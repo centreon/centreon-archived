@@ -719,6 +719,10 @@ paths:
               schema:
                 type: object
                 properties:
+                  id:
+                    type: integer
+                    description: Contact ID
+                    example: 1
                   name:
                     type: string
                     description: Name of the current user
@@ -740,6 +744,10 @@ paths:
                     nullable: true
                     description: Locale of the current user
                     example: en_US
+                  is_admin:
+                    type: boolean
+                    description: If the current user is an administrator
+                    example: true
                   useDeprecatedPages:
                     type: boolean
                     description: Indicates if user wants to use deprecated monitoring pages

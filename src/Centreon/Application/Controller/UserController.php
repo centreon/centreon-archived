@@ -85,6 +85,7 @@ class UserController extends AbstractController
         $user = $this->getUser();
 
         return $this->view([
+            'id' => $user->getId(),
             'name' => $user->getName(),
             'alias' => $user->getAlias(),
             'email' => $user->getEmail(),
