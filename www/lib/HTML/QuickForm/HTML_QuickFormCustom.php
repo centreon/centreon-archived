@@ -85,18 +85,27 @@ class HTML_QuickFormCustom extends HTML_QuickForm
      */
     public function createSecurityToken()
     {
-        $token = bin2hex(openssl_random_pseudo_bytes(16));
+        try {
+            $this->getElement('centreon_token');
+        } catch (HTML_QuickForm_Error $e) {
+            if ($e->getCode() != QUICKFORM_NONEXIST_ELEMENT) {
+                throw $e;
+            } else {
+                $token = bin2hex(openssl_random_pseudo_bytes(16));
 
-        if (!isset($_SESSION['x-centreon-token']) || !is_array($_SESSION['x-centreon-token'])) {
-            $_SESSION['x-centreon-token'] = array();
-            $_SESSION['x-centreon-token-generated-at'] = array();
+                if (!isset($_SESSION['x-centreon-token']) || !is_array($_SESSION['x-centreon-token'])) {
+                    $_SESSION['x-centreon-token'] = array();
+                    $_SESSION['x-centreon-token-generated-at'] = array();
+                }
+
+                $_SESSION['x-centreon-token'][] = $token;
+                $_SESSION['x-centreon-token-generated-at'][(string)$token] = time();
+
+                $myTokenElement = $this->addElement('hidden', 'centreon_token');
+                $myTokenElement->setValue($token);
+            }
         }
 
-        $_SESSION['x-centreon-token'][] = $token;
-        $_SESSION['x-centreon-token-generated-at'][(string)$token] = time();
-
-        $myTokenElement = $this->addElement('hidden', 'centreon_token');
-        $myTokenElement->setValue($token);
     }
 
     /**
