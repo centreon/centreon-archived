@@ -141,6 +141,8 @@ class HostMenu extends Component {
       return <MenuLoader width={27} />;
     }
 
+    const hasPendingHosts = data.pending > 0;
+
     return (
       <div
         className={`${styles.wrapper} wrap-right-hosts`}
@@ -150,10 +152,9 @@ class HostMenu extends Component {
           <IconHeader
             Icon={HostIcon}
             iconName={t('Hosts')}
+            pending={hasPendingHosts}
             onClick={this.toggle}
-          >
-            {data.pending > 0 && <span className={styles['custom-icon']} />}
-          </IconHeader>
+          />
           <Link
             className={classnames(styles.link, styles['wrap-middle-icon'])}
             to={getHostResourcesUrl({

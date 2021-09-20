@@ -350,14 +350,6 @@ default:
       paths: [ "%paths.base%/features/URI.feature" ]
       contexts: [ URIContext ]
 
-    topcounterprofilemenu:
-      paths: [ "%paths.base%/features/TopCounterProfileMenu.feature" ]
-      contexts: [ TopCounterProfileMenuContext ]
-
-    topcounterpoller:
-      paths: [ "%paths.base%/features/TopCounterPollers.feature" ]
-      contexts: [ TopCounterPollersContext ]
-
     topologyapi:
       paths: [ "%paths.base%/features/TopologyAPI.feature" ]
       contexts: [ TopologyAPIContext ]

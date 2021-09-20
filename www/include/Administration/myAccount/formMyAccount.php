@@ -57,13 +57,6 @@ if (!isset($centreonFeature)) {
     $centreonFeature = new CentreonFeature($pearDB);
 }
 
-try {
-    $licenseObject = $dependencyInjector['lm.license'];
-    $isLicenseValid = $licenseObject->validate(true);
-} catch (\Exception $ex) {
-    $isLicenseValid = false;
-}
-
 /*
  * Database retrieve information for the User
  */
@@ -71,7 +64,7 @@ $cct = array();
 if ($o == "c") {
     $query = "SELECT contact_id, contact_name, contact_alias, contact_lang, contact_email, contact_pager,
         contact_js_effects, contact_autologin_key, default_page, show_deprecated_pages, contact_auth_type,
-        contact_platform_data_sending, enable_one_click_export
+        enable_one_click_export
         FROM contact WHERE contact_id = :id";
     $DBRESULT = $pearDB->prepare($query);
     $DBRESULT->bindValue(':id', $centreon->user->get_id(), \PDO::PARAM_INT);
@@ -153,24 +146,8 @@ $form->addElement(
     $attrsText
 );
 
-$platformDataSendingRadios = [
-    $form->createElement('radio', null, null, _('No'), '0'),
-    $form->createElement('radio', null, null, _('Contact Details'), '1'),
-    $form->createElement('radio', null, null, _('Anonymized'), '2')
-];
 
-if ($isLicenseValid) {
-    unset($platformDataSendingRadios[0]);
-}
-
-$form->addGroup(
-    $platformDataSendingRadios,
-    'contact_platform_data_sending',
-    _('Contextual assistance and associated data sending'),
-    '&nbsp;'
-);
-
-/* ------------------------ Topology ---------------------------- */
+/* ------------------------ Topoogy ---------------------------- */
 $pages = [];
 $aclUser = $centreon->user->lcaTStr;
 if (!empty($aclUser)) {
