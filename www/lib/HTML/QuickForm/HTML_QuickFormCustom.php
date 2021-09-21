@@ -85,7 +85,7 @@ class HTML_QuickFormCustom extends HTML_QuickForm
      */
     public function createSecurityToken()
     {
-        if (!$this->elementExists('centreon_token')){
+        if (!$this->elementExists('centreon_token')) {
             $token = bin2hex(openssl_random_pseudo_bytes(16));
 
             if (!isset($_SESSION['x-centreon-token']) || !is_array($_SESSION['x-centreon-token'])) {
