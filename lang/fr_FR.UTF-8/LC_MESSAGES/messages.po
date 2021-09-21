@@ -16241,5 +16241,5 @@ msgid "Service graphs"
 msgstr "Graphiques de services"
 
 msgid "Clear filter"
-msgstr "Réinitialiser le filtre"
+msgstr "Effacer le filtre"
 
