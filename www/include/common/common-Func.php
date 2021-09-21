@@ -2350,7 +2350,8 @@ function isNotEmptyAfterStringSanitize($test): bool
 /**
  * Remove too old CSRF tokens (> 15min)
  */
-function purgeTokens(){
+function purgeTokens()
+{
     foreach ($_SESSION['x-centreon-token-generated-at'] as $key => $value) {
         $elapsedTime = time() - $value;
 
@@ -2367,26 +2368,33 @@ function purgeTokens(){
  *
  * @return boolean
  */
-function isCSRFTokenValid(){
+function isCSRFTokenValid()
+{
     $isValid = false;
 
     purgeTokens();
 
     $token = $_POST['centreon_token'] ?? $_GET['centreon_token'] ?? null;
     if ($token !== null && in_array($token, $_SESSION['x-centreon-token'])) {
-        $key = array_search((string)$token, $_SESSION['x-centreon-token']);
+        $key = array_search((string) $token, $_SESSION['x-centreon-token']);
         unset($_SESSION['x-centreon-token'][$key]);
-        unset($_SESSION['x-centreon-token-generated-at'][(string)$token]);
+        unset($_SESSION['x-centreon-token-generated-at'][(string) $token]);
         $isValid = true;
     }
+
     return $isValid;
 }
 
 /**
  * Display error message for unvalid form (CSRF token unvalid or too old)
  */
-function unvalidFormMessage(){
+function unvalidFormMessage()
+{
     echo "<div class='msg' align='center'>" .
         _("The form has not been submitted since 15 minutes. Please retry to resubmit") .
-        "</div>";
+        "<a href='' ".
+        "onload='windows.location.searchParams.delete('o'); windows.location.searchParams.delete('centreon_token');' ".
+        "alt='reload'> " . _("here") . "</a></div>";
 }
+
+
