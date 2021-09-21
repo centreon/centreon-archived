@@ -13,18 +13,6 @@ module.exports = merge(baseConfig, extractCssConfig, {
     rules: [
       { parser: { system: false } },
       {
-        test: /fonts(\\|\/).+\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
-        use: [
-          {
-            loader: 'file-loader',
-            options: {
-              name: '[name].[hash:8].[ext]',
-              publicPath: './',
-            },
-          },
-        ],
-      },
-      {
         test: /\.icon.svg$/,
         use: ['@svgr/webpack'],
       },

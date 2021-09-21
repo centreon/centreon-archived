@@ -38,9 +38,6 @@ const mapDispatchToProps = (dispatch) => {
     fetchNavigationData: () => {
       dispatch(fetchNavigationData());
     },
-    updateTooltip: () => {
-      dispatch(updateTooltip());
-    },
   };
 };
 
