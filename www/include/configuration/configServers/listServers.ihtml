@@ -79,7 +79,8 @@
         <tr class="ListHeader">
             <td class="ListColHeaderPicker">
                 <div class="md-checkbox md-checkbox-inline">
-                    <input type="checkbox" id="checkall" name="checkall" onclick="checkUncheckAll(this);"/>
+                    <input type="checkbox" id="checkall" name="checkall"
+                        onclick="checkUncheckAll(this); hasPollersSelected();"/>
                     <label class="empty-label" for="checkall"></label>
                 </div>
             </td>
