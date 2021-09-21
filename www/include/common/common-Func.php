@@ -2391,9 +2391,7 @@ function unvalidFormMessage()
 {
     echo "<div class='msg' align='center'>" .
         _("The form has not been submitted since 15 minutes. Please retry to resubmit") .
-        "<a href='' ".
-        "onload='windows.location.searchParams.delete('o'); windows.location.searchParams.delete('centreon_token');' ".
-        "alt='reload'> " . _("here") . "</a></div>";
+        "</div>";
 }
 
 
