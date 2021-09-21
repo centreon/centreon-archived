@@ -17,7 +17,7 @@ import { withStyles, createStyles } from '@material-ui/core';
 
 import { ThemeProvider } from '@centreon/ui';
 
-import Header from './components/header';
+import Header from './Header';
 import { history } from './store';
 import Nagigation from './Navigation';
 import Tooltip from './components/tooltip';
