@@ -1,4 +1,5 @@
 interface Content {
+  [x: string]: string | undefined;
   content: string;
   wrapper: string;
 }

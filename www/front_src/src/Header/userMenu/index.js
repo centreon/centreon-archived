@@ -18,11 +18,11 @@ import UserIcon from '@material-ui/icons/AccountCircle';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import CheckIcon from '@material-ui/icons/Check';
 
-import { allowedPagesSelector } from '../../../redux/selectors/navigation/allowedPages';
+import { allowedPagesSelector } from '../../redux/selectors/navigation/allowedPages';
 import styles from '../header.scss';
-import Clock from '../clock';
-import axios from '../../../axios';
-import MenuLoader from '../../MenuLoader';
+import Clock from '../Clock';
+import axios from '../../axios';
+import MenuLoader from '../../components/MenuLoader';
 
 const EDIT_PROFILE_TOPOLOGY_PAGE = '50104';
 

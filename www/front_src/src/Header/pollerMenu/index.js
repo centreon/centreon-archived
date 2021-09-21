@@ -28,10 +28,10 @@ import LatencyIcon from '@material-ui/icons/Speed';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 
-import axios from '../../../axios';
+import axios from '../../axios';
 import styles from '../header.scss';
-import { allowedPagesSelector } from '../../../redux/selectors/navigation/allowedPages';
-import MenuLoader from '../../MenuLoader';
+import { allowedPagesSelector } from '../../redux/selectors/navigation/allowedPages';
+import MenuLoader from '../../components/MenuLoader';
 
 const POLLER_CONFIGURATION_TOPOLOGY_PAGE = '60901';
 
