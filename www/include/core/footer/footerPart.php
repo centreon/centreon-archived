@@ -233,19 +233,19 @@ if ((isset($_GET["mini"]) && $_GET["mini"] == 1) ||
             || JSON.parse(localStorage.getItem('centreonPlatformData')).cacheGenerationDate + (24 * 60 * 60 * 1000) < Date.now()
         ) {
             const userParametersRequest = jQuery.ajax({
-                url: '/centreon/api/v21.10/configuration/users/current/parameters',
+                url: '/centreon/api/latest/configuration/users/current/parameters',
                 method: 'GET',
                 contentType: 'application/json'
             })
 
             const platformVersionsRequest = jQuery.ajax({
-                url: '/centreon/api/v21.10/platform/versions',
+                url: '/centreon/api/beta/platform/versions',
                 method: 'GET',
                 contentType: 'application/json'
             })
 
             const aclActionsRequest = jQuery.ajax({
-                url: '/centreon/api/v21.10/users/acl/actions',
+                url: '/centreon/api/latest/users/acl/actions',
                 method: 'GET',
                 contentType: 'application/json'
             })
