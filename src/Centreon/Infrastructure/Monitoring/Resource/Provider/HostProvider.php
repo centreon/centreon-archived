@@ -45,7 +45,7 @@ final class HostProvider extends Provider
                 $filter->getStatuses(),
                 ResourceFilter::MAP_STATUS_HOST
             ))
-            || $filter->getServicegroupIds()
+            || $filter->getServicegroupNames()
         ) {
             return false;
         }
@@ -238,17 +238,17 @@ final class HostProvider extends Provider
         }
 
         // apply the monitoring server filter to SQL query
-        if (!empty($filter->getMonitoringServerIds())) {
-            $monitoringServerIds = [];
+        if (!empty($filter->getMonitoringServerNames())) {
+            $monitoringServerNames = [];
 
-            foreach ($filter->getMonitoringServerIds() as $index => $monitoringServerId) {
-                $key = ":monitoringServerId_{$index}";
+            foreach ($filter->getMonitoringServerNames() as $index => $monitoringServerName) {
+                $key = ":monitoringServerName_{$index}";
 
-                $monitoringServerIds[] = $key;
-                $collector->addValue($key, $monitoringServerId, \PDO::PARAM_INT);
+                $monitoringServerNames[] = $key;
+                $collector->addValue($key, $monitoringServerName, \PDO::PARAM_STR);
             }
 
-            $sql .= ' AND i.instance_id IN (' . implode(', ', $monitoringServerIds) . ')';
+            $sql .= ' AND i.name IN (' . implode(', ', $monitoringServerNames) . ')';
         }
 
         return $sql;
