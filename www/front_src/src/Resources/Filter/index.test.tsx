@@ -214,7 +214,7 @@ describe(Filter, () => {
           result: [],
         },
       })
-      .mockResolvedValueOnce({ data: {} });
+      .mockResolvedValue({ data: {} });
   });
 
   afterEach(() => {
@@ -284,10 +284,6 @@ describe(Filter, () => {
     const searchValue = 'foobar';
 
     userEvent.type(getByPlaceholderText(labelSearch), searchValue);
-
-    mockedAxios.get
-      .mockResolvedValueOnce({ data: {} })
-      .mockResolvedValueOnce({ data: {} });
 
     userEvent.click(
       getByLabelText(labelSearchOptions).firstElementChild as HTMLElement,
@@ -471,7 +467,7 @@ describe(Filter, () => {
             result: [],
           },
         })
-        .mockResolvedValueOnce({
+        .mockResolvedValue({
           data: {
             meta: {
               limit: 30,
@@ -594,7 +590,7 @@ describe(Filter, () => {
             result: [],
           },
         })
-        .mockResolvedValueOnce({
+        .mockResolvedValue({
           data: {
             meta: {
               limit: 30,
