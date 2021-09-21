@@ -52,12 +52,23 @@ $serviceObj = new CentreonService($pearDB);
 $resourceId = $resourceId ?? 0;
 
 /**
- * @param string $date Date to check
- * @return boolean Returns TRUE (valid date) if the year is less than 2100
+ * @param array $fields form data
+ * @return boolean|array Returns TRUE (valid date) if the year is less than 2100, otherwise returns errors
  */
-function checkYearMax($date)
+function checkYearMax(array $fields)
 {
-    return ((int) (new \DateTime($date))->format('Y')) < DOWNTIME_YEAR_MAX;
+    $errors = [];
+    $tooHighDateMessage = sprintf(_("Please choose a date before %d"), DOWNTIME_YEAR_MAX);
+
+    if (((int) (new \DateTime($fields['alternativeDateStart']))->format('Y')) >= DOWNTIME_YEAR_MAX) {
+        $errors['start'] = $tooHighDateMessage;
+    }
+
+    if (((int) (new \DateTime($fields['alternativeDateEnd']))->format('Y')) >= DOWNTIME_YEAR_MAX) {
+        $errors['end'] = $tooHighDateMessage;
+    }
+
+    return count($errors) > 0 ? $errors : true;
 }
 
 if (
@@ -314,12 +325,10 @@ if (
         )
     );
 
-    $form->registerRule('checkYearMax', 'callback', 'checkYearMax');
+    $form->addFormRule('checkYearMax');
 
     $form->addRule('end', _("Required Field"), 'required');
-    $form->addRule('end', sprintf(_("Please choose a date before %d"), DOWNTIME_YEAR_MAX), 'checkYearMax');
     $form->addRule('start', _("Required Field"), 'required');
-    $form->addRule('start', sprintf(_("Please choose a date before %d"), DOWNTIME_YEAR_MAX), 'checkYearMax');
     $form->addRule('end_time', _("Required Field"), 'required');
     $form->addRule('start_time', _("Required Field"), 'required');
     $form->addRule('comment', _("Required Field"), 'required');
