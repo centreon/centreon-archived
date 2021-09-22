@@ -1159,6 +1159,11 @@ div.menuLeft {
     margin: 2px 10px 2px 0px;
 }
 
+#esi_icon_image {
+    height: 25px;
+    vertical-align: middle;
+}
+
 /* ------ END : Popover-----*/
 
 /* ------ START : Tabs -----*/
