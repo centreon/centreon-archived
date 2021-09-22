@@ -87,7 +87,9 @@ if (isset($_GET["period_form"]) || isset($_GET["period"]) && $o == "") {
             require_once($path . "formDowntime.php");
             break; #Modify a downtime
         case "e":
+            purgeOutdatedCSRFTokens();
             if (isCSRFTokenValid()) {
+                purgeCSRFToken();
                 $downtime->enable($downtime_id);
             } else {
                 unvalidFormMessage();
@@ -95,7 +97,9 @@ if (isset($_GET["period_form"]) || isset($_GET["period"]) && $o == "") {
             require_once($path . "listDowntime.php");
             break; #Activate a service
         case "ms":
+            purgeOutdatedCSRFTokens();
             if (isCSRFTokenValid()) {
+                purgeCSRFToken();
                 $downtime->multiEnable(isset($select) ? $select : array());
             } else {
                 unvalidFormMessage();
@@ -103,7 +107,9 @@ if (isset($_GET["period_form"]) || isset($_GET["period"]) && $o == "") {
             require_once($path . "listDowntime.php");
             break;
         case "u":
+            purgeOutdatedCSRFTokens();
             if (isCSRFTokenValid()) {
+                purgeCSRFToken();
                 $downtime->disable($downtime_id);
             } else {
                 unvalidFormMessage();
@@ -111,7 +117,9 @@ if (isset($_GET["period_form"]) || isset($_GET["period"]) && $o == "") {
             require_once($path . "listDowntime.php");
             break; #Desactivate a service
         case "mu":
+            purgeOutdatedCSRFTokens();
             if (isCSRFTokenValid()) {
+                purgeCSRFToken();
                 $downtime->multiDisable(isset($select) ? $select : array());
             } else {
                 unvalidFormMessage();
@@ -119,7 +127,9 @@ if (isset($_GET["period_form"]) || isset($_GET["period"]) && $o == "") {
             require_once($path . "listDowntime.php");
             break;
         case "m":
+            purgeOutdatedCSRFTokens();
             if (isCSRFTokenValid()) {
+                purgeCSRFToken();
                 $downtime->duplicate(isset($select) ? $select : array(), $dupNbr);
             } else {
                 unvalidFormMessage();
@@ -127,7 +137,9 @@ if (isset($_GET["period_form"]) || isset($_GET["period"]) && $o == "") {
             require_once($path . "listDowntime.php");
             break; #Duplicate n services
         case "d":
+            purgeOutdatedCSRFTokens();
             if (isCSRFTokenValid()) {
+                purgeCSRFToken();
                 $downtime->multiDelete(isset($select) ? $select : array());
             } else {
                 unvalidFormMessage();

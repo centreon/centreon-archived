@@ -99,7 +99,9 @@ switch ($o) {
         }
         break;
     case METRIC_ENABLE:
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             if (is_int($vmetricId)) {
                 enableVirtualMetricInDB($vmetricId);
             }
@@ -109,7 +111,9 @@ switch ($o) {
         require_once($path . "listVirtualMetrics.php");
         break;
     case METRIC_DISABLE:
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             if (is_int($vmetricId)) {
                 disableVirtualMetricInDB($vmetricId);
             }
@@ -119,7 +123,9 @@ switch ($o) {
         require_once($path . "listVirtualMetrics.php");
         break;
     case METRIC_DUPLICATE:
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             if (!in_array(false, $selectIds) && !in_array(false, $duplicateNbr)) {
                 multipleVirtualMetricInDB($selectIds, $duplicateNbr);
             }
@@ -129,7 +135,9 @@ switch ($o) {
         require_once($path . "listVirtualMetrics.php");
         break;
     case METRIC_DELETE:
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             if (!in_array(false, $selectIds)) {
                 deleteVirtualMetricInDB($selectIds);
             }

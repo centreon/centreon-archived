@@ -75,7 +75,9 @@ switch ($o) {
         require_once($path . "renderTimeperiod.php");
         break;
     case "m": // Duplicate n Timeperiods
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             multipleTimeperiodInDB(
                 is_array($select) ? $select : array(),
                 is_array($dupNbr) ? $dupNbr : array()
@@ -86,7 +88,9 @@ switch ($o) {
         require_once($path . "listTimeperiod.php");
         break;
     case "d": // Delete n Timeperiods
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             deleteTimeperiodInDB(is_array($select) ? $select : array());
         } else {
             unvalidFormMessage();

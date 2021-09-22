@@ -72,7 +72,9 @@ switch ($o) {
         require_once($path . "AddSvcComment.php");
         break;
     case "ds":
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             if (!empty($select)) {
                 foreach ($select as $key => $value) {
                     $res = explode(';', urldecode($key));

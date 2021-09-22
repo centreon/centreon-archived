@@ -109,7 +109,9 @@ switch ($o) {
         require_once($path . "formHost.php");
         break;
     case HOST_ACTIVATION:
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             enableHostInDB($host_id);
         } else {
             unvalidFormMessage();
@@ -117,7 +119,9 @@ switch ($o) {
         require_once($path . "listHost.php");
         break; #Activate a host
     case HOST_MASSIVE_ACTIVATION:
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             enableHostInDB(null, $select ?? []);
         } else {
             unvalidFormMessage();
@@ -125,7 +129,9 @@ switch ($o) {
         require_once($path . "listHost.php");
         break;
     case HOST_DEACTIVATION:
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             disableHostInDB($host_id);
         } else {
             unvalidFormMessage();
@@ -133,7 +139,9 @@ switch ($o) {
         require_once($path . "listHost.php");
         break; #Desactivate a host
     case HOST_MASSIVE_DEACTIVATION:
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             disableHostInDB(null, $select ?? []);
         } else {
             unvalidFormMessage();
@@ -141,7 +149,9 @@ switch ($o) {
         require_once($path . "listHost.php");
         break;
     case HOST_DUPLICATION:
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             multipleHostInDB($select ?? [], $dupNbr);
         } else {
             unvalidFormMessage();
@@ -152,7 +162,9 @@ switch ($o) {
         require_once($path . "listHost.php");
         break;
     case HOST_DELETION:
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             deleteHostInDB($select ?? []);
         } else {
             unvalidFormMessage();
@@ -160,7 +172,13 @@ switch ($o) {
         require_once($path . "listHost.php");
         break;
     case HOST_SERVICE_DEPLOYMENT:
-        applytpl($select ?? []);
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            applytpl($select ?? []);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listHost.php");
         break; #Deploy service n hosts
     default:

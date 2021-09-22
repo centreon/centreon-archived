@@ -73,7 +73,9 @@ switch ($o) {
         break;
 
     case "s":
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             if ($lvl_access == "w") {
                 $myConnector = $connectorObj->read($connector_id);
                 $myConnector['enabled'] = '1';
@@ -86,7 +88,9 @@ switch ($o) {
         break;
 
     case "u":
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             if ($lvl_access == "w") {
                 $myConnector = $connectorObj->read($connector_id);
                 $myConnector['enabled'] = '0';
@@ -99,7 +103,9 @@ switch ($o) {
         break;
 
     case "m":
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             if ($lvl_access == "w") {
                 $selectedConnectors = array_keys($select);
                 foreach ($selectedConnectors as $connectorId) {
@@ -113,7 +119,9 @@ switch ($o) {
         break;
 
     case "d":
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             if ($lvl_access == "w") {
                 $selectedConnectors = array_keys($select);
                 foreach ($selectedConnectors as $connectorId) {

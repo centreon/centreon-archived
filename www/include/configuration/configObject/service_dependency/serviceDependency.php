@@ -79,7 +79,9 @@ switch ($o) {
         require_once($path . "formServiceDependency.php");
         break;
     case "m": # Duplicate n Dependencies
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             multipleServiceDependencyInDB(
                 is_array($select) ? $select : array(),
                 is_array($dupNbr) ? $dupNbr : array()
@@ -90,7 +92,9 @@ switch ($o) {
         require_once($path . "listServiceDependency.php");
         break;
     case "d": # Delete n Dependencies
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             deleteServiceDependencyInDB(is_array($select) ? $select : array());
         } else {
             unvalidFormMessage();

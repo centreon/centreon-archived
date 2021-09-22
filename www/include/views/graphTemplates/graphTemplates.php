@@ -103,7 +103,9 @@ switch ($o) {
         break;
     case "m":
         // duplicate n time selected graph template(s)
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             multipleGraphTemplateInDB($selectedGraphTemplates, $duplicationNumbers);
         } else {
             unvalidFormMessage();
@@ -112,7 +114,9 @@ switch ($o) {
         break;
     case "d":
         // delete selected graph template(s)
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             deleteGraphTemplateInDB($selectedGraphTemplates);
         } else {
             unvalidFormMessage();

@@ -99,7 +99,9 @@ switch ($o) {
         require_once($path . "formServers.php");
         break;
     case SERVER_ENABLE:
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             if ($server_id !== false) {
                 enableServerInDB($server_id);
             }
@@ -109,7 +111,9 @@ switch ($o) {
         require_once($path . "listServers.php");
         break;
     case SERVER_DISABLE:
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             if ($server_id !== false) {
                 disableServerInDB($server_id);
             }
@@ -119,7 +123,9 @@ switch ($o) {
         require_once($path . "listServers.php");
         break;
     case SERVER_DUPLICATE:
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             if (!in_array(false, $select) && !in_array(false, $dupNbr)) {
                 duplicateServer($select, $dupNbr);
             }
@@ -129,7 +135,9 @@ switch ($o) {
         require_once($path . "listServers.php");
         break;
     case SERVER_DELETE:
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             if (!in_array(false, $select)) {
                 deleteServerInDB($select);
             }

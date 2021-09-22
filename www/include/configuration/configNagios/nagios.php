@@ -84,7 +84,9 @@ switch ($o) {
         require_once(__DIR__ . '/formNagios.php');
         break; #Modify Nagios.cfg
     case "s":
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             enableNagiosInDB($nagiosId);
         } else {
             unvalidFormMessage();
@@ -92,7 +94,9 @@ switch ($o) {
         require_once(__DIR__ . '/listNagios.php');
         break; #Activate a nagios CFG
     case "u":
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             disableNagiosInDB($nagiosId);
         } else {
             unvalidFormMessage();
@@ -100,7 +104,9 @@ switch ($o) {
         require_once(__DIR__ . '/listNagios.php');
         break; #Desactivate a nagios CFG
     case "m":
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             multipleNagiosInDB(isset($select) ? $select : array(), $dupNbr);
         } else {
             unvalidFormMessage();
@@ -108,7 +114,9 @@ switch ($o) {
         require_once(__DIR__ . '/listNagios.php');
         break; #Duplicate n nagios CFGs
     case "d":
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             deleteNagiosInDB(isset($select) ? $select : array());
         } else {
             unvalidFormMessage();

@@ -137,7 +137,9 @@ switch ($o) {
         require_once($path . "formContactTemplateModel.php");
         break; // Modify a contact template
     case "s":
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             enableContactInDB($contact_id);
         } else {
             unvalidFormMessage();
@@ -145,7 +147,9 @@ switch ($o) {
         require_once($path . "listContactTemplateModel.php");
         break; // Activate a contact template
     case "ms":
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             enableContactInDB(null, isset($select) ? $select : array());
         } else {
             unvalidFormMessage();
@@ -153,7 +157,9 @@ switch ($o) {
         require_once($path . "listContactTemplateModel.php");
         break;
     case "u":
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             disableContactInDB($contact_id);
         } else {
             unvalidFormMessage();
@@ -161,7 +167,9 @@ switch ($o) {
         require_once($path . "listContactTemplateModel.php");
         break; // Desactivate a contact
     case "mu":
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             disableContactInDB(null, isset($select) ? $select : array());
         } else {
             unvalidFormMessage();
@@ -169,7 +177,9 @@ switch ($o) {
         require_once($path . "listContactTemplateModel.php");
         break;
     case "m":
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             // We notify that we have made a duplicate
             $eventDispatcher->notify(
                 $eventContext,
@@ -185,7 +195,9 @@ switch ($o) {
         require_once($path . "listContactTemplateModel.php");
         break; // Duplicate n contacts
     case "d":
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             // We notify that we have made a delete
             $eventDispatcher->notify(
                 $eventContext,

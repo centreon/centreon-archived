@@ -96,7 +96,9 @@ switch ($o) {
         }
         break;
     case TRAP_DUPLICATE:
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             if (!in_array(false, $selectIds) && !in_array(false, $duplicateNbr)) {
                 $trapObj->duplicate($selectIds, $duplicateNbr);
             }
@@ -106,7 +108,9 @@ switch ($o) {
         require_once($path . "listTraps.php");
         break;
     case TRAP_DELETE:
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             if (!in_array(false, $selectIds)) {
                 $trapObj->delete($selectIds);
             }

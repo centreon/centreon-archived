@@ -73,7 +73,9 @@ switch ($o) {
         require_once($path . "formGroups.php");
         break; #Modify a Trap
     case "m":
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             multipleTrapGroupInDB(isset($select) ? $select : array(), $dupNbr);
         } else {
             unvalidFormMessage();
@@ -81,7 +83,9 @@ switch ($o) {
         require_once($path . "listGroups.php");
         break; #Duplicate n Traps
     case "d":
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             deleteTrapGroupInDB(isset($select) ? $select : array());
         } else {
             unvalidFormMessage();

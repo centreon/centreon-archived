@@ -75,7 +75,9 @@ switch ($o) {
         require_once($path . "formMetaServiceDependency.php");
         break;
     case "m": # Duplicate n Meta Services
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             multipleMetaServiceDependencyInDB(
                 is_array($select) ? $select : array(),
                 is_array($dupNbr) ? $dupNbr : array()
@@ -86,7 +88,9 @@ switch ($o) {
         require_once($path . "listMetaServiceDependency.php");
         break;
     case "d": # Delete n Meta Service
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             deleteMetaServiceDependencyInDB(is_array($select) ? $select : array());
         } else {
             unvalidFormMessage();

@@ -85,7 +85,9 @@ switch ($o) {
         require_once($path . "formEscalation.php");
         break; #Modify a Escalation
     case "m":
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             multipleEscalationInDB(isset($select) ? $select : array(), $dupNbr);
         } else {
             unvalidFormMessage();
@@ -93,7 +95,9 @@ switch ($o) {
         require_once($path . "listEscalation.php");
         break; #Duplicate n Escalations
     case "d":
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             deleteEscalationInDB(isset($select) ? $select : array());
         } else {
             unvalidFormMessage();

@@ -130,7 +130,9 @@ switch ($o) {
         /*
          * Activate a Resource
          */
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             if ($resourceId !== false) {
                 enableResourceInDB($resourceId);
             }
@@ -143,7 +145,9 @@ switch ($o) {
         /*
          * Desactivate a Resource
          */
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             if ($resourceId !== false) {
                 disableResourceInDB($resourceId);
             }
@@ -156,7 +160,9 @@ switch ($o) {
         /*
          * Duplicate n resources only if data sent are correctly typed
          */
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             if (!in_array(false, $selectIds) && !in_array(false, $duplicateNbr)) {
                 multipleResourceInDB(
                     $selectIds,
@@ -172,7 +178,9 @@ switch ($o) {
         /*
          * Delete n resources only if data sent are correctly typed
          */
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             if (!in_array(false, $selectIds)) {
                 deleteResourceInDB($selectIds);
             }
