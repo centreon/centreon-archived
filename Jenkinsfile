@@ -300,7 +300,7 @@ try {
     }
   }
 
-  if ((env.BUILD == 'CI')) {
+  if ((env.BUILD == 'CI') || (env.BUILD == 'QA')) {
     stage('Delivery to unstable') {
       node {
         checkoutCentreonBuild(buildBranch)
@@ -412,8 +412,8 @@ try {
     }
   }  
 
-  if ((env.BUILD == 'RELEASE') || (env.BUILD == 'QA')) {
-    stage('Delivery to unstable') {
+  if ((env.BUILD == 'RELEASE')) {
+    stage('Delivery to testing') {
       node {
         checkoutCentreonBuild(buildBranch)
         unstash 'tar-sources'
