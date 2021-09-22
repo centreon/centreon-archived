@@ -28,6 +28,7 @@ export interface ResourceDetails extends NamedEntity {
   last_check: string;
   last_notification: string;
   last_status_change: string;
+  last_time_with_no_issue: string;
   latency: number;
   links: ResourceLinks;
   monitoring_server_name?: string;
