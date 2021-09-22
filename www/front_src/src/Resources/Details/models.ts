@@ -6,9 +6,10 @@ import {
   Parent,
   ResourceLinks,
   NamedEntity,
+  ResourceType,
 } from '../models';
 
-import { StoredCustomTimePeriod, TimePeriodId } from './tabs/Graph/models';
+import { CustomTimePeriod, TimePeriodId } from './tabs/Graph/models';
 
 export interface ResourceDetails extends NamedEntity {
   acknowledged: boolean;
@@ -40,7 +41,7 @@ export interface ResourceDetails extends NamedEntity {
   status: Status;
   timezone?: string;
   tries: string;
-  type: 'service' | 'host' | 'metaservice';
+  type: ResourceType;
   uuid: string;
 }
 
@@ -55,14 +56,11 @@ export interface GraphOptions {
 }
 
 export interface GraphTabParameters {
-  graphOptions?: GraphOptions;
-  selectedCustomTimePeriod?: StoredCustomTimePeriod;
-  selectedTimePeriodId?: TimePeriodId;
+  options?: GraphOptions;
 }
 
 export interface ServicesTabParameters {
-  graphMode: boolean;
-  graphTimePeriod: GraphTabParameters;
+  options: GraphOptions;
 }
 
 export interface TabParameters {
@@ -71,9 +69,11 @@ export interface TabParameters {
 }
 
 export interface DetailsUrlQueryParameters {
+  customTimePeriod?: CustomTimePeriod;
   id: number;
   parentId?: number;
   parentType?: string;
+  selectedTimePeriodId?: TimePeriodId;
   tab?: string;
   tabParameters?: TabParameters;
   type: string;

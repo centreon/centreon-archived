@@ -3,17 +3,16 @@ import * as React from 'react';
 import { all, head, pathEq, pick } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
-import { makeStyles, Menu, MenuItem } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core';
 import IconAcknowledge from '@material-ui/icons/Person';
 import IconCheck from '@material-ui/icons/Sync';
 import IconMore from '@material-ui/icons/MoreHoriz';
 
 import {
   useCancelTokenSource,
-  Severity,
   useSnackbar,
   SeverityCode,
-  IconButton,
+  PopoverMenu,
 } from '@centreon/ui';
 
 import IconDowntime from '../../icons/Downtime';
@@ -23,10 +22,10 @@ import {
   labelCheck,
   labelSomethingWentWrong,
   labelCheckCommandSent,
-  labelMoreActions,
   labelDisacknowledge,
   labelSubmitStatus,
   labelAddComment,
+  labelMoreActions,
 } from '../../translatedLabels';
 import { ResourceContext, useResourceContext } from '../../Context';
 import { checkResources } from '../api';
@@ -40,6 +39,7 @@ import AcknowledgeForm from './Acknowledge';
 import DisacknowledgeForm from './Disacknowledge';
 import SubmitStatusForm from './SubmitStatus';
 import ResourceActionButton from './ResourceActionButton';
+import ActionMenuItem from './ActionMenuItem';
 
 const useStyles = makeStyles((theme) => ({
   action: {
@@ -80,19 +80,12 @@ const ResourceActionsContent = ({
   const { t } = useTranslation();
   const classes = useStyles();
   const { cancel, token } = useCancelTokenSource();
-  const { showMessage } = useSnackbar();
-  const [moreActionsMenuAnchor, setMoreActionsMenuAnchor] =
-    React.useState<Element | null>(null);
+  const { showErrorMessage, showSuccessMessage } = useSnackbar();
 
   const [resourceToSubmitStatus, setResourceToSubmitStatus] =
     React.useState<Resource | null>();
   const [resourceToComment, setResourceToComment] =
     React.useState<Resource | null>();
-
-  const showError = (message): void =>
-    showMessage({ message, severity: Severity.error });
-  const showSuccess = (message): void =>
-    showMessage({ message, severity: Severity.success });
 
   const {
     canAcknowledge,
@@ -126,9 +119,9 @@ const ResourceActionsContent = ({
     })
       .then(() => {
         confirmAction();
-        showSuccess(t(labelCheckCommandSent));
+        showSuccessMessage(t(labelCheckCommandSent));
       })
-      .catch(() => showError(t(labelSomethingWentWrong)));
+      .catch(() => showErrorMessage(t(labelSomethingWentWrong)));
   }, [resourcesToCheck]);
 
   React.useEffect(() => (): void => cancel(), []);
@@ -153,12 +146,7 @@ const ResourceActionsContent = ({
     setResourcesToSetDowntime([]);
   };
 
-  const closeMoreActionsMenu = (): void => {
-    setMoreActionsMenuAnchor(null);
-  };
-
   const prepareToDisacknowledge = (): void => {
-    closeMoreActionsMenu();
     setResourcesToDisacknowledge(selectedResources);
   };
 
@@ -167,7 +155,6 @@ const ResourceActionsContent = ({
   };
 
   const prepareToSubmitStatus = (): void => {
-    closeMoreActionsMenu();
     const [selectedResource] = selectedResources;
 
     setResourceToSubmitStatus(selectedResource);
@@ -178,7 +165,6 @@ const ResourceActionsContent = ({
   };
 
   const prepareToAddComment = (): void => {
-    closeMoreActionsMenu();
     const [selectedResource] = selectedResources;
 
     setResourceToComment(selectedResource);
@@ -186,10 +172,6 @@ const ResourceActionsContent = ({
 
   const cancelComment = (): void => {
     setResourceToComment(null);
-  };
-
-  const openMoreActionsMenu = (event: React.MouseEvent): void => {
-    setMoreActionsMenuAnchor(event.currentTarget);
   };
 
   const areSelectedResourcesOk = all(
@@ -203,13 +185,28 @@ const ResourceActionsContent = ({
   const disableCheck = !canCheck(selectedResources);
   const disableDisacknowledge = !canDisacknowledge(selectedResources);
 
+  const hasSelectedResources = selectedResources.length > 0;
+  const hasOneResourceSelected = selectedResources.length === 1;
+
   const disableSubmitStatus =
-    selectedResources.length !== 1 ||
+    !hasOneResourceSelected ||
     !canSubmitStatus(selectedResources) ||
     !head(selectedResources)?.passive_checks;
 
   const disableAddComment =
-    selectedResources.length !== 1 || !canComment(selectedResources);
+    !hasOneResourceSelected || !canComment(selectedResources);
+
+  const isAcknowledgePermitted =
+    canAcknowledge(selectedResources) || !hasSelectedResources;
+  const isDowntimePermitted =
+    canDowntime(selectedResources) || !hasSelectedResources;
+  const isCheckPermitted = canCheck(selectedResources) || !hasSelectedResources;
+  const isDisacknowledgePermitted =
+    canDisacknowledge(selectedResources) || !hasSelectedResources;
+  const isSubmitStatusPermitted =
+    canSubmitStatus(selectedResources) || !hasSelectedResources;
+  const isAddCommentPermitted =
+    canComment(selectedResources) || !hasSelectedResources;
 
   return (
     <div className={classes.flex}>
@@ -219,6 +216,7 @@ const ResourceActionsContent = ({
             disabled={disableAcknowledge}
             icon={<IconAcknowledge />}
             label={t(labelAcknowledge)}
+            permitted={isAcknowledgePermitted}
             onClick={prepareToAcknowledge}
           />
         </div>
@@ -227,6 +225,7 @@ const ResourceActionsContent = ({
             disabled={disableDowntime}
             icon={<IconDowntime />}
             label={t(labelSetDowntime)}
+            permitted={isDowntimePermitted}
             onClick={prepareToSetDowntime}
           />
         </div>
@@ -235,6 +234,7 @@ const ResourceActionsContent = ({
             disabled={disableCheck}
             icon={<IconCheck />}
             label={t(labelCheck)}
+            permitted={isCheckPermitted}
             onClick={prepareToCheck}
           />
         </div>
@@ -276,34 +276,43 @@ const ResourceActionsContent = ({
         )}
       </div>
 
-      <div className={classes.flex}>
-        <IconButton title={t(labelMoreActions)} onClick={openMoreActionsMenu}>
-          <IconMore color="primary" fontSize="small" />
-        </IconButton>
-      </div>
-
-      <Menu
-        keepMounted
-        anchorEl={moreActionsMenuAnchor}
-        open={Boolean(moreActionsMenuAnchor)}
-        onClose={closeMoreActionsMenu}
+      <PopoverMenu
+        icon={<IconMore color="primary" fontSize="small" />}
+        title={t(labelMoreActions) as string}
       >
-        <MenuItem
-          disabled={disableDisacknowledge}
-          onClick={prepareToDisacknowledge}
-        >
-          {t(labelDisacknowledge)}
-        </MenuItem>
-        <MenuItem
-          disabled={disableSubmitStatus}
-          onClick={prepareToSubmitStatus}
-        >
-          {t(labelSubmitStatus)}
-        </MenuItem>
-        <MenuItem disabled={disableAddComment} onClick={prepareToAddComment}>
-          {t(labelAddComment)}
-        </MenuItem>
-      </Menu>
+        {({ close }): JSX.Element => (
+          <>
+            <ActionMenuItem
+              disabled={disableDisacknowledge}
+              label={labelDisacknowledge}
+              permitted={isDisacknowledgePermitted}
+              onClick={(): void => {
+                close();
+                prepareToDisacknowledge();
+              }}
+            />
+            <ActionMenuItem
+              disabled={disableSubmitStatus}
+              label={labelSubmitStatus}
+              permitted={isSubmitStatusPermitted}
+              onClick={(): void => {
+                close();
+                prepareToSubmitStatus();
+              }}
+            />
+
+            <ActionMenuItem
+              disabled={disableAddComment}
+              label={labelAddComment}
+              permitted={isAddCommentPermitted}
+              onClick={(): void => {
+                close();
+                prepareToAddComment();
+              }}
+            />
+          </>
+        )}
+      </PopoverMenu>
     </div>
   );
 };

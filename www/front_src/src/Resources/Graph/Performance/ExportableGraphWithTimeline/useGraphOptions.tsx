@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { GraphOptions, GraphTabParameters } from '../../../Details/models';
+import { GraphOptions } from '../../../Details/models';
 import { labelDisplayEvents } from '../../../translatedLabels';
 import { GraphOptionId } from '../models';
 
@@ -9,8 +9,9 @@ interface GraphOptionsState {
   graphOptions: GraphOptions;
 }
 
-export const GraphOptionsContext =
-  React.createContext<GraphOptionsState | undefined>(undefined);
+export const GraphOptionsContext = React.createContext<
+  GraphOptionsState | undefined
+>(undefined);
 
 export const useGraphOptionsContext = (): GraphOptionsState =>
   React.useContext(GraphOptionsContext) as GraphOptionsState;
@@ -25,19 +26,19 @@ export const defaultGraphOptions = {
 
 interface UseGraphOptionsState {
   changeTabGraphOptions: (graphOptions: GraphOptions) => void;
-  graphTabParameters?: GraphTabParameters;
+  options?: GraphOptions;
 }
 
 const useGraphOptions = ({
-  graphTabParameters,
+  options,
   changeTabGraphOptions,
 }: UseGraphOptionsState): GraphOptionsState => {
   const [graphOptions, setGraphOptions] = React.useState<GraphOptions>({
     ...defaultGraphOptions,
-    ...graphTabParameters?.graphOptions,
+    ...options,
   });
 
-  const changeGraphOptions = (graphOptionId: GraphOptionId) => () => {
+  const changeGraphOptions = (graphOptionId: GraphOptionId) => (): void => {
     const newGraphOptions = {
       ...graphOptions,
       [graphOptionId]: {

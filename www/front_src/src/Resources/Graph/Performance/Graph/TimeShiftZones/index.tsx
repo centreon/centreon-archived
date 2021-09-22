@@ -25,8 +25,9 @@ interface TimeShiftContextProps {
   shiftTime?: (direction: TimeShiftDirection) => void;
 }
 
-export const TimeShiftContext =
-  React.createContext<TimeShiftContextProps | undefined>(undefined);
+export const TimeShiftContext = React.createContext<
+  TimeShiftContextProps | undefined
+>(undefined);
 
 export const useTimeShiftContext = (): TimeShiftContextProps =>
   React.useContext(TimeShiftContext) as TimeShiftContextProps;
@@ -37,7 +38,7 @@ const TimeShifts = (): JSX.Element | null => {
 
   const { graphWidth, canAdjustTimePeriod } = useTimeShiftContext();
 
-  const hoverDirection = (direction: TimeShiftDirection | null) => () =>
+  const hoverDirection = (direction: TimeShiftDirection | null) => (): void =>
     setDirectionHovered(direction);
 
   if (not(canAdjustTimePeriod)) {

@@ -59,6 +59,7 @@ class RemoteServerFormStepOne extends Component {
   render() {
     const { error, handleSubmit, onSubmit, waitList, t } = this.props;
     const { inputTypeManual } = this.state;
+
     return (
       <div className={styles['form-wrapper']}>
         <div className={styles['form-inner']}>

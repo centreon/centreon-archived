@@ -18,7 +18,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { withTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import axios from '../../../axios';
@@ -149,6 +149,16 @@ class PollerMenu extends Component {
     });
   };
 
+  closeSubmenu = () => {
+    this.setState({
+      toggled: false,
+    });
+
+    this.props.history.push(
+      `/main.php?p=${POLLER_CONFIGURATION_TOPOLOGY_PAGE}`,
+    );
+  };
+
   // hide poller detailed data if click outside
   handleClick = (e) => {
     if (!this.poller || this.poller.contains(e.target)) {
@@ -179,9 +189,10 @@ class PollerMenu extends Component {
         className={classnames(styles['wrap-left-pollers'], {
           [styles['submenu-active']]: toggled,
         })}
+        ref={(poller) => (this.poller = poller)}
       >
         {statusIcon}
-        <div ref={(poller) => (this.poller = poller)}>
+        <div>
           <span
             className={classnames(styles['wrap-left-icon'], styles.pollers)}
             onClick={this.toggle}
@@ -199,94 +210,94 @@ class PollerMenu extends Component {
           >
             {this.props.children}
           </span>
-          <div className={classnames(styles.submenu, styles.pollers)}>
-            <div className={styles['submenu-inner']}>
-              <ul
-                className={classnames(
-                  styles['submenu-items'],
-                  styles['list-unstyled'],
-                )}
-              >
-                <li className={styles['submenu-item']}>
-                  <span className={styles['submenu-item-link']}>
-                    {t('All pollers')}
-                    <span className={styles['submenu-count']}>
-                      {data.total ? data.total : '...'}
-                    </span>
+        </div>
+        <div className={classnames(styles.submenu, styles.pollers)}>
+          <div className={styles['submenu-content']}>
+            <ul
+              className={classnames(
+                styles['submenu-items'],
+                styles['list-unstyled'],
+              )}
+            >
+              <li className={styles['submenu-item']}>
+                <span className={styles['submenu-item-link']}>
+                  {t('All pollers')}
+                  <span className={styles['submenu-count']}>
+                    {data.total ? data.total : '...'}
                   </span>
-                </li>
-                {data.issues
-                  ? Object.entries(data.issues).map(([key, issue]) => {
-                      let message = '';
+                </span>
+              </li>
+              {data.issues
+                ? Object.entries(data.issues).map(([key, issue]) => {
+                    let message = '';
 
-                      if (key === 'database') {
-                        message = t('Database updates not active');
-                      } else if (key === 'stability') {
-                        message = t('Pollers not running');
-                      } else if (key === 'latency') {
-                        message = t('Latency detected');
-                      }
+                    if (key === 'database') {
+                      message = t('Database updates not active');
+                    } else if (key === 'stability') {
+                      message = t('Pollers not running');
+                    } else if (key === 'latency') {
+                      message = t('Latency detected');
+                    }
 
-                      return (
-                        <li className={styles['submenu-top-item']} key={key}>
-                          <span className={styles['submenu-top-item-link']}>
-                            {message}
-                            <span className={styles['submenu-top-count']}>
-                              {issue.total ? issue.total : '...'}
-                            </span>
+                    return (
+                      <li className={styles['submenu-top-item']} key={key}>
+                        <span className={styles['submenu-top-item-link']}>
+                          {message}
+                          <span className={styles['submenu-top-count']}>
+                            {issue.total ? issue.total : '...'}
                           </span>
-                          {Object.entries(issue).map(([elem, values]) => {
-                            if (values.poller) {
-                              const pollers = values.poller;
-                              return pollers.map((poller) => {
-                                let color = 'red';
-                                if (elem === 'warning') {
-                                  color = 'orange';
-                                }
-                                return (
+                        </span>
+                        {Object.entries(issue).map(([elem, values]) => {
+                          if (values.poller) {
+                            const pollers = values.poller;
+
+                            return pollers.map((poller) => {
+                              let color = 'red';
+                              if (elem === 'warning') {
+                                color = 'orange';
+                              }
+
+                              return (
+                                <span
+                                  className={styles['submenu-top-item-link']}
+                                  key={poller.name}
+                                  style={{ padding: '0px 16px 17px' }}
+                                >
                                   <span
-                                    className={styles['submenu-top-item-link']}
-                                    key={poller.name}
-                                    style={{ padding: '0px 16px 17px' }}
+                                    className={classnames(
+                                      styles['dot-colored'],
+                                      styles[color],
+                                    )}
                                   >
-                                    <span
-                                      className={classnames(
-                                        styles['dot-colored'],
-                                        styles[color],
-                                      )}
-                                    >
-                                      {poller.name}
-                                    </span>
+                                    {poller.name}
                                   </span>
-                                );
-                              });
-                            }
-                            return null;
-                          })}
-                        </li>
-                      );
-                    })
-                  : null}
-                {allowPollerConfiguration /* display poller configuration button if user is allowed */ && (
-                  <Link
-                    to={`/main.php?p=${POLLER_CONFIGURATION_TOPOLOGY_PAGE}`}
-                  >
-                    <button
-                      className={classnames(
-                        styles.btn,
-                        styles['btn-big'],
-                        styles['btn-green'],
-                        styles['submenu-top-button'],
-                      )}
-                      onClick={this.toggle}
-                    >
-                      {t('Configure pollers')}
-                    </button>
-                  </Link>
-                )}
-              </ul>
-            </div>
+                                </span>
+                              );
+                            });
+                          }
+
+                          return null;
+                        })}
+                      </li>
+                    );
+                  })
+                : null}
+              {allowPollerConfiguration /* display poller configuration button if user is allowed */ && (
+                <button
+                  className={classnames(
+                    styles.btn,
+                    styles['btn-big'],
+                    styles['btn-green'],
+                    styles['submenu-top-button'],
+                  )}
+                  onClick={this.closeSubmenu}
+                >
+                  {t('Configure pollers')}
+                </button>
+              )}
+            </ul>
           </div>
+          <div className={styles['submenu-padding']} />
         </div>
       </div>
     );
@@ -302,12 +313,16 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {};
 
-export default withTranslation()(
-  connect(mapStateToProps, mapDispatchToProps)(PollerMenu),
+export default withRouter(
+  withTranslation()(connect(mapStateToProps, mapDispatchToProps)(PollerMenu)),
 );
 
 PollerMenu.propTypes = {
-  allowedPages: PropTypes.arrayOf(PropTypes.string).isRequired,
+  allowedPages: PropTypes.arrayOf(PropTypes.string),
   refreshTime: PropTypes.oneOfType([PropTypes.number, PropTypes.bool])
     .isRequired,
+};
+
+PollerMenu.defaultProps = {
+  allowedPages: [],
 };

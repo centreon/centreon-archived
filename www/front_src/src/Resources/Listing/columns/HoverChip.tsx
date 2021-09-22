@@ -14,13 +14,19 @@ const useStyles = makeStyles(() => ({
 
 interface Props {
   Chip: () => JSX.Element;
-  children: React.ReactElement;
+  children: (props?) => JSX.Element;
   label: string;
   onClick?: () => void;
 }
 
 const HoverChip = ({ children, Chip, label, onClick }: Props): JSX.Element => {
+  const [isChipHovered, setIsChipHovered] = React.useState<boolean>(false);
+
   const classes = useStyles();
+
+  const openTooltip = (): void => setIsChipHovered(true);
+
+  const closeTooltip = (): void => setIsChipHovered(false);
 
   return (
     <Tooltip
@@ -36,14 +42,17 @@ const HoverChip = ({ children, Chip, label, onClick }: Props): JSX.Element => {
       enterDelay={200}
       enterNextDelay={200}
       leaveDelay={0}
+      open={isChipHovered}
       placement="left"
-      title={children}
+      title={children({ close: closeTooltip })}
       onClick={(e): void => {
         e.preventDefault();
         e.stopPropagation();
 
         onClick?.();
       }}
+      onClose={closeTooltip}
+      onOpen={openTooltip}
     >
       <span>
         <Chip />

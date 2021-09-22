@@ -1374,3 +1374,7 @@ VALUES
   ('partitioning_retention', 365),
   ('partitioning_retention_forward', 10),
   ('partitioning_backup_directory', '/var/cache/centreon/backup');
+
+-- Insert local authentication provider configuration
+INSERT INTO `provider_configuration` (type, name, is_active, is_forced)
+VALUES ('local', 'local', true, true);

@@ -20,6 +20,7 @@ class ProgressBar extends Component {
 
   render() {
     const { links } = this.props;
+
     return (
       <div className={styles['progress-bar']}>
         <div className={styles['progress-bar-wrapper']}>

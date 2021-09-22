@@ -14640,6 +14640,9 @@ msgstr "Permitir certificado autofirmado"
 #  msgid "Export to png"
 #  msgstr ""
 
+#  msgid "Go to performance page"
+#  msgstr ""
+
 #  msgid "Parent"
 #  msgstr ""
 
@@ -14707,3 +14710,33 @@ msgstr "Permitir certificado autofirmado"
 
 #  msgid "The duration must be lesser than a year"
 #  msgstr ""
+
+#  msgid "As displayed"
+#  msgstr ""
+
+#  msgid "Medium size"
+#  msgstr ""
+
+#  msgid "Small size"
+#  msgstr ""
+
+# msgid "Display the complete graph"
+# msgstr ""
+
+# msgid "Action not permitted"
+# msgstr ""
+
+# msgid "Scroll to top"
+# msgstr ""
+
+# msgid "This week"
+# msgstr ""
+
+# msgid "Before last year"
+# msgstr ""
+
+# msgid "Search options"
+# msgstr ""
+
+# msgid "Service graphs"
+# msgstr ""

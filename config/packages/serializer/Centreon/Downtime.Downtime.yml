@@ -1,4 +1,7 @@
 Centreon\Domain\Downtime\Downtime:
+    access_type: 'public_method'
+    accessor_order: custom
+    custom_accessor_order: [ startTime, endTime, actualStartTime, actualEndTime ]
     properties:
         id:
             type: int
@@ -45,6 +48,9 @@ Centreon\Domain\Downtime\Downtime:
                 - 'downtime_services'
         isCancelled:
             type: bool
+            accessor:
+                getter: 'isCancelled'
+                setter: 'setCancelled'
             groups:
                 - 'Default'
                 - 'downtime_main'
@@ -80,6 +86,9 @@ Centreon\Domain\Downtime\Downtime:
             type: int
         isFixed:
             type: bool
+            accessor:
+                getter: 'isFixed'
+                setter: 'setFixed'
             groups:
                 - 'Default'
                 - 'downtime_main'
@@ -111,12 +120,18 @@ Centreon\Domain\Downtime\Downtime:
                 - 'downtime_event_list'
         isStarted:
             type: bool
+            accessor:
+                getter: 'isStarted'
+                setter: 'setStarted'
             groups:
                 - 'Default'
                 - 'downtime_main'
                 - 'downtime_event_list'
         withServices:
             type: bool
+            accessor:
+                getter: 'isWithServices'
+                setter: 'setWithServices'
             groups:
                 - 'downtime_host_add'
                 - 'resource_dt'

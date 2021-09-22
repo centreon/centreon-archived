@@ -3,12 +3,7 @@ import * as React from 'react';
 import { useFormik } from 'formik';
 import { useTranslation } from 'react-i18next';
 
-import {
-  Severity,
-  useSnackbar,
-  useRequest,
-  useLocaleDateTimeFormat,
-} from '@centreon/ui';
+import { useSnackbar, useRequest, useLocaleDateTimeFormat } from '@centreon/ui';
 import { useUserContext } from '@centreon/ui-context';
 
 import {
@@ -34,10 +29,7 @@ const DowntimeForm = ({
   onSuccess,
 }: Props): JSX.Element | null => {
   const { t } = useTranslation();
-  const { showMessage } = useSnackbar();
-
-  const showSuccess = (message): void =>
-    showMessage({ message, severity: Severity.success });
+  const { showSuccessMessage } = useSnackbar();
 
   const { alias, downtime } = useUserContext();
   const { toIsoString } = useLocaleDateTimeFormat();
@@ -90,7 +82,7 @@ const DowntimeForm = ({
         },
         resources,
       }).then(() => {
-        showSuccess(t(labelDowntimeCommandSent));
+        showSuccessMessage(t(labelDowntimeCommandSent));
         onSuccess();
       });
     },

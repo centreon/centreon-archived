@@ -2,9 +2,6 @@ import * as React from 'react';
 
 import { pick } from 'ramda';
 
-import { Grid, Chip, Tooltip } from '@material-ui/core';
-import FlappingIcon from '@material-ui/icons/SwapCalls';
-
 import ChecksIcon from '../../../../ChecksIcon';
 import {
   labelCurrentStateDuration,
@@ -15,8 +12,6 @@ import {
   labelNextCheck,
   labelCheckDuration,
   labelLatency,
-  labelResourceFlapping,
-  labelPercentStateChange,
   labelLastNotification,
   labelCurrentNotificationNumber,
   labelFqdn,
@@ -24,15 +19,27 @@ import {
   labelGroups,
   labelCalculationType,
   labelCheck,
-  labelFlapping,
+  labelPercentStateChange,
+  labelStatusInformation,
+  labelDowntimeDuration,
+  labelAcknowledgement,
+  labelPerformanceData,
+  labelCommand,
 } from '../../../../translatedLabels';
 import { ResourceDetails } from '../../../models';
+import ExpandableCard from '../ExpandableCard';
 
 import DetailsLine from './DetailsLine';
+import PercentStateChangeCard from './PercentStateChangeCard';
+import Groups from './Groups';
+import DowntimesCard from './DowntimesCard';
+import AcknowledgementCard from './AcknowledegmentCard';
+import CommandLineCard from './CommandLineCard';
 
-interface DetailCardLine {
+export interface DetailCardLine {
   active?: boolean;
   field?: string | number | boolean | Array<unknown>;
+  isCustomCard?: boolean;
   line: JSX.Element;
   title: string;
   xs?: 6 | 12;
@@ -43,6 +50,7 @@ interface DetailCardLineProps {
   t: (label: string) => string;
   toDateTime: (date: string | Date) => string;
 }
+
 const getDetailCardLines = ({
   details,
   toDateTime,
@@ -55,6 +63,33 @@ const getDetailCardLines = ({
   const displayChecksIcon = checksDisabled || activeChecksDisabled;
 
   return [
+    {
+      field: details.information,
+      isCustomCard: true,
+      line: (
+        <ExpandableCard
+          content={details.information}
+          severityCode={details.status.severity_code}
+          title={t(labelStatusInformation)}
+        />
+      ),
+      title: labelStatusInformation,
+      xs: 12,
+    },
+    {
+      field: details.downtimes,
+      isCustomCard: true,
+      line: <DowntimesCard details={details} />,
+      title: labelDowntimeDuration,
+      xs: 12,
+    },
+    {
+      field: details.acknowledgement ? true : undefined,
+      isCustomCard: true,
+      line: <AcknowledgementCard details={details} />,
+      title: labelAcknowledgement,
+      xs: 12,
+    },
     {
       field: details.fqdn,
       line: <DetailsLine line={details.fqdn} />,
@@ -96,7 +131,6 @@ const getDetailCardLines = ({
       line: (
         <ChecksIcon {...pick(['active_checks', 'passive_checks'], details)} />
       ),
-
       title: labelCheck,
     },
     {
@@ -115,17 +149,8 @@ const getDetailCardLines = ({
       title: labelLatency,
     },
     {
-      field: details.flapping ? true : undefined,
-      line: (
-        <Tooltip title={t(labelResourceFlapping)}>
-          <FlappingIcon color="primary" />
-        </Tooltip>
-      ),
-      title: labelFlapping,
-    },
-    {
       field: details.percent_state_change,
-      line: <DetailsLine line={`${details.percent_state_change}%`} />,
+      line: <PercentStateChangeCard details={details} />,
       title: labelPercentStateChange,
     },
     {
@@ -145,18 +170,27 @@ const getDetailCardLines = ({
     },
     {
       field: details.groups,
-      line: (
-        <Grid container spacing={1}>
-          {details.groups?.map((group) => {
-            return (
-              <Grid item key={group.name}>
-                <Chip label={group.name} />
-              </Grid>
-            );
-          })}
-        </Grid>
-      ),
+      line: <Groups details={details} />,
       title: labelGroups,
+      xs: 12,
+    },
+    {
+      field: details.performance_data,
+      isCustomCard: true,
+      line: (
+        <ExpandableCard
+          content={details.performance_data || ''}
+          title={t(labelPerformanceData)}
+        />
+      ),
+      title: labelPerformanceData,
+      xs: 12,
+    },
+    {
+      field: details.command_line,
+      isCustomCard: true,
+      line: <CommandLineCard details={details} />,
+      title: labelCommand,
       xs: 12,
     },
   ];

@@ -35,7 +35,7 @@ use Centreon\Domain\HostConfiguration\Interfaces\HostSeverity\HostSeverityServic
 use Centreon\Domain\HostConfiguration\Model\HostCategory;
 use Centreon\Domain\HostConfiguration\Model\HostGroup;
 use Centreon\Domain\Repository\Interfaces\DataStorageEngineInterface;
-use Centreon\Infrastructure\HostConfiguration\API\Model\HostCategory\HostCategoryV21Factory;
+use Centreon\Infrastructure\HostConfiguration\API\Model\HostCategory\HostCategoryV2110Factory;
 
 /**
  * @package Centreon\Domain\HostConfiguration
@@ -133,10 +133,7 @@ class HostConfigurationService implements HostConfigurationServiceInterface
                 throw new HostConfigurationException(_('Unable to find the Engine configuration'));
             }
 
-            $safedHostName = EngineConfiguration::removeIllegalCharacters(
-                $host->getName(),
-                $engineConfiguration->getIllegalObjectNameCharacters()
-            );
+            $safedHostName = $engineConfiguration->removeIllegalCharacters($host->getName());
             if (empty($safedHostName)) {
                 throw new HostConfigurationException(_('Host name can not be empty'));
             }

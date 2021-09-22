@@ -292,10 +292,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
             throw PlatformTopologyException::unableToFindEngineConfiguration();
         }
 
-        $foundIllegalCharacters = EngineConfiguration::hasIllegalCharacters(
-            $stringToCheck,
-            $engineConfiguration->getIllegalObjectNameCharacters()
-        );
+        $foundIllegalCharacters = $engineConfiguration->hasIllegalCharacters($stringToCheck);
         if (true === $foundIllegalCharacters) {
             throw PlatformTopologyException::illegalCharacterFound(
                 $engineConfiguration->getIllegalObjectNameCharacters(),

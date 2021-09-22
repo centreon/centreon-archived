@@ -1,6 +1,7 @@
 import { findIndex, lensPath, propEq, set } from 'ramda';
 
 import { CriteriaValue } from '../Filter/Criterias/models';
+import { searchableFields } from '../Filter/Criterias/searchQueryLanguage';
 import { Filter } from '../Filter/models';
 import { buildResourcesEndpoint } from '../Listing/api/endpoint';
 
@@ -20,19 +21,6 @@ interface EndpointParams {
 const defaultStatuses = ['WARNING', 'DOWN', 'CRITICAL', 'UNKNOWN'];
 const defaultResourceTypes = [];
 const defaultStates = ['unhandled_problems'];
-
-const searchableFields = [
-  'h.name',
-  'h.alias',
-  'h.address',
-  's.description',
-  'name',
-  'alias',
-  'parent_name',
-  'parent_alias',
-  'fqdn',
-  'information',
-];
 
 const getListingEndpoint = ({
   page = 1,
@@ -55,18 +43,7 @@ const getListingEndpoint = ({
     search: search
       ? {
           regex: {
-            fields: [
-              'h.name',
-              'h.alias',
-              'h.address',
-              's.description',
-              'name',
-              'alias',
-              'parent_name',
-              'parent_alias',
-              'fqdn',
-              'information',
-            ],
+            fields: searchableFields,
             value: search,
           },
         }
