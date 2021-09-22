@@ -105,7 +105,7 @@ const mockUserContext = {
 
   name: 'admin',
 
-  refresh_interval: 15,
+  refreshInterval: 15,
   timezone: 'Europe/Paris',
 };
 
