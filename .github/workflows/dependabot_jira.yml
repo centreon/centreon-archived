@@ -1,24 +1,30 @@
-name: Dependabot Jira
+name: Create Dependabot Ticket on Jira
 
 on:
+  workflow_dispatch: #manual trigger
   pull_request:
-    types:
-      - opened
-    branches:
-      - master
+    types: [ opened, reopened ]
+    branches: [ develop, dev-2* ]
 
 env:
   JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
   JIRA_USER_EMAIL: ${{ secrets.JIRA_USER_EMAIL }}
   JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
-  JIRA_PROJECT: "ACUNETIX-TEST"
+  JIRA_PROJECT_KEY: "ACUNETIX-TEST"
   JIRA_ISSUE_TYPE: "Vulnerability"
 
 jobs:
-  create_jira:
-    name: Dependabot Jira
+  get_user_data:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.user.id == 27856297 #id dependabot user
+    steps:
+      - name: View PR author
+        run: echo "This issue is opened by ${{ github.event.pull_request.user.login }} and has the id ${{ github.event.pull_request.user.id }}. [DEP - ${{github.event.repository.name }}] ${{github.event.pull_request.title }}"
+  create_ticket:
+    name: Create Jira ticket on dependaBot PR
+    #if: github.event.pull_request.user.id == 49699333 #dependabot's user id
+    #github.event.pull_request.user.login #the workflow is triggered by pull_request event, to get the author who opened the PR
+    if: contains(github.event.pull_request.labels.*.name, 'dependencies')
+    runs-on: ubuntu-latest
     steps:
     - name: Login to Jira
       uses: atlassian/gajira-login@v2.0.0
@@ -26,14 +32,13 @@ jobs:
         JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
         JIRA_USER_EMAIL: ${{ secrets.JIRA_USER_EMAIL }}
         JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
-
     - name: Create Jira Issue
       id: create
       uses: atlassian/gajira-create@v2.0.1
       with:
-        project: ${{ env.JIRA_PROJECT }}
+        project: ${{ env.JIRA_PROJECT_KEY }}
         issuetype: ${{ env.JIRA_ISSUE_TYPE }}
         summary: |
-          [${{github.event.repository.name }}] ${{github.event.pull_request.title }}
+          [DEP - ${{github.event.repository.name }}] ${{github.event.pull_request.title }}
         description: |
-          ${{github.event.pull_request.html_url }}
+          ${{github.event.pull_request.html_url }} --- ${{github.event.pull_request.number}} --- ${{github.event.pull_request.url}}
