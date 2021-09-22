@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Bar } from '@visx/visx';
+import { Shape } from '@visx/visx';
 import { ScaleTime } from 'd3-scale';
 import { max, prop } from 'ramda';
 
@@ -57,7 +57,7 @@ const AreaAnnotation = ({
   const xEnd = endDate ? xScale(new Date(endDate)) : xScale.range()[1];
 
   const area = (
-    <Bar
+    <Shape.Bar
       fill={getFill({ color, event: prop('event', props) })}
       height={graphHeight + iconSize / 2}
       width={xEnd - xStart}

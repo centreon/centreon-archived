@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { ParentSize } from '@visx/visx';
+import { Responsive } from '@visx/visx';
 import {
   map,
   prop,
@@ -482,7 +482,7 @@ const PerformanceGraph = ({
           )}
         </div>
 
-        <ParentSize>
+        <Responsive.ParentSize>
           {({ width, height }): JSX.Element => (
             <Graph
               applyZoom={adjustTimePeriod}
@@ -504,7 +504,7 @@ const PerformanceGraph = ({
               onAddComment={onAddComment}
             />
           )}
-        </ParentSize>
+        </Responsive.ParentSize>
         <div className={classes.legend}>
           <Legend
             base={base as number}
