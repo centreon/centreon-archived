@@ -39,11 +39,12 @@ jobs:
         project: ${{ env.JIRA_PROJECT_KEY }}
         issuetype: ${{ env.JIRA_ISSUE_TYPE }}
         summary: |
-          [Dependency to upgrade on : ${{github.event.repository.name }}] - ${{github.event.pull_request.title }}
+          [Dependency to upgrade on : centreon/${{github.event.repository.name }}] - ${{github.event.pull_request.title }}
         description: |
 
-          {panel:title=Dependency to upgrade}:
-              '${{github.event.pull_request.title }}'
+          {panel:title=Dependency to upgrade}
+              ${{github.event.pull_request.title }}
           {panel}
 
-          More details are available in the PR n°${{github.event.pull_request.number}}: ${{github.event.pull_request.html_url }}
+          More details are available in the *PR n°${{github.event.pull_request.number}}*
+          The link is: ${{github.event.pull_request.html_url }}
