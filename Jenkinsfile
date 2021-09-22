@@ -256,8 +256,8 @@ try {
     }
   }
 
-  if ((env.BUILD == 'RELEASE') || (env.BUILD == 'QA')) {
-    stage('Delivery') {
+  if ((env.BUILD == 'RELEASE')) {
+    stage('Delivery to testing') {
       node {
         checkoutCentreonBuild(buildBranch)
         unstash 'tar-sources'
