@@ -14,11 +14,11 @@ env:
   JIRA_ISSUE_TYPE: "Vulnerability"
 
 jobs:
-  get_user_data:
-    runs-on: ubuntu-latest
-    steps:
-      - name: View PR author
-        run: echo "This issue is opened by ${{ github.event.pull_request.user.login }} and has the id ${{ github.event.pull_request.user.id }}. [DependaBot on ${{github.event.repository.name }} repo] PR n°${{github.event.number }}. jira url ${{ secrets.JIRA_BASE_URL }}. jira email ${{ secrets.JIRA_USER_EMAIL }}. jira api ${{ secrets.JIRA_API_TOKEN }}."
+  #get_user_data:
+  #  runs-on: ubuntu-latest
+  #  steps:
+  #    - name: View PR author
+  #      run: echo "This issue is opened by ${{ github.event.pull_request.user.login }} and has the id ${{ github.event.pull_request.user.id }}. [DependaBot on ${{github.event.repository.name }} repo] PR n°${{github.event.number }}. jira url ${{ secrets.JIRA_BASE_URL }}. jira email ${{ secrets.JIRA_USER_EMAIL }}. jira api ${{ secrets.JIRA_API_TOKEN }}."
   create_ticket:
     name: Create Jira ticket on dependaBot PR
     #if: github.event.pull_request.user.id == 49699333 #dependabot's user id
@@ -39,7 +39,9 @@ jobs:
         project: ${{ env.JIRA_PROJECT_KEY }}
         issuetype: ${{ env.JIRA_ISSUE_TYPE }}
         summary: |
-          [DependaBot on ${{github.event.repository.name }} repo] PR n°${{github.event.pull_request.number}}
+          [Dependency to upgrade on : ${{github.event.repository.name }}] - PR n°${{github.event.pull_request.number}}
         description: |
-          Ddependency to upgrade: ${{github.event.pull_request.title }}
+          **Dependency to upgrade**:
+              '${{github.event.pull_request.title }}'
+
           More details are available following the url: ${{github.event.pull_request.html_url }}
