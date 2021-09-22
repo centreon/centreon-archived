@@ -46,6 +46,7 @@ const CriteriasContent = ({
       icon={<TuneIcon fontSize="small" />}
       popperPlacement="bottom-start"
       title={t(labelSearchOptions)}
+      onClose={applyCurrentFilter}
     >
       {(): JSX.Element => (
         <Grid
