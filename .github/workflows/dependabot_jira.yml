@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: View PR author
-        run: echo "This issue is opened by ${{ github.event.pull_request.user.login }} and has the id ${{ github.event.pull_request.user.id }}. [DependaBot on ${{github.event.repository.name }} repo] PR n°${{github.event.pull_request.title }}. jira url ${{ secrets.JIRA_BASE_URL }}. jira email ${{ secrets.JIRA_USER_EMAIL }}. jira api ${{ secrets.JIRA_API_TOKEN }}."
+        run: echo "This issue is opened by ${{ github.event.pull_request.user.login }} and has the id ${{ github.event.pull_request.user.id }}. [DependaBot on ${{github.event.repository.name }} repo] PR n°${{github.event.number }}. jira url ${{ secrets.JIRA_BASE_URL }}. jira email ${{ secrets.JIRA_USER_EMAIL }}. jira api ${{ secrets.JIRA_API_TOKEN }}."
   create_ticket:
     name: Create Jira ticket on dependaBot PR
     #if: github.event.pull_request.user.id == 49699333 #dependabot's user id
