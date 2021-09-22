@@ -172,6 +172,10 @@ $help['openid_connect_scope'] = dgettext(
     'help',
     'Your OpenId Connect Scope (for example openid).'
 );
+$help['openid_connect_login_claim'] = dgettext(
+    'help',
+    'Your OpenId Connect login claim value (if empty preferred_username will be used).'
+);
 $help['openid_connect_redirect_url'] = dgettext(
     'help',
     'Your OpenId Connect redirect url (this server).'

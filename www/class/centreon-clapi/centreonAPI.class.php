@@ -885,7 +885,7 @@ class CentreonAPI
                     if (isset($splits[2])) {
                         $name .= ';' . $splits[2];
                     }
-                    if ($this->objectTable[$splits[0]]->getObjectId($name) == 0) {
+                    if ($this->objectTable[$splits[0]]->getObjectId($name, CentreonObject::MULTIPLE_VALUE) == 0) {
                         echo "Unknown object : $splits[0];$splits[1]\n";
                         $this->setReturnCode(1);
                         

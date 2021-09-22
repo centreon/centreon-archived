@@ -23,9 +23,10 @@ import {
   Paper,
   Typography,
   Theme,
-  fade,
+  alpha,
   useTheme,
   CircularProgress,
+  Tooltip,
 } from '@material-ui/core';
 import { grey } from '@material-ui/core/colors';
 
@@ -47,7 +48,10 @@ import {
   hasUnitStackedLines,
 } from '../timeSeries';
 import Lines from '../Lines';
-import { labelAddComment } from '../../../translatedLabels';
+import {
+  labelActionNotPermitted,
+  labelAddComment,
+} from '../../../translatedLabels';
 import { TimelineEvent } from '../../../Details/tabs/Timeline/models';
 import { Resource } from '../../../models';
 import { ResourceDetails } from '../../../Details/models';
@@ -66,7 +70,6 @@ import TimeShiftZones, {
   TimeShiftDirection,
 } from './TimeShiftZones';
 import { useMetricsValueContext } from './useMetricsValue';
-import AnchorPoints from './AnchorPoints';
 
 const propsAreEqual = (prevProps, nextProps): boolean =>
   equals(prevProps, nextProps);
@@ -111,7 +114,7 @@ const useStyles = makeStyles<Theme, Pick<Props, 'onAddComment'>>((theme) => ({
   },
   graphLoader: {
     alignItems: 'center',
-    backgroundColor: fade(theme.palette.common.white, 0.5),
+    backgroundColor: alpha(theme.palette.common.white, 0.5),
     display: 'flex',
     height: '100%',
     justifyContent: 'center',
@@ -175,7 +178,7 @@ const getScale = ({
   });
 };
 
-const bisectDate = bisector(identity).center;
+export const bisectDate = bisector(identity).center;
 
 const GraphContent = ({
   width,
@@ -206,8 +209,9 @@ const GraphContent = ({
 
   const [addingComment, setAddingComment] = React.useState(false);
   const [commentDate, setCommentDate] = React.useState<Date>();
-  const [zoomPivotPosition, setZoomPivotPosition] =
-    React.useState<number | null>(null);
+  const [zoomPivotPosition, setZoomPivotPosition] = React.useState<
+    number | null
+  >(null);
   const [zoomBoundaries, setZoomBoundaries] =
     React.useState<ZoomBoundaries | null>(null);
   const { canComment } = useAclQuery();
@@ -327,7 +331,7 @@ const GraphContent = ({
     });
   };
 
-  const displayTooltip = (event) => {
+  const displayTooltip = (event): void => {
     setIsMouseOver(true);
     const { x, y } = localPoint(event) || { x: 0, y: 0 };
 
@@ -345,6 +349,7 @@ const GraphContent = ({
         start: lt(mouseX, zoomPivotPosition) ? mouseX : zoomPivotPosition,
       });
       changeMetricsValue({ newMetricsValue: null });
+
       return;
     }
 
@@ -359,6 +364,7 @@ const GraphContent = ({
 
     if (isNil(mousePosition)) {
       changeMetricsValue({ newMetricsValue: null });
+
       return;
     }
 
@@ -367,7 +373,7 @@ const GraphContent = ({
     updateMetricsValue({ x });
   }, [mousePosition]);
 
-  const closeZoomPreview = () => {
+  const closeZoomPreview = (): void => {
     setZoomBoundaries(null);
     setZoomPivotPosition(null);
   };
@@ -387,7 +393,7 @@ const GraphContent = ({
   const displayAddCommentTooltip = (event): void => {
     setZoomBoundaries(null);
     setZoomPivotPosition(null);
-    if (!canComment([resource]) || isNil(onAddComment)) {
+    if (isNil(onAddComment)) {
       return;
     }
 
@@ -396,6 +402,7 @@ const GraphContent = ({
         end: xScale.invert(zoomBoundaries?.end || graphWidth),
         start: xScale.invert(zoomBoundaries?.start || 0),
       });
+
       return;
     }
 
@@ -424,7 +431,7 @@ const GraphContent = ({
     onAddComment?.(comment);
   };
 
-  const displayZoomPreview = (event) => {
+  const displayZoomPreview = (event): void => {
     if (isNil(onAddComment)) {
       return;
     }
@@ -447,7 +454,15 @@ const GraphContent = ({
     (zoomBoundaries?.end || 0) - (zoomBoundaries?.start || 0),
   );
 
-  const timeValue = getTimeValue(mousePosition?.[0] || 0);
+  const mousePositionTimeTick = mousePosition
+    ? getTimeValue(mousePosition[0]).timeTick
+    : 0;
+
+  const timeTick = containsMetrics ? new Date(mousePositionTimeTick) : null;
+
+  const isCommentPermitted = canComment([resource]);
+
+  const commentTitle = isCommentPermitted ? '' : t(labelActionNotPermitted);
 
   return (
     <AnnotationsContext.Provider value={annotations}>
@@ -488,6 +503,7 @@ const GraphContent = ({
                 lines={lines}
                 rightScale={rightScale}
                 timeSeries={timeSeries}
+                timeTick={timeTick}
                 xScale={xScale}
               />
               {displayEventAnnotations && (
@@ -498,22 +514,15 @@ const GraphContent = ({
                 />
               )}
               <MemoizedBar
-                fill={fade(theme.palette.primary.main, 0.2)}
+                fill={alpha(theme.palette.primary.main, 0.2)}
                 height={graphHeight}
-                stroke={fade(theme.palette.primary.main, 0.5)}
+                stroke={alpha(theme.palette.primary.main, 0.5)}
                 width={zoomBarWidth}
                 x={zoomBoundaries?.start || 0}
                 y={0}
               />
               {containsMetrics && (
                 <>
-                  <AnchorPoints
-                    leftScale={leftScale}
-                    lines={lines}
-                    rightScale={rightScale}
-                    timeValue={timeValue}
-                    xScale={xScale}
-                  />
                   <Line
                     from={{ x: mousePositionX, y: 0 }}
                     pointerEvents="none"
@@ -572,14 +581,19 @@ const GraphContent = ({
                   formatString: dateTimeFormat,
                 })}
               </Typography>
-              <Button
-                className={classes.addCommentButton}
-                color="primary"
-                size="small"
-                onClick={prepareAddComment}
-              >
-                {t(labelAddComment)}
-              </Button>
+              <Tooltip title={commentTitle}>
+                <div>
+                  <Button
+                    className={classes.addCommentButton}
+                    color="primary"
+                    disabled={!isCommentPermitted}
+                    size="small"
+                    onClick={prepareAddComment}
+                  >
+                    {t(labelAddComment)}
+                  </Button>
+                </div>
+              </Tooltip>
             </Paper>
           )}
           {addingComment && (

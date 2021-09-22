@@ -6,8 +6,9 @@ interface GraphIntersectionState {
 }
 
 export const useIntersection = (): GraphIntersectionState => {
-  const [entry, setEntry] =
-    React.useState<IntersectionObserverEntry | null>(null);
+  const [entry, setEntry] = React.useState<IntersectionObserverEntry | null>(
+    null,
+  );
   const [element, setElement] = React.useState<HTMLElement | null>(null);
 
   const observer = React.useRef<IntersectionObserver | null>(null);
@@ -28,7 +29,7 @@ export const useIntersection = (): GraphIntersectionState => {
       observer.current.observe(element);
     }
 
-    return () => {
+    return (): void => {
       observer.current?.disconnect();
     };
   }, [element]);

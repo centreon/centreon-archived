@@ -34,6 +34,7 @@ const createAppStore = (initialState = {}) => {
   const store = createStore(createRootReducer(history), initialState, enhancer);
 
   sagaMiddleware.run(sagas);
+
   return store;
 };
 

@@ -60,6 +60,7 @@ class RemoteServerStepOneRoute extends Component {
     const { links } = this;
     const { pollerData } = this.props;
     const { waitList } = this.state;
+
     return (
       <BaseWizard>
         <ProgressBar links={links} />

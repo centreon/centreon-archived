@@ -4,10 +4,10 @@ centreon_application_find_meta_service_configuration:
   requirements:
     metaId: '\d+'
   controller: 'Centreon\Application\Controller\MetaServiceConfigurationController::findOneMetaServiceConfiguration'
-  condition: "request.attributes.get('version') >= 2.1"
+  condition: "request.attributes.get('version') >= 21.10"
 
 centreon_application_find_meta_services_configurations:
   methods: GET
   path: /configuration/metaservices
   controller: 'Centreon\Application\Controller\MetaServiceConfigurationController::findMetaServicesConfigurations'
-  condition: "request.attributes.get('version') >= 2.1"
+  condition: "request.attributes.get('version') >= 21.10"

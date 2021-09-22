@@ -11,7 +11,6 @@ import {
 } from '@testing-library/react';
 import { Simulate } from 'react-dom/test-utils';
 import userEvent from '@testing-library/user-event';
-import { last } from 'ramda';
 
 import { setUrlQueryParameters, getUrlQueryParameters } from '@centreon/ui';
 
@@ -28,11 +27,8 @@ import {
   labelResourceProblems,
   labelAll,
   labelUnhandledProblems,
-  labelShowCriteriasFilters,
-  labelSearchHelp,
-  labelSearchOnFields,
   labelNewFilter,
-  labelSelectCriterias,
+  labelSearchOptions,
 } from '../translatedLabels';
 import useListing from '../Listing/useListing';
 import useActions from '../Actions/useActions';
@@ -62,9 +58,6 @@ jest.mock('react-redux', () => ({
   ...(jest.requireActual('react-redux') as jest.Mocked<unknown>),
   useSelector: jest.fn(),
 }));
-
-window.clearInterval = jest.fn();
-window.setInterval = jest.fn();
 
 const linuxServersHostGroup = {
   id: 0,
@@ -151,8 +144,16 @@ const filter = {
       value: [{ id: 'acknowledged', name: labelAcknowledged }],
     },
     { name: 'statuses', value: [{ id: 'OK', name: labelOk }] },
-    { name: 'host_groups', value: [linuxServersHostGroup] },
-    { name: 'service_groups', value: [webAccessServiceGroup] },
+    {
+      name: 'host_groups',
+      object_type: 'host_groups',
+      value: [linuxServersHostGroup],
+    },
+    {
+      name: 'service_groups',
+      object_type: 'service_groups',
+      value: [webAccessServiceGroup],
+    },
     { name: 'search', value: 'Search me' },
     { name: 'sort', value: [defaultSortField, defaultSortOrder] },
   ],
@@ -171,8 +172,6 @@ const FilterTest = (): JSX.Element | null => {
   const detailsState = useDetails();
   const listingState = useListing();
   const actionsState = useActions();
-
-  filterState.filterExpanded = true;
 
   return (
     <Context.Provider
@@ -226,7 +225,7 @@ describe(Filter, () => {
     window.history.pushState({}, '', window.location.pathname);
   });
 
-  it('executes a listing request with "Unhandled problems" filter group by default', async () => {
+  it('executes a listing request with "Unhandled problems" filter by default', async () => {
     renderFilter();
 
     await waitFor(() =>
@@ -240,7 +239,8 @@ describe(Filter, () => {
   it.each(searchableFields.map((searchableField) => [searchableField]))(
     'executes a listing request with an "$and" search param containing %p when %p is typed in the search field',
     async (searchableField) => {
-      const { getByPlaceholderText, getByText } = renderFilter();
+      const { getByPlaceholderText, getByText, getByLabelText } =
+        renderFilter();
 
       await waitFor(() => {
         expect(mockedAxios.get).toHaveBeenCalled();
@@ -249,11 +249,13 @@ describe(Filter, () => {
       const search = 'foobar';
       const fieldSearchValue = `${searchableField}:${search}`;
 
-      fireEvent.change(getByPlaceholderText(labelSearch), {
-        target: { value: fieldSearchValue },
-      });
+      userEvent.type(getByPlaceholderText(labelSearch), fieldSearchValue);
 
       mockedAxios.get.mockResolvedValueOnce({ data: {} });
+
+      userEvent.click(
+        getByLabelText(labelSearchOptions).firstElementChild as HTMLElement,
+      );
 
       fireEvent.click(getByText(labelSearch));
 
@@ -273,7 +275,7 @@ describe(Filter, () => {
   );
 
   it('executes a listing request with an "$or" search param containing all searchable fields when a string that does not correspond to any searchable field is typed in the search field', async () => {
-    const { getByPlaceholderText, getByText } = renderFilter();
+    const { getByPlaceholderText, getByText, getByLabelText } = renderFilter();
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalled();
@@ -281,11 +283,15 @@ describe(Filter, () => {
 
     const searchValue = 'foobar';
 
-    fireEvent.change(getByPlaceholderText(labelSearch), {
-      target: { value: searchValue },
-    });
+    userEvent.type(getByPlaceholderText(labelSearch), searchValue);
 
-    mockedAxios.get.mockResolvedValueOnce({ data: {} });
+    mockedAxios.get
+      .mockResolvedValueOnce({ data: {} })
+      .mockResolvedValueOnce({ data: {} });
+
+    userEvent.click(
+      getByLabelText(labelSearchOptions).firstElementChild as HTMLElement,
+    );
 
     fireEvent.click(getByText(labelSearch));
 
@@ -336,7 +342,7 @@ describe(Filter, () => {
       },
     ],
   ])(
-    'executes a listing request with "%p" params when "%p" filter group is set',
+    'executes a listing request with "%p" parameters when "%p" filter is set',
     async (filterGroup, criterias) => {
       const { getByText } = renderFilter();
 
@@ -364,9 +370,9 @@ describe(Filter, () => {
   );
 
   it.each(filtersParams)(
-    "executes a listing request with current search and selected %p filter options when it's changed",
+    "executes a listing request with current search and selected %p criteria when it's changed",
     async (
-      filterName,
+      criteriaName,
       optionToSelect,
       endpointParamChanged,
       selectEndpointMockAction,
@@ -375,36 +381,78 @@ describe(Filter, () => {
         renderFilter();
 
       await waitFor(() => {
-        expect(mockedAxios.get).toHaveBeenCalled();
+        expect(mockedAxios.get).toHaveBeenCalledTimes(2);
       });
-
-      fireEvent.click(getByLabelText(labelShowCriteriasFilters));
 
       selectEndpointMockAction?.();
       mockedAxios.get.mockResolvedValueOnce({ data: {} });
 
       const searchValue = 'foobar';
-      fireEvent.change(getByPlaceholderText(labelSearch), {
-        target: { value: searchValue },
-      });
+      userEvent.type(getByPlaceholderText(labelSearch), searchValue);
 
-      const filterToChange = getByText(filterName);
-      fireEvent.click(filterToChange);
+      fireEvent.click(
+        getByLabelText(labelSearchOptions).firstElementChild as HTMLElement,
+      );
+
+      fireEvent.click(getByText(criteriaName));
 
       const selectedOption = await findByText(optionToSelect);
       fireEvent.click(selectedOption);
 
-      await waitFor(() =>
+      fireEvent.click(getByText(labelSearch));
+
+      await waitFor(() => {
         expect(mockedAxios.get).toHaveBeenCalledWith(
           getListingEndpoint({
             search: searchValue,
             ...endpointParamChanged,
           }),
           cancelTokenRequestParam,
-        ),
-      );
+        );
+      });
     },
   );
+
+  it('accepts the selected autocomplete suggestion when the beginning of a criteria is input and the tab key is pressed', async () => {
+    const { getByPlaceholderText } = renderFilter();
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledTimes(2);
+    });
+
+    userEvent.type(
+      getByPlaceholderText(labelSearch),
+      '{selectall}{backspace}stat',
+    );
+
+    userEvent.tab();
+
+    expect(getByPlaceholderText(labelSearch)).toHaveValue('state:');
+
+    userEvent.type(getByPlaceholderText(labelSearch), 'u');
+
+    userEvent.tab();
+
+    expect(getByPlaceholderText(labelSearch)).toHaveValue('state:unhandled');
+
+    userEvent.type(getByPlaceholderText(labelSearch), ' st');
+
+    userEvent.tab();
+
+    expect(getByPlaceholderText(labelSearch)).toHaveValue(
+      'state:unhandled status:',
+    );
+
+    userEvent.type(getByPlaceholderText(labelSearch), ' type:');
+
+    userEvent.keyboard('{ArrowDown}');
+
+    userEvent.tab();
+
+    expect(getByPlaceholderText(labelSearch)).toHaveValue(
+      'state:unhandled status: type:service',
+    );
+  });
 
   describe('Filter storage', () => {
     it('populates filter with values from localStorage if available', async () => {
@@ -436,8 +484,12 @@ describe(Filter, () => {
 
       const renderResult = renderFilter();
 
-      const { getByText, queryByLabelText, findByPlaceholderText } =
-        renderResult;
+      const {
+        getByText,
+        queryByLabelText,
+        findByPlaceholderText,
+        getByLabelText,
+      } = renderResult;
 
       await waitFor(() => expect(mockedAxios.get).toHaveBeenCalledTimes(2));
 
@@ -447,19 +499,25 @@ describe(Filter, () => {
 
       const searchField = await findByPlaceholderText(labelSearch);
 
-      expect(searchField).toHaveDisplayValue('Search me');
+      expect(searchField).toHaveValue(
+        'type:host state:acknowledged status:ok host_group:0|Linux-servers service_group:1|Web-access Search me',
+      );
 
-      fireEvent.click(getByText(labelResource));
+      userEvent.click(
+        getByLabelText(labelSearchOptions).firstElementChild as HTMLElement,
+      );
+
+      userEvent.click(getByText(labelResource));
       expect(getByText(labelHost)).toBeInTheDocument();
 
-      fireEvent.click(getByText(labelState));
+      userEvent.click(getByText(labelState));
       expect(getByText(labelAcknowledged)).toBeInTheDocument();
 
-      fireEvent.click(getByText(labelStatus));
+      userEvent.click(getByText(labelStatus));
       expect(getByText(labelOk)).toBeInTheDocument();
 
       act(() => {
-        fireEvent.click(getByText(labelHostGroup));
+        userEvent.click(getByText(labelHostGroup));
       });
 
       await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
@@ -488,7 +546,7 @@ describe(Filter, () => {
 
       userEvent.click(unhandledProblemsOption);
 
-      fireEvent.click(getByText(labelAll));
+      userEvent.click(getByText(labelAll));
 
       await waitFor(() => expect(mockedAxios.get).toHaveBeenCalledTimes(3));
 
@@ -499,9 +557,7 @@ describe(Filter, () => {
 
       const searchField = await findByPlaceholderText(labelSearch);
 
-      fireEvent.change(searchField, {
-        target: { value: 'searching...' },
-      });
+      userEvent.type(searchField, 'searching...');
 
       await waitFor(() =>
         expect(mockedLocalStorageSetItem).toHaveBeenCalledWith(
@@ -515,29 +571,6 @@ describe(Filter, () => {
           ),
         ),
       );
-    });
-
-    it('leaves search help tooltip visible when the search input is filled', async () => {
-      const { getByLabelText, getByText, getByPlaceholderText } =
-        renderFilter();
-
-      await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
-
-      fireEvent.click(getByLabelText(labelSearchHelp));
-
-      expect(
-        getByText(labelSearchOnFields, { exact: false }),
-      ).toBeInTheDocument();
-
-      const searchInput = getByPlaceholderText(labelSearch);
-
-      fireEvent.change(searchInput, {
-        target: { value: 'foobar' },
-      });
-
-      expect(
-        getByText(labelSearchOnFields, { exact: false }),
-      ).toBeInTheDocument();
     });
   });
 
@@ -572,15 +605,27 @@ describe(Filter, () => {
           },
         });
 
-      const { getByText, getByDisplayValue, getAllByPlaceholderText } =
-        renderFilter();
+      const {
+        getByText,
+        getByDisplayValue,
+        getAllByPlaceholderText,
+        getByLabelText,
+      } = renderFilter();
 
       await waitFor(() => {
         expect(mockedAxios.get).toHaveBeenCalledTimes(2);
       });
 
       expect(getByText('New filter')).toBeInTheDocument();
-      expect(getByDisplayValue('Search me')).toBeInTheDocument();
+      expect(
+        getByDisplayValue(
+          'type:host state:acknowledged status:ok host_group:0|Linux-servers service_group:1|Web-access Search me',
+        ),
+      ).toBeInTheDocument();
+
+      fireEvent.click(
+        getByLabelText(labelSearchOptions).firstElementChild as HTMLElement,
+      );
 
       fireEvent.click(getByText(labelResource));
       expect(getByText(labelHost)).toBeInTheDocument();
@@ -656,34 +701,6 @@ describe(Filter, () => {
           name: 'search',
         }),
       ).toEqual('Search me');
-    });
-  });
-
-  it.each([
-    labelResource,
-    labelState,
-    labelStatus,
-    labelHostGroup,
-    labelServiceGroup,
-  ])('hides the %p criteria field when deselected', async (criteriaLabel) => {
-    const { getByLabelText, getAllByText, queryByLabelText } = renderFilter();
-
-    await waitFor(() => {
-      expect(mockedAxios.get).toHaveBeenCalled();
-    });
-
-    mockedAxios.get.mockResolvedValue({ data: {} });
-
-    fireEvent.click(
-      getByLabelText(labelSelectCriterias).firstChild as HTMLElement,
-    );
-
-    fireEvent.click(last(getAllByText(criteriaLabel)) as HTMLElement);
-
-    expect(queryByLabelText(criteriaLabel)).toBeNull();
-
-    await waitFor(() => {
-      expect(mockedAxios.get).toHaveBeenCalled();
     });
   });
 });

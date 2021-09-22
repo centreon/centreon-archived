@@ -12,7 +12,7 @@ import {
 } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
-import { useTheme, fade } from '@material-ui/core';
+import { useTheme, alpha } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 
 import { MemoizedPanel as Panel, Tab } from '@centreon/ui';
@@ -102,7 +102,7 @@ const Details = (): JSX.Element | null => {
       return theme.palette.common.white;
     }
 
-    return fade(foundColorCondition.color, 0.8);
+    return alpha(foundColorCondition.color, 0.8);
   };
 
   return (

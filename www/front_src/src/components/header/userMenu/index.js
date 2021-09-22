@@ -106,7 +106,7 @@ class UserMenu extends Component {
 
     // check if edit profile page (My Account) is allowed
     const { allowedPages, t } = this.props;
-    const allowEditProfile = allowedPages.includes(EDIT_PROFILE_TOPOLOGY_PAGE);
+    const allowEditProfile = allowedPages?.includes(EDIT_PROFILE_TOPOLOGY_PAGE);
 
     const { fullname, username, autologinkey } = data;
 
@@ -156,7 +156,7 @@ class UserMenu extends Component {
                   </span>
                 </li>
                 {autologinkey && (
-                  <>
+                  <div className={styles['submenu-content']}>
                     <button
                       className={styles['submenu-user-button']}
                       onClick={this.onCopy}
@@ -175,11 +175,11 @@ class UserMenu extends Component {
                       ref={(node) => (this.autologinNode = node)}
                       value={autolink}
                     />
-                  </>
+                  </div>
                 )}
               </ul>
-              <div className={styles['button-wrap']}>
-                <a href="index.php?disconnect=1">
+              <div className={styles['submenu-content']}>
+                <a className={styles.logoutLink} href="index.php?disconnect=1">
                   <button
                     className={classnames(
                       styles.btn,

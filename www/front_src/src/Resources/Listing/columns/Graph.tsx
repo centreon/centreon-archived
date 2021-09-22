@@ -7,7 +7,7 @@ import IconGraph from '@material-ui/icons/BarChart';
 
 import { IconButton, ComponentColumnProps } from '@centreon/ui';
 
-import { labelGraph } from '../../translatedLabels';
+import { labelGraph, labelServiceGraphs } from '../../translatedLabels';
 import PerformanceGraph from '../../Graph/Performance';
 import useMousePosition, {
   MousePositionContext,
@@ -29,11 +29,16 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface GraphProps {
+  displayCompleteGraph: () => void;
   endpoint?: string;
   row: Resource | ResourceDetails;
 }
 
-const Graph = ({ row, endpoint }: GraphProps): JSX.Element => {
+const Graph = ({
+  row,
+  endpoint,
+  displayCompleteGraph,
+}: GraphProps): JSX.Element => {
   const { periodQueryParameters } = useTimePeriod({});
   const mousePositionProps = useMousePosition();
 
@@ -41,6 +46,7 @@ const Graph = ({ row, endpoint }: GraphProps): JSX.Element => {
     <MousePositionContext.Provider value={mousePositionProps}>
       <PerformanceGraph
         limitLegendRows
+        displayCompleteGraph={displayCompleteGraph}
         displayTitle={false}
         endpoint={`${endpoint}${periodQueryParameters}`}
         graphHeight={150}
@@ -61,32 +67,53 @@ const GraphColumn = ({
   }: ComponentColumnProps): JSX.Element | null => {
     const classes = useStyles();
 
+    const { type } = row;
+
+    const isHost = type === 'host';
+
     const endpoint = path<string | undefined>(
       ['links', 'endpoints', 'performance_graph'],
       row,
     );
 
-    if (isNil(endpoint)) {
+    if (isNil(endpoint) && !isHost) {
       return null;
     }
+
+    const label = isHost ? labelServiceGraphs : labelGraph;
 
     return (
       <IconColumn>
         <HoverChip
           Chip={(): JSX.Element => (
             <IconButton
-              ariaLabel={labelGraph}
-              title={labelGraph}
+              ariaLabel={label}
+              title={label}
               onClick={(): void => onClick(row)}
             >
               <IconGraph fontSize="small" />
             </IconButton>
           )}
-          label={labelGraph}
+          label={label}
         >
-          <Paper className={classes.graph}>
-            <Graph endpoint={endpoint} row={row} />
-          </Paper>
+          {({ close }): JSX.Element => {
+            if (isHost) {
+              return <div />;
+            }
+
+            return (
+              <Paper className={classes.graph}>
+                <Graph
+                  displayCompleteGraph={(): void => {
+                    onClick(row);
+                    close();
+                  }}
+                  endpoint={endpoint}
+                  row={row}
+                />
+              </Paper>
+            );
+          }}
         </HoverChip>
       </IconColumn>
     );

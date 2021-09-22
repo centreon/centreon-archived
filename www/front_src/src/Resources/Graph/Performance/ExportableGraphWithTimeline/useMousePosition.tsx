@@ -18,8 +18,9 @@ const useMousePosition = (): MousePositionState => {
 
 export default useMousePosition;
 
-export const MousePositionContext =
-  React.createContext<MousePositionState | undefined>(undefined);
+export const MousePositionContext = React.createContext<
+  MousePositionState | undefined
+>(undefined);
 
 export const useMousePositionContext = (): MousePositionState =>
   React.useContext(MousePositionContext) as MousePositionState;

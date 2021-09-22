@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { connect } from 'react-redux';
 import { Switch, Route, withRouter } from 'react-router-dom';
-import { isEmpty, equals } from 'ramda';
+import { equals } from 'ramda';
 
 import { styled } from '@material-ui/core';
 
@@ -35,7 +35,7 @@ const getExternalPageRoutes = ({
 
   const pageEntries = Object.entries(pages);
   const isAllowedPage = (path): boolean =>
-    allowedPages.find((allowedPage) => path.includes(allowedPage));
+    allowedPages?.find((allowedPage) => path.includes(allowedPage));
 
   const loadablePages = pageEntries.filter(([path]) => isAllowedPage(path));
 
@@ -67,9 +67,10 @@ interface Props {
 
 const ReactRouter = React.memo<Props>(
   ({ allowedPages, history, pages, externalPagesFetched }: Props) => {
-    if (isEmpty(allowedPages)) {
+    if (!externalPagesFetched || !allowedPages) {
       return <PageSkeleton />;
     }
+
     return (
       <React.Suspense fallback={<PageSkeleton />}>
         <Switch>

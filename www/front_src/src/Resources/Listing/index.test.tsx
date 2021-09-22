@@ -25,11 +25,14 @@ import {
   __,
   propEq,
   find,
+  isNil,
+  last,
 } from 'ramda';
+import userEvent from '@testing-library/user-event';
 
 import { Column } from '@centreon/ui';
 
-import { Resource } from '../models';
+import { Resource, ResourceType } from '../models';
 import Context, { ResourceContext } from '../Context';
 import useActions from '../Actions/useActions';
 import useDetails from '../Details/useDetails';
@@ -65,6 +68,7 @@ const appState = {
 
 const fillEntities = (): Array<Resource> => {
   const entityCount = 31;
+
   return new Array(entityCount).fill(0).map((_, index) => ({
     acknowledged: index % 2 === 0,
     duration: '1m',
@@ -103,7 +107,7 @@ const fillEntities = (): Array<Resource> => {
       severity_code: 5,
     },
     tries: '1',
-    type: index % 4 === 0 ? 'service' : 'host',
+    type: index % 4 === 0 ? ResourceType.service : ResourceType.host,
     uuid: `${index}`,
   }));
 };
@@ -145,9 +149,6 @@ const ListingTest = (): JSX.Element => {
 const mockedSelector = useSelector as jest.Mock;
 
 const renderListing = (): RenderResult => render(<ListingTest />);
-
-window.clearInterval = jest.fn();
-window.setInterval = jest.fn();
 
 describe(Listing, () => {
   beforeEach(() => {
@@ -206,7 +207,7 @@ describe(Listing, () => {
   describe('column sorting', () => {
     afterEach(async () => {
       act(() => {
-        context.setFilter(unhandledProblemsFilter);
+        context.setCurrentFilter(unhandledProblemsFilter);
       });
 
       await waitFor(() => {
@@ -224,24 +225,36 @@ describe(Listing, () => {
       async (id, label, sortField) => {
         const { getByLabelText } = renderListing();
 
+        await waitFor(() => {
+          expect(mockedAxios.get).toHaveBeenCalled();
+        });
+
         mockedAxios.get.mockResolvedValue({ data: retrievedListing });
 
         const sortBy = (sortField || id) as string;
 
-        fireEvent.click(getByLabelText(`Column ${label}`));
+        userEvent.click(getByLabelText(`Column ${label}`));
 
         await waitFor(() => {
           expect(mockedAxios.get).toHaveBeenLastCalledWith(
-            getListingEndpoint({ sort: { [sortBy]: 'desc' } }),
+            getListingEndpoint({
+              sort: { [sortBy]: 'desc' },
+              states: [],
+              statuses: [],
+            }),
             cancelTokenRequestParam,
           );
         });
 
-        fireEvent.click(getByLabelText(`Column ${label}`));
+        userEvent.click(getByLabelText(`Column ${label}`));
 
         await waitFor(() =>
           expect(mockedAxios.get).toHaveBeenLastCalledWith(
-            getListingEndpoint({ sort: { [sortBy]: 'asc' } }),
+            getListingEndpoint({
+              sort: { [sortBy]: 'asc' },
+              states: [],
+              statuses: [],
+            }),
             cancelTokenRequestParam,
           ),
         );
@@ -432,7 +445,7 @@ describe(Listing, () => {
   it.each(additionalIds)(
     'displays additional columns when selected from the corresponding menu',
     async (columnId) => {
-      const { getAllByText, getByTitle } = renderListing();
+      const { getAllByText, getByTitle, getByText } = renderListing();
 
       await waitFor(() => {
         expect(mockedAxios.get).toHaveBeenCalled();
@@ -440,12 +453,28 @@ describe(Listing, () => {
 
       fireEvent.click(getByTitle('Add columns').firstChild as HTMLElement);
 
-      const columnLabel = find(propEq('id', columnId), columns)
-        ?.label as string;
+      const column = find(propEq('id', columnId), columns);
+      const columnLabel = column?.label as string;
 
-      fireEvent.click(head(getAllByText(columnLabel)) as HTMLElement);
+      const columnShortLabel = column?.shortLabel as string;
 
-      expect(getAllByText(columnLabel).length).toBeGreaterThanOrEqual(2);
+      const hasShortLabel = !isNil(columnShortLabel);
+
+      const columnDisplayLabel = hasShortLabel
+        ? `${columnLabel} (${columnShortLabel})`
+        : columnLabel;
+
+      fireEvent.click(last(getAllByText(columnDisplayLabel)) as HTMLElement);
+
+      const expectedLabelCount = hasShortLabel ? 1 : 2;
+
+      expect(getAllByText(columnDisplayLabel).length).toEqual(
+        expectedLabelCount,
+      );
+
+      if (hasShortLabel) {
+        expect(getByText(columnDisplayLabel)).toBeInTheDocument();
+      }
     },
   );
 });

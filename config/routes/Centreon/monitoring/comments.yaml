@@ -2,7 +2,7 @@ centreon_application_monitoring_commentresource:
     methods: POST
     path: /monitoring/resources/comments
     controller: 'Centreon\Application\Controller\Monitoring\CommentController::addResourcesComment'
-    condition: "request.attributes.get('version') >= 2.0"
+    condition: "request.attributes.get('version') >= 21.10"
 
 centreon_application_monitoring_commenthost:
     methods: POST
@@ -10,7 +10,7 @@ centreon_application_monitoring_commenthost:
     requirements:
         hostId: '\d+'
     controller: 'Centreon\Application\Controller\Monitoring\CommentController::addHostComment'
-    condition: "request.attributes.get('version') >= 2.0"
+    condition: "request.attributes.get('version') >= 21.10"
 
 centreon_application_monitoring_commentservice:
     methods: POST
@@ -19,7 +19,7 @@ centreon_application_monitoring_commentservice:
         hostId: '\d+'
         serviceId: '\d+'
     controller: 'Centreon\Application\Controller\Monitoring\CommentController::addServiceComment'
-    condition: "request.attributes.get('version') >= 2.0"
+    condition: "request.attributes.get('version') >= 21.10"
 
 centreon_application_monitoring_commentmetaservice:
     methods: POST
@@ -27,4 +27,4 @@ centreon_application_monitoring_commentmetaservice:
     controller: 'Centreon\Application\Controller\Monitoring\CommentController::addMetaServiceComment'
     requirements:
         metaId: '\d+'
-    condition: "request.attributes.get('version') >= 2.1"
+    condition: "request.attributes.get('version') >= 21.10"

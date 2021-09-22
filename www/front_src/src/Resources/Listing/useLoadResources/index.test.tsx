@@ -127,7 +127,7 @@ describe(useLoadResources, () => {
   ];
 
   it.each(testCases)(
-    'resets the page to 1 when %p is changed',
+    'resets the page to 1 when %p is changed and current filter is applied',
     async (_, setter) => {
       render(<TestComponent />);
 
@@ -145,6 +145,7 @@ describe(useLoadResources, () => {
 
       act(() => {
         (setter as () => void)();
+        context.applyCurrentFilter();
       });
 
       await waitFor(() => {

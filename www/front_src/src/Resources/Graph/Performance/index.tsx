@@ -21,9 +21,18 @@ import {
   propOr,
 } from 'ramda';
 import { useTranslation } from 'react-i18next';
+import { useHistory } from 'react-router';
 
-import { makeStyles, Typography, Theme } from '@material-ui/core';
+import {
+  makeStyles,
+  Typography,
+  Theme,
+  MenuItem,
+  Menu,
+  ButtonGroup,
+} from '@material-ui/core';
 import SaveAsImageIcon from '@material-ui/icons/SaveAlt';
+import LaunchIcon from '@material-ui/icons/Launch';
 import { Skeleton } from '@material-ui/lab';
 
 import {
@@ -33,6 +42,7 @@ import {
   ContentWithCircularLoading,
   IconButton,
   useLocaleDateTimeFormat,
+  Button,
 } from '@centreon/ui';
 
 import { TimelineEvent } from '../../Details/tabs/Timeline/models';
@@ -40,8 +50,12 @@ import { Resource } from '../../models';
 import { ResourceDetails } from '../../Details/models';
 import { CommentParameters } from '../../Actions/api';
 import {
+  labelAsDisplayed,
   labelExportToPng,
+  labelSmallSize,
+  labelMediumSize,
   labelNoDataForThisPeriod,
+  labelPerformancePage,
 } from '../../translatedLabels';
 import {
   CustomTimePeriod,
@@ -67,6 +81,7 @@ import exportToPng from './ExportableGraphWithTimeline/exportToPng';
 interface Props {
   adjustTimePeriod?: (props: AdjustTimePeriodProps) => void;
   customTimePeriod?: CustomTimePeriod;
+  displayCompleteGraph?: () => void;
   displayEventAnnotations?: boolean;
   displayTitle?: boolean;
   endpoint?: string;
@@ -86,6 +101,13 @@ interface MakeStylesProps extends Pick<Props, 'graphHeight' | 'displayTitle'> {
 }
 
 const useStyles = makeStyles<Theme, MakeStylesProps>((theme) => ({
+  buttonGroup: {
+    alignSelf: 'center',
+  },
+  buttonLink: {
+    background: 'transparent',
+    border: 'none',
+  },
   container: {
     display: 'grid',
     flexDirection: 'column',
@@ -98,21 +120,18 @@ const useStyles = makeStyles<Theme, MakeStylesProps>((theme) => ({
     justifyItems: 'center',
     width: 'auto',
   },
-  exportToPngButton: {
-    justifySelf: 'end',
-  },
   graphHeader: {
     display: 'grid',
-    gridTemplateColumns: '0.1fr 1fr 0.1fr',
+    gridTemplateColumns: '0.4fr 1fr 0.4fr',
     justifyItems: 'center',
     width: '100%',
   },
   graphTranslation: {
     columnGap: `${theme.spacing(1)}px`,
     display: 'grid',
-    gridTemplateColumns: ({ canAdjustTimePeriod }) =>
+    gridTemplateColumns: ({ canAdjustTimePeriod }): string =>
       canAdjustTimePeriod ? 'min-content auto min-content' : 'auto',
-    justifyContent: ({ canAdjustTimePeriod }) =>
+    justifyContent: ({ canAdjustTimePeriod }): string =>
       canAdjustTimePeriod ? 'space-between' : 'center',
     margin: theme.spacing(0, 1),
     width: '90%',
@@ -150,6 +169,7 @@ const PerformanceGraph = ({
   displayTitle = true,
   limitLegendRows,
   isInViewport = true,
+  displayCompleteGraph,
 }: Props): JSX.Element | null => {
   const classes = useStyles({
     canAdjustTimePeriod: not(isNil(adjustTimePeriod)),
@@ -157,6 +177,8 @@ const PerformanceGraph = ({
     graphHeight,
   });
   const { t } = useTranslation();
+  const { format } = useLocaleDateTimeFormat();
+  const history = useHistory();
 
   const [timeSeries, setTimeSeries] = React.useState<Array<TimeValue>>([]);
   const [lineData, setLineData] = React.useState<Array<LineModel>>();
@@ -165,6 +187,37 @@ const PerformanceGraph = ({
   const [exporting, setExporting] = React.useState<boolean>(false);
   const performanceGraphRef = React.useRef<HTMLDivElement | null>(null);
   const performanceGraphHeightRef = React.useRef<number>(0);
+  const [menuAnchor, setMenuAnchor] = React.useState<Element | null>(null);
+
+  const openSizeExportMenu = (event: React.MouseEvent): void => {
+    setMenuAnchor(event.currentTarget);
+  };
+  const closeSizeExportMenu = (): void => {
+    setMenuAnchor(null);
+  };
+  const goToPerformancePage = (): void => {
+    const startTimestamp = format({
+      date: customTimePeriod?.start as Date,
+      formatString: 'X',
+    });
+    const endTimestamp = format({
+      date: customTimePeriod?.end as Date,
+      formatString: 'X',
+    });
+
+    const urlParameters = (): string => {
+      const params = new URLSearchParams({
+        end: endTimestamp,
+        mode: '0',
+        start: startTimestamp,
+        svc_id: `${resource.parent?.name};${resource.name}`,
+      });
+
+      return params.toString();
+    };
+
+    history.push(`/main.php?p=204&${urlParameters()}`);
+  };
 
   const { selectedResourceId } = useResourceContext();
 
@@ -194,6 +247,7 @@ const PerformanceGraph = ({
             display: find(propEq('name', line.name), lineData)?.display ?? true,
           })),
         );
+
         return;
       }
       setLineData(newLineData);
@@ -317,7 +371,7 @@ const PerformanceGraph = ({
     );
   };
 
-  const shiftTime = (direction: TimeShiftDirection) => {
+  const shiftTime = (direction: TimeShiftDirection): void => {
     if (isNil(customTimePeriod)) {
       return;
     }
@@ -336,10 +390,12 @@ const PerformanceGraph = ({
     });
   };
 
-  const convertToPng = (): void => {
+  const convertToPng = (ratio: number): void => {
+    setMenuAnchor(null);
     setExporting(true);
     exportToPng({
       element: performanceGraphRef.current as HTMLElement,
+      ratio,
       title: `${resource?.name}-performance`,
     }).finally(() => {
       setExporting(false);
@@ -372,22 +428,51 @@ const PerformanceGraph = ({
             <Typography color="textPrimary" variant="body1">
               {title}
             </Typography>
-            <div className={classes.exportToPngButton}>
-              <ContentWithCircularLoading
-                alignCenter={false}
-                loading={exporting}
-                loadingIndicatorSize={16}
+            <ButtonGroup className={classes.buttonGroup} size="small">
+              <IconButton
+                disableTouchRipple
+                className={classes.buttonLink}
+                color="primary"
+                title={t(labelPerformancePage)}
+                onClick={goToPerformancePage}
               >
-                <IconButton
-                  disableTouchRipple
-                  disabled={isNil(timeline)}
-                  title={t(labelExportToPng)}
-                  onClick={convertToPng}
+                <LaunchIcon style={{ fontSize: 18 }} />
+              </IconButton>
+              <Button className={classes.buttonLink}>
+                <ContentWithCircularLoading
+                  alignCenter={false}
+                  loading={exporting}
+                  loadingIndicatorSize={16}
                 >
-                  <SaveAsImageIcon style={{ fontSize: 18 }} />
-                </IconButton>
-              </ContentWithCircularLoading>
-            </div>
+                  <>
+                    <IconButton
+                      disableTouchRipple
+                      disabled={isNil(timeline)}
+                      title={t(labelExportToPng)}
+                      onClick={openSizeExportMenu}
+                    >
+                      <SaveAsImageIcon style={{ fontSize: 18 }} />
+                    </IconButton>
+                    <Menu
+                      keepMounted
+                      anchorEl={menuAnchor}
+                      open={Boolean(menuAnchor)}
+                      onClose={closeSizeExportMenu}
+                    >
+                      <MenuItem onClick={(): void => convertToPng(1)}>
+                        {t(labelAsDisplayed)}
+                      </MenuItem>
+                      <MenuItem onClick={(): void => convertToPng(0.75)}>
+                        {t(labelMediumSize)}
+                      </MenuItem>
+                      <MenuItem onClick={(): void => convertToPng(0.5)}>
+                        {t(labelSmallSize)}
+                      </MenuItem>
+                    </Menu>
+                  </>
+                </ContentWithCircularLoading>
+              </Button>
+            </ButtonGroup>
           </div>
         )}
 
@@ -423,6 +508,7 @@ const PerformanceGraph = ({
         <div className={classes.legend}>
           <Legend
             base={base as number}
+            displayCompleteGraph={displayCompleteGraph}
             limitLegendRows={limitLegendRows}
             lines={sortedLines}
             toggable={toggableLegend}

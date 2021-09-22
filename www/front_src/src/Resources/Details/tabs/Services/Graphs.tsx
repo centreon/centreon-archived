@@ -6,8 +6,6 @@ import { makeStyles } from '@material-ui/styles';
 
 import { Resource } from '../../../models';
 import ExportablePerformanceGraphWithTimeline from '../../../Graph/Performance/ExportableGraphWithTimeline';
-import { CustomTimePeriod, TimePeriod } from '../Graph/models';
-import { AdjustTimePeriodProps } from '../../../Graph/Performance/models';
 import useMousePosition, {
   MousePositionContext,
 } from '../../../Graph/Performance/ExportableGraphWithTimeline/useMousePosition';
@@ -17,27 +15,13 @@ const MemoizedPerformanceGraph = React.memo(
   (prevProps, nextProps) => {
     const prevResource = prevProps.resource;
     const nextResource = nextProps.resource;
-    const prevPeriodQueryParameters = prevProps.periodQueryParameters;
-    const nextPeriodQueryParameters = nextProps.periodQueryParameters;
-    const prevSelectedTimePeriod = prevProps.selectedTimePeriod;
-    const nextSelectedTimePeriod = nextProps.selectedTimePeriod;
 
-    return (
-      equals(prevResource?.id, nextResource?.id) &&
-      equals(prevPeriodQueryParameters, nextPeriodQueryParameters) &&
-      equals(prevSelectedTimePeriod, nextSelectedTimePeriod)
-    );
+    return equals(prevResource?.id, nextResource?.id);
   },
 );
 
 interface Props {
-  adjustTimePeriod: (props: AdjustTimePeriodProps) => void;
-  customTimePeriod: CustomTimePeriod;
-  getIntervalDates: () => [string, string];
   infiniteScrollTriggerRef: React.RefObject<HTMLDivElement>;
-  periodQueryParameters: string;
-  resourceDetailsUpdated: boolean;
-  selectedTimePeriod: TimePeriod | null;
   services: Array<Resource>;
 }
 
@@ -50,12 +34,6 @@ const useStyles = makeStyles({
 const ServiceGraphs = ({
   services,
   infiniteScrollTriggerRef,
-  periodQueryParameters,
-  getIntervalDates,
-  selectedTimePeriod,
-  customTimePeriod,
-  adjustTimePeriod,
-  resourceDetailsUpdated,
 }: Props): JSX.Element => {
   const classes = useStyles();
   const mousePositionProps = useMousePosition();
@@ -75,14 +53,8 @@ const ServiceGraphs = ({
             <div className={classes.serviceGraph} key={id}>
               <MemoizedPerformanceGraph
                 limitLegendRows
-                adjustTimePeriod={adjustTimePeriod}
-                customTimePeriod={customTimePeriod}
-                getIntervalDates={getIntervalDates}
                 graphHeight={120}
-                periodQueryParameters={periodQueryParameters}
                 resource={service}
-                resourceDetailsUpdated={resourceDetailsUpdated}
-                selectedTimePeriod={selectedTimePeriod}
               />
               {isLastService && <div ref={infiniteScrollTriggerRef} />}
             </div>

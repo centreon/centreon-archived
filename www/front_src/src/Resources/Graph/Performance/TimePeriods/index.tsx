@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { always, cond, lt, lte, map, pick, T } from 'ramda';
+import { always, cond, lt, lte, map, not, pick, T } from 'ramda';
 import { ParentSize } from '@visx/visx';
 
 import {
@@ -11,55 +11,63 @@ import {
   Button,
   useTheme,
   Tooltip,
+  Theme,
 } from '@material-ui/core';
+import { CreateCSSProperties } from '@material-ui/styles';
 
-import {
-  ChangeCustomTimePeriodProps,
-  CustomTimePeriod,
-  TimePeriodId,
-  timePeriods,
-} from '../../../Details/tabs/Graph/models';
+import { timePeriods } from '../../../Details/tabs/Graph/models';
 import GraphOptions from '../ExportableGraphWithTimeline/GraphOptions';
+import { useResourceContext } from '../../../Context';
 
 import CustomTimePeriodPickers from './CustomTimePeriodPickers';
 
-const useStyles = makeStyles((theme) => ({
+interface StylesProps {
+  disablePaper: boolean;
+}
+
+const useStyles = makeStyles<Theme, StylesProps>((theme) => ({
   button: {
     fontSize: theme.typography.body2.fontSize,
   },
   buttonGroup: {
     alignSelf: 'center',
   },
-  header: {
+  header: ({ disablePaper }): CreateCSSProperties<StylesProps> => ({
     alignItems: 'center',
+    backgroundColor: disablePaper ? 'transparent' : 'undefined',
+    border: disablePaper ? 'unset' : 'undefined',
+    boxShadow: disablePaper ? 'unset' : 'undefined',
     columnGap: `${theme.spacing(2)}px`,
     display: 'grid',
     gridTemplateColumns: `repeat(3, auto)`,
     justifyContent: 'center',
     padding: theme.spacing(1, 0.5),
-  },
+  }),
 }));
 
 interface Props {
-  changeCustomTimePeriod: (props: ChangeCustomTimePeriodProps) => void;
-  customTimePeriod: CustomTimePeriod;
+  disableGraphOptions?: boolean;
+  disablePaper?: boolean;
   disabled?: boolean;
-  onChange: (timePeriod: TimePeriodId) => void;
-  selectedTimePeriodId?: string;
 }
 
 const timePeriodOptions = map(pick(['id', 'name', 'largeName']), timePeriods);
 
 const TimePeriodButtonGroup = ({
-  selectedTimePeriodId,
-  onChange,
   disabled = false,
-  customTimePeriod,
-  changeCustomTimePeriod,
+  disableGraphOptions = false,
+  disablePaper = false,
 }: Props): JSX.Element => {
   const { t } = useTranslation();
-  const classes = useStyles();
+  const classes = useStyles({ disablePaper });
   const theme = useTheme();
+
+  const {
+    customTimePeriod,
+    changeCustomTimePeriod,
+    changeSelectedTimePeriod,
+    selectedTimePeriod,
+  } = useResourceContext();
 
   const translatedTimePeriodOptions = timePeriodOptions.map((timePeriod) => ({
     ...timePeriod,
@@ -67,13 +75,14 @@ const TimePeriodButtonGroup = ({
     name: t(timePeriod.name),
   }));
 
-  const changeDate = ({ property, date }) =>
+  const changeDate = ({ property, date }): void =>
     changeCustomTimePeriod({ date, property });
 
   return (
     <ParentSize>
-      {({ width }) => {
+      {({ width }): JSX.Element => {
         const isCompact = lt(width, theme.breakpoints.values.sm);
+
         return (
           <Paper className={classes.header}>
             <ButtonGroup
@@ -90,9 +99,9 @@ const TimePeriodButtonGroup = ({
                       className={classes.button}
                       component="span"
                       variant={
-                        selectedTimePeriodId === id ? 'contained' : 'outlined'
+                        selectedTimePeriod?.id === id ? 'contained' : 'outlined'
                       }
-                      onClick={() => onChange(id)}
+                      onClick={(): void => changeSelectedTimePeriod(id)}
                     >
                       {cond<number, string>([
                         [lte(theme.breakpoints.values.md), always(largeName)],
@@ -109,7 +118,7 @@ const TimePeriodButtonGroup = ({
               customTimePeriod={customTimePeriod}
               isCompact={isCompact}
             />
-            <GraphOptions />
+            {not(disableGraphOptions) && <GraphOptions />}
           </Paper>
         );
       }}
