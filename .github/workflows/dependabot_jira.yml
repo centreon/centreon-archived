@@ -10,7 +10,7 @@ env:
   JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
   JIRA_USER_EMAIL: ${{ secrets.JIRA_USER_EMAIL }}
   JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
-  JIRA_PROJECT_KEY: "ACUNETIX-TEST"
+  JIRA_PROJECT_KEY: "AT"
   JIRA_ISSUE_TYPE: "Vulnerability"
 
 jobs:
