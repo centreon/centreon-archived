@@ -36,6 +36,7 @@ import Groups from './Groups';
 import DowntimesCard from './DowntimesCard';
 import AcknowledgementCard from './AcknowledegmentCard';
 import CommandLineCard from './CommandLineCard';
+import LastTimeWithNoIssue from './LastTimeWithNoChange';
 
 export interface DetailCardLine {
   active?: boolean;
@@ -124,7 +125,8 @@ const getDetailCardLines = ({
     },
     {
       field: details.last_time_with_no_issue,
-      line: <DetailsLine line={toDateTime(details.last_time_with_no_issue)} />,
+      line: <LastTimeWithNoIssue details={details} />,
+
       title: labelLastTimeWithNoIssue,
     },
     {
