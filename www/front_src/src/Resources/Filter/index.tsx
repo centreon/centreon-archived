@@ -50,7 +50,6 @@ const useStyles = makeStyles((theme) => ({
   autocompletePopper: {
     zIndex: theme.zIndex.tooltip,
   },
-
   container: {
     alignItems: 'center',
     display: 'grid',
