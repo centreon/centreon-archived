@@ -39,6 +39,7 @@ jobs:
         project: ${{ env.JIRA_PROJECT_KEY }}
         issuetype: ${{ env.JIRA_ISSUE_TYPE }}
         summary: |
-          [DependaBot on ${{github.event.repository.name }} repo] PR n°${{github.event.pull_request.title }}
+          [DependaBot on ${{github.event.repository.name }} repo] PR n°${{github.event.pull_request.number}}
         description: |
-          ${{github.event.pull_request.html_url }} --- ${{github.event.pull_request.number}} --- ${{github.event.pull_request.url}}
+          Ddependency to upgrade: ${{github.event.pull_request.title }}
+          More details are available following the url: ${{github.event.pull_request.html_url }}
