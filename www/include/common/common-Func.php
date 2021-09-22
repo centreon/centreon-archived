@@ -2348,19 +2348,31 @@ function isNotEmptyAfterStringSanitize($test): bool
 }
 
 /**
- * Remove too old CSRF tokens (> 15min)
+ * Remove CSRF tokens older than 15min form session
  */
-function purgeTokens()
+function purgeOutdatedCSRFTokens()
 {
     foreach ($_SESSION['x-centreon-token-generated-at'] as $key => $value) {
         $elapsedTime = time() - $value;
 
         if ($elapsedTime > (15 * 60)) {
-            $tokenKey = array_search((string)$key, $_SESSION['x-centreon-token']);
+            $tokenKey = array_search((string) $key, $_SESSION['x-centreon-token']);
             unset($_SESSION['x-centreon-token'][$tokenKey]);
-            unset($_SESSION['x-centreon-token-generated-at'][(string)$key]);
+            unset($_SESSION['x-centreon-token-generated-at'][(string) $key]);
         }
     }
+}
+
+/**
+ * Remove CSRF Token from session
+ */
+function purgeCSRFToken()
+{
+    $token = $_POST['centreon_token'] ?? $_GET['centreon_token'] ?? null;
+
+    $key = array_search((string) $token, $_SESSION['x-centreon-token']);
+    unset($_SESSION['x-centreon-token'][$key]);
+    unset($_SESSION['x-centreon-token-generated-at'][(string) $token]);
 }
 
 /**
@@ -2372,13 +2384,8 @@ function isCSRFTokenValid()
 {
     $isValid = false;
 
-    purgeTokens();
-
     $token = $_POST['centreon_token'] ?? $_GET['centreon_token'] ?? null;
     if ($token !== null && in_array($token, $_SESSION['x-centreon-token'])) {
-        $key = array_search((string) $token, $_SESSION['x-centreon-token']);
-        unset($_SESSION['x-centreon-token'][$key]);
-        unset($_SESSION['x-centreon-token-generated-at'][(string) $token]);
         $isValid = true;
     }
 
@@ -2394,5 +2401,3 @@ function unvalidFormMessage()
         _("The form has not been submitted since 15 minutes. Please retry to resubmit") .
         "</div>";
 }
-
-

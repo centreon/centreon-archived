@@ -46,21 +46,27 @@ if (isset($_REQUEST['ar_id']) || isset($_REQUEST['new'])) {
         $ldapConf = new CentreonLdapAdmin($pearDB);
         switch ($ldapAction) {
             case "d":
+                purgeOutdatedCSRFTokens();
                 if (isCSRFTokenValid()) {
+                    purgeCSRFToken();
                     $ldapConf->deleteConfiguration($select);
                 } else {
                     unvalidFormMessage();
                 }
                 break;
             case "ms":
+                purgeOutdatedCSRFTokens();
                 if (isCSRFTokenValid()) {
+                    purgeCSRFToken();
                     $ldapConf->setStatus(1, $select);
                 } else {
                     unvalidFormMessage();
                 }
                 break;
             case "mu":
+                purgeOutdatedCSRFTokens();
                 if (isCSRFTokenValid()) {
+                    purgeCSRFToken();
                     $ldapConf->setStatus(0, $select);
                 } else {
                     unvalidFormMessage();

@@ -61,7 +61,9 @@ switch ($o) {
         require_once($path . "AddHostComment.php");
         break;
     case "dh":
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             DeleteComment("HOST", $select);
         } else {
             unvalidFormMessage();

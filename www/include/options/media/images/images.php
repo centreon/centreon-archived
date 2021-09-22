@@ -95,7 +95,9 @@ switch ($o) {
         require_once($path . "formDirectory.php");
         break;
     case IMAGE_DELETE:
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             if (!in_array(false, $selectIds)) {
                 deleteMultImg($selectIds);
                 deleteMultDirectory($selectIds);

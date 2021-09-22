@@ -112,7 +112,9 @@ switch ($o) {
         /*
          * Activate a contactgroup
          */
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             enableContactGroupInDB($cg_id);
         } else {
             unvalidFormMessage();
@@ -123,7 +125,9 @@ switch ($o) {
         /*
          * Desactivate a contactgroup
          */
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             disableContactGroupInDB($cg_id);
         } else {
             unvalidFormMessage();
@@ -134,7 +138,9 @@ switch ($o) {
         /*
          * Duplicate n contact group
          */
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             multipleContactGroupInDB(isset($select) ? $select : array(), $dupNbr);
         } else {
             unvalidFormMessage();
@@ -145,7 +151,9 @@ switch ($o) {
         /*
          * Delete a contact group
          */
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             deleteContactGroupInDB(isset($select) ? $select : array());
         } else {
             unvalidFormMessage();

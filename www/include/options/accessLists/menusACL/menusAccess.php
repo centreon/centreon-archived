@@ -101,13 +101,21 @@ switch ($o) {
         }
         break;
     case ACL_ENABLE:
-        if (is_int($aclTopologyId)) {
-            enableLCAInDB($aclTopologyId);
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            if (is_int($aclTopologyId)) {
+                enableLCAInDB($aclTopologyId);
+            }
+        } else {
+            unvalidFormMessage();
         }
         require_once($path . "listsMenusAccess.php");
         break;
     case ACL_MULTI_ENABLE:
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             if (!in_array(false, $selectIds)) {
                 enableLCAInDB(null, $selectIds);
             }
@@ -117,7 +125,9 @@ switch ($o) {
         require_once($path . "listsMenusAccess.php");
         break;
     case ACL_DISABLE:
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             if (is_int($aclTopologyId)) {
                 disableLCAInDB($aclTopologyId);
             }
@@ -127,7 +137,9 @@ switch ($o) {
         require_once($path . "listsMenusAccess.php");
         break;
     case ACL_MULTI_DISABLE:
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             if (!in_array(false, $selectIds)) {
                 disableLCAInDB(null, $selectIds);
             }
@@ -137,7 +149,9 @@ switch ($o) {
         require_once($path . "listsMenusAccess.php");
         break;
     case ACL_DUPLICATE:
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             if (!in_array(false, $selectIds) && !in_array(false, $duplicateNbr)) {
                 multipleLCAInDB($selectIds, $duplicateNbr);
             }
@@ -147,7 +161,9 @@ switch ($o) {
         require_once($path . "listsMenusAccess.php");
         break;
     case ACL_DELETE:
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             if (!in_array(false, $selectIds)) {
                 deleteLCAInDB($selectIds);
             }

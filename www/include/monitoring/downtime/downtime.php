@@ -62,7 +62,9 @@ switch ($o) {
         require_once($path . "AddDowntime.php");
         break;
     case "ds":
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             if (isset($_POST["select"])) {
                 foreach ($_POST["select"] as $key => $value) {
                     $res = explode(';', urldecode($key));
@@ -83,7 +85,9 @@ switch ($o) {
         require_once($path . "listDowntime.php");
         break;
     case "cs":
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             if (isset($_POST["select"])) {
                 foreach ($_POST["select"] as $key => $value) {
                     $res = explode(';', urldecode($key));

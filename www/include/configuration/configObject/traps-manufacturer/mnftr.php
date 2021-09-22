@@ -72,7 +72,9 @@ switch ($o) {
         require_once(__DIR__ . "/formMnftr.php");
         break; #Modify a Trap
     case "m":
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             multipleMnftrInDB(isset($select) ? $select : array(), $dupNbr);
         } else {
             unvalidFormMessage();
@@ -80,7 +82,9 @@ switch ($o) {
         require_once(__DIR__ . "/listMnftr.php");
         break; #Duplicate n Traps
     case "d":
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             deleteMnftrInDB(isset($select) ? $select : array());
         } else {
             unvalidFormMessage();

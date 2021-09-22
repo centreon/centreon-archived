@@ -81,7 +81,9 @@ switch ($o) {
         require_once($path . "formGroupConfig.php");
         break; #Modify a  an access group
     case "s":
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             enableGroupInDB($acl_group_id);
         } else {
             unvalidFormMessage();
@@ -89,7 +91,9 @@ switch ($o) {
         require_once($path . "listGroupConfig.php");
         break; #Activate a contactgroup
     case "ms":
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             enableGroupInDB(null, isset($select) ? $select : array());
         } else {
             unvalidFormMessage();
@@ -97,7 +101,9 @@ switch ($o) {
         require_once($path . "listGroupConfig.php");
         break; #Activate n access group
     case "u":
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             disableGroupInDB($acl_group_id);
         } else {
             unvalidFormMessage();
@@ -105,7 +111,9 @@ switch ($o) {
         require_once($path . "listGroupConfig.php");
         break; #Desactivate a contactgroup
     case "mu":
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             disableGroupInDB(null, isset($select) ? $select : array());
         } else {
             unvalidFormMessage();
@@ -113,7 +121,9 @@ switch ($o) {
         require_once($path . "listGroupConfig.php");
         break; #Desactivate n access group
     case "m":
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             multipleGroupInDB(isset($select) ? $select : array(), $dupNbr);
         } else {
             unvalidFormMessage();
@@ -121,7 +131,9 @@ switch ($o) {
         require_once($path . "listGroupConfig.php");
         break; #Duplicate n access group
     case "d":
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             deleteGroupInDB(isset($select) ? $select : array());
         } else {
             unvalidFormMessage();

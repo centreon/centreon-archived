@@ -83,7 +83,9 @@ switch ($o) {
         require_once($path . "formHostCategories.php");
         break;
     case "s":
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             enableHostCategoriesInDB($hc_id);
         } else {
             unvalidFormMessage();
@@ -91,7 +93,9 @@ switch ($o) {
         require_once($path . "listHostCategories.php");
         break;
     case "ms":
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             enableHostCategoriesInDB(null, isset($select) ? $select : []);
         } else {
             unvalidFormMessage();
@@ -99,7 +103,9 @@ switch ($o) {
         require_once($path . "listHostCategories.php");
         break;
     case "u":
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             disableHostCategoriesInDB($hc_id);
         } else {
             unvalidFormMessage();
@@ -107,7 +113,9 @@ switch ($o) {
         require_once($path . "listHostCategories.php");
         break;
     case "mu":
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             disableHostCategoriesInDB(null, isset($select) ? $select : []);
         } else {
             unvalidFormMessage();
@@ -115,7 +123,9 @@ switch ($o) {
         require_once($path . "listHostCategories.php");
         break;
     case "m":
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             multipleHostCategoriesInDB(isset($select) ? $select : [], $dupNbr);
         } else {
             unvalidFormMessage();
@@ -123,7 +133,9 @@ switch ($o) {
         require_once($path . "listHostCategories.php");
         break;
     case "d":
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             deleteHostCategoriesInDB(isset($select) ? $select : []);
         } else {
             unvalidFormMessage();

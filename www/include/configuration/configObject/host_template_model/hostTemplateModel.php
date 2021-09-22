@@ -86,7 +86,9 @@ switch ($o) {
         require_once($path . "formHostTemplateModel.php");
         break; #Add a host template model
     case HOST_TEMPLATE_ACTIVATION:
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             enableHostInDB($host_id);
         } else {
             unvalidFormMessage();
@@ -94,7 +96,9 @@ switch ($o) {
         require_once($path . "listHostTemplateModel.php");
         break; #Activate a host template model
     case HOST_TEMPLATE_MASSIVE_ACTIVATION:
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             enableHostInDB(null, isset($select) ? $select : array());
         } else {
             unvalidFormMessage();
@@ -102,7 +106,9 @@ switch ($o) {
         require_once($path . "listHostTemplateModel.php");
         break;
     case HOST_TEMPLATE_DEACTIVATION:
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             disableHostInDB($host_id);
         } else {
             unvalidFormMessage();
@@ -110,7 +116,9 @@ switch ($o) {
         require_once($path . "listHostTemplateModel.php");
         break; #Desactivate a host template model
     case HOST_TEMPLATE_MASSIVE_DEACTIVATION:
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             disableHostInDB(null, isset($select) ? $select : array());
         } else {
             unvalidFormMessage();
@@ -118,7 +126,9 @@ switch ($o) {
         require_once($path . "listHostTemplateModel.php");
         break;
     case HOST_TEMPLATE_DUPLICATION:
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             multipleHostInDB(isset($select) ? $select : array(), $dupNbr);
         } else {
             unvalidFormMessage();
@@ -126,7 +136,9 @@ switch ($o) {
         require_once($path . "listHostTemplateModel.php");
         break; #Duplicate n host template model
     case HOST_TEMPLATE_DELETION:
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             deleteHostInDB(isset($select) ? $select : array());
         } else {
             unvalidFormMessage();

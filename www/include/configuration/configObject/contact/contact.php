@@ -174,7 +174,9 @@ switch ($o) {
         require_once($path . "formContact.php");
         break;
     case ACTIVATE_CONTACT:
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             enableContactInDB($contactId);
         } else {
             unvalidFormMessage();
@@ -182,7 +184,9 @@ switch ($o) {
         require_once($path . "listContact.php");
         break;
     case MASSIVE_ACTIVATE_CONTACT:
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             enableContactInDB(null, isset($select) ? $select : array());
         } else {
             unvalidFormMessage();
@@ -190,7 +194,9 @@ switch ($o) {
         require_once($path . "listContact.php");
         break;
     case DEACTIVATE_CONTACT:
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             disableContactInDB($contactId);
         } else {
             unvalidFormMessage();
@@ -198,7 +204,9 @@ switch ($o) {
         require_once($path . "listContact.php");
         break;
     case MASSIVE_DEACTIVATE_CONTACT:
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             disableContactInDB(null, isset($select) ? $select : array());
         } else {
             unvalidFormMessage();
@@ -206,7 +214,9 @@ switch ($o) {
         require_once($path . "listContact.php");
         break;
     case DUPLICATE_CONTACTS:
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             $eventDispatcher->notify(
                 'contact.form',
                 EventDispatcher::EVENT_DUPLICATE,
@@ -221,7 +231,9 @@ switch ($o) {
         require_once($path . "listContact.php");
         break;
     case DELETE_CONTACTS:
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             $eventDispatcher->notify(
                 'contact.form',
                 EventDispatcher::EVENT_DELETE,
@@ -236,7 +248,9 @@ switch ($o) {
         require_once $path . 'displayNotification.php';
         break;
     case SYNC_LDAP_CONTACTS:
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             $eventDispatcher->notify(
                 'contact.form',
                 EventDispatcher::EVENT_SYNCHRONIZE,

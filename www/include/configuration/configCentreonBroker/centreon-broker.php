@@ -93,7 +93,9 @@ switch ($o) {
         break; // modify CentreonBroker
 
     case "s":
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             enableCentreonBrokerInDB($id);
         } else {
             unvalidFormMessage();
@@ -102,7 +104,9 @@ switch ($o) {
         break; // Activate a CentreonBroker CFG
 
     case "u":
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             disablCentreonBrokerInDB($id);
         } else {
             unvalidFormMessage();
@@ -111,7 +115,9 @@ switch ($o) {
         break; // Desactivate a CentreonBroker CFG
 
     case "m":
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             multipleCentreonBrokerInDB(isset($select) ? $select : array(), $dupNbr);
         } else {
             unvalidFormMessage();
@@ -120,7 +126,9 @@ switch ($o) {
         break; // Duplicate n CentreonBroker CFGs
 
     case "d":
+        purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
+            purgeCSRFToken();
             deleteCentreonBrokerInDB(isset($select) ? $select : array());
         } else {
             unvalidFormMessage();
