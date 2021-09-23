@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -73,44 +72,38 @@ $path = "./include/options/media/images/";
 /*
  * PHP functions
  */
-require_once $path . "DB-Func.php";
+require_once $path."DB-Func.php";
 require_once "./include/common/common-Func.php";
 
 switch ($o) {
     case IMAGE_ADD:
-        require_once($path . "formImg.php");
+        require_once($path."formImg.php");
         break;
     case IMAGE_WATCH:
         if (is_int($imageId)) {
-            require_once($path . "formImg.php");
+            require_once($path."formImg.php");
         }
         break;
     case IMAGE_MODIFY:
-        require_once($path . "formImg.php");
+        require_once($path."formImg.php");
         break;
     case IMAGE_MODIFY_DIRECTORY:
-        require_once($path . "formDirectory.php");
+        require_once($path."formDirectory.php");
         break;
     case IMAGE_MOVE:
-        require_once($path . "formDirectory.php");
+        require_once($path."formDirectory.php");
         break;
     case IMAGE_DELETE:
-        purgeOutdatedCSRFTokens();
-        if (isCSRFTokenValid()) {
-            purgeCSRFToken();
-            if (!in_array(false, $selectIds)) {
-                deleteMultImg($selectIds);
-                deleteMultDirectory($selectIds);
-            }
-        } else {
-            unvalidFormMessage();
+        if (!in_array(false, $selectIds)) {
+            deleteMultImg($selectIds);
+            deleteMultDirectory($selectIds);
         }
-        require_once($path . "listImg.php");
+        require_once($path."listImg.php");
         break;
     case IMAGE_SYNC_DIR:
-        require_once($path . "syncDir.php");
+        require_once($path."syncDir.php");
         break;
     default:
-        require_once($path . "listImg.php");
+        require_once($path."listImg.php");
         break;
 }

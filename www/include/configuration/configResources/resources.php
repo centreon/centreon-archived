@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -64,7 +63,7 @@ $action = filter_var(
     $_POST['o1'] ?? $_POST['o2'] ?? null,
     FILTER_VALIDATE_REGEXP,
     array(
-        "options" => array("regexp" => "/([a|c|d|m|s|u|w]{1})/")
+        "options" => array("regexp"=>"/([a|c|d|m|s|u|w]{1})/")
     )
 );
 if ($action !== false) {
@@ -130,14 +129,8 @@ switch ($o) {
         /*
          * Activate a Resource
          */
-        purgeOutdatedCSRFTokens();
-        if (isCSRFTokenValid()) {
-            purgeCSRFToken();
-            if ($resourceId !== false) {
-                enableResourceInDB($resourceId);
-            }
-        } else {
-            unvalidFormMessage();
+        if ($resourceId !== false) {
+            enableResourceInDB($resourceId);
         }
         require_once($path . "listResources.php");
         break;
@@ -145,14 +138,8 @@ switch ($o) {
         /*
          * Desactivate a Resource
          */
-        purgeOutdatedCSRFTokens();
-        if (isCSRFTokenValid()) {
-            purgeCSRFToken();
-            if ($resourceId !== false) {
-                disableResourceInDB($resourceId);
-            }
-        } else {
-            unvalidFormMessage();
+        if ($resourceId !== false) {
+            disableResourceInDB($resourceId);
         }
         require_once($path . "listResources.php");
         break;
@@ -160,17 +147,11 @@ switch ($o) {
         /*
          * Duplicate n resources only if data sent are correctly typed
          */
-        purgeOutdatedCSRFTokens();
-        if (isCSRFTokenValid()) {
-            purgeCSRFToken();
-            if (!in_array(false, $selectIds) && !in_array(false, $duplicateNbr)) {
-                multipleResourceInDB(
-                    $selectIds,
-                    $duplicateNbr
-                );
-            }
-        } else {
-            unvalidFormMessage();
+        if (!in_array(false, $selectIds) && !in_array(false, $duplicateNbr)) {
+            multipleResourceInDB(
+                $selectIds,
+                $duplicateNbr
+            );
         }
         require_once($path . "listResources.php");
         break;
@@ -178,14 +159,8 @@ switch ($o) {
         /*
          * Delete n resources only if data sent are correctly typed
          */
-        purgeOutdatedCSRFTokens();
-        if (isCSRFTokenValid()) {
-            purgeCSRFToken();
-            if (!in_array(false, $selectIds)) {
-                deleteResourceInDB($selectIds);
-            }
-        } else {
-            unvalidFormMessage();
+        if (!in_array(false, $selectIds)) {
+            deleteResourceInDB($selectIds);
         }
         require_once($path . "listResources.php");
         break;

@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -90,53 +89,23 @@ switch ($o) {
         require_once($path . "formHostGroup.php");
         break; #Modify a Hostgroup
     case "s":
-        purgeOutdatedCSRFTokens();
-        if (isCSRFTokenValid()) {
-            purgeCSRFToken();
-            enableHostGroupInDB($hg_id);
-        } else {
-            unvalidFormMessage();
-        }
+        enableHostGroupInDB($hg_id);
         require_once($path . "listHostGroup.php");
         break; #Activate a Hostgroup
     case "ms":
-        purgeOutdatedCSRFTokens();
-        if (isCSRFTokenValid()) {
-            purgeCSRFToken();
-            enableHostGroupInDB(null, isset($select) ? $select : array());
-        } else {
-            unvalidFormMessage();
-        }
+        enableHostGroupInDB(null, isset($select) ? $select : array());
         require_once($path . "listHostGroup.php");
         break;
     case "u":
-        purgeOutdatedCSRFTokens();
-        if (isCSRFTokenValid()) {
-            purgeCSRFToken();
-            disableHostGroupInDB($hg_id);
-        } else {
-            unvalidFormMessage();
-        }
+        disableHostGroupInDB($hg_id);
         require_once($path . "listHostGroup.php");
         break; #Desactivate a Hostgroup
     case "mu":
-        purgeOutdatedCSRFTokens();
-        if (isCSRFTokenValid()) {
-            purgeCSRFToken();
-            disableHostGroupInDB(null, isset($select) ? $select : array());
-        } else {
-            unvalidFormMessage();
-        }
+        disableHostGroupInDB(null, isset($select) ? $select : array());
         require_once($path . "listHostGroup.php");
         break;
     case "m":
-        purgeOutdatedCSRFTokens();
-        if (isCSRFTokenValid()) {
-            purgeCSRFToken();
-            multipleHostGroupInDB(isset($select) ? $select : array(), $dupNbr);
-        } else {
-            unvalidFormMessage();
-        }
+        multipleHostGroupInDB(isset($select) ? $select : array(), $dupNbr);
         $acl = $centreon->user->access;
         $hgs = $acl->getHostGroupAclConf(null, 'broker');
         $hgString = implode(',', array_map('mywrap', array_keys($hgs)));
@@ -144,13 +113,7 @@ switch ($o) {
         require_once($path . "listHostGroup.php");
         break; #Duplicate n Host grou
     case "d":
-        purgeOutdatedCSRFTokens();
-        if (isCSRFTokenValid()) {
-            purgeCSRFToken();
-            deleteHostGroupInDB(isset($select) ? $select : array());
-        } else {
-            unvalidFormMessage();
-        }
+        deleteHostGroupInDB(isset($select) ? $select : array());
         require_once($path . "listHostGroup.php");
         break; #Delete n Host group
     default:

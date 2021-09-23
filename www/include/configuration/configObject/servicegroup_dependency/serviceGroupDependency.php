@@ -80,26 +80,14 @@ switch ($o) {
         require_once($path . "formServiceGroupDependency.php");
         break;
     case "m": # Duplicate n Dependencies
-        purgeOutdatedCSRFTokens();
-        if (isCSRFTokenValid()) {
-            purgeCSRFToken();
-            multipleServiceGroupDependencyInDB(
-                is_array($select) ? $select : array(),
-                is_array($dupNbr) ? $dupNbr : array()
-            );
-        } else {
-            unvalidFormMessage();
-        }
+        multipleServiceGroupDependencyInDB(
+            is_array($select) ? $select : array(),
+            is_array($dupNbr) ? $dupNbr : array()
+        );
         require_once($path . "listServiceGroupDependency.php");
         break;
     case "d": # Delete n Dependency
-        purgeOutdatedCSRFTokens();
-        if (isCSRFTokenValid()) {
-            purgeCSRFToken();
-            deleteServiceGroupDependencyInDB(is_array($select) ? $select : array());
-        } else {
-            unvalidFormMessage();
-        }
+        deleteServiceGroupDependencyInDB(is_array($select) ? $select : array());
         require_once($path . "listServiceGroupDependency.php");
         break;
     default:

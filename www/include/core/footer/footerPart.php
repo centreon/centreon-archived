@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -106,9 +105,9 @@ try {
 
 
 if (!$min) {
-    ?>
+?>
     <!-- Footer -->
-    <?php
+<?php
 }
 ?>
 
@@ -196,35 +195,33 @@ if (!$min) {
 </script>
 <?php
 
-if (
-    (isset($_GET["mini"]) && $_GET["mini"] == 1)
-    || (isset($_SESSION['fullScreen']) && isset($_SESSION['fullScreen']['value']) && $_SESSION['fullScreen']['value'])
+if ((isset($_GET["mini"]) && $_GET["mini"] == 1) ||
+    (isset($_SESSION['fullScreen']) && isset($_SESSION['fullScreen']['value']) && $_SESSION['fullScreen']['value'])
 ) {
-    ?>
+?>
     <script type="text/javascript">
         myToggleAll(0, false);
     </script>
-    <?php
-} else {
+<?php } else {
     if (!$centreon->user->showDiv("footer")) {
-        ?>
+?>
         <script type="text/javascript">
             new Effect.toggle('footer', 'blind', {
                 duration: 0
             });
         </script>
-        <?php
+<?php
     }
 }
 
-/*
-* Create Data Flow
-*/
-$cdata = CentreonData::getInstance();
-$jsdata = $cdata->getJsData();
-foreach ($jsdata as $k => $val) {
-    echo "<span class=\"data hide\" id=\"" . $k . "\" data-" . $k . "=\"" . $val . "\"></span>";
-}
+    /*
+    * Create Data Flow
+    */
+    $cdata = CentreonData::getInstance();
+    $jsdata = $cdata->getJsData();
+    foreach ($jsdata as $k => $val) {
+        echo "<span class=\"data hide\" id=\"" . $k . "\" data-" . $k . "=\"" . $val . "\"></span>";
+    }
 
 ?>
 
@@ -233,9 +230,7 @@ foreach ($jsdata as $k => $val) {
     if (sendStatistics === true) {
         if (
             localStorage.getItem('centreonPlatformData') === null
-            || JSON.parse(
-                localStorage.getItem('centreonPlatformData')
-            ).cacheGenerationDate + (24 * 60 * 60 * 1000) < Date.now()
+            || JSON.parse(localStorage.getItem('centreonPlatformData')).cacheGenerationDate + (24 * 60 * 60 * 1000) < Date.now()
         ) {
             const userParametersRequest = jQuery.ajax({
                 url: '/centreon/api/v21.10/configuration/users/current/parameters',
@@ -393,16 +388,14 @@ foreach ($jsdata as $k => $val) {
     <?php
     $featureToAsk = $centreonFeature->toAsk($centreon->user->get_id());
     if (count($featureToAsk) === 1) {
-        ?>
+    ?>
         var testingFeature = jQuery('<div/>')
             .html(
                 '<h3>Feature testing</h3>' +
-                '<div style="margin: 2px;">Would you like to activate the feature flipping:' +
-                '<?php echo $featureToAsk[0]['name']; ?>  ?</div>' +
+                '<div style="margin: 2px;">Would you like to activate the feature flipping: <?php echo $featureToAsk[0]['name']; ?>  ?</div>' +
                 '<div style="margin: 2px; font-weight: bold;">Description: </div>' +
                 '<div style="margin: 2px;"> <?php echo $featureToAsk[0]['description']; ?>.</div>' +
-                '<div style="margin: 2px;">Please, give us your feedback on ' +
-                '<a href="https://centreon.github.io">Slack</a> ' +
+                '<div style="margin: 2px;">Please, give us your feedback on <a href="https://centreon.github.io">Slack</a> ' +
                 'or <a href="https://github.com/centreon/centreon/issues">Github</a>.</div>' +
                 '<div style="margin: 2px; font-weight: bold;">Legacy version: </div>' +
                 '<div style="margin: 2px;">You can switch back to the legacy version in my account page. ' +
@@ -451,7 +444,7 @@ foreach ($jsdata as $k => $val) {
             isModal: true,
             open: true
         })
-        <?php
+    <?php
     }
     ?>
 

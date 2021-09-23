@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -105,11 +104,6 @@ try {
     $j = 0;
     $attrsText = array("size" => "2");
     $nbConnectors = count($connectorsList);
-    $form->createSecurityToken();
-    $centreonToken = is_array($form->getElementValue('centreon_token')) ?
-        end($form->getElementValue('centreon_token')) :
-        $form->getElementValue('centreon_token');
-
     for ($i = 0; $i < $nbConnectors; $i++) {
         $result = $connectorsList[$i];
         $moptions = "";
@@ -120,15 +114,13 @@ try {
             if ($lvl_access == "w") {
                 if ($result['enabled']) {
                     $moptions = "<a href='main.php?p="
-                        . $p . "&id=" . $result['id'] . "&o=u&limit=" . $limit . "&num=" . $num .
-                        "&centreon_token=" . $centreonToken .
-                        "'><img src='img/icons/disabled.png' class='ico-14 margin_right' border='0' alt='"
+                        . $p . "&id=" . $result['id'] . "&o=u&limit=" . $limit . "&num="
+                        . $num . "'><img src='img/icons/disabled.png' class='ico-14 margin_right' border='0' alt='"
                         . _("Disabled") . "'></a>&nbsp;&nbsp;";
                 } else {
                     $moptions = "<a href='main.php?p="
-                        . $p . "&id=" . $result['id'] . "&o=s&limit=" . $limit . "&num=" . $num .
-                        "&centreon_token=" . $centreonToken .
-                        "'><img src='img/icons/enabled.png' class='ico-14 margin_right' border='0' alt='"
+                        . $p . "&id=" . $result['id'] . "&o=s&limit=" . $limit . "&num="
+                        . $num . "'><img src='img/icons/enabled.png' class='ico-14 margin_right' border='0' alt='"
                         . _("Enabled") . "'></a>&nbsp;&nbsp;";
                 }
                 $moptions .= "&nbsp;"

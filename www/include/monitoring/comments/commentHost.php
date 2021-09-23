@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2020 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -61,13 +60,7 @@ switch ($o) {
         require_once($path . "AddHostComment.php");
         break;
     case "dh":
-        purgeOutdatedCSRFTokens();
-        if (isCSRFTokenValid()) {
-            purgeCSRFToken();
-            DeleteComment("HOST", $select);
-        } else {
-            unvalidFormMessage();
-        }
+        DeleteComment("HOST", $select);
         require_once($path . "viewHostComment.php");
         break;
     case "vh":

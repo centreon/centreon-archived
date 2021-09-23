@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -75,7 +74,7 @@ $action = filter_var(
     $_POST['o1'] ?? $_POST['o2'] ?? null,
     FILTER_VALIDATE_REGEXP,
     array(
-        "options" => array("regexp" => "/([a|c|d|m|s|u|w]{1})/")
+        "options" => array("regexp"=>"/([a|c|d|m|s|u|w]{1})/")
     )
 );
 if ($action !== false) {
@@ -101,74 +100,38 @@ switch ($o) {
         }
         break;
     case ACL_ENABLE:
-        purgeOutdatedCSRFTokens();
-        if (isCSRFTokenValid()) {
-            purgeCSRFToken();
-            if (is_int($aclTopologyId)) {
-                enableLCAInDB($aclTopologyId);
-            }
-        } else {
-            unvalidFormMessage();
+        if (is_int($aclTopologyId)) {
+            enableLCAInDB($aclTopologyId);
         }
         require_once($path . "listsMenusAccess.php");
         break;
     case ACL_MULTI_ENABLE:
-        purgeOutdatedCSRFTokens();
-        if (isCSRFTokenValid()) {
-            purgeCSRFToken();
-            if (!in_array(false, $selectIds)) {
-                enableLCAInDB(null, $selectIds);
-            }
-        } else {
-            unvalidFormMessage();
+        if (!in_array(false, $selectIds)) {
+            enableLCAInDB(null, $selectIds);
         }
         require_once($path . "listsMenusAccess.php");
         break;
     case ACL_DISABLE:
-        purgeOutdatedCSRFTokens();
-        if (isCSRFTokenValid()) {
-            purgeCSRFToken();
-            if (is_int($aclTopologyId)) {
-                disableLCAInDB($aclTopologyId);
-            }
-        } else {
-            unvalidFormMessage();
+        if (is_int($aclTopologyId)) {
+            disableLCAInDB($aclTopologyId);
         }
         require_once($path . "listsMenusAccess.php");
         break;
     case ACL_MULTI_DISABLE:
-        purgeOutdatedCSRFTokens();
-        if (isCSRFTokenValid()) {
-            purgeCSRFToken();
-            if (!in_array(false, $selectIds)) {
-                disableLCAInDB(null, $selectIds);
-            }
-        } else {
-            unvalidFormMessage();
+        if (!in_array(false, $selectIds)) {
+            disableLCAInDB(null, $selectIds);
         }
         require_once($path . "listsMenusAccess.php");
         break;
     case ACL_DUPLICATE:
-        purgeOutdatedCSRFTokens();
-        if (isCSRFTokenValid()) {
-            purgeCSRFToken();
-            if (!in_array(false, $selectIds) && !in_array(false, $duplicateNbr)) {
-                multipleLCAInDB($selectIds, $duplicateNbr);
-            }
-        } else {
-            unvalidFormMessage();
+        if (!in_array(false, $selectIds) && !in_array(false, $duplicateNbr)) {
+            multipleLCAInDB($selectIds, $duplicateNbr);
         }
         require_once($path . "listsMenusAccess.php");
         break;
     case ACL_DELETE:
-        purgeOutdatedCSRFTokens();
-        if (isCSRFTokenValid()) {
-            purgeCSRFToken();
-            if (!in_array(false, $selectIds)) {
-                deleteLCAInDB($selectIds);
-            }
-        } else {
-            unvalidFormMessage();
+        if (!in_array(false, $selectIds)) {
+            deleteLCAInDB($selectIds);
         }
         require_once($path . "listsMenusAccess.php");
         break;
