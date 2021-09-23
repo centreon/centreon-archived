@@ -51,4 +51,8 @@ jobs:
 
             Date: ${{ env.CURRENT_DATE }}
 
-          fields: '{"customfield_10880": "Internal", "customfield_10881": "dependabot"}'
+          fields:
+            '{
+              "customfield_10880": "Internal",
+              "customfield_10881": "dependabot"
+            }'
