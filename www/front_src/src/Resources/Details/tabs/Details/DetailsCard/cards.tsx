@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { equals, pick } from 'ramda';
 
-import { SeverityCode } from '@centreon/centreon-frontend/packages/centreon-ui/src';
+import { SeverityCode } from '@centreon/ui';
 
 import ChecksIcon from '../../../../ChecksIcon';
 import {
