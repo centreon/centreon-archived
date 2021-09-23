@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { pick } from 'ramda';
+import { equals, pick } from 'ramda';
 
 import { SeverityCode } from '@centreon/centreon-frontend/packages/centreon-ui/src';
 
@@ -127,7 +127,7 @@ const getDetailCardLines = ({
     {
       field:
         details.last_time_with_no_issue &&
-        details.status.severity_code === SeverityCode.Ok,
+        equals(details.status.severity_code, SeverityCode.Ok),
       line: <DetailsLine line={toDateTime(details.last_time_with_no_issue)} />,
       title: labelLastTimeWithNoIssue,
     },
@@ -136,7 +136,6 @@ const getDetailCardLines = ({
       line: <DetailsLine line={toDateTime(details.last_check)} />,
       title: labelLastCheck,
     },
-
     {
       field: displayChecksIcon ? true : undefined,
       line: (
