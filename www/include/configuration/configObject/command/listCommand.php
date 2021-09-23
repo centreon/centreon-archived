@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -127,7 +128,7 @@ $style = "one";
 $addrType = $type ? "&type=" . $type : "";
 $attrBtnSuccess = array(
     "class" => "btc bt_success",
-    "onClick" => "window.history.replaceState('', '', '?p=" . $p . $addrType. "');"
+    "onClick" => "window.history.replaceState('', '', '?p=" . $p . $addrType . "');"
 );
 $form->addElement('submit', 'Search', _("Search"), $attrBtnSuccess);
 
@@ -141,16 +142,23 @@ $commandType = array(
 
 // Fill a tab with a multidimensional Array we put in $tpl
 $elemArr = array();
+$form->createSecurityToken();
+$centreonToken = is_array($form->getElementValue('centreon_token')) ?
+    end($form->getElementValue('centreon_token')) :
+    $form->getElementValue('centreon_token');
+
 for ($i = 0; $cmd = $dbResult->fetch(); $i++) {
     $selectedElements = $form->addElement('checkbox', "select[" . $cmd['command_id'] . "]");
 
     if ($cmd["command_activate"]) {
         $moptions = "<a href='main.php?p=" . $p . "&command_id=" . $cmd['command_id'] . "&o=di&limit=" . $limit .
-            "&num=" . $num . "&search=" . $search . "'><img src='img/icons/disabled.png' " .
+            "&num=" . $num . "&search=" . $search .  "&centreon_token=" . $centreonToken .
+            "'><img src='img/icons/disabled.png' " .
             "class='ico-14 margin_right' border='0' alt='" . _("Disabled") . "'></a>";
     } else {
         $moptions = "<a href='main.php?p=" . $p . "&command_id=" . $cmd['command_id'] . "&o=en&limit=" . $limit .
-            "&num=" . $num . "&search=" . $search . "'><img src='img/icons/enabled.png' " .
+            "&num=" . $num . "&search=" . $search .  "&centreon_token=" . $centreonToken .
+            "'><img src='img/icons/enabled.png' " .
             "class='ico-14 margin_right' border='0' alt='" . _("Enabled") . "'></a>";
     }
 

@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -58,7 +59,7 @@ if (isset($_POST['searchSC']) || isset($_GET['searchSC'])) {
 
 $searchTool = '';
 if ($search) {
-    $searchTool .= "WHERE (sc_name LIKE '%" . $search . "%' ".
+    $searchTool .= "WHERE (sc_name LIKE '%" . $search . "%' " .
     "OR sc_description LIKE '%" . $search . "%') ";
 }
 
@@ -116,6 +117,11 @@ $form->addElement('submit', 'Search', _("Search"), $attrBtnSuccess);
 
 // Fill a tab with a multidimensional Array we put in $tpl
 $elemArr = array();
+$form->createSecurityToken();
+$centreonToken = is_array($form->getElementValue('centreon_token')) ?
+    end($form->getElementValue('centreon_token')) :
+    $form->getElementValue('centreon_token');
+
 for ($i = 0; $sc = $dbResult->fetch(); $i++) {
     $moptions = "";
     $dbResult2 = $pearDB->query(
@@ -127,12 +133,14 @@ for ($i = 0; $sc = $dbResult->fetch(); $i++) {
 
     if ($sc["sc_activate"]) {
         $moptions .= "<a href='main.php?p=" . $p . "&sc_id=" . $sc['sc_id'] . "&o=u&limit=" . $limit .
-            "&num=" . $num . "&search=" . $search . "'><img src='img/icons/disabled.png' class='ico-14 margin_right' "
-            . "border='0' alt='" . _("Disabled") . "'></a>&nbsp;&nbsp;";
+            "&num=" . $num . "&search=" . $search . "&centreon_token=" . $centreonToken .
+            "'><img src='img/icons/disabled.png' class='ico-14 margin_right' " .
+            "border='0' alt='" . _("Disabled") . "'></a>&nbsp;&nbsp;";
     } else {
         $moptions .= "<a href='main.php?p=" . $p . "&sc_id=" . $sc['sc_id'] . "&o=s&limit=" . $limit .
-            "&num=" . $num . "&search=" . $search . "'><img src='img/icons/enabled.png' class='ico-14 margin_right' "
-            . "border='0' alt='" . _("Enabled") . "'></a>&nbsp;&nbsp;";
+            "&num=" . $num . "&search=" . $search . "&centreon_token=" . $centreonToken .
+            "'><img src='img/icons/enabled.png' class='ico-14 margin_right' " .
+            "border='0' alt='" . _("Enabled") . "'></a>&nbsp;&nbsp;";
     }
     $moptions .= "&nbsp;";
     $moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) " .

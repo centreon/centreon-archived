@@ -103,22 +103,46 @@ switch ($o) {
         require_once($path . "formMetaService.php");
         break;
     case "s": # Activate a Meta Service
-        enableMetaServiceInDB($meta_id);
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            enableMetaServiceInDB($meta_id);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listMetaService.php");
         break;
     case "u": # Desactivate a Meta Service
-        disableMetaServiceInDB($meta_id);
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            disableMetaServiceInDB($meta_id);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listMetaService.php");
         break;
     case "d": # Delete n Meta Servive
-        deleteMetaServiceInDB(is_array($select) ? $select : array());
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            deleteMetaServiceInDB(is_array($select) ? $select : array());
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listMetaService.php");
         break;
     case "m": # Duplicate n Meta Service
-        multipleMetaServiceInDB(
-            is_array($select) ? $select : array(),
-            is_array($dupNbr) ? $dupNbr : array()
-        );
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            multipleMetaServiceInDB(
+                is_array($select) ? $select : array(),
+                is_array($dupNbr) ? $dupNbr : array()
+            );
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listMetaService.php");
         break;
     case "ci": # Manage Service of the MS
@@ -131,18 +155,36 @@ switch ($o) {
         require_once($path . "metric.php");
         break;
     case "ss": # Activate a Metric
-        enableMetricInDB($msr_id);
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            enableMetricInDB($msr_id);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listMetric.php");
         break;
     case "us": # Desactivate a Metric
-        disableMetricInDB($msr_id);
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            disableMetricInDB($msr_id);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listMetric.php");
         break;
     case "ws": # View Service to a MS
         require_once($path . "metric.php");
         break;
     case "ds":  # Delete n Metric
-        deleteMetricInDB(is_array($select) ? $select : array());
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            deleteMetricInDB(is_array($select) ? $select : array());
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listMetric.php");
         break;
     default:

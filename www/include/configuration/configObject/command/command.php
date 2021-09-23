@@ -101,33 +101,69 @@ if ($min) {
             require_once($path . "formCommand.php");
             break;
         case "m": // Duplicate n Commands
-            multipleCommandInDB(
-                is_array($select) ? $select : array(),
-                is_array($dupNbr) ? $dupNbr : array()
-            );
+            purgeOutdatedCSRFTokens();
+            if (isCSRFTokenValid()) {
+                purgeCSRFToken();
+                multipleCommandInDB(
+                    is_array($select) ? $select : array(),
+                    is_array($dupNbr) ? $dupNbr : array()
+                );
+            } else {
+                unvalidFormMessage();
+            }
             require_once($path . "listCommand.php");
             break;
         case "d": // Delete n Commands
-            deleteCommandInDB(is_array($select) ? $select : array());
+            purgeOutdatedCSRFTokens();
+            if (isCSRFTokenValid()) {
+                purgeCSRFToken();
+                deleteCommandInDB(is_array($select) ? $select : array());
+            } else {
+                unvalidFormMessage();
+            }
             require_once($path . "listCommand.php");
             break;
         case "me":
-            changeCommandStatus(null, is_array($select) ? $select : array(), 1);
+            purgeOutdatedCSRFTokens();
+            if (isCSRFTokenValid()) {
+                purgeCSRFToken();
+                changeCommandStatus(null, is_array($select) ? $select : array(), 1);
+            } else {
+                unvalidFormMessage();
+            }
             require_once($path . "listCommand.php");
             break;
         case "md":
-            changeCommandStatus(null, is_array($select) ? $select : array(), 0);
+            purgeOutdatedCSRFTokens();
+            if (isCSRFTokenValid()) {
+                purgeCSRFToken();
+                changeCommandStatus(null, is_array($select) ? $select : array(), 0);
+            } else {
+                unvalidFormMessage();
+            }
             require_once($path . "listCommand.php");
             break;
         case "en":
-            if ($command_id !== false) {
-                changeCommandStatus($command_id, null, 1);
+            purgeOutdatedCSRFTokens();
+            if (isCSRFTokenValid()) {
+                purgeCSRFToken();
+                if ($command_id !== false) {
+                    changeCommandStatus($command_id, null, 1);
+                }
+            } else {
+                unvalidFormMessage();
             }
             require_once($path . "listCommand.php");
             break;
         case "di":
-            if ($command_id !== false) {
-                changeCommandStatus($command_id, null, 0);
+            purgeOutdatedCSRFTokens();
+            if (isCSRFTokenValid()) {
+                purgeCSRFToken();
+                if ($command_id !== false) {
+                    changeCommandStatus($command_id, null, 0);
+                }
+            } else {
+                unvalidFormMessage();
             }
             require_once($path . "listCommand.php");
             break;

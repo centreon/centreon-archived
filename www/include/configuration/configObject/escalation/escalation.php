@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -57,7 +58,7 @@ $path = "./include/configuration/configObject/escalation/";
 /*
  * PHP functions
  */
-require_once $path."DB-Func.php";
+require_once $path . "DB-Func.php";
 require_once "./include/common/common-Func.php";
 
 /* Set the real page */
@@ -75,23 +76,35 @@ if (isset($ret) && is_array($ret) && $ret['topology_page'] != "" && $p != $ret['
 
 switch ($o) {
     case "a":
-        require_once($path."formEscalation.php");
+        require_once($path . "formEscalation.php");
         break; #Add a Escalation
     case "w":
-        require_once($path."formEscalation.php");
+        require_once($path . "formEscalation.php");
         break; #Watch a Escalation
     case "c":
-        require_once($path."formEscalation.php");
+        require_once($path . "formEscalation.php");
         break; #Modify a Escalation
     case "m":
-        multipleEscalationInDB(isset($select) ? $select : array(), $dupNbr);
-        require_once($path."listEscalation.php");
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            multipleEscalationInDB(isset($select) ? $select : array(), $dupNbr);
+        } else {
+            unvalidFormMessage();
+        }
+        require_once($path . "listEscalation.php");
         break; #Duplicate n Escalations
     case "d":
-        deleteEscalationInDB(isset($select) ? $select : array());
-        require_once($path."listEscalation.php");
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            deleteEscalationInDB(isset($select) ? $select : array());
+        } else {
+            unvalidFormMessage();
+        }
+        require_once($path . "listEscalation.php");
         break; #Delete n Escalation
     default:
-        require_once($path."listEscalation.php");
+        require_once($path . "listEscalation.php");
         break;
 }
