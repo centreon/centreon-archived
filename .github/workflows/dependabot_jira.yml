@@ -43,5 +43,3 @@ jobs:
             More details are available in the *PR n°${{ github.event.pull_request.number }}*
 
             The link is: ${{ github.event.pull_request.html_url }}
-        - name: Log created issue
-          run: echo "Issue ${{ steps.create.outputs.issue }} was created"
