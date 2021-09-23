@@ -16,9 +16,11 @@ const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 const retrievedUser = {
   alias: 'Admin alias',
+  isExportButtonEnabled: false,
   locale: 'fr_FR.UTF8',
   name: 'Admin',
   timezone: 'Europe/Paris',
+  use_deprecated_pages: false,
 };
 
 const retrievedDefaultParameters = {

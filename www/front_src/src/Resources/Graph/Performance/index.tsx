@@ -42,7 +42,6 @@ import {
   ContentWithCircularLoading,
   IconButton,
   useLocaleDateTimeFormat,
-  Button,
 } from '@centreon/ui';
 
 import { TimelineEvent } from '../../Details/tabs/Timeline/models';
@@ -102,11 +101,9 @@ interface MakeStylesProps extends Pick<Props, 'graphHeight' | 'displayTitle'> {
 
 const useStyles = makeStyles<Theme, MakeStylesProps>((theme) => ({
   buttonGroup: {
-    alignSelf: 'center',
-  },
-  buttonLink: {
-    background: 'transparent',
-    border: 'none',
+    columnGap: `${theme.spacing(1)}px`,
+    display: 'flex',
+    flexDirection: 'row',
   },
   container: {
     display: 'grid',
@@ -438,40 +435,38 @@ const PerformanceGraph = ({
               >
                 <LaunchIcon style={{ fontSize: 18 }} />
               </IconButton>
-              <Button className={classes.buttonLink}>
-                <ContentWithCircularLoading
-                  alignCenter={false}
-                  loading={exporting}
-                  loadingIndicatorSize={16}
-                >
-                  <>
-                    <IconButton
-                      disableTouchRipple
-                      disabled={isNil(timeline)}
-                      title={t(labelExportToPng)}
-                      onClick={openSizeExportMenu}
-                    >
-                      <SaveAsImageIcon style={{ fontSize: 18 }} />
-                    </IconButton>
-                    <Menu
-                      keepMounted
-                      anchorEl={menuAnchor}
-                      open={Boolean(menuAnchor)}
-                      onClose={closeSizeExportMenu}
-                    >
-                      <MenuItem onClick={(): void => convertToPng(1)}>
-                        {t(labelAsDisplayed)}
-                      </MenuItem>
-                      <MenuItem onClick={(): void => convertToPng(0.75)}>
-                        {t(labelMediumSize)}
-                      </MenuItem>
-                      <MenuItem onClick={(): void => convertToPng(0.5)}>
-                        {t(labelSmallSize)}
-                      </MenuItem>
-                    </Menu>
-                  </>
-                </ContentWithCircularLoading>
-              </Button>
+              <ContentWithCircularLoading
+                alignCenter={false}
+                loading={exporting}
+                loadingIndicatorSize={16}
+              >
+                <>
+                  <IconButton
+                    disableTouchRipple
+                    disabled={isNil(timeline)}
+                    title={t(labelExportToPng)}
+                    onClick={openSizeExportMenu}
+                  >
+                    <SaveAsImageIcon style={{ fontSize: 18 }} />
+                  </IconButton>
+                  <Menu
+                    keepMounted
+                    anchorEl={menuAnchor}
+                    open={Boolean(menuAnchor)}
+                    onClose={closeSizeExportMenu}
+                  >
+                    <MenuItem onClick={(): void => convertToPng(1)}>
+                      {t(labelAsDisplayed)}
+                    </MenuItem>
+                    <MenuItem onClick={(): void => convertToPng(0.75)}>
+                      {t(labelMediumSize)}
+                    </MenuItem>
+                    <MenuItem onClick={(): void => convertToPng(0.5)}>
+                      {t(labelSmallSize)}
+                    </MenuItem>
+                  </Menu>
+                </>
+              </ContentWithCircularLoading>
             </ButtonGroup>
           </div>
         )}
