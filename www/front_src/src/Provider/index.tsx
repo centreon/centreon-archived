@@ -114,6 +114,7 @@ const AppProvider = (): JSX.Element | null => {
             locale: retrievedUser.locale || 'en',
             name: retrievedUser.name,
             timezone: retrievedUser.timezone,
+            use_deprecated_pages: false,
           });
           setDowntime({
             default_duration: parseInt(
