@@ -23,8 +23,8 @@ const LastTimeWithNoIssue = ({ details }: Props): JSX.Element => {
   const classes = useStyles();
 
   return (
-    <div className={classes.lastTimeWithNoIsuue}>
-      <DetailsLine line={`${details.last_status_change}`} />
+    <div className={classes.lastTimeWithNoIssue}>
+      <DetailsLine line={`${details.duration}`} />
     </div>
   );
 };
