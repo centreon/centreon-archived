@@ -22,7 +22,7 @@ jobs:
     steps:
       - name: Get current date
         id: date
-        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+        run: echo "::set-output name=date2::$(date +'%Y-%m-%d')"
       - name: Echo current date
         run: echo $NOW
       - name: Login to Jira
@@ -49,6 +49,6 @@ jobs:
 
             The link is: ${{ github.event.pull_request.html_url }}
 
-            Creation date: ${{ steps.date.outputs.date }}
+            Creation date: ${{ steps.date.outputs.date2 }}
         - name: Log created issue
           run: echo "Issue ${{ steps.create.outputs.issue }} was created"
