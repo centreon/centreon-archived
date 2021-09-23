@@ -20,11 +20,6 @@ jobs:
     if: contains(github.event.pull_request.labels.*.name, 'dependencies')
     runs-on: ubuntu-latest
     steps:
-      - name: Get current date
-        id: date
-        run: echo "::set-output name=date2::$(date +'%Y-%m-%d')"
-      - name: Echo current date
-        run: echo $NOW
       - name: Login to Jira
         uses: atlassian/gajira-login@v2.0.0
         env:
@@ -48,6 +43,5 @@ jobs:
             More details are available in the *PR n°${{ github.event.pull_request.number }}*
 
             The link is: ${{ github.event.pull_request.html_url }}
-
         - name: Log created issue
           run: echo "Issue ${{ steps.create.outputs.issue }} was created"
