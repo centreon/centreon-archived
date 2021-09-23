@@ -16243,5 +16243,5 @@ msgstr "Graphiques de services"
 msgid "Enable the one-click export button for poller configuration [BETA]"
 msgstr "Activer le bouton d’export de la configuration des collecteurs en un seul clic [BETA]"
 
-msgid "labelLastTimeWithNoIssue"
-msgstr "Dernier contrôle OK"
+msgid "Last time with no issue"
+msgstr "Dernière contrôle sans problème"
