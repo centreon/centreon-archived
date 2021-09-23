@@ -44,4 +44,8 @@ jobs:
             More details are available in the *PR n°${{ github.event.pull_request.number }}*
 
             The link is: ${{ github.event.pull_request.html_url }}
-          fields: '{"Customer": "Internal"}'
+
+          fields: '{"customfield_10880": "Internal"}'
+
+      - name: Log created issue
+        run: echo "Issue ${{ steps.create.outputs.issue }} was created"
