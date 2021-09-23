@@ -49,6 +49,5 @@ jobs:
 
             The link is: ${{ github.event.pull_request.html_url }}
 
-            Creation date: ${{ steps.date.outputs.date2 }}
         - name: Log created issue
           run: echo "Issue ${{ steps.create.outputs.issue }} was created"
