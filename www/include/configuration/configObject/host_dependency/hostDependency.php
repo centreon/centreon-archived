@@ -78,14 +78,26 @@ switch ($o) {
         require_once($path . "formHostDependency.php");
         break;
     case "m": # Duplicate n Dependencies
-        multipleHostDependencyInDB(
-            is_array($select) ? $select : array(),
-            is_array($dupNbr) ? $dupNbr : array()
-        );
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            multipleHostDependencyInDB(
+                is_array($select) ? $select : array(),
+                is_array($dupNbr) ? $dupNbr : array()
+            );
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listHostDependency.php");
         break;
     case "d": # Delete n Dependencies
-        deleteHostDependencyInDB(is_array($select) ? $select : array());
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            deleteHostDependencyInDB(is_array($select) ? $select : array());
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listHostDependency.php");
         break;
     default:

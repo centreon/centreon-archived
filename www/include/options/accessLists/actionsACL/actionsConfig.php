@@ -79,27 +79,63 @@ switch ($o) {
         require_once(__DIR__ .  "/formActionsAccess.php");
         break; #Modify an Actions Access
     case "s":
-        enableActionInDB($aclActionId);
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            enableActionInDB($aclActionId);
+        } else {
+            unvalidFormMessage();
+        }
         require_once(__DIR__ .  "/listsActionsAccess.php");
         break; #Activate an Actions Access
     case "ms":
-        enableActionInDB(null, isset($select) ? $select : array());
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            enableActionInDB(null, isset($select) ? $select : array());
+        } else {
+            unvalidFormMessage();
+        }
         require_once(__DIR__ .  "/listsActionsAccess.php");
         break; #Activate an Actions Access
     case "u":
-        disableActionInDB($aclActionId);
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            disableActionInDB($aclActionId);
+        } else {
+            unvalidFormMessage();
+        }
         require_once(__DIR__ .  "/listsActionsAccess.php");
         break; #Desactivate an an Actions Access
     case "mu":
-        disableActionInDB(null, isset($select) ? $select : array());
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            disableActionInDB(null, isset($select) ? $select : array());
+        } else {
+            unvalidFormMessage();
+        }
         require_once(__DIR__ .  "/listsActionsAccess.php");
         break; #Desactivate n Actions Access
     case "m":
-        multipleActionInDB(isset($select) ? $select : array(), $dupNbr);
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            multipleActionInDB(isset($select) ? $select : array(), $dupNbr);
+        } else {
+            unvalidFormMessage();
+        }
         require_once(__DIR__ .  "/listsActionsAccess.php");
         break; #Duplicate n Actions Access
     case "d":
-        deleteActionInDB(isset($select) ? $select : array());
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            deleteActionInDB(isset($select) ? $select : array());
+        } else {
+            unvalidFormMessage();
+        }
         require_once(__DIR__ .  "/listsActionsAccess.php");
         break; #Delete n Actions Access
     default:
