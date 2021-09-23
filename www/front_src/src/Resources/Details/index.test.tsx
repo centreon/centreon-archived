@@ -9,6 +9,7 @@ import {
   fireEvent,
   RenderResult,
   act,
+  getByLabelText,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
@@ -74,6 +75,7 @@ import {
   labelLastMonth,
   labelLastYear,
   labelBeforeLastYear,
+  labelLastCheckWithOkStatus,
 } from '../translatedLabels';
 import Context, { ResourceContext } from '../Context';
 import useListing from '../Listing/useListing';
@@ -523,7 +525,7 @@ describe(Details, () => {
     expect(getByText('10')).toBeInTheDocument();
     expect(getByText('CRITICAL')).toBeInTheDocument();
     expect(getByText('Centreon')).toBeInTheDocument();
-
+    expect(getByText(labelLastCheckWithOkStatus)).toBeInTheDocument();
     expect(getByText(labelFqdn)).toBeInTheDocument();
     expect(getByText('central.centreon.com')).toBeInTheDocument();
     expect(getByText(labelAlias)).toBeInTheDocument();

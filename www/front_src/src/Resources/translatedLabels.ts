@@ -229,4 +229,5 @@ export const labelLastMonth = 'Last month';
 export const labelLastYear = 'Last year';
 export const labelBeforeLastYear = 'Before last year';
 export const labelServiceGraphs = 'Service graphs';
-export const labelLastTimeWithNoIssue = 'Last time with no issue';
+export const labelLastCheckWithOkStatus = 'Last check with OK status';
+';

@@ -14741,5 +14741,5 @@ msgstr "Permitir certificado autofirmado"
 # msgid "Service graphs"
 # msgstr ""
 
-msgid "Last time with no issue"
+msgid "Last check with OK status"
 msgstr ""

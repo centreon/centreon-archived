@@ -27,7 +27,7 @@ import {
   labelAcknowledgement,
   labelPerformanceData,
   labelCommand,
-  labelLastTimeWithNoIssue,
+  labelLastCheckWithOkStatus,
 } from '../../../../translatedLabels';
 import { ResourceDetails } from '../../../models';
 import ExpandableCard from '../ExpandableCard';
@@ -129,7 +129,7 @@ const getDetailCardLines = ({
         details.last_time_with_no_issue &&
         equals(details.status.severity_code, SeverityCode.Ok),
       line: <DetailsLine line={toDateTime(details.last_time_with_no_issue)} />,
-      title: labelLastTimeWithNoIssue,
+      title: labelLastCheckWithOkStatus,
     },
     {
       field: details.last_check,
