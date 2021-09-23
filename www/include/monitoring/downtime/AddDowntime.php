@@ -432,21 +432,22 @@ if (
              */
 
             //catch fix input host_id
-            if (!is_array($_POST["host_id"])) {
-                $_POST["host_id"] = array($_POST["host_id"]);
-            }
-
-            foreach ($_POST["host_id"] as $host_id) {
-                $ecObj->addHostDowntime(
-                    $host_id,
-                    $_POST["comment"],
-                    $concatenatedStart,
-                    $concatenatedEnd,
-                    $_POST["persistant"],
-                    $duration,
-                    $applyDtOnServices,
-                    $hostOrCentreonTime
-                );
+            if (isset($_POST["host_id"])) {
+                if (!is_array($_POST["host_id"])) {
+                    $_POST["host_id"] = [$_POST["host_id"]];
+                }
+                foreach ($_POST["host_id"] as $host_id) {
+                    $ecObj->addHostDowntime(
+                        $host_id,
+                        $_POST["comment"],
+                        $concatenatedStart,
+                        $concatenatedEnd,
+                        $_POST["persistant"],
+                        $duration,
+                        $applyDtOnServices,
+                        $hostOrCentreonTime
+                    );
+                }
             }
         } elseif (
             $values['downtimeType']['downtimeType'] == 0

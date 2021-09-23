@@ -426,6 +426,7 @@ $tpl->assign("genOpt_time_zone", _("Time Zone"));
 $tpl->assign("genOpt_auth", _("Authentication properties"));
 $tpl->assign("genOpt_openid_connect", _("Authentication by OpenId Connect"));
 $tpl->assign("support", _("Support Information"));
+$tpl->assign('statistics', _("Statistics"));
 $tpl->assign('valid', $valid);
 
 /*

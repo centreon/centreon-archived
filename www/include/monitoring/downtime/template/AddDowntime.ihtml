@@ -68,13 +68,6 @@
             <td class="FormRowValue">{$form.downtimeType.html}</td>
         </tr>
         {/if}
-
-        <!--
-        <tr class="list_one">
-            <td  class="ListColLeft">{$form.host_or_centreon_time.label}</td>
-            <td  class="ListColLeft">{$form.host_or_centreon_time.html}</td>
-        </tr>
-        -->
         <!-- Object choice -->
         <tr class="list_two" id="host_input">
             <td class="FormRowField">{$form.host_id.label}</td>
@@ -124,12 +117,14 @@
         </tr>
         <tr class="list_two">
             <td class="FormRowField">{$form.start.label}</td>
-            <td class="FormRowValue">{$form.start.html}&nbsp;{$form.alternativeDateStart.html}&nbsp;{$form.start_time.html}
+            <td class="FormRowValue">{$form.start.html}&nbsp;
+            &nbsp;{$form.start_time.html}
             </td>
         </tr>
         <tr class="list_one">
             <td class="FormRowField">{$form.end.label}</td>
-            <td class="FormRowValue">{$form.end.html}&nbsp;{$form.alternativeDateEnd.html}&nbsp;{$form.end_time.html}
+            <td class="FormRowValue">{$form.end.html}&nbsp;
+            &nbsp;{$form.end_time.html}
             </td>
         </tr>
         <tr class="list_two">
@@ -142,8 +137,15 @@
         </tr>
     </table>
     <div id="validForm">
-        <p>{$form.action.html}</p>
-        <p>{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+        {if isset($form.action)}
+            <p>{$form.action.html}</p>
+        {/if}
+        <p>
+            {if isset($form.submitC)}
+                {$form.submitC.html}
+            {/if}
+            {$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}
+        </p>
     </div>
     {$form.hidden}
 </form>

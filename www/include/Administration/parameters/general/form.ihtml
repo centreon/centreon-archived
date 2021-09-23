@@ -1,5 +1,5 @@
 {$form.javascript}
-{$colorJS}
+
 <div id ="testProxy"><p id="msg-wrapper"></p></div>
 <form {$form.attributes}>
 <table class="formTable table">
@@ -226,7 +226,11 @@
     </tr>
     <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_send_statistics">{$form.send_statistics.label}</td><td class="FormRowValue">{$form.send_statistics.html}</td></tr>
 
-    <tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">{$form.required._note}</td></tr>
+    <tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">
+    {if isset($form.required)}
+        {$form.required._note}
+    {/if}
+    </td></tr>
  </table>
 {if !$valid}
 	<div id="validForm" class="oreonbutton">
