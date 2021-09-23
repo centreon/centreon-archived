@@ -1,7 +1,6 @@
 name: Create Dependabot Ticket on Jira
 
 on:
-  workflow_dispatch: #manual trigger
   pull_request:
     types: [ opened, reopened ]
     branches: [ develop, dev-2* ]
@@ -51,6 +50,5 @@ jobs:
             The link is: ${{ github.event.pull_request.html_url }}
 
             Creation date: ${{ steps.date.output.date }}
-          #fields: '{"customfield_10171": "test"}'
         - name: Log created issue
           run: echo "Issue ${{ steps.create.outputs.issue }} was created"
