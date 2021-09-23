@@ -38,7 +38,6 @@ import Groups from './Groups';
 import DowntimesCard from './DowntimesCard';
 import AcknowledgementCard from './AcknowledegmentCard';
 import CommandLineCard from './CommandLineCard';
-import LastTimeWithNoIssue from './LastTimeWithNoChange';
 
 export interface DetailCardLine {
   active?: boolean;
@@ -129,7 +128,7 @@ const getDetailCardLines = ({
       field:
         details.last_time_with_no_issue &&
         details.status.severity_code === SeverityCode.Ok,
-      line: <LastTimeWithNoIssue details={details} />,
+      line: <DetailsLine line={details.last_time_with_no_issue} />,
       title: labelLastTimeWithNoIssue,
     },
     {
