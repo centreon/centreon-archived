@@ -7,7 +7,7 @@ import { ResourceDetails } from '../../../models';
 import DetailsLine from './DetailsLine';
 
 const useStyles = makeStyles((theme) => ({
-  lastTimeWithNoIsuue: {
+  lastTimeWithNoIssue: {
     alignItems: 'center',
     columnGap: `${theme.spacing(1)}px`,
     display: 'grid',
@@ -24,9 +24,7 @@ const LastTimeWithNoIssue = ({ details }: Props): JSX.Element => {
 
   return (
     <div className={classes.lastTimeWithNoIsuue}>
-      <DetailsLine
-        line={`${details.last_check} - ${details.last_status_change}`}
-      />
+      <DetailsLine line={`${details.last_status_change}`} />
     </div>
   );
 };

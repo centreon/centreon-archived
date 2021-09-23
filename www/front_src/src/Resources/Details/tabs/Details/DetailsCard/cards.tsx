@@ -2,6 +2,8 @@ import * as React from 'react';
 
 import { pick } from 'ramda';
 
+import { SeverityCode } from '@centreon/centreon-frontend/packages/centreon-ui/src';
+
 import ChecksIcon from '../../../../ChecksIcon';
 import {
   labelCurrentStateDuration,
@@ -124,9 +126,10 @@ const getDetailCardLines = ({
       title: labelLastStateChange,
     },
     {
-      field: details.last_time_with_no_issue,
+      field:
+        details.last_time_with_no_issue &&
+        details.status.severity_code === SeverityCode.Ok,
       line: <LastTimeWithNoIssue details={details} />,
-
       title: labelLastTimeWithNoIssue,
     },
     {
