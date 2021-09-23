@@ -20,6 +20,10 @@ jobs:
     if: contains(github.event.pull_request.labels.*.name, 'dependencies')
     runs-on: ubuntu-latest
     steps:
+      -name: Get current date
+        id: date
+        run: echo "NOW::$(date +'%Y-%m-%dT%H:%M:%S')" >> $GITHUB_ENV
+
       - name: Login to Jira
         uses: atlassian/gajira-login@v2.0.0
         env:
@@ -46,6 +50,3 @@ jobs:
             The link is: ${{ github.event.pull_request.html_url }}
 
           fields: '{"customfield_10880": "Internal", "customfield_10881": "dependabot"}'
-
-      - name: Log created issue
-        run: echo "Issue ${{ steps.create.outputs.issue }} was created"
