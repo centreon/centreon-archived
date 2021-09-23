@@ -55,5 +55,5 @@ jobs:
             '{
               "customfield_10880": "Internal",
               "customfield_10881": "dependabot",
-              "customfield_10866": ${{ env.CURRENT_DATE }}
+              "customfield_10866": "${{ env.CURRENT_DATE }}"
             }'
