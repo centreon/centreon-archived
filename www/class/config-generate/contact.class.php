@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -109,7 +110,7 @@ class Contact extends AbstractObject
     /**
      * @see Contact::$contacts_service_linked_cache
      */
-    private function getContactForServiceCache() : void
+    private function getContactForServiceCache(): void
     {
         $stmt = $this->backend_instance->db->prepare("
             SELECT csr.contact_id, service_service_id
@@ -210,13 +211,14 @@ class Contact extends AbstractObject
      * @param integer $contactId
      * @return boolean
      */
-    protected function shouldContactBeNotified(int $contactId) : bool
+    protected function shouldContactBeNotified(int $contactId): bool
     {
         if ($this->contacts[$contactId]['enable_notifications'] == '1') {
             return true;
         } elseif (
             $this->contacts[$contactId]['contact_template_id'] !== null
-            && $this->contacts[$contactId]['enable_notifications'] == '2') {
+            && $this->contacts[$contactId]['enable_notifications'] == '2'
+        ) {
             return $this->shouldContactBeNotified($this->contacts[$contactId]['contact_template_id']);
         }
 
@@ -226,7 +228,7 @@ class Contact extends AbstractObject
      * @see Contact::getContactCache()
      * @see Contact::getContactForServiceCache()
      */
-    protected function buildCache() : void
+    protected function buildCache(): void
     {
         if ($this->done_cache == 1) {
             return;
@@ -271,7 +273,7 @@ class Contact extends AbstractObject
         $this->contacts[$contact_id]['use'] = [
             $this->generateFromContactId($this->contacts[$contact_id]['contact_template_id'])
         ];
-        if (!$this->shouldContactBeNotified($contact_id)){
+        if (!$this->shouldContactBeNotified($contact_id)) {
             return null;
         }
         $this->getContactNotificationCommands($contact_id, 'host');
