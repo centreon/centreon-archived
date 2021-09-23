@@ -9,9 +9,6 @@ import { IconButton, ComponentColumnProps } from '@centreon/ui';
 
 import { labelGraph, labelServiceGraphs } from '../../translatedLabels';
 import PerformanceGraph from '../../Graph/Performance';
-import useMousePosition, {
-  MousePositionContext,
-} from '../../Graph/Performance/ExportableGraphWithTimeline/useMousePosition';
 import { ResourceDetails } from '../../Details/models';
 import { Resource } from '../../models';
 import useTimePeriod from '../../Graph/Performance/TimePeriods/useTimePeriod';
@@ -40,20 +37,17 @@ const Graph = ({
   displayCompleteGraph,
 }: GraphProps): JSX.Element => {
   const { periodQueryParameters } = useTimePeriod({});
-  const mousePositionProps = useMousePosition();
 
   return (
-    <MousePositionContext.Provider value={mousePositionProps}>
-      <PerformanceGraph
-        limitLegendRows
-        displayCompleteGraph={displayCompleteGraph}
-        displayTitle={false}
-        endpoint={`${endpoint}${periodQueryParameters}`}
-        graphHeight={150}
-        resource={row}
-        timeline={[]}
-      />
-    </MousePositionContext.Provider>
+    <PerformanceGraph
+      limitLegendRows
+      displayCompleteGraph={displayCompleteGraph}
+      displayTitle={false}
+      endpoint={`${endpoint}${periodQueryParameters}`}
+      graphHeight={150}
+      resource={row}
+      timeline={[]}
+    />
   );
 };
 

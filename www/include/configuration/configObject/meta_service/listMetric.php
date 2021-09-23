@@ -125,6 +125,11 @@ if ($in_statement != "") {
      */
     $elemArr1 = array();
     $i = 0;
+    $form->createSecurityToken();
+    $centreonToken = is_array($form->getElementValue('centreon_token')) ?
+        end($form->getElementValue('centreon_token')) :
+        $form->getElementValue('centreon_token');
+
     while ($metric = $DBRESULTO->fetchRow()) {
         foreach ($ar_relations[$metric['metric_id']] as $relation) {
             $moptions = "";
@@ -132,11 +137,13 @@ if ($in_statement != "") {
             if ($relation["activate"]) {
                 $moptions .= "<a href='main.php?p=" . $p . "&msr_id=" . $relation['msr_id'] .
                     "&o=us&meta_id=" . $meta_id . "&metric_id=" . $metric['metric_id'] .
+                    "&centreon_token=" . $centreonToken .
                     "'><img src='img/icons/disabled.png' class='ico-14 margin_right' border='0' alt='" .
                     _("Disabled") . "'></a>&nbsp;&nbsp;";
             } else {
                 $moptions .= "<a href='main.php?p=" . $p . "&msr_id=" . $relation['msr_id'] .
                     "&o=ss&meta_id=" . $meta_id . "&metric_id=" . $metric['metric_id'] .
+                    "&centreon_token=" . $centreonToken .
                     "'><img src='img/icons/enabled.png' class='ico-14 margin_right' border='0' alt='" .
                     _("Enabled") . "'></a>&nbsp;&nbsp;";
             }

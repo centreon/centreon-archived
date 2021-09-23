@@ -95,27 +95,63 @@ switch ($o) {
         require_once($path . "formServiceTemplateModel.php");
         break;
     case SERVICE_TEMPLATE_ACTIVATION:
-        enableServiceInDB($service_id);
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            enableServiceInDB($service_id);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listServiceTemplateModel.php");
         break;
     case SERVICE_TEMPLATE_MASSIVE_ACTIVATION:
-        enableServiceInDB(null, isset($select) ? $select : array());
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            enableServiceInDB(null, isset($select) ? $select : array());
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listServiceTemplateModel.php");
         break;
     case SERVICE_TEMPLATE_DEACTIVATION:
-        disableServiceInDB($service_id);
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            disableServiceInDB($service_id);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listServiceTemplateModel.php");
         break;
     case SERVICE_TEMPLATE_MASSIVE_DEACTIVATION:
-        disableServiceInDB(null, isset($select) ? $select : array());
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            disableServiceInDB(null, isset($select) ? $select : array());
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listServiceTemplateModel.php");
         break;
     case SERVICE_TEMPLATE_DUPLICATION:
-        multipleServiceInDB(isset($select) ? $select : array(), $dupNbr);
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            multipleServiceInDB(isset($select) ? $select : array(), $dupNbr);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listServiceTemplateModel.php");
         break;
     case SERVICE_TEMPLATE_DELETION:
-        deleteServiceInDB(isset($select) ? $select : array());
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            deleteServiceInDB(isset($select) ? $select : array());
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listServiceTemplateModel.php");
         break;
     default:

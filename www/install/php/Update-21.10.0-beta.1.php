@@ -40,7 +40,7 @@ try {
     $constraintStatement = $pearDB->query(
         "SELECT COUNT(*) as count FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS WHERE CONSTRAINT_NAME='session_ibfk_1'"
     );
-    if (($constraint = $constraintStatement->fetch()) && $constraint['count'] === 0) {
+    if (($constraint = $constraintStatement->fetch()) && (int) $constraint['count'] === 0) {
         $errorMessage = 'Impossible to add Delete Cascade constraint on the table session';
         $pearDB->query(
             "ALTER TABLE `session` ADD CONSTRAINT `session_ibfk_1` FOREIGN KEY (`user_id`) " .
