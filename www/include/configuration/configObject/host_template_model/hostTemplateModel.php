@@ -63,7 +63,7 @@ $hostObj = new CentreonHost($pearDB);
 $lockedElements = $hostObj->getLockedHostTemplates();
 
 /* Set the real page */
-if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
+if (isset($ret) && is_array($ret) && $ret['topology_page'] != "" && $p != $ret['topology_page']) {
     $p = $ret['topology_page'];
 }
 

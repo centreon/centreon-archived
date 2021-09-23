@@ -73,10 +73,12 @@ $inputPost = filter_input_array(
 
 $inputs = array();
 foreach ($inputArguments as $argumentName => $argumentValue) {
-    if (!is_null($inputGet[$argumentName]) && trim($inputGet[$argumentName]) != '') {
+    if (!empty($inputGet[$argumentName]) && trim($inputGet[$argumentName]) != '') {
         $inputs[$argumentName] = $inputGet[$argumentName];
-    } else {
+    } elseif (!empty($inputPost[$argumentName]) && trim($inputPost[$argumentName]) != '') {
         $inputs[$argumentName] = $inputPost[$argumentName];
+    } else {
+        $inputs[$argumentName] = null;
     }
 }
 

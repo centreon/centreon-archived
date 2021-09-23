@@ -577,7 +577,6 @@ class CentreonLDAP
         $sr = ldap_search($this->ds, $basedn, $filter, $attr, 0, $searchLimit, $searchTimeout);
 
         /* Sort */
-        @ldap_sort($this->ds, $sr, "dn");
         $number_returned = ldap_count_entries($this->ds, $sr);
         $this->debug("LDAP Search : " . (isset($number_returned) ? $number_returned : "0") . " entries found");
 
@@ -1091,8 +1090,8 @@ class CentreonLdapAdmin
                 }
                 $insertStr .= "($arId, '" . $this->db->escape($addr) . "', '" .
                     $this->db->escape($portList[$key]) . "', " .
-                    $this->db->escape($sslList[$key] ? 1 : 0) . ", " .
-                    $this->db->escape($tlsList[$key] ? 1 : 0) . ", $i)";
+                    $this->db->escape(isset($sslList[$key]) ? 1 : 0) . ", " .
+                    $this->db->escape(isset($tlsList[$key]) ? 1 : 0) . ", $i)";
                 $i++;
             }
             if ($insertStr) {

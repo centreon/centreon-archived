@@ -1196,7 +1196,7 @@ class CentreonConfigCentreonBroker
         $row = $res->fetch();
 
         $this->defaults[$fieldId] = null;
-        if (!is_null($row)) {
+        if (!is_null($row) && $row !== false) {
             if (!is_null($row['default_value']) && $row['default_value'] != '') {
                 $this->defaults[$fieldId] = $row['default_value'];
             } elseif (!is_null($row['value_value']) && $row['value_value'] != '') {

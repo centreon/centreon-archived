@@ -1,6 +1,6 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
 <form name='form'>
-<input name="p" value="{$p}" type="hidden">
+
 <input name="o" value="svc" type="hidden">
 <table class="ajaxOption table">
     <tbody>
@@ -26,7 +26,7 @@
         <tr class="ToolbarTR">
             <td width="330">
                 <span class="consol_button" id="instance_selected"></span>
-                <input name="p" value="{$p}" type="hidden">
+                
                 <div class="Toolbar_TDSelectAction_Top">
                     <span class="consol_button"><a id="JS_monitoring_refresh" href="#" onclick="javascript:monitoring_refresh('');"><img src='./img/icons/refresh.png' alt='Refresh' title='Refresh'></a></span>
                     <span class="consol_button"><a id="JS_monitoring_play" class="cachediv" href="#" onclick="javascript:monitoring_play('');"><img src='./img/icons/media_play.png' alt='Play' title='Play'></a></span>
@@ -48,12 +48,10 @@
         <td id="sel2" class="Toolbar_pagelimit"></td>
     </tr>
 </table>
-{if $host_name}
-<input type='hidden' name='host_name' value='{$host_name}'>
-{/if}
-<input name="p" value="{$p}" type="hidden">
+
+
 <input name='cmd' id='cmd' value='42' type='hidden'>
 <input name='o' value='{$o}' type='hidden'>
-<input type='hidden' id='limit' name='limit' value='{$limit}'>  
+<input type='hidden' id='limit' name='limit' value='{$limit}'>
 {$form.hidden}
 </form>

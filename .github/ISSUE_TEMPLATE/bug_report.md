@@ -85,7 +85,7 @@ Please describe precisely the steps to reproduce the encountered issue.
 
 **PHP error logs**
 
-For version using PHP 7.2 or 7.3 on centOs 8
+For version using PHP 7.2 or 7.3 on centOs 8 or PHP 8
 ```
 tail -f /var/log/php-fpm/centreon-error.log
 ```

@@ -154,7 +154,7 @@ function multipleServiceCategorieInDB($sc = [], $nbrDup = [])
                 $statement->execute();
                 $statement = $pearDB->query("SELECT MAX(sc_id) as maxid FROM `service_categories`");
                 $maxId = $statement->fetch();
-                $scAcl[$maxId['MAX(sc_id)']] = $key;
+                $scAcl[$maxId['maxid']] = $key;
                 $query = "INSERT INTO service_categories_relation (service_service_id, sc_id) " .
                     "(SELECT service_service_id, " . $maxId['maxid'] .
                     " FROM service_categories_relation WHERE sc_id = :sc_id)";

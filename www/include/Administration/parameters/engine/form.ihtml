@@ -1,5 +1,5 @@
 {$form.javascript}
-{$colorJS}
+
 <form {$form.attributes}>
 	<table class="formTable table">
 	 	<tr class="ListHeader">
@@ -51,7 +51,11 @@
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_fixed">&nbsp;{$form.monitoring_dwt_fixed.label}</td><td class="FormRowValue">{$form.monitoring_dwt_fixed.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_set_downtimes_on_services_attached_to_hosts">&nbsp;{$form.monitoring_dwt_svc.label}</td><td class="FormRowValue">{$form.monitoring_dwt_svc.html}</td></tr>		
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_duration">&nbsp;{$form.monitoring_dwt_duration.label}</td><td class="FormRowValue">{$form.monitoring_dwt_duration.html}&nbsp;{$form.monitoring_dwt_duration_scale.html}</td></tr>
-		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">{$form.required._note}</td></tr>
+		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">
+                {if isset($form.required)}
+                    {$form.required._note}
+                {/if}
+            </td></tr>
 	</table>
 	{if !$valid}
 		<div id="validForm" class="oreonbutton"><p>{$form.submitC.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p></div>

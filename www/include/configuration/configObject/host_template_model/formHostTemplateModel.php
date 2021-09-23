@@ -699,6 +699,8 @@ $form->addElement('textarea', 'host_comment', _("Comments"), $attrsTextarea);
 #
 ## Sort 2 - Host Relations
 #
+$form->addElement('header', 'HGlinks', _("Hostgroup Relations"));
+$form->addElement('header', 'HClinks', _("Host Categories Relations"));
 if ($o === HOST_TEMPLATE_ADD) {
     $form->addElement('header', 'title2', _("Add relations"));
 } elseif ($o === HOST_TEMPLATE_MODIFY) {

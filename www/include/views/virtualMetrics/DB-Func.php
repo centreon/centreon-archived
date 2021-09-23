@@ -73,7 +73,7 @@ function hasVirtualNameNeverUsed($vmetricName = null, $indexId = null)
     if (isset($form)) {
         $gsvs = $form->getSubmitValues();
     }
-    if (is_null($$vmetricName) && isset($gsvs["vmetric_name"])) {
+    if (is_null($vmetricName) && isset($gsvs["vmetric_name"])) {
         $vmetricName = htmlentities($gsvs["vmetric_name"], ENT_QUOTES, 'UTF-8');
     }
     if (is_null($indexId) && isset($gsvs["index_id"])) {

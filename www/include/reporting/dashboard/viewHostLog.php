@@ -84,26 +84,6 @@ $formHost->addElement(
     $get_date_end
 );
 
-/* adding hidden fields to get the result of datepicker in an unlocalized format */
-$formPeriod->addElement(
-    'hidden',
-    'alternativeDateStartDate',
-    '',
-    array(
-        'size' => 10,
-        'class' => 'alternativeDate'
-    )
-);
-$formPeriod->addElement(
-    'hidden',
-    'alternativeDateEndDate',
-    '',
-    array(
-        'size' => 10,
-        'class' => 'alternativeDate'
-    )
-);
-
 if (isset($id)) {
     $formHost->setDefaults(array('host' => $id));
 }
@@ -125,7 +105,7 @@ if ($id !== false) {
     $dates = getPeriodToReport("alternate");
     $start_date = $dates[0];
     $end_date = $dates[1];
-    $formPeriod->setDefaults(array('period' => $period));
+    //$formPeriod->setDefaults(array('period' => $period));
 
     /*
      * Getting host and his services stats
