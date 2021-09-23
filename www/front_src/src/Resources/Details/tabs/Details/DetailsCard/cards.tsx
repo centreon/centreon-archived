@@ -128,7 +128,7 @@ const getDetailCardLines = ({
       field:
         details.last_time_with_no_issue &&
         details.status.severity_code === SeverityCode.Ok,
-      line: <DetailsLine line={details.last_time_with_no_issue} />,
+      line: <DetailsLine line={toDateTime(details.last_time_with_no_issue)} />,
       title: labelLastTimeWithNoIssue,
     },
     {
