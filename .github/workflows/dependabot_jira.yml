@@ -14,11 +14,6 @@ env:
   JIRA_ISSUE_TYPE: "Vulnerability"
 
 jobs:
-  #get_user_data:
-  #  runs-on: ubuntu-latest
-  #  steps:
-  #    - name: View PR author
-  #      run: echo "This issue is opened by ${{ github.event.pull_request.user.login }} and has the id ${{ github.event.pull_request.user.id }}. [DependaBot on ${{github.event.repository.name }} repo] PR n°${{github.event.number }}. jira url ${{ secrets.JIRA_BASE_URL }}. jira email ${{ secrets.JIRA_USER_EMAIL }}. jira api ${{ secrets.JIRA_API_TOKEN }}."
   create_ticket:
     name: Create Jira ticket on dependaBot PR
     #if: github.event.pull_request.user.id == 49699333 #dependabot's user id
@@ -26,6 +21,11 @@ jobs:
     if: contains(github.event.pull_request.labels.*.name, 'dependencies')
     runs-on: ubuntu-latest
     steps:
+      - name: Get current date
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+      - name: Echo current date
+        run: echo $NOW
       - name: Login to Jira
         uses: atlassian/gajira-login@v2.0.0
         env:
@@ -47,6 +47,10 @@ jobs:
             {panel}
 
             More details are available in the *PR n°${{ github.event.pull_request.number }}*
+
             The link is: ${{ github.event.pull_request.html_url }}
 
-            ${{ github.event.pull_request.body }}
+            Creation date: ${{ steps.date.output.date }}
+          #fields: '{"customfield_10171": "test"}'
+        - name: Log created issue
+          run: echo "Issue ${{ steps.create.outputs.issue }} was created"
