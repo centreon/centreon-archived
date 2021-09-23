@@ -24,7 +24,7 @@ const LastTimeWithNoIssue = ({ details }: Props): JSX.Element => {
 
   return (
     <div className={classes.lastTimeWithNoIssue}>
-      <DetailsLine line={`${details.duration}`} />
+      <DetailsLine line={details.duration} />
     </div>
   );
 };
