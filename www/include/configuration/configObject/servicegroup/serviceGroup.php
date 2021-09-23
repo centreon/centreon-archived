@@ -87,22 +87,46 @@ switch ($o) {
         require_once($path . "formServiceGroup.php");
         break;
     case "s": # Activate a service group
-        enableServiceGroupInDB($sg_id);
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            enableServiceGroupInDB($sg_id);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listServiceGroup.php");
         break;
     case "u": # Deactivate a service group
-        disableServiceGroupInDB($sg_id);
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            disableServiceGroupInDB($sg_id);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listServiceGroup.php");
         break;
     case "m": # Duplicate n service groups
-        multipleServiceGroupInDB(
-            is_array($select) ? $select : [],
-            is_array($dupNbr) ? $dupNbr : []
-        );
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            multipleServiceGroupInDB(
+                is_array($select) ? $select : [],
+                is_array($dupNbr) ? $dupNbr : []
+            );
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listServiceGroup.php");
         break;
     case "d": # Delete n service groups
-        deleteServiceGroupInDB(is_array($select) ? $select : []);
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            deleteServiceGroupInDB(is_array($select) ? $select : []);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listServiceGroup.php");
         break;
     default:

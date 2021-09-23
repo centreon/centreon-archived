@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -242,6 +243,10 @@ $fgHost = array("value" => null, "print" => null);
 
 $interval_length = $centreon->optGen['interval_length'];
 
+$form->createSecurityToken();
+$centreonToken = is_array($form->getElementValue('centreon_token')) ?
+    end($form->getElementValue('centreon_token')) :
+    $form->getElementValue('centreon_token');
 for ($i = 0; $service = $dbResult->fetch(); $i++) {
     //Get Number of Hosts linked to this one.
     $dbResult2 = $pearDB->query(
@@ -264,11 +269,13 @@ for ($i = 0; $service = $dbResult->fetch(); $i++) {
     if ($service["service_activate"]) {
         $moptions .= "<a href='main.php?p=" . $p . "&service_id=" . $service['service_id'] . "&o=u&limit=" .
             $limit . "&num=" . $num . "&hostgroups=" . $hostgroups . "&template=$template&status=" . $status .
+            "&centreon_token=" . $centreonToken .
             "'><img src='img/icons/disabled.png' class='ico-14 margin_right' border='0' alt='" .
             _("Disabled") . "'></a>";
     } else {
         $moptions .= "<a href='main.php?p=" . $p . "&service_id=" . $service['service_id'] . "&o=s&limit=" .
             $limit . "&num=" . $num . "&hostgroups=" . $hostgroups . "&template=$template&status=" . $status .
+            "&centreon_token=" . $centreonToken .
             "'><img src='img/icons/enabled.png' class='ico-14 margin_right' border='0' alt='" . _("Enabled") . "'></a>";
     }
     $moptions .= "&nbsp;<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) " .
@@ -317,10 +324,11 @@ for ($i = 0; $service = $dbResult->fetch(); $i++) {
 
     if ((isset($ehiCache[$service["host_id"]]) && $ehiCache[$service["host_id"]])) {
         $host_icone = "./img/media/" . $mediaObj->getFilename($ehiCache[$service["host_id"]]);
-    } elseif ($icone = $host_method->replaceMacroInString(
-        $service["host_id"],
-        getMyHostExtendedInfoImage($service["host_id"], "ehi_icon_image", 1)
-    )
+    } elseif (
+        $icone = $host_method->replaceMacroInString(
+            $service["host_id"],
+            getMyHostExtendedInfoImage($service["host_id"], "ehi_icon_image", 1)
+        )
     ) {
         $host_icone = "./img/media/" . $icone;
     } else {
@@ -329,12 +337,13 @@ for ($i = 0; $service = $dbResult->fetch(); $i++) {
 
     if (isset($service['esi_icon_image']) && $service['esi_icon_image']) {
         $svc_icon = "./img/media/" . $mediaObj->getFilename($service['esi_icon_image']);
-    } elseif ($icone = $mediaObj->getFilename(
-        getMyServiceExtendedInfoField(
-            $service["service_id"],
-            "esi_icon_image"
+    } elseif (
+        $icone = $mediaObj->getFilename(
+            getMyServiceExtendedInfoField(
+                $service["service_id"],
+                "esi_icon_image"
+            )
         )
-    )
     ) {
         $svc_icon = "./img/media/" . $icone;
     } else {

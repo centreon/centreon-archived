@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -106,17 +107,22 @@ $style = "one";
  * Fill a tab with a mutlidimensionnal Array we put in $tpl
  */
 $elemArr = array();
+$form->createSecurityToken();
+$centreonToken = is_array($form->getElementValue('centreon_token')) ?
+    end($form->getElementValue('centreon_token')) :
+    $form->getElementValue('centreon_token');
+
 for ($i = 0; $resources = $statement->fetchRow(); $i++) {
     $selectedElements = $form->addElement('checkbox', "select[" . $resources['acl_res_id'] . "]");
 
     if ($resources["acl_res_activate"]) {
         $moptions = "<a href='main.php?p=" . $p . "&acl_res_id=" . $resources['acl_res_id']
-            . "&o=u&limit=" . $limit . "&num=" . $num . "&search=" . $search
+            . "&o=u&limit=" . $limit . "&num=" . $num . "&search=" . $search . "&centreon_token=" . $centreonToken
             . "'><img src='img/icons/disabled.png' class='ico-14 margin_right' border='0' alt='"
             . _("Disabled") . "'></a>&nbsp;&nbsp;";
     } else {
         $moptions = "<a href='main.php?p=" . $p . "&acl_res_id=" . $resources['acl_res_id']
-            . "&o=s&limit=" . $limit . "&num=" . $num . "&search=" . $search
+            . "&o=s&limit=" . $limit . "&num=" . $num . "&search=" . $search . "&centreon_token=" . $centreonToken
             . "'><img src='img/icons/enabled.png' class='ico-14 margin_right' border='0' alt='"
             . _("Enabled") . "'></a>&nbsp;&nbsp;";
     }
@@ -128,8 +134,8 @@ for ($i = 0; $resources = $statement->fetchRow(); $i++) {
 
     /* Contacts */
     $ctNbr = array();
-    $rq = "SELECT COUNT(*) AS nbr 
-          FROM acl_resources_host_relations 
+    $rq = "SELECT COUNT(*) AS nbr
+          FROM acl_resources_host_relations
           WHERE acl_res_id = '" . $resources['acl_res_id'] . "'";
     $DBRESULT2 = $pearDB->query($rq);
     $ctNbr = $DBRESULT2->fetchRow();
