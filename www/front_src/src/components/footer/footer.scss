@@ -47,15 +47,3 @@
 .sidebar.active + .content .footer {
   left: 160px;
 }
-.full-screen {
-  position: fixed;
-  right: 10px;
-  border-radius: 4px;
-  background-size: cover;
-  cursor: pointer;
-  z-index: 99;
-  bottom: 14px;
-  width: 38px;
-  height: 32px;
-  display: inline-block;
-}
