@@ -26,25 +26,27 @@ jobs:
     if: contains(github.event.pull_request.labels.*.name, 'dependencies')
     runs-on: ubuntu-latest
     steps:
-    - name: Login to Jira
-      uses: atlassian/gajira-login@v2.0.0
-      env:
-        JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
-        JIRA_USER_EMAIL: ${{ secrets.JIRA_USER_EMAIL }}
-        JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
-    - name: Create Jira Issue
-      id: create
-      uses: atlassian/gajira-create@v2.0.1
-      with:
-        project: ${{ env.JIRA_PROJECT_KEY }}
-        issuetype: ${{ env.JIRA_ISSUE_TYPE }}
-        summary: |
-          [Dependency to upgrade on : centreon/${{github.event.repository.name }}] - ${{github.event.pull_request.title }}
-        description: |
+      - name: Login to Jira
+        uses: atlassian/gajira-login@v2.0.0
+        env:
+          JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
+          JIRA_USER_EMAIL: ${{ secrets.JIRA_USER_EMAIL }}
+          JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+      - name: Create Jira Issue
+        id: create
+        uses: atlassian/gajira-create@v2.0.1
+        with:
+          project: ${{ env.JIRA_PROJECT_KEY }}
+          issuetype: ${{ env.JIRA_ISSUE_TYPE }}
+          summary: |
+            [Dependency to upgrade on : centreon/${{github.event.repository.name }}] - ${{github.event.pull_request.title }}
+          description: |
 
-          {panel:title=Dependency to upgrade}
-              ${{github.event.pull_request.title }}
-          {panel}
+            {panel:title=Dependency to upgrade}
+                ${{github.event.pull_request.title }}
+            {panel}
 
-          More details are available in the *PR n°${{github.event.pull_request.number}}*
-          The link is: ${{github.event.pull_request.html_url }}
+            More details are available in the *PR n°${{github.event.pull_request.number}}*
+            The link is: ${{github.event.pull_request.html_url }}
+
+            ${{github.event.pull_request.description }}
