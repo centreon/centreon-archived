@@ -56,6 +56,7 @@ const mockedAxios = axios as jest.Mocked<typeof axios>;
 const mockUserContext = {
   locale: 'en',
   refreshInterval: 60,
+  timezone: 'Europe/Paris',
 };
 
 jest.mock('@centreon/centreon-frontend/packages/ui-context', () => ({
