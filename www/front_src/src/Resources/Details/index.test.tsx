@@ -505,7 +505,7 @@ describe(Details, () => {
     });
   });
 
-  it('displays resource details information', async () => {
+  it.only('displays resource details information', async () => {
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
 
     const { getByText, queryByText, getAllByText } = renderDetails();
@@ -573,6 +573,9 @@ describe(Details, () => {
 
     expect(getByText(labelCheckDuration)).toBeInTheDocument();
     expect(getByText('0.070906 s')).toBeInTheDocument();
+
+    expect(getByText(labelLastCheckWithOkStatus)).toBeInTheDocument();
+    expect(getByText('06/18/2020 7:15 PM')).toBeInTheDocument();
 
     expect(getByText(labelLatency)).toBeInTheDocument();
     expect(getByText('0.005 s')).toBeInTheDocument();
