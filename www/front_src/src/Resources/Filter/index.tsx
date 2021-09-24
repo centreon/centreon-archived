@@ -14,6 +14,7 @@ import {
 } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
+import CloseIcon from '@material-ui/icons/Close';
 import {
   ClickAwayListener,
   makeStyles,
@@ -22,13 +23,14 @@ import {
   Popper,
 } from '@material-ui/core';
 
-import { MemoizedFilter, SearchField } from '@centreon/ui';
+import { MemoizedFilter, SearchField, IconButton } from '@centreon/ui';
 
 import {
   labelStateFilter,
   labelSearch,
   labelNewFilter,
   labelMyFilters,
+  labelClearFilter,
 } from '../translatedLabels';
 import { useResourceContext } from '../Context';
 
@@ -71,6 +73,7 @@ const Filter = (): JSX.Element => {
     currentFilter,
     search,
     applyCurrentFilter,
+    clearFilter,
   } = useResourceContext();
 
   const [isSearchFieldFocus, setIsSearchFieldFocus] = React.useState(false);
@@ -329,6 +332,16 @@ const Filter = (): JSX.Element => {
             <div>
               <SearchField
                 fullWidth
+                EndAdornment={(): JSX.Element => (
+                  <IconButton
+                    ariaLabel={t(labelClearFilter)}
+                    size="small"
+                    title={t(labelClearFilter)}
+                    onClick={clearFilter}
+                  >
+                    <CloseIcon fontSize="small" />
+                  </IconButton>
+                )}
                 inputRef={searchRef as React.RefObject<HTMLInputElement>}
                 placeholder={t(labelSearch)}
                 value={search}

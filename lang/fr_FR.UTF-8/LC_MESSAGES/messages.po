@@ -16245,3 +16245,7 @@ msgstr "Activer le bouton d’export de la configuration des collecteurs en un s
 
 msgid "Last check returning OK"
 msgstr "Dernier contrôle avec un statut OK"
+
+msgid "Clear filter"
+msgstr "Effacer le filtre"
+
