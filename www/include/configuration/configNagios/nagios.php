@@ -39,7 +39,7 @@ if (!isset($centreon)) {
 }
 
 $nagiosId = filter_var(
-    $_GET['nagios_id'] ?? $_POST['nagios_id'],
+    $_GET['nagios_id'] ?? $_POST['nagios_id'] ?? null,
     FILTER_VALIDATE_INT
 ) ?: null;
 
@@ -58,7 +58,7 @@ require_once __DIR__ . '/DB-Func.php';
 require_once "./include/common/common-Func.php";
 
 /* Set the real page */
-if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
+if (isset($ret) && is_array($ret) && $ret['topology_page'] != "" && $p != $ret['topology_page']) {
     $p = $ret['topology_page'];
 }
 
@@ -84,19 +84,43 @@ switch ($o) {
         require_once(__DIR__ . '/formNagios.php');
         break; #Modify Nagios.cfg
     case "s":
-        enableNagiosInDB($nagiosId);
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            enableNagiosInDB($nagiosId);
+        } else {
+            unvalidFormMessage();
+        }
         require_once(__DIR__ . '/listNagios.php');
         break; #Activate a nagios CFG
     case "u":
-        disableNagiosInDB($nagiosId);
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            disableNagiosInDB($nagiosId);
+        } else {
+            unvalidFormMessage();
+        }
         require_once(__DIR__ . '/listNagios.php');
         break; #Desactivate a nagios CFG
     case "m":
-        multipleNagiosInDB(isset($select) ? $select : array(), $dupNbr);
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            multipleNagiosInDB(isset($select) ? $select : array(), $dupNbr);
+        } else {
+            unvalidFormMessage();
+        }
         require_once(__DIR__ . '/listNagios.php');
         break; #Duplicate n nagios CFGs
     case "d":
-        deleteNagiosInDB(isset($select) ? $select : array());
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            deleteNagiosInDB(isset($select) ? $select : array());
+        } else {
+            unvalidFormMessage();
+        }
         require_once(__DIR__ . '/listNagios.php');
         break; #Delete n nagios CFG
     default:

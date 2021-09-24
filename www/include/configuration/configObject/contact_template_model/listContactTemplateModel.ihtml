@@ -24,7 +24,6 @@
             { else }
             <td>&nbsp;</td>
             { /if }
-            <input name="p" value="{$p}" type="hidden">
             {php}
                include('./include/common/pagination.php');
             {/php}
@@ -68,7 +67,6 @@
             { else }
             <td>&nbsp;</td>
             { /if }
-            <input name="p" value="{$p}" type="hidden">
             {php}
                include('./include/common/pagination.php');
             {/php}

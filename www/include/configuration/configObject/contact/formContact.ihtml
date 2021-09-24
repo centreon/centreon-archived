@@ -8,9 +8,22 @@
 </ul>
 <div id="validFormTop">
   {if $o == "a" || $o == "c" || $o == "mc"}
-      <p class="oreonbutton">{$form.submitC.html}{$form.submitMC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+      <p class="oreonbutton">
+        {if isset($form.submitC)}
+            {$form.submitC.html}
+        {elseif isset($form.submitMC)}
+            {$form.submitMC.html}
+        {else}
+            {$form.submitA.html}
+        {/if}
+        &nbsp;&nbsp;&nbsp;{$form.reset.html}
+      </p>
   {else if $o == "w"}
-      <p class="oreonbutton">{$form.change.html}</p>
+      <p class="oreonbutton">
+        {if isset($form.change)}
+            {$form.change.html}
+        {/if}
+      </p>
   {/if}
 </div>
 </div>
@@ -81,9 +94,13 @@
         {/if}
         <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="service_notification_commands"> {$form.contact_svNotifCmds.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.contact_svNotifCmds.html}</p></td></tr>
         {if $o == "a" || $o == "c"}
-            <tr class="list_lvl_1"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
+            <tr class="list_lvl_1"><td class="ListColLvl2_name" colspan="2">
+                {if isset($form.required)}
+                    {$form.required._note}
+                {/if}
+            </td></tr>
         {/if}
-        {if is_array($modules_template)}
+        {if isset($modules_template) && is_array($modules_template)}
             {foreach item=module_template from=$modules_template}
                 {include file=$module_template}
             {/foreach}
@@ -117,7 +134,7 @@
             <td class="FormRowValue">{$form.contact_autologin_key.html} {$form.contact_gen_akey.html}</td>
         </tr>
         <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="auth_type"> {$form.contact_auth_type.label}</td><td class="FormRowValue">{$form.contact_auth_type.html}</td></tr>
-        {if $ldap == "1" }
+        {if isset($ldap) && $ldap == "1" }
             <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="ldap_dn"> {$form.contact_ldap_dn.label}</td><td class="FormRowValue">{$form.contact_ldap_dn.html}</td></tr>
         {/if}
         {if $displayAdminFlag == 1}
@@ -141,10 +158,18 @@
         {/if}
         <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="aclgroups"> {$form.contact_acl_groups.label}</td><td class="FormRowValue">{$form.contact_acl_groups.html}</td></tr>
         {if $o == "a" || $o == "c"}
-            <tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
+            <tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">
+                {if isset($form.required)}
+                    {$form.required._note}
+                {/if}
+            </td></tr>
         {/if}
         {if $o == "a" || $o == "c"}
-            <tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
+            <tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">
+                {if isset($form.required)}
+                    {$form.required._note}
+                {/if}
+            </td></tr>
         {/if}
     </table>
     </div>
@@ -174,15 +199,27 @@
         <tr class="list_one"><td class="FormRowField">{$form.contact_activate.label}</td><td class="FormRowValue">{$form.contact_activate.html}</td></tr>
         <tr class="list_two"><td class="FormRowField">{$form.contact_comment.label}</td><td class="FormRowValue">{$form.contact_comment.html}</td></tr>
         {if $o == "a" || $o == "c"}
-            <tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
+            <tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">
+                {if isset($form.required)}
+                    {$form.required._note}
+                {/if}
+            </td></tr>
         {/if}
     </table>
     </div>
     <div id="validForm">
     {if $o == "a" || $o == "c" || $o == "mc"}
-        <p class="oreonbutton">{$form.submitC.html}{$form.submitMC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+        <p class="oreonbutton">
+        {if isset($form.submitC)}
+            {$form.submitC.html}
+        {elseif isset($form.submitMC)}
+            {$form.submitMC.html}
+        {else}
+            {$form.submitA.html}
+        {/if}
+        &nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
     {else if $o == "w"}
-        <p class="oreonbutton">{$form.change.html}</p>
+        <p class="oreonbutton">{if isset($form.change)}{$form.change.html}{/if}</p>
     {/if}
     </div>
     {$form.hidden}

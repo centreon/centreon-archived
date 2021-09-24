@@ -125,7 +125,7 @@ def checkoutCentreonBuild(buildBranch) {
 /*
 ** Pipeline code.
 */
-stage('Source') {
+stage('Deliver sources') {
   node {
     dir('centreon-web') {
       checkout scm
@@ -200,6 +200,8 @@ try {
             trendChartType: 'NONE'
           )
           junit 'ut-fe.xml'
+          stash name: 'ut-fe.xml', includes: 'ut-fe.xml'
+          stash name: 'codestyle-fe.xml', includes: 'codestyle-fe.xml'
         }
       }
     },
@@ -228,6 +230,10 @@ try {
             trendChartType: 'NONE'
           )
           junit 'ut-be.xml'
+          stash name: 'ut-be.xml', includes: 'ut-be.xml'
+          stash name: 'coverage-be.xml', includes: 'coverage-be.xml'
+          stash name: 'codestyle-be.xml', includes: 'codestyle-be.xml'
+          stash name: 'phpstan.xml', includes: 'phpstan.xml'
         }
       }
     },
@@ -268,7 +274,7 @@ try {
         archiveArtifacts artifacts: "rpms-centos8.tar.gz"
         stash name: "rpms-centos8", includes: 'output/noarch/*.rpm'
         sh 'rm -rf output'
-      }      
+      }
     }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
       error('Unit tests // RPM Packaging Failure');
@@ -279,6 +285,15 @@ try {
   stage('Violations to Github') {
     node {
       if (env.CHANGE_ID) { // pull request to comment with coding style issues
+        if (hasBackendChanges) {
+          unstash 'codestyle-be.xml'
+          unstash 'phpstan.xml'
+        }
+
+        if (hasFrontendChanges) {
+          unstash 'codestyle-fe.xml'
+        }
+
         ViolationsToGitHub([
           repositoryName: 'centreon',
           pullRequestId: env.CHANGE_ID,
@@ -300,7 +315,24 @@ try {
     }
   }
 
-  if ((env.BUILD == 'CI') || (env.BUILD == 'QA')) {
+  if ((env.BUILD == 'CI')) {
+    stage('Delivery to canary') {
+      node {
+        checkoutCentreonBuild(buildBranch)
+        sh 'rm -rf output'
+        unstash 'tar-sources'
+        unstash 'api-doc'
+        unstash 'rpms-centos8'
+        unstash 'rpms-centos7'
+        sh "./centreon-build/jobs/web/${serie}/mon-web-delivery.sh"
+      }
+      if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+        error('Delivery stage failure');
+      }
+    }
+  }
+
+  if ((env.BUILD == 'QA')) {
     stage('Delivery to unstable') {
       node {
         checkoutCentreonBuild(buildBranch)
@@ -314,24 +346,104 @@ try {
       if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
         error('Delivery stage failure');
       }
-    } 
+    }
   }
 
-  stage('Docker packaging') {
-    def parallelSteps = [:]
-    def osBuilds = isStableBuild() ? ['centos7', 'centos8'] : ['centos7']
-    for (x in osBuilds) {
-      def osBuild = x
-      parallelSteps[osBuild] = {
-        node {
-          checkoutCentreonBuild(buildBranch)
-          sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh ${osBuild}"
-        }
+  if ((env.BUILD == 'RELEASE')) {
+    stage('Delivery to testing') {
+      node {
+        checkoutCentreonBuild(buildBranch)
+        sh 'rm -rf output'
+        unstash 'tar-sources'
+        unstash 'api-doc'
+        unstash 'rpms-centos8'
+        unstash 'rpms-centos7'
+        sh "./centreon-build/jobs/web/${serie}/mon-web-delivery.sh"
+      }
+      if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+        error('Delivery stage failure');
       }
     }
-    parallel parallelSteps
-    if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-      error('Bundle stage failure.');
+  }
+
+  // TODO : add canary management in centreon-build
+  /*if ((env.BUILD == 'CI')) {
+    stage('Docker packaging with canary rpms') {
+      def parallelSteps = [:]
+      def osBuilds = isStableBuild() ? ['centos7', 'centos8'] : ['centos7']
+      for (x in osBuilds) {
+        def osBuild = x
+        parallelSteps[osBuild] = {
+          node {
+            checkoutCentreonBuild(buildBranch)
+            sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh ${osBuild}"
+          }
+        }
+      }
+      parallel parallelSteps
+      if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+        error('Bundle stage failure.');
+      }
+    }
+  }*/
+
+  if ((env.BUILD == 'QA')) {
+    stage('Docker packaging with unstable rpms') {
+      def parallelSteps = [:]
+      def osBuilds = isStableBuild() ? ['centos7', 'centos8'] : ['centos7']
+      for (x in osBuilds) {
+        def osBuild = x
+        parallelSteps[osBuild] = {
+          node {
+            checkoutCentreonBuild(buildBranch)
+            sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh ${osBuild}"
+          }
+        }
+      }
+      parallel parallelSteps
+      if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+        error('Bundle stage failure.');
+      }
+    }
+  }
+
+  if ((env.BUILD == 'RELEASE')) {
+    stage('Docker packaging') {
+      def parallelSteps = [:]
+      def osBuilds = isStableBuild() ? ['centos7', 'centos8'] : ['centos7']
+      for (x in osBuilds) {
+        def osBuild = x
+        parallelSteps[osBuild] = {
+          node {
+            checkoutCentreonBuild(buildBranch)
+            sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh ${osBuild}"
+          }
+        }
+      }
+      parallel parallelSteps
+      if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+        error('Bundle stage failure.');
+      }
+    }
+  }
+
+  if ((env.BUILD == 'REFERENCE')) {
+    stage('Docker packaging with tagging image as latest') {
+      def parallelSteps = [:]
+      def osBuilds = isStableBuild() ? ['centos7', 'centos8'] : ['centos7']
+      for (x in osBuilds) {
+        def osBuild = x
+        parallelSteps[osBuild] = {
+          node {
+            checkoutCentreonBuild(buildBranch)
+            sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh ${osBuild}"
+          }
+        }
+      }
+      parallel parallelSteps
+      if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+        error('Bundle stage failure.');
+      }
     }
   }
 
@@ -383,7 +495,7 @@ try {
     }
   }
 
-  if ((env.BUILD == 'RELEASE') || (env.BUILD == 'QA')) {
+  if ((env.BUILD == 'RELEASE') || (env.BUILD == 'QA') || (env.BUILD == 'REFERENCE')) {
     stage('Acceptance tests') {
       if (hasBackendChanges || hasFrontendChanges) {
         def atparallelSteps = [:]
@@ -412,30 +524,6 @@ try {
       }
     }
   }  
-
-  if ((env.BUILD == 'RELEASE')) {
-    stage('Delivery to testing') {
-      node {
-        checkoutCentreonBuild(buildBranch)
-        unstash 'tar-sources'
-        unstash 'api-doc'
-        unstash 'rpms-centos8'
-        unstash 'rpms-centos7'
-        sh "./centreon-build/jobs/web/${serie}/mon-web-delivery.sh"
-      }
-      if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-        error('Delivery stage failure');
-      }
-    } 
-
-    build job: "centreon-autodiscovery/${env.BRANCH_NAME}", wait: false
-    build job: "centreon-awie/${env.BRANCH_NAME}", wait: false
-    build job: "centreon-license-manager/${env.BRANCH_NAME}", wait: false
-    build job: "centreon-pp-manager/${env.BRANCH_NAME}", wait: false
-    build job: "centreon-bam/${env.BRANCH_NAME}", wait: false
-    build job: "centreon-mbi/${env.BRANCH_NAME}", wait: false
-  }
-
 } catch(e) {
   if (isStableBuild()) {
     slackSend channel: "#monitoring-metrology",

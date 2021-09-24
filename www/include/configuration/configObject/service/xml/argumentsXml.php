@@ -111,24 +111,26 @@ if (isset($_GET['cmdId']) && isset($_GET['svcId']) && isset($_GET['svcTplId']) &
     }
 
     $argTab = array();
+    $exampleTab = [];
 
-    $query2 = "SELECT command_line, command_example FROM command WHERE command_id = '" . $cmdId . "' LIMIT 1";
-    $res2 = $db->query($query2);
-    $row2 = $res2->fetchRow();
-    $cmdLine = $row2['command_line'];
-    preg_match_all("/\\\$(ARG[0-9]+)\\\$/", $cmdLine, $matches);
-    foreach ($matches[1] as $key => $value) {
-        $argTab[$value] = $value;
-    }
-    $exampleTab = preg_split('/\!/', $row2['command_example']);
-    if (is_array($exampleTab)) {
-        foreach ($exampleTab as $key => $value) {
-            $nbTmp = $key;
-            $exampleTab['ARG' . $nbTmp] = $value;
-            unset($exampleTab[$key]);
+    $query2 = "SELECT command_line, command_example FROM command WHERE command_id = :cmd_id LIMIT 1";
+    $statement = $db->prepare($query2);
+    $statement->bindValue(':cmd_id', $cmdId, \PDO::PARAM_INT);
+    $statement->execute();
+    if ($row2 = $statement->fetch()) {
+        $cmdLine = $row2['command_line'];
+        preg_match_all("/\\\$(ARG[0-9]+)\\\$/", $cmdLine, $matches);
+        foreach ($matches[1] as $key => $value) {
+            $argTab[$value] = $value;
         }
-    } else {
-        $exampleTab = array();
+        $exampleTab = preg_split('/\!/', $row2['command_example']);
+        if (is_array($exampleTab)) {
+            foreach ($exampleTab as $key => $value) {
+                $nbTmp = $key;
+                $exampleTab['ARG' . $nbTmp] = $value;
+                unset($exampleTab[$key]);
+            }
+        }
     }
 
     $query3 = "SELECT command_command_id_arg " .

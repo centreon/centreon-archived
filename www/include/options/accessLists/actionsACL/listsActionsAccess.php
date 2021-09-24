@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2021 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -96,15 +97,22 @@ $style = "one";
 
 /* Fill a tab with a mutlidimensionnal Array we put in $tpl */
 $elemArr = array();
+$form->createSecurityToken();
+$centreonToken = is_array($form->getElementValue('centreon_token')) ?
+    end($form->getElementValue('centreon_token')) :
+    $form->getElementValue('centreon_token');
+
 for ($i = 0; $topo = $statement->fetchRow(); $i++) {
     $selectedElements = $form->addElement('checkbox', "select[" . $topo['acl_action_id'] . "]");
     if ($topo["acl_action_activate"]) {
         $moptions = "<a href='main.php?p=" . $p . "&acl_action_id=" . $topo['acl_action_id'] . "&o=u&limit=" . $limit .
-            "&num=" . $num . "&search=" . $search . "'><img src='img/icons/disabled.png' class='ico-14 margin_right' " .
+            "&num=" . $num . "&search=" . $search . "&centreon_token=" . $centreonToken .
+            "'><img src='img/icons/disabled.png' class='ico-14 margin_right' " .
             "border='0' alt='" . _("Disabled") . "'></a>&nbsp;&nbsp;";
     } else {
         $moptions = "<a href='main.php?p=" . $p . "&acl_action_id=" . $topo['acl_action_id'] . "&o=s&limit=" . $limit .
-            "&num=" . $num . "&search=" . $search . "'><img src='img/icons/enabled.png' class='ico-14 margin_right' " .
+            "&num=" . $num . "&search=" . $search . "&centreon_token=" . $centreonToken .
+            "'><img src='img/icons/enabled.png' class='ico-14 margin_right' " .
             "border='0' alt='" . _("Enabled") . "'></a>&nbsp;&nbsp;";
     }
     $moptions .= "&nbsp;";

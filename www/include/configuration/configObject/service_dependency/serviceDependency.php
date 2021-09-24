@@ -65,7 +65,7 @@ $dupNbr = filter_var_array(
 );
 
 /* Set the real page */
-if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
+if (isset($ret) && is_array($ret) && $ret['topology_page'] != "" && $p != $ret['topology_page']) {
     $p = $ret['topology_page'];
 }
 
@@ -79,14 +79,26 @@ switch ($o) {
         require_once($path . "formServiceDependency.php");
         break;
     case "m": # Duplicate n Dependencies
-        multipleServiceDependencyInDB(
-            is_array($select) ? $select : array(),
-            is_array($dupNbr) ? $dupNbr : array()
-        );
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            multipleServiceDependencyInDB(
+                is_array($select) ? $select : array(),
+                is_array($dupNbr) ? $dupNbr : array()
+            );
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listServiceDependency.php");
         break;
     case "d": # Delete n Dependencies
-        deleteServiceDependencyInDB(is_array($select) ? $select : array());
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            deleteServiceDependencyInDB(is_array($select) ? $select : array());
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listServiceDependency.php");
         break;
     default:

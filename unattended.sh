@@ -60,7 +60,11 @@ fi
 CENTREON_MAJOR_VERSION=$version
 CENTREON_RELEASE_VERSION="$CENTREON_MAJOR_VERSION-2"
 
-#Variables dynamically set
+# Static variables
+PHP_BIN="/usr/bin/php"
+PHP_ETC="/etc/php.d/"
+
+# Variables dynamically set
 detected_os_release=
 detected_os_version=
 
@@ -68,8 +72,6 @@ detected_os_version=
 BASE_PACKAGES=
 CENTREON_SELINUX_PACKAGES=
 RELEASE_RPM_URL=
-PHP_BIN=
-PHP_ETC=
 OS_SPEC_SERVICES=
 PKG_MGR=
 has_systemd=
@@ -125,7 +127,7 @@ function log() {
 
 	# shift once to get the log message (string or array)
 	shift
-	
+
 	# get the log message (full log message)
 	log_message="${@}"
 
@@ -298,89 +300,91 @@ function set_centreon_repos() {
 # then set the required environment variables accordingly
 #
 function set_required_prerequisite() {
-
 	log "INFO" "Check if the system OS is supported and set the environment variables"
 
 	get_os_information
 
-	case "$detected_os_version" in
-	7*)
-		log "INFO" "Setting specific part for v7 ($detected_os_version)"
+    case "$detected_os_version" in
+    7*)
+        log "INFO" "Setting specific part for v7 ($detected_os_version)"
 
-		case "$detected_os_release" in
-		centos-release* | centos-linux-release*)
-			BASE_PACKAGES=(centos-release-scl)
-			;;
+        case "$detected_os_release" in
+        centos-release* | centos-linux-release*)
+            BASE_PACKAGES=(centos-release-scl)
+            ;;
 
-		oraclelinux-release* | enterprise-release*)
-			BASE_PACKAGES=(oraclelinux-release-el7)
-			;;
-		esac
-		RELEASE_RPM_URL="http://yum.centreon.com/standard/$CENTREON_MAJOR_VERSION/el7/stable/noarch/RPMS/centreon-release-$CENTREON_RELEASE_VERSION.el7.centos.noarch.rpm"
-		log "INFO" "Install Centreon from ${RELEASE_RPM_URL}"
-		PHP_BIN="/opt/rh/rh-php73/root/bin/php"
-		PHP_ETC="/etc/opt/rh/rh-php73/php.d/"
-		OS_SPEC_SERVICES="rh-php73-php-fpm httpd24-httpd"
-		PKG_MGR="yum"
+        oraclelinux-release* | enterprise-release*)
+            BASE_PACKAGES=(oraclelinux-release-el7)
+            ;;
+        esac
+        RELEASE_RPM_URL="http://yum.centreon.com/standard/$CENTREON_MAJOR_VERSION/el7/stable/noarch/RPMS/centreon-release-$CENTREON_RELEASE_VERSION.el7.centos.noarch.rpm"
+        REMI_RELEASE_RPM_URL="https://rpms.remirepo.net/enterprise/remi-release-8.rpm"
+        log "INFO" "Install Centreon from ${RELEASE_RPM_URL}"
+        OS_SPEC_SERVICES="php-fpm httpd24-httpd"
+        PKG_MGR="yum"
 
-		set_centreon_repos
+        install_remi_repo
+        $PKG_MGR -y -q install yum-utils
+        yum-config-manager --enable remi-php80
 
-		log "INFO" "Installing required base packages"
-		if ! $PKG_MGR -y -q install ${BASE_PACKAGES[@]}; then
-			error_and_exit "Failed to install required base packages  ${BASE_PACKAGES[@]}"
-		fi
-		;;
+        set_centreon_repos
 
-	8*)
-		log "INFO" "Setting specific part for v8 ($detected_os_version)"
+        log "INFO" "Installing required base packages"
+        if ! $PKG_MGR -y -q install ${BASE_PACKAGES[@]}; then
+            error_and_exit "Failed to install required base packages  ${BASE_PACKAGES[@]}"
+        fi
+        ;;
 
-		RELEASE_RPM_URL="http://yum.centreon.com/standard/$CENTREON_MAJOR_VERSION/el8/stable/noarch/RPMS/centreon-release-$CENTREON_RELEASE_VERSION.el8.noarch.rpm"
-		PHP_BIN="/bin/php"
-		PHP_ETC="/etc/php.d"
-		OS_SPEC_SERVICES="php-fpm httpd"
-		PKG_MGR="dnf"
+    8*)
+        log "INFO" "Setting specific part for v8 ($detected_os_version)"
 
-		case "$detected_os_release" in
+        RELEASE_RPM_URL="http://yum.centreon.com/standard/$CENTREON_MAJOR_VERSION/el8/stable/noarch/RPMS/centreon-release-$CENTREON_RELEASE_VERSION.el8.noarch.rpm"
+        REMI_RELEASE_RPM_URL="https://rpms.remirepo.net/enterprise/remi-release-8.rpm"
+        OS_SPEC_SERVICES="php-fpm httpd"
+        PKG_MGR="dnf"
 
-		redhat-release*)
-			BASE_PACKAGES=(dnf-plugins-core epel-release)
-			subscription-manager repos --enable codeready-builder-for-rhel-8-x86_64-rpms
-			;;
+        case "$detected_os_release" in
+        redhat-release*)
+            BASE_PACKAGES=(dnf-plugins-core epel-release)
+            subscription-manager repos --enable codeready-builder-for-rhel-8-x86_64-rpms
+            ;;
 
-		centos-release-8.[3-9]* | centos-linux-release* | centos-stream-release*)
-			BASE_PACKAGES=(dnf-plugins-core epel-release)
-			$PKG_MGR config-manager --set-enabled powertools
-			;;
+        centos-release-8.[3-9]* | centos-linux-release* | centos-stream-release*)
+            BASE_PACKAGES=(dnf-plugins-core epel-release)
+            $PKG_MGR config-manager --set-enabled powertools
+            ;;
 
-		centos-release-8.[1-2]*)
-			BASE_PACKAGES=(dnf-plugins-core epel-release)
-			$PKG_MGR config-manager --set-enabled PowerTools
-			;;
+        centos-release-8.[1-2]*)
+            BASE_PACKAGES=(dnf-plugins-core epel-release)
+            $PKG_MGR config-manager --set-enabled PowerTools
+            ;;
 
-		oraclelinux-release* | enterprise-release*)
-			BASE_PACKAGES=(dnf-plugins-core oracle-epel-release-el8)
-			$PKG_MGR config-manager --set-enabled ol8_codeready_builder
-			;;
-		esac
+        oraclelinux-release* | enterprise-release*)
+            BASE_PACKAGES=(dnf-plugins-core oracle-epel-release-el8)
+            $PKG_MGR config-manager --set-enabled ol8_codeready_builder
+            ;;
+        esac
 
-		log "INFO" "Installing PHP 7.3 and enable it"
-		$PKG_MGR module install php:7.3 -y -q
-		$PKG_MGR module enable php:7.3 -y -q
+        install_remi_repo
+        $PKG_MGR config-manager --set-enabled 'powertools'
 
-		log "INFO" "Installing packages ${BASE_PACKAGES[@]}"
-		$PKG_MGR -y -q install ${BASE_PACKAGES[@]}
+        log "INFO" "Installing PHP 8.0 and enable it"
+        $PKG_MGR module install php:remi-8.0 -y -q
+        $PKG_MGR module enable php:remi-8.0 -y -q
 
-		log "INFO" "Updating package gnutls"
-		$PKG_MGR -y -q update gnutls
+        log "INFO" "Installing packages ${BASE_PACKAGES[@]}"
+        $PKG_MGR -y -q install ${BASE_PACKAGES[@]}
 
-		set_centreon_repos
-		;;
+        log "INFO" "Updating package gnutls"
+        $PKG_MGR -y -q update gnutls
 
-	*)
-		error_and_exit "This '$script_short_name' script only supports Red-Hat compatible distribution (v7 and v8). Please check https://documentation.centreon.com/$CENTREON_MAJOR_VERSION/en/installation/introduction.html for alternative installation methods."
-		;;
-	esac
+        set_centreon_repos
+        ;;
 
+    *)
+        error_and_exit "This '$script_short_name' script only supports Red-Hat compatible distribution (v7 and v8). Please check https://documentation.centreon.com/$CENTREON_MAJOR_VERSION/en/installation/introduction.html for alternative installation methods."
+        ;;
+    esac
 }
 #========= end of function set_required_prerequisite()
 
@@ -516,6 +520,26 @@ function install_centreon_repo() {
 	fi
 }
 #========= end of function install_centreon_repo()
+
+#========= begin of function install_remi_repo()
+# install Remi repositories
+#
+function install_remi_repo() {
+
+	log "INFO" "Remi repositories installation..."
+	$PKG_MGR -q clean all
+
+	rpm -q remi-release >/dev/null 2>&1
+	if [ $? -ne 0 ]; then
+		$PKG_MGR -q install -y $REMI_RELEASE_RPM_URL
+		if [ $? -ne 0 ]; then
+			error_and_exit "Could not install Remi repository"
+		fi
+	else
+		log "INFO" "Remi repository seems to be already installed"
+	fi
+}
+#========= end of function install_remi_repo()
 
 #========= begin of function update_firewall_config()
 # add firewall configuration for newly added services

@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -60,7 +61,11 @@ $displayLocked = filter_var(
 
 // keep checkbox state if navigating in pagination
 // this trick is mandatory cause unchecked checkboxes do not post any data
-if (($centreon->historyPage[$url] > 0 || $num !== 0) && isset($centreon->historySearch[$url]['displayLocked'])) {
+if (
+    isset($centreon->historyPage[$url])
+    && ($centreon->historyPage[$url] > 0 || $num !== 0)
+    && isset($centreon->historySearch[$url]['displayLocked'])
+) {
     $displayLocked = $centreon->historySearch[$url]['displayLocked'];
 }
 
@@ -133,6 +138,11 @@ $interval_length = $oreon->optGen['interval_length'];
 $search = str_replace('#S#', "/", $search);
 $search = str_replace('#BS#', "\\", $search);
 
+$form->createSecurityToken();
+$centreonToken = is_array($form->getElementValue('centreon_token')) ?
+    end($form->getElementValue('centreon_token')) :
+    $form->getElementValue('centreon_token');
+
 for ($i = 0; $service = $dbResult->fetch(); $i++) {
     $moptions = "";
     $selectedElements = $form->addElement('checkbox', "select[" . $service['service_id'] . "]");
@@ -141,11 +151,13 @@ for ($i = 0; $service = $dbResult->fetch(); $i++) {
     } else {
         if ($service["service_activate"]) {
             $moptions .= "<a href='main.php?p=" . $p . "&service_id=" . $service['service_id'] . "&o=u&limit=" .
-                $limit . "&num=" . $num . "&search=" . $search . "'><img src='img/icons/disabled.png' " .
+                $limit . "&num=" . $num . "&search=" . $search . "&centreon_token=" . $centreonToken .
+                "'><img src='img/icons/disabled.png' " .
                 "class='ico-14 margin_right' border='0' alt='" . _("Disabled") . "'></a>&nbsp;&nbsp;";
         } else {
             $moptions .= "<a href='main.php?p=" . $p . "&service_id=" . $service['service_id'] . "&o=s&limit=" .
-                $limit . "&num=" . $num . "&search=" . $search . "'><img src='img/icons/enabled.png' " .
+                $limit . "&num=" . $num . "&search=" . $search . "&centreon_token=" . $centreonToken .
+                "'><img src='img/icons/enabled.png' " .
                 "class='ico-14 margin_right' border='0' alt='" . _("Enabled") . "'></a>&nbsp;&nbsp;";
         }
         $moptions .= "&nbsp;";
@@ -208,12 +220,13 @@ for ($i = 0; $service = $dbResult->fetch(); $i++) {
 
     if (isset($service['esi_icon_image']) && $service['esi_icon_image']) {
         $svc_icon = "./img/media/" . $mediaObj->getFilename($service['esi_icon_image']);
-    } elseif ($icone = $mediaObj->getFilename(
-        getMyServiceExtendedInfoField(
-            $service["service_id"],
-            "esi_icon_image"
+    } elseif (
+        $icone = $mediaObj->getFilename(
+            getMyServiceExtendedInfoField(
+                $service["service_id"],
+                "esi_icon_image"
+            )
         )
-    )
     ) {
         $svc_icon = "./img/media/" . $icone;
     } else {

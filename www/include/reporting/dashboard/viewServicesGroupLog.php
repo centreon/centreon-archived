@@ -84,26 +84,6 @@ if (isset($id)) {
     $form->setDefaults(array('item' => $id));
 }
 
-/* adding hidden fields to get the result of datepicker in an unlocalized format */
-$formPeriod->addElement(
-    'hidden',
-    'alternativeDateStartDate',
-    '',
-    array(
-        'size' => 10,
-        'class' => 'alternativeDate'
-    )
-);
-$formPeriod->addElement(
-    'hidden',
-    'alternativeDateEndDate',
-    '',
-    array(
-        'size' => 10,
-        'class' => 'alternativeDate'
-    )
-);
-
 /*
 * Set servicegroup id with period selection form
 */

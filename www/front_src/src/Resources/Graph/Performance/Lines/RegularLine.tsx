@@ -69,16 +69,22 @@ export default React.memo(RegularLine, (prevProps, nextProps) => {
     timeSeries: prevTimeSeries,
     graphHeight: prevGraphHeight,
     highlight: prevHighlight,
+    xScale: prevXScale,
   } = prevProps;
   const {
     timeSeries: nextTimeSeries,
     graphHeight: nextGraphHeight,
     highlight: nextHighlight,
+    xScale: nextXScale,
   } = nextProps;
+
+  const prevXScaleRange = prevXScale.range();
+  const nextXScaleRange = nextXScale.range();
 
   return (
     equals(prevTimeSeries, nextTimeSeries) &&
     equals(prevGraphHeight, nextGraphHeight) &&
-    equals(prevHighlight, nextHighlight)
+    equals(prevHighlight, nextHighlight) &&
+    equals(prevXScaleRange, nextXScaleRange)
   );
 });

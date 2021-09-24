@@ -40,10 +40,15 @@ class InformationsRepository extends ServiceEntityRepository
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':key', $key, PDO::PARAM_STR);
         $stmt->execute();
-        $stmt->setFetchMode(PDO::FETCH_CLASS, Informations::class);
         $result = $stmt->fetch();
+        $informations = null;
+        if ($result) {
+            $informations = new Informations();
+            $informations->setKey($result['key']);
+            $informations->setValue($result['value']);
+        }
 
-        return $result ?: null;
+        return $informations;
     }
 
     /**
