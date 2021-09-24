@@ -70,7 +70,7 @@
         "phpdocumentor/reflection-docblock": "^5.2",
         "symfony/property-access": "4.4.*",
         "symfony/property-info": "4.4.*",
-        "symfony/serializer": "4.4.*"
+        "symfony/serializer": "5.3.*"
     },
     "autoload": {
         "psr-4": {
