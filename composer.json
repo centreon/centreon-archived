@@ -61,7 +61,7 @@
         "symfony/http-client": "4.4.*",
         "symfony/maker-bundle": "^1.11",
         "symfony/monolog-bundle": "^3.7",
-        "symfony/options-resolver": "4.4.*",
+        "symfony/options-resolver": "5.3.*",
         "symfony/security-bundle": "4.4.*",
         "symfony/translation": "4.4.*",
         "symfony/validator": "4.4.*",
