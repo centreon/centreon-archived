@@ -44,8 +44,8 @@ final class MetaServiceProvider extends Provider
                 $filter->getStatuses(),
                 ResourceFilter::MAP_STATUS_SERVICE
             ))
-            || $filter->getHostgroupIds()
-            || $filter->getServicegroupIds()
+            || $filter->getHostgroupNames()
+            || $filter->getServicegroupNames()
         ) {
             return false;
         }

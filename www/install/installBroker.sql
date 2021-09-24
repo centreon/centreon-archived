@@ -188,6 +188,7 @@ CREATE TABLE `hostgroups` (
   `hostgroup_id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   PRIMARY KEY (`hostgroup_id`)
+  KEY `hg_name_idx` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -407,6 +408,7 @@ CREATE TABLE `instances` (
   `deleted` boolean NOT NULL default false, 
   `outdated` boolean NOT NULL default false,
   PRIMARY KEY (`instance_id`)
+  KEY `instances_name_idx` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -518,6 +520,7 @@ CREATE TABLE `servicegroups` (
   `servicegroup_id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   PRIMARY KEY (`servicegroup_id`)
+  KEY `sg_name_idx` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

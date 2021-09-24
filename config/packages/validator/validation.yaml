@@ -223,29 +223,29 @@ Centreon\Domain\Monitoring\ResourceFilter:
                     - PENDING
                 multiple: true
                 groups: [Default]
-        hostgroupIds:
+        hostgroupNames:
             - Type:
                 type: array
                 groups: [Default]
             - All:
                 - Type:
-                    type: int
+                    type: string
                     groups: [Default]
-        servicegroupIds:
+        servicegroupNames:
             - Type:
                 type: array
                 groups: [Default]
             - All:
                 - Type:
-                    type: int
+                    type: string
                     groups: [Default]
-        monitoringServerIds:
+        monitoringServerNames:
             - Type:
                 type: array
                 groups: [Default]
             - All:
                 - Type:
-                    type: int
+                    type: string
                     groups: [Default]
         onlyWithPerformanceData:
             - Type:
