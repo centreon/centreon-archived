@@ -15,7 +15,7 @@ env:
 jobs:
   create_ticket:
     name: Create Jira ticket on dependaBot PR
-    if: contains(github.event.pull_request.labels.*.name, 'dependencies')
+    if: github.event.pull_request.user.id == 49699333
     runs-on: ubuntu-latest
     steps:
       - name: Get current date
