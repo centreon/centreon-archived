@@ -54,7 +54,7 @@
         "symfony/console": "4.4.*",
         "symfony/dotenv": "4.4.*",
         "symfony/expression-language": "4.4.*",
-        "symfony/filesystem": "4.4.*",
+        "symfony/filesystem": "5.3.*",
         "symfony/finder": "4.4.*",
         "symfony/flex": "^1.9",
         "symfony/framework-bundle": "4.4.*",
