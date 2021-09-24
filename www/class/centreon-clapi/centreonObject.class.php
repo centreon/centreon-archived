@@ -289,12 +289,14 @@ abstract class CentreonObject
         $this->initInsertParameters($parameters);
 
         $id = $this->object->insert($this->params);
-        $this->addAuditLog(
-            'a',
-            $id,
-            $this->params[$this->object->getUniqueLabelField()],
-            $this->params
-        );
+        if (isset($this->params[$this->object->getUniqueLabelField()])) {
+            $this->addAuditLog(
+                'a',
+                $id,
+                $this->params[$this->object->getUniqueLabelField()],
+                $this->params
+            );
+        }
 
         if (method_exists($this, "insertRelations")) {
             $this->insertRelations($id);

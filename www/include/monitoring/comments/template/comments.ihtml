@@ -57,7 +57,7 @@
                     <td class="ListColLeft"><a href='{$tcs.h_details_uri}' isreact="true">{$tcs.host_name}</a>
                     </td>
                     <td class="ListColLeft">
-                    {if $tcs.s_details_uri}
+                    {if isset($tcs.s_details_uri)}
                         <a href='{$tcs.s_details_uri}' isreact="true">{$tcs.service_description}</a>
                     {else}
                         {$tcs.service_description}

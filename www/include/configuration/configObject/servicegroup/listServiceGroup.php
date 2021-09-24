@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -99,17 +100,24 @@ $form->addElement('submit', 'Search', _("Search"), $attrBtnSuccess);
 
 // Fill a tab with a multidimensional Array we put in $tpl
 $elemArr = array();
+$form->createSecurityToken();
+$centreonToken = is_array($form->getElementValue('centreon_token')) ?
+    end($form->getElementValue('centreon_token')) :
+    $form->getElementValue('centreon_token');
+
 for ($i = 0; $sg = $dbResult->fetch(); $i++) {
     $selectedElements = $form->addElement('checkbox', "select[" . $sg['sg_id'] . "]");
     $moptions = "";
     if ($sg["sg_activate"]) {
         $moptions .= "<a href='main.php?p=" . $p . "&sg_id=" . $sg['sg_id'] . "&o=u&limit=" . $limit .
-            "&num=" . $num . "&search=" . $search . "'><img src='img/icons/disabled.png' class='ico-14 margin_right' "
-            . "border='0' alt='" . _("Disabled") . "'></a>";
+            "&num=" . $num . "&search=" . $search . "&centreon_token=" . $centreonToken .
+            "'><img src='img/icons/disabled.png' class='ico-14 margin_right' " .
+            "border='0' alt='" . _("Disabled") . "'></a>";
     } else {
         $moptions .= "<a href='main.php?p=" . $p . "&sg_id=" . $sg['sg_id'] . "&o=s&limit=" . $limit .
-            "&num=" . $num . "&search=" . $search . "'><img src='img/icons/enabled.png' class='ico-14 margin_right' "
-            . "border='0' alt='" . _("Enabled") . "'></a>";
+            "&num=" . $num . "&search=" . $search . "&centreon_token=" . $centreonToken .
+            "'><img src='img/icons/enabled.png' class='ico-14 margin_right' " .
+            "border='0' alt='" . _("Enabled") . "'></a>";
     }
     $moptions .= "&nbsp;<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) " .
         "event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" " .

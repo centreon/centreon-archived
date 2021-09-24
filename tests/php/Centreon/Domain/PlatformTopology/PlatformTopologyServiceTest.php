@@ -425,25 +425,14 @@ class PlatformTopologyServiceTest extends TestCase
             ->setConfigurationKey('one_peer_retention_mode')
             ->setConfigurationValue('yes');
 
-        $this->brokerRepository
-            ->expects($this->at(0))
+        $this->brokerRepository->expects($this->exactly(4))
             ->method('findByMonitoringServerAndParameterName')
-            ->willReturn([$this->brokerConfiguration]);
-
-        $this->brokerRepository
-            ->expects($this->at(1))
-            ->method('findByMonitoringServerAndParameterName')
-            ->willReturn([$this->brokerConfiguration]);
-
-        $this->brokerRepository
-            ->expects($this->at(2))
-            ->method('findByMonitoringServerAndParameterName')
-            ->willReturn([$brokerConfigurationPeerRetention]);
-
-        $this->brokerRepository
-            ->expects($this->at(3))
-            ->method('findByMonitoringServerAndParameterName')
-            ->willReturn([$brokerConfigurationPeerRetention]);
+            ->willReturnOnConsecutiveCalls(
+                [$this->brokerConfiguration],
+                [$this->brokerConfiguration],
+                [$brokerConfigurationPeerRetention],
+                [$brokerConfigurationPeerRetention]
+            );
 
         $platformTopologyService = new PlatformTopologyService(
             $this->platformTopologyRepository,
