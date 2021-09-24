@@ -216,11 +216,11 @@ class Contact extends AbstractObject
      */
     protected function shouldContactBeNotified(int $contactId): bool
     {
-        if ($this->contacts[$contactId]['enable_notifications'] == self::ENABLE_NOTIFICATIONS) {
+        if ($this->contacts[$contactId]['enable_notifications'] === self::ENABLE_NOTIFICATIONS) {
             return true;
         } elseif (
             $this->contacts[$contactId]['contact_template_id'] !== null
-            && $this->contacts[$contactId]['enable_notifications'] == self::DEFAULT_NOTIFICATIONS
+            && $this->contacts[$contactId]['enable_notifications'] === self::DEFAULT_NOTIFICATIONS
         ) {
             return $this->shouldContactBeNotified($this->contacts[$contactId]['contact_template_id']);
         }
