@@ -15191,3 +15191,6 @@ msgstr "Erro ao remover tokens de um contato"
 
 # msgid "Service graphs"
 # msgstr ""
+
+msgid "Clear filter"
+msgstr ""
