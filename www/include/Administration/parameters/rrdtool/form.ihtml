@@ -1,5 +1,4 @@
 {$form.javascript}
-{$colorJS}
 <form {$form.attributes}>
     <table class="formTable table">
         <tr class="ListHeader">

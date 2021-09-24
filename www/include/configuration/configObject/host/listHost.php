@@ -312,6 +312,15 @@ $search = tidySearchKey($search, $advanced_search);
 $elemArr = array();
 $search = str_replace('\_', "_", $search);
 
+<<<<<<< HEAD
+=======
+
+$form->createSecurityToken();
+$centreonToken = is_array($form->getElementValue('centreon_token'))
+    ? end($form->getElementValue('centreon_token'))
+    : $form->getElementValue('centreon_token');
+
+>>>>>>> 4832cc4f3e780891a0a5d45ad6cca2bc3b40c5c2
 for ($i = 0; $host = $dbResult->fetch(); $i++) {
     if (!isset($poller)
         || $poller == 0
@@ -324,6 +333,7 @@ for ($i = 0; $host = $dbResult->fetch(); $i++) {
 
         if ($host["host_activate"]) {
             $moptions = "<a href='main.php?p=$p&host_id={$host['host_id']}"
+<<<<<<< HEAD
                 . "&o=u&limit=$limit&num=$num&searchH=$search'>"
                 . "<img src='img/icons/disabled.png' class='ico-14 margin_right' "
                 . "border='0' alt='" . _("Disabled") . "'></a>";
@@ -331,6 +341,17 @@ for ($i = 0; $host = $dbResult->fetch(); $i++) {
             $moptions = "<a href='main.php?p=$p&host_id={$host['host_id']}"
                 . "&o=s&limit=$limit&num=$num&searchH=$search'>"
                 . "<img src='img/icons/enabled.png' class='ico-14 margin_right' "
+=======
+                . "&o=u&limit=$limit&num=$num&searchH=$search"
+                . "&centreon_token=" . $centreonToken
+                . "'><img src='img/icons/disabled.png' class='ico-14 margin_right' "
+                . "border='0' alt='" . _("Disabled") . "'></a>";
+        } else {
+            $moptions = "<a href='main.php?p=$p&host_id={$host['host_id']}"
+                . "&o=s&limit=$limit&num=$num&searchH=$search"
+                . "&centreon_token=" . $centreonToken
+                . "'><img src='img/icons/enabled.png' class='ico-14 margin_right' "
+>>>>>>> 4832cc4f3e780891a0a5d45ad6cca2bc3b40c5c2
                 . "border='0' alt='" . _("Enabled") . "'></a>";
         }
 

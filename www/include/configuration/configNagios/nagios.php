@@ -39,7 +39,7 @@ if (!isset($centreon)) {
 }
 
 $nagiosId = filter_var(
-    $_GET['nagios_id'] ?? $_POST['nagios_id'],
+    $_GET['nagios_id'] ?? $_POST['nagios_id'] ?? null,
     FILTER_VALIDATE_INT
 ) ?: null;
 
@@ -58,7 +58,7 @@ require_once __DIR__ . '/DB-Func.php';
 require_once "./include/common/common-Func.php";
 
 /* Set the real page */
-if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
+if (isset($ret) && is_array($ret) && $ret['topology_page'] != "" && $p != $ret['topology_page']) {
     $p = $ret['topology_page'];
 }
 

@@ -69,7 +69,6 @@
                     </button>
                 {/if}
             </td>
-            <input name="p" value="{$p}" type="hidden">
             {php}
                include('./include/common/pagination.php');
             {/php}
@@ -79,7 +78,8 @@
         <tr class="ListHeader">
             <td class="ListColHeaderPicker">
                 <div class="md-checkbox md-checkbox-inline">
-                    <input type="checkbox" id="checkall" name="checkall" onclick="checkUncheckAll(this);"/>
+                    <input type="checkbox" id="checkall" name="checkall"
+                        onclick="checkUncheckAll(this); hasPollersSelected();"/>
                     <label class="empty-label" for="checkall"></label>
                 </div>
             </td>
@@ -142,7 +142,6 @@
     </table>
     <table class="ToolbarTable table">
         <tr class="ToolbarTR">
-            <input name="p" value="{$p}" type="hidden">
             {php}
                include('./include/common/pagination.php');
             {/php}

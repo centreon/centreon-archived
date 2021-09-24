@@ -67,7 +67,7 @@
                     <a href='{$tds.h_details_uri}' isreact="true">{$tds.host_name}</a>
                 </td>
 		<td class="ListColLeft" width="130">
-                    {if $tds.s_details_uri}
+                    {if isset($tds.s_details_uri)}
                     <a href='{$tds.s_details_uri}' isreact="true">{$tds.service_description}</a>
                     {else}
                     {$tds.service_description}
