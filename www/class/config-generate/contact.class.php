@@ -96,6 +96,9 @@ class Contact extends AbstractObject
     protected $stmt_commands = array('host' => null, 'service' => null);
     protected $stmt_contact_service = null;
 
+    public const ENABLE_NOTIFICATIONS = '1';
+    public const DEFAULT_NOTIFICATIONS = '2';
+
     private function getContactCache()
     {
         $stmt = $this->backend_instance->db->prepare("SELECT
@@ -213,11 +216,11 @@ class Contact extends AbstractObject
      */
     protected function shouldContactBeNotified(int $contactId): bool
     {
-        if ($this->contacts[$contactId]['enable_notifications'] == '1') {
+        if ($this->contacts[$contactId]['enable_notifications'] == self::ENABLE_NOTIFICATIONS) {
             return true;
         } elseif (
             $this->contacts[$contactId]['contact_template_id'] !== null
-            && $this->contacts[$contactId]['enable_notifications'] == '2'
+            && $this->contacts[$contactId]['enable_notifications'] == self::DEFAULT_NOTIFICATIONS
         ) {
             return $this->shouldContactBeNotified($this->contacts[$contactId]['contact_template_id']);
         }
