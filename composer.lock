@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8b871ff31791088e166e8d862c2b4b39",
+    "content-hash": "18c5c951091345a1a635cfc8b8e62c2a",
     "packages": [
         {
             "name": "beberlei/assert",
@@ -4817,34 +4817,35 @@
         },
         {
             "name": "symfony/property-info",
-            "version": "v4.4.30",
+            "version": "v5.3.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/property-info.git",
-                "reference": "9471a7202a30fe682614b19043e30795a7a9e7c0"
+                "reference": "7202b6c93a07df5df83eb58e3757dffb77fc5d90"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/property-info/zipball/9471a7202a30fe682614b19043e30795a7a9e7c0",
-                "reference": "9471a7202a30fe682614b19043e30795a7a9e7c0",
+                "url": "https://api.github.com/repos/symfony/property-info/zipball/7202b6c93a07df5df83eb58e3757dffb77fc5d90",
+                "reference": "7202b6c93a07df5df83eb58e3757dffb77fc5d90",
                 "shasum": ""
             },
             "require": {
-                "php": ">=7.1.3",
-                "symfony/inflector": "^3.4|^4.0|^5.0",
-                "symfony/polyfill-php80": "^1.16"
+                "php": ">=7.2.5",
+                "symfony/deprecation-contracts": "^2.1",
+                "symfony/polyfill-php80": "^1.16",
+                "symfony/string": "^5.1"
             },
             "conflict": {
-                "phpdocumentor/reflection-docblock": "<3.0|>=3.2.0,<3.2.2",
-                "phpdocumentor/type-resolver": "<0.3.0|1.3.*",
-                "symfony/dependency-injection": "<3.4"
+                "phpdocumentor/reflection-docblock": "<3.2.2",
+                "phpdocumentor/type-resolver": "<1.4.0",
+                "symfony/dependency-injection": "<4.4"
             },
             "require-dev": {
                 "doctrine/annotations": "^1.10.4",
                 "phpdocumentor/reflection-docblock": "^3.0|^4.0|^5.0",
-                "symfony/cache": "^3.4|^4.0|^5.0",
-                "symfony/dependency-injection": "^3.4|^4.0|^5.0",
-                "symfony/serializer": "^3.4|^4.0|^5.0"
+                "symfony/cache": "^4.4|^5.0",
+                "symfony/dependency-injection": "^4.4|^5.0",
+                "symfony/serializer": "^4.4|^5.0"
             },
             "suggest": {
                 "phpdocumentor/reflection-docblock": "To use the PHPDoc",
@@ -4886,7 +4887,7 @@
                 "validator"
             ],
             "support": {
-                "source": "https://github.com/symfony/property-info/tree/v4.4.30"
+                "source": "https://github.com/symfony/property-info/tree/v5.3.7"
             },
             "funding": [
                 {
@@ -4902,7 +4903,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-08-18T18:17:39+00:00"
+            "time": "2021-08-23T12:57:24+00:00"
         },
         {
             "name": "symfony/routing",
@@ -10615,5 +10616,5 @@
     "platform-overrides": {
         "php": "8.0"
     },
-    "plugin-api-version": "2.0.0"
+    "plugin-api-version": "2.1.0"
 }
