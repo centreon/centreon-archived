@@ -4,8 +4,10 @@
     {if $inheritance !="1" }
     <!-- notification inheritance option -->
     <div style='visibility: hidden'>
-        {$form.contact_additive_inheritance.html}
-        {$form.cg_additive_inheritance.html}
+		{if isset($form.contact_additive_inheritance) && isset($form.cg_additive_inheritance)}
+			{$form.contact_additive_inheritance.html}
+			{$form.cg_additive_inheritance.html}
+		{/if}
     </div>
     {/if}
      <div  class="headerTabContainer">
@@ -18,9 +20,22 @@
         </ul>
 		<div id="validFormTop">
 		{if $o == "a" || $o == "c" || $o == "mc"}
-			<p class="oreonbutton">{$form.submitC.html}{$form.submitMC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+			<p class="oreonbutton">
+				{if isset($form.submitC)}
+                    {$form.submitC.html}
+                {elseif isset($form.submitMC)}
+                    {$form.submitMC.html}
+                {else}
+                    {$form.submitA.html}
+                {/if}
+                &nbsp;&nbsp;&nbsp;{$form.reset.html}
+			</p>
 		{else if $o == "w"}
-			<p class="oreonbutton">{$form.change.html}</p>
+			<p class="oreonbutton">
+				{if isset($form.change)}
+					{$form.change.html}
+				{/if}
+			</p>
 		{/if}
 		</div>
      </div>
@@ -29,7 +44,14 @@
 	        <tr class="ListHeader">
 	            <td class="FormHeader"><h3>| {$form.header.title}</h3></td>
 	             <td style="text-align:right;">
-	                <a href="./main.php?p={$p}&min=1&doc=1&page=configobject.html" target="_blank"  style='cursor:help' alt='{$topdoc}'>
+	                <a
+						href="./main.php?p={$p}&min=1&doc=1&page=configobject.html"
+						target="_blank"
+						style='cursor:help'
+						{if isset($topdoc)}
+							alt='{$topdoc}'
+						{/if}
+					>
 	             </td>
 	        </tr>
  	        <tr class="list_lvl_1">
@@ -46,14 +68,19 @@
 			</tr>
 	        <tr class="list_one">
 	            <td class="FormRowField"><img class="helpTooltip" name="address"> {$form.host_address.label}</td>
-	            <td class="FormRowValue">{$form.host_address.html}&nbsp;&nbsp;{$form.host_resolve.html}</td>
+	            <td class="FormRowValue">
+					{$form.host_address.html}&nbsp;&nbsp;
+					{if isset($form.host_resolve)}
+						{$form.host_resolve.html}
+					{/if}
+				</td>
 	        </tr>
 			{/if}
 		    <tr class="list_two">
 		        <td class="FormRowField"><img class="helpTooltip" name="snmp_options"> {$form.host_snmp_community.label} & {$form.host_snmp_version.label}</td>
 		        <td class="FormRowValue">{$form.host_snmp_community.html}&nbsp;&nbsp;{$form.host_snmp_version.html}</td>
 		    </tr>
-            {if $form.nagios_server_id.label}
+            {if isset($form.nagios_server_id.label)}
 			<tr class="list_one">
 			    <td class="FormRowField"><img class="helpTooltip" name="poller"> {$form.nagios_server_id.label}</td>
 			    <td class="FormRowValue">{$form.nagios_server_id.html} {if $o == "mc"} | {$form.mc_mod_nsid.html}{/if}</td>
@@ -73,13 +100,13 @@
 				<td class="FormRowField"><img class="helpTooltip" name="use"> {$form.host_parallel_template.label}<p class="description">{$form.tplTextParallel.label}<p></td>
 				<td class="FormRowValue" id="parallelTemplate">{include file="file:$centreon_path/www/include/common/templates/cloneHost.ihtml" cloneId="template" cloneSet=$cloneSetTemplate}</td>
 			</tr>
-            {if $form.dupSvTplAssocText.label}
+            {if isset($form.dupSvTplAssocText.label)}
 			<tr class="list_two">
 				<td class="FormRowField"><img class="helpTooltip" name="create_linked_services"> {$form.dupSvTplAssocText.label}</td>
 				<td class="FormRowValue">{$form.dupSvTplAssoc.html}</td>
 			</tr>
             {/if}
-			{if $form.acl_groups}
+			{if isset($form.acl_groups)}
 		    <tr class="list_lvl_1">
 		        <td class="ListColLvl1_name" colspan="2"><img src="./img/icones/16x16/lock_new.gif">&nbsp;&nbsp;{$accessgroups}</td>
 		    </tr>
@@ -148,7 +175,11 @@
 				<td class="FormRowValue">{$form.host_passive_checks_enabled.html}</td>
 			</tr>
 			{if $o == "a" || $o == "c"}
-				<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required_note}</td></tr>
+				<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">
+				{if isset($required.note)}
+					{$form.required_note}
+				{/if}
+				</td></tr>
 			{/if}
 		<tbody>
 	</table>
@@ -355,7 +386,11 @@
          <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="hostcategories"> {$form.host_hcs.label}</td><td class="FormRowValue">{$form.host_hcs.html} </td></tr>
 	{/if}
 	{if $o == "a" || $o == "c"}
-		<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required_note}</td></tr>
+		<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">
+		{if isset($form.required_note)}
+			{$form.required_note}
+		{/if}
+		</td></tr>
 	{/if}
  </table>
 </div>
@@ -414,7 +449,11 @@
 		{/if}</td>
 	</tr>
 	{if $o == "a" || $o == "c"}
-		<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required_note}</td></tr>
+		<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">
+			{if isset($required.note)}
+				{$form.required_note}
+			{/if}
+		</td></tr>
 	{/if}
  </table>
 </div>
@@ -436,7 +475,7 @@
 		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="icon_image"> {$form.ehi_icon_image.label}</td><td class="FormRowValue">{$form.ehi_icon_image.html}&nbsp;&nbsp;<img id='ehi_icon_image_img' src='./img/blank.gif'></td></tr>
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="icon_image_alt"> {$form.ehi_icon_image_alt.label}</td><td class="FormRowValue">{$form.ehi_icon_image_alt.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="statusmap_image"> {$form.ehi_statusmap_image.label}</td><td class="FormRowValue">{$form.ehi_statusmap_image.html}&nbsp;&nbsp;<img id='ehi_statusmap_image_img' src='./img/blank.gif'></td></tr>
-		{if $form.geo_coords.label}
+		{if isset($form.geo_coords.label)}
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="geo_coords"> {$form.geo_coords.label}</td><td class="FormRowValue">{$form.geo_coords.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="2d_coords"> {$form.ehi_2d_coords.label}</td><td class="FormRowValue">{$form.ehi_2d_coords.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="3d_coords"> {$form.ehi_3d_coords.label}</td><td class="FormRowValue">{$form.ehi_3d_coords.html}</td></tr>
@@ -454,24 +493,42 @@
 		<tr class="list_two"><td class="FormRowField">{$form.host_activate.label}</td><td class="FormRowValue">{$form.host_activate.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.host_comment.label}</td><td class="FormRowValue">{$form.host_comment.html}</td></tr>
 		{if $o == "a" || $o == "c"}
-			<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required_note}</td></tr>
+			<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">
+				{if isset($required.note)}
+					{$form.required_note}
+				{/if}
+			</td></tr>
 		{/if}
 	</table>
 </div>
 <div id="validForm">
 {if $o == "a" || $o == "c" || $o == "mc"}
-	<p class="oreonbutton">{$form.submitC.html}{$form.submitMC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+	<p class="oreonbutton">
+		{if isset($form.submitC)}
+			{$form.submitC.html}
+		{elseif isset($form.submitMC)}
+			{$form.submitMC.html}
+		{else}
+			{$form.submitA.html}
+		{/if}
+		&nbsp;&nbsp;&nbsp;{$form.reset.html}
+	</p>
 {else if $o == "w"}
-	<p class="oreonbutton">{$form.change.html}</p>
+	<p class="oreonbutton">
+		{if isset($form.change)}
+			{$form.change.html}
+		{/if}
+	</p>
 {/if}
 </div>
 {$form.hidden}
 </form>
 {$helptext}
 <script>
-
-var alert_check_interval = "{$alert_check_interval}";
-
+	var alert_check_interval = null;
+	{if isset($alert_check_interval)}
+		alert_check_interval = "{$alert_check_interval}";
+	{/if}
 {literal}
 jQuery('input[name=host_check_interval]').change(function(){
     if (parseInt(jQuery(this).val()) >= 1440){

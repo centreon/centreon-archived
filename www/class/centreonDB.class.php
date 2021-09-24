@@ -246,9 +246,9 @@ class CentreonDB extends \PDO
     /**
      * Query
      *
-     * @return \PDOStatement
+     * @return CentreonDBStatement
      */
-    public function query($queryString = null, $parameters = null)
+    public function query($queryString, $parameters = null, ...$parametersArgs)
     {
         if (!is_null($parameters) && !is_array($parameters)) {
             $parameters = [$parameters];
@@ -273,7 +273,7 @@ class CentreonDB extends \PDO
                 $this->log->insertLog(2, " QUERY : " . $string);
             }
 
-            throw new \PDOException($e->getMessage(), hexdec($e->getCode()));
+            throw $e;
         }
 
         $this->queryNumber++;

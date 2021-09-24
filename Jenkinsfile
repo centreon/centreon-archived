@@ -200,6 +200,8 @@ try {
             trendChartType: 'NONE'
           )
           junit 'ut-fe.xml'
+          stash name: 'ut-fe.xml', includes: 'ut-fe.xml'
+          stash name: 'codestyle-fe.xml', includes: 'codestyle-fe.xml'
         }
       }
     },
@@ -228,6 +230,10 @@ try {
             trendChartType: 'NONE'
           )
           junit 'ut-be.xml'
+          stash name: 'ut-be.xml', includes: 'ut-be.xml'
+          stash name: 'coverage-be.xml', includes: 'coverage-be.xml'
+          stash name: 'codestyle-be.xml', includes: 'codestyle-be.xml'
+          stash name: 'phpstan.xml', includes: 'phpstan.xml'
         }
       }
     },
@@ -268,7 +274,7 @@ try {
         archiveArtifacts artifacts: "rpms-centos8.tar.gz"
         stash name: "rpms-centos8", includes: 'output/noarch/*.rpm'
         sh 'rm -rf output'
-      }      
+      }
     }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
       error('Unit tests // RPM Packaging Failure');
@@ -279,6 +285,15 @@ try {
   stage('Violations to Github') {
     node {
       if (env.CHANGE_ID) { // pull request to comment with coding style issues
+        if (hasBackendChanges) {
+          unstash 'codestyle-be.xml'
+          unstash 'phpstan.xml'
+        }
+
+        if (hasFrontendChanges) {
+          unstash 'codestyle-fe.xml'
+        }
+
         ViolationsToGitHub([
           repositoryName: 'centreon',
           pullRequestId: env.CHANGE_ID,
@@ -314,7 +329,7 @@ try {
       if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
         error('Delivery stage failure');
       }
-    } 
+    }
   }
 
   stage('Docker packaging') {

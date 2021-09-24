@@ -1109,6 +1109,7 @@ class CentreonServiceTemplate extends CentreonObject
         if (!$this->canBeExported($filterName)) {
             return false;
         }
+        $filterId = null;
         if (!is_null($filterName)) {
             $filterId = $this->getObjectId($filterName);
         }

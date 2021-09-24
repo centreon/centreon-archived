@@ -1513,7 +1513,7 @@ class CentreonACL
             }
 
             $result = $pearDBMonitoring->query($query);
-            while ($row = $result->fetchRow()) {
+            while ($row = $result->fetch()) {
                 if ($withServiceDescription) {
                     $tab[$row['host_id']][$row['service_id']] = $row['description'];
                 } else {
@@ -2517,7 +2517,7 @@ class CentreonACL
      * @param array $hosts | hosts to duplicate
      * @return void
      */
-    public function duplicateHostAcl($hosts = [])
+    public static function duplicateHostAcl($hosts = [])
     {
         $sql = "INSERT INTO %s (host_host_id, acl_res_id)
             (SELECT %d, acl_res_id FROM %s WHERE host_host_id = %d)";
@@ -2535,7 +2535,7 @@ class CentreonACL
      * @param array $hgs | host groups to duplicate
      * @return void
      */
-    public function duplicateHgAcl($hgs = array())
+    public static function duplicateHgAcl($hgs = array())
     {
         $sql = "INSERT INTO %s 
                     (hg_hg_id, acl_res_id)
@@ -2554,7 +2554,7 @@ class CentreonACL
      * @param array $sgs | service groups to duplicate
      * @return void
      */
-    public function duplicateSgAcl($sgs = array())
+    public static function duplicateSgAcl($sgs = array())
     {
         $sql = "INSERT INTO %s 
                     (sg_id, acl_res_id)
@@ -2573,7 +2573,7 @@ class CentreonACL
      * @param array $hcs | host categories to duplicate
      * @return void
      */
-    public function duplicateHcAcl($hcs = array())
+    public static function duplicateHcAcl($hcs = array())
     {
         $sql = "INSERT INTO %s 
                     (hc_id, acl_res_id)
@@ -2592,7 +2592,7 @@ class CentreonACL
      * @param array $scs | service categories to duplicate
      * @return void
      */
-    public function duplicateScAcl($scs = array())
+    public static function duplicateScAcl($scs = array())
     {
         $sql = "INSERT INTO %s 
                     (sc_id, acl_res_id)

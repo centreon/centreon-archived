@@ -99,13 +99,18 @@ class CommandRepositoryTest extends TestCase
     public function testGetPaginationList()
     {
         $result = $this->repository->getPaginationList();
+        $command = new Command();
+        if (array_key_exists('id', $result[0]) && array_key_exists('name', $result[0])) {
+            $command->setId($result[0]['id']);
+            $command->setName($result[0]['name']);
+        }
+
         $data = $this->datasets[0]['data'][0];
+        $expectedCommand = new Command();
+        $expectedCommand->setId($data['id']);
+        $expectedCommand->setName($data['name']);
 
-        $entity = new Command();
-        $entity->setId($data['id']);
-        $entity->setName($data['name']);
-
-        $this->assertEquals([$entity], $result);
+        $this->assertEquals($expectedCommand, $command);
     }
 
     /**
@@ -124,13 +129,18 @@ class CommandRepositoryTest extends TestCase
         $offset = 0;
 
         $result = $this->repository->getPaginationList($filters, $limit, $offset);
+        $command = new Command();
+        if (array_key_exists('id', $result[0]) && array_key_exists('name', $result[0])) {
+            $command->setId($result[0]['id']);
+            $command->setName($result[0]['name']);
+        }
+
         $data = $this->datasets[1]['data'][0];
+        $expectedCommand = new Command();
+        $expectedCommand->setId($data['id']);
+        $expectedCommand->setName($data['name']);
 
-        $entity = new Command();
-        $entity->setId($data['id']);
-        $entity->setName($data['name']);
-
-        $this->assertEquals([$entity], $result);
+        $this->assertEquals($expectedCommand, $command);
     }
 
     /**

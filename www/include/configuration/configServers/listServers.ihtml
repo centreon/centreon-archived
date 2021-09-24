@@ -69,7 +69,6 @@
                     </button>
                 {/if}
             </td>
-            <input name="p" value="{$p}" type="hidden">
             {php}
                include('./include/common/pagination.php');
             {/php}
@@ -142,7 +141,6 @@
     </table>
     <table class="ToolbarTable table">
         <tr class="ToolbarTR">
-            <input name="p" value="{$p}" type="hidden">
             {php}
                include('./include/common/pagination.php');
             {/php}

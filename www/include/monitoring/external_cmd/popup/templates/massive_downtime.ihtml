@@ -10,7 +10,7 @@
 			</tr>
             <tr>
 				<td class="FormRowField" style='padding-left:15px;'>{$form.start.label}</td>
-				<td class="FormRowValue" style='padding-left:15px;'>{$form.start.html}&nbsp;{$form.start_time.html} {$form.alternativeDateStart.html}</td>
+				<td class="FormRowValue" style='padding-left:15px;'>{$form.start.html}&nbsp;{$form.start_time.html}</td>
 			</tr>
 			<tr>
 				<td  class="FormRowField" style='padding-left:15px;'>{$form.host_or_centreon_time.label}</td>
@@ -18,7 +18,7 @@
 			</tr>
 			<tr>
 				<td class="FormRowField" style='padding-left:15px;'>{$form.end.label}</td>
-				<td class="FormRowValue" style='padding-left:15px;'>{$form.end.html}&nbsp;{$form.end_time.html} {$form.alternativeDateEnd.html}</td>
+				<td class="FormRowValue" style='padding-left:15px;'>{$form.end.html}&nbsp;{$form.end_time.html}</td>
 			</tr>
 			<tr>
 				<td class="FormRowField" style='padding-left:15px;'>{$form.duration.label}</td>

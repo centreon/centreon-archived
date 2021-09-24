@@ -44,7 +44,6 @@ use CentreonLegacy\ServiceProvider as ServiceProviderLegacy;
 
 class WidgetSource extends SourceAbstract
 {
-
     const TYPE = 'widget';
     const PATH = 'www/widgets/';
     const CONFIG_FILE = 'configs.xml';
@@ -136,6 +135,9 @@ class WidgetSource extends SourceAbstract
 
     public function createEntityFromConfig(string $configFile): Module
     {
+        // force linux path format
+        $configFile = str_replace(DIRECTORY_SEPARATOR, '/', $configFile);
+
         $xml = simplexml_load_file($configFile);
 
         $entity = new Module;
