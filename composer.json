@@ -64,7 +64,7 @@
         "symfony/options-resolver": "4.4.*",
         "symfony/security-bundle": "4.4.*",
         "symfony/translation": "4.4.*",
-        "symfony/validator": "4.4.*",
+        "symfony/validator": "5.0.*",
         "symfony/yaml": "4.4.*",
         "doctrine/annotations": "^1.0",
         "phpdocumentor/reflection-docblock": "^5.2",
