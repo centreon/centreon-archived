@@ -90,7 +90,7 @@ require_once $path . "DB-Func.php";
 require_once "./include/common/common-Func.php";
 
 /* Set the real page */
-if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
+if (isset($ret) && is_array($ret) && $ret['topology_page'] != "" && $p != $ret['topology_page']) {
     $p = $ret['topology_page'];
 }
 
@@ -102,7 +102,7 @@ $allowedAclGroups = $acl->getAccessGroups();
  */
 $eventDispatcher = $dependencyInjector[ServiceProvider::CENTREON_EVENT_DISPATCHER];
 
-if(! is_null($eventDispatcher->getDispatcherLoader())) {
+if (!is_null($eventDispatcher->getDispatcherLoader())) {
     $eventDispatcher->getDispatcherLoader()->load();
 }
 
@@ -174,49 +174,91 @@ switch ($o) {
         require_once($path . "formContact.php");
         break;
     case ACTIVATE_CONTACT:
-        enableContactInDB($contactId);
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            enableContactInDB($contactId);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listContact.php");
         break;
     case MASSIVE_ACTIVATE_CONTACT:
-        enableContactInDB(null, isset($select) ? $select : array());
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            enableContactInDB(null, isset($select) ? $select : array());
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listContact.php");
         break;
     case DEACTIVATE_CONTACT:
-        disableContactInDB($contactId);
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            disableContactInDB($contactId);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listContact.php");
         break;
     case MASSIVE_DEACTIVATE_CONTACT:
-        disableContactInDB(null, isset($select) ? $select : array());
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            disableContactInDB(null, isset($select) ? $select : array());
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listContact.php");
         break;
     case DUPLICATE_CONTACTS:
-        $eventDispatcher->notify(
-            'contact.form',
-            EventDispatcher::EVENT_DUPLICATE,
-            [
-                'contact_ids' => $select,
-                'numbers' => $dupNbr
-            ]
-        );
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            $eventDispatcher->notify(
+                'contact.form',
+                EventDispatcher::EVENT_DUPLICATE,
+                [
+                    'contact_ids' => $select,
+                    'numbers' => $dupNbr
+                ]
+            );
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listContact.php");
         break;
     case DELETE_CONTACTS:
-        $eventDispatcher->notify(
-            'contact.form',
-            EventDispatcher::EVENT_DELETE,
-            ['contact_ids' => $select]
-        );
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            $eventDispatcher->notify(
+                'contact.form',
+                EventDispatcher::EVENT_DELETE,
+                ['contact_ids' => $select]
+            );
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listContact.php");
         break;
     case DISPLAY_NOTIFICATION:
         require_once $path . 'displayNotification.php';
         break;
     case SYNC_LDAP_CONTACTS:
-        $eventDispatcher->notify(
-            'contact.form',
-            EventDispatcher::EVENT_SYNCHRONIZE,
-            ['contact_ids' => $select]
-        );
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            $eventDispatcher->notify(
+                'contact.form',
+                EventDispatcher::EVENT_SYNCHRONIZE,
+                ['contact_ids' => $select]
+            );
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listContact.php");
         break;
     default:

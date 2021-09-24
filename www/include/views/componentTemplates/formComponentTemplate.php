@@ -106,17 +106,19 @@ $eTemplate = '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><t
 
 $availableRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=list';
 
-if ($o !== 'a') {
-    $defaultRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_objects' .
-        '&action=defaultValues&target=graphCurve&field=host_id&id=' . $compo_id;
-}
 $attrServices = [
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => $availableRoute,
-    'defaultDatasetRoute' => $defaultRoute,
     'linkedObject' => 'centreonService',
     'multiple' => false
 ];
+
+if ($o !== 'a') {
+    $defaultRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_objects' .
+        '&action=defaultValues&target=graphCurve&field=host_id&id=' . $compo_id;
+
+    $attrServices['defaultDatasetRoute'] = $defaultRoute;
+}
 
 /*
  * Form begin

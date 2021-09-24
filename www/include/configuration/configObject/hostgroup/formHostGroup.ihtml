@@ -1,15 +1,22 @@
 {$form.javascript}{$javascript}
 <form {$form.attributes}>
-    {if !$form.msgacl }
+    {if !isset($form.msgacl) }
     <div id="validFormTop">
         {if $o == "a" || $o == "c"}
-        <p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+        <p class="oreonbutton">
+            {if isset($form.submitC)}
+                {$form.submitC.html}
+            {else}
+                {$form.submitA.html}
+            {/if}
+            &nbsp;&nbsp;&nbsp;{$form.reset.html}
+        </p>
         {else if $o == "w"}
-        <p class="oreonbutton">{$form.change.html}</p>
+        <p class="oreonbutton">{if isset($form.change)}{$form.change.html}{/if}</p>
         {/if}
     </div>
     {/if}
-    {if $form.msgacl }
+    {if isset($form.msgacl) }
     <div style="color: red; text-align: center; font-weight: bold; margin: 4px">
         {t}You can't edit this hostgroup because you don't have access to all its resources{/t}
     </div>
@@ -100,17 +107,28 @@
             </tr>
             {if $o == "a" || $o == "c"}
             <tr class="list_lvl_2">
-                <td class="ListColLvl2_name" colspan="2">{$form.required._note}</td>
+                <td class="ListColLvl2_name" colspan="2">
+                    {if isset($form.required)}
+                        {$form.required._note}
+                    {/if}
+                </td>
             </tr>
             {/if}
         </table>
     </div>
-    {if !$form.msgacl }
+    {if !isset($form.msgacl) }
     <div id="validForm">
         {if $o == "a" || $o == "c"}
-        <p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+        <p class="oreonbutton">
+            {if isset($form.submitC)}
+                {$form.submitC.html}
+            {else}
+                {$form.submitA.html}
+            {/if}
+            &nbsp;&nbsp;&nbsp;{$form.reset.html}
+        </p>
         {else if $o == "w"}
-        <p class="oreonbutton">{$form.change.html}</p>
+        <p class="oreonbutton">{if isset($form.change)}{$form.change.html}{/if}</p>
         {/if}
     </div>
     {/if}

@@ -920,6 +920,7 @@ if ($o == SERVICE_ADD) {
     $form->addElement('header', 'title4', _("View an Extended Info"));
 } elseif ($o == SERVICE_MASSIVE_CHANGE) {
     $form->addElement('header', 'title3', _("Massive Change"));
+    $form->addElement('header', 'title4', _("Modify an Extended Info"));
 }
 
 $form->addElement('header', 'nagios', _("Monitoring Engine"));

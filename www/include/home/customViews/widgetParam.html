@@ -1,4 +1,4 @@
-{$form.javascript}{$javascript}
+{$form.javascript}
 <form {$form.attributes}>
 
 <table class="table formTable">
@@ -36,7 +36,9 @@
 </table>
 <div id="validForm">
 	{$form.hidden}
-	<input type='hidden' name='selectedId' value='{$selectedId}'/>
+    {if isset($selectedId)}
+	    <input type='hidden' name='selectedId' value='{$selectedId}'/>
+    {/if}
 	<p class="oreonbutton">
 		{$form.submit.html}&nbsp;{$form.reset.html}
 	</p>
