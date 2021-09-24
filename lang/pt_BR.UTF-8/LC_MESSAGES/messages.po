@@ -15192,5 +15192,5 @@ msgstr "Erro ao remover tokens de um contato"
 # msgid "Service graphs"
 # msgstr ""
 
-msgid "Last check with OK status"
+msgid "Last check returning OK"
 msgstr ""
