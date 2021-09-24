@@ -40,7 +40,7 @@
         "ext-json": "*",
         "ext-openssl": "*",
         "ext-phar": "*",
-        "friendsofsymfony/rest-bundle": "^2.5",
+        "friendsofsymfony/rest-bundle": "^3.0",
         "jms/serializer-bundle": "^3.9",
         "justinrainbow/json-schema": "^5.2",
         "nelmio/cors-bundle": "^1.5",
