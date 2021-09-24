@@ -272,8 +272,8 @@ class CentreonDowntime extends CentreonObject
         if (!is_numeric($tmp[3])) {
             throw new CentreonClapiException('Incorrect fixed parameters');
         }
-        if (!is_numeric($tmp[4])) {
-            throw new CentreonClapiException('Incorrect duration parameters');
+        if ($tmp[3] == 0 && !is_numeric($tmp[4])) {
+            throw new CentreonClapiException('Incorrect duration parameters: mandatory for flexible downtimes');
         }
 
         $p = array();
@@ -281,7 +281,7 @@ class CentreonDowntime extends CentreonObject
         $p[':start_time'] = $tmp[1];
         $p[':end_time'] = $tmp[2];
         $p[':fixed'] = $tmp[3];
-        $p[':duration'] = $tmp[4];
+        $p[':duration'] = $tmp[3] == 0 ? $tmp[4] : null;
         $daysOfWeek = explode(',', strtolower($tmp[5]));
         $days = array();
         foreach ($daysOfWeek as $dayOfWeek) {
