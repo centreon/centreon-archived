@@ -1459,18 +1459,10 @@ __EOT__
 #----
 check_php_fpm_directory() {
     if [ -z "$DIR_PHP_FPM_CONF" ] ; then
-        if [ -d /etc/php/7.2/fpm/pool.d ]; then
-            DIR_PHP_FPM_CONF="/etc/php/7.2/fpm/pool.d"
-        elif [ -d /etc/opt/rh/rh-php72/php-fpm.d ] ; then
-            DIR_PHP_FPM_CONF="/etc/opt/rh/rh-php72/php-fpm.d"
-        elif [ -d /etc/php/7.3/fpm/pool.d ]; then
-            DIR_PHP_FPM_CONF="/etc/php/7.3/fpm/pool.d"
-        elif [ -d /etc/opt/rh/rh-php73/php-fpm.d ] ; then
-            DIR_PHP_FPM_CONF="/etc/opt/rh/rh-php73/php-fpm.d"
-        elif [ -d /etc/php/7.1/fpm/pool.d ]; then
-            DIR_PHP_FPM_CONF="/etc/php/7.1/fpm/pool.d"
-        elif [ -d /etc/opt/rh/rh-php71/php-fpm.d ] ; then
-            DIR_PHP_FPM_CONF="/etc/opt/rh/rh-php71/php-fpm.d"
+        if [ -d /etc/php/8.0/fpm/pool.d ]; then
+            DIR_PHP_FPM_CONF="/etc/php/8.0/fpm/pool.d"
+        elif [ -d /etc/php-fpm.d ] ; then
+            DIR_PHP_FPM_CONF="/etc/php-fpm.d"
         else
             echo_passed "$(gettext "PHP FPM config directory not found")" "$critical"
             answer_with_testdir "$(gettext "Where is your PHP FPM conf.d directory")" "NO_DEFAULT" "DIR_PHP_FPM_CONF"

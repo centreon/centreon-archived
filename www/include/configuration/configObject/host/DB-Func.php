@@ -456,7 +456,7 @@ function multipleHostInDB($hosts = array(), $nbrDup = array())
                         $dbResult2 = $pearDB->query("SELECT COUNT(*) 
                                                 FROM host_service_relation 
                                                 WHERE service_service_id = '" . $service["service_service_id"] . "'");
-                        $mulHostSv = $dbResult2->fetchrow();
+                        $mulHostSv = $dbResult2->fetch();
                         if ($mulHostSv["COUNT(*)"] > 1) {
                             $dbResult3 = $pearDB->query("INSERT INTO host_service_relation 
                 VALUES (NULL, NULL, '" . $maxId["MAX(host_id)"] . "', NULL, '" . $service["service_service_id"] . "')");
@@ -984,7 +984,7 @@ function insertHost($ret, $macro_on_demand = null, $server_id = null)
             $host_id['MAX(host_id)'],
             $_REQUEST['macroInput'],
             $_REQUEST['macroValue'],
-            $_REQUEST['macroPassword'],
+            $_REQUEST['macroPassword'] ?? [],
             $macroDescription,
             false,
             $ret["command_command_id"]
@@ -1335,7 +1335,7 @@ function updateHost($host_id = null, $from_MC = false, $cfg = null)
             $host_id,
             $_REQUEST['macroInput'],
             $_REQUEST['macroValue'],
-            $_REQUEST['macroPassword'],
+            $_REQUEST['macroPassword'] ?? [],
             $macroDescription,
             false,
             $ret["command_command_id"]
@@ -1437,7 +1437,7 @@ function updateHost_MC($host_id = null)
             $host_id,
             $_REQUEST['macroInput'],
             $_REQUEST['macroValue'],
-            $_REQUEST['macroPassword'],
+            $_REQUEST['macroPassword'] ?? [],
             $macroDescription,
             true
         );
@@ -2386,30 +2386,6 @@ function updateNagiosServerRelation($host_id, $ret = array())
         $rq .= "('" . (int)$host_id . "', '" . $ret . "')";
 
         $dbResult = $pearDB->query($rq);
-    }
-}
-
-/**
- * For massive change. We just add the new list if the elem doesn't exist yet
- */
-function updateNagiosServerRelation_MC($host_id, $ret = array())
-{
-    global $form, $pearDB;
-
-    if (!$host_id) {
-        return;
-    }
-
-    $cgs = array();
-    while ($arr = $dbResult->fetch()) {
-        $cgs[$arr["nagios_server_id"]] = $arr["nagios_server_id"];
-    }
-
-    $ret = $form->getSubmitValue("nagios_server_id");
-    if (isset($ret) && $ret != "" && $ret != 0) {
-        $dbResult = $pearDB->query("SELECT * FROM ns_host_relation WHERE host_host_id = '" . (int)$host_id . "'");
-        $dbResult = $pearDB->query("INSERT INTO `ns_host_relation` (`host_host_id`, `nagios_server_id`) 
-                                    VALUES ('" . (int)$host_id . "', '" . $ret . "')");
     }
 }
 

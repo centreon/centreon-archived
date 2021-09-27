@@ -1,5 +1,4 @@
 {$form.javascript}
-{$insertValueQuery}
 <form {$form.attributes}>
         <div class="headerTabContainer">
         <ul id="mainnav">
@@ -8,11 +7,18 @@
             <li class="b" id='c3'><a href="#" style='cursor:pointer' onclick="javascript:montre('3');">{$tabTitle_3}</a></li>
         </ul>
         <div id="validFormTop">
-	     {if $o == "a" || $o == "c"}
-		    <p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
-	     {else if $o == "w"}
-		    <p class="oreonbutton">{$form.change.html}</p>
-	     {/if}
+            {if $o == "a" || $o == "c"}
+		        <p class="oreonbutton">
+                    {if isset($form.submitC)}
+                        {$form.submitC.html}
+                    {else}
+                        {$form.submitA.html}
+                    {/if}
+                    &nbsp;&nbsp;&nbsp;{$form.reset.html}
+                </p>
+            {else if $o == "w"}
+                <p class="oreonbutton">{if isset($form.change)}{$form.change.html}{/if}</p>
+            {/if}
         </div>
 	</div>
 	<div id='tab1' class='tab'>
@@ -76,7 +82,11 @@
                      </td>
                    </tr>
                    <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="comments"> {$form.traps_comments.label}</td><td class="FormRowValue">{$form.traps_comments.html}</td></tr>
-                   <tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">{$form.required._note}</td></tr>
+                   <tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">
+                {if isset($form.required)}
+                    {$form.required._note}
+                {/if}
+            </td></tr>
            </tbody>
 	</table>
 	</div>
@@ -96,7 +106,9 @@
                     <tr class="list_one">
                         <td class="FormRowField"><img class="helpTooltip" name="services"> {$serviceTxt}</td>
                         <td class="FormRowValue">
-                            {$form.host_filter.html}
+                            {if isset($form.host_filter)}
+                              {$form.host_filter.html}
+                            {/if}
                             {$form.services.html}
                         </td>
                     </tr>
@@ -186,11 +198,18 @@
             </table>
         </div>
 	<div id="validForm">
-	{if $o == "a" || $o == "c"}
-		<p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
-	{else if $o == "w"}
-		<p class="oreonbutton">{$form.change.html}</p>
-	{/if}
+        {if $o == "a" || $o == "c"}
+            <p class="oreonbutton">
+                {if isset($form.submitC)}
+                    {$form.submitC.html}
+                {else}
+                    {$form.submitA.html}
+                {/if}
+                &nbsp;&nbsp;&nbsp;{$form.reset.html}
+            </p>
+    {else if $o == "w"}
+        <p class="oreonbutton">{if isset($form.change)}{$form.change.html}{/if}</p>
+    {/if}
 	</div>
 	{$form.hidden}
 </form>

@@ -38,7 +38,7 @@ if (!isset($centreon)) {
 }
 
 $id = filter_var(
-    $_REQUEST['id'],
+    $_REQUEST['id'] ?? null,
     FILTER_VALIDATE_INT,
     ['options' => ['default' => 0]]
 );

@@ -25,7 +25,9 @@
 	<div id="validForm">
 	<input type='hidden' name='o' value='{$o}'>
 	{if $o == "li"}
-		<p>{$form.action.html}</p>
+		{if isset($form.action)}
+			<p>{$form.action.html}</p>
+		{/if}
 		<p class="oreonbutton">{$form.submitA.html}</p>
 	{/if}
 	</div>

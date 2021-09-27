@@ -1019,16 +1019,19 @@ function getMyServiceExtendedInfoField($service_id, $field)
             "WHERE `extended_service_information`.`service_service_id` = '" . CentreonDb::escape($service_id) .
             "' AND `service`.`service_id` = '" . CentreonDb::escape($service_id) . "' LIMIT 1";
         $DBRESULT = $pearDB->query($query);
-        $row = $DBRESULT->fetchRow();
-        $field_result = $row[$field];
-        if ($row[$field]) {
-            return $row[$field];
-        } elseif ($row["service_template_model_stm_id"]) {
-            if (isset($tab[$row['service_template_model_stm_id']])) {
+
+        if ($row = $DBRESULT->fetch()) {
+            if ($row[$field]) {
+                return $row[$field];
+            } elseif ($row["service_template_model_stm_id"]) {
+                if (isset($tab[$row['service_template_model_stm_id']])) {
+                    break;
+                }
+                $service_id = $row["service_template_model_stm_id"];
+                $tab[$service_id] = 1;
+            } else {
                 break;
             }
-            $service_id = $row["service_template_model_stm_id"];
-            $tab[$service_id] = 1;
         } else {
             break;
         }

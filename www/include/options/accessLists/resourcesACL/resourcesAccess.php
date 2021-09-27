@@ -39,7 +39,7 @@ if (!isset($centreon)) {
 }
 
 $aclId = filter_var(
-    $_GET['acl_res_id'] ?? $_POST['acl_res_id'],
+    $_GET['acl_res_id'] ?? $_POST['acl_res_id'] ?? null,
     FILTER_VALIDATE_INT
 ) ?: null;
 

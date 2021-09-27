@@ -73,7 +73,7 @@ $sgs = $acl->getServiceGroupAclConf(null, 'broker');
 $severityObj = new CentreonCriticality($pearDB);
 
 /* Set the real page */
-if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
+if (isset($ret) && is_array($ret) && $ret['topology_page'] != "" && $p != $ret['topology_page']) {
     $p = $ret['topology_page'];
 }
 
