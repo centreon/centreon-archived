@@ -387,7 +387,7 @@ try {
     }
   }*/
 
-//  if ((env.BUILD == 'QA')) {
+  if ((env.BUILD == 'QA')) {
     stage('Docker packaging with unstable rpms') {
       def parallelSteps = [:]
       def osBuilds = isStableBuild() ? ['centos7', 'centos8'] : ['centos7']
@@ -405,7 +405,7 @@ try {
         error('Bundle stage failure.');
       }
     }
-//  }
+  }
 
   if ((env.BUILD == 'RELEASE')) {
     stage('Docker packaging') {
