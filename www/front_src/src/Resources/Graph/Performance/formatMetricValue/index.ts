@@ -1,5 +1,5 @@
 import numeral from 'numeral';
-import { and, isNil, lt } from 'ramda';
+import { isNil, lt } from 'ramda';
 
 interface FormatMetricValueProps {
   base?: number;
@@ -36,7 +36,7 @@ const formatMetricValue = ({
     .format(`0.[00]${formatSuffix}`)
     .replace(/\s|i|B/g, '');
 
-  if (and(lt(value, 0), base1024)) {
+  if (lt(value, 0)) {
     return `-${formattedMetricValue}`;
   }
 
