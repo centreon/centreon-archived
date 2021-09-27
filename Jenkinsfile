@@ -497,7 +497,7 @@ try {
     }
   }
 
-//  if ((env.BUILD == 'RELEASE') || (env.BUILD == 'QA') || (env.BUILD == 'REFERENCE')) {
+  if ((env.BUILD == 'RELEASE') || (env.BUILD == 'QA') || (env.BUILD == 'REFERENCE')) {
     stage('Acceptance tests') {
       if (hasBackendChanges || hasFrontendChanges) {
         def atparallelSteps = [:]
@@ -525,7 +525,7 @@ try {
         }
       }
     }
-//  }
+  }
 } catch(e) {
   if (isStableBuild()) {
     slackSend channel: "#monitoring-metrology",
