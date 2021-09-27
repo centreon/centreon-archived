@@ -6,11 +6,11 @@ import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 
 import createStore from '../../../store';
-import { setRefreshIntervals } from '../../../redux/actions/refreshActions';
 
 import HostMenu from '.';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
+
 describe(HostMenu, () => {
   afterEach(() => {
     mockedAxios.get.mockReset();
@@ -19,7 +19,7 @@ describe(HostMenu, () => {
   it('redirects to the Resource status page with the resource type filter set to host and the corresponding status when a status chip is clicked', async () => {
     const store = createStore();
 
-    mockedAxios.get.mockResolvedValueOnce({
+    mockedAxios.get.mockResolvedValue({
       data: {
         down: {
           total: 3,
@@ -43,8 +43,6 @@ describe(HostMenu, () => {
         </Provider>
       </BrowserRouter>,
     );
-
-    store.dispatch(setRefreshIntervals({ AjaxTimeReloadMonitoring: 10 }));
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalled();

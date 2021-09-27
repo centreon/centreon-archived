@@ -56,16 +56,6 @@ const getListingEndpoint = ({
 
 const cancelTokenRequestParam = { cancelToken: {} };
 
-const mockAppStateSelector = (useSelector: jest.Mock): void => {
-  const appState = {
-    intervals: {
-      AjaxTimeReloadMonitoring: 60,
-    },
-  };
-
-  useSelector.mockImplementation((callback) => callback(appState));
-};
-
 interface CriteriaValueProps {
   filter: Filter;
   name: string;
@@ -96,7 +86,6 @@ const getFilterWithUpdatedCriteria = ({
 };
 
 export {
-  mockAppStateSelector,
   getListingEndpoint,
   cancelTokenRequestParam,
   defaultStatuses,

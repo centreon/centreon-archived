@@ -1,6 +1,5 @@
 import * as React from 'react';
 
-import { useSelector } from 'react-redux';
 import {
   render,
   RenderResult,
@@ -31,6 +30,7 @@ import {
 import userEvent from '@testing-library/user-event';
 
 import { Column } from '@centreon/ui';
+import { useUserContext } from '@centreon/ui-context';
 
 import { Resource, ResourceType } from '../models';
 import Context, { ResourceContext } from '../Context';
@@ -53,18 +53,21 @@ const columns = getColumns({
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
-jest.mock('react-redux', () => ({
-  ...(jest.requireActual('react-redux') as jest.Mocked<unknown>),
-  useSelector: jest.fn(),
+const mockUserContext = {
+  locale: 'en',
+  refreshInterval: 60,
+  timezone: 'Europe/Paris',
+};
+
+jest.mock('@centreon/centreon-frontend/packages/ui-context', () => ({
+  ...(jest.requireActual('@centreon/ui-context') as jest.Mocked<unknown>),
+  useUserContext: jest.fn(),
 }));
 
-jest.mock('../icons/Downtime');
+const mockedUserContext = useUserContext as jest.Mock;
 
-const appState = {
-  intervals: {
-    AjaxTimeReloadMonitoring: 60,
-  },
-};
+jest.mock('../icons/Downtime');
+jest.useFakeTimers();
 
 const fillEntities = (): Array<Resource> => {
   const entityCount = 31;
@@ -146,15 +149,11 @@ const ListingTest = (): JSX.Element => {
   );
 };
 
-const mockedSelector = useSelector as jest.Mock;
-
 const renderListing = (): RenderResult => render(<ListingTest />);
 
 describe(Listing, () => {
   beforeEach(() => {
-    mockedSelector.mockImplementation((callback) => {
-      return callback(appState);
-    });
+    mockedUserContext.mockReturnValue(mockUserContext);
 
     mockedAxios.get
       .mockResolvedValueOnce({
@@ -171,7 +170,7 @@ describe(Listing, () => {
   });
 
   afterEach(() => {
-    mockedSelector.mockClear();
+    mockedUserContext.mockReset();
     mockedAxios.get.mockReset();
   });
 
