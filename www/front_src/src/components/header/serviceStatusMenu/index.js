@@ -136,7 +136,42 @@ class ServiceStatusMenu extends Component {
 
   render() {
     const { data, toggled } = this.state;
-    const { t } = this.props;
+    const { t, useDeprecatedPages } = this.props;
+
+    const unhandledCriticalServicesLink = useDeprecatedPages
+      ? '/main.php?p=20201&o=svc_unhandled&statusFilter=critical&search='
+      : getServiceResourcesUrl({
+          stateCriterias: unhandledStateCriterias,
+          statusCriterias: criticalCriterias,
+        });
+
+    const unhandledWarningServicesLink = useDeprecatedPages
+      ? '/main.php?p=20201&o=svc_unhandled&statusFilter=warning&search='
+      : getServiceResourcesUrl({
+          stateCriterias: unhandledStateCriterias,
+          statusCriterias: warningCriterias,
+        });
+
+    const unhandledUnknownServicesLink = useDeprecatedPages
+      ? '/main.php?p=20201&o=svc_unhandled&statusFilter=unknown&search='
+      : getServiceResourcesUrl({
+          stateCriterias: unhandledStateCriterias,
+          statusCriterias: unknownCriterias,
+        });
+
+    const okServicesLink = useDeprecatedPages
+      ? '/main.php?p=20201&o=svc&statusFilter=ok&search='
+      : getServiceResourcesUrl({ statusCriterias: okCriterias });
+
+    const servicesLink = useDeprecatedPages
+      ? '/main.php?p=20201&o=svc&statusFilter=&search='
+      : getServiceResourcesUrl();
+
+    const pendingServicesLink = useDeprecatedPages
+      ? '/main.php?p=20201&o=svc&statusFilter=&search='
+      : getServiceResourcesUrl({
+          statusCriterias: pendingCriterias,
+        });
 
     // do not display service information until having data
     if (!data) {
@@ -158,10 +193,7 @@ class ServiceStatusMenu extends Component {
           </IconHeader>
           <Link
             className={classnames(styles.link, styles['wrap-middle-icon'])}
-            to={getServiceResourcesUrl({
-              stateCriterias: unhandledStateCriterias,
-              statusCriterias: criticalCriterias,
-            })}
+            to={unhandledCriticalServicesLink}
           >
             <IconNumber
               iconColor="red"
@@ -177,10 +209,7 @@ class ServiceStatusMenu extends Component {
           </Link>
           <Link
             className={classnames(styles.link, styles['wrap-middle-icon'])}
-            to={getServiceResourcesUrl({
-              stateCriterias: unhandledStateCriterias,
-              statusCriterias: warningCriterias,
-            })}
+            to={unhandledWarningServicesLink}
           >
             <IconNumber
               iconColor="orange"
@@ -196,10 +225,7 @@ class ServiceStatusMenu extends Component {
           </Link>
           <Link
             className={classnames(styles.link, styles['wrap-middle-icon'])}
-            to={getServiceResourcesUrl({
-              stateCriterias: unhandledStateCriterias,
-              statusCriterias: unknownCriterias,
-            })}
+            to={unhandledUnknownServicesLink}
           >
             <IconNumber
               iconColor="gray-light"
@@ -215,7 +241,7 @@ class ServiceStatusMenu extends Component {
           </Link>
           <Link
             className={classnames(styles.link, styles['wrap-middle-icon'])}
-            to={getServiceResourcesUrl({ statusCriterias: okCriterias })}
+            to={okServicesLink}
           >
             <IconNumber
               iconColor="green"
@@ -239,7 +265,7 @@ class ServiceStatusMenu extends Component {
             <SubmenuItems>
               <Link
                 className={styles.link}
-                to={getServiceResourcesUrl()}
+                to={servicesLink}
                 onClick={this.toggle}
               >
                 <SubmenuItem
@@ -249,10 +275,7 @@ class ServiceStatusMenu extends Component {
               </Link>
               <Link
                 className={styles.link}
-                to={getServiceResourcesUrl({
-                  stateCriterias: unhandledStateCriterias,
-                  statusCriterias: criticalCriterias,
-                })}
+                to={unhandledCriticalServicesLink}
                 onClick={this.toggle}
               >
                 <SubmenuItem
@@ -265,10 +288,7 @@ class ServiceStatusMenu extends Component {
               </Link>
               <Link
                 className={styles.link}
-                to={getServiceResourcesUrl({
-                  stateCriterias: unhandledStateCriterias,
-                  statusCriterias: warningCriterias,
-                })}
+                to={unhandledWarningServicesLink}
                 onClick={this.toggle}
               >
                 <SubmenuItem
@@ -281,10 +301,7 @@ class ServiceStatusMenu extends Component {
               </Link>
               <Link
                 className={styles.link}
-                to={getServiceResourcesUrl({
-                  stateCriterias: unhandledStateCriterias,
-                  statusCriterias: unknownCriterias,
-                })}
+                to={unhandledUnknownServicesLink}
                 onClick={this.toggle}
               >
                 <SubmenuItem
@@ -297,7 +314,7 @@ class ServiceStatusMenu extends Component {
               </Link>
               <Link
                 className={styles.link}
-                to={getServiceResourcesUrl({ statusCriterias: okCriterias })}
+                to={okServicesLink}
                 onClick={this.toggle}
               >
                 <SubmenuItem
@@ -308,9 +325,7 @@ class ServiceStatusMenu extends Component {
               </Link>
               <Link
                 className={styles.link}
-                to={getServiceResourcesUrl({
-                  statusCriterias: pendingCriterias,
-                })}
+                to={pendingServicesLink}
                 onClick={this.toggle}
               >
                 <SubmenuItem
