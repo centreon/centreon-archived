@@ -447,7 +447,7 @@ try {
     }
   }
 
-  if ((env.BUILD == 'QA')) {
+//  if ((env.BUILD == 'QA')) {
     stage('API // E2E') {
       parallel 'API Tests': {
         if (hasBackendChanges) {
@@ -495,8 +495,8 @@ try {
         parallel parallelSteps
       }
     }
-  }
-  
+//  }
+
   if ((env.BUILD == 'RELEASE') || (env.BUILD == 'QA') || (env.BUILD == 'REFERENCE')) {
     stage('Acceptance tests') {
       if (hasBackendChanges || hasFrontendChanges) {
