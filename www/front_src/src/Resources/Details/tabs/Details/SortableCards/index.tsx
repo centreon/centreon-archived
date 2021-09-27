@@ -3,7 +3,7 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { rectIntersection } from '@dnd-kit/core';
 import { rectSortingStrategy } from '@dnd-kit/sortable';
-import { filter, find, isEmpty, isNil, map, pluck, propEq } from 'ramda';
+import { filter, find, isEmpty, map, pluck, propEq } from 'ramda';
 
 import { Box, Grid } from '@material-ui/core';
 
@@ -50,8 +50,7 @@ const SortableCards = ({ panelWidth, details }: Props): JSX.Element => {
   );
 
   const displayedCards = filter(
-    ({ shouldBeDisplayed }) =>
-      shouldBeDisplayed,
+    ({ shouldBeDisplayed }) => shouldBeDisplayed,
     cards,
   );
 

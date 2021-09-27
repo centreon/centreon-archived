@@ -43,7 +43,7 @@ export interface DetailCardLine {
   active?: boolean;
   isCustomCard?: boolean;
   line: JSX.Element;
-  shouldBeDisplayed?: boolean;
+  shouldBeDisplayed: boolean;
   title: string;
   xs?: 6 | 12;
 }
@@ -140,7 +140,7 @@ const getDetailCardLines = ({
       line: (
         <ChecksIcon {...pick(['active_checks', 'passive_checks'], details)} />
       ),
-      shouldBeDisplayed: displayChecksIcon ? true : undefined,
+      shouldBeDisplayed: displayChecksIcon,
       title: labelCheck,
     },
     {
