@@ -68,14 +68,22 @@ const useLoadResources = (): LoadResources => {
       return criteriaValue?.map(prop('id'));
     };
 
+    const getCriteriaNames = (name: string): Array<string> => {
+      const criteriaValue = getCriteriaValue(name) as
+        | Array<SelectEntry>
+        | undefined;
+
+      return criteriaValue?.map(prop('name')) as Array<string>;
+    };
+
     sendRequest({
-      hostGroupIds: getCriteriaIds('host_groups'),
+      hostGroups: getCriteriaNames('host_groups'),
       limit,
-      monitoringServerIds: getCriteriaIds('monitoring_servers'),
+      monitoringServers: getCriteriaNames('monitoring_servers'),
       page,
       resourceTypes: getCriteriaIds('resource_types'),
       search,
-      serviceGroupIds: getCriteriaIds('service_groups'),
+      serviceGroups: getCriteriaNames('service_groups'),
       sort: getSort(),
       states: getCriteriaIds('states'),
       statuses: getCriteriaIds('statuses'),
