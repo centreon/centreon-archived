@@ -1,8 +1,8 @@
-@import "../../styles/partials/variables";
-@import "../../styles/partials/helpers";
-@import "../../styles/partials/fonts";
-@import "../../styles/partials/icons";
-@import "../button/button";
+@import "../styles/partials/variables";
+@import "../styles/partials/helpers";
+@import "../styles/partials/fonts";
+@import "../styles/partials/icons";
+@import "../components/button/button.scss";
 
 .header {
   background-color: #232f39;

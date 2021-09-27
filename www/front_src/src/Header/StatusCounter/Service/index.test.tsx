@@ -6,7 +6,6 @@ import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 
 import createStore from '../../../store';
-import { setRefreshIntervals } from '../../../redux/actions/refreshActions';
 
 import ServiceMenu from '.';
 
@@ -19,7 +18,7 @@ describe(ServiceMenu, () => {
   it('redirects to the Resource status page with the resource type filter set to service and the corresponding status when a status chip is clicked', async () => {
     const store = createStore();
 
-    mockedAxios.get.mockResolvedValueOnce({
+    mockedAxios.get.mockResolvedValue({
       data: {
         critical: {
           total: 4,
@@ -47,8 +46,6 @@ describe(ServiceMenu, () => {
         </Provider>
       </BrowserRouter>,
     );
-
-    store.dispatch(setRefreshIntervals({ AjaxTimeReloadMonitoring: 10 }));
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalled();
