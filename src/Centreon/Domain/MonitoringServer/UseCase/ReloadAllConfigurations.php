@@ -40,7 +40,7 @@ class ReloadAllConfigurations
     /**
      * @var MonitoringServerConfigurationRepositoryInterface
      */
-    private $repository;
+    private $configurationRepository;
 
      /**
      * @var MonitoringServerRepositoryInterface
@@ -49,14 +49,14 @@ class ReloadAllConfigurations
 
     /**
      * @param MonitoringServerRepositoryInterface $monitoringServerRepository
-     * @param MonitoringServerConfigurationRepositoryInterface $repository
+     * @param MonitoringServerConfigurationRepositoryInterface $configurationRepository
      */
     public function __construct(
         MonitoringServerRepositoryInterface $monitoringServerRepository,
-        MonitoringServerConfigurationRepositoryInterface $repository
+        MonitoringServerConfigurationRepositoryInterface $configurationRepository
     ) {
         $this->monitoringServerRepository = $monitoringServerRepository;
-        $this->repository = $repository;
+        $this->configurationRepository = $configurationRepository;
     }
 
     /**
@@ -78,7 +78,7 @@ class ReloadAllConfigurations
                 $lastMonitoringServerId = $monitoringServer->getId();
                 if ($lastMonitoringServerId !== null) {
                     $this->info('Reload configuration for monitoring server #' . $lastMonitoringServerId);
-                    $this->repository->reloadConfiguration($lastMonitoringServerId);
+                    $this->configurationRepository->reloadConfiguration($lastMonitoringServerId);
                 } else {
                     $this->error('Monitoring server id from repository is null');
                 }

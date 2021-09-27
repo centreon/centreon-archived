@@ -67,16 +67,15 @@ class MonitoringServerController extends AbstractController
      * @return View
      * @throws \Exception
      */
-    public function findServer(RequestParametersInterface $requestParameters): View
+    public function findServers(RequestParametersInterface $requestParameters): View
     {
         $this->denyAccessUnlessGrantedForApiConfiguration();
-        $server = $this->monitoringServerService->findServers();
         $context = (new Context())->setGroups([
             MonitoringServer::SERIALIZER_GROUP_MAIN,
         ]);
         return $this->view(
             [
-                'result' => $server,
+                'result' => $this->monitoringServerService->findServers(),
                 'meta' => $requestParameters->toArray()
             ]
         )->setContext($context);

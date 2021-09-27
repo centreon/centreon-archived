@@ -40,7 +40,7 @@ class GenerateAllConfigurations
     /**
      * @var MonitoringServerConfigurationRepositoryInterface
      */
-    private $repository;
+    private $configurationRepository;
 
     /**
      * @var MonitoringServerRepositoryInterface
@@ -49,14 +49,14 @@ class GenerateAllConfigurations
 
     /**
      * @param MonitoringServerRepositoryInterface $monitoringServerRepository
-     * @param MonitoringServerConfigurationRepositoryInterface $repository
+     * @param MonitoringServerConfigurationRepositoryInterface $configurationRepository
      */
     public function __construct(
         MonitoringServerRepositoryInterface $monitoringServerRepository,
-        MonitoringServerConfigurationRepositoryInterface $repository
+        MonitoringServerConfigurationRepositoryInterface $configurationRepository
     ) {
         $this->monitoringServerRepository = $monitoringServerRepository;
-        $this->repository = $repository;
+        $this->configurationRepository = $configurationRepository;
     }
 
     /**
@@ -77,9 +77,9 @@ class GenerateAllConfigurations
                 $lastMonitoringServerId = $monitoringServer->getId();
                 if ($lastMonitoringServerId !== null) {
                     $this->info('Generate configuration files for monitoring server #' . $lastMonitoringServerId);
-                    $this->repository->generateConfiguration($lastMonitoringServerId);
+                    $this->configurationRepository->generateConfiguration($lastMonitoringServerId);
                     $this->info('Move configuration files for monitoring server #' . $lastMonitoringServerId);
-                    $this->repository->moveExportFiles($lastMonitoringServerId);
+                    $this->configurationRepository->moveExportFiles($lastMonitoringServerId);
                 } else {
                     $this->error('Monitoring server id from repository is null');
                 }

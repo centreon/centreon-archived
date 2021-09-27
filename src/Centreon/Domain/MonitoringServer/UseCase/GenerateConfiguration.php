@@ -46,18 +46,18 @@ class GenerateConfiguration
     /**
      * @var MonitoringServerConfigurationRepositoryInterface
      */
-    private $repository;
+    private $configurationRepository;
 
     /**
      * @param MonitoringServerRepositoryInterface $monitoringServerRepository
-     * @param MonitoringServerConfigurationRepositoryInterface $repository
+     * @param MonitoringServerConfigurationRepositoryInterface $configurationRepository
      */
     public function __construct(
         MonitoringServerRepositoryInterface $monitoringServerRepository,
-        MonitoringServerConfigurationRepositoryInterface $repository
+        MonitoringServerConfigurationRepositoryInterface $configurationRepository
     ) {
         $this->monitoringServerRepository = $monitoringServerRepository;
-        $this->repository = $repository;
+        $this->configurationRepository = $configurationRepository;
     }
 
     /**
@@ -74,9 +74,9 @@ class GenerateConfiguration
                 throw ConfigurationMonitoringServerException::notFound($monitoringServerId);
             }
             $this->info('Generate configuration files for monitoring server #' . $monitoringServerId);
-            $this->repository->generateConfiguration($monitoringServerId);
+            $this->configurationRepository->generateConfiguration($monitoringServerId);
             $this->info('Move configuration files for monitoring server #' . $monitoringServerId);
-            $this->repository->moveExportFiles($monitoringServerId);
+            $this->configurationRepository->moveExportFiles($monitoringServerId);
         } catch (EntityNotFoundException | TimeoutException $ex) {
             if ($ex instanceof TimeoutException) {
                 throw ConfigurationMonitoringServerException::timeout($monitoringServerId, $ex->getMessage());

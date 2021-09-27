@@ -1,7 +1,7 @@
 configuration.monitoring-servers.findServer:
     methods: GET
     path: /configuration/monitoring-servers
-    controller: 'Centreon\Application\Controller\Configuration\MonitoringServerController::findServer'
+    controller: 'Centreon\Application\Controller\Configuration\MonitoringServerController::findServers'
     condition: "request.attributes.get('version') >= 21.10"
 
 configuration_monitoring_server_generate:
