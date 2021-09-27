@@ -3,12 +3,7 @@ import * as React from 'react';
 import axios from 'axios';
 import { render, RenderResult, waitFor } from '@testing-library/react';
 
-import {
-  useUser,
-  useAcl,
-  useDowntime,
-  useRefreshInterval,
-} from '@centreon/ui-context';
+import { useUser, useAcl, useRefreshInterval } from '@centreon/ui-context';
 
 import AppProvider from '.';
 

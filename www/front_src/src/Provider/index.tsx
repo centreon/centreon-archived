@@ -19,7 +19,6 @@ import {
 import App from '../App';
 import createStore from '../store';
 
-import Context from './UserContext';
 import {
   userEndpoint,
   translationEndpoint,
@@ -88,6 +87,7 @@ const AppProvider = (): JSX.Element | null => {
             locale: retrievedUser.locale || 'en',
             name: retrievedUser.name,
             timezone: retrievedUser.timezone,
+            use_deprecated_pages: retrievedUser.use_deprecated_pages,
           });
           setDowntime({
             default_duration: parseInt(
