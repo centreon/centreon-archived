@@ -505,7 +505,7 @@ describe(Details, () => {
     });
   });
 
-  it.only('displays resource details information', async () => {
+  it('displays resource details information', async () => {
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
 
     const { getByText, queryByText, getAllByText } = renderDetails();

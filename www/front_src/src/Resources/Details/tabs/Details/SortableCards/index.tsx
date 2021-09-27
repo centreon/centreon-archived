@@ -50,7 +50,8 @@ const SortableCards = ({ panelWidth, details }: Props): JSX.Element => {
   );
 
   const displayedCards = filter(
-    ({ field }) => !isNil(field) && !isEmpty(field),
+    ({ shouldBeDisplayed }) =>
+      !isNil(shouldBeDisplayed) && !isEmpty(shouldBeDisplayed),
     cards,
   );
 
@@ -71,7 +72,7 @@ const SortableCards = ({ panelWidth, details }: Props): JSX.Element => {
         RootComponent={RootComponent}
         collisionDetection={rectIntersection}
         itemProps={[
-          'field',
+          'shouldBeDisplayed',
           'line',
           'xs',
           'active',
