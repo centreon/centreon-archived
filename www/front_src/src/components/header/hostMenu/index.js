@@ -134,6 +134,38 @@ class HostMenu extends Component {
     const { data, toggled } = this.state;
     const { t } = this.props;
 
+    const { useDeprecatedPages } = this.props;
+
+    const unhandledDownHostsLink = useDeprecatedPages
+      ? '/main.php?p=20202&o=h_down&search='
+      : getHostResourcesUrl({
+          stateCriterias: unhandledStateCriterias,
+          statusCriterias: downCriterias,
+        });
+
+    const unhandledUnreachableHostsLink = useDeprecatedPages
+      ? '/main.php?p=20202&o=h_unreachable&search='
+      : getHostResourcesUrl({
+          stateCriterias: unhandledStateCriterias,
+          statusCriterias: unreachableCriterias,
+        });
+
+    const upHostsLink = useDeprecatedPages
+      ? '/main.php?p=20202&o=h_up&search='
+      : getHostResourcesUrl({
+          statusCriterias: upCriterias,
+        });
+
+    const hostsLink = useDeprecatedPages
+      ? '/main.php?p=20202&o=h&search='
+      : getHostResourcesUrl();
+
+    const pendingHostsLink = useDeprecatedPages
+      ? '/main.php?p=20202&o=h_pending&search='
+      : getHostResourcesUrl({
+          statusCriterias: pendingCriterias,
+        });
+
     // do not display host information until having data
     if (!data) {
       return <MenuLoader width={27} />;
@@ -154,10 +186,7 @@ class HostMenu extends Component {
           </IconHeader>
           <Link
             className={classnames(styles.link, styles['wrap-middle-icon'])}
-            to={getHostResourcesUrl({
-              stateCriterias: unhandledStateCriterias,
-              statusCriterias: downCriterias,
-            })}
+            to={unhandledDownHostsLink}
           >
             <IconNumber
               iconColor="red"
@@ -171,10 +200,7 @@ class HostMenu extends Component {
           </Link>
           <Link
             className={classnames(styles.link, styles['wrap-middle-icon'])}
-            to={getHostResourcesUrl({
-              stateCriterias: unhandledStateCriterias,
-              statusCriterias: unreachableCriterias,
-            })}
+            to={unhandledUnreachableHostsLink}
           >
             <IconNumber
               iconColor="gray-dark"
@@ -190,9 +216,7 @@ class HostMenu extends Component {
           </Link>
           <Link
             className={classnames(styles.link, styles['wrap-middle-icon'])}
-            to={getHostResourcesUrl({
-              statusCriterias: upCriterias,
-            })}
+            to={upHostsLink}
           >
             <IconNumber
               iconColor="green"
@@ -216,7 +240,7 @@ class HostMenu extends Component {
             <SubmenuItems>
               <Link
                 className={styles.link}
-                to={getHostResourcesUrl()}
+                to={hostsLink}
                 onClick={this.toggle}
               >
                 <SubmenuItem
@@ -226,10 +250,7 @@ class HostMenu extends Component {
               </Link>
               <Link
                 className={styles.link}
-                to={getHostResourcesUrl({
-                  stateCriterias: unhandledStateCriterias,
-                  statusCriterias: downCriterias,
-                })}
+                to={unhandledDownHostsLink}
                 onClick={this.toggle}
               >
                 <SubmenuItem
@@ -242,10 +263,7 @@ class HostMenu extends Component {
               </Link>
               <Link
                 className={styles.link}
-                to={getHostResourcesUrl({
-                  stateCriterias: unhandledStateCriterias,
-                  statusCriterias: unreachableCriterias,
-                })}
+                to={unhandledUnreachableHostsLink}
                 onClick={this.toggle}
               >
                 <SubmenuItem
@@ -258,9 +276,7 @@ class HostMenu extends Component {
               </Link>
               <Link
                 className={styles.link}
-                to={getHostResourcesUrl({
-                  statusCriterias: upCriterias,
-                })}
+                to={upHostsLink}
                 onClick={this.toggle}
               >
                 <SubmenuItem
@@ -271,9 +287,7 @@ class HostMenu extends Component {
               </Link>
               <Link
                 className={styles.link}
-                to={getHostResourcesUrl({
-                  statusCriterias: pendingCriterias,
-                })}
+                to={pendingHostsLink}
                 onClick={this.toggle}
               >
                 <SubmenuItem
