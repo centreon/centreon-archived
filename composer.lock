@@ -6834,16 +6834,16 @@
         },
         {
             "name": "centreon/centreon-test-lib",
-            "version": "dev-fix-extensions-acceptance-tests",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/centreon/centreon-test-lib.git",
-                "reference": "eb8dca579eb2473238fa22ade71a56579edc5e27"
+                "reference": "de52fe6985e559715430903a661ef79ff750effe"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/eb8dca579eb2473238fa22ade71a56579edc5e27",
-                "reference": "eb8dca579eb2473238fa22ade71a56579edc5e27",
+                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/de52fe6985e559715430903a661ef79ff750effe",
+                "reference": "de52fe6985e559715430903a661ef79ff750effe",
                 "shasum": ""
             },
             "require": {
