@@ -387,7 +387,7 @@ try {
     }
   }*/
 
-  if ((env.BUILD == 'QA')) {
+//  if ((env.BUILD == 'QA')) {
     stage('Docker packaging with unstable rpms') {
       def parallelSteps = [:]
       def osBuilds = isStableBuild() ? ['centos7', 'centos8'] : ['centos7']
@@ -405,7 +405,7 @@ try {
         error('Bundle stage failure.');
       }
     }
-  }
+//  }
 
   if ((env.BUILD == 'RELEASE')) {
     stage('Docker packaging') {
@@ -447,7 +447,7 @@ try {
     }
   }
 
-//  if ((env.BUILD == 'QA')) {
+  if ((env.BUILD == 'QA')) {
     stage('API // E2E') {
       parallel 'API Tests': {
         if (hasBackendChanges) {
@@ -495,9 +495,9 @@ try {
         parallel parallelSteps
       }
     }
-//  }
+  }
 
-  if ((env.BUILD == 'RELEASE') || (env.BUILD == 'QA') || (env.BUILD == 'REFERENCE')) {
+//  if ((env.BUILD == 'RELEASE') || (env.BUILD == 'QA') || (env.BUILD == 'REFERENCE')) {
     stage('Acceptance tests') {
       if (hasBackendChanges || hasFrontendChanges) {
         def atparallelSteps = [:]
@@ -525,7 +525,7 @@ try {
         }
       }
     }
-  }  
+//  }
 } catch(e) {
   if (isStableBuild()) {
     slackSend channel: "#monitoring-metrology",
