@@ -156,7 +156,7 @@ final class MetaServiceProvider extends Provider
             FROM `:dbstg`.`services` AS s
             INNER JOIN `:dbstg`.`hosts` sh
             ON sh.host_id = s.host_id
-            AND sh.name LIKE '_Module_Meta%'
+            AND sh.name LIKE '\_Module\_Meta%'
             AND sh.enabled = 1";
 
         // set ACL limitations
