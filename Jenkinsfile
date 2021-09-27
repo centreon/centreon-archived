@@ -523,7 +523,7 @@ try {
         }
       }
     }
-  }  
+  }
 } catch(e) {
   if (isStableBuild()) {
     slackSend channel: "#monitoring-metrology",
