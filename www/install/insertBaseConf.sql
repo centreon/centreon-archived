@@ -601,7 +601,8 @@ INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`
 (68, 'storage_db_port', 'Storage DB port', 'Port on which the DB server listens', 'int', NULL),
 (69, 'storage_db_type', 'Storage DB type', 'Target DBMS.', 'select', NULL),
 (74, 'path', 'Path', 'Path of the lua script.', 'text', NULL),
-(75, 'connections_count', 'Number of connection to the database', 'Usually cpus/2', 'int', NULL);
+(75, 'connections_count', 'Number of connection to the database', 'Usually cpus/2', 'int', NULL),
+(76, 'tls_hostname', 'TLS Host name', 'Expected TLS certificate common name (CN) - leave blank if unsure.', 'text', NULL);
 
 INSERT INTO `cb_fieldgroup` (`cb_fieldgroup_id`, `groupname`, `displayname`, `multiple`, `group_parent_id`) VALUES
 (1, 'filters', '', 0, NULL),
@@ -869,7 +870,8 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 (33, 74, 1, 1),
 (33, 47, 0, 2),
 (33, 72, 0, 3),
-(33, 71, 0, 4);
+(33, 71, 0, 4),
+(3, 76, 0, 5);
 
 --
 -- Contenu de la table `cb_type_field_relation`
