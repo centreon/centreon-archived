@@ -51,7 +51,7 @@ const SortableCards = ({ panelWidth, details }: Props): JSX.Element => {
 
   const displayedCards = filter(
     ({ shouldBeDisplayed }) =>
-      !isNil(shouldBeDisplayed) && !isEmpty(shouldBeDisplayed),
+      shouldBeDisplayed,
     cards,
   );
 
