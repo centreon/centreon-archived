@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -137,76 +136,42 @@ switch ($o) {
         require_once($path . "formContactTemplateModel.php");
         break; // Modify a contact template
     case "s":
-        purgeOutdatedCSRFTokens();
-        if (isCSRFTokenValid()) {
-            purgeCSRFToken();
-            enableContactInDB($contact_id);
-        } else {
-            unvalidFormMessage();
-        }
+        enableContactInDB($contact_id);
         require_once($path . "listContactTemplateModel.php");
         break; // Activate a contact template
     case "ms":
-        purgeOutdatedCSRFTokens();
-        if (isCSRFTokenValid()) {
-            purgeCSRFToken();
-            enableContactInDB(null, isset($select) ? $select : array());
-        } else {
-            unvalidFormMessage();
-        }
+        enableContactInDB(null, isset($select) ? $select : array());
         require_once($path . "listContactTemplateModel.php");
         break;
     case "u":
-        purgeOutdatedCSRFTokens();
-        if (isCSRFTokenValid()) {
-            purgeCSRFToken();
-            disableContactInDB($contact_id);
-        } else {
-            unvalidFormMessage();
-        }
+        disableContactInDB($contact_id);
         require_once($path . "listContactTemplateModel.php");
         break; // Desactivate a contact
     case "mu":
-        purgeOutdatedCSRFTokens();
-        if (isCSRFTokenValid()) {
-            purgeCSRFToken();
-            disableContactInDB(null, isset($select) ? $select : array());
-        } else {
-            unvalidFormMessage();
-        }
+        disableContactInDB(null, isset($select) ? $select : array());
         require_once($path . "listContactTemplateModel.php");
         break;
     case "m":
-        purgeOutdatedCSRFTokens();
-        if (isCSRFTokenValid()) {
-            purgeCSRFToken();
-            // We notify that we have made a duplicate
-            $eventDispatcher->notify(
-                $eventContext,
-                EventDispatcher::EVENT_DUPLICATE,
-                [
-                    'contact_ids' => isset($select) ? $select : [],
-                    'numbers' => $dupNbr
-                ]
-            );
-        } else {
-            unvalidFormMessage();
-        }
+        // We notify that we have made a duplicate
+        $eventDispatcher->notify(
+            $eventContext,
+            EventDispatcher::EVENT_DUPLICATE,
+            [
+                'contact_ids' => isset($select) ? $select : [],
+                'numbers' => $dupNbr
+            ]
+        );
+
         require_once($path . "listContactTemplateModel.php");
         break; // Duplicate n contacts
     case "d":
-        purgeOutdatedCSRFTokens();
-        if (isCSRFTokenValid()) {
-            purgeCSRFToken();
-            // We notify that we have made a delete
-            $eventDispatcher->notify(
-                $eventContext,
-                EventDispatcher::EVENT_DELETE,
-                ['contact_ids' => isset($select) ? $select : []]
-            );
-        } else {
-            unvalidFormMessage();
-        }
+        // We notify that we have made a delete
+        $eventDispatcher->notify(
+            $eventContext,
+            EventDispatcher::EVENT_DELETE,
+            ['contact_ids' => isset($select) ? $select : []]
+        );
+
         require_once($path . "listContactTemplateModel.php");
         break; // Delete n contacts
     default:

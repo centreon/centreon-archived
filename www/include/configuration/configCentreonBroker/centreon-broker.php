@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -73,7 +72,7 @@ $serverString = trim($acl->getPollerString());
 $allowedBrokerConf = array();
 
 if ($serverString != "''" && !empty($serverString)) {
-    $sql = "SELECT config_id FROM cfg_centreonbroker WHERE ns_nagios_server IN (" . $serverString . ")";
+    $sql = "SELECT config_id FROM cfg_centreonbroker WHERE ns_nagios_server IN (".$serverString.")";
     $res = $pearDB->query($sql);
     while ($row = $res->fetchRow()) {
         $allowedBrokerConf[$row['config_id']] = true;
@@ -93,46 +92,22 @@ switch ($o) {
         break; // modify CentreonBroker
 
     case "s":
-        purgeOutdatedCSRFTokens();
-        if (isCSRFTokenValid()) {
-            purgeCSRFToken();
-            enableCentreonBrokerInDB($id);
-        } else {
-            unvalidFormMessage();
-        }
+        enableCentreonBrokerInDB($id);
         require_once($path . "listCentreonBroker.php");
         break; // Activate a CentreonBroker CFG
 
     case "u":
-        purgeOutdatedCSRFTokens();
-        if (isCSRFTokenValid()) {
-            purgeCSRFToken();
-            disablCentreonBrokerInDB($id);
-        } else {
-            unvalidFormMessage();
-        }
+        disablCentreonBrokerInDB($id);
         require_once($path . "listCentreonBroker.php");
         break; // Desactivate a CentreonBroker CFG
 
     case "m":
-        purgeOutdatedCSRFTokens();
-        if (isCSRFTokenValid()) {
-            purgeCSRFToken();
-            multipleCentreonBrokerInDB(isset($select) ? $select : array(), $dupNbr);
-        } else {
-            unvalidFormMessage();
-        }
+        multipleCentreonBrokerInDB(isset($select) ? $select : array(), $dupNbr);
         require_once($path . "listCentreonBroker.php");
         break; // Duplicate n CentreonBroker CFGs
 
     case "d":
-        purgeOutdatedCSRFTokens();
-        if (isCSRFTokenValid()) {
-            purgeCSRFToken();
-            deleteCentreonBrokerInDB(isset($select) ? $select : array());
-        } else {
-            unvalidFormMessage();
-        }
+        deleteCentreonBrokerInDB(isset($select) ? $select : array());
         require_once($path . "listCentreonBroker.php");
         break; // Delete n CentreonBroker CFG
 

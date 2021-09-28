@@ -15,8 +15,6 @@ import {
 } from '@material-ui/core';
 import { CreateCSSProperties } from '@material-ui/styles';
 
-import { useMemoComponent } from '@centreon/ui';
-
 import { timePeriods } from '../../../Details/tabs/Graph/models';
 import GraphOptions from '../ExportableGraphWithTimeline/GraphOptions';
 import { useResourceContext } from '../../../Context';
@@ -80,62 +78,52 @@ const TimePeriodButtonGroup = ({
   const changeDate = ({ property, date }): void =>
     changeCustomTimePeriod({ date, property });
 
-  return useMemoComponent({
-    Component: (
-      <Responsive.ParentSize>
-        {({ width }): JSX.Element => {
-          const isCompact = lt(width, theme.breakpoints.values.sm);
+  return (
+    <Responsive.ParentSize>
+      {({ width }): JSX.Element => {
+        const isCompact = lt(width, theme.breakpoints.values.sm);
 
-          return (
-            <Paper className={classes.header}>
-              <ButtonGroup
-                className={classes.buttonGroup}
-                color="primary"
-                component="span"
-                disabled={disabled}
-                size="small"
-              >
-                {map(
-                  ({ id, name, largeName }) => (
-                    <Tooltip key={name} placement="top" title={largeName}>
-                      <Button
-                        className={classes.button}
-                        component="span"
-                        variant={
-                          selectedTimePeriod?.id === id
-                            ? 'contained'
-                            : 'outlined'
-                        }
-                        onClick={(): void => changeSelectedTimePeriod(id)}
-                      >
-                        {cond<number, string>([
-                          [lte(theme.breakpoints.values.md), always(largeName)],
-                          [T, always(name)],
-                        ])(width)}
-                      </Button>
-                    </Tooltip>
-                  ),
-                  translatedTimePeriodOptions,
-                )}
-              </ButtonGroup>
-              <CustomTimePeriodPickers
-                acceptDate={changeDate}
-                customTimePeriod={customTimePeriod}
-                isCompact={isCompact}
-              />
-              {not(disableGraphOptions) && <GraphOptions />}
-            </Paper>
-          );
-        }}
-      </Responsive.ParentSize>
-    ),
-    memoProps: [
-      disabled,
-      disableGraphOptions,
-      disablePaper,
-      selectedTimePeriod?.id,
-    ],
-  });
+        return (
+          <Paper className={classes.header}>
+            <ButtonGroup
+              className={classes.buttonGroup}
+              color="primary"
+              component="span"
+              disabled={disabled}
+              size="small"
+            >
+              {map(
+                ({ id, name, largeName }) => (
+                  <Tooltip key={name} placement="top" title={largeName}>
+                    <Button
+                      className={classes.button}
+                      component="span"
+                      variant={
+                        selectedTimePeriod?.id === id ? 'contained' : 'outlined'
+                      }
+                      onClick={(): void => changeSelectedTimePeriod(id)}
+                    >
+                      {cond<number, string>([
+                        [lte(theme.breakpoints.values.md), always(largeName)],
+                        [T, always(name)],
+                      ])(width)}
+                    </Button>
+                  </Tooltip>
+                ),
+                translatedTimePeriodOptions,
+              )}
+            </ButtonGroup>
+            <CustomTimePeriodPickers
+              acceptDate={changeDate}
+              customTimePeriod={customTimePeriod}
+              isCompact={isCompact}
+            />
+            {not(disableGraphOptions) && <GraphOptions />}
+          </Paper>
+        );
+      }}
+    </Responsive.ParentSize>
+  );
 };
 
 export default TimePeriodButtonGroup;

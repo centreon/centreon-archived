@@ -127,73 +127,31 @@ switch ($o) {
         require_once($path . "formService.php");
         break;
     case SERVICE_DIVISION:
-        purgeOutdatedCSRFTokens();
-        if (isCSRFTokenValid()) {
-            purgeCSRFToken();
-            divideGroupedServiceInDB(null, isset($select) ? $select : array());
-        } else {
-            unvalidFormMessage();
-        }
+        divideGroupedServiceInDB(null, isset($select) ? $select : array());
         require_once($path . "listServiceByHost$linkType.php");
         break;
     case SERVICE_ACTIVATION:
-        purgeOutdatedCSRFTokens();
-        if (isCSRFTokenValid()) {
-            purgeCSRFToken();
-            enableServiceInDB($service_id);
-        } else {
-            unvalidFormMessage();
-        }
+        enableServiceInDB($service_id);
         require_once($path . "listServiceByHost$linkType.php");
         break;
     case SERVICE_MASSIVE_ACTIVATION:
-        purgeOutdatedCSRFTokens();
-        if (isCSRFTokenValid()) {
-            purgeCSRFToken();
-            enableServiceInDB(null, isset($select) ? $select : array());
-        } else {
-            unvalidFormMessage();
-        }
+        enableServiceInDB(null, isset($select) ? $select : array());
         require_once($path . "listServiceByHost$linkType.php");
         break;
     case SERVICE_DEACTIVATION:
-        purgeOutdatedCSRFTokens();
-        if (isCSRFTokenValid()) {
-            purgeCSRFToken();
-            disableServiceInDB($service_id);
-        } else {
-            unvalidFormMessage();
-        }
+        disableServiceInDB($service_id);
         require_once($path . "listServiceByHost$linkType.php");
         break;
     case SERVICE_MASSIVE_DEACTIVATION:
-        purgeOutdatedCSRFTokens();
-        if (isCSRFTokenValid()) {
-            purgeCSRFToken();
-            disableServiceInDB(null, isset($select) ? $select : array());
-        } else {
-            unvalidFormMessage();
-        }
+        disableServiceInDB(null, isset($select) ? $select : array());
         require_once($path . "listServiceByHost$linkType.php");
         break;
     case SERVICE_DUPLICATION:
-        purgeOutdatedCSRFTokens();
-        if (isCSRFTokenValid()) {
-            purgeCSRFToken();
-            multipleServiceInDB(isset($select) ? $select : array(), $dupNbr);
-        } else {
-            unvalidFormMessage();
-        }
+        multipleServiceInDB(isset($select) ? $select : array(), $dupNbr);
         require_once($path . "listServiceByHost$linkType.php");
         break;
     case SERVICE_DELETION:
-        purgeOutdatedCSRFTokens();
-        if (isCSRFTokenValid()) {
-            purgeCSRFToken();
-            deleteServiceInDB(isset($select) ? $select : array());
-        } else {
-            unvalidFormMessage();
-        }
+        deleteServiceInDB(isset($select) ? $select : array());
         require_once($path . "listServiceByHost$linkType.php");
         break;
     default:

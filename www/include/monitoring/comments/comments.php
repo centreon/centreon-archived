@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2020 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -72,17 +71,11 @@ switch ($o) {
         require_once($path . "AddSvcComment.php");
         break;
     case "ds":
-        purgeOutdatedCSRFTokens();
-        if (isCSRFTokenValid()) {
-            purgeCSRFToken();
-            if (!empty($select)) {
-                foreach ($select as $key => $value) {
-                    $res = explode(';', urldecode($key));
-                    DeleteComment($res[0], [(int)$res[1] . ';' . (int)$res[2] => 'on']);
-                }
+        if (!empty($select)) {
+            foreach ($select as $key => $value) {
+                $res = explode(';', urldecode($key));
+                DeleteComment($res[0], [(int)$res[1] . ';' . (int)$res[2] => 'on']);
             }
-        } else {
-            unvalidFormMessage();
         }
         require_once($path . "listComment.php");
         break;

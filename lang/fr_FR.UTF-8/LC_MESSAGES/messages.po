@@ -16240,6 +16240,9 @@ msgstr "Détails du Contact"
 msgid "Service graphs"
 msgstr "Graphiques de services"
 
+msgid "Clear filter"
+msgstr "Réinitialiser le filtre"
+
 msgid "Enable the one-click export button for poller configuration [BETA]"
 msgstr "Activer le bouton d’export de la configuration des collecteurs en un seul clic [BETA]"
 
@@ -16248,4 +16251,5 @@ msgstr "Dernier contrôle avec un statut OK"
 
 msgid "Clear filter"
 msgstr "Effacer le filtre"
+
 

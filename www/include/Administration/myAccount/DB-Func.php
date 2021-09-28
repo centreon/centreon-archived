@@ -145,7 +145,7 @@ function updateContact($contact_id = null)
           'default_page = :defaultPage, ' .
           'contact_js_effects = :contactJsEffects, ' .
           'show_deprecated_pages = :showDeprecatedPages, ' .
-          'contact_autologin_key = :contactAutologinKey, ' .
+          'contact_autologin_key = :contactAutologinKey';
           'enable_one_click_export = :enableOneClickExport';
 
     $password_encrypted = null;

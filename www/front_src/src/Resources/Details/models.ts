@@ -46,7 +46,7 @@ export interface ResourceDetails extends NamedEntity {
   uuid: string;
 }
 
-export interface GraphOption {
+interface GraphOption {
   id: GraphOptionId;
   label: string;
   value: boolean;

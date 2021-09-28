@@ -77,66 +77,30 @@ switch ($o) {
         require_once($path . "formServiceCategories.php");
         break;
     case "s": # Activate a ServiceCategories
-        purgeOutdatedCSRFTokens();
-        if (isCSRFTokenValid()) {
-            purgeCSRFToken();
-            enableServiceCategorieInDB($sc_id);
-        } else {
-            unvalidFormMessage();
-        }
+        enableServiceCategorieInDB($sc_id);
         require_once($path . "listServiceCategories.php");
         break;
     case "ms":
-        purgeOutdatedCSRFTokens();
-        if (isCSRFTokenValid()) {
-            purgeCSRFToken();
-            enableServiceCategorieInDB(null, is_array($select) ? $select : []);
-        } else {
-            unvalidFormMessage();
-        }
+        enableServiceCategorieInDB(null, is_array($select) ? $select : []);
         require_once($path . "listServiceCategories.php");
         break;
     case "u": # Desactivate a service category
-        purgeOutdatedCSRFTokens();
-        if (isCSRFTokenValid()) {
-            purgeCSRFToken();
-            disableServiceCategorieInDB($sc_id);
-        } else {
-            unvalidFormMessage();
-        }
+        disableServiceCategorieInDB($sc_id);
         require_once($path . "listServiceCategories.php");
         break;
     case "mu":
-        purgeOutdatedCSRFTokens();
-        if (isCSRFTokenValid()) {
-            purgeCSRFToken();
-            disableServiceCategorieInDB(null, is_array($select) ? $select : []);
-        } else {
-            unvalidFormMessage();
-        }
+        disableServiceCategorieInDB(null, is_array($select) ? $select : []);
         require_once($path . "listServiceCategories.php");
         break;
     case "m": # Duplicate n service categories
-        purgeOutdatedCSRFTokens();
-        if (isCSRFTokenValid()) {
-            purgeCSRFToken();
-            multipleServiceCategorieInDB(
-                is_array($select) ? $select : [],
-                is_array($dupNbr) ? $dupNbr : []
-            );
-        } else {
-            unvalidFormMessage();
-        }
+        multipleServiceCategorieInDB(
+            is_array($select) ? $select : [],
+            is_array($dupNbr) ? $dupNbr : []
+        );
         require_once($path . "listServiceCategories.php");
         break;
     case "d": # Delete n service categories
-        purgeOutdatedCSRFTokens();
-        if (isCSRFTokenValid()) {
-            purgeCSRFToken();
-            deleteServiceCategorieInDB(is_array($select) ? $select : []);
-        } else {
-            unvalidFormMessage();
-        }
+        deleteServiceCategorieInDB(is_array($select) ? $select : []);
         require_once($path . "listServiceCategories.php");
         break;
     default:

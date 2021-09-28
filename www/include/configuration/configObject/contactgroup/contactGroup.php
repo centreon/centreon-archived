@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -112,58 +111,37 @@ switch ($o) {
         /*
          * Activate a contactgroup
          */
-        purgeOutdatedCSRFTokens();
-        if (isCSRFTokenValid()) {
-            purgeCSRFToken();
-            enableContactGroupInDB($cg_id);
-        } else {
-            unvalidFormMessage();
-        }
+        enableContactGroupInDB($cg_id);
         require_once($path . "listContactGroup.php");
         break;
     case "u":
         /*
          * Desactivate a contactgroup
          */
-        purgeOutdatedCSRFTokens();
-        if (isCSRFTokenValid()) {
-            purgeCSRFToken();
-            disableContactGroupInDB($cg_id);
-        } else {
-            unvalidFormMessage();
-        }
+        disableContactGroupInDB($cg_id);
         require_once($path . "listContactGroup.php");
         break;
     case "m":
         /*
          * Duplicate n contact group
          */
-        purgeOutdatedCSRFTokens();
-        if (isCSRFTokenValid()) {
-            purgeCSRFToken();
-            multipleContactGroupInDB(isset($select) ? $select : array(), $dupNbr);
-        } else {
-            unvalidFormMessage();
-        }
+        multipleContactGroupInDB(isset($select) ? $select : array(), $dupNbr);
         require_once($path . "listContactGroup.php");
         break;
     case "d":
         /*
-         * Delete a contact group
+         *
          */
-        purgeOutdatedCSRFTokens();
-        if (isCSRFTokenValid()) {
-            purgeCSRFToken();
-            deleteContactGroupInDB(isset($select) ? $select : array());
-        } else {
-            unvalidFormMessage();
-        }
+        deleteContactGroupInDB(isset($select) ? $select : array());
         require_once($path . "listContactGroup.php");
         break;
     case "dn":
         require_once $path . 'displayNotification.php';
         break;
     default:
+        /*
+         * Delete n contact group
+         */
         require_once($path . "listContactGroup.php");
         break;
 }

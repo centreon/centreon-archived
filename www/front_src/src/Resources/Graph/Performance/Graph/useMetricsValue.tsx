@@ -6,9 +6,7 @@ import { dateTimeFormat, useLocaleDateTimeFormat } from '@centreon/ui';
 
 import formatMetricValue from '../formatMetricValue';
 import { Line, TimeValue } from '../models';
-import { getLineForMetric, getMetrics } from '../timeSeries';
-
-export type MousePosition = [number, number] | null;
+import { getLineForMetric } from '../timeSeries';
 
 interface MetricsValue {
   base: number;
@@ -24,34 +22,17 @@ interface FormattedMetricData {
   unit: string;
 }
 
-interface ChangeMousePositionAndMetricsValueProps {
-  base: number;
-  lines: Array<Line>;
-  position: MousePosition;
-  timeValue: TimeValue | null;
-}
-
-interface ChangeMetricsValueProps {
-  newMetricsValue: MetricsValue | null;
-}
-
 interface MetricsValueState {
-  changeMetricsValue: ({ newMetricsValue }: ChangeMetricsValueProps) => void;
-  changeMousePositionAndMetricsValue: (
-    props: ChangeMousePositionAndMetricsValueProps,
-  ) => void;
+  changeMetricsValue: ({ newMetricsValue }) => void;
   formatDate: () => string;
   getFormattedMetricData: (metric: string) => FormattedMetricData | null;
   metricsValue: MetricsValue | null;
-  mousePosition: MousePosition;
-  setMousePosition: React.Dispatch<React.SetStateAction<MousePosition>>;
 }
 
 const useMetricsValue = (isInViewPort?: boolean): MetricsValueState => {
   const [metricsValue, setMetricsValue] = React.useState<MetricsValue | null>(
     null,
   );
-  const [mousePosition, setMousePosition] = React.useState<MousePosition>(null);
   const { format } = useLocaleDateTimeFormat();
 
   const formatDate = (): string =>
@@ -60,45 +41,11 @@ const useMetricsValue = (isInViewPort?: boolean): MetricsValueState => {
       formatString: dateTimeFormat,
     });
 
-  const changeMetricsValue = ({
-    newMetricsValue,
-  }: ChangeMetricsValueProps): void => {
+  const changeMetricsValue = ({ newMetricsValue }): void => {
     if (not(isInViewPort)) {
       return;
     }
     setMetricsValue(newMetricsValue);
-  };
-
-  const changeMousePositionAndMetricsValue = ({
-    position,
-    timeValue,
-    lines,
-    base,
-  }: ChangeMousePositionAndMetricsValueProps): void => {
-    if (isNil(position) || isNil(timeValue)) {
-      setMousePosition(null);
-      setMetricsValue(null);
-
-      return;
-    }
-    setMousePosition(position);
-
-    const metrics = getMetrics(timeValue);
-
-    const metricsToDisplay = metrics.filter((metric) => {
-      const line = getLineForMetric({ lines, metric });
-
-      return !isNil(timeValue[metric]) && !isNil(line);
-    });
-
-    changeMetricsValue({
-      newMetricsValue: {
-        base,
-        lines,
-        metrics: metricsToDisplay,
-        timeValue,
-      },
-    });
   };
 
   const getFormattedMetricData = (
@@ -130,12 +77,9 @@ const useMetricsValue = (isInViewPort?: boolean): MetricsValueState => {
 
   return {
     changeMetricsValue,
-    changeMousePositionAndMetricsValue,
     formatDate,
     getFormattedMetricData,
     metricsValue,
-    mousePosition,
-    setMousePosition,
   };
 };
 

@@ -103,24 +103,12 @@ switch ($o) {
         break;
     case "m":
         // duplicate n time selected graph template(s)
-        purgeOutdatedCSRFTokens();
-        if (isCSRFTokenValid()) {
-            purgeCSRFToken();
-            multipleGraphTemplateInDB($selectedGraphTemplates, $duplicationNumbers);
-        } else {
-            unvalidFormMessage();
-        }
+        multipleGraphTemplateInDB($selectedGraphTemplates, $duplicationNumbers);
         require_once $path . "listGraphTemplates.php";
         break;
     case "d":
         // delete selected graph template(s)
-        purgeOutdatedCSRFTokens();
-        if (isCSRFTokenValid()) {
-            purgeCSRFToken();
-            deleteGraphTemplateInDB($selectedGraphTemplates);
-        } else {
-            unvalidFormMessage();
-        }
+        deleteGraphTemplateInDB($selectedGraphTemplates);
         require_once $path . "listGraphTemplates.php";
         break;
     default:

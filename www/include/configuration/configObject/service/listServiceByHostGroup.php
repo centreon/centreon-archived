@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -261,11 +260,6 @@ $interval_length = $centreon->optGen['interval_length'];
 $elemArr = array();
 $fgHostgroup = array("value" => null, "print" => null);
 
-$form->createSecurityToken();
-$centreonToken = is_array($form->getElementValue('centreon_token')) ?
-    end($form->getElementValue('centreon_token')) :
-    $form->getElementValue('centreon_token');
-
 for ($i = 0; $service = $dbResult->fetch(); $i++) {
     $moptions = "";
     $fgHostgroup["value"] != $service["hg_name"]
@@ -276,12 +270,10 @@ for ($i = 0; $service = $dbResult->fetch(); $i++) {
     if ($service["service_activate"]) {
         $moptions .= "<a href='main.php?p=" . $p . "&service_id=" . $service['service_id'] . "&o=u&limit=" . $limit .
             "&num=" . $num . "&search=" . $search . "&template=" . $template . "&status=" . $status .
-            "&centreon_token=" . $centreonToken .
             "'><img src='img/icons/disabled.png' class='ico-14 margin_right' border='0' alt='" . _("Disabled") . "'>";
     } else {
         $moptions .= "<a href='main.php?p=" . $p . "&service_id=" . $service['service_id'] . "&o=s&limit=" . $limit .
             "&num=" . $num . "&search=" . $search . "&template=" . $template . "&status=" . $status .
-            "&centreon_token=" . $centreonToken .
             "'><img src='img/icons/enabled.png' class='ico-14 margin_right' border='0' alt='" . _("Enabled") . "'>";
     }
     $moptions .= "</a>&nbsp;";
@@ -310,13 +302,12 @@ for ($i = 0; $service = $dbResult->fetch(); $i++) {
 
     if (isset($service['esi_icon_image']) && $service['esi_icon_image']) {
         $svc_icon = "./img/media/" . $mediaObj->getFilename($service['esi_icon_image']);
-    } elseif (
-        $icone = $mediaObj->getFilename(
-            getMyServiceExtendedInfoField(
-                $service["service_id"],
-                "esi_icon_image"
-            )
+    } elseif ($icone = $mediaObj->getFilename(
+        getMyServiceExtendedInfoField(
+            $service["service_id"],
+            "esi_icon_image"
         )
+    )
     ) {
         $svc_icon = "./img/media/" . $icone;
     } else {

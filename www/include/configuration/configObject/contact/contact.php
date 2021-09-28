@@ -102,7 +102,7 @@ $allowedAclGroups = $acl->getAccessGroups();
  */
 $eventDispatcher = $dependencyInjector[ServiceProvider::CENTREON_EVENT_DISPATCHER];
 
-if (!is_null($eventDispatcher->getDispatcherLoader())) {
+if(! is_null($eventDispatcher->getDispatcherLoader())) {
     $eventDispatcher->getDispatcherLoader()->load();
 }
 
@@ -174,91 +174,49 @@ switch ($o) {
         require_once($path . "formContact.php");
         break;
     case ACTIVATE_CONTACT:
-        purgeOutdatedCSRFTokens();
-        if (isCSRFTokenValid()) {
-            purgeCSRFToken();
-            enableContactInDB($contactId);
-        } else {
-            unvalidFormMessage();
-        }
+        enableContactInDB($contactId);
         require_once($path . "listContact.php");
         break;
     case MASSIVE_ACTIVATE_CONTACT:
-        purgeOutdatedCSRFTokens();
-        if (isCSRFTokenValid()) {
-            purgeCSRFToken();
-            enableContactInDB(null, isset($select) ? $select : array());
-        } else {
-            unvalidFormMessage();
-        }
+        enableContactInDB(null, isset($select) ? $select : array());
         require_once($path . "listContact.php");
         break;
     case DEACTIVATE_CONTACT:
-        purgeOutdatedCSRFTokens();
-        if (isCSRFTokenValid()) {
-            purgeCSRFToken();
-            disableContactInDB($contactId);
-        } else {
-            unvalidFormMessage();
-        }
+        disableContactInDB($contactId);
         require_once($path . "listContact.php");
         break;
     case MASSIVE_DEACTIVATE_CONTACT:
-        purgeOutdatedCSRFTokens();
-        if (isCSRFTokenValid()) {
-            purgeCSRFToken();
-            disableContactInDB(null, isset($select) ? $select : array());
-        } else {
-            unvalidFormMessage();
-        }
+        disableContactInDB(null, isset($select) ? $select : array());
         require_once($path . "listContact.php");
         break;
     case DUPLICATE_CONTACTS:
-        purgeOutdatedCSRFTokens();
-        if (isCSRFTokenValid()) {
-            purgeCSRFToken();
-            $eventDispatcher->notify(
-                'contact.form',
-                EventDispatcher::EVENT_DUPLICATE,
-                [
-                    'contact_ids' => $select,
-                    'numbers' => $dupNbr
-                ]
-            );
-        } else {
-            unvalidFormMessage();
-        }
+        $eventDispatcher->notify(
+            'contact.form',
+            EventDispatcher::EVENT_DUPLICATE,
+            [
+                'contact_ids' => $select,
+                'numbers' => $dupNbr
+            ]
+        );
         require_once($path . "listContact.php");
         break;
     case DELETE_CONTACTS:
-        purgeOutdatedCSRFTokens();
-        if (isCSRFTokenValid()) {
-            purgeCSRFToken();
-            $eventDispatcher->notify(
-                'contact.form',
-                EventDispatcher::EVENT_DELETE,
-                ['contact_ids' => $select]
-            );
-        } else {
-            unvalidFormMessage();
-        }
+        $eventDispatcher->notify(
+            'contact.form',
+            EventDispatcher::EVENT_DELETE,
+            ['contact_ids' => $select]
+        );
         require_once($path . "listContact.php");
         break;
     case DISPLAY_NOTIFICATION:
         require_once $path . 'displayNotification.php';
         break;
     case SYNC_LDAP_CONTACTS:
-        purgeOutdatedCSRFTokens();
-        if (isCSRFTokenValid()) {
-            purgeCSRFToken();
-            $eventDispatcher->notify(
-                'contact.form',
-                EventDispatcher::EVENT_SYNCHRONIZE,
-                ['contact_ids' => $select]
-            );
-        } else {
-            unvalidFormMessage();
-        }
+        $eventDispatcher->notify(
+            'contact.form',
+            EventDispatcher::EVENT_SYNCHRONIZE,
+            ['contact_ids' => $select]
+        );
         require_once($path . "listContact.php");
         break;
     default:
