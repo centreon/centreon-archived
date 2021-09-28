@@ -8,7 +8,7 @@ import { buildResourcesEndpoint } from '../Listing/api/endpoint';
 interface EndpointParams {
   hostGroups?: Array<string>;
   limit?: number;
-  monitoringServers?: Array<number>;
+  monitoringServers?: Array<string>;
   page?: number;
   resourceTypes?: Array<string>;
   search?: string;
