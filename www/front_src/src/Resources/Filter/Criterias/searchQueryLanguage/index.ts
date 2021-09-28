@@ -35,6 +35,7 @@ import { SelectEntry } from '@centreon/ui';
 
 import {
   Criteria,
+  CriteriaDisplayProps,
   criteriaValueNameById,
   selectableCriterias,
 } from '../models';
@@ -49,6 +50,7 @@ import {
   AutocompleteSuggestionProps,
   staticCriteriaNames,
   getSelectableCriteriasByName,
+  dynamicCriteriaValuesByName,
 } from './models';
 
 const singular = pluralize.singular as (string) => string;
@@ -214,18 +216,25 @@ const getCriteriaValueSuggestions = ({
   return without(selectedValues, criteriaNames);
 };
 
-const getAutocompleteSuggestions = ({
+const getIsNextCharacterEmpty = ({
   search,
   cursorPosition,
-}: AutocompleteSuggestionProps): Array<string> => {
+}: AutocompleteSuggestionProps): boolean => {
   const nextCharacter = search[cursorPosition];
-  const isNextCharacterEmpty =
-    isNil(nextCharacter) || isEmpty(nextCharacter.trim());
 
-  if (isNil(cursorPosition) || !isNextCharacterEmpty) {
-    return [];
-  }
+  return isNil(nextCharacter) || isEmpty(nextCharacter.trim());
+};
 
+interface GetCRiteriaAndExpression {
+  criteriaName: string;
+  expressionBeforeCursor: string;
+  expressionCriteriaValues: Array<string>;
+}
+
+const getCriteriaAndExpression = ({
+  search,
+  cursorPosition,
+}: AutocompleteSuggestionProps): GetCRiteriaAndExpression => {
   const searchBeforeCursor = slice(0, cursorPosition + 1, search);
   const expressionBeforeCursor = pipe(
     trim,
@@ -239,6 +248,67 @@ const getAutocompleteSuggestions = ({
     criteriaQueryLanguageName,
   );
   const expressionCriteriaValues = pipe(last, split(','))(expressionCriteria);
+
+  return {
+    criteriaName,
+    expressionBeforeCursor,
+    expressionCriteriaValues,
+  };
+};
+
+interface GetDynamicCriteriaParametersAndValueProps {
+  criteria: CriteriaDisplayProps;
+  values: Array<string>;
+}
+
+const getDynamicCriteriaParametersAndValue = ({
+  search,
+  cursorPosition,
+}: AutocompleteSuggestionProps): GetDynamicCriteriaParametersAndValueProps | null => {
+  const isNextCharacterEmpty = getIsNextCharacterEmpty({
+    cursorPosition,
+    search,
+  });
+
+  if (isNil(cursorPosition) || !isNextCharacterEmpty) {
+    return null;
+  }
+
+  const { criteriaName, expressionCriteriaValues } = getCriteriaAndExpression({
+    cursorPosition,
+    search,
+  });
+
+  const pluralizedCriteriaName = pluralize(criteriaName);
+
+  const hasCriteriaDynamicValues = includes(
+    pluralizedCriteriaName,
+    dynamicCriteriaValuesByName,
+  );
+
+  return hasCriteriaDynamicValues
+    ? {
+        criteria: selectableCriterias[pluralizedCriteriaName],
+        values: expressionCriteriaValues,
+      }
+    : null;
+};
+
+const getAutocompleteSuggestions = ({
+  search,
+  cursorPosition,
+}: AutocompleteSuggestionProps): Array<string> => {
+  const isNextCharacterEmpty = getIsNextCharacterEmpty({
+    cursorPosition,
+    search,
+  });
+
+  if (isNil(cursorPosition) || !isNextCharacterEmpty) {
+    return [];
+  }
+
+  const { criteriaName, expressionCriteriaValues, expressionBeforeCursor } =
+    getCriteriaAndExpression({ cursorPosition, search });
 
   const hasCriteriaStaticValues = includes(criteriaName, staticCriteriaNames);
 
@@ -268,4 +338,11 @@ const getAutocompleteSuggestions = ({
   return reject(includes(__, search), getCriteriaNameSuggestions(criteriaName));
 };
 
-export { parse, build, getAutocompleteSuggestions, searchableFields };
+export {
+  parse,
+  build,
+  getAutocompleteSuggestions,
+  getDynamicCriteriaParametersAndValue,
+  searchableFields,
+  GetDynamicCriteriaParametersAndValueProps,
+};
