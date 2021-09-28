@@ -61,6 +61,12 @@ const staticCriteriaValuesByName = {
   status: selectableStatuses,
 };
 
+export const dynamicCriteriaValuesByName = [
+  CriteriaNames.hostGroups,
+  CriteriaNames.monitoringServers,
+  CriteriaNames.serviceGroups,
+];
+
 export const getSelectableCriteriasByName = (
   name: string,
 ): Array<{ id: string; name: string }> => {
