@@ -114,7 +114,6 @@ try {
           ])
         }
 
-        discoverGitReferenceBuild()
         recordIssues(
           referenceJobName: "centreon-web/${env.REF_BRANCH}",
           enabledForFailure: true,
