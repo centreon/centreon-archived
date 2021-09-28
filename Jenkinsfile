@@ -4,7 +4,7 @@
 def serie = '20.10'
 def maintenanceBranch = "${serie}.x"
 def qaBranch = "dev-${serie}.x"
-env.REF_BRANCH = 'master'
+env.REF_BRANCH = "${maintenanceBranch}"
 env.PROJECT='centreon-web'
 if (env.BRANCH_NAME.startsWith('release-')) {
   env.BUILD = 'RELEASE'
@@ -91,8 +91,8 @@ try {
         sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh centos7"
         junit 'ut-be.xml,ut-fe.xml'
 
-        discoverGitReferenceBuild()
         recordIssues(
+          referenceJobName: "centreon-web/${env.REF_BRANCH}",
           enabledForFailure: true,
           aggregatingResults: true,
           tools: [
@@ -102,6 +102,7 @@ try {
           trendChartType: 'NONE'
         )
         recordIssues(
+          referenceJobName: "centreon-web/${env.REF_BRANCH}",
           enabledForFailure: true,
           failOnError: true,
           tools: [esLint(pattern: 'codestyle-fe.xml')],
