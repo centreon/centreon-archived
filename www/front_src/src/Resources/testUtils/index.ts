@@ -12,7 +12,7 @@ interface EndpointParams {
   page?: number;
   resourceTypes?: Array<string>;
   search?: string;
-  serviceGroups?: Array<number>;
+  serviceGroups?: Array<string>;
   sort?;
   states?: Array<string>;
   statuses?: Array<string>;
