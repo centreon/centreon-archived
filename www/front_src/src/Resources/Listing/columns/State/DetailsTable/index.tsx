@@ -53,9 +53,9 @@ const DetailsTable = <TDetails extends { id: number }>({
   });
 
   useEffect(() => {
-    sendRequest(endpoint).then((retrievedDetails) =>
-      setDetails(retrievedDetails.result),
-    );
+    sendRequest(endpoint).then((retrievedDetails) => {
+      setDetails(retrievedDetails.result);
+    });
   }, []);
 
   const loading = details === undefined;

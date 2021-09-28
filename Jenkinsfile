@@ -384,7 +384,7 @@ try {
       }
     }
   }
-  
+
   if ((env.BUILD == 'RELEASE') || (env.BUILD == 'QA') || (env.BUILD == 'REFERENCE')) {
     stage('Acceptance tests') {
       if (hasBackendChanges || hasFrontendChanges) {
@@ -413,6 +413,7 @@ try {
         }
       }
     }
+<<<<<<< HEAD
   }  
 
   if ((env.BUILD == 'RELEASE')) {
@@ -438,6 +439,9 @@ try {
     build job: "centreon-mbi/${env.BRANCH_NAME}", wait: false
   }
 
+=======
+  }
+>>>>>>> ba98da9ba5319a008da336d5ac6640cc4539c7d4
 } catch(e) {
   if (isStableBuild()) {
     slackSend channel: "#monitoring-metrology",

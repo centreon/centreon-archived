@@ -1,6 +1,5 @@
 import * as React from 'react';
 
-import { useSelector } from 'react-redux';
 import axios from 'axios';
 import {
   fireEvent,
@@ -40,7 +39,6 @@ import {
   getCriteriaValue,
   getFilterWithUpdatedCriteria,
   getListingEndpoint,
-  mockAppStateSelector,
   searchableFields,
 } from '../testUtils';
 import useDetails from '../Details/useDetails';
@@ -54,10 +52,7 @@ import Filter from '.';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
-jest.mock('react-redux', () => ({
-  ...(jest.requireActual('react-redux') as jest.Mocked<unknown>),
-  useSelector: jest.fn(),
-}));
+jest.useFakeTimers();
 
 const linuxServersHostGroup = {
   id: 0,
@@ -198,8 +193,6 @@ Storage.prototype.getItem = mockedLocalStorageGetItem;
 Storage.prototype.setItem = mockedLocalStorageSetItem;
 
 const cancelTokenRequestParam = { cancelToken: {} };
-
-mockAppStateSelector(useSelector as jest.Mock);
 
 describe(Filter, () => {
   beforeEach(() => {
