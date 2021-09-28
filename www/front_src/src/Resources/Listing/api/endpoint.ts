@@ -3,7 +3,7 @@ import { buildListingEndpoint, ListingParameters } from '@centreon/ui';
 import { resourcesEndpoint } from '../../api/endpoint';
 
 export type ListResourcesProps = {
-  hostGroups: Array<number>;
+  hostGroups: Array<string>;
   monitoringServers: Array<number>;
   onlyWithPerformanceData?: boolean;
   resourceTypes: Array<string>;
