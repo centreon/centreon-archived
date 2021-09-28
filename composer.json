@@ -69,7 +69,7 @@
         "doctrine/annotations": "^1.0",
         "phpdocumentor/reflection-docblock": "^5.2",
         "symfony/property-access": "4.4.*",
-        "symfony/property-info": "4.4.*",
+        "symfony/property-info": "5.3.*",
         "symfony/serializer": "4.4.*"
     },
     "autoload": {
