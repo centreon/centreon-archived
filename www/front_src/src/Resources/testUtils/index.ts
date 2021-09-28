@@ -6,7 +6,7 @@ import { Filter } from '../Filter/models';
 import { buildResourcesEndpoint } from '../Listing/api/endpoint';
 
 interface EndpointParams {
-  hostGroups?: Array<number>;
+  hostGroups?: Array<string>;
   limit?: number;
   monitoringServers?: Array<number>;
   page?: number;
