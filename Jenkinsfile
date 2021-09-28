@@ -92,7 +92,7 @@ try {
         junit 'ut-be.xml,ut-fe.xml'
 
         recordIssues(
-          referenceJobName: "centreon-web/${env.REF_BRANCH}",
+          referenceJobName: "${env.PROJECT}/${env.REF_BRANCH}",
           enabledForFailure: true,
           aggregatingResults: true,
           tools: [
