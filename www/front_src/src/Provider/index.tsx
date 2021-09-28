@@ -6,20 +6,18 @@ import i18n, { Resource, ResourceLanguage } from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
 import { useRequest, getData, Loader } from '@centreon/ui';
+import { Actions, useAcl, User, useUser, Context } from '@centreon/ui-context';
 
 import App from '../App';
 import createStore from '../store';
 
-import Context from './UserContext';
 import {
   userEndpoint,
   translationEndpoint,
   aclEndpoint,
   parametersEndpoint,
 } from './endpoint';
-import { User, Actions, DefaultParameters } from './models';
-import useUser from './useUser';
-import useAcl from './useAcl';
+import { DefaultParameters } from './models';
 import useDowntime from './useDowntime';
 import useRefreshInterval from './useRefreshInterval';
 
@@ -83,6 +81,7 @@ const AppProvider = (): JSX.Element | null => {
             locale: retrievedUser.locale || 'en',
             name: retrievedUser.name,
             timezone: retrievedUser.timezone,
+            use_deprecated_pages: retrievedUser.use_deprecated_pages,
           });
           setDowntime({
             default_duration: parseInt(
