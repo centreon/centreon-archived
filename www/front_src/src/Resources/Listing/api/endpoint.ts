@@ -4,7 +4,7 @@ import { resourcesEndpoint } from '../../api/endpoint';
 
 export type ListResourcesProps = {
   hostGroups: Array<string>;
-  monitoringServers: Array<number>;
+  monitoringServers: Array<string>;
   onlyWithPerformanceData?: boolean;
   resourceTypes: Array<string>;
   serviceGroups: Array<number>;
