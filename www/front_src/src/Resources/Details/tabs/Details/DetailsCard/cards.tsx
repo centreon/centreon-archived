@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { equals, isNil, pick } from 'ramda';
+import { equals, isEmpty, isNil, pick } from 'ramda';
 
 import { SeverityCode } from '@centreon/ui';
 
@@ -82,7 +82,7 @@ const getDetailCardLines = ({
     {
       isCustomCard: true,
       line: <DowntimesCard details={details} />,
-      shouldBeDisplayed: !isNil(details.downtimes),
+      shouldBeDisplayed: !isEmpty(details.downtimes),
       title: labelDowntimeDuration,
       xs: 12,
     },
@@ -165,7 +165,7 @@ const getDetailCardLines = ({
     },
     {
       line: <DetailsLine line={toDateTime(details.last_notification)} />,
-      shouldBeDisplayed: isNil(details.last_notification),
+      shouldBeDisplayed: !isNil(details.last_notification),
       title: labelLastNotification,
     },
     {
@@ -180,7 +180,7 @@ const getDetailCardLines = ({
     },
     {
       line: <Groups details={details} />,
-      shouldBeDisplayed: !isNil(details.groups),
+      shouldBeDisplayed: !isEmpty(details.groups),
       title: labelGroups,
       xs: 12,
     },
@@ -192,7 +192,7 @@ const getDetailCardLines = ({
           title={t(labelPerformanceData)}
         />
       ),
-      shouldBeDisplayed: !isNil(details.performance_data),
+      shouldBeDisplayed: !isEmpty(details.performance_data),
       title: labelPerformanceData,
       xs: 12,
     },
