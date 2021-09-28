@@ -52,6 +52,21 @@ $path = "./include/configuration/configResources/";
 require_once $path . "DB-Func.php";
 require_once "./include/common/common-Func.php";
 
+/**
+ *  Page forbidden if server is a remote
+ */
+$isRemote = false;
+
+$result = $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'isRemote'");
+if ($row = $result->fetch()) {
+    $isRemote = $row['value'] === 'yes';
+}
+
+if ($isRemote) {
+    require_once($path . "../../core/errors/alt_error.php");
+    exit();
+}
+
 define('MACRO_ADD', 'a');
 define('MACRO_DELETE', 'd');
 define('MACRO_DISABLE', 'u');

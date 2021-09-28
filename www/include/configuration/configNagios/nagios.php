@@ -57,6 +57,21 @@ $dupNbr = filter_var_array(
 require_once __DIR__ . '/DB-Func.php';
 require_once "./include/common/common-Func.php";
 
+/**
+ *  Page forbidden if server is a remote
+ */
+$isRemote = false;
+
+$result = $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'isRemote'");
+if ($row = $result->fetch()) {
+    $isRemote = $row['value'] === 'yes';
+}
+
+if ($isRemote) {
+    require_once(__DIR__ . "/../../core/errors/alt_error.php");
+    exit();
+}
+
 /* Set the real page */
 if (isset($ret) && is_array($ret) && $ret['topology_page'] != "" && $p != $ret['topology_page']) {
     $p = $ret['topology_page'];
