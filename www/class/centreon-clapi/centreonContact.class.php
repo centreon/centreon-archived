@@ -400,7 +400,14 @@ class CentreonContact extends CentreonObject
                 if (
                     !in_array(
                         $params[1],
-                        ['reach_api', 'reach_api_rt', 'default_page', 'ar_id', 'show_deprecated_pages']
+                        [
+                            'reach_api',
+                            'reach_api_rt',
+                            'default_page',
+                            'ar_id',
+                            'show_deprecated_pages',
+                            'enable_one_click_export'
+                        ]
                     )
                 ) {
                     $params[1] = "contact_" . $params[1];
