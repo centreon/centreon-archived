@@ -28,10 +28,10 @@ import LatencyIcon from '@material-ui/icons/Speed';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 
-import axios from '../../../axios';
+import axios from '../../axios';
 import styles from '../header.scss';
-import { allowedPagesSelector } from '../../../redux/selectors/navigation/allowedPages';
-import MenuLoader from '../../MenuLoader';
+import { allowedPagesSelector } from '../../redux/selectors/navigation/allowedPages';
+import MenuLoader from '../../components/MenuLoader';
 
 const POLLER_CONFIGURATION_TOPOLOGY_PAGE = '60901';
 
@@ -109,7 +109,7 @@ class PollerMenu extends Component {
     'internal.php?object=centreon_topcounter&action=pollersListIssues',
   );
 
-  refreshInterval = null;
+  refreshIntervalRef = null;
 
   state = {
     data: null,
@@ -123,7 +123,7 @@ class PollerMenu extends Component {
 
   componentWillUnmount() {
     window.removeEventListener('mousedown', this.handleClick, false);
-    clearInterval(this.refreshInterval);
+    clearInterval(this.refreshIntervalRef);
   }
 
   // fetch api to get host data
@@ -145,13 +145,13 @@ class PollerMenu extends Component {
   };
 
   UNSAFE_componentWillReceiveProps = (nextProps) => {
-    const { refreshTime } = nextProps;
+    const { refreshInterval } = nextProps;
     const { intervalApplied } = this.state;
-    if (refreshTime && !intervalApplied) {
+    if (refreshInterval && !intervalApplied) {
       this.getData();
-      this.refreshInterval = setInterval(() => {
+      this.refreshIntervalRef = setInterval(() => {
         this.getData();
-      }, refreshTime);
+      }, refreshInterval * 1000);
       this.setState({
         intervalApplied: true,
       });
@@ -323,9 +323,6 @@ class PollerMenu extends Component {
 
 const mapStateToProps = (state) => ({
   allowedPages: allowedPagesSelector(state),
-  refreshTime: state.intervals
-    ? parseInt(state.intervals.AjaxTimeReloadStatistic) * 1000
-    : false,
 });
 
 const mapDispatchToProps = {};
@@ -336,8 +333,7 @@ export default withRouter(
 
 PollerMenu.propTypes = {
   allowedPages: PropTypes.arrayOf(PropTypes.string),
-  refreshTime: PropTypes.oneOfType([PropTypes.number, PropTypes.bool])
-    .isRequired,
+  refreshInterval: PropTypes.number.isRequired,
 };
 
 PollerMenu.defaultProps = {

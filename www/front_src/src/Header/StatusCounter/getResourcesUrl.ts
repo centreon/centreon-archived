@@ -57,10 +57,15 @@ const getResourcesUrl = ({
   )}&fromTopCounter=true`;
 };
 
+interface Criterias {
+  stateCriterias?: { name; value };
+  statusCriterias?: { name; value };
+}
+
 const getHostResourcesUrl = ({
   statusCriterias = { name: 'statuses', value: [] },
   stateCriterias = { name: 'states', value: [] },
-} = {}): string => {
+}: Criterias = {}): string => {
   return getResourcesUrl({
     resourceTypeCriterias: hostCriterias,
     stateCriterias,
@@ -71,7 +76,7 @@ const getHostResourcesUrl = ({
 const getServiceResourcesUrl = ({
   statusCriterias = { name: 'statuses', value: [] },
   stateCriterias = { name: 'states', value: [] },
-} = {}): string => {
+}: Criterias = {}): string => {
   return getResourcesUrl({
     resourceTypeCriterias: serviceCriteria,
     stateCriterias,

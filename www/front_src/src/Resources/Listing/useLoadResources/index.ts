@@ -1,9 +1,9 @@
 import * as React from 'react';
 
-import { useSelector } from 'react-redux';
 import { isNil, prop } from 'ramda';
 
 import { SelectEntry } from '@centreon/ui';
+import { useUserContext } from '@centreon/ui-context';
 
 import { useResourceContext } from '../../Context';
 import { SortOrder } from '../../models';
@@ -31,9 +31,9 @@ const useLoadResources = (): LoadResources => {
 
   const refreshIntervalRef = React.useRef<number>();
 
-  const refreshIntervalMs = useSelector(
-    (state: { intervals }) => state.intervals.AjaxTimeReloadMonitoring * 1000,
-  );
+  const { refreshInterval } = useUserContext();
+
+  const refreshIntervalMs = refreshInterval * 1000;
 
   const getSort = (): { [sortField: string]: SortOrder } | undefined => {
     const sort = getCriteriaValue('sort');

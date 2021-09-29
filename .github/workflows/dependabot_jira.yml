@@ -1,0 +1,54 @@
+name: Create Dependabot Ticket on Jira
+
+on:
+  pull_request:
+    types: [ opened ]
+    branches: [ develop, dev-2* ]
+
+env:
+  JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
+  JIRA_USER_EMAIL: ${{ secrets.JIRA_USER_EMAIL }}
+  JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+  JIRA_PROJECT_KEY: "MON"
+  JIRA_ISSUE_TYPE: "Vulnerability"
+
+jobs:
+  create_ticket:
+    name: Create Jira ticket on dependaBot PR
+    if: github.event.pull_request.user.id == 49699333
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get current date
+        id: date
+        run: echo "CURRENT_DATE=$(date +'%Y-%m-%dT%H:%M:%S')" >> $GITHUB_ENV
+
+      - name: Login to Jira
+        uses: atlassian/gajira-login@v2.0.0
+        env:
+          JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
+          JIRA_USER_EMAIL: ${{ secrets.JIRA_USER_EMAIL }}
+          JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+
+      - name: Create Jira Issue
+        id: create
+        uses: atlassian/gajira-create@v2.0.1
+        with:
+          project: ${{ env.JIRA_PROJECT_KEY }}
+          issuetype: ${{ env.JIRA_ISSUE_TYPE }}
+          summary: |
+            [Dependency to upgrade on : centreon/${{ github.event.repository.name }}] - ${{ github.event.pull_request.title }}
+          description: |
+
+            {panel:title=Dependency to upgrade}
+                ${{ github.event.pull_request.title }}
+            {panel}
+
+            More details are available in the *PR n°${{ github.event.pull_request.number }}*
+
+            The link is: ${{ github.event.pull_request.html_url }}
+          fields:
+            '{
+              "customfield_10880": "Internal",
+              "customfield_10881": "dependabot",
+              "customfield_10866": "${{ env.CURRENT_DATE }}"
+            }'
