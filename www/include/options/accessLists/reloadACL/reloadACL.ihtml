@@ -4,7 +4,7 @@
 	<table class="ToolbarTable table">
 		<tr class="ToolbarTR">
 			<td>{$form.o1.html}</td>
-			<input name="p" value="{$p}" type="hidden">
+			
 		</tr>
 	</table>
 	<table class="ListTable">
@@ -33,7 +33,7 @@
 	<table class="ToolbarTable table">
 		<tr class="ToolbarTR">
 			<td>{$form.o2.html}</td>
-			<input name="p" value="{$p}" type="hidden">
+			
 		</tr>
 	</table>
 <input type='hidden' name='o' id='o' value='0'>

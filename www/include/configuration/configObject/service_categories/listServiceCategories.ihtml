@@ -19,13 +19,12 @@
             { if $mode_access == 'w' }
             <td>
                 {$form.o1.html}
-                {if $ldap == "1" }<a href="{$msg.ldap_importL}">{$msg.ldap_importT}</a>{/if}
+                {if isset($ldap) && $ldap == "1" }<a href="{$msg.ldap_importL}">{$msg.ldap_importT}</a>{/if}
                 <a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
             </td>
             { else }
             <td>&nbsp;</td>
             { /if }
-            <input name="p" value="{$p}" type="hidden">
             {php}
             include('./include/common/pagination.php');
             {/php}
@@ -65,13 +64,12 @@
             { if $mode_access == 'w' }
             <td class="Toolbar_TDSelectAction_Bottom">
                 {$form.o2.html}
-                {if $ldap == "1" }<a href="{$msg.ldap_importL}">{$msg.ldap_importT}</a>{/if}
+                {if isset($ldap) && $ldap == "1" }<a href="{$msg.ldap_importL}">{$msg.ldap_importT}</a>{/if}
                 <a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
             </td>
             { else }
             <td>&nbsp;</td>
             { /if }
-            <input name="p" value="{$p}" type="hidden">
             {php}
             include('./include/common/pagination.php');
             {/php}

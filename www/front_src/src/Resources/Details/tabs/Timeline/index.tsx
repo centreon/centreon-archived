@@ -30,7 +30,7 @@ type TimelineListing = ListingModel<TimelineEvent>;
 const useStyles = makeStyles((theme) => ({
   filter: {
     padding: theme.spacing(2),
-    paddingTop: theme.spacing(0.5),
+    paddingTop: 0,
   },
 }));
 

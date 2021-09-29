@@ -45,7 +45,7 @@ export interface ResourceDetails extends NamedEntity {
   uuid: string;
 }
 
-interface GraphOption {
+export interface GraphOption {
   id: GraphOptionId;
   label: string;
   value: boolean;
@@ -60,7 +60,6 @@ export interface GraphTabParameters {
 }
 
 export interface ServicesTabParameters {
-  graphMode: boolean;
   options: GraphOptions;
 }
 

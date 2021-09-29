@@ -13,16 +13,17 @@ import { ConnectedRouter } from 'connected-react-router';
 import Fullscreen from 'react-fullscreen-crossbrowser';
 import queryString from 'query-string';
 
-import { withStyles, createStyles } from '@material-ui/core';
+import FullscreenIcon from '@material-ui/icons/Fullscreen';
+import { withStyles, createStyles, Fab } from '@material-ui/core';
 
-import Header from './components/header';
+import { ThemeProvider } from '@centreon/ui';
+
+import Header from './Header';
 import { history } from './store';
-import NavigationComponent from './components/navigation';
-import Tooltip from './components/tooltip';
+import Nagigation from './Navigation';
 import Footer from './components/footer';
 import axios from './axios';
 import { fetchExternalComponents } from './redux/actions/externalComponentsActions';
-import footerStyles from './components/footer/footer.scss';
 import PageLoader from './components/PageLoader';
 
 const MainRouter = React.lazy(() => import('./components/mainRouter'));
@@ -42,6 +43,12 @@ const styles = createStyles({
     height: '100%',
     overflow: 'hidden',
     width: '100%',
+  },
+  fullscreenButton: {
+    bottom: '10px',
+    position: 'absolute',
+    right: '20px',
+    zIndex: 1500,
   },
   mainContent: {
     backgroundcolor: 'white',
@@ -149,34 +156,39 @@ class App extends Component<Props, State> {
     return (
       <Suspense fallback={<PageLoader />}>
         <ConnectedRouter history={history}>
-          <div className={classes.wrapper}>
-            {!min && <NavigationComponent />}
-            <Tooltip />
-            <div className={classes.content} id="content">
-              {!min && <Header />}
-              <div
-                className={classes.fullScreenWrapper}
-                id="fullscreen-wrapper"
-              >
-                <Fullscreen
-                  enabled={this.state.isFullscreenEnabled}
-                  onChange={(isFullscreenEnabled): void => {
-                    this.setState({ isFullscreenEnabled });
-                  }}
-                  onClose={this.removeFullscreenParams}
+          <ThemeProvider>
+            <div className={classes.wrapper}>
+              {!min && <Nagigation />}
+              <div className={classes.content} id="content">
+                {!min && <Header />}
+                <div
+                  className={classes.fullScreenWrapper}
+                  id="fullscreen-wrapper"
                 >
-                  <div className={classes.mainContent}>
-                    <MainRouter />
-                  </div>
-                </Fullscreen>
+                  <Fullscreen
+                    enabled={this.state.isFullscreenEnabled}
+                    onChange={(isFullscreenEnabled): void => {
+                      this.setState({ isFullscreenEnabled });
+                    }}
+                    onClose={this.removeFullscreenParams}
+                  >
+                    <div className={classes.mainContent}>
+                      <MainRouter />
+                    </div>
+                  </Fullscreen>
+                </div>
+                {!min && <Footer />}
               </div>
-              {!min && <Footer />}
+              <Fab
+                className={classes.fullscreenButton}
+                color="default"
+                size="small"
+                onClick={this.goFull}
+              >
+                <FullscreenIcon />
+              </Fab>
             </div>
-            <span
-              className={footerStyles['full-screen']}
-              onClick={this.goFull}
-            />
-          </div>
+          </ThemeProvider>
         </ConnectedRouter>
       </Suspense>
     );

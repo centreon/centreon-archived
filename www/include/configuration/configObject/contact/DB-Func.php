@@ -207,7 +207,15 @@ function deleteContactInDB($contacts = array())
         "SELECT contact_name FROM `contact` WHERE `contact_id` = :contactId LIMIT 1"
     );
 
-    $dbResult = $pearDB->prepare(
+    $contactTokenStmt = $pearDB->prepare(
+        "SELECT token FROM `security_authentication_tokens` WHERE `user_id` = :contactId"
+    );
+
+    $deleteTokenStmt = $pearDB->prepare(
+        "DELETE FROM `security_token` WHERE `token` = :token"
+    );
+
+    $deleteContactStmt = $pearDB->prepare(
         "DELETE FROM contact WHERE contact_id = :contactId"
     );
 
@@ -218,8 +226,15 @@ function deleteContactInDB($contacts = array())
             $contactNameStmt->execute();
             $row = $contactNameStmt->fetch();
 
-            $dbResult->bindValue(':contactId', (int)$key, \PDO::PARAM_INT);
-            $dbResult->execute();
+            $contactTokenStmt->bindValue(':contactId', (int)$key, \PDO::PARAM_INT);
+            $contactTokenStmt->execute();
+            while ($rowContact = $contactTokenStmt->fetch()) {
+                $deleteTokenStmt->bindValue(':token', $rowContact['token'], \PDO::PARAM_STR);
+                $deleteTokenStmt->execute();
+            }
+
+            $deleteContactStmt->bindValue(':contactId', (int)$key, \PDO::PARAM_INT);
+            $deleteContactStmt->execute();
 
             $centreon->CentreonLogAction->insertLog("contact", $key, $row['contact_name'], "d");
         }

@@ -10,10 +10,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
+import { FormControlLabel, Checkbox, Typography } from '@material-ui/core';
+
 import styles from '../../styles/partials/form/_form.scss';
 
 import fieldHoc from './hoc';
-import { prepareInputProps } from './utils';
 
 const callbackWithValue = (trueValue, falseValue, callback) => (e) =>
   callback(e.target.checked ? trueValue : falseValue);
@@ -43,31 +44,22 @@ const CheckboxField = ({
         styles['custom-checkbox orange'],
       )}
     >
-      <input
-        {...prepareInputProps(rest)}
+      <FormControlLabel
         aria-checked={checked}
         checked={value}
-        className={styles['custom-control-input']}
+        control={<Checkbox color="primary" size="small" />}
         defaultChecked={value === trueValue}
-        focusin={onBlur && callbackWithValue(trueValue, falseValue, onBlur)}
-        type="checkbox"
+        label={label}
+        name={rest.name}
         onChange={
           onChange && callbackWithValue(trueValue, falseValue, onChange)
         }
       />
-      <label className={styles['custom-control-label']} htmlFor={rest.id}>
-        {label}
-        {info}
-      </label>
     </div>
     {error ? (
-      <div className={styles['invalid-feedback']}>
-        <div
-          className={classnames(styles.field__msg, styles['field__msg--error'])}
-        >
-          {error}
-        </div>
-      </div>
+      <Typography color="error" variant="body2">
+        {error}
+      </Typography>
     ) : null}
   </div>
 );

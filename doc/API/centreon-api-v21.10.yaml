@@ -112,6 +112,79 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /authentication/providers/configurations:
+    get:
+      tags:
+        - Authentication
+      summary: "Providers Configurations"
+      description: "Endpoint to list all the existing providers configuration"
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: "Id of configuration"
+                    example: 1
+                  type:
+                    type: "string"
+                    description: "Type of provider"
+                    example: "local"
+                  name:
+                    type: "string"
+                    description: "Name of provider"
+                    example: "local"
+                  authentication_uri:
+                    type: "string"
+                    description: "Provider Uri used to proceed authentication"
+                    example: "/centreon/authentication/providers/configurations/local"
+                  centreon_base_uri:
+                    type: "string"
+                    description: "Centreon Base Uri used by the provider to redirect"
+                    example: "/centreon"
+                  is_active:
+                    type: boolean
+                    description: "Provider active or not"
+                    example: true
+                  is_forced:
+                    type: boolean
+                    description: "Provider forced or not"
+                    example: false
+  /authentication/providers/{provider_configuration_name}:
+    post:
+      tags:
+       - Authentication
+      parameters:
+        - $ref: '#/components/parameters/providerConfigurationName'
+      summary: "Authentication to provider"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                login:
+                  type: "string"
+                  example: "admin"
+                password:
+                  type: "string"
+                  example: "centreon"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                properties:
+                  redirect_uri:
+                    type: string
+                    example: "/centreon/main.php?p=50113&o=ldap"
+        '302':
+          description: "Found"
   /configuration/hosts/templates:
     get:
       tags:
@@ -538,6 +611,10 @@ paths:
               schema:
                 type: object
                 properties:
+                  id:
+                    type: integer
+                    description: Contact ID
+                    example: 1
                   name:
                     type: string
                     description: Name of the current user
@@ -559,6 +636,14 @@ paths:
                     nullable: true
                     description: Locale of the current user
                     example: en_US
+                  is_admin:
+                    type: boolean
+                    description: If the current user is an administrator
+                    example: true
+                  useDeprecatedPages:
+                    type: boolean
+                    description: Indicates if user wants to use deprecated monitoring pages
+                    example: false
         '403':
           $ref: '#/components/responses/Forbidden'
         '500':
@@ -3454,6 +3539,13 @@ components:
         type: integer
         format: int64
         example: 329
+    providerConfigurationName:
+      in: path
+      name: provider_configuration_name
+      required: true
+      schema:
+        type: string
+        example: "local"
     FilterPageName:
       in: path
       name: page_name

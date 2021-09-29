@@ -7,9 +7,18 @@
         </ul>
         <div id="validFormTop">
         {if $o == "a" || $o == "c" || $o == "mc"}
-            <p class="oreonbutton">{$form.submitC.html}{$form.submitMC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+            <p class="oreonbutton">
+                {if isset($form.submitC)}
+                    {$form.submitC.html}
+                {elseif isset($form.submitMC)}
+                    {$form.submitMC.html}
+                {else}
+                    {$form.submitA.html}
+                {/if}
+                &nbsp;&nbsp;&nbsp;{$form.reset.html}
+            </p>
         {else if $o == "w"}
-            <p class="oreonbutton">{$form.change.html}</p>
+            <p class="oreonbutton">{if isset($form.change)}{$form.change.html}{/if}</p>
         {/if}
         </div>
     </div>
@@ -44,8 +53,11 @@
                 </td>
             </tr>
             <tr class="list_two"><td class="FormRowField">{$form.default_page.label}</td><td class="FormRowValue">{$form.default_page.html}</td></tr>
-            <tr class="list_one"><td class="FormRowField">{$form.show_deprecated_pages.label}</td><td class="FormRowValue">{$form.show_deprecated_pages.html}</td></tr>
+            <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="show_deprecated_pages">{$form.show_deprecated_pages.label}</td><td class="FormRowValue">{$form.show_deprecated_pages.html}</td></tr>
             <tr class="list_two"><td class="FormRowField">{$form.contact_js_effects.label}</td><td class="FormRowValue">{$form.contact_js_effects.html}</td></tr>
+            {if $contactIsAdmin}
+            <tr class="list_one"><td class="FormRowField">{$form.enable_one_click_export.label}</td><td class="FormRowValue">{$form.enable_one_click_export.html}</td></tr>
+            {/if}
             <tr class="list_lvl_1">
                 <td class="ListColLvl1_name" colspan="2">
                     <h4>{t}Authentication{/t}</h4>
@@ -103,18 +115,32 @@
             <tr class="list_two"><td class="FormRowField">{$form.monitoring_sound_svc_notification_1.label}</td><td class="FormRowValue">{$form.monitoring_sound_svc_notification_1.html}</td></tr>
             <tr class="list_one"><td class="FormRowField">{$form.monitoring_sound_svc_notification_2.label}</td><td class="FormRowValue">{$form.monitoring_sound_svc_notification_2.html}</td></tr>
             <tr class="list_two"><td class="FormRowField">{$form.monitoring_sound_svc_notification_3.label}</td><td class="FormRowValue">{$form.monitoring_sound_svc_notification_3.html}</td></tr>
-    		{if $o == "c"}
-    		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">{$form.required._note}</td></tr>
-    		{/if}
+            {if $o == "c"}
+            <tr class="list_lvl_1">
+                <td class="ListColLvl1_name" colspan="2">
+                {if isset($form.required)}
+                    {$form.required._note}
+                {/if}
+                </td>
+            </tr>
+            {/if}
 	    </table>
     </div>
 	<div id="validForm">
 	{if $o == "c"}
-		<p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+        <p class="oreonbutton">
+            {if isset($form.submitC)}
+                {$form.submitC.html}
+            {else}
+                {$form.submitA.html}
+            {/if}
+            &nbsp;&nbsp;&nbsp;{$form.reset.html}
+        </p>
 	{else}
-		<p class="oreonbutton">{$form.change.html}</p>
+		<p class="oreonbutton">{if isset($form.change)}{$form.change.html}{/if}</p>
 	{/if}
 	</div>
 	{$form.hidden}
 </form>
+{$helptext}
 

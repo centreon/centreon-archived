@@ -8,7 +8,7 @@ import classnames from 'classnames';
 
 import { PageSkeleton } from '@centreon/ui';
 
-import styles from '../../components/header/header.scss';
+import styles from '../../Header/header.scss';
 
 class LegacyRoute extends Component {
   constructor(props) {

@@ -274,9 +274,11 @@ class CentreonLogAction
                     WHERE action_log_id = " . (int) $row['action_log_id'] . "
                     AND field_name = 'refMacroPassword'"
             );
-            $result = $macroPasswordStatement->fetch();
-            $macroPasswordRef = explode(',', $result['field_value']);
-            while ($field = $DBRESULT2->fetchRow()) {
+            $macroPasswordRef = [];
+            if ($result = $macroPasswordStatement->fetch()) {
+                $macroPasswordRef = explode(',', $result['field_value']);
+            }
+            while ($field = $DBRESULT2->fetch()) {
                 switch ($field['field_name']) {
                     case 'macroValue':
                         /**

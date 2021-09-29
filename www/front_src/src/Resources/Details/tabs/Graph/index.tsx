@@ -1,5 +1,7 @@
 import * as React from 'react';
 
+import { equals } from 'ramda';
+
 import { Theme, makeStyles } from '@material-ui/core';
 
 import { TabProps } from '..';
@@ -11,9 +13,8 @@ import { GraphOptions } from '../../models';
 import useGraphOptions, {
   GraphOptionsContext,
 } from '../../../Graph/Performance/ExportableGraphWithTimeline/useGraphOptions';
-import useMousePosition, {
-  MousePositionContext,
-} from '../../../Graph/Performance/ExportableGraphWithTimeline/useMousePosition';
+
+import HostGraph from './HostGraph';
 
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
@@ -48,8 +49,6 @@ const GraphTabContent = ({
 }: GraphTabContentProps): JSX.Element => {
   const classes = useStyles();
 
-  const mousePositionProps = useMousePosition();
-
   const changeTabGraphOptions = (options: GraphOptions): void => {
     setGraphTabParameters({
       ...tabParameters.graph,
@@ -62,16 +61,22 @@ const GraphTabContent = ({
     options: tabParameters.graph?.options,
   });
 
+  const isService = equals('service', details?.type);
+
   return (
     <GraphOptionsContext.Provider value={graphOptions}>
       <div className={classes.container}>
-        <TimePeriodButtonGroup />
-        <MousePositionContext.Provider value={mousePositionProps}>
-          <ExportablePerformanceGraphWithTimeline
-            graphHeight={280}
-            resource={details}
-          />
-        </MousePositionContext.Provider>
+        {isService ? (
+          <>
+            <TimePeriodButtonGroup />
+            <ExportablePerformanceGraphWithTimeline
+              graphHeight={280}
+              resource={details}
+            />
+          </>
+        ) : (
+          <HostGraph details={details} />
+        )}
       </div>
     </GraphOptionsContext.Provider>
   );

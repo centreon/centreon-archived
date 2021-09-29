@@ -4,7 +4,6 @@ import org.jenkinsci.plugins.pipeline.modeldefinition.Utils
 /*
 ** Variables.
 */
-properties([buildDiscarder(logRotator(numToKeepStr: '50'))])
 def serie = '21.10'
 def maintenanceBranch = "${serie}.x"
 def qaBranch = "dev-${serie}.x"
@@ -74,7 +73,7 @@ def acceptanceTag = ""
 ** Functions
 */
 def isStableBuild() {
-  return ((env.BUILD == 'RELEASE') || (env.BUILD == 'REFERENCE') || (env.BUILD == 'QA'))
+  return ((env.BUILD == 'REFERENCE') || (env.BUILD == 'QA'))
 }
 
 def hasChanges(patterns) {
@@ -126,7 +125,7 @@ def checkoutCentreonBuild(buildBranch) {
 /*
 ** Pipeline code.
 */
-stage('Source') {
+stage('Deliver sources') {
   node {
     dir('centreon-web') {
       checkout scm
@@ -173,22 +172,16 @@ stage('Source') {
       returnStdout: true
     ).split()
 
-    // get feature files
-    def grepAcceptanceFiles = ""
-    if (!hasBackendChanges && hasFrontendChanges) {
-      acceptanceTag = "@reactjs"
-      grepAcceptanceFiles = "-exec grep -Rl '${acceptanceTag}' {} \\;"
-    }
     //FIXME : reintegrate ldap features after fixing them
     featureFiles = sh(
-      script: "rm centreon-web/features/Ldap*.feature && find centreon-web/features -type f -name '*.feature' ${grepAcceptanceFiles} | sed -e 's#centreon-web/features/##g' | sort",
+      script: "rm centreon-web/features/Ldap*.feature && find centreon-web/features -type f -name '*.feature' | sed -e 's#centreon-web/features/##g' | sort",
       returnStdout: true
     ).split()
   }
 }
 
 try {
-  stage('Unit tests') {
+  stage('Unit tests // Sonar analysis // RPMs Packaging') {
     parallel 'frontend': {
       if (!hasFrontendChanges) {
         Utils.markStageSkippedForConditional('frontend')
@@ -198,6 +191,14 @@ try {
           unstash 'tar-sources'
           unstash 'node_modules'
           sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh frontend"
+          recordIssues(
+            referenceJobName: "centreon-web/${env.REF_BRANCH}",
+            enabledForFailure: true,
+            failOnError: true,
+            qualityGates: [[threshold: 1, type: 'NEW', unstable: false]],
+            tool: esLint(id: 'eslint', name: 'eslint', pattern: 'codestyle-fe.xml'),
+            trendChartType: 'NONE'
+          )
           junit 'ut-fe.xml'
           stash name: 'ut-fe.xml', includes: 'ut-fe.xml'
           stash name: 'codestyle-fe.xml', includes: 'codestyle-fe.xml'
@@ -213,6 +214,21 @@ try {
           unstash 'tar-sources'
           unstash 'vendor'
           sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh backend"
+          //Recording issues in Jenkins job
+          recordIssues(
+            referenceJobName: "centreon-web/${env.REF_BRANCH}",
+            enabledForFailure: true,
+            qualityGates: [[threshold: 1, type: 'DELTA', unstable: false]],
+            tool: phpCodeSniffer(id: 'phpcs', name: 'phpcs', pattern: 'codestyle-be.xml'),
+            trendChartType: 'NONE'
+          )
+          recordIssues(
+            referenceJobName: "centreon-web/${env.REF_BRANCH}",
+            enabledForFailure: true,
+            qualityGates: [[threshold: 1, type: 'DELTA', unstable: false]],
+            tool: phpStan(id: 'phpstan', name: 'phpstan', pattern: 'phpstan.xml'),
+            trendChartType: 'NONE'
+          )
           junit 'ut-be.xml'
           stash name: 'ut-be.xml', includes: 'ut-be.xml'
           stash name: 'coverage-be.xml', includes: 'coverage-be.xml'
@@ -230,39 +246,62 @@ try {
         withSonarQubeEnv('SonarQubeDev') {
           sh "./centreon-build/jobs/web/${serie}/mon-web-analysis.sh"
         }
+        // sonarQube step to get qualityGate result
+        def qualityGate = waitForQualityGate()
+        if (qualityGate.status != 'OK') {
+          error "Pipeline aborted due to quality gate failure: ${qualityGate.status}"
+        }
+        if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+          error("Quality gate failure: ${qualityGate.status}.");
+        }
+      }
+    },
+    'rpm packaging centos7': {
+      node {
+        checkoutCentreonBuild(buildBranch)
+        unstash 'tar-sources'
+        sh "./centreon-build/jobs/web/${serie}/mon-web-package.sh centos7"
+        archiveArtifacts artifacts: "rpms-centos7.tar.gz"
+        stash name: "rpms-centos7", includes: 'output/noarch/*.rpm'
+        sh 'rm -rf output'
+      }
+    },
+    'rpm packaging centos8': {
+      node {
+        checkoutCentreonBuild(buildBranch)
+        unstash 'tar-sources'
+        sh "./centreon-build/jobs/web/${serie}/mon-web-package.sh centos8"
+        archiveArtifacts artifacts: "rpms-centos8.tar.gz"
+        stash name: "rpms-centos8", includes: 'output/noarch/*.rpm'
+        sh 'rm -rf output'
       }
     }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-      error('Unit tests stage failure.');
+      error('Unit tests // RPM Packaging Failure');
     }
   }
 
-  stage('Quality gate') {
+
+  stage('Violations to Github') {
     node {
-      if (hasBackendChanges) {
-        unstash 'ut-be.xml'
-        unstash 'coverage-be.xml'
-        unstash 'codestyle-be.xml'
-        unstash 'phpstan.xml'
-      }
-
-      if (hasFrontendChanges) {
-        unstash 'ut-fe.xml'
-        unstash 'codestyle-fe.xml'
-      }
-
       if (env.CHANGE_ID) { // pull request to comment with coding style issues
+        if (hasBackendChanges) {
+          unstash 'codestyle-be.xml'
+          unstash 'phpstan.xml'
+        }
+
+        if (hasFrontendChanges) {
+          unstash 'codestyle-fe.xml'
+        }
+
         ViolationsToGitHub([
           repositoryName: 'centreon',
           pullRequestId: env.CHANGE_ID,
-
           createSingleFileComments: true,
           commentOnlyChangedContent: true,
           commentOnlyChangedFiles: true,
           keepOldComments: false,
-
           commentTemplate: "**{{violation.severity}}**: {{violation.message}}",
-
           violationConfigs: [
             [parser: 'CHECKSTYLE', pattern: '.*/codestyle-be.xml$', reporter: 'Checkstyle'],
             [parser: 'CHECKSTYLE', pattern: '.*/phpstan.xml$', reporter: 'Checkstyle'],
@@ -270,147 +309,201 @@ try {
           ]
         ])
       }
+    }
+    if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+      error("Reports stage failure");
+    }
+  }
 
-      if (hasBackendChanges) {
-        recordIssues(
-          referenceJobName: "centreon-web/${env.REF_BRANCH}",
-          enabledForFailure: true,
-          qualityGates: [[threshold: 1, type: 'DELTA', unstable: false]],
-          tool: phpCodeSniffer(id: 'phpcs', name: 'phpcs', pattern: 'codestyle-be.xml'),
-          trendChartType: 'NONE'
-        )
-        recordIssues(
-          referenceJobName: "centreon-web/${env.REF_BRANCH}",
-          enabledForFailure: true,
-          qualityGates: [[threshold: 1, type: 'DELTA', unstable: false]],
-          tool: phpStan(id: 'phpstan', name: 'phpstan', pattern: 'phpstan.xml'),
-          trendChartType: 'NONE'
-        )
-      }
-
-      if (hasFrontendChanges) {
-        recordIssues(
-          referenceJobName: "centreon-web/${env.REF_BRANCH}",
-          enabledForFailure: true,
-          failOnError: true,
-          qualityGates: [[threshold: 1, type: 'NEW', unstable: false]],
-          tool: esLint(id: 'eslint', name: 'eslint', pattern: 'codestyle-fe.xml'),
-          trendChartType: 'NONE'
-        )
-      }
-      // sonarQube step to get qualityGate result
-      def qualityGate = waitForQualityGate()
-      if (qualityGate.status != 'OK') {
-        error "Pipeline aborted due to quality gate failure: ${qualityGate.status}"
+  if ((env.BUILD == 'CI')) {
+    stage('Delivery to canary') {
+      node {
+        checkoutCentreonBuild(buildBranch)
+        sh 'rm -rf output'
+        unstash 'tar-sources'
+        unstash 'api-doc'
+        unstash 'rpms-centos8'
+        unstash 'rpms-centos7'
+        sh "./centreon-build/jobs/web/${serie}/mon-web-delivery.sh"
       }
       if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-        error("Quality gate failure: ${qualityGate.status}.");
+        error('Delivery stage failure');
       }
-    }
-
-    if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-      error("Quality gate failure: ${qualityGate.status}.");
     }
   }
 
-  stage('Package') {
-    def parallelSteps = [:]
-    def osBuilds = isStableBuild() ? ['centos7', 'centos8'] : ['centos7']
-    for (x in osBuilds) {
-      def osBuild = x
-      parallelSteps[osBuild] = {
-        node {
-          checkoutCentreonBuild(buildBranch)
-          unstash 'tar-sources'
-          sh "./centreon-build/jobs/web/${serie}/mon-web-package.sh ${osBuild}"
-          archiveArtifacts artifacts: "rpms-${osBuild}.tar.gz"
-        }
+  if ((env.BUILD == 'QA')) {
+    stage('Delivery to unstable') {
+      node {
+        checkoutCentreonBuild(buildBranch)
+        sh 'rm -rf output'
+        unstash 'tar-sources'
+        unstash 'api-doc'
+        unstash 'rpms-centos8'
+        unstash 'rpms-centos7'
+        sh "./centreon-build/jobs/web/${serie}/mon-web-delivery.sh"
       }
-    }
-    parallel parallelSteps
-    if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-      error('Package stage failure.');
+      if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+        error('Delivery stage failure');
+      }
     }
   }
 
-  stage('Bundle') {
-    def parallelSteps = [:]
-    def osBuilds = isStableBuild() ? ['centos7', 'centos8'] : ['centos7']
-    for (x in osBuilds) {
-      def osBuild = x
-      parallelSteps[osBuild] = {
-        node {
-          checkoutCentreonBuild(buildBranch)
-          sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh ${osBuild}"
-        }
+  if ((env.BUILD == 'RELEASE')) {
+    stage('Delivery to testing') {
+      node {
+        checkoutCentreonBuild(buildBranch)
+        sh 'rm -rf output'
+        unstash 'tar-sources'
+        unstash 'api-doc'
+        unstash 'rpms-centos8'
+        unstash 'rpms-centos7'
+        sh "./centreon-build/jobs/web/${serie}/mon-web-delivery.sh"
       }
-    }
-    parallel parallelSteps
-    if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-      error('Bundle stage failure.');
+      if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+        error('Delivery stage failure');
+      }
     }
   }
 
-  if (isStableBuild()) {
-    stage('API integration tests') {
-      if (hasBackendChanges) {
-        def parallelSteps = [:]
-        for (x in apiFeatureFiles) {
-          def feature = x
-          parallelSteps[feature] = {
-            node {
-              checkoutCentreonBuild(buildBranch)
-              unstash 'tar-sources'
-              unstash 'vendor'
-              def acceptanceStatus = sh(
-                script: "./centreon-build/jobs/web/${serie}/mon-web-api-integration-test.sh centos7 tests/api/features/${feature}",
-                returnStatus: true
-              )
-              junit 'xunit-reports/**/*.xml'
-              if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0))
-                currentBuild.result = 'FAILURE'
-              archiveArtifacts allowEmptyArchive: true, artifacts: 'api-integration-test-logs/*.txt'
-            }
-          }
-        }
-        parallel parallelSteps
-        if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-          error('API integration tests stage failure.');
-        }
-      }
-    }
-
-    stage('E2E tests') {
+  // TODO : add canary management in centreon-build
+  /*if ((env.BUILD == 'CI')) {
+    stage('Docker packaging with canary rpms') {
       def parallelSteps = [:]
-      for (x in e2eFeatureFiles) {
-        def feature = x
-        parallelSteps[feature] = {
+      def osBuilds = isStableBuild() ? ['centos7', 'centos8'] : ['centos7']
+      for (x in osBuilds) {
+        def osBuild = x
+        parallelSteps[osBuild] = {
           node {
             checkoutCentreonBuild(buildBranch)
-            unstash 'tar-sources'
-            unstash 'cypress-node-modules'
-            timeout(time: 10, unit: 'MINUTES') {
-            def acceptanceStatus = sh(script: "./centreon-build/jobs/web/${serie}/mon-web-e2e-test.sh centos7 tests/e2e/cypress/integration/${feature}", returnStatus: true)
-            junit 'centreon-web*/tests/e2e/cypress/results/reports/junit-report.xml'
-            if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0))
-              currentBuild.result = 'FAILURE'
-            archiveArtifacts allowEmptyArchive: true, artifacts: 'centreon-web*/tests/e2e/cypress/results/**/*.mp4, centreon-web*/tests/e2e/cypress/results/**/*.png'
-            }
+            sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh ${osBuild}"
           }
         }
       }
       parallel parallelSteps
       if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-        error('E2E tests stage failure.');
+        error('Bundle stage failure.');
       }
     }
+  }*/
 
-    stage('Acceptance tests') {
-      if (hasBackendChanges || hasFrontendChanges) {
+  if ((env.BUILD == 'QA')) {
+    stage('Docker packaging with unstable rpms') {
+      def parallelSteps = [:]
+      def osBuilds = isStableBuild() ? ['centos7', 'centos8'] : ['centos7']
+      for (x in osBuilds) {
+        def osBuild = x
+        parallelSteps[osBuild] = {
+          node {
+            checkoutCentreonBuild(buildBranch)
+            sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh ${osBuild}"
+          }
+        }
+      }
+      parallel parallelSteps
+      if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+        error('Bundle stage failure.');
+      }
+    }
+  }
+
+  if ((env.BUILD == 'RELEASE')) {
+    stage('Docker packaging') {
+      def parallelSteps = [:]
+      def osBuilds = isStableBuild() ? ['centos7', 'centos8'] : ['centos7']
+      for (x in osBuilds) {
+        def osBuild = x
+        parallelSteps[osBuild] = {
+          node {
+            checkoutCentreonBuild(buildBranch)
+            sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh ${osBuild}"
+          }
+        }
+      }
+      parallel parallelSteps
+      if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+        error('Bundle stage failure.');
+      }
+    }
+  }
+
+  if ((env.BUILD == 'REFERENCE')) {
+    stage('Docker packaging with tagging image as latest') {
+      def parallelSteps = [:]
+      def osBuilds = isStableBuild() ? ['centos7', 'centos8'] : ['centos7']
+      for (x in osBuilds) {
+        def osBuild = x
+        parallelSteps[osBuild] = {
+          node {
+            checkoutCentreonBuild(buildBranch)
+            sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh ${osBuild}"
+          }
+        }
+      }
+      parallel parallelSteps
+      if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+        error('Bundle stage failure.');
+      }
+    }
+  }
+
+  if ((env.BUILD == 'QA')) {
+    stage('API // E2E') {
+      parallel 'API Tests': {
+        if (hasBackendChanges) {
+          def parallelSteps = [:]
+          for (x in apiFeatureFiles) {
+            def feature = x
+            parallelSteps[feature] = {
+              node {
+                checkoutCentreonBuild(buildBranch)
+                unstash 'tar-sources'
+                unstash 'vendor'
+                def acceptanceStatus = sh(
+                  script: "./centreon-build/jobs/web/${serie}/mon-web-api-integration-test.sh centos7 tests/api/features/${feature}",
+                  returnStatus: true
+                )
+                junit 'xunit-reports/**/*.xml'
+                if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0))
+                  currentBuild.result = 'FAILURE'
+                archiveArtifacts allowEmptyArchive: true, artifacts: 'api-integration-test-logs/*.txt'
+              }
+            }
+          }
+          parallel parallelSteps
+        }
+      },
+      'E2E tests': {
         def parallelSteps = [:]
-        for (x in featureFiles) {
+        for (x in e2eFeatureFiles) {
           def feature = x
           parallelSteps[feature] = {
+            node {
+              checkoutCentreonBuild(buildBranch)
+              unstash 'tar-sources'
+              unstash 'cypress-node-modules'
+              timeout(time: 10, unit: 'MINUTES') {
+                def acceptanceStatus = sh(script: "./centreon-build/jobs/web/${serie}/mon-web-e2e-test.sh centos7 tests/e2e/cypress/integration/${feature}", returnStatus: true)
+                junit 'centreon-web*/tests/e2e/cypress/results/reports/junit-report.xml'
+                if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0))
+                  currentBuild.result = 'FAILURE'
+                  archiveArtifacts allowEmptyArchive: true, artifacts: 'centreon-web*/tests/e2e/cypress/results/**/*.mp4, centreon-web*/tests/e2e/cypress/results/**/*.png'
+              }
+            }
+          }
+        }
+        parallel parallelSteps
+      }
+    }
+  }
+
+  if ((env.BUILD == 'RELEASE') || (env.BUILD == 'QA') || (env.BUILD == 'REFERENCE')) {
+    stage('Acceptance tests') {
+      if (hasBackendChanges || hasFrontendChanges) {
+        def atparallelSteps = [:]
+        for (x in featureFiles) {
+          def feature = x
+          atparallelSteps[feature] = {
             node {
               checkoutCentreonBuild(buildBranch)
               unstash 'tar-sources'
@@ -426,32 +519,11 @@ try {
             }
           }
         }
-        parallel parallelSteps
+        parallel atparallelSteps
         if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-          error('Critical tests stage failure.');
+          error('Critical tests stage failure');
         }
       }
-    }
-
-    stage('Delivery') {
-      node {
-        checkoutCentreonBuild(buildBranch)
-        unstash 'tar-sources'
-        unstash 'api-doc'
-        sh "./centreon-build/jobs/web/${serie}/mon-web-delivery.sh"
-      }
-      if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-        error('Delivery stage failure.');
-      }
-    }
-
-    if (env.BUILD == 'REFERENCE' || env.BUILD == 'QA') {
-      build job: "centreon-autodiscovery/${env.BRANCH_NAME}", wait: false
-      build job: "centreon-awie/${env.BRANCH_NAME}", wait: false
-      build job: "centreon-license-manager/${env.BRANCH_NAME}", wait: false
-      build job: "centreon-pp-manager/${env.BRANCH_NAME}", wait: false
-      build job: "centreon-bam/${env.BRANCH_NAME}", wait: false
-      build job: "centreon-mbi/${env.BRANCH_NAME}", wait: false
     }
   }
 } catch(e) {

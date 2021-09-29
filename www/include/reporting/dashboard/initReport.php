@@ -99,7 +99,14 @@ $color["UNKNOWN"] = $colors['unknown'];
 $color["UP"] = $colors['up'];
 $color["DOWN"] = $colors['down'];
 $color["UNREACHABLE"] = $colors['unreachable'];
+$color["UNDETERMINED"] = $colors['undetermined'];
+$color["OK"] = $colors['ok'];
+$color["WARNING"] = $colors['warning'];
+$color["CRITICAL"] = $colors['critical'];
 $tpl->assign('color', $color);
+
+$startDate = 0;
+$endDate = 0;
 
 /*
  * Translations and styles
@@ -250,8 +257,84 @@ if ($get_date_start == "" && $get_date_end == "" && $period == "") {
 $tpl->assign("get_date_start", $get_date_start);
 $tpl->assign("get_date_end", $get_date_end);
 $tpl->assign("get_period", $period);
+$tpl->assign("link_csv_url", null);
+$tpl->assign("infosTitle", null);
+// Settings default variables for all state.
+$tpl->assign("name", null);
+$tpl->assign("totalAlert", null);
+$tpl->assign("totalTime", null);
+$initialStates = [
+    "OK_TP" => null,
+    "OK_MP" => null,
+    "OK_A" => null,
+    "WARNING_TP" => null,
+    "WARNING_MP" => null,
+    "WARNING_A" => null,
+    "CRITICAL_TP" => null,
+    "CRITICAL_MP" => null,
+    "CRITICAL_A" => null,
+    "UNKNOWN_TP" => null,
+    "UNKNOWN_MP" => null,
+    "UNKNOWN_A" => null,
+    "UP_TF" => null,
+    "UP_TP" => null,
+    "UP_MP" => null,
+    "UP_A" => null,
+    "DOWN_TF" => null,
+    "DOWN_TP" => null,
+    "DOWN_MP" => null,
+    "DOWN_A" => null,
+    "UNREACHABLE_TF" => null,
+    "UNREACHABLE_TP" => null,
+    "UNREACHABLE_MP" => null,
+    "UNREACHABLE_A" => null,
+    "UNDETERMINED_TF" => null,
+    "UNDETERMINED_TP" => null,
+    "MAINTENANCE_TF" => null,
+    "MAINTENANCE_TP" => null,
+    "NAME" => null,
+    "ID" => null,
+    "DESCRIPTION" => null,
+    "HOST_ID" => null,
+    "HOST_NAME" => null,
+    "SERVICE_ID" => null,
+    "SERVICE_DESC" => null
+];
+$tpl->assign("summary", $initialStates);
+$tpl->assign("components_avg", $initialStates);
+$tpl->assign("components", ["tb" => $initialStates]);
+$tpl->assign("period_name", _("From"));
+$tpl->assign("date_start", null);
+$tpl->assign("to", _("to"));
+$tpl->assign("date_end", null);
+$tpl->assign("period", null);
+$tpl->assign("host_id", null);
+$tpl->assign("hostgroup_id", null);
+$tpl->assign("servicegroup_id", null);
+$tpl->assign("Alert", _("Alert"));
 
-
+$tpl->assign("host_up", null);
+$tpl->assign("host_down", null);
+$tpl->assign("host_unreachable", null);
+$tpl->assign("host_undetermined", null);
+$tpl->assign("host_maintenance", null);
+$tpl->assign("service_ok", null);
+$tpl->assign("service_warning", null);
+$tpl->assign("service_critical", null);
+$tpl->assign("service_unknown", null);
+$tpl->assign("service_undetermined", null);
+$tpl->assign("service_maintenance", null);
+$tpl->assign("hostgroup_up", null);
+$tpl->assign("hostgroup_down", null);
+$tpl->assign("hostgroup_unreachable", null);
+$tpl->assign("hostgroup_undetermined", null);
+$tpl->assign("hostgroup_maintenance", null);
+$tpl->assign("servicegroup_ok", null);
+$tpl->assign("servicegroup_warning", null);
+$tpl->assign("servicegroup_critical", null);
+$tpl->assign("servicegroup_unknown", null);
+$tpl->assign("servicegroup_undetermined", null);
+$tpl->assign("servicegroup_maintenance", null);
 
 $tpl->assign('period_choice', $period_choice);
 /*
@@ -272,8 +355,33 @@ $formPeriod->addElement(
     _("to"),
     array("id"=>"EndDate", "size"=>10, "class"=>"datepicker", "onClick" => "javascript: togglePeriodType();")
 );
+/* adding hidden fields to get the result of datepicker in an unlocalized format */
+$formPeriod->addElement(
+    'hidden',
+    'alternativeDateStartDate',
+    '',
+    array(
+        'size' => 10,
+        'class' => 'alternativeDate'
+    )
+);
+$formPeriod->addElement(
+    'hidden',
+    'alternativeDateEndDate',
+    'test',
+    array(
+        'size' => 10,
+        'class' => 'alternativeDate'
+    )
+);
 $formPeriod->addElement('submit', 'button', _("Apply period"), array('class' => 'btc bt_success'));
-$formPeriod->setDefaults(array('period' => $period, "StartDate" => $get_date_start, "EndDate" => $get_date_end));
+$formPeriod->setDefaults(
+    [
+        'period' => $period,
+        'StartDate' => $get_date_start,
+        'EndDate' => $get_date_end,
+    ]
+);
 
 ?>
 <script type='text/javascript'>

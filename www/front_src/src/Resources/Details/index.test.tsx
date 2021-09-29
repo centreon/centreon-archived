@@ -54,7 +54,6 @@ import {
   labelAlias,
   labelGroups,
   labelAcknowledgement,
-  labelSwitchToGraph,
   labelDowntime,
   labelDisplayEvents,
   labelForward,
@@ -67,6 +66,7 @@ import {
   labelCompactTimePeriod,
   labelCheck,
   labelShortcuts,
+  labelMonitoringServer,
   labelToday,
   labelYesterday,
   labelThisWeek,
@@ -478,6 +478,12 @@ const renderDetails = (
   { openTabId }: RenderDetailsProps = { openTabId: undefined },
 ): RenderResult => render(<DetailsTest openTabId={openTabId} />);
 
+const mockedLocalStorageGetItem = jest.fn();
+const mockedLocalStorageSetItem = jest.fn();
+
+Storage.prototype.getItem = mockedLocalStorageGetItem;
+Storage.prototype.setItem = mockedLocalStorageSetItem;
+
 describe(Details, () => {
   beforeEach(() => {
     mockDate.set(currentDateIsoString);
@@ -487,6 +493,8 @@ describe(Details, () => {
   afterEach(() => {
     mockDate.reset();
     mockedAxios.get.mockReset();
+    mockedLocalStorageSetItem.mockReset();
+    mockedLocalStorageGetItem.mockReset();
     act(() => {
       context.clearSelectedResource();
     });
@@ -601,7 +609,15 @@ describe(Details, () => {
     async (period, startIsoString, timelineEventsLimit, periodId) => {
       mockedAxios.get
         .mockResolvedValueOnce({ data: retrievedDetails })
-        .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
+        .mockResolvedValueOnce({ data: retrievedPerformanceGraphData });
+
+      if (!isNil(periodId)) {
+        mockedAxios.get.mockResolvedValueOnce({
+          data: retrievedPerformanceGraphData,
+        });
+      }
+
+      mockedAxios.get
         .mockResolvedValueOnce({ data: retrievedTimeline })
         .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
         .mockResolvedValueOnce({ data: retrievedTimeline });
@@ -612,6 +628,10 @@ describe(Details, () => {
 
       act(() => {
         setSelectedServiceResource();
+      });
+
+      await waitFor(() => {
+        expect(getByText(period) as HTMLElement).toBeEnabled();
       });
 
       userEvent.click(getByText(period) as HTMLElement);
@@ -727,10 +747,9 @@ describe(Details, () => {
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedTimeline });
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedTimeline });
 
-    const { getByText, getAllByLabelText, baseElement, debug, getByLabelText } =
-      renderDetails({
-        openTabId: timelineTabId,
-      });
+    const { getByText, getAllByLabelText, baseElement } = renderDetails({
+      openTabId: timelineTabId,
+    });
 
     act(() => {
       setSelectedServiceResource();
@@ -765,8 +784,6 @@ describe(Details, () => {
         expect.anything(),
       ),
     );
-
-    debug(getByLabelText('test'), 100000);
 
     expect(getByText(labelToday)).toBeInTheDocument();
 
@@ -887,7 +904,6 @@ describe(Details, () => {
         links: {
           ...retrievedDetails.links,
           uris: {
-            configuration: '/configuration',
             logs: '/logs',
             reporting: '/reporting',
           },
@@ -907,10 +923,6 @@ describe(Details, () => {
 
     userEvent.click(getByLabelText(labelShortcuts).firstChild as HTMLElement);
 
-    expect(getAllByLabelText(labelConfigure)[0]).toHaveAttribute(
-      'href',
-      '/configuration',
-    );
     expect(getAllByLabelText(labelViewLogs)[0]).toHaveAttribute(
       'href',
       '/logs',
@@ -975,7 +987,6 @@ describe(Details, () => {
 
     act(() => {
       context.setServicesTabParameters({
-        graphMode: true,
         options: defaultGraphOptions,
       });
     });
@@ -1007,7 +1018,6 @@ describe(Details, () => {
             },
           },
           services: {
-            graphMode: true,
             options: {
               displayEvents: {
                 id: 'displayEvents',
@@ -1131,13 +1141,12 @@ describe(Details, () => {
 
     act(() => {
       context.setServicesTabParameters({
-        graphMode: false,
         options: defaultGraphOptions,
       });
     });
   });
 
-  it('displays the linked service graphs when the service tab of a host is clicked and the graph mode is activated', async () => {
+  it('displays the linked service graphs when the Graph tab of a host is clicked', async () => {
     mockedAxios.get
       .mockResolvedValueOnce({
         data: {
@@ -1149,17 +1158,14 @@ describe(Details, () => {
         data: retrievedServices,
       })
       .mockResolvedValueOnce({
-        data: retrievedServices,
-      })
-      .mockResolvedValueOnce({
         data: retrievedPerformanceGraphData,
       })
       .mockResolvedValueOnce({
         data: retrievedPerformanceGraphData,
       });
 
-    const { getByLabelText, findByText, getByText } = renderDetails({
-      openTabId: servicesTabId,
+    const { findByText, getByText } = renderDetails({
+      openTabId: graphTabId,
     });
 
     act(() => {
@@ -1170,13 +1176,7 @@ describe(Details, () => {
       expect(mockedAxios.get).toHaveBeenCalledTimes(2);
     });
 
-    fireEvent.click(
-      getByLabelText(labelSwitchToGraph).firstElementChild as HTMLElement,
-    );
-
     await findByText(retrievedPerformanceGraphData.global.title);
-
-    expect(context.tabParameters?.services?.graphMode).toEqual(true);
 
     userEvent.click(getByText(label7Days).parentElement as HTMLElement);
 
@@ -1438,7 +1438,7 @@ describe(Details, () => {
     });
   });
 
-  it('displays the resource configuration link when the resource name is hovered', async () => {
+  it('displays the resource configuration link', async () => {
     mockedAxios.get.mockResolvedValueOnce({
       data: {
         ...retrievedDetails,
@@ -1475,6 +1475,35 @@ describe(Details, () => {
     expect(
       getByLabelText(`${labelConfigure}_${retrievedDetails.name}`),
     ).toHaveAttribute('href', '/configuration');
+  });
+
+  it('populates details tiles with values from localStorage if available', async () => {
+    mockedAxios.get.mockResolvedValueOnce({
+      data: retrievedDetails,
+    });
+
+    const { getByText, queryByText } = renderDetails();
+
+    act(() => {
+      setSelectedServiceResource();
+    });
+
+    mockedLocalStorageGetItem.mockReturnValue(
+      JSON.stringify([labelMonitoringServer, labelStatusInformation]),
+    );
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        context.getSelectedResourceDetailsEndpoint() as string,
+        expect.anything(),
+      );
+    });
+
+    expect(getByText(labelMonitoringServer)).toBeInTheDocument();
+    expect(getByText(labelStatusInformation)).toBeInTheDocument();
+
+    expect(queryByText(labelLastCheck)).not.toBeInTheDocument();
+    expect(queryByText(labelCommand)).not.toBeInTheDocument();
   });
 
   it('queries the performance graphs with the time period selected in the "Timeline" tab when the "Graph" tab is selected and the "Timeline" tab was selected', async () => {

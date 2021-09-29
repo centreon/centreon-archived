@@ -1,6 +1,6 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
 <form name='form'>
-<input name="p" value="{$p}" type="hidden">
+
 <input name="o" value="svc" type="hidden">
 {assign var='nbCol' value='4'}
 {if $poller_listing}
@@ -59,14 +59,11 @@
 <div id="forAjax"></div>
 <table class="ToolbarTable table">
     <tr class="ToolbarTR">
-        <td width='150'><input name="p" value="{$p}" type="hidden"></td>
+        <td width='150'></td>
         <td id="pagination2" class="ToolbarPagination"></td>
         <td id="sel2" class="Toolbar_pagelimit"></td>
     </tr>
 </table>
-{if $host_name}
-    <input type='hidden' name='host_name' value='{$host_name}'>
-{/if}
 <input name='cmd' id='cmd' value='42' type='hidden'>
 <input name='o' value='{$o}' type='hidden'>
 <input type='hidden' id='limit' name='limit' value='{$limit}'>

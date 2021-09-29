@@ -1,9 +1,7 @@
 -- Drop legacy API authentication table
-
 DROP TABLE `ws_token`;
 
 -- Create authentication tables and insert local configuration
-
 CREATE TABLE `provider_configuration` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `type` varchar(255) NOT NULL,
@@ -50,4 +48,14 @@ CREATE TABLE `security_authentication_tokens` (
   REFERENCES `contact` (`contact_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-ALTER TABLE `session` MODIFY `last_reload` BIGINT UNSIGNED
+ALTER TABLE `session` MODIFY `last_reload` BIGINT UNSIGNED;
+
+-- Add one-click export button column to contact
+ALTER TABLE `contact` ADD COLUMN `enable_one_click_export` enum('0','1') DEFAULT '0';
+
+-- Add TLS hostname in config brocker input/outputs IPV4
+INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`, `fieldtype`, `external`) VALUES
+(76, 'tls_hostname', 'TLS Host name', 'Expected TLS certificate common name (CN) - leave blank if unsure.', 'text', NULL);
+
+INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`, `order_display`) VALUES
+(3, 76, 0, 5);

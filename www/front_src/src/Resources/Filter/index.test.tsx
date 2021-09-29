@@ -1,6 +1,5 @@
 import * as React from 'react';
 
-import { useSelector } from 'react-redux';
 import axios from 'axios';
 import {
   fireEvent,
@@ -40,7 +39,6 @@ import {
   getCriteriaValue,
   getFilterWithUpdatedCriteria,
   getListingEndpoint,
-  mockAppStateSelector,
   searchableFields,
 } from '../testUtils';
 import useDetails from '../Details/useDetails';
@@ -54,10 +52,7 @@ import Filter from '.';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
-jest.mock('react-redux', () => ({
-  ...(jest.requireActual('react-redux') as jest.Mocked<unknown>),
-  useSelector: jest.fn(),
-}));
+jest.useFakeTimers();
 
 const linuxServersHostGroup = {
   id: 0,
@@ -199,8 +194,6 @@ Storage.prototype.setItem = mockedLocalStorageSetItem;
 
 const cancelTokenRequestParam = { cancelToken: {} };
 
-mockAppStateSelector(useSelector as jest.Mock);
-
 describe(Filter, () => {
   beforeEach(() => {
     mockedAxios.get
@@ -214,7 +207,7 @@ describe(Filter, () => {
           result: [],
         },
       })
-      .mockResolvedValueOnce({ data: {} });
+      .mockResolvedValue({ data: {} });
   });
 
   afterEach(() => {
@@ -284,10 +277,6 @@ describe(Filter, () => {
     const searchValue = 'foobar';
 
     userEvent.type(getByPlaceholderText(labelSearch), searchValue);
-
-    mockedAxios.get
-      .mockResolvedValueOnce({ data: {} })
-      .mockResolvedValueOnce({ data: {} });
 
     userEvent.click(
       getByLabelText(labelSearchOptions).firstElementChild as HTMLElement,
@@ -433,26 +422,24 @@ describe(Filter, () => {
 
     userEvent.tab();
 
-    expect(getByPlaceholderText(labelSearch)).toHaveValue(
-      'state:unhandled_problems',
-    );
+    expect(getByPlaceholderText(labelSearch)).toHaveValue('state:unhandled');
 
     userEvent.type(getByPlaceholderText(labelSearch), ' st');
 
     userEvent.tab();
 
     expect(getByPlaceholderText(labelSearch)).toHaveValue(
-      'state:unhandled_problems status:',
+      'state:unhandled status:',
     );
 
-    userEvent.type(getByPlaceholderText(labelSearch), ' resource_type:');
+    userEvent.type(getByPlaceholderText(labelSearch), ' type:');
 
     userEvent.keyboard('{ArrowDown}');
 
     userEvent.tab();
 
     expect(getByPlaceholderText(labelSearch)).toHaveValue(
-      'state:unhandled_problems status: resource_type:service',
+      'state:unhandled status: type:service',
     );
   });
 
@@ -473,7 +460,7 @@ describe(Filter, () => {
             result: [],
           },
         })
-        .mockResolvedValueOnce({
+        .mockResolvedValue({
           data: {
             meta: {
               limit: 30,
@@ -502,7 +489,7 @@ describe(Filter, () => {
       const searchField = await findByPlaceholderText(labelSearch);
 
       expect(searchField).toHaveValue(
-        'resource_type:host state:acknowledged status:OK host_group:0|Linux-servers service_group:1|Web-access Search me',
+        'type:host state:acknowledged status:ok host_group:0|Linux-servers service_group:1|Web-access Search me',
       );
 
       userEvent.click(
@@ -596,7 +583,7 @@ describe(Filter, () => {
             result: [],
           },
         })
-        .mockResolvedValueOnce({
+        .mockResolvedValue({
           data: {
             meta: {
               limit: 30,
@@ -621,7 +608,7 @@ describe(Filter, () => {
       expect(getByText('New filter')).toBeInTheDocument();
       expect(
         getByDisplayValue(
-          'resource_type:host state:acknowledged status:OK host_group:0|Linux-servers service_group:1|Web-access Search me',
+          'type:host state:acknowledged status:ok host_group:0|Linux-servers service_group:1|Web-access Search me',
         ),
       ).toBeInTheDocument();
 

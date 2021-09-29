@@ -4,7 +4,7 @@ import { makeStyles } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
   page: {
-    backgroundColor: theme.palette.common.white,
+    // backgroundColor: theme.palette.common.white,
     padding: theme.spacing(2, 0),
   },
 }));

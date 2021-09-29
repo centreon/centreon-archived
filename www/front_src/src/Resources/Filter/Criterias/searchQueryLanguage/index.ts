@@ -7,6 +7,7 @@ import {
   flip,
   head,
   includes,
+  invertObj,
   isEmpty,
   isNil,
   keys,
@@ -19,69 +20,70 @@ import {
   propEq,
   propSatisfies,
   reject,
+  slice,
   sortBy,
   split,
   startsWith,
+  trim,
   without,
   __,
 } from 'ramda';
 import pluralize from 'pluralize';
+import { compose } from 'redux';
 
 import { SelectEntry } from '@centreon/ui';
 
 import {
   Criteria,
-  CriteriaNames,
   criteriaValueNameById,
   selectableCriterias,
-  selectableResourceTypes,
-  selectableStates,
-  selectableStatuses,
 } from '../models';
 import getDefaultCriterias from '../default';
 
-import { CriteriaValueSuggestionsProps } from './models';
+import {
+  CriteriaId,
+  criteriaNameToQueryLanguageName,
+  criteriaNameSortOrder,
+  CriteriaValueSuggestionsProps,
+  searchableFields,
+  AutocompleteSuggestionProps,
+  staticCriteriaNames,
+  getSelectableCriteriasByName,
+} from './models';
+
+const singular = pluralize.singular as (string) => string;
 
 const isIn = flip(includes);
 
-const criteriaNameSortOrder = {
-  [CriteriaNames.hostGroups]: 4,
-  [CriteriaNames.monitoringServers]: 6,
-  [CriteriaNames.resourceTypes]: 1,
-  [CriteriaNames.serviceGroups]: 5,
-  [CriteriaNames.states]: 2,
-  [CriteriaNames.statuses]: 3,
+const getCriteriaQueryLanguageName = (name: string): string => {
+  return criteriaNameToQueryLanguageName[name] || name;
 };
 
-const searchableFields = [
-  'h.name',
-  'h.alias',
-  'h.address',
-  's.description',
-  'name',
-  'alias',
-  'parent_name',
-  'parent_alias',
-  'fqdn',
-  'information',
-];
+const getCriteriaNameFromQueryLanguageName = (name: string): string => {
+  return invertObj(criteriaNameToQueryLanguageName)[name] || name;
+};
 
-const criteriaKeys = keys(selectableCriterias) as Array<string>;
+const selectableCriteriaNames = keys(selectableCriterias) as Array<string>;
 
-const isCriteriaPart = pipe(split(':'), head, pluralize, isIn(criteriaKeys));
+const isCriteriaPart = pipe(
+  split(':'),
+  head,
+  getCriteriaNameFromQueryLanguageName,
+  pluralize,
+  isIn(selectableCriteriaNames),
+);
 const isFilledCriteria = pipe(endsWith(':'), not);
 
 const parse = (search: string): Array<Criteria> => {
-  const parts = search.split(' ');
-
   const [criteriaParts, rawSearchParts] = partition(
     allPass([isCriteriaPart, isFilledCriteria]),
-    parts,
+    search.split(' '),
   );
 
   const criterias: Array<Criteria> = criteriaParts.map((criteria) => {
     const [key, values] = criteria.split(':');
-    const pluralizedKey = pluralize(key);
+    const unmappedCriteriaKey = getCriteriaNameFromQueryLanguageName(key);
+    const pluralizedKey = pluralize(unmappedCriteriaKey);
 
     const defaultCriteria = find(
       propEq('name', pluralizedKey),
@@ -98,7 +100,9 @@ const parse = (search: string): Array<Criteria> => {
         const [resourceId, resourceName] = value.split('|');
         const isStaticCriteria = isNil(objectType);
 
-        const id = isStaticCriteria ? value : parseInt(resourceId, 10);
+        const id = isStaticCriteria
+          ? getCriteriaNameFromQueryLanguageName(value)
+          : parseInt(resourceId, 10);
         const name = isStaticCriteria
           ? criteriaValueNameById[id]
           : resourceName;
@@ -125,7 +129,7 @@ const parse = (search: string): Array<Criteria> => {
   const criteriaNames = toNames(criteriasWithSearch);
 
   const defaultCriterias = reject(
-    pipe(({ name }) => name, isIn(criteriaNames)),
+    compose(isIn(criteriaNames), prop('name')),
     getDefaultCriterias(),
   );
 
@@ -141,7 +145,7 @@ const parse = (search: string): Array<Criteria> => {
 const build = (criterias: Array<Criteria>): string => {
   const nameEqualsSearch = propEq('name', 'search');
   const nameEqualsSort = propEq('name', 'sort');
-  const hasEmptyValue = propSatisfies(pipe(isEmpty), 'value');
+  const hasEmptyValue = propSatisfies(isEmpty, 'value');
 
   const rejectSearch = reject(nameEqualsSearch);
   const rejectSort = reject(nameEqualsSort);
@@ -155,16 +159,21 @@ const build = (criterias: Array<Criteria>): string => {
   )(criterias);
 
   const builtCriterias = regularCriterias
-    .filter(({ value }) => !isNil(value))
+    .filter(compose(not, isNil, prop('value')))
     .map(({ name, value, object_type }): string => {
       const values = value as Array<SelectEntry>;
       const isStaticCriteria = isNil(object_type);
 
       const formattedValues = isStaticCriteria
-        ? values.map(prop('id'))
+        ? values.map(compose(getCriteriaQueryLanguageName, prop('id')))
         : values.map(({ id, name: valueName }) => `${id}|${valueName}`);
 
-      return `${pluralize.singular(name)}:${formattedValues.join(',')}`;
+      const criteriaName = compose(
+        getCriteriaQueryLanguageName,
+        singular,
+      )(name);
+
+      return `${criteriaName}:${formattedValues.join(',')}`;
     })
     .join(' ');
 
@@ -176,48 +185,33 @@ const build = (criterias: Array<Criteria>): string => {
 };
 
 const getCriteriaNameSuggestions = (word: string): Array<string> => {
-  const singularizedCriteriaKeys = map(
-    pluralize.singular,
-    criteriaKeys,
-  ) as Array<string>;
+  const criteriaNames = map(
+    compose(getCriteriaQueryLanguageName, pluralize.singular),
+    selectableCriteriaNames,
+  );
 
   if (isEmpty(word)) {
     return [];
   }
 
   const suggestions = filter(startsWith(word), [
-    ...singularizedCriteriaKeys,
+    ...criteriaNames,
     ...searchableFields,
   ]);
 
-  return suggestions.map((suggestion) => `${suggestion}:`);
+  return map(concat(__, ':'), suggestions);
 };
 
 const getCriteriaValueSuggestions = ({
   selectedValues,
   criterias,
 }: CriteriaValueSuggestionsProps): Array<string> => {
-  const criteriaIds = map(prop('id'), criterias);
+  const criteriaNames = map<CriteriaId, string>(
+    compose(getCriteriaQueryLanguageName, prop('id')),
+  )(criterias);
 
-  return without(selectedValues, criteriaIds);
+  return without(selectedValues, criteriaNames);
 };
-
-const staticCriteriaValuesById = {
-  resource_type: selectableResourceTypes,
-  state: selectableStates,
-  status: selectableStatuses,
-};
-
-const getSelectableCriteriasByName = (
-  name: string,
-): Array<{ id: string; name: string }> => {
-  return staticCriteriaValuesById[name];
-};
-
-interface AutocompleteSuggestionProps {
-  cursorPosition: number;
-  search: string;
-}
 
 const getAutocompleteSuggestions = ({
   search,
@@ -231,22 +225,27 @@ const getAutocompleteSuggestions = ({
     return [];
   }
 
-  const searchBeforeCursor = search.slice(0, cursorPosition + 1);
-  const expressionBeforeCursor =
-    last(searchBeforeCursor.trim().split(' ')) || '';
-  const expressionCriteria = expressionBeforeCursor.split(':');
-  const criteriaName = head(expressionCriteria) || '';
-  const expressionCriteriaValues = last(expressionCriteria)?.split(',') || [];
+  const searchBeforeCursor = slice(0, cursorPosition + 1, search);
+  const expressionBeforeCursor = pipe(
+    trim,
+    split(' '),
+    last,
+  )(searchBeforeCursor) as string;
 
-  const hasCriteriaStaticValues = Object.keys(
-    staticCriteriaValuesById,
-  ).includes(criteriaName);
+  const expressionCriteria = expressionBeforeCursor.split(':');
+  const criteriaQueryLanguageName = head(expressionCriteria) as string;
+  const criteriaName = getCriteriaNameFromQueryLanguageName(
+    criteriaQueryLanguageName,
+  );
+  const expressionCriteriaValues = pipe(last, split(','))(expressionCriteria);
+
+  const hasCriteriaStaticValues = includes(criteriaName, staticCriteriaNames);
 
   if (isEmpty(criteriaName)) {
     return [];
   }
 
-  if (expressionBeforeCursor.includes(':') && hasCriteriaStaticValues) {
+  if (includes(':', expressionBeforeCursor) && hasCriteriaStaticValues) {
     const criterias = getSelectableCriteriasByName(criteriaName);
     const lastCriteriaValue = last(expressionCriteriaValues) || '';
 
@@ -261,7 +260,7 @@ const getAutocompleteSuggestions = ({
     }).includes(lastCriteriaValue);
 
     return isLastValueInSuggestions
-      ? criteriaValueSuggestions.map(concat(','))
+      ? map(concat(','), criteriaValueSuggestions)
       : filter(startsWith(lastCriteriaValue), criteriaValueSuggestions);
   }
 
