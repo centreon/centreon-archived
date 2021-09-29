@@ -9,6 +9,7 @@ export const userDecoder = JsonDecoder.object<User>(
     locale: JsonDecoder.string,
     name: JsonDecoder.string,
     timezone: JsonDecoder.string,
+    use_deprecated_pages: JsonDecoder.boolean,
   },
   'User parameters',
   {

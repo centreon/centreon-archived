@@ -1,6 +1,5 @@
-import { baseEndpoint } from '../../../../../Resources/api/endpoint';
+import { baseEndpoint } from '../../../../Resources/api/endpoint';
 
-export const monitoringServersEndpoint = `${baseEndpoint}/configuration/monitoring-servers`;
 export const exportAndReloadConfigurationEndpoint = (
   pollerId: number,
 ): string =>

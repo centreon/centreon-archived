@@ -1,47 +1,25 @@
 import * as React from 'react';
 
-import { TFunction, useTranslation } from 'react-i18next';
-import { equals, filter, isEmpty, not, propEq } from 'ramda';
+import { useTranslation } from 'react-i18next';
 
-import {
-  Button,
-  List,
-  makeStyles,
-  Paper,
-  Typography,
-  ListItem,
-  ListItemText,
-} from '@material-ui/core';
+import { Button, makeStyles, Paper, Typography } from '@material-ui/core';
 
-import {
-  getData,
-  useRequest,
-  ListingModel,
-  useSnackbar,
-  Dialog,
-} from '@centreon/ui';
+import { getData, useRequest, useSnackbar, Dialog } from '@centreon/ui';
 
 import {
   labelCancel,
   labelExportAndReload,
-  labelExportAndReloadSucceeded,
   labelExportAndReloadTheConfiguration,
   labelExportConfiguration,
   labelExportingAndReloadingTheConfiguration,
   labelThisWillExportAndReloadOnTheFollowingPollers,
 } from '../translatedLabels';
 
-import {
-  listMonitoringServersDecoder,
-  statusMessageDecoder,
-} from './api/decoders';
-import { MonitoringServer, Status, StatusMessage } from './models';
-import { buildMonitoringServersEndpoint } from './api';
-import { exportAndReloadConfigurationEndpoint } from './api/endpoints';
+import { statusMessageDecoder } from './api/decoders';
+import { StatusMessage } from './models';
 
 interface Props {
   setIsExportingConfiguration: (isExporting: boolean) => void;
-  total: number;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -57,63 +35,18 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-interface ShowExportAndReloadMessagesProps {
-  monitoringServers: Array<MonitoringServer>;
-  result: Array<StatusMessage>;
-  statusToFilterOn: Status;
-  t: TFunction;
-}
-
-const showExportAndReloadMessages = ({
-  result,
-  monitoringServers,
-  statusToFilterOn,
-  t,
-}: ShowExportAndReloadMessagesProps): Record<string, string> =>
-  result.reduce((acc, statusMessage, idx) => {
-    if (equals(statusMessage.status, statusToFilterOn)) {
-      return acc;
-    }
-
-    const monitoringServer = monitoringServers[idx];
-
-    const isFilteredOnBySuccess = equals(statusToFilterOn, Status.ok);
-
-    return {
-      ...acc,
-      [monitoringServer.name]: isFilteredOnBySuccess
-        ? t(labelExportAndReloadSucceeded)
-        : statusMessage.message,
-    };
-  }, {});
-
 const ExportConfiguration = ({
-  total,
   setIsExportingConfiguration,
 }: Props): JSX.Element => {
-  const [monitoringServers, setMonitoringServers] = React.useState<
-    Array<MonitoringServer>
-  >([]);
   const [askingBeforeExportConfiguration, setAskingBeforeExportConfiguration] =
     React.useState(false);
-  const { sendRequest: sendMonitoringServersRequest, sending } = useRequest<
-    ListingModel<MonitoringServer>
-  >({
-    decoder: listMonitoringServersDecoder,
+  const { sendRequest, sending } = useRequest<StatusMessage>({
+    decoder: statusMessageDecoder,
     request: getData,
   });
-  const { sendRequest: sendExportAndReloadConfigurationRequest } =
-    useRequest<StatusMessage>({
-      decoder: statusMessageDecoder,
-      request: getData,
-    });
   const { t } = useTranslation();
   const classes = useStyles();
-  const { showSuccessMessages, showInfoMessage, showErrorMessages } =
-    useSnackbar();
-
-  const loadMonitoringServers = (): Promise<ListingModel<MonitoringServer>> =>
-    sendMonitoringServersRequest(buildMonitoringServersEndpoint(total));
+  const { showInfoMessage } = useSnackbar();
 
   const askBeforeExportConfiguration = (): void => {
     setAskingBeforeExportConfiguration(true);
@@ -122,49 +55,8 @@ const ExportConfiguration = ({
   const closeConfirmDialog = (): void =>
     setAskingBeforeExportConfiguration(false);
 
-  const exportAndReload = (pollerId: number): Promise<StatusMessage> =>
-    sendExportAndReloadConfigurationRequest(
-      exportAndReloadConfigurationEndpoint(pollerId),
-    );
-
   const confirmExportAndReload = (): void => {
     showInfoMessage(t(labelExportingAndReloadingTheConfiguration));
-    Promise.all([
-      ...monitoringServers.map(({ id }) => exportAndReload(id)),
-    ]).then((result: Array<StatusMessage>) => {
-      const errorStatusMessages = filter(
-        propEq('status', Status.error),
-        result,
-      );
-
-      const successStatusMessages = filter(propEq('status', Status.ok), result);
-
-      const hasExportSucceeded = not(isEmpty(successStatusMessages));
-
-      const hasErrorMessages = not(isEmpty(errorStatusMessages));
-
-      if (hasExportSucceeded) {
-        showSuccessMessages(
-          showExportAndReloadMessages({
-            monitoringServers,
-            result,
-            statusToFilterOn: Status.ok,
-            t,
-          }),
-        );
-      }
-
-      if (hasErrorMessages) {
-        showErrorMessages(
-          showExportAndReloadMessages({
-            monitoringServers,
-            result,
-            statusToFilterOn: Status.error,
-            t,
-          }),
-        );
-      }
-    });
     closeConfirmDialog();
   };
 
@@ -172,13 +64,7 @@ const ExportConfiguration = ({
     setIsExportingConfiguration(askingBeforeExportConfiguration);
   }, [askingBeforeExportConfiguration]);
 
-  React.useEffect((): void => {
-    loadMonitoringServers().then(({ result }) => {
-      setMonitoringServers(result);
-    });
-  }, [total]);
-
-  const disableButton = isEmpty(monitoringServers) || sending;
+  const disableButton = sending;
 
   return (
     <>
@@ -205,13 +91,6 @@ const ExportConfiguration = ({
           <Typography>
             {t(labelThisWillExportAndReloadOnTheFollowingPollers)}:
           </Typography>
-          <List dense className={classes.pollersList}>
-            {monitoringServers.map(({ name }) => (
-              <ListItem key={name}>
-                <ListItemText className={classes.pollerText} primary={name} />
-              </ListItem>
-            ))}
-          </List>
         </div>
       </Dialog>
     </>
