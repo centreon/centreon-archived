@@ -30,13 +30,16 @@ import {
   labelCheck,
   labelSetDowntime,
   labelParent,
+  labelNotes,
+  labelAction,
 } from '../../translatedLabels';
 import useAclQuery from '../../Actions/Resource/aclQuery';
 import truncate from '../../truncate';
 
 import StateColumn from './State';
 import GraphColumn from './Graph';
-import UrlColumn from './Url';
+import NotesUrlColumn from './Url/Notes';
+import ActionUrlColumn from './Url/Action';
 
 const useStyles = makeStyles((theme) => ({
   extraSmallChipContainer: {
@@ -246,13 +249,20 @@ export const getColumns = ({ actions, t }: ColumnsProps): Array<Column> => [
     width: 200,
   },
   {
-    Component: UrlColumn,
+    Component: NotesUrlColumn,
     getRenderComponentOnRowUpdateCondition: T,
-    id: 'url',
-    label: '',
+    id: 'notes_url',
+    label: t(labelNotes),
     sortable: false,
     type: ColumnType.component,
-    width: 50,
+  },
+  {
+    Component: ActionUrlColumn,
+    getRenderComponentOnRowUpdateCondition: T,
+    id: 'action_url',
+    label: t(labelAction),
+    sortable: false,
+    type: ColumnType.component,
   },
   {
     Component: GraphColumn({ onClick: actions.onDisplayGraph }),

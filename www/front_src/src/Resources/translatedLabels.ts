@@ -180,3 +180,5 @@ export const labelFqdn = 'FQDN / Address';
 export const labelAlias = 'Alias';
 export const labelUrl = 'URL';
 export const labelParent = 'Parent';
+export const labelNotes = 'Notes';
+export const labelAction = 'Action';
