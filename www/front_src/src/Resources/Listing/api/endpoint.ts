@@ -7,7 +7,7 @@ export type ListResourcesProps = {
   monitoringServers: Array<string>;
   onlyWithPerformanceData?: boolean;
   resourceTypes: Array<string>;
-  serviceGroups: Array<number>;
+  serviceGroups: Array<string>;
   states: Array<string>;
   statuses: Array<string>;
 } & ListingParameters;

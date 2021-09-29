@@ -10,7 +10,7 @@ Centreon\Domain\Monitoring\ResourceFilter:
             type: array<string>
         servicegroupNames:
             type: array<string>
-        monitoringServiceNames:
+        monitoringServerNames:
             type: array<string>
         onlyWithPerformanceData:
             type: boolean
