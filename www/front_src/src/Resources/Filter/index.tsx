@@ -17,8 +17,9 @@ import {
   pluck,
   concat,
   pipe,
-  replace,
   dropLast,
+  or,
+  remove,
 } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
@@ -132,16 +133,26 @@ const Filter = (): JSX.Element => {
 
     const lastValue = last(values);
 
+    const selectedValues = remove(-1, 1, values);
+
     sendDynamicCriteriaValueRequests(
       buildAutocompleteEndpoint({
         limit: 5,
         page: 1,
         search: {
+          conditions: [
+            ...(autocompleteSearch?.conditions || []),
+            not(isEmpty(selectedValues))
+              ? {
+                  field: 'name',
+                  values: { $ni: selectedValues },
+                }
+              : {},
+          ],
           regex: {
             fields: ['name'],
             value: lastValue,
           },
-          ...(autocompleteSearch || {}),
         },
       }),
     ).then(({ result }): void => {
@@ -149,18 +160,19 @@ const Filter = (): JSX.Element => {
 
       const lastValueEqualsToAResult = find(equals(lastValue), names);
 
-      const notSelectedResult = difference(names, values);
+      const notSelectedValues = difference(names, values);
 
-      if (lastValueEqualsToAResult) {
+      if (or(lastValueEqualsToAResult, isEmpty(names))) {
         setAutoCompleteSuggestions([
+          ...notSelectedValues,
           ',',
-          ...map(concat(','), notSelectedResult),
+          ...map(concat(','), notSelectedValues),
         ]);
 
         return;
       }
 
-      setAutoCompleteSuggestions(notSelectedResult);
+      setAutoCompleteSuggestions(names);
     });
   };
 
