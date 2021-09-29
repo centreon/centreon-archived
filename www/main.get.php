@@ -113,6 +113,17 @@ $query = "SELECT topology_parent,topology_name,topology_id,topology_url,topology
 $DBRESULT = $pearDB->query($query);
 $redirect = $DBRESULT->fetch();
 
+/**
+ *  Is server a remote ?
+ */
+global $isRemote;
+$isRemote = false;
+
+$result = $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'isRemote'");
+if ($row = $result->fetch()) {
+    $isRemote = $row['value'] === 'yes';
+}
+
 /*
  * Init URL
  */
@@ -208,6 +219,7 @@ if ($redirect !== false && ($acl_page == 1 || $acl_page == 2)) {
             $url = "./include/core/errors/alt_error.php";
         }
     }
+    if ()
 } else {
     $url = "./include/core/errors/alt_error.php";
 }

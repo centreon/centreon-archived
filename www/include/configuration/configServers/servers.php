@@ -103,14 +103,6 @@ $forbiddenIfRemote = [
     SERVER_DUPLICATE,
     SERVER_DELETE
 ];
-
-$isRemote = false;
-
-$result = $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'isRemote'");
-if ($row = $result->fetch()) {
-    $isRemote = $row['value'] === 'yes';
-}
-
 if ($isRemote && in_array($o, $forbiddenIfRemote)) {
     require_once($path . "../../core/errors/alt_error.php");
     exit();
