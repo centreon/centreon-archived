@@ -17,6 +17,8 @@ import {
   pluck,
   concat,
   pipe,
+  replace,
+  dropLast,
 } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
@@ -273,9 +275,20 @@ const Filter = (): JSX.Element => {
     const searchBeforeCompletedWord = search.slice(0, searchCutPosition);
     const searchAfterCompletedWord = search.slice(searchCutPosition);
 
+    const searchBeforeSuggestion = isEmpty(expressionAfterSeparator.trim())
+      ? searchBeforeCompletedWord.trim()
+      : dropLast(
+          expressionAfterSeparator.length,
+          searchBeforeCompletedWord.trim(),
+        );
+
+    const suggestion = isEmpty(expressionAfterSeparator.trim())
+      ? completedWord
+      : acceptedSuggestion;
+
     const searchWithAcceptedSuggestion = [
-      searchBeforeCompletedWord.trim(),
-      completedWord,
+      searchBeforeSuggestion,
+      suggestion,
       searchAfterCompletedWord.trim() === '' ? '' : ' ',
       searchAfterCompletedWord,
     ].join('');
