@@ -43,7 +43,7 @@ export interface DetailCardLine {
   active?: boolean;
   isCustomCard?: boolean;
   line: JSX.Element;
-  shouldBeDisplayed?: boolean;
+  shouldBeDisplayed: boolean;
   title: string;
   xs?: 6 | 12;
 }
@@ -89,7 +89,7 @@ const getDetailCardLines = ({
     {
       isCustomCard: true,
       line: <AcknowledgementCard details={details} />,
-      shouldBeDisplayed: !isEmpty(details.acknowledgement),
+      shouldBeDisplayed: !isNil(details.acknowledgement),
       title: labelAcknowledgement,
       xs: 12,
     },
@@ -192,7 +192,7 @@ const getDetailCardLines = ({
           title={t(labelPerformanceData)}
         />
       ),
-      shouldBeDisplayed: !isNil(details.performance_data),
+      shouldBeDisplayed: !isEmpty(details.performance_data),
       title: labelPerformanceData,
       xs: 12,
     },
