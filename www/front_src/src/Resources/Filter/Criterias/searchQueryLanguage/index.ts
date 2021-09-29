@@ -97,19 +97,20 @@ const parse = (search: string): Array<Criteria> => {
       object_type: objectType,
       type: 'multi_select',
       value: values?.split(',').map((value) => {
-        const [resourceId, resourceName] = value.split('|');
         const isStaticCriteria = isNil(objectType);
 
-        const id = isStaticCriteria
-          ? getCriteriaNameFromQueryLanguageName(value)
-          : parseInt(resourceId, 10);
-        const name = isStaticCriteria
-          ? criteriaValueNameById[id]
-          : resourceName;
+        if (isStaticCriteria) {
+          const id = getCriteriaNameFromQueryLanguageName(value);
+
+          return {
+            id: getCriteriaNameFromQueryLanguageName(value),
+            name: criteriaValueNameById[id],
+          };
+        }
 
         return {
-          id,
-          name,
+          id: 0,
+          name: value,
         };
       }),
     };
@@ -166,7 +167,7 @@ const build = (criterias: Array<Criteria>): string => {
 
       const formattedValues = isStaticCriteria
         ? values.map(compose(getCriteriaQueryLanguageName, prop('id')))
-        : values.map(({ id, name: valueName }) => `${id}|${valueName}`);
+        : values.map(({ name: valueName }) => `${valueName}`);
 
       const criteriaName = compose(
         getCriteriaQueryLanguageName,
