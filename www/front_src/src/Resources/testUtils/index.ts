@@ -6,13 +6,13 @@ import { Filter } from '../Filter/models';
 import { buildResourcesEndpoint } from '../Listing/api/endpoint';
 
 interface EndpointParams {
-  hostGroupIds?: Array<number>;
+  hostGroups?: Array<string>;
   limit?: number;
-  monitoringServerIds?: Array<number>;
+  monitoringServers?: Array<string>;
   page?: number;
   resourceTypes?: Array<string>;
   search?: string;
-  serviceGroupIds?: Array<number>;
+  serviceGroups?: Array<string>;
   sort?;
   states?: Array<string>;
   statuses?: Array<string>;
@@ -29,15 +29,15 @@ const getListingEndpoint = ({
   statuses = defaultStatuses,
   states = defaultStates,
   resourceTypes = defaultResourceTypes,
-  hostGroupIds = [],
-  serviceGroupIds = [],
-  monitoringServerIds = [],
+  hostGroups = [],
+  serviceGroups = [],
+  monitoringServers = [],
   search,
 }: EndpointParams): string =>
   buildResourcesEndpoint({
-    hostGroupIds,
+    hostGroups,
     limit,
-    monitoringServerIds,
+    monitoringServers,
     page,
     resourceTypes,
     search: search
@@ -48,7 +48,7 @@ const getListingEndpoint = ({
           },
         }
       : undefined,
-    serviceGroupIds,
+    serviceGroups,
     sort,
     states,
     statuses,
