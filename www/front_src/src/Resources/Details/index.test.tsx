@@ -524,7 +524,6 @@ describe(Details, () => {
     expect(getByText('10')).toBeInTheDocument();
     expect(getByText('CRITICAL')).toBeInTheDocument();
     expect(getByText('Centreon')).toBeInTheDocument();
-    expect(getByText(labelLastCheckWithOkStatus)).toBeInTheDocument();
     expect(getByText(labelFqdn)).toBeInTheDocument();
     expect(getByText('central.centreon.com')).toBeInTheDocument();
     expect(getByText(labelAlias)).toBeInTheDocument();
