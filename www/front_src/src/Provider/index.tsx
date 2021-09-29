@@ -6,7 +6,14 @@ import i18n, { Resource, ResourceLanguage } from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
 import { useRequest, getData, Loader } from '@centreon/ui';
-import { Actions, useAcl, User, useUser, Context } from '@centreon/ui-context';
+import {
+  Actions,
+  useAcl,
+  User,
+  useUser,
+  Context,
+  useRefreshInterval,
+} from '@centreon/ui-context';
 
 import App from '../App';
 import createStore from '../store';
@@ -19,7 +26,6 @@ import {
 } from './endpoint';
 import { DefaultParameters } from './models';
 import useDowntime from './useDowntime';
-import useRefreshInterval from './useRefreshInterval';
 
 const store = createStore();
 
