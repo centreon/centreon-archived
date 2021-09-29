@@ -219,7 +219,6 @@ if ($redirect !== false && ($acl_page == 1 || $acl_page == 2)) {
             $url = "./include/core/errors/alt_error.php";
         }
     }
-    if ()
 } else {
     $url = "./include/core/errors/alt_error.php";
 }
