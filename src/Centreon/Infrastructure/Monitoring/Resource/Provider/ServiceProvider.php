@@ -294,7 +294,7 @@ final class ServiceProvider extends Provider
                 $key = ":monitoringServerName_{$index}";
 
                 $monitoringServerNames[] = $key;
-                $collector->addValue($key, $monitoringServerName, \PDO::PARAM_INT);
+                $collector->addValue($key, $monitoringServerName, \PDO::PARAM_STR);
             }
 
             $sql .= ' AND i.name IN (' . implode(', ', $monitoringServerNames) . ')';

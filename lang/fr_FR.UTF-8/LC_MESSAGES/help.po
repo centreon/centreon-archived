@@ -7240,3 +7240,6 @@ msgstr ""
 "Si l'option est activée l'utilisation des pages dépréciées sera totalement rétablie"
 "Cela inclu: l'affichage des pages mais également toutes les redirections entre pages dépréciées"
 "Si l'option n'est pas activée l'utilisation de la nouvelle page de Monitoring Resource Status sera pleinement activée"
+
+msgid "Expected TLS certificate common name (CN) - leave blank if unsure."
+msgstr "Champ common name (CN) attendu dans le certificat TLS - laisser vide en cas de doute"

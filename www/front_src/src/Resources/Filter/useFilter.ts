@@ -160,6 +160,10 @@ const useFilter = (): FilterState => {
   }, [currentFilter.criterias]);
 
   React.useEffect(() => {
+    if (getUrlQueryParameters().fromTopCounter) {
+      return;
+    }
+
     storeFilter(filterWithParsedSearch);
 
     const queryParameters = [
@@ -184,7 +188,7 @@ const useFilter = (): FilterState => {
       },
     ]);
 
-    setCurrentFilter(getDefaultFilter());
+    applyFilter(getDefaultFilter());
   }, [getUrlQueryParameters().fromTopCounter]);
 
   React.useEffect(() => (): void => {
