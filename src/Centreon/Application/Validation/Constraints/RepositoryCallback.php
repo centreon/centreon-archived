@@ -46,7 +46,7 @@ class RepositoryCallback extends Constraint
     public $repoMethod = null;
     public $repository = null;
     public $fields = [];
-    const NOT_VALID_REPO_CALLBACK = '13bd9dbf-6b9b-41cd-a99e-4844bcf3077z';
+    public const NOT_VALID_REPO_CALLBACK = '13bd9dbf-6b9b-41cd-a99e-4844bcf3077z';
     public $message = 'Does not satisfy validation callback. Check Repository.';
 
     protected static $errorNames = [
