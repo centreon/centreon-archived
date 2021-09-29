@@ -9,7 +9,7 @@
                 {$form.submitA.html}
             {/if}
             &nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
-    {else if $o == "w"}
+    {else if $o == "w" && !$isRemote}
         <p class="oreonbutton">{if isset($form.change)}{$form.change.html}{/if}</p>
     {/if}
     </div>
@@ -136,7 +136,7 @@
                 {$form.submitA.html}
             {/if}
             &nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
-    {else if $o == "w"}
+    {else if $o == "w"&& !$isRemote}
         <p class="oreonbutton">{if isset($form.change)}{$form.change.html}{/if}</p>
     {/if}
     </div>

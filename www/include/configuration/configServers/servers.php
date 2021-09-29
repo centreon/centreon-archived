@@ -92,6 +92,30 @@ if ($action !== false) {
     $o = $action;
 }
 
+/**
+ * Actions forbidden if server is a remote
+ */
+$forbiddenIfRemote = [
+    SERVER_ADD,
+    SERVER_MODIFY,
+    SERVER_ENABLE,
+    SERVER_DISABLE,
+    SERVER_DUPLICATE,
+    SERVER_DELETE
+];
+
+$isRemote = false;
+
+$result = $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'isRemote'");
+if ($row = $result->fetch()) {
+    $isRemote = $row['value'] === 'yes';
+}
+
+if ($isRemote && in_array($o, $forbiddenIfRemote)) {
+    require_once($path . "../../core/errors/alt_error.php");
+    exit();
+}
+
 switch ($o) {
     case SERVER_ADD:
     case SERVER_WATCH:
