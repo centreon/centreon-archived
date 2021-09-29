@@ -66,6 +66,7 @@ class RepositoryCallbackValidator extends CallbackValidator implements CentreonV
 
     /**
      * {@inheritdoc}
+     * @return void
      */
     public function validate($object, Constraint $constraint)
     {
@@ -85,19 +86,19 @@ class RepositoryCallbackValidator extends CallbackValidator implements CentreonV
                 json_encode($method)
             ));
         } elseif (null !== $object && !$repo->$method($object)) {
-                $this->context->buildViolation($constraint->message)
-                    ->atPath($field)
-                    ->setInvalidValue($value)
-                    ->setCode(RepositoryCallback::NOT_VALID_REPO_CALLBACK)
-                    ->setCause('Not Satisfying method:'.$method)
-                    ->addViolation();
+            $this->context->buildViolation($constraint->message)
+                ->atPath($field)
+                ->setInvalidValue($value)
+                ->setCode(RepositoryCallback::NOT_VALID_REPO_CALLBACK)
+                ->setCause('Not Satisfying method:' . $method)
+                ->addViolation();
         }
     }
 
     /**
      * List of required services
      *
-     * @return array
+     * @return string[]
      */
     public static function dependencies(): array
     {
