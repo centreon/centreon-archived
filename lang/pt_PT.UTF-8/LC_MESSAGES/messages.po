@@ -15182,3 +15182,6 @@ msgstr "Erro ao remover tokens de um contato"
 
 msgid "Clear filter"
 msgstr ""
+
+msgid "Last check with OK status"
+msgstr "" 

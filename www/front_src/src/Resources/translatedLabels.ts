@@ -230,3 +230,4 @@ export const labelLastYear = 'Last year';
 export const labelBeforeLastYear = 'Before last year';
 export const labelServiceGraphs = 'Service graphs';
 export const labelClearFilter = 'Clear filter';
+export const labelLastCheckWithOkStatus = 'Last check with OK status';

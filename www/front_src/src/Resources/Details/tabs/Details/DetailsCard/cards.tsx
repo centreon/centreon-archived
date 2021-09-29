@@ -1,6 +1,8 @@
 import * as React from 'react';
 
-import { pick, isEmpty, isNil } from 'ramda';
+import { pick, isEmpty, isNil, equals } from 'ramda';
+
+import { SeverityCode } from '@centreon/ui';
 
 import ChecksIcon from '../../../../ChecksIcon';
 import {
@@ -25,6 +27,7 @@ import {
   labelAcknowledgement,
   labelPerformanceData,
   labelCommand,
+  labelLastCheckWithOkStatus,
 } from '../../../../translatedLabels';
 import { ResourceDetails } from '../../../models';
 import ExpandableCard from '../ExpandableCard';
@@ -127,10 +130,17 @@ const getDetailCardLines = ({
       title: labelLastCheck,
     },
     {
+      line: <DetailsLine line={toDateTime(details.last_time_with_no_issue)} />,
+      shouldBeDisplayed:
+        !isNil(details.last_time_with_no_issue) &&
+        !equals(details.status.severity_code, SeverityCode.Ok),
+      title: labelLastCheckWithOkStatus,
+    },
+    {
       line: (
         <ChecksIcon {...pick(['active_checks', 'passive_checks'], details)} />
       ),
-      shouldBeDisplayed: displayChecksIcon ? true : undefined,
+      shouldBeDisplayed: displayChecksIcon,
       title: labelCheck,
     },
     {
