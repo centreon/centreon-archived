@@ -58,9 +58,9 @@ class RepositoryCallback extends Constraint
     public $repository = null;
 
     /**
-     * @var string[]
+     * @var string
      */
-    public $fields = [];
+    public $fields = '';
 
     public const NOT_VALID_REPO_CALLBACK = '13bd9dbf-6b9b-41cd-a99e-4844bcf3077z';
 

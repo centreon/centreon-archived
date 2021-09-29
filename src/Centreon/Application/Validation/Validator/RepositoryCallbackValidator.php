@@ -80,7 +80,7 @@ class RepositoryCallbackValidator extends CallbackValidator implements CentreonV
         $value = $object->$fieldAccessor();
         $field = $constraint->fields;
 
-        if (!\is_callable($constraint->repository, $method)) {
+        if (!\is_callable([$constraint->repository, $method])) {
             throw new ConstraintDefinitionException(sprintf(
                 '%s targeted by Callback constraint is not a valid callable in the repository',
                 json_encode($method)
