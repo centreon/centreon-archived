@@ -152,7 +152,7 @@ final class HostProvider extends Provider
             h.perfdata AS `performance_data`,
             h.execution_time AS `execution_time`,
             h.latency AS `latency`,
-            h.notify AS `notification_enabled`
+            h.notify AS `notification_enabled`,
             h.last_time_up AS `last_time_with_no_issue`
             FROM `:dbstg`.`hosts` AS h";
 
