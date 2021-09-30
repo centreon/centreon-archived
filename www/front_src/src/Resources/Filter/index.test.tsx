@@ -443,7 +443,7 @@ describe(Filter, () => {
     },
   );
 
-  it('accepts the selected autocomple suggestion when the beginning of a dynamic criteria is input and the tab key is pressed', async () => {
+  it('accepts the selected autocomplete suggestion when the beginning of a dynamic criteria is input and the tab key is pressed', async () => {
     dynamicCriteriaRequests();
     const { getByPlaceholderText } = renderFilter();
 
