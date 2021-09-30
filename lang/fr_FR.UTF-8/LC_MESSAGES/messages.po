@@ -16243,3 +16243,5 @@ msgstr "Graphiques de services"
 msgid "Clear filter"
 msgstr "Effacer le filtre"
 
+msgid "Last check with OK status"
+msgstr "Dernier contrôle avec un statut OK" 
