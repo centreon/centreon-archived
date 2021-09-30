@@ -16302,3 +16302,6 @@ msgstr "L'export et le rechargement de la configuration a echoué"
 
 msgid "Enable the one-click export button for poller configuration [BETA]"
 msgstr "Activer le bouton d’export de la configuration des collecteurs en un seul clic [BETA]"
+
+msgid "Last check with OK status"
+msgstr "Dernier contrôle avec un statut OK" 

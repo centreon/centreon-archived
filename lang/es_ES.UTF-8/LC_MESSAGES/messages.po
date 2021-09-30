@@ -14743,3 +14743,6 @@ msgstr "Permitir certificado autofirmado"
 
 msgid "Clear filter"
 msgstr ""
+
+msgid "Last check with OK status"
+msgstr "" 

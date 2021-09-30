@@ -74,6 +74,7 @@ import {
   labelLastMonth,
   labelLastYear,
   labelBeforeLastYear,
+  labelLastCheckWithOkStatus,
 } from '../translatedLabels';
 import Context, { ResourceContext } from '../Context';
 import useListing from '../Listing/useListing';
@@ -150,6 +151,7 @@ const retrievedDetails = {
   last_check: '2020-05-18T16:00Z',
   last_notification: '2020-07-18T17:30:00Z',
   last_status_change: '2020-04-18T15:00Z',
+  last_time_with_no_issue: '2021-09-23T15:49:50+02:00',
   last_update: '2020-03-18T16:30:00Z',
   latency: 0.005,
   links: {
@@ -522,7 +524,6 @@ describe(Details, () => {
     expect(getByText('10')).toBeInTheDocument();
     expect(getByText('CRITICAL')).toBeInTheDocument();
     expect(getByText('Centreon')).toBeInTheDocument();
-
     expect(getByText(labelFqdn)).toBeInTheDocument();
     expect(getByText('central.centreon.com')).toBeInTheDocument();
     expect(getByText(labelAlias)).toBeInTheDocument();
@@ -571,6 +572,9 @@ describe(Details, () => {
 
     expect(getByText(labelCheckDuration)).toBeInTheDocument();
     expect(getByText('0.070906 s')).toBeInTheDocument();
+
+    expect(getByText(labelLastCheckWithOkStatus)).toBeInTheDocument();
+    expect(getByText('06/18/2020 7:15 PM')).toBeInTheDocument();
 
     expect(getByText(labelLatency)).toBeInTheDocument();
     expect(getByText('0.005 s')).toBeInTheDocument();

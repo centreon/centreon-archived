@@ -5031,6 +5031,11 @@ components:
           format: date-time
           nullable: true
           description: "Date of the last status change (ISO8601)"
+        last_time_with_no_issue:
+          type: string
+          format: date-time
+          nullable: true
+          description: "Date of the last status change (ISO8601)"
         tries:
           type: string
           nullable: true

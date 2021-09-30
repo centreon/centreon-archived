@@ -3,6 +3,7 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { rectIntersection } from '@dnd-kit/core';
 import { rectSortingStrategy } from '@dnd-kit/sortable';
+<<<<<<< HEAD
 import {
   append,
   equals,
@@ -16,6 +17,9 @@ import {
   propEq,
   remove,
 } from 'ramda';
+=======
+import { filter, find, isEmpty, map, pluck, propEq } from 'ramda';
+>>>>>>> 70ccc7b8e3... enh(UI): Add new tile with the last ok status (#10213)
 
 import { Box, Grid } from '@material-ui/core';
 
@@ -84,10 +88,9 @@ const SortableCards = ({ panelWidth, details }: Props): JSX.Element => {
   );
 
   const displayedCards = filter(
-    ({ field }) => !isNil(field) && !isEmpty(field),
+    ({ shouldBeDisplayed }) => shouldBeDisplayed,
     cards,
   );
-
   const RootComponent = ({ children }: RootComponentProps): JSX.Element => (
     <Grid container spacing={1} style={{ width: panelWidth }}>
       {children}
