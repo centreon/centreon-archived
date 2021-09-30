@@ -253,7 +253,7 @@ const Filter = (): JSX.Element => {
       return;
     }
 
-    if (isEmpty(autoCompleteSuggestions) || !isSearchFieldFocus) {
+    if (isEmpty(autoCompleteSuggestions)) {
       setAutocompleteAnchor(null);
 
       return;
@@ -459,7 +459,6 @@ const Filter = (): JSX.Element => {
 
   const blurInput = (): void => {
     setIsSearchFieldFocus(false);
-    setCursorPosition(0);
     clearDebounceDynamicSuggestions();
   };
 
