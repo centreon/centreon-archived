@@ -47,6 +47,7 @@ import { allFilter, Filter as FilterModel } from './models';
 import useFilter from './useFilter';
 import { filterKey } from './storedFilter';
 import { defaultSortField, defaultSortOrder } from './Criterias/default';
+import { buildHostGroupsEndpoint } from './api/endpoint';
 
 import Filter from '.';
 
@@ -155,6 +156,30 @@ const filter = {
   name: 'My filter',
 };
 
+const hostGroupsData = {
+  meta: {
+    limit: 5,
+    page: 1,
+    search: {},
+    sort_by: {},
+    total: 3,
+  },
+  result: [
+    {
+      id: 72,
+      name: 'ESX-Servers',
+    },
+    {
+      id: 60,
+      name: 'Firewall',
+    },
+    {
+      id: 70,
+      name: 'IpCam-Hardware',
+    },
+  ],
+};
+
 const FilterWithLoading = (): JSX.Element => {
   useLoadResources();
 
@@ -192,6 +217,23 @@ Storage.prototype.getItem = mockedLocalStorageGetItem;
 Storage.prototype.setItem = mockedLocalStorageSetItem;
 
 const cancelTokenRequestParam = { cancelToken: {} };
+const dynamicCriteriaRequests = (): void => {
+  mockedAxios.get.mockReset();
+  mockedAxios.get
+    .mockResolvedValueOnce({
+      data: {
+        meta: {
+          limit: 30,
+          page: 1,
+          total: 0,
+        },
+        result: [],
+      },
+    })
+    .mockResolvedValueOnce({ data: {} })
+    .mockResolvedValueOnce({ data: {} })
+    .mockResolvedValue({ data: hostGroupsData });
+};
 
 describe(Filter, () => {
   beforeEach(() => {
@@ -400,6 +442,81 @@ describe(Filter, () => {
       });
     },
   );
+
+  it('accepts the selected autocomple suggestion when the beginning of a dynamic criteria is input and the tab key is pressed', async () => {
+    dynamicCriteriaRequests();
+    const { getByPlaceholderText } = renderFilter();
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledTimes(2);
+    });
+
+    userEvent.type(
+      getByPlaceholderText(labelSearch),
+      '{selectall}{backspace}host',
+    );
+
+    userEvent.tab();
+
+    expect(getByPlaceholderText(labelSearch)).toHaveValue('host_group:');
+
+    userEvent.type(getByPlaceholderText(labelSearch), 'ESX');
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        buildHostGroupsEndpoint({
+          limit: 5,
+          page: 1,
+          search: {
+            conditions: [],
+            regex: {
+              fields: ['name'],
+              value: 'ESX',
+            },
+          },
+        }),
+        cancelTokenRequestParam,
+      );
+    });
+
+    userEvent.tab();
+
+    expect(getByPlaceholderText(labelSearch)).toHaveValue(
+      'host_group:ESX-Servers',
+    );
+
+    userEvent.type(getByPlaceholderText(labelSearch), ',');
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        buildHostGroupsEndpoint({
+          limit: 5,
+          page: 1,
+          search: {
+            conditions: [
+              {
+                field: 'name',
+                values: { $ni: ['ESX-Servers'] },
+              },
+            ],
+            regex: {
+              fields: ['name'],
+              value: '',
+            },
+          },
+        }),
+        cancelTokenRequestParam,
+      );
+    });
+
+    userEvent.keyboard('{ArrowDown}');
+
+    userEvent.tab();
+
+    expect(getByPlaceholderText(labelSearch)).toHaveValue(
+      'host_group:ESX-Servers,Firewall',
+    );
+  });
 
   it('accepts the selected autocomplete suggestion when the beginning of a criteria is input and the tab key is pressed', async () => {
     const { getByPlaceholderText } = renderFilter();
