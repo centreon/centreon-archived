@@ -166,7 +166,7 @@ final class ServiceProvider extends Provider
             s.perfdata AS `performance_data`,
             s.execution_time AS `execution_time`,
             s.latency AS `latency`,
-            s.notify AS `notification_enabled`
+            s.notify AS `notification_enabled`,
             s.last_time_ok AS `last_time_with_no_issue`
             FROM `:dbstg`.`services` AS s
             INNER JOIN `:dbstg`.`hosts` sh
