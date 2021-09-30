@@ -133,7 +133,7 @@ Centreon\Domain\Monitoring\Resource:
             type: DateTime<'Y-m-d\TH:i:sP'>
             groups:
                 - 'resource_main'
-              lastTimeWithNoIssue:
+        lastTimeWithNoIssue:
             type: DateTime<'Y-m-d\TH:i:sP'>
             groups:
                 - 'resource_details'  
