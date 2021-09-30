@@ -187,7 +187,7 @@ UNLOCK TABLES;
 CREATE TABLE `hostgroups` (
   `hostgroup_id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
-  PRIMARY KEY (`hostgroup_id`)
+  PRIMARY KEY (`hostgroup_id`),
   KEY `hg_name_idx` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -405,9 +405,9 @@ CREATE TABLE `instances` (
   `running` tinyint(1) DEFAULT NULL,
   `start_time` int(11) DEFAULT NULL,
   `version` varchar(16) DEFAULT NULL,
-  `deleted` boolean NOT NULL default false, 
+  `deleted` boolean NOT NULL default false,
   `outdated` boolean NOT NULL default false,
-  PRIMARY KEY (`instance_id`)
+  PRIMARY KEY (`instance_id`),
   KEY `instances_name_idx` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -519,7 +519,7 @@ UNLOCK TABLES;
 CREATE TABLE `servicegroups` (
   `servicegroup_id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
-  PRIMARY KEY (`servicegroup_id`)
+  PRIMARY KEY (`servicegroup_id`),
   KEY `sg_name_idx` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
