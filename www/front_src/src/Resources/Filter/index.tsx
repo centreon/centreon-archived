@@ -172,11 +172,12 @@ const Filter = (): JSX.Element => {
       const notSelectedValues = difference(names, values);
 
       if (or(lastValueEqualsToAResult, isEmpty(names))) {
-        setAutoCompleteSuggestions([
+        const res = [
           ...notSelectedValues,
-          ',',
           ...map(concat(','), notSelectedValues),
-        ]);
+        ];
+
+        setAutoCompleteSuggestions(res);
 
         return;
       }
