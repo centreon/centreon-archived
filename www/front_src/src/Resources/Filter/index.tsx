@@ -527,7 +527,7 @@ const Filter = (): JSX.Element => {
                 <Paper square>
                   {isDynamicCriteria && sendingDynamicCriteriaValueRequests && (
                     <MenuItem className={classes.loader}>
-                      <CircularProgress size={30} />
+                      <CircularProgress size={20} />
                     </MenuItem>
                   )}
                   {autoCompleteSuggestions.map((suggestion, index) => {
