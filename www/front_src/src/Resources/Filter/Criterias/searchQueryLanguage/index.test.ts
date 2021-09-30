@@ -88,7 +88,7 @@ describe(getAutocompleteSuggestions, () => {
     },
     {
       cursorPosition: 15,
-      expectedResult: [',acknowledged', ',in_downtime'],
+      expectedResult: [',', ',acknowledged', ',in_downtime'],
       inputSearch: 'state:unhandled',
     },
     {

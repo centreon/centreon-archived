@@ -197,6 +197,15 @@ const Filter = (): JSX.Element => {
 
   React.useEffect(() => {
     setSelectedSuggestionIndex(0);
+
+    if (isEmpty(search.charAt(dec(cursorPosition)).trim())) {
+      clearDebounceDynamicSuggestions();
+      setAutoCompleteSuggestions([]);
+      setAutocompleteAnchor(null);
+
+      return;
+    }
+
     const dynamicCriteriaParameters = getDynamicCriteriaParametersAndValue({
       cursorPosition,
       search,

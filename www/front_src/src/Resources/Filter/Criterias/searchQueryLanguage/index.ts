@@ -331,7 +331,7 @@ const getAutocompleteSuggestions = ({
     }).includes(lastCriteriaValue);
 
     return isLastValueInSuggestions
-      ? map(concat(','), criteriaValueSuggestions)
+      ? [',', ...map(concat(','), criteriaValueSuggestions)]
       : filter(startsWith(lastCriteriaValue), criteriaValueSuggestions);
   }
 
