@@ -53,8 +53,6 @@ class AuthenticationService implements AuthenticationServiceInterface
     private $sessionRepository;
 
     /**
-     * AuthenticationService constructor.
-     *
      * @param AuthenticationRepositoryInterface $authenticationRepository
      * @param ProviderServiceInterface $providerService
      */

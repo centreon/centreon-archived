@@ -138,6 +138,30 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
         return $contact;
     }
 
+
+    /**
+     * @inheritDoc
+     */
+    public function findByAuthenticationToken(string $token): ?Contact
+    {
+        $statement = $this->db->prepare(
+            $this->translateDbName(
+                "SELECT *
+                FROM `:db`.contact
+                INNER JOIN `:db`.security_authentication_tokens sat ON sat.user_id = contact.contact_id
+                WHERE sat.token = :token"
+            )
+        );
+        $statement->bindValue(':token', $token, \PDO::PARAM_STR);
+        $statement->execute();
+
+        if ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            return $this->createContact($result);
+        }
+
+        return null;
+    }
+
     /**
      * Find and add all topology rules defined by all menus access defined for this contact.
      * The purpose is to limit access to the API based on menus access.
