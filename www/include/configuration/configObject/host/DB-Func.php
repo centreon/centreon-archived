@@ -2477,13 +2477,19 @@ function sanitizeFormHostParameters(array $ret): array
                 break;
             case 'command_command_id_arg1':
             case 'command_command_id_arg2':
-            case 'host_name':
             case 'host_alias':
-            case 'host_address':
             case 'host_snmp_community':
             case 'host_snmp_version':
             case 'host_comment':
+            case 'host_address':
             case 'geo_coords':
+                $bindParams[':' . $inputName] = [
+                    \PDO::PARAM_STR => (($inputValue = filter_var($inputValue, FILTER_SANITIZE_STRING)) === '')
+                        ? null
+                        : $inputValue
+                ];
+                break;
+            case 'host_name':
                 if (!empty($inputValue)) {
                     $bindParams[':' . $inputName] = [
                         \PDO::PARAM_STR => (($inputValue = filter_var($inputValue, FILTER_SANITIZE_STRING)) === '')
@@ -2512,11 +2518,11 @@ function sanitizeFormHostParameters(array $ret): array
                 if (!empty($inputValue)) {
                     $bindParams[':host_notification_options'] = [
                         \PDO::PARAM_STR => (($inputValue = filter_var(
-                            implode(",", array_keys($inputValue)),
-                            FILTER_SANITIZE_STRING
-                        )) === '')
-                        ? null
-                        : $inputValue
+                                implode(",", array_keys($inputValue)),
+                                FILTER_SANITIZE_STRING
+                            )) === '')
+                            ? null
+                            : $inputValue
                     ];
                 }
                 break;
@@ -2536,11 +2542,11 @@ function sanitizeFormHostParameters(array $ret): array
                 if (!empty($inputValue)) {
                     $bindParams[':host_stalking_options'] = [
                         \PDO::PARAM_STR => (($inputValue = filter_var(
-                            implode(",", array_keys($inputValue)),
-                            FILTER_SANITIZE_STRING
-                        )) === '')
-                        ? null
-                        : $inputValue
+                                implode(",", array_keys($inputValue)),
+                                FILTER_SANITIZE_STRING
+                            )) === '')
+                            ? null
+                            : $inputValue
                     ];
                 }
                 break;
