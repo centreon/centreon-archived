@@ -16278,3 +16278,6 @@ msgstr "Erreur sur le serveur de supervision #%d: %s"
 
 msgid "Execution was too long and reached timeout"
 msgstr "L'exécution a été trop longue et a atteint le délai d'attente"
+
+msgid "Last check with OK status"
+msgstr "Dernier contrôle avec un statut OK" 
