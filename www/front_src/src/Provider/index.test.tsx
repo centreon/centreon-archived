@@ -20,6 +20,7 @@ const retrievedUser = {
   locale: 'fr_FR.UTF8',
   name: 'Admin',
   timezone: 'Europe/Paris',
+  use_deprecated_pages: false,
 };
 
 const contextUser = {
