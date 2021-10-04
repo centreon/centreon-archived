@@ -63,7 +63,7 @@ import SelectFilter from './Fields/SelectFilter';
 import {
   getAutocompleteSuggestions,
   getDynamicCriteriaParametersAndValue,
-  GetDynamicCriteriaParametersAndValueProps,
+  DynamicCriteriaParametersAndValues,
 } from './Criterias/searchQueryLanguage';
 
 interface DynamicCriteriaResult {
@@ -137,7 +137,7 @@ const Filter = (): JSX.Element => {
   const loadDynamicCriteriaSuggestion = ({
     criteria,
     values,
-  }: GetDynamicCriteriaParametersAndValueProps): void => {
+  }: DynamicCriteriaParametersAndValues): void => {
     const { buildAutocompleteEndpoint, autocompleteSearch } = criteria;
 
     const lastValue = last(values);
@@ -187,7 +187,7 @@ const Filter = (): JSX.Element => {
   };
 
   const debounceDynamicSuggestions = (
-    props: GetDynamicCriteriaParametersAndValueProps,
+    props: DynamicCriteriaParametersAndValues,
   ): void => {
     clearDebounceDynamicSuggestions();
 
@@ -214,7 +214,7 @@ const Filter = (): JSX.Element => {
 
     if (isDefined(dynamicCriteriaParameters) && isSearchFieldFocus) {
       debounceDynamicSuggestions(
-        dynamicCriteriaParameters as GetDynamicCriteriaParametersAndValueProps,
+        dynamicCriteriaParameters as DynamicCriteriaParametersAndValues,
       );
 
       return;

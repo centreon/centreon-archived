@@ -225,7 +225,7 @@ const getIsNextCharacterEmpty = ({
   return isNil(nextCharacter) || isEmpty(nextCharacter.trim());
 };
 
-interface GetCRiteriaAndExpression {
+interface CriteriaExpression {
   criteriaName: string;
   expressionBeforeCursor: string;
   expressionCriteriaValues: Array<string>;
@@ -234,7 +234,7 @@ interface GetCRiteriaAndExpression {
 const getCriteriaAndExpression = ({
   search,
   cursorPosition,
-}: AutocompleteSuggestionProps): GetCRiteriaAndExpression => {
+}: AutocompleteSuggestionProps): CriteriaExpression => {
   const searchBeforeCursor = slice(0, cursorPosition + 1, search);
   const expressionBeforeCursor = pipe(
     trim,
@@ -256,7 +256,7 @@ const getCriteriaAndExpression = ({
   };
 };
 
-interface GetDynamicCriteriaParametersAndValueProps {
+interface DynamicCriteriaParametersAndValues {
   criteria: CriteriaDisplayProps;
   values: Array<string>;
 }
@@ -264,7 +264,7 @@ interface GetDynamicCriteriaParametersAndValueProps {
 const getDynamicCriteriaParametersAndValue = ({
   search,
   cursorPosition,
-}: AutocompleteSuggestionProps): GetDynamicCriteriaParametersAndValueProps | null => {
+}: AutocompleteSuggestionProps): DynamicCriteriaParametersAndValues | null => {
   const isNextCharacterEmpty = getIsNextCharacterEmpty({
     cursorPosition,
     search,
@@ -344,5 +344,5 @@ export {
   getAutocompleteSuggestions,
   getDynamicCriteriaParametersAndValue,
   searchableFields,
-  GetDynamicCriteriaParametersAndValueProps,
+  DynamicCriteriaParametersAndValues,
 };
