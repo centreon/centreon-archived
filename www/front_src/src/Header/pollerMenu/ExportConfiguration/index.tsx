@@ -1,10 +1,12 @@
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
+import { not } from 'ramda';
 
 import { Button, makeStyles, Paper, Typography } from '@material-ui/core';
 
 import { getData, useRequest, useSnackbar, Dialog } from '@centreon/ui';
+import { useUserContext } from '@centreon/ui-context';
 
 import {
   labelCancel,
@@ -38,11 +40,12 @@ const useStyles = makeStyles((theme) => ({
 
 const ExportConfiguration = ({
   setIsExportingConfiguration,
-}: Props): JSX.Element => {
+}: Props): JSX.Element | null => {
   const [askingBeforeExportConfiguration, setAskingBeforeExportConfiguration] =
     React.useState(false);
 
   const { t } = useTranslation();
+  const { isExportButtonEnabled } = useUserContext();
   const { sendRequest, sending } = useRequest({
     defaultFailureMessage: t(labelFailedToExportAndReloadConfiguration),
     request: getData,
@@ -68,6 +71,10 @@ const ExportConfiguration = ({
   React.useEffect(() => {
     setIsExportingConfiguration(sending);
   }, [sending]);
+
+  if (not(isExportButtonEnabled)) {
+    return null;
+  }
 
   const disableButton = sending;
 
