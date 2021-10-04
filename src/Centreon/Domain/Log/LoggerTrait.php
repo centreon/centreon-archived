@@ -240,4 +240,24 @@ trait LoggerTrait
     {
         return $this->logger !== null && $this->contactForDebug->isValidForContact($this->contact);
     }
+
+    /**
+     * @return bool
+     */
+    private function isValidForContact(): bool
+    {
+        if (
+            ($this->contactForDebug->getId() === null && $this->contactForDebug->getEmail() === null)
+            || (
+                $this->contactForDebug->getId() !== null
+                && $this->contact->getId() === $this->contactForDebug->getId()
+            ) || (
+                $this->contactForDebug->getEmail() !== null
+                && $this->contact->getEmail() === $this->contactForDebug->getEmail()
+            )
+        ) {
+            return true;
+        }
+        return false;
+    }
 }

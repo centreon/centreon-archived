@@ -56,6 +56,22 @@ class ContactForDebug
     }
 
     /**
+     * @return int
+     */
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEmail(): string
+    {
+        return $this->email;
+    }
+
+    /**
      * Indicates whether the logger can log messages for the given contact.
      * The comparison is made by comparing the id or email of the contact.
      * If no id or email has been defined the method will always return TRUE.
