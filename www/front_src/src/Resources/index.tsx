@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { isNil } from 'ramda';
 
-import { withSnackbar, ListingPage, WithPanel } from '@centreon/ui';
+import { ListingPage, WithPanel } from '@centreon/ui';
 
 import Context from './Context';
 import Filter from './Filter';
@@ -66,4 +66,4 @@ const Resources = (): JSX.Element => {
   );
 };
 
-export default withSnackbar({ Component: Resources });
+export default Resources;
