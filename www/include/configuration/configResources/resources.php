@@ -52,6 +52,14 @@ $path = "./include/configuration/configResources/";
 require_once $path . "DB-Func.php";
 require_once "./include/common/common-Func.php";
 
+/**
+ *  Page forbidden if server is a remote
+ */
+if ($isRemote) {
+    require_once($path . "../../core/errors/alt_error.php");
+    exit();
+}
+
 define('MACRO_ADD', 'a');
 define('MACRO_DELETE', 'd');
 define('MACRO_DISABLE', 'u');

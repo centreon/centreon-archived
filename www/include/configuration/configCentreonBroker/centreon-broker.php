@@ -38,6 +38,7 @@ if (!isset($centreon)) {
     exit();
 }
 
+
 isset($_GET["id"]) ? $cG = $_GET["id"] : $cG = null;
 isset($_POST["id"]) ? $cP = $_POST["id"] : $cP = null;
 $cG ? $id = $cG : $id = $cP;
@@ -62,6 +63,14 @@ $path = "./include/configuration/configCentreonBroker/";
  */
 require_once $path . "DB-Func.php";
 require_once "./include/common/common-Func.php";
+
+/**
+ *  Page forbidden if server is a remote
+ */
+if ($isRemote) {
+    require_once($path . "../../core/errors/alt_error.php");
+    exit();
+}
 
 /* Set the real page */
 if (isset($ret) && is_array($ret) && $ret['topology_page'] != "" && $p != $ret['topology_page']) {
