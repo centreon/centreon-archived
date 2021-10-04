@@ -682,7 +682,7 @@ class CentreonService
         $aMacros = $this->getMacros($serviceId, $aListTemplate, $cmdId);
         foreach ($aMacros as $macro) {
             foreach ($macroInput as $ind => $input) {
-                if (isset($macro['macroInput_#index#'])) {
+                if (isset($macro['macroInput_#index#']) && isset($macro["macroValue_#index#"])) {
                     # Don't override macros on massive change if there is not direct inheritance
                     if (($input == $macro['macroInput_#index#'] && $macroValue[$ind] == $macro["macroValue_#index#"])
                         || ($isMassiveChange && $input == $macro['macroInput_#index#'] &&
