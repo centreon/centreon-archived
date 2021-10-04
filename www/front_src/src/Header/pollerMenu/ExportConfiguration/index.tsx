@@ -41,13 +41,14 @@ const ExportConfiguration = ({
 }: Props): JSX.Element => {
   const [askingBeforeExportConfiguration, setAskingBeforeExportConfiguration] =
     React.useState(false);
+
+  const { t } = useTranslation();
   const { sendRequest, sending } = useRequest({
+    defaultFailureMessage: t(labelFailedToExportAndReloadConfiguration),
     request: getData,
   });
-  const { t } = useTranslation();
   const classes = useStyles();
-  const { showInfoMessage, showSuccessMessage, showErrorMessage } =
-    useSnackbar();
+  const { showInfoMessage, showSuccessMessage } = useSnackbar();
 
   const askBeforeExportConfiguration = (): void => {
     setAskingBeforeExportConfiguration(true);
@@ -58,13 +59,9 @@ const ExportConfiguration = ({
 
   const confirmExportAndReload = (): void => {
     showInfoMessage(t(labelExportingAndReloadingTheConfiguration));
-    sendRequest(exportAndReloadConfigurationEndpoint)
-      .then(() => {
-        showSuccessMessage(t(labelConfigurationExportedAndReloaded));
-      })
-      .catch(() => {
-        showErrorMessage(t(labelFailedToExportAndReloadConfiguration));
-      });
+    sendRequest(exportAndReloadConfigurationEndpoint).then(() => {
+      showSuccessMessage(t(labelConfigurationExportedAndReloaded));
+    });
     closeConfirmDialog();
   };
 
