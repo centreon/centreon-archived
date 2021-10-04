@@ -5,7 +5,7 @@ import { selectableResourceTypes, selectableStatuses } from '../models';
 import { build, parse, getAutocompleteSuggestions } from './index';
 
 const search =
-  'type:host,service state:unhandled status:ok,up host_group:53|Linux-Servers monitoring_server:1|Central h.name:centreon';
+  'type:host,service state:unhandled status:ok,up host_group:Linux-Servers monitoring_server:Central h.name:centreon';
 
 const parsedSearch = [
   {
@@ -36,7 +36,7 @@ const parsedSearch = [
     name: 'host_groups',
     object_type: 'host_groups',
     type: 'multi_select',
-    value: [{ id: 53, name: 'Linux-Servers' }],
+    value: [{ id: 0, name: 'Linux-Servers' }],
   },
   {
     name: 'service_groups',
@@ -48,7 +48,7 @@ const parsedSearch = [
     name: 'monitoring_servers',
     object_type: 'monitoring_servers',
     type: 'multi_select',
-    value: [{ id: 1, name: 'Central' }],
+    value: [{ id: 0, name: 'Central' }],
   },
   { name: 'search', object_type: null, type: 'text', value: 'h.name:centreon' },
 ];

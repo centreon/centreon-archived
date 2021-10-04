@@ -386,7 +386,7 @@ if ($o == SERVER_WATCH) {
     /*
      * Just watch a nagios information
      */
-    if ($centreon->user->access->page($p) != 2) {
+    if ($centreon->user->access->page($p) != 2 && !$isRemote) {
         $form->addElement(
             "button",
             "change",
@@ -450,6 +450,7 @@ if ($valid) {
     $tpl->assign('engines', $monitoring_engines);
     $tpl->assign('cloneSetCmd', $cloneSetCmd);
     $tpl->assign('centreon_path', $centreon->optGen['oreon_path']);
+    $tpl->assign('isRemote', $isRemote);
     include_once("help.php");
 
     $helptext = "";

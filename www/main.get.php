@@ -113,6 +113,17 @@ $query = "SELECT topology_parent,topology_name,topology_id,topology_url,topology
 $DBRESULT = $pearDB->query($query);
 $redirect = $DBRESULT->fetch();
 
+/**
+ *  Is server a remote ?
+ */
+global $isRemote;
+$isRemote = false;
+
+$result = $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'isRemote'");
+if ($row = $result->fetch()) {
+    $isRemote = $row['value'] === 'yes';
+}
+
 /*
  * Init URL
  */

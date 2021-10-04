@@ -43,6 +43,13 @@ interface ContactServiceInterface
     public function findContact(int $id): ?Contact;
 
     /**
+     * Find a contact by an authentication token
+     * @param string $token
+     * @return Contact|null
+     */
+    public function findByAuthenticationToken(string $token): ?Contact;
+
+    /**
      * Indicates whether or not the contact exists.
      *
      * @param ContactInterface $contact
