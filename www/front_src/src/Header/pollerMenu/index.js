@@ -329,7 +329,6 @@ class PollerMenu extends Component {
             </ul>
             <ExportConfiguration
               setIsExportingConfiguration={this.setIsExportingConfiguration}
-              total={data.total}
             />
           </div>
           <div className={styles['submenu-padding']} />

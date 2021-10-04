@@ -8,15 +8,16 @@ import { getData, useRequest, useSnackbar, Dialog } from '@centreon/ui';
 
 import {
   labelCancel,
+  labelConfigurationExportedAndReloaded,
   labelExportAndReload,
   labelExportAndReloadTheConfiguration,
   labelExportConfiguration,
   labelExportingAndReloadingTheConfiguration,
+  labelFailedToExportAndReloadConfiguration,
   labelThisWillExportAndReloadOnTheFollowingPollers,
 } from '../translatedLabels';
 
-import { statusMessageDecoder } from './api/decoders';
-import { StatusMessage } from './models';
+import { exportAndReloadConfigurationEndpoint } from './api/endpoints';
 
 interface Props {
   setIsExportingConfiguration: (isExporting: boolean) => void;
@@ -40,13 +41,13 @@ const ExportConfiguration = ({
 }: Props): JSX.Element => {
   const [askingBeforeExportConfiguration, setAskingBeforeExportConfiguration] =
     React.useState(false);
-  const { sendRequest, sending } = useRequest<StatusMessage>({
-    decoder: statusMessageDecoder,
+  const { sendRequest, sending } = useRequest({
     request: getData,
   });
   const { t } = useTranslation();
   const classes = useStyles();
-  const { showInfoMessage } = useSnackbar();
+  const { showInfoMessage, showSuccessMessage, showErrorMessage } =
+    useSnackbar();
 
   const askBeforeExportConfiguration = (): void => {
     setAskingBeforeExportConfiguration(true);
@@ -57,12 +58,19 @@ const ExportConfiguration = ({
 
   const confirmExportAndReload = (): void => {
     showInfoMessage(t(labelExportingAndReloadingTheConfiguration));
+    sendRequest(exportAndReloadConfigurationEndpoint)
+      .then(() => {
+        showSuccessMessage(t(labelConfigurationExportedAndReloaded));
+      })
+      .catch(() => {
+        showErrorMessage(t(labelFailedToExportAndReloadConfiguration));
+      });
     closeConfirmDialog();
   };
 
   React.useEffect(() => {
-    setIsExportingConfiguration(askingBeforeExportConfiguration);
-  }, [askingBeforeExportConfiguration]);
+    setIsExportingConfiguration(sending);
+  }, [sending]);
 
   const disableButton = sending;
 

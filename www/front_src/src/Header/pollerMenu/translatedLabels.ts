@@ -7,4 +7,7 @@ export const labelThisWillExportAndReloadOnTheFollowingPollers =
   'This will export and reload the configuration on the following pollers';
 export const labelExportingAndReloadingTheConfiguration =
   'Exporting and reloading the configuration. Please wait...';
-export const labelExportAndReloadSucceeded = 'Export and reload succeeded';
+export const labelConfigurationExportedAndReloaded =
+  'Configuration exported and reloaded';
+export const labelFailedToExportAndReloadConfiguration =
+  'Failed to export and reload the configuration';
