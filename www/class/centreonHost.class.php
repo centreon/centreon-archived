@@ -1091,12 +1091,14 @@ class CentreonHost
         $aMacros = $this->getMacros($host_id, $aTemplates, $cmdId);
         foreach ($aMacros as $macro) {
             foreach ($macroInput as $ind => $input) {
-                if ($input == $macro['macroInput_#index#'] &&
-                    $macroValue[$ind] == $macro["macroValue_#index#"] &&
-                    $macroPassword[$ind] == $macro['macroPassword_#index#']
-                ) {
-                    unset($macroInput[$ind]);
-                    unset($macroValue[$ind]);
+                if (isset($macro['macroInput_#index#'])) {
+                    if ($input == $macro['macroInput_#index#'] &&
+                        $macroValue[$ind] == $macro["macroValue_#index#"] &&
+                        $macroPassword[$ind] == $macro['macroPassword_#index#']
+                    ) {
+                        unset($macroInput[$ind]);
+                        unset($macroValue[$ind]);
+                    }
                 }
             }
         }
