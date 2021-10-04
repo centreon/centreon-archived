@@ -24,9 +24,12 @@ declare(strict_types=1);
 namespace Centreon\Domain\MonitoringServer\Interfaces;
 
 use Centreon\Domain\MonitoringServer\MonitoringServer;
-use Centreon\Domain\MonitoringServer\MonitoringServerException;
+use Centreon\Domain\MonitoringServer\Exception\MonitoringServerException;
 use Centreon\Domain\MonitoringServer\MonitoringServerResource;
 
+/**
+  * @package Centreon\Domain\MonitoringServer\Interfaces
+ */
 interface MonitoringServerRepositoryInterface
 {
     /**
@@ -91,7 +94,7 @@ interface MonitoringServerRepositoryInterface
     /**
      * Delete a monitoring server.
      *
-     * @param integer $monitoringServerId
+     * @param int $monitoringServerId
      */
     public function deleteServer(int $monitoringServerId): void;
 }

@@ -92,6 +92,22 @@ if ($action !== false) {
     $o = $action;
 }
 
+/**
+ * Actions forbidden if server is a remote
+ */
+$forbiddenIfRemote = [
+    SERVER_ADD,
+    SERVER_MODIFY,
+    SERVER_ENABLE,
+    SERVER_DISABLE,
+    SERVER_DUPLICATE,
+    SERVER_DELETE
+];
+if ($isRemote && in_array($o, $forbiddenIfRemote)) {
+    require_once($path . "../../core/errors/alt_error.php");
+    exit();
+}
+
 switch ($o) {
     case SERVER_ADD:
     case SERVER_WATCH:

@@ -23,7 +23,7 @@ import { connect } from 'react-redux';
 
 import PollerIcon from '@material-ui/icons/DeviceHub';
 import StorageIcon from '@material-ui/icons/Storage';
-import { Typography } from '@material-ui/core';
+import { Typography, Button } from '@material-ui/core';
 import LatencyIcon from '@material-ui/icons/Speed';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
@@ -32,6 +32,8 @@ import axios from '../../axios';
 import styles from '../header.scss';
 import { allowedPagesSelector } from '../../redux/selectors/navigation/allowedPages';
 import MenuLoader from '../../components/MenuLoader';
+
+import ExportConfiguration from './ExportConfiguration';
 
 const POLLER_CONFIGURATION_TOPOLOGY_PAGE = '60901';
 
@@ -114,6 +116,7 @@ class PollerMenu extends Component {
   state = {
     data: null,
     intervalApplied: false,
+    isExporting: false,
     toggled: false,
   };
 
@@ -170,6 +173,10 @@ class PollerMenu extends Component {
     this.setState({
       toggled: false,
     });
+  };
+
+  redirectsToPollersPage = () => {
+    this.closeSubmenu();
 
     this.props.history.push(
       `/main.php?p=${POLLER_CONFIGURATION_TOPOLOGY_PAGE}`,
@@ -178,11 +185,21 @@ class PollerMenu extends Component {
 
   // hide poller detailed data if click outside
   handleClick = (e) => {
-    if (!this.poller || this.poller.contains(e.target)) {
+    if (
+      !this.poller ||
+      this.poller.contains(e.target) ||
+      this.state.isExporting
+    ) {
       return;
     }
     this.setState({
       toggled: false,
+    });
+  };
+
+  setIsExportingConfiguration = (newIsExporting) => {
+    this.setState({
+      isExporting: newIsExporting,
     });
   };
 
@@ -300,19 +317,19 @@ class PollerMenu extends Component {
                   })
                 : null}
               {allowPollerConfiguration /* display poller configuration button if user is allowed */ && (
-                <button
-                  className={classnames(
-                    styles.btn,
-                    styles['btn-big'],
-                    styles['btn-green'],
-                    styles['submenu-top-button'],
-                  )}
+                <Button
+                  size="small"
+                  style={{ marginTop: '8px' }}
+                  variant="contained"
                   onClick={this.closeSubmenu}
                 >
                   {t('Configure pollers')}
-                </button>
+                </Button>
               )}
             </ul>
+            <ExportConfiguration
+              setIsExportingConfiguration={this.setIsExportingConfiguration}
+            />
           </div>
           <div className={styles['submenu-padding']} />
         </div>

@@ -10,13 +10,22 @@ import {
   useRefreshInterval,
 } from '@centreon/ui-context';
 
-import AppProvider from '.';
+import Provider from '.';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 const retrievedUser = {
   alias: 'Admin alias',
-  isExportButtonEnabled: false,
+  is_export_button_enabled: true,
+  locale: 'fr_FR.UTF8',
+  name: 'Admin',
+  timezone: 'Europe/Paris',
+  use_deprecated_pages: false,
+};
+
+const contextUser = {
+  alias: 'Admin alias',
+  isExportButtonEnabled: true,
   locale: 'fr_FR.UTF8',
   name: 'Admin',
   timezone: 'Europe/Paris',
@@ -59,10 +68,10 @@ jest.mock('../App', () => {
 });
 
 const renderComponent = (): RenderResult => {
-  return render(<AppProvider />);
+  return render(<Provider />);
 };
 
-describe(AppProvider, () => {
+describe(Provider, () => {
   beforeEach(() => {
     mockedAxios.get
       .mockResolvedValueOnce({
@@ -84,7 +93,7 @@ describe(AppProvider, () => {
 
     await waitFor(() => {
       expect(useAcl().setActionAcl).toHaveBeenCalledWith(retrievedActionsAcl);
-      expect(useUser().setUser).toHaveBeenCalledWith(retrievedUser);
+      expect(useUser().setUser).toHaveBeenCalledWith(contextUser);
       expect(useDowntime().setDowntime).toHaveBeenCalledWith({
         default_duration:
           retrievedDefaultParameters.monitoring_default_downtime_duration,

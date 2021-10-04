@@ -35,6 +35,7 @@
         "curl/curl" : "^2.3",
         "dragonmantank/cron-expression": "3.1.0",
         "enshrined/svg-sanitize": "^0.14",
+        "doctrine/annotations": "^1.0",
         "ext-ctype": "*",
         "ext-iconv": "*",
         "ext-json": "*",
@@ -47,6 +48,7 @@
         "openpsa/quickform": "3.3.*",
         "pear/pear-core-minimal": "^1.10",
         "php": ">=7.2.24",
+        "phpdocumentor/reflection-docblock": "^5.2",
         "pimple/pimple": "^3.2",
         "sensio/framework-extra-bundle": "^5.3",
         "smarty/smarty": "^3.1",
@@ -62,15 +64,13 @@
         "symfony/maker-bundle": "^1.11",
         "symfony/monolog-bundle": "^3.7",
         "symfony/options-resolver": "4.4.*",
-        "symfony/security-bundle": "4.4.*",
-        "symfony/translation": "4.4.*",
-        "symfony/validator": "4.4.*",
-        "symfony/yaml": "4.4.*",
-        "doctrine/annotations": "^1.0",
-        "phpdocumentor/reflection-docblock": "^5.2",
         "symfony/property-access": "4.4.*",
         "symfony/property-info": "4.4.*",
-        "symfony/serializer": "4.4.*"
+        "symfony/security-bundle": "4.4.*",
+        "symfony/serializer": "4.4.*",
+        "symfony/translation": "4.4.*",
+        "symfony/validator": "4.4.*",
+        "symfony/yaml": "4.4.*"
     },
     "autoload": {
         "psr-4": {
