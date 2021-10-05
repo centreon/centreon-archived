@@ -184,7 +184,7 @@ try {
     }
   }
 
-  if ((env.BUILD == 'CI') || (env.BUILD == 'QA')) {
+  if ((env.BUILD == 'QA')) {
     stage('Delivery to unstable') {
       node {
         checkoutCentreonBuild(buildBranch)
@@ -200,6 +200,22 @@ try {
     }
   }
 
+  if ((env.BUILD == 'REFERENCE')) {
+    stage('Delivery') {
+      node {
+        checkoutCentreonBuild(buildBranch)
+        unstash 'tar-sources'
+        unstash 'api-doc'
+        unstash 'rpms-centos7'
+        unstash 'rpms-centos8'
+        sh "./centreon-build/jobs/web/${serie}/mon-web-delivery.sh"
+      }
+      if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+        error('Delivery stage failure.');
+      }
+    }
+  }
+  
   stage('Docker creation') {
     parallel 'Docker centos7': {
       node {
