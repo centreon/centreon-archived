@@ -3,8 +3,8 @@ export const labelCancel = 'Cancel';
 export const labelExportAndReload = 'Export & reload';
 export const labelExportAndReloadTheConfiguration =
   'Export and reload the configuration?';
-export const labelThisWillExportAndReloadOnAllOfYourPollers =
-  'This will export and reload the configuration on all of your pollers';
+export const labelThisWillExportAndReloadOnAllOfYourPlatform =
+  'This will export and reload the configuration on all of your platform';
 export const labelExportingAndReloadingTheConfiguration =
   'Exporting and reloading the configuration. Please wait...';
 export const labelConfigurationExportedAndReloaded =
