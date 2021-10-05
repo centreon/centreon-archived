@@ -16289,7 +16289,7 @@ msgid "Export and reload the configuration?"
 msgstr "Export et recharger la configuration ?"
 
 msgid "This will export and reload the configuration on all of your platform"
-msgstr "Cela va export et recharger la configuration sur l'ensemble de votre plateforme"
+msgstr "Cela va exporter et recharger la configuration sur l'ensemble de votre plateforme"
 
 msgid "Exporting and reloading the configuration. Please wait..."
 msgstr "La configuration est en train d'être exportée et rechargée. Veuillez attendre..."
