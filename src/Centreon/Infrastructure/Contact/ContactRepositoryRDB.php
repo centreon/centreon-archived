@@ -146,9 +146,14 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
     {
         $statement = $this->db->prepare(
             $this->translateDbName(
-                "SELECT *
+                "SELECT contact.*, t.topology_url, t.topology_url_opt, t.is_react, t.topology_id, tz.timezone_name
                 FROM `:db`.contact
-                INNER JOIN `:db`.security_authentication_tokens sat ON sat.user_id = contact.contact_id
+                LEFT JOIN `:db`.timezone tz
+                    ON tz.timezone_id = contact.contact_location
+                LEFT JOIN `:db`.topology t
+                    ON t.topology_page = contact.default_page
+                INNER JOIN `:db`.security_authentication_tokens sat
+                    ON sat.user_id = contact.contact_id
                 WHERE sat.token = :token"
             )
         );
