@@ -106,3 +106,6 @@
 </form>
 {$helptext}
 
+<script type="text/javascript">
+  displayExistingExceptions({$countExceptions});
+</script>
