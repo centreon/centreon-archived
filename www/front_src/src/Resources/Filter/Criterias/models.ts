@@ -153,7 +153,7 @@ const selectableStatuses = [
 ];
 
 export interface CriteriaDisplayProps {
-  autocompleteSearch?: Record<string, unknown>;
+  autocompleteSearch?: { conditions: Array<Record<string, unknown>> };
   buildAutocompleteEndpoint?;
   label: string;
   options?: Array<SelectEntry>;
