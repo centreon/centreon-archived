@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { path, isNil, equals, last, pipe, not } from 'ramda';
 
-import { makeStyles } from '@material-ui/styles';
+import { makeStyles } from '@material-ui/core';
 
 import { Resource } from '../../../models';
 import ExportablePerformanceGraphWithTimeline from '../../../Graph/Performance/ExportableGraphWithTimeline';
@@ -41,11 +41,19 @@ interface Props {
   services: Array<Resource>;
 }
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
+  graphs: {
+    columnGap: '8px',
+    display: 'grid',
+    gridTemplateColumns: `repeat(auto-fill, minmax(${theme.spacing(
+      40,
+    )}px, auto))`,
+    rowGap: '8px',
+  },
   serviceGraph: {
     display: 'contents',
   },
-});
+}));
 
 const ServiceGraphs = ({
   services,
@@ -65,7 +73,7 @@ const ServiceGraphs = ({
   );
 
   return (
-    <>
+    <div className={classes.graphs}>
       <MousePositionContext.Provider value={mousePositionProps}>
         {servicesWithGraph.map((service) => {
           const { id } = service;
@@ -89,7 +97,7 @@ const ServiceGraphs = ({
           );
         })}
       </MousePositionContext.Provider>
-    </>
+    </div>
   );
 };
 
