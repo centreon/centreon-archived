@@ -16,7 +16,7 @@ import {
   labelExportConfiguration,
   labelExportingAndReloadingTheConfiguration,
   labelFailedToExportAndReloadConfiguration,
-  labelThisWillExportAndReloadOnTheFollowingPollers,
+  labelThisWillExportAndReloadOnAllOfYourPollers,
 } from '../translatedLabels';
 
 import { exportAndReloadConfigurationEndpoint } from './api/endpoints';
@@ -101,7 +101,7 @@ const ExportConfiguration = ({
       >
         <div>
           <Typography>
-            {t(labelThisWillExportAndReloadOnTheFollowingPollers)}:
+            {t(labelThisWillExportAndReloadOnAllOfYourPollers)}
           </Typography>
         </div>
       </Dialog>
