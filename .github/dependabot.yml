@@ -21,7 +21,7 @@ updates:
     versioning-strategy: increase-if-necessary
     ignore:
       - dependency-name: "*"
-        update-types: ["version-update:semver-patch"]
+        update-types: ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"]
 
 
   # Maintain dependencies for PHP
@@ -37,7 +37,7 @@ updates:
     versioning-strategy: increase-if-necessary
     ignore:
       - dependency-name: "*"
-        update-types: ["version-update:semver-patch"]
+        update-types: ["version-update:semver-patch", "version-update:semver-minor", "version-update:semver-major"]
 
   # Maintain dependencies for Python
   - package-ecosystem: "pip"
