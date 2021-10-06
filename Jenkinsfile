@@ -115,7 +115,7 @@ stage('Deliver sources') {
     }
     dir('centreon-build') {
       checkout resolveScm(source: [$class: 'GitSCMSource',
-                                  remote: 'ssh://git@github.com/centreon/centreon-build.git',
+                                  remote: 'https://github.com/centreon/centreon-build.git',
                                   credentialsId: 'technique-ci',
                                   traits: [[$class: 'jenkins.plugins.git.traits.BranchDiscoveryTrait']]],
                                   targets: [BRANCH_NAME, 'master'])
