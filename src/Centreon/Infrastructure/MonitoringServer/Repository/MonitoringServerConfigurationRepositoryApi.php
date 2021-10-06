@@ -147,15 +147,6 @@ class MonitoringServerConfigurationRepositoryApi implements MonitoringServerConf
             $this->initUri();
             $fullUriPath = $this->serverUri . '/include/configuration/configGenerate/xml/' . $filePath;
 
-            $optionPayload = [
-                'proxy' => null,
-                'no_proxy' => '*',
-            ];
-
-            // On https scheme, the SSL verify_peer needs to be specified
-            $optionPayload['verify_peer'] = $_SERVER['REQUEST_SCHEME'] === 'https';
-            $optionPayload['verify_host'] = $optionPayload['verify_peer'];
-
             $authenticationTokens = $this->authenticationTokenService->findByContact($this->contact);
             if ($authenticationTokens === null) {
                 throw AuthenticationException::authenticationTokenNotFound();
@@ -167,9 +158,17 @@ class MonitoringServerConfigurationRepositoryApi implements MonitoringServerConf
             ) {
                 throw AuthenticationException::authenticationTokenExpired();
             }
-            $optionPayload['headers'] = ['X-AUTH-TOKEN' => $providerToken->getToken()];
-            $optionPayload['body'] = $payloadBody;
-            $optionPayload['timeout'] = $this->timeout;
+
+            $optionPayload = [
+                'proxy' => null,
+                'no_proxy' => '*',
+                'verify_peer' => $_SERVER['REQUEST_SCHEME'] === 'https',
+                'headers' => ['X-AUTH-TOKEN' => $providerToken->getToken()],
+                'body' => $payloadBody,
+                'timeout' => $this->timeout
+            ];
+
+            $optionPayload['verify_host'] = $optionPayload['verify_peer'];
 
             $response = $this->httpClient->request('POST', $fullUriPath, $optionPayload);
             if ($response->getStatusCode() !== 200) {
