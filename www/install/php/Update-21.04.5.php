@@ -38,9 +38,14 @@ try {
             "ALTER TABLE `contact` ADD COLUMN `contact_platform_data_sending` ENUM('0', '1', '2')"
         );
     }
-    $pearDB->commit();
+
+    if ($pearDB->inTransaction()) {
+        $pearDB->commit();
+    }
 } catch (\Exception $e) {
-    $pearDB->rollBack();
+    if ($pearDB->inTransaction()) {
+        $pearDB->rollBack();
+    }
     $centreonLog->insertLog(
         4,
         $versionOfTheUpgrade . $errorMessage .
