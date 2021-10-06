@@ -106,9 +106,9 @@ def checkoutCentreonBuild(buildBranch) {
     $class: 'GitSCM',
     branches: [[name: "refs/heads/${branchName}"]],
     doGenerateSubmoduleConfigurations: false,
+    extensions: [[$class: 'CloneOption', timeout: 20, noTags: false]],
     userRemoteConfigs: [[
       $class: 'UserRemoteConfig',
-      extensions: [[$class: 'CloneOption', timeout: 20, noTags: false]],
       url: "ssh://git@github.com/centreon/centreon-build.git"
     ]]
   ]}
