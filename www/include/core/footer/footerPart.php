@@ -238,7 +238,7 @@ foreach ($jsdata as $k => $val) {
             ).cacheGenerationDate + (24 * 60 * 60 * 1000) < Date.now()
         ) {
             const userParametersRequest = jQuery.ajax({
-                url: '/centreon/api/latest/configuration/users/current/parameters',
+                url: '/centreon/api/beta/configuration/users/current/parameters',
                 method: 'GET',
                 contentType: 'application/json'
             })
@@ -250,7 +250,7 @@ foreach ($jsdata as $k => $val) {
             })
 
             const aclActionsRequest = jQuery.ajax({
-                url: '/centreon/api/latest/users/acl/actions',
+                url: '/centreon/api/beta/users/acl/actions',
                 method: 'GET',
                 contentType: 'application/json'
             })
@@ -314,7 +314,6 @@ foreach ($jsdata as $k => $val) {
                      */
                     const aclActions = [
                         ...Object.values(aclActionsRes.host),
-                        ...Object.values(aclActionsRes.metaservice),
                         ...Object.values(aclActionsRes.service)
                     ];
                     if (!aclActions.includes(true)) {
