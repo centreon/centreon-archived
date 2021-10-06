@@ -101,29 +101,6 @@ def hasChanges(patterns) {
   return isMatching
 }
 
-def checkoutCentreonBuild(buildBranch) {
-  def getCentreonBuildGitConfiguration = { branchName -> [
-    $class: 'GitSCM',
-    branches: [[name: "refs/heads/${branchName}"]],
-    doGenerateSubmoduleConfigurations: false,
-    extensions: [[$class: 'CloneOption', timeout: 20, noTags: false]],
-    userRemoteConfigs: [[
-      $class: 'UserRemoteConfig',
-      url: "ssh://git@github.com/centreon/centreon-build.git"
-    ]]
-  ]
-  currentBuild.result = 'SUCCESS'
-  }
-  dir('centreon-build') {
-    try {
-      checkout(getCentreonBuildGitConfiguration(buildBranch))
-    } catch(e) {
-      echo "branch '${buildBranch}' does not exist in centreon-build, then fallback to master"
-      checkout(getCentreonBuildGitConfiguration('master'))
-    }
-  }
-}
-
 /*
 ** Pipeline code.
 */
@@ -136,8 +113,9 @@ stage('Deliver sources') {
         hasBackendChanges = hasChanges(backendFiles)
       }
     }
-
-    checkoutCentreonBuild(buildBranch)
+    dir('centreon-build') {
+      checkout resolveScm(source: git('ssh://git@github.com/centreon/centreon-build.git'), targets: [BRANCH_NAME,'master']
+    }
 
     // git repository is stored for the Sonar analysis below.
     sh 'tar czf centreon-web-git.tar.gz centreon-web'
