@@ -72,9 +72,14 @@ try {
         $statement->bindValue(':criterias', $criterias, \PDO::PARAM_STR);
         $statement->execute();
     }
-    $pearDB->commit();
+
+    if ($pearDB->inTransaction()) {
+        $pearDB->commit();
+    }
 } catch (\Exception $e) {
-    $pearDB->rollBack();
+    if ($pearDB->inTransaction()) {
+        $pearDB->rollBack();
+    }
     $centreonLog->insertLog(
         4,
         $versionOfTheUpgrade . $errorMessage .
