@@ -101,6 +101,16 @@ def hasChanges(patterns) {
   return isMatching
 }
 
+def checkoutCentreonBuild() {
+  dir('centreon-build') {
+    checkout resolveScm(source: [$class: 'GitSCMSource',
+      remote: 'https://github.com/centreon/centreon-build.git',
+      credentialsId: 'technique-ci',
+      traits: [[$class: 'jenkins.plugins.git.traits.BranchDiscoveryTrait']]],
+      targets: [BRANCH_NAME, 'master'])
+  }
+}
+
 /*
 ** Pipeline code.
 */
@@ -114,13 +124,7 @@ stage('Deliver sources') {
       }
     }
 
-    dir('centreon-build') {
-      checkout resolveScm(source: [$class: 'GitSCMSource',
-                                  remote: 'https://github.com/centreon/centreon-build.git',
-                                  credentialsId: 'technique-ci',
-                                  traits: [[$class: 'jenkins.plugins.git.traits.BranchDiscoveryTrait']]],
-                                  targets: [BRANCH_NAME, 'master'])
-    }
+    checkoutCentreonBuild()
 
     // git repository is stored for the Sonar analysis below.
     sh 'tar czf centreon-web-git.tar.gz centreon-web'
