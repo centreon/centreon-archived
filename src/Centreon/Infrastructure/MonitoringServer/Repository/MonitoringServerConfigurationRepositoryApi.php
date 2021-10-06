@@ -147,9 +147,10 @@ class MonitoringServerConfigurationRepositoryApi implements MonitoringServerConf
             $this->initUri();
             $fullUriPath = $this->serverUri . '/include/configuration/configGenerate/xml/' . $filePath;
 
-            $optionPayload = [];
-            $optionPayload['proxy'] = null;
-            $optionPayload['no_proxy'] = '*';
+            $optionPayload = [
+                'proxy' => null,
+                'no_proxy' => '*',
+            ];
 
             // On https scheme, the SSL verify_peer needs to be specified
             $optionPayload['verify_peer'] = $_SERVER['REQUEST_SCHEME'] === 'https';
