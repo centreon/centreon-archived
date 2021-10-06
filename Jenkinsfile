@@ -105,7 +105,7 @@ def hasChanges(patterns) {
 ** Pipeline code.
 */
 stage('Deliver sources') {
-  node("tests") {
+  node {
     dir('centreon-web') {
       checkout scm
       if (!isStableBuild()) {
