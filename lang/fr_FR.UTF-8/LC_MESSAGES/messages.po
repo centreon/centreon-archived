@@ -16239,10 +16239,7 @@ msgstr "Détails du Contact"
 
 msgid "Service graphs"
 msgstr "Graphiques de services"
-<<<<<<< HEAD
-=======
 
 msgid "Clear filter"
 msgstr "Effacer le filtre"
 
->>>>>>> 8660776857... enh(UI): Clear filter by one click on close icon into search/filter bar (#10152)
