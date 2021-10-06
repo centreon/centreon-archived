@@ -112,11 +112,11 @@ stage('Deliver sources') {
         hasFrontendChanges = hasChanges(frontendFiles)
         hasBackendChanges = hasChanges(backendFiles)
       }
-
-      dir('centreon-build') {
-        checkout resolveScm(source: git('ssh://git@github.com/centreon/centreon-build.git'), targets: [BRANCH_NAME,'master']
-      }
     }
+    dir('centreon-build') {
+      checkout resolveScm(source: git('ssh://git@github.com/centreon/centreon-build.git'), targets: [BRANCH_NAME,'master']
+    }
+
     // git repository is stored for the Sonar analysis below.
     sh 'tar czf centreon-web-git.tar.gz centreon-web'
     stash name: 'git-sources', includes: 'centreon-web-git.tar.gz'
