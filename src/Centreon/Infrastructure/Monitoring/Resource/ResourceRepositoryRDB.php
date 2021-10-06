@@ -184,7 +184,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             . 'resource.tries, resource.last_check, resource.next_check, '
             . 'resource.information, resource.performance_data, '
             . 'resource.execution_time, resource.latency, '
-            . 'resource.notification_enabled '
+            . 'resource.notification_enabled, resource.last_time_with_no_issue '
             . 'FROM (';
 
         $subRequests = [];
@@ -217,18 +217,19 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         $request .= ') AS `resource`';
 
         // apply the host group filter to SQL query
-        if ($filter->getHostgroupIds()) {
+        if ($filter->getHostgroupNames()) {
             $groupList = [];
 
-            foreach ($filter->getHostgroupIds() as $index => $groupId) {
-                $key = ":resourceHostgroupId_{$index}";
+            foreach ($filter->getHostgroupNames() as $index => $groupName) {
+                $key = ":resourceHostgroupName_{$index}";
                 $groupList[] = $key;
-                $collector->addValue($key, $groupId, \PDO::PARAM_INT);
+                $collector->addValue($key, $groupName, \PDO::PARAM_STR);
             }
 
             $request .= ' INNER JOIN `:dbstg`.`hosts_hostgroups` AS hhg
                 ON hhg.host_id = resource.host_id
-                AND hhg.hostgroup_id IN (' . implode(', ', $groupList) . ') ';
+                INNER JOIN `:dbstg`.`hostgroups` AS hg
+                ON hg.name IN (' . implode(', ', $groupList) . ') ';
         }
 
         /**

@@ -109,6 +109,7 @@ $form->addElement('text', 'hg_alias', _("Alias"), $attrsText);
 /*
  * Hosts Selection
  */
+$form->addElement('header', 'relation', _("Relation"));
 $hostRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_host'
     . '&action=defaultValues&target=hostgroups&field=hg_hosts&id=' . ($hg_id > 0 ? $hg_id : '');
 $attrHost1 = array_merge(

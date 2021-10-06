@@ -2,7 +2,6 @@ import * as React from 'react';
 
 import mockDate from 'mockdate';
 import axios from 'axios';
-import { useSelector } from 'react-redux';
 import { last, pick, map } from 'ramda';
 import {
   render,
@@ -53,7 +52,6 @@ import useLoadResources from '../Listing/useLoadResources';
 import useListing from '../Listing/useListing';
 import useFilter from '../Filter/useFilter';
 import Context, { ResourceContext } from '../Context';
-import { mockAppStateSelector } from '../testUtils';
 import { Resource } from '../models';
 import useDetails from '../Details/useDetails';
 
@@ -106,7 +104,7 @@ const mockUserContext = {
 
   name: 'admin',
 
-  refresh_interval: 15,
+  refreshInterval: 15,
   timezone: 'Europe/Paris',
 };
 
@@ -187,7 +185,6 @@ describe(Actions, () => {
       .mockResolvedValueOnce({ data: [] });
 
     mockDate.set(mockNow);
-    mockAppStateSelector(useSelector as jest.Mock);
 
     mockedUserContext.mockReturnValue(mockUserContext);
   });

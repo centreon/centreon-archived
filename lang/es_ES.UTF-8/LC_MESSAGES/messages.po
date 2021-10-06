@@ -14740,3 +14740,9 @@ msgstr "Permitir certificado autofirmado"
 
 # msgid "Service graphs"
 # msgstr ""
+
+msgid "Clear filter"
+msgstr ""
+
+msgid "Last check with OK status"
+msgstr "" 

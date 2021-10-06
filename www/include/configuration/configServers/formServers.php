@@ -38,9 +38,6 @@ if (!isset($centreon)) {
     exit();
 }
 
-const ZMQ = 1;
-const SSH = 2;
-
 require_once _CENTREON_PATH_ . "/www/class/centreon-config/centreonMainCfg.class.php";
 
 $objMain = new CentreonMainCfg();
@@ -130,6 +127,7 @@ $cdata->addJsData('clone-count-pollercmd', count($cmdArray));
  */
 $nagios_servers = array();
 $dbResult = $pearDB->query("SELECT * FROM `nagios_server` ORDER BY name");
+$cfg_server = array_map("myDecode", $dbResult->fetch());
 while ($nagios_server = $dbResult->fetch()) {
     $nagios_servers[$nagios_server["id"]] = $nagios_server["name"];
 }
@@ -388,7 +386,7 @@ if ($o == SERVER_WATCH) {
     /*
      * Just watch a nagios information
      */
-    if ($centreon->user->access->page($p) != 2) {
+    if ($centreon->user->access->page($p) != 2 && !$isRemote) {
         $form->addElement(
             "button",
             "change",
@@ -452,6 +450,7 @@ if ($valid) {
     $tpl->assign('engines', $monitoring_engines);
     $tpl->assign('cloneSetCmd', $cloneSetCmd);
     $tpl->assign('centreon_path', $centreon->optGen['oreon_path']);
+    $tpl->assign('isRemote', $isRemote);
     include_once("help.php");
 
     $helptext = "";

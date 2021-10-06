@@ -21,7 +21,7 @@
 			{if $o == "w"}
 				<div><img class="helpTooltip" name="tip_host_service_data_source">{$form.host_id.label}</div>
 			{/if}
-			
+
 		</td>
 		<td id="td_list_hsr" class="FormRowValue">
 			{$form.host_id.html}
@@ -59,14 +59,15 @@
                 {$form.ds_color_line_mode.html}<br/>
                 <span class="pull-left">{$form.ds_color_line.html}&nbsp;&nbsp;{$form.ds_color_line_color.html}</span>
                 <label>
-                    <span style="margin-left: 5px" class="pull-left">{$form.ds_random_color_line.html}</span>
-                    {$form.ds_random_color_line.label}
+					{if isset($form.ds_random_color_line)}
+						<span style="margin-left: 5px" class="pull-left">{$form.ds_random_color_line.html}</span>
+						{$form.ds_random_color_line.label}
+					{/if}
                 </label>
             </td>
 		{/if}
 		{if $o == "w"}
 			<td id="td_ds_color_line" class="FormRowValue" style="font-size: 11px; font-family: Courier New;">{$form.ds_color_line_read.html}</td>
-		
 		{/if}
 	</tr>
 	<tr class="list_one">
@@ -107,12 +108,21 @@
 	<!--<tr class="list_two"><td class="FormRowField">{$form.default_tpl1.label}</td><td class="FormRowValue">{$form.default_tpl1.html}</td></tr>-->
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_comments">{$form.comment.label}</td><td class="FormRowValue">{$form.comment.html}</td></tr>
 	{if $o == "a" || $o == "c"}
-		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">{$form.required.note}</td></tr>
+		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">
+			{if isset($form.required)}
+				{$form.required.note}
+			{/if}
+		</td></tr>
 	{/if}
 </table>
 <div id="validForm">
 {if $o == "a" || $o == "c"}
-	<p>{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+	<p>
+		{if isset($form.submitC)}
+			{$form.submitC.html}
+		{/if}
+		{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}
+	</p>
 {else if $o == "w"}
 	<p>{$form.change.html}</p>
 {/if}

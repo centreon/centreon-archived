@@ -15,7 +15,9 @@
 	</div>
 	<div id="validForm">
 	{if $o == "cd"}
-		<p>{$form.action.html}</p>
+			{if isset($form.action)}
+				<p>{$form.action.html}</p>
+			{/if}
 		<p class="oreonbutton">{$form.submitC.html}&nbsp;&nbsp;&nbsp;{$form.cancel.html}</p>
 	{elseif $o == "m"}
 		<p class="oreonbutton">{$form.submitM.html}&nbsp;&nbsp;&nbsp;{$form.cancel.html}</p>

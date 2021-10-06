@@ -86,26 +86,6 @@ $form->addElement(
     $get_date_end
 );
 
-/* adding hidden fields to get the result of datepicker in an unlocalized format */
-$formPeriod->addElement(
-    'hidden',
-    'alternativeDateStartDate',
-    '',
-    array(
-        'size' => 10,
-        'class' => 'alternativeDate'
-    )
-);
-$formPeriod->addElement(
-    'hidden',
-    'alternativeDateEndDate',
-    '',
-    array(
-        'size' => 10,
-        'class' => 'alternativeDate'
-    )
-);
-
 $redirect = $form->addElement('hidden', 'o');
 $redirect->setValue($o);
 

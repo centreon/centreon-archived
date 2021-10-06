@@ -6,11 +6,11 @@ Centreon\Domain\Monitoring\ResourceFilter:
             type: array<string>
         statuses:
             type: array<string>
-        hostgroupIds:
-            type: array<int>
-        servicegroupIds:
-            type: array<int>
-        monitoringServerIds:
-            type: array<int>
+        hostgroupNames:
+            type: array<string>
+        servicegroupNames:
+            type: array<string>
+        monitoringServerNames:
+            type: array<string>
         onlyWithPerformanceData:
             type: boolean

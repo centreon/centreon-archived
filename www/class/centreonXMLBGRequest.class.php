@@ -226,7 +226,7 @@ class CentreonXMLBGRequest
         $dbResult = $this->DB->query($query);
         $admin = $dbResult->fetchRow();
         $dbResult->closeCursor();
-        if ($admin["contact_admin"]) {
+        if ($admin !== false && $admin["contact_admin"]) {
             $this->is_admin = 1;
         } else {
             $this->is_admin = 0;
@@ -330,7 +330,7 @@ class CentreonXMLBGRequest
 
     public function setServiceGroupsHistory($sg)
     {
-        $_SESSION['monitoring_default_servicegroups'] = sg;
+        $_SESSION['monitoring_default_servicegroups'] = $sg;
     }
 
     public function setCriticality($criticality)

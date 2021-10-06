@@ -35,6 +35,7 @@ import { SelectEntry } from '@centreon/ui';
 
 import {
   Criteria,
+  CriteriaDisplayProps,
   criteriaValueNameById,
   selectableCriterias,
 } from '../models';
@@ -49,6 +50,7 @@ import {
   AutocompleteSuggestionProps,
   staticCriteriaNames,
   getSelectableCriteriasByName,
+  dynamicCriteriaValuesByName,
 } from './models';
 
 const singular = pluralize.singular as (string) => string;
@@ -97,19 +99,20 @@ const parse = (search: string): Array<Criteria> => {
       object_type: objectType,
       type: 'multi_select',
       value: values?.split(',').map((value) => {
-        const [resourceId, resourceName] = value.split('|');
         const isStaticCriteria = isNil(objectType);
 
-        const id = isStaticCriteria
-          ? getCriteriaNameFromQueryLanguageName(value)
-          : parseInt(resourceId, 10);
-        const name = isStaticCriteria
-          ? criteriaValueNameById[id]
-          : resourceName;
+        if (isStaticCriteria) {
+          const id = getCriteriaNameFromQueryLanguageName(value);
+
+          return {
+            id: getCriteriaNameFromQueryLanguageName(value),
+            name: criteriaValueNameById[id],
+          };
+        }
 
         return {
-          id,
-          name,
+          id: 0,
+          name: value,
         };
       }),
     };
@@ -166,7 +169,7 @@ const build = (criterias: Array<Criteria>): string => {
 
       const formattedValues = isStaticCriteria
         ? values.map(compose(getCriteriaQueryLanguageName, prop('id')))
-        : values.map(({ id, name: valueName }) => `${id}|${valueName}`);
+        : values.map(({ name: valueName }) => `${valueName}`);
 
       const criteriaName = compose(
         getCriteriaQueryLanguageName,
@@ -213,18 +216,25 @@ const getCriteriaValueSuggestions = ({
   return without(selectedValues, criteriaNames);
 };
 
-const getAutocompleteSuggestions = ({
+const getIsNextCharacterEmpty = ({
   search,
   cursorPosition,
-}: AutocompleteSuggestionProps): Array<string> => {
+}: AutocompleteSuggestionProps): boolean => {
   const nextCharacter = search[cursorPosition];
-  const isNextCharacterEmpty =
-    isNil(nextCharacter) || isEmpty(nextCharacter.trim());
 
-  if (isNil(cursorPosition) || !isNextCharacterEmpty) {
-    return [];
-  }
+  return isNil(nextCharacter) || isEmpty(nextCharacter.trim());
+};
 
+interface CriteriaExpression {
+  criteriaName: string;
+  expressionBeforeCursor: string;
+  expressionCriteriaValues: Array<string>;
+}
+
+const getCriteriaAndExpression = ({
+  search,
+  cursorPosition,
+}: AutocompleteSuggestionProps): CriteriaExpression => {
   const searchBeforeCursor = slice(0, cursorPosition + 1, search);
   const expressionBeforeCursor = pipe(
     trim,
@@ -238,6 +248,67 @@ const getAutocompleteSuggestions = ({
     criteriaQueryLanguageName,
   );
   const expressionCriteriaValues = pipe(last, split(','))(expressionCriteria);
+
+  return {
+    criteriaName,
+    expressionBeforeCursor,
+    expressionCriteriaValues,
+  };
+};
+
+interface DynamicCriteriaParametersAndValues {
+  criteria: CriteriaDisplayProps;
+  values: Array<string>;
+}
+
+const getDynamicCriteriaParametersAndValue = ({
+  search,
+  cursorPosition,
+}: AutocompleteSuggestionProps): DynamicCriteriaParametersAndValues | null => {
+  const isNextCharacterEmpty = getIsNextCharacterEmpty({
+    cursorPosition,
+    search,
+  });
+
+  if (isNil(cursorPosition) || !isNextCharacterEmpty) {
+    return null;
+  }
+
+  const { criteriaName, expressionCriteriaValues } = getCriteriaAndExpression({
+    cursorPosition,
+    search,
+  });
+
+  const pluralizedCriteriaName = pluralize(criteriaName);
+
+  const hasCriteriaDynamicValues = includes(
+    pluralizedCriteriaName,
+    dynamicCriteriaValuesByName,
+  );
+
+  return hasCriteriaDynamicValues
+    ? {
+        criteria: selectableCriterias[pluralizedCriteriaName],
+        values: expressionCriteriaValues,
+      }
+    : null;
+};
+
+const getAutocompleteSuggestions = ({
+  search,
+  cursorPosition,
+}: AutocompleteSuggestionProps): Array<string> => {
+  const isNextCharacterEmpty = getIsNextCharacterEmpty({
+    cursorPosition,
+    search,
+  });
+
+  if (isNil(cursorPosition) || !isNextCharacterEmpty) {
+    return [];
+  }
+
+  const { criteriaName, expressionCriteriaValues, expressionBeforeCursor } =
+    getCriteriaAndExpression({ cursorPosition, search });
 
   const hasCriteriaStaticValues = includes(criteriaName, staticCriteriaNames);
 
@@ -267,4 +338,11 @@ const getAutocompleteSuggestions = ({
   return reject(includes(__, search), getCriteriaNameSuggestions(criteriaName));
 };
 
-export { parse, build, getAutocompleteSuggestions, searchableFields };
+export {
+  parse,
+  build,
+  getAutocompleteSuggestions,
+  getDynamicCriteriaParametersAndValue,
+  searchableFields,
+  DynamicCriteriaParametersAndValues,
+};

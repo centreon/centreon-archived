@@ -19,8 +19,16 @@
 			</tr>
 		</table>		
 		<div id="validForm">
-			<p>{$form.action.html}</p>
-			<p>{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+			{if isset($form.action)}
+				<p>{$form.action.html}</p>
+			{/if}
+			<p>
+				{if isset($form.submitC)}
+					{$form.submitC.html}
+				{else}
+					{$form.submitA.html}
+				{/if}
+				&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
 		</div>
 		{$form.hidden}
 	</form>

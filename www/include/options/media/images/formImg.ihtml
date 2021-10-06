@@ -44,7 +44,11 @@
 		</tr>
 		
 		{if $o == "a" || $o == "ci"}
-			<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">{$form.required._note}</td></tr>
+			<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">
+                {if isset($form.required)}
+                    {$form.required._note}
+                {/if}
+            </td></tr>
 		{/if}
 	</table>
 	</div>

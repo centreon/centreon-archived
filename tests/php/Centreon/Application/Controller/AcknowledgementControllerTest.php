@@ -142,12 +142,12 @@ class AcknowledgementControllerTest extends TestCase
         $disacknowledgement = new Acknowledgement();
         $disacknowledgement->setWithServices(true);
 
-        $this->acknowledgementService->expects($this->at(1))
+        $this->acknowledgementService->expects($this->exactly(2))
             ->method('disacknowledgeResource')
-            ->with($this->equalTo($this->hostResource), $this->equalTo($disacknowledgement));
-        $this->acknowledgementService->expects($this->at(2))
-            ->method('disacknowledgeResource')
-            ->with($this->equalTo($this->serviceResource), $this->equalTo($disacknowledgement));
+            ->withConsecutive(
+                [$this->equalTo($this->hostResource), $this->equalTo($disacknowledgement)],
+                [$this->equalTo($this->serviceResource), $this->equalTo($disacknowledgement)]
+            );
 
         $acknowledgementController = new AcknowledgementController($this->acknowledgementService);
         $acknowledgementController->setContainer($this->container);

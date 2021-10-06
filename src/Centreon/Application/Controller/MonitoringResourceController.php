@@ -63,9 +63,9 @@ class MonitoringResourceController extends AbstractController
         'types',
         'states',
         'statuses',
-        'hostgroup_ids',
-        'servicegroup_ids',
-        'monitoring_server_ids',
+        'hostgroup_names',
+        'servicegroup_names',
+        'monitoring_server_names',
     ];
 
     public const FILTER_RESOURCES_ON_PERFORMANCE_DATA_AVAILABILITY = 'only_with_performance_data';
@@ -779,12 +779,12 @@ class MonitoringResourceController extends AbstractController
      */
     private function generateResourceUri(ResourceEntity $resource, string $relativeUri): string
     {
-        $relativeUri = str_replace('{resource_id}', $resource->getId(), $relativeUri);
-        $relativeUri = str_replace('{host_id}', $resource->getHostId(), $relativeUri);
-        $relativeUri = str_replace('{service_id}', $resource->getServiceId(), $relativeUri);
+        $relativeUri = str_replace('{resource_id}', (string) $resource->getId(), $relativeUri);
+        $relativeUri = str_replace('{host_id}', (string) $resource->getHostId(), $relativeUri);
+        $relativeUri = str_replace('{service_id}', (string) $resource->getServiceId(), $relativeUri);
 
         if ($resource->getParent() !== null) {
-            $relativeUri = str_replace('{parent_resource_id}', $resource->getParent()->getId(), $relativeUri);
+            $relativeUri = str_replace('{parent_resource_id}', (string) $resource->getParent()->getId(), $relativeUri);
         }
 
         return $this->getBaseUri() . $relativeUri;

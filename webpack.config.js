@@ -11,18 +11,9 @@ module.exports = merge(baseConfig, extractCssConfig, {
   entry: ['@babel/polyfill', './www/front_src/src/index.js'],
   module: {
     rules: [
-      { parser: { system: false } },
       {
-        test: /fonts(\\|\/).+\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
-        use: [
-          {
-            loader: 'file-loader',
-            options: {
-              name: '[name].[hash:8].[ext]',
-              publicPath: './',
-            },
-          },
-        ],
+        parser: { system: false },
+        test: /\.[cm]?(j|t)sx?$/,
       },
       {
         test: /\.icon.svg$/,
