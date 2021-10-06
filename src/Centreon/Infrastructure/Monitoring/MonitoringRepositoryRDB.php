@@ -198,9 +198,12 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
         }
 
         $result = $this->db->query('SELECT FOUND_ROWS()');
-        $this->sqlRequestTranslator->getRequestParameters()->setTotal(
-            (int) $result->fetchColumn()
-        );
+
+        if ($result !== false) {
+            $this->sqlRequestTranslator->getRequestParameters()->setTotal(
+                (int) $result->fetchColumn()
+            );
+        }
 
         $hostIds = [];
 
@@ -476,9 +479,12 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
         $statement->execute();
 
         $result = $this->db->query('SELECT FOUND_ROWS()');
-        $this->sqlRequestTranslator->getRequestParameters()->setTotal(
-            (int) $result->fetchColumn()
-        );
+
+        if ($result !== false) {
+            $this->sqlRequestTranslator->getRequestParameters()->setTotal(
+                (int) $result->fetchColumn()
+            );
+        }
 
         while (false !== ($result = $statement->fetch(\PDO::FETCH_ASSOC))) {
             $hostGroups[] = EntityCreator::createEntityByArray(
@@ -1128,9 +1134,12 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
         }
 
         $result = $this->db->query('SELECT FOUND_ROWS()');
-        $this->sqlRequestTranslator->getRequestParameters()->setTotal(
-            (int) $result->fetchColumn()
-        );
+
+        if ($result !== false) {
+            $this->sqlRequestTranslator->getRequestParameters()->setTotal(
+                (int) $result->fetchColumn()
+            );
+        }
 
         while (false !== ($result = $statement->fetch(\PDO::FETCH_ASSOC))) {
             $service = EntityCreator::createEntityByArray(
@@ -1288,9 +1297,12 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
         }
 
         $result = $this->db->query('SELECT FOUND_ROWS()');
-        $this->sqlRequestTranslator->getRequestParameters()->setTotal(
-            (int) $result->fetchColumn()
-        );
+
+        if ($result !== false) {
+            $this->sqlRequestTranslator->getRequestParameters()->setTotal(
+                (int) $result->fetchColumn()
+            );
+        }
 
         while (false !== ($result = $statement->fetch(\PDO::FETCH_ASSOC))) {
             $service = EntityCreator::createEntityByArray(
@@ -1390,9 +1402,12 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
         $statement->execute();
 
         $result = $this->db->query('SELECT FOUND_ROWS()');
-        $this->sqlRequestTranslator->getRequestParameters()->setTotal(
-            (int) $result->fetchColumn()
-        );
+
+        if ($result !== false) {
+            $this->sqlRequestTranslator->getRequestParameters()->setTotal(
+                (int) $result->fetchColumn()
+            );
+        }
 
         while (false !== ($result = $statement->fetch(\PDO::FETCH_ASSOC))) {
             $serviceGroups[] = EntityCreator::createEntityByArray(
@@ -1533,15 +1548,13 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
     }
 
     /**
-     * @param array $serviceGroups
-     * @return array
-     * @throws \Exception
+     * @inheritDoc
      */
-    public function findServicesByServiceGroups(array $serviceGroups): array
+    public function findServicesByServiceGroups(array $serviceGroupIds): array
     {
         $servicesByServiceGroupId = [];
 
-        if ($this->hasNotEnoughRightsToContinue() || empty($serviceGroups)) {
+        if ($this->hasNotEnoughRightsToContinue() || empty($serviceGroupIds)) {
             return $servicesByServiceGroupId;
         }
 
@@ -1574,14 +1587,14 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
               ON ssg.service_id = srv.service_id
               AND ssg.host_id = srv.host_id'
             . $subRequest
-            . 'WHERE ssg.servicegroup_id IN (' . str_repeat('?,', count($serviceGroups) - 1) . '?)
+            . 'WHERE ssg.servicegroup_id IN (' . str_repeat('?,', count($serviceGroupIds) - 1) . '?)
                 AND srv.enabled = 1
             GROUP by ssg.servicegroup_id, srv.host_id, srv.service_id';
 
         $request = $this->translateDbName($request);
 
         $statement = $this->db->prepare($request);
-        $statement->execute($serviceGroups);
+        $statement->execute($serviceGroupIds);
 
         while (false !== ($result = $statement->fetch(\PDO::FETCH_ASSOC))) {
             $service = EntityCreator::createEntityByArray(
@@ -1602,7 +1615,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
     /**
      * @param int $hostId
      * @param int $serviceId
-     * @return array
+     * @return array<int, ServiceGroup>
      */
     public function findServiceGroupsByHostAndService(int $hostId, int $serviceId): array
     {
@@ -1691,9 +1704,12 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
         $statement->execute();
 
         $result = $this->db->query('SELECT FOUND_ROWS()');
-        $this->sqlRequestTranslator->getRequestParameters()->setTotal(
-            (int)$result->fetchColumn()
-        );
+
+        if ($result !== false) {
+            $this->sqlRequestTranslator->getRequestParameters()->setTotal(
+                (int) $result->fetchColumn()
+            );
+        }
 
         while (false !== ($result = $statement->fetch(\PDO::FETCH_ASSOC))) {
             $serviceGroups[] = EntityCreator::createEntityByArray(
