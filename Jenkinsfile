@@ -112,7 +112,7 @@ def checkoutCentreonBuild(buildBranch) {
       url: "ssh://git@github.com/centreon/centreon-build.git"
     ]]
   ]}
-
+  currentBuild.result = 'SUCCESS'
   dir('centreon-build') {
     try {
       checkout(getCentreonBuildGitConfiguration(buildBranch))
