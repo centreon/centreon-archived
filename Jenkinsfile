@@ -112,7 +112,7 @@ stage('Deliver sources') {
         hasFrontendChanges = hasChanges(frontendFiles)
         hasBackendChanges = hasChanges(backendFiles)
       }
-    }
+          
     dir('centreon-build') {
       checkout resolveScm(source: git('ssh://git@github.com/centreon/centreon-build.git'), targets: [BRANCH_NAME,'master']
     }
