@@ -56,7 +56,7 @@
         "symfony/options-resolver": "4.4.*",
         "symfony/serializer-pack": "^1.0",
         "symfony/maker-bundle": "^1.11",
-        "nelmio/cors-bundle": "^1.5",
+        "nelmio/cors-bundle": "^2.1",
         "symfony/validator": "4.4.*",
         "symfony/translation": "4.4.*",
         "symfony/expression-language": "4.4.*",
