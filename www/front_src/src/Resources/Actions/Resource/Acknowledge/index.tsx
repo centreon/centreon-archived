@@ -46,7 +46,7 @@ const AcknowledgeForm = ({
   const { t } = useTranslation();
   const { showSuccessMessage } = useSnackbar();
 
-  const { alias } = useUserContext();
+  const { alias, acknowledgement } = useUserContext();
 
   const {
     sendRequest: sendAcknowledgeResources,
@@ -59,9 +59,9 @@ const AcknowledgeForm = ({
     initialValues: {
       acknowledgeAttachedResources: false,
       comment: undefined,
-      isSticky: false,
+      isSticky: acknowledgement.sticky,
       notify: false,
-      persistent: false,
+      persistent: acknowledgement.persistent,
     },
     onSubmit: (values): void => {
       sendAcknowledgeResources({
