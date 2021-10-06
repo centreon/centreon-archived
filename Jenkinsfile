@@ -111,11 +111,12 @@ def checkoutCentreonBuild(buildBranch) {
       $class: 'UserRemoteConfig',
       url: "ssh://git@github.com/centreon/centreon-build.git"
     ]]
-  ]}
+  ]
+  currentBuild.result = 'SUCCESS'
+  }
   dir('centreon-build') {
     try {
       checkout(getCentreonBuildGitConfiguration(buildBranch))
-      currentBuild.result = 'SUCCESS'
     } catch(e) {
       echo "branch '${buildBranch}' does not exist in centreon-build, then fallback to master"
       checkout(getCentreonBuildGitConfiguration('master'))
