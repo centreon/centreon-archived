@@ -114,7 +114,7 @@ stage('Deliver sources') {
       }
     }
     dir('centreon-build') {
-      checkout resolveScm(source: git('ssh://git@github.com/centreon/centreon-build.git'), targets: [BRANCH_NAME,'master']
+      checkout resolveScm(source: git('ssh://git@github.com/centreon/centreon-build.git'), targets: [BRANCH_NAME,'master'])
     }
 
     // git repository is stored for the Sonar analysis below.
