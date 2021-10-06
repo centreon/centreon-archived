@@ -111,8 +111,10 @@ def checkoutCentreonBuild(buildBranch) {
       $class: 'UserRemoteConfig',
       url: "ssh://git@github.com/centreon/centreon-build.git"
     ]]
-  ]}
-  currentBuild.result = 'SUCCESS'
+  ]
+  return true
+  }
+
   dir('centreon-build') {
     try {
       checkout(getCentreonBuildGitConfiguration(buildBranch))
