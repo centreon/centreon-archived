@@ -3390,6 +3390,14 @@ paths:
                       type: integer
                       description: Default monitoring refresh interval
                       example: 15
+                    monitoring_default_acknowledgement_persistent:
+                      type: boolean
+                      description: Default monitoring acknowledgement persistent option
+                      example: true
+                    monitoring_default_acknowledgement_sticky:
+                      type: boolean
+                      description: Default monitoring acknowledgement sticky option
+                      example: true
         '400':
           $ref: '#/components/responses/BadRequest'
         '403':
