@@ -7,7 +7,7 @@ import org.jenkinsci.plugins.pipeline.modeldefinition.Utils
 def serie = '21.04'
 def maintenanceBranch = "${serie}.x"
 def qaBranch = "dev-${serie}.x"
-env.REF_BRANCH = 'master'
+env.REF_BRANCH = "${maintenanceBranch}"
 env.PROJECT='centreon-web'
 if (env.BRANCH_NAME.startsWith('release-')) {
   env.BUILD = 'RELEASE'
@@ -114,20 +114,22 @@ try {
           ])
         }
 
-        discoverGitReferenceBuild()
         recordIssues(
+          referenceJobName: "centreon-web/${env.REF_BRANCH}",
           enabledForFailure: true,
           qualityGates: [[threshold: 1, type: 'DELTA', unstable: false]],
           tool: phpCodeSniffer(id: 'phpcs', name: 'phpcs', pattern: 'codestyle-be.xml'),
           trendChartType: 'NONE'
         )
         recordIssues(
+          referenceJobName: "centreon-web/${env.REF_BRANCH}",
           enabledForFailure: true,
           qualityGates: [[threshold: 1, type: 'DELTA', unstable: false]],
           tool: phpStan(id: 'phpstan', name: 'phpstan', pattern: 'phpstan.xml'),
           trendChartType: 'NONE'
         )
         recordIssues(
+          referenceJobName: "centreon-web/${env.REF_BRANCH}",
           enabledForFailure: true,
           failOnError: true,
           qualityGates: [[threshold: 1, type: 'NEW', unstable: false]],
@@ -182,7 +184,7 @@ try {
     }
   }
 
-  if ((env.BUILD == 'CI') || (env.BUILD == 'QA')) {
+  if ((env.BUILD == 'QA')) {
     stage('Delivery to unstable') {
       node {
         checkoutCentreonBuild(buildBranch)
@@ -198,6 +200,22 @@ try {
     }
   }
 
+  if ((env.BUILD == 'REFERENCE')) {
+    stage('Delivery') {
+      node {
+        checkoutCentreonBuild(buildBranch)
+        unstash 'tar-sources'
+        unstash 'api-doc'
+        unstash 'rpms-centos7'
+        unstash 'rpms-centos8'
+        sh "./centreon-build/jobs/web/${serie}/mon-web-delivery.sh"
+      }
+      if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+        error('Delivery stage failure.');
+      }
+    }
+  }
+  
   stage('Docker creation') {
     parallel 'Docker centos7': {
       node {
