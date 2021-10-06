@@ -133,15 +133,21 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             'host.criticality' => 'cv.value'
         ]);
 
-        $accessGroupFilter = $this->isAdmin()
-            ? ''
-            : ' INNER JOIN `:dbstg`.`centreon_acl` acl
-                  ON acl.host_id = h.host_id
-                  AND acl.service_id IS NULL
-                INNER JOIN `:db`.`acl_groups` acg
-                  ON acg.acl_group_id = acl.group_id
-                  AND acg.acl_group_activate = \'1\'
-                  AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups) . ') ';
+        $accessGroupFilter = '';
+
+        if ($this->isAdmin() === false) {
+            $accessGroupIds = array_map(
+                function ($accessGroup) {
+                    return $accessGroup->getId();
+                },
+                $this->accessGroups
+            );
+
+            $accessGroupFilter = ' INNER JOIN `:dbstg`.`centreon_acl` acl
+                ON acl.host_id = h.host_id
+                AND acl.service_id IS NULL
+                AND acl.group_id IN (' . implode(',', $accessGroupIds) . ') ';
+        }
 
         $request =
             'SELECT SQL_CALC_FOUND_ROWS DISTINCT
@@ -218,15 +224,21 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             return [];
         }
 
-        $accessGroupFilter = $this->isAdmin()
-            ? ' '
-            : ' INNER JOIN `:dbstg`.`centreon_acl` acl
-                  ON acl.host_id = h.host_id
-                  AND acl.service_id IS NULL
-                INNER JOIN `:db`.`acl_groups` acg
-                  ON acg.acl_group_id = acl.group_id
-                  AND acg.acl_group_activate = \'1\'
-                  AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups) . ') ';
+        $accessGroupFilter = '';
+
+        if ($this->isAdmin() === false) {
+            $accessGroupIds = array_map(
+                function ($accessGroup) {
+                    return $accessGroup->getId();
+                },
+                $this->accessGroups
+            );
+
+            $accessGroupFilter = ' INNER JOIN `:dbstg`.`centreon_acl` acl
+                ON acl.host_id = h.host_id
+                AND acl.service_id IS NULL
+                AND acl.group_id IN (' . implode(',', $accessGroupIds) . ') ';
+        }
 
         $request =
             'SELECT SQL_CALC_FOUND_ROWS DISTINCT
@@ -274,15 +286,21 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             return [];
         }
 
-        $accessGroupFilter = $this->isAdmin()
-            ? ' '
-            : ' INNER JOIN `:dbstg`.`centreon_acl` acl
-                  ON acl.host_id = h.host_id
-                  AND acl.service_id = srv.service_id
-                INNER JOIN `:db`.`acl_groups` acg
-                  ON acg.acl_group_id = acl.group_id
-                  AND acg.acl_group_activate = \'1\'
-                  AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups) . ') ';
+        $accessGroupFilter = '';
+
+        if ($this->isAdmin() === false) {
+            $accessGroupIds = array_map(
+                function ($accessGroup) {
+                    return $accessGroup->getId();
+                },
+                $this->accessGroups
+            );
+
+            $accessGroupFilter = ' INNER JOIN `:dbstg`.`centreon_acl` acl
+                ON acl.host_id = h.host_id
+                AND acl.service_id = srv.service_id
+                AND acl.group_id IN (' . implode(',', $accessGroupIds) . ') ';
+        }
 
         $request =
             'SELECT SQL_CALC_FOUND_ROWS DISTINCT
@@ -481,15 +499,21 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             return null;
         }
 
-        $accessGroupFilter = $this->isAdmin()
-            ? ' '
-            : ' INNER JOIN `:dbstg`.`centreon_acl` acl
-                  ON acl.host_id = h.host_id
-                  AND acl.service_id IS NULL
-                INNER JOIN `:db`.`acl_groups` acg
-                  ON acg.acl_group_id = acl.group_id
-                  AND acg.acl_group_activate = \'1\'
-                  AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups) . ') ';
+        $accessGroupFilter = '';
+
+        if ($this->isAdmin() === false) {
+            $accessGroupIds = array_map(
+                function ($accessGroup) {
+                    return $accessGroup->getId();
+                },
+                $this->accessGroups
+            );
+
+            $accessGroupFilter = ' INNER JOIN `:dbstg`.`centreon_acl` acl
+                ON acl.host_id = h.host_id
+                AND acl.service_id IS NULL
+                AND acl.group_id IN (' . implode(',', $accessGroupIds) . ') ';
+        }
 
         $request =
             'SELECT h.*,
@@ -726,15 +750,21 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             return null;
         }
 
-        $accessGroupFilter = $this->isAdmin()
-            ? ' '
-            : ' INNER JOIN `:dbstg`.`centreon_acl` acl
-                  ON acl.host_id = h.host_id
-                  AND acl.service_id = srv.service_id
-                INNER JOIN `:db`.`acl_groups` acg
-                  ON acg.acl_group_id = acl.group_id
-                  AND acg.acl_group_activate = \'1\'
-                  AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups) . ') ';
+        $accessGroupFilter = '';
+
+        if ($this->isAdmin() === false) {
+            $accessGroupIds = array_map(
+                function ($accessGroup) {
+                    return $accessGroup->getId();
+                },
+                $this->accessGroups
+            );
+
+            $accessGroupFilter = ' INNER JOIN `:dbstg`.`centreon_acl` acl
+                ON acl.host_id = h.host_id
+                AND acl.service_id = srv.service_id
+                AND acl.group_id IN (' . implode(',', $accessGroupIds) . ') ';
+        }
 
         $request =
             'SELECT DISTINCT srv.*, h.host_id AS `host_host_id`,
@@ -815,15 +845,21 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             return null;
         }
 
-        $accessGroupFilter = $this->isAdmin()
-            ? ' '
-            : ' INNER JOIN `:dbstg`.`centreon_acl` acl
-                  ON acl.host_id = h.host_id
-                  AND acl.service_id = srv.service_id
-                INNER JOIN `:db`.`acl_groups` acg
-                  ON acg.acl_group_id = acl.group_id
-                  AND acg.acl_group_activate = \'1\'
-                  AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups) . ') ';
+        $accessGroupFilter = '';
+
+        if ($this->isAdmin() === false) {
+            $accessGroupIds = array_map(
+                function ($accessGroup) {
+                    return $accessGroup->getId();
+                },
+                $this->accessGroups
+            );
+
+            $accessGroupFilter = ' INNER JOIN `:dbstg`.`centreon_acl` acl
+                ON acl.host_id = h.host_id
+                AND acl.service_id = srv.service_id
+                AND acl.group_id IN (' . implode(',', $accessGroupIds) . ') ';
+        }
 
         $request =
             'SELECT DISTINCT srv.*, h.host_id AS `host_host_id`,
@@ -1005,15 +1041,21 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             'service.criticality' => 'cv.value'
         ]);
 
-        $accessGroupFilter = $this->isAdmin()
-            ? ' '
-            : ' INNER JOIN `:dbstg`.`centreon_acl` acl
-                  ON acl.host_id = srv.host_id
-                  AND acl.service_id = srv.service_id
-                INNER JOIN `:db`.`acl_groups` acg
-                  ON acg.acl_group_id = acl.group_id
-                  AND acg.acl_group_activate = \'1\'
-                  AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups) . ') ';
+        $accessGroupFilter = '';
+
+        if ($this->isAdmin() === false) {
+            $accessGroupIds = array_map(
+                function ($accessGroup) {
+                    return $accessGroup->getId();
+                },
+                $this->accessGroups
+            );
+
+            $accessGroupFilter = ' INNER JOIN `:dbstg`.`centreon_acl` acl
+                ON acl.host_id = srv.host_id
+                AND acl.service_id = srv.service_id
+                AND acl.group_id IN (' . implode(',', $accessGroupIds) . ') ';
+        }
 
         $request =
             'SELECT SQL_CALC_FOUND_ROWS DISTINCT
@@ -1172,15 +1214,21 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             return $services;
         }
 
-        $accessGroupFilter = $this->isAdmin()
-            ? ' '
-            : ' INNER JOIN `:dbstg`.`centreon_acl` acl
-                  ON acl.host_id = srv.host_id
-                  AND acl.service_id = srv.service_id
-                INNER JOIN `:db`.`acl_groups` acg
-                  ON acg.acl_group_id = acl.group_id
-                  AND acg.acl_group_activate = \'1\'
-                  AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups) . ') ';
+        $accessGroupFilter = '';
+
+        if ($this->isAdmin() === false) {
+            $accessGroupIds = array_map(
+                function ($accessGroup) {
+                    return $accessGroup->getId();
+                },
+                $this->accessGroups
+            );
+
+            $accessGroupFilter = ' INNER JOIN `:dbstg`.`centreon_acl` acl
+                ON acl.host_id = srv.host_id
+                AND acl.service_id = srv.service_id
+                AND acl.group_id IN (' . implode(',', $accessGroupIds) . ') ';
+        }
 
         $request =
             'SELECT SQL_CALC_FOUND_ROWS DISTINCT srv.*,
@@ -1377,16 +1425,21 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             $serviceIds
         );
 
-        $accessGroupFilter = $this->isAdmin()
-            ? ' '
-            : ' INNER JOIN `:dbstg`.`centreon_acl` acl
-                  ON acl.host_id = h.host_id
-                  AND acl.service_id = srv.service_id
-                INNER JOIN `:db`.`acl_groups` acg
-                  ON acg.acl_group_id = acl.group_id
-                  AND acg.acl_group_activate = \'1\'
-                  AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups) . ') ';
+        $accessGroupFilter = '';
 
+        if ($this->isAdmin() === false) {
+            $accessGroupIds = array_map(
+                function ($accessGroup) {
+                    return $accessGroup->getId();
+                },
+                $this->accessGroups
+            );
+
+            $accessGroupFilter = ' INNER JOIN `:dbstg`.`centreon_acl` acl
+                ON acl.host_id = h.host_id
+                AND acl.service_id = srv.service_id
+                AND acl.group_id IN (' . implode(',', $accessGroupIds) . ') ';
+        }
 
         $request =
             'SELECT DISTINCT 
@@ -1431,15 +1484,21 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             return $services;
         }
 
-        $accessGroupFilter = $this->isAdmin()
-            ? ' '
-            : ' INNER JOIN `:dbstg`.`centreon_acl` acl
-                  ON acl.host_id = h.host_id
-                  AND acl.service_id = srv.service_id
-                INNER JOIN `:db`.`acl_groups` acg
-                  ON acg.acl_group_id = acl.group_id
-                  AND acg.acl_group_activate = \'1\'
-                  AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups) . ') ';
+        $accessGroupFilter = '';
+
+        if ($this->isAdmin() === false) {
+            $accessGroupIds = array_map(
+                function ($accessGroup) {
+                    return $accessGroup->getId();
+                },
+                $this->accessGroups
+            );
+
+            $accessGroupFilter = ' INNER JOIN `:dbstg`.`centreon_acl` acl
+                ON acl.host_id = h.host_id
+                AND acl.service_id = srv.service_id
+                AND acl.group_id IN (' . implode(',', $accessGroupIds) . ') ';
+        }
 
         $request =
             'SELECT DISTINCT
