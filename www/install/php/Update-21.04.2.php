@@ -56,9 +56,14 @@ try {
         $statement->bindValue(':moduleMetaId', (int) $moduleMetaId, \PDO::PARAM_INT);
         $statement->execute();
     }
-    $pearDB->commit();
+
+    if ($pearDB->inTransaction()) {
+        $pearDB->commit();
+    }
 } catch (\Exception $e) {
-    $pearDB->rollBack();
+    if ($pearDB->inTransaction()) {
+        $pearDB->rollBack();
+    }
     $centreonLog->insertLog(
         4,
         $versionOfTheUpgrade . $errorMessage .
