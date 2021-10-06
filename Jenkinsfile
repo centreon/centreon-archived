@@ -176,13 +176,7 @@ try {
         Utils.markStageSkippedForConditional('frontend')
       } else {
         node {
-          dir('centreon-build') {
-            checkout resolveScm(source: [$class: 'GitSCMSource',
-              remote: 'https://github.com/centreon/centreon-build.git',
-              credentialsId: 'technique-ci',
-              traits: [[$class: 'jenkins.plugins.git.traits.BranchDiscoveryTrait']]],
-              targets: [BRANCH_NAME, 'master'])
-          }          
+          checkoutCentreonBuild()
           unstash 'tar-sources'
           unstash 'node_modules'
           sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh frontend"
@@ -205,13 +199,7 @@ try {
         Utils.markStageSkippedForConditional('backend')
       } else {
         node {
-          dir('centreon-build') {
-            checkout resolveScm(source: [$class: 'GitSCMSource',
-              remote: 'https://github.com/centreon/centreon-build.git',
-              credentialsId: 'technique-ci',
-              traits: [[$class: 'jenkins.plugins.git.traits.BranchDiscoveryTrait']]],
-              targets: [BRANCH_NAME, 'master'])
-          }          
+          checkoutCentreonBuild()      
           unstash 'tar-sources'
           unstash 'vendor'
           sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh backend"
@@ -241,13 +229,7 @@ try {
     'sonar': {
       node {
         // Run sonarQube analysis
-        dir('centreon-build') {
-          checkout resolveScm(source: [$class: 'GitSCMSource',
-            remote: 'https://github.com/centreon/centreon-build.git',
-            credentialsId: 'technique-ci',
-            traits: [[$class: 'jenkins.plugins.git.traits.BranchDiscoveryTrait']]],
-            targets: [BRANCH_NAME, 'master'])
-        }          
+        checkoutCentreonBuild()    
         unstash 'git-sources'
         sh 'rm -rf centreon-web && tar xzf centreon-web-git.tar.gz'
         withSonarQubeEnv('SonarQubeDev') {
@@ -265,13 +247,7 @@ try {
     },
     'rpm packaging centos7': {
       node {
-        dir('centreon-build') {
-          checkout resolveScm(source: [$class: 'GitSCMSource',
-            remote: 'https://github.com/centreon/centreon-build.git',
-            credentialsId: 'technique-ci',
-            traits: [[$class: 'jenkins.plugins.git.traits.BranchDiscoveryTrait']]],
-            targets: [BRANCH_NAME, 'master'])
-        }               
+        checkoutCentreonBuild()
         unstash 'tar-sources'
         sh "./centreon-build/jobs/web/${serie}/mon-web-package.sh centos7"
         archiveArtifacts artifacts: "rpms-centos7.tar.gz"
@@ -281,13 +257,7 @@ try {
     },
     'rpm packaging centos8': {
       node {
-        dir('centreon-build') {
-          checkout resolveScm(source: [$class: 'GitSCMSource',
-            remote: 'https://github.com/centreon/centreon-build.git',
-            credentialsId: 'technique-ci',
-            traits: [[$class: 'jenkins.plugins.git.traits.BranchDiscoveryTrait']]],
-            targets: [BRANCH_NAME, 'master'])
-        }               
+        checkoutCentreonBuild()           
         unstash 'tar-sources'
         sh "./centreon-build/jobs/web/${serie}/mon-web-package.sh centos8"
         archiveArtifacts artifacts: "rpms-centos8.tar.gz"
@@ -337,13 +307,7 @@ try {
   if ((env.BUILD == 'CI')) {
     stage('Delivery to canary') {
       node {
-        dir('centreon-build') {
-          checkout resolveScm(source: [$class: 'GitSCMSource',
-            remote: 'https://github.com/centreon/centreon-build.git',
-            credentialsId: 'technique-ci',
-            traits: [[$class: 'jenkins.plugins.git.traits.BranchDiscoveryTrait']]],
-            targets: [BRANCH_NAME, 'master'])
-        }       
+        checkoutCentreonBuild()    
         sh 'rm -rf output'
         unstash 'tar-sources'
         unstash 'api-doc'
@@ -360,13 +324,7 @@ try {
   if ((env.BUILD == 'QA')) {
     stage('Delivery to unstable') {
       node {
-        dir('centreon-build') {
-          checkout resolveScm(source: [$class: 'GitSCMSource',
-            remote: 'https://github.com/centreon/centreon-build.git',
-            credentialsId: 'technique-ci',
-            traits: [[$class: 'jenkins.plugins.git.traits.BranchDiscoveryTrait']]],
-            targets: [BRANCH_NAME, 'master'])
-        }       
+        checkoutCentreonBuild()     
         sh 'rm -rf output'
         unstash 'tar-sources'
         unstash 'api-doc'
@@ -383,13 +341,7 @@ try {
   if ((env.BUILD == 'RELEASE')) {
     stage('Delivery to testing') {
       node {
-        dir('centreon-build') {
-          checkout resolveScm(source: [$class: 'GitSCMSource',
-            remote: 'https://github.com/centreon/centreon-build.git',
-            credentialsId: 'technique-ci',
-            traits: [[$class: 'jenkins.plugins.git.traits.BranchDiscoveryTrait']]],
-            targets: [BRANCH_NAME, 'master'])
-        }       
+        checkoutCentreonBuild()    
         sh 'rm -rf output'
         unstash 'tar-sources'
         unstash 'api-doc'
@@ -438,13 +390,7 @@ try {
         def osBuild = x
         parallelSteps[osBuild] = {
           node {
-            dir('centreon-build') {
-              checkout resolveScm(source: [$class: 'GitSCMSource',
-                remote: 'https://github.com/centreon/centreon-build.git',
-                credentialsId: 'technique-ci',
-                traits: [[$class: 'jenkins.plugins.git.traits.BranchDiscoveryTrait']]],
-                targets: [BRANCH_NAME, 'master'])
-            }                   
+            checkoutCentreonBuild()                
             sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh ${osBuild}"
           }
         }
@@ -464,13 +410,7 @@ try {
         def osBuild = x
         parallelSteps[osBuild] = {
           node {
-            dir('centreon-build') {
-              checkout resolveScm(source: [$class: 'GitSCMSource',
-                remote: 'https://github.com/centreon/centreon-build.git',
-                credentialsId: 'technique-ci',
-                traits: [[$class: 'jenkins.plugins.git.traits.BranchDiscoveryTrait']]],
-                targets: [BRANCH_NAME, 'master'])
-            }       
+            checkoutCentreonBuild()    
             sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh ${osBuild}"
           }
         }
@@ -490,13 +430,7 @@ try {
         def osBuild = x
         parallelSteps[osBuild] = {
           node {
-            dir('centreon-build') {
-              checkout resolveScm(source: [$class: 'GitSCMSource',
-                remote: 'https://github.com/centreon/centreon-build.git',
-                credentialsId: 'technique-ci',
-                traits: [[$class: 'jenkins.plugins.git.traits.BranchDiscoveryTrait']]],
-                targets: [BRANCH_NAME, 'master'])
-            }       
+            checkoutCentreonBuild()
             sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh ${osBuild}"
           }
         }
@@ -517,13 +451,7 @@ try {
             def feature = x
             parallelSteps[feature] = {
               node {
-                dir('centreon-build') {
-                  checkout resolveScm(source: [$class: 'GitSCMSource',
-                    remote: 'https://github.com/centreon/centreon-build.git',
-                    credentialsId: 'technique-ci',
-                    traits: [[$class: 'jenkins.plugins.git.traits.BranchDiscoveryTrait']]],
-                    targets: [BRANCH_NAME, 'master'])
-                }       
+                checkoutCentreonBuild()
                 unstash 'tar-sources'
                 unstash 'vendor'
                 def acceptanceStatus = sh(
@@ -546,13 +474,7 @@ try {
           def feature = x
           parallelSteps[feature] = {
             node {
-              dir('centreon-build') {
-                checkout resolveScm(source: [$class: 'GitSCMSource',
-                  remote: 'https://github.com/centreon/centreon-build.git',
-                  credentialsId: 'technique-ci',
-                  traits: [[$class: 'jenkins.plugins.git.traits.BranchDiscoveryTrait']]],
-                  targets: [BRANCH_NAME, 'master'])
-              }       
+              checkoutCentreonBuild()
               unstash 'tar-sources'
               unstash 'cypress-node-modules'
               timeout(time: 10, unit: 'MINUTES') {
@@ -578,13 +500,7 @@ try {
           def feature = x
           atparallelSteps[feature] = {
             node {
-              dir('centreon-build') {
-                checkout resolveScm(source: [$class: 'GitSCMSource',
-                  remote: 'https://github.com/centreon/centreon-build.git',
-                  credentialsId: 'technique-ci',
-                  traits: [[$class: 'jenkins.plugins.git.traits.BranchDiscoveryTrait']]],
-                  targets: [BRANCH_NAME, 'master'])
-              }       
+              checkoutCentreonBuild()     
               unstash 'tar-sources'
               unstash 'vendor'
               def acceptanceStatus = sh(
