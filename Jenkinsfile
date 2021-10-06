@@ -115,10 +115,10 @@ def checkoutCentreonBuild(buildBranch) {
   dir('centreon-build') {
     try {
       checkout(getCentreonBuildGitConfiguration(buildBranch))
+      currentBuild.result = 'SUCCESS'
     } catch(e) {
       echo "branch '${buildBranch}' does not exist in centreon-build, then fallback to master"
       checkout(getCentreonBuildGitConfiguration('master'))
-      currentBuild.result = 'SUCCESS'
     }
   }
 }
