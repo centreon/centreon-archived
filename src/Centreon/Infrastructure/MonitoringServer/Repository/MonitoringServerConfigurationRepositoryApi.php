@@ -29,7 +29,6 @@ use DateTime;
 use Symfony\Component\HttpClient\Exception\TransportException;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
-use Centreon\Domain\Proxy\Interfaces\ProxyServiceInterface;
 use Security\Domain\Authentication\Interfaces\AuthenticationTokenServiceInterface;
 use Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerConfigurationRepositoryInterface;
 use Centreon\Domain\Repository\RepositoryException;
@@ -46,10 +45,6 @@ class MonitoringServerConfigurationRepositoryApi implements MonitoringServerConf
 {
     use LoggerTrait;
 
-    /**
-     * @var ProxyServiceInterface
-     */
-    private $proxyService;
     /**
      * @var ContactInterface
      */
@@ -74,18 +69,15 @@ class MonitoringServerConfigurationRepositoryApi implements MonitoringServerConf
     private $timeout = 60;
 
     /**
-     * @param ProxyServiceInterface $proxyService
      * @param AuthenticationTokenServiceInterface $authenticationTokenService
      * @param ContactInterface $contact
      * @param HttpClientInterface $httpClient
      */
     public function __construct(
-        ProxyServiceInterface $proxyService,
         AuthenticationTokenServiceInterface $authenticationTokenService,
         ContactInterface $contact,
         HttpClientInterface $httpClient
     ) {
-        $this->proxyService = $proxyService;
         $this->contact = $contact;
         $this->authenticationTokenService = $authenticationTokenService;
         $this->httpClient = $httpClient;
@@ -155,17 +147,6 @@ class MonitoringServerConfigurationRepositoryApi implements MonitoringServerConf
             $this->initUri();
             $fullUriPath = $this->serverUri . '/include/configuration/configGenerate/xml/' . $filePath;
 
-            $optionPayload = [];
-
-            $proxy = $this->proxyService->getProxy();
-            // Enable proxy
-            if (null !== $proxy && !empty((string) $proxy)) {
-                $optionPayload['proxy'] = (string) $proxy;
-            }
-            // On https scheme, the SSL verify_peer needs to be specified
-            $optionPayload['verify_peer'] = $_SERVER['REQUEST_SCHEME'] === 'https';
-            $optionPayload['verify_host'] = $optionPayload['verify_peer'];
-
             $authenticationTokens = $this->authenticationTokenService->findByContact($this->contact);
             if ($authenticationTokens === null) {
                 throw AuthenticationException::authenticationTokenNotFound();
@@ -177,9 +158,17 @@ class MonitoringServerConfigurationRepositoryApi implements MonitoringServerConf
             ) {
                 throw AuthenticationException::authenticationTokenExpired();
             }
-            $optionPayload['headers'] = ['X-AUTH-TOKEN' => $providerToken->getToken()];
-            $optionPayload['body'] = $payloadBody;
-            $optionPayload['timeout'] = $this->timeout;
+
+            $optionPayload = [
+                'proxy' => null,
+                'no_proxy' => '*',
+                'verify_peer' => $_SERVER['REQUEST_SCHEME'] === 'https',
+                'headers' => ['X-AUTH-TOKEN' => $providerToken->getToken()],
+                'body' => $payloadBody,
+                'timeout' => $this->timeout
+            ];
+
+            $optionPayload['verify_host'] = $optionPayload['verify_peer'];
 
             $response = $this->httpClient->request('POST', $fullUriPath, $optionPayload);
             if ($response->getStatusCode() !== 200) {
