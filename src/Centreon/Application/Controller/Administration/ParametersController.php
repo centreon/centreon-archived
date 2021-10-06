@@ -78,6 +78,8 @@ class ParametersController extends AbstractController
         $downtimeDuration = '';
         $downtimeScale = '';
         $refreshInterval = '';
+        $isAcknowledgementPersistent = false;
+        $isAcknowledgementSticky = false;
 
         $options = $this->optionService->findSelectedOptions([
             self::DEFAULT_DOWNTIME_DURATION,
@@ -99,10 +101,10 @@ class ParametersController extends AbstractController
                     $refreshInterval = $option->getValue();
                     break;
                 case self::DEFAULT_ACKNOWLEDGEMENT_PERSISTENT:
-                    $isAcknowledgementPersistent = $option->getValue();
+                    $isAcknowledgementPersistent = (int) $option->getValue() === 1 ? true : false;
                     break;
                 case self::DEFAULT_ACKNOWLEDGEMENT_STICKY:
-                    $isAcknowledgementSticky = $option->getValue();
+                    $isAcknowledgementSticky = (int) $option->getValue() === 1 ? true : false;
                     break;
                 default:
                     break;
@@ -114,11 +116,8 @@ class ParametersController extends AbstractController
 
         $parameters[self::KEY_NAME_CONCORDANCE[self::DEFAULT_REFRESH_INTERVAL]] = (int) $refreshInterval;
 
-        $parameters[self::KEY_NAME_CONCORDANCE[self::DEFAULT_ACKNOWLEDGEMENT_PERSISTENT]] =
-            (int) $isAcknowledgementPersistent === 1 ? true : false;
-
-        $parameters[self::KEY_NAME_CONCORDANCE[self::DEFAULT_ACKNOWLEDGEMENT_STICKY]] =
-            (int) $isAcknowledgementSticky === 1 ? true : false;
+        $parameters[self::KEY_NAME_CONCORDANCE[self::DEFAULT_ACKNOWLEDGEMENT_PERSISTENT]] = $isAcknowledgementPersistent;
+        $parameters[self::KEY_NAME_CONCORDANCE[self::DEFAULT_ACKNOWLEDGEMENT_STICKY]] = $isAcknowledgementSticky;
 
         return $this->view($parameters);
     }
