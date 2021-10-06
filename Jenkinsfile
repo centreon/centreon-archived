@@ -113,6 +113,7 @@ stage('Deliver sources') {
         hasBackendChanges = hasChanges(backendFiles)
       }
     }
+
     dir('centreon-build') {
       checkout resolveScm(source: [$class: 'GitSCMSource',
                                   remote: 'https://github.com/centreon/centreon-build.git',
@@ -171,7 +172,13 @@ try {
         Utils.markStageSkippedForConditional('frontend')
       } else {
         node {
-          checkoutCentreonBuild(buildBranch)
+          dir('centreon-build') {
+            checkout resolveScm(source: [$class: 'GitSCMSource',
+              remote: 'https://github.com/centreon/centreon-build.git',
+              credentialsId: 'technique-ci',
+              traits: [[$class: 'jenkins.plugins.git.traits.BranchDiscoveryTrait']]],
+              targets: [BRANCH_NAME, 'master'])
+          }          
           unstash 'tar-sources'
           unstash 'node_modules'
           sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh frontend"
