@@ -76,6 +76,10 @@ jest.mock('react-redux', () => ({
 }));
 
 const mockUserContext = {
+  acknowledgement: {
+    persistent: true,
+    sticky: false,
+  },
   acl: {
     actions: {
       host: {
@@ -101,7 +105,6 @@ const mockUserContext = {
     default_duration: 7200,
   },
   locale: 'en',
-
   name: 'admin',
 
   refreshInterval: 15,
@@ -296,7 +299,7 @@ describe(Actions, () => {
           acknowledgement: {
             comment: labelAcknowledgedByAdmin,
             is_notify_contacts: true,
-            is_persistent_comment: true,
+            is_persistent_comment: false,
             is_sticky: false,
             with_services: true,
           },
