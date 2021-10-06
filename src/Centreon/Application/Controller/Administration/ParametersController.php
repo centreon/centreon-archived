@@ -116,7 +116,8 @@ class ParametersController extends AbstractController
 
         $parameters[self::KEY_NAME_CONCORDANCE[self::DEFAULT_REFRESH_INTERVAL]] = (int) $refreshInterval;
 
-        $parameters[self::KEY_NAME_CONCORDANCE[self::DEFAULT_ACKNOWLEDGEMENT_PERSISTENT]] = $isAcknowledgementPersistent;
+        $parameters[self::KEY_NAME_CONCORDANCE[self::DEFAULT_ACKNOWLEDGEMENT_PERSISTENT]] =
+            $isAcknowledgementPersistent;
         $parameters[self::KEY_NAME_CONCORDANCE[self::DEFAULT_ACKNOWLEDGEMENT_STICKY]] = $isAcknowledgementSticky;
 
         return $this->view($parameters);
