@@ -25,8 +25,6 @@ $centreonLog = new CentreonLog();
 //error specific content
 $versionOfTheUpgrade = 'UPGRADE - 21.04.1: ';
 
-$pearDB = new CentreonDB('centreon', 3, false);
-
 /**
  * Query with transaction
  */
@@ -73,13 +71,9 @@ try {
         $statement->execute();
     }
 
-    if ($pearDB->inTransaction()) {
-        $pearDB->commit();
-    }
+    $pearDB->commit();
 } catch (\Exception $e) {
-    if ($pearDB->inTransaction()) {
-        $pearDB->rollBack();
-    }
+    $pearDB->rollBack();
     $centreonLog->insertLog(
         4,
         $versionOfTheUpgrade . $errorMessage .
