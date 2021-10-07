@@ -2,7 +2,7 @@
 -- Insert version
 --
 
-INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '21.04.6');
+INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '21.04.7');
 
 --
 -- Contenu de la table `contact`
