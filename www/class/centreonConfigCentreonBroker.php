@@ -842,7 +842,7 @@ class CentreonConfigCentreonBroker
         $keepLuaParameters = false;
         if ($values['output'] !== null) {
             foreach ($values['output'] as $key => $output) {
-                if ($output['type'] == 'lua') {
+                if ($output['type'] === 'lua') {
                     if ($this->removeUnindexedLuaParameters($values, $key)) {
                         $keepLuaParameters = true;
                     }
@@ -852,7 +852,7 @@ class CentreonConfigCentreonBroker
             // Clean the informations for this id
             $query = 'DELETE FROM cfg_centreonbroker_info WHERE config_id = '
                 . (int) $id
-                . ($keepLuaParameters ? ' AND config_key NOT LIKE "lua_parameter_%"' : '');
+                . ($keepLuaParameters ? ' AND config_key NOT LIKE "lua\_parameter\_%"' : '');
             $this->db->query($query);
         }
 
@@ -909,7 +909,7 @@ class CentreonConfigCentreonBroker
                                         $explodedFieldname2 = explode('__', $fieldname2);
                                         if (
                                             isset($fieldtype[$explodedFieldname2[1]]) &&
-                                            $fieldtype[$explodedFieldname2[1]] == 'radio'
+                                            $fieldtype[$explodedFieldname2[1]] === 'radio'
                                         ) {
                                             $value2 = $value2[$explodedFieldname2[1]];
                                         }
