@@ -105,10 +105,7 @@ try {
     $j = 0;
     $attrsText = array("size" => "2");
     $nbConnectors = count($connectorsList);
-    $form->createSecurityToken();
-    $centreonToken = is_array($form->getElementValue('centreon_token')) ?
-        end($form->getElementValue('centreon_token')) :
-        $form->getElementValue('centreon_token');
+    $centreonToken = createCSRFToken();
 
     for ($i = 0; $i < $nbConnectors; $i++) {
         $result = $connectorsList[$i];

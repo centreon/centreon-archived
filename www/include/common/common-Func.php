@@ -2351,6 +2351,26 @@ function isNotEmptyAfterStringSanitize($test): bool
 }
 
 /**
+ * Create a CSRF token
+ *
+ * @return string
+ */
+function createCSRFToken(): string
+{
+    $token = bin2hex(openssl_random_pseudo_bytes(16));
+
+    if (!isset($_SESSION['x-centreon-token']) || !is_array($_SESSION['x-centreon-token'])) {
+        $_SESSION['x-centreon-token'] = array();
+        $_SESSION['x-centreon-token-generated-at'] = array();
+    }
+
+    $_SESSION['x-centreon-token'][] = $token;
+    $_SESSION['x-centreon-token-generated-at'][(string)$token] = time();
+
+    return $token;
+}
+
+/**
  * Remove CSRF tokens older than 15min form session
  */
 function purgeOutdatedCSRFTokens()

@@ -172,10 +172,7 @@ $changeStateServers = getChangeState($changeStateServers);
 // Fill a tab with a multidimensional Array we put in $tpl
 $elemArr = [];
 $i = -1;
-$form->createSecurityToken();
-$centreonToken = is_array($form->getElementValue('centreon_token')) ?
-    end($form->getElementValue('centreon_token')) :
-    $form->getElementValue('centreon_token');
+$centreonToken = createCSRFToken();
 
 foreach ($servers as $config) {
     $i++;
