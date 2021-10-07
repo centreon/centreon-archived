@@ -87,7 +87,7 @@ interface MonitoringRepositoryInterface
     /**
      * Find all hosts from an array of hostIds for a non admin user
      *
-     * @param array<string, mixed> $hostIds
+     * @param int[] $hostIds
      * @return Host[]
      */
     public function findHostsByIdsForNonAdminUser(array $hostIds): array;
