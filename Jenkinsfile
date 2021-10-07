@@ -364,13 +364,7 @@ try {
         def osBuild = x
         parallelSteps[osBuild] = {
           node {
-            dir('centreon-build') {
-              checkout resolveScm(source: [$class: 'GitSCMSource',
-                remote: 'https://github.com/centreon/centreon-build.git',
-                credentialsId: 'technique-ci',
-                traits: [[$class: 'jenkins.plugins.git.traits.BranchDiscoveryTrait']]],
-                targets: [BRANCH_NAME, 'master'])
-            }       
+            checkoutCentreonBuild()
             sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh ${osBuild}"
           }
         }
