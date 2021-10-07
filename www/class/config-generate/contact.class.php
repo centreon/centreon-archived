@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -109,7 +110,7 @@ class Contact extends AbstractObject
     /**
      * @see Contact::$contacts_service_linked_cache
      */
-    private function getContactForServiceCache() : void
+    private function getContactForServiceCache(): void
     {
         $stmt = $this->backend_instance->db->prepare("
             SELECT csr.contact_id, service_service_id
@@ -210,7 +211,7 @@ class Contact extends AbstractObject
      * @see Contact::getContactCache()
      * @see Contact::getContactForServiceCache()
      */
-    protected function buildCache() : void
+    protected function buildCache(): void
     {
         if ($this->done_cache == 1) {
             return;
