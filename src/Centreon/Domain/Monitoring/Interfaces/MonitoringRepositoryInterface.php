@@ -205,7 +205,7 @@ interface MonitoringRepositoryInterface
     /**
      * @param int $hostId
      * @param int $serviceId
-     * @return array<int, ServiceGroup>
+     * @return ServiceGroup[]
      */
     public function findServiceGroupsByHostAndService(int $hostId, int $serviceId): array;
 
