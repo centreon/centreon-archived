@@ -53,7 +53,7 @@ interface MonitoringRepositoryInterface
      * Find the hosts of the hosts groups ids given.
      *
      * @param int[] $hostsGroupsIds List of hosts groups Ids for which we want to retrieve the hosts
-     * @return array<int, array<int, mixed>> [hostGroupId => hostId,...]
+     * @return array<int, array<int, Host>> [hostGroupId => hostId,...]
      * @throws \Exception
      */
     public function findHostsByHostsGroups(array $hostsGroupsIds): array;
