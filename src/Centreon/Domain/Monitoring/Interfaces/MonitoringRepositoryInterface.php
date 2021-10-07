@@ -122,7 +122,7 @@ interface MonitoringRepositoryInterface
     /**
      * Find all services from an array of serviceIds for a non admin user
      *
-     * @param array<string, mixed> $serviceIds
+     * @param int[] $serviceIds
      * @return Service[]
      */
     public function findServicesByIdsForNonAdminUser(array $serviceIds): array;
