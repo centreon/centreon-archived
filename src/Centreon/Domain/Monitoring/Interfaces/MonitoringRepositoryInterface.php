@@ -197,7 +197,7 @@ interface MonitoringRepositoryInterface
 
     /**
      * @param int[] $serviceGroupIds
-     * @return array<int, array<int, mixed>>
+     * @return array<int, array<int, Service>>
      * @throws \Exception
      */
     public function findServicesByServiceGroups(array $serviceGroupIds): array;
