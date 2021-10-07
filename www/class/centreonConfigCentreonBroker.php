@@ -967,7 +967,7 @@ class CentreonConfigCentreonBroker
      *
      * @param array $values
      * @param integer $key
-     * @return boolean
+     * @return boolean (false if no undefinex index found)
      */
     private function removeUnindexedLuaParameters(array &$values, int $key): bool
     {
