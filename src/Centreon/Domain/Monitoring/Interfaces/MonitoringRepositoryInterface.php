@@ -185,7 +185,7 @@ interface MonitoringRepositoryInterface
      * Finds services from a list of hosts.
      *
      * @param int[] $hostIds List of host for which we want to get services
-     * @return array<int, array<int, mixed>> Return a list of services indexed by host
+     * @return array<int, array<int, Service>> Return a list of services indexed by host
      */
     public function findServicesByHosts(array $hostIds): array;
 
