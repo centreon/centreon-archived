@@ -25,8 +25,6 @@ $centreonLog = new CentreonLog();
 //error specific content
 $versionOfTheUpgrade = 'UPGRADE - 20.10.8 : ';
 
-$pearDB = new CentreonDB('centreon', 3, false);
-
 /**
  * Query with transaction
  */
