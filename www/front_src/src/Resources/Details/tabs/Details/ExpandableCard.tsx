@@ -51,8 +51,8 @@ const ExpandableCard = ({
   content,
   severityCode,
 }: Props): JSX.Element => {
-  const { t } = useTranslation();
   const classes = useStyles({ severityCode });
+  const { t } = useTranslation();
 
   const [outputExpanded, setOutputExpanded] = React.useState(false);
 
