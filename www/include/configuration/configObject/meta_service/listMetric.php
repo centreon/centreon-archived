@@ -125,10 +125,7 @@ if ($in_statement != "") {
      */
     $elemArr1 = array();
     $i = 0;
-    $form->createSecurityToken();
-    $centreonToken = is_array($form->getElementValue('centreon_token')) ?
-        end($form->getElementValue('centreon_token')) :
-        $form->getElementValue('centreon_token');
+    $centreonToken = createCSRFToken();
 
     while ($metric = $DBRESULTO->fetchRow()) {
         foreach ($ar_relations[$metric['metric_id']] as $relation) {

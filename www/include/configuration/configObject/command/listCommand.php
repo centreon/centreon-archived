@@ -139,10 +139,7 @@ $commandType = array(
 
 // Fill a tab with a multidimensional Array we put in $tpl
 $elemArr = array();
-$form->createSecurityToken();
-$centreonToken = is_array($form->getElementValue('centreon_token')) ?
-    end($form->getElementValue('centreon_token')) :
-    $form->getElementValue('centreon_token');
+$centreonToken = createCSRFToken();
 
 for ($i = 0; $cmd = $dbResult->fetch(); $i++) {
     $selectedElements = $form->addElement('checkbox', "select[" . $cmd['command_id'] . "]");
