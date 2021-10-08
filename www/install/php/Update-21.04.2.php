@@ -25,8 +25,6 @@ $centreonLog = new CentreonLog();
 //error specific content
 $versionOfTheUpgrade = 'UPGRADE - 21.04.2: ';
 
-$pearDB = new CentreonDB('centreon', 3, false);
-
 /**
  * Query with transaction
  */
@@ -56,6 +54,7 @@ try {
         $statement->bindValue(':moduleMetaId', (int) $moduleMetaId, \PDO::PARAM_INT);
         $statement->execute();
     }
+
     $pearDB->commit();
 } catch (\Exception $e) {
     $pearDB->rollBack();
