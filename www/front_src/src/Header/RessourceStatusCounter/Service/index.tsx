@@ -119,11 +119,7 @@ const ServiceStatusCounter = (): JSX.Element => {
               to={unhandledCriticalServicesLink}
             >
               <StatusCounter
-                count={
-                  <span id="count-svc-critical">
-                    {numeral(data.critical.unhandled).format('0a')}
-                  </span>
-                }
+                count={numeral(data.critical.unhandled).format('0a')}
                 severityCode={SeverityCode.High}
               />
             </Link>
@@ -132,11 +128,7 @@ const ServiceStatusCounter = (): JSX.Element => {
               to={unhandledWarningServicesLink}
             >
               <StatusCounter
-                count={
-                  <span id="count-svc-warning">
-                    {numeral(data.warning.unhandled).format('0a')}
-                  </span>
-                }
+                count={numeral(data.warning.unhandled).format('0a')}
                 severityCode={SeverityCode.Medium}
               />
             </Link>
@@ -145,11 +137,7 @@ const ServiceStatusCounter = (): JSX.Element => {
               to={unhandledUnknownServicesLink}
             >
               <StatusCounter
-                count={
-                  <span id="count-svc-unknown">
-                    {numeral(data.unknown.unhandled).format('0a')}
-                  </span>
-                }
+                count={numeral(data.unknown.unhandled).format('0a')}
                 severityCode={SeverityCode.Low}
               />
             </Link>
@@ -158,9 +146,7 @@ const ServiceStatusCounter = (): JSX.Element => {
               to={okServicesLink}
             >
               <StatusCounter
-                count={
-                  <span id="count-svc-ok">{numeral(data.ok).format('0a')}</span>
-                }
+                count={numeral(data.ok).format('0a')}
                 severityCode={SeverityCode.None}
               />
             </Link>
