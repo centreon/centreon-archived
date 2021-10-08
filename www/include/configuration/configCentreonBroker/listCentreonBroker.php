@@ -123,10 +123,8 @@ $style = "one";
 
 // Fill a tab with a multidimensional Array we put in $tpl
 $elemArr = array();
-$form->createSecurityToken();
-$centreonToken = is_array($form->getElementValue('centreon_token')) ?
-    end($form->getElementValue('centreon_token')) :
-    $form->getElementValue('centreon_token');
+$centreonToken = createCSRFToken();
+
 
 for ($i = 0; $config = $dbResult->fetch(); $i++) {
     $moptions = "";
