@@ -153,6 +153,10 @@ const AppProvider = (): JSX.Element | null => {
     <Context.Provider
       value={{
         ...user,
+        acknowledgement: {
+          persistent: false,
+          sticky: false,
+        },
         acl: {
           actions: actionAcl,
         },
