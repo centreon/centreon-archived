@@ -12,11 +12,12 @@ import ServiceIcon from '@material-ui/icons/RoomService';
 
 import {
   IconHeader,
-  IconNumber,
+  StatusCounter,
   IconToggleSubmenu,
   SubmenuHeader,
   SubmenuItem,
   SubmenuItems,
+  SeverityCode,
 } from '@centreon/ui';
 import { useUserContext } from '@centreon/ui-context';
 
@@ -30,7 +31,7 @@ import {
   pendingCriterias,
   unhandledStateCriterias,
 } from '../getResourcesUrl';
-import StatusCounter, { useStyles } from '..';
+import RessourceStatusCounter, { useStyles } from '..';
 
 const serviceStatusEndpoint =
   'internal.php?object=centreon_topcounter&action=servicesStatus';
@@ -99,7 +100,7 @@ const ServiceStatusCounter = (): JSX.Element => {
       });
 
   return (
-    <StatusCounter
+    <RessourceStatusCounter
       endpoint={serviceStatusEndpoint}
       loaderWidth={33}
       schema={statusSchema}
@@ -117,60 +118,50 @@ const ServiceStatusCounter = (): JSX.Element => {
               className={classnames(classes.link, styles['wrap-middle-icon'])}
               to={unhandledCriticalServicesLink}
             >
-              <IconNumber
-                iconColor="red"
-                iconNumber={
+              <StatusCounter
+                count={
                   <span id="count-svc-critical">
                     {numeral(data.critical.unhandled).format('0a')}
                   </span>
                 }
-                iconType={`${
-                  data.critical.unhandled > 0 ? 'colored' : 'bordered'
-                }`}
+                severityCode={SeverityCode.High}
               />
             </Link>
             <Link
               className={classnames(classes.link, styles['wrap-middle-icon'])}
               to={unhandledWarningServicesLink}
             >
-              <IconNumber
-                iconColor="orange"
-                iconNumber={
+              <StatusCounter
+                count={
                   <span id="count-svc-warning">
                     {numeral(data.warning.unhandled).format('0a')}
                   </span>
                 }
-                iconType={`${
-                  data.warning.unhandled > 0 ? 'colored' : 'bordered'
-                }`}
+                severityCode={SeverityCode.Medium}
               />
             </Link>
             <Link
               className={classnames(classes.link, styles['wrap-middle-icon'])}
               to={unhandledUnknownServicesLink}
             >
-              <IconNumber
-                iconColor="gray-light"
-                iconNumber={
+              <StatusCounter
+                count={
                   <span id="count-svc-unknown">
                     {numeral(data.unknown.unhandled).format('0a')}
                   </span>
                 }
-                iconType={`${
-                  data.unknown.unhandled > 0 ? 'colored' : 'bordered'
-                }`}
+                severityCode={SeverityCode.Low}
               />
             </Link>
             <Link
               className={classnames(classes.link, styles['wrap-middle-icon'])}
               to={okServicesLink}
             >
-              <IconNumber
-                iconColor="green"
-                iconNumber={
+              <StatusCounter
+                count={
                   <span id="count-svc-ok">{numeral(data.ok).format('0a')}</span>
                 }
-                iconType={`${data.ok > 0 ? 'colored' : 'bordered'}`}
+                severityCode={SeverityCode.None}
               />
             </Link>
             <IconToggleSubmenu
@@ -260,7 +251,7 @@ const ServiceStatusCounter = (): JSX.Element => {
           </SubmenuHeader>
         </div>
       )}
-    </StatusCounter>
+    </RessourceStatusCounter>
   );
 };
 

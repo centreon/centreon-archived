@@ -9,8 +9,8 @@ import Hook from '../components/Hook';
 import styles from './header.scss';
 import PollerMenu from './pollerMenu';
 import UserMenu from './userMenu';
-import ServiceStatusCounter from './StatusCounter/Service';
-import HostStatusCounter from './StatusCounter/Host';
+import ServiceStatusCounter from './RessourceStatusCounter/Service';
+import HostStatusCounter from './RessourceStatusCounter/Host';
 
 const HookComponent = Hook as unknown as (props) => JSX.Element;
 
