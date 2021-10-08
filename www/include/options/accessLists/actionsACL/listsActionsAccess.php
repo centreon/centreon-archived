@@ -97,10 +97,7 @@ $style = "one";
 
 /* Fill a tab with a mutlidimensionnal Array we put in $tpl */
 $elemArr = array();
-$form->createSecurityToken();
-$centreonToken = is_array($form->getElementValue('centreon_token')) ?
-    end($form->getElementValue('centreon_token')) :
-    $form->getElementValue('centreon_token');
+$centreonToken = createCSRFToken();
 
 for ($i = 0; $topo = $statement->fetchRow(); $i++) {
     $selectedElements = $form->addElement('checkbox', "select[" . $topo['acl_action_id'] . "]");
