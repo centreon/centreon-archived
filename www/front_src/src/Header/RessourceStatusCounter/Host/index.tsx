@@ -123,7 +123,7 @@ const HostMenu = (): JSX.Element => {
               to={unhandledDownHostsLink}
             >
               <StatusCounter
-                count={numeral(data.down.unhandled).format('0a')}
+                count={data.down.unhandled}
                 severityCode={SeverityCode.High}
               />
             </Link>
@@ -132,7 +132,7 @@ const HostMenu = (): JSX.Element => {
               to={unhandledUnreachableHostsLink}
             >
               <StatusCounter
-                count={numeral(data.unreachable.unhandled).format('0a')}
+                count={data.unreachable.unhandled}
                 severityCode={SeverityCode.Medium}
               />
             </Link>
@@ -141,7 +141,7 @@ const HostMenu = (): JSX.Element => {
               to={upHostsLink}
             >
               <StatusCounter
-                count={numeral(data.ok).format('0a')}
+                count={data.ok}
                 severityCode={SeverityCode.Low}
               />
             </Link>
