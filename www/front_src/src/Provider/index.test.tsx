@@ -8,6 +8,7 @@ import {
   useAcl,
   useDowntime,
   useRefreshInterval,
+  useAcknowledgement,
 } from '@centreon/ui-context';
 
 import AppProvider from '.';
@@ -24,6 +25,8 @@ const retrievedUser = {
 };
 
 const retrievedDefaultParameters = {
+  monitoring_default_acknowledgement_persistent: true,
+  monitoring_default_acknowledgement_sticky: false,
   monitoring_default_downtime_duration: 1458,
   monitoring_default_refresh_interval: 15,
 };
@@ -92,6 +95,12 @@ describe(AppProvider, () => {
       expect(useRefreshInterval().setRefreshInterval).toHaveBeenCalledWith(
         retrievedDefaultParameters.monitoring_default_refresh_interval,
       );
+      expect(useAcknowledgement().setAcknowledgement).toHaveBeenCalledWith({
+        persistent:
+          retrievedDefaultParameters.monitoring_default_acknowledgement_persistent,
+        sticky:
+          retrievedDefaultParameters.monitoring_default_acknowledgement_sticky,
+      });
     });
   });
 });

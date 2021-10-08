@@ -764,10 +764,6 @@ class AcknowledgementController extends AbstractController
             throw new ValidationFailedException($errorList);
         }
 
-        // set default values [sticky, persistent_comment] to true
-        $acknowledgement->setSticky(true);
-        $acknowledgement->setPersistentComment(true);
-
         foreach ($resources as $resource) {
             // start acknowledgement process
             try {
