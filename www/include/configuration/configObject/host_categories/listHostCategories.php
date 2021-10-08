@@ -109,10 +109,8 @@ $form->addElement('submit', 'Search', _("Search"), $attrBtnSuccess);
 
 // Fill a tab with a multidimensional Array we put in $tpl
 $elemArr = array();
-$form->createSecurityToken();
-$centreonToken = is_array($form->getElementValue('centreon_token')) ?
-    end($form->getElementValue('centreon_token')) :
-    $form->getElementValue('centreon_token');
+$centreonToken = createCSRFToken();
+
 for ($i = 0; $hc = $DBRESULT->fetch(); $i++) {
     $selectedElements = $form->addElement('checkbox', "select[" . $hc['hc_id'] . "]");
     $moptions = "";
