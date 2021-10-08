@@ -43,11 +43,11 @@ const ExportConfiguration = ({
     React.useState(false);
 
   const { t } = useTranslation();
+  const classes = useStyles();
   const { sendRequest, sending } = useRequest({
     defaultFailureMessage: t(labelFailedToExportAndReloadConfiguration),
     request: getData,
   });
-  const classes = useStyles();
   const { showInfoMessage, showSuccessMessage } = useSnackbar();
 
   const askBeforeExportConfiguration = (): void => {

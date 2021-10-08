@@ -52,8 +52,6 @@ const ExportablePerformanceGraphWithTimeline = ({
 }: Props): JSX.Element => {
   const classes = useStyles();
 
-  const { alias } = useUserContext();
-
   const {
     customTimePeriod,
     getIntervalDates,
@@ -69,6 +67,8 @@ const ExportablePerformanceGraphWithTimeline = ({
     decoder: listTimelineEventsDecoder,
     request: listTimelineEvents,
   });
+
+  const { alias } = useUserContext();
 
   const [timeline, setTimeline] = React.useState<Array<TimelineEvent>>();
   const graphOptions =
