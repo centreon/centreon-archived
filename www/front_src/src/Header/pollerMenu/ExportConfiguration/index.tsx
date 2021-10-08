@@ -42,8 +42,8 @@ const ExportConfiguration = ({
   const [askingBeforeExportConfiguration, setAskingBeforeExportConfiguration] =
     React.useState(false);
 
-  const { t } = useTranslation();
   const classes = useStyles();
+  const { t } = useTranslation();
   const { sendRequest, sending } = useRequest({
     defaultFailureMessage: t(labelFailedToExportAndReloadConfiguration),
     request: getData,

@@ -90,8 +90,8 @@ const debounceTimeInMs = 500;
 const isDefined = pipe(isNil, not);
 
 const Filter = (): JSX.Element => {
-  const { t } = useTranslation();
   const classes = useStyles();
+  const { t } = useTranslation();
 
   const {
     applyFilter,
