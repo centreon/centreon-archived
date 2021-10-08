@@ -28,6 +28,7 @@ import {
   User,
   Actions,
   useCloudServices,
+  useAcknowledgement,
 } from '@centreon/ui-context';
 
 import createStore from '../store';
@@ -60,6 +61,7 @@ const AppProvider = (): JSX.Element => {
   const { downtime, setDowntime } = useDowntime();
   const { refreshInterval, setRefreshInterval } = useRefreshInterval();
   const { actionAcl, setActionAcl } = useAcl();
+  const { acknowledgement, setAcknowledgement } = useAcknowledgement();
   const cloudServices = useCloudServices();
   const [dataLoaded, setDataLoaded] = React.useState(false);
 
@@ -131,6 +133,12 @@ const AppProvider = (): JSX.Element => {
             ),
           );
           setActionAcl(retrievedAcl);
+          setAcknowledgement({
+            persistent:
+              retrievedParameters.monitoring_default_acknowledgement_persistent,
+            sticky:
+              retrievedParameters.monitoring_default_acknowledgement_sticky,
+          });
 
           initializeI18n({
             retrievedTranslations,
@@ -155,6 +163,7 @@ const AppProvider = (): JSX.Element => {
     <Context.Provider
       value={{
         ...user,
+        acknowledgement,
         acl: {
           actions: actionAcl,
         },
