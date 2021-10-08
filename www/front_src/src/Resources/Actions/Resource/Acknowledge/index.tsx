@@ -36,14 +36,13 @@ const AcknowledgeForm = ({
   const { t } = useTranslation();
   const { showSuccessMessage } = useSnackbar();
 
-  const { alias } = useUserContext();
-
   const {
     sendRequest: sendAcknowledgeResources,
     sending: sendingAcknowledgeResources,
   } = useRequest({
     request: acknowledgeResources,
   });
+  const { alias } = useUserContext();
 
   const form = useFormik({
     initialValues: {

@@ -52,6 +52,12 @@ const ExportablePerformanceGraphWithTimeline = ({
 }: Props): JSX.Element => {
   const classes = useStyles();
 
+  const { sendRequest: sendGetTimelineRequest } = useRequest<
+    ListingModel<TimelineEvent>
+  >({
+    decoder: listTimelineEventsDecoder,
+    request: listTimelineEvents,
+  });
   const { alias } = useUserContext();
 
   const {
@@ -62,13 +68,6 @@ const ExportablePerformanceGraphWithTimeline = ({
     selectedTimePeriod,
     resourceDetailsUpdated,
   } = useResourceContext();
-
-  const { sendRequest: sendGetTimelineRequest } = useRequest<
-    ListingModel<TimelineEvent>
-  >({
-    decoder: listTimelineEventsDecoder,
-    request: listTimelineEvents,
-  });
 
   const [timeline, setTimeline] = React.useState<Array<TimelineEvent>>();
   const graphOptions =

@@ -56,10 +56,10 @@ const GraphActions = ({
 }: Props): JSX.Element => {
   const [menuAnchor, setMenuAnchor] = React.useState<Element | null>(null);
   const [exporting, setExporting] = React.useState<boolean>(false);
+  const classes = useStyles();
   const { t } = useTranslation();
   const { format } = useLocaleDateTimeFormat();
   const history = useHistory();
-  const classes = useStyles();
 
   const openSizeExportMenu = (event: React.MouseEvent): void => {
     setMenuAnchor(event.currentTarget);
