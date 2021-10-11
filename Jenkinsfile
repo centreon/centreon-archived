@@ -366,6 +366,20 @@ try {
     }
   }
 
+  if ((env.BUILD == 'REFERENCE')) {
+    stage('Delivery API documentation') {
+      node {
+        checkoutCentreonBuild()    
+        unstash 'tar-sources'
+        unstash 'api-doc'
+        sh "./centreon-build/jobs/web/${serie}/mon-web-delivery.sh"
+      }
+      if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+        error('Delivery stage failure');
+      }
+    }
+  }
+  
   // TODO : add canary management in centreon-build
   /*if ((env.BUILD == 'CI')) {
     stage('Docker packaging with canary rpms') {
