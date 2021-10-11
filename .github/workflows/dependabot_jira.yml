@@ -39,7 +39,7 @@ jobs:
             [${{ github.event.repository.name }}] - ${{ github.event.pull_request.title }}
           description: |
 
-            {panel:title=Recommandantion}
+            {panel:title=Recommandation}
               ${{ github.event.pull_request.title }}
             {panel}
 
@@ -47,12 +47,11 @@ jobs:
 
             Github link is: ${{ github.event.pull_request.html_url }}
 
-            *CVSS*
             {panel:title=CVSS details}
               More details are available on snyk
             {panel}
 
-            # Github Advisory
+            *Github Advisory*
 
 
           fields:
