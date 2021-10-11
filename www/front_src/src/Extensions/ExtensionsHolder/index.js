@@ -185,6 +185,7 @@ class ExtensionsHolder extends React.Component {
 
                   <Paper
                     square
+                    elevation={0}
                     style={{
                       alignItems: 'center',
                       backgroundColor: licenseInfo?.color || '#FFFFFF',
