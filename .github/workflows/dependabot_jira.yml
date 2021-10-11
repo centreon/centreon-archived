@@ -62,12 +62,5 @@ jobs:
                 "customfield_10881": "Dependabot",
                 "customfield_10866": "${{ env.CURRENT_DATE }}",
                 "labels": ["Dependabot"],
-                "components":
-                [
-                  {
-                    "name": "centreon-web",
-                    "id": "11414",
-                    "fromCache": false
-                  }
-                ]
+                "components":[{"name": "centreon-web"}]
               }'
