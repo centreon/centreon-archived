@@ -101,24 +101,13 @@ def hasChanges(patterns) {
   return isMatching
 }
 
-def checkoutCentreonBuild(buildBranch) {
-  def getCentreonBuildGitConfiguration = { branchName -> [
-    $class: 'GitSCM',
-    branches: [[name: "refs/heads/${branchName}"]],
-    doGenerateSubmoduleConfigurations: false,
-    userRemoteConfigs: [[
-      $class: 'UserRemoteConfig',
-      url: "ssh://git@github.com/centreon/centreon-build.git"
-    ]]
-  ]}
-
+def checkoutCentreonBuild() {
   dir('centreon-build') {
-    try {
-      checkout(getCentreonBuildGitConfiguration(buildBranch))
-    } catch(e) {
-      echo "branch '${buildBranch}' does not exist in centreon-build, then fallback to master"
-      checkout(getCentreonBuildGitConfiguration('master'))
-    }
+    checkout resolveScm(source: [$class: 'GitSCMSource',
+      remote: 'https://github.com/centreon/centreon-build.git',
+      credentialsId: 'technique-ci',
+      traits: [[$class: 'jenkins.plugins.git.traits.BranchDiscoveryTrait']]],
+      targets: [BRANCH_NAME, 'master'])
   }
 }
 
@@ -135,7 +124,7 @@ stage('Deliver sources') {
       }
     }
 
-    checkoutCentreonBuild(buildBranch)
+    checkoutCentreonBuild()
 
     // git repository is stored for the Sonar analysis below.
     sh 'tar czf centreon-web-git.tar.gz centreon-web'
@@ -187,7 +176,7 @@ try {
         Utils.markStageSkippedForConditional('frontend')
       } else {
         node {
-          checkoutCentreonBuild(buildBranch)
+          checkoutCentreonBuild()
           unstash 'tar-sources'
           unstash 'node_modules'
           sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh frontend"
@@ -210,7 +199,7 @@ try {
         Utils.markStageSkippedForConditional('backend')
       } else {
         node {
-          checkoutCentreonBuild(buildBranch)
+          checkoutCentreonBuild()      
           unstash 'tar-sources'
           unstash 'vendor'
           sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh backend"
@@ -240,7 +229,7 @@ try {
     'sonar': {
       node {
         // Run sonarQube analysis
-        checkoutCentreonBuild(buildBranch)
+        checkoutCentreonBuild()    
         unstash 'git-sources'
         sh 'rm -rf centreon-web && tar xzf centreon-web-git.tar.gz'
         withSonarQubeEnv('SonarQubeDev') {
@@ -258,7 +247,7 @@ try {
     },
     'rpm packaging centos7': {
       node {
-        checkoutCentreonBuild(buildBranch)
+        checkoutCentreonBuild()
         unstash 'tar-sources'
         sh "./centreon-build/jobs/web/${serie}/mon-web-package.sh centos7"
         archiveArtifacts artifacts: "rpms-centos7.tar.gz"
@@ -268,7 +257,7 @@ try {
     },
     'rpm packaging centos8': {
       node {
-        checkoutCentreonBuild(buildBranch)
+        checkoutCentreonBuild()           
         unstash 'tar-sources'
         sh "./centreon-build/jobs/web/${serie}/mon-web-package.sh centos8"
         archiveArtifacts artifacts: "rpms-centos8.tar.gz"
@@ -318,7 +307,7 @@ try {
   if ((env.BUILD == 'CI')) {
     stage('Delivery to canary') {
       node {
-        checkoutCentreonBuild(buildBranch)
+        checkoutCentreonBuild()    
         sh 'rm -rf output'
         unstash 'tar-sources'
         unstash 'api-doc'
@@ -335,7 +324,7 @@ try {
   if ((env.BUILD == 'QA')) {
     stage('Delivery to unstable') {
       node {
-        checkoutCentreonBuild(buildBranch)
+        checkoutCentreonBuild()     
         sh 'rm -rf output'
         unstash 'tar-sources'
         unstash 'api-doc'
@@ -352,7 +341,7 @@ try {
   if ((env.BUILD == 'RELEASE')) {
     stage('Delivery to testing') {
       node {
-        checkoutCentreonBuild(buildBranch)
+        checkoutCentreonBuild()    
         sh 'rm -rf output'
         unstash 'tar-sources'
         unstash 'api-doc'
@@ -389,7 +378,7 @@ try {
         def osBuild = x
         parallelSteps[osBuild] = {
           node {
-            checkoutCentreonBuild(buildBranch)
+            checkoutCentreonBuild()
             sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh ${osBuild}"
           }
         }
@@ -409,7 +398,7 @@ try {
         def osBuild = x
         parallelSteps[osBuild] = {
           node {
-            checkoutCentreonBuild(buildBranch)
+            checkoutCentreonBuild()                
             sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh ${osBuild}"
           }
         }
@@ -429,7 +418,7 @@ try {
         def osBuild = x
         parallelSteps[osBuild] = {
           node {
-            checkoutCentreonBuild(buildBranch)
+            checkoutCentreonBuild()    
             sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh ${osBuild}"
           }
         }
@@ -449,7 +438,7 @@ try {
         def osBuild = x
         parallelSteps[osBuild] = {
           node {
-            checkoutCentreonBuild(buildBranch)
+            checkoutCentreonBuild()
             sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh ${osBuild}"
           }
         }
@@ -461,15 +450,39 @@ try {
     }
   }
 
-  stage('API // E2E') {
-    parallel 'API Tests': {
-      if (hasBackendChanges) {
+  if ((env.BUILD == 'QA')) {
+    stage('API // E2E') {
+      parallel 'API Tests': {
+        if (hasBackendChanges) {
+          def parallelSteps = [:]
+          for (x in apiFeatureFiles) {
+            def feature = x
+            parallelSteps[feature] = {
+              node {
+                checkoutCentreonBuild()
+                unstash 'tar-sources'
+                unstash 'vendor'
+                def acceptanceStatus = sh(
+                  script: "./centreon-build/jobs/web/${serie}/mon-web-api-integration-test.sh centos7 tests/api/features/${feature}",
+                  returnStatus: true
+                )
+                junit 'xunit-reports/**/*.xml'
+                if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0))
+                  currentBuild.result = 'FAILURE'
+                archiveArtifacts allowEmptyArchive: true, artifacts: 'api-integration-test-logs/*.txt'
+              }
+            }
+          }
+          parallel parallelSteps
+        }
+      },
+      'E2E tests': {
         def parallelSteps = [:]
         for (x in apiFeatureFiles) {
           def feature = x
           parallelSteps[feature] = {
             node {
-              checkoutCentreonBuild(buildBranch)
+              checkoutCentreonBuild()
               unstash 'tar-sources'
               unstash 'vendor'
               def acceptanceStatus = sh(
@@ -517,7 +530,7 @@ try {
           def feature = x
           atparallelSteps[feature] = {
             node {
-              checkoutCentreonBuild(buildBranch)
+              checkoutCentreonBuild()     
               unstash 'tar-sources'
               unstash 'vendor'
               def acceptanceStatus = sh(
