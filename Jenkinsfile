@@ -177,7 +177,7 @@ try {
     }
   }
 
-  if ((env.BUILD == 'CI') || (env.BUILD == 'QA')) {
+  if ((env.BUILD == 'QA')) {
     stage('Delivery to unstable') {
       node {
         checkoutCentreonBuild(buildBranch)
@@ -257,7 +257,7 @@ try {
     }
   }
 
-  if ((env.BUILD == 'RELEASE')) {
+  if ((env.BUILD == 'RELEASE') || (env.BUILD == 'REFERENCE')) {
     stage('Delivery to testing') {
       node {
         checkoutCentreonBuild(buildBranch)
