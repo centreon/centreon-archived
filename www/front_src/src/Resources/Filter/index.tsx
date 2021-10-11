@@ -389,11 +389,18 @@ const Filter = (): JSX.Element => {
 
     if (escapeKeyPressed) {
       closeSuggestionPopover();
+      setAutoCompleteSuggestions([]);
 
       return;
     }
 
-    if (tabKeyPressed && hasAutocompleteSuggestions) {
+    const isSearchFieldFocusedAndEnterKeyPressed =
+      enterKeyPressed && isSearchFieldFocus;
+
+    const canAcceptSuggestion =
+      tabKeyPressed || isSearchFieldFocusedAndEnterKeyPressed;
+
+    if (canAcceptSuggestion && hasAutocompleteSuggestions) {
       event.preventDefault();
       acceptAutocompleteSuggestionAtIndex(selectedSuggestionIndex);
 
