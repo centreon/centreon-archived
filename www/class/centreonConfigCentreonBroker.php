@@ -730,19 +730,20 @@ class CentreonConfigCentreonBroker
     {
 
         // exclude multiple parameters load with broker js hook
-        $condition = '';
-        if (is_array($values['output'])) {
+        $keepLuaParameters = false;
+        if ($values['output'] !== null) {
             foreach ($values['output'] as $key => $output) {
-                if (array_key_exists('lua_parameter__value_#index#', $output)) {
-                    $condition .= ' AND config_key NOT LIKE "lua_parameter_%"';
-                    unset($values['output'][$key]['lua_parameter__value_#index#']);
-                    unset($values['output'][$key]['lua_parameter__name_#index#']);
-                    unset($values['output'][$key]['lua_parameter__type_#index#']);
+                if ($output['type'] === 'lua') {
+                    if ($this->removeUnindexedLuaParameters($values, $key)) {
+                        $keepLuaParameters = true;
+                    }
+                    $this->removeEmptyLuaParameters($values, $key);
                 }
             }
-
             // Clean the informations for this id
-            $query = 'DELETE FROM cfg_centreonbroker_info WHERE config_id = ' . (int)$id . $condition;
+            $query = 'DELETE FROM cfg_centreonbroker_info WHERE config_id = '
+                . (int) $id
+                . ($keepLuaParameters ? ' AND config_key NOT LIKE "lua\_parameter\_%"' : '');
             $this->db->query($query);
         }
 
@@ -799,7 +800,7 @@ class CentreonConfigCentreonBroker
                                         $explodedFieldname2 = explode('__', $fieldname2);
                                         if (
                                             isset($fieldtype[$explodedFieldname2[1]])
-                                            && $fieldtype[$explodedFieldname2[1]] == 'radio'
+                                            && $fieldtype[$explodedFieldname2[1]] === 'radio'
                                         ) {
                                             $value2 = $value2[$explodedFieldname2[1]];
                                         }
@@ -850,6 +851,47 @@ class CentreonConfigCentreonBroker
         }
 
         return true;
+    }
+
+    /**
+     * unset lua parameters with undefined index
+     *
+     * @param array $values
+     * @param integer $key
+     * @return boolean (false if no undefined index found)
+     */
+    private function removeUnindexedLuaParameters(array &$values, int $key): bool
+    {
+        if (array_key_exists('lua_parameter__value_#index#', $values['output'][$key])) {
+            unset($values['output'][$key]['lua_parameter__value_#index#']);
+            unset($values['output'][$key]['lua_parameter__name_#index#']);
+            unset($values['output'][$key]['lua_parameter__type_#index#']);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * unset lua parameters with value and name empty
+     *
+     * @param array &$values modified parameter
+     * @param integer $key
+     */
+    private function removeEmptyLuaParameters(array &$values, int $key): void
+    {
+        $paramKeys = array_keys($values['output'][$key]);
+        $paramKeysIndexes = preg_filter('/lua_parameter__value_([0-9]*)/', '$1', $paramKeys ?? []);
+
+        foreach ($paramKeysIndexes as $index) {
+            if (
+                !$values['output'][$key]['lua_parameter__name_' . $index]
+                && !$values['output'][$key]['lua_parameter__value_' . $index]
+            ) {
+                unset($values['output'][$key]['lua_parameter__value_' . $index]);
+                unset($values['output'][$key]['lua_parameter__name_' . $index]);
+                unset($values['output'][$key]['lua_parameter__type_' . $index]);
+            }
+        }
     }
 
     /**
@@ -1393,7 +1435,7 @@ class CentreonConfigCentreonBroker
                 $configId,
                 $configGroup,
                 $row
-                ) . '__' . $info['parent_grp_id'] . '__' . $elemStr;
+            ) . '__' . $info['parent_grp_id'] . '__' . $elemStr;
         }
         return $elemStr;
     }
