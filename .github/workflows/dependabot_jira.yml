@@ -61,6 +61,6 @@ jobs:
                 "customfield_10881": "Dependabot",
                 "customfield_10866": "${{ env.CURRENT_DATE }}",
                 "labels": ["Dependabot"],
-                "priority": "Highest",
+                "priority": "1",
                 "components":[{"name": "centreon-web"}]
               }'
