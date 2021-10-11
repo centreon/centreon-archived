@@ -39,20 +39,20 @@ jobs:
             [${{ github.event.repository.name }}] - ${{ github.event.pull_request.title }}
           description: |
 
-            {panel:title=Dependency to upgrade}
+            {panel:title=Recommandantion}
               ${{ github.event.pull_request.title }}
             {panel}
 
             More details are available in the *PR n°${{ github.event.pull_request.number }}*
 
-            The link is: ${{ github.event.pull_request.html_url }}
+            Github link is: ${{ github.event.pull_request.html_url }}
 
-            *CVSS*:
-
-
-            {info:title=cvss details|icon=false}
+            *CVSS*
+            {panel:title=CVSS details}
               More details are available on snyk
-            {info}
+            {panel}
+
+            # Github Advisory
 
 
           fields:
@@ -61,5 +61,6 @@ jobs:
                 "customfield_10881": "Dependabot",
                 "customfield_10866": "${{ env.CURRENT_DATE }}",
                 "labels": ["Dependabot"],
+                "priority": "Highest",
                 "components":[{"name": "centreon-web"}]
               }'
