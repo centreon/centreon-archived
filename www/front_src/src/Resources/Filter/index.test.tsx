@@ -10,7 +10,6 @@ import {
 } from '@testing-library/react';
 import { Simulate } from 'react-dom/test-utils';
 import userEvent from '@testing-library/user-event';
-import { keyboardState } from '@testing-library/user-event/dist/keyboard/types';
 
 import { setUrlQueryParameters, getUrlQueryParameters } from '@centreon/ui';
 
@@ -446,7 +445,12 @@ describe(Filter, () => {
 
   it.each([
     ['tab', (): void => userEvent.tab()],
-    ['enter', (): keyboardState => userEvent.keyboard('{Enter}')],
+    [
+      'enter',
+      (): void => {
+        userEvent.keyboard('{Enter}');
+      },
+    ],
   ])(
     'accepts the selected autocomplete suggestion when the beginning of a dynamic criteria is input and the %p key is pressed',
     async (_, keyboardAction) => {
