@@ -13,6 +13,7 @@ import {
   useUser,
   Context,
   useRefreshInterval,
+  useDowntime,
 } from '@centreon/ui-context';
 
 import App from '../App';
@@ -25,10 +26,7 @@ import {
   aclEndpoint,
   parametersEndpoint,
 } from './endpoint';
-import { User, Actions, DefaultParameters } from './models';
-import useUser from './useUser';
-import useAcl from './useAcl';
-import useDowntime from './useDowntime';
+import { DefaultParameters } from './models';
 
 const store = createStore();
 

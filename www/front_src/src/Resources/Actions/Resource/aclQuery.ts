@@ -16,8 +16,9 @@ import {
 } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
+import { useUserContext } from '@centreon/ui-context';
+
 import { Resource } from '../../models';
-import { useUserContext } from '../../../Provider/UserContext';
 import { labelServicesDenied, labelHostsDenied } from '../../translatedLabels';
 
 interface AclQuery {
@@ -28,7 +29,7 @@ interface AclQuery {
   canDisacknowledgeServices: () => boolean;
   canDowntime: (resources) => boolean;
   canDowntimeServices: () => boolean;
-  canSubmitStatus: (resource) => boolean;
+  canSubmitStatus: (resources) => boolean;
   getAcknowledgementDeniedTypeAlert: (resources) => string | undefined;
   getDisacknowledgementDeniedTypeAlert: (resources) => string | undefined;
   getDowntimeDeniedTypeAlert: (resources) => string | undefined;

@@ -24,11 +24,11 @@ import { useTranslation } from 'react-i18next';
 import { makeStyles, Typography, Theme } from '@material-ui/core';
 
 import { useRequest, getData } from '@centreon/ui';
+import { useUserContext } from '@centreon/ui-context';
 
 import { timeFormat, dateTimeFormat } from '../format';
 import { parseAndFormat } from '../../dateTime';
 import { labelNoDataForThisPeriod } from '../../translatedLabels';
-import { useUserContext } from '../../../Provider/UserContext';
 
 import getTimeSeries, { getLineData } from './timeSeries';
 import { GraphData, TimeValue, Line as LineModel } from './models';
