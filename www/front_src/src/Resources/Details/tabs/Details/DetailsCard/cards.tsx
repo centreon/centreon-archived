@@ -76,12 +76,7 @@ const getDetailCardLines = ({
       line: (
         <ExpandableCard
           changeExpandedCards={changeExpandedCards}
-          content="this
-          is a
-          status
-          information
-          with
-          several lines"
+          content={details.information}
           expandedCard={includes(t(labelStatusInformation), expandedCards)}
           severityCode={details.status.severity_code}
           title={t(labelStatusInformation)}
