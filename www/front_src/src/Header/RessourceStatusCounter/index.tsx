@@ -22,7 +22,7 @@ interface Props {
   schema: yup.AnySchema;
 }
 
-const StatusCounter = <
+const RessourceStatusCounter = <
   StatusCount extends {
     pending: number;
   },
@@ -91,4 +91,4 @@ const StatusCounter = <
   );
 };
 
-export default StatusCounter;
+export default RessourceStatusCounter;

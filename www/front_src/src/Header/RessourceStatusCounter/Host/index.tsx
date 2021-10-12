@@ -11,11 +11,12 @@ import HostIcon from '@material-ui/icons/Dns';
 
 import {
   IconHeader,
-  IconNumber,
   IconToggleSubmenu,
   SubmenuHeader,
   SubmenuItem,
   SubmenuItems,
+  SeverityCode,
+  StatusCounter,
 } from '@centreon/ui';
 import { useUserContext } from '@centreon/ui-context';
 
@@ -28,7 +29,7 @@ import {
   pendingCriterias,
   unhandledStateCriterias,
 } from '../getResourcesUrl';
-import StatusCounter, { useStyles } from '..';
+import RessourceStatusCounter, { useStyles } from '..';
 
 const hostStatusEndpoint =
   'internal.php?object=centreon_topcounter&action=hosts_status';
@@ -103,7 +104,7 @@ const HostMenu = (): JSX.Element => {
       });
 
   return (
-    <StatusCounter<HostData>
+    <RessourceStatusCounter<HostData>
       endpoint={hostStatusEndpoint}
       loaderWidth={27}
       schema={statusSchema}
@@ -121,45 +122,25 @@ const HostMenu = (): JSX.Element => {
               className={classnames(classes.link, styles['wrap-middle-icon'])}
               to={unhandledDownHostsLink}
             >
-              <IconNumber
-                iconColor="red"
-                iconNumber={
-                  <span id="count-host-down">
-                    {numeral(data.down.unhandled).format('0a')}
-                  </span>
-                }
-                iconType={`${data.down.unhandled > 0 ? 'colored' : 'bordered'}`}
+              <StatusCounter
+                count={data.down.unhandled}
+                severityCode={SeverityCode.High}
               />
             </Link>
             <Link
               className={classnames(classes.link, styles['wrap-middle-icon'])}
               to={unhandledUnreachableHostsLink}
             >
-              <IconNumber
-                iconColor="gray-dark"
-                iconNumber={
-                  <span id="count-host-unreachable">
-                    {numeral(data.unreachable.unhandled).format('0a')}
-                  </span>
-                }
-                iconType={`${
-                  data.unreachable.unhandled > 0 ? 'colored' : 'bordered'
-                }`}
+              <StatusCounter
+                count={data.unreachable.unhandled}
+                severityCode={SeverityCode.Medium}
               />
             </Link>
             <Link
               className={classnames(classes.link, styles['wrap-middle-icon'])}
               to={upHostsLink}
             >
-              <IconNumber
-                iconColor="green"
-                iconNumber={
-                  <span id="count-host-up">
-                    {numeral(data.ok).format('0a')}
-                  </span>
-                }
-                iconType={`${data.ok > 0 ? 'colored' : 'bordered'}`}
-              />
+              <StatusCounter count={data.ok} severityCode={SeverityCode.Low} />
             </Link>
             <IconToggleSubmenu
               iconType="arrow"
@@ -235,7 +216,7 @@ const HostMenu = (): JSX.Element => {
           </SubmenuHeader>
         </div>
       )}
-    </StatusCounter>
+    </RessourceStatusCounter>
   );
 };
 
