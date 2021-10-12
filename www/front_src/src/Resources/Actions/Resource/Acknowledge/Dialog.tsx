@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
+import { FormikErrors, FormikHandlers, FormikValues } from 'formik';
 
 import {
   Checkbox,
@@ -19,19 +20,22 @@ import {
   labelNotify,
   labelNotifyHelpCaption,
   labelAcknowledgeServices,
+  labelPersistent,
+  labelSticky,
 } from '../../../translatedLabels';
 import { Resource } from '../../../models';
 import useAclQuery from '../aclQuery';
 
-interface Props {
+import { AcknowledgeFormValues } from '.';
+
+interface Props extends Pick<FormikHandlers, 'handleChange'> {
   canConfirm: boolean;
-  errors?;
-  handleChange;
-  onCancel;
-  onConfirm;
+  errors?: FormikErrors<AcknowledgeFormValues>;
+  onCancel: () => void;
+  onConfirm: () => Promise<unknown>;
   resources: Array<Resource>;
   submitting: boolean;
-  values;
+  values: FormikValues;
 }
 
 const DialogAcknowledge = ({
@@ -67,7 +71,7 @@ const DialogAcknowledge = ({
       onClose={onCancel}
       onConfirm={onConfirm}
     >
-      <Grid container direction="column" spacing={1}>
+      <Grid container direction="column">
         {deniedTypeAlert && (
           <Grid item>
             <Alert severity="warning">{deniedTypeAlert}</Alert>
@@ -119,6 +123,34 @@ const DialogAcknowledge = ({
             />
           </Grid>
         )}
+        <Grid item>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={values.persistent}
+                color="primary"
+                inputProps={{ 'aria-label': t(labelPersistent) }}
+                size="small"
+                onChange={handleChange('persistent')}
+              />
+            }
+            label={t(labelPersistent)}
+          />
+        </Grid>
+        <Grid item>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={values.isSticky}
+                color="primary"
+                inputProps={{ 'aria-label': t(labelSticky) }}
+                size="small"
+                onChange={handleChange('isSticky')}
+              />
+            }
+            label={t(labelSticky)}
+          />
+        </Grid>
       </Grid>
     </Dialog>
   );

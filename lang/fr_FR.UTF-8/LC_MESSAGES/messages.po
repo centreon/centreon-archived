@@ -16281,3 +16281,21 @@ msgstr "L'exécution a été trop longue et a atteint le délai d'attente"
 
 msgid "Last check with OK status"
 msgstr "Dernier contrôle avec un statut OK" 
+
+msgid "Export & reload"
+msgstr "Exporter et recharger"
+
+msgid "Export and reload the configuration?"
+msgstr "Export et recharger la configuration ?"
+
+msgid "This will export and reload the configuration on all of your platform"
+msgstr "Cela va exporter et recharger la configuration sur l'ensemble de votre plateforme"
+
+msgid "Exporting and reloading the configuration. Please wait..."
+msgstr "La configuration est en train d'être exportée et rechargée. Veuillez patientez ..."
+
+msgid "Configuration exported and reloaded"
+msgstr "Configuration exportée et rechargée"
+
+msgid "Failed to export and reload the configuration"
+msgstr "L'export et le rechargement de la configuration a echoué"

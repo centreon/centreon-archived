@@ -25,8 +25,8 @@ const Listing = ({
   switchButtonIcon,
   onSwitchButtonClick,
 }: Props): JSX.Element => {
-  const { t } = useTranslation();
   const classes = useStyles();
+  const { t } = useTranslation();
 
   return (
     <>

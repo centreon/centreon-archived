@@ -77,8 +77,8 @@ const ResourceActionsContent = ({
   setResourcesToCheck,
   setResourcesToDisacknowledge,
 }: Props): JSX.Element => {
-  const { t } = useTranslation();
   const classes = useStyles();
+  const { t } = useTranslation();
   const { cancel, token } = useCancelTokenSource();
   const { showErrorMessage, showSuccessMessage } = useSnackbar();
 

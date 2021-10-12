@@ -34,9 +34,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const CommandLineCard = ({ details }: Props): JSX.Element => {
+  const classes = useStyles();
   const { t } = useTranslation();
   const { showSuccessMessage, showErrorMessage } = useSnackbar();
-  const classes = useStyles();
 
   const copyCommandLine = (): void => {
     try {

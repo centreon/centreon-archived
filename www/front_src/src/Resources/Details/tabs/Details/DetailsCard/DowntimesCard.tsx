@@ -27,9 +27,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const DowntimesCard = ({ details }: Props): JSX.Element => {
+  const classes = useStyles();
   const { t } = useTranslation();
   const { toDateTime } = useLocaleDateTimeFormat();
-  const classes = useStyles();
 
   return (
     <div className={classes.downtimes}>

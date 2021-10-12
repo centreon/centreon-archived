@@ -23,7 +23,7 @@ include_once __DIR__ . "/../../class/centreonLog.class.php";
 $centreonLog = new CentreonLog();
 
 //error specific content
-$versionOfTheUpgrade = 'UPGRADE - 21.04.1: ';
+$versionOfTheUpgrade = 'UPGRADE - 20.10.8 : ';
 
 /**
  * Query with transaction
@@ -31,46 +31,29 @@ $versionOfTheUpgrade = 'UPGRADE - 21.04.1: ';
 try {
     $pearDB->beginTransaction();
     /**
-     * Retrieve user filters
+     * Retreive Meta Host Id
      */
     $statement = $pearDB->query(
-        "SELECT `id`, `criterias` FROM `user_filter`"
+        "SELECT `host_id` FROM `host` WHERE `host_name` = '_Module_Meta'"
     );
 
-    $fixedCriteriaFilters = [];
-
-    /**
-     * Sort filter criteria was not correctly added during the 21.04.0
-     * upgrade. It should be an array and not an object
+    /*
+     * Add missing relation
      */
-    while ($filter = $statement->fetch()) {
-        $id = $filter['id'];
-        $decodedCriterias = json_decode($filter['criterias'], true);
-        foreach ($decodedCriterias as $criteriaKey => $criteria) {
-            if ($criteria['name'] === 'sort') {
-                $decodedCriterias[$criteriaKey]['value'] = [
-                    'status_severity_code',
-                    $criteria['value']['status_severity_code']
-                ];
-            }
-        }
-
-        $fixedCriteriaFilters[$id] = json_encode($decodedCriterias);
-    }
-
-    /**
-     * UPDATE SQL request on filters
-     */
-    foreach ($fixedCriteriaFilters as $id => $criterias) {
-        $errorMessage = "Unable to update filter values in user_filter table.";
+    if ($moduleMeta = $statement->fetch()) {
+        $moduleMetaId = $moduleMeta['host_id'];
+        $errorMessage = "Unable to add relation between Module Meta and default poller.";
         $statement = $pearDB->prepare(
-            "UPDATE `user_filter` SET `criterias` = :criterias WHERE `id` = :id"
+            "INSERT INTO ns_host_relation(`nagios_server_id`, `host_host_id`)
+            VALUES(
+                (SELECT id FROM nagios_server WHERE localhost = '1'),
+                (:moduleMetaId)
+            )
+            ON DUPLICATE KEY UPDATE nagios_server_id = nagios_server_id"
         );
-        $statement->bindValue(':id', (int) $id, \PDO::PARAM_INT);
-        $statement->bindValue(':criterias', $criterias, \PDO::PARAM_STR);
+        $statement->bindValue(':moduleMetaId', (int) $moduleMetaId, \PDO::PARAM_INT);
         $statement->execute();
     }
-
     $pearDB->commit();
 } catch (\Exception $e) {
     $pearDB->rollBack();

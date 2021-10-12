@@ -23,7 +23,7 @@ include_once __DIR__ . "/../../class/centreonLog.class.php";
 $centreonLog = new CentreonLog();
 
 //error specific content
-$versionOfTheUpgrade = 'UPGRADE - 21.10.0-beta.1: ';
+$versionOfTheUpgrade = 'UPGRADE - 21.04.6:';
 
 /**
  * Query with transaction
@@ -35,29 +35,8 @@ try {
     $errorMessage = 'Impossible to purge the table session';
     $pearDB->query("DELETE FROM `session`");
 
-    // Add TLS hostname in config brocker for input/outputs IPV4
-    $statement = $pearDB->query("SELECT cb_field_id from cb_field WHERE fieldname = 'tls_hostname'");
-    if ($statement->fetchColumn() === false) {
-        $errorMessage  = 'Unable to update cb_field';
-        $pearDB->query("
-            INSERT INTO `cb_field` (
-                `cb_field_id`, `fieldname`,`displayname`,
-                `description`,
-                `fieldtype`, `external`
-            ) VALUES (
-                null, 'tls_hostname', 'TLS Host name',
-                'Expected TLS certificate common name (CN) - leave blank if unsure.',
-                'text', NULL
-            )
-        ");
-
-        $errorMessage  = 'Unable to update cb_type_field_relation';
-        $fieldId = $pearDB->lastInsertId();
-        $pearDB->query("
-            INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`, `order_display`) VALUES
-            (3, " . $fieldId . ", 0, 5)
-        ");
-    }
+    $errorMessage = 'Impossible to purge the table ws_token';
+    $pearDB->query("DELETE FROM `ws_token`");
 
     $pearDB->commit();
 
@@ -70,6 +49,11 @@ try {
             "ALTER TABLE `session` ADD CONSTRAINT `session_ibfk_1` FOREIGN KEY (`user_id`) " .
             "REFERENCES `contact` (`contact_id`) ON DELETE CASCADE"
         );
+    }
+
+    $errorMessage = "Impossible to drop column 'contact_platform_data_sending' from 'contact' table";
+    if ($pearDB->isColumnExist('contact', 'contact_platform_data_sending')) {
+        $pearDB->query("ALTER TABLE `contact` DROP COLUMN `contact_platform_data_sending`");
     }
 } catch (\Exception $e) {
     if ($pearDB->inTransaction()) {

@@ -90,8 +90,8 @@ const debounceTimeInMs = 500;
 const isDefined = pipe(isNil, not);
 
 const Filter = (): JSX.Element => {
-  const { t } = useTranslation();
   const classes = useStyles();
+  const { t } = useTranslation();
 
   const {
     applyFilter,
@@ -389,11 +389,18 @@ const Filter = (): JSX.Element => {
 
     if (escapeKeyPressed) {
       closeSuggestionPopover();
+      setAutoCompleteSuggestions([]);
 
       return;
     }
 
-    if (tabKeyPressed && hasAutocompleteSuggestions) {
+    const isSearchFieldFocusedAndEnterKeyPressed =
+      enterKeyPressed && isSearchFieldFocus;
+
+    const canAcceptSuggestion =
+      tabKeyPressed || isSearchFieldFocusedAndEnterKeyPressed;
+
+    if (canAcceptSuggestion && hasAutocompleteSuggestions) {
       event.preventDefault();
       acceptAutocompleteSuggestionAtIndex(selectedSuggestionIndex);
 

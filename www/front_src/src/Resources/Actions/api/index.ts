@@ -2,6 +2,7 @@ import axios, { AxiosResponse, CancelToken } from 'axios';
 import { map, pick } from 'ramda';
 
 import { Resource } from '../../models';
+import { AcknowledgeFormValues } from '../Resource/Acknowledge';
 
 import {
   acknowledgeEndpoint,
@@ -10,15 +11,9 @@ import {
   commentEndpoint,
 } from './endpoint';
 
-interface AcknowledgeParams {
-  acknowledgeAttachedResources?: boolean;
-  comment: string;
-  notify: boolean;
-}
-
 interface ResourcesWithAcknowledgeParams {
   cancelToken: CancelToken;
-  params: AcknowledgeParams;
+  params: AcknowledgeFormValues;
   resources: Array<Resource>;
 }
 
@@ -34,6 +29,8 @@ const acknowledgeResources =
         acknowledgement: {
           comment: params.comment,
           is_notify_contacts: params.notify,
+          is_persistent_comment: params.persistent,
+          is_sticky: params.isSticky,
           with_services: params.acknowledgeAttachedResources,
         },
         resources: map(pick(['type', 'id', 'parent']), resources),

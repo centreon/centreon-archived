@@ -52,8 +52,8 @@ interface MonitoringRepositoryInterface
     /**
      * Find the hosts of the hosts groups ids given.
      *
-     * @param array $hostsGroupsIds List of hosts groups Ids for which we want to retrieve the hosts
-     * @return array [hostGroupId => hostId,...]
+     * @param int[] $hostsGroupsIds List of hosts groups Ids for which we want to retrieve the hosts
+     * @return array<int, array<int, Host>> [hostGroupId => hostId,...]
      * @throws \Exception
      */
     public function findHostsByHostsGroups(array $hostsGroupsIds): array;
@@ -61,8 +61,8 @@ interface MonitoringRepositoryInterface
     /**
      * Find the hosts of the services groups ids given.
      *
-     * @param array $servicesGroupsIds List of services groups Ids for which we want to retrieve the hosts
-     * @return Host[] [serviceGroupId => hostId,...]
+     * @param int[] $servicesGroupsIds List of services groups Ids for which we want to retrieve the hosts
+     * @return array<int, array<int, Host>> [serviceGroupId => hostId,...]
      * @throws \Exception
      */
     public function findHostsByServiceGroups(array $servicesGroupsIds): array;
@@ -87,7 +87,7 @@ interface MonitoringRepositoryInterface
     /**
      * Find all hosts from an array of hostIds for a non admin user
      *
-     * @param array $hostIds
+     * @param int[] $hostIds
      * @return Host[]
      */
     public function findHostsByIdsForNonAdminUser(array $hostIds): array;
@@ -95,7 +95,7 @@ interface MonitoringRepositoryInterface
     /**
      * Find all hosts from an array of hostIds for an admin user
      *
-     * @param array $hostIds
+     * @param int[] $hostIds
      * @return Host[]
      */
     public function findHostsByIdsForAdminUser(array $hostIds): array;
@@ -122,7 +122,7 @@ interface MonitoringRepositoryInterface
     /**
      * Find all services from an array of serviceIds for a non admin user
      *
-     * @param array $serviceIds
+     * @param array<int, array<string, int>> $serviceIds
      * @return Service[]
      */
     public function findServicesByIdsForNonAdminUser(array $serviceIds): array;
@@ -130,7 +130,7 @@ interface MonitoringRepositoryInterface
     /**
      * Find all services from an array of serviceIds for an admin user
      *
-     * @param array $serviceIds
+     * @param array<int, array<string, int>> $serviceIds
      * @return Service[]
      */
     public function findServicesByIdsForAdminUser(array $serviceIds): array;
@@ -184,9 +184,8 @@ interface MonitoringRepositoryInterface
     /**
      * Finds services from a list of hosts.
      *
-     * @param array $hostIds List of host for which we want to get services
-     * @return array Return a list of services indexed by host
-     * [host_id => Service[], ...]
+     * @param int[] $hostIds List of host for which we want to get services
+     * @return array<int, array<int, Service>> Return a list of services indexed by host
      */
     public function findServicesByHosts(array $hostIds): array;
 
@@ -197,16 +196,16 @@ interface MonitoringRepositoryInterface
     public function setContact(ContactInterface $contact): self;
 
     /**
-     * @param array $serviceGroups
-     * @return array
+     * @param int[] $serviceGroupIds
+     * @return array<int, array<int, Service>>
      * @throws \Exception
      */
-    public function findServicesByServiceGroups(array $serviceGroups): array;
+    public function findServicesByServiceGroups(array $serviceGroupIds): array;
 
     /**
      * @param int $hostId
      * @param int $serviceId
-     * @return array
+     * @return ServiceGroup[]
      */
     public function findServiceGroupsByHostAndService(int $hostId, int $serviceId): array;
 
