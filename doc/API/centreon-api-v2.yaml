@@ -41,11 +41,7 @@ servers:
         default: '80'
         description: "Port used by HTTP server"
       version:
-        enum:
-          - latest
-          - beta
-          - v2
-        default: beta
+        default: v20.10
         description: "Version of the API"
 tags:
   - name: Authentication
