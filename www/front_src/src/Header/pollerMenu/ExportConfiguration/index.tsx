@@ -41,16 +41,15 @@ const useStyles = makeStyles((theme) => ({
 const ExportConfiguration = ({
   setIsExportingConfiguration,
 }: Props): JSX.Element | null => {
+  const classes = useStyles();
   const [askingBeforeExportConfiguration, setAskingBeforeExportConfiguration] =
     React.useState(false);
-
-  const classes = useStyles();
   const { t } = useTranslation();
-  const { isExportButtonEnabled } = useUserContext();
   const { sendRequest, sending } = useRequest({
     defaultFailureMessage: t(labelFailedToExportAndReloadConfiguration),
     request: getData,
   });
+  const { isExportButtonEnabled } = useUserContext();
   const { showInfoMessage, showSuccessMessage } = useSnackbar();
 
   const askBeforeExportConfiguration = (): void => {
