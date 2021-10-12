@@ -11,12 +11,12 @@ import HostIcon from '@material-ui/icons/Dns';
 
 import {
   IconHeader,
-  StatusCounter,
   IconToggleSubmenu,
   SubmenuHeader,
   SubmenuItem,
   SubmenuItems,
   SeverityCode,
+  StatusCounter,
 } from '@centreon/ui';
 import { useUserContext } from '@centreon/ui-context';
 
@@ -140,10 +140,7 @@ const HostMenu = (): JSX.Element => {
               className={classnames(classes.link, styles['wrap-middle-icon'])}
               to={upHostsLink}
             >
-              <StatusCounter
-                count={data.ok}
-                severityCode={SeverityCode.Low}
-              />
+              <StatusCounter count={data.ok} severityCode={SeverityCode.Low} />
             </Link>
             <IconToggleSubmenu
               iconType="arrow"

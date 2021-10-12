@@ -12,12 +12,12 @@ import ServiceIcon from '@material-ui/icons/RoomService';
 
 import {
   IconHeader,
-  StatusCounter,
   IconToggleSubmenu,
   SubmenuHeader,
   SubmenuItem,
   SubmenuItems,
   SeverityCode,
+  StatusCounter,
 } from '@centreon/ui';
 import { useUserContext } from '@centreon/ui-context';
 
