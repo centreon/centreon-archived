@@ -63,9 +63,10 @@ const CriteriaContent = ({
     return (
       <PopoverMultiConnectedAutocompleteField
         {...commonProps}
-        conditionField="name"
+        disableSortedOptions
         field="name"
         getEndpoint={getEndpoint}
+        getOptionSelected={(option, s): boolean => option.name === s.name}
         value={value}
         onChange={(_, updatedValue): void => {
           changeCriteria(updatedValue);
