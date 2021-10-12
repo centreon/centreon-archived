@@ -60,8 +60,8 @@ const TimePeriodButtonGroup = ({
   disableGraphOptions = false,
   disablePaper = false,
 }: Props): JSX.Element => {
-  const { t } = useTranslation();
   const classes = useStyles({ disablePaper });
+  const { t } = useTranslation();
   const theme = useTheme();
 
   const {

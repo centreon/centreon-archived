@@ -321,7 +321,7 @@ class PollerMenu extends Component {
                   size="small"
                   style={{ marginTop: '8px' }}
                   variant="contained"
-                  onClick={this.closeSubmenu}
+                  onClick={this.redirectsToPollersPage}
                 >
                   {t('Configure pollers')}
                 </Button>

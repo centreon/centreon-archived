@@ -243,10 +243,8 @@ $fgHost = array("value" => null, "print" => null);
 
 $interval_length = $centreon->optGen['interval_length'];
 
-$form->createSecurityToken();
-$centreonToken = is_array($form->getElementValue('centreon_token')) ?
-    end($form->getElementValue('centreon_token')) :
-    $form->getElementValue('centreon_token');
+$centreonToken = createCSRFToken();
+
 for ($i = 0; $service = $dbResult->fetch(); $i++) {
     //Get Number of Hosts linked to this one.
     $dbResult2 = $pearDB->query(

@@ -110,10 +110,7 @@ $form->addElement('submit', 'Search', _("Search"), $attrBtnSuccess);
 $deftype = array(0 => "CDEF", 1 => "VDEF");
 $yesOrNo = array(null => "No", 0 => "No", 1 => "Yes");
 $elemArr = array();
-$form->createSecurityToken();
-$centreonToken = is_array($form->getElementValue('centreon_token')) ?
-    end($form->getElementValue('centreon_token')) :
-    $form->getElementValue('centreon_token');
+$centreonToken = createCSRFToken();
 
 for ($i = 0; $vmetric = $stmt->fetch(); $i++) {
     $selectedElements = $form->addElement('checkbox', "select[" . $vmetric['vmetric_id'] . "]");

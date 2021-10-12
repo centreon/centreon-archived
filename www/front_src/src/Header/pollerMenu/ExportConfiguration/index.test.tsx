@@ -5,6 +5,7 @@ import { render, waitFor, RenderResult, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { withSnackbar } from '@centreon/ui';
+import { useUserContext } from '@centreon/ui-context';
 
 import { cancelTokenRequestParam } from '../../../Resources/testUtils';
 import {
@@ -20,17 +21,35 @@ import ExportConfiguration from '.';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
+jest.mock('@centreon/centreon-frontend/packages/ui-context', () => ({
+  ...(jest.requireActual('@centreon/ui-context') as jest.Mocked<unknown>),
+  useUserContext: jest.fn(),
+}));
+
+const mockedUserContext = useUserContext as jest.Mock;
+
+const mockUserContext = {
+  isExportButtonEnabled: true,
+  locale: 'en',
+  refreshInterval: 60,
+  timezone: 'Europe/Paris',
+};
+
+const ExportConfigurationButton = (): JSX.Element => (
+  <ExportConfiguration setIsExportingConfiguration={jest.fn} />
+);
+
 const ExportConfigurationWithSnackbar = withSnackbar({
-  Component: ExportConfiguration,
+  Component: ExportConfigurationButton,
 });
 
 const renderExportConfiguration = (): RenderResult =>
-  render(
-    <ExportConfigurationWithSnackbar setIsExportingConfiguration={jest.fn} />,
-  );
+  render(<ExportConfigurationWithSnackbar />);
 
 describe(ExportConfiguration, () => {
   beforeEach(() => {
+    mockedUserContext.mockReturnValue(mockUserContext);
+
     mockedAxios.get.mockReset();
     mockedAxios.get.mockResolvedValueOnce({
       data: {},

@@ -54,7 +54,7 @@ class ExtensionDetailPopup extends React.Component {
         onConfirm={onCloseClicked}
       >
         <Grid container direction="column" spacing={2} style={{ width: 520 }}>
-          <Grid item>
+          <Grid item style={{ height: 300 }}>
             <Responsive.ParentSize>
               {({ width }) =>
                 loading ? (
@@ -73,6 +73,8 @@ class ExtensionDetailPopup extends React.Component {
                 )
               }
             </Responsive.ParentSize>
+          </Grid>
+          <Grid item>
             {modalDetails.version.installed && modalDetails.version.outdated ? (
               <IconButton
                 onClick={() => {

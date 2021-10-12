@@ -50,11 +50,6 @@
         <tr class="ToolbarTR">
             <td>
                 {if !$isRemote}
-                    {if $is_admin == 1 || $can_generate == 1}
-                        <button type="button" class="{$exportBtn.class}" name="{$exportBtn.name}" onClick="{$exportBtn.onClickAction}">
-                            <span class="ui-icon ui-icon-white {$exportBtn.iconClass}"></span> {$exportBtn.text}
-                        </button>
-                    {/if}
                     {if $mode_access == 'w'}
                         <a href="{$wizardAddBtn.link}" class="{$wizardAddBtn.class}" target="_top">
                             <span class="ui-icon ui-icon-white {$wizardAddBtn.iconClass}"></span> {$wizardAddBtn.text}
@@ -62,6 +57,14 @@
                         <a href="{$addBtn.link}" class="{$addBtn.class}">
                             <span class="ui-icon ui-icon-white {$addBtn.iconClass}"></span> {$addBtn.text}
                         </a>
+                    {/if}
+                    {if $is_admin == 1 || $can_generate == 1}
+                         <button type="button" class="{$exportBtn.class}" name="{$exportBtn.name}"
+                             onClick="{$exportBtn.onClickAction}">
+                             <span class="ui-icon ui-icon-white {$exportBtn.iconClass}"></span> {$exportBtn.text}
+                         </button>
+                    {/if}
+                    {if $mode_access == 'w'}
                         <button type="submit" class="{$duplicateBtn.class}" name="{$duplicateBtn.name}" onClick="{$duplicateBtn.onClickAction}">
                             <span class="ui-icon ui-icon-white {$duplicateBtn.iconClass}"></span> {$duplicateBtn.text}
                         </button>

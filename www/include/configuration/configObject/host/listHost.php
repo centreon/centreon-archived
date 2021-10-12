@@ -314,10 +314,7 @@ $elemArr = array();
 $search = str_replace('\_', "_", $search);
 
 
-$form->createSecurityToken();
-$centreonToken = is_array($form->getElementValue('centreon_token'))
-    ? end($form->getElementValue('centreon_token'))
-    : $form->getElementValue('centreon_token');
+$centreonToken = createCSRFToken();
 
 for ($i = 0; $host = $dbResult->fetch(); $i++) {
     if (
