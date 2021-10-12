@@ -69,9 +69,12 @@ final class MetaServiceProvider extends Provider
         StatementCollector $collector,
         array $accessGroupIds
     ): string {
-        $aclSubQuery = ' INNER JOIN `:dbstg`.`centreon_acl` AS service_acl ON service_acl.host_id = s.host_id
-            AND service_acl.service_id = s.service_id
-            AND service_acl.group_id IN (' . implode(',', $accessGroupIds) . ') ';
+        $aclSubQuery = ' EXISTS (
+            SELECT 1 FROM `:dbstg`.`centreon_acl` AS service_acl
+            WHERE service_acl.host_id = s.host_id
+                AND service_acl.service_id = s.service_id
+                AND service_acl.group_id IN (' . implode(',', $accessGroupIds) . ')
+            LIMIT 1) ';
 
         return $this->prepareSubQuery($filter, $collector, $aclSubQuery);
     }
@@ -89,7 +92,7 @@ final class MetaServiceProvider extends Provider
         StatementCollector $collector,
         ?string $aclSubQuery
     ): string {
-        $sql = "SELECT DISTINCT
+        $sql = "SELECT
             SUBSTRING(s.description, 6) AS `id`,
             'metaservice' AS `type`,
             s.display_name AS `name`,
@@ -159,13 +162,14 @@ final class MetaServiceProvider extends Provider
             AND sh.name LIKE '\_Module\_Meta%'
             AND sh.enabled = 1";
 
+        // show active services only
+        $sql .= ' WHERE s.enabled = 1 ';
+
+
         // set ACL limitations
         if ($aclSubQuery !== null) {
-            $sql .= $aclSubQuery;
+            $sql .= ' AND ' . $aclSubQuery;
         }
-
-        // show active services only
-        $sql .= ' WHERE s.enabled = 1';
 
         // apply the state filter to SQL query
         if ($filter->getStates() && !$filter->hasState(ResourceServiceInterface::STATE_ALL)) {
