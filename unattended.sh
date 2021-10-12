@@ -318,7 +318,7 @@ function set_required_prerequisite() {
             ;;
         esac
         RELEASE_RPM_URL="http://yum.centreon.com/standard/$CENTREON_MAJOR_VERSION/el7/stable/noarch/RPMS/centreon-release-$CENTREON_RELEASE_VERSION.el7.centos.noarch.rpm"
-        REMI_RELEASE_RPM_URL="https://rpms.remirepo.net/enterprise/remi-release-8.rpm"
+        REMI_RELEASE_RPM_URL="https://rpms.remirepo.net/enterprise/remi-release-7.rpm"
         log "INFO" "Install Centreon from ${RELEASE_RPM_URL}"
         OS_SPEC_SERVICES="php-fpm httpd24-httpd"
         PKG_MGR="yum"
