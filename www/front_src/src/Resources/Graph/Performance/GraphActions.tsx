@@ -105,22 +105,22 @@ const GraphActions = ({
 
   return (
     <div className={classes.buttonGroup}>
-      <IconButton
-        disableTouchRipple
-        className={classes.buttonLink}
-        color="primary"
-        size="small"
-        title={t(labelPerformancePage)}
-        onClick={goToPerformancePage}
-      >
-        <LaunchIcon style={{ fontSize: 18 }} />
-      </IconButton>
       <ContentWithCircularLoading
         alignCenter={false}
         loading={exporting}
         loadingIndicatorSize={16}
       >
         <>
+          <IconButton
+            disableTouchRipple
+            className={classes.buttonLink}
+            color="primary"
+            size="small"
+            title={t(labelPerformancePage)}
+            onClick={goToPerformancePage}
+          >
+            <LaunchIcon style={{ fontSize: 18 }} />
+          </IconButton>
           <IconButton
             disableTouchRipple
             disabled={isNil(timeline)}
