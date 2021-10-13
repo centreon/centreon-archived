@@ -66,7 +66,7 @@ interface HostData {
   };
 }
 
-const HostMenu = (): JSX.Element => {
+const HostStatusCounter = (): JSX.Element => {
   const classes = useStyles();
 
   const { t } = useTranslation();
@@ -220,4 +220,4 @@ const HostMenu = (): JSX.Element => {
   );
 };
 
-export default withTranslation()(HostMenu);
+export default withTranslation()(HostStatusCounter);
