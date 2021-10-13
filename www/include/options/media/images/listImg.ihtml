@@ -1,6 +1,7 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
 <form {$form.attributes}>
     <table class="ajaxOption table">
+	
     <tbody>
       <tr>
         <th><h5>{t}Filters{/t}</h5></th>
