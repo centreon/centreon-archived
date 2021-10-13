@@ -105,7 +105,7 @@ const Filter = (): JSX.Element => {
     clearFilter,
   } = useResourceContext();
 
-  const [isSearchFieldFocus, setIsSearchFieldFocus] = React.useState(false);
+  const [isSearchFieldFocus, setIsSearchFieldFocused] = React.useState(false);
   const [autocompleteAnchor, setAutocompleteAnchor] =
     React.useState<HTMLDivElement | null>(null);
   const searchRef = React.useRef<HTMLInputElement>();
@@ -465,7 +465,7 @@ const Filter = (): JSX.Element => {
   };
 
   const blurInput = (): void => {
-    setIsSearchFieldFocus(false);
+    setIsSearchFieldFocused(false);
     clearDebounceDynamicSuggestions();
   };
 
@@ -518,7 +518,7 @@ const Filter = (): JSX.Element => {
                     title={t(labelClearFilter)}
                     onClick={clearFilter}
                   >
-                    <CloseIcon fontSize="small" />
+                    <CloseIcon color="action" fontSize="small" />
                   </IconButton>
                 )}
                 inputRef={searchRef as React.RefObject<HTMLInputElement>}
@@ -529,7 +529,7 @@ const Filter = (): JSX.Element => {
                 onClick={(): void => {
                   setCursorPosition(searchRef?.current?.selectionStart || 0);
                 }}
-                onFocus={(): void => setIsSearchFieldFocus(true)}
+                onFocus={(): void => setIsSearchFieldFocused(true)}
                 onKeyDown={inputKey}
               />
               <Popper
