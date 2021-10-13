@@ -2328,7 +2328,6 @@ function updateHostTemplateService_MC($host_id = null)
         }
 
         $ret = $form->getSubmitValue("host_svTpls");
-        
         if (!empty($ret)) {
             for ($i = 0; $i < count($ret); $i++) {
                 if (!isset($svtpls[$ret[$i]])) {
