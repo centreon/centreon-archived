@@ -283,7 +283,7 @@ foreach ($jsdata as $k => $val) {
                         },
                         account: {
                             name: licenseClient ? licenseClient : null,
-                            uuid: uuid,
+                            id: uuid,
                             serverType: isRemote ? 'remote' : 'central',
                             licenseType: licenseProduct ? licenseProduct : null,
                             versionMajor: null,
