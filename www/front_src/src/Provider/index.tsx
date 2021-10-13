@@ -101,6 +101,7 @@ const AppProvider = (): JSX.Element | null => {
               10,
             ),
           );
+          console.log(retrievedAcl);
           setActionAcl(retrievedAcl);
 
           initializeI18n({
