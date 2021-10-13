@@ -101,6 +101,7 @@ const AppProvider = (): JSX.Element | null => {
               10,
             ),
           );
+          // eslint-disable-next-line no-console
           console.log(retrievedAcl);
           setActionAcl(retrievedAcl);
 
