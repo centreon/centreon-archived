@@ -38,13 +38,13 @@
            box-sizing: border-box;
            margin: 0 6px;
            &.red {
-            background-color: rgb(249, 0, 38);
+            background-color: #f90026;
            }
            &.orange {
-            background-color: rgb(255, 154, 19);
+            background-color: #FF9A13;
            }
            &.green {
-            background-color:rgb(132, 189, 0);
+            background-color: #84BD00;
            }
          }
       }
@@ -94,10 +94,10 @@
             }
           }
           &.red {
-            background-color: rgb(249, 0, 38);
+            background-color: #f90026;
           }
           &.red-bordered {
-            border: 2px solid rgb(249, 0, 38);
+            border: 2px solid #f90026;
             span {
               line-height: 30px;
             }
@@ -112,19 +112,19 @@
             }
           }
           &.green {
-            background-color: rgb(132, 189, 0);
+            background-color: #84BD00;
           }
           &.green-bordered {
-            border: 2px solid rgb(132, 189, 0);
+            border: 2px solid #84BD00;
             span {
               line-height: 30px;
             }
           }
           &.orange {
-            background-color: rgb(255, 154, 19);
+            background-color: #FF9A13;
           }
           &.orange-bordered {
-            border: 2px solid rgb(255, 154, 19);
+            border: 2px solid  #FF9A13;
             span {
               line-height: 30px;
             }
@@ -378,12 +378,12 @@
     }
     &.red {
       &:before {
-        background-color:rgb(249, 0, 38);
+        background-color:#f90026;
       }
     }
     &.orange {
       &:before {
-        background-color: rgb(255, 154, 19);
+        background-color:  #FF9A13;
       }
     }
     &.gray {
@@ -398,7 +398,7 @@
     }
     &.green {
       &:before {
-        background-color: rgb(132, 189, 0);
+        background-color: #84BD00;
       }
     }
     &.blue {
