@@ -38,13 +38,13 @@
            box-sizing: border-box;
            margin: 0 6px;
            &.red {
-            background-color: #ed1c24;
+            background-color: rgb(249, 0, 38);
            }
            &.orange {
-            background-color: #ff9913;
+            background-color: rgb(255, 154, 19);
            }
            &.green {
-            background-color: #87bd23;
+            background-color:rgb(132, 189, 0);
            }
          }
       }
@@ -94,10 +94,10 @@
             }
           }
           &.red {
-            background-color: #ed1c24;
+            background-color: rgb(249, 0, 38);
           }
           &.red-bordered {
-            border: 2px solid #ed1c24;
+            border: 2px solid rgb(249, 0, 38);
             span {
               line-height: 30px;
             }
@@ -112,19 +112,19 @@
             }
           }
           &.green {
-            background-color: #87bd23;
+            background-color: rgb(132, 189, 0);
           }
           &.green-bordered {
-            border: 2px solid #87bd23;
+            border: 2px solid rgb(132, 189, 0);
             span {
               line-height: 30px;
             }
           }
           &.orange {
-            background-color: #ff9913;
+            background-color: rgb(255, 154, 19);
           }
           &.orange-bordered {
-            border: 2px solid #ff9913;
+            border: 2px solid rgb(255, 154, 19);
             span {
               line-height: 30px;
             }
@@ -378,12 +378,12 @@
     }
     &.red {
       &:before {
-        background-color: #ed1b23;
+        background-color:rgb(249, 0, 38);
       }
     }
     &.orange {
       &:before {
-        background-color: #ffa125;
+        background-color: rgb(255, 154, 19);
       }
     }
     &.gray {
@@ -398,7 +398,7 @@
     }
     &.green {
       &:before {
-        background-color: #87bd23;
+        background-color: rgb(132, 189, 0);
       }
     }
     &.blue {
