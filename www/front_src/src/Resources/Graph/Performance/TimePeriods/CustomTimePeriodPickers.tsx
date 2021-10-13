@@ -108,11 +108,11 @@ const CustomTimePeriodPickers = ({
   acceptDate,
   isCompact: isMinimalWidth,
 }: Props): JSX.Element => {
+  const classes = useStyles(isMinimalWidth);
+  const { t } = useTranslation();
   const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
   const [start, setStart] = React.useState<Date>(customTimePeriod.start);
   const [end, setEnd] = React.useState<Date>(customTimePeriod.end);
-  const classes = useStyles(isMinimalWidth);
-  const { t } = useTranslation();
   const { locale } = useUserContext();
   const { format } = useLocaleDateTimeFormat();
   const { Adapter, isMeridianFormat } = useDateTimePickerAdapter();

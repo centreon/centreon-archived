@@ -42,6 +42,15 @@ const useListing = (): ListingState => {
     getStoredOrDefaultColumnIds(defaultSelectedColumnIds),
   );
 
+  const { sendRequest, sending } = useRequest<ResourceListing>({
+    getErrorMessage: ifElse(
+      pathEq(['response', 'status'], 404),
+      always(ApiNotFoundMessage),
+      pathOr(labelSomethingWentWrong, ['response', 'data', 'message']),
+    ),
+    request: listResources,
+  });
+
   React.useEffect(() => {
     storeColumnIds(selectedColumnIds);
   }, [selectedColumnIds]);
@@ -50,15 +59,6 @@ const useListing = (): ListingState => {
     return (): void => {
       clearCachedColumnIds();
     };
-  });
-
-  const { sendRequest, sending } = useRequest<ResourceListing>({
-    getErrorMessage: ifElse(
-      pathEq(['response', 'status'], 404),
-      always(ApiNotFoundMessage),
-      pathOr(labelSomethingWentWrong, ['response', 'data', 'message']),
-    ),
-    request: listResources,
   });
 
   return {
