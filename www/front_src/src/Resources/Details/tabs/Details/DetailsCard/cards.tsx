@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { pick } from 'ramda';
+import { pick, includes } from 'ramda';
 
 import ChecksIcon from '../../../../ChecksIcon';
 import {
@@ -28,6 +28,7 @@ import {
 } from '../../../../translatedLabels';
 import { ResourceDetails } from '../../../models';
 import ExpandableCard from '../ExpandableCard';
+import { ChangeExpandedCardsProps } from '../SortableCards/models';
 
 import DetailsLine from './DetailsLine';
 import PercentStateChangeCard from './PercentStateChangeCard';
@@ -46,7 +47,9 @@ export interface DetailCardLine {
 }
 
 interface DetailCardLineProps {
+  changeExpandedCards: (props: ChangeExpandedCardsProps) => void;
   details: ResourceDetails;
+  expandedCards: Array<string>;
   t: (label: string) => string;
   toDateTime: (date: string | Date) => string;
 }
@@ -55,6 +58,8 @@ const getDetailCardLines = ({
   details,
   toDateTime,
   t,
+  expandedCards,
+  changeExpandedCards,
 }: DetailCardLineProps): Array<DetailCardLine> => {
   const checksDisabled =
     details.active_checks === false && details.passive_checks === false;
@@ -68,7 +73,9 @@ const getDetailCardLines = ({
       isCustomCard: true,
       line: (
         <ExpandableCard
+          changeExpandedCards={changeExpandedCards}
           content={details.information}
+          expandedCard={includes(t(labelStatusInformation), expandedCards)}
           severityCode={details.status.severity_code}
           title={t(labelStatusInformation)}
         />
@@ -179,7 +186,9 @@ const getDetailCardLines = ({
       isCustomCard: true,
       line: (
         <ExpandableCard
+          changeExpandedCards={changeExpandedCards}
           content={details.performance_data || ''}
+          expandedCard={includes(t(labelPerformanceData), expandedCards)}
           title={t(labelPerformanceData)}
         />
       ),

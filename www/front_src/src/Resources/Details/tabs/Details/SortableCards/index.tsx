@@ -3,7 +3,19 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { rectIntersection } from '@dnd-kit/core';
 import { rectSortingStrategy } from '@dnd-kit/sortable';
-import { filter, find, isEmpty, isNil, map, pluck, propEq } from 'ramda';
+import {
+  append,
+  equals,
+  filter,
+  find,
+  findIndex,
+  isEmpty,
+  isNil,
+  map,
+  pluck,
+  propEq,
+  remove,
+} from 'ramda';
 
 import { Box, Grid } from '@material-ui/core';
 
@@ -11,6 +23,7 @@ import {
   SortableItems,
   useLocaleDateTimeFormat,
   RootComponentProps,
+  useMemoComponent,
 } from '@centreon/ui';
 
 import getDetailCardLines, { DetailCardLine } from '../DetailsCard/cards';
@@ -20,7 +33,7 @@ import {
   storeDetailsCards,
 } from '../storedDetailsCards';
 
-import { CardsLayout } from './models';
+import { CardsLayout, ChangeExpandedCardsProps, ExpandAction } from './models';
 import Content from './Content';
 
 interface Props {
@@ -31,10 +44,31 @@ interface Props {
 const SortableCards = ({ panelWidth, details }: Props): JSX.Element => {
   const { toDateTime } = useLocaleDateTimeFormat();
   const { t } = useTranslation();
+  const [expandedCards, setExpandedCards] = React.useState<Array<string>>([]);
 
   const storedDetailsCards = getStoredOrDefaultDetailsCards([]);
 
-  const allDetailsCards = getDetailCardLines({ details, t, toDateTime });
+  const changeExpandedCards = ({
+    action,
+    card,
+  }: ChangeExpandedCardsProps): void => {
+    if (equals(action, ExpandAction.add)) {
+      setExpandedCards(append(card, expandedCards));
+
+      return;
+    }
+
+    const expandedCardIndex = findIndex(equals(card), expandedCards);
+    setExpandedCards(remove(expandedCardIndex, 1, expandedCards));
+  };
+
+  const allDetailsCards = getDetailCardLines({
+    changeExpandedCards,
+    details,
+    expandedCards,
+    t,
+    toDateTime,
+  });
 
   const defaultDetailsCardsLayout = isEmpty(storedDetailsCards)
     ? pluck('title', allDetailsCards)
@@ -64,27 +98,31 @@ const SortableCards = ({ panelWidth, details }: Props): JSX.Element => {
     storeDetailsCards(items);
   };
 
-  return (
-    <Box>
-      <SortableItems<CardsLayout>
-        Content={Content}
-        RootComponent={RootComponent}
-        collisionDetection={rectIntersection}
-        itemProps={[
-          'field',
-          'line',
-          'xs',
-          'active',
-          'isCustomCard',
-          'width',
-          'title',
-        ]}
-        items={displayedCards}
-        sortingStrategy={rectSortingStrategy}
-        onDragEnd={dragEnd}
-      />
-    </Box>
-  );
+  return useMemoComponent({
+    Component: (
+      <Box>
+        <SortableItems<CardsLayout>
+          Content={Content}
+          RootComponent={RootComponent}
+          collisionDetection={rectIntersection}
+          itemProps={[
+            'shouldBeDisplayed',
+            'field',
+            'line',
+            'xs',
+            'active',
+            'isCustomCard',
+            'width',
+            'title',
+          ]}
+          items={displayedCards}
+          sortingStrategy={rectSortingStrategy}
+          onDragEnd={dragEnd}
+        />
+      </Box>
+    ),
+    memoProps: [defaultDetailsCardsLayout, panelWidth, expandedCards],
+  });
 };
 
 export default SortableCards;
