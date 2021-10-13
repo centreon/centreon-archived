@@ -140,7 +140,7 @@ const HostStatusCounter = (): JSX.Element => {
               className={classnames(classes.link, styles['wrap-middle-icon'])}
               to={upHostsLink}
             >
-              <StatusCounter count={data.ok} severityCode={SeverityCode.Low} />
+              <StatusCounter count={data.ok} severityCode={SeverityCode.Ok} />
             </Link>
             <IconToggleSubmenu
               iconType="arrow"
