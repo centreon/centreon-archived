@@ -2449,9 +2449,10 @@ class CentreonACL
      *
      * @access public
      * @param array $options
-     * @return void
+     * @param boolean $localOnly Indicates if only local contactgroups should be searched
+     * @return mixed[]
      */
-    public function getContactGroupAclConf($options = array(), $localOnly = true)
+    public function getContactGroupAclConf(array $options = [], bool $localOnly = true)
     {
         $request = $this->constructRequest($options, true);
 
