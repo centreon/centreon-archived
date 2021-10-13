@@ -118,7 +118,7 @@ const getDetailCardLines = ({
     },
     {
       line: <DetailsLine line={details.timezone} />,
-      shouldBeDisplayed: !isNil(details.timezone),
+      shouldBeDisplayed: !isNil(details.timezone) && !isEmpty(details.timezone),
       title: labelTimezone,
     },
     {
