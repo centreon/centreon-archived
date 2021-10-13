@@ -13,6 +13,7 @@ import {
   useUser,
   Context,
   useRefreshInterval,
+  useDowntime,
 } from '@centreon/ui-context';
 
 import App from '../App';
@@ -25,7 +26,6 @@ import {
   parametersEndpoint,
 } from './endpoint';
 import { DefaultParameters } from './models';
-import useDowntime from './useDowntime';
 
 const store = createStore();
 
@@ -101,6 +101,8 @@ const AppProvider = (): JSX.Element | null => {
               10,
             ),
           );
+          // eslint-disable-next-line no-console
+          console.log(retrievedAcl);
           setActionAcl(retrievedAcl);
 
           initializeI18n({

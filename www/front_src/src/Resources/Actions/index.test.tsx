@@ -14,6 +14,8 @@ import {
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
+import { useUserContext } from '@centreon/ui-context';
+
 import {
   labelAcknowledgedBy,
   labelDowntimeBy,
@@ -51,7 +53,6 @@ import useFilter from '../Filter/useFilter';
 import Context, { ResourceContext } from '../Context';
 import { mockAppStateSelector, cancelTokenRequestParam } from '../testUtils';
 import { Resource } from '../models';
-import * as UserContext from '../../Provider/UserContext';
 import useDetails from '../Details/useDetails';
 
 import {
@@ -81,6 +82,7 @@ const mockUserContext = {
       host: {
         acknowledgement: true,
         check: true,
+        comment: true,
         disacknowledgement: true,
         downtime: true,
         submit_status: true,
@@ -88,6 +90,7 @@ const mockUserContext = {
       service: {
         acknowledgement: true,
         check: true,
+        comment: true,
         disacknowledgement: true,
         downtime: true,
         submit_status: true,
@@ -102,13 +105,17 @@ const mockUserContext = {
 
   name: 'admin',
 
-  refresh_interval: 15,
+  refreshInterval: 15,
   timezone: 'Europe/Paris',
+  use_deprecated_pages: false,
 };
 
-jest.mock('../../Provider/UserContext');
+jest.mock('@centreon/centreon-frontend/packages/ui-context', () => ({
+  ...(jest.requireActual('@centreon/ui-context') as jest.Mocked<unknown>),
+  useUserContext: jest.fn(),
+}));
 
-const mockedUserContext = UserContext as jest.Mocked<typeof UserContext>;
+const mockedUserContext = useUserContext as jest.Mock;
 
 const ActionsWithLoading = (): JSX.Element => {
   useLoadResources();
@@ -180,14 +187,14 @@ describe(Actions, () => {
     mockDate.set(mockNow);
     mockAppStateSelector(useSelector);
 
-    mockedUserContext.useUserContext.mockReturnValue(mockUserContext);
+    mockedUserContext.mockReturnValue(mockUserContext);
   });
 
   afterEach(() => {
     mockDate.reset();
     mockedAxios.get.mockReset();
 
-    mockedUserContext.useUserContext.mockReset();
+    mockedUserContext.mockReset();
   });
 
   it('executes a listing request when the refresh button is clicked', async () => {
@@ -551,13 +558,14 @@ describe(Actions, () => {
   });
 
   it('cannot execute an action when associated ACL are not sufficient', async () => {
-    mockedUserContext.useUserContext.mockReset().mockReturnValue({
+    mockedUserContext.mockReset().mockReturnValue({
       ...mockUserContext,
       acl: {
         actions: {
           host: {
             acknowledgement: false,
             check: false,
+            comment: false,
             disacknowledgement: false,
             downtime: false,
             submit_status: false,
@@ -565,6 +573,7 @@ describe(Actions, () => {
           service: {
             acknowledgement: false,
             check: false,
+            comment: false,
             disacknowledgement: false,
             downtime: false,
             submit_status: false,
@@ -689,7 +698,7 @@ describe(Actions, () => {
   ])(
     'displays a warning message when trying to %p with limited ACL',
     async (_, labelAction, labelAclWarning, acl) => {
-      mockedUserContext.useUserContext.mockReset().mockReturnValue({
+      mockedUserContext.mockReset().mockReturnValue({
         ...mockUserContext,
         acl,
       });
@@ -732,7 +741,7 @@ describe(Actions, () => {
   ])(
     'disables services propagation option when trying to %p on hosts when ACL on services are not sufficient',
     async (_, labelAction, labelAppliesOnServices, acl) => {
-      mockedUserContext.useUserContext.mockReset().mockReturnValue({
+      mockedUserContext.mockReset().mockReturnValue({
         ...mockUserContext,
         acl,
       });
@@ -758,7 +767,7 @@ describe(Actions, () => {
   it('disables the submit status action when one of the following condition is met: ACL are not sufficient, more than one resource is selected, selected resource is not passive', async () => {
     const { getByText } = renderActions();
 
-    mockedUserContext.useUserContext.mockReset().mockReturnValue({
+    mockedUserContext.mockReset().mockReturnValue({
       ...mockUserContext,
       acl: {
         actions: {
