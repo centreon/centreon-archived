@@ -54,10 +54,10 @@ const GraphActions = ({
   timeline,
   performanceGraphRef,
 }: Props): JSX.Element => {
-  const [menuAnchor, setMenuAnchor] = React.useState<Element | null>(null);
-  const [exporting, setExporting] = React.useState<boolean>(false);
   const classes = useStyles();
   const { t } = useTranslation();
+  const [menuAnchor, setMenuAnchor] = React.useState<Element | null>(null);
+  const [exporting, setExporting] = React.useState<boolean>(false);
   const { format } = useLocaleDateTimeFormat();
   const history = useHistory();
 

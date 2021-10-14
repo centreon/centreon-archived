@@ -29,8 +29,8 @@ interface Props {
 }
 
 const SortableCards = ({ panelWidth, details }: Props): JSX.Element => {
-  const { t } = useTranslation();
   const { toDateTime } = useLocaleDateTimeFormat();
+  const { t } = useTranslation();
 
   const storedDetailsCards = getStoredOrDefaultDetailsCards([]);
 

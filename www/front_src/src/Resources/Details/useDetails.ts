@@ -78,6 +78,7 @@ export interface DetailsState {
 }
 
 const useDetails = (): DetailsState => {
+  const { t } = useTranslation();
   const [openDetailsTabId, setOpenDetailsTabId] =
     React.useState<TabId>(detailsTabId);
   const [selectedResourceUuid, setSelectedResourceUuid] =
@@ -98,8 +99,6 @@ const useDetails = (): DetailsState => {
     React.useState<TimePeriodId | undefined>();
   const [defaultSelectedCustomTimePeriod, setDefaultSelectedCustomTimePeriod] =
     React.useState<CustomTimePeriod | undefined>();
-
-  const { t } = useTranslation();
 
   const { sendRequest, sending } = useRequest<ResourceDetails>({
     getErrorMessage: ifElse(
