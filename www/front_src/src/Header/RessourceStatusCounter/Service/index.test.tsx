@@ -7,10 +7,10 @@ import { BrowserRouter } from 'react-router-dom';
 
 import createStore from '../../../store';
 
-import ServiceMenu from '.';
+import ServiceStatusCounter from '.';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
-describe(ServiceMenu, () => {
+describe(ServiceStatusCounter, () => {
   afterEach(() => {
     mockedAxios.get.mockReset();
   });
@@ -42,7 +42,7 @@ describe(ServiceMenu, () => {
     const { getByText, getAllByText } = render(
       <BrowserRouter>
         <Provider store={store}>
-          <ServiceMenu />
+          <ServiceStatusCounter />
         </Provider>
       </BrowserRouter>,
     );

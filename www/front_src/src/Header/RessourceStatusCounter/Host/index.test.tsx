@@ -7,11 +7,11 @@ import { BrowserRouter } from 'react-router-dom';
 
 import createStore from '../../../store';
 
-import HostMenu from '.';
+import HostStatusCounter from '.';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
-describe(HostMenu, () => {
+describe(HostStatusCounter, () => {
   afterEach(() => {
     mockedAxios.get.mockReset();
   });
@@ -39,7 +39,7 @@ describe(HostMenu, () => {
     const { getByText, getAllByText } = render(
       <BrowserRouter>
         <Provider store={store}>
-          <HostMenu />
+          <HostStatusCounter />
         </Provider>
       </BrowserRouter>,
     );
