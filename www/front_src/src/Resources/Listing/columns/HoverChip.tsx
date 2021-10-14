@@ -20,9 +20,9 @@ interface Props {
 }
 
 const HoverChip = ({ children, Chip, label, onClick }: Props): JSX.Element => {
-  const [isChipHovered, setIsChipHovered] = React.useState<boolean>(false);
-
   const classes = useStyles();
+
+  const [isChipHovered, setIsChipHovered] = React.useState<boolean>(false);
 
   const openTooltip = (): void => setIsChipHovered(true);
 
