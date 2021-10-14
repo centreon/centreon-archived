@@ -61,6 +61,7 @@ const ExportablePerformanceGraphWithTimeline = ({
     resourceDetailsUpdated,
   } = useResourceContext();
 
+  const [timeline, setTimeline] = React.useState<Array<TimelineEvent>>();
   const { sendRequest: sendGetTimelineRequest } = useRequest<
     ListingModel<TimelineEvent>
   >({
@@ -70,7 +71,6 @@ const ExportablePerformanceGraphWithTimeline = ({
 
   const { alias } = useUserContext();
 
-  const [timeline, setTimeline] = React.useState<Array<TimelineEvent>>();
   const graphOptions =
     useGraphOptionsContext()?.graphOptions || defaultGraphOptions;
   const graphContainerRef = React.useRef<HTMLElement | null>(null);

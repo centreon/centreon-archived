@@ -30,10 +30,10 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const GraphOptions = (): JSX.Element => {
-  const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
-  const { graphOptions, changeGraphOptions } = useGraphOptionsContext();
   const classes = useStyles();
   const { t } = useTranslation();
+  const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
+  const { graphOptions, changeGraphOptions } = useGraphOptionsContext();
 
   const openGraphOptions = (event: React.MouseEvent): void => {
     if (isNil(anchorEl)) {

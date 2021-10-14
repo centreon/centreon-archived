@@ -1387,6 +1387,12 @@ function updateHost_MC($host_id = null)
         $ret["host_template_model_htm_id"] = $result["host_id"];
         $dbResult->closeCursor();
     }
+    // Remove all parameters that have an empty value in order to keep the host properties that have not been modified
+    foreach ($ret as $name => $value) {
+        if (is_string($value) && empty($value)) {
+            unset($ret[$name]);
+        }
+    }
 
     $bindParams = sanitizeFormHostParameters($ret);
     $rq = "UPDATE host SET ";

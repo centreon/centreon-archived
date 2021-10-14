@@ -42,8 +42,8 @@ interface Props {
 
 const SortableCards = ({ panelWidth, details }: Props): JSX.Element => {
   const { toDateTime } = useLocaleDateTimeFormat();
-  const [expandedCards, setExpandedCards] = React.useState<Array<string>>([]);
   const { t } = useTranslation();
+  const [expandedCards, setExpandedCards] = React.useState<Array<string>>([]);
 
   const storedDetailsCards = getStoredOrDefaultDetailsCards([]);
 

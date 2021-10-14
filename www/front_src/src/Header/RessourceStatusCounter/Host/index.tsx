@@ -66,7 +66,7 @@ interface HostData {
   };
 }
 
-const HostMenu = (): JSX.Element => {
+const HostStatusCounter = (): JSX.Element => {
   const classes = useStyles();
 
   const { t } = useTranslation();
@@ -133,7 +133,7 @@ const HostMenu = (): JSX.Element => {
             >
               <StatusCounter
                 count={data.unreachable.unhandled}
-                severityCode={SeverityCode.Medium}
+                severityCode={SeverityCode.Low}
               />
             </Link>
             <Link
@@ -220,4 +220,4 @@ const HostMenu = (): JSX.Element => {
   );
 };
 
-export default withTranslation()(HostMenu);
+export default withTranslation()(HostStatusCounter);

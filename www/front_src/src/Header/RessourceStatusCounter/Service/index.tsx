@@ -8,7 +8,7 @@ import numeral from 'numeral';
 import { Link } from 'react-router-dom';
 import { useTranslation, withTranslation } from 'react-i18next';
 
-import ServiceIcon from '@material-ui/icons/RoomService';
+import ServiceIcon from '@material-ui/icons/Grain';
 
 import {
   IconHeader,
