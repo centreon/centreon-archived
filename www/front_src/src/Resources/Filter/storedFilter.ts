@@ -3,7 +3,6 @@ import { baseKey, getStoredOrDefault, store } from '../storage';
 import { Filter } from './models';
 
 const filterKey = `${baseKey}filter`;
-const filterExpandedKey = `${baseKey}filter-expanded`;
 
 let cachedFilter;
 
@@ -26,10 +25,4 @@ const clearCachedFilter = (): void => {
   cachedFilter = null;
 };
 
-export {
-  getStoredOrDefaultFilter,
-  storeFilter,
-  clearCachedFilter,
-  filterKey,
-  filterExpandedKey,
-};
+export { getStoredOrDefaultFilter, storeFilter, clearCachedFilter, filterKey };
