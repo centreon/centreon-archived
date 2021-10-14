@@ -133,7 +133,7 @@ const HostStatusCounter = (): JSX.Element => {
             >
               <StatusCounter
                 count={data.unreachable.unhandled}
-                severityCode={SeverityCode.Medium}
+                severityCode={SeverityCode.Low}
               />
             </Link>
             <Link
