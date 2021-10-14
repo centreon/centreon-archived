@@ -16228,8 +16228,8 @@ msgstr "Cette semaine"
 msgid "Before last year"
 msgstr "Avant l'année dernière"
 
-msgid "Search options"
-msgstr "Options de recherche"
+msgid "Filter options"
+msgstr "Options de filtre"
 
 msgid "The parameter \"%s\" must be an integer"
 msgstr "Le paramètre \"%s\" doit être un entier"

@@ -14735,7 +14735,7 @@ msgstr "Permitir certificado autofirmado"
 # msgid "Before last year"
 # msgstr ""
 
-# msgid "Search options"
+# msgid "Filter options"
 # msgstr ""
 
 # msgid "Service graphs"
