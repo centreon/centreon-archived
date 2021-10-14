@@ -26,6 +26,8 @@ import {
   find,
   isNil,
   last,
+  equals,
+  not,
 } from 'ramda';
 import userEvent from '@testing-library/user-event';
 
@@ -38,7 +40,11 @@ import useActions from '../Actions/useActions';
 import useDetails from '../Details/useDetails';
 import useFilter from '../Filter/useFilter';
 import { labelInDowntime, labelAcknowledged } from '../translatedLabels';
-import { getListingEndpoint, cancelTokenRequestParam } from '../testUtils';
+import {
+  getListingEndpoint,
+  cancelTokenRequestParam,
+  secondSortCriteria,
+} from '../testUtils';
 import { unhandledProblemsFilter } from '../Filter/models';
 
 import useListing from './useListing';
@@ -237,7 +243,11 @@ describe(Listing, () => {
         await waitFor(() => {
           expect(mockedAxios.get).toHaveBeenLastCalledWith(
             getListingEndpoint({
-              sort: { [sortBy]: 'desc' },
+              sort: {
+                [sortBy]: 'desc',
+                ...(not(equals(sortBy, 'last_status_change')) &&
+                  secondSortCriteria),
+              },
             }),
             cancelTokenRequestParam,
           );
@@ -248,7 +258,11 @@ describe(Listing, () => {
         await waitFor(() =>
           expect(mockedAxios.get).toHaveBeenLastCalledWith(
             getListingEndpoint({
-              sort: { [sortBy]: 'asc' },
+              sort: {
+                [sortBy]: 'asc',
+                ...(not(equals(sortBy, 'last_status_change')) &&
+                  secondSortCriteria),
+              },
             }),
             cancelTokenRequestParam,
           ),
