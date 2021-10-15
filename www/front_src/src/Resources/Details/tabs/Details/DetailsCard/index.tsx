@@ -14,6 +14,7 @@ const useStyles = makeStyles((theme) => ({
   },
   container: {
     height: '100%',
+    overflow: 'hidden',
   },
   title: {
     display: 'flex',
