@@ -33,22 +33,45 @@
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
   </body>
+  <script type="text/javascript" src="./include/common/javascript/jquery/jquery.min.js"></script>
   <script type="text/javascript">
-    let platformData = localStorage.getItem('centreonPlatformData');
-    if (platformData !== null) {
-      platformData = JSON.parse(platformData);
-      // Pendo.io
-      (function(apiKey, platformData){
-      (function(p,e,n,d,o){var v,w,x,y,z;o=p[d]=p[d]||{};o._q=o._q||[];
-      v=['initialize','identify','updateOptions','pageLoad','track'];for(w=0,x=v.length;w<x;++w)(function(m){
+    jQuery.ajax({
+      url: './api/internal.php?object=centreon_ceip&action=ceipInfo',
+      type: 'get',
+      dataType: 'json',
+      success: function (data) {
+
+      if (data.ceip === true) {
+        // Pendo.io
+        (function(apiKey, platformData){
+        (function(p,e,n,d,o){var v,w,x,y,z;o=p[d]=p[d]||{};o._q=o._q||[];
+        v=['initialize','identify','updateOptions','pageLoad','track'];for(w=0,x=v.length;w<x;++w)(function(m){
           o[m]=o[m]||function(){o._q[m===v[0]?'unshift':'push']([m].concat([].slice.call(arguments,0)));};})(v[w]);
           y=e.createElement(n);y.async=!0;y.src='https://cdn.eu.pendo.io/agent/static/'+apiKey+'/pendo.js';
           z=e.getElementsByTagName(n)[0];z.parentNode.insertBefore(y,z);})(window,document,'script','pendo');
 
           // Call this whenever information about your visitors becomes available
           // Please use Strings, Numbers, or Bools for value types.
-          pendo.initialize(platformData);
-      })('b06b875d-4a10-4365-7edf-8efeaf53dfdd', platformData);
-    }
+          pendo.initialize(data);
+        })('b06b875d-4a10-4365-7edf-8efeaf53dfdd', data);
+
+        // Create localStorage cache
+        let platformData = {
+          cacheGenerationDate: Date.now(),
+          visitor: data.visitor,
+          account: data.account,
+          excludeAllText: data.excludeAllText
+        }
+        if (localStorage.getItem('centreonPlatformData') !== null) {
+            localStorage.removeItem('centreonPlatformData');
+          }
+          localStorage.setItem('centreonPlatformData', JSON.stringify(platformData));
+        } else {
+          if (localStorage.getItem('centreonPlatformData') !== null) {
+            localStorage.removeItem('centreonPlatformData');
+          }
+        }
+      }
+    });
   </script>
 </html>
