@@ -107,7 +107,6 @@ const SortableCards = ({ panelWidth, details }: Props): JSX.Element => {
             'shouldBeDisplayed',
             'line',
             'xs',
-            'active',
             'isCustomCard',
             'width',
             'title',
