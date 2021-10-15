@@ -1,0 +1,19 @@
+[./install.sh]:INFO: GREP=/usr/bin/grep
+[./install.sh]:INFO: CAT=/usr/bin/cat
+[./install.sh]:INFO: SED=/usr/bin/sed
+[./install.sh]:INFO: CHMOD=/usr/bin/chmod
+[./install.sh]:INFO: CHOWN=/usr/bin/chown
+rm : OK
+cp : OK
+mv : OK
+/usr/bin/chmod : OK
+/usr/bin/chown : OK
+echo : OK
+more : FAIL
+[./install.sh]:ERR: $binary not found in $PATH
+mkdir : OK
+find : OK
+/usr/bin/grep : OK
+/usr/bin/cat : OK
+/usr/bin/sed : OK
+Please check fail binary and retry : 
