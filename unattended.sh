@@ -58,7 +58,7 @@ if [ "$wizard_autoplay" == "true" ]; then
 fi
 
 CENTREON_MAJOR_VERSION=$version
-CENTREON_RELEASE_VERSION="$CENTREON_MAJOR_VERSION-1"
+CENTREON_RELEASE_VERSION="$CENTREON_MAJOR_VERSION-2"
 
 # Static variables
 PHP_BIN="/usr/bin/php"
