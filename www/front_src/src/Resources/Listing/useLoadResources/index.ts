@@ -14,6 +14,7 @@ export interface LoadResources {
 }
 
 const secondSortField = 'last_status_change';
+const defaultSecondSortCriteria = { [secondSortField]: SortOrder.desc };
 
 const useLoadResources = (): LoadResources => {
   const {
@@ -46,11 +47,12 @@ const useLoadResources = (): LoadResources => {
 
     const [sortField, sortOrder] = sort as [string, SortOrder];
 
-    const secondSortCriteria = { [secondSortField]: SortOrder.desc };
+    const secondSortCriteria =
+      not(equals(sortField, secondSortField)) && defaultSecondSortCriteria;
 
     return {
       [sortField]: sortOrder,
-      ...(not(equals(sortField, secondSortField)) && secondSortCriteria),
+      ...secondSortCriteria,
     };
   };
 

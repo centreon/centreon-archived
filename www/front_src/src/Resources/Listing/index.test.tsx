@@ -43,7 +43,7 @@ import { labelInDowntime, labelAcknowledged } from '../translatedLabels';
 import {
   getListingEndpoint,
   cancelTokenRequestParam,
-  secondSortCriteria,
+  defaultSecondSortCriteria,
 } from '../testUtils';
 import { unhandledProblemsFilter } from '../Filter/models';
 
@@ -240,13 +240,16 @@ describe(Listing, () => {
 
         userEvent.click(getByLabelText(`Column ${label}`));
 
+        const secondSortCriteria =
+          not(equals(sortField, 'last_status_change')) &&
+          defaultSecondSortCriteria;
+
         await waitFor(() => {
           expect(mockedAxios.get).toHaveBeenLastCalledWith(
             getListingEndpoint({
               sort: {
                 [sortBy]: 'desc',
-                ...(not(equals(sortBy, 'last_status_change')) &&
-                  secondSortCriteria),
+                ...secondSortCriteria,
               },
             }),
             cancelTokenRequestParam,
@@ -260,8 +263,7 @@ describe(Listing, () => {
             getListingEndpoint({
               sort: {
                 [sortBy]: 'asc',
-                ...(not(equals(sortBy, 'last_status_change')) &&
-                  secondSortCriteria),
+                ...secondSortCriteria,
               },
             }),
             cancelTokenRequestParam,

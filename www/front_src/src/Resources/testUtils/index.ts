@@ -23,14 +23,14 @@ const defaultStatuses = ['WARNING', 'DOWN', 'CRITICAL', 'UNKNOWN'];
 const defaultResourceTypes = [];
 const defaultStates = ['unhandled_problems'];
 
-const secondSortCriteria = { last_status_change: SortOrder.desc };
+const defaultSecondSortCriteria = { last_status_change: SortOrder.desc };
 
 const getListingEndpoint = ({
   page = 1,
   limit = 30,
   sort = {
     status_severity_code: SortOrder.asc,
-    ...secondSortCriteria,
+    ...defaultSecondSortCriteria,
   },
   statuses = defaultStatuses,
   states = defaultStates,
@@ -100,5 +100,5 @@ export {
   searchableFields,
   getCriteriaValue,
   getFilterWithUpdatedCriteria,
-  secondSortCriteria,
+  defaultSecondSortCriteria,
 };
