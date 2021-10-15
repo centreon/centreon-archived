@@ -66,7 +66,7 @@ fi
 ​
 for key in /etc/pki/rpm-gpg/*
 do
-  gpg $key | grep -q "pub  1024D/8A7652BC"
+  gpg $key | grep -q "pub  $OLDKEY_ID"
   if [ $? -eq 0 ]; then
     if [ ${AUTO} -eq 0 ]; then
       echo "
