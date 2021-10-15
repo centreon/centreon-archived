@@ -28,12 +28,12 @@ import {
   labelDowntimeDuration,
   labelAcknowledgedBy,
   labelTimezone,
-  labelCurrentStateDuration,
-  labelLastStateChange,
+  labelCurrentStatusDuration,
+  labelLastStatusChange,
   labelNextCheck,
   labelCheckDuration,
   labelLatency,
-  labelPercentStateChange,
+  labelStatusChangePercentage,
   labelLastNotification,
   labelLastCheck,
   labelCurrentNotificationNumber,
@@ -558,10 +558,10 @@ describe(Details, () => {
     expect(getByText(labelTimezone)).toBeInTheDocument();
     expect(getByText('Europe/Paris')).toBeInTheDocument();
 
-    expect(getByText(labelCurrentStateDuration)).toBeInTheDocument();
+    expect(getByText(labelCurrentStatusDuration)).toBeInTheDocument();
     expect(getByText('22m - 3/3 (Hard)')).toBeInTheDocument();
 
-    expect(getByText(labelLastStateChange)).toBeInTheDocument();
+    expect(getByText(labelLastStatusChange)).toBeInTheDocument();
     expect(getByText('04/18/2020 5:00 PM')).toBeInTheDocument();
 
     expect(getByText(labelLastCheck)).toBeInTheDocument();
@@ -581,7 +581,7 @@ describe(Details, () => {
 
     expect(getByText(labelCheck)).toBeInTheDocument();
 
-    expect(getByText(labelPercentStateChange)).toBeInTheDocument();
+    expect(getByText(labelStatusChangePercentage)).toBeInTheDocument();
     expect(getByText('3.5%')).toBeInTheDocument();
 
     expect(getByText(labelLastNotification)).toBeInTheDocument();
