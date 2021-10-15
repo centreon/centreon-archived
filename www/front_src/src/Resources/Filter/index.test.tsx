@@ -588,14 +588,24 @@ describe(Filter, () => {
             result: [],
           },
         })
-        .mockResolvedValue({
+        .mockResolvedValueOnce({
           data: {
             meta: {
               limit: 30,
               page: 1,
               total: 0,
             },
-            result: [],
+            result: [linuxServersHostGroup],
+          },
+        })
+        .mockResolvedValueOnce({
+          data: {
+            meta: {
+              limit: 30,
+              page: 1,
+              total: 0,
+            },
+            result: [webAccessServiceGroup],
           },
         });
 
@@ -711,14 +721,24 @@ describe(Filter, () => {
             result: [],
           },
         })
-        .mockResolvedValue({
+        .mockResolvedValueOnce({
           data: {
             meta: {
               limit: 30,
               page: 1,
               total: 0,
             },
-            result: [],
+            result: [linuxServersHostGroup],
+          },
+        })
+        .mockResolvedValueOnce({
+          data: {
+            meta: {
+              limit: 30,
+              page: 1,
+              total: 0,
+            },
+            result: [webAccessServiceGroup],
           },
         });
 
@@ -754,6 +774,9 @@ describe(Filter, () => {
       expect(getByText(labelOk)).toBeInTheDocument();
 
       fireEvent.click(getByText(labelHostGroup));
+
+      await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
+
       expect(getByText(linuxServersHostGroup.name)).toBeInTheDocument();
 
       await waitFor(() => {
@@ -761,6 +784,9 @@ describe(Filter, () => {
       });
 
       fireEvent.click(getByText(labelServiceGroup));
+
+      await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
+
       expect(getByText(webAccessServiceGroup.name)).toBeInTheDocument();
 
       await waitFor(() => {
