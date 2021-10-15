@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Log;
 
+use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -32,9 +33,37 @@ use Psr\Log\LoggerInterface;
 trait LoggerTrait
 {
     /**
+     * @var ContactInterface
+     */
+    private $contact;
+
+    /**
      * @var LoggerInterface
      */
     private $logger;
+
+    /**
+     * @var ContactForDebug
+     */
+    private $contactForDebug;
+
+    /**
+     * @param ContactInterface $contact
+     * @required
+     */
+    public function setContact(ContactInterface $contact): void
+    {
+        $this->contact = $contact;
+    }
+
+    /**
+     * @param ContactForDebug $contactForDebug
+     * @required
+     */
+    public function setContactForDebug(ContactForDebug $contactForDebug): void
+    {
+        $this->contactForDebug = $contactForDebug;
+    }
 
     /**
      * @param LoggerInterface $centreonLogger
@@ -53,11 +82,11 @@ trait LoggerTrait
      */
     private function emergency(string $message, array $context = [], callable $callable = null): void
     {
-        if ($this->logger !== null) {
+        if ($this->canBeLogged()) {
             if ($callable !== null) {
                 $context = array_merge($context, $callable());
             }
-            $this->logger->emergency($message, $context);
+            $this->logger->emergency($this->prefixMessage($message), $context);
         }
     }
 
@@ -69,11 +98,11 @@ trait LoggerTrait
      */
     private function alert(string $message, array $context = [], callable $callable = null): void
     {
-        if ($this->logger !== null) {
+        if ($this->canBeLogged()) {
             if ($callable !== null) {
                 $context = array_merge($context, $callable());
             }
-            $this->logger->alert($message, $context);
+            $this->logger->alert($this->prefixMessage($message), $context);
         }
     }
 
@@ -85,11 +114,11 @@ trait LoggerTrait
      */
     private function critical(string $message, array $context = [], callable $callable = null): void
     {
-        if ($this->logger !== null) {
+        if ($this->canBeLogged()) {
             if ($callable !== null) {
                 $context = array_merge($context, $callable());
             }
-            $this->logger->critical($message, $context);
+            $this->logger->critical($this->prefixMessage($message), $context);
         }
     }
 
@@ -101,11 +130,11 @@ trait LoggerTrait
      */
     private function error(string $message, array $context = [], callable $callable = null): void
     {
-        if ($this->logger !== null) {
+        if ($this->canBeLogged()) {
             if ($callable !== null) {
                 $context = array_merge($context, $callable());
             }
-            $this->logger->error($message, $context);
+            $this->logger->error($this->prefixMessage($message), $context);
         }
     }
 
@@ -117,11 +146,11 @@ trait LoggerTrait
      */
     private function warning(string $message, array $context = [], callable $callable = null): void
     {
-        if ($this->logger !== null) {
+        if ($this->canBeLogged()) {
             if ($callable !== null) {
                 $context = array_merge($context, $callable());
             }
-            $this->logger->warning($message, $context);
+            $this->logger->warning($this->prefixMessage($message), $context);
         }
     }
 
@@ -133,11 +162,11 @@ trait LoggerTrait
      */
     private function notice(string $message, array $context = [], callable $callable = null): void
     {
-        if ($this->logger !== null) {
+        if ($this->canBeLogged()) {
             if ($callable !== null) {
                 $context = array_merge($context, $callable());
             }
-            $this->logger->notice($message, $context);
+            $this->logger->notice($this->prefixMessage($message), $context);
         }
     }
 
@@ -149,11 +178,11 @@ trait LoggerTrait
      */
     private function info(string $message, array $context = [], callable $callable = null): void
     {
-        if ($this->logger !== null) {
+        if ($this->canBeLogged()) {
             if ($callable !== null) {
                 $context = array_merge($context, $callable());
             }
-            $this->logger->info($message, $context);
+            $this->logger->info($this->prefixMessage($message), $context);
         }
     }
 
@@ -165,11 +194,11 @@ trait LoggerTrait
      */
     private function debug(string $message, array $context = [], callable $callable = null): void
     {
-        if ($this->logger !== null) {
+        if ($this->canBeLogged()) {
             if ($callable !== null) {
                 $context = array_merge($context, $callable());
             }
-            $this->logger->debug($message, $context);
+            $this->logger->debug($this->prefixMessage($message), $context);
         }
     }
 
@@ -181,13 +210,34 @@ trait LoggerTrait
      * @throws \Psr\Log\InvalidArgumentException
      * @see \Psr\Log\LoggerInterface::log()
      */
-    private function log($level, $message, array $context = [], callable $callable = null): void
+    private function log($level, string $message, array $context = [], callable $callable = null): void
     {
-        if ($this->logger !== null) {
+        if ($this->canBeLogged()) {
             if ($callable !== null) {
                 $context = array_merge($context, $callable());
             }
-            $this->logger->log($level, $message, $context);
+            $this->logger->log($level, $this->prefixMessage($message), $context);
         }
+    }
+
+    /**
+     * @param string $message
+     * @return string
+     */
+    private function prefixMessage(string $message): string
+    {
+        $debugTrace = debug_backtrace();
+        $callingClass = (count($debugTrace) >= 2)
+            ? $debugTrace[1]['class'] . ':' . $debugTrace[1]['line']
+            : get_called_class();
+        return sprintf('[%s]: %s', $callingClass, $message);
+    }
+
+    /**
+     * @return bool
+     */
+    private function canBeLogged(): bool
+    {
+        return $this->logger !== null && $this->contactForDebug->isValidForContact($this->contact);
     }
 }
