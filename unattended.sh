@@ -58,7 +58,7 @@ if [ "$wizard_autoplay" == "true" ]; then
 fi
 
 CENTREON_MAJOR_VERSION=$version
-CENTREON_RELEASE_VERSION="$CENTREON_MAJOR_VERSION-2"
+centreon_release_version="$CENTREON_MAJOR_VERSION-${CENTREON_RELEASE_MINOR_VERSION:-"5"}"
 
 #Variables dynamically set
 detected_os_release=
@@ -316,7 +316,7 @@ function set_required_prerequisite() {
 			BASE_PACKAGES=(oraclelinux-release-el7)
 			;;
 		esac
-		RELEASE_RPM_URL="http://yum.centreon.com/standard/$CENTREON_MAJOR_VERSION/el7/stable/noarch/RPMS/centreon-release-$CENTREON_RELEASE_VERSION.el7.centos.noarch.rpm"
+        RELEASE_RPM_URL="https://yum.centreon.com/standard/$CENTREON_MAJOR_VERSION/el7/stable/noarch/RPMS/centreon-release-$centreon_release_version.el7.centos.noarch.rpm"
 		log "INFO" "Install Centreon from ${RELEASE_RPM_URL}"
 		PHP_BIN="/opt/rh/rh-php73/root/bin/php"
 		PHP_ETC="/etc/opt/rh/rh-php73/php.d/"
@@ -334,7 +334,7 @@ function set_required_prerequisite() {
 	8*)
 		log "INFO" "Setting specific part for v8 ($detected_os_version)"
 
-		RELEASE_RPM_URL="http://yum.centreon.com/standard/$CENTREON_MAJOR_VERSION/el8/stable/noarch/RPMS/centreon-release-$CENTREON_RELEASE_VERSION.el8.noarch.rpm"
+		RELEASE_RPM_URL="https://yum.centreon.com/standard/$CENTREON_MAJOR_VERSION/el8/stable/noarch/RPMS/centreon-release-$centreon_release_version.el8.noarch.rpm"
 		PHP_BIN="/bin/php"
 		PHP_ETC="/etc/php.d"
 		OS_SPEC_SERVICES="php-fpm httpd"
