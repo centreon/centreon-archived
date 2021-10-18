@@ -460,8 +460,9 @@ try {
               checkoutCentreonBuild()
               unstash 'tar-sources'
               unstash 'vendor'
+              def acceptanceStatus = 0
               withCredentials([string(credentialsId: '4cbaf9de-75ff-4fa7-aabf-c79513b59f7d', variable: 'GITHUB_TOKEN')]) {
-                def acceptanceStatus = sh(
+                acceptanceStatus = sh(
                   script: "./centreon-build/jobs/web/${serie}/mon-web-api-integration-test.sh centos7 tests/api/features/${feature}",
                   returnStatus: true
                 )
@@ -509,8 +510,9 @@ try {
             checkoutCentreonBuild()
             unstash 'tar-sources'
             unstash 'vendor'
+            def acceptanceStatus = 0
             withCredentials([string(credentialsId: '4cbaf9de-75ff-4fa7-aabf-c79513b59f7d', variable: 'GITHUB_TOKEN')]) {
-              def acceptanceStatus = sh(
+              acceptanceStatus = sh(
                 script: "./centreon-build/jobs/web/${serie}/mon-web-acceptance.sh centos7 features/${feature} ${acceptanceTag}",
                 returnStatus: true
               )
