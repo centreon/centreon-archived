@@ -462,10 +462,12 @@ try {
                 checkoutCentreonBuild()
                 unstash 'tar-sources'
                 unstash 'vendor'
-                def acceptanceStatus = sh(
-                  script: "./centreon-build/jobs/web/${serie}/mon-web-api-integration-test.sh centos7 tests/api/features/${feature}",
-                  returnStatus: true
-                )
+                withCredentials([string(credentialsId: '4cbaf9de-75ff-4fa7-aabf-c79513b59f7d', variable: 'GITHUB_TOKEN')]) {
+                  def acceptanceStatus = sh(
+                    script: "./centreon-build/jobs/web/${serie}/mon-web-api-integration-test.sh centos7 tests/api/features/${feature}",
+                    returnStatus: true
+                  )
+                }
                 junit 'xunit-reports/**/*.xml'
                 if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0))
                   currentBuild.result = 'FAILURE'
@@ -508,13 +510,15 @@ try {
           def feature = x
           atparallelSteps[feature] = {
             node {
-              checkoutCentreonBuild()     
+              checkoutCentreonBuild()
               unstash 'tar-sources'
               unstash 'vendor'
-              def acceptanceStatus = sh(
-                script: "./centreon-build/jobs/web/${serie}/mon-web-acceptance.sh centos7 features/${feature} ${acceptanceTag}",
-                returnStatus: true
-              )
+              withCredentials([string(credentialsId: '4cbaf9de-75ff-4fa7-aabf-c79513b59f7d', variable: 'GITHUB_TOKEN')]) {
+                def acceptanceStatus = sh(
+                  script: "./centreon-build/jobs/web/${serie}/mon-web-acceptance.sh centos7 features/${feature} ${acceptanceTag}",
+                  returnStatus: true
+                )
+              }
               junit 'xunit-reports/**/*.xml'
               if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0))
                 currentBuild.result = 'FAILURE'
