@@ -369,7 +369,6 @@ try {
     }
   }
 
-  // TODO : add canary management in centreon-build
   if ((env.BUILD == 'CI')) {
     stage('Docker packaging with canary rpms') {
       def parallelSteps = [:]
