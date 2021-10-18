@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * Copyright 2005-2019 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
@@ -30,7 +31,6 @@
  * do not wish to do so, delete this exception statement from your version.
  *
  * For more information : contact@centreon.com
- *
  *
  */
 declare(strict_types=1);
@@ -65,4 +65,11 @@ interface ContactRepositoryInterface
      * @return Contact|null
      */
     public function findBySession(string $sessionId): ?Contact;
+
+    /**
+     * Find a contact by an authentication token
+     * @param string $token
+     * @return Contact|null
+     */
+    public function findByAuthenticationToken(string $token): ?Contact;
 }

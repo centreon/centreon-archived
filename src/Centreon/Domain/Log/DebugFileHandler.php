@@ -41,11 +41,11 @@ class DebugFileHandler extends StreamHandler
     /**
      * @param FormatterInterface $formatter Monolog formatter
      * @param string|resource $stream Resource or Log filename
-     * @param int $level The minimum logging level at which this handler will be triggered
-     * @param bool $bubble Whether the messages that are handled can bubble up the stack or not
-     * @param int|null $filePermission Optional file permissions (default (0644) are only for owner read/write)
-     * @param false $useLocking Try to lock log file before doing any writes
      * @param bool $isActivate Whether the messages can be processed
+     * @param int|null $filePermission Optional file permissions (default (0644) are only for owner read/write)
+     * @param mixed $level The minimum logging level at which this handler will be triggered
+     * @param bool $useLocking Try to lock log file before doing any writes
+     * @param bool $bubble Whether the messages that are handled can bubble up the stack or not
      * @throws \InvalidArgumentException
      */
     public function __construct(
@@ -53,7 +53,7 @@ class DebugFileHandler extends StreamHandler
         $stream,
         bool $isActivate = false,
         int $filePermission = null,
-        int $level = Logger::DEBUG,
+        $level = Logger::DEBUG,
         bool $useLocking = false,
         bool $bubble = true
     ) {
@@ -63,7 +63,7 @@ class DebugFileHandler extends StreamHandler
     }
 
     /**
-     * @param array<string, mixed> $record
+     * {@inheritDoc}
      * @throws \LogicException
      */
     protected function write(array $record): void

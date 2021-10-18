@@ -79,6 +79,9 @@ class UserController extends AbstractController
     {
         $this->denyAccessUnlessGrantedForApiConfiguration();
 
+        /**
+         * @var Contact $user
+         */
         $user = $this->getUser();
 
         return $this->view([
@@ -87,7 +90,9 @@ class UserController extends AbstractController
             'email' => $user->getEmail(),
             'timezone' => $user->getTimezone()->getName(),
             'locale' => $user->getLocale(),
-            'use_deprecated_pages' => $user->isUsingDeprecatedPages()
+            'is_admin' => $user->isAdmin(),
+            'use_deprecated_pages' => $user->isUsingDeprecatedPages(),
+            'is_export_button_enabled' => $user->isOneClickExportEnabled()
         ]);
     }
 
