@@ -3,7 +3,6 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { rectIntersection } from '@dnd-kit/core';
 import { rectSortingStrategy } from '@dnd-kit/sortable';
-<<<<<<< HEAD
 import {
   append,
   equals,
@@ -11,15 +10,11 @@ import {
   find,
   findIndex,
   isEmpty,
-  isNil,
   map,
   pluck,
   propEq,
   remove,
 } from 'ramda';
-=======
-import { filter, find, isEmpty, map, pluck, propEq } from 'ramda';
->>>>>>> 70ccc7b8e3... enh(UI): Add new tile with the last ok status (#10213)
 
 import { Box, Grid } from '@material-ui/core';
 
