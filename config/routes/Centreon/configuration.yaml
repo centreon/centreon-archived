@@ -1,9 +1,3 @@
-configuration.monitoring-servers.findServer:
-    methods: GET
-    path: /configuration/monitoring-servers
-    controller: 'Centreon\Application\Controller\Configuration\MonitoringServerController::findServer'
-    condition: "request.attributes.get('version') >= 21.10"
-
 configuration.proxy.getProxy:
     methods: GET
     path: /configuration/proxy
