@@ -238,6 +238,8 @@ trait LoggerTrait
      */
     private function canBeLogged(): bool
     {
-        return $this->logger !== null && $this->contactForDebug->isValidForContact($this->contact);
+        return $this->logger !== null
+            && $this->contactForDebug !== null
+            && $this->contactForDebug->isValidForContact($this->contact);
     }
 }
