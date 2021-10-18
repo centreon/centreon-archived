@@ -368,7 +368,11 @@ try {
       }
     }
   }
+<<<<<<< HEAD
 
+=======
+  
+>>>>>>> develop
   if ((env.BUILD == 'CI')) {
     stage('Docker packaging with canary rpms') {
       def parallelSteps = [:]
