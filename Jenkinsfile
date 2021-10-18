@@ -199,7 +199,7 @@ try {
         Utils.markStageSkippedForConditional('backend')
       } else {
         node {
-          checkoutCentreonBuild()      
+          checkoutCentreonBuild()
           unstash 'tar-sources'
           unstash 'vendor'
           sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh backend"
@@ -229,7 +229,7 @@ try {
     'sonar': {
       node {
         // Run sonarQube analysis
-        checkoutCentreonBuild()    
+        checkoutCentreonBuild()
         unstash 'git-sources'
         sh 'rm -rf centreon-web && tar xzf centreon-web-git.tar.gz'
         withSonarQubeEnv('SonarQubeDev') {
@@ -257,7 +257,7 @@ try {
     },
     'rpm packaging centos8': {
       node {
-        checkoutCentreonBuild()           
+        checkoutCentreonBuild()
         unstash 'tar-sources'
         sh "./centreon-build/jobs/web/${serie}/mon-web-package.sh centos8"
         archiveArtifacts artifacts: "rpms-centos8.tar.gz"
@@ -307,7 +307,7 @@ try {
   if ((env.BUILD == 'CI')) {
     stage('Delivery to canary') {
       node {
-        checkoutCentreonBuild()    
+        checkoutCentreonBuild()
         sh 'rm -rf output'
         unstash 'tar-sources'
         unstash 'api-doc'
@@ -324,7 +324,7 @@ try {
   if ((env.BUILD == 'QA')) {
     stage('Delivery to unstable') {
       node {
-        checkoutCentreonBuild()     
+        checkoutCentreonBuild()
         sh 'rm -rf output'
         unstash 'tar-sources'
         unstash 'api-doc'
@@ -341,7 +341,7 @@ try {
   if ((env.BUILD == 'RELEASE')) {
     stage('Delivery to testing') {
       node {
-        checkoutCentreonBuild()    
+        checkoutCentreonBuild()
         sh 'rm -rf output'
         unstash 'tar-sources'
         unstash 'api-doc'
@@ -358,7 +358,7 @@ try {
   if ((env.BUILD == 'REFERENCE')) {
     stage('Delivery API documentation') {
       node {
-        checkoutCentreonBuild()    
+        checkoutCentreonBuild()
         unstash 'tar-sources'
         unstash 'api-doc'
         sh "./centreon-build/jobs/web/${serie}/mon-web-delivery.sh"
@@ -398,7 +398,7 @@ try {
         def osBuild = x
         parallelSteps[osBuild] = {
           node {
-            checkoutCentreonBuild()                
+            checkoutCentreonBuild()
             sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh ${osBuild}"
           }
         }
@@ -418,7 +418,7 @@ try {
         def osBuild = x
         parallelSteps[osBuild] = {
           node {
-            checkoutCentreonBuild()    
+            checkoutCentreonBuild()
             sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh ${osBuild}"
           }
         }
