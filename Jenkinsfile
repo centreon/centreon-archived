@@ -369,8 +369,7 @@ try {
     }
   }
   
-  // TODO : add canary management in centreon-build
-  /*if ((env.BUILD == 'CI')) {
+  if ((env.BUILD == 'CI')) {
     stage('Docker packaging with canary rpms') {
       def parallelSteps = [:]
       def osBuilds = isStableBuild() ? ['centos7', 'centos8'] : ['centos7']
@@ -388,7 +387,7 @@ try {
         error('Bundle stage failure.');
       }
     }
-  }*/
+  }
 
   if ((env.BUILD == 'QA')) {
     stage('Docker packaging with unstable rpms') {
@@ -450,7 +449,7 @@ try {
     }
   }
 
-  if ((env.BUILD == 'QA')) {
+  if ((env.BUILD == 'QA') || (env.BUILD == 'CI')) {
     stage('API // E2E') {
       parallel 'API Tests': {
         if (hasBackendChanges) {
@@ -500,32 +499,30 @@ try {
     }
   }
 
-  if ((env.BUILD == 'RELEASE') || (env.BUILD == 'QA') || (env.BUILD == 'REFERENCE')) {
-    stage('Acceptance tests') {
-      if (hasBackendChanges || hasFrontendChanges) {
-        def atparallelSteps = [:]
-        for (x in featureFiles) {
-          def feature = x
-          atparallelSteps[feature] = {
-            node {
-              checkoutCentreonBuild()     
-              unstash 'tar-sources'
-              unstash 'vendor'
-              def acceptanceStatus = sh(
-                script: "./centreon-build/jobs/web/${serie}/mon-web-acceptance.sh centos7 features/${feature} ${acceptanceTag}",
-                returnStatus: true
-              )
-              junit 'xunit-reports/**/*.xml'
-              if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0))
-                currentBuild.result = 'FAILURE'
-              archiveArtifacts allowEmptyArchive: true, artifacts: 'acceptance-logs/*.txt, acceptance-logs/*.png, acceptance-logs/*.flv'
-            }
+  stage('Acceptance tests') {
+    if (hasBackendChanges || hasFrontendChanges) {
+      def atparallelSteps = [:]
+      for (x in featureFiles) {
+        def feature = x
+        atparallelSteps[feature] = {
+          node {
+            checkoutCentreonBuild()     
+            unstash 'tar-sources'
+            unstash 'vendor'
+            def acceptanceStatus = sh(
+              script: "./centreon-build/jobs/web/${serie}/mon-web-acceptance.sh centos7 features/${feature} ${acceptanceTag}",
+              returnStatus: true
+            )
+            junit 'xunit-reports/**/*.xml'
+            if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0))
+              currentBuild.result = 'FAILURE'
+            archiveArtifacts allowEmptyArchive: true, artifacts: 'acceptance-logs/*.txt, acceptance-logs/*.png, acceptance-logs/*.flv'
           }
         }
-        parallel atparallelSteps
-        if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-          error('Critical tests stage failure');
-        }
+      }
+      parallel atparallelSteps
+      if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+        error('Critical tests stage failure');
       }
     }
   }
