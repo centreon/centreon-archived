@@ -46,4 +46,13 @@ interface ServiceGroupServiceInterface
      * @throws ServiceGroupException
      */
     public function findServiceGroupsByIds(array $serviceGroupIds): array;
+
+    /**
+     * Retrieve servicegroups from their ids
+     *
+     * @param array $serviceGroupNames
+     * @return ServiceGroup[]
+     * @throws ServiceGroupException
+     */
+    public function findServiceGroupsByNames(array $serviceGroupNames): array;
 }

@@ -76,4 +76,16 @@ final class HostGroupService extends AbstractCentreonService implements HostGrou
             throw new HostGroupException(_('Error when searching hostgroups'), 0, $e);
         }
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function findHostGroupsByNames(array $hostGroupIds): array
+    {
+        try {
+            return $this->hostGroupRepository->findHostGroupsByNames($hostGroupIds);
+        } catch (\Throwable $e) {
+            throw new HostGroupException(_('Error when searching hostgroups'), 0, $e);
+        }
+    }
 }

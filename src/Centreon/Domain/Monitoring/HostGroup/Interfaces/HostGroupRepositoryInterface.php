@@ -36,6 +36,14 @@ interface HostGroupRepositoryInterface
     public function findHostGroupsByIds(array $hostGroupIds): array;
 
     /**
+     * Retrieve hostgroups from their names
+     *
+     * @param array $hostGroupNames
+     * @return HostGroup[]
+     */
+    public function findHostGroupsByNames(array $hostGroupNames): array;
+
+    /**
      * @param ContactInterface $contact
      * @return HostGroupRepositoryInterface
      */
