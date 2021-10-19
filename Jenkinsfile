@@ -387,7 +387,7 @@ try {
         error('Bundle stage failure.');
       }
     }
-  }*/
+  }
 
   if ((env.BUILD == 'QA')) {
     stage('Docker packaging with unstable rpms') {
