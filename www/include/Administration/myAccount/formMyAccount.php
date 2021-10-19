@@ -61,7 +61,7 @@ if (!isset($centreonFeature)) {
  * Database retrieve information for the User
  */
 $cct = array();
-if ($o == "c") {<f
+if ($o == "c") {
     $query = "SELECT contact_id, contact_name, contact_alias, contact_lang, contact_email, contact_pager,
         contact_autologin_key, default_page, show_deprecated_pages, contact_auth_type,
         enable_one_click_export
