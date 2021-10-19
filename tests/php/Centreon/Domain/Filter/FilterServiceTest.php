@@ -117,7 +117,7 @@ class FilterServiceTest extends TestCase
             ->method('filterByContact')
             ->willReturn($this->hostGroupService);
         $this->hostGroupService->expects($this->once())
-            ->method('findHostGroupsByIds')
+            ->method('findHostGroupsByNames')
             ->willReturn([$renamedHostGroup]);
 
         $filterService = new FilterService(
@@ -151,7 +151,7 @@ class FilterServiceTest extends TestCase
             ->method('filterByContact')
             ->willReturn($this->serviceGroupService);
         $this->serviceGroupService->expects($this->once())
-            ->method('findServiceGroupsByIds')
+            ->method('findServiceGroupsByNames')
             ->willReturn([]);
 
         $filterService = new FilterService(
