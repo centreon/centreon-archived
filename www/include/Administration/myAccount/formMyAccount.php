@@ -137,7 +137,7 @@ $form->addElement(
 );
 $form->addElement('select', 'contact_lang', _("Language"), $langs);
 $form->addElement('checkbox', 'show_deprecated_pages', _("Use deprecated pages"), null, $attrsText);
-$form->addElement('checkbox', 'contact_js_effects', _("Animation effects"), null, $attrsText);
+//$form->addElement('checkbox', 'contact_js_effects', _("Animation effects"), null, $attrsText);
 $form->addElement(
     'checkbox',
     'enable_one_click_export',
