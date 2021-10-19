@@ -96,4 +96,7 @@ export interface ResourceLinks {
 
 export type TranslationType = (label: string) => string;
 
-export type SortOrder = 'asc' | 'desc';
+export enum SortOrder {
+  asc = 'asc',
+  desc = 'desc',
+}
