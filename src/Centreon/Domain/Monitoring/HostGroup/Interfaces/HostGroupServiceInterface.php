@@ -41,7 +41,7 @@ interface HostGroupServiceInterface
     /**
      * Retrieve hostgroups from their ids
      *
-     * @param array $hostGroupIds
+     * @param array<int, int> $hostGroupIds
      * @return HostGroup[]
      * @throws HostGroupException
      */
@@ -50,7 +50,7 @@ interface HostGroupServiceInterface
     /**
      * Retrieve hostgroups from their names
      *
-     * @param array $hostGroupNames
+     * @param array<int, string> $hostGroupNames
      * @return HostGroup[]
      * @throws HostGroupException
      */
