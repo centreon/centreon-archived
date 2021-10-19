@@ -65,6 +65,10 @@ final class HostGroupRepositoryRDB extends AbstractRepositoryDRB implements Host
         $this->accessGroups = $accessGroups;
         return $this;
     }
+
+    /**
+     * @inheritDoc
+     */
     public function findHostGroupsByNames(array $hostGroupNames): array
     {
         $hostGroups = [];
