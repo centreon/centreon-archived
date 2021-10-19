@@ -278,7 +278,7 @@ try {
                 /*
                  * Check if monitoring engine's configuration directory existss
                  */
-                 $dbResult = $pearDB->query("
+                $dbResult = $pearDB->query("
                     SELECT cfg_dir FROM cfg_nagios, nagios_server
                     WHERE nagios_server.id = cfg_nagios.nagios_server_id
                     AND nagios_server.localhost = '1'

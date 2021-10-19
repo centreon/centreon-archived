@@ -62,6 +62,9 @@ if (!isset($centreonFeature)) {
  */
 $cct = array();
 if ($o == "c") {
+    $query_js_effect_drop = $pearDB->prepare("alter table contact drop column if exists contact_js_effects");
+    $query_js_effect_drop->execute();
+
     $query = "SELECT contact_id, contact_name, contact_alias, contact_lang, contact_email, contact_pager,
         contact_autologin_key, default_page, show_deprecated_pages, contact_auth_type,
         enable_one_click_export
