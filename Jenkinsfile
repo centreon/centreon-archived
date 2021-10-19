@@ -447,7 +447,7 @@ try {
           def feature = x
           parallelSteps[feature] = {
             node {
-              checkoutCentreonBuild(buildBranch)
+              checkoutCentreonBuild()
               unstash 'tar-sources'
               unstash 'cypress-node-modules'
               timeout(time: 10, unit: 'MINUTES') {
