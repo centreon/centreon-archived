@@ -354,20 +354,6 @@ try {
       }
     }
   }
-
-  if ((env.BUILD == 'REFERENCE')) {
-    stage('Delivery API documentation') {
-      node {
-        checkoutCentreonBuild()    
-        unstash 'tar-sources'
-        unstash 'api-doc'
-        sh "./centreon-build/jobs/web/${serie}/mon-web-delivery.sh"
-      }
-      if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-        error('Delivery stage failure');
-      }
-    }
-  }
   
   if ((env.BUILD == 'CI') || (env.BUILD == 'REFERENCE')) {
     stage('Docker packaging with canary rpms') {
