@@ -304,7 +304,7 @@ try {
     }
   }
 
-  if ((env.BUILD == 'CI')) {
+  if ((env.BUILD == 'CI') || (env.BUILD == "REFERENCE")) {
     stage('Delivery to canary') {
       node {
         checkoutCentreonBuild()    
@@ -369,8 +369,7 @@ try {
     }
   }
   
-  // TODO : add canary management in centreon-build
-  /*if ((env.BUILD == 'CI')) {
+  if ((env.BUILD == 'CI') || (env.BUILD == 'REFERENCE')) {
     stage('Docker packaging with canary rpms') {
       def parallelSteps = [:]
       def osBuilds = isStableBuild() ? ['centos7', 'centos8'] : ['centos7']
@@ -430,27 +429,7 @@ try {
     }
   }
 
-  if ((env.BUILD == 'REFERENCE')) {
-    stage('Docker packaging with tagging image as latest') {
-      def parallelSteps = [:]
-      def osBuilds = isStableBuild() ? ['centos7', 'centos8'] : ['centos7']
-      for (x in osBuilds) {
-        def osBuild = x
-        parallelSteps[osBuild] = {
-          node {
-            checkoutCentreonBuild()
-            sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh ${osBuild}"
-          }
-        }
-      }
-      parallel parallelSteps
-      if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-        error('Bundle stage failure.');
-      }
-    }
-  }
-
-  if ((env.BUILD == 'QA')) {
+  if ((env.BUILD == 'QA') || (env.BUILD == 'CI') || (env.BUILD == 'REFERENCE')) {
     stage('API // E2E') {
       parallel 'API Tests': {
         if (hasBackendChanges) {
