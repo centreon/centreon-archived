@@ -447,8 +447,8 @@ function divideHostGroupsToHostGroup($service_id)
 
     $query = "SELECT hostgroup_hg_id FROM host_service_relation " .
         "WHERE service_service_id = '" . $service_id . "' AND hostgroup_hg_id IS NOT NULL";
-    $dbResult3 = $pearDB->query();
-    while ($data = $dbResult3->fetch($query)) {
+    $dbResult3 = $pearDB->query($query);
+    while ($data = $dbResult3->fetch()) {
         $sv_id = multipleServiceInDB(
             array($service_id => "1"),
             array($service_id => "1"),
@@ -1753,6 +1753,8 @@ function updateServiceNotifs($service_id = null, $ret = array())
 // For massive change. incremental mode
 function updateServiceNotifs_MC($service_id = null)
 {
+    require_once "./include/common/javascript/commandGetArgs/cmdGetExample.php";
+
     if (!$service_id) {
         return;
     }
