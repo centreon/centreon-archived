@@ -54,8 +54,7 @@ class CentreonContactGroup extends CentreonObject
 
     public static $aDepends = array(
         'CMD',
-        'TP',
-        'CONTACT'
+        'TP'
     );
 
     /**

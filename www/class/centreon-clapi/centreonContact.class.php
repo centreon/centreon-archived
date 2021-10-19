@@ -68,12 +68,15 @@ class CentreonContact extends CentreonObject
     const UNKNOWN_TIMEZONE = "Invalid timezone";
     const CONTACT_LOCATION = "timezone";
     const UNKNOWN_NOTIFICATION_OPTIONS = "Invalid notifications options";
+    private const LDAP_PARAMETER_NAME = "ar_name";
 
     protected $register;
     public static $aDepends = array(
         'CONTACTTPL',
         'CMD',
-        'TP'
+        'TP',
+        'CG',
+        'LDAP'
     );
     /**
      *
@@ -122,6 +125,7 @@ class CentreonContact extends CentreonObject
         parent::__construct($dependencyInjector);
         $this->dependencyInjector = $dependencyInjector;
         $this->tpObject = new CentreonTimePeriod($dependencyInjector);
+        $this->ldap = new CentreonLdap($dependencyInjector);
         $this->object = new \Centreon_Object_Contact($dependencyInjector);
         $this->timezoneObject = new \Centreon_Object_Timezone($dependencyInjector);
         $this->params = array(
@@ -547,6 +551,9 @@ class CentreonContact extends CentreonObject
                         $parameter = self::SVC_NOTIF_TP;
                         $value = $this->tpObject->getObjectName($value);
                         CentreonTimePeriod::getInstance()->export($value);
+                    } elseif ($parameter === "ar_id") {
+                        $parameter = self::LDAP_PARAMETER_NAME;
+                        $value = $this->ldap->getObjectName($value);
                     } elseif ($parameter == "contact_lang") {
                         $parameter = "locale";
                     } elseif ($parameter == "contact_host_notification_options") {
