@@ -50,7 +50,7 @@ interface HostGroupServiceInterface
     /**
      * Retrieve hostgroups from their names
      *
-     * @param array<int, string> $hostGroupNames
+     * @param string[] $hostGroupNames
      * @return HostGroup[]
      * @throws HostGroupException
      */
