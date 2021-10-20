@@ -133,10 +133,10 @@ class FilterService extends AbstractCentreonService implements FilterServiceInte
             if ($criteria->getType() === 'multi_select' && is_array($criteria->getValue())) {
                 switch ($criteria->getObjectType()) {
                     case 'host_groups':
-                        $hostGroupIds = array_column($criteria->getValue(), 'id');
+                        $hostGroupNames = array_column($criteria->getValue(), 'name');
                         $hostGroups = $this->hostGroupService
                             ->filterByContact($this->contact)
-                            ->findHostGroupsByIds($hostGroupIds);
+                            ->findHostGroupsByNames($hostGroupNames);
                         $criteria->setValue(array_map(
                             function ($hostGroup) {
                                 return [
@@ -148,10 +148,10 @@ class FilterService extends AbstractCentreonService implements FilterServiceInte
                         ));
                         break;
                     case 'service_groups':
-                        $serviceGroupIds = array_column($criteria->getValue(), 'id');
+                        $serviceGroupNames = array_column($criteria->getValue(), 'name');
                         $serviceGroups = $this->serviceGroupService
                             ->filterByContact($this->contact)
-                            ->findServiceGroupsByIds($serviceGroupIds);
+                            ->findServiceGroupsByNames($serviceGroupNames);
                         $criteria->setValue(array_map(
                             function ($serviceGroup) {
                                 return [
