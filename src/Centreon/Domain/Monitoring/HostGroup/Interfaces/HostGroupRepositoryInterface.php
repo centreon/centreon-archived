@@ -30,7 +30,7 @@ interface HostGroupRepositoryInterface
     /**
      * Retrieve hostgroups from their ids
      *
-     * @param array<int, int> $hostGroupIds
+     * @param int[] $hostGroupIds
      * @return HostGroup[]
      */
     public function findHostGroupsByIds(array $hostGroupIds): array;
