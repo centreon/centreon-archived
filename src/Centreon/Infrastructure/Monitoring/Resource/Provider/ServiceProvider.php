@@ -219,7 +219,7 @@ final class ServiceProvider extends Provider
                   WHERE ssg.host_id = s.host_id AND ssg.service_id = s.service_id
                     AND EXISTS (SELECT 1 FROM `:dbstg`.`servicegroups` AS sg
                   WHERE ssg.servicegroup_id = sg.servicegroup_id
-                    AND sg.id = ssg.id AND sg.name IN (' . implode(', ', $groupList) . ') LIMIT 1) LIMIT 1)';
+                    AND sg.name IN (' . implode(', ', $groupList) . ') LIMIT 1) LIMIT 1)';
         }
 
         // apply the state filter to SQL query
