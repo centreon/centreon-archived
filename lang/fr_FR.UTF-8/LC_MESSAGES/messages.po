@@ -2428,11 +2428,11 @@ msgstr "Commentaires"
 #: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:497
 #: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:511
 msgid "Acknowledged"
-msgstr "Acquittés"
+msgstr "Acquitté"
 
 #: centreon-web/www/install/smarty_translate.php:840
 msgid "In Downtime"
-msgstr "Plage de maintenance démarrée"
+msgstr "En maintenance"
 
 #: centreon-web/www/install/smarty_translate.php:843
 #: centreon-web/www/install/menu_translation.php:88
@@ -12415,7 +12415,7 @@ msgstr "Statut détaillé"
 #: centreon-web/www/include/monitoring/status/Hosts/host.php:133
 #: centreon-web/www/include/monitoring/status/Services/service.php:338
 msgid "Unhandled Problems"
-msgstr "Problèmes non acquittés"
+msgstr "Problèmes non traités"
 
 #: centreon-web/www/include/monitoring/status/Hosts/host.php:134
 msgid "Host Problems"
@@ -15299,8 +15299,8 @@ msgstr "Commande copiée dans le presse-papier"
 msgid "Current notification number"
 msgstr "Numéro de notification actuel"
 
-msgid "Current state duration"
-msgstr "Durée de l'état actuel"
+msgid "Current status duration"
+msgstr "Durée du statut actuel"
 
 msgid "Downtime duration"
 msgstr "Durée de la plage de maintenance"
@@ -15333,7 +15333,7 @@ msgid "Downtime"
 msgstr "Plage de maintenance"
 
 msgid "In downtime"
-msgstr "En plage de maintenance"
+msgstr "En maintenance"
 
 msgid "1 day"
 msgstr "1 jour"
@@ -15365,8 +15365,8 @@ msgstr "Programmer une plage de maintenance sur les services attachés à l'hôt
 msgid "Last notification"
 msgstr "Dernière notification"
 
-msgid "Last state change"
-msgstr "Dernier changement d'état"
+msgid "Last status change"
+msgstr "Dernier changement de statut"
 
 msgid "Next check"
 msgstr "Prochain contrôle"
@@ -15377,8 +15377,8 @@ msgstr "Si cette option est cochée, une notification sera envoyée aux contacts
 msgid "Open"
 msgstr "Ouvrir"
 
-msgid "Percent state change"
-msgstr "Pourcentage de changement d'état"
+msgid "Status change percentage"
+msgstr "Pourcentage de changement de statut"
 
 msgid "Resource name"
 msgstr "Nom de la ressource"
@@ -15456,7 +15456,7 @@ msgid "Type of resource"
 msgstr "Type de ressource"
 
 msgid "Unhandled problems"
-msgstr "Problèmes non acquittés"
+msgstr "Problèmes non traités"
 
 msgid "Unhandled"
 msgstr "Non traité"
@@ -16299,3 +16299,6 @@ msgstr "Configuration exportée et rechargée"
 
 msgid "Failed to export and reload the configuration"
 msgstr "L'export et le rechargement de la configuration a echoué"
+
+msgid "Enable the one-click export button for poller configuration"
+msgstr "Activer le bouton d’export de la configuration des collecteurs en un seul clic"
