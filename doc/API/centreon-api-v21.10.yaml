@@ -112,26 +112,7 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
-  /authentication/login:
-    get:
-      tags:
-        - Authentication
-      summary: "Login redirection"
-      description: "Entry point to redirect user for his authentication"
-      responses:
-        '302':
-          description: "Found"
-        '200':
-          description: "Authentication URI"
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  authentication_uri:
-                    type: string
-                    example: "/centreon/login"
-  /authentication/providers-configurations:
+  /authentication/providers/configurations:
     get:
       tags:
         - Authentication
@@ -3875,6 +3856,42 @@ components:
           type: integer
           description: "Number of items found"
           example: 1
+    Comment.Resources:
+      type: object
+      required: [ resources ]
+      properties:
+        resources:
+          type: array
+          items:
+            type: object
+            required: [ comment,id ]
+            properties:
+              type:
+                type: string
+                enum: [ host, service ]
+                description: "Type of resource"
+                example: "service"
+              id:
+                type: integer
+                description: "Resource ID"
+                example: 10
+              parent:
+                type: object
+                nullable: true
+                properties:
+                  id:
+                    type: integer
+                    description: "Parent resource ID"
+                    example: 17
+              date:
+                type: string
+                format: date-time
+                nullable: true
+                description: "Date of the comment (ISO8601)"
+              comment:
+                type: string
+                description: "Comment to add to the monitored resource"
+                example: "Resource is not-OK but it is expected"
     Configuration.Host.Category:
       type: object
       properties:
@@ -4167,42 +4184,6 @@ components:
         is_activated:
           type: boolean
           description: "Indicates whether the host group is activated or not"
-    Comment.Resources:
-      type: object
-      required: [resources]
-      properties:
-        resources:
-          type: array
-          items:
-            type: object
-            required: [comment,id]
-            properties:
-              type:
-                type: string
-                enum: [host, service]
-                description: "Type of resource"
-                example: "service"
-              id:
-                type: integer
-                description: "Resource ID"
-                example: 10
-              parent:
-                type: object
-                nullable: true
-                properties:
-                  id:
-                    type: integer
-                    description: "Parent resource ID"
-                    example: 17
-              date:
-                type: string
-                format: date-time
-                nullable: true
-                description: "Date of the comment (ISO8601)"
-              comment:
-                type: string
-                description: "Comment to add to the monitored resource"
-                example: "Resource is not-OK but it is expected"
     Media.NullableImage:
       type: object
       nullable: true
