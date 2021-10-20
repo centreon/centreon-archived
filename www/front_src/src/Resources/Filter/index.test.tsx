@@ -61,7 +61,7 @@ const linuxServersHostGroup = {
 };
 
 const webAccessServiceGroup = {
-  id: 1,
+  id: 0,
   name: 'Web-access',
 };
 
@@ -72,7 +72,7 @@ type FilterParameter = [
   (() => void) | undefined,
 ];
 
-const filtersParams: Array<FilterParameter> = [
+const filterParams: Array<FilterParameter> = [
   [labelResource, labelHost, { resourceTypes: ['host'] }, undefined],
   [
     labelState,
@@ -94,7 +94,7 @@ const filtersParams: Array<FilterParameter> = [
     labelHostGroup,
     linuxServersHostGroup.name,
     {
-      hostGroupIds: [linuxServersHostGroup.id],
+      hostGroups: [linuxServersHostGroup.name],
     },
     (): void => {
       mockedAxios.get.mockResolvedValueOnce({
@@ -111,9 +111,8 @@ const filtersParams: Array<FilterParameter> = [
   [
     labelServiceGroup,
     webAccessServiceGroup.name,
-
     {
-      serviceGroupIds: [webAccessServiceGroup.id],
+      serviceGroups: [webAccessServiceGroup.name],
     },
     (): void => {
       mockedAxios.get.mockResolvedValueOnce({
@@ -400,7 +399,7 @@ describe(Filter, () => {
     },
   );
 
-  it.each(filtersParams)(
+  it.each(filterParams)(
     "executes a listing request with current search and selected %p criteria when it's changed",
     async (
       criteriaName,
@@ -588,14 +587,24 @@ describe(Filter, () => {
             result: [],
           },
         })
-        .mockResolvedValue({
+        .mockResolvedValueOnce({
           data: {
             meta: {
               limit: 30,
               page: 1,
               total: 0,
             },
-            result: [],
+            result: [linuxServersHostGroup],
+          },
+        })
+        .mockResolvedValueOnce({
+          data: {
+            meta: {
+              limit: 30,
+              page: 1,
+              total: 0,
+            },
+            result: [webAccessServiceGroup],
           },
         });
 
@@ -617,7 +626,7 @@ describe(Filter, () => {
       const searchField = await findByPlaceholderText(labelSearch);
 
       expect(searchField).toHaveValue(
-        'type:host state:acknowledged status:ok host_group:0|Linux-servers service_group:1|Web-access Search me',
+        'type:host state:acknowledged status:ok host_group:Linux-servers service_group:Web-access Search me',
       );
 
       userEvent.click(
@@ -711,14 +720,24 @@ describe(Filter, () => {
             result: [],
           },
         })
-        .mockResolvedValue({
+        .mockResolvedValueOnce({
           data: {
             meta: {
               limit: 30,
               page: 1,
               total: 0,
             },
-            result: [],
+            result: [linuxServersHostGroup],
+          },
+        })
+        .mockResolvedValueOnce({
+          data: {
+            meta: {
+              limit: 30,
+              page: 1,
+              total: 0,
+            },
+            result: [webAccessServiceGroup],
           },
         });
 
@@ -736,7 +755,7 @@ describe(Filter, () => {
       expect(getByText('New filter')).toBeInTheDocument();
       expect(
         getByDisplayValue(
-          'type:host state:acknowledged status:ok host_group:0|Linux-servers service_group:1|Web-access Search me',
+          'type:host state:acknowledged status:ok host_group:Linux-servers service_group:Web-access Search me',
         ),
       ).toBeInTheDocument();
 
@@ -754,6 +773,9 @@ describe(Filter, () => {
       expect(getByText(labelOk)).toBeInTheDocument();
 
       fireEvent.click(getByText(labelHostGroup));
+
+      await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
+
       expect(getByText(linuxServersHostGroup.name)).toBeInTheDocument();
 
       await waitFor(() => {
@@ -761,6 +783,9 @@ describe(Filter, () => {
       });
 
       fireEvent.click(getByText(labelServiceGroup));
+
+      await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
+
       expect(getByText(webAccessServiceGroup.name)).toBeInTheDocument();
 
       await waitFor(() => {

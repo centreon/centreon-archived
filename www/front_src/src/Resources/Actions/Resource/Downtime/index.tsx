@@ -41,6 +41,8 @@ const DowntimeForm = ({
   });
   const { alias, downtime } = useUserContext();
 
+  const { alias, downtime } = useUserContext();
+
   const currentDate = new Date();
 
   const defaultDurationInMs = downtime.default_duration * 1000;

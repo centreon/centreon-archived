@@ -701,10 +701,10 @@ function updateHostInDB($host_id = null, $from_MC = false, $cfg = null)
         updateHostNotifs($host_id);
     }
 
-# Function for updating notification interval options
-# 1 - MC with deletion of existing options (Replacement)
-# 2 - MC with addition of new options (incremental)
-# 3 - Normal update
+    # Function for updating notification interval options
+    # 1 - MC with deletion of existing options (Replacement)
+    # 2 - MC with addition of new options (incremental)
+    # 3 - Normal update
     if (
         isset($ret["mc_mod_notifopt_notification_interval"]["mc_mod_notifopt_notification_interval"])
         && $ret["mc_mod_notifopt_notification_interval"]["mc_mod_notifopt_notification_interval"]
@@ -719,10 +719,10 @@ function updateHostInDB($host_id = null, $from_MC = false, $cfg = null)
         updateHostNotifOptionInterval($host_id);
     }
 
-# Function for updating first notification delay options
-# 1 - MC with deletion of existing options (Replacement)
-# 2 - MC with addition of new options (incremental)
-# 3 - Normal update, default behavior
+    # Function for updating first notification delay options
+    # 1 - MC with deletion of existing options (Replacement)
+    # 2 - MC with addition of new options (incremental)
+    # 3 - Normal update, default behavior
     if (
         isset($ret["mc_mod_notifopt_first_notification_delay"]["mc_mod_notifopt_first_notification_delay"])
         && $ret["mc_mod_notifopt_first_notification_delay"]["mc_mod_notifopt_first_notification_delay"]
@@ -738,15 +738,15 @@ function updateHostInDB($host_id = null, $from_MC = false, $cfg = null)
     }
 
 
-# Function for updating first notification delay options
+    # Function for updating first notification delay options
     updateHostNotifOptionRecoveryNotificationDelay($host_id);
 
 
 
-# Function for updating notification timeperiod options
-# 1 - MC with deletion of existing options (Replacement)
-# 2 - MC with addition of new options (incremental)
-# 3 - Normal update
+    # Function for updating notification timeperiod options
+    # 1 - MC with deletion of existing options (Replacement)
+    # 2 - MC with addition of new options (incremental)
+    # 3 - Normal update
     if (
         isset($ret["mc_mod_notifopt_timeperiod"]["mc_mod_notifopt_timeperiod"])
         && $ret["mc_mod_notifopt_timeperiod"]["mc_mod_notifopt_timeperiod"]
@@ -761,10 +761,10 @@ function updateHostInDB($host_id = null, $from_MC = false, $cfg = null)
         updateHostNotifOptionTimeperiod($host_id);
     }
 
-# Function for updating host hg
-# 1 - MC with deletion of existing hg
-# 2 - MC with addition of new hg
-# 3 - Normal update
+    # Function for updating host hg
+    # 1 - MC with deletion of existing hg
+    # 2 - MC with addition of new hg
+    # 3 - Normal update
     if (isset($ret["mc_mod_hhg"]["mc_mod_hhg"]) && $ret["mc_mod_hhg"]["mc_mod_hhg"]) {
         updateHostHostGroup($host_id);
     } elseif (isset($ret["mc_mod_hhg"]["mc_mod_hhg"]) && !$ret["mc_mod_hhg"]["mc_mod_hhg"]) {
@@ -773,10 +773,10 @@ function updateHostInDB($host_id = null, $from_MC = false, $cfg = null)
         updateHostHostGroup($host_id);
     }
 
-# Function for updating host hc
-# 1 - MC with deletion of existing hc
-# 2 - MC with addition of new hc
-# 3 - Normal update
+    # Function for updating host hc
+    # 1 - MC with deletion of existing hc
+    # 2 - MC with addition of new hc
+    # 3 - Normal update
     if (isset($ret["mc_mod_hhc"]["mc_mod_hhc"]) && $ret["mc_mod_hhc"]["mc_mod_hhc"]) {
         updateHostHostCategory($host_id);
     } elseif (isset($ret["mc_mod_hhc"]["mc_mod_hhc"]) && !$ret["mc_mod_hhc"]["mc_mod_hhc"]) {
@@ -785,10 +785,10 @@ function updateHostInDB($host_id = null, $from_MC = false, $cfg = null)
         updateHostHostCategory($host_id, $ret);
     }
 
-# Function for updating host template
-# 1 - MC with deletion of existing template
-# 2 - MC with addition of new template
-# 3 - Normal update
+    # Function for updating host template
+    # 1 - MC with deletion of existing template
+    # 2 - MC with addition of new template
+    # 3 - Normal update
     if (isset($ret["mc_mod_htpl"]["mc_mod_htpl"]) && $ret["mc_mod_htpl"]["mc_mod_htpl"]) {
         updateHostTemplateService($host_id);
     } elseif (isset($ret["mc_mod_htpl"]["mc_mod_htpl"]) && !$ret["mc_mod_htpl"]["mc_mod_htpl"]) {
@@ -2322,7 +2322,6 @@ function updateHostTemplateService_MC($host_id = null)
     if (!$host_id) {
         return;
     }
-
     $dbResult = $pearDB->query("SELECT host_register FROM host WHERE host_id = '" . (int)$host_id . "'");
     $row = $dbResult->fetch();
     if ($row["host_register"] == 0) {
@@ -2335,13 +2334,15 @@ function updateHostTemplateService_MC($host_id = null)
         }
 
         $ret = $form->getSubmitValue("host_svTpls");
-        for ($i = 0; $i < count($ret); $i++) {
-            if (!isset($svtpls[$ret[$i]])) {
-                $rq = "INSERT INTO host_service_relation ";
-                $rq .= "(hostgroup_hg_id, host_host_id, servicegroup_sg_id, service_service_id) ";
-                $rq .= "VALUES ";
-                $rq .= "(NULL, '" . (int)$host_id . "', NULL, '" . $ret[$i] . "')";
-                $dbResult2 = $pearDB->query($rq);
+        if (!empty($ret)) {
+            for ($i = 0; $i < count($ret); $i++) {
+                if (!isset($svtpls[$ret[$i]])) {
+                    $rq = "INSERT INTO host_service_relation ";
+                    $rq .= "(hostgroup_hg_id, host_host_id, servicegroup_sg_id, service_service_id) ";
+                    $rq .= "VALUES ";
+                    $rq .= "(NULL, '" . (int)$host_id . "', NULL, '" . $ret[$i] . "')";
+                    $dbResult2 = $pearDB->query($rq);
+                }
             }
         }
     } elseif ($centreon->user->get_version() >= 3) {

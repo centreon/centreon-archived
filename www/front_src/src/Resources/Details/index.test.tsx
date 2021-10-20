@@ -1097,9 +1097,9 @@ describe(Details, () => {
 
     expect(mockedAxios.get).toHaveBeenCalledWith(
       buildResourcesEndpoint({
-        hostGroupIds: [],
+        hostGroups: [],
         limit: 30,
-        monitoringServerIds: [],
+        monitoringServers: [],
         page: 1,
         resourceTypes: ['service'],
         search: {
@@ -1112,7 +1112,7 @@ describe(Details, () => {
             },
           ],
         },
-        serviceGroupIds: [],
+        serviceGroups: [],
         states: [],
         statuses: [],
       }),
@@ -1506,8 +1506,8 @@ describe(Details, () => {
     expect(getByText(labelMonitoringServer)).toBeInTheDocument();
     expect(getByText(labelStatusInformation)).toBeInTheDocument();
 
-    expect(queryByText(labelLastCheck)).not.toBeInTheDocument();
-    expect(queryByText(labelCommand)).not.toBeInTheDocument();
+    expect(queryByText(labelLastCheck)).toBeInTheDocument();
+    expect(queryByText(labelCommand)).toBeInTheDocument();
   });
 
   it('queries the performance graphs with the time period selected in the "Timeline" tab when the "Graph" tab is selected and the "Timeline" tab was selected', async () => {

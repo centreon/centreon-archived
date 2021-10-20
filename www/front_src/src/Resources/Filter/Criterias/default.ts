@@ -1,5 +1,7 @@
 import { SelectEntry } from '@centreon/ui';
 
+import { SortOrder } from '../../models';
+
 import { Criteria } from './models';
 
 interface DefaultCriteriaValues {
@@ -12,7 +14,7 @@ interface DefaultCriteriaValues {
 }
 
 const defaultSortField = 'status_severity_code';
-const defaultSortOrder = 'asc';
+const defaultSortOrder = SortOrder.asc;
 
 const getDefaultCriterias = (
   {
