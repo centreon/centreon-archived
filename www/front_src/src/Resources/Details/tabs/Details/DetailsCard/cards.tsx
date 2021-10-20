@@ -6,10 +6,10 @@ import { SeverityCode } from '@centreon/ui';
 
 import ChecksIcon from '../../../../ChecksIcon';
 import {
-  labelCurrentStateDuration,
+  labelCurrentStatusDuration,
   labelMonitoringServer,
   labelTimezone,
-  labelLastStateChange,
+  labelLastStatusChange,
   labelLastCheck,
   labelNextCheck,
   labelCheckDuration,
@@ -21,7 +21,7 @@ import {
   labelGroups,
   labelCalculationType,
   labelCheck,
-  labelPercentStateChange,
+  labelStatusChangePercentage,
   labelStatusInformation,
   labelDowntimeDuration,
   labelAcknowledgement,
@@ -124,12 +124,12 @@ const getDetailCardLines = ({
     {
       line: <DetailsLine line={`${details.duration} - ${details.tries}`} />,
       shouldBeDisplayed: !isNil(details.duration),
-      title: labelCurrentStateDuration,
+      title: labelCurrentStatusDuration,
     },
     {
       line: <DetailsLine line={toDateTime(details.last_status_change)} />,
       shouldBeDisplayed: !isNil(details.last_status_change),
-      title: labelLastStateChange,
+      title: labelLastStatusChange,
     },
     {
       line: <DetailsLine line={toDateTime(details.last_check)} />,
@@ -168,7 +168,7 @@ const getDetailCardLines = ({
     {
       line: <PercentStateChangeCard details={details} />,
       shouldBeDisplayed: !isNil(details.percent_state_change),
-      title: labelPercentStateChange,
+      title: labelStatusChangePercentage,
     },
     {
       line: <DetailsLine line={toDateTime(details.last_notification)} />,
