@@ -129,7 +129,6 @@ const SortableCards = ({ panelWidth, details }: Props): JSX.Element => {
           collisionDetection={rectIntersection}
           itemProps={[
             'shouldBeDisplayed',
-            'field',
             'line',
             'xs',
             'isCustomCard',
