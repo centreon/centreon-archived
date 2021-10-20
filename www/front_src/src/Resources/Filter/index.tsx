@@ -79,7 +79,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'grid',
     gridAutoFlow: 'column',
     gridGap: theme.spacing(1),
-    gridTemplateColumns: 'auto auto auto 1fr',
+    gridTemplateColumns: 'auto 175px auto 1fr',
     width: '100%',
   },
   loader: { display: 'flex', justifyContent: 'center' },
