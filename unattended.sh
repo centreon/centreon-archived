@@ -707,7 +707,15 @@ EOF
 
 	mkdir -p /var/log/mysql
 	chown mysql:mysql /var/log/mysql
-	printf "\n[mariadb]\nlog_output=FILE\ngeneral_log\ngeneral_log_file=/var/log/mysql/mariadb.log\nlog_error\nlog_error=/var/log/mysql/mariadb.err\n" >> /etc/my.cnf.d/custom_log.cnf
+       cat <<EOF >> /etc/my.cnf.d/custom_log.cnf
+
+[mariadb]
+log_output=FILE
+general_log
+general_log_file=/var/log/mysql/mariadb.log
+log_error\nlog_error=/var/log/mysql/mariadb.err
+
+EOF
 	printf "\nslow_query_log = 1\nslow-query_log_file = /var/log/mysql/slow.log\nlong_query_time = 2" >> /etc/my.cnf.d/centreon.cnf
 	systemctl restart mysqld
 
