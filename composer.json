@@ -44,7 +44,7 @@
         "friendsofsymfony/rest-bundle": "^2.5",
         "jms/serializer-bundle": "^3.9",
         "justinrainbow/json-schema": "^5.2",
-        "nelmio/cors-bundle": "^2.1",
+        "nelmio/cors-bundle": "^1.5",
         "openpsa/quickform": "3.3.*",
         "pear/pear-core-minimal": "^1.10",
         "php": ">=7.2.24",

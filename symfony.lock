@@ -6,19 +6,19 @@
         "version": "v3.3.1"
     },
     "behat/behat": {
-        "version": "v3.8.1"
+        "version": "v3.9.0"
     },
     "behat/gherkin": {
-        "version": "v4.8.0"
+        "version": "v4.9.0"
     },
     "behat/mink": {
-        "version": "1.8.x-dev"
+        "version": "1.x-dev"
     },
     "behat/mink-extension": {
         "version": "2.3.1"
     },
     "behat/mink-selenium2-driver": {
-        "version": "v1.4.0"
+        "version": "v1.5.0"
     },
     "behat/transliterator": {
         "version": "v1.3.0"
@@ -33,7 +33,7 @@
         "version": "2.3.2"
     },
     "doctrine/annotations": {
-        "version": "1.0",
+        "version": "1.13",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "master",
@@ -60,7 +60,7 @@
         "version": "0.14.1"
     },
     "friendsofsymfony/rest-bundle": {
-        "version": "2.2",
+        "version": "2.8",
         "recipe": {
             "repo": "github.com/symfony/recipes-contrib",
             "branch": "master",
@@ -75,22 +75,22 @@
         "version": "7.3.0"
     },
     "guzzlehttp/promises": {
-        "version": "1.4.1"
+        "version": "1.5.0"
     },
     "guzzlehttp/psr7": {
-        "version": "2.0.0"
+        "version": "2.1.0"
     },
     "instaclick/php-webdriver": {
-        "version": "1.4.9"
+        "version": "1.4.10"
     },
     "jms/metadata": {
         "version": "2.5.1"
     },
     "jms/serializer": {
-        "version": "3.14.0"
+        "version": "3.15.0"
     },
     "jms/serializer-bundle": {
-        "version": "3.0",
+        "version": "3.10",
         "recipe": {
             "repo": "github.com/symfony/recipes-contrib",
             "branch": "master",
@@ -98,16 +98,16 @@
             "ref": "384cec52df45f3bfd46a09930d6960a58872b268"
         },
         "files": [
+            "config/packages/prod/jms_serializer.yaml",
             "config/packages/dev/jms_serializer.yaml",
-            "config/packages/jms_serializer.yaml",
-            "config/packages/prod/jms_serializer.yaml"
+            "config/packages/jms_serializer.yaml"
         ]
     },
     "justinrainbow/json-schema": {
         "version": "5.2.11"
     },
     "league/openapi-psr7-validator": {
-        "version": "0.16.3"
+        "version": "0.16.4"
     },
     "league/uri": {
         "version": "6.5.0"
@@ -116,7 +116,7 @@
         "version": "2.3.0"
     },
     "monolog/monolog": {
-        "version": "2.3.4"
+        "version": "2.3.5"
     },
     "myclabs/deep-copy": {
         "version": "1.10.2"
@@ -137,7 +137,7 @@
         "version": "v4.13.0"
     },
     "nyholm/psr7": {
-        "version": "1.0",
+        "version": "1.4",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "master",
@@ -176,13 +176,13 @@
         "version": "5.2.2"
     },
     "phpdocumentor/type-resolver": {
-        "version": "1.5.0"
+        "version": "1.5.1"
     },
     "phpspec/prophecy": {
         "version": "1.14.0"
     },
     "phpstan/phpdoc-parser": {
-        "version": "0.5.7"
+        "version": "1.2.0"
     },
     "phpstan/phpstan": {
         "version": "0.12.99"
@@ -206,7 +206,7 @@
         "version": "5.0.3"
     },
     "phpunit/phpunit": {
-        "version": "9.3",
+        "version": "9.5",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "master",
@@ -307,7 +307,7 @@
         "version": "3.0.2"
     },
     "sensio/framework-extra-bundle": {
-        "version": "5.2",
+        "version": "5.6",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "master",
@@ -319,7 +319,7 @@
         ]
     },
     "sensiolabs/security-checker": {
-        "version": "4.0",
+        "version": "6.0",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "master",
@@ -334,7 +334,7 @@
         "version": "1.6.2"
     },
     "smarty/smarty": {
-        "version": "v3.1.39"
+        "version": "v3.1.40"
     },
     "squizlabs/php_codesniffer": {
         "version": "3.6",
@@ -404,7 +404,7 @@
         "version": "v4.4.30"
     },
     "symfony/flex": {
-        "version": "1.0",
+        "version": "1.17",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "master",
@@ -424,16 +424,16 @@
             "ref": "3b9c85f14cad439042f88f94a1fd15fb8ed923c9"
         },
         "files": [
+            "config/services.yaml",
             "config/bootstrap.php",
+            "config/routes/dev/framework.yaml",
+            "config/preload.php",
             "config/packages/cache.yaml",
             "config/packages/framework.yaml",
             "config/packages/test/framework.yaml",
-            "config/preload.php",
-            "config/routes/dev/framework.yaml",
-            "config/services.yaml",
             "public/index.php",
-            "src/Controller/.gitignore",
-            "src/Kernel.php"
+            "src/Kernel.php",
+            "src/Controller/.gitignore"
         ]
     },
     "symfony/http-client": {
@@ -452,7 +452,7 @@
         "version": "v5.3.4"
     },
     "symfony/maker-bundle": {
-        "version": "1.0",
+        "version": "1.34",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "master",
@@ -475,17 +475,17 @@
             "ref": "a7bace7dbc5a7ed5608dbe2165e0774c87175fe6"
         },
         "files": [
-            "config/packages/dev/monolog.yaml",
-            "config/packages/prod/deprecations.yaml",
+            "config/packages/test/monolog.yaml",
             "config/packages/prod/monolog.yaml",
-            "config/packages/test/monolog.yaml"
+            "config/packages/prod/deprecations.yaml",
+            "config/packages/dev/monolog.yaml"
         ]
     },
     "symfony/options-resolver": {
         "version": "v4.4.30"
     },
     "symfony/phpunit-bridge": {
-        "version": "4.3",
+        "version": "4.4",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "master",
@@ -530,7 +530,7 @@
         "version": "v4.4.31"
     },
     "symfony/routing": {
-        "version": "4.2",
+        "version": "4.4",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "master",
@@ -538,9 +538,9 @@
             "ref": "683dcb08707ba8d41b7e34adb0344bfd68d248a7"
         },
         "files": [
-            "config/packages/prod/routing.yaml",
+            "config/routes.yaml",
             "config/packages/routing.yaml",
-            "config/routes.yaml"
+            "config/packages/prod/routing.yaml"
         ]
     },
     "symfony/security-bundle": {
@@ -580,7 +580,7 @@
         "version": "v5.3.7"
     },
     "symfony/translation": {
-        "version": "3.3",
+        "version": "4.4",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "master",
@@ -613,7 +613,7 @@
         ]
     },
     "symfony/validator": {
-        "version": "4.3",
+        "version": "4.4",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "master",
@@ -621,8 +621,8 @@
             "ref": "3eb8df139ec05414489d55b97603c5f6ca0c44cb"
         },
         "files": [
-            "config/packages/test/validator.yaml",
-            "config/packages/validator.yaml"
+            "config/packages/validator.yaml",
+            "config/packages/test/validator.yaml"
         ]
     },
     "symfony/var-dumper": {
@@ -632,7 +632,7 @@
         "version": "v5.3.8"
     },
     "symfony/web-profiler-bundle": {
-        "version": "3.3",
+        "version": "4.4",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "master",
@@ -640,9 +640,9 @@
             "ref": "6bdfa1a95f6b2e677ab985cd1af2eae35d62e0f6"
         },
         "files": [
-            "config/packages/dev/web_profiler.yaml",
+            "config/routes/dev/web_profiler.yaml",
             "config/packages/test/web_profiler.yaml",
-            "config/routes/dev/web_profiler.yaml"
+            "config/packages/dev/web_profiler.yaml"
         ]
     },
     "symfony/yaml": {

@@ -44,15 +44,13 @@ const DetailsTab = ({ details }: Props): JSX.Element => {
   }
 
   return (
-    <>
-      <Responsive.ParentSize>
-        {({ width }): JSX.Element => (
-          <div>
-            <SortableCards details={details} panelWidth={width} />
-          </div>
-        )}
-      </Responsive.ParentSize>
-    </>
+    <Responsive.ParentSize>
+      {({ width }): JSX.Element => (
+        <div>
+          <SortableCards details={details} panelWidth={width} />
+        </div>
+      )}
+    </Responsive.ParentSize>
   );
 };
 

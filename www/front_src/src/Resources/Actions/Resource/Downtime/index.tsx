@@ -39,6 +39,7 @@ const DowntimeForm = ({
   } = useRequest({
     request: setDowntimeOnResources,
   });
+  const { alias, downtime } = useUserContext();
 
   const { alias, downtime } = useUserContext();
 

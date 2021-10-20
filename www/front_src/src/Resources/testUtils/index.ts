@@ -4,16 +4,15 @@ import { CriteriaValue } from '../Filter/Criterias/models';
 import { searchableFields } from '../Filter/Criterias/searchQueryLanguage';
 import { Filter } from '../Filter/models';
 import { buildResourcesEndpoint } from '../Listing/api/endpoint';
-import { SortOrder } from '../models';
 
 interface EndpointParams {
-  hostGroups?: Array<string>;
+  hostGroupIds?: Array<number>;
   limit?: number;
-  monitoringServers?: Array<string>;
+  monitoringServerIds?: Array<number>;
   page?: number;
   resourceTypes?: Array<string>;
   search?: string;
-  serviceGroups?: Array<string>;
+  serviceGroupIds?: Array<number>;
   sort?;
   states?: Array<string>;
   statuses?: Array<string>;
@@ -23,27 +22,22 @@ const defaultStatuses = ['WARNING', 'DOWN', 'CRITICAL', 'UNKNOWN'];
 const defaultResourceTypes = [];
 const defaultStates = ['unhandled_problems'];
 
-const defaultSecondSortCriteria = { last_status_change: SortOrder.desc };
-
 const getListingEndpoint = ({
   page = 1,
   limit = 30,
-  sort = {
-    status_severity_code: SortOrder.asc,
-    ...defaultSecondSortCriteria,
-  },
+  sort = { status_severity_code: 'asc' },
   statuses = defaultStatuses,
   states = defaultStates,
   resourceTypes = defaultResourceTypes,
-  hostGroups = [],
-  serviceGroups = [],
-  monitoringServers = [],
+  hostGroupIds = [],
+  serviceGroupIds = [],
+  monitoringServerIds = [],
   search,
 }: EndpointParams): string =>
   buildResourcesEndpoint({
-    hostGroups,
+    hostGroupIds,
     limit,
-    monitoringServers,
+    monitoringServerIds,
     page,
     resourceTypes,
     search: search
@@ -54,7 +48,7 @@ const getListingEndpoint = ({
           },
         }
       : undefined,
-    serviceGroups,
+    serviceGroupIds,
     sort,
     states,
     statuses,
@@ -100,5 +94,4 @@ export {
   searchableFields,
   getCriteriaValue,
   getFilterWithUpdatedCriteria,
-  defaultSecondSortCriteria,
 };

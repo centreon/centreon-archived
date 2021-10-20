@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { equals, or } from 'ramda';
+import { equals } from 'ramda';
 
 import { Theme, makeStyles } from '@material-ui/core';
 
@@ -61,11 +61,7 @@ const GraphTabContent = ({
     options: tabParameters.graph?.options,
   });
 
-  const type = details?.type as string;
-  const equalsService = equals('service');
-  const equalsMetaService = equals('metaservice');
-
-  const isService = or(equalsService(type), equalsMetaService(type));
+  const isService = equals('service', details?.type);
 
   return (
     <GraphOptionsContext.Provider value={graphOptions}>

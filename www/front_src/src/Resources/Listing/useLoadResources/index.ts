@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { equals, isNil, not, prop } from 'ramda';
+import { isNil, prop } from 'ramda';
 
 import { SelectEntry } from '@centreon/ui';
 import { useUserContext } from '@centreon/ui-context';
@@ -12,9 +12,6 @@ import { searchableFields } from '../../Filter/Criterias/searchQueryLanguage';
 export interface LoadResources {
   initAutorefreshAndLoad: () => void;
 }
-
-const secondSortField = 'last_status_change';
-const defaultSecondSortCriteria = { [secondSortField]: SortOrder.desc };
 
 const useLoadResources = (): LoadResources => {
   const {
@@ -47,13 +44,7 @@ const useLoadResources = (): LoadResources => {
 
     const [sortField, sortOrder] = sort as [string, SortOrder];
 
-    const secondSortCriteria =
-      not(equals(sortField, secondSortField)) && defaultSecondSortCriteria;
-
-    return {
-      [sortField]: sortOrder,
-      ...secondSortCriteria,
-    };
+    return { [sortField]: sortOrder };
   };
 
   const load = (): void => {
@@ -77,22 +68,14 @@ const useLoadResources = (): LoadResources => {
       return criteriaValue?.map(prop('id'));
     };
 
-    const getCriteriaNames = (name: string): Array<string> => {
-      const criteriaValue = getCriteriaValue(name) as
-        | Array<SelectEntry>
-        | undefined;
-
-      return criteriaValue?.map(prop('name')) as Array<string>;
-    };
-
     sendRequest({
-      hostGroups: getCriteriaNames('host_groups'),
+      hostGroupIds: getCriteriaIds('host_groups'),
       limit,
-      monitoringServers: getCriteriaNames('monitoring_servers'),
+      monitoringServerIds: getCriteriaIds('monitoring_servers'),
       page,
       resourceTypes: getCriteriaIds('resource_types'),
       search,
-      serviceGroups: getCriteriaNames('service_groups'),
+      serviceGroupIds: getCriteriaIds('service_groups'),
       sort: getSort(),
       states: getCriteriaIds('states'),
       statuses: getCriteriaIds('statuses'),

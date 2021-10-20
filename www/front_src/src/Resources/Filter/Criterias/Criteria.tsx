@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { equals, isNil } from 'ramda';
+import { isNil } from 'ramda';
 
 import {
   PopoverMultiAutocompleteField,
@@ -53,9 +53,6 @@ const CriteriaContent = ({
   };
 
   if (isNil(options)) {
-    const getOptionSelected = (option, selectedValue): boolean =>
-      equals(option.name, selectedValue.name);
-
     const getEndpoint = ({ search, page }): string =>
       buildAutocompleteEndpoint({
         limit: 10,
@@ -66,10 +63,9 @@ const CriteriaContent = ({
     return (
       <PopoverMultiConnectedAutocompleteField
         {...commonProps}
-        disableSortedOptions
+        conditionField="name"
         field="name"
         getEndpoint={getEndpoint}
-        getOptionSelected={getOptionSelected}
         value={value}
         onChange={(_, updatedValue): void => {
           changeCriteria(updatedValue);

@@ -1,7 +1,6 @@
 import {
   allPass,
   concat,
-  contains,
   endsWith,
   filter,
   find,
@@ -79,7 +78,7 @@ const isFilledCriteria = pipe(endsWith(':'), not);
 
 const parse = (search: string): Array<Criteria> => {
   const [criteriaParts, rawSearchParts] = partition(
-    allPass([contains(':'), isCriteriaPart, isFilledCriteria]),
+    allPass([isCriteriaPart, isFilledCriteria]),
     search.split(' '),
   );
 
@@ -100,20 +99,19 @@ const parse = (search: string): Array<Criteria> => {
       object_type: objectType,
       type: 'multi_select',
       value: values?.split(',').map((value) => {
+        const [resourceId, resourceName] = value.split('|');
         const isStaticCriteria = isNil(objectType);
 
-        if (isStaticCriteria) {
-          const id = getCriteriaNameFromQueryLanguageName(value);
-
-          return {
-            id,
-            name: criteriaValueNameById[id],
-          };
-        }
+        const id = isStaticCriteria
+          ? getCriteriaNameFromQueryLanguageName(value)
+          : parseInt(resourceId, 10);
+        const name = isStaticCriteria
+          ? criteriaValueNameById[id]
+          : resourceName;
 
         return {
-          id: 0,
-          name: value,
+          id,
+          name,
         };
       }),
     };
@@ -170,7 +168,7 @@ const build = (criterias: Array<Criteria>): string => {
 
       const formattedValues = isStaticCriteria
         ? values.map(compose(getCriteriaQueryLanguageName, prop('id')))
-        : values.map(({ name: valueName }) => `${valueName}`);
+        : values.map(({ id, name: valueName }) => `${id}|${valueName}`);
 
       const criteriaName = compose(
         getCriteriaQueryLanguageName,

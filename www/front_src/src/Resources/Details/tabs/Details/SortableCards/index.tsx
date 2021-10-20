@@ -14,8 +14,6 @@ import {
   pluck,
   propEq,
   remove,
-  difference,
-  uniq,
 } from 'ramda';
 
 import { Box, Grid } from '@material-ui/core';
@@ -41,23 +39,6 @@ interface Props {
   details: ResourceDetails;
   panelWidth: number;
 }
-
-interface MergeDefaultAndStoredCardsProps {
-  defaultCards: Array<string>;
-  storedCards: Array<string>;
-}
-
-const mergeDefaultAndStoredCards = ({
-  defaultCards,
-  storedCards,
-}: MergeDefaultAndStoredCardsProps): Array<string> => {
-  const differenceBetweenDefaultAndStoredCards = difference(
-    defaultCards,
-    storedCards,
-  );
-
-  return uniq([...storedCards, ...differenceBetweenDefaultAndStoredCards]);
-};
 
 const SortableCards = ({ panelWidth, details }: Props): JSX.Element => {
   const { toDateTime } = useLocaleDateTimeFormat();
@@ -88,14 +69,9 @@ const SortableCards = ({ panelWidth, details }: Props): JSX.Element => {
     toDateTime,
   });
 
-  const allDetailsCardsTitle = pluck('title', allDetailsCards);
-
   const defaultDetailsCardsLayout = isEmpty(storedDetailsCards)
-    ? allDetailsCardsTitle
-    : mergeDefaultAndStoredCards({
-        defaultCards: allDetailsCardsTitle,
-        storedCards: storedDetailsCards,
-      });
+    ? pluck('title', allDetailsCards)
+    : storedDetailsCards;
 
   const cards = map<string, CardsLayout>(
     (title) => ({
@@ -129,6 +105,7 @@ const SortableCards = ({ panelWidth, details }: Props): JSX.Element => {
           collisionDetection={rectIntersection}
           itemProps={[
             'shouldBeDisplayed',
+            'field',
             'line',
             'xs',
             'active',
