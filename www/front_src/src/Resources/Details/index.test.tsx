@@ -28,12 +28,12 @@ import {
   labelDowntimeDuration,
   labelAcknowledgedBy,
   labelTimezone,
-  labelCurrentStateDuration,
-  labelLastStateChange,
+  labelCurrentStatusDuration,
+  labelLastStatusChange,
   labelNextCheck,
   labelCheckDuration,
   labelLatency,
-  labelPercentStateChange,
+  labelStatusChangePercentage,
   labelLastNotification,
   labelLastCheck,
   labelCurrentNotificationNumber,
@@ -107,6 +107,15 @@ jest.mock(
   '@centreon/centreon-frontend/packages/centreon-ui/src/utils/copy',
   () => jest.fn(),
 );
+
+jest.mock('@visx/visx', () => {
+  return {
+    ...(jest.requireActual('@visx/visx') as jest.Mocked<unknown>),
+    Responsive: {
+      ParentSize: ({ children }): JSX.Element => children({ width: 500 }),
+    },
+  };
+});
 
 const resourceServiceUuid = 'h1-s1';
 const resourceServiceId = 1;
@@ -508,7 +517,8 @@ describe(Details, () => {
   it('displays resource details information', async () => {
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
 
-    const { getByText, queryByText, getAllByText } = renderDetails();
+    const { getByText, queryByText, getAllByText, findByText } =
+      renderDetails();
 
     act(() => {
       setSelectedServiceResource();
@@ -524,7 +534,10 @@ describe(Details, () => {
     expect(getByText('10')).toBeInTheDocument();
     expect(getByText('CRITICAL')).toBeInTheDocument();
     expect(getByText('Centreon')).toBeInTheDocument();
-    expect(getByText(labelFqdn)).toBeInTheDocument();
+
+    const fqdnText = await findByText(labelFqdn);
+
+    expect(fqdnText).toBeInTheDocument();
     expect(getByText('central.centreon.com')).toBeInTheDocument();
     expect(getByText(labelAlias)).toBeInTheDocument();
     expect(getByText('Central-Centreon')).toBeInTheDocument();
@@ -558,10 +571,10 @@ describe(Details, () => {
     expect(getByText(labelTimezone)).toBeInTheDocument();
     expect(getByText('Europe/Paris')).toBeInTheDocument();
 
-    expect(getByText(labelCurrentStateDuration)).toBeInTheDocument();
+    expect(getByText(labelCurrentStatusDuration)).toBeInTheDocument();
     expect(getByText('22m - 3/3 (Hard)')).toBeInTheDocument();
 
-    expect(getByText(labelLastStateChange)).toBeInTheDocument();
+    expect(getByText(labelLastStatusChange)).toBeInTheDocument();
     expect(getByText('04/18/2020 5:00 PM')).toBeInTheDocument();
 
     expect(getByText(labelLastCheck)).toBeInTheDocument();
@@ -581,7 +594,7 @@ describe(Details, () => {
 
     expect(getByText(labelCheck)).toBeInTheDocument();
 
-    expect(getByText(labelPercentStateChange)).toBeInTheDocument();
+    expect(getByText(labelStatusChangePercentage)).toBeInTheDocument();
     expect(getByText('3.5%')).toBeInTheDocument();
 
     expect(getByText(labelLastNotification)).toBeInTheDocument();
@@ -746,6 +759,7 @@ describe(Details, () => {
       ),
     );
   });
+
   it('displays retrieved timeline events and filtered by selected event types, when the Timeline tab is selected', async () => {
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedTimeline });
