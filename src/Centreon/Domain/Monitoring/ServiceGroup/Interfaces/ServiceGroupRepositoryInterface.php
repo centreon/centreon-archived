@@ -38,7 +38,7 @@ interface ServiceGroupRepositoryInterface
     /**
      * Retrieve servicegroups from their names
      *
-     * @param array<int, string> $serviceGroupNames
+     * @param string[] $serviceGroupNames
      * @return ServiceGroup[]
      */
     public function findServiceGroupsByNames(array $serviceGroupNames): array;
