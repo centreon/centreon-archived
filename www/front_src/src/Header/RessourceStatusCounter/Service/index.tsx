@@ -107,7 +107,7 @@ const ServiceStatusCounter = (): JSX.Element => {
     >
       {({ hasPending, data, toggled, toggleDetailedView }): JSX.Element => (
         <div className={`${styles.wrapper} wrap-right-services`}>
-          <SubmenuHeader active={toggled} submenuType="top">
+          <SubmenuHeader active={toggled}>
             <IconHeader
               Icon={ServiceIcon}
               iconName={t('Services')}
