@@ -14331,7 +14331,7 @@ msgstr "Permitir certificado autofirmado"
 #  msgid "Current notification number"
 #  msgstr ""
 
-#  msgid "Current state duration"
+#  msgid "Current status duration"
 #  msgstr ""
 
 #  msgid "Downtime duration"
@@ -14397,7 +14397,7 @@ msgstr "Permitir certificado autofirmado"
 #  msgid "Last notification"
 #  msgstr ""
 
-#  msgid "Last state change"
+#  msgid "Last status change"
 #  msgstr ""
 
 #  msgid "Next check"
@@ -14409,7 +14409,7 @@ msgstr "Permitir certificado autofirmado"
 #  msgid "Open"
 #  msgstr ""
 
-#  msgid "Percent state change"
+#  msgid "Status change percentage"
 #  msgstr ""
 
 #  msgid "Resource name"
