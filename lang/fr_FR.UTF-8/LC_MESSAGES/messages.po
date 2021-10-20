@@ -16240,9 +16240,6 @@ msgstr "Détails du Contact"
 msgid "Service graphs"
 msgstr "Graphiques de services"
 
-msgid "Enable the one-click export button for poller configuration"
-msgstr "Activer le bouton d’export de la configuration des collecteurs en un seul clic"
-
 msgid "Clear filter"
 msgstr "Effacer le filtre"
 
@@ -16302,3 +16299,6 @@ msgstr "Configuration exportée et rechargée"
 
 msgid "Failed to export and reload the configuration"
 msgstr "L'export et le rechargement de la configuration a echoué"
+
+msgid "Enable the one-click export button for poller configuration"
+msgstr "Activer le bouton d’export de la configuration des collecteurs en un seul clic"
