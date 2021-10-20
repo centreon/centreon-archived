@@ -111,7 +111,7 @@ const HostStatusCounter = (): JSX.Element => {
     >
       {({ hasPending, toggled, toggleDetailedView, data }): JSX.Element => (
         <div className={`${styles.wrapper} wrap-right-hosts`}>
-          <SubmenuHeader active={toggled} submenuType="top">
+          <SubmenuHeader active={toggled}>
             <IconHeader
               Icon={HostIcon}
               iconName={t('Hosts')}
