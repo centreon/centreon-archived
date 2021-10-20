@@ -41,7 +41,7 @@ interface ServiceGroupServiceInterface
     /**
      * Retrieve servicegroups from their ids
      *
-     * @param array<int, int> $serviceGroupIds
+     * @param int[] $serviceGroupIds
      * @return ServiceGroup[]
      * @throws ServiceGroupException
      */
