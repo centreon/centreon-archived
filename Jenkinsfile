@@ -413,10 +413,10 @@ try {
             archiveArtifacts allowEmptyArchive: true, artifacts: 'acceptance-logs/*.txt, acceptance-logs/*.png, acceptance-logs/*.flv'
           }
         }
-        parallel atparallelSteps
-        if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-          error('Critical tests stage failure');
-        }
+      }
+      parallel atparallelSteps
+      if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+        error('Critical tests stage failure');
       }
     }
   }
