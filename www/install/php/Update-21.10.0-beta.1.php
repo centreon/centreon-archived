@@ -25,8 +25,6 @@ $centreonLog = new CentreonLog();
 //error specific content
 $versionOfTheUpgrade = 'UPGRADE - 21.10.0-beta.1: ';
 
-$pearDB = new CentreonDB('centreon', 3, false);
-
 /**
  * Query with transaction
  */
@@ -36,17 +34,6 @@ try {
     //Purge all session.
     $errorMessage = 'Impossible to purge the table session';
     $pearDB->query("DELETE FROM `session`");
-
-    $constraintStatement = $pearDB->query(
-        "SELECT COUNT(*) as count FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS WHERE CONSTRAINT_NAME='session_ibfk_1'"
-    );
-    if (($constraint = $constraintStatement->fetch()) && (int) $constraint['count'] === 0) {
-        $errorMessage = 'Impossible to add Delete Cascade constraint on the table session';
-        $pearDB->query(
-            "ALTER TABLE `session` ADD CONSTRAINT `session_ibfk_1` FOREIGN KEY (`user_id`) " .
-            "REFERENCES `contact` (`contact_id`) ON DELETE CASCADE"
-        );
-    }
 
     // Add TLS hostname in config brocker for input/outputs IPV4
     $statement = $pearDB->query("SELECT cb_field_id from cb_field WHERE fieldname = 'tls_hostname'");
@@ -73,8 +60,21 @@ try {
     }
 
     $pearDB->commit();
+
+    $constraintStatement = $pearDB->query(
+        "SELECT COUNT(*) as count FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS WHERE CONSTRAINT_NAME='session_ibfk_1'"
+    );
+    if (($constraint = $constraintStatement->fetch()) && (int) $constraint['count'] === 0) {
+        $errorMessage = 'Impossible to add Delete Cascade constraint on the table session';
+        $pearDB->query(
+            "ALTER TABLE `session` ADD CONSTRAINT `session_ibfk_1` FOREIGN KEY (`user_id`) " .
+            "REFERENCES `contact` (`contact_id`) ON DELETE CASCADE"
+        );
+    }
 } catch (\Exception $e) {
-    $pearDB->rollBack();
+    if ($pearDB->inTransaction()) {
+        $pearDB->rollBack();
+    }
     $centreonLog->insertLog(
         4,
         $versionOfTheUpgrade . $errorMessage .
