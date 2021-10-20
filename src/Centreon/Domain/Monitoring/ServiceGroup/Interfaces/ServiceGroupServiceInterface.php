@@ -50,7 +50,7 @@ interface ServiceGroupServiceInterface
     /**
      * Retrieve servicegroups from their ids
      *
-     * @param array<int, string> $serviceGroupNames
+     * @param string[] $serviceGroupNames
      * @return ServiceGroup[]
      * @throws ServiceGroupException
      */
