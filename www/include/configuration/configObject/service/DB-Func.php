@@ -1753,8 +1753,6 @@ function updateServiceNotifs($service_id = null, $ret = array())
 // For massive change. incremental mode
 function updateServiceNotifs_MC($service_id = null)
 {
-    require_once "./include/common/javascript/commandGetArgs/cmdGetExample.php";
-
     if (!$service_id) {
         return;
     }
