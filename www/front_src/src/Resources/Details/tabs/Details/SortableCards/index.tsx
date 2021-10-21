@@ -16,6 +16,7 @@ import {
   remove,
   difference,
   uniq,
+  prop,
 } from 'ramda';
 
 import { Box, Grid } from '@material-ui/core';
@@ -110,6 +111,7 @@ const SortableCards = ({ panelWidth, details }: Props): JSX.Element => {
     ({ shouldBeDisplayed }) => shouldBeDisplayed,
     cards,
   );
+
   const RootComponent = ({ children }: RootComponentProps): JSX.Element => (
     <Grid container spacing={1} style={{ width: panelWidth }}>
       {children}
@@ -142,7 +144,13 @@ const SortableCards = ({ panelWidth, details }: Props): JSX.Element => {
         />
       </Box>
     ),
-    memoProps: [defaultDetailsCardsLayout, panelWidth, expandedCards],
+    memoProps: [
+      defaultDetailsCardsLayout,
+      panelWidth,
+      expandedCards,
+      details,
+      displayedCards.map(prop('id')),
+    ],
   });
 };
 
