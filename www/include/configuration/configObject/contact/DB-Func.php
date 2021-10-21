@@ -1224,9 +1224,13 @@ function sanitizeFormContactParameters(array $ret): array
                 if (empty($inputValue)) {
                     throw new \InvalidArgumentException('Bad Parameter');
                 } else {
-                    $fullSpecialChars = FILTER_SANITIZE_FULL_SPECIAL_CHARS;
-                    $noEncodeQuotes = FILTER_FLAG_NO_ENCODE_QUOTES;
-                    if ($inputValue = filter_var($inputValue, $fullSpecialChars, $noEncodeQuotes)) {
+                    if (
+                        $inputValue = filter_var(
+                            $inputValue,
+                            FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+                            FILTER_FLAG_NO_ENCODE_QUOTES
+                        )
+                    ) {
                         $bindParams[':' . $inputName] = [\PDO::PARAM_STR => $inputValue];
                     }
                 }
