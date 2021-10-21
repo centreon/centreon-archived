@@ -1219,20 +1219,23 @@ function sanitizeFormContactParameters(array $ret): array
                     }
                 }
                 break;
-            case 'contact_name':
+            case 'contact_ldap_dn':
             case 'contact_alias':
-                $inputValue = filter_var($inputValue, FILTER_SANITIZE_STRING);
                 if (empty($inputValue)) {
                     throw new \InvalidArgumentException('Bad Parameter');
                 } else {
-                    $bindParams[':' . $inputName] = [\PDO::PARAM_STR => $inputValue];
+                    $fullSpecialChars = FILTER_SANITIZE_FULL_SPECIAL_CHARS;
+                    $noEncodeQuotes = FILTER_FLAG_NO_ENCODE_QUOTES;
+                    if ($inputValue = filter_var($inputValue, $fullSpecialChars, $noEncodeQuotes)) {
+                        $bindParams[':' . $inputName] = [\PDO::PARAM_STR => $inputValue];
+                    }
                 }
                 break;
+            case 'contact_name':
             case 'contact_autologin_key':
             case 'contact_email':
             case 'contact_pager':
             case 'contact_comment':
-            case 'contact_ldap_dn':
             case 'contact_address1':
             case 'contact_address2':
             case 'contact_address3':
