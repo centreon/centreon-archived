@@ -49,6 +49,7 @@ class CentreonUser
     public $version;
     public $admin;
     public $limit;
+    public $js_effects;
     public $num;
     public $gmt;
     public $is_admin;
@@ -95,6 +96,7 @@ class CentreonUser
         $this->version = 3;
         $this->default_page = $user["default_page"] ?? CentreonAuth::DEFAULT_PAGE;
         $this->gmt = $user["contact_location"];
+        $this->js_effects = $user["contact_js_effects"];
         $this->showDeprecatedPages = (bool) $user["show_deprecated_pages"];
         $this->is_admin = null;
         /*
@@ -294,6 +296,25 @@ class CentreonUser
         $this->showDeprecatedPages = $showDeprecatedPages;
     }
 
+    /**
+     *
+     * @global type $pearDB
+     * @return type
+     */
+    public function get_js_effects()
+    {
+        global $pearDB;
+
+        $DBRESULT = $pearDB->query('SELECT contact_js_effects FROM contact WHERE contact_id = ' . $this->user_id);
+        if (($jsEffectsEnabled = $DBRESULT->fetch()) && isset($jsEffectsEnabled['contact_js_effects'])) {
+            $this->js_effects = $jsEffectsEnabled['contact_js_effects'];
+        } else {
+            $this->js_effects = 0;
+        }
+
+        return $this->js_effects;
+    }
+
     // Set
 
     /**
@@ -348,6 +369,15 @@ class CentreonUser
     public function set_version($version)
     {
         $this->version = $version;
+    }
+
+    /**
+     *
+     * @param type $js_effects
+     */
+    public function set_js_effects($js_effects)
+    {
+        $this->js_effects = $js_effects;
     }
 
     /**
