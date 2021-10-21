@@ -49,9 +49,9 @@ class CentreonHostgroups
 
     /**
      *
-     * @var type
+     * @var array
      */
-    private $relationCache;
+    private $relationCache = [];
 
     /**
      *
