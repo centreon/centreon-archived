@@ -19,35 +19,55 @@
  *
  */
 
-require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
-require_once _CENTREON_PATH_ . "/www/class/centreonUUID.class.php";
-require_once _CENTREON_PATH_ . "/www/class/centreonStatistics.class.php";
-require_once dirname(__FILE__) . "/webService.class.php";
-
-use Symfony\Component\Console\Logger\ConsoleLogger;
-use Symfony\Component\Console\Output\ConsoleOutput;
+require_once __DIR__ . '/../../../bootstrap.php';
+require_once __DIR__ . '/../../class/centreonDB.class.php';
+require_once __DIR__ . '/../../class/centreonUUID.class.php';
+require_once __DIR__ . '/../../class/centreonStatistics.class.php';
+require_once __DIR__ . '/webService.class.php';
 
 class CentreonCeip extends CentreonWebService
 {
-    protected $uuid;
+    /**
+     * @var string
+     */
+    private $uuid;
+
+    /**
+     * @var \CentreonUser
+     */
+    private $user;
+
+    /**
+     * @var \Centreon\Domain\Log\LegacyLogger
+     */
+    private $logger;
 
     /**
      * Constructor
      */
     public function __construct()
     {
-        global $centreon;
-        $this->centreon = $centreon;
-
         parent::__construct();
+
+        global $centreon;
+
+        $this->user = $centreon->user;
+
+        // Generate UUID
+        $this->uuid = (new CentreonUUID($this->pearDB))->getUUID();
+
+        $kernel = \App\Kernel::createForWeb();
+        $this->logger = $kernel->getContainer()->get(
+            \Centreon\Domain\Log\LegacyLogger::class
+        );
     }
 
     /**
      * Get CEIP Account and User info
      *
-     * @return array with Account/User info
+     * @return array<string,mixed> with Account/User info
      */
-    public function getCeipInfo()
+    public function getCeipInfo(): array
     {
         // Don't compute data is CEIP is disabled
         if (!$this->isCeipActive()) {
@@ -55,10 +75,6 @@ class CentreonCeip extends CentreonWebService
                 'ceip' => false
             ];
         }
-
-        // Get UUID
-        $centreonUUID = new CentreonUUID($this->pearDB);
-        $this->uuid = $centreonUUID->getUUID();
 
         return [
             'visitor' => $this->getVisitorInformation(),
@@ -71,40 +87,42 @@ class CentreonCeip extends CentreonWebService
     /**
      * Get the type of the Centreon server
      *
-     * @return string the type of the server
+     * @return string the type of the server (central|remote)
      */
     private function getServerType(): string
     {
-        $stmt = $this->pearDB->prepare(
+        $instanceType = 'central';
+
+        $result = $this->pearDB->query(
             "SELECT `value` FROM `informations` WHERE `key` = 'isRemote'"
         );
-        $stmt->execute();
-        $result = $stmt->fetchRow();
+        if ($row = $result->fetch()) {
+            $instanceType = $row['value'] === 'yes' ? 'remote' : 'central';
+        }
 
-        $isRemote = $result['value'] === 'yes' ? 'remote' : 'central';
-
-        return $isRemote;
+        return $instanceType;
     }
 
     /**
      * Get visitor information
      *
-     * @return array with visitor information
+     * @return array<string,mixed> with visitor information
+     * @throws \PDOException
      */
     private function getVisitorInformation(): array
     {
-        $locale = $this->centreon->user->lang === 'browser'
+        $locale = $this->user->lang === 'browser'
             ? null
-            : $this->centreon->user->lang;
+            : $this->user->lang;
 
-        $role = $this->centreon->user->admin
+        $role = $this->user->admin
             ? "admin"
             : "user";
 
         if (strcmp($role, 'admin') != 0) {
             $stmt = $this->pearDB->prepare('
-                SELECT COUNT(*)
-                FROM acl_actions_rules  AS aar
+                SELECT COUNT(*) AS countAcl
+                FROM acl_actions_rules AS aar
                 INNER JOIN acl_actions AS aa ON (aa.acl_action_id = aar.acl_action_rule_id)
                 INNER JOIN acl_group_actions_relations AS agar ON (agar.acl_action_id = aar.acl_action_rule_id)
                 INNER JOIN acl_group_contacts_relations AS agcr ON (agcr.acl_group_id = agar.acl_group_id)
@@ -117,18 +135,15 @@ class CentreonCeip extends CentreonWebService
                     WHERE contact_contact_id = :contact_id
                 )
             ');
-            $stmt->bindValue(':contact_id', $this->centreon->user->user_id, PDO::PARAM_INT);
-            $stmt->bindValue(':contact_id', $this->centreon->user->user_id, PDO::PARAM_INT);
+            $stmt->bindValue(':contact_id', $this->user->user_id, PDO::PARAM_INT);
             $stmt->execute();
-            $result = $stmt->fetchRow();
-
-            if ($result > 0) {
+            if (($row = $stmt->fetch()) && $row['countAcl'] > 0) {
                 $role = 'operator';
             }
         }
 
         return [
-            'id' => substr($this->uuid, 0, 6) . '-' . $this->centreon->user->user_id,
+            'id' => substr($this->uuid, 0, 6) . '-' . $this->user->user_id,
             'locale' => $locale,
             'role' => $role
         ];
@@ -137,14 +152,12 @@ class CentreonCeip extends CentreonWebService
     /**
      * Get account information
      *
-     * @return array with account information
+     * @return array<string,mixed> with account information
      */
     private function getAccountInformation(): array
     {
         // Get Centreon statistics
-        $output = new ConsoleOutput();
-        $logger = new ConsoleLogger($output);
-        $centreonStats = new CentreonStatistics($logger);
+        $centreonStats = new CentreonStatistics($this->logger);
         $configUsage = $centreonStats->getPlatformInfo();
 
         // Get Licences information
@@ -160,8 +173,8 @@ class CentreonCeip extends CentreonWebService
             'licenseType' => $licenseInfo['licenseType'],
             'versionMajor' => $centreonVersion['major'],
             'versionMinor' => $centreonVersion['minor'],
-            'nb_hosts' => $configUsage['nb_hosts'],
-            'nb_services' => $configUsage['nb_services'],
+            'nb_hosts' => (int) $configUsage['nb_hosts'],
+            'nb_services' => (int) $configUsage['nb_services'],
             'nb_servers' => $configUsage['nb_central'] + $configUsage['nb_remotes'] + $configUsage['nb_pollers']
         ];
     }
@@ -169,7 +182,7 @@ class CentreonCeip extends CentreonWebService
     /**
      * Get license information such as company name and license type
      *
-     * @return array with license info
+     * @return array<string,string> with license info
      */
     private function getLicenseInformation(): array
     {
@@ -198,8 +211,8 @@ class CentreonCeip extends CentreonWebService
                     }
                 }
             }
-        } catch (\Exception $ex) {
-            error_log($ex->getMessage());
+        } catch (\Exception $exception) {
+            $this->logger->error($exception->getMessage, ['context' => $exception]);
         }
 
         return [
@@ -211,18 +224,21 @@ class CentreonCeip extends CentreonWebService
     /**
      * Get the major and minor versions of Centreon web
      *
-     * @return array with major and minor versions
+     * @return array<string,string|null> with major and minor versions
+     * @throws \PDOException
      */
     private function getCentreonVersion(): array
     {
-        $stmt = $this->pearDB->prepare(
+        $major = null;
+        $minor = null;
+
+        $result = $this->pearDB->query(
             "SELECT informations.value FROM informations WHERE informations.key = 'version'"
         );
-        $stmt->execute();
-        $result = $stmt->fetchRow();
-
-        $minor = $result['value'];
-        $major = substr($minor, 0, strrpos($minor, '.', 0));
+        if ($row = $result->fetch()) {
+            $minor = $row['value'];
+            $major = substr($minor, 0, strrpos($minor, '.', 0));
+        }
 
         return [
             'major' => $major,
@@ -234,15 +250,15 @@ class CentreonCeip extends CentreonWebService
      * Get CEIP status
      *
      * @return bool the status of CEIP
+     * @throws \PDOException
      */
     private function isCeipActive(): bool
     {
-        $stmt = $this->pearDB->prepare(
+        $result = $this->pearDB->query(
             "SELECT `value` FROM `options` WHERE `key` = 'send_statistics' LIMIT 1"
         );
-        $stmt->execute();
 
-        if (($sendStatisticsResult = $stmt->fetchRow()) && $sendStatisticsResult["value"] == "1") {
+        if (($sendStatisticsResult = $result->fetch()) && $sendStatisticsResult["value"] === "1") {
             return true;
         } else {
             return false;
