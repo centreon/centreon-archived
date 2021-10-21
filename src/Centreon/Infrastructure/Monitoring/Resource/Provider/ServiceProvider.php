@@ -205,21 +205,20 @@ final class ServiceProvider extends Provider
         }
 
         // apply the service group filter to SQL query
-        if ($filter->getServicegroupNames()) {
+        if ($filter->getServicegroupIds()) {
             $groupList = [];
 
-            foreach ($filter->getServicegroupNames() as $index => $groupName) {
-                $key = ":serviceServicegroupName_{$index}";
+            foreach ($filter->getServicegroupIds() as $index => $groupId) {
+                $key = ":serviceServicegroupId_{$index}";
 
                 $groupList[] = $key;
-                $collector->addValue($key, $groupName, \PDO::PARAM_STR);
+                $collector->addValue($key, $groupId, \PDO::PARAM_INT);
             }
 
             $sql .= ' AND EXISTS (SELECT 1 FROM `:dbstg`.`services_servicegroups` AS ssg
                   WHERE ssg.host_id = s.host_id AND ssg.service_id = s.service_id
                     AND EXISTS (SELECT 1 FROM `:dbstg`.`servicegroups` AS sg
-                  WHERE ssg.servicegroup_id = sg.servicegroup_id
-                    AND sg.name IN (' . implode(', ', $groupList) . ') LIMIT 1) LIMIT 1)';
+                  WHERE sg.servicegroup_id IN (' . implode(', ', $groupList) . ') LIMIT 1) LIMIT 1)';
         }
 
         // apply the state filter to SQL query

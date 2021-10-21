@@ -249,7 +249,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
                 WHERE hhg.host_id = resource.host_id
                     AND EXISTS (
                         SELECT 1 FROM `:dbstg`.`hostgroups` AS hg
-                        WHERE hg.hostgroup_id = hhg.hostgroup_id AND hg.name IN (' . implode(', ', $groupList) . ')
+                        WHERE hg.hostgroup_id IN (' . implode(', ', $groupList) . ')
                         LIMIT 1)
                 LIMIT 1) ';
         }
