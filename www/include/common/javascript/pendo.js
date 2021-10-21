@@ -9,9 +9,9 @@ const initPendo = (data) => {
 
     // Call this whenever information about your visitors becomes available
     // Please use Strings, Numbers, or Bools for value types.
-    pendo.initialize(data);
+    pendo.initialize(platformData);
   })('b06b875d-4a10-4365-7edf-8efeaf53dfdd', data);
-}
+};
 
 if (window.fetch) {
   let shouldGetCeipInfo = false;
@@ -24,10 +24,9 @@ if (window.fetch) {
       if ((centreonPlatformData.cacheGenerationDate + (24 * 60 * 60 * 1000)) < Date.now()) {
         shouldGetCeipInfo = true;
       } else if (centreonPlatformData.ceip === true) {
-        initPendo(centreonPlatformData)
+        initPendo(centreonPlatformData);
       }
     } catch (e) {
-      localStorage.removeItem('centreonPlatformData');
       shouldGetCeipInfo = true;
     }
   }
@@ -48,9 +47,12 @@ if (window.fetch) {
               cacheGenerationDate: Date.now(),
               visitor: data.visitor,
               account: data.account,
-              excludeAllText: data.excludeAllText
-            }
+              excludeAllText: data.excludeAllText,
+              ceip: true
+            };
             localStorage.setItem('centreonPlatformData', JSON.stringify(platformData));
+          } else {
+            localStorage.setItem('centreonPlatformData', JSON.stringify({ ceip: false }));
           }
         });
       }
