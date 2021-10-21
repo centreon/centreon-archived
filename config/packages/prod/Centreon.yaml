@@ -322,3 +322,6 @@ services:
     monolog.debug.handler:
         class: Centreon\Domain\Log\DebugFileHandler
         arguments: [ '@monolog.debug.formater', '%debug_log_file%', '%env(bool:APP_DEBUG)%', 664, '%debug_level%' ]
+
+    Centreon\Domain\Log\LegacyLogger:
+        public: true
