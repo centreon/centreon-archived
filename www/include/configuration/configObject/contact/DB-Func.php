@@ -1221,6 +1221,7 @@ function sanitizeFormContactParameters(array $ret): array
                 break;
             case 'contact_ldap_dn':
             case 'contact_alias':
+            case 'contact_name':
                 if (!empty($inputValue)) {
                     if (
                         $inputValue = filter_var(
@@ -1233,7 +1234,6 @@ function sanitizeFormContactParameters(array $ret): array
                     }
                 }
                 break;
-            case 'contact_name':
             case 'contact_autologin_key':
             case 'contact_email':
             case 'contact_pager':
