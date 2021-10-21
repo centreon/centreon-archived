@@ -38,11 +38,8 @@ const entityDecoder = JsonDecoder.object<Filter>(
                 JsonDecoder.tuple(
                   [
                     JsonDecoder.string,
-                    JsonDecoder.oneOf<'asc' | 'desc'>(
-                      [
-                        JsonDecoder.isExactly('asc'),
-                        JsonDecoder.isExactly('desc'),
-                      ],
+                    JsonDecoder.enumeration<SortOrder>(
+                      SortOrder,
                       'FilterCriteriaSortOrder',
                     ),
                   ],

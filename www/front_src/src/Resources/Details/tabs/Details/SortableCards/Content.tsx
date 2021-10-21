@@ -44,7 +44,6 @@ const Content = ({
   itemRef,
   title,
   line,
-  active,
   xs,
   isCustomCard,
   width,
@@ -73,7 +72,6 @@ const Content = ({
             <MoreVertIcon fontSize="small" />
           </div>
           <DetailsCard
-            active={active}
             isCustomCard={isCustomCard}
             line={line}
             title={t(title)}

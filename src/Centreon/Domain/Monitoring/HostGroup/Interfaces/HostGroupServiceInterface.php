@@ -41,9 +41,18 @@ interface HostGroupServiceInterface
     /**
      * Retrieve hostgroups from their ids
      *
-     * @param array $hostGroupIds
+     * @param int[] $hostGroupIds
      * @return HostGroup[]
      * @throws HostGroupException
      */
     public function findHostGroupsByIds(array $hostGroupIds): array;
+
+    /**
+     * Retrieve hostgroups from their names
+     *
+     * @param string[] $hostGroupNames
+     * @return HostGroup[]
+     * @throws HostGroupException
+     */
+    public function findHostGroupsByNames(array $hostGroupNames): array;
 }

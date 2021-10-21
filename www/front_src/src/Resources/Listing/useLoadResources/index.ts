@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { isNil, prop } from 'ramda';
+import { equals, isNil, not, prop } from 'ramda';
 
 import { SelectEntry } from '@centreon/ui';
 import { useUserContext } from '@centreon/ui-context';
@@ -12,6 +12,9 @@ import { searchableFields } from '../../Filter/Criterias/searchQueryLanguage';
 export interface LoadResources {
   initAutorefreshAndLoad: () => void;
 }
+
+const secondSortField = 'last_status_change';
+const defaultSecondSortCriteria = { [secondSortField]: SortOrder.desc };
 
 const useLoadResources = (): LoadResources => {
   const {
@@ -44,7 +47,13 @@ const useLoadResources = (): LoadResources => {
 
     const [sortField, sortOrder] = sort as [string, SortOrder];
 
-    return { [sortField]: sortOrder };
+    const secondSortCriteria =
+      not(equals(sortField, secondSortField)) && defaultSecondSortCriteria;
+
+    return {
+      [sortField]: sortOrder,
+      ...secondSortCriteria,
+    };
   };
 
   const load = (): void => {

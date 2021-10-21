@@ -29,7 +29,7 @@ class InfluxdbContext extends CentreonContext
     public function anInfluxdbOutputIsProperlyConfigured()
     {
         $this->visit('main.php?p=60909&o=c&id=1');
-        $this->assertFind('css', 'li#c4 > a:nth-child(1)')->click();
+        $this->assertFind('css', 'li#c3 > a:nth-child(1)')->click();
         $this->assertFind('css', 'select#block_output')->selectOption('InfluxDB - Storage - InfluxDB');
         $this->assertFind('css', 'a#add_output')->click();
         sleep(5);

@@ -4,6 +4,7 @@ import { CriteriaValue } from '../Filter/Criterias/models';
 import { searchableFields } from '../Filter/Criterias/searchQueryLanguage';
 import { Filter } from '../Filter/models';
 import { buildResourcesEndpoint } from '../Listing/api/endpoint';
+import { SortOrder } from '../models';
 
 interface EndpointParams {
   hostGroups?: Array<string>;
@@ -22,10 +23,15 @@ const defaultStatuses = ['WARNING', 'DOWN', 'CRITICAL', 'UNKNOWN'];
 const defaultResourceTypes = [];
 const defaultStates = ['unhandled_problems'];
 
+const defaultSecondSortCriteria = { last_status_change: SortOrder.desc };
+
 const getListingEndpoint = ({
   page = 1,
   limit = 30,
-  sort = { status_severity_code: 'asc' },
+  sort = {
+    status_severity_code: SortOrder.asc,
+    ...defaultSecondSortCriteria,
+  },
   statuses = defaultStatuses,
   states = defaultStates,
   resourceTypes = defaultResourceTypes,
@@ -94,4 +100,5 @@ export {
   searchableFields,
   getCriteriaValue,
   getFilterWithUpdatedCriteria,
+  defaultSecondSortCriteria,
 };

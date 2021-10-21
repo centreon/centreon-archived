@@ -1,6 +1,7 @@
 import {
   allPass,
   concat,
+  contains,
   endsWith,
   filter,
   find,
@@ -78,7 +79,7 @@ const isFilledCriteria = pipe(endsWith(':'), not);
 
 const parse = (search: string): Array<Criteria> => {
   const [criteriaParts, rawSearchParts] = partition(
-    allPass([isCriteriaPart, isFilledCriteria]),
+    allPass([contains(':'), isCriteriaPart, isFilledCriteria]),
     search.split(' '),
   );
 
@@ -105,7 +106,7 @@ const parse = (search: string): Array<Criteria> => {
           const id = getCriteriaNameFromQueryLanguageName(value);
 
           return {
-            id: getCriteriaNameFromQueryLanguageName(value),
+            id,
             name: criteriaValueNameById[id],
           };
         }

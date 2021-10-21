@@ -26,6 +26,8 @@ import {
   find,
   isNil,
   last,
+  equals,
+  not,
 } from 'ramda';
 import userEvent from '@testing-library/user-event';
 
@@ -38,7 +40,11 @@ import useActions from '../Actions/useActions';
 import useDetails from '../Details/useDetails';
 import useFilter from '../Filter/useFilter';
 import { labelInDowntime, labelAcknowledged } from '../translatedLabels';
-import { getListingEndpoint, cancelTokenRequestParam } from '../testUtils';
+import {
+  getListingEndpoint,
+  cancelTokenRequestParam,
+  defaultSecondSortCriteria,
+} from '../testUtils';
 import { unhandledProblemsFilter } from '../Filter/models';
 
 import useListing from './useListing';
@@ -234,10 +240,17 @@ describe(Listing, () => {
 
         userEvent.click(getByLabelText(`Column ${label}`));
 
+        const secondSortCriteria =
+          not(equals(sortField, 'last_status_change')) &&
+          defaultSecondSortCriteria;
+
         await waitFor(() => {
           expect(mockedAxios.get).toHaveBeenLastCalledWith(
             getListingEndpoint({
-              sort: { [sortBy]: 'desc' },
+              sort: {
+                [sortBy]: 'desc',
+                ...secondSortCriteria,
+              },
             }),
             cancelTokenRequestParam,
           );
@@ -248,7 +261,10 @@ describe(Listing, () => {
         await waitFor(() =>
           expect(mockedAxios.get).toHaveBeenLastCalledWith(
             getListingEndpoint({
-              sort: { [sortBy]: 'asc' },
+              sort: {
+                [sortBy]: 'asc',
+                ...secondSortCriteria,
+              },
             }),
             cancelTokenRequestParam,
           ),
