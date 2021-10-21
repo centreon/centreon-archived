@@ -1,7 +1,6 @@
 <?php
-
 /*
- * Copyright 2005-2015 Centreon
+ * Copyright 2005-2021 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -34,76 +33,11 @@
  *
  */
 
-use Symfony\Component\Console\Logger\ConsoleLogger;
-use Symfony\Component\Console\Output\ConsoleOutput;
-
 if (!isset($centreon)) {
     exit;
 }
 
 require_once("./class/centreonData.class.php");
-
-/**
- * Check if CEIP is enabled.
- */
-$result = $pearDB->query("SELECT `value` FROM `options` WHERE `key` = 'send_statistics' LIMIT 1");
-
-if (($sendStatisticsResult = $result->fetch()) && $sendStatisticsResult["value"] == "1") {
-    $sendStatistics = '1';
-} else {
-    $sendStatistics = '0';
-}
-
-/**
- * Getting Platform Type.
- */
-$result = $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'isRemote'");
-$isRemote = '0';
-if ($row = $result->fetch()) {
-    $isRemote = $row['value'] === 'yes' ? '1' : '0';
-}
-
-/**
- * Getting Centreon UUID.
- */
-$centreonUUID = new CentreonUUID($pearDB);
-$uuid = $centreonUUID->getUUID();
-
-/**
- * Getting Platform statistics.
- */
-$output = new ConsoleOutput();
-$logger = new ConsoleLogger($output);
-$centreonStats = new CentreonStatistics($logger);
-$stats = $centreonStats->getPlatformInfo();
-
-/**
- * Getting License informations.
- */
-$productLicense = 'Open Source';
-$licenseClientName = null;
-try {
-    $centreonModules = ['epp', 'bam', 'map', 'mbi'];
-    $licenseObject = $dependencyInjector['lm.license'];
-    $licenseInformation = [];
-    foreach ($centreonModules as $module) {
-        $licenseObject->setProduct($module);
-        $isLicenseValid = $licenseObject->validate(false);
-        if ($isLicenseValid && !empty($licenseObject->getData())) {
-            $licenseInformation[$module] = $licenseObject->getData();
-            $licenseClientName = $licenseInformation[$module]['client']['name'];
-            if ($module === 'epp') {
-                $productLicense = 'IT Edition';
-            }
-            if (in_array($module, ['mbi', 'bam', 'map'])) {
-                $productLicense = 'Business Edition';
-            }
-        }
-    }
-} catch (\Exception $ex) {
-    error_log($ex->getMessage());
-}
-
 
 if (!$min) {
     ?>
@@ -218,8 +152,8 @@ if (
 }
 
 /*
-* Create Data Flow
-*/
+ * Create Data Flow
+ */
 $cdata = CentreonData::getInstance();
 $jsdata = $cdata->getJsData();
 foreach ($jsdata as $k => $val) {
@@ -228,131 +162,8 @@ foreach ($jsdata as $k => $val) {
 
 ?>
 
+<script src="./include/common/javascript/pendo.js" async></script>
 <script type='text/javascript'>
-    let sendStatistics = Boolean(<?= $sendStatistics ?>);
-    if (sendStatistics === true) {
-        if (
-            localStorage.getItem('centreonPlatformData') === null
-            || JSON.parse(
-                localStorage.getItem('centreonPlatformData')
-            ).cacheGenerationDate + (24 * 60 * 60 * 1000) < Date.now()
-        ) {
-            const userParametersRequest = jQuery.ajax({
-                url: '/centreon/api/v21.10/configuration/users/current/parameters',
-                method: 'GET',
-                contentType: 'application/json'
-            })
-
-            const platformVersionsRequest = jQuery.ajax({
-                url: '/centreon/api/v21.10/platform/versions',
-                method: 'GET',
-                contentType: 'application/json'
-            })
-
-            const aclActionsRequest = jQuery.ajax({
-                url: '/centreon/api/v21.10/users/acl/actions',
-                method: 'GET',
-                contentType: 'application/json'
-            })
-            jQuery.when(
-                userParametersRequest, platformVersionsRequest, aclActionsRequest
-            ).done(
-                (userParametersResponse, platformVersionsResponse, aclActionsResponse) => {
-                    const userParameters = userParametersResponse[0]
-                    const platformVersions = platformVersionsResponse[0]
-                    const aclActionsRes = aclActionsResponse[0]
-
-                    /**
-                     * Initiate variables for data Sending.
-                     */
-                    let uuid = "<?= $uuid ?>";
-                    let nbHosts = parseInt(<?= $stats['nb_hosts'] ?>);
-                    let nbServices = parseInt(<?= $stats['nb_services'] ?>);
-                    let nbServers = parseInt(<?= $stats['nb_central'] ?>)
-                        + parseInt(<?= $stats['nb_pollers'] ?>)
-                        + parseInt(<?= $stats['nb_remotes'] ?>);
-                    let isRemote = Boolean(<?php $isRemote ?>);
-                    let licenseProduct = "<?= $productLicense ?>";
-                    let licenseClient = "<?= $licenseClientName ?>";
-                    let platformData = {
-                        cacheGenerationDate: Date.now(),
-                        excludeAllText: true,
-                        visitor: {
-                            id: null,
-                            role: null,
-                        },
-                        account: {
-                            name: licenseClient ? licenseClient : null,
-                            id: uuid,
-                            serverType: isRemote ? 'remote' : 'central',
-                            licenseType: licenseProduct ? licenseProduct : null,
-                            versionMajor: null,
-                            versionMinor: null,
-                            nb_hosts: nbHosts,
-                            nb_services: nbServices,
-                            nb_servers: nbServers,
-                        }
-                    };
-
-                    /**
-                     * Create unique id based on company name, uuid and contact id
-                     */
-                    platformData.visitor.id = platformData.account.name
-                        ? platformData.account.name.substr(0,10) + '-' + uuid.substr(0,8) + '-' + userParameters.id
-                        : uuid.substr(0,8) + '-' + userParameters.id;
-
-                    if (userParameters.is_admin) {
-                        platformData.visitor.role = 'admin';
-                    }
-
-                    platformData.account.versionMajor = platformVersions.web.major + '.' + platformVersions.web.minor;
-                    platformData.account.versionMinor = platformVersions.web.version;
-
-                    /**
-                     * Define role based on ACL actions
-                     * If user as at least one action rule in ACL, then set role to operator, else to user
-                     */
-                    const aclActions = [
-                        ...Object.values(aclActionsRes.host),
-                        ...Object.values(aclActionsRes.metaservice),
-                        ...Object.values(aclActionsRes.service)
-                    ];
-                    if (!aclActions.includes(true)) {
-                        platformData.visitor.role = 'user';
-                    } else if (aclActions.includes(true) && platformData.visitor.role !== 'admin') {
-                        platformData.visitor.role = 'operator';
-                    }
-
-                    /**
-                     * Save data in local storage and redirect user.
-                     */
-                    localStorage.setItem('centreonPlatformData', JSON.stringify(platformData));
-                }
-            )
-        }
-    } else {
-        if (localStorage.getItem('centreonPlatformData') !== null) {
-            localStorage.removeItem('centreonPlatformData');
-        }
-    }
-
-    platformData = localStorage.getItem('centreonPlatformData');
-    if (platformData !== null) {
-        platformData = JSON.parse(platformData);
-        // Pendo.io
-        (function(apiKey, platformData){
-        (function(p,e,n,d,o){var v,w,x,y,z;o=p[d]=p[d]||{};o._q=o._q||[];
-        v=['initialize','identify','updateOptions','pageLoad','track'];for(w=0,x=v.length;w<x;++w)(function(m){
-            o[m]=o[m]||function(){o._q[m===v[0]?'unshift':'push']([m].concat([].slice.call(arguments,0)));};})(v[w]);
-            y=e.createElement(n);y.async=!0;y.src='https://cdn.eu.pendo.io/agent/static/'+apiKey+'/pendo.js';
-            z=e.getElementsByTagName(n)[0];z.parentNode.insertBefore(y,z);})(window,document,'script','pendo');
-
-            // Call this whenever information about your visitors becomes available
-            // Please use Strings, Numbers, or Bools for value types.
-            pendo.initialize(platformData);
-        })('b06b875d-4a10-4365-7edf-8efeaf53dfdd', platformData);
-    }
-
     jQuery(function() {
         initWholePage();
 
@@ -390,6 +201,7 @@ foreach ($jsdata as $k => $val) {
         jQuery(".timepicker").timepicker();
         jQuery(".datepicker").datepicker();
     }
+
     <?php
     $featureToAsk = $centreonFeature->toAsk($centreon->user->get_id());
     if (count($featureToAsk) === 1) {
