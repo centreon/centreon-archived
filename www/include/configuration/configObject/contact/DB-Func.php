@@ -1221,13 +1221,11 @@ function sanitizeFormContactParameters(array $ret): array
                 break;
             case 'contact_ldap_dn':
             case 'contact_alias':
-                if (empty($inputValue)) {
-                    throw new \InvalidArgumentException('Bad Parameter');
-                } else {
+                if (!empty($inputValue)) {
                     if (
                         $inputValue = filter_var(
                             $inputValue,
-                            FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+                            FILTER_SANITIZE_STRING,
                             FILTER_FLAG_NO_ENCODE_QUOTES
                         )
                     ) {
