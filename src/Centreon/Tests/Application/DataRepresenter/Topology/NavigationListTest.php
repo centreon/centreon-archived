@@ -57,21 +57,9 @@ class NavigationListTest extends TestCase
                 $entity->setTopologyId(1);
                 $entity->setTopologyUrl($url);
                 $entity->setTopologyPage(null);
-                $entity->setTopologyParent(1);
+                $entity->setTopologyParent();
                 $entity->setTopologyGroup(1);
-                $entity->setTopologyName('menu-name');
-                $entity->setIsReact('0');
-
-                return $entity;
-            })(),
-            (function () use ($url, $group) {
-                $entity = new Topology();
-                $entity->setTopologyId(12);
-                $entity->setTopologyUrl($url);
-                $entity->setTopologyPage(null);
-                $entity->setTopologyParent(12);
-                $entity->setTopologyGroup(2);
-                $entity->setTopologyName('menu-name');
+                $entity->setTopologyName('menu-name 3');
                 $entity->setIsReact('0');
 
                 return $entity;
@@ -81,32 +69,8 @@ class NavigationListTest extends TestCase
                 $entity->setTopologyId(123);
                 $entity->setTopologyUrl($url);
                 $entity->setTopologyPage(null);
-                $entity->setTopologyParent(123);
-                $entity->setTopologyGroup(3);
-                $entity->setTopologyName('menu-name 2');
-                $entity->setIsReact('0');
-
-                return $entity;
-            })(),
-            (function () use ($url, $group) {
-                $entity = new Topology();
-                $entity->setTopologyId(4);
-                $entity->setTopologyUrl($url);
-                $entity->setTopologyPage(1);
-                $entity->setTopologyParent(12);
-                $entity->setTopologyGroup(3);
-                $entity->setTopologyName('menu-name 3');
-                $entity->setIsReact('0');
-
-                return $entity;
-            })(),
-            (function () use ($url, $group) {
-                $entity = new Topology();
-                $entity->setTopologyId(5);
-                $entity->setTopologyUrl($url);
-                $entity->setTopologyPage(123);
-                $entity->setTopologyParent(12);
-                $entity->setTopologyGroup(3);
+                $entity->setTopologyParent(1);
+                $entity->setTopologyGroup(1);
                 $entity->setTopologyName('menu-name 4');
                 $entity->setIsReact('0');
 
@@ -126,11 +90,11 @@ class NavigationListTest extends TestCase
             })(),
             (function () use ($url, $group) {
                 $entity = new Topology();
-                $entity->setTopologyId(7);
+                $entity->setTopologyId(6);
                 $entity->setTopologyUrl($url);
-                $entity->setTopologyPage(12345);
+                $entity->setTopologyPage(12346);
                 $entity->setTopologyParent(123);
-                $entity->setTopologyGroup(null);
+                $entity->setTopologyGroup(3);
                 $entity->setTopologyName('menu-name 6');
                 $entity->setIsReact('0');
 
