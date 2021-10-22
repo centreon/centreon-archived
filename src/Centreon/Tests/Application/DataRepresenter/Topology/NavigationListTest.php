@@ -136,6 +136,18 @@ class NavigationListTest extends TestCase
 
                 return $entity;
             })(),
+            (function () use ($url, $group) {
+                $entity = new Topology();
+                $entity->setTopologyId(87);
+                $entity->setTopologyUrl($url);
+                $entity->setTopologyPage(30101);
+                $entity->setTopologyParent(301);
+                $entity->setTopologyGroup(null);
+                $entity->setTopologyName('orphan-lvl-3');
+                $entity->setIsReact('0');
+
+                return $entity;
+            })(),
         ];
 
         $dataRepresenter = new NavigationList($entities, [
