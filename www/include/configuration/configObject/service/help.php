@@ -89,7 +89,7 @@ $help["check_interval"] = dgettext(
 $help["retry_interval"] = dgettext(
     "help",
     "Define the number of \"time units\" to wait before scheduling a re-check for this service after a " .
-    "non-OK state was detected. With the default time unit of 60s, this number will mean multiples of 1 minute. " .
+    "non-OK state was detected. With the default time unit of 15s, this number will mean multiples of 1 minute. " .
     "Once the service has been retried max_check_attempts times without a change in its status, it will revert " .
     "to being scheduled at its \"normal\" check interval rate. (default value: 1)"
 );
