@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { isNil } from 'ramda';
+import { equals, isNil } from 'ramda';
 import { Responsive } from '@visx/visx';
 
 import { styled, makeStyles } from '@material-ui/core';
@@ -39,20 +39,22 @@ interface Props {
 }
 
 const DetailsTab = ({ details }: Props): JSX.Element => {
-  if (isNil(details)) {
-    return <LoadingSkeleton />;
-  }
-
   return (
-    <>
-      <Responsive.ParentSize>
-        {({ width }): JSX.Element => (
+    <Responsive.ParentSize>
+      {({ width }): JSX.Element => {
+        const loading = isNil(details) || equals(width, 0);
+
+        if (loading) {
+          return <LoadingSkeleton />;
+        }
+
+        return (
           <div>
             <SortableCards details={details} panelWidth={width} />
           </div>
-        )}
-      </Responsive.ParentSize>
-    </>
+        );
+      }}
+    </Responsive.ParentSize>
   );
 };
 

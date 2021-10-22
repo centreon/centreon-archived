@@ -450,6 +450,7 @@ $tpl->assign('cct', $cct);
 $tpl->assign('o', $o);
 $tpl->assign('featuresFlipping', (count($features) > 0));
 $tpl->assign('contactIsAdmin', $centreon->user->get_admin());
+$tpl->assign('isRemote', $isRemote);
 
 /*
  * prepare help texts
