@@ -337,3 +337,6 @@ services:
     Centreon\Domain\Log\ContactForDebug:
         class: Centreon\Domain\Log\ContactForDebug
         arguments: ['%env(DEBUG_CONTACT)%']
+
+    Centreon\Domain\Log\LegacyLogger:
+        public: true

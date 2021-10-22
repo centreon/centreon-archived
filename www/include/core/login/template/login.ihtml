@@ -78,6 +78,11 @@
                     return false;
                 });
             });
+
+            if (window.location.href.match(/\/index.php\?disconnect=1/)) {
+                localStorage.removeItem('centreonPlatformData');
+            }
+
           // check :
           //  - if login page is in an iframe
           //  - if iframe url is login page with disconnect parameter
