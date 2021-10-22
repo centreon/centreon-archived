@@ -27,9 +27,9 @@ use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\MonitoringServer\Model\RealTimeMonitoringServer;
 
 /**
- * This interface gathers all the reading operations on the host category repository.
+ * This interface gathers all the reading operations on the realtime monitoring server repository.
  *
- * @package Centreon\Domain\HostConfiguration\Interfaces
+ * @package Centreon\Domain\MonitoringServer\Interfaces
  */
 interface RealTimeMonitoringServerRepositoryInterface
 {

@@ -33,6 +33,7 @@ use Centreon\Domain\MonitoringServer\Model\RealTimeMonitoringServer;
 use Centreon\Infrastructure\RequestParameters\Interfaces\NormalizerInterface;
 use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
 use Centreon\Domain\MonitoringServer\Interfaces\RealTimeMonitoringServerRepositoryInterface;
+use Centreon\Infrastructure\CentreonLegacyDB\StatementCollector;
 use Centreon\Infrastructure\MonitoringServer\Repository\Model\RealTimeMonitoringServerFactoryRdb;
 
 /**
@@ -148,6 +149,7 @@ class RealTimeMonitoringServerRepositoryRDB extends AbstractRepositoryDRB implem
      */
     private function findAllRequest(?array $ids): array
     {
+        $collector = new StatementCollector();
         $this->sqlRequestTranslator->setConcordanceArray([
             'id' => 'instances.instance_id',
             'name' => 'instances.name',
@@ -173,18 +175,18 @@ class RealTimeMonitoringServerRepositoryRDB extends AbstractRepositoryDRB implem
         $request = $this->translateDbName('SELECT SQL_CALC_FOUND_ROWS * FROM `:dbstg`.instances');
 
         // Search
-        $hasWhereCondition = false;
-
         $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
-
-        if ($searchRequest !== null) {
-            $request .= $searchRequest;
-            $hasWhereCondition = true;
-        }
+        $request .= $searchRequest !== null ? $searchRequest : '';
 
         if ($ids !== null) {
-            $request .= ($hasWhereCondition === false ? ' WHERE ' : ' AND ') .
-                ' instances.instance_id IN ( ' . implode(',', $ids) . ' )';
+            $instanceIds = [];
+            $request .= (empty($searchRequest)) ? ' WHERE ' : ' AND ';
+            foreach ($ids as $index => $instanceId) {
+                $key = ":instanceId_{$index}";
+                $instanceIds[] = $key;
+                $collector->addValue($key, $instanceId, \PDO::PARAM_INT);
+            }
+            $request .= 'instances.instance_id IN (' . implode(', ', $instanceIds) . ')';
         }
 
         // Sort
@@ -200,9 +202,10 @@ class RealTimeMonitoringServerRepositoryRDB extends AbstractRepositoryDRB implem
         foreach ($this->sqlRequestTranslator->getSearchValues() as $key => $data) {
             $type = key($data);
             $value = $data[$type];
-            $statement->bindValue($key, $value, $type);
+            $collector->addValue($key, $value, $type);
         }
 
+        $collector->bind($statement);
         $statement->execute();
 
         $result = $this->db->query('SELECT FOUND_ROWS()');

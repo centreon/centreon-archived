@@ -25,7 +25,6 @@ namespace Centreon\Domain\MonitoringServer\UseCase\RealTimeMonitoringServer;
 use Centreon\Domain\MonitoringServer\MonitoringServer;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\MonitoringServer\Exception\RealTimeMonitoringServerException;
-use Centreon\Domain\MonitoringServer\Interfaces\RealTimeMonitoringServerServiceInterface;
 use Centreon\Infrastructure\MonitoringServer\Repository\RealTimeMonitoringServerRepositoryRDB;
 
 /**
@@ -35,11 +34,6 @@ use Centreon\Infrastructure\MonitoringServer\Repository\RealTimeMonitoringServer
  */
 class FindRealTimeMonitoringServers
 {
-
-    /**
-     * @var RealTimeMonitoringServerServiceInterface
-     */
-    private $realTimeMonitoringServerService;
     /**
      * @var ContactInterface
      */
@@ -56,12 +50,10 @@ class FindRealTimeMonitoringServers
      * @param ContactInterface $contact
      */
     public function __construct(
-        RealTimeMonitoringServerServiceInterface $realTimeMonitoringServerService,
         RealTimeMonitoringServerRepositoryRDB $realTimeMonitoringServerRepository,
         ContactInterface $contact
     ) {
         $this->contact = $contact;
-        $this->realTimeMonitoringServerService = $realTimeMonitoringServerService;
         $this->realTimeMonitoringServerRepository = $realTimeMonitoringServerRepository;
     }
 
@@ -77,7 +69,11 @@ class FindRealTimeMonitoringServers
 
         $realTimeMonitoringServers = [];
         if ($this->contact->isAdmin()) {
-            $realTimeMonitoringServers = $this->realTimeMonitoringServerService->findAll();
+            try {
+                $realTimeMonitoringServers = $this->realTimeMonitoringServerRepository->findAll();
+            } catch (\Throwable $ex) {
+                throw RealTimeMonitoringServerException::findRealTimeMonitoringServersException($ex);
+            }
         } else {
             /**
              * @var MonitoringServer[]
@@ -91,8 +87,12 @@ class FindRealTimeMonitoringServers
                     },
                     $allowedMonitoringServers
                 );
-                $realTimeMonitoringServers = $this->realTimeMonitoringServerService
-                    ->findByIds($allowedMonitoringServerIds);
+                try {
+                    $realTimeMonitoringServers = $this->realTimeMonitoringServerRepository
+                        ->findByIds($allowedMonitoringServerIds);
+                } catch (\Throwable $ex) {
+                    throw RealTimeMonitoringServerException::findRealTimeMonitoringServersException($ex);
+                }
             }
         }
 
