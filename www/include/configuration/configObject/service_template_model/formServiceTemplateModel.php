@@ -40,17 +40,6 @@ if (!isset($centreon)) {
 require_once _CENTREON_PATH_ . 'www/class/centreonLDAP.class.php';
 require_once _CENTREON_PATH_ . 'www/class/centreonContactgroup.class.php';
 
-function myDecodeService($arg)
-{
-    $arg = str_replace('#BR#', "\\n", $arg);
-    $arg = str_replace('#T#', "\\t", $arg);
-    $arg = str_replace('#R#', "\\r", $arg);
-    $arg = str_replace('#S#', "/", $arg);
-    $arg = str_replace('#BS#', "\\", $arg);
-
-    return html_entity_decode($arg, ENT_QUOTES, "UTF-8");
-}
-
 function myDecodeSvTP($arg)
 {
     $arg = str_replace('#BR#', "\\n", $arg);
