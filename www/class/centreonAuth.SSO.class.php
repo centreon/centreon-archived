@@ -100,11 +100,7 @@ class CentreonAuthSSO extends CentreonAuth
             $this->source = "OpenId";
 
             # Get configured values
-            if (!empty($this->ssoOptions['openid_connect_client_basic_auth'])) {
-                $clientBasicAuth = $this->ssoOptions['openid_connect_client_basic_auth'];
-            } else {
-                $clientBasicAuth = false;
-            }
+            $clientBasicAuth = $this->ssoOptions['openid_connect_client_basic_auth'];
             $clientId = $this->ssoOptions['openid_connect_client_id'];
             $clientSecret = $this->ssoOptions['openid_connect_client_secret'];
             if (empty($this->ssoOptions['openid_connect_redirect_url'])) {
