@@ -36,13 +36,13 @@ interface RealTimeMonitoringServerServiceInterface
      * @return RealTimeMonitoringServer[]
      * @throws RealTimeMonitoringServerException
      */
-    public function findAllWithAcl(): array;
+    public function findAll(): array;
 
     /**
      * Find all Real Time Monitoring Servers (for an admin user).
-     *
+     * @param int[] $ids
      * @return RealTimeMonitoringServer[]
      * @throws RealTimeMonitoringServerException
      */
-    public function findAllWithoutAcl(): array;
+    public function findByIds(array $ids): array;
 }

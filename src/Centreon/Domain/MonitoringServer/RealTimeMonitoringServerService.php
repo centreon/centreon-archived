@@ -59,10 +59,10 @@ class RealTimeMonitoringServerService implements RealTimeMonitoringServerService
     /**
      * @inheritDoc
      */
-    public function findAllWithAcl(): array
+    public function findAll(): array
     {
         try {
-            return $this->repository->findAllByContact($this->contact);
+            return $this->repository->findAll();
         } catch (\Throwable $ex) {
             throw RealTimeMonitoringServerException::findRealTimeMonitoringServersException($ex);
         }
@@ -71,10 +71,10 @@ class RealTimeMonitoringServerService implements RealTimeMonitoringServerService
     /**
      * @inheritDoc
      */
-    public function findAllWithoutAcl(): array
+    public function findByIds(array $ids): array
     {
         try {
-            return $this->repository->findAll();
+            return $this->repository->findByIds($ids);
         } catch (\Throwable $ex) {
             throw RealTimeMonitoringServerException::findRealTimeMonitoringServersException($ex);
         }
