@@ -189,10 +189,8 @@ class NavigationList implements JsonSerializable
                     ];
 
                     //check if topology has group index
-                    if (
-                        !is_null($entity->getTopologyGroup())
-                        && isset($groups[$levelTwo][$entity->getTopologyGroup()])
-                    ) {
+                    if (!is_null($entity->getTopologyGroup())
+                        && isset($groups[$levelTwo][$entity->getTopologyGroup()])) {
                         if (!isset($naviList[$matches[1]]['children'][$levelTwo]['groups']
                                 [$entity->getTopologyGroup()])) {
                             $naviList[$matches[1]]['children'][$levelTwo]['groups'][$entity->getTopologyGroup()] = [
@@ -227,10 +225,10 @@ class NavigationList implements JsonSerializable
     /**
      * Extract the array without keys to avoid serialization into objects
      *
-     * @param  $naviList
-     * @return array
+     * @param  mixed $naviList
+     * @return mixed
      */
-    private function removeKeysFromArray($naviList)
+    private function removeKeysFromArray(mixed $naviList): mixed
     {
         foreach ($naviList as $key => &$value) {
             if (!empty($value['children'])) {
