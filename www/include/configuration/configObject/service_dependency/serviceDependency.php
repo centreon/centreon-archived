@@ -38,12 +38,6 @@ if (!isset($centreon)) {
     exit();
 }
 
-const ADD_DEPENDENCY = 'a';
-const WATCH_DEPENDENCY = 'w';
-const MODIFY_DEPENDENCY = 'c';
-const DUPLICATE_DEPENDENCY = 'm';
-const DELETE_DEPENDENCY = 'd';
-
 /*
  * Path to the configuration dir
  */
@@ -79,12 +73,12 @@ if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
     $dbmon = $acl->getNameDBAcl();
 
 switch ($o) {
-    case ADD_DEPENDENCY:
-    case WATCH_DEPENDENCY:
-    case MODIFY_DEPENDENCY:
+    case "a": # Add a Dependency
+    case "w": # Watch a Dependency
+    case "c": # Modify a Dependency
         require_once($path . "formServiceDependency.php");
         break;
-    case DUPLICATE_DEPENDENCY:
+    case "m": # Duplicate n Dependencies
         purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
             purgeCSRFToken();
@@ -97,7 +91,7 @@ switch ($o) {
         }
         require_once($path . "listServiceDependency.php");
         break;
-    case DELETE_DEPENDENCY:
+    case "d": # Delete n Dependencies
         purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
             purgeCSRFToken();
