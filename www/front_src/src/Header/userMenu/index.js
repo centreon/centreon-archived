@@ -13,7 +13,7 @@ import { withTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
-import { Typography } from '@material-ui/core';
+import { Typography, withStyles, createStyles } from '@material-ui/core';
 import UserIcon from '@material-ui/icons/AccountCircle';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import CheckIcon from '@material-ui/icons/Check';
@@ -25,6 +25,19 @@ import axios from '../../axios';
 import MenuLoader from '../../components/MenuLoader';
 
 const EDIT_PROFILE_TOPOLOGY_PAGE = '50104';
+
+const MuiStyles = createStyles({
+  fullname: {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    width: '115px',
+  },
+  nameAliasContainer: {
+    display: 'grid',
+    gridTemplateColumns: '2fr 1fr',
+  },
+});
 
 class UserMenu extends Component {
   userService = axios('internal.php?object=centreon_topcounter&action=user');
@@ -110,7 +123,7 @@ class UserMenu extends Component {
     }
 
     // check if edit profile page (My Account) is allowed
-    const { allowedPages, t } = this.props;
+    const { allowedPages, t, classes } = this.props;
     const allowEditProfile = allowedPages?.includes(EDIT_PROFILE_TOPOLOGY_PAGE);
 
     const { fullname, username, autologinkey } = data;
@@ -142,16 +155,19 @@ class UserMenu extends Component {
                 )}
               >
                 <li className={styles['submenu-item']}>
-                  <span className={styles['submenu-item-link']}>
-                    <span className={styles['submenu-user-name']}>
-                      <Typography variant="body2">{fullname}</Typography>
-                    </span>
-                    <span className={styles['submenu-user-type']}>
-                      <Typography variant="body2">
+                  <div className={classnames(styles['submenu-item-link'])}>
+                    <div>
+                      <Typography className={classes.fullname} variant="body2">
+                        {fullname}
+                      </Typography>
+                      <Typography
+                        style={{ wordWrap: 'break-word' }}
+                        variant="body2"
+                      >
                         {t('as')}
                         {` ${username}`}
                       </Typography>
-                    </span>
+                    </div>
                     {allowEditProfile && (
                       <Link
                         className={styles['submenu-user-edit']}
@@ -163,7 +179,7 @@ class UserMenu extends Component {
                         </Typography>
                       </Link>
                     )}
-                  </span>
+                  </div>
                 </li>
                 {autologinkey && (
                   <div className={styles['submenu-content']}>
@@ -211,6 +227,6 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {};
 
-export default withTranslation()(
-  connect(mapStateToProps, mapDispatchToProps)(UserMenu),
+export default withStyles(MuiStyles)(
+  withTranslation()(connect(mapStateToProps, mapDispatchToProps)(UserMenu)),
 );
