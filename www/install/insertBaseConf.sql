@@ -2,7 +2,7 @@
 -- Insert version
 --
 
-INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '21.10.0-beta.1');
+INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '21.10.0-rc.1');
 
 --
 -- Contenu de la table `contact`
@@ -147,7 +147,24 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('gorgone_api_ssl', '0'),
 ('gorgone_api_allow_self_signed', '1'),
 ('gorgone_cmd_timeout', '5'),
-('enable_broker_stats', '0');
+('enable_broker_stats', '0'),
+('openid_connect_enable', '0'),
+('openid_connect_mode', '1'),
+('openid_connect_trusted_clients', ''),
+('openid_connect_blacklist_clients', ''),
+('openid_connect_base_url', ''),
+('openid_connect_authorization_endpoint', ''),
+('openid_connect_token_endpoint', ''),
+('openid_connect_introspection_endpoint', ''),
+('openid_connect_userinfo_endpoint', ''),
+('openid_connect_end_session_endpoint', ''),
+('openid_connect_scope', ''),
+('openid_connect_login_claim', ''),
+('openid_connect_redirect_url', ''),
+('openid_connect_client_id', ''),
+('openid_connect_client_secret', ''),
+('openid_connect_client_basic_auth', '0'),
+('openid_connect_verify_peer', '0');
 
 --
 -- Contenu de la table `giv_components_template`
