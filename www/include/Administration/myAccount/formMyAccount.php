@@ -137,13 +137,15 @@ $form->addElement(
 );
 $form->addElement('select', 'contact_lang', _("Language"), $langs);
 $form->addElement('checkbox', 'show_deprecated_pages', _("Use deprecated pages"), null, $attrsText);
-$form->addElement(
-    'checkbox',
-    'enable_one_click_export',
-    _("Enable the one-click export button for poller configuration [BETA]"),
-    null,
-    $attrsText
-);
+if (!$isRemote) {
+    $form->addElement(
+        'checkbox',
+        'enable_one_click_export',
+        _("Enable the one-click export button for poller configuration [BETA]"),
+        null,
+        $attrsText
+    );
+}
 
 
 /* ------------------------ Topoogy ---------------------------- */
