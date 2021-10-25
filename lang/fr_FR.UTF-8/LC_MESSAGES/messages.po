@@ -6234,7 +6234,7 @@ msgstr "Groupes liés"
 
 #: centreon-web/www/include/options/accessLists/resourcesACL/formResourcesAccess.php:264
 msgid "Shared Resources"
-msgstr "Ressources partagéesb"
+msgstr "Ressources partagées"
 
 #: centreon-web/www/include/options/accessLists/resourcesACL/formResourcesAccess.php:266
 msgid ""
@@ -16280,7 +16280,7 @@ msgid "Execution was too long and reached timeout"
 msgstr "L'exécution a été trop longue et a atteint le délai d'attente"
 
 msgid "Last check with OK status"
-msgstr "Dernier contrôle avec un statut OK" 
+msgstr "Dernier contrôle avec un statut OK"
 
 msgid "Export & reload"
 msgstr "Exporter et recharger"
