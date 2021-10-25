@@ -67,7 +67,7 @@ class RealTimeMonitoringServerRepositoryRDB extends AbstractRepositoryDRB implem
      */
     public function findAll(): array
     {
-        return $this->findAllRequest(null);
+        return $this->findAllRequest([]);
     }
 
     /**
@@ -142,12 +142,12 @@ class RealTimeMonitoringServerRepositoryRDB extends AbstractRepositoryDRB implem
     /**
      * Find all RealTime Monitoring Servers filtered by contact id.
      *
-     * @param int[]|null $ids Monitoring Server ids
+     * @param int[] $ids Monitoring Server ids
      * @return RealTimeMonitoringServer[]
      * @throws AssertionFailedException
      * @throws \InvalidArgumentException
      */
-    private function findAllRequest(?array $ids): array
+    private function findAllRequest(array $ids): array
     {
         $collector = new StatementCollector();
         $this->sqlRequestTranslator->setConcordanceArray([
@@ -178,7 +178,7 @@ class RealTimeMonitoringServerRepositoryRDB extends AbstractRepositoryDRB implem
         $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
         $request .= $searchRequest !== null ? $searchRequest : '';
 
-        if ($ids !== null) {
+        if (!empty($ids)) {
             $instanceIds = [];
             $request .= (empty($searchRequest)) ? ' WHERE ' : ' AND ';
             foreach ($ids as $index => $instanceId) {
@@ -217,6 +217,7 @@ class RealTimeMonitoringServerRepositoryRDB extends AbstractRepositoryDRB implem
         while (($record = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
             $realTimeMonitoringServers[] = RealTimeMonitoringServerFactoryRdb::create($record);
         }
+
         return $realTimeMonitoringServers;
     }
 }

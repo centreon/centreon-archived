@@ -33,7 +33,6 @@ use Centreon\Domain\MonitoringServer\Model\RealTimeMonitoringServer;
  */
 interface RealTimeMonitoringServerRepositoryInterface
 {
-
     /**
      * Find all Real Time Monitoring Servers.
      *
@@ -54,7 +53,7 @@ interface RealTimeMonitoringServerRepositoryInterface
     /**
      * Find all the Monitoring Servers that user is allowed to see.
      *
-     * @param ContactInterface $contact Contact related to host categories
+     * @param ContactInterface $contact Contact related to monitoring servers
      * @return MonitoringServer[]
      * @throws \Throwable
      */

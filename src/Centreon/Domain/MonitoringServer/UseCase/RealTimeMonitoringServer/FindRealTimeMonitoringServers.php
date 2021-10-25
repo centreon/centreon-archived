@@ -26,14 +26,17 @@ use Centreon\Domain\MonitoringServer\MonitoringServer;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\MonitoringServer\Exception\RealTimeMonitoringServerException;
 use Centreon\Infrastructure\MonitoringServer\Repository\RealTimeMonitoringServerRepositoryRDB;
+use Centreon\Domain\Log\LoggerTrait;
 
 /**
- * This class is designed to represent a use case to find all host categories.
+ * This class is designed to represent a use case to find all monitoring servers.
  *
- * @package Centreon\Domain\HostConfiguration\UseCase\V21
+ * @package Centreon\Domain\MonitoringServer\UseCase\RealTimeMonitoringServer
  */
 class FindRealTimeMonitoringServers
 {
+    use LoggerTrait;
+
     /**
      * @var ContactInterface
      */
@@ -70,6 +73,7 @@ class FindRealTimeMonitoringServers
         $realTimeMonitoringServers = [];
         if ($this->contact->isAdmin()) {
             try {
+                $this->info('Find all realtime monitoring servers information.');
                 $realTimeMonitoringServers = $this->realTimeMonitoringServerRepository->findAll();
             } catch (\Throwable $ex) {
                 throw RealTimeMonitoringServerException::findRealTimeMonitoringServersException($ex);
@@ -87,16 +91,25 @@ class FindRealTimeMonitoringServers
                     },
                     $allowedMonitoringServers
                 );
+                $this->info(
+                    'Find realtime monitoring servers information for following ids: '
+                    . implode(',', $allowedMonitoringServerIds)
+                );
                 try {
                     $realTimeMonitoringServers = $this->realTimeMonitoringServerRepository
                         ->findByIds($allowedMonitoringServerIds);
                 } catch (\Throwable $ex) {
                     throw RealTimeMonitoringServerException::findRealTimeMonitoringServersException($ex);
                 }
+            } else {
+                $this->info(
+                    'Cannot find realtime monitoring servers information because user does not have access to anyone.'
+                );
             }
         }
 
         $response->setRealTimeMonitoringServers($realTimeMonitoringServers);
+
         return $response;
     }
 }
