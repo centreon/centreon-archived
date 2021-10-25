@@ -45,7 +45,7 @@ use Centreon\Application\DataRepresenter\Topology\NavigationList;
  */
 class NavigationListTest extends TestCase
 {
-    public function testJsonSerialize(): mixed
+    public function testJsonSerialize(): void
     {
         $url = 'http://loca';
         $page = 'my-page';
