@@ -35,9 +35,10 @@ use Tests\Centreon\Domain\MonitoringServer\Model\RealTimeMonitoringServerTest;
 class FindRealTimeMonitoringServersTest extends TestCase
 {
     /**
-     * @var realTimeMonitoringServerRepository&\PHPUnit\Framework\MockObject\MockObject
+     * @var RealTimeMonitoringServerRepositoryRDB&\PHPUnit\Framework\MockObject\MockObject
      */
-    private $realTimeMonitoringServerService;
+    private $realTimeMonitoringServerRepository;
+
     /**
      * @var \Centreon\Domain\MonitoringServer\Model\RealTimeMonitoringServer
      */
