@@ -756,15 +756,7 @@ class CentreonConfigCentreonBroker
         } catch (\PDOException $e) {
             return false;
         }
-
-        /*
-         * Inputs and Outputs infos
-         */
-        try {
-            $this->updateCentreonBrokerInfos($id, $values);
-        } catch (\PDOException $e) {
-            return false;
-        }
+        $this->updateCentreonBrokerInfos($id, $values);
     }
 
     /**
@@ -835,15 +827,7 @@ class CentreonConfigCentreonBroker
         } catch (\PDOException $e) {
             return false;
         }
-
-        /*
-         * Inputs and Outputs infos
-         */
-        try {
-            $this->updateCentreonBrokerInfos($id, $values);
-        } catch (\PDOException $e) {
-            return false;
-        }
+        $this->updateCentreonBrokerInfos($id, $values);
     }
 
     /**
