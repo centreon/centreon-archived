@@ -155,7 +155,12 @@ class UserMenu extends Component {
                 )}
               >
                 <li className={styles['submenu-item']}>
-                  <div className={classnames(styles['submenu-item-link'])}>
+                  <div
+                    className={classnames(
+                      styles['submenu-item-link'],
+                      classes.nameAliasContainer,
+                    )}
+                  >
                     <div>
                       <Typography className={classes.fullname} variant="body2">
                         {fullname}
