@@ -910,8 +910,8 @@ class CentreonConfigCentreonBroker
                     $fieldtype = $this->getFieldtypes($typeId);
                     foreach ($infos as $fieldname => $fieldvalue) {
                         $lvl = 0;
-                        $grp_id = NULL;
-                        $parent_id = NULL;
+                        $grp_id = null;
+                        $parent_id = null;
 
                         if ($fieldname == 'multiple_fields' && is_array($fieldvalue)) {
                             foreach ($fieldvalue as $index => $value) {
@@ -981,7 +981,8 @@ class CentreonConfigCentreonBroker
                             $grp_id = $info[1];
                             $query = 'INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value,'
                                 . 'config_group, config_group_id, grp_level, subgrp_id, parent_grp_id)  VALUES ('
-                                . ':config_id, :config_key, :config_value, :config_group, :config_group_id, :grp_level, :subgrp_id, :parent_grp_id)';
+                                . ':config_id, :config_key, :config_value, :config_group, :config_group_id, '
+                                . ':grp_level, :subgrp_id, :parent_grp_id)';
 
                             $stmt = $this->db->prepare($query);
                             $stmt->bindValue(':config_id', $id, \PDO::PARAM_INT);
@@ -1010,7 +1011,7 @@ class CentreonConfigCentreonBroker
                             $parent_id = $grp_id;
                             $fieldname = $info[2];
                         }
-                        $grp_id = NULL;
+                        $grp_id = null;
                         foreach ($fieldvalue as $value) {
                             $query = 'INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, '
                                 . 'config_group, config_group_id, grp_level, subgrp_id, parent_grp_id) VALUES ('
