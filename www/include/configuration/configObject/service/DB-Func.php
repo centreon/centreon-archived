@@ -708,7 +708,8 @@ function multipleServiceInDB(
                             $esi["esi_id"] = null;
                             foreach ($esi as $key2 => $value2) {
                                 $val ? $val .=
-                                    ($value2 != null
+                                    (
+                                        $value2 != null
                                         ? (", '" . $pearDB->escape($value2) . "'")
                                         : ", NULL"
                                     ) : $val .= ($value2 != null ? ("'" . $pearDB->escape($value2) . "'") : "NULL");
@@ -1753,8 +1754,6 @@ function updateServiceNotifs($service_id = null, $ret = array())
 // For massive change. incremental mode
 function updateServiceNotifs_MC($service_id = null)
 {
-    require_once "./include/common/javascript/commandGetArgs/cmdGetExample.php";
-
     if (!$service_id) {
         return;
     }
@@ -1765,7 +1764,8 @@ function updateServiceNotifs_MC($service_id = null)
     $rq .= "WHERE service_id = '" . $service_id . "' LIMIT 1";
     $dbResult = $pearDB->query($rq);
     $service = array();
-    $service = array_map("myDecodeService", $dbResult->fetch());
+    $service = array_map("db2str", $dbResult->fetch());
+    $service = array_map("myDecode", $service);
 
     $ret = $form->getSubmitValue("service_notifOpts");
 
