@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -264,13 +265,11 @@ if ($o == WATCH_DEPENDENCY) {
     }
     $form->setDefaults($dep);
     $form->freeze();
-} # Modify a Dependency information
-elseif ($o == MODIFY_DEPENDENCY) {
+} elseif ($o == MODIFY_DEPENDENCY) {
     $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $form->setDefaults($dep);
-} # Add a Dependency information
-elseif ($o == ADD_DEPENDENCY) {
+} elseif ($o == ADD_DEPENDENCY) {
     $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $form->setDefaults(array('inherits_parent', '0'));
@@ -293,8 +292,8 @@ if ($valid) {
     require_once("listHostDependency.php");
 } else {
     /*
-	 * Apply a template definition
-	 */
+     * Apply a template definition
+     */
     $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
     $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
     $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
