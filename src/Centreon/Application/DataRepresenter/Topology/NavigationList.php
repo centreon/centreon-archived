@@ -228,7 +228,7 @@ class NavigationList implements JsonSerializable
      * @param  mixed[] $naviList
      * @return mixed
      */
-    private function removeKeysFromArray(mixed $naviList): mixed
+    private function removeKeysFromArray(array $naviList): array
     {
         foreach ($naviList as $key => &$value) {
             if (!empty($value['children'])) {
