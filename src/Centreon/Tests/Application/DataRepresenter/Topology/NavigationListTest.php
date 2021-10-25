@@ -45,18 +45,17 @@ use Centreon\Application\DataRepresenter\Topology\NavigationList;
  */
 class NavigationListTest extends TestCase
 {
-    public function testJsonSerialize()
+    public function testJsonSerialize(): mixed
     {
         $url = 'http://loca';
         $page = 'my-page';
-        $group = 1;
 
         $entities = [
-            (function () use ($url, $group) {
+            (function () use ($url) {
                 $entity = new Topology();
                 $entity->setTopologyId(1);
                 $entity->setTopologyUrl($url);
-                $entity->setTopologyPage(1);
+                $entity->setTopologyPage('1');
                 $entity->setTopologyParent(null);
                 $entity->setTopologyGroup(null);
                 $entity->setTopologyName('menu-A-lvl-1');
@@ -64,11 +63,11 @@ class NavigationListTest extends TestCase
 
                 return $entity;
             })(),
-            (function () use ($url, $group) {
+            (function () use ($url) {
                 $entity = new Topology();
                 $entity->setTopologyId(2);
                 $entity->setTopologyUrl($url);
-                $entity->setTopologyPage(2);
+                $entity->setTopologyPage('2');
                 $entity->setTopologyParent(null);
                 $entity->setTopologyGroup(null);
                 $entity->setTopologyName('menu-B-lvl-1');
@@ -76,11 +75,11 @@ class NavigationListTest extends TestCase
 
                 return $entity;
             })(),
-            (function () use ($url, $group) {
+            (function () use ($url) {
                 $entity = new Topology();
                 $entity->setTopologyId(3);
                 $entity->setTopologyUrl($url);
-                $entity->setTopologyPage(123);
+                $entity->setTopologyPage('123');
                 $entity->setTopologyParent(1);
                 $entity->setTopologyGroup(null);
                 $entity->setTopologyName('menu-C-lvl-2');
@@ -88,7 +87,7 @@ class NavigationListTest extends TestCase
 
                 return $entity;
             })(),
-            (function () use ($url, $group) {
+            (function () use ($url) {
                 $entity = new Topology();
                 $entity->setTopologyId(4);
                 $entity->setTopologyUrl($url);
@@ -100,11 +99,11 @@ class NavigationListTest extends TestCase
 
                 return $entity;
             })(),
-            (function () use ($url, $group) {
+            (function () use ($url) {
                 $entity = new Topology();
                 $entity->setTopologyId(5);
                 $entity->setTopologyUrl($url);
-                $entity->setTopologyPage(12345);
+                $entity->setTopologyPage('12345');
                 $entity->setTopologyParent(123);
                 $entity->setTopologyGroup(3);
                 $entity->setTopologyName('menu-D-lvl-3');
@@ -112,11 +111,11 @@ class NavigationListTest extends TestCase
 
                 return $entity;
             })(),
-            (function () use ($url, $group) {
+            (function () use ($url) {
                 $entity = new Topology();
                 $entity->setTopologyId(6);
                 $entity->setTopologyUrl($url);
-                $entity->setTopologyPage(12346);
+                $entity->setTopologyPage('12346');
                 $entity->setTopologyParent(123);
                 $entity->setTopologyGroup(3);
                 $entity->setTopologyName('menu-E-lvl-3');
@@ -124,11 +123,11 @@ class NavigationListTest extends TestCase
 
                 return $entity;
             })(),
-            (function () use ($url, $group) {
+            (function () use ($url) {
                 $entity = new Topology();
                 $entity->setTopologyId(7);
                 $entity->setTopologyUrl($url);
-                $entity->setTopologyPage(12347);
+                $entity->setTopologyPage('12347');
                 $entity->setTopologyParent(123);
                 $entity->setTopologyGroup(null);
                 $entity->setTopologyName('menu-F-lvl-3');
@@ -136,11 +135,11 @@ class NavigationListTest extends TestCase
 
                 return $entity;
             })(),
-            (function () use ($url, $group) {
+            (function () use ($url) {
                 $entity = new Topology();
                 $entity->setTopologyId(87);
                 $entity->setTopologyUrl($url);
-                $entity->setTopologyPage(30101);
+                $entity->setTopologyPage('30101');
                 $entity->setTopologyParent(301);
                 $entity->setTopologyGroup(null);
                 $entity->setTopologyName('orphan-lvl-3');
