@@ -226,7 +226,7 @@ class NavigationList implements JsonSerializable
      * Extract the array without keys to avoid serialization into objects
      *
      * @param  mixed[] $naviList
-     * @return mixed
+     * @return mixed[]
      */
     private function removeKeysFromArray(array $naviList): array
     {
