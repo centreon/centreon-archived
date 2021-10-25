@@ -42,8 +42,8 @@ if (!isset($centreon)) {
 #
 $dep = array();
 $initialValues = array();
-if (($o == "c" || $o == "w") && $dep_id) {
-    $DBRESULT = $pearDB->query("SELECT * FROM dependency WHERE dep_id = '" . $dep_id . "' LIMIT 1");
+if (($o == MODIFY_DEPENDENCY || $o == WATCH_DEPENDENCY) && $depId) {
+    $DBRESULT = $pearDB->query("SELECT * FROM dependency WHERE dep_id = '" . $depId . "' LIMIT 1");
 
     # Set base value
     $dep = array_map("myDecode", $DBRESULT->fetchRow());
@@ -86,11 +86,11 @@ $attrHostgroups = array(
  * Form begin
  */
 $form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
-if ($o == "a") {
+if ($o == ADD_DEPENDENCY) {
     $form->addElement('header', 'title', _("Add a Dependency"));
-} elseif ($o == "c") {
+} elseif ($o == MODIFY_DEPENDENCY) {
     $form->addElement('header', 'title', _("Modify a Dependency"));
-} elseif ($o == "w") {
+} elseif ($o == WATCH_DEPENDENCY) {
     $form->addElement('header', 'title', _("View a Dependency"));
 }
 
@@ -113,48 +113,78 @@ $tab[] = $form->createElement(
     'o',
     '&nbsp;',
     _("Ok/Up"),
-    array('id' => 'hUp', 'onClick' => 'uncheckAllH(this);')
+    array('id' => 'nUp', 'onClick' => 'applyNotificationRules(this);')
 );
 $tab[] = $form->createElement(
     'checkbox',
     'd',
     '&nbsp;',
     _("Down"),
-    array('id' => 'hDown', 'onClick' => 'uncheckAllH(this);')
+    array('id' => 'nDown', 'onClick' => 'applyNotificationRules(this);')
 );
 $tab[] = $form->createElement(
     'checkbox',
     'u',
     '&nbsp;',
     _("Unreachable"),
-    array('id' => 'hUnreachable', 'onClick' => 'uncheckAllH(this);')
+    array('id' => 'nUnreachable', 'onClick' => 'applyNotificationRules(this);')
 );
 $tab[] = $form->createElement(
     'checkbox',
     'p',
     '&nbsp;',
     _("Pending"),
-    array('id' => 'hPending', 'onClick' => 'uncheckAllH(this);')
+    array('id' => 'nPending', 'onClick' => 'applyNotificationRules(this);')
 );
 $tab[] = $form->createElement(
     'checkbox',
     'n',
     '&nbsp;',
     _("None"),
-    array('id' => 'hNone', 'onClick' => 'uncheckAllH(this);')
+    array('id' => 'nNone', 'onClick' => 'applyNotificationRules(this);')
 );
 $form->addGroup($tab, 'notification_failure_criteria', _("Notification Failure Criteria"), '&nbsp;&nbsp;');
 
 $tab = array();
-$tab[] = $form->createElement('checkbox', 'o', '&nbsp;', _("Ok/Up"));
-$tab[] = $form->createElement('checkbox', 'd', '&nbsp;', _("Down"));
-$tab[] = $form->createElement('checkbox', 'u', '&nbsp;', _("Unreachable"));
-$tab[] = $form->createElement('checkbox', 'p', '&nbsp;', _("Pending"));
-$tab[] = $form->createElement('checkbox', 'n', '&nbsp;', _("None"));
+$tab[] = $form->createElement(
+    'checkbox',
+    'o',
+    '&nbsp;',
+    _("Ok/Up"),
+    ['id' => 'eUp', 'onClick' => 'applyExecutionRules(this);']
+);
+$tab[] = $form->createElement(
+    'checkbox',
+    'd',
+    '&nbsp;',
+    _("Down"),
+    ['id' => 'eDown', 'onClick' => 'applyExecutionRules(this);']
+);
+$tab[] = $form->createElement(
+    'checkbox',
+    'u',
+    '&nbsp;',
+    _("Unreachable"),
+    ['id' => 'eUnreachable', 'onClick' => 'applyExecutionRules(this);']
+);
+$tab[] = $form->createElement(
+    'checkbox',
+    'p',
+    '&nbsp;',
+    _("Pending"),
+    ['id' => 'ePending', 'onClick' => 'applyExecutionRules(this);']
+);
+$tab[] = $form->createElement(
+    'checkbox',
+    'n',
+    '&nbsp;',
+    _("None"),
+    ['id' => 'eNone', 'onClick' => 'applyExecutionRules(this);']
+);
 $form->addGroup($tab, 'execution_failure_criteria', _("Execution Failure Criteria"), '&nbsp;&nbsp;');
 
 $route = './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup' .
-    '&action=defaultValues&target=dependency&field=dep_hgParents&id=' . $dep_id;
+    '&action=defaultValues&target=dependency&field=dep_hgParents&id=' . $depId;
 $attrHostgroup1 = array_merge(
     $attrHostgroups,
     array('defaultDatasetRoute' => $route)
@@ -162,7 +192,7 @@ $attrHostgroup1 = array_merge(
 $form->addElement('select2', 'dep_hgParents', _("Host Groups Name"), array(), $attrHostgroup1);
 
 $route = './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup' .
-    '&action=defaultValues&target=dependency&field=dep_hgChilds&id=' . $dep_id;
+    '&action=defaultValues&target=dependency&field=dep_hgChilds&id=' . $depId;
 $attrHostgroup2 = array_merge(
     $attrHostgroups,
     array('defaultDatasetRoute' => $route)
@@ -189,7 +219,7 @@ $form->addRule('dep_description', _("Required Field"), 'required');
 $form->addRule('dep_description', _("Unauthorized value"), 'sanitize');
 $form->addRule('dep_hgParents', _("Required Field"), 'required');
 $form->addRule('dep_hgChilds', _("Required Field"), 'required');
-
+$form->addRule('execution_failure_criteria', _("Required Field"), 'required');
 $form->addRule('notification_failure_criteria', _("Required Field"), 'required');
 
 $form->registerRule('cycle', 'callback', 'testHostGroupDependencyCycle');
@@ -205,24 +235,24 @@ $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
 # Just watch a Dependency information
-if ($o == "w") {
+if ($o == WATCH_DEPENDENCY) {
     if ($centreon->user->access->page($p) != 2) {
         $form->addElement(
             "button",
             "change",
             _("Modify"),
-            array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&dep_id=" . $dep_id . "'")
+            array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&dep_id=" . $depId . "'")
         );
     }
     $form->setDefaults($dep);
     $form->freeze();
 } # Modify a Dependency information
-elseif ($o == "c") {
+elseif ($o == MODIFY_DEPENDENCY) {
     $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $form->setDefaults($dep);
 } # Add a Dependency information
-elseif ($o == "a") {
+elseif ($o == ADD_DEPENDENCY) {
     $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $form->setDefaults(array('inherits_parent', '0'));
@@ -270,18 +300,26 @@ if ($valid) {
 }
 ?>
 <script type="text/javascript">
-    function uncheckAllH(object) {
-        if (object.id == "hNone" && object.checked) {
-            document.getElementById('hUp').checked = false;
-            document.getElementById('hDown').checked = false;
-            document.getElementById('hUnreachable').checked = false;
-            document.getElementById('hPending').checked = false;
-            if (document.getElementById('hFlapping')) {
-                document.getElementById('hFlapping').checked = false;
-            }
+    function applyNotificationRules(object) {
+        if (object.id === "nNone" && object.checked) {
+            document.getElementById('nUp').checked = false;
+            document.getElementById('nDown').checked = false;
+            document.getElementById('nUnreachable').checked = false;
+            document.getElementById('nPending').checked = false;
         }
         else {
-            document.getElementById('hNone').checked = false;
+            document.getElementById('nNone').checked = false;
+        }
+    }
+    function applyExecutionRules(object) {
+        if (object.id === "eNone" && object.checked) {
+            document.getElementById('eUp').checked = false;
+            document.getElementById('eDown').checked = false;
+            document.getElementById('eUnreachable').checked = false;
+            document.getElementById('ePending').checked = false;
+        }
+        else {
+            document.getElementById('eNone').checked = false;
         }
     }
 </script>
