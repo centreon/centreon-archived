@@ -68,6 +68,51 @@ try {
         }
     }
 
+    /**
+     * Retrieve user filters
+     */
+    $statement = $pearDB->query(
+        "SELECT `id`, `criterias` FROM `user_filter` WHERE `page_name` = 'events-view'"
+    );
+
+    $fixedCriteriaFilters = [];
+
+    /**
+     * Sort filter criteria was not correctly added during the 21.04.0
+     * upgrade. It should be an array and not an object
+     */
+    $errorMessage = "Cannot parse filter values in user_filter table.";
+    while ($filter = $statement->fetch()) {
+        $id = $filter['id'];
+        $decodedCriterias = json_decode($filter['criterias'], true);
+        foreach ($decodedCriterias as $criteriaKey => $criteria) {
+            if (
+                $criteria['name'] === 'sort'
+                && is_array($criteria['value'])
+                && count($criteria['value']) === 2
+                && $criteria['value'][0] === 'status_severity_code'
+                && !in_array($criteria['value'][1], ['asc', 'desc'])
+            ) {
+                $decodedCriterias[$criteriaKey]['value'][1] = 'desc';
+            }
+        }
+
+        $fixedCriteriaFilters[$id] = json_encode($decodedCriterias);
+    }
+
+    /**
+     * UPDATE SQL request on filters
+     */
+    $errorMessage = "Unable to update filter sort values in user_filter table.";
+    foreach ($fixedCriteriaFilters as $id => $criterias) {
+        $statement = $pearDB->prepare(
+            "UPDATE `user_filter` SET `criterias` = :criterias WHERE `id` = :id"
+        );
+        $statement->bindValue(':id', (int) $id, \PDO::PARAM_INT);
+        $statement->bindValue(':criterias', $criterias, \PDO::PARAM_STR);
+        $statement->execute();
+    }
+
     $pearDB->commit();
 } catch (\Exception $e) {
     $pearDB->rollBack();
