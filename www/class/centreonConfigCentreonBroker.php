@@ -925,27 +925,11 @@ class CentreonConfigCentreonBroker
                                     $stmt->bindValue(':config_key', $fieldname2, \PDO::PARAM_STR);
                                     $stmt->bindValue(':config_value', $value2, \PDO::PARAM_STR);
                                     $stmt->bindValue(':config_group', $group, \PDO::PARAM_STR);
-                                    $stmt->bindValue(
-                                        ':config_group_id',
-                                        $gid,
-                                        is_null($gid) ? \PDO::PARAM_NULL : \PDO::PARAM_INT
-                                    );
+                                    $stmt->bindValue(':config_group_id', $gid, \PDO::PARAM_INT);
                                     $stmt->bindValue(':grp_level', $lvl, \PDO::PARAM_INT);
-                                    $stmt->bindValue(
-                                        ':subgrp_id',
-                                        $grp_id,
-                                        is_null($grp_id) ? \PDO::PARAM_NULL : \PDO::PARAM_INT
-                                    );
-                                    $stmt->bindValue(
-                                        ':parent_grp_id',
-                                        $parent_id,
-                                        is_null($parent_id) ? \PDO::PARAM_NULL : \PDO::PARAM_INT
-                                    );
-                                    $stmt->bindValue(
-                                        ':fieldIndex',
-                                        $index,
-                                        is_null($index) ? \PDO::PARAM_NULL : \PDO::PARAM_INT
-                                    );
+                                    $stmt->bindValue(':subgrp_id', $grp_id, \PDO::PARAM_INT);
+                                    $stmt->bindValue(':parent_grp_id', $parent_id, \PDO::PARAM_INT);
+                                    $stmt->bindValue(':fieldIndex', $index, \PDO::PARAM_INT);
                                     $stmt->execute();
                                 }
                             }
@@ -973,22 +957,10 @@ class CentreonConfigCentreonBroker
                             $stmt->bindValue(':config_key', $grp_name, \PDO::PARAM_STR);
                             $stmt->bindValue(':config_value', "", \PDO::PARAM_STR);
                             $stmt->bindValue(':config_group', $group, \PDO::PARAM_STR);
-                            $stmt->bindValue(
-                                ':config_group_id',
-                                $gid,
-                                is_null($gid) ? \PDO::PARAM_NULL : \PDO::PARAM_INT
-                            );
+                            $stmt->bindValue(':config_group_id', $gid, \PDO::PARAM_INT);
                             $stmt->bindValue(':grp_level', $lvl, \PDO::PARAM_INT);
-                            $stmt->bindValue(
-                                ':subgrp_id',
-                                $grp_id,
-                                is_null($grp_id) ? \PDO::PARAM_NULL : \PDO::PARAM_INT
-                            );
-                            $stmt->bindValue(
-                                ':parent_grp_id',
-                                $parent_id,
-                                is_null($parent_id) ? \PDO::PARAM_NULL : \PDO::PARAM_INT
-                            );
+                            $stmt->bindValue(':subgrp_id', $grp_id, \PDO::PARAM_INT);
+                            $stmt->bindValue(':parent_grp_id', $parent_id, \PDO::PARAM_INT);
                             $stmt->execute();
 
                             $lvl++;
@@ -1006,22 +978,10 @@ class CentreonConfigCentreonBroker
                             $stmt->bindValue(':config_key', $fieldname, \PDO::PARAM_STR);
                             $stmt->bindValue(':config_value', $value, \PDO::PARAM_STR);
                             $stmt->bindValue(':config_group', $group, \PDO::PARAM_STR);
-                            $stmt->bindValue(
-                                ':config_group_id',
-                                $gid,
-                                is_null($gid) ? \PDO::PARAM_NULL : \PDO::PARAM_INT
-                            );
+                            $stmt->bindValue(':config_group_id', $gid, \PDO::PARAM_INT);
                             $stmt->bindValue(':grp_level', $lvl, \PDO::PARAM_INT);
-                            $stmt->bindValue(
-                                ':subgrp_id',
-                                $grp_id,
-                                is_null($grp_id) ? \PDO::PARAM_NULL : \PDO::PARAM_INT
-                            );
-                            $stmt->bindValue(
-                                ':parent_grp_id',
-                                $parent_id,
-                                is_null($parent_id) ? \PDO::PARAM_NULL : \PDO::PARAM_INT
-                            );
+                            $stmt->bindValue(':subgrp_id', $grp_id, \PDO::PARAM_INT);
+                            $stmt->bindValue(':parent_grp_id', $parent_id, \PDO::PARAM_INT);
                             $stmt->execute();
                         }
                     }
