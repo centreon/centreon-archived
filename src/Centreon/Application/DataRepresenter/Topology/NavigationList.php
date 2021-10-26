@@ -169,7 +169,6 @@ class NavigationList implements JsonSerializable
                 ];
             } elseif (
                 preg_match('/^(\d)(\d\d)(\d\d)$/', $entity->getTopologyPage(), $matches)
-                && !empty($naviList[$matches[1]])
                 && !empty($naviList[$matches[1]]['children'][$matches[1] . $matches[2]])
             ) { // level 3
                 $levelTwo = $matches[1] . $matches[2];
