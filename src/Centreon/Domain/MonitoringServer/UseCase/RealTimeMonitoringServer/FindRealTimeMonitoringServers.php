@@ -22,26 +22,30 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\MonitoringServer\UseCase\RealTimeMonitoringServer;
 
+use Centreon\Domain\MonitoringServer\MonitoringServer;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\MonitoringServer\Exception\RealTimeMonitoringServerException;
-use Centreon\Domain\MonitoringServer\Interfaces\RealTimeMonitoringServerServiceInterface;
+use Centreon\Infrastructure\MonitoringServer\Repository\RealTimeMonitoringServerRepositoryRDB;
+use Centreon\Domain\Log\LoggerTrait;
 
 /**
- * This class is designed to represent a use case to find all host categories.
+ * This class is designed to represent a use case to find all monitoring servers.
  *
- * @package Centreon\Domain\HostConfiguration\UseCase\V21
+ * @package Centreon\Domain\MonitoringServer\UseCase\RealTimeMonitoringServer
  */
 class FindRealTimeMonitoringServers
 {
+    use LoggerTrait;
 
-    /**
-     * @var RealTimeMonitoringServerServiceInterface
-     */
-    private $realTimeMonitoringServerService;
     /**
      * @var ContactInterface
      */
     private $contact;
+
+    /**
+     * @var RealTimeMonitoringServerRepositoryRDB
+     */
+    private $realTimeMonitoringServerRepository;
 
     /**
      * FindRealTimeMonitoringServers constructor.
@@ -49,11 +53,11 @@ class FindRealTimeMonitoringServers
      * @param ContactInterface $contact
      */
     public function __construct(
-        RealTimeMonitoringServerServiceInterface $realTimeMonitoringServerService,
+        RealTimeMonitoringServerRepositoryRDB $realTimeMonitoringServerRepository,
         ContactInterface $contact
     ) {
         $this->contact = $contact;
-        $this->realTimeMonitoringServerService = $realTimeMonitoringServerService;
+        $this->realTimeMonitoringServerRepository = $realTimeMonitoringServerRepository;
     }
 
     /**
@@ -65,10 +69,47 @@ class FindRealTimeMonitoringServers
     public function execute(): FindRealTimeMonitoringServersResponse
     {
         $response = new FindRealTimeMonitoringServersResponse();
-        $realTimeMonitoringServers = ($this->contact->isAdmin())
-            ? $this->realTimeMonitoringServerService->findAllWithoutAcl()
-            : $this->realTimeMonitoringServerService->findAllWithAcl();
+
+        $realTimeMonitoringServers = [];
+        if ($this->contact->isAdmin()) {
+            try {
+                $this->info('Find all realtime monitoring servers information.');
+                $realTimeMonitoringServers = $this->realTimeMonitoringServerRepository->findAll();
+            } catch (\Throwable $ex) {
+                throw RealTimeMonitoringServerException::findRealTimeMonitoringServersException($ex);
+            }
+        } else {
+            /**
+             * @var MonitoringServer[]
+             */
+            $allowedMonitoringServers = $this->realTimeMonitoringServerRepository
+                ->findAllowedMonitoringServers($this->contact);
+            if (!empty($allowedMonitoringServers)) {
+                $allowedMonitoringServerIds = array_map(
+                    function ($allowedMonitoringServer) {
+                        return $allowedMonitoringServer->getId();
+                    },
+                    $allowedMonitoringServers
+                );
+                $this->info(
+                    'Find realtime monitoring servers information for following ids: '
+                    . implode(',', $allowedMonitoringServerIds)
+                );
+                try {
+                    $realTimeMonitoringServers = $this->realTimeMonitoringServerRepository
+                        ->findByIds($allowedMonitoringServerIds);
+                } catch (\Throwable $ex) {
+                    throw RealTimeMonitoringServerException::findRealTimeMonitoringServersException($ex);
+                }
+            } else {
+                $this->info(
+                    'Cannot find realtime monitoring servers information because user does not have access to anyone.'
+                );
+            }
+        }
+
         $response->setRealTimeMonitoringServers($realTimeMonitoringServers);
+
         return $response;
     }
 }
