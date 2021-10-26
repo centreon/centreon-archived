@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -310,7 +311,25 @@ function updateComponentTemplate($compoId = null)
         $formValues['ds_color_area'] = $formValues['ds_color_line'];
     }
 
-    list($formValues['host_id'], $formValues['service_id']) = parseHostIdPostParameter($formValues['host_id']);
+    list($formValues['host_id'], $formValues['service_id']) = parseHostIdPostParameter($formValues['host_service_id']);
+
+    // Sets the default values if they have not been sent (used to deselect the checkboxes)
+    $checkBoxValueToSet = [
+        'ds_stack',
+        'ds_invert',
+        'ds_filled',
+        'ds_hidecurve',
+        'ds_max',
+        'ds_min',
+        'ds_minmax_int',
+        'ds_average',
+        'ds_last',
+        'ds_max',
+        'ds_total'
+    ];
+    foreach ($checkBoxValueToSet as $element) {
+        $formValues[$element] = $formValues[$element] ?? '0';
+    }
 
     $bindParams = sanitizeFormComponentTemplatesParameters($formValues);
 
