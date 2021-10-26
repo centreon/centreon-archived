@@ -12,16 +12,8 @@
             <td><h4>{$Pollers}</h4></td>
         </tr>
         <tr>
-            <td><input type='text' name='searchH' value="
-                {if isset($searchH)}
-                    {$searchH}
-                {/if}
-            "/></td>
-            <td><input type='text' name='searchS' value="
-                {if isset($searchS)}
-                    {$searchS}
-                {/if}
-            "/></td>
+            <td><input type='text' name='searchH' value="{if isset($searchH)}{$searchH}{/if}"/></td>
+            <td><input type='text' name='searchS' value="{if isset($searchS)}{$searchS}{/if}"/></td>
             <td>{$form.searchP.html}</td>
             <td>{$form.Search.html}</td>
         </tr>
