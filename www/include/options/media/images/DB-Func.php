@@ -439,7 +439,7 @@ function isCorrectMIMEType(array $file): bool
         "zip" => "application/zip",
         "gzip" => "application/x-gzip"
     ];
-    $fileExtension = end(explode(".", $file["name"]));
+    $fileExtension = strtolower(end(explode(".", $file["name"])));
     if (!array_key_exists($fileExtension, $mimeTypeFileExtensionConcordance)) {
         return false;
     }
