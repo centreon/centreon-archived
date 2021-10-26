@@ -6234,7 +6234,7 @@ msgstr "Groupes liés"
 
 #: centreon-web/www/include/options/accessLists/resourcesACL/formResourcesAccess.php:264
 msgid "Shared Resources"
-msgstr "Ressources partagéesb"
+msgstr "Ressources partagées"
 
 #: centreon-web/www/include/options/accessLists/resourcesACL/formResourcesAccess.php:266
 msgid ""
