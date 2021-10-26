@@ -324,7 +324,6 @@ function updateComponentTemplate($compoId = null)
         'ds_minmax_int',
         'ds_average',
         'ds_last',
-        'ds_max',
         'ds_total'
     ];
     foreach ($checkBoxValueToSet as $element) {
