@@ -15,16 +15,16 @@
 	<tr class="list_two">
 		<td class="FormRowField">
 			{if $o == "a" || $o == "c"}
-				<div style="text-decoration: underline;"><img class="helpTooltip" name="tip_host_service_data_source">{$form.host_id.label}</div>
+				<div style="text-decoration: underline;"><img class="helpTooltip" name="tip_host_service_data_source">{$form.host_service_id.label}</div>
 				{$form.hsr_text.label}
 			{/if}
 			{if $o == "w"}
-				<div><img class="helpTooltip" name="tip_host_service_data_source">{$form.host_id.label}</div>
+				<div><img class="helpTooltip" name="tip_host_service_data_source">{$form.host_service_id.label}</div>
 			{/if}
 
 		</td>
 		<td id="td_list_hsr" class="FormRowValue">
-			{$form.host_id.html}
+			{$form.host_service_id.html}
 		</td>
 	</tr>
 	<tr class="list_one">
@@ -121,7 +121,10 @@
 		{if isset($form.submitC)}
 			{$form.submitC.html}
 		{/if}
-		{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}
+		{if isset($form.submitA)}
+			{$form.submitA.html}
+		{/if}
+		&nbsp;&nbsp;&nbsp;{$form.reset.html}
 	</p>
 {else if $o == "w"}
 	<p>{$form.change.html}</p>
