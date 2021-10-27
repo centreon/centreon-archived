@@ -893,8 +893,8 @@ class CentreonConfigCentreonBroker
                     $fieldtype = $this->getFieldtypes($typeId);
                     foreach ($infos as $fieldname => $fieldvalue) {
                         $lvl = 0;
-                        $grp_id = 'NULL';
-                        $parent_id = 'NULL';
+                        $grp_id = null;
+                        $parent_id = null;
 
                         if ($fieldname == 'multiple_fields' && is_array($fieldvalue)) {
                             foreach ($fieldvalue as $index => $value) {
@@ -917,10 +917,19 @@ class CentreonConfigCentreonBroker
                                     $query = "INSERT INTO cfg_centreonbroker_info "
                                         . "(config_id, config_key, config_value, config_group, config_group_id, "
                                         . "grp_level, subgrp_id, parent_grp_id, fieldIndex) "
-                                        . "VALUES (" . $id . ", '" . $fieldname2 . "', '" . $value2 . "', '"
-                                        . $group . "', " . $gid . ", " . $lvl . ", " . $grp_id . ", "
-                                        . $parent_id . ", " . $index . ") ";
-                                    $this->db->query($query);
+                                        . "VALUES (:config_id, :config_key, :config_value, :config_group, "
+                                        . ":config_group_id, :grp_level, :subgrp_id, :parent_grp_id, :fieldIndex) ";
+                                    $stmt = $this->db->prepare($query);
+                                    $stmt->bindValue(':config_id', $id, \PDO::PARAM_INT);
+                                    $stmt->bindValue(':config_key', $fieldname2, \PDO::PARAM_STR);
+                                    $stmt->bindValue(':config_value', $value2, \PDO::PARAM_STR);
+                                    $stmt->bindValue(':config_group', $group, \PDO::PARAM_STR);
+                                    $stmt->bindValue(':config_group_id', $gid, \PDO::PARAM_INT);
+                                    $stmt->bindValue(':grp_level', $lvl, \PDO::PARAM_INT);
+                                    $stmt->bindValue(':subgrp_id', $grp_id, \PDO::PARAM_INT);
+                                    $stmt->bindValue(':parent_grp_id', $parent_id, \PDO::PARAM_INT);
+                                    $stmt->bindValue(':fieldIndex', $index, \PDO::PARAM_INT);
+                                    $stmt->execute();
                                 }
                             }
                             continue;
@@ -939,20 +948,40 @@ class CentreonConfigCentreonBroker
                             $grp_id = $info[1];
                             $query = 'INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value,'
                                 . 'config_group, config_group_id, grp_level, subgrp_id, parent_grp_id)  VALUES ('
-                                . $id . ', "' . $grp_name . '", "", "' . $group . '", ' . $gid . ', ' . $lvl
-                                . ', ' . $grp_id . ', ' . $parent_id . ')';
-                            $this->db->query($query);
+                                . ':config_id, :config_key, :config_value, :config_group, :config_group_id, '
+                                . ':grp_level, :subgrp_id, :parent_grp_id)';
+
+                            $stmt = $this->db->prepare($query);
+                            $stmt->bindValue(':config_id', $id, \PDO::PARAM_INT);
+                            $stmt->bindValue(':config_key', $grp_name, \PDO::PARAM_STR);
+                            $stmt->bindValue(':config_value', "", \PDO::PARAM_STR);
+                            $stmt->bindValue(':config_group', $group, \PDO::PARAM_STR);
+                            $stmt->bindValue(':config_group_id', $gid, \PDO::PARAM_INT);
+                            $stmt->bindValue(':grp_level', $lvl, \PDO::PARAM_INT);
+                            $stmt->bindValue(':subgrp_id', $grp_id, \PDO::PARAM_INT);
+                            $stmt->bindValue(':parent_grp_id', $parent_id, \PDO::PARAM_INT);
+                            $stmt->execute();
+
                             $lvl++;
                             $parent_id = $grp_id;
                             $fieldname = $info[2];
                         }
-                        $grp_id = 'NULL';
+                        $grp_id = null;
                         foreach ($fieldvalue as $value) {
                             $query = 'INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, '
                                 . 'config_group, config_group_id, grp_level, subgrp_id, parent_grp_id) VALUES ('
-                                . $id . ', "' . $fieldname . '", "' . $value . '", "' . $group . '", '
-                                . $gid . ', ' . $lvl . ', ' . $grp_id . ', ' . $parent_id . ')';
-                            $this->db->query($query);
+                                . ':config_id, :config_key, :config_value, :config_group, '
+                                . ':config_group_id, :grp_level, :subgrp_id, :parent_grp_id) ';
+                            $stmt = $this->db->prepare($query);
+                            $stmt->bindValue(':config_id', $id, \PDO::PARAM_INT);
+                            $stmt->bindValue(':config_key', $fieldname, \PDO::PARAM_STR);
+                            $stmt->bindValue(':config_value', $value, \PDO::PARAM_STR);
+                            $stmt->bindValue(':config_group', $group, \PDO::PARAM_STR);
+                            $stmt->bindValue(':config_group_id', $gid, \PDO::PARAM_INT);
+                            $stmt->bindValue(':grp_level', $lvl, \PDO::PARAM_INT);
+                            $stmt->bindValue(':subgrp_id', $grp_id, \PDO::PARAM_INT);
+                            $stmt->bindValue(':parent_grp_id', $parent_id, \PDO::PARAM_INT);
+                            $stmt->execute();
                         }
                     }
                 }
