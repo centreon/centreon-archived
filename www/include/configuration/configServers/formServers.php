@@ -149,7 +149,7 @@ $attrPollers = array(
 );
 $attrPoller1 = $attrPollers;
 if (isset($cfg_server['remote_id'])) {
-    $attrPoller1['defaultDatasetRoute'] =>
+    $attrPoller1['defaultDatasetRoute'] =
         './api/internal.php?object=centreon_configuration_poller&action=defaultValues'
         . '&target=resources&field=instance_id&id=' . $cfg_server['remote_id'];
 }
