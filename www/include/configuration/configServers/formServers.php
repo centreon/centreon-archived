@@ -472,7 +472,7 @@ if ($valid) {
     }
 
     // init current gorgone fields visibility
-    displayGorgoneParam(<?= !$cfg_server['localhost'] ? "true" : "false" ?>)
+    displayGorgoneParam(<?= !isset($cfg_server['localhost']) || !$cfg_server['localhost'] ? "true" : "false" ?>)
 
     jQuery("#remote_additional_id").centreonSelect2({
         select2: {
