@@ -283,13 +283,13 @@ function deleteServerInDB(array $serverIds): void
 
         // Is a Remote Server?
         $result = $pearDB->query(
-            "SELECT * FROM remote_servers WHERE ip = '" . $row['ip'] . "'"
+            "SELECT * FROM remote_servers WHERE server_id = '" . $serverId . "'"
         );
 
         if ($result->numRows() > 0) {
             // Delete entry from remote_servers
             $pearDB->query(
-                "DELETE FROM remote_servers WHERE ip = '" . $row['ip'] . "'"
+                "DELETE FROM remote_servers WHERE server_id = '" . $serverId . "'"
             );
             // Delete all relation between this Remote Server and pollers
             $pearDB->query(
@@ -749,30 +749,31 @@ function addUserRessource(int $serverId): bool
  * Update Remote Server information
  *
  * @param array $data
- * @param string|null $oldIpAddress Old IP address of the server before the upgrade
+ * @param int $serverId id of the server
  */
-function updateRemoteServerInformation(array $data, string $oldIpAddress = null)
+function updateRemoteServerInformation(array $data, int $serverId)
 {
     global $pearDB;
 
-    $statement = $pearDB->prepare("SELECT COUNT(*) AS total FROM remote_servers WHERE ip = :ip");
-    $statement->bindValue(':ip', $oldIpAddress ?? $data["ns_ip_address"]);
+    $statement = $pearDB->prepare("SELECT COUNT(*) AS total FROM remote_servers WHERE server_id = :server_id");
+    $statement->bindValue(':server_id', $serverId);
     $statement->execute();
     $total = (int) $statement->fetch(\PDO::FETCH_ASSOC)['total'];
 
     if ($total === 1) {
         $statement = $pearDB->prepare("
-            UPDATE remote_servers 
+            UPDATE remote_servers
             SET http_method = :http_method, http_port = :http_port,
                 no_check_certificate = :no_check_certificate, no_proxy = :no_proxy, ip = :new_ip
-            WHERE ip = :ip
+            WHERE server_id = :server_id
         ");
         $statement->bindValue(':http_method', $data["http_method"]);
         $statement->bindValue(':http_port', $data["http_port"] ?? null, \PDO::PARAM_INT);
         $statement->bindValue(':no_proxy', $data["no_proxy"]["no_proxy"]);
         $statement->bindValue(':no_check_certificate', $data["no_check_certificate"]["no_check_certificate"]);
         $statement->bindValue(':new_ip', $data["ns_ip_address"]);
-        $statement->bindValue(':ip', $oldIpAddress ?? $data["ns_ip_address"]);
+        $statement->bindValue(':ip', $data["ns_ip_address"]);
+        $statement->bindValue(':server_id', $serverId);
         $statement->execute();
     }
 }
@@ -796,14 +797,6 @@ function updateServer(int $id, array $data): void
         $pearDB->query("UPDATE `nagios_server` SET `is_default` = '0'");
     }
     $retValue = [];
-
-    // We retrieve IP address that was defined before the update request
-    $statement = $pearDB->prepare('SELECT ns_ip_address FROM nagios_server WHERE id = :id');
-    $statement->bindValue(':id', $id, \PDO::PARAM_INT);
-    $statement->execute();
-    $ipAddressBeforeChanges = ($result = $statement->fetch(\PDO::FETCH_ASSOC))
-        ? $result['ns_ip_address']
-        : null;
 
     $rq = "UPDATE `nagios_server` SET ";
     $rq .= "`name` = ";
@@ -998,7 +991,7 @@ function updateServer(int $id, array $data): void
         // catch exception but don't return anything to avoid blank pages on form
     }
 
-    updateRemoteServerInformation($data, $ipAddressBeforeChanges);
+    updateRemoteServerInformation($data, $id);
     additionnalRemoteServersByPollerId($id, $data["remote_additional_id"]);
 
     if (isset($_REQUEST['pollercmd'])) {
@@ -1071,7 +1064,7 @@ UNION
 
 SELECT instance_id, COUNT(*) as num_logs, MAX(action_log_date) as action_log_date FROM log_action
     INNER JOIN (
-        SELECT h.instance_id, servicegroup_id FROM services_servicegroups sg 
+        SELECT h.instance_id, servicegroup_id FROM services_servicegroups sg
         INNER JOIN hosts h ON h.host_id = sg.host_id AND h.instance_id IN ($pollersSearch)
     ) AS subtable ON log_action.action_type = 'd' AND log_action.object_id = subtable.servicegroup_id
 WHERE log_action.object_type = 'servicegroup' AND action_log_date > $lastRestart GROUP BY subtable.instance_id
@@ -1326,8 +1319,8 @@ function updateServerIntoPlatformTopology(array $pollerInformations, int $server
     /**
      * Check if we are updating a Remote Server
      */
-    $statement = $pearDB->prepare("SELECT * FROM remote_servers WHERE ip = :address");
-    $statement->bindValue(':address', $pollerIp, \PDO::PARAM_STR);
+    $statement = $pearDB->prepare("SELECT * FROM remote_servers WHERE server_id = :serverId");
+    $statement->bindValue(':serverId', $serverId, \PDO::PARAM_INT);
     $statement->execute();
     $isRemote = $statement->fetch(\PDO::FETCH_ASSOC);
     if ($isRemote) {

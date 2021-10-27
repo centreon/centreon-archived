@@ -614,7 +614,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
              */
             if ($deletedPlatform->getServerId() !== null) {
                 if ($deletedPlatform->getType() === PlatformPending::TYPE_REMOTE) {
-                    $this->remoteServerRepository->deleteRemoteServerByAddress($deletedPlatform->getAddress());
+                    $this->remoteServerRepository->deleteRemoteServer($deletedPlatform->getServerId());
                     $this->remoteServerRepository->deleteAdditionalRemoteServer($deletedPlatform->getServerId());
                 }
 

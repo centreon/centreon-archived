@@ -87,7 +87,7 @@ class CentreonStatistics
             "(SELECT COUNT(sg.sg_id) FROM servicegroup sg " .
             "WHERE sg.sg_activate = '1') as nb_sg, " .
             "@nb_remotes:=(SELECT COUNT(ns.id) FROM nagios_server ns, remote_servers rs WHERE ns.ns_activate = '1' " .
-            "AND rs.ip = ns.ns_ip_address) as nb_remotes , " .
+            "AND rs.server_id = ns.id) as nb_remotes , " .
             "((SELECT COUNT(ns2.id) FROM nagios_server ns2 WHERE ns2.ns_activate = '1')-@nb_remotes-1) as nb_pollers," .
             " '1' as nb_central " .
             "FROM host h WHERE h.host_activate = '1' AND h.host_register = '1'";

@@ -55,20 +55,20 @@ if ($isAdmin === false) {
 $tpl = new Smarty();
 $tpl = initSmartyTpl(null, $tpl);
 
-// get remote server ip
-$query = 'SELECT ip FROM remote_servers';
+// get remote server ids
+$query = 'SELECT server_id FROM remote_servers';
 $dbResult = $pearDB->query($query);
-$remotesServerIPs = $dbResult->fetchAll(PDO::FETCH_COLUMN);
+$remotesServerIds = $dbResult->fetchAll(PDO::FETCH_COLUMN);
 $dbResult->closeCursor();
 //get poller informations
 $query = "
-SELECT ns.`id`, ns.`name`, ns.`gorgone_port`, ns.`ns_ip_address`, ns.`localhost`, ns.remote_id, 
-remote_server_use_as_proxy, cn.`command_file`, GROUP_CONCAT( pr.`remote_server_id` ) AS list_remote_server_id 
-FROM nagios_server AS ns 
-    LEFT JOIN remote_servers AS rs ON (rs.ip = ns.ns_ip_address) 
-    LEFT JOIN cfg_nagios AS cn ON (cn.`nagios_id` = ns.`id`) 
-    LEFT JOIN rs_poller_relation AS pr ON (pr.`poller_server_id` = ns.`id`) 
-WHERE ns.ns_activate = '1' 
+SELECT ns.`id`, ns.`name`, ns.`gorgone_port`, ns.`ns_ip_address`, ns.`localhost`, ns.remote_id,
+remote_server_use_as_proxy, cn.`command_file`, GROUP_CONCAT( pr.`remote_server_id` ) AS list_remote_server_id
+FROM nagios_server AS ns
+    LEFT JOIN remote_servers AS rs ON (rs.`server_id` = ns.`id`)
+    LEFT JOIN cfg_nagios AS cn ON (cn.`nagios_id` = ns.`id`)
+    LEFT JOIN rs_poller_relation AS pr ON (pr.`poller_server_id` = ns.`id`)
+WHERE ns.ns_activate = '1'
 AND ns.`id` =" . (int)$pollerId;
 
 $dbResult = $pearDB->query($query);
@@ -172,7 +172,7 @@ if ($server['localhost'] === '1') {
 
     if (!empty($dataError)) {
         $config = $dataError;
-    } elseif (in_array($server['ns_ip_address'], $remotesServerIPs)) {
+    } elseif (in_array($server['id'], $remotesServerIds)) {
         //config for remote
         $config = file_get_contents('./remote.yaml');
         $config = str_replace(

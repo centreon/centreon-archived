@@ -81,14 +81,14 @@ class CentreonConfigurationPoller extends CentreonConfigurationObjects
 
         if (isset($this->arguments['t'])) {
             if ($this->arguments['t'] == 'remote') {
-                $queryPoller .= "JOIN remote_servers rs ON (ns.ns_ip_address = rs.ip) ";
+                $queryPoller .= "JOIN remote_servers rs ON (ns.id = rs.server_id) ";
                 // Exclude selected master Remote Server
                 if (isset($this->arguments['e'])) {
                     $queryPoller .= 'WHERE ns.id <> :masterId ';
                     $queryValues['masterId'] = (int)$this->arguments['e'];
                 }
             } elseif ($this->arguments['t'] == 'poller') {
-                $queryPoller .= "LEFT JOIN remote_servers rs ON (ns.ns_ip_address = rs.ip) "
+                $queryPoller .= "LEFT JOIN remote_servers rs ON (ns.id = rs.server_id) "
                     . "WHERE rs.ip IS NULL "
                     . "AND ns.localhost = '0' ";
             } elseif ($this->arguments['t'] == 'central') {
@@ -126,8 +126,8 @@ class CentreonConfigurationPoller extends CentreonConfigurationObjects
         $stmt = $this->pearDB->prepare($queryPoller);
         $stmt->bindParam(':name', $queryValues['name'], PDO::PARAM_STR);
         // bind exluded master Remote Server
-        if (isset($this->arguments['t']) 
-            && $this->arguments['t'] == 'remote' 
+        if (isset($this->arguments['t'])
+            && $this->arguments['t'] == 'remote'
             && isset($this->arguments['e'])
         ) {
             $stmt->bindParam(':masterId', $queryValues['masterId'], PDO::PARAM_STR);

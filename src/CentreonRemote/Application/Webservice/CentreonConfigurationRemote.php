@@ -211,7 +211,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
     public function postGetRemotesList(): array
     {
         $query = 'SELECT ns.id, ns.ns_ip_address as ip, ns.name FROM nagios_server as ns ' .
-            'JOIN remote_servers as rs ON rs.ip = ns.ns_ip_address ' .
+            'JOIN remote_servers as rs ON rs.server_id = ns.id ' .
             'WHERE rs.is_connected = 1';
         $statement = $this->pearDB->query($query);
 
@@ -474,7 +474,8 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
                 $httpMethod,
                 $httpPort,
                 $noCheckCertificate,
-                $noProxy
+                $noProxy,
+                $serverId
             );
             $this->setCentreonInstanceAsCentral();
             $this->updateServerInPlatformTopology([
@@ -545,7 +546,8 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
         string $httpMethod,
         string $httpPort,
         bool $noCheckCertificate,
-        bool $noProxy
+        bool $noProxy,
+        int $serverId
     ): void {
         $dbAdapter = $this->getDi()[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]->getAdapter('configuration_db');
         $date = date('Y-m-d H:i:s');
@@ -573,7 +575,8 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
                 'http_method' => $httpMethod,
                 'http_port' => $httpPort ?: null,
                 'no_check_certificate' => $noCheckCertificate ?: 0,
-                'no_proxy' => $noProxy ?: 0
+                'no_proxy' => $noProxy ?: 0,
+                'server_id' => $serverId
             ];
             $dbAdapter->insert('remote_servers', $data);
         }

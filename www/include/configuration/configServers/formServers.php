@@ -64,14 +64,14 @@ if (($o == SERVER_MODIFY || $o == SERVER_WATCH) && $server_id) {
     $cfg_server = array_map("myDecode", $dbResult->fetch());
     $dbResult->closeCursor();
 
-    $query = 'SELECT ip FROM remote_servers';
+    $query = 'SELECT server_id FROM remote_servers';
     $dbResult = $pearDB->query($query);
-    $remotesServerIPs = $dbResult->fetchAll(PDO::FETCH_COLUMN);
+    $remotesServerIds = $dbResult->fetchAll(PDO::FETCH_COLUMN);
     $dbResult->closeCursor();
 
     if ($cfg_server['localhost']) {
         $serverType = "central";
-    } elseif (in_array($cfg_server['ns_ip_address'], $remotesServerIPs)) {
+    } elseif (in_array($cfg_server['id'], $remotesServerIds)) {
         $serverType = "remote";
     }
 
@@ -79,9 +79,9 @@ if (($o == SERVER_MODIFY || $o == SERVER_WATCH) && $server_id) {
         $statement = $pearDB->prepare(
             "SELECT http_method, http_port, no_check_certificate, no_proxy
             FROM `remote_servers`
-            WHERE `ip` = :ns_ip_address LIMIT 1"
+            WHERE `server_id` = :serverId LIMIT 1"
         );
-        $statement->bindParam(':ns_ip_address', $cfg_server['ns_ip_address'], \PDO::PARAM_STR);
+        $statement->bindParam(':serverId', $cfg_server['id'], \PDO::PARAM_INT);
         $statement->execute();
 
         $cfg_server = array_merge($cfg_server, array_map("myDecode", $statement->fetch()));

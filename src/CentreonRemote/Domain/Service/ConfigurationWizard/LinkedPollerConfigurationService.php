@@ -338,7 +338,7 @@ class LinkedPollerConfigurationService
             // Get information of remote
             $remoteDataStatement = $this->db->query("SELECT ns.ns_ip_address as ip, rs.centreon_path,
                 rs.http_method, rs.http_port, rs.no_check_certificate, rs.no_proxy
-                FROM nagios_server as ns JOIN remote_servers as rs ON rs.ip = ns.ns_ip_address
+                FROM nagios_server as ns JOIN remote_servers as rs ON rs.server_id = ns.id
                 WHERE ns.id = {$remoteID}");
             $remoteDataResults = $remoteDataStatement->fetchAll(\PDO::FETCH_ASSOC);
 

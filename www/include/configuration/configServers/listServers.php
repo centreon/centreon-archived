@@ -114,9 +114,9 @@ while ($info = $dbResult->fetch()) {
 }
 $dbResult->closeCursor();
 
-$query = 'SELECT ip FROM remote_servers';
+$query = 'SELECT server_id FROM remote_servers';
 $dbResult = $pearDB->query($query);
-$remotesServerIPs = $dbResult->fetchAll(PDO::FETCH_COLUMN);
+$remotesServerIds = $dbResult->fetchAll(PDO::FETCH_COLUMN);
 $dbResult->closeCursor();
 
 // Smarty template Init
@@ -243,7 +243,7 @@ foreach ($servers as $config) {
         ? $nagiosInfo[$config['id']]['last_alive']
         : '-';
     $serverType = $config['localhost'] ? _('Central') : _('Distant Poller');
-    $serverType = in_array($config['ns_ip_address'], $remotesServerIPs)
+    $serverType = in_array($config['id'], $remotesServerIds)
         ? _('Remote Server')
         : $serverType;
 

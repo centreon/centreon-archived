@@ -28,9 +28,9 @@ interface RemoteServerRepositoryInterface
     /**
      * Delete a Remote Server.
      *
-     * @param string $address
+     * @param integer $monitoringServerId
      */
-    public function deleteRemoteServerByAddress(string $address): void;
+    public function deleteRemoteServer(int $monitoringServerId): void;
 
     /**
      * Delete an Additional Remote Server, for pollers linked to multiple Remote Servers.
