@@ -59,6 +59,7 @@ if (!$centreon->user->admin && $server_id && count($serverResult)) {
 $nagios = array();
 $selectedAdditionnalRS = null;
 $serverType = "poller";
+$cfg_server = [];
 if (($o == SERVER_MODIFY || $o == SERVER_WATCH) && $server_id) {
     $dbResult = $pearDB->query("SELECT * FROM `nagios_server` WHERE `id` = '$server_id' LIMIT 1");
     $cfg_server = array_map("myDecode", $dbResult->fetch());
@@ -146,18 +147,17 @@ $attrPollers = array(
     'multiple' => false,
     'linkedObject' => 'centreonInstance'
 );
-$route = './api/internal.php?object=centreon_configuration_poller&action=defaultValues' .
-    '&target=resources&field=instance_id&id=' . $cfg_server['remote_id'];
-$attrPoller1 = array_merge(
-    $attrPollers,
-    array('defaultDatasetRoute' => $route)
-);
+$attrPoller1 = $attrPollers;
+if (isset($cfg_server['remote_id'])) {
+    $attrPoller1['defaultDatasetRoute'] => './api/internal.php?object=centreon_configuration_poller&action=defaultValues' .
+        '&target=resources&field=instance_id&id=' . $cfg_server['remote_id'];
+}
 $attrPoller2 = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './api/internal.php?object=centreon_configuration_poller&action=list&t=remote',
     'multiple' => true,
     'linkedObject' => 'centreonInstance'
-);/*
+);
 
 /*
  * Form begin
