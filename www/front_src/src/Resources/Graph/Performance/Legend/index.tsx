@@ -1,17 +1,9 @@
 import * as React from 'react';
 
 import clsx from 'clsx';
-import {
-  equals,
-  find,
-  gt,
-  includes,
-  length,
-  propOr,
-  slice,
-  split,
-} from 'ramda';
+import { equals, find, gt, includes, isNil, length, slice, split } from 'ramda';
 import { useTranslation } from 'react-i18next';
+import { useAtomValue } from 'jotai/utils';
 
 import {
   Typography,
@@ -27,9 +19,8 @@ import BarChartIcon from '@material-ui/icons/BarChart';
 import { CreateCSSProperties } from '@material-ui/styles';
 
 import { ResourceContext, useResourceContext } from '../../../Context';
-import { Line } from '../models';
+import { Line, TimeValue } from '../models';
 import memoizeComponent from '../../../memoizedComponent';
-import { useMetricsValueContext } from '../Graph/useMetricsValue';
 import formatMetricValue from '../formatMetricValue/index';
 import {
   labelAvg,
@@ -37,12 +28,21 @@ import {
   labelMax,
   labelMin,
 } from '../../../translatedLabels';
+import { timeValueAtom } from '../Graph/mouseTimeValueAtoms';
+import { getLineForMetric, getMetrics } from '../timeSeries';
 
 import LegendMarker from './Marker';
 
 interface MakeStylesProps {
   limitLegendRows: boolean;
   panelWidth: number;
+}
+
+interface FormattedMetricData {
+  color: string;
+  formattedValue: string | null;
+  name: string;
+  unit: string;
 }
 
 const maxLinesDisplayed = 11;
@@ -106,12 +106,14 @@ const useStyles = makeStyles<Theme, MakeStylesProps, string>((theme) => ({
 interface Props {
   base: number;
   displayCompleteGraph?: () => void;
+  displayTimeValues: boolean;
   limitLegendRows?: boolean;
   lines: Array<Line>;
   onClearHighlight: () => void;
   onHighlight: (metric: string) => void;
   onSelect: (metric: string) => void;
   onToggle: (metric: string) => void;
+  timeSeries: Array<TimeValue>;
   toggable: boolean;
 }
 
@@ -133,11 +135,17 @@ const LegendContent = ({
   base,
   limitLegendRows = false,
   displayCompleteGraph,
+  timeSeries,
+  displayTimeValues,
 }: LegendContentProps): JSX.Element => {
   const classes = useStyles({ limitLegendRows, panelWidth });
   const theme = useTheme();
-  const { metricsValue, getFormattedMetricData } = useMetricsValueContext();
   const { t } = useTranslation();
+  const timeValue = useAtomValue(timeValueAtom);
+
+  const graphTimeValue = timeSeries.find((timeSerie) =>
+    equals(timeSerie.timeTick, timeValue?.timeTick),
+  );
 
   const getLegendName = ({ legend, name }: Line): JSX.Element => {
     const legendName = legend || name;
@@ -160,6 +168,21 @@ const LegendContent = ({
     );
   };
 
+  const getMetricsToDisplay = (): Array<string> => {
+    if (isNil(graphTimeValue)) {
+      return [];
+    }
+    const metrics = getMetrics(graphTimeValue as TimeValue);
+
+    const metricsToDisplay = metrics.filter((metric) => {
+      const line = getLineForMetric({ lines, metric });
+
+      return !isNil(graphTimeValue[metric]) && !isNil(line);
+    });
+
+    return metricsToDisplay;
+  };
+
   const getMetricValue = ({ value, unit }: GetMetricValueProps): string =>
     formatMetricValue({
       base,
@@ -167,11 +190,40 @@ const LegendContent = ({
       value,
     }) || 'N/A';
 
+  const getFormattedMetricData = (
+    metric: string,
+  ): FormattedMetricData | null => {
+    if (isNil(graphTimeValue)) {
+      return null;
+    }
+    const value = graphTimeValue[metric] as number;
+
+    const { color, name, unit } = getLineForMetric({
+      lines,
+      metric,
+    }) as Line;
+
+    const formattedValue = formatMetricValue({
+      base,
+      unit,
+      value,
+    });
+
+    return {
+      color,
+      formattedValue,
+      name,
+      unit,
+    };
+  };
+
   const displayedLines = limitLegendRows
     ? slice(0, maxLinesDisplayed, lines)
     : lines;
 
   const hasMoreLines = limitLegendRows && gt(length(lines), maxLinesDisplayed);
+
+  const metrics = getMetricsToDisplay();
 
   return (
     <div className={classes.legend}>
@@ -190,13 +242,12 @@ const LegendContent = ({
               ? color
               : alpha(theme.palette.text.disabled, 0.2);
 
-            const metric = find(
-              equals(line.metric),
-              propOr([], 'metrics', metricsValue),
-            );
+            const metric = find(equals(line.metric), metrics);
 
             const formattedValue =
-              metric && getFormattedMetricData(metric)?.formattedValue;
+              displayTimeValues &&
+              metric &&
+              getFormattedMetricData(metric)?.formattedValue;
 
             const minMaxAvg = [
               {
@@ -296,7 +347,14 @@ const LegendContent = ({
   );
 };
 
-const memoProps = ['panelWidth', 'lines', 'toggable'];
+const memoProps = [
+  'panelWidth',
+  'lines',
+  'toggable',
+  'timeSeries',
+  'displayTimeValues',
+  'base',
+];
 
 const MemoizedLegendContent = memoizeComponent<LegendContentProps>({
   Component: LegendContent,

@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { path, isNil } from 'ramda';
+import { useUpdateAtom } from 'jotai/utils';
 
 import { makeStyles, Paper } from '@material-ui/core';
 import IconGraph from '@material-ui/icons/BarChart';
@@ -12,6 +13,10 @@ import PerformanceGraph from '../../Graph/Performance';
 import { ResourceDetails } from '../../Details/models';
 import { Resource } from '../../models';
 import useTimePeriod from '../../Graph/Performance/TimePeriods/useTimePeriod';
+import {
+  changeMousePositionAndTimeValueDerivedAtom,
+  isListingGraphOpenAtom,
+} from '../../Graph/Performance/Graph/mouseTimeValueAtoms';
 
 import HoverChip from './HoverChip';
 import IconColumn from './IconColumn';
@@ -37,6 +42,19 @@ const Graph = ({
   displayCompleteGraph,
 }: GraphProps): JSX.Element => {
   const { periodQueryParameters } = useTimePeriod({});
+  const setIsListingGraphOpen = useUpdateAtom(isListingGraphOpenAtom);
+  const changeMousePositionAndTimeValue = useUpdateAtom(
+    changeMousePositionAndTimeValueDerivedAtom,
+  );
+
+  React.useEffect(() => {
+    setIsListingGraphOpen(true);
+
+    return (): void => {
+      setIsListingGraphOpen(false);
+      changeMousePositionAndTimeValue({ position: null, timeValue: null });
+    };
+  }, []);
 
   return (
     <PerformanceGraph
