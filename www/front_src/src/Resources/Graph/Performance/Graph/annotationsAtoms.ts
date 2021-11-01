@@ -42,9 +42,14 @@ interface GetColorProps {
   color: string;
 }
 
-export interface AnnotationAtom {
+interface AnnotationAtom {
   event?: TimelineEvent;
   resourceId: string;
+}
+
+interface GetIsNotHoveredOrNilProps {
+  annotation: AnnotationAtom | undefined;
+  hoveredAnnotation: AnnotationAtom | undefined;
 }
 
 export const annotationHoveredAtom = atom<AnnotationAtom | undefined>(
@@ -101,18 +106,22 @@ export const changeAnnotationHoveredDerivedAtom = atom(
   },
 );
 
+const getIsNotHoveredOrNil = ({
+  hoveredAnnotation,
+  annotation,
+}: GetIsNotHoveredOrNilProps): boolean =>
+  or(
+    isNil(hoveredAnnotation?.event),
+    not(equals(hoveredAnnotation?.resourceId, annotation?.resourceId)),
+  );
+
 export const getStrokeWidthDerivedAtom = atom(
   (get) =>
     (annotation: AnnotationAtom | undefined): number =>
       cond<AnnotationAtom | undefined, number>([
         [
           (hoveredAnnotation): boolean =>
-            or(
-              isNil(hoveredAnnotation?.event),
-              not(
-                equals(hoveredAnnotation?.resourceId, annotation?.resourceId),
-              ),
-            ),
+            getIsNotHoveredOrNil({ annotation, hoveredAnnotation }),
           always(1),
         ],
         [equals(annotation), always(3)],
@@ -126,12 +135,7 @@ export const getStrokeOpacityDerivedAtom = atom(
       cond<AnnotationAtom | undefined, number>([
         [
           (hoveredAnnotation): boolean =>
-            or(
-              isNil(hoveredAnnotation?.event),
-              not(
-                equals(hoveredAnnotation?.resourceId, annotation?.resourceId),
-              ),
-            ),
+            getIsNotHoveredOrNil({ annotation, hoveredAnnotation }),
           always(0.5),
         ],
         [equals(annotation), always(0.7)],
@@ -145,10 +149,7 @@ export const getFillColorDerivedAtom = atom(
       cond<AnnotationAtom | undefined, string>([
         [
           (hoveredAnnotation): boolean =>
-            or(
-              isNil(hoveredAnnotation?.event),
-              not(equals(hoveredAnnotation?.resourceId, annotation.resourceId)),
-            ),
+            getIsNotHoveredOrNil({ annotation, hoveredAnnotation }),
           always(alpha(color, 0.3)),
         ],
         [
@@ -165,10 +166,7 @@ export const getIconColorDerivedAtom = atom(
       cond<AnnotationAtom | undefined, string>([
         [
           (hoveredAnnotation): boolean =>
-            or(
-              isNil(hoveredAnnotation?.event),
-              not(equals(hoveredAnnotation?.resourceId, annotation.resourceId)),
-            ),
+            getIsNotHoveredOrNil({ annotation, hoveredAnnotation }),
           always(color),
         ],
         [
