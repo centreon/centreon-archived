@@ -18,7 +18,6 @@ import {
 import BarChartIcon from '@material-ui/icons/BarChart';
 import { CreateCSSProperties } from '@material-ui/styles';
 
-import { ResourceContext, useResourceContext } from '../../../Context';
 import { Line, TimeValue } from '../models';
 import memoizeComponent from '../../../memoizedComponent';
 import formatMetricValue from '../formatMetricValue/index';
@@ -30,6 +29,7 @@ import {
 } from '../../../translatedLabels';
 import { timeValueAtom } from '../Graph/mouseTimeValueAtoms';
 import { getLineForMetric, getMetrics } from '../timeSeries';
+import { panelWidthStorageAtom } from '../../../Details/detailsAtoms';
 
 import LegendMarker from './Marker';
 
@@ -117,8 +117,6 @@ interface Props {
   toggable: boolean;
 }
 
-type LegendContentProps = Props & Pick<ResourceContext, 'panelWidth'>;
-
 interface GetMetricValueProps {
   unit: string;
   value: number | null;
@@ -131,17 +129,17 @@ const LegendContent = ({
   toggable,
   onHighlight,
   onClearHighlight,
-  panelWidth,
   base,
   limitLegendRows = false,
   displayCompleteGraph,
   timeSeries,
   displayTimeValues,
-}: LegendContentProps): JSX.Element => {
+}: Props): JSX.Element => {
+  const panelWidth = useAtomValue(panelWidthStorageAtom);
+  const timeValue = useAtomValue(timeValueAtom);
   const classes = useStyles({ limitLegendRows, panelWidth });
   const theme = useTheme();
   const { t } = useTranslation();
-  const timeValue = useAtomValue(timeValueAtom);
 
   const graphTimeValue = timeSeries.find((timeSerie) =>
     equals(timeSerie.timeTick, timeValue?.timeTick),
@@ -356,15 +354,13 @@ const memoProps = [
   'base',
 ];
 
-const MemoizedLegendContent = memoizeComponent<LegendContentProps>({
+const MemoizedLegendContent = memoizeComponent<Props>({
   Component: LegendContent,
   memoProps,
 });
 
 const Legend = (props: Props): JSX.Element => {
-  const { panelWidth } = useResourceContext();
-
-  return <MemoizedLegendContent {...props} panelWidth={panelWidth} />;
+  return <MemoizedLegendContent {...props} />;
 };
 
 export default Legend;

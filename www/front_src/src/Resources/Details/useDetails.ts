@@ -28,7 +28,6 @@ import {
   GraphTabParameters,
   TabParameters,
 } from './models';
-import { getStoredOrDefaultPanelWidth, storePanelWidth } from './storedDetails';
 import {
   ChangeCustomTimePeriodProps,
   CustomTimePeriod,
@@ -47,7 +46,6 @@ export interface DetailsState {
   getSelectedResourceDetailsEndpoint: () => string | undefined;
   loadDetails: () => void;
   openDetailsTabId: TabId;
-  panelWidth: number;
   periodQueryParameters: string;
   resourceDetailsUpdated: boolean;
   selectResource: (resource: Resource) => void;
@@ -57,7 +55,6 @@ export interface DetailsState {
   selectedTimePeriod: TimePeriod | null;
   setGraphTabParameters: (parameters: GraphTabParameters) => void;
   setOpenDetailsTabId: React.Dispatch<React.SetStateAction<TabId>>;
-  setPanelWidth: React.Dispatch<React.SetStateAction<number>>;
   setSelectedResourceId: React.Dispatch<
     React.SetStateAction<number | undefined>
   >;
@@ -92,9 +89,6 @@ const useDetails = (): DetailsState => {
     React.useState<string>();
   const [details, setDetails] = React.useState<ResourceDetails>();
   const [tabParameters, setTabParameters] = React.useState<TabParameters>({});
-  const [panelWidth, setPanelWidth] = React.useState(
-    getStoredOrDefaultPanelWidth(550),
-  );
   const [defaultSelectedTimePeriodId, setDefaultSelectedTimePeriodId] =
     React.useState<TimePeriodId | undefined>();
   const [defaultSelectedCustomTimePeriod, setDefaultSelectedCustomTimePeriod] =
@@ -222,10 +216,6 @@ const useDetails = (): DetailsState => {
     loadDetails();
   }, [selectedResourceUuid]);
 
-  React.useEffect(() => {
-    storePanelWidth(panelWidth);
-  }, [panelWidth]);
-
   const setServicesTabParameters = (
     parameters: ServicesTabParameters,
   ): void => {
@@ -242,14 +232,12 @@ const useDetails = (): DetailsState => {
     getSelectedResourceDetailsEndpoint,
     loadDetails,
     openDetailsTabId,
-    panelWidth,
     selectResource,
     selectedResourceId,
     selectedResourceParentId,
     selectedResourceUuid,
     setGraphTabParameters,
     setOpenDetailsTabId,
-    setPanelWidth,
     setSelectedResourceId,
     setSelectedResourceParentId,
     setSelectedResourceParentType,
