@@ -160,8 +160,6 @@ const PerformanceGraph = ({
   const [base, setBase] = React.useState<number>();
   const performanceGraphRef = React.useRef<HTMLDivElement | null>(null);
   const performanceGraphHeightRef = React.useRef<number>(0);
-  const timeValue = useAtomValue(timeValueAtom);
-  const isListingGraphOpen = useAtomValue(isListingGraphOpenAtom);
 
   const { selectedResourceId } = useResourceContext();
 
@@ -171,6 +169,10 @@ const PerformanceGraph = ({
   } = useRequest<GraphData>({
     request: getData,
   });
+
+  const timeValue = useAtomValue(timeValueAtom);
+  const isListingGraphOpen = useAtomValue(isListingGraphOpenAtom);
+
   const { toDateTime } = useLocaleDateTimeFormat();
 
   React.useEffect(() => {

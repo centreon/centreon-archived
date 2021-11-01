@@ -224,11 +224,11 @@ const GraphContent = ({
     React.useState<ZoomBoundaries | null>(null);
   const graphSvgRef = React.useRef<SVGSVGElement | null>(null);
   const { canComment } = useAclQuery();
+  const mousePosition = useAtomValue(mousePositionAtom);
   const changeMousePositionAndTimeValue = useUpdateAtom(
     changeMousePositionAndTimeValueDerivedAtom,
   );
   const changeTimeValue = useUpdateAtom(changeTimeValueDerivedAtom);
-  const mousePosition = useAtomValue(mousePositionAtom);
   const setAnnotationHovered = useUpdateAtom(annotationHoveredAtom);
   const changeAnnotationHovered = useUpdateAtom(
     changeAnnotationHoveredDerivedAtom,

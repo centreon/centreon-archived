@@ -1,3 +1,4 @@
+/* eslint-disable hooks/sort */
 import * as React from 'react';
 
 import clsx from 'clsx';
@@ -136,10 +137,10 @@ const LegendContent = ({
   displayTimeValues,
 }: Props): JSX.Element => {
   const panelWidth = useAtomValue(panelWidthStorageAtom);
-  const timeValue = useAtomValue(timeValueAtom);
   const classes = useStyles({ limitLegendRows, panelWidth });
   const theme = useTheme();
   const { t } = useTranslation();
+  const timeValue = useAtomValue(timeValueAtom);
 
   const graphTimeValue = timeSeries.find((timeSerie) =>
     equals(timeSerie.timeTick, timeValue?.timeTick),
