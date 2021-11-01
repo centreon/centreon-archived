@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { path, isNil, or, not } from 'ramda';
+import { useAtomValue } from 'jotai/utils';
 
 import { Paper, Theme, makeStyles } from '@material-ui/core';
 
@@ -17,7 +18,7 @@ import { GraphOptionId } from '../models';
 import { useIntersection } from '../useGraphIntersection';
 import { useResourceContext } from '../../../Context';
 
-import { defaultGraphOptions, useGraphOptionsContext } from './useGraphOptions';
+import { graphOptionsAtom } from './graphOptionsAtoms';
 
 const useStyles = makeStyles((theme: Theme) => ({
   graph: {
@@ -64,8 +65,7 @@ const ExportablePerformanceGraphWithTimeline = ({
 
   const { alias } = useUserContext();
 
-  const graphOptions =
-    useGraphOptionsContext()?.graphOptions || defaultGraphOptions;
+  const graphOptions = useAtomValue(graphOptionsAtom);
   const graphContainerRef = React.useRef<HTMLElement | null>(null);
 
   const { setElement, isInViewport } = useIntersection();
