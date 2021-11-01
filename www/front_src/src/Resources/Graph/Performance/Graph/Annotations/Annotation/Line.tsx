@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { Shape } from '@visx/visx';
 import { ScaleTime } from 'd3-scale';
-import { pick, prop } from 'ramda';
+import { pick } from 'ramda';
 import { useAtomValue } from 'jotai/utils';
 
 import { makeStyles } from '@material-ui/core';
