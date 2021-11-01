@@ -11,6 +11,7 @@ import {
   act,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { Provider } from 'jotai';
 
 import {
   ThemeProvider,
@@ -81,7 +82,7 @@ import useListing from '../Listing/useListing';
 import { resourcesEndpoint } from '../api/endpoint';
 import { buildResourcesEndpoint } from '../Listing/api/endpoint';
 import { cancelTokenRequestParam } from '../testUtils';
-import { defaultGraphOptions } from '../Graph/Performance/ExportableGraphWithTimeline/useGraphOptions';
+import { defaultGraphOptions } from '../Graph/Performance/ExportableGraphWithTimeline/graphOptionsAtoms';
 import useFilter from '../Filter/useFilter';
 import { CriteriaNames } from '../Filter/Criterias/models';
 
@@ -473,11 +474,13 @@ const DetailsTest = ({ openTabId }: Props): JSX.Element => {
   } as ResourceContext;
 
   return (
-    <ThemeProvider>
-      <Context.Provider value={context}>
-        <Details />
-      </Context.Provider>
-    </ThemeProvider>
+    <Provider>
+      <ThemeProvider>
+        <Context.Provider value={context}>
+          <Details />
+        </Context.Provider>
+      </ThemeProvider>
+    </Provider>
   );
 };
 

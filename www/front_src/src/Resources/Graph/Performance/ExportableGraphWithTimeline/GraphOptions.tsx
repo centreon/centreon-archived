@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const GraphOptions = (): JSX.Element => {
+const Options = (): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
   const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
@@ -117,4 +117,4 @@ const GraphOptions = (): JSX.Element => {
   });
 };
 
-export default GraphOptions;
+export default Options;
