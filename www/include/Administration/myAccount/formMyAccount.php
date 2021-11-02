@@ -138,13 +138,15 @@ $form->addElement(
 $form->addElement('select', 'contact_lang', _("Language"), $langs);
 $form->addElement('checkbox', 'show_deprecated_pages', _("Use deprecated pages"), null, $attrsText);
 $form->addElement('checkbox', 'contact_js_effects', _("Animation effects"), null, $attrsText);
-$form->addElement(
-    'checkbox',
-    'enable_one_click_export',
-    _("Enable the one-click export button for poller configuration [BETA]"),
-    null,
-    $attrsText
-);
+if (!$isRemote) {
+    $form->addElement(
+        'checkbox',
+        'enable_one_click_export',
+        _("Enable the one-click export button for poller configuration [BETA]"),
+        null,
+        $attrsText
+    );
+}
 
 
 /* ------------------------ Topoogy ---------------------------- */
@@ -451,6 +453,7 @@ $tpl->assign('cct', $cct);
 $tpl->assign('o', $o);
 $tpl->assign('featuresFlipping', (count($features) > 0));
 $tpl->assign('contactIsAdmin', $centreon->user->get_admin());
+$tpl->assign('isRemote', $isRemote);
 
 /*
  * prepare help texts

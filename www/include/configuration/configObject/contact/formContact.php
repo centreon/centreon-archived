@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -84,7 +85,7 @@ if ($result === false) {
 $dbResult->closeCursor();
 
 $cct = array();
-if (($o == "c" || $o == "w") && $contactId) {
+if (($o == MODIFY_CONTACT || $o == WATCH_CONTACT) && $contactId) {
     /**
      * Init Tables informations
      */
@@ -146,7 +147,7 @@ if (($o == "c" || $o == "w") && $contactId) {
  */
 $langs = array();
 $langs = getLangs();
-if ($o == "mc") {
+if ($o == MASSIVE_CHANGE) {
     array_unshift($langs, null);
 }
 
@@ -236,7 +237,7 @@ $tpl = initSmartyTpl($path, $tpl);
  * @var $moduleFormManager \Centreon\Domain\Service\ModuleFormManager
  */
 
-if ($o == "a") {
+if ($o == ADD_CONTACT) {
     $form->addElement('header', 'title', _("Add a User"));
 
     $eventDispatcher->notify(
@@ -248,7 +249,7 @@ if ($o == "a") {
             'contact_id' => $contactId
         ]
     );
-} elseif ($o == "c") {
+} elseif ($o == MODIFY_CONTACT) {
     $form->addElement('header', 'title', _("Modify a User"));
 
     $eventDispatcher->notify(
@@ -260,7 +261,7 @@ if ($o == "a") {
             'contact_id' => $contactId
         ]
     );
-} elseif ($o == "w") {
+} elseif ($o == WATCH_CONTACT) {
     $form->addElement('header', 'title', _("View a User"));
 
     $eventDispatcher->notify(
@@ -272,7 +273,7 @@ if ($o == "a") {
             'contact_id' => $contactId
         ]
     );
-} elseif ($o == "mc") {
+} elseif ($o == MASSIVE_CHANGE) {
     $form->addElement('header', 'title', _("Massive Change"));
 
     $eventDispatcher->notify(
@@ -301,7 +302,7 @@ $form->addElement('header', 'acl', _("Access lists"));
  * Don't change contact name and alias in massif change
  * Don't change contact name, alias or autologin key in massive change
  */
-if ($o != "mc") {
+if ($o != MASSIVE_CHANGE) {
     $form->addElement('text', 'contact_name', _("Full Name"), $attrsTextDescr);
     $form->addElement('text', 'contact_alias', _("Alias / Login"), $attrsText);
     $form->addElement('text', 'contact_autologin_key', _("Autologin Key"), array("size" => "90", "id" => "aKey"));
@@ -328,7 +329,7 @@ $form->addElement('text', 'contact_address6', _("Address6"), $attrsText);
  * Contact Groups Field
  */
 $form->addElement('header', 'groupLinks', _("Group Relations"));
-if ($o == "mc") {
+if ($o == MASSIVE_CHANGE) {
     $mc_mod_cg = array();
     $mc_mod_cg[] = $form->createElement('radio', 'mc_mod_cg', null, _("Incremental"), '0');
     $mc_mod_cg[] = $form->createElement('radio', 'mc_mod_cg', null, _("Replacement"), '1');
@@ -396,7 +397,7 @@ if ($centreon->user->admin) {
 /**
  * ACL configurations
  */
-if ($o == "mc") {
+if ($o == MASSIVE_CHANGE) {
     $mc_mod_cg = array();
     $mc_mod_cg[] = $form->createElement('radio', 'mc_mod_acl', null, _("Incremental"), '0');
     $mc_mod_cg[] = $form->createElement('radio', 'mc_mod_acl', null, _("Replacement"), '1');
@@ -432,7 +433,7 @@ $attrTimezones = array(
 );
 $form->addElement('select2', 'contact_location', _("Timezone / Location"), array(), $attrTimezones);
 
-if ($o != "mc") {
+if ($o != MASSIVE_CHANGE) {
     $auth_type = array();
 } else {
     $auth_type = array(null => null);
@@ -446,7 +447,7 @@ if ($centreon->optGen['ldap_auth_enable'] == 1) {
         $dnElement->freeze();
     }
 }
-if ($o != "mc") {
+if ($o != MASSIVE_CHANGE) {
     $form->setDefaults(array(
         'contact_oreon' => '1',
         'contact_admin' => '0',
@@ -466,7 +467,7 @@ $tab[] = $form->createElement('radio', 'contact_enable_notifications', null, _("
 $tab[] = $form->createElement('radio', 'contact_enable_notifications', null, _("No"), '0');
 $tab[] = $form->createElement('radio', 'contact_enable_notifications', null, _("Default"), '2');
 $form->addGroup($tab, 'contact_enable_notifications', _("Enable Notifications"), '&nbsp;');
-if ($o != "mc") {
+if ($o != MASSIVE_CHANGE) {
     $form->setDefaults(array('contact_enable_notifications' => '2'));
 }
 
@@ -529,7 +530,7 @@ $form->addElement('select2', 'timeperiod_tp_id', _("Host Notification Period"), 
 
 unset($hostNotifOpt);
 
-if ($o == "mc") {
+if ($o == MASSIVE_CHANGE) {
     $mc_mod_hcmds = array();
     $mc_mod_hcmds[] = $form->createElement('radio', 'mc_mod_hcmds', null, _("Incremental"), '0');
     $mc_mod_hcmds[] = $form->createElement('radio', 'mc_mod_hcmds', null, _("Replacement"), '1');
@@ -615,7 +616,7 @@ $attrTimeperiod2 = array_merge(
 );
 $form->addElement('select2', 'timeperiod_tp_id2', _("Service Notification Period"), array(), $attrTimeperiod2);
 
-if ($o == "mc") {
+if ($o == MASSIVE_CHANGE) {
     $mc_mod_svcmds = array();
     $mc_mod_svcmds[] = $form->createElement('radio', 'mc_mod_svcmds', null, _("Incremental"), '0');
     $mc_mod_svcmds[] = $form->createElement('radio', 'mc_mod_svcmds', null, _("Replacement"), '1');
@@ -645,7 +646,7 @@ $cctActivation[] = $form->createElement('radio', 'contact_activate', null, _("En
 $cctActivation[] = $form->createElement('radio', 'contact_activate', null, _("Disabled"), '0');
 $form->addGroup($cctActivation, 'contact_activate', _("Status"), '&nbsp;');
 $form->setDefaults(array('contact_activate' => '1'));
-if ($o == "c" && $centreon->user->get_id() == $cct["contact_id"]) {
+if ($o == MODIFY_CONTACT && $centreon->user->get_id() == $cct["contact_id"]) {
     $form->freeze('contact_activate');
 }
 
@@ -683,7 +684,7 @@ function myReplace()
 $form->applyFilter('__ALL__', 'myTrim');
 $form->applyFilter('contact_name', 'myReplace');
 $from_list_menu = false;
-if ($o != "mc") {
+if ($o != MASSIVE_CHANGE) {
     $ret = $form->getSubmitValues();
     $form->addRule('contact_name', _("Compulsory Name"), 'required');
     $form->addRule('contact_alias', _("Compulsory Alias"), 'required');
@@ -727,7 +728,7 @@ if ($o != "mc") {
         _("You have to keep at least one contact to access to Centreon"),
         'keepOneContactAtLeast'
     );
-} elseif ($o == "mc") {
+} elseif ($o == MASSIVE_CHANGE) {
     if ($form->getSubmitValue("submitMC")) {
         $from_list_menu = false;
     } else {
@@ -750,7 +751,7 @@ foreach ($help as $key => $text) {
     $helptext .= '<span style="display:none" id="help:' . $key . '">' . $text . '</span>' . "\n";
 }
 $tpl->assign("helptext", $helptext);
-if ($o == "w") {
+if ($o == WATCH_CONTACT) {
     # Just watch a contact information
     if ($centreon->user->access->page($p) != 2) {
         $form->addElement(
@@ -762,16 +763,16 @@ if ($o == "w") {
     }
     $form->setDefaults($cct);
     $form->freeze();
-} elseif ($o == "c") {
+} elseif ($o == MODIFY_CONTACT) {
     # Modify a contact information
     $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $form->setDefaults($cct);
-} elseif ($o == "a") {
+} elseif ($o == ADD_CONTACT) {
     # Add a contact information
     $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
-} elseif ($o == "mc") {
+} elseif ($o == MASSIVE_CHANGE) {
     # Massive Change
     $subMC = $form->addElement('submit', 'submitMC', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
@@ -788,7 +789,7 @@ $valid = false;
 
 if ($form->validate() && $from_list_menu == false) {
     $cctObj = $form->getElement('contact_id');
-    if (!$centreon->user->admin && $contact_id) {
+    if (!$centreon->user->admin && $contactId) {
         $form->removeElement('contact_admin');
         $form->removeElement('reach_api');
         $form->removeElement('reach_api_rt');
@@ -818,16 +819,16 @@ if ($form->validate() && $from_list_menu == false) {
         );
     } elseif ($form->getSubmitValue("submitMC")) {
         $select = explode(",", $select);
-        foreach ($select as $key => $contactId) {
-            if ($contactId) {
-                updateContactInDB($contactId, true);
+        foreach ($select as $key => $selectedContactId) {
+            if ($selectedContactId) {
+                updateContactInDB($selectedContactId, true);
 
                 $eventDispatcher->notify(
                     'contact.form',
                     EventDispatcher::EVENT_UPDATE,
                     [
                         'form' => $form,
-                        'contact_id' => $contactId
+                        'contact_id' => $selectedContactId
                     ]
                 );
             }

@@ -182,23 +182,26 @@ const PerformanceGraph = ({
       return;
     }
 
-    sendGetGraphDataRequest(endpoint).then((graphData) => {
-      setTimeSeries(getTimeSeries(graphData));
-      setBase(graphData.global.base);
-      setTitle(graphData.global.title);
-      const newLineData = getLineData(graphData);
-      if (lineData) {
-        setLineData(
-          newLineData.map((line) => ({
-            ...line,
-            display: find(propEq('name', line.name), lineData)?.display ?? true,
-          })),
-        );
+    sendGetGraphDataRequest(endpoint)
+      .then((graphData) => {
+        setTimeSeries(getTimeSeries(graphData));
+        setBase(graphData.global.base);
+        setTitle(graphData.global.title);
+        const newLineData = getLineData(graphData);
+        if (lineData) {
+          setLineData(
+            newLineData.map((line) => ({
+              ...line,
+              display:
+                find(propEq('name', line.name), lineData)?.display ?? true,
+            })),
+          );
 
-        return;
-      }
-      setLineData(newLineData);
-    });
+          return;
+        }
+        setLineData(newLineData);
+      })
+      .catch(() => undefined);
   }, [endpoint]);
 
   React.useEffect(() => {
