@@ -3,20 +3,26 @@ import * as React from 'react';
 import { isNil, isEmpty, pipe, not, defaultTo, propEq, findIndex } from 'ramda';
 import { useTranslation } from 'react-i18next';
 import { useAtom } from 'jotai';
+import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 
 import { useTheme, alpha } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 
 import { MemoizedPanel as Panel, Tab } from '@centreon/ui';
 
-import { useResourceContext } from '../Context';
 import { rowColorConditions } from '../colors';
 
 import Header from './Header';
 import { ResourceDetails } from './models';
 import { TabById, detailsTabId, tabs } from './tabs';
 import { Tab as TabModel, TabId } from './tabs/models';
-import { panelWidthStorageAtom } from './detailsAtoms';
+import {
+  clearSelectedResourceDerivedAtom,
+  detailsAtom,
+  openDetailsTabIdAtom,
+  panelWidthStorageAtom,
+  selectResourceDerivedAtom,
+} from './detailsAtoms';
 
 export interface DetailsSectionProps {
   details?: ResourceDetails;
@@ -29,14 +35,10 @@ const Details = (): JSX.Element | null => {
   const panelRef = React.useRef<HTMLDivElement>();
 
   const [panelWidth, setPanelWidth] = useAtom(panelWidthStorageAtom);
-
-  const {
-    openDetailsTabId,
-    details,
-    setOpenDetailsTabId,
-    clearSelectedResource,
-    selectResource,
-  } = useResourceContext();
+  const [openDetailsTabId, setOpenDetailsTabId] = useAtom(openDetailsTabIdAtom);
+  const details = useAtomValue(detailsAtom);
+  const clearSelectedResource = useUpdateAtom(clearSelectedResourceDerivedAtom);
+  const selectResource = useUpdateAtom(selectResourceDerivedAtom);
 
   React.useEffect(() => {
     if (isNil(details)) {

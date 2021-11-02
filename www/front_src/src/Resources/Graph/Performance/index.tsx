@@ -41,7 +41,7 @@ import {
   CustomTimePeriod,
   CustomTimePeriodProperty,
 } from '../../Details/tabs/Graph/models';
-import { useResourceContext } from '../../Context';
+import { selectedResourceIdAtom } from '../../Details/detailsAtoms';
 
 import Graph from './Graph';
 import Legend from './Legend';
@@ -161,14 +161,14 @@ const PerformanceGraph = ({
   const performanceGraphRef = React.useRef<HTMLDivElement | null>(null);
   const performanceGraphHeightRef = React.useRef<number>(0);
 
-  const { selectedResourceId } = useResourceContext();
-
   const {
     sendRequest: sendGetGraphDataRequest,
     sending: sendingGetGraphDataRequest,
   } = useRequest<GraphData>({
     request: getData,
   });
+
+  const selectedResourceId = useAtomValue(selectedResourceIdAtom);
 
   const timeValue = useAtomValue(timeValueAtom);
   const isListingGraphOpen = useAtomValue(isListingGraphOpenAtom);

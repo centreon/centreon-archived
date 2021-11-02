@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { path, isNil } from 'ramda';
-import { useUpdateAtom } from 'jotai/utils';
+import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 
 import { makeStyles, Paper } from '@material-ui/core';
 import IconGraph from '@material-ui/icons/BarChart';
@@ -12,11 +12,12 @@ import { labelGraph, labelServiceGraphs } from '../../translatedLabels';
 import PerformanceGraph from '../../Graph/Performance';
 import { ResourceDetails } from '../../Details/models';
 import { Resource } from '../../models';
-import useTimePeriod from '../../Graph/Performance/TimePeriods/useTimePeriod';
 import {
   changeMousePositionAndTimeValueDerivedAtom,
   isListingGraphOpenAtom,
 } from '../../Graph/Performance/Graph/mouseTimeValueAtoms';
+import { graphQueryParametersDerivedAtom } from '../../Graph/Performance/TimePeriods/timePeriodAtoms';
+import { lastDayPeriod } from '../../Details/tabs/Graph/models';
 
 import HoverChip from './HoverChip';
 import IconColumn from './IconColumn';
@@ -41,11 +42,15 @@ const Graph = ({
   endpoint,
   displayCompleteGraph,
 }: GraphProps): JSX.Element => {
-  const { periodQueryParameters } = useTimePeriod({});
+  const getGraphQueryParameters = useAtomValue(graphQueryParametersDerivedAtom);
   const setIsListingGraphOpen = useUpdateAtom(isListingGraphOpenAtom);
   const changeMousePositionAndTimeValue = useUpdateAtom(
     changeMousePositionAndTimeValueDerivedAtom,
   );
+
+  const graphQueryParameters = getGraphQueryParameters({
+    timePeriod: lastDayPeriod,
+  });
 
   React.useEffect(() => {
     setIsListingGraphOpen(true);
@@ -61,7 +66,7 @@ const Graph = ({
       limitLegendRows
       displayCompleteGraph={displayCompleteGraph}
       displayTitle={false}
-      endpoint={`${endpoint}${periodQueryParameters}`}
+      endpoint={`${endpoint}${graphQueryParameters}`}
       graphHeight={150}
       resource={row}
       timeline={[]}

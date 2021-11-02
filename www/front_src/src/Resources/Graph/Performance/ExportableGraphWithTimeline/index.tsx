@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { path, isNil, or, not } from 'ramda';
-import { useAtomValue } from 'jotai/utils';
+import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 
 import { Paper, Theme, makeStyles } from '@material-ui/core';
 
@@ -16,7 +16,14 @@ import { Resource } from '../../../models';
 import { ResourceDetails } from '../../../Details/models';
 import { GraphOptionId } from '../models';
 import { useIntersection } from '../useGraphIntersection';
-import { useResourceContext } from '../../../Context';
+import {
+  adjustTimePeriodDerivedAtom,
+  customTimePeriodAtom,
+  getDatesDerivedAtom,
+  graphQueryParametersDerivedAtom,
+  resourceDetailsUpdatedAtom,
+  selectedTimePeriodAtom,
+} from '../TimePeriods/timePeriodAtoms';
 
 import { graphOptionsAtom } from './graphOptionsAtoms';
 
@@ -46,15 +53,6 @@ const ExportablePerformanceGraphWithTimeline = ({
 }: Props): JSX.Element => {
   const classes = useStyles();
 
-  const {
-    customTimePeriod,
-    getIntervalDates,
-    periodQueryParameters,
-    adjustTimePeriod,
-    selectedTimePeriod,
-    resourceDetailsUpdated,
-  } = useResourceContext();
-
   const [timeline, setTimeline] = React.useState<Array<TimelineEvent>>();
   const { sendRequest: sendGetTimelineRequest } = useRequest<
     ListingModel<TimelineEvent>
@@ -66,6 +64,13 @@ const ExportablePerformanceGraphWithTimeline = ({
   const { alias } = useUserContext();
 
   const graphOptions = useAtomValue(graphOptionsAtom);
+  const getGraphQueryParameters = useAtomValue(graphQueryParametersDerivedAtom);
+  const selectedTimePeriod = useAtomValue(selectedTimePeriodAtom);
+  const customTimePeriod = useAtomValue(customTimePeriodAtom);
+  const resourceDetailsUpdated = useAtomValue(resourceDetailsUpdatedAtom);
+  const getIntervalDates = useAtomValue(getDatesDerivedAtom);
+  const adjustTimePeriod = useUpdateAtom(adjustTimePeriodDerivedAtom);
+
   const graphContainerRef = React.useRef<HTMLElement | null>(null);
 
   const { setElement, isInViewport } = useIntersection();
@@ -88,7 +93,7 @@ const ExportablePerformanceGraphWithTimeline = ({
       return;
     }
 
-    const [start, end] = getIntervalDates();
+    const [start, end] = getIntervalDates(selectedTimePeriod);
 
     sendGetTimelineRequest({
       endpoint: timelineEndpoint,
@@ -130,7 +135,13 @@ const ExportablePerformanceGraphWithTimeline = ({
       return undefined;
     }
 
-    return `${endpoint}${periodQueryParameters}`;
+    const graphQuerParameters = getGraphQueryParameters({
+      endDate: customTimePeriod.end,
+      startDate: customTimePeriod.start,
+      timePeriod: selectedTimePeriod,
+    });
+
+    return `${endpoint}${graphQuerParameters}`;
   };
 
   const addCommentToTimeline = ({ date, comment }): void => {

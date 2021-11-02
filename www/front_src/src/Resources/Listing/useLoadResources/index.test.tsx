@@ -7,7 +7,7 @@ import { render, act, waitFor } from '@testing-library/react';
 import useFilter from '../../Filter/useFilter';
 import useListing from '../useListing';
 import Context, { ResourceContext } from '../../Context';
-import useDetails from '../../Details/useDetails';
+import useLoadDetails from '../../Details/useLoadDetails';
 
 import useLoadResources from '.';
 
@@ -29,7 +29,7 @@ const LoadResourcesComponent = (): JSX.Element => {
 const TestComponent = (): JSX.Element => {
   const filterState = useFilter();
   const listingState = useListing();
-  const detailsState = useDetails();
+  const detailsState = useLoadDetails();
 
   context = {
     ...filterState,

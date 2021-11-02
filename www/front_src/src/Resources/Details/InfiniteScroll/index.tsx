@@ -13,6 +13,7 @@ import {
   length,
 } from 'ramda';
 import { useTranslation } from 'react-i18next';
+import { useAtomValue } from 'jotai/utils';
 
 import {
   CircularProgress,
@@ -27,10 +28,10 @@ import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import { useIntersectionObserver, ListingModel } from '@centreon/ui';
 
 import NoResultsMessage from '../NoResultsMessage';
-import { ResourceDetails } from '../models';
-import { ResourceContext, useResourceContext } from '../../Context';
 import memoizeComponent from '../../memoizedComponent';
 import { labelScrollToTop } from '../../translatedLabels';
+import { selectedResourceIdAtom } from '../detailsAtoms';
+import { ResourceDetails } from '../models';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -94,21 +95,17 @@ interface Props<TEntity> {
   }) => Promise<ListingModel<TEntity>>;
 }
 
-type InfiniteScrollContentProps<TEntity> = Props<TEntity> &
-  Pick<ResourceContext, 'selectedResourceId'>;
-
 const InfiniteScrollContent = <TEntity extends { id: number }>({
   limit,
   filter,
-  details,
   reloadDependencies = [],
   loadingSkeleton,
   loading,
   preventReloadWhen = false,
-  selectedResourceId,
   sendListingRequest,
   children,
-}: InfiniteScrollContentProps<TEntity>): JSX.Element => {
+  details,
+}: Props<TEntity>): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
 
@@ -119,6 +116,8 @@ const InfiniteScrollContent = <TEntity extends { id: number }>({
   const [isScrolling, setIsScrolling] = React.useState(false);
   const scrollableContainerRef = React.useRef<HTMLDivElement | undefined>();
   const preventScrollingRef = React.useRef(false);
+
+  const selectedResourceId = useAtomValue(selectedResourceIdAtom);
 
   const listEntities = (
     { atPage } = {
@@ -276,27 +275,19 @@ const InfiniteScrollContent = <TEntity extends { id: number }>({
 const MemoizedInfiniteScrollContent = memoizeComponent({
   Component: InfiniteScrollContent,
   memoProps: [
-    'selectedResourceId',
     'limit',
-    'details',
     'reloadDependencies',
     'loading',
     'preventReloadWhen',
     'filter',
+    'details',
   ],
 }) as typeof InfiniteScrollContent;
 
 const InfiniteScroll = <TEntity extends { id: number }>(
   props: Props<TEntity>,
 ): JSX.Element => {
-  const { selectedResourceId } = useResourceContext();
-
-  return (
-    <MemoizedInfiniteScrollContent
-      selectedResourceId={selectedResourceId}
-      {...props}
-    />
-  );
+  return <MemoizedInfiniteScrollContent {...props} />;
 };
 
 export default InfiniteScroll;

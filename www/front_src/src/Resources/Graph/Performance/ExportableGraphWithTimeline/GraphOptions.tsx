@@ -17,7 +17,10 @@ import { IconButton, useMemoComponent } from '@centreon/ui';
 
 import { labelGraphOptions } from '../../../translatedLabels';
 import { GraphOption, GraphOptions } from '../../../Details/models';
-import { useResourceContext } from '../../../Context';
+import {
+  setGraphTabParametersDerivedAtom,
+  tabParametersAtom,
+} from '../../../Details/detailsAtoms';
 
 import {
   changeGraphOptionsDerivedAtom,
@@ -38,9 +41,11 @@ const Options = (): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
   const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
+
   const graphOptions = useAtomValue(graphOptionsAtom);
+  const tabParameters = useAtomValue(tabParametersAtom);
   const changeGraphOptions = useUpdateAtom(changeGraphOptionsDerivedAtom);
-  const { tabParameters, setGraphTabParameters } = useResourceContext();
+  const setGraphTabParameters = useUpdateAtom(setGraphTabParametersDerivedAtom);
 
   const openGraphOptions = (event: React.MouseEvent): void => {
     if (isNil(anchorEl)) {
