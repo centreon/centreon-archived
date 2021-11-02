@@ -60,7 +60,7 @@
                 jQuery('form[name="login"]').submit(() => {
                     jQuery('input[type="submit"]').prop('disabled', true)
                     jQuery.ajax({
-                        url: '/centreon/authentication/providers/configurations/local',
+                        url: './authentication/providers/configurations/local',
                         data: JSON.stringify({
                             login: jQuery('input[name="useralias"]').val(),
                             password: jQuery('input[name="password"]').val()
