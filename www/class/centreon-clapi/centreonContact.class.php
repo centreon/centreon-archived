@@ -125,7 +125,6 @@ class CentreonContact extends CentreonObject
         parent::__construct($dependencyInjector);
         $this->dependencyInjector = $dependencyInjector;
         $this->tpObject = new CentreonTimePeriod($dependencyInjector);
-        $this->ldap = new CentreonLdap($dependencyInjector);
         $this->object = new \Centreon_Object_Contact($dependencyInjector);
         $this->timezoneObject = new \Centreon_Object_Timezone($dependencyInjector);
         $this->params = array(
@@ -552,8 +551,7 @@ class CentreonContact extends CentreonObject
                         $value = $this->tpObject->getObjectName($value);
                         CentreonTimePeriod::getInstance()->export($value);
                     } elseif ($parameter === "ar_id") {
-                        $parameter = self::LDAP_PARAMETER_NAME;
-                        $value = $this->ldap->getObjectName($value);
+                        continue;
                     } elseif ($parameter == "contact_lang") {
                         $parameter = "locale";
                     } elseif ($parameter == "contact_host_notification_options") {

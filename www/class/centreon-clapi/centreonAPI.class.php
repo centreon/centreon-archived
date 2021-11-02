@@ -200,6 +200,11 @@ class CentreonAPI
             ),
             'export' => true
         );
+        $this->relationObject["LDAPCONTACT"] = array(
+            'module' => 'core',
+            'class' => 'LDAPContactRelation',
+            'export' => true
+        );
         $this->relationObject["LDAP"] = array(
             'module' => 'core',
             'class' => 'LDAP',
