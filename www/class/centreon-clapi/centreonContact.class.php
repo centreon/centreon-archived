@@ -74,9 +74,7 @@ class CentreonContact extends CentreonObject
     public static $aDepends = array(
         'CONTACTTPL',
         'CMD',
-        'TP',
-        'CG',
-        'LDAP'
+        'TP'
     );
     /**
      *

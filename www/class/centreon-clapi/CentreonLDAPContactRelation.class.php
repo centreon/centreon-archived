@@ -52,22 +52,7 @@ require_once "centreonLDAP.class.php";
  */
 class CentreonLDAPContactRelation extends CentreonObject
 {
-    const ORDER_UNIQUENAME = 1;
     const ORDER_NAME = 0;
-    const ORDER_MAIL = 2;
-    const ORDER_PASS = 3;
-    const ORDER_ADMIN = 4;
-    const ORDER_ACCESS = 5;
-    const ORDER_LANG = 6;
-    const ORDER_AUTHTYPE = 7;
-    const HOST_NOTIF_TP = "hostnotifperiod";
-    const SVC_NOTIF_TP = "svcnotifperiod";
-    const HOST_NOTIF_CMD = "hostnotifcmd";
-    const SVC_NOTIF_CMD = "svcnotifcmd";
-    const UNKNOWN_LOCALE = "Invalid locale";
-    const UNKNOWN_TIMEZONE = "Invalid timezone";
-    const CONTACT_LOCATION = "timezone";
-    const UNKNOWN_NOTIFICATION_OPTIONS = "Invalid notifications options";
     private const LDAP_PARAMETER_NAME = "ar_name";
 
     protected $register;
@@ -85,36 +70,8 @@ class CentreonLDAPContactRelation extends CentreonObject
     {
         parent::__construct($dependencyInjector);
         $this->dependencyInjector = $dependencyInjector;
-        $this->tpObject = new CentreonTimePeriod($dependencyInjector);
         $this->ldap = new CentreonLdap($dependencyInjector);
         $this->object = new \Centreon_Object_Contact($dependencyInjector);
-        $this->timezoneObject = new \Centreon_Object_Timezone($dependencyInjector);
-        $this->params = array(
-            'contact_host_notification_options' => 'n',
-            'contact_service_notification_options' => 'n',
-            'contact_location' => '0',
-            'contact_enable_notifications' => '0',
-            'contact_type_msg' => 'txt',
-            'contact_activate' => '1',
-            'contact_register' => '1'
-        );
-        $this->insertParams = array(
-            'contact_name',
-            'contact_alias',
-            'contact_email',
-            'contact_passwd',
-            'contact_admin',
-            'contact_oreon',
-            'contact_lang',
-            'contact_auth_type'
-        );
-        $this->exportExcludedParams = array_merge(
-            $this->insertParams,
-            array(
-                $this->object->getPrimaryKey(),
-                "contact_register"
-            )
-        );
         $this->action = "LDAPCONTACT";
         $this->nbOfCompulsoryParams = count($this->insertParams);
         $this->register = 1;
