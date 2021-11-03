@@ -13,9 +13,6 @@ import { GraphOptions } from '../../models';
 import useGraphOptions, {
   GraphOptionsContext,
 } from '../../../Graph/Performance/ExportableGraphWithTimeline/useGraphOptions';
-import useMousePosition, {
-  MousePositionContext,
-} from '../../../Graph/Performance/ExportableGraphWithTimeline/useMousePosition';
 
 import HostGraph from './HostGraph';
 
@@ -52,8 +49,6 @@ const GraphTabContent = ({
 }: GraphTabContentProps): JSX.Element => {
   const classes = useStyles();
 
-  const mousePositionProps = useMousePosition();
-
   const changeTabGraphOptions = (options: GraphOptions): void => {
     setGraphTabParameters({
       ...tabParameters.graph,
@@ -74,12 +69,10 @@ const GraphTabContent = ({
         {isService ? (
           <>
             <TimePeriodButtonGroup />
-            <MousePositionContext.Provider value={mousePositionProps}>
-              <ExportablePerformanceGraphWithTimeline
-                graphHeight={280}
-                resource={details}
-              />
-            </MousePositionContext.Provider>
+            <ExportablePerformanceGraphWithTimeline
+              graphHeight={280}
+              resource={details}
+            />
           </>
         ) : (
           <HostGraph details={details} />

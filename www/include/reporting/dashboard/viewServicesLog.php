@@ -91,26 +91,6 @@ $form->addElement('hidden', 'p', $p);
 $redirect = $form->addElement('hidden', 'o');
 $redirect->setValue($o);
 
-/* adding hidden fields to get the result of datepicker in an unlocalized format */
-$formPeriod->addElement(
-    'hidden',
-    'alternativeDateStartDate',
-    '',
-    array(
-        'size' => 10,
-        'class' => 'alternativeDate'
-    )
-);
-$formPeriod->addElement(
-    'hidden',
-    'alternativeDateEndDate',
-    '',
-    array(
-        'size' => 10,
-        'class' => 'alternativeDate'
-    )
-);
-
 /*
  * Set service id with period selection form
  */
@@ -151,7 +131,35 @@ if ($serviceId !== false && $hostId !== false) {
         $endDate,
         $reportingTimePeriod
     );
-    $serviceStats = $servicesStats[$hostId][$serviceId];
+    if (!empty($servicesStats)) {
+        $serviceStats = $servicesStats[$hostId][$serviceId];
+    } else {
+        $serviceStats = [
+            "OK_TF" => null,
+            "OK_MP" => null,
+            "OK_TP" => null,
+            "OK_A" => null,
+            "WARNING_TP" => null,
+            "WARNING_A" => null,
+            "WARNING_MP" => null,
+            "WARNING_TF" => null,
+            "CRITICAL_TP" => null,
+            "CRITICAL_A" => null,
+            "CRITICAL_MP" => null,
+            "CRITICAL_TF" => null,
+            "UNKNOWN_TP" => null,
+            "UNKNOWN_A" => null,
+            "UNKNOWN_MP" => null,
+            "UNKNOWN_TF" => null,
+            "UNDETERMINED_TP" => null,
+            "UNDETERMINED_A" => null,
+            "UNDETERMINED_TF" => null,
+            "MAINTENANCE_TP" => null,
+            "MAINTENANCE_TF" => null,
+            "TOTAL_ALERTS" => null,
+            "TOTAL_TIME_F" => null,
+        ];
+    }
 
     /*
      * Chart datas

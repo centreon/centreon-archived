@@ -28,11 +28,14 @@ use Centreon\Domain\Monitoring\HostGroup;
 use Centreon\Domain\Monitoring\ServiceGroup;
 use Centreon\Domain\Repository\RepositoryException;
 use Centreon\Domain\Contact\Interfaces\ContactFilterInterface;
-use Centreon\Domain\MonitoringServer\MonitoringServerException;
+use Centreon\Domain\MonitoringServer\Exception\MonitoringServerException;
 use Centreon\Domain\HostConfiguration\HostConfigurationException;
 use Centreon\Domain\Monitoring\Exception\MonitoringServiceException;
 use Centreon\Domain\ServiceConfiguration\ServiceConfigurationException;
 
+/**
+ * @package Centreon\Domain\Monitoring\Interfaces
+ */
 interface MonitoringServiceInterface extends ContactFilterInterface
 {
     /**
@@ -49,7 +52,7 @@ interface MonitoringServiceInterface extends ContactFilterInterface
      *
      * @param bool $withHosts Indicates whether hosts groups must be completed with their hosts
      * @param bool $withServices Indicates whether hosts must be completed with their services
-     * @param int $hostId Return only hostgroups for specific host null by default
+     * @param int|null $hostId Return only hostgroups for specific host null by default
      * @return HostGroup[]
      * @throws \Exception
      */
@@ -130,10 +133,11 @@ interface MonitoringServiceInterface extends ContactFilterInterface
     public function isServiceExists(int $hostId, int $serviceId): bool;
 
     /**
-     * Find all service groups by host and service ids
+     * Find all service groups by host and service ids.
+     *
      * @param int $hostId
      * @param int $serviceId
-     * @return array
+     * @return ServiceGroup[]
      */
     public function findServiceGroupsByHostAndService(int $hostId, int $serviceId): array;
 

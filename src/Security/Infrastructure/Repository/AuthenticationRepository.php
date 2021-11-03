@@ -24,14 +24,18 @@ namespace Security\Infrastructure\Repository;
 
 use Centreon\Infrastructure\DatabaseConnection;
 use Security\Domain\Authentication\Model\ProviderToken;
+use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Security\Domain\Authentication\Model\AuthenticationTokens;
 use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
+use Security\Domain\Authentication\Interfaces\AuthenticationTokenRepositoryInterface;
 
 /**
  * @package Security\Repository
  */
-class AuthenticationRepository extends AbstractRepositoryDRB implements AuthenticationRepositoryInterface
+class AuthenticationRepository extends AbstractRepositoryDRB implements
+    AuthenticationRepositoryInterface,
+    AuthenticationTokenRepositoryInterface
 {
     /**
      * @param DatabaseConnection $db
@@ -224,6 +228,64 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements Authenti
                 (int) $result['user_id'],
                 (int) $result['provider_configuration_id'],
                 $token,
+                $providerToken,
+                $providerRefreshToken
+            );
+        }
+
+        return null;
+    }
+
+
+     /**
+     * @inheritDoc
+     */
+    public function findAuthenticationTokensByContact(ContactInterface $contact): ?AuthenticationTokens
+    {
+        $statement = $this->db->prepare($this->translateDbName("
+            SELECT sat.user_id, sat.provider_configuration_id,
+              provider_token.token AS provider_token,
+              provider_token.creation_date as provider_token_creation_date,
+              provider_token.expiration_date as provider_token_expiration_date,
+              refresh_token.token AS refresh_token,
+              refresh_token.creation_date as refresh_token_creation_date,
+              refresh_token.expiration_date as refresh_token_expiration_date
+            FROM `:db`.security_authentication_tokens sat
+            INNER JOIN `:db`.security_token provider_token ON provider_token.id = sat.provider_token_id
+            LEFT JOIN `:db`.security_token refresh_token ON refresh_token.id = sat.provider_token_refresh_id
+            WHERE sat.user_id = :user_id
+        "));
+        $statement->bindValue(':user_id', $contact->getId(), \PDO::PARAM_INT);
+        $statement->execute();
+
+        if ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            $expirationDate = $result['provider_token_expiration_date'] !== null
+                ? (new \DateTime())->setTimestamp((int) $result['provider_token_expiration_date'])
+                : null;
+            $providerToken = new ProviderToken(
+                null,
+                $result['provider_token'],
+                (new \Datetime())->setTimestamp((int) $result['provider_token_creation_date']),
+                $expirationDate
+            );
+
+            $providerRefreshToken = null;
+            if ($result['refresh_token'] !== null) {
+                $expirationDate = $result['refresh_token_expiration_date'] !== null
+                    ? (new \DateTime())->setTimestamp((int) $result['refresh_token_expiration_date'])
+                    : null;
+                $providerRefreshToken = new ProviderToken(
+                    null,
+                    $result['refresh_token'],
+                    (new \Datetime())->setTimestamp((int) $result['refresh_token_creation_date']),
+                    $expirationDate
+                );
+            }
+
+            return new AuthenticationTokens(
+                (int) $result['user_id'],
+                (int) $result['provider_configuration_id'],
+                'fake_value',
                 $providerToken,
                 $providerRefreshToken
             );

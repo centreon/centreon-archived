@@ -199,8 +199,16 @@ function insertHostGroupDependency($ret = array()): int
     $statement->bindValue(':depName', $resourceValues['dep_name'], \PDO::PARAM_STR);
     $statement->bindValue(':depDescription', $resourceValues['dep_description'], \PDO::PARAM_STR);
     $statement->bindValue(':inheritsParent', $resourceValues['inherits_parent'], \PDO::PARAM_STR);
-    $statement->bindValue(':executionFailure', $resourceValues['execution_failure_criteria'], \PDO::PARAM_STR);
-    $statement->bindValue(':notificationFailure', $resourceValues['notification_failure_criteria'], \PDO::PARAM_STR);
+    $statement->bindValue(
+        ':executionFailure',
+        $resourceValues['execution_failure_criteria'] ?? null,
+        \PDO::PARAM_STR
+    );
+    $statement->bindValue(
+        ':notificationFailure',
+        $resourceValues['notification_failure_criteria'] ?? null,
+        \PDO::PARAM_STR
+    );
     $statement->bindValue(':depComment', $resourceValues['dep_comment'], \PDO::PARAM_STR);
     $statement->execute();
 
@@ -248,8 +256,16 @@ function updateHostGroupDependency($depId = null): void
     $statement->bindValue(':depName', $resourceValues['dep_name'], \PDO::PARAM_STR);
     $statement->bindValue(':depDescription', $resourceValues['dep_description'], \PDO::PARAM_STR);
     $statement->bindValue(':inheritsParent', $resourceValues['inherits_parent'], \PDO::PARAM_STR);
-    $statement->bindValue(':executionFailure', $resourceValues['execution_failure_criteria'], \PDO::PARAM_STR);
-    $statement->bindValue(':notificationFailure', $resourceValues['notification_failure_criteria'], \PDO::PARAM_STR);
+    $statement->bindValue(
+        ':executionFailure',
+        $resourceValues['execution_failure_criteria'] ?? null,
+        \PDO::PARAM_STR
+    );
+    $statement->bindValue(
+        ':notificationFailure',
+        $resourceValues['notification_failure_criteria'] ?? null,
+        \PDO::PARAM_STR
+    );
     $statement->bindValue(':depComment', $resourceValues['dep_comment'], \PDO::PARAM_STR);
     $statement->bindValue(':depId', $depId, \PDO::PARAM_INT);
     $statement->execute();
@@ -288,21 +304,27 @@ function sanitizeResourceParameters(array $resources): array
         ? $sanitizedParameters["inherits_parent"] = '1'
         : $sanitizedParameters["inherits_parent"] = '0';
 
-    $sanitizedParameters['execution_failure_criteria'] = filter_var(
-        implode(
-            ",",
-            array_keys($resources["execution_failure_criteria"])
-        ),
-        FILTER_SANITIZE_STRING
-    );
 
-    $sanitizedParameters['notification_failure_criteria'] = filter_var(
-        implode(
-            ",",
-            array_keys($resources["notification_failure_criteria"])
-        ),
-        FILTER_SANITIZE_STRING
-    );
+    if (isset($resources["execution_failure_criteria"]) && is_array($resources["execution_failure_criteria"])) {
+        $sanitizedParameters['execution_failure_criteria'] = filter_var(
+            implode(
+                ",",
+                array_keys($resources["execution_failure_criteria"])
+            ),
+            FILTER_SANITIZE_STRING
+        );
+    }
+
+    if (isset($resources["notification_failure_criteria"]) && is_array($resources["notification_failure_criteria"])) {
+        $sanitizedParameters['notification_failure_criteria'] = filter_var(
+            implode(
+                ",",
+                array_keys($resources["notification_failure_criteria"])
+            ),
+            FILTER_SANITIZE_STRING
+        );
+    }
+
     $sanitizedParameters['dep_comment'] = filter_var($resources['dep_comment'], FILTER_SANITIZE_STRING);
     return $sanitizedParameters;
 }

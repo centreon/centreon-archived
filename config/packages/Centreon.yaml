@@ -16,6 +16,7 @@ parameters:
     debug_log_file: '%log_path%/centreon-web.log'
     debug_level: "%env(DEBUG_LEVEL)%"
     env(DEBUG_LEVEL): !php/const Monolog\Logger::NOTICE
+    curl.timeout: 60
 
 services:
     _defaults:
@@ -24,8 +25,8 @@ services:
         autoconfigure: true # Automatically registers your services as commands, event subscribers, controller...
 
     Centreon\:
-        resource: '%kernel.root_dir%/Centreon/*'
-        exclude: '%kernel.root_dir%/Centreon/Tests'
+        resource: '../../src/Centreon/*'
+        exclude: '../../src/Centreon/Tests'
 
     Centreon\Infrastructure\DatabaseConnection:
         class: Centreon\Infrastructure\DatabaseConnection
@@ -84,6 +85,9 @@ services:
     Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface:
         class: Centreon\Domain\RequestParameters\RequestParameters
 
+    Security\Domain\Authentication\Interfaces\AuthenticationTokenServiceInterface:
+        class: Security\Domain\Authentication\AuthenticationTokenService
+
     # Icon configuration
     Centreon\Domain\Configuration\Icon\Interfaces\IconServiceInterface:
         class: Centreon\Domain\Configuration\Icon\IconService
@@ -103,6 +107,12 @@ services:
         calls:
             - method: setSqlRequestTranslator
               arguments: ['@sqlRequestTranslator']
+
+    Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerConfigurationRepositoryInterface:
+        class: Centreon\Infrastructure\MonitoringServer\Repository\MonitoringServerConfigurationRepositoryApi
+        calls:
+        - method: setTimeout
+          arguments: ['%curl.timeout%']
 
     # Platform topology register server
     Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyServiceInterface:

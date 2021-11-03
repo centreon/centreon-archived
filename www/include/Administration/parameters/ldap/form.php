@@ -443,6 +443,7 @@ if ($valid) {
     $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
     $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
     $form->accept($renderer);
+    $tpl->assign("hideSyncInterval", 0);
     $tpl->assign('form', $renderer->toArray());
     $tpl->assign('centreon_path', $centreon->optGen['oreon_path']);
     $tpl->assign('cloneSet', $cloneSet);

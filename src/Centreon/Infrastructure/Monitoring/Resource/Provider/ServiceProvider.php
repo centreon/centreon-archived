@@ -166,7 +166,8 @@ final class ServiceProvider extends Provider
             s.perfdata AS `performance_data`,
             s.execution_time AS `execution_time`,
             s.latency AS `latency`,
-            s.notify AS `notification_enabled`
+            s.notify AS `notification_enabled`,
+            s.last_time_ok AS `last_time_with_no_issue`
             FROM `:dbstg`.`services` AS s
             INNER JOIN `:dbstg`.`hosts` sh
                 ON sh.host_id = s.host_id
@@ -187,20 +188,20 @@ final class ServiceProvider extends Provider
         }
 
         // apply the service group filter to SQL query
-        if ($filter->getServicegroupIds()) {
+        if ($filter->getServicegroupNames()) {
             $groupList = [];
 
-            foreach ($filter->getServicegroupIds() as $index => $groupId) {
-                $key = ":serviceServicegroupId_{$index}";
+            foreach ($filter->getServicegroupNames() as $index => $groupName) {
+                $key = ":serviceServicegroupName_{$index}";
 
                 $groupList[] = $key;
-                $collector->addValue($key, $groupId, \PDO::PARAM_INT);
+                $collector->addValue($key, $groupName, \PDO::PARAM_STR);
             }
 
             $sql .= ' INNER JOIN `:dbstg`.`services_servicegroups` AS ssg
-                  ON ssg.host_id = s.host_id
-                  AND ssg.service_id = s.service_id
-                  AND ssg.servicegroup_id IN (' . implode(', ', $groupList) . ') ';
+                  ON ssg.host_id = s.host_id AND ssg.service_id = s.service_id
+                  INNER JOIN `:dbstg`.`servicegroups` AS sg
+                  ON ssg.servicegroup_id = sg.servicegroup_id AND sg.name IN (' . implode(', ', $groupList) . ') ';
         }
 
         $hasWhereCondition = false;
@@ -287,19 +288,18 @@ final class ServiceProvider extends Provider
         }
 
         // apply the monitoring server filter to SQL query
-        if (!empty($filter->getMonitoringServerIds())) {
-            $monitoringServerIds = [];
+        if (!empty($filter->getMonitoringServerNames())) {
+            $monitoringServerNames = [];
 
-            foreach ($filter->getMonitoringServerIds() as $index => $monitoringServerId) {
-                $key = ":monitoringServerId_{$index}";
+            foreach ($filter->getMonitoringServerNames() as $index => $monitoringServerName) {
+                $key = ":monitoringServerName_{$index}";
 
-                $monitoringServerIds[] = $key;
-                $collector->addValue($key, $monitoringServerId, \PDO::PARAM_INT);
+                $monitoringServerNames[] = $key;
+                $collector->addValue($key, $monitoringServerName, \PDO::PARAM_STR);
             }
 
-            $sql .= ' AND i.instance_id IN (' . implode(', ', $monitoringServerIds) . ')';
+            $sql .= ' AND i.name IN (' . implode(', ', $monitoringServerNames) . ')';
         }
-
         return $sql;
     }
 

@@ -11,7 +11,10 @@ module.exports = merge(baseConfig, extractCssConfig, {
   entry: ['@babel/polyfill', './www/front_src/src/index.js'],
   module: {
     rules: [
-      { parser: { system: false } },
+      {
+        parser: { system: false },
+        test: /\.[cm]?(j|t)sx?$/,
+      },
       {
         test: /\.icon.svg$/,
         use: ['@svgr/webpack'],

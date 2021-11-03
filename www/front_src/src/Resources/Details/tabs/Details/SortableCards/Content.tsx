@@ -49,8 +49,8 @@ const Content = ({
   isCustomCard,
   width,
 }: ContentProps): JSX.Element => {
-  const { t } = useTranslation();
   const classes = useStyles({ isDragging });
+  const { t } = useTranslation();
 
   const getVariableXs = (): GridSize => {
     const variableXs = isNil(xs) ? 6 : xs;

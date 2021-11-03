@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -86,14 +87,22 @@ switch ($o) {
         require_once $path . 'formComponentTemplate.php';
         break; //Modify a Component Template
     case 'm':
-        multipleComponentTemplateInDB(
-            isset($selectedCurveTemplates) ? $selectedCurveTemplates : [],
-            $duplicationNumbers
-        );
+        if (isCSRFTokenValid()) {
+            multipleComponentTemplateInDB(
+                isset($selectedCurveTemplates) ? $selectedCurveTemplates : [],
+                $duplicationNumbers
+            );
+        } else {
+            unvalidFormMessage();
+        }
         require_once $path . 'listComponentTemplates.php';
         break; //Duplicate n Component Templates
     case 'd':
-        deleteComponentTemplateInDB(isset($selectedCurveTemplates) ? $selectedCurveTemplates : []);
+        if (isCSRFTokenValid()) {
+            deleteComponentTemplateInDB(isset($selectedCurveTemplates) ? $selectedCurveTemplates : []);
+        } else {
+            unvalidFormMessage();
+        }
         require_once $path . 'listComponentTemplates.php';
         break; //Delete n Component Templates
     default:

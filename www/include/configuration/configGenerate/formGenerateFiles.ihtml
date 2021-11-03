@@ -38,7 +38,7 @@
                 </td>
 			</tr>
 			<tr class="list_one">
-				<td class="FormRowField">					
+				<td class="FormRowField">
 					{$progressLabel} (<label id='progressPct'></label>)
 				</td>
 				<td class="FormRowValue">
@@ -57,12 +57,12 @@
 			</tbody>
 		</table>
 	</div>
-	{if $msg_debug || $msg_copy || $msg_restart }
+	{if isset($msg_debug) || isset($msg_copy) || isset($msg_restart) }
 	<div>
 		<ul id="mainnav">
 		{assign var='cpt' value=0}
 		{foreach from=$host_list key=key item=item}
-			{if $msg_restart[$key] || $msg_copy[$key] || $msg_debug[$key]}
+			{if isset($msg_restart[$key]) || isset($msg_copy[$key]) || isset($msg_debug[$key])}
 			{assign var='cpt' value=$cpt+1}
 			<li class="a" id='c{$cpt}'><a href="#generate"  onclick="javascript:montre('{$cpt}');">{$host_list[$key]}</a></li>
 			{/if}
@@ -78,17 +78,17 @@
 		 	<tr class="ListHeader">
 		 		<td class="FormHeader"><img src='./img/icones/16x16/component_green.gif'>&nbsp;&nbsp;{$form.header.status}</td>
 		 	</tr>
-		 	{if $msg_debug[$key]}
+		 	{if isset($msg_debug[$key])}
 		 	<tr class="list_two_fixe">
 		 		<td class="ListColLvl1_name">{$msg_debug[$key]}</td>
 		 	</tr>
 		 	{/if}
-		 	{if $msg_copy[$key]}
+		 	{if isset($msg_copy[$key])}
 		 	<tr class="list_one_fixe">
 		 		<td class="ListColLvl1_name">{$msg_copy[$key]}</td>
 		 	</tr>
 			{/if}
-		 	{if $msg_restart[$key]}
+		 	{if isset($msg_restart[$key])}
 		 	<tr class="list_two_fixe">
 		 		<td class="ListColLvl1_name">{$msg_restart[$key]}</td>
 		 	</tr>

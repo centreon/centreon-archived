@@ -52,8 +52,8 @@ const StateCard = ({
   commentLine,
   chip,
 }: Props): JSX.Element => {
-  const { t } = useTranslation();
   const classes = useStyles();
+  const { t } = useTranslation();
 
   return (
     <Card elevation={0} style={{ padding: 8 }}>

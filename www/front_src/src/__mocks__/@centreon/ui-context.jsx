@@ -11,6 +11,8 @@ const setRefreshInterval = jest.fn();
 const setAreCloudServicesEnabled = jest.fn();
 const areCloudServicesEnabled = false;
 
+const setAcknowledgement = jest.fn();
+
 const useUser = jest.fn(() => ({
   setUser,
   user: 'admin',
@@ -36,7 +38,16 @@ const useCloudServices = jest.fn(() => ({
   setAreCloudServicesEnabled,
 }));
 
+const useAcknowledgement = jest.fn(() => ({
+  acknowledgement: {},
+  setAcknowledgement,
+}));
+
 const useUserContext = jest.fn(() => ({
+  acknowledgement: {
+    persistent: true,
+    sticky: false,
+  },
   acl: {
     actions: {
       host: {
@@ -63,7 +74,6 @@ const useUserContext = jest.fn(() => ({
   downtime: {
     default_duration: 7200,
   },
-
   locale: 'en',
 
   name: 'admin',
@@ -83,4 +93,5 @@ export {
   useRefreshInterval,
   useCloudServices,
   Context,
+  useAcknowledgement,
 };

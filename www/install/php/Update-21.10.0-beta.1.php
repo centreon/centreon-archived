@@ -25,8 +25,6 @@ $centreonLog = new CentreonLog();
 //error specific content
 $versionOfTheUpgrade = 'UPGRADE - 21.10.0-beta.1: ';
 
-$pearDB = new CentreonDB('centreon', 3, false);
-
 /**
  * Query with transaction
  */
@@ -37,20 +35,46 @@ try {
     $errorMessage = 'Impossible to purge the table session';
     $pearDB->query("DELETE FROM `session`");
 
+    // Add TLS hostname in config brocker for input/outputs IPV4
+    $statement = $pearDB->query("SELECT cb_field_id from cb_field WHERE fieldname = 'tls_hostname'");
+    if ($statement->fetchColumn() === false) {
+        $errorMessage  = 'Unable to update cb_field';
+        $pearDB->query("
+            INSERT INTO `cb_field` (
+                `cb_field_id`, `fieldname`,`displayname`,
+                `description`,
+                `fieldtype`, `external`
+            ) VALUES (
+                null, 'tls_hostname', 'TLS Host name',
+                'Expected TLS certificate common name (CN) - leave blank if unsure.',
+                'text', NULL
+            )
+        ");
+
+        $errorMessage  = 'Unable to update cb_type_field_relation';
+        $fieldId = $pearDB->lastInsertId();
+        $pearDB->query("
+            INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`, `order_display`) VALUES
+            (3, " . $fieldId . ", 0, 5)
+        ");
+    }
+
+    $pearDB->commit();
+
     $constraintStatement = $pearDB->query(
         "SELECT COUNT(*) as count FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS WHERE CONSTRAINT_NAME='session_ibfk_1'"
     );
-    if (($constraint = $constraintStatement->fetch()) && $constraint['count'] === 0) {
+    if (($constraint = $constraintStatement->fetch()) && (int) $constraint['count'] === 0) {
         $errorMessage = 'Impossible to add Delete Cascade constraint on the table session';
         $pearDB->query(
             "ALTER TABLE `session` ADD CONSTRAINT `session_ibfk_1` FOREIGN KEY (`user_id`) " .
             "REFERENCES `contact` (`contact_id`) ON DELETE CASCADE"
         );
     }
-
-    $pearDB->commit();
 } catch (\Exception $e) {
-    $pearDB->rollBack();
+    if ($pearDB->inTransaction()) {
+        $pearDB->rollBack();
+    }
     $centreonLog->insertLog(
         4,
         $versionOfTheUpgrade . $errorMessage .

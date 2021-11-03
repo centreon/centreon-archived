@@ -63,7 +63,7 @@ $hostObj = new CentreonHost($pearDB);
 $lockedElements = $hostObj->getLockedHostTemplates();
 
 /* Set the real page */
-if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
+if (isset($ret) && is_array($ret) && $ret['topology_page'] != "" && $p != $ret['topology_page']) {
     $p = $ret['topology_page'];
 }
 
@@ -86,27 +86,63 @@ switch ($o) {
         require_once($path . "formHostTemplateModel.php");
         break; #Add a host template model
     case HOST_TEMPLATE_ACTIVATION:
-        enableHostInDB($host_id);
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            enableHostInDB($host_id);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listHostTemplateModel.php");
         break; #Activate a host template model
     case HOST_TEMPLATE_MASSIVE_ACTIVATION:
-        enableHostInDB(null, isset($select) ? $select : array());
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            enableHostInDB(null, isset($select) ? $select : array());
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listHostTemplateModel.php");
         break;
     case HOST_TEMPLATE_DEACTIVATION:
-        disableHostInDB($host_id);
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            disableHostInDB($host_id);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listHostTemplateModel.php");
         break; #Desactivate a host template model
     case HOST_TEMPLATE_MASSIVE_DEACTIVATION:
-        disableHostInDB(null, isset($select) ? $select : array());
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            disableHostInDB(null, isset($select) ? $select : array());
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listHostTemplateModel.php");
         break;
     case HOST_TEMPLATE_DUPLICATION:
-        multipleHostInDB(isset($select) ? $select : array(), $dupNbr);
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            multipleHostInDB(isset($select) ? $select : array(), $dupNbr);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listHostTemplateModel.php");
         break; #Duplicate n host template model
     case HOST_TEMPLATE_DELETION:
-        deleteHostInDB(isset($select) ? $select : array());
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            deleteHostInDB(isset($select) ? $select : array());
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listHostTemplateModel.php");
         break; #Delete n host template models
     default:

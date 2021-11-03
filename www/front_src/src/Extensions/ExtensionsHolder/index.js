@@ -115,10 +115,8 @@ class ExtensionsHolder extends React.Component {
                   style={{ display: 'grid', height: '100%' }}
                   variant="outlined"
                 >
-                  <div style={{ height: 10 }}>
-                    {isLoading && <LinearProgress />}
-                  </div>
-                  <CardContent>
+                  {isLoading && <LinearProgress />}
+                  <CardContent style={{ padding: '10px' }}>
                     <Typography style={{ fontWeight: 'bold' }} variant="body1">
                       {this.parseDescription(entity.description)}
                     </Typography>
@@ -126,7 +124,7 @@ class ExtensionsHolder extends React.Component {
                       {`by ${entity.label}`}
                     </Typography>
                   </CardContent>
-                  <CardActions>
+                  <CardActions style={{ justifyContent: 'center' }}>
                     {entity.version.installed ? (
                       <Chip
                         avatar={
@@ -185,23 +183,24 @@ class ExtensionsHolder extends React.Component {
                     )}
                   </CardActions>
 
-                  {licenseInfo && (
-                    <Paper
-                      square
-                      style={{
-                        alignItems: 'center',
-                        backgroundColor: licenseInfo.color,
-                        cursor: 'pointer',
-                        display: 'flex',
-                        justifyContent: 'center',
-                      }}
-                      variant="outlined"
-                    >
+                  <Paper
+                    square
+                    elevation={0}
+                    style={{
+                      alignItems: 'center',
+                      backgroundColor: licenseInfo?.color || '#FFFFFF',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      minHeight: '20px',
+                    }}
+                  >
+                    {licenseInfo?.label && (
                       <Typography style={{ color: '#FFFFFF' }} variant="body2">
                         {licenseInfo.label}
                       </Typography>
-                    </Paper>
-                  )}
+                    )}
+                  </Paper>
                 </Card>
               </Grid>
             );

@@ -63,6 +63,7 @@ const CriteriaContent = ({
     return (
       <PopoverMultiConnectedAutocompleteField
         {...commonProps}
+        conditionField="name"
         field="name"
         getEndpoint={getEndpoint}
         value={value}
