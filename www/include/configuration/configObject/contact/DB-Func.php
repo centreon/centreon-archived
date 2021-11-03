@@ -1219,7 +1219,6 @@ function sanitizeFormContactParameters(array $ret): array
                     }
                 }
                 break;
-            case 'contact_ldap_dn':
             case 'contact_alias':
             case 'contact_name':
                 if (
@@ -1240,6 +1239,7 @@ function sanitizeFormContactParameters(array $ret): array
             case 'contact_email':
             case 'contact_pager':
             case 'contact_comment':
+            case 'contact_ldap_dn':
             case 'contact_address1':
             case 'contact_address2':
             case 'contact_address3':
