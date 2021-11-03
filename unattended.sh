@@ -149,7 +149,7 @@ timezone=`$PHP_BIN -r '
 
     echo $timezoneName;
 ' 2> /dev/null`
-echo "date.timezone = $timezone" > $PHP_ETC/10-centreon.ini
+echo "date.timezone = $timezone" >> $PHP_ETC/10-centreon.ini
 print_step_end "OK, timezone set to $timezone"
 
 #
