@@ -2,12 +2,15 @@ import * as React from 'react';
 
 import axios from 'axios';
 import { useSelector } from 'react-redux';
-import { render, act, waitFor } from '@testing-library/react';
+import { render, act, waitFor, RenderResult } from '@testing-library/react';
+import { Provider } from 'jotai';
+
+import { useUserContext } from '@centreon/ui-context';
 
 import useFilter from '../../Filter/useFilter';
 import useListing from '../useListing';
 import Context, { ResourceContext } from '../../Context';
-import useLoadDetails from '../../Details/useLoadDetails';
+import useLoadDetails from '../../testUtils/useLoadDetails';
 
 import useLoadResources from '.';
 
@@ -17,6 +20,19 @@ jest.mock('react-redux', () => ({
   ...(jest.requireActual('react-redux') as jest.Mocked<unknown>),
   useSelector: jest.fn(),
 }));
+
+const mockUserContext = {
+  locale: 'en',
+  refreshInterval: 60,
+  timezone: 'Europe/Paris',
+};
+
+jest.mock('@centreon/centreon-frontend/packages/ui-context', () => ({
+  ...(jest.requireActual('@centreon/ui-context') as jest.Mocked<unknown>),
+  useUserContext: jest.fn(),
+}));
+
+const mockedUserContext = useUserContext as jest.Mock;
 
 let context: ResourceContext;
 
@@ -44,6 +60,15 @@ const TestComponent = (): JSX.Element => {
   );
 };
 
+const TestComponentWithJotai = (): JSX.Element => (
+  <Provider>
+    <TestComponent />
+  </Provider>
+);
+
+const renderLoadResources = (): RenderResult =>
+  render(<TestComponentWithJotai />);
+
 const appState = {
   intervals: {
     AjaxTimeReloadMonitoring: 60,
@@ -54,6 +79,7 @@ const mockedSelector = useSelector as jest.Mock;
 
 describe(useLoadResources, () => {
   beforeEach(() => {
+    mockedUserContext.mockReturnValue(mockUserContext);
     mockedSelector.mockImplementation((callback) => {
       return callback(appState);
     });
@@ -71,6 +97,7 @@ describe(useLoadResources, () => {
   });
 
   afterEach(() => {
+    mockedUserContext.mockReset();
     mockedAxios.get.mockReset();
   });
 
@@ -79,7 +106,7 @@ describe(useLoadResources, () => {
       'sort',
       (): void => context.setCriteria({ name: 'sort', value: ['a', 'asc'] }),
     ],
-    ['limit', (): void => context.setLimit(20), '20'],
+    ['limit', (): void => context.setLimit?.(20), '20'],
     [
       'search',
       (): void => context.setCriteria({ name: 'search', value: 'toto' }),
@@ -129,14 +156,14 @@ describe(useLoadResources, () => {
   it.each(testCases)(
     'resets the page to 1 when %p is changed and current filter is applied',
     async (_, setter) => {
-      render(<TestComponent />);
+      renderLoadResources();
 
       await waitFor(() => {
         expect(mockedAxios.get).toHaveBeenCalledTimes(2);
       });
 
       act(() => {
-        context.setPage(2);
+        context.setPage?.(2);
       });
 
       await waitFor(() => {

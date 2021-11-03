@@ -10,6 +10,7 @@ import {
 import axios from 'axios';
 import { last, omit, propEq } from 'ramda';
 import userEvent from '@testing-library/user-event';
+import { Provider } from 'jotai';
 
 import useFilter from '../useFilter';
 import Context, { ResourceContext } from '../../Context';
@@ -51,7 +52,13 @@ const SaveMenuTest = (): JSX.Element => {
   );
 };
 
-const renderSaveMenu = (): RenderResult => render(<SaveMenuTest />);
+const SaveMenuTestWithJotai = (): JSX.Element => (
+  <Provider>
+    <SaveMenuTest />
+  </Provider>
+);
+
+const renderSaveMenu = (): RenderResult => render(<SaveMenuTestWithJotai />);
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 

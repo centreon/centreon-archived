@@ -10,6 +10,7 @@ import {
 } from '@testing-library/react';
 import { omit, head, prop } from 'ramda';
 import { makeDnd, DND_DIRECTION_DOWN } from 'react-beautiful-dnd-test-utils';
+import { Provider } from 'jotai';
 
 import Context, { ResourceContext } from '../../Context';
 import useFilter from '../useFilter';
@@ -38,6 +39,12 @@ const EditFilterPanelTest = (): JSX.Element => {
     </Context.Provider>
   );
 };
+
+const EditFilterPanelTestWithJotai = (): JSX.Element => (
+  <Provider>
+    <EditFilterPanelTest />
+  </Provider>
+);
 
 const retrievedCustomFilters = {
   meta: {
@@ -96,7 +103,7 @@ const retrievedCustomFilters = {
 };
 
 const renderEditFilterPanel = (): RenderResult =>
-  render(<EditFilterPanelTest />);
+  render(<EditFilterPanelTestWithJotai />);
 
 describe(EditFilterPanel, () => {
   beforeEach(() => {

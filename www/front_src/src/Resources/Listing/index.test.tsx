@@ -30,6 +30,7 @@ import {
   not,
 } from 'ramda';
 import userEvent from '@testing-library/user-event';
+import { Provider } from 'jotai';
 
 import { Column } from '@centreon/ui';
 import { useUserContext } from '@centreon/ui-context';
@@ -45,7 +46,7 @@ import {
   defaultSecondSortCriteria,
 } from '../testUtils';
 import { unhandledProblemsFilter } from '../Filter/models';
-import useLoadDetails from '../Details/useLoadDetails';
+import useLoadDetails from '../testUtils/useLoadDetails';
 import useDetails from '../Details/useDetails';
 
 import useListing from './useListing';
@@ -158,7 +159,13 @@ const ListingTest = (): JSX.Element => {
   );
 };
 
-const renderListing = (): RenderResult => render(<ListingTest />);
+const ListingTestWithJotai = (): JSX.Element => (
+  <Provider>
+    <ListingTest />
+  </Provider>
+);
+
+const renderListing = (): RenderResult => render(<ListingTestWithJotai />);
 
 describe(Listing, () => {
   beforeEach(() => {

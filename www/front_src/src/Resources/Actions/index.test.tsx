@@ -11,6 +11,7 @@ import {
   act,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { Provider } from 'jotai';
 
 import { useUserContext } from '@centreon/ui-context';
 import { SeverityCode } from '@centreon/ui';
@@ -53,7 +54,7 @@ import useListing from '../Listing/useListing';
 import useFilter from '../Filter/useFilter';
 import Context, { ResourceContext } from '../Context';
 import { Resource } from '../models';
-import useLoadDetails from '../Details/useLoadDetails';
+import useLoadDetails from '../testUtils/useLoadDetails';
 import useDetails from '../Details/useDetails';
 
 import {
@@ -166,8 +167,14 @@ const ActionsWithContext = (): JSX.Element => {
   );
 };
 
+const ActionsWithJotai = (): JSX.Element => (
+  <Provider>
+    <ActionsWithContext />
+  </Provider>
+);
+
 const renderActions = (): RenderResult => {
-  return render(<ActionsWithContext />);
+  return render(<ActionsWithJotai />);
 };
 
 describe(Actions, () => {
