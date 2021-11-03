@@ -1222,15 +1222,17 @@ function sanitizeFormContactParameters(array $ret): array
             case 'contact_ldap_dn':
             case 'contact_alias':
             case 'contact_name':
-                if (!empty($inputValue)) {
-                    if (
-                        $inputValue = filter_var(
-                            $inputValue,
-                            FILTER_SANITIZE_STRING,
-                            FILTER_FLAG_NO_ENCODE_QUOTES
-                        )
-                    ) {
+                if (
+                    $inputValue = filter_var(
+                        $inputValue ?? "",
+                        FILTER_SANITIZE_STRING,
+                        FILTER_FLAG_NO_ENCODE_QUOTES
+                    )
+                ) {
+                    if (!empty($inputValue)) {
                         $bindParams[':' . $inputName] = [\PDO::PARAM_STR => $inputValue];
+                    } else {
+                        throw new \InvalidArgumentException('Bad Parameter');
                     }
                 }
                 break;
@@ -1245,7 +1247,7 @@ function sanitizeFormContactParameters(array $ret): array
             case 'contact_address5':
             case 'contact_address6':
                 if (!empty($inputValue)) {
-                    if ($inputValue = filter_var($inputValue, FILTER_SANITIZE_STRING)) {
+                    if ($inputValue = filter_var($inputValue, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES)) {
                         $bindParams[':' . $inputName] = [\PDO::PARAM_STR => $inputValue];
                     }
                 }
