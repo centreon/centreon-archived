@@ -68,7 +68,6 @@ class CentreonContact extends CentreonObject
     const UNKNOWN_TIMEZONE = "Invalid timezone";
     const CONTACT_LOCATION = "timezone";
     const UNKNOWN_NOTIFICATION_OPTIONS = "Invalid notifications options";
-    private const LDAP_PARAMETER_NAME = "ar_name";
 
     protected $register;
     public static $aDepends = array(
