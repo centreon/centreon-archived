@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { path, isNil, or, not, pick } from 'ramda';
+import { path, isNil, or, not } from 'ramda';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 
 import { Paper, Theme, makeStyles } from '@material-ui/core';
