@@ -242,7 +242,7 @@ const useLoadResources = (): LoadResources => {
     loadDetails();
   }, [selectedResourceUuid]);
 
-  return React.useMemo(() => ({ initAutorefreshAndLoad }), []);
+  return { initAutorefreshAndLoad };
 };
 
 export default useLoadResources;

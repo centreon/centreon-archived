@@ -27,6 +27,7 @@ import {
 import { getColumns, defaultSelectedColumnIds } from './columns';
 import useLoadResources from './useLoadResources';
 import {
+  enabledAutorefreshAtom,
   limitAtom,
   listingAtom,
   pageAtom,
@@ -50,6 +51,7 @@ const ResourceListing = (): JSX.Element => {
   );
   const listing = useAtomValue(listingAtom);
   const sending = useAtomValue(sendingAtom);
+  const enabledAutoRefresh = useAtomValue(enabledAutorefreshAtom);
   const setSelectedResourceParentType = useUpdateAtom(
     selectedResourceParentTypeAtom,
   );
@@ -181,6 +183,7 @@ const ResourceListing = (): JSX.Element => {
         selectedResources,
         selectedResourceUuid,
         sending,
+        enabledAutoRefresh,
       ]}
       predefinedRowsSelection={predefinedRowsSelection}
       rowColorConditions={[
