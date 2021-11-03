@@ -141,7 +141,8 @@ class CentreonContact extends CentreonObject
             'contact_admin',
             'contact_oreon',
             'contact_lang',
-            'contact_auth_type'
+            'contact_auth_type',
+            'ar_id'
         );
         $this->exportExcludedParams = array_merge(
             $this->insertParams,
@@ -404,7 +405,6 @@ class CentreonContact extends CentreonObject
                             'reach_api',
                             'reach_api_rt',
                             'default_page',
-                            'ar_id',
                             'show_deprecated_pages',
                             'enable_one_click_export'
                         ]
@@ -547,8 +547,6 @@ class CentreonContact extends CentreonObject
                         $parameter = self::SVC_NOTIF_TP;
                         $value = $this->tpObject->getObjectName($value);
                         CentreonTimePeriod::getInstance()->export($value);
-                    } elseif ($parameter === "ar_id") {
-                        continue;
                     } elseif ($parameter == "contact_lang") {
                         $parameter = "locale";
                     } elseif ($parameter == "contact_host_notification_options") {
