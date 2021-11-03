@@ -39,7 +39,7 @@ require_once "centreonLDAP.class.php";
  */
 class CentreonLDAPContactRelation extends CentreonObject
 {
-    const ORDER_NAME = 0;
+    private const ORDER_NAME = 0;
     private const LDAP_PARAMETER_NAME = "ar_name";
 
     protected $register;
