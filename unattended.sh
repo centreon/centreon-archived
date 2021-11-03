@@ -649,7 +649,7 @@ function install_central() {
 		}
 		echo $timezoneName;
 	' 2>/dev/null)
-	echo "date.timezone = $timezone" >$PHP_ETC/50-centreon.ini
+	echo "date.timezone = $timezone" >>$PHP_ETC/50-centreon.ini
 
 	log "INFO" "PHP date.timezone set to [$timezone]"
 
