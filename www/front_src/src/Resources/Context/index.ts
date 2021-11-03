@@ -3,12 +3,12 @@ import * as React from 'react';
 import { FilterState } from '../Filter/useFilter';
 import { ActionsState } from '../Actions/useActions';
 import { ListingState } from '../Listing/useListing';
-import { DetailsState } from '../Details/useLoadDetails';
+import { DetailsState } from '../testUtils/useLoadDetails';
 
 export type ResourceContext = FilterState &
   ActionsState &
-  ListingState &
-  DetailsState;
+  Partial<DetailsState> &
+  Partial<ListingState>;
 
 const Context = React.createContext<ResourceContext | undefined>(undefined);
 

@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { equals, includes, not } from 'ramda';
 import { useTranslation } from 'react-i18next';
-import { useUpdateAtom } from 'jotai/utils';
+import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { useAtom } from 'jotai';
 
 import { useTheme, alpha } from '@material-ui/core';
@@ -26,6 +26,13 @@ import {
 
 import { getColumns, defaultSelectedColumnIds } from './columns';
 import useLoadResources from './useLoadResources';
+import {
+  limitAtom,
+  listingAtom,
+  pageAtom,
+  selectedColumnIdsAtom,
+  sendingAtom,
+} from './listingAtoms';
 
 export const okStatuses = ['OK', 'UP'];
 
@@ -37,6 +44,12 @@ const ResourceListing = (): JSX.Element => {
   const [selectedResourceUuid, setSelectedResourceUuid] = useAtom(
     selectedResourceUuidAtom,
   );
+  const [page, setPage] = useAtom(pageAtom);
+  const [selectedColumnIds, setSelectedColumnIds] = useAtom(
+    selectedColumnIdsAtom,
+  );
+  const listing = useAtomValue(listingAtom);
+  const sending = useAtomValue(sendingAtom);
   const setSelectedResourceParentType = useUpdateAtom(
     selectedResourceParentTypeAtom,
   );
@@ -46,22 +59,16 @@ const ResourceListing = (): JSX.Element => {
   );
   const setSelectedResourceId = useUpdateAtom(selectedResourceIdAtom);
   const setOpenDetailsTabId = useUpdateAtom(openDetailsTabIdAtom);
+  const setLimit = useUpdateAtom(limitAtom);
 
   const {
-    listing,
-    setLimit,
-    page,
-    setPage,
     setSelectedResources,
     selectedResources,
     setResourcesToAcknowledge,
     setResourcesToSetDowntime,
     setResourcesToCheck,
-    sending,
     setCriteriaAndNewFilter,
     getCriteriaValue,
-    selectedColumnIds,
-    setSelectedColumnIds,
     search,
   } = useResourceContext();
 

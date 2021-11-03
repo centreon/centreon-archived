@@ -87,6 +87,7 @@ import { defaultGraphOptions } from '../Graph/Performance/ExportableGraphWithTim
 import useFilter from '../Filter/useFilter';
 import { CriteriaNames } from '../Filter/Criterias/models';
 import { ResourceType } from '../models';
+import useLoadDetails from '../testUtils/useLoadDetails';
 
 import {
   last7Days,
@@ -97,7 +98,6 @@ import { buildListTimelineEventsEndpoint } from './tabs/Timeline/api';
 import useDetails from './useDetails';
 import { getTypeIds } from './tabs/Timeline/Event';
 import { DetailsUrlQueryParameters } from './models';
-import useLoadDetails from './useLoadDetails';
 
 import Details from '.';
 
@@ -1253,13 +1253,13 @@ describe(Details, () => {
     });
 
     act(() => {
-      context.changeCustomTimePeriod({
+      context.changeCustomTimePeriod?.({
         date: new Date(startISOString),
         property: CustomTimePeriodProperty.start,
       });
     });
     act(() => {
-      context.changeCustomTimePeriod({
+      context.changeCustomTimePeriod?.({
         date: new Date(endISOString),
         property: CustomTimePeriodProperty.end,
       });
@@ -1292,13 +1292,13 @@ describe(Details, () => {
     const endISOString = '2020-01-21T06:00:00.000Z';
 
     act(() => {
-      context.changeCustomTimePeriod({
+      context.changeCustomTimePeriod?.({
         date: new Date(startISOString),
         property: CustomTimePeriodProperty.start,
       });
     });
     act(() => {
-      context.changeCustomTimePeriod({
+      context.changeCustomTimePeriod?.({
         date: new Date(endISOString),
         property: CustomTimePeriodProperty.end,
       });
@@ -1378,13 +1378,13 @@ describe(Details, () => {
       const { getByLabelText } = renderDetails();
 
       act(() => {
-        context.changeCustomTimePeriod({
+        context.changeCustomTimePeriod?.({
           date: new Date('2020-01-20T06:00:00.000Z'),
           property: CustomTimePeriodProperty.start,
         });
       });
       act(() => {
-        context.changeCustomTimePeriod({
+        context.changeCustomTimePeriod?.({
           date: new Date('2020-01-21T06:00:00.000Z'),
           property: CustomTimePeriodProperty.end,
         });
