@@ -4,7 +4,7 @@
 
 [![Centreon Twitter](https://img.shields.io/twitter/follow/centreon.svg?style=social)](https://twitter.com/centreon) &nbsp;[![Centreon Labs Twitter](https://img.shields.io/twitter/follow/centreonlabs.svg?style=social)](https://twitter.com/centreonlabs) &nbsp;
 
-![Centreon ScreenShot](centreon-github-wall.jpg?raw=true "Title")
+![Centreon ScreenShot](21.10_blur.png?raw=true "Title")
 
 <h2> Introduction </h2>
 
