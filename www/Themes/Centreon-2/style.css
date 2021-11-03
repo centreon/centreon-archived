@@ -1159,7 +1159,7 @@ div.menuLeft {
     margin: 2px 10px 2px 0px;
 }
 
-#esi_icon_image {
+#esi_icon_image_img, #ehi_icon_image_img{
     height: 25px;
     vertical-align: middle;
 }
