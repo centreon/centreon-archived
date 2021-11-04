@@ -657,7 +657,6 @@ class CentreonAPI
      */
     public function launchAction($exit = true)
     {
-        
         $action = strtoupper($this->action);
 
         /**
