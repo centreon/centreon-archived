@@ -62,7 +62,7 @@ class CentreonLDAPContactRelation extends CentreonObject
         $this->action = "LDAPCONTACT";
         $this->nbOfCompulsoryParams = count($this->insertParams);
         $this->register = 1;
-        $this->activateField = 'contact_activate';
+        $this->activateField = 'ldap_contact_activate';
     }
 
     /**
