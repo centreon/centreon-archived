@@ -95,7 +95,6 @@ if (isset($_SERVER['HTTP_X_AUTH_TOKEN'])) {
         'contact_admin' => $contact->isAdmin(),
         'contact_lang' => null,
         'contact_passwd' => null,
-        'contact_js_effects' => null,
         'contact_autologin_key' => null,
         'contact_location' => null,
         'reach_api' => $contact->hasAccessToApiConfiguration(),
@@ -279,7 +278,7 @@ try {
                 /*
                  * Check if monitoring engine's configuration directory existss
                  */
-                 $dbResult = $pearDB->query("
+                $dbResult = $pearDB->query("
                     SELECT cfg_dir FROM cfg_nagios, nagios_server
                     WHERE nagios_server.id = cfg_nagios.nagios_server_id
                     AND nagios_server.localhost = '1'
