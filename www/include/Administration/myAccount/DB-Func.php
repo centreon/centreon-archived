@@ -143,7 +143,6 @@ function updateContact($contact_id = null)
           'contact_email = :contactEmail, ' .
           'contact_pager = :contactPager, ' .
           'default_page = :defaultPage, ' .
-          'contact_js_effects = :contactJsEffects, ' .
           'show_deprecated_pages = :showDeprecatedPages, ' .
           'contact_autologin_key = :contactAutologinKey, ' .
           'enable_one_click_export = :enableOneClickExport';
@@ -185,7 +184,6 @@ function updateContact($contact_id = null)
         \PDO::PARAM_INT
     );
     $stmt->bindValue(':defaultPage', !empty($ret['default_page']) ? $ret['default_page'] : null, \PDO::PARAM_INT);
-    $stmt->bindValue(':contactJsEffects', isset($ret['contact_js_effects']) ? 1 : 0, \PDO::PARAM_STR);
     $stmt->bindValue(':showDeprecatedPages', isset($ret['show_deprecated_pages']) ? 1 : 0, \PDO::PARAM_STR);
     $stmt->bindValue(':enableOneClickExport', isset($ret['enable_one_click_export']) ? '1' : '0', \PDO::PARAM_STR);
     $stmt->bindValue(':contactId', $contact_id, \PDO::PARAM_INT);

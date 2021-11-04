@@ -46,7 +46,7 @@ class InputBroker
             ],
             [
                 'config_key'      => 'retry_interval',
-                'config_value'    => '60',
+                'config_value'    => '15',
                 'config_group'    => 'input',
                 'config_group_id' => '0',
                 'grp_level'       => '0',
