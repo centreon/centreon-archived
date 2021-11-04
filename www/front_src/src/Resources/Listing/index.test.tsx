@@ -37,7 +37,7 @@ import { useUserContext } from '@centreon/ui-context';
 
 import { Resource, ResourceType } from '../models';
 import Context, { ResourceContext } from '../Context';
-import useActions from '../Actions/useActions';
+import useActions from '../testUtils/useActions';
 import useFilter from '../Filter/useFilter';
 import { labelInDowntime, labelAcknowledged } from '../translatedLabels';
 import {

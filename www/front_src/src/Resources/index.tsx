@@ -10,7 +10,6 @@ import Filter from './Filter';
 import Listing from './Listing';
 import Details from './Details';
 import useFilter from './Filter/useFilter';
-import useActions from './Actions/useActions';
 import EditFiltersPanel from './Filter/Edit';
 import memoizeComponent from './memoizedComponent';
 import { selectedResourceIdAtom } from './Details/detailsAtoms';
@@ -44,7 +43,6 @@ const MemoizedResourcesPage = memoizeComponent<Props>({
 
 const Resources = (): JSX.Element => {
   const filterContext = useFilter();
-  const actionsContext = useActions();
 
   useDetails();
 
@@ -52,7 +50,6 @@ const Resources = (): JSX.Element => {
     <Context.Provider
       value={{
         ...filterContext,
-        ...actionsContext,
       }}
     >
       <MemoizedResourcesPage editPanelOpen={filterContext.editPanelOpen} />

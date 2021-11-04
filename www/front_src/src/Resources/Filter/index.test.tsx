@@ -32,7 +32,7 @@ import {
   labelSearchOptions,
 } from '../translatedLabels';
 import useListing from '../Listing/useListing';
-import useActions from '../Actions/useActions';
+import useActions from '../testUtils/useActions';
 import Context, { ResourceContext } from '../Context';
 import useLoadResources from '../Listing/useLoadResources';
 import {

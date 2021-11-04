@@ -23,6 +23,12 @@ import {
   selectedResourceTypeAtom,
   selectedResourceUuidAtom,
 } from '../Details/detailsAtoms';
+import {
+  resourcesToAcknowledgeAtom,
+  resourcesToCheckAtom,
+  resourcesToSetDowntimeAtom,
+  selectedResourcesAtom,
+} from '../Actions/actionsAtoms';
 
 import { getColumns, defaultSelectedColumnIds } from './columns';
 import useLoadResources from './useLoadResources';
@@ -49,6 +55,9 @@ const ResourceListing = (): JSX.Element => {
   const [selectedColumnIds, setSelectedColumnIds] = useAtom(
     selectedColumnIdsAtom,
   );
+  const [selectedResources, setSelectedResources] = useAtom(
+    selectedResourcesAtom,
+  );
   const listing = useAtomValue(listingAtom);
   const sending = useAtomValue(sendingAtom);
   const enabledAutoRefresh = useAtomValue(enabledAutorefreshAtom);
@@ -62,17 +71,12 @@ const ResourceListing = (): JSX.Element => {
   const setSelectedResourceId = useUpdateAtom(selectedResourceIdAtom);
   const setOpenDetailsTabId = useUpdateAtom(openDetailsTabIdAtom);
   const setLimit = useUpdateAtom(limitAtom);
+  const setResourcesToAcknowledge = useUpdateAtom(resourcesToAcknowledgeAtom);
+  const setResourcesToSetDowntime = useUpdateAtom(resourcesToSetDowntimeAtom);
+  const setResourcesToCheck = useUpdateAtom(resourcesToCheckAtom);
 
-  const {
-    setSelectedResources,
-    selectedResources,
-    setResourcesToAcknowledge,
-    setResourcesToSetDowntime,
-    setResourcesToCheck,
-    setCriteriaAndNewFilter,
-    getCriteriaValue,
-    search,
-  } = useResourceContext();
+  const { setCriteriaAndNewFilter, getCriteriaValue, search } =
+    useResourceContext();
 
   const { initAutorefreshAndLoad } = useLoadResources();
 
