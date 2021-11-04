@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { all, head, pathEq, pick } from 'ramda';
+import { all, head, pathEq } from 'ramda';
 import { useTranslation } from 'react-i18next';
 import { useAtom } from 'jotai';
 
