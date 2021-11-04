@@ -44,9 +44,9 @@ use PDO;
 
 class TopologyRepository extends ServiceEntityRepository
 {
-    const ACL_ACCESS_NONE = 0;
-    const ACL_ACCESS_READ_WRITE = 1;
-    const ACL_ACCESS_READ_ONLY = 2;
+    private const ACL_ACCESS_NONE = 0;
+    private const ACL_ACCESS_READ_WRITE = 1;
+    private const ACL_ACCESS_READ_ONLY = 2;
 
     /**
      * Disable Menus for a Master-to-Remote transition
