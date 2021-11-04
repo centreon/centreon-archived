@@ -360,9 +360,10 @@ function set_required_prerequisite() {
             ;;
 
         oraclelinux-release* | enterprise-release*)
-            BASE_PACKAGES=(dnf-plugins-core oracle-epel-release-el8)
+            BASE_PACKAGES=(dnf-plugins-core)
             $PKG_MGR config-manager --set-enabled ol8_codeready_builder
-            ;;
+            dnf install -y http://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+	    ;;
         esac
 
         install_remi_repo
