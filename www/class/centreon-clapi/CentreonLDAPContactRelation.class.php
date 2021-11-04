@@ -38,8 +38,6 @@ require_once "centreonLDAP.class.php";
 class CentreonLDAPContactRelation extends CentreonObject
 {
     private const ORDER_NAME = 0;
-    private const HOST_NOTIF_CMD = "hostnotifcmd";
-    private const SVC_NOTIF_CMD = "svcnotifcmd";
     private const LDAP_PARAMETER_NAME = "ar_name";
 
     protected $register;
@@ -67,7 +65,6 @@ class CentreonLDAPContactRelation extends CentreonObject
 
     /**
      * @param $parameters
-     * @return array
      * @throws CentreonClapiException
      */
     public function initUpdateParameters($parameters)
@@ -78,49 +75,6 @@ class CentreonLDAPContactRelation extends CentreonObject
         }
         $objectId = $this->getObjectId($params[self::ORDER_NAME]);
         $params[self::ORDER_NAME] = str_replace(" ", "_", $params[self::ORDER_NAME]);
-    }
-
-    /**
-     * Export notification commands
-     *
-     * @param string $objType
-     * @param int $contactId
-     * @param string $contactName
-     * @return void
-     */
-    private function exportNotifCommands($objType, $contactId, $contactName)
-    {
-        $commandObj = new \Centreon_Object_Command($this->dependencyInjector);
-        if ($objType == self::HOST_NOTIF_CMD) {
-            $obj = new \Centreon_Object_Relation_Contact_Command_Host($this->dependencyInjector);
-        } else {
-            $obj = new \Centreon_Object_Relation_Contact_Command_Service($this->dependencyInjector);
-        }
-
-        $cmds = $obj->getMergedParameters(
-            array(),
-            array($commandObj->getUniqueLabelField()),
-            -1,
-            0,
-            null,
-            null,
-            array($this->object->getPrimaryKey() => $contactId),
-            "AND"
-        );
-        $str = "";
-        foreach ($cmds as $element) {
-            if ($str != "") {
-                $str .= "|";
-            }
-            $str .= $element[$commandObj->getUniqueLabelField()];
-        }
-        if ($str) {
-            echo $this->action . $this->delim
-                . "setparam" . $this->delim
-                . $contactName . $this->delim
-                . $objType . $this->delim
-                . $str . "\n";
-        }
     }
 
     /**
@@ -175,9 +129,6 @@ class CentreonLDAPContactRelation extends CentreonObject
                     }
                 }
             }
-            $objId = $element[$this->object->getPrimaryKey()];
-            $this->exportNotifCommands(self::HOST_NOTIF_CMD, $objId, $element[$this->object->getUniqueLabelField()]);
-            $this->exportNotifCommands(self::SVC_NOTIF_CMD, $objId, $element[$this->object->getUniqueLabelField()]);
         }
     }
 }
