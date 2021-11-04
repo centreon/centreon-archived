@@ -13,7 +13,7 @@ import { makeDnd, DND_DIRECTION_DOWN } from 'react-beautiful-dnd-test-utils';
 import { Provider } from 'jotai';
 
 import Context, { ResourceContext } from '../../Context';
-import useFilter from '../useFilter';
+import useFilter from '../../testUtils/useFilter';
 import { labelFilter, labelName, labelDelete } from '../../translatedLabels';
 import { filterEndpoint } from '../api';
 import { defaultSortField, defaultSortOrder } from '../Criterias/default';

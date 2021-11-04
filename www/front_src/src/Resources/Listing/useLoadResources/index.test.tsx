@@ -7,7 +7,7 @@ import { Provider } from 'jotai';
 
 import { useUserContext } from '@centreon/ui-context';
 
-import useFilter from '../../Filter/useFilter';
+import useFilter from '../../testUtils/useFilter';
 import useListing from '../useListing';
 import Context, { ResourceContext } from '../../Context';
 import useLoadDetails from '../../testUtils/useLoadDetails';
@@ -104,17 +104,17 @@ describe(useLoadResources, () => {
   const testCases = [
     [
       'sort',
-      (): void => context.setCriteria({ name: 'sort', value: ['a', 'asc'] }),
+      (): void => context.setCriteria?.({ name: 'sort', value: ['a', 'asc'] }),
     ],
     ['limit', (): void => context.setLimit?.(20), '20'],
     [
       'search',
-      (): void => context.setCriteria({ name: 'search', value: 'toto' }),
+      (): void => context.setCriteria?.({ name: 'search', value: 'toto' }),
     ],
     [
       'states',
       (): void =>
-        context.setCriteria({
+        context.setCriteria?.({
           name: 'states',
           value: [{ id: 'unhandled', name: 'Unhandled problems' }],
         }),
@@ -122,7 +122,7 @@ describe(useLoadResources, () => {
     [
       'statuses',
       (): void =>
-        context.setCriteria({
+        context.setCriteria?.({
           name: 'statuses',
           value: [{ id: 'OK', name: 'Ok' }],
         }),
@@ -130,7 +130,7 @@ describe(useLoadResources, () => {
     [
       'resourceTypes',
       (): void =>
-        context.setCriteria({
+        context.setCriteria?.({
           name: 'resource_types',
           value: [{ id: 'host', name: 'Host' }],
         }),
@@ -138,7 +138,7 @@ describe(useLoadResources, () => {
     [
       'hostGroups',
       (): void =>
-        context.setCriteria({
+        context.setCriteria?.({
           name: 'host_groups',
           value: [{ id: 0, name: 'Linux-servers' }],
         }),
@@ -146,7 +146,7 @@ describe(useLoadResources, () => {
     [
       'serviceGroups',
       (): void =>
-        context.setCriteria({
+        context.setCriteria?.({
           name: 'service_groups',
           value: [{ id: 1, name: 'Web-services' }],
         }),
@@ -172,7 +172,7 @@ describe(useLoadResources, () => {
 
       act(() => {
         (setter as () => void)();
-        context.applyCurrentFilter();
+        context.applyCurrentFilter?.();
       });
 
       await waitFor(() => {

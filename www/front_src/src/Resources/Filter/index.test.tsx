@@ -48,7 +48,7 @@ import useDetails from '../Details/useDetails';
 
 import { allFilter, Filter as FilterModel } from './models';
 import useFilter from './useFilter';
-import { filterKey } from './storedFilter';
+import { filterKey } from './filterAtoms';
 import { defaultSortField, defaultSortOrder } from './Criterias/default';
 import { buildHostGroupsEndpoint } from './api/endpoint';
 
@@ -694,9 +694,9 @@ describe(Filter, () => {
 
       mockedAxios.get.mockResolvedValue({ data: {} });
 
-      const unhandledProblemsOption = await findByText(labelUnhandledProblems);
+      const newFilterOption = await findByText(labelNewFilter);
 
-      userEvent.click(unhandledProblemsOption);
+      userEvent.click(newFilterOption);
 
       userEvent.click(getByText(labelAll));
 

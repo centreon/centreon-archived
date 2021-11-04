@@ -84,7 +84,7 @@ import { resourcesEndpoint } from '../api/endpoint';
 import { buildResourcesEndpoint } from '../Listing/api/endpoint';
 import { cancelTokenRequestParam } from '../testUtils';
 import { defaultGraphOptions } from '../Graph/Performance/ExportableGraphWithTimeline/graphOptionsAtoms';
-import useFilter from '../Filter/useFilter';
+import useFilter from '../testUtils/useFilter';
 import { CriteriaNames } from '../Filter/Criterias/models';
 import { ResourceType } from '../models';
 import useLoadDetails from '../testUtils/useLoadDetails';
@@ -1508,7 +1508,7 @@ describe(Details, () => {
     userEvent.click(getByText('Linux-servers').parentElement as HTMLElement);
 
     await waitFor(() => {
-      expect(context.getCriteriaValue(CriteriaNames.serviceGroups)).toEqual([
+      expect(context.getCriteriaValue?.(CriteriaNames.serviceGroups)).toEqual([
         { id: 0, name: 'Linux-servers' },
       ]);
     });

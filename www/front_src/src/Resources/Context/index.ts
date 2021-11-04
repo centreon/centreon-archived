@@ -5,7 +5,7 @@ import { ActionsState } from '../testUtils/useActions';
 import { ListingState } from '../Listing/useListing';
 import { DetailsState } from '../testUtils/useLoadDetails';
 
-export type ResourceContext = FilterState &
+export type ResourceContext = Partial<FilterState> &
   Partial<ActionsState> &
   Partial<DetailsState> &
   Partial<ListingState>;

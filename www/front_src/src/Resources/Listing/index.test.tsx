@@ -38,7 +38,7 @@ import { useUserContext } from '@centreon/ui-context';
 import { Resource, ResourceType } from '../models';
 import Context, { ResourceContext } from '../Context';
 import useActions from '../testUtils/useActions';
-import useFilter from '../Filter/useFilter';
+import useFilter from '../testUtils/useFilter';
 import { labelInDowntime, labelAcknowledged } from '../translatedLabels';
 import {
   getListingEndpoint,
@@ -222,7 +222,7 @@ describe(Listing, () => {
   describe('column sorting', () => {
     afterEach(async () => {
       act(() => {
-        context.setCurrentFilter(unhandledProblemsFilter);
+        context.setCurrentFilter?.(unhandledProblemsFilter);
       });
 
       await waitFor(() => {

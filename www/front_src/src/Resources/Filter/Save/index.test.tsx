@@ -12,7 +12,7 @@ import { last, omit, propEq } from 'ramda';
 import userEvent from '@testing-library/user-event';
 import { Provider } from 'jotai';
 
-import useFilter from '../useFilter';
+import useFilter from '../../testUtils/useFilter';
 import Context, { ResourceContext } from '../../Context';
 import {
   labelSaveFilter,

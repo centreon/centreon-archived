@@ -12,6 +12,7 @@ import {
   symmetricDifference,
 } from 'ramda';
 import { useTranslation } from 'react-i18next';
+import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 
 import {
   Menu,
@@ -33,9 +34,15 @@ import {
 } from '../../translatedLabels';
 import { useResourceContext } from '../../Context';
 import { updateFilter as updateFilterRequest } from '../api';
-import { FilterState } from '../useFilter';
 import memoizeComponent from '../../memoizedComponent';
 import { Filter } from '../models';
+import {
+  applyFilterDerivedAtom,
+  currentFilterAtom,
+  customFiltersAtom,
+  editPanelOpenAtom,
+  filtersDerivedAtom,
+} from '../filterAtoms';
 
 import CreateFilterDialog from './CreateFilterDialog';
 
@@ -50,29 +57,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-type Props = Pick<
-  FilterState,
-  | 'currentFilter'
-  | 'loadCustomFilters'
-  | 'customFilters'
-  | 'setEditPanelOpen'
-  | 'filters'
-  | 'appliedFilter'
-  | 'search'
-  | 'applyFilter'
->;
-
-const SaveFilterMenuContent = ({
-  currentFilter,
-  applyFilter,
-  loadCustomFilters,
-  customFilters,
-  setEditPanelOpen,
-  filters,
-}: Props): JSX.Element => {
+const SaveFilterMenu = (): JSX.Element => {
   const classes = useStyles();
 
   const { t } = useTranslation();
+
+  const { loadCustomFilters } = useResourceContext();
 
   const [menuAnchor, setMenuAnchor] = React.useState<Element | null>(null);
   const [createFilterDialogOpen, setCreateFilterDialogOpen] =
@@ -84,6 +74,12 @@ const SaveFilterMenuContent = ({
   } = useRequest({
     request: updateFilterRequest,
   });
+
+  const currentFilter = useAtomValue(currentFilterAtom);
+  const customFilters = useAtomValue(customFiltersAtom);
+  const filters = useAtomValue(filtersDerivedAtom);
+  const applyFilter = useUpdateAtom(applyFilterDerivedAtom);
+  const setEditPanelOpen = useUpdateAtom(editPanelOpenAtom);
 
   const { showSuccessMessage } = useSnackbar();
 
@@ -107,7 +103,7 @@ const SaveFilterMenuContent = ({
   const loadFiltersAndUpdateCurrent = (newFilter: Filter): void => {
     closeCreateFilterDialog();
 
-    loadCustomFilters().then(() => {
+    loadCustomFilters?.().then(() => {
       applyFilter(newFilter);
     });
   };
@@ -184,46 +180,6 @@ const SaveFilterMenuContent = ({
         />
       )}
     </>
-  );
-};
-
-const memoProps = [
-  'updatedFilter',
-  'customFilters',
-  'appliedFilter',
-  'filters',
-  'currentFilter',
-  'search',
-];
-
-const MemoizedSaveFilterMenuContent = memoizeComponent<Props>({
-  Component: SaveFilterMenuContent,
-  memoProps,
-});
-
-const SaveFilterMenu = (): JSX.Element => {
-  const {
-    filterWithParsedSearch,
-    applyFilter,
-    loadCustomFilters,
-    customFilters,
-    setEditPanelOpen,
-    filters,
-    appliedFilter,
-    search,
-  } = useResourceContext();
-
-  return (
-    <MemoizedSaveFilterMenuContent
-      appliedFilter={appliedFilter}
-      applyFilter={applyFilter}
-      currentFilter={filterWithParsedSearch}
-      customFilters={customFilters}
-      filters={filters}
-      loadCustomFilters={loadCustomFilters}
-      search={search}
-      setEditPanelOpen={setEditPanelOpen}
-    />
   );
 };
 

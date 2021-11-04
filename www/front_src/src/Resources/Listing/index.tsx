@@ -11,7 +11,6 @@ import { MemoizedListing as Listing, useSnackbar } from '@centreon/ui';
 
 import { graphTabId } from '../Details/tabs';
 import { rowColorConditions } from '../colors';
-import { useResourceContext } from '../Context';
 import Actions from '../Actions';
 import { Resource, SortOrder } from '../models';
 import { labelSelectAtLeastOneColumn, labelStatus } from '../translatedLabels';
@@ -29,6 +28,11 @@ import {
   resourcesToSetDowntimeAtom,
   selectedResourcesAtom,
 } from '../Actions/actionsAtoms';
+import {
+  getCriteriaValueDerivedAtom,
+  searchAtom,
+  setCriteriaAndNewFilterDerivedAtom,
+} from '../Filter/filterAtoms';
 
 import { getColumns, defaultSelectedColumnIds } from './columns';
 import useLoadResources from './useLoadResources';
@@ -61,6 +65,8 @@ const ResourceListing = (): JSX.Element => {
   const listing = useAtomValue(listingAtom);
   const sending = useAtomValue(sendingAtom);
   const enabledAutoRefresh = useAtomValue(enabledAutorefreshAtom);
+  const getCriteriaValue = useAtomValue(getCriteriaValueDerivedAtom);
+  const search = useAtomValue(searchAtom);
   const setSelectedResourceParentType = useUpdateAtom(
     selectedResourceParentTypeAtom,
   );
@@ -74,9 +80,9 @@ const ResourceListing = (): JSX.Element => {
   const setResourcesToAcknowledge = useUpdateAtom(resourcesToAcknowledgeAtom);
   const setResourcesToSetDowntime = useUpdateAtom(resourcesToSetDowntimeAtom);
   const setResourcesToCheck = useUpdateAtom(resourcesToCheckAtom);
-
-  const { setCriteriaAndNewFilter, getCriteriaValue, search } =
-    useResourceContext();
+  const setCriteriaAndNewFilter = useUpdateAtom(
+    setCriteriaAndNewFilterDerivedAtom,
+  );
 
   const { initAutorefreshAndLoad } = useLoadResources();
 

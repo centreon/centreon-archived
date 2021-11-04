@@ -51,7 +51,7 @@ import {
 } from '../translatedLabels';
 import useLoadResources from '../Listing/useLoadResources';
 import useListing from '../Listing/useListing';
-import useFilter from '../Filter/useFilter';
+import useFilter from '../testUtils/useFilter';
 import Context, { ResourceContext } from '../Context';
 import { Resource } from '../models';
 import useLoadDetails from '../testUtils/useLoadDetails';

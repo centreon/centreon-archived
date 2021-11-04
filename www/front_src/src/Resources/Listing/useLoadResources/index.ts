@@ -17,7 +17,6 @@ import { useTranslation } from 'react-i18next';
 import { getData, SelectEntry, useRequest } from '@centreon/ui';
 import { useUserContext } from '@centreon/ui-context';
 
-import { useResourceContext } from '../../Context';
 import { ResourceListing, SortOrder } from '../../models';
 import { searchableFields } from '../../Filter/Criterias/searchQueryLanguage';
 import {
@@ -42,6 +41,11 @@ import {
 } from '../../translatedLabels';
 import ApiNotFoundMessage from '../ApiNotFoundMessage';
 import { ResourceDetails } from '../../Details/models';
+import {
+  appliedFilterAtom,
+  customFiltersAtom,
+  getCriteriaValueDerivedAtom,
+} from '../../Filter/filterAtoms';
 
 export interface LoadResources {
   initAutorefreshAndLoad: () => void;
@@ -83,13 +87,13 @@ const useLoadResources = (): LoadResources => {
   const selectedResourceDetailsEndpoint = useAtomValue(
     selectedResourceDetailsEndpointDerivedAtom,
   );
+  const customFilters = useAtomValue(customFiltersAtom);
+  const getCriteriaValue = useAtomValue(getCriteriaValueDerivedAtom);
+  const appliedFilter = useAtomValue(appliedFilterAtom);
   const setListing = useUpdateAtom(listingAtom);
   const setSending = useUpdateAtom(sendingAtom);
   const setSendingDetails = useUpdateAtom(sendingDetailsAtom);
   const clearSelectedResource = useUpdateAtom(clearSelectedResourceDerivedAtom);
-
-  const { customFilters, getCriteriaValue, appliedFilter } =
-    useResourceContext();
 
   const refreshIntervalRef = React.useRef<number>();
 
