@@ -360,9 +360,10 @@ function set_required_prerequisite() {
             ;;
 
         oraclelinux-release* | enterprise-release*)
-            BASE_PACKAGES=(dnf-plugins-core oracle-epel-release-el8)
+            BASE_PACKAGES=(dnf-plugins-core)
             $PKG_MGR config-manager --set-enabled ol8_codeready_builder
-            ;;
+            dnf install -y http://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+	    ;;
         esac
 
         install_remi_repo
@@ -678,7 +679,7 @@ function install_central() {
 		}
 		echo $timezoneName;
 	' 2>/dev/null)
-	echo "date.timezone = $timezone" >>$PHP_ETC/50-centreon.ini
+	echo "date.timezone = $timezone" >> $PHP_ETC/50-centreon.ini
 
 	log "INFO" "PHP date.timezone set to [$timezone]"
 
