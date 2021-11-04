@@ -20,6 +20,7 @@ import {
   customFiltersAtom,
   filterWithParsedSearchDerivedAtom,
   searchAtom,
+  sendingFilterAtom,
   storedFilterAtom,
 } from './filterAtoms';
 import { CriteriaValue } from './Criterias/models';
@@ -36,11 +37,8 @@ export interface FilterState {
   setEditPanelOpen?: (update: boolean) => void;
 }
 
-const useFilter = (): FilterState => {
-  const {
-    sendRequest: sendListCustomFiltersRequest,
-    sending: customFiltersLoading,
-  } = useRequest({
+const useFilter = (): void => {
+  const { sendRequest: sendListCustomFiltersRequest, sending } = useRequest({
     decoder: listCustomFiltersDecoder,
     request: listCustomFilters,
   });
@@ -54,6 +52,7 @@ const useFilter = (): FilterState => {
   const setSearch = useUpdateAtom(searchAtom);
   const applyFilter = useUpdateAtom(applyFilterDerivedAtom);
   const storeFilter = useUpdateAtom(storedFilterAtom);
+  const setSendingFilter = useUpdateAtom(sendingFilterAtom);
 
   const loadCustomFilters = (): Promise<Array<Filter>> => {
     return sendListCustomFiltersRequest().then(({ result }) => {
@@ -103,10 +102,9 @@ const useFilter = (): FilterState => {
     applyFilter(defaultFilter);
   }, [getUrlQueryParameters().fromTopCounter]);
 
-  return {
-    customFiltersLoading,
-    loadCustomFilters,
-  };
+  React.useEffect(() => {
+    setSendingFilter(sending);
+  }, [sending]);
 };
 
 export default useFilter;

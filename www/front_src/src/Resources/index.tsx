@@ -5,15 +5,14 @@ import { useAtomValue } from 'jotai/utils';
 
 import { ListingPage, useMemoComponent, WithPanel } from '@centreon/ui';
 
-import Context from './Context';
 import Filter from './Filter';
 import Listing from './Listing';
 import Details from './Details';
-import useFilter from './Filter/useFilter';
 import EditFiltersPanel from './Filter/Edit';
 import { selectedResourceIdAtom } from './Details/detailsAtoms';
 import useDetails from './Details/useDetails';
 import { editPanelOpenAtom } from './Filter/filterAtoms';
+import useFilter from './Filter/useFilter';
 
 const ResourcesPage = (): JSX.Element => {
   const selectedResourceId = useAtomValue(selectedResourceIdAtom);
@@ -35,19 +34,10 @@ const ResourcesPage = (): JSX.Element => {
 };
 
 const Resources = (): JSX.Element => {
-  const filterContext = useFilter();
-
   useDetails();
+  useFilter();
 
-  return (
-    <Context.Provider
-      value={{
-        ...filterContext,
-      }}
-    >
-      <ResourcesPage />
-    </Context.Provider>
-  );
+  return <ResourcesPage />;
 };
 
 export default Resources;

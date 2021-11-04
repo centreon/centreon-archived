@@ -13,6 +13,7 @@ import {
 } from 'ramda';
 import { useTranslation } from 'react-i18next';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
+import { useAtom } from 'jotai';
 
 import {
   Menu,
@@ -32,9 +33,7 @@ import {
   labelFilterSaved,
   labelEditFilters,
 } from '../../translatedLabels';
-import { useResourceContext } from '../../Context';
-import { updateFilter as updateFilterRequest } from '../api';
-import memoizeComponent from '../../memoizedComponent';
+import { listCustomFilters, updateFilter as updateFilterRequest } from '../api';
 import { Filter } from '../models';
 import {
   applyFilterDerivedAtom,
@@ -42,7 +41,9 @@ import {
   customFiltersAtom,
   editPanelOpenAtom,
   filtersDerivedAtom,
+  sendingFilterAtom,
 } from '../filterAtoms';
+import { listCustomFiltersDecoder } from '../api/decoders';
 
 import CreateFilterDialog from './CreateFilterDialog';
 
@@ -62,11 +63,14 @@ const SaveFilterMenu = (): JSX.Element => {
 
   const { t } = useTranslation();
 
-  const { loadCustomFilters } = useResourceContext();
-
   const [menuAnchor, setMenuAnchor] = React.useState<Element | null>(null);
   const [createFilterDialogOpen, setCreateFilterDialogOpen] =
     React.useState(false);
+
+  const { sendRequest: sendListCustomFiltersRequest, sending } = useRequest({
+    decoder: listCustomFiltersDecoder,
+    request: listCustomFilters,
+  });
 
   const {
     sendRequest: sendUpdateFilterRequest,
@@ -75,11 +79,12 @@ const SaveFilterMenu = (): JSX.Element => {
     request: updateFilterRequest,
   });
 
+  const [customFilters, setCustomFilters] = useAtom(customFiltersAtom);
   const currentFilter = useAtomValue(currentFilterAtom);
-  const customFilters = useAtomValue(customFiltersAtom);
   const filters = useAtomValue(filtersDerivedAtom);
   const applyFilter = useUpdateAtom(applyFilterDerivedAtom);
   const setEditPanelOpen = useUpdateAtom(editPanelOpenAtom);
+  const setSendingFilter = useUpdateAtom(sendingFilterAtom);
 
   const { showSuccessMessage } = useSnackbar();
 
@@ -98,6 +103,14 @@ const SaveFilterMenu = (): JSX.Element => {
 
   const closeCreateFilterDialog = (): void => {
     setCreateFilterDialogOpen(false);
+  };
+
+  const loadCustomFilters = (): Promise<Array<Filter>> => {
+    return sendListCustomFiltersRequest().then(({ result }) => {
+      setCustomFilters(result.map(omit(['order'])));
+
+      return result;
+    });
   };
 
   const loadFiltersAndUpdateCurrent = (newFilter: Filter): void => {
@@ -139,6 +152,10 @@ const SaveFilterMenu = (): JSX.Element => {
       retrievedFilter?.criterias || [],
     );
   };
+
+  React.useEffect(() => {
+    setSendingFilter(sending);
+  }, [sending]);
 
   const isNewFilter = currentFilter.id === '';
   const canSaveFilter = and(isFilterDirty(), not(isNewFilter));

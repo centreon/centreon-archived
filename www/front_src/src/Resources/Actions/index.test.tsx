@@ -52,7 +52,7 @@ import {
 import useLoadResources from '../Listing/useLoadResources';
 import useListing from '../Listing/useListing';
 import useFilter from '../testUtils/useFilter';
-import Context, { ResourceContext } from '../Context';
+import Context, { ResourceContext } from '../testUtils/Context';
 import { Resource } from '../models';
 import useLoadDetails from '../testUtils/useLoadDetails';
 import useDetails from '../Details/useDetails';

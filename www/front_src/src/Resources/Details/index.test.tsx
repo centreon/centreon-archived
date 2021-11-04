@@ -78,7 +78,7 @@ import {
   labelLastCheckWithOkStatus,
   labelGraph,
 } from '../translatedLabels';
-import Context, { ResourceContext } from '../Context';
+import Context, { ResourceContext } from '../testUtils/Context';
 import useListing from '../Listing/useListing';
 import { resourcesEndpoint } from '../api/endpoint';
 import { buildResourcesEndpoint } from '../Listing/api/endpoint';

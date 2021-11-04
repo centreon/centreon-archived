@@ -9,7 +9,7 @@ import { useUserContext } from '@centreon/ui-context';
 
 import useFilter from '../../testUtils/useFilter';
 import useListing from '../useListing';
-import Context, { ResourceContext } from '../../Context';
+import Context, { ResourceContext } from '../../testUtils/Context';
 import useLoadDetails from '../../testUtils/useLoadDetails';
 
 import useLoadResources from '.';

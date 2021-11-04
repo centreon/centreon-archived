@@ -50,7 +50,6 @@ import {
   labelMyFilters,
   labelClearFilter,
 } from '../translatedLabels';
-import { useResourceContext } from '../Context';
 
 import SaveFilter from './Save';
 import FilterLoadingSkeleton from './FilterLoadingSkeleton';
@@ -74,6 +73,7 @@ import {
   currentFilterAtom,
   customFiltersAtom,
   searchAtom,
+  sendingFilterAtom,
   setNewFilterDerivedAtom,
 } from './filterAtoms';
 
@@ -104,8 +104,6 @@ const Filter = (): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
 
-  const { customFiltersLoading } = useResourceContext();
-
   const [isSearchFieldFocus, setIsSearchFieldFocused] = React.useState(false);
   const [autocompleteAnchor, setAutocompleteAnchor] =
     React.useState<HTMLDivElement | null>(null);
@@ -130,6 +128,7 @@ const Filter = (): JSX.Element => {
   const [search, setSearch] = useAtom(searchAtom);
   const customFilters = useAtomValue(customFiltersAtom);
   const currentFilter = useAtomValue(currentFilterAtom);
+  const sendingFilter = useAtomValue(sendingFilterAtom);
   const applyCurrentFilter = useUpdateAtom(applyCurrentFilterDerivedAtom);
   const applyFilter = useUpdateAtom(applyFilterDerivedAtom);
   const setNewFilter = useUpdateAtom(setNewFilterDerivedAtom);
@@ -487,7 +486,7 @@ const Filter = (): JSX.Element => {
 
   const memoProps = [
     customFilters,
-    customFiltersLoading,
+    sendingFilter,
     search,
     cursorPosition,
     autoCompleteSuggestions,
@@ -503,7 +502,7 @@ const Filter = (): JSX.Element => {
       content={
         <div className={classes.container}>
           <SaveFilter />
-          {customFiltersLoading ? (
+          {sendingFilter ? (
             <FilterLoadingSkeleton />
           ) : (
             <SelectFilter

@@ -33,7 +33,7 @@ import {
 } from '../translatedLabels';
 import useListing from '../Listing/useListing';
 import useActions from '../testUtils/useActions';
-import Context, { ResourceContext } from '../Context';
+import Context, { ResourceContext } from '../testUtils/Context';
 import useLoadResources from '../Listing/useLoadResources';
 import {
   defaultStates,
@@ -203,7 +203,7 @@ const FilterWithLoading = (): JSX.Element => {
 };
 
 const FilterTest = (): JSX.Element | null => {
-  const filterState = useFilter();
+  useFilter();
   const detailsState = useLoadDetails();
   const listingState = useListing();
   const actionsState = useActions();
@@ -216,7 +216,6 @@ const FilterTest = (): JSX.Element | null => {
         {
           ...listingState,
           ...actionsState,
-          ...filterState,
           ...detailsState,
         } as ResourceContext
       }

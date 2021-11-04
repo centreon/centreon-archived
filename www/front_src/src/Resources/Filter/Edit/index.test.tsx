@@ -12,7 +12,7 @@ import { omit, head, prop } from 'ramda';
 import { makeDnd, DND_DIRECTION_DOWN } from 'react-beautiful-dnd-test-utils';
 import { Provider } from 'jotai';
 
-import Context, { ResourceContext } from '../../Context';
+import Context, { ResourceContext } from '../../testUtils/Context';
 import useFilter from '../../testUtils/useFilter';
 import { labelFilter, labelName, labelDelete } from '../../translatedLabels';
 import { filterEndpoint } from '../api';

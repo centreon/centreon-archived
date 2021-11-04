@@ -13,7 +13,7 @@ import userEvent from '@testing-library/user-event';
 import { Provider } from 'jotai';
 
 import useFilter from '../../testUtils/useFilter';
-import Context, { ResourceContext } from '../../Context';
+import Context, { ResourceContext } from '../../testUtils/Context';
 import {
   labelSaveFilter,
   labelSave,

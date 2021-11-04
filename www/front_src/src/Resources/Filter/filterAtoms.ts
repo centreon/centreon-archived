@@ -83,6 +83,7 @@ export const appliedFilterAtom = atomWithDefault<Filter>((get) =>
 );
 export const editPanelOpenAtom = atom(false);
 export const searchAtom = atom('');
+export const sendingFilterAtom = atom(false);
 
 export const filterWithParsedSearchDerivedAtom = atom((get) => ({
   ...get(currentFilterAtom),
