@@ -46,7 +46,7 @@ class OutputRrdMaster
             ],
             [
                 'config_key'      => 'retry_interval',
-                'config_value'    => '60',
+                'config_value'    => '15',
                 'config_group'    => 'output',
                 'config_group_id' => '1',
                 'grp_level'       => '0',

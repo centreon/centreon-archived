@@ -95,7 +95,6 @@ if (isset($_SERVER['HTTP_X_AUTH_TOKEN'])) {
         'contact_admin' => $contact->isAdmin(),
         'contact_lang' => null,
         'contact_passwd' => null,
-        'contact_js_effects' => null,
         'contact_autologin_key' => null,
         'contact_location' => null,
         'reach_api' => $contact->hasAccessToApiConfiguration(),
