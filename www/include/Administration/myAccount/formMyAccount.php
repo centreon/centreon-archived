@@ -63,7 +63,7 @@ if (!isset($centreonFeature)) {
 $cct = array();
 if ($o == "c") {
     $query = "SELECT contact_id, contact_name, contact_alias, contact_lang, contact_email, contact_pager,
-        contact_js_effects, contact_autologin_key, default_page, show_deprecated_pages, contact_auth_type,
+        contact_autologin_key, default_page, show_deprecated_pages, contact_auth_type,
         enable_one_click_export
         FROM contact WHERE contact_id = :id";
     $DBRESULT = $pearDB->prepare($query);
@@ -137,7 +137,6 @@ $form->addElement(
 );
 $form->addElement('select', 'contact_lang', _("Language"), $langs);
 $form->addElement('checkbox', 'show_deprecated_pages', _("Use deprecated pages"), null, $attrsText);
-$form->addElement('checkbox', 'contact_js_effects', _("Animation effects"), null, $attrsText);
 if (!$isRemote) {
     $form->addElement(
         'checkbox',
