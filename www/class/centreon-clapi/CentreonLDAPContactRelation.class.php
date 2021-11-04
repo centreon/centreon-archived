@@ -38,8 +38,8 @@ require_once "centreonLDAP.class.php";
 class CentreonLDAPContactRelation extends CentreonObject
 {
     private const ORDER_NAME = 0;
-    private const HOST_NOTIF_TP = "hostnotifperiod";
-    private const SVC_NOTIF_TP = "svcnotifperiod";
+    private const HOST_NOTIF_CMD = "hostnotifcmd";
+    private const SVC_NOTIF_CMD = "svcnotifcmd";
     private const LDAP_PARAMETER_NAME = "ar_name";
 
     protected $register;
