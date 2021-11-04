@@ -164,7 +164,7 @@ class TopologyRepository extends ServiceEntityRepository
 
         $whereClause = false;
         if (!$user->access->admin) {
-            $query .= ' WHERE topology_page IN (' . $user->access->getTopologyString() . ')';
+            $query .= ' WHERE topology_page IN (' . $user->access->getTopologyString() . ')  OR topology_page IS NULL';
             $whereClause = true;
         }
 
