@@ -40,11 +40,11 @@ class CentreonLDAPContactRelation extends CentreonObject
     private const ORDER_NAME = 0;
     private const LDAP_PARAMETER_NAME = "ar_name";
 
-    protected $register;
-    public static $aDepends = array(
+    protected int $register;
+    public static $aDepends = [
         'CONTACT',
         'LDAP'
-    );
+    ];
 
     /**
      * Constructor
@@ -90,7 +90,7 @@ class CentreonLDAPContactRelation extends CentreonObject
         }
 
         $labelField = $this->object->getUniqueLabelField();
-        $filters = array("contact_register" => $this->register);
+        $filters = ["contact_register" => $this->register];
         if (!is_null($filterName)) {
             $filters[$labelField] = $filterName;
         }
