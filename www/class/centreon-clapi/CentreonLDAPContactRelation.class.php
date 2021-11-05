@@ -49,12 +49,12 @@ class CentreonLDAPContactRelation extends CentreonObject
     /**
      * Constructor
      *
+     * @param \Pimple\Container $dependencyInjector
      * @return void
      */
     public function __construct(\Pimple\Container $dependencyInjector)
     {
         parent::__construct($dependencyInjector);
-        $this->dependencyInjector = $dependencyInjector;
         $this->ldap = new CentreonLdap($dependencyInjector);
         $this->object = new \Centreon_Object_Contact($dependencyInjector);
         $this->action = "LDAPCONTACT";
@@ -64,7 +64,7 @@ class CentreonLDAPContactRelation extends CentreonObject
     }
 
     /**
-     * @param $parameters
+     * @param string $parameters
      * @throws CentreonClapiException
      */
     public function initUpdateParameters($parameters)
@@ -78,53 +78,10 @@ class CentreonLDAPContactRelation extends CentreonObject
     }
 
     /**
-     * Export notification commands
-     *
-     * @param string $objType
-     * @param int $contactId
-     * @param string $contactName
-     * @return void
-     */
-    private function exportNotifCommands($objType, $contactId, $contactName)
-    {
-        $commandObj = new \Centreon_Object_Command($this->dependencyInjector);
-        if ($objType == self::HOST_NOTIF_CMD) {
-            $obj = new \Centreon_Object_Relation_Contact_Command_Host($this->dependencyInjector);
-        } else {
-            $obj = new \Centreon_Object_Relation_Contact_Command_Service($this->dependencyInjector);
-        }
-
-        $cmds = $obj->getMergedParameters(
-            array(),
-            array($commandObj->getUniqueLabelField()),
-            -1,
-            0,
-            null,
-            null,
-            array($this->object->getPrimaryKey() => $contactId),
-            "AND"
-        );
-        $str = "";
-        foreach ($cmds as $element) {
-            if ($str != "") {
-                $str .= "|";
-            }
-            $str .= $element[$commandObj->getUniqueLabelField()];
-        }
-        if ($str) {
-            echo $this->action . $this->delim
-                . "setparam" . $this->delim
-                . $contactName . $this->delim
-                . $objType . $this->delim
-                . $str . "\n";
-        }
-    }
-
-    /**
      * Export data
      *
-     * @param null $filterName
-     * @return bool|void
+     * @param string|null $filterName
+     * @return bool
      */
     public function export($filterName = null)
     {
@@ -160,14 +117,12 @@ class CentreonLDAPContactRelation extends CentreonObject
             foreach ($element as $parameter => $value) {
                 if (!is_null($value) && $value != "" && !in_array($parameter, $this->exportExcludedParams)) {
                     if ($parameter === "ar_id") {
-                        $parameter = self::LDAP_PARAMETER_NAME;
                         $value = $this->ldap->getObjectName($value);
-
                         $value = CentreonUtils::convertLineBreak($value);
                         echo $this->action . $this->delim
                         . "setparam" . $this->delim
                         . $element[$this->object->getUniqueLabelField()] . $this->delim
-                        . $parameter . $this->delim
+                        . self::LDAP_PARAMETER_NAME . $this->delim
                         . $value . "\n";
                     }
                 }
