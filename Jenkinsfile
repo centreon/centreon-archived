@@ -6,8 +6,8 @@ import org.jenkinsci.plugins.pipeline.modeldefinition.Utils
 */
 def serie = '22.04'
 def maintenanceBranch = "${serie}.x"
-def qaBranch = "dev-${serie}.x"
-env.REF_BRANCH = 'master'
+def qaBranch = "master"
+env.REF_BRANCH = qaBranch
 env.PROJECT='centreon-web'
 if (env.BRANCH_NAME.startsWith('release-')) {
   env.BUILD = 'RELEASE'
