@@ -40,7 +40,7 @@ class CentreonLDAPContactRelation extends CentreonObject
     private const ORDER_NAME = 0;
     private const LDAP_PARAMETER_NAME = "ar_name";
 
-    protected int $register;
+    protected int $isRegistered;
     public static $aDepends = [
         'CONTACT',
         'LDAP'
@@ -59,7 +59,7 @@ class CentreonLDAPContactRelation extends CentreonObject
         $this->object = new \Centreon_Object_Contact($dependencyInjector);
         $this->action = "LDAPCONTACT";
         $this->nbOfCompulsoryParams = count($this->insertParams);
-        $this->register = 1;
+        $this->isRegistered = 1;
         $this->activateField = 'ldap_contact_activate';
     }
 
@@ -73,7 +73,6 @@ class CentreonLDAPContactRelation extends CentreonObject
         if (count($params) < self::NB_UPDATE_PARAMS) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
-        $objectId = $this->getObjectId($params[self::ORDER_NAME]);
         $params[self::ORDER_NAME] = str_replace(" ", "_", $params[self::ORDER_NAME]);
     }
 
@@ -90,7 +89,7 @@ class CentreonLDAPContactRelation extends CentreonObject
         }
 
         $labelField = $this->object->getUniqueLabelField();
-        $filters = ["contact_register" => $this->register];
+        $filters = ["contact_register" => $this->isRegistered];
         if (!is_null($filterName)) {
             $filters[$labelField] = $filterName;
         }
@@ -108,12 +107,12 @@ class CentreonLDAPContactRelation extends CentreonObject
             if (!$algo) {
                 $element['contact_passwd'] = $this->dependencyInjector['utils']->encodePass($element['contact_passwd']);
             }
-            $addStr = $this->action . $this->delim . "ADD";
+            $displayResult = $this->action . $this->delim . "ADD";
             foreach ($this->insertParams as $param) {
-                $addStr .= $this->delim . $element[$param];
+                $displayResult .= $this->delim . $element[$param];
             }
-            $addStr .= "\n";
-            echo $addStr;
+            $displayResult .= "\n";
+            echo $displayResult;
             foreach ($element as $parameter => $value) {
                 if (!is_null($value) && $value != "" && !in_array($parameter, $this->exportExcludedParams)) {
                     if ($parameter === "ar_id") {
@@ -128,5 +127,6 @@ class CentreonLDAPContactRelation extends CentreonObject
                 }
             }
         }
+        return true;
     }
 }
