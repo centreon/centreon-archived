@@ -395,7 +395,8 @@ try {
       node {
         checkoutCentreonBuild();
         unstash 'tar-sources'
-        sh "./centreon-build/jobs/web/${serie}/mon-web-lighthouse-ci.sh centos7"
+        "./centreon-build/jobs/web/${serie}/mon-web-lighthouse-ci.sh centos7"
+        archiveArtifacts allowEmptyArchive: true, artifacts: 'centreon/.lighthouseci/*'
       }
     }
   }
