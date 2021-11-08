@@ -5,19 +5,19 @@ import org.jenkinsci.plugins.pipeline.modeldefinition.Utils
 ** Variables.
 */
 def serie = '22.04'
-def maintenanceBranch = "master"
-def qaBranch = "develop"
-env.REF_BRANCH = maintenanceBranch
+def stableBranch = "master"
+def devBranch = "develop"
+env.REF_BRANCH = stableBranch
 env.PROJECT='centreon-web'
 if (env.BRANCH_NAME.startsWith('release-')) {
   env.BUILD = 'RELEASE'
   env.DELIVERY_STAGE = 'Delivery to testing'
   env.DOCKER_STAGE = 'Docker packaging'
-} else if ((env.BRANCH_NAME == env.REF_BRANCH) || (env.BRANCH_NAME == maintenanceBranch)) {
+} else if (env.BRANCH_NAME == stableBranch) {
   env.BUILD = 'REFERENCE'
   env.DELIVERY_STAGE = 'Delivery to canary'
   env.DOCKER_STAGE = 'Docker packaging with canary rpms'
-} else if ((env.BRANCH_NAME == 'develop') || (env.BRANCH_NAME == qaBranch)) {
+} else if (env.BRANCH_NAME == devBranch) {
   env.BUILD = 'QA'
   env.DELIVERY_STAGE = 'Delivery to unstable'
   env.DOCKER_STAGE = 'Docker packaging with unstable rpms'
