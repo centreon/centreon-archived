@@ -38,6 +38,12 @@ if (!isset($centreon)) {
     exit();
 }
 
+const ADD_DEPENDENCY = 'a';
+const WATCH_DEPENDENCY = 'w';
+const MODIFY_DEPENDENCY = 'c';
+const DUPLICATE_DEPENDENCY = 'm';
+const DELETE_DEPENDENCY = 'd';
+
 #Path to the configuration dir
 $path = "./include/configuration/configObject/metaservice_dependency/";
 
@@ -69,12 +75,12 @@ $acl = $oreon->user->access;
 $metastr = $acl->getMetaServiceString();
 
 switch ($o) {
-    case "a": # Add a Meta Service
-    case "w": # Watch a Meta Service
-    case "c": # Modify a Meta Service
+    case ADD_DEPENDENCY:
+    case WATCH_DEPENDENCY:
+    case MODIFY_DEPENDENCY:
         require_once($path . "formMetaServiceDependency.php");
         break;
-    case "m": # Duplicate n Meta Services
+    case DUPLICATE_DEPENDENCY:
         purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
             purgeCSRFToken();
@@ -87,7 +93,7 @@ switch ($o) {
         }
         require_once($path . "listMetaServiceDependency.php");
         break;
-    case "d": # Delete n Meta Service
+    case DELETE_DEPENDENCY:
         purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
             purgeCSRFToken();
