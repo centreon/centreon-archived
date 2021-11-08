@@ -136,41 +136,6 @@ try {
     }
   }
 
-  stage('Bundle') {
-    parallel 'centos7': {
-      node {
-        sh 'setup_centreon_build.sh'
-        sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh centos7"
-      }
-    }
-    if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-      error('Bundle stage failure.');
-    }
-  }
-
-  stage('Acceptance tests') {
-    def parallelSteps = [:]
-    for (x in featureFiles) {
-      def feature = x
-      parallelSteps[feature] = {
-        node {
-          sh 'setup_centreon_build.sh'
-          unstash 'tar-sources'
-          unstash 'vendor'
-          def acceptanceStatus = sh(script: "./centreon-build/jobs/web/${serie}/mon-web-acceptance.sh centos7 features/${feature}", returnStatus: true)
-          junit 'xunit-reports/**/*.xml'
-          if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0))
-            currentBuild.result = 'FAILURE'
-          archiveArtifacts allowEmptyArchive: true, artifacts: 'acceptance-logs/*.txt, acceptance-logs/*.png, acceptance-logs/*.flv'
-        }
-      }
-    }
-    parallel parallelSteps
-    if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-      error('Critical tests stage failure.');
-    }
-  }
-
   if ((env.BUILD == 'RELEASE') || (env.BUILD == 'REFERENCE')) {
     stage('Delivery') {
       node {
