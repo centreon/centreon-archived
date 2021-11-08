@@ -30,10 +30,18 @@ interface ServiceGroupRepositoryInterface
     /**
      * Retrieve servicegroups from their ids
      *
-     * @param array $serviceGroupIds
+     * @param int[] $serviceGroupIds
      * @return ServiceGroup[]
      */
     public function findServiceGroupsByIds(array $serviceGroupIds): array;
+
+    /**
+     * Retrieve servicegroups from their names
+     *
+     * @param string[] $serviceGroupNames
+     * @return ServiceGroup[]
+     */
+    public function findServiceGroupsByNames(array $serviceGroupNames): array;
 
     /**
      * @param ContactInterface $contact

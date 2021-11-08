@@ -82,6 +82,13 @@ export interface FilterState {
 
 const useFilter = (): FilterState => {
   const { t } = useTranslation();
+
+  const [customFilters, setCustomFilters] = React.useState<Array<Filter>>([]);
+  const [currentFilter, setCurrentFilter] = React.useState(getDefaultFilter());
+  const [appliedFilter, setAppliedFilter] = React.useState(getDefaultFilter());
+  const [editPanelOpen, setEditPanelOpen] = React.useState<boolean>(false);
+  const [search, setSearch] = React.useState('');
+
   const {
     sendRequest: sendListCustomFiltersRequest,
     sending: customFiltersLoading,
@@ -89,13 +96,6 @@ const useFilter = (): FilterState => {
     decoder: listCustomFiltersDecoder,
     request: listCustomFilters,
   });
-
-  const [customFilters, setCustomFilters] = React.useState<Array<Filter>>([]);
-  const [currentFilter, setCurrentFilter] = React.useState(getDefaultFilter());
-  const [appliedFilter, setAppliedFilter] = React.useState(getDefaultFilter());
-  const [search, setSearch] = React.useState('');
-
-  const [editPanelOpen, setEditPanelOpen] = React.useState<boolean>(false);
 
   const filterWithParsedSearch = {
     ...currentFilter,
@@ -160,6 +160,10 @@ const useFilter = (): FilterState => {
   }, [currentFilter.criterias]);
 
   React.useEffect(() => {
+    if (getUrlQueryParameters().fromTopCounter) {
+      return;
+    }
+
     storeFilter(filterWithParsedSearch);
 
     const queryParameters = [
@@ -184,7 +188,7 @@ const useFilter = (): FilterState => {
       },
     ]);
 
-    setCurrentFilter(getDefaultFilter());
+    applyFilter(getDefaultFilter());
   }, [getUrlQueryParameters().fromTopCounter]);
 
   React.useEffect(() => (): void => {

@@ -69,10 +69,33 @@ class UserFilterContext extends ApiContext
      */
     public function iUpdateTheFilterWithTheCreationValues(): void
     {
+        $response = $this->iSendARequestTo(
+            'GET',
+            '/api/v21.10/monitoring/hostgroups'
+        );
+        $decodedResponse = json_decode($response->getBody()->__toString(), true);
+        $hostgroupId = $decodedResponse['result'][0]['id'];
+        $hostgroupName = $decodedResponse['result'][0]['name'];
+
+        $requestBody = '{
+            "name":"my filter1",
+            "criterias":[{
+              "name": "host_groups",
+              "type": "multi_select",
+              "value": [
+                {
+                  "id": ' . $hostgroupId . ',
+                  "name": "' . $hostgroupName . '"
+                }
+              ],
+              "object_type": "host_groups"
+            }]
+        }';
+
         $this->iSendARequestToWithBody(
             'PUT',
             '/api/v21.10/users/filters/events-view/1',
-            $this->requestBody
+            $requestBody
         );
     }
 }

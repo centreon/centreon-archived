@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -37,6 +38,7 @@ if (!isset($centreon)) {
     exit();
 }
 
+
 isset($_GET["id"]) ? $cG = $_GET["id"] : $cG = null;
 isset($_POST["id"]) ? $cP = $_POST["id"] : $cP = null;
 $cG ? $id = $cG : $id = $cP;
@@ -62,8 +64,16 @@ $path = "./include/configuration/configCentreonBroker/";
 require_once $path . "DB-Func.php";
 require_once "./include/common/common-Func.php";
 
+/**
+ *  Page forbidden if server is a remote
+ */
+if ($isRemote) {
+    require_once($path . "../../core/errors/alt_error.php");
+    exit();
+}
+
 /* Set the real page */
-if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
+if (isset($ret) && is_array($ret) && $ret['topology_page'] != "" && $p != $ret['topology_page']) {
     $p = $ret['topology_page'];
 }
 
@@ -72,7 +82,7 @@ $serverString = trim($acl->getPollerString());
 $allowedBrokerConf = array();
 
 if ($serverString != "''" && !empty($serverString)) {
-    $sql = "SELECT config_id FROM cfg_centreonbroker WHERE ns_nagios_server IN (".$serverString.")";
+    $sql = "SELECT config_id FROM cfg_centreonbroker WHERE ns_nagios_server IN (" . $serverString . ")";
     $res = $pearDB->query($sql);
     while ($row = $res->fetchRow()) {
         $allowedBrokerConf[$row['config_id']] = true;
@@ -92,22 +102,46 @@ switch ($o) {
         break; // modify CentreonBroker
 
     case "s":
-        enableCentreonBrokerInDB($id);
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            enableCentreonBrokerInDB($id);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listCentreonBroker.php");
         break; // Activate a CentreonBroker CFG
 
     case "u":
-        disablCentreonBrokerInDB($id);
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            disablCentreonBrokerInDB($id);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listCentreonBroker.php");
         break; // Desactivate a CentreonBroker CFG
 
     case "m":
-        multipleCentreonBrokerInDB(isset($select) ? $select : array(), $dupNbr);
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            multipleCentreonBrokerInDB(isset($select) ? $select : array(), $dupNbr);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listCentreonBroker.php");
         break; // Duplicate n CentreonBroker CFGs
 
     case "d":
-        deleteCentreonBrokerInDB(isset($select) ? $select : array());
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            deleteCentreonBrokerInDB(isset($select) ? $select : array());
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listCentreonBroker.php");
         break; // Delete n CentreonBroker CFG
 

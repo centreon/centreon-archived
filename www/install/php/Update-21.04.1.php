@@ -25,8 +25,6 @@ $centreonLog = new CentreonLog();
 //error specific content
 $versionOfTheUpgrade = 'UPGRADE - 21.04.1: ';
 
-$pearDB = new CentreonDB('centreon', 3, false);
-
 /**
  * Query with transaction
  */
@@ -72,6 +70,7 @@ try {
         $statement->bindValue(':criterias', $criterias, \PDO::PARAM_STR);
         $statement->execute();
     }
+
     $pearDB->commit();
 } catch (\Exception $e) {
     $pearDB->rollBack();

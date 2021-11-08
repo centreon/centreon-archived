@@ -139,9 +139,11 @@ const InfiniteScrollContent = <TEntity extends { id: number }>({
 
   const reload = (): void => {
     setPage(1);
-    listEntities({ atPage: 1 })?.then(({ result }) => {
-      setEntities(result);
-    });
+    listEntities({ atPage: 1 })
+      ?.then(({ result }) => {
+        setEntities(result);
+      })
+      .catch(() => undefined);
   };
 
   React.useEffect(() => {
@@ -161,9 +163,11 @@ const InfiniteScrollContent = <TEntity extends { id: number }>({
       return;
     }
 
-    listEntities()?.then(({ result }) => {
-      setEntities(concat(entities, result));
-    });
+    listEntities()
+      ?.then(({ result }) => {
+        setEntities(concat(entities, result));
+      })
+      .catch(() => undefined);
   }, [page]);
 
   React.useEffect(() => {

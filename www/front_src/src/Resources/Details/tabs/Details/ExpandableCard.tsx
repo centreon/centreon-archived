@@ -18,6 +18,7 @@ import { getStatusColors } from '@centreon/ui';
 import { labelMore, labelLess } from '../../../translatedLabels';
 
 import Card from './Card';
+import { ChangeExpandedCardsProps, ExpandAction } from './SortableCards/models';
 
 const useStyles = makeStyles<Theme, { severityCode?: number }>((theme) => {
   const getStatusBackgroundColor = (severityCode): string =>
@@ -41,7 +42,9 @@ const useStyles = makeStyles<Theme, { severityCode?: number }>((theme) => {
 });
 
 interface Props {
+  changeExpandedCards: (props: ChangeExpandedCardsProps) => void;
   content: string;
+  expandedCard: boolean;
   severityCode?: number;
   title: string;
 }
@@ -50,18 +53,24 @@ const ExpandableCard = ({
   title,
   content,
   severityCode,
+  expandedCard,
+  changeExpandedCards,
 }: Props): JSX.Element => {
-  const { t } = useTranslation();
   const classes = useStyles({ severityCode });
-
-  const [outputExpanded, setOutputExpanded] = React.useState(false);
+  const { t } = useTranslation();
 
   const lines = content.split(/\n|\\n/);
   const threeFirstLines = lines.slice(0, 3);
   const lastLines = pipe(slice(3, lines.length), reject(isEmpty))(lines);
 
   const toggleOutputExpanded = (): void => {
-    setOutputExpanded(!outputExpanded);
+    if (expandedCard) {
+      changeExpandedCards({ action: ExpandAction.remove, card: title });
+
+      return;
+    }
+
+    changeExpandedCards({ action: ExpandAction.add, card: title });
   };
 
   const Line = (line, index): JSX.Element => (
@@ -81,13 +90,13 @@ const ExpandableCard = ({
         {title}
       </Typography>
       {threeFirstLines.map(Line)}
-      {outputExpanded && lastLines.map(Line)}
+      {expandedCard && lastLines.map(Line)}
       {lastLines.length > 0 && (
         <>
           <Divider />
           <CardActions>
             <Button color="primary" size="small" onClick={toggleOutputExpanded}>
-              {outputExpanded ? t(labelLess) : t(labelMore)}
+              {expandedCard ? t(labelLess) : t(labelMore)}
             </Button>
           </CardActions>
         </>

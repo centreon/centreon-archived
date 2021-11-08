@@ -31,7 +31,6 @@ const DowntimeForm = ({
   const { t } = useTranslation();
   const { showSuccessMessage } = useSnackbar();
 
-  const { alias, downtime } = useUserContext();
   const { toIsoString } = useLocaleDateTimeFormat();
 
   const {
@@ -40,6 +39,8 @@ const DowntimeForm = ({
   } = useRequest({
     request: setDowntimeOnResources,
   });
+
+  const { alias, downtime } = useUserContext();
 
   const currentDate = new Date();
 

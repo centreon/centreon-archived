@@ -418,6 +418,114 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /configuration/monitoring-servers/{monitoring_server_id}/generate:
+    get:
+      tags:
+        - Monitoring server
+      summary: "Generate the configuration of the monitoring server"
+      description: |
+        Generate and move the configuration files of the monitoring server
+      parameters:
+        - $ref: '#/components/parameters/MonitoringServerId'
+      responses:
+        '204':
+          description: "Generation OK"
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /configuration/monitoring-servers/{monitoring_server_id}/reload:
+    get:
+      tags:
+      - Monitoring server
+      summary: "Reload the configuration of the monitoring server"
+      description: |
+        Reload the configuration files of the monitoring server
+      parameters:
+      - $ref: '#/components/parameters/MonitoringServerId'
+      responses:
+        '204':
+          description: "Reload OK"
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /configuration/monitoring-servers/{monitoring_server_id}/generate-and-reload:
+    get:
+      tags:
+      - Monitoring server
+      summary: "Generate and reload the configuration of the monitoring server"
+      description: |
+        Generate, move and reload the configuration files of the monitoring server
+      parameters:
+      - $ref: '#/components/parameters/MonitoringServerId'
+      responses:
+        '204':
+          description: "Generation and reload OK"
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /configuration/monitoring-servers/generate:
+    get:
+      tags:
+      - Monitoring server
+      summary: "Generate the configuration for all monitoring servers"
+      description: |
+        Generate and move the configuration files for all monitoring servers.
+
+        The process will stop at the first error.
+      responses:
+        '204':
+          description: "Generation OK"
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /configuration/monitoring-servers/reload:
+    get:
+      tags:
+      - Monitoring server
+      summary: "Reload the configuration for all monitoring servers"
+      description: |
+        Reload the configuration files for all monitoring servers.
+
+        The process will stop at the first error.
+      responses:
+        '204':
+          description: "Reload OK"
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /configuration/monitoring-servers/generate-and-reload:
+    get:
+      tags:
+      - Monitoring server
+      summary: "Generate and reload the configuration for all monitoring servers"
+      description: |
+        Generate, move and reload the configuration files for all monitoring servers.
+
+        The process will stop at the first error.
+      responses:
+        '204':
+          description: "Generation and reload OK"
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /configuration/metaservices:
     get:
       tags:
@@ -611,6 +719,10 @@ paths:
               schema:
                 type: object
                 properties:
+                  id:
+                    type: integer
+                    description: Contact ID
+                    example: 1
                   name:
                     type: string
                     description: Name of the current user
@@ -632,6 +744,10 @@ paths:
                     nullable: true
                     description: Locale of the current user
                     example: en_US
+                  is_admin:
+                    type: boolean
+                    description: If the current user is an administrator
+                    example: true
                   useDeprecatedPages:
                     type: boolean
                     description: Indicates if user wants to use deprecated monitoring pages
@@ -3274,6 +3390,14 @@ paths:
                       type: integer
                       description: Default monitoring refresh interval
                       example: 15
+                    monitoring_default_acknowledgement_persistent:
+                      type: boolean
+                      description: Default monitoring acknowledgement persistent option
+                      example: true
+                    monitoring_default_acknowledgement_sticky:
+                      type: boolean
+                      description: Default monitoring acknowledgement sticky option
+                      example: true
         '400':
           $ref: '#/components/responses/BadRequest'
         '403':
@@ -3508,6 +3632,15 @@ components:
       in: path
       name: meta_id
       description: "ID of the meta service"
+      required: true
+      schema:
+        type: integer
+        format: int64
+        example: 1
+    MonitoringServerId:
+      in: path
+      name: monitoring_server_id
+      description: "ID of the monitoring server (poller)"
       required: true
       schema:
         type: integer
@@ -4352,12 +4485,24 @@ components:
           example: "Acknowledged by admin"
         with_services:
           type: boolean
-          description: "Indicates whether we should acknowledge the host-related services"
+          description: "Indicates whether or not we should acknowledge the host-related services."
           example: true
+          default: true
         is_notify_contacts:
           type: boolean
-          description: "Indicates whether notification is sent to the contacts linked to the host or service"
+          description: "Indicates whether or not notification is sent to the contacts linked to the host or service."
           example: false
+          default: true
+        is_persistent_comment:
+          type: boolean
+          description: "Indicates if the acknowledgment will be maintained in case a restart of the scheduler occurs."
+          example: false
+          default: true
+        is_sticky:
+          type: boolean
+          description: "Indicates if the acknowledgment will be maintained in case of non-OK status change."
+          example: false
+          default: true
     Disacknowledgement.Resource:
       type: object
       properties:
@@ -4988,6 +5133,11 @@ components:
           description: "Duration since last status change"
           example: "2h 3m"
         last_status_change:
+          type: string
+          format: date-time
+          nullable: true
+          description: "Date of the last status change (ISO8601)"
+        last_time_with_no_issue:
           type: string
           format: date-time
           nullable: true

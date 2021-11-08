@@ -13,8 +13,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const NoResultsMessage = (): JSX.Element => {
-  const { t } = useTranslation();
   const classes = useStyles();
+  const { t } = useTranslation();
 
   return (
     <Paper className={classes.container}>

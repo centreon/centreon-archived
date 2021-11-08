@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -201,6 +202,7 @@ class CentreonConfigCentreonBroker
         }
         $query = "SELECT cb_tag_id, tagname
             FROM cb_tag
+            WHERE tagname <> 'logger'
             ORDER BY tagname";
         try {
             $res = $this->db->query($query);
@@ -838,19 +840,20 @@ class CentreonConfigCentreonBroker
     public function updateCentreonBrokerInfos($id, $values)
     {
         // exclude multiple parameters load with broker js hook
-        $condition = '';
+        $keepLuaParameters = false;
         if ($values['output'] !== null) {
             foreach ($values['output'] as $key => $output) {
-                if (array_key_exists('lua_parameter__value_#index#', $output)) {
-                    $condition .= ' AND config_key NOT LIKE "lua_parameter_%"';
-                    unset($values['output'][$key]['lua_parameter__value_#index#']);
-                    unset($values['output'][$key]['lua_parameter__name_#index#']);
-                    unset($values['output'][$key]['lua_parameter__type_#index#']);
+                if ($output['type'] === 'lua') {
+                    if ($this->removeUnindexedLuaParameters($values, $key)) {
+                        $keepLuaParameters = true;
+                    }
+                    $this->removeEmptyLuaParameters($values, $key);
                 }
             }
-
             // Clean the informations for this id
-            $query = 'DELETE FROM cfg_centreonbroker_info WHERE config_id = ' . (int)$id . $condition;
+            $query = 'DELETE FROM cfg_centreonbroker_info WHERE config_id = '
+                . (int) $id
+                . ($keepLuaParameters ? ' AND config_key NOT LIKE "lua\_parameter\_%"' : '');
             $this->db->query($query);
         }
 
@@ -891,8 +894,8 @@ class CentreonConfigCentreonBroker
                     $fieldtype = $this->getFieldtypes($typeId);
                     foreach ($infos as $fieldname => $fieldvalue) {
                         $lvl = 0;
-                        $grp_id = 'NULL';
-                        $parent_id = 'NULL';
+                        $grp_id = null;
+                        $parent_id = null;
 
                         if ($fieldname == 'multiple_fields' && is_array($fieldvalue)) {
                             foreach ($fieldvalue as $index => $value) {
@@ -905,18 +908,29 @@ class CentreonConfigCentreonBroker
                                 foreach ($value as $fieldname2 => $value2) {
                                     if (is_array($value2)) {
                                         $explodedFieldname2 = explode('__', $fieldname2);
-                                        if (isset($fieldtype[$explodedFieldname2[1]]) &&
-                                            $fieldtype[$explodedFieldname2[1]] == 'radio') {
+                                        if (
+                                            isset($fieldtype[$explodedFieldname2[1]]) &&
+                                            $fieldtype[$explodedFieldname2[1]] === 'radio'
+                                        ) {
                                             $value2 = $value2[$explodedFieldname2[1]];
                                         }
                                     }
                                     $query = "INSERT INTO cfg_centreonbroker_info "
                                         . "(config_id, config_key, config_value, config_group, config_group_id, "
                                         . "grp_level, subgrp_id, parent_grp_id, fieldIndex) "
-                                        . "VALUES (" . $id . ", '" . $fieldname2 . "', '" . $value2 . "', '"
-                                        . $group . "', " . $gid . ", " . $lvl . ", " . $grp_id . ", "
-                                        . $parent_id . ", " . $index . ") ";
-                                    $this->db->query($query);
+                                        . "VALUES (:config_id, :config_key, :config_value, :config_group, "
+                                        . ":config_group_id, :grp_level, :subgrp_id, :parent_grp_id, :fieldIndex) ";
+                                    $stmt = $this->db->prepare($query);
+                                    $stmt->bindValue(':config_id', $id, \PDO::PARAM_INT);
+                                    $stmt->bindValue(':config_key', $fieldname2, \PDO::PARAM_STR);
+                                    $stmt->bindValue(':config_value', $value2, \PDO::PARAM_STR);
+                                    $stmt->bindValue(':config_group', $group, \PDO::PARAM_STR);
+                                    $stmt->bindValue(':config_group_id', $gid, \PDO::PARAM_INT);
+                                    $stmt->bindValue(':grp_level', $lvl, \PDO::PARAM_INT);
+                                    $stmt->bindValue(':subgrp_id', $grp_id, \PDO::PARAM_INT);
+                                    $stmt->bindValue(':parent_grp_id', $parent_id, \PDO::PARAM_INT);
+                                    $stmt->bindValue(':fieldIndex', $index, \PDO::PARAM_INT);
+                                    $stmt->execute();
                                 }
                             }
                             continue;
@@ -935,20 +949,40 @@ class CentreonConfigCentreonBroker
                             $grp_id = $info[1];
                             $query = 'INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value,'
                                 . 'config_group, config_group_id, grp_level, subgrp_id, parent_grp_id)  VALUES ('
-                                . $id . ', "' . $grp_name . '", "", "' . $group . '", ' . $gid . ', ' . $lvl
-                                . ', ' . $grp_id . ', ' . $parent_id . ')';
-                            $this->db->query($query);
+                                . ':config_id, :config_key, :config_value, :config_group, :config_group_id, '
+                                . ':grp_level, :subgrp_id, :parent_grp_id)';
+
+                            $stmt = $this->db->prepare($query);
+                            $stmt->bindValue(':config_id', $id, \PDO::PARAM_INT);
+                            $stmt->bindValue(':config_key', $grp_name, \PDO::PARAM_STR);
+                            $stmt->bindValue(':config_value', "", \PDO::PARAM_STR);
+                            $stmt->bindValue(':config_group', $group, \PDO::PARAM_STR);
+                            $stmt->bindValue(':config_group_id', $gid, \PDO::PARAM_INT);
+                            $stmt->bindValue(':grp_level', $lvl, \PDO::PARAM_INT);
+                            $stmt->bindValue(':subgrp_id', $grp_id, \PDO::PARAM_INT);
+                            $stmt->bindValue(':parent_grp_id', $parent_id, \PDO::PARAM_INT);
+                            $stmt->execute();
+
                             $lvl++;
                             $parent_id = $grp_id;
                             $fieldname = $info[2];
                         }
-                        $grp_id = 'NULL';
+                        $grp_id = null;
                         foreach ($fieldvalue as $value) {
                             $query = 'INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, '
                                 . 'config_group, config_group_id, grp_level, subgrp_id, parent_grp_id) VALUES ('
-                                . $id . ', "' . $fieldname . '", "' . $value . '", "' . $group . '", '
-                                . $gid . ', ' . $lvl . ', ' . $grp_id . ', ' . $parent_id . ')';
-                            $this->db->query($query);
+                                . ':config_id, :config_key, :config_value, :config_group, '
+                                . ':config_group_id, :grp_level, :subgrp_id, :parent_grp_id) ';
+                            $stmt = $this->db->prepare($query);
+                            $stmt->bindValue(':config_id', $id, \PDO::PARAM_INT);
+                            $stmt->bindValue(':config_key', $fieldname, \PDO::PARAM_STR);
+                            $stmt->bindValue(':config_value', $value, \PDO::PARAM_STR);
+                            $stmt->bindValue(':config_group', $group, \PDO::PARAM_STR);
+                            $stmt->bindValue(':config_group_id', $gid, \PDO::PARAM_INT);
+                            $stmt->bindValue(':grp_level', $lvl, \PDO::PARAM_INT);
+                            $stmt->bindValue(':subgrp_id', $grp_id, \PDO::PARAM_INT);
+                            $stmt->bindValue(':parent_grp_id', $parent_id, \PDO::PARAM_INT);
+                            $stmt->execute();
                         }
                     }
                 }
@@ -956,6 +990,47 @@ class CentreonConfigCentreonBroker
         }
 
         return true;
+    }
+
+    /**
+     * unset lua parameters with undefined index
+     *
+     * @param array $values
+     * @param integer $key
+     * @return boolean (false if no undefined index found)
+     */
+    private function removeUnindexedLuaParameters(array &$values, int $key): bool
+    {
+        if (array_key_exists('lua_parameter__value_#index#', $values['output'][$key])) {
+            unset($values['output'][$key]['lua_parameter__value_#index#']);
+            unset($values['output'][$key]['lua_parameter__name_#index#']);
+            unset($values['output'][$key]['lua_parameter__type_#index#']);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * unset lua parameters with value and name empty
+     *
+     * @param array &$values modified parameter
+     * @param integer $key
+     */
+    private function removeEmptyLuaParameters(array &$values, int $key): void
+    {
+        $paramKeys = array_keys($values['output'][$key]);
+        $paramKeysIndexes = preg_filter('/lua_parameter__value_([0-9]*)/', '$1', $paramKeys ?? []);
+
+        foreach ($paramKeysIndexes as $index) {
+            if (
+                !$values['output'][$key]['lua_parameter__name_' . $index]
+                && !$values['output'][$key]['lua_parameter__value_' . $index]
+            ) {
+                unset($values['output'][$key]['lua_parameter__value_' . $index]);
+                unset($values['output'][$key]['lua_parameter__name_' . $index]);
+                unset($values['output'][$key]['lua_parameter__type_' . $index]);
+            }
+        }
     }
 
     /**
@@ -1196,7 +1271,7 @@ class CentreonConfigCentreonBroker
         $row = $res->fetch();
 
         $this->defaults[$fieldId] = null;
-        if (!is_null($row)) {
+        if (!is_null($row) && $row !== false) {
             if (!is_null($row['default_value']) && $row['default_value'] != '') {
                 $this->defaults[$fieldId] = $row['default_value'];
             } elseif (!is_null($row['value_value']) && $row['value_value'] != '') {
@@ -1494,10 +1569,10 @@ class CentreonConfigCentreonBroker
             }
             $row = $res->fetchRow();
             $elemStr = $this->getConfigFieldName(
-                    $configId,
-                    $configGroup,
-                    $row
-                ) . '__' . $info['parent_grp_id'] . '__' . $elemStr;
+                $configId,
+                $configGroup,
+                $row
+            ) . '__' . $info['parent_grp_id'] . '__' . $elemStr;
         }
         return $elemStr;
     }
