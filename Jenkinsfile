@@ -345,7 +345,7 @@ try {
     }
   }
 
-  stage('API // E2E') {
+  stage('API // E2E // Lighthouse CI') {
     parallel 'API Tests': {
       if (hasBackendChanges) {
         def parallelSteps = [:]
@@ -390,6 +390,13 @@ try {
         }
       }
       parallel parallelSteps
+    },
+    'Lighthouse CI': {
+      node {
+        checkoutCentreonBuild();
+        unstash 'tar-sources'
+        sh(script: "./centreon-build/jobs/web/${serie}/mon-web-lighthouse-ci.sh centos7")
+      }
     }
   }
   
