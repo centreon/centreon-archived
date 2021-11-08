@@ -392,11 +392,13 @@ try {
       parallel parallelSteps
     },
     'Lighthouse CI': {
-      node {
-        checkoutCentreonBuild();
-        unstash 'tar-sources'
-        sh "./centreon-build/jobs/web/${serie}/mon-web-lighthouse-ci.sh centos7"
-        archiveArtifacts allowEmptyArchive: true, artifacts: 'centreon-web*/.lighthouseci/**/*.html, centreon-web*/.lighthouseci/**/*.json'
+      if (hasFrontendChanges) {
+        node {
+          checkoutCentreonBuild();
+          unstash 'tar-sources'
+          sh "./centreon-build/jobs/web/${serie}/mon-web-lighthouse-ci.sh centos7"
+          archiveArtifacts allowEmptyArchive: true, artifacts: 'centreon-web*/.lighthouseci/**/*.html, centreon-web*/.lighthouseci/**/*.json'
+        }
       }
     }
   }
