@@ -123,6 +123,7 @@ const SortableCards = ({ panelWidth, details }: Props): JSX.Element => {
     Component: (
       <Box>
         <SortableItems<CardsLayout>
+          updateSortableItemsOnItemsChange
           Content={Content}
           RootComponent={RootComponent}
           collisionDetection={rectIntersection}
