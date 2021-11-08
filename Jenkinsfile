@@ -395,7 +395,7 @@ try {
       node {
         checkoutCentreonBuild();
         unstash 'tar-sources'
-        sh(script: "./centreon-build/jobs/web/${serie}/mon-web-lighthouse-ci.sh centos7")
+        sh "./centreon-build/jobs/web/${serie}/mon-web-lighthouse-ci.sh centos7"
       }
     }
   }
