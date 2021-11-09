@@ -41,15 +41,14 @@ class CentreonLDAPContactRelation extends CentreonObject
     private const LDAP_PARAMETER_NAME = "ar_name";
 
     protected int $register;
-    public static $aDepends = [
+    public static $aDepends = array(
         'CONTACT',
         'LDAP'
-    ];
+    );
 
     /**
      * Constructor
      *
-     * @param \Pimple\Container $dependencyInjector
      * @return void
      */
     public function __construct(\Pimple\Container $dependencyInjector)
@@ -64,7 +63,7 @@ class CentreonLDAPContactRelation extends CentreonObject
     }
 
     /**
-     * @param string $parameters
+     * @param $parameters
      * @throws CentreonClapiException
      */
     public function initUpdateParameters($parameters)
@@ -80,7 +79,7 @@ class CentreonLDAPContactRelation extends CentreonObject
      * Export data
      *
      * @param string|null $filterName
-     * @return bool|void
+     * @return bool
      */
     public function export($filterName = null)
     {
@@ -89,7 +88,7 @@ class CentreonLDAPContactRelation extends CentreonObject
         }
 
         $labelField = $this->object->getUniqueLabelField();
-        $filters = ["contact_register" => $this->register];
+        $filters = array("contact_register" => $this->register);
         if (!is_null($filterName)) {
             $filters[$labelField] = $filterName;
         }
@@ -107,25 +106,28 @@ class CentreonLDAPContactRelation extends CentreonObject
             if (!$algo) {
                 $element['contact_passwd'] = $this->dependencyInjector['utils']->encodePass($element['contact_passwd']);
             }
-            $displayResult = $this->action . $this->delim . "ADD";
+            $addStr = $this->action . $this->delim . "ADD";
             foreach ($this->insertParams as $param) {
-                $displayResult .= $this->delim . $element[$param];
+                $addStr .= $this->delim . $element[$param];
             }
-            $displayResult .= "\n";
-            echo $displayResult;
+            $addStr .= "\n";
+            echo $addStr;
             foreach ($element as $parameter => $value) {
                 if (!is_null($value) && $value != "" && !in_array($parameter, $this->exportExcludedParams)) {
                     if ($parameter === "ar_id") {
+                        $parameter = self::LDAP_PARAMETER_NAME;
                         $value = $this->ldap->getObjectName($value);
+
                         $value = CentreonUtils::convertLineBreak($value);
                         echo $this->action . $this->delim
                         . "setparam" . $this->delim
                         . $element[$this->object->getUniqueLabelField()] . $this->delim
-                        . self::LDAP_PARAMETER_NAME . $this->delim
+                        . $parameter . $this->delim
                         . $value . "\n";
                     }
                 }
             }
         }
+        return true;
     }
 }
