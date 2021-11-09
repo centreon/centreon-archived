@@ -130,7 +130,7 @@ abstract class ServerConnectionConfigurationService
     protected function insertConfigResources($serverID)
     {
         $sql = 'SELECT `resource_id`, `resource_name` FROM `cfg_resource`';
-        $sql .= "WHERE `resource_name` IN('\$USER1$', '\$CENTREONPLUGINS$') ORDER BY `resource_id` ASC";
+        $sql .= "WHERE `resource_name` IN('\$USER1$', '\$CENTREONPLUGINS$') ORDER BY `resource_name` DESC";
         $this->getDbAdapter()->query($sql);
         $results = $this->getDbAdapter()->results();
 
@@ -138,8 +138,9 @@ abstract class ServerConnectionConfigurationService
             throw new \Exception('Resources records from `cfg_resource` could not be fetched.');
         }
 
-        if ($results[0]->resource_name != '$USER1$' ||
-            $results[1]->resource_name != '$CENTREONPLUGINS$'
+        if (
+            $results[0]->resource_name !== '$USER1$'
+            || $results[1]->resource_name !== '$CENTREONPLUGINS$'
         ) {
             throw new \Exception('Resources records from `cfg_resource` are not as expected.');
         }
