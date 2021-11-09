@@ -40,7 +40,7 @@ class CentreonLDAPContactRelation extends CentreonObject
     private const ORDER_NAME = 0;
     private const LDAP_PARAMETER_NAME = "ar_name";
 
-    protected int $register;
+    protected $register;
     public static $aDepends = array(
         'CONTACT',
         'LDAP'
@@ -54,6 +54,7 @@ class CentreonLDAPContactRelation extends CentreonObject
     public function __construct(\Pimple\Container $dependencyInjector)
     {
         parent::__construct($dependencyInjector);
+        $this->dependencyInjector = $dependencyInjector;
         $this->ldap = new CentreonLdap($dependencyInjector);
         $this->object = new \Centreon_Object_Contact($dependencyInjector);
         $this->action = "LDAPCONTACT";
@@ -72,14 +73,15 @@ class CentreonLDAPContactRelation extends CentreonObject
         if (count($params) < self::NB_UPDATE_PARAMS) {
             throw new CentreonClapiException(self::MISSINGPARAMETER);
         }
+        $objectId = $this->getObjectId($params[self::ORDER_NAME]);
         $params[self::ORDER_NAME] = str_replace(" ", "_", $params[self::ORDER_NAME]);
     }
 
     /**
      * Export data
      *
-     * @param string|null $filterName
-     * @return bool
+     * @param null $filterName
+     * @return bool|void
      */
     public function export($filterName = null)
     {
@@ -128,6 +130,5 @@ class CentreonLDAPContactRelation extends CentreonObject
                 }
             }
         }
-        return true;
     }
 }
