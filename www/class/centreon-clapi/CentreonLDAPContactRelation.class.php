@@ -39,8 +39,10 @@ class CentreonLDAPContactRelation extends CentreonObject
 {
     private const ORDER_NAME = 0;
     private const LDAP_PARAMETER_NAME = "ar_name";
+    const HOST_NOTIF_CMD = "hostnotifcmd";
+    const SVC_NOTIF_CMD = "svcnotifcmd";
 
-    protected $register;
+    protected int $register;
     public static $aDepends = array(
         'CONTACT',
         'LDAP'
@@ -78,10 +80,53 @@ class CentreonLDAPContactRelation extends CentreonObject
     }
 
     /**
+     * Export notification commands
+     *
+     * @param string $objType
+     * @param int $contactId
+     * @param string $contactName
+     * @return void
+     */
+    private function exportNotifCommands($objType, $contactId, $contactName)
+    {
+        $commandObj = new \Centreon_Object_Command($this->dependencyInjector);
+        if ($objType == self::HOST_NOTIF_CMD) {
+            $obj = new \Centreon_Object_Relation_Contact_Command_Host($this->dependencyInjector);
+        } else {
+            $obj = new \Centreon_Object_Relation_Contact_Command_Service($this->dependencyInjector);
+        }
+
+        $cmds = $obj->getMergedParameters(
+            array(),
+            array($commandObj->getUniqueLabelField()),
+            -1,
+            0,
+            null,
+            null,
+            array($this->object->getPrimaryKey() => $contactId),
+            "AND"
+        );
+        $str = "";
+        foreach ($cmds as $element) {
+            if ($str != "") {
+                $str .= "|";
+            }
+            $str .= $element[$commandObj->getUniqueLabelField()];
+        }
+        if ($str) {
+            echo $this->action . $this->delim
+                . "setparam" . $this->delim
+                . $contactName . $this->delim
+                . $objType . $this->delim
+                . $str . "\n";
+        }
+    }
+
+    /**
      * Export data
      *
-     * @param null $filterName
-     * @return bool|void
+     * @param string|null $filterName
+     * @return bool
      */
     public function export($filterName = null)
     {
@@ -117,18 +162,21 @@ class CentreonLDAPContactRelation extends CentreonObject
             foreach ($element as $parameter => $value) {
                 if (!is_null($value) && $value != "" && !in_array($parameter, $this->exportExcludedParams)) {
                     if ($parameter === "ar_id") {
-                        $parameter = self::LDAP_PARAMETER_NAME;
                         $value = $this->ldap->getObjectName($value);
 
                         $value = CentreonUtils::convertLineBreak($value);
                         echo $this->action . $this->delim
                         . "setparam" . $this->delim
                         . $element[$this->object->getUniqueLabelField()] . $this->delim
-                        . $parameter . $this->delim
+                        . self::LDAP_PARAMETER_NAME . $this->delim
                         . $value . "\n";
                     }
                 }
             }
+            $objId = $element[$this->object->getPrimaryKey()];
+            $this->exportNotifCommands(self::HOST_NOTIF_CMD, $objId, $element[$this->object->getUniqueLabelField()]);
+            $this->exportNotifCommands(self::SVC_NOTIF_CMD, $objId, $element[$this->object->getUniqueLabelField()]);
         }
+        return true;
     }
 }
