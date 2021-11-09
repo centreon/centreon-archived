@@ -40,7 +40,7 @@ class CentreonLDAPContactRelation extends CentreonObject
     private const ORDER_NAME = 0;
     private const LDAP_PARAMETER_NAME = "ar_name";
 
-    protected int $register;
+    protected $register;
     public static $aDepends = [
         'CONTACT',
         'LDAP'
