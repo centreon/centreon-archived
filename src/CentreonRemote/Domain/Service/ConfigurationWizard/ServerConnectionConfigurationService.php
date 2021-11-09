@@ -3,7 +3,6 @@
 namespace CentreonRemote\Domain\Service\ConfigurationWizard;
 
 use Centreon\Infrastructure\CentreonLegacyDB\CentreonDBAdapter;
-
 use CentreonRemote\Domain\Resources\RemoteConfig\NagiosServer;
 use CentreonRemote\Domain\Resources\RemoteConfig\CfgNagios;
 use CentreonRemote\Domain\Resources\RemoteConfig\CfgNagiosBrokerModule;
@@ -69,6 +68,7 @@ abstract class ServerConnectionConfigurationService
      * Set one peer retention mode
      *
      * @param bool $onePeerRetention if one peer retention mode is enabled
+     * @return void
      */
     public function setOnePeerRetention(bool $onePeerRetention): void
     {
@@ -138,8 +138,10 @@ abstract class ServerConnectionConfigurationService
             throw new \Exception('Resources records from `cfg_resource` could not be fetched.');
         }
 
-        if ($results[0]->resource_name != '$USER1$' ||
-            $results[1]->resource_name != '$CENTREONPLUGINS$'
+        if (
+            !in_array($results[0]->resource_name, ["\$CENTREONPLUGINS$","\$USER1$"])
+            && !in_array($results[1]->resource_name, ["\$CENTREONPLUGINS$,","\$USER1$"])
+            && $results[0]->resource_name !== $results[1]->resource_name
         ) {
             throw new \Exception('Resources records from `cfg_resource` are not as expected.');
         }
