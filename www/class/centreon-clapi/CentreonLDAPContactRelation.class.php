@@ -40,7 +40,7 @@ class CentreonLDAPContactRelation extends CentreonObject
     private const ORDER_NAME = 0;
     private const LDAP_PARAMETER_NAME = "ar_name";
 
-    protected int $isRegistered;
+    protected int $register;
     public static $aDepends = [
         'CONTACT',
         'LDAP'
@@ -59,7 +59,7 @@ class CentreonLDAPContactRelation extends CentreonObject
         $this->object = new \Centreon_Object_Contact($dependencyInjector);
         $this->action = "LDAPCONTACT";
         $this->nbOfCompulsoryParams = count($this->insertParams);
-        $this->isRegistered = 1;
+        $this->register = 1;
         $this->activateField = 'ldap_contact_activate';
     }
 
@@ -89,7 +89,7 @@ class CentreonLDAPContactRelation extends CentreonObject
         }
 
         $labelField = $this->object->getUniqueLabelField();
-        $filters = ["contact_register" => $this->isRegistered];
+        $filters = ["contact_register" => $this->register];
         if (!is_null($filterName)) {
             $filters[$labelField] = $filterName;
         }
