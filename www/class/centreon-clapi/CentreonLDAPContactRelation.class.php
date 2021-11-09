@@ -39,8 +39,8 @@ class CentreonLDAPContactRelation extends CentreonObject
 {
     private const ORDER_NAME = 0;
     private const LDAP_PARAMETER_NAME = "ar_name";
-    const HOST_NOTIF_CMD = "hostnotifcmd";
-    const SVC_NOTIF_CMD = "svcnotifcmd";
+    private const HOST_NOTIF_CMD = "hostnotifcmd";
+    private const SVC_NOTIF_CMD = "svcnotifcmd";
 
     protected int $register;
     public static $aDepends = array(
