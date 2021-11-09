@@ -138,7 +138,9 @@ abstract class ServerConnectionConfigurationService
             throw new \Exception('Resources records from `cfg_resource` could not be fetched.');
         }
 
-        if ($results[0]->resource_name != '$USER1$' || $results[1]->resource_name != '$CENTREONPLUGINS$') {
+        if ($results[0]->resource_name != '$USER1$' ||
+            $results[1]->resource_name != '$CENTREONPLUGINS$'
+        ) {
             throw new \Exception('Resources records from `cfg_resource` are not as expected.');
         }
 
