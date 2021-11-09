@@ -40,7 +40,7 @@ class CentreonLDAPContactRelation extends CentreonObject
     private const ORDER_NAME = 0;
     private const LDAP_PARAMETER_NAME = "ar_name";
 
-    protected $register;
+    protected int $register;
     public static $aDepends = [
         'CONTACT',
         'LDAP'
@@ -80,7 +80,7 @@ class CentreonLDAPContactRelation extends CentreonObject
      * Export data
      *
      * @param string|null $filterName
-     * @return bool
+     * @return bool|void
      */
     public function export($filterName = null)
     {
@@ -127,6 +127,5 @@ class CentreonLDAPContactRelation extends CentreonObject
                 }
             }
         }
-        return true;
     }
 }
