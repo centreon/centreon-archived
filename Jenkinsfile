@@ -147,7 +147,7 @@ stage('Deliver sources') {
     stash name: 'cypress-node-modules', includes: "cypress-node-modules.tar.gz"
     stash name: 'vendor', includes: 'vendor.tar.gz'
     stash name: 'node_modules', includes: 'node_modules.tar.gz'
-    stash name: 'api-doc', includes: 'centreon-api-v21.10.html'
+    stash name: 'api-doc', includes: 'centreon-api-v22.04.html'
     publishHTML([
       allowMissing: false,
       keepAll: true,
