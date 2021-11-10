@@ -48,11 +48,11 @@ class CentreonLDAPContactRelation extends CentreonObject
         'LDAP'
     );
 
-     /**
-     * @param $parameters
-     * @return array
-     * @throws CentreonClapiException
-     */
+    /**
+    * @param $parameters
+    * @return array
+    * @throws CentreonClapiException
+    */
     public function initUpdateParameters($parameters)
     {
         $params = explode($this->delim, $parameters);
@@ -78,6 +78,23 @@ class CentreonLDAPContactRelation extends CentreonObject
         $this->nbOfCompulsoryParams = count($this->insertParams);
         $this->register = 1;
         $this->activateField = 'contact_activate';
+        $this->insertParams = array(
+            'contact_name',
+            'contact_alias',
+            'contact_email',
+            'contact_passwd',
+            'contact_admin',
+            'contact_oreon',
+            'contact_lang',
+            'contact_auth_type'
+        );
+        $this->exportExcludedParams = array_merge(
+            $this->insertParams,
+            array(
+                $this->object->getPrimaryKey(),
+                "contact_register"
+            )
+        );
     }
 
     /**
