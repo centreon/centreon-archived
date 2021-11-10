@@ -405,9 +405,8 @@ class CentreonContact extends CentreonObject
                             'reach_api',
                             'reach_api_rt',
                             'default_page',
-                            'ar_id',
                             'show_deprecated_pages',
-                            'enable_one_click_export',
+                            'enable_one_click_export'
                         ]
                     )
                 ) {
