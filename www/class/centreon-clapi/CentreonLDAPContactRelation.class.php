@@ -42,25 +42,10 @@ class CentreonLDAPContactRelation extends CentreonObject
     private const LDAP_PARAMETER_NAME = "ar_name";
 
     protected int $register;
-    public static $aDepends = array(
+    public static $aDepends = [
         'CONTACT',
         'LDAP'
-    );
-
-    /**
-    * @param $parameters
-    * @return array
-    * @throws CentreonClapiException
-    */
-    public function initUpdateParameters($parameters)
-    {
-        $params = explode($this->delim, $parameters);
-        if (count($params) < self::NB_UPDATE_PARAMS) {
-            throw new CentreonClapiException(self::MISSINGPARAMETER);
-        }
-        $objectId = $this->getObjectId($params[self::ORDER_NAME]);
-        $params[self::ORDER_NAME] = str_replace(" ", "_", $params[self::ORDER_NAME]);
-    }
+    ];
 
     /**
      * Constructor
@@ -74,26 +59,23 @@ class CentreonLDAPContactRelation extends CentreonObject
         $this->ldap = new CentreonLdap($dependencyInjector);
         $this->object = new \Centreon_Object_Contact($dependencyInjector);
         $this->action = "LDAPCONTACT";
+        $this->nbOfCompulsoryParams = count($this->insertParams);
         $this->register = 1;
         $this->activateField = 'contact_activate';
-        $this->insertParams = array(
-            'contact_name',
-            'contact_alias',
-            'contact_email',
-            'contact_passwd',
-            'contact_admin',
-            'contact_oreon',
-            'contact_lang',
-            'contact_auth_type'
-        );
-        $this->exportExcludedParams = array_merge(
-            $this->insertParams,
-            array(
-                $this->object->getPrimaryKey(),
-                "contact_register"
-            )
-        );
-        $this->nbOfCompulsoryParams = count($this->insertParams);
+    }
+
+    /**
+    * @param $parameters
+    * @return array
+    * @throws CentreonClapiException
+    */
+    public function initUpdateParameters($parameters)
+    {
+        $params = explode($this->delim, $parameters);
+        if (count($params) < self::NB_UPDATE_PARAMS) {
+            throw new CentreonClapiException(self::MISSINGPARAMETER);
+        }
+        $params[self::ORDER_NAME] = str_replace(" ", "_", $params[self::ORDER_NAME]);
     }
 
     /**
@@ -123,16 +105,6 @@ class CentreonLDAPContactRelation extends CentreonObject
             "AND"
         );
         foreach ($elements as $element) {
-            $algo = $this->dependencyInjector['utils']->detectPassPattern($element['contact_passwd']);
-            if (!$algo) {
-                $element['contact_passwd'] = $this->dependencyInjector['utils']->encodePass($element['contact_passwd']);
-            }
-            $addStr = $this->action . $this->delim . "ADD";
-            foreach ($this->insertParams as $param) {
-                $addStr .= $this->delim . $element[$param];
-            }
-            $addStr .= "\n";
-            echo $addStr;
             foreach ($element as $parameter => $value) {
                 if (!is_null($value) && $value != "" && !in_array($parameter, $this->exportExcludedParams)) {
                     if ($parameter === "ar_id") {
