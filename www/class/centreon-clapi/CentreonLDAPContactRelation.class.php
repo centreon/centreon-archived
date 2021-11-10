@@ -24,8 +24,10 @@ namespace CentreonClapi;
 
 require_once "centreonObject.class.php";
 require_once "centreonUtils.class.php";
+require_once "centreonTimePeriod.class.php";
 require_once "Centreon/Object/Contact/Contact.php";
 require_once "Centreon/Object/Command/Command.php";
+require_once "Centreon/Object/Timezone/Timezone.php";
 require_once "Centreon/Object/Relation/Contact/Command/Host.php";
 require_once "Centreon/Object/Relation/Contact/Command/Service.php";
 require_once "centreonLDAP.class.php";
@@ -37,6 +39,7 @@ require_once "centreonLDAP.class.php";
  */
 class CentreonLDAPContactRelation extends CentreonObject
 {
+    private const ORDER_NAME = 0;
     private const LDAP_PARAMETER_NAME = "ar_name";
 
     protected int $register;
@@ -44,6 +47,21 @@ class CentreonLDAPContactRelation extends CentreonObject
         'CONTACT',
         'LDAP'
     );
+
+     /**
+     * @param $parameters
+     * @return array
+     * @throws CentreonClapiException
+     */
+    public function initUpdateParameters($parameters)
+    {
+        $params = explode($this->delim, $parameters);
+        if (count($params) < self::NB_UPDATE_PARAMS) {
+            throw new CentreonClapiException(self::MISSINGPARAMETER);
+        }
+        $objectId = $this->getObjectId($params[self::ORDER_NAME]);
+        $params[self::ORDER_NAME] = str_replace(" ", "_", $params[self::ORDER_NAME]);
+    }
 
     /**
      * Constructor
@@ -57,14 +75,16 @@ class CentreonLDAPContactRelation extends CentreonObject
         $this->ldap = new CentreonLdap($dependencyInjector);
         $this->object = new \Centreon_Object_Contact($dependencyInjector);
         $this->action = "LDAPCONTACT";
+        $this->nbOfCompulsoryParams = count($this->insertParams);
         $this->register = 1;
+        $this->activateField = 'contact_activate';
     }
 
     /**
      * Export data
      *
      * @param string|null $filterName
-     * @return bool|void
+     * @return bool
      */
     public function export($filterName = null)
     {
@@ -88,9 +108,8 @@ class CentreonLDAPContactRelation extends CentreonObject
         );
         foreach ($elements as $element) {
             foreach ($element as $parameter => $value) {
-                if (!is_null($value) && $value != "") {
+                if (!is_null($value) && $value != "" && !in_array($parameter, $this->exportExcludedParams)) {
                     if ($parameter === "ar_id") {
-                        $this->action = "CONTACT";
                         $value = $this->ldap->getObjectName($value);
                         $value = CentreonUtils::convertLineBreak($value);
                         echo $this->action . $this->delim
@@ -102,5 +121,6 @@ class CentreonLDAPContactRelation extends CentreonObject
                 }
             }
         }
+        return true;
     }
 }

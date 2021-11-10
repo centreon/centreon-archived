@@ -141,7 +141,7 @@ class CentreonContact extends CentreonObject
             'contact_admin',
             'contact_oreon',
             'contact_lang',
-            'contact_auth_type'
+            'contact_auth_type',
             'ar_id'
         );
         $this->exportExcludedParams = array_merge(
@@ -405,9 +405,9 @@ class CentreonContact extends CentreonObject
                             'reach_api',
                             'reach_api_rt',
                             'default_page',
+                            'ar_id',
                             'show_deprecated_pages',
                             'enable_one_click_export',
-                            'ar_id'
                         ]
                     )
                 ) {
