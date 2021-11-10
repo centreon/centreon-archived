@@ -406,7 +406,8 @@ class CentreonAPI
     protected function requireLibs($object)
     {
         if ($object != "") {
-            if (isset($this->relationObject[$object]['class'])
+            if (
+                isset($this->relationObject[$object]['class'])
                 && isset($this->relationObject[$object]['module'])
                 && !class_exists("\CentreonClapi\Centreon" . $this->relationObject[$object]['class'])
             ) {
@@ -421,14 +422,16 @@ class CentreonAPI
                 }
             }
 
-            if (isset($this->relationObject[$object]['libs'])
+            if (
+                isset($this->relationObject[$object]['libs'])
                 && !array_walk($this->relationObject[$object]['libs'], 'class_exists')
             ) {
                 array_walk($this->relationObject[$object]['libs'], 'require_once');
             }
         } else {
             foreach ($this->relationObject as $sSynonyme => $oObjet) {
-                if (isset($oObjet['class'])
+                if (
+                    isset($oObjet['class'])
                     && isset($oObjet['module'])
                     && !class_exists("\CentreonClapi\Centreon" . $oObjet['class'])
                 ) {
@@ -910,7 +913,8 @@ class CentreonAPI
     private function iniObject($objname)
     {
         $className = '';
-        if (isset($this->relationObject[$objname]['namespace'])
+        if (
+            isset($this->relationObject[$objname]['namespace'])
             && $this->relationObject[$objname]['namespace']
         ) {
             $className .= '\\' . $this->relationObject[$objname]['namespace'];
@@ -1100,9 +1104,11 @@ class CentreonAPI
             $aObject = $this->relationObject;
             while ($oObjet = array_slice($aObject, -1, 1, true)) {
                 $key = key($oObjet);
-                if (isset($oObjet[$key]['class'])
+                if (
+                    isset($oObjet[$key]['class'])
                     && $oObjet[$key]['export'] === true
-                    && !in_array($key, $this->aExport)) {
+                    && !in_array($key, $this->aExport)
+                ) {
                     $objName = '';
                     if (isset($oObjet[$key]['namespace'])) {
                         $objName = '\\' . $oObjet[$key]['namespace'];

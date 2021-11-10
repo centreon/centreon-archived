@@ -74,7 +74,6 @@ class CentreonLDAPContactRelation extends CentreonObject
         $this->ldap = new CentreonLdap($dependencyInjector);
         $this->object = new \Centreon_Object_Contact($dependencyInjector);
         $this->action = "LDAPCONTACT";
-        $this->nbOfCompulsoryParams = count($this->insertParams);
         $this->register = 1;
         $this->activateField = 'contact_activate';
         $this->insertParams = array(
@@ -94,6 +93,7 @@ class CentreonLDAPContactRelation extends CentreonObject
                 "contact_register"
             )
         );
+        $this->nbOfCompulsoryParams = count($this->insertParams);
     }
 
     /**
@@ -123,6 +123,16 @@ class CentreonLDAPContactRelation extends CentreonObject
             "AND"
         );
         foreach ($elements as $element) {
+            $algo = $this->dependencyInjector['utils']->detectPassPattern($element['contact_passwd']);
+            if (!$algo) {
+                $element['contact_passwd'] = $this->dependencyInjector['utils']->encodePass($element['contact_passwd']);
+            }
+            $addStr = $this->action . $this->delim . "ADD";
+            foreach ($this->insertParams as $param) {
+                $addStr .= $this->delim . $element[$param];
+            }
+            $addStr .= "\n";
+            echo $addStr;
             foreach ($element as $parameter => $value) {
                 if (!is_null($value) && $value != "" && !in_array($parameter, $this->exportExcludedParams)) {
                     if ($parameter === "ar_id") {
