@@ -26,6 +26,8 @@ require_once "centreonObject.class.php";
 require_once "centreonUtils.class.php";
 require_once "Centreon/Object/Contact/Contact.php";
 require_once "Centreon/Object/Command/Command.php";
+require_once "Centreon/Object/Relation/Contact/Command/Host.php";
+require_once "Centreon/Object/Relation/Contact/Command/Service.php";
 require_once "centreonLDAP.class.php";
 
 /**
@@ -56,14 +58,13 @@ class CentreonLDAPContactRelation extends CentreonObject
         $this->object = new \Centreon_Object_Contact($dependencyInjector);
         $this->action = "LDAPCONTACT";
         $this->register = 1;
-        $this->activateField = 'ldap_contact_activate';
     }
 
     /**
      * Export data
      *
      * @param string|null $filterName
-     * @return bool
+     * @return bool|void
      */
     public function export($filterName = null)
     {
@@ -86,18 +87,8 @@ class CentreonLDAPContactRelation extends CentreonObject
             "AND"
         );
         foreach ($elements as $element) {
-            $algo = $this->dependencyInjector['utils']->detectPassPattern($element['contact_passwd']);
-            if (!$algo) {
-                $element['contact_passwd'] = $this->dependencyInjector['utils']->encodePass($element['contact_passwd']);
-            }
-            $addStr = $this->action . $this->delim . "ADD";
-            foreach ($this->insertParams as $param) {
-                $addStr .= $this->delim . $element[$param];
-            }
-            $addStr .= "\n";
-            echo $addStr;
             foreach ($element as $parameter => $value) {
-                if (!is_null($value) && $value != "" && !in_array($parameter, $this->exportExcludedParams)) {
+                if (!is_null($value) && $value != "") {
                     if ($parameter === "ar_id") {
                         $this->action = "CONTACT";
                         $value = $this->ldap->getObjectName($value);
@@ -111,6 +102,5 @@ class CentreonLDAPContactRelation extends CentreonObject
                 }
             }
         }
-        return true;
     }
 }
