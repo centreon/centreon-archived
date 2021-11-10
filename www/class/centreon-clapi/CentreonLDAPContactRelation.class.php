@@ -27,7 +27,6 @@ require_once "centreonUtils.class.php";
 require_once "centreonTimePeriod.class.php";
 require_once "Centreon/Object/Contact/Contact.php";
 require_once "Centreon/Object/Command/Command.php";
-require_once "Centreon/Object/Timezone/Timezone.php";
 require_once "Centreon/Object/Relation/Contact/Command/Host.php";
 require_once "Centreon/Object/Relation/Contact/Command/Service.php";
 require_once "centreonLDAP.class.php";
