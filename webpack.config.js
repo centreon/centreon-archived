@@ -43,6 +43,8 @@ module.exports = merge(baseConfig, extractCssConfig, {
     new HtmlWebpackPlugin({
       alwaysWriteToDisk: true,
       filename: path.resolve(`${__dirname}`, 'www', 'index.html'),
+      // the default function (md4) is not supported by OpenSSL by default starting in Node 17
+      hashFunction: 'xxhash64',
       template: './www/front_src/public/index.html',
     }),
     new HtmlWebpackHarddiskPlugin(),
