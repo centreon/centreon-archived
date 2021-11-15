@@ -54,7 +54,7 @@ class CentreonConfigCentreonBroker
      *
      * @var array
      */
-    public $arrayMultiple = array();
+    public $arrayMultiple = [];
 
     /**
      *
