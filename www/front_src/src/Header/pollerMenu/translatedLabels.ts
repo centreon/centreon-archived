@@ -11,3 +11,6 @@ export const labelConfigurationExportedAndReloaded =
   'Configuration exported and reloaded';
 export const labelFailedToExportAndReloadConfiguration =
   'Failed to export and reload the configuration';
+export const labelPoller = 'Poller';
+export const labelLatency = 'Latency';
+export const labelDatabase = 'Database';
