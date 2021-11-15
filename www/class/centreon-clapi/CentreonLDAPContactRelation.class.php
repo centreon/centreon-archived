@@ -33,15 +33,16 @@ require_once "centreonLDAP.class.php";
 
 /**
  * Class representating relation between a contact and his LDAP configuration
- *
- * @author sylvestre
  */
 class CentreonLDAPContactRelation extends CentreonObject
 {
     private const ORDER_NAME = 0;
     private const LDAP_PARAMETER_NAME = "ar_name";
 
-    protected int $register;
+    /**
+     * @var int
+     */
+    protected $register;
     public static $aDepends = [
         'CONTACT',
         'LDAP'
