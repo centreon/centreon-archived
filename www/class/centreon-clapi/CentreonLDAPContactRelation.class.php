@@ -91,6 +91,7 @@ class CentreonLDAPContactRelation extends CentreonObject
         }
 
         $labelField = $this->object->getUniqueLabelField();
+
         $filters = array("contact_register" => $this->register);
         if (!is_null($filterName)) {
             $filters[$labelField] = $filterName;
