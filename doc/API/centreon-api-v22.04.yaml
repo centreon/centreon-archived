@@ -22,7 +22,7 @@ info:
   license:
     name: Apache 2.0
     url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
-  version: "21.10"
+  version: "22.04"
 externalDocs:
   description: You can contact us on our community Slack
   url: 'https://centreon.slack.com/messages/CCRGLQSE5'
@@ -42,7 +42,7 @@ servers:
         default: '80'
         description: "Port used by HTTP server"
       version:
-        default: v21.10
+        default: v22.04
         description: "Version of the API"
 tags:
   - name: Acknowledgement
