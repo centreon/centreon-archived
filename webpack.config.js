@@ -35,8 +35,6 @@ module.exports = merge(baseConfig, extractCssConfig, {
   },
   output: {
     crossOriginLoading: 'anonymous',
-    // the default function (md4) is not supported by OpenSSL by default starting in Node 17
-    hashFunction: 'xxhash64',
     library: ['name'],
     path: path.resolve(`${__dirname}/www/static`),
     publicPath: './static/',
