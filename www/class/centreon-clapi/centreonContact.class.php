@@ -147,7 +147,8 @@ class CentreonContact extends CentreonObject
             $this->insertParams,
             array(
                 $this->object->getPrimaryKey(),
-                "contact_register"
+                "contact_register",
+                "ar_id"
             )
         );
         $this->action = "CONTACT";

@@ -125,7 +125,7 @@ if ($form->validate()) {
         $msg .= str_replace("\n", "<br />", $stdout);
         $msg .= "<br />Moving traps in database...";
 
-        $command = "@CENTREONTRAPD_BINDIR@/centFillTrapDB -f '" . $values["tmp_name"]
+        $command = "/usr/share/centreon/bin/centFillTrapDB -f '" . $values["tmp_name"]
             . "' -m " . $manufacturerId . " --severity=info 2>&1";
 
         if ($debug) {
