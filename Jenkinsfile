@@ -400,7 +400,7 @@ try {
           publishHTML([
             allowMissing: false,
             keepAll: true,
-            reportDir: 'centreon-web*/.lighthouseci',
+            reportDir: "$PROJECT-$VERSION/.lighthouseci",
             reportFiles: 'lighthouseci-index.html',
             reportName: 'Centreon Web Performances',
             reportTitles: ''
