@@ -133,7 +133,7 @@ class CentreonContact extends CentreonObject
             'contact_activate' => '1',
             'contact_register' => '1'
         );
-        $this->insertParams = array(
+        $this->insertParams = [
             'contact_name',
             'contact_alias',
             'contact_email',
@@ -141,9 +141,8 @@ class CentreonContact extends CentreonObject
             'contact_admin',
             'contact_oreon',
             'contact_lang',
-            'contact_auth_type',
-            'ar_id'
-        );
+            'contact_auth_type'
+        ];
         $this->exportExcludedParams = array_merge(
             $this->insertParams,
             array(
