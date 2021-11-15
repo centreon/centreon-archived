@@ -27,5 +27,9 @@ module.exports = {
       },
       url: 'http://localhost:4000/centreon/monitoring/resources',
     },
+    upload: {
+      reportFilenamePattern: '.lighthouseci/lighthouseci-index.%%EXTENSION%%',
+      target: 'filesystem',
+    },
   },
 };

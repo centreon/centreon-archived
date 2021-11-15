@@ -397,7 +397,14 @@ try {
           checkoutCentreonBuild();
           unstash 'tar-sources'
           sh "./centreon-build/jobs/web/${serie}/mon-web-lighthouse-ci.sh centos7"
-          archiveArtifacts allowEmptyArchive: true, artifacts: 'centreon-web*/.lighthouseci/**/*.html, centreon-web*/.lighthouseci/**/*.json'
+          publishHTML([
+            allowMissing: false,
+            keepAll: true,
+            reportDir: '.lighthouseci',
+            reportFiles: 'lighthouseci-index.html',
+            reportName: 'Centreon Web Performances',
+            reportTitles: ''
+          ])
         }
       }
     }
