@@ -27,9 +27,9 @@ if (env.BRANCH_NAME.startsWith('release-')) {
   env.DOCKER_STAGE = 'Docker packaging with canary rpms'
 }
 
-def buildBranch = env.BRANCH_NAME
+env.BUILD_BRANCH = env.BRANCH_NAME
 if (env.CHANGE_BRANCH) {
-  buildBranch = env.CHANGE_BRANCH
+  env.BUILD_BRANCH = env.CHANGE_BRANCH
 }
 
 def backendFiles = [
@@ -115,7 +115,7 @@ def checkoutCentreonBuild() {
       remote: 'https://github.com/centreon/centreon-build.git',
       credentialsId: 'technique-ci',
       traits: [[$class: 'jenkins.plugins.git.traits.BranchDiscoveryTrait']]],
-      targets: [BRANCH_NAME, 'master'])
+      targets: [env.BUILD_BRANCH, 'master'])
   }
 }
 
