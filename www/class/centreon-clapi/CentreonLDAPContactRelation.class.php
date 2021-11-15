@@ -50,13 +50,12 @@ class CentreonLDAPContactRelation extends CentreonObject
 
     /**
      * Constructor
-     *
+     * @param \Pimple\Container $dependencyInjector
      * @return void
      */
     public function __construct(\Pimple\Container $dependencyInjector)
     {
         parent::__construct($dependencyInjector);
-        $this->dependencyInjector = $dependencyInjector;
         $this->ldap = new CentreonLdap($dependencyInjector);
         $this->contact = new \Centreon_Object_Contact($dependencyInjector);
         $this->action = "LDAPCONTACT";
