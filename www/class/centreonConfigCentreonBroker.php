@@ -52,6 +52,12 @@ class CentreonConfigCentreonBroker
 
     /**
      *
+     * @var array
+     */
+    public $arrayMultiple = [];
+
+    /**
+     *
      * @var \CentreonDB
      */
     private $db;
@@ -76,19 +82,19 @@ class CentreonConfigCentreonBroker
 
     /**
      *
-     * @var type
+     * @var array<int|string,mixed>|null
      */
     private $tagsCache = null;
 
     /**
      *
-     * @var type
+     * @var array<int,string>|null
      */
     private $typesCache = null;
 
     /**
      *
-     * @var type
+     * @var array<int,string>|null
      */
     private $typesNameCache = null;
 
@@ -173,7 +179,7 @@ class CentreonConfigCentreonBroker
      *
      * @param CentreonDB $db The connection to centreon database
      */
-    public function setDb($db)
+    public function setDb($db): void
     {
         $this->db = $db;
     }
@@ -308,12 +314,10 @@ class CentreonConfigCentreonBroker
         return $this->blockCache[$tagId];
     }
 
-    public $arrayMultiple;
-
     /**
      * Create the HTML_QuickForm object with element for a block
      *
-     * @param int $blockId The block id ('tag_id'_'type_id')
+     * @param string $blockId The block id ('tag_id'_'type_id')
      * @param int $page The centreon page id
      * @param int $formId The form post
      * @param int $config_id
@@ -523,7 +527,7 @@ class CentreonConfigCentreonBroker
     /**
      * Generate Cdata tag
      */
-    public function generateCdata()
+    public function generateCdata(): void
     {
         $cdata = CentreonData::getInstance();
         if (isset($this->arrayMultiple)) {
@@ -593,8 +597,8 @@ class CentreonConfigCentreonBroker
 
     /**
      * Return a cb type id for the shortname given
-     * @param type $typeName
-     * @return boolean
+     * @param string $typeName
+     * @return int|null
      */
     public function getTypeId($typeName)
     {
@@ -674,6 +678,7 @@ class CentreonConfigCentreonBroker
         $row = $res->fetch();
         $id = $row['config_id'];
         $this->updateCentreonBrokerInfos($id, $values);
+        return true;
     }
 
     /**
@@ -717,6 +722,7 @@ class CentreonConfigCentreonBroker
             return false;
         }
         $this->updateCentreonBrokerInfos($id, $values);
+        return true;
     }
 
     /**
@@ -731,7 +737,7 @@ class CentreonConfigCentreonBroker
 
         // exclude multiple parameters load with broker js hook
         $keepLuaParameters = false;
-        if ($values['output'] !== null) {
+        if (isset($values['output'])) {
             foreach ($values['output'] as $key => $output) {
                 if ($output['type'] === 'lua') {
                     if ($this->removeUnindexedLuaParameters($values, $key)) {
@@ -740,12 +746,12 @@ class CentreonConfigCentreonBroker
                     $this->removeEmptyLuaParameters($values, $key);
                 }
             }
-            // Clean the informations for this id
-            $query = 'DELETE FROM cfg_centreonbroker_info WHERE config_id = '
-                . (int) $id
-                . ($keepLuaParameters ? ' AND config_key NOT LIKE "lua\_parameter\_%"' : '');
-            $this->db->query($query);
         }
+        // Clean the informations for this id
+        $query = 'DELETE FROM cfg_centreonbroker_info WHERE config_id = '
+            . (int) $id
+            . ($keepLuaParameters ? ' AND config_key NOT LIKE "lua\_parameter\_%"' : '');
+        $this->db->query($query);
 
         $groups_infos = array();
         $groups_infos_multiple = array();
@@ -781,7 +787,7 @@ class CentreonConfigCentreonBroker
             foreach ($groups as $gid => $infos) {
                 if (isset($infos['blockId'])) {
                     list($tagId, $typeId) = explode('_', $infos['blockId']);
-                    $fieldtype = $this->getFieldtypes($typeId);
+                    $fieldtype = $this->getFieldtypes((int) $typeId);
                     foreach ($infos as $fieldname => $fieldvalue) {
                         $lvl = 0;
                         $grp_id = null;
@@ -926,10 +932,10 @@ class CentreonConfigCentreonBroker
     /**
      * Get the list of forms for a config_id
      *
-     * @param $config_id int $config_id The id of config
-     * @param $tag string $tag The tag name
-     * @param $page int $page The page topology
-     * @param $tpl Smarty $tpl The template Smarty
+     * @param int $config_id The id of config
+     * @param string $tag The tag name
+     * @param int $page The page topology
+     * @param Smarty $tpl The template Smarty
      * @return array
      * @throws HTML_QuickForm_Error
      */
@@ -1090,7 +1096,7 @@ class CentreonConfigCentreonBroker
         while ($row = $res->fetchRow()) {
             list($tagId, $typeId) = explode('_', $row['config_value']);
             $pos = $row['config_group_id'];
-            $fields = $this->getBlockInfos($typeId);
+            $fields = $this->getBlockInfos((int) $typeId);
             $help = array();
             $help[] = array('name' => $tag . '[' . $pos . '][name]', 'desc' => _('The name of block configuration'));
             $help[] = array('name' => $tag . '[' . $pos . '][type]', 'desc' => _('The type of block configuration'));
@@ -1299,7 +1305,7 @@ class CentreonConfigCentreonBroker
      *
      * @param string $rpn The rpn operation
      * @param int $val The value for apply
-     * @return The value with rpn apply or the value is errors
+     * @return mixed The value with rpn apply or the value is errors
      */
     private function rpnCalc($rpn, $val)
     {
