@@ -150,7 +150,7 @@ describe(Provider, () => {
     );
 
     await waitFor(() => {
-      expect(atomsValue.acl).toEqual(retrievedActionsAcl);
+      expect(atomsValue.acl).toEqual({ actions: retrievedActionsAcl });
       expect(atomsValue.user).toEqual(contextUser);
       expect(atomsValue.downtime).toEqual({
         default_duration:
