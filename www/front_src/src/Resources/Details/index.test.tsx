@@ -19,6 +19,10 @@ import {
   getUrlQueryParameters,
   copyToClipboard,
 } from '@centreon/ui';
+import {
+  refreshIntervalAtom,
+  userAtom,
+} from '@centreon/centreon-frontend/packages/ui-context/src';
 
 import {
   labelMore,
@@ -510,8 +514,20 @@ const DetailsTest = (): JSX.Element => {
   );
 };
 
+const mockUser = {
+  isExportButtonEnabled: true,
+  locale: 'en',
+  timezone: 'Europe/Paris',
+};
+const mockRefreshInterval = 60;
+
 const DetailsWithJotai = (): JSX.Element => (
-  <Provider>
+  <Provider
+    initialValues={[
+      [userAtom, mockUser],
+      [refreshIntervalAtom, mockRefreshInterval],
+    ]}
+  >
     <DetailsTest />
   </Provider>
 );
