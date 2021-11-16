@@ -65,10 +65,9 @@ class CentreonLDAPContactRelation extends CentreonObject
 
     /**
     * @param string $parameters
-    * @return void
     * @throws CentreonClapiException
     */
-    public function initUpdateParameters($parameters)
+    public function initUpdateParameters(string $parameters): void
     {
         $params = explode($this->delim, $parameters);
         if (count($params) < self::NB_UPDATE_PARAMS) {
@@ -83,14 +82,14 @@ class CentreonLDAPContactRelation extends CentreonObject
      * @param string|null $filterName
      * @return bool
      */
-    public function export($filterName = null)
+    public function export($filterName = null): bool
     {
         if (!$this->canBeExported($filterName)) {
             return false;
         }
 
         $labelField = $this->contact->getUniqueLabelField();
-        $filters = array("contact_register" => $this->register);
+        $filters = ["contact_register" => $this->register];
         if (!is_null($filterName)) {
             $filters[$labelField] = $filterName;
         }
@@ -105,16 +104,14 @@ class CentreonLDAPContactRelation extends CentreonObject
         );
         foreach ($contacts as $contact) {
             foreach ($contact as $parameter => $value) {
-                if (!empty($value) && !in_array($parameter, $this->exportExcludedParams)) {
-                    if ($parameter === "ar_id") {
-                        $value = $this->ldap->getObjectName($value);
-                        $value = CentreonUtils::convertLineBreak($value);
-                        echo $this->action . $this->delim
-                        . "setparam" . $this->delim
-                        . $contact[$this->contact->getUniqueLabelField()] . $this->delim
-                        . self::LDAP_PARAMETER_NAME . $this->delim
-                        . $value . "\n";
-                    }
+                if (!empty($value) && !in_array($parameter, $this->exportExcludedParams) && $parameter === "ar_id") {
+                    $value = $this->ldap->getObjectName($value);
+                    $value = CentreonUtils::convertLineBreak($value);
+                    echo $this->action . $this->delim
+                    . "setparam" . $this->delim
+                    . $contact[$this->contact->getUniqueLabelField()] . $this->delim
+                    . self::LDAP_PARAMETER_NAME . $this->delim
+                    . $value . "\n";
                 }
             }
         }
