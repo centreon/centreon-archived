@@ -4,7 +4,6 @@ import { isNil, prop } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
-import SettingsIcon from '@material-ui/icons/Settings';
 import LogsIcon from '@material-ui/icons/Assignment';
 import ReportIcon from '@material-ui/icons/Assessment';
 import {
@@ -22,7 +21,6 @@ import { PopoverMenu } from '@centreon/ui';
 import { ResourceUris } from '../models';
 import {
   labelActionNotPermitted,
-  labelConfigure,
   labelShortcuts,
   labelViewLogs,
   labelViewReport,
@@ -47,11 +45,6 @@ const ShortcutsTooltip = ({ resourceUris }: Props): JSX.Element => {
 
   const shortcuts = [
     {
-      Icon: SettingsIcon,
-      name: labelConfigure,
-      uri: prop('configuration', resourceUris),
-    },
-    {
       Icon: LogsIcon,
       name: labelViewLogs,
       uri: prop('logs', resourceUris),
@@ -68,7 +61,7 @@ const ShortcutsTooltip = ({ resourceUris }: Props): JSX.Element => {
       icon={<MoreHorizIcon fontSize="small" />}
       title={t(labelShortcuts)}
     >
-      {() => (
+      {(): JSX.Element => (
         <List dense>
           {shortcuts.map(({ Icon, uri, name }) => (
             <Tooltip

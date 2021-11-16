@@ -25,8 +25,6 @@ $centreonLog = new CentreonLog();
 //error specific content
 $versionOfTheUpgrade = 'UPGRADE - 21.04.0-beta.1: ';
 
-$pearDB = new CentreonDB('centreon', 3, false);
-
 $criteriasConcordanceArray = [
     'states' => [
         'acknowledged' => 'Acknowledged',

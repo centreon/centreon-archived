@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { map, nth, pipe, path, all, not, isNil, prop } from 'ramda';
-import { AreaStack, curveLinear } from '@visx/visx';
+import { Shape, Curve } from '@visx/visx';
 import { ScaleLinear, ScaleTime } from 'd3-scale';
 
 import { Line, TimeValue } from '../models';
@@ -28,8 +28,8 @@ const StackLines = ({
   xScale,
   timeTick,
 }: Props): JSX.Element => (
-  <AreaStack
-    curve={curveLinear}
+  <Shape.AreaStack
+    curve={Curve.curveLinear}
     data={timeSeries}
     defined={(d): boolean => {
       return pipe(
@@ -48,6 +48,7 @@ const StackLines = ({
           index,
           lines,
         ) as Line;
+
         return (
           <React.Fragment key={`stack-${prop('key', stack)}`}>
             <StackedAnchorPoint
@@ -70,7 +71,7 @@ const StackLines = ({
         );
       });
     }}
-  </AreaStack>
+  </Shape.AreaStack>
 );
 
 export default StackLines;

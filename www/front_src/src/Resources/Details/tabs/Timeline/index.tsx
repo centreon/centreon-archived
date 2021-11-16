@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { prop, isEmpty, path } from 'ramda';
+import { prop, isEmpty, path, isNil } from 'ramda';
 
 import { makeStyles, Paper } from '@material-ui/core';
 
@@ -15,6 +15,8 @@ import {
 import { labelEvent } from '../../../translatedLabels';
 import { TabProps } from '..';
 import InfiniteScroll from '../../InfiniteScroll';
+import TimePeriodButtonGroup from '../../../Graph/Performance/TimePeriods';
+import { useResourceContext } from '../../../Context';
 
 import { types } from './Event';
 import { TimelineEvent, Type } from './models';
@@ -28,12 +30,18 @@ type TimelineListing = ListingModel<TimelineEvent>;
 const useStyles = makeStyles((theme) => ({
   filter: {
     padding: theme.spacing(2),
+    paddingTop: 0,
   },
 }));
 
 const TimelineTab = ({ details }: TabProps): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
+
+  const { getIntervalDates, selectedTimePeriod, customTimePeriod } =
+    useResourceContext();
+
+  const [start, end] = getIntervalDates();
 
   const translatedTypes = types.map((type) => ({
     ...type,
@@ -55,6 +63,15 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
     }
 
     return {
+      conditions: [
+        {
+          field: 'date',
+          values: {
+            $gt: start,
+            $lt: end,
+          },
+        },
+      ],
       lists: [
         {
           field: 'type',
@@ -90,6 +107,7 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
       details={details}
       filter={
         <Paper className={classes.filter}>
+          <TimePeriodButtonGroup disableGraphOptions disablePaper />
           <MultiAutocompleteField
             fullWidth
             label={t(labelEvent)}
@@ -103,8 +121,11 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
       limit={limit}
       loading={sending}
       loadingSkeleton={<LoadingSkeleton />}
-      reloadDependencies={[selectedTypes]}
-      sendListingRequest={listTimeline}
+      reloadDependencies={[
+        selectedTypes,
+        selectedTimePeriod?.id || customTimePeriod,
+      ]}
+      sendListingRequest={isNil(timelineEndpoint) ? undefined : listTimeline}
     >
       {({ infiniteScrollTriggerRef, entities }): JSX.Element => {
         return (

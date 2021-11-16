@@ -51,10 +51,7 @@ while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
 $stmt->closeCursor();
 
 $compo = [];
-if (
-    ($o === 'c' || $o === 'w') &&
-    $compo_id
-) {
+if (($o === MODIFY_COMPONENT_TEMPLATE || $o === WATCH_COMPONENT_TEMPLATE) && $compo_id) {
     $stmt = $pearDB->prepare('SELECT * FROM giv_components_template WHERE compo_id = :compo_id LIMIT 1');
     $stmt->bindValue(':compo_id', $compo_id, \PDO::PARAM_INT);
     $stmt->execute();
@@ -105,28 +102,29 @@ $eTemplate = '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><t
     '<br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
 
 $availableRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_service&action=list';
-
-if ($o !== 'a') {
-    $defaultRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_objects' .
-        '&action=defaultValues&target=graphCurve&field=host_id&id=' . $compo_id;
-}
 $attrServices = [
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => $availableRoute,
-    'defaultDatasetRoute' => $defaultRoute,
     'linkedObject' => 'centreonService',
     'multiple' => false
 ];
+
+if ($o !== ADD_COMPONENT_TEMPLATE) {
+    $defaultRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_objects' .
+        '&action=defaultValues&target=graphCurve&field=host_id&id=' . $compo_id;
+
+    $attrServices['defaultDatasetRoute'] = $defaultRoute;
+}
 
 /*
  * Form begin
  */
 $form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
-if ($o === 'a') {
+if ($o === ADD_COMPONENT_TEMPLATE) {
     $form->addElement('header', 'ftitle', _('Add a Data Source Template'));
-} elseif ($o === 'c') {
+} elseif ($o === MODIFY_COMPONENT_TEMPLATE) {
     $form->addElement('header', 'ftitle', _('Modify a Data Source Template'));
-} elseif ($o === 'w') {
+} elseif ($o === WATCH_COMPONENT_TEMPLATE) {
     $form->addElement('header', 'ftitle', _('View a Data Source Template'));
 }
 
@@ -146,7 +144,7 @@ for ($cpt = 1; $cpt <= 100; $cpt++) {
 $form->addElement('select', 'ds_order', _('Order'), $orders);
 
 $form->addElement('static', 'hsr_text', _('Choose a service if you want a specific curve for it.'));
-$form->addElement('select2', 'host_id', _('Linked Host Services'), [], $attrServices);
+$form->addElement('select2', 'host_service_id', _('Linked Host Services'), [], $attrServices);
 
 $form->addElement('text', 'ds_name', _('Data Source Name'), $attrsText);
 $form->addElement('select', 'datasources', null, $dataSources);
@@ -296,7 +294,7 @@ $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;" . _('Required 
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
-if ($o === 'w') {
+if ($o === WATCH_COMPONENT_TEMPLATE) {
     // Just watch
     $form->addElement(
         'button',
@@ -306,7 +304,7 @@ if ($o === 'w') {
     );
     $form->setDefaults($compo);
     $form->freeze();
-} elseif ($o === 'c') {
+} elseif ($o === MODIFY_COMPONENT_TEMPLATE) {
     // Modify
     $subC = $form->addElement(
         'submit',
@@ -319,12 +317,12 @@ if ($o === 'w') {
         'reset',
         _('Reset'),
         [
-            'onClick' => 'javascript:resetLists(' . $compo["host_id"] . ',' . $compo["index_id"] . ')',
+            'onClick' => 'javascript:resetLists(' . ($compo["host_id"] ?? 0) . ',' . ($compo["service_id"] ?? 0) . ')',
             'class' => 'btc bt_default'
         ]
     );
     $form->setDefaults($compo);
-} elseif ($o === 'a') {
+} elseif ($o === ADD_COMPONENT_TEMPLATE) {
     // add
     $subA = $form->addElement(
         'submit',
@@ -354,7 +352,7 @@ if ($o === 'w') {
         ]
     );
 }
-if ($o === 'c' || $o === 'a') {
+if ($o === MODIFY_COMPONENT_TEMPLATE || $o === ADD_COMPONENT_TEMPLATE) {
     ?>
     <script type='text/javascript'>
         function insertValueQuery() {
@@ -396,7 +394,7 @@ $tpl->assign('sort2', _('Graphs'));
 $helptext = '';
 include_once('help.php');
 foreach ($help as $key => $text) {
-    $helptext .= '<span style="display:none" id="help:' . $key . '">' . $text . '</span>' . '\n';
+    $helptext .= '<span style="display:none" id="help:' . $key . '">' . $text . '</span>';
 }
 $tpl->assign('helptext', $helptext);
 
@@ -408,7 +406,7 @@ if ($form->validate()) {
     } elseif ($form->getSubmitValue('submitC')) {
         updateComponentTemplateInDB($compoObj->getValue());
     }
-    $o = 'w';
+    $o = WATCH_COMPONENT_TEMPLATE;
     $form->addElement(
         'button',
         'change',
@@ -434,14 +432,14 @@ if ($valid) {
 $vdef = 0; /* don't list VDEF in metrics list */
 
 include_once('./include/views/graphs/common/makeJS_formMetricsList.php');
-if ($o === 'c' || $o === 'w') {
+if ($o === MODIFY_COMPONENT_TEMPLATE || $o === WATCH_COMPONENT_TEMPLATE) {
     $host_service_id = filter_var(
-        $_POST['host_id'] ?? $compo['host_id'] . '-' . $compo['service_id'],
+        $_POST['host_service_id'] ?? ($compo["host_id"] . '-' . $compo['service_id']),
         FILTER_SANITIZE_STRING
     );
-} elseif ($o === 'a') {
+} elseif ($o === ADD_COMPONENT_TEMPLATE) {
     $host_service_id = filter_var(
-        $_POST['host_id'] ?? null,
+        $_POST['host_service_id'] ?? null,
         FILTER_SANITIZE_STRING
     );
 }

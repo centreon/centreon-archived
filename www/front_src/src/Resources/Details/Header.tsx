@@ -1,3 +1,6 @@
+/* eslint-disable hooks/sort */
+// Issue : https://github.com/hiukky/eslint-plugin-hooks/issues/3
+
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
@@ -14,13 +17,13 @@ import {
 import { Skeleton } from '@material-ui/lab';
 import CopyIcon from '@material-ui/icons/FileCopy';
 import SettingsIcon from '@material-ui/icons/Settings';
+import { CreateCSSProperties } from '@material-ui/styles';
 
 import {
   StatusChip,
   SeverityCode,
   IconButton,
   useSnackbar,
-  Severity,
   copyToClipboard,
 } from '@centreon/ui';
 
@@ -44,7 +47,7 @@ interface MakeStylesProps {
 }
 
 const useStyles = makeStyles<Theme, MakeStylesProps>((theme) => ({
-  header: ({ displaySeverity }) => ({
+  header: ({ displaySeverity }): CreateCSSProperties<MakeStylesProps> => ({
     alignItems: 'center',
     display: 'grid',
     gridGap: theme.spacing(2),
@@ -64,11 +67,11 @@ const useStylesHeaderContent = makeStyles((theme) => ({
     gridTemplateColumns: 'auto minmax(0, 1fr)',
   },
   resourceName: {
-    columnGap: theme.spacing(0.5),
+    alignItems: 'center',
+    columnGap: theme.spacing(1),
     display: 'grid',
-    gridTemplateColumns: 'repeat(2, min-content)',
-    height: theme.spacing(3),
-    width: 'min-content',
+    gridTemplateColumns: 'minmax(auto, min-content) min-content',
+    height: '100%',
   },
   resourceNameConfigurationIcon: {
     alignSelf: 'center',
@@ -77,6 +80,15 @@ const useStylesHeaderContent = makeStyles((theme) => ({
   },
   resourceNameConfigurationLink: {
     height: theme.spacing(2.5),
+  },
+  resourceNameContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100%',
+    width: '100%',
+  },
+  resourceNameTooltip: {
+    maxWidth: 'none',
   },
   truncated: {
     overflow: 'hidden',
@@ -101,31 +113,16 @@ type Props = {
 } & DetailsSectionProps;
 
 const HeaderContent = ({ details, onSelectParent }: Props): JSX.Element => {
-  const [resourceNameHovered, setResourceNameHovered] = React.useState(false);
   const { t } = useTranslation();
-  const { showMessage } = useSnackbar();
+  const { showSuccessMessage, showErrorMessage } = useSnackbar();
   const classes = useStylesHeaderContent();
-
-  const hoverResourceName = () => {
-    setResourceNameHovered(true);
-  };
-
-  const leaveResourceName = () => {
-    setResourceNameHovered(false);
-  };
 
   const copyResourceLink = (): void => {
     try {
       copyToClipboard(window.location.href);
-      showMessage({
-        message: t(labelLinkCopied),
-        severity: Severity.success,
-      });
+      showSuccessMessage(t(labelLinkCopied));
     } catch (_) {
-      showMessage({
-        message: t(labelSomethingWentWrong),
-        severity: Severity.error,
-      });
+      showErrorMessage(t(labelSomethingWentWrong));
     }
   };
 
@@ -160,32 +157,34 @@ const HeaderContent = ({ details, onSelectParent }: Props): JSX.Element => {
         label={t(details.status.name)}
         severityCode={details.status.severity_code}
       />
-      <div>
+      <div className={classes.resourceNameContainer}>
         <div
           aria-label={`${details.name}_hover`}
           className={classes.resourceName}
-          onMouseEnter={hoverResourceName}
-          onMouseLeave={leaveResourceName}
         >
-          <Typography className={classes.truncated}>{details.name}</Typography>
-          <div className={classes.resourceNameConfigurationIcon}>
-            {resourceNameHovered && (
-              <Tooltip title={resourceConfigurationUriTitle}>
-                <div>
-                  <Link
-                    aria-label={`${t(labelConfigure)}_${details.name}`}
-                    className={classes.resourceNameConfigurationLink}
-                    href={resourceConfigurationUri}
-                  >
-                    <SettingsIcon
-                      color={resourceConfigurationIconColor}
-                      fontSize="small"
-                    />
-                  </Link>
-                </div>
-              </Tooltip>
-            )}
-          </div>
+          <Tooltip
+            classes={{ tooltip: classes.resourceNameTooltip }}
+            placement="top"
+            title={details.name}
+          >
+            <Typography className={classes.truncated}>
+              {details.name}
+            </Typography>
+          </Tooltip>
+          <Tooltip title={resourceConfigurationUriTitle}>
+            <div className={classes.resourceNameConfigurationIcon}>
+              <Link
+                aria-label={`${t(labelConfigure)}_${details.name}`}
+                className={classes.resourceNameConfigurationLink}
+                href={resourceConfigurationUri}
+              >
+                <SettingsIcon
+                  color={resourceConfigurationIconColor}
+                  fontSize="small"
+                />
+              </Link>
+            </div>
+          </Tooltip>
         </div>
         {hasPath(['parent', 'status'], details) && (
           <div className={classes.parent}>
@@ -197,7 +196,7 @@ const HeaderContent = ({ details, onSelectParent }: Props): JSX.Element => {
             <SelectableResourceName
               name={details.parent.name}
               variant="caption"
-              onSelect={() => onSelectParent(details.parent)}
+              onSelect={(): void => onSelectParent(details.parent)}
             />
           </div>
         )}

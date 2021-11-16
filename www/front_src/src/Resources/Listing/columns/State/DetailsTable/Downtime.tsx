@@ -1,3 +1,5 @@
+/* eslint-disable react/no-unused-prop-types */
+
 import * as React from 'react';
 
 import parse from 'html-react-parser';
@@ -16,7 +18,7 @@ import {
   labelComment,
 } from '../../../../translatedLabels';
 
-import DetailsTable, { DetailsTableProps, getYesNoLabel } from '.';
+import DetailsTable, { getYesNoLabel } from '.';
 
 const useStyles = makeStyles({
   comment: {
@@ -28,12 +30,17 @@ const useStyles = makeStyles({
 });
 
 interface DowntimeDetails {
+  author_name: string;
   comment: string;
-  // eslint-disable-next-line react/no-unused-prop-types
+  end_time: Date | string;
   id: number;
+  is_fixed: boolean;
+  start_time: Date | string;
 }
 
-type Props = Pick<DetailsTableProps, 'endpoint'>;
+interface Props {
+  endpoint: string;
+}
 
 const DowntimeDetailsTable = ({ endpoint }: Props): JSX.Element => {
   const classes = useStyles();
@@ -64,7 +71,9 @@ const DowntimeDetailsTable = ({ endpoint }: Props): JSX.Element => {
       width: 150,
     },
     {
-      getContent: ({ end_time }): string => toDateTime(end_time),
+      getContent: ({ end_time }: DowntimeDetails): JSX.Element => (
+        <span>{toDateTime(end_time)}</span>
+      ),
       id: 'end_time',
       label: t(labelEndTime),
       type: ColumnType.string,
@@ -72,6 +81,8 @@ const DowntimeDetailsTable = ({ endpoint }: Props): JSX.Element => {
     },
 
     {
+      className: classes.comment,
+
       getContent: ({ comment }: DowntimeDetails): JSX.Element => {
         return (
           <span className={classes.comment}>
@@ -81,7 +92,7 @@ const DowntimeDetailsTable = ({ endpoint }: Props): JSX.Element => {
       },
       id: 'comment',
       label: t(labelComment),
-      type: ColumnType.string,
+      type: ColumnType.component,
       width: 250,
     },
   ];

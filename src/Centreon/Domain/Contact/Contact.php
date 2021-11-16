@@ -159,6 +159,18 @@ class Contact implements UserInterface, ContactInterface
     private $defaultPage;
 
     /**
+     * Indicates if user uses deprecated pages
+     *
+     * @var bool
+     */
+    private $useDeprecatedPages;
+
+    /**
+     * @var bool
+     */
+    private $isOneClickExportEnabled = false;
+
+    /**
      * @return int
      */
     public function getId(): int
@@ -573,5 +585,45 @@ class Contact implements UserInterface, ContactInterface
     public function getDefaultPage(): ?Page
     {
         return $this->defaultPage;
+    }
+
+    /**
+     * Indicates if user uses deprecated pages
+     *
+     * @return  bool
+     */
+    public function isUsingDeprecatedPages()
+    {
+        return $this->useDeprecatedPages;
+    }
+
+    /**
+     * @param  bool  $useDeprecatedPages  Indicates if user uses deprecated pages
+     * @return  self
+     */
+    public function setUseDeprecatedPages(bool $useDeprecatedPages)
+    {
+        $this->useDeprecatedPages = $useDeprecatedPages;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isOneClickExportEnabled(): bool
+    {
+        return $this->isOneClickExportEnabled;
+    }
+
+    /**
+     * @param bool $isOneClickExportEnabled
+     * @return Contact
+     */
+    public function setOneClickExportEnabled(bool $isOneClickExportEnabled): Contact
+    {
+        $this->isOneClickExportEnabled = $isOneClickExportEnabled;
+
+        return $this;
     }
 }

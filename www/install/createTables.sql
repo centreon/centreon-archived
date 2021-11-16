@@ -742,7 +742,6 @@ CREATE TABLE `contact` (
   `contact_address5` varchar(200) DEFAULT NULL,
   `contact_address6` varchar(200) DEFAULT NULL,
   `contact_comment` text,
-  `contact_js_effects` enum('0','1') DEFAULT '0',
   `contact_location` int(11) DEFAULT '0',
   `contact_oreon` enum('0','1') DEFAULT NULL,
   `reach_api` int(11) DEFAULT '0',
@@ -763,6 +762,7 @@ CREATE TABLE `contact` (
   `contact_register` tinyint(6) NOT NULL DEFAULT '1',
   `contact_ldap_last_sync` int(11) NOT NULL DEFAULT 0,
   `contact_ldap_required_sync` enum('0','1') NOT NULL DEFAULT '0',
+  `enable_one_click_export` enum('0','1') DEFAULT '0',
   PRIMARY KEY (`contact_id`),
   KEY `name_index` (`contact_name`),
   KEY `alias_index` (`contact_alias`),
@@ -1894,7 +1894,8 @@ CREATE TABLE `session` (
   `update_acl` enum('0','1') DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `session_id` (`session_id`(255)),
-  KEY `user_id` (`user_id`)
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `session_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `contact` (`contact_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;

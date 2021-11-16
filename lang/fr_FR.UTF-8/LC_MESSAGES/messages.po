@@ -863,6 +863,10 @@ msgstr "Sélectionné"
 msgid "Add"
 msgstr "Ajouter"
 
+#: centreon-web/www/include/configuration/configServers/listServers.php:318
+msgid "Add (advanced)"
+msgstr "Ajouter (avancé)"
+
 #: centreon-web/www/class/centreonConfigCentreonBroker.php:390
 #: centreon-web/www/include/options/accessLists/resourcesACL/formResourcesAccess.php:260
 #: centreon-web/www/include/options/accessLists/resourcesACL/formResourcesAccess.php:276
@@ -1925,6 +1929,10 @@ msgstr "Mise à jour"
 msgid "Do you confirm the deletion?"
 msgstr "Confirmez-vous la suppression ?"
 
+#: centreon-web/www/include/configuration/configServers/listServers.php:351
+msgid "You are about to delete one or more pollers.\\nThis action is IRREVERSIBLE.\\nDo you confirm the deletion ?"
+msgstr "Vous êtes sur le point de supprimer un ou plusieurs collecteurs.\\nCette action est IRREVERSIBLE.\\nConfirmez-vous la suppression ?"
+
 #: centreon-web/www/install/smarty_translate.php:354
 #: centreon-web/www/install/smarty_translate.php:357
 msgid "Uninstall Module"
@@ -2420,11 +2428,11 @@ msgstr "Commentaires"
 #: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:497
 #: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:511
 msgid "Acknowledged"
-msgstr "Acquittés"
+msgstr "Acquitté"
 
 #: centreon-web/www/install/smarty_translate.php:840
 msgid "In Downtime"
-msgstr "Plage de maintenance démarrée"
+msgstr "En maintenance"
 
 #: centreon-web/www/install/smarty_translate.php:843
 #: centreon-web/www/install/menu_translation.php:88
@@ -6226,7 +6234,7 @@ msgstr "Groupes liés"
 
 #: centreon-web/www/include/options/accessLists/resourcesACL/formResourcesAccess.php:264
 msgid "Shared Resources"
-msgstr "Ressources partagéesb"
+msgstr "Ressources partagées"
 
 #: centreon-web/www/include/options/accessLists/resourcesACL/formResourcesAccess.php:266
 msgid ""
@@ -12407,7 +12415,7 @@ msgstr "Statut détaillé"
 #: centreon-web/www/include/monitoring/status/Hosts/host.php:133
 #: centreon-web/www/include/monitoring/status/Services/service.php:338
 msgid "Unhandled Problems"
-msgstr "Problèmes non acquittés"
+msgstr "Problèmes non traités"
 
 #: centreon-web/www/include/monitoring/status/Hosts/host.php:134
 msgid "Host Problems"
@@ -15291,8 +15299,8 @@ msgstr "Commande copiée dans le presse-papier"
 msgid "Current notification number"
 msgstr "Numéro de notification actuel"
 
-msgid "Current state duration"
-msgstr "Durée de l'état actuel"
+msgid "Current status duration"
+msgstr "Durée du statut actuel"
 
 msgid "Downtime duration"
 msgstr "Durée de la plage de maintenance"
@@ -15325,7 +15333,7 @@ msgid "Downtime"
 msgstr "Plage de maintenance"
 
 msgid "In downtime"
-msgstr "En plage de maintenance"
+msgstr "En maintenance"
 
 msgid "1 day"
 msgstr "1 jour"
@@ -15357,8 +15365,8 @@ msgstr "Programmer une plage de maintenance sur les services attachés à l'hôt
 msgid "Last notification"
 msgstr "Dernière notification"
 
-msgid "Last state change"
-msgstr "Dernier changement d'état"
+msgid "Last status change"
+msgstr "Dernier changement de statut"
 
 msgid "Next check"
 msgstr "Prochain contrôle"
@@ -15369,8 +15377,8 @@ msgstr "Si cette option est cochée, une notification sera envoyée aux contacts
 msgid "Open"
 msgstr "Ouvrir"
 
-msgid "Percent state change"
-msgstr "Pourcentage de changement d'état"
+msgid "Status change percentage"
+msgstr "Pourcentage de changement de statut"
 
 msgid "Resource name"
 msgstr "Nom de la ressource"
@@ -15448,7 +15456,7 @@ msgid "Type of resource"
 msgstr "Type de ressource"
 
 msgid "Unhandled problems"
-msgstr "Problèmes non acquittés"
+msgstr "Problèmes non traités"
 
 msgid "Unhandled"
 msgstr "Non traité"
@@ -15868,8 +15876,8 @@ msgstr "Erreur lors de la recherche d'hôtes et de modèles de service liés"
 msgid "deprecated"
 msgstr "déprécié"
 
-msgid "Show deprecated pages"
-msgstr "Afficher les pages dépréciées"
+msgid "Use deprecated pages"
+msgstr "Utiliser les pages dépréciées"
 
 msgid "Error when adding services to the host %d"
 msgstr "Erreur lors de l'ajout de services à l'hôte %d"
@@ -15985,6 +15993,9 @@ msgstr "Afficher les évènements"
 
 msgid "Export to png"
 msgstr "Exporter comme png"
+
+msgid "Go to performance page"
+msgstr "Aller vers la page de performance"
 
 msgid "[%s] The value \"%s\" is too long, it should have no more than %d characters, but has %d characters"
 msgstr "[%s] La valeur \"%s\" est trop longue, elle ne devrait pas comporter plus de %d caractères mais n'en comporte que %d"
@@ -16207,3 +16218,87 @@ msgstr "L'année doit être inférieure à %d (%s)"
 
 msgid "[%s] The date \"%s\" was expected to be at most %s"
 msgstr "[%s] La date \"%s\" devait être au maximum au %s"
+
+msgid "Scroll to top"
+msgstr "Défiler vers le haut"
+
+msgid "This week"
+msgstr "Cette semaine"
+
+msgid "Before last year"
+msgstr "Avant l'année dernière"
+
+msgid "Filter options"
+msgstr "Options de filtre"
+
+msgid "The parameter \"%s\" must be an integer"
+msgstr "Le paramètre \"%s\" doit être un entier"
+
+msgid "Contact Details"
+msgstr "Détails du Contact"
+
+msgid "Service graphs"
+msgstr "Graphiques de services"
+
+msgid "Clear filter"
+msgstr "Effacer le filtre"
+
+msgid "Error while searching contact"
+msgstr "Erreur lors de la recherche d'un contact"
+
+msgid "Monitoring server not found (#%d)"
+msgstr "Serveur de supervision non trouvé (#%d)"
+
+msgid "Generation error on monitoring server #%d: %s"
+msgstr "Erreur de génération sur le serveur de supervision #%d : %s"
+
+msgid "Reloading error on monitoring server #%d: %s"
+msgstr "Erreur de rechargement sur le serveur de supervision #%d : %s"
+
+msgid "Error on retrieving monitoring servers"
+msgstr "Erreur lors de la récupération des serveurs de supervision"
+
+msgid "Authentication token expired"
+msgstr "Le jeton d'authentification a expiré"
+
+msgid "Authentication token not found"
+msgstr "Jeton d'authentification non trouvé"
+
+msgid "Request failed (%d)"
+msgstr "La requête a échoué (%d)"
+
+msgid "Response empty"
+msgstr "Réponse vide"
+
+msgid "Unable to load the Symfony container"
+msgstr "Impossible de charger le conteneur Symfony"
+
+msgid "Error on monitoring server #%d: %s"
+msgstr "Erreur sur le serveur de supervision #%d: %s"
+
+msgid "Execution was too long and reached timeout"
+msgstr "L'exécution a été trop longue et a atteint le délai d'attente"
+
+msgid "Last check with OK status"
+msgstr "Dernier contrôle avec un statut OK"
+
+msgid "Export & reload"
+msgstr "Exporter et recharger"
+
+msgid "Export and reload the configuration?"
+msgstr "Export et recharger la configuration ?"
+
+msgid "This will export and reload the configuration on all of your platform"
+msgstr "Cela va exporter et recharger la configuration sur l'ensemble de votre plateforme"
+
+msgid "Exporting and reloading the configuration. Please wait..."
+msgstr "La configuration est en train d'être exportée et rechargée. Veuillez patienter ..."
+
+msgid "Configuration exported and reloaded"
+msgstr "Configuration exportée et rechargée"
+
+msgid "Failed to export and reload the configuration"
+msgstr "L'export et le rechargement de la configuration a echoué"
+
+msgid "Enable the one-click export button for poller configuration"
+msgstr "Activer le bouton d’export de la configuration des collecteurs en un seul clic"

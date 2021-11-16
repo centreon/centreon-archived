@@ -153,18 +153,17 @@ const selectableStatuses = [
 ];
 
 export interface CriteriaDisplayProps {
-  autocompleteSearch?: Record<string, unknown>;
+  autocompleteSearch?: { conditions: Array<Record<string, unknown>> };
   buildAutocompleteEndpoint?;
   label: string;
   options?: Array<SelectEntry>;
-  sortId: number;
 }
 
 export interface CriteriaById {
   [criteria: string]: CriteriaDisplayProps;
 }
 
-export enum SelectableCriteriasType {
+export enum CriteriaNames {
   hostGroups = 'host_groups',
   monitoringServers = 'monitoring_servers',
   resourceTypes = 'resource_types',
@@ -174,36 +173,30 @@ export enum SelectableCriteriasType {
 }
 
 const selectableCriterias: CriteriaById = {
-  [SelectableCriteriasType.hostGroups]: {
+  [CriteriaNames.resourceTypes]: {
+    label: labelResource,
+    options: selectableResourceTypes,
+  },
+  [CriteriaNames.states]: {
+    label: labelState,
+    options: selectableStates,
+  },
+  [CriteriaNames.statuses]: {
+    label: labelStatus,
+    options: selectableStatuses,
+  },
+  [CriteriaNames.hostGroups]: {
     buildAutocompleteEndpoint: buildHostGroupsEndpoint,
     label: labelHostGroup,
-    sortId: 3,
   },
-  [SelectableCriteriasType.monitoringServers]: {
+  [CriteriaNames.serviceGroups]: {
+    buildAutocompleteEndpoint: buildServiceGroupsEndpoint,
+    label: labelServiceGroup,
+  },
+  [CriteriaNames.monitoringServers]: {
     autocompleteSearch: { conditions: [{ field: 'running', value: true }] },
     buildAutocompleteEndpoint: buildMonitoringServersEndpoint,
     label: labelMonitoringServer,
-    sortId: 5,
-  },
-  [SelectableCriteriasType.resourceTypes]: {
-    label: labelResource,
-    options: selectableResourceTypes,
-    sortId: 0,
-  },
-  [SelectableCriteriasType.serviceGroups]: {
-    buildAutocompleteEndpoint: buildServiceGroupsEndpoint,
-    label: labelServiceGroup,
-    sortId: 4,
-  },
-  [SelectableCriteriasType.states]: {
-    label: labelState,
-    options: selectableStates,
-    sortId: 1,
-  },
-  [SelectableCriteriasType.statuses]: {
-    label: labelStatus,
-    options: selectableStatuses,
-    sortId: 2,
   },
 };
 

@@ -101,12 +101,13 @@ class RemoteServerStepThreeRoute extends Component {
     const { links } = this;
     const { pollerData, t } = this.props;
     const { generateStatus, error } = this.state;
+
     return (
       <BaseWizard>
         <ProgressBar links={links} />
         <WizardFormInstallingStatus
           error={error}
-          formTitle={`${t('Finalizing Setup')}:`}
+          formTitle={`${t('Finalizing Setup')}`}
           statusCreating={pollerData.submitStatus}
           statusGenerating={generateStatus}
         />

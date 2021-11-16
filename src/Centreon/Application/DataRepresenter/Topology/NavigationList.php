@@ -154,7 +154,10 @@ class NavigationList implements JsonSerializable
                     'is_react' => (bool)$entity->getIsReact(),
                     'show' => (bool)$entity->getTopologyShow()
                 ];
-            } elseif (preg_match('/^(\d)(\d\d)$/', $entity->getTopologyPage(), $matches)) {
+            } elseif (
+                preg_match('/^(\d)(\d\d)$/', $entity->getTopologyPage(), $matches)
+                && !empty($naviList[$matches[1]])
+            ) {
                 $naviList[$matches[1]]['children'][$entity->getTopologyPage()] = [
                     'page' => $entity->getTopologyPage(),
                     'label' => $entity->getTopologyName(),
@@ -164,7 +167,10 @@ class NavigationList implements JsonSerializable
                     'is_react' => (bool)$entity->getIsReact(),
                     'show' => (bool)$entity->getTopologyShow()
                 ];
-            } elseif (preg_match('/^(\d)(\d\d)(\d\d)$/', $entity->getTopologyPage(), $matches)) { // level 3
+            } elseif (
+                preg_match('/^(\d)(\d\d)(\d\d)$/', $entity->getTopologyPage(), $matches)
+                && !empty($naviList[$matches[1]]['children'][$matches[1] . $matches[2]])
+            ) { // level 3
                 $levelTwo = $matches[1] . $matches[2];
 
                 //level 3 items can be grouped for better display
@@ -218,10 +224,10 @@ class NavigationList implements JsonSerializable
     /**
      * Extract the array without keys to avoid serialization into objects
      *
-     * @param  $naviList
-     * @return array
+     * @param  array<array> $naviList
+     * @return array<array>
      */
-    private function removeKeysFromArray($naviList)
+    private function removeKeysFromArray(array $naviList): array
     {
         foreach ($naviList as $key => &$value) {
             if (!empty($value['children'])) {

@@ -39,7 +39,7 @@ if (!isset($centreon)) {
 }
 
 $aclId = filter_var(
-    $_GET['acl_res_id'] ?? $_POST['acl_res_id'],
+    $_GET['acl_res_id'] ?? $_POST['acl_res_id'] ?? null,
     FILTER_VALIDATE_INT
 ) ?: null;
 
@@ -77,27 +77,63 @@ switch ($o) {
         require_once(__DIR__ . '/formResourcesAccess.php');
         break; #Modify a LCA
     case "s":
-        enableLCAInDB($aclId);
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            enableLCAInDB($aclId);
+        } else {
+            unvalidFormMessage();
+        }
         require_once(__DIR__ . '/listsResourcesAccess.php');
         break; #Activate a LCA
     case "ms":
-        enableLCAInDB(null, $select);
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            enableLCAInDB(null, $select);
+        } else {
+            unvalidFormMessage();
+        }
         require_once(__DIR__ . '/listsResourcesAccess.php');
         break; #Activate n LCA
     case "u":
-        disableLCAInDB($aclId);
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            disableLCAInDB($aclId);
+        } else {
+            unvalidFormMessage();
+        }
         require_once(__DIR__ . '/listsResourcesAccess.php');
         break; #Desactivate a LCA
     case "mu":
-        disableLCAInDB(null, $select);
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            disableLCAInDB(null, $select);
+        } else {
+            unvalidFormMessage();
+        }
         require_once(__DIR__ . '/listsResourcesAccess.php');
         break; #Desactivate n LCA
     case "m":
-        multipleLCAInDB($select, $dupNbr);
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            multipleLCAInDB($select, $dupNbr);
+        } else {
+            unvalidFormMessage();
+        }
         require_once(__DIR__ . '/listsResourcesAccess.php');
         break; #Duplicate n LCAs
     case "d":
-        deleteLCAInDB($select);
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            deleteLCAInDB($select);
+        } else {
+            unvalidFormMessage();
+        }
         require_once(__DIR__ . '/listsResourcesAccess.php');
         break; #Delete n LCAs
     case "t":

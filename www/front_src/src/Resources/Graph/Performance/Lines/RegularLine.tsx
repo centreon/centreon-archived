@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { AreaClosed, curveLinear, LinePath } from '@visx/visx';
+import { Shape, Curve } from '@visx/visx';
 import { equals, isNil, prop } from 'ramda';
 import { ScaleLinear, ScaleTime } from 'd3-scale';
 
@@ -37,7 +37,7 @@ const RegularLine = ({
   graphHeight,
 }: Props): JSX.Element => {
   const props = {
-    curve: curveLinear,
+    curve: Curve.curveLinear,
     data: timeSeries,
     defined: (value): boolean => !isNil(value[metric]),
     opacity: highlight === false ? 0.3 : 1,
@@ -50,7 +50,7 @@ const RegularLine = ({
 
   if (filled) {
     return (
-      <AreaClosed<TimeValue>
+      <Shape.AreaClosed<TimeValue>
         fill={getFillColor({ areaColor, transparency })}
         fillRule="nonzero"
         key={metric}
@@ -61,7 +61,7 @@ const RegularLine = ({
     );
   }
 
-  return <LinePath<TimeValue> {...props} />;
+  return <Shape.LinePath<TimeValue> {...props} />;
 };
 
 export default React.memo(RegularLine, (prevProps, nextProps) => {
@@ -69,16 +69,22 @@ export default React.memo(RegularLine, (prevProps, nextProps) => {
     timeSeries: prevTimeSeries,
     graphHeight: prevGraphHeight,
     highlight: prevHighlight,
+    xScale: prevXScale,
   } = prevProps;
   const {
     timeSeries: nextTimeSeries,
     graphHeight: nextGraphHeight,
     highlight: nextHighlight,
+    xScale: nextXScale,
   } = nextProps;
+
+  const prevXScaleRange = prevXScale.range();
+  const nextXScaleRange = nextXScale.range();
 
   return (
     equals(prevTimeSeries, nextTimeSeries) &&
     equals(prevGraphHeight, nextGraphHeight) &&
-    equals(prevHighlight, nextHighlight)
+    equals(prevHighlight, nextHighlight) &&
+    equals(prevXScaleRange, nextXScaleRange)
   );
 });

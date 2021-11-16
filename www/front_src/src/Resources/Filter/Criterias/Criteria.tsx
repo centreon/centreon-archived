@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { isNil } from 'ramda';
+import { equals, isNil } from 'ramda';
 
 import {
   PopoverMultiAutocompleteField,
@@ -53,7 +53,10 @@ const CriteriaContent = ({
   };
 
   if (isNil(options)) {
-    const getEndpoint = ({ search, page }) =>
+    const getOptionSelected = (option, selectedValue): boolean =>
+      equals(option.name, selectedValue.name);
+
+    const getEndpoint = ({ search, page }): string =>
       buildAutocompleteEndpoint({
         limit: 10,
         page,
@@ -63,10 +66,12 @@ const CriteriaContent = ({
     return (
       <PopoverMultiConnectedAutocompleteField
         {...commonProps}
+        disableSortedOptions
         field="name"
         getEndpoint={getEndpoint}
+        getOptionSelected={getOptionSelected}
         value={value}
-        onChange={(_, updatedValue) => {
+        onChange={(_, updatedValue): void => {
           changeCriteria(updatedValue);
         }}
       />
@@ -81,7 +86,7 @@ const CriteriaContent = ({
       {...commonProps}
       options={translatedOptions}
       value={translatedValues}
-      onChange={(_, updatedValue) => {
+      onChange={(_, updatedValue): void => {
         changeCriteria(getUntranslated(updatedValue));
       }}
     />
@@ -89,7 +94,7 @@ const CriteriaContent = ({
 };
 
 const Criteria = ({ value, name }: Props): JSX.Element => {
-  const { setCriteriaAndNewFilter, getMultiSelectCriterias, nextSearch } =
+  const { setCriteriaAndNewFilter, filterWithParsedSearch } =
     useResourceContext();
 
   return useMemoComponent({
@@ -100,7 +105,7 @@ const Criteria = ({ value, name }: Props): JSX.Element => {
         value={value}
       />
     ),
-    memoProps: [value, name, getMultiSelectCriterias(), nextSearch],
+    memoProps: [value, name, filterWithParsedSearch],
   });
 };
 

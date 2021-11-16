@@ -11,14 +11,12 @@ import { TimelineEvent } from '../../../Details/tabs/Timeline/models';
 import { listTimelineEvents } from '../../../Details/tabs/Timeline/api';
 import { listTimelineEventsDecoder } from '../../../Details/tabs/Timeline/api/decoders';
 import PerformanceGraph from '..';
-import {
-  CustomTimePeriod,
-  TimePeriod,
-} from '../../../Details/tabs/Graph/models';
 import { Resource } from '../../../models';
 import { ResourceDetails } from '../../../Details/models';
-import { AdjustTimePeriodProps, GraphOptionId } from '../models';
+import { GraphOptionId } from '../models';
 import { useIntersection } from '../useGraphIntersection';
+import { useResourceContext } from '../../../Context';
+import { ResourceGraphMousePosition } from '../../../Details/tabs/Services/Graphs';
 
 import { defaultGraphOptions, useGraphOptionsContext } from './useGraphOptions';
 
@@ -36,32 +34,34 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 interface Props {
-  adjustTimePeriod?: (props: AdjustTimePeriodProps) => void;
-  customTimePeriod: CustomTimePeriod;
-  getIntervalDates: () => [string, string];
   graphHeight: number;
   limitLegendRows?: boolean;
-  periodQueryParameters: string;
   resource?: Resource | ResourceDetails;
-  resourceDetailsUpdated: boolean;
-  selectedTimePeriod: TimePeriod | null;
+  resourceGraphMousePosition?: ResourceGraphMousePosition | null;
+  updateResourceGraphMousePosition?: (
+    resourceGraphMousePosition: ResourceGraphMousePosition | null,
+  ) => void;
 }
 
 const ExportablePerformanceGraphWithTimeline = ({
   resource,
-  selectedTimePeriod,
-  getIntervalDates,
-  periodQueryParameters,
   graphHeight,
-  customTimePeriod,
-  adjustTimePeriod,
-  resourceDetailsUpdated,
   limitLegendRows,
+  updateResourceGraphMousePosition,
+  resourceGraphMousePosition,
 }: Props): JSX.Element => {
   const classes = useStyles();
 
-  const { alias } = useUserContext();
+  const {
+    customTimePeriod,
+    getIntervalDates,
+    periodQueryParameters,
+    adjustTimePeriod,
+    selectedTimePeriod,
+    resourceDetailsUpdated,
+  } = useResourceContext();
 
+  const [timeline, setTimeline] = React.useState<Array<TimelineEvent>>();
   const { sendRequest: sendGetTimelineRequest } = useRequest<
     ListingModel<TimelineEvent>
   >({
@@ -69,7 +69,8 @@ const ExportablePerformanceGraphWithTimeline = ({
     request: listTimelineEvents,
   });
 
-  const [timeline, setTimeline] = React.useState<Array<TimelineEvent>>();
+  const { alias } = useUserContext();
+
   const graphOptions =
     useGraphOptionsContext()?.graphOptions || defaultGraphOptions;
   const graphContainerRef = React.useRef<HTMLElement | null>(null);
@@ -90,6 +91,7 @@ const ExportablePerformanceGraphWithTimeline = ({
   const retrieveTimeline = (): void => {
     if (or(isNil(timelineEndpoint), not(displayEventAnnotations))) {
       setTimeline([]);
+
       return;
     }
 
@@ -168,7 +170,9 @@ const ExportablePerformanceGraphWithTimeline = ({
           limitLegendRows={limitLegendRows}
           resource={resource as Resource}
           resourceDetailsUpdated={resourceDetailsUpdated}
+          resourceGraphMousePosition={resourceGraphMousePosition}
           timeline={timeline}
+          updateResourceGraphMousePosition={updateResourceGraphMousePosition}
           xAxisTickFormat={
             selectedTimePeriod?.dateTimeFormat ||
             customTimePeriod.xAxisTickFormat

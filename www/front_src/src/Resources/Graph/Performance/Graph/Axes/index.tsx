@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { AxisBottom } from '@visx/visx';
+import { Axis } from '@visx/visx';
 import { ScaleLinear, ScaleTime } from 'd3-scale';
 
 import { useLocaleDateTimeFormat } from '@centreon/ui';
@@ -44,7 +44,7 @@ const Axes = ({
 
   return (
     <>
-      <AxisBottom
+      <Axis.AxisBottom
         numTicks={xTickCount}
         scale={xScale}
         tickFormat={formatXAxisTick}

@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { isNil } from 'ramda';
 
-import { withSnackbar, ListingPage, WithPanel } from '@centreon/ui';
+import { ListingPage, WithPanel } from '@centreon/ui';
 
 import Context from './Context';
 import Filter from './Filter';
@@ -26,7 +26,7 @@ const ResourcesPage = ({
 }: Props): JSX.Element => (
   <WithPanel open={editPanelOpen} panel={<EditFiltersPanel />}>
     <ListingPage
-      filters={<Filter />}
+      filter={<Filter />}
       listing={<Listing />}
       panel={<Details />}
       panelOpen={!isNil(selectedResourceId)}
@@ -66,4 +66,4 @@ const Resources = (): JSX.Element => {
   );
 };
 
-export default withSnackbar(Resources);
+export default Resources;

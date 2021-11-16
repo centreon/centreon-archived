@@ -276,7 +276,7 @@ class ResourceService extends AbstractCentreonService implements ResourceService
         $url = str_replace('$HOSTADDRESS$', $resource->getFqdn(), $url);
         $url = str_replace('$HOSTNAME$', $resource->getName(), $url);
         $url = str_replace('$HOSTSTATE$', $resource->getStatus()->getName(), $url);
-        $url = str_replace('$HOSTSTATEID$', $resource->getStatus()->getCode(), $url);
+        $url = str_replace('$HOSTSTATEID$', (string) $resource->getStatus()->getCode(), $url);
         $url = str_replace('$HOSTALIAS$', $resource->getAlias(), $url);
 
         return $url;
@@ -294,11 +294,11 @@ class ResourceService extends AbstractCentreonService implements ResourceService
         $url = str_replace('$HOSTADDRESS$', $resource->getParent()->getFqdn(), $url);
         $url = str_replace('$HOSTNAME$', $resource->getParent()->getName(), $url);
         $url = str_replace('$HOSTSTATE$', $resource->getParent()->getStatus()->getName(), $url);
-        $url = str_replace('$HOSTSTATEID$', $resource->getParent()->getStatus()->getCode(), $url);
+        $url = str_replace('$HOSTSTATEID$', (string) $resource->getParent()->getStatus()->getCode(), $url);
         $url = str_replace('$HOSTALIAS$', $resource->getParent()->getAlias(), $url);
         $url = str_replace('$SERVICEDESC$', $resource->getName(), $url);
         $url = str_replace('$SERVICESTATE$', $resource->getStatus()->getName(), $url);
-        $url = str_replace('$SERVICESTATEID$', $resource->getStatus()->getCode(), $url);
+        $url = str_replace('$SERVICESTATEID$', (string) $resource->getStatus()->getCode(), $url);
 
         return $url;
     }

@@ -141,6 +141,80 @@ final class ServiceGroupRepositoryRDB extends AbstractRepositoryDRB implements S
     }
 
     /**
+     * @inheritDoc
+     */
+    public function findServiceGroupsByNames(array $serviceGroupNames): array
+    {
+        $serviceGroups = [];
+
+        if ($this->hasNotEnoughRightsToContinue() || empty($serviceGroupNames)) {
+            return $serviceGroups;
+        }
+
+        $bindValues = [];
+        $subRequest = '';
+        if (!$this->isAdmin()) {
+            $bindValues[':contact_id'] = [\PDO::PARAM_INT => $this->contact->getId()];
+
+            // Not an admin, we must to filter on contact
+            $subRequest .=
+                ' INNER JOIN `:db`.acl_resources_sg_relations sgr
+                    ON sgr.sg_id = sg.servicegroup_id
+                INNER JOIN `:db`.acl_resources res
+                    ON res.acl_res_id = sgr.acl_res_id
+                    AND res.acl_res_activate = \'1\'
+                INNER JOIN `:db`.acl_res_group_relations rgr
+                    ON rgr.acl_res_id = res.acl_res_id
+                INNER JOIN `:db`.acl_groups grp
+                    ON grp.acl_group_id IN ('
+                . $this->accessGroupIdToString($this->accessGroups)
+                . ') AND grp.acl_group_activate = \'1\'
+                    AND grp.acl_group_id = rgr.acl_group_id
+                LEFT JOIN `:db`.acl_group_contacts_relations gcr
+                    ON gcr.acl_group_id = grp.acl_group_id
+                LEFT JOIN `:db`.acl_group_contactgroups_relations gcgr
+                    ON gcgr.acl_group_id = grp.acl_group_id
+                LEFT JOIN `:db`.contactgroup_contact_relation cgcr
+                    ON cgcr.contactgroup_cg_id = gcgr.cg_cg_id
+                    AND cgcr.contact_contact_id = :contact_id
+                    OR gcr.contact_contact_id = :contact_id';
+        }
+
+        $request = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT sg.* FROM `:dbstg`.`servicegroups` sg ' . $subRequest;
+        $request = $this->translateDbName($request);
+
+        $bindServiceGroupNames = [];
+        foreach ($serviceGroupNames as $index => $serviceGroupName) {
+            $bindServiceGroupNames[':service_group_name_' . $index] = [\PDO::PARAM_STR => $serviceGroupName];
+        }
+        $bindValues = array_merge($bindValues, $bindServiceGroupNames);
+        $request .= ' WHERE sg.name IN (' . implode(',', array_keys($bindServiceGroupNames)) . ')';
+
+        // Sort
+        $request .= ' ORDER BY sg.name ASC';
+
+        $statement = $this->db->prepare($request);
+
+        // We bind extra parameters according to access rights
+        foreach ($bindValues as $key => $data) {
+            $type = key($data);
+            $value = $data[$type];
+            $statement->bindValue($key, $value, $type);
+        }
+
+        $statement->execute();
+
+        while (false !== ($result = $statement->fetch(\PDO::FETCH_ASSOC))) {
+            $serviceGroups[] = EntityCreator::createEntityByArray(
+                ServiceGroup::class,
+                $result
+            );
+        }
+
+        return $serviceGroups;
+    }
+
+    /**
      * Check if the contact is admin
      *
      * @return bool

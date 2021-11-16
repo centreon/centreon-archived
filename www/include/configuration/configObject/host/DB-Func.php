@@ -456,7 +456,7 @@ function multipleHostInDB($hosts = array(), $nbrDup = array())
                         $dbResult2 = $pearDB->query("SELECT COUNT(*) 
                                                 FROM host_service_relation 
                                                 WHERE service_service_id = '" . $service["service_service_id"] . "'");
-                        $mulHostSv = $dbResult2->fetchrow();
+                        $mulHostSv = $dbResult2->fetch();
                         if ($mulHostSv["COUNT(*)"] > 1) {
                             $dbResult3 = $pearDB->query("INSERT INTO host_service_relation 
                 VALUES (NULL, NULL, '" . $maxId["MAX(host_id)"] . "', NULL, '" . $service["service_service_id"] . "')");
@@ -701,10 +701,10 @@ function updateHostInDB($host_id = null, $from_MC = false, $cfg = null)
         updateHostNotifs($host_id);
     }
 
-# Function for updating notification interval options
-# 1 - MC with deletion of existing options (Replacement)
-# 2 - MC with addition of new options (incremental)
-# 3 - Normal update
+    # Function for updating notification interval options
+    # 1 - MC with deletion of existing options (Replacement)
+    # 2 - MC with addition of new options (incremental)
+    # 3 - Normal update
     if (
         isset($ret["mc_mod_notifopt_notification_interval"]["mc_mod_notifopt_notification_interval"])
         && $ret["mc_mod_notifopt_notification_interval"]["mc_mod_notifopt_notification_interval"]
@@ -719,10 +719,10 @@ function updateHostInDB($host_id = null, $from_MC = false, $cfg = null)
         updateHostNotifOptionInterval($host_id);
     }
 
-# Function for updating first notification delay options
-# 1 - MC with deletion of existing options (Replacement)
-# 2 - MC with addition of new options (incremental)
-# 3 - Normal update, default behavior
+    # Function for updating first notification delay options
+    # 1 - MC with deletion of existing options (Replacement)
+    # 2 - MC with addition of new options (incremental)
+    # 3 - Normal update, default behavior
     if (
         isset($ret["mc_mod_notifopt_first_notification_delay"]["mc_mod_notifopt_first_notification_delay"])
         && $ret["mc_mod_notifopt_first_notification_delay"]["mc_mod_notifopt_first_notification_delay"]
@@ -738,15 +738,15 @@ function updateHostInDB($host_id = null, $from_MC = false, $cfg = null)
     }
 
 
-# Function for updating first notification delay options
+    # Function for updating first notification delay options
     updateHostNotifOptionRecoveryNotificationDelay($host_id);
 
 
 
-# Function for updating notification timeperiod options
-# 1 - MC with deletion of existing options (Replacement)
-# 2 - MC with addition of new options (incremental)
-# 3 - Normal update
+    # Function for updating notification timeperiod options
+    # 1 - MC with deletion of existing options (Replacement)
+    # 2 - MC with addition of new options (incremental)
+    # 3 - Normal update
     if (
         isset($ret["mc_mod_notifopt_timeperiod"]["mc_mod_notifopt_timeperiod"])
         && $ret["mc_mod_notifopt_timeperiod"]["mc_mod_notifopt_timeperiod"]
@@ -761,10 +761,10 @@ function updateHostInDB($host_id = null, $from_MC = false, $cfg = null)
         updateHostNotifOptionTimeperiod($host_id);
     }
 
-# Function for updating host hg
-# 1 - MC with deletion of existing hg
-# 2 - MC with addition of new hg
-# 3 - Normal update
+    # Function for updating host hg
+    # 1 - MC with deletion of existing hg
+    # 2 - MC with addition of new hg
+    # 3 - Normal update
     if (isset($ret["mc_mod_hhg"]["mc_mod_hhg"]) && $ret["mc_mod_hhg"]["mc_mod_hhg"]) {
         updateHostHostGroup($host_id);
     } elseif (isset($ret["mc_mod_hhg"]["mc_mod_hhg"]) && !$ret["mc_mod_hhg"]["mc_mod_hhg"]) {
@@ -773,10 +773,10 @@ function updateHostInDB($host_id = null, $from_MC = false, $cfg = null)
         updateHostHostGroup($host_id);
     }
 
-# Function for updating host hc
-# 1 - MC with deletion of existing hc
-# 2 - MC with addition of new hc
-# 3 - Normal update
+    # Function for updating host hc
+    # 1 - MC with deletion of existing hc
+    # 2 - MC with addition of new hc
+    # 3 - Normal update
     if (isset($ret["mc_mod_hhc"]["mc_mod_hhc"]) && $ret["mc_mod_hhc"]["mc_mod_hhc"]) {
         updateHostHostCategory($host_id);
     } elseif (isset($ret["mc_mod_hhc"]["mc_mod_hhc"]) && !$ret["mc_mod_hhc"]["mc_mod_hhc"]) {
@@ -785,10 +785,10 @@ function updateHostInDB($host_id = null, $from_MC = false, $cfg = null)
         updateHostHostCategory($host_id, $ret);
     }
 
-# Function for updating host template
-# 1 - MC with deletion of existing template
-# 2 - MC with addition of new template
-# 3 - Normal update
+    # Function for updating host template
+    # 1 - MC with deletion of existing template
+    # 2 - MC with addition of new template
+    # 3 - Normal update
     if (isset($ret["mc_mod_htpl"]["mc_mod_htpl"]) && $ret["mc_mod_htpl"]["mc_mod_htpl"]) {
         updateHostTemplateService($host_id);
     } elseif (isset($ret["mc_mod_htpl"]["mc_mod_htpl"]) && !$ret["mc_mod_htpl"]["mc_mod_htpl"]) {
@@ -984,7 +984,7 @@ function insertHost($ret, $macro_on_demand = null, $server_id = null)
             $host_id['MAX(host_id)'],
             $_REQUEST['macroInput'],
             $_REQUEST['macroValue'],
-            $_REQUEST['macroPassword'],
+            $_REQUEST['macroPassword'] ?? [],
             $macroDescription,
             false,
             $ret["command_command_id"]
@@ -1335,7 +1335,7 @@ function updateHost($host_id = null, $from_MC = false, $cfg = null)
             $host_id,
             $_REQUEST['macroInput'],
             $_REQUEST['macroValue'],
-            $_REQUEST['macroPassword'],
+            $_REQUEST['macroPassword'] ?? [],
             $macroDescription,
             false,
             $ret["command_command_id"]
@@ -1387,6 +1387,12 @@ function updateHost_MC($host_id = null)
         $ret["host_template_model_htm_id"] = $result["host_id"];
         $dbResult->closeCursor();
     }
+    // Remove all parameters that have an empty value in order to keep the host properties that have not been modified
+    foreach ($ret as $name => $value) {
+        if (is_string($value) && empty($value)) {
+            unset($ret[$name]);
+        }
+    }
 
     $bindParams = sanitizeFormHostParameters($ret);
     $rq = "UPDATE host SET ";
@@ -1437,7 +1443,7 @@ function updateHost_MC($host_id = null)
             $host_id,
             $_REQUEST['macroInput'],
             $_REQUEST['macroValue'],
-            $_REQUEST['macroPassword'],
+            $_REQUEST['macroPassword'] ?? [],
             $macroDescription,
             true
         );
@@ -2316,7 +2322,6 @@ function updateHostTemplateService_MC($host_id = null)
     if (!$host_id) {
         return;
     }
-
     $dbResult = $pearDB->query("SELECT host_register FROM host WHERE host_id = '" . (int)$host_id . "'");
     $row = $dbResult->fetch();
     if ($row["host_register"] == 0) {
@@ -2329,13 +2334,15 @@ function updateHostTemplateService_MC($host_id = null)
         }
 
         $ret = $form->getSubmitValue("host_svTpls");
-        for ($i = 0; $i < count($ret); $i++) {
-            if (!isset($svtpls[$ret[$i]])) {
-                $rq = "INSERT INTO host_service_relation ";
-                $rq .= "(hostgroup_hg_id, host_host_id, servicegroup_sg_id, service_service_id) ";
-                $rq .= "VALUES ";
-                $rq .= "(NULL, '" . (int)$host_id . "', NULL, '" . $ret[$i] . "')";
-                $dbResult2 = $pearDB->query($rq);
+        if (!empty($ret)) {
+            for ($i = 0; $i < count($ret); $i++) {
+                if (!isset($svtpls[$ret[$i]])) {
+                    $rq = "INSERT INTO host_service_relation ";
+                    $rq .= "(hostgroup_hg_id, host_host_id, servicegroup_sg_id, service_service_id) ";
+                    $rq .= "VALUES ";
+                    $rq .= "(NULL, '" . (int)$host_id . "', NULL, '" . $ret[$i] . "')";
+                    $dbResult2 = $pearDB->query($rq);
+                }
             }
         }
     } elseif ($centreon->user->get_version() >= 3) {
@@ -2386,30 +2393,6 @@ function updateNagiosServerRelation($host_id, $ret = array())
         $rq .= "('" . (int)$host_id . "', '" . $ret . "')";
 
         $dbResult = $pearDB->query($rq);
-    }
-}
-
-/**
- * For massive change. We just add the new list if the elem doesn't exist yet
- */
-function updateNagiosServerRelation_MC($host_id, $ret = array())
-{
-    global $form, $pearDB;
-
-    if (!$host_id) {
-        return;
-    }
-
-    $cgs = array();
-    while ($arr = $dbResult->fetch()) {
-        $cgs[$arr["nagios_server_id"]] = $arr["nagios_server_id"];
-    }
-
-    $ret = $form->getSubmitValue("nagios_server_id");
-    if (isset($ret) && $ret != "" && $ret != 0) {
-        $dbResult = $pearDB->query("SELECT * FROM ns_host_relation WHERE host_host_id = '" . (int)$host_id . "'");
-        $dbResult = $pearDB->query("INSERT INTO `ns_host_relation` (`host_host_id`, `nagios_server_id`) 
-                                    VALUES ('" . (int)$host_id . "', '" . $ret . "')");
     }
 }
 
@@ -2570,8 +2553,8 @@ function sanitizeFormHostParameters(array $ret): array
                 break;
             case 'host_register':
                 $bindParams[':' . $inputName] = [
-                    \PDO::PARAM_STR => in_array($inputValue[$inputName], ['0', '1', '2', '3'])
-                        ? $inputValue[$inputName]
+                    \PDO::PARAM_STR => in_array($inputValue, ['0', '1', '2', '3'])
+                        ? $inputValue
                         : null
                 ];
                 break;

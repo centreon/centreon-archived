@@ -22,38 +22,59 @@
 include_once __DIR__ . "/../../class/centreonLog.class.php";
 $centreonLog = new CentreonLog();
 
+//error specific content
 $versionOfTheUpgrade = 'UPGRADE - 21.10.0-beta.1: ';
 
-$pearDB = new CentreonDB();
-
+/**
+ * Query with transaction
+ */
 try {
     $pearDB->beginTransaction();
-    $errorMessage = "Unable to check if table 'password_security_policy' exists";
-    $dbResult = $pearDB->query("SHOW TABLES LIKE 'password_security_policy'");
-    if ($dbResult->fetch()) {
-        $errorMessage = "Unable to create table 'password_security_policy'";
-        $pearDB->query(
-            "CREATE TABLE `password_security_policy` (
-            `password_length` int(11) UNSIGNED NOT NULL DEFAULT 12,
-            `uppercase_characters` enum('0', '1') NOT NULL DEFAULT '1',
-            `lowercase_characters` enum('0', '1') NOT NULL DEFAULT '1',
-            `integer_characters` enum('0', '1') NOT NULL DEFAULT '1',
-            `special_characters` enum('0', '1') NOT NULL DEFAULT '1',
-            `attempts` int(11) UNSIGNED NOT NULL DEFAULT 5,
-            `blocking_duration` int(11) UNSIGNED NOT NULL DEFAULT 900,
-            `password_expiration` int(11) UNSIGNED NOT NULL DEFAULT 7776000,
-            `delay_before_new_password` int(11) UNSIGNED NOT NULL DEFAULT 3600)"
-        );
 
-        $errorMessage = "Unable to create insert default configuration in 'password_security_policy'";
-        $pearDB->query("INSERT INTO `password_security_policy`
-        (`password_length`, `uppercase_characters`, `lowercase_characters`, `integer_characters`,
-        `special_characters`, `attempts`, `blocking_duration`, `password_expiration`, `delay_before_new_password`)
-        VALUES (12, '1', '1', '1', '1', 5, 900, 7776000, 3600)");
+    //Purge all session.
+    $errorMessage = 'Impossible to purge the table session';
+    $pearDB->query("DELETE FROM `session`");
+
+    // Add TLS hostname in config brocker for input/outputs IPV4
+    $statement = $pearDB->query("SELECT cb_field_id from cb_field WHERE fieldname = 'tls_hostname'");
+    if ($statement->fetchColumn() === false) {
+        $errorMessage  = 'Unable to update cb_field';
+        $pearDB->query("
+            INSERT INTO `cb_field` (
+                `cb_field_id`, `fieldname`,`displayname`,
+                `description`,
+                `fieldtype`, `external`
+            ) VALUES (
+                null, 'tls_hostname', 'TLS Host name',
+                'Expected TLS certificate common name (CN) - leave blank if unsure.',
+                'text', NULL
+            )
+        ");
+
+        $errorMessage  = 'Unable to update cb_type_field_relation';
+        $fieldId = $pearDB->lastInsertId();
+        $pearDB->query("
+            INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`, `order_display`) VALUES
+            (3, " . $fieldId . ", 0, 5)
+        ");
     }
+
     $pearDB->commit();
-} catch (Exception $e) {
-    $pearDB->rollback();
+
+    $constraintStatement = $pearDB->query(
+        "SELECT COUNT(*) as count FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS WHERE CONSTRAINT_NAME='session_ibfk_1'"
+    );
+    if (($constraint = $constraintStatement->fetch()) && (int) $constraint['count'] === 0) {
+        $errorMessage = 'Impossible to add Delete Cascade constraint on the table session';
+        $pearDB->query(
+            "ALTER TABLE `session` ADD CONSTRAINT `session_ibfk_1` FOREIGN KEY (`user_id`) " .
+            "REFERENCES `contact` (`contact_id`) ON DELETE CASCADE"
+        );
+    }
+} catch (\Exception $e) {
+    if ($pearDB->inTransaction()) {
+        $pearDB->rollBack();
+    }
     $centreonLog->insertLog(
         4,
         $versionOfTheUpgrade . $errorMessage .

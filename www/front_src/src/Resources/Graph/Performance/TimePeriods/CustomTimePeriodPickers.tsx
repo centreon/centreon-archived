@@ -108,21 +108,21 @@ const CustomTimePeriodPickers = ({
   acceptDate,
   isCompact: isMinimalWidth,
 }: Props): JSX.Element => {
+  const classes = useStyles(isMinimalWidth);
+  const { t } = useTranslation();
   const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
   const [start, setStart] = React.useState<Date>(customTimePeriod.start);
   const [end, setEnd] = React.useState<Date>(customTimePeriod.end);
-  const classes = useStyles(isMinimalWidth);
-  const { t } = useTranslation();
   const { locale } = useUserContext();
   const { format } = useLocaleDateTimeFormat();
   const { Adapter, isMeridianFormat } = useDateTimePickerAdapter();
 
-  const isInvalidDate = ({ startDate, endDate }) =>
+  const isInvalidDate = ({ startDate, endDate }): boolean =>
     dayjs(startDate).isSameOrAfter(dayjs(endDate), 'minute');
 
   const changeDate =
     ({ property, date }) =>
-    () => {
+    (): void => {
       const currentDate = customTimePeriod[property];
 
       if (
@@ -152,11 +152,11 @@ const CustomTimePeriodPickers = ({
     setEnd(customTimePeriod.end);
   }, [customTimePeriod.start, customTimePeriod.end]);
 
-  const openPopover = (event: React.MouseEvent) => {
+  const openPopover = (event: React.MouseEvent): void => {
     setAnchorEl(event.currentTarget);
   };
 
-  const closePopover = () => {
+  const closePopover = (): void => {
     setAnchorEl(null);
   };
 

@@ -1,24 +1,26 @@
 import * as React from 'react';
 
-import { useSelector } from 'react-redux';
-import { isNil, equals, not, prop } from 'ramda';
-import useDeepCompareEffect from 'use-deep-compare-effect';
+import { equals, isNil, not, prop } from 'ramda';
 
 import { SelectEntry } from '@centreon/ui';
+import { useUserContext } from '@centreon/ui-context';
 
 import { useResourceContext } from '../../Context';
 import { SortOrder } from '../../models';
+import { searchableFields } from '../../Filter/Criterias/searchQueryLanguage';
 
 export interface LoadResources {
   initAutorefreshAndLoad: () => void;
 }
+
+const secondSortField = 'last_status_change';
+const defaultSecondSortCriteria = { [secondSortField]: SortOrder.desc };
 
 const useLoadResources = (): LoadResources => {
   const {
     limit,
     page,
     setPage,
-    nextSearch,
     setListing,
     sendRequest,
     enabledAutorefresh,
@@ -27,14 +29,14 @@ const useLoadResources = (): LoadResources => {
     details,
     selectedResourceId,
     getCriteriaValue,
-    filter,
+    appliedFilter,
   } = useResourceContext();
 
   const refreshIntervalRef = React.useRef<number>();
 
-  const refreshIntervalMs = useSelector(
-    (state: { intervals }) => state.intervals.AjaxTimeReloadMonitoring * 1000,
-  );
+  const { refreshInterval } = useUserContext();
+
+  const refreshIntervalMs = refreshInterval * 1000;
 
   const getSort = (): { [sortField: string]: SortOrder } | undefined => {
     const sort = getCriteriaValue('sort');
@@ -45,7 +47,13 @@ const useLoadResources = (): LoadResources => {
 
     const [sortField, sortOrder] = sort as [string, SortOrder];
 
-    return { [sortField]: sortOrder };
+    const secondSortCriteria =
+      not(equals(sortField, secondSortField)) && defaultSecondSortCriteria;
+
+    return {
+      [sortField]: sortOrder,
+      ...secondSortCriteria,
+    };
   };
 
   const load = (): void => {
@@ -53,24 +61,15 @@ const useLoadResources = (): LoadResources => {
     const search = searchCriteria
       ? {
           regex: {
-            fields: [
-              'h.name',
-              'h.alias',
-              'h.address',
-              's.description',
-              'name',
-              'alias',
-              'parent_name',
-              'parent_alias',
-              'fqdn',
-              'information',
-            ],
+            fields: searchableFields,
             value: searchCriteria,
           },
         }
       : undefined;
 
-    const getCriteriaIds = (name: string) => {
+    const getCriteriaIds = (
+      name: string,
+    ): Array<string | number> | undefined => {
       const criteriaValue = getCriteriaValue(name) as
         | Array<SelectEntry>
         | undefined;
@@ -78,14 +77,22 @@ const useLoadResources = (): LoadResources => {
       return criteriaValue?.map(prop('id'));
     };
 
+    const getCriteriaNames = (name: string): Array<string> => {
+      const criteriaValue = getCriteriaValue(name) as
+        | Array<SelectEntry>
+        | undefined;
+
+      return criteriaValue?.map(prop('name')) as Array<string>;
+    };
+
     sendRequest({
-      hostGroupIds: getCriteriaIds('host_groups'),
+      hostGroups: getCriteriaNames('host_groups'),
       limit,
-      monitoringServerIds: getCriteriaIds('monitoring_servers'),
+      monitoringServers: getCriteriaNames('monitoring_servers'),
       page,
       resourceTypes: getCriteriaIds('resource_types'),
       search,
-      serviceGroupIds: getCriteriaIds('service_groups'),
+      serviceGroups: getCriteriaNames('service_groups'),
       sort: getSort(),
       states: getCriteriaIds('states'),
       statuses: getCriteriaIds('statuses'),
@@ -111,10 +118,7 @@ const useLoadResources = (): LoadResources => {
   };
 
   const initAutorefreshAndLoad = (): void => {
-    if (
-      isNil(customFilters) ||
-      not(equals(getCriteriaValue('search'), nextSearch))
-    ) {
+    if (isNil(customFilters)) {
       return;
     }
 
@@ -133,6 +137,14 @@ const useLoadResources = (): LoadResources => {
   }, []);
 
   React.useEffect(() => {
+    if (isNil(details)) {
+      return;
+    }
+
+    initAutorefresh();
+  }, [isNil(details)]);
+
+  React.useEffect(() => {
     if (isNil(page)) {
       return;
     }
@@ -140,13 +152,13 @@ const useLoadResources = (): LoadResources => {
     initAutorefreshAndLoad();
   }, [page]);
 
-  useDeepCompareEffect(() => {
+  React.useEffect(() => {
     if (page === 1) {
       initAutorefreshAndLoad();
     }
 
     setPage(1);
-  }, [limit, ...filter.criterias]);
+  }, [limit, appliedFilter]);
 
   return { initAutorefreshAndLoad };
 };

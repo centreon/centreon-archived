@@ -289,16 +289,20 @@ abstract class CentreonObject
         $this->initInsertParameters($parameters);
 
         $id = $this->object->insert($this->params);
-        $this->addAuditLog(
-            'a',
-            $id,
-            $this->params[$this->object->getUniqueLabelField()],
-            $this->params
-        );
+        if (isset($this->params[$this->object->getUniqueLabelField()])) {
+            $this->addAuditLog(
+                'a',
+                $id,
+                $this->params[$this->object->getUniqueLabelField()],
+                $this->params
+            );
+        }
 
         if (method_exists($this, "insertRelations")) {
             $this->insertRelations($id);
         }
+        $aclObj = new CentreonACL($this->dependencyInjector);
+        $aclObj->reload(true);
     }
 
 
@@ -324,6 +328,8 @@ abstract class CentreonObject
         if (count($ids)) {
             $this->object->delete($ids[0]);
             $this->addAuditLog('d', $ids[0], $objectName);
+            $aclObj = new CentreonACL($this->dependencyInjector);
+            $aclObj->reload(true);
         } else {
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $objectName);
         }

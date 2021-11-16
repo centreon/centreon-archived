@@ -14797,7 +14797,7 @@ msgstr "Erro ao remover tokens de um contato"
 #  msgid "Current notification number"
 #  msgstr ""
 
-#  msgid "Current state duration"
+#  msgid "Current status duration"
 #  msgstr ""
 
 #  msgid "Downtime duration"
@@ -14860,7 +14860,7 @@ msgstr "Erro ao remover tokens de um contato"
 #  msgid "Last notification"
 #  msgstr ""
 
-#  msgid "Last state change"
+#  msgid "Last status change"
 #  msgstr ""
 
 #  msgid "Next check"
@@ -14872,7 +14872,7 @@ msgstr "Erro ao remover tokens de um contato"
 #  msgid "Open"
 #  msgstr ""
 
-#  msgid "Percent state change"
+#  msgid "Status change percentage"
 #  msgstr ""
 
 #  msgid "Resource name"
@@ -15097,6 +15097,9 @@ msgstr "Erro ao remover tokens de um contato"
 #  msgid "Export to png"
 #  msgstr ""
 
+#  msgid "Go to performance page"
+#  msgstr ""
+
 #  msgid "Parent"
 #  msgstr ""
 
@@ -15173,3 +15176,24 @@ msgstr "Erro ao remover tokens de um contato"
 
 # msgid "Action not permitted"
 # msgstr ""
+
+# msgid "Scroll to top"
+# msgstr ""
+
+# msgid "This week"
+# msgstr ""
+
+# msgid "Before last year"
+# msgstr ""
+
+# msgid "Filter options"
+# msgstr ""
+
+# msgid "Service graphs"
+# msgstr ""
+
+msgid "Clear filter"
+msgstr ""
+
+msgid "Last check with OK status"
+msgstr "" 

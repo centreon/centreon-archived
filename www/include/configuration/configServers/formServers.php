@@ -38,9 +38,6 @@ if (!isset($centreon)) {
     exit();
 }
 
-const ZMQ = 1;
-const SSH = 2;
-
 require_once _CENTREON_PATH_ . "/www/class/centreon-config/centreonMainCfg.class.php";
 
 $objMain = new CentreonMainCfg();
@@ -62,6 +59,7 @@ if (!$centreon->user->admin && $server_id && count($serverResult)) {
 $nagios = array();
 $selectedAdditionnalRS = null;
 $serverType = "poller";
+$cfg_server = [];
 if (($o == SERVER_MODIFY || $o == SERVER_WATCH) && $server_id) {
     $dbResult = $pearDB->query("SELECT * FROM `nagios_server` WHERE `id` = '$server_id' LIMIT 1");
     $cfg_server = array_map("myDecode", $dbResult->fetch());
@@ -149,18 +147,18 @@ $attrPollers = array(
     'multiple' => false,
     'linkedObject' => 'centreonInstance'
 );
-$route = './api/internal.php?object=centreon_configuration_poller&action=defaultValues' .
-    '&target=resources&field=instance_id&id=' . $cfg_server['remote_id'];
-$attrPoller1 = array_merge(
-    $attrPollers,
-    array('defaultDatasetRoute' => $route)
-);
+$attrPoller1 = $attrPollers;
+if (isset($cfg_server['remote_id'])) {
+    $attrPoller1['defaultDatasetRoute'] =
+        './api/internal.php?object=centreon_configuration_poller&action=defaultValues'
+        . '&target=resources&field=instance_id&id=' . $cfg_server['remote_id'];
+}
 $attrPoller2 = array(
     'datasourceOrigin' => 'ajax',
     'availableDatasetRoute' => './api/internal.php?object=centreon_configuration_poller&action=list&t=remote',
     'multiple' => true,
     'linkedObject' => 'centreonInstance'
-);/*
+);
 
 /*
  * Form begin
@@ -388,7 +386,7 @@ if ($o == SERVER_WATCH) {
     /*
      * Just watch a nagios information
      */
-    if ($centreon->user->access->page($p) != 2) {
+    if ($centreon->user->access->page($p) != 2 && !$isRemote) {
         $form->addElement(
             "button",
             "change",
@@ -452,6 +450,7 @@ if ($valid) {
     $tpl->assign('engines', $monitoring_engines);
     $tpl->assign('cloneSetCmd', $cloneSetCmd);
     $tpl->assign('centreon_path', $centreon->optGen['oreon_path']);
+    $tpl->assign('isRemote', $isRemote);
     include_once("help.php");
 
     $helptext = "";
@@ -474,7 +473,7 @@ if ($valid) {
     }
 
     // init current gorgone fields visibility
-    displayGorgoneParam(<?= !$cfg_server['localhost'] ? "true" : "false" ?>)
+    displayGorgoneParam(<?= !isset($cfg_server['localhost']) || !$cfg_server['localhost'] ? "true" : "false" ?>)
 
     jQuery("#remote_additional_id").centreonSelect2({
         select2: {

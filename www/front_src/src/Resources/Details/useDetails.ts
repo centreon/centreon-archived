@@ -16,6 +16,8 @@ import {
   labelSomethingWentWrong,
 } from '../translatedLabels';
 import { Resource } from '../models';
+import useTimePeriod from '../Graph/Performance/TimePeriods/useTimePeriod';
+import { AdjustTimePeriodProps } from '../Graph/Performance/models';
 
 import { detailsTabId, getTabIdFromLabel, getTabLabelFromId } from './tabs';
 import { TabId } from './tabs/models';
@@ -27,18 +29,32 @@ import {
   TabParameters,
 } from './models';
 import { getStoredOrDefaultPanelWidth, storePanelWidth } from './storedDetails';
+import {
+  ChangeCustomTimePeriodProps,
+  CustomTimePeriod,
+  TimePeriod,
+  TimePeriodId,
+} from './tabs/Graph/models';
 
 export interface DetailsState {
+  adjustTimePeriod: (props: AdjustTimePeriodProps) => void;
+  changeCustomTimePeriod: (props: ChangeCustomTimePeriodProps) => void;
+  changeSelectedTimePeriod: (timePeriod: TimePeriodId) => void;
   clearSelectedResource: () => void;
+  customTimePeriod: CustomTimePeriod;
   details?: ResourceDetails;
+  getIntervalDates: () => [string, string];
   getSelectedResourceDetailsEndpoint: () => string | undefined;
   loadDetails: () => void;
   openDetailsTabId: TabId;
   panelWidth: number;
+  periodQueryParameters: string;
+  resourceDetailsUpdated: boolean;
   selectResource: (resource: Resource) => void;
   selectedResourceId?: number;
   selectedResourceParentId?: number;
   selectedResourceUuid?: string;
+  selectedTimePeriod: TimePeriod | null;
   setGraphTabParameters: (parameters: GraphTabParameters) => void;
   setOpenDetailsTabId: React.Dispatch<React.SetStateAction<TabId>>;
   setPanelWidth: React.Dispatch<React.SetStateAction<number>>;
@@ -62,6 +78,7 @@ export interface DetailsState {
 }
 
 const useDetails = (): DetailsState => {
+  const { t } = useTranslation();
   const [openDetailsTabId, setOpenDetailsTabId] =
     React.useState<TabId>(detailsTabId);
   const [selectedResourceUuid, setSelectedResourceUuid] =
@@ -78,10 +95,12 @@ const useDetails = (): DetailsState => {
   const [panelWidth, setPanelWidth] = React.useState(
     getStoredOrDefaultPanelWidth(550),
   );
+  const [defaultSelectedTimePeriodId, setDefaultSelectedTimePeriodId] =
+    React.useState<TimePeriodId | undefined>();
+  const [defaultSelectedCustomTimePeriod, setDefaultSelectedCustomTimePeriod] =
+    React.useState<CustomTimePeriod | undefined>();
 
-  const { t } = useTranslation();
-
-  const { sendRequest } = useRequest<ResourceDetails>({
+  const { sendRequest, sending } = useRequest<ResourceDetails>({
     getErrorMessage: ifElse(
       pathEq(['response', 'status'], 404),
       always(t(labelNoResourceFound)),
@@ -117,6 +136,8 @@ const useDetails = (): DetailsState => {
       parentType,
       tab,
       tabParameters: tabParametersFromUrl,
+      selectedTimePeriodId,
+      customTimePeriod,
     } = detailsUrlQueryParameters;
 
     if (!isNil(tab)) {
@@ -129,16 +150,27 @@ const useDetails = (): DetailsState => {
     setSelectedResourceType(type);
     setSelectedResourceParentType(parentType);
     setTabParameters(tabParametersFromUrl || {});
+    setDefaultSelectedTimePeriodId(selectedTimePeriodId);
+    setDefaultSelectedCustomTimePeriod(customTimePeriod);
   }, []);
+
+  const timePeriodProps = useTimePeriod({
+    defaultSelectedCustomTimePeriod,
+    defaultSelectedTimePeriodId,
+    details,
+    sending,
+  });
 
   React.useEffect(() => {
     setUrlQueryParameters([
       {
         name: 'details',
         value: {
+          customTimePeriod: timePeriodProps.customTimePeriod,
           id: selectedResourceId,
           parentId: selectedResourceParentId,
           parentType: selectedResourceParentType,
+          selectedTimePeriodId: timePeriodProps.selectedTimePeriod?.id,
           tab: getTabLabelFromId(openDetailsTabId),
           tabParameters,
           type: selectedResourceType,
@@ -153,6 +185,8 @@ const useDetails = (): DetailsState => {
     selectedResourceParentType,
     selectedResourceParentType,
     tabParameters,
+    timePeriodProps.selectedTimePeriod,
+    timePeriodProps.customTimePeriod,
   ]);
 
   const getSelectedResourceDetailsEndpoint = (): string | undefined => {
@@ -223,6 +257,7 @@ const useDetails = (): DetailsState => {
     setSelectedResourceUuid,
     setServicesTabParameters,
     tabParameters,
+    ...timePeriodProps,
   };
 };
 

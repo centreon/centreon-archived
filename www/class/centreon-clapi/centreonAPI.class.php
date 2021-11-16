@@ -73,12 +73,16 @@ class CentreonAPI
     public $debug;
     public $variables;
     public $centreon_path;
-    public $optGen;
     private $return_code;
     private $dependencyInjector;
     private $relationObject;
     private $objectTable;
     private $aExport = array();
+
+    /**
+     * @var string
+     */
+    public $delim = ';';
 
     public function __construct(
         $user,
@@ -88,8 +92,6 @@ class CentreonAPI
         $options,
         \Pimple\Container $dependencyInjector
     ) {
-        global $version;
-
         /**
          * Set variables
          */
@@ -341,13 +343,6 @@ class CentreonAPI
                 }
             }
         }
-
-        /*
-         * Manage version
-         */
-        $this->optGen = $this->getOptGen();
-        $version = $this->optGen["version"];
-        $this->delim = ";";
     }
 
     /**
@@ -454,18 +449,6 @@ class CentreonAPI
          */
         require_once _CLAPI_CLASS_ . "/centreonTimePeriod.class.php";
         require_once _CLAPI_CLASS_ . "/centreonACLResources.class.php";
-    }
-
-    /**
-     * Get General option of Centreon
-     */
-    private function getOptGen()
-    {
-        $DBRESULT = $this->DB->query("SELECT * FROM options");
-        while ($row = $DBRESULT->fetchRow()) {
-            $this->optGen[$row["key"]] = $row["value"];
-        }
-        $DBRESULT->closeCursor();
     }
 
     /**
@@ -669,7 +652,6 @@ class CentreonAPI
      */
     public function launchAction($exit = true)
     {
-        
         $action = strtoupper($this->action);
 
         /**
@@ -888,7 +870,6 @@ class CentreonAPI
                     if ($this->objectTable[$splits[0]]->getObjectId($name, CentreonObject::MULTIPLE_VALUE) == 0) {
                         echo "Unknown object : $splits[0];$splits[1]\n";
                         $this->setReturnCode(1);
-                        
                         if ($withoutClose === false) {
                             $this->close();
                         } else {

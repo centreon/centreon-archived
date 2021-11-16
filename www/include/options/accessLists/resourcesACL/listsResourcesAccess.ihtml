@@ -17,7 +17,7 @@
     </table>
 	<table class="ToolbarTable table">
 		<tr class="ToolbarTR">
-			<td>{$msg.options} {$form.o1.html}&nbsp;&nbsp;&nbsp;<a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>&nbsp;&nbsp;<a href= '#' class="btc bt_info" onClick="window.open('{$msg.testL}','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=500, height=700');">{$msg.testT}</a><input name="p" value="{$p}" type="hidden"></td>
+			<td> {$form.o1.html}&nbsp;&nbsp;&nbsp;<a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>&nbsp;&nbsp;<a href= '#' class="btc bt_info" onClick="window.open('{$msg.testL}','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=500, height=700');">{$msg.testT}</a></td>
 			{php}
 			   include('./include/common/pagination.php');
 			{/php}
@@ -54,7 +54,7 @@
 	</table>
 	<table class="ToolbarTable table">
 		<tr class="ToolbarTR">
-			<td>{$msg.options} {$form.o2.html}&nbsp;&nbsp;&nbsp;<a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>&nbsp;&nbsp;<a href= '#' class="btc bt_info" onClick="window.open('{$msg.testL}','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=500, height=700');">{$msg.testT}</a><input name="p" value="{$p}" type="hidden"></td>
+			<td> {$form.o2.html}&nbsp;&nbsp;&nbsp;<a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>&nbsp;&nbsp;<a href= '#' class="btc bt_info" onClick="window.open('{$msg.testL}','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=500, height=700');">{$msg.testT}</a></td>
 			{php}
 			   include('./include/common/pagination.php');
 			{/php}

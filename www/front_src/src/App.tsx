@@ -13,18 +13,17 @@ import { ConnectedRouter } from 'connected-react-router';
 import Fullscreen from 'react-fullscreen-crossbrowser';
 import queryString from 'query-string';
 
-import { withStyles, createStyles } from '@material-ui/core';
+import FullscreenIcon from '@material-ui/icons/Fullscreen';
+import { withStyles, createStyles, Fab } from '@material-ui/core';
 
 import { ThemeProvider } from '@centreon/ui';
 
-import Header from './components/header';
+import Header from './Header';
 import { history } from './store';
-import NavigationComponent from './components/navigation';
-import Tooltip from './components/tooltip';
+import Nagigation from './Navigation';
 import Footer from './components/footer';
 import axios from './axios';
 import { fetchExternalComponents } from './redux/actions/externalComponentsActions';
-import footerStyles from './components/footer/footer.scss';
 import PageLoader from './components/PageLoader';
 
 const MainRouter = React.lazy(() => import('./components/mainRouter'));
@@ -44,6 +43,12 @@ const styles = createStyles({
     height: '100%',
     overflow: 'hidden',
     width: '100%',
+  },
+  fullscreenButton: {
+    bottom: '10px',
+    position: 'absolute',
+    right: '20px',
+    zIndex: 1500,
   },
   mainContent: {
     backgroundcolor: 'white',
@@ -153,8 +158,7 @@ class App extends Component<Props, State> {
         <ConnectedRouter history={history}>
           <ThemeProvider>
             <div className={classes.wrapper}>
-              {!min && <NavigationComponent />}
-              <Tooltip />
+              {!min && <Nagigation />}
               <div className={classes.content} id="content">
                 {!min && <Header />}
                 <div
@@ -175,10 +179,14 @@ class App extends Component<Props, State> {
                 </div>
                 {!min && <Footer />}
               </div>
-              <span
-                className={footerStyles['full-screen']}
+              <Fab
+                className={classes.fullscreenButton}
+                color="default"
+                size="small"
                 onClick={this.goFull}
-              />
+              >
+                <FullscreenIcon />
+              </Fab>
             </div>
           </ThemeProvider>
         </ConnectedRouter>

@@ -96,7 +96,7 @@ function multipleEscalationInDB($escalations = array(), $nbrDup = array())
             }
             if (isset($esc_name) && testExistence($esc_name)) {
                 $val ? $rq = "INSERT INTO escalation VALUES (" . $val . ")" : $rq = null;
-                $dbResult = $pearDB->query($rq);
+                $pearDB->query($rq);
                 $dbResult = $pearDB->query("SELECT MAX(esc_id) FROM escalation");
                 $maxId = $dbResult->fetch();
                 if (isset($maxId["MAX(esc_id)"])) {
@@ -269,7 +269,7 @@ function insertEscalation()
         ? $rq .= "'" . htmlentities($ret["esc_comment"], ENT_QUOTES, "UTF-8") . "' "
         : $rq .= "NULL ";
     $rq .= ")";
-    $dbResult = $pearDB->query($rq);
+    $pearDB->query($rq);
     $dbResult = $pearDB->query("SELECT MAX(esc_id) FROM escalation");
     $esc_id = $dbResult->fetch();
     $fields["esc_name"] = htmlentities($ret["esc_name"], ENT_QUOTES, "UTF-8");
@@ -378,7 +378,7 @@ function updateEscalation($esc_id = null)
         ? $rq .= "'" . htmlentities($ret["esc_comment"], ENT_QUOTES, "UTF-8") . "' "
         : $rq .= "NULL ";
     $rq .= "WHERE esc_id = '" . $esc_id . "'";
-    $dbResult = $pearDB->query($rq);
+    $pearDB->query($rq);
     $fields["esc_name"] = htmlentities($ret["esc_name"], ENT_QUOTES, "UTF-8");
     $fields["esc_alias"] = htmlentities($ret["esc_alias"], ENT_QUOTES, "UTF-8");
     $fields["first_notification"] = htmlentities($ret["first_notification"], ENT_QUOTES, "UTF-8");
@@ -418,7 +418,7 @@ function updateEscalation($esc_id = null)
     }
     $centreon->CentreonLogAction->insertLog(
         "escalation",
-        $esc_id["MAX(esc_id)"],
+        $esc_id,
         htmlentities($ret["esc_name"], ENT_QUOTES, "UTF-8"),
         "c",
         $fields
@@ -434,7 +434,7 @@ function updateEscalationContactGroups($esc_id = null)
     global $pearDB;
     $rq = "DELETE FROM escalation_contactgroup_relation ";
     $rq .= "WHERE escalation_esc_id = '" . $esc_id . "'";
-    $dbResult = $pearDB->query($rq);
+    $pearDB->query($rq);
     $ret = array();
     $ret = CentreonUtils::mergeWithInitialValues($form, 'esc_cgs');
     $cg = new CentreonContactgroup($pearDB);
@@ -451,7 +451,7 @@ function updateEscalationContactGroups($esc_id = null)
         $rq .= "(escalation_esc_id, contactgroup_cg_id) ";
         $rq .= "VALUES ";
         $rq .= "('" . $esc_id . "', '" . $ret[$i] . "')";
-        $dbResult = $pearDB->query($rq);
+        $pearDB->query($rq);
     }
 }
 
@@ -464,7 +464,7 @@ function updateEscalationHosts($esc_id = null)
     global $pearDB;
     $rq = "DELETE FROM escalation_host_relation ";
     $rq .= "WHERE escalation_esc_id = '" . $esc_id . "'";
-    $dbResult = $pearDB->query($rq);
+    $pearDB->query($rq);
     $ret = array();
     $ret = CentreonUtils::mergeWithInitialValues($form, 'esc_hosts');
     for ($i = 0; $i < count($ret); $i++) {
@@ -472,7 +472,7 @@ function updateEscalationHosts($esc_id = null)
         $rq .= "(escalation_esc_id, host_host_id) ";
         $rq .= "VALUES ";
         $rq .= "('" . $esc_id . "', '" . $ret[$i] . "')";
-        $dbResult = $pearDB->query($rq);
+        $pearDB->query($rq);
     }
 }
 
@@ -485,7 +485,7 @@ function updateEscalationHostGroups($esc_id = null)
     global $pearDB;
     $rq = "DELETE FROM escalation_hostgroup_relation ";
     $rq .= "WHERE escalation_esc_id = '" . $esc_id . "'";
-    $dbResult = $pearDB->query($rq);
+    $pearDB->query($rq);
     $ret = array();
     $ret = CentreonUtils::mergeWithInitialValues($form, 'esc_hgs');
     for ($i = 0; $i < count($ret); $i++) {
@@ -493,7 +493,7 @@ function updateEscalationHostGroups($esc_id = null)
         $rq .= "(escalation_esc_id, hostgroup_hg_id) ";
         $rq .= "VALUES ";
         $rq .= "('" . $esc_id . "', '" . $ret[$i] . "')";
-        $dbResult = $pearDB->query($rq);
+        $pearDB->query($rq);
     }
 }
 
@@ -506,7 +506,7 @@ function updateEscalationServiceGroups($esc_id = null)
     global $pearDB;
     $rq = "DELETE FROM escalation_servicegroup_relation ";
     $rq .= "WHERE escalation_esc_id = '" . $esc_id . "'";
-    $dbResult = $pearDB->query($rq);
+    $pearDB->query($rq);
     $ret = array();
     $ret = CentreonUtils::mergeWithInitialValues($form, 'esc_sgs');
     for ($i = 0; $i < count($ret); $i++) {
@@ -514,7 +514,7 @@ function updateEscalationServiceGroups($esc_id = null)
         $rq .= "(escalation_esc_id, servicegroup_sg_id) ";
         $rq .= "VALUES ";
         $rq .= "('" . $esc_id . "', '" . $ret[$i] . "')";
-        $dbResult = $pearDB->query($rq);
+        $pearDB->query($rq);
     }
 }
 
@@ -527,8 +527,7 @@ function updateEscalationServices($esc_id = null)
     global $pearDB;
     $rq = "DELETE FROM escalation_service_relation ";
     $rq .= "WHERE escalation_esc_id = '" . $esc_id . "'";
-    $dbResult = $pearDB->query($rq);
-    $ret = array();
+    $pearDB->query($rq);
     $ret = CentreonUtils::mergeWithInitialValues($form, 'esc_hServices');
     for ($i = 0; $i < count($ret); $i++) {
         $exp = explode("-", $ret[$i]);
@@ -537,7 +536,7 @@ function updateEscalationServices($esc_id = null)
             $rq .= "(escalation_esc_id, service_service_id, host_host_id) ";
             $rq .= "VALUES ";
             $rq .= "('" . $esc_id . "', '" . $exp[1] . "', '" . $exp[0] . "')";
-            $dbResult = $pearDB->query($rq);
+            $pearDB->query($rq);
         }
     }
 }
@@ -551,7 +550,7 @@ function updateEscalationMetaServices($esc_id = null)
     global $pearDB;
     $rq = "DELETE FROM escalation_meta_service_relation ";
     $rq .= "WHERE escalation_esc_id = '" . $esc_id . "'";
-    $dbResult = $pearDB->query($rq);
+    $pearDB->query($rq);
     $ret = array();
     $ret = CentreonUtils::mergeWithInitialValues($form, 'esc_metas');
     for ($i = 0; $i < count($ret); $i++) {
@@ -559,6 +558,6 @@ function updateEscalationMetaServices($esc_id = null)
         $rq .= "(escalation_esc_id, meta_service_meta_id) ";
         $rq .= "VALUES ";
         $rq .= "('" . $esc_id . "', '" . $ret[$i] . "')";
-        $dbResult = $pearDB->query($rq);
+        $pearDB->query($rq);
     }
 }

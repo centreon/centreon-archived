@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { last, head, equals, reject, path, isNil } from 'ramda';
+import { equals, reject, path, isNil } from 'ramda';
 import axios from 'axios';
 import mockDate from 'mockdate';
 import {
@@ -28,12 +28,12 @@ import {
   labelDowntimeDuration,
   labelAcknowledgedBy,
   labelTimezone,
-  labelCurrentStateDuration,
-  labelLastStateChange,
+  labelCurrentStatusDuration,
+  labelLastStatusChange,
   labelNextCheck,
   labelCheckDuration,
   labelLatency,
-  labelPercentStateChange,
+  labelStatusChangePercentage,
   labelLastNotification,
   labelLastCheck,
   labelCurrentNotificationNumber,
@@ -54,7 +54,6 @@ import {
   labelAlias,
   labelGroups,
   labelAcknowledgement,
-  labelSwitchToGraph,
   labelDowntime,
   labelDisplayEvents,
   labelForward,
@@ -67,16 +66,31 @@ import {
   labelCompactTimePeriod,
   labelCheck,
   labelShortcuts,
+  labelMonitoringServer,
+  labelToday,
+  labelYesterday,
+  labelThisWeek,
+  labelLastWeek,
+  labelLastMonth,
+  labelLastYear,
+  labelBeforeLastYear,
+  labelLastCheckWithOkStatus,
 } from '../translatedLabels';
 import Context, { ResourceContext } from '../Context';
 import useListing from '../Listing/useListing';
 import { resourcesEndpoint } from '../api/endpoint';
 import { buildResourcesEndpoint } from '../Listing/api/endpoint';
 import { cancelTokenRequestParam } from '../testUtils';
+import { defaultGraphOptions } from '../Graph/Performance/ExportableGraphWithTimeline/useGraphOptions';
 import useFilter from '../Filter/useFilter';
-import { SelectableCriteriasType } from '../Filter/Criterias/models';
+import { CriteriaNames } from '../Filter/Criterias/models';
 
-import { last7Days, last31Days, lastDayPeriod } from './tabs/Graph/models';
+import {
+  last7Days,
+  last31Days,
+  lastDayPeriod,
+  CustomTimePeriodProperty,
+} from './tabs/Graph/models';
 import { graphTabId, timelineTabId, servicesTabId, metricsTabId } from './tabs';
 import { TabId } from './tabs/models';
 import { buildListTimelineEventsEndpoint } from './tabs/Timeline/api';
@@ -93,6 +107,15 @@ jest.mock(
   '@centreon/centreon-frontend/packages/centreon-ui/src/utils/copy',
   () => jest.fn(),
 );
+
+jest.mock('@visx/visx', () => {
+  return {
+    ...(jest.requireActual('@visx/visx') as jest.Mocked<unknown>),
+    Responsive: {
+      ParentSize: ({ children }): JSX.Element => children({ width: 500 }),
+    },
+  };
+});
 
 const resourceServiceUuid = 'h1-s1';
 const resourceServiceId = 1;
@@ -137,6 +160,7 @@ const retrievedDetails = {
   last_check: '2020-05-18T16:00Z',
   last_notification: '2020-07-18T17:30:00Z',
   last_status_change: '2020-04-18T15:00Z',
+  last_time_with_no_issue: '2021-09-23T15:49:50+02:00',
   last_update: '2020-03-18T16:30:00Z',
   latency: 0.005,
   links: {
@@ -217,7 +241,7 @@ const retrievedTimeline = {
   result: [
     {
       content: 'INITIAL HOST STATE: Centreon-Server;UP;HARD;1;',
-      date: '2020-06-22T08:40:00Z',
+      date: '2020-01-21T08:40:00Z',
       id: 1,
       status: {
         name: 'UP',
@@ -228,7 +252,7 @@ const retrievedTimeline = {
     },
     {
       content: 'INITIAL HOST STATE: Centreon-Server;DOWN;HARD;3;',
-      date: '2020-06-22T08:35:00Z',
+      date: '2020-01-21T08:35:00Z',
       id: 2,
       status: {
         name: 'DOWN',
@@ -242,7 +266,7 @@ const retrievedTimeline = {
         name: 'admin',
       },
       content: 'My little notification',
-      date: '2020-06-21T07:40:00Z',
+      date: '2020-01-20T07:40:00Z',
       id: 3,
       type: 'notification',
     },
@@ -251,7 +275,7 @@ const retrievedTimeline = {
         name: 'admin',
       },
       content: 'My little ack',
-      date: '2020-06-20T07:35:00Z',
+      date: '2020-01-19T07:35:00Z',
       id: 4,
       type: 'acknowledgement',
     },
@@ -260,10 +284,10 @@ const retrievedTimeline = {
         name: 'admin',
       },
       content: 'My little dt',
-      date: '2020-06-20T07:30:00Z',
-      end_date: '2020-06-22T07:33:00Z',
+      date: '2020-01-19T07:30:00Z',
+      end_date: '2020-01-21T07:33:00Z',
       id: 5,
-      start_date: '2020-06-20T07:30:00Z',
+      start_date: '2020-01-19T07:30:00Z',
       type: 'downtime',
     },
     {
@@ -271,10 +295,10 @@ const retrievedTimeline = {
         name: 'super_admin',
       },
       content: 'My little ongoing dt',
-      date: '2020-06-20T06:57:00Z',
+      date: '2020-01-19T06:57:00Z',
       end_date: null,
       id: 6,
-      start_date: '2020-06-19T07:30:00Z',
+      start_date: '2020-01-19T07:30:00Z',
       type: 'downtime',
     },
     {
@@ -282,10 +306,54 @@ const retrievedTimeline = {
         name: 'admin',
       },
       content: 'My little comment',
-      date: '2020-06-20T06:55:00Z',
-      end_date: '2020-06-22T07:33:00Z',
+      date: '2020-01-19T06:55:00Z',
+      end_date: '2020-01-21T07:33:00Z',
       id: 7,
-      start_date: '2020-06-20T07:30:00Z',
+      start_date: '2020-01-19T07:30:00Z',
+      type: 'comment',
+    },
+    {
+      contact: {
+        name: 'admin',
+      },
+      content: 'My little comment two',
+      date: '2020-01-18T06:55:00Z',
+      end_date: null,
+      id: 8,
+      start_date: null,
+      type: 'comment',
+    },
+    {
+      contact: {
+        name: 'admin',
+      },
+      content: 'My little comment three',
+      date: '2020-01-01T06:55:00Z',
+      end_date: null,
+      id: 9,
+      start_date: null,
+      type: 'comment',
+    },
+    {
+      contact: {
+        name: 'admin',
+      },
+      content: 'My little comment four',
+      date: '2019-06-10T06:55:00Z',
+      end_date: null,
+      id: 10,
+      start_date: null,
+      type: 'comment',
+    },
+    {
+      contact: {
+        name: 'admin',
+      },
+      content: 'My little comment five',
+      date: '2018-10-10T06:55:00Z',
+      end_date: null,
+      id: 11,
+      start_date: null,
       type: 'comment',
     },
   ],
@@ -361,7 +429,7 @@ const currentDateIsoString = '2020-01-21T06:00:00.000Z';
 
 let context: ResourceContext;
 
-const setSelectedServiceResource = () => {
+const setSelectedServiceResource = (): void => {
   context.setSelectedResourceUuid(resourceServiceUuid);
   context.setSelectedResourceId(resourceServiceId);
   context.setSelectedResourceType(resourceServiceType);
@@ -369,7 +437,7 @@ const setSelectedServiceResource = () => {
   context.setSelectedResourceParentType(resourceHostType);
 };
 
-const setSelectedHostResource = () => {
+const setSelectedHostResource = (): void => {
   context.setSelectedResourceUuid(resourceHostUuid);
   context.setSelectedResourceId(resourceHostId);
   context.setSelectedResourceType(resourceHostType);
@@ -377,7 +445,7 @@ const setSelectedHostResource = () => {
   context.setSelectedResourceParentType(undefined);
 };
 
-const setSelectedMetaServiceResource = () => {
+const setSelectedMetaServiceResource = (): void => {
   context.setSelectedResourceUuid(resourceServiceUuid);
   context.setSelectedResourceId(resourceServiceId);
   context.setSelectedResourceType(metaServiceResourceType);
@@ -421,6 +489,12 @@ const renderDetails = (
   { openTabId }: RenderDetailsProps = { openTabId: undefined },
 ): RenderResult => render(<DetailsTest openTabId={openTabId} />);
 
+const mockedLocalStorageGetItem = jest.fn();
+const mockedLocalStorageSetItem = jest.fn();
+
+Storage.prototype.getItem = mockedLocalStorageGetItem;
+Storage.prototype.setItem = mockedLocalStorageSetItem;
+
 describe(Details, () => {
   beforeEach(() => {
     mockDate.set(currentDateIsoString);
@@ -430,19 +504,21 @@ describe(Details, () => {
   afterEach(() => {
     mockDate.reset();
     mockedAxios.get.mockReset();
+    mockedLocalStorageSetItem.mockReset();
+    mockedLocalStorageGetItem.mockReset();
     act(() => {
-      context.setGraphTabParameters({
-        selectedCustomTimePeriod: undefined,
-        selectedTimePeriodId: lastDayPeriod.id,
-      });
       context.clearSelectedResource();
+    });
+    act(() => {
+      context.changeSelectedTimePeriod(lastDayPeriod.id);
     });
   });
 
   it('displays resource details information', async () => {
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
 
-    const { getByText, queryByText, getAllByText } = renderDetails();
+    const { getByText, queryByText, getAllByText, findByText } =
+      renderDetails();
 
     act(() => {
       setSelectedServiceResource();
@@ -459,7 +535,9 @@ describe(Details, () => {
     expect(getByText('CRITICAL')).toBeInTheDocument();
     expect(getByText('Centreon')).toBeInTheDocument();
 
-    expect(getByText(labelFqdn)).toBeInTheDocument();
+    const fqdnText = await findByText(labelFqdn);
+
+    expect(fqdnText).toBeInTheDocument();
     expect(getByText('central.centreon.com')).toBeInTheDocument();
     expect(getByText(labelAlias)).toBeInTheDocument();
     expect(getByText('Central-Centreon')).toBeInTheDocument();
@@ -493,10 +571,10 @@ describe(Details, () => {
     expect(getByText(labelTimezone)).toBeInTheDocument();
     expect(getByText('Europe/Paris')).toBeInTheDocument();
 
-    expect(getByText(labelCurrentStateDuration)).toBeInTheDocument();
+    expect(getByText(labelCurrentStatusDuration)).toBeInTheDocument();
     expect(getByText('22m - 3/3 (Hard)')).toBeInTheDocument();
 
-    expect(getByText(labelLastStateChange)).toBeInTheDocument();
+    expect(getByText(labelLastStatusChange)).toBeInTheDocument();
     expect(getByText('04/18/2020 5:00 PM')).toBeInTheDocument();
 
     expect(getByText(labelLastCheck)).toBeInTheDocument();
@@ -508,12 +586,15 @@ describe(Details, () => {
     expect(getByText(labelCheckDuration)).toBeInTheDocument();
     expect(getByText('0.070906 s')).toBeInTheDocument();
 
+    expect(getByText(labelLastCheckWithOkStatus)).toBeInTheDocument();
+    expect(getByText('06/18/2020 7:15 PM')).toBeInTheDocument();
+
     expect(getByText(labelLatency)).toBeInTheDocument();
     expect(getByText('0.005 s')).toBeInTheDocument();
 
     expect(getByText(labelCheck)).toBeInTheDocument();
 
-    expect(getByText(labelPercentStateChange)).toBeInTheDocument();
+    expect(getByText(labelStatusChangePercentage)).toBeInTheDocument();
     expect(getByText('3.5%')).toBeInTheDocument();
 
     expect(getByText(labelLastNotification)).toBeInTheDocument();
@@ -545,7 +626,15 @@ describe(Details, () => {
     async (period, startIsoString, timelineEventsLimit, periodId) => {
       mockedAxios.get
         .mockResolvedValueOnce({ data: retrievedDetails })
-        .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
+        .mockResolvedValueOnce({ data: retrievedPerformanceGraphData });
+
+      if (!isNil(periodId)) {
+        mockedAxios.get.mockResolvedValueOnce({
+          data: retrievedPerformanceGraphData,
+        });
+      }
+
+      mockedAxios.get
         .mockResolvedValueOnce({ data: retrievedTimeline })
         .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
         .mockResolvedValueOnce({ data: retrievedTimeline });
@@ -556,6 +645,10 @@ describe(Details, () => {
 
       act(() => {
         setSelectedServiceResource();
+      });
+
+      await waitFor(() => {
+        expect(getByText(period) as HTMLElement).toBeEnabled();
       });
 
       userEvent.click(getByText(period) as HTMLElement);
@@ -594,16 +687,7 @@ describe(Details, () => {
         );
 
         if (!isNil(periodId)) {
-          expect(context.tabParameters.graph).toEqual({
-            graphOptions: {
-              displayEvents: {
-                id: 'displayEvents',
-                label: 'Display events',
-                value: true,
-              },
-            },
-            selectedTimePeriodId: periodId,
-          });
+          expect(context.selectedTimePeriod?.id).toEqual(periodId);
         }
       });
     },
@@ -651,7 +735,7 @@ describe(Details, () => {
     );
     const downtimeAnnotations = await findAllByLabelText(labelDowntime);
 
-    expect(commentAnnotations).toHaveLength(1);
+    expect(commentAnnotations).toHaveLength(5);
     expect(acknowledgementAnnotations).toHaveLength(1);
     expect(downtimeAnnotations).toHaveLength(2);
   });
@@ -676,15 +760,14 @@ describe(Details, () => {
     );
   });
 
-  it('displays retrieved timeline events, grouped by date, and filtered by selected event types, when the Timeline tab is selected', async () => {
+  it('displays retrieved timeline events and filtered by selected event types, when the Timeline tab is selected', async () => {
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedTimeline });
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedTimeline });
 
-    const { getByText, getAllByText, getAllByLabelText, baseElement } =
-      renderDetails({
-        openTabId: timelineTabId,
-      });
+    const { getByText, getAllByLabelText, baseElement } = renderDetails({
+      openTabId: timelineTabId,
+    });
 
     act(() => {
       setSelectedServiceResource();
@@ -698,6 +781,15 @@ describe(Details, () => {
             limit: 30,
             page: 1,
             search: {
+              conditions: [
+                {
+                  field: 'date',
+                  values: {
+                    $gt: '2020-01-20T06:00:00.000Z',
+                    $lt: '2020-01-21T06:00:00.000Z',
+                  },
+                },
+              ],
               lists: [
                 {
                   field: 'type',
@@ -711,9 +803,9 @@ describe(Details, () => {
       ),
     );
 
-    expect(getByText('06/22/2020')).toBeInTheDocument();
+    expect(getByText(labelToday)).toBeInTheDocument();
 
-    expect(getByText('10:40 AM')).toBeInTheDocument();
+    expect(getByText('Tuesday, January 21, 2020 9:40 AM')).toBeInTheDocument();
     expect(getAllByLabelText('Event')).toHaveLength(3); // 2 events + 1 selected option
     expect(getByText('UP')).toBeInTheDocument();
     expect(getByText('Tries: 1')).toBeInTheDocument();
@@ -721,41 +813,70 @@ describe(Details, () => {
       getByText('INITIAL HOST STATE: Centreon-Server;UP;HARD;1;'),
     ).toBeInTheDocument();
 
-    expect(getByText('10:35 AM')).toBeInTheDocument();
+    expect(getByText('Tuesday, January 21, 2020 9:35 AM')).toBeInTheDocument();
     expect(getByText('DOWN')).toBeInTheDocument();
     expect(getByText('Tries: 3')).toBeInTheDocument();
     expect(
       getByText('INITIAL HOST STATE: Centreon-Server;DOWN;HARD;3;'),
     ).toBeInTheDocument();
 
-    expect(getByText('06/21/2020')).toBeInTheDocument();
+    expect(getByText(labelYesterday)).toBeInTheDocument();
 
-    expect(getByText('9:40 AM')).toBeInTheDocument();
+    expect(getByText('Monday, January 20, 2020 8:40 AM')).toBeInTheDocument();
     expect(getByText('My little notification'));
 
-    expect(getByText('06/20/2020')).toBeInTheDocument();
+    expect(getByText(labelThisWeek)).toBeInTheDocument();
+    expect(getByText('January 19, 2020')).toBeInTheDocument();
 
-    expect(getByText('9:35 AM')).toBeInTheDocument();
+    expect(getByText('Sunday, January 19, 2020 8:35 AM')).toBeInTheDocument();
     expect(getByText('My little ack'));
 
     expect(
-      getByText('From 06/20/2020 9:30 AM To 06/22/2020 9:33 AM'),
+      getByText(
+        'From Sunday, January 19, 2020 8:30 AM To Tuesday, January 21, 2020 8:33 AM',
+      ),
     ).toBeInTheDocument();
     expect(getByText('My little dt'));
 
-    expect(getByText('From 06/19/2020 9:30 AM')).toBeInTheDocument();
+    expect(
+      getByText('From Sunday, January 19, 2020 8:30 AM'),
+    ).toBeInTheDocument();
     expect(getByText('My little ongoing dt'));
 
-    expect(getByText('8:55 AM')).toBeInTheDocument();
+    expect(getByText('Sunday, January 19, 2020 7:55 AM')).toBeInTheDocument();
     expect(getByText('My little comment'));
 
-    const dateRegExp = /\d+\/\d+\/\d+$/;
+    expect(getByText(labelLastWeek)).toBeInTheDocument();
+    expect(
+      getByText('From January 12, 2020 to January 18, 2020'),
+    ).toBeInTheDocument();
+
+    expect(getByText('Saturday, January 18, 2020 7:55 AM')).toBeInTheDocument();
+    expect(getByText('My little comment two'));
+
+    expect(getByText(labelLastMonth)).toBeInTheDocument();
+    expect(
+      getByText('From December 15, 2019 to January 11, 2020'),
+    ).toBeInTheDocument();
+
+    expect(getByText('Wednesday, January 1, 2020 7:55 AM')).toBeInTheDocument();
+    expect(getByText('My little comment three'));
+
+    expect(getByText(labelLastYear)).toBeInTheDocument();
+    expect(
+      getByText('From December 16, 2018 to December 14, 2019'),
+    ).toBeInTheDocument();
+
+    expect(getByText('Monday, June 10, 2019 8:55 AM')).toBeInTheDocument();
+    expect(getByText('My little comment four'));
+
+    expect(getByText(labelBeforeLastYear)).toBeInTheDocument();
+    expect(getByText('From December 15, 2018')).toBeInTheDocument();
 
     expect(
-      getAllByText(dateRegExp)
-        .map((element) => element.textContent)
-        .filter((text) => text !== '06/23/2020'), // corresponds to one of the graph X Scale ticks
-    ).toEqual(['06/22/2020', '06/21/2020', '06/20/2020']);
+      getByText('Wednesday, October 10, 2018 8:55 AM'),
+    ).toBeInTheDocument();
+    expect(getByText('My little comment five'));
 
     const removeEventIcon = baseElement.querySelectorAll(
       'svg[class*="deleteIcon"]',
@@ -771,6 +892,15 @@ describe(Details, () => {
             limit: 30,
             page: 1,
             search: {
+              conditions: [
+                {
+                  field: 'date',
+                  values: {
+                    $gt: '2020-01-20T06:00:00.000Z',
+                    $lt: '2020-01-21T06:00:00.000Z',
+                  },
+                },
+              ],
               lists: [
                 {
                   field: 'type',
@@ -792,7 +922,6 @@ describe(Details, () => {
         links: {
           ...retrievedDetails.links,
           uris: {
-            configuration: '/configuration',
             logs: '/logs',
             reporting: '/reporting',
           },
@@ -812,10 +941,6 @@ describe(Details, () => {
 
     userEvent.click(getByLabelText(labelShortcuts).firstChild as HTMLElement);
 
-    expect(getAllByLabelText(labelConfigure)[0]).toHaveAttribute(
-      'href',
-      '/configuration',
-    );
     expect(getAllByLabelText(labelViewLogs)[0]).toHaveAttribute(
       'href',
       '/logs',
@@ -874,17 +999,18 @@ describe(Details, () => {
     act(() => {
       setSelectedHostResource();
       context.setGraphTabParameters({
-        selectedTimePeriodId: last7Days.id,
+        options: defaultGraphOptions,
       });
     });
 
     act(() => {
       context.setServicesTabParameters({
-        graphMode: true,
-        graphTimePeriod: {
-          selectedTimePeriodId: last31Days.id,
-        },
+        options: defaultGraphOptions,
       });
+    });
+
+    act(() => {
+      context.changeSelectedTimePeriod(last7Days.id);
     });
 
     const updatedDetailsFromQueryParameters = getUrlQueryParameters()
@@ -892,16 +1018,30 @@ describe(Details, () => {
 
     await waitFor(() => {
       expect(updatedDetailsFromQueryParameters).toEqual({
+        customTimePeriod: {
+          end: '2020-01-21T06:00:00.000Z',
+          start: '2020-01-14T06:00:00.000Z',
+        },
         id: 1,
+        selectedTimePeriodId: 'last_7_days',
         tab: 'details',
         tabParameters: {
           graph: {
-            selectedTimePeriodId: last7Days.id,
+            options: {
+              displayEvents: {
+                id: 'displayEvents',
+                label: labelDisplayEvents,
+                value: false,
+              },
+            },
           },
           services: {
-            graphMode: true,
-            graphTimePeriod: {
-              selectedTimePeriodId: last31Days.id,
+            options: {
+              displayEvents: {
+                id: 'displayEvents',
+                label: labelDisplayEvents,
+                value: false,
+              },
             },
           },
         },
@@ -971,9 +1111,9 @@ describe(Details, () => {
 
     expect(mockedAxios.get).toHaveBeenCalledWith(
       buildResourcesEndpoint({
-        hostGroupIds: [],
+        hostGroups: [],
         limit: 30,
-        monitoringServerIds: [],
+        monitoringServers: [],
         page: 1,
         resourceTypes: ['service'],
         search: {
@@ -986,7 +1126,7 @@ describe(Details, () => {
             },
           ],
         },
-        serviceGroupIds: [],
+        serviceGroups: [],
         states: [],
         statuses: [],
       }),
@@ -1019,13 +1159,12 @@ describe(Details, () => {
 
     act(() => {
       context.setServicesTabParameters({
-        graphMode: false,
-        graphTimePeriod: {},
+        options: defaultGraphOptions,
       });
     });
   });
 
-  it('displays the linked service graphs when the service tab of a host is clicked and the graph mode is activated', async () => {
+  it('displays the linked service graphs when the Graph tab of a host is clicked', async () => {
     mockedAxios.get
       .mockResolvedValueOnce({
         data: {
@@ -1037,17 +1176,14 @@ describe(Details, () => {
         data: retrievedServices,
       })
       .mockResolvedValueOnce({
-        data: retrievedServices,
-      })
-      .mockResolvedValueOnce({
         data: retrievedPerformanceGraphData,
       })
       .mockResolvedValueOnce({
         data: retrievedPerformanceGraphData,
       });
 
-    const { getByLabelText, findByText, getAllByText } = renderDetails({
-      openTabId: servicesTabId,
+    const { findByText, getByText } = renderDetails({
+      openTabId: graphTabId,
     });
 
     act(() => {
@@ -1058,24 +1194,16 @@ describe(Details, () => {
       expect(mockedAxios.get).toHaveBeenCalledTimes(2);
     });
 
-    fireEvent.click(
-      getByLabelText(labelSwitchToGraph).firstElementChild as HTMLElement,
-    );
-
     await findByText(retrievedPerformanceGraphData.global.title);
 
-    expect(context.tabParameters?.services?.graphMode).toEqual(true);
-
-    userEvent.click(head(getAllByText(label1Day)) as HTMLElement);
-    userEvent.click(last(getAllByText(label7Days)) as HTMLElement);
+    userEvent.click(getByText(label7Days).parentElement as HTMLElement);
 
     await waitFor(() => {
-      expect(mockedAxios.get).toHaveBeenCalledTimes(6);
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        'ping-performance?start=2020-01-14T06:00:00.000Z&end=2020-01-21T06:00:00.000Z',
+        cancelTokenRequestParam,
+      );
     });
-
-    expect(
-      context.tabParameters?.services?.graphTimePeriod.selectedTimePeriodId,
-    ).toEqual(last7Days.id);
   });
 
   it('queries performance graphs with a custom timeperiod when the Graph tab is selected and a custom time period is selected', async () => {
@@ -1103,12 +1231,15 @@ describe(Details, () => {
     });
 
     act(() => {
-      context.setGraphTabParameters({
-        selectedCustomTimePeriod: {
-          end: endISOString,
-          start: startISOString,
-        },
-        selectedTimePeriodId: undefined,
+      context.changeCustomTimePeriod({
+        date: new Date(startISOString),
+        property: CustomTimePeriodProperty.start,
+      });
+    });
+    act(() => {
+      context.changeCustomTimePeriod({
+        date: new Date(endISOString),
+        property: CustomTimePeriodProperty.end,
       });
     });
 
@@ -1168,13 +1299,15 @@ describe(Details, () => {
     });
 
     act(() => {
-      setSelectedServiceResource();
-      context.setGraphTabParameters({
-        selectedCustomTimePeriod: {
-          end: '2020-01-21T06:00:00.000Z',
-          start: '2020-01-21T06:00:00.000Z',
-        },
-        selectedTimePeriodId: undefined,
+      context.changeCustomTimePeriod({
+        date: new Date('2020-01-21T06:00:00.000Z'),
+        property: CustomTimePeriodProperty.start,
+      });
+    });
+    act(() => {
+      context.changeCustomTimePeriod({
+        date: new Date('2020-01-21T06:00:00.000Z'),
+        property: CustomTimePeriodProperty.end,
       });
     });
 
@@ -1317,13 +1450,13 @@ describe(Details, () => {
     userEvent.click(getByText('Linux-servers').parentElement as HTMLElement);
 
     await waitFor(() => {
-      expect(
-        context.getCriteriaValue(SelectableCriteriasType.serviceGroups),
-      ).toEqual([{ id: 0, name: 'Linux-servers' }]);
+      expect(context.getCriteriaValue(CriteriaNames.serviceGroups)).toEqual([
+        { id: 0, name: 'Linux-servers' },
+      ]);
     });
   });
 
-  it('displays the resource configuration link when the resource name is hovered', async () => {
+  it('displays the resource configuration link', async () => {
     mockedAxios.get.mockResolvedValueOnce({
       data: {
         ...retrievedDetails,
@@ -1360,5 +1493,136 @@ describe(Details, () => {
     expect(
       getByLabelText(`${labelConfigure}_${retrievedDetails.name}`),
     ).toHaveAttribute('href', '/configuration');
+  });
+
+  it('populates details tiles with values from localStorage if available', async () => {
+    mockedAxios.get.mockResolvedValueOnce({
+      data: retrievedDetails,
+    });
+
+    const { getByText, queryByText } = renderDetails();
+
+    act(() => {
+      setSelectedServiceResource();
+    });
+
+    mockedLocalStorageGetItem.mockReturnValue(
+      JSON.stringify([labelMonitoringServer, labelStatusInformation]),
+    );
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        context.getSelectedResourceDetailsEndpoint() as string,
+        expect.anything(),
+      );
+    });
+
+    expect(getByText(labelMonitoringServer)).toBeInTheDocument();
+    expect(getByText(labelStatusInformation)).toBeInTheDocument();
+
+    expect(queryByText(labelLastCheck)).toBeInTheDocument();
+    expect(queryByText(labelCommand)).toBeInTheDocument();
+  });
+
+  it('queries the performance graphs with the time period selected in the "Timeline" tab when the "Graph" tab is selected and the "Timeline" tab was selected', async () => {
+    mockedAxios.get
+      .mockResolvedValueOnce({ data: retrievedDetails })
+      .mockResolvedValueOnce({ data: retrievedTimeline })
+      .mockResolvedValueOnce({ data: retrievedTimeline })
+      .mockResolvedValueOnce(retrievedFilters)
+      .mockResolvedValueOnce({ data: retrievedDetails })
+      .mockResolvedValueOnce({ data: retrievedPerformanceGraphData })
+      .mockResolvedValueOnce({ data: retrievedTimeline });
+
+    const { getByText } = renderDetails({
+      openTabId: timelineTabId,
+    });
+
+    act(() => {
+      setSelectedServiceResource();
+    });
+
+    await waitFor(() =>
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        buildListTimelineEventsEndpoint({
+          endpoint: retrievedDetails.links.endpoints.timeline,
+          parameters: {
+            limit: 30,
+            page: 1,
+            search: {
+              conditions: [
+                {
+                  field: 'date',
+                  values: {
+                    $gt: '2020-01-20T06:00:00.000Z',
+                    $lt: '2020-01-21T06:00:00.000Z',
+                  },
+                },
+              ],
+              lists: [
+                {
+                  field: 'type',
+                  values: getTypeIds(),
+                },
+              ],
+            },
+          },
+        }),
+        expect.anything(),
+      ),
+    );
+
+    userEvent.click(getByText(label7Days).parentElement as HTMLElement);
+
+    await waitFor(() =>
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        buildListTimelineEventsEndpoint({
+          endpoint: retrievedDetails.links.endpoints.timeline,
+          parameters: {
+            limit: 30,
+            page: 1,
+            search: {
+              conditions: [
+                {
+                  field: 'date',
+                  values: {
+                    $gt: '2020-01-14T06:00:00.000Z',
+                    $lt: '2020-01-21T06:00:00.000Z',
+                  },
+                },
+              ],
+              lists: [
+                {
+                  field: 'type',
+                  values: getTypeIds(),
+                },
+              ],
+            },
+          },
+        }),
+        expect.anything(),
+      ),
+    );
+
+    expect(context.selectedTimePeriod?.id).toEqual(last7Days.id);
+
+    act(() => {
+      context.clearSelectedResource();
+    });
+
+    renderDetails({
+      openTabId: graphTabId,
+    });
+
+    act(() => {
+      setSelectedServiceResource();
+    });
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        `${retrievedDetails.links.endpoints.performance_graph}?start=2020-01-14T06:00:00.000Z&end=2020-01-21T06:00:00.000Z`,
+        cancelTokenRequestParam,
+      );
+    });
   });
 });
