@@ -2483,15 +2483,15 @@ function sanitizeFormHostParameters(array $ret): array
                 ];
                 break;
             case 'host_name':
-            case 'host_address':
                 if (!empty($inputValue)) {
                     $bindParams[':' . $inputName] = [
                         \PDO::PARAM_STR => (($inputValue = filter_var($inputValue, FILTER_SANITIZE_STRING)) === '')
-                            ? null
-                            : $inputValue
+                        ? null
+                        : $inputValue
                     ];
                 }
                 break;
+            case 'host_address':
             case 'command_command_id_arg1':
             case 'command_command_id_arg2':
             case 'host_alias':
