@@ -1,11 +1,7 @@
 import * as React from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { Typography, makeStyles } from '@material-ui/core';
 
-import { Typography, makeStyles, Tooltip } from '@material-ui/core';
-import IconCheck from '@material-ui/icons/Check';
-
-import { labelActive } from '../../../../translatedLabels';
 import Card from '../Card';
 
 const useStyles = makeStyles((theme) => ({
@@ -13,7 +9,8 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.success.main,
   },
   container: {
-    height: '100%',
+    height: 65,
+    overflow: 'hidden',
   },
   title: {
     display: 'flex',
@@ -22,7 +19,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface Props {
-  active?: boolean;
   isCustomCard?: boolean;
   line: JSX.Element;
   title: string;
@@ -31,11 +27,9 @@ interface Props {
 const DetailsCard = ({
   title,
   line,
-  active,
   isCustomCard = false,
 }: Props): JSX.Element => {
   const classes = useStyles();
-  const { t } = useTranslation();
 
   if (isCustomCard) {
     return line;
@@ -47,11 +41,6 @@ const DetailsCard = ({
         <Typography gutterBottom color="textSecondary" variant="body1">
           {title}
         </Typography>
-        {active && (
-          <Tooltip title={t(labelActive) as string}>
-            <IconCheck className={classes.active} fontSize="small" />
-          </Tooltip>
-        )}
       </div>
       {line}
     </Card>

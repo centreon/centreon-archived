@@ -207,8 +207,8 @@ const GraphContent = ({
   changeMetricsValue,
   resourceGraphMousePosition,
 }: GraphContentProps): JSX.Element => {
-  const { t } = useTranslation();
   const classes = useStyles({ onAddComment });
+  const { t } = useTranslation();
 
   const [addingComment, setAddingComment] = React.useState(false);
   const [commentDate, setCommentDate] = React.useState<Date>();

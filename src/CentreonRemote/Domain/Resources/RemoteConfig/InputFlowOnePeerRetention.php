@@ -22,7 +22,7 @@ class InputFlowOnePeerRetention
         return [
             new CfgCentreonBrokerInfo('name', "connection-to-${pollerName}"),
             new CfgCentreonBrokerInfo('port', '5669'),
-            new CfgCentreonBrokerInfo('retry_interval', '60'),
+            new CfgCentreonBrokerInfo('retry_interval', '15'),
             new CfgCentreonBrokerInfo('buffering_timeout', '0'),
             new CfgCentreonBrokerInfo('host', $pollerIP),
             new CfgCentreonBrokerInfo('protocol', 'bbdo'),

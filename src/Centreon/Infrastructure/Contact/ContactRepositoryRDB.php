@@ -138,6 +138,35 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
         return $contact;
     }
 
+
+    /**
+     * @inheritDoc
+     */
+    public function findByAuthenticationToken(string $token): ?Contact
+    {
+        $statement = $this->db->prepare(
+            $this->translateDbName(
+                "SELECT contact.*, t.topology_url, t.topology_url_opt, t.is_react, t.topology_id, tz.timezone_name
+                FROM `:db`.contact
+                LEFT JOIN `:db`.timezone tz
+                    ON tz.timezone_id = contact.contact_location
+                LEFT JOIN `:db`.topology t
+                    ON t.topology_page = contact.default_page
+                INNER JOIN `:db`.security_authentication_tokens sat
+                    ON sat.user_id = contact.contact_id
+                WHERE sat.token = :token"
+            )
+        );
+        $statement->bindValue(':token', $token, \PDO::PARAM_STR);
+        $statement->execute();
+
+        if ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            return $this->createContact($result);
+        }
+
+        return null;
+    }
+
     /**
      * Find and add all topology rules defined by all menus access defined for this contact.
      * The purpose is to limit access to the API based on menus access.
@@ -352,7 +381,8 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
             ->setTimezone(new \DateTimeZone($contactTimezoneName))
             ->setLocale($contactLocale)
             ->setDefaultPage($page)
-            ->setUseDeprecatedPages($contact['show_deprecated_pages'] === '1');
+            ->setUseDeprecatedPages($contact['show_deprecated_pages'] === '1')
+            ->setOneClickExportEnabled($contact['enable_one_click_export'] === '1');
     }
 
     /**

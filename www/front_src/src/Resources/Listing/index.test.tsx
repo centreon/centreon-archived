@@ -1,6 +1,5 @@
 import * as React from 'react';
 
-import { useSelector } from 'react-redux';
 import {
   render,
   RenderResult,
@@ -27,10 +26,13 @@ import {
   find,
   isNil,
   last,
+  equals,
+  not,
 } from 'ramda';
 import userEvent from '@testing-library/user-event';
 
 import { Column } from '@centreon/ui';
+import { useUserContext } from '@centreon/ui-context';
 
 import { Resource, ResourceType } from '../models';
 import Context, { ResourceContext } from '../Context';
@@ -38,7 +40,11 @@ import useActions from '../Actions/useActions';
 import useDetails from '../Details/useDetails';
 import useFilter from '../Filter/useFilter';
 import { labelInDowntime, labelAcknowledged } from '../translatedLabels';
-import { getListingEndpoint, cancelTokenRequestParam } from '../testUtils';
+import {
+  getListingEndpoint,
+  cancelTokenRequestParam,
+  defaultSecondSortCriteria,
+} from '../testUtils';
 import { unhandledProblemsFilter } from '../Filter/models';
 
 import useListing from './useListing';
@@ -53,18 +59,21 @@ const columns = getColumns({
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
-jest.mock('react-redux', () => ({
-  ...(jest.requireActual('react-redux') as jest.Mocked<unknown>),
-  useSelector: jest.fn(),
+const mockUserContext = {
+  locale: 'en',
+  refreshInterval: 60,
+  timezone: 'Europe/Paris',
+};
+
+jest.mock('@centreon/centreon-frontend/packages/ui-context', () => ({
+  ...(jest.requireActual('@centreon/ui-context') as jest.Mocked<unknown>),
+  useUserContext: jest.fn(),
 }));
 
-jest.mock('../icons/Downtime');
+const mockedUserContext = useUserContext as jest.Mock;
 
-const appState = {
-  intervals: {
-    AjaxTimeReloadMonitoring: 60,
-  },
-};
+jest.mock('../icons/Downtime');
+jest.useFakeTimers();
 
 const fillEntities = (): Array<Resource> => {
   const entityCount = 31;
@@ -146,15 +155,11 @@ const ListingTest = (): JSX.Element => {
   );
 };
 
-const mockedSelector = useSelector as jest.Mock;
-
 const renderListing = (): RenderResult => render(<ListingTest />);
 
 describe(Listing, () => {
   beforeEach(() => {
-    mockedSelector.mockImplementation((callback) => {
-      return callback(appState);
-    });
+    mockedUserContext.mockReturnValue(mockUserContext);
 
     mockedAxios.get
       .mockResolvedValueOnce({
@@ -171,7 +176,7 @@ describe(Listing, () => {
   });
 
   afterEach(() => {
-    mockedSelector.mockClear();
+    mockedUserContext.mockReset();
     mockedAxios.get.mockReset();
   });
 
@@ -235,10 +240,17 @@ describe(Listing, () => {
 
         userEvent.click(getByLabelText(`Column ${label}`));
 
+        const secondSortCriteria =
+          not(equals(sortField, 'last_status_change')) &&
+          defaultSecondSortCriteria;
+
         await waitFor(() => {
           expect(mockedAxios.get).toHaveBeenLastCalledWith(
             getListingEndpoint({
-              sort: { [sortBy]: 'desc' },
+              sort: {
+                [sortBy]: 'desc',
+                ...secondSortCriteria,
+              },
             }),
             cancelTokenRequestParam,
           );
@@ -249,7 +261,10 @@ describe(Listing, () => {
         await waitFor(() =>
           expect(mockedAxios.get).toHaveBeenLastCalledWith(
             getListingEndpoint({
-              sort: { [sortBy]: 'asc' },
+              sort: {
+                [sortBy]: 'asc',
+                ...secondSortCriteria,
+              },
             }),
             cancelTokenRequestParam,
           ),

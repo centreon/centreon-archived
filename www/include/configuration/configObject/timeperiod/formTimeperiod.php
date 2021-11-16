@@ -312,9 +312,6 @@ if ($valid) {
     $tpl->assign('gmtUsed', $centreon->CentreonGMT->used());
     $tpl->assign('noExceptionMessage', _('GMT is activated on your system. Exceptions will not be generated.'));
     $tpl->assign('exceptionLabel', _('Exceptions'));
+    $tpl->assign('countExceptions', $k);
     $tpl->display("formTimeperiod.ihtml");
 }
-?>
-<script type="text/javascript">
-    displayExistingExceptions(<?php echo $k;?>);
-</script>

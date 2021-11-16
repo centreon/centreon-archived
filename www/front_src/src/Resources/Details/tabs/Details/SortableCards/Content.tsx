@@ -44,13 +44,12 @@ const Content = ({
   itemRef,
   title,
   line,
-  active,
   xs,
   isCustomCard,
   width,
 }: ContentProps): JSX.Element => {
-  const { t } = useTranslation();
   const classes = useStyles({ isDragging });
+  const { t } = useTranslation();
 
   const getVariableXs = (): GridSize => {
     const variableXs = isNil(xs) ? 6 : xs;
@@ -73,7 +72,6 @@ const Content = ({
             <MoreVertIcon fontSize="small" />
           </div>
           <DetailsCard
-            active={active}
             isCustomCard={isCustomCard}
             line={line}
             title={t(title)}

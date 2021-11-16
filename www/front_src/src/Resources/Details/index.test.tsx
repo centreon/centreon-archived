@@ -28,12 +28,12 @@ import {
   labelDowntimeDuration,
   labelAcknowledgedBy,
   labelTimezone,
-  labelCurrentStateDuration,
-  labelLastStateChange,
+  labelCurrentStatusDuration,
+  labelLastStatusChange,
   labelNextCheck,
   labelCheckDuration,
   labelLatency,
-  labelPercentStateChange,
+  labelStatusChangePercentage,
   labelLastNotification,
   labelLastCheck,
   labelCurrentNotificationNumber,
@@ -74,6 +74,7 @@ import {
   labelLastMonth,
   labelLastYear,
   labelBeforeLastYear,
+  labelLastCheckWithOkStatus,
 } from '../translatedLabels';
 import Context, { ResourceContext } from '../Context';
 import useListing from '../Listing/useListing';
@@ -106,6 +107,15 @@ jest.mock(
   '@centreon/centreon-frontend/packages/centreon-ui/src/utils/copy',
   () => jest.fn(),
 );
+
+jest.mock('@visx/visx', () => {
+  return {
+    ...(jest.requireActual('@visx/visx') as jest.Mocked<unknown>),
+    Responsive: {
+      ParentSize: ({ children }): JSX.Element => children({ width: 500 }),
+    },
+  };
+});
 
 const resourceServiceUuid = 'h1-s1';
 const resourceServiceId = 1;
@@ -150,6 +160,7 @@ const retrievedDetails = {
   last_check: '2020-05-18T16:00Z',
   last_notification: '2020-07-18T17:30:00Z',
   last_status_change: '2020-04-18T15:00Z',
+  last_time_with_no_issue: '2021-09-23T15:49:50+02:00',
   last_update: '2020-03-18T16:30:00Z',
   latency: 0.005,
   links: {
@@ -506,7 +517,8 @@ describe(Details, () => {
   it('displays resource details information', async () => {
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
 
-    const { getByText, queryByText, getAllByText } = renderDetails();
+    const { getByText, queryByText, getAllByText, findByText } =
+      renderDetails();
 
     act(() => {
       setSelectedServiceResource();
@@ -523,7 +535,9 @@ describe(Details, () => {
     expect(getByText('CRITICAL')).toBeInTheDocument();
     expect(getByText('Centreon')).toBeInTheDocument();
 
-    expect(getByText(labelFqdn)).toBeInTheDocument();
+    const fqdnText = await findByText(labelFqdn);
+
+    expect(fqdnText).toBeInTheDocument();
     expect(getByText('central.centreon.com')).toBeInTheDocument();
     expect(getByText(labelAlias)).toBeInTheDocument();
     expect(getByText('Central-Centreon')).toBeInTheDocument();
@@ -557,10 +571,10 @@ describe(Details, () => {
     expect(getByText(labelTimezone)).toBeInTheDocument();
     expect(getByText('Europe/Paris')).toBeInTheDocument();
 
-    expect(getByText(labelCurrentStateDuration)).toBeInTheDocument();
+    expect(getByText(labelCurrentStatusDuration)).toBeInTheDocument();
     expect(getByText('22m - 3/3 (Hard)')).toBeInTheDocument();
 
-    expect(getByText(labelLastStateChange)).toBeInTheDocument();
+    expect(getByText(labelLastStatusChange)).toBeInTheDocument();
     expect(getByText('04/18/2020 5:00 PM')).toBeInTheDocument();
 
     expect(getByText(labelLastCheck)).toBeInTheDocument();
@@ -572,12 +586,15 @@ describe(Details, () => {
     expect(getByText(labelCheckDuration)).toBeInTheDocument();
     expect(getByText('0.070906 s')).toBeInTheDocument();
 
+    expect(getByText(labelLastCheckWithOkStatus)).toBeInTheDocument();
+    expect(getByText('06/18/2020 7:15 PM')).toBeInTheDocument();
+
     expect(getByText(labelLatency)).toBeInTheDocument();
     expect(getByText('0.005 s')).toBeInTheDocument();
 
     expect(getByText(labelCheck)).toBeInTheDocument();
 
-    expect(getByText(labelPercentStateChange)).toBeInTheDocument();
+    expect(getByText(labelStatusChangePercentage)).toBeInTheDocument();
     expect(getByText('3.5%')).toBeInTheDocument();
 
     expect(getByText(labelLastNotification)).toBeInTheDocument();
@@ -742,6 +759,7 @@ describe(Details, () => {
       ),
     );
   });
+
   it('displays retrieved timeline events and filtered by selected event types, when the Timeline tab is selected', async () => {
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
     mockedAxios.get.mockResolvedValueOnce({ data: retrievedTimeline });
@@ -1093,9 +1111,9 @@ describe(Details, () => {
 
     expect(mockedAxios.get).toHaveBeenCalledWith(
       buildResourcesEndpoint({
-        hostGroupIds: [],
+        hostGroups: [],
         limit: 30,
-        monitoringServerIds: [],
+        monitoringServers: [],
         page: 1,
         resourceTypes: ['service'],
         search: {
@@ -1108,7 +1126,7 @@ describe(Details, () => {
             },
           ],
         },
-        serviceGroupIds: [],
+        serviceGroups: [],
         states: [],
         statuses: [],
       }),
@@ -1502,8 +1520,8 @@ describe(Details, () => {
     expect(getByText(labelMonitoringServer)).toBeInTheDocument();
     expect(getByText(labelStatusInformation)).toBeInTheDocument();
 
-    expect(queryByText(labelLastCheck)).not.toBeInTheDocument();
-    expect(queryByText(labelCommand)).not.toBeInTheDocument();
+    expect(queryByText(labelLastCheck)).toBeInTheDocument();
+    expect(queryByText(labelCommand)).toBeInTheDocument();
   });
 
   it('queries the performance graphs with the time period selected in the "Timeline" tab when the "Graph" tab is selected and the "Timeline" tab was selected', async () => {

@@ -5,7 +5,7 @@ Feature:
 
   Background:
     Given a running instance of Centreon Web API
-    And the endpoints are described in Centreon Web API documentation (version: 21.10)
+    And the endpoints are described in Centreon Web API documentation
 
   Scenario: Host categories listing
     Given I am logged in

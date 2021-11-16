@@ -1,6 +1,5 @@
 import * as React from 'react';
 
-import { useSelector } from 'react-redux';
 import axios from 'axios';
 import {
   fireEvent,
@@ -40,7 +39,6 @@ import {
   getCriteriaValue,
   getFilterWithUpdatedCriteria,
   getListingEndpoint,
-  mockAppStateSelector,
   searchableFields,
 } from '../testUtils';
 import useDetails from '../Details/useDetails';
@@ -49,15 +47,13 @@ import { allFilter, Filter as FilterModel } from './models';
 import useFilter from './useFilter';
 import { filterKey } from './storedFilter';
 import { defaultSortField, defaultSortOrder } from './Criterias/default';
+import { buildHostGroupsEndpoint } from './api/endpoint';
 
 import Filter from '.';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
-jest.mock('react-redux', () => ({
-  ...(jest.requireActual('react-redux') as jest.Mocked<unknown>),
-  useSelector: jest.fn(),
-}));
+jest.useFakeTimers();
 
 const linuxServersHostGroup = {
   id: 0,
@@ -65,7 +61,7 @@ const linuxServersHostGroup = {
 };
 
 const webAccessServiceGroup = {
-  id: 1,
+  id: 0,
   name: 'Web-access',
 };
 
@@ -76,7 +72,7 @@ type FilterParameter = [
   (() => void) | undefined,
 ];
 
-const filtersParams: Array<FilterParameter> = [
+const filterParams: Array<FilterParameter> = [
   [labelResource, labelHost, { resourceTypes: ['host'] }, undefined],
   [
     labelState,
@@ -98,7 +94,7 @@ const filtersParams: Array<FilterParameter> = [
     labelHostGroup,
     linuxServersHostGroup.name,
     {
-      hostGroupIds: [linuxServersHostGroup.id],
+      hostGroups: [linuxServersHostGroup.name],
     },
     (): void => {
       mockedAxios.get.mockResolvedValueOnce({
@@ -115,9 +111,8 @@ const filtersParams: Array<FilterParameter> = [
   [
     labelServiceGroup,
     webAccessServiceGroup.name,
-
     {
-      serviceGroupIds: [webAccessServiceGroup.id],
+      serviceGroups: [webAccessServiceGroup.name],
     },
     (): void => {
       mockedAxios.get.mockResolvedValueOnce({
@@ -161,6 +156,30 @@ const filter = {
   name: 'My filter',
 };
 
+const hostGroupsData = {
+  meta: {
+    limit: 5,
+    page: 1,
+    search: {},
+    sort_by: {},
+    total: 3,
+  },
+  result: [
+    {
+      id: 72,
+      name: 'ESX-Servers',
+    },
+    {
+      id: 60,
+      name: 'Firewall',
+    },
+    {
+      id: 70,
+      name: 'IpCam-Hardware',
+    },
+  ],
+};
+
 const FilterWithLoading = (): JSX.Element => {
   useLoadResources();
 
@@ -198,8 +217,23 @@ Storage.prototype.getItem = mockedLocalStorageGetItem;
 Storage.prototype.setItem = mockedLocalStorageSetItem;
 
 const cancelTokenRequestParam = { cancelToken: {} };
-
-mockAppStateSelector(useSelector as jest.Mock);
+const dynamicCriteriaRequests = (): void => {
+  mockedAxios.get.mockReset();
+  mockedAxios.get
+    .mockResolvedValueOnce({
+      data: {
+        meta: {
+          limit: 30,
+          page: 1,
+          total: 0,
+        },
+        result: [],
+      },
+    })
+    .mockResolvedValueOnce({ data: {} })
+    .mockResolvedValueOnce({ data: {} })
+    .mockResolvedValue({ data: hostGroupsData });
+};
 
 describe(Filter, () => {
   beforeEach(() => {
@@ -365,7 +399,7 @@ describe(Filter, () => {
     },
   );
 
-  it.each(filtersParams)(
+  it.each(filterParams)(
     "executes a listing request with current search and selected %p criteria when it's changed",
     async (
       criteriaName,
@@ -406,6 +440,92 @@ describe(Filter, () => {
           cancelTokenRequestParam,
         );
       });
+    },
+  );
+
+  it.each([
+    ['tab', (): void => userEvent.tab()],
+    [
+      'enter',
+      (): void => {
+        userEvent.keyboard('{Enter}');
+      },
+    ],
+  ])(
+    'accepts the selected autocomplete suggestion when the beginning of a dynamic criteria is input and the %p key is pressed',
+    async (_, keyboardAction) => {
+      dynamicCriteriaRequests();
+      const { getByPlaceholderText } = renderFilter();
+
+      await waitFor(() => {
+        expect(mockedAxios.get).toHaveBeenCalledTimes(2);
+      });
+
+      userEvent.type(
+        getByPlaceholderText(labelSearch),
+        '{selectall}{backspace}host',
+      );
+
+      keyboardAction();
+
+      expect(getByPlaceholderText(labelSearch)).toHaveValue('host_group:');
+
+      userEvent.type(getByPlaceholderText(labelSearch), 'ESX');
+
+      await waitFor(() => {
+        expect(mockedAxios.get).toHaveBeenCalledWith(
+          buildHostGroupsEndpoint({
+            limit: 5,
+            page: 1,
+            search: {
+              conditions: [],
+              regex: {
+                fields: ['name'],
+                value: 'ESX',
+              },
+            },
+          }),
+          cancelTokenRequestParam,
+        );
+      });
+
+      keyboardAction();
+
+      expect(getByPlaceholderText(labelSearch)).toHaveValue(
+        'host_group:ESX-Servers',
+      );
+
+      userEvent.type(getByPlaceholderText(labelSearch), ',');
+
+      await waitFor(() => {
+        expect(mockedAxios.get).toHaveBeenCalledWith(
+          buildHostGroupsEndpoint({
+            limit: 5,
+            page: 1,
+            search: {
+              conditions: [
+                {
+                  field: 'name',
+                  values: { $ni: ['ESX-Servers'] },
+                },
+              ],
+              regex: {
+                fields: ['name'],
+                value: '',
+              },
+            },
+          }),
+          cancelTokenRequestParam,
+        );
+      });
+
+      userEvent.keyboard('{ArrowDown}');
+
+      keyboardAction();
+
+      expect(getByPlaceholderText(labelSearch)).toHaveValue(
+        'host_group:ESX-Servers,Firewall',
+      );
     },
   );
 
@@ -467,14 +587,24 @@ describe(Filter, () => {
             result: [],
           },
         })
-        .mockResolvedValue({
+        .mockResolvedValueOnce({
           data: {
             meta: {
               limit: 30,
               page: 1,
               total: 0,
             },
-            result: [],
+            result: [linuxServersHostGroup],
+          },
+        })
+        .mockResolvedValueOnce({
+          data: {
+            meta: {
+              limit: 30,
+              page: 1,
+              total: 0,
+            },
+            result: [webAccessServiceGroup],
           },
         });
 
@@ -496,7 +626,7 @@ describe(Filter, () => {
       const searchField = await findByPlaceholderText(labelSearch);
 
       expect(searchField).toHaveValue(
-        'type:host state:acknowledged status:ok host_group:0|Linux-servers service_group:1|Web-access Search me',
+        'type:host state:acknowledged status:ok host_group:Linux-servers service_group:Web-access Search me',
       );
 
       userEvent.click(
@@ -590,14 +720,24 @@ describe(Filter, () => {
             result: [],
           },
         })
-        .mockResolvedValue({
+        .mockResolvedValueOnce({
           data: {
             meta: {
               limit: 30,
               page: 1,
               total: 0,
             },
-            result: [],
+            result: [linuxServersHostGroup],
+          },
+        })
+        .mockResolvedValueOnce({
+          data: {
+            meta: {
+              limit: 30,
+              page: 1,
+              total: 0,
+            },
+            result: [webAccessServiceGroup],
           },
         });
 
@@ -615,7 +755,7 @@ describe(Filter, () => {
       expect(getByText('New filter')).toBeInTheDocument();
       expect(
         getByDisplayValue(
-          'type:host state:acknowledged status:ok host_group:0|Linux-servers service_group:1|Web-access Search me',
+          'type:host state:acknowledged status:ok host_group:Linux-servers service_group:Web-access Search me',
         ),
       ).toBeInTheDocument();
 
@@ -633,6 +773,9 @@ describe(Filter, () => {
       expect(getByText(labelOk)).toBeInTheDocument();
 
       fireEvent.click(getByText(labelHostGroup));
+
+      await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
+
       expect(getByText(linuxServersHostGroup.name)).toBeInTheDocument();
 
       await waitFor(() => {
@@ -640,6 +783,9 @@ describe(Filter, () => {
       });
 
       fireEvent.click(getByText(labelServiceGroup));
+
+      await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
+
       expect(getByText(webAccessServiceGroup.name)).toBeInTheDocument();
 
       await waitFor(() => {

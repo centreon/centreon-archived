@@ -14,8 +14,10 @@ parameters:
     api.header: "Api-Version"
     api.version.latest: "21.10"
     debug_log_file: '%log_path%/centreon-web.log'
-    debug_level: "%env(DEBUG_LEVEL)%"
     env(DEBUG_LEVEL): !php/const Monolog\Logger::NOTICE
+    curl.timeout: 60
+    debug_level: "%env(DEBUG_LEVEL)%"
+    env(DEBUG_CONTACT): null
 
 services:
     _defaults:
@@ -84,6 +86,9 @@ services:
     Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface:
         class: Centreon\Domain\RequestParameters\RequestParameters
 
+    Security\Domain\Authentication\Interfaces\AuthenticationTokenServiceInterface:
+        class: Security\Domain\Authentication\AuthenticationTokenService
+
     # Icon configuration
     Centreon\Domain\Configuration\Icon\Interfaces\IconServiceInterface:
         class: Centreon\Domain\Configuration\Icon\IconService
@@ -103,6 +108,12 @@ services:
         calls:
             - method: setSqlRequestTranslator
               arguments: ['@sqlRequestTranslator']
+
+    Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerConfigurationRepositoryInterface:
+        class: Centreon\Infrastructure\MonitoringServer\Repository\MonitoringServerConfigurationRepositoryApi
+        calls:
+        - method: setTimeout
+          arguments: ['%curl.timeout%']
 
     # Platform topology register server
     Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyServiceInterface:
@@ -317,8 +328,15 @@ services:
 
     monolog.debug.formater:
         class: Monolog\Formatter\LineFormatter
-        arguments: [ "[%%datetime%%] %%level_name%%: %%message%% %%context%%\n", null, false, true ]
+        arguments: [ "[%%datetime%%] [%%level_name%%] %%message%% %%context%%\n", !php/const DateTimeInterface::ISO8601, false, true ]
 
     monolog.debug.handler:
         class: Centreon\Domain\Log\DebugFileHandler
         arguments: [ '@monolog.debug.formater', '%debug_log_file%', '%env(bool:APP_DEBUG)%', 664, '%debug_level%' ]
+
+    Centreon\Domain\Log\ContactForDebug:
+        class: Centreon\Domain\Log\ContactForDebug
+        arguments: ['%env(DEBUG_CONTACT)%']
+
+    Centreon\Domain\Log\LegacyLogger:
+        public: true

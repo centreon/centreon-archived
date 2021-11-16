@@ -49,24 +49,29 @@
     <table class="ToolbarTable table">
         <tr class="ToolbarTR">
             <td>
-                {if $is_admin == 1 || $can_generate == 1}
-                    <button type="button" class="{$exportBtn.class}" name="{$exportBtn.name}" onClick="{$exportBtn.onClickAction}">
-                        <span class="ui-icon ui-icon-white {$exportBtn.iconClass}"></span> {$exportBtn.text}
-                    </button>
-                {/if}
-                {if $mode_access == 'w'}
-                    <a href="{$wizardAddBtn.link}" class="{$wizardAddBtn.class}" target="_top">
-                        <span class="ui-icon ui-icon-white {$wizardAddBtn.iconClass}"></span> {$wizardAddBtn.text}
-                    </a>
-                    <a href="{$addBtn.link}" class="{$addBtn.class}">
-                        <span class="ui-icon ui-icon-white {$addBtn.iconClass}"></span> {$addBtn.text}
-                    </a>
-                    <button type="submit" class="{$duplicateBtn.class}" name="{$duplicateBtn.name}" onClick="{$duplicateBtn.onClickAction}">
-                        <span class="ui-icon ui-icon-white {$duplicateBtn.iconClass}"></span> {$duplicateBtn.text}
-                    </button>
-                    <button type="submit" class="{$deleteBtn.class}" name="{$deleteBtn.name}" onClick="{$deleteBtn.onClickAction}">
-                        <span class="ui-icon ui-icon-white {$deleteBtn.iconClass}"></span> {$deleteBtn.text}
-                    </button>
+                {if !$isRemote}
+                    {if $mode_access == 'w'}
+                        <a href="{$wizardAddBtn.link}" class="{$wizardAddBtn.class}" target="_top">
+                            <span class="ui-icon ui-icon-white {$wizardAddBtn.iconClass}"></span> {$wizardAddBtn.text}
+                        </a>
+                        <a href="{$addBtn.link}" class="{$addBtn.class}">
+                            <span class="ui-icon ui-icon-white {$addBtn.iconClass}"></span> {$addBtn.text}
+                        </a>
+                    {/if}
+                    {if $is_admin == 1 || $can_generate == 1}
+                         <button type="button" class="{$exportBtn.class}" name="{$exportBtn.name}"
+                             onClick="{$exportBtn.onClickAction}">
+                             <span class="ui-icon ui-icon-white {$exportBtn.iconClass}"></span> {$exportBtn.text}
+                         </button>
+                    {/if}
+                    {if $mode_access == 'w'}
+                        <button type="submit" class="{$duplicateBtn.class}" name="{$duplicateBtn.name}" onClick="{$duplicateBtn.onClickAction}">
+                            <span class="ui-icon ui-icon-white {$duplicateBtn.iconClass}"></span> {$duplicateBtn.text}
+                        </button>
+                        <button type="submit" class="{$deleteBtn.class}" name="{$deleteBtn.name}" onClick="{$deleteBtn.onClickAction}">
+                            <span class="ui-icon ui-icon-white {$deleteBtn.iconClass}"></span> {$deleteBtn.text}
+                        </button>
+                    {/if}
                 {/if}
             </td>
             {php}
@@ -77,10 +82,13 @@
     <table class="ListTable">
         <tr class="ListHeader">
             <td class="ListColHeaderPicker">
+            {if !$isRemote}
                 <div class="md-checkbox md-checkbox-inline">
-                    <input type="checkbox" id="checkall" name="checkall" onclick="checkUncheckAll(this);"/>
+                    <input type="checkbox" id="checkall" name="checkall"
+                        onclick="checkUncheckAll(this); hasPollersSelected();"/>
                     <label class="empty-label" for="checkall"></label>
                 </div>
+            {/if}
             </td>
             <td class="ListColHeaderLeft">{$headerMenu_name}</td>
             <td class="ListColHeaderCenter">{$headerMenu_ip_address}</td>
@@ -98,7 +106,7 @@
         </tr>
         {section name=elem loop=$elemArr}
         <tr class={$elemArr[elem].MenuClass}>
-            <td class="ListColPicker">{$elemArr[elem].RowMenu_select}</td>
+            <td class="ListColPicker">{if !$isRemote}{$elemArr[elem].RowMenu_select} {/if}</td>
             <td class="ListColLeft">{if $mode_access == 'w'}<a href="{$elemArr[elem].RowMenu_link}">{/if}{$elemArr[elem].RowMenu_name}{if $mode_access == 'w'}</a>{/if}</td>
             <td class="ListColCenter">{if $mode_access == 'w'}<a href="{$elemArr[elem].RowMenu_link}">{/if}{$elemArr[elem].RowMenu_ip_address}{if $mode_access == 'w'}</a>{/if}</td>
             <td class="ListColCenter">{$elemArr[elem].RowMenu_type}</td>
@@ -120,7 +128,7 @@
             <td class="ListColCenter">{$elemArr[elem].RowMenu_is_default}</td>
             <td class="ListColCenter"><span class="badge {$elemArr[elem].RowMenu_badge}">{$elemArr[elem].RowMenu_status}</span></td>
             <td class="ListColCenter">
-                {if $mode_access == 'w' && $elemArr[elem].RowMenu_cfg_id != ""}
+                {if $mode_access == 'w' && $elemArr[elem].RowMenu_cfg_id != "" && !$isRemote}
                 <!-- Link for edit poller monitoring engine configuration -->
                 <a href="./main.php?p=60903&o=c&nagios_id={$elemArr[elem].RowMenu_cfg_id}">
                     <img src="./img/icons/edit_conf.png" class="ico-16" title="Edit monitoring engine configuration">
@@ -135,7 +143,7 @@
                 </span>
                 {/if}
             </td>
-            <td class="ListColRight">{if $mode_access == 'w' }{$elemArr[elem].RowMenu_options}{else}&nbsp;{/if}</td>
+            <td class="ListColRight">{if $mode_access == 'w' && !$isRemote }{$elemArr[elem].RowMenu_options}{else}&nbsp;{/if}</td>
         </tr>
         {/section}
     </table>

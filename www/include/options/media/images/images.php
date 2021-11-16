@@ -59,12 +59,6 @@ $directoryId = filter_var(
     FILTER_VALIDATE_INT
 );
 
-// If one data are not correctly typed in array, it will be set to false
-$selectIds = filter_var_array(
-    $_GET["select"] ?? $_POST["select"] ?? array(),
-    FILTER_VALIDATE_INT
-);
-
 /*
  * Path to the cities dir
  */
@@ -95,6 +89,11 @@ switch ($o) {
         require_once($path . "formDirectory.php");
         break;
     case IMAGE_DELETE:
+        // If one data are not correctly typed in array, it will be set to false
+        $selectIds = filter_var_array(
+            $_GET["select"] ?? $_POST["select"] ?? array(),
+            FILTER_VALIDATE_INT
+        );
         purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
             purgeCSRFToken();

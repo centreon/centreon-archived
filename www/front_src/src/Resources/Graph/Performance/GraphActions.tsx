@@ -54,12 +54,12 @@ const GraphActions = ({
   timeline,
   performanceGraphRef,
 }: Props): JSX.Element => {
+  const classes = useStyles();
+  const { t } = useTranslation();
   const [menuAnchor, setMenuAnchor] = React.useState<Element | null>(null);
   const [exporting, setExporting] = React.useState<boolean>(false);
-  const { t } = useTranslation();
   const { format } = useLocaleDateTimeFormat();
   const history = useHistory();
-  const classes = useStyles();
 
   const openSizeExportMenu = (event: React.MouseEvent): void => {
     setMenuAnchor(event.currentTarget);
@@ -105,22 +105,22 @@ const GraphActions = ({
 
   return (
     <div className={classes.buttonGroup}>
-      <IconButton
-        disableTouchRipple
-        className={classes.buttonLink}
-        color="primary"
-        size="small"
-        title={t(labelPerformancePage)}
-        onClick={goToPerformancePage}
-      >
-        <LaunchIcon style={{ fontSize: 18 }} />
-      </IconButton>
       <ContentWithCircularLoading
         alignCenter={false}
         loading={exporting}
         loadingIndicatorSize={16}
       >
         <>
+          <IconButton
+            disableTouchRipple
+            className={classes.buttonLink}
+            color="primary"
+            size="small"
+            title={t(labelPerformancePage)}
+            onClick={goToPerformancePage}
+          >
+            <LaunchIcon style={{ fontSize: 18 }} />
+          </IconButton>
           <IconButton
             disableTouchRipple
             disabled={isNil(timeline)}

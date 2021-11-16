@@ -980,18 +980,20 @@ if ($form->validate() && $from_list_menu == false) {
          * Before saving, we check if a password macro has changed its name to be able to give it the right password
          * instead of wildcards (PASSWORD_REPLACEMENT_VALUE).
          */
-        foreach ($_REQUEST['macroInput'] as $index => $macroName) {
-            if (array_key_exists('macroOriginalName_' . $index, $_REQUEST)) {
-                $originalMacroName = $_REQUEST['macroOriginalName_' . $index];
-                if ($_REQUEST['macroValue'][$index] === PASSWORD_REPLACEMENT_VALUE) {
-                    /*
-                     * The password has not been changed along with the name, so its value is equal to the wildcard.
-                     * We will therefore recover the password stored for its original name.
-                     */
-                    foreach ($macroArray as $indexMacro => $macroDetails) {
-                        if ($macroDetails['macroInput_#index#'] === $originalMacroName) {
-                            $_REQUEST['macroValue'][$index] = $macroPasswords[$indexMacro]['password'];
-                            break;
+        if (isset($_REQUEST['macroInput'])) {
+            foreach ($_REQUEST['macroInput'] as $index => $macroName) {
+                if (array_key_exists('macroOriginalName_' . $index, $_REQUEST)) {
+                    $originalMacroName = $_REQUEST['macroOriginalName_' . $index];
+                    if ($_REQUEST['macroValue'][$index] === PASSWORD_REPLACEMENT_VALUE) {
+                        /*
+                        * The password has not been changed along with the name, so its value is equal to the wildcard.
+                        * We will therefore recover the password stored for its original name.
+                        */
+                        foreach ($macroArray as $indexMacro => $macroDetails) {
+                            if ($macroDetails['macroInput_#index#'] === $originalMacroName) {
+                                $_REQUEST['macroValue'][$index] = $macroPasswords[$indexMacro]['password'];
+                                break;
+                            }
                         }
                     }
                 }

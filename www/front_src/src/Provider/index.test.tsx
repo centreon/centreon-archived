@@ -8,15 +8,25 @@ import {
   useAcl,
   useDowntime,
   useRefreshInterval,
+  useAcknowledgement,
 } from '@centreon/ui-context';
 
-import AppProvider from '.';
+import Provider from '.';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 const retrievedUser = {
   alias: 'Admin alias',
-  isExportButtonEnabled: false,
+  is_export_button_enabled: true,
+  locale: 'fr_FR.UTF8',
+  name: 'Admin',
+  timezone: 'Europe/Paris',
+  use_deprecated_pages: false,
+};
+
+const contextUser = {
+  alias: 'Admin alias',
+  isExportButtonEnabled: true,
   locale: 'fr_FR.UTF8',
   name: 'Admin',
   timezone: 'Europe/Paris',
@@ -24,6 +34,8 @@ const retrievedUser = {
 };
 
 const retrievedDefaultParameters = {
+  monitoring_default_acknowledgement_persistent: true,
+  monitoring_default_acknowledgement_sticky: false,
   monitoring_default_downtime_duration: 1458,
   monitoring_default_refresh_interval: 15,
 };
@@ -59,10 +71,10 @@ jest.mock('../App', () => {
 });
 
 const renderComponent = (): RenderResult => {
-  return render(<AppProvider />);
+  return render(<Provider />);
 };
 
-describe(AppProvider, () => {
+describe(Provider, () => {
   beforeEach(() => {
     mockedAxios.get
       .mockResolvedValueOnce({
@@ -84,7 +96,7 @@ describe(AppProvider, () => {
 
     await waitFor(() => {
       expect(useAcl().setActionAcl).toHaveBeenCalledWith(retrievedActionsAcl);
-      expect(useUser().setUser).toHaveBeenCalledWith(retrievedUser);
+      expect(useUser().setUser).toHaveBeenCalledWith(contextUser);
       expect(useDowntime().setDowntime).toHaveBeenCalledWith({
         default_duration:
           retrievedDefaultParameters.monitoring_default_downtime_duration,
@@ -92,6 +104,12 @@ describe(AppProvider, () => {
       expect(useRefreshInterval().setRefreshInterval).toHaveBeenCalledWith(
         retrievedDefaultParameters.monitoring_default_refresh_interval,
       );
+      expect(useAcknowledgement().setAcknowledgement).toHaveBeenCalledWith({
+        persistent:
+          retrievedDefaultParameters.monitoring_default_acknowledgement_persistent,
+        sticky:
+          retrievedDefaultParameters.monitoring_default_acknowledgement_sticky,
+      });
     });
   });
 });

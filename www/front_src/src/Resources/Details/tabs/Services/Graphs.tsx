@@ -49,9 +49,9 @@ const ServiceGraphs = ({
   services,
   infiniteScrollTriggerRef,
 }: Props): JSX.Element => {
+  const classes = useStyles();
   const [resourceGraphMousePosition, setResourceGraphMousePosition] =
     React.useState<ResourceGraphMousePosition | null>(null);
-  const classes = useStyles();
 
   const servicesWithGraph = services.filter(
     pipe(path(['links', 'endpoints', 'performance_graph']), isNil, not),

@@ -74,14 +74,6 @@ class AuthenticationException extends \Exception
     /**
      * @return self
      */
-    public static function cannotStartLegacySession(): self
-    {
-        return new self(_('Unable to start Centreon legacy session'));
-    }
-
-    /**
-     * @return self
-     */
     public static function cannotRefreshToken(): self
     {
         return new self(_('Error while refresh token'));
@@ -93,22 +85,6 @@ class AuthenticationException extends \Exception
     public static function sessionExpired(): self
     {
         return new self(_('Your session has expired'));
-    }
-
-    /**
-     * @return self
-     */
-    public static function sessionTokenNotFound(): self
-    {
-        return new self(_('Session token not found'));
-    }
-
-    /**
-     * @return self
-     */
-    public static function tokenNotFound(): self
-    {
-        return new self(_('token not found'));
     }
 
     /**
@@ -154,5 +130,21 @@ class AuthenticationException extends \Exception
     public static function updateAuthenticationTokens(\Throwable $ex): self
     {
         return new self(_('Error while updating authentication tokens'), 0, $ex);
+    }
+
+    /**
+     * @return self
+     */
+    public static function authenticationTokenExpired(): self
+    {
+        return new self(_('Authentication token expired'));
+    }
+
+    /**
+     * @return self
+     */
+    public static function authenticationTokenNotFound(): self
+    {
+        return new self(_('Authentication token not found'));
     }
 }

@@ -105,7 +105,7 @@ class CentreonAuthSSO extends CentreonAuth
             $clientSecret = $this->ssoOptions['openid_connect_client_secret'];
             if (empty($this->ssoOptions['openid_connect_redirect_url'])) {
                 $redirectNoEncode = '{scheme}://{hostname}:{port}'
-                . rtim($this->ssoOptions['oreon_web_path'], "/") . "/" . 'index.php';
+                . "/" . trim($this->ssoOptions['oreon_web_path'], "/") . "/" . 'index.php';
             } else {
                 $redirectNoEncode = $this->ssoOptions['openid_connect_redirect_url'];
             }
@@ -436,7 +436,7 @@ class CentreonAuthSSO extends CentreonAuth
             $this->CentreonLog->insertLog(
                 1,
                 sprintf(
-                    "[%s] [Error] Unable to get Token Access Information: %S, message: %s",
+                    "[%s] [Error] Unable to get Token Access Information: %s, message: %s",
                     $this->source,
                     get_class($e),
                     $e->getMessage()

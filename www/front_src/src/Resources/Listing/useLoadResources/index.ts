@@ -1,9 +1,9 @@
 import * as React from 'react';
 
-import { useSelector } from 'react-redux';
-import { isNil, prop } from 'ramda';
+import { equals, isNil, not, prop } from 'ramda';
 
 import { SelectEntry } from '@centreon/ui';
+import { useUserContext } from '@centreon/ui-context';
 
 import { useResourceContext } from '../../Context';
 import { SortOrder } from '../../models';
@@ -12,6 +12,9 @@ import { searchableFields } from '../../Filter/Criterias/searchQueryLanguage';
 export interface LoadResources {
   initAutorefreshAndLoad: () => void;
 }
+
+const secondSortField = 'last_status_change';
+const defaultSecondSortCriteria = { [secondSortField]: SortOrder.desc };
 
 const useLoadResources = (): LoadResources => {
   const {
@@ -31,9 +34,9 @@ const useLoadResources = (): LoadResources => {
 
   const refreshIntervalRef = React.useRef<number>();
 
-  const refreshIntervalMs = useSelector(
-    (state: { intervals }) => state.intervals.AjaxTimeReloadMonitoring * 1000,
-  );
+  const { refreshInterval } = useUserContext();
+
+  const refreshIntervalMs = refreshInterval * 1000;
 
   const getSort = (): { [sortField: string]: SortOrder } | undefined => {
     const sort = getCriteriaValue('sort');
@@ -44,7 +47,13 @@ const useLoadResources = (): LoadResources => {
 
     const [sortField, sortOrder] = sort as [string, SortOrder];
 
-    return { [sortField]: sortOrder };
+    const secondSortCriteria =
+      not(equals(sortField, secondSortField)) && defaultSecondSortCriteria;
+
+    return {
+      [sortField]: sortOrder,
+      ...secondSortCriteria,
+    };
   };
 
   const load = (): void => {
@@ -68,14 +77,22 @@ const useLoadResources = (): LoadResources => {
       return criteriaValue?.map(prop('id'));
     };
 
+    const getCriteriaNames = (name: string): Array<string> => {
+      const criteriaValue = getCriteriaValue(name) as
+        | Array<SelectEntry>
+        | undefined;
+
+      return criteriaValue?.map(prop('name')) as Array<string>;
+    };
+
     sendRequest({
-      hostGroupIds: getCriteriaIds('host_groups'),
+      hostGroups: getCriteriaNames('host_groups'),
       limit,
-      monitoringServerIds: getCriteriaIds('monitoring_servers'),
+      monitoringServers: getCriteriaNames('monitoring_servers'),
       page,
       resourceTypes: getCriteriaIds('resource_types'),
       search,
-      serviceGroupIds: getCriteriaIds('service_groups'),
+      serviceGroups: getCriteriaNames('service_groups'),
       sort: getSort(),
       states: getCriteriaIds('states'),
       statuses: getCriteriaIds('statuses'),

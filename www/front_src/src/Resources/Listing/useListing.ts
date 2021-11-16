@@ -15,6 +15,11 @@ import {
   getStoredOrDefaultColumnIds,
   storeColumnIds,
 } from './columns/storedColumnIds';
+import {
+  clearCachedLimit,
+  getStoredOrDefaultLimit,
+  storeLimit,
+} from './storedLimit';
 
 type ListingDispatch<T> = React.Dispatch<React.SetStateAction<T>>;
 
@@ -35,22 +40,12 @@ export interface ListingState {
 
 const useListing = (): ListingState => {
   const [listing, setListing] = React.useState<ResourceListing>();
-  const [limit, setLimit] = React.useState<number>(30);
+  const [limit, setLimit] = React.useState<number>(getStoredOrDefaultLimit(30));
   const [page, setPage] = React.useState<number>();
   const [enabledAutorefresh, setEnabledAutorefresh] = React.useState(true);
   const [selectedColumnIds, setSelectedColumnIds] = React.useState(
     getStoredOrDefaultColumnIds(defaultSelectedColumnIds),
   );
-
-  React.useEffect(() => {
-    storeColumnIds(selectedColumnIds);
-  }, [selectedColumnIds]);
-
-  React.useEffect(() => {
-    return (): void => {
-      clearCachedColumnIds();
-    };
-  });
 
   const { sendRequest, sending } = useRequest<ResourceListing>({
     getErrorMessage: ifElse(
@@ -59,6 +54,21 @@ const useListing = (): ListingState => {
       pathOr(labelSomethingWentWrong, ['response', 'data', 'message']),
     ),
     request: listResources,
+  });
+
+  React.useEffect(() => {
+    storeColumnIds(selectedColumnIds);
+  }, [selectedColumnIds]);
+
+  React.useEffect(() => {
+    storeLimit(limit);
+  }, [limit]);
+
+  React.useEffect(() => {
+    return (): void => {
+      clearCachedColumnIds();
+      clearCachedLimit();
+    };
   });
 
   return {
