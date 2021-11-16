@@ -6,12 +6,12 @@ import { TimeValue } from '../models';
 
 export type MousePosition = [number, number] | null;
 
-interface ChangeMousePositionAndTimeValueProps {
+interface PositionTimeValue {
   position: MousePosition;
   timeValue: TimeValue | null;
 }
 
-interface ChangeTimeValueProps {
+interface NewTimeValueInViewportState {
   isInViewport?: boolean;
   newTimeValue: TimeValue | null;
 }
@@ -22,7 +22,11 @@ export const isListingGraphOpenAtom = atom(false);
 
 export const changeTimeValueDerivedAtom = atom(
   null,
-  (_, set, { newTimeValue, isInViewport }: ChangeTimeValueProps): void => {
+  (
+    _,
+    set,
+    { newTimeValue, isInViewport }: NewTimeValueInViewportState,
+  ): void => {
     if (not(isInViewport)) {
       return;
     }
@@ -32,11 +36,7 @@ export const changeTimeValueDerivedAtom = atom(
 
 export const changeMousePositionAndTimeValueDerivedAtom = atom(
   null,
-  (
-    _,
-    set,
-    { position, timeValue }: ChangeMousePositionAndTimeValueProps,
-  ): void => {
+  (_, set, { position, timeValue }: PositionTimeValue): void => {
     if (isNil(position) || isNil(timeValue)) {
       set(mousePositionAtom, null);
       set(timeValueAtom, null);

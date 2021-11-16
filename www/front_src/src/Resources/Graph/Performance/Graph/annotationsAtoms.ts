@@ -33,11 +33,11 @@ interface ChangeAnnotationHoveredProps {
 }
 
 interface GetIsBetweenProps {
-  xEnd: number;
-  xStart: number;
+  end: number;
+  start: number;
 }
 
-interface GetColorProps {
+interface AnnotationColor {
   annotation: AnnotationAtom;
   color: string;
 }
@@ -47,7 +47,7 @@ interface AnnotationAtom {
   resourceId: string;
 }
 
-interface GetIsNotHoveredOrNilProps {
+interface AnnotationWithHoveredState {
   annotation: AnnotationAtom | undefined;
   hoveredAnnotation: AnnotationAtom | undefined;
 }
@@ -56,9 +56,9 @@ export const annotationHoveredAtom = atom<AnnotationAtom | undefined>(
   undefined,
 );
 
-export const getIsBetween = ({ xStart, xEnd }: GetIsBetweenProps): Pred => {
-  const gteX = gte(__, xStart);
-  const lteX = lte(__, xEnd);
+export const getIsBetween = ({ start, end }: GetIsBetweenProps): Pred => {
+  const gteX = gte(__, start);
+  const lteX = lte(__, end);
 
   return both(gteX, lteX);
 };
@@ -77,8 +77,8 @@ export const changeAnnotationHoveredDerivedAtom = atom(
     }: ChangeAnnotationHoveredProps,
   ) => {
     const isWithinErrorMargin = getIsBetween({
-      xEnd: inc(mouseX),
-      xStart: dec(mouseX),
+      end: inc(mouseX),
+      start: dec(mouseX),
     });
 
     const annotationHovered = find(
@@ -88,10 +88,10 @@ export const changeAnnotationHoveredDerivedAtom = atom(
         }
 
         const isBetweenStartAndEndDate = getIsBetween({
-          xEnd: xScale(
+          end: xScale(
             endDate ? new Date(endDate) : last(xScale.domain()) || graphWidth,
           ),
-          xStart: xScale(new Date(startDate as string)),
+          start: xScale(new Date(startDate as string)),
         });
 
         return isBetweenStartAndEndDate(mouseX);
@@ -109,7 +109,7 @@ export const changeAnnotationHoveredDerivedAtom = atom(
 const getIsNotHoveredOrNil = ({
   hoveredAnnotation,
   annotation,
-}: GetIsNotHoveredOrNilProps): boolean =>
+}: AnnotationWithHoveredState): boolean =>
   or(
     isNil(hoveredAnnotation?.event),
     not(equals(hoveredAnnotation?.resourceId, annotation?.resourceId)),
@@ -145,7 +145,7 @@ export const getStrokeOpacityDerivedAtom = atom(
 
 export const getFillColorDerivedAtom = atom(
   (get) =>
-    ({ color, annotation }: GetColorProps): string =>
+    ({ color, annotation }: AnnotationColor): string =>
       cond<AnnotationAtom | undefined, string>([
         [
           (hoveredAnnotation): boolean =>
@@ -162,7 +162,7 @@ export const getFillColorDerivedAtom = atom(
 
 export const getIconColorDerivedAtom = atom(
   (get) =>
-    ({ color, annotation }: GetColorProps): string =>
+    ({ color, annotation }: AnnotationColor): string =>
       cond<AnnotationAtom | undefined, string>([
         [
           (hoveredAnnotation): boolean =>
