@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { render, act, waitFor, RenderResult } from '@testing-library/react';
 import { Provider } from 'jotai';
 
-import { useUserContext } from '@centreon/ui-context';
+import { refreshIntervalAtom, userAtom } from '@centreon/ui-context';
 
 import useFilter from '../../testUtils/useFilter';
 import useListing from '../useListing';
@@ -21,18 +21,11 @@ jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
 }));
 
-const mockUserContext = {
+const mockUser = {
   locale: 'en',
-  refreshInterval: 60,
   timezone: 'Europe/Paris',
 };
-
-jest.mock('@centreon/centreon-frontend/packages/ui-context', () => ({
-  ...(jest.requireActual('@centreon/ui-context') as jest.Mocked<unknown>),
-  useUserContext: jest.fn(),
-}));
-
-const mockedUserContext = useUserContext as jest.Mock;
+const mockRefreshInterval = 60;
 
 let context: ResourceContext;
 
@@ -61,7 +54,12 @@ const TestComponent = (): JSX.Element => {
 };
 
 const TestComponentWithJotai = (): JSX.Element => (
-  <Provider>
+  <Provider
+    initialValues={[
+      [userAtom, mockUser],
+      [refreshIntervalAtom, mockRefreshInterval],
+    ]}
+  >
     <TestComponent />
   </Provider>
 );
@@ -79,7 +77,6 @@ const mockedSelector = useSelector as jest.Mock;
 
 describe(useLoadResources, () => {
   beforeEach(() => {
-    mockedUserContext.mockReturnValue(mockUserContext);
     mockedSelector.mockImplementation((callback) => {
       return callback(appState);
     });
@@ -97,7 +94,6 @@ describe(useLoadResources, () => {
   });
 
   afterEach(() => {
-    mockedUserContext.mockReset();
     mockedAxios.get.mockReset();
   });
 

@@ -13,7 +13,10 @@ import userEvent from '@testing-library/user-event';
 import { Provider } from 'jotai';
 
 import { setUrlQueryParameters, getUrlQueryParameters } from '@centreon/ui';
-import { useUserContext } from '@centreon/centreon-frontend/packages/ui-context/src';
+import {
+  refreshIntervalAtom,
+  userAtom,
+} from '@centreon/centreon-frontend/packages/ui-context/src';
 
 import {
   labelResource,
@@ -56,18 +59,12 @@ import Filter from '.';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
-const mockUserContext = {
+const mockUser = {
+  isExportButtonEnabled: true,
   locale: 'en',
-  refreshInterval: 60,
   timezone: 'Europe/Paris',
 };
-
-jest.mock('@centreon/centreon-frontend/packages/ui-context', () => ({
-  ...(jest.requireActual('@centreon/ui-context') as jest.Mocked<unknown>),
-  useUserContext: jest.fn(),
-}));
-
-const mockedUserContext = useUserContext as jest.Mock;
+const mockRefreshInterval = 60;
 
 jest.useFakeTimers();
 
@@ -226,7 +223,12 @@ const FilterTest = (): JSX.Element | null => {
 };
 
 const FilterTestWitJotai = (): JSX.Element => (
-  <Provider>
+  <Provider
+    initialValues={[
+      [userAtom, mockUser],
+      [refreshIntervalAtom, mockRefreshInterval],
+    ]}
+  >
     <FilterTest />
   </Provider>
 );
@@ -254,13 +256,11 @@ const dynamicCriteriaRequests = (): void => {
       },
     })
     .mockResolvedValueOnce({ data: {} })
-    .mockResolvedValueOnce({ data: {} })
     .mockResolvedValue({ data: hostGroupsData });
 };
 
 describe(Filter, () => {
   beforeEach(() => {
-    mockedUserContext.mockReturnValue(mockUserContext);
     mockedAxios.get
       .mockResolvedValueOnce({
         data: {
@@ -276,7 +276,6 @@ describe(Filter, () => {
   });
 
   afterEach(() => {
-    mockedUserContext.mockReset();
     mockedAxios.get.mockReset();
     mockedLocalStorageSetItem.mockReset();
     mockedLocalStorageGetItem.mockReset();

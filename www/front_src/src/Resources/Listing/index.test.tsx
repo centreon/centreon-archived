@@ -33,7 +33,10 @@ import userEvent from '@testing-library/user-event';
 import { Provider } from 'jotai';
 
 import { Column } from '@centreon/ui';
-import { useUserContext } from '@centreon/ui-context';
+import {
+  refreshIntervalAtom,
+  userAtom,
+} from '@centreon/centreon-frontend/packages/ui-context/src';
 
 import { Resource, ResourceType } from '../models';
 import Context, { ResourceContext } from '../testUtils/Context';
@@ -61,18 +64,12 @@ const columns = getColumns({
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
-const mockUserContext = {
+const mockUser = {
+  isExportButtonEnabled: true,
   locale: 'en',
-  refreshInterval: 60,
   timezone: 'Europe/Paris',
 };
-
-jest.mock('@centreon/centreon-frontend/packages/ui-context', () => ({
-  ...(jest.requireActual('@centreon/ui-context') as jest.Mocked<unknown>),
-  useUserContext: jest.fn(),
-}));
-
-const mockedUserContext = useUserContext as jest.Mock;
+const mockRefreshInterval = 60;
 
 jest.mock('../icons/Downtime');
 jest.useFakeTimers();
@@ -160,7 +157,12 @@ const ListingTest = (): JSX.Element => {
 };
 
 const ListingTestWithJotai = (): JSX.Element => (
-  <Provider>
+  <Provider
+    initialValues={[
+      [userAtom, mockUser],
+      [refreshIntervalAtom, mockRefreshInterval],
+    ]}
+  >
     <ListingTest />
   </Provider>
 );
@@ -169,8 +171,6 @@ const renderListing = (): RenderResult => render(<ListingTestWithJotai />);
 
 describe(Listing, () => {
   beforeEach(() => {
-    mockedUserContext.mockReturnValue(mockUserContext);
-
     mockedAxios.get
       .mockResolvedValueOnce({
         data: {
@@ -186,7 +186,6 @@ describe(Listing, () => {
   });
 
   afterEach(() => {
-    mockedUserContext.mockReset();
     mockedAxios.get.mockReset();
   });
 
