@@ -4,16 +4,9 @@ import { useTranslation } from 'react-i18next';
 import { always, cond, lt, lte, map, not, pick, T } from 'ramda';
 import { Responsive } from '@visx/visx';
 
-import {
-  Paper,
-  makeStyles,
-  ButtonGroup,
-  Button,
-  useTheme,
-  Tooltip,
-  Theme,
-} from '@material-ui/core';
-import { CreateCSSProperties } from '@material-ui/styles';
+import { Paper, ButtonGroup, Button, useTheme, Tooltip, Theme } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import { CreateCSSProperties } from '@mui/styles';
 
 import { useMemoComponent } from '@centreon/ui';
 
@@ -39,7 +32,7 @@ const useStyles = makeStyles<Theme, StylesProps>((theme) => ({
     backgroundColor: disablePaper ? 'transparent' : 'undefined',
     border: disablePaper ? 'unset' : 'undefined',
     boxShadow: disablePaper ? 'unset' : 'undefined',
-    columnGap: `${theme.spacing(2)}px`,
+    columnGap: theme.spacing(2),
     display: 'grid',
     gridTemplateColumns: `repeat(3, auto)`,
     justifyContent: 'center',

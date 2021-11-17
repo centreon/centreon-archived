@@ -4,7 +4,8 @@ import { equals, last, not, isEmpty } from 'ramda';
 import { useTranslation } from 'react-i18next';
 import { Dayjs } from 'dayjs';
 
-import { Typography, Paper, makeStyles } from '@material-ui/core';
+import { Typography, Paper } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import {
   Timeline,
   TimelineConnector,
@@ -12,7 +13,7 @@ import {
   TimelineDot,
   TimelineItem,
   TimelineSeparator,
-} from '@material-ui/lab';
+} from '@mui/lab';
 
 import { useUserContext } from '@centreon/ui-context';
 import { useLocaleDateTimeFormat } from '@centreon/centreon-frontend/packages/centreon-ui/src';

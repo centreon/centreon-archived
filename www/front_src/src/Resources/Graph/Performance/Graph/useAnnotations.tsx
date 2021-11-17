@@ -20,7 +20,7 @@ import {
 } from 'ramda';
 import { ScaleTime } from 'd3-scale';
 
-import { alpha } from '@material-ui/core';
+import { alpha } from '@mui/material';
 
 import { TimelineEvent } from '../../../Details/tabs/Timeline/models';
 

@@ -3,7 +3,9 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { prop, isEmpty, path, isNil } from 'ramda';
 
-import { makeStyles, Paper } from '@material-ui/core';
+import { Paper } from '@mui/material';
+
+import makeStyles from '@mui/styles/makeStyles';
 
 import {
   useRequest,

@@ -3,15 +3,9 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { isEmpty, pipe, reject, slice } from 'ramda';
 
-import {
-  Typography,
-  Divider,
-  CardActions,
-  Button,
-  makeStyles,
-  Theme,
-} from '@material-ui/core';
-import { CreateCSSProperties } from '@material-ui/core/styles/withStyles';
+import { Typography, Divider, CardActions, Button, Theme } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import { CreateCSSProperties } from '@mui/styles';
 
 import { getStatusColors } from '@centreon/ui';
 

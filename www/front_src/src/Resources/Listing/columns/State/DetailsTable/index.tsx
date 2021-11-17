@@ -10,8 +10,8 @@ import {
   TableHead,
   TableCell,
   TableBody,
-} from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
+} from '@mui/material';
+import { Skeleton } from '@mui/material';
 
 import {
   useRequest,

@@ -2,7 +2,9 @@ import * as React from 'react';
 
 import { path, isNil, or, not } from 'ramda';
 
-import { Paper, Theme, makeStyles } from '@material-ui/core';
+import { Paper, Theme } from '@mui/material';
+
+import makeStyles from '@mui/styles/makeStyles';
 
 import { useRequest, ListingModel } from '@centreon/ui';
 import { useUserContext } from '@centreon/ui-context';

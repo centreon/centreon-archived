@@ -3,7 +3,9 @@ import * as React from 'react';
 import axios from 'axios';
 import * as yup from 'yup';
 
-import { ClickAwayListener, makeStyles } from '@material-ui/core';
+import { ClickAwayListener } from '@mui/material';
+
+import makeStyles from '@mui/styles/makeStyles';
 
 import { useUserContext } from '@centreon/ui-context';
 

@@ -3,7 +3,7 @@ import * as React from 'react';
 import { equals, includes, not } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
-import { useTheme, alpha } from '@material-ui/core';
+import { useTheme, alpha } from '@mui/material';
 
 import { MemoizedListing as Listing, useSnackbar } from '@centreon/ui';
 

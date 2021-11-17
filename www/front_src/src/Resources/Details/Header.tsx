@@ -6,18 +6,12 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { hasPath, isNil, not, path, prop } from 'ramda';
 
-import {
-  Grid,
-  Typography,
-  makeStyles,
-  Theme,
-  Link,
-  Tooltip,
-} from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
-import CopyIcon from '@material-ui/icons/FileCopy';
-import SettingsIcon from '@material-ui/icons/Settings';
-import { CreateCSSProperties } from '@material-ui/styles';
+import { Grid, Typography, Theme, Link, Tooltip } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import { Skeleton } from '@mui/material';
+import CopyIcon from '@mui/icons-material/FileCopy';
+import SettingsIcon from '@mui/icons-material/Settings';
+import { CreateCSSProperties } from '@mui/styles';
 
 import {
   StatusChip,
@@ -100,7 +94,7 @@ const useStylesHeaderContent = makeStyles((theme) => ({
 const LoadingSkeleton = (): JSX.Element => (
   <Grid container item alignItems="center" spacing={2} style={{ flexGrow: 1 }}>
     <Grid item>
-      <Skeleton height={25} variant="circle" width={25} />
+      <Skeleton height={25} variant="circular" width={25} />
     </Grid>
     <Grid item>
       <Skeleton height={25} width={250} />

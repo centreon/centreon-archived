@@ -1,6 +1,7 @@
 import * as React from 'react';
 
-import { Tooltip, makeStyles } from '@material-ui/core';
+import { Tooltip } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 
 const useStyles = makeStyles(() => ({
   iconButton: {
@@ -30,7 +31,6 @@ const HoverChip = ({ children, Chip, label, onClick }: Props): JSX.Element => {
 
   return (
     <Tooltip
-      interactive
       PopperProps={{
         onClick: (e): void => {
           e.preventDefault();

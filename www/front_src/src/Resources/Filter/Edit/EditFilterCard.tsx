@@ -14,8 +14,8 @@ import {
 } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
-import DeleteIcon from '@material-ui/icons/Delete';
-import { makeStyles } from '@material-ui/core';
+import DeleteIcon from '@mui/icons-material/Delete';
+import makeStyles from '@mui/styles/makeStyles';
 
 import {
   ContentWithCircularLoading,
@@ -181,7 +181,7 @@ const EditFilterCardContent = ({
         loading={sendingRequest}
         loadingIndicatorSize={24}
       >
-        <IconButton title={t(labelDelete)} onClick={askDelete}>
+        <IconButton title={t(labelDelete)} onClick={askDelete} size="large">
           <DeleteIcon fontSize="small" />
         </IconButton>
       </ContentWithCircularLoading>

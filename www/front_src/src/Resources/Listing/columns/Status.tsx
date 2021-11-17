@@ -6,9 +6,9 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { pathEq } from 'ramda';
 
-import { makeStyles } from '@material-ui/core';
-import IconAcknowledge from '@material-ui/icons/Person';
-import IconCheck from '@material-ui/icons/Sync';
+import makeStyles from '@mui/styles/makeStyles';
+import IconAcknowledge from '@mui/icons-material/Person';
+import IconCheck from '@mui/icons-material/Sync';
 
 import {
   ComponentColumnProps,
@@ -90,7 +90,7 @@ const StatusColumnOnHover = ({
           labelAction: labelAcknowledge,
         })}
         onClick={(): void => actions.onAcknowledge(row)}
-      >
+        size="large">
         <IconAcknowledge fontSize="small" />
       </IconButton>
       <IconButton
@@ -101,7 +101,7 @@ const StatusColumnOnHover = ({
           labelAction: labelSetDowntime,
         })}
         onClick={(): void => actions.onDowntime(row)}
-      >
+        size="large">
         <IconDowntime fontSize="small" />
       </IconButton>
       <IconButton
@@ -112,7 +112,7 @@ const StatusColumnOnHover = ({
           labelAction: labelCheck,
         })}
         onClick={(): void => actions.onCheck(row)}
-      >
+        size="large">
         <IconCheck fontSize="small" />
       </IconButton>
     </div>

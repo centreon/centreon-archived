@@ -9,7 +9,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import classnames from 'classnames';
 
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 
 import { history } from '../../store';
 

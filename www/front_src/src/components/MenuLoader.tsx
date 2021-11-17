@@ -1,7 +1,8 @@
 import * as React from 'react';
 
-import { useTheme, makeStyles, alpha } from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
+import { useTheme, alpha } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import { Skeleton } from '@mui/material';
 
 const useStyles = makeStyles((theme) => ({
   skeleton: {

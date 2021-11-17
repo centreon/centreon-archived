@@ -13,8 +13,9 @@ import { ConnectedRouter } from 'connected-react-router';
 import Fullscreen from 'react-fullscreen-crossbrowser';
 import queryString from 'query-string';
 
-import FullscreenIcon from '@material-ui/icons/Fullscreen';
-import { withStyles, createStyles, Fab } from '@material-ui/core';
+import FullscreenIcon from '@mui/icons-material/Fullscreen';
+import { Fab } from '@mui/material';
+import { styled } from '@mui/system';
 
 import { ThemeProvider } from '@centreon/ui';
 
@@ -28,39 +29,41 @@ import PageLoader from './components/PageLoader';
 
 const MainRouter = React.lazy(() => import('./components/mainRouter'));
 
-const styles = createStyles({
-  content: {
-    display: 'flex',
-    flexDirection: 'column',
-    height: ' 100vh',
-    overflow: 'hidden',
-    position: 'relative',
-    transition: 'all 0.3s',
-    width: '100%',
-  },
-  fullScreenWrapper: {
-    flexGrow: 1,
-    height: '100%',
-    overflow: 'hidden',
-    width: '100%',
-  },
-  fullscreenButton: {
-    bottom: '10px',
-    position: 'absolute',
-    right: '20px',
-    zIndex: 1500,
-  },
-  mainContent: {
-    backgroundcolor: 'white',
-    height: '100%',
-    width: '100%',
-  },
-  wrapper: {
-    alignItems: 'stretch',
-    display: 'flex',
-    height: '100%',
-    overflow: 'hidden',
-  },
+const Content = styled('div')({
+  display: 'flex',
+  flexDirection: 'column',
+  height: ' 100vh',
+  overflow: 'hidden',
+  position: 'relative',
+  transition: 'all 0.3s',
+  width: '100%',
+});
+
+const FullscreenWrapper = styled('div')({
+  flexGrow: 1,
+  height: '100%',
+  overflow: 'hidden',
+  width: '100%',
+});
+
+const FullscreenButton = styled(Fab)({
+  bottom: '10px',
+  position: 'absolute',
+  right: '20px',
+  zIndex: 1500,
+});
+
+const RouterWrapper = styled('div')({
+  backgroundcolor: 'white',
+  height: '100%',
+  width: '100%',
+});
+
+const Wrapper = styled('div')({
+  alignItems: 'stretch',
+  display: 'flex',
+  height: '100%',
+  overflow: 'hidden',
 });
 
 // Extends Window interface
@@ -72,7 +75,6 @@ declare global {
 }
 
 interface Props {
-  classes;
   fetchExternalComponents: () => void;
 }
 
@@ -151,20 +153,15 @@ class App extends Component<Props, State> {
   public render(): ReactNode {
     const min = this.getMinArgument();
 
-    const { classes } = this.props;
-
     return (
       <Suspense fallback={<PageLoader />}>
         <ConnectedRouter history={history}>
           <ThemeProvider>
-            <div className={classes.wrapper}>
+            <Wrapper>
               {!min && <Nagigation />}
-              <div className={classes.content} id="content">
+              <Content id="content">
                 {!min && <Header />}
-                <div
-                  className={classes.fullScreenWrapper}
-                  id="fullscreen-wrapper"
-                >
+                <FullscreenWrapper id="fullscreen-wrapper">
                   <Fullscreen
                     enabled={this.state.isFullscreenEnabled}
                     onChange={(isFullscreenEnabled): void => {
@@ -172,22 +169,21 @@ class App extends Component<Props, State> {
                     }}
                     onClose={this.removeFullscreenParams}
                   >
-                    <div className={classes.mainContent}>
+                    <RouterWrapper>
                       <MainRouter />
-                    </div>
+                    </RouterWrapper>
                   </Fullscreen>
-                </div>
+                </FullscreenWrapper>
                 {!min && <Footer />}
-              </div>
-              <Fab
-                className={classes.fullscreenButton}
+              </Content>
+              <FullscreenButton
                 color="default"
                 size="small"
                 onClick={this.goFull}
               >
                 <FullscreenIcon />
-              </Fab>
-            </div>
+              </FullscreenButton>
+            </Wrapper>
           </ThemeProvider>
         </ConnectedRouter>
       </Suspense>
@@ -207,4 +203,4 @@ const mapDispatchToProps = (dispatch: (any) => void): DispatchProps => {
   };
 };
 
-export default connect(null, mapDispatchToProps)(withStyles(styles)(App));
+export default connect(null, mapDispatchToProps)(App);

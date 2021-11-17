@@ -2,7 +2,9 @@ import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import { Card, Typography, makeStyles } from '@material-ui/core';
+import { Card, Typography } from '@mui/material';
+
+import makeStyles from '@mui/styles/makeStyles';
 
 import { labelComment } from '../../../translatedLabels';
 

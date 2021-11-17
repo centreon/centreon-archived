@@ -2,7 +2,9 @@ import * as React from 'react';
 
 import { isNil, isEmpty } from 'ramda';
 
-import { Avatar, makeStyles, Tooltip } from '@material-ui/core';
+import { Avatar, Tooltip } from '@mui/material';
+
+import makeStyles from '@mui/styles/makeStyles';
 
 import { IconButton } from '@centreon/ui';
 
@@ -63,7 +65,7 @@ const UrlColumn = ({
           onClick={(): null => {
             return null;
           }}
-        >
+          size="large">
           {icon}
         </IconButton>
       </a>

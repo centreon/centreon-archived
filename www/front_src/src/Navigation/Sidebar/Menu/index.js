@@ -16,9 +16,9 @@ import clsx from 'clsx';
 import { Link as RouterLink } from 'react-router-dom';
 import { withRouter } from 'react-router';
 
-import Link from '@material-ui/core/Link';
-import { Typography, styled } from '@material-ui/core';
-import ArrowForwardIcon from '@material-ui/icons/ArrowForwardIos';
+import Link from '@mui/material/Link';
+import { Typography, styled } from '@mui/material';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForwardIos';
 
 import BoundingBox from './BoundingBox';
 import styles from './menu.scss';

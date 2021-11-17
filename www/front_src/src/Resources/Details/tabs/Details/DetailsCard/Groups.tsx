@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { equals } from 'ramda';
 
-import { Grid, Chip } from '@material-ui/core';
+import { Grid, Chip } from '@mui/material';
 
 import { CriteriaNames } from '../../../../Filter/Criterias/models';
 import { ResourceDetails } from '../../../models';

@@ -16,7 +16,6 @@ import { useTranslation } from 'react-i18next';
 import {
   Button,
   ClickAwayListener,
-  makeStyles,
   Paper,
   Typography,
   Theme,
@@ -24,8 +23,9 @@ import {
   useTheme,
   CircularProgress,
   Tooltip,
-} from '@material-ui/core';
-import { grey } from '@material-ui/core/colors';
+} from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import { grey } from '@mui/material/colors';
 
 import {
   dateTimeFormat,

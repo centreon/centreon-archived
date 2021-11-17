@@ -53,7 +53,7 @@ const CriteriaContent = ({
   };
 
   if (isNil(options)) {
-    const getOptionSelected = (option, selectedValue): boolean =>
+    const isOptionEqualToValue = (option, selectedValue): boolean =>
       equals(option.name, selectedValue.name);
 
     const getEndpoint = ({ search, page }): string =>
@@ -69,7 +69,7 @@ const CriteriaContent = ({
         disableSortedOptions
         field="name"
         getEndpoint={getEndpoint}
-        getOptionSelected={getOptionSelected}
+        isOptionEqualToValue={isOptionEqualToValue}
         value={value}
         onChange={(_, updatedValue): void => {
           changeCriteria(updatedValue);

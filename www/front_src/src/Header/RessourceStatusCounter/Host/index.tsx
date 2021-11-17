@@ -7,7 +7,7 @@ import numeral from 'numeral';
 import { Link } from 'react-router-dom';
 import { useTranslation, withTranslation } from 'react-i18next';
 
-import HostIcon from '@material-ui/icons/Dns';
+import HostIcon from '@mui/icons-material/Dns';
 
 import {
   IconHeader,

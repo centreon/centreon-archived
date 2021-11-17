@@ -4,7 +4,7 @@ import { Shape } from '@visx/visx';
 import { ScaleTime } from 'd3-scale';
 import { max, prop } from 'ramda';
 
-import { makeStyles } from '@material-ui/core';
+import makeStyles from '@mui/styles/makeStyles';
 
 import { useLocaleDateTimeFormat, useMemoComponent } from '@centreon/ui';
 

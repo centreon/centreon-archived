@@ -4,9 +4,10 @@ import { isNil } from 'ramda';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router';
 
-import { makeStyles, Menu, MenuItem } from '@material-ui/core';
-import SaveAsImageIcon from '@material-ui/icons/SaveAlt';
-import LaunchIcon from '@material-ui/icons/Launch';
+import { Menu, MenuItem } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import SaveAsImageIcon from '@mui/icons-material/SaveAlt';
+import LaunchIcon from '@mui/icons-material/Launch';
 
 import {
   ContentWithCircularLoading,
@@ -37,7 +38,7 @@ interface Props {
 
 const useStyles = makeStyles((theme) => ({
   buttonGroup: {
-    columnGap: `${theme.spacing(1)}px`,
+    columnGap: theme.spacing(1),
     display: 'flex',
     flexDirection: 'row',
   },
@@ -126,7 +127,7 @@ const GraphActions = ({
             disabled={isNil(timeline)}
             title={t(labelExportToPng)}
             onClick={openSizeExportMenu}
-          >
+            size="large">
             <SaveAsImageIcon style={{ fontSize: 18 }} />
           </IconButton>
           <Menu

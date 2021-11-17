@@ -23,15 +23,10 @@ import {
 } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
-import CloseIcon from '@material-ui/icons/Close';
-import {
-  CircularProgress,
-  ClickAwayListener,
-  makeStyles,
-  MenuItem,
-  Paper,
-  Popper,
-} from '@material-ui/core';
+import CloseIcon from '@mui/icons-material/Close';
+import { CircularProgress, ClickAwayListener, MenuItem, Paper, Popper } from '@mui/material';
+
+import makeStyles from '@mui/styles/makeStyles';
 
 import {
   MemoizedFilter,

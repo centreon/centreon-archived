@@ -3,7 +3,9 @@ import * as React from 'react';
 import clsx from 'clsx';
 import { take, takeLast } from 'ramda';
 
-import { Typography, makeStyles } from '@material-ui/core';
+import { Typography } from '@mui/material';
+
+import makeStyles from '@mui/styles/makeStyles';
 
 import LegendMarker, { LegendMarkerVariant } from '../Legend/Marker';
 

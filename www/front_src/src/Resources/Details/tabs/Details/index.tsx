@@ -3,8 +3,9 @@ import * as React from 'react';
 import { equals, isNil } from 'ramda';
 import { Responsive } from '@visx/visx';
 
-import { styled, makeStyles } from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
+import { styled } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import { Skeleton } from '@mui/material';
 
 import { ResourceDetails } from '../../models';
 

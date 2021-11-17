@@ -13,18 +13,10 @@ import {
 } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
-import {
-  Typography,
-  makeStyles,
-  useTheme,
-  alpha,
-  Theme,
-  Tooltip,
-  Box,
-  Button,
-} from '@material-ui/core';
-import BarChartIcon from '@material-ui/icons/BarChart';
-import { CreateCSSProperties } from '@material-ui/styles';
+import { Typography, useTheme, alpha, Theme, Tooltip, Box, Button } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import BarChartIcon from '@mui/icons-material/BarChart';
+import { CreateCSSProperties } from '@mui/styles';
 
 import { ResourceContext, useResourceContext } from '../../../Context';
 import { Line } from '../models';
@@ -90,7 +82,7 @@ const useStyles = makeStyles<Theme, MakeStylesProps, string>((theme) => ({
   minMaxAvgContainer: {
     columnGap: theme.spacing(0.5),
     display: 'grid',
-    gridAutoRows: `${theme.spacing(2)}px`,
+    gridAutoRows: theme.spacing(2),
     gridTemplateColumns: 'repeat(2, min-content)',
     whiteSpace: 'nowrap',
   },

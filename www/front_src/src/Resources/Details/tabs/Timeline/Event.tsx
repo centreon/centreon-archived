@@ -7,11 +7,12 @@ import { prop, isNil, filter, equals } from 'ramda';
 import { TFunction, useTranslation } from 'react-i18next';
 import dayjs, { Dayjs } from 'dayjs';
 
-import { makeStyles, Chip, Typography } from '@material-ui/core';
-import EventIcon from '@material-ui/icons/Event';
-import CommentIcon from '@material-ui/icons/Comment';
-import NotificationIcon from '@material-ui/icons/Notifications';
-import FaceIcon from '@material-ui/icons/Face';
+import { Chip, Typography } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import EventIcon from '@mui/icons-material/Event';
+import CommentIcon from '@mui/icons-material/Comment';
+import NotificationIcon from '@mui/icons-material/Notifications';
+import FaceIcon from '@mui/icons-material/Face';
 
 import { useLocaleDateTimeFormat } from '@centreon/ui';
 

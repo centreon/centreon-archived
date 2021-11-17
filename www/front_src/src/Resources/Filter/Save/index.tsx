@@ -13,13 +13,9 @@ import {
 } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
-import {
-  Menu,
-  MenuItem,
-  CircularProgress,
-  makeStyles,
-} from '@material-ui/core';
-import SettingsIcon from '@material-ui/icons/Settings';
+import { Menu, MenuItem, CircularProgress } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import SettingsIcon from '@mui/icons-material/Settings';
 
 import { IconButton, useRequest, useSnackbar } from '@centreon/ui';
 
@@ -148,43 +144,41 @@ const SaveFilterMenuContent = ({
   const canSaveFilter = and(isFilterDirty(), not(isNewFilter));
   const canSaveFilterAsNew = or(isFilterDirty(), isNewFilter);
 
-  return (
-    <>
-      <IconButton title={t(labelSaveFilter)} onClick={openSaveFilterMenu}>
-        <SettingsIcon />
-      </IconButton>
-      <Menu
-        keepMounted
-        anchorEl={menuAnchor}
-        open={Boolean(menuAnchor)}
-        onClose={closeSaveFilterMenu}
+  return <>
+    <IconButton title={t(labelSaveFilter)} onClick={openSaveFilterMenu} size="large">
+      <SettingsIcon />
+    </IconButton>
+    <Menu
+      keepMounted
+      anchorEl={menuAnchor}
+      open={Boolean(menuAnchor)}
+      onClose={closeSaveFilterMenu}
+    >
+      <MenuItem
+        disabled={!canSaveFilterAsNew}
+        onClick={openCreateFilterDialog}
       >
-        <MenuItem
-          disabled={!canSaveFilterAsNew}
-          onClick={openCreateFilterDialog}
-        >
-          {t(labelSaveAsNew)}
-        </MenuItem>
-        <MenuItem disabled={!canSaveFilter} onClick={updateFilter}>
-          <div className={classes.save}>
-            <span>{t(labelSave)}</span>
-            {sendingUpdateFilterRequest && <CircularProgress size={15} />}
-          </div>
-        </MenuItem>
-        <MenuItem disabled={isEmpty(customFilters)} onClick={openEditPanel}>
-          {t(labelEditFilters)}
-        </MenuItem>
-      </Menu>
-      {createFilterDialogOpen && (
-        <CreateFilterDialog
-          open
-          filter={currentFilter}
-          onCancel={closeCreateFilterDialog}
-          onCreate={confirmCreateFilter}
-        />
-      )}
-    </>
-  );
+        {t(labelSaveAsNew)}
+      </MenuItem>
+      <MenuItem disabled={!canSaveFilter} onClick={updateFilter}>
+        <div className={classes.save}>
+          <span>{t(labelSave)}</span>
+          {sendingUpdateFilterRequest && <CircularProgress size={15} />}
+        </div>
+      </MenuItem>
+      <MenuItem disabled={isEmpty(customFilters)} onClick={openEditPanel}>
+        {t(labelEditFilters)}
+      </MenuItem>
+    </Menu>
+    {createFilterDialogOpen && (
+      <CreateFilterDialog
+        open
+        filter={currentFilter}
+        onCancel={closeCreateFilterDialog}
+        onCreate={confirmCreateFilter}
+      />
+    )}
+  </>;
 };
 
 const memoProps = [

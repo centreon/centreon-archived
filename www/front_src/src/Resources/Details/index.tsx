@@ -12,8 +12,8 @@ import {
 } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
-import { useTheme, alpha } from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
+import { useTheme, alpha } from '@mui/material';
+import { Skeleton } from '@mui/material';
 
 import { MemoizedPanel as Panel, Tab } from '@centreon/ui';
 

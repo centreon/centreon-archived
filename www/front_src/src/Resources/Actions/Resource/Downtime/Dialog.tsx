@@ -3,21 +3,23 @@ import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { not } from 'ramda';
+import dayjs from 'dayjs';
+// import {
+//   MuiPickersUtilsProvider,
+//   KeyboardTimePicker,
+//   KeyboardDatePicker,
+//   DatePickerProps,
+//   TimePickerProps,
+// } from '@material-ui/pickers';
 
+import { DatePicker, LocalizationProvider, MuiPickersAdapter } from '@mui/lab';
 import {
   Checkbox,
   FormControlLabel,
   FormHelperText,
   Grid,
-} from '@material-ui/core';
-import {
-  MuiPickersUtilsProvider,
-  KeyboardTimePicker,
-  KeyboardDatePicker,
-  DatePickerProps,
-  TimePickerProps,
-} from '@material-ui/pickers';
-import { Alert } from '@material-ui/lab';
+  Alert,
+} from '@mui/material';
 
 import { Dialog, TextField, SelectField } from '@centreon/ui';
 import { useUserContext } from '@centreon/ui-context';
@@ -72,16 +74,16 @@ const pickerCommonProps = {
   variant: 'inline',
 };
 
-const datePickerProps = {
-  ...pickerCommonProps,
-  disableToolbar: true,
-  format: 'L',
-} as Omit<DatePickerProps, 'onChange' | 'value'>;
+// const datePickerProps = {
+//   ...pickerCommonProps,
+//   disableToolbar: true,
+//   format: 'L',
+// } as Omit<DatePickerProps, 'onChange' | 'value'>;
 
-const timePickerProps = {
-  ...pickerCommonProps,
-  format: 'LT',
-} as Omit<TimePickerProps, 'onChange' | 'value'>;
+// const timePickerProps = {
+//   ...pickerCommonProps,
+//   format: 'LT',
+// } as Omit<TimePickerProps, 'onChange' | 'value'>;
 
 const DialogDowntime = ({
   resources,
@@ -95,9 +97,14 @@ const DialogDowntime = ({
   setFieldValue,
 }: Props): JSX.Element => {
   const { t } = useTranslation();
-  const { locale } = useUserContext();
+
   const { getDowntimeDeniedTypeAlert, canDowntimeServices } = useAclQuery();
-  const { Adapter, isMeridianFormat } = useDateTimePickerAdapter();
+  const [isPickerOpened, setIsPickerOpened] = React.useState(false);
+  const { locale, timezone } = useUserContext();
+
+  // const { Adapter } = useDateTimePickerAdapter();
+
+  const { Adapter } = useDateTimePickerAdapter({ locale, tz: timezone });
 
   const open = resources.length > 0;
 
@@ -110,6 +117,18 @@ const DialogDowntime = ({
     };
 
   const deniedTypeAlert = getDowntimeDeniedTypeAlert(resources);
+
+  const renderInput = (props): JSX.Element => <TextField {...props} />;
+
+  const handleInputChange =
+    (field: string) =>
+    (newValue: dayjs.Dayjs | null, keyBoardValue: string | undefined): void => {
+      const value = dayjs(isPickerOpened ? newValue : keyBoardValue).locale(
+        locale,
+      );
+
+      changeDate(field)(value);
+    };
 
   return (
     <Dialog
@@ -124,13 +143,24 @@ const DialogDowntime = ({
       onConfirm={onConfirm}
     >
       {deniedTypeAlert && <Alert severity="warning">{deniedTypeAlert}</Alert>}
-      <MuiPickersUtilsProvider locale={locale.substring(0, 2)} utils={Adapter}>
+      <LocalizationProvider
+        dateAdapter={Adapter}
+        locale={locale.substring(0, 2)}
+      >
         <Grid container direction="column" spacing={1}>
           <Grid item>
             <FormHelperText>{t(labelFrom)}</FormHelperText>
             <Grid container direction="row" spacing={1}>
               <Grid item style={{ width: 240 }}>
-                <KeyboardDatePicker
+                <DatePicker<dayjs.Dayjs>
+                  label={t(labelStartDate)}
+                  renderInput={renderInput}
+                  value={values.dateStart}
+                  onChange={handleInputChange('dateStart')}
+                  onClose={(): void => setIsPickerOpened(false)}
+                  onOpen={(): void => setIsPickerOpened(true)}
+                />
+                {/* <KeyboardDatePicker
                   KeyboardButtonProps={{
                     'aria-label': t(labelChangeStartDate),
                   }}
@@ -142,10 +172,18 @@ const DialogDowntime = ({
                   value={values.dateStart}
                   onChange={changeDate('dateStart')}
                   {...datePickerProps}
-                />
+                /> */}
               </Grid>
               <Grid item style={{ width: 200 }}>
-                <KeyboardTimePicker
+                <DatePicker<dayjs.Dayjs>
+                  label="Date desktop"
+                  renderInput={renderInput}
+                  value={values.dateStart}
+                  onChange={handleInputChange('dateStart')}
+                  onClose={(): void => setIsPickerOpened(false)}
+                  onOpen={(): void => setIsPickerOpened(true)}
+                />
+                {/* <KeyboardTimePicker
                   KeyboardButtonProps={{
                     'aria-label': t(labelChangeStartTime),
                   }}
@@ -156,7 +194,7 @@ const DialogDowntime = ({
                   value={values.timeStart}
                   onChange={changeDate('timeStart')}
                   {...timePickerProps}
-                />
+                /> */}
               </Grid>
             </Grid>
           </Grid>
@@ -164,7 +202,15 @@ const DialogDowntime = ({
             <FormHelperText>{t(labelTo)}</FormHelperText>
             <Grid container direction="row" spacing={1}>
               <Grid item style={{ width: 240 }}>
-                <KeyboardDatePicker
+                <DatePicker<dayjs.Dayjs>
+                  label="Date desktop"
+                  renderInput={renderInput}
+                  value={values.dateStart}
+                  onChange={handleInputChange('dateStart')}
+                  onClose={(): void => setIsPickerOpened(false)}
+                  onOpen={(): void => setIsPickerOpened(true)}
+                />
+                {/* <KeyboardDatePicker
                   KeyboardButtonProps={{
                     'aria-label': t(labelChangeEndDate),
                   }}
@@ -174,10 +220,18 @@ const DialogDowntime = ({
                   value={values.dateEnd}
                   onChange={changeDate('dateEnd')}
                   {...datePickerProps}
-                />
+                /> */}
               </Grid>
               <Grid item style={{ width: 200 }}>
-                <KeyboardTimePicker
+                <DatePicker<dayjs.Dayjs>
+                  label="Date desktop"
+                  renderInput={renderInput}
+                  value={values.dateStart}
+                  onChange={handleInputChange('dateStart')}
+                  onClose={(): void => setIsPickerOpened(false)}
+                  onOpen={(): void => setIsPickerOpened(true)}
+                />
+                {/* <KeyboardTimePicker
                   KeyboardButtonProps={{
                     'aria-label': t(labelChangeEndTime),
                   }}
@@ -189,7 +243,7 @@ const DialogDowntime = ({
                   value={values.timeEnd}
                   onChange={changeDate('timeEnd')}
                   {...timePickerProps}
-                />
+                /> */}
               </Grid>
             </Grid>
           </Grid>
@@ -204,7 +258,7 @@ const DialogDowntime = ({
                   onChange={handleChange('fixed')}
                 />
               }
-              label={t(labelFixed)}
+              label={t(labelFixed) as string}
             />
           </Grid>
           <Grid item>
@@ -268,12 +322,12 @@ const DialogDowntime = ({
                     onChange={handleChange('downtimeAttachedResources')}
                   />
                 }
-                label={t(labelSetDowntimeOnServices)}
+                label={t(labelSetDowntimeOnServices) as string}
               />
             </Grid>
           )}
         </Grid>
-      </MuiPickersUtilsProvider>
+      </LocalizationProvider>
     </Dialog>
   );
 };

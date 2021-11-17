@@ -21,12 +21,12 @@ import { withTranslation } from 'react-i18next';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import PollerIcon from '@material-ui/icons/DeviceHub';
-import StorageIcon from '@material-ui/icons/Storage';
-import { Typography, Button } from '@material-ui/core';
-import LatencyIcon from '@material-ui/icons/Speed';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+import PollerIcon from '@mui/icons-material/DeviceHub';
+import StorageIcon from '@mui/icons-material/Storage';
+import { Typography, Button } from '@mui/material';
+import LatencyIcon from '@mui/icons-material/Speed';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 
 import axios from '../../axios';
 import styles from '../header.scss';

@@ -19,7 +19,7 @@ import {
   prop,
 } from 'ramda';
 
-import { Box, Grid } from '@material-ui/core';
+import { Box, Grid } from '@mui/material';
 
 import {
   SortableItems,

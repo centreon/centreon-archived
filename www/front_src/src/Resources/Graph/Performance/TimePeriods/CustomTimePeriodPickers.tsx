@@ -4,16 +4,11 @@ import dayjs from 'dayjs';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import { and, or } from 'ramda';
 import { useTranslation } from 'react-i18next';
-
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
-import {
-  FormHelperText,
-  makeStyles,
-  Typography,
-  Button,
-  Popover,
-} from '@material-ui/core';
-import AccessTimeIcon from '@material-ui/icons/AccessTime';
+
+import { FormHelperText, Typography, Button, Popover } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
 
 import { useUserContext } from '@centreon/ui-context';
 import { dateTimeFormat, useLocaleDateTimeFormat } from '@centreon/ui';
@@ -53,12 +48,12 @@ const useStyles = makeStyles((theme) => ({
   },
   buttonContent: {
     alignItems: 'center',
-    columnGap: `${theme.spacing(1)}px`,
+    columnGap: theme.spacing(1),
     display: 'grid',
     gridTemplateColumns: 'min-content auto',
   },
   compactFromTo: {
-    columnGap: `${theme.spacing(0.5)}px`,
+    columnGap: theme.spacing(0.5),
     display: 'grid',
     grid: 'repeat(2, min-content) / min-content auto',
   },
@@ -67,18 +62,18 @@ const useStyles = makeStyles((theme) => ({
   },
   fromTo: {
     alignItems: 'center',
-    columnGap: `${theme.spacing(0.5)}px`,
+    columnGap: theme.spacing(0.5),
     display: 'grid',
     gridTemplateColumns: 'repeat(4, auto)',
   },
   minimalFromTo: {
     display: 'grid',
     gridTemplateRows: 'repeat(2, min-content)',
-    rowGap: `${theme.spacing(0.3)}px`,
+    rowGap: theme.spacing(0.3),
   },
   minimalPickers: {
     alignItems: 'center',
-    columnGap: `${theme.spacing(1)}px`,
+    columnGap: theme.spacing(1),
     display: 'grid',
     gridTemplateColumns: 'min-content auto',
   },
@@ -88,18 +83,18 @@ const useStyles = makeStyles((theme) => ({
   },
   pickers: {
     alignItems: 'center',
-    columnGap: `${theme.spacing(0.5)}px`,
+    columnGap: theme.spacing(0.5),
     display: 'grid',
-    gridTemplateColumns: `minmax(${theme.spacing(15)}px, ${theme.spacing(
+    gridTemplateColumns: `minmax(${theme.spacing(15)}, ${theme.spacing(
       17,
-    )}px) min-content minmax(${theme.spacing(15)}px, ${theme.spacing(17)}px)`,
+    )}px) min-content minmax(${theme.spacing(15)}, ${theme.spacing(17)})`,
   },
   popover: {
     display: 'grid',
     gridTemplateRows: 'auto auto auto',
     justifyItems: 'center',
     padding: theme.spacing(1, 2),
-    rowGap: `${theme.spacing(1)}px`,
+    rowGap: theme.spacing(1),
   },
 }));
 
@@ -115,7 +110,7 @@ const CustomTimePeriodPickers = ({
   const [end, setEnd] = React.useState<Date>(customTimePeriod.end);
   const { locale } = useUserContext();
   const { format } = useLocaleDateTimeFormat();
-  const { Adapter, isMeridianFormat } = useDateTimePickerAdapter();
+  const { Adapter } = useDateTimePickerAdapter({ locale, tz: 'Europe/Paris' });
 
   const isInvalidDate = ({ startDate, endDate }): boolean =>
     dayjs(startDate).isSameOrAfter(dayjs(endDate), 'minute');
@@ -229,7 +224,7 @@ const CustomTimePeriodPickers = ({
                   changeDate={changeDate}
                   commonPickersProps={{
                     ...commonPickersProps,
-                    ampm: isMeridianFormat(start),
+                    ampm: false,
                   }}
                   date={start}
                   maxDate={customTimePeriod.end}
@@ -245,7 +240,7 @@ const CustomTimePeriodPickers = ({
                   changeDate={changeDate}
                   commonPickersProps={{
                     ...commonPickersProps,
-                    ampm: isMeridianFormat(end),
+                    ampm: false,
                   }}
                   date={end}
                   minDate={customTimePeriod.start}

@@ -2,8 +2,9 @@ import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import { Button, Grid, makeStyles } from '@material-ui/core';
-import TuneIcon from '@material-ui/icons/Tune';
+import { Button, Grid } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import TuneIcon from '@mui/icons-material/Tune';
 
 import { PopoverMenu, SelectEntry, useMemoComponent } from '@centreon/ui';
 

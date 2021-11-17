@@ -2,8 +2,9 @@ import * as React from 'react';
 
 import { path, isNil } from 'ramda';
 
-import { makeStyles, Paper } from '@material-ui/core';
-import IconGraph from '@material-ui/icons/BarChart';
+import { Paper } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import IconGraph from '@mui/icons-material/BarChart';
 
 import { IconButton, ComponentColumnProps } from '@centreon/ui';
 
@@ -84,7 +85,7 @@ const GraphColumn = ({
               ariaLabel={label}
               title={label}
               onClick={(): void => onClick(row)}
-            >
+              size="large">
               <IconGraph fontSize="small" />
             </IconButton>
           )}
