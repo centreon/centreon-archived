@@ -2484,8 +2484,9 @@ function sanitizeFormHostParameters(array $ret): array
                 break;
             case 'host_name':
                 if (!empty($inputValue)) {
+                    $inputValue = filter_var($inputValue, FILTER_SANITIZE_STRING);
                     $bindParams[':' . $inputName] = [
-                        \PDO::PARAM_STR => (($inputValue = filter_var($inputValue, FILTER_SANITIZE_STRING)) === '')
+                        \PDO::PARAM_STR => ($inputValue === '' || $inputValue === false)
                         ? null
                         : $inputValue
                     ];
@@ -2499,8 +2500,9 @@ function sanitizeFormHostParameters(array $ret): array
             case 'host_snmp_version':
             case 'host_comment':
             case 'geo_coords':
+                $inputValue = filter_var($inputValue, FILTER_SANITIZE_STRING);
                 $bindParams[':' . $inputName] = [
-                    \PDO::PARAM_STR => (($inputValue = filter_var($inputValue, FILTER_SANITIZE_STRING)) === '')
+                    \PDO::PARAM_STR => ($inputValue === '' || $inputValue === false)
                         ? null
                         : $inputValue
                 ];
@@ -2523,11 +2525,9 @@ function sanitizeFormHostParameters(array $ret): array
                 break;
             case 'host_notifOpts':
                 if (!empty($inputValue)) {
+                    $inputValue = filter_var(implode(",", array_keys($inputValue)), FILTER_SANITIZE_STRING);
                     $bindParams[':host_notification_options'] = [
-                        \PDO::PARAM_STR => (($inputValue = filter_var(
-                            implode(",", array_keys($inputValue)),
-                            FILTER_SANITIZE_STRING
-                        )) === '')
+                        \PDO::PARAM_STR => ($inputValue === '' || $inputValue === false)
                         ? null
                         : $inputValue
                     ];
@@ -2547,11 +2547,9 @@ function sanitizeFormHostParameters(array $ret): array
                 break;
             case 'host_stalOpts':
                 if (!empty($inputValue)) {
+                    $inputValue = filter_var(implode(",", array_keys($inputValue)), FILTER_SANITIZE_STRING);
                     $bindParams[':host_stalking_options'] = [
-                        \PDO::PARAM_STR => (($inputValue = filter_var(
-                            implode(",", array_keys($inputValue)),
-                            FILTER_SANITIZE_STRING
-                        )) === '')
+                        \PDO::PARAM_STR => ($inputValue === '' || $inputValue === false)
                         ? null
                         : $inputValue
                     ];
