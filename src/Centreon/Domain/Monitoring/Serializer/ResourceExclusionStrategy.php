@@ -53,7 +53,8 @@ class ResourceExclusionStrategy implements ExclusionStrategyInterface
             $property->class === Resources::class
             && $navigatorContext->getDepth() > 1
             &&
-            (   $property->groups === null
+            (
+                $property->groups === null
                 || !in_array(Resources::SERIALIZER_GROUP_PARENT, $property->groups)
             )
         ) {
