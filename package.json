@@ -12,7 +12,8 @@
     "test": "jest",
     "test:watch": "npm test -- --watch",
     "start:dev": "cross-env WEBPACK_ENV=serve webpack serve --mode development --config ./webpack.config.dev.js",
-    "lhci": "lhci autorun"
+    "lhci": "lhci autorun",
+    "lhci:open": "lhci open"
   },
   "devDependencies": {
     "@babel/core": "^7.15.5",
