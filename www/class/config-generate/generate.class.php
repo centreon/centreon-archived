@@ -167,6 +167,31 @@ class Generate
         }
     }
 
+    /**
+     * Insert services in index_data
+     *
+     * @param integer $localhost
+     * @return void
+     */
+    private function generateModulesIndexData($localhost = 0)
+    {
+        if (is_null($this->module_objects)) {
+            $this->getModuleObjects();
+        }
+        if (is_array($this->module_objects)) {
+            foreach ($this->module_objects as $module_object) {
+                $moduleInstance = $module_object::getInstance($this->dependencyInjector);
+                if (
+                    $moduleInstance->isEngineObject() == true
+                    && method_exists($moduleInstance, 'generateModuleIndexData')
+                ) {
+                    $moduleInstance->generateModuleIndexData($localhost);
+                }
+            }
+        }
+
+    }
+
     private function getPollerFromId($poller_id)
     {
         $query = "SELECT id, localhost,  centreonconnector_path FROM nagios_server " .
@@ -241,6 +266,7 @@ class Generate
         $this->backend_instance->movePath($this->current_poller['id']);
 
         $this->generateIndexData($this->current_poller['localhost']);
+        $this->generateModulesIndexData($this->current_poller['localhost']);
     }
 
     public function configPollerFromName($poller_name)
