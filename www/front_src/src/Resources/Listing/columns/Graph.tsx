@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { path, isNil } from 'ramda';
+import { path, isNil, not } from 'ramda';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 
 import { makeStyles, Paper } from '@material-ui/core';
@@ -81,6 +81,7 @@ const GraphColumn = ({
 }): ((props: ComponentColumnProps) => JSX.Element | null) => {
   const GraphHoverChip = ({
     row,
+    isHovered,
   }: ComponentColumnProps): JSX.Element | null => {
     const classes = useStyles();
 
@@ -111,10 +112,11 @@ const GraphColumn = ({
               <IconGraph fontSize="small" />
             </IconButton>
           )}
+          isHovered={isHovered}
           label={label}
         >
-          {({ close }): JSX.Element => {
-            if (isHost) {
+          {({ close, isChipHovered }): JSX.Element => {
+            if (isHost || not(isChipHovered) || not(isHovered)) {
               return <div />;
             }
 
