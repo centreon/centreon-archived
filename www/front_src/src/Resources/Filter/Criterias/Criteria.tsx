@@ -84,6 +84,7 @@ const CriteriaContent = ({
   return (
     <PopoverMultiAutocompleteField
       {...commonProps}
+      hideInput
       options={translatedOptions}
       value={translatedValues}
       onChange={(_, updatedValue): void => {
