@@ -84,7 +84,7 @@ class ParametersController extends AbstractController
         $refreshInterval = '';
         $isAcknowledgementPersistent = false;
         $isAcknowledgementSticky = false;
-        $isDowntimeFixed = false;
+        $isDowntimeFixed = true;
         $isDowntimeWithServices = false;
 
         $options = $this->optionService->findSelectedOptions([
