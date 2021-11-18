@@ -2427,10 +2427,10 @@ CREATE TABLE `password_security_policy` (
   `lowercase_characters` enum('0', '1') NOT NULL DEFAULT '1',
   `integer_characters` enum('0', '1') NOT NULL DEFAULT '1',
   `special_characters` enum('0', '1') NOT NULL DEFAULT '1',
-  `attempts` int(11) UNSIGNED NOT NULL DEFAULT 5,
-  `blocking_duration` int(11) UNSIGNED NOT NULL DEFAULT 900,
-  `password_expiration` int(11) UNSIGNED NOT NULL DEFAULT 7776000,
-  `delay_before_new_password` int(11) UNSIGNED NOT NULL DEFAULT 3600
+  `attempts` int(11) UNSIGNED DEFAULT 5,
+  `blocking_duration` int(11) UNSIGNED DEFAULT 900,
+  `password_expiration` int(11) UNSIGNED DEFAULT 7776000,
+  `delay_before_new_password` int(11) UNSIGNED DEFAULT 3600
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;

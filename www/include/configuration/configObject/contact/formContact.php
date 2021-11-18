@@ -84,6 +84,16 @@ if ($result === false) {
 }
 $dbResult->closeCursor();
 
+/**
+ * Get the Security Policy for automatic generation password.
+ */
+try {
+    $statement = $pearDB->query("SELECT * from password_security_policy");
+} catch(\PDOException $e) {
+    return false;
+}
+$passwordPolicy = $statement->fetch(\PDO::FETCH_ASSOC);
+
 $cct = array();
 if (($o == MODIFY_CONTACT || $o == WATCH_CONTACT) && $contactId) {
     /**
@@ -367,7 +377,13 @@ $form->addElement(
     _("Confirm Password"),
     array("size" => "30", "autocomplete" => "new-password", "id" => "passwd2", "onkeypress" => "resetPwdType(this);")
 );
-$form->addElement('button', 'contact_gen_passwd', _("Generate"), array('onclick' => 'generatePassword("passwd");'));
+$encodedPasswordPolicy = json_encode($passwordPolicy);
+$form->addElement(
+    'button',
+    'contact_gen_passwd',
+    _("Generate"),
+    ['onclick' => "generatePassword('passwd', '$encodedPasswordPolicy');"]
+);
 
 $form->addElement('select', 'contact_lang', _("Default Language"), $langs);
 $form->addElement(
@@ -714,6 +730,9 @@ if ($o != MASSIVE_CHANGE) {
     }
 
     $form->addRule(array('contact_passwd', 'contact_passwd2'), _("Passwords do not match"), 'compare');
+    if ($o === ADD_CONTACT) {
+        $form->addFormRule('validatePasswordCreation');
+    }
     $form->registerRule('exist', 'callback', 'testContactExistence');
     $form->addRule('contact_name', "<font style='color: red;'>*</font>&nbsp;" . _("Contact already exists"), 'exist');
     $form->registerRule('existAlias', 'callback', 'testAliasExistence');

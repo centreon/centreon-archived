@@ -36,14 +36,15 @@
   * Script found on http://www.blazonry.com/javascript/password.php
   * simplified to generate a random password for autologin_key
   */
-function generatePassword(what)
+function generatePassword(what, securityPolicy = null)
 {
+    securityPolicy = JSON.parse(securityPolicy);
     if (parseInt(navigator.appVersion) <= 3) {
         alert("Sorry this only works in 4.0+ browsers");
         return true;
     }
 
-    var length=8;
+    var length=securityPolicy.password_length;
     var sPassword = "";
 
     /*
@@ -70,12 +71,13 @@ function generatePassword(what)
      * TODO (maybe): Rechange the type if typing into the box...
      */
     if (what == "aKey") {
-		document.getElementById('aKey').value = sPassword;
+		  document.getElementById('aKey').value = sPassword;
     } else {
-		document.getElementById('passwd1').value = sPassword;
-		document.getElementById('passwd1').setAttribute('type','text');
-		document.getElementById('passwd2').value = sPassword;
-		document.getElementById('passwd2').setAttribute('type','text');
+      sPassword = generatePasswordWithSecurityPolicy(securityPolicy)
+      document.getElementById('passwd1').value = sPassword;
+      document.getElementById('passwd1').setAttribute('type','text');
+      document.getElementById('passwd2').value = sPassword;
+      document.getElementById('passwd2').setAttribute('type','text');
     }
     return true;
 }
@@ -107,4 +109,45 @@ function checkPunc(num)
 function resetPwdType(elem)
 {
 	elem.setAttribute('type', 'password');
+}
+
+//Password generated with at least 1 number, 1 upper case character, 1 lower case character and 1 Special character
+function generatePasswordWithSecurityPolicy(securityPolicy)
+{
+  var passwordLength = securityPolicy.password_length;
+  var numberChars = "0123456789";
+  var upperChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  var lowerChars = "abcdefghijklmnopqrstuvwxyz";
+  var specialChars = "@$!%*?&";
+  var allChars = numberChars + upperChars + lowerChars + specialChars;
+  var randPasswordArray = Array(parseInt(passwordLength, 10));
+  console.log(randPasswordArray);
+  randPasswordArray[0] = numberChars;
+  randPasswordArray[1] = upperChars;
+  randPasswordArray[2] = lowerChars;
+  randPasswordArray[3] = specialChars;
+  console.log(randPasswordArray);
+  randPasswordArray = randPasswordArray.fill(allChars, 4);
+  console.log(randPasswordArray);
+  if(window.crypto && window.crypto.getRandomValues)
+  {
+      return shuffleArray(randPasswordArray.map(function(x) { return x[Math.floor(window.crypto.getRandomValues(new Uint32Array(1))[0] / (0xffffffff + 1) * x.length)] })).join('');  
+  }
+  else if(window.msCrypto && window.msCrypto.getRandomValues) 
+  {
+      return shuffleArray(randPasswordArray.map(function(x) { return x[Math.floor(window.msCrypto.getRandomValues(new Uint32Array(1))[0] / (0xffffffff + 1) * x.length)] })).join('');
+  }else{
+      return shuffleArray(randPasswordArray.map(function(x) { return x[Math.floor(Math.random() * x.length)] })).join('');
+  }
+}
+
+function shuffleArray(array)
+{
+  for (var i = array.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var temp = array[i];
+    array[i] = array[j];
+    array[j] = temp;
+}
+  return array;
 }
