@@ -133,7 +133,7 @@ class CentreonContact extends CentreonObject
             'contact_activate' => '1',
             'contact_register' => '1'
         );
-        $this->insertParams = array(
+        $this->insertParams = [
             'contact_name',
             'contact_alias',
             'contact_email',
@@ -142,12 +142,13 @@ class CentreonContact extends CentreonObject
             'contact_oreon',
             'contact_lang',
             'contact_auth_type'
-        );
+        ];
         $this->exportExcludedParams = array_merge(
             $this->insertParams,
             array(
                 $this->object->getPrimaryKey(),
-                "contact_register"
+                "contact_register",
+                "ar_id"
             )
         );
         $this->action = "CONTACT";
@@ -404,7 +405,6 @@ class CentreonContact extends CentreonObject
                             'reach_api',
                             'reach_api_rt',
                             'default_page',
-                            'ar_id',
                             'show_deprecated_pages',
                             'enable_one_click_export'
                         ]
