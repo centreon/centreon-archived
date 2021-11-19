@@ -1,58 +1,144 @@
-import React from 'react';
+import * as React from 'react';
 
-import * as yup from 'yup';
-import axios from 'axios';
+import classnames from 'classnames';
+import { useTranslation } from 'react-i18next';
+import { isNil, not } from 'ramda';
 
 import PollerIcon from '@material-ui/icons/DeviceHub';
-import { ClickAwayListener } from '@material-ui/core';
+import StorageIcon from '@material-ui/icons/Storage';
+import LatencyIcon from '@material-ui/icons/Speed';
+import { ClickAwayListener, makeStyles } from '@material-ui/core';
 
-import { useUserContext } from '@centreon/centreon-frontend/packages/ui-context/src';
+import { getData, useRequest } from '@centreon/ui';
 
+import styles from '../header.scss';
 import MenuLoader from '../../components/MenuLoader';
 
+export const useStyles = makeStyles(() => ({
+  link: {
+    textDecoration: 'none',
+  },
+}));
+
+const getIssueClass = ({ issues, key }): string => {
+  if (not(issues[key].warning)) {
+    return 'orange';
+  }
+  if (not(issues[key].critical)) {
+    return 'red';
+  }
+
+  return 'green';
+};
+
+interface GetPollerStatusIconProps {
+  issues: Issues | null;
+}
+
+const GetPollerStatusIcon = ({
+  issues,
+}: GetPollerStatusIconProps): JSX.Element => {
+  const databaseClass = getIssueClass({ issues, key: 'database' });
+
+  const latencyClass = getIssueClass({ issues, key: 'latency' });
+  const { t } = useTranslation();
+
+  return (
+    <>
+      <span
+        className={classnames(
+          styles['wrap-left-icon'],
+          styles.round,
+          styles[databaseClass],
+        )}
+      >
+        <span
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+          }}
+          title={
+            databaseClass === 'green'
+              ? t('OK: all database poller updates are active')
+              : t(
+                  'Some database poller updates are not active; check your configuration',
+                )
+          }
+        >
+          <StorageIcon />
+        </span>
+      </span>
+      <span
+        className={classnames(
+          styles['wrap-left-icon'],
+          styles.round,
+          styles[latencyClass],
+        )}
+      >
+        <span
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+          }}
+          title={
+            latencyClass === 'green'
+              ? t('OK: no latency detected on your platform')
+              : t(
+                  'Latency detected, check configuration for better optimization',
+                )
+          }
+        >
+          <LatencyIcon />
+        </span>
+      </span>
+    </>
+  );
+};
 interface Props {
-  children: (props) => JSX.Element;
   endpoint: string;
   loaderWidth: number;
-  schema: yup.AnySchema;
+  refreshInterval: number;
+}
+
+interface Issue {
+  critical: number;
+  warning: number;
+}
+
+interface Issues {
+  [key: string]: Issue;
 }
 
 const PollerMenu = ({
-  schema,
   endpoint,
   loaderWidth,
-  children,
+  refreshInterval,
 }: Props): JSX.Element => {
-  const [data, setData] = React.useState<boolean>();
-  const [toggled, setToggled] = React.useState<boolean>(false);
-  const toggleDetailedView = (): void => {
-    setToggled(!toggled);
-  };
-
+  const [issues, setIssues] = React.useState<Issues | null>(null);
+  const [toggled, setToggled] = React.useState<boolean>();
   const interval = React.useRef<number>();
 
-  const { refreshInterval } = useUserContext();
+  const { sendRequest } = useRequest<Issues>({
+    request: getData,
+  });
 
-  const getData = (): void => {
-    axios
-      .get(`./api/${endpoint}`)
-      .then(({ data: retrievedData }) => {
-        schema.validate(retrievedData).then(() => {
-          setData(retrievedData);
-        });
+  const loadIssues = (): void => {
+    sendRequest(`./api/${endpoint}`)
+      .then((retrievedIssues) => {
+        setIssues(retrievedIssues);
       })
       .catch((error) => {
         if (error.response && error.response.status === 401) {
-          setData(undefined);
+          setIssues(null);
         }
       });
   };
 
   React.useEffect(() => {
-    getData();
+    loadIssues();
 
     interval.current = window.setInterval(() => {
-      getData();
+      loadIssues();
     }, refreshInterval * 1000);
 
     return (): void => {
@@ -60,24 +146,27 @@ const PollerMenu = ({
     };
   }, []);
 
-  if (!data) {
+  const toggleDetailedView = (): void => {
+    setToggled(!toggled);
+  };
+
+  if (isNil(issues)) {
     return <MenuLoader width={loaderWidth} />;
   }
 
   return (
-    <PollerIcon>
-      <ClickAwayListener
-        onClickAway={(): void => {
-          if (!toggled) {
-            return;
-          }
+    <ClickAwayListener
+      onClickAway={(): void => {
+        if (!toggled) {
+          return;
+        }
 
-          toggleDetailedView();
-        }}
-      >
-        {children({ data, toggleDetailedView, toggled })}
-      </ClickAwayListener>
-    </PollerIcon>
+        toggleDetailedView();
+      }}
+    >
+      <PollerIcon />
+      <GetPollerStatusIcon issues={issues} />
+    </ClickAwayListener>
   );
 };
 

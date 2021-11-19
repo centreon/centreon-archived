@@ -16,12 +16,18 @@ const HookComponent = Hook as unknown as (props) => JSX.Element;
 
 const Header = (): JSX.Element => {
   const { refreshInterval } = useUserContext();
+  const pollerListIssues =
+    'internal.php?object=centreon_topcounter&action=pollersListIssues';
 
   return (
     <header className={styles.header}>
       <div className={styles['header-icons']}>
         <div className={classnames(styles.wrap, styles['wrap-left'])}>
-          <PollerMenu refreshInterval={refreshInterval} />
+          <PollerMenu
+            endpoint={pollerListIssues}
+            loaderWidth={27}
+            refreshInterval={refreshInterval}
+          />
         </div>
         <div className={classnames(styles.wrap, styles['wrap-right'])}>
           <HookComponent path="/header/topCounter" />
