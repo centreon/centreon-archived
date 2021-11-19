@@ -86,7 +86,7 @@ class Generate
     /**
      * Insert services in index_data
      *
-     * @param bool $localhost (FALSE by default)
+     * @param bool $isLocalhost (FALSE by default)
      * @return void
      */
     private function generateIndexData($isLocalhost = false): void
@@ -171,7 +171,7 @@ class Generate
     /**
      * Insert services created by modules in index_data
      *
-     * @param bool $localhost (FALSE by default)
+     * @param bool $isLocalhost (FALSE by default)
      * @return void
      */
     private function generateModulesIndexData($isLocalhost = false): void
