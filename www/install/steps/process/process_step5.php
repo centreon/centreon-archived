@@ -74,7 +74,7 @@ if (
 ) {
     $err['password_security_policy'] = false;
 } else {
-    $parameters['admin_password'] = hash('sha256', $parameters['admin_password']);
+    $parameters['admin_password'] = password_hash($parameters['admin_password'], PASSWORD_BCRYPT);
 }
 
 if (!count($err['required']) && $err['password'] && $err['email']) {

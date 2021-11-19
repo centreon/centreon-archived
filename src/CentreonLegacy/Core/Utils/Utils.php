@@ -215,6 +215,9 @@ class Utils
             case 'sha1':
                 $encodePassword .= 'sha1__' . sha1($password);
                 break;
+            case 'argon2i':
+                $encodePassword = password_hash($password, PASSWORD_BCRYPT);
+                break;
             default:
                 $encodePassword .= 'md5__' . md5($password);
                 break;

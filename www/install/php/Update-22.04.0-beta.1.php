@@ -28,30 +28,72 @@ $pearDB = new CentreonDB();
 
 try {
     $pearDB->beginTransaction();
-    $errorMessage = "Unable to check if table 'password_security_policy' exists";
-    $dbResult = $pearDB->query("SHOW TABLES LIKE 'password_security_policy'");
-    if ($dbResult->fetch()) {
-        $errorMessage = "Unable to create table 'password_security_policy'";
-        $pearDB->query(
-            "CREATE TABLE `password_security_policy` (
-            `password_length` int(11) UNSIGNED NOT NULL DEFAULT 12,
-            `uppercase_characters` enum('0', '1') NOT NULL DEFAULT '1',
-            `lowercase_characters` enum('0', '1') NOT NULL DEFAULT '1',
-            `integer_characters` enum('0', '1') NOT NULL DEFAULT '1',
-            `special_characters` enum('0', '1') NOT NULL DEFAULT '1',
-            `attempts` int(11) UNSIGNED NOT NULL DEFAULT 5,
-            `blocking_duration` int(11) UNSIGNED NOT NULL DEFAULT 900,
-            `password_expiration` int(11) UNSIGNED NOT NULL DEFAULT 7776000,
-            `delay_before_new_password` int(11) UNSIGNED NOT NULL DEFAULT 3600)"
-        );
+    $errorMessage = "Unable to create table 'password_security_policy'";
+    $pearDB->query(
+        "CREATE TABLE `password_security_policy` (
+        `password_length` int(11) UNSIGNED NOT NULL DEFAULT 12,
+        `uppercase_characters` enum('0', '1') NOT NULL DEFAULT '1',
+        `lowercase_characters` enum('0', '1') NOT NULL DEFAULT '1',
+        `integer_characters` enum('0', '1') NOT NULL DEFAULT '1',
+        `special_characters` enum('0', '1') NOT NULL DEFAULT '1',
+        `attempts` int(11) UNSIGNED NOT NULL DEFAULT 5,
+        `blocking_duration` int(11) UNSIGNED NOT NULL DEFAULT 900,
+        `password_expiration` int(11) UNSIGNED NOT NULL DEFAULT 7776000,
+        `delay_before_new_password` int(11) UNSIGNED NOT NULL DEFAULT 3600)"
+    );
 
-        $errorMessage = "Unable to create insert default configuration in 'password_security_policy'";
-        $pearDB->query("INSERT INTO `password_security_policy`
+    $errorMessage = "Unable to insert default configuration in 'password_security_policy'";
+    $pearDB->query(
+        "INSERT INTO `password_security_policy`
         (`password_length`, `uppercase_characters`, `lowercase_characters`, `integer_characters`,
         `special_characters`, `attempts`, `blocking_duration`, `password_expiration`, `delay_before_new_password`)
-        VALUES (12, '1', '1', '1', '1', 5, 900, 7776000, 3600)");
+        VALUES (12, '1', '1', '1', '1', 5, 900, 7776000, 3600)"
+    );
+
+    $errorMessage = "Unable to create table 'contact_password'";
+    $pearDB->query(
+        "CREATE TABLE `contact_password` (
+        `id` int(11) NOT NULL AUTO_INCREMENT,
+        `password` varchar(255) NOT NULL,
+        `contact_id` int(11) NOT NULL,
+        `creation_date` BIGINT UNSIGNED NOT NULL,
+        PRIMARY KEY (`id`),
+        KEY `contact_password_contact_id_fk` (`contact_id`),
+        INDEX `creation_date_index` (`creation_date`),
+        CONSTRAINT `contact_password_contact_id_fk` FOREIGN KEY (`contact_id`)
+        REFERENCES `contact` (`contact_id`) ON DELETE CASCADE)"
+    );
+
+    $errorMessage = "Unable to select existing passwords from 'contact' table";
+    $dbResult = $pearDB->query(
+        "SELECT `contact_id`, `contact_passwd` FROM `contact` WHERE `contact_passwd` IS NOT NULL"
+    );
+    $statement = $pearDB->prepare(
+        "INSERT INTO `contact_password` (`password`, `contact_id`, `creation_date`)
+        VALUES (:password, :contactId, :creationDate)"
+    );
+    while ($row = $dbResult->fetch()) {
+        $errorMessage = "Unable to insert password in 'contact_password' table";
+        $statement->bindValue(':password', $row['contact_passwd']);
+        $statement->bindValue(':contactId', $row['contact_id']);
+        $statement->bindValue(':creationDate', time());
+        $statement->execute();
     }
-    $pearDB->commit();
+    $errorMessage = "Unable to drop column 'contact_passwd' from 'contact' table";
+    $dbResult = $pearDB->query("ALTER TABLE `contact` DROP COLUMN `contact_passwd`");
+    if ($pearDB->inTransaction()) {
+        $pearDB->commit();
+    }
 } catch (Exception $e) {
-    $pearDB->rollback();
+    if ($pearDB->inTransaction()) {
+        $pearDB->rollBack();
+    }
+    $centreonLog->insertLog(
+        4,
+        $versionOfTheUpgrade . $errorMessage .
+        " - Code : " . (int)$e->getCode() .
+        " - Error : " . $e->getMessage() .
+        " - Trace : " . $e->getTraceAsString()
+    );
+    throw new \Exception($versionOfTheUpgrade . $errorMessage, (int)$e->getCode(), $e);
 }

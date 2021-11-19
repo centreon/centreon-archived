@@ -533,7 +533,7 @@ function insertContactInDB($ret = array())
  */
 function insertContact($ret = array())
 {
-    global $form, $pearDB, $centreon, $encryptType, $dependencyInjector;
+    global $form, $pearDB, $centreon, $dependencyInjector;
 
     if (!count($ret)) {
         $ret = $form->getSubmitValues();
@@ -558,41 +558,42 @@ function insertContact($ret = array())
 
     $stmt->execute();
     $dbResult = $pearDB->query("SELECT MAX(contact_id) FROM contact");
-    $contact_id = $dbResult->fetch();
+    $contactId = $dbResult->fetch();
 
-    if (isset($ret["contact_passwd"])) {
-        if ($encryptType == 1) {
-            $ret["contact_passwd"] = $ret["contact_passwd2"] =
-                $dependencyInjector['utils']->encodePass($ret["contact_passwd"], 'md5');
-        } elseif ($encryptType == 2) {
-            $ret["contact_passwd"] = $ret["contact_passwd2"] =
-                $dependencyInjector['utils']->encodePass($ret["contact_passwd"], 'sha1');
-        } else {
-            $ret["contact_passwd"] = $ret["contact_passwd2"] =
-                $dependencyInjector['utils']->encodePass($ret["contact_passwd"], 'md5');
-        }
+    if (isset($ret["contact_passwd"]) && !empty($ret["contact_passwd"])) {
+        $ret["contact_passwd"] = $ret["contact_passwd2"]
+            = $dependencyInjector['utils']->encodePass($ret["contact_passwd"], 'argon2i');
+
+        $statement = $pearDB->prepare(
+            'INSERT INTO `contact_password` (password, contact_id, creation_date)
+            VALUES (:password, :contactId, :creationDate)'
+        );
+        $statement->bindValue(':password', $ret['contact_passwd'], PDO::PARAM_STR);
+        $statement->bindValue(':contactId', $contactId['MAX(contact_id)'], PDO::PARAM_INT);
+        $statement->bindValue(':creationDate', time(), PDO::PARAM_INT);
+        $statement->execute();
     }
 
     /* Prepare value for changelog */
     $fields = CentreonLogAction::prepareChanges($ret);
     $centreon->CentreonLogAction->insertLog(
         "contact",
-        $contact_id["MAX(contact_id)"],
+        $contactId["MAX(contact_id)"],
         $ret["contact_name"],
         "a",
         $fields
     );
 
-    return ($contact_id["MAX(contact_id)"]);
+    return ($contactId["MAX(contact_id)"]);
 }
 
 /**
- * @param null $contact_id
+ * @param int|null $contactId
  */
-function updateContact($contact_id = null)
+function updateContact($contactId = null)
 {
     global $form, $pearDB, $centreon, $encryptType, $dependencyInjector;
-    if (!$contact_id) {
+    if (!$contactId) {
         return;
     }
     $ret = array();
@@ -616,29 +617,46 @@ function updateContact($contact_id = null)
             $stmt->bindValue($token, $value, $paramType);
         }
     }
-    $stmt->bindValue(':contactId', $contact_id, \PDO::PARAM_INT);
+    $stmt->bindValue(':contactId', $contactId, \PDO::PARAM_INT);
     $stmt->execute();
 
-    if (isset($ret["contact_lang"]) && $ret["contact_lang"] != null && $contact_id == $centreon->user->get_id()) {
+    if (isset($ret["contact_lang"]) && $ret["contact_lang"] != null && $contactId == $centreon->user->get_id()) {
         $centreon->user->set_lang($ret["contact_lang"]);
     }
 
-    if (isset($ret["contact_passwd"])) {
-        if ($encryptType == 1) {
-            $ret["contact_passwd"] = $ret["contact_passwd2"] =
-                $dependencyInjector['utils']->encodePass($ret["contact_passwd"], 'md5');
-        } elseif ($encryptType == 2) {
-            $ret["contact_passwd"] = $ret["contact_passwd2"] =
-                $dependencyInjector['utils']->encodePass($ret["contact_passwd"], 'sha1');
-        } elseif (isset($ret['contact_passwd'])) {
-            $ret["contact_passwd"] = $ret["contact_passwd2"] =
-                $dependencyInjector['utils']->encodePass($ret["contact_passwd"], 'md5');
+    if (isset($ret["contact_passwd"]) && !empty($ret["contact_passwd"])) {
+        $ret["contact_passwd"] = $ret["contact_passwd2"]
+            = $dependencyInjector['utils']->encodePass($ret["contact_passwd"], 'argon2i');
+
+        //Get three last saved password.
+        $statement = $pearDB->prepare(
+            'SELECT id, password, creation_date from `contact_password`
+            WHERE `contact_id` = :contactId ORDER BY `creation_date` DESC'
+        );
+        $statement->bindValue(':contactId', $contactId, PDO::PARAM_INT);
+        $statement->execute();
+        //If 3 or more passwords are saved, delete the oldest one.
+        if (($result = $statement->fetchAll()) && count($result) >= 3) {
+            $statement = $pearDB->prepare(
+                'DELETE FROM `contact_password` WHERE `creation_date` < :creationDate'
+            );
+            $statement->bindValue(':creationDate', $result[1]['creation_date'], PDO::PARAM_INT);
+            $statement->execute();
         }
+
+        $statement = $pearDB->prepare(
+            'INSERT INTO `contact_password` (password, contact_id, creation_date)
+            VALUES (:password, :contactId, :creationDate)'
+        );
+        $statement->bindValue(':password', $ret['contact_passwd'], PDO::PARAM_STR);
+        $statement->bindValue(':contactId', $contactId, PDO::PARAM_INT);
+        $statement->bindValue(':creationDate', time(), PDO::PARAM_INT);
+        $statement->execute();
     }
 
     /* Prepare value for changelog */
     $fields = CentreonLogAction::prepareChanges($ret);
-    $centreon->CentreonLogAction->insertLog("contact", $contact_id, $ret["contact_name"], "c", $fields);
+    $centreon->CentreonLogAction->insertLog("contact", $contactId, $ret["contact_name"], "c", $fields);
 }
 
 /**
@@ -648,7 +666,7 @@ function updateContact_MC($contact_id = null)
 {
     global $form, $pearDB, $centreon;
 
-    if (!$contact_id) {
+    if ($contact_id == null || $contact_id === false) {
         return;
     }
 
@@ -1187,18 +1205,6 @@ function sanitizeFormContactParameters(array $ret): array
                         : 'txt'
                 ];
                 break;
-            case 'contact_passwd':
-                if (!empty($inputValue)) {
-                    $password = $dependencyInjector['utils']->encodePass(
-                        $inputValue,
-                        $encryptType == 2 ?  'sha1' : 'md5'
-                    );
-
-                    $bindParams [':' . $inputName] = [
-                        \PDO::PARAM_STR => $password
-                    ];
-                }
-                break;
             case 'contact_lang':
                 if (!empty($inputValue)) {
                     $inputValue = filter_var($inputValue, FILTER_SANITIZE_STRING);
@@ -1263,15 +1269,23 @@ function sanitizeFormContactParameters(array $ret): array
     return $bindParams;
 }
 
+/**
+ * Validate password creation using defined security policy.
+ *
+ * @param array $fields
+ * @return mixed
+ */
 function validatePasswordCreation(array $fields)
 {
     global $pearDB;
     $errors = [];
     $password = $fields['contact_passwd'];
-
+    if (empty($password)) {
+        return true;
+    }
     try {
         $statement = $pearDB->query("SELECT * from password_security_policy");
-    } catch(\PDOException $e) {
+    } catch (\PDOException $e) {
         return false;
     }
     $passwordPolicy = $statement->fetch(\PDO::FETCH_ASSOC);
@@ -1295,5 +1309,42 @@ function validatePasswordCreation(array $fields)
         $errors['contact_passwd'] = _("Your password should contains special characters form the list '@$!%*?&'.");
     }
 
+    return count($errors) > 0 ? $errors : true;
+}
+
+/**
+ * Validate password creation using defined security policy.
+ *
+ * @param array $fields
+ * @return mixed
+ */
+function validatePasswordModification(array $fields)
+{
+    global $pearDB;
+    $errors = [];
+    $password = $fields['contact_passwd'];
+    $contactId = $fields['contact_id'];
+    if (empty($password)) {
+        return true;
+    }
+    try {
+        $statement = $pearDB->prepare(
+            "SELECT id, password FROM `contact_password` WHERE `contact_id` = :contactId"
+        );
+        $statement->bindParam(':contactId', $contactId, \PDO::PARAM_INT);
+        $statement->execute();
+
+        $passwordHistory = $statement->fetchAll(\PDO::FETCH_ASSOC);
+        foreach ($passwordHistory as $contactPassword) {
+            if (password_verify($password, $contactPassword['password'])) {
+                $errors['contact_passwd'] = _(
+                    "Your password has already been used. Please choose a different password than your two previous."
+                );
+                break;
+            }
+        }
+    } catch (\PDOException $e) {
+        return false;
+    }
     return count($errors) > 0 ? $errors : true;
 }

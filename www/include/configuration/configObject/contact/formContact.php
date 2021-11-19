@@ -730,8 +730,11 @@ if ($o != MASSIVE_CHANGE) {
     }
 
     $form->addRule(array('contact_passwd', 'contact_passwd2'), _("Passwords do not match"), 'compare');
-    if ($o === ADD_CONTACT) {
+    if ($o === ADD_CONTACT || $o === MODIFY_CONTACT) {
         $form->addFormRule('validatePasswordCreation');
+    }
+    if ($o === MODIFY_CONTACT) {
+        $form->addFormRule('validatePasswordModification');
     }
     $form->registerRule('exist', 'callback', 'testContactExistence');
     $form->addRule('contact_name', "<font style='color: red;'>*</font>&nbsp;" . _("Contact already exists"), 'exist');

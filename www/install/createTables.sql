@@ -729,7 +729,6 @@ CREATE TABLE `contact` (
   `timeperiod_tp_id2` int(11) DEFAULT NULL,
   `contact_name` varchar(200) DEFAULT NULL,
   `contact_alias` varchar(200) DEFAULT NULL,
-  `contact_passwd` varchar(255) DEFAULT NULL,
   `contact_lang` varchar(255) DEFAULT 'browser',
   `contact_host_notification_options` varchar(200) DEFAULT NULL,
   `contact_service_notification_options` varchar(200) DEFAULT NULL,
@@ -2431,6 +2430,18 @@ CREATE TABLE `password_security_policy` (
   `blocking_duration` int(11) UNSIGNED DEFAULT 900,
   `password_expiration` int(11) UNSIGNED DEFAULT 7776000,
   `delay_before_new_password` int(11) UNSIGNED DEFAULT 3600
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `contact_password` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `password` varchar(255) NOT NULL,
+  `contact_id` int(11) NOT NULL,
+  `creation_date` BIGINT UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `contact_password_contact_id_fk` (`contact_id`),
+  INDEX `creation_date_index` (`creation_date`),
+  CONSTRAINT `contact_password_contact_id_fk` FOREIGN KEY (`contact_id`)
+  REFERENCES `contact` (`contact_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
