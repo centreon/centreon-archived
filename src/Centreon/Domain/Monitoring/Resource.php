@@ -264,11 +264,12 @@ class Resource
     private $notificationEnabled = false;
 
     /**
-     * Resource constructor.
+     * @param string $monitoringServerName
      */
-    public function __construct()
+    public function __construct(string $monitoringServerName)
     {
         $this->links = new ResourceLinks();
+        $this->monitoringServerName = $monitoringServerName;
     }
 
     /**
@@ -501,16 +502,6 @@ class Resource
     public function getMonitoringServerName(): string
     {
         return $this->monitoringServerName;
-    }
-
-   /**
-     * @param string $monitoringServerName
-     * @return self
-     */
-    public function setMonitoringServerName(string $monitoringServerName): self
-    {
-        $this->monitoringServerName = $monitoringServerName;
-        return $this;
     }
 
     /**
