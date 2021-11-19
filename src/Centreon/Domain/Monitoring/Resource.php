@@ -103,7 +103,7 @@ class Resource
     protected $commandLine;
 
     /**
-     * @var string|null
+     * @var string
      */
     private $monitoringServerName;
 
@@ -496,18 +496,18 @@ class Resource
     }
 
     /**
-     * @return string|null
+     * @return string
      */
-    public function getMonitoringServerName(): ?string
+    public function getMonitoringServerName(): string
     {
         return $this->monitoringServerName;
     }
 
    /**
-     * @param string|null $monitoringServerName
+     * @param string $monitoringServerName
      * @return self
      */
-    public function setMonitoringServerName(?string $monitoringServerName): self
+    public function setMonitoringServerName(string $monitoringServerName): self
     {
         $this->monitoringServerName = $monitoringServerName;
         return $this;
