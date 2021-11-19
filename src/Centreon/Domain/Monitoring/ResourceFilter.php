@@ -151,9 +151,9 @@ class ResourceFilter
     /**
      * Transform result by map
      *
-     * @param array $list
-     * @param array $map
-     * @return array
+     * @param array<mixed, mixed> $list
+     * @param array<mixed, mixed> $map
+     * @return array<int, mixed>
      */
     public static function map(array $list, array $map): array
     {

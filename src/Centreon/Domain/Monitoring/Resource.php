@@ -286,7 +286,7 @@ class Resource
     {
         $result = null;
 
-        if ($this->getLastStatusChange()) {
+        if ($this->getLastStatusChange() !== null) {
             $result = CentreonDuration::toString(time() - $this->getLastStatusChange()->getTimestamp());
         }
 
@@ -300,7 +300,7 @@ class Resource
     {
         $result = null;
 
-        if ($this->getLastCheck()) {
+        if ($this->getLastCheck() !== null) {
             $result = CentreonDuration::toString(time() - $this->getLastCheck()->getTimestamp());
         }
 
@@ -496,9 +496,9 @@ class Resource
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getMonitoringServerName(): string
+    public function getMonitoringServerName(): ?string
     {
         return $this->monitoringServerName;
     }
@@ -924,7 +924,7 @@ class Resource
      */
     public function setInformation(?string $information): self
     {
-        $this->information = trim($information);
+        $this->information = $information !== null ? trim($information) : null;
 
         return $this;
     }
