@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2015 Centreon
+ * Copyright 2005-2015S Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -189,10 +190,9 @@ class Generate
                 }
             }
         }
-
     }
 
-    private function getPollerFromId($poller_id)
+    private function getPollerFromId($poller_id): void
     {
         $query = "SELECT id, localhost,  centreonconnector_path FROM nagios_server " .
             "WHERE id = :poller_id";
@@ -206,7 +206,7 @@ class Generate
         }
     }
 
-    private function getPollerFromName($poller_name)
+    private function getPollerFromName($poller_name): void
     {
         $query = "SELECT id, localhost, centreonconnector_path FROM nagios_server " .
             "WHERE name = :poller_name";
@@ -220,7 +220,7 @@ class Generate
         }
     }
 
-    public function resetObjectsEngine()
+    public function resetObjectsEngine(): void
     {
         Host::getInstance($this->dependencyInjector)->reset();
         HostTemplate::getInstance($this->dependencyInjector)->reset();
@@ -245,7 +245,7 @@ class Generate
         $this->resetModuleObjects();
     }
 
-    private function configPoller($username = 'unknown')
+    private function configPoller($username = 'unknown'): void
     {
         $this->backend_instance->setUserName($username);
         $this->backend_instance->initPath($this->current_poller['id']);
@@ -269,7 +269,7 @@ class Generate
         $this->generateModulesIndexData($this->current_poller['localhost']);
     }
 
-    public function configPollerFromName($poller_name)
+    public function configPollerFromName($poller_name): void
     {
         try {
             $this->getPollerFromName($poller_name);
@@ -281,7 +281,7 @@ class Generate
         }
     }
 
-    public function configPollerFromId($poller_id, $username = 'unknown')
+    public function configPollerFromId($poller_id, $username = 'unknown'): void
     {
         try {
             if (is_null($this->current_poller)) {
@@ -295,7 +295,7 @@ class Generate
         }
     }
 
-    public function configPollers($username = 'unknown')
+    public function configPollers($username = 'unknown'): void
     {
         $query = "SELECT id, localhost, centreonconnector_path FROM " .
             "nagios_server WHERE ns_activate = '1'";
@@ -337,15 +337,16 @@ class Generate
         }
     }
 
-    public function generateModuleObjects($type = 1)
+    public function generateModuleObjects($type = 1): void
     {
         if (is_null($this->module_objects)) {
             $this->getModuleObjects();
         }
         if (is_array($this->module_objects)) {
             foreach ($this->module_objects as $module_object) {
-                if (($type == 1 && $module_object::getInstance($this->dependencyInjector)->isEngineObject() == true) ||
-                    ($type == 2 && $module_object::getInstance($this->dependencyInjector)->isBrokerObject() == true)
+                if (
+                    ($type == 1 && $module_object::getInstance($this->dependencyInjector)->isEngineObject() == true)
+                    || ($type == 2 && $module_object::getInstance($this->dependencyInjector)->isBrokerObject() == true)
                 ) {
                     $module_object::getInstance($this->dependencyInjector)->generateFromPollerId(
                         $this->current_poller['id'],
@@ -356,7 +357,7 @@ class Generate
         }
     }
 
-    public function resetModuleObjects()
+    public function resetModuleObjects(): void
     {
         if (is_null($this->module_objects)) {
             $this->getModuleObjects();
@@ -371,7 +372,7 @@ class Generate
     /**
      * Reset the cache and the instance
      */
-    public function reset()
+    public function reset(): void
     {
         $this->poller_cache = array();
         $this->current_poller = null;
