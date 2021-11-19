@@ -67,6 +67,12 @@ class ResourceFilter
     public const STATUS_UNKNOWN = 'UNKNOWN';
     public const STATUS_PENDING = 'PENDING';
 
+    /**
+     * Available state types
+     */
+    public const HARD_STATE_TYPE = 'H';
+    public const SOFT_STATE_TYPE = 'S';
+
     public const MAP_STATUS_SERVICE = [
         self::STATUS_OK => 0,
         self::STATUS_WARNING => 1,
@@ -80,6 +86,11 @@ class ResourceFilter
         self::STATUS_DOWN => 1,
         self::STATUS_UNREACHABLE => 2,
         self::STATUS_PENDING => 4,
+    ];
+
+    public const MAP_STATE_TYPES = [
+        self::HARD_STATE_TYPE => 1,
+        self::SOFT_STATE_TYPE => 0,
     ];
 
     /**
@@ -131,6 +142,11 @@ class ResourceFilter
      * @var boolean
      */
     private $onlyWithPerformanceData = false;
+
+    /**
+     * @var string[]
+     */
+    private $stateTypes = [];
 
     /**
      * Transform result by map
@@ -386,5 +402,23 @@ class ResourceFilter
     public function getOnlyWithPerformanceData(): bool
     {
         return $this->onlyWithPerformanceData;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getStateTypes(): array
+    {
+        return $this->stateTypes;
+    }
+
+    /**
+     * @param string[] $stateTypes
+     * @return self
+     */
+    public function setStateTypes(array $stateTypes): self
+    {
+        $this->stateTypes = $stateTypes;
+        return $this;
     }
 }

@@ -193,6 +193,11 @@ class Resource
     private $notificationNumber;
 
     /**
+     * @var int
+     */
+    private $stateType;
+
+    /**
      * @var string|null
      */
     private $tries;
@@ -827,6 +832,24 @@ class Resource
     public function setNotificationNumber(?int $notificationNumber): self
     {
         $this->notificationNumber = $notificationNumber;
+        return $this;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getStateType(): int
+    {
+        return $this->stateType;
+    }
+
+    /**
+     * @param integer $stateType
+     * @return self
+     */
+    public function setStateType(int $stateType): self
+    {
+        $this->stateType = $stateType;
         return $this;
     }
 
