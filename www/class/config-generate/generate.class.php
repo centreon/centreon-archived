@@ -84,7 +84,7 @@ class Generate
     }
 
     /**
-     * Insert services created by modules in index_data
+     * Insert services in index_data
      *
      * @param bool $localhost (FALSE by default)
      * @return void
@@ -169,7 +169,7 @@ class Generate
     }
 
     /**
-     * Insert services in index_data
+     * Insert services created by modules in index_data
      *
      * @param bool $localhost (FALSE by default)
      * @return void
