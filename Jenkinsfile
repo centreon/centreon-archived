@@ -4,20 +4,20 @@ import org.jenkinsci.plugins.pipeline.modeldefinition.Utils
 /*
 ** Variables.
 */
-def serie = '21.10'
-def maintenanceBranch = "${serie}.x"
-def qaBranch = "dev-${serie}.x"
-env.REF_BRANCH = 'master'
+def serie = '22.04'
+def stableBranch = "master"
+def devBranch = "develop"
+env.REF_BRANCH = stableBranch
 env.PROJECT='centreon-web'
 if (env.BRANCH_NAME.startsWith('release-')) {
   env.BUILD = 'RELEASE'
   env.DELIVERY_STAGE = 'Delivery to testing'
   env.DOCKER_STAGE = 'Docker packaging'
-} else if ((env.BRANCH_NAME == env.REF_BRANCH) || (env.BRANCH_NAME == maintenanceBranch)) {
+} else if (env.BRANCH_NAME == stableBranch) {
   env.BUILD = 'REFERENCE'
   env.DELIVERY_STAGE = 'Delivery to canary'
   env.DOCKER_STAGE = 'Docker packaging with canary rpms'
-} else if ((env.BRANCH_NAME == 'develop') || (env.BRANCH_NAME == qaBranch)) {
+} else if (env.BRANCH_NAME == devBranch) {
   env.BUILD = 'QA'
   env.DELIVERY_STAGE = 'Delivery to unstable'
   env.DOCKER_STAGE = 'Docker packaging with unstable rpms'
@@ -27,9 +27,9 @@ if (env.BRANCH_NAME.startsWith('release-')) {
   env.DOCKER_STAGE = 'Docker packaging with canary rpms'
 }
 
-def buildBranch = env.BRANCH_NAME
+env.BUILD_BRANCH = env.BRANCH_NAME
 if (env.CHANGE_BRANCH) {
-  buildBranch = env.CHANGE_BRANCH
+  env.BUILD_BRANCH = env.CHANGE_BRANCH
 }
 
 def backendFiles = [
@@ -115,7 +115,7 @@ def checkoutCentreonBuild() {
       remote: 'https://github.com/centreon/centreon-build.git',
       credentialsId: 'technique-ci',
       traits: [[$class: 'jenkins.plugins.git.traits.BranchDiscoveryTrait']]],
-      targets: [BRANCH_NAME, 'master'])
+      targets: [env.BUILD_BRANCH, 'master'])
   }
 }
 
@@ -147,7 +147,7 @@ stage('Deliver sources') {
     stash name: 'cypress-node-modules', includes: "cypress-node-modules.tar.gz"
     stash name: 'vendor', includes: 'vendor.tar.gz'
     stash name: 'node_modules', includes: 'node_modules.tar.gz'
-    stash name: 'api-doc', includes: 'centreon-api-v21.10.html'
+    stash name: 'api-doc', includes: 'centreon-api-v22.04.html'
     publishHTML([
       allowMissing: false,
       keepAll: true,
@@ -237,9 +237,13 @@ try {
     'sonar': {
       node {
         // Run sonarQube analysis
-        checkoutCentreonBuild()    
+        checkoutCentreonBuild()
         unstash 'git-sources'
+        unstash 'vendor'
+        unstash 'node_modules'
         sh 'rm -rf centreon-web && tar xzf centreon-web-git.tar.gz'
+        sh 'rm -rf centreon-web/vendor && tar xzf vendor.tar.gz -C centreon-web'
+        sh 'rm -rf centreon-web/node_modules && tar xzf node_modules.tar.gz -C centreon-web'
         withSonarQubeEnv('SonarQubeDev') {
           sh "./centreon-build/jobs/web/${serie}/mon-web-analysis.sh"
         }
