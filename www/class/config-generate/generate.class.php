@@ -86,7 +86,7 @@ class Generate
     /**
      * Insert services in index_data
      *
-     * @param bool $localhost (default false)
+     * @param bool $localhost (FALSE by default)
      * @return void
      */
     private function generateIndexData($isLocalhost = false): void
@@ -171,7 +171,7 @@ class Generate
     /**
      * Insert services in index_data
      *
-     * @param bool $localhost (default false)
+     * @param bool $localhost (FALSE by default)
      * @return void
      */
     private function generateModulesIndexData($isLocalhost = false): void
@@ -266,7 +266,7 @@ class Generate
         $this->backend_instance->movePath($this->current_poller['id']);
 
         $this->generateIndexData($this->current_poller['localhost'] === '1');
-        $this->generateModulesIndexData($this->current_poller['localhost'] ==='1');
+        $this->generateModulesIndexData($this->current_poller['localhost'] === '1');
     }
 
     public function configPollerFromName($poller_name): void
