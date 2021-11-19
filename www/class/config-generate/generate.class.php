@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005-2015 Centreon
+ * Copyright 2005-2021 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -86,10 +86,10 @@ class Generate
     /**
      * Insert services in index_data
      *
-     * @param integer $localhost
+     * @param bool $localhost (default false)
      * @return void
      */
-    private function generateIndexData($localhost = 0)
+    private function generateIndexData($isLocalhost = false): void
     {
         $serviceInstance = Service::getInstance($this->dependencyInjector);
         $hostInstance = Host::getInstance($this->dependencyInjector);
@@ -142,7 +142,7 @@ class Generate
         }
 
         # Meta services
-        if ($localhost == 1) {
+        if ($isLocalhost) {
             $metaServices = MetaService::getInstance($this->dependencyInjector)->getMetaServices();
             $hostId = MetaHost::getInstance($this->dependencyInjector)->getHostIdByHostName('_Module_Meta');
             foreach ($metaServices as $metaId => $metaService) {
@@ -171,10 +171,10 @@ class Generate
     /**
      * Insert services in index_data
      *
-     * @param integer $localhost
+     * @param bool $localhost (default false)
      * @return void
      */
-    private function generateModulesIndexData($localhost = 0)
+    private function generateModulesIndexData($isLocalhost = false): void
     {
         if (is_null($this->module_objects)) {
             $this->getModuleObjects();
@@ -186,7 +186,7 @@ class Generate
                     $moduleInstance->isEngineObject() == true
                     && method_exists($moduleInstance, 'generateModuleIndexData')
                 ) {
-                    $moduleInstance->generateModuleIndexData($localhost);
+                    $moduleInstance->generateModuleIndexData($isLocalhost);
                 }
             }
         }
@@ -265,8 +265,8 @@ class Generate
         Broker::getInstance($this->dependencyInjector)->generateFromPoller($this->current_poller);
         $this->backend_instance->movePath($this->current_poller['id']);
 
-        $this->generateIndexData($this->current_poller['localhost']);
-        $this->generateModulesIndexData($this->current_poller['localhost']);
+        $this->generateIndexData($this->current_poller['localhost'] === '1');
+        $this->generateModulesIndexData($this->current_poller['localhost'] ==='1');
     }
 
     public function configPollerFromName($poller_name): void
