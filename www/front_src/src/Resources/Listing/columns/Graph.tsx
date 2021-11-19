@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { path, isNil } from 'ramda';
+import { path, isNil, not } from 'ramda';
 
 import { makeStyles, Paper } from '@material-ui/core';
 import IconGraph from '@material-ui/icons/BarChart';
@@ -58,6 +58,7 @@ const GraphColumn = ({
 }): ((props: ComponentColumnProps) => JSX.Element | null) => {
   const GraphHoverChip = ({
     row,
+    isHovered,
   }: ComponentColumnProps): JSX.Element | null => {
     const classes = useStyles();
 
@@ -88,10 +89,11 @@ const GraphColumn = ({
               <IconGraph fontSize="small" />
             </IconButton>
           )}
+          isHovered={isHovered}
           label={label}
         >
-          {({ close }): JSX.Element => {
-            if (isHost) {
+          {({ close, isChipHovered }): JSX.Element => {
+            if (isHost || not(isChipHovered) || not(isHovered)) {
               return <div />;
             }
 
