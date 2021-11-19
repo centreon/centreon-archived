@@ -2,17 +2,33 @@ import * as React from 'react';
 
 import classnames from 'classnames';
 import { useTranslation } from 'react-i18next';
-import { isNil, not } from 'ramda';
+import { isNil } from 'ramda';
 
 import PollerIcon from '@material-ui/icons/DeviceHub';
 import StorageIcon from '@material-ui/icons/Storage';
 import LatencyIcon from '@material-ui/icons/Speed';
-import { ClickAwayListener, makeStyles } from '@material-ui/core';
+import {
+  Avatar,
+  ClickAwayListener,
+  makeStyles,
+  Theme,
+  Typography,
+} from '@material-ui/core';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+import { CreateCSSProperties } from '@material-ui/styles';
 
-import { getData, useRequest } from '@centreon/ui';
+import {
+  getStatusColors,
+  SeverityCode,
+  getData,
+  useRequest,
+} from '@centreon/ui';
 
 import styles from '../header.scss';
 import MenuLoader from '../../components/MenuLoader';
+
+import { labelPoller } from './translatedLabels';
 
 export const useStyles = makeStyles(() => ({
   link: {
@@ -20,75 +36,94 @@ export const useStyles = makeStyles(() => ({
   },
 }));
 
-const getIssueClass = ({ issues, key }): string => {
-  if (not(issues[key].warning)) {
-    return 'orange';
+const getIssueSeverity = ({ issues, key }): SeverityCode => {
+  if (!isNil(issues[key]?.warning)) {
+    return SeverityCode.Medium;
   }
-  if (not(issues[key].critical)) {
-    return 'red';
+  if (!isNil(issues[key]?.critical)) {
+    return SeverityCode.High;
   }
 
-  return 'green';
+  return SeverityCode.Ok;
 };
 
 interface GetPollerStatusIconProps {
   issues: Issues | null;
 }
 
+interface StyleProps {
+  databaseSeverity: SeverityCode;
+  latencySeverity: SeverityCode;
+}
+
+const useStatusStyles = makeStyles<Theme, StyleProps>((theme) => {
+  const getSeverityColor = (severityCode): CreateCSSProperties<StyleProps> => ({
+    background: getStatusColors({
+      severityCode,
+      theme,
+    }).backgroundColor,
+    color: getStatusColors({
+      severityCode,
+      theme,
+    }).color,
+  });
+
+  return {
+    database: ({ databaseSeverity }): CreateCSSProperties<StyleProps> =>
+      getSeverityColor(databaseSeverity),
+    latency: ({ latencySeverity }): CreateCSSProperties<StyleProps> =>
+      getSeverityColor(latencySeverity),
+  };
+});
+
 const GetPollerStatusIcon = ({
   issues,
 }: GetPollerStatusIconProps): JSX.Element => {
-  const databaseClass = getIssueClass({ issues, key: 'database' });
+  const databaseSeverity = getIssueSeverity({ issues, key: 'database' });
 
-  const latencyClass = getIssueClass({ issues, key: 'latency' });
+  const latencySeverity = getIssueSeverity({ issues, key: 'latency' });
+  const classes = useStatusStyles({ databaseSeverity, latencySeverity });
+
   const { t } = useTranslation();
 
   return (
     <>
-      <span
-        className={classnames(
-          styles['wrap-left-icon'],
-          styles.round,
-          styles[databaseClass],
-        )}
-      >
+      <span className={classnames(styles['wrap-left-icon'], styles.round)}>
         <span
           style={{
             display: 'flex',
             justifyContent: 'center',
           }}
           title={
-            databaseClass === 'green'
+            databaseSeverity === SeverityCode.Ok
               ? t('OK: all database poller updates are active')
               : t(
                   'Some database poller updates are not active; check your configuration',
                 )
           }
         >
-          <StorageIcon />
+          <Avatar className={classes.database}>
+            <StorageIcon />
+          </Avatar>
         </span>
       </span>
-      <span
-        className={classnames(
-          styles['wrap-left-icon'],
-          styles.round,
-          styles[latencyClass],
-        )}
-      >
+      <span className={classnames(styles['wrap-left-icon'], styles.round)}>
         <span
           style={{
             display: 'flex',
             justifyContent: 'center',
           }}
           title={
-            latencyClass === 'green'
+            latencySeverity === SeverityCode.Ok
               ? t('OK: no latency detected on your platform')
               : t(
                   'Latency detected, check configuration for better optimization',
                 )
           }
         >
-          <LatencyIcon />
+          <Avatar className={classes.latency}>
+            <LatencyIcon />
+          </Avatar>
         </span>
       </span>
     </>
@@ -114,6 +149,8 @@ const PollerMenu = ({
   loaderWidth,
   refreshInterval,
 }: Props): JSX.Element => {
+  const { t } = useTranslation();
+
   const [issues, setIssues] = React.useState<Issues | null>(null);
   const [toggled, setToggled] = React.useState<boolean>();
   const interval = React.useRef<number>();
@@ -160,12 +197,16 @@ const PollerMenu = ({
         if (!toggled) {
           return;
         }
-
         toggleDetailedView();
       }}
     >
-      <PollerIcon />
-      <GetPollerStatusIcon issues={issues} />
+      <>
+        <PollerIcon style={{ color: '#FFFFFF' }} />
+        <span className={styles['wrap-left-icon__name']}>
+          <Typography variant="caption">{t(labelPoller)}</Typography>
+        </span>
+        <GetPollerStatusIcon issues={issues} />
+      </>
     </ClickAwayListener>
   );
 };
