@@ -54,13 +54,16 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
     public function findById(int $contactId): ?Contact
     {
         $request = $this->translateDbName(
-            'SELECT contact.*, t.topology_url, t.topology_url_opt, t.is_react, t.topology_id, tz.timezone_name
+            'SELECT contact.*, cp.password AS contact_passwd, t.topology_url,
+            t.topology_url_opt, t.is_react, t.topology_id, tz.timezone_name
             FROM `:db`.contact
+            INNER JOIN `:db`.contact_password cp
+                ON cp.contact_id = contact.contact_id
             LEFT JOIN `:db`.timezone tz
                 ON tz.timezone_id = contact.contact_location
             LEFT JOIN `:db`.topology t
                 ON t.topology_page = contact.default_page
-            WHERE contact_id = :contact_id'
+            WHERE contact.contact_id = :contact_id'
         );
 
         $statement = $this->db->prepare($request);
@@ -83,8 +86,11 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
     public function findByName(string $name): ?Contact
     {
         $request = $this->translateDbName(
-            'SELECT contact.*, t.topology_url, t.topology_url_opt, t.is_react, t.topology_id, tz.timezone_name
+            'SELECT contact.*, cp.password AS contact_passwd, t.topology_url,
+            t.topology_url_opt, t.is_react, t.topology_id, tz.timezone_name
             FROM `:db`.contact
+            INNER JOIN `:db`.contact_password cp
+                ON cp.contact_id = contact.contact_id
             LEFT JOIN `:db`.timezone tz
                 ON tz.timezone_id = contact.contact_location
             LEFT JOIN `:db`.topology t
@@ -113,8 +119,11 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
     public function findBySession(string $sessionId): ?Contact
     {
         $request = $this->translateDbName(
-            'SELECT contact.*, t.topology_url, t.topology_url_opt, t.is_react, t.topology_id, tz.timezone_name
+            'SELECT contact.*, cp.password AS contact_passwd, t.topology_url,
+            t.topology_url_opt, t.is_react, t.topology_id, tz.timezone_name
             FROM `:db`.contact
+            INNER JOIN `:db`.contact_password cp
+                ON cp.contact_id = contact.contact_id
             LEFT JOIN `:db`.timezone tz
                 ON tz.timezone_id = contact.contact_location
             LEFT JOIN `:db`.topology t
@@ -146,8 +155,11 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
     {
         $statement = $this->db->prepare(
             $this->translateDbName(
-                "SELECT contact.*, t.topology_url, t.topology_url_opt, t.is_react, t.topology_id, tz.timezone_name
+                "SELECT contact.*, cp.password AS contact_passwd, t.topology_url,
+                t.topology_url_opt, t.is_react, t.topology_id, tz.timezone_name
                 FROM `:db`.contact
+                INNER JOIN `:db`.contact_password cp
+                    ON cp.contact_id = contact.contact_id
                 LEFT JOIN `:db`.timezone tz
                     ON tz.timezone_id = contact.contact_location
                 LEFT JOIN `:db`.topology t
@@ -365,7 +377,6 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
                 $page->setUrlOptions($contact['topology_url_opt']);
             }
         }
-
         return (new Contact())
             ->setId((int) $contact['contact_id'])
             ->setName($contact['contact_name'])

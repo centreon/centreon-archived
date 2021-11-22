@@ -509,13 +509,29 @@ class CentreonAPI
         );
         $DBRESULT->bindParam(':contactAlias', $this->login, \PDO::PARAM_STR);
         $DBRESULT->execute();
-
         if ($DBRESULT->rowCount()) {
             $row = $DBRESULT->fetchRow();
-
             if ($row['contact_admin'] == 0) {
                 print "You don't have permissions for CLAPI.\n";
                 exit(1);
+            }
+            if (
+                str_starts_with($row["contact_passwd"], 'md5__')
+                && $row["contact_passwd"] === $this->dependencyInjector['utils']->encodePass(
+                    $this->password, 'md5'
+                )
+            ) {
+                $newPassword = password_hash($this->password, PASSWORD_BCRYPT);
+                $statement = $this->DB->prepare(
+                    "UPDATE `contact_password` SET password = :newPassword
+                    WHERE password = :oldPassword AND contact_id = :contactId"
+                );
+                $statement->bindValue(':newPassword', $newPassword, \PDO::PARAM_STR);
+                $statement->bindValue(':oldPassword', $row["contact_passwd"], \PDO::PARAM_STR);
+                $statement->bindValue(':contactId', $row["contact_id"], \PDO::PARAM_INT);
+                $statement->execute();
+                \CentreonClapi\CentreonUtils::setUserId($row['contact_id']);
+                return 1;
             }
             if (password_verify($this->password, $row['contact_passwd'])) {
                 \CentreonClapi\CentreonUtils::setUserId($row['contact_id']);

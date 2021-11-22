@@ -221,16 +221,19 @@ class CentreonAuth
                     }
                 }
             }
-        } elseif ($this->userInfos["contact_auth_type"] == ""
+        } elseif (
+            $this->userInfos["contact_auth_type"] == ""
             || $this->userInfos["contact_auth_type"] == "local"
             || $this->autologin
         ) {
-            if ($this->autologin
+            if (
+                $this->autologin
                 && $this->userInfos["contact_autologin_key"]
                 && $this->userInfos["contact_autologin_key"] === $token
             ) {
                 $this->passwdOk = 1;
-            } elseif (!empty($password)
+            } elseif (
+                !empty($password)
                 && $this->userInfos["contact_passwd"] === $password
                 && $this->autologin
             ) {
