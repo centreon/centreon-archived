@@ -98,6 +98,7 @@ import { buildListTimelineEventsEndpoint } from './tabs/Timeline/api';
 import useDetails from './useDetails';
 import { getTypeIds } from './tabs/Timeline/Event';
 import { DetailsUrlQueryParameters } from './models';
+import useLoadDetails from './useLoadDetails';
 
 import Details from '.';
 
