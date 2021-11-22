@@ -83,3 +83,5 @@ export const selectedResourceDetailsEndpointDerivedAtom = atom((get) => {
 
   return `${resourcesEndpoint}/${selectedResourceType}s/${selectedResourceId}`;
 });
+
+export const sendingDetailsAtom = atom(false);
