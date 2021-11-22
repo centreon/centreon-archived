@@ -15,7 +15,7 @@ import {
 } from '@material-ui/lab';
 
 import { useUserContext } from '@centreon/ui-context';
-import { useLocaleDateTimeFormat } from '@centreon/centreon-frontend/packages/centreon-ui/src';
+import { useLocaleDateTimeFormat } from '@centreon/ui';
 
 import { labelFrom, labelTo } from '../../../../translatedLabels';
 import { TimelineEvent } from '../models';

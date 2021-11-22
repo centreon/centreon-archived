@@ -16,7 +16,6 @@ import {
   remove,
   difference,
   uniq,
-  prop,
 } from 'ramda';
 import { useAtom } from 'jotai';
 
@@ -124,6 +123,7 @@ const SortableCards = ({ panelWidth, details }: Props): JSX.Element => {
     Component: (
       <Box>
         <SortableItems<CardsLayout>
+          updateSortableItemsOnItemsChange
           Content={Content}
           RootComponent={RootComponent}
           collisionDetection={rectIntersection}
@@ -141,13 +141,7 @@ const SortableCards = ({ panelWidth, details }: Props): JSX.Element => {
         />
       </Box>
     ),
-    memoProps: [
-      defaultDetailsCardsLayout,
-      panelWidth,
-      expandedCards,
-      details,
-      displayedCards.map(prop('id')),
-    ],
+    memoProps: [panelWidth, expandedCards, details],
   });
 };
 
