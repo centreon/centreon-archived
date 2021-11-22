@@ -17,6 +17,7 @@ import { Provider as ReduxProvider } from 'react-redux';
 import { pathEq, toPairs, pipe, reduce, mergeAll } from 'ramda';
 import i18n, { Resource, ResourceLanguage } from 'i18next';
 import { initReactI18next } from 'react-i18next';
+import { Provider as JotaiProvider } from 'jotai';
 
 import { useRequest, getData, withSnackbar, ThemeProvider } from '@centreon/ui';
 import {
@@ -163,24 +164,26 @@ const AppProvider = (): JSX.Element => {
   }
 
   return (
-    <Context.Provider
-      value={{
-        ...user,
-        acknowledgement,
-        acl: {
-          actions: actionAcl,
-        },
-        cloudServices,
-        downtime,
-        refreshInterval,
-      }}
-    >
-      <ReduxProvider store={store}>
-        <React.Suspense fallback={<PageLoader />}>
-          <App />
-        </React.Suspense>
-      </ReduxProvider>
-    </Context.Provider>
+    <JotaiProvider>
+      <Context.Provider
+        value={{
+          ...user,
+          acknowledgement,
+          acl: {
+            actions: actionAcl,
+          },
+          cloudServices,
+          downtime,
+          refreshInterval,
+        }}
+      >
+        <ReduxProvider store={store}>
+          <React.Suspense fallback={<PageLoader />}>
+            <App />
+          </React.Suspense>
+        </ReduxProvider>
+      </Context.Provider>
+    </JotaiProvider>
   );
 };
 

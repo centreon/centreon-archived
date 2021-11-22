@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
+import { useAtomValue } from 'jotai/utils';
 
 import { Grid } from '@material-ui/core';
 import IconRefresh from '@material-ui/icons/Refresh';
@@ -15,6 +16,7 @@ import {
   labelEnableAutorefresh,
 } from '../../translatedLabels';
 import { ResourceContext, useResourceContext } from '../../Context';
+import { selectedResourceIdAtom } from '../../Details/detailsAtoms';
 
 interface AutorefreshProps {
   enabledAutorefresh: boolean;
@@ -49,10 +51,7 @@ export interface ActionsProps {
 
 type ResourceContextProps = Pick<
   ResourceContext,
-  | 'enabledAutorefresh'
-  | 'setEnabledAutorefresh'
-  | 'sending'
-  | 'selectedResourceId'
+  'enabledAutorefresh' | 'setEnabledAutorefresh' | 'sending'
 >;
 
 const RefreshActionsContent = ({
@@ -91,12 +90,10 @@ const RefreshActionsContent = ({
 };
 
 const RefreshActions = ({ onRefresh }: ActionsProps): JSX.Element => {
-  const {
-    enabledAutorefresh,
-    setEnabledAutorefresh,
-    sending,
-    selectedResourceId,
-  } = useResourceContext();
+  const selectedResourceId = useAtomValue(selectedResourceIdAtom);
+
+  const { enabledAutorefresh, setEnabledAutorefresh, sending } =
+    useResourceContext();
 
   return useMemoComponent({
     Component: (

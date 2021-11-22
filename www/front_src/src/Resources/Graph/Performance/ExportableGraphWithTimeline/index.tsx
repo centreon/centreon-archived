@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { path, isNil, or, not } from 'ramda';
+import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 
 import { Paper, Theme, makeStyles } from '@material-ui/core';
 
@@ -15,10 +16,16 @@ import { Resource } from '../../../models';
 import { ResourceDetails } from '../../../Details/models';
 import { GraphOptionId } from '../models';
 import { useIntersection } from '../useGraphIntersection';
-import { useResourceContext } from '../../../Context';
-import { ResourceGraphMousePosition } from '../../../Details/tabs/Services/Graphs';
+import {
+  adjustTimePeriodDerivedAtom,
+  customTimePeriodAtom,
+  getDatesDerivedAtom,
+  graphQueryParametersDerivedAtom,
+  resourceDetailsUpdatedAtom,
+  selectedTimePeriodAtom,
+} from '../TimePeriods/timePeriodAtoms';
 
-import { defaultGraphOptions, useGraphOptionsContext } from './useGraphOptions';
+import { graphOptionsAtom } from './graphOptionsAtoms';
 
 const useStyles = makeStyles((theme: Theme) => ({
   graph: {
@@ -37,29 +44,14 @@ interface Props {
   graphHeight: number;
   limitLegendRows?: boolean;
   resource?: Resource | ResourceDetails;
-  resourceGraphMousePosition?: ResourceGraphMousePosition | null;
-  updateResourceGraphMousePosition?: (
-    resourceGraphMousePosition: ResourceGraphMousePosition | null,
-  ) => void;
 }
 
 const ExportablePerformanceGraphWithTimeline = ({
   resource,
   graphHeight,
   limitLegendRows,
-  updateResourceGraphMousePosition,
-  resourceGraphMousePosition,
 }: Props): JSX.Element => {
   const classes = useStyles();
-
-  const {
-    customTimePeriod,
-    getIntervalDates,
-    periodQueryParameters,
-    adjustTimePeriod,
-    selectedTimePeriod,
-    resourceDetailsUpdated,
-  } = useResourceContext();
 
   const [timeline, setTimeline] = React.useState<Array<TimelineEvent>>();
   const { sendRequest: sendGetTimelineRequest } = useRequest<
@@ -71,8 +63,14 @@ const ExportablePerformanceGraphWithTimeline = ({
 
   const { alias } = useUserContext();
 
-  const graphOptions =
-    useGraphOptionsContext()?.graphOptions || defaultGraphOptions;
+  const graphOptions = useAtomValue(graphOptionsAtom);
+  const getGraphQueryParameters = useAtomValue(graphQueryParametersDerivedAtom);
+  const selectedTimePeriod = useAtomValue(selectedTimePeriodAtom);
+  const customTimePeriod = useAtomValue(customTimePeriodAtom);
+  const resourceDetailsUpdated = useAtomValue(resourceDetailsUpdatedAtom);
+  const getIntervalDates = useAtomValue(getDatesDerivedAtom);
+  const adjustTimePeriod = useUpdateAtom(adjustTimePeriodDerivedAtom);
+
   const graphContainerRef = React.useRef<HTMLElement | null>(null);
 
   const { setElement, isInViewport } = useIntersection();
@@ -95,7 +93,7 @@ const ExportablePerformanceGraphWithTimeline = ({
       return;
     }
 
-    const [start, end] = getIntervalDates();
+    const [start, end] = getIntervalDates(selectedTimePeriod);
 
     sendGetTimelineRequest({
       endpoint: timelineEndpoint,
@@ -137,7 +135,13 @@ const ExportablePerformanceGraphWithTimeline = ({
       return undefined;
     }
 
-    return `${endpoint}${periodQueryParameters}`;
+    const graphQuerParameters = getGraphQueryParameters({
+      endDate: customTimePeriod.end,
+      startDate: customTimePeriod.start,
+      timePeriod: selectedTimePeriod,
+    });
+
+    return `${endpoint}${graphQuerParameters}`;
   };
 
   const addCommentToTimeline = ({ date, comment }): void => {
@@ -170,9 +174,7 @@ const ExportablePerformanceGraphWithTimeline = ({
           limitLegendRows={limitLegendRows}
           resource={resource as Resource}
           resourceDetailsUpdated={resourceDetailsUpdated}
-          resourceGraphMousePosition={resourceGraphMousePosition}
           timeline={timeline}
-          updateResourceGraphMousePosition={updateResourceGraphMousePosition}
           xAxisTickFormat={
             selectedTimePeriod?.dateTimeFormat ||
             customTimePeriod.xAxisTickFormat
