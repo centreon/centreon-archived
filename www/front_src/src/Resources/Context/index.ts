@@ -3,7 +3,7 @@ import * as React from 'react';
 import { FilterState } from '../Filter/useFilter';
 import { ActionsState } from '../Actions/useActions';
 import { ListingState } from '../Listing/useListing';
-import { DetailsState } from '../Details/useDetails';
+import { DetailsState } from '../Details/useLoadDetails';
 
 export type ResourceContext = FilterState &
   ActionsState &
