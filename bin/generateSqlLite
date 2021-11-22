@@ -417,7 +417,7 @@ try {
             }
 
             //match hosts with their dedicated service
-            foreach ($resultHostServices as $host) {
+            foreach ($resultHostServices as $service) {
                 $stmt = $dbh_sqlite->prepare("INSERT INTO host_service_relation (service_service_id, host_host_id)
                 VALUES (:service_service_id,:host_host_id)");
                 $stmt->bindParam(':service_service_id', $host['service_id'], PDO::PARAM_INT);
