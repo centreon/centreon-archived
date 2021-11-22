@@ -98,11 +98,6 @@ class EngineService extends AbstractCentreonService implements
             throw new EngineException('Host name can not be empty');
         }
 
-        $sticky = 0;
-        if ($acknowledgement->isSticky() === true) {
-            $sticky = 2;
-        }
-
         $preCommand = sprintf(
             'ACKNOWLEDGE_HOST_PROBLEM;%s;%d;%d;%d;%s;%s',
             $host->getName(),
