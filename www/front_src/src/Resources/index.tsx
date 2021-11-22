@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { isNil } from 'ramda';
+import { useAtomValue } from 'jotai/utils';
 
 import { ListingPage, WithPanel } from '@centreon/ui';
 
@@ -11,30 +12,32 @@ import Details from './Details';
 import useFilter from './Filter/useFilter';
 import useListing from './Listing/useListing';
 import useActions from './Actions/useActions';
-import useDetails from './Details/useDetails';
 import EditFiltersPanel from './Filter/Edit';
 import memoizeComponent from './memoizedComponent';
+import { selectedResourceIdAtom } from './Details/detailsAtoms';
+import useLoadDetails from './Details/useLoadDetails';
+import useDetails from './Details/useDetails';
 
 interface Props {
   editPanelOpen: boolean;
-  selectedResourceId?: number;
 }
 
-const ResourcesPage = ({
-  editPanelOpen,
-  selectedResourceId,
-}: Props): JSX.Element => (
-  <WithPanel open={editPanelOpen} panel={<EditFiltersPanel />}>
-    <ListingPage
-      filter={<Filter />}
-      listing={<Listing />}
-      panel={<Details />}
-      panelOpen={!isNil(selectedResourceId)}
-    />
-  </WithPanel>
-);
+const ResourcesPage = ({ editPanelOpen }: Props): JSX.Element => {
+  const selectedResourceId = useAtomValue(selectedResourceIdAtom);
 
-const memoProps = ['editPanelOpen', 'selectedResourceId'];
+  return (
+    <WithPanel open={editPanelOpen} panel={<EditFiltersPanel />}>
+      <ListingPage
+        filter={<Filter />}
+        listing={<Listing />}
+        panel={<Details />}
+        panelOpen={!isNil(selectedResourceId)}
+      />
+    </WithPanel>
+  );
+};
+
+const memoProps = ['editPanelOpen'];
 
 const MemoizedResourcesPage = memoizeComponent<Props>({
   Component: ResourcesPage,
@@ -44,10 +47,10 @@ const MemoizedResourcesPage = memoizeComponent<Props>({
 const Resources = (): JSX.Element => {
   const listingContext = useListing();
   const filterContext = useFilter();
-  const detailsContext = useDetails();
+  const detailsContext = useLoadDetails();
   const actionsContext = useActions();
 
-  const { selectedResourceId } = detailsContext;
+  useDetails();
 
   return (
     <Context.Provider
@@ -58,10 +61,7 @@ const Resources = (): JSX.Element => {
         ...actionsContext,
       }}
     >
-      <MemoizedResourcesPage
-        editPanelOpen={filterContext.editPanelOpen}
-        selectedResourceId={selectedResourceId}
-      />
+      <MemoizedResourcesPage editPanelOpen={filterContext.editPanelOpen} />
     </Context.Provider>
   );
 };

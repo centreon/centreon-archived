@@ -14,6 +14,7 @@ import StackedAnchorPoint, {
 import { getFillColor } from '.';
 
 interface Props {
+  displayTimeValues: boolean;
   lines: Array<Line>;
   timeSeries: Array<TimeValue>;
   timeTick: Date | null;
@@ -27,6 +28,7 @@ const StackLines = ({
   yScale,
   xScale,
   timeTick,
+  displayTimeValues,
 }: Props): JSX.Element => (
   <Shape.AreaStack
     curve={Curve.curveLinear}
@@ -50,9 +52,10 @@ const StackLines = ({
         ) as Line;
 
         return (
-          <React.Fragment key={`stack-${prop('key', stack)}`}>
+          <g key={`stack-${prop('key', stack)}`}>
             <StackedAnchorPoint
               areaColor={areaColor}
+              displayTimeValues={displayTimeValues}
               lineColor={lineColor}
               stackValues={stack as unknown as Array<StackValue>}
               timeTick={timeTick}
@@ -67,7 +70,7 @@ const StackLines = ({
               stroke={lineColor}
               strokeWidth={highlight ? 2 : 1}
             />
-          </React.Fragment>
+          </g>
         );
       });
     }}
