@@ -53,6 +53,7 @@ import useListing from '../Listing/useListing';
 import useFilter from '../Filter/useFilter';
 import Context, { ResourceContext } from '../Context';
 import { Resource } from '../models';
+import useLoadDetails from '../Details/useLoadDetails';
 import useDetails from '../Details/useDetails';
 
 import {
@@ -144,10 +145,12 @@ const service = {
 } as Resource;
 
 const ActionsWithContext = (): JSX.Element => {
-  const detailsState = useDetails();
+  const detailsState = useLoadDetails();
   const listingState = useListing();
   const actionsState = useActions();
   const filterState = useFilter();
+
+  useDetails();
 
   context = {
     ...detailsState,

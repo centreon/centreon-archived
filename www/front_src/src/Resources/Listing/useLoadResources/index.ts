@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { equals, isNil, not, prop } from 'ramda';
+import { useAtomValue } from 'jotai/utils';
 
 import { SelectEntry } from '@centreon/ui';
 import { useUserContext } from '@centreon/ui-context';
@@ -8,6 +9,10 @@ import { useUserContext } from '@centreon/ui-context';
 import { useResourceContext } from '../../Context';
 import { SortOrder } from '../../models';
 import { searchableFields } from '../../Filter/Criterias/searchQueryLanguage';
+import {
+  detailsAtom,
+  selectedResourceIdAtom,
+} from '../../Details/detailsAtoms';
 
 export interface LoadResources {
   initAutorefreshAndLoad: () => void;
@@ -17,6 +22,11 @@ const secondSortField = 'last_status_change';
 const defaultSecondSortCriteria = { [secondSortField]: SortOrder.desc };
 
 const useLoadResources = (): LoadResources => {
+  const { refreshInterval } = useUserContext();
+
+  const details = useAtomValue(detailsAtom);
+  const selectedResourceId = useAtomValue(selectedResourceIdAtom);
+
   const {
     limit,
     page,
@@ -26,15 +36,11 @@ const useLoadResources = (): LoadResources => {
     enabledAutorefresh,
     customFilters,
     loadDetails,
-    details,
-    selectedResourceId,
     getCriteriaValue,
     appliedFilter,
   } = useResourceContext();
 
   const refreshIntervalRef = React.useRef<number>();
-
-  const { refreshInterval } = useUserContext();
 
   const refreshIntervalMs = refreshInterval * 1000;
 
@@ -160,7 +166,7 @@ const useLoadResources = (): LoadResources => {
     setPage(1);
   }, [limit, appliedFilter]);
 
-  return { initAutorefreshAndLoad };
+  return React.useMemo(() => ({ initAutorefreshAndLoad }), []);
 };
 
 export default useLoadResources;
