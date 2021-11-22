@@ -44,7 +44,7 @@ function generatePassword(what, securityPolicy = null)
         return true;
     }
 
-    var length=securityPolicy.password_length;
+    var length = securityPolicy.password_length;
     var sPassword = "";
 
     /*

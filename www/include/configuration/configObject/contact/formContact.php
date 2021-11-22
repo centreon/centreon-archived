@@ -93,6 +93,7 @@ try {
     return false;
 }
 $passwordPolicy = $statement->fetch(\PDO::FETCH_ASSOC);
+$encodedPasswordPolicy = json_encode($passwordPolicy);
 
 $cct = array();
 if (($o == MODIFY_CONTACT || $o == WATCH_CONTACT) && $contactId) {
@@ -316,7 +317,12 @@ if ($o != MASSIVE_CHANGE) {
     $form->addElement('text', 'contact_name', _("Full Name"), $attrsTextDescr);
     $form->addElement('text', 'contact_alias', _("Alias / Login"), $attrsText);
     $form->addElement('text', 'contact_autologin_key', _("Autologin Key"), array("size" => "90", "id" => "aKey"));
-    $form->addElement('button', 'contact_gen_akey', _("Generate"), array('onclick' => 'generatePassword("aKey");'));
+    $form->addElement(
+        'button',
+        'contact_gen_akey',
+        _("Generate"),
+        ['onclick' => "generatePassword('aKey', '$encodedPasswordPolicy');"]
+    );
 }
 
 $form->addElement('text', 'contact_email', _("Email"), $attrsTextMail);
@@ -377,7 +383,6 @@ $form->addElement(
     _("Confirm Password"),
     array("size" => "30", "autocomplete" => "new-password", "id" => "passwd2", "onkeypress" => "resetPwdType(this);")
 );
-$encodedPasswordPolicy = json_encode($passwordPolicy);
 $form->addElement(
     'button',
     'contact_gen_passwd',

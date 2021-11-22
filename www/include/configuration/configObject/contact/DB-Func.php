@@ -562,7 +562,7 @@ function insertContact($ret = array())
 
     if (isset($ret["contact_passwd"]) && !empty($ret["contact_passwd"])) {
         $ret["contact_passwd"] = $ret["contact_passwd2"]
-            = $dependencyInjector['utils']->encodePass($ret["contact_passwd"], 'argon2i');
+            = $dependencyInjector['utils']->encodePass($ret["contact_passwd"], 'bcrypt');
 
         $statement = $pearDB->prepare(
             'INSERT INTO `contact_password` (password, contact_id, creation_date)
@@ -626,7 +626,7 @@ function updateContact($contactId = null)
 
     if (isset($ret["contact_passwd"]) && !empty($ret["contact_passwd"])) {
         $ret["contact_passwd"] = $ret["contact_passwd2"]
-            = $dependencyInjector['utils']->encodePass($ret["contact_passwd"], 'argon2i');
+            = $dependencyInjector['utils']->encodePass($ret["contact_passwd"], 'bcrypt');
 
         //Get three last saved password.
         $statement = $pearDB->prepare(

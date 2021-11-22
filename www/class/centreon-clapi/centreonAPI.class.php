@@ -501,20 +501,14 @@ class CentreonAPI
         /**
          * Check Login / Password
          */
-        if ($useSha1) {
-            $pass = $this->dependencyInjector['utils']->encodePass($this->password, 'sha1');
-        } else {
-            $pass = $this->dependencyInjector['utils']->encodePass($this->password, 'md5');
-        }
-
-        if ($isWorker) {
-            $pass = 'md5__' . $this->password;
-        }
-
-        $DBRESULT = $this->DB->query("SELECT *
-                 FROM contact
-                 WHERE contact_alias = '" . $this->login . "'
-                 AND contact_activate = '1'");
+        $DBRESULT = $this->DB->prepare(
+            "SELECT `contact`.*, `contact_password`.`password` AS `contact_passwd` FROM `contact`
+            INNER JOIN `contact_password` ON `contact_password`.`contact_id` = `contact`.`contact_id`
+            WHERE `contact_alias` = :contactAlias
+            AND `contact_activate` = '1' AND `contact_register` = '1' LIMIT 1"
+        );
+        $DBRESULT->bindParam(':contactAlias', $this->login, \PDO::PARAM_STR);
+        $DBRESULT->execute();
 
         if ($DBRESULT->rowCount()) {
             $row = $DBRESULT->fetchRow();
@@ -523,16 +517,7 @@ class CentreonAPI
                 print "You don't have permissions for CLAPI.\n";
                 exit(1);
             }
-
-            $algo = $this->dependencyInjector['utils']->detectPassPattern($row['contact_passwd']);
-            if (!$algo) {
-                if ($useSha1) {
-                    $row['contact_passwd'] = 'sha1__' . $row['contact_passwd'];
-                } else {
-                    $row['contact_passwd'] = 'md5__' . $row['contact_passwd'];
-                }
-            }
-            if ($row['contact_passwd'] == $pass) {
+            if (password_verify($this->password, $row['contact_passwd'])) {
                 \CentreonClapi\CentreonUtils::setUserId($row['contact_id']);
                 return 1;
             } elseif ($row['contact_auth_type'] == 'ldap') {

@@ -156,11 +156,6 @@ class CentreonAuth
             $this->passwdOk = 0;
             return;
         }
-        if (isset($this->userInfos["contact_passwd"]) &&
-            !$this->dependencyInjector['utils']->detectPassPattern($this->userInfos["contact_passwd"])
-        ) {
-            $this->userInfos["contact_passwd"] = 'md5__' . $this->userInfos["contact_passwd"];
-        }
         if ($this->userInfos["contact_auth_type"] == "ldap" && $this->autologin == 0) {
             /*
              * Insert LDAP Class
@@ -240,8 +235,23 @@ class CentreonAuth
                 && $this->autologin
             ) {
                 $this->passwdOk = 1;
-            } elseif (!empty($password)
+            } elseif (
+                !empty($password)
+                && str_starts_with($this->userInfos["contact_passwd"], 'md5__')
                 && $this->userInfos["contact_passwd"] === $this->myCrypt($password)
+            ) {
+                $newPassword = password_hash($password, PASSWORD_BCRYPT);
+                $statement = $this->pearDB->prepare(
+                    "UPDATE `contact_password` SET password = :newPassword
+                    WHERE password = :oldPassword AND contact_id = :contactId"
+                );
+                $statement->bindValue(':newPassword', $newPassword, \PDO::PARAM_STR);
+                $statement->bindValue(':oldPassword', $this->userInfos["contact_passwd"], \PDO::PARAM_STR);
+                $statement->bindValue(':contactId', $this->userInfos["contact_id"], \PDO::PARAM_INT);
+                $statement->execute();
+                $this->passwdOk = 1;
+            } elseif (!empty($password)
+                && password_verify($password, $this->userInfos["contact_passwd"])
                 && $this->autologin == 0
             ) {
                 $this->passwdOk = 1;
@@ -287,11 +297,15 @@ class CentreonAuth
     {
 
         if ($this->autologin == 0 || ($this->autologin && $token != "")) {
-            $dbResult = $this->pearDB->query(
-                "SELECT * FROM `contact` " .
-                "WHERE `contact_alias` = '" . $this->pearDB->escape($username, true) . "'" .
-                "AND `contact_activate` = '1' AND `contact_register` = '1' LIMIT 1"
+            $dbResult = $this->pearDB->prepare(
+                "SELECT `contact`.*, `contact_password`.`password` AS `contact_passwd` FROM `contact`
+                INNER JOIN `contact_password` ON `contact_password`.`contact_id` = `contact`.`contact_id`
+                WHERE `contact_alias` = :contactAlias
+                AND `contact_activate` = '1' AND `contact_register` = '1' LIMIT 1
+                "
             );
+            $dbResult->bindValue(':contactAlias', $username, \PDO::PARAM_STR);
+            $dbResult->execute();
         } else {
             $dbResult = $this->pearDB->query(
                 "SELECT * FROM `contact` " .
