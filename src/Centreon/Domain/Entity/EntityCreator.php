@@ -60,16 +60,12 @@ class EntityCreator
      * @param array $data Data used to fill the new object entity
      * @param string|null $prefix The prefix is used to retrieve only certain records when the table contains data
      * from more than one entity
-     * @return object Return an new instance of the class
+     * @return mixed Return an new instance of the class
      * @throws \Exception
      */
-    public static function createEntityByArray(
-        string $className,
-        array $data,
-        string $prefix = null,
-        ...$constructorArguments
-    ): object {
-        return (new self($className))->createByArray($data, $prefix, ...$constructorArguments);
+    public static function createEntityByArray(string $className, array $data, string $prefix = null)
+    {
+        return (new self($className))->createByArray($data, $prefix);
     }
 
     /**
@@ -103,7 +99,7 @@ class EntityCreator
      * @throws \ReflectionException
      * @throws \Exception
      */
-    public function createByArray(array $data, string $prefix = null, ...$constructorArguments)
+    public function createByArray(array $data, string $prefix = null)
     {
         if (!class_exists($this->className)) {
             throw new \Exception(
@@ -114,7 +110,7 @@ class EntityCreator
         $this->readPublicMethod();
         $this->readAnnotations();
 
-        $objectToSet = (new ReflectionClass($this->className))->newInstance(...$constructorArguments);
+        $objectToSet = (new ReflectionClass($this->className))->newInstance();
 
         if (!empty($prefix)) {
             // If a prefix is defined, we keep only $data for which the keys start

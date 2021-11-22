@@ -308,16 +308,9 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
      */
     protected function parseResource(array $data): ResourceEntity
     {
-        $monitoringServerName = $data['monitoring_server_name'];
-        unset($data['monitoring_server_name']);
-        /**
-         * @var ResourceEntity $resource
-         */
         $resource = EntityCreator::createEntityByArray(
             ResourceEntity::class,
-            $data,
-            null,
-            $monitoringServerName
+            $data
         );
 
         $resource->setHostId((int)$data['host_id']);
@@ -345,8 +338,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         $parent = EntityCreator::createEntityByArray(
             ResourceEntity::class,
             $data,
-            'parent_',
-            $monitoringServerName
+            'parent_'
         );
 
         if ($parent->getId()) {
