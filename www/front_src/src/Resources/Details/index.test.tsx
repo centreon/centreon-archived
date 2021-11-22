@@ -78,15 +78,16 @@ import {
   labelLastCheckWithOkStatus,
   labelGraph,
 } from '../translatedLabels';
-import Context, { ResourceContext } from '../Context';
+import Context, { ResourceContext } from '../testUtils/Context';
 import useListing from '../Listing/useListing';
 import { resourcesEndpoint } from '../api/endpoint';
 import { buildResourcesEndpoint } from '../Listing/api/endpoint';
 import { cancelTokenRequestParam } from '../testUtils';
 import { defaultGraphOptions } from '../Graph/Performance/ExportableGraphWithTimeline/graphOptionsAtoms';
-import useFilter from '../Filter/useFilter';
+import useFilter from '../testUtils/useFilter';
 import { CriteriaNames } from '../Filter/Criterias/models';
 import { ResourceType } from '../models';
+import useLoadDetails from '../testUtils/useLoadDetails';
 
 import {
   last7Days,
@@ -97,7 +98,6 @@ import { buildListTimelineEventsEndpoint } from './tabs/Timeline/api';
 import useDetails from './useDetails';
 import { getTypeIds } from './tabs/Timeline/Event';
 import { DetailsUrlQueryParameters } from './models';
-import useLoadDetails from './useLoadDetails';
 
 import Details from '.';
 
@@ -1253,13 +1253,13 @@ describe(Details, () => {
     });
 
     act(() => {
-      context.changeCustomTimePeriod({
+      context.changeCustomTimePeriod?.({
         date: new Date(startISOString),
         property: CustomTimePeriodProperty.start,
       });
     });
     act(() => {
-      context.changeCustomTimePeriod({
+      context.changeCustomTimePeriod?.({
         date: new Date(endISOString),
         property: CustomTimePeriodProperty.end,
       });
@@ -1292,13 +1292,13 @@ describe(Details, () => {
     const endISOString = '2020-01-21T06:00:00.000Z';
 
     act(() => {
-      context.changeCustomTimePeriod({
+      context.changeCustomTimePeriod?.({
         date: new Date(startISOString),
         property: CustomTimePeriodProperty.start,
       });
     });
     act(() => {
-      context.changeCustomTimePeriod({
+      context.changeCustomTimePeriod?.({
         date: new Date(endISOString),
         property: CustomTimePeriodProperty.end,
       });
@@ -1378,13 +1378,13 @@ describe(Details, () => {
       const { getByLabelText } = renderDetails();
 
       act(() => {
-        context.changeCustomTimePeriod({
+        context.changeCustomTimePeriod?.({
           date: new Date('2020-01-20T06:00:00.000Z'),
           property: CustomTimePeriodProperty.start,
         });
       });
       act(() => {
-        context.changeCustomTimePeriod({
+        context.changeCustomTimePeriod?.({
           date: new Date('2020-01-21T06:00:00.000Z'),
           property: CustomTimePeriodProperty.end,
         });
@@ -1508,7 +1508,7 @@ describe(Details, () => {
     userEvent.click(getByText('Linux-servers').parentElement as HTMLElement);
 
     await waitFor(() => {
-      expect(context.getCriteriaValue(CriteriaNames.serviceGroups)).toEqual([
+      expect(context.getCriteriaValue?.(CriteriaNames.serviceGroups)).toEqual([
         { id: 0, name: 'Linux-servers' },
       ]);
     });

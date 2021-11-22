@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
+import { useAtom } from 'jotai';
 import { useAtomValue } from 'jotai/utils';
 
 import { Grid } from '@material-ui/core';
@@ -8,15 +9,17 @@ import IconRefresh from '@material-ui/icons/Refresh';
 import IconPlay from '@material-ui/icons/PlayArrow';
 import IconPause from '@material-ui/icons/Pause';
 
-import { IconButton, useMemoComponent } from '@centreon/ui';
+import { IconButton } from '@centreon/ui';
 
 import {
   labelRefresh,
   labelDisableAutorefresh,
   labelEnableAutorefresh,
 } from '../../translatedLabels';
-import { ResourceContext, useResourceContext } from '../../Context';
-import { selectedResourceIdAtom } from '../../Details/detailsAtoms';
+import {
+  enabledAutorefreshAtom,
+  sendingAtom,
+} from '../../Listing/listingAtoms';
 
 interface AutorefreshProps {
   enabledAutorefresh: boolean;
@@ -45,22 +48,17 @@ const AutorefreshButton = ({
   );
 };
 
-export interface ActionsProps {
+export interface Props {
   onRefresh: () => void;
 }
 
-type ResourceContextProps = Pick<
-  ResourceContext,
-  'enabledAutorefresh' | 'setEnabledAutorefresh' | 'sending'
->;
-
-const RefreshActionsContent = ({
-  onRefresh,
-  enabledAutorefresh,
-  setEnabledAutorefresh,
-  sending,
-}: ActionsProps & ResourceContextProps): JSX.Element => {
+const RefreshActions = ({ onRefresh }: Props): JSX.Element => {
   const { t } = useTranslation();
+
+  const [enabledAutorefresh, setEnabledAutorefresh] = useAtom(
+    enabledAutorefreshAtom,
+  );
+  const sending = useAtomValue(sendingAtom);
 
   const toggleAutorefresh = (): void => {
     setEnabledAutorefresh(!enabledAutorefresh);
@@ -87,25 +85,6 @@ const RefreshActionsContent = ({
       </Grid>
     </Grid>
   );
-};
-
-const RefreshActions = ({ onRefresh }: ActionsProps): JSX.Element => {
-  const selectedResourceId = useAtomValue(selectedResourceIdAtom);
-
-  const { enabledAutorefresh, setEnabledAutorefresh, sending } =
-    useResourceContext();
-
-  return useMemoComponent({
-    Component: (
-      <RefreshActionsContent
-        enabledAutorefresh={enabledAutorefresh}
-        sending={sending}
-        setEnabledAutorefresh={setEnabledAutorefresh}
-        onRefresh={onRefresh}
-      />
-    ),
-    memoProps: [sending, enabledAutorefresh, selectedResourceId],
-  });
 };
 
 export default RefreshActions;

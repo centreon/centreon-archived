@@ -10,6 +10,7 @@ import {
   customTimePeriodAtom,
   selectedTimePeriodAtom,
 } from '../Graph/Performance/TimePeriods/timePeriodAtoms';
+import useTimePeriod from '../Graph/Performance/TimePeriods/useTimePeriod';
 
 import { getTabIdFromLabel, getTabLabelFromId } from './tabs';
 import { DetailsUrlQueryParameters } from './models';
@@ -22,6 +23,7 @@ import {
   selectedResourceParentTypeAtom,
   selectedResourceTypeAtom,
   selectedResourceUuidAtom,
+  sendingDetailsAtom,
   tabParametersAtom,
 } from './detailsAtoms';
 
@@ -45,12 +47,17 @@ const useDetails = (): void => {
   const [tabParameters, setTabParameters] = useAtom(tabParametersAtom);
   const customTimePeriod = useAtomValue(customTimePeriodAtom);
   const selectedTimePeriod = useAtomValue(selectedTimePeriodAtom);
+  const sendingDetails = useAtomValue(sendingDetailsAtom);
   const setDefaultSelectedTimePeriodId = useUpdateAtom(
     defaultSelectedTimePeriodIdAtom,
   );
   const setDefaultSelectedCustomTimePeriod = useUpdateAtom(
     defaultSelectedCustomTimePeriodAtom,
   );
+
+  useTimePeriod({
+    sending: sendingDetails,
+  });
 
   React.useEffect(() => {
     const urlQueryParameters = getUrlQueryParameters();
