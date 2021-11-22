@@ -129,11 +129,6 @@ class EngineService extends AbstractCentreonService implements
             throw new EngineException('The host of service is not defined');
         }
 
-        $sticky = 0;
-        if ($acknowledgement->isSticky() === true) {
-            $sticky = 2;
-        }
-
         $preCommand = sprintf(
             'ACKNOWLEDGE_SVC_PROBLEM;%s;%s;%d;%d;%d;%s;%s',
             $service->getHost()->getName(),
