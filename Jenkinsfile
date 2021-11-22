@@ -71,7 +71,7 @@ stage('Deliver sources') {
     env.RELEASE = "${source.RELEASE}"
     stash name: 'tar-sources', includes: "centreon-web-${env.VERSION}.tar.gz"
     stash name: 'vendor', includes: 'vendor.tar.gz'
-    stash name: 'api-doc', includes: 'centreon-api-v2.html'
+    stash name: 'api-doc', includes: 'centreon-api-v2.1.html'
     publishHTML([
       allowMissing: false,
       keepAll: true,
