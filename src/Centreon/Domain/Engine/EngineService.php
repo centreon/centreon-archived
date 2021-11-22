@@ -138,7 +138,7 @@ class EngineService extends AbstractCentreonService implements
             'ACKNOWLEDGE_SVC_PROBLEM;%s;%s;%d;%d;%d;%s;%s',
             $service->getHost()->getName(),
             $service->getDescription(),
-            $sticky,
+            $acknowledgement->isSticky() ? 2 : 0,
             (int) $acknowledgement->isNotifyContacts(),
             (int) $acknowledgement->isPersistentComment(),
             $this->contact->getAlias(),
