@@ -383,7 +383,7 @@ try {
                 $stmt->bindParam(':order', $value['order'], PDO::PARAM_INT);                
                 $stmt->execute();	
             }
-            
+
             // Insert Host macro
             $stmt = $dbh_sqlite->prepare("INSERT INTO on_demand_macro_host (host_macro_name, host_macro_value, host_host_id) VALUES (
                     :host_macro_name, :host_macro_value, :host_host_id)");
@@ -417,13 +417,16 @@ try {
             }
 
             //match hosts with their dedicated service
-            foreach($result_host_services as $host)
-            {
-                    $stmt = $dbh_sqlite->prepare("INSERT INTO host_service_relation (service_service_id, host_host_id) VALUES (
-                    :service_service_id, :host_host_id)");
-                    $stmt->bindParam(':service_service_id', $host['service_id'], PDO::PARAM_INT);
-                    $stmt->bindParam(':host_host_id', $host['host_id'], PDO::PARAM_INT);
-                    $stmt->execute();
+            foreach ($result_host_services as $host) {
+
+                $stmt = $dbh_sqlite->prepare("INSERT INTO host_service_relation (service_service_id, host_host_id)
+                SELECT :service_service_id, :host_host_id
+                EXCEPT
+                SELECT service_service_id, host_host_id FROM host_service_relation
+                WHERE service_service_id = :service_service_id AND host_host_id = :host_host_id");
+                $stmt->bindParam(':service_service_id', $host['service_id'], PDO::PARAM_INT);
+                $stmt->bindParam(':host_host_id', $host['host_id'], PDO::PARAM_INT);
+                $stmt->execute();
             }
 
             // Insert services by hostgroup
