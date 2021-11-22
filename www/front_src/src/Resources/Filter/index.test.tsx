@@ -41,6 +41,7 @@ import {
   getListingEndpoint,
   searchableFields,
 } from '../testUtils';
+import useLoadDetails from '../Details/useLoadDetails';
 import useDetails from '../Details/useDetails';
 
 import { allFilter, Filter as FilterModel } from './models';
@@ -188,9 +189,11 @@ const FilterWithLoading = (): JSX.Element => {
 
 const FilterTest = (): JSX.Element | null => {
   const filterState = useFilter();
-  const detailsState = useDetails();
+  const detailsState = useLoadDetails();
   const listingState = useListing();
   const actionsState = useActions();
+
+  useDetails();
 
   return (
     <Context.Provider

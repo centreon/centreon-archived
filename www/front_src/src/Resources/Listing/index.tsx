@@ -2,6 +2,8 @@ import * as React from 'react';
 
 import { equals, includes, not } from 'ramda';
 import { useTranslation } from 'react-i18next';
+import { useUpdateAtom } from 'jotai/utils';
+import { useAtom } from 'jotai';
 
 import { useTheme, alpha } from '@material-ui/core';
 
@@ -13,6 +15,14 @@ import { useResourceContext } from '../Context';
 import Actions from '../Actions';
 import { Resource, SortOrder } from '../models';
 import { labelSelectAtLeastOneColumn, labelStatus } from '../translatedLabels';
+import {
+  openDetailsTabIdAtom,
+  selectedResourceIdAtom,
+  selectedResourceParentIdAtom,
+  selectedResourceParentTypeAtom,
+  selectedResourceTypeAtom,
+  selectedResourceUuidAtom,
+} from '../Details/detailsAtoms';
 
 import { getColumns, defaultSelectedColumnIds } from './columns';
 import useLoadResources from './useLoadResources';
@@ -24,18 +34,24 @@ const ResourceListing = (): JSX.Element => {
   const { t } = useTranslation();
   const { showWarningMessage } = useSnackbar();
 
+  const [selectedResourceUuid, setSelectedResourceUuid] = useAtom(
+    selectedResourceUuidAtom,
+  );
+  const setSelectedResourceParentType = useUpdateAtom(
+    selectedResourceParentTypeAtom,
+  );
+  const setSelectedResourceType = useUpdateAtom(selectedResourceTypeAtom);
+  const setSelectedResourceParentId = useUpdateAtom(
+    selectedResourceParentIdAtom,
+  );
+  const setSelectedResourceId = useUpdateAtom(selectedResourceIdAtom);
+  const setOpenDetailsTabId = useUpdateAtom(openDetailsTabIdAtom);
+
   const {
     listing,
     setLimit,
     page,
     setPage,
-    setOpenDetailsTabId,
-    setSelectedResourceUuid,
-    setSelectedResourceId,
-    setSelectedResourceParentId,
-    setSelectedResourceType,
-    setSelectedResourceParentType,
-    selectedResourceUuid,
     setSelectedResources,
     selectedResources,
     setResourcesToAcknowledge,

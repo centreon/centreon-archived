@@ -1,7 +1,9 @@
+/* eslint-disable hooks/sort */
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { prop, isEmpty, path, isNil } from 'ramda';
+import { useAtomValue } from 'jotai/utils';
 
 import { makeStyles, Paper } from '@material-ui/core';
 
@@ -16,7 +18,11 @@ import { labelEvent } from '../../../translatedLabels';
 import { TabProps } from '..';
 import InfiniteScroll from '../../InfiniteScroll';
 import TimePeriodButtonGroup from '../../../Graph/Performance/TimePeriods';
-import { useResourceContext } from '../../../Context';
+import {
+  customTimePeriodAtom,
+  getDatesDerivedAtom,
+  selectedTimePeriodAtom,
+} from '../../../Graph/Performance/TimePeriods/timePeriodAtoms';
 
 import { types } from './Event';
 import { TimelineEvent, Type } from './models';
@@ -38,10 +44,11 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
 
-  const { getIntervalDates, selectedTimePeriod, customTimePeriod } =
-    useResourceContext();
+  const getIntervalDates = useAtomValue(getDatesDerivedAtom);
+  const selectedTimePeriod = useAtomValue(selectedTimePeriodAtom);
+  const customTimePeriod = useAtomValue(customTimePeriodAtom);
 
-  const [start, end] = getIntervalDates();
+  const [start, end] = getIntervalDates(selectedTimePeriod);
 
   const translatedTypes = types.map((type) => ({
     ...type,
@@ -124,6 +131,7 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
       reloadDependencies={[
         selectedTypes,
         selectedTimePeriod?.id || customTimePeriod,
+        timelineEndpoint,
       ]}
       sendListingRequest={isNil(timelineEndpoint) ? undefined : listTimeline}
     >
