@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2018 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -58,15 +59,25 @@ $formHost = new HTML_QuickFormCustom('formHost', 'post', "?p=" . $p);
 $redirect = $formHost->addElement('hidden', 'o');
 $redirect->setValue($o);
 
-$hosts = getAllHostsForReporting($is_admin, $lcaHoststr);
+$hostsRoute = [
+    'datasourceOrigin' => 'ajax',
+    'multiple' => false,
+    'linkedObject' => 'centreonHost',
+    'availableDatasetRoute' => './api/internal.php?object=centreon_configuration_host&action=list',
+    'defaultDatasetRoute' => './api/internal.php?object=centreon_configuration_host&action=defaultValues'
+        . '&target=host&field=host_id&id=' . $id,
+    'allowClear' => false,
+];
 $selHost = $formHost->addElement(
-    'select',
+    'select2',
     'host',
     _("Host"),
-    $hosts,
-    array(
-        "onChange" =>"this.form.submit();"
-    )
+    [], 
+    $hostsRoute
+);
+$selHost->addJsCallback(
+    'change',
+    'this.form.submit();'
 );
 $formHost->addElement(
     'hidden',
@@ -127,7 +138,6 @@ if ($id !== false) {
     /*
      * Exporting variables for ihtml
      */
-    $tpl->assign("name", $hosts[$id]);
     $tpl->assign("totalAlert", $hostStats["TOTAL_ALERTS"]);
     $tpl->assign("totalTime", $hostStats["TOTAL_TIME_F"]);
     $tpl->assign("summary", $hostStats);
