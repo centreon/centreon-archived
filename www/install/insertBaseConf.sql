@@ -12,9 +12,9 @@ INSERT INTO `contact` (`contact_id`, `timeperiod_tp_id`, `timeperiod_tp_id2`, `c
 INSERT INTO `contact` (`contact_id`, `timeperiod_tp_id`, `timeperiod_tp_id2`, `contact_name`, `contact_alias`, `contact_lang`, `contact_host_notification_options`, `contact_service_notification_options`, `contact_email`, `contact_pager`, `contact_comment`, `contact_oreon`, `contact_admin`, `contact_type_msg`, `contact_activate`, `contact_auth_type`, `contact_ldap_dn`) VALUES(17, 1, 1, 'Guest', 'guest', 'en_US.UTF-8', 'n', 'n', 'guest@localhost', NULL, NULL, '0', '0', 'txt', '0', 'local', NULL);
 INSERT INTO `contact` (`contact_id`, `timeperiod_tp_id`, `timeperiod_tp_id2`, `contact_name`, `contact_alias`, `contact_lang`, `contact_host_notification_options`, `contact_service_notification_options`, `contact_email`, `contact_pager`, `contact_comment`, `contact_oreon`, `contact_admin`, `contact_type_msg`, `contact_activate`, `contact_auth_type`, `contact_ldap_dn`) VALUES(18, 1, 1, 'User', 'user', 'en_US.UTF-8', 'n', 'n', 'user@localhost', NULL, NULL, '0', '0', 'txt', '0', 'local', NULL);
 
-INSERT INTO `contact_password` (`password`, `contact_id`, `creation_date`) VALUES ('@admin_password@', 1, SELECT UNIX_TIMESTAMP(NOW()));
-INSERT INTO `contact_password` (`password`, `contact_id`, `creation_date`) VALUES ('Centre0nGuest!', 17, SELECT UNIX_TIMESTAMP(NOW()));
-INSERT INTO `contact_password` (`password`, `contact_id`, `creation_date`) VALUES ('Centre0nUser!', 18, SELECT UNIX_TIMESTAMP(NOW()));
+INSERT INTO `contact_password` (`password`, `contact_id`, `creation_date`) VALUES ('@admin_password@', 1, (SELECT UNIX_TIMESTAMP(NOW())));
+INSERT INTO `contact_password` (`password`, `contact_id`, `creation_date`) VALUES ('Centre0nGuest!', 17, (SELECT UNIX_TIMESTAMP(NOW())));
+INSERT INTO `contact_password` (`password`, `contact_id`, `creation_date`) VALUES ('Centre0nUser!', 18, (SELECT UNIX_TIMESTAMP(NOW())));
 --
 -- Contenu de la table `contact_param`
 --
