@@ -106,7 +106,7 @@ class EngineService extends AbstractCentreonService implements
         $preCommand = sprintf(
             'ACKNOWLEDGE_HOST_PROBLEM;%s;%d;%d;%d;%s;%s',
             $host->getName(),
-            $sticky,
+            $acknowledgement->isSticky() ? 2 : 0,
             (int) $acknowledgement->isNotifyContacts(),
             (int) $acknowledgement->isPersistentComment(),
             $this->contact->getAlias(),
