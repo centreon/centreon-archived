@@ -80,10 +80,10 @@ const useStatusStyles = makeStyles<Theme, StyleProps>((theme) => {
     icon: {
       cursor: 'pointer',
       fontSize: theme.typography.body1.fontSize,
-      height: theme.spacing(3.5),
+      height: theme.spacing(4),
       margin: '6px',
       position: 'relative',
-      width: theme.spacing(3.5),
+      width: theme.spacing(4),
     },
     latency: ({ latencySeverity }): CreateCSSProperties<StyleProps> =>
       getSeverityColor(latencySeverity),
