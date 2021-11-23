@@ -144,6 +144,7 @@ final class MetaServiceProvider extends Provider
             s.last_state_change AS `last_status_change`,
             s.last_notification AS `last_notification`,
             s.notification_number AS `notification_number`,
+            s.state_type AS `state_type`,
             CONCAT(s.check_attempt, '/', s.max_check_attempts, ' (', CASE
                 WHEN s.state_type = 1 THEN 'H'
                 WHEN s.state_type = 0 THEN 'S'
@@ -221,6 +222,21 @@ final class MetaServiceProvider extends Provider
             }
 
             $sql .= ' AND s.description IN (' . implode(', ', $metaServiceIds) . ')';
+        }
+
+        // apply the state types filter to SQL query
+        $stateTypes = ResourceFilter::map($filter->getStateTypes(), ResourceFilter::MAP_STATE_TYPES);
+        if ($stateTypes) {
+            $stateTypesList = [];
+
+            foreach ($stateTypes as $index => $stateType) {
+                $key = ":serviceStateType_{$index}";
+
+                $stateTypesList[] = $key;
+                $collector->addValue($key, $stateType, \PDO::PARAM_INT);
+            }
+
+            $sql .= ' AND s.state_type IN (' . implode(', ', $stateTypesList) . ')';
         }
 
         return $sql;

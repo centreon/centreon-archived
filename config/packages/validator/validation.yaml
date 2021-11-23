@@ -247,6 +247,14 @@ Centreon\Domain\Monitoring\ResourceFilter:
                 - Type:
                     type: string
                     groups: [Default]
+        stateTypes:
+            - Type:
+                type: array
+                groups: [Default]
+            - All:
+                - Type:
+                    type: string
+                    groups: [Default]
         onlyWithPerformanceData:
             - Type:
                 type: boolean
