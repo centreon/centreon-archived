@@ -384,6 +384,7 @@ describe(Filter, () => {
       labelResourceProblems,
       {
         resourceTypes: [],
+        stateTypes: [],
         states: [],
         statuses: defaultStatuses,
       },
@@ -392,6 +393,7 @@ describe(Filter, () => {
       labelAll,
       {
         resourceTypes: [],
+        stateTypes: [],
         states: [],
         statuses: [],
       },
@@ -413,11 +415,7 @@ describe(Filter, () => {
 
       await waitFor(() => {
         expect(mockedAxios.get).toHaveBeenLastCalledWith(
-          getListingEndpoint({
-            resourceTypes: criterias.resourceTypes,
-            states: criterias.states,
-            statuses: criterias.statuses,
-          }),
+          getListingEndpoint(criterias),
           cancelTokenRequestParam,
         );
       });

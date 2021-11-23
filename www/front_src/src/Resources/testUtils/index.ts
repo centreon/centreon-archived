@@ -15,6 +15,7 @@ interface EndpointParams {
   search?: string;
   serviceGroups?: Array<string>;
   sort?;
+  stateTypes?: Array<string>;
   states?: Array<string>;
   statuses?: Array<string>;
 }
@@ -22,6 +23,7 @@ interface EndpointParams {
 const defaultStatuses = ['WARNING', 'DOWN', 'CRITICAL', 'UNKNOWN'];
 const defaultResourceTypes = [];
 const defaultStates = ['unhandled_problems'];
+const defaultStateTypes = ['hard'];
 
 const defaultSecondSortCriteria = { last_status_change: SortOrder.desc };
 
@@ -39,6 +41,7 @@ const getListingEndpoint = ({
   serviceGroups = [],
   monitoringServers = [],
   search,
+  stateTypes = defaultStateTypes,
 }: EndpointParams): string =>
   buildResourcesEndpoint({
     hostGroups,
@@ -56,6 +59,7 @@ const getListingEndpoint = ({
       : undefined,
     serviceGroups,
     sort,
+    stateTypes,
     states,
     statuses,
   });

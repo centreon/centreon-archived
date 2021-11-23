@@ -1148,6 +1148,7 @@ describe(Details, () => {
           ],
         },
         serviceGroups: [],
+        stateTypes: [],
         states: [],
         statuses: [],
       }),
