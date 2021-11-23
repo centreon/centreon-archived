@@ -22,6 +22,9 @@ import {
   labelStatus,
   labelMonitoringServer,
   labelMetaService,
+  labelStateType,
+  labelHard,
+  labelSoft,
 } from '../../translatedLabels';
 import {
   buildHostGroupsEndpoint,
@@ -48,10 +51,12 @@ const criteriaValueNameById = {
   UP: labelUp,
   WARNING: labelWarning,
   acknowledged: labelAcknowledged,
+  hard: labelHard,
   host: labelHost,
   in_downtime: labelInDowntime,
   metaservice: labelMetaService,
   service: labelService,
+  soft: labelSoft,
   unhandled_problems: labelUnhandled,
 };
 
@@ -152,6 +157,20 @@ const selectableStatuses = [
   pendingStatus,
 ];
 
+const hardStateTypeId = 'hard';
+const hardStateType = {
+  id: hardStateTypeId,
+  name: criteriaValueNameById[hardStateTypeId],
+};
+
+const softStateTypeId = 'soft';
+const softStateType = {
+  id: softStateTypeId,
+  name: criteriaValueNameById[softStateTypeId],
+};
+
+const selectableStateTypes = [hardStateType, softStateType];
+
 export interface CriteriaDisplayProps {
   autocompleteSearch?: { conditions: Array<Record<string, unknown>> };
   buildAutocompleteEndpoint?;
@@ -168,6 +187,7 @@ export enum CriteriaNames {
   monitoringServers = 'monitoring_servers',
   resourceTypes = 'resource_types',
   serviceGroups = 'service_groups',
+  stateTypes = 'state_types',
   states = 'states',
   statuses = 'statuses',
 }
@@ -184,6 +204,10 @@ const selectableCriterias: CriteriaById = {
   [CriteriaNames.statuses]: {
     label: labelStatus,
     options: selectableStatuses,
+  },
+  [CriteriaNames.stateTypes]: {
+    label: labelStateType,
+    options: selectableStateTypes,
   },
   [CriteriaNames.hostGroups]: {
     buildAutocompleteEndpoint: buildHostGroupsEndpoint,
@@ -211,4 +235,6 @@ export {
   selectableStates,
   selectableStatuses,
   selectableCriterias,
+  selectableStateTypes,
+  hardStateType,
 };
