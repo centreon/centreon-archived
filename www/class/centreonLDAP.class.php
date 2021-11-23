@@ -1542,11 +1542,19 @@ class CentreonLdapAdmin
         );
         if ($row = $result->fetch()) {
             if ($row['ari_value'] == '0') {
-                $this->db->query(
-                    "UPDATE contact " .
-                    "SET contact_passwd = NULL " .
-                    "WHERE ar_id = " . $this->db->escape($arId)
-                );
+                $statement = $this->db->prepare("SELECT contact_id FROM contact WHERE ar_id = :arId");
+                $statement->bindValue(':arId', $arId, \PDO::PARAM_INT);
+                $statement->execute();
+                $ldapContactIdList = [];
+                while($row = $statement->fetch()) {
+                    $ldapContactIdList[] = $row['contact_id'];
+                }
+                if (!empty($ldapContactIdList)) {
+                    $contactIds = implode(', ', $ldapContactIdList);
+                    $this->db->query(
+                        "DELETE FROM password WHERE contact_id IN ($contactIds)"
+                    );
+                }
             }
         }
     }

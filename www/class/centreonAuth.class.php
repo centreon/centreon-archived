@@ -302,7 +302,7 @@ class CentreonAuth
         if ($this->autologin == 0 || ($this->autologin && $token != "")) {
             $dbResult = $this->pearDB->prepare(
                 "SELECT `contact`.*, `contact_password`.`password` AS `contact_passwd` FROM `contact`
-                INNER JOIN `contact_password` ON `contact_password`.`contact_id` = `contact`.`contact_id`
+                LEFT JOIN `contact_password` ON `contact_password`.`contact_id` = `contact`.`contact_id`
                 WHERE `contact_alias` = :contactAlias
                 AND `contact_activate` = '1' AND `contact_register` = '1' LIMIT 1
                 "
