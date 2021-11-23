@@ -30,14 +30,15 @@ import {
   not,
 } from 'ramda';
 import userEvent from '@testing-library/user-event';
+import { Provider } from 'jotai';
 
 import { Column } from '@centreon/ui';
 import { useUserContext } from '@centreon/ui-context';
 
 import { Resource, ResourceType } from '../models';
-import Context, { ResourceContext } from '../Context';
-import useActions from '../Actions/useActions';
-import useFilter from '../Filter/useFilter';
+import Context, { ResourceContext } from '../testUtils/Context';
+import useActions from '../testUtils/useActions';
+import useFilter from '../testUtils/useFilter';
 import { labelInDowntime, labelAcknowledged } from '../translatedLabels';
 import {
   getListingEndpoint,
@@ -45,7 +46,7 @@ import {
   defaultSecondSortCriteria,
 } from '../testUtils';
 import { unhandledProblemsFilter } from '../Filter/models';
-import useLoadDetails from '../Details/useLoadDetails';
+import useLoadDetails from '../testUtils/useLoadDetails';
 import useDetails from '../Details/useDetails';
 
 import useListing from './useListing';
@@ -158,7 +159,13 @@ const ListingTest = (): JSX.Element => {
   );
 };
 
-const renderListing = (): RenderResult => render(<ListingTest />);
+const ListingTestWithJotai = (): JSX.Element => (
+  <Provider>
+    <ListingTest />
+  </Provider>
+);
+
+const renderListing = (): RenderResult => render(<ListingTestWithJotai />);
 
 describe(Listing, () => {
   beforeEach(() => {
@@ -215,7 +222,7 @@ describe(Listing, () => {
   describe('column sorting', () => {
     afterEach(async () => {
       act(() => {
-        context.setCurrentFilter(unhandledProblemsFilter);
+        context.setCurrentFilter?.(unhandledProblemsFilter);
       });
 
       await waitFor(() => {

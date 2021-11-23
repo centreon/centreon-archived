@@ -24,6 +24,7 @@ import {
   resourceDetailsUpdatedAtom,
   selectedTimePeriodAtom,
 } from '../TimePeriods/timePeriodAtoms';
+import { detailsAtom } from '../../../Details/detailsAtoms';
 
 import { graphOptionsAtom } from './graphOptionsAtoms';
 
@@ -69,6 +70,7 @@ const ExportablePerformanceGraphWithTimeline = ({
   const customTimePeriod = useAtomValue(customTimePeriodAtom);
   const resourceDetailsUpdated = useAtomValue(resourceDetailsUpdatedAtom);
   const getIntervalDates = useAtomValue(getDatesDerivedAtom);
+  const details = useAtomValue(detailsAtom);
   const adjustTimePeriod = useUpdateAtom(adjustTimePeriodDerivedAtom);
 
   const graphContainerRef = React.useRef<HTMLElement | null>(null);
@@ -130,7 +132,7 @@ const ExportablePerformanceGraphWithTimeline = ({
     setElement(graphContainerRef.current);
   }, []);
 
-  const getEndpoint = (): string | undefined => {
+  const graphEndpoint = React.useMemo((): string | undefined => {
     if (isNil(endpoint)) {
       return undefined;
     }
@@ -142,7 +144,11 @@ const ExportablePerformanceGraphWithTimeline = ({
     });
 
     return `${endpoint}${graphQuerParameters}`;
-  };
+  }, [
+    customTimePeriod.start.toISOString(),
+    customTimePeriod.end.toISOString(),
+    details,
+  ]);
 
   const addCommentToTimeline = ({ date, comment }): void => {
     setTimeline([
@@ -168,7 +174,7 @@ const ExportablePerformanceGraphWithTimeline = ({
           adjustTimePeriod={adjustTimePeriod}
           customTimePeriod={customTimePeriod}
           displayEventAnnotations={displayEventAnnotations}
-          endpoint={getEndpoint()}
+          endpoint={graphEndpoint}
           graphHeight={graphHeight}
           isInViewport={isInViewport}
           limitLegendRows={limitLegendRows}
