@@ -218,3 +218,61 @@ function updateContact($contactId = null)
     $centreon->user->email = $ret['contact_email'];
     $centreon->user->setToken(isset($ret['contact_autologin_key']) ? $ret['contact_autologin_key'] : "''");
 }
+
+function validatePasswordModification(array $fields)
+{
+    global $pearDB, $centreon;
+    $errors = [];
+    $password = $fields['contact_passwd'];
+    $contactId = (int) $centreon->user->get_id();
+    if (empty($password)) {
+        return true;
+    }
+
+    try {
+        $statement = $pearDB->query("SELECT * from password_security_policy");
+    } catch (\PDOException $e) {
+        return false;
+    }
+    $passwordPolicy = $statement->fetch(\PDO::FETCH_ASSOC);
+
+    if (strlen($password) < (int) $passwordPolicy['password_length']) {
+        $errors['contact_passwd'] = sprintf(
+            _("Your password should be %d characters long."),
+            (int) $passwordPolicy['password_length']
+        );
+    }
+    if ((bool) $passwordPolicy['uppercase_characters'] === true && !preg_match('/[A-Z]/', $password)) {
+        $errors['contact_passwd'] = _("Your password should contains uppercase characters.");
+    }
+    if ((bool) $passwordPolicy['lowercase_characters'] === true && !preg_match('/[a-z]/', $password)) {
+        $errors['contact_passwd'] = _("Your password should contains lowercase characters.");
+    }
+    if ((bool) $passwordPolicy['integer_characters'] === true && !preg_match('/[0-9]/', $password)) {
+        $errors['contact_passwd'] = _("Your password should contains integer characters.");
+    }
+    if ((bool) $passwordPolicy['special_characters'] === true && !preg_match('/[@$!%*?&]/', $password)) {
+        $errors['contact_passwd'] = _("Your password should contains special characters form the list '@$!%*?&'.");
+    }
+
+    try {
+        $statement = $pearDB->prepare(
+            "SELECT id, password FROM `contact_password` WHERE `contact_id` = :contactId"
+        );
+        $statement->bindParam(':contactId', $contactId, \PDO::PARAM_INT);
+        $statement->execute();
+
+        $passwordHistory = $statement->fetchAll(\PDO::FETCH_ASSOC);
+        foreach ($passwordHistory as $contactPassword) {
+            if (password_verify($password, $contactPassword['password'])) {
+                $errors['contact_passwd'] = _(
+                    "Your password has already been used. Please choose a different password than your two previous."
+                );
+                break;
+            }
+        }
+    } catch (\PDOException $e) {
+        return false;
+    }
+    return count($errors) > 0 ? $errors : true;
+}

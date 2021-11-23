@@ -122,6 +122,7 @@ if ($cct["contact_auth_type"] != 'ldap') {
 $form->addElement('text', 'contact_email', _("Email"), $attrsText);
 $form->addElement('text', 'contact_pager', _("Pager"), $attrsText);
 if ($cct["contact_auth_type"] != 'ldap') {
+    $form->addFormRule('validatePasswordModification');
     $form->addElement(
         'password',
         'contact_passwd',
