@@ -13,10 +13,7 @@ import userEvent from '@testing-library/user-event';
 import { Provider } from 'jotai';
 
 import { setUrlQueryParameters, getUrlQueryParameters } from '@centreon/ui';
-import {
-  refreshIntervalAtom,
-  userAtom,
-} from '@centreon/centreon-frontend/packages/ui-context/src';
+import { refreshIntervalAtom, userAtom } from '@centreon/ui-context';
 
 import {
   labelResource,
