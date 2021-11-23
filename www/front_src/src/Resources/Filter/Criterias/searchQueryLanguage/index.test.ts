@@ -105,7 +105,7 @@ describe(getAutocompleteSuggestions, () => {
     },
     {
       cursorPosition: 22,
-      expectedResult: ['status:'],
+      expectedResult: ['status:', 'status_type:'],
       inputSearch: 'state:unhandled statu',
     },
     {
