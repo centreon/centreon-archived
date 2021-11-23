@@ -8,8 +8,8 @@ export type ListResourcesProps = {
   onlyWithPerformanceData?: boolean;
   resourceTypes: Array<string>;
   serviceGroups: Array<string>;
-  stateTypes: Array<string>;
   states: Array<string>;
+  statusTypes: Array<string>;
   statuses: Array<string>;
 } & ListingParameters;
 
@@ -19,8 +19,8 @@ const buildResourcesEndpoint = (parameters: ListResourcesProps): string => {
     customQueryParameters: [
       { name: 'states', value: parameters.states },
       {
-        name: 'state_types',
-        value: parameters.stateTypes,
+        name: 'status_types',
+        value: parameters.statusTypes,
       },
       { name: 'types', value: parameters.resourceTypes },
       { name: 'statuses', value: parameters.statuses },

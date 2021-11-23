@@ -15198,7 +15198,7 @@ msgstr ""
 msgid "Last check with OK status"
 msgstr ""
 
-# msgid "State type"
+# msgid "Status type"
 # msgstr ""
 
 # msgid "Hard"

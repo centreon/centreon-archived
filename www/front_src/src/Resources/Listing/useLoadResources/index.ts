@@ -167,8 +167,8 @@ const useLoadResources = (): LoadResources => {
       search,
       serviceGroups: getCriteriaNames('service_groups'),
       sort: getSort(),
-      stateTypes: getCriteriaIds('state_types'),
       states: getCriteriaIds('states'),
+      statusTypes: getCriteriaIds('status_types'),
       statuses: getCriteriaIds('statuses'),
     }).then(setListing);
 

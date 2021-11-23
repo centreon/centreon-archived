@@ -22,7 +22,7 @@ import {
   labelStatus,
   labelMonitoringServer,
   labelMetaService,
-  labelStateType,
+  labelStatusType,
   labelHard,
   labelSoft,
 } from '../../translatedLabels';
@@ -187,8 +187,8 @@ export enum CriteriaNames {
   monitoringServers = 'monitoring_servers',
   resourceTypes = 'resource_types',
   serviceGroups = 'service_groups',
-  stateTypes = 'state_types',
   states = 'states',
+  statusTypes = 'status_types',
   statuses = 'statuses',
 }
 
@@ -205,8 +205,8 @@ const selectableCriterias: CriteriaById = {
     label: labelStatus,
     options: selectableStatuses,
   },
-  [CriteriaNames.stateTypes]: {
-    label: labelStateType,
+  [CriteriaNames.statusTypes]: {
+    label: labelStatusType,
     options: selectableStateTypes,
   },
   [CriteriaNames.hostGroups]: {

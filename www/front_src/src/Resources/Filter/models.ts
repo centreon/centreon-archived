@@ -40,8 +40,8 @@ const newFilter = {
 
 const unhandledProblemsFilter: Filter = {
   criterias: getDefaultCriterias({
-    stateTypes: [hardStateType],
     states: [unhandledState],
+    statusTypes: [hardStateType],
     statuses: [warningStatus, downStatus, criticalStatus, unknownStatus],
   }),
   id: 'unhandled_problems',

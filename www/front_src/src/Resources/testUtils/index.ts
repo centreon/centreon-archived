@@ -15,8 +15,8 @@ interface EndpointParams {
   search?: string;
   serviceGroups?: Array<string>;
   sort?;
-  stateTypes?: Array<string>;
   states?: Array<string>;
+  statusTypes?: Array<string>;
   statuses?: Array<string>;
 }
 
@@ -41,7 +41,7 @@ const getListingEndpoint = ({
   serviceGroups = [],
   monitoringServers = [],
   search,
-  stateTypes = defaultStateTypes,
+  statusTypes = defaultStateTypes,
 }: EndpointParams): string =>
   buildResourcesEndpoint({
     hostGroups,
@@ -59,8 +59,8 @@ const getListingEndpoint = ({
       : undefined,
     serviceGroups,
     sort,
-    stateTypes,
     states,
+    statusTypes,
     statuses,
   });
 

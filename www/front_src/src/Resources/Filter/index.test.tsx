@@ -30,7 +30,7 @@ import {
   labelUnhandledProblems,
   labelNewFilter,
   labelSearchOptions,
-  labelStateType,
+  labelStatusType,
   labelSoft,
 } from '../translatedLabels';
 import useListing from '../Listing/useListing';
@@ -110,10 +110,10 @@ const filterParams: Array<FilterParameter> = [
     undefined,
   ],
   [
-    labelStateType,
+    labelStatusType,
     labelSoft,
     {
-      stateTypes: [...defaultStateTypes, 'soft'],
+      statusTypes: [...defaultStateTypes, 'soft'],
     },
     undefined,
   ],
@@ -395,8 +395,8 @@ describe(Filter, () => {
       labelResourceProblems,
       {
         resourceTypes: [],
-        stateTypes: [],
         states: [],
+        statusTypes: [],
         statuses: defaultStatuses,
       },
     ],
@@ -404,8 +404,8 @@ describe(Filter, () => {
       labelAll,
       {
         resourceTypes: [],
-        stateTypes: [],
         states: [],
+        statusTypes: [],
         statuses: [],
       },
     ],

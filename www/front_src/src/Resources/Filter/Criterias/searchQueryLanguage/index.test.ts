@@ -6,7 +6,7 @@ import { selectableResourceTypes, selectableStatuses } from '../models';
 import { build, parse, getAutocompleteSuggestions } from './index';
 
 const search =
-  'type:host,service state:unhandled status:ok,up state_type:soft host_group:Linux-Servers monitoring_server:Central h.name:centreon';
+  'type:host,service state:unhandled status:ok,up status_type:soft host_group:Linux-Servers monitoring_server:Central h.name:centreon';
 
 const parsedSearch = [
   {
@@ -34,7 +34,7 @@ const parsedSearch = [
     ],
   },
   {
-    name: 'state_types',
+    name: 'status_types',
     object_type: null,
     type: 'multi_select',
     value: [{ id: 'soft', name: labelSoft }],
@@ -80,7 +80,7 @@ describe(getAutocompleteSuggestions, () => {
   const testCases = [
     {
       cursorPosition: 3,
-      expectedResult: ['state:', 'status:', 'state_type:'],
+      expectedResult: ['state:', 'status:', 'status_type:'],
       inputSearch: 'sta',
     },
     {

@@ -231,6 +231,6 @@ export const labelBeforeLastYear = 'Before last year';
 export const labelServiceGraphs = 'Service graphs';
 export const labelClearFilter = 'Clear filter';
 export const labelLastCheckWithOkStatus = 'Last check with OK status';
-export const labelStateType = 'State type';
+export const labelStatusType = 'Status type';
 export const labelHard = 'Hard';
 export const labelSoft = 'Soft';

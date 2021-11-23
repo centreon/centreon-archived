@@ -24,7 +24,7 @@ export const criteriaNameSortOrder = {
   [CriteriaNames.serviceGroups]: 6,
   [CriteriaNames.states]: 2,
   [CriteriaNames.statuses]: 3,
-  [CriteriaNames.stateTypes]: 4,
+  [CriteriaNames.statusTypes]: 4,
 };
 
 export interface AutocompleteSuggestionProps {
@@ -60,8 +60,8 @@ export const criteriaNameToQueryLanguageName = {
 const staticCriteriaValuesByName = {
   resource_type: selectableResourceTypes,
   state: selectableStates,
-  state_type: selectableStateTypes,
   status: selectableStatuses,
+  status_type: selectableStateTypes,
 };
 
 export const dynamicCriteriaValuesByName = [
