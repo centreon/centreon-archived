@@ -231,11 +231,25 @@ function validatePasswordModification(array $fields)
 
     try {
         $statement = $pearDB->query("SELECT * from password_security_policy");
+        $statement2 = $pearDB->prepare(
+            "SELECT creation_date FROM contact_password WHERE contact_id = :contactId ORDER BY creation_date DESC LIMIT 1"
+        );
+        $statement2->bindValue(':contactId', $centreon->user->get_id(), \PDO::PARAM_INT);
+        $statement2->execute();
     } catch (\PDOException $e) {
         return false;
     }
     $passwordPolicy = $statement->fetch(\PDO::FETCH_ASSOC);
-
+    if ($passwordCreationDate = $statement2->fetchColumn()) {
+        $passwordCreationDate = (int) $passwordCreationDate;
+        $delayBeforeNewPassword = (int) $passwordPolicy['delay_before_new_password'];
+        $isPasswordCanBeChanged = $passwordCreationDate + $delayBeforeNewPassword < time();
+        if (!$isPasswordCanBeChanged) {
+            $errors['contact_passwd'] = _(
+                "You can't change your password because the delay before changing password is not over."
+            );
+        }
+    };
     if (strlen($password) < (int) $passwordPolicy['password_length']) {
         $errors['contact_passwd'] = sprintf(
             _("Your password should be %d characters long."),
@@ -255,24 +269,28 @@ function validatePasswordModification(array $fields)
         $errors['contact_passwd'] = _("Your password should contains special characters form the list '@$!%*?&'.");
     }
 
-    try {
-        $statement = $pearDB->prepare(
-            "SELECT id, password FROM `contact_password` WHERE `contact_id` = :contactId"
-        );
-        $statement->bindParam(':contactId', $contactId, \PDO::PARAM_INT);
-        $statement->execute();
+    if ((bool) $passwordPolicy['can_reuse_password'] === false) {
+        try {
+            $statement = $pearDB->prepare(
+                "SELECT id, password FROM `contact_password` WHERE `contact_id` = :contactId"
+            );
+            $statement->bindParam(':contactId', $contactId, \PDO::PARAM_INT);
+            $statement->execute();
 
-        $passwordHistory = $statement->fetchAll(\PDO::FETCH_ASSOC);
-        foreach ($passwordHistory as $contactPassword) {
-            if (password_verify($password, $contactPassword['password'])) {
-                $errors['contact_passwd'] = _(
-                    "Your password has already been used. Please choose a different password than your two previous."
-                );
-                break;
+            $passwordHistory = $statement->fetchAll(\PDO::FETCH_ASSOC);
+            foreach ($passwordHistory as $contactPassword) {
+                if (password_verify($password, $contactPassword['password'])) {
+                    $errors['contact_passwd'] = _(
+                        "Your password has already been used. " .
+                        "Please choose a different password from the previous three."
+                    );
+                    break;
+                }
             }
+        } catch (\PDOException $e) {
+            return false;
         }
-    } catch (\PDOException $e) {
-        return false;
     }
+
     return count($errors) > 0 ? $errors : true;
 }

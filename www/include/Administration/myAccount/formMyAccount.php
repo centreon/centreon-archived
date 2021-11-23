@@ -123,6 +123,25 @@ $form->addElement('text', 'contact_email', _("Email"), $attrsText);
 $form->addElement('text', 'contact_pager', _("Pager"), $attrsText);
 if ($cct["contact_auth_type"] != 'ldap') {
     $form->addFormRule('validatePasswordModification');
+    $statement = $pearDB->prepare(
+        "SELECT creation_date FROM contact_password WHERE contact_id = :contactId ORDER BY creation_date DESC LIMIT 1"
+    );
+    $statement->bindValue(':contactId', $centreon->user->get_id(), \PDO::PARAM_INT);
+    $statement->execute();
+    $result = $statement->fetchColumn();
+    if ($result) {
+        $passwordCreationDate = (int) $result;
+        $passwordExpirationDate = $passwordCreationDate + $passwordPolicy['password_expiration'];
+        $isPasswordExpired = time() > $passwordExpirationDate;
+        if ($isPasswordExpired) {
+            $expirationMessage = _("Your password has expired. Please change it.");
+        } else {
+            $expirationMessage = sprintf(
+                _("Your password will expire in %s days."),
+                ceil(($passwordExpirationDate - time()) / 86400)
+            );
+        }
+    }
     $form->addElement(
         'password',
         'contact_passwd',
@@ -462,6 +481,9 @@ $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font
 $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());
+if (isset($expirationMessage)) {
+    $tpl->assign('expirationMessage', $expirationMessage);
+}
 $tpl->assign('cct', $cct);
 $tpl->assign('o', $o);
 $tpl->assign('featuresFlipping', (count($features) > 0));

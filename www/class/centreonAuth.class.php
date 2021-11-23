@@ -197,7 +197,7 @@ class CentreonAuth
                         $this->passwdOk = 1;
                         if (isset($this->ldap_store_password[$arId]) && $this->ldap_store_password[$arId]) {
                             $this->pearDB->query(
-                                "UPDATE `contact` " .
+                                "UPDATE `contact_password` " .
                                 "SET `contact_passwd` = '" . $this->myCrypt($this->password) . "'" .
                                 "WHERE `contact_alias` = '" . $this->login . "' AND `contact_register` = '1'"
                             );

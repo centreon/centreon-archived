@@ -1400,5 +1400,5 @@ VALUES ('local', 'local', true, true);
 
 INSERT INTO `password_security_policy`
 (`password_length`, `uppercase_characters`, `lowercase_characters`, `integer_characters`, `special_characters`,
-`attempts`, `blocking_duration`, `password_expiration`, `delay_before_new_password`)
-VALUES (12, '1', '1', '1', '1', 5, 900, 7776000, 3600);
+`attempts`, `blocking_duration`, `password_expiration`, `delay_before_new_password`, `can_reuse_password`)
+VALUES (12, '1', '1', '1', '1', 5, 900, 7776000, 3600, '1');
