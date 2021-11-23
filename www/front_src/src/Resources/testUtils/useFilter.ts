@@ -3,6 +3,7 @@ import * as React from 'react';
 import { omit } from 'ramda';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
+import { useAtom } from 'jotai';
 
 import {
   useRequest,
@@ -10,49 +11,46 @@ import {
   getUrlQueryParameters,
 } from '@centreon/ui';
 
-import { listCustomFilters } from './api';
-import { listCustomFiltersDecoder } from './api/decoders';
-import { Filter } from './models';
-import { build } from './Criterias/searchQueryLanguage';
 import {
+  applyCurrentFilterDerivedAtom,
   applyFilterDerivedAtom,
   currentFilterAtom,
   customFiltersAtom,
+  editPanelOpenAtom,
   filterWithParsedSearchDerivedAtom,
+  getCriteriaValueDerivedAtom,
   searchAtom,
-  sendingFilterAtom,
+  setCriteriaDerivedAtom,
   storedFilterAtom,
-} from './filterAtoms';
-import { CriteriaValue } from './Criterias/models';
+} from '../Filter/filterAtoms';
+import { listCustomFilters } from '../Filter/api';
+import { listCustomFiltersDecoder } from '../Filter/api/decoders';
+import { Filter } from '../Filter/models';
+import { build } from '../Filter/Criterias/searchQueryLanguage';
+import { FilterState } from '../Filter/useFilter';
 
-export interface FilterState {
-  applyCurrentFilter?: () => void;
-  currentFilter?: Filter;
-  customFilters?: Array<Filter>;
-  customFiltersLoading: boolean;
-  getCriteriaValue?: (name: string) => CriteriaValue | undefined;
-  loadCustomFilters: () => Promise<Array<Filter>>;
-  setCriteria?: ({ name, value }: { name: string; value }) => void;
-  setCurrentFilter?: (filter: Filter) => void;
-  setEditPanelOpen?: (update: boolean) => void;
-}
-
-const useFilter = (): void => {
-  const { sendRequest: sendListCustomFiltersRequest, sending } = useRequest({
+const useFilter = (): FilterState => {
+  const {
+    sendRequest: sendListCustomFiltersRequest,
+    sending: customFiltersLoading,
+  } = useRequest({
     decoder: listCustomFiltersDecoder,
     request: listCustomFilters,
   });
 
-  const currentFilter = useAtomValue(currentFilterAtom);
+  const [customFilters, setCustomFilters] = useAtom(customFiltersAtom);
+  const [currentFilter, setCurrentFilter] = useAtom(currentFilterAtom);
   const filterWithParsedSearch = useAtomValue(
     filterWithParsedSearchDerivedAtom,
   );
+  const getCriteriaValue = useAtomValue(getCriteriaValueDerivedAtom);
   const defaultFilter = useAtomValue(storedFilterAtom);
-  const setCustomFilters = useUpdateAtom(customFiltersAtom);
   const setSearch = useUpdateAtom(searchAtom);
   const applyFilter = useUpdateAtom(applyFilterDerivedAtom);
+  const applyCurrentFilter = useUpdateAtom(applyCurrentFilterDerivedAtom);
+  const setCriteria = useUpdateAtom(setCriteriaDerivedAtom);
   const storeFilter = useUpdateAtom(storedFilterAtom);
-  const setSendingFilter = useUpdateAtom(sendingFilterAtom);
+  const setEditPanelOpen = useUpdateAtom(editPanelOpenAtom);
 
   const loadCustomFilters = (): Promise<Array<Filter>> => {
     return sendListCustomFiltersRequest().then(({ result }) => {
@@ -102,9 +100,17 @@ const useFilter = (): void => {
     applyFilter(defaultFilter);
   }, [getUrlQueryParameters().fromTopCounter]);
 
-  React.useEffect(() => {
-    setSendingFilter(sending);
-  }, [sending]);
+  return {
+    applyCurrentFilter,
+    currentFilter,
+    customFilters,
+    customFiltersLoading,
+    getCriteriaValue,
+    loadCustomFilters,
+    setCriteria,
+    setCurrentFilter,
+    setEditPanelOpen,
+  };
 };
 
 export default useFilter;

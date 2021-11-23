@@ -11,6 +11,7 @@ import {
   act,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { Provider } from 'jotai';
 
 import { useUserContext } from '@centreon/ui-context';
 import { SeverityCode } from '@centreon/ui';
@@ -50,17 +51,18 @@ import {
 } from '../translatedLabels';
 import useLoadResources from '../Listing/useLoadResources';
 import useListing from '../Listing/useListing';
-import useFilter from '../Filter/useFilter';
-import Context, { ResourceContext } from '../Context';
+import useFilter from '../testUtils/useFilter';
+import Context, { ResourceContext } from '../testUtils/Context';
 import { Resource } from '../models';
+import useLoadDetails from '../testUtils/useLoadDetails';
 import useDetails from '../Details/useDetails';
+import useActions from '../testUtils/useActions';
 
 import {
   acknowledgeEndpoint,
   downtimeEndpoint,
   checkEndpoint,
 } from './api/endpoint';
-import useActions from './useActions';
 import { disacknowledgeEndpoint } from './Resource/Disacknowledge/api';
 import { submitStatusEndpoint } from './Resource/SubmitStatus/api';
 
@@ -144,10 +146,12 @@ const service = {
 } as Resource;
 
 const ActionsWithContext = (): JSX.Element => {
-  const detailsState = useDetails();
+  const detailsState = useLoadDetails();
   const listingState = useListing();
   const actionsState = useActions();
   const filterState = useFilter();
+
+  useDetails();
 
   context = {
     ...detailsState,
@@ -163,8 +167,14 @@ const ActionsWithContext = (): JSX.Element => {
   );
 };
 
+const ActionsWithJotai = (): JSX.Element => (
+  <Provider>
+    <ActionsWithContext />
+  </Provider>
+);
+
 const renderActions = (): RenderResult => {
-  return render(<ActionsWithContext />);
+  return render(<ActionsWithJotai />);
 };
 
 describe(Actions, () => {
@@ -244,7 +254,7 @@ describe(Actions, () => {
       const selectedResources = [host];
 
       act(() => {
-        context.setSelectedResources(selectedResources);
+        context.setSelectedResources?.(selectedResources);
       });
 
       await waitFor(() =>
@@ -275,7 +285,7 @@ describe(Actions, () => {
     const selectedResources = [host, service];
 
     act(() => {
-      context.setSelectedResources(selectedResources);
+      context.setSelectedResources?.(selectedResources);
     });
 
     fireEvent.click(getByText(labelAcknowledge));
@@ -317,7 +327,7 @@ describe(Actions, () => {
     const selectedResources = [host];
 
     act(() => {
-      context.setSelectedResources(selectedResources);
+      context.setSelectedResources?.(selectedResources);
     });
 
     fireEvent.click(getByTitle(labelMoreActions).firstChild as HTMLElement);
@@ -348,7 +358,7 @@ describe(Actions, () => {
     const selectedResources = [service];
 
     act(() => {
-      context.setSelectedResources(selectedResources);
+      context.setSelectedResources?.(selectedResources);
     });
 
     fireEvent.click(getByText(labelAcknowledge));
@@ -364,7 +374,7 @@ describe(Actions, () => {
     const selectedResources = [service];
 
     act(() => {
-      context.setSelectedResources(selectedResources);
+      context.setSelectedResources?.(selectedResources);
     });
 
     fireEvent.click(getByTitle(labelMoreActions).firstChild as HTMLElement);
@@ -383,7 +393,7 @@ describe(Actions, () => {
     const selectedResources = [host];
 
     act(() => {
-      context.setSelectedResources(selectedResources);
+      context.setSelectedResources?.(selectedResources);
     });
 
     fireEvent.click(last(getAllByText(labelSetDowntime)) as HTMLElement);
@@ -409,7 +419,7 @@ describe(Actions, () => {
     const selectedResources = [host];
 
     act(() => {
-      context.setSelectedResources(selectedResources);
+      context.setSelectedResources?.(selectedResources);
     });
 
     await waitFor(() =>
@@ -438,7 +448,7 @@ describe(Actions, () => {
     const selectedResources = [host];
 
     act(() => {
-      context.setSelectedResources(selectedResources);
+      context.setSelectedResources?.(selectedResources);
     });
 
     fireEvent.click(last(getAllByText(labelSetDowntime)) as HTMLElement);
@@ -475,7 +485,7 @@ describe(Actions, () => {
     const selectedResources = [host, service];
 
     act(() => {
-      context.setSelectedResources(selectedResources);
+      context.setSelectedResources?.(selectedResources);
     });
 
     mockedAxios.get.mockResolvedValueOnce({ data: {} });
@@ -501,7 +511,7 @@ describe(Actions, () => {
     const { getByText, getByLabelText, getByTitle } = renderActions();
 
     act(() => {
-      context.setSelectedResources([service]);
+      context.setSelectedResources?.([service]);
     });
 
     fireEvent.click(getByTitle(labelMoreActions).firstChild as HTMLElement);
@@ -553,7 +563,7 @@ describe(Actions, () => {
     });
 
     act(() => {
-      context.setSelectedResources([host]);
+      context.setSelectedResources?.([host]);
     });
 
     fireEvent.click(getByTitle(labelMoreActions).firstChild as HTMLElement);
@@ -598,7 +608,7 @@ describe(Actions, () => {
     const selectedResources = [host, service];
 
     act(() => {
-      context.setSelectedResources(selectedResources);
+      context.setSelectedResources?.(selectedResources);
     });
 
     await waitFor(() => {
@@ -720,7 +730,7 @@ describe(Actions, () => {
       const selectedResources = [host, service];
 
       act(() => {
-        context.setSelectedResources(selectedResources);
+        context.setSelectedResources?.(selectedResources);
       });
 
       fireEvent.click(getByTitle(labelMoreActions).firstChild as HTMLElement);
@@ -763,7 +773,7 @@ describe(Actions, () => {
       const { getByText, getByTitle } = renderActions();
 
       act(() => {
-        context.setSelectedResources([host]);
+        context.setSelectedResources?.([host]);
       });
 
       fireEvent.click(getByTitle(labelMoreActions).firstChild as HTMLElement);
@@ -797,7 +807,7 @@ describe(Actions, () => {
     });
 
     act(() => {
-      context.setSelectedResources([host, service]);
+      context.setSelectedResources?.([host, service]);
     });
 
     fireEvent.click(getByTitle(labelMoreActions).firstChild as HTMLElement);
@@ -810,7 +820,7 @@ describe(Actions, () => {
     });
 
     act(() => {
-      context.setSelectedResources([host]);
+      context.setSelectedResources?.([host]);
     });
 
     await waitFor(() => {
@@ -821,7 +831,7 @@ describe(Actions, () => {
     });
 
     act(() => {
-      context.setSelectedResources([service]);
+      context.setSelectedResources?.([service]);
     });
 
     await waitFor(() => {
@@ -832,7 +842,7 @@ describe(Actions, () => {
     });
 
     act(() => {
-      context.setSelectedResources([{ ...service, passive_checks: false }]);
+      context.setSelectedResources?.([{ ...service, passive_checks: false }]);
     });
 
     await waitFor(() => {
@@ -860,7 +870,7 @@ describe(Actions, () => {
     });
 
     act(() => {
-      context.setSelectedResources([host, service]);
+      context.setSelectedResources?.([host, service]);
     });
 
     fireEvent.click(getByTitle(labelMoreActions).firstChild as HTMLElement);
@@ -873,7 +883,7 @@ describe(Actions, () => {
     });
 
     act(() => {
-      context.setSelectedResources([host]);
+      context.setSelectedResources?.([host]);
     });
 
     await waitFor(() => {
@@ -884,7 +894,7 @@ describe(Actions, () => {
     });
 
     act(() => {
-      context.setSelectedResources([service]);
+      context.setSelectedResources?.([service]);
     });
 
     await waitFor(() => {
@@ -899,7 +909,7 @@ describe(Actions, () => {
     const { getByText } = renderActions();
 
     act(() => {
-      context.setSelectedResources([
+      context.setSelectedResources?.([
         {
           ...host,
           status: {

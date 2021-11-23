@@ -1,13 +1,51 @@
 import * as React from 'react';
 
-import { equals, isNil, not, prop } from 'ramda';
+import {
+  always,
+  equals,
+  ifElse,
+  isNil,
+  not,
+  pathEq,
+  pathOr,
+  prop,
+} from 'ramda';
+import { useAtomValue, useUpdateAtom } from 'jotai/utils';
+import { useAtom } from 'jotai';
+import { useTranslation } from 'react-i18next';
 
-import { SelectEntry } from '@centreon/ui';
+import { getData, SelectEntry, useRequest } from '@centreon/ui';
 import { useUserContext } from '@centreon/ui-context';
 
-import { useResourceContext } from '../../Context';
-import { SortOrder } from '../../models';
+import { ResourceListing, SortOrder } from '../../models';
 import { searchableFields } from '../../Filter/Criterias/searchQueryLanguage';
+import {
+  clearSelectedResourceDerivedAtom,
+  detailsAtom,
+  selectedResourceDetailsEndpointDerivedAtom,
+  selectedResourceIdAtom,
+  selectedResourceUuidAtom,
+  sendingDetailsAtom,
+} from '../../Details/detailsAtoms';
+import {
+  enabledAutorefreshAtom,
+  limitAtom,
+  listingAtom,
+  pageAtom,
+  sendingAtom,
+} from '../listingAtoms';
+import { listResources } from '../api';
+import {
+  labelNoResourceFound,
+  labelSomethingWentWrong,
+} from '../../translatedLabels';
+import ApiNotFoundMessage from '../ApiNotFoundMessage';
+import { ResourceDetails } from '../../Details/models';
+import {
+  appliedFilterAtom,
+  customFiltersAtom,
+  getCriteriaValueDerivedAtom,
+} from '../../Filter/filterAtoms';
 
 export interface LoadResources {
   initAutorefreshAndLoad: () => void;
@@ -17,24 +55,47 @@ const secondSortField = 'last_status_change';
 const defaultSecondSortCriteria = { [secondSortField]: SortOrder.desc };
 
 const useLoadResources = (): LoadResources => {
-  const {
-    limit,
-    page,
-    setPage,
-    setListing,
-    sendRequest,
-    enabledAutorefresh,
-    customFilters,
-    loadDetails,
-    details,
-    selectedResourceId,
-    getCriteriaValue,
-    appliedFilter,
-  } = useResourceContext();
+  const { t } = useTranslation();
 
-  const refreshIntervalRef = React.useRef<number>();
+  const { sendRequest, sending } = useRequest<ResourceListing>({
+    getErrorMessage: ifElse(
+      pathEq(['response', 'status'], 404),
+      always(ApiNotFoundMessage),
+      pathOr(t(labelSomethingWentWrong), ['response', 'data', 'message']),
+    ),
+    request: listResources,
+  });
+
+  const { sendRequest: sendLoadDetailsRequest, sending: sendingDetails } =
+    useRequest<ResourceDetails>({
+      getErrorMessage: ifElse(
+        pathEq(['response', 'status'], 404),
+        always(t(labelNoResourceFound)),
+        pathOr(t(labelSomethingWentWrong), ['response', 'data', 'message']),
+      ),
+      request: getData,
+    });
 
   const { refreshInterval } = useUserContext();
+
+  const [page, setPage] = useAtom(pageAtom);
+  const [details, setDetails] = useAtom(detailsAtom);
+  const selectedResourceId = useAtomValue(selectedResourceIdAtom);
+  const selectedResourceUuid = useAtomValue(selectedResourceUuidAtom);
+  const limit = useAtomValue(limitAtom);
+  const enabledAutorefresh = useAtomValue(enabledAutorefreshAtom);
+  const selectedResourceDetailsEndpoint = useAtomValue(
+    selectedResourceDetailsEndpointDerivedAtom,
+  );
+  const customFilters = useAtomValue(customFiltersAtom);
+  const getCriteriaValue = useAtomValue(getCriteriaValueDerivedAtom);
+  const appliedFilter = useAtomValue(appliedFilterAtom);
+  const setListing = useUpdateAtom(listingAtom);
+  const setSending = useUpdateAtom(sendingAtom);
+  const setSendingDetails = useUpdateAtom(sendingDetailsAtom);
+  const clearSelectedResource = useUpdateAtom(clearSelectedResourceDerivedAtom);
+
+  const refreshIntervalRef = React.useRef<number>();
 
   const refreshIntervalMs = refreshInterval * 1000;
 
@@ -54,6 +115,18 @@ const useLoadResources = (): LoadResources => {
       [sortField]: sortOrder,
       ...secondSortCriteria,
     };
+  };
+
+  const loadDetails = (): void => {
+    if (isNil(selectedResourceId)) {
+      return;
+    }
+
+    sendLoadDetailsRequest(selectedResourceDetailsEndpoint)
+      .then(setDetails)
+      .catch(() => {
+        clearSelectedResource();
+      });
   };
 
   const load = (): void => {
@@ -159,6 +232,19 @@ const useLoadResources = (): LoadResources => {
 
     setPage(1);
   }, [limit, appliedFilter]);
+
+  React.useEffect(() => {
+    setSending(sending);
+  }, [sending]);
+
+  React.useEffect(() => {
+    setSendingDetails(sending);
+  }, [sendingDetails]);
+
+  React.useEffect(() => {
+    setDetails(undefined);
+    loadDetails();
+  }, [selectedResourceUuid]);
 
   return { initAutorefreshAndLoad };
 };

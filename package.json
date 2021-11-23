@@ -113,6 +113,7 @@
     "html-react-parser": "^1.4.0",
     "i18next": "^21.2.4",
     "install": "^0.13.0",
+    "jotai": "^1.4.2",
     "jsdom": "^17.0.0",
     "json-loader": "^0.5.7",
     "numeral": "^2.0.6",
