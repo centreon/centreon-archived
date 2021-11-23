@@ -16,6 +16,7 @@ import {
   reduce,
   reject,
   set as update,
+  sortBy,
   values,
 } from 'ramda';
 import { TFunction } from 'react-i18next';
@@ -41,6 +42,7 @@ import {
 } from './models';
 import { build, parse } from './Criterias/searchQueryLanguage';
 import { getStoredOrDefaultFilter } from './storedFilter';
+import { criteriaNameSortOrder } from './Criterias/searchQueryLanguage/models';
 
 export const filterKey = `${baseKey}filter`;
 
@@ -198,9 +200,14 @@ export const multiSelectCriteriasDerivedAtom = atom((get) => {
   const isNonSelectableCriteria = (criteria: Criteria): boolean =>
     pipe(({ name }) => name, getSelectableCriteriaByName, isNil)(criteria);
 
+  const criterias = sortBy(
+    ({ name }) => criteriaNameSortOrder[name],
+    filterWithParsedSearch.criterias,
+  );
+
   return pipe(
     reject(isNonSelectableCriteria) as (criterias) => Array<Criteria>,
-  )(filterWithParsedSearch.criterias);
+  )(criterias);
 });
 
 export const filtersDerivedAtom = atom((get) => [
