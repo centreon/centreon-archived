@@ -1,4 +1,4 @@
-import { baseKey, getStoredOrDefault, store } from '../storage';
+import { baseKey, getStoredOrDefault } from '../storage';
 
 import { Filter } from './models';
 
@@ -17,12 +17,4 @@ const getStoredOrDefaultFilter = (defaultValue: Filter): Filter => {
   });
 };
 
-const storeFilter = (filter: Filter): void => {
-  store<Filter>({ key: filterKey, value: filter });
-};
-
-const clearCachedFilter = (): void => {
-  cachedFilter = null;
-};
-
-export { getStoredOrDefaultFilter, storeFilter, clearCachedFilter, filterKey };
+export { getStoredOrDefaultFilter };
