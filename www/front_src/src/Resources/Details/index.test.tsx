@@ -107,6 +107,10 @@ import Details from '.';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
+jest.mock('@centreon/ui-context', () =>
+  jest.requireActual('@centreon/centreon-frontend/packages/ui-context'),
+);
+
 jest.mock('../icons/Downtime');
 jest.mock(
   '@centreon/centreon-frontend/packages/centreon-ui/src/utils/copy',

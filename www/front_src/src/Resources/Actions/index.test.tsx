@@ -78,6 +78,10 @@ const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 const onRefresh = jest.fn();
 
+jest.mock('@centreon/ui-context', () =>
+  jest.requireActual('@centreon/centreon-frontend/packages/ui-context'),
+);
+
 jest.mock('react-redux', () => ({
   ...(jest.requireActual('react-redux') as jest.Mocked<unknown>),
   useSelector: jest.fn(),
