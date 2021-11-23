@@ -30,6 +30,8 @@ import {
   labelUnhandledProblems,
   labelNewFilter,
   labelSearchOptions,
+  labelStateType,
+  labelSoft,
 } from '../translatedLabels';
 import useListing from '../Listing/useListing';
 import useActions from '../testUtils/useActions';
@@ -42,6 +44,7 @@ import {
   getFilterWithUpdatedCriteria,
   getListingEndpoint,
   searchableFields,
+  defaultStateTypes,
 } from '../testUtils';
 import useLoadDetails from '../testUtils/useLoadDetails';
 import useDetails from '../Details/useDetails';
@@ -103,6 +106,14 @@ const filterParams: Array<FilterParameter> = [
     labelOk,
     {
       statuses: [...defaultStatuses, 'OK'],
+    },
+    undefined,
+  ],
+  [
+    labelStateType,
+    labelSoft,
+    {
+      stateTypes: [...defaultStateTypes, 'soft'],
     },
     undefined,
   ],

@@ -105,4 +105,5 @@ export {
   getCriteriaValue,
   getFilterWithUpdatedCriteria,
   defaultSecondSortCriteria,
+  defaultStateTypes,
 };
