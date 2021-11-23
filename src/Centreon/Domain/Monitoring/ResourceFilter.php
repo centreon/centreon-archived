@@ -70,8 +70,8 @@ class ResourceFilter
     /**
      * Available state types
      */
-    public const HARD_STATE_TYPE = 'H';
-    public const SOFT_STATE_TYPE = 'S';
+    public const HARD_STATE_TYPE = 'hard';
+    public const SOFT_STATE_TYPE = 'soft';
 
     public const MAP_STATUS_SERVICE = [
         self::STATUS_OK => 0,
