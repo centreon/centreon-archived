@@ -1,6 +1,5 @@
 import * as React from 'react';
 
-import classnames from 'classnames';
 import { useTranslation } from 'react-i18next';
 import { isNil } from 'ramda';
 import clsx from 'clsx';
@@ -27,7 +26,6 @@ import {
   IconHeader,
 } from '@centreon/ui';
 
-import styles from '../header.scss';
 import MenuLoader from '../../components/MenuLoader';
 
 import {
