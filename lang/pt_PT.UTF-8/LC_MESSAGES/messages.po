@@ -15184,4 +15184,13 @@ msgid "Clear filter"
 msgstr ""
 
 msgid "Last check with OK status"
-msgstr "" 
+msgstr ""
+
+# msgid "State type"
+# msgstr ""
+
+# msgid "Hard"
+# msgstr ""
+
+# msgid "Soft"
+# msgstr ""
