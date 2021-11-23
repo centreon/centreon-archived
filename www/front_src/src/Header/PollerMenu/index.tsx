@@ -3,6 +3,7 @@ import * as React from 'react';
 import classnames from 'classnames';
 import { useTranslation } from 'react-i18next';
 import { isNil } from 'ramda';
+import clsx from 'clsx';
 
 import PollerIcon from '@material-ui/icons/DeviceHub';
 import StorageIcon from '@material-ui/icons/Storage';
@@ -10,12 +11,11 @@ import LatencyIcon from '@material-ui/icons/Speed';
 import {
   Avatar,
   ClickAwayListener,
+  Grid,
   makeStyles,
   Theme,
-  Typography,
+  useTheme,
 } from '@material-ui/core';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import { CreateCSSProperties } from '@material-ui/styles';
 
 import {
@@ -23,12 +23,20 @@ import {
   SeverityCode,
   getData,
   useRequest,
+  IconToggleSubmenu,
+  IconHeader,
 } from '@centreon/ui';
 
 import styles from '../header.scss';
 import MenuLoader from '../../components/MenuLoader';
 
-import { labelPoller } from './translatedLabels';
+import {
+  labelDatabaseNotActive,
+  labelDatabaseUpdateAndActive,
+  labelLatencyDetected,
+  labelNoLatencyDetected,
+  labelPoller,
+} from './translatedLabels';
 
 export const useStyles = makeStyles(() => ({
   link: {
@@ -71,6 +79,14 @@ const useStatusStyles = makeStyles<Theme, StyleProps>((theme) => {
   return {
     database: ({ databaseSeverity }): CreateCSSProperties<StyleProps> =>
       getSeverityColor(databaseSeverity),
+    icon: {
+      cursor: 'pointer',
+      fontSize: theme.typography.body1.fontSize,
+      height: theme.spacing(3.5),
+      margin: '6px',
+      position: 'relative',
+      width: theme.spacing(3.5),
+    },
     latency: ({ latencySeverity }): CreateCSSProperties<StyleProps> =>
       getSeverityColor(latencySeverity),
   };
@@ -88,44 +104,26 @@ const GetPollerStatusIcon = ({
 
   return (
     <>
-      <span className={classnames(styles['wrap-left-icon'], styles.round)}>
-        <span
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-          }}
-          title={
-            databaseSeverity === SeverityCode.Ok
-              ? t('OK: all database poller updates are active')
-              : t(
-                  'Some database poller updates are not active; check your configuration',
-                )
-          }
-        >
-          <Avatar className={classes.database}>
-            <StorageIcon />
-          </Avatar>
-        </span>
-      </span>
-      <span className={classnames(styles['wrap-left-icon'], styles.round)}>
-        <span
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-          }}
-          title={
-            latencySeverity === SeverityCode.Ok
-              ? t('OK: no latency detected on your platform')
-              : t(
-                  'Latency detected, check configuration for better optimization',
-                )
-          }
-        >
-          <Avatar className={classes.latency}>
-            <LatencyIcon />
-          </Avatar>
-        </span>
-      </span>
+      <Avatar
+        className={clsx(classes.database, classes.icon)}
+        title={
+          databaseSeverity === SeverityCode.Ok
+            ? t(labelDatabaseUpdateAndActive)
+            : t(labelDatabaseNotActive)
+        }
+      >
+        <StorageIcon />
+      </Avatar>
+      <Avatar
+        className={clsx(classes.latency, classes.icon)}
+        title={
+          latencySeverity === SeverityCode.Ok
+            ? t(labelNoLatencyDetected)
+            : t(labelLatencyDetected)
+        }
+      >
+        <LatencyIcon />
+      </Avatar>
     </>
   );
 };
@@ -149,8 +147,8 @@ const PollerMenu = ({
   loaderWidth,
   refreshInterval,
 }: Props): JSX.Element => {
+  const theme = useTheme();
   const { t } = useTranslation();
-
   const [issues, setIssues] = React.useState<Issues | null>(null);
   const [toggled, setToggled] = React.useState<boolean>();
   const interval = React.useRef<number>();
@@ -201,11 +199,29 @@ const PollerMenu = ({
       }}
     >
       <>
-        <PollerIcon style={{ color: '#FFFFFF' }} />
-        <span className={styles['wrap-left-icon__name']}>
-          <Typography variant="caption">{t(labelPoller)}</Typography>
-        </span>
-        <GetPollerStatusIcon issues={issues} />
+        <Grid
+          container
+          alignItems="center"
+          direction="row"
+          justifyContent="flex-start"
+          style={{
+            padding: theme.spacing('6px', '6px', '6px', '16px'),
+            paddingLeft: theme.spacing(2),
+          }}
+        >
+          <IconHeader
+            Icon={PollerIcon}
+            iconName={t(labelPoller)}
+            onClick={toggleDetailedView}
+          />
+
+          <GetPollerStatusIcon issues={issues} />
+          <IconToggleSubmenu
+            iconType="arrow"
+            rotate={toggled}
+            onClick={toggleDetailedView}
+          />
+        </Grid>
       </>
     </ClickAwayListener>
   );

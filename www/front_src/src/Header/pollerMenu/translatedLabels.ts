@@ -14,3 +14,11 @@ export const labelFailedToExportAndReloadConfiguration =
 export const labelPoller = 'Poller';
 export const labelLatency = 'Latency';
 export const labelDatabase = 'Database';
+export const labelNoLatencyDetected =
+  'OK: no latency detected on your platform';
+export const labelLatencyDetected =
+  'Latency detected, check configuration for better optimization';
+export const labelDatabaseUpdateAndActive =
+  'OK: all database poller updates are active';
+export const labelDatabaseNotActive =
+  'Some database poller updates are not active; check your configuration';
