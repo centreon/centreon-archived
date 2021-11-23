@@ -57,6 +57,17 @@ if (!isset($centreonFeature)) {
     $centreonFeature = new CentreonFeature($pearDB);
 }
 
+/**
+ * Get the Security Policy for automatic generation password.
+ */
+try {
+    $statement = $pearDB->query("SELECT * from password_security_policy");
+} catch(\PDOException $e) {
+    return false;
+}
+$passwordPolicy = $statement->fetch(\PDO::FETCH_ASSOC);
+$encodedPasswordPolicy = json_encode($passwordPolicy);
+
 /*
  * Database retrieve information for the User
  */
@@ -86,6 +97,8 @@ if ($o == "c") {
 
     // selected by default is Resources status page
     $cct['default_page'] = $cct['default_page'] ?: CentreonAuth::DEFAULT_PAGE;
+
+    $statement = $pearDB->prepare("SELECT ");
 }
 
 /*
@@ -125,7 +138,7 @@ if ($cct["contact_auth_type"] != 'ldap') {
         'button',
         'contact_gen_passwd',
         _("Generate"),
-        array('onclick' => 'generatePassword("passwd");', 'class' => 'btc bt_info')
+        ['onclick' => "generatePassword('passwd', '$encodedPasswordPolicy');", 'class' => 'btc bt_info']
     );
 }
 $form->addElement('text', 'contact_autologin_key', _("Autologin Key"), array("size" => "30", "id" => "aKey"));
@@ -133,7 +146,7 @@ $form->addElement(
     'button',
     'contact_gen_akey',
     _("Generate"),
-    array('onclick' => 'generatePassword("aKey");', 'class' => 'btc bt_info')
+    ['onclick' => "generatePassword('aKey', '$encodedPasswordPolicy');", 'class' => 'btc bt_info']
 );
 $form->addElement('select', 'contact_lang', _("Language"), $langs);
 $form->addElement('checkbox', 'show_deprecated_pages', _("Use deprecated pages"), null, $attrsText);

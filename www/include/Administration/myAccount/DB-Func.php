@@ -113,11 +113,11 @@ function updateContactInDB($contact_id = null)
     updateNotificationOptions($contact_id);
 }
 
-function updateContact($contact_id = null)
+function updateContact($contactId = null)
 {
-    global $form, $pearDB, $centreon, $encryptType;
+    global $form, $pearDB, $centreon, $encryptType, $dependencyInjector;
 
-    if (!$contact_id) {
+    if (!$contactId) {
         return;
     }
 
@@ -146,17 +146,6 @@ function updateContact($contact_id = null)
           'show_deprecated_pages = :showDeprecatedPages, ' .
           'contact_autologin_key = :contactAutologinKey, ' .
           'enable_one_click_export = :enableOneClickExport';
-
-    $password_encrypted = null;
-    if (!empty($ret['contact_passwd'])) {
-        $rq .= ', contact_passwd = :contactPasswd';
-        if ($encryptType == 2) {
-            $password_encrypted = sha1($ret['contact_passwd']);
-        } else {
-            $password_encrypted = md5($ret['contact_passwd']);
-        }
-    }
-
     $rq .= ' WHERE contact_id = :contactId';
 
     $stmt = $pearDB->prepare($rq);
@@ -186,11 +175,39 @@ function updateContact($contact_id = null)
     $stmt->bindValue(':defaultPage', !empty($ret['default_page']) ? $ret['default_page'] : null, \PDO::PARAM_INT);
     $stmt->bindValue(':showDeprecatedPages', isset($ret['show_deprecated_pages']) ? 1 : 0, \PDO::PARAM_STR);
     $stmt->bindValue(':enableOneClickExport', isset($ret['enable_one_click_export']) ? '1' : '0', \PDO::PARAM_STR);
-    $stmt->bindValue(':contactId', $contact_id, \PDO::PARAM_INT);
-    if (!is_null($password_encrypted)) {
-        $stmt->bindValue(':contactPasswd', $password_encrypted, \PDO::PARAM_STR);
-    }
+    $stmt->bindValue(':contactId', $contactId, \PDO::PARAM_INT);
     $stmt->execute();
+
+    if (isset($ret["contact_passwd"]) && !empty($ret["contact_passwd"])) {
+        $ret["contact_passwd"] = $ret["contact_passwd2"]
+            = $dependencyInjector['utils']->encodePass($ret["contact_passwd"], 'bcrypt');
+
+        //Get three last saved password.
+        $statement = $pearDB->prepare(
+            'SELECT id, password, creation_date from `contact_password`
+            WHERE `contact_id` = :contactId ORDER BY `creation_date` DESC'
+        );
+        $statement->bindValue(':contactId', $contactId, PDO::PARAM_INT);
+        $statement->execute();
+        //If 3 or more passwords are saved, delete the oldest one.
+        if (($result = $statement->fetchAll()) && count($result) >= 3) {
+            $statement = $pearDB->prepare(
+                'DELETE FROM `contact_password` WHERE `creation_date` < :creationDate AND contact_id = :contactId'
+            );
+            $statement->bindValue(':creationDate', $result[1]['creation_date'], PDO::PARAM_INT);
+            $statement->bindValue(':contactId', $contactId, PDO::PARAM_INT);
+            $statement->execute();
+        }
+
+        $statement = $pearDB->prepare(
+            'INSERT INTO `contact_password` (password, contact_id, creation_date)
+            VALUES (:password, :contactId, :creationDate)'
+        );
+        $statement->bindValue(':password', $ret['contact_passwd'], PDO::PARAM_STR);
+        $statement->bindValue(':contactId', $contactId, PDO::PARAM_INT);
+        $statement->bindValue(':creationDate', time(), PDO::PARAM_INT);
+        $statement->execute();
+    }
 
     /*
      * Update user object..
