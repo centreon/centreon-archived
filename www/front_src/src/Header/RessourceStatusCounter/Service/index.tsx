@@ -7,6 +7,7 @@ import * as yup from 'yup';
 import numeral from 'numeral';
 import { Link } from 'react-router-dom';
 import { useTranslation, withTranslation } from 'react-i18next';
+import { useAtomValue } from 'jotai/utils';
 
 import ServiceIcon from '@material-ui/icons/Grain';
 
@@ -19,7 +20,7 @@ import {
   SeverityCode,
   StatusCounter,
 } from '@centreon/ui';
-import { useUserContext } from '@centreon/ui-context';
+import { userAtom } from '@centreon/centreon-frontend/packages/ui-context/src';
 
 import styles from '../../header.scss';
 import {
@@ -62,7 +63,7 @@ const ServiceStatusCounter = (): JSX.Element => {
 
   const { t } = useTranslation();
 
-  const { use_deprecated_pages } = useUserContext();
+  const { use_deprecated_pages } = useAtomValue(userAtom);
 
   const unhandledCriticalServicesLink = use_deprecated_pages
     ? '/main.php?p=20201&o=svc_unhandled&statusFilter=critical&search='
