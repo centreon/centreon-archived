@@ -199,41 +199,42 @@ const PollerMenu = ({
   }
 
   return (
-    <ClickAwayListener
-      onClickAway={(): void => {
-        if (!toggled) {
-          return;
-        }
-        toggleDetailedView();
-      }}
-    >
-      <>
-        <Grid
-          container
-          alignItems="center"
-          direction="row"
-          justifyContent="flex-start"
-          style={{
-            padding: theme.spacing('6px', '6px', '6px', '16px'),
-            paddingLeft: theme.spacing(2),
-          }}
-        >
-          <IconHeader
-            Icon={PollerIcon}
-            iconName={t(labelPoller)}
-            onClick={toggleDetailedView}
-          />
+    <>
+      <ClickAwayListener
+        onClickAway={(): void => {
+          if (!toggled) {
+            return;
+          }
+          toggleDetailedView();
+        }}
+      >
+        <>
+          <Grid
+            container
+            alignItems="center"
+            direction="row"
+            justifyContent="flex-start"
+            style={{
+              padding: theme.spacing('6px', '6px', '6px', '16px'),
+              paddingLeft: theme.spacing(2),
+            }}
+          >
+            <IconHeader
+              Icon={PollerIcon}
+              iconName={t(labelPoller)}
+              onClick={toggleDetailedView}
+            />
 
-          <GetPollerStatusIcon issues={issues} />
+            <GetPollerStatusIcon issues={issues} />
 
-          <IconToggleSubmenu
-            iconType="arrow"
-            rotate={toggled}
-            onClick={toggleDetailedView}
-          />
-        </Grid>
-      </>
-
+            <IconToggleSubmenu
+              iconType="arrow"
+              rotate={toggled}
+              onClick={toggleDetailedView}
+            />
+          </Grid>
+        </>
+      </ClickAwayListener>
       <div className={classnames(styles.submenu, styles.pollers)}>
         <div className={styles['submenu-content']}>
           <ul
@@ -317,7 +318,7 @@ const PollerMenu = ({
           <ExportConfiguration setIsExportingConfiguration={newExporting} />
         </div>
       </div>
-    </ClickAwayListener>
+    </>
   );
 };
 
