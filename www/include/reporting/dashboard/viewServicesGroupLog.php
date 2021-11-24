@@ -51,37 +51,50 @@ $id = filter_var($_GET['item'] ?? $_POST['item'] ?? false, FILTER_VALIDATE_INT);
  * FORMS
  */
 
-$form = new HTML_QuickFormCustom('formItem', 'post', "?p=" . $p);
+$serviceGroupForm = new HTML_QuickFormCustom('formServiceGroup', 'post', "?p=" . $p);
+$redirect = $serviceGroupForm->addElement('hidden', 'o');
+$redirect->setValue($o);
 
-$items = getAllServicesgroupsForReporting();
-$form->addElement(
-    'select',
+$serviceGroupRoute = array(
+    'datasourceOrigin' => 'ajax',
+    'multiple' => false,
+    'linkedObject' => 'centreonServicegroups',
+    'availableDatasetRoute' =>
+    './include/common/webServices/rest/internal.php'
+    . '?object=centreon_configuration_servicegroup&action=list',
+    'defaultDatasetRoute' =>
+    './include/common/webServices/rest/internal.php?object=centreon_configuration_servicegroup'
+    . '&action=defaultValues&target=service&field=service_sgs&id=' . $id,
+);
+$serviceGroupSelectBox = $serviceGroupForm->addElement(
+    'select2',
     'item',
     _("Service Group"),
-    $items,
-    array(
-        "onChange" =>"this.form.submit();"
-    )
+    [],
+    $serviceGroupRoute
 );
-$form->addElement(
+$serviceGroupSelectBox->addJsCallback(
+    'change',
+    'this.form.submit();'
+);
+$serviceGroupForm->addElement(
     'hidden',
     'period',
     $period
 );
-$form->addElement(
+$serviceGroupForm->addElement(
     'hidden',
     'StartDate',
     $get_date_start
 );
-$form->addElement(
+$serviceGroupForm->addElement(
     'hidden',
     'EndDate',
     $get_date_end
 );
-$redirect = $form->addElement('hidden', 'o');
-$redirect->setValue($o);
+
 if (isset($id)) {
-    $form->setDefaults(array('item' => $id));
+    $serviceGroupForm->setDefaults(array('item' => $id));
 }
 
 /*
@@ -99,13 +112,13 @@ if ($id !== false) {
      * Getting periods values
      */
     $dates = getPeriodToReport("alternate");
-    $start_date = $dates[0];
-    $end_date = $dates[1];
+    $startDate = $dates[0];
+    $endDate = $dates[1];
 
     /*
      * Getting servicegroups logs
      */
-    $servicesgroupStats = getLogInDbForServicesGroup($id, $start_date, $end_date, $reportingTimePeriod);
+    $servicesgroupStats = getLogInDbForServicesGroup($id, $startDate, $endDate, $reportingTimePeriod);
 
     /*
      * Chart datas
@@ -136,9 +149,9 @@ if ($id !== false) {
 
     $tpl->assign("components", $servicesgroupFinalStats);
     $tpl->assign('period_name', _("From"));
-    $tpl->assign('date_start', $start_date);
+    $tpl->assign('date_start', $startDate);
     $tpl->assign('to', _("to"));
-    $tpl->assign('date_end', $end_date);
+    $tpl->assign('date_end', $endDate);
     $tpl->assign('period', $period);
     $formPeriod->setDefaults(array('period' => $period));
     $tpl->assign('id', $id);
@@ -151,7 +164,7 @@ if ($id !== false) {
     $tpl->assign(
         "link_csv_url",
         "./include/reporting/dashboard/csvExport/csv_ServiceGroupLogs.php?servicegroup="
-        . $id . "&start=" . $start_date . "&end=" . $end_date
+        . $id . "&start=" . $startDate . "&end=" . $endDate
     );
     $tpl->assign(
         "link_csv_name",
@@ -186,8 +199,8 @@ $formPeriod->accept($renderer);
 $tpl->assign('formPeriod', $renderer->toArray());
 
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-$form->accept($renderer);
-$tpl->assign('formItem', $renderer->toArray());
+$serviceGroupForm->accept($renderer);
+$tpl->assign('serviceGroupForm', $renderer->toArray());
 
 if (
     !$formPeriod->isSubmitted()
