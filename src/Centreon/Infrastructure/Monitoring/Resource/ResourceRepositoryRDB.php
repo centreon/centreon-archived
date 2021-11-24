@@ -247,11 +247,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             $request .= ' EXISTS (
                 SELECT 1 FROM `:dbstg`.`hosts_hostgroups` AS hhg
                 WHERE hhg.host_id = resource.host_id
-                    AND EXISTS (
-                        SELECT 1 FROM `:dbstg`.`hostgroups` AS hg
-                        WHERE hg.hostgroup_id IN (' . implode(', ', $groupList) . ')
-                        LIMIT 1)
-                LIMIT 1) ';
+                AND hhg.hostgroup_id IN (' . implode(', ', $groupList) . ') LIMIT 1)';
         }
 
         /**
