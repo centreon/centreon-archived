@@ -4,6 +4,7 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { not } from 'ramda';
 import { FormikErrors, FormikHandlers, FormikValues } from 'formik';
+import { useAtomValue } from 'jotai/utils';
 
 import {
   Checkbox,
@@ -21,7 +22,7 @@ import {
 import { Alert } from '@material-ui/lab';
 
 import { Dialog, TextField, SelectField } from '@centreon/ui';
-import { useUserContext } from '@centreon/ui-context';
+import { userAtom } from '@centreon/ui-context';
 
 import {
   labelCancel,
@@ -98,7 +99,7 @@ const DialogDowntime = ({
   setFieldValue,
 }: Props): JSX.Element => {
   const { t } = useTranslation();
-  const { locale } = useUserContext();
+  const { locale } = useAtomValue(userAtom);
   const { getDowntimeDeniedTypeAlert, canDowntimeServices } = useAclQuery();
   const { Adapter, isMeridianFormat } = useDateTimePickerAdapter();
 
