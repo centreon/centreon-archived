@@ -259,7 +259,7 @@ try {
     },
     'Lighthouse CI': {
       node {
-        checkoutCentreonBuild();
+        checkoutCentreonBuild(buildBranch);
         unstash 'tar-sources'
         sh "./centreon-build/jobs/web/${serie}/mon-web-lighthouse-ci.sh centos7"
         publishHTML([
