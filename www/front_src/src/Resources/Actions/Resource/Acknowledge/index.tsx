@@ -3,9 +3,10 @@ import * as React from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
+import { useAtomValue } from 'jotai/utils';
 
 import { useSnackbar, useRequest } from '@centreon/ui';
-import { useUserContext } from '@centreon/ui-context';
+import { acknowledgementAtom, userAtom } from '@centreon/ui-context';
 
 import {
   labelRequired,
@@ -53,7 +54,8 @@ const AcknowledgeForm = ({
     request: acknowledgeResources,
   });
 
-  const { alias, acknowledgement } = useUserContext();
+  const { alias } = useAtomValue(userAtom);
+  const acknowledgement = useAtomValue(acknowledgementAtom);
 
   const form = useFormik<AcknowledgeFormValues>({
     initialValues: {
