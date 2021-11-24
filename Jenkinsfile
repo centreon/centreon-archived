@@ -349,7 +349,7 @@ try {
     }
   }
 
-  stage('API // E2E') {
+  stage('API // E2E // Lighthouse CI') {
     parallel 'API Tests': {
       if (hasBackendChanges) {
         def parallelSteps = [:]
@@ -394,6 +394,23 @@ try {
         }
       }
       parallel parallelSteps
+    },
+    'Lighthouse CI': {
+      if (hasFrontendChanges) {
+        node {
+          checkoutCentreonBuild();
+          unstash 'tar-sources'
+          sh "./centreon-build/jobs/web/${serie}/mon-web-lighthouse-ci.sh centos7"
+          publishHTML([
+            allowMissing: false,
+            keepAll: true,
+            reportDir: "$PROJECT-$VERSION/.lighthouseci",
+            reportFiles: 'lighthouseci-index.html',
+            reportName: 'Centreon Web Performances',
+            reportTitles: ''
+          ])
+        }
+      }
     }
   }
   
