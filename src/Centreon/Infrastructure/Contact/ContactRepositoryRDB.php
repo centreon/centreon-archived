@@ -89,7 +89,7 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
             'SELECT contact.*, cp.password AS contact_passwd, t.topology_url,
             t.topology_url_opt, t.is_react, t.topology_id, tz.timezone_name
             FROM `:db`.contact
-            INNER JOIN `:db`.contact_password cp
+            LEFT JOIN `:db`.contact_password cp
                 ON cp.contact_id = contact.contact_id
             LEFT JOIN `:db`.timezone tz
                 ON tz.timezone_id = contact.contact_location
@@ -122,7 +122,7 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
             'SELECT contact.*, cp.password AS contact_passwd, t.topology_url,
             t.topology_url_opt, t.is_react, t.topology_id, tz.timezone_name
             FROM `:db`.contact
-            INNER JOIN `:db`.contact_password cp
+            LEFT JOIN `:db`.contact_password cp
                 ON cp.contact_id = contact.contact_id
             LEFT JOIN `:db`.timezone tz
                 ON tz.timezone_id = contact.contact_location

@@ -1552,7 +1552,7 @@ class CentreonLdapAdmin
                 if (!empty($ldapContactIdList)) {
                     $contactIds = implode(', ', $ldapContactIdList);
                     $this->db->query(
-                        "DELETE FROM password WHERE contact_id IN ($contactIds)"
+                        "DELETE FROM contact_password WHERE contact_id IN ($contactIds)"
                     );
                 }
             }

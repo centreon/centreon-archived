@@ -192,31 +192,76 @@ class CentreonAuth
                 if ($this->passwdOk == -1) {
                     $this->passwdOk = 0;
                     if (isset($this->userInfos["contact_passwd"])
-                        && $this->userInfos["contact_passwd"] === $this->myCrypt($password)
+                        && password_verify($this->password, $this->userInfos["contact_passwd"])
                     ) {
                         $this->passwdOk = 1;
                         if (isset($this->ldap_store_password[$arId]) && $this->ldap_store_password[$arId]) {
-                            $this->pearDB->query(
-                                "UPDATE `contact_password` " .
-                                "SET `contact_passwd` = '" . $this->myCrypt($this->password) . "'" .
-                                "WHERE `contact_alias` = '" . $this->login . "' AND `contact_register` = '1'"
+                            $statement = $this->pearDB->prepare(
+                                "INSERT INTO contact_password (password, contact_id, creation_date) " .
+                                "VALUES (:password, :contactId, :creationDate)"
                             );
+                            $statement->bindValue(
+                                ':password',
+                                $this->dependencyInjector['utils']->encodePass($this->password, 'bcrypt'),
+                                \PDO::PARAM_STR
+                            );
+                            $statement->bindValue(
+                                ':contactId',
+                                $this->userInfos['contact_id'],
+                                \PDO::PARAM_INT
+                            );
+                            $statement->bindValue(
+                                ':creationDate',
+                                time(),
+                                \PDO::PARAM_INT
+                            );
+                            $statement->execute();
                         }
                     }
                 } elseif ($this->passwdOk == 1) {
                     if (isset($this->ldap_store_password[$arId]) && $this->ldap_store_password[$arId]) {
                         if (!isset($this->userInfos["contact_passwd"])) {
-                            $this->pearDB->query(
-                                "UPDATE `contact` " .
-                                "SET `contact_passwd` = '" . $this->myCrypt($this->password) . "'" .
-                                "WHERE `contact_alias` = '" . $this->login . "' AND `contact_register` = '1'"
+                            $statement = $this->pearDB->prepare(
+                                "INSERT INTO contact_password (password, contact_id, creation_date) " .
+                                "VALUES (:password, :contactId, :creationDate)"
                             );
-                        } elseif ($this->userInfos["contact_passwd"] != $this->myCrypt($this->password)) {
-                            $this->pearDB->query(
-                                "UPDATE `contact` " .
-                                "SET `contact_passwd` = '" . $this->myCrypt($this->password) . "'" .
-                                "WHERE `contact_alias` = '" . $this->login . "' AND `contact_register` = '1'"
+                            $statement->bindValue(
+                                ':password',
+                                $this->dependencyInjector['utils']->encodePass($this->password, 'bcrypt'),
+                                \PDO::PARAM_STR
                             );
+                            $statement->bindValue(
+                                ':contactId',
+                                $this->userInfos['contact_id'],
+                                \PDO::PARAM_INT
+                            );
+                            $statement->bindValue(
+                                ':creationDate',
+                                time(),
+                                \PDO::PARAM_INT
+                            );
+                            $statement->execute();
+                        } elseif (!password_verify($this->password, $this->userInfos["contact_passwd"])) {
+                            $statement = $this->pearDB->prepare(
+                                "UPDATE contact_password SET password = :newPassword WHERE " .
+                                "password = :oldPassword AND contact_id= :contactId"
+                            );
+                            $statement->bindValue(
+                                ':newPassword',
+                                $this->dependencyInjector['utils']->encodePass($this->password, 'bcrypt'),
+                                \PDO::PARAM_STR
+                            );
+                            $statement->bindValue(
+                                ':oldPassword',
+                                $this->userInfos['contact_passwd'],
+                                \PDO::PARAM_INT
+                            );
+                            $statement->bindValue(
+                                ':contactId',
+                                $this->userInfos['contact_id'],
+                                \PDO::PARAM_INT
+                            );
+                            $statement->execute();
                         }
                     }
                 }
@@ -243,7 +288,7 @@ class CentreonAuth
                 && str_starts_with($this->userInfos["contact_passwd"], 'md5__')
                 && $this->userInfos["contact_passwd"] === $this->myCrypt($password)
             ) {
-                $newPassword = password_hash($password, PASSWORD_BCRYPT);
+                $newPassword = $this->dependencyInjector['utils']->encodePass($password, 'bcrypt');
                 $statement = $this->pearDB->prepare(
                     "UPDATE `contact_password` SET password = :newPassword
                     WHERE password = :oldPassword AND contact_id = :contactId"
