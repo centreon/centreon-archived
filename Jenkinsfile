@@ -234,26 +234,45 @@ try {
     }
   }
 
-  stage('API integration tests') {
-    def parallelSteps = [:]
-    for (x in apiFeatureFiles) {
-      def feature = x
-      parallelSteps[feature] = {
-        node {
-          checkoutCentreonBuild(buildBranch)
-          unstash 'tar-sources'
-          unstash 'vendor'
-          def acceptanceStatus = sh(script: "./centreon-build/jobs/web/${serie}/mon-web-api-integration-test.sh centos7 tests/api/features/${feature}", returnStatus: true)
-          junit 'xunit-reports/**/*.xml'
-          if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0))
-            currentBuild.result = 'FAILURE'
-          archiveArtifacts allowEmptyArchive: true, artifacts: 'api-integration-test-logs/*.txt'
+  stage('API integration tests // Lighthouse CI') {
+    parallel 'API integration tests': {
+      def parallelSteps = [:]
+      for (x in apiFeatureFiles) {
+        def feature = x
+        parallelSteps[feature] = {
+          node {
+            checkoutCentreonBuild(buildBranch)
+            unstash 'tar-sources'
+            unstash 'vendor'
+            def acceptanceStatus = sh(script: "./centreon-build/jobs/web/${serie}/mon-web-api-integration-test.sh centos7 tests/api/features/${feature}", returnStatus: true)
+            junit 'xunit-reports/**/*.xml'
+            if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0))
+              currentBuild.result = 'FAILURE'
+            archiveArtifacts allowEmptyArchive: true, artifacts: 'api-integration-test-logs/*.txt'
+          }
         }
       }
-    }
-    parallel parallelSteps
-    if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-      error('API integration tests stage failure.');
+      parallel parallelSteps
+      if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+        error('API integration tests stage failure.');
+      }
+    },
+    'Lighthouse CI': {
+      if (hasFrontendChanges) {
+        node {
+          checkoutCentreonBuild();
+          unstash 'tar-sources'
+          sh "./centreon-build/jobs/web/${serie}/mon-web-lighthouse-ci.sh centos7"
+          publishHTML([
+            allowMissing: false,
+            keepAll: true,
+            reportDir: "$PROJECT-$VERSION/.lighthouseci",
+            reportFiles: 'lighthouseci-index.html',
+            reportName: 'Centreon Web Performances',
+            reportTitles: ''
+          ])
+        }
+      }
     }
   }
 
