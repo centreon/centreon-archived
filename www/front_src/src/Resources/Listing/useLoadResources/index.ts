@@ -15,7 +15,7 @@ import { useAtom } from 'jotai';
 import { useTranslation } from 'react-i18next';
 
 import { getData, SelectEntry, useRequest } from '@centreon/ui';
-import { useUserContext } from '@centreon/ui-context';
+import { refreshIntervalAtom } from '@centreon/ui-context';
 
 import { ResourceListing, SortOrder } from '../../models';
 import { searchableFields } from '../../Filter/Criterias/searchQueryLanguage';
@@ -76,10 +76,9 @@ const useLoadResources = (): LoadResources => {
       request: getData,
     });
 
-  const { refreshInterval } = useUserContext();
-
   const [page, setPage] = useAtom(pageAtom);
   const [details, setDetails] = useAtom(detailsAtom);
+  const refreshInterval = useAtomValue(refreshIntervalAtom);
   const selectedResourceId = useAtomValue(selectedResourceIdAtom);
   const selectedResourceUuid = useAtomValue(selectedResourceUuidAtom);
   const limit = useAtomValue(limitAtom);

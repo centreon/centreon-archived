@@ -5,11 +5,12 @@ import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { not } from 'ramda';
+import { useAtomValue } from 'jotai/utils';
 
 import { Button, makeStyles, Paper, Typography } from '@material-ui/core';
 
 import { getData, useRequest, useSnackbar, Dialog } from '@centreon/ui';
-import { useUserContext } from '@centreon/ui-context';
+import { userAtom } from '@centreon/ui-context';
 
 import {
   labelCancel,
@@ -52,8 +53,9 @@ const ExportConfiguration = ({
     defaultFailureMessage: t(labelFailedToExportAndReloadConfiguration),
     request: getData,
   });
-  const { isExportButtonEnabled } = useUserContext();
   const { showInfoMessage, showSuccessMessage } = useSnackbar();
+
+  const { isExportButtonEnabled } = useAtomValue(userAtom);
 
   const askBeforeExportConfiguration = (): void => {
     setAskingBeforeExportConfiguration(true);
