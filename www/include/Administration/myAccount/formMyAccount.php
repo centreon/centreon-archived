@@ -62,7 +62,7 @@ if (!isset($centreonFeature)) {
  */
 try {
     $statement = $pearDB->query("SELECT * from password_security_policy");
-} catch(\PDOException $e) {
+} catch (\PDOException $e) {
     return false;
 }
 $passwordPolicy = $statement->fetch(\PDO::FETCH_ASSOC);

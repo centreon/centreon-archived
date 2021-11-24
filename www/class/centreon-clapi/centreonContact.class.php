@@ -279,14 +279,11 @@ class CentreonContact extends CentreonObject
         $addParams[$this->object->getUniqueLabelField()] = $params[self::ORDER_UNIQUENAME];
         $addParams['contact_name'] = $this->checkIllegalChar($params[self::ORDER_NAME]);
         $addParams['contact_email'] = $params[self::ORDER_MAIL];
-        $addParams['contact_passwd'] = md5($params[self::ORDER_PASS]);
+        $addParams['contact_passwd'] = $this->dependencyInjector['utils']->encodePass(
+            $params[self::ORDER_PASS],
+            PASSWORD_BCRYPT
+        );
 
-        $algo = $this->dependencyInjector['utils']->detectPassPattern($params[self::ORDER_PASS]);
-        if (!$algo) {
-            $addParams['contact_passwd'] = $this->dependencyInjector['utils']->encodePass($params[self::ORDER_PASS]);
-        } else {
-            $addParams['contact_passwd'] = $params[self::ORDER_PASS];
-        }
 
         $addParams['contact_admin'] = $params[self::ORDER_ADMIN];
         if ($addParams['contact_admin'] == '') {
@@ -527,10 +524,6 @@ class CentreonContact extends CentreonObject
             "AND"
         );
         foreach ($elements as $element) {
-            $algo = $this->dependencyInjector['utils']->detectPassPattern($element['contact_passwd']);
-            if (!$algo) {
-                $element['contact_passwd'] = $this->dependencyInjector['utils']->encodePass($element['contact_passwd']);
-            }
             $addStr = $this->action . $this->delim . "ADD";
             foreach ($this->insertParams as $param) {
                 $addStr .= $this->delim . $element[$param];

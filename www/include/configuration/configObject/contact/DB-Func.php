@@ -343,24 +343,30 @@ function multipleContactInDB($contacts = array(), $nbrDup = array())
     $newContactIds = [];
     foreach ($contacts as $key => $value) {
         $newContactIds[$key] = [];
-        $dbResult = $pearDB->query("SELECT * FROM contact WHERE contact_id = '" . (int)$key . "' LIMIT 1");
+        $dbResult = $pearDB->query(
+            "SELECT `contact`.*, cp.password
+            FROM contact
+            LEFT JOIN contact_password cp ON cp.contact_id = contact.contact_id
+            WHERE `contact`.contact_id = '" . (int)$key . "' LIMIT 1");
         $row = $dbResult->fetch();
         $row["contact_id"] = null;
         for ($i = 1; $i <= $nbrDup[$key]; $i++) {
             $val = null;
             foreach ($row as $key2 => $value2) {
-                $key2 == "contact_name" ? ($contact_name = $value2 = $value2 . "_" . $i) : null;
-                $key2 == "contact_alias" ? ($contact_alias = $value2 = $value2 . "_" . $i) : null;
-                $val ? $val .= ($value2 != null ? (", '" . $value2 . "'") : ", NULL") : $val .=
-                    ($value2 != null ? ("'" . $value2 . "'") : "NULL");
-                if ($key2 != "contact_id") {
-                    $fields[$key2] = $value2;
-                }
-                if (isset($contact_name)) {
-                    $fields["contact_name"] = $contact_name;
-                }
-                if (isset($contact_alias)) {
-                    $fields["contact_alias"] = $contact_alias;
+                if ($key2 !== "password") {
+                    $key2 == "contact_name" ? ($contact_name = $value2 = $value2 . "_" . $i) : null;
+                    $key2 == "contact_alias" ? ($contact_alias = $value2 = $value2 . "_" . $i) : null;
+                    $val ? $val .= ($value2 != null ? (", '" . $value2 . "'") : ", NULL") : $val .=
+                        ($value2 != null ? ("'" . $value2 . "'") : "NULL");
+                    if ($key2 != "contact_id") {
+                        $fields[$key2] = $value2;
+                    }
+                    if (isset($contact_name)) {
+                        $fields["contact_name"] = $contact_name;
+                    }
+                    if (isset($contact_alias)) {
+                        $fields["contact_alias"] = $contact_alias;
+                    }
                 }
             }
 
@@ -373,6 +379,19 @@ function multipleContactInDB($contacts = array(), $nbrDup = array())
                 $pearDB->query($rq);
                 $lastId = $pearDB->lastInsertId();
                 if (isset($lastId)) {
+                    /**
+                     * Don't insert password for a contact_template.
+                     */
+                    if ($row['password'] !== null) {
+                        $statement = $pearDB->prepare(
+                            "INSERT INTO contact_password (password, contact_id, creation_date)
+                            VALUES (:password, :contactId, :creationDate)"
+                        );
+                        $statement->bindValue(':password', $row['password'], \PDO::PARAM_STR);
+                        $statement->bindValue(':contactId', $lastId, \PDO::PARAM_INT);
+                        $statement->bindValue(':creationDate', time(), \PDO::PARAM_INT);
+                        $statement->execute();
+                    }
                     $newContactIds[$key][] = $lastId;
                     /*
                      * ACL update
@@ -562,7 +581,7 @@ function insertContact($ret = array())
 
     if (isset($ret["contact_passwd"]) && !empty($ret["contact_passwd"])) {
         $ret["contact_passwd"] = $ret["contact_passwd2"]
-            = $dependencyInjector['utils']->encodePass($ret["contact_passwd"], 'bcrypt');
+            = $dependencyInjector['utils']->encodePass($ret["contact_passwd"], PASSWORD_BCRYPT);
 
         $statement = $pearDB->prepare(
             'INSERT INTO `contact_password` (password, contact_id, creation_date)
@@ -626,7 +645,7 @@ function updateContact($contactId = null)
 
     if (isset($ret["contact_passwd"]) && !empty($ret["contact_passwd"])) {
         $ret["contact_passwd"] = $ret["contact_passwd2"]
-            = $dependencyInjector['utils']->encodePass($ret["contact_passwd"], 'bcrypt');
+            = $dependencyInjector['utils']->encodePass($ret["contact_passwd"], PASSWORD_BCRYPT);
 
         //Get three last saved password.
         $statement = $pearDB->prepare(
@@ -1332,7 +1351,8 @@ function validatePasswordModification(array $fields)
         $statement1 = $pearDB->query("SELECT * from password_security_policy");
         $passwordPolicy = $statement1->fetch(\PDO::FETCH_ASSOC);
         $statement2 = $pearDB->prepare(
-            "SELECT creation_date FROM contact_password WHERE contact_id = :contactId ORDER BY creation_date DESC LIMIT 1"
+            "SELECT creation_date FROM contact_password " .
+            "WHERE contact_id = :contactId ORDER BY creation_date DESC LIMIT 1"
         );
         $statement2->bindValue(':contactId', $contactId, \PDO::PARAM_INT);
         $statement2->execute();

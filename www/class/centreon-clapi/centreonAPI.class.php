@@ -515,11 +515,11 @@ class CentreonAPI
                 print "You don't have permissions for CLAPI.\n";
                 exit(1);
             }
+
+            // Update password from md5 to bcrypt if old md5 password is valid.
             if (
                 str_starts_with($row["contact_passwd"], 'md5__')
-                && $row["contact_passwd"] === $this->dependencyInjector['utils']->encodePass(
-                    $this->password, 'md5'
-                )
+                && $row["contact_passwd"] === $this->dependencyInjector['utils']->encodePass($this->password, 'md5')
             ) {
                 $newPassword = password_hash($this->password, PASSWORD_BCRYPT);
                 $statement = $this->DB->prepare(

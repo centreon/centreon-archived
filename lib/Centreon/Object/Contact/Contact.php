@@ -32,7 +32,7 @@
  * For more information : contact@centreon.com
  *
  */
- 
+
 require_once "Centreon/Object/Object.php";
 
 /**
@@ -45,4 +45,125 @@ class Centreon_Object_Contact extends Centreon_Object
     protected $table = "contact";
     protected $primaryKey = "contact_id";
     protected $uniqueLabelField = "contact_alias";
+
+    /**
+     * Used for inserting contact into database
+     *
+     * @param array $params
+     * @return int
+     */
+    public function insert($params = [])
+    {
+        $sql = "INSERT INTO $this->table ";
+        $sqlFields = "";
+        $sqlValues = "";
+        $sqlParams = [];
+
+        // Store password value and remove it from the array to not inserting it in contact table.
+        if (isset($params['contact_passwd'])) {
+            $password = $params['contact_passwd'];
+            unset($params['contact_passwd']);
+        }
+        foreach ($params as $key => $value) {
+            if ($key == $this->primaryKey) {
+                continue;
+            }
+            if ($sqlFields != "") {
+                $sqlFields .= ",";
+            }
+            if ($sqlValues != "") {
+                $sqlValues .= ",";
+            }
+            $sqlFields .= $key;
+            $sqlValues .= "?";
+            $sqlParams[] = trim($value);
+        }
+        if ($sqlFields && $sqlValues) {
+            $sql .= "(" . $sqlFields . ") VALUES (" . $sqlValues . ")";
+            $this->db->query($sql, $sqlParams);
+            $contactId = $this->db->lastInsertId();
+            if (isset($password) && isset($contactId)) {
+                $statement = $this->db->prepare(
+                    "INSERT INTO `contact_password` (password, contact_id, creation_date)
+                    VALUES (:password, :contactId, :creationDate)"
+                );
+                $statement->bindParam(':password', $password, \PDO::PARAM_STR);
+                $statement->bindParam(':contactId', $contactId, \PDO::PARAM_INT);
+                $statement->bindParam(':creationDate', time(), \PDO::PARAM_INT);
+                $statement->execute();
+            }
+            return $contactId;
+        }
+        return null;
+    }
+
+    /**
+     * List all objects with all their parameters
+     * Data heavy, use with as many parameters as possible
+     * in order to limit it
+     *
+     * @param mixed $parameterNames
+     * @param int $count
+     * @param int $offset
+     * @param string $order
+     * @param string $sort
+     * @param array $filters
+     * @param string $filterType
+     * @return array
+     * @throws Exception
+     */
+    public function getList(
+        $parameterNames = "*",
+        $count = -1,
+        $offset = 0,
+        $order = null,
+        $sort = "ASC",
+        $filters = array(),
+        $filterType = "OR"
+    ) {
+        if ($filterType != "OR" && $filterType != "AND") {
+            throw new Exception('Unknown filter type');
+        }
+
+        if (is_array($parameterNames)) {
+            if (($key = array_search('contact_id', $parameterNames)) !== false) {
+                $parameterNames[$key] = $this->table . '.contact_id';
+            }
+            $params = implode(",", $parameterNames);
+        } elseif ($parameterNames === "contact_id") {
+            $params = $this->table . '.contact_id';
+        } else {
+            $params = $parameterNames;
+        }
+        $sql = "SELECT $params, cp.password AS contact_passwd FROM $this->table " .
+        "LEFT JOIN contact_password cp ON cp.contact_id = contact.contact_id";
+        $filterTab = array();
+        if (count($filters)) {
+            foreach ($filters as $key => $rawvalue) {
+                if (!count($filterTab)) {
+                    $sql .= " WHERE $key ";
+                } else {
+                    $sql .= " $filterType $key ";
+                }
+                if (is_array($rawvalue)) {
+                    $sql .= ' IN (' . str_repeat('?,', count($rawvalue) - 1) . '?) ';
+                    $filterTab = array_merge($filterTab, $rawvalue);
+                } else {
+                    $sql .= ' LIKE ? ';
+                    $value = trim($rawvalue);
+                    $value = str_replace("\\", "\\\\", $value);
+                    $value = str_replace("_", "\_", $value);
+                    $value = str_replace(" ", "\ ", $value);
+                    $filterTab[] = $value;
+                }
+            }
+        }
+        if (isset($order) && isset($sort) && (strtoupper($sort) == "ASC" || strtoupper($sort) == "DESC")) {
+            $sql .= " ORDER BY $order $sort ";
+        }
+        if (isset($count) && $count != -1) {
+            $sql = $this->db->limit($sql, $count, $offset);
+        }
+        return $this->getResult($sql, $filterTab, "fetchAll");
+    }
 }

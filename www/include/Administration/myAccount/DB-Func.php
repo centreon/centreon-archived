@@ -115,7 +115,7 @@ function updateContactInDB($contact_id = null)
 
 function updateContact($contactId = null)
 {
-    global $form, $pearDB, $centreon, $encryptType, $dependencyInjector;
+    global $form, $pearDB, $centreon, $dependencyInjector;
 
     if (!$contactId) {
         return;
@@ -180,7 +180,7 @@ function updateContact($contactId = null)
 
     if (isset($ret["contact_passwd"]) && !empty($ret["contact_passwd"])) {
         $ret["contact_passwd"] = $ret["contact_passwd2"]
-            = $dependencyInjector['utils']->encodePass($ret["contact_passwd"], 'bcrypt');
+            = $dependencyInjector['utils']->encodePass($ret["contact_passwd"], PASSWORD_BCRYPT);
 
         //Get three last saved password.
         $statement = $pearDB->prepare(
@@ -232,7 +232,8 @@ function validatePasswordModification(array $fields)
     try {
         $statement = $pearDB->query("SELECT * from password_security_policy");
         $statement2 = $pearDB->prepare(
-            "SELECT creation_date FROM contact_password WHERE contact_id = :contactId ORDER BY creation_date DESC LIMIT 1"
+            "SELECT creation_date FROM contact_password " .
+            "WHERE contact_id = :contactId ORDER BY creation_date DESC LIMIT 1"
         );
         $statement2->bindValue(':contactId', $centreon->user->get_id(), \PDO::PARAM_INT);
         $statement2->execute();
@@ -241,9 +242,8 @@ function validatePasswordModification(array $fields)
     }
     $passwordPolicy = $statement->fetch(\PDO::FETCH_ASSOC);
     if ($passwordCreationDate = $statement2->fetchColumn()) {
-        $passwordCreationDate = (int) $passwordCreationDate;
         $delayBeforeNewPassword = (int) $passwordPolicy['delay_before_new_password'];
-        $isPasswordCanBeChanged = $passwordCreationDate + $delayBeforeNewPassword < time();
+        $isPasswordCanBeChanged = (int) $passwordCreationDate + $delayBeforeNewPassword < time();
         if (!$isPasswordCanBeChanged) {
             $errors['contact_passwd'] = _(
                 "You can't change your password because the delay before changing password is not over."

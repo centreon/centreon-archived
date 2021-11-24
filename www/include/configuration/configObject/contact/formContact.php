@@ -89,7 +89,7 @@ $dbResult->closeCursor();
  */
 try {
     $statement = $pearDB->query("SELECT * from password_security_policy");
-} catch(\PDOException $e) {
+} catch (\PDOException $e) {
     return false;
 }
 $passwordPolicy = $statement->fetch(\PDO::FETCH_ASSOC);
@@ -376,13 +376,23 @@ if ($o !== MASSIVE_CHANGE) {
         'password',
         'contact_passwd',
         _("Password"),
-        array("size" => "30", "autocomplete" => "new-password", "id" => "passwd1", "onkeypress" => "resetPwdType(this);")
+        array(
+            "size" => "30",
+            "autocomplete" => "new-password",
+            "id" => "passwd1",
+            "onkeypress" => "resetPwdType(this);"
+        )
     );
     $form->addElement(
         'password',
         'contact_passwd2',
         _("Confirm Password"),
-        array("size" => "30", "autocomplete" => "new-password", "id" => "passwd2", "onkeypress" => "resetPwdType(this);")
+        array(
+            "size" => "30",
+            "autocomplete" => "new-password",
+            "id" => "passwd2",
+            "onkeypress" => "resetPwdType(this);"
+        )
     );
     $form->addElement(
         'button',

@@ -191,7 +191,8 @@ class CentreonAuth
                 $this->passwdOk = $authLDAP->checkPassword();
                 if ($this->passwdOk == -1) {
                     $this->passwdOk = 0;
-                    if (isset($this->userInfos["contact_passwd"])
+                    if (
+                        isset($this->userInfos["contact_passwd"])
                         && password_verify($this->password, $this->userInfos["contact_passwd"])
                     ) {
                         $this->passwdOk = 1;
@@ -202,7 +203,7 @@ class CentreonAuth
                             );
                             $statement->bindValue(
                                 ':password',
-                                $this->dependencyInjector['utils']->encodePass($this->password, 'bcrypt'),
+                                $this->dependencyInjector['utils']->encodePass($this->password, PASSWORD_BCRYPT),
                                 \PDO::PARAM_STR
                             );
                             $statement->bindValue(
@@ -227,7 +228,7 @@ class CentreonAuth
                             );
                             $statement->bindValue(
                                 ':password',
-                                $this->dependencyInjector['utils']->encodePass($this->password, 'bcrypt'),
+                                $this->dependencyInjector['utils']->encodePass($this->password, PASSWORD_BCRYPT),
                                 \PDO::PARAM_STR
                             );
                             $statement->bindValue(
@@ -241,6 +242,8 @@ class CentreonAuth
                                 \PDO::PARAM_INT
                             );
                             $statement->execute();
+
+                        // Update password if LDAP authentication is valid but password not up to date in Centreon.
                         } elseif (!password_verify($this->password, $this->userInfos["contact_passwd"])) {
                             $statement = $this->pearDB->prepare(
                                 "UPDATE contact_password SET password = :newPassword WHERE " .
@@ -248,7 +251,7 @@ class CentreonAuth
                             );
                             $statement->bindValue(
                                 ':newPassword',
-                                $this->dependencyInjector['utils']->encodePass($this->password, 'bcrypt'),
+                                $this->dependencyInjector['utils']->encodePass($this->password, PASSWORD_BCRYPT),
                                 \PDO::PARAM_STR
                             );
                             $statement->bindValue(
@@ -283,12 +286,14 @@ class CentreonAuth
                 && $this->autologin
             ) {
                 $this->passwdOk = 1;
+
+            // Update password from md5 to bcrypt if old md5 password is valid.
             } elseif (
                 !empty($password)
                 && str_starts_with($this->userInfos["contact_passwd"], 'md5__')
                 && $this->userInfos["contact_passwd"] === $this->myCrypt($password)
             ) {
-                $newPassword = $this->dependencyInjector['utils']->encodePass($password, 'bcrypt');
+                $newPassword = $this->dependencyInjector['utils']->encodePass($password, PASSWORD_BCRYPT);
                 $statement = $this->pearDB->prepare(
                     "UPDATE `contact_password` SET password = :newPassword
                     WHERE password = :oldPassword AND contact_id = :contactId"
@@ -298,7 +303,8 @@ class CentreonAuth
                 $statement->bindValue(':contactId', $this->userInfos["contact_id"], \PDO::PARAM_INT);
                 $statement->execute();
                 $this->passwdOk = 1;
-            } elseif (!empty($password)
+            } elseif (
+                !empty($password)
                 && password_verify($password, $this->userInfos["contact_passwd"])
                 && $this->autologin == 0
             ) {
@@ -312,18 +318,21 @@ class CentreonAuth
          * LDAP - fallback
          */
         if ($this->passwdOk == 2) {
-            if ($this->autologin && $this->userInfos["contact_autologin_key"]
+            if (
+                $this->autologin && $this->userInfos["contact_autologin_key"]
                 && $this->userInfos["contact_autologin_key"] === $token
             ) {
                 $this->passwdOk = 1;
-            } elseif (!empty($password)
+            } elseif (
+                !empty($password)
                 && isset($this->userInfos["contact_passwd"])
                 && $this->userInfos["contact_passwd"] === $password && $this->autologin
             ) {
                 $this->passwdOk = 1;
-            } elseif (!empty($password)
+            } elseif (
+                !empty($password)
                 && isset($this->userInfos["contact_passwd"])
-                && $this->userInfos["contact_passwd"] === $this->myCrypt($password)
+                && password_verify($password, $this->userInfos["contact_passwd"])
                 && $this->autologin == 0
             ) {
                 $this->passwdOk = 1;
@@ -380,19 +389,22 @@ class CentreonAuth
             $this->getCryptFunction();
             $this->checkPassword($password, $token);
             if ($this->passwdOk == 1) {
-                if ($this->userInfos["contact_oreon"]
+                if (
+                    $this->userInfos["contact_oreon"]
                     || ($this->userInfos["contact_oreon"] == 0 && $this->source == 'API')
                 ) {
                     $this->CentreonLog->setUID($this->userInfos["contact_id"]);
                     $this->CentreonLog->insertLog(
                         1,
-                        "[" . $this->source . "] [" . $_SERVER["REMOTE_ADDR"] . "] Authentication succeeded for '" . $username . "'"
+                        "[" . $this->source . "] [" . $_SERVER["REMOTE_ADDR"] . "] Authentication succeeded for '" .
+                        $username . "'"
                     );
                 } else {
                     $this->passwdOk = 0;
                     $this->CentreonLog->insertLog(
                         1,
-                        "[" . $this->source . "] [" . $_SERVER["REMOTE_ADDR"] . "] '" . $username . "' is not allowed to reach Centreon"
+                        "[" . $this->source . "] [" . $_SERVER["REMOTE_ADDR"] . "] '" .
+                        $username . "' is not allowed to reach Centreon"
                     );
                     $this->error = _('Your credentials are incorrect.');
                 }
@@ -400,7 +412,8 @@ class CentreonAuth
                 //  Take care before modifying this message pattern as it may break tools such as fail2ban
                 $this->CentreonLog->insertLog(
                     1,
-                    "[" . $this->source . "] [" . $_SERVER["REMOTE_ADDR"] . "] Authentication failed for '" . $username . "'"
+                    "[" . $this->source . "] [" . $_SERVER["REMOTE_ADDR"] . "] Authentication failed for '" .
+                    $username . "'"
                 );
                 $this->error = _('Your credentials are incorrect.');
             }
@@ -439,7 +452,8 @@ class CentreonAuth
                 //  Take care before modifying this message pattern as it may break tools such as fail2ban
                 $this->CentreonLog->insertLog(
                     1,
-                    "[" . $this->source . "] [" . $_SERVER["REMOTE_ADDR"] . "] Authentication failed for '" . $username . "' : not found"
+                    "[" . $this->source . "] [" . $_SERVER["REMOTE_ADDR"] . "] Authentication failed for '" .
+                    $username . "' : not found"
                 );
             }
             $this->error = _('Your credentials are incorrect.');

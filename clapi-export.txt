@@ -1,83 +1,5 @@
 {OBJECT_TYPE};{COMMAND};{PARAMETERS}
-ACLMENU;ADD;test_access-group;test_access-group;
-ACLMENU;SETPARAM;test_access-group;activate;1;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Hosts;Hosts;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Hosts;Host Groups;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Hosts;Templates;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Hosts;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Hosts;Categories;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Services;Services by host;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Services;Services by host group;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Services;Service Groups;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Services;Templates;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Services;Categories;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Services;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Services;Meta Services;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Users;Contacts / Users;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Users;Contact Templates;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Users;Contact Groups;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Users;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Users;Time Periods;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Commands;Checks;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Commands;Notifications;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Commands;Discovery;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Commands;Miscellaneous;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Commands;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Commands;Connectors;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Notifications;Escalations;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Notifications;Hosts;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Notifications;Host Groups;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Notifications;Services;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Notifications;Service Groups;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Notifications;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Notifications;Meta Services;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;SNMP Traps;SNMP Traps;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;SNMP Traps;Manufacturer;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;SNMP Traps;Group;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;SNMP Traps;MIBs;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;SNMP Traps;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;SNMP Traps;Generate;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Knowledge Base;Hosts;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Knowledge Base;Services;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Knowledge Base;Host Templates;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Knowledge Base;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Knowledge Base;Service Templates;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Pollers;Export configuration;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Pollers;Pollers;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Pollers;Engine configuration;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Pollers;Broker configuration;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Pollers;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Pollers;Resources;
-ACLMENU;GRANTRW;test_access-group;0;Administration;Parameters;Centreon UI;
-ACLMENU;GRANTRW;test_access-group;0;Administration;Parameters;Monitoring;
-ACLMENU;GRANTRW;test_access-group;0;Administration;Parameters;Gorgone;
-ACLMENU;GRANTRW;test_access-group;0;Administration;Parameters;My Account;
-ACLMENU;GRANTRW;test_access-group;0;Administration;Parameters;LDAP;
-ACLMENU;GRANTRW;test_access-group;0;Administration;Parameters;RRDTool;
-ACLMENU;GRANTRW;test_access-group;0;Administration;Parameters;Debug;
-ACLMENU;GRANTRW;test_access-group;0;Administration;Parameters;Knowledge Base;
-ACLMENU;GRANTRW;test_access-group;0;Administration;Parameters;Backup;
-ACLMENU;GRANTRW;test_access-group;0;Administration;Parameters;Options;
-ACLMENU;GRANTRW;test_access-group;0;Administration;Parameters;Data;
-ACLMENU;GRANTRW;test_access-group;0;Administration;Parameters;
-ACLMENU;GRANTRW;test_access-group;0;Administration;Parameters;Images;
-ACLMENU;GRANTRW;test_access-group;0;Administration;Extensions;
-ACLMENU;GRANTRW;test_access-group;0;Administration;Extensions;Manager;
-ACLMENU;GRANTRW;test_access-group;0;Administration;ACL;Access Groups;
-ACLMENU;GRANTRW;test_access-group;0;Administration;ACL;Menus Access;
-ACLMENU;GRANTRW;test_access-group;0;Administration;ACL;Resources Access;
-ACLMENU;GRANTRW;test_access-group;0;Administration;ACL;Actions Access;
-ACLMENU;GRANTRW;test_access-group;0;Administration;ACL;
-ACLMENU;GRANTRW;test_access-group;0;Administration;ACL;Reload ACL;
-ACLMENU;GRANTRW;test_access-group;0;Administration;Logs;
-ACLMENU;GRANTRW;test_access-group;0;Administration;Sessions;
-ACLMENU;GRANTRW;test_access-group;0;Administration;About;
-ACLMENU;GRANTRW;test_access-group;0;Administration;Platform Status;Broker Statistics;
-ACLMENU;GRANTRW;test_access-group;0;Administration;Platform Status;Engine Statistics;
-ACLMENU;GRANTRW;test_access-group;0;Administration;
-ACLMENU;GRANTRW;test_access-group;0;Administration;Platform Status;
-ACLMENU;GRANTRW;test_access-group;0;Administration;Platform Status;Databases;
+ACLACTION;ADD;Simple User;Simple User;
 ACLACTION;SETPARAM;Simple User;activate;1;
 ACLACTION;GRANT;Simple User;poller_stats;
 ACLACTION;GRANT;Simple User;top_counter;
@@ -91,8 +13,9 @@ ACLACTION;GRANT;Simple User;host_schedule_check;
 ACLACTION;GRANT;Simple User;host_schedule_forced_check;
 ACLACTION;GRANT;Simple User;host_schedule_downtime;
 ACLACTION;GRANT;Simple User;host_comment;
+INSTANCE;ADD;Central;127.0.0.1;22;1;5556
 INSTANCE;setparam;Central;localhost;1
-INSTANCE;setparam;Central;is_default;0
+INSTANCE;setparam;Central;is_default;1
 INSTANCE;setparam;Central;ns_activate;1
 INSTANCE;setparam;Central;ns_status;0
 INSTANCE;setparam;Central;engine_start_command;service centengine start
@@ -110,6 +33,7 @@ INSTANCE;setparam;Central;init_script_centreontrapd;centreontrapd
 INSTANCE;setparam;Central;snmp_trapd_path_conf;/etc/snmp/centreon_traps/
 INSTANCE;setparam;Central;remote_server_use_as_proxy;1
 INSTANCE;setparam;Central;updated;0
+TP;ADD;24x7;Always
 TP;setparam;24x7;tp_sunday;00:00-24:00
 TP;setparam;24x7;tp_monday;00:00-24:00
 TP;setparam;24x7;tp_tuesday;00:00-24:00
@@ -117,6 +41,8 @@ TP;setparam;24x7;tp_wednesday;00:00-24:00
 TP;setparam;24x7;tp_thursday;00:00-24:00
 TP;setparam;24x7;tp_friday;00:00-24:00
 TP;setparam;24x7;tp_saturday;00:00-24:00
+TP;ADD;none;Never
+TP;ADD;nonworkhours;Non-Work Hours
 TP;setparam;nonworkhours;tp_sunday;00:00-24:00
 TP;setparam;nonworkhours;tp_monday;00:00-09:00,17:00-24:00
 TP;setparam;nonworkhours;tp_tuesday;00:00-09:00,17:00-24:00
@@ -124,57 +50,65 @@ TP;setparam;nonworkhours;tp_wednesday;00:00-09:00,17:00-24:00
 TP;setparam;nonworkhours;tp_thursday;00:00-09:00,17:00-24:00
 TP;setparam;nonworkhours;tp_friday;00:00-09:00,17:00-24:00
 TP;setparam;nonworkhours;tp_saturday;00:00-24:00
+TP;ADD;workhours;Work hours
 TP;setparam;workhours;tp_monday;09:00-17:00
 TP;setparam;workhours;tp_tuesday;09:00-17:00
 TP;setparam;workhours;tp_wednesday;09:00-17:00
 TP;setparam;workhours;tp_thursday;09:00-17:00
 TP;setparam;workhours;tp_friday;09:00-17:00
+VENDOR;ADD;3com;3Com
 VENDOR;setparam;3com;id;3
 VENDOR;setparam;3com;name;3com
 VENDOR;setparam;3com;alias;3Com
+VENDOR;ADD;Cisco;Cisco Networks
 VENDOR;setparam;Cisco;id;1
 VENDOR;setparam;Cisco;name;Cisco
 VENDOR;setparam;Cisco;alias;Cisco Networks
+VENDOR;ADD;Dell;Dell
 VENDOR;setparam;Dell;id;6
 VENDOR;setparam;Dell;name;Dell
 VENDOR;setparam;Dell;alias;Dell
+VENDOR;ADD;Generic;Generic
 VENDOR;setparam;Generic;id;7
 VENDOR;setparam;Generic;name;Generic
 VENDOR;setparam;Generic;alias;Generic
 VENDOR;setparam;Generic;description;References Generic Traps
+VENDOR;ADD;HP;HP Networks
 VENDOR;setparam;HP;id;2
 VENDOR;setparam;HP;name;HP
 VENDOR;setparam;HP;alias;HP Networks
+VENDOR;ADD;HP-Compaq;HP and Compaq Systems
 VENDOR;setparam;HP-Compaq;id;11
 VENDOR;setparam;HP-Compaq;name;HP-Compaq
 VENDOR;setparam;HP-Compaq;alias;HP and Compaq Systems
+VENDOR;ADD;Linksys;Linksys
 VENDOR;setparam;Linksys;id;4
 VENDOR;setparam;Linksys;name;Linksys
 VENDOR;setparam;Linksys;alias;Linksys
+VENDOR;ADD;Zebra;Zebra
 VENDOR;setparam;Zebra;id;9
 VENDOR;setparam;Zebra;name;Zebra
 VENDOR;setparam;Zebra;alias;Zebra
-CMD;ADD;base_centreon_ping;2;$USER1$/check_icmp -H $HOSTADDRESS$ -n $_SERVICEPACKETNUMBER$ -w $_SERVICEWARNING$ -c $_SERVICECRITICAL$
-CMD;setparam;base_centreon_ping;enable_shell;0
-CMD;setparam;base_centreon_ping;command_activate;1
-CMD;setparam;base_centreon_ping;command_locked;0
 CMD;ADD;check_centreon_cpu;2;$USER1$/check_centreon_snmp_cpu -H $HOSTADDRESS$ -v $_HOSTSNMPVERSION$ -C $_HOSTSNMPCOMMUNITY$ -c $ARG1$ -w $ARG2$
 CMD;setparam;check_centreon_cpu;command_example;!80!90
 CMD;setparam;check_centreon_cpu;enable_shell;0
 CMD;setparam;check_centreon_cpu;command_activate;1
 CMD;setparam;check_centreon_cpu;graph;CPU
 CMD;setparam;check_centreon_cpu;command_locked;0
+CMD;setargumentdescr;check_centreon_cpu;ARG1:critical;ARG2:warning
 CMD;ADD;check_centreon_dummy;2;$USER1$/check_centreon_dummy -s $ARG1$ -o $ARG2$
 CMD;setparam;check_centreon_dummy;command_example;!0!OK
 CMD;setparam;check_centreon_dummy;enable_shell;0
 CMD;setparam;check_centreon_dummy;command_activate;1
 CMD;setparam;check_centreon_dummy;command_locked;0
+CMD;setargumentdescr;check_centreon_dummy;ARG1:status;ARG2:output
 CMD;ADD;check_centreon_load_average;2;$USER1$/check_centreon_snmp_loadaverage -H $HOSTADDRESS$ -v $_HOSTSNMPVERSION$ -C $_HOSTSNMPCOMMUNITY$ -w $ARG1$ -c $ARG2$
 CMD;setparam;check_centreon_load_average;command_example;!4,3,2!6,5,4
 CMD;setparam;check_centreon_load_average;enable_shell;0
 CMD;setparam;check_centreon_load_average;command_activate;1
 CMD;setparam;check_centreon_load_average;graph;Load_Average
 CMD;setparam;check_centreon_load_average;command_locked;0
+CMD;setargumentdescr;check_centreon_load_average;ARG1:warning;ARG2:critical
 CMD;ADD;check_centreon_memory;2;$USER1$/check_centreon_snmp_memory -H $HOSTADDRESS$ -v $_HOSTSNMPVERSION$ -C $_HOSTSNMPCOMMUNITY$ -w 80 -c 90
 CMD;setparam;check_centreon_memory;enable_shell;0
 CMD;setparam;check_centreon_memory;command_activate;1
@@ -185,49 +119,58 @@ CMD;setparam;check_centreon_nb_connections;command_example;!80!70!100
 CMD;setparam;check_centreon_nb_connections;enable_shell;0
 CMD;setparam;check_centreon_nb_connections;command_activate;1
 CMD;setparam;check_centreon_nb_connections;command_locked;0
+CMD;setargumentdescr;check_centreon_nb_connections;ARG1:port;ARG2:warning;ARG3:critical
 CMD;ADD;check_centreon_nt;2;$USER1$/check_nt -H $HOSTADDRESS$ -p 12489 -v $ARG1$ -l $ARG2$ -s $ARG3$ -w $ARG4$ -c $ARG5$
 CMD;setparam;check_centreon_nt;enable_shell;0
 CMD;setparam;check_centreon_nt;command_activate;1
 CMD;setparam;check_centreon_nt;command_locked;0
+CMD;setargumentdescr;check_centreon_nt;ARG1:variable;ARG2:params;ARG3:password;ARG4:warning;ARG5:critical
 CMD;ADD;check_centreon_ping;2;$USER1$/check_icmp -H $HOSTADDRESS$ -n $ARG1$ -w $ARG2$ -c $ARG3$
 CMD;setparam;check_centreon_ping;command_example;!3!200,20%!400,50%
 CMD;setparam;check_centreon_ping;enable_shell;0
 CMD;setparam;check_centreon_ping;command_activate;1
 CMD;setparam;check_centreon_ping;graph;Latency
 CMD;setparam;check_centreon_ping;command_locked;0
+CMD;setargumentdescr;check_centreon_ping;ARG1:count;ARG2:warning;ARG3:critical
 CMD;ADD;check_centreon_process;2;$USER1$/check_centreon_snmp_process -H $HOSTADDRESS$ -v $_HOSTSNMPVERSION$ -C $_HOSTSNMPCOMMUNITY$ -n -p $ARG1$ -w $ARG2$ -c $ARG3$
 CMD;setparam;check_centreon_process;command_example;!httpd!warning!critical
 CMD;setparam;check_centreon_process;enable_shell;0
 CMD;setparam;check_centreon_process;command_activate;1
 CMD;setparam;check_centreon_process;command_locked;0
+CMD;setargumentdescr;check_centreon_process;ARG1:process name
 CMD;ADD;check_centreon_remote_storage;2;$USER1$/check_centreon_snmp_remote_storage -H $HOSTADDRESS$ -n -d $ARG1$ -w $ARG2$ -c $ARG3$ -v $_HOSTSNMPVERSION$ -C $_HOSTSNMPCOMMUNITY$
 CMD;setparam;check_centreon_remote_storage;command_example;!/!80!90
 CMD;setparam;check_centreon_remote_storage;enable_shell;0
 CMD;setparam;check_centreon_remote_storage;command_activate;1
 CMD;setparam;check_centreon_remote_storage;graph;Storage
 CMD;setparam;check_centreon_remote_storage;command_locked;0
+CMD;setargumentdescr;check_centreon_remote_storage;ARG1:disk number;ARG2:warning;ARG3:critical
 CMD;ADD;check_centreon_snmp_proc_detailed;2;$USER1$/check_centreon_snmp_process_detailed -H $HOSTADDRESS$ -v $_HOSTSNMPVERSION$ -C $_HOSTSNMPCOMMUNITY$ -n $ARG1$ -m $ARG2$
 CMD;setparam;check_centreon_snmp_proc_detailed;command_example;!apache!20,50
 CMD;setparam;check_centreon_snmp_proc_detailed;enable_shell;0
 CMD;setparam;check_centreon_snmp_proc_detailed;command_activate;1
 CMD;setparam;check_centreon_snmp_proc_detailed;command_locked;0
+CMD;setargumentdescr;check_centreon_snmp_proc_detailed;ARG1:process name;ARG2:memory thresholds
 CMD;ADD;check_centreon_snmp_value;2;$USER1$/check_centreon_snmp_value -H $HOSTADDRESS$ -v $_HOSTSNMPVERSION$ -C $_HOSTSNMPCOMMUNITY$ -o $ARG1$ -w $ARG2$ -c $ARG53
 CMD;setparam;check_centreon_snmp_value;command_example;!1.3.6.1.4.1.705.1.8.1.0!190!210
 CMD;setparam;check_centreon_snmp_value;enable_shell;0
 CMD;setparam;check_centreon_snmp_value;command_activate;1
 CMD;setparam;check_centreon_snmp_value;command_locked;0
+CMD;setargumentdescr;check_centreon_snmp_value;ARG2:OID;ARG3:warning;ARG4:critical
 CMD;ADD;check_centreon_traffic;2;$USER1$/check_centreon_snmp_traffic -H $HOSTADDRESS$ -n -i $ARG1$ -w $ARG2$ -c $ARG3$ -v $_HOSTSNMPVERSION$ -C $_HOSTSNMPCOMMUNITY$
 CMD;setparam;check_centreon_traffic;command_example;!eth0!80!90
 CMD;setparam;check_centreon_traffic;enable_shell;0
 CMD;setparam;check_centreon_traffic;command_activate;1
 CMD;setparam;check_centreon_traffic;graph;Traffic
 CMD;setparam;check_centreon_traffic;command_locked;0
+CMD;setargumentdescr;check_centreon_traffic;ARG1:interface;ARG2:warning;ARG3:critical
 CMD;ADD;check_centreon_traffic_limited;2;$USER1$/check_centreon_snmp_traffic -H $HOSTADDRESS$ -n -i $ARG1$ -w $ARG2$ -c $ARG3$ -T $ARG4$ -v $_HOSTSNMPVERSION$ -C $_HOSTSNMPCOMMUNITY$
 CMD;setparam;check_centreon_traffic_limited;command_example;!eth0!80!90!2
 CMD;setparam;check_centreon_traffic_limited;enable_shell;0
 CMD;setparam;check_centreon_traffic_limited;command_activate;1
 CMD;setparam;check_centreon_traffic_limited;graph;Traffic
 CMD;setparam;check_centreon_traffic_limited;command_locked;0
+CMD;setargumentdescr;check_centreon_traffic_limited;ARG1:interface;ARG2:warning;ARG3:critical;ARG6:Max bandwidth
 CMD;ADD;check_centreon_uptime;2;$USER1$/check_centreon_snmp_uptime -H $HOSTADDRESS$ -v $_HOSTSNMPVERSION$ -C $_HOSTSNMPCOMMUNITY$ -d
 CMD;setparam;check_centreon_uptime;enable_shell;0
 CMD;setparam;check_centreon_uptime;command_activate;1
@@ -237,16 +180,19 @@ CMD;setparam;check_dhcp;command_example;!eth0
 CMD;setparam;check_dhcp;enable_shell;0
 CMD;setparam;check_dhcp;command_activate;1
 CMD;setparam;check_dhcp;command_locked;0
+CMD;setargumentdescr;check_dhcp;ARG1:interface
 CMD;ADD;check_dig;2;$USER1$/check_dig -H $HOSTADDRESS$ -l $ARG1$
 CMD;setparam;check_dig;command_example;!www.centreon-nms.org
 CMD;setparam;check_dig;enable_shell;0
 CMD;setparam;check_dig;command_activate;1
 CMD;setparam;check_dig;command_locked;0
+CMD;setargumentdescr;check_dig;ARG1:query address
 CMD;ADD;check_disk_smb;2;$USER1$/check_disk_smb -H $HOSTADDRESS$ -s $ARG1$ -u $ARG2$ -p $ARG3$ -w $ARG4$ -c $ARG5$
 CMD;setparam;check_disk_smb;command_example;!share!user!passwd!80!90
 CMD;setparam;check_disk_smb;enable_shell;0
 CMD;setparam;check_disk_smb;command_activate;1
 CMD;setparam;check_disk_smb;command_locked;0
+CMD;setargumentdescr;check_disk_smb;ARG1:share;ARG2:user;ARG3:password;ARG4:warning;ARG5:critical
 CMD;ADD;check_distant_disk_space;2;$USER1$/check_distant_disk_space -H $HOSTADDRESS$ -C $ARG1$ -p $ARG2$ -w $ARG3$ -c $ARG4$
 CMD;setparam;check_distant_disk_space;enable_shell;0
 CMD;setparam;check_distant_disk_space;command_activate;1
@@ -255,6 +201,7 @@ CMD;ADD;check_dns;2;$USER1$/check_dns -H $ARG1$ -s $HOSTADDRESS$
 CMD;setparam;check_dns;enable_shell;0
 CMD;setparam;check_dns;command_activate;1
 CMD;setparam;check_dns;command_locked;0
+CMD;setargumentdescr;check_dns;ARG1:hostname
 CMD;ADD;check_ftp;2;$USER1$/check_ftp -H $HOSTADDRESS$
 CMD;setparam;check_ftp;command_example;!127.0.0.1
 CMD;setparam;check_ftp;enable_shell;0
@@ -280,6 +227,7 @@ CMD;ADD;check_load_average;2;$USER1$/check_load $HOSTADDRESS$ -w $ARG1$ -c $ARG2
 CMD;setparam;check_load_average;enable_shell;0
 CMD;setparam;check_load_average;command_activate;1
 CMD;setparam;check_load_average;command_locked;0
+CMD;setargumentdescr;check_load_average;ARG1:warning;ARG2:critical
 CMD;ADD;check_local_cpu_load;2;$USER1$/check_nt -H $HOSTADDRESS$ -v CPULOAD -l $ARG1$ -s $ARG2$
 CMD;setparam;check_local_cpu_load;enable_shell;0
 CMD;setparam;check_local_cpu_load;command_activate;1
@@ -288,27 +236,33 @@ CMD;ADD;check_local_disk;2;$USER1$/check_disk -w $ARG2$ -c $ARG3$ -p $ARG1$
 CMD;setparam;check_local_disk;enable_shell;0
 CMD;setparam;check_local_disk;command_activate;1
 CMD;setparam;check_local_disk;command_locked;0
+CMD;setargumentdescr;check_local_disk;ARG1:path;ARG2:warning;ARG3:critical
 CMD;ADD;check_local_disk_space;2;$USER1$/check_nt -H $HOSTADDRESS$ -v USEDDISKSPACE -l $ARG1$ -w $ARG2$ -c $ARG3$ -s $ARG2$
 CMD;setparam;check_local_disk_space;enable_shell;0
 CMD;setparam;check_local_disk_space;command_activate;1
 CMD;setparam;check_local_disk_space;command_locked;0
+CMD;setargumentdescr;check_local_disk_space;ARG1:drive letter;ARG1:critical;ARG2:warning
 CMD;ADD;check_local_load;2;$USER1$/check_load -w $ARG1$ -c $ARG2$
 CMD;setparam;check_local_load;enable_shell;0
 CMD;setparam;check_local_load;command_activate;1
 CMD;setparam;check_local_load;command_locked;0
+CMD;setargumentdescr;check_local_load;ARG1:warning;ARG2:critical
 CMD;ADD;check_local_procs;2;$USER1$/check_procs -w $ARG1$ -c $ARG2$ -u $ARG3$
 CMD;setparam;check_local_procs;enable_shell;0
 CMD;setparam;check_local_procs;command_activate;1
 CMD;setparam;check_local_procs;command_locked;0
+CMD;setargumentdescr;check_local_procs;ARG1:warning;ARG2:critical;ARG3:process owner
 CMD;ADD;check_local_swap;2;$USER1$/check_swap -w $ARG1$ -c $ARG2$ -v
 CMD;setparam;check_local_swap;command_example;!80!90
 CMD;setparam;check_local_swap;enable_shell;0
 CMD;setparam;check_local_swap;command_activate;1
 CMD;setparam;check_local_swap;command_locked;0
+CMD;setargumentdescr;check_local_swap;ARG1:warning;ARG2:critical
 CMD;ADD;check_local_users;2;$USER1$/check_users -w $ARG1$ -c $ARG2$
 CMD;setparam;check_local_users;enable_shell;0
 CMD;setparam;check_local_users;command_activate;1
 CMD;setparam;check_local_users;command_locked;0
+CMD;setargumentdescr;check_local_users;ARG1:warning;ARG2:critical
 CMD;ADD;check_maxq;2;$USER1$/check_maxq_script_return -r $ARG1$ -P $ARG2$
 CMD;setparam;check_maxq;enable_shell;0
 CMD;setparam;check_maxq;command_activate;1
@@ -327,6 +281,7 @@ CMD;setparam;check_nt_disk;command_example;!12489!C!80!90!public
 CMD;setparam;check_nt_disk;enable_shell;0
 CMD;setparam;check_nt_disk;command_activate;1
 CMD;setparam;check_nt_disk;command_locked;0
+CMD;setargumentdescr;check_nt_disk;ARG1:drive letter;ARG2:warning;ARG3:critical
 CMD;ADD;check_nt_memuse;2;$USER1$/check_nt -H $HOSTADDRESS$ -v MEMUSE -p $ARG1$ -w $ARG2$ -c $ARG3$ -s $ARG4$
 CMD;setparam;check_nt_memuse;command_example;!12489!80!90!public
 CMD;setparam;check_nt_memuse;enable_shell;0
@@ -344,10 +299,12 @@ CMD;ADD;check_snmp;2;$USER1$/check_snmp -H $HOSTADDRESS$ -o $ARG1$ -w $ARG2$ -c 
 CMD;setparam;check_snmp;enable_shell;0
 CMD;setparam;check_snmp;command_activate;1
 CMD;setparam;check_snmp;command_locked;0
+CMD;setargumentdescr;check_snmp;ARG1:OID;ARG2:warning;ARG3:critical
 CMD;ADD;check_tcp;2;$USER1$/check_tcp -H $HOSTADDRESS$ -p $ARG1$ -w $ARG2$ -c $ARG3$
 CMD;setparam;check_tcp;enable_shell;0
 CMD;setparam;check_tcp;command_activate;1
 CMD;setparam;check_tcp;command_locked;0
+CMD;setargumentdescr;check_tcp;ARG1:port;ARG2:warning;ARG3:critical
 CMD;ADD;check_telnet;2;$USER1$/check_tcp -H $HOSTADDRESS$ -p 23
 CMD;setparam;check_telnet;enable_shell;0
 CMD;setparam;check_telnet;command_activate;1
@@ -356,12 +313,16 @@ CMD;ADD;check_udp;2;$USER1$/check_udp -H $HOSTADDRESS$ -p $ARG1$
 CMD;setparam;check_udp;enable_shell;0
 CMD;setparam;check_udp;command_activate;1
 CMD;setparam;check_udp;command_locked;0
+CMD;setargumentdescr;check_udp;ARG1:port
+CMD;ADD;host-notify-by-email;1;/usr/bin/printf &quot;%b&quot; &quot;***** centreon Notification *****#BR##BR#Type:$NOTIFICATIONTYPE$#BR#Host: $HOSTNAME$#BR#State: $HOSTSTATE$#BR#Address: $HOSTADDRESS$#BR#Info: $HOSTOUTPUT$#BR#Date/Time: $DATE$&quot; | @MAILER@ -s &quot;Host $HOSTSTATE$ alert for $HOSTNAME$!&quot; $CONTACTEMAIL$
 CMD;setparam;host-notify-by-email;enable_shell;1
 CMD;setparam;host-notify-by-email;command_activate;1
 CMD;setparam;host-notify-by-email;command_locked;0
+CMD;ADD;host-notify-by-epager;1;/usr/bin/printf &quot;%b&quot; &quot;Host $HOSTALIAS$ is $HOSTSTATE$#BR#Info: $OUTPUT$#BR#Time: $DATETIME$\&quot; | @MAILER@ -s \&quot;$NOTIFICATIONTYPE$ alert - Host $HOSTNAME$ is $HOSTSTATE$\&quot; $CONTACTPAGER$
 CMD;setparam;host-notify-by-epager;enable_shell;1
 CMD;setparam;host-notify-by-epager;command_activate;1
 CMD;setparam;host-notify-by-epager;command_locked;0
+CMD;ADD;host-notify-by-jabber;1;$USER1$/notify_via_jabber  $CONTACTPAGER$ &quot;Host &#039;$HOSTALIAS$&#039; is $HOSTSTATE$ - Info: $HOSTOUTPUT$&quot;
 CMD;setparam;host-notify-by-jabber;enable_shell;0
 CMD;setparam;host-notify-by-jabber;command_activate;1
 CMD;setparam;host-notify-by-jabber;command_locked;0
@@ -369,65 +330,72 @@ CMD;ADD;process-service-perfdata;3;$USER1$/process-service-perfdata  "$LASTSERVI
 CMD;setparam;process-service-perfdata;enable_shell;0
 CMD;setparam;process-service-perfdata;command_activate;1
 CMD;setparam;process-service-perfdata;command_locked;0
+CMD;ADD;service-notify-by-email;1;/usr/bin/printf &quot;%b&quot; &quot;***** centreon Notification *****#BR##BR#Notification Type: $NOTIFICATIONTYPE$#BR##BR#Service: $SERVICEDESC$#BR#Host: $HOSTALIAS$#BR#Address: $HOSTADDRESS$#BR#State: $SERVICESTATE$#BR##BR#Date/Time: $DATE$ Additional Info : $SERVICEOUTPUT$&quot; | @MAILER@ -s &quot;** $NOTIFICATIONTYPE$ alert - $HOSTALIAS$/$SERVICEDESC$ is $SERVICESTATE$ **&quot; $CONTACTEMAIL$
 CMD;setparam;service-notify-by-email;enable_shell;1
 CMD;setparam;service-notify-by-email;command_activate;1
 CMD;setparam;service-notify-by-email;command_locked;0
+CMD;ADD;service-notify-by-epager;1;/usr/bin/printf &quot;%b&quot; &quot;Service: $SERVICEDESC$#BR#Host: $HOSTNAME$#BR#Address: $HOSTADDRESS$#BR#State: $SERVICESTATE$#BR#Info: $OUTPUT$#BR#Date: $DATETIME$&quot; | @MAILER@ -s &quot;$NOTIFICATIONTYPE$: $HOSTALIAS$/$SERVICEDESC$ is $SERVICESTATE$&quot; $CONTACTPAGER$
 CMD;setparam;service-notify-by-epager;enable_shell;1
 CMD;setparam;service-notify-by-epager;command_activate;1
 CMD;setparam;service-notify-by-epager;command_locked;0
+CMD;ADD;service-notify-by-jabber;1;$USER1$/notify_via_jabber $CONTACTPAGER$ &quot;$NOTIFICATIONTYPE$ $HOSTNAME$ $SERVICEDESC$ $SERVICESTATE$ $SERVICEOUTPUT$ $LONGDATETIME$&quot;
 CMD;setparam;service-notify-by-jabber;enable_shell;0
 CMD;setparam;service-notify-by-jabber;command_activate;1
 CMD;setparam;service-notify-by-jabber;command_locked;0
-CMD;ADD;submit-host-check-result;3;$USER1$/submit_host_check_result $HOSTNAME$ $HOSTSTATE$ &#039
+CMD;ADD;submit-host-check-result;3;$USER1$/submit_host_check_result $HOSTNAME$ $HOSTSTATE$ &#039;$HOSTOUTPUT$&#039;
 CMD;setparam;submit-host-check-result;enable_shell;0
 CMD;setparam;submit-host-check-result;command_activate;1
 CMD;setparam;submit-host-check-result;command_locked;0
-CMD;ADD;submit-service-check-result;3;$USER1$/submit_service_check_result $HOSTNAME$ $SERVICEDESC$ $SERVICESTATE$ &#039
+CMD;ADD;submit-service-check-result;3;$USER1$/submit_service_check_result $HOSTNAME$ $SERVICEDESC$ $SERVICESTATE$ &#039;$SERVICEOUTPUT$&#039;
 CMD;setparam;submit-service-check-result;enable_shell;0
 CMD;setparam;submit-service-check-result;command_activate;1
 CMD;setparam;submit-service-check-result;command_locked;0
+RESOURCECFG;ADD;$CENTREONPLUGINS$;/usr/lib/centreon/plugins;Central;Centreon Plugins Path
 RESOURCECFG;setparam;2;activate;1
+RESOURCECFG;ADD;$USER1$;/usr/lib64/nagios/plugins;Central;Nagios Plugins Path
 RESOURCECFG;setparam;1;activate;1
+CENTBROKERCFG;ADD;central-broker-master;Central
 CENTBROKERCFG;SETPARAM;central-broker-master;filename;central-broker.json
 CENTBROKERCFG;SETPARAM;central-broker-master;cache_directory;/var/lib/centreon-broker
 CENTBROKERCFG;SETPARAM;central-broker-master;stats_activate;1
 CENTBROKERCFG;SETPARAM;central-broker-master;daemon;1
 CENTBROKERCFG;SETPARAM;central-broker-master;pool_size;
-CENTBROKERCFG;SETINPUT;central-broker-master;0;negotiation;yes
+CENTBROKERCFG;ADDINPUT;central-broker-master;central-broker-master-input;ipv4
 CENTBROKERCFG;SETINPUT;central-broker-master;0;port;5669
-CENTBROKERCFG;SETINPUT;central-broker-master;0;retry_interval;60
 CENTBROKERCFG;SETINPUT;central-broker-master;0;buffering_timeout;0
+CENTBROKERCFG;SETINPUT;central-broker-master;0;retry_interval;5
 CENTBROKERCFG;SETINPUT;central-broker-master;0;protocol;bbdo
-CENTBROKERCFG;SETINPUT;central-broker-master;0;tls;no
+CENTBROKERCFG;SETINPUT;central-broker-master;0;tls;auto
+CENTBROKERCFG;SETINPUT;central-broker-master;0;negotiation;yes
 CENTBROKERCFG;SETINPUT;central-broker-master;0;one_peer_retention_mode;no
-CENTBROKERCFG;SETINPUT;central-broker-master;0;compression;no
+CENTBROKERCFG;SETINPUT;central-broker-master;0;compression;auto
+CENTBROKERCFG;SETINPUT;central-broker-master;0;type;ipv4
+CENTBROKERCFG;ADDOUTPUT;central-broker-master;central-broker-master-sql;sql
 CENTBROKERCFG;SETOUTPUT;central-broker-master;0;db_type;mysql
+CENTBROKERCFG;SETOUTPUT;central-broker-master;0;retry_interval;5
+CENTBROKERCFG;SETOUTPUT;central-broker-master;0;buffering_timeout;0
 CENTBROKERCFG;SETOUTPUT;central-broker-master;0;db_host;localhost
 CENTBROKERCFG;SETOUTPUT;central-broker-master;0;db_port;3306
 CENTBROKERCFG;SETOUTPUT;central-broker-master;0;db_user;centreon
 CENTBROKERCFG;SETOUTPUT;central-broker-master;0;db_password;centreon
 CENTBROKERCFG;SETOUTPUT;central-broker-master;0;db_name;centreon_storage
-CENTBROKERCFG;SETOUTPUT;central-broker-master;0;retry_interval;60
-CENTBROKERCFG;SETOUTPUT;central-broker-master;0;buffering_timeout;0
-CENTBROKERCFG;ADDLOGGER;central-broker-master;/var/log/centreon-broker/central-broker-master.log;file
-CENTBROKERCFG;SETLOGGER;central-broker-master;0;config;yes
-CENTBROKERCFG;SETLOGGER;central-broker-master;0;debug;no
-CENTBROKERCFG;SETLOGGER;central-broker-master;0;error;yes
-CENTBROKERCFG;SETLOGGER;central-broker-master;0;info;no
-CENTBROKERCFG;SETLOGGER;central-broker-master;0;level;low
-CENTBROKERCFG;SETOUTPUT;central-broker-master;1;one_peer_retention_mode;no
-CENTBROKERCFG;SETOUTPUT;central-broker-master;1;negotiation;yes
+CENTBROKERCFG;SETOUTPUT;central-broker-master;0;queries_per_transaction;1
+CENTBROKERCFG;SETOUTPUT;central-broker-master;0;read_timeout;1
+CENTBROKERCFG;SETOUTPUT;central-broker-master;0;type;sql
+CENTBROKERCFG;ADDOUTPUT;central-broker-master;centreon-broker-master-rrd;ipv4
 CENTBROKERCFG;SETOUTPUT;central-broker-master;1;port;5670
+CENTBROKERCFG;SETOUTPUT;central-broker-master;1;buffering_timeout;0
 CENTBROKERCFG;SETOUTPUT;central-broker-master;1;host;localhost
+CENTBROKERCFG;SETOUTPUT;central-broker-master;1;retry_interval;5
 CENTBROKERCFG;SETOUTPUT;central-broker-master;1;protocol;bbdo
 CENTBROKERCFG;SETOUTPUT;central-broker-master;1;tls;no
+CENTBROKERCFG;SETOUTPUT;central-broker-master;1;negotiation;yes
+CENTBROKERCFG;SETOUTPUT;central-broker-master;1;one_peer_retention_mode;no
 CENTBROKERCFG;SETOUTPUT;central-broker-master;1;compression;no
-CENTBROKERCFG;SETOUTPUT;central-broker-master;1;retry_interval;60
-CENTBROKERCFG;SETOUTPUT;central-broker-master;1;buffering_timeout;0
-CENTBROKERCFG;SETOUTPUT;central-broker-master;2;store_in_data_bin;yes
-CENTBROKERCFG;SETOUTPUT;central-broker-master;2;insert_in_index_data;1
+CENTBROKERCFG;SETOUTPUT;central-broker-master;1;type;ipv4
+CENTBROKERCFG;ADDOUTPUT;central-broker-master;central-broker-master-perfdata;storage
 CENTBROKERCFG;SETOUTPUT;central-broker-master;2;interval;60
-CENTBROKERCFG;SETOUTPUT;central-broker-master;2;retry_interval;60
+CENTBROKERCFG;SETOUTPUT;central-broker-master;2;retry_interval;5
 CENTBROKERCFG;SETOUTPUT;central-broker-master;2;buffering_timeout;0
 CENTBROKERCFG;SETOUTPUT;central-broker-master;2;length;15552000
 CENTBROKERCFG;SETOUTPUT;central-broker-master;2;db_type;mysql
@@ -436,47 +404,54 @@ CENTBROKERCFG;SETOUTPUT;central-broker-master;2;db_port;3306
 CENTBROKERCFG;SETOUTPUT;central-broker-master;2;db_user;centreon
 CENTBROKERCFG;SETOUTPUT;central-broker-master;2;db_password;centreon
 CENTBROKERCFG;SETOUTPUT;central-broker-master;2;db_name;centreon_storage
+CENTBROKERCFG;SETOUTPUT;central-broker-master;2;queries_per_transaction;1
+CENTBROKERCFG;SETOUTPUT;central-broker-master;2;read_timeout;1
 CENTBROKERCFG;SETOUTPUT;central-broker-master;2;check_replication;no
+CENTBROKERCFG;SETOUTPUT;central-broker-master;2;store_in_data_bin;yes
+CENTBROKERCFG;SETOUTPUT;central-broker-master;2;insert_in_index_data;1
+CENTBROKERCFG;SETOUTPUT;central-broker-master;2;type;storage
+CENTBROKERCFG;ADD;central-module-master;Central
 CENTBROKERCFG;SETPARAM;central-module-master;filename;central-module.json
 CENTBROKERCFG;SETPARAM;central-module-master;cache_directory;/var/lib/centreon-engine
 CENTBROKERCFG;SETPARAM;central-module-master;stats_activate;1
 CENTBROKERCFG;SETPARAM;central-module-master;daemon;0
 CENTBROKERCFG;SETPARAM;central-module-master;pool_size;
-CENTBROKERCFG;SETOUTPUT;central-module-master;0;negotiation;yes
-CENTBROKERCFG;SETOUTPUT;central-module-master;0;one_peer_retention_mode;no
+CENTBROKERCFG;ADDOUTPUT;central-module-master;central-module-master-output;ipv4
 CENTBROKERCFG;SETOUTPUT;central-module-master;0;port;5669
 CENTBROKERCFG;SETOUTPUT;central-module-master;0;host;localhost
-CENTBROKERCFG;SETOUTPUT;central-module-master;0;retry_interval;60
+CENTBROKERCFG;SETOUTPUT;central-module-master;0;retry_interval;5
 CENTBROKERCFG;SETOUTPUT;central-module-master;0;buffering_timeout;0
 CENTBROKERCFG;SETOUTPUT;central-module-master;0;protocol;bbdo
 CENTBROKERCFG;SETOUTPUT;central-module-master;0;tls;no
+CENTBROKERCFG;SETOUTPUT;central-module-master;0;negotiation;yes
+CENTBROKERCFG;SETOUTPUT;central-module-master;0;one_peer_retention_mode;no
 CENTBROKERCFG;SETOUTPUT;central-module-master;0;compression;no
-CENTBROKERCFG;ADDLOGGER;central-module-master;/var/log/centreon-broker/central-module-master.log;file
-CENTBROKERCFG;SETLOGGER;central-module-master;0;config;yes
-CENTBROKERCFG;SETLOGGER;central-module-master;0;debug;no
-CENTBROKERCFG;SETLOGGER;central-module-master;0;error;yes
-CENTBROKERCFG;SETLOGGER;central-module-master;0;info;no
-CENTBROKERCFG;SETLOGGER;central-module-master;0;level;low
+CENTBROKERCFG;SETOUTPUT;central-module-master;0;type;ipv4
+CENTBROKERCFG;ADD;central-rrd-master;Central
 CENTBROKERCFG;SETPARAM;central-rrd-master;filename;central-rrd.json
 CENTBROKERCFG;SETPARAM;central-rrd-master;cache_directory;/var/lib/centreon-broker
 CENTBROKERCFG;SETPARAM;central-rrd-master;stats_activate;1
 CENTBROKERCFG;SETPARAM;central-rrd-master;daemon;1
 CENTBROKERCFG;SETPARAM;central-rrd-master;pool_size;
-CENTBROKERCFG;SETINPUT;central-rrd-master;0;one_peer_retention_mode;no
-CENTBROKERCFG;SETINPUT;central-rrd-master;0;negotiation;yes
+CENTBROKERCFG;ADDINPUT;central-rrd-master;central-rrd-master-input;ipv4
 CENTBROKERCFG;SETINPUT;central-rrd-master;0;port;5670
 CENTBROKERCFG;SETINPUT;central-rrd-master;0;buffering_timeout;0
-CENTBROKERCFG;SETINPUT;central-rrd-master;0;retry_interval;60
+CENTBROKERCFG;SETINPUT;central-rrd-master;0;retry_interval;5
 CENTBROKERCFG;SETINPUT;central-rrd-master;0;protocol;bbdo
 CENTBROKERCFG;SETINPUT;central-rrd-master;0;tls;auto
+CENTBROKERCFG;SETINPUT;central-rrd-master;0;negotiation;yes
+CENTBROKERCFG;SETINPUT;central-rrd-master;0;one_peer_retention_mode;no
 CENTBROKERCFG;SETINPUT;central-rrd-master;0;compression;auto
+CENTBROKERCFG;SETINPUT;central-rrd-master;0;type;ipv4
+CENTBROKERCFG;ADDOUTPUT;central-rrd-master;central-rrd-master-output;rrd
 CENTBROKERCFG;SETOUTPUT;central-rrd-master;0;metrics_path;/var/lib/centreon/metrics
 CENTBROKERCFG;SETOUTPUT;central-rrd-master;0;status_path;/var/lib/centreon/status
-CENTBROKERCFG;SETOUTPUT;central-rrd-master;0;retry_interval;60
+CENTBROKERCFG;SETOUTPUT;central-rrd-master;0;retry_interval;5
 CENTBROKERCFG;SETOUTPUT;central-rrd-master;0;buffering_timeout;0
-CENTBROKERCFG;SETOUTPUT;central-rrd-master;0;store_in_data_bin;yes
 CENTBROKERCFG;SETOUTPUT;central-rrd-master;0;write_metrics;yes
 CENTBROKERCFG;SETOUTPUT;central-rrd-master;0;write_status;yes
+CENTBROKERCFG;SETOUTPUT;central-rrd-master;0;type;rrd
+ENGINECFG;ADD;Centreon Engine Central;Central;Centreon Engine
 ENGINECFG;setparam;Centreon Engine Central;log_file;/var/log/centreon-engine/centengine.log
 ENGINECFG;setparam;Centreon Engine Central;cfg_dir;/etc/centreon-engine
 ENGINECFG;setparam;Centreon Engine Central;temp_file;/var/log/centreon-engine/centengine.tmp
@@ -507,12 +482,12 @@ ENGINECFG;setparam;Centreon Engine Central;log_host_retries;1
 ENGINECFG;setparam;Centreon Engine Central;log_event_handlers;1
 ENGINECFG;setparam;Centreon Engine Central;log_external_commands;1
 ENGINECFG;setparam;Centreon Engine Central;log_passive_checks;2
-ENGINECFG;setparam;Centreon Engine Central;sleep_time;0.2
+ENGINECFG;setparam;Centreon Engine Central;sleep_time;1
 ENGINECFG;setparam;Centreon Engine Central;service_inter_check_delay_method;s
 ENGINECFG;setparam;Centreon Engine Central;host_inter_check_delay_method;s
 ENGINECFG;setparam;Centreon Engine Central;service_interleave_factor;s
-ENGINECFG;setparam;Centreon Engine Central;max_concurrent_checks;400
-ENGINECFG;setparam;Centreon Engine Central;max_service_check_spread;5
+ENGINECFG;setparam;Centreon Engine Central;max_concurrent_checks;0
+ENGINECFG;setparam;Centreon Engine Central;max_service_check_spread;15
 ENGINECFG;setparam;Centreon Engine Central;max_host_check_spread;15
 ENGINECFG;setparam;Centreon Engine Central;check_result_reaper_frequency;5
 ENGINECFG;setparam;Centreon Engine Central;interval_length;60
@@ -562,9 +537,7 @@ ENGINECFG;setparam;Centreon Engine Central;cfg_file;centengine.cfg
 ENGINECFG;setparam;Centreon Engine Central;log_pid;1
 ENGINECFG;setparam;Centreon Engine Central;enable_macros_filter;0
 ENGINECFG;setparam;Centreon Engine Central;broker_module;/usr/lib64/centreon-engine/externalcmd.so|/usr/lib64/nagios/cbmod.so /etc/centreon-broker/central-module.json
-CONTACTTPL;ADD;contact_template;contact_template;;$2y$10$Yf78oIppk6wC7hMtDd0TKeXByb1kVD5IGvAEF/g.F4KtiMSbXvpT.;0;1;;local
-CONTACTTPL;setparam;contact_template;hostnotifopt;n
-CONTACTTPL;setparam;contact_template;servicenotifopt;n
+CONTACTTPL;ADD;contact_template;contact_template;;;0;;browser;local
 CONTACTTPL;setparam;contact_template;timezone;0
 CONTACTTPL;setparam;contact_template;reach_api;0
 CONTACTTPL;setparam;contact_template;reach_api_rt;0
@@ -575,20 +548,7 @@ CONTACTTPL;setparam;contact_template;show_deprecated_pages;0
 CONTACTTPL;setparam;contact_template;contact_ldap_last_sync;0
 CONTACTTPL;setparam;contact_template;contact_ldap_required_sync;0
 CONTACTTPL;setparam;contact_template;enable_one_click_export;0
-CONTACTTPL;ADD;test_name;test_contact-template;;$2y$10$BqnZdxhI2wz1Ot/exXd73eOngqA2RPeBmjxSSyEzSygFXo3L9guAW;0;1;;local
-CONTACTTPL;setparam;test_contact-template;hostnotifopt;n
-CONTACTTPL;setparam;test_contact-template;servicenotifopt;n
-CONTACTTPL;setparam;test_contact-template;timezone;0
-CONTACTTPL;setparam;test_contact-template;reach_api;0
-CONTACTTPL;setparam;test_contact-template;reach_api_rt;0
-CONTACTTPL;setparam;test_contact-template;contact_enable_notifications;0
-CONTACTTPL;setparam;test_contact-template;contact_type_msg;txt
-CONTACTTPL;setparam;test_contact-template;contact_activate;1
-CONTACTTPL;setparam;test_contact-template;show_deprecated_pages;0
-CONTACTTPL;setparam;test_contact-template;contact_ldap_last_sync;0
-CONTACTTPL;setparam;test_contact-template;contact_ldap_required_sync;0
-CONTACTTPL;setparam;test_contact-template;enable_one_click_export;0
-CONTACT;ADD;admin admin;admin;admin@centreon.com;$2y$10$kBoz3kL/8kIe8BGStjH67uW7xX060pbypSKcnLfGDYu.FPuShgsKS;1;1;en_US.UTF-8;local
+CONTACT;ADD;admin admin;admin;admin@centreon.com;$2y$10$N3j.O9U4xEFfJMfB/g3qo.XOR/Ea7FDV418dIOyavB3EXMPshCCl6;1;1;en_US.UTF-8;local
 CONTACT;setparam;admin;hostnotifperiod;24x7
 CONTACT;setparam;admin;svcnotifperiod;24x7
 CONTACT;setparam;admin;hostnotifopt;n
@@ -603,9 +563,12 @@ CONTACT;setparam;admin;show_deprecated_pages;0
 CONTACT;setparam;admin;contact_ldap_last_sync;0
 CONTACT;setparam;admin;contact_ldap_required_sync;0
 CONTACT;setparam;admin;enable_one_click_export;0
+CONTACT;setparam;admin;id;1
+CONTACT;setparam;admin;password;$2y$10$N3j.O9U4xEFfJMfB/g3qo.XOR/Ea7FDV418dIOyavB3EXMPshCCl6
+CONTACT;setparam;admin;creation_date;1638194730
 CONTACT;setparam;admin;hostnotifcmd;host-notify-by-email
 CONTACT;setparam;admin;svcnotifcmd;service-notify-by-email
-CONTACT;ADD;Guest;guest;guest@localhost;$2y$10$PktpVP.m4EWXkblTgNDqu.qNLwXrASiS8E0.d8E9giKzAhvSBH/5a;0;0;en_US.UTF-8;local
+CONTACT;ADD;Guest;guest;guest@localhost;;0;0;en_US.UTF-8;local
 CONTACT;setparam;guest;hostnotifperiod;24x7
 CONTACT;setparam;guest;svcnotifperiod;24x7
 CONTACT;setparam;guest;hostnotifopt;n
@@ -620,35 +583,7 @@ CONTACT;setparam;guest;show_deprecated_pages;0
 CONTACT;setparam;guest;contact_ldap_last_sync;0
 CONTACT;setparam;guest;contact_ldap_required_sync;0
 CONTACT;setparam;guest;enable_one_click_export;0
-CONTACT;setparam;guest;hostnotifcmd;host-notify-by-email
-CONTACT;setparam;guest;svcnotifcmd;service-notify-by-email
-CONTACT;ADD;Jean-Pierre;jeanpierre;Jean-Pierre@hotmail.fr;$2y$10$xRDrrYnB0.ZcN2cWq7idOeFKfzwTQXm3b0xh6TuYUxI8ctVE98ddy;0;1;browser;local
-CONTACT;setparam;jeanpierre;hostnotifopt;n
-CONTACT;setparam;jeanpierre;servicenotifopt;n
-CONTACT;setparam;jeanpierre;timezone;0
-CONTACT;setparam;jeanpierre;reach_api;0
-CONTACT;setparam;jeanpierre;reach_api_rt;0
-CONTACT;setparam;jeanpierre;contact_enable_notifications;2
-CONTACT;setparam;jeanpierre;contact_type_msg;txt
-CONTACT;setparam;jeanpierre;contact_activate;1
-CONTACT;setparam;jeanpierre;show_deprecated_pages;0
-CONTACT;setparam;jeanpierre;contact_ldap_last_sync;0
-CONTACT;setparam;jeanpierre;contact_ldap_required_sync;0
-CONTACT;setparam;jeanpierre;enable_one_click_export;0
-CONTACT;ADD;test_contact;test_contact;test@localhost;$2y$10$HcwRGF.oU8k9sfm9Vpp7eOlrNHomq4RuNLqhTQcnqDNfAPBe44wGK;0;0;en_US.UTF-8;local
-CONTACT;setparam;test_contact;hostnotifopt;n
-CONTACT;setparam;test_contact;servicenotifopt;n
-CONTACT;setparam;test_contact;timezone;0
-CONTACT;setparam;test_contact;reach_api;0
-CONTACT;setparam;test_contact;reach_api_rt;0
-CONTACT;setparam;test_contact;contact_enable_notifications;0
-CONTACT;setparam;test_contact;contact_type_msg;txt
-CONTACT;setparam;test_contact;contact_activate;1
-CONTACT;setparam;test_contact;show_deprecated_pages;0
-CONTACT;setparam;test_contact;contact_ldap_last_sync;0
-CONTACT;setparam;test_contact;contact_ldap_required_sync;0
-CONTACT;setparam;test_contact;enable_one_click_export;0
-CONTACT;ADD;User;user;user@localhost;$2y$10$Da/IX.qnrwXwu7JJe04JWOJOdTUmqicml7B56wZDyZd6ohZJfOKKm;0;0;en_US.UTF-8;local
+CONTACT;ADD;User;user;user@localhost;;0;0;en_US.UTF-8;local
 CONTACT;setparam;user;hostnotifperiod;24x7
 CONTACT;setparam;user;svcnotifperiod;24x7
 CONTACT;setparam;user;hostnotifopt;n
@@ -663,13 +598,11 @@ CONTACT;setparam;user;show_deprecated_pages;0
 CONTACT;setparam;user;contact_ldap_last_sync;0
 CONTACT;setparam;user;contact_ldap_required_sync;0
 CONTACT;setparam;user;enable_one_click_export;0
-CONTACT;setparam;user;hostnotifcmd;host-notify-by-email
-CONTACT;setparam;user;svcnotifcmd;service-notify-by-email
 TRAP;ADD;adDiagCancelled;.1.3.6.1.4.1.674.10893.1.1.200.0.537
 TRAP;setparam;adDiagCancelled;traps_name;adDiagCancelled
 TRAP;setparam;adDiagCancelled;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.537
 TRAP;setparam;adDiagCancelled;traps_mode;0
-TRAP;setparam;adDiagCancelled;traps_args;Array Manager Event: Array Disk diagnostics cancelled:
+TRAP;setparam;adDiagCancelled;traps_args;Array Manager Event: Array Disk diagnostics cancelled: 
 TRAP;setparam;adDiagCancelled;traps_status;1
 TRAP;setparam;adDiagCancelled;vendor;Dell
 TRAP;setparam;adDiagCancelled;traps_reschedule_svc_enable;0
@@ -687,7 +620,7 @@ TRAP;ADD;adDiagCompleted;.1.3.6.1.4.1.674.10893.1.1.200.0.555
 TRAP;setparam;adDiagCompleted;traps_name;adDiagCompleted
 TRAP;setparam;adDiagCompleted;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.555
 TRAP;setparam;adDiagCompleted;traps_mode;0
-TRAP;setparam;adDiagCompleted;traps_args;Array Manager Event: Array Disk diagnostics completed:
+TRAP;setparam;adDiagCompleted;traps_args;Array Manager Event: Array Disk diagnostics completed: 
 TRAP;setparam;adDiagCompleted;traps_status;0
 TRAP;setparam;adDiagCompleted;vendor;Dell
 TRAP;setparam;adDiagCompleted;traps_reschedule_svc_enable;0
@@ -705,7 +638,7 @@ TRAP;ADD;adDiagFailed;.1.3.6.1.4.1.674.10893.1.1.200.0.546
 TRAP;setparam;adDiagFailed;traps_name;adDiagFailed
 TRAP;setparam;adDiagFailed;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.546
 TRAP;setparam;adDiagFailed;traps_mode;0
-TRAP;setparam;adDiagFailed;traps_args;Array Manager Event: Array Disk diagnostics failed:
+TRAP;setparam;adDiagFailed;traps_args;Array Manager Event: Array Disk diagnostics failed: 
 TRAP;setparam;adDiagFailed;traps_status;3
 TRAP;setparam;adDiagFailed;vendor;Dell
 TRAP;setparam;adDiagFailed;traps_reschedule_svc_enable;0
@@ -723,7 +656,7 @@ TRAP;ADD;adDiagStarted;.1.3.6.1.4.1.674.10893.1.1.200.0.528
 TRAP;setparam;adDiagStarted;traps_name;adDiagStarted
 TRAP;setparam;adDiagStarted;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.528
 TRAP;setparam;adDiagStarted;traps_mode;0
-TRAP;setparam;adDiagStarted;traps_args;Array Manager Event: Array Disk diagnostics started:
+TRAP;setparam;adDiagStarted;traps_args;Array Manager Event: Array Disk diagnostics started: 
 TRAP;setparam;adDiagStarted;traps_status;1
 TRAP;setparam;adDiagStarted;vendor;Dell
 TRAP;setparam;adDiagStarted;traps_reschedule_svc_enable;0
@@ -741,7 +674,7 @@ TRAP;ADD;adFormatCancelled;.1.3.6.1.4.1.674.10893.1.1.200.0.531
 TRAP;setparam;adFormatCancelled;traps_name;adFormatCancelled
 TRAP;setparam;adFormatCancelled;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.531
 TRAP;setparam;adFormatCancelled;traps_mode;0
-TRAP;setparam;adFormatCancelled;traps_args;Array Manager Event: Array Disk format cancelled:
+TRAP;setparam;adFormatCancelled;traps_args;Array Manager Event: Array Disk format cancelled: 
 TRAP;setparam;adFormatCancelled;traps_status;1
 TRAP;setparam;adFormatCancelled;vendor;Dell
 TRAP;setparam;adFormatCancelled;traps_reschedule_svc_enable;0
@@ -759,7 +692,7 @@ TRAP;ADD;adFormatCompleted;.1.3.6.1.4.1.674.10893.1.1.200.0.549
 TRAP;setparam;adFormatCompleted;traps_name;adFormatCompleted
 TRAP;setparam;adFormatCompleted;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.549
 TRAP;setparam;adFormatCompleted;traps_mode;0
-TRAP;setparam;adFormatCompleted;traps_args;Array Manager Event: Array Disk format completed:
+TRAP;setparam;adFormatCompleted;traps_args;Array Manager Event: Array Disk format completed: 
 TRAP;setparam;adFormatCompleted;traps_status;0
 TRAP;setparam;adFormatCompleted;vendor;Dell
 TRAP;setparam;adFormatCompleted;traps_reschedule_svc_enable;0
@@ -777,7 +710,7 @@ TRAP;ADD;adFormatFailed;.1.3.6.1.4.1.674.10893.1.1.200.0.540
 TRAP;setparam;adFormatFailed;traps_name;adFormatFailed
 TRAP;setparam;adFormatFailed;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.540
 TRAP;setparam;adFormatFailed;traps_mode;0
-TRAP;setparam;adFormatFailed;traps_args;Array Manager Event: Array Disk format failed:
+TRAP;setparam;adFormatFailed;traps_args;Array Manager Event: Array Disk format failed: 
 TRAP;setparam;adFormatFailed;traps_status;3
 TRAP;setparam;adFormatFailed;vendor;Dell
 TRAP;setparam;adFormatFailed;traps_reschedule_svc_enable;0
@@ -795,7 +728,7 @@ TRAP;ADD;adFormatStarted;.1.3.6.1.4.1.674.10893.1.1.200.0.522
 TRAP;setparam;adFormatStarted;traps_name;adFormatStarted
 TRAP;setparam;adFormatStarted;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.522
 TRAP;setparam;adFormatStarted;traps_mode;0
-TRAP;setparam;adFormatStarted;traps_args;Array Manager Event: Array Disk format started:
+TRAP;setparam;adFormatStarted;traps_args;Array Manager Event: Array Disk format started: 
 TRAP;setparam;adFormatStarted;traps_status;1
 TRAP;setparam;adFormatStarted;vendor;Dell
 TRAP;setparam;adFormatStarted;traps_reschedule_svc_enable;0
@@ -813,7 +746,7 @@ TRAP;ADD;adInitializeCancelled;.1.3.6.1.4.1.674.10893.1.1.200.0.533
 TRAP;setparam;adInitializeCancelled;traps_name;adInitializeCancelled
 TRAP;setparam;adInitializeCancelled;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.533
 TRAP;setparam;adInitializeCancelled;traps_mode;0
-TRAP;setparam;adInitializeCancelled;traps_args;Array Manager Event: Array Disk initialize cancelled:
+TRAP;setparam;adInitializeCancelled;traps_args;Array Manager Event: Array Disk initialize cancelled: 
 TRAP;setparam;adInitializeCancelled;traps_status;1
 TRAP;setparam;adInitializeCancelled;vendor;Dell
 TRAP;setparam;adInitializeCancelled;traps_reschedule_svc_enable;0
@@ -831,7 +764,7 @@ TRAP;ADD;adInitializeCompleted;.1.3.6.1.4.1.674.10893.1.1.200.0.551
 TRAP;setparam;adInitializeCompleted;traps_name;adInitializeCompleted
 TRAP;setparam;adInitializeCompleted;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.551
 TRAP;setparam;adInitializeCompleted;traps_mode;0
-TRAP;setparam;adInitializeCompleted;traps_args;Array Manager Event: Array Disk initialize completed:
+TRAP;setparam;adInitializeCompleted;traps_args;Array Manager Event: Array Disk initialize completed: 
 TRAP;setparam;adInitializeCompleted;traps_status;0
 TRAP;setparam;adInitializeCompleted;vendor;Dell
 TRAP;setparam;adInitializeCompleted;traps_reschedule_svc_enable;0
@@ -849,7 +782,7 @@ TRAP;ADD;adInitializeFailed;.1.3.6.1.4.1.674.10893.1.1.200.0.542
 TRAP;setparam;adInitializeFailed;traps_name;adInitializeFailed
 TRAP;setparam;adInitializeFailed;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.542
 TRAP;setparam;adInitializeFailed;traps_mode;0
-TRAP;setparam;adInitializeFailed;traps_args;Array Manager Event: Array Disk initialize failed:
+TRAP;setparam;adInitializeFailed;traps_args;Array Manager Event: Array Disk initialize failed: 
 TRAP;setparam;adInitializeFailed;traps_status;3
 TRAP;setparam;adInitializeFailed;vendor;Dell
 TRAP;setparam;adInitializeFailed;traps_reschedule_svc_enable;0
@@ -867,7 +800,7 @@ TRAP;ADD;adInitializeStarted;.1.3.6.1.4.1.674.10893.1.1.200.0.524
 TRAP;setparam;adInitializeStarted;traps_name;adInitializeStarted
 TRAP;setparam;adInitializeStarted;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.524
 TRAP;setparam;adInitializeStarted;traps_mode;0
-TRAP;setparam;adInitializeStarted;traps_args;Array Manager Event: Array Disk initialize started:
+TRAP;setparam;adInitializeStarted;traps_args;Array Manager Event: Array Disk initialize started: 
 TRAP;setparam;adInitializeStarted;traps_status;1
 TRAP;setparam;adInitializeStarted;vendor;Dell
 TRAP;setparam;adInitializeStarted;traps_reschedule_svc_enable;0
@@ -885,7 +818,7 @@ TRAP;ADD;adRebuildCancelled;.1.3.6.1.4.1.674.10893.1.1.200.0.536
 TRAP;setparam;adRebuildCancelled;traps_name;adRebuildCancelled
 TRAP;setparam;adRebuildCancelled;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.536
 TRAP;setparam;adRebuildCancelled;traps_mode;0
-TRAP;setparam;adRebuildCancelled;traps_args;Array Manager Event: Array Disk rebuild cancelled:
+TRAP;setparam;adRebuildCancelled;traps_args;Array Manager Event: Array Disk rebuild cancelled: 
 TRAP;setparam;adRebuildCancelled;traps_status;1
 TRAP;setparam;adRebuildCancelled;vendor;Dell
 TRAP;setparam;adRebuildCancelled;traps_reschedule_svc_enable;0
@@ -903,7 +836,7 @@ TRAP;ADD;adRebuildCompleted;.1.3.6.1.4.1.674.10893.1.1.200.0.554
 TRAP;setparam;adRebuildCompleted;traps_name;adRebuildCompleted
 TRAP;setparam;adRebuildCompleted;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.554
 TRAP;setparam;adRebuildCompleted;traps_mode;0
-TRAP;setparam;adRebuildCompleted;traps_args;Array Manager Event: Array Disk rebuild completed:
+TRAP;setparam;adRebuildCompleted;traps_args;Array Manager Event: Array Disk rebuild completed: 
 TRAP;setparam;adRebuildCompleted;traps_status;0
 TRAP;setparam;adRebuildCompleted;vendor;Dell
 TRAP;setparam;adRebuildCompleted;traps_reschedule_svc_enable;0
@@ -921,7 +854,7 @@ TRAP;ADD;adRebuildFailed;.1.3.6.1.4.1.674.10893.1.1.200.0.545
 TRAP;setparam;adRebuildFailed;traps_name;adRebuildFailed
 TRAP;setparam;adRebuildFailed;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.545
 TRAP;setparam;adRebuildFailed;traps_mode;0
-TRAP;setparam;adRebuildFailed;traps_args;Array Manager Event: Array Disk rebuild failed:
+TRAP;setparam;adRebuildFailed;traps_args;Array Manager Event: Array Disk rebuild failed: 
 TRAP;setparam;adRebuildFailed;traps_status;3
 TRAP;setparam;adRebuildFailed;vendor;Dell
 TRAP;setparam;adRebuildFailed;traps_reschedule_svc_enable;0
@@ -939,7 +872,7 @@ TRAP;ADD;adRebuildStarted;.1.3.6.1.4.1.674.10893.1.1.200.0.527
 TRAP;setparam;adRebuildStarted;traps_name;adRebuildStarted
 TRAP;setparam;adRebuildStarted;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.527
 TRAP;setparam;adRebuildStarted;traps_mode;0
-TRAP;setparam;adRebuildStarted;traps_args;Array Manager Event: Array Disk rebuild started:
+TRAP;setparam;adRebuildStarted;traps_args;Array Manager Event: Array Disk rebuild started: 
 TRAP;setparam;adRebuildStarted;traps_status;1
 TRAP;setparam;adRebuildStarted;vendor;Dell
 TRAP;setparam;adRebuildStarted;traps_reschedule_svc_enable;0
@@ -1762,7 +1695,7 @@ TRAP;setparam;coldStart;traps_log;0
 TRAP;setparam;coldStart;traps_routing_mode;0
 TRAP;setparam;coldStart;traps_exec_method;0
 TRAP;setparam;coldStart;traps_downtime;0
-TRAP;setparam;coldStart;traps_comments;A coldStart(0) trap signifies that the sending protocol entity is reinitializing itself such that the agent&#039
+TRAP;setparam;coldStart;traps_comments;A coldStart(0) trap signifies that the sending protocol entity is reinitializing itself such that the agent&#039;s configuration or the protocol entity implementation may be altered.
 TRAP;ADD;dmtfAlert309;.1.3.6.1.4.1.674.10890.1.0.309
 TRAP;setparam;dmtfAlert309;traps_name;dmtfAlert309
 TRAP;setparam;dmtfAlert309;traps_oid;.1.3.6.1.4.1.674.10890.1.0.309
@@ -2068,7 +2001,7 @@ TRAP;setparam;linkDown;traps_log;0
 TRAP;setparam;linkDown;traps_routing_mode;0
 TRAP;setparam;linkDown;traps_exec_method;0
 TRAP;setparam;linkDown;traps_downtime;0
-TRAP;setparam;linkDown;traps_comments;A linkDown(2) trap signifies that the sending protocol entity recognizes a failure in one of the communication links represented in the agent&#039
+TRAP;setparam;linkDown;traps_comments;A linkDown(2) trap signifies that the sending protocol entity recognizes a failure in one of the communication links represented in the agent&#039;s configuration.
 TRAP;ADD;linkUp;.1.3.6.1.6.3.1.1.5.4
 TRAP;setparam;linkUp;traps_name;linkUp
 TRAP;setparam;linkUp;traps_oid;.1.3.6.1.6.3.1.1.5.4
@@ -2086,7 +2019,7 @@ TRAP;setparam;linkUp;traps_log;0
 TRAP;setparam;linkUp;traps_routing_mode;0
 TRAP;setparam;linkUp;traps_exec_method;0
 TRAP;setparam;linkUp;traps_downtime;0
-TRAP;setparam;linkUp;traps_comments;A linkUp(3) trap signifies that the sending protocol entity recognizes that one of the communication links represented in the agent&#039
+TRAP;setparam;linkUp;traps_comments;A linkUp(3) trap signifies that the sending protocol entity recognizes that one of the communication links represented in the agent&#039;s configuration has come up.
 TRAP;ADD;ospfVirtIfTxRetransmit;.1.3.6.1.4.1.11.0.14
 TRAP;setparam;ospfVirtIfTxRetransmit;traps_name;ospfVirtIfTxRetransmit
 TRAP;setparam;ospfVirtIfTxRetransmit;traps_oid;.1.3.6.1.4.1.11.0.14
@@ -2109,7 +2042,7 @@ TRAP;ADD;perc2SmartConfigChange;.1.3.6.1.4.1.674.10893.1.1.200.0.586
 TRAP;setparam;perc2SmartConfigChange;traps_name;perc2SmartConfigChange
 TRAP;setparam;perc2SmartConfigChange;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.586
 TRAP;setparam;perc2SmartConfigChange;traps_mode;0
-TRAP;setparam;perc2SmartConfigChange;traps_args;Array Manager Event: Smart Config Change:
+TRAP;setparam;perc2SmartConfigChange;traps_args;Array Manager Event: Smart Config Change: 
 TRAP;setparam;perc2SmartConfigChange;traps_status;1
 TRAP;setparam;perc2SmartConfigChange;vendor;Dell
 TRAP;setparam;perc2SmartConfigChange;traps_reschedule_svc_enable;0
@@ -2127,7 +2060,7 @@ TRAP;ADD;perc2SmartFPTExceeded;.1.3.6.1.4.1.674.10893.1.1.200.0.585
 TRAP;setparam;perc2SmartFPTExceeded;traps_name;perc2SmartFPTExceeded
 TRAP;setparam;perc2SmartFPTExceeded;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.585
 TRAP;setparam;perc2SmartFPTExceeded;traps_mode;0
-TRAP;setparam;perc2SmartFPTExceeded;traps_args;Array Manager Event: Smart FPT Exceeded:
+TRAP;setparam;perc2SmartFPTExceeded;traps_args;Array Manager Event: Smart FPT Exceeded: 
 TRAP;setparam;perc2SmartFPTExceeded;traps_status;0
 TRAP;setparam;perc2SmartFPTExceeded;vendor;Dell
 TRAP;setparam;perc2SmartFPTExceeded;traps_reschedule_svc_enable;0
@@ -2145,7 +2078,7 @@ TRAP;ADD;perc2SmartFPTExceededTest;.1.3.6.1.4.1.674.10893.1.1.200.0.590
 TRAP;setparam;perc2SmartFPTExceededTest;traps_name;perc2SmartFPTExceededTest
 TRAP;setparam;perc2SmartFPTExceededTest;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.590
 TRAP;setparam;perc2SmartFPTExceededTest;traps_mode;0
-TRAP;setparam;perc2SmartFPTExceededTest;traps_args;    Internal Controller has encountered Strong-ARM processor specific error$1
+TRAP;setparam;perc2SmartFPTExceededTest;traps_args;    Internal Controller has encountered Strong-ARM processor specific error$1 
 TRAP;setparam;perc2SmartFPTExceededTest;traps_status;1
 TRAP;setparam;perc2SmartFPTExceededTest;vendor;Dell
 TRAP;setparam;perc2SmartFPTExceededTest;traps_reschedule_svc_enable;0
@@ -2163,7 +2096,7 @@ TRAP;ADD;perc2SmartWarning;.1.3.6.1.4.1.674.10893.1.1.200.0.587
 TRAP;setparam;perc2SmartWarning;traps_name;perc2SmartWarning
 TRAP;setparam;perc2SmartWarning;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.587
 TRAP;setparam;perc2SmartWarning;traps_mode;0
-TRAP;setparam;perc2SmartWarning;traps_args;Array Manager Event: Smart Warning:
+TRAP;setparam;perc2SmartWarning;traps_args;Array Manager Event: Smart Warning: 
 TRAP;setparam;perc2SmartWarning;traps_status;1
 TRAP;setparam;perc2SmartWarning;vendor;Dell
 TRAP;setparam;perc2SmartWarning;traps_reschedule_svc_enable;0
@@ -2181,7 +2114,7 @@ TRAP;ADD;perc2SmartWarningDegraded;.1.3.6.1.4.1.674.10893.1.1.200.0.589
 TRAP;setparam;perc2SmartWarningDegraded;traps_name;perc2SmartWarningDegraded
 TRAP;setparam;perc2SmartWarningDegraded;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.589
 TRAP;setparam;perc2SmartWarningDegraded;traps_mode;0
-TRAP;setparam;perc2SmartWarningDegraded;traps_args;Array Manager Event: Smart warning degraded:
+TRAP;setparam;perc2SmartWarningDegraded;traps_args;Array Manager Event: Smart warning degraded: 
 TRAP;setparam;perc2SmartWarningDegraded;traps_status;1
 TRAP;setparam;perc2SmartWarningDegraded;vendor;Dell
 TRAP;setparam;perc2SmartWarningDegraded;traps_reschedule_svc_enable;0
@@ -2199,7 +2132,7 @@ TRAP;ADD;perc2SmartWarningTemp;.1.3.6.1.4.1.674.10893.1.1.200.0.588
 TRAP;setparam;perc2SmartWarningTemp;traps_name;perc2SmartWarningTemp
 TRAP;setparam;perc2SmartWarningTemp;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.588
 TRAP;setparam;perc2SmartWarningTemp;traps_mode;0
-TRAP;setparam;perc2SmartWarningTemp;traps_args;Array Manager Event: Smart warning temperature:
+TRAP;setparam;perc2SmartWarningTemp;traps_args;Array Manager Event: Smart warning temperature: 
 TRAP;setparam;perc2SmartWarningTemp;traps_status;1
 TRAP;setparam;perc2SmartWarningTemp;vendor;Dell
 TRAP;setparam;perc2SmartWarningTemp;traps_reschedule_svc_enable;0
@@ -2217,7 +2150,7 @@ TRAP;ADD;percPredictiveFailure;.1.3.6.1.4.1.674.10893.1.1.200.0.570
 TRAP;setparam;percPredictiveFailure;traps_name;percPredictiveFailure
 TRAP;setparam;percPredictiveFailure;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.570
 TRAP;setparam;percPredictiveFailure;traps_mode;0
-TRAP;setparam;percPredictiveFailure;traps_args;Array Manager Event: Predictive Failure reported:
+TRAP;setparam;percPredictiveFailure;traps_args;Array Manager Event: Predictive Failure reported: 
 TRAP;setparam;percPredictiveFailure;traps_status;1
 TRAP;setparam;percPredictiveFailure;vendor;Dell
 TRAP;setparam;percPredictiveFailure;traps_reschedule_svc_enable;0
@@ -2235,7 +2168,7 @@ TRAP;ADD;percSCSISenseData;.1.3.6.1.4.1.674.10893.1.1.200.0.571
 TRAP;setparam;percSCSISenseData;traps_name;percSCSISenseData
 TRAP;setparam;percSCSISenseData;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.571
 TRAP;setparam;percSCSISenseData;traps_mode;0
-TRAP;setparam;percSCSISenseData;traps_args;Array Manager Event: SCSI sense data:
+TRAP;setparam;percSCSISenseData;traps_args;Array Manager Event: SCSI sense data: 
 TRAP;setparam;percSCSISenseData;traps_status;1
 TRAP;setparam;percSCSISenseData;vendor;Dell
 TRAP;setparam;percSCSISenseData;traps_reschedule_svc_enable;0
@@ -4107,7 +4040,7 @@ TRAP;ADD;vdFailedRedundancy;.1.3.6.1.4.1.674.10893.1.1.200.0.510
 TRAP;setparam;vdFailedRedundancy;traps_name;vdFailedRedundancy
 TRAP;setparam;vdFailedRedundancy;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.510
 TRAP;setparam;vdFailedRedundancy;traps_mode;0
-TRAP;setparam;vdFailedRedundancy;traps_args;Array Manager Event: Virtual Disk failed redundancy:
+TRAP;setparam;vdFailedRedundancy;traps_args;Array Manager Event: Virtual Disk failed redundancy: 
 TRAP;setparam;vdFailedRedundancy;traps_status;1
 TRAP;setparam;vdFailedRedundancy;vendor;Dell
 TRAP;setparam;vdFailedRedundancy;traps_reschedule_svc_enable;0
@@ -4125,7 +4058,7 @@ TRAP;ADD;vdFormatCancelled;.1.3.6.1.4.1.674.10893.1.1.200.0.530
 TRAP;setparam;vdFormatCancelled;traps_name;vdFormatCancelled
 TRAP;setparam;vdFormatCancelled;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.530
 TRAP;setparam;vdFormatCancelled;traps_mode;0
-TRAP;setparam;vdFormatCancelled;traps_args;Array Manager Event: Virtual Disk format cancelled:
+TRAP;setparam;vdFormatCancelled;traps_args;Array Manager Event: Virtual Disk format cancelled: 
 TRAP;setparam;vdFormatCancelled;traps_status;1
 TRAP;setparam;vdFormatCancelled;vendor;Dell
 TRAP;setparam;vdFormatCancelled;traps_reschedule_svc_enable;0
@@ -4143,7 +4076,7 @@ TRAP;ADD;vdFormatCompleted;.1.3.6.1.4.1.674.10893.1.1.200.0.548
 TRAP;setparam;vdFormatCompleted;traps_name;vdFormatCompleted
 TRAP;setparam;vdFormatCompleted;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.548
 TRAP;setparam;vdFormatCompleted;traps_mode;0
-TRAP;setparam;vdFormatCompleted;traps_args;Array Manager Event: Virtual Disk format completed:
+TRAP;setparam;vdFormatCompleted;traps_args;Array Manager Event: Virtual Disk format completed: 
 TRAP;setparam;vdFormatCompleted;traps_status;0
 TRAP;setparam;vdFormatCompleted;vendor;Dell
 TRAP;setparam;vdFormatCompleted;traps_reschedule_svc_enable;0
@@ -4161,7 +4094,7 @@ TRAP;ADD;vdFormatFailed;.1.3.6.1.4.1.674.10893.1.1.200.0.539
 TRAP;setparam;vdFormatFailed;traps_name;vdFormatFailed
 TRAP;setparam;vdFormatFailed;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.539
 TRAP;setparam;vdFormatFailed;traps_mode;0
-TRAP;setparam;vdFormatFailed;traps_args;Array Manager Event: Virtual Disk format failed:
+TRAP;setparam;vdFormatFailed;traps_args;Array Manager Event: Virtual Disk format failed: 
 TRAP;setparam;vdFormatFailed;traps_status;3
 TRAP;setparam;vdFormatFailed;vendor;Dell
 TRAP;setparam;vdFormatFailed;traps_reschedule_svc_enable;0
@@ -4179,7 +4112,7 @@ TRAP;ADD;vdFormatStarted;.1.3.6.1.4.1.674.10893.1.1.200.0.521
 TRAP;setparam;vdFormatStarted;traps_name;vdFormatStarted
 TRAP;setparam;vdFormatStarted;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.521
 TRAP;setparam;vdFormatStarted;traps_mode;0
-TRAP;setparam;vdFormatStarted;traps_args;Array Manager Event: Virtual Disk format started:
+TRAP;setparam;vdFormatStarted;traps_args;Array Manager Event: Virtual Disk format started: 
 TRAP;setparam;vdFormatStarted;traps_status;1
 TRAP;setparam;vdFormatStarted;vendor;Dell
 TRAP;setparam;vdFormatStarted;traps_reschedule_svc_enable;0
@@ -4197,7 +4130,7 @@ TRAP;ADD;vdInitializeCancelled;.1.3.6.1.4.1.674.10893.1.1.200.0.532
 TRAP;setparam;vdInitializeCancelled;traps_name;vdInitializeCancelled
 TRAP;setparam;vdInitializeCancelled;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.532
 TRAP;setparam;vdInitializeCancelled;traps_mode;0
-TRAP;setparam;vdInitializeCancelled;traps_args;Array Manager Event: Virtual Disk initialization cancelled:
+TRAP;setparam;vdInitializeCancelled;traps_args;Array Manager Event: Virtual Disk initialization cancelled: 
 TRAP;setparam;vdInitializeCancelled;traps_status;1
 TRAP;setparam;vdInitializeCancelled;vendor;Dell
 TRAP;setparam;vdInitializeCancelled;traps_reschedule_svc_enable;0
@@ -4215,7 +4148,7 @@ TRAP;ADD;vdInitializeCompleted;.1.3.6.1.4.1.674.10893.1.1.200.0.550
 TRAP;setparam;vdInitializeCompleted;traps_name;vdInitializeCompleted
 TRAP;setparam;vdInitializeCompleted;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.550
 TRAP;setparam;vdInitializeCompleted;traps_mode;0
-TRAP;setparam;vdInitializeCompleted;traps_args;Array Manager Event: Virtual Disk initialization completed:
+TRAP;setparam;vdInitializeCompleted;traps_args;Array Manager Event: Virtual Disk initialization completed: 
 TRAP;setparam;vdInitializeCompleted;traps_status;0
 TRAP;setparam;vdInitializeCompleted;vendor;Dell
 TRAP;setparam;vdInitializeCompleted;traps_reschedule_svc_enable;0
@@ -4233,7 +4166,7 @@ TRAP;ADD;vdInitializeFailed;.1.3.6.1.4.1.674.10893.1.1.200.0.541
 TRAP;setparam;vdInitializeFailed;traps_name;vdInitializeFailed
 TRAP;setparam;vdInitializeFailed;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.541
 TRAP;setparam;vdInitializeFailed;traps_mode;0
-TRAP;setparam;vdInitializeFailed;traps_args;Array Manager Event: Virtual Disk initialization Failed:
+TRAP;setparam;vdInitializeFailed;traps_args;Array Manager Event: Virtual Disk initialization Failed: 
 TRAP;setparam;vdInitializeFailed;traps_status;3
 TRAP;setparam;vdInitializeFailed;vendor;Dell
 TRAP;setparam;vdInitializeFailed;traps_reschedule_svc_enable;0
@@ -4251,7 +4184,7 @@ TRAP;ADD;vdInitializeStarted;.1.3.6.1.4.1.674.10893.1.1.200.0.523
 TRAP;setparam;vdInitializeStarted;traps_name;vdInitializeStarted
 TRAP;setparam;vdInitializeStarted;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.523
 TRAP;setparam;vdInitializeStarted;traps_mode;0
-TRAP;setparam;vdInitializeStarted;traps_args;Array Manager Event: Virtual Disk initialization started:
+TRAP;setparam;vdInitializeStarted;traps_args;Array Manager Event: Virtual Disk initialization started: 
 TRAP;setparam;vdInitializeStarted;traps_status;0
 TRAP;setparam;vdInitializeStarted;vendor;Dell
 TRAP;setparam;vdInitializeStarted;traps_reschedule_svc_enable;0
@@ -4269,7 +4202,7 @@ TRAP;ADD;vdRebuildCancelled;.1.3.6.1.4.1.674.10893.1.1.200.0.535
 TRAP;setparam;vdRebuildCancelled;traps_name;vdRebuildCancelled
 TRAP;setparam;vdRebuildCancelled;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.535
 TRAP;setparam;vdRebuildCancelled;traps_mode;0
-TRAP;setparam;vdRebuildCancelled;traps_args;Array Manager Event: Virtual Disk rebuild cancelled:
+TRAP;setparam;vdRebuildCancelled;traps_args;Array Manager Event: Virtual Disk rebuild cancelled: 
 TRAP;setparam;vdRebuildCancelled;traps_status;1
 TRAP;setparam;vdRebuildCancelled;vendor;Dell
 TRAP;setparam;vdRebuildCancelled;traps_reschedule_svc_enable;0
@@ -4287,7 +4220,7 @@ TRAP;ADD;vdRebuildCompleted;.1.3.6.1.4.1.674.10893.1.1.200.0.553
 TRAP;setparam;vdRebuildCompleted;traps_name;vdRebuildCompleted
 TRAP;setparam;vdRebuildCompleted;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.553
 TRAP;setparam;vdRebuildCompleted;traps_mode;0
-TRAP;setparam;vdRebuildCompleted;traps_args;Array Manager Event: Virtual Disk rebuild completed:
+TRAP;setparam;vdRebuildCompleted;traps_args;Array Manager Event: Virtual Disk rebuild completed: 
 TRAP;setparam;vdRebuildCompleted;traps_status;0
 TRAP;setparam;vdRebuildCompleted;vendor;Dell
 TRAP;setparam;vdRebuildCompleted;traps_reschedule_svc_enable;0
@@ -4305,7 +4238,7 @@ TRAP;ADD;vdRebuildFailed;.1.3.6.1.4.1.674.10893.1.1.200.0.544
 TRAP;setparam;vdRebuildFailed;traps_name;vdRebuildFailed
 TRAP;setparam;vdRebuildFailed;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.544
 TRAP;setparam;vdRebuildFailed;traps_mode;0
-TRAP;setparam;vdRebuildFailed;traps_args;Array Manager Event: Virtual Disk rebuild failed:
+TRAP;setparam;vdRebuildFailed;traps_args;Array Manager Event: Virtual Disk rebuild failed: 
 TRAP;setparam;vdRebuildFailed;traps_status;3
 TRAP;setparam;vdRebuildFailed;vendor;Dell
 TRAP;setparam;vdRebuildFailed;traps_reschedule_svc_enable;0
@@ -4323,7 +4256,7 @@ TRAP;ADD;vdRebuildStarted;.1.3.6.1.4.1.674.10893.1.1.200.0.526
 TRAP;setparam;vdRebuildStarted;traps_name;vdRebuildStarted
 TRAP;setparam;vdRebuildStarted;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.526
 TRAP;setparam;vdRebuildStarted;traps_mode;0
-TRAP;setparam;vdRebuildStarted;traps_args;Array Manager Event: Virtual Disk rebuild started:
+TRAP;setparam;vdRebuildStarted;traps_args;Array Manager Event: Virtual Disk rebuild started: 
 TRAP;setparam;vdRebuildStarted;traps_status;1
 TRAP;setparam;vdRebuildStarted;vendor;Dell
 TRAP;setparam;vdRebuildStarted;traps_reschedule_svc_enable;0
@@ -4341,7 +4274,7 @@ TRAP;ADD;vdReconfigCancelled;.1.3.6.1.4.1.674.10893.1.1.200.0.534
 TRAP;setparam;vdReconfigCancelled;traps_name;vdReconfigCancelled
 TRAP;setparam;vdReconfigCancelled;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.534
 TRAP;setparam;vdReconfigCancelled;traps_mode;0
-TRAP;setparam;vdReconfigCancelled;traps_args;Array Manager Event: Virtual Disk Reconfiguration cancelled:
+TRAP;setparam;vdReconfigCancelled;traps_args;Array Manager Event: Virtual Disk Reconfiguration cancelled: 
 TRAP;setparam;vdReconfigCancelled;traps_status;1
 TRAP;setparam;vdReconfigCancelled;vendor;Dell
 TRAP;setparam;vdReconfigCancelled;traps_reschedule_svc_enable;0
@@ -4359,7 +4292,7 @@ TRAP;ADD;vdReconfigCompleted;.1.3.6.1.4.1.674.10893.1.1.200.0.552
 TRAP;setparam;vdReconfigCompleted;traps_name;vdReconfigCompleted
 TRAP;setparam;vdReconfigCompleted;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.552
 TRAP;setparam;vdReconfigCompleted;traps_mode;0
-TRAP;setparam;vdReconfigCompleted;traps_args;Array Manager Event: Virtual Disk Reconfiguration completed:
+TRAP;setparam;vdReconfigCompleted;traps_args;Array Manager Event: Virtual Disk Reconfiguration completed: 
 TRAP;setparam;vdReconfigCompleted;traps_status;1
 TRAP;setparam;vdReconfigCompleted;vendor;Dell
 TRAP;setparam;vdReconfigCompleted;traps_reschedule_svc_enable;0
@@ -4377,7 +4310,7 @@ TRAP;ADD;vdReconfigFailed;.1.3.6.1.4.1.674.10893.1.1.200.0.543
 TRAP;setparam;vdReconfigFailed;traps_name;vdReconfigFailed
 TRAP;setparam;vdReconfigFailed;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.543
 TRAP;setparam;vdReconfigFailed;traps_mode;0
-TRAP;setparam;vdReconfigFailed;traps_args;Array Manager Event: Virtual Disk Reconfiguration failed:
+TRAP;setparam;vdReconfigFailed;traps_args;Array Manager Event: Virtual Disk Reconfiguration failed: 
 TRAP;setparam;vdReconfigFailed;traps_status;3
 TRAP;setparam;vdReconfigFailed;vendor;Dell
 TRAP;setparam;vdReconfigFailed;traps_reschedule_svc_enable;0
@@ -4395,7 +4328,7 @@ TRAP;ADD;vdReconfigStarted;.1.3.6.1.4.1.674.10893.1.1.200.0.525
 TRAP;setparam;vdReconfigStarted;traps_name;vdReconfigStarted
 TRAP;setparam;vdReconfigStarted;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.525
 TRAP;setparam;vdReconfigStarted;traps_mode;0
-TRAP;setparam;vdReconfigStarted;traps_args;Array Manager Event: Virtual Disk Reconfiguration started:
+TRAP;setparam;vdReconfigStarted;traps_args;Array Manager Event: Virtual Disk Reconfiguration started: 
 TRAP;setparam;vdReconfigStarted;traps_status;1
 TRAP;setparam;vdReconfigStarted;vendor;Dell
 TRAP;setparam;vdReconfigStarted;traps_reschedule_svc_enable;0
@@ -4413,7 +4346,7 @@ TRAP;ADD;virtualDiskConfigChanged;.1.3.6.1.4.1.674.10893.1.1.200.0.507
 TRAP;setparam;virtualDiskConfigChanged;traps_name;virtualDiskConfigChanged
 TRAP;setparam;virtualDiskConfigChanged;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.507
 TRAP;setparam;virtualDiskConfigChanged;traps_mode;0
-TRAP;setparam;virtualDiskConfigChanged;traps_args;Array Manager Event: Virtual Disk created:
+TRAP;setparam;virtualDiskConfigChanged;traps_args;Array Manager Event: Virtual Disk created: 
 TRAP;setparam;virtualDiskConfigChanged;traps_status;0
 TRAP;setparam;virtualDiskConfigChanged;vendor;Dell
 TRAP;setparam;virtualDiskConfigChanged;traps_reschedule_svc_enable;0
@@ -4431,7 +4364,7 @@ TRAP;ADD;virtualDiskCreated;.1.3.6.1.4.1.674.10893.1.1.200.0.505
 TRAP;setparam;virtualDiskCreated;traps_name;virtualDiskCreated
 TRAP;setparam;virtualDiskCreated;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.505
 TRAP;setparam;virtualDiskCreated;traps_mode;0
-TRAP;setparam;virtualDiskCreated;traps_args;Array Manager Event: Virtual Disk created:
+TRAP;setparam;virtualDiskCreated;traps_args;Array Manager Event: Virtual Disk created: 
 TRAP;setparam;virtualDiskCreated;traps_status;0
 TRAP;setparam;virtualDiskCreated;vendor;Dell
 TRAP;setparam;virtualDiskCreated;traps_reschedule_svc_enable;0
@@ -4449,7 +4382,7 @@ TRAP;ADD;virtualDiskDegraded;.1.3.6.1.4.1.674.10893.1.1.200.0.509
 TRAP;setparam;virtualDiskDegraded;traps_name;virtualDiskDegraded
 TRAP;setparam;virtualDiskDegraded;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.509
 TRAP;setparam;virtualDiskDegraded;traps_mode;0
-TRAP;setparam;virtualDiskDegraded;traps_args;Array Manager Event: Virtual Disk degraded:
+TRAP;setparam;virtualDiskDegraded;traps_args;Array Manager Event: Virtual Disk degraded: 
 TRAP;setparam;virtualDiskDegraded;traps_status;1
 TRAP;setparam;virtualDiskDegraded;vendor;Dell
 TRAP;setparam;virtualDiskDegraded;traps_reschedule_svc_enable;0
@@ -4467,7 +4400,7 @@ TRAP;ADD;virtualDiskDeleted;.1.3.6.1.4.1.674.10893.1.1.200.0.506
 TRAP;setparam;virtualDiskDeleted;traps_name;virtualDiskDeleted
 TRAP;setparam;virtualDiskDeleted;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.506
 TRAP;setparam;virtualDiskDeleted;traps_mode;0
-TRAP;setparam;virtualDiskDeleted;traps_args;Array Manager Event: Virtual Disk deleted:
+TRAP;setparam;virtualDiskDeleted;traps_args;Array Manager Event: Virtual Disk deleted: 
 TRAP;setparam;virtualDiskDeleted;traps_status;1
 TRAP;setparam;virtualDiskDeleted;vendor;Dell
 TRAP;setparam;virtualDiskDeleted;traps_reschedule_svc_enable;0
@@ -4485,7 +4418,7 @@ TRAP;ADD;virtualDiskFailed;.1.3.6.1.4.1.674.10893.1.1.200.0.508
 TRAP;setparam;virtualDiskFailed;traps_name;virtualDiskFailed
 TRAP;setparam;virtualDiskFailed;traps_oid;.1.3.6.1.4.1.674.10893.1.1.200.0.508
 TRAP;setparam;virtualDiskFailed;traps_mode;0
-TRAP;setparam;virtualDiskFailed;traps_args;Array Manager Event: Virtual Disk failed:
+TRAP;setparam;virtualDiskFailed;traps_args;Array Manager Event: Virtual Disk failed: 
 TRAP;setparam;virtualDiskFailed;traps_status;3
 TRAP;setparam;virtualDiskFailed;vendor;Dell
 TRAP;setparam;virtualDiskFailed;traps_reschedule_svc_enable;0
@@ -4543,24 +4476,6 @@ HTPL;setparam;generic-host;timezone;0
 HTPL;setparam;generic-host;host_locked;0
 HTPL;setparam;generic-host;host_register;0
 HTPL;setparam;generic-host;host_activate;1
-HTPL;ADD;my_htpl-test;my_htpl-test;0.0.0.0;;;
-HTPL;setparam;my_htpl-test;host_active_checks_enabled;2
-HTPL;setparam;my_htpl-test;host_passive_checks_enabled;2
-HTPL;setparam;my_htpl-test;host_checks_enabled;2
-HTPL;setparam;my_htpl-test;host_obsess_over_host;2
-HTPL;setparam;my_htpl-test;host_check_freshness;2
-HTPL;setparam;my_htpl-test;host_event_handler_enabled;2
-HTPL;setparam;my_htpl-test;host_flap_detection_enabled;2
-HTPL;setparam;my_htpl-test;host_process_perf_data;2
-HTPL;setparam;my_htpl-test;host_retain_status_information;2
-HTPL;setparam;my_htpl-test;host_retain_nonstatus_information;2
-HTPL;setparam;my_htpl-test;host_notifications_enabled;2
-HTPL;setparam;my_htpl-test;contact_additive_inheritance;0
-HTPL;setparam;my_htpl-test;cg_additive_inheritance;0
-HTPL;setparam;my_htpl-test;timezone;0
-HTPL;setparam;my_htpl-test;host_locked;0
-HTPL;setparam;my_htpl-test;host_register;0
-HTPL;setparam;my_htpl-test;host_activate;1
 HTPL;ADD;Printers;Printers;;;;
 HTPL;setparam;Printers;host_active_checks_enabled;2
 HTPL;setparam;Printers;host_passive_checks_enabled;2
@@ -4788,83 +4703,9 @@ CG;setparam;Guest;cg_type;local
 CG;ADD;Supervisors;Centreon supervisors
 CG;setparam;Supervisors;cg_activate;1
 CG;setparam;Supervisors;cg_type;local
-CG;ADD;test_contact-group;test_contact-group
-CG;setparam;test_contact-group;cg_activate;1
-CG;setparam;test_contact-group;cg_type;local
 CG;addcontact;Guest;guest;guest
 CG;addcontact;Guest;user;user
 CG;addcontact;Supervisors;admin;admin
-CG;addcontact;test_contact-group;test_contact;test_contact
-LDAP;ADD;openldap;openldap;
-LDAP;SETPARAM;openldap;enable;1;
-LDAP;ADDSERVER;openldap;openldap;389;0;0;
-LDAP;SETPARAM;openldap;alias;uid;
-LDAP;SETPARAM;openldap;bind_dn;cn=admin,dc=centreon,dc=com;
-LDAP;SETPARAM;openldap;bind_pass;centreon;
-LDAP;SETPARAM;openldap;group_base_search;dc=centreon,dc=com;
-LDAP;SETPARAM;openldap;group_filter;(&(cn=%s)(objectClass=groupOfNames));
-LDAP;SETPARAM;openldap;group_member;member;
-LDAP;SETPARAM;openldap;group_name;cn;
-LDAP;SETPARAM;openldap;ldap_auto_import;1;
-LDAP;SETPARAM;openldap;ldap_contact_tmpl;contact_template;
-LDAP;SETPARAM;openldap;ldap_dns_use_domain;;
-LDAP;SETPARAM;openldap;ldap_search_limit;60;
-LDAP;SETPARAM;openldap;ldap_search_timeout;60;
-LDAP;SETPARAM;openldap;ldap_srv_dns;0;
-LDAP;SETPARAM;openldap;ldap_store_password;1;
-LDAP;SETPARAM;openldap;ldap_template;Posix;
-LDAP;SETPARAM;openldap;protocol_version;3;
-LDAP;SETPARAM;openldap;user_base_search;dc=centreon,dc=com;
-LDAP;SETPARAM;openldap;user_email;mail;
-LDAP;SETPARAM;openldap;user_filter;(&(uid=%s)(objectClass=posixAccount));
-LDAP;SETPARAM;openldap;user_firstname;givenname;
-LDAP;SETPARAM;openldap;user_group;;
-LDAP;SETPARAM;openldap;user_lastname;sn;
-LDAP;SETPARAM;openldap;user_name;cn;
-LDAP;SETPARAM;openldap;user_pager;mobile;
-LDAP;ADD;test_configuration-LDAP;test_configuration-LDAP;
-LDAP;SETPARAM;test_configuration-LDAP;enable;0;
-LDAP;SETPARAM;test_configuration-LDAP;alias;samaccountname;
-LDAP;SETPARAM;test_configuration-LDAP;bind_dn;;
-LDAP;SETPARAM;test_configuration-LDAP;bind_pass;;
-LDAP;SETPARAM;test_configuration-LDAP;group_base_search;;
-LDAP;SETPARAM;test_configuration-LDAP;group_filter;(&(samAccountName=%s)(objectClass=group)(samAccountType=268435456));
-LDAP;SETPARAM;test_configuration-LDAP;group_member;member;
-LDAP;SETPARAM;test_configuration-LDAP;group_name;samaccountname;
-LDAP;SETPARAM;test_configuration-LDAP;ldap_auto_import;1;
-LDAP;SETPARAM;test_configuration-LDAP;ldap_dns_use_domain;;
-LDAP;SETPARAM;test_configuration-LDAP;ldap_search_limit;60;
-LDAP;SETPARAM;test_configuration-LDAP;ldap_search_timeout;60;
-LDAP;SETPARAM;test_configuration-LDAP;ldap_srv_dns;0;
-LDAP;SETPARAM;test_configuration-LDAP;ldap_store_password;0;
-LDAP;SETPARAM;test_configuration-LDAP;ldap_template;Active Directory;
-LDAP;SETPARAM;test_configuration-LDAP;protocol_version;2;
-LDAP;SETPARAM;test_configuration-LDAP;user_base_search;;
-LDAP;SETPARAM;test_configuration-LDAP;user_email;mail;
-LDAP;SETPARAM;test_configuration-LDAP;user_filter;(&(samAccountName=%s)(objectClass=user)(samAccountType=805306368));
-LDAP;SETPARAM;test_configuration-LDAP;user_firstname;givenname;
-LDAP;SETPARAM;test_configuration-LDAP;user_group;memberOf;
-LDAP;SETPARAM;test_configuration-LDAP;user_lastname;sn;
-LDAP;SETPARAM;test_configuration-LDAP;user_name;name;
-LDAP;SETPARAM;test_configuration-LDAP;user_pager;mobile;
-HOST;ADD;test_host;test_host;0.0.0.0;;Central;
-HOST;setparam;test_host;host_active_checks_enabled;2
-HOST;setparam;test_host;host_passive_checks_enabled;2
-HOST;setparam;test_host;host_checks_enabled;2
-HOST;setparam;test_host;host_obsess_over_host;2
-HOST;setparam;test_host;host_check_freshness;2
-HOST;setparam;test_host;host_event_handler_enabled;2
-HOST;setparam;test_host;host_flap_detection_enabled;2
-HOST;setparam;test_host;host_process_perf_data;2
-HOST;setparam;test_host;host_retain_status_information;2
-HOST;setparam;test_host;host_retain_nonstatus_information;2
-HOST;setparam;test_host;host_notifications_enabled;2
-HOST;setparam;test_host;contact_additive_inheritance;0
-HOST;setparam;test_host;cg_additive_inheritance;0
-HOST;setparam;test_host;timezone;0
-HOST;setparam;test_host;host_locked;0
-HOST;setparam;test_host;host_register;1
-HOST;setparam;test_host;host_activate;1
 HOST;ADD;Centreon-Server;Monitoring Server;127.0.0.1;;Central;
 HOST;setparam;Centreon-Server;host_active_checks_enabled;2
 HOST;setparam;Centreon-Server;host_passive_checks_enabled;2
@@ -4884,9 +4725,7 @@ HOST;setparam;Centreon-Server;timezone;0
 HOST;setparam;Centreon-Server;host_locked;0
 HOST;setparam;Centreon-Server;host_register;1
 HOST;setparam;Centreon-Server;host_activate;1
-HOST;addparent;Centreon-Server;test_host
 HOST;addtemplate;Centreon-Server;generic-host
-HOST;addtemplate;test_host;my_htpl-test
 STPL;ADD;generic-service;generic-service;
 STPL;setparam;generic-service;check_period;24x7
 STPL;setparam;generic-service;notification_period;24x7
@@ -5265,44 +5104,19 @@ STPL;setparam;SNMP-Windows-CPU;check_command_arguments;!80!90
 STPL;setparam;SNMP-Windows-CPU;service_locked;0
 STPL;setparam;SNMP-Windows-CPU;service_register;0
 STPL;setparam;SNMP-Windows-CPU;service_activate;1
-STPL;ADD;test_stpl;test_stpl;
-STPL;setparam;test_stpl;check_command;base_centreon_ping
-STPL;setparam;test_stpl;service_is_volatile;2
-STPL;setparam;test_stpl;service_active_checks_enabled;2
-STPL;setparam;test_stpl;service_passive_checks_enabled;2
-STPL;setparam;test_stpl;service_parallelize_check;2
-STPL;setparam;test_stpl;service_obsess_over_service;2
-STPL;setparam;test_stpl;service_check_freshness;2
-STPL;setparam;test_stpl;service_event_handler_enabled;2
-STPL;setparam;test_stpl;service_flap_detection_enabled;2
-STPL;setparam;test_stpl;service_process_perf_data;2
-STPL;setparam;test_stpl;service_retain_status_information;2
-STPL;setparam;test_stpl;service_retain_nonstatus_information;2
-STPL;setparam;test_stpl;service_notifications_enabled;2
-STPL;setparam;test_stpl;contact_additive_inheritance;0
-STPL;setparam;test_stpl;cg_additive_inheritance;0
-STPL;setparam;test_stpl;service_inherit_contacts_from_host;1
-STPL;setparam;test_stpl;service_use_only_contacts_from_host;0
-STPL;setparam;test_stpl;service_locked;0
-STPL;setparam;test_stpl;service_register;0
-STPL;setparam;test_stpl;service_activate;1
 STPL;addcontactgroup;generic-service;Supervisors
 STPL;addhosttemplate;Ping-LAN;generic-host
 STPL;addhosttemplate;SNMP-DISK-/;Servers-Linux
+STPL;addhosttemplate;SNMP-DISK-E:;Servers-Win2K
+STPL;addhosttemplate;SNMP-DISK-E:;Servers-Win2K3
 STPL;addhosttemplate;SNMP-Linux-Load-Average;Servers-Linux
 STPL;addhosttemplate;SNMP-Linux-Memory;Servers-Linux
 STPL;addhosttemplate;SNMP-Linux-Swap;Servers-Linux
-STPL;addhosttemplate;SNMP-DISK-E:;Servers-Win2K
-STPL;addhosttemplate;SNMP-Win2K-memory;Servers-Win2K
-STPL;addhosttemplate;SNMP-Windows-CPU;Servers-Win2K
-STPL;addhosttemplate;SNMP-DISK-E:;Servers-Win2K3
 STPL;addhosttemplate;SNMP-Win2K3-Memory;Servers-Win2K3
 STPL;addhosttemplate;SNMP-Win2K3-Swap;Servers-Win2K3
+STPL;addhosttemplate;SNMP-Win2K-memory;Servers-Win2K
+STPL;addhosttemplate;SNMP-Windows-CPU;Servers-Win2K
 STPL;addhosttemplate;SNMP-Windows-CPU;Servers-Win2K3
-HC;ADD;test_category;test_category
-HC;setparam;test_category;hc_activate;1
-HC;addmember;test_category;my_htpl-test
-HC;addmember;test_category;test_host
 HG;ADD;Firewall;All firewalls
 HG;setparam;Firewall;hg_activate;1
 HG;ADD;Linux-Servers;All linux servers
@@ -5315,14 +5129,11 @@ HG;ADD;Routers;All routers
 HG;setparam;Routers;hg_activate;1
 HG;ADD;Switchs;All switchs
 HG;setparam;Switchs;hg_activate;1
-HG;ADD;test_host-group;test_host-group
-HG;setparam;test_host-group;hg_activate;1
 HG;ADD;Unix-Servers;All unix servers
 HG;setparam;Unix-Servers;hg_activate;1
 HG;ADD;Windows-Servers;All windows servers
 HG;setparam;Windows-Servers;hg_activate;1
 HG;addhost;Linux-Servers;Centreon-Server
-HG;addhost;test_host-group;test_host
 SERVICE;ADD;Centreon-Server;Disk-/;SNMP-DISK-/
 SERVICE;setparam;Centreon-Server;Disk-/;service_is_volatile;2
 SERVICE;setparam;Centreon-Server;Disk-/;service_active_checks_enabled;2
@@ -5483,26 +5294,6 @@ SERVICE;setparam;Centreon-Server;Ping;service_use_only_contacts_from_host;0
 SERVICE;setparam;Centreon-Server;Ping;service_locked;0
 SERVICE;setparam;Centreon-Server;Ping;service_register;1
 SERVICE;setparam;Centreon-Server;Ping;service_activate;1
-SERVICE;ADD;test_host;service_test;test_stpl
-SERVICE;setparam;test_host;service_test;service_is_volatile;2
-SERVICE;setparam;test_host;service_test;service_active_checks_enabled;2
-SERVICE;setparam;test_host;service_test;service_passive_checks_enabled;2
-SERVICE;setparam;test_host;service_test;service_parallelize_check;2
-SERVICE;setparam;test_host;service_test;service_obsess_over_service;2
-SERVICE;setparam;test_host;service_test;service_check_freshness;2
-SERVICE;setparam;test_host;service_test;service_event_handler_enabled;2
-SERVICE;setparam;test_host;service_test;service_flap_detection_enabled;2
-SERVICE;setparam;test_host;service_test;service_process_perf_data;2
-SERVICE;setparam;test_host;service_test;service_retain_status_information;2
-SERVICE;setparam;test_host;service_test;service_retain_nonstatus_information;2
-SERVICE;setparam;test_host;service_test;service_notifications_enabled;2
-SERVICE;setparam;test_host;service_test;contact_additive_inheritance;0
-SERVICE;setparam;test_host;service_test;cg_additive_inheritance;0
-SERVICE;setparam;test_host;service_test;service_inherit_contacts_from_host;1
-SERVICE;setparam;test_host;service_test;service_use_only_contacts_from_host;0
-SERVICE;setparam;test_host;service_test;service_locked;0
-SERVICE;setparam;test_host;service_test;service_register;1
-SERVICE;setparam;test_host;service_test;service_activate;1
 SC;ADD;Disk;Disk
 SC;setparam;Disk;sc_activate;0
 SC;ADD;Memory;Memory
@@ -5525,7 +5316,6 @@ SC;addservicetemplate;Memory;SNMP-Win2K3-Swap
 SC;addservicetemplate;Memory;SNMP-Linux-Memory
 SC;addservicetemplate;Ping;Ping-LAN
 SC;addservicetemplate;Ping;Ping-WAN
-SC;addservicetemplate;Ping;test_stpl
 ACLRESOURCE;ADD;All Resources;All Resources;
 ACLRESOURCE;SETPARAM;All Resources;activate;1;
 ACLRESOURCE;GRANT_HOST;All Resources;*;
@@ -5533,8 +5323,7 @@ ACLRESOURCE;GRANT_HOSTGROUP;All Resources;*;
 ACLRESOURCE;GRANT_SERVICEGROUP;All Resources;*;
 ACLGROUP;ADD;ALL;ALL;
 ACLGROUP;SETPARAM;ALL;activate;1;
-ACLGROUP;SETMENU;ALL;test_access-group;
 ACLGROUP;SETACTION;ALL;Simple User;
 ACLGROUP;SETRESOURCE;ALL;All Resources;
-ACLGROUP;SETCONTACT;ALL;test_contact;
-ACLGROUP;SETCONTACTGROUP;ALL;Guest|test_contact-group;
+ACLGROUP;SETCONTACTGROUP;ALL;Guest;
+

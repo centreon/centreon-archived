@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "74ec0c199110e2586a3d4ff7b2b9c7ea",
+    "content-hash": "269666dac64d83ca1fb6e412ce8fc3c0",
     "packages": [
         {
             "name": "beberlei/assert",
@@ -6835,16 +6835,16 @@
         },
         {
             "name": "centreon/centreon-test-lib",
-            "version": "dev-master",
+            "version": "dev-MON-6465",
             "source": {
                 "type": "git",
                 "url": "https://github.com/centreon/centreon-test-lib.git",
-                "reference": "8816d93fc20e7ad2796dd44b99d43b3225edfed6"
+                "reference": "48d050a104db1d7c8c4ef3f6d97fff1f5b8b2e2b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/8816d93fc20e7ad2796dd44b99d43b3225edfed6",
-                "reference": "8816d93fc20e7ad2796dd44b99d43b3225edfed6",
+                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/48d050a104db1d7c8c4ef3f6d97fff1f5b8b2e2b",
+                "reference": "48d050a104db1d7c8c4ef3f6d97fff1f5b8b2e2b",
                 "shasum": ""
             },
             "require": {
@@ -6863,7 +6863,6 @@
                 "behat/mink": "Browser controller/emulator abstraction for PHP",
                 "behat/mink-selenium2-driver": "Mink driver using Selenium"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -6892,9 +6891,9 @@
             ],
             "support": {
                 "issues": "https://github.com/centreon/centreon-test-lib/issues",
-                "source": "https://github.com/centreon/centreon-test-lib/tree/master"
+                "source": "https://github.com/centreon/centreon-test-lib/tree/MON-6465"
             },
-            "time": "2021-10-19T14:30:15+00:00"
+            "time": "2021-11-24T14:54:54+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -10702,5 +10701,5 @@
     "platform-overrides": {
         "php": "8.0"
     },
-    "plugin-api-version": "2.1.0"
+    "plugin-api-version": "2.0.0"
 }

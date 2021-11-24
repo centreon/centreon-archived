@@ -215,7 +215,7 @@ class Utils
             case 'sha1':
                 $encodePassword .= 'sha1__' . sha1($password);
                 break;
-            case 'bcrypt':
+            case PASSWORD_BCRYPT:
                 $encodePassword = password_hash($password, PASSWORD_BCRYPT);
                 break;
             default:

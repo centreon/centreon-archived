@@ -39,7 +39,8 @@ try {
         `attempts` int(11) UNSIGNED NOT NULL DEFAULT 5,
         `blocking_duration` int(11) UNSIGNED NOT NULL DEFAULT 900,
         `password_expiration` int(11) UNSIGNED NOT NULL DEFAULT 7776000,
-        `delay_before_new_password` int(11) UNSIGNED NOT NULL DEFAULT 3600)"
+        `delay_before_new_password` int(11) UNSIGNED NOT NULL DEFAULT 3600,
+        `can_reuse_password` enum('0', '1') NOT NULL DEFAULT '0')"
     );
 
     $errorMessage = "Unable to insert default configuration in 'password_security_policy'";
