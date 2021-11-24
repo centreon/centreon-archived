@@ -64,6 +64,9 @@ class EngineService extends AbstractCentreonService implements
      */
     private $engineConfigurationRepository;
 
+    private const ACKNOWLEDGEMENT_WITH_STICKY_OPTION = 2;
+    private const ACKNOWLEDGEMENT_WITH_NO_STICKY_OPTION = 0;
+
     /**
      * CentCoreService constructor.
      *
@@ -96,7 +99,9 @@ class EngineService extends AbstractCentreonService implements
         $preCommand = sprintf(
             'ACKNOWLEDGE_HOST_PROBLEM;%s;%d;%d;%d;%s;%s',
             $host->getName(),
-            (int) $acknowledgement->isSticky(),
+            $acknowledgement->isSticky()
+                ? self::ACKNOWLEDGEMENT_WITH_STICKY_OPTION
+                : self::ACKNOWLEDGEMENT_WITH_NO_STICKY_OPTION,
             (int) $acknowledgement->isNotifyContacts(),
             (int) $acknowledgement->isPersistentComment(),
             $this->contact->getAlias(),
@@ -123,7 +128,9 @@ class EngineService extends AbstractCentreonService implements
             'ACKNOWLEDGE_SVC_PROBLEM;%s;%s;%d;%d;%d;%s;%s',
             $service->getHost()->getName(),
             $service->getDescription(),
-            (int) $acknowledgement->isSticky(),
+            $acknowledgement->isSticky()
+                ? self::ACKNOWLEDGEMENT_WITH_STICKY_OPTION
+                : self::ACKNOWLEDGEMENT_WITH_NO_STICKY_OPTION,
             (int) $acknowledgement->isNotifyContacts(),
             (int) $acknowledgement->isPersistentComment(),
             $this->contact->getAlias(),
