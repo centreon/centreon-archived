@@ -3,16 +3,19 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { isNil } from 'ramda';
 import clsx from 'clsx';
+import classnames from 'classnames';
 
 import PollerIcon from '@material-ui/icons/DeviceHub';
 import StorageIcon from '@material-ui/icons/Storage';
 import LatencyIcon from '@material-ui/icons/Speed';
 import {
   Avatar,
+  Button,
   ClickAwayListener,
   Grid,
   makeStyles,
   Theme,
+  Typography,
   useTheme,
 } from '@material-ui/core';
 import { CreateCSSProperties } from '@material-ui/styles';
@@ -26,6 +29,7 @@ import {
   IconHeader,
 } from '@centreon/ui';
 
+import styles from '../header.scss';
 import MenuLoader from '../../components/MenuLoader';
 
 import {
@@ -35,6 +39,7 @@ import {
   labelNoLatencyDetected,
   labelPoller,
 } from './translatedLabels';
+import ExportConfiguration from './ExportConfiguration';
 
 export const useStyles = makeStyles(() => ({
   link: {
@@ -78,7 +83,6 @@ const useStatusStyles = makeStyles<Theme, StyleProps>((theme) => {
     database: ({ databaseSeverity }): CreateCSSProperties<StyleProps> =>
       getSeverityColor(databaseSeverity),
     icon: {
-      cursor: 'pointer',
       fontSize: theme.typography.body1.fontSize,
       height: theme.spacing(4),
       margin: '6px',
@@ -133,6 +137,7 @@ interface Props {
 
 interface Issue {
   critical: number;
+  total: number;
   warning: number;
 }
 
@@ -147,9 +152,15 @@ const PollerMenu = ({
 }: Props): JSX.Element => {
   const theme = useTheme();
   const { t } = useTranslation();
+
   const [issues, setIssues] = React.useState<Issues | null>(null);
+  const [isExporting, setIsExportingConfiguration] = React.useState<boolean>();
   const [toggled, setToggled] = React.useState<boolean>();
   const interval = React.useRef<number>();
+
+  const newExporting = (): void => {
+    setIsExportingConfiguration(!isExporting);
+  };
 
   const { sendRequest } = useRequest<Issues>({
     request: getData,
@@ -214,6 +225,7 @@ const PollerMenu = ({
           />
 
           <GetPollerStatusIcon issues={issues} />
+
           <IconToggleSubmenu
             iconType="arrow"
             rotate={toggled}
@@ -221,6 +233,90 @@ const PollerMenu = ({
           />
         </Grid>
       </>
+
+      <div className={classnames(styles.submenu, styles.pollers)}>
+        <div className={styles['submenu-content']}>
+          <ul
+            className={classnames(
+              styles['submenu-items'],
+              styles['list-unstyled'],
+            )}
+          >
+            <li className={styles['submenu-item']}>
+              <span className={styles['submenu-item-link']}>
+                <Typography variant="body2">{t('All pollers')}</Typography>
+                <Typography variant="body2">
+                  {issues.total ? issues.total : '...'}
+                </Typography>
+              </span>
+            </li>
+            {issues
+              ? Object.entries(issues).map(([key, issue]) => {
+                  let message = '';
+
+                  if (key === 'database') {
+                    message = t('Database updates not active');
+                  } else if (key === 'stability') {
+                    message = t('Pollers not running');
+                  } else if (key === 'latency') {
+                    message = t('Latency detected');
+                  }
+
+                  return (
+                    <li className={styles['submenu-top-item']} key={key}>
+                      <span className={styles['submenu-item-link']}>
+                        <Typography variant="body2">{message} </Typography>
+                        <Typography variant="body2">
+                          {issue.total ? issue.total : '...'}
+                        </Typography>
+                      </span>
+                      {Object.entries(issue).map(([elem, values]) => {
+                        if (values.poller) {
+                          const pollers = values.poller;
+
+                          return pollers.map((poller) => {
+                            let color = 'red';
+                            if (elem === 'warning') {
+                              color = 'orange';
+                            }
+
+                            return (
+                              <span
+                                className={styles['submenu-item-link']}
+                                key={poller.name}
+                              >
+                                <span
+                                  className={classnames(
+                                    styles['dot-colored'],
+                                    styles[color],
+                                  )}
+                                >
+                                  <Typography variant="body2">
+                                    {poller.name}
+                                  </Typography>
+                                </span>
+                              </span>
+                            );
+                          });
+                        }
+
+                        return null;
+                      })}
+                    </li>
+                  );
+                })
+              : null}
+            <Button
+              size="small"
+              style={{ marginTop: '8px' }}
+              variant="contained"
+            >
+              {t('Configure pollers')}
+            </Button>
+          </ul>
+          <ExportConfiguration setIsExportingConfiguration={newExporting} />
+        </div>
+      </div>
     </ClickAwayListener>
   );
 };
