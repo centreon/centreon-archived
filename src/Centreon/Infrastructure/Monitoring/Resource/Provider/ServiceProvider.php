@@ -267,18 +267,18 @@ final class ServiceProvider extends Provider
         }
 
         // apply the state types filter to SQL query
-        $stateTypes = ResourceFilter::map($filter->getStateTypes(), ResourceFilter::MAP_STATE_TYPES);
-        if ($stateTypes) {
-            $stateTypesList = [];
+        $statusTypes = ResourceFilter::map($filter->getStatusTypes(), ResourceFilter::MAP_STATUS_TYPES);
+        if ($statusTypes) {
+            $statusTypesList = [];
 
-            foreach ($stateTypes as $index => $stateType) {
+            foreach ($statusTypes as $index => $statusType) {
                 $key = ":serviceStateType_{$index}";
 
-                $stateTypesList[] = $key;
-                $collector->addValue($key, $stateType, \PDO::PARAM_INT);
+                $statusTypesList[] = $key;
+                $collector->addValue($key, $statusType, \PDO::PARAM_INT);
             }
 
-            $sql .= ' AND s.state_type IN (' . implode(', ', $stateTypesList) . ')';
+            $sql .= ' AND s.state_type IN (' . implode(', ', $statusTypesList) . ')';
         }
 
         if (!empty($filter->getHostIds())) {

@@ -225,7 +225,7 @@ final class MetaServiceProvider extends Provider
         }
 
         // apply the state types filter to SQL query
-        $stateTypes = ResourceFilter::map($filter->getStateTypes(), ResourceFilter::MAP_STATE_TYPES);
+        $stateTypes = ResourceFilter::map($filter->getStatusTypes(), ResourceFilter::MAP_STATUS_TYPES);
         if ($stateTypes) {
             $stateTypesList = [];
 

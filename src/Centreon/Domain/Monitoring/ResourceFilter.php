@@ -70,8 +70,8 @@ class ResourceFilter
     /**
      * Available state types
      */
-    public const HARD_STATE_TYPE = 'hard';
-    public const SOFT_STATE_TYPE = 'soft';
+    public const HARD_STATUS_TYPE = 'hard';
+    public const SOFT_STATUS_TYPE = 'soft';
 
     public const MAP_STATUS_SERVICE = [
         self::STATUS_OK => 0,
@@ -88,9 +88,9 @@ class ResourceFilter
         self::STATUS_PENDING => 4,
     ];
 
-    public const MAP_STATE_TYPES = [
-        self::HARD_STATE_TYPE => 1,
-        self::SOFT_STATE_TYPE => 0,
+    public const MAP_STATUS_TYPES = [
+        self::HARD_STATUS_TYPE => 1,
+        self::SOFT_STATUS_TYPE => 0,
     ];
 
     /**
@@ -146,7 +146,7 @@ class ResourceFilter
     /**
      * @var string[]
      */
-    private $stateTypes = [];
+    private $statusTypes = [];
 
     /**
      * Transform result by map
@@ -407,18 +407,18 @@ class ResourceFilter
     /**
      * @return string[]
      */
-    public function getStateTypes(): array
+    public function getStatusTypes(): array
     {
-        return $this->stateTypes;
+        return $this->statusTypes;
     }
 
     /**
-     * @param string[] $stateTypes
+     * @param string[] $statusTypes
      * @return self
      */
-    public function setStateTypes(array $stateTypes): self
+    public function setStatusTypes(array $statusTypes): self
     {
-        $this->stateTypes = $stateTypes;
+        $this->statusTypes = $statusTypes;
         return $this;
     }
 }
