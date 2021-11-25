@@ -75,10 +75,17 @@ $selHost = $formHost->addElement(
     [],
     $hostsRoute
 );
+
+$selHost->addJsCallback(
+    'change',
+    'if(($("input[value=custom]").is(\':checked\'))){$("input[value=custom]").attr(\':checked\', \':checked\')}'
+);
+
 $selHost->addJsCallback(
     'change',
     'this.form.submit();'
 );
+
 $formHost->addElement(
     'hidden',
     'period',
