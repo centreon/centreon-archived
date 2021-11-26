@@ -57,7 +57,7 @@
         {literal}
         <script type="text/javascript">
             jQuery(() => {
-                jQuery('form[name="login"]').submit((e) => {
+                jQuery('form[name="login"]').submit(() => {
                     jQuery('input[type="submit"]').prop('disabled', true)
                     jQuery.ajax({
                         url: './authentication/providers/configurations/local',
