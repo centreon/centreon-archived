@@ -76,7 +76,7 @@ if (
         $passwordP = $form->getSubmitValue('password');
     }
 
-    $useralias = $useraliasG ? $useraliasG : $useraliasP;
+    $useralias = $useraliasG ?? $useraliasP;
     $password = $passwordG ? $passwordG : $passwordP;
 
     $token = "";
