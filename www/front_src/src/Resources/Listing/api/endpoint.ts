@@ -19,7 +19,7 @@ const buildResourcesEndpoint = (parameters: ListResourcesProps): string => {
     customQueryParameters: [
       { name: 'states', value: parameters.states },
       {
-        name: 'state_types',
+        name: 'status_types',
         value: parameters.statusTypes,
       },
       { name: 'types', value: parameters.resourceTypes },
