@@ -115,8 +115,7 @@ class LocalProvider implements ProviderInterface
             $this->dependencyInjector['configuration_db'],
             $log,
             1,
-            "",
-            "WEB"
+            ""
         );
         $this->debug(
             '[LOCAL PROVIDER] local provider trying to authenticate using legacy Authentication',

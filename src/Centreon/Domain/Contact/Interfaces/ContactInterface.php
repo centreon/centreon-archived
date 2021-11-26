@@ -45,6 +45,21 @@ interface ContactInterface
     public function isActive(): bool;
 
     /**
+     * Indicates whether the contact is allowed to reach web application.
+     *
+     * @return bool
+     */
+    public function isAllowedToReachWeb(): bool;
+
+    /**
+     * Allow user or not to reach web application.
+     *
+     * @param bool $isAllowed
+     * @return ContactInterface
+     */
+    public function setAllowedToReachWeb(bool $isAllowed): ContactInterface;
+
+    /**
      * Contact name.
      *
      * @return string

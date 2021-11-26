@@ -26,7 +26,6 @@ use Centreon\Domain\Contact\Exception\ContactServiceException;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Contact\Interfaces\ContactRepositoryInterface;
 use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
-use Centreon\Domain\Menu\Interfaces\MenuRepositoryInterface;
 
 class ContactService implements ContactServiceInterface
 {
@@ -35,15 +34,9 @@ class ContactService implements ContactServiceInterface
      */
     private $contactRepository;
 
-    /**
-     * @var MenuRepositoryInterface
-     */
-    private $menuRepository;
-
-    public function __construct(ContactRepositoryInterface $contactRepository, MenuRepositoryInterface $menuRepository)
+    public function __construct(ContactRepositoryInterface $contactRepository)
     {
         $this->contactRepository = $contactRepository;
-        $this->menuRepository = $menuRepository;
     }
 
     /**
@@ -75,6 +68,14 @@ class ContactService implements ContactServiceInterface
     {
         $contact = $this->contactRepository->findById($contact->getId());
         return $contact !== null;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findByName(string $name): ?Contact
+    {
+        return $this->contactRepository->findByName($name);
     }
 
     /**

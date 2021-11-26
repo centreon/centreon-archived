@@ -27,6 +27,14 @@ use Centreon\Domain\Contact\Contact;
 interface ContactServiceInterface
 {
     /**
+     * Find a contact based on its name.
+     *
+     * @param string $name Contact name
+     * @return Contact|null
+     */
+    public function findByName(string $name): ?Contact;
+
+    /**
      * Find a contact based on their session number.
      *
      * @param string $session Contact session number

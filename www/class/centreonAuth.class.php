@@ -91,11 +91,8 @@ class CentreonAuth
         $pearDB,
         $CentreonLog,
         $encryptType = 1,
-        $token = "",
-        $source = "WEB"
+        $token = ""
     ) {
-        global $centreon_crypt;
-
         $this->dependencyInjector = $dependencyInjector;
         $this->cryptPossibilities = array('MD5', 'SHA1');
         $this->CentreonLog = $CentreonLog;
@@ -108,7 +105,6 @@ class CentreonAuth
         $this->ldap_auto_import = array();
         $this->ldap_store_password = array();
         $this->default_page = self::DEFAULT_PAGE;
-        $this->source = $source;
 
         $res = $pearDB->query(
             "SELECT ar.ar_id, ari.ari_value, ari.ari_name " .
@@ -318,22 +314,11 @@ class CentreonAuth
             $this->getCryptFunction();
             $this->checkPassword($password, $token);
             if ($this->passwdOk == 1) {
-                if ($this->userInfos["contact_oreon"]
-                    || ($this->userInfos["contact_oreon"] == 0 && $this->source == 'API')
-                ) {
-                    $this->CentreonLog->setUID($this->userInfos["contact_id"]);
-                    $this->CentreonLog->insertLog(
-                        1,
-                        "[" . $this->source . "] [" . $_SERVER["REMOTE_ADDR"] . "] Authentication succeeded for '" . $username . "'"
-                    );
-                } else {
-                    $this->passwdOk = 0;
-                    $this->CentreonLog->insertLog(
-                        1,
-                        "[" . $this->source . "] [" . $_SERVER["REMOTE_ADDR"] . "] '" . $username . "' is not allowed to reach Centreon"
-                    );
-                    $this->error = _('Your credentials are incorrect.');
-                }
+                $this->CentreonLog->setUID($this->userInfos["contact_id"]);
+                $this->CentreonLog->insertLog(
+                    1,
+                    "[" . $this->source . "] [" . $_SERVER["REMOTE_ADDR"] . "] Authentication succeeded for '" . $username . "'"
+                );
             } else {
                 //  Take care before modifying this message pattern as it may break tools such as fail2ban
                 $this->CentreonLog->insertLog(

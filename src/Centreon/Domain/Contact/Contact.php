@@ -114,6 +114,11 @@ class Contact implements UserInterface, ContactInterface
     private $isActive;
 
     /**
+     * @var bool Indicates whether this contact is allowed to reach centreon application
+     */
+    private $isAllowedToReachWeb;
+
+    /**
      * @var string|null Authentication Token
      */
     private $token;
@@ -315,6 +320,24 @@ class Contact implements UserInterface, ContactInterface
     public function setIsActive(bool $isActive): self
     {
         $this->isActive = $isActive;
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isAllowedToReachWeb(): bool
+    {
+        return $this->isAllowedToReachWeb;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setAllowedToReachWeb(bool $isAllowed): ContactInterface
+    {
+        $this->isAllowedToReachWeb = $isAllowed;
+
         return $this;
     }
 
