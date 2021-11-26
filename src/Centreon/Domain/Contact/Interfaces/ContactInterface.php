@@ -146,8 +146,7 @@ interface ContactInterface
     public function getDefaultPage(): ?Page;
 
     /**
-     * @param Page|null $defaultPage
-     * @return static
+     * @inheritDoc
      */
     public function setDefaultPage(?Page $defaultPage): static;
 }
