@@ -319,14 +319,16 @@ class CentreonAuth
             if ($this->passwdOk == 1) {
                 $this->CentreonLog->setUID($this->userInfos["contact_id"]);
                 $this->CentreonLog->insertLog(
-                    1,
-                    "[" . $this->source . "] [" . $_SERVER["REMOTE_ADDR"] . "] Authentication succeeded for '" . $username . "'"
+                    CentreonUserLog::TYPE_LOGIN,
+                    "[" . $this->source . "] [" . $_SERVER["REMOTE_ADDR"] . "] "
+                        . "Authentication succeeded for '" . $username . "'"
                 );
             } else {
                 //  Take care before modifying this message pattern as it may break tools such as fail2ban
                 $this->CentreonLog->insertLog(
-                    1,
-                    "[" . $this->source . "] [" . $_SERVER["REMOTE_ADDR"] . "] Authentication failed for '" . $username . "'"
+                    CentreonUserLog::TYPE_LOGIN,
+                    "[" . $this->source . "] [" . $_SERVER["REMOTE_ADDR"] . "] "
+                        . "Authentication failed for '" . $username . "'"
                 );
                 $this->error = _('Your credentials are incorrect.');
             }
@@ -364,7 +366,7 @@ class CentreonAuth
             if (strlen($username) > 0) {
                 //  Take care before modifying this message pattern as it may break tools such as fail2ban
                 $this->CentreonLog->insertLog(
-                    1,
+                    CentreonUserLog::TYPE_LOGIN,
                     "[" . $this->source . "] [" . $_SERVER["REMOTE_ADDR"] . "] Authentication failed for '" . $username . "' : not found"
                 );
             }

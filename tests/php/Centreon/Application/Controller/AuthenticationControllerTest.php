@@ -174,7 +174,7 @@ class AuthenticationControllerTest extends TestCase
                     "message" => 'Invalid credentials',
                 ],
                 Response::HTTP_UNAUTHORIZED
-        ),
+            ),
             $view
         );
     }
