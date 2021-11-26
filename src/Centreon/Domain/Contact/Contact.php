@@ -266,7 +266,7 @@ class Contact implements UserInterface, ContactInterface
     }
 
     /**
-     * @return bool
+     * @inheritDoc
      */
     public function isAdmin(): bool
     {
@@ -274,10 +274,12 @@ class Contact implements UserInterface, ContactInterface
     }
 
     /**
+     * Set if the user is admin or not.
+     *
      * @param bool $isAdmin
-     * @return ContactInterface
+     * @return static
      */
-    public function setAdmin(bool $isAdmin): ContactInterface
+    public function setAdmin(bool $isAdmin): static
     {
         $this->isAdmin = $isAdmin;
         if ($this->isAdmin) {
@@ -297,9 +299,9 @@ class Contact implements UserInterface, ContactInterface
 
     /**
      * @param int $templateId
-     * @return self
+     * @return static
      */
-    public function setTemplateId(?int $templateId): self
+    public function setTemplateId(?int $templateId): static
     {
         $this->templateId = $templateId;
         return $this;
@@ -315,9 +317,9 @@ class Contact implements UserInterface, ContactInterface
 
     /**
      * @param bool $isActive
-     * @return self
+     * @return static
      */
-    public function setIsActive(bool $isActive): self
+    public function setIsActive(bool $isActive): static
     {
         $this->isActive = $isActive;
         return $this;
@@ -334,7 +336,7 @@ class Contact implements UserInterface, ContactInterface
     /**
      * @inheritDoc
      */
-    public function setAllowedToReachWeb(bool $isAllowed): ContactInterface
+    public function setAllowedToReachWeb(bool $isAllowed): static
     {
         $this->isAllowedToReachWeb = $isAllowed;
 
@@ -351,9 +353,9 @@ class Contact implements UserInterface, ContactInterface
 
     /**
      * @param string|null $token
-     * @return self
+     * @return static
      */
-    public function setToken(?string $token): self
+    public function setToken(?string $token): static
     {
         $this->token = $token;
         return $this;
@@ -369,9 +371,9 @@ class Contact implements UserInterface, ContactInterface
 
     /**
      * @param string|null $encodedPassword
-     * @return self
+     * @return static
      */
-    public function setEncodedPassword(?string $encodedPassword): self
+    public function setEncodedPassword(?string $encodedPassword): static
     {
         $this->encodedPassword = $encodedPassword;
         return $this;
@@ -452,9 +454,9 @@ class Contact implements UserInterface, ContactInterface
 
     /**
      * @param bool $hasAccessToApiConfiguration
-     * @return self
+     * @return static
      */
-    public function setAccessToApiConfiguration(bool $hasAccessToApiConfiguration): self
+    public function setAccessToApiConfiguration(bool $hasAccessToApiConfiguration): static
     {
         $this->hasAccessToApiConfiguration = $hasAccessToApiConfiguration;
 
@@ -477,9 +479,9 @@ class Contact implements UserInterface, ContactInterface
 
     /**
      * @param bool $hasAccessToApiRealTime
-     * @return self
+     * @return static
      */
-    public function setAccessToApiRealTime(bool $hasAccessToApiRealTime): self
+    public function setAccessToApiRealTime(bool $hasAccessToApiRealTime): static
     {
         $this->hasAccessToApiRealTime = $hasAccessToApiRealTime;
         if ($this->hasAccessToApiRealTime) {
@@ -550,9 +552,9 @@ class Contact implements UserInterface, ContactInterface
      * timezone setter
      *
      * @param \DateTimeZone $timezone
-     * @return self
+     * @return static
      */
-    public function setTimezone(\DateTimeZone $timezone): self
+    public function setTimezone(\DateTimeZone $timezone): static
     {
         $this->timezone = $timezone;
         return $this;
@@ -641,9 +643,9 @@ class Contact implements UserInterface, ContactInterface
 
     /**
      * @param bool $isOneClickExportEnabled
-     * @return Contact
+     * @return static
      */
-    public function setOneClickExportEnabled(bool $isOneClickExportEnabled): Contact
+    public function setOneClickExportEnabled(bool $isOneClickExportEnabled): static
     {
         $this->isOneClickExportEnabled = $isOneClickExportEnabled;
 
