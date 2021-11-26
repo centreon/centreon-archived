@@ -593,8 +593,7 @@ class Contact implements UserInterface, ContactInterface
     }
 
     /**
-     * @param Page|null $defaultPage
-     * @return static
+     * @inheritDoc
      */
     public function setDefaultPage(?Page $defaultPage):static
     {
