@@ -2,10 +2,11 @@ import * as React from 'react';
 
 import axios from 'axios';
 import * as yup from 'yup';
+import { useAtomValue } from 'jotai/utils';
 
 import { ClickAwayListener, makeStyles } from '@material-ui/core';
 
-import { useUserContext } from '@centreon/ui-context';
+import { refreshIntervalAtom } from '@centreon/ui-context';
 
 import MenuLoader from '../../components/MenuLoader';
 
@@ -37,7 +38,7 @@ const RessourceStatusCounter = <
 
   const interval = React.useRef<number>();
 
-  const { refreshInterval } = useUserContext();
+  const refreshInterval = useAtomValue(refreshIntervalAtom);
 
   const getData = (): void => {
     axios

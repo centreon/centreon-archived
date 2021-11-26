@@ -68,6 +68,7 @@ $hostsRoute = array(
     './include/common/webServices/rest/internal.php?object=centreon_configuration_host
     &action=defaultValues&target=host&field=host_id&id=' . $id,
 );
+
 $selHost = $formPeriod->addElement(
     'select2',
     'hostElement',
