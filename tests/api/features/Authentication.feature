@@ -11,7 +11,7 @@ Feature:
         When I log in with invalid credentials
         Then the response code should be "401"
         And the JSON node "code" should be equal to the number "401"
-        And the JSON node "message" should be equal to the string "Invalid Credentials"
+        And the JSON node "message" should be equal to the string "Invalid credentials"
 
     # Internal local authentication
     Scenario:
