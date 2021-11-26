@@ -39,7 +39,6 @@ require_once _CENTREON_PATH_ . "/www/class/centreonRestHttp.class.php";
 
 class CentreonAuthSSO extends CentreonAuth
 {
-
     protected $ssoOptions = array();
     protected $ssoMandatory = 0;
 
@@ -47,11 +46,6 @@ class CentreonAuthSSO extends CentreonAuth
      * @var using a proxy
      */
     private $proxy = null;
-
-    /**
-     * @var proxy authentication information
-     */
-    private $proxyAuthentication = null;
 
     public function __construct(
         $dependencyInjector,

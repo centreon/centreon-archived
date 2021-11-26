@@ -42,6 +42,12 @@ class CentreonAuth
     public const DEFAULT_PAGE = 200;
     public const PWS_OCCULTATION = '******';
 
+    public const AUTOLOGIN_ENABLE = 1;
+    public const AUTOLOGIN_DISABLE = 0;
+
+    public const ENCRYPT_MD5 = 1;
+    public const ENCRYPT_SHA1 = 2;
+
     // Declare Values
     public $userInfos;
     protected $login;
@@ -90,7 +96,7 @@ class CentreonAuth
         $autologin,
         $pearDB,
         $CentreonLog,
-        $encryptType = 1,
+        $encryptType = self::ENCRYPT_MD5,
         $token = ""
     ) {
         $this->dependencyInjector = $dependencyInjector;
@@ -376,10 +382,10 @@ class CentreonAuth
     {
         if (isset($this->cryptEngine)) {
             switch ($this->cryptEngine) {
-                case 1:
+                case self::ENCRYPT_MD5:
                     return "MD5";
                     break;
-                case 2:
+                case self::ENCRYPT_SHA1:
                     return "SHA1";
                     break;
                 default:

@@ -65,9 +65,9 @@ if (
     /*
      * Check first for Autologin or Get Authentication
      */
-    isset($_GET["autologin"]) ? $autologin = $_GET["autologin"] : $autologin = 0;
-    isset($_GET["useralias"]) ? $useraliasG = $_GET["useralias"] : $useraliasG = null;
-    isset($_GET["password"]) ? $passwordG = $_GET["password"] : $passwordG = null;
+    $autologin = isset($_GET["autologin"]) ? $_GET["autologin"] : CentreonAuthSSO::AUTOLOGIN_DISABLE;
+    $useraliasG = isset($_GET["useralias"]) ? $_GET["useralias"] : null;
+    $passwordG = isset($_GET["password"]) ? $_GET["password"] : null;
 
     $useraliasP = null;
     $passwordP = null;
@@ -76,8 +76,8 @@ if (
         $passwordP = $form->getSubmitValue('password');
     }
 
-    $useraliasG ? $useralias = $useraliasG : $useralias = $useraliasP;
-    $passwordG ? $password = $passwordG : $password = $passwordP;
+    $useralias = $useraliasG ? $useraliasG : $useraliasP;
+    $password = $passwordG ? $passwordG : $passwordP;
 
     $token = "";
     if (isset($_REQUEST['token']) && $_REQUEST['token']) {
@@ -85,7 +85,7 @@ if (
     }
 
     if (!isset($encryptType)) {
-        $encryptType = 1;
+        $encryptType = CentreonAuthSSO::ENCRYPT_MD5;
     }
 
     $centreonAuth = new CentreonAuthSSO(
