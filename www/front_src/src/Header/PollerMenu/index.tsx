@@ -2,44 +2,36 @@ import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { isNil } from 'ramda';
-import clsx from 'clsx';
 import classnames from 'classnames';
+import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { push } from 'connected-react-router';
 
 import PollerIcon from '@material-ui/icons/DeviceHub';
-import StorageIcon from '@material-ui/icons/Storage';
-import LatencyIcon from '@material-ui/icons/Speed';
 import {
-  Avatar,
   Button,
   ClickAwayListener,
   Grid,
   makeStyles,
-  Theme,
   Typography,
   useTheme,
 } from '@material-ui/core';
-import { CreateCSSProperties } from '@material-ui/styles';
 
 import {
-  getStatusColors,
-  SeverityCode,
   getData,
   useRequest,
   IconToggleSubmenu,
   IconHeader,
+  SeverityCode,
 } from '@centreon/ui';
 
+import { allowedPagesSelector } from '../../redux/selectors/navigation/allowedPages';
 import styles from '../header.scss';
 import MenuLoader from '../../components/MenuLoader';
 
-import {
-  labelDatabaseNotActive,
-  labelDatabaseUpdateAndActive,
-  labelLatencyDetected,
-  labelNoLatencyDetected,
-  labelPoller,
-} from './translatedLabels';
+import { labelPoller } from './translatedLabels';
 import ExportConfiguration from './ExportConfiguration';
+import PollerStatusIcon from './PollerStatusIcon';
 
 export const useStyles = makeStyles(() => ({
   link: {
@@ -47,100 +39,19 @@ export const useStyles = makeStyles(() => ({
   },
 }));
 
-const getIssueSeverity = ({ issues, key }): SeverityCode => {
-  if (!isNil(issues[key]?.warning)) {
-    return SeverityCode.Medium;
-  }
-  if (!isNil(issues[key]?.critical)) {
-    return SeverityCode.High;
-  }
+export const pollerConfigurationTopologyPage = '60901';
 
-  return SeverityCode.Ok;
-};
-
-interface GetPollerStatusIconProps {
-  issues: Issues | null;
-}
-
-interface StyleProps {
-  databaseSeverity: SeverityCode;
-  latencySeverity: SeverityCode;
-}
-
-const useStatusStyles = makeStyles<Theme, StyleProps>((theme) => {
-  const getSeverityColor = (severityCode): CreateCSSProperties<StyleProps> => ({
-    background: getStatusColors({
-      severityCode,
-      theme,
-    }).backgroundColor,
-    color: getStatusColors({
-      severityCode,
-      theme,
-    }).color,
-  });
-
-  return {
-    database: ({ databaseSeverity }): CreateCSSProperties<StyleProps> =>
-      getSeverityColor(databaseSeverity),
-    icon: {
-      fontSize: theme.typography.body1.fontSize,
-      height: theme.spacing(4),
-      margin: '6px',
-      position: 'relative',
-      width: theme.spacing(4),
-    },
-    latency: ({ latencySeverity }): CreateCSSProperties<StyleProps> =>
-      getSeverityColor(latencySeverity),
-  };
-});
-
-const GetPollerStatusIcon = ({
-  issues,
-}: GetPollerStatusIconProps): JSX.Element => {
-  const databaseSeverity = getIssueSeverity({ issues, key: 'database' });
-
-  const latencySeverity = getIssueSeverity({ issues, key: 'latency' });
-  const classes = useStatusStyles({ databaseSeverity, latencySeverity });
-
-  const { t } = useTranslation();
-
-  return (
-    <>
-      <Avatar
-        className={clsx(classes.database, classes.icon)}
-        title={
-          databaseSeverity === SeverityCode.Ok
-            ? t(labelDatabaseUpdateAndActive)
-            : t(labelDatabaseNotActive)
-        }
-      >
-        <StorageIcon />
-      </Avatar>
-      <Avatar
-        className={clsx(classes.latency, classes.icon)}
-        title={
-          latencySeverity === SeverityCode.Ok
-            ? t(labelNoLatencyDetected)
-            : t(labelLatencyDetected)
-        }
-      >
-        <LatencyIcon />
-      </Avatar>
-    </>
-  );
-};
-interface Props {
-  endpoint: string;
-  loaderWidth: number;
-  refreshInterval: number;
-}
-
-interface Issue {
+export interface Issue {
   critical: number;
   total: number;
   warning: number;
 }
-
+interface Props {
+  allowedPages: Array<string>;
+  endpoint: string;
+  loaderWidth: number;
+  refreshInterval: number;
+}
 interface Issues {
   [key: string]: Issue;
 }
@@ -149,10 +60,10 @@ const PollerMenu = ({
   endpoint,
   loaderWidth,
   refreshInterval,
+  allowedPages,
 }: Props): JSX.Element => {
   const theme = useTheme();
   const { t } = useTranslation();
-
   const [issues, setIssues] = React.useState<Issues | null>(null);
   const [isExporting, setIsExportingConfiguration] = React.useState<boolean>();
   const [toggled, setToggled] = React.useState<boolean>();
@@ -166,16 +77,18 @@ const PollerMenu = ({
     request: getData,
   });
 
-  const loadIssues = (): void => {
-    sendRequest(`./api/${endpoint}`)
-      .then((retrievedIssues) => {
-        setIssues(retrievedIssues);
-      })
-      .catch((error) => {
-        if (error.response && error.response.status === 401) {
-          setIssues(null);
-        }
-      });
+  const allowPollerConfiguration = allowedPages.includes(
+    pollerConfigurationTopologyPage,
+  );
+
+  const closeSubmenu = (): void => {
+    setToggled(!toggled);
+  };
+
+  const redirectsToPollersPage = (): void => {
+    closeSubmenu();
+
+    push(`/main.php?p=${pollerConfigurationTopologyPage}`);
   };
 
   React.useEffect(() => {
@@ -190,6 +103,18 @@ const PollerMenu = ({
     };
   }, []);
 
+  const loadIssues = (): void => {
+    sendRequest(`./api/${endpoint}`)
+      .then((retrievedIssues) => {
+        setIssues(retrievedIssues);
+      })
+      .catch((error) => {
+        if (error.response && error.response.status === 401) {
+          setIssues(null);
+        }
+      });
+  };
+
   const toggleDetailedView = (): void => {
     setToggled(!toggled);
   };
@@ -199,127 +124,136 @@ const PollerMenu = ({
   }
 
   return (
-    <>
-      <ClickAwayListener
-        onClickAway={(): void => {
-          if (!toggled) {
-            return;
-          }
-          toggleDetailedView();
-        }}
-      >
-        <>
-          <Grid
-            container
-            alignItems="center"
-            direction="row"
-            justifyContent="flex-start"
-            style={{
-              padding: theme.spacing('6px', '6px', '6px', '16px'),
-              paddingLeft: theme.spacing(2),
-            }}
-          >
-            <IconHeader
-              Icon={PollerIcon}
-              iconName={t(labelPoller)}
-              onClick={toggleDetailedView}
-            />
+    <ClickAwayListener
+      onClickAway={(): void => {
+        if (!toggled) {
+          return;
+        }
+        toggleDetailedView();
+      }}
+    >
+      <>
+        <Grid
+          container
+          alignItems="center"
+          direction="row"
+          justifyContent="flex-start"
+          style={{
+            padding: theme.spacing('6px', '6px', '6px', '16px'),
+            paddingLeft: theme.spacing(2),
+          }}
+        >
+          <IconHeader
+            Icon={PollerIcon}
+            iconName={t(labelPoller)}
+            onClick={toggleDetailedView}
+          />
 
-            <GetPollerStatusIcon issues={issues} />
+          <PollerStatusIcon issues={issues} />
 
-            <IconToggleSubmenu
-              iconType="arrow"
-              rotate={toggled}
-              onClick={toggleDetailedView}
-            />
-          </Grid>
-        </>
-      </ClickAwayListener>
-      <div className={classnames(styles.submenu, styles.pollers)}>
-        <div className={styles['submenu-content']}>
-          <ul
-            className={classnames(
-              styles['submenu-items'],
-              styles['list-unstyled'],
-            )}
-          >
-            <li className={styles['submenu-item']}>
-              <span className={styles['submenu-item-link']}>
-                <Typography variant="body2">{t('All pollers')}</Typography>
-                <Typography variant="body2">
-                  {issues.total ? issues.total : '...'}
-                </Typography>
-              </span>
-            </li>
-            {issues
-              ? Object.entries(issues).map(([key, issue]) => {
-                  let message = '';
+          <IconToggleSubmenu
+            iconType="arrow"
+            issues={issues}
+            rotate={toggled}
+            onClick={toggleDetailedView}
+          />
+        </Grid>
+        <Grid
+          container
+          alignItems="center"
+          direction="row"
+          justifyContent="flex-start"
+          style={{
+            color: theme.palette.background.paper,
+            display: 'block',
+            fontSize: 'small',
+            paddingLeft: theme.spacing(2),
+            textTransform: 'uppercase',
+          }}
+        >
+          {issues
+            ? Object.entries(issues).map(([key, issue]) => {
+                let message = '';
 
-                  if (key === 'database') {
-                    message = t('Database updates not active');
-                  } else if (key === 'stability') {
-                    message = t('Pollers not running');
-                  } else if (key === 'latency') {
-                    message = t('Latency detected');
-                  }
+                if (key === 'database') {
+                  message = t('Database updates not active');
+                } else if (key === 'stability') {
+                  message = t('Pollers not running');
+                } else if (key === 'latency') {
+                  message = t('Latency detected');
+                }
 
-                  return (
-                    <li className={styles['submenu-top-item']} key={key}>
-                      <span className={styles['submenu-item-link']}>
-                        <Typography variant="body2">{message} </Typography>
-                        <Typography variant="body2">
+                return (
+                  <li className={styles['submenu-top-item']} key={key}>
+                    <span className={styles['submenu-item-link']}>
+                      <Grid>
+                        <Grid>
+                          {message}
                           {issue.total ? issue.total : '...'}
-                        </Typography>
-                      </span>
-                      {Object.entries(issue).map(([elem, values]) => {
-                        if (values.poller) {
-                          const pollers = values.poller;
+                        </Grid>
+                      </Grid>
+                    </span>
+                    {Object.entries(issue).map(([elem, values]) => {
+                      if (values.poller) {
+                        const pollers = values.poller;
 
-                          return pollers.map((poller) => {
-                            let color = 'red';
-                            if (elem === 'warning') {
-                              color = 'orange';
-                            }
+                        return pollers.map((poller) => {
+                          let color = SeverityCode.High;
+                          if (elem === 'warning') {
+                            color = SeverityCode.Medium;
+                          }
 
-                            return (
-                              <span
-                                className={styles['submenu-item-link']}
-                                key={poller.name}
+                          return (
+                            <Grid
+                              className={styles['submenu-item-link']}
+                              key={poller.name}
+                            >
+                              <Grid
+                                className={classnames(
+                                  styles['dot-colored'],
+                                  styles[color],
+                                )}
                               >
-                                <span
-                                  className={classnames(
-                                    styles['dot-colored'],
-                                    styles[color],
-                                  )}
-                                >
-                                  <Typography variant="body2">
-                                    {poller.name}
-                                  </Typography>
-                                </span>
-                              </span>
-                            );
-                          });
-                        }
+                                <Typography variant="body2">
+                                  {poller.name}
+                                </Typography>
+                              </Grid>
+                            </Grid>
+                          );
+                        });
+                      }
 
-                        return null;
-                      })}
-                    </li>
-                  );
-                })
-              : null}
+                      return null;
+                    })}
+                  </li>
+                );
+              })
+            : null}
+          {allowPollerConfiguration && (
             <Button
               size="small"
               style={{ marginTop: '8px' }}
               variant="contained"
+              onClick={redirectsToPollersPage}
             >
               {t('Configure pollers')}
             </Button>
-          </ul>
+          )}
           <ExportConfiguration setIsExportingConfiguration={newExporting} />
-        </div>
-      </div>
-    </>
+        </Grid>
+      </>
+    </ClickAwayListener>
   );
 };
 
-export default PollerMenu;
+interface StateToProps {
+  allowedPages: Array<string>;
+}
+
+const mapStateToProps = (state): StateToProps => ({
+  allowedPages: allowedPagesSelector(state),
+});
+
+export default connect(mapStateToProps)(withRouter(PollerMenu)) as (
+  props: Props,
+) => JSX.Element;
