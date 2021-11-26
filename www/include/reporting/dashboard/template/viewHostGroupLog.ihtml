@@ -9,14 +9,12 @@
 </div>
 <table style='width:100%;' class="ListTable">
 	<tr class='ListHeader'>
+		<!-- hostgroup selection -->
+		<form {$formHostGroup.attributes} style="margin:0px;padding:0px;">&nbsp;
 		<td class="ListColHeaderLeft" style='white-space: nowrap; border-left-width:0.0px;border-left-style:none;'>
-			<!-- hostgroup selection -->
-			<form {$formHostGroup.attributes} style="margin:0px;padding:0px;">&nbsp;
-				&nbsp;&nbsp;{$formHostGroup.item.html}{$formHostGroup.hidden}
-			</form>
+				&nbsp;&nbsp;{$formPeriod.itemElement.html}{$formHostGroup.hidden}
 		</td>
 		<td style='padding:5px;vertical-align:top;'>
-			<form {$formPeriod.attributes} style="padding-bottom : 0px;">
 				{if $date_start != 0}
 				&nbsp;&nbsp;&nbsp;{$period_name} <span class="isTimestamp isDate">{$date_start} </span> {$to} <span class="isTimestamp isDate"> {$date_end}</span>
 				{/if}
@@ -26,8 +24,8 @@
 					{$formPeriod.StartDate.label} {$formPeriod.StartDate.html}&nbsp;
 					{$formPeriod.EndDate.label} {$formPeriod.EndDate.html}
 					{$formPeriod.button.html}{$formPeriod.hidden}
-			</form>
 		</td>
+		</form>
 		<td>
 			<a href="{$link_csv_url}"><img src="./img/icons/csv.png" class="ico-20" alt="Export CSV" title="{t}Export CSV{/t}" target="_blank"/></a>
 		</td>
@@ -35,7 +33,7 @@
 	<tr class='list_lvl_3'>
 		<td style='width:300px; padding:5px'>
 			<!-- chart drawing -->
-			{if $name}
+			{if $id}
 			<div id="chart" style="text-align: center; max-height: 180px; position: relative;" ></div>
 			{/if}
 		</td>

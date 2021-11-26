@@ -46,7 +46,7 @@ require_once './include/reporting/dashboard/initReport.php';
 /*
  *  Getting service group to report
  */
-$id = filter_var($_GET['item'] ?? $_POST['item'] ?? false, FILTER_VALIDATE_INT);
+$id = filter_var($_GET['itemElement'] ?? $_POST['itemElement'] ?? false, FILTER_VALIDATE_INT);
 /*
  * FORMS
  */
@@ -66,9 +66,9 @@ $serviceGroupRoute = array(
     './include/common/webServices/rest/internal.php?object=centreon_configuration_servicegroup'
     . '&action=defaultValues&target=service&field=service_sgs&id=' . $id,
 );
-$serviceGroupSelectBox = $serviceGroupForm->addElement(
+$serviceGroupSelectBox = $formPeriod->addElement(
     'select2',
-    'item',
+    'itemElement',
     _("Service Group"),
     [],
     $serviceGroupRoute
