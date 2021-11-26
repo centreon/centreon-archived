@@ -61,9 +61,6 @@ class CentreonAuth
     protected $debug;
     protected $dependencyInjector;
 
-    // Web UI or API
-    protected $source;
-
     // Flags
     public $passwdOk;
     protected $authType;
