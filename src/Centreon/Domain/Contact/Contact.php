@@ -275,9 +275,9 @@ class Contact implements UserInterface, ContactInterface
 
     /**
      * @param bool $isAdmin
-     * @return self
+     * @return ContactInterface
      */
-    public function setAdmin(bool $isAdmin): self
+    public function setAdmin(bool $isAdmin): ContactInterface
     {
         $this->isAdmin = $isAdmin;
         if ($this->isAdmin) {
