@@ -48,6 +48,8 @@ class CentreonAuth
     public const ENCRYPT_MD5 = 1;
     public const ENCRYPT_SHA1 = 2;
 
+    protected const SOURCE_LOCAL = 'local';
+
     // Declare Values
     public $userInfos;
     protected $login;
@@ -320,14 +322,14 @@ class CentreonAuth
                 $this->CentreonLog->setUID($this->userInfos["contact_id"]);
                 $this->CentreonLog->insertLog(
                     CentreonUserLog::TYPE_LOGIN,
-                    "[" . $this->source . "] [" . $_SERVER["REMOTE_ADDR"] . "] "
+                    "[" . self::SOURCE_LOCAL . "] [" . $_SERVER["REMOTE_ADDR"] . "] "
                         . "Authentication succeeded for '" . $username . "'"
                 );
             } else {
                 //  Take care before modifying this message pattern as it may break tools such as fail2ban
                 $this->CentreonLog->insertLog(
                     CentreonUserLog::TYPE_LOGIN,
-                    "[" . $this->source . "] [" . $_SERVER["REMOTE_ADDR"] . "] "
+                    "[" . self::SOURCE_LOCAL . "] [" . $_SERVER["REMOTE_ADDR"] . "] "
                         . "Authentication failed for '" . $username . "'"
                 );
                 $this->error = _('Your credentials are incorrect.');
@@ -367,7 +369,7 @@ class CentreonAuth
                 //  Take care before modifying this message pattern as it may break tools such as fail2ban
                 $this->CentreonLog->insertLog(
                     CentreonUserLog::TYPE_LOGIN,
-                    "[" . $this->source . "] [" . $_SERVER["REMOTE_ADDR"] . "] Authentication failed for '" . $username . "' : not found"
+                    "[" . self::SOURCE_LOCAL . "] [" . $_SERVER["REMOTE_ADDR"] . "] Authentication failed for '" . $username . "' : not found"
                 );
             }
             $this->error = _('Your credentials are incorrect.');
