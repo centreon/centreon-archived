@@ -77,7 +77,7 @@ if (
     }
 
     $useralias = $useraliasG ?? $useraliasP;
-    $password = $passwordG ? $passwordG : $passwordP;
+    $password = $passwordG ?? $passwordP;
 
     $token = "";
     if (isset($_REQUEST['token']) && $_REQUEST['token']) {
