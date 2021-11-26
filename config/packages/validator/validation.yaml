@@ -247,7 +247,7 @@ Centreon\Domain\Monitoring\ResourceFilter:
                 - Type:
                     type: string
                     groups: [Default]
-        stateTypes:
+        statusTypes:
             - Type:
                 type: array
                 groups: [Default]
