@@ -133,6 +133,8 @@ class Authenticate
      */
     public function execute(AuthenticateRequest $request, AuthenticateResponse $response): void
     {
+        $this->authorizeUserToAuthenticateOrFail($request->getLogin());
+
         $authenticationProvider = $this->findProviderOrFail($request->getProviderConfigurationName());
         $this->authenticateOrFail($authenticationProvider, $request);
         $providerUser = $this->getUserFromProviderOrFail($authenticationProvider);
@@ -202,6 +204,30 @@ class Authenticate
     }
 
     /**
+     * Check if user is allowed to authenticate or throw an Exception.
+     *
+     * @param string $userName
+     * @throws AuthenticationException
+     */
+    private function authorizeUserToAuthenticateOrFail(string $userName): void
+    {
+        $this->debug(
+            '[AUTHENTICATE] Check user authorization to log in web application',
+            ['user' => $userName]
+        );
+        $contact = $this->contactService->findByName($userName);
+        if ($contact !== null && !$contact->isAllowedToReachWeb()) {
+            $this->critical(
+                "[AUTHENTICATE] User is not allowed to reach web application",
+                [
+                    "user" => $userName
+                ]
+            );
+            throw AuthenticationException::notAllowedToReachWebApplication();
+        }
+    }
+
+    /**
      * Authenticate the user or throw an Exception.
      *
      * @param ProviderInterface $authenticationProvider
@@ -224,7 +250,7 @@ class Authenticate
 
         if (!$authenticationProvider->isAuthenticated()) {
             $this->critical(
-                "[AUTHENTICATE] Provider can't authenticate successfully user ",
+                "[AUTHENTICATE] Provider can't authenticate successfully user",
                 [
                     "provider_name" => $authenticationProvider->getName(),
                     "user" => $request->getLogin()

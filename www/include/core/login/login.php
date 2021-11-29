@@ -70,7 +70,12 @@ $form->addElement('text', 'useralias', null, $optionsAliasField);
 $optionsPasswordField = array('placeholder' => _("Password"), 'class' => 'inputclassicPass');
 $form->addElement('password', 'password', null, $optionsPasswordField);
 
-$submitLogin = $form->addElement('submit', 'submitLogin', _("Connect"), array('class' => 'btc bt_info'));
+$submitLogin = $form->addElement(
+    'submit',
+    'submitLogin',
+    _("Connect"),
+    ['class' => 'btc bt_info']
+);
 
 $loginValidate = $form->validate();
 
