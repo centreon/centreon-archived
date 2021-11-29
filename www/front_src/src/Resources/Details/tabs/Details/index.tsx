@@ -2,11 +2,12 @@ import * as React from 'react';
 
 import { equals, isNil } from 'ramda';
 import { Responsive } from '@visx/visx';
+import { useAtomValue } from 'jotai/utils';
 
 import { styled, makeStyles } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 
-import { ResourceDetails } from '../../models';
+import { detailsAtom } from '../../detailsAtoms';
 
 import SortableCards from './SortableCards';
 
@@ -34,11 +35,9 @@ const LoadingSkeleton = (): JSX.Element => {
   );
 };
 
-interface Props {
-  details?: ResourceDetails;
-}
+const DetailsTab = (): JSX.Element => {
+  const details = useAtomValue(detailsAtom);
 
-const DetailsTab = ({ details }: Props): JSX.Element => {
   return (
     <Responsive.ParentSize>
       {({ width }): JSX.Element => {

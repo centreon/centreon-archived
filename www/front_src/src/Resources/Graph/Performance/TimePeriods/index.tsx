@@ -3,6 +3,7 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { always, cond, lt, lte, map, not, pick, T } from 'ramda';
 import { Responsive } from '@visx/visx';
+import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 
 import {
   Paper,
@@ -19,9 +20,14 @@ import { useMemoComponent } from '@centreon/ui';
 
 import { timePeriods } from '../../../Details/tabs/Graph/models';
 import GraphOptions from '../ExportableGraphWithTimeline/GraphOptions';
-import { useResourceContext } from '../../../Context';
 
 import CustomTimePeriodPickers from './CustomTimePeriodPickers';
+import {
+  changeCustomTimePeriodDerivedAtom,
+  changeSelectedTimePeriodDerivedAtom,
+  customTimePeriodAtom,
+  selectedTimePeriodAtom,
+} from './timePeriodAtoms';
 
 interface StylesProps {
   disablePaper: boolean;
@@ -64,12 +70,14 @@ const TimePeriodButtonGroup = ({
   const { t } = useTranslation();
   const theme = useTheme();
 
-  const {
-    customTimePeriod,
-    changeCustomTimePeriod,
-    changeSelectedTimePeriod,
-    selectedTimePeriod,
-  } = useResourceContext();
+  const customTimePeriod = useAtomValue(customTimePeriodAtom);
+  const selectedTimePeriod = useAtomValue(selectedTimePeriodAtom);
+  const changeCustomTimePeriod = useUpdateAtom(
+    changeCustomTimePeriodDerivedAtom,
+  );
+  const changeSelectedTimePeriod = useUpdateAtom(
+    changeSelectedTimePeriodDerivedAtom,
+  );
 
   const translatedTimePeriodOptions = timePeriodOptions.map((timePeriod) => ({
     ...timePeriod,

@@ -3,6 +3,8 @@ import * as React from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { useTranslation } from 'react-i18next';
 import { move, isNil } from 'ramda';
+import { useUpdateAtom } from 'jotai/utils';
+import { useAtom } from 'jotai';
 
 import {
   Typography,
@@ -14,9 +16,9 @@ import MoveIcon from '@material-ui/icons/UnfoldMore';
 
 import { MemoizedSectionPanel as SectionPanel, useRequest } from '@centreon/ui';
 
-import { useResourceContext } from '../../Context';
 import { labelEditFilters } from '../../translatedLabels';
 import { patchFilter } from '../api';
+import { customFiltersAtom, editPanelOpenAtom } from '../filterAtoms';
 
 import EditFilterCard from './EditFilterCard';
 
@@ -55,12 +57,12 @@ const EditFiltersPanel = (): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
 
-  const { customFilters, setEditPanelOpen, setCustomFilters } =
-    useResourceContext();
-
   const { sendRequest, sending } = useRequest({
     request: patchFilter,
   });
+
+  const [customFilters, setCustomFilters] = useAtom(customFiltersAtom);
+  const setEditPanelOpen = useUpdateAtom(editPanelOpenAtom);
 
   const closeEditPanel = (): void => {
     setEditPanelOpen(false);

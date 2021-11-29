@@ -753,7 +753,6 @@ sub submitResult_do {
         } else {
             $submit = '/bin/echo "' . $prefix . "[$datetime] $str\" >> " . $self->{cmdFile};
         }
-        $submit = '/bin/echo "' . $prefix . "[$datetime] $str\" >> " . $self->{cmdFile};
     } else {
         $str =~ s/'/'\\''/g;
         $str =~ s/"/\\"/g;

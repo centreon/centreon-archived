@@ -11,9 +11,16 @@ import {
   act,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { Provider } from 'jotai';
 
-import { useUserContext } from '@centreon/ui-context';
 import { SeverityCode } from '@centreon/ui';
+import {
+  acknowledgementAtom,
+  aclAtom,
+  downtimeAtom,
+  refreshIntervalAtom,
+  userAtom,
+} from '@centreon/centreon-frontend/packages/ui-context/src';
 
 import {
   labelAcknowledgedBy,
@@ -50,17 +57,18 @@ import {
 } from '../translatedLabels';
 import useLoadResources from '../Listing/useLoadResources';
 import useListing from '../Listing/useListing';
-import useFilter from '../Filter/useFilter';
-import Context, { ResourceContext } from '../Context';
+import useFilter from '../testUtils/useFilter';
+import Context, { ResourceContext } from '../testUtils/Context';
 import { Resource } from '../models';
+import useLoadDetails from '../testUtils/useLoadDetails';
 import useDetails from '../Details/useDetails';
+import useActions from '../testUtils/useActions';
 
 import {
   acknowledgeEndpoint,
   downtimeEndpoint,
   checkEndpoint,
 } from './api/endpoint';
-import useActions from './useActions';
 import { disacknowledgeEndpoint } from './Resource/Disacknowledge/api';
 import { submitStatusEndpoint } from './Resource/SubmitStatus/api';
 
@@ -70,53 +78,49 @@ const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 const onRefresh = jest.fn();
 
+jest.mock('@centreon/ui-context', () =>
+  jest.requireActual('@centreon/centreon-frontend/packages/ui-context'),
+);
+
 jest.mock('react-redux', () => ({
   ...(jest.requireActual('react-redux') as jest.Mocked<unknown>),
   useSelector: jest.fn(),
 }));
 
-const mockUserContext = {
-  acknowledgement: {
-    persistent: true,
-    sticky: false,
-  },
-  acl: {
-    actions: {
-      host: {
-        acknowledgement: true,
-        check: true,
-        comment: true,
-        disacknowledgement: true,
-        downtime: true,
-        submit_status: true,
-      },
-      service: {
-        acknowledgement: true,
-        check: true,
-        comment: true,
-        disacknowledgement: true,
-        downtime: true,
-        submit_status: true,
-      },
-    },
-  },
+const mockUser = {
   alias: 'admin',
-  downtime: {
-    default_duration: 7200,
-  },
+  isExportButtonEnabled: true,
   locale: 'en',
-  name: 'admin',
-
-  refreshInterval: 15,
   timezone: 'Europe/Paris',
 };
-
-jest.mock('@centreon/centreon-frontend/packages/ui-context', () => ({
-  ...(jest.requireActual('@centreon/ui-context') as jest.Mocked<unknown>),
-  useUserContext: jest.fn(),
-}));
-
-const mockedUserContext = useUserContext as jest.Mock;
+const mockRefreshInterval = 15;
+const mockDowntime = {
+  default_duration: 7200,
+};
+const mockAcl = {
+  actions: {
+    host: {
+      acknowledgement: true,
+      check: true,
+      comment: true,
+      disacknowledgement: true,
+      downtime: true,
+      submit_status: true,
+    },
+    service: {
+      acknowledgement: true,
+      check: true,
+      comment: true,
+      disacknowledgement: true,
+      downtime: true,
+      submit_status: true,
+    },
+  },
+};
+const mockAcknowledgement = {
+  persistent: true,
+  sticky: false,
+};
 
 jest.mock('../icons/Downtime');
 
@@ -144,10 +148,12 @@ const service = {
 } as Resource;
 
 const ActionsWithContext = (): JSX.Element => {
-  const detailsState = useDetails();
+  const detailsState = useLoadDetails();
   const listingState = useListing();
   const actionsState = useActions();
   const filterState = useFilter();
+
+  useDetails();
 
   context = {
     ...detailsState,
@@ -163,8 +169,20 @@ const ActionsWithContext = (): JSX.Element => {
   );
 };
 
-const renderActions = (): RenderResult => {
-  return render(<ActionsWithContext />);
+const renderActions = (aclAtions = mockAcl): RenderResult => {
+  return render(
+    <Provider
+      initialValues={[
+        [userAtom, mockUser],
+        [refreshIntervalAtom, mockRefreshInterval],
+        [downtimeAtom, mockDowntime],
+        [aclAtom, aclAtions],
+        [acknowledgementAtom, mockAcknowledgement],
+      ]}
+    >
+      <ActionsWithContext />
+    </Provider>,
+  );
 };
 
 describe(Actions, () => {
@@ -188,15 +206,11 @@ describe(Actions, () => {
       .mockResolvedValueOnce({ data: [] });
 
     mockDate.set(mockNow);
-
-    mockedUserContext.mockReturnValue(mockUserContext);
   });
 
   afterEach(() => {
     mockDate.reset();
     mockedAxios.get.mockReset();
-
-    mockedUserContext.mockReset();
   });
 
   it('executes a listing request when the refresh button is clicked', async () => {
@@ -244,7 +258,7 @@ describe(Actions, () => {
       const selectedResources = [host];
 
       act(() => {
-        context.setSelectedResources(selectedResources);
+        context.setSelectedResources?.(selectedResources);
       });
 
       await waitFor(() =>
@@ -275,7 +289,7 @@ describe(Actions, () => {
     const selectedResources = [host, service];
 
     act(() => {
-      context.setSelectedResources(selectedResources);
+      context.setSelectedResources?.(selectedResources);
     });
 
     fireEvent.click(getByText(labelAcknowledge));
@@ -317,7 +331,7 @@ describe(Actions, () => {
     const selectedResources = [host];
 
     act(() => {
-      context.setSelectedResources(selectedResources);
+      context.setSelectedResources?.(selectedResources);
     });
 
     fireEvent.click(getByTitle(labelMoreActions).firstChild as HTMLElement);
@@ -348,7 +362,7 @@ describe(Actions, () => {
     const selectedResources = [service];
 
     act(() => {
-      context.setSelectedResources(selectedResources);
+      context.setSelectedResources?.(selectedResources);
     });
 
     fireEvent.click(getByText(labelAcknowledge));
@@ -364,7 +378,7 @@ describe(Actions, () => {
     const selectedResources = [service];
 
     act(() => {
-      context.setSelectedResources(selectedResources);
+      context.setSelectedResources?.(selectedResources);
     });
 
     fireEvent.click(getByTitle(labelMoreActions).firstChild as HTMLElement);
@@ -383,7 +397,7 @@ describe(Actions, () => {
     const selectedResources = [host];
 
     act(() => {
-      context.setSelectedResources(selectedResources);
+      context.setSelectedResources?.(selectedResources);
     });
 
     fireEvent.click(last(getAllByText(labelSetDowntime)) as HTMLElement);
@@ -409,7 +423,7 @@ describe(Actions, () => {
     const selectedResources = [host];
 
     act(() => {
-      context.setSelectedResources(selectedResources);
+      context.setSelectedResources?.(selectedResources);
     });
 
     await waitFor(() =>
@@ -438,7 +452,7 @@ describe(Actions, () => {
     const selectedResources = [host];
 
     act(() => {
-      context.setSelectedResources(selectedResources);
+      context.setSelectedResources?.(selectedResources);
     });
 
     fireEvent.click(last(getAllByText(labelSetDowntime)) as HTMLElement);
@@ -475,7 +489,7 @@ describe(Actions, () => {
     const selectedResources = [host, service];
 
     act(() => {
-      context.setSelectedResources(selectedResources);
+      context.setSelectedResources?.(selectedResources);
     });
 
     mockedAxios.get.mockResolvedValueOnce({ data: {} });
@@ -501,7 +515,7 @@ describe(Actions, () => {
     const { getByText, getByLabelText, getByTitle } = renderActions();
 
     act(() => {
-      context.setSelectedResources([service]);
+      context.setSelectedResources?.([service]);
     });
 
     fireEvent.click(getByTitle(labelMoreActions).firstChild as HTMLElement);
@@ -553,7 +567,7 @@ describe(Actions, () => {
     });
 
     act(() => {
-      context.setSelectedResources([host]);
+      context.setSelectedResources?.([host]);
     });
 
     fireEvent.click(getByTitle(labelMoreActions).firstChild as HTMLElement);
@@ -569,36 +583,31 @@ describe(Actions, () => {
   });
 
   it('cannot execute an action when associated ACL are not sufficient', async () => {
-    mockedUserContext.mockReset().mockReturnValue({
-      ...mockUserContext,
-      acl: {
-        actions: {
-          host: {
-            acknowledgement: false,
-            check: false,
-            comment: false,
-            disacknowledgement: false,
-            downtime: false,
-            submit_status: false,
-          },
-          service: {
-            acknowledgement: false,
-            check: false,
-            comment: false,
-            disacknowledgement: false,
-            downtime: false,
-            submit_status: false,
-          },
+    const { getByText, getByTitle } = renderActions({
+      actions: {
+        host: {
+          acknowledgement: false,
+          check: false,
+          comment: false,
+          disacknowledgement: false,
+          downtime: false,
+          submit_status: false,
+        },
+        service: {
+          acknowledgement: false,
+          check: false,
+          comment: false,
+          disacknowledgement: false,
+          downtime: false,
+          submit_status: false,
         },
       },
     });
 
-    const { getByText, getByTitle } = renderActions();
-
     const selectedResources = [host, service];
 
     act(() => {
-      context.setSelectedResources(selectedResources);
+      context.setSelectedResources?.(selectedResources);
     });
 
     await waitFor(() => {
@@ -618,9 +627,9 @@ describe(Actions, () => {
 
   const cannotDowntimeServicesAcl = {
     actions: {
-      ...mockUserContext.acl.actions,
+      ...mockAcl.actions,
       service: {
-        ...mockUserContext.acl.actions.service,
+        ...mockAcl.actions.service,
         downtime: false,
       },
     },
@@ -628,9 +637,9 @@ describe(Actions, () => {
 
   const cannotAcknowledgeServicesAcl = {
     actions: {
-      ...mockUserContext.acl.actions,
+      ...mockAcl.actions,
       service: {
-        ...mockUserContext.acl.actions.service,
+        ...mockAcl.actions.service,
         acknowledgement: false,
       },
     },
@@ -638,9 +647,9 @@ describe(Actions, () => {
 
   const cannotDisacknowledgeServicesAcl = {
     actions: {
-      ...mockUserContext.acl.actions,
+      ...mockAcl.actions,
       service: {
-        ...mockUserContext.acl.actions.service,
+        ...mockAcl.actions.service,
         disacknowledgement: false,
       },
     },
@@ -648,9 +657,9 @@ describe(Actions, () => {
 
   const cannotDowntimeHostsAcl = {
     actions: {
-      ...mockUserContext.acl.actions,
+      ...mockAcl.actions,
       host: {
-        ...mockUserContext.acl.actions.host,
+        ...mockAcl.actions.host,
         downtime: false,
       },
     },
@@ -658,9 +667,9 @@ describe(Actions, () => {
 
   const cannotAcknowledgeHostsAcl = {
     actions: {
-      ...mockUserContext.acl.actions,
+      ...mockAcl.actions,
       host: {
-        ...mockUserContext.acl.actions.host,
+        ...mockAcl.actions.host,
         acknowledgement: false,
       },
     },
@@ -668,9 +677,9 @@ describe(Actions, () => {
 
   const cannotDisacknowledgeHostsAcl = {
     actions: {
-      ...mockUserContext.acl.actions,
+      ...mockAcl.actions,
       host: {
-        ...mockUserContext.acl.actions.host,
+        ...mockAcl.actions.host,
         disacknowledgement: false,
       },
     },
@@ -710,17 +719,12 @@ describe(Actions, () => {
   ])(
     'displays a warning message when trying to %p with limited ACL',
     async (_, labelAction, labelAclWarning, acl) => {
-      mockedUserContext.mockReset().mockReturnValue({
-        ...mockUserContext,
-        acl,
-      });
-
-      const { getByText, getByTitle } = renderActions();
+      const { getByText, getByTitle } = renderActions(acl);
 
       const selectedResources = [host, service];
 
       act(() => {
-        context.setSelectedResources(selectedResources);
+        context.setSelectedResources?.(selectedResources);
       });
 
       fireEvent.click(getByTitle(labelMoreActions).firstChild as HTMLElement);
@@ -755,15 +759,10 @@ describe(Actions, () => {
   ])(
     'disables services propagation option when trying to %p on hosts when ACL on services are not sufficient',
     async (_, labelAction, labelAppliesOnServices, acl) => {
-      mockedUserContext.mockReset().mockReturnValue({
-        ...mockUserContext,
-        acl,
-      });
-
-      const { getByText, getByTitle } = renderActions();
+      const { getByText, getByTitle } = renderActions(acl);
 
       act(() => {
-        context.setSelectedResources([host]);
+        context.setSelectedResources?.([host]);
       });
 
       fireEvent.click(getByTitle(labelMoreActions).firstChild as HTMLElement);
@@ -781,23 +780,18 @@ describe(Actions, () => {
   );
 
   it('disables the submit status action when one of the following condition is met: ACL are not sufficient, more than one resource is selected, selected resource is not passive', async () => {
-    const { getByText, getByTitle } = renderActions();
-
-    mockedUserContext.mockReset().mockReturnValue({
-      ...mockUserContext,
-      acl: {
-        actions: {
-          ...mockUserContext.acl.actions,
-          host: {
-            ...mockUserContext.acl.actions.host,
-            submit_status: false,
-          },
+    const { getByText, getByTitle } = renderActions({
+      actions: {
+        ...mockAcl.actions,
+        host: {
+          ...mockAcl.actions.host,
+          submit_status: false,
         },
       },
     });
 
     act(() => {
-      context.setSelectedResources([host, service]);
+      context.setSelectedResources?.([host, service]);
     });
 
     fireEvent.click(getByTitle(labelMoreActions).firstChild as HTMLElement);
@@ -810,7 +804,7 @@ describe(Actions, () => {
     });
 
     act(() => {
-      context.setSelectedResources([host]);
+      context.setSelectedResources?.([host]);
     });
 
     await waitFor(() => {
@@ -821,7 +815,7 @@ describe(Actions, () => {
     });
 
     act(() => {
-      context.setSelectedResources([service]);
+      context.setSelectedResources?.([service]);
     });
 
     await waitFor(() => {
@@ -832,7 +826,7 @@ describe(Actions, () => {
     });
 
     act(() => {
-      context.setSelectedResources([{ ...service, passive_checks: false }]);
+      context.setSelectedResources?.([{ ...service, passive_checks: false }]);
     });
 
     await waitFor(() => {
@@ -844,23 +838,18 @@ describe(Actions, () => {
   });
 
   it('disables the comment action when the ACL are not sufficient or more than one resource is selected', async () => {
-    const { getByText, getByTitle } = renderActions();
-
-    mockedUserContext.mockReset().mockReturnValue({
-      ...mockUserContext,
-      acl: {
-        actions: {
-          ...mockUserContext.acl.actions,
-          host: {
-            ...mockUserContext.acl.actions.host,
-            comment: false,
-          },
+    const { getByText, getByTitle } = renderActions({
+      actions: {
+        ...mockAcl.actions,
+        host: {
+          ...mockAcl.actions.host,
+          comment: false,
         },
       },
     });
 
     act(() => {
-      context.setSelectedResources([host, service]);
+      context.setSelectedResources?.([host, service]);
     });
 
     fireEvent.click(getByTitle(labelMoreActions).firstChild as HTMLElement);
@@ -873,7 +862,7 @@ describe(Actions, () => {
     });
 
     act(() => {
-      context.setSelectedResources([host]);
+      context.setSelectedResources?.([host]);
     });
 
     await waitFor(() => {
@@ -884,7 +873,7 @@ describe(Actions, () => {
     });
 
     act(() => {
-      context.setSelectedResources([service]);
+      context.setSelectedResources?.([service]);
     });
 
     await waitFor(() => {
@@ -899,7 +888,7 @@ describe(Actions, () => {
     const { getByText } = renderActions();
 
     act(() => {
-      context.setSelectedResources([
+      context.setSelectedResources?.([
         {
           ...host,
           status: {
