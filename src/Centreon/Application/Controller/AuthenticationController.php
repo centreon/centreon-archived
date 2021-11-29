@@ -37,6 +37,7 @@ use Centreon\Domain\Authentication\UseCase\AuthenticateApiRequest;
 use Centreon\Domain\Authentication\UseCase\AuthenticateApiResponse;
 use Centreon\Domain\Authentication\UseCase\FindProvidersConfigurations;
 use Centreon\Domain\Authentication\UseCase\FindProvidersConfigurationsResponse;
+use Centreon\Domain\Authentication\Exception\AuthenticationException;
 use Security\Infrastructure\Authentication\API\Model_2110\ApiAuthenticationFactory;
 use Security\Infrastructure\Authentication\API\Model_2110\ProvidersConfigurationsFactory;
 
@@ -45,6 +46,8 @@ use Security\Infrastructure\Authentication\API\Model_2110\ProvidersConfiguration
  */
 class AuthenticationController extends AbstractController
 {
+    private const INVALID_CREDENTIALS_MESSAGE = 'Invalid credentials';
+
     /**
      * Entry point used to identify yourself and retrieve an authentication token.
      * (If view_response_listener = true, we need to write the following
@@ -63,7 +66,18 @@ class AuthenticationController extends AbstractController
         $password = $contentBody['security']['credentials']['password'] ?? '';
 
         $request = new AuthenticateApiRequest($login, $password);
-        $authenticate->execute($request, $response);
+
+        try {
+            $authenticate->execute($request, $response);
+        } catch (AuthenticationException $e) {
+            return $this->view(
+                [
+                    "code" => Response::HTTP_UNAUTHORIZED,
+                    "message" => _(self::INVALID_CREDENTIALS_MESSAGE),
+                ],
+                Response::HTTP_UNAUTHORIZED
+            );
+        }
 
         return $this->view(ApiAuthenticationFactory::createFromResponse($response));
     }
@@ -83,7 +97,7 @@ class AuthenticationController extends AbstractController
         if ($token === null) {
             return $this->view([
                 "code" => Response::HTTP_UNAUTHORIZED,
-                "message" => 'Invalid credentials'
+                "message" => _(self::INVALID_CREDENTIALS_MESSAGE)
             ], Response::HTTP_UNAUTHORIZED);
         }
 
@@ -142,7 +156,18 @@ class AuthenticationController extends AbstractController
             $clientIp
         );
 
-        $authenticate->execute($authenticateRequest, $response);
+        try {
+            $authenticate->execute($authenticateRequest, $response);
+        } catch (AuthenticationException $e) {
+            return $this->view(
+                [
+                    "code" => Response::HTTP_UNAUTHORIZED,
+                    "message" => _(self::INVALID_CREDENTIALS_MESSAGE),
+                ],
+                Response::HTTP_UNAUTHORIZED
+            );
+        }
+
         return $this->view($response->getRedirectionUriApi());
     }
 }
