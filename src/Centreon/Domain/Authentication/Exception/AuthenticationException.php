@@ -49,6 +49,14 @@ class AuthenticationException extends \Exception
     /**
      * @return self
      */
+    public static function notAllowedToReachWebApplication(): self
+    {
+        return new self(_('User is not allowed to reach web application'));
+    }
+
+    /**
+     * @return self
+     */
     public static function userNotFound(): self
     {
         return new self(_('User cannot be retrieved from the provider'));
