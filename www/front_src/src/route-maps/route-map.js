@@ -1,4 +1,5 @@
 const routeMap = {
+  authentication: '/administration/authentication',
   extensionsManagerPage: '/administration/extensions/manager',
   notAllowedPage: '/not-allowed',
   pollerList: '/main.php?p=60901',
