@@ -369,7 +369,8 @@ class CentreonAuth
                 //  Take care before modifying this message pattern as it may break tools such as fail2ban
                 $this->CentreonLog->insertLog(
                     CentreonUserLog::TYPE_LOGIN,
-                    "[" . self::SOURCE_LOCAL . "] [" . $_SERVER["REMOTE_ADDR"] . "] Authentication failed for '" . $username . "' : not found"
+                    "[" . self::SOURCE_LOCAL . "] [" . $_SERVER["REMOTE_ADDR"] . "] "
+                        . "Authentication failed for '" . $username . "' : not found"
                 );
             }
             $this->error = _('Your credentials are incorrect.');
