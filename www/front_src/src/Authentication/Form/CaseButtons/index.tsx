@@ -27,11 +27,12 @@ import {
   labelStrong,
   labelUpperCase,
   labelWeak,
-} from '../translatedLabels';
-import { SecurityPolicy } from '../models';
-import Progress from '../Progress';
+} from '../../translatedLabels';
+import { SecurityPolicy } from '../../models';
+import Progress from '../../Progress';
+import { getFields } from '../utils';
 
-import { getFields } from './utils';
+import LabelWithTooltip from './LabelWithTooltip';
 
 const activeButtonProps = {
   variant: 'contained',
@@ -105,12 +106,10 @@ const CaseButtons = (): JSX.Element => {
             color="primary"
             onClick={selectCase(hasLowerCaseName)}
           >
-            <Tooltip
-              placement="top"
-              title={t(labelForceToUseLowerCase) as string}
-            >
-              <div>{labelLowerCase}</div>
-            </Tooltip>
+            <LabelWithTooltip
+              label={labelLowerCase}
+              tooltipLabel={labelForceToUseLowerCase}
+            />
           </Button>
           <Button
             {...(hasUpperCase && activeButtonProps)}
@@ -118,12 +117,10 @@ const CaseButtons = (): JSX.Element => {
             color="primary"
             onClick={selectCase(hasUpperCaseName)}
           >
-            <Tooltip
-              placement="top"
-              title={t(labelForceToUseUpperCase) as string}
-            >
-              <div>{labelUpperCase}</div>
-            </Tooltip>
+            <LabelWithTooltip
+              label={labelUpperCase}
+              tooltipLabel={labelForceToUseUpperCase}
+            />
           </Button>
           <Button
             {...(hasNumber && activeButtonProps)}
@@ -131,12 +128,10 @@ const CaseButtons = (): JSX.Element => {
             color="primary"
             onClick={selectCase(hasNumberName)}
           >
-            <Tooltip
-              placement="top"
-              title={t(labelForceToUseNumbers) as string}
-            >
-              <div>{labelNumber}</div>
-            </Tooltip>
+            <LabelWithTooltip
+              label={labelNumber}
+              tooltipLabel={labelForceToUseNumbers}
+            />
           </Button>
           <Button
             {...(hasSpecialCharacter && activeButtonProps)}
@@ -144,12 +139,10 @@ const CaseButtons = (): JSX.Element => {
             color="primary"
             onClick={selectCase(hasSpecialCharacterName)}
           >
-            <Tooltip
-              placement="top"
-              title={t(labelForceToUseSpecialCharacters) as string}
-            >
-              <div>{labelSpecialCharacters}</div>
-            </Tooltip>
+            <LabelWithTooltip
+              label={labelSpecialCharacters}
+              tooltipLabel={labelForceToUseSpecialCharacters}
+            />
           </Button>
         </ButtonGroup>
         <Progress max={4} thresholds={thresholds} value={thresholdValue} />
