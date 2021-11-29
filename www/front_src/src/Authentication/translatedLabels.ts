@@ -1,0 +1,19 @@
+export const labelDefinePasswordSecurityPolicy =
+  'Define the password security policy';
+export const labelPasswordCasePolicy = 'Password case policy';
+export const labelPasswordLength = 'Password minimum length';
+export const labelMinimum8Characters = 'Minimum 8 characters';
+export const labelForceToUseUpperCase = 'Force to use upper case';
+export const labelForceToUseLowerCase = 'Force to use lower case';
+export const labelForceToUseNumbers = 'Force to use numbers';
+export const labelForceToUseSpecialCharacters =
+  'Force to use special characters';
+export const labelRequired = 'Required';
+export const labelLowerCase = 'a-z';
+export const labelUpperCase = 'A-Z';
+export const labelNumber = '0-9';
+export const labelSpecialCharacters = '/*+&...';
+export const labelPasswordCases = 'Password cases';
+export const labelWeak = 'Weak';
+export const labelGood = 'Good';
+export const labelStrong = 'Strong';
