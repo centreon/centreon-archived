@@ -8,7 +8,7 @@ import { makeStyles, Typography } from '@material-ui/core';
 
 import { TextField } from '@centreon/ui';
 
-import { Unit } from './models';
+import { Unit } from '../models';
 
 const weeksUnit = 'weeks';
 

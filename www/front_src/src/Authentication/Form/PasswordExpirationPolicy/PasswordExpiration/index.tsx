@@ -5,7 +5,7 @@ import { useFormikContext } from 'formik';
 
 import { FormHelperText, makeStyles, Typography } from '@material-ui/core';
 
-import TimeInput from '../../../TimeInput';
+import TimeInput from '../../../TimeInputs/TimeInput';
 import {
   labelMonth,
   labelMonths,
@@ -15,6 +15,7 @@ import {
 } from '../../../translatedLabels';
 import { SecurityPolicy } from '../../../models';
 import { getField } from '../../utils';
+import TimeInputs from '../../../TimeInputs';
 
 const passwordExpirationFieldName = 'passwordExpiration';
 
@@ -54,29 +55,12 @@ const PasswordExpiration = (): JSX.Element => {
   return (
     <div className={classes.passwordExpirationContainer}>
       <Typography variant="h6">{t(labelPasswordExpiration)}</Typography>
-      <div className={classes.timeInputs}>
-        <TimeInput
-          getAbsoluteValue
-          labels={{
-            plural: labelMonths,
-            singular: labelMonth,
-          }}
-          name={`${passwordExpirationFieldName}_${labelMonth}`}
-          timeValue={passwordExpirationValue}
-          unit="months"
-          onChange={change}
-        />
-        <TimeInput
-          labels={{
-            plural: labelDays,
-            singular: labelDay,
-          }}
-          name={`${passwordExpirationFieldName}_${labelDay}`}
-          timeValue={passwordExpirationValue}
-          unit="days"
-          onChange={change}
-        />
-      </div>
+      <TimeInputs
+        baseName={passwordExpirationFieldName}
+        timeValue={passwordExpirationValue}
+        units={['months', 'days']}
+        onChange={change}
+      />
       {passwordExpirationError && (
         <FormHelperText error>{passwordExpirationError}</FormHelperText>
       )}

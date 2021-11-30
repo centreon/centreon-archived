@@ -26,4 +26,4 @@ export interface SecurityPolicyAPI {
   password_min_length: number;
 }
 
-export type Unit = DurationUnitType | 'weeks';
+export type Unit = DurationUnitType;
