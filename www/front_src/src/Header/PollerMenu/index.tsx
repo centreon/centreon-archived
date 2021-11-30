@@ -12,6 +12,7 @@ import {
   Button,
   ClickAwayListener,
   makeStyles,
+  Paper,
   Typography,
 } from '@material-ui/core';
 
@@ -68,6 +69,10 @@ interface PollerData {
 }
 
 const useStyles = makeStyles((theme) => ({
+  confButton: {
+    display: 'flex',
+    marginTop: theme.spacing(1),
+  },
   label: {
     color: theme.palette.common.white,
   },
@@ -95,7 +100,6 @@ const PollerMenu = ({
 
   const [issues, setIssues] = React.useState<Issues | null>(null);
   const [totalPoller, setTotal] = React.useState<PollerData | number>(0);
-
   const [isExporting, setIsExportingConfiguration] = React.useState<boolean>();
   const [toggled, setToggled] = React.useState<boolean>(false);
   const interval = React.useRef<number>();
@@ -111,12 +115,6 @@ const PollerMenu = ({
   const closeSubmenu = (): void => {
     setToggled(!toggled);
   };
-
-  // const redirectsToPollersPage = (): void => {
-  //   push(`/main.php?p=${pollerConfigurationTopologyPage}`);
-
-  //   closeSubmenu();
-  // };
 
   React.useEffect(() => {
     loadPollerData();
@@ -223,14 +221,15 @@ const PollerMenu = ({
                   )}
                   to={pollerConfigurationTopologyPage}
                 >
-                  <Button
-                    size="medium"
-                    style={{ marginTop: '8px' }}
-                    variant="contained"
-                    onClick={closeSubmenu}
-                  >
-                    {t(labelConfigurePollers)}
-                  </Button>
+                  <Paper className={classes.confButton}>
+                    <Button
+                      size="small"
+                      variant="contained"
+                      onClick={closeSubmenu}
+                    >
+                      {t(labelConfigurePollers)}
+                    </Button>
+                  </Paper>
                 </Link>
               )}
               <ExportConfiguration setIsExportingConfiguration={newExporting} />
