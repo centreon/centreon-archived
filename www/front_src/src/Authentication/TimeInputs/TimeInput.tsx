@@ -59,45 +59,50 @@ const TimeInput = ({
 
   const functionGetDurationValue = getAbsoluteValue ? 'as' : 'get';
 
-  const changeInput = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    const value = parseInt(path(['target', 'value'], event) as string, 10);
+  const changeInput = React.useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>): void => {
+      const value = parseInt(path(['target', 'value'], event) as string, 10);
 
-    const currentDuration = dayjs.duration(timeValue || 0);
+      const currentDuration = dayjs.duration(timeValue || 0);
 
-    if (Number.isNaN(value)) {
+      if (Number.isNaN(value)) {
+        const previousValue = Math.floor(
+          currentDuration[functionGetDurationValue](unit),
+        );
+        onChange(
+          currentDuration
+            .clone()
+            .subtract(previousValue, unit)
+            .as('milliseconds'),
+        );
+
+        return;
+      }
+
       const previousValue = Math.floor(
         currentDuration[functionGetDurationValue](unit),
       );
+      const diffDuration = value - previousValue;
+      if (
+        equals(unit, 'months') &&
+        equals(currentDuration.clone().add(diffDuration, unit).asMonths(), 12)
+      ) {
+        onChange(
+          currentDuration
+            .clone()
+            .subtract(previousValue, 'months')
+            .add(1, 'years')
+            .asMilliseconds(),
+        );
+
+        return;
+      }
       onChange(
-        currentDuration
-          .clone()
-          .subtract(previousValue, unit)
-          .as('milliseconds'),
+        currentDuration.clone().add(diffDuration, unit).asMilliseconds(),
       );
-
-      return;
-    }
-
-    const previousValue = Math.floor(
-      currentDuration[functionGetDurationValue](unit),
-    );
-    const diffDuration = value - previousValue;
-    if (
-      equals(unit, 'months') &&
-      equals(currentDuration.clone().add(diffDuration, unit).asMonths(), 12)
-    ) {
-      onChange(
-        currentDuration
-          .clone()
-          .subtract(previousValue, 'months')
-          .add(1, 'years')
-          .asMilliseconds(),
-      );
-
-      return;
-    }
-    onChange(currentDuration.clone().add(diffDuration, unit).asMilliseconds());
-  };
+    },
+    [functionGetDurationValue, unit, timeValue],
+  );
 
   const normalizedValue = normalizeValue({
     functionGetDurationValue,
