@@ -2,9 +2,10 @@
 import DayjsAdapter from '@date-io/dayjs';
 import dayjs from 'dayjs';
 import { includes } from 'ramda';
+import { useAtomValue } from 'jotai/utils';
 
-import { useUserContext } from '@centreon/ui-context';
 import { useLocaleDateTimeFormat } from '@centreon/ui';
+import { userAtom } from '@centreon/centreon-frontend/packages/ui-context/src';
 
 interface UseDateTimePickerAdapterProps {
   Adapter: typeof DayjsAdapter;
@@ -14,7 +15,7 @@ interface UseDateTimePickerAdapterProps {
 const meridians = ['AM', 'PM'];
 
 const useDateTimePickerAdapter = (): UseDateTimePickerAdapterProps => {
-  const { locale, timezone } = useUserContext();
+  const { locale, timezone } = useAtomValue(userAtom);
   const { format, toTime } = useLocaleDateTimeFormat();
 
   class Adapter extends DayjsAdapter {

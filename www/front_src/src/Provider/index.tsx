@@ -17,18 +17,18 @@ import { Provider as ReduxProvider } from 'react-redux';
 import { pathEq, toPairs, pipe, reduce, mergeAll } from 'ramda';
 import i18n, { Resource, ResourceLanguage } from 'i18next';
 import { initReactI18next } from 'react-i18next';
+import { Provider as JotaiProvider } from 'jotai';
+import { useUpdateAtom } from 'jotai/utils';
 
 import { useRequest, getData, withSnackbar, ThemeProvider } from '@centreon/ui';
 import {
-  Context,
-  useUser,
-  useAcl,
-  useDowntime,
-  useRefreshInterval,
+  userAtom,
   User,
   Actions,
-  useCloudServices,
-  useAcknowledgement,
+  downtimeAtom,
+  refreshIntervalAtom,
+  acknowledgementAtom,
+  aclAtom,
 } from '@centreon/ui-context';
 
 import createStore from '../store';
@@ -52,17 +52,13 @@ dayjs.extend(weekday);
 dayjs.extend(isBetween);
 dayjs.extend(isSameOrBefore);
 
-const App = React.lazy(() => import('../App'));
-
 const store = createStore();
 
-const AppProvider = (): JSX.Element => {
-  const { user, setUser } = useUser();
-  const { downtime, setDowntime } = useDowntime();
-  const { refreshInterval, setRefreshInterval } = useRefreshInterval();
-  const { actionAcl, setActionAcl } = useAcl();
-  const { acknowledgement, setAcknowledgement } = useAcknowledgement();
-  const cloudServices = useCloudServices();
+interface Props {
+  children: React.ReactNode;
+}
+
+const AppProvider = ({ children }: Props): JSX.Element => {
   const [dataLoaded, setDataLoaded] = React.useState(false);
 
   const { sendRequest: getUser } = useRequest<User>({
@@ -78,6 +74,12 @@ const AppProvider = (): JSX.Element => {
   const { sendRequest: getAcl } = useRequest<Actions>({
     request: getData,
   });
+
+  const setUser = useUpdateAtom(userAtom);
+  const setDowntime = useUpdateAtom(downtimeAtom);
+  const setRefreshInterval = useUpdateAtom(refreshIntervalAtom);
+  const setAcl = useUpdateAtom(aclAtom);
+  const setAcknowledgement = useUpdateAtom(acknowledgementAtom);
 
   const initializeI18n = ({ retrievedUser, retrievedTranslations }): void => {
     const locale = (retrievedUser.locale || navigator.language)?.slice(0, 2);
@@ -132,7 +134,7 @@ const AppProvider = (): JSX.Element => {
               10,
             ),
           );
-          setActionAcl(retrievedAcl);
+          setAcl({ actions: retrievedAcl });
           setAcknowledgement({
             persistent:
               retrievedParameters.monitoring_default_acknowledgement_persistent,
@@ -160,32 +162,19 @@ const AppProvider = (): JSX.Element => {
   }
 
   return (
-    <Context.Provider
-      value={{
-        ...user,
-        acknowledgement,
-        acl: {
-          actions: actionAcl,
-        },
-        cloudServices,
-        downtime,
-        refreshInterval,
-      }}
-    >
-      <ReduxProvider store={store}>
-        <React.Suspense fallback={<PageLoader />}>
-          <App />
-        </React.Suspense>
-      </ReduxProvider>
-    </Context.Provider>
+    <ReduxProvider store={store}>
+      <React.Suspense fallback={<PageLoader />}>{children}</React.Suspense>
+    </ReduxProvider>
   );
 };
 
 const AppProviderWithSnackbar = withSnackbar({ Component: AppProvider });
 
-const Provider = (): JSX.Element => (
+const Provider = ({ children }: Props): JSX.Element => (
   <ThemeProvider>
-    <AppProviderWithSnackbar />
+    <JotaiProvider>
+      <AppProviderWithSnackbar>{children}</AppProviderWithSnackbar>
+    </JotaiProvider>
   </ThemeProvider>
 );
 
