@@ -347,7 +347,8 @@ function multipleContactInDB($contacts = array(), $nbrDup = array())
             "SELECT `contact`.*, cp.password
             FROM contact
             LEFT JOIN contact_password cp ON cp.contact_id = contact.contact_id
-            WHERE `contact`.contact_id = '" . (int)$key . "' LIMIT 1");
+            WHERE `contact`.contact_id = '" . (int)$key . "' LIMIT 1"
+        );
         $row = $dbResult->fetch();
         $row["contact_id"] = null;
         for ($i = 1; $i <= $nbrDup[$key]; $i++) {
