@@ -98,19 +98,7 @@ class Centreon_Object_Contact extends Centreon_Object
     }
 
     /**
-     * List all objects with all their parameters
-     * Data heavy, use with as many parameters as possible
-     * in order to limit it
-     *
-     * @param mixed $parameterNames
-     * @param int $count
-     * @param int $offset
-     * @param string $order
-     * @param string $sort
-     * @param array $filters
-     * @param string $filterType
-     * @return array
-     * @throws Exception
+     * @inheritDoc
      */
     public function getList(
         $parameterNames = "*",

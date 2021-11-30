@@ -191,10 +191,12 @@ function updateContact($contactId = null)
         $statement->execute();
         //If 3 or more passwords are saved, delete the oldest one.
         if (($result = $statement->fetchAll()) && count($result) >= 3) {
+            $creationDates = array_column($result, 'creation_date');
+            $oldestPassword = $result[array_search(min($creationDates), $creationDates)];
             $statement = $pearDB->prepare(
-                'DELETE FROM `contact_password` WHERE `creation_date` < :creationDate AND contact_id = :contactId'
+                'DELETE FROM `contact_password` WHERE `id` < :id AND contact_id = :contactId'
             );
-            $statement->bindValue(':creationDate', $result[1]['creation_date'], PDO::PARAM_INT);
+            $statement->bindValue(':id', $oldestPassword['id'], PDO::PARAM_INT);
             $statement->bindValue(':contactId', $contactId, PDO::PARAM_INT);
             $statement->execute();
         }
@@ -219,6 +221,9 @@ function updateContact($contactId = null)
     $centreon->user->setToken(isset($ret['contact_autologin_key']) ? $ret['contact_autologin_key'] : "''");
 }
 
+/**
+ * @param array<string,mixed> $fields
+ */
 function validatePasswordModification(array $fields)
 {
     global $pearDB, $centreon;

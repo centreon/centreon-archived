@@ -359,8 +359,8 @@ class CentreonAuth
                 "SELECT `contact`.*, `contact_password`.`password` AS `contact_passwd` FROM `contact`
                 LEFT JOIN `contact_password` ON `contact_password`.`contact_id` = `contact`.`contact_id`
                 WHERE `contact_alias` = :contactAlias
-                AND `contact_activate` = '1' AND `contact_register` = '1' LIMIT 1
-                "
+                AND `contact_activate` = '1' AND `contact_register` = '1' 
+                ORDER BY contact_password.creation_date LIMIT 1"
             );
             $dbResult->bindValue(':contactAlias', $username, \PDO::PARAM_STR);
             $dbResult->execute();

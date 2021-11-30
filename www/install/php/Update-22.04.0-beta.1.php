@@ -27,7 +27,6 @@ $versionOfTheUpgrade = 'UPGRADE - 22.04.0-beta.1: ';
 $pearDB = new CentreonDB();
 
 try {
-    $pearDB->beginTransaction();
     $errorMessage = "Unable to create table 'password_security_policy'";
     $pearDB->query(
         "CREATE TABLE `password_security_policy` (
@@ -82,13 +81,7 @@ try {
     }
     $errorMessage = "Unable to drop column 'contact_passwd' from 'contact' table";
     $dbResult = $pearDB->query("ALTER TABLE `contact` DROP COLUMN `contact_passwd`");
-    if ($pearDB->inTransaction()) {
-        $pearDB->commit();
-    }
 } catch (Exception $e) {
-    if ($pearDB->inTransaction()) {
-        $pearDB->rollBack();
-    }
     $centreonLog->insertLog(
         4,
         $versionOfTheUpgrade . $errorMessage .

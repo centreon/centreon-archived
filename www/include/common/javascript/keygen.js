@@ -71,7 +71,7 @@ function generatePassword(what, securityPolicy = null)
      * TODO (maybe): Rechange the type if typing into the box...
      */
     if (what == "aKey") {
-		    document.getElementById('aKey').value = sPassword;
+        document.getElementById('aKey').value = sPassword;
     } else {
         sPassword = generatePasswordWithSecurityPolicy(securityPolicy)
         document.getElementById('passwd1').value = sPassword;

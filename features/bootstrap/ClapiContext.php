@@ -28,6 +28,32 @@ class ClapiContext extends CentreonContext
         "ACLGROUP"
     ];
 
+    private const CLAPI_ADD_OBJECTS = [
+        "ACLMENU",
+        "ACLACTION",
+        "INSTANCE",
+        "TP",
+        "VENDOR",
+        "CMD",
+        "RESOURCECFG",
+        "CENTBROKERCFG",
+        "ENGINECFG",
+        "CONTACTTPL",
+        "CONTACT",
+        "TRAP",
+        "HTPL",
+        "CG",
+        "LDAP",
+        "HOST",
+        "STPL",
+        "HC",
+        "HG",
+        "SERVICE",
+        "SC",
+        "ACLRESOURCE",
+        "ACLGROUP",
+    ];
+
     private const CONFIGURATION_EXPORT_FILENAME = 'clapi-export.txt';
 
     public function exportClapi($file = null, $selectList = array(), $filter = null)
@@ -148,7 +174,7 @@ class ClapiContext extends CentreonContext
             $clapiActions[] = $clapiCommand[0];
         }
         $clapiActions = array_merge(array_unique($clapiActions));
-        if (self::CLAPI_ACTIONS_ORDER != $clapiActions) {
+        if (self::CLAPI_ACTIONS_ORDER !== $clapiActions) {
             throw new \Exception(
                 'Clapi actions order is not the same as the one in the file : ' . implode(', ', $clapiActions)
             );
@@ -172,5 +198,24 @@ class ClapiContext extends CentreonContext
      */
     public function theConfigurationObjectsShouldBeAddedToTheCentralConfiguration()
     {
+        $this->exportClapi(sys_get_temp_dir() . DIRECTORY_SEPARATOR . self::CONFIGURATION_EXPORT_FILENAME);
+        $exportFileLines = file(sys_get_temp_dir() . DIRECTORY_SEPARATOR . self::CONFIGURATION_EXPORT_FILENAME);
+        array_shift($exportFileLines);
+        array_pop($exportFileLines);
+        $clapiAddedActions = [];
+        foreach ($exportFileLines as $line) {
+            if (strpos($line, 'ADD;') !== false) {
+                $clapiCommand = explode(';', $line);
+                $clapiAddedActions[] = $clapiCommand[0];
+            }
+        }
+        $clapiAddedActions = array_merge(array_unique($clapiAddedActions));
+
+        if ($clapiAddedActions !== self::CLAPI_ADD_OBJECTS) {
+            throw new \Exception(
+                'Clapi actions order is not the same as the one in the file : ' .
+                implode(', ', array_diff($clapiAddedActions))
+            );
+        }
     }
 }

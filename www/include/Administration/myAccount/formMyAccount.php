@@ -60,11 +60,7 @@ if (!isset($centreonFeature)) {
 /**
  * Get the Security Policy for automatic generation password.
  */
-try {
-    $statement = $pearDB->query("SELECT * from password_security_policy");
-} catch (\PDOException $e) {
-    return false;
-}
+$statement = $pearDB->query("SELECT * from password_security_policy");
 $passwordPolicy = $statement->fetch(\PDO::FETCH_ASSOC);
 $encodedPasswordPolicy = json_encode($passwordPolicy);
 
@@ -97,8 +93,6 @@ if ($o == "c") {
 
     // selected by default is Resources status page
     $cct['default_page'] = $cct['default_page'] ?: CentreonAuth::DEFAULT_PAGE;
-
-    $statement = $pearDB->prepare("SELECT ");
 }
 
 /*

@@ -503,9 +503,10 @@ class CentreonAPI
          */
         $DBRESULT = $this->DB->prepare(
             "SELECT `contact`.*, `contact_password`.`password` AS `contact_passwd` FROM `contact`
-            INNER JOIN `contact_password` ON `contact_password`.`contact_id` = `contact`.`contact_id`
+            LEFT JOIN `contact_password` ON `contact_password`.`contact_id` = `contact`.`contact_id`
             WHERE `contact_alias` = :contactAlias
-            AND `contact_activate` = '1' AND `contact_register` = '1' LIMIT 1"
+            AND `contact_activate` = '1' AND `contact_register` = '1' 
+            ORDER BY contact_password.creation_date DESC LIMIT 1"
         );
         $DBRESULT->bindParam(':contactAlias', $this->login, \PDO::PARAM_STR);
         $DBRESULT->execute();
