@@ -5,14 +5,7 @@ import { useFormikContext } from 'formik';
 
 import { FormHelperText, makeStyles, Typography } from '@material-ui/core';
 
-import TimeInput from '../../../TimeInputs/TimeInput';
-import {
-  labelMonth,
-  labelMonths,
-  labelPasswordExpiration,
-  labelDay,
-  labelDays,
-} from '../../../translatedLabels';
+import { labelPasswordExpiration } from '../../../translatedLabels';
 import { SecurityPolicy } from '../../../models';
 import { getField } from '../../utils';
 import TimeInputs from '../../../TimeInputs';
@@ -22,13 +15,6 @@ const passwordExpirationFieldName = 'passwordExpiration';
 const useStyles = makeStyles((theme) => ({
   passwordExpirationContainer: {
     marginTop: theme.spacing(1),
-  },
-  timeInputs: {
-    columnGap: theme.spacing(1.5),
-    display: 'flex',
-    flexDirection: 'row',
-    marginBottom: theme.spacing(0.5),
-    marginTop: theme.spacing(0.5),
   },
 }));
 

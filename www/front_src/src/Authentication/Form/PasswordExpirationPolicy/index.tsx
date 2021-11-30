@@ -9,6 +9,7 @@ import { labelPasswordExpirationPolicy } from '../../translatedLabels';
 
 import PasswordExpiration from './PasswordExpiration';
 import CanReusePasswords from './CanReusePasswords';
+import TimeBeforeNewPassword from './TimeBeforeNewPassword';
 
 const useStyles = makeStyles((theme) => ({
   passwordExpirationPolicy: {
@@ -27,6 +28,7 @@ const PasswordExpirationPolicy = (): JSX.Element => {
       <Typography variant="h5">{t(labelPasswordExpirationPolicy)}</Typography>
       <div className={classes.passwordExpirationPolicy}>
         <PasswordExpiration />
+        <TimeBeforeNewPassword />
         <CanReusePasswords />
       </div>
     </div>

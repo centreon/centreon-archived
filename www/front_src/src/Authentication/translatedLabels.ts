@@ -20,7 +20,8 @@ export const labelGood = 'Good';
 export const labelStrong = 'Strong';
 export const labelPasswordExpirationPolicy = 'Password expiration policy';
 export const labelPasswordExpiration = 'Password expiration';
-export const labelBetween1HourAnd12Months = 'Between 1 hour and 12 months';
+export const labelChooseAValueBetween1HourAnd12Months =
+  'Choose a value between 1 hour and 12 months';
 export const labelMonth = 'Month';
 export const labelMonths = 'Months';
 export const labelDay = 'Day';
@@ -33,3 +34,5 @@ export const labelSecond = 'Second';
 export const labelSeconds = 'Seconds';
 export const labelCanReuseLast3Passwords = 'Can reuse last 3 passwords';
 export const labelTimeBeforeSetNewPassword = 'Time before set new password';
+export const labelChooseAValueBetween1HourAnd1Week =
+  'Choose a value between 1 hour and 1 week';

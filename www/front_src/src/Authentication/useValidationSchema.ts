@@ -3,7 +3,8 @@ import * as Yup from 'yup';
 
 import { SecurityPolicy } from './models';
 import {
-  labelBetween1HourAnd12Months,
+  labelChooseAValueBetween1HourAnd12Months,
+  labelChooseAValueBetween1HourAnd1Week,
   labelMaximum128Characters,
   labelMinimum8Characters,
   labelRequired,
@@ -21,8 +22,8 @@ const useValidationSchema = (): Yup.SchemaOf<SecurityPolicy> => {
     blockingDuration: Yup.number().max(sevenDaysInSeconds).nullable().defined(),
     canReusePasswords: Yup.boolean().defined(),
     delayBeforeNewPassword: Yup.number()
-      .min(oneHourInSeconds)
-      .max(sevenDaysInSeconds)
+      .min(oneHourInSeconds, t(labelChooseAValueBetween1HourAnd1Week))
+      .max(sevenDaysInSeconds, t(labelChooseAValueBetween1HourAnd1Week))
       .nullable()
       .defined(),
     hasLowerCase: Yup.boolean().defined(),
@@ -30,8 +31,8 @@ const useValidationSchema = (): Yup.SchemaOf<SecurityPolicy> => {
     hasSpecialCharacter: Yup.boolean().defined(),
     hasUpperCase: Yup.boolean().defined(),
     passwordExpiration: Yup.number()
-      .min(sevenDaysInSeconds, t(labelBetween1HourAnd12Months))
-      .max(twelveMonthsInSeconds, t(labelBetween1HourAnd12Months))
+      .min(sevenDaysInSeconds, t(labelChooseAValueBetween1HourAnd12Months))
+      .max(twelveMonthsInSeconds, t(labelChooseAValueBetween1HourAnd12Months))
       .nullable()
       .defined(),
     passwordMinLength: Yup.number()
