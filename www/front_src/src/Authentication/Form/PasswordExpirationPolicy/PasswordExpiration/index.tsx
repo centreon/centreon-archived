@@ -3,7 +3,7 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useFormikContext } from 'formik';
 
-import { FormHelperText, makeStyles, Typography } from '@material-ui/core';
+import { FormHelperText, FormLabel, makeStyles } from '@material-ui/core';
 
 import { labelPasswordExpiration } from '../../../translatedLabels';
 import { SecurityPolicy } from '../../../models';
@@ -40,7 +40,7 @@ const PasswordExpiration = (): JSX.Element => {
 
   return (
     <div className={classes.passwordExpirationContainer}>
-      <Typography variant="h6">{t(labelPasswordExpiration)}</Typography>
+      <FormLabel>{t(labelPasswordExpiration)}</FormLabel>
       <TimeInputs
         baseName={passwordExpirationFieldName}
         timeValue={passwordExpirationValue}

@@ -12,7 +12,7 @@ import { SecurityPolicy } from './models';
 
 const useStyles = makeStyles((theme: Theme) => ({
   authenticationContainer: {
-    margin: theme.spacing(1),
+    margin: '0 auto',
     padding: theme.spacing(1),
   },
 }));

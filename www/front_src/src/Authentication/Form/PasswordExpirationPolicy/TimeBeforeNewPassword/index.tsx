@@ -3,7 +3,7 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useFormikContext } from 'formik';
 
-import { FormHelperText, Typography } from '@material-ui/core';
+import { FormHelperText, FormLabel } from '@material-ui/core';
 
 import { labelTimeBeforeSetNewPassword } from '../../../translatedLabels';
 import { getField } from '../../utils';
@@ -33,7 +33,7 @@ const TimeBeforeNewPassword = (): JSX.Element => {
 
   return (
     <div>
-      <Typography variant="h6">{t(labelTimeBeforeSetNewPassword)}</Typography>
+      <FormLabel>{t(labelTimeBeforeSetNewPassword)}</FormLabel>
       <TimeInputs
         baseName={delayBeforeNewPasswordFieldName}
         timeValue={delayBeforeNewPasswordValue}
