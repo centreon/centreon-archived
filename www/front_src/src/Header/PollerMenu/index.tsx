@@ -2,10 +2,12 @@ import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { includes, isEmpty, isNil } from 'ramda';
-import { withRouter, Link } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import classnames from 'classnames';
 import clsx from 'clsx';
+import { useAtomValue } from 'jotai/utils';
+import { useHistory } from 'react-router';
 
 import PollerIcon from '@material-ui/icons/DeviceHub';
 import {
@@ -23,6 +25,7 @@ import {
   SubmenuHeader,
   IconToggleSubmenu,
 } from '@centreon/ui';
+import { refreshIntervalAtom } from '@centreon/centreon-frontend/packages/ui-context/src';
 
 import styles from '../header.scss';
 import { allowedPagesSelector } from '../../redux/selectors/navigation/allowedPages';
@@ -56,7 +59,6 @@ interface Props {
   allowedPages: Array<string>;
   endpoint: string;
   loaderWidth: number;
-  refreshInterval: number;
 }
 
 interface Issues {
@@ -91,7 +93,6 @@ const useStyles = makeStyles((theme) => ({
 const PollerMenu = ({
   endpoint,
   loaderWidth,
-  refreshInterval,
   allowedPages,
 }: Props): JSX.Element => {
   const classes = useStyles();
@@ -103,14 +104,15 @@ const PollerMenu = ({
   const [isExporting, setIsExportingConfiguration] = React.useState<boolean>();
   const [toggled, setToggled] = React.useState<boolean>(false);
   const interval = React.useRef<number>();
+  const history = useHistory();
+  const { sendRequest } = useRequest<PollerData>({
+    request: getData,
+  });
+  const refreshInterval = useAtomValue(refreshIntervalAtom);
 
   const newExporting = (): void => {
     setIsExportingConfiguration(!isExporting);
   };
-
-  const { sendRequest } = useRequest<PollerData>({
-    request: getData,
-  });
 
   const closeSubmenu = (): void => {
     setToggled(!toggled);
@@ -157,7 +159,10 @@ const PollerMenu = ({
     pollerConfigurationNumberPage,
   );
 
-  const pollerConfigurationTopologyPage = '/main.php?p=60901';
+  const redirectToPollerConfiguration = (): void => {
+    closeSubmenu();
+    history.push(`/main.php?p=${pollerConfigurationNumberPage}`);
+  };
 
   return (
     <ClickAwayListener
@@ -214,23 +219,15 @@ const PollerMenu = ({
                 </Typography>
               )}
               {allowPollerConfiguration && (
-                <Link
-                  className={classnames(
-                    classes.link,
-                    styles['wrap-middle-icon'],
-                  )}
-                  to={pollerConfigurationTopologyPage}
-                >
-                  <Paper className={classes.confButton}>
-                    <Button
-                      size="small"
-                      variant="contained"
-                      onClick={closeSubmenu}
-                    >
-                      {t(labelConfigurePollers)}
-                    </Button>
-                  </Paper>
-                </Link>
+                <Paper className={classes.confButton}>
+                  <Button
+                    size="small"
+                    variant="contained"
+                    onClick={redirectToPollerConfiguration}
+                  >
+                    {t(labelConfigurePollers)}
+                  </Button>
+                </Paper>
               )}
               <ExportConfiguration setIsExportingConfiguration={newExporting} />
             </div>
