@@ -2,15 +2,16 @@
 import * as React from 'react';
 
 import { equals, last } from 'ramda';
+import { useUpdateAtom } from 'jotai/utils';
 
 import { makeStyles, Typography } from '@material-ui/core';
 import ShowChartOutlinedIcon from '@material-ui/icons/ShowChartOutlined';
 
-import { ResourceContext } from '../../../Context';
 import Card from '../Details/Card';
 import SelectableResourceName from '../Details/SelectableResourceName';
 import { Resource } from '../../../models';
 import ShortTypeChip from '../../../ShortTypeChip';
+import { selectResourceDerivedAtom } from '../../detailsAtoms';
 
 import { MetaServiceMetric } from './models';
 
@@ -41,17 +42,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-type Props = {
+interface Props {
   infiniteScrollTriggerRef: React.RefObject<HTMLDivElement>;
   metrics: Array<MetaServiceMetric>;
-} & Pick<ResourceContext, 'selectResource'>;
+}
 
-const Metrics = ({
-  infiniteScrollTriggerRef,
-  metrics,
-  selectResource,
-}: Props): JSX.Element => {
+const Metrics = ({ infiniteScrollTriggerRef, metrics }: Props): JSX.Element => {
   const classes = useStyles();
+
+  const selectResource = useUpdateAtom(selectResourceDerivedAtom);
 
   return (
     <>

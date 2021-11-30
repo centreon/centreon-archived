@@ -34,18 +34,6 @@
  */
 
 /*
- * Get all hosts from DB
- */
-function getAllHostsForReporting($is_admin, $lcaHoststr, $search = null)
-{
-    global $centreon;
-
-    $hosts = array("NULL" => "");
-    $hosts += $centreon->user->access->getHostAclConf($search, 'broker');
-    return $hosts;
-}
-
-/*
  * returns days of week taken in account for reporting in a string
  */
 function getReportDaysStr($reportTimePeriod)

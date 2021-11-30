@@ -111,12 +111,11 @@ class LocalProvider implements ProviderInterface
             $this->dependencyInjector,
             $credentials['login'],
             $credentials['password'],
-            0,
+            \CentreonAuth::AUTOLOGIN_DISABLE,
             $this->dependencyInjector['configuration_db'],
             $log,
-            1,
-            "",
-            "WEB"
+            \CentreonAuth::ENCRYPT_MD5,
+            ""
         );
         $this->debug(
             '[LOCAL PROVIDER] local provider trying to authenticate using legacy Authentication',
