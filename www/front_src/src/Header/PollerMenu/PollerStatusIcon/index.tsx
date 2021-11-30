@@ -72,8 +72,8 @@ const useStatusStyles = makeStyles<Theme, StyleProps>((theme) => {
 
 const PollerStatusIcon = ({ issues }: PollerStatusIconProps): JSX.Element => {
   const databaseSeverity = getIssueSeverity({ issues, key: 'database' });
-
   const latencySeverity = getIssueSeverity({ issues, key: 'latency' });
+
   const classes = useStatusStyles({ databaseSeverity, latencySeverity });
 
   const { t } = useTranslation();

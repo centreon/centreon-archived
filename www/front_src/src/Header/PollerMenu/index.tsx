@@ -1,45 +1,50 @@
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { isNil } from 'ramda';
-import classnames from 'classnames';
-import { withRouter } from 'react-router-dom';
+import { includes, isEmpty, isNil } from 'ramda';
+import { withRouter, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { push } from 'connected-react-router';
+import classnames from 'classnames';
+import clsx from 'clsx';
 
 import PollerIcon from '@material-ui/icons/DeviceHub';
 import {
   Button,
   ClickAwayListener,
-  Grid,
   makeStyles,
   Typography,
-  useTheme,
 } from '@material-ui/core';
 
 import {
   getData,
   useRequest,
-  IconToggleSubmenu,
   IconHeader,
-  SeverityCode,
+  SubmenuHeader,
+  IconToggleSubmenu,
 } from '@centreon/ui';
 
-import { allowedPagesSelector } from '../../redux/selectors/navigation/allowedPages';
 import styles from '../header.scss';
+import { allowedPagesSelector } from '../../redux/selectors/navigation/allowedPages';
 import MenuLoader from '../../components/MenuLoader';
 
-import { labelPoller } from './translatedLabels';
+import {
+  labelAllPollers,
+  labelConfigurePollers,
+  labelDatabaseUpdatesNotActive,
+  labelLatencyDetected,
+  labelPoller,
+  labelPollerNotRunning,
+} from './translatedLabels';
 import ExportConfiguration from './ExportConfiguration';
 import PollerStatusIcon from './PollerStatusIcon';
 
-export const useStyles = makeStyles(() => ({
-  link: {
-    textDecoration: 'none',
-  },
-}));
+export const pollerConfigurationNumberPage = '60901';
 
-export const pollerConfigurationTopologyPage = '60901';
+const pollerIssueKeyToMessage = {
+  database: labelDatabaseUpdatesNotActive,
+  latency: labelLatencyDetected,
+  stability: labelPollerNotRunning,
+};
 
 export interface Issue {
   critical: number;
@@ -52,9 +57,31 @@ interface Props {
   loaderWidth: number;
   refreshInterval: number;
 }
+
 interface Issues {
   [key: string]: Issue;
 }
+
+interface PollerData {
+  issues: Issues;
+  totalPoller: number;
+}
+
+const useStyles = makeStyles((theme) => ({
+  label: {
+    color: theme.palette.common.white,
+  },
+  link: {
+    textDecoration: 'none',
+  },
+  pollerDetailRow: {
+    display: 'flex',
+    gap: theme.spacing(1),
+  },
+  pollerDetailTitle: {
+    flexGrow: 1,
+  },
+}));
 
 const PollerMenu = ({
   endpoint,
@@ -62,40 +89,40 @@ const PollerMenu = ({
   refreshInterval,
   allowedPages,
 }: Props): JSX.Element => {
-  const theme = useTheme();
+  const classes = useStyles();
+
   const { t } = useTranslation();
+
   const [issues, setIssues] = React.useState<Issues | null>(null);
+  const [totalPoller, setTotal] = React.useState<PollerData | number>(0);
+
   const [isExporting, setIsExportingConfiguration] = React.useState<boolean>();
-  const [toggled, setToggled] = React.useState<boolean>();
+  const [toggled, setToggled] = React.useState<boolean>(false);
   const interval = React.useRef<number>();
 
   const newExporting = (): void => {
     setIsExportingConfiguration(!isExporting);
   };
 
-  const { sendRequest } = useRequest<Issues>({
+  const { sendRequest } = useRequest<PollerData>({
     request: getData,
   });
-
-  const allowPollerConfiguration = allowedPages.includes(
-    pollerConfigurationTopologyPage,
-  );
 
   const closeSubmenu = (): void => {
     setToggled(!toggled);
   };
 
-  const redirectsToPollersPage = (): void => {
-    closeSubmenu();
+  // const redirectsToPollersPage = (): void => {
+  //   push(`/main.php?p=${pollerConfigurationTopologyPage}`);
 
-    push(`/main.php?p=${pollerConfigurationTopologyPage}`);
-  };
+  //   closeSubmenu();
+  // };
 
   React.useEffect(() => {
-    loadIssues();
+    loadPollerData();
 
     interval.current = window.setInterval(() => {
-      loadIssues();
+      loadPollerData();
     }, refreshInterval * 1000);
 
     return (): void => {
@@ -103,10 +130,15 @@ const PollerMenu = ({
     };
   }, []);
 
-  const loadIssues = (): void => {
+  const loadPollerData = (): void => {
     sendRequest(`./api/${endpoint}`)
-      .then((retrievedIssues) => {
-        setIssues(retrievedIssues);
+      .then((retrievedPollerData) => {
+        setIssues(
+          isEmpty(retrievedPollerData.issues)
+            ? null
+            : retrievedPollerData.issues,
+        );
+        setTotal(retrievedPollerData.totalPoller);
       })
       .catch((error) => {
         if (error.response && error.response.status === 401) {
@@ -123,6 +155,12 @@ const PollerMenu = ({
     return <MenuLoader width={loaderWidth} />;
   }
 
+  const allowPollerConfiguration = allowedPages?.includes(
+    pollerConfigurationNumberPage,
+  );
+
+  const pollerConfigurationTopologyPage = '/main.php?p=60901';
+
   return (
     <ClickAwayListener
       onClickAway={(): void => {
@@ -133,114 +171,72 @@ const PollerMenu = ({
       }}
     >
       <>
-        <Grid
-          container
-          alignItems="center"
-          direction="row"
-          justifyContent="flex-start"
-          style={{
-            padding: theme.spacing('6px', '6px', '6px', '16px'),
-            paddingLeft: theme.spacing(2),
-          }}
-        >
-          <IconHeader
-            Icon={PollerIcon}
-            iconName={t(labelPoller)}
-            onClick={toggleDetailedView}
-          />
-
-          <PollerStatusIcon issues={issues} />
-
-          <IconToggleSubmenu
-            iconType="arrow"
-            issues={issues}
-            rotate={toggled}
-            onClick={toggleDetailedView}
-          />
-        </Grid>
-        <Grid
-          container
-          alignItems="center"
-          direction="row"
-          justifyContent="flex-start"
-          style={{
-            color: theme.palette.background.paper,
-            display: 'block',
-            fontSize: 'small',
-            paddingLeft: theme.spacing(2),
-            textTransform: 'uppercase',
-          }}
-        >
-          {issues
-            ? Object.entries(issues).map(([key, issue]) => {
-                let message = '';
-
-                if (key === 'database') {
-                  message = t('Database updates not active');
-                } else if (key === 'stability') {
-                  message = t('Pollers not running');
-                } else if (key === 'latency') {
-                  message = t('Latency detected');
-                }
-
-                return (
-                  <li className={styles['submenu-top-item']} key={key}>
-                    <span className={styles['submenu-item-link']}>
-                      <Grid>
-                        <Grid>
-                          {message}
-                          {issue.total ? issue.total : '...'}
-                        </Grid>
-                      </Grid>
-                    </span>
-                    {Object.entries(issue).map(([elem, values]) => {
-                      if (values.poller) {
-                        const pollers = values.poller;
-
-                        return pollers.map((poller) => {
-                          let color = SeverityCode.High;
-                          if (elem === 'warning') {
-                            color = SeverityCode.Medium;
-                          }
-
-                          return (
-                            <Grid
-                              className={styles['submenu-item-link']}
-                              key={poller.name}
-                            >
-                              <Grid
-                                className={classnames(
-                                  styles['dot-colored'],
-                                  styles[color],
-                                )}
-                              >
-                                <Typography variant="body2">
-                                  {poller.name}
-                                </Typography>
-                              </Grid>
-                            </Grid>
-                          );
-                        });
-                      }
-
-                      return null;
-                    })}
-                  </li>
-                );
-              })
-            : null}
-          {allowPollerConfiguration && (
-            <Button
-              size="small"
-              style={{ marginTop: '8px' }}
-              variant="contained"
-              onClick={redirectsToPollersPage}
+        <div className={`${styles.wrapper} wrap-right-services`}>
+          <SubmenuHeader active={toggled}>
+            <IconHeader
+              Icon={PollerIcon}
+              iconName={t(labelPoller)}
+              onClick={toggleDetailedView}
+            />
+            <PollerStatusIcon issues={issues} />
+            <IconToggleSubmenu
+              cursor="pointer"
+              iconType="arrow"
+              rotate={toggled}
+              onClick={toggleDetailedView}
+            />
+            <div
+              className={classnames(styles['submenu-toggle'], {
+                [styles['submenu-toggle-active'] as string]: toggled,
+              })}
             >
-              {t('Configure pollers')}
-            </Button>
-          )}
-          <ExportConfiguration setIsExportingConfiguration={newExporting} />
-        </Grid>
+              {!isNil(issues) ? (
+                Object.entries(issues).map(([key, issue]) => {
+                  return (
+                    <div className={classes.pollerDetailRow} key={key}>
+                      <Typography
+                        className={clsx([
+                          classes.label,
+                          classes.pollerDetailTitle,
+                        ])}
+                        variant="body2"
+                      >
+                        {t(pollerIssueKeyToMessage[key])}
+                      </Typography>
+                      <Typography className={classes.label} variant="body2">
+                        {issue.total ? issue.total : ''}
+                      </Typography>
+                    </div>
+                  );
+                })
+              ) : (
+                <Typography className={classes.label} variant="body2">
+                  {t(labelAllPollers)}
+                  {totalPoller}
+                </Typography>
+              )}
+              {allowPollerConfiguration && (
+                <Link
+                  className={classnames(
+                    classes.link,
+                    styles['wrap-middle-icon'],
+                  )}
+                  to={pollerConfigurationTopologyPage}
+                >
+                  <Button
+                    size="medium"
+                    style={{ marginTop: '8px' }}
+                    variant="contained"
+                    onClick={closeSubmenu}
+                  >
+                    {t(labelConfigurePollers)}
+                  </Button>
+                </Link>
+              )}
+              <ExportConfiguration setIsExportingConfiguration={newExporting} />
+            </div>
+          </SubmenuHeader>
+        </div>
       </>
     </ClickAwayListener>
   );
