@@ -55,7 +55,7 @@ const PasswordCasePolicy = (): JSX.Element => {
   return useMemoComponent({
     Component: (
       <div>
-        <Typography variant="h6">{t(labelPasswordCasePolicy)}</Typography>
+        <Typography variant="h5">{t(labelPasswordCasePolicy)}</Typography>
         <div className={classes.fields}>
           <TextField
             fullWidth

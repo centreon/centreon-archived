@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
-import { equals, gt, isEmpty, isNil, path } from 'ramda';
+import { equals, gt, path } from 'ramda';
 
 import { makeStyles, Typography } from '@material-ui/core';
 
@@ -12,10 +12,10 @@ import { Unit } from './models';
 
 const weeksUnit = 'weeks';
 
-const normalizeValue = ({ unit, value }): number =>
+const normalizeValue = ({ unit, value, functionGetDurationValue }): number =>
   equals(unit, weeksUnit)
-    ? dayjs.duration(value).as('days') / 7
-    : dayjs.duration(value).as(unit);
+    ? dayjs.duration(value)[functionGetDurationValue]('days') / 7
+    : dayjs.duration(value)[functionGetDurationValue](unit);
 
 interface Labels {
   plural: string;
@@ -23,6 +23,7 @@ interface Labels {
 }
 
 interface Props {
+  getAbsoluteValue?: boolean;
   labels: Labels;
   name: string;
   onChange: (value: number) => void;
@@ -32,9 +33,13 @@ interface Props {
 }
 
 const useStyles = makeStyles((theme) => ({
+  small: {
+    fontSize: 'small',
+    padding: theme.spacing(0.75),
+  },
   timeInput: {
     alignItems: 'center',
-    columnGap: theme.spacing(1),
+    columnGap: theme.spacing(0.5),
     display: 'grid',
     gridTemplateColumns: `${theme.spacing(8)}px auto`,
   },
@@ -47,47 +52,55 @@ const TimeInput = ({
   labels,
   name,
   required = false,
+  getAbsoluteValue = false,
 }: Props): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
 
+  const functionGetDurationValue = getAbsoluteValue ? 'as' : 'get';
+
   const changeInput = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const value = parseInt(path(['target', 'value'], event) as string, 10);
 
-    const duration = dayjs.duration(timeValue);
+    const currentDuration = dayjs.duration(timeValue);
+
     if (Number.isNaN(value)) {
-      if (equals(unit, weeksUnit)) {
-        const previousValue = Math.floor(duration.as('days'));
-        onChange(
-          duration.clone().subtract(previousValue, 'days').as('milliseconds'),
-        );
-
-        return;
-      }
-      const previousValue = Math.floor(duration.as(unit));
-      onChange(
-        duration.clone().subtract(previousValue, unit).as('milliseconds'),
+      const previousValue = Math.floor(
+        currentDuration[functionGetDurationValue](unit),
       );
-    }
-
-    if (equals(unit, weeksUnit)) {
-      const previousValue = Math.floor(duration.as('days') / 7);
-      const diffDuration = value - previousValue;
       onChange(
-        duration
+        currentDuration
           .clone()
-          .add(diffDuration * 7, 'days')
+          .subtract(previousValue, unit)
           .as('milliseconds'),
       );
 
       return;
     }
-    const previousValue = Math.floor(duration.as(unit));
+
+    const previousValue = Math.floor(
+      currentDuration[functionGetDurationValue](unit),
+    );
     const diffDuration = value - previousValue;
-    onChange(duration.clone().add(diffDuration, unit).as('milliseconds'));
+    if (
+      equals(unit, 'months') &&
+      equals(currentDuration.clone().add(diffDuration, unit).asMonths(), 12)
+    ) {
+      onChange(
+        currentDuration
+          .clone()
+          .subtract(previousValue, 'months')
+          .add(1, 'years')
+          .asMilliseconds(),
+      );
+
+      return;
+    }
+    onChange(currentDuration.clone().add(diffDuration, unit).asMilliseconds());
   };
 
   const normalizedValue = normalizeValue({
+    functionGetDurationValue,
     unit,
     value: timeValue,
   });
@@ -98,7 +111,7 @@ const TimeInput = ({
   return (
     <div className={classes.timeInput}>
       <TextField
-        inputProps={{ min: 0 }}
+        inputProps={{ className: classes.small, min: 0 }}
         name={name}
         required={required}
         type="number"

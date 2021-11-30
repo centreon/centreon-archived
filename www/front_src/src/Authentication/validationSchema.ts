@@ -4,13 +4,14 @@ import * as Yup from 'yup';
 import { SecurityPolicy } from './models';
 import {
   labelBetween1HourAnd12Months,
+  labelMaximum128Characters,
   labelMinimum8Characters,
   labelRequired,
 } from './translatedLabels';
 
 const sevenDaysInSeconds = 1000 * 60 * 60 * 24 * 7;
 const oneHourInSeconds = 1000 * 60 * 60;
-const twelveMonthsInSeconds = 1000 * 60 * 60 * 24 * 30 * 12;
+const twelveMonthsInSeconds = 1000 * 60 * 60 * 24 * 365;
 
 const useValidationSchema = (): Yup.SchemaOf<SecurityPolicy> => {
   const { t } = useTranslation();
@@ -35,6 +36,7 @@ const useValidationSchema = (): Yup.SchemaOf<SecurityPolicy> => {
       .defined(),
     passwordMinLength: Yup.number()
       .min(8, t(labelMinimum8Characters))
+      .max(128, t(labelMaximum128Characters))
       .defined(t(labelRequired)),
   });
 };

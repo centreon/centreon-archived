@@ -13,7 +13,7 @@ const PasswordExpirationPolicy = (): JSX.Element => {
 
   return (
     <div>
-      <Typography variant="h6">{t(labelPasswordExpirationPolicy)}</Typography>
+      <Typography variant="h5">{t(labelPasswordExpirationPolicy)}</Typography>
       <PasswordExpiration />
     </div>
   );
