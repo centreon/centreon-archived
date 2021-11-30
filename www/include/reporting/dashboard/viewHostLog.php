@@ -65,8 +65,8 @@ $hostsRoute = array(
     'availableDatasetRoute' =>
         './api/internal.php?object=centreon_configuration_host&action=list',
     'defaultDatasetRoute' =>
-    './include/common/webServices/rest/internal.php?object=centreon_configuration_host
-    &action=defaultValues&target=host&field=host_id&id=' . $id,
+        './api/internal.php?object=centreon_configuration_host
+        &action=defaultValues&target=host&field=host_id&id=' . $id,
 );
 $selHost = $formHost->addElement(
     'select2',
