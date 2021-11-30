@@ -7,13 +7,13 @@ import { makeStyles, Typography } from '@material-ui/core';
 
 import { TextField, useMemoComponent } from '@centreon/ui';
 
-import { SecurityPolicy } from '../models';
+import { SecurityPolicy } from '../../models';
 import {
   labelPasswordCasePolicy,
   labelPasswordLength,
-} from '../translatedLabels';
+} from '../../translatedLabels';
+import { getField } from '../utils';
 
-import { getField } from './utils';
 import CaseButtons from './CaseButtons';
 
 const passwordMinLengthFieldName = 'passwordMinLength';

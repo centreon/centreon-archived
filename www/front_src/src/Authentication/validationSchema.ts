@@ -2,11 +2,15 @@ import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
 
 import { SecurityPolicy } from './models';
-import { labelMinimum8Characters, labelRequired } from './translatedLabels';
+import {
+  labelBetween1HourAnd12Months,
+  labelMinimum8Characters,
+  labelRequired,
+} from './translatedLabels';
 
-const sevenDaysInSeconds = 60 * 60 * 24 * 7;
-const oneHourInSeconds = 60 * 60;
-const twelveMonthsInSeconds = 60 * 60 * 24 * 30 * 12;
+const sevenDaysInSeconds = 1000 * 60 * 60 * 24 * 7;
+const oneHourInSeconds = 1000 * 60 * 60;
+const twelveMonthsInSeconds = 1000 * 60 * 60 * 24 * 30 * 12;
 
 const useValidationSchema = (): Yup.SchemaOf<SecurityPolicy> => {
   const { t } = useTranslation();
@@ -25,8 +29,8 @@ const useValidationSchema = (): Yup.SchemaOf<SecurityPolicy> => {
     hasSpecialCharacter: Yup.boolean().defined(),
     hasUpperCase: Yup.boolean().defined(),
     passwordExpiration: Yup.number()
-      .min(sevenDaysInSeconds)
-      .max(twelveMonthsInSeconds)
+      .min(sevenDaysInSeconds, t(labelBetween1HourAnd12Months))
+      .max(twelveMonthsInSeconds, t(labelBetween1HourAnd12Months))
       .nullable()
       .defined(),
     passwordMinLength: Yup.number()

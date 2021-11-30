@@ -2,12 +2,13 @@ import * as React from 'react';
 
 import { Formik } from 'formik';
 
-import { makeStyles } from '@material-ui/core';
+import { Divider, makeStyles } from '@material-ui/core';
 
 import { SecurityPolicy } from '../models';
 import useValidationSchema from '../validationSchema';
 
 import PasswordCasePolicy from './PasswordCasePolicy';
+import PasswordExpirationPolicy from './PasswordExpirationPolicy';
 
 interface Props {
   initialValues: SecurityPolicy;
@@ -16,6 +17,10 @@ interface Props {
 const useStyles = makeStyles((theme) => ({
   formContainer: {
     margin: theme.spacing(2, 1),
+    width: 'fit-content',
+  },
+  formGroup: {
+    marginBottom: theme.spacing(1),
   },
 }));
 
@@ -37,7 +42,13 @@ const Form = ({ initialValues }: Props): JSX.Element => {
     >
       {(): JSX.Element => (
         <div className={classes.formContainer}>
-          <PasswordCasePolicy />
+          <div className={classes.formGroup}>
+            <PasswordCasePolicy />
+          </div>
+          <Divider />
+          <div className={classes.formGroup}>
+            <PasswordExpirationPolicy />
+          </div>
         </div>
       )}
     </Formik>

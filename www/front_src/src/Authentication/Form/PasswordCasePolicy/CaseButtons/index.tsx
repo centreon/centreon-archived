@@ -8,7 +8,6 @@ import {
   ButtonGroup,
   ButtonProps,
   makeStyles,
-  Tooltip,
   useTheme,
 } from '@material-ui/core';
 
@@ -27,10 +26,10 @@ import {
   labelStrong,
   labelUpperCase,
   labelWeak,
-} from '../../translatedLabels';
-import { SecurityPolicy } from '../../models';
-import Progress from '../../Progress';
-import { getFields } from '../utils';
+} from '../../../translatedLabels';
+import { SecurityPolicy } from '../../../models';
+import Progress from '../../../Progress';
+import { getFields } from '../../utils';
 
 import LabelWithTooltip from './LabelWithTooltip';
 

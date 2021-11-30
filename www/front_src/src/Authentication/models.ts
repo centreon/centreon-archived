@@ -1,3 +1,5 @@
+import { DurationUnitType } from 'dayjs/plugin/duration';
+
 export interface SecurityPolicy {
   attempts: number | null;
   blockingDuration: number | null;
@@ -23,3 +25,5 @@ export interface SecurityPolicyAPI {
   password_expiration: number | null;
   password_min_length: number;
 }
+
+export type Unit = DurationUnitType | 'weeks';
