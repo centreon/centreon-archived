@@ -19,6 +19,10 @@ import {
   getUrlQueryParameters,
   copyToClipboard,
 } from '@centreon/ui';
+import {
+  refreshIntervalAtom,
+  userAtom,
+} from '@centreon/centreon-frontend/packages/ui-context/src';
 
 import {
   labelMore,
@@ -102,6 +106,10 @@ import { DetailsUrlQueryParameters } from './models';
 import Details from '.';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
+
+jest.mock('@centreon/ui-context', () =>
+  jest.requireActual('@centreon/centreon-frontend/packages/ui-context'),
+);
 
 jest.mock('../icons/Downtime');
 jest.mock(
@@ -510,8 +518,20 @@ const DetailsTest = (): JSX.Element => {
   );
 };
 
+const mockUser = {
+  isExportButtonEnabled: true,
+  locale: 'en',
+  timezone: 'Europe/Paris',
+};
+const mockRefreshInterval = 60;
+
 const DetailsWithJotai = (): JSX.Element => (
-  <Provider>
+  <Provider
+    initialValues={[
+      [userAtom, mockUser],
+      [refreshIntervalAtom, mockRefreshInterval],
+    ]}
+  >
     <DetailsTest />
   </Provider>
 );

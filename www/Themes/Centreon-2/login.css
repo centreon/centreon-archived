@@ -88,6 +88,11 @@
 .bt_info {
     background: #00bfb3 !important;
 }
+
+.bt_info:disabled {
+    background: gray !important;
+}
+
 .button_group {
     text-align: right;
     padding: 8px;
@@ -137,7 +142,7 @@ input[type="submit"] {
     margin-top: .5em;
 }
 
-input[type="submit"].bt_info:hover {
+input[type="submit"].bt_info:hover:not(:disabled) {
     background-color: #00a499 !important;
     transition: .7s all ease;
 }
