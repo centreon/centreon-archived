@@ -1,30 +1,24 @@
 import * as React from 'react';
 
+import { useAtomValue, useUpdateAtom } from 'jotai/utils';
+
 import { useRequest, ListingModel } from '@centreon/ui';
 
-import { TabProps } from '..';
-import { ResourceContext, useResourceContext } from '../../../Context';
 import { listResources } from '../../../Listing/api';
 import { Resource } from '../../../models';
 import InfiniteScroll from '../../InfiniteScroll';
-import memoizeComponent from '../../../memoizedComponent';
+import { detailsAtom, selectResourceDerivedAtom } from '../../detailsAtoms';
 
 import ServiceList from './List';
 import LoadingSkeleton from './LoadingSkeleton';
 
-type ServicesTabContentProps = TabProps &
-  Pick<
-    ResourceContext,
-    'selectResource' | 'tabParameters' | 'setServicesTabParameters'
-  >;
-
-const ServicesTabContent = ({
-  details,
-  selectResource,
-}: ServicesTabContentProps): JSX.Element => {
+const ServicesTab = (): JSX.Element => {
   const { sendRequest, sending } = useRequest({
     request: listResources,
   });
+
+  const details = useAtomValue(detailsAtom);
+  const selectResource = useUpdateAtom(selectResourceDerivedAtom);
 
   const limit = 30;
 
@@ -69,25 +63,6 @@ const ServicesTabContent = ({
         );
       }}
     </InfiniteScroll>
-  );
-};
-
-const MemoizedServiceTabContent = memoizeComponent<ServicesTabContentProps>({
-  Component: ServicesTabContent,
-  memoProps: ['details', 'tabParameters'],
-});
-
-const ServicesTab = ({ details }: TabProps): JSX.Element => {
-  const { selectResource, tabParameters, setServicesTabParameters } =
-    useResourceContext();
-
-  return (
-    <MemoizedServiceTabContent
-      details={details}
-      selectResource={selectResource}
-      setServicesTabParameters={setServicesTabParameters}
-      tabParameters={tabParameters}
-    />
   );
 };
 

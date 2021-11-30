@@ -12,6 +12,7 @@ import {
 import { bisector } from 'd3-array';
 import { ScaleLinear } from 'd3-scale';
 import { useTranslation } from 'react-i18next';
+import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 
 import {
   Button,
@@ -45,8 +46,6 @@ import {
   getSortedStackedLines,
   getStackedMetricValues,
   hasUnitStackedLines,
-  getMetrics,
-  getLineForMetric,
 } from '../timeSeries';
 import Lines from '../Lines';
 import {
@@ -59,18 +58,24 @@ import { ResourceDetails } from '../../../Details/models';
 import { CommentParameters } from '../../../Actions/api';
 import useAclQuery from '../../../Actions/Resource/aclQuery';
 import memoizeComponent from '../../../memoizedComponent';
-import { ResourceGraphMousePosition } from '../../../Details/tabs/Services/Graphs';
 
 import AddCommentForm from './AddCommentForm';
 import Annotations from './Annotations';
 import Axes from './Axes';
-import { AnnotationsContext } from './Context';
-import useAnnotations from './useAnnotations';
 import TimeShiftZones, {
   TimeShiftContext,
   TimeShiftDirection,
 } from './TimeShiftZones';
-import { MousePosition, useMetricsValueContext } from './useMetricsValue';
+import {
+  changeMousePositionAndTimeValueDerivedAtom,
+  changeTimeValueDerivedAtom,
+  MousePosition,
+  mousePositionAtom,
+} from './mouseTimeValueAtoms';
+import {
+  annotationHoveredAtom,
+  changeAnnotationHoveredDerivedAtom,
+} from './annotationsAtoms';
 
 const propsAreEqual = (prevProps, nextProps): boolean =>
   equals(prevProps, nextProps);
@@ -144,17 +149,17 @@ interface GraphContentProps {
   applyZoom?: (props: AdjustTimePeriodProps) => void;
   base: number;
   canAdjustTimePeriod: boolean;
-  changeMetricsValue: (props) => void;
   containsMetrics: boolean;
   displayEventAnnotations: boolean;
+  displayTimeValues: boolean;
   format: (parameters) => string;
   height: number;
   hideAddCommentTooltip: () => void;
+  isInViewport?: boolean;
   lines: Array<LineModel>;
   loading: boolean;
   onAddComment?: (commentParameters: CommentParameters) => void;
   resource: Resource | ResourceDetails;
-  resourceGraphMousePosition?: ResourceGraphMousePosition | null;
   shiftTime?: (direction: TimeShiftDirection) => void;
   showAddCommentTooltip: (args) => void;
   timeSeries: Array<TimeValue>;
@@ -204,8 +209,8 @@ const GraphContent = ({
   canAdjustTimePeriod,
   displayEventAnnotations,
   containsMetrics,
-  changeMetricsValue,
-  resourceGraphMousePosition,
+  isInViewport,
+  displayTimeValues,
 }: GraphContentProps): JSX.Element => {
   const classes = useStyles({ onAddComment });
   const { t } = useTranslation();
@@ -219,16 +224,20 @@ const GraphContent = ({
     React.useState<ZoomBoundaries | null>(null);
   const graphSvgRef = React.useRef<SVGSVGElement | null>(null);
   const { canComment } = useAclQuery();
+  const mousePosition = useAtomValue(mousePositionAtom);
+  const changeMousePositionAndTimeValue = useUpdateAtom(
+    changeMousePositionAndTimeValueDerivedAtom,
+  );
+  const changeTimeValue = useUpdateAtom(changeTimeValueDerivedAtom);
+  const setAnnotationHovered = useUpdateAtom(annotationHoveredAtom);
+  const changeAnnotationHovered = useUpdateAtom(
+    changeAnnotationHoveredDerivedAtom,
+  );
 
   const theme = useTheme();
 
   const graphWidth = width > 0 ? width - margin.left - margin.right : 0;
   const graphHeight = height > 0 ? height - margin.top - margin.bottom : 0;
-
-  const annotations = useAnnotations(graphWidth);
-
-  const { changeMousePositionAndMetricsValue, mousePosition } =
-    useMetricsValueContext();
 
   const hideAddCommentTooltipOnEspcapePress = (event: KeyboardEvent): void => {
     if (event.key === 'Escape') {
@@ -316,9 +325,7 @@ const GraphContent = ({
 
   const updateMousePosition = (position: MousePosition): void => {
     if (isNil(position)) {
-      changeMousePositionAndMetricsValue({
-        base,
-        lines,
+      changeMousePositionAndTimeValue({
         position: null,
         timeValue: null,
       });
@@ -327,7 +334,7 @@ const GraphContent = ({
     }
     const timeValue = getTimeValue(position[0]);
 
-    changeMousePositionAndMetricsValue({ base, lines, position, timeValue });
+    changeMousePositionAndTimeValue({ position, timeValue });
   };
 
   const displayTooltip = (event: React.MouseEvent): void => {
@@ -338,8 +345,10 @@ const GraphContent = ({
 
     const mouseX = x - margin.left;
 
-    annotations.changeAnnotationHovered({
+    changeAnnotationHovered({
+      graphWidth,
       mouseX,
+      resourceId: resource.uuid,
       timeline,
       xScale,
     });
@@ -349,7 +358,7 @@ const GraphContent = ({
         end: gte(mouseX, zoomPivotPosition) ? mouseX : zoomPivotPosition,
         start: lt(mouseX, zoomPivotPosition) ? mouseX : zoomPivotPosition,
       });
-      changeMetricsValue({ newMetricsValue: null });
+      changeTimeValue({ isInViewport, newTimeValue: null });
 
       return;
     }
@@ -366,7 +375,7 @@ const GraphContent = ({
 
   const closeTooltip = (): void => {
     updateMousePosition(null);
-    annotations.setAnnotationHovered(undefined);
+    setAnnotationHovered(undefined);
 
     if (not(isNil(zoomPivotPosition))) {
       return;
@@ -431,45 +440,7 @@ const GraphContent = ({
     hideAddCommentTooltip();
   };
 
-  React.useEffect((): void => {
-    if (isNil(resourceGraphMousePosition)) {
-      changeMetricsValue({
-        newMetricsValue: null,
-      });
-
-      return;
-    }
-    const { resourceId, mousePosition: mousePositionContext } =
-      resourceGraphMousePosition;
-    if (
-      equals(resourceId, resource.id) ||
-      equals(mousePositionContext, mousePosition) ||
-      isNil(mousePositionContext)
-    ) {
-      return;
-    }
-
-    const timeValue = getTimeValue(mousePositionContext[0]);
-
-    const metrics = getMetrics(timeValue);
-
-    const metricsToDisplay = metrics.filter((metric) => {
-      const line = getLineForMetric({ lines, metric });
-
-      return !isNil(timeValue[metric]) && !isNil(line);
-    });
-
-    changeMetricsValue({
-      newMetricsValue: {
-        base,
-        lines,
-        metrics: metricsToDisplay,
-        timeValue,
-      },
-    });
-  }, [resourceGraphMousePosition]);
-
-  const position = mousePosition || resourceGraphMousePosition?.mousePosition;
+  const position = mousePosition;
 
   const mousePositionX = (position?.[0] || 0) - margin.left;
   const mousePositionY = (position?.[1] || 0) - margin.top;
@@ -489,166 +460,161 @@ const GraphContent = ({
   const commentTitle = isCommentPermitted ? '' : t(labelActionNotPermitted);
 
   return (
-    <AnnotationsContext.Provider value={annotations}>
-      <ClickAwayListener onClickAway={hideAddCommentTooltip}>
-        <div className={classes.container}>
-          {loading && (
-            <div className={classes.graphLoader}>
-              <CircularProgress />
-            </div>
-          )}
-          <svg
-            height={height}
-            ref={graphSvgRef}
-            width="100%"
-            onMouseUp={closeZoomPreview}
-          >
-            <Group.Group left={margin.left} top={margin.top}>
-              <MemoizedGridRows
-                height={graphHeight}
-                scale={rightScale || leftScale}
-                stroke={grey[100]}
-                width={graphWidth}
-              />
-              <MemoizedGridColumns
-                height={graphHeight}
-                scale={xScale}
-                stroke={grey[100]}
-                width={graphWidth}
-              />
-              <MemoizedAxes
-                base={base}
-                graphHeight={graphHeight}
-                graphWidth={graphWidth}
-                leftScale={leftScale}
-                lines={lines}
-                rightScale={rightScale}
-                xAxisTickFormat={xAxisTickFormat}
-                xScale={xScale}
-              />
-              <MemoizedLines
-                graphHeight={graphHeight}
-                leftScale={leftScale}
-                lines={lines}
-                rightScale={rightScale}
-                timeSeries={timeSeries}
-                timeTick={timeTick}
-                xScale={xScale}
-              />
-              {displayEventAnnotations && (
-                <MemoizedAnnotations
-                  graphHeight={graphHeight}
-                  timeline={timeline as Array<TimelineEvent>}
-                  xScale={xScale}
-                />
-              )}
-              <MemoizedBar
-                fill={alpha(theme.palette.primary.main, 0.2)}
-                height={graphHeight}
-                stroke={alpha(theme.palette.primary.main, 0.5)}
-                width={zoomBarWidth}
-                x={zoomBoundaries?.start || 0}
-                y={0}
-              />
-              {useMemoComponent({
-                Component:
-                  containsMetrics && position ? (
-                    <>
-                      <Shape.Line
-                        from={{ x: mousePositionX, y: 0 }}
-                        pointerEvents="none"
-                        stroke={grey[400]}
-                        strokeWidth={1}
-                        to={{ x: mousePositionX, y: graphHeight }}
-                      />
-                      <Shape.Line
-                        from={{ x: 0, y: mousePositionY }}
-                        pointerEvents="none"
-                        stroke={grey[400]}
-                        strokeWidth={1}
-                        to={{ x: graphWidth, y: mousePositionY }}
-                      />
-                    </>
-                  ) : (
-                    <></>
-                  ),
-                memoProps: [
-                  isNil(resourceGraphMousePosition) ||
-                  equals(resource.id, resourceGraphMousePosition?.resourceId)
-                    ? mousePosition
-                    : resourceGraphMousePosition,
-                ],
-              })}
-              <MemoizedBar
-                className={classes.overlay}
-                fill="transparent"
-                height={graphHeight}
-                width={graphWidth}
-                x={0}
-                y={0}
-                onMouseDown={displayZoomPreview}
-                onMouseLeave={closeTooltip}
-                onMouseMove={displayTooltip}
-                onMouseUp={displayAddCommentTooltip}
-              />
-            </Group.Group>
-            <TimeShiftContext.Provider
-              value={{
-                canAdjustTimePeriod,
-                graphHeight,
-                graphWidth,
-                loading,
-                marginLeft: margin.left,
-                marginTop: margin.top,
-                shiftTime,
-              }}
-            >
-              <TimeShiftZones />
-            </TimeShiftContext.Provider>
-          </svg>
-          {addCommentTooltipOpen && (
-            <Paper
-              className={classes.addCommentTooltip}
-              style={{
-                left: addCommentTooltipLeft,
-                top: addCommentTooltipTop,
-                width: commentTooltipWidth,
-              }}
-            >
-              <Typography variant="caption">
-                {format({
-                  date: new Date(commentDate as Date),
-                  formatString: dateTimeFormat,
-                })}
-              </Typography>
-              <Tooltip title={commentTitle}>
-                <div>
-                  <Button
-                    className={classes.addCommentButton}
-                    color="primary"
-                    disabled={!isCommentPermitted}
-                    size="small"
-                    onClick={prepareAddComment}
-                  >
-                    {t(labelAddComment)}
-                  </Button>
-                </div>
-              </Tooltip>
-            </Paper>
-          )}
-          {addingComment && (
-            <AddCommentForm
-              date={commentDate as Date}
-              resource={resource}
-              onClose={(): void => {
-                setAddingComment(false);
-              }}
-              onSuccess={confirmAddComment}
+    <ClickAwayListener onClickAway={hideAddCommentTooltip}>
+      <div className={classes.container}>
+        {loading && (
+          <div className={classes.graphLoader}>
+            <CircularProgress />
+          </div>
+        )}
+        <svg
+          height={height}
+          ref={graphSvgRef}
+          width="100%"
+          onMouseUp={closeZoomPreview}
+        >
+          <Group.Group left={margin.left} top={margin.top}>
+            <MemoizedGridRows
+              height={graphHeight}
+              scale={rightScale || leftScale}
+              stroke={grey[100]}
+              width={graphWidth}
             />
-          )}
-        </div>
-      </ClickAwayListener>
-    </AnnotationsContext.Provider>
+            <MemoizedGridColumns
+              height={graphHeight}
+              scale={xScale}
+              stroke={grey[100]}
+              width={graphWidth}
+            />
+            <MemoizedAxes
+              base={base}
+              graphHeight={graphHeight}
+              graphWidth={graphWidth}
+              leftScale={leftScale}
+              lines={lines}
+              rightScale={rightScale}
+              xAxisTickFormat={xAxisTickFormat}
+              xScale={xScale}
+            />
+            <MemoizedLines
+              displayTimeValues={displayTimeValues}
+              graphHeight={graphHeight}
+              leftScale={leftScale}
+              lines={lines}
+              rightScale={rightScale}
+              timeSeries={timeSeries}
+              timeTick={timeTick}
+              xScale={xScale}
+            />
+            {displayEventAnnotations && (
+              <MemoizedAnnotations
+                graphHeight={graphHeight}
+                resourceId={resource.uuid}
+                timeline={timeline as Array<TimelineEvent>}
+                xScale={xScale}
+              />
+            )}
+            <MemoizedBar
+              fill={alpha(theme.palette.primary.main, 0.2)}
+              height={graphHeight}
+              stroke={alpha(theme.palette.primary.main, 0.5)}
+              width={zoomBarWidth}
+              x={zoomBoundaries?.start || 0}
+              y={0}
+            />
+            {useMemoComponent({
+              Component:
+                displayTimeValues && containsMetrics && position ? (
+                  <g>
+                    <Shape.Line
+                      from={{ x: mousePositionX, y: 0 }}
+                      pointerEvents="none"
+                      stroke={grey[400]}
+                      strokeWidth={1}
+                      to={{ x: mousePositionX, y: graphHeight }}
+                    />
+                    <Shape.Line
+                      from={{ x: 0, y: mousePositionY }}
+                      pointerEvents="none"
+                      stroke={grey[400]}
+                      strokeWidth={1}
+                      to={{ x: graphWidth, y: mousePositionY }}
+                    />
+                  </g>
+                ) : (
+                  <g />
+                ),
+              memoProps: [mousePosition],
+            })}
+            <MemoizedBar
+              className={classes.overlay}
+              fill="transparent"
+              height={graphHeight}
+              width={graphWidth}
+              x={0}
+              y={0}
+              onMouseDown={displayZoomPreview}
+              onMouseLeave={closeTooltip}
+              onMouseMove={displayTooltip}
+              onMouseUp={displayAddCommentTooltip}
+            />
+          </Group.Group>
+          <TimeShiftContext.Provider
+            value={{
+              canAdjustTimePeriod,
+              graphHeight,
+              graphWidth,
+              loading,
+              marginLeft: margin.left,
+              marginTop: margin.top,
+              shiftTime,
+            }}
+          >
+            <TimeShiftZones />
+          </TimeShiftContext.Provider>
+        </svg>
+        {addCommentTooltipOpen && (
+          <Paper
+            className={classes.addCommentTooltip}
+            style={{
+              left: addCommentTooltipLeft,
+              top: addCommentTooltipTop,
+              width: commentTooltipWidth,
+            }}
+          >
+            <Typography variant="caption">
+              {format({
+                date: new Date(commentDate as Date),
+                formatString: dateTimeFormat,
+              })}
+            </Typography>
+            <Tooltip title={commentTitle}>
+              <div>
+                <Button
+                  className={classes.addCommentButton}
+                  color="primary"
+                  disabled={!isCommentPermitted}
+                  size="small"
+                  onClick={prepareAddComment}
+                >
+                  {t(labelAddComment)}
+                </Button>
+              </div>
+            </Tooltip>
+          </Paper>
+        )}
+        {addingComment && (
+          <AddCommentForm
+            date={commentDate as Date}
+            resource={resource}
+            onClose={(): void => {
+              setAddingComment(false);
+            }}
+            onSuccess={confirmAddComment}
+          />
+        )}
+      </div>
+    </ClickAwayListener>
   );
 };
 
@@ -670,7 +636,6 @@ const memoProps = [
   'displayEventAnnotations',
   'containsMetrics',
   'isInViewport',
-  'resourceGraphMousePosition',
 ];
 
 const MemoizedGraphContent = memoizeComponent<GraphContentProps>({
@@ -699,7 +664,6 @@ const Graph = (
     showTooltip: showAddCommentTooltip,
     hideTooltip: hideAddCommentTooltip,
   } = VisxTooltip.useTooltip();
-  const { changeMetricsValue } = useMetricsValueContext();
 
   return (
     <MemoizedGraphContent
@@ -707,7 +671,6 @@ const Graph = (
       addCommentTooltipLeft={addCommentTooltipLeft}
       addCommentTooltipOpen={addCommentTooltipOpen}
       addCommentTooltipTop={addCommentTooltipTop}
-      changeMetricsValue={changeMetricsValue}
       format={format}
       hideAddCommentTooltip={hideAddCommentTooltip}
       showAddCommentTooltip={showAddCommentTooltip}

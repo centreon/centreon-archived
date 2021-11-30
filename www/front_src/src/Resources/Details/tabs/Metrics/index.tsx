@@ -1,14 +1,13 @@
 import * as React from 'react';
 
 import { path } from 'ramda';
+import { useAtomValue } from 'jotai/utils';
 
 import { useRequest } from '@centreon/ui';
 
-import { TabProps } from '..';
 import InfiniteScroll from '../../InfiniteScroll';
 import LoadingSkeleton from '../Services/LoadingSkeleton';
-import memoizeComponent from '../../../memoizedComponent';
-import { useResourceContext, ResourceContext } from '../../../Context';
+import { detailsAtom } from '../../detailsAtoms';
 
 import { MetaServiceMetricListing } from './models';
 import { listMetaServiceMetrics } from './api';
@@ -17,19 +16,15 @@ import Metrics from './Metrics';
 
 const limit = 30;
 
-type MetricsTabContentProps = TabProps &
-  Pick<ResourceContext, 'selectResource'>;
-
-const MetricsTabContent = ({
-  details,
-  selectResource,
-}: MetricsTabContentProps): JSX.Element => {
-  const endpoint = path(['links', 'endpoints', 'metrics'], details);
-
+const MetricsTab = (): JSX.Element => {
   const { sendRequest, sending } = useRequest<MetaServiceMetricListing>({
     decoder: metaServiceMetricListingDecoder,
     request: listMetaServiceMetrics,
   });
+
+  const details = useAtomValue(detailsAtom);
+
+  const endpoint = path(['links', 'endpoints', 'metrics'], details);
 
   const sendListingRequest = ({
     atPage,
@@ -59,27 +54,10 @@ const MetricsTabContent = ({
           <Metrics
             infiniteScrollTriggerRef={infiniteScrollTriggerRef}
             metrics={entities}
-            selectResource={selectResource}
           />
         );
       }}
     </InfiniteScroll>
-  );
-};
-
-const MemoizedMetricsTabContent = memoizeComponent<MetricsTabContentProps>({
-  Component: MetricsTabContent,
-  memoProps: ['details'],
-});
-
-const MetricsTab = ({ details }: TabProps): JSX.Element => {
-  const { selectResource } = useResourceContext();
-
-  return (
-    <MemoizedMetricsTabContent
-      details={details}
-      selectResource={selectResource}
-    />
   );
 };
 

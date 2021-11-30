@@ -12,6 +12,8 @@ import {
   symmetricDifference,
 } from 'ramda';
 import { useTranslation } from 'react-i18next';
+import { useAtomValue, useUpdateAtom } from 'jotai/utils';
+import { useAtom } from 'jotai';
 
 import {
   Menu,
@@ -31,11 +33,17 @@ import {
   labelFilterSaved,
   labelEditFilters,
 } from '../../translatedLabels';
-import { useResourceContext } from '../../Context';
-import { updateFilter as updateFilterRequest } from '../api';
-import { FilterState } from '../useFilter';
-import memoizeComponent from '../../memoizedComponent';
+import { listCustomFilters, updateFilter as updateFilterRequest } from '../api';
 import { Filter } from '../models';
+import {
+  applyFilterDerivedAtom,
+  currentFilterAtom,
+  customFiltersAtom,
+  editPanelOpenAtom,
+  filtersDerivedAtom,
+  sendingFilterAtom,
+} from '../filterAtoms';
+import { listCustomFiltersDecoder } from '../api/decoders';
 
 import CreateFilterDialog from './CreateFilterDialog';
 
@@ -50,26 +58,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-type Props = Pick<
-  FilterState,
-  | 'currentFilter'
-  | 'loadCustomFilters'
-  | 'customFilters'
-  | 'setEditPanelOpen'
-  | 'filters'
-  | 'appliedFilter'
-  | 'search'
-  | 'applyFilter'
->;
-
-const SaveFilterMenuContent = ({
-  currentFilter,
-  applyFilter,
-  loadCustomFilters,
-  customFilters,
-  setEditPanelOpen,
-  filters,
-}: Props): JSX.Element => {
+const SaveFilterMenu = (): JSX.Element => {
   const classes = useStyles();
 
   const { t } = useTranslation();
@@ -78,12 +67,24 @@ const SaveFilterMenuContent = ({
   const [createFilterDialogOpen, setCreateFilterDialogOpen] =
     React.useState(false);
 
+  const { sendRequest: sendListCustomFiltersRequest, sending } = useRequest({
+    decoder: listCustomFiltersDecoder,
+    request: listCustomFilters,
+  });
+
   const {
     sendRequest: sendUpdateFilterRequest,
     sending: sendingUpdateFilterRequest,
   } = useRequest({
     request: updateFilterRequest,
   });
+
+  const [customFilters, setCustomFilters] = useAtom(customFiltersAtom);
+  const currentFilter = useAtomValue(currentFilterAtom);
+  const filters = useAtomValue(filtersDerivedAtom);
+  const applyFilter = useUpdateAtom(applyFilterDerivedAtom);
+  const setEditPanelOpen = useUpdateAtom(editPanelOpenAtom);
+  const setSendingFilter = useUpdateAtom(sendingFilterAtom);
 
   const { showSuccessMessage } = useSnackbar();
 
@@ -104,10 +105,18 @@ const SaveFilterMenuContent = ({
     setCreateFilterDialogOpen(false);
   };
 
+  const loadCustomFilters = (): Promise<Array<Filter>> => {
+    return sendListCustomFiltersRequest().then(({ result }) => {
+      setCustomFilters(result.map(omit(['order'])));
+
+      return result;
+    });
+  };
+
   const loadFiltersAndUpdateCurrent = (newFilter: Filter): void => {
     closeCreateFilterDialog();
 
-    loadCustomFilters().then(() => {
+    loadCustomFilters?.().then(() => {
       applyFilter(newFilter);
     });
   };
@@ -143,6 +152,10 @@ const SaveFilterMenuContent = ({
       retrievedFilter?.criterias || [],
     );
   };
+
+  React.useEffect(() => {
+    setSendingFilter(sending);
+  }, [sending]);
 
   const isNewFilter = currentFilter.id === '';
   const canSaveFilter = and(isFilterDirty(), not(isNewFilter));
@@ -184,46 +197,6 @@ const SaveFilterMenuContent = ({
         />
       )}
     </>
-  );
-};
-
-const memoProps = [
-  'updatedFilter',
-  'customFilters',
-  'appliedFilter',
-  'filters',
-  'currentFilter',
-  'search',
-];
-
-const MemoizedSaveFilterMenuContent = memoizeComponent<Props>({
-  Component: SaveFilterMenuContent,
-  memoProps,
-});
-
-const SaveFilterMenu = (): JSX.Element => {
-  const {
-    filterWithParsedSearch,
-    applyFilter,
-    loadCustomFilters,
-    customFilters,
-    setEditPanelOpen,
-    filters,
-    appliedFilter,
-    search,
-  } = useResourceContext();
-
-  return (
-    <MemoizedSaveFilterMenuContent
-      appliedFilter={appliedFilter}
-      applyFilter={applyFilter}
-      currentFilter={filterWithParsedSearch}
-      customFilters={customFilters}
-      filters={filters}
-      loadCustomFilters={loadCustomFilters}
-      search={search}
-      setEditPanelOpen={setEditPanelOpen}
-    />
   );
 };
 

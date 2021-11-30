@@ -32,13 +32,4 @@ const getStoredOrDefault = <TItem>({
   return updatedCachedItem;
 };
 
-interface StoreParameters<TItem> {
-  key: string;
-  value: TItem;
-}
-
-const store = <TItem>({ value, key }: StoreParameters<TItem>): void => {
-  localStorage.setItem(key, JSON.stringify(value));
-};
-
-export { getStoredOrDefault, store, baseKey };
+export { getStoredOrDefault, baseKey };

@@ -1,20 +1,23 @@
 import * as React from 'react';
 
 import { equals } from 'ramda';
+import { useUpdateAtom } from 'jotai/utils';
 
 import { Grid, Chip } from '@material-ui/core';
 
+import { setCriteriaAndNewFilterDerivedAtom } from '../../../../Filter/filterAtoms';
 import { CriteriaNames } from '../../../../Filter/Criterias/models';
 import { ResourceDetails } from '../../../models';
 import { NamedEntity, ResourceType } from '../../../../models';
-import { useResourceContext } from '../../../../Context';
 
 interface Props {
   details: ResourceDetails;
 }
 
 const Groups = ({ details }: Props): JSX.Element => {
-  const { setCriteriaAndNewFilter } = useResourceContext();
+  const setCriteriaAndNewFilter = useUpdateAtom(
+    setCriteriaAndNewFilterDerivedAtom,
+  );
 
   const filterByGroup = (group: NamedEntity): void => {
     setCriteriaAndNewFilter({
