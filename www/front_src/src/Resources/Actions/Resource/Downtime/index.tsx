@@ -2,9 +2,10 @@ import * as React from 'react';
 
 import { useFormik } from 'formik';
 import { useTranslation } from 'react-i18next';
+import { useAtomValue } from 'jotai/utils';
 
 import { useSnackbar, useRequest, useLocaleDateTimeFormat } from '@centreon/ui';
-import { useUserContext } from '@centreon/ui-context';
+import { downtimeAtom, userAtom } from '@centreon/ui-context';
 
 import {
   labelDowntimeCommandSent,
@@ -40,7 +41,8 @@ const DowntimeForm = ({
     request: setDowntimeOnResources,
   });
 
-  const { alias, downtime } = useUserContext();
+  const { alias } = useAtomValue(userAtom);
+  const downtime = useAtomValue(downtimeAtom);
 
   const currentDate = new Date();
 

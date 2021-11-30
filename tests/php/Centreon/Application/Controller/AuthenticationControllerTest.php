@@ -32,7 +32,6 @@ use Centreon\Domain\Authentication\UseCase\Authenticate;
 use Centreon\Domain\Authentication\UseCase\AuthenticateApi;
 use Centreon\Application\Controller\AuthenticationController;
 use Security\Domain\Authentication\Model\ProviderConfiguration;
-use Centreon\Domain\Authentication\UseCase\AuthenticateResponse;
 use Centreon\Domain\Authentication\UseCase\AuthenticateApiResponse;
 use Centreon\Domain\Authentication\Exception\AuthenticationException;
 use Centreon\Domain\Authentication\UseCase\FindProvidersConfigurations;
@@ -162,12 +161,22 @@ class AuthenticationControllerTest extends TestCase
         );
 
         $this->authenticateApi
-        ->expects($this->once())
-        ->method('execute')
-        ->will($this->throwException(AuthenticationException::notAuthenticated()));
-        $this->expectException(AuthenticationException::class);
-        $this->expectExceptionMessage('Authentication failed');
-        $authenticationController->login($this->request, $this->authenticateApi, $response);
+            ->expects($this->once())
+            ->method('execute')
+            ->will($this->throwException(AuthenticationException::notAuthenticated()));
+
+        $view = $authenticationController->login($this->request, $this->authenticateApi, $response);
+
+        $this->assertEquals(
+            View::create(
+                [
+                    "code" => Response::HTTP_UNAUTHORIZED,
+                    "message" => 'Invalid credentials',
+                ],
+                Response::HTTP_UNAUTHORIZED
+            ),
+            $view
+        );
     }
 
     /**
