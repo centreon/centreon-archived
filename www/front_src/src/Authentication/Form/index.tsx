@@ -5,7 +5,7 @@ import { Formik } from 'formik';
 import { Divider, makeStyles } from '@material-ui/core';
 
 import { SecurityPolicy } from '../models';
-import useValidationSchema from '../validationSchema';
+import useValidationSchema from '../useValidationSchema';
 
 import PasswordCasePolicy from './PasswordCasePolicy';
 import PasswordExpirationPolicy from './PasswordExpirationPolicy';
