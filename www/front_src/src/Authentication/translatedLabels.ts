@@ -25,3 +25,4 @@ export const labelMonth = 'Month';
 export const labelMonths = 'Months';
 export const labelDay = 'Day';
 export const labelDays = 'Days';
+export const labelCanReuseLast3Passwords = 'Can reuse last 3 passwords';

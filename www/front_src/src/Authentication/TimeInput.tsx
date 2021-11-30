@@ -111,6 +111,7 @@ const TimeInput = ({
   return (
     <div className={classes.timeInput}>
       <TextField
+        ariaLabel={t(label)}
         inputProps={{ className: classes.small, min: 0 }}
         name={name}
         required={required}
