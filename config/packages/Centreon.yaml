@@ -29,6 +29,10 @@ services:
         resource: '../../src/Centreon/*'
         exclude: '../../src/Centreon/Tests'
 
+    Core\:
+        resource: '../../src/Core/*'
+        exclude: '../../src/Core/Tests'
+
     Centreon\Infrastructure\DatabaseConnection:
         class: Centreon\Infrastructure\DatabaseConnection
         arguments:
@@ -212,6 +216,8 @@ services:
             calls:
                 - method: setSqlRequestTranslator
                   arguments: ['@sqlRequestTranslator']
+        Core\Infrastructure\RealTime\Api\Hypermedia\HypermediaProviderInterface:
+            tags: ['realtime.api.hypermedia']
 
     Centreon\Domain\Monitoring\Interfaces\ResourceServiceInterface:
         class: Centreon\Domain\Monitoring\ResourceService
@@ -223,6 +229,12 @@ services:
               arguments: ['@sqlRequestTranslator']
             - method: setProviders
               arguments: [!tagged_iterator 'monitoring.resource.providers']
+
+    Core\Infrastructure\RealTime\Api\Hypermedia\HypermediaService:
+        class: Core\Infrastructure\RealTime\Api\Hypermedia\HypermediaService
+        calls:
+            - method: setHypermediaProviders
+              arguments: [!tagged_iterator 'realtime.api.hypermedia']
 
     # Filters
     Centreon\Domain\Filter\Interfaces\FilterServiceInterface:

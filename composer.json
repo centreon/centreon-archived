@@ -47,7 +47,7 @@
         "nelmio/cors-bundle": "^2.1",
         "openpsa/quickform": "3.3.*",
         "pear/pear-core-minimal": "^1.10",
-        "php": ">=7.2.24",
+        "php": ">=8.0",
         "phpdocumentor/reflection-docblock": "^5.2",
         "pimple/pimple": "^3.2",
         "sensio/framework-extra-bundle": "^5.3",
