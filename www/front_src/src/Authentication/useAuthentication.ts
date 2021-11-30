@@ -5,6 +5,7 @@ import { useRequest } from '@centreon/ui';
 import { SecurityPolicy } from './models';
 import { getSecurityPolicy } from './api';
 import { securityPolicyDecoder } from './api/decoders';
+import { adaptSecurityPolicyFromAPI } from './api/adapters';
 
 interface UseAuthenticationState {
   initialSecurityPolicy: SecurityPolicy | null;
@@ -21,7 +22,9 @@ const useAuthentication = (): UseAuthenticationState => {
 
   React.useEffect(() => {
     sendRequest()
-      .then(setInitialSecurityPolicy)
+      .then((securityPolicy) =>
+        setInitialSecurityPolicy(adaptSecurityPolicyFromAPI(securityPolicy)),
+      )
       .catch(() => undefined);
   }, []);
 
