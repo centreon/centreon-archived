@@ -38,7 +38,7 @@ const PasswordExpiration = (): JSX.Element => {
   const { values, setFieldValue, errors } = useFormikContext<SecurityPolicy>();
 
   const change = (value: number): void => {
-    setFieldValue(passwordExpirationFieldName, value);
+    setFieldValue(passwordExpirationFieldName, value || null);
   };
 
   const passwordExpirationValue = React.useMemo<number>(

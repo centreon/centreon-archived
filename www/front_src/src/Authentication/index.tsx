@@ -6,7 +6,7 @@ import { isNil } from 'ramda';
 import { Paper, makeStyles, Theme, Typography } from '@material-ui/core';
 
 import { labelDefinePasswordSecurityPolicy } from './translatedLabels';
-import useAuthentication from './useAthentication';
+import useAuthentication from './useAuthentication';
 import Form from './Form';
 import { SecurityPolicy } from './models';
 

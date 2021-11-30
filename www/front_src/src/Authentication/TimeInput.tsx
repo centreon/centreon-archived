@@ -62,7 +62,7 @@ const TimeInput = ({
   const changeInput = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const value = parseInt(path(['target', 'value'], event) as string, 10);
 
-    const currentDuration = dayjs.duration(timeValue);
+    const currentDuration = dayjs.duration(timeValue || 0);
 
     if (Number.isNaN(value)) {
       const previousValue = Math.floor(
@@ -102,7 +102,7 @@ const TimeInput = ({
   const normalizedValue = normalizeValue({
     functionGetDurationValue,
     unit,
-    value: timeValue,
+    value: timeValue || 0,
   });
   const inputValue = Math.floor(normalizedValue);
 
