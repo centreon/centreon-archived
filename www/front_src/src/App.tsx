@@ -25,6 +25,7 @@ import Footer from './components/footer';
 import axios from './axios';
 import { fetchExternalComponents } from './redux/actions/externalComponentsActions';
 import PageLoader from './components/PageLoader';
+import Provider from './Provider';
 
 const MainRouter = React.lazy(() => import('./components/mainRouter'));
 
@@ -207,4 +208,10 @@ const mapDispatchToProps = (dispatch: (any) => void): DispatchProps => {
   };
 };
 
-export default connect(null, mapDispatchToProps)(withStyles(styles)(App));
+const CentreonApp = connect(null, mapDispatchToProps)(withStyles(styles)(App));
+
+export default (): JSX.Element => (
+  <Provider>
+    <CentreonApp />
+  </Provider>
+);
