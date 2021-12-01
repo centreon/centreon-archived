@@ -5,6 +5,8 @@ import { useTranslation } from 'react-i18next';
 
 import { FormControlLabel, makeStyles, Switch } from '@material-ui/core';
 
+import { useMemoComponent } from '@centreon/centreon-frontend/packages/centreon-ui/src';
+
 import { labelCanReuseLast3Passwords } from '../../translatedLabels';
 import { getField } from '../utils';
 
@@ -21,28 +23,31 @@ const CanReusePasswords = (): JSX.Element => {
   const { values, handleChange } = useFormikContext<FormikValues>();
   const { t } = useTranslation();
 
-  const canReusePasswords = React.useMemo(
-    () => getField<boolean>({ field: fieldName, object: values }),
-    [values],
-  );
+  const canReusePasswords = getField<boolean>({
+    field: fieldName,
+    object: values,
+  });
 
-  return (
-    <div className={classes.canReusePasswords}>
-      <FormControlLabel
-        control={
-          <Switch
-            aria-label={t(labelCanReuseLast3Passwords)}
-            checked={canReusePasswords}
-            color="primary"
-            name={t(labelCanReuseLast3Passwords)}
-            size="small"
-            onChange={handleChange(fieldName)}
-          />
-        }
-        label={t(labelCanReuseLast3Passwords)}
-      />
-    </div>
-  );
+  return useMemoComponent({
+    Component: (
+      <div className={classes.canReusePasswords}>
+        <FormControlLabel
+          control={
+            <Switch
+              aria-label={t(labelCanReuseLast3Passwords)}
+              checked={canReusePasswords}
+              color="primary"
+              name={t(labelCanReuseLast3Passwords)}
+              size="small"
+              onChange={handleChange(fieldName)}
+            />
+          }
+          label={t(labelCanReuseLast3Passwords)}
+        />
+      </div>
+    ),
+    memoProps: [canReusePasswords],
+  });
 };
 
 export default CanReusePasswords;

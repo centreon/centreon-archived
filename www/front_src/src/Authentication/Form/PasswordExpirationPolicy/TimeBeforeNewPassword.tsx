@@ -5,6 +5,8 @@ import { FormikValues, useFormikContext } from 'formik';
 
 import { FormHelperText, FormLabel } from '@material-ui/core';
 
+import { useMemoComponent } from '@centreon/centreon-frontend/packages/centreon-ui/src';
+
 import { labelTimeBeforeSetNewPassword } from '../../translatedLabels';
 import { getField } from '../utils';
 import TimeInputs from '../../TimeInputs';
@@ -20,30 +22,33 @@ const TimeBeforeNewPassword = (): JSX.Element => {
     setFieldValue(delayBeforeNewPasswordFieldName, value || null);
   };
 
-  const delayBeforeNewPasswordValue = React.useMemo<number>(
-    () => getField({ field: delayBeforeNewPasswordFieldName, object: values }),
-    [values],
-  );
+  const delayBeforeNewPasswordValue = getField<number>({
+    field: delayBeforeNewPasswordFieldName,
+    object: values,
+  });
 
-  const delayBeforeNewPasswordError = React.useMemo<number>(
-    () => getField({ field: delayBeforeNewPasswordFieldName, object: errors }),
-    [errors],
-  );
+  const delayBeforeNewPasswordError = getField<string>({
+    field: delayBeforeNewPasswordFieldName,
+    object: errors,
+  });
 
-  return (
-    <div>
-      <FormLabel>{t(labelTimeBeforeSetNewPassword)}</FormLabel>
-      <TimeInputs
-        baseName={delayBeforeNewPasswordFieldName}
-        timeValue={delayBeforeNewPasswordValue}
-        units={['days', 'hours', 'minutes', 'seconds']}
-        onChange={change}
-      />
-      {delayBeforeNewPasswordError && (
-        <FormHelperText error>{delayBeforeNewPasswordError}</FormHelperText>
-      )}
-    </div>
-  );
+  return useMemoComponent({
+    Component: (
+      <div>
+        <FormLabel>{t(labelTimeBeforeSetNewPassword)}</FormLabel>
+        <TimeInputs
+          baseName={delayBeforeNewPasswordFieldName}
+          timeValue={delayBeforeNewPasswordValue}
+          units={['days', 'hours', 'minutes', 'seconds']}
+          onChange={change}
+        />
+        {delayBeforeNewPasswordError && (
+          <FormHelperText error>{delayBeforeNewPasswordError}</FormHelperText>
+        )}
+      </div>
+    ),
+    memoProps: [delayBeforeNewPasswordValue, delayBeforeNewPasswordError],
+  });
 };
 
 export default TimeBeforeNewPassword;

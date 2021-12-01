@@ -6,7 +6,7 @@ import { equals, gt, path } from 'ramda';
 
 import { makeStyles, Typography } from '@material-ui/core';
 
-import { TextField } from '@centreon/ui';
+import { TextField, useMemoComponent } from '@centreon/ui';
 
 import { Unit } from '../models';
 
@@ -65,10 +65,11 @@ const TimeInput = ({
 
       const currentDuration = dayjs.duration(timeValue || 0);
 
+      const previousValue = Math.floor(
+        currentDuration[functionGetDurationValue](unit),
+      );
+
       if (Number.isNaN(value)) {
-        const previousValue = Math.floor(
-          currentDuration[functionGetDurationValue](unit),
-        );
         onChange(
           currentDuration
             .clone()
@@ -79,9 +80,6 @@ const TimeInput = ({
         return;
       }
 
-      const previousValue = Math.floor(
-        currentDuration[functionGetDurationValue](unit),
-      );
       const diffDuration = value - previousValue;
       if (
         equals(unit, 'months') &&
@@ -104,32 +102,39 @@ const TimeInput = ({
     [functionGetDurationValue, unit, timeValue],
   );
 
-  const normalizedValue = normalizeValue({
-    functionGetDurationValue,
-    unit,
-    value: timeValue || 0,
-  });
+  const normalizedValue = React.useMemo(
+    () =>
+      normalizeValue({
+        functionGetDurationValue,
+        unit,
+        value: timeValue || 0,
+      }),
+    [functionGetDurationValue, unit, timeValue],
+  );
   const inputValue = Math.floor(normalizedValue);
 
   const label = gt(inputValue, 1) ? labels.plural : labels.singular;
 
-  return (
-    <div className={classes.timeInput}>
-      <TextField
-        inputProps={{
-          'aria-label': t(label),
-          className: classes.small,
-          min: 0,
-        }}
-        name={name}
-        required={required}
-        type="number"
-        value={equals(inputValue, 0) ? '' : inputValue}
-        onChange={changeInput}
-      />
-      <Typography>{t(label)}</Typography>
-    </div>
-  );
+  return useMemoComponent({
+    Component: (
+      <div className={classes.timeInput}>
+        <TextField
+          inputProps={{
+            'aria-label': t(label),
+            className: classes.small,
+            min: 0,
+          }}
+          name={name}
+          required={required}
+          type="number"
+          value={equals(inputValue, 0) ? '' : inputValue}
+          onChange={changeInput}
+        />
+        <Typography>{t(label)}</Typography>
+      </div>
+    ),
+    memoProps: [timeValue, unit, labels, name, required, getAbsoluteValue],
+  });
 };
 
 export default TimeInput;

@@ -63,19 +63,15 @@ const CaseButtons = (): JSX.Element => {
   };
 
   const [hasLowerCase, hasUpperCase, hasNumber, hasSpecialCharacter] =
-    React.useMemo(
-      () =>
-        getFields<boolean>({
-          fields: [
-            hasLowerCaseName,
-            hasUpperCaseName,
-            hasNumberName,
-            hasSpecialCharacterName,
-          ],
-          object: values,
-        }),
-      [values],
-    );
+    getFields<boolean>({
+      fields: [
+        hasLowerCaseName,
+        hasUpperCaseName,
+        hasNumberName,
+        hasSpecialCharacterName,
+      ],
+      object: values,
+    });
 
   const thresholds = React.useMemo(
     () => [
@@ -83,7 +79,7 @@ const CaseButtons = (): JSX.Element => {
       { color: theme.palette.warning.main, label: labelGood, value: 3 },
       { color: theme.palette.success.main, label: labelStrong, value: 4 },
     ],
-    [theme],
+    [],
   );
 
   const thresholdValue = [

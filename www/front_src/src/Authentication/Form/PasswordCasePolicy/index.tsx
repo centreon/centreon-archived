@@ -33,23 +33,15 @@ const PasswordCasePolicy = (): JSX.Element => {
   const { t } = useTranslation();
   const { handleChange, errors, values } = useFormikContext<FormikValues>();
 
-  const passwordLengthError = React.useMemo(
-    () =>
-      getField<string | undefined>({
-        field: passwordMinLengthFieldName,
-        object: errors,
-      }),
-    [errors],
-  );
+  const passwordLengthError = getField<string | undefined>({
+    field: passwordMinLengthFieldName,
+    object: errors,
+  });
 
-  const passwordLengthValue = React.useMemo(
-    () =>
-      getField<number>({
-        field: passwordMinLengthFieldName,
-        object: values,
-      }),
-    [values],
-  );
+  const passwordLengthValue = getField<number>({
+    field: passwordMinLengthFieldName,
+    object: values,
+  });
 
   return useMemoComponent({
     Component: (

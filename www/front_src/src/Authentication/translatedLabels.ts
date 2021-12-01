@@ -53,3 +53,5 @@ export const labelPasswordSecurityPolicySaved =
   'Password security policy saved';
 export const labelFailedToSavePasswordSecurityPolicy =
   'Failed to save password security policy';
+export const labelThisWillNotBeUsedBecauseNumberOfAttemptsIsNotDefined =
+  'This will not be used because number of attempts is not defined';

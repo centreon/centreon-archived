@@ -44,9 +44,12 @@ const useStyles = makeStyles<Theme, Threshold>((theme) => ({
 }));
 
 const StrengthProgress = ({ thresholds, max, value }: Props): JSX.Element => {
-  const currentThreshold =
-    findLast((threshold) => value >= threshold.value, thresholds) ||
-    thresholds[0];
+  const currentThreshold = React.useMemo(
+    () =>
+      findLast((threshold) => value >= threshold.value, thresholds) ||
+      thresholds[0],
+    [thresholds, value],
+  );
   const classes = useStyles(currentThreshold);
   const { t } = useTranslation();
 

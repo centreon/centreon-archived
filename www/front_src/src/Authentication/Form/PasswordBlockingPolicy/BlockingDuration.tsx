@@ -2,15 +2,18 @@ import * as React from 'react';
 
 import { FormikValues, useFormikContext } from 'formik';
 import { useTranslation } from 'react-i18next';
-import { and, isNil, not } from 'ramda';
+import { isNil, not } from 'ramda';
 
 import { FormHelperText, FormLabel, useTheme } from '@material-ui/core';
+
+import { useMemoComponent } from '@centreon/centreon-frontend/packages/centreon-ui/src';
 
 import TimeInputs from '../../TimeInputs';
 import {
   labelBlockingTimeBeforeNewConnectionAttempt,
   labelGood,
   labelStrong,
+  labelThisWillNotBeUsedBecauseNumberOfAttemptsIsNotDefined,
   labelWeak,
 } from '../../translatedLabels';
 import { getField } from '../utils';
@@ -21,6 +24,8 @@ import {
   strongBlockingDuration,
   weakBlockingDuration,
 } from '../../timestamps';
+
+import { attemptsFieldName } from './Attempts';
 
 const blockingDurationFieldName = 'blockingDuration';
 
@@ -34,15 +39,20 @@ const BlockingDuration = (): JSX.Element => {
     setFieldValue(blockingDurationFieldName, value || null);
   };
 
-  const blockingDurationValue = React.useMemo<number>(
-    () => getField({ field: blockingDurationFieldName, object: values }),
-    [values],
-  );
+  const blockingDurationValue = getField<number>({
+    field: blockingDurationFieldName,
+    object: values,
+  });
 
-  const blockingDurationError = React.useMemo<number>(
-    () => getField({ field: blockingDurationFieldName, object: errors }),
-    [errors],
-  );
+  const blockingDurationError = getField<string>({
+    field: blockingDurationFieldName,
+    object: errors,
+  });
+
+  const attemptsValue = getField<number>({
+    field: attemptsFieldName,
+    object: values,
+  });
 
   const thresholds = React.useMemo(
     () => [
@@ -62,35 +72,48 @@ const BlockingDuration = (): JSX.Element => {
         value: strongBlockingDuration,
       },
     ],
-    [theme],
+    [],
   );
 
-  const displayStrengthProgress = and(
-    isNil(blockingDurationError),
-    not(isNil(blockingDurationValue)),
+  const areAttemptsEmpty = isNil(attemptsValue);
+
+  const displayStrengthProgress = React.useMemo(
+    () =>
+      isNil(blockingDurationError) &&
+      not(isNil(blockingDurationValue)) &&
+      not(areAttemptsEmpty),
+    [blockingDurationError, blockingDurationValue, areAttemptsEmpty],
   );
 
-  return (
-    <div>
-      <FormLabel>{t(labelBlockingTimeBeforeNewConnectionAttempt)}</FormLabel>
-      <TimeInputs
-        baseName={blockingDurationFieldName}
-        timeValue={blockingDurationValue}
-        units={['days', 'hours', 'minutes', 'seconds']}
-        onChange={change}
-      />
-      {blockingDurationError && (
-        <FormHelperText error>{blockingDurationError}</FormHelperText>
-      )}
-      {displayStrengthProgress && (
-        <StrengthProgress
-          max={sevenDays}
-          thresholds={thresholds}
-          value={blockingDurationValue || 0}
+  return useMemoComponent({
+    Component: (
+      <div>
+        <FormLabel>{t(labelBlockingTimeBeforeNewConnectionAttempt)}</FormLabel>
+        <TimeInputs
+          baseName={blockingDurationFieldName}
+          timeValue={blockingDurationValue}
+          units={['days', 'hours', 'minutes', 'seconds']}
+          onChange={change}
         />
-      )}
-    </div>
-  );
+        {blockingDurationError && (
+          <FormHelperText error>{blockingDurationError}</FormHelperText>
+        )}
+        {areAttemptsEmpty && (
+          <FormHelperText error>
+            {t(labelThisWillNotBeUsedBecauseNumberOfAttemptsIsNotDefined)}
+          </FormHelperText>
+        )}
+        {displayStrengthProgress && (
+          <StrengthProgress
+            max={sevenDays}
+            thresholds={thresholds}
+            value={blockingDurationValue || 0}
+          />
+        )}
+      </div>
+    ),
+    memoProps: [blockingDurationValue, blockingDurationError, attemptsValue],
+  });
 };
 
 export default BlockingDuration;

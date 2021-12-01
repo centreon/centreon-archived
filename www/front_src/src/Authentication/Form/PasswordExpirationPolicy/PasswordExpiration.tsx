@@ -5,6 +5,8 @@ import { FormikValues, useFormikContext } from 'formik';
 
 import { FormHelperText, FormLabel, makeStyles } from '@material-ui/core';
 
+import { useMemoComponent } from '@centreon/centreon-frontend/packages/centreon-ui/src';
+
 import { labelPasswordExpiration } from '../../translatedLabels';
 import { getField } from '../utils';
 import TimeInputs from '../../TimeInputs';
@@ -27,30 +29,33 @@ const PasswordExpiration = (): JSX.Element => {
     setFieldValue(passwordExpirationFieldName, value || null);
   };
 
-  const passwordExpirationValue = React.useMemo<number>(
-    () => getField({ field: passwordExpirationFieldName, object: values }),
-    [values],
-  );
+  const passwordExpirationValue = getField<number>({
+    field: passwordExpirationFieldName,
+    object: values,
+  });
 
-  const passwordExpirationError = React.useMemo<number>(
-    () => getField({ field: passwordExpirationFieldName, object: errors }),
-    [errors],
-  );
+  const passwordExpirationError = getField<string>({
+    field: passwordExpirationFieldName,
+    object: errors,
+  });
 
-  return (
-    <div className={classes.passwordExpirationContainer}>
-      <FormLabel>{t(labelPasswordExpiration)}</FormLabel>
-      <TimeInputs
-        baseName={passwordExpirationFieldName}
-        timeValue={passwordExpirationValue}
-        units={['months', 'days']}
-        onChange={change}
-      />
-      {passwordExpirationError && (
-        <FormHelperText error>{passwordExpirationError}</FormHelperText>
-      )}
-    </div>
-  );
+  return useMemoComponent({
+    Component: (
+      <div className={classes.passwordExpirationContainer}>
+        <FormLabel>{t(labelPasswordExpiration)}</FormLabel>
+        <TimeInputs
+          baseName={passwordExpirationFieldName}
+          timeValue={passwordExpirationValue}
+          units={['months', 'days']}
+          onChange={change}
+        />
+        {passwordExpirationError && (
+          <FormHelperText error>{passwordExpirationError}</FormHelperText>
+        )}
+      </div>
+    ),
+    memoProps: [passwordExpirationValue, passwordExpirationError],
+  });
 };
 
 export default PasswordExpiration;

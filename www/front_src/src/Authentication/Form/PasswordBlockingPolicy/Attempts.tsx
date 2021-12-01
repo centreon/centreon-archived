@@ -6,7 +6,7 @@ import { isEmpty, isNil, not, path } from 'ramda';
 
 import { makeStyles, useTheme } from '@material-ui/core';
 
-import { TextField } from '@centreon/ui';
+import { TextField, useMemoComponent } from '@centreon/ui';
 
 import {
   labelGood,
@@ -18,7 +18,7 @@ import {
 import { getField } from '../utils';
 import StrengthProgress from '../../StrengthProgress';
 
-const attemptsFieldName = 'attempts';
+export const attemptsFieldName = 'attempts';
 
 const useStyles = makeStyles({
   input: {
@@ -32,35 +32,30 @@ const Attempts = (): JSX.Element => {
   const { t } = useTranslation();
   const theme = useTheme();
 
-  const changeInput = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    const value = path(['target', 'value'], event);
+  const changeInput = React.useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>): void => {
+      const value = path(['target', 'value'], event);
 
-    if (isEmpty(value)) {
-      setFieldValue(attemptsFieldName, null);
+      if (isEmpty(value)) {
+        setFieldValue(attemptsFieldName, null);
 
-      return;
-    }
+        return;
+      }
 
-    setFieldValue(attemptsFieldName, value);
-  };
-
-  const attemptsError = React.useMemo(
-    () =>
-      getField<string | undefined>({
-        field: attemptsFieldName,
-        object: errors,
-      }),
-    [errors],
+      setFieldValue(attemptsFieldName, value);
+    },
+    [attemptsFieldName],
   );
 
-  const attemptsValue = React.useMemo(
-    () =>
-      getField<number>({
-        field: attemptsFieldName,
-        object: values,
-      }),
-    [values],
-  );
+  const attemptsError = getField<string | undefined>({
+    field: attemptsFieldName,
+    object: errors,
+  });
+
+  const attemptsValue = getField<number>({
+    field: attemptsFieldName,
+    object: values,
+  });
 
   const thresholds = React.useMemo(
     () => [
@@ -69,36 +64,41 @@ const Attempts = (): JSX.Element => {
       { color: theme.palette.success.main, label: labelStrong, value: 8 },
       { color: theme.palette.grey[500], label: labelUnknown, value: 11 },
     ],
-    [theme],
+    [],
   );
 
-  const displayStrengthProgress =
-    isNil(attemptsError) && not(isNil(attemptsValue));
+  const displayStrengthProgress = React.useMemo(
+    () => isNil(attemptsError) && not(isNil(attemptsValue)),
+    [attemptsError, attemptsValue],
+  );
 
-  return (
-    <div className={classes.input}>
-      <TextField
-        fullWidth
-        error={attemptsError}
-        helperText={attemptsError}
-        inputProps={{
-          min: 1,
-        }}
-        label={t(labelNumberOfAttemptsBeforeBlockNewAttempt)}
-        name={attemptsFieldName}
-        type="number"
-        value={attemptsValue || ''}
-        onChange={changeInput}
-      />
-      {displayStrengthProgress && (
-        <StrengthProgress
-          max={10}
-          thresholds={thresholds}
-          value={attemptsValue || 0}
+  return useMemoComponent({
+    Component: (
+      <div className={classes.input}>
+        <TextField
+          fullWidth
+          error={attemptsError}
+          helperText={attemptsError}
+          inputProps={{
+            min: 1,
+          }}
+          label={t(labelNumberOfAttemptsBeforeBlockNewAttempt)}
+          name={attemptsFieldName}
+          type="number"
+          value={attemptsValue || ''}
+          onChange={changeInput}
         />
-      )}
-    </div>
-  );
+        {displayStrengthProgress && (
+          <StrengthProgress
+            max={10}
+            thresholds={thresholds}
+            value={attemptsValue || 0}
+          />
+        )}
+      </div>
+    ),
+    memoProps: [attemptsError, attemptsValue],
+  });
 };
 
 export default Attempts;
