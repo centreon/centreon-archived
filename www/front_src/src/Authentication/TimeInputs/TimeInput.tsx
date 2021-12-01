@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
-import { equals, gt, path } from 'ramda';
+import { and, equals, gt, path, subtract } from 'ramda';
 
 import { makeStyles, Typography } from '@material-ui/core';
 
@@ -80,10 +80,15 @@ const TimeInput = ({
         return;
       }
 
-      const diffDuration = value - previousValue;
+      const diffDuration = subtract(value, previousValue);
       if (
-        equals(unit, 'months') &&
-        equals(currentDuration.clone().add(diffDuration, unit).asMonths(), 12)
+        and(
+          equals(unit, 'months'),
+          equals(
+            currentDuration.clone().add(diffDuration, unit).asMonths(),
+            12,
+          ),
+        )
       ) {
         onChange(
           currentDuration
