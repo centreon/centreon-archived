@@ -5,10 +5,10 @@ import { useFormikContext } from 'formik';
 
 import { FormHelperText, FormLabel, makeStyles } from '@material-ui/core';
 
-import { labelPasswordExpiration } from '../../../translatedLabels';
-import { SecurityPolicy } from '../../../models';
-import { getField } from '../../utils';
-import TimeInputs from '../../../TimeInputs';
+import { labelPasswordExpiration } from '../../translatedLabels';
+import { SecurityPolicy } from '../../models';
+import { getField } from '../utils';
+import TimeInputs from '../../TimeInputs';
 
 const passwordExpirationFieldName = 'passwordExpiration';
 

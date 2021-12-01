@@ -53,6 +53,7 @@ const Form = ({ initialValues }: Props): JSX.Element => {
           <div className={classes.formGroup}>
             <PasswordBlockingPolicy />
           </div>
+          <Divider />
         </div>
       )}
     </Formik>

@@ -5,10 +5,10 @@ import { useFormikContext } from 'formik';
 
 import { FormHelperText, FormLabel } from '@material-ui/core';
 
-import { labelTimeBeforeSetNewPassword } from '../../../translatedLabels';
-import { getField } from '../../utils';
-import TimeInputs from '../../../TimeInputs';
-import { SecurityPolicy } from '../../../models';
+import { labelTimeBeforeSetNewPassword } from '../../translatedLabels';
+import { getField } from '../utils';
+import TimeInputs from '../../TimeInputs';
+import { SecurityPolicy } from '../../models';
 
 const delayBeforeNewPasswordFieldName = 'delayBeforeNewPassword';
 
