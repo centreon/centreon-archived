@@ -9,6 +9,7 @@ import { adaptSecurityPolicyFromAPI } from './api/adapters';
 
 interface UseAuthenticationState {
   initialSecurityPolicy: SecurityPolicy | null;
+  loadSecurityPolicy: () => void;
   sendingGetSecurityPolicy: boolean;
 }
 
@@ -20,16 +21,21 @@ const useAuthentication = (): UseAuthenticationState => {
     request: getSecurityPolicy,
   });
 
-  React.useEffect(() => {
+  const loadSecurityPolicy = (): void => {
     sendRequest()
       .then((securityPolicy) =>
         setInitialSecurityPolicy(adaptSecurityPolicyFromAPI(securityPolicy)),
       )
       .catch(() => undefined);
+  };
+
+  React.useEffect(() => {
+    loadSecurityPolicy();
   }, []);
 
   return {
     initialSecurityPolicy,
+    loadSecurityPolicy,
     sendingGetSecurityPolicy: sending,
   };
 };

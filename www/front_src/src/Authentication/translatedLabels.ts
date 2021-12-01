@@ -45,3 +45,11 @@ export const labelBlockingTimeBeforeNewConnectionAttempt =
   'Blocking time before new connection attempt';
 export const labelBlockingDurationMustBeLessOrEqualThan7Days =
   'Blocking duration must be less or equal than 7 days';
+export const labelSave = 'Save';
+export const labelSaving = 'Saving...';
+export const labelSaved = 'Saved';
+export const labelReset = 'Reset';
+export const labelPasswordSecurityPolicySaved =
+  'Password security policy saved';
+export const labelFailedToSavePasswordSecurityPolicy =
+  'Failed to save password security policy';

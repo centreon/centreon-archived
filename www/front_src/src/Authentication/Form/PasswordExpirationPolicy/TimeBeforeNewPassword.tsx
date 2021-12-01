@@ -1,21 +1,20 @@
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { useFormikContext } from 'formik';
+import { FormikValues, useFormikContext } from 'formik';
 
 import { FormHelperText, FormLabel } from '@material-ui/core';
 
 import { labelTimeBeforeSetNewPassword } from '../../translatedLabels';
 import { getField } from '../utils';
 import TimeInputs from '../../TimeInputs';
-import { SecurityPolicy } from '../../models';
 
 const delayBeforeNewPasswordFieldName = 'delayBeforeNewPassword';
 
 const TimeBeforeNewPassword = (): JSX.Element => {
   const { t } = useTranslation();
 
-  const { values, setFieldValue, errors } = useFormikContext<SecurityPolicy>();
+  const { values, setFieldValue, errors } = useFormikContext<FormikValues>();
 
   const change = (value: number): void => {
     setFieldValue(delayBeforeNewPasswordFieldName, value || null);

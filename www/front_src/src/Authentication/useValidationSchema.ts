@@ -2,11 +2,7 @@ import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
 
 import { SecurityPolicy } from './models';
-import {
-  oneHourInMilliseconds,
-  sevenDaysInMilliseconds,
-  twelveMonthsInMilliseconds,
-} from './timestamps';
+import { oneHour, sevenDays, twelveMonths } from './timestamps';
 import {
   labelChooseAValueBetween1and10,
   labelChooseAValueBetween1HourAnd12Months,
@@ -27,16 +23,13 @@ const useValidationSchema = (): Yup.SchemaOf<SecurityPolicy> => {
       .nullable()
       .defined(),
     blockingDuration: Yup.number()
-      .max(
-        sevenDaysInMilliseconds,
-        t(labelBlockingDurationMustBeLessOrEqualThan7Days),
-      )
+      .max(sevenDays, t(labelBlockingDurationMustBeLessOrEqualThan7Days))
       .nullable()
       .defined(),
     canReusePasswords: Yup.boolean().defined(),
     delayBeforeNewPassword: Yup.number()
-      .min(oneHourInMilliseconds, t(labelChooseAValueBetween1HourAnd1Week))
-      .max(sevenDaysInMilliseconds, t(labelChooseAValueBetween1HourAnd1Week))
+      .min(oneHour, t(labelChooseAValueBetween1HourAnd1Week))
+      .max(sevenDays, t(labelChooseAValueBetween1HourAnd1Week))
       .nullable()
       .defined(),
     hasLowerCase: Yup.boolean().defined(),
@@ -44,11 +37,8 @@ const useValidationSchema = (): Yup.SchemaOf<SecurityPolicy> => {
     hasSpecialCharacter: Yup.boolean().defined(),
     hasUpperCase: Yup.boolean().defined(),
     passwordExpiration: Yup.number()
-      .min(sevenDaysInMilliseconds, t(labelChooseAValueBetween1HourAnd12Months))
-      .max(
-        twelveMonthsInMilliseconds,
-        t(labelChooseAValueBetween1HourAnd12Months),
-      )
+      .min(sevenDays, t(labelChooseAValueBetween1HourAnd12Months))
+      .max(twelveMonths, t(labelChooseAValueBetween1HourAnd12Months))
       .nullable()
       .defined(),
     passwordMinLength: Yup.number()

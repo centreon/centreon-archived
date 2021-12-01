@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { useFormikContext } from 'formik';
+import { FormikValues, useFormikContext } from 'formik';
 
 import {
   Button,
@@ -27,7 +27,6 @@ import {
   labelUpperCase,
   labelWeak,
 } from '../../../translatedLabels';
-import { SecurityPolicy } from '../../../models';
 import StrengthProgress from '../../../StrengthProgress';
 import { getFields } from '../../utils';
 
@@ -57,7 +56,7 @@ const CaseButtons = (): JSX.Element => {
   const { t } = useTranslation();
   const theme = useTheme();
 
-  const { values, setFieldValue } = useFormikContext<SecurityPolicy>();
+  const { values, setFieldValue } = useFormikContext<FormikValues>();
 
   const selectCase = (caseName: string) => (): void => {
     setFieldValue(caseName, !values[caseName]);

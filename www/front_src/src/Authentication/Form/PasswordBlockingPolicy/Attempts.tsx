@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { useFormikContext } from 'formik';
+import { FormikValues, useFormikContext } from 'formik';
 import { useTranslation } from 'react-i18next';
 import { isEmpty, isNil, not, path } from 'ramda';
 
@@ -8,7 +8,6 @@ import { makeStyles, useTheme } from '@material-ui/core';
 
 import { TextField } from '@centreon/ui';
 
-import { SecurityPolicy } from '../../models';
 import {
   labelGood,
   labelNumberOfAttemptsBeforeBlockNewAttempt,
@@ -29,7 +28,7 @@ const useStyles = makeStyles({
 
 const Attempts = (): JSX.Element => {
   const classes = useStyles();
-  const { values, setFieldValue, errors } = useFormikContext<SecurityPolicy>();
+  const { values, setFieldValue, errors } = useFormikContext<FormikValues>();
   const { t } = useTranslation();
   const theme = useTheme();
 

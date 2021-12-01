@@ -1,12 +1,11 @@
 import * as React from 'react';
 
-import { useFormikContext } from 'formik';
+import { FormikValues, useFormikContext } from 'formik';
 import { useTranslation } from 'react-i18next';
 import { and, isNil, not } from 'ramda';
 
 import { FormHelperText, FormLabel, useTheme } from '@material-ui/core';
 
-import { SecurityPolicy } from '../../models';
 import TimeInputs from '../../TimeInputs';
 import {
   labelBlockingTimeBeforeNewConnectionAttempt,
@@ -17,10 +16,10 @@ import {
 import { getField } from '../utils';
 import StrengthProgress from '../../StrengthProgress';
 import {
-  goodBlockingDurationInMilliseconds,
-  sevenDaysInMilliseconds,
-  strongBlockingDurationInMilliseconds,
-  weakBlockingDurationInMilliseconds,
+  goodBlockingDuration,
+  sevenDays,
+  strongBlockingDuration,
+  weakBlockingDuration,
 } from '../../timestamps';
 
 const blockingDurationFieldName = 'blockingDuration';
@@ -29,7 +28,7 @@ const BlockingDuration = (): JSX.Element => {
   const { t } = useTranslation();
   const theme = useTheme();
 
-  const { values, setFieldValue, errors } = useFormikContext<SecurityPolicy>();
+  const { values, setFieldValue, errors } = useFormikContext<FormikValues>();
 
   const change = (value: number): void => {
     setFieldValue(blockingDurationFieldName, value || null);
@@ -50,17 +49,17 @@ const BlockingDuration = (): JSX.Element => {
       {
         color: theme.palette.error.main,
         label: labelWeak,
-        value: weakBlockingDurationInMilliseconds,
+        value: weakBlockingDuration,
       },
       {
         color: theme.palette.warning.main,
         label: labelGood,
-        value: goodBlockingDurationInMilliseconds,
+        value: goodBlockingDuration,
       },
       {
         color: theme.palette.success.main,
         label: labelStrong,
-        value: strongBlockingDurationInMilliseconds,
+        value: strongBlockingDuration,
       },
     ],
     [theme],
@@ -85,7 +84,7 @@ const BlockingDuration = (): JSX.Element => {
       )}
       {displayStrengthProgress && (
         <StrengthProgress
-          max={sevenDaysInMilliseconds}
+          max={sevenDays}
           thresholds={thresholds}
           value={blockingDurationValue || 0}
         />

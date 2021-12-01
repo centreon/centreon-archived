@@ -1,11 +1,10 @@
 import * as React from 'react';
 
-import { useFormikContext } from 'formik';
+import { FormikValues, useFormikContext } from 'formik';
 import { useTranslation } from 'react-i18next';
 
 import { FormControlLabel, makeStyles, Switch } from '@material-ui/core';
 
-import { SecurityPolicy } from '../../models';
 import { labelCanReuseLast3Passwords } from '../../translatedLabels';
 import { getField } from '../utils';
 
@@ -19,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
 
 const CanReusePasswords = (): JSX.Element => {
   const classes = useStyles();
-  const { values, handleChange } = useFormikContext<SecurityPolicy>();
+  const { values, handleChange } = useFormikContext<FormikValues>();
   const { t } = useTranslation();
 
   const canReusePasswords = React.useMemo(

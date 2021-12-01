@@ -1,9 +1,15 @@
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { isNil } from 'ramda';
+import { isNil, not } from 'ramda';
 
-import { Paper, makeStyles, Theme, Typography } from '@material-ui/core';
+import {
+  Paper,
+  makeStyles,
+  Theme,
+  Typography,
+  LinearProgress,
+} from '@material-ui/core';
 
 import { labelDefinePasswordSecurityPolicy } from './translatedLabels';
 import useAuthentication from './useAuthentication';
@@ -15,14 +21,20 @@ const useStyles = makeStyles((theme: Theme) => ({
     margin: '0 auto',
     padding: theme.spacing(1),
   },
+  loading: {
+    height: theme.spacing(0.5),
+  },
 }));
 
 const Authentication = (): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
 
-  const { sendingGetSecurityPolicy, initialSecurityPolicy } =
-    useAuthentication();
+  const {
+    sendingGetSecurityPolicy,
+    initialSecurityPolicy,
+    loadSecurityPolicy,
+  } = useAuthentication();
 
   const isSecurityPolicyEmpty = React.useMemo(
     () => isNil(initialSecurityPolicy),
@@ -34,10 +46,18 @@ const Authentication = (): JSX.Element => {
       <Typography variant="h4">
         {t(labelDefinePasswordSecurityPolicy)}
       </Typography>
-      {sendingGetSecurityPolicy || isSecurityPolicyEmpty ? (
+      <div className={classes.loading}>
+        {not(isSecurityPolicyEmpty) && sendingGetSecurityPolicy && (
+          <LinearProgress />
+        )}
+      </div>
+      {isSecurityPolicyEmpty ? (
         <Typography>{t('loading')}</Typography>
       ) : (
-        <Form initialValues={initialSecurityPolicy as SecurityPolicy} />
+        <Form
+          initialValues={initialSecurityPolicy as SecurityPolicy}
+          loadSecurityPolicy={loadSecurityPolicy}
+        />
       )}
     </Paper>
   );

@@ -1,12 +1,11 @@
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { useFormikContext } from 'formik';
+import { FormikValues, useFormikContext } from 'formik';
 
 import { FormHelperText, FormLabel, makeStyles } from '@material-ui/core';
 
 import { labelPasswordExpiration } from '../../translatedLabels';
-import { SecurityPolicy } from '../../models';
 import { getField } from '../utils';
 import TimeInputs from '../../TimeInputs';
 
@@ -22,7 +21,7 @@ const PasswordExpiration = (): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
 
-  const { values, setFieldValue, errors } = useFormikContext<SecurityPolicy>();
+  const { values, setFieldValue, errors } = useFormikContext<FormikValues>();
 
   const change = (value: number): void => {
     setFieldValue(passwordExpirationFieldName, value || null);

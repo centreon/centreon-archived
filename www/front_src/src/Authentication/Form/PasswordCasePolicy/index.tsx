@@ -1,13 +1,12 @@
 import * as React from 'react';
 
-import { useFormikContext } from 'formik';
+import { FormikValues, useFormikContext } from 'formik';
 import { useTranslation } from 'react-i18next';
 
 import { makeStyles, Typography } from '@material-ui/core';
 
 import { TextField, useMemoComponent } from '@centreon/ui';
 
-import { SecurityPolicy } from '../../models';
 import {
   labelPasswordCasePolicy,
   labelPasswordLength,
@@ -32,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
 const PasswordCasePolicy = (): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
-  const { handleChange, errors, values } = useFormikContext<SecurityPolicy>();
+  const { handleChange, errors, values } = useFormikContext<FormikValues>();
 
   const passwordLengthError = React.useMemo(
     () =>
