@@ -53,8 +53,13 @@ require_once _CENTREON_PATH_ . "www/class/centreonACL.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonUser.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonConfigCentreonBroker.php";
 
-define('STATUS_OK', 0);
-define('STATUS_NOK', 1);
+
+if (!defined('STATUS_OK')) {
+    define('STATUS_OK', 0);
+}
+if (!defined('STATUS_NOK')) {
+    define('STATUS_NOK', 1);
+}
 
 $pearDB = new CentreonDB();
 
@@ -79,10 +84,12 @@ if (isset($_SERVER['HTTP_X_AUTH_TOKEN'])) {
         $xml->writeElement("error", 'Contact not found');
         $xml->endElement();
 
-        header('Content-Type: application/xml');
-        header('Cache-Control: no-cache');
-        header('Expires: 0');
-        header('Cache-Control: no-cache, must-revalidate');
+        if (!headers_sent()) {
+            header('Content-Type: application/xml');
+            header('Cache-Control: no-cache');
+            header('Expires: 0');
+            header('Cache-Control: no-cache, must-revalidate');
+        }
 
         $xml->output();
         exit();
@@ -144,7 +151,7 @@ $statementRemotes = $pearDB->prepare(
     FROM nagios_server AS ns1
     JOIN platform_topology AS pt ON (ns1.id = pt.server_id)
     JOIN nagios_server AS ns2 ON ns1.id = ns2.remote_id
-    WHERE ns2.id IN (' . implode(',', array_keys($pollerParams)) . ') 
+    WHERE ns2.id IN (' . implode(',', array_keys($pollerParams)) . ')
     AND pt.type = "remote"
     UNION
     SELECT ns1.id
@@ -195,10 +202,10 @@ if (!empty($remotesResults)) {
  *
  * @see set_error_handler
  */
-function log_error($errno, $errstr, $errfile, $errline)
+$log_error = function($errno, $errstr, $errfile, $errline)
 {
     global $generatePhpErrors;
-    if (!(error_reporting() & $errno)) {
+    if (!(error_reporting() && $errno)) {
         return;
     }
 
@@ -215,7 +222,7 @@ function log_error($errno, $errstr, $errfile, $errline)
             break;
     }
     return true;
-}
+};
 
 try {
     $ret = array();
@@ -226,7 +233,7 @@ try {
     $centreonBrokerPath = _CENTREON_CACHEDIR_ . "/config/broker/";
 
     /*  Set new error handler */
-    set_error_handler('log_error');
+    set_error_handler($log_error);
 
     # Centcore pipe path
     $centcore_pipe = _CENTREON_VARLIB_ . "/centcore.cmd";
@@ -407,9 +414,11 @@ foreach ($generatePhpErrors as $error) {
 $xml->endElement();
 $xml->endElement();
 
-header('Content-Type: application/xml');
-header('Cache-Control: no-cache');
-header('Expires: 0');
-header('Cache-Control: no-cache, must-revalidate');
+if (!headers_sent()) {
+    header('Content-Type: application/xml');
+    header('Cache-Control: no-cache');
+    header('Expires: 0');
+    header('Cache-Control: no-cache, must-revalidate');
+}
 
 $xml->output();

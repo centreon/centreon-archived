@@ -51,6 +51,12 @@ require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonXML.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonSession.class.php";
 
+if (!isset($dependencyInjector)){
+    $dependencyInjector = \Centreon\LegacyContainer::getInstance();
+}
+if (!isset($GLOBALS['pearDB'])) {
+    global $pearDB;
+}
 $pearDB = $dependencyInjector["configuration_db"];
 
 $xml = new CentreonXML();
@@ -74,10 +80,12 @@ if (isset($_SERVER['HTTP_X_AUTH_TOKEN'])) {
         $xml->writeElement("error", 'Contact not found');
         $xml->endElement();
 
-        header('Content-Type: application/xml');
-        header('Cache-Control: no-cache');
-        header('Expires: 0');
-        header('Cache-Control: no-cache, must-revalidate');
+        if (!headers_sent()) {
+            header('Content-Type: application/xml');
+            header('Cache-Control: no-cache');
+            header('Expires: 0');
+            header('Cache-Control: no-cache, must-revalidate');
+        }
 
         $xml->output();
         exit();
@@ -133,8 +141,35 @@ $ret = array();
 $ret['host'] = $pollers;
 $ret['debug'] = $debug;
 
+/**
+ * The error handler for get error from PHP
+ *
+ * @see set_error_handler
+ */
+$log_error = function ($errno, $errstr, $errfile, $errline)
+{
+    global $generatePhpErrors;
+    if (!(error_reporting() && $errno)) {
+        return;
+    }
+
+    switch ($errno) {
+        case E_ERROR:
+        case E_USER_ERROR:
+        case E_CORE_ERROR:
+            $generatePhpErrors[] = array('error', $errstr);
+            break;
+        case E_WARNING:
+        case E_USER_WARNING:
+        case E_CORE_WARNING:
+            $generatePhpErrors[] = array('warning', $errstr);
+            break;
+    }
+    return true;
+};
+
 // Set new error handler
-set_error_handler('log_error');
+set_error_handler($log_error);
 
 $xml->startElement("response");
 try {
@@ -196,40 +231,14 @@ foreach ($generatePhpErrors as $error) {
 }
 $xml->endElement();
 
-header('Content-Type: application/xml');
-header('Cache-Control: no-cache');
-header('Expires: 0');
-header('Cache-Control: no-cache, must-revalidate');
+if (!headers_sent()) {
+    header('Content-Type: application/xml');
+    header('Cache-Control: no-cache');
+    header('Expires: 0');
+    header('Cache-Control: no-cache, must-revalidate');
+}
 
 $xml->output();
-
-
-/**
- * The error handler for get error from PHP
- *
- * @see set_error_handler
- */
-function log_error($errno, $errstr, $errfile, $errline)
-{
-    global $generatePhpErrors;
-    if (!(error_reporting() && $errno)) {
-        return;
-    }
-
-    switch ($errno) {
-        case E_ERROR:
-        case E_USER_ERROR:
-        case E_CORE_ERROR:
-            $generatePhpErrors[] = array('error', $errstr);
-            break;
-        case E_WARNING:
-        case E_USER_WARNING:
-        case E_CORE_WARNING:
-            $generatePhpErrors[] = array('warning', $errstr);
-            break;
-    }
-    return true;
-}
 
 function printDebug($xml, $tabs)
 {
