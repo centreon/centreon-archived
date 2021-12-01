@@ -16305,3 +16305,30 @@ msgstr "Activer le bouton d’export de la configuration des collecteurs en un s
 
 msgid "User is not allowed to reach web application"
 msgstr "L'utilisateur n'est pas autorisé à joindre l'application web"
+
+msgid "You can't change your password because the delay before changing password is not over."
+msgstr "Vous ne pouvez pas changer votre mot de passe car le délai avant changement de mot de passe n'est pas encore terminé."
+
+msgid "Your password should be %d characters long."
+msgstr "Votre mot de passe doit contenir %d caractères."
+
+msgid "Your password should contains uppercase characters."
+msgstr "Votre mot de passe doit contenir des caractères majuscules."
+
+msgid "Your password should contains lowercase characters."
+msgstr "Votre mot de passe doit contenir des caractères minuscules."
+
+msgid "Your password should contains integer characters."
+msgstr "Votre mot de passe doit contenir des caractères numériques."
+
+msgid "Your password should contains special characters form the list '@$!%*?&'."
+msgstr "Votre mot de passe doit contenir des caractères spéciaux de la liste '@$!%*?&'."
+
+msgid "Your password has already been used. Please choose a different password from the previous three."
+msgstr "Votre mot de passe a déjà été utilisé. Veuillez choisir un mot de passe différent des trois précédents."
+
+msgid "Your password has expired. Please change it."
+msgstr "Votre mot de passe a expiré. Veuillez le changer."
+
+msgid "Your password will expire in %s days."
+msgstr "Votre mot de passe expirera dans %s jours."
