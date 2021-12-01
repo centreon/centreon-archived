@@ -168,7 +168,7 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
                 INNER JOIN `:db`.security_authentication_tokens sat
                     ON sat.user_id = contact.contact_id
                 WHERE sat.token = :token
-                ORDER BY cp.creation_date DESC LIMIT 1'"
+                ORDER BY cp.creation_date DESC LIMIT 1"
             )
         );
         $statement->bindValue(':token', $token, \PDO::PARAM_STR);
