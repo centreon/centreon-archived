@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { findLast } from 'ramda';
+import { findLast, gt } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -43,7 +43,7 @@ const useStyles = makeStyles<Theme, Threshold>((theme) => ({
   },
 }));
 
-const Progress = ({ thresholds, max, value }: Props): JSX.Element => {
+const StrengthProgress = ({ thresholds, max, value }: Props): JSX.Element => {
   const currentThreshold =
     findLast((threshold) => value >= threshold.value, thresholds) ||
     thresholds[0];
@@ -52,7 +52,7 @@ const Progress = ({ thresholds, max, value }: Props): JSX.Element => {
 
   const { label } = currentThreshold;
 
-  const progressValue = (value / max) * 100;
+  const progressValue = gt(value, max) ? 100 : (value / max) * 100;
 
   return (
     <div className={classes.progressContainer}>
@@ -72,6 +72,6 @@ const Progress = ({ thresholds, max, value }: Props): JSX.Element => {
 };
 
 export default memoizeComponent<Props>({
-  Component: Progress,
+  Component: StrengthProgress,
   memoProps: ['thresholds', 'max', 'value'],
 });

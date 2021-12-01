@@ -28,7 +28,7 @@ import {
   labelWeak,
 } from '../../../translatedLabels';
 import { SecurityPolicy } from '../../../models';
-import Progress from '../../../Progress';
+import StrengthProgress from '../../../StrengthProgress';
 import { getFields } from '../../utils';
 
 import LabelWithTooltip from './LabelWithTooltip';
@@ -144,7 +144,11 @@ const CaseButtons = (): JSX.Element => {
             />
           </Button>
         </ButtonGroup>
-        <Progress max={4} thresholds={thresholds} value={thresholdValue} />
+        <StrengthProgress
+          max={4}
+          thresholds={thresholds}
+          value={thresholdValue}
+        />
       </div>
     ),
     memoProps: [hasLowerCase, hasUpperCase, hasNumber, hasSpecialCharacter],

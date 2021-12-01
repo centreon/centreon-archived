@@ -3,27 +3,40 @@ import * as Yup from 'yup';
 
 import { SecurityPolicy } from './models';
 import {
+  oneHourInMilliseconds,
+  sevenDaysInMilliseconds,
+  twelveMonthsInMilliseconds,
+} from './timestamps';
+import {
+  labelChooseAValueBetween1and10,
   labelChooseAValueBetween1HourAnd12Months,
   labelChooseAValueBetween1HourAnd1Week,
   labelMaximum128Characters,
   labelMinimum8Characters,
   labelRequired,
+  labelBlockingDurationMustBeLessOrEqualThan7Days,
 } from './translatedLabels';
-
-const sevenDaysInSeconds = 1000 * 60 * 60 * 24 * 7;
-const oneHourInSeconds = 1000 * 60 * 60;
-const twelveMonthsInSeconds = 1000 * 60 * 60 * 24 * 365;
 
 const useValidationSchema = (): Yup.SchemaOf<SecurityPolicy> => {
   const { t } = useTranslation();
 
   return Yup.object().shape({
-    attempts: Yup.number().min(1).max(10).nullable().defined(),
-    blockingDuration: Yup.number().max(sevenDaysInSeconds).nullable().defined(),
+    attempts: Yup.number()
+      .min(1, t(labelChooseAValueBetween1and10))
+      .max(10, t(labelChooseAValueBetween1and10))
+      .nullable()
+      .defined(),
+    blockingDuration: Yup.number()
+      .max(
+        sevenDaysInMilliseconds,
+        t(labelBlockingDurationMustBeLessOrEqualThan7Days),
+      )
+      .nullable()
+      .defined(),
     canReusePasswords: Yup.boolean().defined(),
     delayBeforeNewPassword: Yup.number()
-      .min(oneHourInSeconds, t(labelChooseAValueBetween1HourAnd1Week))
-      .max(sevenDaysInSeconds, t(labelChooseAValueBetween1HourAnd1Week))
+      .min(oneHourInMilliseconds, t(labelChooseAValueBetween1HourAnd1Week))
+      .max(sevenDaysInMilliseconds, t(labelChooseAValueBetween1HourAnd1Week))
       .nullable()
       .defined(),
     hasLowerCase: Yup.boolean().defined(),
@@ -31,8 +44,11 @@ const useValidationSchema = (): Yup.SchemaOf<SecurityPolicy> => {
     hasSpecialCharacter: Yup.boolean().defined(),
     hasUpperCase: Yup.boolean().defined(),
     passwordExpiration: Yup.number()
-      .min(sevenDaysInSeconds, t(labelChooseAValueBetween1HourAnd12Months))
-      .max(twelveMonthsInSeconds, t(labelChooseAValueBetween1HourAnd12Months))
+      .min(sevenDaysInMilliseconds, t(labelChooseAValueBetween1HourAnd12Months))
+      .max(
+        twelveMonthsInMilliseconds,
+        t(labelChooseAValueBetween1HourAnd12Months),
+      )
       .nullable()
       .defined(),
     passwordMinLength: Yup.number()

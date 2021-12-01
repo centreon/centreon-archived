@@ -18,6 +18,7 @@ export const labelPasswordCases = 'Password cases';
 export const labelWeak = 'Weak';
 export const labelGood = 'Good';
 export const labelStrong = 'Strong';
+export const labelUnknown = 'Unknown';
 export const labelPasswordExpirationPolicy = 'Password expiration policy';
 export const labelPasswordExpiration = 'Password expiration';
 export const labelChooseAValueBetween1HourAnd12Months =
@@ -36,3 +37,11 @@ export const labelCanReuseLast3Passwords = 'Can reuse last 3 passwords';
 export const labelTimeBeforeSetNewPassword = 'Time before set new password';
 export const labelChooseAValueBetween1HourAnd1Week =
   'Choose a value between 1 hour and 1 week';
+export const labelPasswordBlockingPolicy = 'Password blocking policy';
+export const labelNumberOfAttemptsBeforeBlockNewAttempt =
+  'Number of attempts before block new attempt';
+export const labelChooseAValueBetween1and10 = 'Choose a value between 1 and 10';
+export const labelBlockingTimeBeforeNewConnectionAttempt =
+  'Blocking time before new connection attempt';
+export const labelBlockingDurationMustBeLessOrEqualThan7Days =
+  'Blocking duration must be less or equal than 7 days';

@@ -9,6 +9,7 @@ import useValidationSchema from '../useValidationSchema';
 
 import PasswordCasePolicy from './PasswordCasePolicy';
 import PasswordExpirationPolicy from './PasswordExpirationPolicy';
+import PasswordBlockingPolicy from './PasswordBlockingPolicy';
 
 interface Props {
   initialValues: SecurityPolicy;
@@ -47,6 +48,10 @@ const Form = ({ initialValues }: Props): JSX.Element => {
           <Divider />
           <div className={classes.formGroup}>
             <PasswordExpirationPolicy />
+          </div>
+          <Divider />
+          <div className={classes.formGroup}>
+            <PasswordBlockingPolicy />
           </div>
         </div>
       )}
