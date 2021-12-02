@@ -13,8 +13,14 @@ import {
 import userEvent from '@testing-library/user-event';
 import { Provider } from 'jotai';
 
-import { useUserContext } from '@centreon/ui-context';
 import { SeverityCode } from '@centreon/ui';
+import {
+  acknowledgementAtom,
+  aclAtom,
+  downtimeAtom,
+  refreshIntervalAtom,
+  userAtom,
+} from '@centreon/centreon-frontend/packages/ui-context/src';
 
 import {
   labelAcknowledgedBy,
@@ -72,53 +78,49 @@ const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 const onRefresh = jest.fn();
 
+jest.mock('@centreon/ui-context', () =>
+  jest.requireActual('@centreon/centreon-frontend/packages/ui-context'),
+);
+
 jest.mock('react-redux', () => ({
   ...(jest.requireActual('react-redux') as jest.Mocked<unknown>),
   useSelector: jest.fn(),
 }));
 
-const mockUserContext = {
-  acknowledgement: {
-    persistent: true,
-    sticky: false,
-  },
-  acl: {
-    actions: {
-      host: {
-        acknowledgement: true,
-        check: true,
-        comment: true,
-        disacknowledgement: true,
-        downtime: true,
-        submit_status: true,
-      },
-      service: {
-        acknowledgement: true,
-        check: true,
-        comment: true,
-        disacknowledgement: true,
-        downtime: true,
-        submit_status: true,
-      },
-    },
-  },
+const mockUser = {
   alias: 'admin',
-  downtime: {
-    default_duration: 7200,
-  },
+  isExportButtonEnabled: true,
   locale: 'en',
-  name: 'admin',
-
-  refreshInterval: 15,
   timezone: 'Europe/Paris',
 };
-
-jest.mock('@centreon/centreon-frontend/packages/ui-context', () => ({
-  ...(jest.requireActual('@centreon/ui-context') as jest.Mocked<unknown>),
-  useUserContext: jest.fn(),
-}));
-
-const mockedUserContext = useUserContext as jest.Mock;
+const mockRefreshInterval = 15;
+const mockDowntime = {
+  default_duration: 7200,
+};
+const mockAcl = {
+  actions: {
+    host: {
+      acknowledgement: true,
+      check: true,
+      comment: true,
+      disacknowledgement: true,
+      downtime: true,
+      submit_status: true,
+    },
+    service: {
+      acknowledgement: true,
+      check: true,
+      comment: true,
+      disacknowledgement: true,
+      downtime: true,
+      submit_status: true,
+    },
+  },
+};
+const mockAcknowledgement = {
+  persistent: true,
+  sticky: false,
+};
 
 jest.mock('../icons/Downtime');
 
@@ -167,14 +169,20 @@ const ActionsWithContext = (): JSX.Element => {
   );
 };
 
-const ActionsWithJotai = (): JSX.Element => (
-  <Provider>
-    <ActionsWithContext />
-  </Provider>
-);
-
-const renderActions = (): RenderResult => {
-  return render(<ActionsWithJotai />);
+const renderActions = (aclAtions = mockAcl): RenderResult => {
+  return render(
+    <Provider
+      initialValues={[
+        [userAtom, mockUser],
+        [refreshIntervalAtom, mockRefreshInterval],
+        [downtimeAtom, mockDowntime],
+        [aclAtom, aclAtions],
+        [acknowledgementAtom, mockAcknowledgement],
+      ]}
+    >
+      <ActionsWithContext />
+    </Provider>,
+  );
 };
 
 describe(Actions, () => {
@@ -198,15 +206,11 @@ describe(Actions, () => {
       .mockResolvedValueOnce({ data: [] });
 
     mockDate.set(mockNow);
-
-    mockedUserContext.mockReturnValue(mockUserContext);
   });
 
   afterEach(() => {
     mockDate.reset();
     mockedAxios.get.mockReset();
-
-    mockedUserContext.mockReset();
   });
 
   it('executes a listing request when the refresh button is clicked', async () => {
@@ -579,31 +583,26 @@ describe(Actions, () => {
   });
 
   it('cannot execute an action when associated ACL are not sufficient', async () => {
-    mockedUserContext.mockReset().mockReturnValue({
-      ...mockUserContext,
-      acl: {
-        actions: {
-          host: {
-            acknowledgement: false,
-            check: false,
-            comment: false,
-            disacknowledgement: false,
-            downtime: false,
-            submit_status: false,
-          },
-          service: {
-            acknowledgement: false,
-            check: false,
-            comment: false,
-            disacknowledgement: false,
-            downtime: false,
-            submit_status: false,
-          },
+    const { getByText, getByTitle } = renderActions({
+      actions: {
+        host: {
+          acknowledgement: false,
+          check: false,
+          comment: false,
+          disacknowledgement: false,
+          downtime: false,
+          submit_status: false,
+        },
+        service: {
+          acknowledgement: false,
+          check: false,
+          comment: false,
+          disacknowledgement: false,
+          downtime: false,
+          submit_status: false,
         },
       },
     });
-
-    const { getByText, getByTitle } = renderActions();
 
     const selectedResources = [host, service];
 
@@ -628,9 +627,9 @@ describe(Actions, () => {
 
   const cannotDowntimeServicesAcl = {
     actions: {
-      ...mockUserContext.acl.actions,
+      ...mockAcl.actions,
       service: {
-        ...mockUserContext.acl.actions.service,
+        ...mockAcl.actions.service,
         downtime: false,
       },
     },
@@ -638,9 +637,9 @@ describe(Actions, () => {
 
   const cannotAcknowledgeServicesAcl = {
     actions: {
-      ...mockUserContext.acl.actions,
+      ...mockAcl.actions,
       service: {
-        ...mockUserContext.acl.actions.service,
+        ...mockAcl.actions.service,
         acknowledgement: false,
       },
     },
@@ -648,9 +647,9 @@ describe(Actions, () => {
 
   const cannotDisacknowledgeServicesAcl = {
     actions: {
-      ...mockUserContext.acl.actions,
+      ...mockAcl.actions,
       service: {
-        ...mockUserContext.acl.actions.service,
+        ...mockAcl.actions.service,
         disacknowledgement: false,
       },
     },
@@ -658,9 +657,9 @@ describe(Actions, () => {
 
   const cannotDowntimeHostsAcl = {
     actions: {
-      ...mockUserContext.acl.actions,
+      ...mockAcl.actions,
       host: {
-        ...mockUserContext.acl.actions.host,
+        ...mockAcl.actions.host,
         downtime: false,
       },
     },
@@ -668,9 +667,9 @@ describe(Actions, () => {
 
   const cannotAcknowledgeHostsAcl = {
     actions: {
-      ...mockUserContext.acl.actions,
+      ...mockAcl.actions,
       host: {
-        ...mockUserContext.acl.actions.host,
+        ...mockAcl.actions.host,
         acknowledgement: false,
       },
     },
@@ -678,9 +677,9 @@ describe(Actions, () => {
 
   const cannotDisacknowledgeHostsAcl = {
     actions: {
-      ...mockUserContext.acl.actions,
+      ...mockAcl.actions,
       host: {
-        ...mockUserContext.acl.actions.host,
+        ...mockAcl.actions.host,
         disacknowledgement: false,
       },
     },
@@ -720,12 +719,7 @@ describe(Actions, () => {
   ])(
     'displays a warning message when trying to %p with limited ACL',
     async (_, labelAction, labelAclWarning, acl) => {
-      mockedUserContext.mockReset().mockReturnValue({
-        ...mockUserContext,
-        acl,
-      });
-
-      const { getByText, getByTitle } = renderActions();
+      const { getByText, getByTitle } = renderActions(acl);
 
       const selectedResources = [host, service];
 
@@ -765,12 +759,7 @@ describe(Actions, () => {
   ])(
     'disables services propagation option when trying to %p on hosts when ACL on services are not sufficient',
     async (_, labelAction, labelAppliesOnServices, acl) => {
-      mockedUserContext.mockReset().mockReturnValue({
-        ...mockUserContext,
-        acl,
-      });
-
-      const { getByText, getByTitle } = renderActions();
+      const { getByText, getByTitle } = renderActions(acl);
 
       act(() => {
         context.setSelectedResources?.([host]);
@@ -791,17 +780,12 @@ describe(Actions, () => {
   );
 
   it('disables the submit status action when one of the following condition is met: ACL are not sufficient, more than one resource is selected, selected resource is not passive', async () => {
-    const { getByText, getByTitle } = renderActions();
-
-    mockedUserContext.mockReset().mockReturnValue({
-      ...mockUserContext,
-      acl: {
-        actions: {
-          ...mockUserContext.acl.actions,
-          host: {
-            ...mockUserContext.acl.actions.host,
-            submit_status: false,
-          },
+    const { getByText, getByTitle } = renderActions({
+      actions: {
+        ...mockAcl.actions,
+        host: {
+          ...mockAcl.actions.host,
+          submit_status: false,
         },
       },
     });
@@ -854,17 +838,12 @@ describe(Actions, () => {
   });
 
   it('disables the comment action when the ACL are not sufficient or more than one resource is selected', async () => {
-    const { getByText, getByTitle } = renderActions();
-
-    mockedUserContext.mockReset().mockReturnValue({
-      ...mockUserContext,
-      acl: {
-        actions: {
-          ...mockUserContext.acl.actions,
-          host: {
-            ...mockUserContext.acl.actions.host,
-            comment: false,
-          },
+    const { getByText, getByTitle } = renderActions({
+      actions: {
+        ...mockAcl.actions,
+        host: {
+          ...mockAcl.actions.host,
+          comment: false,
         },
       },
     });

@@ -66,10 +66,10 @@ $hostsGroupRoute = array(
     'multiple' => false,
     'linkedObject' => 'centreonHostgroups',
     'availableDatasetRoute' =>
-    './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=list',
+        './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=list',
     'defaultDatasetRoute' =>
-    './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup'
-    . '&action=defaultValues&target=service&field=service_hgPars&id=' . $id,
+        './api/internal.php?object=centreon_configuration_hostgroup'
+        . '&action=defaultValues&target=service&field=service_hgPars&id=' . $id,
 );
 $hostGroupSelectBox = $formHostGroup->addElement(
     'select2',

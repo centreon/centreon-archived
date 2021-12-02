@@ -1,8 +1,9 @@
 import React from 'react';
 
 import classnames from 'classnames';
+import { useAtomValue } from 'jotai/utils';
 
-import { useUserContext } from '@centreon/ui-context';
+import { refreshIntervalAtom } from '@centreon/ui-context';
 
 import Hook from '../components/Hook';
 
@@ -15,7 +16,7 @@ import HostStatusCounter from './RessourceStatusCounter/Host';
 const HookComponent = Hook as unknown as (props) => JSX.Element;
 
 const Header = (): JSX.Element => {
-  const { refreshInterval } = useUserContext();
+  const refreshInterval = useAtomValue(refreshIntervalAtom);
 
   return (
     <header className={styles.header}>
