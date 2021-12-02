@@ -51,12 +51,18 @@ const maxLinesDisplayed = 11;
 const useStyles = makeStyles<Theme, MakeStylesProps, string>((theme) => ({
   caption: ({ panelWidth }): CreateCSSProperties<MakeStylesProps> => ({
     lineHeight: 1.2,
-    marginRight: theme.spacing(1),
+    marginRight: theme.spacing(0.5),
     maxWidth: 0.85 * panelWidth,
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
   }),
+  captionUnit: {
+    justifyContent: 'start',
+    marginRight: theme.spacing(0.5),
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+  },
   highlight: {
     color: theme.typography.body1.color,
   },
@@ -83,7 +89,20 @@ const useStyles = makeStyles<Theme, MakeStylesProps, string>((theme) => ({
   legendData: {
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'space-between',
+  },
+  legendName: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'start',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+  },
+  legendUnit: {
+    justifyContent: 'end',
+    marginLeft: 'auto',
+    marginRight: theme.spacing(0.5),
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
   },
   legendValue: {
     fontWeight: theme.typography.body1.fontWeight,
@@ -146,17 +165,18 @@ const LegendContent = ({
     equals(timeSerie.timeTick, timeValue?.timeTick),
   );
 
-  const getLegendName = ({ legend, name }: Line): JSX.Element => {
+  const getLegendName = ({ legend, name, unit }: Line): JSX.Element => {
     const legendName = legend || name;
+    const unitName = ` (${unit})`;
     const metricName = includes('#', legendName)
       ? split('#')(legendName)[1]
       : legendName;
 
     return (
       <div>
-        <Tooltip placement="top" title={legendName}>
+        <Tooltip placement="top" title={legendName + unitName}>
           <Typography
-            className={clsx(classes.caption)}
+            className={classes.legendName}
             component="p"
             variant="caption"
           >
@@ -291,14 +311,14 @@ const LegendContent = ({
               >
                 <LegendMarker color={markerColor} disabled={!display} />
                 <div className={classes.legendData}>
-                  <div>
+                  <div className={classes.legendName}>
                     {getLegendName(line)}
                     <Typography
-                      className={classes.caption}
+                      className={classes.legendUnit}
                       component="p"
                       variant="caption"
                     >
-                      {line.unit && `(${line.unit})`}
+                      {`(${line.unit})`}
                     </Typography>
                   </div>
                   {formattedValue ? (
