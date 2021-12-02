@@ -1128,6 +1128,7 @@ describe(Details, () => {
         },
         serviceGroups: [],
         states: [],
+        statusTypes: [],
         statuses: [],
       }),
       expect.anything(),

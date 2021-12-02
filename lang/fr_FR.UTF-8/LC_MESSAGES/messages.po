@@ -16306,5 +16306,14 @@ msgstr "L'export et le rechargement de la configuration a echoué"
 msgid "Enable the one-click export button for poller configuration"
 msgstr "Activer le bouton d’export de la configuration des collecteurs en un seul clic"
 
+msgid "Status type"
+msgstr "Type de status"
+
+msgid "Hard"
+msgstr "Dur"
+
+msgid "Soft"
+msgstr "Souple"
+
 msgid "User is not allowed to reach web application"
 msgstr "L'utilisateur n'est pas autorisé à joindre l'application web"
