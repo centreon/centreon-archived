@@ -140,7 +140,6 @@ if ($id !== false) {
     /*
      * Exporting variables for ihtml
      */
-    $tpl->assign("name", $hosts[$id]);
     $tpl->assign("totalAlert", $hostStats["TOTAL_ALERTS"]);
     $tpl->assign("totalTime", $hostStats["TOTAL_TIME_F"]);
     $tpl->assign("summary", $hostStats);
