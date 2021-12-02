@@ -12,5 +12,7 @@ Centreon\Domain\Monitoring\ResourceFilter:
             type: array<string>
         monitoringServerNames:
             type: array<string>
+        statusTypes:
+            type: array<string>
         onlyWithPerformanceData:
             type: boolean

@@ -233,3 +233,6 @@ export const labelClearFilter = 'Clear filter';
 export const labelLastCheckWithOkStatus = 'Last check with OK status';
 export const labelDowntimeIsFixed = 'Downtime is fixed';
 export const labelDowntimeWithServices = 'Downtime with services';
+export const labelStatusType = 'Status type';
+export const labelHard = 'Hard';
+export const labelSoft = 'Soft';
