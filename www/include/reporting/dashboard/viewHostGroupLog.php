@@ -134,7 +134,6 @@ if ($id !== false) {
     /*
      * Exporting variables for ihtml
      */
-    $tpl->assign('name', $items[$id]);
     $tpl->assign('totalAlert', $hostgroupStats["average"]["TOTAL_ALERTS"]);
     $tpl->assign('summary', $hostgroupStats["average"]);
 
