@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'grid',
     gridTemplateColumns: 'repeat(2, 1fr)',
     marginTop: theme.spacing(1),
-    width: theme.spacing(50),
+    width: theme.spacing(60),
   },
   passwordExpirationAndBlockingGroups: {
     display: 'flex',

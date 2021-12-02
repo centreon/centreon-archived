@@ -15,7 +15,7 @@ import {
   labelSaving,
 } from '../translatedLabels';
 
-import defaultSecurityPolicy from './default';
+import { defaultSecurityPolicy } from './defaults';
 
 const useStyles = makeStyles((theme) => ({
   buttons: {

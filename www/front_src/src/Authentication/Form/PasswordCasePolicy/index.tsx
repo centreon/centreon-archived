@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'grid',
     gridTemplateColumns: '0.9fr 1fr',
     marginTop: theme.spacing(1),
-    width: theme.spacing(50),
+    width: theme.spacing(60),
   },
 }));
 
@@ -54,6 +54,7 @@ const PasswordCasePolicy = (): JSX.Element => {
             error={passwordLengthError}
             helperText={passwordLengthError}
             inputProps={{
+              'aria-label': t(labelPasswordLength),
               min: 0,
             }}
             label={t(labelPasswordLength)}

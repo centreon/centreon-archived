@@ -1,7 +1,7 @@
 import { SecurityPolicy } from '../models';
 import { fiveTeenMinutes, oneHour, sevenDays } from '../timestamps';
 
-const defaultSecurityPolicy: SecurityPolicy = {
+export const defaultSecurityPolicy: SecurityPolicy = {
   attempts: 5,
   blockingDuration: fiveTeenMinutes,
   canReusePasswords: false,
@@ -14,4 +14,15 @@ const defaultSecurityPolicy: SecurityPolicy = {
   passwordMinLength: 12,
 };
 
-export default defaultSecurityPolicy;
+export const defaultSecurityPolicyWithNullValues: SecurityPolicy = {
+  attempts: null,
+  blockingDuration: null,
+  canReusePasswords: false,
+  delayBeforeNewPassword: null,
+  hasLowerCase: false,
+  hasNumber: false,
+  hasSpecialCharacter: false,
+  hasUpperCase: false,
+  passwordExpiration: null,
+  passwordMinLength: 12,
+};
