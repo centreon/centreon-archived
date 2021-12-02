@@ -39,19 +39,21 @@ require_once _CENTREON_PATH_ . "/www/class/centreonRestHttp.class.php";
 
 class CentreonAuthSSO extends CentreonAuth
 {
-
     protected $ssoOptions = array();
     protected $ssoMandatory = 0;
+
+    private const SOURCE_SSO = 'sso';
+    private const SOURCE_OPENID_CONNECT = 'OpenId';
+
+    /**
+     * @var string
+     */
+    private $source;
 
     /**
      * @var using a proxy
      */
     private $proxy = null;
-
-    /**
-     * @var proxy authentication information
-     */
-    private $proxyAuthentication = null;
 
     public function __construct(
         $dependencyInjector,
@@ -87,6 +89,7 @@ class CentreonAuthSSO extends CentreonAuth
                     );
                 }
             }
+            $this->source = self::SOURCE_SSO;
         } elseif (
             isset($this->ssoOptions['openid_connect_enable'])
             && (int) $this->ssoOptions['openid_connect_enable'] === 1
@@ -97,7 +100,7 @@ class CentreonAuthSSO extends CentreonAuth
             && !empty($this->ssoOptions['openid_connect_client_id'])
             && !empty($this->ssoOptions['openid_connect_client_secret'])
         ) {
-            $this->source = "OpenId";
+            $this->source = self::SOURCE_OPENID_CONNECT;
 
             # Get configured values
             $clientBasicAuth = $this->ssoOptions['openid_connect_client_basic_auth'];

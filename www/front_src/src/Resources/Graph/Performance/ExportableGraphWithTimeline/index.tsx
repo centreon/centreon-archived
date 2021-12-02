@@ -6,7 +6,7 @@ import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { Paper, Theme, makeStyles } from '@material-ui/core';
 
 import { useRequest, ListingModel } from '@centreon/ui';
-import { useUserContext } from '@centreon/ui-context';
+import { userAtom } from '@centreon/ui-context';
 
 import { TimelineEvent } from '../../../Details/tabs/Timeline/models';
 import { listTimelineEvents } from '../../../Details/tabs/Timeline/api';
@@ -62,8 +62,7 @@ const ExportablePerformanceGraphWithTimeline = ({
     request: listTimelineEvents,
   });
 
-  const { alias } = useUserContext();
-
+  const { alias } = useAtomValue(userAtom);
   const graphOptions = useAtomValue(graphOptionsAtom);
   const getGraphQueryParameters = useAtomValue(graphQueryParametersDerivedAtom);
   const selectedTimePeriod = useAtomValue(selectedTimePeriodAtom);
