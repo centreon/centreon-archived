@@ -22,8 +22,9 @@ interface Labels {
   singular: string;
 }
 
-interface Props {
+export interface TimeInputProps {
   getAbsoluteValue?: boolean;
+  inputLabel: string;
   labels: Labels;
   name: string;
   onChange: (value: number) => void;
@@ -53,7 +54,8 @@ const TimeInput = ({
   name,
   required = false,
   getAbsoluteValue = false,
-}: Props): JSX.Element => {
+  inputLabel,
+}: TimeInputProps): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
 
@@ -125,7 +127,7 @@ const TimeInput = ({
       <div className={classes.timeInput}>
         <TextField
           inputProps={{
-            'aria-label': t(label),
+            'aria-label': `${t(inputLabel)} ${t(label)}`,
             className: classes.small,
             min: 0,
           }}

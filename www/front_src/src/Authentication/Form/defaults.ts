@@ -1,4 +1,5 @@
-import { SecurityPolicy } from '../models';
+import { adaptSecurityPolicyToAPI } from '../api/adapters';
+import { SecurityPolicy, SecurityPolicyAPI } from '../models';
 import { fiveTeenMinutes, oneHour, sevenDays } from '../timestamps';
 
 export const defaultSecurityPolicy: SecurityPolicy = {
@@ -26,3 +27,20 @@ export const defaultSecurityPolicyWithNullValues: SecurityPolicy = {
   passwordExpiration: null,
   passwordMinLength: 12,
 };
+
+export const defaultSecurityPolicyAPI: SecurityPolicyAPI =
+  adaptSecurityPolicyToAPI(defaultSecurityPolicy);
+
+export const retrievedSecurityPolicyAPI: SecurityPolicyAPI =
+  adaptSecurityPolicyToAPI({
+    attempts: 8,
+    blockingDuration: fiveTeenMinutes,
+    canReusePasswords: false,
+    delayBeforeNewPassword: oneHour,
+    hasLowerCase: false,
+    hasNumber: true,
+    hasSpecialCharacter: true,
+    hasUpperCase: false,
+    passwordExpiration: sevenDays,
+    passwordMinLength: 42,
+  });

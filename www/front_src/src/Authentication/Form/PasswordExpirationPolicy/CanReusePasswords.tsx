@@ -34,7 +34,6 @@ const CanReusePasswords = (): JSX.Element => {
         <FormControlLabel
           control={
             <Switch
-              aria-label={t(labelCanReuseLast3Passwords)}
               checked={canReusePasswords}
               color="primary"
               name={t(labelCanReuseLast3Passwords)}

@@ -46,6 +46,7 @@ const mapUnitAndLabels: Array<UnitAndLabels> = [
 
 interface Props {
   baseName: string;
+  inputLabel: string;
   onChange: (value: number) => void;
   timeValue: number;
   units: Array<Unit>;
@@ -56,6 +57,7 @@ const TimeInputs = ({
   units,
   onChange,
   timeValue,
+  inputLabel,
 }: Props): JSX.Element => {
   const classes = useStyles();
 
@@ -70,6 +72,7 @@ const TimeInputs = ({
         return (
           <TimeInput
             getAbsoluteValue={equals(idx, 0)}
+            inputLabel={inputLabel}
             key={singularLabel}
             labels={{
               plural: pluralLabel,

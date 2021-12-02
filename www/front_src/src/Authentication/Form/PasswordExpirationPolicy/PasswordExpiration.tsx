@@ -45,6 +45,7 @@ const PasswordExpiration = (): JSX.Element => {
         <FormLabel>{t(labelPasswordExpiration)}</FormLabel>
         <TimeInputs
           baseName={passwordExpirationFieldName}
+          inputLabel={labelPasswordExpiration}
           timeValue={passwordExpirationValue}
           units={['months', 'days']}
           onChange={change}

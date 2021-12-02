@@ -38,6 +38,7 @@ const TimeBeforeNewPassword = (): JSX.Element => {
         <FormLabel>{t(labelTimeBeforeSetNewPassword)}</FormLabel>
         <TimeInputs
           baseName={delayBeforeNewPasswordFieldName}
+          inputLabel={labelTimeBeforeSetNewPassword}
           timeValue={delayBeforeNewPasswordValue}
           units={['days', 'hours', 'minutes', 'seconds']}
           onChange={change}

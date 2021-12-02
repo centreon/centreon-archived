@@ -91,6 +91,7 @@ const BlockingDuration = (): JSX.Element => {
         <FormLabel>{t(labelBlockingTimeBeforeNewConnectionAttempt)}</FormLabel>
         <TimeInputs
           baseName={blockingDurationFieldName}
+          inputLabel={labelBlockingTimeBeforeNewConnectionAttempt}
           timeValue={blockingDurationValue}
           units={['days', 'hours', 'minutes', 'seconds']}
           onChange={change}

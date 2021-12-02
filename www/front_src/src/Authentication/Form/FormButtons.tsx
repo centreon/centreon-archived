@@ -56,7 +56,7 @@ const FormButtons = (): JSX.Element => {
 
   const canSubmit =
     not(isSubmitting) && formHasChanged && isValid && not(submitted);
-  const canReset = not(isSubmitting) && formHasChanged && not(submitted);
+  const canReset = not(isSubmitting) && dirty && not(submitted);
 
   return useMemoComponent({
     Component: (

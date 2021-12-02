@@ -14,6 +14,7 @@ import {
   labelGood,
   labelMaximum128Characters,
   labelMinimum8Characters,
+  labelPasswordCasePolicy,
   labelPasswordLength,
   labelRequired,
   labelStrong,
@@ -53,8 +54,37 @@ const renderPasswordCasePolicy = (
   initialValues: SecurityPolicy = defaultSecurityPolicy,
 ): RenderResult => render(<TestComponent initialValues={initialValues} />);
 
-describe(PasswordCasePolicy, () => {
-  it('displays an error when password minimum length input is emptied', async () => {
+describe('Password case policy', () => {
+  it('renders the password case policy fields with values', async () => {
+    renderPasswordCasePolicy();
+
+    await waitFor(() => {
+      expect(screen.getByText(labelPasswordCasePolicy)).toBeInTheDocument();
+    });
+
+    expect(screen.getByLabelText(labelPasswordLength)).toHaveValue(12);
+    expect(screen.getByLabelText(labelForceToUseLowerCase)).toBeInTheDocument();
+    expect(screen.getByLabelText(labelForceToUseUpperCase)).toBeInTheDocument();
+    expect(screen.getByLabelText(labelForceToUseNumbers)).toBeInTheDocument();
+    expect(
+      screen.getByLabelText(labelForceToUseSpecialCharacters),
+    ).toBeInTheDocument();
+    expect(screen.getByText(labelStrong)).toBeInTheDocument();
+  });
+
+  it('changes the password minimum length value when "45" is typed in the input', async () => {
+    renderPasswordCasePolicy();
+
+    userEvent.type(
+      screen.getByLabelText(labelPasswordLength),
+      '{selectall}{backspace}45',
+    );
+
+    await waitFor(() => {
+      expect(screen.getByLabelText(labelPasswordLength)).toHaveValue(45);
+    });
+  });
+  it('displays an error message when password minimum length input is emptied', async () => {
     renderPasswordCasePolicy();
 
     userEvent.type(
@@ -67,7 +97,7 @@ describe(PasswordCasePolicy, () => {
     });
   });
 
-  it('displays an error when "7" is typed in the password minimum length input', async () => {
+  it('displays an error message when "7" is typed in the password minimum length input', async () => {
     renderPasswordCasePolicy();
 
     userEvent.type(
@@ -80,7 +110,7 @@ describe(PasswordCasePolicy, () => {
     });
   });
 
-  it('displays an error when "129" is typed in the password minimum length input', async () => {
+  it('displays an error message when "129" is typed in the password minimum length input', async () => {
     renderPasswordCasePolicy();
 
     userEvent.type(

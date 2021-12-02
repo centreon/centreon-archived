@@ -34,7 +34,7 @@ const Attempts = (): JSX.Element => {
 
   const changeInput = React.useCallback(
     (event: React.ChangeEvent<HTMLInputElement>): void => {
-      const value = path(['target', 'value'], event);
+      const value = path(['target', 'value'], event) as string;
 
       if (isEmpty(value)) {
         setFieldValue(attemptsFieldName, null);
@@ -42,7 +42,7 @@ const Attempts = (): JSX.Element => {
         return;
       }
 
-      setFieldValue(attemptsFieldName, value);
+      setFieldValue(attemptsFieldName, parseInt(value, 10));
     },
     [attemptsFieldName],
   );
@@ -80,6 +80,7 @@ const Attempts = (): JSX.Element => {
           error={attemptsError}
           helperText={attemptsError}
           inputProps={{
+            'aria-label': t(labelNumberOfAttemptsBeforeBlockNewAttempt),
             min: 1,
           }}
           label={t(labelNumberOfAttemptsBeforeBlockNewAttempt)}
