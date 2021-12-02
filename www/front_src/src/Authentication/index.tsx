@@ -15,6 +15,7 @@ import { labelDefinePasswordSecurityPolicy } from './translatedLabels';
 import useAuthentication from './useAuthentication';
 import Form from './Form';
 import { SecurityPolicy } from './models';
+import LoadingSkeleton from './LoadingSkeleton';
 
 const useStyles = makeStyles((theme: Theme) => ({
   authenticationContainer: {
@@ -52,7 +53,7 @@ const Authentication = (): JSX.Element => {
         )}
       </div>
       {isSecurityPolicyEmpty ? (
-        <Typography>{t('loading')}</Typography>
+        <LoadingSkeleton />
       ) : (
         <Form
           initialValues={initialSecurityPolicy as SecurityPolicy}
