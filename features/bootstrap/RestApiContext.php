@@ -70,15 +70,16 @@ class RestApiContext extends CentreonContext
      */
     public function callRestApi()
     {
+        var_dump(sys_get_temp_dir());
         $env = file_get_contents('tests/rest_api/rest_api.postman_environment.json');
         $env = str_replace(
             '@IP_CENTREON@',
             $this->container->getHost() . ':' . $this->container->getPort('80', 'web'),
             $env
         );
-        $this->envfile = tempnam('/tmp', 'rest_api_env');
+        $this->envfile = tempnam(sys_get_temp_dir(), 'rest_api_env');
         file_put_contents($this->envfile, $env);
-        $this->logfile = tempnam('/tmp', $this->logFilePrefix);
+        $this->logfile = tempnam(sys_get_temp_dir(), $this->logFilePrefix);
         exec(
             'newman run' .
             ' tests/rest_api/' . $this->restCollection .
