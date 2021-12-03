@@ -22,11 +22,7 @@ declare(strict_types=1);
 
 namespace Centreon\Infrastructure\MonitoringServer\Repository;
 
-use DateTime;
-use Centreon\Domain\Log\LoggerTrait;
-use Centreon\Domain\Repository\RepositoryException;
 use Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerConfigurationRepositoryInterface;
-use Centreon\Infrastructure\MonitoringServer\Repository\Exception\MonitoringServerConfigurationRepositoryException;
 
 /**
  * This class is designed to represent the API repository to manage the generation/move/reload of the monitoring
@@ -36,8 +32,6 @@ use Centreon\Infrastructure\MonitoringServer\Repository\Exception\MonitoringServ
  */
 class MonitoringServerConfigurationRepositoryFile implements MonitoringServerConfigurationRepositoryInterface
 {
-    // use LoggerTrait;
-
     /**
      * @inheritDoc
      */
@@ -46,7 +40,9 @@ class MonitoringServerConfigurationRepositoryFile implements MonitoringServerCon
         $_POST['generate'] = true;
         $_POST['debug'] = true;
         $_POST['poller'] = $monitoringServerId;
-        include( _CENTREON_PATH_ . 'www/include/configuration/configGenerate/xml/generateFiles.php');
+        ob_start([$this, 'outputHandler']);
+        include(_CENTREON_PATH_ . 'www/include/configuration/configGenerate/xml/generateFiles.php');
+        ob_end_flush();
     }
 
     /**
@@ -55,7 +51,9 @@ class MonitoringServerConfigurationRepositoryFile implements MonitoringServerCon
     public function moveExportFiles(int $monitoringServerId): void
     {
         $_POST['poller'] = $monitoringServerId;
-        include( _CENTREON_PATH_ . 'www/include/configuration/configGenerate/xml/moveFiles.php');
+        ob_start([$this, 'outputHandler']);
+        include(_CENTREON_PATH_ . 'www/include/configuration/configGenerate/xml/moveFiles.php');
+        ob_end_flush();
     }
 
      /**
@@ -65,7 +63,24 @@ class MonitoringServerConfigurationRepositoryFile implements MonitoringServerCon
     {
         $_POST['poller'] = $monitoringServerId;
         $_POST['mode'] = 1;
-        include( _CENTREON_PATH_ . 'www/include/configuration/configGenerate/xml/restartPollers.php');
+        ob_start([$this, 'outputHandler']);
+        include(_CENTREON_PATH_ . 'www/include/configuration/configGenerate/xml/restartPollers.php');
+        ob_end_flush();
     }
 
+    public function outputHandler(string $buffer): string
+    {
+        $errors = '';
+        $values = [];
+        $index = [];
+        $parser = xml_parser_create();
+        xml_parse_into_struct($parser, $buffer, $values, $index);
+        if (array_key_exists('ERRORPHP', $index)) {
+            foreach ($index['ERRORPHP'] as $valuesIndex) {
+                $errors .= $values[$valuesIndex]['value'] . "\n";
+            }
+        }
+
+        return $errors;
+    }
 }

@@ -51,7 +51,7 @@ require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonXML.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonSession.class.php";
 
-if (!isset($dependencyInjector)){
+if (!isset($dependencyInjector)) {
     $dependencyInjector = \Centreon\LegacyContainer::getInstance();
 }
 if (!isset($GLOBALS['pearDB'])) {
@@ -146,8 +146,7 @@ $ret['debug'] = $debug;
  *
  * @see set_error_handler
  */
-$log_error = function ($errno, $errstr, $errfile, $errline)
-{
+$log_error = function ($errno, $errstr, $errfile, $errline) {
     global $generatePhpErrors;
     if (!(error_reporting() && $errno)) {
         return;
