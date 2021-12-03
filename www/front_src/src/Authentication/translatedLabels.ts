@@ -55,3 +55,6 @@ export const labelFailedToSavePasswordSecurityPolicy =
   'Failed to save password security policy';
 export const labelThisWillNotBeUsedBecauseNumberOfAttemptsIsNotDefined =
   'This will not be used because number of attempts is not defined';
+export const labelCancel = 'Cancel';
+export const labelResetTheForm = 'Reset the form';
+export const labelDoYouWantToResetTheForm = 'Do you want to reset the form?';

@@ -6,10 +6,13 @@ import { equals, not } from 'ramda';
 
 import { Button, makeStyles } from '@material-ui/core';
 
-import { SaveButton, useMemoComponent } from '@centreon/ui';
+import { ConfirmDialog, SaveButton, useMemoComponent } from '@centreon/ui';
 
 import {
+  labelCancel,
+  labelDoYouWantToResetTheForm,
   labelReset,
+  labelResetTheForm,
   labelSave,
   labelSaved,
   labelSaving,
@@ -31,6 +34,7 @@ const FormButtons = (): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
   const [submitted, setSubmitted] = React.useState(false);
+  const [askingBeforeReset, setAskingBeforeReset] = React.useState(false);
 
   const { isSubmitting, dirty, isValid, values, submitForm, resetForm } =
     useFormikContext<FormikValues>();
@@ -47,8 +51,17 @@ const FormButtons = (): JSX.Element => {
       .catch(() => undefined);
   };
 
+  const askBeforeReset = (): void => {
+    setAskingBeforeReset(true);
+  };
+
   const reset = (): void => {
     resetForm();
+    closeAskingBeforeReset();
+  };
+
+  const closeAskingBeforeReset = (): void => {
+    setAskingBeforeReset(false);
   };
 
   const areValuesEqualsToDefault = equals(values, defaultSecurityPolicy);
@@ -75,13 +88,29 @@ const FormButtons = (): JSX.Element => {
           disabled={not(canReset)}
           size="small"
           variant="contained"
-          onClick={reset}
+          onClick={askBeforeReset}
         >
           {t(labelReset)}
         </Button>
+        <ConfirmDialog
+          labelCancel={t(labelCancel)}
+          labelConfirm={t(labelReset)}
+          labelMessage={t(labelDoYouWantToResetTheForm)}
+          labelTitle={t(labelResetTheForm)}
+          open={askingBeforeReset}
+          onCancel={closeAskingBeforeReset}
+          onClose={closeAskingBeforeReset}
+          onConfirm={reset}
+        />
       </div>
     ),
-    memoProps: [canSubmit, isSubmitting, submitted],
+    memoProps: [
+      canSubmit,
+      canReset,
+      isSubmitting,
+      submitted,
+      askingBeforeReset,
+    ],
   });
 };
 

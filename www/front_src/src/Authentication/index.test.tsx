@@ -12,11 +12,13 @@ import {
 } from './Form/defaults';
 import {
   labelDefinePasswordSecurityPolicy,
+  labelDoYouWantToResetTheForm,
   labelNumberOfAttemptsBeforeBlockNewAttempt,
   labelPasswordBlockingPolicy,
   labelPasswordCasePolicy,
   labelPasswordExpirationPolicy,
   labelPasswordLength,
+  labelResetTheForm,
   labelSave,
 } from './translatedLabels';
 import { securityPolicyEndpoint } from './api/endpoints';
@@ -136,6 +138,14 @@ describe('Authentication', () => {
     });
 
     userEvent.click(screen.getByText(labelReset));
+
+    await waitFor(() => {
+      expect(screen.getByText(labelResetTheForm)).toBeInTheDocument();
+    });
+
+    expect(screen.getByText(labelDoYouWantToResetTheForm)).toBeInTheDocument();
+
+    userEvent.click(screen.getAllByText(labelReset)[1]);
 
     await waitFor(() => {
       expect(screen.getByLabelText(labelPasswordLength)).toHaveValue(12);
