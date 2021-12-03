@@ -87,9 +87,9 @@ class Centreon_Object_Contact extends Centreon_Object
                     "INSERT INTO `contact_password` (password, contact_id, creation_date)
                     VALUES (:password, :contactId, :creationDate)"
                 );
-                $statement->bindParam(':password', $password, \PDO::PARAM_STR);
-                $statement->bindParam(':contactId', $contactId, \PDO::PARAM_INT);
-                $statement->bindParam(':creationDate', time(), \PDO::PARAM_INT);
+                $statement->bindValue(':password', $password, \PDO::PARAM_STR);
+                $statement->bindValue(':contactId', $contactId, \PDO::PARAM_INT);
+                $statement->bindValue(':creationDate', time(), \PDO::PARAM_INT);
                 $statement->execute();
             }
             return $contactId;
