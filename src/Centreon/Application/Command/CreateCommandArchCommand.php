@@ -48,10 +48,11 @@ class CreateCommandArchCommand extends CreateArchCommand
 
         if (strtolower($actionName) === self::COMMAND_CREATE || strtolower($actionName) === self::COMMAND_UPDATE) {
             $this->createUseCaseRequestFile($entityName, $useCaseName);
-            $this->createUseCaseFile($entityName, $useCaseName, $this->getUseCaseRequestName($entityName));
+            $this->createUseCaseFile($entityName, $useCaseName, $this->getUseCaseRequestName($useCaseName));
         } else {
             $this->createUseCaseFile($entityName, $useCaseName);
         }
+        $this->createControllerFile($entityName, $useCaseName);
     }
 
     /**
@@ -179,7 +180,7 @@ class CreateCommandArchCommand extends CreateArchCommand
 
         namespace Centreon\Application\\$entityName\UseCase\\$useCaseName;
 
-        use Centreon\Application\\$entityName\UseCase\\$useCaseRequest;
+        use Centreon\Application\\$entityName\UseCase\\$useCaseName\\$useCaseRequest;
         use Centreon\Application\\$entityName\Repository\\$writeRepositoryInterface;
 
         class $useCaseName
@@ -202,4 +203,44 @@ class CreateCommandArchCommand extends CreateArchCommand
 
         return $content;
     }
+
+    private function createControllerFile(string $entityName, string $useCaseName): void
+    {
+        $controllerPath = __DIR__ . '/../../Infrastructure/' . $entityName . '/Api/' . $useCaseName;
+        if (!is_dir($controllerPath)) {
+            mkdir($controllerPath, 0777, true);
+        }
+        $controllerName = '' . $useCaseName . 'Controller';
+        if (!file_exists($controllerPath . '/' . $controllerName . '.php')) {
+            file_put_contents(
+                $controllerPath . '/' . $controllerName . '.php',
+                $this->generateControllerContent($entityName, $useCaseName)
+            );
+        }
+    }
+
+    private function generateControllerContent(string $entityName, string $useCaseName): string
+    {
+        $controllerName = $useCaseName . 'Controller';
+        $content = <<<EOF
+        <?php
+        $this->licenceHeader
+        declare(strict_types=1);
+
+        namespace Centreon\Infrastructure\\$entityName\Api\\$useCaseName;
+
+        use Centreon\Application\\$entityName\UseCase\\$useCaseName\\$useCaseName;
+        use Centreon\Application\Controller\AbstractController;
+
+        class $controllerName extends AbstractController
+        {
+            public function __invoke($useCaseName \$$useCaseName): void
+            {
+            }
+        }
+
+        EOF;
+        return $content;
+    }
+    
 }
