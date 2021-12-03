@@ -70,7 +70,6 @@ class RestApiContext extends CentreonContext
      */
     public function callRestApi()
     {
-        var_dump(sys_get_temp_dir());
         $env = file_get_contents('tests/rest_api/rest_api.postman_environment.json');
         $env = str_replace(
             '@IP_CENTREON@',
