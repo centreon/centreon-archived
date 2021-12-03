@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
   passwordExpirationPolicy: {
     display: 'flex',
     flexDirection: 'column',
-    rowGap: theme.spacing(1),
+    rowGap: theme.spacing(1.5),
   },
 }));
 

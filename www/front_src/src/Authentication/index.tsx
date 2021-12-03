@@ -20,7 +20,7 @@ import LoadingSkeleton from './LoadingSkeleton';
 const useStyles = makeStyles((theme: Theme) => ({
   authenticationContainer: {
     margin: '0 auto',
-    padding: theme.spacing(1),
+    padding: theme.spacing(2, 2, 0),
   },
   loading: {
     height: theme.spacing(0.5),

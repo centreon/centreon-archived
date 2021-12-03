@@ -20,7 +20,7 @@ const passwordMinLengthFieldName = 'passwordMinLength';
 const useStyles = makeStyles((theme) => ({
   fields: {
     alignItems: 'top',
-    columnGap: theme.spacing(1),
+    columnGap: theme.spacing(2),
     display: 'grid',
     gridTemplateColumns: '0.9fr 1fr',
     marginTop: theme.spacing(1),
