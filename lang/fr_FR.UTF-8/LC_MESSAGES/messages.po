@@ -16305,3 +16305,123 @@ msgstr "Activer le bouton d’export de la configuration des collecteurs en un s
 
 msgid "User is not allowed to reach web application"
 msgstr "L'utilisateur n'est pas autorisé à joindre l'application web"
+
+msgid "Define the password security policy"
+msgstr "Définir la politique de sécurité de mot de passe"
+
+msgid "Password case policy"
+msgstr "Politique de casse du mot de passe"
+
+msgid "Password minimum length"
+msgstr "Longueur minimum du mot de passe"
+
+msgid "Minimum 8 characters"
+msgstr "8 caractères minimum"
+
+msgid "Maximum 128 characters"
+msgstr "128 caractères maximum"
+
+msgid "Force to use upper case"
+msgstr "Forcer à utiliser une majuscule"
+
+msgid "Force to use lower case"
+msgstr "Forcer à utiliser une minuscule"
+
+msgid "Force to use numbers"
+msgstr "Forcer à utiliser des nombres"
+
+msgid "Force to use special characters"
+msgstr "Forcer à utiliser des caractères spéciaux"
+
+msgid "Password cases"
+msgstr "Casses du mot de passe"
+
+msgid "Weak"
+msgstr "Faible"
+
+msgid "Good"
+msgstr "Bon"
+
+msgid "Strong"
+msgstr "Fort"
+
+msgid "Password expiration policy"
+msgstr "Politique d'expiration du mot de passe"
+
+msgid "Password expiration"
+msgstr "Expiration du mot de passe"
+
+msgid "Choose a duration between 1 hour and 12 months"
+msgstr "Veuillez choisir une durée entre 1 heure et 12 mois"
+
+msgid "Month"
+msgstr "Mois"
+
+msgid "Months"
+msgstr "Mois"
+
+msgid "Day"
+msgstr "Jour"
+
+msgid "Days"
+msgstr "Jours"
+
+msgid "Hour"
+msgstr "Heure"
+
+msgid "Hours"
+msgstr "Heures"
+
+msgid "Minute"
+msgstr "Minute"
+
+msgid "Minutes"
+msgstr "Minutes"
+
+msgid "Second"
+msgstr "Seconde"
+
+msgid "Second"
+msgstr "Secondes"
+
+msgid "Can reuse last 3 passwords"
+msgstr "Peut réutiliser les 3 derniers mot de passe"
+
+msgid "Time before set new password"
+msgstr "Durée avant de définir un nouveau mot de passe"
+
+msgid "Choose a duration between 1 hour and 1 week"
+msgstr "Veuillez choisir une durée entre 1 heure et 1 semaine"
+
+msgid "Password blocking policy"
+msgstr "Politique de blocage du mot de passe"
+
+msgid "Number of attempts before block new attempt"
+msgstr "Nombre de tentatives avant le blocage d'une nouvelle tentative"
+
+msgid "Choose a value between 1 and 10"
+msgstr "Veuillez choisir une valeur entre 1 et 10"
+
+msgid "Blocking time before new connection attempt"
+msgstr "Durée de blocage avant une nouvelle tentative"
+
+msgid "Blocking duration must be less or equal than 7 days"
+msgstr "La durée de blocage doit être inférieure ou égale à 7 jours"
+
+msgid "Saving..."
+msgstr "En cours de sauvegarde..."
+
+msgid "Saved"
+msgstr "Sauvegardé"
+
+msgid "Reset"
+msgstr "Réinitialiser"
+
+msgid "Password security policy saved"
+msgstr "Politique de sécurité de mot de passe sauvegardée"
+
+msgid "Failed to save password security policy"
+msgstr "La sauvegarde de la politique de définition de mot de passe a échoué"
+
+msgid "This will not be used because number of attempts is not defined"
+msgstr "Ceci ne va pas être utilisé car le nombre de tentatives n'est pas défini" 

@@ -14746,3 +14746,123 @@ msgstr ""
 
 msgid "Last check with OK status"
 msgstr "" 
+
+# msgid "Define the password security policy"
+# msgstr ""
+
+# msgid "Password case policy"
+# msgstr ""
+
+# msgid "Password minimum length"
+# msgstr ""
+
+# msgid "Minimum 8 characters"
+# msgstr ""
+
+# msgid "Maximum 128 characters"
+# msgstr ""
+
+# msgid "Force to use upper case"
+# msgstr ""
+
+# msgid "Force to use lower case"
+# msgstr ""
+
+# msgid "Force to use numbers"
+# msgstr ""
+
+# msgid "Force to use special characters"
+# msgstr ""
+
+# msgid "Password cases"
+# msgstr ""
+
+# msgid "Weak"
+# msgstr ""
+
+# msgid "Good"
+# msgstr ""
+
+# msgid "Strong"
+# msgstr ""
+
+# msgid "Password expiration policy"
+# msgstr ""
+
+# msgid "Password expiration"
+# msgstr ""
+
+# msgid "Choose a duration between 1 hour and 12 months"
+# msgstr ""
+
+# msgid "Month"
+# msgstr ""
+
+# msgid "Months"
+# msgstr ""
+
+# msgid "Day"
+# msgstr ""
+
+# msgid "Days"
+# msgstr ""
+
+# msgid "Hour"
+# msgstr ""
+
+# msgid "Hours"
+# msgstr ""
+
+# msgid "Minute"
+# msgstr ""
+
+# msgid "Minutes"
+# msgstr ""
+
+# msgid "Second"
+# msgstr ""
+
+# msgid "Second"
+# msgstr ""
+
+# msgid "Can reuse last 3 passwords"
+# msgstr ""
+
+# msgid "Time before set new password"
+# msgstr ""
+
+# msgid "Choose a duration between 1 hour and 1 week"
+# msgstr ""
+
+# msgid "Password blocking policy"
+# msgstr ""
+
+# msgid "Number of attempts before block new attempt"
+# msgstr ""
+
+# msgid "Choose a value between 1 and 10"
+# msgstr ""
+
+# msgid "Blocking time before new connection attempt"
+# msgstr ""
+
+# msgid "Blocking duration must be less or equal than 7 days"
+# msgstr ""
+
+# msgid "Saving..."
+# msgstr ""
+
+# msgid "Saved"
+# msgstr ""
+
+# msgid "Reset"
+# msgstr ""
+
+# msgid "Password security policy saved"
+# msgstr ""
+
+# msgid "Failed to save password security policy"
+# msgstr ""
+
+# msgid "This will not be used because number of attempts is not defined"
+# msgstr "" 

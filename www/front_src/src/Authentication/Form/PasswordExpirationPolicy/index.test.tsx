@@ -9,8 +9,8 @@ import useValidationSchema from '../../useValidationSchema';
 import { defaultSecurityPolicy } from '../defaults';
 import {
   labelCanReuseLast3Passwords,
-  labelChooseAValueBetween1HourAnd12Months,
-  labelChooseAValueBetween1HourAnd1Week,
+  labelChooseADurationBetween1HourAnd12Months,
+  labelChooseADurationBetween1HourAnd1Week,
   labelDay,
   labelDays,
   labelHour,
@@ -97,7 +97,7 @@ describe('Password expiration policy', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText(labelChooseAValueBetween1HourAnd12Months),
+        screen.getByText(labelChooseADurationBetween1HourAnd12Months),
       ).toBeInTheDocument();
     });
   });
@@ -123,7 +123,7 @@ describe('Password expiration policy', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText(labelChooseAValueBetween1HourAnd12Months),
+        screen.getByText(labelChooseADurationBetween1HourAnd12Months),
       ).toBeInTheDocument();
     });
   });
@@ -144,7 +144,7 @@ describe('Password expiration policy', () => {
 
     await waitFor(() => {
       expect(
-        screen.queryByText(labelChooseAValueBetween1HourAnd12Months),
+        screen.queryByText(labelChooseADurationBetween1HourAnd12Months),
       ).not.toBeInTheDocument();
     });
   });
@@ -171,7 +171,7 @@ describe('Password expiration policy', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText(labelChooseAValueBetween1HourAnd1Week),
+        screen.getByText(labelChooseADurationBetween1HourAnd1Week),
       ).toBeInTheDocument();
     });
   });
@@ -198,7 +198,7 @@ describe('Password expiration policy', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText(labelChooseAValueBetween1HourAnd1Week),
+        screen.getByText(labelChooseADurationBetween1HourAnd1Week),
       ).toBeInTheDocument();
     });
   });
@@ -220,7 +220,7 @@ describe('Password expiration policy', () => {
 
     await waitFor(() => {
       expect(
-        screen.queryByText(labelChooseAValueBetween1HourAnd1Week),
+        screen.queryByText(labelChooseADurationBetween1HourAnd1Week),
       ).not.toBeInTheDocument();
     });
   });
