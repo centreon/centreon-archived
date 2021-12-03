@@ -15,6 +15,7 @@
         "friends-of-behat/mink": "^1.9",
         "friends-of-behat/mink-extension": "^2.5",
         "behat/mink-selenium2-driver": "^1.4",
+        "centreon/centreon-test-lib": "dev-MON-6465",
         "phpstan/phpstan": "^0.12.59",
         "phpstan/phpstan-beberlei-assert": "^0.12",
         "phpunit/phpunit": "^9.5",
@@ -28,7 +29,7 @@
         "twig/twig": "^2.0",
         "webmozart/assert": "^1.8",
         "zircote/swagger-php": "^3.0",
-        "centreon/centreon-test-lib": "dev-MON-6465"
+        "psr/container": "~1.0.0"
     },
     "require": {
         "beberlei/assert": "^3.3",
