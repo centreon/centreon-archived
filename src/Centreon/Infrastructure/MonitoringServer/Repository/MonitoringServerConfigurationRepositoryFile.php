@@ -68,7 +68,7 @@ class MonitoringServerConfigurationRepositoryFile implements MonitoringServerCon
     {
         try {
             ob_start();
-            include(_CENTREON_PATH_ . $filePath);
+            require_once(_CENTREON_PATH_ . $filePath);
             $xml = ob_get_contents();
             ob_end_clean();
             if (!empty($xml)) {
