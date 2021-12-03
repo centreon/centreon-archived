@@ -202,8 +202,7 @@ if (!empty($remotesResults)) {
  *
  * @see set_error_handler
  */
-$log_error = function($errno, $errstr, $errfile, $errline)
-{
+$log_error = function ($errno, $errstr, $errfile, $errline) {
     global $generatePhpErrors;
     if (!(error_reporting() && $errno)) {
         return;
