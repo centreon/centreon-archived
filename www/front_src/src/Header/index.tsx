@@ -7,7 +7,7 @@ import { useUserContext } from '@centreon/ui-context';
 import Hook from '../components/Hook';
 
 import styles from './header.scss';
-import PollerMenu from './pollerMenu';
+import PollerMenu from './PollerMenu';
 import UserMenu from './userMenu';
 import ServiceStatusCounter from './RessourceStatusCounter/Service';
 import HostStatusCounter from './RessourceStatusCounter/Host';

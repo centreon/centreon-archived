@@ -231,3 +231,5 @@ export const labelBeforeLastYear = 'Before last year';
 export const labelServiceGraphs = 'Service graphs';
 export const labelClearFilter = 'Clear filter';
 export const labelLastCheckWithOkStatus = 'Last check with OK status';
+export const labelDowntimeIsFixed = 'Downtime is fixed';
+export const labelDowntimeWithServices = 'Downtime with services';
