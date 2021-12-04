@@ -127,7 +127,7 @@ const AppProvider = (): JSX.Element => {
             ),
             downtime_with_services:
               retrievedParameters.monitoring_default_downtime_with_services,
-            is_fixed: retrievedParameters.monitoring_default_downtime_is_fixed,
+            fixed: retrievedParameters.monitoring_default_downtime_fixed,
           });
           setRefreshInterval(
             parseInt(
