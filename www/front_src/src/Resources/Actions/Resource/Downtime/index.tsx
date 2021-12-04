@@ -66,7 +66,7 @@ const DowntimeForm = ({
       comment: undefined,
       dateEnd: defaultEndDate,
       dateStart: currentDate,
-      downtimeIsFixed: downtime.is_fixed,
+      downtimeIsFixed: downtime.fixed,
       downtimeWithServices: downtime.downtime_with_services,
       duration: {
         unit: 'seconds',
