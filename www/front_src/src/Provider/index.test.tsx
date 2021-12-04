@@ -37,7 +37,7 @@ const retrievedDefaultParameters = {
   monitoring_default_acknowledgement_persistent: true,
   monitoring_default_acknowledgement_sticky: false,
   monitoring_default_downtime_duration: 1458,
-  monitoring_default_downtime_is_fixed: true,
+  monitoring_default_downtime_fixed: true,
   monitoring_default_downtime_with_services: true,
   monitoring_default_refresh_interval: 15,
 };
@@ -102,22 +102,20 @@ describe(Provider, () => {
       expect(useDowntime().setDowntime).toHaveBeenCalledWith({
         default_duration:
           retrievedDefaultParameters.monitoring_default_downtime_duration,
-      });
-      expect(useRefreshInterval().setRefreshInterval).toHaveBeenCalledWith(
-        retrievedDefaultParameters.monitoring_default_refresh_interval,
-      );
-      expect(useDowntime().setDowntime).toHaveBeenCalledWith({
         downtime_with_services:
           retrievedDefaultParameters.monitoring_default_downtime_with_services,
-        is_fixed:
-          retrievedDefaultParameters.monitoring_default_downtime_is_fixed,
+        fixed: retrievedDefaultParameters.monitoring_default_downtime_fixed,
       });
-      expect(useAcknowledgement().setAcknowledgement).toHaveBeenCalledWith({
-        persistent:
-          retrievedDefaultParameters.monitoring_default_acknowledgement_persistent,
-        sticky:
-          retrievedDefaultParameters.monitoring_default_acknowledgement_sticky,
-      });
+    });
+    expect(useRefreshInterval().setRefreshInterval).toHaveBeenCalledWith(
+      retrievedDefaultParameters.monitoring_default_refresh_interval,
+    );
+
+    expect(useAcknowledgement().setAcknowledgement).toHaveBeenCalledWith({
+      persistent:
+        retrievedDefaultParameters.monitoring_default_acknowledgement_persistent,
+      sticky:
+        retrievedDefaultParameters.monitoring_default_acknowledgement_sticky,
     });
   });
 });
