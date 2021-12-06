@@ -1,7 +1,8 @@
 <?php
+
 /*
- * Copyright 2005-2015 CENTREON
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2021 CENTREON
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -42,16 +43,19 @@ require_once _CENTREON_PATH_ . "www/class/centreon-clapi/centreonExported.class.
 
 abstract class CentreonObject
 {
-    const MISSINGPARAMETER = "Missing parameters";
-    const MISSINGNAMEPARAMETER = "Missing name parameter";
-    const OBJECTALREADYEXISTS = "Object already exists";
-    const OBJECT_NOT_FOUND = "Object not found";
-    const UNKNOWN_METHOD = "Method not implemented into Centreon API";
-    const NAMEALREADYINUSE = "Name is already in use";
-    const NB_UPDATE_PARAMS = 3;
-    const UNKNOWNPARAMETER = "Unknown parameter";
-    const OBJECTALREADYLINKED = "Objects already linked";
-    const OBJECTNOTLINKED = "Objects are not linked";
+    public const MISSINGPARAMETER = "Missing parameters";
+    public const MISSINGNAMEPARAMETER = "Missing name parameter";
+    public const OBJECTALREADYEXISTS = "Object already exists";
+    public const OBJECT_NOT_FOUND = "Object not found";
+    public const UNKNOWN_METHOD = "Method not implemented into Centreon API";
+    public const NAMEALREADYINUSE = "Name is already in use";
+    public const NB_UPDATE_PARAMS = 3;
+    public const UNKNOWNPARAMETER = "Unknown parameter";
+    public const OBJECTALREADYLINKED = "Objects already linked";
+    public const OBJECTNOTLINKED = "Objects are not linked";
+    public const SINGLE_VALUE = 0;
+    public const MULTIPLE_VALUE = 1;
+
 
     private $centreon_api = null;
     protected static $instances;
@@ -206,14 +210,16 @@ abstract class CentreonObject
      * @param string $name
      * @return int
      */
-    public function getObjectId($name)
+    public function getObjectId($name, int $type = self::SINGLE_VALUE)
     {
         if (isset($this->objectIds[$name])) {
             return $this->objectIds[$name];
         }
         $ids = $this->object->getIdByParameter($this->object->getUniqueLabelField(), array($name));
         if (count($ids)) {
-            $this->objectIds[$name] = $ids[0];
+            $this->objectIds[$name] = ($type === self::SINGLE_VALUE)
+                ? $ids[0]
+                : $ids;
             return $this->objectIds[$name];
         }
         return 0;
@@ -244,8 +250,9 @@ abstract class CentreonObject
     {
         $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off' ? "https" : "http";
         $port = '';
-        if (($protocol == 'http' && $_SERVER['SERVER_PORT'] != 80) ||
-            ($protocol == 'https' && $_SERVER['SERVER_PORT'] != 443)
+        if (
+            ($protocol == 'http' && $_SERVER['SERVER_PORT'] != 80)
+            || ($protocol == 'https' && $_SERVER['SERVER_PORT'] != 443)
         ) {
             $port = ':' . $_SERVER['SERVER_PORT'];
         }
@@ -282,16 +289,20 @@ abstract class CentreonObject
         $this->initInsertParameters($parameters);
 
         $id = $this->object->insert($this->params);
-        $this->addAuditLog(
-            'a',
-            $id,
-            $this->params[$this->object->getUniqueLabelField()],
-            $this->params
-        );
+        if (isset($this->params[$this->object->getUniqueLabelField()])) {
+            $this->addAuditLog(
+                'a',
+                $id,
+                $this->params[$this->object->getUniqueLabelField()],
+                $this->params
+            );
+        }
 
         if (method_exists($this, "insertRelations")) {
             $this->insertRelations($id);
         }
+        $aclObj = new CentreonACL($this->dependencyInjector);
+        $aclObj->reload(true);
     }
 
 
@@ -317,6 +328,8 @@ abstract class CentreonObject
         if (count($ids)) {
             $this->object->delete($ids[0]);
             $this->addAuditLog('d', $ids[0], $objectName);
+            $aclObj = new CentreonACL($this->dependencyInjector);
+            $aclObj->reload(true);
         } else {
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $objectName);
         }
@@ -356,7 +369,8 @@ abstract class CentreonObject
             $objectId = $params['objectId'];
             unset($params['objectId']);
 
-            if (isset($params[$uniqueLabel])
+            if (
+                isset($params[$uniqueLabel])
                 && $this->objectExists($params[$uniqueLabel], $objectId) == true
             ) {
                 throw new CentreonClapiException(self::NAMEALREADYINUSE);
@@ -457,10 +471,13 @@ abstract class CentreonObject
         }
 
         $filterId = $this->getObjectId($filterName);
-        $exported->ariane_push($this->action, $filterId, $filterName);
-        if ($exported->is_exported($this->action, $filterId, $filterName)) {
-            $exported->ariane_pop();
-            return false;
+        $filterIds = is_array($filterId) ? $filterId : [$filterId];
+        foreach ($filterIds as $filterId) {
+            $exported->ariane_push($this->action, $filterId, $filterName);
+            if ($exported->is_exported($this->action, $filterId, $filterName)) {
+                $exported->ariane_pop();
+                return false;
+            }
         }
 
         return true;

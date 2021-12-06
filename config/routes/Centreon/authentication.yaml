@@ -1,0 +1,11 @@
+centreon_application_authentication_login:
+    methods: POST
+    path: /login
+    controller: 'Centreon\Application\Controller\AuthenticationController::login'
+    condition: "request.attributes.get('version') >= 21.10"
+
+centreon_application_authentication_logout:
+    methods: GET
+    path: /logout
+    controller: 'Centreon\Application\Controller\AuthenticationController::logout'
+    condition: "request.attributes.get('version') >= 21.10"

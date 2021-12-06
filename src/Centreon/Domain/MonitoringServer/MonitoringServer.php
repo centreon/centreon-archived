@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,88 +22,79 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\MonitoringServer;
 
-use JMS\Serializer\Annotation as Serializer;
-use Centreon\Domain\Annotation\EntityDescriptor as Desc;
+use Centreon\Domain\Service\EntityDescriptorMetadataInterface;
 
-class MonitoringServer
+/**
+ * This class is designed to represent a monitoring server entity.
+ *
+ * @package Centreon\Domain\MonitoringServer
+ */
+class MonitoringServer implements EntityDescriptorMetadataInterface
 {
+    // Groups for serializing
+    public const SERIALIZER_GROUP_MAIN = 'monitoringserver_main';
+
     /**
-     * @Serializer\Groups({"monitoringserver_main"})
-     * @var int Unique id of server
+     * @var int|null Unique id of server
      */
     private $id;
 
     /**
-     * @Serializer\Groups({"monitoringserver_main"})
-     * @var string Name of server
+     * @var string|null Name of server
      */
     private $name;
 
     /**
-     * @Serializer\Groups({"monitoringserver_main"})
-     * @Desc(column="localhost", modifier="setLocalhost")
      * @var bool Indicates whether it's the localhost server
      */
     private $isLocalhost = false;
 
     /**
-     * @Serializer\Groups({"monitoringserver_main"})
      * @var bool Indicates whether it's the default server
      */
     private $isDefault = false;
 
     /**
-     * @Serializer\Groups({"monitoringserver_main"})
      * @var \DateTime|null Date of the last Engine restart request
      */
     private $lastRestart;
 
     /**
-     * @Serializer\Groups({"monitoringserver_main"})
-     * @Desc(column="ns_ip_address", modifier="setAddress")
      * @var string|null IP address of server
      */
     private $address;
 
     /**
-     * @Serializer\Groups({"monitoringserver_main"})
-     * @Desc(column="ns_activate", modifier="setActivate")
      * @var bool Indicates whether the server configuration is activated
      */
     private $isActivate = true;
 
     /**
-     * @Serializer\Groups({"monitoringserver_main"})
      * @var string|null System start command for Engine
      */
     private $engineStartCommand;
 
     /**
-     * @Serializer\Groups({"monitoringserver_main"})
      * @var string|null System stop command for Engine
      */
     private $engineStopCommand;
 
     /**
-     * @Serializer\Groups({"monitoringserver_main"})
      * @var string|null System restart command for Engine
      */
     private $engineRestartCommand;
 
     /**
-     * @Serializer\Groups({"monitoringserver_main"})
      * @var string|null System reload command for Engine
      */
     private $engineReloadCommand;
 
     /**
-     * @Serializer\Groups({"monitoringserver_main"})
      * @var string|null Full path of the Engine binary
      */
     private $nagiosBin;
 
     /**
-     * @Serializer\Groups({"monitoringserver_main"})
      * @var string|null Full path of the Engine statistics binary
      */
     private $nagiostatsBin;
@@ -113,31 +105,26 @@ class MonitoringServer
     private $nagiosPerfdata;
 
     /**
-     * @Serializer\Groups({"monitoringserver_main"})
      * @var string|null System reload command for Broker
      */
     private $brokerReloadCommand;
 
     /**
-     * @Serializer\Groups({"monitoringserver_main"})
      * @var string|null Full path of the Broker configuration
      */
     private $centreonbrokerCfgPath;
 
     /**
-     * @Serializer\Groups({"monitoringserver_main"})
      * @var string|null Full path of the Broker module's libraries
      */
     private $centreonbrokerModulePath;
 
     /**
-     * @Serializer\Groups({"monitoringserver_main"})
      * @var string|null Full path of the Engine connectors
      */
     private $centreonconnectorPath;
 
     /**
-     * @Serializer\Groups({"monitoringserver_main"})
      * @var int SSH port SSH port of this server
      */
     private $sshPort;
@@ -148,13 +135,11 @@ class MonitoringServer
     private $sshPrivateKey;
 
     /**
-     * @Serializer\Groups({"monitoringserver_main"})
      * @var string|null System name of Centreontrapd daemon
      */
     private $initScriptCentreontrapd;
 
     /**
-     * @Serializer\Groups({"monitoringserver_main"})
      * @var string|null Full path of the Centreontrapd daemon configuration
      */
     private $snmpTrapdPathConf;
@@ -170,60 +155,68 @@ class MonitoringServer
     private $engineVersion;
 
     /**
-     * @Serializer\Groups({"monitoringserver_main"})
      * @var string|null Full path of the Broker logs
      */
     private $centreonbrokerLogsPath;
 
     /**
-     * @Serializer\Groups({"monitoringserver_main"})
      * @var int|null Unique ID of the master Remote Server linked to the server
      */
     private $remoteId;
 
     /**
-     * @Serializer\Groups({"monitoringserver_main"})
      * @var bool Indicates whether Remote Servers are used as SSH proxies
      */
-    private $remoteServerCentcoreSshProxy = true;
+    private $remoteServerUseAsProxy = true;
 
     /**
-     * @Serializer\Groups({"monitoringserver_main"})
      * @var bool Indicates whether the monitoring configuration has changed since last restart
      */
     private $isUpdated = false;
 
     /**
-     * @return int
+     * @inheritdoc
      */
-    public function getId(): int
+    public static function loadEntityDescriptorMetadata(): array
+    {
+        return [
+            'localhost' => 'setLocalhost',
+            'ns_ip_address' => 'setAddress',
+            'ns_activate' => 'setActivate',
+        ];
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getId(): ?int
     {
         return $this->id;
     }
 
     /**
-     * @param int $id
+     * @param int|null $id
      * @return MonitoringServer
      */
-    public function setId(int $id): MonitoringServer
+    public function setId(?int $id): MonitoringServer
     {
         $this->id = $id;
         return $this;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getName(): string
+    public function getName(): ?string
     {
         return $this->name;
     }
 
     /**
-     * @param string $name
+     * @param string|null $name
      * @return MonitoringServer
      */
-    public function setName(string $name): MonitoringServer
+    public function setName(?string $name): MonitoringServer
     {
         $this->name = $name;
         return $this;
@@ -664,18 +657,18 @@ class MonitoringServer
     /**
      * @return bool
      */
-    public function isRemoteServerCentcoreSshProxy(): bool
+    public function isRemoteServerUseAsProxy(): bool
     {
-        return $this->remoteServerCentcoreSshProxy;
+        return $this->remoteServerUseAsProxy;
     }
 
     /**
-     * @param bool $remoteServerCentcoreSshProxy
+     * @param bool $remoteServerUseAsProxy
      * @return MonitoringServer
      */
-    public function setRemoteServerCentcoreSshProxy(bool $remoteServerCentcoreSshProxy): MonitoringServer
+    public function setRemoteServerUseAsProxy(bool $remoteServerUseAsProxy): MonitoringServer
     {
-        $this->remoteServerCentcoreSshProxy = $remoteServerCentcoreSshProxy;
+        $this->remoteServerUseAsProxy = $remoteServerUseAsProxy;
         return $this;
     }
 

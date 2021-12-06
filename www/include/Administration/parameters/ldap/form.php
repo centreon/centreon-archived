@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2019 Centreon
+ * Copyright 2005-2021 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -196,7 +197,6 @@ $form->addElement('hidden', 'gopt_id');
 $redirect = $form->addElement('hidden', 'o');
 $redirect->setValue($o);
 
-
 /**
  * Smarty
  */
@@ -219,7 +219,8 @@ $defaultOpt = array(
     'ldap_search_limit' => '60',
     'ldap_auto_sync' => '1', // synchronization on user's login is enabled by default
     'ldap_sync_interval' => '1', // minimal value of the interval between two LDAP synchronizations
-    'ldap_search_timeout' => '60');
+    'ldap_search_timeout' => '60'
+);
 
 $gopt = array();
 if ($arId) {
@@ -232,8 +233,9 @@ if ($arId) {
     $res->bindValue('arId', $arId, PDO::PARAM_INT);
     $res->execute();
     while ($row = $res->fetch()) {
-        $gopt['ar_name'] = $row['ar_name'];
-        $gopt['ar_description'] = $row['ar_description'];
+        // sanitize name and description
+        $gopt['ar_name'] = filter_var($row['ar_name'], FILTER_SANITIZE_STRING);
+        $gopt['ar_description'] = filter_var($row['ar_description'], FILTER_SANITIZE_STRING);
         $gopt['ldap_auth_enable'] = $row['ar_enable'];
         $gopt['ar_sync_base_date'] = $row['ar_sync_base_date'];
     }
@@ -249,7 +251,7 @@ if ($arId) {
 }
 
 /*
- * LDAP servers 
+ * LDAP servers
  */
 $cloneSet = array();
 $cloneSet[] = $form->addElement(
@@ -257,7 +259,7 @@ $cloneSet[] = $form->addElement(
     'address[#index#]',
     _("Host address"),
     array(
-        "size"=>"30",
+        "size" => "30",
         "id" => "address_#index#"
     )
 );
@@ -266,7 +268,7 @@ $cloneSet[] = $form->addElement(
     'port[#index#]',
     _("Port"),
     array(
-        "size"=>"10",
+        "size" => "10",
         "id" => "port_#index#"
     )
 );
@@ -327,66 +329,79 @@ require_once $path . 'ldap/javascript/ldapJs.php';
 
 $valid = false;
 $filterValid = true;
+$validNameOrDescription = true;
 $allHostsOk = true;
 if ($form->validate()) {
     $values = $form->getSubmitValues();
+    // sanitize name and description
+    $values['ar_name'] = filter_var($values['ar_name'], FILTER_SANITIZE_STRING);
+    $values['ar_description'] = filter_var($values['ar_description'], FILTER_SANITIZE_STRING);
 
-    /*
-     * Test if filter string is valid
-     */
-    if (!CentreonLDAP::validateFilterPattern($values['user_filter'])) {
-        $filterValid = false;
-    }
+    // Check if sanitized name and description are not empty
+    if (
+        "" === $values['ar_name']
+        || "" === $values['ar_description']
+    ) {
+        $validNameOrDescription = false;
+    } else {
+        // Test if filter string is valid
+        if (!CentreonLDAP::validateFilterPattern($values['user_filter'])) {
+            $filterValid = false;
+        }
 
-    if (isset($_POST['ldapHosts'])) {
-        foreach ($_POST['ldapHosts'] as $ldapHost) {
-            if ($ldapHost['hostname'] == '' || $ldapHost['port'] == '') {
-                $allHostsOk = false;
+        if (isset($_POST['ldapHosts'])) {
+            foreach ($_POST['ldapHosts'] as $ldapHost) {
+                if ($ldapHost['hostname'] == '' || $ldapHost['port'] == '') {
+                    $allHostsOk = false;
+                }
             }
         }
-    }
 
-    if ($filterValid && $allHostsOk) {
-        if (!isset($values['ldap_contact_tmpl'])) {
-            $values['ldap_contact_tmpl'] = "";
-        }
+        if ($filterValid && $allHostsOk) {
+            if (!isset($values['ldap_contact_tmpl'])) {
+                $values['ldap_contact_tmpl'] = "";
+            }
 
-        if (!isset($values['ldap_default_cg'])) {
-            $values['ldap_default_cg'] = "";
-        }
+            if (!isset($values['ldap_default_cg'])) {
+                $values['ldap_default_cg'] = "";
+            }
 
-        // setting a reference time to calculate the expected synchronization
-        $currentTime = time();
-        $values['ar_sync_base_date'] = $currentTime;
+            // setting a reference time to calculate the expected synchronization
+            $currentTime = time();
+            $values['ar_sync_base_date'] = $currentTime;
 
-        // updating the next expected auto-sync at login if the admin has changed the sync options or it never occurred
-        if ($gopt['ldap_auto_sync'] === $values['ldap_auto_sync']['ldap_auto_sync']
-            && !empty($gopt['ar_sync_base_date'])
-            && ($gopt['ar_sync_base_date'] + ($values['ldap_sync_interval'] * 3600)) > $currentTime
-            && $currentTime > $gopt['ar_sync_base_date']
-        ) {
-            // distinguishing the enabled and disabled cases
-            if ($values['ldap_auto_sync']['ldap_auto_sync'] == 0
-                || ($values['ldap_auto_sync']['ldap_auto_sync'] == 1
-                    && $gopt['ldap_sync_interval'] == $values['ldap_sync_interval'])
+            // updating the next expected auto-sync at login if the admin has changed the sync options
+            // or it never occurred
+            if (
+                $gopt['ldap_auto_sync'] === $values['ldap_auto_sync']['ldap_auto_sync']
+                && !empty($gopt['ar_sync_base_date'])
+                && ($gopt['ar_sync_base_date'] + ($values['ldap_sync_interval'] * 3600)) > $currentTime
+                && $currentTime > $gopt['ar_sync_base_date']
             ) {
-                // synchronization parameters have not changed, the reference time shouldn't be updated
-                $values['ar_sync_base_date'] = $gopt['ar_sync_base_date'];
+                // distinguishing the enabled and disabled cases
+                if (
+                    $values['ldap_auto_sync']['ldap_auto_sync'] == 0
+                    || ($values['ldap_auto_sync']['ldap_auto_sync'] == 1
+                        && $gopt['ldap_sync_interval'] == $values['ldap_sync_interval'])
+                ) {
+                    // synchronization parameters have not changed, the reference time shouldn't be updated
+                    $values['ar_sync_base_date'] = $gopt['ar_sync_base_date'];
+                }
             }
+
+            $arId = $ldapAdmin->setGeneralOptions($values, $values['ar_id']);
+            $o = "w";
+            $valid = true;
+
+            if (!isset($values['ldap_srv_dns']['ldap_srv_dns']) || !$values['ldap_srv_dns']['ldap_srv_dns']) {
+                $tpl->assign("hideDnsOptions", 1);
+            } else {
+                $tpl->assign("hideDnsOptions", 0);
+            }
+
+            $tpl->assign("hideSyncInterval", (int)$values['ldap_auto_sync']['ldap_auto_sync'] ?? 0);
+            $form->freeze();
         }
-
-        $arId = $ldapAdmin->setGeneralOptions($values['ar_id'], $values);
-        $o = "w";
-        $valid = true;
-
-        if (!isset($values['ldap_srv_dns']['ldap_srv_dns']) || !$values['ldap_srv_dns']['ldap_srv_dns']) {
-            $tpl->assign("hideDnsOptions", 1);
-        } else {
-            $tpl->assign("hideDnsOptions", 0);
-        }
-
-        $tpl->assign("hideSyncInterval", (int)$values['ldap_auto_sync']['ldap_auto_sync'] ?? 0);
-        $form->freeze();
     }
 }
 
@@ -397,13 +412,15 @@ if (!$form->validate() && isset($_POST["gopt_id"])) {
         . _("Bad ldap filter: missing %s pattern. Check user or group filter") . "</div>");
 } elseif (false === $allHostsOk) {
     print("<div class='msg' align='center'>" . _("Invalid LDAP Host parameters") . "</div>");
+} elseif (false === $validNameOrDescription) {
+    print("<div class='msg' align='center'>" . _("Invalid name or description") . "</div>");
 }
 
 $form->addElement(
     "button",
     "change",
     _("Modify"),
-    array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=ldap&ar_id=" . $arId ."'")
+    array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=ldap&ar_id=" . $arId . "'")
 );
 
 /*
@@ -426,6 +443,7 @@ if ($valid) {
     $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
     $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
     $form->accept($renderer);
+    $tpl->assign("hideSyncInterval", 0);
     $tpl->assign('form', $renderer->toArray());
     $tpl->assign('centreon_path', $centreon->optGen['oreon_path']);
     $tpl->assign('cloneSet', $cloneSet);

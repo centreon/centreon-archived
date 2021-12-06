@@ -32,10 +32,10 @@
  * For more information : contact@centreon.com
  *
  */
-require_once _CENTREON_PATH_ . 'www/class/centreonInstance.class.php';
-require_once _CENTREON_PATH_ . 'www/class/centreonDB.class.php';
-require_once _CENTREON_PATH_ . 'www/class/centreonHook.class.php';
-require_once _CENTREON_PATH_ . 'www/class/centreonDBInstance.class.php';
+require_once __DIR__ . '/centreonInstance.class.php';
+require_once __DIR__ . '/centreonDB.class.php';
+require_once __DIR__ . '/centreonHook.class.php';
+require_once __DIR__ . '/centreonDBInstance.class.php';
 
 
 /**
@@ -79,27 +79,55 @@ class CentreonService
     }
 
     /**
-     *  Method that returns service description from service_id
+     * filteredArrayId takes an array of combined ID (HOSTID_SVCID) as parameter.
+     * It will check for each combined ID if:
+     *   - HOSTID is defined and > 0
+     *   - SVCID is defined and > 0
      *
-     * @param int $svc_id
-     * @return string
+     * @param  int[] $ids
+     * @return int[] filtered
      */
-    public function getServiceDesc($svc_id)
+    function filteredArrayId(array $ids): array
+    {
+        /* Slight difference here. Array parameter is made
+         * of combined ids HOSTID_SERVICEID
+         */
+        $combinedIds = [];
+        return array_filter($ids, function ($combinedId) {
+            // Only valid combined ID are authorized (HOSTID_SVCID)
+            if (preg_match('/([0-9]+)_([0-9]+)/', $combinedId, $matches)) {
+                $hostId = (int)$matches[1];
+                $serviceId = (int)$matches[2];
+                return ($hostId > 0 && $serviceId > 0);
+            }
+            return false;
+        });
+    }
+
+    /**
+     *  Method that returns service description from serviceId
+     *
+     * @param int $serviceId
+     * @return ?string
+     */
+    public function getServiceDesc(int $serviceId): ?string
     {
         static $svcTab = null;
 
-        if (is_null($svcTab)) {
-            $svcTab = array();
+        if ($serviceId) {
+            if (is_null($svcTab)) {
+                $svcTab = array();
 
-            $rq = "SELECT service_id, service_description
-     			   FROM service";
-            $res = $this->db->query($rq);
-            while ($row = $res->fetchRow()) {
-                $svcTab[$row['service_id']] = $row['service_description'];
+                $rq = "SELECT service_id, service_description
+     	    		   FROM service";
+                $res = $this->db->query($rq);
+                while ($row = $res->fetchRow()) {
+                    $svcTab[$row['service_id']] = $row['service_description'];
+                }
             }
-        }
-        if (isset($svcTab[$svc_id])) {
-            return $svcTab[$svc_id];
+            if (isset($svcTab[$serviceId])) {
+                return $svcTab[$serviceId];
+            }
         }
         return null;
     }
@@ -224,48 +252,49 @@ class CentreonService
     }
 
     /**
-     * Get Service alias
+     * Gets the service description of a service
      *
-     * @param int $sid
-     * @return string
+     * @param int[] $serviceIds
+     * @return array serviceDescriptions
+     * ['service_id' => integer, 'description' => string, 'host_name' => string, 'host_id' => integer],...]
      */
-    public function getServicesDescr($sid = array())
+    public function getServicesDescr($serviceIds = []): array
     {
-        $arrayReturn = array();
+        $serviceDescriptions = [];
 
-        if (!empty($sid)) {
-            $where = "";
-            foreach ($sid as $s) {
-                $tmp = explode("_", $s);
-                if (isset($tmp[0]) && isset($tmp[1])) {
-                    if ($where !== "") {
-                        $where .= " OR ";
-                    } else {
-                        $where .= " AND ( ";
-                    }
-                    $where .= " (h.host_id = " . $this->db->escape($tmp[0]);
-                    $where .= " AND s.service_id = " . $this->db->escape($tmp[1]) . " ) ";
+        if (!empty($serviceIds)) {
+            $where = '';
+            /* checking here that the array provided as parameter
+             * is exclusively made of integers (service ids)
+             */
+            $filteredSvcIds = $this->filteredArrayId($serviceIds);
+
+            if (count($filteredSvcIds) > 0) {
+                foreach ($filteredSvcIds as $hostAndServiceId) {
+                    list($hostId, $serviceId) = explode("_", $hostAndServiceId);
+                    $where .= empty($where) ? " ( " : " OR ";
+                    $where .= " (h.host_id = $hostId AND s.service_id = $serviceId) ";
                 }
-            }
-            if ($where !== "") {
-                $where .= " ) ";
-                $query = "SELECT s.service_description, s.service_id, h.host_name, h.host_id
-                          FROM service s
-                          INNER JOIN host_service_relation hsr ON hsr.service_service_id = s.service_id
-                          INNER JOIN host h ON hsr.host_host_id = h.host_id
-                          WHERE  1 = 1 " . $where;
-                $res = $this->db->query($query);
-                while ($row = $res->fetchRow()) {
-                    $arrayReturn[] = array(
-                        "service_id" => $row['service_id'],
-                        "description" => $row['service_description'],
-                        "host_name" => $row['host_name'],
-                        "host_id" => $row['host_id']
-                    );
+                if ($where !== "") {
+                    $where .= " ) ";
+                    $query = "SELECT s.service_description, s.service_id, h.host_name, h.host_id
+                        FROM service s
+                        INNER JOIN host_service_relation hsr ON hsr.service_service_id = s.service_id
+                        INNER JOIN host h ON hsr.host_host_id = h.host_id
+                        WHERE " . $where;
+                    $res = $this->db->query($query);
+                    while ($row = $res->fetch(\PDO::FETCH_ASSOC)) {
+                        $serviceDescriptions[] = [
+                            'service_id' => $row['service_id'],
+                            'description' => $row['service_description'],
+                            'host_name' => $row['host_name'],
+                            'host_id' => $row['host_id']
+                        ];
+                    }
                 }
             }
         }
-        return $arrayReturn;
+        return $serviceDescriptions;
     }
 
 
@@ -463,17 +492,7 @@ class CentreonService
                 if (preg_match('/\$_SERVICE(.*)\$$/', $row['svc_macro_name'], $matches)) {
                     $arr[$i]['macroInput_#index#'] = $matches[1];
                     $arr[$i]['macroValue_#index#'] = $row['svc_macro_value'];
-
-                    $valPassword = null;
-                    if (isset($row['is_password'])) {
-                        if ($row['is_password'] === '1') {
-                            $valPassword = '1';
-                        } else {
-                            $valPassword = null;
-                        }
-                    }
-                    $arr[$i]['macroPassword_#index#'] = $valPassword;
-
+                    $arr[$i]['macroPassword_#index#'] = $row['is_password'] ? 1 : null;
                     $arr[$i]['macroDescription_#index#'] = $row['description'];
                     $arr[$i]['macroDescription'] = $row['description'];
                     if (!is_null($template)) {
@@ -663,13 +682,15 @@ class CentreonService
         $aMacros = $this->getMacros($serviceId, $aListTemplate, $cmdId);
         foreach ($aMacros as $macro) {
             foreach ($macroInput as $ind => $input) {
-                # Don't override macros on massive change if there is not direct inheritance
-                if (($input == $macro['macroInput_#index#'] && $macroValue[$ind] == $macro["macroValue_#index#"])
-                    || ($isMassiveChange && $input == $macro['macroInput_#index#'] &&
-                        isset($macroFrom[$ind]) && $macroFrom[$ind] != 'direct')
-                ) {
-                    unset($macroInput[$ind]);
-                    unset($macroValue[$ind]);
+                if (isset($macro['macroInput_#index#']) && isset($macro["macroValue_#index#"])) {
+                    # Don't override macros on massive change if there is not direct inheritance
+                    if (($input == $macro['macroInput_#index#'] && $macroValue[$ind] == $macro["macroValue_#index#"])
+                        || ($isMassiveChange && $input == $macro['macroInput_#index#'] &&
+                            isset($macroFrom[$ind]) && $macroFrom[$ind] != 'direct')
+                    ) {
+                        unset($macroInput[$ind]);
+                        unset($macroValue[$ind]);
+                    }
                 }
             }
         }
@@ -865,8 +886,6 @@ class CentreonService
 
     public function purgeOldMacroToForm(&$macroArray, &$form, $fromKey, $macrosArrayToCompare = null)
     {
-
-
         if (isset($form["macroInput"]["#index#"])) {
             unset($form["macroInput"]["#index#"]);
         }

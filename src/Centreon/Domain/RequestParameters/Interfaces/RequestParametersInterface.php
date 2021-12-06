@@ -23,6 +23,9 @@ namespace Centreon\Domain\RequestParameters\Interfaces;
 
 use Centreon\Domain\RequestParameters\RequestParameters;
 
+/**
+ * @package Centreon\Domain\RequestParameters\Interfaces
+ */
 interface RequestParametersInterface
 {
     /**
@@ -34,18 +37,34 @@ interface RequestParametersInterface
     public function addExtraParameter(string $parameterName, $value): void;
 
     /**
-     * Find the search parameter.
+     * Check if a search parameter exists.
      *
      * @param string $keyToFind Name of the search parameter
      * @param array $parameters List of parameters
-     * @return string|null Returns the value of the search parameter
+     * @return bool Returns true if the parameter exists
      */
-    public function findSearchParameter(string $keyToFind, array $parameters): ?string;
+    public function hasSearchParameter(string $keyToFind, array $parameters): bool;
 
     /**
      * @return int
      */
     public function getConcordanceStrictMode(): int;
+
+    /**
+     * @param int $concordanceStrictMode
+     */
+    public function setConcordanceStrictMode(int $concordanceStrictMode);
+
+    /**
+     * @return int
+     */
+    public function getConcordanceErrorMode(): int;
+
+    /**
+     * Set error mode (exception or silent)
+     * @param int $concordanceErrorMode
+     */
+    public function setConcordanceErrorMode(int $concordanceErrorMode);
 
     /**
      * Returns the value of the extra parameter.
@@ -81,19 +100,6 @@ interface RequestParametersInterface
      * @return int
      */
     public function getTotal(): int;
-
-    /**
-     * Indicate is the parameter has been defined.
-     *
-     * @param string $parameter Parameter to find
-     * @return bool
-     */
-    public function isSearchParameterDefined(string $parameter): bool;
-
-    /**
-     * @param int $concordanceStrictMode
-     */
-    public function setConcordanceStrictMode(int $concordanceStrictMode): void;
 
     /**
      * @param int $limit Number of records per page

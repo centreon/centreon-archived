@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2019 Centreon
+ * Copyright 2005-2021 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -52,6 +53,14 @@ if (!isset($obj->session_id) || !CentreonSession::checkSession($obj->session_id,
     exit();
 }
 
+$centreon = $_SESSION['centreon'];
+
+/**
+ * true: URIs will correspond to deprecated pages
+ * false: URIs will correspond to new page (Resource Status)
+ */
+$useDeprecatedPages = $centreon->user->doesShowDeprecatedPages();
+
 // Set Default Poller
 $obj->getDefaultFilters();
 
@@ -69,6 +78,11 @@ $order = isset($_GET['order']) && $_GET['order'] === "DESC" ? "DESC" : "ASC";
 
 // Backup poller selection
 $obj->setInstanceHistory($instance);
+
+$kernel = \App\Kernel::createForWeb();
+$resourceController = $kernel->getContainer()->get(
+    \Centreon\Application\Controller\MonitoringResourceController::class
+);
 
 //saving bound values
 $queryValues = [];
@@ -181,11 +195,18 @@ if (isset($tab_svc)) {
         $obj->XML->writeAttribute("class", $obj->getNextLineClass());
         if (isset($tab["tab_svc"])) {
             foreach ($tab["tab_svc"] as $svc => $state) {
+                $serviceId = $svcObj->getServiceId($svc, $host_name);
                 $obj->XML->startElement("svc");
                 $obj->XML->writeElement("sn", CentreonUtils::escapeSecure($svc), false);
                 $obj->XML->writeElement("snl", CentreonUtils::escapeSecure(urlencode($svc)));
                 $obj->XML->writeElement("sc", $obj->colorService[$state]);
-                $obj->XML->writeElement("svc_id", $svcObj->getServiceId($svc, $host_name));
+                $obj->XML->writeElement("svc_id", $serviceId);
+                $obj->XML->writeElement(
+                    "s_details_uri",
+                    $useDeprecatedPages
+                        ? 'main.php?o=svcd&p=202&host_name=' . $host_name . '&service_description=' . $svc
+                        : $resourceController->buildServiceDetailsUri($tab["hid"], $serviceId)
+                );
                 $obj->XML->endElement();
             }
         }
@@ -196,6 +217,24 @@ if (isset($tab_svc)) {
         $obj->XML->writeElement("hnl", CentreonUtils::escapeSecure(urlencode($host_name)));
         $obj->XML->writeElement("hs", _($obj->statusHost[$tab["cs"]]), false);
         $obj->XML->writeElement("hc", $obj->colorHost[$tab["cs"]]);
+        $obj->XML->writeElement(
+            "h_details_uri",
+            $useDeprecatedPages
+                ? 'main.php?p=20202&o=hd&host_name=' . $host_name
+                : $resourceController->buildHostDetailsUri($tab["hid"])
+        );
+        $obj->XML->writeElement(
+            "s_listing_uri",
+            $useDeprecatedPages
+                ? 'main.php?o=svc&p=20201&statusFilter=;host_search=' . $host_name
+                : $resourceController->buildListingUri([
+                    'filter' => json_encode([
+                        'criterias' => [
+                            'search' => 'h.name:^' . $host_name . '$',
+                        ],
+                    ]),
+                ])
+        );
         $obj->XML->endElement();
     }
 }

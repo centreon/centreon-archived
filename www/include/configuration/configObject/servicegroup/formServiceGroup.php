@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -55,7 +56,9 @@ $initialValues = array('sg_hServices' => array(), 'sg_hgServices' => array());
 $sg = array();
 $hServices = array();
 if (($o == "c" || $o == "w") && $sg_id) {
-    $DBRESULT = $pearDB->query("SELECT * FROM servicegroup WHERE sg_id = '" . $sg_id . "' LIMIT 1");
+    $DBRESULT = $pearDB->prepare('SELECT * FROM servicegroup WHERE sg_id = :sg_id LIMIT 1');
+    $DBRESULT->bindValue(':sg_id', $sg_id, PDO::PARAM_INT);
+    $DBRESULT->execute();
 
     // Set base value
     $sg = array_map("myDecode", $DBRESULT->fetchRow());
@@ -108,7 +111,10 @@ if ($o == "a") {
 $form->addElement('header', 'information', _("General Information"));
 $form->addElement('text', 'sg_name', _("Name"), $attrsText);
 $form->addElement('text', 'sg_alias', _("Description"), $attrsText);
+
+$form->registerRule('validate_geo_coords', 'function', 'validateGeoCoords');
 $form->addElement('text', 'geo_coords', _("Geo coordinates"), $attrsText);
+$form->addRule('geo_coords', _("geo coords are not valid"), 'validate_geo_coords');
 
 $form->addElement('header', 'relation', _("Relations"));
 
@@ -188,13 +194,11 @@ if ($o == "w") {
     }
     $form->setDefaults($sg);
     $form->freeze();
-} # Modify a Service Group information
-elseif ($o == "c") {
+} elseif ($o == "c") { # Modify a Service Group information
     $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $form->setDefaults($sg);
-} # Add a Service Group information
-elseif ($o == "a") {
+} elseif ($o == "a") { # Add a Service Group information
     $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 }
@@ -240,69 +244,3 @@ if ($valid) {
     $tpl->assign('o', $o);
     $tpl->display("formServiceGroup.ihtml");
 }
-?>
-<script type='text/javascript'>
-    function hostFilterSelect(elem) {
-        var arg = 'host_id=' + elem.value;
-
-        if (window.XMLHttpRequest) {
-            var xhr = new XMLHttpRequest();
-        } else if (window.ActiveXObject) {
-            try {
-                var xhr = new ActiveXObject("Msxml2.XMLHTTP");
-            } catch (e) {
-                var xhr = new ActiveXObject("Microsoft.XMLHTTP");
-            }
-        } else {
-            var xhr = false;
-        }
-
-        xhr.open("POST", "./include/configuration/configObject/servicegroup/getServiceXml.php", true);
-        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        xhr.send(arg);
-
-        xhr.onreadystatechange = function () {
-            if (xhr && xhr.readyState == 4 && xhr.status == 200 && xhr.responseXML) {
-                var response = xhr.responseXML.documentElement;
-                var _services = response.getElementsByTagName("services");
-                var _selbox;
-
-                if (document.getElementById("sg_hServices-f")) {
-                    _selbox = document.getElementById("sg_hServices-f");
-                    _selected = document.getElementById("sg_hServices-t");
-                } else if (document.getElementById("__sg_hServices")) {
-                    _selbox = document.getElementById("__sg_hServices");
-                    _selected = document.getElementById("_sg_hServices");
-                }
-
-                while (_selbox.options.length > 0) {
-                    _selbox.options[0] = null;
-                }
-
-                if (_services.length == 0) {
-                    _selbox.setAttribute('disabled', 'disabled');
-                } else {
-                    _selbox.removeAttribute('disabled');
-                }
-
-                for (var i = 0; i < _services.length; i++) {
-                    var _svc = _services[i];
-                    var _id = _svc.getElementsByTagName("id")[0].firstChild.nodeValue;
-                    var _description = _svc.getElementsByTagName("description")[0].firstChild.nodeValue;
-                    var validFlag = true;
-
-                    for (var j = 0; j < _selected.length; j++) {
-                        if (_id == _selected.options[j].value) {
-                            validFlag = false;
-                        }
-                    }
-
-                    if (validFlag == true) {
-                        new_elem = new Option(_description, _id);
-                        _selbox.options[_selbox.length] = new_elem;
-                    }
-                }
-            }
-        }
-    }
-</script>

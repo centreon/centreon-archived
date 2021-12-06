@@ -1,129 +1,156 @@
 {$form.javascript}
 <form {$form.attributes}>
-	<div id="validFormTop">
-	{if $o == "a" || $o == "c"}
-		<p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
-	{else if $o == "w"}
-		<p class="oreonbutton">{$form.change.html}</p>
-	{/if}
-	</div>
-	<div id='tab1' class='tab'>
-	 <table class="formTable table">
-	 	<tr class="ListHeader">
-      <td class="FormHeader" colspan="2">
-        <h3>| {$form.header.title}</h3>
-      </td>
-    </tr>
-	 	<tr class="list_lvl_1">
-      <td class="ListColLvl1_name" colspan="2">
-        <h4>{$form.header.Server_Informations}</h4>
-      </td>
-    </tr>
-		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="name"> {$form.name.label}</td><td class="FormRowValue">{$form.name.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="ns_ip_address"> {$form.ns_ip_address.label}</td><td class="FormRowValue">{$form.ns_ip_address.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="localhost"> {$form.localhost.label}</td><td class="FormRowValue">{$form.localhost.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="is_default"> {$form.is_default.label}</td><td class="FormRowValue">{$form.is_default.html}</td></tr>
-		{if $form.remote_id.label}
-		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="remote_id"> {$form.remote_id.label}</td><td class="FormRowValue">{$form.remote_id.html}</td></tr>
-        <tr class="list_tow">
+    <div id="validFormTop">
+    {if $o == "a" || $o == "c"}
+        <p class="oreonbutton">
+            {if isset($form.submitC)}
+                {$form.submitC.html}
+            {else}
+                {$form.submitA.html}
+            {/if}
+            &nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+    {else if $o == "w" && !$isRemote}
+        <p class="oreonbutton">{if isset($form.change)}{$form.change.html}{/if}</p>
+    {/if}
+    </div>
+    <div id='tab1' class='tab'>
+    <table class="formTable table">
+        <tr class="ListHeader">
+            <td class="FormHeader" colspan="2">
+                <h3>| {$form.header.title}</h3>
+            </td>
+        </tr>
+        <tr class="list_lvl_1">
+            <td class="ListColLvl1_name" colspan="2">
+                <h4>{$form.header.Server_Informations}</h4>
+            </td>
+        </tr>
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="name"> {$form.name.label}</td><td class="FormRowValue">{$form.name.html}</td></tr>
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="ns_ip_address"> {$form.ns_ip_address.label}</td><td class="FormRowValue">{$form.ns_ip_address.html}</td></tr>
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="localhost"> {$form.localhost.label}</td><td class="FormRowValue">{$form.localhost.html}</td></tr>
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="is_default"> {$form.is_default.label}</td><td class="FormRowValue">{$form.is_default.html}</td></tr>
+        {if $form.remote_id.label}
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="remote_id"> {$form.remote_id.label}</td><td class="FormRowValue">{$form.remote_id.html}</td></tr>
+        <tr class="list_two">
             <td class="FormRowField"><img class="helpTooltip" name="remote_additional_id"> {$form.remote_additional_id.label}</td>
             <td class="FormRowValue">{$form.remote_additional_id.html}</td>
         </tr>
-		{/if}
-    {if $form.header.Remote_Configuration.label}
-    <tr class="list_lvl_1">
-      <td class="ListColLvl1_name" colspan="2">
-          <h4>{$form.header.Remote_Configuration}</h4>
-      </td>
-      <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="http_method">{$form.http_method.label}</td><td class="FormRowValue">{$form.http_method.html}</td></tr>
-      <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="http_port">{$form.http_port.label}</td><td class="FormRowValue">{$form.http_port.html}</td></tr>
-      <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="no_check_certificate">{$form.no_check_certificate.label}</td><td class="FormRowValue">{$form.no_check_certificate.html}</td></tr>
-      <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="no_proxy">{$form.no_proxy.label}</td><td class="FormRowValue">{$form.no_proxy.html}</td></tr>
-    </tr>
+        {/if}
+        {if $form.ssh_port.label}
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="ssh_port"> {$form.ssh_port.label}</td><td class="FormRowValue">{$form.ssh_port.html}</td></tr>
+        {/if}
+        {if isset($form.header.Remote_Configuration)}
+        <tr class="list_lvl_1">
+            <td class="ListColLvl1_name" colspan="2">
+                <h4>{$form.header.Remote_Configuration}</h4>
+            </td>
+            <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="http_method">{$form.http_method.label}</td><td class="FormRowValue">{$form.http_method.html}</td></tr>
+            <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="http_port">{$form.http_port.label}</td><td class="FormRowValue">{$form.http_port.html}</td></tr>
+            <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="no_check_certificate">{$form.no_check_certificate.label}</td><td class="FormRowValue">{$form.no_check_certificate.html}</td></tr>
+            <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="no_proxy">{$form.no_proxy.label}</td><td class="FormRowValue">{$form.no_proxy.html}</td></tr>
+        </tr>
+        {/if}
+        <!-- specific gorgone fields for remote or poller -->
+        <tbody id="gorgoneData">
+            <tr class="list_lvl_1">
+                <td class="ListColLvl1_name" colspan="2"><h4>{$form.header.gorgone_Informations}</h4></td>
+            </tr>
+            <tr class="list_one">
+                <td class="FormRowField"><img class="helpTooltip" name="gorgone_communication_type"> {$form.gorgone_communication_type.label}</td>
+                <td class="FormRowValue">{$form.gorgone_communication_type.html}</td>
+            </tr>
+            <tr class="list_two">
+                <td class="FormRowField"><img class="helpTooltip" name="gorgone_port"> {$form.gorgone_port.label}</td>
+                <td class="FormRowValue">{$form.gorgone_port.html}</td>
+            </tr>
+
+            {if $form.remote_server_use_as_proxy.label}
+            <tr class="list_one">
+                <td class="FormRowField"><img class="helpTooltip" name="remote_server_use_as_proxy"> {$form.remote_server_use_as_proxy.label}</td>
+                <td class="FormRowValue">{$form.remote_server_use_as_proxy.html}</td>
+            </tr>
+            {/if}
+        </tbody>
+
+        <tr class="list_lvl_1">
+            <td class="ListColLvl1_name" colspan="2"><h4>{$form.header.Nagios_Informations}</h4></td>
+        </tr>
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="engine_start_command"> {$form.engine_start_command.label}</td><td class="FormRowValue">{$form.engine_start_command.html}</td></tr>
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="engine_stop_command"> {$form.engine_stop_command.label}</td><td class="FormRowValue">{$form.engine_stop_command.html}</td></tr>
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="engine_restart_command"> {$form.engine_restart_command.label}</td><td class="FormRowValue">{$form.engine_restart_command.html}</td></tr>
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="engine_reload_command"> {$form.engine_reload_command.label}</td><td class="FormRowValue">{$form.engine_reload_command.html}</td></tr>
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="nagios_bin"> {$form.nagios_bin.label}</td><td class="FormRowValue">{$form.nagios_bin.html}</td></tr>
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="nagiostats_bin"> {$form.nagiostats_bin.label}</td><td class="FormRowValue">{$form.nagiostats_bin.html}</td></tr>
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="nagios_perfdata"> {$form.nagios_perfdata.label}</td><td class="FormRowValue">{$form.nagios_perfdata.html}</td></tr>
+        <tr class="list_lvl_1">
+            <td class="ListColLvl1_name" colspan="2">
+                <h4>{$form.header.CentreonBroker}</h4>
+            </td>
+        </tr>
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="broker_reload_command"> {$form.broker_reload_command.label}</td><td class="FormRowValue">{$form.broker_reload_command.html}</td></tr>
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="centreonbroker_cfg_path"> {$form.centreonbroker_cfg_path.label}</td><td class="FormRowValue">{$form.centreonbroker_cfg_path.html}</td></tr>
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="centreonbroker_module_path"> {$form.centreonbroker_module_path.label}</td><td class="FormRowValue">{$form.centreonbroker_module_path.html}</td></tr>
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="centreonbroker_logs_path"> {$form.centreonbroker_logs_path.label}</td><td class="FormRowValue">{$form.centreonbroker_logs_path.html}</td></tr>
+        <tr class="list_lvl_1">
+            <td class="ListColLvl1_name" colspan="2">
+                <h4>{$form.header.CentreonConnector}</h4>
+            </td>
+        </tr>
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="centreonconnector_path"> {$form.centreonconnector_path.label}</td><td class="FormRowValue">{$form.centreonconnector_path.html}</td></tr>
+        <tr class="list_lvl_1">
+            <td class="ListColLvl1_name" colspan="2">
+                <h4>{$form.header.Centreontrapd}</h4>
+            </td>
+        </tr>
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="centreontrapd_init_script"> {$form.init_script_centreontrapd.label}</td><td class="FormRowValue">{$form.init_script_centreontrapd.html}</td></tr>
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="snmp_trapd_path_conf"> {$form.snmp_trapd_path_conf.label}</td><td class="FormRowValue">{$form.snmp_trapd_path_conf.html}</td></tr>
+            <tr class="list_lvl_1">
+                <td class="ListColLvl1_name" colspan="2">
+                    <h4>{$form.header.Misc}</h4>
+                </td>
+            </tr>
+        <tr class="list_two">
+            <td class="FormRowField">
+                <img class="helpTooltip" name="pollercmd"> {t}Post-Restart command{/t}
+            </td>
+            <td class="FormRowValue">
+                {include file="file:$centreon_path/www/include/common/templates/clone.ihtml" cloneId="pollercmd" cloneSet=$cloneSetCmd}
+            </td>
+        </tr>
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="ns_activate"> {$form.ns_activate.label}</td><td class="FormRowValue">{$form.ns_activate.html}</td></tr>
+        {if $o == "a" || $o == "c"}
+            <tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">
+            {if isset($form.required_note)}
+                {$form.required_note}
+            {/if}
+            </td></tr>
+        {/if}
+    </table>
+    </div>
+    <div id="validForm">
+    {if $o == "a" || $o == "c"}
+        <p class="oreonbutton">
+            {if isset($form.submitC)}
+                {$form.submitC.html}
+            {else}
+                {$form.submitA.html}
+            {/if}
+            &nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+    {else if $o == "w" && !$isRemote}
+        <p class="oreonbutton">{if isset($form.change)}{$form.change.html}{/if}</p>
     {/if}
-		<tr class="list_lvl_1">
-      <td class="ListColLvl1_name" colspan="2">
-        <h4>{$form.header.SSH_Informations}</h4>
-      </td>
-    </tr>
-		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="ssh_port"> {$form.ssh_port.label}</td><td class="FormRowValue">{$form.ssh_port.html}</td></tr>
-		{if $form.remote_server_centcore_ssh_proxy.label}
-		<tr class="list_two">
-		  <td class="FormRowField"><img class="helpTooltip" name="remote_server_centcore_ssh_proxy"> {$form.remote_server_centcore_ssh_proxy.label}</td>
-		  <td class="FormRowValue">{$form.remote_server_centcore_ssh_proxy.html}</td>
-		</tr>
-		{/if}
-		<tr class="list_lvl_1">
-      <td class="ListColLvl1_name" colspan="2">
-        <h4>{$form.header.Nagios_Informations}</h4>
-      </td>
-    </tr>
-    <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="engine_start_command"> {$form.engine_start_command.label}</td><td class="FormRowValue">{$form.engine_start_command.html}</td></tr>
-    <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="engine_stop_command"> {$form.engine_stop_command.label}</td><td class="FormRowValue">{$form.engine_stop_command.html}</td></tr>
-    <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="engine_restart_command"> {$form.engine_restart_command.label}</td><td class="FormRowValue">{$form.engine_restart_command.html}</td></tr>
-    <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="engine_reload_command"> {$form.engine_reload_command.label}</td><td class="FormRowValue">{$form.engine_reload_command.html}</td></tr>
-    <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="nagios_bin"> {$form.nagios_bin.label}</td><td class="FormRowValue">{$form.nagios_bin.html}</td></tr>
-    <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="nagiostats_bin"> {$form.nagiostats_bin.label}</td><td class="FormRowValue">{$form.nagiostats_bin.html}</td></tr>
-    <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="nagios_perfdata"> {$form.nagios_perfdata.label}</td><td class="FormRowValue">{$form.nagios_perfdata.html}</td></tr>
-    <tr class="list_lvl_1">
-      <td class="ListColLvl1_name" colspan="2">
-        <h4>{$form.header.CentreonBroker}</h4>
-      </td>
-    </tr>
-    <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="broker_reload_command"> {$form.broker_reload_command.label}</td><td class="FormRowValue">{$form.broker_reload_command.html}</td></tr>
-    <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="centreonbroker_cfg_path"> {$form.centreonbroker_cfg_path.label}</td><td class="FormRowValue">{$form.centreonbroker_cfg_path.html}</td></tr>
-    <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="centreonbroker_module_path"> {$form.centreonbroker_module_path.label}</td><td class="FormRowValue">{$form.centreonbroker_module_path.html}</td></tr>
-    <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="centreonbroker_logs_path"> {$form.centreonbroker_logs_path.label}</td><td class="FormRowValue">{$form.centreonbroker_logs_path.html}</td></tr>
-    <tr class="list_lvl_1">
-      <td class="ListColLvl1_name" colspan="2">
-        <h4>{$form.header.CentreonConnector}</h4>
-      </td>
-    </tr>
-		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="centreonconnector_path"> {$form.centreonconnector_path.label}</td><td class="FormRowValue">{$form.centreonconnector_path.html}</td></tr>
-		<tr class="list_lvl_1">
-      <td class="ListColLvl1_name" colspan="2">
-        <h4>{$form.header.Centreontrapd}</h4>
-      </td>
-    </tr>
-		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="centreontrapd_init_script"> {$form.init_script_centreontrapd.label}</td><td class="FormRowValue">{$form.init_script_centreontrapd.html}</td></tr>
-    <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="snmp_trapd_path_conf"> {$form.snmp_trapd_path_conf.label}</td><td class="FormRowValue">{$form.snmp_trapd_path_conf.html}</td></tr>
-		<tr class="list_lvl_1">
-      <td class="ListColLvl1_name" colspan="2">
-        <h4>{$form.header.Misc}</h4>
-      </td>
-    </tr>
-		<tr class="list_one">
-      <td class="FormRowField">
-          <img class="helpTooltip" name="pollercmd"> {t}Post-Restart command{/t}
-      </td>
-      <td class="FormRowValue">
-          {include file="file:$centreon_path/www/include/common/templates/clone.ihtml" cloneId="pollercmd" cloneSet=$cloneSetCmd}
-      </td>
-    </tr>
-    <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="ns_activate"> {$form.ns_activate.label}</td><td class="FormRowValue">{$form.ns_activate.html}</td></tr>
-		{if $o == "a" || $o == "c"}
-			<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">{$form.required_note}</td></tr>
-		{/if}
-	</table>
-	</div>
-	<div id="validForm">
-	{if $o == "a" || $o == "c"}
-		<p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
-	{else if $o == "w"}
-		<p class="oreonbutton">{$form.change.html}</p>
-	{/if}
-	</div>
-	{$form.hidden}
+    </div>
+    {$form.hidden}
 </form>
 <script type="text/javascript">
-var engines = {literal}{{/literal}
-{foreach name=engines from=$engines key=ename item=engine}
-  "{$ename}": {literal}{{/literal}
-{foreach name=engine from=$engine key=k item=v}
-    "{$k}": "{$v}"{if not $smarty.foreach.engine.last},{/if}
-{/foreach}
-  {literal}}{/literal}{if not $smarty.foreach.engines.last},{/if}
-
-{/foreach}
+    var engines = {literal}{{/literal}
+    {foreach name=engines from=$engines key=ename item=engine}
+        "{$ename}": {literal}{{/literal}
+        {foreach name=engine from=$engine key=k item=v}
+            "{$k}": "{$v}"{if not $smarty.foreach.engine.last},{/if}
+        {/foreach}
+        {literal}}{/literal}{if not $smarty.foreach.engines.last},{/if}
+    {/foreach}
+    {literal}}{/literal}
 </script>
 {$helptext}

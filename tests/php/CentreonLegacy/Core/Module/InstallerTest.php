@@ -30,7 +30,7 @@ class InstallerTest extends \PHPUnit\Framework\TestCase
     private $information;
     private $utils;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->container = new ServiceContainer();
 
@@ -48,7 +48,7 @@ class InstallerTest extends \PHPUnit\Framework\TestCase
         );
         $this->information = $this->getMockBuilder('CentreonLegacy\Core\Module\Information')
             ->disableOriginalConstructor()
-            ->setMethods(array('getConfiguration'))
+            ->onlyMethods(array('getConfiguration'))
             ->getMock();
 
         $this->information->expects($this->any())
@@ -60,7 +60,7 @@ class InstallerTest extends \PHPUnit\Framework\TestCase
             ->getMock();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->container->terminate();
         $this->container = null;
@@ -70,7 +70,7 @@ class InstallerTest extends \PHPUnit\Framework\TestCase
     {
         $filesystem = $this->getMockBuilder('\Symfony\Component\Filesystem\Filesystem')
             ->disableOriginalConstructor()
-            ->setMethods(array('exists'))
+            ->onlyMethods(array('exists'))
             ->getMock();
         $filesystem->expects($this->any())
             ->method('exists')

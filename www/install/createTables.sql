@@ -409,12 +409,41 @@ CREATE TABLE `cb_type_field_relation` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `cb_log` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `cb_log_level` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `cfg_centreonbroker_log` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id_centreonbroker` int(11) NOT NULL,
+  `id_log` int(11) NOT NULL,
+  `id_level` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `cfg_centreonbroker` (
   `config_id` int(11) NOT NULL AUTO_INCREMENT,
   `config_name` varchar(100) NOT NULL,
   `config_filename` varchar(255) NOT NULL,
   `config_write_timestamp` enum('0','1') DEFAULT '1',
   `config_write_thread_id` enum('0','1') DEFAULT '1',
+  `log_directory` varchar(255),
+  `log_filename` varchar(255),
+  `log_max_size` int(11) NOT NULL DEFAULT 0,
   `config_activate` enum('0','1') DEFAULT '0',
   `ns_nagios_server` int(11) NOT NULL,
   `event_queue_max_size` int(11) DEFAULT '100000',
@@ -422,6 +451,7 @@ CREATE TABLE `cfg_centreonbroker` (
   `cache_directory` varchar(255),
   `stats_activate` enum('0','1') DEFAULT '1',
   `daemon` TINYINT(1),
+  `pool_size` int(11) DEFAULT NULL,
   PRIMARY KEY (`config_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -452,9 +482,6 @@ CREATE TABLE `cfg_nagios` (
   `cfg_dir` varchar(255) DEFAULT NULL,
   `temp_file` varchar(255) DEFAULT NULL,
   `status_file` varchar(255) DEFAULT NULL,
-  `check_result_path` varchar(255) DEFAULT NULL,
-  `use_check_result_path` enum('0','1') DEFAULT '0',
-  `max_check_result_file_age` varchar(255) DEFAULT NULL,
   `status_update_interval` int(11) DEFAULT NULL,
   `nagios_user` varchar(255) DEFAULT NULL,
   `nagios_group` varchar(255) DEFAULT NULL,
@@ -507,7 +534,6 @@ CREATE TABLE `cfg_nagios` (
   `auto_reschedule_checks` enum('0','1','2') DEFAULT NULL,
   `auto_rescheduling_interval` int(11) DEFAULT NULL,
   `auto_rescheduling_window` int(11) DEFAULT NULL,
-  `use_aggressive_host_checking` enum('0','1','2') DEFAULT NULL,
   `enable_flap_detection` enum('0','1','2') DEFAULT NULL,
   `low_service_flap_threshold` varchar(255) DEFAULT NULL,
   `high_service_flap_threshold` varchar(255) DEFAULT NULL,
@@ -546,6 +572,7 @@ CREATE TABLE `cfg_nagios` (
   `check_host_freshness` enum('0','1','2') DEFAULT NULL,
   `host_freshness_check_interval` int(11) DEFAULT NULL,
   `date_format` varchar(255) DEFAULT NULL,
+  `instance_heartbeat_interval` smallint DEFAULT 30,
   `illegal_object_name_chars` varchar(255) DEFAULT NULL,
   `illegal_macro_output_chars` varchar(255) DEFAULT NULL,
   `use_regexp_matching` enum('0','1','2') DEFAULT NULL,
@@ -715,7 +742,6 @@ CREATE TABLE `contact` (
   `contact_address5` varchar(200) DEFAULT NULL,
   `contact_address6` varchar(200) DEFAULT NULL,
   `contact_comment` text,
-  `contact_js_effects` enum('0','1') DEFAULT '0',
   `contact_location` int(11) DEFAULT '0',
   `contact_oreon` enum('0','1') DEFAULT NULL,
   `reach_api` int(11) DEFAULT '0',
@@ -731,10 +757,12 @@ CREATE TABLE `contact` (
   `contact_acl_group_list` varchar(255) DEFAULT NULL,
   `contact_autologin_key` varchar(255) DEFAULT NULL,
   `default_page` int(11) DEFAULT NULL,
+  `show_deprecated_pages` enum('0','1') DEFAULT '0',
   `contact_charset` varchar(255) DEFAULT NULL,
   `contact_register` tinyint(6) NOT NULL DEFAULT '1',
   `contact_ldap_last_sync` int(11) NOT NULL DEFAULT 0,
   `contact_ldap_required_sync` enum('0','1') NOT NULL DEFAULT '0',
+  `enable_one_click_export` enum('0','1') DEFAULT '0',
   PRIMARY KEY (`contact_id`),
   KEY `name_index` (`contact_name`),
   KEY `alias_index` (`contact_alias`),
@@ -961,6 +989,7 @@ CREATE TABLE `dependency_hostChild_relation` (
   `host_host_id` int(11) DEFAULT NULL,
   KEY `dependency_index` (`dependency_dep_id`),
   KEY `host_index` (`host_host_id`),
+  UNIQUE (`dependency_dep_id`, `host_host_id`),
   CONSTRAINT `dependency_hostChild_relation_ibfk_1` FOREIGN KEY (`dependency_dep_id`) REFERENCES `dependency` (`dep_id`) ON DELETE CASCADE,
   CONSTRAINT `dependency_hostChild_relation_ibfk_2` FOREIGN KEY (`host_host_id`) REFERENCES `host` (`host_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -972,6 +1001,7 @@ CREATE TABLE `dependency_hostParent_relation` (
   `host_host_id` int(11) DEFAULT NULL,
   KEY `dependency_index` (`dependency_dep_id`),
   KEY `host_index` (`host_host_id`),
+  UNIQUE (`dependency_dep_id`, `host_host_id`),
   CONSTRAINT `dependency_hostParent_relation_ibfk_1` FOREIGN KEY (`dependency_dep_id`) REFERENCES `dependency` (`dep_id`) ON DELETE CASCADE,
   CONSTRAINT `dependency_hostParent_relation_ibfk_2` FOREIGN KEY (`host_host_id`) REFERENCES `host` (`host_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -983,6 +1013,7 @@ CREATE TABLE `dependency_hostgroupChild_relation` (
   `hostgroup_hg_id` int(11) DEFAULT NULL,
   KEY `dependency_index` (`dependency_dep_id`),
   KEY `hostgroup_index` (`hostgroup_hg_id`),
+  UNIQUE (`dependency_dep_id`, `hostgroup_hg_id`),
   CONSTRAINT `dependency_hostgroupChild_relation_ibfk_1` FOREIGN KEY (`dependency_dep_id`) REFERENCES `dependency` (`dep_id`) ON DELETE CASCADE,
   CONSTRAINT `dependency_hostgroupChild_relation_ibfk_2` FOREIGN KEY (`hostgroup_hg_id`) REFERENCES `hostgroup` (`hg_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -994,6 +1025,7 @@ CREATE TABLE `dependency_hostgroupParent_relation` (
   `hostgroup_hg_id` int(11) DEFAULT NULL,
   KEY `dependency_index` (`dependency_dep_id`),
   KEY `hostgroup_index` (`hostgroup_hg_id`),
+  UNIQUE (`dependency_dep_id`, `hostgroup_hg_id`),
   CONSTRAINT `dependency_hostgroupParent_relation_ibfk_1` FOREIGN KEY (`dependency_dep_id`) REFERENCES `dependency` (`dep_id`) ON DELETE CASCADE,
   CONSTRAINT `dependency_hostgroupParent_relation_ibfk_2` FOREIGN KEY (`hostgroup_hg_id`) REFERENCES `hostgroup` (`hg_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1005,6 +1037,7 @@ CREATE TABLE `dependency_metaserviceChild_relation` (
   `meta_service_meta_id` int(11) DEFAULT NULL,
   KEY `dependency_index` (`dependency_dep_id`),
   KEY `meta_service_index` (`meta_service_meta_id`),
+  UNIQUE (`dependency_dep_id`, `meta_service_meta_id`),
   CONSTRAINT `dependency_metaserviceChild_relation_ibfk_1` FOREIGN KEY (`dependency_dep_id`) REFERENCES `dependency` (`dep_id`) ON DELETE CASCADE,
   CONSTRAINT `dependency_metaserviceChild_relation_ibfk_2` FOREIGN KEY (`meta_service_meta_id`) REFERENCES `meta_service` (`meta_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1016,6 +1049,7 @@ CREATE TABLE `dependency_metaserviceParent_relation` (
   `meta_service_meta_id` int(11) DEFAULT NULL,
   KEY `dependency_index` (`dependency_dep_id`),
   KEY `meta_service_index` (`meta_service_meta_id`),
+  UNIQUE (`dependency_dep_id`, `meta_service_meta_id`),
   CONSTRAINT `dependency_metaserviceParent_relation_ibfk_1` FOREIGN KEY (`dependency_dep_id`) REFERENCES `dependency` (`dep_id`) ON DELETE CASCADE,
   CONSTRAINT `dependency_metaserviceParent_relation_ibfk_2` FOREIGN KEY (`meta_service_meta_id`) REFERENCES `meta_service` (`meta_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1029,6 +1063,7 @@ CREATE TABLE `dependency_serviceChild_relation` (
   KEY `dependency_index` (`dependency_dep_id`),
   KEY `service_index` (`service_service_id`),
   KEY `host_index` (`host_host_id`),
+  UNIQUE (`dependency_dep_id`, `service_service_id`, `host_host_id`),
   CONSTRAINT `dependency_serviceChild_relation_ibfk_1` FOREIGN KEY (`dependency_dep_id`) REFERENCES `dependency` (`dep_id`) ON DELETE CASCADE,
   CONSTRAINT `dependency_serviceChild_relation_ibfk_2` FOREIGN KEY (`service_service_id`) REFERENCES `service` (`service_id`) ON DELETE CASCADE,
   CONSTRAINT `dependency_serviceChild_relation_ibfk_3` FOREIGN KEY (`host_host_id`) REFERENCES `host` (`host_id`) ON DELETE CASCADE
@@ -1043,6 +1078,7 @@ CREATE TABLE `dependency_serviceParent_relation` (
   KEY `dependency_index` (`dependency_dep_id`),
   KEY `service_index` (`service_service_id`),
   KEY `host_index` (`host_host_id`),
+  UNIQUE (`dependency_dep_id`, `service_service_id`, `host_host_id`),
   CONSTRAINT `dependency_serviceParent_relation_ibfk_1` FOREIGN KEY (`dependency_dep_id`) REFERENCES `dependency` (`dep_id`) ON DELETE CASCADE,
   CONSTRAINT `dependency_serviceParent_relation_ibfk_2` FOREIGN KEY (`service_service_id`) REFERENCES `service` (`service_id`) ON DELETE CASCADE,
   CONSTRAINT `dependency_serviceParent_relation_ibfk_3` FOREIGN KEY (`host_host_id`) REFERENCES `host` (`host_id`) ON DELETE CASCADE
@@ -1055,6 +1091,7 @@ CREATE TABLE `dependency_servicegroupChild_relation` (
   `servicegroup_sg_id` int(11) DEFAULT NULL,
   KEY `dependency_index` (`dependency_dep_id`),
   KEY `sg_index` (`servicegroup_sg_id`),
+  UNIQUE (`dependency_dep_id`, `servicegroup_sg_id`),
   CONSTRAINT `dependency_servicegroupChild_relation_ibfk_1` FOREIGN KEY (`dependency_dep_id`) REFERENCES `dependency` (`dep_id`) ON DELETE CASCADE,
   CONSTRAINT `dependency_servicegroupChild_relation_ibfk_2` FOREIGN KEY (`servicegroup_sg_id`) REFERENCES `servicegroup` (`sg_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1066,6 +1103,7 @@ CREATE TABLE `dependency_servicegroupParent_relation` (
   `servicegroup_sg_id` int(11) DEFAULT NULL,
   KEY `dependency_index` (`dependency_dep_id`),
   KEY `sg_index` (`servicegroup_sg_id`),
+  UNIQUE (`dependency_dep_id`, `servicegroup_sg_id`),
   CONSTRAINT `dependency_servicegroupParent_relation_ibfk_1` FOREIGN KEY (`dependency_dep_id`) REFERENCES `dependency` (`dep_id`) ON DELETE CASCADE,
   CONSTRAINT `dependency_servicegroupParent_relation_ibfk_2` FOREIGN KEY (`servicegroup_sg_id`) REFERENCES `servicegroup` (`sg_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1515,7 +1553,7 @@ CREATE TABLE `hostgroup_relation` (
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `informations` (
   `key` varchar(25) DEFAULT NULL,
-  `value` varchar(255) DEFAULT NULL
+  `value` varchar(1024) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -1627,14 +1665,15 @@ CREATE TABLE `nagios_server` (
   `centreonbroker_module_path` varchar(255) DEFAULT NULL,
   `centreonconnector_path` varchar(255) DEFAULT NULL,
   `ssh_port` int(11) DEFAULT NULL,
-  `ssh_private_key` varchar(255) DEFAULT NULL,
+  `gorgone_communication_type` enum('1', '2') NOT NULL DEFAULT '1',
+  `gorgone_port` int(11) DEFAULT NULL,
   `init_script_centreontrapd` varchar(255) DEFAULT NULL,
   `snmp_trapd_path_conf` varchar(255) DEFAULT NULL,
   `engine_name` varchar(255) DEFAULT NULL,
   `engine_version` varchar(255) DEFAULT NULL,
   `centreonbroker_logs_path` VARCHAR(255),
   `remote_id` int(11) NULL,
-  `remote_server_centcore_ssh_proxy` enum('0','1') NOT NULL DEFAULT '1',
+  `remote_server_use_as_proxy` enum('0','1') NOT NULL DEFAULT '1',
   `updated` enum('1','0') NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   CONSTRAINT `nagios_server_remote_id_id` FOREIGN KEY (`remote_id`) REFERENCES `nagios_server` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
@@ -1656,12 +1695,13 @@ CREATE TABLE `ns_host_relation` (
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `ods_view_details` (
   `dv_id` int(11) NOT NULL AUTO_INCREMENT,
-  `index_id` int(11) DEFAULT NULL,
+  `index_id` BIGINT UNSIGNED DEFAULT NULL,
   `metric_id` int(11) DEFAULT NULL,
   `rnd_color` varchar(7) DEFAULT NULL,
   `contact_id` int(11) DEFAULT NULL,
   `all_user` enum('0','1') DEFAULT NULL,
   PRIMARY KEY (`dv_id`),
+  KEY `index_id` (`index_id`),
   KEY `contact_index` (`contact_id`, `index_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1671,7 +1711,7 @@ CREATE TABLE `on_demand_macro_host` (
   `host_macro_id` int(11) NOT NULL AUTO_INCREMENT,
   `host_macro_name` varchar(255) NOT NULL,
   `host_macro_value` varchar(4096) NOT NULL,
-  `is_password` tinyint(2) DEFAULT NULL,
+  `is_password` tinyint(2) DEFAULT 0,
   `description` text DEFAULT NULL,
   `host_host_id` int(11) NOT NULL,
   `macro_order` int(11) NULL DEFAULT 0,
@@ -1686,7 +1726,7 @@ CREATE TABLE `on_demand_macro_service` (
   `svc_macro_id` int(11) NOT NULL AUTO_INCREMENT,
   `svc_macro_name` varchar(255) NOT NULL,
   `svc_macro_value` varchar(4096) NOT NULL,
-  `is_password` tinyint(2) DEFAULT NULL,
+  `is_password` tinyint(2) DEFAULT 0,
   `description` text DEFAULT NULL,
   `svc_svc_id` int(11) NOT NULL,
   `macro_order` int(11) NULL DEFAULT 0,
@@ -1840,7 +1880,7 @@ CREATE TABLE `session` (
   `session_id` varchar(256) DEFAULT NULL,
   `user_id` int(11) DEFAULT NULL,
   `current_page` int(11) DEFAULT NULL,
-  `last_reload` int(11) DEFAULT NULL,
+  `last_reload` bigint UNSIGNED DEFAULT NULL,
   `ip_address` varchar(45) DEFAULT NULL,
   `s_nbHostsUp` int(11) DEFAULT NULL,
   `s_nbHostsDown` int(11) DEFAULT NULL,
@@ -1854,7 +1894,8 @@ CREATE TABLE `session` (
   `update_acl` enum('0','1') DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `session_id` (`session_id`(255)),
-  KEY `user_id` (`user_id`)
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `session_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `contact` (`contact_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -1921,6 +1962,7 @@ CREATE TABLE `topology` (
   `topology_popup` enum('0','1') DEFAULT NULL,
   `topology_modules` enum('0','1') DEFAULT NULL,
   `topology_show` enum('0','1') DEFAULT '1',
+  `is_deprecated` enum('0','1') NOT NULL DEFAULT '0',
   `topology_style_class` varchar(255) DEFAULT NULL,
   `topology_style_id` varchar(255) DEFAULT NULL,
   `topology_OnClick` varchar(255) DEFAULT NULL,
@@ -2085,7 +2127,7 @@ CREATE TABLE `view_img_dir_relation` (
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `virtual_metrics` (
   `vmetric_id` int(11) NOT NULL AUTO_INCREMENT,
-  `index_id` int(11) DEFAULT NULL,
+  `index_id` BIGINT UNSIGNED DEFAULT NULL,
   `vmetric_name` varchar(255) DEFAULT NULL,
   `def_type` enum('0','1') DEFAULT '0',
   `rpn_function` varchar(255) DEFAULT NULL,
@@ -2205,15 +2247,6 @@ CREATE TABLE `widgets` (
   CONSTRAINT `fk_wdg_model_id` FOREIGN KEY (`widget_model_id`) REFERENCES `widget_models` (`widget_model_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE ws_token (
-  contact_id INT NOT NULL,
-  token VARCHAR(100) NOT NULL,
-  generate_date DATETIME NOT NULL,
-  UNIQUE (token),
-  KEY `index1` (`generate_date`),
-  FOREIGN KEY (contact_id) REFERENCES contact (contact_id) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -2313,6 +2346,79 @@ CREATE TABLE IF NOT EXISTS `task` (
   `parent_id` INT(11) NULL,
   `params` BLOB NULL,
   `created_at` TIMESTAMP NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Create user_filter table
+CREATE TABLE `user_filter` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `name` varchar(255) NOT NULL,
+    `user_id` int(11) NOT NULL,
+    `page_name` varchar(255) NOT NULL,
+    `criterias` text,
+    `order` int(11) NOT NULL,
+    PRIMARY KEY (`id`),
+    CONSTRAINT `filter_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `contact` (`contact_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Create platform_topology table
+CREATE TABLE `platform_topology` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `address` varchar(255) NOT NULL,
+    `hostname` varchar(255) NULL,
+    `name` varchar(255) NOT NULL,
+    `type` varchar(255) NOT NULL,
+    `parent_id` int(11),
+    `pending` enum('0', '1') DEFAULT '1',
+    `server_id` int(11),
+    PRIMARY KEY (`id`),
+    CONSTRAINT `platform_topology_ibfk_1` FOREIGN KEY (`server_id`) REFERENCES `nagios_server` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT `platform_topology_ibfk_2` FOREIGN KEY (`parent_id`) REFERENCES `platform_topology` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+COMMENT='Registration and parent relation Table used to set the platform topology';
+
+-- Create authentication tables
+
+CREATE TABLE `provider_configuration` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `type` varchar(255) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `is_active` BOOLEAN NOT NULL DEFAULT 1,
+  `is_forced` BOOLEAN NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_name` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `security_token` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `token` varchar(255) NOT NULL,
+  `creation_date` bigint UNSIGNED NOT NULL,
+  `expiration_date` bigint UNSIGNED DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `token_index` (`token`),
+  INDEX `expiration_index` (`expiration_date`),
+  UNIQUE KEY `unique_token` (`token`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `security_authentication_tokens` (
+  `token` varchar(255) NOT NULL,
+  `provider_token_id` int(11) DEFAULT NULL,
+  `provider_token_refresh_id` int(11) DEFAULT NULL,
+  `provider_configuration_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  PRIMARY KEY (`token`),
+  KEY `security_authentication_tokens_token_fk` (`token`),
+  KEY `security_authentication_tokens_provider_token_id_fk` (`provider_token_id`),
+  KEY `security_authentication_tokens_provider_token_refresh_id_fk` (`provider_token_refresh_id`),
+  KEY `security_authentication_tokens_configuration_id_fk` (`provider_configuration_id`),
+  KEY `security_authentication_tokens_user_id_fk` (`user_id`),
+  CONSTRAINT `security_authentication_tokens_configuration_id_fk` FOREIGN KEY (`provider_configuration_id`)
+  REFERENCES `provider_configuration` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `security_authentication_tokens_provider_token_id_fk` FOREIGN KEY (`provider_token_id`)
+  REFERENCES `security_token` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `security_authentication_tokens_provider_token_refresh_id_fk` FOREIGN KEY (`provider_token_refresh_id`)
+  REFERENCES `security_token` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `security_authentication_tokens_user_id_fk` FOREIGN KEY (`user_id`)
+  REFERENCES `contact` (`contact_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;

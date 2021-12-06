@@ -3,9 +3,13 @@
 /* eslint-disable react/prop-types */
 
 import React from 'react';
+
 import classnames from 'classnames';
+
+import { FormControlLabel, Radio, Typography } from '@material-ui/core';
+
 import styles from '../../styles/partials/form/_form.scss';
-import { prepareInputProps } from './utils';
+
 import fieldHoc from './hoc';
 
 const RadioField = ({ checked, error, label, info, className, ...rest }) => (
@@ -16,27 +20,19 @@ const RadioField = ({ checked, error, label, info, className, ...rest }) => (
       styles['form-group'],
     )}
   >
-    <input
-      className={styles['form-check-input']}
-      type="radio"
+    <FormControlLabel
       checked={checked}
-      aria-checked={checked}
-      info
-      {...prepareInputProps(rest)}
+      control={<Radio color="primary" size="small" />}
+      label={label}
+      onChange={rest.onChange}
+      onClick={rest.onClick}
     />
-
-    <label htmlFor={rest.id} className={styles['custom-control-label']}>
-      {label}
-      {info}
-    </label>
 
     {error ? (
       <div className={styles['invalid-feedback']}>
-        <div
-          className={classnames(styles.field__msg, styles['field__msg--error'])}
-        >
+        <Typography color="error" variant="body2">
           {error}
-        </div>
+        </Typography>
       </div>
     ) : null}
   </div>

@@ -32,7 +32,7 @@ use Vfs\Node\File;
 class ExportParserJsonTest extends TestCase
 {
 
-    public function setUp()
+    public function setUp(): void
     {
         // mount VFS
         $this->fs = FileSystem::factory('vfs://');
@@ -42,7 +42,7 @@ class ExportParserJsonTest extends TestCase
         $this->parser = new ExportParserJson;
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         // unmount VFS
         $this->fs->unmount();
@@ -97,7 +97,7 @@ class ExportParserJsonTest extends TestCase
     {
         $this->parser->dump([], 'vfs://tmp/test.json');
 
-        $this->assertFileNotExists('vfs://tmp/test.json');
+        $this->assertFileDoesNotExist('vfs://tmp/test.json');
     }
 
     /**

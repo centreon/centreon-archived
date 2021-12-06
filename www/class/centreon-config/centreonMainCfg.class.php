@@ -124,19 +124,18 @@ class CentreonMainCfg
             'log_host_retries' => '1',
             'log_event_handlers' => '1',
             'log_external_commands' => '1',
-            'log_passive_checks' => '0',
-            'sleep_time' => '0.2',
+            'log_passive_checks' => '1',
+            'sleep_time' => '1',
             'service_inter_check_delay_method' => 's',
             'host_inter_check_delay_method' => 's',
             'service_interleave_factor' => 's',
-            'max_concurrent_checks' => '400',
-            'max_service_check_spread' => '5',
-            'max_host_check_spread' => '5',
+            'max_concurrent_checks' => '0',
+            'max_service_check_spread' => '15',
+            'max_host_check_spread' => '15',
             'check_result_reaper_frequency' => '5',
             'max_check_result_reaper_time' => '10',
             'interval_length' => '60',
             'auto_reschedule_checks' => '0',
-            'use_aggressive_host_checking' => '0',
             'enable_flap_detection' => '0',
             'low_service_flap_threshold' => '25.0',
             'high_service_flap_threshold' => '50.0',
@@ -184,7 +183,6 @@ class CentreonMainCfg
             'max_debug_file_size' => '1000000000',
             'daemon_dumps_core' => '0',
             'cfg_file' => 'centengine.cfg',
-            'use_check_result_path' => '0',
             'cached_host_check_horizon' => '60',
             'log_pid' => 1,
             'enable_macros_filter' => 0
@@ -270,7 +268,7 @@ class CentreonMainCfg
             "`host_inter_check_delay_method`, `service_interleave_factor`, `max_concurrent_checks`, " .
             "`max_service_check_spread`, `max_host_check_spread`, `check_result_reaper_frequency`, " .
             "`max_check_result_reaper_time`, `interval_length`, `auto_reschedule_checks`, " .
-            "`use_aggressive_host_checking`, `enable_flap_detection`, `low_service_flap_threshold`, " .
+            "`enable_flap_detection`, `low_service_flap_threshold`, " .
             "`high_service_flap_threshold`, `low_host_flap_threshold`, `high_host_flap_threshold`, " .
             "`soft_state_dependencies`, `service_check_timeout`, `host_check_timeout`, `event_handler_timeout`, " .
             "`notification_timeout`, `ocsp_timeout`, `ochp_timeout`, `perfdata_timeout`, `obsess_over_services`, " .
@@ -283,10 +281,10 @@ class CentreonMainCfg
             "`enable_predictive_service_dependency_checks`, `passive_host_checks_are_soft`, " .
             "`use_large_installation_tweaks`, `enable_environment_macros`, `use_setpgid`, " .
             "`debug_file`, `debug_level`, `debug_level_opt`, `debug_verbosity`, `max_debug_file_size`, " .
-            "`daemon_dumps_core`, `cfg_file`, `use_check_result_path`) " .
+            "`daemon_dumps_core`, `cfg_file`) " .
             "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, " .
-            "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, " .
-            "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, " .
+            "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         $params = array(
             'Centreon Engine ' . $sName,
@@ -337,7 +335,6 @@ class CentreonMainCfg
             $baseValues['max_check_result_reaper_time'],
             $baseValues['interval_length'],
             $baseValues['auto_reschedule_checks'],
-            $baseValues['use_aggressive_host_checking'],
             $baseValues['enable_flap_detection'],
             $baseValues['low_service_flap_threshold'],
             $baseValues['high_service_flap_threshold'],
@@ -383,8 +380,7 @@ class CentreonMainCfg
             $baseValues['debug_verbosity'],
             $baseValues['max_debug_file_size'],
             $baseValues['daemon_dumps_core'],
-            $baseValues['cfg_file'],
-            $baseValues['use_check_result_path']
+            $baseValues['cfg_file']
         );
         foreach ($params as &$param) {
             if (empty($param)) {

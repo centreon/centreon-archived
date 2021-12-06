@@ -75,44 +75,29 @@ class CentreonLdapSynchro extends CentreonWebService
         $result = false;
 
         $contactId = filter_var(
-            $_POST['contactId'] ?? null,
+            $_POST['contactId'] ?? false,
             FILTER_VALIDATE_INT
-        );
-        $sessionId = filter_var(
-            $_POST['sessionId'] ?? null,
-            FILTER_SANITIZE_STRING
         );
 
         if (!$this->isLdapEnabled()) {
             return $result;
         }
 
-        if (empty($contactId) && empty($sessionId)) {
+        if ($contactId === false) {
             $this->centreonLog->insertLog(
                 3, //ldap.log
-                "LDAP MANUAL SYNC : Error - Chosen contact data are missing."
+                "LDAP MANUAL SYNC : Error - Chosen contact id is not consistent."
             );
             return $result;
         }
 
         $this->pearDB->beginTransaction();
         try {
-            // getting the contact name and ID for the logs
-            if ($contactId) {
-                // (getting the contactId to homogenize the next request's bindValue variable name)
-                $resUser = $this->pearDB->prepare(
-                    'SELECT `contact_id`, `contact_name` FROM `contact`
-                    WHERE `contact_id` = :contactId'
-                );
-                $resUser->bindValue(':contactId', $contactId, PDO::PARAM_INT);
-            } elseif ($sessionId) {
-                $resUser = $this->pearDB->prepare(
-                    'SELECT `contact_id`, `contact_name` FROM contact
-                    LEFT JOIN session ON session.user_id = contact.contact_id
-                    WHERE session.session_id = :userSessionId'
-                );
-                $resUser->bindValue(':userSessionId', $sessionId, PDO::PARAM_STR);
-            }
+            $resUser = $this->pearDB->prepare(
+                'SELECT `contact_id`, `contact_name` FROM `contact`
+                WHERE `contact_id` = :contactId'
+            );
+            $resUser->bindValue(':contactId', $contactId, PDO::PARAM_INT);
             $resUser->execute();
             $contact = $resUser->fetch();
 

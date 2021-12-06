@@ -16,8 +16,14 @@
                     <select id="select-chart" multiple size="1"></select>
                 </td>
                 <td>{$form.period.html}</td>
-                <td>{$form.StartDate.html} {$form.StartTime.html} {$form.alternativeDateStartDate.html}</td>
-                <td>{$form.EndDate.html} {$form.EndTime.html} {$form.alternativeDateEndDate.html}</td>
+                <td>
+                    {$form.StartDate.html}
+                    {$form.StartTime.html}
+                </td>
+                <td>
+                    {$form.EndDate.html}
+                    {$form.EndTime.html}
+                </td>
             </tr>
             <tr>
                 <td class="divider" colspan="4"><hr></td>
@@ -72,61 +78,71 @@
     </div>
 </div>
 
-<script src="./include/common/javascript/moment-with-locales.js"></script>
+<script src="./include/common/javascript/moment-with-locales.min.2.21.js"></script>
 <script src="./include/common/javascript/moment-timezone-with-data.min.js"></script>
-<script src="./include/common/javascript/handlebars-v4.0.5.js"></script>
 <script src="./include/common/javascript/centreon/centreon-select2.js"></script>
 <script src="./include/common/javascript/datepicker/localizedDatepicker.js"></script>
 <script>
 var defaultCharts = {$defaultCharts};
 var nbDisplayedCharts = {$nbDisplayedCharts};
 var tooManyChartMsg = "{t}You cannot add more charts. The maximum charts is {/t}" + nbDisplayedCharts;
-</script>
 
 {literal}
-<script id="graph-line" type="text/x-handlebars-template">
-    <div id="graph_wrapper_{{graphId}}" data-graph-id="{{graphId}}" class="graph">
-        <div class="title">
-            <img class="remove ico-18 margin_right" src="./img/icons/circle-cross.png">
-            <span>{{graphTitle}}</span>
-            {/literal}
-            {if $topologyAccess.2040101 || $admin == 1}
-            <a class="btc bt_info actions-simple" data-href="./main.get.php?p=2040101">
-                {t}Split chart{/t}
-            </a>
-            {/if}
-            {if $topologyAccess.2040102 || $admin == 1}
-            <a class="btc bt_info actions-simple" data-href="./main.get.php?p=2040102">
-                {t}Display multiple periods{/t}
-            </a>
-            {/if}
-            {literal}
-            <a class="actions" data-href="./include/views/graphs/generateGraphs/generateImage.php">
-                <img alt="Export graph" src="./img/icons/picture.png" class="ico-18 margin_right">
-            </a>
-            <a class="actions" data-href="./include/views/graphs/exportData/ExportCSVServiceData.php">
-                <img alt="Export CSV" src="./img/icons/csv.png" class="ico-18 margin_right">
-            </a>
-        </div>
-        <div class="content">
-            <button id="display-graph-{{graphId}}" data-graph-id="{{graphId}}" data-graph-type="{{graphType}}" class="btc bt_info performance_button">Display Chart</button>
-            <div class="action left">
-                <button class="bt_action">&lt;&lt;</button>
-            </div>
-            <div class="chart" id="graph-{{graphId}}" data-graph-id="{{graphId}}" data-graph-type="{{graphType}}">
-            </div>
-            <div class="action right">
-                <button class="bt_action">&gt;&gt;</button>
-            </div>
-            <div class="chart chart-status" id="graph-status-{{graphId}}" data-graph-id="{{graphId}}" data-graph-type="status">
-            </div>
-        </div>
-    </div>
-</script>
-<script>
+
 var charts = [];
-var source = jQuery('#graph-line').html();
-var templateGraph = Handlebars.compile(source);
+const templateGraph = ({ graphId, graphType, graphTitle }) => {
+    return `
+        <div id="graph_wrapper_${graphId}" data-graph-id="${graphId}" class="graph">
+            <div class="title">
+                <img class="remove ico-18 margin_right" src="./img/icons/circle-cross.png">
+                <span>${graphTitle}</span>
+                {/literal}
+                {if $topologyAccess.2040101 || $admin == 1}
+                <a class="btc bt_info actions-simple" data-href="./main.get.php?p=2040101">
+                    {t}Split chart{/t}
+                </a>
+                {/if}
+                {if $topologyAccess.2040102 || $admin == 1}
+                <a class="btc bt_info actions-simple" data-href="./main.get.php?p=2040102">
+                    {t}Display multiple periods{/t}
+                </a>
+                {/if}
+                {literal}
+                <a class="actions" data-href="./include/views/graphs/generateGraphs/generateImage.php">
+                    <img alt="Export graph" src="./img/icons/picture.png" class="ico-18 margin_right">
+                </a>
+                <a class="actions" data-href="./include/views/graphs/exportData/ExportCSVServiceData.php">
+                    <img alt="Export CSV" src="./img/icons/csv.png" class="ico-18 margin_right">
+                </a>
+            </div>
+            <div class="content">
+                <button
+                    id="display-graph-${graphId}"
+                    data-graph-id="${graphId}"
+                    data-graph-type="${graphType}"
+                    class="btc bt_info performance_button"
+                >
+                    Display Chart
+                </button>
+                <div class="action left">
+                    <button class="bt_action">&lt;&lt;</button>
+                </div>
+                <div class="chart" id="graph-${graphId}" data-graph-id="${graphId}" data-graph-type="${graphType}">
+                </div>
+                <div class="action right">
+                    <button class="bt_action">&gt;&gt;</button>
+                </div>
+                <div
+                    class="chart chart-status"
+                    id="graph-status-${graphId}"
+                    data-graph-id="${graphId}"
+                    data-graph-type="status"
+                >
+                </div>
+            </div>
+        </div>
+    `;
+};
 var autoRefresh = false;
 
 // get timezone from localstorage

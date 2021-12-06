@@ -82,8 +82,10 @@ class ConfigurationExporter extends ExporterServiceAbstract
             $import = $manifest->get("import");
             foreach ($import['data'] as $data) {
                 if (!isset($truncated[$data['table']])) {
-                    // truncate table
-                    $db->query("TRUNCATE TABLE `" . $data['table'] . "`;");
+                    // empty table
+                    $db->query("DELETE FROM `" . $data['table'] . "`");
+                    // optimize table
+                    $db->query("OPTIMIZE TABLE `" . $data['table'] . "`");
                     $truncated[$data['table']] = 1;
                 }
 

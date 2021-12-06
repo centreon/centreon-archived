@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2019 Centreon
+ * Copyright 2005-2021 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -36,32 +37,45 @@
 require_once $centreon_path . "/bootstrap.php";
 
 /**
- * Path to the configuration dir
- */
-global $path;
-
-/**
  * Getting Centreon Version
  */
 $result = $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'version' LIMIT 1");
 $release = $result->fetch();
 
 /**
- * Getting Keycloak login state
+ * Getting OpenId Connect login state
  */
-$result = $pearDB->query("SELECT `value` FROM `options` WHERE `key` = 'keycloak_enable' LIMIT 1");
-$keycloakEnabled = $result->fetch()["value"];
+$result = $pearDB->query("SELECT `value` FROM `options` WHERE `key` = 'openid_connect_enable' LIMIT 1");
+$openIdConnectEnabled = "0";
+if (($row = $result->fetch()) !== false) {
+    $openIdConnectEnabled = $row["value"];
+}
 
-$result = $pearDB->query("SELECT `value` FROM `options` WHERE `key` = 'keycloak_mode' LIMIT 1");
-$keycloakMode = $result->fetch()["value"];
+
+$result = $pearDB->query("SELECT `value` FROM `options` WHERE `key` = 'openid_connect_mode' LIMIT 1");
+$openIdConnectMode = "0";
+if (($row = $result->fetch()) !== false) {
+    $openIdConnectMode = $row["value"];
+}
+
 
 /**
  * Defining Login Form
  */
 $form = new HTML_QuickFormCustom('Form', 'post', './index.php');
-$form->addElement('text', 'useralias', _("Login:"), array('class' => 'inputclassic'));
-$form->addElement('password', 'password', _("Password"), array('class' => 'inputclassicPass'));
-$submitLogin = $form->addElement('submit', 'submitLogin', _("Connect"), array('class' => 'btc bt_info'));
+
+$optionsAliasField = array('placeholder' => _("Login"), 'class' => 'inputclassic', 'autocomplete' => 'off');
+$form->addElement('text', 'useralias', null, $optionsAliasField);
+
+$optionsPasswordField = array('placeholder' => _("Password"), 'class' => 'inputclassicPass');
+$form->addElement('password', 'password', null, $optionsPasswordField);
+
+$submitLogin = $form->addElement(
+    'submit',
+    'submitLogin',
+    _("Connect"),
+    ['class' => 'btc bt_info']
+);
 
 $loginValidate = $form->validate();
 
@@ -116,15 +130,15 @@ if ($file_install_access) {
 /*
  * Smarty template Init
  */
-$tpl = new Smarty();
-$tpl = initSmartyTpl($path . '/include/core/login/template/', $tpl);
+$tpl = new \Smarty();
+$tpl = initSmartyTpl(__DIR__ . '/template/', $tpl);
 
 // Initializing variables
 $tpl->assign('loginMessages', $loginMessages);
 $tpl->assign('centreonVersion', 'v. ' . $release['value']);
 $tpl->assign('currentDate', date("d/m/Y"));
-$tpl->assign('keycloakEnabled', $keycloakEnabled);
-$tpl->assign('keycloakMode', $keycloakMode);
+$tpl->assign('openIdConnectEnabled', $openIdConnectEnabled);
+$tpl->assign('openIdConnectMode', $openIdConnectMode);
 
 // Redirect User
 $redirect = filter_input(

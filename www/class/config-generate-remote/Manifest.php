@@ -44,8 +44,8 @@ class Manifest extends AbstractObject
             'infile_clauses' => [
                 'fields_clause' => [
                     'terminated_by' => $this->fieldSeparatorInfile,
-                    'enclosed_by' => '',
-                    'escaped_by' => '',
+                    'enclosed_by' => '"',
+                    'escaped_by' => '\\\\',
                 ],
                 'lines_clause' => [
                     'terminated_by' => $this->lineSeparatorInfile,
@@ -114,5 +114,17 @@ class Manifest extends AbstractObject
             'table' => $table,
             'columns' => $columns
         ];
+    }
+
+    /**
+     * clean
+     *
+     * @return void
+     */
+    public function clean()
+    {
+        $this->manifest['date'] = date('l jS \of F Y h:i:s A');
+        $this->manifest['import']['data'] = [];
+        $this->manifest['pollers'] = [];
     }
 }

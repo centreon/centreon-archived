@@ -1,0 +1,30 @@
+centreon_application_monitoring_resource_list:
+    methods: GET
+    path: /monitoring/resources
+    controller: 'Centreon\Application\Controller\MonitoringResourceController::list'
+    condition: "request.attributes.get('version') >= 21.10"
+
+centreon_application_monitoring_resource_details_host:
+    methods: GET
+    path: /monitoring/resources/hosts/{hostId}
+    controller: 'Centreon\Application\Controller\MonitoringResourceController::detailsHost'
+    requirements:
+        hostId: '\d+'
+    condition: "request.attributes.get('version') >= 21.10"
+
+centreon_application_monitoring_resource_details_service:
+    methods: GET
+    path: /monitoring/resources/hosts/{hostId}/services/{serviceId}
+    controller: 'Centreon\Application\Controller\MonitoringResourceController::detailsService'
+    requirements:
+        hostId: '\d+'
+        serviceId: '\d+'
+    condition: "request.attributes.get('version') >= 21.10"
+
+centreon_application_monitoring_resource_details_meta_service:
+    methods: GET
+    path: /monitoring/resources/metaservices/{metaId}
+    controller: 'Centreon\Application\Controller\MonitoringResourceController::detailsMetaService'
+    requirements:
+        metaId: '\d+'
+    condition: "request.attributes.get('version') >= 21.10"

@@ -1,7 +1,8 @@
 <?php
+
 /*
- * Copyright 2005-2015 CENTREON
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2021 CENTREON
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -49,11 +50,11 @@ require_once "Centreon/Object/Service/Template.php";
 class CentreonServiceTemplate extends CentreonObject
 {
 
-    const ORDER_SVCDESC = 0;
-    const ORDER_SVCALIAS = 1;
-    const ORDER_SVCTPL = 2;
-    const NB_UPDATE_PARAMS = 3;
-    const UNKNOWN_NOTIFICATION_OPTIONS = "Invalid notifications options";
+    public const ORDER_SVCDESC = 0;
+    public const ORDER_SVCALIAS = 1;
+    public const ORDER_SVCTPL = 2;
+    public const NB_UPDATE_PARAMS = 3;
+    public const UNKNOWN_NOTIFICATION_OPTIONS = "Invalid notifications options";
 
     public static $aDepends = array(
         'CMD',
@@ -189,6 +190,169 @@ class CentreonServiceTemplate extends CentreonObject
             }
             echo implode($this->delim, $tab) . "\n";
         }
+    }
+
+    /**
+     * Get a parameter
+     *
+     * @param null $parameters
+     * @throws CentreonClapiException
+     */
+    public function getparam($parameters = null)
+    {
+        $params = explode($this->delim, $parameters);
+        if (count($params) < 2) {
+            throw new CentreonClapiException(self::MISSINGPARAMETER);
+        }
+        $authorizeParam = array(
+            'activate',
+            'description',
+            'alias',
+            'template',
+            'is_volatile',
+            'check_period',
+            'check_command',
+            'check_command_arguments',
+            'max_check_attempts',
+            'normal_check_interval',
+            'retry_check_interval',
+            'active_checks_enabled',
+            'passive_checks_enabled',
+            'notifications_enabled',
+            'contact_additive_inheritance',
+            'cg_additive_inheritance',
+            'notification_interval',
+            'notification_period',
+            'notification_options',
+            'first_notification_delay',
+            'obsess_over_service',
+            'check_freshness',
+            'freshness_threshold',
+            'event_handler_enabled',
+            'flap_detection_enabled',
+            'retain_status_information',
+            'retain_nonstatus_information',
+            'event_handler',
+            'event_handler_arguments',
+            'notes',
+            'notes_url',
+            'action_url',
+            'icon_image',
+            'icon_image_alt',
+            'comment'
+        );
+        $unknownParam = array();
+
+        if (($objectId = $this->getObjectId($params[self::ORDER_SVCDESC])) != 0) {
+            $listParam = explode('|', $params[1]);
+            $exportedFields = [];
+            $resultString = "";
+            foreach ($listParam as $paramSearch) {
+                if (!$paramString) {
+                    $paramString = $paramSearch;
+                } else {
+                    $paramString = $paramString . $this->delim . $paramSearch;
+                }
+                $field = $paramSearch;
+                if (!in_array($field, $authorizeParam)) {
+                    $unknownParam[] = $field;
+                } else {
+                    $extended = false;
+                    switch ($paramSearch) {
+                        case "check_command":
+                            $field = "command_command_id";
+                            break;
+                        case "check_command_arguments":
+                            $field = "command_command_id_arg";
+                            break;
+                        case "event_handler":
+                            $field = "command_command_id2";
+                            break;
+                        case "event_handler_arguments":
+                            $field = "command_command_id_arg2";
+                            break;
+                        case "check_period":
+                            $field = "timeperiod_tp_id";
+                            break;
+                        case "notification_period":
+                            $field = "timeperiod_tp_id2";
+                            break;
+                        case "template":
+                            $field = "service_template_model_stm_id";
+                            break;
+                        case "contact_additive_inheritance":
+                        case "cg_additive_inheritance":
+                        case "geo_coords":
+                            break;
+                        case "notes":
+                            $extended = true;
+                            break;
+                        case "notes_url":
+                            $extended = true;
+                            break;
+                        case "action_url":
+                            $extended = true;
+                            break;
+                        case "icon_image":
+                            $extended = true;
+                            break;
+                        case "icon_image_alt":
+                            $extended = true;
+                            break;
+                        default:
+                            if (!preg_match("/^service_/", $paramSearch)) {
+                                $field = "service_" . $paramSearch;
+                            }
+                            break;
+                    }
+
+                    if (!$extended) {
+                        $ret = $this->object->getParameters($objectId, $field);
+                        $ret = $ret[$field];
+                    } else {
+                        $field = "esi_" . $field;
+                        $extended = new \Centreon_Object_Service_Extended($this->dependencyInjector);
+                        $ret = $extended->getParameters($objectId, $field);
+                        $ret = $ret[$field];
+                    }
+
+                    switch ($paramSearch) {
+                        case "check_command":
+                        case "event_handler":
+                            $commandObject = new CentreonCommand($this->dependencyInjector);
+                            $field = $commandObject->object->getUniqueLabelField();
+                            $ret = $commandObject->object->getParameters($ret, $field);
+                            $ret = $ret[$field];
+                            break;
+                        case "check_period":
+                        case "notification_period":
+                            $tpObj = new CentreonTimePeriod($this->dependencyInjector);
+                            $field = $tpObj->object->getUniqueLabelField();
+                            $ret = $tpObj->object->getParameters($ret, $field);
+                            $ret = $ret[$field];
+                            break;
+                        case "template":
+                            $tplObj = new CentreonServiceTemplate($this->dependencyInjector);
+                            $field = $tplObj->object->getUniqueLabelField();
+                            $ret = $tplObj->object->getParameters($ret, $field);
+                            $ret = $ret[$field];
+                            break;
+                    }
+                    if (!isset($exportedFields[$paramSearch])) {
+                        $resultString .= $ret . $this->delim;
+                        $exportedFields[$paramSearch] = 1;
+                    }
+                }
+            }
+        } else {
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[self::ORDER_UNIQUENAME]);
+        }
+
+        if (!empty($unknownParam)) {
+            throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . implode('|', $unknownParam));
+        }
+        echo implode(';', array_unique(explode(';', $paramString))) . "\n";
+        echo substr($resultString, 0, -1) . "\n";
     }
 
     /**
@@ -410,7 +574,7 @@ class CentreonServiceTemplate extends CentreonObject
                 $params[1] = "esi_" . $params[1];
                 if ($params[1] == "esi_icon_image") {
                     if ($params[2]) {
-                        $id = CentreonUtils::getImageId($params[2]);
+                        $id = CentreonUtils::getImageId($params[2], $this->db);
                         if (is_null($id)) {
                             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $params[2]);
                         }
@@ -715,6 +879,10 @@ class CentreonServiceTemplate extends CentreonObject
                     $class = "Centreon_Object_Host_Template";
                     $relclass = "Centreon_Object_Relation_Service_Template_Host";
                     break;
+                case "category":
+                    $class = "Centreon_Object_Service_Category";
+                    $relclass = "Centreon_Object_Relation_Service_Category_Service";
+                    break;
                 default:
                     throw new CentreonClapiException(self::UNKNOWN_METHOD);
                     break;
@@ -941,6 +1109,7 @@ class CentreonServiceTemplate extends CentreonObject
         if (!$this->canBeExported($filterName)) {
             return false;
         }
+        $filterId = null;
         if (!is_null($filterName)) {
             $filterId = $this->getObjectId($filterName);
         }
@@ -1010,8 +1179,7 @@ class CentreonServiceTemplate extends CentreonObject
             "AND"
         );
         foreach ($elements as $element) {
-            $exportContactName = isset($element['contact_name']) ? $element['contact_name'] : null;
-            CentreonContact::getInstance()->export($exportContactName);
+            CentreonContact::getInstance()->export($element['contact_alias']);
             echo $this->action . $this->delim
                 . "addcontact" . $this->delim
                 . $element['service_description'] . $this->delim

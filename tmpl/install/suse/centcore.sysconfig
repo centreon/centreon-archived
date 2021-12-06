@@ -1,2 +1,0 @@
-# centcore command line options
-OPTIONS="--logfile=@CENTREON_LOG@/centcore.log --severity=error --config=@CENTREON_ETC@/conf.pm"

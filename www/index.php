@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2019 Centreon
+ * Copyright 2005-2021 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -31,7 +32,6 @@
  *
  * For more information : contact@centreon.com
  *
- *
  */
 
 require_once realpath(__DIR__ . '/../config/centreon.config.php');
@@ -61,7 +61,6 @@ require_once $classdir . "/centreonSession.class.php";
 require_once $classdir . "/centreonAuth.SSO.class.php";
 require_once $classdir . "/centreonLog.class.php";
 require_once $classdir . "/centreonDB.class.php";
-require_once SMARTY_DIR . "Smarty.class.php";
 
 /*
  * Get auth type
@@ -88,17 +87,28 @@ if (file_exists("./install/setup.php")) {
 /**
  * Install frontend assets if needed
  */
-$basePath = '/' . trim(explode('index.php', $_SERVER['REQUEST_URI'])[0], "/") . '/';
+$requestUri = filter_var(
+    $_SERVER['REQUEST_URI'],
+    FILTER_SANITIZE_STRING,
+    [
+        'options' => [
+            'default' => '/centreon/'
+        ]
+    ]
+);
+$basePath = '/' . trim(explode('index.php', $requestUri)[0], "/") . '/';
+$basePath = str_replace('//', '/', $basePath);
 $indexHtmlPath = './index.html';
 $indexHtmlContent = file_get_contents($indexHtmlPath);
 
 // update base path only if it has changed
 if (!preg_match('/.*<base\shref="' . preg_quote($basePath, '/') . '">/', $indexHtmlContent)) {
     $indexHtmlContent = preg_replace(
-        '/(.*<base\shref=").*(">)/',
+        '/(^.*<base\shref=")\S+(">.*$)/s',
         '${1}' . $basePath . '${2}',
         $indexHtmlContent
     );
+
     file_put_contents($indexHtmlPath, $indexHtmlContent);
 }
 
@@ -115,6 +125,10 @@ if (isset($_GET["disconnect"])) {
         $CentreonLog->insertLog(1, "Contact '" . $centreon->user->get_alias() . "' logout");
 
         $pearDB->query("DELETE FROM session WHERE session_id = '" . session_id() . "'");
+
+        $sessionStatement = $pearDB->prepare("DELETE FROM security_token WHERE token = :sessionId");
+        $sessionStatement->bindValue(':sessionId', session_id(), \PDO::PARAM_STR);
+        $sessionStatement->execute();
 
         CentreonSession::restart();
     }

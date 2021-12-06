@@ -1,7 +1,8 @@
 <?php
+
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2020 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -31,45 +32,48 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 if (!isset($oreon)) {
     exit();
 }
+$contactId = filter_var(
+    $_GET["contact_id"] ?? $_POST["contact_id"] ?? 0,
+    FILTER_VALIDATE_INT
+);
+$select = $_GET["select"] ?? $_POST["select"] ?? [];
+$form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 
-    isset($_GET["contact_id"]) ? $cG = $_GET["contact_id"] : $cG = null;
-    isset($_POST["contact_id"]) ? $cP = $_POST["contact_id"] : $cP = null;
-    $cG ? $contact_id = $cG : $contact_id = $cP;
+/*
+ * Path to the configuration folder
+ */
+$path = "./include/monitoring/comments/";
 
-    $form = new HTML_QuickFormCustom('Form', 'post', "?p=".$p);
-
-    /*
-	 * Path to the configuration dir
-	 */
-    $path = "./include/monitoring/comments/";
-
-    /*
-	 * PHP functions
-	 */
-    require_once "./include/common/common-Func.php";
-    require_once "./include/monitoring/comments/common-Func.php";
-    require_once "./include/monitoring/external_cmd/functions.php";
+/*
+ * PHP functions
+ */
+require_once "./include/common/common-Func.php";
+require_once "./include/monitoring/comments/common-Func.php";
+require_once "./include/monitoring/external_cmd/functions.php";
 
 switch ($o) {
     case "ah":
-        require_once($path."AddHostComment.php");
+        require_once($path . "AddHostComment.php");
         break;
     case "dh":
-        DeleteComment("HOST", isset($_GET["select"]) ? $_GET["select"] : array());
-        require_once($path."viewHostComment.php");
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            DeleteComment("HOST", $select);
+        } else {
+            unvalidFormMessage();
+        }
+        require_once($path . "viewHostComment.php");
         break;
     case "vh":
-        require_once($path."viewHostComment.php");
+        require_once($path . "viewHostComment.php");
         break;
     default:
-        require_once($path."viewHostComment.php");
+        require_once($path . "viewHostComment.php");
         break;
 }

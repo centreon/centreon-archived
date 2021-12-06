@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
  *
@@ -37,24 +38,6 @@ interface AcknowledgementRepositoryInterface
     public function filterByAccessGroups(?array $accessGroups): self;
 
     /**
-     * Find the latest acknowledgement of all hosts.
-     *
-     * @return Acknowledgement[]
-     * @throws \Exception
-     * @throws RequestParametersTranslatorException
-     */
-    public function findLatestAcknowledgementOfAllHosts();
-
-    /**
-     * Find the latest acknowledgement of all services.
-     *
-     * @return Acknowledgement[]
-     * @throws \Exception
-     * @throws RequestParametersTranslatorException
-     */
-    public function findLatestAcknowledgementOfAllServices();
-
-    /**
      * Find the latest service acknowledgement.
      *
      * @param int $hostId Host id linked to the service
@@ -72,6 +55,77 @@ interface AcknowledgementRepositoryInterface
      * @throws \Exception
      */
     public function findLatestHostAcknowledgement(int $hostId): ?Acknowledgement;
+
+    /**
+     * Find one acknowledgement **without taking into account** the ACLs of user.
+     *
+     * @param int $acknowledgementId Acknowledgement id
+     * @return Acknowledgement|null Return NULL if the acknowledgement has not been found
+     * @throws \Exception
+     */
+    public function findOneAcknowledgementForAdminUser(int $acknowledgementId): ?Acknowledgement;
+
+    /**
+     * Find one acknowledgement **taking into account** the ACLs of user.
+     *
+     * @param int $acknowledgementId Acknowledgement id
+     * @return Acknowledgement|null Return NULL if the acknowledgement has not been found
+     * @throws \Exception
+     */
+    public function findOneAcknowledgementForNonAdminUser(int $acknowledgementId): ?Acknowledgement;
+
+    /**
+     * Find all acknowledgements **without taking into account** the ACLs of user.
+     *
+     * @return Acknowledgement[] Return the acknowledgements found
+     * @throws \Exception
+     */
+    public function findAcknowledgementsForAdminUser(): array;
+
+    /**
+     * Find all acknowledgements **taking into account** the ACLs of user.
+     *
+     * @return Acknowledgement[] Return the acknowledgements found
+     * @throws \Exception
+     */
+    public function findAcknowledgementsForNonAdminUser(): array;
+
+    /**
+     * Find acknowledgements of all hosts.
+     *
+     * @return Acknowledgement[]
+     * @throws \Exception
+     * @throws RequestParametersTranslatorException
+     */
+    public function findHostsAcknowledgements();
+
+    /**
+     * Find acknowledgements of all services.
+     *
+     * @return Acknowledgement[]
+     * @throws \Exception
+     * @throws RequestParametersTranslatorException
+     */
+    public function findServicesAcknowledgements();
+
+    /**
+     * Find host acknowledgements.
+     *
+     * @param int $hostId Host id for which we want to find the acknowledgements
+     * @return Acknowledgement[]
+     * @throws \Exception
+     */
+    public function findAcknowledgementsByHost(int $hostId): array;
+
+    /**
+     * Find service acknowledgements.
+     *
+     * @param int $hostId Host id linked to the service
+     * @param int $serviceId Service id for which we want the acknowledgements
+     * @return Acknowledgement[]
+     * @throws \Exception
+     */
+    public function findAcknowledgementsByService(int $hostId, int $serviceId): array;
 
     /**
      * Indicates whether the contact is an admin or not.

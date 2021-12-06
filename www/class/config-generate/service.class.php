@@ -60,7 +60,7 @@ class Service extends AbstractService
      * @param int $hostId
      * @param string $hostName
      */
-    private function getServiceGroups(int $serviceId, int $hostId, string $hostName) : void
+    protected function getServiceGroups(int $serviceId, int $hostId, string $hostName) : void
     {
         $servicegroup = Servicegroup::getInstance($this->dependencyInjector);
         $this->service_cache[$serviceId]['sg'] = $servicegroup->getServiceGroupsForService($hostId, $serviceId);
@@ -134,7 +134,7 @@ class Service extends AbstractService
      * @param int $serviceId
      * @param bool $isOnlyContactHost
      */
-    private function getContactsFromHost(int $hostId, int $serviceId, bool $isOnlyContactHost) : void
+    protected function getContactsFromHost(int $hostId, int $serviceId, bool $isOnlyContactHost) : void
     {
         if ($isOnlyContactHost) {
             $host = Host::getInstance($this->dependencyInjector);
@@ -362,7 +362,7 @@ class Service extends AbstractService
      * @param bool $generate
      * @return array
      */
-    private function manageNotificationInheritance(array &$service, bool $generate = true): array
+    protected function manageNotificationInheritance(array &$service, bool $generate = true): array
     {
         $results = array('cg' => array(), 'contact' => array());
 
@@ -474,14 +474,8 @@ class Service extends AbstractService
         }
     }
 
-    private function clean(&$service)
+    protected function clean(&$service)
     {
-        #if ($service['contact_from_host'] == 1) {
-        #    $service['contacts'] = null;
-        #    $service['contact_groups'] = null;
-        #    $service['contact_from_host'] = 0;
-        #}
-
         if ($service['severity_from_host'] == 1) {
             unset($service['macros']['_CRITICALITY_LEVEL']);
             unset($service['macros']['_CRITICALITY_ID']);
@@ -542,9 +536,17 @@ class Service extends AbstractService
         if (!isset($this->service_cache[$serviceId]) || is_null($this->service_cache[$serviceId])) {
             return null;
         }
+        // We skip anomalydetection services represented by enum value '3'
+        if ($this->service_cache[$serviceId]['register'] === '3') {
+            return null;
+        }
         if ($this->checkGenerate($hostId . '.' . $serviceId)) {
             return $this->service_cache[$serviceId]['service_description'];
         }
+
+        // we reset notifications for service multiples and hg
+        $this->service_cache[$serviceId]['contacts'] = '';
+        $this->service_cache[$serviceId]['contact_groups'] = '';
 
         $this->getImages($this->service_cache[$serviceId]);
         $this->getMacros($this->service_cache[$serviceId]);
@@ -557,6 +559,7 @@ class Service extends AbstractService
         $service_template->current_service_id = $serviceId;
         $service_template->current_service_description = $this->service_cache[$serviceId]['service_description'];
         $this->getServiceTemplates($this->service_cache[$serviceId]);
+
         $this->getServiceCommands($this->service_cache[$serviceId]);
         $this->getServicePeriods($this->service_cache[$serviceId]);
 

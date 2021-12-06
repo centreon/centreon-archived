@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2019 Centreon
+ * Copyright 2005-2020 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -38,7 +39,7 @@ if (!isset($centreon)) {
 }
 
 if (!$centreon->user->admin) {
-    if ($host_id && false === strpos($aclHostString, "'" . $host_id . "'")) {
+    if (is_numeric($host_id) && false === strpos($aclHostString, "'" . $host_id . "'")) {
         $msg = new CentreonMsg();
         $msg->setImage("./img/icons/warning.png");
         $msg->setTextStyle("bold");
@@ -46,6 +47,8 @@ if (!$centreon->user->admin) {
         return null;
     }
 }
+
+const PASSWORD_REPLACEMENT_VALUE = '**********';
 
 $hostObj = new CentreonHost($pearDB);
 
@@ -75,54 +78,6 @@ require_once _CENTREON_PATH_ . 'www/class/centreonLDAP.class.php';
 require_once _CENTREON_PATH_ . 'www/class/centreonContactgroup.class.php';
 
 /*
- * Validate function for all host is in the same instances
- */
-
-function childSameInstance()
-{
-    global $form;
-
-    $instanceId = $form->getElementValue('nagios_server_id');
-    if (is_array($instanceId)) {
-        $instanceId = $instanceId[0];
-    }
-    $listChild = $form->getElementValue('host_childs');
-    if (count($listChild) == 0) {
-        return true;
-    }
-    return allInSameInstance($listChild, $instanceId);
-}
-
-function parentSameInstance()
-{
-    global $form;
-
-    $instanceId = $form->getElementValue('nagios_server_id');
-    if (is_array($instanceId)) {
-        $instanceId = $instanceId[0];
-    }
-    $listChild = $form->getElementValue('host_parents');
-    if (count($listChild) == 0) {
-        return true;
-    }
-    return allInSameInstance($listChild, $instanceId);
-}
-
-function allInSameInstance($hosts, $instanceId)
-{
-    global $pearDB;
-
-    $query = 'SELECT host_host_id FROM ns_host_relation
-            WHERE nagios_server_id != ' . $instanceId . '
-            AND host_host_id IN (' . join(', ', $hosts) . ')';
-    $res = $pearDB->query($query);
-    if ($res->rowCount() > 0) {
-        return false;
-    }
-    return true;
-}
-
-/*
  * Database retrieve information for Host
  */
 $host = array();
@@ -130,14 +85,21 @@ $host = array();
 // define macros as empty array to avoid null counting
 $aMacros = array();
 
-if (($o == "c" || $o == "w") && $host_id) {
-    $DBRESULT = $pearDB->query("SELECT * 
-                                FROM host, extended_host_information ehi 
-                                WHERE host_id = '" . $host_id . "' 
-                                AND ehi.host_host_id = host.host_id LIMIT 1");
+// Used to store all macro passwords
+$macroPasswords = [];
+
+if (($o === HOST_MODIFY || $o === HOST_WATCH) && isset($host_id)) {
+    $statement = $pearDB->prepare(
+        'SELECT * FROM host
+        INNER JOIN extended_host_information ehi
+            ON ehi.host_host_id = host.host_id
+        WHERE host_id = :host_id LIMIT 1'
+    );
+    $statement->bindValue(':host_id', $host_id, \PDO::PARAM_INT);
+    $statement->execute();
 
     // Set base value
-    $host_list = $DBRESULT->fetch();
+    $host_list = $statement->fetch();
     $host = array_map("myDecode", $host_list);
 
     $cmdId = $host['command_command_id'];
@@ -153,15 +115,18 @@ if (($o == "c" || $o == "w") && $host_id) {
     foreach ($tmp as $key => $value) {
         $host["host_stalOpts"][trim($value)] = 1;
     }
-    $DBRESULT->closeCursor();
 
     // Set Host Category Parents
-    $DBRESULT = $pearDB->query('SELECT DISTINCT hostcategories_hc_id 
-                    FROM hostcategories_relation hcr, hostcategories hc
-                    WHERE hcr.hostcategories_hc_id = hc.hc_id
-                    AND hc.level IS NULL
-                    AND hcr.host_host_id = \'' . $host_id . '\'');
-    for ($i = 0; $hc = $DBRESULT->fetch(); $i++) {
+    $statement = $pearDB->prepare(
+        'SELECT DISTINCT hostcategories_hc_id 
+        FROM hostcategories_relation hcr
+        INNER JOIN hostcategories hc
+            ON hcr.hostcategories_hc_id = hc.hc_id
+        WHERE hc.level IS NULL AND hcr.host_host_id = :host_id'
+    );
+    $statement->bindValue(':host_id', $host_id, \PDO::PARAM_INT);
+    $statement->execute();
+    for ($i = 0; $hc = $statement->fetch(); $i++) {
         if (!$centreon->user->admin && false === strpos($hcString, "'" . $hc['hostcategories_hc_id'] . "'")) {
             $initialValues['host_hcs'][] = $hc['hostcategories_hc_id'];
             $host["host_hcs"][$i] = $hc['hostcategories_hc_id'];
@@ -169,28 +134,29 @@ if (($o == "c" || $o == "w") && $host_id) {
             $host["host_hcs"][$i] = $hc['hostcategories_hc_id'];
         }
     }
-    $DBRESULT->closeCursor();
 
     // Set Host and Nagios Server Relation
-    $DBRESULT = $pearDB->query("SELECT `nagios_server_id` 
-                                FROM `ns_host_relation` 
-                                WHERE `host_host_id` = '" . $host_id . "'");
-    for (($o != "mc") ? $i = 0 : $i = 1; $ns = $DBRESULT->fetch(); $i++) {
+    $statement = $pearDB->prepare('SELECT `nagios_server_id` FROM `ns_host_relation` WHERE `host_host_id` = :host_id');
+    $statement->bindValue(':host_id', $host_id, \PDO::PARAM_INT);
+    $statement->execute();
+    for (($o !== HOST_MASSIVE_CHANGE) ? $i = 0 : $i = 1; $ns = $statement->fetch(); $i++) {
         $host["nagios_server_id"][$i] = $ns["nagios_server_id"];
     }
-    $DBRESULT->closeCursor();
     unset($ns);
 
     // Set critically
-    $res = $pearDB->query("SELECT hc.hc_id 
-                            FROM hostcategories hc, hostcategories_relation hcr
-                            WHERE hcr.host_host_id = " . $pearDB->escape($host_id) . "
-                            AND hcr.hostcategories_hc_id = hc.hc_id
-                            AND hc.level IS NOT NULL
-                            ORDER BY hc.level ASC
-                            LIMIT 1");
-    if ($res->rowCount()) {
-        $cr = $res->fetch();
+    $statement = $pearDB->prepare(
+        'SELECT hc.hc_id 
+        FROM hostcategories hc
+        INNER JOIN hostcategories_relation hcr
+            ON hcr.hostcategories_hc_id = hc.hc_id
+        WHERE hc.level IS NOT NULL AND hcr.host_host_id = :host_id
+        ORDER BY hc.level ASC LIMIT 1'
+    );
+    $statement->bindValue(':host_id', $host_id, \PDO::PARAM_INT);
+    $statement->execute();
+    if ($statement->rowCount()) {
+        $cr = $statement->fetch();
         $host['criticality_id'] = $cr['hc_id'];
     }
 
@@ -199,7 +165,56 @@ if (($o == "c" || $o == "w") && $host_id) {
         $cmdId = "";
     }
 
-    $aMacros = $hostObj->getMacros($host_id, false, $aTemplates, $cmdId, $_POST);
+    if (isset($_REQUEST['macroInput'])) {
+        /**
+         * We don't taking into account the POST data sent from the interface in order the retrieve the original value
+         * of all passwords.
+         */
+        $aMacros = $hostObj->getMacros($host_id, $aTemplates, $cmdId);
+
+        /**
+         * If a password has been modified from the interface, we retrieve the old password existing in the repository
+         * (giving by the $aMacros variable) to inject it before saving.
+         * Passwords will be saved using the $_REQUEST variable.
+         */
+        foreach ($_REQUEST['macroInput'] as $index => $macroName) {
+            if (
+                !isset($_REQUEST['macroFrom'][$index])
+                || !isset($_REQUEST['macroPassword'][$index])
+                || $_REQUEST['macroPassword'][$index] !== '1'                      // Not a password
+                || $_REQUEST['macroValue'][$index] !== PASSWORD_REPLACEMENT_VALUE  // The password has not changed
+            ) {
+                continue;
+            }
+            foreach ($aMacros as $macroAlreadyExist) {
+                if (
+                    $macroAlreadyExist['macroInput_#index#'] === $macroName
+                    && $_REQUEST['macroFrom'][$index] === $macroAlreadyExist['source']
+                ) {
+                    /**
+                     * if the password has not been changed, we replace the password coming from the interface with
+                     * the original value (from the repository) before saving.
+                     */
+                    $_REQUEST['macroValue'][$index] = $macroAlreadyExist['macroValue_#index#'];
+                }
+            }
+        }
+    }
+
+    // We taking into account the POST data sent from the interface
+    $aMacros = $hostObj->getMacros($host_id, $aTemplates, $cmdId, $_POST);
+
+    // We hide all passwords in the jsData property to prevent them from appearing in the HTML code.
+    foreach ($aMacros as $index => $macroValues) {
+        if ($macroValues['macroPassword_#index#'] === 1) {
+            $macroPasswords[$index]['password'] = $aMacros[$index]['macroValue_#index#'];
+            // It's a password macro
+            $aMacros[$index]['macroOldValue_#index#'] = PASSWORD_REPLACEMENT_VALUE;
+            $aMacros[$index]['macroValue_#index#'] = PASSWORD_REPLACEMENT_VALUE;
+            // Keep the original name of the input field in case its name changes.
+            $aMacros[$index]['macroOriginalName_#index#'] = $aMacros[$index]['macroInput_#index#'];
+        }
+    }
 }
 
 // Preset values of macros
@@ -222,13 +237,14 @@ $cdata->addJsData('clone-count-template', count($tplArray));
 
 // Nagios Server comes from DB -> Store in $nsServer Array
 $nsServers = array();
-if ($o == "mc") {
+if ($o === HOST_MASSIVE_CHANGE) {
     $nsServers[null] = null;
 }
-$DBRESULT = $pearDB->query("SELECT id, name
-                                FROM nagios_server " .
+$DBRESULT = $pearDB->query(
+    "SELECT id, name FROM nagios_server " .
     ($aclPollerString != "''" ? $acl->queryBuilder('WHERE', 'id', $aclPollerString) : "") .
-    " ORDER BY name");
+    " ORDER BY name"
+);
 while ($nsServer = $DBRESULT->fetch()) {
     $nsServers[$nsServer["id"]] = $nsServer["name"];
 }
@@ -241,17 +257,7 @@ $extImgStatusmap = array();
 $extImgStatusmap = return_image_list(2);
 
 // Host multiple templates relations stored in DB
-$mTp = array();
-$k = 0;
-$DBRESULT = $pearDB->query("SELECT host_tpl_id 
-                            FROM host_template_relation 
-                            WHERE host_host_id = '" . $host_id . "' 
-                            ORDER BY `order`");
-while ($multiTp = $DBRESULT->fetch()) {
-    $mTp[$k] = $multiTp["host_tpl_id"];
-    $k++;
-}
-$DBRESULT->closeCursor();
+$mTp = $hostObj->getSavedTpl($host_id);
 
 
 // Var information to format the element
@@ -297,14 +303,6 @@ $attrHosts = array(
     'multiple' => true,
     'linkedObject' => 'centreonHost'
 );
-$hostTplRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_hosttemplates'
-    . '&action=list';
-$attrHostTpls = array(
-    'datasourceOrigin' => 'ajax',
-    'availableDatasetRoute' => $hostTplRoute,
-    'multiple' => true,
-    'linkedObject' => 'centreonHosttemplates'
-);
 $hostGrAvRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=list';
 $attrHostgroups = array(
     'datasourceOrigin' => 'ajax',
@@ -333,16 +331,15 @@ $TemplateValues = array();
 unset($_POST['o']);
 $form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 
-$form->registerRule('validate_childs', 'function', 'childSameInstance');
-$form->registerRule('validate_parents', 'function', 'parentSameInstance');
+$form->registerRule('validate_geo_coords', 'function', 'validateGeoCoords');
 
-if ($o == "a") {
+if ($o === HOST_ADD) {
     $form->addElement('header', 'title', _("Add a Host"));
-} elseif ($o == "c") {
+} elseif ($o === HOST_MODIFY) {
     $form->addElement('header', 'title', _("Modify a Host"));
-} elseif ($o == "w") {
+} elseif ($o === HOST_WATCH) {
     $form->addElement('header', 'title', _("View a Host"));
-} elseif ($o == "mc") {
+} elseif ($o === HOST_MASSIVE_CHANGE) {
     $form->addElement('header', 'title', _("Massive Change"));
 }
 
@@ -352,7 +349,7 @@ if ($o == "a") {
 #
 $form->addElement('header', 'information', _("General Information"));
 # No possibility to change name and alias, because there's no interest
-if ($o != "mc") {
+if ($o !== HOST_MASSIVE_CHANGE) {
     $form->addElement('text', 'host_name', _("Name"), $attrsText);
     $form->addElement('text', 'host_alias', _("Alias"), $attrsText);
     $form->addElement(
@@ -392,16 +389,16 @@ $form->addElement('select2', 'host_location', _("Timezone / Location"), array(),
 
 $form->addElement('select', 'nagios_server_id', _("Monitored from"), $nsServers);
 /*
- * Get deault poller id
+ * Get default poller id
  */
 $DBRESULT = $pearDB->query("SELECT id FROM nagios_server WHERE is_default = '1'");
 $defaultServer = $DBRESULT->fetch();
 $DBRESULT->closeCursor();
-if (isset($defaultServer) && $defaultServer && $o != "mc") {
+if (isset($defaultServer) && $defaultServer && $o !== HOST_MASSIVE_CHANGE) {
     $form->setDefaults(array('nagios_server_id' => $defaultServer["id"]));
 }
 
-if ($o == "mc") {
+if ($o === HOST_MASSIVE_CHANGE) {
     $mc_mod_tplp = array();
     $mc_mod_tplp[] = $form->createElement('radio', 'mc_mod_tplp', null, _("Incremental"), '0');
     $mc_mod_tplp[] = $form->createElement('radio', 'mc_mod_tplp', null, _("Replacement"), '1');
@@ -456,13 +453,16 @@ $cloneSetMacro[] = $form->addElement(
     array('id' => 'macroFrom_#index#')
 );
 
-
 $cloneSetTemplate = array();
+$listPpTemplate = $hostObj->getLimitedList();
+$listAllTemplate = $hostObj->getList(false, true, null);
+$validTemplate = array_diff_key($listAllTemplate, $listPpTemplate);
+$listTemplate = array(null => null) + $mTp + $validTemplate;
 $cloneSetTemplate[] = $form->addElement(
     'select',
     'tpSelect[#index#]',
     '',
-    (array(null => null) + $hostObj->getList(false, true)),
+    $listTemplate,
     array(
         "id" => "tpSelect_#index#",
         "class" => "select2",
@@ -473,11 +473,9 @@ $cloneSetTemplate[] = $form->addElement(
 $dupSvTpl[] = $form->createElement('radio', 'dupSvTplAssoc', null, _("Yes"), '1');
 $dupSvTpl[] = $form->createElement('radio', 'dupSvTplAssoc', null, _("No"), '0');
 $form->addGroup($dupSvTpl, 'dupSvTplAssoc', _("Checks Enabled"), '&nbsp;');
-if ($o == "c") {
+if ($o === HOST_MODIFY) {
     $form->setDefaults(array('dupSvTplAssoc' => '0'));
-} elseif ($o == "w") {
-    ;
-} elseif ($o != "mc") {
+} elseif ($o !== HOST_MASSIVE_CHANGE) {
     $form->setDefaults(array('dupSvTplAssoc' => '1'));
 }
 $form->addElement('static', 'dupSvTplAssocText', _("Create Services linked to the Template too"));
@@ -513,7 +511,7 @@ $hostEHE[] = $form->createElement('radio', 'host_event_handler_enabled', null, _
 $hostEHE[] = $form->createElement('radio', 'host_event_handler_enabled', null, _("No"), '0');
 $hostEHE[] = $form->createElement('radio', 'host_event_handler_enabled', null, _("Default"), '2');
 $form->addGroup($hostEHE, 'host_event_handler_enabled', _("Event Handler Enabled"), '&nbsp;');
-if ($o != "mc") {
+if ($o !== HOST_MASSIVE_CHANGE) {
     $form->setDefaults(array('host_event_handler_enabled' => '2'));
 }
 
@@ -538,7 +536,7 @@ $hostACE[] = $form->createElement('radio', 'host_active_checks_enabled', null, _
 $hostACE[] = $form->createElement('radio', 'host_active_checks_enabled', null, _("No"), '0');
 $hostACE[] = $form->createElement('radio', 'host_active_checks_enabled', null, _("Default"), '2');
 $form->addGroup($hostACE, 'host_active_checks_enabled', _("Active Checks Enabled"), '&nbsp;');
-if ($o != "mc") {
+if ($o !== HOST_MASSIVE_CHANGE) {
     $form->setDefaults(array('host_active_checks_enabled' => '2'));
 }
 
@@ -546,7 +544,7 @@ $hostPCE[] = $form->createElement('radio', 'host_passive_checks_enabled', null, 
 $hostPCE[] = $form->createElement('radio', 'host_passive_checks_enabled', null, _("No"), '0');
 $hostPCE[] = $form->createElement('radio', 'host_passive_checks_enabled', null, _("Default"), '2');
 $form->addGroup($hostPCE, 'host_passive_checks_enabled', _("Passive Checks Enabled"), '&nbsp;');
-if ($o != "mc") {
+if ($o !== HOST_MASSIVE_CHANGE) {
     $form->setDefaults(array('host_passive_checks_enabled' => '2'));
 }
 
@@ -571,11 +569,11 @@ $hostNE[] = $form->createElement('radio', 'host_notifications_enabled', null, _(
 $hostNE[] = $form->createElement('radio', 'host_notifications_enabled', null, _("No"), '0');
 $hostNE[] = $form->createElement('radio', 'host_notifications_enabled', null, _("Default"), '2');
 $form->addGroup($hostNE, 'host_notifications_enabled', _("Notification Enabled"), '&nbsp;');
-if ($o != "mc") {
+if ($o !== HOST_MASSIVE_CHANGE) {
     $form->setDefaults(array('host_notifications_enabled' => '2'));
 }
 
-if ($o == "mc") {
+if ($o === HOST_MASSIVE_CHANGE) {
     $mc_mod_notifopt_first_notification_delay = array();
     $mc_mod_notifopt_first_notification_delay[] = $form->createElement(
         'radio',
@@ -604,7 +602,7 @@ $form->addElement('text', 'host_first_notification_delay', _("First notification
 
 $form->addElement('text', 'host_recovery_notification_delay', _("Recovery notification delay"), $attrsText2);
 
-if ($o == "mc") {
+if ($o === HOST_MASSIVE_CHANGE) {
     $mc_mod_hcg = array();
     $mc_mod_hcg[] = $form->createElement('radio', 'mc_mod_hcg', null, _("Incremental"), '0');
     $mc_mod_hcg[] = $form->createElement('radio', 'mc_mod_hcg', null, _("Replacement"), '1');
@@ -617,7 +615,7 @@ if ($o == "mc") {
  */
 $dbResult = $pearDB->query('SELECT `value` FROM options WHERE `key` = "inheritance_mode"');
 $inheritanceMode = $dbResult->fetch();
-if ($o == "mc") {
+if ($o === HOST_MASSIVE_CHANGE) {
     $contactAdditive[] = $form->createElement('radio', 'mc_contact_additive_inheritance', null, _("Yes"), '1');
     $contactAdditive[] = $form->createElement('radio', 'mc_contact_additive_inheritance', null, _("No"), '0');
     $contactAdditive[] = $form->createElement(
@@ -677,7 +675,7 @@ $attrContactgroup1 = array_merge(
 $form->addElement('select2', 'host_cgs', _("Linked Contact Groups"), array(), $attrContactgroup1);
 
 
-if ($o == "mc") {
+if ($o === HOST_MASSIVE_CHANGE) {
     $mc_mod_notifopt_notification_interval = array();
     $mc_mod_notifopt_notification_interval[] = $form->createElement(
         'radio',
@@ -704,7 +702,7 @@ if ($o == "mc") {
 
 $form->addElement('text', 'host_notification_interval', _("Notification Interval"), $attrsText2);
 
-if ($o == "mc") {
+if ($o === HOST_MASSIVE_CHANGE) {
     $mc_mod_notifopt_timeperiod = array();
     $mc_mod_notifopt_timeperiod[] = $form->createElement(
         'radio',
@@ -731,7 +729,7 @@ $attrTimeperiod2 = array_merge(
 );
 $form->addElement('select2', 'timeperiod_tp_id2', _("Notification Period"), array(), $attrTimeperiod2);
 
-if ($o == "mc") {
+if ($o === HOST_MASSIVE_CHANGE) {
     $mc_mod_notifopts = array();
     $mc_mod_notifopts[] = $form->createElement('radio', 'mc_mod_notifopts', null, _("Incremental"), '0');
     $mc_mod_notifopts[] = $form->createElement('radio', 'mc_mod_notifopts', null, _("Replacement"), '1');
@@ -795,7 +793,7 @@ $form->addElement('header', 'furtherInfos', _("Additional Information"));
 $hostActivation[] = $form->createElement('radio', 'host_activate', null, _("Enabled"), '1');
 $hostActivation[] = $form->createElement('radio', 'host_activate', null, _("Disabled"), '0');
 $form->addGroup($hostActivation, 'host_activate', _("Status"), '&nbsp;');
-if ($o != "mc") {
+if ($o !== HOST_MASSIVE_CHANGE) {
     $form->setDefaults(array('host_activate' => '1'));
 }
 $form->addElement('textarea', 'host_comment', _("Comments"), $attrsTextarea);
@@ -803,13 +801,13 @@ $form->addElement('textarea', 'host_comment', _("Comments"), $attrsTextarea);
 #
 ## Sort 2 - Host Relations
 #
-if ($o == "a") {
+if ($o === HOST_ADD) {
     $form->addElement('header', 'title2', _("Add relations"));
-} elseif ($o == "c") {
+} elseif ($o === HOST_MODIFY) {
     $form->addElement('header', 'title2', _("Modify relations"));
-} elseif ($o == "w") {
+} elseif ($o === HOST_WATCH) {
     $form->addElement('header', 'title2', _("View relations"));
-} elseif ($o == "mc") {
+} elseif ($o === HOST_MASSIVE_CHANGE) {
     $form->addElement('header', 'title2', _("Massive Change"));
 }
 
@@ -817,7 +815,7 @@ $form->addElement('header', 'links', _("Relations"));
 $form->addElement('header', 'HGlinks', _("Hostgroup Relations"));
 $form->addElement('header', 'HClinks', _("Host Categories Relations"));
 
-if ($o == "mc") {
+if ($o === HOST_MASSIVE_CHANGE) {
     $mc_mod_hpar = array();
     $mc_mod_hpar[] = $form->createElement('radio', 'mc_mod_hpar', null, _("Incremental"), '0');
     $mc_mod_hpar[] = $form->createElement('radio', 'mc_mod_hpar', null, _("Replacement"), '1');
@@ -834,7 +832,7 @@ $attrHost1 = array_merge(
 );
 $form->addElement('select2', 'host_parents', _("Parent Hosts"), array(), $attrHost1);
 
-if ($o == "mc") {
+if ($o === HOST_MASSIVE_CHANGE) {
     $mc_mod_hch = array();
     $mc_mod_hch[] = $form->createElement('radio', 'mc_mod_hch', null, _("Incremental"), '0');
     $mc_mod_hch[] = $form->createElement('radio', 'mc_mod_hch', null, _("Replacement"), '1');
@@ -850,7 +848,7 @@ $attrHost2 = array_merge(
 );
 $form->addElement('select2', 'host_childs', _("Child Hosts"), array(), $attrHost2);
 
-if ($o == "mc") {
+if ($o === HOST_MASSIVE_CHANGE) {
     $mc_mod_hhg = array();
     $mc_mod_hhg[] = $form->createElement('radio', 'mc_mod_hhg', null, _("Incremental"), '0');
     $mc_mod_hhg[] = $form->createElement('radio', 'mc_mod_hhg', null, _("Replacement"), '1');
@@ -866,7 +864,7 @@ $attrHostgroup1 = array_merge(
 );
 $form->addElement('select2', 'host_hgs', _("Parent Host Groups"), array(), $attrHostgroup1);
 
-if ($o == "mc") {
+if ($o === HOST_MASSIVE_CHANGE) {
     $mc_mod_hhc = array();
     $mc_mod_hhc[] = $form->createElement('radio', 'mc_mod_hhc', null, _("Incremental"), '0');
     $mc_mod_hhc[] = $form->createElement('radio', 'mc_mod_hhc', null, _("Replacement"), '1');
@@ -882,7 +880,7 @@ $attrHostcategory1 = array_merge(
 );
 $form->addElement('select2', 'host_hcs', _("Parent Host Categories"), array(), $attrHostcategory1);
 
-if ($o == "mc") {
+if ($o === HOST_MASSIVE_CHANGE) {
     $mc_mod_nsid = array();
     $mc_mod_nsid[] = $form->createElement('radio', 'mc_mod_nsid', null, _("Incremental"), '0');
     $mc_mod_nsid[] = $form->createElement('radio', 'mc_mod_nsid', null, _("Replacement"), '1');
@@ -893,13 +891,13 @@ if ($o == "mc") {
 #
 ## Sort 3 - Data treatment
 #
-if ($o == "a") {
+if ($o === HOST_ADD) {
     $form->addElement('header', 'title3', _("Add Data Processing"));
-} elseif ($o == "c") {
+} elseif ($o === HOST_MODIFY) {
     $form->addElement('header', 'title3', _("Modify Data Processing"));
-} elseif ($o == "w") {
+} elseif ($o === HOST_WATCH) {
     $form->addElement('header', 'title3', _("View Data Processing"));
-} elseif ($o == "mc") {
+} elseif ($o === HOST_MASSIVE_CHANGE) {
     $form->addElement('header', 'title3', _("Massive Change"));
 }
 
@@ -909,7 +907,7 @@ $hostOOH[] = $form->createElement('radio', 'host_obsess_over_host', null, _("Yes
 $hostOOH[] = $form->createElement('radio', 'host_obsess_over_host', null, _("No"), '0');
 $hostOOH[] = $form->createElement('radio', 'host_obsess_over_host', null, _("Default"), '2');
 $form->addGroup($hostOOH, 'host_obsess_over_host', _("Obsess Over Host"), '&nbsp;');
-if ($o != "mc") {
+if ($o !== HOST_MASSIVE_CHANGE) {
     $form->setDefaults(array('host_obsess_over_host' => '2'));
 }
 
@@ -917,7 +915,7 @@ $hostCF[] = $form->createElement('radio', 'host_check_freshness', null, _("Yes")
 $hostCF[] = $form->createElement('radio', 'host_check_freshness', null, _("No"), '0');
 $hostCF[] = $form->createElement('radio', 'host_check_freshness', null, _("Default"), '2');
 $form->addGroup($hostCF, 'host_check_freshness', _("Check Freshness"), '&nbsp;');
-if ($o != "mc") {
+if ($o !== HOST_MASSIVE_CHANGE) {
     $form->setDefaults(array('host_check_freshness' => '2'));
 }
 
@@ -925,7 +923,7 @@ $hostFDE[] = $form->createElement('radio', 'host_flap_detection_enabled', null, 
 $hostFDE[] = $form->createElement('radio', 'host_flap_detection_enabled', null, _("No"), '0');
 $hostFDE[] = $form->createElement('radio', 'host_flap_detection_enabled', null, _("Default"), '2');
 $form->addGroup($hostFDE, 'host_flap_detection_enabled', _("Flap Detection Enabled"), '&nbsp;');
-if ($o != "mc") {
+if ($o !== HOST_MASSIVE_CHANGE) {
     $form->setDefaults(array('host_flap_detection_enabled' => '2'));
 }
 
@@ -937,7 +935,7 @@ $hostRSI[] = $form->createElement('radio', 'host_retain_status_information', nul
 $hostRSI[] = $form->createElement('radio', 'host_retain_status_information', null, _("No"), '0');
 $hostRSI[] = $form->createElement('radio', 'host_retain_status_information', null, _("Default"), '2');
 $form->addGroup($hostRSI, 'host_retain_status_information', _("Retain Status Information"), '&nbsp;');
-if ($o != "mc") {
+if ($o !== HOST_MASSIVE_CHANGE) {
     $form->setDefaults(array('host_retain_status_information' => '2'));
 }
 
@@ -945,20 +943,20 @@ $hostRNI[] = $form->createElement('radio', 'host_retain_nonstatus_information', 
 $hostRNI[] = $form->createElement('radio', 'host_retain_nonstatus_information', null, _("No"), '0');
 $hostRNI[] = $form->createElement('radio', 'host_retain_nonstatus_information', null, _("Default"), '2');
 $form->addGroup($hostRNI, 'host_retain_nonstatus_information', _("Retain Non Status Information"), '&nbsp;');
-if ($o != "mc") {
+if ($o !== HOST_MASSIVE_CHANGE) {
     $form->setDefaults(array('host_retain_nonstatus_information' => '2'));
 }
 
 /*
  * Sort 4 - Extended Infos
  */
-if ($o == "a") {
+if ($o === HOST_ADD) {
     $form->addElement('header', 'title4', _("Add a Host Extended Info"));
-} elseif ($o == "c") {
+} elseif ($o === HOST_MODIFY) {
     $form->addElement('header', 'title4', _("Modify a Host Extended Info"));
-} elseif ($o == "w") {
+} elseif ($o === HOST_WATCH) {
     $form->addElement('header', 'title4', _("View a Host Extended Info"));
-} elseif ($o == "mc") {
+} elseif ($o === HOST_MASSIVE_CHANGE) {
     $form->addElement('header', 'title4', _("Massive Change"));
 }
 
@@ -980,8 +978,9 @@ $form->addElement('select', 'ehi_statusmap_image', _("Status Map Image"), $extIm
 $form->addElement('text', 'ehi_2d_coords', _("2d Coords"), $attrsText2);
 $form->addElement('text', 'ehi_3d_coords', _("3d Coords"), $attrsText2);
 $form->addElement('text', 'geo_coords', _("Geo coordinates"), $attrsText);
+$form->addRule('geo_coords', _("geo coords are not valid"), 'validate_geo_coords');
 
-if (!$centreon->user->admin && $o == "a") {
+if (!$centreon->user->admin && $o === HOST_ADD) {
     $aclDeRoute = './include/common/webServices/rest/internal.php?object=centreon_administration_aclgroup'
         . '&action=defaultValues&target=host&field=acl_groups&id=' . $host_id;
     $aclAvRoute = './include/common/webServices/rest/internal.php?object=centreon_administration_aclgroup&action=list';
@@ -1009,13 +1008,13 @@ $form->addElement('select', 'criticality_id', _('Severity level'), $criticalityI
 /*
  * Sort 5 - Macros - Nagios 3
  */
-if ($o == "a") {
+if ($o === HOST_ADD) {
     $form->addElement('header', 'title5', _("Add macros"));
-} elseif ($o == "c") {
+} elseif ($o === HOST_MODIFY) {
     $form->addElement('header', 'title5', _("Modify macros"));
-} elseif ($o == "w") {
+} elseif ($o === HOST_WATCH) {
     $form->addElement('header', 'title5', _("View macros"));
-} elseif ($o == "mc") {
+} elseif ($o === HOST_MASSIVE_CHANGE) {
     $form->addElement('header', 'title5', _("Massive Change"));
 }
 
@@ -1037,12 +1036,8 @@ $init = $form->addElement('hidden', 'initialValues');
 $init->setValue(serialize($initialValues));
 
 if (is_array($select)) {
-    $select_str = null;
-    foreach ($select as $key => $value) {
-        $select_str .= $key . ",";
-    }
     $select_pear = $form->addElement('hidden', 'select');
-    $select_pear->setValue($select_str);
+    $select_pear->setValue(implode(',', array_keys($select)));
 }
 
 /*
@@ -1056,11 +1051,12 @@ function myReplace()
 
 $form->applyFilter('__ALL__', 'myTrim');
 $from_list_menu = false;
-if ($o != "mc") {
+if ($o !== HOST_MASSIVE_CHANGE) {
     $form->applyFilter('host_name', 'myReplace');
     $form->addRule('host_name', _("Compulsory Name"), 'required');
 
-    if (isset($centreon->optGen["strict_hostParent_poller_management"])
+    if (
+        isset($centreon->optGen["strict_hostParent_poller_management"])
         && $centreon->optGen["strict_hostParent_poller_management"] == 1
     ) {
         $form->registerRule('testPollerDep', 'callback', 'testPollerDep');
@@ -1069,8 +1065,6 @@ if ($o != "mc") {
             _("Impossible to change server due to parentship with other hosts"),
             'testPollerDep'
         );
-        $form->addRule('host_parents', _("Some hosts parent has not the same instance"), 'validate_parents');
-        $form->addRule('host_childs', _("Some hosts child has not the same instance"), 'validate_childs');
     }
     /*
      * Test existence
@@ -1079,9 +1073,12 @@ if ($o != "mc") {
     $form->addRule('host_name', _("_Module_ is not a legal expression"), 'testModule');
     $form->registerRule('existTemplate', 'callback', 'hasHostTemplateNeverUsed');
     $form->registerRule('exist', 'callback', 'hasHostNameNeverUsed');
+    $form->registerRule('sanitize', 'callback', 'isNotEmptyAfterStringSanitize');
     $form->addRule('host_name', _("Template name is already in use"), 'existTemplate');
     $form->addRule('host_name', _("Host name is already in use"), 'exist');
+    $form->addRule('host_name', _("Unauthorized value"), 'sanitize');
     $form->addRule('host_address', _("Compulsory Address"), 'required');
+    $form->addRule('host_address', _("Unauthorized value"), 'sanitize');
     $form->registerRule('cg_group_exists', 'callback', 'testCg');
     $form->addRule(
         'host_cgs',
@@ -1089,7 +1086,7 @@ if ($o != "mc") {
             . ' please verified if a Centreon contactgroup has the same name.'),
         'cg_group_exists'
     );
-} elseif ($o == "mc") {
+} elseif ($o === HOST_MASSIVE_CHANGE) {
     if ($form->getSubmitValue("submitMC")) {
         $from_list_menu = false;
     } else {
@@ -1116,7 +1113,7 @@ $tpl->assign(
         . " if needed, pair this configuration with the use of timeperiods")
 );
 
-if ($o == "w") {
+if ($o === HOST_WATCH) {
     /*
      * Just watch a host information
      */
@@ -1128,7 +1125,7 @@ if ($o == "w") {
     }
     $form->setDefaults($host);
     $form->freeze();
-} elseif ($o == "c") {
+} elseif ($o === HOST_MODIFY) {
     /*
      * Modify a host information
      */
@@ -1140,13 +1137,13 @@ if ($o == "w") {
         array("onClick" => "history.go(0);", "class" => "btc bt_default")
     );
     $form->setDefaults($host);
-} elseif ($o == "a") {
+} elseif ($o === HOST_ADD) {
     /*
      * Add a host information
      */
     $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
-} elseif ($o == "mc") {
+} elseif ($o === HOST_MASSIVE_CHANGE) {
     /*
      * Massive Change
      */
@@ -1178,7 +1175,7 @@ foreach ($help as $key => $text) {
 }
 $tpl->assign("helptext", $helptext);
 
-if ($o != "a" && $o != "c") {
+if ($o !== HOST_ADD && $o !== HOST_MODIFY) {
     $tpl->assign('time_unit', " * " . $centreon->optGen["interval_length"] . " " . _("seconds"));
 } else {
     /*
@@ -1193,16 +1190,36 @@ if ($form->validate() && $from_list_menu == false) {
     if ($form->getSubmitValue("submitA")) {
         $hostObj->setValue(insertHostInDB());
     } elseif ($form->getSubmitValue("submitC")) {
-        updateHostInDB($hostObj->getValue());
-    } elseif ($form->getSubmitValue("submitMC")) {
-        $select = explode(",", $select);
-        foreach ($select as $key => $value) {
-            if ($value) {
-                updateHostInDB($value, true);
+        /*
+         * Before saving, we check if a password macro has changed its name to be able to give it the right password
+         * instead of wildcards (PASSWORD_REPLACEMENT_VALUE).
+         */
+        if (isset($_REQUEST['macroInput'])) {
+            foreach ($_REQUEST['macroInput'] as $index => $macroName) {
+                if (array_key_exists('macroOriginalName_' . $index, $_REQUEST)) {
+                    $originalMacroName = $_REQUEST['macroOriginalName_' . $index];
+                    if ($_REQUEST['macroValue'][$index] === PASSWORD_REPLACEMENT_VALUE) {
+                        /*
+                         * The password has not been changed along with the name, so its value is equal to the wildcard.
+                         * We will therefore recover the password stored for its original name.
+                         */
+                        foreach ($aMacros as $indexMacro => $macroDetails) {
+                            if ($macroDetails['macroInput_#index#'] === $originalMacroName) {
+                                $_REQUEST['macroValue'][$index] = $macroPasswords[$indexMacro]['password'];
+                                break;
+                            }
+                        }
+                    }
+                }
             }
         }
+        updateHostInDB($hostObj->getValue());
+    } elseif ($form->getSubmitValue("submitMC")) {
+        foreach (array_keys($select) as $hostIdToUpdate) {
+            updateHostInDB($hostIdToUpdate, true);
+        }
     }
-    $o = "w";
+    $o = HOST_WATCH;
     $valid = true;
 } elseif ($form->isSubmitted()) {
     $tpl->assign("macChecker", "<i style='color:red;'>" . $form->getElementError("macChecker") . "</i>");
@@ -1238,7 +1255,6 @@ if ($valid) {
     $tpl->assign('cloneSetMacro', $cloneSetMacro);
     $tpl->assign('cloneSetTemplate', $cloneSetTemplate);
     $tpl->assign('centreon_path', $centreon->optGen['oreon_path']);
-    $tpl->assign("k", $k);
     $tpl->assign("tpl", 0);
     $tpl->display("formHost.ihtml");
     ?>

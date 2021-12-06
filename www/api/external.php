@@ -46,12 +46,16 @@ $user = null;
 // get user information if a token is provided
 if (isset($_SERVER['HTTP_CENTREON_AUTH_TOKEN'])) {
     try {
-        $res = $pearDB->prepare(
-            "SELECT c.* FROM ws_token w, contact c WHERE c.contact_id = w.contact_id AND token = ?"
+        $contactStatement = $pearDB->prepare(
+            "SELECT c.*
+            FROM security_authentication_tokens sat, contact c
+            WHERE c.contact_id = sat.user_id
+            AND sat.token = :token"
         );
-        $res->execute(array($_SERVER['HTTP_CENTREON_AUTH_TOKEN']));
-        if ($userInfos = $res->fetch()) {
-            $centreon = new Centreon($userInfos);
+        $contactStatement->bindValue(':token', $_SERVER['HTTP_CENTREON_AUTH_TOKEN'], \PDO::PARAM_STR);
+        $contactStatement->execute();
+        if ($userInfos = $contactStatement->fetch()) {
+            $centreon = new \Centreon($userInfos);
             $user = $centreon->user;
         }
     } catch (\PDOException $e) {

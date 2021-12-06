@@ -71,8 +71,15 @@ class CentreonWorker implements CentreonClapiServiceInterface
              * mark task as being worked on
              */
             $this->getDi()['centreon.taskservice']->updateStatus($task->getId(), Task::STATE_PROGRESS);
-
-            $params = unserialize($task->getParams())['params'];
+            $serializedParams = filter_var($task->getParams(), FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+            if (empty($serializedParams)) {
+                throw new \Exception('Invalid Parameters');
+            }
+            $taskParams = unserialize($serializedParams);
+            if (!array_key_exists('params', $taskParams)) {
+                throw new \Exception('Missing parameters: params');
+            }
+            $params = $taskParams['params'];
             $commitment = new ExportCommitment($params['server'], $params['pollers']);
 
             try {
@@ -154,7 +161,15 @@ class CentreonWorker implements CentreonClapiServiceInterface
         /**
          * create import task on remote
          */
-        $params = unserialize($task->getParams())['params'];
+        $serializedParams = filter_var($task->getParams(), FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+        if (empty($serializedParams)) {
+            throw new \Exception('Invalid Parameters');
+        }
+        $taskParams = unserialize($serializedParams);
+        if (!array_key_exists('params', $taskParams)) {
+            throw new \Exception('Missing parameters: params');
+        }
+        $params = $taskParams['params'];
         $centreonPath = trim($params['centreon_path'], '/');
         $centreonPath = $centreonPath ? $centreonPath : '/centreon';
         $url = $params['http_method'] ? $params['http_method'] . "://" : "";

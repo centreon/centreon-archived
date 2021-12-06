@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 CENTREON
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2020 CENTREON
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -73,6 +73,22 @@ class CentreonContactGroup extends CentreonObject
         $this->action = "CG";
         $this->nbOfCompulsoryParams = count($this->insertParams);
         $this->activateField = "cg_activate";
+    }
+
+    /**
+     * Get contact group ID
+     *
+     * @param string|null $contactGroupName
+     * @return int
+     * @throws CentreonClapiException
+     */
+    public function getContactGroupID($contactGroupName = null)
+    {
+        $cgIds = $this->object->getIdByParameter($this->object->getUniqueLabelField(), array($contactGroupName));
+        if (count($cgIds) !== 1) {
+            throw new CentreonClapiException("Unknown contact group: " . $contactGroupName);
+        }
+        return (int) $cgIds[0];
     }
 
     /**
@@ -240,7 +256,7 @@ class CentreonContactGroup extends CentreonObject
             'AND'
         );
         foreach ($elements as $element) {
-            CentreonContact::getInstance()->export($element['contact_alias']);
+            CentreonContact::getInstance()->export($element[$cFieldName]);
             echo $this->action . $this->delim . "addcontact" .
                 $this->delim . $element[$cgFieldName] . $this->delim . $element[$cFieldName] .
                 $this->delim . $element['contact_alias'] . "\n";

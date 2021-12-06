@@ -13,7 +13,14 @@ parameters:
     database_user: "%env(user)%"
     database_password: "%env(password)%"
     centreon_var_lib: "%env(_CENTREON_VARLIB_)%"
-    validation_path: "%env(_CENTREON_PATH_)%config/packages/validator/validation.yaml"
+    validation_path: "%env(_CENTREON_PATH_)%config/packages/validator"
+    centreon_path: "%env(_CENTREON_PATH_)%"
+    centreon_etc_path: "%env(_CENTREON_ETC_)%"
+    translation_path: "%centreon_path%/www/locale"
+    log_path: "%env(_CENTREON_LOG_)%"
+    media_path: "img/media"
+    redirect_default_page: "/monitoring/resources"
+    session_expiration_delay: 120
 
 services:
     # Default configuration for services in *this* file
@@ -22,24 +29,60 @@ services:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, et
 
-    App\EventSubscriber\:
+    _instanceof:
+        Security\Domain\Authentication\Interfaces\ProviderInterface:
+            tags: ['authentication.providers']
+
+    EventSubscriber\:
         resource: '../src/EventSubscriber/*'
+
+    Security\:
+        resource: '../src/Security/*'
 
     # Mandatory to use 'view_response_listener: true' in the fost rest config failed
     sensio_framework_extra.view.listener:
         alias: Sensio\Bundle\FrameworkExtraBundle\EventListener\TemplateListener
 
     security.provider.tokenapi:
-        class: App\Security\TokenAPIAuthenticator
+        class: Security\TokenAPIAuthenticator
         public: false
 
     security.provider.sessionapi:
-        class: App\Security\SessionAPIAuthenticator
+        class: Security\SessionAPIAuthenticator
         public: false
 
     Centreon\Domain\Entity\EntityValidator:
         class: Centreon\Domain\Entity\EntityValidator
         arguments: ['%validation_path%']
 
-imports:
-    resource: './Modules/*.yaml'
+    Pimple\Container:
+        factory: ['Centreon\LegacyContainer', 'getInstance']
+
+    Centreon\Application\Controller\Router:
+        decorates: 'router'
+        arguments: ['@Centreon\Application\Controller\Router.inner']
+
+
+    # Security
+    Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface:
+        class: Security\Infrastructure\Repository\AuthenticationRepository
+
+    Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface:
+        class: Security\Domain\Authentication\AuthenticationService
+        public: true
+
+    Security\Domain\Authentication\Interfaces\ProviderRepositoryInterface:
+        class: Security\Infrastructure\Repository\ProviderRepository
+
+    Security\Domain\Authentication\Interfaces\SessionRepositoryInterface:
+        class: Security\Infrastructure\Repository\SessionRepository
+
+    Security\Domain\Authentication\Interfaces\ProviderServiceInterface:
+        class: Security\Domain\Authentication\ProviderService
+        public: true
+
+    Security\Domain\Authentication\Model\LocalProvider:
+        arguments: [ "%session_expiration_delay%" ]
+
+    Security\Domain\Authentication\Model\ProviderFactory:
+        arguments: [!tagged_iterator 'authentication.providers']

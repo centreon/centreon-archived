@@ -54,7 +54,7 @@ class CentreonAuthLDAP
      * Constructor
      *
      * @param CentreonDB $pearDB Connection to centreon database
-     * @param CentreonLog $CentreonLog Log event
+     * @param CentreonUserLog $CentreonLog Log event
      * @param string $login The username
      * @param string $password The user password
      * @param string $contactInfos
@@ -116,7 +116,13 @@ class CentreonAuthLDAP
             && $this->contactInfos['contact_ldap_dn'] != ''
             && $this->ldap->findUserDn($this->contactInfos['contact_alias']) !== $this->contactInfos['contact_ldap_dn']
         ) {
-            return 0;
+            if ($this->ldap->connect()) {
+                //User resource error
+                return 0;
+            } else {
+                //LDAP fallback
+                return 2;
+            }
         }
 
         /*

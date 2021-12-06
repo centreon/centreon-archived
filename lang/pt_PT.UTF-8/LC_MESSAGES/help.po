@@ -681,11 +681,11 @@ msgstr ""
 msgid "Authentication can be solely based on SSO or it can work with both SSO and local authentication systems."
 msgstr "A autenticação pode ser baseada somente no SSO ou pode funcionar tanto com o SSO quanto com um sistema de autenticação local."
 
-msgid "Enable login with Keycloak."
-msgstr "Ativa autenticação com Keycloak"
+msgid "Enable login with OpenId Connect."
+msgstr "Ativa autenticação com OpenId Connect"
 
-msgid "Authentication can be solely based on Keycloak or it can work with both Keycloak and local authentication systems."
-msgstr "A autenticação pode ser baseada exclusivamente no Keycloak ou pode funcionar com os sistemas de autenticação Keycloak e local."
+msgid "Authentication can be solely based on OpenId Connect or it can work with both OpenId Connect and local authentication systems."
+msgstr "A autenticação pode ser baseada exclusivamente no OpenId Connect ou pode funcionar com os sistemas de autenticação OpenId Connect e local."
 
 msgid "IP/DNS of trusted clients. Use coma as delimiter in case of multiple clients."
 msgstr "IP/DNS de clientes de confiança. Use virgula para delimitar em caso de multiplos clientes."
@@ -693,20 +693,32 @@ msgstr "IP/DNS de clientes de confiança. Use virgula para delimitar em caso de 
 msgid "IP/DNS of blacklist clients. Use coma as delimiter in case of multiple clients."
 msgstr "IP/DNS de clientes bloqueados. Use virgula para delimitar em caso de multiplos clientes."
 
-msgid "Your Keycloak server url (with \"/auth\")."
-msgstr "Seu endereço do servidor Keycloak (com \"/auth\")."
+msgid "Your OpenId Connect base Url (for example http://IP:8080/auth/realms/master/protocol/openid-connect)."
+msgstr "Seu endereço básico do servidor OpenId Connect (par xemple http://IP:8080/auth/realms/master/protocol/openid-connect)."
 
-msgid "Your Keycloak redirect url (this server)."
-msgstr "Seu endereço de redirecionamento Keycloak (este servidor)."
+msgid "Your OpenId Connect Authorization endpoint (for example /auth)."
+msgstr "Seu endereço do servidor OpenId Connect Authorization endpoint (por exemplo /auth)."
 
-msgid "Your Keycloak Realm name."
-msgstr "Seu nome de Dominio Keycloak"
+msgid "Your OpenId Connect Token endpoint (for example /token)."
+msgstr "Seu endereço do servidor OpenId Connect Token endpoint (por exemplo /token)."
 
-msgid "Your Keycloak client ID."
+msgid "Your OpenId Connect Introspection Token endpoint (for example /token/introspect)."
+msgstr "Seu endereço do servidor OpenId Connect Introspection Token endpoint (por exemplo /token/introspect)."
+
+msgid "Your OpenId Connect User Information endpoint (for example /userinfo)."
+msgstr "Seu endereço do servidor OpenId Connect User Information endpoint (por exemplo /userinfo)."
+
+msgid "Your OpenId Connect Scope (for example openid)."
+msgstr "O escopo (par exemple openid)."
+
+msgid "Your OpenId Connect redirect url (this server)."
+msgstr "Seu endereço de redirecionamento OpenId Connect (este servidor)."
+
+msgid "Your OpenId Connect client ID."
 msgstr "Sua identificação de cliente kaycloak"
 
-msgid "Your Keycloak client secret."
-msgstr "Seu segredo de cliente Keycloak"
+msgid "Your OpenId Connect client secret."
+msgstr "Seu segredo de cliente OpenId Connect"
 
 #: centreon-web/www/include/Administration/parameters/general/help.php:92
 msgid "The header variable that will be used as login. i.e: $_SERVER['HTTP_AUTH_USER']"
@@ -1436,26 +1448,6 @@ msgid "This is a temporary file that Monitoring Engine periodically creates and 
 msgstr ""
 "Esse é um ficheiro temporário que o mecanismo de supervisão cria periodicamente durante a atualização de comentários, status e assim por diante. \n"
 "Este ficheiro é excluído quando não é mais necessário."
-
-#: centreon-web/www/include/configuration/configNagios/help.php:67
-msgid ""
-"This options determines which directory Monitoring Engine will use to temporarily store host and service check results before they are processed. This directory should not be used to store any other files, as Monitoring Engine will periodically clean this directory "
-"of old file. Make sure that only a single instance of Monitoring Engine has access to the check result path. If multiple instances of Monitoring Engine have their check result path set to the same directory, you will run into problems with check results being "
-"processed (incorrectly) by the wrong instance of Monitoring Engine!"
-msgstr ""
-"Essa opção determina qual diretório o mecanismo de gerenciamento usará para armazenar temporariamente os resultados do controle. \n"
-"Este diretório não deve armazenar outros ficheiros, porque o mecanismo de supervisão exclui o conteúdo desse diretório repetidamente. \n"
-"Certifique-se de que apenas uma instância do mecanismo de supervisão tenha acesso ao diretório de resultados. \n"
-"Se várias instâncias do mecanismo de monitoramento tiverem seu diretório de resultados, configure o mesmo local, você terá problemas com os resultados das verificações sendo processadas (erroneamente) em comparação com a instância incorreta do mecanismo de supervisão!"
-
-#: centreon-web/www/include/configuration/configNagios/help.php:78
-msgid ""
-"This options determines the maximum age in seconds that Monitoring Engine will consider check result files found in the check_result_path directory to be valid. Check result files that are older that this threshold will be deleted by Monitoring Engine and the check "
-"results they contain will not be processed. By using a value of zero (0) with this option, Monitoring Engine will process all check result files."
-msgstr ""
-"Essa opção determina o tempo máximo em segundos que o mecanismo de gerenciamento pode considerar localizar informações de resultado de controle no diretório de armazenamento de resultados. \n"
-"Os resultados que excedam esse limite de tempo serão excluídos pelo mecanismo de supervisão e não poderão mais ser usados. \n"
-"Usando o valor zero (0) para essa opção, o mecanismo de monitoramento explorará cada ficheiro de controle."
 
 #: centreon-web/www/include/configuration/configNagios/help.php:86
 msgid ""
@@ -2450,10 +2442,6 @@ msgid "Enable the possibility to log pid information in engine log file (option 
 msgstr ""
 "Permite a capacidade de registrar o PID do processo no log de eventos do mecanismo de supervisor. \n"
 "Esta opção só funciona para o motor Centreon."
-
-#: centreon-web/www/include/configuration/configNagios/help.php:492
-msgid "This option enable or disable compatibility mode to use check result path."
-msgstr "Essa opção torna o mecanismo do Mecanismo Centreon compatível com módulos de terceiros, como MKLiveStatus e Mod_Gearman."
 
 #: centreon-web/www/include/configuration/configObject/host_dependency/help.php:4 centreon-web/www/include/configuration/configObject/service_dependency/help.php:4
 msgid "Define a short name for this dependency."
@@ -4648,16 +4636,6 @@ msgstr ""
 #~ "Este é um diretório que o Nagios pode usar como espaço de trabalho para criar arquivos temporários durante o processo de monitoramento. \n"
 #~ "Você deve executar tmpwatch, ou um utilitário semelhante, neste diretório de tempos em tempos, a fim de excluir arquivos com mais de 24 horas."
 
-#~ msgid ""
-#~ "This options determines which directory Nagios will use to temporarily store host and service check results before they are processed. This directory should not be used to store any other files, as Nagios will periodically clean this directory of old file. Make "
-#~ "sure that only a single instance of Nagios has access to the check result path. If multiple instances of Nagios have their check result path set to the same directory, you will run into problems with check results being processed (incorrectly) by the wrong "
-#~ "instance of Nagios!"
-#~ msgstr ""
-#~ "Essa opção determina qual diretório do Nagios usará para armazenar temporariamente os resultados de controle em hosts e serviços antes que eles sejam processados. \n"
-#~ "Este diretório não deve ser usado para armazenar outros arquivos, pois o Nagios limpará periodicamente esse diretório de arquivos antigos. \n"
-#~ "Certifique-se de que apenas uma instância do Nagios tenha acesso ao caminho do resultado dos controles. \n"
-#~ "Se várias instâncias Nagios acessar a mesma pasta, você pode ter problemas com resultado controle (inconsistente) como tratados pela instância errada do Nagios."
-
 #~ msgid "This is used to set the effective user that the Nagios process should run as. After initial program startup and before starting to monitor anything, Nagios will drop its effective privileges and run as this user. You may specify either a username or a UID."
 #~ msgstr ""
 #~ "Esta opção é usada para definir o usuário que executará o processo Nagios. \n"
@@ -4802,3 +4780,15 @@ msgstr ""
 
 #~ msgid "Additional Remote Server to which this server will be attached"
 #~ msgstr ""
+
+#  msgid "More actions"
+#  msgstr ""
+
+#  msgid "Disacknowledge"
+#  msgstr ""
+
+#  msgid "Disacknowledge services attached to hosts"
+#  msgid ""
+
+#  msgid "Disacknowledgement command sent"
+#  msgid ""

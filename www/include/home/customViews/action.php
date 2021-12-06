@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright 2005-2015 Centreon
+ * Copyright 2005-2020 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -33,7 +34,7 @@
  *
  */
 
-require_once realpath(dirname(__FILE__) . "/../../../../config/centreon.config.php");
+require_once realpath(__DIR__ . "/../../../../config/centreon.config.php");
 require_once _CENTREON_PATH_ . "www/class/centreon.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonCustomView.class.php";
@@ -46,105 +47,294 @@ require_once _CENTREON_PATH_ . "www/class/centreonContactgroup.class.php";
 session_start();
 session_write_close();
 
-if (!isset($_POST['action']) || !isset($_SESSION['centreon'])) {
+if (empty($_POST['action']) || !isset($_SESSION['centreon'])) {
     exit();
 }
 
 $centreon = $_SESSION['centreon'];
-$action = $_POST['action'];
+
 $db = new CentreonDB();
 if (CentreonSession::checkSession(session_id(), $db) == 0) {
     exit();
 }
 
-$viewObj = new CentreonCustomView($centreon, $db);
-$widgetObj = new CentreonWidget($centreon, $db);
-$xml = new CentreonXML();
-if (isset($_POST['custom_view_id']) && $_POST['custom_view_id']) {
-    $customViewId = $_POST['custom_view_id'];
-    $permission = $viewObj->checkPermission($customViewId);
-} else {
-    $customViewId = "";
-}
-$xml->startElement('response');
-try {
-    if ($action == "add") {
-        if (isset($_POST['create_load']['create_load']) && $_POST['create_load']['create_load'] == 'create') {
-            $customViewId = $viewObj->addCustomView($_POST);
-            if (isset($_POST['widget_id'])) {
-                $widgetObj->udpateViewWidgetRelations($customViewId, $_POST['widget_id']);
-            }
-        } elseif (isset($_POST['create_load']['create_load']) && $_POST['create_load']['create_load'] == 'load') {
-            $customViewId = $viewObj->loadCustomView($_POST);
-        }
-    } elseif ($action == "edit" && $customViewId) {
-        $viewObj->updateCustomView($_POST);
+$action = $_POST['action'];
 
-        if (isset($_POST['widget_id'])) {
-            $widgetObj->udpateViewWidgetRelations($customViewId, $_POST['widget_id']);
-        }
+$postFilter = array(
+    'widget_id' => [
+        'filter' => FILTER_VALIDATE_INT,
+        'options' => [
+            'default' => false
+        ]
+    ],
+    'custom_view_id' => [
+        'filter' => FILTER_VALIDATE_INT,
+        'options' => [
+            'default' => false
+        ]
+    ],
+    'timer' => [
+        'filter' => FILTER_VALIDATE_INT,
+        'options' => [
+            'default' => false
+        ]
+    ],
+    'public' => [
+        'filter' => FILTER_VALIDATE_INT,
+        'options' => [
+            'default' => false
+        ]
+    ],
+    'user_id' => [
+        'filter' => FILTER_VALIDATE_INT,
+        'options' => [
+            'default' => false
+        ]
+    ],
+    'viewLoad' => [
+        'filter' => FILTER_VALIDATE_INT,
+        'options' => [
+            'default' => false
+        ]
+    ],
+    'name' => [
+        'filter' => FILTER_SANITIZE_STRING,
+        'options' => [
+            'default' => ''
+        ]
+    ],
+    'layout' => [
+        'options' => [
+            'default' => ''
+        ]
+    ],
+    'widget_model_id' => [
+        'filter' => FILTER_VALIDATE_INT,
+        'options' => [
+            'default' => false
+        ]
+    ],
+    'widget_model_id' => [
+        'filter' => FILTER_VALIDATE_INT,
+        'options' => [
+            'default' => false
+        ]
+    ],
+    'widget_title' => [
+        'filter' => FILTER_SANITIZE_STRING,
+        'options' => [
+            'default' => ''
+        ]
+    ]
+);
 
-        //update share
-        if (!isset($_POST['public'])) {
-            $_POST['public'] = 0;
-        }
+$postInputs = filter_input_array(INPUT_POST, $postFilter);
 
-        if (!isset($_POST['user_id'])) {
-            $_POST['user_id'] = $centreon->user->user_id;
-        }
-    } elseif ($action == "share") {
-        $viewObj->shareCustomView($_POST, $centreon->user->user_id);
-    } elseif ($action == "remove") {
-        $viewObj->removeUserFromView($_POST);
-        $xml->writeElement('contact_name', $centreon->user->getContactName($db, $_POST['user_id']));
-    } elseif ($action == "removegroup") {
-        $cgObj = new CentreonContactgroup($db);
-        $viewObj->removeUsergroupFromView($_POST);
-        $xml->writeElement('contact_name', $cgObj->getNameFromCgId($_POST['usergroup_id']));
-    } elseif ($action == "setPreferences") {
-        $widgetObj->updateUserWidgetPreferences($_POST, $permission);
-    } elseif ($action == "deleteWidget") {
-        $widgetObj->deleteWidgetFromView($_POST);
-    } elseif ($action == "position") {
-        $widgetObj->updateWidgetPositions($_POST);
-    } elseif ($action == "deleteView" && $customViewId) {
-        $viewObj->deleteCustomView($customViewId);
-    } elseif ($action == "addWidget") {
-        $widgetObj->addWidget($_POST);
-    } elseif ($action == "setDefault") {
-        $viewObj->setDefault($customViewId);
-    } elseif ($action == "setRotate" && isset($_POST['timer'])) {
-        $centreon->user->setContactParameters($db, array('widget_view_rotation' => $_POST['timer']));
-    } elseif ($action == "defaultEditMode") {
-        $_SESSION['customview_edit_mode'] = $_POST['editMode'];
-    } elseif ($action == "get_share_info") {
-        /* Get share information for a view */
-        if (isset($_POST['viewId'])) {
-            $viewers = $viewObj->getUsersFromViewId($_POST['viewId']);
-            $viewerGroups = $viewObj->getUsergroupsFromViewId($_POST['viewId']);
-            $xml->startElement('contacts');
-            foreach ($viewers as $viewer) {
-                if ($viewer['user_id'] != $centreon->user->user_id) {
-                    $xml->startElement('contact');
-                    $xml->writeAttribute('locked', $viewer['locked']);
-                    $xml->writeAttribute('id', $viewer['user_id']);
-                    $xml->text($viewer['contact_name']);
-                    $xml->endElement();
-                }
-            }
-            $xml->endElement();
-            $xml->startElement('contactgroups');
-            foreach ($viewerGroups as $viewerGroup) {
-                $xml->startElement('contactgroup');
-                $xml->writeAttribute('locked', $viewerGroup['locked']);
-                $xml->writeAttribute('id', $viewerGroup['usergroup_id']);
-                $xml->text($viewerGroup['cg_name']);
-                $xml->endElement();
-            }
-            $xml->endElement();
+$lockedUsers = [];
+if (!empty($_POST['lockedUsers'])) {
+    foreach ($_POST['lockedUsers'] as $lockedUserId) {
+        if (filter_var($lockedUserId, FILTER_VALIDATE_INT) !== false) {
+            $lockedUsers[] = (int) $lockedUserId;
         }
     }
-    $xml->writeElement('custom_view_id', $customViewId);
+}
+$unlockedUsers = [];
+if (!empty($_POST['unlockedUsers'])) {
+    foreach ($_POST['unlockedUsers'] as $unlockedUserId) {
+        if (filter_var($unlockedUserId, FILTER_VALIDATE_INT) !== false) {
+            $unlockedUsers[] = (int) $unlockedUserId;
+        }
+    }
+}
+$lockedUsergroups = [];
+if (!empty($_POST['lockedUsergroups'])) {
+    foreach ($_POST['lockedUsergroups'] as $lockedUsergroupsId) {
+        if (filter_var($lockedUsergroupsId, FILTER_VALIDATE_INT) !== false) {
+            $lockedUsergroups[] = (int) $lockedUsergroupsId;
+        }
+    }
+}
+$unlockedUsergroups = [];
+if (!empty($_POST['unlockedUsergroups'])) {
+    foreach ($_POST['unlockedUsergroups'] as $unlockedUsergroupsId) {
+        if (filter_var($unlockedUsergroupsId, FILTER_VALIDATE_INT) !== false) {
+            $unlockedUsergroups[] = (int) $unlockedUsergroupsId;
+        }
+    }
+}
+
+$positions = [];
+if (!empty($_POST['positions'])) {
+    foreach ($_POST['positions'] as $position) {
+        if (filter_var($position, FILTER_SANITIZE_STRING) !== false) {
+            $positions[] = $position;
+        }
+    }
+}
+
+$createLoad = '';
+if (!empty($_POST['create_load']['create_load'])) {
+    $createLoad = $_POST['create_load']['create_load'];
+}
+
+
+$postInputs['layout'] = filter_var(
+    $_POST['layout']['layout'] ?? '',
+    FILTER_SANITIZE_STRING,
+    $postFilter['layout']
+);
+
+$viewObj = new CentreonCustomView($centreon, $db);
+$widgetObj = new CentreonWidget($centreon, $db);
+
+$xml = new CentreonXML();
+
+if ($postInputs['custom_view_id']) {
+    // check wether or not user can modify the view (locked & visible)
+    $permission = $viewObj->checkPermission($postInputs['custom_view_id']);
+} else {
+    $postInputs['custom_view_id'] = "";
+}
+// check if the user can perform the provided action
+$authorized = ($centreon->user->admin === '0') ? $viewObj->checkUserActions($action) : true;
+$xml->startElement('response');
+try {
+    switch ($action) {
+        case 'add':
+            if (!empty($createLoad)) {
+                if ($createLoad === 'create') {
+                    $postInputs['custom_view_id'] = $viewObj->addCustomView(
+                        $postInputs['name'],
+                        $postInputs['layout'],
+                        $postInputs['public'],
+                        $authorized
+                    );
+                    if ($postInputs['widget_id']) {
+                        $widgetObj->updateViewWidgetRelations($postInputs['custom_view_id']);
+                    }
+                } elseif ($createLoad === 'load' && !empty($postInputs['viewLoad'])) {
+                    $postInputs['custom_view_id'] = $viewObj->loadCustomView($postInputs['viewLoad'], $authorized);
+                }
+            }
+            break;
+        case 'edit':
+            if ($postInputs['custom_view_id']) {
+                $viewObj->updateCustomView(
+                    $postInputs['custom_view_id'],
+                    $postInputs['name'],
+                    $postInputs['layout'],
+                    $postInputs['public'],
+                    $permission,
+                    $authorized
+                );
+
+                if ($postInputs['widget_id']) {
+                    $widgetObj->updateViewWidgetRelations($postInputs['custom_view_id'], $postInputs['widget_id']);
+                }
+
+                //update share
+                if (!$postInputs['public']) {
+                    $postInputs['public'] = 0;
+                }
+
+                if (empty($postInputs['user_id'])) {
+                    $userId = $centreon->user->user_id;
+                }
+            }
+            break;
+        case 'share':
+            $viewObj->shareCustomView(
+                $postInputs['custom_view_id'],
+                $lockedUsers,
+                $unlockedUsers,
+                $lockedUsergroups,
+                $unlockedUsergroups,
+                $centreon->user->user_id,
+                $permission,
+                $authorized
+            );
+            break;
+        case 'remove':
+            $viewObj->removeUserFromView($postInputs['user_id'], $postInputs['custom_view_id'], $permission);
+            $xml->writeElement('contact_name', $centreon->user->getContactName($db, $postInputs['user_id']));
+            break;
+        case 'removegroup':
+            $cgObj = new CentreonContactgroup($db);
+            $viewObj->removeUsergroupFromView($postInputs['custom_view_id'], $postInputs['usergroup_id']);
+            $xml->writeElement('contact_name', $cgObj->getNameFromCgId($postInputs['usergroup_id']));
+            break;
+        case 'setPreferences':
+            $widgetObj->updateUserWidgetPreferences($_POST, $permission, $authorized);
+            break;
+        case 'deleteWidget':
+            $widgetObj->deleteWidgetFromView(
+                $postInputs['custom_view_id'],
+                $postInputs['widget_id'],
+                $authorized,
+                $permission
+            );
+            break;
+        case 'position':
+            $widgetObj->updateWidgetPositions($postInputs['custom_view_id'], $permission, $positions);
+            break;
+        case 'deleteView':
+            if ($postInputs['custom_view_id']) {
+                $viewObj->deleteCustomView($postInputs['custom_view_id'], $authorized);
+            }
+            break;
+        case 'addWidget':
+            $widgetObj->addWidget(
+                $postInputs['custom_view_id'],
+                $postInputs['widget_model_id'],
+                $postInputs['widget_title'],
+                $permission,
+                $authorized
+            );
+            break;
+        case 'setDefault':
+            if ($postInputs['custom_view_id']) {
+                $viewObj->setDefault($postInputs['custom_view_id']);
+            }
+            break;
+        case 'setRotate':
+            if ($postInputs['timer'] >= 0) {
+                $centreon->user->setContactParameters($db, array('widget_view_rotation' => $postInputs['timer']));
+            }
+            break;
+        case 'defaultEditMode':
+            $_SESSION['customview_edit_mode'] = $_POST['editMode'];
+            break;
+        case 'get_share_info':
+            $viewId = isset($_POST['viewId']) ? filter_var($_POST['viewId'], FILTER_VALIDATE_INT) : false;
+            if (false !== $viewId) {
+                $viewers = $viewObj->getUsersFromViewId($viewId);
+                $viewerGroups = $viewObj->getUsergroupsFromViewId($viewId);
+                $xml->startElement('contacts');
+                foreach ($viewers as $viewer) {
+                    if ($viewer['user_id'] != $centreon->user->user_id) {
+                        $xml->startElement('contact');
+                        $xml->writeAttribute('locked', $viewer['locked']);
+                        $xml->writeAttribute('id', $viewer['user_id']);
+                        $xml->text($viewer['contact_name']);
+                        $xml->endElement();
+                    }
+                }
+                $xml->endElement();
+                $xml->startElement('contactgroups');
+                foreach ($viewerGroups as $viewerGroup) {
+                    $xml->startElement('contactgroup');
+                    $xml->writeAttribute('locked', $viewerGroup['locked']);
+                    $xml->writeAttribute('id', $viewerGroup['usergroup_id']);
+                    $xml->text($viewerGroup['cg_name']);
+                    $xml->endElement();
+                }
+                $xml->endElement();
+            }
+            break;
+        default:
+            throw new CentreonCustomViewException('Unsupported action provided.');
+    }
+    $xml->writeElement('custom_view_id', $postInputs['custom_view_id']);
 } catch (CentreonCustomViewException $e) {
     $xml->writeElement('error', $e->getMessage());
 } catch (CentreonWidgetException $e) {

@@ -1,0 +1,11 @@
+centreon_application_gorgone_sendCommand:
+  methods: POST
+  path: /gorgone/pollers/{pollerId}/commands/{commandName}
+  controller: 'Centreon\Application\Controller\GorgoneController::sendCommand'
+  condition: "request.attributes.get('version') >= 21.10"
+
+centreon_application_gorgone_getResponses:
+  methods: GET
+  path: /gorgone/pollers/{pollerId}/responses/{token}
+  controller: 'Centreon\Application\Controller\GorgoneController::getResponses'
+  condition: "request.attributes.get('version') >= 21.10"

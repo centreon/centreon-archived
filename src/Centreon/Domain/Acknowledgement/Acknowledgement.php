@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,101 +22,122 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Acknowledgement;
 
-use JMS\Serializer\Annotation as Serializer;
-use Centreon\Domain\Annotation\EntityDescriptor as Desc;
+use Centreon\Domain\Service\EntityDescriptorMetadataInterface;
 
-class Acknowledgement
+class Acknowledgement implements EntityDescriptorMetadataInterface
 {
+    // Groups for serialization
+    public const SERIALIZER_GROUPS_HOST = ['Default', 'ack_host'];
+    public const SERIALIZER_GROUPS_SERVICE = ['Default', 'ack_service'];
+    public const SERIALIZER_GROUP_FULL = 'ack_full';
+
+    // Types
     public const TYPE_HOST_ACKNOWLEDGEMENT = 0;
     public const TYPE_SERVICE_ACKNOWLEDGEMENT = 1;
 
+    //Groups for validation
+    public const VALIDATION_GROUP_ACK_RESOURCE = ['ack_resource'];
+
     /**
-     * @Serializer\Groups({"ack_main"})
-     * @Desc(column="acknowledgement_id", modifier="setId")
-     * @Serializer\Type("integer")
      * @var int
      */
     private $id;
 
     /**
-     * @Serializer\Groups({"ack_main"})
-     * @Serializer\Type("integer")
+     * @var int
+     */
+    private $pollerId;
+
+    /**
+     * @var int
+     */
+    private $hostId;
+
+    /**
+     * @var int
+     */
+    private $serviceId;
+
+    /**
      * @var int|null
      */
     private $authorId;
 
     /**
-     * @Serializer\Groups({"ack_main"})
-     * @Desc(column="comment_data", modifier="setComment")
-     * @Serializer\Type("string")
+     * @var string|null
+     */
+    private $authorName;
+
+    /**
      * @var string|null
      */
     private $comment;
 
     /**
-     * @Serializer\Groups({"ack_main"})
      * @var \DateTime|null
      */
     private $deletionTime;
 
     /**
-     * @Serializer\Groups({"ack_main"})
-     * @var \DateTime
+     * @var \DateTime|null
      */
     private $entryTime;
 
     /**
-     * @Serializer\Groups({"ack_main"})
-     * @Serializer\Type("integer")
-     * @var int Host id
+     * @var int Resource id
      */
-    private $hostId;
+    private $resourceId;
 
     /**
-     * @Serializer\Groups({"ack_main"})
-     * @Desc(column="instance_id", modifier="setPollerId")
-     * @Serializer\Type("integer")
-     * @var int|null Poller Id
+     * @var int|null Parent resource id
      */
-    private $pollerId;
+    private $parentResourceId;
 
     /**
-     * @Serializer\Groups({"ack_main"})
-     * @Desc(column="notify_contacts", modifier="setNotifyContacts")
-     * @Serializer\Type("boolean")
      * @var bool Indicates if the contacts must to be notify
      */
-    private $isNotifyContacts;
+    private $isNotifyContacts = true;
 
     /**
-     * @Serializer\Groups({"ack_main"})
-     * @Desc(column="persistent_comment", modifier="setPersistentComment")
-     * @Serializer\Type("boolean")
      * @var bool Indicates this acknowledgement will be maintained in the case of a restart of the scheduler
      */
-    private $isPersistentComment;
+    private $isPersistentComment = true;
 
     /**
-     * @Serializer\Groups({"ack_main"})
-     * @Desc(column="sticky", modifier="setSticky")
-     * @Serializer\Type("boolean")
      * @var bool
      */
-    private $isSticky;
+    private $isSticky = true;
 
     /**
-     * @Serializer\Groups({"ack_service"})
-     * @Serializer\Type("integer")
-     * @var int|null Service id
-     */
-    private $serviceId;
-
-    /**
-     * @Serializer\Groups({"ack_main"})*
-     * @Serializer\Type("integer")
-     * @var int State of this acknowledgment
+     * @var int State of this acknowledgement
      */
     private $state;
+
+    /**
+     * @var int Type of this acknowledgement
+     */
+    private $type;
+
+    /**
+     * @var bool Indicates if this downtime should be applied to linked services
+     */
+    private $withServices = false;
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function loadEntityDescriptorMetadata(): array
+    {
+        return [
+            'author' => 'setAuthorName',
+            'acknowledgement_id' => 'setId',
+            'comment_data' => 'setComment',
+            'instance_id' => 'setPollerId',
+            'notify_contacts' => 'setNotifyContacts',
+            'persistent_comment' => 'setPersistentComment',
+            'sticky' => 'setSticky',
+        ];
+    }
 
     /**
      * @return int|null
@@ -136,6 +158,60 @@ class Acknowledgement
     }
 
     /**
+     * @return int
+     */
+    public function getPollerId(): ?int
+    {
+        return $this->pollerId;
+    }
+
+    /**
+     * @param int $pollerId
+     * @return Acknowledgement
+     */
+    public function setPollerId(int $pollerId): Acknowledgement
+    {
+        $this->pollerId = $pollerId;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getHostId(): ?int
+    {
+        return $this->hostId;
+    }
+
+    /**
+     * @param int $hostId
+     * @return Acknowledgement
+     */
+    public function setHostId(int $hostId): Acknowledgement
+    {
+        $this->hostId = $hostId;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getServiceId(): ?int
+    {
+        return $this->serviceId;
+    }
+
+    /**
+     * @param int $serviceId
+     * @return Acknowledgement
+     */
+    public function setServiceId(int $serviceId): Acknowledgement
+    {
+        $this->serviceId = $serviceId;
+        return $this;
+    }
+
+    /**
      * @return int|null
      */
     public function getAuthorId(): ?int
@@ -151,6 +227,22 @@ class Acknowledgement
     {
         $this->authorId = $authorId;
         return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getAuthorName(): ?string
+    {
+        return $this->authorName;
+    }
+
+    /**
+     * @param string|null $authorName
+     */
+    public function setAuthorName(?string $authorName): void
+    {
+        $this->authorName = $authorName;
     }
 
     /**
@@ -190,18 +282,18 @@ class Acknowledgement
     }
 
     /**
-     * @return \DateTime
+     * @return \DateTime|null
      */
-    public function getEntryTime(): \DateTime
+    public function getEntryTime(): ?\DateTime
     {
         return $this->entryTime;
     }
 
     /**
-     * @param \DateTime $entryTime
+     * @param \DateTime|null $entryTime
      * @return Acknowledgement
      */
-    public function setEntryTime(\DateTime $entryTime): Acknowledgement
+    public function setEntryTime(?\DateTime $entryTime): Acknowledgement
     {
         $this->entryTime = $entryTime;
         return $this;
@@ -210,36 +302,36 @@ class Acknowledgement
     /**
      * @return int
      */
-    public function getHostId(): int
+    public function getResourceId(): int
     {
-        return $this->hostId;
+        return $this->resourceId;
     }
 
     /**
-     * @param int $hostId
+     * @param int $resourceId
      * @return Acknowledgement
      */
-    public function setHostId(int $hostId): Acknowledgement
+    public function setResourceId(int $resourceId): Acknowledgement
     {
-        $this->hostId = $hostId;
+        $this->resourceId = $resourceId;
         return $this;
     }
 
     /**
-     * @return int|null
+     * @return int
      */
-    public function getPollerId(): ?int
+    public function getParentResourceId(): ?int
     {
-        return $this->pollerId;
+        return $this->parentResourceId;
     }
 
     /**
-     * @param int|null $pollerId
+     * @param int|null $parentResourceId
      * @return Acknowledgement
      */
-    public function setPollerId(?int $pollerId): Acknowledgement
+    public function setParentResourceId(?int $parentResourceId): Acknowledgement
     {
-        $this->pollerId = $pollerId;
+        $this->parentResourceId = $parentResourceId;
         return $this;
     }
 
@@ -300,24 +392,6 @@ class Acknowledgement
     /**
      * @return int
      */
-    public function getServiceId(): ?int
-    {
-        return $this->serviceId;
-    }
-
-    /**
-     * @param int $serviceId|null
-     * @return Acknowledgement
-     */
-    public function setServiceId(?int $serviceId): Acknowledgement
-    {
-        $this->serviceId = $serviceId;
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
     public function getState(): int
     {
         return $this->state;
@@ -331,5 +405,39 @@ class Acknowledgement
     {
         $this->state = $state;
         return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getType(): int
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param int $type
+     * @return Acknowledgement
+     */
+    public function setType(int $type): Acknowledgement
+    {
+        $this->type = $type;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isWithServices(): bool
+    {
+        return $this->withServices;
+    }
+
+    /**
+     * @param bool $withServices
+     */
+    public function setWithServices(bool $withServices): void
+    {
+        $this->withServices = $withServices;
     }
 }

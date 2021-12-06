@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable no-async-promise-executor */
 /* eslint-disable consistent-return */
 /* eslint-disable no-unused-vars */
@@ -13,8 +14,9 @@ const getGlobalName = (filename) => {
   const normalizedFilename = filename
     .replace(/(^\.?\/)|(\.js)/g, '')
     .replace(/\//g, '$');
+
   return `$centreonExternalModule$${normalizedFilename}`;
-}
+};
 
 const importModule = ({ basename, file }) => {
   return new Promise(async (resolve, reject) => {
@@ -41,16 +43,21 @@ const importModules = ({ basename, files }) => {
   const promises = files.map((file) => {
     return importModule({ basename, file });
   });
+
   return Promise.all(promises);
 };
 
 // this function allows to import dynamically js and css using systemjs
 // it is compatible with IE, Edge, firefox and chrome
-export function dynamicImport(basename, parameters) {
-  return new Promise(async (resolve, _reject) => {
-    const { js: { commons, chunks, bundle }, css } = parameters;
+export const dynamicImport = (basename, parameters) =>
+  new Promise(async (resolve, _reject) => {
+    const {
+      js: { commons, chunks, bundle },
+      css,
+    } = parameters;
     if (!bundle) {
       console.error(new Error('dynamic import should contains js parameter.'));
+
       return null;
     }
 
@@ -80,6 +87,5 @@ export function dynamicImport(basename, parameters) {
       console.error(error);
     }
   });
-}
 
 export default dynamicImport;

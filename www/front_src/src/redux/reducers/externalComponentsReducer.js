@@ -1,10 +1,9 @@
 import * as actions from '../actions/externalComponentsActions';
 
-// by default, no one external page and hook
 const initialState = {
-  pages: [],
-  hooks: [],
   fetched: false,
+  hooks: {},
+  pages: {},
 };
 
 const externalComponentsReducer = (state = initialState, action) => {
@@ -12,9 +11,9 @@ const externalComponentsReducer = (state = initialState, action) => {
     case actions.FETCH_EXTERNAL_COMPONENTS_SUCCESS:
       return {
         ...state,
-        pages: action.data.pages,
-        hooks: action.data.hooks,
         fetched: true,
+        hooks: action.data.hooks,
+        pages: action.data.pages,
       };
     default:
       return state;

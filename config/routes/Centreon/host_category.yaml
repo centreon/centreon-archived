@@ -1,0 +1,5 @@
+centreon_application_find_host_categories:
+  methods: GET
+  path: /configuration/hosts/categories
+  controller: 'Centreon\Application\Controller\HostCategoryController::findHostCategories'
+  condition: "request.attributes.get('version') >= 21.10"

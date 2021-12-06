@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2019 Centreon
+ * Copyright 2005-2021 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -47,7 +48,8 @@ $continue = true;
 // DB Connect
 include_once './class/centreonDB.class.php';
 
-if (!isset($_GET["cmd"])
+if (
+    !isset($_GET["cmd"])
     && isset($_POST["cmd"])
 ) {
     $param = $_POST;
@@ -55,29 +57,34 @@ if (!isset($_GET["cmd"])
     $param = $_GET;
 }
 
-if (isset($param["cmd"])
+if (
+    isset($param["cmd"])
     && $param["cmd"] == 15
     && isset($param["author"])
     && isset($param["en"])
     && $param["en"] == 1
 ) {
-    if (!isset($param["sticky"])
+    if (
+        !isset($param["sticky"])
         || !in_array($param["sticky"], array('0', '1'))
     ) {
         $param["sticky"] = '0';
     }
-    if (!isset($param["notify"])
+    if (
+        !isset($param["notify"])
         || !in_array($param["notify"], array('0', '1'))
     ) {
         $param["notify"] = '0';
     }
-    if (!isset($param["persistent"])
+    if (
+        !isset($param["persistent"])
         || !in_array($param["persistent"], array('0', '1'))
     ) {
         $param["persistent"] = '0';
     }
     acknowledgeService($param);
-} elseif (isset($param["cmd"])
+} elseif (
+    isset($param["cmd"])
     && $param["cmd"] == 15
     && isset($param["author"])
     && isset($param["en"])
@@ -86,7 +93,8 @@ if (isset($param["cmd"])
     acknowledgeServiceDisable();
 }
 
-if (isset($param["cmd"])
+if (
+    isset($param["cmd"])
     && $param["cmd"] == 16
     && isset($param["output"])
 ) {
@@ -111,8 +119,6 @@ $pathDetails = "./include/monitoring/objectDetails/";
 $svc_path = $path . "Services/";
 $hg_path = $path . "ServicesHostGroups/";
 $sg_path = $path . "ServicesServiceGroups/";
-$meta_path = $path . "Meta/";
-$path_sch = $path . "Scheduling/";
 
 if ($continue) {
     switch ($o) {
@@ -120,26 +126,12 @@ if ($continue) {
          * View of Service
          */
         case "svc":
-            require_once $svc_path . "service.php";
-            break;
         case "svcpb":
-            require_once $svc_path . "service.php";
-            break;
         case "svc_warning":
-            require_once $svc_path . "service.php";
-            break;
         case "svc_critical":
-            require_once $svc_path . "service.php";
-            break;
         case "svc_unknown":
-            require_once $svc_path . "service.php";
-            break;
         case "svc_ok":
-            require_once $svc_path . "service.php";
-            break;
         case "svc_pending":
-            require_once $svc_path . "service.php";
-            break;
         case "svc_unhandled":
             require_once $svc_path . "service.php";
             break;
@@ -157,8 +149,6 @@ if ($continue) {
             break;
 
         case "svcgrid":
-            require_once $svc_path . "serviceGrid.php";
-            break;
         case "svcOV":
         case "svcOV_pb":
             require_once $svc_path . "serviceGrid.php";
@@ -170,8 +160,6 @@ if ($continue) {
          * View by Service Groups
          */
         case "svcgridSG":
-            require_once $sg_path . "serviceGridBySG.php";
-            break;
         case "svcOVSG":
         case "svcOVSG_pb":
             require_once $sg_path . "serviceGridBySG.php";
@@ -184,26 +172,12 @@ if ($continue) {
          * View By hosts groups
          */
         case "svcgridHG":
-            require_once $hg_path . "serviceGridByHG.php";
-            break;
         case "svcOVHG":
         case "svcOVHG_pb":
             require_once $hg_path . "serviceGridByHG.php";
             break;
         case "svcSumHG":
             require_once $hg_path . "serviceSummaryByHG.php";
-            break;
-        /*
-         * Meta Services
-         */
-        case "meta":
-            require_once $meta_path . "/metaService.php";
-            break;
-        /*
-         * Scheduling Queue
-         */
-        case "svcSch":
-            require_once $path_sch . "serviceSchedule.php";
             break;
         default:
             require_once $svc_path . "service.php";

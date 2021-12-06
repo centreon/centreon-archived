@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,8 +23,12 @@ declare(strict_types=1);
 namespace Centreon\Domain\Entity;
 
 use Centreon\Domain\Annotation\EntityDescriptor;
+use Doctrine\Common\Annotations\AnnotationException;
 use Doctrine\Common\Annotations\AnnotationReader;
+use Centreon\Domain\Service\EntityDescriptorMetadataInterface;
+use Centreon\Domain\Contact\Contact;
 use ReflectionClass;
+use Utility\StringConverter;
 
 class EntityCreator
 {
@@ -33,14 +38,19 @@ class EntityCreator
     private $className;
 
     /**
-     * @var EntityDescriptor[]
+     * @var array<string, EntityDescriptor[]>
      */
-    private $entityDescriptors;
+    private static $entityDescriptors;
 
     /**
-     * @var \ReflectionMethod[]
+     * @var array<string, \ReflectionMethod[]>
      */
-    private $publicMethods;
+    private static $publicMethods;
+
+    /**
+     * @var Contact
+     */
+    private static $contact;
 
     /**
      * Create a new object entity based on the given values.
@@ -48,12 +58,24 @@ class EntityCreator
      *
      * @param string $className Class name to create
      * @param array $data Data used to fill the new object entity
+     * @param string|null $prefix The prefix is used to retrieve only certain records when the table contains data
+     * from more than one entity
      * @return mixed Return an new instance of the class
      * @throws \Exception
      */
-    public static function createEntityByArray(string $className, array $data)
+    public static function createEntityByArray(string $className, array $data, string $prefix = null)
     {
-        return (new self($className))->createByArray($data);
+        return (new self($className))->createByArray($data, $prefix);
+    }
+
+    /**
+     * Set contact
+     *
+     * @param Contact $contact The contact
+     */
+    public static function setContact(Contact $contact): void
+    {
+        static::$contact = $contact;
     }
 
     /**
@@ -70,27 +92,57 @@ class EntityCreator
      * Create an entity and complete it according to the data array
      *
      * @param array $data Array that contains the data that will be used to complete entity
+     * @param string|null $prefix The prefix is used to retrieve only certain records when the table contains data
+     * from more than one entity
      * @return mixed Return an instance of class according to the class name given into constructor
+     * @throws AnnotationException
+     * @throws \ReflectionException
      * @throws \Exception
      */
-    public function createByArray(array $data)
+    public function createByArray(array $data, string $prefix = null)
     {
         if (!class_exists($this->className)) {
-            throw new \Exception('The class ' . $this->className . ' does not exist');
+            throw new \Exception(
+                sprintf(_('The class %s does not exist'), $this->className)
+            );
         }
+
         $this->readPublicMethod();
         $this->readAnnotations();
-        $objectToSet = new $this->className;
+
+        $objectToSet = (new ReflectionClass($this->className))->newInstance();
+
+        if (!empty($prefix)) {
+            // If a prefix is defined, we keep only $data for which the keys start
+            // with the prefix
+            $data = array_filter($data, function ($column) use ($prefix) {
+                if (substr($column, 0, strlen($prefix)) === $prefix) {
+                    return true;
+                }
+                return false;
+            }, ARRAY_FILTER_USE_KEY);
+
+            // Next, we remove the prefix
+            $newData = [];
+            foreach ($data as $column => $value) {
+                $column = substr($column, strlen($prefix));
+                $newData[$column] = $value;
+            }
+            $data = $newData;
+        }
+
         foreach ($data as $column => $value) {
-            if (array_key_exists($column, $this->entityDescriptors)) {
-                $descriptor = $this->entityDescriptors[$column];
+            if (array_key_exists($column, static::$entityDescriptors[$this->className])) {
+                $descriptor = static::$entityDescriptors[$this->className][$column];
                 $setterMethod = ($descriptor !== null && $descriptor->modifier !== null)
                     ? $descriptor->modifier
                     : $this->createSetterMethod($column);
-                if (array_key_exists($setterMethod, $this->publicMethods)) {
-                    $parameters = $this->publicMethods[$setterMethod]->getParameters();
+                if (array_key_exists($setterMethod, static::$publicMethods[$this->className])) {
+                    $parameters = static::$publicMethods[$this->className][$setterMethod]->getParameters();
                     if (empty($parameters)) {
-                        throw new \Exception("The public method {$this->className}::$setterMethod has no parameters");
+                        throw new \Exception(
+                            sprintf(_('The public method %s::%s has no parameters'), $this->className, $setterMethod)
+                        );
                     }
                     $firstParameter = $parameters[0];
                     if ($firstParameter->hasType()) {
@@ -114,10 +166,17 @@ class EntityCreator
 
                     call_user_func_array(array($objectToSet, $setterMethod), [$value]);
                 } else {
-                    throw new \Exception("The public method {$this->className}::$setterMethod is not found");
+                    throw new \Exception(
+                        sprintf(
+                            _('The public method %s::%s was not found'),
+                            $this->className,
+                            $setterMethod
+                        )
+                    );
                 }
             }
         }
+
         return $objectToSet;
     }
 
@@ -139,7 +198,7 @@ class EntityCreator
             if ($allowNull) {
                 return $value;
             } else {
-                throw new \Exception("The value cannot be null");
+                throw new \Exception(_('The value cannot be null'));
             }
         }
 
@@ -155,9 +214,13 @@ class EntityCreator
                 return (bool) $value;
             case 'DateTime':
                 if (is_numeric($value)) {
-                    return (new \DateTime())->setTimestamp((int) $value);
+                    $value = (new \DateTime())->setTimestamp((int) $value);
+                    if (static::$contact !== null) {
+                        $value->setTimezone(static::$contact->getTimezone());
+                    }
+                    return $value;
                 }
-                throw new \Exception("Numeric value expected");
+                throw new \Exception(_('Numeric value expected'));
             default:
                 return $value;
         }
@@ -170,11 +233,15 @@ class EntityCreator
      */
     private function readPublicMethod(): void
     {
-        $this->publicMethods = [];
+        if (isset(static::$publicMethods[$this->className])) {
+            return;
+        }
+
+        static::$publicMethods[$this->className] = [];
         $reflectionClass = new \ReflectionClass($this->className);
         foreach ($reflectionClass->getMethods() as $method) {
             if ($method->isPublic()) {
-                $this->publicMethods[$method->getName()] = $method;
+                static::$publicMethods[$this->className][$method->getName()] = $method;
             }
         }
     }
@@ -182,12 +249,16 @@ class EntityCreator
     /**
      * Read all specific annotations.
      *
-     * @throws \Doctrine\Common\Annotations\AnnotationException
      * @throws \ReflectionException
+     * @throws AnnotationException
      */
     private function readAnnotations(): void
     {
-        $this->entityDescriptors = [];
+        if (isset(static::$entityDescriptors[$this->className])) {
+            return;
+        }
+
+        static::$entityDescriptors[$this->className] = [];
         $reflectionClass = new ReflectionClass($this->className);
         $properties = $reflectionClass->getProperties();
         $reader = new AnnotationReader();
@@ -201,8 +272,19 @@ class EntityCreator
             );
             $key = ($annotation !== null && $annotation->column !== null)
                 ? $annotation->column
-                : $this->convertCamelCaseToSnakeCase($property->getName());
-            $this->entityDescriptors[$key] = $annotation;
+                : StringConverter::convertCamelCaseToSnakeCase($property->getName());
+            static::$entityDescriptors[$this->className][$key] = $annotation;
+        }
+
+        // load entity descriptor data via static method with metadata
+        if ($reflectionClass->isSubclassOf(EntityDescriptorMetadataInterface::class)) {
+            foreach ($this->className::loadEntityDescriptorMetadata() as $column => $modifier) {
+                $descriptor = new EntityDescriptor();
+                $descriptor->column = $column;
+                $descriptor->modifier = $modifier;
+
+                static::$entityDescriptors[$this->className][$column] = $descriptor;
+            }
         }
     }
 
@@ -214,38 +296,6 @@ class EntityCreator
      */
     private function createSetterMethod(string $property): string
     {
-        $camelCaseName = '';
-        for ($index = 0; $index < strlen($property); $index++) {
-            $char = $property[$index];
-            if ($index === 0) {
-                $camelCaseName .= strtoupper($char);
-            } elseif ($char === '_') {
-                $index++;
-                $camelCaseName .= strtoupper($property[$index]);
-            } else {
-                $camelCaseName .= $char;
-            }
-        }
-        return 'set' . $camelCaseName;
-    }
-
-    /**
-     * Convert a string in camel case format to snake case
-     *
-     * @param string $camelCaseName Name in camelCase format
-     * @return string Returns the name converted in snake case format
-     */
-    private function convertCamelCaseToSnakeCase(string $camelCaseName): string
-    {
-        $snakeCaseName = '';
-        for ($index = 0; $index < strlen($camelCaseName); $index++) {
-            $char = $camelCaseName[$index];
-            if (strtoupper($char) === $char) {
-                $snakeCaseName .= '_' . strtolower($char);
-            } else {
-                $snakeCaseName .= $char;
-            }
-        }
-        return $snakeCaseName;
+        return 'set' . ucfirst(StringConverter::convertSnakeCaseToCamelCase($property));
     }
 }

@@ -1,8 +1,6 @@
 <?php
 
-use Centreon\Test\Behat\Administration\ParametersCentreonUiPage;
 use Centreon\Test\Behat\Administration\ParametersMyAccountPage;
-use Centreon\Test\Behat\Configuration\CurrentUserConfigurationPage;
 use Centreon\Test\Behat\CentreonContext;
 
 class LanguageSelectionContext extends CentreonContext
@@ -15,7 +13,6 @@ class LanguageSelectionContext extends CentreonContext
     public function theUserWithAutologinEnabled()
     {
         $this->currentPage = new ParametersMyAccountPage($this);
-        $this->currentPage->save();
     }
 
     /**
@@ -24,7 +21,14 @@ class LanguageSelectionContext extends CentreonContext
     public function selectTheLanguageDropdown()
     {
         $this->currentPage = new ParametersMyAccountPage($this);
-        $this->assertFind('css', 'select[name="contact_lang"]');
+
+        /* Wait for select2 returned values */
+        $this->spin(
+            function ($context) {
+                return (!empty($this->assertFind('css', 'select[name="contact_lang"]')));
+            },
+            'Cannot retrieve language list from select2'
+        );
     }
 
     /**

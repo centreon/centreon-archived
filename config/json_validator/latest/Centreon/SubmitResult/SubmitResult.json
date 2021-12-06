@@ -1,0 +1,25 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Submit result to a host or service",
+    "type": "object",
+    "required": ["status"],
+    "additionalProperties": false,
+    "properties": {
+        "status": {
+            "type": "integer",
+            "enum": [0, 1, 2, 3]
+        },
+        "performance_data": {
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "output": {
+            "type": [
+                "string",
+                "null"
+            ]
+        }
+    }
+}

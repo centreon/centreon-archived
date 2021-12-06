@@ -101,7 +101,6 @@ function loadXML(url) {
         xmlDoc.async = false;
         xmlDoc.load(url);
       } else if (window.XMLHttpRequest) {
-		// ï¿½ l'aide de lobjet XMLHTTPRequest
       	xmlDoc = new XMLHttpRequest();
 		xmlDoc.overrideMimeType('text/xml');
 		xmlDoc.open('GET', url, false);
@@ -241,104 +240,109 @@ function Transformation() {
 	 * 
 	 */
 	
-	this.transform = function(target) {
+    this.transform = function(target) {
         targetElem = target;
-	    var t = this;
-	
-	    if (!browserSupportsXSLT()) {
-	       return;
-	    }
-		
-		if (!document.getElementById("centreonMsg_img")) {
-			 if (typeof _setAlign == 'function') {				
-				 _setAlign("centreonMsg", "center");
-		         _setTextStyle("centreonMsg", "bold");
-		         _setImage("centreonMsg", "./img/misc/ajax-loader.gif");
-		         _setText("centreonMsg", " Loading...");
-		         _setValign("centreonMsg", "bottom");
-			 }
-		}
-		
-		var change = function() {
-                    if (xmlRequest.readyState == 4 && xmlRequest.responseXML && xsltRequest.status == 200 && xsltRequest.readyState == 4 && xsltRequest.statusText == "OK" && xsltRequest.responseText ) {
-                            if (transformed) {
-                                    return;
-                            }
-                            xsltDoc = xsltRequest.responseXML;
-                            xmlDoc = xmlRequest.responseXML;
-                            var targetNode = document.getElementById(target);
-                            if (window.ActiveXObject || document.hasOwnProperty.call(window, "ActiveXObject")) {            
-                                document.getElementById(target).innerHTML = xmlDoc.transformNode(xsltDoc);                    	
-                            } else {
-                                var resultDoc;
-                                var processor = new XSLTProcessor();
-                                if (targetNode) {
-                                    // remove child nodes from DOM
-                                    while (targetNode.firstChild) {
-                                        targetNode.removeChild(targetNode.firstChild);
-                                    }
-                                    targetNode.innerHTML = '';
-                                }
-                                processor.importStylesheet(xsltDoc);
-                                resultDoc = processor.transformToFragment(xmlDoc, document);
-                                targetNode.appendChild(resultDoc);
-                                resultDoc = null;
-                                processor = null;
-                            }
-                            if (callback) {
-                                callback(t);
-                                callback = null;
-                            }
+        var t = this;
 
-                            targetNode = null;
-                            target = null;
-                            
-                            transformed = true;
-                            if (typeof _clear == 'function') {
-                                _clear("centreonMsg");
-                            }
+        if (!browserSupportsXSLT()) {
+           return;
+        }
 
-                            xsltRequest.onreadystatechange = null;
-                            xsltRequest = null;
-                            xmlRequest.onreadystatechange = null;
-                            xmlRequest = null;
-                            xsltDoc = null;
-                            xmlDoc = null;
-                    }
+        if (!document.getElementById("centreonMsg_img")) {
+             if (typeof _setAlign == 'function') {
+                 _setAlign("centreonMsg", "center");
+                 _setTextStyle("centreonMsg", "bold");
+                 _setImage("centreonMsg", "./img/misc/ajax-loader.gif");
+                 _setText("centreonMsg", " Loading...");
+                 _setValign("centreonMsg", "bottom");
+             }
+        }
 
-		}
-                
-                if(xsltRequest != null){
-                    xsltRequest.onreadystatechange = new Function;
-                    xsltRequest = null;
-                    delete xsltRequest;
+        var change = function() {
+            if (
+                xmlRequest.readyState == 4
+                && xmlRequest.responseXML
+                && xsltRequest.status == 200
+                && xsltRequest.readyState == 4
+                && xsltRequest.responseText
+            ) {
+                if (transformed) {
+                    return;
                 }
-                
-                if(xmlRequest != null){
-                    xmlRequest.onreadystatechange = new Function;
-                    xmlRequest = null;
-                    delete xmlRequest;
-                }
-
-		var xmlRequest;
-		var xsltRequest;
+                xsltDoc = xsltRequest.responseXML;
+                xmlDoc = xmlRequest.responseXML;
+                var targetNode = document.getElementById(target);
                 if (window.ActiveXObject || document.hasOwnProperty.call(window, "ActiveXObject")) {
-   			    xmlRequest = new ActiveXObject("Msxml2.XMLHTTP.6.0");
-			    xsltRequest = new ActiveXObject("Msxml2.XMLHTTP.6.0");
-		} else {
-			xmlRequest = GetXmlHttpRequest();
-			xsltRequest = GetXmlHttpRequest();
-		}
-		xmlRequest.open("GET", xml, true);
-		xmlRequest.onreadystatechange = change;
-		xmlRequest.send(null);		
-		if (xsltRequest.readyState != 4) {
-                    xsltRequest.open("GET", xslt);
-                    xsltRequest.onreadystatechange = change;
-                    xsltRequest.send(null);
-		}
-	}
-	
+                    document.getElementById(target).innerHTML = xmlDoc.transformNode(xsltDoc);
+                } else {
+                    var resultDoc;
+                    var processor = new XSLTProcessor();
+                    if (targetNode) {
+                        // remove child nodes from DOM
+                        while (targetNode.firstChild) {
+                            targetNode.removeChild(targetNode.firstChild);
+                        }
+                        targetNode.innerHTML = '';
+                    }
+                    processor.importStylesheet(xsltDoc);
+                    resultDoc = processor.transformToFragment(xmlDoc, document);
+                    targetNode.appendChild(resultDoc);
+                    resultDoc = null;
+                    processor = null;
+                }
+                if (callback) {
+                    callback(t);
+                    callback = null;
+                }
+
+                targetNode = null;
+                target = null;
+
+                transformed = true;
+                if (typeof _clear == 'function') {
+                    _clear("centreonMsg");
+                }
+
+                xsltRequest.onreadystatechange = null;
+                xsltRequest = null;
+                xmlRequest.onreadystatechange = null;
+                xmlRequest = null;
+                xsltDoc = null;
+                xmlDoc = null;
+            }
+        }
+
+        if(xsltRequest != null){
+            xsltRequest.onreadystatechange = new Function;
+            xsltRequest = null;
+            delete xsltRequest;
+        }
+
+        if(xmlRequest != null){
+            xmlRequest.onreadystatechange = new Function;
+            xmlRequest = null;
+            delete xmlRequest;
+        }
+
+        var xmlRequest;
+        var xsltRequest;
+        if (window.ActiveXObject || document.hasOwnProperty.call(window, "ActiveXObject")) {
+        xmlRequest = new ActiveXObject("Msxml2.XMLHTTP.6.0");
+        xsltRequest = new ActiveXObject("Msxml2.XMLHTTP.6.0");
+        } else {
+            xmlRequest = GetXmlHttpRequest();
+            xsltRequest = GetXmlHttpRequest();
+        }
+        xmlRequest.open("GET", xml, true);
+        xmlRequest.onreadystatechange = change;
+        xmlRequest.send(null);
+        if (xsltRequest.readyState != 4) {
+            xsltRequest.open("GET", xslt);
+            xsltRequest.onreadystatechange = change;
+            xsltRequest.send(null);
+        }
+    }
+
 	/**
 	 * Generates a random ID.
 	 *

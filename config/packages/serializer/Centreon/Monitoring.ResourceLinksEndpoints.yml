@@ -1,0 +1,26 @@
+Centreon\Domain\Monitoring\ResourceLinksEndpoints:
+    properties:
+        details:
+            type: string
+            groups:
+                - 'resource_status_main'
+        timeline:
+            type: string
+            groups:
+                - 'resource_status_main'
+        performanceGraph:
+            type: string
+            groups:
+                - 'resource_status_main'
+        statusGraph:
+            type: string
+            groups:
+                - 'resource_status_main'
+        acknowledgement:
+            type: string
+            groups:
+                - 'resource_status_main'
+        downtime:
+            type: string
+            groups:
+                - 'resource_status_main'

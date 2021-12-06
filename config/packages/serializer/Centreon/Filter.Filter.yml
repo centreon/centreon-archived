@@ -1,0 +1,14 @@
+Centreon\Domain\Filter\Filter:
+    properties:
+        id:
+            type: int
+            groups: [filter_main]
+        name:
+            type: string
+            groups: [filter_main]
+        criterias:
+            type: array<Centreon\Domain\Filter\FilterCriteria>
+            groups: [filter_main]
+        order:
+            type: int
+            groups: [filter_main]

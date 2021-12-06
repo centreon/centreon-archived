@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
  *
@@ -19,10 +20,11 @@
  */
 declare(strict_types=1);
 
-namespace App\Security;
+namespace Security;
 
 use Centreon\Domain\Exception\ContactDisabledException;
-use Centreon\Domain\Security\Interfaces\AuthenticationRepositoryInterface;
+use Centreon\Domain\Option\Interfaces\OptionServiceInterface;
+use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
 use Centreon\Domain\Contact\Interfaces\ContactRepositoryInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -38,31 +40,42 @@ use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
 /**
  * Class used to authenticate a request by using a security token.
  *
- * @package App\Security
+ * @package Security
  */
 class TokenAPIAuthenticator extends AbstractGuardAuthenticator
 {
+    public const EXPIRATION_DELAY = 120;
+
     /**
      * @var AuthenticationRepositoryInterface
      */
     private $authenticationRepository;
+
     /**
      * @var ContactRepositoryInterface
      */
     private $contactRepository;
 
     /**
+     * @var OptionServiceInterface
+     */
+    private $optionService;
+
+    /**
      * TokenAPIAuthenticator constructor.
      *
      * @param AuthenticationRepositoryInterface $authenticationRepository
      * @param ContactRepositoryInterface $contactRepository
+     * @param OptionServiceInterface $optionService
      */
     public function __construct(
         AuthenticationRepositoryInterface $authenticationRepository,
-        ContactRepositoryInterface $contactRepository
+        ContactRepositoryInterface $contactRepository,
+        OptionServiceInterface $optionService
     ) {
         $this->authenticationRepository = $authenticationRepository;
         $this->contactRepository = $contactRepository;
+        $this->optionService = $optionService;
     }
 
     /**
@@ -161,18 +174,34 @@ class TokenAPIAuthenticator extends AbstractGuardAuthenticator
         if (null === $apiToken) {
             return null;
         }
-        $token = $this->authenticationRepository->findToken($apiToken);
-        if (is_null($token)) {
+        $tokens = $this->authenticationRepository->findAuthenticationTokensByToken($apiToken);
+
+        if (is_null($tokens)) {
             throw new TokenNotFoundException();
         }
-        if (!$token->isValid()) {
+
+        $providerToken = $tokens->getProviderToken();
+        $expirationDate = $providerToken->getExpirationDate();
+        if ($expirationDate !== null && $expirationDate->getTimestamp() < time()) {
             throw new CredentialsExpiredException();
         }
-        $contact = $this->contactRepository->findById($token->getContactId());
-        if ($contact->isActive() === false) {
+
+        $contact = $this->contactRepository->findById($tokens->getUserId());
+        if (isset($contact) && $contact->isActive() === false) {
             throw new ContactDisabledException();
         }
-        $this->authenticationRepository->refreshToken($token->getToken());
+
+        $expirationSessionDelay = self::EXPIRATION_DELAY;
+        $sessionExpireOption = $this->optionService->findSelectedOptions(['session_expire']);
+        if (!empty($sessionExpireOption)) {
+            $expirationSessionDelay = (int) $sessionExpireOption[0]->getValue();
+        }
+        $providerToken->setExpirationDate(
+            (new \DateTime())->add(new \DateInterval('PT' . $expirationSessionDelay . 'M'))
+        );
+
+        $this->authenticationRepository->updateProviderToken($providerToken);
+
         return $contact;
     }
 

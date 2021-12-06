@@ -7,7 +7,7 @@ import { createSelector } from 'reselect';
  * @param {Object} item
  * @return {Array} accumulator of showable elements
  */
-function filterShowableElements(acc, item) {
+const filterShowableElements = (acc, item) => {
   if (item.show === false) {
     return acc;
   }
@@ -25,7 +25,7 @@ function filterShowableElements(acc, item) {
   }
 
   return [...acc, item];
-}
+};
 
 /**
  * remove groups which have no child
@@ -33,7 +33,7 @@ function filterShowableElements(acc, item) {
  * @param {Object} item
  * @return {Array} accumulator of groups which are not empty
  */
-function removeEmptyGroups(acc, item) {
+const removeEmptyGroups = (acc, item) => {
   if (item.children) {
     return [
       ...acc,
@@ -55,14 +55,14 @@ function removeEmptyGroups(acc, item) {
   }
 
   return [...acc, item];
-}
+};
 
 /**
  * check if a group is empty or not
  * @param {Array} group
  * @return {Boolean} if the group is empty or not
  */
-function filterNotEmptyGroup(group) {
+const filterNotEmptyGroup = (group) => {
   if (group.children) {
     for (const child of group.children) {
       if (child.show === true) {
@@ -72,10 +72,16 @@ function filterNotEmptyGroup(group) {
   }
 
   return false;
-}
+};
 
 const getNavigationItems = (state) => state.navigation.items;
 
-export const menuSelector = createSelector(getNavigationItems, (navItems) =>
-  navItems.reduce(filterShowableElements, []).reduce(removeEmptyGroups, []),
-);
+export const menuSelector = createSelector(getNavigationItems, (navItems) => {
+  if (navItems === undefined) {
+    return [];
+  }
+
+  return navItems
+    .reduce(filterShowableElements, [])
+    .reduce(removeEmptyGroups, []);
+});

@@ -40,10 +40,15 @@ class InformationsRepository extends ServiceEntityRepository
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':key', $key, PDO::PARAM_STR);
         $stmt->execute();
-        $stmt->setFetchMode(PDO::FETCH_CLASS, Informations::class);
         $result = $stmt->fetch();
+        $informations = null;
+        if ($result) {
+            $informations = new Informations();
+            $informations->setKey($result['key']);
+            $informations->setValue($result['value']);
+        }
 
-        return $result ?: null;
+        return $informations;
     }
 
     /**
@@ -53,11 +58,15 @@ class InformationsRepository extends ServiceEntityRepository
      */
     public function toggleRemote(string $flag): void
     {
-        $sql = "UPDATE `informations` SET `value`= :state WHERE `key` = :isRemote";
+        $sql = "UPDATE `informations` SET `value`= :state WHERE `key` = 'isRemote'";
         $stmt = $this->db->prepare($sql);
-        $key = 'isRemote';
-        $stmt->bindParam(':isRemote', $key, PDO::PARAM_STR);
         $stmt->bindParam(':state', $flag, PDO::PARAM_STR);
+        $stmt->execute();
+
+        $centralState = ($flag === 'yes') ? 'no' : 'yes';
+        $sql = "UPDATE `informations` SET `value`= :state WHERE `key` = 'isCentral'";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':state', $centralState, PDO::PARAM_STR);
         $stmt->execute();
     }
 

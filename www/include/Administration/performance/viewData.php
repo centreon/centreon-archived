@@ -59,11 +59,20 @@ require_once("./class/centreonDB.class.php");
 
 include("./include/common/autoNumLimit.php");
 
+
+const REBUILD_RRD = "rg";
+const STOP_REBUILD_RRD = "nrg";
+const DELETE_GRAPH = "ed";
+const HIDE_GRAPH = "hg";
+const SHOW_GRAPH = "nhg";
+const LOCK_SERVICE = "lk";
+const UNLOCK_SERVICE = "nlk";
+
 /*
  * Prepare search engine
  */
 $inputArguments = array(
-    'search' => FILTER_SANITIZE_STRING,
+    'Search' => FILTER_SANITIZE_STRING,
     'searchH' => FILTER_SANITIZE_STRING,
     'num' => FILTER_SANITIZE_NUMBER_INT,
     'limit' => FILTER_SANITIZE_NUMBER_INT,
@@ -89,7 +98,8 @@ $inputPost = filter_input_array(
 
 $inputs = array();
 foreach ($inputArguments as $argumentName => $argumentValue) {
-    if (!is_null($inputPost[$argumentName]) && (
+    if (
+        !empty($inputPost[$argumentName]) && (
             (is_array($inputPost[$argumentName]) && $inputPost[$argumentName]) ||
             (!is_array($inputPost[$argumentName]) && trim($inputPost[$argumentName]) != '')
         )
@@ -104,22 +114,14 @@ $searchS = null;
 $searchH = null;
 $searchP = null;
 
-if (isset($_POST['Search'])) {
+if (isset($inputs['Search'])) {
     $num = 0;
     $centreon->historySearch[$url] = array();
-    $searchH = $_POST["searchH"];
+    $searchH = $inputs["searchH"];
     $centreon->historySearch[$url]["searchH"] = $searchH;
-    $searchS = $_POST["searchS"];
+    $searchS = $inputs["searchS"];
     $centreon->historySearch[$url]["searchS"] = $searchS;
-    $searchP = $_POST["searchP"];
-    $centreon->historySearch[$url]["searchP"] = $searchP;
-} elseif (isset($_GET['Search'])) {
-    $centreon->historySearch[$url] = array();
-    $searchH = $_GET['searchH'];
-    $centreon->historySearch[$url]["searchH"] = $searchH;
-    $searchS = $_GET['searchS'];
-    $centreon->historySearch[$url]["searchS"] = $searchS;
-    $searchP = $_GET['searchP'];
+    $searchP = $inputs["searchP"];
     $centreon->historySearch[$url]["searchP"] = $searchP;
 } else {
     if (isset($centreon->historySearch[$url]['searchH'])) {
@@ -137,57 +139,60 @@ if (isset($_POST['Search'])) {
 $brk = new CentreonBroker($pearDB);
 
 if ((isset($inputs["o1"]) && $inputs["o1"]) || (isset($inputs["o2"]) && $inputs["o2"])) {
-    if ($inputs["o"] == "rg" && isset($inputs["select"])) {
-        $selected = $inputs["select"];
-        foreach ($selected as $key => $value) {
-            $DBRESULT = $pearDBO->query("UPDATE index_data SET `must_be_rebuild` = '1' WHERE id = '" . $key . "'");
+    //filter integer keys
+    $selected = array_filter(
+        $inputs["select"],
+        function ($k) {
+            if (is_int($k)) {
+                return $k;
+            }
+        },
+        ARRAY_FILTER_USE_KEY
+    );
+    if ($inputs["o"] == REBUILD_RRD && !empty($selected)) {
+        foreach (array_keys($selected) as $id) {
+            $DBRESULT = $pearDBO->query("UPDATE index_data SET `must_be_rebuild` = '1' WHERE id = " . $id);
         }
         $brk->reload();
-    } elseif ($inputs["o"] == "nrg" && isset($inputs["select"])) {
-        $selected = $inputs["select"];
-        foreach ($selected as $key => $value) {
-            $query = "UPDATE index_data SET `must_be_rebuild` = '0' WHERE id = '" .
-                $key . "' AND `must_be_rebuild` = '1'";
+    } elseif ($inputs["o"] == STOP_REBUILD_RRD && !empty($selected)) {
+        foreach (array_keys($selected) as $id) {
+            $query = "UPDATE index_data SET `must_be_rebuild` = '0' WHERE `must_be_rebuild` = '1' AND id = " . $id;
             $pearDBO->query($query);
         }
-    } elseif ($inputs["o"] == "ed" && isset($inputs["select"])) {
-        $selected = $inputs["select"];
+    } elseif ($inputs["o"] == DELETE_GRAPH && !empty($selected)) {
         $listMetricsToDelete = array();
-        foreach ($selected as $key => $value) {
-            $DBRESULT = $pearDBO->query("SELECT metric_id FROM metrics WHERE  `index_id` = '" . $key . "'");
+        foreach (array_keys($selected) as $id) {
+            $DBRESULT = $pearDBO->query("SELECT metric_id FROM metrics WHERE  `index_id` = " . $id);
             while ($metrics = $DBRESULT->fetchRow()) {
                 $listMetricsToDelete[] = $metrics['metric_id'];
             }
         }
         $listMetricsToDelete = array_unique($listMetricsToDelete);
         if (count($listMetricsToDelete) > 0) {
-            $query = "UPDATE metrics SET to_delete = 1 WHERE metric_id IN (" . join(', ', $listMetricsToDelete) . ")";
+            $query = "UPDATE metrics SET to_delete = 1 WHERE metric_id IN (" .
+                implode(', ', $listMetricsToDelete) . ")";
             $pearDBO->query($query);
-            $query = "UPDATE index_data SET to_delete = 1 WHERE id IN (" . join(', ', array_keys($selected)) . ")";
+            $query = "UPDATE index_data SET to_delete = 1 WHERE id IN (" . implode(', ', array_keys($selected)) . ")";
             $pearDBO->query($query);
-            $query = "DELETE FROM ods_view_details WHERE metric_id IN (" . join(', ', $listMetricsToDelete) . ")";
+            $query = "DELETE FROM ods_view_details WHERE metric_id IN (" . implode(', ', $listMetricsToDelete) . ")";
             $pearDB->query($query);
             $brk->reload();
         }
-    } elseif ($inputs["o"] == "hg" && isset($inputs["select"])) {
-        $selected = $inputs["select"];
-        foreach ($selected as $key => $value) {
-            $DBRESULT = $pearDBO->query("UPDATE index_data SET `hidden` = '1' WHERE id = '" . $key . "'");
+    } elseif ($inputs["o"] == HIDE_GRAPH && !empty($selected)) {
+        foreach (array_keys($selected) as $id) {
+            $DBRESULT = $pearDBO->query("UPDATE index_data SET `hidden` = '1' WHERE id = " . $id);
         }
-    } elseif ($inputs["o"] == "nhg" && isset($inputs["select"])) {
-        $selected = $inputs["select"];
-        foreach ($selected as $key => $value) {
-            $DBRESULT = $pearDBO->query("UPDATE index_data SET `hidden` = '0' WHERE id = '" . $key . "'");
+    } elseif ($inputs["o"] == SHOW_GRAPH && !empty($selected)) {
+        foreach (array_keys($selected) as $id) {
+            $DBRESULT = $pearDBO->query("UPDATE index_data SET `hidden` = '0' WHERE id = " . $id);
         }
-    } elseif ($inputs["o"] == "lk" && isset($inputs["select"])) {
-        $selected = $inputs["select"];
-        foreach ($selected as $key => $value) {
-            $DBRESULT = $pearDBO->query("UPDATE index_data SET `locked` = '1' WHERE id = '" . $key . "'");
+    } elseif ($inputs["o"] == LOCK_SERVICE && !empty($selected)) {
+        foreach (array_keys($selected) as $id) {
+            $DBRESULT = $pearDBO->query("UPDATE index_data SET `locked` = '1' WHERE id = " . $id);
         }
-    } elseif ($inputs["o"] == "nlk" && isset($inputs["select"])) {
-        $selected = $inputs["select"];
-        foreach ($selected as $key => $value) {
-            $DBRESULT = $pearDBO->query("UPDATE index_data SET `locked` = '0' WHERE id = '" . $key . "'");
+    } elseif ($inputs["o"] == UNLOCK_SERVICE && !empty($selected)) {
+        foreach (array_keys($selected) as $id) {
+            $DBRESULT = $pearDBO->query("UPDATE index_data SET `locked` = '0' WHERE id = " . $id);
         }
     }
 }
@@ -231,8 +236,8 @@ $query = "SELECT SQL_CALC_FOUND_ROWS DISTINCT i.* FROM index_data i, metrics m" 
 $DBRESULT = $pearDBO->query($query);
 $rows = $pearDBO->query("SELECT FOUND_ROWS()")->fetchColumn();
 
-for ($i = 0; $index_data = $DBRESULT->fetchRow(); $i++) {
-    $query = "SELECT * FROM metrics WHERE index_id = '" . $index_data["id"] . "' ORDER BY metric_name";
+for ($i = 0; $indexData = $DBRESULT->fetchRow(); $i++) {
+    $query = "SELECT * FROM metrics WHERE index_id = '" . $indexData["id"] . "' ORDER BY metric_name";
     $DBRESULT2 = $pearDBO->query($query);
     $metric = "";
     for ($im = 0; $metrics = $DBRESULT2->fetchRow(); $im++) {
@@ -244,36 +249,36 @@ for ($i = 0; $index_data = $DBRESULT->fetchRow(); $i++) {
             $metric .= "(" . $metrics["unit_name"] . ")";
         }
     }
-    $index_data["metrics_name"] = $metric;
-    $index_data["service_description"] = "<a href='./main.php?p=50119&o=msvc&index_id=" . $index_data["id"] . "'>" .
-        $index_data["service_description"] . "</a>";
+    $indexData["metrics_name"] = $metric;
+    $indexData["service_description"] = "<a href='./main.php?p=50119&o=msvc&index_id=" . $indexData["id"] . "'>" .
+        $indexData["service_description"] . "</a>";
 
-    $index_data["storage_type"] = $storage_type[$index_data["storage_type"]];
-    $index_data["must_be_rebuild"] = $yesOrNo[$index_data["must_be_rebuild"]];
-    $index_data["to_delete"] = $yesOrNo[$index_data["to_delete"]];
-    $index_data["trashed"] = $yesOrNo[$index_data["trashed"]];
-    $index_data["hidden"] = $yesOrNo[$index_data["hidden"]];
+    $indexData["storage_type"] = $storage_type[$indexData["storage_type"]];
+    $indexData["must_be_rebuild"] = $yesOrNo[$indexData["must_be_rebuild"]];
+    $indexData["to_delete"] = $yesOrNo[$indexData["to_delete"]];
+    $indexData["trashed"] = $yesOrNo[$indexData["trashed"]];
+    $indexData["hidden"] = $yesOrNo[$indexData["hidden"]];
 
-    if (isset($index_data["locked"])) {
-        $index_data["locked"] = $yesOrNo[$index_data["locked"]];
+    if (isset($indexData["locked"])) {
+        $indexData["locked"] = $yesOrNo[$indexData["locked"]];
     } else {
-        $index_data["locked"] = $yesOrNo[0];
+        $indexData["locked"] = $yesOrNo[0];
     }
 
-    $index_data["class"] = $tab_class[$i % 2];
-    $data[$i] = $index_data;
+    $indexData["class"] = $tab_class[$i % 2];
+    $data[$i] = $indexData;
 }
 
-/* Get the list of running poller */
-$queryPollers = "SELECT instance_id, name FROM instances ORDER BY name";
-$instances = array();
-try {
-    $res = $pearDBO->query($queryPollers);
-} catch (\PDOException $e) {
-    while ($row = $res->fetchRow()) {
-        $instances[$row['instance_id']] = $row['name'];
-    }
-}
+//select2 Poller
+$poller = $searchP ?? '';
+$pollerRoute = './api/internal.php?object=centreon_configuration_poller&action=list';
+$attrPoller = array(
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => $pollerRoute,
+    'multiple' => false,
+    'defaultDataset' => $poller,
+    'linkedObject' => 'centreonInstance'
+);
 
 include("./include/common/checkPagination.php");
 
@@ -284,6 +289,8 @@ $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
 $form = new HTML_QuickFormCustom('form', 'POST', "?p=" . $p);
+
+$form->addElement('select2', 'searchP', "", array(), $attrPoller);
 
 $attrBtnSuccess = array(
     "class" => "btc bt_success",
@@ -376,7 +383,9 @@ $tpl->assign('o', $o);
 $tpl->assign("num", $num);
 $tpl->assign("limit", $limit);
 $tpl->assign("data", $data);
-$tpl->assign("instances", $instances);
+if (isset($instances)) {
+    $tpl->assign("instances", $instances);
+}
 $tpl->assign("Host", _("Host"));
 $tpl->assign("Service", _("Service"));
 $tpl->assign("Metrics", _("Metrics"));
@@ -397,11 +406,6 @@ if (isset($searchH)) {
 }
 if (isset($searchS)) {
     $tpl->assign('searchS', $searchS);
-}
-if (isset($searchP)) {
-    $tpl->assign('searchP', $searchP);
-} else {
-    $tpl->assign('searchP', '');
 }
 
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);

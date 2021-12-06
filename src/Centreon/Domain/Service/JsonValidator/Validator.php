@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +26,6 @@ use Centreon\Domain\Service\JsonValidator\Interfaces\JsonValidatorInterface;
 use Centreon\Domain\Service\JsonValidator\Interfaces\ValidatorCacheInterface;
 use JsonSchema\Constraints\Constraint;
 use JsonSchema\Validator as JsonSchemaValidator;
-use phpDocumentor\Reflection\Types\Resource_;
 use Symfony\Component\Config\Resource\FileResource;
 use Symfony\Component\Config\Resource\ResourceInterface;
 use Symfony\Component\Validator\ConstraintViolation;
@@ -44,6 +44,8 @@ class Validator implements JsonValidatorInterface
     public const VERSION_BETA = 'beta';
 
     private const VERSION_DEFAULT = 'default';
+
+    private const COMPONENTS_REFERENCE = '$components';
 
     /**
      * @var JsonSchemaValidator
@@ -116,7 +118,7 @@ class Validator implements JsonValidatorInterface
         }
         $dataToValidate = json_decode($json);
         if ($dataToValidate === null) {
-            throw new \Exception('The JSON cannot be decoded');
+            throw new \Exception(_('The JSON cannot be decoded'));
         }
         if (empty($this->definitions) && $this->validationFilePath !== null) {
             $this->loadDefinitionFile();
@@ -128,21 +130,30 @@ class Validator implements JsonValidatorInterface
          * First of all, we look for definitions according to the given version.
          * otherwise, we look for the default definitions.
          */
-        if (array_key_exists($this->version, $this->definitions)
+        if (
+            array_key_exists($this->version, $this->definitions)
             && array_key_exists($modelName, $this->definitions[$this->version])
         ) {
-            $definitionsToUseForValidation = $this->definitions[$this->version][$modelName];
-        } elseif (array_key_exists(self::VERSION_DEFAULT, $this->definitions)
+            $definitionsToUseForValidation = $this->populateComponentsToDefinitions(
+                $this->definitions[$this->version][$modelName],
+                $this->definitions[self::VERSION_DEFAULT]
+            );
+        } elseif (
+            array_key_exists(self::VERSION_DEFAULT, $this->definitions)
             && array_key_exists($modelName, $this->definitions[self::VERSION_DEFAULT])
         ) {
-            $definitionsToUseForValidation = $this->definitions[self::VERSION_DEFAULT][$modelName];
+            $definitionsToUseForValidation = $this->populateComponentsToDefinitions(
+                $this->definitions[self::VERSION_DEFAULT][$modelName],
+                $this->definitions[self::VERSION_DEFAULT]
+            );
         }
 
         if (empty($definitionsToUseForValidation)) {
             throw new \Exception(
-                'The definition model "' . $modelName. '" to validate the JSON does not exist or is empty'
+                sprintf(_('The definition model "%s" to validate the JSON does not exist or is empty'), $modelName)
             );
         }
+
         $this->validator->validate(
             $dataToValidate,
             $definitionsToUseForValidation,
@@ -152,6 +163,24 @@ class Validator implements JsonValidatorInterface
         return (!$this->validator->isValid())
             ? $this->formatErrors($this->validator->getErrors(), $json)
             : new ConstraintViolationList();
+    }
+
+    /**
+     * Add component references to definitions
+     *
+     * @param array $definitionsToPopulate
+     * @param array $versionedDefinitions
+     * @return array The definitions with component refs if exist
+     */
+    private function populateComponentsToDefinitions(
+        array $definitionsToPopulate,
+        array $versionedDefinitions
+    ): array {
+        if (array_key_exists(self::COMPONENTS_REFERENCE, $versionedDefinitions)) {
+            $definitionsToPopulate[self::COMPONENTS_REFERENCE] = $versionedDefinitions[self::COMPONENTS_REFERENCE];
+        }
+
+        return $definitionsToPopulate;
     }
 
     /**

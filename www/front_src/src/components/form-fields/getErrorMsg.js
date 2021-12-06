@@ -16,6 +16,7 @@ const getErrorMessage = (error) => {
       if (Array.isArray(value)) {
         return `${name || 'Field'} must have at most ${error.maxLength} items`;
       }
+
       return `${name || 'Field'} must be at most ${
         error.maxLength
       } characters long`;
@@ -24,6 +25,7 @@ const getErrorMessage = (error) => {
       if (Array.isArray(value)) {
         return `${name || 'Field'} must have at least ${error.minLength} items`;
       }
+
       return `${name || 'Field'} must be at least ${
         error.minLength
       } characters long`;

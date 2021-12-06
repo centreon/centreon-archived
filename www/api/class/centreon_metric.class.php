@@ -1,7 +1,8 @@
 <?php
+
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2020 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -73,6 +74,8 @@ class CentreonMetric extends CentreonWebService
      */
     public function getList()
     {
+        global $centreon;
+
         $queryValues = array();
         if (isset($this->arguments['q'])) {
             $queryValues['name'] = '%' . (string)$this->arguments['q'] . '%';
@@ -80,11 +83,22 @@ class CentreonMetric extends CentreonWebService
             $queryValues['name'] = '%%';
         }
 
-        $query = 'SELECT DISTINCT(`metric_name`) COLLATE utf8_bin as "metric_name" FROM `metrics` ' .
-            'WHERE metric_name LIKE :name ' .
-            'ORDER BY `metric_name` COLLATE utf8_general_ci ';
+        $query = 'SELECT DISTINCT(`metric_name`)
+            COLLATE utf8_bin as "metric_name", index_id FROM `metrics` as m, index_data i
+            WHERE metric_name LIKE :name ';
+
+        /**
+         * If ACLs on, then only return metrics linked to services that the user can see.
+         */
+        if (!$centreon->user->admin) {
+            $acl = new CentreonACL($centreon->user->user_id, $centreon->user->admin);
+            $query .= ' AND m.index_id = i.id AND i.service_id IN (' .
+                $acl->getServicesString('ID', $this->pearDBMonitoring) . ') ';
+        }
+
+        $query .= ' ORDER BY `metric_name` COLLATE utf8_general_ci ';
         $stmt = $this->pearDBMonitoring->prepare($query);
-        $stmt->bindParam(':name', $queryValues['name'], PDO::PARAM_STR);
+        $stmt->bindParam(':name', $queryValues['name'], \PDO::PARAM_STR);
         $dbResult = $stmt->execute();
         if (!$dbResult) {
             throw new \Exception("An error occured");
@@ -97,9 +111,9 @@ class CentreonMetric extends CentreonWebService
                 'text' => $row['metric_name']
             );
         }
+
         return $metrics;
     }
-
 
     /**
      * @return array
@@ -108,6 +122,8 @@ class CentreonMetric extends CentreonWebService
      */
     protected function getListByService()
     {
+        global $centreon;
+
         $queryValues = array();
         if (isset($this->arguments['q'])) {
             $queryValues['name'] = '%' . (string)$this->arguments['q'] . '%';
@@ -115,19 +131,29 @@ class CentreonMetric extends CentreonWebService
             $queryValues['name'] = '%%';
         }
 
-        $query = 'SELECT SQL_CALC_FOUND_ROWS m.metric_id, ' .
-            'CONCAT(h.name," - ", s.description, " - ",  m.metric_name) AS fullname ' .
-            'FROM metrics m, hosts h, services s, index_data i ' .
-            'WHERE m.index_id = i.id ' .
-            'AND h.host_id = i.host_id ' .
-            'AND s.service_id = i.service_id ' .
-            'AND h.enabled = 1 ' .
-            'AND s.enabled = 1 ' .
-            'AND CONCAT(h.name," - ", s.description, " - ",  m.metric_name) LIKE :name ' .
-            'ORDER BY CONCAT(h.name," - ", s.description, " - ",  m.metric_name) COLLATE utf8_general_ci ';
+        $query = 'SELECT SQL_CALC_FOUND_ROWS m.metric_id,
+            CONCAT(h.name," - ", s.description, " - ",  m.metric_name) AS fullname
+            FROM metrics m, hosts h, services s, index_data i
+            WHERE m.index_id = i.id
+            AND h.host_id = i.host_id
+            AND s.service_id = i.service_id
+            AND h.enabled = 1
+            AND s.enabled = 1
+            AND CONCAT(h.name," - ", s.description, " - ",  m.metric_name) LIKE :name ';
+
+        if (!$centreon->user->admin) {
+            $acl = new CentreonACL($centreon->user->user_id, $centreon->user->admin);
+            $query .= 'AND s.service_id IN (' . $acl->getServicesString('ID', $this->pearDBMonitoring) . ') ';
+        }
+
+        $query .= ' ORDER BY fullname COLLATE utf8_general_ci ';
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
-            if (!is_numeric($this->arguments['page']) || !is_numeric($this->arguments['page_limit'])) {
+            if (
+                !is_numeric($this->arguments['page'])
+                || !is_numeric($this->arguments['page_limit'])
+                || $this->arguments['page_limit'] < 1
+            ) {
                 throw new \RestBadRequestException('400 Bad Request, limit error');
             }
             $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
@@ -136,10 +162,10 @@ class CentreonMetric extends CentreonWebService
             $queryValues['limit'] = (int)$this->arguments['page_limit'];
         }
         $stmt = $this->pearDBMonitoring->prepare($query);
-        $stmt->bindParam(':name', $queryValues['name'], PDO::PARAM_STR);
+        $stmt->bindParam(':name', $queryValues['name'], \PDO::PARAM_STR);
         if (isset($queryValues['offset'])) {
-            $stmt->bindParam(':offset', $queryValues["offset"], PDO::PARAM_INT);
-            $stmt->bindParam(':limit', $queryValues["limit"], PDO::PARAM_INT);
+            $stmt->bindParam(':offset', $queryValues["offset"], \PDO::PARAM_INT);
+            $stmt->bindParam(':limit', $queryValues["limit"], \PDO::PARAM_INT);
         }
         $stmt->execute();
         $metrics = array();
@@ -147,6 +173,75 @@ class CentreonMetric extends CentreonWebService
             $metrics[] = array(
                 'id' => $row['metric_id'],
                 'text' => $row['fullname']
+            );
+        }
+        return array(
+            'items' => $metrics,
+            'total' => (int) $this->pearDBMonitoring->numberRows()
+        );
+    }
+
+    /**
+     * @return array
+     *
+     * @throws RestBadRequestException
+     */
+    protected function getListOfMetricsByService()
+    {
+        $queryValues = array();
+        if (isset($this->arguments['id'])) {
+            $tmp = explode('-', $this->arguments['id']);
+            $queryValues['host_id'] = (int)$tmp[0];
+            $queryValues['service_id'] = (int)$tmp[1];
+        } else {
+            throw new \RestBadRequestException('400 Bad Request, invalid service id');
+        }
+        $nameArg = filter_var($this->arguments['q'] ?? false, FILTER_SANITIZE_STRING);
+        if ($nameArg !== false) {
+            $queryValues['name'] = '%' . $nameArg . '%';
+        } else {
+            $queryValues['name'] = '%%';
+        }
+
+        $query = 'SELECT SQL_CALC_FOUND_ROWS m.metric_id, ' .
+            'm.metric_name AS name ' .
+            'FROM metrics m, hosts h, services s, index_data i ' .
+            'WHERE m.index_id = i.id ' .
+            'AND h.host_id = i.host_id ' .
+            'AND s.service_id = i.service_id ' .
+            'AND h.enabled = 1 ' .
+            'AND s.enabled = 1 ' .
+            'AND m.metric_name LIKE :name ' .
+            'AND h.host_id = :host_id AND s.service_id = :service_id ' .
+            'ORDER BY m.metric_name ';
+
+        if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
+            if (
+                !is_numeric($this->arguments['page'])
+                || !is_numeric($this->arguments['page_limit'])
+                || $this->arguments['page_limit'] < 1
+            ) {
+                throw new \RestBadRequestException('400 Bad Request, limit error');
+            }
+            $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
+            $query .= 'LIMIT :offset,:limit';
+            $queryValues['offset'] = (int)$offset;
+            $queryValues['limit'] = (int)$this->arguments['page_limit'];
+        }
+        $stmt = $this->pearDBMonitoring->prepare($query);
+        $stmt->bindParam(':name', $queryValues['name'], \PDO::PARAM_STR);
+        $stmt->bindParam(':host_id', $queryValues['host_id'], \PDO::PARAM_INT);
+        $stmt->bindParam(':service_id', $queryValues['service_id'], \PDO::PARAM_INT);
+        if (isset($queryValues['offset'])) {
+            $stmt->bindParam(':offset', $queryValues["offset"], \PDO::PARAM_INT);
+            $stmt->bindParam(':limit', $queryValues["limit"], \PDO::PARAM_INT);
+        }
+        $stmt->execute();
+        $metrics = array();
+        while ($row = $stmt->fetch()) {
+            $metrics[] = array(
+                'id' => $row['metric_id'],
+                'text' => $row['name']
             );
         }
         return array(
@@ -225,7 +320,7 @@ class CentreonMetric extends CentreonWebService
      */
     public function getMetricsDataByMetric()
     {
-        if (false === isset($this->arguments['ids'])) {
+        if (!isset($this->arguments['ids'])) {
             self::sendResult(array());
         }
 
@@ -236,11 +331,19 @@ class CentreonMetric extends CentreonWebService
         if (isset($this->arguments['type']) && $this->arguments['type'] === 'ng') {
             foreach ($ids as $id) {
                 list($hostId, $serviceId, $metricId) = explode('_', $id);
+                $hostId = (int)$hostId;
+                $serviceId = (int)$serviceId;
+                $metricId = (int)$metricId;
+
                 $result[] = $this->serviceDatasNg($hostId . '_' . $serviceId, $metricId);
             }
         } else {
             foreach ($ids as $id) {
                 list($hostId, $serviceId, $metricId) = explode('_', $id);
+                $hostId = (int)$hostId;
+                $serviceId = (int)$serviceId;
+                $metricId = (int)$metricId;
+
                 $result[] = $this->serviceDatas($hostId . '_' . $serviceId, $metricId);
             }
         }
@@ -268,8 +371,8 @@ class CentreonMetric extends CentreonWebService
                 'AND group_id IN (' . $aclGroups . ')';
 
             $stmt = $this->pearDBMonitoring->prepare($query);
-            $stmt->bindParam(':hostId', $hostId, PDO::PARAM_INT);
-            $stmt->bindParam(':serviceId', $serviceId, PDO::PARAM_INT);
+            $stmt->bindParam(':hostId', $hostId, \PDO::PARAM_INT);
+            $stmt->bindParam(':serviceId', $serviceId, \PDO::PARAM_INT);
             $dbResult = $stmt->execute();
             if (!$dbResult || $stmt->rowCount() === 0) {
                 return false;
@@ -301,7 +404,8 @@ class CentreonMetric extends CentreonWebService
             $aclGroups = $acl->getAccessGroupsString();
         }
 
-        if (!isset($this->arguments['start']) || !is_numeric($this->arguments['start'])
+        if (
+            !isset($this->arguments['start']) || !is_numeric($this->arguments['start'])
             || !isset($this->arguments['end']) || !is_numeric($this->arguments['end'])
         ) {
             throw new RestBadRequestException("Bad parameters");
@@ -349,21 +453,20 @@ class CentreonMetric extends CentreonWebService
                 return $selectedMetrics;
             }
 
-
-
             $stmt = $this->pearDBMonitoring->prepare(
                 'SELECT metric_id, host_id, service_id
                  FROM metrics, index_data
-                 WHERE metrics.metric_id IN (' . $filter. ')
+                 WHERE metrics.metric_id IN (' . $filter . ')
                  AND metrics.index_id = index_data.id'
             );
             foreach ($queryValues as $param => $value) {
-                $stmt->bindValue($param, $value, PDO::PARAM_INT);
+                $stmt->bindValue($param, $value, \PDO::PARAM_INT);
             }
             $stmt->execute();
 
             while ($row = $stmt->fetch()) {
-                if (isset($selectedMetrics[$row['host_id'] . '_' . $row['service_id']])
+                if (
+                    isset($selectedMetrics[$row['host_id'] . '_' . $row['service_id']])
                     && count($selectedMetrics[$row['host_id'] . '_' . $row['service_id']]) <= 0
                 ) {
                     continue;
@@ -372,7 +475,7 @@ class CentreonMetric extends CentreonWebService
                     if (!$this->checkAcl($row['host_id'], $row['service_id'], $aclGroups, $isAdmin)) {
                         continue;
                     }
-                    $selectedMetrics[$row['host_id'] . '_' . $row['service_id']] = array();
+                    $selectedMetrics[$row['host_id'] . '_' . $row['service_id']] = [];
                 }
                 $selectedMetrics[$row['host_id'] . '_' . $row['service_id']][$row['metric_id']] = 1;
             }
@@ -468,7 +571,7 @@ class CentreonMetric extends CentreonWebService
         $stmt = $this->pearDBMonitoring->prepare($query);
         foreach ([$filterHostIds, $filterServiceIds, $filterMetricIds] as $filterParams) {
             foreach ($filterParams as $param => $value) {
-                $stmt->bindValue($param, $value, PDO::PARAM_INT);
+                $stmt->bindValue($param, $value, \PDO::PARAM_INT);
             }
         }
         $stmt->execute();
@@ -559,7 +662,8 @@ class CentreonMetric extends CentreonWebService
         }
 
         /* Validate options */
-        if (!isset($this->arguments['start']) || !is_numeric($this->arguments['start'])
+        if (
+            !isset($this->arguments['start']) || !is_numeric($this->arguments['start'])
             || !isset($this->arguments['end']) || !is_numeric($this->arguments['end'])
         ) {
             throw new RestBadRequestException("Bad parameters");
@@ -571,7 +675,7 @@ class CentreonMetric extends CentreonWebService
         /* Get the numbers of points */
         $rows = 200;
         if (isset($this->arguments['rows'])) {
-            if (false === is_numeric($this->arguments['rows'])) {
+            if (!is_numeric($this->arguments['rows'])) {
                 throw new RestBadRequestException("Bad parameters");
             }
             $rows = $this->arguments['rows'];
@@ -580,7 +684,7 @@ class CentreonMetric extends CentreonWebService
             throw new RestBadRequestException("The rows must be greater as 10");
         }
 
-        if (false === isset($this->arguments['ids'])) {
+        if (!isset($this->arguments['ids'])) {
             self::sendResult(array());
         }
 
@@ -590,8 +694,9 @@ class CentreonMetric extends CentreonWebService
 
         foreach ($ids as $id) {
             list($hostId, $serviceId) = explode('_', $id);
-            if (false === is_numeric($hostId) ||
-                false === is_numeric($serviceId)
+            if (
+                !is_numeric($hostId) ||
+                !is_numeric($serviceId)
             ) {
                 throw new RestBadRequestException("Bad parameters");
             }
@@ -605,8 +710,8 @@ class CentreonMetric extends CentreonWebService
                     'AND group_id IN (' . $aclGroups . ')';
 
                 $stmt = $this->pearDBMonitoring->prepare($query);
-                $stmt->bindParam(':hostId', $hostId, PDO::PARAM_INT);
-                $stmt->bindParam(':serviceId', $serviceId, PDO::PARAM_INT);
+                $stmt->bindParam(':hostId', $hostId, \PDO::PARAM_INT);
+                $stmt->bindParam(':serviceId', $serviceId, \PDO::PARAM_INT);
                 $dbResult = $stmt->execute();
                 if (!$dbResult) {
                     throw new \Exception("An error occured");
@@ -644,10 +749,10 @@ class CentreonMetric extends CentreonWebService
                     'AND :start < entry_time ' .
                     'AND :end > entry_time';
                 $stmt = $this->pearDBMonitoring->prepare($queryComment);
-                $stmt->bindParam(':hostId', $hostId, PDO::PARAM_INT);
-                $stmt->bindParam(':serviceId', $serviceId, PDO::PARAM_INT);
-                $stmt->bindParam(':start', $start, PDO::PARAM_INT);
-                $stmt->bindParam(':end', $end, PDO::PARAM_INT);
+                $stmt->bindParam(':hostId', $hostId, \PDO::PARAM_INT);
+                $stmt->bindParam(':serviceId', $serviceId, \PDO::PARAM_INT);
+                $stmt->bindParam(':start', $start, \PDO::PARAM_INT);
+                $stmt->bindParam(':end', $end, \PDO::PARAM_INT);
                 $dbResult = $stmt->execute();
                 if (!$dbResult) {
                     throw new \Exception("An error occured");
@@ -699,8 +804,9 @@ class CentreonMetric extends CentreonWebService
             $aclGroups = $acl->getAccessGroupsString();
         }
 
-        if (!isset($this->arguments['start']) || !is_numeric($this->arguments['start'])
-           || !isset($this->arguments['end']) || !is_numeric($this->arguments['end'])
+        if (
+            !isset($this->arguments['start']) || !is_numeric($this->arguments['start'])
+            || !isset($this->arguments['end']) || !is_numeric($this->arguments['end'])
         ) {
             throw new RestBadRequestException("Bad parameters");
         }
@@ -709,8 +815,9 @@ class CentreonMetric extends CentreonWebService
         $end = $this->arguments['end'];
 
         list($hostId, $serviceId) = explode('_', $id);
-        if (false === is_numeric($hostId) ||
-            false === is_numeric($serviceId)
+        if (
+            !is_numeric($hostId) ||
+            !is_numeric($serviceId)
         ) {
             throw new RestBadRequestException("Bad parameters");
         }
@@ -724,8 +831,8 @@ class CentreonMetric extends CentreonWebService
                 'AND group_id IN (' . $aclGroups . ')';
 
             $stmt = $this->pearDBMonitoring->prepare($query);
-            $stmt->bindParam(':hostId', $hostId, PDO::PARAM_INT);
-            $stmt->bindParam(':serviceId', $serviceId, PDO::PARAM_INT);
+            $stmt->bindParam(':hostId', $hostId, \PDO::PARAM_INT);
+            $stmt->bindParam(':serviceId', $serviceId, \PDO::PARAM_INT);
             $dbResult = $stmt->execute();
             if (!$dbResult) {
                 throw new \Exception("An error occured");
@@ -791,10 +898,11 @@ class CentreonMetric extends CentreonWebService
             $aclGroups = $acl->getAccessGroupsString();
         }
 
-        if (false === isset($this->arguments['start']) ||
-            false === is_numeric($this->arguments['start']) ||
-            false === isset($this->arguments['end']) ||
-            false === is_numeric($this->arguments['end'])
+        if (
+            !isset($this->arguments['start']) ||
+            !is_numeric($this->arguments['start']) ||
+            !isset($this->arguments['end']) ||
+            !is_numeric($this->arguments['end'])
         ) {
             throw new RestBadRequestException("Bad parameters");
         }
@@ -805,7 +913,7 @@ class CentreonMetric extends CentreonWebService
         /* Get the numbers of points */
         $rows = 200;
         if (isset($this->arguments['rows'])) {
-            if (false === is_numeric($this->arguments['rows'])) {
+            if (!is_numeric($this->arguments['rows'])) {
                 throw new RestBadRequestException("Bad parameters");
             }
             $rows = $this->arguments['rows'];
@@ -815,8 +923,9 @@ class CentreonMetric extends CentreonWebService
         }
 
         list($hostId, $serviceId) = explode('_', $id);
-        if (false === is_numeric($hostId) ||
-            false === is_numeric($serviceId)
+        if (
+            !is_numeric($hostId) ||
+            !is_numeric($serviceId)
         ) {
             throw new RestBadRequestException("Bad parameters");
         }
@@ -830,8 +939,8 @@ class CentreonMetric extends CentreonWebService
                 'AND group_id IN (' . $aclGroups . ')';
 
             $stmt = $this->pearDBMonitoring->prepare($query);
-            $stmt->bindParam(':hostId', $hostId, PDO::PARAM_INT);
-            $stmt->bindParam(':serviceId', $serviceId, PDO::PARAM_INT);
+            $stmt->bindParam(':hostId', $hostId, \PDO::PARAM_INT);
+            $stmt->bindParam(':serviceId', $serviceId, \PDO::PARAM_INT);
             $dbResult = $stmt->execute();
             if (!$dbResult) {
                 throw new \Exception("An error occured");
@@ -849,7 +958,7 @@ class CentreonMetric extends CentreonWebService
         } catch (Exception $e) {
             throw new RestNotFoundException("Graph not found");
         }
-        if (false === is_null($metric)) {
+        if (!is_null($metric)) {
             $graph->setMetricList($metric);
         }
         $graph->setRRDOption("start", $start);
@@ -881,7 +990,7 @@ class CentreonMetric extends CentreonWebService
         $query = 'SELECT `value` FROM `options` WHERE `key` = "display_downtime_chart"';
         $res = $this->pearDB->query($query);
         $row = $res->fetch();
-        if (false === is_null($row) && $row['value'] === '1') {
+        if (!is_null($row) && $row['value'] === '1') {
             $acks = $this->getAcknowlegePeriods($hostId, $serviceId, $start, $end);
             $downtimes = $this->getDowntimePeriods($hostId, $serviceId, $start, $end);
         }
@@ -930,11 +1039,12 @@ class CentreonMetric extends CentreonWebService
         }
 
         /* Validate options */
-        if (false === isset($this->arguments['ids']) ||
-            false === isset($this->arguments['start']) ||
-            false === is_numeric($this->arguments['start']) ||
-            false === isset($this->arguments['end']) ||
-            false === is_numeric($this->arguments['end'])
+        if (
+            !isset($this->arguments['ids']) ||
+            !isset($this->arguments['start']) ||
+            !is_numeric($this->arguments['start']) ||
+            !isset($this->arguments['end']) ||
+            !is_numeric($this->arguments['end'])
         ) {
             throw new RestBadRequestException("Bad parameters");
         }
@@ -950,7 +1060,7 @@ class CentreonMetric extends CentreonWebService
         /* Get the numbers of points */
         $rows = 200;
         if (isset($this->arguments['rows'])) {
-            if (false === is_numeric($this->arguments['rows'])) {
+            if (!is_numeric($this->arguments['rows'])) {
                 throw new RestBadRequestException("Bad parameters");
             }
             $rows = $this->arguments['rows'];
@@ -1009,10 +1119,10 @@ class CentreonMetric extends CentreonWebService
             'AND service_id = :serviceId ' .
             'AND (entry_time >= :start AND entry_time <= :end)';
         $stmt = $this->pearDBMonitoring->prepare($query);
-        $stmt->bindValue(':hostId', $hostId, PDO::PARAM_INT);
-        $stmt->bindValue(':serviceId', $serviceId, PDO::PARAM_INT);
-        $stmt->bindValue(':start', $start, PDO::PARAM_INT);
-        $stmt->bindValue(':end', $end, PDO::PARAM_INT);
+        $stmt->bindValue(':hostId', $hostId, \PDO::PARAM_INT);
+        $stmt->bindValue(':serviceId', $serviceId, \PDO::PARAM_INT);
+        $stmt->bindValue(':start', $start, \PDO::PARAM_INT);
+        $stmt->bindValue(':end', $end, \PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -1081,7 +1191,7 @@ class CentreonMetric extends CentreonWebService
         $periods = array();
         $stmt = $this->pearDBMonitoring->prepare($query);
         foreach ($queryValues as $key => $value) {
-            $stmt->bindValue(':' . $key, $value, PDO::PARAM_INT);
+            $stmt->bindValue(':' . $key, $value, \PDO::PARAM_INT);
         }
         $dbResult = $stmt->execute();
         if (!$dbResult) {
@@ -1093,13 +1203,15 @@ class CentreonMetric extends CentreonWebService
                 'start' => $row['start'],
                 'end' => $row['end']
             );
-            if ($start > $row['start']
+            if (
+                $start > $row['start']
                 || is_null($row['start'])
                 || $row['start'] === ''
             ) {
                 $period['start'] = $start;
             }
-            if ($end < $row['end']
+            if (
+                $end < $row['end']
                 || is_null($row['end'])
                 || $row['end'] === ''
             ) {

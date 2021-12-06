@@ -1,10 +1,30 @@
 <?php
 
+/*
+ * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * For more information : contact@centreon.com
+ *
+ */
+
 namespace CentreonRemote\Application\Webservice;
 
-use CentreonRemote\Application\Validator\WizardConfigurationRequestValidator;
 use Centreon\Domain\Entity\Task;
+use Centreon\Domain\PlatformTopology\Model\PlatformPending;
 use CentreonRemote\Domain\Value\ServerWizardIdentity;
+use CentreonRemote\Application\Validator\WizardConfigurationRequestValidator;
 
 /**
  * @OA\Tag(name="centreon_configuration_remote", description="")
@@ -66,7 +86,25 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      */
     public function postGetWaitList(): array
     {
-        $statement = $this->pearDB->query('SELECT ip, version FROM `remote_servers` WHERE `is_connected` = 0');
+        $statement = $this->pearDB->query("
+            SELECT id, address as ip, name as server_name FROM `platform_topology`
+            WHERE `type` = 'remote' AND pending = '1'
+        ");
+
+        return $statement->fetchAll();
+    }
+
+    /**
+     * Get Pollers servers waitlist
+     *
+     * @return array
+     */
+    public function postGetPollerWaitList(): array
+    {
+        $statement = $this->pearDB->query("
+            SELECT id, address as ip, name as server_name FROM `platform_topology`
+            WHERE `type` = 'poller' AND pending = '1'
+        ");
 
         return $statement->fetchAll();
     }
@@ -117,7 +155,13 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      */
     public function getList(): array
     {
-        return $this->postGetRemotesList();
+        $list = [];
+        foreach ($this->postGetRemotesList() as $row) {
+            $row['id'] = (int)$row['id'];
+            $list[] = $row;
+        }
+
+        return $list;
     }
 
     /**
@@ -286,10 +330,11 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      * Link centreon remote server
      *
      * @return array
-     * @example ['error' => true, 'message' => 'error message']
+     * @throws \RestBadRequestException
+     * @throws \Exception
      * @example ['success' => true, 'task_id' => 'task id']
      *
-     * @throws \RestBadRequestException
+     * @example ['error' => true, 'message' => 'error message']
      */
     public function postLinkCentreonRemoteServer(): array
     {
@@ -301,11 +346,11 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
         $noCheckCertificate = isset($this->arguments['no_check_certificate'])
             && $this->arguments['no_check_certificate'] === true;
         $noProxy = isset($this->arguments['no_proxy']) && $this->arguments['no_proxy'] === true;
-        $serverWizardIdentity = new ServerWizardIdentity;
+        $serverWizardIdentity = new ServerWizardIdentity();
         $isRemoteConnection = $serverWizardIdentity->requestConfigurationIsRemote();
-        $configurationServiceName = $isRemoteConnection ?
-            'centreon_remote.remote_connection_service' :
-            'centreon_remote.poller_connection_service';
+        $configurationServiceName = $isRemoteConnection
+            ? 'centreon_remote.remote_connection_service'
+            : 'centreon_remote.poller_connection_service';
 
         // validate form fields
         WizardConfigurationRequestValidator::validate();
@@ -315,15 +360,34 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
         $pollerConfigurationBridge = $this->getDi()['centreon_remote.poller_config_bridge'];
 
         // extract HTTP method and port from form or database if registered
-        $httpMethod = "";
-        $httpPort = "";
         $serverIP = parse_url($this->arguments['server_ip'], PHP_URL_HOST) ?: $this->arguments['server_ip'];
         $serverName = substr($this->arguments['server_name'], 0, 40);
 
+        // Check IPv6, IPv4 and FQDN format
+        if (
+            !filter_var($serverIP, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME)
+            && !filter_var($serverIP, FILTER_VALIDATE_IP)
+        ) {
+            return ['error' => true, 'message' => "Invalid IP address"];
+        }
         $dbAdapter = $this->getDi()['centreon.db-manager']->getAdapter('configuration_db');
+
+        /**
+         * Avoid Ip duplication
+         */
+        $statement = $this->pearDB->prepare(
+            'SELECT COUNT(*) as `total` FROM `nagios_server` WHERE `ns_ip_address` = :serverIp'
+        );
+        $statement->bindValue(':serverIp', $serverIP, \PDO::PARAM_STR);
+        $statement->execute();
+        $isInNagios = $statement->fetch(\PDO::FETCH_ASSOC);
+        if ((int)$isInNagios['total'] > 0) {
+            throw new \Exception(_('This IP Address already exist'));
+        }
+
         $sql = 'SELECT * FROM `remote_servers` WHERE `ip` = ?';
         $dbAdapter->query($sql, [$serverIP]);
-        $hasIpInTable = (bool) $dbAdapter->count();
+        $hasIpInTable = (bool)$dbAdapter->count();
 
         if (!$hasIpInTable) {
             $httpMethod = parse_url($this->arguments['server_ip'], PHP_URL_SCHEME) ?: 'http';
@@ -349,11 +413,13 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
         if ($isRemoteConnection) {
             $serverConfigurationService->setDbUser($this->arguments['db_user']);
             $serverConfigurationService->setDbPassword($this->arguments['db_password']);
-            if ($serverWizardIdentity->checkBamOnRemoteServer(
-                $httpMethod . '://' . $serverIP . ':' . $httpPort . '/' . trim($centreonPath, '/'),
-                $noCheckCertificate,
-                $noProxy
-            )) {
+            if (
+                $serverWizardIdentity->checkBamOnRemoteServer(
+                    $httpMethod . '://' . $serverIP . ':' . $httpPort . '/' . trim($centreonPath, '/'),
+                    $noCheckCertificate,
+                    $noProxy
+                )
+            ) {
                 $serverConfigurationService->shouldInsertBamBrokers();
             }
         }
@@ -379,13 +445,13 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
             // set basic parameters to export task
             $params = [
                 'server' => $remoteServer->getId(),
-                'remote_ip' => $remoteServer->getIp(),
+                'pollers' => [],
+                'remote_ip' => $serverIP,
                 'centreon_path' => $centreonPath,
                 'http_method' => $httpMethod,
                 'http_port' => $httpPort,
                 'no_check_certificate' => $noCheckCertificate,
                 'no_proxy' => $noProxy,
-                'pollers' => []
             ];
 
             // If you want to link pollers to a remote
@@ -411,15 +477,35 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
                 $noProxy
             );
             $this->setCentreonInstanceAsCentral();
-
-        // if it is poller wizard and poller is linked to another poller/remote server (instead of central)
+            $this->updateServerInPlatformTopology([
+                'type' => PlatformPending::TYPE_REMOTE,
+                'server_name' => $serverName,
+                'nagios_id' => $serverId,
+                'address' => $serverIP,
+                'children_pollers' => $pollers ?? null
+            ]);
+            // if it is poller wizard and poller is linked to another poller/remote server (instead of central)
         } elseif ($pollerConfigurationBridge->hasPollersForUpdating()) {
             $pollers = [$pollerConfigurationBridge->getPollerFromId($serverId)];
             $parentPoller = $pollerConfigurationBridge->getLinkedPollersSelectedForUpdate()[0];
             $pollerConfigurationService->linkPollersToParentPoller($pollers, $parentPoller);
-            // add broker output to forward data to additionnal remote server and link in db
+            // add broker output to forward data to additional remote server and link in db
             $additionalRemotes = $pollerConfigurationBridge->getAdditionalRemoteServers();
             $pollerConfigurationService->linkPollerToAdditionalRemoteServers($pollers[0], $additionalRemotes);
+            $this->updateServerInPlatformTopology([
+                'type' => PlatformPending::TYPE_POLLER,
+                'server_name' => $serverName,
+                'nagios_id' => $serverId,
+                'address' => $serverIP,
+                'parent' => $parentPoller->getId()
+            ]);
+        } else {
+            $this->updateServerInPlatformTopology([
+                'type' => PlatformPending::TYPE_POLLER,
+                'server_name' => $serverName,
+                'nagios_id' => $serverId,
+                'address' => $serverIP,
+            ]);
         }
 
         return ['success' => true, 'task_id' => $taskId];
@@ -430,9 +516,9 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      *
      * @param string $action The action name
      * @param \CentreonUser $user The current user
-     * @param boolean $isInternal If the api is call in internal
+     * @param bool $isInternal If the api is call in internal
      *
-     * @return boolean If the user has access to the action
+     * @return bool If the user has access to the action
      */
     public function authorize($action, $user, $isInternal = false)
     {
@@ -450,43 +536,44 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      * @param string $centreonPath the path to access to Centreon
      * @param string $httpMethod the method to access to server (HTTP/HTTPS)
      * @param string $httpPort the port to access to the server
-     * @param boolean $noCheckCertificate to do not check SSL CA
-     * @param boolean $noProxy to do not use configured proxy
+     * @param bool $noCheckCertificate to do not check SSL CA
+     * @param bool $noProxy to do not use configured proxy
      */
     private function addServerToListOfRemotes(
-        $serverIP,
-        $centreonPath,
-        $httpMethod,
-        $httpPort,
-        $noCheckCertificate,
-        $noProxy
-    ) {
+        string $serverIP,
+        string $centreonPath,
+        string $httpMethod,
+        string $httpPort,
+        bool $noCheckCertificate,
+        bool $noProxy
+    ): void {
         $dbAdapter = $this->getDi()[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]->getAdapter('configuration_db');
         $date = date('Y-m-d H:i:s');
 
         $sql = 'SELECT * FROM `remote_servers` WHERE `ip` = ?';
         $dbAdapter->query($sql, [$serverIP]);
-        $hasIpInTable = (bool) $dbAdapter->count();
+        $hasIpInTable = (bool)$dbAdapter->count();
 
         if ($hasIpInTable) {
-            $sql = 'UPDATE `remote_servers` SET `is_connected` = ?, `connected_at` = ?, `centreon_path` = ?, ' .
-                '`no_check_certificate` = ?, `no_proxy` = ? ' .
-                'WHERE `ip` = ?';
+            $sql = 'UPDATE `remote_servers` SET
+                `is_connected` = ?, `connected_at` = ?, `centreon_path` = ?,
+                `no_check_certificate` = ?, `no_proxy` = ?
+                WHERE `ip` = ?';
             $data = ['1', $date, $centreonPath, ($noCheckCertificate ?: 0), ($noProxy ?: 0), $serverIP];
             $dbAdapter->query($sql, $data);
         } else {
             $data = [
-                'ip'                   => $serverIP,
-                'app_key'              => '',
-                'version'              => '',
-                'is_connected'         => '1',
-                'created_at'           => $date,
-                'connected_at'         => $date,
-                'centreon_path'        => $centreonPath,
-                'http_method'          => $httpMethod,
-                'http_port'            => $httpPort ?: null,
+                'ip' => $serverIP,
+                'app_key' => '',
+                'version' => '',
+                'is_connected' => '1',
+                'created_at' => $date,
+                'connected_at' => $date,
+                'centreon_path' => $centreonPath,
+                'http_method' => $httpMethod,
+                'http_port' => $httpPort ?: null,
                 'no_check_certificate' => $noCheckCertificate ?: 0,
-                'no_proxy'             => $noProxy ?: 0
+                'no_proxy' => $noProxy ?: 0
             ];
             $dbAdapter->insert('remote_servers', $data);
         }
@@ -501,14 +588,14 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
 
         $sql = "SELECT * FROM `informations` WHERE `key` = 'isCentral'";
         $dbAdapter->query($sql);
-        $hasInfoRecord = (bool) $dbAdapter->count();
+        $hasInfoRecord = (bool)$dbAdapter->count();
 
         if ($hasInfoRecord) {
             $sql = "UPDATE `informations` SET `value` = 'yes' WHERE `key` = 'isCentral'";
             $dbAdapter->query($sql);
         } else {
             $data = [
-                'key'   => 'isCentral',
+                'key' => 'isCentral',
                 'value' => 'yes',
             ];
             $dbAdapter->insert('informations', $data);
@@ -518,12 +605,100 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
     /**
      * Create New Task for export
      *
-     * @var $params array
      * @return bool|int
+     * @var $params array
      */
-    private function createExportTask($params)
+    private function createExportTask(array $params)
     {
-        $result = $this->getDi()['centreon.taskservice']->addTask(Task::TYPE_EXPORT, array('params'=>$params));
-        return $result;
+        return $this->getDi()['centreon.taskservice']->addTask(Task::TYPE_EXPORT, array('params' => $params));
+    }
+
+    /**
+     * @param array $topologyInformation
+     * @throws \Exception
+     */
+    private function updateServerInPlatformTopology(array $topologyInformation): void
+    {
+        /**
+         * Get platform_topology id
+         */
+        $statement = $this->pearDB->prepare(
+            "SELECT id, server_id as nagios_id FROM `platform_topology` WHERE address = :address"
+        );
+        $statement->bindValue(':address', $topologyInformation['address'], \PDO::PARAM_STR);
+        $statement->execute();
+        $server = $statement->fetch(\PDO::FETCH_ASSOC);
+
+        if (isset($server['nagios_id'])) {
+            throw new \Exception(_('This server is already registered'));
+        }
+        if (!empty($topologyInformation['parent'])) {
+            $statement = $this->pearDB->prepare('SELECT id FROM platform_topology WHERE server_id = :serverId');
+            $statement->bindValue(':serverId', (int)$topologyInformation['parent'], \PDO::PARAM_INT);
+            $statement->execute();
+            $parent = $statement->fetch(\PDO::FETCH_ASSOC);
+        } else {
+            // Get Central ID
+            $statement = $this->pearDB->query("SELECT id FROM `platform_topology` WHERE type = 'central'");
+            $parent = $statement->fetch(\PDO::FETCH_ASSOC);
+            if (empty($parent['id'])) {
+                throw new \Exception(_('No Central in topology,please edit it from Configuration > Pollers menu'));
+            }
+        }
+        /**
+         * If the server is already registered in platform_topology Update else insert
+         */
+        $insertedPlatform = [];
+        if (!empty($server['id'])) {
+            $statement = $this->pearDB->prepare(
+                "UPDATE `platform_topology` SET
+                `name` = :name,
+                parent_id = :parentId,
+                server_id = :nagiosId,
+                pending = '0'
+                WHERE id = :topologyId"
+            );
+            $statement->bindValue(':name', $topologyInformation['server_name'], \PDO::PARAM_STR);
+            $statement->bindValue(':parentId', (int)$parent['id'], \PDO::PARAM_INT);
+            $statement->bindValue(':nagiosId', $topologyInformation['nagios_id'], \PDO::PARAM_INT);
+            $statement->bindValue(':topologyId', (int)$server['id'], \PDO::PARAM_INT);
+            $statement->execute();
+        } else {
+            $statement = $this->pearDB->prepare(
+                "INSERT INTO `platform_topology` (`address`,`name`,`type`,`parent_id`,`server_id`, `pending`)
+                VALUES (:address, :name, :type, :parentId, :serverId, '0')"
+            );
+            $statement->bindValue(':address', $topologyInformation['address'], \PDO::PARAM_STR);
+            $statement->bindValue(':name', $topologyInformation['server_name'], \PDO::PARAM_STR);
+            $statement->bindValue(':type', $topologyInformation['type'], \PDO::PARAM_STR);
+            $statement->bindValue(':parentId', (int)$parent['id'], \PDO::PARAM_INT);
+            $statement->bindValue(':serverId', $topologyInformation['nagios_id'], \PDO::PARAM_INT);
+            $statement->execute();
+            /**
+             * Get the new registered platform IP
+             */
+            $statement = $this->pearDB->prepare('SELECT MAX(id) as last_id FROM `platform_topology`');
+            $statement->execute();
+            $insertedPlatform = $statement->fetch(\PDO::FETCH_ASSOC);
+        }
+        /**
+         * If it's a remote with attached poller. Update their parent id
+         */
+        if (!empty($topologyInformation['children_pollers'])) {
+            $statement = $this->pearDB->prepare(
+                "UPDATE `platform_topology`
+                SET parent_id = :parentId, `pending` = '0'
+                WHERE server_id = :pollerId"
+            );
+            foreach ($topologyInformation['children_pollers'] as $poller) {
+                $statement->bindValue(
+                    ':parentId',
+                    isset($insertedPlatform['last_id']) ? (int)$insertedPlatform['last_id'] : (int)$server['id'],
+                    \PDO::PARAM_INT
+                );
+                $statement->bindValue(':pollerId', (int)$poller->getId(), \PDO::PARAM_INT);
+                $statement->execute();
+            }
+        }
     }
 }

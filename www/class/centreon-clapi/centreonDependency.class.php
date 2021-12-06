@@ -207,6 +207,23 @@ class CentreonDependency extends CentreonObject
     }
 
     /**
+     * @param int $dependencyId
+     * @return string
+     */
+    protected function getDependencyName(int $dependencyId): string
+    {
+        $sql = "SELECT `dep_name` FROM `dependency` WHERE `dep_id` = :depId";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':depId', $dependencyId, \PDO::PARAM_INT);
+        $stmt->execute();
+        $row = $stmt->fetch();
+        if (isset($row['dep_name'])) {
+            return $row['dep_name'];
+        }
+        return "";
+    }
+
+    /**
      * Insert new dependency
      *
      * @param string $name
@@ -380,7 +397,8 @@ class CentreonDependency extends CentreonObject
             if (in_array($params[1], array('comment', 'name', 'description')) && !preg_match("/^dep_/", $params[1])) {
                 $params[1] = "dep_" . $params[1];
             }
-            $updateParams = array($params[1] => $params[2]);
+            $params[2] = str_replace("<br/>", "\n", $params[2]);
+            $updateParams = array($params[1] => htmlentities($params[2], ENT_QUOTES, "UTF-8"));
             $updateParams['objectId'] = $objectId;
             return $updateParams;
         } else {
@@ -691,13 +709,26 @@ class CentreonDependency extends CentreonObject
     protected function addHostgroupRelations($depId, $objectToInsert, $relType)
     {
         $table = "dependency_hostgroup" . ucfirst($relType) . "_relation";
-        $sql = "INSERT INTO {$table} (dependency_dep_id, hostgroup_hg_id) VALUES (?, ?)";
         $obj = new \Centreon_Object_Host_Group($this->dependencyInjector);
         $ids = $obj->getIdByParameter($obj->getUniqueLabelField(), array($objectToInsert));
         if (!count($ids)) {
             throw new CentreonClapiException(sprintf('Could not find host group %s', $objectToInsert));
         }
-        $this->db->query($sql, array($depId, $ids[0]));
+        $dataField = ['dependency_dep_id' => $depId, 'hostgroup_hg_id' => $ids[0]];
+        if ($this->isExistingDependency($table, $dataField)) {
+            throw new CentreonClapiException(
+                sprintf(
+                    'Hostgroup %s is already linked to the dependency %s',
+                    $objectToInsert,
+                    $this->getDependencyName($depId)
+                )
+            );
+        }
+        $sql = "INSERT INTO {$table} (dependency_dep_id, hostgroup_hg_id) VALUES (:depId, :hgId)";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':depId', $depId, \PDO::PARAM_INT);
+        $stmt->bindParam(':hgId', $ids[0], \PDO::PARAM_INT);
+        $stmt->execute();
     }
 
     /**
@@ -709,13 +740,26 @@ class CentreonDependency extends CentreonObject
     protected function addServicegroupRelations($depId, $objectToInsert, $relType)
     {
         $table = "dependency_servicegroup" . ucfirst($relType) . "_relation";
-        $sql = "INSERT INTO {$table} (dependency_dep_id, servicegroup_sg_id) VALUES (?, ?)";
         $obj = new \Centreon_Object_Service_Group($this->dependencyInjector);
         $ids = $obj->getIdByParameter($obj->getUniqueLabelField(), array($objectToInsert));
         if (!count($ids)) {
             throw new CentreonClapiException(sprintf('Could not find service group %s', $objectToInsert));
         }
-        $this->db->query($sql, array($depId, $ids[0]));
+        $dataField = ['dependency_dep_id' => $depId, 'servicegroup_sg_id' => $ids[0]];
+        if ($this->isExistingDependency($table, $dataField)) {
+            throw new CentreonClapiException(
+                sprintf(
+                    'Servicegroup %s is already linked to the dependency %s',
+                    $objectToInsert,
+                    $this->getDependencyName($depId)
+                )
+            );
+        }
+        $sql = "INSERT INTO {$table} (dependency_dep_id, servicegroup_sg_id) VALUES (:depId, :sgId)";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':depId', $depId, \PDO::PARAM_INT);
+        $stmt->bindParam(':sgId', $ids[0], \PDO::PARAM_INT);
+        $stmt->execute();
     }
 
     /**
@@ -727,14 +771,26 @@ class CentreonDependency extends CentreonObject
     protected function addMetaRelations($depId, $objectToInsert, $relType)
     {
         $table = "dependency_metaservice" . ucfirst($relType) . "_relation";
-
-        $sql = "INSERT INTO {$table} (dependency_dep_id, meta_service_meta_id) VALUES (?, ?)";
         $obj = new \Centreon_Object_Meta_Service($this->dependencyInjector);
         $ids = $obj->getIdByParameter($obj->getUniqueLabelField(), array($objectToInsert));
         if (!count($ids)) {
             throw new CentreonClapiException(sprintf('Could not find meta service %s', $objectToInsert));
         }
-        $this->db->query($sql, array($depId, $ids[0]));
+        $dataField = ['dependency_dep_id' => $depId, 'meta_service_meta_id' => $ids[0]];
+        if ($this->isExistingDependency($table, $dataField)) {
+            throw new CentreonClapiException(
+                sprintf(
+                    'Meta %s already is already linked to the dependency %s',
+                    $objectToInsert,
+                    $this->getDependencyName($depId)
+                )
+            );
+        }
+        $sql = "INSERT INTO {$table} (dependency_dep_id, meta_service_meta_id) VALUES (:depId, :metaId)";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':depId', $depId, \PDO::PARAM_INT);
+        $stmt->bindParam(':metaId', $ids[0], \PDO::PARAM_INT);
+        $stmt->execute();
     }
 
     /**
@@ -746,33 +802,78 @@ class CentreonDependency extends CentreonObject
     protected function addHostRelations($depId, $objectToInsert, $relType)
     {
         if ($relType == 'parent') {
-            $sql = "INSERT INTO dependency_hostParent_relation (dependency_dep_id, host_host_id) VALUES (?, ?)";
             $hostObj = new \Centreon_Object_Host($this->dependencyInjector);
             $hostIds = $hostObj->getIdByParameter($hostObj->getUniqueLabelField(), array($objectToInsert));
             if (!count($hostIds)) {
                 throw new CentreonClapiException(sprintf('Could not find host %s', $objectToInsert));
             }
-            $params = array($depId, $hostIds[0]);
+            $dataField = ['dependency_dep_id' => $depId, 'host_host_id' => $hostIds[0]];
+            if ($this->isExistingDependency('dependency_hostParent_relation', $dataField)) {
+                throw new CentreonClapiException(
+                    sprintf(
+                        'Host %s is already linked to the dependency %s',
+                        $objectToInsert,
+                        $this->getDependencyName($depId)
+                    )
+                );
+            }
+            $sql = "INSERT INTO dependency_hostParent_relation (dependency_dep_id, host_host_id)
+                    VALUES (:depId, :hostId)";
+            $stmt = $this->db->prepare($sql);
+            $stmt->bindParam(':depId', $depId, \PDO::PARAM_INT);
+            $stmt->bindParam(':hostId', $hostIds[0], \PDO::PARAM_INT);
+            $stmt->execute();
         } elseif ($relType == 'child' && strstr($objectToInsert, ',')) { // service child
-            $sql = "INSERT INTO dependency_serviceChild_relation
-                (dependency_dep_id, host_host_id, service_service_id)
-                VALUES (?, ?, ?)";
             list($host, $service) = explode(",", $objectToInsert);
             $idTab = $this->serviceObj->getHostAndServiceId($host, $service);
             if (!count($idTab)) {
                 throw new CentreonClapiException(sprintf('Could not find service %s on host %s', $service, $host));
             }
-            $params = array($depId, $idTab[0], $idTab[1]);
+            $dataField = [
+                'dependency_dep_id' => $depId,
+                'host_host_id' => $idTab[0],
+                'service_service_id' => $idTab[1]
+            ];
+            if ($this->isExistingDependency('dependency_serviceChild_relation', $dataField)) {
+                throw new CentreonClapiException(
+                    sprintf(
+                        'Dependency between service %s and host %s already exists on %s',
+                        $service,
+                        $host,
+                        $this->getDependencyName($depId)
+                    )
+                );
+            }
+            $sql = "INSERT INTO dependency_serviceChild_relation (dependency_dep_id, host_host_id, service_service_id)
+                    VALUES (:depId, :hostId, :svcId)";
+            $stmt = $this->db->prepare($sql);
+            $stmt->bindParam(':depId', $depId, \PDO::PARAM_INT);
+            $stmt->bindParam(':hostId', $idTab[0], \PDO::PARAM_INT);
+            $stmt->bindParam(':svcId', $idTab[1], \PDO::PARAM_INT);
+            $stmt->execute();
         } elseif ($relType == 'child') { // host child
-            $sql = "INSERT INTO dependency_hostChild_relation (dependency_dep_id, host_host_id) VALUES (?, ?)";
             $hostObj = new \Centreon_Object_Host($this->dependencyInjector);
             $hostIds = $hostObj->getIdByParameter($hostObj->getUniqueLabelField(), array($objectToInsert));
             if (!count($hostIds)) {
                 throw new CentreonClapiException(sprintf('Could not find host %s', $objectToInsert));
             }
-            $params = array($depId, $hostIds[0]);
+            $dataField = ['dependency_dep_id' => $depId, 'host_host_id' => $hostIds[0]];
+            if ($this->isExistingDependency('dependency_hostChild_relation', $dataField)) {
+                throw new CentreonClapiException(
+                    sprintf(
+                        'Host %s is already linked to the dependency %s',
+                        $objectToInsert,
+                        $this->getDependencyName($depId)
+                    )
+                );
+            }
+            $sql = "INSERT INTO dependency_hostChild_relation (dependency_dep_id, host_host_id)
+                    VALUES (:depId, :hostId)";
+            $stmt = $this->db->prepare($sql);
+            $stmt->bindParam(':depId', $depId, \PDO::PARAM_INT);
+            $stmt->bindParam(':hostId', $hostIds[0], \PDO::PARAM_INT);
+            $stmt->execute();
         }
-        $this->db->query($sql, $params);
     }
 
     /**
@@ -784,9 +885,6 @@ class CentreonDependency extends CentreonObject
     protected function addServiceRelations($depId, $objectToInsert, $relType)
     {
         if ($relType == 'parent') {
-            $sql = "INSERT INTO dependency_serviceParent_relation
-                (dependency_dep_id, host_host_id, service_service_id)
-                VALUES (?, ?, ?)";
             if (!strstr($objectToInsert, ',')) {
                 throw new CentreonClapiException('Invalid service definition');
             }
@@ -795,27 +893,81 @@ class CentreonDependency extends CentreonObject
             if (!count($idTab)) {
                 throw new CentreonClapiException(sprintf('Could not find service %s on host %s', $service, $host));
             }
-            $params = array($depId, $idTab[0], $idTab[1]);
+            $dataField = [
+                'dependency_dep_id' => $depId,
+                'host_host_id' => $idTab[0],
+                'service_service_id' => $idTab[1]
+            ];
+            if ($this->isExistingDependency('dependency_serviceParent_relation', $dataField)) {
+                throw new CentreonClapiException(
+                    sprintf(
+                        'Dependency between service %s and host %s already exists on %s',
+                        $service,
+                        $host,
+                        $this->getDependencyName($depId)
+                    )
+                );
+            }
+            $sql = "INSERT INTO dependency_serviceParent_relation (dependency_dep_id, host_host_id, service_service_id)
+                VALUES (:depId, :hostId, :svcId)";
+            $stmt = $this->db->prepare($sql);
+            $stmt->bindParam(':depId', $depId, \PDO::PARAM_INT);
+            $stmt->bindParam(':hostId', $idTab[0], \PDO::PARAM_INT);
+            $stmt->bindParam(':svcId', $idTab[1], \PDO::PARAM_INT);
+            $stmt->execute();
         } elseif ($relType == 'child' && strstr($objectToInsert, ',')) { // service child
-            $sql = "INSERT INTO dependency_serviceChild_relation (dependency_dep_id, host_host_id, service_service_id)
-                VALUES (?, ?, ?)";
             list($host, $service) = explode(",", $objectToInsert);
             $idTab = $this->serviceObj->getHostAndServiceId($host, $service);
             if (!count($idTab)) {
-                throw new CentreonClapiException(sprintf('Could not find service %s on host %s', $service, $host));
+                throw new CentreonClapiException(
+                    sprintf('Could not find service %s on host %s', $depId, $service, $host)
+                );
             }
-            $params = array($depId, $idTab[0], $idTab[1]);
+            $dataField = [
+                'dependency_dep_id' => $depId,
+                'host_host_id' => $idTab[0],
+                'service_service_id' => $idTab[1]
+            ];
+            if ($this->isExistingDependency('dependency_serviceChild_relation', $dataField)) {
+                throw new CentreonClapiException(
+                    sprintf(
+                        'Dependency between service %s and host %s already exists on %s',
+                        $service,
+                        $host,
+                        $this->getDependencyName($depId)
+                    )
+                );
+            }
+            $sql = "INSERT INTO dependency_serviceChild_relation (dependency_dep_id, host_host_id, service_service_id)
+                VALUES (:depId, :hostId, :svcId)";
+            $stmt = $this->db->prepare($sql);
+            $stmt->bindParam(':depId', $depId, \PDO::PARAM_INT);
+            $stmt->bindParam(':hostId', $idTab[0], \PDO::PARAM_INT);
+            $stmt->bindParam(':svcId', $idTab[1], \PDO::PARAM_INT);
+            $stmt->execute();
         } elseif ($relType == 'child') { // host child
-            $sql = "INSERT INTO dependency_hostChild_relation (dependency_dep_id, host_host_id)
-                VALUES (?, ?)";
             $hostObj = new \Centreon_Object_Host($this->dependencyInjector);
             $hostIds = $hostObj->getIdByParameter($hostObj->getUniqueLabelField(), array($objectToInsert));
             if (!count($hostIds)) {
                 throw new CentreonClapiException(sprintf('Could not find host %s', $objectToInsert));
             }
-            $params = array($depId, $hostIds[0]);
+            $dataField = ['dependency_dep_id' => $depId, 'host_host_id' => $hostIds[0]];
+            if ($this->isExistingDependency('dependency_serviceChild_relation', $dataField)) {
+                throw new CentreonClapiException(
+                    sprintf(
+                        'Service %s is already linked to the dependency %s',
+                        $objectToInsert,
+                        $this->getDependencyName($depId)
+                    )
+                );
+            }
+            $sql = "INSERT INTO dependency_hostChild_relation (dependency_dep_id, host_host_id)
+                    VALUES (:depId, :hostId)";
+            $stmt = $this->db->prepare($sql);
+            $stmt->bindParam(':depId', $depId, \PDO::PARAM_INT);
+            $stmt->bindParam(':hostId', $hostIds[0], \PDO::PARAM_INT);
+            $stmt->execute();
         }
-        $this->db->query($sql, $params);
     }
 
     /**
@@ -859,6 +1011,24 @@ class CentreonDependency extends CentreonObject
             default:
                 break;
         }
+    }
+
+    /**
+     * @param string $table
+     * @param array $dataField
+     * @return bool
+     */
+    protected function isExistingDependency(string $table, array $dataField): bool
+    {
+        $sql = "SELECT `dependency_dep_id`
+                FROM {$table} WHERE ";
+        foreach ($dataField as $field => $value) {
+            $sql .= " {$field} = {$value} AND";
+        }
+        $sql = rtrim($sql, "AND");
+        $res = $this->db->query($sql);
+        $row = $res->fetch();
+        return !empty($row['dependency_dep_id']);
     }
 
     /**
@@ -1209,6 +1379,7 @@ class CentreonDependency extends CentreonObject
                         continue;
                     }
                     // setparam
+                    $v = CentreonUtils::convertLineBreak($v);
                     echo
                         implode(
                             $this->delim,
@@ -1217,7 +1388,7 @@ class CentreonDependency extends CentreonObject
                                 'SETPARAM',
                                 $row['dep_name'],
                                 $k,
-                                $v,
+                                html_entity_decode($v, ENT_QUOTES, "UTF-8"),
                             )
                         ) . "\n";
                 }

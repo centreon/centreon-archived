@@ -64,8 +64,6 @@ class CentreonSettings extends CentreonObject
         $this->authorizedOptions = array(
             'broker' => array('values' => array('ndo', 'broker')),
             'centstorage' => array('values' => array('0', '1')),
-            'enable_perfdata_sync' => array('values' => array('0', '1')),
-            'enable_logs_sync' => array('values' => array('0', '1')),
             'gmt' => array(
                 'format' => self::ISSTRING,
                 'getterFormatMethod' => 'getTimezonenameFromId',

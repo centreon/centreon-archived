@@ -44,9 +44,9 @@ use PDO;
 
 class TopologyRepository extends ServiceEntityRepository
 {
-    const ACL_ACCESS_NONE = 0;
-    const ACL_ACCESS_READ_WRITE = 1;
-    const ACL_ACCESS_READ_ONLY = 2;
+    private const ACL_ACCESS_NONE = 0;
+    private const ACL_ACCESS_READ_WRITE = 1;
+    private const ACL_ACCESS_READ_ONLY = 2;
 
     /**
      * Disable Menus for a Master-to-Remote transition
@@ -55,7 +55,7 @@ class TopologyRepository extends ServiceEntityRepository
      */
     public function disableMenus(): bool
     {
-        $sql = file_get_contents(_CENTREON_PATH_ . '/src/Centreon/Infrastructure/Resources/sql/disablemenus.sql');
+        $sql = file_get_contents(__DIR__ . '/../../Infrastructure/Resources/sql/disablemenus.sql');
         $stmt = $this->db->prepare($sql);
         return $stmt->execute();
     }
@@ -67,7 +67,7 @@ class TopologyRepository extends ServiceEntityRepository
      */
     public function enableMenus(): bool
     {
-        $sql = file_get_contents(_CENTREON_PATH_ . '/src/Centreon/Infrastructure/Resources/sql/enablemenus.sql');
+        $sql = file_get_contents(__DIR__ . '/../../Infrastructure/Resources/sql/enablemenus.sql');
         $stmt = $this->db->prepare($sql);
         return $stmt->execute();
     }
@@ -159,11 +159,18 @@ class TopologyRepository extends ServiceEntityRepository
 
         //base query
         $query = 'SELECT topology_id, topology_name, topology_page, topology_url, topology_url_opt, '
-            . 'topology_group, topology_order, topology_parent, is_react, readonly, topology_show '
+            . 'topology_group, topology_order, topology_parent, is_react, readonly, topology_show, is_deprecated '
             . 'FROM ' . Topology::TABLE;
 
+        $whereClause = false;
         if (!$user->access->admin) {
-            $query .= ' WHERE topology_page IN (' . $user->access->getTopologyString() . ')';
+            $query .= ' WHERE topology_page IN (' . $user->access->getTopologyString() . ')  OR topology_page IS NULL';
+            $whereClause = true;
+        }
+
+        if ($user->doesShowDeprecatedPages() === false) {
+            $query .= ($whereClause === true ? ' AND ' : ' WHERE ')
+                . 'is_deprecated = "0"';
         }
 
         $query .= ' ORDER BY topology_parent, topology_group, topology_order, topology_page';

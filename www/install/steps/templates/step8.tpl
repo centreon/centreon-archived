@@ -125,34 +125,42 @@
                 data: {
                     'modules': moduleIds,
                     'widgets': widgetIds
+                },
+                success: (data) => {
+                    var data = JSON.parse(data);
+                    const modules = data['modules'] ? Object.values(data['modules']) : [];
+                    if (modules && modules.length > 0) {
+                        modules.forEach(function(module) {
+                            if (module.install) {
+                                jQuery('label[for="module_' + module.module + '"]').addClass('md-label-green');
+                                jQuery("input[type=checkbox]#module_" + module.module)
+                                    .attr('disabled', 'disabled')
+                                    .prop('checked', 'checked');
+                            }
+                        });
+                    }
+                    const widgets = data['widgets'] ? Object.values(data['widgets']) : [];
+                    if (widgets && widgets.length > 0) {
+                        widgets.forEach(function(widget) {
+                            if (widget.install) {
+                                jQuery('label[for="widget_' + widget.widget + '"]').addClass('md-label-green');
+                                jQuery("input[type=checkbox]#widget_" + widget.widget)
+                                    .attr('disabled', 'disabled')
+                                    .prop('checked', 'checked');
+                            }
+                        });
+                    }
+                    manageButtons();
+                },
+                complete: () => {
+                    installButton.prop('disabled', false)
+                        .addClass('bt_info')
+                        .prop('value', 'Install');
+                    moduleBoxes = jQuery("input[type=checkbox][id^=module_]");
+                    widgetBoxes = jQuery("input[type=checkbox][id^=widget_]");
+                    jQuery("input[type=checkbox][id^=module_]:not(:checked)").prop('disabled', false);
+                    jQuery("input[type=checkbox][id^=widget_]:not(:checked)").prop('disabled', false);
                 }
-            }).success(function(data) {
-                var data = JSON.parse(data);
-                if (data['modules'] && data['modules'].length > 0) {
-                    data['modules'].forEach(function(module) {
-                        if (module.install) {
-                            jQuery('label[for="module_' + module.module + '"]').addClass('md-label-green');
-                            jQuery("input[type=checkbox]#module_" + module.module).attr('disabled', 'disabled');
-                        }
-                    });
-                }
-                if (data['widgets'] && data['widgets'].length > 0) {
-                    data['widgets'].forEach(function(widget) {
-                        if (widget.install) {
-                            jQuery('label[for="widget_' + widget.widget + '"]').addClass('md-label-green');
-                            jQuery("input[type=checkbox]#widget_" + widget.widget).attr('disabled', 'disabled');
-                        }
-                    });
-                }
-                manageButtons();
-            }).complete(function() {
-                installButton.prop('disabled', false)
-                    .addClass('bt_info')
-                    .prop('value', 'Install');
-                moduleBoxes = jQuery("input[type=checkbox][id^=module_]");
-                widgetBoxes = jQuery("input[type=checkbox][id^=widget_]");
-                jQuery("input[type=checkbox][id^=module_]:not(:checked)").prop('disabled', false);
-                jQuery("input[type=checkbox][id^=widget_]:not(:checked)").prop('disabled', false);
             });
         });
 

@@ -1,5 +1,7 @@
+SET SESSION innodb_strict_mode=OFF;
 ALTER TABLE nagios_server ADD COLUMN centreonbroker_logs_path VARCHAR(255);
 ALTER TABLE cfg_centreonbroker ADD COLUMN daemon TINYINT(1);
+SET SESSION innodb_strict_mode=ON;
 
 -- Use service
 UPDATE `options` SET `value` = 'cbd' WHERE `key` = 'broker_correlator_script' AND `value` = '/etc/init.d/cbd';

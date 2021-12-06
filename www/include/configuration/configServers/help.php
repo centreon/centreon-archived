@@ -6,7 +6,9 @@ $help['localhost'] = dgettext("help", "Whether the poller is local");
 $help['is_default'] = dgettext("help", "Main poller");
 $help['remote_id'] = dgettext("help", "Master Remote Server to which this server will be attached");
 $help['remote_additional_id'] = dgettext("help", "Additional Remote Server to which this server will be attached");
-$help['ssh_port'] = dgettext("help", "SSH port of the remote poller");
+$help['ssh_port'] = dgettext("help", "SSH legacy port used by Centreon extensions or tools (see Gorgone Information for communication port between monitoring servers)");
+$help['gorgone_communication_type'] = dgettext("help", "Gorgone communication protocol (ZMQ or SSH)");
+$help['gorgone_port'] = dgettext("help", "Gorgone port of the remote poller (5556 or 22)");
 $help['engine_start_command'] = dgettext("help", "Command to start Centreon Engine process");
 $help['engine_stop_command'] = dgettext("help", "Command to stop Centreon Engine process");
 $help['engine_restart_command'] = dgettext("help", "Command to restart Centreon Engine process");
@@ -25,13 +27,13 @@ $help['centreontrapd_init_script'] = dgettext("help", "Centreontrapd init script
 $help['snmp_trapd_path_conf'] = dgettext(
     "help",
     "Light databases will be stored in the specified directory. "
-        . "They are used for synchronizing trap definitions on pollers."
+    . "They are used for synchronizing trap definitions on pollers."
 );
 $help['pollercmd'] = dgettext(
     "help",
     "Those commands can be executed at the end of the file generation generation/restart process. "
-        . "Do not specify macros in the commands, for they will not be replaced. "
-        . "Make sure to have sufficient rights for the Apache user to run these commands."
+    . "Do not specify macros in the commands, for they will not be replaced. "
+    . "Make sure to have sufficient rights for the Apache user to run these commands."
 );
 $help['description'] = dgettext("help", "Short description of the poller");
 $help['http_method'] = dgettext(
@@ -49,10 +51,10 @@ $help['no_check_certificate'] = dgettext(
 $help['no_proxy'] = dgettext(
     "help",
     "If checked, it won't use the proxy configured in 'Administration > Parameters > Centreon UI' "
-        . "to connect to the Remote Server."
+    . "to connect to the Remote Server."
 );
-$help['remote_server_centcore_ssh_proxy'] = dgettext(
+$help['remote_server_use_as_proxy'] = dgettext(
     "help",
-    "If checked, the Central server will send configuration and external commands directly to the poller "
-        . "and will not use the Remote Server as a proxy."
+    "If disabled, the Central server will send configuration and external commands directly to the poller "
+    . "and will not use the Remote Server as a proxy."
 );

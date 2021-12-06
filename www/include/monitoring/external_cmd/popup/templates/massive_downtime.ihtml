@@ -10,7 +10,7 @@
 			</tr>
             <tr>
 				<td class="FormRowField" style='padding-left:15px;'>{$form.start.label}</td>
-				<td class="FormRowValue" style='padding-left:15px;'>{$form.start.html}&nbsp;{$form.start_time.html} {$form.alternativeDateStart.html}</td>
+				<td class="FormRowValue" style='padding-left:15px;'>{$form.start.html}&nbsp;{$form.start_time.html}</td>
 			</tr>
 			<tr>
 				<td  class="FormRowField" style='padding-left:15px;'>{$form.host_or_centreon_time.label}</td>
@@ -18,7 +18,7 @@
 			</tr>
 			<tr>
 				<td class="FormRowField" style='padding-left:15px;'>{$form.end.label}</td>
-				<td class="FormRowValue" style='padding-left:15px;'>{$form.end.html}&nbsp;{$form.end_time.html} {$form.alternativeDateEnd.html}</td>
+				<td class="FormRowValue" style='padding-left:15px;'>{$form.end.html}&nbsp;{$form.end_time.html}</td>
 			</tr>
 			<tr>
 				<td class="FormRowField" style='padding-left:15px;'>{$form.duration.label}</td>
@@ -50,21 +50,28 @@
 			<p>{$form.action.html}</p>
 			<p>{$form.submit.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
 		</div>
-	</div>	
+	</div>
 
 	<input name="o" type="hidden" value="{$o}" />
 	<input name="p" type="hidden" value="{$p}" />
 	<input name="cmd" type="hidden" value="{$cmd}" />
-	{foreach item=it from=$select}	
+	{foreach item=it from=$select}
 		<input name="select[{$it}]" type="hidden" value="1" />
 	{/foreach}
 </form>
 {literal}
 <script type="text/javascript">
-    /* initializing datepicker and the alternative format field */
-    initDatepicker("datepicker", "mm/dd/yy", "0");
-
+    jQuery(".timepicker").each(function () {
+        if (!$(this).val()) {
+            $(this).val(moment().tz(localStorage.getItem('realTimezone')
+                ? localStorage.getItem('realTimezone')
+                : moment.tz.guess()).format("HH:mm")
+            );
+        }
+    });
     jQuery(".timepicker").timepicker();
+    initDatepicker();
     turnOnEvents();
+    updateDateAndTime();
 </script>
 {/literal}

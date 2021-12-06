@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2018 Centreon
+ * Copyright 2005-2021 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -40,10 +41,6 @@ if (!isset($oreon)) {
     exit;
 }
 
-if (!isset($search)) {
-    $search = "";
-}
-
 /*
  * Required files
  */
@@ -52,10 +49,7 @@ require_once './include/reporting/dashboard/initReport.php';
 /*
  *  Getting hostgroup to report
  */
-isset($_GET["item"]) ? $id = $_GET["item"] : $id = "NULL";
-isset($_POST["item"]) ? $id = $_POST["item"] : $id;
-isset($_POST["search"]) ? $search = $_POST["search"] : "";
-
+$id = filter_var($_GET['item'] ?? $_POST['item'] ?? false, FILTER_VALIDATE_INT);
 /*
  * Formulary
  *
@@ -65,7 +59,7 @@ isset($_POST["search"]) ? $search = $_POST["search"] : "";
 
 $form = new HTML_QuickFormCustom('formItem', 'post', "?p=" . $p);
 
-$items = getAllHostgroupsForReporting($is_admin, $lcaHostGroupstr, $search);
+$items = getAllHostgroupsForReporting($is_admin, $lcaHostGroupstr);
 $select = $form->addElement(
     'select',
     'item',
@@ -92,26 +86,6 @@ $form->addElement(
     $get_date_end
 );
 
-/* adding hidden fields to get the result of datepicker in an unlocalized format */
-$formPeriod->addElement(
-    'hidden',
-    'alternativeDateStartDate',
-    '',
-    array(
-        'size' => 10,
-        'class' => 'alternativeDate'
-    )
-);
-$formPeriod->addElement(
-    'hidden',
-    'alternativeDateEndDate',
-    '',
-    array(
-        'size' => 10,
-        'class' => 'alternativeDate'
-    )
-);
-
 $redirect = $form->addElement('hidden', 'o');
 $redirect->setValue($o);
 
@@ -122,15 +96,11 @@ if (isset($id)) {
 /*
  * Set hostgroup id with period selection form
  */
-if ($id != "NULL") {
+if ($id !== false) {
     $formPeriod->addElement('hidden', 'item', $id);
-}
 
-/*
- * Stats Display for selected hostgroup
- */
-if (isset($id) && $id != "NULL") {
     /*
+     * Stats Display for selected hostgroup
      * Getting periods values
      */
     $dates = getPeriodToReport("alternate");
@@ -178,25 +148,9 @@ if (isset($id) && $id != "NULL") {
     $formPeriod->setDefaults(array('period' => $period));
     $tpl->assign('id', $id);
     $tpl->assign('Alert', _("Alert"));
-}
-$tpl->assign('resumeTitle', _("Hosts group state"));
 
-/*
- * Rendering Forms
- */
-$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-$formPeriod->accept($renderer);
-$tpl->assign('formPeriod', $renderer->toArray());
-
-$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-$form->accept($renderer);
-$tpl->assign('formItem', $renderer->toArray());
-
-/*
- * Ajax timeline and CSV export initialization
- */
-if (isset($id) && $id != "NULL") {
     /*
+     * Ajax timeline and CSV export initialization
      * CSV export
      */
     $tpl->assign(
@@ -223,5 +177,22 @@ if (isset($id) && $id != "NULL") {
 } else {
     ?><script type="text/javascript"> function initTimeline() {;} </script><?php
 }
+$tpl->assign('resumeTitle', _("Hosts group state"));
 
-$tpl->display("template/viewHostGroupLog.ihtml");
+/*
+ * Rendering Forms
+ */
+$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+$formPeriod->accept($renderer);
+$tpl->assign('formPeriod', $renderer->toArray());
+
+$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+$form->accept($renderer);
+$tpl->assign('formItem', $renderer->toArray());
+
+if (
+    !$formPeriod->isSubmitted()
+    || ($formPeriod->isSubmitted() && $formPeriod->validate())
+) {
+    $tpl->display("template/viewHostGroupLog.ihtml");
+}

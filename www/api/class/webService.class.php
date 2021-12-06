@@ -253,11 +253,19 @@ class CentreonWebService
     protected static function updateTokenTtl()
     {
         global $pearDB;
+
         if (isset($_SERVER['HTTP_CENTREON_AUTH_TOKEN'])) {
-            $query = 'UPDATE ws_token SET generate_date = NOW() WHERE token = :token';
             try {
-                $stmt = $pearDB->prepare($query);
-                $stmt->bindParam(':token', $_SERVER['HTTP_CENTREON_AUTH_TOKEN'], PDO::PARAM_STR);
+                $stmt = $pearDB->prepare(
+                    'UPDATE security_token
+                    SET expiration_date = (
+                        SELECT UNIX_TIMESTAMP(NOW() + INTERVAL (`value` * 60) SECOND)
+                        FROM `options`
+                        wHERE `key` = \'session_expire\'
+                    )
+                    WHERE token = :token'
+                );
+                $stmt->bindValue(':token', $_SERVER['HTTP_CENTREON_AUTH_TOKEN'], \PDO::PARAM_STR);
                 $stmt->execute();
             } catch (Exception $e) {
                 static::sendResult("Internal error", 500);
@@ -317,15 +325,15 @@ class CentreonWebService
             $dependencyInjector['translator'];
 
             // Use the web service if has been initialized or initialize it
-            if(isset($dependencyInjector[$webService['class']])) {
+            if (isset($dependencyInjector[$webService['class']])) {
                 $wsObj = $dependencyInjector[$webService['class']];
             } else {
-                $wsObj = new $webService['class'];
+                $wsObj = new $webService['class']();
                 $wsObj->setDi($dependencyInjector);
             }
         } else {
             $webService = self::webservicePath($object);
-            
+
             /**
              * Either we retrieve an instance of this web service that has been
              * created in the dependency injector, or we create a new one.
@@ -335,7 +343,7 @@ class CentreonWebService
             } else {
                 /* Initialize the webservice */
                 require_once($webService['path']);
-                $wsObj = new $webService['class'];
+                $wsObj = new $webService['class']();
             }
         }
 
@@ -347,29 +355,12 @@ class CentreonWebService
             static::sendResult("Method not found", 404);
         }
 
-        $accessDenied = true;
-
-        // if impemented public interface skip checks
-        if ($wsObj instanceof WebserviceAutorizePublicInterface) {
-            $accessDenied = false;
-        } elseif ($wsObj instanceof WebserviceAutorizeRestApiInterface) {
-            // unified check for Rest APIs authorization
-            if ($wsObj->authorize($action, $user, $isInternal)) {
-                $accessDenied = false;
-            } elseif (!$user || !$user->hasAccessRestApiConfiguration()) {
-                $accessDenied = false;
-            }
-        } elseif (false !== $wsObj->authorize($action, $user, $isInternal)) {
-            $accessDenied = false;
-        }
-
-        // Check of the authorization
-        if ($accessDenied) {
-            static::sendResult('Forbidden', 403, static::RESULT_JSON);
-        }
-
         /* Execute the action */
         try {
+            if (!static::isWebserviceAllowed($wsObj, $action, $user, $isInternal)) {
+                static::sendResult('Forbidden', 403, static::RESULT_JSON);
+            }
+
             static::updateTokenTtl();
             $data = $wsObj->$action();
             $wsObj::sendResult($data, 200, $resultFormat);
@@ -378,5 +369,28 @@ class CentreonWebService
         } catch (Exception $e) {
             $wsObj::sendResult($e->getMessage(), 500);
         }
+    }
+
+    /**
+     * Check webservice authorization
+     *
+     * @param WebserviceAutorizePublicInterface|WebserviceAutorizeRestApiInterface $webservice
+     * @param string $action The action name
+     * @param CentreonUser|null $user The current user
+     * @param boolean $isInternal If the api is call from internal
+     * @return boolean if the webservice is allowed for the current user
+     */
+    private static function isWebserviceAllowed($webservice, $action, $user, $isInternal): bool
+    {
+        $allowed = false;
+
+        // skip checks if public interface is implemented
+        if ($webservice instanceof WebserviceAutorizePublicInterface) {
+            $allowed = true;
+        } else {
+            $allowed = $webservice->authorize($action, $user, $isInternal);
+        }
+
+        return $allowed;
     }
 }

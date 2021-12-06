@@ -69,7 +69,8 @@ abstract class AbstractHost extends AbstractObject
         ehi_2d_coords,
         ehi_3d_coords,
         host_location,
-        host_acknowledgement_timeout
+        host_acknowledgement_timeout,
+        geo_coords
     ';
 
     protected $attributesWrite = [
@@ -98,6 +99,7 @@ abstract class AbstractHost extends AbstractObject
         'host_register',
         'host_location',
         'host_acknowledgement_timeout',
+        'geo_coords'
     ];
 
     protected $loopHtpl = []; // To be reset

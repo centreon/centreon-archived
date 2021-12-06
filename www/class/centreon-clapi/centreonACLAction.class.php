@@ -68,6 +68,8 @@ class CentreonACLAction extends CentreonObject
         $this->params = array('acl_action_activate' => '1');
         $this->nbOfCompulsoryParams = 2;
         $this->availableActions = array(
+            'generate_cfg',
+            'generate_trap',
             'global_event_handler',
             'global_flap_detection',
             'global_host_checks',
@@ -84,6 +86,7 @@ class CentreonACLAction extends CentreonObject
             'host_checks',
             'host_checks_for_services',
             'host_comment',
+            'host_disacknowledgement',
             'host_event_handler',
             'host_flap_detection',
             'host_notifications',
@@ -97,6 +100,8 @@ class CentreonACLAction extends CentreonObject
             'service_acknowledgement',
             'service_checks',
             'service_comment',
+            'service_disacknowledgement',
+            'service_display_command',
             'service_event_handler',
             'service_flap_detection',
             'service_notifications',

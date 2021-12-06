@@ -141,7 +141,7 @@ if (isset($_GET["acknowledge"])) {
         setTimeout(mainLoopLocal, 250);
     }
 
-    function initM(_time_reload, _sid, _o) {
+    function initM(_time_reload, _o) {
 
         // INIT Select objects
         construct_selecteList_ndo_instance('instance_selected');
@@ -167,11 +167,11 @@ if (isset($_GET["acknowledge"])) {
 
         _time =<?php echo $time; ?>;
         if (_on) {
-            goM(_time_reload, _sid, _o);
+            goM(_time_reload, _o);
         }
     }
 
-    function goM(_time_reload, _sid, _o) {
+    function goM(_time_reload, _o) {
         _lock = 1;
         var proc = new Transformation();
         proc.setCallback(function(t){monitoringCallBack(t); proc = null;});
@@ -193,7 +193,7 @@ if (isset($_GET["acknowledge"])) {
         }
 
         _lock = 0;
-        _timeoutID = cycleVisibilityChange(function(){goM(_time_reload, _sid, _o)}, _time_reload);
+        _timeoutID = cycleVisibilityChange(function(){goM(_time_reload, _o)}, _time_reload);
         _time_live = _time_reload;
         _on = 1;
         set_header_title();

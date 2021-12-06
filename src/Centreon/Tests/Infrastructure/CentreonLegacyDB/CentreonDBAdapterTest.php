@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -38,12 +39,11 @@ namespace Centreon\Tests\Infrastructure\CentreonLegacyDB;
 
 use PHPUnit\Framework\TestCase;
 use Centreon\Infrastructure\CentreonLegacyDB\CentreonDBAdapter;
-use Centreon\Infrastructure\CentreonLegacyDB\EntityPersister;
-use Centreon\Infrastructure\CentreonLegacyDB\Mapping\ClassMetadata;
+use Centreon\Infrastructure\Service\Exception\NotFoundException;
 use Centreon\Test\Mock\CentreonDB;
 use Centreon\Test\Mock\CentreonDBManagerService;
-use Centreon\Tests\Resource\Mock;
-use Centreon\Tests\Resource\CheckPoint;
+use Centreon\Tests\Resources\Mock;
+use Centreon\Tests\Resources\CheckPoint;
 use Centreon\Test\Traits\TestCaseExtensionTrait;
 
 class CentreonDBAdapterTest extends TestCase
@@ -51,7 +51,7 @@ class CentreonDBAdapterTest extends TestCase
 
     use TestCaseExtensionTrait;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->db = new CentreonDB;
         $this->manager = new CentreonDBManagerService;
@@ -66,11 +66,10 @@ class CentreonDBAdapterTest extends TestCase
         );
     }
 
-    /**
-     * @expectedException \Centreon\Infrastructure\Service\Exception\NotFoundException
-     */
     public function testGetRepositoryWithException()
     {
+        $this->expectException(NotFoundException::class);
+
         $this->dbAdapter->getRepository(\stdClass::class);
     }
 
@@ -120,25 +119,19 @@ class CentreonDBAdapterTest extends TestCase
         $checkPoint->assert($this);
     }
 
-    /**
-     * @expectedException \Exception
-     * @expectedExceptionMessage Error at preparing the query.
-     */
     public function testQueryWithPrepareException()
     {
         $db = $this->createMock(CentreonDB::class);
-        $db
-            ->method('prepare')
+        $db->method('prepare')
             ->willReturn(null);
+
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Error at preparing the query.');
 
         (new CentreonDBAdapter($db, $this->manager))
             ->query('SELECT 1');
     }
 
-    /**
-     * @expectedException \Exception
-     * @expectedExceptionMessage Query failed. test exception
-     */
     public function testQueryWithExceptionInExecution()
     {
         $db = $this->createMock(CentreonDB::class);
@@ -152,6 +145,9 @@ class CentreonDBAdapterTest extends TestCase
 
                 return $stmt;
             }));
+
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Query failed. test exception');
 
         (new CentreonDBAdapter($db, $this->manager))
             ->query('SELECT 1');
@@ -178,7 +174,7 @@ class CentreonDBAdapterTest extends TestCase
 
         $dbAdapter = new CentreonDBAdapter($db, $this->manager);
         $dbAdapter->query('UPDATE query');
-        
+
         $this->assertTrue($dbAdapter->fails());
         $this->assertEquals($errorInfo, $dbAdapter->errorInfo());
     }
@@ -212,20 +208,15 @@ class CentreonDBAdapterTest extends TestCase
         $checkPoint->assert($this);
     }
 
-    /**
-     * @expectedException \Exception
-     * @expectedExceptionMessage The argument `fields` can't be empty
-     */
     public function testInsertWithoutFields()
     {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage("The argument `fields` can't be empty");
+
         $this->dbAdapter
             ->insert('some_table', []);
     }
 
-    /**
-     * @expectedException \Exception
-     * @expectedExceptionMessage Query failed. test exception
-     */
     public function testInsertWithExceptionInExecution()
     {
         $db = $this->createMock(CentreonDB::class);
@@ -239,6 +230,9 @@ class CentreonDBAdapterTest extends TestCase
 
                 return $stmt;
             }));
+
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Query failed. test exception');
 
         (new CentreonDBAdapter($db, $this->manager))
             ->insert('some_table', [
@@ -280,10 +274,6 @@ class CentreonDBAdapterTest extends TestCase
         $checkPoint->assert($this);
     }
 
-    /**
-     * @expectedException \Exception
-     * @expectedExceptionMessage Query failed. test exception
-     */
     public function testUpdateWithExceptionInExecution()
     {
         $id = 1;
@@ -299,6 +289,9 @@ class CentreonDBAdapterTest extends TestCase
 
                 return $stmt;
             }));
+
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Query failed. test exception');
 
         (new CentreonDBAdapter($db, $this->manager))
             ->update('some_table', [

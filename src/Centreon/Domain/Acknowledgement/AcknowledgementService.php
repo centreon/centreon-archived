@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,14 +29,20 @@ use Centreon\Domain\Engine\Interfaces\EngineServiceInterface;
 use Centreon\Domain\Entity\EntityValidator;
 use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
+use Centreon\Domain\Monitoring\Resource as ResourceEntity;
+use Centreon\Domain\Monitoring\ResourceService;
 use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
 use Centreon\Domain\Service\AbstractCentreonService;
 use JMS\Serializer\Exception\ValidationFailedException;
+use Centreon\Domain\Monitoring\Exception\ResourceException;
 
 class AcknowledgementService extends AbstractCentreonService implements AcknowledgementServiceInterface
 {
-    public const VALIDATION_GROUPS_ADD_HOST_ACK = ['add_host_ack'];
-    public const VALIDATION_GROUPS_ADD_SERVICE_ACK = ['add_service_ack'];
+    // validation groups
+    public const VALIDATION_GROUPS_ADD_HOST_ACKS = ['Default', 'add_host_acks'];
+    public const VALIDATION_GROUPS_ADD_SERVICE_ACKS = ['Default', 'add_service_acks'];
+    public const VALIDATION_GROUPS_ADD_HOST_ACK = ['Default', 'add_host_ack'];
+    public const VALIDATION_GROUPS_ADD_SERVICE_ACK = ['Default'];
 
     /**
      * @var AcknowledgementRepositoryInterface
@@ -111,6 +118,32 @@ class AcknowledgementService extends AbstractCentreonService implements Acknowle
     /**
      * @inheritDoc
      */
+    public function findOneAcknowledgement(int $acknowledgementId): ?Acknowledgement
+    {
+        if ($this->contact->isAdmin()) {
+            return $this->acknowledgementRepository->findOneAcknowledgementForAdminUser($acknowledgementId);
+        } else {
+            return $this->acknowledgementRepository
+                ->findOneAcknowledgementForNonAdminUser($acknowledgementId);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findAcknowledgements(): array
+    {
+        if ($this->contact->isAdmin()) {
+            return $this->acknowledgementRepository->findAcknowledgementsForAdminUser();
+        } else {
+            return $this->acknowledgementRepository
+                ->findAcknowledgementsForNonAdminUser();
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function addHostAcknowledgement(Acknowledgement $acknowledgement): void
     {
         // We validate the acknowledgement instance
@@ -123,12 +156,20 @@ class AcknowledgementService extends AbstractCentreonService implements Acknowle
             throw new ValidationFailedException($errors);
         }
 
-        $host = $this->monitoringRepository->findOneHost($acknowledgement->getHostId());
+        $host = $this->monitoringRepository->findOneHost($acknowledgement->getResourceId());
         if (is_null($host)) {
-            throw new AcknowledgementException('Host of acknowledgement not found');
+            throw new EntityNotFoundException(_('Host not found'));
         }
 
         $this->engineService->addHostAcknowledgement($acknowledgement, $host);
+
+        if ($acknowledgement->isWithServices()) {
+            $services = $this->monitoringRepository->findServicesByHostWithoutRequestParameters($host->getId());
+            foreach ($services as $service) {
+                $service->setHost($host);
+                $this->engineService->addServiceAcknowledgement($acknowledgement, $service);
+            }
+        }
     }
 
     /**
@@ -147,18 +188,16 @@ class AcknowledgementService extends AbstractCentreonService implements Acknowle
         }
 
         $service = $this->monitoringRepository->findOneService(
-            $acknowledgement->getHostId(),
-            $acknowledgement->getServiceId()
+            $acknowledgement->getParentResourceId(),
+            $acknowledgement->getResourceId()
         );
         if (is_null($service)) {
-            throw new AcknowledgementException('Service of acknowledgement not found');
+            throw new EntityNotFoundException(_('Service not found'));
         }
 
-        $host = $this->monitoringRepository->findOneHost(
-            $acknowledgement->getHostId()
-        );
+        $host = $this->monitoringRepository->findOneHost($acknowledgement->getParentResourceId());
         if (is_null($host)) {
-            throw new AcknowledgementException('Host of acknowledgement not found');
+            throw new EntityNotFoundException(_('Host not found'));
         }
         $service->setHost($host);
 
@@ -168,34 +207,97 @@ class AcknowledgementService extends AbstractCentreonService implements Acknowle
     /**
      * @inheritDoc
      */
-    public function findLastHostsAcknowledgements(): array
+    public function addMetaServiceAcknowledgement(Acknowledgement $acknowledgement): void
     {
-        return $this->acknowledgementRepository->findLatestAcknowledgementOfAllHosts();
+        // We validate the acknowledgement instance
+        $errors = $this->validator->validate(
+            $acknowledgement,
+            null,
+            AcknowledgementService::VALIDATION_GROUPS_ADD_SERVICE_ACK
+        );
+        if ($errors->count() > 0) {
+            throw new ValidationFailedException($errors);
+        }
+
+        $service = $this->monitoringRepository->findOneServiceByDescription(
+            'meta_' . $acknowledgement->getResourceId()
+        );
+
+        if (is_null($service)) {
+            throw new EntityNotFoundException(_('Service not found'));
+        }
+
+        $host = $this->monitoringRepository->findOneHost($service->getId());
+        if (is_null($host)) {
+            throw new EntityNotFoundException(_('Host not found'));
+        }
+        $service->setHost($host);
+
+        $this->engineService->addServiceAcknowledgement($acknowledgement, $service);
     }
 
     /**
      * @inheritDoc
      */
-    public function findLastServicesAcknowledgements(): array
+    public function findHostsAcknowledgements(): array
     {
-        return $this->acknowledgementRepository->findLatestAcknowledgementOfAllServices();
+        return $this->acknowledgementRepository->findHostsAcknowledgements();
     }
 
     /**
      * @inheritDoc
      */
-    public function disacknowledgeHostAcknowledgement(int $hostId): void
+    public function findServicesAcknowledgements(): array
+    {
+        return $this->acknowledgementRepository->findServicesAcknowledgements();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findAcknowledgementsByHost(int $hostId): array
+    {
+        return $this->acknowledgementRepository->findAcknowledgementsByHost($hostId);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findAcknowledgementsByService(int $hostId, int $serviceId): array
+    {
+        return $this->acknowledgementRepository->findAcknowledgementsByService($hostId, $serviceId);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findAcknowledgementsByMetaService(int $metaId): array
+    {
+        $service = $this->monitoringRepository->findOneServiceByDescription('meta_' . $metaId);
+        if (is_null($service)) {
+            throw new EntityNotFoundException(_('Service not found'));
+        }
+        return $this->acknowledgementRepository->findAcknowledgementsByService(
+            $service->getHost()->getId(),
+            $service->getId()
+        );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function disacknowledgeHost(int $hostId): void
     {
         $host = $this->monitoringRepository->findOneHost($hostId);
         if (is_null($host)) {
-            throw new EntityNotFoundException('Host not found');
+            throw new EntityNotFoundException(_('Host not found'));
         }
         $acknowledgement = $this->acknowledgementRepository->findLatestHostAcknowledgement($hostId);
         if (is_null($acknowledgement)) {
-            throw new AcknowledgementException('No acknowledgement found for this host');
+            throw new AcknowledgementException(_('No acknowledgement found for this host'));
         }
         if (!is_null($acknowledgement->getDeletionTime())) {
-            throw new AcknowledgementException('Acknowledgement already cancelled for this host');
+            throw new AcknowledgementException(_('Acknowledgement already cancelled for this host'));
         }
         $this->engineService->disacknowledgeHost($host);
     }
@@ -203,11 +305,33 @@ class AcknowledgementService extends AbstractCentreonService implements Acknowle
     /**
      * @inheritDoc
      */
-    public function disacknowledgeServiceAcknowledgement(int $hostId, int $serviceId): void
+    public function disacknowledgeMetaService(int $metaId): void
+    {
+        $service = $this->monitoringRepository->findOneServiceByDescription('meta_' . $metaId);
+        if (is_null($service)) {
+            throw new EntityNotFoundException(_('Meta service not found'));
+        }
+        $acknowledgement = $this->acknowledgementRepository->findLatestServiceAcknowledgement(
+            $service->getHost()->getId(),
+            $service->getId()
+        );
+        if (is_null($acknowledgement)) {
+            throw new AcknowledgementException(_('No acknowledgement found for this meta service'));
+        }
+        if (!is_null($acknowledgement->getDeletionTime())) {
+            throw new AcknowledgementException(_('Acknowledgement already cancelled for this meta service'));
+        }
+        $this->engineService->disacknowledgeService($service);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function disacknowledgeService(int $hostId, int $serviceId): void
     {
         $service = $this->monitoringRepository->findOneService($hostId, $serviceId);
         if (is_null($service)) {
-            throw new EntityNotFoundException('Service not found');
+            throw new EntityNotFoundException(_('Service not found'));
         }
         $service->setHost(
             $this->monitoringRepository->findOneHost($hostId)
@@ -217,11 +341,138 @@ class AcknowledgementService extends AbstractCentreonService implements Acknowle
             $serviceId
         );
         if (is_null($acknowledgement)) {
-            throw new AcknowledgementException('No acknowledgement found for this service');
+            throw new AcknowledgementException(_('No acknowledgement found for this service'));
         }
         if (!is_null($acknowledgement->getDeletionTime())) {
-            throw new AcknowledgementException('Acknowledgement already cancelled for this service');
+            throw new AcknowledgementException(_('Acknowledgement already cancelled for this service'));
         }
         $this->engineService->disacknowledgeService($service);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function disacknowledgeResource(ResourceEntity $resource, Acknowledgement $ack): void
+    {
+        switch ($resource->getType()) {
+            case ResourceEntity::TYPE_HOST:
+                $host = $this->monitoringRepository->findOneHost(ResourceService::generateHostIdByResource($resource));
+                if (is_null($host)) {
+                    throw new EntityNotFoundException(_('Host not found'));
+                }
+                $this->engineService->disacknowledgeHost($host);
+                if ($ack->isWithServices()) {
+                    $services = $this->monitoringRepository->findServicesByHostWithoutRequestParameters($host->getId());
+                    foreach ($services as $service) {
+                        $service->setHost($host);
+                        $this->engineService->disacknowledgeService($service);
+                    }
+                }
+                break;
+            case ResourceEntity::TYPE_SERVICE:
+                $host = $this->monitoringRepository->findOneHost(ResourceService::generateHostIdByResource($resource));
+                if (is_null($host)) {
+                    throw new EntityNotFoundException(_('Host not found'));
+                }
+                $service = $this->monitoringRepository->findOneService(
+                    (int)$resource->getParent()->getId(),
+                    (int)$resource->getId()
+                );
+                if (is_null($service)) {
+                    throw new EntityNotFoundException(
+                        sprintf(
+                            _('Service %d (parent: %d) not found'),
+                            $resource->getId(),
+                            $resource->getParent()->getId()
+                        )
+                    );
+                }
+                $service->setHost($host);
+                $this->engineService->disacknowledgeService($service);
+                break;
+            case ResourceEntity::TYPE_META:
+                $service = $this->monitoringRepository->findOneServiceByDescription('meta_' . $resource->getId());
+                if (is_null($service)) {
+                    throw new EntityNotFoundException(
+                        sprintf(
+                            _('Meta Service %d not found'),
+                            $resource->getId()
+                        )
+                    );
+                }
+                $host = $this->monitoringRepository->findOneHost($service->getHost()->getId());
+                if (is_null($host)) {
+                    throw new EntityNotFoundException(_('Host not found'));
+                }
+                $service->setHost($host);
+                $this->engineService->disacknowledgeService($service);
+                break;
+            default:
+                throw new ResourceException(sprintf(_('Incorrect Resource type: %s'), $resource->getType()));
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function acknowledgeResource(ResourceEntity $resource, Acknowledgement $ack): void
+    {
+        switch ($resource->getType()) {
+            case ResourceEntity::TYPE_HOST:
+                $host = $this->monitoringRepository->findOneHost(ResourceService::generateHostIdByResource($resource));
+                if (is_null($host)) {
+                    throw new EntityNotFoundException(_('Host not found'));
+                }
+                $this->engineService->addHostAcknowledgement($ack, $host);
+                if ($ack->isWithServices()) {
+                    $services = $this->monitoringRepository->findServicesByHostWithoutRequestParameters($host->getId());
+                    foreach ($services as $service) {
+                        $service->setHost($host);
+                        $this->engineService->addServiceAcknowledgement($ack, $service);
+                    }
+                }
+                break;
+            case ResourceEntity::TYPE_SERVICE:
+                $host = $this->monitoringRepository->findOneHost(ResourceService::generateHostIdByResource($resource));
+                if (is_null($host)) {
+                    throw new EntityNotFoundException(_('Host not found'));
+                }
+                $service = $this->monitoringRepository->findOneService(
+                    (int)$resource->getParent()->getId(),
+                    (int)$resource->getId()
+                );
+                if (is_null($service)) {
+                    throw new EntityNotFoundException(
+                        sprintf(
+                            _('Service %d (parent: %d) not found'),
+                            $resource->getId(),
+                            $resource->getParent()->getId()
+                        )
+                    );
+                }
+                $service->setHost($host);
+                $this->engineService->addServiceAcknowledgement($ack, $service);
+                break;
+            case ResourceEntity::TYPE_META:
+                $service = $this->monitoringRepository->findOneServiceByDescription('meta_' . $resource->getId());
+                if (is_null($service)) {
+                    throw new EntityNotFoundException(
+                        sprintf(
+                            _('Meta Service %d not found'),
+                            $resource->getId(),
+                            $resource->getParent()->getId()
+                        )
+                    );
+                }
+                $host = $this->monitoringRepository->findOneHost($service->getHost()->getId());
+                if (is_null($host)) {
+                    throw new EntityNotFoundException(_('Host not found'));
+                }
+                $service->setHost($host);
+                $this->engineService->addServiceAcknowledgement($ack, $service);
+                break;
+            default:
+                throw new ResourceException(sprintf(_('Incorrect Resource type: %s'), $resource->getType()));
+        }
     }
 }

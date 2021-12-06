@@ -63,7 +63,6 @@
         var $this = $(this);
 
         var settings = $.extend({
-            sid: "",
             refresh_rate: 15000
         }, options);
 

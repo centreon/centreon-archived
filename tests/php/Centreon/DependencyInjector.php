@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2019 Centreon
+ * Copyright 2020 Centreon
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,7 +40,7 @@ class DependencyInjector implements ArrayAccess
     public static function getInstance(): self
     {
         if (!static::$instance instanceof DependencyInjector) {
-            static::$instance = new DependencyInjector;
+            static::$instance = new DependencyInjector();
         }
 
         return static::$instance;

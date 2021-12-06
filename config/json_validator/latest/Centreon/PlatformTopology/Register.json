@@ -1,0 +1,24 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Add a new server to the platform topology",
+  "type": "object",
+  "required": ["name", "type", "address", "parent_address"],
+  "additionalProperties": false,
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string"
+    },
+    "address": {
+      "type": "string"
+    },
+    "parent_address": {
+      "type": ["string", "null"]
+    },
+    "hostname": {
+      "type": ["string", "null"]
+    }
+  }
+}

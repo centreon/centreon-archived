@@ -74,9 +74,43 @@ Any ideas, enhancements, feature requests are more than welcome. Feature request
 
 You have been working on Centreon base code and want to submit it to us. Well... Again you are more than welcome and thank you in advance ! :clap:
 
-The pull request should respect the some requirements that can found in the following template [PULL_REQUEST_TEMPLATE.md](.github/PULL_REQUEST_TEMPLATE.md)
+The pull request must comply with certain requirements which are set out in the following template
+[PULL_REQUEST_TEMPLATE.md](.github/PULL_REQUEST_TEMPLATE.md)
 
-> **Notice**: Any pull request that does not respect those requirements will be legitimately rejected !
+> **Notice**: A pull request which contains more than the described modifications or contains more than one issue will
+be rejected. Kindly write a detailed description and open one pull request per issue.
+
+If the pull request matches the expected requirements, it will be added to a refinement session with the development team and the product owner.
+If everything is clear, the pull request will be integrated to the development workflow and will be merged if it successfully passes our Continuous Integration's acceptance tests.
+Afterwards, our Quality Assurance team will test it again to avoid any regressions before the pull request is released.
+
+If the development team needs more details, they will contact you about the pull request. Please stay tuned.
+
+> **Warning**: Any pull request that does not respect the requirements will ultimately be rejected ! In addition,
+if you are asked to do so, you must help us understand your changes or behavior, and respond to us within 8 days.
+
+> **Notice**: We used another open source project's contribution model as inspiration to provide better communication on your pull request's status :
+Visual Studio Code.
+
+
+Here are the labels and descriptions we may add to your work.
+
+| Label                             | Reason |
+| :-----                            | :------ |
+| ```pr/external```                 | The first badge |
+| ```status/accepted```             | The development team has approved your modifications |
+| ```status/implemented```          | The PR has been added or may have already been released in next version |
+| ```status/duplicate```            | Another PR is already open |
+| ```status/invalid```              | The requirements are not met |
+| ```status/in-backlog```           | The development team has groomed your proposition and will work on it soon |
+| ```status/could-not-reproduce```  | The dev was unable to reproduce the use-case and may need more information |
+| ```status/needs-attention```      | This PR is on hold. The reason is specified in the issue |
+| ```status/needs-merge```          | A dev needs to merge your work |
+| ```status/too-dangerous```        | The modification seems to impact too much features or may introduce side effects |
+| ```status/multiple-issues```      | The modifications contain more than one issue in a single PR |
+| ```status/out-of-scope```         | The modifications are out of the described scope |
+| ```status/more-info-needed```     | A dev asked you for more details and is waiting for your reply |
+| ```status/wont-fix```             | The modifications do not fix the described behavior |
 
 ### Centreon style guides
 
@@ -110,11 +144,15 @@ The ***type*** can refer to
 - **test**: adding new tests or fixing old ones
 - **chore** : updating project construction files (Jenkins files, CMakefile, gulp, webpack ...)
 
-The ***scope*** is defined by project. Scopes for Centreon Open Source project can be found [here](scopes/centreon.md).
+The ***scope*** is defined by project. Scopes for Centreon Open Source project are related to the modifications.
+For example: fix(***security***) or feat(***hostgroup***)
 
 #### Coding style
 
 Centreon software is made of several languages. For each language a specific coding style **must be respected**.
+
+> **Notice**: For some languages, a bot may ask you to rework the formatting of your code. Until you make the
+ modifications, we won't be able to add your work to the refinement loop.
 
 Since the 18.10 version of Centreon REACT has been introduced and Centreon follows the [airbnb](https://github.com/airbnb/javascript/tree/master/react) react coding style.
 
@@ -128,12 +166,3 @@ For other languages, coding style rules are defined in Centreon GitHub repositor
 
 If you want to visualize and suggest modification to the documentation through a pull request
 you can check the **HOW TO** build the documentation section [here](doc/README.md)
-
-
-
-
-
-
-
-
-

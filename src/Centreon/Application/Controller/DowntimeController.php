@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,39 +22,57 @@ declare(strict_types=1);
 
 namespace Centreon\Application\Controller;
 
+use Centreon\Application\Request\DowntimeRequest;
 use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Downtime\Downtime;
 use Centreon\Domain\Downtime\Interfaces\DowntimeServiceInterface;
+use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
-use Centreon\Domain\Service\JsonValidator\Interfaces\JsonValidatorInterface;
 use FOS\RestBundle\Context\Context;
-use FOS\RestBundle\Controller\AbstractFOSRestController;
-use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use JMS\Serializer\Exception\ValidationFailedException;
 use JMS\Serializer\SerializerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use JsonSchema\Constraints\Constraint;
+use JsonSchema\Validator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Centreon\Domain\Entity\EntityValidator;
+use Symfony\Component\Validator\ConstraintViolationList;
+use Centreon\Domain\Monitoring\Resource as ResourceEntity;
+use Centreon\Domain\Monitoring\ResourceService;
 
 /**
  * This class is design to manage all API REST about downtime requests
  *
  * @package Centreon\Infrastructure\Downtime\Controller
  */
-class DowntimeController extends AbstractFOSRestController
+class DowntimeController extends AbstractController
 {
+    // Groups for serialization
+    public const SERIALIZER_GROUPS_HOST = ['downtime_host'];
+    public const SERIALIZER_GROUPS_SERVICE = ['downtime_service'];
+
+    private const VALIDATION_SCHEME_FOR_A_DOWNTIME = 'config/json_validator/latest/Centreon/Downtime/Downtime.json';
+    private const VALIDATION_SCHEME_FOR_SEVERAL_DOWNTIMES =
+        'config/json_validator/latest/Centreon/Downtime/Downtimes.json';
 
     /**
      * @var DowntimeServiceInterface
      */
     private $downtimeService;
+
     /**
      * @var MonitoringServiceInterface
      */
     private $monitoringService;
 
+    /**
+     * DowntimeController constructor.
+     *
+     * @param DowntimeServiceInterface $downtimeService
+     * @param MonitoringServiceInterface $monitoringService
+     */
     public function __construct(
         DowntimeServiceInterface $downtimeService,
         MonitoringServiceInterface $monitoringService
@@ -63,213 +82,339 @@ class DowntimeController extends AbstractFOSRestController
     }
 
     /**
-     *  Entry point to add a host downtime
+     * Entry point to add multiple host downtimes
      *
-     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
-     * @Rest\Post(
-     *     "/monitoring/hosts/{hostId}/downtimes",
-     *     condition="request.attributes.get('version.is_beta') == true",
-     *     name="monitoring.downtime.addHostDowntime")
      * @param Request $request
-     * @param JsonValidatorInterface $jsonValidator
      * @param SerializerInterface $serializer
-     * @param int $hostId Host id for which we want to add a downtime
-     * @param string $version
      * @return View
      * @throws \Exception
      */
-    public function addHostDowntime(
-        Request $request,
-        JsonValidatorInterface $jsonValidator,
-        SerializerInterface $serializer,
-        int $hostId,
-        string $version
-    ): View {
+    public function addHostDowntimes(Request $request, SerializerInterface $serializer): View
+    {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
         /**
          * @var Contact $contact
          */
         $contact = $this->getUser();
-        if ($contact === null || (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_ADD_HOST_DOWNTIME))) {
+        if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_ADD_HOST_DOWNTIME)) {
             return $this->view(null, Response::HTTP_UNAUTHORIZED);
         }
-        $errors = $jsonValidator
-            ->forVersion($version)
-            ->validate((string) $request->getContent(), 'add_downtime');
 
-        if ($errors->count() > 0) {
-            throw new ValidationFailedException($errors);
-        }
+        /*
+        * Validate the content of the request against the JSON schema validator
+        */
+        $this->validateOrFail($request, self::VALIDATION_SCHEME_FOR_SEVERAL_DOWNTIMES);
+        /**
+         * @var Downtime[] $downtimes
+         */
+        $downtimes = $serializer->deserialize(
+            (string) $request->getContent(),
+            'array<' . Downtime::class . '>',
+            'json'
+        );
 
-        $postData = json_decode((string) $request->getContent(), true);
-        $showService = $postData['show_services'] ?? false;
         $this->monitoringService->filterByContact($contact);
-        $host = $this->monitoringService->findOneHost($hostId);
+        $this->downtimeService->filterByContact($contact);
+        foreach ($downtimes as $downtime) {
+            try {
+                $host = $this->monitoringService->findOneHost($downtime->getResourceId());
 
-        if ($host === null) {
-            return View::create(null, Response::HTTP_NOT_FOUND, []);
+                if ($host === null) {
+                    throw new EntityNotFoundException(
+                        sprintf(_('Host %d not found'), $downtime->getResourceId())
+                    );
+                }
+
+                $this->downtimeService->addHostDowntime($downtime, $host);
+            } catch (EntityNotFoundException $e) {
+                continue;
+            }
         }
 
+        return $this->view();
+    }
+
+    /**
+     * Entry point to add multiple service downtimes
+     *
+     * @param Request $request
+     * @param SerializerInterface $serializer
+     * @return View
+     * @throws \Exception
+     */
+    public function addServiceDowntimes(Request $request, SerializerInterface $serializer): View
+    {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
+        /**
+         * @var Contact $contact
+         */
+        $contact = $this->getUser();
+        if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_ADD_HOST_DOWNTIME)) {
+            return $this->view(null, Response::HTTP_UNAUTHORIZED);
+        }
+
+        $this->validateOrFail($request, self::VALIDATION_SCHEME_FOR_SEVERAL_DOWNTIMES);
+
+        $this->monitoringService->filterByContact($contact);
         $this->downtimeService->filterByContact($contact);
+
+        /**
+         * @var Downtime[] $downtimes
+         */
+        $downtimes = $serializer->deserialize(
+            (string) $request->getContent(),
+            'array<' . Downtime::class . '>',
+            'json'
+        );
+
+        foreach ($downtimes as $downtime) {
+            try {
+                $service = $this->monitoringService->findOneService(
+                    $downtime->getParentResourceId(),
+                    $downtime->getResourceId()
+                );
+                if ($service === null) {
+                    throw new EntityNotFoundException(
+                        sprintf(
+                            _('Service %d on host %d not found'),
+                            $downtime->getResourceId(),
+                            $downtime->getParentResourceId()
+                        )
+                    );
+                }
+
+                $host = $this->monitoringService->findOneHost($downtime->getParentResourceId());
+                $service->setHost($host);
+
+                $this->downtimeService->addServiceDowntime($downtime, $service);
+            } catch (EntityNotFoundException $e) {
+                continue;
+            }
+        }
+
+        return $this->view();
+    }
+
+    /**
+     * Entry point to add a host downtime
+     *
+     * @param Request $request
+     * @param SerializerInterface $serializer
+     * @param int $hostId Host id for which we want to add a downtime
+     * @return View
+     * @throws \Exception
+     */
+    public function addHostDowntime(Request $request, SerializerInterface $serializer, int $hostId): View
+    {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
+        /**
+         * @var Contact $contact
+         */
+        $contact = $this->getUser();
+        if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_ADD_HOST_DOWNTIME)) {
+            return $this->view(null, Response::HTTP_UNAUTHORIZED);
+        }
+
+        /*
+        * Validate the content of the request against the JSON schema validator
+        */
+        $this->validateOrFail($request, self::VALIDATION_SCHEME_FOR_A_DOWNTIME);
 
         /**
          * @var Downtime $downtime
          */
         $downtime = $serializer->deserialize(
-            (string)$request->getContent(),
+            (string) $request->getContent(),
             Downtime::class,
             'json'
         );
 
-        $this->downtimeService->addHostDowntime($downtime, $host);
-
-        if ($showService === true) {
-            $services = $this->monitoringService->findServicesByHost($hostId);
-            foreach ($services as $service) {
-                $service->setHost($host);
-            }
-            $this->downtimeService->addServicesDowntime($downtime, $services);
+        $this->monitoringService->filterByContact($contact);
+        $host = $this->monitoringService->findOneHost($hostId);
+        if ($host === null) {
+            throw new EntityNotFoundException(
+                sprintf(_('Host %d not found'), $hostId)
+            );
         }
+
+        $this->downtimeService->filterByContact($contact);
+        $this->downtimeService->addHostDowntime($downtime, $host);
         return $this->view();
     }
 
     /**
-     *  Entry point to add a service downtime
+     * Entry point to add a service downtime
      *
-     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
-     * @Rest\Post(
-     *     "/monitoring/hosts/{hostId}/services/{serviceId}/downtimes",
-     *     condition="request.attributes.get('version.is_beta') == true",
-     *     name="monitoring.downtime.addServiceDowntime")
      * @param Request $request
-     * @param JsonValidatorInterface $jsonValidator
      * @param SerializerInterface $serializer
      * @param int $hostId Host id linked to the service
      * @param int $serviceId Service id for which we want to add a downtime
-     * @param string $version
      * @return View
      * @throws \Exception
      */
     public function addServiceDowntime(
         Request $request,
-        JsonValidatorInterface $jsonValidator,
         SerializerInterface $serializer,
         int $hostId,
-        int $serviceId,
-        string $version
+        int $serviceId
     ): View {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
         /**
          * @var Contact $contact
          */
         $contact = $this->getUser();
-        if ($contact === null || (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_ADD_SERVICE_DOWNTIME))) {
+        if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_ADD_SERVICE_DOWNTIME)) {
             return $this->view(null, Response::HTTP_UNAUTHORIZED);
         }
 
-        $errors = $jsonValidator
-            ->forVersion($version)
-            ->validate((string) $request->getContent(), 'add_downtime');
+        /*
+        * Validate the content of the request against the JSON schema validator
+        */
+        $this->validateOrFail($request, self::VALIDATION_SCHEME_FOR_A_DOWNTIME);
 
-        if ($errors->count() > 0) {
-            throw new ValidationFailedException($errors);
-        } else {
-            /**
-             * @var Downtime $downtime
-             */
-            $downtime = $serializer->deserialize(
-                (string) $request->getContent(),
-                Downtime::class,
-                'json'
+        /**
+         * @var Downtime $downtime
+         */
+        $downtime = $serializer->deserialize((string) $request->getContent(), Downtime::class, 'json');
+
+        $this->monitoringService->filterByContact($contact);
+
+        $service = $this->monitoringService->findOneService($hostId, $serviceId);
+        if ($service === null) {
+            throw new EntityNotFoundException(
+                sprintf(_('Service %d on host %d not found'), $serviceId, $hostId)
             );
-            $this->monitoringService->filterByContact($contact);
-
-            $service = $this->monitoringService->findOneService($hostId, $serviceId);
-            if ($service === null) {
-                return View::create(null, Response::HTTP_NOT_FOUND, []);
-            }
-
-            $host = $this->monitoringService->findOneHost($hostId);
-            $service->setHost($host);
-
-            $this->downtimeService
-                ->filterByContact($contact)
-                ->addServicesDowntime($downtime, [$service]);
-            return $this->view();
         }
+
+        $host = $this->monitoringService->findOneHost($hostId);
+        $service->setHost($host);
+
+        $this->downtimeService
+            ->filterByContact($contact)
+            ->addServiceDowntime($downtime, $service);
+        return $this->view();
+    }
+
+    /**
+     * Entry point to add a service downtime
+     *
+     * @param Request $request
+     * @param SerializerInterface $serializer
+     * @param int $metaId ID of the Meta Service
+     * @return View
+     * @throws \Exception
+     */
+    public function addMetaServiceDowntime(Request $request, SerializerInterface $serializer, int $metaId): View
+    {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
+        /**
+         * @var Contact $contact
+         */
+        $contact = $this->getUser();
+        if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_ADD_SERVICE_DOWNTIME)) {
+            return $this->view(null, Response::HTTP_UNAUTHORIZED);
+        }
+
+        $this->validateOrFail($request, self::VALIDATION_SCHEME_FOR_A_DOWNTIME);
+
+        /**
+         * @var Downtime $downtime
+         */
+        $downtime = $serializer->deserialize(
+            (string) $request->getContent(),
+            Downtime::class,
+            'json'
+        );
+        $this->monitoringService->filterByContact($contact);
+
+        $service = $this->monitoringService->findOneServiceByDescription('meta_' . $metaId);
+        if (is_null($service)) {
+            throw new EntityNotFoundException(
+                sprintf(_('Meta Service linked to service %d not found'), $metaId)
+            );
+        }
+
+        $host = $this->monitoringService->findOneHost($service->getHost()->getId());
+
+        if (is_null($host)) {
+            throw new EntityNotFoundException(
+                sprintf(_('Host meta for meta %d not found'), $metaId)
+            );
+        }
+        $service->setHost($host);
+
+        $this->downtimeService
+            ->filterByContact($contact)
+            ->addServiceDowntime($downtime, $service);
+        return $this->view();
     }
 
     /**
      * Entry point to find the last hosts downtimes.
      *
-     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
-     * @Rest\Get(
-     *     "/monitoring/hosts/downtimes",
-     *     condition="request.attributes.get('version.is_beta') == true",
-     *     name="monitoring.downtime.findHostDowntimes")
      * @param RequestParametersInterface $requestParameters
      * @return View
      * @throws \Exception
      */
     public function findHostDowntimes(RequestParametersInterface $requestParameters): View
     {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+        /**
+         * @var Contact $contact
+         */
         $contact = $this->getUser();
-        if ($contact === null) {
-            return $this->view(null, Response::HTTP_UNAUTHORIZED);
-        }
+
         $hostsDowntime = $this->downtimeService
             ->filterByContact($contact)
             ->findHostDowntimes();
 
-        $context = (new Context())->setGroups(['downtime_main']);
+        $context = (new Context())->setGroups(Downtime::SERIALIZER_GROUPS_MAIN);
 
-        return $this->view([
-            'result' => $hostsDowntime,
-            'meta' => [
-                'pagination' => $requestParameters->toArray()
+        return $this->view(
+            [
+                'result' => $hostsDowntime,
+                'meta' => $requestParameters->toArray()
             ]
-        ])->setContext($context);
+        )->setContext($context);
     }
 
     /**
      * Entry point to find the last services downtimes.
      *
-     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
-     * @Rest\Get(
-     *     "/monitoring/services/downtimes",
-     *     condition="request.attributes.get('version.is_beta') == true",
-     *     name="monitoring.downtime.findServiceDowntimes")
      * @param RequestParametersInterface $requestParameters
      * @return View
      * @throws \Exception
      */
     public function findServiceDowntimes(RequestParametersInterface $requestParameters): View
     {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+        /**
+         * @var Contact $contact
+         */
         $contact = $this->getUser();
-        if ($contact === null) {
-            return $this->view(null, Response::HTTP_UNAUTHORIZED);
-        }
+
         $servicesDowntimes = $this->downtimeService
             ->filterByContact($contact)
             ->findServicesDowntimes();
 
-        $context = (new Context())->setGroups(['downtime_main', 'downtime_service']);
+        $context = (new Context())->setGroups(Downtime::SERIALIZER_GROUPS_SERVICE);
 
-        return $this->view([
-            'result' => $servicesDowntimes,
-            'meta' => [
-                'pagination' => $requestParameters->toArray()
+        return $this->view(
+            [
+                'result' => $servicesDowntimes,
+                'meta' => $requestParameters->toArray()
             ]
-        ])->setContext($context);
+        )->setContext($context);
     }
 
     /**
      * Entry point to find the last downtimes linked to a service.
      *
-     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
-     * @Rest\Get(
-     *     "/monitoring/hosts/{hostId}/services/{serviceId}/downtimes",
-     *     requirements={"hostId"="\d+"},
-     *     condition="request.attributes.get('version.is_beta') == true",
-     *     name="monitoring.downtime.findDowntimesByService")
      * @param RequestParametersInterface $requestParameters
      * @param int $hostId Host id linked to this service
      * @param int $serviceId Service id for which we want to find downtimes
@@ -281,10 +426,12 @@ class DowntimeController extends AbstractFOSRestController
         int $hostId,
         int $serviceId
     ): View {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+        /**
+         * @var Contact $contact
+         */
         $contact = $this->getUser();
-        if ($contact === null) {
-            return $this->view(null, Response::HTTP_UNAUTHORIZED);
-        }
+
         $this->monitoringService->filterByContact($contact);
 
         if ($this->monitoringService->isHostExists($hostId)) {
@@ -292,45 +439,74 @@ class DowntimeController extends AbstractFOSRestController
                 ->filterByContact($contact)
                 ->findDowntimesByService($hostId, $serviceId);
 
-            $context = (new Context())->setGroups(['downtime_main', 'downtime_service']);
+            $context = (new Context())->setGroups(Downtime::SERIALIZER_GROUPS_SERVICE);
 
-            return $this->view([
-                'result' => $downtimesByHost,
-                'meta' => [
-                    'pagination' => $requestParameters->toArray()
+            return $this->view(
+                [
+                    'result' => $downtimesByHost,
+                    'meta' => $requestParameters->toArray()
                 ]
-            ])->setContext($context);
+            )->setContext($context);
         } else {
             return View::create(null, Response::HTTP_NOT_FOUND, []);
         }
     }
 
     /**
+     * Entry point to find the last downtimes linked to a service.
+     *
+     * @param RequestParametersInterface $requestParameters
+     * @param int $metaId ID of the metaservice
+     * @return View
+     * @throws \Exception
+     */
+    public function findDowntimesByMetaService(RequestParametersInterface $requestParameters, int $metaId): View
+    {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+        /**
+         * @var Contact $contact
+         */
+        $contact = $this->getUser();
+
+        $this->monitoringService->filterByContact($contact);
+
+        $downtimesByHost = $this->downtimeService
+            ->filterByContact($contact)
+            ->findDowntimesByMetaService($metaId);
+
+        $context = (new Context())->setGroups(Downtime::SERIALIZER_GROUPS_SERVICE);
+
+        return $this->view(
+            [
+                'result' => $downtimesByHost,
+                'meta' => $requestParameters->toArray()
+            ]
+        )->setContext($context);
+    }
+
+    /**
      * Entry point to find one host downtime.
      *
-     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
-     * @Rest\Get(
-     *     "/monitoring/downtimes/{downtimeId}",
-     *     requirements={"downtimeId"="\d+"},
-     *     condition="request.attributes.get('version.is_beta') == true",
-     *     name="monitoring.downtime.findOneDowntime")
      * @param int $downtimeId Downtime id to find
      * @return View
      * @throws \Exception
      */
     public function findOneDowntime(int $downtimeId): View
     {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
+        /**
+         * @var Contact $contact
+         */
         $contact = $this->getUser();
-        if ($contact === null) {
-            return $this->view(null, Response::HTTP_UNAUTHORIZED);
-        }
+
         $downtime = $this->downtimeService
             ->filterByContact($contact)
             ->findOneDowntime($downtimeId);
 
         if ($downtime !== null) {
             $context = (new Context())
-                ->setGroups(['downtime_main', 'downtime_service'])
+                ->setGroups(Downtime::SERIALIZER_GROUPS_SERVICE)
                 ->enableMaxDepth();
 
             return $this->view($downtime)->setContext($context);
@@ -342,44 +518,35 @@ class DowntimeController extends AbstractFOSRestController
     /**
      * Entry point to find the last downtimes.
      *
-     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
-     * @Rest\Get(
-     *     "/monitoring/downtimes",
-     *     condition="request.attributes.get('version.is_beta') == true",
-     *     name="monitoring.downtime.findDowntimes")
      * @param RequestParametersInterface $requestParameters
      * @return View
      * @throws \Exception
      */
     public function findDowntimes(RequestParametersInterface $requestParameters): View
     {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+        /**
+         * @var Contact $contact
+         */
         $contact = $this->getUser();
-        if ($contact === null) {
-            return $this->view(null, Response::HTTP_UNAUTHORIZED);
-        }
+
         $hostsDowntime = $this->downtimeService
             ->filterByContact($contact)
             ->findDowntimes();
 
-        $context = (new Context())->setGroups(['downtime_main', 'downtime_service']);
+        $context = (new Context())->setGroups(Downtime::SERIALIZER_GROUPS_SERVICE);
 
-        return $this->view([
-            'result' => $hostsDowntime,
-            'meta' => [
-                'pagination' => $requestParameters->toArray()
+        return $this->view(
+            [
+                'result' => $hostsDowntime,
+                'meta' => $requestParameters->toArray()
             ]
-        ])->setContext($context);
+        )->setContext($context);
     }
 
     /**
      * Entry point to find the last downtimes linked to a host.
      *
-     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
-     * @Rest\Get(
-     *     "/monitoring/hosts/{hostId}/downtimes",
-     *     requirements={"hostId"="\d+"},
-     *     condition="request.attributes.get('version.is_beta') == true",
-     *     name="monitoring.downtime.findDowntimesByHost")
      * @param RequestParametersInterface $requestParameters
      * @param int $hostId Host id for which we want to find downtimes
      * @return View
@@ -387,10 +554,12 @@ class DowntimeController extends AbstractFOSRestController
      */
     public function findDowntimesByHost(RequestParametersInterface $requestParameters, int $hostId): View
     {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+        /**
+         * @var Contact $contact
+         */
         $contact = $this->getUser();
-        if ($contact === null) {
-            return $this->view(null, Response::HTTP_UNAUTHORIZED);
-        }
+
         $this->monitoringService->filterByContact($contact);
         $withServices = $requestParameters->getExtraParameter('with_services') === 'true';
 
@@ -399,15 +568,17 @@ class DowntimeController extends AbstractFOSRestController
                 ->filterByContact($contact)
                 ->findDowntimesByHost($hostId, $withServices);
 
-            $contextGroups = $withServices ? ['downtime_main', 'downtime_service'] : ['downtime_main'];
+            $contextGroups = $withServices
+                ? Downtime::SERIALIZER_GROUPS_SERVICE
+                : Downtime::SERIALIZER_GROUPS_MAIN;
             $context = (new Context())->setGroups($contextGroups)->enableMaxDepth();
 
-            return $this->view([
-                'result' => $downtimesByHost,
-                'meta' => [
-                    'pagination' => $requestParameters->toArray()
+            return $this->view(
+                [
+                    'result' => $downtimesByHost,
+                    'meta' => $requestParameters->toArray()
                 ]
-            ])->setContext($context);
+            )->setContext($context);
         } else {
             return View::create(null, Response::HTTP_NOT_FOUND, []);
         }
@@ -416,25 +587,18 @@ class DowntimeController extends AbstractFOSRestController
     /**
      * Entry point to cancel one downtime.
      *
-     * @IsGranted("ROLE_API_REALTIME", message="You are not authorized to access this resource")
-     * @Rest\Delete(
-     *     "/monitoring/downtimes/{downtimeId}",
-     *     requirements={"downtimeId"="\d+"},
-     *     condition="request.attributes.get('version.is_beta') == true",
-     *     name="monitoring.downtime.cancelOneDowntime")
      * @param int $downtimeId Downtime id to cancel
      * @return View
      * @throws \Exception
      */
     public function cancelOneDowntime(int $downtimeId): View
     {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
         /**
          * @var Contact $contact
          */
         $contact = $this->getUser();
-        if ($contact === null) {
-            return $this->view(null, Response::HTTP_UNAUTHORIZED);
-        }
 
         $downtime = $this->downtimeService
             ->filterByContact($contact)
@@ -455,14 +619,167 @@ class DowntimeController extends AbstractFOSRestController
             $isServiceDowntime = $downtime->getServiceId() !== null;
             $svcCancel = $contact->hasRole(Contact::ROLE_CANCEL_SERVICE_DOWNTIME);
             $hostCancel = $contact->hasRole(Contact::ROLE_CANCEL_HOST_DOWNTIME);
-            if (($isServiceDowntime && !$contact->hasRole(Contact::ROLE_CANCEL_SERVICE_DOWNTIME))
-                || (!$isServiceDowntime && !$contact->hasRole(Contact::ROLE_CANCEL_HOST_DOWNTIME))
-            ) {
+            if (($isServiceDowntime && !$svcCancel) || (!$isServiceDowntime && !$hostCancel)) {
                 return $this->view(null, Response::HTTP_UNAUTHORIZED);
             }
         }
 
         $this->downtimeService->cancelDowntime($downtimeId, $host);
         return $this->view();
+    }
+
+    /**
+     * Entry point to bulk set downtime for resources (hosts and services)
+     * @param Request $request
+     * @param EntityValidator $entityValidator
+     * @param SerializerInterface $serializer
+     * @return View
+     * @throws \Exception
+     */
+    public function massDowntimeResources(
+        Request $request,
+        EntityValidator $entityValidator,
+        SerializerInterface $serializer
+    ): View {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
+        /**
+         * @var Contact $contact
+         */
+        $contact = $this->getUser();
+
+        /**
+         * @var DowntimeRequest $dtRequest
+         */
+        $dtRequest = $serializer->deserialize(
+            (string)$request->getContent(),
+            DowntimeRequest::class,
+            'json'
+        );
+
+        $this->downtimeService->filterByContact($contact);
+
+        //validate input
+        $errorList = new ConstraintViolationList();
+
+        //validate resources
+        $resources = $dtRequest->getResources() ?? [];
+
+        foreach ($resources as $resource) {
+            switch ($resource->getType()) {
+                case ResourceEntity::TYPE_HOST:
+                    $errorList->addAll(ResourceService::validateResource(
+                        $entityValidator,
+                        $resource,
+                        ResourceEntity::VALIDATION_GROUP_DOWNTIME_HOST
+                    ));
+                    break;
+                case ResourceEntity::TYPE_SERVICE:
+                    $errorList->addAll(ResourceService::validateResource(
+                        $entityValidator,
+                        $resource,
+                        ResourceEntity::VALIDATION_GROUP_DOWNTIME_SERVICE
+                    ));
+                    break;
+                case ResourceEntity::TYPE_META:
+                    $errorList->addAll(ResourceService::validateResource(
+                        $entityValidator,
+                        $resource,
+                        ResourceEntity::VALIDATION_GROUP_DOWNTIME_META
+                    ));
+                    break;
+                default:
+                    throw new \RestBadRequestException(_('Incorrect resource type for downtime'));
+            }
+        }
+
+        // validate downtime
+        $downtime = $dtRequest->getDowntime();
+        $errorList->addAll(
+            $entityValidator->validate(
+                $downtime,
+                null,
+                Downtime::VALIDATION_GROUP_DT_RESOURCE
+            )
+        );
+
+        if ($errorList->count() > 0) {
+            throw new ValidationFailedException($errorList);
+        }
+
+        foreach ($resources as $resource) {
+            //start applying downtime process
+            try {
+                if ($this->hasDtRightsForResource($contact, $resource)) {
+                    if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_ADD_SERVICE_DOWNTIME)) {
+                        $downtime->setWithServices(false);
+                    }
+
+                    $this->downtimeService->addResourceDowntime(
+                        $resource,
+                        $downtime
+                    );
+                }
+            } catch (\Exception $e) {
+                throw $e;
+            }
+        }
+
+        return $this->view();
+    }
+
+    /**
+     * @param Contact $contact
+     * @param ResourceEntity $resouce
+     * @return bool
+     */
+    private function hasDtRightsForResource(Contact $contact, ResourceEntity $resouce): bool
+    {
+        $hasRights = false;
+
+        if ($resouce->getType() === ResourceEntity::TYPE_HOST) {
+            $hasRights = $contact->isAdmin() || $contact->hasRole(Contact::ROLE_ADD_HOST_DOWNTIME);
+        } elseif ($resouce->getType() === ResourceEntity::TYPE_SERVICE) {
+            $hasRights = $contact->isAdmin() || $contact->hasRole(Contact::ROLE_ADD_SERVICE_DOWNTIME);
+        } elseif ($resouce->getType() === ResourceEntity::TYPE_META) {
+            $hasRights = $contact->isAdmin() || $contact->hasRole(Contact::ROLE_ADD_SERVICE_DOWNTIME);
+        }
+
+        return $hasRights;
+    }
+
+    /**
+     * This function will ensure that the POST data is valid regarding validation constraints defined.
+     *
+     * @param Request $request
+     * @param string $jsonValidatorFile
+     * @throws \InvalidArgumentException
+     */
+    private function validateOrFail(Request $request, string $jsonValidatorFile): void
+    {
+        $receivedData = json_decode((string) $request->getContent(), true);
+        if (!is_array($receivedData)) {
+            throw new \InvalidArgumentException(_('Error when decoding sent data'));
+        }
+        $centreonPath = $this->getParameter('centreon_path');
+        /*
+        * Validate the content of the POST request against the JSON schema validator
+        */
+        $validator = new Validator();
+        $bodyContent = json_decode((string) $request->getContent());
+        $file = 'file://' . $centreonPath . $jsonValidatorFile;
+        $validator->validate(
+            $bodyContent,
+            (object) ['$ref' => $file],
+            Constraint::CHECK_MODE_VALIDATE_SCHEMA
+        );
+
+        if (!$validator->isValid()) {
+            $message = '';
+            foreach ($validator->getErrors() as $error) {
+                $message .= sprintf("[%s] %s\n", $error['property'], $error['message']);
+            }
+            throw new \InvalidArgumentException($message);
+        }
     }
 }

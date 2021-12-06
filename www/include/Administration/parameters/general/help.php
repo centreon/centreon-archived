@@ -126,43 +126,72 @@ $help['sso_username_replace'] = dgettext(
 );
 
 /**
- * Keycloak
+ * OpenId Connect
  */
-$help['keycloak_enable'] = dgettext(
+$help['openid_connect_enable'] = dgettext(
     'help',
-    'Enable login with Keycloak.'
+    'Enable login with OpenId Connect.'
 );
-$help['keycloak_mode'] = dgettext(
+$help['openid_connect_mode'] = dgettext(
     'help',
-    'Authentication can be solely based on Keycloak or it can work with both Keycloak and local authentication systems.'
+    'Authentication can be solely based on OpenId Connect or it can work with both OpenId Connect and local authentication systems.'
 );
-$help['keycloak_trusted_clients'] = dgettext(
+$help['openid_connect_trusted_clients'] = dgettext(
     'help',
     'IP/DNS of trusted clients. Use coma as delimiter in case of multiple clients.'
 );
-$help['keycloak_blacklist_clients'] = dgettext(
+$help['openid_connect_blacklist_clients'] = dgettext(
     'help',
     'IP/DNS of blacklist clients. Use coma as delimiter in case of multiple clients.'
 );
-$help['keycloak_url'] = dgettext(
+$help['openid_connect_base_url'] = dgettext(
     'help',
-    'Your Keycloak server url (with "/auth").'
+    'Your OpenId Connect base Url (for example http://IP:8080/auth/realms/master/protocol/openid-connect).'
 );
-$help['keycloak_redirect_url'] = dgettext(
+$help['openid_connect_authorization_endpoint'] = dgettext(
     'help',
-    'Your Keycloak redirect url (this server).'
+    'Your OpenId Connect Authorization endpoint (for example /auth).'
 );
-$help['keycloak_realm'] = dgettext(
+$help['openid_connect_token_endpoint'] = dgettext(
     'help',
-    'Your Keycloak Realm name.'
+    'Your OpenId Connect Token endpoint (for example /token).'
 );
-$help['keycloak_client_id'] = dgettext(
+$help['openid_connect_introspection_endpoint'] = dgettext(
     'help',
-    'Your Keycloak client ID.'
+    'Your OpenId Connect Introspection Token endpoint (for example /token/introspect).'
 );
-$help['keycloak_client_secret'] = dgettext(
+$help['openid_connect_userinfo_endpoint'] = dgettext(
     'help',
-    'Your Keycloak client secret.'
+    'Your OpenId Connect User Information endpoint (for example /userinfo).'
+);
+$help['openid_connect_end_session_endpoint'] = dgettext(
+    'help',
+    'Your OpenId Connect End Session endpoint (for example /logout).'
+);
+$help['openid_connect_scope'] = dgettext(
+    'help',
+    'Your OpenId Connect Scope (for example openid).'
+);
+$help['openid_connect_login_claim'] = dgettext(
+    'help',
+    'Your OpenId Connect login claim value (if empty preferred_username will be used).'
+);
+$help['openid_connect_redirect_url'] = dgettext(
+    'help',
+    'Your OpenId Connect redirect url (this server, {scheme}, {hostname} and {port} can be used for substitions,'
+    . ' default is {scheme}://{hostname}:{port}/your_centreon_path/index.php if left empty).'
+);
+$help['openid_connect_client_id'] = dgettext(
+    'help',
+    'Your OpenId Connect client ID.'
+);
+$help['openid_connect_client_secret'] = dgettext(
+    'help',
+    'Your OpenId Connect client secret.'
+);
+$help['openid_connect_client_basic_auth'] = dgettext(
+    'help',
+    'Switch token_endpoint_auth_method from client_secret_post to client_secret_basic'
 );
 
 /**

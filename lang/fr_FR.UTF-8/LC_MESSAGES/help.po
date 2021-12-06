@@ -661,7 +661,7 @@ msgid ""
 "Duration of retention regarding downtimes stored in database. 0 means that no "
 "retention will be applied."
 msgstr ""
-"Durée de rétention concernant les temps d'arrêts stockés en base de données. 0 "
+"Durée de rétention concernant les plages de maintenance stockées en base de données. 0 "
 "signifie qu'aucune rétention n'est appliquée."
 
 #: centreon-web/www/include/Administration/parameters/centstorage/help.php:32
@@ -897,28 +897,43 @@ msgstr ""
 "L'authentification peut-être seulement basée sur SSO ou elle peut fonctionner "
 "à la fois avec SSO et un système d'authentification local. "
 
-msgid "Enable login with Keycloak."
-msgstr "Activer le login avec Keycloak."
+msgid "Enable login with OpenId Connect."
+msgstr "Activer le login avec OpenId Connect."
 
-msgid "Authentication can be solely based on Keycloak or it can work with both Keycloak "
+msgid "Authentication can be solely based on OpenId Connect or it can work with both OpenId Connect "
 "and local authentication systems."
-msgstr "L'authentification peut être basée sur Keycloak uniquement ou peut fonctionner avec Keycloak et les systèmes."
+msgstr "L'authentification peut être basée sur OpenId Connect uniquement ou peut fonctionner avec OpenId Connect et les systèmes."
 "d'authentification locaux."
 
-msgid "Your Keycloak server url (with \"/auth\")."
-msgstr "L'URL de votre serveur Keycloak (avec le \"/auth\")."
+msgid "Your OpenId Connect base Url (for example http://IP:8080/auth/realms/master/protocol/openid-connect)."
+msgstr "L'url de base du service OpenId Connect (par exemple http://IP:8080/auth/realms/master/protocol/openid-connect)."
 
-msgid "Your Keycloak redirect url (this server)."
-msgstr "L'URL Keycloak de redirection vers Centreon (ce serveur)."
+msgid "Your OpenId Connect Authorization endpoint (for example /auth)."
+msgstr "L'url du service OpenId Connect Authorization (par exemple /auth)."
 
-msgid "Your Keycloak Realm name."
-msgstr "Le nom de votre royaume Keycloak comprenant l'application Centreon."
+msgid "Your OpenId Connect Token endpoint (for example /token)."
+msgstr "L'url du service OpenId Connect Token (par exemple /token)."
 
-msgid "Your Keycloak client ID."
-msgstr "L'identifiant Centreon Keycloak (client ID)."
+msgid "Your OpenId Connect Introspection Token endpoint (for example /token/introspect)."
+msgstr "L'url du service OpenId Connect Introspection Token (par exemple /token/introspect)."
 
-msgid "Your Keycloak client secret."
-msgstr "La clé secrète Keycloak pour l'application Centreon."
+msgid "Your OpenId Connect User Information endpoint (for example /userinfo)."
+msgstr "L'url du service OpenId Connect User Information (par exemple /userinfo)."
+
+msgid "Your OpenId Connect End Session endpoint (for example /logout)."
+msgstr "L'url du service OpenId Connect End Session (par exemple /logout)."
+
+msgid "Your OpenId Connect Scope (for example openid)."
+msgstr "Le champ d'application 'scope' (par exemple openid)."
+
+msgid "Your OpenId Connect redirect url (this server)."
+msgstr "L'URL OpenId Connect de redirection vers Centreon (ce serveur)."
+
+msgid "Your OpenId Connect client ID."
+msgstr "L'identifiant Centreon OpenId Connect (client ID)."
+
+msgid "Your OpenId Connect client secret."
+msgstr "La clé secrète OpenId Connect pour l'application Centreon."
 
 #: centreon-web/www/include/Administration/parameters/general/help.php:84
 msgid ""
@@ -998,7 +1013,7 @@ msgid ""
 "on metric chart.<br><b>Warning</b> : This option can slow down the display of "
 "chart."
 msgstr ""
-"Si cette option est activée, les périodes de temps d'arrêts et d'acquittements "
+"Si cette option est activée, les périodes de plage de maintenance et d'acquittements "
 "seront visibles sur les graphiques.<br><b>Attention</b> : Cette option peut "
 "ralentir le chargement des graphiques."
 
@@ -1007,7 +1022,7 @@ msgid ""
 "If this option is enable, the comments will be displayed on status chart."
 "<br><b>Warning</b> : This option can slow down the display of chart."
 msgstr ""
-"Si cette option est activée, les périodes de temps d'arrêts et d'acquittements "
+"Si cette option est activée, les périodes de plage de maintenance et d'acquittements "
 "seront visibles sur les graphiques représentant l'état du service."
 "<br><b>Attention</b> : Cette option peut ralentir le chargement des graphiques."
 
@@ -1081,7 +1096,7 @@ msgstr ""
 msgid "[Persistent] option is enabled by default."
 msgstr ""
 "Active cette option par défaut dans le formulaire. Cette option permet de "
-"repositionner le temps d'arrêt en cas de redémarrage du moteur de supervision."
+"repositionner la plage de maintenance en cas de redémarrage du moteur de supervision."
 
 #: centreon-web/www/include/Administration/parameters/engine/help.php:60
 msgid "[Acknowledge services attached to hosts] option is enabled by default."
@@ -1099,18 +1114,18 @@ msgstr ""
 msgid "Fixed."
 msgstr ""
 "Active cette option par défaut dans le formulaire. Cette option permet "
-"planifier un temps d'arrêt fixe."
+"planifier une plage de maintenance fixe."
 
 #: centreon-web/www/include/Administration/parameters/engine/help.php:71
 msgid ""
 "[Set downtimes on services attached to hosts] option is enbaled by default."
 msgstr ""
 "Active cette option par défaut dans le formulaire. Cette option permet de "
-"programmer un temps d'arrêt aux services liés à l'hôte."
+"programmer une plage de maintenance aux services liés à l'hôte."
 
 #: centreon-web/www/include/Administration/parameters/engine/help.php:73
 msgid "Default duration of scheduled downtimes."
-msgstr "Durée par défaut des temps d'arrêt planifiés."
+msgstr "Durée par défaut des plages de maintenance planifiées."
 
 #: centreon-web/www/include/Administration/parameters/engine/help.php:80
 msgid ""
@@ -1421,7 +1436,7 @@ msgstr ""
 
 #: centreon-web/www/include/options/accessLists/actionsACL/help.php:52
 msgid "Allows users to schedule downtime on a service."
-msgstr "Permet aux utilisateurs de planifier un temps d'arrêt pour un service."
+msgstr "Permet aux utilisateurs de planifier une plage de maintenance pour un service."
 
 #: centreon-web/www/include/options/accessLists/actionsACL/help.php:53
 msgid "Allows users to add or delete a comment of a service."
@@ -1482,7 +1497,7 @@ msgstr ""
 
 #: centreon-web/www/include/options/accessLists/actionsACL/help.php:69
 msgid "Allows users to schedule downtime on a host."
-msgstr "Permet aux utilisateurs de planifier un temps d'arrêt pour un hôte."
+msgstr "Permet aux utilisateurs de planifier une plage de maintenance pour un hôte."
 
 #: centreon-web/www/include/options/accessLists/actionsACL/help.php:70
 msgid "Allows users to add or delete a comment of a host."
@@ -1775,7 +1790,7 @@ msgid ""
 "Engine stops and recreated when it starts."
 msgstr ""
 "C'est le fichier qu'utilise le Moteur de Supervision pour stocker les statuts "
-"actuels, les commentaires, et les informations de temps d'arrêt. Ce fichier "
+"actuels, les commentaires, et les informations de la plage de maintenance. Ce fichier "
 "est effacé à chaque fois que le Moteur de Supervision s'arrête puis le recrée "
 "lorsqu'il redémarre."
 
@@ -1818,43 +1833,6 @@ msgstr ""
 "C'est un fichier temporaire que le moteur de supervision crée périodiquement "
 "durant la mise à jour des commentaires, des statuts, etc. Ce fichier est "
 "supprimé lorsqu'il n'est plus nécessaire."
-
-#: centreon-web/www/include/configuration/configNagios/help.php:67
-msgid ""
-"This options determines which directory Monitoring Engine will use to "
-"temporarily store host and service check results before they are processed. "
-"This directory should not be used to store any other files, as Monitoring "
-"Engine will periodically clean this directory of old file. Make sure that only "
-"a single instance of Monitoring Engine has access to the check result path. If "
-"multiple instances of Monitoring Engine have their check result path set to "
-"the same directory, you will run into problems with check results being "
-"processed (incorrectly) by the wrong instance of Monitoring Engine!"
-msgstr ""
-"Cette option détermine quel répertoire le moteur de supervision utilisera pour "
-"stocker temporairement les résultats des contrôles. Ce répertoire ne doit pas "
-"stocker d'autres fichiers, car le moteur de supervision efface le contenu de "
-"ce répertoire de manière récurrente. Assurez-vous qu'une seule instance du "
-"moteur de supervision ait accès au répertoire des résultats. Si plusieurs "
-"instances du moteur de supervision ont leur répertoire de résultats, "
-"configurez le même emplacement, vous aurez des problèmes avec les résultats "
-"des contrôles en cours de traitement (à tort) par rapport à la mauvaise "
-"instance du moteur de supervision!"
-
-#: centreon-web/www/include/configuration/configNagios/help.php:78
-msgid ""
-"This options determines the maximum age in seconds that Monitoring Engine will "
-"consider check result files found in the check_result_path directory to be "
-"valid. Check result files that are older that this threshold will be deleted "
-"by Monitoring Engine and the check results they contain will not be processed. "
-"By using a value of zero (0) with this option, Monitoring Engine will process "
-"all check result files."
-msgstr ""
-"Cette option détermine le temps maximum en secondes que le moteur de "
-"supervision peut considérer trouver des informations de résultat de contrôles "
-"dans le répertoire de stockage des résultats. Les résultats dépassant ce temps "
-"limite seront effacés par le moteur de supervision et ne pourront plus être "
-"exploités. En utilisant la valeur zéro (0) pour cette option, le moteur de "
-"supervision exploitera chaque fichiers de contrôle."
 
 #: centreon-web/www/include/configuration/configNagios/help.php:86
 msgid ""
@@ -2488,24 +2466,22 @@ msgstr ""
 
 #: centreon-web/www/include/configuration/configNagios/help.php:413
 msgid ""
-"This option determines the maximum number of minutes from when Monitoring "
-"Engine starts that all services (that are scheduled to be regularly checked) "
-"are checked. This option will automatically adjust the service inter-check "
-"delay method (if necessary) to ensure that the initial checks of all services "
-"occur within the timeframe you specify. In general, this option will not have "
-"an effect on service check scheduling if scheduling information is being "
-"retained using the use_retained_scheduling_info option. Default value is 30 "
-"(minutes)."
+"This option determines the maximum number of minutes from when Monitoring Engine starts until all services "
+"(that are scheduled to be regularly checked) are checked. This option will automatically adjust the service "
+"inter-check delay method (if necessary) to ensure that the initial checks of all services occur within the "
+"timeframe you specify. In general, this option will not have an effect on service check scheduling if "
+"scheduling information is being retained using the use_retained_scheduling_info option. Default value in "
+"centengine is 5 (minutes) but it should be raised to 30 if the poller monitors more than 5000 services to "
+"avoid load issues."
 msgstr ""
-"Cette option détermine le nombre maximal de minutes entre le démarrage du "
-"moteur de supervision et la vérification de tous les services (qui doivent "
-"être régulièrement vérifiés). Cette option permet de régler automatiquement la "
-"stratégie de délai entre les vérifications de service (si nécessaire) pour "
-"s'assurer que les vérifications initiales de tous les services se produisent "
-"dans l'intervalle de temps spécifié. En général, cette option n'a pas d'effet "
-"sur ​​la planification des vérifications de service si l'information sur la "
-"planification est conservée en utilisant l'option "
-"use_retained_scheduling_info. La valeur par défaut est 30 (minutes)."
+"Cette option détermine le nombre maximal de minutes entre le démarrage du moteur de supervision "
+"et la vérification de tous les services (qui doivent être régulièrement vérifiés). "
+"Cette option permet de régler automatiquement la stratégie de délai entre les vérifications de service "
+"(si nécessaire) pour s'assurer que les vérifications initiales de tous les services se produisent dans "
+"l'intervalle de temps spécifié. En général, cette option n'a pas d'effet sur la planification des "
+"vérifications de service si l'information sur la planification est conservée en utilisant l'option "
+"use_retained_scheduling_info. La valeur par défaut est 5 (minutes) mais elle doit être augmentée à 30 si "
+"le collecteur supervise plus de 5000 services pour éviter des problèmes de charge."
 
 #: centreon-web/www/include/configuration/configNagios/help.php:414
 msgid ""
@@ -3238,6 +3214,15 @@ msgstr ""
 
 #: centreon-web/www/include/configuration/configNagios/help.php:461
 msgid ""
+"Time interval in seconds between two heartbeat events. This event is the one responsible of the ‘Last Update’ "
+"column update in the Pollers listing. Value must be between 5 and 600. Default value is 30."
+msgstr ""
+"Intervalle de temps en secondes entre deux événements heartbeat. Cet événement est le responsable de "
+"la mise à jour de la colonne 'Dernière mise à jour' dans la liste des Poller. La valeur doit "
+"être comprise entre 5 et 600. La valeur par défaut est 30."
+
+#: centreon-web/www/include/configuration/configNagios/help.php:461
+msgid ""
 "This option allows you to specify what kind of date/time format Monitoring "
 "Engine should use in the web interface and date/time macros."
 msgstr ""
@@ -3571,13 +3556,6 @@ msgstr ""
 "Active la possibilité de journaliser le PID du processus dans le journal "
 "d'évènement du moteur de supervision. Cette option ne fonctionne que pour le "
 "moteur Centreon Engine."
-
-#: centreon-web/www/include/configuration/configNagios/help.php:492
-msgid ""
-"This option enable or disable compatibility mode to use check result path."
-msgstr ""
-"Cette option permet de rendre compatible le moteur Centreon Engine avec les "
-"modules tiers tels que MKLiveStatus et Mod_Gearman."
 
 #: centreon-web/www/include/configuration/configObject/host_dependency/help.php:4
 #: centreon-web/www/include/configuration/configObject/service_dependency/help.php:4
@@ -3987,7 +3965,7 @@ msgid ""
 "with centreon-broker AND central mode."
 msgstr ""
 "N'exécute pas le traitement associé à la définition du trap SNMP si le service "
-"associé est en temps d'arrêt (downtime). Dans le cas où la méthode \"Historisé"
+"associé est en plage de maintenance (downtime). Dans le cas où la méthode \"Historisé"
 "\" est sélectionnée, le processus centreontrapd se connectera à la base de "
 "données pour récupérer cette information. Cette option ne fonctionne que pour "
 "le traitement des traps SNMP sur le serveur Centreon central avec le module "
@@ -6311,8 +6289,16 @@ msgid "Main poller"
 msgstr "Collecteur principal"
 
 #: centreon-web/www/include/configuration/configServers/help.php:7
-msgid "SSH port of the remote poller"
-msgstr "Port SSH du collecteur distant"
+msgid "SSH legacy port used by Centreon extensions or tools (see Gorgone Information for communication port between monitoring servers)"
+msgstr "Port SSH utilisé par les extensions ou outils Centreon (voir Gorgone Information pour le port de communication entre les serveurs de supervision)"
+
+#: centreon-web/www/include/configuration/configServers/help.php:7
+msgid "Gorgone communication protocol (ZMQ or SSH)"
+msgstr "Protocole de communication Gorgone (ZMQ ou SSH)"
+
+#: centreon-web/www/include/configuration/configServers/help.php:8
+msgid "Gorgone port of the remote poller (5556 or 22)"
+msgstr "Port de communication Gorgone (5556 ou 22)"
 
 #: centreon-web/www/include/configuration/configServers/help.php:8
 msgid "Monitoring engine"
@@ -6326,6 +6312,18 @@ msgstr "Chemin du script de démarrage de l’ordonnanceur"
 msgid "Path of init script of centreontrapd"
 msgstr "Chemin du script de démarrage du processus centreontrapd"
 
+msgid "Command to start Centreon Engine process"
+msgstr "Commande pour démarrer le processus Centreon Engine"
+
+msgid "Command to stop Centreon Engine process"
+msgstr "Commande pour arrêter le processus Centreon Engine"
+
+msgid "Command to restart Centreon Engine process"
+msgstr "Commande pour redémarrer le processus Centreon Engine"
+
+msgid "Command to reload Centreon Engine process"
+msgstr "Commande pour recharger le processus Centreon Engine"
+
 #: centreon-web/www/include/configuration/configServers/help.php:11
 msgid "Path of binary of the scheduler"
 msgstr "Chemin du binaire de l’ordonnanceur"
@@ -6337,6 +6335,9 @@ msgstr "Chemin du binaire de statistiques de l’ordonnanceur"
 #: centreon-web/www/include/configuration/configServers/help.php:13
 msgid "Perfdata script"
 msgstr "Script pour les données de performance"
+
+msgid "Command to reload Centreon Broker process"
+msgstr "Commande pour recharger le processus Centreon Broker"
 
 #: centreon-web/www/include/configuration/configServers/help.php:14
 msgid "Path of the configuration file for Centreon Broker"
@@ -6385,42 +6386,50 @@ msgstr ""
 "de macros ans cette commande car elles ne seraient pas remplacées. Vérifier "
 "que les droits d'exécution sont suffisant pour l'utilisateur \"apache\"."
 
+#: centreon-web/www/include/configuration/configServers/help.php:55
+msgid ""
+"If checked, it won't use the proxy configured in 'Administration > Parameters > Centreon UI' "
+"to connect to the Remote Server."
+msgstr ""
+"Si coché, il n'utilisera pas le proxy configuré dans 'Administration > Paramètres > Centreon UI' "
+"pour se connecter au serveur distant."
+
 #: centreon-web/www/include/configuration/configServers/help.php:22
 msgid "Short description of the poller"
 msgstr "Brève description du collecteur"
 
 msgid ""
-"If checked, the Central server will send configuration and external commands directly to the poller "
-"and will not use the Remote Server as a proxy"
+"If disabled, the Central server will send configuration and external commands directly to the poller "
+"and will not use the Remote Server as a proxy."
 msgstr ""
-"Si activé, le serveur Central se connectera directement au collecteur pour transférer la configuration"
+"Si désactivé, le serveur Central se connectera directement au collecteur pour transférer la configuration "
 "et les commandes externes et n'utilisera pas le Remote Server comme proxy."
 
 #: centreon-web/www/include/configuration/configDowntime/help.php:8
 msgid "The name of the recurrent downtime rule."
-msgstr "Le nom de la règle de temps d'arrêt récurrente."
+msgstr "Le nom de la règle de la plage de maintenance récurrente."
 
 #: centreon-web/www/include/configuration/configDowntime/help.php:9
 msgid "Description of the downtime"
-msgstr "Description du temps d'arrêt"
+msgstr "Description de la plage de maintenance"
 
 #: centreon-web/www/include/configuration/configDowntime/help.php:10
 msgid "Option to enable or disable this downtime"
-msgstr "Option pour activer et désactiver le temps d'arrêt"
+msgstr "Option pour activer et désactiver la plage de maintenance"
 
 #: centreon-web/www/include/configuration/configDowntime/help.php:11
 msgid ""
 "This field give the possibility to configure the frequency of this downtime."
 msgstr ""
-"Ce champ donne la possibilité de configurer la fréquence de ce temps d'arrêt."
+"Ce champ donne la possibilité de configurer la fréquence de cette plage de maintenance."
 
 #: centreon-web/www/include/configuration/configDowntime/help.php:13
 msgid ""
 "This field give you the possibility to select all hosts implied by this "
 "downtime"
 msgstr ""
-"Ce champ vous donne la possibilité de choisir tous les hôtes impliqués par ce "
-"temps d'arrêt"
+"Ce champ vous donne la possibilité de choisir tous les hôtes impliqués par cette "
+"plage de maintenance"
 
 #: centreon-web/www/include/configuration/configDowntime/help.php:14
 msgid ""
@@ -6437,7 +6446,7 @@ msgid ""
 "downtime"
 msgstr ""
 "Ce champ vous donne la possibilité de choisir tous les services impliqués par "
-"ce temps d'arrêt"
+"cette plage de maintenance"
 
 #: centreon-web/www/include/configuration/configDowntime/help.php:16
 msgid ""
@@ -6446,7 +6455,7 @@ msgid ""
 msgstr ""
 "Ce champ vous donne la possibilité de choisir tous les groupes de services et "
 "tous les services contenus dans le groupe de services sélectionné impliqués "
-"par ce temps d'arrêt"
+"par cette plage de maintenance"
 
 #: centreon-web/www/include/configuration/configGenerate/help.php:3
 msgid "Select the poller you would like to interact with."
@@ -6693,7 +6702,7 @@ msgstr ""
 
 #~ msgid "Color of Hosts / Services that are on downtime."
 #~ msgstr ""
-#~ "Couleur de la ligne des hôtes et/ou services en temps d'arrêt programmé."
+#~ "Couleur de la ligne des hôtes et/ou services en plage de maintenance programmée."
 
 #~ msgid "Color for Host Down (in Service monitoring consoles)."
 #~ msgstr ""
@@ -6966,26 +6975,6 @@ msgstr ""
 #~ "temps en temps afin de supprimer les fichiers plus vieux que 24 heures."
 
 #~ msgid ""
-#~ "This options determines which directory Nagios will use to temporarily "
-#~ "store host and service check results before they are processed. This "
-#~ "directory should not be used to store any other files, as Nagios will "
-#~ "periodically clean this directory of old file. Make sure that only a single "
-#~ "instance of Nagios has access to the check result path. If multiple "
-#~ "instances of Nagios have their check result path set to the same directory, "
-#~ "you will run into problems with check results being processed (incorrectly) "
-#~ "by the wrong instance of Nagios!"
-#~ msgstr ""
-#~ "Cette option détermine quel répertoire Nagios utilisera afin de stocker "
-#~ "temporairement les résultats des contrôles sur les hôtes et les services "
-#~ "avant qu'ils ne soient traités. Ce répertoire ne devrait pas être utilisé "
-#~ "afin de stocker d'autres fichiers, car Nagios nettoiera périodiquement ce "
-#~ "répertoire des vieux fichiers. Assurez-vous que seul une instance de Nagios "
-#~ "a accès au chemin de résultat des contrôles. Si plusieurs instances Nagios "
-#~ "ont accès au même dossier, vous risquez de rencontrer des problèmes avec "
-#~ "des résultat de contrôle (incohérents) car traité par la mauvaise instance "
-#~ "de Nagios."
-
-#~ msgid ""
 #~ "This is used to set the effective user that the Nagios process should run "
 #~ "as. After initial program startup and before starting to monitor anything, "
 #~ "Nagios will drop its effective privileges and run as this user. You may "
@@ -7221,8 +7210,36 @@ msgstr ""
 #~ "est définie."
 
 #: centreon-web/www/include/configuration/configServers/help.php:7
-#~ msgid "Master Remote Server to which this server will be attached"
-#~ msgstr ""
+msgid "Master Remote Server to which this server will be attached"
+msgstr "Remote Server principal auquel ce collecteur sera lié"
 
-#~ msgid "Additional Remote Server to which this server will be attached"
-#~ msgstr ""
+msgid "Additional Remote Server to which this server will be attached"
+msgstr "Remote Server additionnel auquel ce collecteur sera lié"
+
+msgid ""
+"Enter the name of an active contact who have the right to 'reach API configuration' on the Central."
+"This user will be used to call the API from the Remote to the Central."
+msgstr ""
+"Entrez le nom d'un contact actif qui a le droit d'accéder à l'API de configuration sur le Central."
+"Ce compte sera utilisé pour appeler l'API depuis le Remote vers le Central."
+
+msgid "Enter the current password of this account."
+msgstr "Entrez le mot de passe actuel de ce compte."
+
+msgid "Full URL allowing access to the API of the Centreon's central server."
+msgstr "URL complète permettant d'accéder à l'API du serveur central Centreon."
+
+msgid "Allows to skip the SSL certificate check on the Centreon's central server."
+msgstr "Permet de ne pas vérifier le certificat SSL du serveur central Centreon."
+
+msgid ""
+"If checked this option will restore the use of the deprecated pages."
+"This includes display of the deprecated pages and internal redirections between pages"
+"If not checked this option will enable the full use of the new Monitoring page Resource Status"
+msgstr ""
+"Si l'option est activée l'utilisation des pages dépréciées sera totalement rétablie"
+"Cela inclu: l'affichage des pages mais également toutes les redirections entre pages dépréciées"
+"Si l'option n'est pas activée l'utilisation de la nouvelle page de Monitoring Resource Status sera pleinement activée"
+
+msgid "Expected TLS certificate common name (CN) - leave blank if unsure."
+msgstr "Champ common name (CN) attendu dans le certificat TLS - laisser vide en cas de doute"

@@ -404,20 +404,30 @@ function getLogInDbForHostSVC($host_id, $start_date, $end_date, $reportTimePerio
 }
 
 /*
- * Return a table a (which reference is given in parameter) that contains stats 
+ * Return a table a (which reference is given in parameter) that contains stats
  * on services for a given host defined by $host_id and $service_id
  * me must specify the host id because one service can be linked to many hosts
+ *
+ * @param int $servicegroupId
+ * @param int $startDate
+ * @param int $endDate
+ * @param array $reportTimePeriod
+ * @return array
  */
-function getLogInDbForOneSVC($host_id, $service_id, $start_date, $end_date, $reportTimePeriod)
+function getServicesLogs(array $services, $startDate, $endDate, $reportTimePeriod)
 {
     global $pearDBO, $centreon;
+
+    if (count($services) === 0) {
+        return [];
+    }
 
     $status = array("OK", "WARNING", "CRITICAL", "UNKNOWN", "UNDETERMINED", "MAINTENANCE");
 
     foreach (getServicesStatsValueName() as $name) {
         $serviceStats[$name] = 0;
     }
-    $days_of_week = getReportDaysStr($reportTimePeriod);
+    $daysOfWeek = getReportDaysStr($reportTimePeriod);
     $aclCondition = '';
     if (!$centreon->user->admin) {
         $aclCondition = 'AND EXISTS (SELECT * FROM centreon_acl acl ' .
@@ -425,120 +435,155 @@ function getLogInDbForOneSVC($host_id, $service_id, $start_date, $end_date, $rep
             'AND acl.group_id IN (' . $centreon->user->access->getAccessGroupsString() . ') )';
     }
 
+    $bindValues = [
+        ':startDate' => [\PDO::PARAM_STR, $startDate],
+        ':endDate' => [\PDO::PARAM_STR, $endDate],
+    ];
+
+    $servicesConditions = [];
+    foreach ($services as $index => $service) {
+        $servicesConditions[] = "(las.host_id = :host$index AND las.service_id = :service$index)";
+        $bindValues[':host' . $index] = [\PDO::PARAM_INT, $service['hostId']];
+        $bindValues[':service' . $index] = [\PDO::PARAM_INT, $service['serviceId']];
+    }
+    $servicesSubquery = 'AND (' . implode(' OR ', $servicesConditions) . ')';
+
     // Use "like" instead of "=" to avoid mysql bug on partitioned tables
-    $rq = "SELECT DISTINCT las.service_id, sum(OKTimeScheduled) as OK_T, sum(OKnbEvent) as OK_A, "
+    $rq = "SELECT DISTINCT las.host_id, las.service_id, sum(OKTimeScheduled) as OK_T, sum(OKnbEvent) as OK_A, "
         . "sum(WARNINGTimeScheduled)  as WARNING_T, sum(WARNINGnbEvent) as WARNING_A, "
         . "sum(UNKNOWNTimeScheduled) as UNKNOWN_T, sum(UNKNOWNnbEvent) as UNKNOWN_A, "
         . "sum(CRITICALTimeScheduled) as CRITICAL_T, sum(CRITICALnbEvent) as CRITICAL_A, "
         . "sum(UNDETERMINEDTimeScheduled) as UNDETERMINED_T, "
         . "sum(MaintenanceTime) as MAINTENANCE_T "
         . "FROM log_archive_service las "
-        . "WHERE las.host_id = " . $host_id . " "
-        . $aclCondition .
-        " AND las.service_id = " . $service_id . " AND `date_start` >= " . $start_date .
-        " AND date_end <= " . $end_date . " "
-        . "AND DATE_FORMAT(FROM_UNIXTIME(date_start), '%W') IN (" . $days_of_week . ") "
+        . "WHERE `date_start` >= :startDate "
+        . "AND date_end <= :endDate "
+        . $aclCondition . " "
+        . $servicesSubquery . " "
+        . "AND DATE_FORMAT(FROM_UNIXTIME(date_start), '%W') IN (" . $daysOfWeek . ") "
         . "GROUP BY las.service_id";
-    $dbResult = $pearDBO->query($rq);
+    $statement = $pearDBO->prepare($rq);
 
-    if ($row = $dbResult->fetch()) {
-        $serviceStats = $row;
-    }
-    $timeTab = getTotalTimeFromInterval($start_date, $end_date, $reportTimePeriod);
-    if ($timeTab["reportTime"]) {
-        $serviceStats["UNDETERMINED_T"] += $timeTab["reportTime"]
-            - ($serviceStats["OK_T"] + $serviceStats["WARNING_T"] + $serviceStats["CRITICAL_T"]
-                + $serviceStats["UNKNOWN_T"] + $serviceStats["UNDETERMINED_T"] + $serviceStats["MAINTENANCE_T"]);
-    } else {
-        foreach ($status as $key => $value) {
-            $serviceStats[$value . "_T"] = 0;
-        }
-        $serviceStats["UNDETERMINED_T"] = $timeTab["totalTime"];
-    }
-    /*
-     * Calculate percentage of time (_TP => Total time percentage) for each status
-     */
-    $serviceStats["TOTAL_TIME"] = $serviceStats["OK_T"] + $serviceStats["WARNING_T"] + $serviceStats["CRITICAL_T"]
-        + $serviceStats["UNKNOWN_T"] + $serviceStats["UNDETERMINED_T"] + $serviceStats["MAINTENANCE_T"];
-    $time = $serviceStats["TOTAL_TIME"];
-    foreach ($status as $key => $value) {
-        $serviceStats[$value . "_TP"] = round($serviceStats[$value . "_T"] / $time * 100, 2);
-    }
-    /*
-     * The same percentage (_MP => Mean Time percentage) is calculated ignoring undetermined time
-     */
-    $serviceStats["MEAN_TIME"] = $serviceStats["OK_T"] + $serviceStats["WARNING_T"]
-        + $serviceStats["CRITICAL_T"] + $serviceStats["UNKNOWN_T"];
-    $time = $serviceStats["MEAN_TIME"];
-    if ($serviceStats["MEAN_TIME"] <= 0) {
-        foreach ($status as $key => $value) {
-            if ($value != "UNDETERMINED" && $value != "MAINTENANCE") {
-                $serviceStats[$value . "_MP"] = 0;
-            }
-        }
-    } else {
-        foreach ($status as $key => $value) {
-            if ($value != "UNDETERMINED" && $value != "MAINTENANCE") {
-                $serviceStats[$value . "_MP"] = round($serviceStats[$value . "_T"] / $time * 100, 2);
-            }
-        }
-    }
-    /*
-     * Format time for each status (_TF => Time Formated), mean time and total time
-     */
-    $serviceStats["MEAN_TIME_F"] = getTimeString($serviceStats["MEAN_TIME"], $reportTimePeriod);
-    $serviceStats["TOTAL_TIME_F"] = getTimeString($serviceStats["TOTAL_TIME"], $reportTimePeriod);
-    foreach ($status as $key => $value) {
-        $serviceStats[$value . "_TF"] = getTimeString($serviceStats[$value . "_T"], $reportTimePeriod);
+    foreach ($bindValues as $bindName => $bindParams) {
+        list($bindType, $bindValue) = $bindParams;
+        $statement->bindValue($bindName, $bindValue, $bindType);
     }
 
-    $serviceStats["TOTAL_ALERTS"] = $serviceStats["OK_A"] + $serviceStats["WARNING_A"] + $serviceStats["CRITICAL_A"]
-        + $serviceStats["UNKNOWN_A"];
-    return $serviceStats;
+    $statement->execute();
+
+    $servicesStats = [];
+    $timeTab = getTotalTimeFromInterval($startDate, $endDate, $reportTimePeriod);
+    while ($serviceStats = $statement->fetch()) {
+        if ($timeTab["reportTime"]) {
+            $serviceStats["UNDETERMINED_T"] += $timeTab["reportTime"]
+                - ($serviceStats["OK_T"] + $serviceStats["WARNING_T"] + $serviceStats["CRITICAL_T"]
+                    + $serviceStats["UNKNOWN_T"] + $serviceStats["UNDETERMINED_T"] + $serviceStats["MAINTENANCE_T"]);
+        } else {
+            foreach ($status as $key => $value) {
+                $serviceStats[$value . "_T"] = 0;
+            }
+            $serviceStats["UNDETERMINED_T"] = $timeTab["totalTime"];
+        }
+        /*
+        * Calculate percentage of time (_TP => Total time percentage) for each status
+        */
+        $serviceStats["TOTAL_TIME"] = $serviceStats["OK_T"] + $serviceStats["WARNING_T"] + $serviceStats["CRITICAL_T"]
+            + $serviceStats["UNKNOWN_T"] + $serviceStats["UNDETERMINED_T"] + $serviceStats["MAINTENANCE_T"];
+        $time = $serviceStats["TOTAL_TIME"];
+        foreach ($status as $value) {
+            $serviceStats[$value . "_TP"] = round($serviceStats[$value . "_T"] / $time * 100, 2);
+        }
+        /*
+        * The same percentage (_MP => Mean Time percentage) is calculated ignoring undetermined time
+        */
+        $serviceStats["MEAN_TIME"] = $serviceStats["OK_T"] + $serviceStats["WARNING_T"]
+            + $serviceStats["CRITICAL_T"] + $serviceStats["UNKNOWN_T"];
+        $time = $serviceStats["MEAN_TIME"];
+        if ($serviceStats["MEAN_TIME"] <= 0) {
+            foreach ($status as $value) {
+                if ($value != "UNDETERMINED" && $value != "MAINTENANCE") {
+                    $serviceStats[$value . "_MP"] = 0;
+                }
+            }
+        } else {
+            foreach ($status as $value) {
+                if ($value != "UNDETERMINED" && $value != "MAINTENANCE") {
+                    $serviceStats[$value . "_MP"] = round($serviceStats[$value . "_T"] / $time * 100, 2);
+                }
+            }
+        }
+        /*
+        * Format time for each status (_TF => Time Formated), mean time and total time
+        */
+        $serviceStats["MEAN_TIME_F"] = getTimeString($serviceStats["MEAN_TIME"], $reportTimePeriod);
+        $serviceStats["TOTAL_TIME_F"] = getTimeString($serviceStats["TOTAL_TIME"], $reportTimePeriod);
+        foreach ($status as $value) {
+            $serviceStats[$value . "_TF"] = getTimeString($serviceStats[$value . "_T"], $reportTimePeriod);
+        }
+
+        $serviceStats["TOTAL_ALERTS"] = $serviceStats["OK_A"] + $serviceStats["WARNING_A"] + $serviceStats["CRITICAL_A"]
+            + $serviceStats["UNKNOWN_A"];
+
+        $servicesStats[$serviceStats['host_id']][$serviceStats['service_id']] = $serviceStats;
+    }
+
+    return $servicesStats;
 }
 
 /*
  * Return a table ($serviceGroupStats) that contains availability
  * (average with availability of all services from servicegroup)
  * and alerts (the sum of alerts of all services from servicegroup) for given servicegroup defined by $servicegroup_id
+ *
+ * @param int $servicegroupId
+ * @param int $startDate
+ * @param int $endDate
+ * @param array $reportTimePeriod
+ * @return array
  */
-function getLogInDbForServicesGroup($servicegroup_id, $start_date, $end_date, $reportTimePeriod)
+function getLogInDbForServicesGroup($servicegroupId, $startDate, $endDate, $reportTimePeriod)
 {
-    global $pearDBO;
-
-    $serviceStatsLabels = array();
     $serviceStatsLabels = getServicesStatsValueName();
     $status = array("OK", "WARNING", "CRITICAL", "UNKNOWN", "UNDETERMINED", "MAINTENANCE");
 
-    /* Initialising hostgroup stats to 0 */
+    /* Initialising servicegroup stats to 0 */
     foreach ($serviceStatsLabels as $name) {
         $serviceGroupStats["average"][$name] = 0;
     }
 
     /* $count count the number of services in servicegroup */
     $count = 0;
-    $services = getServiceGroupActivateServices($servicegroup_id);
-    foreach ($services as $host_service_id => $host_service_name) {
-        foreach ($serviceStatsLabels as $name) {
-            $serviceGroupStats[$host_service_id][$name] = 0;
-        }
-        $servicesStats = array();
-        $servicesStats = getLogInDbForOneSVC(
-            $host_service_name['host_id'],
-            $host_service_name['service_id'],
-            $start_date,
-            $end_date,
-            $reportTimePeriod
-        );
+    $services = getServiceGroupActivateServices($servicegroupId);
 
-        if (isset($servicesStats)) {
-            $serviceGroupStats[$host_service_id] = $servicesStats;
-            $serviceGroupStats[$host_service_id]["HOST_ID"] = $host_service_name['host_id'];
-            $serviceGroupStats[$host_service_id]["SERVICE_ID"] = $host_service_name['service_id'];
-            $serviceGroupStats[$host_service_id]["HOST_NAME"] = $host_service_name['host_name'];
-            $serviceGroupStats[$host_service_id]["SERVICE_DESC"] = $host_service_name['service_description'];
+    $servicesParameter = [];
+    foreach ($services as $service) {
+        $servicesParameter[] = [
+            'hostId' => $service['host_id'],
+            'serviceId' => $service['service_id']
+        ];
+    }
+    $servicesStats = getServicesLogs(
+        $servicesParameter,
+        $startDate,
+        $endDate,
+        $reportTimePeriod
+    );
+
+    foreach ($services as $hostServiceid => $service) {
+        $hostId = $service['host_id'];
+        $serviceId = $service['service_id'];
+        foreach ($serviceStatsLabels as $name) {
+            $serviceGroupStats[$hostServiceid][$name] = 0;
+        }
+
+        if (isset($servicesStats[$hostId][$serviceId])) {
+            $serviceGroupStats[$hostServiceid] = $servicesStats[$hostId][$serviceId];
+            $serviceGroupStats[$hostServiceid]["HOST_ID"] = $hostId;
+            $serviceGroupStats[$hostServiceid]["SERVICE_ID"] = $serviceId;
+            $serviceGroupStats[$hostServiceid]["HOST_NAME"] = $service['host_name'];
+            $serviceGroupStats[$hostServiceid]["SERVICE_DESC"] = $service['service_description'];
             foreach ($serviceStatsLabels as $name) {
-                $serviceGroupStats["average"][$name] += $servicesStats[$name];
+                $serviceGroupStats["average"][$name] += $servicesStats[$hostId][$serviceId][$name];
             }
         }
         $count++;
@@ -570,7 +615,7 @@ function getLogInDbForServicesGroup($servicegroup_id, $start_date, $end_date, $r
         + $serviceGroupStats["average"]["MAINTENANCE_T"];
 
     $time = $serviceGroupStats["average"]["TOTAL_TIME"];
-    foreach ($status as $key => $value) {
+    foreach ($status as $value) {
         if ($time) {
             $serviceGroupStats["average"][$value . "_TP"] =
                 round($serviceGroupStats["average"][$value . "_T"] / $time * 100, 2);
@@ -583,7 +628,7 @@ function getLogInDbForServicesGroup($servicegroup_id, $start_date, $end_date, $r
      * Calculate percentage of time (_MP => Mean Time percentage) for each status ignoring undetermined time
      */
     $serviceGroupStats["average"]["MEAN_TIME"] =
-        +$serviceGroupStats["average"]["OK_T"]
+        $serviceGroupStats["average"]["OK_T"]
         + $serviceGroupStats["average"]["WARNING_T"]
         + $serviceGroupStats["average"]["CRITICAL_T"]
         + $serviceGroupStats["average"]["UNKNOWN_T"];
@@ -598,34 +643,35 @@ function getLogInDbForServicesGroup($servicegroup_id, $start_date, $end_date, $r
         + $serviceGroupStats["average"]["UNKNOWN_A"];
     $time = $serviceGroupStats["average"]["MEAN_TIME"];
     if ($time <= 0) {
-        foreach ($status as $key => $value) {
+        foreach ($status as $value) {
             if ($value != "UNDETERMINED" && $value != "MAINTENANCE") {
                 $serviceGroupStats["average"][$value . "_MP"] = 0;
             }
         }
     } else {
-        foreach ($status as $key => $value) {
+        foreach ($status as $value) {
             if ($value != "UNDETERMINED" && $value != "MAINTENANCE") {
                 $serviceGroupStats["average"][$value . "_MP"] =
                     round($serviceGroupStats["average"][$value . "_T"] / $time * 100, 2);
             }
         }
     }
+
     return $serviceGroupStats;
 }
 
 /*
  * Returns all activated services from a servicegroup including services by host and services by hostgroup
  */
-function getServiceGroupActivateServices($sg_id = null)
+function getServiceGroupActivateServices($sgId = null)
 {
     global $centreon;
 
-    if (!$sg_id) {
+    if (!$sgId) {
         return;
     }
 
-    $svs = $centreon->user->access->getServiceServiceGroupAclConf($sg_id, 'broker');
+    $svs = $centreon->user->access->getServiceServiceGroupAclConf($sgId, 'broker');
     return $svs;
 }
 

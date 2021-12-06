@@ -1,0 +1,137 @@
+Centreon\Domain\Downtime\Downtime:
+    access_type: 'public_method'
+    accessor_order: custom
+    custom_accessor_order: [ startTime, endTime, actualStartTime, actualEndTime ]
+    properties:
+        id:
+            type: int
+            groups:
+                - 'Default'
+                - 'downtime_main'
+                - 'downtime_event_list'
+        entryTime:
+            type: DateTime
+            groups:
+                - 'Default'
+                - 'downtime_main'
+                - 'downtime_event_list'
+        authorId:
+            type: int
+            groups:
+                - 'Default'
+                - 'downtime_main'
+                - 'downtime_event_list'
+        authorName:
+            type: string
+            groups:
+                - 'Default'
+                - 'downtime_main'
+                - 'downtime_event_list'
+        hostId:
+            type: int
+            groups:
+                - 'downtime_host'
+                - 'downtime_service'
+        serviceId:
+            type: int
+            groups:
+                - 'downtime_service'
+                - 'downtime_meta'
+        resourceId:
+            type: int
+            groups:
+                - 'downtime_hosts'
+                - 'downtime_services'
+        parentResourceId:
+            type: int
+            groups:
+                - 'downtime_services'
+        isCancelled:
+            type: bool
+            accessor:
+                getter: 'isCancelled'
+                setter: 'setCancelled'
+            groups:
+                - 'Default'
+                - 'downtime_main'
+                - 'downtime_event_list'
+        comment:
+            type: string
+            groups:
+                - 'Default'
+                - 'downtime_main'
+                - 'downtime_event_list'
+                - 'resource_dt'
+        deletionTime:
+            type: DateTime
+            groups:
+                - 'Default'
+                - 'downtime_main'
+                - 'downtime_event_list'
+        duration:
+            type: int
+            groups:
+                - 'Default'
+                - 'downtime_main'
+                - 'downtime_event_list'
+                - 'resource_dt'
+        endTime:
+            type: DateTime
+            groups:
+                - 'Default'
+                - 'downtime_main'
+                - 'downtime_event_list'
+                - 'resource_dt'
+        internalId:
+            type: int
+        isFixed:
+            type: bool
+            accessor:
+                getter: 'isFixed'
+                setter: 'setFixed'
+            groups:
+                - 'Default'
+                - 'downtime_main'
+                - 'downtime_event_list'
+                - 'resource_dt'
+        pollerId:
+            type: int
+            groups:
+                - 'Default'
+                - 'downtime_main'
+        startTime:
+            type: DateTime
+            groups:
+                - 'Default'
+                - 'downtime_main'
+                - 'downtime_event_list'
+                - 'resource_dt'
+        actualStartTime:
+            type: DateTime
+            groups:
+                - 'Default'
+                - 'downtime_main'
+                - 'downtime_event_list'
+        actualEndTime:
+            type: DateTime
+            groups:
+                - 'Default'
+                - 'downtime_main'
+                - 'downtime_event_list'
+        isStarted:
+            type: bool
+            accessor:
+                getter: 'isStarted'
+                setter: 'setStarted'
+            groups:
+                - 'Default'
+                - 'downtime_main'
+                - 'downtime_event_list'
+        withServices:
+            type: bool
+            accessor:
+                getter: 'isWithServices'
+                setter: 'setWithServices'
+            groups:
+                - 'downtime_host_add'
+                - 'resource_dt'

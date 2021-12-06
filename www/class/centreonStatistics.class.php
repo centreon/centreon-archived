@@ -33,20 +33,29 @@
  *
  */
 
-require_once _CENTREON_PATH_ . "/www/class/centreonUUID.class.php";
-require_once _CENTREON_PATH_ . "/www/class/centreonGMT.class.php";
-require_once _CENTREON_PATH_ . "/www/class/centreonVersion.class.php";
-require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
-require_once _CENTREON_PATH_ . "/www/class/centreonStatsModules.class.php";
+require_once __DIR__ . '/../../bootstrap.php';
+require_once __DIR__ . '/centreonUUID.class.php';
+require_once __DIR__ . '/centreonGMT.class.php';
+require_once __DIR__ . '/centreonVersion.class.php';
+require_once __DIR__ . '/centreonDB.class.php';
+require_once __DIR__ . '/centreonStatsModules.class.php';
+
+use Psr\Log\LoggerInterface;
 
 class CentreonStatistics
 {
     /**
+     * @var LoggerInterface $logger
+     */
+    private $logger;
+
+    /**
      * CentreonStatistics constructor.
      */
-    public function __construct()
+    public function __construct(LoggerInterface $logger)
     {
         $this->dbConfig = new centreonDB();
+        $this->logger = $logger;
     }
 
     /**
@@ -143,7 +152,7 @@ class CentreonStatistics
             ),
         );
 
-        $oModulesStats = new CentreonStatsModules();
+        $oModulesStats = new CentreonStatsModules($this->logger);
         $modulesData = $oModulesStats->getModulesStatistics();
         foreach ($modulesData as $moduleData) {
             $data['extension'] = array_merge($data['extension'], $moduleData);

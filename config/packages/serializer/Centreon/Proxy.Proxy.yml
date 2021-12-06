@@ -1,0 +1,14 @@
+Centreon\Domain\Proxy\Proxy:
+  properties:
+    url:
+      type: string
+      groups: [proxy_main]
+    port:
+      type: int
+      groups: [proxy_main]
+    user:
+      type: string
+      groups: [proxy_main]
+    password:
+      type: string
+      groups: [proxy_main]

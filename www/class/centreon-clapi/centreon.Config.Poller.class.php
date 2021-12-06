@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2019 CENTREON
+ * Copyright 2005-2020 CENTREON
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -35,6 +36,13 @@
 
 namespace CentreonClapi;
 
+use Centreon\Domain\Entity\Task;
+use CentreonRemote\ServiceProvider;
+use CentreonRemote\Domain\Service\TaskService;
+use Centreon\Domain\Service\AppKeyGeneratorService;
+use Centreon\Infrastructure\Service\CentcoreCommandService;
+use Centreon\Infrastructure\Service\CentreonDBManagerService;
+
 require_once "centreonUtils.class.php";
 require_once "centreonClapiException.class.php";
 require_once _CENTREON_PATH_ . 'www/class/config-generate/generate.class.php';
@@ -46,17 +54,16 @@ require_once _CENTREON_PATH_ . 'www/class/config-generate/generate.class.php';
  */
 class CentreonConfigPoller
 {
-    private $_DB;
-    private $_DBC;
+    private $DB;
+    private $DBC;
     private $dependencyInjector;
     private $resultTest;
-    private $optGen;
     private $brokerCachePath;
     private $engineCachePath;
     private $centreon_path;
     private $centcore_pipe;
-    const MISSING_POLLER_ID = "Missing poller ID";
-    const UNKNOWN_POLLER_ID = "Unknown poller ID";
+    public const MISSING_POLLER_ID = "Missing poller ID";
+    public const UNKNOWN_POLLER_ID = "Unknown poller ID";
 
     /**
      * Constructor
@@ -68,26 +75,14 @@ class CentreonConfigPoller
     public function __construct($centreon_path, \Pimple\Container $dependencyInjector)
     {
         $this->dependencyInjector = $dependencyInjector;
-        $this->_DB = $this->dependencyInjector["configuration_db"];
-        $this->_DBC = $this->dependencyInjector["realtime_db"];
+        $this->DB = $this->dependencyInjector["configuration_db"];
+        $this->DBC = $this->dependencyInjector["realtime_db"];
         $this->resultTest = 0;
         $this->brokerCachePath = _CENTREON_CACHEDIR_ . "/config/broker/";
         $this->engineCachePath = _CENTREON_CACHEDIR_ . "/config/engine/";
         $this->centreon_path = $centreon_path;
         $this->resultTest = array("warning" => 0, "errors" => 0);
         $this->centcore_pipe = _CENTREON_VARLIB_ . "/centcore.cmd";
-    }
-
-    /**
-     * Get General option of Centreon
-     */
-    private function getOptGen()
-    {
-        $DBRESULT = $this->_DB->query("SELECT * FROM options");
-        while ($row = $DBRESULT->fetchRow()) {
-            $this->optGen[$row["key"]] = $row["value"];
-        }
-        $DBRESULT->closeCursor();
     }
 
     /**
@@ -98,12 +93,12 @@ class CentreonConfigPoller
     private function testPollerId($poller)
     {
         if (is_numeric($poller)) {
-            $sQuery = "SELECT id FROM nagios_server WHERE `id` = '" . $this->_DB->escape($poller) . "'";
+            $sQuery = "SELECT id FROM nagios_server WHERE `id` = '" . $this->DB->escape($poller) . "'";
         } else {
-            $sQuery = "SELECT id FROM nagios_server WHERE `name` = '" . $this->_DB->escape($poller) . "'";
+            $sQuery = "SELECT id FROM nagios_server WHERE `name` = '" . $this->DB->escape($poller) . "'";
         }
 
-        $DBRESULT = $this->_DB->query($sQuery);
+        $DBRESULT = $this->DB->query($sQuery);
         if ($DBRESULT->rowCount() != 0) {
             return;
         } else {
@@ -121,12 +116,12 @@ class CentreonConfigPoller
     private function isPollerLocalhost($poller)
     {
         if (is_numeric($poller)) {
-            $sQuery = "SELECT localhost FROM nagios_server WHERE `id` = '" . $this->_DB->escape($poller) . "'";
+            $sQuery = "SELECT localhost FROM nagios_server WHERE `id` = '" . $this->DB->escape($poller) . "'";
         } else {
-            $sQuery = "SELECT localhost FROM nagios_server WHERE `name` = '" . $this->_DB->escape($poller) . "'";
+            $sQuery = "SELECT localhost FROM nagios_server WHERE `name` = '" . $this->DB->escape($poller) . "'";
         }
 
-        $DBRESULT = $this->_DB->query($sQuery);
+        $DBRESULT = $this->DB->query($sQuery);
         if ($data = $DBRESULT->fetchRow()) {
             return $data["localhost"];
         } else {
@@ -154,7 +149,7 @@ class CentreonConfigPoller
      */
     public function getPollerList($format)
     {
-        $DBRESULT = $this->_DB->query("SELECT id,name FROM nagios_server WHERE ns_activate = '1' ORDER BY id");
+        $DBRESULT = $this->DB->query("SELECT id,name FROM nagios_server WHERE ns_activate = '1' ORDER BY id");
         if ($format == "xml") {
             print "";
         }
@@ -180,8 +175,8 @@ class CentreonConfigPoller
         $poller_id = $this->getPollerId($variables);
         $this->testPollerId($poller_id);
 
-        $result = $this->_DB->query(
-            "SELECT * FROM `nagios_server` WHERE `id` = '" . $this->_DB->escape($poller_id) . "'  LIMIT 1"
+        $result = $this->DB->query(
+            "SELECT * FROM `nagios_server` WHERE `id` = '" . $this->DB->escape($poller_id) . "'  LIMIT 1"
         );
         $host = $result->fetch();
         $result->closeCursor();
@@ -190,9 +185,9 @@ class CentreonConfigPoller
         exec("echo 'RELOADBROKER:" . $host["id"] . "' >> " . $this->centcore_pipe, $stdout, $return_code);
         $msg_restart = _("OK: A reload signal has been sent to '" . $host["name"] . "'");
         print $msg_restart . "\n";
-        $this->_DB->query(
+        $this->DB->query(
             "UPDATE `nagios_server` SET `last_restart` = '" . time()
-            . "' WHERE `id` = '" . $this->_DB->escape($poller_id) . "' LIMIT 1"
+            . "' WHERE `id` = '" . $this->DB->escape($poller_id) . "' LIMIT 1"
         );
         return $return_code;
     }
@@ -215,7 +210,7 @@ class CentreonConfigPoller
 
         $pollerId = $this->getPollerId($pollerId);
 
-        $instanceObj = new \CentreonInstance($this->_DB);
+        $instanceObj = new \CentreonInstance($this->DB);
         $cmds = $instanceObj->getCommandData($pollerId);
         $result = 0;
         foreach ($cmds as $cmd) {
@@ -248,8 +243,8 @@ class CentreonConfigPoller
         $this->testPollerId($variables);
         $poller_id = $this->getPollerId($variables);
 
-        $result = $this->_DB->query(
-            "SELECT * FROM `nagios_server` WHERE `id` = '" . $this->_DB->escape($poller_id) . "'  LIMIT 1"
+        $result = $this->DB->query(
+            "SELECT * FROM `nagios_server` WHERE `id` = '" . $this->DB->escape($poller_id) . "'  LIMIT 1"
         );
         $host = $result->fetch();
         $result->closeCursor();
@@ -258,9 +253,9 @@ class CentreonConfigPoller
         exec("echo 'RELOADBROKER:" . $host["id"] . "' >> " . $this->centcore_pipe, $stdout, $return_code);
         $msg_restart = _("OK: A restart signal has been sent to '" . $host["name"] . "'");
         print $msg_restart . "\n";
-        $this->_DB->query(
+        $this->DB->query(
             "UPDATE `nagios_server` SET `last_restart` = '" . time()
-            . "' WHERE `id` = '" . $this->_DB->escape($poller_id) . "' LIMIT 1"
+            . "' WHERE `id` = '" . $this->DB->escape($poller_id) . "' LIMIT 1"
         );
         return $return_code;
     }
@@ -285,7 +280,7 @@ class CentreonConfigPoller
         /**
          * Get Nagios Bin
          */
-        $DBRESULT_Servers = $this->_DB->query(
+        $DBRESULT_Servers = $this->DB->query(
             "SELECT `nagios_bin` FROM `nagios_server` WHERE `localhost` = '1' ORDER BY `ns_activate` DESC LIMIT 1"
         );
         $nagios_bin = $DBRESULT_Servers->fetchRow();
@@ -309,7 +304,8 @@ class CentreonConfigPoller
 
         $msg_debug = "";
         foreach ($lines as $line) {
-            if (strncmp($line, "Processing object config file", strlen("Processing object config file"))
+            if (
+                strncmp($line, "Processing object config file", strlen("Processing object config file"))
                 && strncmp($line, "Website: http://www.nagios.org", strlen("Website: http://www.nagios.org"))
             ) {
                 $msg_debug .= $line . "\n";
@@ -399,8 +395,7 @@ class CentreonConfigPoller
             chown($this->brokerCachePath . "/$poller_id", $apacheUser);
             chgrp($this->brokerCachePath . "/$poller_id", $apacheUser);
 
-            foreach (glob($this->brokerCachePath
-                . "/$poller_id/*.{xml,json,cfg}", GLOB_BRACE) as $file) {
+            foreach (glob($this->brokerCachePath . "/$poller_id/*.{xml,json,cfg}", GLOB_BRACE) as $file) {
                 chown($file, $apacheUser);
                 chgrp($file, $apacheUser);
             }
@@ -425,12 +420,11 @@ class CentreonConfigPoller
      * Move configuration files to servers
      * @param unknown_type $variables
      */
-    public function cfgMove($variables)
+    public function cfgMove($variables = null)
     {
         global $pearDB, $pearDBO;
-
-        $pearDB = $this->_DB;
-        $pearDBO = $this->_DBC;
+        $pearDB = $this->DB;
+        $pearDBO = $this->DBC;
 
         require_once _CENTREON_PATH_ . "www/include/configuration/configGenerate/DB-Func.php";
         if (!isset($variables)) {
@@ -441,39 +435,38 @@ class CentreonConfigPoller
         $return = 0;
 
         /**
-         * Check poller existance
+         * Check poller existence
          */
         $this->testPollerId($variables);
 
-        $poller_id = $this->getPollerId($variables);
+        $pollerId = (int) $this->getPollerId($variables);
 
-        /* Get Apache user name */
-        $apacheUser = $this->getApacheUser();
+        $statement = $pearDB->prepare("SELECT * FROM `nagios_server` WHERE `id` = :pollerId");
+        $statement->bindValue(':pollerId', $pollerId, \PDO::PARAM_INT);
+        $statement->execute();
+        $host = $statement->fetchRow();
+        $statement->closeCursor();
 
         /**
          * Move files.
          */
-        $DBRESULT_Servers = $this->_DB->query(
-            "SELECT `cfg_dir` FROM `cfg_nagios` WHERE `nagios_server_id` = '"
-            . $this->_DB->escape($poller_id) . "' LIMIT 1"
-        );
-        $Nagioscfg = $DBRESULT_Servers->fetchRow();
-        $DBRESULT_Servers->closeCursor();
-
-        $DBRESULT_Servers = $this->_DB->query(
-            "SELECT * FROM `nagios_server` WHERE `id` = '"
-            . $this->_DB->escape($poller_id) . "'  LIMIT 1"
-        );
-        $host = $DBRESULT_Servers->fetchRow();
-        $DBRESULT_Servers->closeCursor();
+        $msg_copy = "";
         if (isset($host['localhost']) && $host['localhost'] == 1) {
-            $msg_copy = "";
-            foreach (glob($this->engineCachePath . '/' . $poller_id . "/*.cfg") as $filename) {
+            /* Get Apache user name */
+            $apacheUser = $this->getApacheUser();
+
+            $statement = $pearDB->prepare("SELECT `cfg_dir` FROM `cfg_nagios` WHERE `nagios_server_id` = :pollerId");
+            $statement->bindValue(':pollerId', $pollerId, \PDO::PARAM_INT);
+            $statement->execute();
+            $Nagioscfg = $statement->fetchRow();
+            $statement->closeCursor();
+
+            foreach (glob($this->engineCachePath . '/' . $pollerId . "/*.cfg") as $filename) {
                 $bool = @copy($filename, $Nagioscfg["cfg_dir"] . "/" . basename($filename));
                 $result = explode("/", $filename);
                 $filename = array_pop($result);
                 if (!$bool) {
-                    $msg_copy .= $this->display_copying_file($filename, " - " . _("movement") . " KO");
+                    $msg_copy .= $this->displayCopyingFile($filename, " - " . _("movement") . " KO");
                     $return = 1;
                 }
             }
@@ -543,10 +536,69 @@ class CentreonConfigPoller
                 $msg_copy .= _("OK: All configuration files copied with success.");
             }
         } else {
-            exec("echo 'SENDCFGFILE:" . $host['id'] . "' >> " . $this->centcore_pipe, $stdout, $return);
-            if (!isset($msg_copy)) {
-                $msg_copy = "";
+            /**
+             * Get Parent Remote Servers of the Poller
+             */
+            $statementRemotes = $pearDB->prepare(
+                'SELECT ns.id
+                FROM nagios_server AS ns
+                JOIN platform_topology AS pt ON (ns.id = pt.server_id)
+                WHERE ns.id = :pollerId
+                AND pt.type = "remote"
+                UNION
+                SELECT ns1.id
+                FROM nagios_server AS ns1
+                JOIN platform_topology AS pt ON (ns1.id = pt.server_id)
+                JOIN nagios_server AS ns2 ON ns1.id = ns2.remote_id
+                WHERE ns2.id = :pollerId
+                AND pt.type = "remote"
+                UNION
+                SELECT ns1.id
+                FROM nagios_server AS ns1
+                JOIN platform_topology AS pt ON (ns1.id = pt.server_id)
+                JOIN rs_poller_relation AS rspr ON rspr.remote_server_id = ns1.id
+                WHERE rspr.poller_server_id = :pollerId
+                AND pt.type = "remote"'
+            );
+            $statementRemotes->bindValue(':pollerId', $pollerId, \PDO::PARAM_INT);
+            $statementRemotes->execute();
+            $remotesResults = $statementRemotes->fetchAll(\PDO::FETCH_ASSOC);
+
+            /**
+             * If the poller is linked to one or many remotes
+             */
+            foreach ($remotesResults as $remote) {
+                $linkedStatement = $pearDB->prepare(
+                    'SELECT id
+                    FROM nagios_server
+                    WHERE remote_id = :remoteId
+                    UNION
+                    SELECT poller_server_id AS id
+                    FROM rs_poller_relation
+                    WHERE remote_server_id = :remoteId'
+                );
+                $linkedStatement->bindValue(':remoteId', $remote['id'], \PDO::PARAM_INT);
+                $linkedStatement->execute();
+                $linkedResults = $linkedStatement->fetchAll(\PDO::FETCH_ASSOC);
+
+                $exportParams = [
+                    'server' => $remote['id'],
+                    'pollers' => []
+                ];
+
+                if (!empty($linkedResults)) {
+                    $exportParams['pollers'] = array_column($linkedResults, 'id');
+                } else {
+                    $exportParams['pollers'] = [$remote['id']];
+                }
+
+                $this->dependencyInjector[ServiceProvider::CENTREON_TASKSERVICE]->addTask(
+                    Task::TYPE_EXPORT,
+                    ['params' => $exportParams]
+                );
             }
+            exec("echo 'SENDCFGFILE:" . $host['id'] . "' >> " . $this->centcore_pipe, $stdout, $return);
+
             $msg_copy .= _(
                 "OK: All configuration will be send to '"
                 . $host['name'] . "' by centcore in several minutes."
@@ -596,7 +648,7 @@ class CentreonConfigPoller
             throw new CentreonClapiException(self::MISSING_POLLER_ID);
         }
         $this->testPollerId($pollerId);
-        $centreonDir = CentreonUtils::getCentreonDir();
+        $centreonDir = $this->centreon_path;
         $pearDB = $this->dependencyInjector['configuration_db'];
         $res = $pearDB->query("SELECT snmp_trapd_path_conf FROM nagios_server WHERE id = '" . $pollerId . "'");
         $row = $res->fetchRow();
@@ -617,7 +669,7 @@ class CentreonConfigPoller
      * @param unknown_type $status
      * @return string
      */
-    private function display_copying_file($filename = null, $status = null)
+    private function displayCopyingFile($filename = null, $status = null)
     {
         if (!isset($filename)) {
             return;
@@ -637,8 +689,8 @@ class CentreonConfigPoller
             return $poller;
         }
 
-        $sQuery = "SELECT id FROM nagios_server WHERE `name` = '" . $this->_DB->escape($poller) . "'";
-        $DBRESULT = $this->_DB->query($sQuery);
+        $sQuery = "SELECT id FROM nagios_server WHERE `name` = '" . $this->DB->escape($poller) . "'";
+        $DBRESULT = $this->DB->query($sQuery);
         if ($DBRESULT->rowCount() > 0) {
             $row = $DBRESULT->fetchRow();
             return $row['id'];
@@ -650,7 +702,7 @@ class CentreonConfigPoller
     public function getPollerState()
     {
         $pollerState = array();
-        $dbResult = $this->_DBC->query("SELECT instance_id, running, name FROM instances");
+        $dbResult = $this->DBC->query("SELECT instance_id, running, name FROM instances");
 
         while ($row = $dbResult->fetchRow()) {
             $pollerState[$row['instance_id']] = $row['running'];

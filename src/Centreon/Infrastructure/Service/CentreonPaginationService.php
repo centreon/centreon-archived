@@ -148,10 +148,10 @@ class CentreonPaginationService
     {
         if ($limit !== null && $limit > static::LIMIT_MAX) {
             throw new RuntimeException(
-                sprintf('Max value of limit has to be %d instead %d', static::LIMIT_MAX, $limit)
+                sprintf(_('Max value of limit has to be %d instead %d'), static::LIMIT_MAX, $limit)
             );
         } elseif ($limit !== null && $limit < 1) {
-            throw new RuntimeException(sprintf('Minimum value of limit has to be 1 instead %d', $limit));
+            throw new RuntimeException(sprintf(_('Minimum value of limit has to be 1 instead %d'), $limit));
         }
 
         $this->limit = $limit;
@@ -169,7 +169,7 @@ class CentreonPaginationService
     public function setOffset(int $offset = null): self
     {
         if ($offset !== null && $offset < 1) {
-            throw new RuntimeException(sprintf('Minimum value of offset has to be 1 instead %d', $offset));
+            throw new RuntimeException(sprintf(_('Minimum value of offset has to be 1 instead %d'), $offset));
         }
 
         $this->offset = $offset;
@@ -221,7 +221,7 @@ class CentreonPaginationService
         $hasInterface = $ref->isSubclassOf($interface);
 
         if ($hasInterface === false) {
-            throw new Exception(sprintf('Repository class %s has to implement %s', $repository, $interface));
+            throw new Exception(sprintf(_('Repository class %s has to implement %s'), $repository, $interface));
         }
 
         $this->repository = $repository;
@@ -244,7 +244,7 @@ class CentreonPaginationService
 
         if ($hasInterface === false) {
             throw new Exception(
-                sprintf('Class %s has to implement %s to be DataRepresenter', $dataRepresenter, $interface)
+                sprintf(_('Class %s has to implement %s to be DataRepresenter'), $dataRepresenter, $interface)
             );
         }
 
@@ -274,13 +274,12 @@ class CentreonPaginationService
      */
     public function getListing(): DataRepresenter\Listing
     {
-        $entities = $this->db
-            ->getRepository($this->repository)
+        $repository = $this->db->getRepository($this->repository);
+
+        $entities = $repository
             ->getPaginationList($this->filters, $this->limit, $this->offset, $this->ordering, $this->extras);
 
-        $total = $this->db
-            ->getRepository($this->repository)
-            ->getPaginationListTotal();
+        $total = $repository->getPaginationListTotal();
 
         // Serialize list of entities
         if ($this->context !== null) {

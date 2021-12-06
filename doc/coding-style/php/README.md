@@ -2,7 +2,9 @@
 
 ## PHP
 
-For these projects, Centreon work on follow the [PSR-2](http://www.php-fig.org/psr/psr-2/) coding style guidelines.
+For these projects, Centreon work on follow the [PSR-12](https://www.php-fig.org/psr/psr-12/) coding style guidelines.
+
+[Changelog from PSR-2](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-12-extended-coding-style-guide-meta.md#5-changelog-from-psr-2)
 
 ### Summary
 
@@ -18,7 +20,7 @@ public function sampleMethod ($a, $b = null)
     // method body
 }
 ```
-* For control structures( if/for/while…), the placement of parentheses, spaces, and braces; and that else and elseif are on the same line as the closing brace from the earlier body.-b 
+* For control structures( if/for/while…), the placement of parentheses, spaces, and braces; and that else and elseif are on the same line as the closing brace from the earlier body.-b
 ```php
 //bad
 if($a===$b){
@@ -49,11 +51,11 @@ class Foo extends Bar implements FooInterface
         } else {
             BazClass::bar($arg2, $arg3);
         }
- 
+
         foreach ($iterable as $key => $value) {
              // foreach body
         }
- 
+
         echo 'A string with ' . $someVariable . ' and ' . $otherVariable;
     }
 
@@ -71,7 +73,7 @@ public function longLine (
     $longerArgument,
     $muchLongerArgument
 ) {
-       
+
     $longArray = array(
         array(
             0,
@@ -81,10 +83,10 @@ public function longLine (
         3,
         4
     );
- 
+
     $longString = 'Some String with ' . (string)$someVariable . ' and ' .
         'Concatinated';
- 
+
     if (
         ($a == $b)
         && ($b == $c)
@@ -127,9 +129,9 @@ To check your code, you can use [PHP_CodeSniffer](https://github.com/squizlabs/P
 ```bash
 $ php composer.phar require --dev \ squizlabs/php_codesniffer:"*@stable"
 ```
-To validate the code with the [PSR-2](http://www.php-fig.org/psr/psr-2/) standard:
+To validate the code with the [PSR-12](http://www.php-fig.org/psr/psr-12/) standard:
 ```bash
-$ ./bin/phpcs -p --standard=PSR2 src/centreon/myFile
+$ ./bin/phpcs -p --standard=PSR12 src/centreon/myFile
 ```
 
 **[⬆ back to top](#coding-style-guide)**

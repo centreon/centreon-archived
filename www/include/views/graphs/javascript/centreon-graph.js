@@ -278,7 +278,7 @@
           } else {
               self.chart.load(self.buildMetricData(data[0]).data);
               self.chart.regions(self.buildRegions(data[0]));
-              self.buildExtraLegend(data[0].legends, data[0].service_id);
+              self.buildExtraLegend(data[0].metrics);
           }
         }
       });
@@ -671,9 +671,9 @@
      */
     roundTickByte: function (value) {
       if (value < 0) {
-          return '-' + numeral(Math.abs(value)).format('0.0[0]0ib').replace(/iB/, 'B');
+          return '-' + numeral(Math.abs(value)).format('0.0[0]0ib').replace(/i?B/, '');
       }
-      return numeral(value).format('0.0[0]0ib').replace(/iB/, 'B');
+      return numeral(value).format('0.0[0]0ib').replace(/i?B/, '');
     },
     /**
      * Get base for 1000 or 1024 for a curve
@@ -681,15 +681,9 @@
      * @param {String} id - The curve id
      * @return {Integer} - 1000 or 1024
      */
-    getBase: function (id) {
-      // Of course no-unit series are 1000 based
-      for (var e in this.chartData.data) {
-        if((this.chartData.data[e].data[0] === id) && this.chartData.data[e].unit === "") {
-          return 1000;
-        }
-      }
-      if (this.chartData.base) {
-        return this.chartData.base;
+    getBase: function () {
+      if (this.chartData.global.base) {
+        return this.chartData.global.base;
       }
       return 1000;
     },
@@ -723,7 +717,7 @@
               jQuery('<div>')
                 .addClass('chart-legend-color')
                 .css({
-                  'background-color': self.chart.color(curveId)
+                  'background-color': legend.ds_data.ds_color_line
                 })
             )
             .append(
@@ -783,34 +777,35 @@
      * Build for display the extra legends
      *
      * @param {String[]} legends - The list of legends to display
-     * @param {String} service_id - The host id and service id
      */
-    buildExtraLegend: function (legends, service_id) {
+    buildExtraLegend: function (legends) {
       var self = this;
       var i;
+      const orderedLegends = legends.reduce((acc, currentValue) => {
+        acc[currentValue.legend] = currentValue;
+        return acc;
+      }, {});
 
-      jQuery('#chart-legends-' + service_id + ' .chart-legend').each(function (idx, el) {
-        var legendName = jQuery(el).data('legend');
-        if (!self.ids.hasOwnProperty(legendName)) {
+      jQuery('#chart-legends-' + self.id + ' .chart-legend').each(function (idx, el) {
+        const legendName = jQuery(el).find('div:first-child').text();
+
+        if (!orderedLegends.hasOwnProperty(legendName)) {
           return true;
         }
-        var curveId = self.ids[legendName];
+
+        const legendData = orderedLegends[legendName];
         var fct = self.getAxisTickFormat(self.getBase());
         jQuery(el).find('.extra').remove();
-        if (legends.hasOwnProperty(legendName)) {
-          for (i = 0; i < legends[legendName].extras.length; i++) {
-            legendExtra = jQuery('<div>').addClass('extra')
-              .append(
-                jQuery('<span>')
-                  .text(legends[legendName].extras[i].name + ' :')
-              )
-              .append(
-                jQuery('<span>')
-                  .text(fct(legends[legendName].extras[i].value))
-              )
-            legendExtra.appendTo(el);
-          }
-        }
+
+        legendData.prints.forEach((printValue) => {
+          legendExtra = jQuery('<div>')
+            .addClass('extra')
+            .append(
+              jQuery('<span>')
+                .text(printValue)
+            );
+          legendExtra.appendTo(el);
+        });
       });
     }
   };

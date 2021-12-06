@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2018 Centreon
+ * Copyright 2005-2020 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -51,17 +52,17 @@ $centreon = $_SESSION['centreon'];
 $centreonLang = new CentreonLang(_CENTREON_PATH_, $centreon);
 $centreonLang->bindLang();
 
-if (!isset($centreon) ||
-    !isset($_GET['o']) ||
-    !isset($_GET['cmd']) ||
-    !isset($_GET['p'])
+if (
+    !isset($centreon)
+    || !isset($_GET['o'])
+    || !isset($_GET['cmd'])
+    || !isset($_GET['p'])
 ) {
     exit();
 }
-$sid = session_id();
-if (isset($sid)) {
-    $res = $pearDB->prepare("SELECT * FROM session WHERE session_id = :sid");
-    $res->bindValue(':sid', $sid, PDO::PARAM_STR);
+if (session_id()) {
+    $res = $pearDB->prepare("SELECT * FROM `session` WHERE `session_id` = :sid");
+    $res->bindValue(':sid', session_id(), \PDO::PARAM_STR);
     $res->execute();
     if (!$session = $res->fetch()) {
         exit();

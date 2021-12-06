@@ -1,0 +1,14 @@
+Centreon\Domain\Monitoring\ResourceLinks:
+    properties:
+        uris:
+            type: Centreon\Domain\Monitoring\ResourceLinksUris
+            groups:
+                - 'resource_status_main'
+        endpoints:
+            type: Centreon\Domain\Monitoring\ResourceLinksEndpoints
+            groups:
+                - 'resource_status_main'
+        externals:
+            type: Centreon\Domain\Monitoring\ResourceExternalLinks
+            groups:
+                - 'resource_status_main'

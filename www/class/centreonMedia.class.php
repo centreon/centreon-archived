@@ -182,9 +182,11 @@ class CentreonMedia
 
         $fullPath = $mediaDirectory . '/' . $dirname;
 
-        // Create directory
+        // Create directory and nested folder structure
         if (!is_dir($fullPath)) {
-            mkdir($fullPath);
+            mkdir($fullPath, 0755, true);
+        } elseif (fileperms($fullPath) !== 0755) {
+            chmod($fullPath, 0755);
         }
     }
 

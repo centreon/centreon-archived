@@ -101,8 +101,12 @@ default:
       paths: [ "%paths.base%/features/DowntimeStartAndStop.feature" ]
       contexts: [ DowntimeStartAndStopContext ]
 
-    downtime_dst:
-      paths: [ "%paths.base%/features/DowntimeDST.feature" ]
+    downtime_dst_realtime:
+      paths: [ "%paths.base%/features/DowntimeDST/Realtime.feature" ]
+      contexts: [ DowntimeDSTContext ]
+
+    downtime_dst_recurrent:
+      paths: [ "%paths.base%/features/DowntimeDST/Recurrent.feature" ]
       contexts: [ DowntimeDSTContext ]
 
     downtime_recurrent:
@@ -129,12 +133,21 @@ default:
       paths: [ "%paths.base%/features/BrokerConfiguration.feature" ]
       contexts: [ BrokerConfigurationContext ]
 
-    ldap:
-      paths: [ "%paths.base%/features/Ldap.feature" ]
-      contexts: [ LdapContext ]
+    ##FIXME
+    #ldap:
+    #  paths: [ "%paths.base%/features/Ldap.feature" ]
+    #  contexts: [ LdapContext ]
 
-    custom_views:
-      paths: [ "%paths.base%/features/CustomViews.feature" ]
+    custom_views_locked:
+      paths: [ "%paths.base%/features/CustomViews/Locked.feature" ]
+      contexts: [ CustomViewsContext ]
+
+    custom_views_unlocked:
+      paths: [ "%paths.base%/features/CustomViews/Unlocked.feature" ]
+      contexts: [ CustomViewsContext ]
+
+    custom_views_public:
+      paths: [ "%paths.base%/features/CustomViews/Public.feature" ]
       contexts: [ CustomViewsContext ]
 
     host_template_configuration:
@@ -193,17 +206,17 @@ default:
       contexts:
         - LanguageSelectionContext
 
-    ldap_configuration:
-      paths: [ "%paths.base%/features/LdapConfiguration.feature" ]
-      contexts: [ LdapConfigurationContext ]
+    #ldap_configuration:
+    #  paths: [ "%paths.base%/features/LdapConfiguration.feature" ]
+    #  contexts: [ LdapConfigurationContext ]
 
     traps_snmp_configuration:
       paths: [ "%paths.base%/features/TrapsSNMPConfiguration.feature" ]
       contexts: [ TrapsSNMPConfigurationContext ]
 
-    ldap_manual_import:
-      paths: [ "%paths.base%/features/LdapManualImport.feature" ]
-      contexts: [ LdapManualImportContext ]
+    #ldap_manual_import:
+    #  paths: [ "%paths.base%/features/LdapManualImport.feature" ]
+    #  contexts: [ LdapManualImportContext ]
 
     modify_default_page_connexion:
       paths: [ "%paths.base%/features/ModifyDefaultPageConnection.feature" ]
@@ -337,22 +350,6 @@ default:
       paths: [ "%paths.base%/features/URI.feature" ]
       contexts: [ URIContext ]
 
-    topcounterprofilemenu:
-      paths: [ "%paths.base%/features/TopCounterProfileMenu.feature" ]
-      contexts: [ TopCounterProfileMenuContext ]
-
-    topcounterservice:
-      paths: [ "%paths.base%/features/TopCounterServices.feature" ]
-      contexts: [ TopCounterServicesContext ]
-
-    topcounterhost:
-      paths: [ "%paths.base%/features/TopCounterHosts.feature" ]
-      contexts: [ TopCounterHostsContext ]
-
-    topcounterpoller:
-      paths: [ "%paths.base%/features/TopCounterPollers.feature" ]
-      contexts: [ TopCounterPollersContext ]
-
     topologyapi:
       paths: [ "%paths.base%/features/TopologyAPI.feature" ]
       contexts: [ TopologyAPIContext ]
@@ -371,9 +368,3 @@ default:
         - "%paths.base%/features/APIv1/TimeperiodsApi.feature"
       contexts:
         - \Centreon\Test\Behat\CentreonAPIContext
-
-    api_v2_monitoring:
-      paths:
-        - "%paths.base%/features/APIv2/Monitoring/HostApi.feature"
-        - "%paths.base%/features/APIv2/Monitoring/ServiceApi.feature"
-      contexts: [ APIv2Context ]

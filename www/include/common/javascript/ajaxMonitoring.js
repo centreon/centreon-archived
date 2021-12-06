@@ -523,33 +523,15 @@ var _p = 20201;
 	}
 }*/
 
-function initM(_time_reload,_sid,_o){
+function initM(_time_reload,_o){
 	_form=document.getElementById('fsave');
 	_time=parseInt(_form.time.value);
 	_form.time.value = _time - 1000;
 
-
-	/*if(document.getElementById('debug'))
-	{
-		viewDebugInfo('--RESTART--');
-		viewDebugInfo('');
-	}
-	else{
-		var _divdebug = document.createElement("div");
-		_divdebug.id = 'debug';
-		var _debugtable = document.createElement("table");
-		_debugtable.id = 'debugtable';
-		var _debugtr = document.createElement("tr");
-		_debugtable.appendChild(_debugtr);
-		_divdebug.appendChild(_debugtable);
-		_header = document.getElementById('header');
-		_header.appendChild(_divdebug);
-		viewDebugInfo('--INIT--');
-	}*/
-	goM(_time_reload,_sid,_o);
+	goM(_time_reload,_o);
 }
 
-function goM(_time_reload,_sid,_o){
+function goM(_time_reload,_o){
 	// ici je recupere les couples host_name/service affichées sur ma page
 	viewDebugInfo('entre dans goM');
 	if(_on)
@@ -665,7 +647,7 @@ function goM(_time_reload,_sid,_o){
 			viewDebugInfo('readyState=' + xhrM.readyState + ' -- status=' + xhrM.status);
 	}
 
-	_timeoutID = cycleVisibilityChange(function(){goM(_time_reload, _sid, _o)}, _time_reload);
+	_timeoutID = cycleVisibilityChange(function(){goM(_time_reload, _o)}, _time_reload);
 	_time_live = _time_reload;
 	_on = 1;
 }

@@ -53,22 +53,7 @@ class PartEngine
 
     private function createMaxvaluePartition($db, $tableName, $table)
     {
-        # Check if we need to create it
-        try {
-            $dbResult = $db->query(
-                "SELECT 1 FROM INFORMATION_SCHEMA.PARTITIONS
-                WHERE TABLE_NAME = '" . $table->getName() . "'
-                AND TABLE_SCHEMA = '" . $table->getSchema() . "'
-                AND PARTITION_DESCRIPTION = 'MAXVALUE'"
-            );
-        } catch (\PDOException $e) {
-            throw new Exception(
-                "Error : Cannot get partition maxvalue information for table "
-                . $tableName . ", " . $e->getMessage() . "\n"
-            );
-        }
-
-        if (!($row = $dbResult->fetch())) {
+        if ($this->hasMaxValuePartition($db, $table) === false) {
             try {
                 $dbResult = $db->query(
                     "ALTER TABLE " . $tableName . " ADD PARTITION (PARTITION `pmax` VALUES LESS THAN MAXVALUE)"
@@ -107,9 +92,6 @@ class PartEngine
             $day = "0" . $day;
         }
 
-        print "[" . date(DATE_RFC822) . "][updateParts] Create new part for table " . $tableName . " : "
-            . ($ntime[5] + 1900) . $month . $day . " - Range: $current_time\n";
-
         $partitionQuery = "PARTITION `p" . ($ntime[5] + 1900) . $month . $day
             . "` VALUES LESS THAN(" . $current_time . ")";
 
@@ -142,10 +124,15 @@ class PartEngine
         date_default_timezone_set($table->getTimezone());
         $how_much_forward = 0;
         $ltime = localtime();
-        $current_time = mktime(0, 0, 0, $ltime[4] + 1, $ltime[3], $ltime[5] + 1900);
+        $currentTime = mktime(0, 0, 0, $ltime[4] + 1, $ltime[3], $ltime[5] + 1900);
+
+        # Avoid to add since 1970 if we have only pmax partition
+        if ($lastTime == 0) {
+            $lastTime = $currentTime;
+        }
 
         # Gap when you have a cron not updated
-        while ($lastTime < $current_time) {
+        while ($lastTime < $currentTime) {
             $ntime = localtime($lastTime);
             $lastTime = $this->updateAddDailyPartitions(
                 $db,
@@ -156,9 +143,9 @@ class PartEngine
                 $hasMaxValuePartition
             );
         }
-        while ($current_time < $lastTime) {
+        while ($currentTime < $lastTime) {
             $how_much_forward++;
-            $current_time = mktime(0, 0, 0, $ltime[4] + 1, $ltime[3] + $how_much_forward, $ltime[5] + 1900);
+            $currentTime = mktime(0, 0, 0, $ltime[4] + 1, $ltime[3] + $how_much_forward, $ltime[5] + 1900);
         }
         $num_days_forward = $table->getRetentionForward();
         while ($how_much_forward < $num_days_forward) {
@@ -291,15 +278,11 @@ class PartEngine
      */
     private function getLastPartRange($table, $db)
     {
-        $request = "SELECT MAX(CONVERT(PARTITION_DESCRIPTION, SIGNED INTEGER)) as lastPart ";
-        $request .= "FROM INFORMATION_SCHEMA.PARTITIONS ";
-        $request .= "WHERE TABLE_NAME='" . $table->getName() . "' ";
-        $request .= "AND TABLE_SCHEMA='" . $table->getSchema() . "' ";
-        $request .= "GROUP BY TABLE_NAME";
-
         $error = false;
         try {
-            $dbResult = $db->query($request);
+            $dbResult = $db->query(
+                'SHOW CREATE TABLE `' . $table->getSchema() . '`.`' . $table->getName() . '`'
+            );
         } catch (\PDOException $e) {
             $error = true;
         }
@@ -311,8 +294,17 @@ class PartEngine
         }
         $row = $dbResult->fetch();
 
-        // maybe we need to check the value of $row["lastPart"]
-        return $row["lastPart"];
+        $lastPart = 0;
+        // dont care of MAXVALUE
+        if (preg_match_all('/PARTITION `(.*?)` VALUES LESS THAN \(([0-9]+?)\)/', $row['Create Table'], $matches)) {
+            for ($i = 0; isset($matches[2][$i]); $i++) {
+                if ($matches[2][$i] > $lastPart) {
+                    $lastPart = $matches[2][$i];
+                }
+            }
+        }
+
+        return $lastPart;
     }
 
     /**
@@ -419,31 +411,9 @@ class PartEngine
     public function updateParts($table, $db)
     {
         $tableName = $table->getSchema() . "." . $table->getName();
-        if (!$table->exists()) {
-            throw new Exception("Update error: Table " . $tableName . " does not exists\n");
-        }
 
         //verifying if table is partitioned
-        try {
-            $dbResult = $db->query("use " . $table->getSchema());
-        } catch (\PDOException $e) {
-            throw new Exception("Error: cannot use database " . $table->getSchema() . "\n");
-        }
-
-        try {
-            $dbResult = $db->query("SHOW TABLE STATUS LIKE '" . $table->getName() . "'");
-        } catch (\PDOException $e) {
-            throw new Exception("Error: cannot get table " . $tableName . " status, " . $e->getMessage() . "\n");
-        }
-        if (!$dbResult->rowCount()) {
-            throw new Exception("Error: cannot get table " . $tableName . " status\n");
-        }
-        $row = $dbResult->fetch();
-
-        if (!isset($row["Create_options"])) {
-            throw new Exception("Cannot find Create_options for table " . $tableName . "\n");
-        }
-        if (!preg_match("/partitioned/", $row["Create_options"])) {
+        if ($this->isPartitioned($table, $db) === false) {
             throw new Exception("Error: cannot update non partitioned table " . $tableName . "\n");
         }
 
@@ -661,41 +631,34 @@ class PartEngine
      *
      * Check if a table is partitioned.
      */
-    public function isPartitioned($table, $db)
+    public function isPartitioned($table, $db): bool
     {
-        $query = 'SELECT DISTINCT TABLE_NAME '
-            . 'FROM INFORMATION_SCHEMA.PARTITIONS '
-            . 'WHERE PARTITION_NAME IS NOT NULL '
-            . 'AND TABLE_NAME="' . $table->getName() . '" '
-            . 'AND TABLE_SCHEMA="' . $table->getSchema() . '" ';
-
         try {
-            $dbResult = $db->query($query);
+            $dbResult = $db->query(
+                'SHOW CREATE TABLE `' . $table->getSchema() . '`.`' . $table->getName() . '`'
+            );
         } catch (\PDOException $e) {
             throw new Exception('Cannot get partition information');
         }
 
-        if ($dbResult->fetch()) {
-            return true;
-        } else {
-            return false;
+        if ($row = $dbResult->fetch()) {
+            if (preg_match('/PARTITION BY/', $row['Create Table']) === 1) {
+                return true;
+            }
         }
+
+        return false;
     }
 
     /**
      *
      * Check if a table has max value partition.
      */
-    private function hasMaxValuePartition($db, $table)
+    private function hasMaxValuePartition($db, $table): bool
     {
-        # Check if pmax partition exists 
-        $request = "SELECT 1 FROM INFORMATION_SCHEMA.PARTITIONS ";
-        $request .= "WHERE TABLE_NAME='" . $table->getName() . "' ";
-        $request .= "AND TABLE_SCHEMA='" . $table->getSchema() . "' ";
-        $request .= "AND PARTITION_NAME = 'pmax' ";
-
+        # Check if we need to create it
         try {
-            $dbResult = $db->query($request);
+            $dbResult = $db->query('SHOW CREATE TABLE `' . $table->getSchema() . '`.`' . $table->getName() . '`');
         } catch (\PDOException $e) {
             throw new Exception(
                 "Error : Cannot get partition maxvalue information for table "
@@ -703,11 +666,12 @@ class PartEngine
             );
         }
 
-        $hasMaxValuePartition = false;
-        if ($dbResult->fetch()) {
-            $hasMaxValuePartition = true;
+        if ($row = $dbResult->fetch()) {
+            if (preg_match('/PARTITION.*?pmax/', $row['Create Table']) === 1) {
+                return true;
+            }
         }
 
-        return $hasMaxValuePartition;
+        return false;
     }
 }

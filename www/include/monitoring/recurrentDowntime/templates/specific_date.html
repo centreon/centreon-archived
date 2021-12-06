@@ -41,7 +41,7 @@ var period_id = {$period_tab};
 	</td>
 </tr>
 </table>
-{assign var=period_info value=`$period_tab-1`}
+{assign var=period_info value=$period_tab-1}
 {literal}
 <script type="text/javascript">
 jQuery(function() {
@@ -57,27 +57,27 @@ jQuery(function() {
 			}
 		});
 
-        jQuery('select[name="periods[{/literal}{$period_tab}{literal}][days]"]  > option').each(function (index, item) {
+        jQuery('select[name="periods[{/literal}{$period_tab}{literal}][days]"] > option').each(function (index, item) {
 			if (item.value == infos_{/literal}{$period_info}{literal}.day_of_week) {
 				item.selected = true;
 			}
 		});
 
-        jQuery('select[name="periods[{/literal}{$period_tab}{literal}][month_cycle]"]  > option').each(function (index, item){
+        jQuery('select[name="periods[{/literal}{$period_tab}{literal}][month_cycle]"] > option').each(function (index, item){
 	        if (item.value == infos_{/literal}{$period_info}{literal}.month_cycle) {
 		        item.selected = true;
 		    }
 		});
 	}
 
-        jQuery(".timepicker").timepicker();
+	jQuery(".timepicker").timepicker();
 });
 
-    $(document).ready(function () {
-        var validButton = $('#validForm');
-        if (!validButton.length) {
-            $("#tabs_periods :input").prop("disabled", true);
-        }
-    });
+$(document).ready(function () {
+    var validButton = $('#validForm');
+    if (!validButton.length) {
+        $("#tabs_periods :input").prop("disabled", true);
+    }
+});
 </script>
 {/literal}

@@ -30,7 +30,7 @@ use Symfony\Component\Finder\Finder;
 class ConfigurationTest extends TestCase
 {
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->configuration = [
             'opt1' => 'val1',

@@ -101,27 +101,64 @@ class CentreonServicegroups
     }
 
     /**
-     * @param array $sgId
-     * @return array
+     * Returns a filtered array with only integer ids
+     *
+     * @param  int[] $ids
+     * @return int[] filtered
      */
-    public function getServicesGroups($sgId = array())
+    private function filteredArrayId(array $ids): array
     {
-        $arrayReturn = array();
+        return array_filter($ids, function ($id) {
+            return is_numeric($id);
+        });
+    }
 
-        if (!empty($sgId)) {
-            $query = "SELECT sg_id, sg_name "
-                . "FROM servicegroup "
-                . "WHERE sg_id IN (" . $this->DB->escape(implode(",", $sgId)) . " ) ";
-            $res = $this->DB->query($query);
-            while ($row = $res->fetchRow()) {
-                $arrayReturn[] = array(
-                    "id" => $row['sg_id'],
-                    "name" => $row['sg_name']
+    /**
+     * Get service groups id and name from ids
+     *
+     * @param int[] $serviceGroupsIds
+     * @return array $retArr [['id' => integer, 'name' => string],...]
+     */
+    public function getServicesGroups($serviceGroupsIds = [])
+    {
+        $servicesGroups = [];
+
+        if (!empty($serviceGroupsIds)) {
+            /* checking here that the array provided as parameter
+             * is exclusively made of integers (servicegroup ids)
+             */
+            $filteredSgIds = $this->filteredArrayId($serviceGroupsIds);
+            $sgParams = [];
+            if (count($filteredSgIds) > 0) {
+                /*
+                 * Building the sgParams hash table in order to correctly
+                 * bind ids as ints for the request.
+                 */
+                foreach ($filteredSgIds as $index => $filteredSgId) {
+                    $sgParams[':sgId' . $index] = $filteredSgId;
+                }
+
+                $stmt = $this->DB->prepare(
+                    'SELECT sg_id, sg_name FROM servicegroup ' .
+                    'WHERE sg_id IN ( ' . implode(',', array_keys($sgParams)) . ' )'
                 );
+
+                foreach ($sgParams as $index => $value) {
+                    $stmt->bindValue($index, $value, \PDO::PARAM_INT);
+                }
+
+                $stmt->execute();
+
+                while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+                    $servicesGroups[] = [
+                        'id' => $row['sg_id'],
+                        'name' => $row['sg_name']
+                    ];
+                }
             }
         }
 
-        return $arrayReturn;
+        return $servicesGroups;
     }
 
 
@@ -152,7 +189,8 @@ class CentreonServicegroups
                 $parameters['externalObject']['object'] = 'centreonServicetemplates';
                 $parameters['externalObject']['objectOptions'] = array('withHosttemplate' => true);
                 $parameters['relationObject']['table'] = 'servicegroup_relation';
-                $parameters['relationObject']['field'] = 'service_service_id';
+                $parameters['relationObject']['field'] = 'host_host_id';
+                $parameters['relationObject']['additionalField'] = 'service_service_id';
                 $parameters['relationObject']['comparator'] = 'servicegroup_sg_id';
                 break;
             case 'sg_hgServices':

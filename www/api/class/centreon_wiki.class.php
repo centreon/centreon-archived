@@ -47,30 +47,6 @@ class CentreonWiki extends CentreonWebService
         parent::__construct();
     }
 
-    public function postCheckConnection()
-    {
-        $sql_host = explode(':', $this->arguments['host']);
-        $host = $sql_host[0];
-        $port = isset($sql_host[1]) ? $sql_host[1] : '3306';
-        $user = $this->arguments['user'];
-        $password = $this->arguments['pwd'];
-        $db = $this->arguments['name'];
-
-        try {
-            new PDO('mysql:host=' . $host . ';port=' . $port . ';dbname=' . $db, $user, $password);
-            $outcome = true;
-            $message = _('Connection Successful');
-        } catch (PDOException $e) {
-            $outcome = false;
-            $message = $e->getMessage();
-        }
-
-        return array(
-            'outcome' => $outcome,
-            'message' => $message
-        );
-    }
-
     public function postDeletePage()
     {
         $wikiApi = new WikiApi();

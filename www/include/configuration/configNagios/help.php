@@ -67,25 +67,6 @@ $help["temp_file"] = dgettext(
     . "uses when updating comment data, status data, etc. "
     . "The file is deleted when it is no longer needed."
 );
-$help["check_result_path"] = dgettext(
-    "help",
-    "This options determines which directory Monitoring Engine will use to temporarily "
-    . "store host and service check results before they are processed. This directory "
-    . "should not be used to store any other files, as Monitoring Engine will periodically "
-    . "clean this directory of old file. Make sure that only a single instance of "
-    . "Monitoring Engine has access to the check result path. If multiple instances of "
-    . "Monitoring Engine have their check result path set to the same directory, "
-    . "you will run into problems with check results being processed (incorrectly) "
-    . "by the wrong instance of Monitoring Engine!"
-);
-$help["max_check_result_file_age"] = dgettext(
-    "help",
-    "This options determines the maximum age in seconds that Monitoring Engine "
-    . "will consider check result files found in the check_result_path directory to be valid. "
-    . "Check result files that are older that this threshold will be deleted by Monitoring Engine "
-    . "and the check results they contain will not be processed. By using a value of zero (0) "
-    . "with this option, Monitoring Engine will process all check result files."
-);
 $help["Monitoring Engine_user"] = dgettext(
     "help",
     "This is used to set the effective user that the Monitoring Engine process should run as. "
@@ -406,12 +387,13 @@ $help["max_host_check_spread"] = dgettext(
 );
 $help["max_service_check_spread"] = dgettext(
     "help",
-    "This option determines the maximum number of minutes from when Monitoring Engine starts that all " .
-    "services (that are scheduled to be regularly checked) are checked. This option will automatically " .
-    "adjust the service inter-check delay method (if necessary) to ensure that the initial checks of all " .
-    "services occur within the timeframe you specify. In general, this option will not have an effect on service " .
-    "check scheduling if scheduling information is being retained using the use_retained_scheduling_info option. " .
-    "Default value is 30 (minutes)."
+    "This option determines the maximum number of minutes from when Monitoring Engine starts until all services "
+    . "(that are scheduled to be regularly checked) are checked. This option will automatically adjust the service "
+    . "inter-check delay method (if necessary) to ensure that the initial checks of all services occur within the "
+    . "timeframe you specify. In general, this option will not have an effect on service check scheduling if "
+    . "scheduling information is being retained using the use_retained_scheduling_info option. Default value in "
+    . "centengine is 5 (minutes) but it should be raised to 30 if the poller monitors more than 5000 services to "
+    . "avoid load issues."
 );
 $help["service_interleave_factor"] = dgettext(
     "help",
@@ -482,14 +464,6 @@ $help["auto_rescheduling_window"] = dgettext(
     "rescheduling checks. Only host and service checks that occur in the next X seconds " .
     "(determined by this variable) will be rescheduled. This option only has an effect if the " .
     "auto_reschedule_checks option is enabled. Default is 180 seconds (3 minutes)."
-);
-$help["use_aggressive_host_checking"] = dgettext(
-    "help",
-    "Monitoring Engine tries to be smart about how and when it checks the status of hosts. By default this " .
-    "option is disabled and will allow Monitoring Engine to make some smarter decisions and check hosts a " .
-    "bit faster. Enabling this option will increase the amount of time required to check hosts, but may " .
-    "improve reliability a bit. Unless you have problems with Monitoring Engine not recognizing that a " .
-    "host recovered, I would suggest not enabling this option."
 );
 $help["enable_flap_detection"] = dgettext(
     "help",
@@ -754,6 +728,11 @@ $help["date_format"] = dgettext(
     "This option allows you to specify what kind of date/time format Monitoring Engine should use in the web " .
     "interface and date/time macros."
 );
+$help["instance_heartbeat_interval"] = dgettext(
+    "help",
+    "Time interval in seconds between two heartbeat events. This event is the one responsible of the 'Last Update' "
+    . "column update in the Pollers listing. Value must be between 5 and 600. Default value is 30."
+);
 $help["admin_email"] = dgettext(
     "help",
     "This is the email address for the administrator of the local machine (i.e. the one that Monitoring " .
@@ -918,10 +897,6 @@ $help["Monitoring Engine_server_id"] = dgettext(
 $help["log_pid"] = dgettext(
     "help",
     "Enable the possibility to log pid information in engine log file (option only for Centreon Engine)"
-);
-$help["use_check_result_path"] = dgettext(
-    "help",
-    "This option enable or disable compatibility mode to use check result path."
 );
 
 /*

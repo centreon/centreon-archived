@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
  *
@@ -26,11 +27,29 @@ use Centreon\Domain\Acknowledgement\AcknowledgementException;
 use Centreon\Domain\Contact\Interfaces\ContactFilterInterface;
 use Centreon\Domain\Engine\EngineException;
 use Centreon\Domain\Exception\EntityNotFoundException;
+use Centreon\Domain\Monitoring\Resource as ResourceEntity;
 use Centreon\Infrastructure\RequestParameters\RequestParametersTranslatorException;
 use JMS\Serializer\Exception\ValidationFailedException;
 
 interface AcknowledgementServiceInterface extends ContactFilterInterface
 {
+    /**
+     * Find one acknowledgement.
+     *
+     * @param int $acknowledgementId Acknowledgement id
+     * @return Acknowledgement|null Return NULL if the acknowledgement has not been found
+     * @throws \Exception
+     */
+    public function findOneAcknowledgement(int $acknowledgementId): ?Acknowledgement;
+
+    /**
+     * Find all acknowledgements.
+     *
+     * @return Acknowledgement[]
+     * @throws \Exception
+     */
+    public function findAcknowledgements(): array;
+
     /**
      * Find all acknowledgements of all hosts.
      *
@@ -38,7 +57,7 @@ interface AcknowledgementServiceInterface extends ContactFilterInterface
      * @throws RequestParametersTranslatorException
      * @throws \Exception
      */
-    public function findLastHostsAcknowledgements(): array;
+    public function findHostsAcknowledgements(): array;
 
     /**
      * Find all acknowledgements of all services.
@@ -47,12 +66,43 @@ interface AcknowledgementServiceInterface extends ContactFilterInterface
      * @throws RequestParametersTranslatorException
      * @throws \Exception
      */
-    public function findLastServicesAcknowledgements(): array;
+    public function findServicesAcknowledgements(): array;
+
+    /**
+     * Find all acknowledgements by host id.
+     *
+     * @param int $hostId
+     * @return Acknowledgement[]
+     * @throws RequestParametersTranslatorException
+     * @throws \Exception
+     */
+    public function findAcknowledgementsByHost(int $hostId): array;
+
+    /**
+     * Find all acknowledgements by host id and service id.
+     *
+     * @param int $hostId
+     * @param int $serviceId
+     * @return Acknowledgement[]
+     * @throws RequestParametersTranslatorException
+     * @throws \Exception
+     */
+    public function findAcknowledgementsByService(int $hostId, int $serviceId): array;
+
+    /**
+     * Find all acknowledgements by metaservice id.
+     *
+     * @param int $metaId
+     * @return Acknowledgement[]
+     * @throws RequestParametersTranslatorException
+     * @throws \Exception
+     */
+    public function findAcknowledgementsByMetaService(int $metaId): array;
 
     /**
      * Adds a host acknowledgement.
      *
-     * @param Acknowledgement $acknowledgement Host acknowledgment to add
+     * @param Acknowledgement $acknowledgement Host acknowledgement to add
      * @throws AcknowledgementException
      * @throws EngineException
      * @throws EntityNotFoundException
@@ -64,7 +114,7 @@ interface AcknowledgementServiceInterface extends ContactFilterInterface
     /**
      * Adds a service acknowledgement.
      *
-     * @param Acknowledgement $acknowledgement Host acknowledgment to add
+     * @param Acknowledgement $acknowledgement Host acknowledgement to add
      * @throws AcknowledgementException
      * @throws EngineException
      * @throws EntityNotFoundException
@@ -74,17 +124,29 @@ interface AcknowledgementServiceInterface extends ContactFilterInterface
     public function addServiceAcknowledgement(Acknowledgement $acknowledgement): void;
 
     /**
-     * Disacknowledge a host acknowledgement.
+     * Adds a Meta service acknowledgement.
+     *
+     * @param Acknowledgement $acknowledgement Meta service acknowledgement to add
+     * @throws AcknowledgementException
+     * @throws EngineException
+     * @throws EntityNotFoundException
+     * @throws \Exception
+     * @throws ValidationFailedException
+     */
+    public function addMetaServiceAcknowledgement(Acknowledgement $acknowledgement): void;
+
+    /**
+     * Disacknowledge a host.
      *
      * @param int $hostId Host id of acknowledgement to be cancelled
      * @throws EngineException
      * @throws EntityNotFoundException
      * @throws \Exception
      */
-    public function disacknowledgeHostAcknowledgement(int $hostId): void;
+    public function disacknowledgeHost(int $hostId): void;
 
     /**
-     * Disacknowledge a service acknowledgement.
+     * Disacknowledge a service.
      *
      * @param int $hostId Host id linked to the service
      * @param int $serviceId Service id of acknowledgement to be cancelled
@@ -92,5 +154,35 @@ interface AcknowledgementServiceInterface extends ContactFilterInterface
      * @throws EntityNotFoundException
      * @throws \Exception
      */
-    public function disacknowledgeServiceAcknowledgement(int $hostId, int $serviceId): void;
+    public function disacknowledgeService(int $hostId, int $serviceId): void;
+
+    /**
+     * Disacknowledge a metaservice.
+     *
+     * @param int $metaId ID of the metaservice
+     * @throws EngineException
+     * @throws EntityNotFoundException
+     * @throws \Exception
+     */
+    public function disacknowledgeMetaService(int $metaId): void;
+
+    /**
+     * Acknowledge resource and its services if needed.
+     *
+     * @param ResourceEntity $resource Resource to be acknowledged
+     * @param Acknowledgement $ack
+     * @throws EntityNotFoundException
+     * @throws \Exception
+     */
+    public function acknowledgeResource(ResourceEntity $resource, Acknowledgement $ack): void;
+
+    /**
+     * Discknowledge resource and its services if needed.
+     *
+     * @param ResourceEntity $resource Resource to be acknowledged
+     * @param Acknowledgement $ack
+     * @throws EntityNotFoundException
+     * @throws \Exception
+     */
+    public function disacknowledgeResource(ResourceEntity $resource, Acknowledgement $ack): void;
 }

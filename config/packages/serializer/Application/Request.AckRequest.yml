@@ -1,0 +1,10 @@
+Centreon\Application\Request\AckRequest:
+    properties:
+        acknowledgement:
+            type: Centreon\Domain\Acknowledgement\Acknowledgement
+            groups:
+                - 'bulk_acknowledge'
+        resources:
+            type: array<Centreon\Domain\Monitoring\Resource>
+            groups:
+                - 'bulk_acknowledge'

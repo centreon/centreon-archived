@@ -1,0 +1,5 @@
+centreon_application_find_host_groups:
+  methods: GET
+  path: /configuration/hosts/groups
+  controller: 'Centreon\Application\Controller\Configuration\HostGroupController::findHostGroups'
+  condition: "request.attributes.get('version') >= 21.10"

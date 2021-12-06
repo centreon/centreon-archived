@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2019 Centreon
+ * Copyright 2005-2021 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -43,12 +44,12 @@ class CentreonMsg
     public $div;
 
     /* Constructor */
-    public function __construct($div_str = null)
+    public function __construct($divId = null)
     {
-        if (!isset($div_str) && !$div_str) {
+        if (empty($divId)) {
             $this->div = "centreonMsg";
         } else {
-            $this->div = $div_str;
+            $this->div = $divId;
         }
         $this->color = "#FFFFFF";
     }
@@ -106,9 +107,9 @@ class CentreonMsg
     /* If you want to display your message for a limited time period, just call this function */
     public function setTimeOut($sec)
     {
-        $sec *= 1000;
-        echo "<script type=\"text/javascript\">setTimeout(function(){new Effect.toggle(\"" .
-            $this->div . "\")}, " . $sec . ")</script>";
+        echo "<script type=\"text/javascript\">"
+            . "setTimeout(() => { jQuery(\"#" . $this->div . "\").toggle(); }, " . ($sec * 1000) . ");"
+            . "</script>";
     }
 
     /* Clear message box */
@@ -183,7 +184,7 @@ class CentreonMsg
     function _setTimeout(div_str, sec) {
         sec *= 1000;
         setTimeout(function () {
-            new Effect.toggle(div_str)
+            jQuery(`#${div_str}`).toggle()
         }, sec)
     }
 </script>

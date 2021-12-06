@@ -46,11 +46,14 @@ require_once __DIR__ . '/Host.php';
 require_once __DIR__ . '/ServiceCategory.php';
 require_once __DIR__ . '/Resource.php';
 require_once __DIR__ . '/Engine.php';
+require_once __DIR__ . '/Broker.php';
 require_once __DIR__ . '/Graph.php';
 require_once __DIR__ . '/Manifest.php';
 require_once __DIR__ . '/HostCategory.php';
 require_once __DIR__ . '/Curves.php';
 require_once __DIR__ . '/Trap.php';
+require_once __DIR__ . '/PlatformTopology.php';
+require_once __DIR__ . '/Relations/BrokerInfo.php';
 require_once __DIR__ . '/Relations/ViewImgDirRelation.php';
 require_once __DIR__ . '/Relations/ViewImageDir.php';
 require_once __DIR__ . '/Relations/ExtendedServiceInformation.php';
@@ -193,6 +196,7 @@ class Generate
         );
 
         Engine::getInstance($this->dependencyInjector)->generateFromPoller($this->currentPoller);
+        Broker::getInstance($this->dependencyInjector)->generateFromPoller($this->currentPoller);
     }
 
     /**
@@ -208,20 +212,22 @@ class Generate
             $this->backendInstance->setUserName($username);
             $this->backendInstance->initPath($remoteServerId);
             $this->backendInstance->setPollerId($remoteServerId);
+            Manifest::getInstance($this->dependencyInjector)->clean();
             Manifest::getInstance($this->dependencyInjector)->addRemoteServer($remoteServerId);
 
             $this->getPollerFromId($remoteServerId);
             $this->currentPoller['localhost'] = 1;
             $this->currentPoller['remote_id'] = 'NULL';
-            $this->currentPoller['remote_server_centcore_ssh_proxy'] = 0;
+            $this->currentPoller['remote_server_use_as_proxy'] = 0;
             $this->configPoller($username);
             Relations\NagiosServer::getInstance($this->dependencyInjector)->add($this->currentPoller, $remoteServerId);
+            PlatformTopology::getInstance($this->dependencyInjector)->generateFromRemoteServerId($remoteServerId);
 
             $pollers = $this->getPollersFromRemote($remoteServerId);
             foreach ($pollers as $poller) {
                 $poller['localhost'] = 0;
                 $poller['remote_id'] = 'NULL';
-                $poller['remote_server_centcore_ssh_proxy'] = 0;
+                $poller['remote_server_use_as_proxy'] = 0;
                 $this->currentPoller = $poller;
                 $this->configPoller($username);
                 Relations\NagiosServer::getInstance($this->dependencyInjector)->add($poller, $poller['id']);
@@ -335,6 +341,7 @@ class Generate
         ContactGroup::getInstance($this->dependencyInjector)->reset();
         Curves::getInstance($this->dependencyInjector)->reset();
         Engine::getInstance($this->dependencyInjector)->reset();
+        Broker::getInstance($this->dependencyInjector)->reset();
         Graph::getInstance($this->dependencyInjector)->reset();
         HostCategory::getInstance($this->dependencyInjector)->reset();
         HostGroup::getInstance($this->dependencyInjector)->reset();
@@ -345,6 +352,8 @@ class Generate
         ServiceTemplate::getInstance($this->dependencyInjector)->reset();
         TimePeriod::getInstance($this->dependencyInjector)->reset();
         Trap::getInstance($this->dependencyInjector)->reset();
+        PlatformTopology::getInstance($this->dependencyInjector)->reset();
+        Relations\BrokerInfo::getInstance($this->dependencyInjector)->reset();
         Relations\CfgResourceInstanceRelation::getInstance($this->dependencyInjector)->reset();
         Relations\ContactGroupHostRelation::getInstance($this->dependencyInjector)->reset();
         Relations\ContactGroupServiceRelation::getInstance($this->dependencyInjector)->reset();

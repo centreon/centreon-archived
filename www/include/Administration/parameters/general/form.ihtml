@@ -1,5 +1,5 @@
 {$form.javascript}
-{$colorJS}
+
 <div id ="testProxy"><p id="msg-wrapper"></p></div>
 <form {$form.attributes}>
 <table class="formTable table">
@@ -105,18 +105,111 @@
 
     <tr class="list_lvl_1">
       <td class="ListColLvl1_name" colspan="2">
-        <h4>{$genOpt_keycloak}</h4>
+        <h4>{$genOpt_openid_connect}</h4>
       </td>
     </tr>
-    <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="keycloak_enable">{$form.keycloak_enable.label}</td><td class="FormRowValue">{$form.keycloak_enable.html}</td></tr>
-    <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="keycloak_mode">{$form.keycloak_mode.label}</td><td class="FormRowValue">{$form.keycloak_mode.html}</td></tr>
-    <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="keycloak_trusted_clients">{$form.keycloak_trusted_clients.label}</td><td class="FormRowValue">{$form.keycloak_trusted_clients.html}</td></tr>
-    <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="keycloak_blacklist_clients">{$form.keycloak_blacklist_clients.label}</td><td class="FormRowValue">{$form.keycloak_blacklist_clients.html}</td></tr>      
-    <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="keycloak_url">{$form.keycloak_url.label}</td><td class="FormRowValue">{$form.keycloak_url.html}</td></tr>
-    <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="keycloak_redirect_url">{$form.keycloak_redirect_url.label}</td><td class="FormRowValue">{$form.keycloak_redirect_url.html}</td></tr>
-    <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="keycloak_realm">{$form.keycloak_realm.label}</td><td class="FormRowValue">{$form.keycloak_realm.html}</td></tr>
-    <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="keycloak_client_id">{$form.keycloak_client_id.label}</td><td class="FormRowValue">{$form.keycloak_client_id.html}</td></tr>
-    <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="keycloak_client_secret">{$form.keycloak_client_secret.label}</td><td class="FormRowValue">{$form.keycloak_client_secret.html}</td></tr>
+    <tr class="list_one">
+        <td class="FormRowField">
+            <img class="helpTooltip" name="openid_connect_enable">{$form.openid_connect_enable.label}
+        </td>
+        <td class="FormRowValue">{$form.openid_connect_enable.html}</td>
+    </tr>
+    <tr class="list_two">
+        <td class="FormRowField">
+            <img class="helpTooltip" name="openid_connect_mode">{$form.openid_connect_mode.label}
+        </td>
+        <td class="FormRowValue">{$form.openid_connect_mode.html}</td>
+    </tr>
+    <tr class="list_one">
+        <td class="FormRowField">
+            <img class="helpTooltip" name="openid_connect_trusted_clients">{$form.openid_connect_trusted_clients.label}
+        </td>
+        <td class="FormRowValue">{$form.openid_connect_trusted_clients.html}</td>
+    </tr>
+    <tr class="list_two">
+        <td class="FormRowField">
+            <img class="helpTooltip" name="openid_connect_blacklist_clients">{$form.openid_connect_blacklist_clients.label}
+        </td>
+        <td class="FormRowValue">{$form.openid_connect_blacklist_clients.html}</td>
+    </tr>
+    <tr class="list_one">
+        <td class="FormRowField">
+            <img class="helpTooltip" name="openid_connect_base_url">{$form.openid_connect_base_url.label}
+        </td>
+        <td class="FormRowValue">{$form.openid_connect_base_url.html}</td>
+    </tr>
+    <tr class="list_two">
+        <td class="FormRowField">
+            <img class="helpTooltip" name="openid_connect_authorization_endpoint">{$form.openid_connect_authorization_endpoint.label}
+        </td>
+        <td class="FormRowValue">{$form.openid_connect_authorization_endpoint.html}</td>
+    </tr>
+    <tr class="list_one">
+        <td class="FormRowField">
+            <img class="helpTooltip" name="openid_connect_token_endpoint">{$form.openid_connect_token_endpoint.label}
+        </td>
+        <td class="FormRowValue">{$form.openid_connect_token_endpoint.html}</td>
+    </tr>
+    <tr class="list_two">
+        <td class="FormRowField">
+            <img class="helpTooltip" name="openid_connect_introspection_endpoint">{$form.openid_connect_introspection_endpoint.label}
+        </td>
+        <td class="FormRowValue">{$form.openid_connect_introspection_endpoint.html}</td>
+    </tr>
+    <tr class="list_one">
+        <td class="FormRowField">
+            <img class="helpTooltip" name="openid_connect_userinfo_endpoint">{$form.openid_connect_userinfo_endpoint.label}
+        </td>
+        <td class="FormRowValue">{$form.openid_connect_userinfo_endpoint.html}</td>
+    </tr>
+    <tr class="list_two">
+        <td class="FormRowField">
+            <img class="helpTooltip" name="openid_connect_end_session_endpoint">{$form.openid_connect_end_session_endpoint.label}
+        </td>
+        <td class="FormRowValue">{$form.openid_connect_end_session_endpoint.html}</td>
+    </tr>
+    <tr class="list_one">
+        <td class="FormRowField">
+            <img class="helpTooltip" name="openid_connect_scope">{$form.openid_connect_scope.label}
+        </td>
+        <td class="FormRowValue">{$form.openid_connect_scope.html}</td>
+    </tr>
+    <tr class="list_two">
+        <td class="FormRowField">
+            <img class="helpTooltip" name="openid_connect_login_claim">{$form.openid_connect_login_claim.label}
+        </td>
+        <td class="FormRowValue">{$form.openid_connect_login_claim.html}</td>
+    </tr>
+    <tr class="list_one">
+        <td class="FormRowField">
+            <img class="helpTooltip" name="openid_connect_redirect_url">{$form.openid_connect_redirect_url.label}
+        </td>
+        <td class="FormRowValue">{$form.openid_connect_redirect_url.html}</td>
+    </tr>
+    <tr class="list_two">
+        <td class="FormRowField">
+            <img class="helpTooltip" name="openid_connect_client_id">{$form.openid_connect_client_id.label}
+        </td>
+        <td class="FormRowValue">{$form.openid_connect_client_id.html}</td>
+    </tr>
+    <tr class="list_one">
+        <td class="FormRowField">
+            <img class="helpTooltip" name="openid_connect_client_secret">{$form.openid_connect_client_secret.label}
+        </td>
+        <td class="FormRowValue">{$form.openid_connect_client_secret.html}</td>
+    </tr>
+    <tr class="list_two">
+        <td class="FormRowField">
+            <img class="helpTooltip" name="openid_connect_client_basic_auth">{$form.openid_connect_client_basic_auth.label}
+        </td>
+        <td class="FormRowValue">{$form.openid_connect_client_basic_auth.html}</td>
+    </tr>
+    <tr class="list_one">
+        <td class="FormRowField">
+            <img class="helpTooltip" name="openid_connect_verify_peer">{$form.openid_connect_verify_peer.label}
+        </td>
+        <td class="FormRowValue">{$form.openid_connect_verify_peer.html}</td>
+    </tr>
 
 	<tr class="list_lvl_1">
       <td class="ListColLvl1_name" colspan="2">
@@ -139,7 +232,11 @@
     </tr>
     <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_send_statistics">{$form.send_statistics.label}</td><td class="FormRowValue">{$form.send_statistics.html}</td></tr>
 
-    <tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">{$form.required._note}</td></tr>
+    <tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">
+    {if isset($form.required)}
+        {$form.required._note}
+    {/if}
+    </td></tr>
  </table>
 {if !$valid}
 	<div id="validForm" class="oreonbutton">

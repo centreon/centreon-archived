@@ -115,6 +115,8 @@ class AcknowledgementTimeoutContext extends CentreonContext
     public function hostAcknowledged()
     {
         $page = new MonitoringHostsPage($this);
+        $url = 'http://' . $this->container->getHost() . ':' . $this->container->getPort(80, 'web') .
+            '/centreon/include/monitoring/external_cmd/cmdPopup.php';
         $page->addAcknowledgementOnHost(
             $this->hostName,
             'Unit test',
@@ -122,7 +124,8 @@ class AcknowledgementTimeoutContext extends CentreonContext
             true,
             true,
             false,
-            false
+            false,
+            $url
         );
         $hostName = $this->hostName;
         $this->spin(
@@ -140,6 +143,8 @@ class AcknowledgementTimeoutContext extends CentreonContext
         $hostName = $this->serviceHostName;
         $serviceName = $this->serviceName;
         $page = new MonitoringServicesPage($this);
+        $url = 'http://' . $this->container->getHost() . ':' . $this->container->getPort(80, 'web') .
+            '/centreon/include/monitoring/external_cmd/cmdPopup.php';
         $page->addAcknowledgementOnService(
             $hostName,
             $serviceName,
@@ -147,7 +152,8 @@ class AcknowledgementTimeoutContext extends CentreonContext
             true,
             true,
             true,
-            false
+            false,
+            $url
         );
         $this->spin(
             function ($ctx) use ($hostName, $serviceName) {
@@ -161,7 +167,7 @@ class AcknowledgementTimeoutContext extends CentreonContext
      */
     public function iWaitTheTimeLimitSetForExpiration()
     {
-        $this->getSession()->wait(60000, '');
+        $this->getSession()->wait(60000);
     }
 
     /**

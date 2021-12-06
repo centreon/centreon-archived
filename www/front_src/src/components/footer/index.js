@@ -2,7 +2,11 @@
 /* eslint-disable react/prefer-stateless-function */
 
 import React, { Component } from 'react';
+
 import classnames from 'classnames';
+
+import { Typography } from '@material-ui/core';
+
 import styles from './footer.scss';
 
 class Footer extends Component {
@@ -21,52 +25,63 @@ class Footer extends Component {
               <li className={styles['footer-list-item']}>
                 <a
                   href="https://documentation.centreon.com/"
-                  target="_blank"
                   rel="noopener noreferrer"
+                  target="_blank"
                 >
-                  Documentation
+                  <Typography variant="body2">Documentation</Typography>
                 </a>
               </li>
               <li className={styles['footer-list-item']}>
                 <a
                   href="https://support.centreon.com"
-                  target="_blank"
                   rel="noopener noreferrer"
+                  target="_blank"
                 >
-                  Centreon Support
+                  <Typography variant="body2">Support</Typography>
                 </a>
               </li>
               <li className={styles['footer-list-item']}>
                 <a
                   href="https://www.centreon.com"
-                  target="_blank"
                   rel="noopener noreferrer"
+                  target="_blank"
                 >
-                  Centreon
+                  <Typography variant="body2">Centreon</Typography>
                 </a>
               </li>
               <li className={styles['footer-list-item']}>
                 <a
                   href="https://github.com/centreon/centreon.git"
-                  target="_blank"
                   rel="noopener noreferrer"
+                  target="_blank"
                 >
-                  Github Project
+                  <Typography variant="body2">Github Project</Typography>
                 </a>
               </li>
               <li className={styles['footer-list-item']}>
                 <a
                   href="https://centreon.github.io"
-                  target="_blank"
                   rel="noopener noreferrer"
+                  target="_blank"
                 >
-                  Slack
+                  <Typography variant="body2">Slack</Typography>
+                </a>
+              </li>
+              <li className={styles['footer-list-item']}>
+                <a
+                  href="https://github.com/centreon/centreon/security/policy"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  <Typography variant="body2">Security Issue</Typography>
                 </a>
               </li>
             </ul>
           </div>
           <div className={styles['footer-wrap-right']}>
-            <span>Copyright &copy; 2005 - 2020</span>
+            <Typography style={{ color: '#FFFFFF' }} variant="body2">
+              Copyright &copy; 2005 - 2021
+            </Typography>
           </div>
         </div>
       </footer>

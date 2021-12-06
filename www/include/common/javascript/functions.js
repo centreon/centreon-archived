@@ -49,13 +49,13 @@ function getXMLHTTP(){
       }
     }
   }
-  else { // XMLHttpRequest non supporté par le navigateur
+  else { // XMLHttpRequest non supportÃ© par le navigateur
     alert('Votre navigateur ne supporte pas les objets XMLHTTPRequest...');
   }
   return xhr;
 }
 
-var _xmlHttp = null; //l'objet xmlHttpRequest utilisé pour contacter le serveur
+var _xmlHttp = null; //l'objet xmlHttpRequest utilisÃ© pour contacter le serveur
 
 function loadXMLDoc(url,div) {
 	if(_xmlHttp&&_xmlHttp.readyState!=0){
@@ -63,7 +63,7 @@ function loadXMLDoc(url,div) {
 	}
   	_xmlHttp=getXMLHTTP();
   	if(_xmlHttp){
-    	//appel à l'url distante
+    	//appel Ã  l'url distante
     	_xmlHttp.open('GET',url,true);
     	_xmlHttp.onreadystatechange=function() {
       	if(_xmlHttp.readyState==4&&_xmlHttp.responseText) {

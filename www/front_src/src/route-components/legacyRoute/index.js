@@ -3,10 +3,12 @@
 /* eslint-disable react/sort-comp */
 
 import React, { Component } from 'react';
+
 import classnames from 'classnames';
-import styles from '../../components/header/header.scss';
-import loaderStyles from '../../components/loader/loader.scss';
-import Loader from '../../components/loader';
+
+import { PageSkeleton } from '@centreon/ui';
+
+import styles from '../../Header/header.scss';
 
 class LegacyRoute extends Component {
   constructor(props) {
@@ -16,28 +18,9 @@ class LegacyRoute extends Component {
     this.resizeTimeout = null;
 
     this.state = {
-      contentHeight: 0,
       loading: true,
     };
   }
-
-  handleResize = () => {
-    // wait size is the same during 200ms to handle it
-    clearTimeout(this.resizeTimeout);
-
-    if (this.mainContainer) {
-      this.resizeTimeout = setTimeout(() => {
-        const { clientHeight } = this.mainContainer;
-        const { contentHeight } = this.state;
-        if (clientHeight !== contentHeight) {
-          this.setState({
-            loading: false,
-            contentHeight: clientHeight - 30,
-          });
-        }
-      }, 200);
-    }
-  };
 
   handleHref = (event) => {
     const { href } = event.detail;
@@ -54,9 +37,6 @@ class LegacyRoute extends Component {
 
   componentDidMount() {
     this.mainContainer = window.document.getElementById('fullscreen-wrapper');
-
-    // add a listener on global page size
-    window.addEventListener('resize', this.handleResize);
 
     // add event listener to update page url
     window.addEventListener('react.href.update', this.handleHref, false);
@@ -78,8 +58,12 @@ class LegacyRoute extends Component {
     window.removeEventListener('react.href.disconnect', this.handleDisconnect);
   }
 
+  load = () => {
+    this.setState({ loading: false });
+  };
+
   render() {
-    const { contentHeight, loading } = this.state;
+    const { loading } = this.state;
     const {
       history: {
         location: { search, hash },
@@ -95,20 +79,16 @@ class LegacyRoute extends Component {
 
     return (
       <>
-        {loading && (
-          <span className={loaderStyles['main-loader']}>
-            <Loader />
-          </span>
-        )}
+        {loading && <PageSkeleton />}
         <iframe
-          id="main-content"
-          title="Main Content"
-          frameBorder="0"
-          onLoad={this.handleResize}
-          scrolling="yes"
           className={classnames({ [styles.hidden]: loading })}
-          style={{ width: '100%', height: `${contentHeight}px` }}
+          frameBorder="0"
+          id="main-content"
+          scrolling="yes"
           src={`./main.get.php${params}`}
+          style={{ height: '100%', width: '100%' }}
+          title="Main Content"
+          onLoad={this.load}
         />
       </>
     );

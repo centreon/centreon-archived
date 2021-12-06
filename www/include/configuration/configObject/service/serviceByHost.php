@@ -1,7 +1,8 @@
 <?php
+
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2020 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -40,18 +41,10 @@ if (!isset($centreon)) {
 global $form_service_type;
 $form_service_type = "BYHOST";
 
-
-isset($_GET["service_id"]) ? $sG = $_GET["service_id"] : $sG = null;
-isset($_POST["service_id"]) ? $sP = $_POST["service_id"] : $sP = null;
-$sG ? $service_id = CentreonDB::escape($sG) : $service_id = CentreonDB::escape($sP);
-
-isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = null;
-isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = null;
-$cG ? $select = $cG : $select = $cP;
-
-isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = null;
-isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = null;
-$cG ? $dupNbr = $cG : $dupNbr = $cP;
+$service_id = filter_var(
+    $_GET['service_id'] ?? $_POST['service_id'] ?? null,
+    FILTER_VALIDATE_INT
+);
 
 /*
  * Path to the configuration dir
@@ -61,8 +54,17 @@ $path = "./include/configuration/configObject/service/";
 /*
  * PHP functions
  */
-require_once $path."DB-Func.php";
+require_once $path . "DB-Func.php";
 require_once "./include/common/common-Func.php";
+
+$select = filter_var_array(
+    getSelectOption(),
+    FILTER_VALIDATE_INT
+);
+$dupNbr = filter_var_array(
+    getDuplicateNumberOption(),
+    FILTER_VALIDATE_INT
+);
 
 /*
  * Create a suffix for file name in order to redirect service by hostgroup
@@ -70,15 +72,18 @@ require_once "./include/common/common-Func.php";
  */
 $linkType = '';
 
-/*
- * Check if a service is a service by hostgroup or not
- */
-$request = "SELECT * FROM host_service_relation WHERE service_service_id = '".(int)$service_id."'";
-$DBRESULT = $pearDB->query($request);
-while ($data = $DBRESULT->fetchRow()) {
-    if (isset($data["hostgroup_hg_id"]) && $data["hostgroup_hg_id"] != "") {
-        $linkType = 'Group';
-        $form_service_type = "BYHOSTGROUP";
+if ($service_id !== false) {
+    /*
+     * Check if a service is a service by hostgroup or not
+     */
+    $statement = $pearDB->prepare('SELECT * FROM host_service_relation WHERE service_service_id = :service_id');
+    $statement->bindValue(':service_id', $service_id, \PDO::PARAM_INT);
+    $statement->execute();
+    while ($data = $statement->fetch()) {
+        if (isset($data["hostgroup_hg_id"]) && $data["hostgroup_hg_id"] != "") {
+            $linkType = 'Group';
+            $form_service_type = "BYHOSTGROUP";
+        }
     }
 }
 
@@ -95,55 +100,103 @@ if (isset($_POST["o1"]) && isset($_POST["o2"])) {
 }
 
 /* Set the real page */
-if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
+if (isset($ret) && is_array($ret) && $ret['topology_page'] != "" && $p != $ret['topology_page']) {
     $p = $ret['topology_page'];
 }
 
 $acl = $centreon->user->access;
 $aclDbName = $acl->getNameDBAcl();
 
+const SERVICE_ADD = 'a';
+const SERVICE_WATCH = 'w';
+const SERVICE_MODIFY = 'c';
+const SERVICE_MASSIVE_CHANGE = 'mc';
+const SERVICE_DIVISION = 'dv';
+const SERVICE_ACTIVATION = 's';
+const SERVICE_MASSIVE_ACTIVATION = 'ms';
+const SERVICE_DEACTIVATION = 'u';
+const SERVICE_MASSIVE_DEACTIVATION = 'mu';
+const SERVICE_DUPLICATION = 'm';
+const SERVICE_DELETION = 'd';
+
 switch ($o) {
-    case "a":
-        require_once($path."formService.php");
-        break; #Add a service
-    case "w":
-        require_once($path."formService.php");
-        break; #Watch a service
-    case "c":
-        require_once($path."formService.php");
-        break; #Modify a service
-    case "mc":
-        require_once($path."formService.php");
-        break; #Massive change
-    case "dv":
-        divideGroupedServiceInDB(null, isset($select) ? $select : array());
-        require_once($path."listServiceByHost$linkType.php");
-        break; # Divide service linked to n hosts
-    case "s":
-        enableServiceInDB($service_id);
-        require_once($path."listServiceByHost$linkType.php");
-        break; #Activate a service
-    case "ms":
-        enableServiceInDB(null, isset($select) ? $select : array());
-        require_once($path."listServiceByHost$linkType.php");
+    case SERVICE_ADD:
+    case SERVICE_WATCH:
+    case SERVICE_MODIFY:
+    case SERVICE_MASSIVE_CHANGE:
+        require_once($path . "formService.php");
         break;
-    case "u":
-        disableServiceInDB($service_id);
-        require_once($path."listServiceByHost$linkType.php");
-        break; #Desactivate a service
-    case "mu":
-        disableServiceInDB(null, isset($select) ? $select : array());
-        require_once($path."listServiceByHost$linkType.php");
+    case SERVICE_DIVISION:
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            divideGroupedServiceInDB(null, isset($select) ? $select : array());
+        } else {
+            unvalidFormMessage();
+        }
+        require_once($path . "listServiceByHost$linkType.php");
         break;
-    case "m":
-        multipleServiceInDB(isset($select) ? $select : array(), $dupNbr);
-        require_once($path."listServiceByHost$linkType.php");
-        break; #Duplicate n services
-    case "d":
-        deleteServiceInDB(isset($select) ? $select : array());
-        require_once($path."listServiceByHost$linkType.php");
-        break; #Delete n services
+    case SERVICE_ACTIVATION:
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            enableServiceInDB($service_id);
+        } else {
+            unvalidFormMessage();
+        }
+        require_once($path . "listServiceByHost$linkType.php");
+        break;
+    case SERVICE_MASSIVE_ACTIVATION:
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            enableServiceInDB(null, isset($select) ? $select : array());
+        } else {
+            unvalidFormMessage();
+        }
+        require_once($path . "listServiceByHost$linkType.php");
+        break;
+    case SERVICE_DEACTIVATION:
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            disableServiceInDB($service_id);
+        } else {
+            unvalidFormMessage();
+        }
+        require_once($path . "listServiceByHost$linkType.php");
+        break;
+    case SERVICE_MASSIVE_DEACTIVATION:
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            disableServiceInDB(null, isset($select) ? $select : array());
+        } else {
+            unvalidFormMessage();
+        }
+        require_once($path . "listServiceByHost$linkType.php");
+        break;
+    case SERVICE_DUPLICATION:
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            multipleServiceInDB(isset($select) ? $select : array(), $dupNbr);
+        } else {
+            unvalidFormMessage();
+        }
+        require_once($path . "listServiceByHost$linkType.php");
+        break;
+    case SERVICE_DELETION:
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            deleteServiceInDB(isset($select) ? $select : array());
+        } else {
+            unvalidFormMessage();
+        }
+        require_once($path . "listServiceByHost$linkType.php");
+        break;
     default:
-        require_once($path."listServiceByHost$linkType.php");
+        require_once($path . "listServiceByHost$linkType.php");
         break;
 }

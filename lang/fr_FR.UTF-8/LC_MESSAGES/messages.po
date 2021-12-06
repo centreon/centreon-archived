@@ -333,7 +333,7 @@ msgstr "graphique de l'hôte"
 
 #: centreon-web/www/class/centreonGraph.class.php:1190
 msgid "Graph"
-msgstr "Graph"
+msgstr "Graphique"
 
 #: centreon-web/www/class/centreonXMLBGRequest.class.php:177
 #: centreon-web/www/install/centreon_broker_translation.php:48
@@ -624,55 +624,46 @@ msgid "Yes"
 msgstr "Oui"
 
 #: centreon-web/www/class/centreonGraphPoller.class.php:150
-#: centreon-web/www/include/Administration/corePerformance/getStats.php:127
 #: centreon-web/www/include/Administration/corePerformance/nagiosStats.php:160
 msgid "Host Check Execution Time"
 msgstr "Durée de contrôle de l'hôte"
 
 #: centreon-web/www/class/centreonGraphPoller.class.php:151
-#: centreon-web/www/include/Administration/corePerformance/getStats.php:128
 #: centreon-web/www/include/Administration/corePerformance/nagiosStats.php:161
 msgid "Hosts Actively Checked"
 msgstr "Hôtes actuellement contrôlés"
 
 #: centreon-web/www/class/centreonGraphPoller.class.php:152
-#: centreon-web/www/include/Administration/corePerformance/getStats.php:129
 #: centreon-web/www/include/Administration/corePerformance/nagiosStats.php:162
 msgid "Host check latency"
 msgstr "Latence du contrôle de l'hôte"
 
 #: centreon-web/www/class/centreonGraphPoller.class.php:153
-#: centreon-web/www/include/Administration/corePerformance/getStats.php:130
 #: centreon-web/www/include/Administration/corePerformance/nagiosStats.php:163
 msgid "Service Check Execution Time"
 msgstr "Durée de contrôle du service"
 
 #: centreon-web/www/class/centreonGraphPoller.class.php:154
-#: centreon-web/www/include/Administration/corePerformance/getStats.php:131
 #: centreon-web/www/include/Administration/corePerformance/nagiosStats.php:164
 msgid "Services Actively Checked"
 msgstr "Services actuellement contrôlés"
 
 #: centreon-web/www/class/centreonGraphPoller.class.php:155
-#: centreon-web/www/include/Administration/corePerformance/getStats.php:132
 #: centreon-web/www/include/Administration/corePerformance/nagiosStats.php:165
 msgid "Service check latency"
 msgstr "Latence du contrôle du service"
 
 #: centreon-web/www/class/centreonGraphPoller.class.php:156
-#: centreon-web/www/include/Administration/corePerformance/getStats.php:133
 #: centreon-web/www/include/Administration/corePerformance/nagiosStats.php:166
 msgid "Commands in buffer"
 msgstr "Commandes dans le tampon"
 
 #: centreon-web/www/class/centreonGraphPoller.class.php:157
-#: centreon-web/www/include/Administration/corePerformance/getStats.php:134
 #: centreon-web/www/include/Administration/corePerformance/nagiosStats.php:167
 msgid "Host status"
 msgstr "Etat des hôtes"
 
 #: centreon-web/www/class/centreonGraphPoller.class.php:158
-#: centreon-web/www/include/Administration/corePerformance/getStats.php:135
 #: centreon-web/www/include/Administration/corePerformance/nagiosStats.php:168
 msgid "Service status"
 msgstr "Etat du service"
@@ -872,6 +863,10 @@ msgstr "Sélectionné"
 msgid "Add"
 msgstr "Ajouter"
 
+#: centreon-web/www/include/configuration/configServers/listServers.php:318
+msgid "Add (advanced)"
+msgstr "Ajouter (avancé)"
+
 #: centreon-web/www/class/centreonConfigCentreonBroker.php:390
 #: centreon-web/www/include/options/accessLists/resourcesACL/formResourcesAccess.php:260
 #: centreon-web/www/include/options/accessLists/resourcesACL/formResourcesAccess.php:276
@@ -993,7 +988,7 @@ msgstr "Au"
 msgid ""
 "The form has not been submitted since 15 minutes. Please retry to resubmit"
 msgstr ""
-"Le formulaire n'a pas été enovyé depuis 15 minutes. Essayer de renvoyer "
+"Le formulaire n'a pas été envoyé depuis 15 minutes. Essayer de renvoyer "
 "celui-ci"
 
 #: centreon-web/www/lib/HTML/QuickForm.php:2078
@@ -1934,6 +1929,10 @@ msgstr "Mise à jour"
 msgid "Do you confirm the deletion?"
 msgstr "Confirmez-vous la suppression ?"
 
+#: centreon-web/www/include/configuration/configServers/listServers.php:351
+msgid "You are about to delete one or more pollers.\\nThis action is IRREVERSIBLE.\\nDo you confirm the deletion ?"
+msgstr "Vous êtes sur le point de supprimer un ou plusieurs collecteurs.\\nCette action est IRREVERSIBLE.\\nConfirmez-vous la suppression ?"
+
 #: centreon-web/www/install/smarty_translate.php:354
 #: centreon-web/www/install/smarty_translate.php:357
 msgid "Uninstall Module"
@@ -2379,7 +2378,7 @@ msgid "Performances"
 msgstr "Informations de performance"
 
 #: centreon-web/www/install/smarty_translate.php:831
-msgid "Host Informations"
+msgid "Host Information"
 msgstr "Informations sur l'hôte"
 
 #: centreon-web/www/install/smarty_translate.php:834
@@ -2429,11 +2428,11 @@ msgstr "Commentaires"
 #: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:497
 #: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:511
 msgid "Acknowledged"
-msgstr "Acquittés"
+msgstr "Acquitté"
 
 #: centreon-web/www/install/smarty_translate.php:840
 msgid "In Downtime"
-msgstr "Temps d'arrêt démarré"
+msgstr "En maintenance"
 
 #: centreon-web/www/install/smarty_translate.php:843
 #: centreon-web/www/install/menu_translation.php:88
@@ -2447,6 +2446,14 @@ msgstr "Graphiques"
 #: centreon-web/www/include/configuration/configServers/formServers.php:111
 msgid "Poller Name"
 msgstr "Nom du collecteur"
+
+#: centreon-web/www/include/configuration/configServers/formServers.php:233
+msgid "Gorgone connection protocol"
+msgstr "Protocole de connexion utilisé par Gorgone"
+
+#: centreon-web/www/include/configuration/configServers/formServers.php:224
+msgid "Use the Remote Server as a proxy"
+msgstr "Utiliser le Remote Server comme proxy"
 
 #: centreon-web/www/install/smarty_translate.php:849
 #: centreon-web/www/include/Administration/parameters/general/form.php:95
@@ -2520,7 +2527,7 @@ msgstr "Date de génération"
 #: centreon-web/www/include/monitoring/comments/AddSvcComment.php:124
 #: centreon-web/www/include/monitoring/comments/AddComment.php:125
 msgid "Persistent"
-msgstr "Acquittement persistant en cas de redémarrage de l'ordonnanceur."
+msgstr "Persistant"
 
 #: centreon-web/www/install/smarty_translate.php:915
 #: centreon-web/www/include/monitoring/external_cmd/popup/massive_downtime.php:82
@@ -2592,7 +2599,7 @@ msgstr "Fin Actuelle"
 
 #: centreon-web/src/CentreonLegacy/Core/Menu/Menu.php:217
 msgid "Recurrent downtimes"
-msgstr "Temps d'arrêt récurrents"
+msgstr "Plages de maintenance récurrentes"
 
 #: centreon-web/src/CentreonLegacy/Core/Menu/Menu.php:156
 msgid "Plugin Packs"
@@ -2614,14 +2621,25 @@ msgstr "Statut de la plateforme"
 msgid "Engine Statistics"
 msgstr "Statistiques du moteur"
 
+#: centreon-web/src/CentreonRemote/Application/WebService/CentreonConfigurationRemote.php:365
+msgid "This IP Address already exist"
+msgstr "Cette adresse IP existe déjà"
+
+#: centreon-web/src/CentreonRemote/Application/WebService/CentreonConfigurationRemote.php:608
+msgid "This server is already registered"
+msgstr "Ce serveur est déjà enregistré"
+
+#: centreon-web/src/CentreonRemote/Application/WebService/CentreonConfigurationRemote.php:622
+msgid "No Central in topology,please edit it from Configuration > Pollers menu"
+msgstr "Pas de Central dans la topologie,Editez le depuis le menu Configurations > Collecteurs"
 
 #: centreon-web/www/install/smarty_translate.php:942
 msgid "No downtime scheduled"
-msgstr "Pas de temps d'arrêt programmé"
+msgstr "Pas de plage de maintenance programmée"
 
 #: centreon-web/www/install/smarty_translate.php:945
 msgid "Add downtime"
-msgstr "Ajouter un temps d'arrêt"
+msgstr "Ajouter une plage de maintenance"
 
 #: centreon-web/www/install/smarty_translate.php:948
 msgid "General informations"
@@ -2811,6 +2829,9 @@ msgstr "Login"
 #: centreon-web/www/include/core/login/login.php:60
 msgid "Password"
 msgstr "Mot de passe"
+
+msgid "Username"
+msgstr "Utilisateur"
 
 #: centreon-web/www/install/steps/step5.php:80
 msgid "Confirm password"
@@ -3065,7 +3086,7 @@ msgstr "Découverte"
 #: centreon-web/www/install/menu_translation.php:79
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:704
 msgid "Downtimes"
-msgstr "Temps d'arrêt"
+msgstr "Planifier des plages de maintenance"
 
 #: centreon-web/www/install/menu_translation.php:80
 msgid "Edit"
@@ -3216,8 +3237,11 @@ msgstr "Métriques"
 msgid "MIBs"
 msgstr "MIBs"
 
-#: centreon-web/www/install/menu_translation.php:109
-#: centreon-web/www/include/configuration/configObject/command/listCommand.php:129
+#: centreon/www/include/configuration/configObject/command/listCommand.php:127
+#: centreon/www/install/menu_translation.php:95
+#: centreon/www/include/options/oreon/generalOpt/colors/form.php:59
+#: centreon/www/include/configuration/configServers/formServers.php:122
+#: /www/include/configuration/configServers/formServers.php:104
 msgid "Miscellaneous"
 msgstr "Divers"
 
@@ -3520,6 +3544,18 @@ msgstr ""
 #: centreon-web/www/install/step_upgrade/step3.php:46
 msgid "Release notes"
 msgstr "Notes de version"
+
+#: centreon-web/www/install/step_upgrade/step3.php:46
+msgid "Everything is ready !"
+msgstr "Tout est prêt !"
+
+#: centreon-web/www/install/step_upgrade/step3.php:46
+msgid "Your Centreon Platform is about to be upgraded from version "
+msgstr "Votre plateforme Centreon va être mise à jour de la version "
+
+#: centreon-web/www/install/step_upgrade/step3.php:46
+msgid "For further details on changes, please find the complete changelog on "
+msgstr "Pour plus d'informations, consultez les notes de version sur "
 
 #: centreon-web/www/install/step_upgrade/step5.php:44
 msgid "Upgrade finished"
@@ -3880,7 +3916,7 @@ msgstr "Période"
 #: centreon-web/www/include/Administration/brokerPerformance/brokerPerformance.php:57
 #: centreon-web/www/include/reporting/dashboard/initReport.php:176
 msgid "State"
-msgstr "Statut"
+msgstr "État"
 
 #: centreon-web/www/include/Administration/brokerPerformance/brokerPerformance.php:66
 msgid "Last event at"
@@ -3993,6 +4029,13 @@ msgstr "Effets d'animation"
 #: centreon-web/www/include/Administration/myAccount/formMyAccount.php:136
 msgid "Default page"
 msgstr "Page par défaut"
+
+#: centreon-web/www/include/monitoring/status/Services/service.php:219
+#: centreon-web/www/include/monitoring/status/Hosts/host.php:189
+#: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:838
+#: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:719
+msgid "[Page deprecated] Please use the new page: "
+msgstr "[Page dépréciée] Utilisez la nouvelle page: "
 
 #: centreon-web/www/include/Administration/myAccount/formMyAccount.php:138
 msgid "Show Up status"
@@ -4295,19 +4338,26 @@ msgstr "Modifier les options de Centcore"
 
 #: centreon-web/www/include/Administration/parameters/api/api.php:61
 #: centreon-web/www/include/Administration/parameters/centcore/centcore.php:59
-msgid "Enable Broker Statistics Collection"
-msgstr ""
-"Activer la récupération des fichiers de statistiques des composants Centreon "
-"Broker"
+msgid "Enable Broker statistics collection"
+msgstr "Activer la récupération des fichiers de statistiques Broker"
 
 #: centreon-web/www/include/Administration/parameters/api/api.php:62
 #: centreon-web/www/include/Administration/parameters/centcore/centcore.php:60
-msgid "Timeout value for Centcore commands"
-msgstr "Temps maximum d'exécution des commandes centcore"
+msgid "Timeout value for Gorgone commands"
+msgstr "Temps maximum d'exécution des commandes Gorgone"
 
 #: centreon-web/www/include/Administration/parameters/centcore/centcore.php:62
-msgid "Illegal characters for Centcore commands"
-msgstr "Caractères illégaux pour les commandes Centcore"
+msgid "Illegal characters for Gorgone commands"
+msgstr "Caractères illégaux pour les commandes Gorgone"
+
+msgid "IP address or hostname"
+msgstr "Adresse IP ou nom d'hôte"
+
+msgid "Use SSL/TLS"
+msgstr "Utiliser SSL/TLS"
+
+msgid "Allow self signed certificate"
+msgstr "Autoriser les certificats auto-signés"
 
 #: centreon-web/www/include/Administration/parameters/api/api.php:77
 #: centreon-web/www/include/options/accessLists/groupsACL/formGroupConfig.php:175
@@ -4871,8 +4921,8 @@ msgid "LDAP User Import debug"
 msgstr "Débogage de l'import d'utilisateurs LDAP"
 
 #: centreon-web/www/include/Administration/parameters/debug/form.php:62
-msgid "Centcore Engine debug"
-msgstr "Débogage Centcore Engine"
+msgid "Centreon Gorgone debug"
+msgstr "Débogage de Centreon Gorgone "
 
 #: centreon-web/www/include/Administration/parameters/debug/form.php:63
 msgid "Centreontrapd debug"
@@ -4942,7 +4992,7 @@ msgstr "Durée de rétention des données dans MySQL"
 
 #: centreon-web/www/include/Administration/parameters/centstorage/form.php:121
 msgid "Retention Duration for Downtimes"
-msgstr "Durée de rétention des temps d'arrêt"
+msgstr "Durée de rétention des plages de maintenance"
 
 #: centreon-web/www/include/Administration/parameters/centstorage/form.php:122
 msgid "Retention Duration for Comments"
@@ -5231,13 +5281,17 @@ msgstr "Protocole du proxy Internet"
 msgid "Proxy URL"
 msgstr "URL du proxy web"
 
+#: centreon-web/www/include/Administration/parameters/general/form.php:155
+msgid "Test Internet Connection"
+msgstr "Tester la connexion Internet"
+
 #: centreon-web/www/include/Administration/parameters/general/form.php:156
 msgid "Proxy port"
 msgstr "Port d'accès au proxy internet"
 
 #: centreon-web/www/include/Administration/parameters/general/form.php:166
 msgid "Display downtime and acknowledgment on chart"
-msgstr "Afficher les temps d'arrêts et acquittements sur les ghraphiques"
+msgstr "Afficher les plages de maintenances et acquittements sur les ghraphiques"
 
 #: centreon-web/www/include/Administration/parameters/general/form.php:173
 msgid "Display comment on chart"
@@ -5246,26 +5300,38 @@ msgstr "Afficher les commentaires sur le graphique"
 msgid "Are you sure you want to change this parameter? Please read the help before."
 msgstr "Êtes-vous sûr de vouloir changer ce paramètre ? Veuillez lire l'aide avant."
 
-msgid "Keycloak trusted client addresses"
-msgstr "Adresses des clients de confiance SSO Keycloak"
+msgid "Trusted client addresses"
+msgstr "Adresses des clients de confiance"
 
-msgid "Keycloak blacklist client addresses"
-msgstr "Adresses des clients de bloqués Keycloak"
+msgid "Blacklist client addresses"
+msgstr "Adresses des clients bloqués"
 
-msgid "Keycloak Server Url"
-msgstr "URL du serveur Keycloak"
+msgid "Base Url"
+msgstr "URL de base"
 
-msgid "Keycloak Redirect Url"
-msgstr "Adresse de redirection vers Centreon depuis Keycloak"
+msgid "Authorization Endpoint"
+msgstr "Point de terminaison d'autorisation"
 
-msgid "Keycloak Client Realm"
-msgstr "Royaume client Keycloak"
+msgid "Token Endpoint"
+msgstr "Point de terminaison de jeton"
 
-msgid "Keycloak Client ID"
-msgstr "Identifiant client Keycloak"
+msgid "Introspection Token Endpoint"
+msgstr "Point de terminaison d'introspection du jeton"
 
-msgid "Keycloak Client Secret"
-msgstr "Secret client Keycloak"
+msgid "User Information Endpoint"
+msgstr "Point de terminaison des informations utilisateur"
+
+msgid "Scope"
+msgstr "Portée"
+
+msgid "Redirect Url"
+msgstr "Adresse de redirection vers Centreon"
+
+msgid "Client ID"
+msgstr "Identifiant client"
+
+msgid "Client Secret"
+msgstr "Secret client"
 
 #: centreon-web/www/include/Administration/parameters/general/form.php:189
 msgid "Enable SSO authentication"
@@ -5402,7 +5468,7 @@ msgstr "Intervalle de rafraîchissement de la page"
 #: centreon-web/www/include/monitoring/acknowlegement/xml/broker/makeXMLForAck.php:85
 #: centreon-web/www/include/monitoring/external_cmd/popup/massive_ack.php:114
 msgid "Sticky"
-msgstr "Acquittement persistant en cas de changement de statut non-OK"
+msgstr "Persistant (non-OK)"
 
 #: centreon-web/www/include/Administration/parameters/engine/form.php:99
 #: centreon-web/www/include/monitoring/acknowlegement/hostAcknowledge.php:77
@@ -5423,7 +5489,7 @@ msgstr "Acquitter les services liés à l'hôte"
 #: centreon-web/www/include/Administration/parameters/engine/form.php:108
 #: centreon-web/www/include/monitoring/external_cmd/popup/massive_downtime.php:126
 msgid "Set downtimes on services attached to hosts"
-msgstr "Fixer des temps d'arrêt aux services attachés aux hôtes"
+msgstr "Fixer des plages de maintenance aux services attachés aux hôtes"
 
 #: centreon-web/www/include/Administration/parameters/engine/form.php:113
 #: centreon-web/www/include/monitoring/downtime/AddDowntime.php:229
@@ -5467,7 +5533,7 @@ msgstr "Options d'acquittement par défaut"
 
 #: centreon-web/www/include/Administration/parameters/engine/form.php:210
 msgid "Default downtime settings"
-msgstr "Options de temps d'arrêt par défaut"
+msgstr "Options de la plage de maintenance par défaut"
 
 #: centreon-web/www/include/Administration/parameters/rrdtool/form.php:78
 msgid "Directory + RRDTOOL Binary"
@@ -6168,7 +6234,7 @@ msgstr "Groupes liés"
 
 #: centreon-web/www/include/options/accessLists/resourcesACL/formResourcesAccess.php:264
 msgid "Shared Resources"
-msgstr "Ressources partagéesb"
+msgstr "Ressources partagées"
 
 #: centreon-web/www/include/options/accessLists/resourcesACL/formResourcesAccess.php:266
 msgid ""
@@ -6449,7 +6515,7 @@ msgstr "Re-planifier la prochaine vérification d'un service (Forcé)"
 
 #: centreon-web/www/include/options/accessLists/actionsACL/formActionsAccess.php:107
 msgid "Schedule downtime for a service"
-msgstr "Planifier un temps d'arrêt pour un service"
+msgstr "Planifier une plage de maintenance pour un service"
 
 #: centreon-web/www/include/options/accessLists/actionsACL/formActionsAccess.php:108
 msgid "Add/Delete a comment for a service"
@@ -6502,7 +6568,7 @@ msgstr "Planifier la vérification pour un hôte (Forcé)"
 
 #: centreon-web/www/include/options/accessLists/actionsACL/formActionsAccess.php:122
 msgid "Schedule downtime for a host"
-msgstr "Planifier un temps d'arrêt pour un hôte"
+msgstr "Planifier une plage de maintenance pour un hôte"
 
 #: centreon-web/www/include/options/accessLists/actionsACL/formActionsAccess.php:123
 msgid "Add/Delete a comment for a host"
@@ -6874,6 +6940,12 @@ msgstr "Impossible"
 #: centreon-web/www/include/options/media/images/formImg.php:85
 msgid "Add Image(s)"
 msgstr "Ajout d'image(s)"
+
+msgid "Invalid Image Format."
+msgstr "Format d'image invalide."
+
+msgid "Images already uploaded."
+msgstr "Images déjà uploadés."
 
 #: centreon-web/www/include/options/media/images/formImg.php:89
 #: centreon-web/www/include/options/media/images/formImg.php:108
@@ -7627,7 +7699,7 @@ msgstr "OK"
 #: centreon-web/www/include/configuration/configObject/command/minPlayCommand.php:131
 #: centreon-web/www/include/monitoring/status/Services/xml/makeXMLForOneService.php:250
 msgid "WARNING"
-msgstr "WARNING"
+msgstr "ALERTE"
 
 #: centreon-web/www/include/reporting/dashboard/xmlInformations/initXmlFeed.php:85
 #: centreon-web/www/include/reporting/dashboard/csvExport/csv_ServiceGroupLogs.php:109
@@ -7977,7 +8049,7 @@ msgstr "Moyenne"
 
 #: centreon-web/www/include/reporting/dashboard/initReport.php:174
 msgid "Scheduled downtime"
-msgstr "Temps d'arrêt planifié"
+msgstr "Plage de maintenance planifiée"
 
 #: centreon-web/www/include/reporting/dashboard/initReport.php:177
 msgid "Total"
@@ -8137,14 +8209,6 @@ msgstr "Fichier de configuration principal"
 msgid "Temp File"
 msgstr "Fichier temporaire"
 
-#: centreon-web/www/include/configuration/configNagios/formNagios.php:165
-msgid "Check result directory"
-msgstr "Répertoire des mises en cache"
-
-#: centreon-web/www/include/configuration/configNagios/formNagios.php:166
-msgid "Max Check Result File Age"
-msgstr "Age maximal du fichier de mise en cache"
-
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:171
 msgid "Monitoring system User"
 msgstr "Utilisateur system de supervision"
@@ -8254,6 +8318,14 @@ msgstr "Notification"
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:187
 msgid "Service Check Execution Option"
 msgstr "Contrôle actif des services"
+
+#: centreon-web/www/include/configuration/configNagios/formNagios.php
+msgid "Heartbeat Interval"
+msgstr "Intervalle du Heartbeat"
+
+#: centreon-web/www/include/configuration/configNagios/formNagios.php
+msgid "Number between 5 and 600"
+msgstr "Nombre entre 5 et 600"
 
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:193
 msgid "Passive Service Check Acceptance Option"
@@ -8839,6 +8911,14 @@ msgstr "Optimisation"
 msgid "Admin"
 msgstr "Administrateur"
 
+#: centreon-web/www/include/configuration/configObject/contact/formContact.php:320
+msgid "Reach API Configuration"
+msgstr "Accès à l'API de configuration"
+
+#: centreon-web/www/include/configuration/configObject/contact/formContact.php:325
+msgid "Reach API Realtime"
+msgstr "Accès à l'API de temps réel"
+
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:870
 msgid "Folders"
 msgstr "Répertoires"
@@ -8846,10 +8926,6 @@ msgstr "Répertoires"
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:873
 msgid "Host Check Options"
 msgstr "Options de contrôle des hôtes"
-
-#: centreon-web/www/include/configuration/configNagios/formNagios.php:875
-msgid "Result Cache"
-msgstr "Mise en cache des résultats"
 
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:876
 #: centreon-web/www/include/configuration/configObject/host/formHost.php:642
@@ -9328,6 +9404,9 @@ msgstr "Nom du constructeur"
 msgid "OID"
 msgstr "OID"
 
+msgid "Bad OID Format"
+msgstr "Mauvais Format d'OID"
+
 #: centreon-web/www/include/configuration/configObject/traps/formTraps.php:169
 msgid "Default Status"
 msgstr "Statut par défaut"
@@ -9479,7 +9558,7 @@ msgstr "Historisé (recherche en base)"
 
 #: centreon-web/www/include/configuration/configObject/traps/formTraps.php:334
 msgid "Check Downtime"
-msgstr "Contrôle si le service est en temps d'arrêt"
+msgstr "Contrôle si le service est en plage de maintenance"
 
 #: centreon-web/www/include/configuration/configObject/traps/formTraps.php:343
 msgid "Preexec definition"
@@ -9948,7 +10027,7 @@ msgstr "Bagotant"
 #: centreon-web/www/include/configuration/configObject/contact_template_model/formContactTemplateModel.php:260
 #: centreon-web/www/include/configuration/configObject/host_template_model/formHostTemplateModel.php:630
 msgid "Downtime Scheduled"
-msgstr "Temps d'arrêt programmés"
+msgstr "Plages de maintenance programmées"
 
 #: centreon-web/www/include/configuration/configObject/host/formHost.php:779
 #: centreon-web/www/include/configuration/configObject/host_template_model/formHostTemplateModel.php:632
@@ -10225,14 +10304,6 @@ msgstr "Valeur de la macro"
 msgid "Impossible to change server due to parentship with other hosts"
 msgstr ""
 "Impossible de changer le serveur à cause d'une relation avec d'autres hôtes"
-
-#: centreon-web/www/include/configuration/configObject/host/formHost.php:1043
-msgid "Some hosts parent has not the same instance"
-msgstr "Certains hôtes parents ne sont pas supervisés par le même ordonnanceur"
-
-#: centreon-web/www/include/configuration/configObject/host/formHost.php:1044
-msgid "Some hosts child has not the same instance"
-msgstr "Certains hôtes enfants ne sont pas supervisés par le même ordonnanceur"
 
 #: centreon-web/www/include/configuration/configObject/host/formHost.php:1050
 msgid "_Module_ is not a legal expression"
@@ -10553,7 +10624,7 @@ msgstr "Services utilisés"
 #: centreon-web/www/include/configuration/configObject/command/commandType.php:39
 #: centreon-web/www/include/configuration/configObject/command/formCommand.php:186
 msgid "Check"
-msgstr "Vérification"
+msgstr "Vérifier"
 
 #: centreon-web/www/include/configuration/configObject/command/listCommand.php:157
 msgid "Host links (host template links)"
@@ -10648,7 +10719,7 @@ msgstr "Effacer les arguments"
 
 #: centreon-web/www/include/configuration/configObject/command/formCommand.php:214
 msgid "Describe macros"
-msgstr "Décrire les marcros"
+msgstr "Décrire les macros"
 
 #: centreon-web/www/include/configuration/configObject/command/formCommand.php:215
 #: centreon-web/www/include/configuration/configObject/command/formCommand.php:364
@@ -11699,16 +11770,12 @@ msgid "Server Information"
 msgstr "Informations sur le serveur"
 
 #: centreon-web/www/include/configuration/configServers/formServers.php:102
-msgid "SSH Information"
-msgstr "Informations SSH"
+msgid "Gorgone Information"
+msgstr "Informations Gorgone"
 
 #: centreon-web/www/include/configuration/configServers/formServers.php:103
 msgid "Monitoring Engine Information"
 msgstr "Information sur le moteur de supervision"
-
-#: centreon-web/www/include/configuration/configServers/formServers.php:104
-msgid "Miscelleneous"
-msgstr "Divers"
 
 #: centreon-web/www/include/configuration/configServers/formServers.php:105
 msgid "Centreon Trap Collector"
@@ -11721,6 +11788,18 @@ msgstr "Configuration du collecteur"
 #: centreon-web/www/include/configuration/configServers/formServers.php:113
 msgid "Monitoring Engine Init Script"
 msgstr "Script d'initialisation du moteur de supervision"
+
+msgid "Monitoring Engine start command"
+msgstr "Commande de démarrage du moteur de supervision"
+
+msgid "Monitoring Engine stop command"
+msgstr "Commande d'arrêt du moteur de supervision"
+
+msgid "Monitoring Engine restart command"
+msgstr "Commande de redémarrage du moteur de supervision"
+
+msgid "Monitoring Engine reload command"
+msgstr "Commande de rechargement du moteur de supervision"
 
 #: centreon-web/www/include/configuration/configServers/formServers.php:114
 msgid "Init System"
@@ -11749,6 +11828,9 @@ msgstr "Hôte local ?"
 #: centreon-web/www/include/configuration/configServers/formServers.php:130
 msgid "Is default poller ?"
 msgstr "Collecteur par défaut ?"
+
+msgid "Centreon Broker reload command"
+msgstr "Commande de rechargement de Centreon Broker"
 
 #: centreon-web/www/include/configuration/configServers/formServers.php:157
 msgid "Centreon Broker configuration path"
@@ -11784,6 +11866,12 @@ msgstr ""
 msgid "The name of the poller is mandatory"
 msgstr "Le nom du collecteur est obligatoire"
 
+msgid "The IP address is already registered on another poller"
+msgstr "L'adresse IP est déjà enregistrée sur un autre collecteur"
+
+msgid "The IP address is already registered"
+msgstr "L'adresse IP est déjà enregistrée"
+
 #: centreon-web/www/include/configuration/configServers/listServers.php:112
 msgid "Localhost"
 msgstr "Hôte local"
@@ -11802,7 +11890,7 @@ msgstr "PID"
 
 #: centreon-web/www/include/configuration/configServers/listServers.php:117
 msgid "Start time"
-msgstr "Heure de démarrage du programme"
+msgstr "Heure de début"
 
 #: centreon-web/www/include/configuration/configServers/listServers.php:118
 #: centreon-web/www/include/monitoring/status/Services/xml/makeXMLForOneHost.php:189
@@ -11838,15 +11926,15 @@ msgstr "Exporter la configuration"
 #: centreon-web/www/include/configuration/configDowntime/formDowntime.php:114
 #: centreon-web/www/include/monitoring/downtime/listDowntime.php:237
 msgid "Add a downtime"
-msgstr "Ajouter un temps d'arrêt"
+msgstr "Ajouter une plage de maintenance"
 
 #: centreon-web/www/include/configuration/configDowntime/formDowntime.php:116
 msgid "Modify a downtime"
-msgstr "Modifier un temps d'arrêt"
+msgstr "Modifier une plage de maintenance"
 
 #: centreon-web/www/include/configuration/configDowntime/formDowntime.php:118
 msgid "View a downtime"
-msgstr "Visualiser un temps d'arrêt"
+msgstr "Visualiser une plage de maintenance"
 
 #: centreon-web/www/include/configuration/configDowntime/formDowntime.php:121
 #: centreon-web/www/include/configuration/configDowntime/formDowntime.php:232
@@ -11867,7 +11955,7 @@ msgstr "Lié avec le groupe de services"
 
 #: centreon-web/www/include/configuration/configDowntime/formDowntime.php:230
 msgid "Downtime Configuration"
-msgstr "Configuration des temps d'arrêt"
+msgstr "Configuration des plages de maintenance"
 
 #: centreon-web/www/include/configuration/configDowntime/formDowntime.php:234
 msgid "Add new period"
@@ -11880,7 +11968,7 @@ msgstr "La date de fin doit être plus grande que la date de début."
 #: centreon-web/www/include/configuration/configDowntime/formDowntime.php:266
 #: centreon-web/www/include/configuration/configDowntime/formDowntime.php:355
 msgid "No relation set for this downtime"
-msgstr "Aucune relation faite avec ce temps d'arrêt"
+msgstr "Aucune relation faite avec cette plage de maintenance"
 
 #: centreon-web/www/include/configuration/configDowntime/formDowntime.php:334
 #: centreon-web/www/include/configuration/configDowntime/ajaxForms.php:77
@@ -11899,7 +11987,7 @@ msgstr "Secondes"
 #: centreon-web/www/include/configuration/configDowntime/ajaxForms.php:71
 #: centreon-web/www/include/monitoring/downtime/AddDowntime.php:131
 msgid "Downtime type"
-msgstr "Type de temps d'arrêt"
+msgstr "Type de plage de maintenance"
 
 #: centreon-web/www/include/configuration/configDowntime/formDowntime.php:339
 #: centreon-web/www/include/configuration/configDowntime/ajaxForms.php:73
@@ -12327,7 +12415,7 @@ msgstr "Statut détaillé"
 #: centreon-web/www/include/monitoring/status/Hosts/host.php:133
 #: centreon-web/www/include/monitoring/status/Services/service.php:338
 msgid "Unhandled Problems"
-msgstr "Problèmes non acquittés"
+msgstr "Problèmes non traités"
 
 #: centreon-web/www/include/monitoring/status/Hosts/host.php:134
 msgid "Host Problems"
@@ -12450,7 +12538,7 @@ msgstr "Hôtes : Désactiver la vérification"
 #: centreon-web/www/include/monitoring/status/Services/service.php:278
 #: centreon-web/www/include/monitoring/status/Services/service.php:298
 msgid "Hosts : Set Downtime"
-msgstr "Hôtes : Ajouter un temps d'arrêt"
+msgstr "Hôtes : Ajouter une plage de maintenance"
 
 #: centreon-web/www/include/monitoring/status/HostGroups/hostGroupJS.php:71
 msgid "Hosts Status"
@@ -12710,6 +12798,9 @@ msgstr "Problèmes"
 #: centreon-web/www/include/monitoring/status/ServicesServiceGroups/serviceSummaryBySG.php:69
 #: centreon-web/www/include/monitoring/status/ServicesServiceGroups/serviceGridBySG.php:69
 msgid "Acknowledge"
+msgstr "Acquitter"
+
+msgid "Acknowlegment"
 msgstr "Acquittement"
 
 #: centreon-web/www/include/monitoring/status/Services/serviceSummary.php:96
@@ -12836,7 +12927,7 @@ msgstr "Services : Planifier un contrôle immédiat (Forcé)"
 #: centreon-web/www/include/monitoring/status/Services/service.php:251
 #: centreon-web/www/include/monitoring/status/Services/service.php:289
 msgid "Services : Set Downtime"
-msgstr "Services : Ajouter un temps d'arrêt"
+msgstr "Services : Ajouter une plage de maintenance"
 
 #: centreon-web/www/include/monitoring/status/Services/service.php:339
 msgid "Service Problems"
@@ -12953,12 +13044,12 @@ msgstr "Commentaire"
 
 #: centreon-web/www/include/monitoring/external_cmd/popup/massive_downtime.php:74
 msgid "Set downtimes"
-msgstr "Configurer des temps d'arrêt"
+msgstr "Configurer des plages de maintenance"
 
 #: centreon-web/www/include/monitoring/external_cmd/popup/massive_downtime.php:80
 #, php-format
 msgid "Downtime set by %s"
-msgstr "Temps d'arrêt fixé par %s"
+msgstr "Plage de maintenance fixée par %s"
 
 #: centreon-web/www/include/monitoring/external_cmd/popup/massive_downtime.php:88
 msgid "*The timezone used is configured on your user settings"
@@ -12968,7 +13059,7 @@ msgstr ""
 
 #: centreon-web/www/include/monitoring/external_cmd/popup/massive_downtime.php:134
 msgid "Set downtime"
-msgstr "Configurer un temps d'arrêt"
+msgstr "Planifier une maintenance"
 
 #: centreon-web/www/include/monitoring/external_cmd/popup/massive_ack.php:96
 msgid "Acknowledge problems"
@@ -13081,7 +13172,7 @@ msgstr "Soumettre un résultat pour ce service"
 
 #: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:477
 msgid "Schedule downtime for this service"
-msgstr "Planifier un arrêt pour ce service"
+msgstr "Planifier une plage de maintenance pour ce service"
 
 #: centreon-web/www/include/monitoring/objectDetails/serviceDetails.php:478
 msgid "Add a comment for this service"
@@ -13332,7 +13423,7 @@ msgstr "Commandes disponibles"
 
 #: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:482
 msgid "Schedule downtime for this host"
-msgstr "Planifier un temps d'arrêt pour cet hôte"
+msgstr "Planifier une plage de maintenance pour cet hôte"
 
 #: centreon-web/www/include/monitoring/objectDetails/hostDetails.php:483
 msgid "Add Comment for this host"
@@ -13488,7 +13579,7 @@ msgstr "Confirmez-vous l'annulation ?"
 
 #: centreon-web/www/include/monitoring/downtime/listDowntime.php:248
 msgid "Services Downtimes"
-msgstr "Temps d'arrêt des services"
+msgstr "Plages de maintenance des services"
 
 #: centreon-web/www/include/monitoring/downtime/listDowntime.php:249
 msgid "s"
@@ -13496,15 +13587,15 @@ msgstr "s"
 
 #: centreon-web/www/include/monitoring/downtime/listDowntime.php:250
 msgid "View downtimes of hosts"
-msgstr "Visualiser les temps d'arrêt des hôtes"
+msgstr "Visualiser les plages de maintenance des hôtes"
 
 #: centreon-web/www/include/monitoring/downtime/listDowntime.php:261
 msgid "Display Finished Downtimes"
-msgstr "Afficher les temps d'arrêt terminés"
+msgstr "Afficher les plages de maintenance terminés"
 
 #: centreon-web/www/include/monitoring/downtime/listDowntime.php:262
 msgid "Display Recurring Downtimes"
-msgstr "Afficher les temps d'arrêt cycliques"
+msgstr "Afficher les plages de maintenance cycliques"
 
 #: centreon-web/www/include/monitoring/downtime/AddDowntime.php:172
 msgid "Hostgroups"
@@ -13521,7 +13612,7 @@ msgstr ""
 
 #: centreon-web/www/include/monitoring/downtime/AddDowntime.php:240
 msgid "Set downtime for hosts services"
-msgstr "Configurer un temps d'arrêt pour les services des hôtes"
+msgstr "Configurer une plage de maintenance pour les services des hôtes"
 
 #~ msgid " element(s) found"
 #~ msgstr "élément(s) trouvé(s)"
@@ -13570,7 +13661,7 @@ msgstr "Configurer un temps d'arrêt pour les services des hôtes"
 #~ msgstr "Statuts de services"
 
 #~ msgid "No downtime scheduled for services"
-#~ msgstr "Aucun temps d'arrêt planifié pour les services"
+#~ msgstr "Aucune plage de maintenance planifiée pour les services"
 
 #~ msgid "Host category"
 #~ msgstr "Catégorie d'hôtes"
@@ -13672,10 +13763,10 @@ msgstr "Configurer un temps d'arrêt pour les services des hôtes"
 #~ msgstr "Planifier pour un hôte"
 
 #~ msgid "Add a Host downtime"
-#~ msgstr "Ajouter un temps d'arrêt pour un hôte"
+#~ msgstr "Ajouter une plage de maintenance pour un hôte"
 
 #~ msgid "Select a downtime type"
-#~ msgstr "Sélectionner un type de temps d'arrêt"
+#~ msgstr "Sélectionner un type de plage de maintenance"
 
 #~ msgid "Connection Error to NDO DataBase ! \n"
 #~ msgstr "Erreur de connexion à la base de données NDO ! \n"
@@ -13702,13 +13793,10 @@ msgstr "Configurer un temps d'arrêt pour les services des hôtes"
 #~ msgstr "Dernière fois dans un état critique"
 
 #~ msgid "Services: Set Downtime"
-#~ msgstr "Services: Planifier un temps d'arrêt"
+#~ msgstr "Services: Planifier une plage de maintenance"
 
 #~ msgid "Hosts: Set Downtime"
-#~ msgstr "Hôtes: Planifier un temps d'arrêt"
-
-#~ msgid "Disacknowledge"
-#~ msgstr "Désacquittement"
+#~ msgstr "Hôtes: Planifier une plage de maintenance"
 
 #~ msgid "Enable Notification"
 #~ msgstr "Activer la Notification"
@@ -13851,6 +13939,9 @@ msgstr "Configurer un temps d'arrêt pour les services des hôtes"
 
 #~ msgid "ACL rules"
 #~ msgstr "Règles d'accès"
+
+msgid "ACL Resource name can't be empty"
+msgstr "Le nom de la Resource ACL ne peut pas être vide"
 
 #~ msgid "All Graphs"
 #~ msgstr "Tous les graphiques"
@@ -14254,7 +14345,7 @@ msgstr "Poubelle"
 #~ msgstr "Couleur des hôtes ou des services acquittés"
 
 #~ msgid "Downtime host or service Color"
-#~ msgstr "Couleur des hôtes ou des services en temps d'arrêt"
+#~ msgstr "Couleur des hôtes ou des services en maintenance"
 
 #~ msgid "Color for host Down (Service view)"
 #~ msgstr ""
@@ -14522,9 +14613,6 @@ msgstr "Poubelle"
 #~ msgid "On Problem Host"
 #~ msgstr "Sur Problème de l'hôte"
 
-#~ msgid "Unhandled"
-#~ msgstr "Non Traités"
-
 #~ msgid "Unhandled Service problems (last %s)"
 #~ msgstr "Problèmes de service non traités (%s derniers)"
 
@@ -14556,16 +14644,13 @@ msgstr "Poubelle"
 #~ msgstr "Confirmez-vous l'annulation?"
 
 #~ msgid "Hosts Downtimes"
-#~ msgstr "Temps d'arrêt des hôtes"
+#~ msgstr "Plages de maintenance des hôtes"
 
 #~ msgid "No downtime scheduled for hosts"
-#~ msgstr "Aucun temps d'arrêt planifié pour les hôtes"
+#~ msgstr "Aucune plage de maintenance planifiée pour les hôtes"
 
 #~ msgid "View downtimes of services"
-#~ msgstr "Visualiser les temps d'arrêt des services"
-
-#~ msgid "PENDING"
-#~ msgstr "EN ATTENTE"
+#~ msgstr "Visualiser les plages de maintenance des services"
 
 #~ msgid "Sort by criticality"
 #~ msgstr "Trier par criticité"
@@ -14765,9 +14850,6 @@ msgstr "Création d'une tâche d'exportation"
 msgid "Generating Export Files"
 msgstr "Génération de fichiers d'exportation"
 
-msgid "Processing Remote Import/Configuration"
-msgstr "Traitement de l'importation/configuration à distance"
-
 msgid "The field is required"
 msgstr "Ce champ est requis"
 
@@ -14808,7 +14890,7 @@ msgid "Latency detected, check configuration for better optimization"
 msgstr "Latence détectée, vérifiez la configuration pour une meilleure optimisation"
 
 msgid "You can't edit this downtime because you don't have access to all of its resources"
-msgstr "Vous ne pouvez pas éditer ce temps d’arrêt car vous n'êtes pas autorisé à accéder à toutes les ressources liées"
+msgstr "Vous ne pouvez pas éditer cette plage de maintenance car vous n'êtes pas autorisé à accéder à toutes les ressources liées"
 
 msgid "You can't edit this hostgroup because you don't have access to all its resources"
 msgstr "Vous ne pouvez pas éditer groupe d'hote car vous n'êtes pas autorisé à accéder à toutes les ressources liées"
@@ -14828,11 +14910,1398 @@ msgstr "Graphiques"
 msgid "To use additional Remote Servers a Master Remote Server must be selected."
 msgstr "Un Remote Server principal doit être sélectionné, avant d'utiliser des Remote Server additionnels."
 
+msgid "Attach to Master Remote Server"
+msgstr "Lier à un Remote Server principal"
+
 msgid "Attach additional Remote Servers"
-msgstr "Ajouter des Remote Server additonnels"
+msgstr "Lier à des Remote Server additionnels"
 
 msgid "Locked elements"
 msgstr "Eléments verrouillés"
 
 msgid "This value needs to be an integer lesser than"
 msgstr "Cette valeur doit être un entier inférieur à"
+
+#:Centreon/Application/Controller/Configuration/ProxyController.php:91
+msgid "Invalid json message received"
+msgstr "Json invalide reçu"
+
+#:Centreon/Application/Controller/Monitoring/MetricController.php:81
+#:Centreon/Application/Controller/DowntimeController.php:134
+#:Centreon/Application/Controller/DowntimeController.php:273
+msgid "Host %d not found"
+msgstr "Hôte %d non trouvé"
+
+#:Centreon/Application/Controller/Monitoring/MetricController.php:81
+#:Centreon/Domain/Acknowledgement/AcknowledgementService.php:308
+msgid "Service %d not found"
+msgstr "Service %d non trouvé"
+
+#:Centreon/Application/Controller/Monitoring/MetricController.php:109
+msgid "Invalid date given for parameter \"%s\"."
+msgstr "Date invalide pour le paramètre \"%s\"."
+
+#:Centreon/Application/Controller/Monitoring/MetricController.php:117
+msgid "End date must be greater than start date."
+msgstr "La date de fin doit être supérieure à la date de début."
+
+#:Centreon/Application/Controller/AcknowledgementController.php:573
+msgid "Incorrect resource type for disacknowledgement"
+msgstr "Type de ressource incorrect pour le désacquittement"
+
+#:Centreon/Application/Controller/AcknowledgementController.php:650
+#:Centreon/Application/Controller/DowntimeController.php:644
+msgid "Incorrect resource type for acknowledgement"
+msgstr "Type de ressource incorrect pour l'acquittement"
+
+#:Centreon/Application/Controller/AuthenticationController.php:76
+msgid "Invalid credentials"
+msgstr "Identifiants invalides"
+
+#:Centreon/Application/Controller/DowntimeController.php:203
+#:Centreon/Application/Controller/DowntimeController.php:333
+msgid "Service %d on host %d not found"
+msgstr "Service %d de l'hôte %d non trouvé"
+
+#:Centreon/Application/Controller/GorgoneController.php:142
+msgid "Unrecognized Command"
+msgstr "Commande non reconnue"
+
+#:Centreon/Application/Controller/GorgoneController.php:157
+msgid "Commands containing a request body are not allowed at the moment"
+msgstr "Les commandes contenant un corp ne sont pas autorisées pour le moment"
+
+#:Centreon/Domain/Acknowledgement/AcknowledgementService.php:161
+#:Centreon/Domain/Acknowledgement/AcknowledgementService.php:200
+#:Centreon/Domain/Acknowledgement/AcknowledgementService.php:246
+#:Centreon/Domain/Acknowledgement/AcknowledgementService.php:290
+#:Centreon/Domain/Check/CheckService.php:114
+#:Centreon/Domain/Check/CheckService.php:138
+#:Centreon/Domain/Downtime/DowntimeService.php:252
+msgid "Host not found"
+msgstr "Hôte non trouvé"
+
+#:Centreon/Domain/Acknowledgement/AcknowledgementService.php:195
+#:Centreon/Domain/Acknowledgement/AcknowledgementService.php:265
+#:Centreon/Domain/Check/CheckService.php:143
+#:Centreon/Domain/Downtime/DowntimeService.php:260
+msgid "Service not found"
+msgstr "Service non trouvé"
+
+#:Centreon/Domain/Acknowledgement/AcknowledgementService.php:250
+msgid "No acknowledgement found for this host"
+msgstr "Aucun acquittement trouvé pour cet hôte"
+
+#:Centreon/Domain/Acknowledgement/AcknowledgementService.php:253
+msgid "Acknowledgement already cancelled for this host"
+msgstr "Acquittement déjà annulé pour cet hôte"
+
+#:Centreon/Domain/Acknowledgement/AcknowledgementService.php:275
+msgid "No acknowledgement found for this service"
+msgstr "Aucun acquittement trouvé pour ce service"
+
+#:Centreon/Domain/Acknowledgement/AcknowledgementService.php:278
+msgid "Acknowledgement already cancelled for this service"
+msgstr "Acquittement déjà annulé pour ce service"
+
+#:Centreon/Domain/Acknowledgement/AcknowledgementService.php:315
+msgid "Incorrect Resource type: %s"
+msgstr "Type de ressource incorrect: %s"
+
+#:Centreon/Domain/ConfigurationLoader/YamlConfigurationLoader.php:102
+msgid "Loop detected in file %s"
+msgstr "Boucle détectée dans le fichier %s"
+
+#:Centreon/Domain/ConfigurationLoader/YamlConfigurationLoader.php:137
+msgid "The configuration file %s does not exists"
+msgstr "Le fichier de configuration %s n'existe pas"
+
+#:Centreon/Domain/Downtime/DowntimeService.php:233
+msgid "Downtime not found"
+msgstr "Plage de maintenance non trouvée"
+
+#:Centreon/Domain/Downtime/DowntimeService.php:239
+msgid "Downtime already cancelled for this %s"
+msgstr "Plage de maintenance déjà annulée pour %s"
+
+#:Centreon/Domain/Downtime/DowntimeService.php:267
+msgid "Incorrect Resource Type"
+msgstr "Type de ressource incorrect"
+
+#:Centreon/Domain/Engine/EngineService.php:76
+#:Centreon/Domain/Engine/EngineService.php:102
+#:Centreon/Domain/Engine/EngineService.php:169
+#:Centreon/Domain/Engine/EngineService.php:220
+msgid "The contact alias is empty"
+msgstr "L'alias du contact est vide"
+
+#:Centreon/Domain/Engine/EngineService.php:79
+#:Centreon/Domain/Engine/EngineService.php:129
+#:Centreon/Domain/Engine/EngineService.php:175
+#:Centreon/Domain/Engine/EngineService.php:266
+#:Centreon/Domain/Engine/EngineService.php:316
+#:Centreon/Domain/HostConfiguration/HostConfigurationService.php:47
+msgid "Host name can not be empty"
+msgstr "Le nom d'hôte ne peut être vide"
+
+#:Centreon/Domain/Engine/EngineService.php:105
+#:Centreon/Domain/Engine/EngineService.php:149
+#:Centreon/Domain/Engine/EngineService.php:146
+msgid "The host of service is not defined"
+msgstr "L'hôte du service n'est pas défini"
+
+#:Centreon/Domain/Engine/EngineService.php:172
+msgid "Host of downtime not found"
+msgstr "L'hôte associé à la plage de maintenance n'a pas été trouvé"
+
+#:Centreon/Domain/Engine/EngineService.php:235
+msgid "The host of service (id: %d) is not defined"
+msgstr "L'hôte du service (id: %d) n'est pas défini"
+
+#:Centreon/Domain/Engine/EngineService.php:238
+msgid "Host name of service (id: %d) can not be empty"
+msgstr "Le nom d'hôte du service (id: %d) ne peut pas être vide"
+
+#:Centreon/Domain/Engine/EngineService.php:241
+msgid "The description of service (id: %d) can not be empty"
+msgstr "La description du service (id: %d) ne peut pas être vide"
+
+#:Centreon/Domain/Engine/EngineService.php:286
+msgid "Host and service id can not be null at the same time"
+msgstr "L'ID de l'hôte et du service ne peuvent pas être null en même temps"
+
+#:Centreon/Domain/Engine/EngineService.php:289
+msgid "Downtime internal id can not be null"
+msgstr "L'ID interne de la plage de maintenance ne peut pas être null"
+
+#:Centreon/Domain/Engine/EngineService.php:355
+msgid "Host name cannot be empty"
+msgstr "Le nom d'hôte ne peut pas être vide"
+
+#:Centreon/Domain/Engine/EngineService.php:359
+msgid "Service description cannot be empty"
+msgstr "La description du service ne peut pas être vide"
+
+#:Centreon/Domain/Exception/ExpiredTokenException.php:29
+msgid "Token expired."
+msgstr "Token expiré."
+
+#:Centreon/Domain/Exception/ContactDisabledException.php:29
+msgid "Contact disabled."
+msgstr "Contact désactivé."
+
+#:Centreon/Domain/Gorgone/ActionLog.php:77
+msgid "Token can not empty, null or not defined"
+msgstr "Le token ne peut être ni null, ni vide ou non défini"
+
+#:Centreon/Domain/Gorgone/GorgoneService.php:69
+msgid "Error when connecting to the Gorgone server"
+msgstr "Erreur de connexion avec le serveur Gorgone"
+
+#:Centreon/Domain/HostConfiguration/HostConfigurationService.php:52
+msgid "Host name already exists"
+msgstr "Le nom d'hôte existe déjà"
+
+#:Centreon/Domain/HostConfiguration/HostConfigurationService.php:61
+msgid "Error while creation of host"
+msgstr "Erreur lors de la creation de l'hôte"
+
+#:Centreon/Domain/HostConfiguration/HostConfigurationService.php:73
+msgid "Error while searching for the host"
+msgstr "Erreur lors de la recherche de l'hôte"
+
+#:Centreon/Domain/HostConfiguration/HostConfigurationService.php:85
+msgid "Error while searching for the number of host"
+msgstr "Erreur lors de la recherche du nombre d'hôte"
+
+msgid "Error while searching for the host macros"
+msgstr "Erreur lors de la recherche des macros de l'hôte"
+
+msgid "Monitoring server with id %d not found"
+msgstr "Le serveur de supervision avec l'id %d n'a pas été trouvé"
+
+msgid "Monitoring server %s not found"
+msgstr "Le serveur de supervision %s n'a pas été trouvé"
+
+msgid "Template with id %d not found"
+msgstr "Le modèle avec l'id %d n'a pas été trouvé"
+
+msgid "Template %s not found"
+msgstr "Le modèle %s n'a pas été trouvé"
+
+msgid "Error while searching for the service macros"
+msgstr "Erreur lors de la recherche des macros du service"
+
+msgid "Error while searching for the service"
+msgstr "Erreur lors de la recherche du service"
+
+msgid "Error while searching for the command of service"
+msgstr "Erreur lors de la recherche de la commande du service"
+
+msgid "The service id can not be null"
+msgstr "L'id du service ne peut pas être null"
+
+msgid "Host or id can not be null"
+msgstr "L'hôte ou l'id de l'hôte ne peuvent pas être null"
+
+msgid "The command line in the configuration is empty while in the monitoring it is not"
+msgstr "La ligne de commande dans la configuration est vide alors que celle de la supervision ne l'est pas."
+
+msgid "Different number of tokens between configuration and monitoring command line"
+msgstr "Nombre différent de jetons entre la ligne de commande de configuration et de supervision"
+
+#:Centreon/Domain/Monitoring/ResourceService.php:102
+msgid "Error while searching for resources"
+msgstr "Erreur lors de la recherche de ressources"
+
+#:Centreon/Domain/MonitoringServer/MonitoringServerService.php:57
+msgid "Error when searching for monitoring servers"
+msgstr "Erreur lors de la recherche de serveurs de supervision"
+
+msgid "Error when searching for real time monitoring servers"
+msgstr "Erreur lors de la recherche de serveurs de supervision dans le temps réel"
+
+#:Centreon/Domain/MonitoringServer/MonitoringServerService.php:142
+msgid "Error when deleting a monitoring server"
+msgstr "Erreur lors de la supression d'un serveur de supervision"
+
+#:Centreon/Domain/MonitoringServer/MonitoringServerService.php:69
+msgid "Error when searching for a resource of monitoring server"
+msgstr "Erreur lors de la recherche de la ressource attachée au serveur de supervision"
+
+#:Centreon/Domain/MonitoringServer/MonitoringServerService.php:81
+msgid "Error when searching for the local monitoring servers"
+msgstr "Erreur lors de la recherche du serveur de supervision local"
+
+#:Centreon/Domain/Platform/PlatformService.php:58
+msgid "Error while searching for the web version of the Centreon platform"
+msgstr "Erreur lors de la récupération de la version de la plate-forme Centreon"
+
+#:Centreon/Domain/Platform/PlatformService.php:70
+msgid "Error while searching for the modules version of the Centreon platform"
+msgstr "Erreur lors de la recherche de la version des extensions"
+
+#:Centreon/Domain/Platform/PlatformService.php:82
+msgid "Error while searching for the widgets version of the Centreon platform"
+msgstr "Erreur lors de la recherche de la version des widgets"
+
+#:Centreon/Domain/RequestParameters/RequestParameters.php:354
+msgid "Bad format for the sort request parameter"
+msgstr "Mauvais format pour la requête de tri"
+
+#:Centreon/Domain/Security/AuthenticationService.php:79
+msgid "Contact not found"
+msgstr "Contact non trouvé"
+
+#:Centreon/Domain/Security/AuthenticationService.php:113
+#:Centreon/Infrastructure/Gorgone/CommandRepositoryAPI.php:98
+msgid "Token not found"
+msgstr "Token non trouvé"
+
+#:Centreon/Infrastructure/Engine/EngineRepositoryFile.php:87
+msgid "Centcore directory %s does not exist"
+msgstr "Le répertoire Centcore %s n'existe pas"
+
+#:Centreon/Infrastructure/Engine/EngineRepositoryFile.php:96
+msgid "Error during creation of the CentCore command file (%s)"
+msgstr "Erreur lors de la création du fichier de commande Centcore (%s)"
+
+#:Centreon/Infrastructure/Gorgone/CommandRepositoryAPI.php:94
+msgid "Bad request"
+msgstr "Mauvaise requête"
+
+#:Centreon/Infrastructure/Gorgone/ResponseRepositoryAPI.php:94
+msgid "Request error"
+msgstr "Erreur de requête"
+
+#:Centreon/Infrastructure/HostConfiguration/HostConfigurationRepositoryRDB.php:135
+msgid "Monitoring server %1 not found"
+msgstr "Serveur de supervision %1 non trouvé"
+
+#:Centreon/Infrastructure/HostConfiguration/HostConfigurationRepositoryRDB.php:189
+msgid "Template with id %1 not found"
+msgstr "Le modèle possédant l'id %1 n'a pas été trouvé"
+
+#:Centreon/Infrastructure/HostConfiguration/HostConfigurationRepositoryRDB.php:206
+msgid "Template %1 not found"
+msgstr "Le modèle %1 n'a pas été trouvé"
+
+#:Centreon/Infrastructure/Monitoring/MonitoringRepositoryRDB.php:189
+#:Centreon/Infrastructure/Monitoring/MonitoringRepositoryRDB.php:535
+#:Centreon/Infrastructure/Monitoring/MonitoringRepositoryRDB.php:590
+#:Centreon/Infrastructure/Monitoring/MonitoringRepositoryRDB.php:702
+#:Centreon/Infrastructure/Monitoring/MonitoringRepositoryRDB.php:802
+#:Centreon/Infrastructure/Monitoring/MonitoringRepositoryRDB.php:1010
+msgid "Bad SQL request"
+msgstr "Mauvaise requête SQL"
+
+#:Centreon/Infrastructure/Monitoring/TimelineRepositoryRDB.php:444
+msgid "Incorrect Event Type"
+msgstr "Mauvais type d'évènement"
+
+#:Centreon/Infrastructure/Provider/AutoloadServiceProvider.php:112
+msgid "Provider %1 is loaded"
+msgstr "Le fournisseur %1 est chargé"
+
+#:Centreon/Infrastructure/RequestParameters/SqlRequestParametersTranslator.php:197
+msgid "The parameter %s is not allowed"
+msgstr "Le paramètre %s n'est pas autorisé"
+
+#:Centreon/Infrastructure/RequestParameters/SqlRequestParametersTranslator.php:216
+msgid "The value %1 is only supported by the operators %2 and %3"
+msgstr "La valeur %1 est uniquement supportée par les opéreateurs %2 et %3"
+
+#:Centreon/Infrastructure/RequestParameters/SqlRequestParametersTranslator.php:265
+#:Centreon/Infrastructure/RequestParameters/SqlRequestParametersTranslator.php:268
+msgid "Bad regex format"
+msgstr "Mauvaise expression régulière (RegExp)"
+
+#:Centreon/Infrastructure/RequestParameters/SqlRequestParametersTranslator.php:318
+msgid "Bad search operator"
+msgstr "Mauvais opérateur de recherche"
+
+#:Centreon/Infrastructure/Security/AuthenticationRepositoryRDB.php:97
+msgid "Error during token creation"
+msgstr "Erreur lors de la création du token"
+
+#:Centreon/Infrastructure/Security/AuthenticationRepositoryRDB.php:141
+msgid "Error during deleting expired session"
+msgstr "Erreur lors de l'expiration de la session"
+
+#:Centreon/Infrastructure/Security/AuthenticationRepositoryRDB.php:214
+msgid "Error when recovering the number of tokens"
+msgstr "Erreur lors de la récupération du nombre de token"
+
+#:Centreon/Infrastructure/Security/AuthenticationRepositoryRDB.php:232
+msgid "Error when deleting tokens for one contact"
+msgstr "Erreur lors de la suppression des tokens pour un contact"
+msgid "Acknowledged by"
+msgstr "Acquitté par"
+
+msgid "Acknowledge services attached to host"
+msgstr "Acquitter les services attachés à l'hôte"
+
+msgid "at"
+msgstr "à"
+
+msgid "Clear"
+msgstr "Effacer"
+
+msgid "Criterias"
+msgstr "Critères"
+
+msgid "Copy"
+msgstr "Copier"
+
+msgid "Command copied to clipboard"
+msgstr "Commande copiée dans le presse-papier"
+
+msgid "Current notification number"
+msgstr "Numéro de notification actuel"
+
+msgid "Current status duration"
+msgstr "Durée du statut actuel"
+
+msgid "Downtime duration"
+msgstr "Durée de la plage de maintenance"
+
+msgid "End date must be greater than start date"
+msgstr "La date de fin doit être supérieure à la date de début"
+
+msgid "End time"
+msgstr "Heure de fin"
+
+msgid "This Resource is flapping"
+msgstr "Cette Ressource est bagottante"
+
+msgid "Show criterias filters"
+msgstr "Montrer les critères de filtre"
+
+msgid "Start date"
+msgstr "Date de début"
+
+msgid "Change start date"
+msgstr "Changer la date de début"
+
+msgid "Change start time"
+msgstr "Changer l'heure de début"
+
+msgid "Host group"
+msgstr "Groupe d'hôtes"
+
+msgid "Downtime"
+msgstr "Plage de maintenance"
+
+msgid "In downtime"
+msgstr "En maintenance"
+
+msgid "1 day"
+msgstr "1 jour"
+
+msgid "7 days"
+msgstr "7 jours"
+
+msgid "31 days"
+msgstr "31 jours"
+
+msgid "Last day"
+msgstr "Dernier jour"
+
+msgid "Last 7 days"
+msgstr "Derniers 7 jours"
+
+msgid "Last 31 days"
+msgstr "Derniers 31 jours"
+
+msgid "Set downtime on"
+msgstr "Programmer une plage de maintenance sur"
+
+msgid "Downtime set by"
+msgstr "Plage de maintenance programmée par"
+
+msgid "Set downtime on services attached to host"
+msgstr "Programmer une plage de maintenance sur les services attachés à l'hôte"
+
+msgid "Last notification"
+msgstr "Dernière notification"
+
+msgid "Last status change"
+msgstr "Dernier changement de statut"
+
+msgid "Next check"
+msgstr "Prochain contrôle"
+
+msgid "If checked, a notification is sent to the contacts linked to the object to warn that the incident on the resource has been acknowledged"
+msgstr "Si cette option est cochée, une notification sera envoyée aux contacts liés à l'objet afin d'avertir que l'incident de la ressource a été acquitté"
+
+msgid "Open"
+msgstr "Ouvrir"
+
+msgid "Status change percentage"
+msgstr "Pourcentage de changement de statut"
+
+msgid "Resource name"
+msgstr "Nom de la ressource"
+
+msgid "Resource problems"
+msgstr "Problèmes de ressources"
+
+msgid "Rows per page"
+msgstr "Lignes par page"
+
+msgid "of"
+msgstr "de"
+
+msgid "More"
+msgstr "Étendre"
+
+msgid "Disable autorefresh"
+msgstr "Désactiver l'actualisation automatique"
+
+msgid "Enable autorefresh"
+msgstr "Activer l'actualisation automatique"
+
+msgid "Search help"
+msgstr "Aide pour la recherche"
+
+msgid "This search bar will search matching occurences you type, contained in: host name or alias or address or service description"
+msgstr "Cette barre de recherche va rechercher les ressources correspondantes aux occurences que vous tapez, contenues dans: le nom de l'hôte, l'alias, l'adresse, ou bien la description du service"
+
+msgid "You can use regular expression syntax to retrieve more relevant results"
+msgstr "Vous pouvez utiliser des expressions régulières afin d'afficher des résultats plus pertinents à la recherche"
+
+msgid "It's possible to specify the criteria you precisely want to search, by using the following syntax:"
+msgstr "Il est possible de spécifier les critères que vous voulez rechercher de manière précise, en utilisant la syntaxe suivante:"
+
+msgid "Some examples:"
+msgstr "Quelques exemples:"
+
+msgid "will display resources with host name starting by'"
+msgstr "affichera les ressources avec un nom d'hôte commençant par"
+
+msgid "will display resources with service description finishing by"
+msgstr "affichera les ressources avec une description de service finissant par"
+
+msgid "will display all resources with host having alias containing"
+msgstr "affichera les ressources avec un alias d'hôte contenant"
+
+msgid "will display resources having FQDN that doesn't contain"
+msgstr "affichera les ressources avec un FQDN ne contenant pas"
+
+msgid "and host alias containing"
+msgstr "et un alias d'hôte contenant"
+
+msgid "Tips"
+msgstr "Conseils"
+
+msgid "get some help while creating your regular expression query at"
+msgstr "obtenez de l'aide lors de la création de votre expression régulière sur"
+
+msgid "Service group"
+msgstr "Groupe de services"
+
+msgid "State filter"
+msgstr "Filtre de statut"
+
+msgid "Acknowledge command sent"
+msgstr "Commande d'acquittement envoyée"
+
+msgid "Downtime command sent"
+msgstr "Commande de configuration de plage de maintenance envoyée"
+
+msgid "Check command sent"
+msgstr "Commande de contrôle envoyée"
+
+msgid "Type of resource"
+msgstr "Type de ressource"
+
+msgid "Unhandled problems"
+msgstr "Problèmes non traités"
+
+msgid "Unhandled"
+msgstr "Non traité"
+
+msgid "Oops, something went wrong"
+msgstr "Oups, quelque chose s'est mal passé"
+
+msgid "Seems that your Apache configuration is not up-to-date"
+msgstr "Il semble que votre configuration Apache ne soit pas à jour"
+
+msgid "Contact your Centreon administrator or update the following file"
+msgstr "Contactez votre administrateur Centreon ou mettez à jour le fichier suivant"
+
+msgid "See Documentation"
+msgstr "Voir la documentation"
+
+msgid "Services will not be affected because you don't have sufficient permission"
+msgstr "Les services ne seront pas affectés car vous ne disposez pas de droits suffisants"
+
+msgid "Hosts will not be affected because you don't have sufficient permission"
+msgstr "Les hôtes ne seront pas affectés car vous ne disposez pas de droits suffisants"
+
+msgid "Protocol %s is not allowed"
+msgstr "Le protocole %s n'est pas autorisé"
+
+msgid "The port can only be between 0 and 65535 inclusive"
+msgstr "Le port ne peut être compris qu'entre 0 et 65535 inclus"
+
+msgid "No results found"
+msgstr "Aucun résultat trouvé"
+
+msgid "Error when decoding sent data"
+msgstr "Erreur lors du décodage des données envoyées"
+
+msgid "Error when retrieving selected options"
+msgstr "Erreur lors de la récupération des options selectionnées"
+
+msgid "Filter id %d not found"
+msgstr "Filtre id %s non trouvé"
+
+msgid "Filter already exists"
+msgstr "Le filtre existe déjà"
+
+msgid "Error when adding filter %s"
+msgstr "Erreur lors de l'ajout du filtre %s"
+
+msgid "Error when updating filter %s"
+msgstr "Erreur lors de la mise à jour du filtre %s"
+
+msgid "Error when deleting filter %s"
+msgstr "Erreur lors de la suppression du filtre %s"
+
+msgid "Error when searching filters"
+msgstr "Erreur lors de la recherche des filtres"
+
+msgid "Error when searching filter id %d"
+msgstr "Erreur lors de la recherche du filtre id %d"
+
+msgid "Save filter"
+msgstr "Sauvegarder le filtre"
+
+msgid "Save as new"
+msgstr "Créer un nouveau filtre"
+
+msgid "My filters"
+msgstr "Mes filtres"
+
+msgid "New filter"
+msgstr "Nouveau filtre"
+
+msgid "Filter created"
+msgstr "Filtre créé"
+
+msgid "Filter saved"
+msgstr "Filtre sauvegardé"
+
+msgid "Edit filters"
+msgstr "Éditer les filtres"
+
+msgid "Rename"
+msgstr "Renommer"
+
+msgid "Delete filter?"
+msgstr "Supprimer le filtre?"
+
+msgid "Filter deleted"
+msgstr "Filtre supprimé"
+
+msgid "Filter updated"
+msgstr "Filtre actualisé"
+
+msgid "Name cannot be empty"
+msgstr "Le nom ne peut pas être vide"
+
+msgid "Timeline"
+msgstr "Historique"
+
+msgid "by"
+msgstr "par"
+
+msgid "Notification sent to"
+msgstr "Notification envoyée à"
+
+#: api/platform
+msgid "Unable to convert in remote server, no Central to link provided"
+msgstr "Impossible de convertir en remote, aucun Central à lier renseigné"
+
+
+#: api/platform
+msgid "Unable to update the platform information"
+msgstr "Impossible de mettre à jour les informations de la plateforme"
+
+#: api/platform
+msgid "An error occured while converting your platform"
+msgstr "Une erreur est survenue lors de la conversion de la plateforme"
+
+#: api/platform
+msgid "An error occured while searching any remote children"
+msgstr "Une erreur est survenue lors de la recherche de remote enfants"
+
+#: api/platform
+msgid "An error occured while your platform update"
+msgstr "Une erreur est survenue lors de la mise à jour de la platforme"
+
+#: api/platform
+msgid "An error occured while disabling the central menus"
+msgstr "Une erreur est survenue lors de la désactivation des menus du central"
+
+#: api/platform
+msgid "An error occured while enabling the central menus"
+msgstr "Une erreur est survenue lors de l'activation des menus du central"
+
+#: api/platform
+msgid "An error occured while updating the platform topology"
+msgstr "Une erreur est survenue lors de la mise à jour de la topology de la plateforme"
+
+#: api/platform
+msgid "Your Central is linked to another remote(s), conversion in Remote isn't allowed"
+msgstr "Votre central est lié a d'autre remote(s), la conversion en Remote n'est pas autorisée"
+
+#: api/platform
+msgid "Additional properties are not allowed"
+msgstr "Les propriétés additionnelles ne sont pas autorisées"
+
+#: api/platform
+msgid "Nullable property is not allowed"
+msgstr "Les propriétés nullable ne sont pas autorisées"
+
+#: api/platform
+msgid "Missing required property: %s"
+msgstr "propriété requise manquante: %s"
+
+#: api/platform
+msgid "Invalid property type %s for %s, type %s expected"
+msgstr "Type de propriétés invalide %s pour %s, type %s attendu"
+
+#: api/platform
+msgid "Bad JSON schema format"
+msgstr "Mauvais format de JSON schema"
+
+#: api/platform
+msgid "Bad JSON schema path"
+msgstr "Mauvais chemin de JSON Schema"
+
+#: api/platform
+msgid "the address %s is already used in the topology and can't be provided as Central Server Address"
+msgstr "l'adresse %s est déjà utilisé dans la topology et ne peut pas être renseigné comme Adresse de Serveur Central"
+
+#: api/platform
+msgid "the address %s is already used has proxy address and can't be provided as Central Server Address"
+msgstr "l'adresse %s est déjà utilisé comme addresse de proxy et ne peut pas être renseigné comme Adresse de Serveur Central"
+
+#: api/platform/topology
+msgid "The address '%s' of '%s' is not valid or not resolvable"
+msgstr "L'adresse '%s' de la plateforme '%s' n'est pas valide ou ne peut être résolue"
+
+#: api/platform/topology
+msgid "The platform type of '%s'@'%s' is not consistent"
+msgstr "Le type de la plateforme '%s'@'%s' n'est pas cohérent"
+
+#: api/platform/topology
+msgid "The address of the parent platform '%s'@'%s' is not consistent"
+msgstr "L'adresse de la plateforme parente '%s'@'%s' n'est pas cohérente"
+
+#: api/platform/topology
+msgid "A platform using the name : '%s' or address : '%s' already exists"
+msgstr "Une plateforme avec le nom : '%s' ou l'adresse : '%s' existe déjà"
+
+#: api/platform/topology
+msgid "No parent platform was found for : '%s'@'%s'"
+msgstr "Aucune plateforme parente n'a été trouvée pour : '%s'@'%s'"
+
+#: api/platform/topology
+msgid "Cannot register the '%s' platform : '%s'@'%s' behind a '%s' platform"
+msgstr "Impossible d'enregistrer la plateforme '%s' : '%s'@'%s' derrière un '%s'"
+
+#: api/platform/topology
+msgid "Error when adding in topology the platform : '%s'@'%s'"
+msgstr "Erreur lors de l'ajout dans la topologie de la plateforme : '%s'@'%s'"
+
+#: api/platform/topology
+msgid "Cannot use parent address on a Central server type"
+msgstr "Il n'est pas possible d'utiliser l'adresse d'une plateforme parente sur un serveur de type Central"
+
+#: api/platform/topology
+msgid "Cannot set parent id on a central server"
+msgstr "Il n'est pas possible d'assigner un id parent à un serveur central"
+
+#: api/platform/topology
+msgid "Cannot link a 'remote': '%s'@'%s' to another Remote server type"
+msgstr "Il n'est pas possible de lier un 'remote': '%s'@'%s' à un autre serveur de type 'Remote'"
+
+#: api/platform/topology
+msgid "A '%s': '%s'@'%s' is already saved"
+msgstr "Un '%s': '%s'@'%s' est déjà enregistré"
+
+#: api/platform/topology
+msgid "The server type '%s' : '%s'@'%s' does not match the one configured in Centreon or is disabled"
+msgstr "Le serveur du type '%s' : '%s'@'%s' ne correspond pas à celui configuré dans Centreon ou est désactivé"
+
+#: api/platform/topology
+msgid "Missing mandatory parent address, to link the platform : '%s'@'%s'"
+msgstr "Adresse du server parent manquante, pour pouvoir lier la plateforme : '%s'@'%s'"
+
+#: api/platform/topology
+msgid "Missing mandatory platform address of: '%s'"
+msgstr "Adresse de la plateforme: '%s' manquante"
+
+#: api/platform/topology
+msgid "Missing mandatory platform name"
+msgstr "Nom de la plateforme manquant"
+
+#: api/platform/topology
+msgid "Same address and parent_address for platform : '%s'@'%s'"
+msgstr "Les adresses de la plateforme : '%s'@'%s' et de son parent sont les mêmes"
+
+#: api/platform/topology
+msgid "Central platform's API port is not consistent. Please check the 'Remote Access' form."
+msgstr "Le port de l'API vers le Central n'est pas cohérent. Veuiller vérifier le formulaire 'Accès du Remote'."
+
+#: api/platform/topology
+msgid "At least one illegal character in '%s' was found in platform's name: '%s'"
+msgstr "Au moins un caractère illégal parmi '%s' a été trouvé dans le nom de la plateforme: '%s'"
+
+#: api/platform/topology
+msgid "At least one non RFC compliant character was found in platform's hostname: '%s'"
+msgstr "Au moins un caractère ne respecte pas la norme RFC dans le nom de domaine de la plateforme: '%s'"
+
+#: api/platform/topology
+msgid "Platform : '%s'@'%s' mandatory data are missing. Please check the Remote Access form"
+msgstr "Données indispensables manquantes pour la plateforme : '%s'@'%s'. Veuillez vérifier le formulaire 'Accès du Remote'"
+
+#: api/platform/topology
+msgid "Central platform's data are not consistent. Please check the 'Remote Access' form"
+msgstr "Des données de la plateforme ne sont pas cohérentes. Veuillez vérifier le formulaire 'Accès du Remote'."
+
+#: api/platform/topology
+msgid "Unable to retrieve platform information's data."
+msgstr "Impossible de récupérer les données d'information sur la plateforme."
+
+#: api/platform/topology
+msgid "Unable to find local monitoring server name"
+msgstr "Impossible de trouver le nom du serveur local de supervision"
+
+#: api/platform/topology
+msgid "Error when searching monitoring server name"
+msgstr "Erreur lors de la recherche du nom du serveur de supervision"
+
+#: api/platform/topology
+msgid "The platform: '%s'@'%s' is not declared as a 'remote'"
+msgstr "La plateforme: '%s'@'%s' n'est pas déclarée comme un 'remote'"
+
+#: api/platform/topology
+msgid "The platform: '%s'@'%s' is not linked to a Central. Please use the wizard first"
+msgstr "La plateforme: '%s'@'%s n'est pas liée à un Central. Veuillez d'abord utiliser l'assistant"
+
+#: api/platform/topology
+msgid "Central's protocol port is missing on: '%s'@'%s'. Please check the Remote Access form"
+msgstr "Le port du Central, de la plateforme: '%s'@'%s est manquant. Veuillez vérifier le formulaire 'Accès du Remote'"
+
+#: api/platform/topology
+msgid "Central's protocol scheme is missing on: '%s'@'%s'. Please check the Remote Access form"
+msgstr "Le schéma du Central, de la plateforme: '%s'@'%s est manquant. Veuillez vérifier le formulaire 'Accès du Remote'"
+
+#: api/platform/topology
+msgid "Central's path is missing on: '%s'@'%s'. Please check the Remote Access form."
+msgstr "Le chemin vers le Central, de la plateforme: '%s'@'%s est manquant. Veuillez vérifier le formulaire 'Accès du Remote'."
+
+#: api/platform/topology
+msgid "Central's credentials are missing on: '%s'@'%s'. Please check the Remote Access form"
+msgstr "Les identifiants du Central sont manquants pour: '%s'@'%s'. Veuillez vérifier le formulaire 'Accès du Remote'"
+
+#: api/platform/topology
+msgid "Unable to decipher central's credentials. Please check the credentials in the 'Remote Access' form"
+msgstr "Impossible de déchiffrer les identifiants du Central. Veuillez vérifier le formulaire 'Accès du Remote'"
+
+#: api/platform/topology
+msgid "Failed to get the auth token from Central : '%s'"
+msgstr "Echec d'obtention du token d'auth. sur le Central: '%s'@'%s'"
+
+#: api/platform/topology
+msgid "The platform: '%s'@'%s' cannot be found on the Central"
+msgstr "La plateforme: '%s'@'%s' ne peut pas être trouvé sur le Central"
+
+msgid "The platform: '%s'@'%s' cannot be delete from the Central"
+msgstr "La plateforme: '%s'@'%s' ne peut pas être supprimé depuis le Central"
+
+#: api/platform/topology
+msgid "Request to the Central's API failed"
+msgstr "Echec de la requète vers l'API du Central"
+
+#: api/platform/topology
+msgid "API calling the Central returned a Client exception"
+msgstr "L'API du Central a renvoyé une exception Client"
+
+#: api/platform/topology
+msgid "API calling the Central returned a Redirection exception"
+msgstr "L'API du Central a renvoyé une exception de Redirection"
+
+#: api/platform/topology
+msgid "API calling the Central returned a Server exception"
+msgstr "L'API du Central a renvoyé une exception Server"
+
+#: api/platform/topology
+msgid "Please check the 'Centreon UI' and 'Remote access' forms"
+msgstr "Veuillez vérifier les formulaires 'Centreon Web' et 'Accès du Remote'"
+
+#: api/platform/topology
+msgid "Unable to decode Central's API response"
+msgstr "Impossible de décoder la réponse de L'API provenant du Central"
+
+#: api/platform/topology
+msgid "Error from Central's register API : "
+msgstr "Erreur de l'API d'enregistrement sur le Central : "
+
+#: api/platform/topology
+msgid "The platform: '%s'@'%s' cannot be added to the Central linked to this Remote"
+msgstr "La plateforme: '%s'@'%s' ne peut pas être ajoutée au Central lié à ce Remote"
+
+#: api/platform/topology
+msgid "Central's response : "
+msgstr "Réponse du Central : "
+
+#: api/platform/topology
+msgid "Unable to find the encryption key. Please check the '.env.local.php' file."
+msgstr "Impossible de trouver la clef de déchiffrement. Veuillez vérifer le fichier '.env.local.php'."
+
+#: api/platform/topology
+msgid "No Platform Topology found."
+msgstr "Aucune Topologie trouvée."
+
+#: api/platform/topology
+msgid "No top level platform found to link the child platforms"
+msgstr "Aucune platforme principale trouvée pour lier les plateformes enfants"
+
+#: api/platform/topology
+msgid "An error occurred while deleting the platform"
+msgstr "Une erreur est survenue lors de la suppression de la plateforme"
+
+#: api/platform/topology
+msgid "An error occurred while updating the platform"
+msgstr "Une erreur est survenue lors de la mise à jour de la plateforme"
+
+#: api/platform/topology
+msgid "platform not found"
+msgstr "plateforme non trouvée"
+
+#: api/platform/topology
+msgid "The platform '%s'@'%s' cannot be found on the Central"
+msgstr "La plateforme '%s'@'%s' n'a pas été trouvée sur le Central"
+
+msgid "You are not authorized to access this resource"
+msgstr "Vous n'êtes pas autorisé à accéder à cette ressource"
+
+msgid "Shortcuts"
+msgstr "Raccourcis"
+
+msgid "View logs"
+msgstr "Voir les logs"
+
+msgid "Configure"
+msgstr "Configurer"
+
+msgid "View report"
+msgstr "Voir le rapport"
+
+msgid "An error occurred while retrieving users linked to ViewId on database"
+msgstr "Une erreur est survenue lors de la récupération en DB des utilisateurs liés à ViewId"
+
+msgid "An error occurred while retrieving groups linked to ViewId on database"
+msgstr "Une erreur est survenue lors de la récupération en DB des groupes liés à ViewId"
+
+msgid "Resources Status"
+msgstr "Statut des ressources"
+
+msgid "Error when searching for services by host"
+msgstr "Erreur lors de la recherche de services par hôte"
+
+msgid "The host id cannot be null"
+msgstr "L'id de l'hôte ne peut pas être nul"
+
+msgid "Error when searching for host templates"
+msgstr "Erreur lors de la recherche de modèles d'hôtes"
+
+msgid "The public method %s::%s was not found"
+msgstr "La méthode publique %s::%s n'a pas été trouvée"
+
+msgid "The public method %s::%s has no parameters"
+msgstr "La méthode publique %s::%s n'a pas de paramètres"
+
+msgid "This host is not a host template"
+msgstr "Cet hôte n'est pas un modèle d'hôte"
+
+msgid "Error when searching for host and related service templates"
+msgstr "Erreur lors de la recherche d'hôtes et de modèles de service liés"
+
+msgid "deprecated"
+msgstr "déprécié"
+
+msgid "Use deprecated pages"
+msgstr "Utiliser les pages dépréciées"
+
+msgid "Error when adding services to the host %d"
+msgstr "Erreur lors de l'ajout de services à l'hôte %d"
+
+msgid "Error when changing host status (%d to %s)"
+msgstr "Erreur lors du changement de statut de l'hôte (%d à %s)"
+
+msgid "Error when searching for already used host names"
+msgstr "Erreur lors de la recherche de noms d'hôtes déjà utilisés"
+
+msgid "Cannot build uri to unknown tab : %s"
+msgstr "Impossible de construire une uri vers un onglet inconnu : %s"
+
+msgid "Copy the link to this resource"
+msgstr "Copier le lien vers cette ressource"
+
+msgid "Resource link copied to the clipboard"
+msgstr "Lien vers la ressource copiée dans le presse-papier"
+
+#: www/include/Administration/parameters/DB-Func.php
+msgid "The password cannot be crypted. Please re-submit the form"
+msgstr "Le mot de passe ne peut pas être chiffré. Merci de soumettre à nouveau le formulaire"
+
+#: www/include/Adrministration/parameters/remote/formRemote.php
+msgid "The password cannot be decrypted. Please re-enter the account password and submit the form"
+msgstr "Le mot de passe ne peut pas être déchiffré. Merci de vérifier ce champs et de soumettre le formuaire"
+
+#: www/include/Adrministration/parameters/remote/formRemote.php
+msgid "Central's API credentials"
+msgstr "Identifiants de l'API du Central"
+
+msgid "Build full URI (SCHEME://IP:PORT/PATH)."
+msgstr "construction de l'URI complete (SCHEME://IP:PORT/PATH)."
+
+msgid "Central's API URI."
+msgstr "URI de l'API du central"
+
+msgid "Allow self signed certificate."
+msgstr "Autoriser le certificat auto-signé."
+
+msgid "Must be a number between 1 and 65335 included."
+msgstr "Doit être un nombre compris entre 1 et 65335 inclus"
+
+#: www/include/Adrministration/parameters/remote/formRemote.php
+msgid "Remote access"
+msgstr "Accès du Remote"
+
+msgid "Disacknowledge"
+msgstr "Désacquitter"
+
+msgid "Disacknowledge services attached to hosts"
+msgstr "Désacquitter les services attachés aux hôtes"
+
+msgid "Disacknowledgement command sent"
+msgstr "Commande de désacquittement envoyée"
+
+msgid "Unable to find the Engine configuration"
+msgstr "Impossible de trouver la configuration du moteur de supervision"
+
+msgid "Ip address can not be empty"
+msgstr "L'adresse IP ne peut pas être vide"
+
+msgid "Monitoring server is not correctly defined"
+msgstr "Le serveur de supervision n'est pas correctement défini"
+
+msgid "Submit a status"
+msgstr "Soumettre un statut"
+
+msgid "Status submitted"
+msgstr "Statut soumis"
+
+msgid "No resource found"
+msgstr "Pas de ressource trouvée"
+
+msgid "Error when searching for the Engine configuration (%s)"
+msgstr "Erreur lors de la recherche de la configuration du moteur (%s)"
+
+msgid "Host id cannot be null"
+msgstr "L'id de l'hôte ne peut être nul"
+
+msgid "Host name cannot be null"
+msgstr "Le nom de l'hôte ne peut être nul"
+
+msgid "Action log id cannot be null"
+msgstr "L'id du journal des actions ne peut être nul"
+
+msgid "Error when adding details for the action log %d"
+msgstr "Erreur lors de l'ajout de détails pour le journal des actions %d"
+
+msgid "Error when adding an entry in the action log"
+msgstr "Erreur lors de l'ajout d'une entrée dans le journal des actions"
+
+msgid "PENDING"
+msgstr "EN ATTENTE"
+
+msgid "FQDN / Address"
+msgstr "FQDN / Adresse"
+
+msgid "Comment added"
+msgstr "Commentaire ajouté"
+
+msgid "Error when searching for services"
+msgstr "Erreur lors de la recherche des services"
+
+msgid "Error when searching for hosts"
+msgstr "Erreur lors de la recherche des hôtes"
+
+msgid "Groups"
+msgstr "Groupes"
+
+msgid "Display events"
+msgstr "Afficher les évènements"
+
+msgid "Export to png"
+msgstr "Exporter comme png"
+
+msgid "Go to performance page"
+msgstr "Aller vers la page de performance"
+
+msgid "[%s] The value \"%s\" is too long, it should have no more than %d characters, but has %d characters"
+msgstr "[%s] La valeur \"%s\" est trop longue, elle ne devrait pas comporter plus de %d caractères mais n'en comporte que %d"
+
+msgid "[%s] The value \"%s\" is too short, it should have at least %d characters, but only has %d characters"
+msgstr "[%s] La valeur \"%s\" est trop courte, elle devrait comporter au moins %d caractères mais n'en a que %d"
+
+msgid "[%s] The value \"%d\" was expected to be at least %d"
+msgstr "[%s] La valeur \"%d\" devait être au moins égale à %d"
+
+msgid "[%s] The value \"%d\" was expected to be at most %d"
+msgstr "[%s] La valeur \"%d\" devait être au plus égale à %d"
+
+msgid "[%s] The value \"%d\" is not greater or equal than %d"
+msgstr "[%s] La valeur \"%d\" n'est pas supérieure ou égale à %d"
+
+msgid "[%s] The value is empty, but non empty value was expected"
+msgstr "[%s] La valeur est vide, mais une valeur non vide était attendue"
+
+msgid "[%s] The value is null, but non null value was expected"
+msgstr "[%] La valeur est nulle, mais une valeur non nulle était attendue"
+
+msgid "Switch to graph mode"
+msgstr "Basculer vers le mode graphique"
+
+msgid "Switch to list mode"
+msgstr "Basculer vers le mode liste"
+
+msgid "Parent of service resource type cannot be null"
+msgstr "Le parent de la resource de type service ne peut être null"
+
+msgid "One of the elements provided is not a ResourceGroup type"
+msgstr "Un des éléments fourni n'est pas de type ResourceGroup"
+
+msgid "Error when searching for host categories"
+msgstr "Erreur lors de la recherche des catégories d'hôtes"
+
+msgid "Error when searching for host severities"
+msgstr "Erreur lors de la recherche des sévérités d'hôtes"
+
+msgid "Parent"
+msgstr "Parent"
+
+msgid "Error when searching for host groups"
+msgstr "Erreur lors de la recherche de groupes d'hôtes"
+
+msgid "Select criterias"
+msgstr "Sélectionner les critères"
+
+msgid "Error when searching for the host category (%s)"
+msgstr "Erreur lors de la recherche de la catégorie de l'hôte (%s)"
+
+msgid "Error when searching for the host group (%s)"
+msgstr "Erreur lors de la recherche du groupe d'hôte (%s)"
+
+msgid "Host category (%s) not found"
+msgstr "Catégorie de l'hôte (%s) non trouvé"
+
+msgid "Host group (%s) not found"
+msgstr "Groupe d'hôte (%s) non trouvé"
+
+msgid "Service id cannot be null"
+msgstr "L'id du service ne peut pas être nul"
+
+msgid "Configuration has changed"
+msgstr "La configuration a changé"
+
+msgid "Macro passwords cannot be detected"
+msgstr "Les macros de type mot de passe ne peuvent pas être détectées"
+
+msgid "Configuration command cannot be splitted by macros"
+msgstr "La commande de configuration ne peut être séparée par macros"
+
+msgid "Unable to hide passwords in command (Reason: %s)"
+msgstr "Impossible de cacher les mots de passe dans la commande (Raison: %s)"
+
+msgid "Check command of host id %d not found"
+msgstr "Commande de contrôle de l'id d'hôte %d non trouvée"
+
+msgid "Check command of service id %d not found"
+msgstr "Commande de contrôle de l'id de service %d non trouvée"
+
+msgid "Error while searching for the command of host"
+msgstr "Erreur lors de la recheche de la commande de l'hôte"
+
+msgid "Monitoring server"
+msgstr "Serveur de supervision"
+
+msgid "Error when adding a host macro"
+msgstr "Erreur lors de l'ajout d'une macro hôte"
+
+msgid "Error when adding a host"
+msgstr "Erreur lors de l'ajout d'un hôte"
+
+msgid "Error when adding a host category"
+msgstr "Erreur lors de l'ajout d'une catégorie hôte"
+
+msgid "Error when adding a host group"
+msgstr "Erreur lors de l'ajout d'un groupe d'hôte"
+
+msgid "Error when searching for the meta services configurations"
+msgstr "Erreur lors de la recherche des configurations des meta services"
+
+msgid "Error when searching for the meta service configuration (%s)"
+msgstr "Erreur lors de la recherche du meta service (%s)"
+
+msgid "Calculation method provided not supported (%s)"
+msgstr "Méthode de calcul fournie non supportée (%s)"
+
+msgid "Meta Service linked to service %d not found"
+msgstr "Meta Service lié au service %d non trouvé"
+
+msgid "Host meta for meta %d not found"
+msgstr "Hôte lié au meta %d non trouvé"
+
+msgid "Forward"
+msgstr "En avant"
+
+msgid "Backward"
+msgstr "En arrière"
+
+msgid "The end date must be greater than the start date"
+msgstr "La date de fin doit être supérieure à la date de début"
+
+msgid "Graph options"
+msgstr "Options de graphe"
+
+msgid "Check duration"
+msgstr "Temps d'exécution"
+
+msgid "Avg"
+msgstr "Moy"
+
+msgid "Compact time period"
+msgstr "Période de temps compacte"
+
+msgid "Notifications enabled"
+msgstr "Notifications activées"
+
+msgid "Notifications disabled"
+msgstr "Notifications désactivées"
+
+msgid "All checks are disabled"
+msgstr "Tous les contrôles sont désactivés"
+
+msgid "Only passive checks are enabled"
+msgstr "Seulement les contrôles passifs sont activés"
+
+msgid "Mandatory data to create the entity '%s' is missing"
+msgstr "Les données obligatoires pour créer l'entité '%s' sont manquantes"
+
+msgid "Calculation type"
+msgstr "Type de calcul"
+
+msgid "At least one column must be selected"
+msgstr "Au moins une colonne doit être sélectionnée"
+
+msgid "The duration must be lesser than a year"
+msgstr "La durée doit être inférieure à une année"
+
+msgid "Authentication failed"
+msgstr "Authentification échouée"
+
+msgid "User cannot be logout"
+msgstr "L'utilisateur ne peut pas être déconnecté"
+
+msgid "User cannot be retrieved from the identity provider"
+msgstr "L'utilisateur ne peut pas être retrouvé depuis le fournisseur d'identification"
+
+msgid "Cannot create user"
+msgstr "Impossible de créer l'utilisateur"
+
+msgid "Error while deleting expired token"
+msgstr "Erreur lors de la suppression du jeton expiré"
+
+msgid "Error while adding authentication token"
+msgstr "Erreur lors de l'ajout du jeton d'authentification"
+
+msgid "Error while deleting session"
+msgstr "Erreur lors de la suppression de la session"
+
+msgid "Error while searching authentication tokens"
+msgstr "Erreur lors de la recherche des jetons d'authentification"
+
+msgid "Error while updating authentication tokens"
+msgstr "Erreur lors de la mise à jour des jetons d'authentification"
+
+msgid "Error while searching identity providers configurations"
+msgstr "Erreur lors de la recherche des configurations de fournisseurs d'identification"
+
+msgid "Unable to start Centreon legacy session"
+msgstr "Impossible de démarrer la session Centreon legacy"
+
+msgid "As displayed"
+msgstr "Comme affiché"
+
+msgid "Medium size"
+msgstr "Taille moyenne"
+
+msgid "Display the complete graph"
+msgstr "Afficher le graphe complet"
+
+msgid "Small size"
+msgstr "Petite Taille"
+
+msgid "Action not permitted"
+msgstr "Action non autorisée"
+
+msgid "Missing mandatory parameter: '%s'"
+msgstr "Paramètre obligatoire manquant: '%s'"
+
+msgid "Error while searching provider configuration: '%s'"
+msgstr "Erreur pendant la recherche de configuration du fournisseur d'identification: '%s'"
+
+msgid "Please choose a date before %d"
+msgstr "Veuillez choisir une date avant %d"
+
+msgid "Year must be less than %d (%s)"
+msgstr "L'année doit être inférieure à %d (%s)"
+
+msgid "[%s] The date \"%s\" was expected to be at most %s"
+msgstr "[%s] La date \"%s\" devait être au maximum au %s"
+
+msgid "Scroll to top"
+msgstr "Défiler vers le haut"
+
+msgid "This week"
+msgstr "Cette semaine"
+
+msgid "Before last year"
+msgstr "Avant l'année dernière"
+
+msgid "Filter options"
+msgstr "Options de filtre"
+
+msgid "The parameter \"%s\" must be an integer"
+msgstr "Le paramètre \"%s\" doit être un entier"
+
+msgid "Contact Details"
+msgstr "Détails du Contact"
+
+msgid "Service graphs"
+msgstr "Graphiques de services"
+
+msgid "Clear filter"
+msgstr "Effacer le filtre"
+
+msgid "Error while searching contact"
+msgstr "Erreur lors de la recherche d'un contact"
+
+msgid "Monitoring server not found (#%d)"
+msgstr "Serveur de supervision non trouvé (#%d)"
+
+msgid "Generation error on monitoring server #%d: %s"
+msgstr "Erreur de génération sur le serveur de supervision #%d : %s"
+
+msgid "Reloading error on monitoring server #%d: %s"
+msgstr "Erreur de rechargement sur le serveur de supervision #%d : %s"
+
+msgid "Error on retrieving monitoring servers"
+msgstr "Erreur lors de la récupération des serveurs de supervision"
+
+msgid "Authentication token expired"
+msgstr "Le jeton d'authentification a expiré"
+
+msgid "Authentication token not found"
+msgstr "Jeton d'authentification non trouvé"
+
+msgid "Request failed (%d)"
+msgstr "La requête a échoué (%d)"
+
+msgid "Response empty"
+msgstr "Réponse vide"
+
+msgid "Unable to load the Symfony container"
+msgstr "Impossible de charger le conteneur Symfony"
+
+msgid "Error on monitoring server #%d: %s"
+msgstr "Erreur sur le serveur de supervision #%d: %s"
+
+msgid "Execution was too long and reached timeout"
+msgstr "L'exécution a été trop longue et a atteint le délai d'attente"
+
+msgid "Last check with OK status"
+msgstr "Dernier contrôle avec un statut OK"
+
+msgid "Export & reload"
+msgstr "Exporter et recharger"
+
+msgid "Export and reload the configuration?"
+msgstr "Export et recharger la configuration ?"
+
+msgid "This will export and reload the configuration on all of your platform"
+msgstr "Cela va exporter et recharger la configuration sur l'ensemble de votre plateforme"
+
+msgid "Exporting and reloading the configuration. Please wait..."
+msgstr "La configuration est en train d'être exportée et rechargée. Veuillez patienter ..."
+
+msgid "Configuration exported and reloaded"
+msgstr "Configuration exportée et rechargée"
+
+msgid "Failed to export and reload the configuration"
+msgstr "L'export et le rechargement de la configuration a echoué"
+
+msgid "Enable the one-click export button for poller configuration"
+msgstr "Activer le bouton d’export de la configuration des collecteurs en un seul clic"
+
+msgid "User is not allowed to reach web application"
+msgstr "L'utilisateur n'est pas autorisé à joindre l'application web"

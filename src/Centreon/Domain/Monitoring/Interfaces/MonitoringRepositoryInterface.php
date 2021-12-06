@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,13 +23,13 @@ declare(strict_types=1);
 namespace Centreon\Domain\Monitoring\Interfaces;
 
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
-use Centreon\Domain\Entity\EntityCreator;
 use Centreon\Domain\Monitoring\HostGroup;
 use Centreon\Domain\Monitoring\ServiceGroup;
 use Centreon\Domain\Security\AccessGroup;
 use Centreon\Domain\Monitoring\Host;
 use Centreon\Domain\Monitoring\Service;
-use Centreon\Infrastructure\Monitoring\MonitoringRepositoryRDB;
+use Centreon\Domain\Downtime\Downtime;
+use Centreon\Domain\Acknowledgement\Acknowledgement;
 
 interface MonitoringRepositoryInterface
 {
@@ -51,8 +52,8 @@ interface MonitoringRepositoryInterface
     /**
      * Find the hosts of the hosts groups ids given.
      *
-     * @param array $hostsGroupsIds List of hosts groups Ids for which we want to retrieve the hosts
-     * @return array [hostGroupId => hostId,...]
+     * @param int[] $hostsGroupsIds List of hosts groups Ids for which we want to retrieve the hosts
+     * @return array<int, array<int, Host>> [hostGroupId => hostId,...]
      * @throws \Exception
      */
     public function findHostsByHostsGroups(array $hostsGroupsIds): array;
@@ -60,18 +61,19 @@ interface MonitoringRepositoryInterface
     /**
      * Find the hosts of the services groups ids given.
      *
-     * @param array $servicesGroupsIds List of services groups Ids for which we want to retrieve the hosts
-     * @return array [serviceGroupId => hostId,...]
+     * @param int[] $servicesGroupsIds List of services groups Ids for which we want to retrieve the hosts
+     * @return array<int, array<int, Host>> [serviceGroupId => hostId,...]
      * @throws \Exception
      */
     public function findHostsByServiceGroups(array $servicesGroupsIds): array;
 
     /**
-     * Find all services grouped by host groups
+     * Find all hostgroups with option to provide host id
      *
+     * @param int $hostId Id of host to filter hostgroups by
      * @return HostGroup[]
      */
-    public function findHostGroups(): array;
+    public function findHostGroups(?int $hostId): array;
 
     /**
      * Find one host based on its id and according to ACL.
@@ -81,6 +83,22 @@ interface MonitoringRepositoryInterface
      * @throws \Exception
      */
     public function findOneHost(int $hostId): ?Host;
+
+    /**
+     * Find all hosts from an array of hostIds for a non admin user
+     *
+     * @param int[] $hostIds
+     * @return Host[]
+     */
+    public function findHostsByIdsForNonAdminUser(array $hostIds): array;
+
+    /**
+     * Find all hosts from an array of hostIds for an admin user
+     *
+     * @param int[] $hostIds
+     * @return Host[]
+     */
+    public function findHostsByIdsForAdminUser(array $hostIds): array;
 
     /**
      * Find one service based on its id and according to ACL.
@@ -93,9 +111,34 @@ interface MonitoringRepositoryInterface
     public function findOneService(int $hostId, int $serviceId): ?Service;
 
     /**
+     * Find one service based on its id and according to ACL.
+     *
+     * @param string $serviceDescription
+     * @return Service|null
+     * @throws \Exception
+     */
+    public function findOneServiceByDescription(string $serviceDescription): ?Service;
+
+    /**
+     * Find all services from an array of serviceIds for a non admin user
+     *
+     * @param array<int, array<string, int>> $serviceIds
+     * @return Service[]
+     */
+    public function findServicesByIdsForNonAdminUser(array $serviceIds): array;
+
+    /**
+     * Find all services from an array of serviceIds for an admin user
+     *
+     * @param array<int, array<string, int>> $serviceIds
+     * @return Service[]
+     */
+    public function findServicesByIdsForAdminUser(array $serviceIds): array;
+
+    /**
      * Find all services grouped by service groups
      *
-     * @return \Servicegroup[]
+     * @return Servicegroup[]
      * @throws \Exception
      */
     public function findServiceGroups(): array;
@@ -110,12 +153,23 @@ interface MonitoringRepositoryInterface
 
     /**
      * Retrieve all real time services according to ACL of contact and host id
+     * using request parameters (search, sort, pagination)
      *
      * @param int $hostId Host ID for which we want to find services
      * @return Service[]
      * @throws \Exception
      */
-    public function findServicesByHost(int $hostId): array;
+    public function findServicesByHostWithRequestParameters(int $hostId): array;
+
+    /**
+     * Retrieve all real time services according to ACL of contact and host id
+     * without request parameters (no search, no sort, no pagination)
+     *
+     * @param int $hostId Host ID for which we want to find services
+     * @return Service[]
+     * @throws \Exception
+     */
+    public function findServicesByHostWithoutRequestParameters(int $hostId): array;
 
     /**
      * Find services according to the host id and service ids given
@@ -130,9 +184,8 @@ interface MonitoringRepositoryInterface
     /**
      * Finds services from a list of hosts.
      *
-     * @param array $hostIds List of host for which we want to get services
-     * @return array Return a list of services indexed by host
-     * [host_id => Service[], ...]
+     * @param int[] $hostIds List of host for which we want to get services
+     * @return array<int, array<int, Service>> Return a list of services indexed by host
      */
     public function findServicesByHosts(array $hostIds): array;
 
@@ -143,9 +196,32 @@ interface MonitoringRepositoryInterface
     public function setContact(ContactInterface $contact): self;
 
     /**
-     * @param array $serviceGroups
-     * @return array
+     * @param int[] $serviceGroupIds
+     * @return array<int, array<int, Service>>
      * @throws \Exception
      */
-    public function findServicesByServiceGroups(array $serviceGroups): array;
+    public function findServicesByServiceGroups(array $serviceGroupIds): array;
+
+    /**
+     * @param int $hostId
+     * @param int $serviceId
+     * @return ServiceGroup[]
+     */
+    public function findServiceGroupsByHostAndService(int $hostId, int $serviceId): array;
+
+    /**
+     * Find downtimes for host or service
+     * @param int $hostId
+     * @param int $serviceId
+     * @return Downtime[]
+     */
+    public function findDowntimes(int $hostId, int $serviceId): array;
+
+    /**
+     * Find acknowledgements for host or service
+     * @param int $hostId
+     * @param int $serviceId
+     * @return Acknowledgement[]
+     */
+    public function findAcknowledgements(int $hostId, int $serviceId): array;
 }

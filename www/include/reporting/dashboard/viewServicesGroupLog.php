@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2018 Centreon
+ * Copyright 2005-2021 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -45,17 +46,14 @@ require_once './include/reporting/dashboard/initReport.php';
 /*
  *  Getting service group to report
  */
-isset($_GET["item"]) ? $id = $_GET["item"] : $id = "NULL";
-isset($_POST["item"]) ? $id = $_POST["item"] : $id;
-isset($_POST["search"]) ? $search = $_POST["search"] : "";
-
+$id = filter_var($_GET['item'] ?? $_POST['item'] ?? false, FILTER_VALIDATE_INT);
 /*
  * FORMS
  */
 
 $form = new HTML_QuickFormCustom('formItem', 'post', "?p=" . $p);
 
-$items = getAllServicesgroupsForReporting($search);
+$items = getAllServicesgroupsForReporting();
 $form->addElement(
     'select',
     'item',
@@ -86,42 +84,18 @@ if (isset($id)) {
     $form->setDefaults(array('item' => $id));
 }
 
-/* adding hidden fields to get the result of datepicker in an unlocalized format */
-$formPeriod->addElement(
-    'hidden',
-    'alternativeDateStartDate',
-    '',
-    array(
-        'size' => 10,
-        'class' => 'alternativeDate'
-    )
-);
-$formPeriod->addElement(
-    'hidden',
-    'alternativeDateEndDate',
-    '',
-    array(
-        'size' => 10,
-        'class' => 'alternativeDate'
-    )
-);
-
 /*
- * Set servicegroup id with period selection form
- */
-if ($id != "NULL") {
+* Set servicegroup id with period selection form
+*/
+if ($id !== false) {
     $formPeriod->addElement(
         'hidden',
         'item',
         $id
     );
-}
 
-/*
- * Stats Display for selected services group
- */
-if (isset($id) && $id != "NULL") {
     /*
+     * Stats Display for selected services group
      * Getting periods values
      */
     $dates = getPeriodToReport("alternate");
@@ -129,9 +103,8 @@ if (isset($id) && $id != "NULL") {
     $end_date = $dates[1];
 
     /*
-     * Getting hostgroup and his hosts stats
+     * Getting servicegroups logs
      */
-    $servicesgroupStats = array();
     $servicesgroupStats = getLogInDbForServicesGroup($id, $start_date, $end_date, $reportingTimePeriod);
 
     /*
@@ -170,26 +143,9 @@ if (isset($id) && $id != "NULL") {
     $formPeriod->setDefaults(array('period' => $period));
     $tpl->assign('id', $id);
     $tpl->assign('Alert', _("Alert"));
-}
-$tpl->assign('resumeTitle', _("Service group state"));
-$tpl->assign('p', $p);
 
-/*
- * Rendering forms
- */
-$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-$formPeriod->accept($renderer);
-$tpl->assign('formPeriod', $renderer->toArray());
-
-$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-$form->accept($renderer);
-$tpl->assign('formItem', $renderer->toArray());
-
-/*
- * Ajax timeline and CSV export initialization
- */
-if (isset($id) && $id != "NULL") {
     /*
+     * Ajax timeline and CSV export initialization
      * CSV export
      */
     $tpl->assign(
@@ -219,5 +175,23 @@ if (isset($id) && $id != "NULL") {
 } else {
     ?><script type="text/javascript"> function initTimeline() {;} </script> <?php
 }
+$tpl->assign('resumeTitle', _("Service group state"));
+$tpl->assign('p', $p);
 
-$tpl->display("template/viewServicesGroupLog.ihtml");
+/*
+ * Rendering forms
+ */
+$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+$formPeriod->accept($renderer);
+$tpl->assign('formPeriod', $renderer->toArray());
+
+$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+$form->accept($renderer);
+$tpl->assign('formItem', $renderer->toArray());
+
+if (
+    !$formPeriod->isSubmitted()
+    || ($formPeriod->isSubmitted() && $formPeriod->validate())
+) {
+    $tpl->display("template/viewServicesGroupLog.ihtml");
+}

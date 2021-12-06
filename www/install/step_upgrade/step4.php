@@ -40,21 +40,15 @@ session_start();
 define('STEP_NUMBER', 4);
 
 $_SESSION['step'] = STEP_NUMBER;
-require_once realpath(dirname(__FILE__) . "/../../../config/centreon.config.php");
 require_once '../steps/functions.php';
+require_once __DIR__ . "/../../../config/centreon.config.php";
 $template = getTemplate('templates');
-
-include_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 
 /*
 ** Get and check initial Centreon version.
 ** Should be >= 2.8.0-beta1.
 */
-$db = new CentreonDB();
-$res = $db->query("SELECT `value` FROM `informations` WHERE `key` = 'version'");
-$row = $res->fetchRow();
-$current = $row['value'];
-$_SESSION['CURRENT_VERSION'] = $current;
+$current = $_SESSION['CURRENT_VERSION'];
 if (version_compare($current, '2.8.0-beta1') < 0) {
     $troubleshootTxt1 = _('Upgrade to this release requires Centreon >= 2.8.0-beta1.');
     $troubleshootTxt2 = sprintf(_('Your current version is %s.'), $current);

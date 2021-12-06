@@ -1,0 +1,10 @@
+Centreon\Domain\Monitoring\Entity\DowntimeEventObject:
+   properties:
+           id:
+               type: int
+               groups:
+                   - 'downtime_event_list'
+           author:
+               type: string
+               groups:
+                   - 'downtime_event_list'

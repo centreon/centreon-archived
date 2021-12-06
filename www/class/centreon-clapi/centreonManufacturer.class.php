@@ -131,11 +131,13 @@ class CentreonManufacturer extends CentreonObject
             throw new CentreonClapiException(self::FILE_NOT_FOUND . ": " . $mibFile);
         }
         copy($mibFile, $tmpMibFile);
-        $centreonDir = CentreonUtils::getCentreonDir();
+        $centreonDir = realpath(__DIR__ . "/../../../");
         passthru("export MIBS=ALL && $centreonDir/bin/snmpttconvertmib --in=$tmpMibFile --out=$tmpMibFile.conf");
         passthru("$centreonDir/bin/centFillTrapDB -f $tmpMibFile.conf -m $vendorId");
         unlink($tmpMibFile);
-        unlink($tmpMibFile . ".conf");
+        if (file_exists($tmpMibFile . ".conf")) {
+            unlink($tmpMibFile . ".conf");
+        }
     }
 
     /**

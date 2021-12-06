@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2019 Centreon
+ * Copyright 2005-2020 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -41,6 +42,33 @@ if (!isset($centreon)) {
     exit();
 }
 
+// LDAP import form
+const LDAP_IMPORT_FORM = 'li';
+// Massive Change
+const MASSIVE_CHANGE = 'mc';
+// Add a contact
+const ADD_CONTACT = 'a';
+// Watch a contact
+const WATCH_CONTACT = 'w';
+// Modify a contact
+const MODIFY_CONTACT = 'c';
+// Activate a contact
+const ACTIVATE_CONTACT = 's';
+// Massive activate on selected contacts
+const MASSIVE_ACTIVATE_CONTACT = 'ms';
+// Deactivate a contact
+const DEACTIVATE_CONTACT = 'u';
+// Massive deactivate on selected contacts
+const MASSIVE_DEACTIVATE_CONTACT = 'mu';
+// Duplicate n contacts and notify it
+const DUPLICATE_CONTACTS = 'm';
+// Delete n contacts and notify it
+const DELETE_CONTACTS = 'd';
+// display notification
+const DISPLAY_NOTIFICATION = 'dn';
+// Synchronize selected contacts with the LDAP
+const SYNC_LDAP_CONTACTS = 'sync';
+
 isset($_GET["contact_id"]) ? $cG = $_GET["contact_id"] : $cG = null;
 isset($_POST["contact_id"]) ? $cP = $_POST["contact_id"] : $cP = null;
 $cG ? $contactId = $cG : $contactId = $cP;
@@ -58,14 +86,11 @@ $cG ? $dupNbr = $cG : $dupNbr = $cP;
  */
 $path = "./include/configuration/configObject/contact/";
 
-/*
- * PHP functions
- */
 require_once $path . "DB-Func.php";
 require_once "./include/common/common-Func.php";
 
 /* Set the real page */
-if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
+if (isset($ret) && is_array($ret) && $ret['topology_page'] != "" && $p != $ret['topology_page']) {
     $p = $ret['topology_page'];
 }
 
@@ -77,7 +102,7 @@ $allowedAclGroups = $acl->getAccessGroups();
  */
 $eventDispatcher = $dependencyInjector[ServiceProvider::CENTREON_EVENT_DISPATCHER];
 
-if(! is_null($eventDispatcher->getDispatcherLoader())) {
+if (!is_null($eventDispatcher->getDispatcherLoader())) {
     $eventDispatcher->getDispatcherLoader()->load();
 }
 
@@ -139,70 +164,103 @@ $eventDispatcher->addEventHandler(
 );
 
 switch ($o) {
-    case "li":
+    case LDAP_IMPORT_FORM:
         require_once($path . "ldapImportContact.php");
-        break; # LDAP import form	# Wistof
-    case "mc":
+        break;
+    case MASSIVE_CHANGE:
+    case ADD_CONTACT:
+    case WATCH_CONTACT:
+    case MODIFY_CONTACT:
         require_once($path . "formContact.php");
-        break; # Massive Change
-    case "a":
-        require_once($path . "formContact.php");
-        break; #Add a contact
-    case "w":
-        require_once($path . "formContact.php");
-        break; #Watch a contact
-    case "c":
-        require_once($path . "formContact.php");
-        break; #Modify a contact
-    case "s":
-        enableContactInDB($contactId);
-        require_once($path . "listContact.php");
-        break; #Activate a contact
-    case "ms":
-        enableContactInDB(null, isset($select) ? $select : array());
+        break;
+    case ACTIVATE_CONTACT:
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            enableContactInDB($contactId);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listContact.php");
         break;
-    case "u":
-        disableContactInDB($contactId);
-        require_once($path . "listContact.php");
-        break; #Desactivate a contact
-    case "mu":
-        disableContactInDB(null, isset($select) ? $select : array());
+    case MASSIVE_ACTIVATE_CONTACT:
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            enableContactInDB(null, isset($select) ? $select : array());
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listContact.php");
         break;
-    case "m":
-        // We notify that we have made a duplicate
-        $eventDispatcher->notify(
-            'contact.form',
-            EventDispatcher::EVENT_DUPLICATE,
-            [
-                'contact_ids' => $select,
-                'numbers' => $dupNbr
-            ]
-        );
-
+    case DEACTIVATE_CONTACT:
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            disableContactInDB($contactId);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listContact.php");
-        break; #Duplicate n contacts
-    case "d":
-        // We notify that we have made a delete
-        $eventDispatcher->notify(
-            'contact.form',
-            EventDispatcher::EVENT_DELETE,
-            ['contact_ids' => $select]
-        );
+        break;
+    case MASSIVE_DEACTIVATE_CONTACT:
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            disableContactInDB(null, isset($select) ? $select : array());
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listContact.php");
-        break; #Delete n contacts
-    case "dn":
+        break;
+    case DUPLICATE_CONTACTS:
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            $eventDispatcher->notify(
+                'contact.form',
+                EventDispatcher::EVENT_DUPLICATE,
+                [
+                    'contact_ids' => $select,
+                    'numbers' => $dupNbr
+                ]
+            );
+        } else {
+            unvalidFormMessage();
+        }
+        require_once($path . "listContact.php");
+        break;
+    case DELETE_CONTACTS:
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            $eventDispatcher->notify(
+                'contact.form',
+                EventDispatcher::EVENT_DELETE,
+                ['contact_ids' => $select]
+            );
+        } else {
+            unvalidFormMessage();
+        }
+        require_once($path . "listContact.php");
+        break;
+    case DISPLAY_NOTIFICATION:
         require_once $path . 'displayNotification.php';
         break;
-    case "sync":
-        $eventDispatcher->notify(
-            'contact.form',
-            EventDispatcher::EVENT_SYNCHRONIZE,
-            ['contact_ids' => $select]
-        );
+    case SYNC_LDAP_CONTACTS:
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            $eventDispatcher->notify(
+                'contact.form',
+                EventDispatcher::EVENT_SYNCHRONIZE,
+                ['contact_ids' => $select]
+            );
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listContact.php");
-        break; #Synchronize selected contacts with the LDAP
+        break;
     default:
         require_once($path . "listContact.php");
         break;

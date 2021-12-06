@@ -240,7 +240,7 @@ class ServiceProvider implements AutoloadServiceProviderInterface
             $eventDispatcher = new Event\EventDispatcher();
             $eventDispatcher->setDispatcherLoader(
                 new Event\FileLoader(
-                    _CENTREON_PATH_ . '/www/modules/',
+                    __DIR__ . '/../../www/modules/',
                     'custom-module-form.php'
                 )
             );

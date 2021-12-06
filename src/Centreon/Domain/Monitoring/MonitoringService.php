@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,10 +23,17 @@ declare(strict_types=1);
 namespace Centreon\Domain\Monitoring;
 
 use Centreon\Domain\Contact\Contact;
+use Centreon\Domain\HostConfiguration\Interfaces\HostConfigurationServiceInterface;
+use Centreon\Domain\Monitoring\Exception\MonitoringServiceException;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
+use Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerServiceInterface;
 use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
 use Centreon\Domain\Service\AbstractCentreonService;
+use Centreon\Domain\ServiceConfiguration\Interfaces\ServiceConfigurationServiceInterface;
+use Centreon\Domain\Macro\Interfaces\MacroInterface;
+use Centreon\Domain\HostConfiguration\Exception\HostCommandException;
+use Centreon\Domain\ServiceConfiguration\Exception\ServiceCommandException;
 
 /**
  * Monitoring class used to manage the real time services and hosts
@@ -34,6 +42,8 @@ use Centreon\Domain\Service\AbstractCentreonService;
  */
 class MonitoringService extends AbstractCentreonService implements MonitoringServiceInterface
 {
+    use CommandLineTrait;
+
     /**
      * @var MonitoringRepositoryInterface
      */
@@ -45,15 +55,37 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
     private $accessGroupRepository;
 
     /**
+     * @var ServiceConfigurationServiceInterface
+     */
+    private $serviceConfiguration;
+    /**
+     * @var HostConfigurationServiceInterface
+     */
+    private $hostConfiguration;
+    /**
+     * @var MonitoringServerServiceInterface
+     */
+    private $monitoringServerService;
+
+    /**
      * @param MonitoringRepositoryInterface $monitoringRepository
      * @param AccessGroupRepositoryInterface $accessGroupRepository
+     * @param ServiceConfigurationServiceInterface $serviceConfigurationService
+     * @param HostConfigurationServiceInterface $hostConfigurationService
+     * @param MonitoringServerServiceInterface $monitoringServerService
      */
     public function __construct(
         MonitoringRepositoryInterface $monitoringRepository,
-        AccessGroupRepositoryInterface $accessGroupRepository
+        AccessGroupRepositoryInterface $accessGroupRepository,
+        ServiceConfigurationServiceInterface $serviceConfigurationService,
+        HostConfigurationServiceInterface $hostConfigurationService,
+        MonitoringServerServiceInterface $monitoringServerService
     ) {
         $this->monitoringRepository = $monitoringRepository;
         $this->accessGroupRepository = $accessGroupRepository;
+        $this->serviceConfiguration = $serviceConfigurationService;
+        $this->hostConfiguration = $hostConfigurationService;
+        $this->monitoringServerService = $monitoringServerService;
     }
 
     /**
@@ -87,7 +119,7 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
      */
     public function findServicesByHost(int $hostId): array
     {
-        return $this->monitoringRepository->findServicesByHost($hostId);
+        return $this->monitoringRepository->findServicesByHostWithRequestParameters($hostId);
     }
 
     /**
@@ -105,10 +137,10 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
     /**
      * @inheritDoc
      */
-    public function findHostGroups(bool $withHosts = false, bool $withServices = false): array
+    public function findHostGroups(bool $withHosts = false, bool $withServices = false, int $hostId = null): array
     {
         // Find hosts groups only
-        $hostGroups = $this->monitoringRepository->findHostGroups();
+        $hostGroups = $this->monitoringRepository->findHostGroups($hostId);
 
         if (!empty($hostGroups)) {
             $hostIds = [];
@@ -178,6 +210,14 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
     /**
      * @inheritDoc
      */
+    public function findOneServiceByDescription(string $description): ?Service
+    {
+        return $this->monitoringRepository->findOneServiceByDescription($description);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function findServiceGroups(bool $withHosts = false, bool $withServices = false): array
     {
         // Find hosts groups only
@@ -205,7 +245,7 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
                 // First, we will sort services by service groups and hosts
                 $servicesByServiceGroupAndHost = [];
                 /**
-                 * @var $services Service[]
+                 * @var Service[] $services
                  */
                 foreach ($servicesByServiceGroup as $serviceGroupId => $services) {
                     foreach ($services as $service) {
@@ -216,11 +256,12 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
 
                 // Next, we will linked services to host
                 /**
-                 * @var $serviceGroup ServiceGroup
+                 * @var ServiceGroup $serviceGroup
                  */
                 foreach ($serviceGroups as $serviceGroup) {
                     foreach ($serviceGroup->getHosts() as $host) {
-                        if (array_key_exists($serviceGroup->getId(), $servicesByServiceGroupAndHost)
+                        if (
+                            array_key_exists($serviceGroup->getId(), $servicesByServiceGroupAndHost)
                             && array_key_exists($host->getId(), $servicesByServiceGroupAndHost[$serviceGroup->getId()])
                         ) {
                             $host->setServices(
@@ -244,6 +285,22 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
     }
 
     /**
+     * @inheritDoc
+     */
+    public function isServiceExists(int $hostId, int $serviceId): bool
+    {
+        return !is_null($this->findOneService($hostId, $serviceId));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findServiceGroupsByHostAndService(int $hostId, int $serviceId): array
+    {
+        return $this->monitoringRepository->findServiceGroupsByHostAndService($hostId, $serviceId);
+    }
+
+    /**
      * Completes hosts with their services.
      *
      * @param array $hosts Host list for which we want to complete with their services
@@ -264,5 +321,114 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
             }
         }
         return $hosts;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findCommandLineOfService(int $hostId, int $serviceId): ?string
+    {
+        try {
+            $service = $this->findOneService($hostId, $serviceId);
+            if ($service === null) {
+                throw new MonitoringServiceException('Service not found');
+            }
+            $this->hidePasswordInServiceCommandLine($service);
+            return $service->getCommandLine();
+        } catch (MonitoringServiceException $ex) {
+            throw $ex;
+        } catch (\Throwable $ex) {
+            throw new MonitoringServiceException('Error when getting the command line');
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function hidePasswordInHostCommandLine(Host $monitoringHost, string $replacementValue = '***'): void
+    {
+        $monitoringCommand = $monitoringHost->getCheckCommand();
+        if (empty($monitoringCommand)) {
+            return;
+        }
+        if ($monitoringHost->getId() === null) {
+            throw MonitoringServiceException::hostIdNotNull();
+        }
+
+        $configurationCommand = $this->hostConfiguration->findCommandLine($monitoringHost->getId());
+        if (empty($configurationCommand)) {
+            throw HostCommandException::notFound($monitoringHost->getId());
+        }
+
+        $hostMacros = $this->hostConfiguration->findHostMacrosFromCommandLine(
+            $monitoringHost->getId(),
+            $configurationCommand
+        );
+
+        $builtCommand = $this->buildCommandLineFromConfiguration(
+            $configurationCommand,
+            $monitoringCommand,
+            $hostMacros,
+            $replacementValue
+        );
+
+        if (!empty($builtCommand)) {
+            $monitoringHost->setCheckCommand($builtCommand);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function hidePasswordInServiceCommandLine(Service $monitoringService, string $replacementValue = '***'): void
+    {
+        $monitoringCommand = $monitoringService->getCommandLine();
+        if (empty($monitoringCommand)) {
+            return;
+        }
+        if ($monitoringService->getId() === null) {
+            throw MonitoringServiceException::serviceIdNotNull();
+        }
+        if ($monitoringService->getHost() === null || $monitoringService->getHost()->getId() === null) {
+            throw MonitoringServiceException::hostIdNotNull();
+        }
+
+        $configurationCommand = $this->serviceConfiguration->findCommandLine($monitoringService->getId());
+        if (empty($configurationCommand)) {
+            // Meta Service case
+            if (preg_match('/^meta_[0-9]+$/', $monitoringService->getDescription())) {
+                // For META SERVICE we can define the configuration command line with the monitoring command line
+                $monitoringService->setCommandLine($monitoringCommand);
+                return;
+            } else {
+                // The service is not a META SERVICE
+                throw ServiceCommandException::notFound($monitoringService->getId());
+            }
+        }
+
+        $hostMacros = $this->hostConfiguration->findHostMacrosFromCommandLine(
+            $monitoringService->getHost()->getId(),
+            $configurationCommand
+        );
+        $serviceMacros = $this->serviceConfiguration->findServiceMacrosFromCommandLine(
+            $monitoringService->getId(),
+            $configurationCommand
+        );
+
+        /**
+         * @var MacroInterface[] $macros
+         */
+        $macros = array_merge($hostMacros, $serviceMacros);
+
+        $builtCommand = $this->buildCommandLineFromConfiguration(
+            $configurationCommand,
+            $monitoringCommand,
+            $macros,
+            $replacementValue
+        );
+
+        if (!empty($builtCommand)) {
+            $monitoringService->setCommandLine($builtCommand);
+        }
     }
 }

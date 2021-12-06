@@ -6,36 +6,73 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/jsx-filename-extension */
 
-import React, { Component, ReactNode } from 'react';
+import React, { Component, ReactNode, Suspense } from 'react';
+
 import { connect } from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router';
 import Fullscreen from 'react-fullscreen-crossbrowser';
 import queryString from 'query-string';
-import { StylesProvider } from '@material-ui/styles';
-import Header from './components/header';
+
+import FullscreenIcon from '@material-ui/icons/Fullscreen';
+import { withStyles, createStyles, Fab } from '@material-ui/core';
+
+import { ThemeProvider } from '@centreon/ui';
+
+import Header from './Header';
 import { history } from './store';
-
-import NavigationComponent from './components/navigation';
-import Tooltip from './components/tooltip';
+import Nagigation from './Navigation';
 import Footer from './components/footer';
-import MainRouter from './components/mainRouter';
 import axios from './axios';
-
 import { fetchExternalComponents } from './redux/actions/externalComponentsActions';
+import PageLoader from './components/PageLoader';
 
-import styles from './App.scss';
-import footerStyles from './components/footer/footer.scss';
-import contentStyles from './styles/partials/_content.scss';
+const MainRouter = React.lazy(() => import('./components/mainRouter'));
+
+const styles = createStyles({
+  content: {
+    display: 'flex',
+    flexDirection: 'column',
+    height: ' 100vh',
+    overflow: 'hidden',
+    position: 'relative',
+    transition: 'all 0.3s',
+    width: '100%',
+  },
+  fullScreenWrapper: {
+    flexGrow: 1,
+    height: '100%',
+    overflow: 'hidden',
+    width: '100%',
+  },
+  fullscreenButton: {
+    bottom: '10px',
+    position: 'absolute',
+    right: '20px',
+    zIndex: 1500,
+  },
+  mainContent: {
+    backgroundcolor: 'white',
+    height: '100%',
+    width: '100%',
+  },
+  wrapper: {
+    alignItems: 'stretch',
+    display: 'flex',
+    height: '100%',
+    overflow: 'hidden',
+  },
+});
 
 // Extends Window interface
 declare global {
   interface Window {
-    fullscreenSearch: string;
-    fullscreenHash: string;
+    fullscreenHash: string | null;
+    fullscreenSearch: string | null;
   }
 }
 
 interface Props {
+  classes;
   fetchExternalComponents: () => void;
 }
 
@@ -75,15 +112,15 @@ class App extends Component<Props, State> {
   private removeFullscreenParams = (): void => {
     if (history.location.pathname === '/main.php') {
       history.push({
+        hash: window.fullscreenHash,
         pathname: '/main.php',
         search: window.fullscreenSearch,
-        hash: window.fullscreenHash,
       });
     }
 
     // remove fullscreen parameters to keep normal routing
-    delete window.fullscreenSearch;
-    delete window.fullscreenHash;
+    window.fullscreenSearch = null;
+    window.fullscreenHash = null;
   };
 
   // keep alive (redirect to login page if session is expired)
@@ -114,44 +151,55 @@ class App extends Component<Props, State> {
   public render(): ReactNode {
     const min = this.getMinArgument();
 
+    const { classes } = this.props;
+
     return (
-      <StylesProvider injectFirst>
+      <Suspense fallback={<PageLoader />}>
         <ConnectedRouter history={history}>
-          <div className={styles.wrapper}>
-            {!min && <NavigationComponent />}
-            <Tooltip />
-            <div id="content" className={contentStyles.content}>
-              {!min && <Header />}
-              <div
-                id="fullscreen-wrapper"
-                className={contentStyles['fullscreen-wrapper']}
-              >
-                <Fullscreen
-                  enabled={this.state.isFullscreenEnabled}
-                  onClose={this.removeFullscreenParams}
-                  onChange={(isFullscreenEnabled): void => {
-                    this.setState({ isFullscreenEnabled });
-                  }}
+          <ThemeProvider>
+            <div className={classes.wrapper}>
+              {!min && <Nagigation />}
+              <div className={classes.content} id="content">
+                {!min && <Header />}
+                <div
+                  className={classes.fullScreenWrapper}
+                  id="fullscreen-wrapper"
                 >
-                  <div className={styles['main-content']}>
-                    <MainRouter />
-                  </div>
-                </Fullscreen>
+                  <Fullscreen
+                    enabled={this.state.isFullscreenEnabled}
+                    onChange={(isFullscreenEnabled): void => {
+                      this.setState({ isFullscreenEnabled });
+                    }}
+                    onClose={this.removeFullscreenParams}
+                  >
+                    <div className={classes.mainContent}>
+                      <MainRouter />
+                    </div>
+                  </Fullscreen>
+                </div>
+                {!min && <Footer />}
               </div>
-              {!min && <Footer />}
+              <Fab
+                className={classes.fullscreenButton}
+                color="default"
+                size="small"
+                onClick={this.goFull}
+              >
+                <FullscreenIcon />
+              </Fab>
             </div>
-            <span
-              className={footerStyles['full-screen']}
-              onClick={this.goFull}
-            />
-          </div>
+          </ThemeProvider>
         </ConnectedRouter>
-      </StylesProvider>
+      </Suspense>
     );
   }
 }
 
-const mapDispatchToProps = (dispatch: (any) => void): Props => {
+interface DispatchProps {
+  fetchExternalComponents: () => void;
+}
+
+const mapDispatchToProps = (dispatch: (any) => void): DispatchProps => {
   return {
     fetchExternalComponents: (): void => {
       dispatch(fetchExternalComponents());
@@ -159,4 +207,4 @@ const mapDispatchToProps = (dispatch: (any) => void): Props => {
   };
 };
 
-export default connect(null, mapDispatchToProps)(App);
+export default connect(null, mapDispatchToProps)(withStyles(styles)(App));

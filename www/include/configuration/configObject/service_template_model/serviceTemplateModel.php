@@ -1,7 +1,8 @@
 <?php
+
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2020 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -37,21 +38,10 @@ if (!isset($centreon)) {
     exit();
 }
 
-isset($_GET["service_id"]) ? $sG = $_GET["service_id"] : $sG = null;
-isset($_POST["service_id"]) ? $sP = $_POST["service_id"] : $sP = null;
-$sG ? $service_id = $sG : $service_id = $sP;
-
-isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = null;
-isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = null;
-$cG ? $select = $cG : $select = $cP;
-
-isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = null;
-isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = null;
-$cG ? $select = $cG : $select = $cP;
-
-isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = null;
-isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = null;
-$cG ? $dupNbr = $cG : $dupNbr = $cP;
+$service_id = filter_var(
+    $_GET['service_id'] ?? $_POST['service_id'] ?? null,
+    FILTER_VALIDATE_INT
+);
 
 if ($o == "c" && $service_id == null) {
     $o = "";
@@ -69,51 +59,101 @@ $path2 = "./include/configuration/configObject/service/";
 require_once $path2 . "DB-Func.php";
 require_once "./include/common/common-Func.php";
 
+$select = filter_var_array(
+    getSelectOption(),
+    FILTER_VALIDATE_INT
+);
+$dupNbr = filter_var_array(
+    getDuplicateNumberOption(),
+    FILTER_VALIDATE_INT
+);
+
 $serviceObj = new CentreonService($pearDB);
 $lockedElements = $serviceObj->getLockedServiceTemplates();
 
 /* Set the real page */
-if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
+if (isset($ret) && is_array($ret) && $ret['topology_page'] != "" && $p != $ret['topology_page']) {
     $p = $ret['topology_page'];
 }
 
+const SERVICE_TEMPLATE_ADD = 'a';
+const SERVICE_TEMPLATE_WATCH = 'w';
+const SERVICE_TEMPLATE_MODIFY = 'c';
+const SERVICE_TEMPLATE_MASSIVE_CHANGE = 'mc';
+const SERVICE_TEMPLATE_ACTIVATION = 's';
+const SERVICE_TEMPLATE_MASSIVE_ACTIVATION = 'ms';
+const SERVICE_TEMPLATE_DEACTIVATION = 'u';
+const SERVICE_TEMPLATE_MASSIVE_DEACTIVATION = 'mu';
+const SERVICE_TEMPLATE_DUPLICATION = 'm';
+const SERVICE_TEMPLATE_DELETION = 'd';
+
 switch ($o) {
-    case "a":
+    case SERVICE_TEMPLATE_ADD:
+    case SERVICE_TEMPLATE_WATCH:
+    case SERVICE_TEMPLATE_MODIFY:
+    case SERVICE_TEMPLATE_MASSIVE_CHANGE:
         require_once($path . "formServiceTemplateModel.php");
-        break; #Add a Service Template Model
-    case "w":
-        require_once($path . "formServiceTemplateModel.php");
-        break; #Watch a Service Template Model
-    case "c":
-        require_once($path . "formServiceTemplateModel.php");
-        break; #Modify a Service Template Model
-    case "mc":
-        require_once($path . "formServiceTemplateModel.php");
-        break; #Massive change
-    case "s":
-        enableServiceInDB($service_id);
-        require_once($path . "listServiceTemplateModel.php");
-        break; #Activate a Service Template Model
-    case "ms":
-        enableServiceInDB(null, isset($select) ? $select : array());
+        break;
+    case SERVICE_TEMPLATE_ACTIVATION:
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            enableServiceInDB($service_id);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listServiceTemplateModel.php");
         break;
-    case "u":
-        disableServiceInDB($service_id);
-        require_once($path . "listServiceTemplateModel.php");
-        break; #Desactivate a Service Template Model
-    case "mu":
-        disableServiceInDB(null, isset($select) ? $select : array());
+    case SERVICE_TEMPLATE_MASSIVE_ACTIVATION:
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            enableServiceInDB(null, isset($select) ? $select : array());
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listServiceTemplateModel.php");
         break;
-    case "m":
-        multipleServiceInDB(isset($select) ? $select : array(), $dupNbr);
+    case SERVICE_TEMPLATE_DEACTIVATION:
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            disableServiceInDB($service_id);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listServiceTemplateModel.php");
-        break; #Duplicate n Service Template Models
-    case "d":
-        deleteServiceInDB(isset($select) ? $select : array());
+        break;
+    case SERVICE_TEMPLATE_MASSIVE_DEACTIVATION:
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            disableServiceInDB(null, isset($select) ? $select : array());
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listServiceTemplateModel.php");
-        break; #Delete n Service Template Models
+        break;
+    case SERVICE_TEMPLATE_DUPLICATION:
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            multipleServiceInDB(isset($select) ? $select : array(), $dupNbr);
+        } else {
+            unvalidFormMessage();
+        }
+        require_once($path . "listServiceTemplateModel.php");
+        break;
+    case SERVICE_TEMPLATE_DELETION:
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            deleteServiceInDB(isset($select) ? $select : array());
+        } else {
+            unvalidFormMessage();
+        }
+        require_once($path . "listServiceTemplateModel.php");
+        break;
     default:
         require_once($path . "listServiceTemplateModel.php");
         break;

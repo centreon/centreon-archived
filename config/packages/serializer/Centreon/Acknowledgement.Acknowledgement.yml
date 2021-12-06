@@ -1,0 +1,105 @@
+Centreon\Domain\Acknowledgement\Acknowledgement:
+    properties:
+        id:
+            type: int
+            groups:
+                - 'ack_main'
+                - 'ack_event_list'
+                - 'ack_service'
+                - 'ack_host'
+                - 'ack_full'
+        pollerId:
+            type: int
+            groups:
+                - 'ack_full'
+        hostId:
+            type: int
+            groups:
+                - 'ack_host'
+                - 'ack_service'
+                - 'ack_full'
+        serviceId:
+            type: int
+            groups:
+                - 'ack_service'
+                - 'ack_full'
+        resourceId:
+            type: int
+            groups:
+                - 'ack_hosts'
+                - 'ack_services'
+        parentResourceId:
+            type: int
+            groups:
+                - 'ack_services'
+        authorId:
+            type: int
+            groups:
+                - 'Default'
+                - 'ack_main'
+                - 'ack_event_list'
+        authorName:
+            type: string
+            groups:
+                - 'Default'
+                - 'ack_main'
+                - 'ack_event_list'
+                - 'ack_full'
+        comment:
+            type: string
+            groups:
+                - 'Default'
+                - 'ack_main'
+                - 'ack_event_list'
+                - 'ack_resource'
+                - 'ack_service'
+                - 'ack_full'
+        deletionTime:
+            type: DateTime
+            groups:
+                - 'Default'
+                - 'ack_main'
+                - 'ack_event_list'
+                - 'ack_full'
+        entryTime:
+            type: DateTime
+            groups:
+                - 'Default'
+                - 'ack_main'
+                - 'ack_event_list'
+                - 'ack_full'
+        isNotifyContacts:
+            type: bool
+            groups:
+                - 'Default'
+                - 'ack_main'
+                - 'ack_event_list'
+                - 'ack_resource'
+                - 'ack_full'
+        isPersistentComment:
+            type: bool
+            groups:
+                - 'Default'
+                - 'ack_main'
+                - 'ack_event_list'
+                - 'ack_full'
+        isSticky:
+            type: bool
+            groups:
+                - 'Default'
+                - 'ack_main'
+                - 'ack_event_list'
+                - 'ack_full'
+        state:
+            type: int
+            groups:
+                - 'Default'
+                - 'ack_main'
+                - 'ack_event_list'
+                - 'ack_full'
+        withServices:
+            type: bool
+            groups:
+                - 'ack_host_add'
+                - 'ack_resource'
+                - 'ack_full'

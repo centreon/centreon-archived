@@ -33,13 +33,19 @@
  *
  */
 
+
 if (!isset($oreon)) {
     exit();
 }
 
-$DBRESULT = $pearDB->query("SELECT * FROM `options` WHERE options.key LIKE 'kb_%'");
+$DBRESULT = $pearDB->query(
+    "SELECT * FROM `options` WHERE options.key LIKE 'kb_%' AND options.key <> 'kb_wiki_password' "
+);
 while ($opt = $DBRESULT->fetchRow()) {
     $gopt[$opt["key"]] = myDecode($opt["value"]);
+}
+if (isset($opt["kb_wiki_password"])) {
+    $gopt[$opt["kb_wiki_password"]] = CentreonAuth::PWS_OCCULTATION;
 }
 $DBRESULT->closeCursor();
 

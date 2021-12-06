@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2018 Centreon
+ * Copyright 2005-2021 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -45,24 +46,22 @@ require_once './include/reporting/dashboard/initReport.php';
 /*
  *  Getting service to report
  */
-isset($_GET["host_id"]) ? $host_id = $_GET["host_id"] : $host_id = "NULL";
-isset($_POST["host_id"]) ? $host_id = $_POST["host_id"] : $host_id;
-isset($_GET["item"]) ? $service_id = $_GET["item"] : $service_id = "NULL";
-isset($_POST["item"]) ? $service_id = $_POST["item"] : $service_id;
+$hostId = filter_var($_GET['host_id'] ?? $_POST['host_id'] ?? false, FILTER_VALIDATE_INT);
+$serviceId = filter_var($_GET['item'] ?? $_POST['item'] ?? false, FILTER_VALIDATE_INT);
 
 /*
  * FORMS
  */
 $form = new HTML_QuickFormCustom('formItem', 'post', "?p=" . $p);
 
-$host_name = getMyHostName($host_id);
-$items = $centreon->user->access->getHostServices($pearDBO, $host_id);
+$host_name = getMyHostName($hostId);
+$items = $centreon->user->access->getHostServices($pearDBO, $hostId);
 
 $itemsForUrl = array();
 foreach ($items as $key => $value) {
     $itemsForUrl[str_replace(":", "%3A", $key)] = str_replace(":", "%3A", $value);
 }
-$service_name = $itemsForUrl[$service_id];
+$service_name = $itemsForUrl[$serviceId];
 
 $select = $form->addElement(
     'select',
@@ -92,64 +91,75 @@ $form->addElement('hidden', 'p', $p);
 $redirect = $form->addElement('hidden', 'o');
 $redirect->setValue($o);
 
-/* adding hidden fields to get the result of datepicker in an unlocalized format */
-$formPeriod->addElement(
-    'hidden',
-    'alternativeDateStartDate',
-    '',
-    array(
-        'size' => 10,
-        'class' => 'alternativeDate'
-    )
-);
-$formPeriod->addElement(
-    'hidden',
-    'alternativeDateEndDate',
-    '',
-    array(
-        'size' => 10,
-        'class' => 'alternativeDate'
-    )
-);
-
 /*
  * Set service id with period selection form
  */
-if ($service_id != "NULL" && $host_id != "NULL") {
+if ($serviceId !== false && $hostId !== false) {
     $formPeriod->addElement(
         'hidden',
         'item',
-        $service_id
+        $serviceId
     );
     $formPeriod->addElement(
         'hidden',
         'host_id',
-        $host_id
+        $hostId
     );
     $form->addElement(
         'hidden',
         'host_id',
-        $host_id
+        $hostId
     );
-    $form->setDefaults(array('item' => $service_id));
-}
+    $form->setDefaults(array('item' => $serviceId));
 
-/*
- * Stats Display for selected service
- */
-if (isset($host_id) && $host_id != "NULL" && isset($service_id) && $service_id != "NULL") {
     /*
      * Getting periods values
      */
     $dates = getPeriodToReport("alternate");
-    $start_date = $dates[0];
-    $end_date = $dates[1];
+    $startDate = $dates[0];
+    $endDate = $dates[1];
 
     /*
      * Getting hostgroup and his hosts stats
      */
-    $serviceStats = array();
-    $serviceStats = getLogInDbForOneSVC($host_id, $service_id, $start_date, $end_date, $reportingTimePeriod);
+    $servicesStats = getServicesLogs(
+        [[
+            'hostId' => $hostId,
+            'serviceId' => $serviceId
+        ]],
+        $startDate,
+        $endDate,
+        $reportingTimePeriod
+    );
+    if (!empty($servicesStats)) {
+        $serviceStats = $servicesStats[$hostId][$serviceId];
+    } else {
+        $serviceStats = [
+            "OK_TF" => null,
+            "OK_MP" => null,
+            "OK_TP" => null,
+            "OK_A" => null,
+            "WARNING_TP" => null,
+            "WARNING_A" => null,
+            "WARNING_MP" => null,
+            "WARNING_TF" => null,
+            "CRITICAL_TP" => null,
+            "CRITICAL_A" => null,
+            "CRITICAL_MP" => null,
+            "CRITICAL_TF" => null,
+            "UNKNOWN_TP" => null,
+            "UNKNOWN_A" => null,
+            "UNKNOWN_MP" => null,
+            "UNKNOWN_TF" => null,
+            "UNDETERMINED_TP" => null,
+            "UNDETERMINED_A" => null,
+            "UNDETERMINED_TF" => null,
+            "MAINTENANCE_TP" => null,
+            "MAINTENANCE_TF" => null,
+            "TOTAL_ALERTS" => null,
+            "TOTAL_TIME_F" => null,
+        ];
+    }
 
     /*
      * Chart datas
@@ -165,42 +175,25 @@ if (isset($host_id) && $host_id != "NULL" && isset($service_id) && $service_id !
      * Exporting variables for ihtml
      */
     $tpl->assign('host_name', $host_name);
-    $tpl->assign('name', $itemsForUrl[$service_id]);
+    $tpl->assign('name', $itemsForUrl[$serviceId]);
     $tpl->assign('totalAlert', $serviceStats["TOTAL_ALERTS"]);
     $tpl->assign('totalTime', $serviceStats["TOTAL_TIME_F"]);
     $tpl->assign('summary', $serviceStats);
     $tpl->assign('from', _("From"));
-    $tpl->assign('date_start', $start_date);
+    $tpl->assign('date_start', $startDate);
     $tpl->assign('to', _("to"));
-    $tpl->assign('date_end', $end_date);
-    $formPeriod->setDefaults(array('period' => $period));
-    $tpl->assign('id', $service_id);
-}
-$tpl->assign('resumeTitle', _("Service state"));
-$tpl->assign('p', $p);
+    $tpl->assign('date_end', $endDate);
+    $formPeriod->setDefaults(['period' => $period]);
+    $tpl->assign('id', $serviceId);
 
-/*
- * Rendering forms
- */
-$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-$formPeriod->accept($renderer);
-$tpl->assign('formPeriod', $renderer->toArray());
-
-$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-$form->accept($renderer);
-$tpl->assign('formItem', $renderer->toArray());
-
-/*
- * Ajax timeline and CSV export initialization
- */
-if (isset($host_id) && $host_id != "NULL" && isset($service_id) && $service_id != "NULL") {
     /*
+     * Ajax timeline and CSV export initialization
      * CSV Export
      */
     $tpl->assign(
         "link_csv_url",
         "./include/reporting/dashboard/csvExport/csv_ServiceLogs.php?host="
-        . $host_id . "&service=" . $service_id . "&start=" . $start_date . "&end=" . $end_date
+        . $hostId . "&service=" . $serviceId . "&start=" . $startDate . "&end=" . $endDate
     );
     $tpl->assign("link_csv_name", _("Export in CSV format"));
 
@@ -221,5 +214,23 @@ if (isset($host_id) && $host_id != "NULL" && isset($service_id) && $service_id !
 } else {
     ?><script type="text/javascript"> function initTimeline() {;} </script> <?php
 }
+$tpl->assign('resumeTitle', _("Service state"));
+$tpl->assign('p', $p);
 
-$tpl->display("template/viewServicesLog.ihtml");
+/*
+ * Rendering forms
+ */
+$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+$formPeriod->accept($renderer);
+$tpl->assign('formPeriod', $renderer->toArray());
+
+$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+$form->accept($renderer);
+$tpl->assign('formItem', $renderer->toArray());
+
+if (
+    !$formPeriod->isSubmitted()
+    || ($formPeriod->isSubmitted() && $formPeriod->validate())
+) {
+    $tpl->display("template/viewServicesLog.ihtml");
+}

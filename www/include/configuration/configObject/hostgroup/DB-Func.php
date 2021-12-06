@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2019 Centreon
+ * Copyright 2005-2020 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -114,11 +115,32 @@ function disableHostGroupInDB($hg_id = null, $hg_arr = array())
     }
 }
 
+/**
+ * @param int $hgId
+ */
+function removeRelationLastHostgroupDependency(int $hgId): void
+{
+    global $pearDB;
+
+    $query = 'SELECT count(dependency_dep_id) AS nb_dependency , dependency_dep_id AS id 
+              FROM dependency_hostgroupParent_relation 
+              WHERE dependency_dep_id = (SELECT dependency_dep_id FROM dependency_hostgroupParent_relation 
+                                         WHERE hostgroup_hg_id =  ' . $hgId . ')';
+    $dbResult = $pearDB->query($query);
+    $result = $dbResult->fetch();
+
+    //is last parent
+    if ($result['nb_dependency'] == 1) {
+        $pearDB->query("DELETE FROM dependency WHERE dep_id = " . $result['id']);
+    }
+}
+
 function deleteHostGroupInDB($hostGroups = array())
 {
     global $pearDB, $centreon;
 
     foreach ($hostGroups as $key => $value) {
+        removeRelationLastHostgroupDependency((int)$key);
         $rq = "SELECT @nbr := (SELECT COUNT( * ) FROM host_service_relation WHERE service_service_id = " .
             "hsr.service_service_id GROUP BY service_service_id ) AS nbr, hsr.service_service_id FROM " .
             "host_service_relation hsr WHERE hsr.hostgroup_hg_id = '" . $key . "'";

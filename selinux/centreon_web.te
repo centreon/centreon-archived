@@ -1,0 +1,136 @@
+policy_module(centreon_web, 0.0.5)
+
+########################################
+#
+# Declarations
+#
+
+require {
+	class dbus { send_msg };
+	class tcp_socket { name_bind name_connect };
+	class service { reload status };
+	type centreon_t;
+	type centreon_etc_t;
+	type fs_t;
+	type etc_t;
+	type init_var_lib_t;
+	type ld_so_cache_t;
+	type shadow_t;
+	type systemd_logind_t;
+	type systemd_systemctl_exec_t;
+	type systemd_unit_file_t;
+	type httpd_t;
+	type httpd_log_t;
+	type httpd_sys_content_t;
+	type httpd_sys_rw_content_t;
+	type unreserved_port_t;
+	type system_cronjob_t;
+	type unconfined_t;
+}
+
+type centreon_web_t;
+type centreon_web_rw_t;
+init_daemon_domain(centreon_web_t, centreon_web_rw_t)
+
+type centreon_config_t;
+files_type(centreon_config_t)
+
+type centreon_var_lib_t;
+files_type(centreon_var_lib_t)
+
+type centreon_var_run_t;
+files_pid_file(centreon_var_run_t)
+
+########################################
+#
+# Centreon local policy
+#
+
+allow centreon_t self:capability { dac_override setgid setuid };
+dontaudit centreon_t self:capability sys_tty_config;
+allow centreon_web_t fs_t:filesystem associate;
+allow centreon_t httpd_log_t:dir { add_name create read remove_name rename rmdir write };
+allow centreon_t httpd_log_t:file { append create getattr setattr lock open read rename unlink write };
+
+allow centreon_web_t httpd_sys_content_t:dir { add_name create remove_name rmdir write };
+allow centreon_web_t httpd_sys_content_t:file { append create unlink write };
+allow centreon_web_rw_t httpd_sys_rw_content_t:dir { add_name create read remove_name rename rmdir write };
+allow centreon_web_rw_t httpd_sys_rw_content_t:file { append create getattr setattr lock open read rename unlink write };
+
+#============= httpd_t ==============
+allow httpd_t centreon_etc_t:dir { add_name write };
+allow httpd_t centreon_etc_t:file { create getattr open read write };
+allow httpd_t etc_t:dir { add_name write };
+allow httpd_t etc_t:file { create setattr write };
+allow httpd_t init_t:unix_stream_socket connectto;
+allow httpd_t init_var_lib_t:file { read open lock getattr };
+allow httpd_t ld_so_cache_t:file execute;
+allow httpd_t self:capability { audit_write sys_resource };
+allow httpd_t self:netlink_audit_socket nlmsg_relay;
+allow httpd_t self:process { execmem setrlimit };
+allow httpd_t shadow_t:file { getattr open read };
+allow httpd_t systemd_logind_t:dbus send_msg;
+allow httpd_t systemd_systemctl_exec_t:file { open read };
+allow httpd_t systemd_unit_file_t:service { reload status };
+allow httpd_t httpd_sys_content_t:dir { add_name write remove_name rmdir create };
+allow httpd_t httpd_sys_content_t:file { unlink };
+allow httpd_t centreon_config_t:dir read;
+allow httpd_t centreon_config_t:file { getattr open read };
+allow httpd_t centreon_web_rw_t:dir { add_name remove_name write };
+allow httpd_t centreon_web_rw_t:file { create getattr open read rename setattr write unlink };
+allow httpd_t centreon_web_t:dir { add_name remove_name write };
+allow httpd_t centreon_web_t:file { create getattr open read rename setattr write unlink map };
+allow httpd_t centreon_var_lib_t:dir { add_name create read remove_name rename rmdir write };
+allow httpd_t centreon_var_lib_t:file { append create getattr setattr lock open read rename setattr unlink write };
+
+# allowed php-fpm use the port 9042
+allow httpd_t unreserved_port_t:tcp_socket name_bind;
+allow httpd_t unreserved_port_t:tcp_socket name_connect;
+
+#============= systemd_logind_t ==============
+allow systemd_logind_t httpd_t:dbus send_msg;
+
+#============= system_cronjob_t ==============
+allow system_cronjob_t centreon_web_t:file map;
+
+#============= unconfined_t ==============
+allow unconfined_t centreon_web_t:dir { add_name create relabelfrom relabelto remove_name setattr write };
+allow unconfined_t centreon_web_t:file { create relabelfrom relabelto rename setattr };
+allow unconfined_t centreon_web_t:lnk_file { create relabelfrom relabelto rename setattr };
+
+kernel_read_system_state(centreon_web_t)
+kernel_read_kernel_sysctls(centreon_web_t)
+kernel_read_software_raid_state(centreon_web_t)
+
+corecmd_exec_bin(centreon_web_t)
+corecmd_exec_shell(centreon_web_t)
+
+corenet_all_recvfrom_unlabeled(centreon_web_t)
+corenet_all_recvfrom_netlabel(centreon_web_t)
+corenet_tcp_sendrecv_generic_if(centreon_web_t)
+corenet_tcp_sendrecv_generic_node(centreon_web_t)
+
+corenet_sendrecv_all_client_packets(centreon_web_t)
+corenet_tcp_connect_all_ports(centreon_web_t)
+corenet_tcp_sendrecv_all_ports(centreon_web_t)
+
+corenet_dontaudit_tcp_bind_all_reserved_ports(centreon_web_t)
+corenet_dontaudit_udp_bind_all_reserved_ports(centreon_web_t)
+
+dev_read_sysfs(centreon_web_t)
+dev_read_urand(centreon_web_t)
+
+domain_use_interactive_fds(centreon_web_t)
+domain_read_all_domains_state(centreon_web_t)
+
+files_read_etc_runtime_files(centreon_web_t)
+files_read_kernel_symbol_table(centreon_web_t)
+files_read_usr_files(centreon_web_t)
+files_search_spool(centreon_web_t)
+
+fs_getattr_all_fs(centreon_web_t)
+fs_search_auto_mountpoints(centreon_web_t)
+
+auth_use_nsswitch(centreon_web_t)
+
+logging_send_syslog_msg(centreon_web_t)

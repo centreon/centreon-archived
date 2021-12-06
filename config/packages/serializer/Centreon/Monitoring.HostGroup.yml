@@ -1,0 +1,14 @@
+Centreon\Domain\Monitoring\HostGroup:
+    properties:
+        id:
+            type: int
+            groups:
+                - 'hg_main'
+        hosts:
+            type: array<Centreon\Domain\Monitoring\Host>
+            groups:
+                - 'hg_with_host'
+        name:
+            type: string
+            groups:
+                - 'hg_main'

@@ -64,7 +64,7 @@ class CentreonModulesWebserviceTest extends TestCase
         ],
     ];
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->webservice = $this->createPartialMock(CentreonModulesWebservice::class, [
             'loadDb',
@@ -83,7 +83,7 @@ class CentreonModulesWebserviceTest extends TestCase
         $container[\CentreonLegacy\ServiceProvider::CENTREON_LEGACY_MODULE_INFORMATION] = $this
             ->getMockBuilder(\CentreonLegacy\Core\Module\Information::class)
             ->disableOriginalConstructor()
-            ->setMethods([
+            ->onlyMethods([
                 'getList',
             ])
             ->getMock();
@@ -114,7 +114,7 @@ class CentreonModulesWebserviceTest extends TestCase
         $container[\CentreonLegacy\ServiceProvider::CENTREON_LEGACY_MODULE_INFORMATION] = $this
             ->getMockBuilder(\CentreonLegacy\Core\Module\Information::class)
             ->disableOriginalConstructor()
-            ->setMethods([
+            ->onlyMethods([
                 'getList',
             ])
             ->getMock();

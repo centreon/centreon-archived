@@ -95,15 +95,21 @@
             <td class="ListColHeaderCenter" style="width:170px;">{$status_trans}</td>
             <td class="ListColHeaderCenter">{$actions_trans}&nbsp;&nbsp;&nbsp;</td>
         </tr>
-        {assign var=$line value=0}
+        {assign var="line" value=0}
+        {php} $l = 0; {/php}
         {if $selection == 1}
         {foreach key=elem from=$content item=stt}
         <tr class="{php} global $line; print $line[$l%2]; {/php}">
             <td class="ListColCenter"><img class="ico-14" src="./img/icons/service.png"></td>
-            <td class="ListColLeft"><a
+            <td class="ListColLeft">
+                <a
                     href="./include/configuration/configKnowledge/proxy/proxy.php?host_name={$services.$elem.h}"
-                    target="_blank" title="Show Wiki Page"><img class="ico-14" src="./img/icons/link.png"></a>&nbsp;{if
-                $services.$elem.h != $hostname}{$services.$elem.h}{else} &nbsp;{/if}
+                    target="_blank"
+                    title="Show Wiki Page"
+                >
+                    <img class="ico-14" src="./img/icons/link.png">
+                </a>
+                &nbsp;{$services.$elem.h}
             </td>
             <td class="ListColLeft"><a
                     href="./include/configuration/configKnowledge/proxy/proxy.php?host_name={$services.$elem.h}&service_description={$services.$elem.svc}"
@@ -114,7 +120,7 @@
             <td class="ListColCenter">
                 {if $stt == 0}
                 <a name="Create wiki page"
-                   href='./include/configuration/configKnowledge/popup.php?session_id={php}print session_id();{/php}&object=Service_:_{$elem}&type={$selection}'
+                   href='./include/configuration/configKnowledge/popup.php?object=Service_:_{$elem}&type={$selection}'
                    target='_blank'>{t}Create wiki page{/t}</a>
                 &nbsp;&nbsp;&nbsp;{$line}
                 {/if}
@@ -139,11 +145,12 @@
         {foreach key=elem from=$content item=stt}
         <tr class="{php} global $line; print $line[$l%2]; {/php}">
             <td class="ListColCenter">
-                {if $selection == 3}
-                <img class="ico-14" src="./img/icons/service.png"></td>
+            {if $selection == 1 || $selection == 3}
+                <img class="ico-14" src="./img/icons/service.png">
             {else}
-            <img class="ico-14" src="{$icone[$elem]}"></td>
+                <img class="ico-14" src="./img/icons/host.png"></td>
             {/if}
+            </td>
             <td class="ListColLeft">{if $selection == 0}<a
                     href="./include/configuration/configKnowledge/proxy/proxy.php?host_name={$elem}" target="_blank"
                     title="Show Wiki Page"><img class="ico-14" src="./img/icons/link.png"></a>&nbsp;{/if}{$elem}
@@ -157,15 +164,15 @@
                 {if $stt == 0}
                 {if $selection == 3}
                 <a name="Create wiki page"
-                   href='./include/configuration/configKnowledge/popup.php?session_id={php}print session_id();{/php}&object=Service-Template_:_{$elem}&type={$selection}'
+                   href='./include/configuration/configKnowledge/popup.php?object=Service-Template_:_{$elem}&type={$selection}'
                    target='_blank'>{t}Create wiki page{/t}</a>
                 {elseif $selection == 2}
                 <a name="Create wiki page"
-                   href='./include/configuration/configKnowledge/popup.php?session_id={php}print session_id();{/php}&object=Host-Template_:_{$elem}&type={$selection}'
+                   href='./include/configuration/configKnowledge/popup.php?object=Host-Template_:_{$elem}&type={$selection}'
                    target='_blank'>{t}Create wiki page{/t}</a>
                 {else}
                 <a name="Create wiki page"
-                   href='./include/configuration/configKnowledge/popup.php?session_id={php}print session_id();{/php}&object=Host_:_{$elem}&type={$selection}'
+                   href='./include/configuration/configKnowledge/popup.php?object=Host_:_{$elem}&type={$selection}'
                    target='_blank'>{t}Create wiki page{/t}</a>
                 {/if}
                 {/if}

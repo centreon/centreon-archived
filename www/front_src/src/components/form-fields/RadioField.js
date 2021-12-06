@@ -3,8 +3,13 @@
 /* eslint-disable react/jsx-filename-extension */
 
 import React from 'react';
+
 import classnames from 'classnames';
+
+import { Typography } from '@material-ui/core';
+
 import styles from '../../styles/partials/form/_form.scss';
+
 import { prepareInputProps } from './utils';
 import fieldHoc from './hoc';
 
@@ -17,26 +22,22 @@ const RadioField = ({ checked, error, label, info, className, ...rest }) => (
     )}
   >
     <input
+      info
+      aria-checked={checked}
       className={styles['form-check-input']}
       type="radio"
-      aria-checked={checked}
-      info
       {...prepareInputProps(rest)}
     />
 
-    <label htmlFor={rest.id} className={styles['custom-control-label']}>
+    <label className={styles['custom-control-label']} htmlFor={rest.id}>
       {label}
       {info}
     </label>
 
     {error ? (
-      <div className={styles['invalid-feedback']}>
-        <div
-          className={classnames(styles.field__msg, styles['field__msg--error'])}
-        >
-          {error}
-        </div>
-      </div>
+      <Typography style={{ color: '#d0021b' }} variant="body2">
+        {error}
+      </Typography>
     ) : null}
   </div>
 );

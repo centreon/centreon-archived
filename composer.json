@@ -2,71 +2,87 @@
     "name": "centreon/centreon",
     "type": "project",
     "license": "GPL-2.0-only",
-    "authors": [
-        {
-            "name": "Kevin Duret",
-            "email": "kduret@centreon.com"
-        }
-    ],
     "description": "Centreon - IT and Application monitoring software",
     "config": {
-        "secure-http": false
+        "secure-http": false,
+        "platform": {
+            "php": "8.0"
+        }
     },
     "require-dev": {
-        "behat/behat": "^3.3",
-        "behat/mink": "dev-master#a534fe7dac9525e8e10ca68e737c3d7e5058ec83",
-        "phpunit/phpunit": "^7.5",
-        "squizlabs/php_codesniffer": "^2.9",
-        "phing/phing": "3.0.0-alpha3",
-        "behat/mink-extension": "^2.2",
-        "behat/mink-selenium2-driver": "^1.3",
         "adlawson/vfs": "^0.12.1",
-        "zircote/swagger-php": "^3.0",
-        "symfony/phpunit-bridge": "^4.3",
-        "centreon/centreon-test-lib": "dev-master"
+        "behat/behat": "^3.8",
+        "behat/mink": "dev-master#a534fe7dac9525e8e10ca68e737c3d7e5058ec83",
+        "behat/mink-extension": "^2.3",
+        "behat/mink-selenium2-driver": "^1.4",
+        "centreon/centreon-test-lib": "dev-master",
+        "phpstan/phpstan": "^0.12.59",
+        "phpstan/phpstan-beberlei-assert": "^0.12",
+        "phpunit/phpunit": "^9.5",
+        "sensiolabs/security-checker": "^6.0",
+        "squizlabs/php_codesniffer": "^3.5",
+        "symfony/phpunit-bridge": "4.4.*",
+        "symfony/stopwatch": "^4.4",
+        "symfony/twig-bundle": "^4.4",
+        "symfony/var-dumper": "4.4.*",
+        "symfony/web-profiler-bundle": "^4.4",
+        "twig/twig": "^2.0",
+        "webmozart/assert": "^1.8",
+        "zircote/swagger-php": "^3.0"
     },
     "require": {
-        "php": ">=7.1.3",
-        "ext-phar": "*",
-        "pear/pear-core-minimal": "^1.10",
-        "pimple/pimple": "^3.2",
-        "symfony/filesystem": "^4.1",
-        "symfony/finder": "^4.1",
-        "openpsa/quickform": "3.3.*",
-        "smarty/smarty": "~2.6",
-        "curl/curl" : "^1.5",
+        "beberlei/assert": "^3.3",
+        "curl/curl" : "^2.3",
+        "dragonmantank/cron-expression": "3.1.0",
+        "enshrined/svg-sanitize": "^0.14",
+        "doctrine/annotations": "^1.0",
         "ext-ctype": "*",
         "ext-iconv": "*",
-        "friendsofsymfony/rest-bundle": "^2.5",
-        "jms/serializer-bundle": "^2.4",
-        "sensio/framework-extra-bundle": "^5.3",
-        "symfony/console": "4.3.*",
-        "symfony/dotenv": "4.3.*",
-        "symfony/flex": "^1.1",
-        "symfony/framework-bundle": "4.3.*",
-        "symfony/security-bundle": "^4.3",
-        "symfony/yaml": "4.3.*",
-        "symfony/options-resolver": "4.3.*",
-        "symfony/serializer-pack": "^1.0",
-        "symfony/maker-bundle": "^1.11",
-        "nelmio/cors-bundle": "^1.5",
-        "symfony/validator": "4.3.*",
-        "symfony/translation": "4.3.*",
-        "symfony/expression-language": "4.3.*",
         "ext-json": "*",
+        "ext-openssl": "*",
+        "ext-phar": "*",
+        "friendsofsymfony/rest-bundle": "^2.5",
+        "jms/serializer-bundle": "^3.9",
         "justinrainbow/json-schema": "^5.2",
-        "ext-pdo": "*"
+        "nelmio/cors-bundle": "^2.1",
+        "openpsa/quickform": "3.3.*",
+        "pear/pear-core-minimal": "^1.10",
+        "php": ">=7.2.24",
+        "phpdocumentor/reflection-docblock": "^5.2",
+        "pimple/pimple": "^3.2",
+        "sensio/framework-extra-bundle": "^5.3",
+        "smarty/smarty": "^3.1",
+        "smarty-gettext/smarty-gettext": "^1.6",
+        "symfony/console": "4.4.*",
+        "symfony/dotenv": "4.4.*",
+        "symfony/expression-language": "4.4.*",
+        "symfony/filesystem": "4.4.*",
+        "symfony/finder": "4.4.*",
+        "symfony/flex": "^1.9",
+        "symfony/framework-bundle": "4.4.*",
+        "symfony/http-client": "4.4.*",
+        "symfony/maker-bundle": "^1.11",
+        "symfony/monolog-bundle": "^3.7",
+        "symfony/options-resolver": "4.4.*",
+        "symfony/property-access": "4.4.*",
+        "symfony/property-info": "4.4.*",
+        "symfony/security-bundle": "4.4.*",
+        "symfony/serializer": "4.4.*",
+        "symfony/translation": "4.4.*",
+        "symfony/validator": "4.4.*",
+        "symfony/yaml": "4.4.*"
     },
     "autoload": {
         "psr-4": {
             "": "src/",
             "ConfigGenerateRemote\\": "www/class/config-generate-remote/",
             "App\\": "src/",
-            "Tests\\": "tests/php/"
+            "Tests\\": "tests/php/",
+            "Centreon\\Test\\Api\\": "tests/api/"
         },
         "classmap": ["www/class/"],
         "files" : [
-            "GPL_LIB/smarty-plugins/block.t.php",
+            "GPL_LIB/smarty-plugins/function.eval.php",
             "www/api/exceptions.php",
             "www/api/class/webService.class.php",
             "www/lib/HTML/QuickForm/HTML_QuickFormCustom.php",
@@ -94,7 +110,20 @@
     "extra": {
         "symfony": {
             "allow-contrib": true,
-            "require": "4.3.*"
+            "require": "4.4.*"
         }
+    },
+    "scripts": {
+        "auto-scripts": {
+            "security-checker security:check": "script",
+            "cache:clear": "symfony-cmd",
+            "assets:install %PUBLIC_DIR%": "symfony-cmd"
+        },
+        "test": "phpunit --bootstrap ./tests/php/bootstrap.php",
+        "test:ci": "@test --log-junit ./build/phpunit.xml --coverage-clover ./build/coverage-be.xml --no-interaction --do-not-cache-result",
+        "codestyle": "phpcs --extensions=php --standard=./ruleset.xml ./",
+        "codestyle:ci": "@codestyle --report=checkstyle --report-file=./build/checkstyle-be.xml --no-cache",
+        "phpstan": "phpstan analyse -c phpstan.neon --level 6 --memory-limit=512M",
+        "phpstan:ci": "@phpstan --error-format=absolute --no-interaction --no-progress"
     }
 }

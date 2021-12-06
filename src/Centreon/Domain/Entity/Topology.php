@@ -100,6 +100,11 @@ class Topology
     protected $topology_show;
 
     /**
+     * @var bool
+     */
+    protected $is_deprecated = false;
+
+    /**
      * @var string
      */
     protected $topology_style_class;
@@ -302,6 +307,25 @@ class Topology
     public function setTopologyShow(string $topology_show): void
     {
         $this->topology_show = $topology_show;
+    }
+
+    /**
+     * @return string
+     */
+    public function getIsDeprecated(): bool
+    {
+        return $this->is_deprecated;
+    }
+
+    /**
+     * @param string $isDeprecated
+     */
+    public function setIsDeprecated(string $isDeprecated): void
+    {
+        if (in_array($this->is_deprecated, ['0', '1'])) {
+            throw new \InvalidArgumentException('deprecated parameter must be "0" or "1"');
+        }
+        $this->is_deprecated = (bool) $isDeprecated;
     }
 
     /**

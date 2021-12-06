@@ -1,23 +1,14 @@
-
 {
+  "extends": "./node_modules/@centreon/centreon-frontend/packages/frontend-config/tsconfig/index",
   "compilerOptions": {
-    "target": "es5",
-    "module": "commonjs",
-    "jsx": "react",
-    "strict": true,
-    "noImplicitAny": false,
-    "skipLibCheck": true,
     "baseUrl": "./",
-    "paths": {
-      "@centreon/ui/*": ["@centreon/ui/src/*"]
-    },
-    "typeRoots": ["./types", "./node_modules/@types"],
-    "esModuleInterop": true,
+    "typeRoots": [
+      "./types",
+      "./node_modules/@types"
+    ],
+    "module": "esnext",
   },
   "include": [
     "./www/front_src/src"
-  ],
-  "exclude": [
-    "node_modules"
   ]
 }

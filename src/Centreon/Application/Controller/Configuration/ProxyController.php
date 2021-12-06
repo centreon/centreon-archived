@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,15 +22,14 @@ declare(strict_types=1);
 
 namespace Centreon\Application\Controller\Configuration;
 
+use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Entity\EntityValidator;
 use Centreon\Domain\Proxy\Interfaces\ProxyServiceInterface;
 use Centreon\Domain\Proxy\Proxy;
-use FOS\RestBundle\Controller\AbstractFOSRestController;
+use Centreon\Application\Controller\AbstractController;
 use FOS\RestBundle\View\View;
-use FOS\RestBundle\Controller\Annotations as Rest;
 use JMS\Serializer\Exception\ValidationFailedException;
 use JMS\Serializer\SerializerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -39,7 +39,7 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
  *
  * @package Centreon\Application\Controller\Configuration
  */
-class ProxyController extends AbstractFOSRestController
+class ProxyController extends AbstractController
 {
     /**
      * @var ProxyServiceInterface
@@ -57,16 +57,13 @@ class ProxyController extends AbstractFOSRestController
     }
 
     /**
-     * @IsGranted("ROLE_API_CONFIGURATION", message="You are not authorized to access this resource")
-     * @Rest\Get(
-     *     "/configuration/proxy",
-     *     condition="request.attributes.get('version.is_beta') == true",
-     *     name="configuration.proxy.getProxy")
      * @return View
      * @throws \Exception
      */
     public function getProxy(): View
     {
+        $this->denyAccessUnlessGrantedForApiConfiguration();
+
         if (!$this->getUser()->isAdmin() && !$this->isGranted('ROLE_ADMINISTRATION_PARAMETERS_CENTREON_UI_RW')) {
             return $this->view(null, Response::HTTP_FORBIDDEN);
         }
@@ -74,11 +71,6 @@ class ProxyController extends AbstractFOSRestController
     }
 
     /**
-     * @IsGranted("ROLE_API_CONFIGURATION", message="You are not authorized to access this resource")
-     * @Rest\Put(
-     *     "/configuration/proxy",
-     *     condition="request.attributes.get('version.is_beta') == true",
-     *     name="configuration.proxy.updateProxy")
      * @param Request $request
      * @param EntityValidator $entityValidator
      * @param SerializerInterface $serializer
@@ -90,17 +82,24 @@ class ProxyController extends AbstractFOSRestController
         EntityValidator $entityValidator,
         SerializerInterface $serializer
     ): View {
-        if (!$this->getUser()->isAdmin() && !$this->isGranted('ROLE_ADMINISTRATION_PARAMETERS_CENTREON_UI_RW')) {
+        $this->denyAccessUnlessGrantedForApiConfiguration();
+
+        /**
+         * @var ContactInterface $user
+         */
+        $user = $this->getUser();
+
+        if (!$user->isAdmin() && !$this->isGranted('ROLE_ADMINISTRATION_PARAMETERS_CENTREON_UI_RW')) {
             return $this->view(null, Response::HTTP_FORBIDDEN);
         }
         $data = json_decode((string) $request->getContent(), true);
         if ($data === null) {
-            throw new HttpException(json_last_error(), 'Invalid json message received');
+            throw new HttpException(json_last_error(), _('Invalid json message received'));
         }
         $errors = $entityValidator->validateEntity(
             Proxy::class,
             json_decode((string) $request->getContent(), true),
-            ['Default'],
+            ['proxy_main'],
             false // We don't allow extra fields
         );
         if ($errors->count() > 0) {

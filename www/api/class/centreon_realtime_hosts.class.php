@@ -141,20 +141,20 @@ class CentreonRealtimeHosts extends CentreonRealtimeBase
         } else {
             $this->viewType = null;
         }
-        if (isset($this->arguments['sortType'])) {
-            if (strtolower($this->arguments['sortType']) === 'asc' ||
-                strtolower($this->arguments['sortType']) === 'desc') {
-                $this->sortType = $this->arguments['sortType'];
+        if (isset($this->arguments['order'])) {
+            if (strtolower($this->arguments['order']) === 'asc' ||
+                strtolower($this->arguments['order']) === 'desc') {
+                $this->order = $this->arguments['order'];
             } else {
-                throw new \RestBadRequestException('Bad sort type parameter');
+                throw new \RestBadRequestException('Bad order parameter');
             }
         } else {
-            $this->sortType = null;
-        }
-        if (isset($this->arguments['order'])) {
-            $this->order = $this->arguments['order'];
-        } else {
             $this->order = null;
+        }
+        if (isset($this->arguments['sortType'])) {
+            $this->sortType = $this->arguments['sortType'];
+        } else {
+            $this->sortType = null;
         }
     }
 
@@ -340,7 +340,7 @@ class CentreonRealtimeHosts extends CentreonRealtimeBase
 
         if ($this->criticality) {
             $query .= " AND h.host_id = cvs.host_id ";
-            $query .= " AND cvs.name = 'CRITICALITY_ID' ";
+            $query .= " AND cvs.name = 'CRITICALITY_LEVEL' ";
             $query .= " AND cvs.service_id IS NULL ";
             $query .= " AND cvs.value = :criticality ";
             $queryValues['criticality'] = (string)$this->criticality;
@@ -415,8 +415,11 @@ class CentreonRealtimeHosts extends CentreonRealtimeBase
             }
 
             switch ($this->sortType) {
-                case 'name':
-                    $query .= " ORDER BY h.name $q";
+                case 'id':
+                    $query .= "ORDER BY h.host_id $q, h.name";
+                    break;
+                case 'alias':
+                    $query .= "ORDER BY h.alias $q, h.name";
                     break;
                 case 'address':
                     $query .= " ORDER BY IFNULL(inet_aton(h.address), h.address) $q, h.name ";
@@ -428,7 +431,10 @@ class CentreonRealtimeHosts extends CentreonRealtimeBase
                     $query .= " ORDER BY h.last_state_change $q, h.name ";
                     break;
                 case 'last_hard_state_change':
-                    $query .= " ORDER BY h.last_hard_state_change $q,h.name ";
+                    $query .= " ORDER BY h.last_hard_state_change $q, h.name ";
+                    break;
+                case 'acknowledged':
+                    $query .= "ORDER BY h.acknowledged $q, h.name";
                     break;
                 case 'last_check':
                     $query .= " ORDER BY h.last_check $q, h.name ";
@@ -436,11 +442,21 @@ class CentreonRealtimeHosts extends CentreonRealtimeBase
                 case 'check_attempt':
                     $query .= " ORDER BY h.check_attempt $q, h.name ";
                     break;
+                case 'max_check_attempts':
+                    $query .= "ORDER BY h.max_check_attempts $q, h.name";
+                    break;
+                case 'instance_name':
+                    $query .= "ORDER BY i.name $q, h.name";
+                    break;
                 case 'output':
                     $query .= " ORDER BY h.output $q, h.name ";
                     break;
                 case 'criticality':
                     $query .= " ORDER BY criticality $q, h.name ";
+                    break;
+                case 'name':
+                default:
+                    $query .= " ORDER BY h.name $q";
                     break;
             }
         }

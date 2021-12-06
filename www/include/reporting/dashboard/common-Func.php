@@ -1,7 +1,8 @@
 <?php
+
 /*
- * Copyright 2005-2016 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2020 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -33,49 +34,79 @@
  *
  */
 
-/*
- * return the interval of time which must be reported
- * @alternate type string : Needed to choose between the localized or the unlocalized date format
+/**
+ * Function that returns the time interval to report
+ *
+ * @param string|null $alternate Needed to choose between the localized or the unlocalized date format
+ * @return array
  */
-function getPeriodToReport($alternate = null)
+function getPeriodToReport(?string $alternate = null): array
 {
-    $period = (isset($_POST["period"])) ? $_POST["period"] : "";
-    $period = (isset($_GET["period"])) ? $_GET["period"] : $period;
-    $period_choice = (isset($_POST["period_choice"])) ? $_POST["period_choice"] : "";
-    $end_date = 0;
-    $start_date = 0;
+    $period = '';
+    $period_choice = '';
+    $start_date = '';
+    $end_date = '';
+
+    if (isset($_POST['period'])) {
+        $period = filter_var($_POST['period'], FILTER_SANITIZE_STRING);
+    } elseif (isset($_GET['period'])) {
+        $period = filter_var($_GET['period'], FILTER_SANITIZE_STRING);
+    }
+
+    if (isset($_POST['period_choice'])) {
+        $period_choice = filter_var($_POST['period_choice'], FILTER_SANITIZE_STRING);
+    }
+
     if (null != $alternate) {
-        $start_date = (isset($_POST["alternativeDateStartDate"])) ? $_POST["alternativeDateStartDate"] : "";
-        $end_date = (isset($_POST["alternativeDateEndDate"])) ? $_POST["alternativeDateEndDate"] : "";
+        if (isset($_POST['alternativeDateStartDate'])) {
+            $start_date = filter_var($_POST['alternativeDateStartDate'], FILTER_SANITIZE_STRING);
+        }
+
+        if (isset($_POST['alternativeDateEndDate'])) {
+            $end_date = filter_var($_POST['alternativeDateEndDate'], FILTER_SANITIZE_STRING);
+        }
     } else {
-        $start_date = (isset($_POST["StartDate"])) ? $_POST["StartDate"] : "";
-        $end_date = (isset($_POST["EndDate"])) ? $_POST["EndDate"] : "";
+        if (isset($_POST['StartDate'])) {
+            $start_date = filter_var($_POST['StartDate'], FILTER_SANITIZE_STRING);
+        } elseif (isset($_GET['StartDate'])) {
+            $start_date = filter_var($_GET['StartDate'], FILTER_SANITIZE_STRING);
+        }
+
+        if (isset($_POST['EndDate'])) {
+            $end_date = filter_var($_POST['EndDate'], FILTER_SANITIZE_STRING);
+        } elseif (isset($_GET['EndDate'])) {
+            $end_date = filter_var($_GET['EndDate'], FILTER_SANITIZE_STRING);
+        }
     }
-    $start_date = (isset($_GET["start"])) ? $_GET["start"] : $start_date;
-    $end_date = (isset($_GET["end"])) ? $_GET["end"] : $end_date;
-    $interval = array(0, 0);
-    if ($period_choice == "custom" &&
-        $start_date != "" &&
-        $end_date != ""
+
+    $interval = [0, 0];
+
+    if (
+        $period_choice === 'custom' &&
+        $start_date !== '' &&
+        $end_date !== ''
     ) {
-        $period = "";
+        $period = '';
     }
-    if ($period == "" &&
-        $start_date == "" &&
-        $end_date == ""
+    if (
+        $period === '' &&
+        $start_date === '' &&
+        $end_date === ''
     ) {
-        $period = "yesterday";
+        $period = 'yesterday';
     }
-    if ($period == "" &&
-        $start_date != ""
+    if (
+        $period === '' &&
+        $start_date !== ''
     ) {
         $interval = getDateSelectCustomized($start_date, $end_date);
     } else {
         $interval = getDateSelectPredefined($period);
     }
-    $start_date = $interval[0];
-    $end_date = $interval[1];
-    return (array($start_date, $end_date));
+
+    list($start_date, $end_date) = $interval;
+
+    return [$start_date, $end_date];
 }
 
 /*
@@ -158,7 +189,7 @@ function getDateSelectPredefined($period)
             $start_date = mktime(0, 0, 0, $month, $day - 30, $year);
             $end_date = mktime(24, 0, 0, $month, $day - 1, $year);
         } elseif ($period == "lastyear") {
-            $start_date = mktime(0, 0, 0, 1, 1, $year-1);
+            $start_date = mktime(0, 0, 0, 1, 1, $year - 1);
             $end_date = mktime(0, 0, 0, 1, 1, $year);
         } elseif ($period == "thismonth") {
             $start_date = mktime(0, 0, 0, $month, 1, $year);
@@ -197,7 +228,8 @@ function getDateSelectCustomized($start, $end)
             $end_time = $end;
         }
     }
-    if (!is_numeric($start) &&
+    if (
+        !is_numeric($start) &&
         isset($start) &&
         $start != ""
     ) {
@@ -223,7 +255,7 @@ function getTotalTimeFromInterval($start, $end, $reportTimePeriod)
     $one_day_real_duration = 60 * 60 * 24;
     $totalTime = 0;
     $reportTime = 0;
-    
+
     $reportTimePeriodEnd = mktime(
         $reportTimePeriod["report_hour_end"],
         $reportTimePeriod["report_minute_end"],
@@ -245,7 +277,8 @@ function getTotalTimeFromInterval($start, $end, $reportTimePeriod)
         if ($day_duration > $end - $start) {
             $day_duration  = $end - $start;
         }
-        if (isset($reportTimePeriod["report_" . date("l", $start)]) &&
+        if (
+            isset($reportTimePeriod["report_" . date("l", $start)]) &&
             $reportTimePeriod["report_" . date("l", $start)]
         ) {
             $reportTime += $day_duration;
@@ -285,16 +318,16 @@ function createDateTimelineFormat($time_unix)
     $tab_month = array(
     "01" => "Jan",
     "02" => "Feb",
-    "03"=> "Mar",
-    "04"=> "Apr",
+    "03" => "Mar",
+    "04" => "Apr",
     "05" => "May",
-    "06"=> "Jun",
-    "07"=> "Jul",
-    "08"=> "Aug",
-    "09"=> "Sep",
-    "10"=> "Oct",
-    "11"=> "Nov",
-    "12"=> "Dec");
+    "06" => "Jun",
+    "07" => "Jul",
+    "08" => "Aug",
+    "09" => "Sep",
+    "10" => "Oct",
+    "11" => "Nov",
+    "12" => "Dec");
     $date = $tab_month[date('m', $time_unix)] . date(" d Y G:i:s", $time_unix);
     return $date;
 }
@@ -337,6 +370,6 @@ function formatData($state, $time, $timeTOTAL, $time_none, $nb_alert, $color)
         $tab["pourcentkTime"] = null;
     }
     $tab["nbAlert"] = $nb_alert;
-    $tab["style"] = "class='ListColCenter' style='background:" . $color."'";
+    $tab["style"] = "class='ListColCenter' style='background:" . $color . "'";
     return $tab;
 }

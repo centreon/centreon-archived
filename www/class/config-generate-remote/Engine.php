@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
  * 
@@ -35,14 +36,13 @@ class Engine extends AbstractObject
     protected $attributesSelect = '
         nagios_server_id,
         nagios_id,
+        nagios_name,
         use_timezone,
         cfg_dir,
-        cfg_file as cfg_filename,
+        cfg_file,
         log_file,
+        log_archive_path,
         status_file,
-        check_result_path,
-        use_check_result_path,
-        max_check_result_file_age,
         status_update_interval,
         external_command_buffer_slots,
         command_check_interval,
@@ -120,7 +120,6 @@ class Engine extends AbstractObject
         log_external_commands,
         log_passive_checks,
         auto_reschedule_checks,
-        use_aggressive_host_checking,
         soft_state_dependencies,
         obsess_over_services,
         obsess_over_hosts,
@@ -144,12 +143,12 @@ class Engine extends AbstractObject
     ';
     protected $attributesWrite = [
         'nagios_server_id',
+        'nagios_id',
+        'nagios_name',
         'use_timezone',
         'log_file',
+        'log_archive_path',
         'status_file',
-        'check_result_path',
-        'use_check_result_path', //centengine
-        'max_check_result_file_age',
         'status_update_interval',
         'external_command_buffer_slots',
         'command_check_interval',
@@ -211,7 +210,8 @@ class Engine extends AbstractObject
         'macros_filter',
         'enable_macros_filter',
         'nagios_activate',
-        'cfg_dir'
+        'cfg_dir',
+        'cfg_file'
     ];
     protected $stmtEngine = null;
 

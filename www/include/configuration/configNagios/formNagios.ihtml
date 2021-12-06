@@ -1,4 +1,4 @@
-{$form.javascript}{$javascript}
+{$form.javascript}
 <form {$form.attributes}>
 	<div class="headerTabContainer">
 		<ul id="mainnav">
@@ -12,9 +12,16 @@
 		</ul>
         <div id="validFormTop">
         {if $o == "a" || $o == "c"}
-            <p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+            <p class="oreonbutton">
+                {if isset($form.submitC)}
+                    {$form.submitC.html}
+                {else}
+                    {$form.submitA.html}
+                {/if}
+                &nbsp;&nbsp;&nbsp;{$form.reset.html}
+            </p>
         {else if $o == "w"}
-            <p class="oreonbutton">{$form.change.html}</p>
+            <p class="oreonbutton">{if isset($form.change)}{$form.change.html}{/if}</p>
         {/if}
         </div>
 	</div>
@@ -59,15 +66,6 @@
 
 			<tr class="list_lvl_1">
               <td class="ListColLvl1_name" colspan="2">
-                <h4>{$ResultCache}</h4>
-              </td>
-            </tr>
-			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="check_result_path" />&nbsp;{$form.check_result_path.label}</td><td class="FormRowValue">{$form.check_result_path.html}</td></tr>
-            <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="use_check_result_path" />&nbsp;{$form.use_check_result_path.label}</td><td class="FormRowValue">{$form.use_check_result_path.html}</td></tr>
-			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="max_check_result_file_age" />&nbsp;{$form.max_check_result_file_age.label}</td><td class="FormRowValue">{$form.max_check_result_file_age.html}</td></tr>
-
-			<tr class="list_lvl_1">
-              <td class="ListColLvl1_name" colspan="2">
                 <h4>{$ExternalCommandes}</h4>
               </td>
             </tr>
@@ -82,9 +80,13 @@
               </td>
             </tr>
 			<tr class="list_one"><td class="FormRowField">&nbsp;{$form.nagios_comment.label}</td><td class="FormRowValue">{$form.nagios_comment.html}</td></tr>
-			{if $o == "a" || $o == "c"}
-				<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">{$form.required._note}</td></tr>
-			{/if}
+            {if $o == "a" || $o == "c"}
+                <tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">
+                {if isset($form.required)}
+                    {$form.required._note}
+                {/if}
+                </td></tr>
+            {/if}
 		</table>
 	</div>
 	<div id='tab2' class='tab'>
@@ -100,7 +102,6 @@
                 <h4>{$HostCheckOptions}</h4>
               </td>
             </tr>
-			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="use_aggressive_host_checking" />&nbsp;{$form.use_aggressive_host_checking.label}</td><td class="FormRowValue">{$form.use_aggressive_host_checking.html}<font color='red' style='padding-left:120px;'>{$aggressive_host_warning}</font></td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="enable_predictive_host_dependency_checks" />&nbsp;{$form.enable_predictive_host_dependency_checks.label}</td><td class="FormRowValue">{$form.enable_predictive_host_dependency_checks.html}</td></tr>
 			<tr class="list_lvl_1">
               <td class="ListColLvl1_name" colspan="2">
@@ -172,9 +173,13 @@
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="translate_passive_host_checks">&nbsp;{$form.translate_passive_host_checks.label}</td><td class="FormRowValue">{$form.translate_passive_host_checks.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="passive_host_checks_are_soft">&nbsp;{$form.passive_host_checks_are_soft.label}</td><td class="FormRowValue">{$form.passive_host_checks_are_soft.html}</td></tr>
 
-			{if $o == "a" || $o == "c"}
-				<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">{$form.required._note}</td></tr>
-			{/if}
+            {if $o == "a" || $o == "c"}
+                <tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">
+                {if isset($form.required)}
+                    {$form.required._note}
+                {/if}
+                </td></tr>
+            {/if}
 		</table>
 	</div>
 	<div id='tab3' class='tab'>
@@ -238,9 +243,13 @@
                         <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="retained_host_attribute_mask">&nbsp;{$form.retained_host_attribute_mask.label}</td><td class="FormRowValue">{$form.retained_host_attribute_mask.html}</td></tr>
                         <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="retained_service_attribute_mask">&nbsp;{$form.retained_service_attribute_mask.label}</td><td class="FormRowValue">{$form.retained_service_attribute_mask.html}</td></tr>
 
-			{if $o == "a" || $o == "c"}
-				<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">{$form.required._note}</td></tr>
-			{/if}
+            {if $o == "a" || $o == "c"}
+                <tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">
+                {if isset($form.required)}
+                    {$form.required._note}
+                {/if}
+                </td></tr>
+            {/if}
 		</table>
 	</div>
 	<div id='tab4' class='tab'>
@@ -304,9 +313,13 @@
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="service_perfdata_file_processing_interval">&nbsp;{$form.service_perfdata_file_processing_interval.label}</td><td class="FormRowValue">{$form.service_perfdata_file_processing_interval.html}&nbsp;{$Seconds}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="host_perfdata_file_processing_command">&nbsp;{$form.host_perfdata_file_processing_command.label}</td><td class="FormRowValue">{$form.host_perfdata_file_processing_command.html}</td></tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="service_perfdata_file_processing_command">&nbsp;{$form.service_perfdata_file_processing_command.label}</td><td class="FormRowValue">{$form.service_perfdata_file_processing_command.html}</td></tr>
-			{if $o == "a" || $o == "c"}
-				<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">{$form.required._note}</td></tr>
-			{/if}
+            {if $o == "a" || $o == "c"}
+                <tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">
+                {if isset($form.required)}
+                    {$form.required._note}
+                {/if}
+                </td></tr>
+            {/if}
 		</table>
 	</div>
 	<div id='tab5' class='tab'>
@@ -368,9 +381,13 @@
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="use_large_installation_tweaks">&nbsp;{$form.use_large_installation_tweaks.label}</td><td class="FormRowValue">{$form.use_large_installation_tweaks.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="enable_environment_macros">&nbsp;{$form.enable_environment_macros.label}</td><td class="FormRowValue">{$form.enable_environment_macros.html}</td></tr>
             <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="use_setpgid">&nbsp;{$form.use_setpgid.label}</td><td class="FormRowValue">{$form.use_setpgid.html}</td></tr>
-			{if $o == "a" || $o == "c"}
-				<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">{$form.required._note}</td></tr>
-			{/if}
+            {if $o == "a" || $o == "c"}
+                <tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">
+                {if isset($form.required)}
+                    {$form.required._note}
+                {/if}
+                </td></tr>
+            {/if}
 		</table>
 	</div>
 	<div id='tab6' class='tab'>
@@ -385,6 +402,7 @@
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="nagios_user">&nbsp;{$form.nagios_user.label}</td><td class="FormRowValue">{$form.nagios_user.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="nagios_group">&nbsp;{$form.nagios_group.label}</td><td class="FormRowValue">{$form.nagios_group.html}</td></tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="date_format">&nbsp;{$form.date_format.label}</td><td class="FormRowValue">{$form.date_format.html}</td></tr>
+			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="instance_heartbeat_interval">&nbsp;{$form.instance_heartbeat_interval.label}</td><td class="FormRowValue">{$form.instance_heartbeat_interval.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="illegal_object_name_chars">&nbsp;{$form.illegal_object_name_chars.label}</td><td class="FormRowValue">{$form.illegal_object_name_chars.html}</td></tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="illegal_macro_output_chars">&nbsp;{$form.illegal_macro_output_chars.label}</td><td class="FormRowValue">{$form.illegal_macro_output_chars.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="use_regexp_matching">&nbsp;{$form.use_regexp_matching.label}</td><td class="FormRowValue">{$form.use_regexp_matching.html}</td></tr>
@@ -392,9 +410,13 @@
 			<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><h4>{$AdminInfo}</h4></td></tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="admin_email">&nbsp;{$form.admin_email.label}</td><td class="FormRowValue">{$form.admin_email.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="admin_pager">&nbsp;{$form.admin_pager.label}</td><td class="FormRowValue">{$form.admin_pager.html}</td></tr>
-			{if $o == "a" || $o == "c"}
-				<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">{$form.required._note}</td></tr>
-			{/if}
+            {if $o == "a" || $o == "c"}
+                <tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">
+                {if isset($form.required)}
+                    {$form.required._note}
+                {/if}
+                </td></tr>
+            {/if}
 		</table>
 	</div>
 	<div id='tab7' class='tab'>
@@ -414,16 +436,27 @@
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="debug_verbosity">&nbsp;{$form.debug_verbosity.label}</td><td class="FormRowValue">{$form.debug_verbosity.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="max_debug_file_size">&nbsp;{$form.max_debug_file_size.label}</td><td class="FormRowValue">{$form.max_debug_file_size.html}&nbsp;{$Bytes}</td></tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="daemon_dumps_core">&nbsp;{$form.daemon_dumps_core.label}</td><td class="FormRowValue">{$form.daemon_dumps_core.html}&nbsp;</td></tr>
-			{if $o == "a" || $o == "c"}
-				<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">{$form.required._note}</td></tr>
-			{/if}
+            {if $o == "a" || $o == "c"}
+                <tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">
+                {if isset($form.required)}
+                    {$form.required._note}
+                {/if}
+                </td></tr>
+            {/if}
 		</table>
 	</div>
 	<div id="validForm">
 	{if $o == "a" || $o == "c"}
-		<p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+		<p class="oreonbutton">
+			{if isset($form.submitC)}
+				{$form.submitC.html}
+			{else}
+				{$form.submitA.html}
+			{/if}
+			&nbsp;&nbsp;&nbsp;{$form.reset.html}
+		</p>
 	{else if $o == "w"}
-		<p class="oreonbutton">{$form.change.html}</p>
+		<p class="oreonbutton">{if isset($form.change)}{$form.change.html}{/if}</p>
 	{/if}
 	</div>
 	{$form.hidden}

@@ -1,7 +1,8 @@
 <?php
+
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2021 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -60,8 +61,8 @@ require_once "$classdir/centreonDB.class.php";
 require_once "$classdir/centreonLang.class.php";
 require_once "$classdir/centreonSession.class.php";
 require_once "$classdir/centreon.class.php";
-require_once $classdir . '/centreonFeature.class.php';
-require_once SMARTY_DIR . "Smarty.class.php";
+require_once "$classdir/centreonFeature.class.php";
+require_once SMARTY_DIR . "SmartyBC.class.php";
 
 /*
  * Create DB Connection
@@ -75,51 +76,17 @@ $centreonSession = new CentreonSession();
 
 CentreonSession::start();
 
-/*
- * Delete Session Expired
- */
-$DBRESULT = $pearDB->query("SELECT * FROM `options` WHERE `key` = 'session_expire' LIMIT 1");
-$session_expire = $DBRESULT->fetch();
-if (!isset($session_expire["value"]) || !$session_expire["value"]) {
-    $session_expire["value"] = 2;
-}
-$time_limit = time() - ($session_expire["value"] * 60);
-
-$DBRESULT = $pearDB->query("DELETE FROM `session` WHERE `last_reload` < '" . $time_limit . "'");
-
-// drop session if session has been deleted due to expiration
+// Check session and drop all expired sessions
 if (!CentreonSession::checkSession(session_id(), $pearDB)) {
     CentreonSession::stop();
 }
 
-
-$args = "&redirect='";
-$a = 0;
-foreach ($_GET as $key => $value) {
-    if ($a) {
-        $args .= '&';
-    }
-    if (is_string($value)) {
-        $args .= "{$key}={$value}";
-    }
-    $a++;
-}
-$args .= "'";
+$args = "&redirect=" . urlencode(http_build_query($_GET));
 
 // check centreon session
 // if session is not valid and autologin token is not given, then redirect to login page
 if (!isset($_SESSION["centreon"])) {
     if (!isset($_GET['autologin'])) {
-        $args = "&redirect='";
-        $a = 0;
-        foreach ($_GET as $key => $value) {
-            if ($a) {
-                $args .= '&';
-            }
-            $args .= "$key=$value";
-            $a++;
-        }
-        $args .= "'";
         header("Location: index.php?disconnect=1" . $args);
     } else {
         $args = null;
@@ -143,20 +110,18 @@ if (!isset($centreon) || !is_object($centreon)) {
 /*
  * Init different elements we need in a lot of pages
  */
-unset($centreon->Nagioscfg);
-$centreon->initNagiosCFG($pearDB);
 unset($centreon->optGen);
 $centreon->initOptGen($pearDB);
 
 if (!$p) {
-    $root_menu = get_my_first_allowed_root_menu($centreon->user->access->topologyStr);
-    if (isset($root_menu["topology_page"])) {
-        $p = $root_menu["topology_page"];
-    } else {
-        $p = null;
-    }
-    if (isset($root_menu["topology_url_opt"])) {
-        $tab = preg_split("/\=/", $root_menu["topology_url_opt"]);
+    $rootMenu = getFirstAllowedMenu($centreon->user->access->topologyStr, $centreon->user->default_page);
+
+    if ($rootMenu && $rootMenu['topology_url'] && $rootMenu['is_react']) {
+        header("Location: .{$rootMenu['topology_url']}");
+    } elseif ($rootMenu) {
+        $p = $rootMenu["topology_page"];
+        $tab = preg_split("/\=/", $rootMenu["topology_url_opt"]);
+
         if (isset($tab[1])) {
             $o = $tab[1];
         }
@@ -226,13 +191,18 @@ if ($DBRESULT->rowCount() && ($elem = $DBRESULT->fetch())) {
 //Update Session Table For last_reload and current_page row
 $page = '' . $level1 . $level2 . $level3 . $level4;
 if ($page == '') {
-    $page = "NULL";
+    $page = null;
 }
-$query = "UPDATE `session` SET `current_page` = " . $page .
-    ", `last_reload` = '" . time() . "', `ip_address` = '" . $_SERVER["REMOTE_ADDR"] .
-    "' WHERE CONVERT(`session_id` USING utf8) = '" . session_id() . "' AND `user_id` = '" .
-    $centreon->user->user_id . "'";
-$DBRESULT = $pearDB->query($query);
+$sessionStatement = $pearDB->prepare(
+    "UPDATE `session`
+    SET `current_page` = :currentPage
+    WHERE `session_id` = :sessionId"
+);
+$sessionStatement->bindValue(':currentPage', $page, \PDO::PARAM_INT);
+$sessionStatement->bindValue(':sessionId', session_id(), \PDO::PARAM_STR);
+$sessionStatement->execute();
+
+$centreonSession->updateSession($pearDB);
 
 //Init Language
 $centreonLang = new CentreonLang(_CENTREON_PATH_, $centreon);

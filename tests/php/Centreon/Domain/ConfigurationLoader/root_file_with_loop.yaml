@@ -1,0 +1,6 @@
+name: text1
+description: text2
+tab:
+  key1: value1
+  key2: value2
+child: !include child3.yaml

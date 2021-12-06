@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -47,7 +48,7 @@ $commandName = filter_var(
     FILTER_SANITIZE_STRING
 );
 
-if ($commandId != null) {
+if ($commandId !== false) {
     //Get command information
     $sth = $pearDB->prepare('SELECT * FROM `command` WHERE `command_id` = :command_id LIMIT 1');
     $sth->bindParam(':command_id', $commandId, PDO::PARAM_INT);
@@ -79,8 +80,11 @@ if ($commandId != null) {
     $command = $oreon->optGen["nagios_path_plugins"] . $commandName;
 }
 
-$command = str_replace("#S#", "/", $command);
-$command = str_replace("#BS#", "\\", $command);
+// Secure command
+$search = ['#S#', '#BS#', '../'];
+$replace = ['/', "\\", '/'];
+$command = str_replace($search, $replace, $command);
+$command = escapeshellcmd($command);
 
 $tab = explode(' ', $command);
 if (realpath($tab[0])) {
@@ -113,12 +117,13 @@ $tpl = initSmartyTpl($path, $tpl);
  * Apply a template definition
  */
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+
 $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());
 $tpl->assign('o', $o);
-$tpl->assign('command_line', $command);
+$tpl->assign('command_line', CentreonUtils::escapeSecure($command, CentreonUtils::ESCAPE_ALL));
 if (isset($msg) && $msg) {
-    $tpl->assign('msg', $msg);
+    $tpl->assign('msg', CentreonUtils::escapeAllExceptSelectedTags($msg, ['br']));
 }
 
 $tpl->display("minHelpCommand.ihtml");

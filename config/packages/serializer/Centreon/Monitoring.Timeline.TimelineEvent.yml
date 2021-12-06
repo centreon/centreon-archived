@@ -1,0 +1,20 @@
+Centreon\Domain\Monitoring\Timeline\TimelineEvent:
+    properties:
+        id:
+            groups: [Default, timeline_main]
+        type:
+            groups: [Default, timeline_main]
+        date:
+            groups: [Default, timeline_main]
+        startDate:
+            groups: [Default, timeline_main]
+        endDate:
+            groups: [Default, timeline_main]
+        content:
+            groups: [Default, timeline_main]
+        contact:
+            groups: [Default, timeline_main]
+        status:
+            groups: [Default, timeline_main]
+        tries:
+            groups: [Default, timeline_main]

@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2015 Centreon
+ * Copyright 2005-2021 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -82,54 +83,116 @@ class Generate
         $this->backend_instance = Backend::getInstance($this->dependencyInjector);
     }
 
-    private function generateIndexData($localhost = 0)
+    /**
+     * Insert services in index_data
+     *
+     * @param bool $isLocalhost (FALSE by default)
+     * @return void
+     */
+    private function generateIndexData($isLocalhost = false): void
     {
-        $service_instance = Service::getInstance($this->dependencyInjector);
-        $host_instance = Host::getInstance($this->dependencyInjector);
-        $services = $service_instance->getGeneratedServices();
+        $serviceInstance = Service::getInstance($this->dependencyInjector);
+        $hostInstance = Host::getInstance($this->dependencyInjector);
+        $services = $serviceInstance->getGeneratedServices();
 
-        try {
-            $query = "INSERT INTO index_data (host_id, service_id, host_name, service_description) VALUES " .
-                "(:host_id, :service_id, :host_name, :service_description) ON DUPLICATE KEY UPDATE " .
-                "host_name=VALUES(host_name), service_description=VALUES(service_description)";
-            $stmt = $this->backend_instance->db_cs->prepare($query);
-            $this->backend_instance->db_cs->beginTransaction();
-            foreach ($services as $host_id => &$values) {
-                foreach ($values as $service_id) {
-                    $stmt->bindValue(':host_name', $host_instance->getString($host_id, 'host_name'), PDO::PARAM_STR);
-                    $stmt->bindValue(
-                        ':service_description',
-                        $service_instance->getString($service_id, 'service_description'),
-                        PDO::PARAM_STR
-                    );
-                    $stmt->bindParam(':host_id', $host_id, PDO::PARAM_INT);
-                    $stmt->bindParam(':service_id', $service_id, PDO::PARAM_INT);
-                    $stmt->execute();
-                }
+        $bulkLimit = 2000;
+
+        $valuesQueries = [];
+        $bindParams = [];
+        $bulkCount = 0;
+
+        $bulkInsert = function () use (&$valuesQueries, &$bindParams, &$bulkCount) {
+            $stmt = $this->backend_instance->db_cs->prepare(
+                'INSERT INTO index_data (host_id, service_id, host_name, service_description) VALUES '
+                . implode(',', $valuesQueries)
+                . ' ON DUPLICATE KEY UPDATE '
+                . ' host_name=VALUES(host_name), service_description=VALUES(service_description) '
+            );
+
+            foreach ($bindParams as $bindKey => list($bindValue, $bindType)) {
+                $stmt->bindValue($bindKey, $bindValue, $bindType);
             }
 
-            # Meta services
-            if ($localhost == 1) {
-                $meta_services = MetaService::getInstance($this->dependencyInjector)->getMetaServices();
-                $host_id = MetaHost::getInstance($this->dependencyInjector)->getHostIdByHostName('_Module_Meta');
-                foreach ($meta_services as $meta_id => $meta_service) {
-                    $stmt->bindValue(':host_name', '_Module_Meta', PDO::PARAM_STR);
-                    $stmt->bindValue(':service_description', 'meta_' . $meta_id, PDO::PARAM_STR);
-                    $stmt->bindParam(':host_id', $host_id, PDO::PARAM_INT);
-                    $stmt->bindParam(':service_id', $meta_service['service_id'], PDO::PARAM_INT);
-                    $stmt->execute();
+            $stmt->execute();
+
+            $valuesQueries = [];
+            $bindParams = [];
+            $bulkCount = 0;
+        };
+
+        foreach ($services as $hostId => &$values) {
+            $hostName = $hostInstance->getString($hostId, 'host_name');
+            foreach ($values as $serviceId) {
+                $serviceDescription = $serviceInstance->getString($serviceId, 'service_description');
+                $bindParams[":host_id_{$hostId}"] = [$hostId, \PDO::PARAM_INT];
+                $bindParams[":service_id_{$serviceId}"] = [$serviceId, \PDO::PARAM_INT];
+                $bindParams[":host_name_{$hostId}"] = [$hostName, \PDO::PARAM_STR];
+                $bindParams[":service_description_{$serviceId}"] = [$serviceDescription, \PDO::PARAM_STR];
+                $valuesQueries[] = "(
+                    :host_id_{$hostId},
+                    :service_id_{$serviceId},
+                    :host_name_{$hostId},
+                    :service_description_{$serviceId}
+                )";
+                $bulkCount++;
+                if ($bulkCount === $bulkLimit) {
+                    $bulkInsert();
                 }
             }
+        }
 
-            $this->backend_instance->db_cs->commit();
-        } catch (Exception $e) {
-            $this->backend_instance->db_cs->rollback();
-            throw new Exception('Exception received : ' . $e->getMessage() . "\n");
-            throw new Exception($e->getFile() . "\n");
+        # Meta services
+        if ($isLocalhost) {
+            $metaServices = MetaService::getInstance($this->dependencyInjector)->getMetaServices();
+            $hostId = MetaHost::getInstance($this->dependencyInjector)->getHostIdByHostName('_Module_Meta');
+            foreach ($metaServices as $metaId => $metaService) {
+                $bindParams[":host_id_{$hostId}"] = [$hostId, \PDO::PARAM_INT];
+                $bindParams[":meta_service_id_{$metaId}"] = [$metaService['service_id'], \PDO::PARAM_INT];
+                $bindParams[":host_name_{$hostId}"] = ['_Module_Meta', \PDO::PARAM_STR];
+                $bindParams[":meta_service_description_{$metaId}"] = ['meta_' . $metaId, \PDO::PARAM_STR];
+                $valuesQueries[] = "(
+                    :host_id_{$hostId},
+                    :meta_service_id_{$metaId},
+                    :host_name_{$hostId},
+                    :meta_service_description_{$metaId}
+                )";
+                $bulkCount++;
+                if ($bulkCount === $bulkLimit) {
+                    $bulkInsert();
+                }
+            }
+        }
+
+        if ($bulkCount > 0) {
+            $bulkInsert();
         }
     }
 
-    private function getPollerFromId($poller_id)
+    /**
+     * Insert services created by modules in index_data
+     *
+     * @param bool $isLocalhost (FALSE by default)
+     * @return void
+     */
+    private function generateModulesIndexData($isLocalhost = false): void
+    {
+        if (is_null($this->module_objects)) {
+            $this->getModuleObjects();
+        }
+        if (is_array($this->module_objects)) {
+            foreach ($this->module_objects as $module_object) {
+                $moduleInstance = $module_object::getInstance($this->dependencyInjector);
+                if (
+                    $moduleInstance->isEngineObject() == true
+                    && method_exists($moduleInstance, 'generateModuleIndexData')
+                ) {
+                    $moduleInstance->generateModuleIndexData($isLocalhost);
+                }
+            }
+        }
+    }
+
+    private function getPollerFromId($poller_id): void
     {
         $query = "SELECT id, localhost,  centreonconnector_path FROM nagios_server " .
             "WHERE id = :poller_id";
@@ -143,7 +206,7 @@ class Generate
         }
     }
 
-    private function getPollerFromName($poller_name)
+    private function getPollerFromName($poller_name): void
     {
         $query = "SELECT id, localhost, centreonconnector_path FROM nagios_server " .
             "WHERE name = :poller_name";
@@ -157,7 +220,7 @@ class Generate
         }
     }
 
-    public function resetObjectsEngine()
+    public function resetObjectsEngine(): void
     {
         Host::getInstance($this->dependencyInjector)->reset();
         HostTemplate::getInstance($this->dependencyInjector)->reset();
@@ -182,7 +245,7 @@ class Generate
         $this->resetModuleObjects();
     }
 
-    private function configPoller($username = 'unknown')
+    private function configPoller($username = 'unknown'): void
     {
         $this->backend_instance->setUserName($username);
         $this->backend_instance->initPath($this->current_poller['id']);
@@ -202,10 +265,11 @@ class Generate
         Broker::getInstance($this->dependencyInjector)->generateFromPoller($this->current_poller);
         $this->backend_instance->movePath($this->current_poller['id']);
 
-        $this->generateIndexData($this->current_poller['localhost']);
+        $this->generateIndexData($this->current_poller['localhost'] === '1');
+        $this->generateModulesIndexData($this->current_poller['localhost'] === '1');
     }
 
-    public function configPollerFromName($poller_name)
+    public function configPollerFromName($poller_name): void
     {
         try {
             $this->getPollerFromName($poller_name);
@@ -217,7 +281,7 @@ class Generate
         }
     }
 
-    public function configPollerFromId($poller_id, $username = 'unknown')
+    public function configPollerFromId($poller_id, $username = 'unknown'): void
     {
         try {
             if (is_null($this->current_poller)) {
@@ -231,7 +295,7 @@ class Generate
         }
     }
 
-    public function configPollers($username = 'unknown')
+    public function configPollers($username = 'unknown'): void
     {
         $query = "SELECT id, localhost, centreonconnector_path FROM " .
             "nagios_server WHERE ns_activate = '1'";
@@ -273,15 +337,16 @@ class Generate
         }
     }
 
-    public function generateModuleObjects($type = 1)
+    public function generateModuleObjects($type = 1): void
     {
         if (is_null($this->module_objects)) {
             $this->getModuleObjects();
         }
         if (is_array($this->module_objects)) {
             foreach ($this->module_objects as $module_object) {
-                if (($type == 1 && $module_object::getInstance($this->dependencyInjector)->isEngineObject() == true) ||
-                    ($type == 2 && $module_object::getInstance($this->dependencyInjector)->isBrokerObject() == true)
+                if (
+                    ($type == 1 && $module_object::getInstance($this->dependencyInjector)->isEngineObject() == true)
+                    || ($type == 2 && $module_object::getInstance($this->dependencyInjector)->isBrokerObject() == true)
                 ) {
                     $module_object::getInstance($this->dependencyInjector)->generateFromPollerId(
                         $this->current_poller['id'],
@@ -292,7 +357,7 @@ class Generate
         }
     }
 
-    public function resetModuleObjects()
+    public function resetModuleObjects(): void
     {
         if (is_null($this->module_objects)) {
             $this->getModuleObjects();
@@ -307,7 +372,7 @@ class Generate
     /**
      * Reset the cache and the instance
      */
-    public function reset()
+    public function reset(): void
     {
         $this->poller_cache = array();
         $this->current_poller = null;

@@ -47,9 +47,6 @@ class Engine extends AbstractObject
         cfg_file as cfg_filename,
         log_file,
         status_file,
-        check_result_path,
-        use_check_result_path,
-        max_check_result_file_age,
         status_update_interval,
         external_command_buffer_slots,
         command_check_interval,
@@ -93,6 +90,7 @@ class Engine extends AbstractObject
         service_perfdata_file_processing_interval,
         service_freshness_check_interval,
         host_freshness_check_interval,
+        instance_heartbeat_interval,
         date_format,
         illegal_object_name_chars,
         illegal_macro_output_chars,
@@ -135,7 +133,6 @@ class Engine extends AbstractObject
         log_external_commands,
         log_passive_checks,
         auto_reschedule_checks,
-        use_aggressive_host_checking,
         soft_state_dependencies,
         obsess_over_services,
         obsess_over_hosts,
@@ -161,9 +158,6 @@ class Engine extends AbstractObject
         'resource_file',
         'log_file',
         'status_file',
-        'check_result_path',
-        'use_check_result_path', //centengine
-        'max_check_result_file_age',
         'status_update_interval',
         'external_command_buffer_slots',
         'command_check_interval',
@@ -231,9 +225,11 @@ class Engine extends AbstractObject
         'host_perfdata_file_processing_command',
         'service_perfdata_file_processing_command',
         'macros_filter',
-        'enable_macros_filter'
+        'enable_macros_filter',
+        'grpc_port'
     );
     protected $attributes_default = array(
+        'instance_heartbeat_interval',
         'enable_notifications',
         'execute_service_checks',
         'accept_passive_service_checks',
@@ -251,7 +247,6 @@ class Engine extends AbstractObject
         'log_external_commands',
         'log_passive_checks',
         'auto_reschedule_checks',
-        'use_aggressive_host_checking',
         'soft_state_dependencies',
         'obsess_over_services',
         'obsess_over_hosts',
@@ -406,6 +401,7 @@ class Engine extends AbstractObject
         $object['service_perfdata_file_processing_command']
             = $command_instance->generateFromCommandId($object['service_perfdata_file_processing_command_id']);
 
+        $object['grpc_port'] = 50000 + $poller_id;
         $this->generate_filename = 'centengine.DEBUG';
         $object['cfg_file'] = $this->cfg_file['debug']['cfg_file'];
         $object['resource_file'] = $this->cfg_file['debug']['resource_file'];

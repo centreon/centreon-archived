@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,21 +24,36 @@ namespace Centreon\Infrastructure\RequestParameters;
 
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 use Centreon\Domain\RequestParameters\RequestParameters;
+use Centreon\Infrastructure\RequestParameters\Interfaces\NormalizerInterface;
 
+/**
+ * @package Centreon\Infrastructure\RequestParameters
+ */
 class SqlRequestParametersTranslator
 {
+    /**
+     * @var string[]
+     */
     private $aggregateOperators = [
         RequestParameters::AGGREGATE_OPERATOR_OR,
         RequestParameters::AGGREGATE_OPERATOR_AND
     ];
 
     /**
-     * @var array $concordanceArray Concordance table between the search column
+     * @var array<string, string> $concordanceArray Concordance table between the search column
      * and the real column name in the database. ['id' => 'my_table_id', ...]
      */
-    private $concordanceArray;
+    private $concordanceArray = [];
 
+    /**
+     * @var array<string, mixed>
+     */
     private $searchValues = [];
+
+    /**
+     * @var array<string, NormalizerInterface>
+     */
+    private $normalizers = [];
 
     /**
      * @var RequestParametersInterface
@@ -56,7 +72,7 @@ class SqlRequestParametersTranslator
     /**
      * Create the database query based on the search parameters.
      *
-     * @param array $search Array containing search parameters
+     * @param array<mixed, mixed> $search Array containing search parameters
      * @param string|null $aggregateOperator Aggregate operator
      * @return string Return the processed database query
      * @throws RequestParametersTranslatorException
@@ -74,21 +90,19 @@ class SqlRequestParametersTranslator
                     // Recursive call until to read key/value data
                     $databaseSubQuery = $this->createDatabaseQuery($searchRequests, $key);
                 }
-            } else {
-                if (is_int($key) && (is_object($searchRequests) || is_array($searchRequests))) {
-                    // It's a list of object to process
-                    $searchRequests = (array) $searchRequests;
-                    if (!empty($searchRequests)) {
-                        // Recursive call until to read key/value data
-                        $databaseSubQuery = $this->createDatabaseQuery($searchRequests, $aggregateOperator);
-                    }
-                } elseif (!is_int($key)) {
-                    // It's a pair on key/value to translate into a database query
-                    if (is_object($searchRequests)) {
-                        $searchRequests = (array) $searchRequests;
-                    }
-                    $databaseSubQuery = $this->createQueryOnKeyValue($key, $searchRequests);
+            } elseif (is_int($key) && (is_object($searchRequests) || is_array($searchRequests))) {
+                // It's a list of object to process
+                $searchRequests = (array) $searchRequests;
+                if (!empty($searchRequests)) {
+                    // Recursive call until to read key/value data
+                    $databaseSubQuery = $this->createDatabaseQuery($searchRequests, $aggregateOperator);
                 }
+            } elseif (!is_int($key)) {
+                // It's a pair on key/value to translate into a database query
+                if (is_object($searchRequests)) {
+                    $searchRequests = (array) $searchRequests;
+                }
+                $databaseSubQuery = $this->createQueryOnKeyValue($key, $searchRequests);
             }
             if (!empty($databaseQuery)) {
                 if (is_null($aggregateOperator)) {
@@ -104,7 +118,7 @@ class SqlRequestParametersTranslator
                 $databaseQuery .= $databaseSubQuery;
             }
         }
-        return count($search) > 1
+        return count($search) > 1 && !empty($databaseQuery)
             ? '(' . $databaseQuery . ')'
             : $databaseQuery;
     }
@@ -166,7 +180,8 @@ class SqlRequestParametersTranslator
                     $orderQuery .= ', ';
                 }
                 $orderQuery .= sprintf(
-                    '%s %s',
+                    '%s IS NULL, %s %s',
+                    $this->concordanceArray[$name],
                     $this->concordanceArray[$name],
                     $order
                 );
@@ -182,14 +197,21 @@ class SqlRequestParametersTranslator
      * @return string Part of the database query.
      * @throws RequestParametersTranslatorException
      */
-    private function createQueryOnKeyValue(
-        string $key,
-        $valueOrArray
-    ): string {
-        if ($this->requestParameters->getConcordanceStrictMode() === RequestParameters::CONCORDANCE_MODE_STRICT
+    private function createQueryOnKeyValue(string $key, $valueOrArray): string
+    {
+        if (
+            $this->requestParameters->getConcordanceStrictMode() === RequestParameters::CONCORDANCE_MODE_STRICT
             && !key_exists($key, $this->concordanceArray)
         ) {
-            throw new RequestParametersTranslatorException('The parameter \''. $key . '\' is not allowed');
+            if (
+                $this->requestParameters
+                    ->getConcordanceErrorMode() === RequestParameters::CONCORDANCE_ERRMODE_EXCEPTION
+            ) {
+                throw new RequestParametersTranslatorException(
+                    sprintf(_('The parameter %s is not allowed'), $key)
+                );
+            }
+            return '';
         }
         if (is_array($valueOrArray)) {
             $searchOperator = (string) key($valueOrArray);
@@ -197,6 +219,10 @@ class SqlRequestParametersTranslator
         } else {
             $searchOperator = RequestParameters::DEFAULT_SEARCH_OPERATOR;
             $mixedValue = $valueOrArray;
+        }
+
+        if ($mixedValue === null) {
+            $mixedValue = $this->normalizeValue($key, $mixedValue);
         }
 
         if ($mixedValue === null) {
@@ -212,12 +238,14 @@ class SqlRequestParametersTranslator
                     . RequestParameters::OPERATOR_NOT_EQUAL
                 );
             }
-        } elseif ($searchOperator === RequestParameters::OPERATOR_IN
+        } elseif (
+            $searchOperator === RequestParameters::OPERATOR_IN
             || $searchOperator === RequestParameters::OPERATOR_NOT_IN
         ) {
             if (is_array($mixedValue)) {
                 $bindKey = '(';
                 foreach ($mixedValue as $index => $newValue) {
+                    $newValue = $this->normalizeValue($key, $newValue);
                     $type = \PDO::PARAM_STR;
                     if (is_int($newValue)) {
                         $type = \PDO::PARAM_INT;
@@ -233,22 +261,39 @@ class SqlRequestParametersTranslator
                 }
                 $bindKey .= ')';
             } else {
+                $mixedValue = $this->normalizeValue($key, $mixedValue);
                 $type = \PDO::PARAM_STR;
                 if (is_int($mixedValue)) {
                     $type = \PDO::PARAM_INT;
                 } elseif (is_bool($mixedValue)) {
                     $type = \PDO::PARAM_BOOL;
                 }
-                $bindKey = '(:value_' . (count($this->searchValues) + 1) . ')';
+                $bindKey = ':value_' . (count($this->searchValues) + 1);
                 $this->searchValues[$bindKey] = [$type => $mixedValue];
+                $bindKey = '(' . $bindKey . ')';
             }
-        } elseif ($searchOperator === RequestParameters::OPERATOR_LIKE
+        } elseif (
+            $searchOperator === RequestParameters::OPERATOR_LIKE
             || $searchOperator === RequestParameters::OPERATOR_NOT_LIKE
+            || $searchOperator === RequestParameters::OPERATOR_REGEXP
         ) {
+            // We check the regex
+            if ($searchOperator === RequestParameters::OPERATOR_REGEXP) {
+                try {
+                    preg_match('/' . $mixedValue . '/', '');
+                } catch (\Throwable $ex) {
+                    // No exception in prod environment
+                    throw new RequestParametersTranslatorException('Bad regex format \'' . $mixedValue . '\'', 0, $ex);
+                }
+                if (preg_last_error() !== PREG_NO_ERROR) {
+                    throw new RequestParametersTranslatorException('Bad regex format \'' . $mixedValue . '\'', 0);
+                }
+            }
             $type = \PDO::PARAM_STR;
             $bindKey = ':value_' . (count($this->searchValues) + 1);
             $this->searchValues[$bindKey] = [$type => $mixedValue];
         } else {
+            $mixedValue = $this->normalizeValue($key, $mixedValue);
             $type = \PDO::PARAM_STR;
             if (is_int($mixedValue)) {
                 $type = \PDO::PARAM_INT;
@@ -292,7 +337,7 @@ class SqlRequestParametersTranslator
         } elseif ($aggregateOperator === RequestParameters::AGGREGATE_OPERATOR_OR) {
             return 'OR';
         }
-        throw new RequestParametersTranslatorException('Bad search operator');
+        throw new RequestParametersTranslatorException(_('Bad search operator'));
     }
 
     /**
@@ -309,6 +354,8 @@ class SqlRequestParametersTranslator
                 return 'LIKE';
             case RequestParameters::OPERATOR_NOT_LIKE:
                 return 'NOT LIKE';
+            case RequestParameters::OPERATOR_REGEXP:
+                return 'REGEXP';
             case RequestParameters::OPERATOR_LESS_THAN:
                 return '<';
             case RequestParameters::OPERATOR_LESS_THAN_OR_EQUAL:
@@ -330,7 +377,7 @@ class SqlRequestParametersTranslator
     }
 
     /**
-     * @return array
+     * @return array<string, string>
      */
     public function getConcordanceArray(): array
     {
@@ -338,7 +385,7 @@ class SqlRequestParametersTranslator
     }
 
     /**
-     * @param array $concordanceArray
+     * @param array<string, string> $concordanceArray
      */
     public function setConcordanceArray(array $concordanceArray): void
     {
@@ -349,7 +396,7 @@ class SqlRequestParametersTranslator
      * Add a search value
      *
      * @param string $key Key
-     * @param array $value Array [type_value => value]
+     * @param array<int, mixed> $value Array [type_value => value]
      */
     public function addSearchValue(string $key, array $value): void
     {
@@ -357,7 +404,7 @@ class SqlRequestParametersTranslator
     }
 
     /**
-     * @return array
+     * @return array<string, mixed>
      */
     public function getSearchValues(): array
     {
@@ -365,10 +412,55 @@ class SqlRequestParametersTranslator
     }
 
     /**
-     * @param array $searchValues
+     * @param array<string, mixed> $searchValues
      */
     public function setSearchValues(array $searchValues): void
     {
         $this->searchValues = $searchValues;
+    }
+
+    /**
+     * Add a normalizer for a property name to be declared in the search parameters.
+     * <code>
+     * $sqlRequestTranslator = new SqlRequestParametersTranslator(new RequestParameters());
+     * $sqlRequestTranslator->addNormalizer(
+     *      'name',
+     *      new class() implements NormalizerInterface
+     *      {
+     *          public function normalize($valueToNormalize)
+     *          {
+     *              if ($valueToNormalize === "localhost") {
+     *                  return "127.0.0.1";
+     *              }
+     *              return $valueToNormalize;
+     *          }
+     *      }
+     * );
+     * </code>
+     * @param string $propertyName Property name for which the normalizer is applied
+     * @param NormalizerInterface $normalizer Normalizer to applied
+     * @throws \InvalidArgumentException
+     */
+    public function addNormalizer(string $propertyName, NormalizerInterface $normalizer): void
+    {
+        if (empty($propertyName)) {
+            throw new \InvalidArgumentException(_('The property name of the normalizer cannot be empty.'));
+        }
+        $this->normalizers[$propertyName] = $normalizer;
+    }
+
+    /**
+     * Normalize a value.
+     *
+     * @param string $propertyName Property name to be normalized if it exists
+     * @param string|bool|int|null $valueToNormalize Value to be normalized
+     * @return string|bool|int|null
+     */
+    private function normalizeValue(string $propertyName, $valueToNormalize)
+    {
+        if (array_key_exists($propertyName, $this->normalizers)) {
+            return $this->normalizers[$propertyName]->normalize($valueToNormalize);
+        }
+        return $valueToNormalize;
     }
 }

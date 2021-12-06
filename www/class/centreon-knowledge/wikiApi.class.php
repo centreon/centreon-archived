@@ -48,8 +48,9 @@ class WikiApi
     private $curl;
     private $loggedIn;
     private $tokens;
-    private $cookies;
     private $noSslCertificate;
+
+    public const PROXY_URL = './include/configuration/configKnowledge/proxy/proxy.php';
 
     /**
      * WikiApi constructor.
@@ -71,12 +72,10 @@ class WikiApi
     private function getCurl()
     {
         $curl = curl_init();
-        $cookiefile = tempnam("/tmp", "CURLCOOKIE");
         curl_setopt($curl, CURLOPT_URL, $this->url);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_POST, true);
-        curl_setopt($curl, CURLOPT_COOKIEFILE, $cookiefile);
-        curl_setopt($curl, CURLOPT_COOKIEJAR, $cookiefile);
+        curl_setopt($curl, CURLOPT_COOKIEFILE, '');
         if ($this->noSslCertificate == 1) {
             curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
             curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
@@ -111,8 +110,6 @@ class WikiApi
             return $this->loggedIn;
         }
 
-        curl_setopt($this->curl, CURLOPT_HEADER, true);
-
         // Get Connection Cookie/Token
         $postfields = array(
             'action' => 'query',
@@ -123,20 +120,12 @@ class WikiApi
 
         curl_setopt($this->curl, CURLOPT_POSTFIELDS, $postfields);
         $result = curl_exec($this->curl);
-        $header_size = curl_getinfo($this->curl, CURLINFO_HEADER_SIZE);
-        $header = substr($result, 0, $header_size);
-        $body = substr($result, $header_size);
+        if ($result === false) {
+            throw new \Exception("curl error");
+        }
+        $decoded = json_decode($result, true);
 
-        // Get cookies
-        preg_match_all('/^Set-Cookie:\s*([^;]*)/mi', $header, $matches);
-
-        $this->cookies = array_merge($this->cookies, $matches[1]);
-        $cookies = implode('; ', $this->cookies);
-        curl_setopt($this->curl, CURLOPT_COOKIE, $cookies);
-
-        $result = json_decode($body, true);
-
-        $token = $result['query']['tokens']['logintoken'];
+        $token = $decoded['query']['tokens']['logintoken'];
 
         // Launch Connection
         $postfields = [
@@ -150,26 +139,17 @@ class WikiApi
 
         curl_setopt($this->curl, CURLOPT_POSTFIELDS, $postfields);
         $result = curl_exec($this->curl);
+        if ($result === false) {
+            throw new \Exception("curl error");
+        }
 
-        $header_size = curl_getinfo($this->curl, CURLINFO_HEADER_SIZE);
-        $header = substr($result, 0, $header_size);
-        $body = substr($result, $header_size);
-
-        // Get cookies
-        preg_match_all('/^Set-Cookie:\s*([^;]*)/mi', $header, $matches);
-        $this->cookies = array_merge($this->cookies, $matches[1]);
-        $cookies = implode('; ', $this->cookies);
-        curl_setopt($this->curl, CURLOPT_COOKIE, $cookies);
-
-        $result = json_decode($body, true);
-        $resultLogin = $result['login']['result'];
+        $decoded = json_decode($result, true);
+        $resultLogin = $decoded['login']['result'];
 
         $this->loggedIn = false;
         if ($resultLogin == 'Success') {
             $this->loggedIn = true;
         }
-
-        curl_setopt($this->curl, CURLOPT_HEADER, false);
 
         return $this->loggedIn;
     }
@@ -215,9 +195,6 @@ class WikiApi
 
         if ($this->version >= 1.24) {
             $this->tokens[$method] = $result['query']['tokens']['csrftoken'];
-            if ($this->tokens[$method] == '+/') {
-                $this->tokens[$method] = $this->getMethodToken('delete', $title);
-            }
         } elseif ($this->version >= 1.20) {
             $this->tokens[$method] = $result['tokens'][$method . 'token'];
         } else {
@@ -260,9 +237,6 @@ class WikiApi
             $tries++;
         }
 
-        //remove cookies related to this action
-        unlink('/tmp/CURLCOOKIE*');
-
         if (isset($deleteResult->error)) {
             return false;
         } elseif (isset($deleteResult->delete)) {
@@ -278,7 +252,7 @@ class WikiApi
             'format' => 'json',
             'action' => 'query',
             'list' => 'allpages',
-            'aplimit' => '10'
+            'aplimit' => '200'
         );
 
         $pages = array();
@@ -292,10 +266,17 @@ class WikiApi
             }
 
             // Get next page if exists
-            if (isset($result->{'query-continue'}->allpages->apcontinue)) {
+            $continue = false;
+            if ($this->version >= 1.31) {
+                if (isset($result->{'continue'}->apcontinue)) {
+                    $postfields['apfrom'] = $result->{'continue'}->apcontinue;
+                    $continue = true;
+                }
+            } elseif (isset($result->{'query-continue'}->allpages->apcontinue)) {
                 $postfields['apfrom'] = $result->{'query-continue'}->allpages->apcontinue;
+                $continue = true;
             }
-        } while (isset($result->{'query-continue'}->allpages->apcontinue));
+        } while ($continue === true);
 
         return $pages;
     }
@@ -429,14 +410,20 @@ class WikiApi
         $resHost = $this->db->query(
             "SELECT host_id FROM host WHERE host_name LIKE '" . $hostName . "'"
         );
-        $tuple = $resHost->fetch();
 
-        $valueToAdd = './include/configuration/configKnowledge/proxy/proxy.php?host_name=$HOSTNAME$';
-        $this->db->query(
-            "UPDATE extended_host_information "
-            . "SET ehi_notes_url = '" . $valueToAdd . "' "
-            . "WHERE host_host_id = '" . $tuple['host_id'] . "'"
-        );
+        $hostRow = $resHost->fetch();
+
+        if ($hostRow !== false) {
+            $url = self::PROXY_URL . '?host_name=$HOSTNAME$';
+            $statement = $this->db->prepare(
+                "UPDATE extended_host_information " .
+                "SET ehi_notes_url = :url " .
+                "WHERE host_host_id = :hostId"
+            );
+            $statement->bindValue(':url', $url, \PDO::PARAM_STR);
+            $statement->bindValue(':hostId', $hostRow['host_id'], \PDO::PARAM_INT);
+            $statement->execute();
+        }
     }
 
     /**
@@ -453,15 +440,19 @@ class WikiApi
             "AND host_service_relation.host_host_id = host.host_id " .
             "AND host_service_relation.service_service_id = service.service_id "
         );
-        $tuple = $resService->fetch();
+        $serviceRow = $resService->fetch();
 
-        $valueToAdd = './include/configuration/configKnowledge/proxy/proxy.php?' .
-            'host_name=$HOSTNAME$&service_description=$SERVICEDESC$';
-        $this->db->query(
-            "UPDATE extended_service_information " .
-            "SET esi_notes_url = '" . $valueToAdd . "' " .
-            "WHERE service_service_id = '" . $tuple['service_id'] . "' "
-        );
+        if ($serviceRow !== false) {
+            $url = self::PROXY_URL . '?host_name=$HOSTNAME$&service_description=$SERVICEDESC$';
+            $statement = $this->db->prepare(
+                "UPDATE extended_service_information " .
+                "SET esi_notes_url = :url " .
+                "WHERE service_service_id = :serviceId"
+            );
+            $statement->bindValue(':url', $url, \PDO::PARAM_STR);
+            $statement->bindValue(':serviceId', $serviceRow['service_id'], \PDO::PARAM_INT);
+            $statement->execute();
+        }
     }
 
     /**
@@ -473,21 +464,25 @@ class WikiApi
             "SELECT service_id FROM service " .
             "WHERE service_description LIKE '" . $serviceName . "' "
         );
-        $tuple = $resService->fetch();
+        $serviceTemplateRow = $resService->fetch();
 
-        $valueToAdd = './include/configuration/configKnowledge/proxy/proxy.php?' .
-            'host_name=$HOSTNAME$&service_description=$SERVICEDESC$';
-        $this->db->query(
-            "UPDATE extended_service_information " .
-            "SET esi_notes_url = '" . $valueToAdd . "' " .
-            "WHERE service_service_id = '" . $tuple['service_id'] . "' "
-        );
+        if ($serviceTemplateRow !== false) {
+            $url = self::PROXY_URL . '?host_name=$HOSTNAME$&service_description=$SERVICEDESC$';
+            $statement = $this->db->prepare(
+                "UPDATE extended_service_information " .
+                "SET esi_notes_url = :url " .
+                "WHERE service_service_id = :serviceId"
+            );
+            $statement->bindValue(':url', $url, \PDO::PARAM_STR);
+            $statement->bindValue(':serviceId', $serviceTemplateRow['service_id'], \PDO::PARAM_INT);
+            $statement->execute();
+        }
     }
 
     /**
      * make a call to mediawiki api to delete a page
      * @param string $title
-     * @return array
+     * @return object
      */
     private function deleteMWPage($title = '')
     {

@@ -36,7 +36,9 @@
 
 namespace Centreon\Application\Validation;
 
+use Centreon\Application\Validation\Validator\Interfaces\CentreonValidatorInterface;
 use Pimple\Psr11\ServiceLocator;
+use ReflectionClass;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidatorFactoryInterface;
 use Pimple\Container;
@@ -73,16 +75,23 @@ class CentreonValidatorFactory implements ConstraintValidatorFactoryInterface
 
         if (!isset($this->validators[$className])) {
             if (class_exists($className)) {
-                // validator as a class with dependencies
-                $this->validators[$className] = new $className(new ServiceLocator(
-                    $this->container,
-                    method_exists($className, 'dependencies') ? $className::dependencies() : []
-                ));
+                // validator as a class with dependencies from centreon
+                $reflection = (new ReflectionClass($className));
+
+                if ($reflection->implementsInterface(CentreonValidatorInterface::class)) {
+                    $this->validators[$className] = new $className(new ServiceLocator(
+                        $this->container,
+                        $reflection->hasMethod('dependencies') ? $className::dependencies() : []
+                    ));
+                } else {
+                    // validator as a class with empty property accessor
+                    $this->validators[$className] = new $className();
+                }
             } elseif (in_array($className, $this->container->keys())) {
                 // validator as a service
                 $this->validators[$className] = $this->container[$className];
             } else {
-                throw new \RuntimeException(sprintf('The validator "%s" is not found', $className));
+                throw new \RuntimeException(sprintf(_('The validator "%s" is not found'), $className));
             }
         }
 

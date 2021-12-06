@@ -75,7 +75,7 @@ class FileLoader implements DispatcherLoaderInterface
     public function load():void
     {
         if (! is_dir($this->pathModules)) {
-            throw new \Exception("The path does not exist");
+            throw new \Exception(_('The path does not exist'));
         }
         $modules = scandir($this->pathModules);
 

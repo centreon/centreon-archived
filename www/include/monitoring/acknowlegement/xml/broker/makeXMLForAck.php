@@ -1,7 +1,8 @@
 <?php
+
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2020 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -33,51 +34,52 @@
  *
  */
 
-require_once realpath(dirname(__FILE__) . "/../../../../../../config/centreon.config.php");
-include_once _CENTREON_PATH_ . "www/class/centreonDuration.class.php";
-include_once _CENTREON_PATH_ . "www/class/centreonGMT.class.php";
-include_once _CENTREON_PATH_ . "www/class/centreonXML.class.php";
-include_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
-include_once _CENTREON_PATH_ . "www/class/centreonSession.class.php";
-include_once _CENTREON_PATH_ . "www/class/centreon.class.php";
-include_once _CENTREON_PATH_ . "www/class/centreonLang.class.php";
-include_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
+require_once realpath(__DIR__ . '/../../../../../../config/centreon.config.php');
+include_once _CENTREON_PATH_ . 'www/class/centreonDuration.class.php';
+include_once _CENTREON_PATH_ . 'www/class/centreonGMT.class.php';
+include_once _CENTREON_PATH_ . 'www/class/centreonXML.class.php';
+include_once _CENTREON_PATH_ . 'www/class/centreonDB.class.php';
+include_once _CENTREON_PATH_ . 'www/class/centreonSession.class.php';
+include_once _CENTREON_PATH_ . 'www/class/centreon.class.php';
+include_once _CENTREON_PATH_ . 'www/class/centreonLang.class.php';
+include_once _CENTREON_PATH_ . 'www/include/common/common-Func.php';
 
 session_start();
 $oreon = $_SESSION['centreon'];
 
 $db = new CentreonDB();
-$pearDB = $db;
 $dbb = new CentreonDB("centstorage");
 
-$centreonlang = new CentreonLang(_CENTREON_PATH_, $oreon);
-$centreonlang->bindLang();
+$centreonLang = new CentreonLang(_CENTREON_PATH_, $oreon);
+$centreonLang->bindLang();
 $sid = session_id();
 if (isset($sid)) {
-    //$sid = $_GET["sid"];
-    $res = $db->query("SELECT * FROM session WHERE session_id = '".CentreonDB::escape($sid)."'");
-    if (!$session = $res->fetchRow()) {
+    $res = $db->prepare('SELECT * FROM session WHERE session_id = :sid');
+    $res->bindValue(':sid', $sid, \PDO::PARAM_STR);
+    $res->execute();
+    if (!$session = $res->fetch()) {
         get_error('bad session id');
     }
 } else {
     get_error('need session id !');
 }
 
-(isset($_GET["hid"])) ? $host_id = CentreonDB::escape($_GET["hid"]) : $host_id = 0;
-(isset($_GET["svc_id"])) ? $service_id = CentreonDB::escape($_GET["svc_id"]) : $service_id = 0;
+// sanitize host and service id from request;
+$hostId = filter_var($_GET['hid'] ?? false, FILTER_VALIDATE_INT);
+$svcId = filter_var($_GET['svc_id'] ?? false, FILTER_VALIDATE_INT);
 
-/*
- * Init GMT class
- */
-$centreonGMT = new CentreonGMT($pearDB);
-$centreonGMT->getMyGMTFromSession($sid, $pearDB);
+// check if a mandatory valid hostId is given
+if (false === $hostId) {
+    get_error('bad host Id');
+}
 
-/**
- * Start Buffer
- */
+// Init GMT class
+$centreonGMT = new CentreonGMT($db);
+$centreonGMT->getMyGMTFromSession($sid, $db);
+
+// Start Buffer
 $xml = new CentreonXML();
 $xml->startElement("response");
-
 $xml->startElement("label");
 $xml->writeElement('author', _('Author'));
 $xml->writeElement('entrytime', _('Entry Time'));
@@ -86,49 +88,50 @@ $xml->writeElement('sticky', _('Sticky'));
 $xml->writeElement('comment', _('Comment'));
 $xml->endElement();
 
-/**
- * Retrieve info
- */
-if (!$service_id) {
-    $query = "SELECT author, entry_time, comment_data, persistent_comment, sticky
-    		  FROM acknowledgements
-    		  WHERE host_id = " . CentreonDB::escape($host_id) . "
-    		  AND service_id IS NULL
-    		  ORDER BY entry_time DESC
-    		  LIMIT 1";
+// Retrieve info
+if (false === $svcId) {
+    $res = $dbb->prepare(
+        'SELECT author, entry_time, comment_data, persistent_comment, sticky
+        FROM acknowledgements
+        WHERE host_id = :hostId
+        AND service_id = 0
+        ORDER BY entry_time DESC
+        LIMIT 1'
+    );
+    $res->bindValue(':hostId', $hostId, \PDO::PARAM_INT);
+    $res->execute();
 } else {
-    $query = "SELECT author, entry_time, comment_data, persistent_comment, sticky
-    		  FROM acknowledgements
-    		  WHERE host_id = " . CentreonDB::escape($host_id) . "
-    		  AND service_id = " . CentreonDB::escape($service_id) . "
-    		  ORDER BY entry_time DESC
-    		  LIMIT 1";
-}
-$res = $dbb->query($query);
-$rowClass = "list_one";
-if (isset($res)) {
-    while ($row = $res->fetchRow()) {
-        $row['comment_data'] = strip_tags($row['comment_data']);
-        $xml->startElement('ack');
-        $xml->writeAttribute('class', $rowClass);
-        $xml->writeElement('author', $row['author']);
-        $xml->writeElement('entrytime', $row['entry_time']);
-        $xml->writeElement('comment', $row['comment_data']);
-        $xml->writeElement('persistent', $row['persistent_comment'] ? _('Yes') : _('No'));
-        $xml->writeElement('sticky', $row['sticky'] ? _('Yes') : _('No'));
-        $xml->endElement();
-        $rowClass == "list_one" ? $rowClass = "list_two" : $rowClass = "list_one";
-    }
+    $res = $dbb->prepare(
+        'SELECT author, entry_time, comment_data, persistent_comment, sticky
+        FROM acknowledgements
+        WHERE host_id = :hostId
+        AND service_id = :svcId
+        ORDER BY entry_time DESC
+        LIMIT 1'
+    );
+    $res->bindValue(':hostId', $hostId, \PDO::PARAM_INT);
+    $res->bindValue(':svcId', $svcId, \PDO::PARAM_INT);
+    $res->execute();
 }
 
-/*
- * End buffer
- */
+$rowClass = 'list_one';
+while ($row = $res->fetch()) {
+    $row['comment_data'] = strip_tags($row['comment_data']);
+    $xml->startElement('ack');
+    $xml->writeAttribute('class', $rowClass);
+    $xml->writeElement('author', $row['author']);
+    $xml->writeElement('entrytime', $row['entry_time']);
+    $xml->writeElement('comment', $row['comment_data']);
+    $xml->writeElement('persistent', $row['persistent_comment'] ? _('Yes') : _('No'));
+    $xml->writeElement('sticky', $row['sticky'] ? _('Yes') : _('No'));
+    $xml->endElement();
+    $rowClass === 'list_one' ? $rowClass = 'list_two' : $rowClass = 'list_one';
+}
+
+// End buffer
 $xml->endElement();
 header('Content-type: text/xml; charset=utf-8');
 header('Cache-Control: no-cache, must-revalidate');
 
-/*
- * Print Buffer
- */
+// Print Buffer
 $xml->output();

@@ -217,6 +217,12 @@ class CentreonUtils
             case "notlike":
                 $result = "NOT LIKE";
                 break;
+            case "regex":
+                $result = "REGEXP";
+                break;
+            case "notregex":
+                $result = "NOT REGEXP";
+                break;
             default:
                 $result = "";
                 break;
@@ -236,7 +242,14 @@ class CentreonUtils
         $init = array();
         try {
             $initForm = $form->getElement('initialValues');
-            $initialValues = unserialize($initForm->getValue());
+            $initForm = filter_var($initForm->getValue(), FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+
+            if ($initForm === false) {
+                throw new \InvalidArgumentException('Invalid Parameters');
+            }
+
+            $initialValues = unserialize($initForm, ['allowed_classes' => false]);
+
             if (!empty($initialValues) && isset($initialValues[$key])) {
                 $init = $initialValues[$key];
             }
@@ -351,18 +364,18 @@ class CentreonUtils
                 return str_replace(str_split($pattern), "", $stringToEscape);
         }
     }
-    
+
     /**
      * Convert all html tags into HTML entities
      *
-     * @param type $stringToEscape String to escape
+     * @param string $stringToEscape String to escape
      * @return string Converted string
      */
     public static function escapeAll($stringToEscape)
     {
         return htmlentities($stringToEscape, ENT_QUOTES, 'UTF-8');
     }
-    
+
     /**
      * Convert all HTML tags into HTML entities except those defined in parameter
      *
@@ -456,8 +469,9 @@ class CentreonUtils
     {
         $occurrences = false;
         $start = 0;
-        if (($start = stripos($html, "<$tag", $start)) !== false &&
-            ($end = stripos($html, "</$tag>", $end + strlen("</$tag>")))
+        if (
+            ($start = stripos($html, "<$tag", $start)) !== false &&
+            ($end = stripos($html, "</$tag>", strlen("</$tag>")))
         ) {
             if (!is_array($occurrences[$tag])) {
                 $occurrences[$tag] = array();
@@ -474,5 +488,23 @@ class CentreonUtils
                 );
         }
         return $occurrences;
+    }
+
+    /**
+     *
+     * @param $coords -90.0,180.0
+     * @return bool
+     */
+    public static function validateGeoCoords($coords): bool
+    {
+        if (
+            preg_match(
+                '/^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/',
+                $coords
+            )
+        ) {
+            return true;
+        }
+        return false;
     }
 }

@@ -1,0 +1,2 @@
+child_key: value_child_key
+child_key2: !include conf.d/child5.yaml

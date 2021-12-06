@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +23,7 @@ declare(strict_types=1);
 namespace Centreon\Infrastructure\Engine;
 
 use Centreon\Domain\Engine\EngineException;
+use Centreon\Domain\Engine\EngineService;
 use Centreon\Domain\Engine\Interfaces\EngineRepositoryInterface;
 
 final class EngineRepositoryFile implements EngineRepositoryInterface
@@ -29,16 +31,25 @@ final class EngineRepositoryFile implements EngineRepositoryInterface
     /**
      * @var string
      */
-    private $centCorePath;
+    private $centCoreDirectory;
+
+    /**
+     * @var string
+     */
+    private $centCoreFile;
 
     /**
      * EngineRepositoryFile constructor.
      *
      * @param string $centCorePath
      */
-    public function __construct(string $centCorePath)
+    public function __construct(string $centCoreDirectory)
     {
-        $this->centCorePath = $centCorePath;
+        $this->centCoreDirectory = $centCoreDirectory;
+        $this->centCoreFile =
+            $centCoreDirectory
+            . DIRECTORY_SEPARATOR
+            . 'external-cmd-' . microtime(true) . '.cmd';
     }
 
     /**
@@ -72,22 +83,25 @@ final class EngineRepositoryFile implements EngineRepositoryInterface
             $commandsToSend .= $command;
         }
 
+        if (!is_dir($this->centCoreDirectory)) {
+            throw new EngineException(
+                sprintf(_('Centcore directory %s does not exist'), $this->centCoreDirectory)
+            );
+        }
+
         if (!empty($commandsToSend)) {
-            if (file_exists($this->centCorePath)) {
-                $isDataSent = file_put_contents($this->centCorePath, $commandsToSend . "\n", FILE_APPEND);
-            } else {
-                $isDataSent = file_put_contents($this->centCorePath, $commandsToSend . "\n");
-            }
+            $isDataSent = file_put_contents($this->centCoreFile, $commandsToSend . "\n", FILE_APPEND);
 
             if ($isDataSent === false) {
                 throw new EngineException(
                     sprintf(
-                        'Error during creation of the CentCore command file (%s)',
+                        _('Error during creation of the CentCore command file (%s)'),
                         $this->centCorePath
                     )
                 );
             }
         }
+
         return count($commandsAwaiting);
     }
 }

@@ -85,7 +85,7 @@ class URIContext extends CentreonContext
                 return true;
             },
             'Comment is not applied.',
-            10
+            20
         );
     }
 
@@ -94,14 +94,14 @@ class URIContext extends CentreonContext
      */
     public function iClickOnTheLinkInTheServiceOutput()
     {
-        $this->page = new ServiceMonitoringDetailsPage($this, $this->hostname, $this->serviceDescription);
         $this->spin(
             function ($context) {
-                $this->assertFind('css', 'table.ListTable td.ListColNoWrap.containsURI a')->click();
+                $page = new ServiceMonitoringDetailsPage($context, $context->hostname, $context->serviceDescription);
+                $context->assertFind('css', 'table.ListTable td.ListColNoWrap.containsURI a')->click();
                 return true;
             },
             'Cannot find link in service output',
-            10
+            20
         );
     }
 
@@ -110,14 +110,14 @@ class URIContext extends CentreonContext
      */
     public function iClickOnTheLinkInTheComment()
     {
-        $this->page = new CommentMonitoringListingPage($this);
         $this->spin(
             function ($context) {
-                $this->assertFind('css', 'table.ListTable td.ListColNoWrap.containsURI a')->click();
+                $page = new CommentMonitoringListingPage($context);
+                $context->assertFind('css', 'table.ListTable td.ListColNoWrap.containsURI a')->click();
                 return true;
             },
             'Cannot find link in service output',
-            10
+            20
         );
     }
 
@@ -132,7 +132,7 @@ class URIContext extends CentreonContext
                 return count($windowNames) > 1;
             },
             'Link tab is not opened.',
-            10
+            20
         );
 
         $windowNames = $this->getSession()->getWindowNames();

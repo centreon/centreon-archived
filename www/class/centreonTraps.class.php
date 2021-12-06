@@ -1,7 +1,8 @@
 <?php
+
 /**
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2020 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -75,38 +76,72 @@ class CentreonTraps
      *  then inserts data into the  traps_matching_properties
      * @param int $trapId
      */
-    private function setMatchingOptions($trapId)
+    private function setMatchingOptions(int $trapId)
     {
-        $this->db->query("DELETE FROM traps_matching_properties WHERE trap_id = '" . $trapId . "'");
+        if ($trapId > 0) {
+            $query = "DELETE FROM traps_matching_properties WHERE trap_id = :trapId";
+            $statement = $this->db->prepare($query);
+            $statement->bindValue(':trapId', $trapId, \PDO::PARAM_INT);
+            $statement->execute();
 
-        $insertStr = "";
-        if (isset($_REQUEST['rule'])) {
-            $rules = $_REQUEST['rule'];
-            $regexp = $_REQUEST['regexp'];
-            $status = $_REQUEST['rulestatus'];
-            $severity = $_REQUEST['ruleseverity'];
-            $i = 1;
-            foreach ($rules as $key => $value) {
-                if (is_null($value) || $value == "") {
-                    continue;
+            $insertStr = "";
+            if (isset($_REQUEST['rule'])) {
+                $rules = $_REQUEST['rule'];
+                $regexp = $_REQUEST['regexp'];
+                $status = $_REQUEST['rulestatus'];
+                $severity = $_REQUEST['ruleseverity'];
+                $i = 1;
+                $queryValues = [];
+                foreach ($rules as $key => $value) {
+                    if (is_null($value) || $value == "") {
+                        continue;
+                    }
+                    $value = filter_var($value, FILTER_SANITIZE_STRING);
+                    $regexp[$key] = filter_var($regexp[$key], FILTER_SANITIZE_STRING) ? $regexp[$key] : "";
+                    $status[$key] = filter_var($status[$key], FILTER_VALIDATE_INT) ? (int) $status[$key] : 0;
+                    $severity[$key] = filter_var($severity[$key], FILTER_VALIDATE_INT);
+
+                    if ($insertStr) {
+                        $insertStr .= ", ";
+                    }
+
+                    $queryValues[':value' . $key] = [
+                        \PDO::PARAM_STR => $value
+                    ];
+                    $queryValues[':regexp' . $key] = [
+                        \PDO::PARAM_STR => $regexp[$key]
+                    ];
+                    $queryValues[':status' . $key] = [
+                        \PDO::PARAM_INT => $status[$key]
+                    ];
+
+                    if ($severity[$key] !== false) {
+                        $bindSeverity = ":severity" . $key;
+                        $queryValues[":severity" . $key] = [
+                            \PDO::PARAM_INT => $severity[$key]
+                        ];
+                    } else {
+                        $bindSeverity = "NULL";
+                    }
+                    $insertStr .= "(:trapId,  :value" . $key . ", :regexp". $key .", :status" . $key . ", "
+                        . $bindSeverity . ", " . $i . ")";
                 }
-                if ($insertStr) {
-                    $insertStr .= ", ";
-                }
-                if ($severity[$key] == "") {
-                    $severity[$key] = "NULL";
-                }
-                $insertStr .= "($trapId, '" . $this->db->escape($value) . "', '" .
-                    $this->db->escape($regexp[$key]) . "', " . $this->db->escape($status[$key]) . ", " .
-                    $this->db->escape($severity[$key]) . ", $i)";
-                $i++;
+
             }
-        }
-        if ($insertStr) {
-            $this->db->query(
-                "INSERT INTO traps_matching_properties
-                    (trap_id, tmo_string, tmo_regexp, tmo_status, severity_id, tmo_order) VALUES $insertStr"
-            );
+            if ($insertStr) {
+                $query = "INSERT INTO traps_matching_properties
+                    (trap_id, tmo_string, tmo_regexp, tmo_status, severity_id, tmo_order) VALUES $insertStr";
+                $statement = $this->db->prepare($query);
+                $statement->bindValue(':trapId', $trapId, \PDO::PARAM_INT);
+                if (isset($queryValues)) {
+                    foreach ($queryValues as $bindId => $bindData) {
+                        foreach ($bindData as $bindType => $bindValue) {
+                            $statement->bindValue($bindId, $bindValue, $bindType);
+                        }
+                    }
+                }
+                $statement->execute();
+            }
         }
     }
 
@@ -121,26 +156,48 @@ class CentreonTraps
     }
 
     /**
+     * Check if the OID has the good Format
+     *
+     * @param null|string $oid
+     * @return boolean
+     */
+    public function testOidFormat($oid = null)
+    {
+        if (preg_match('/^(\.([0-2]))|([0-2])((\.0)|(\.([1-9][0-9]*)))*$/', $oid) == true) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
      *
      * tests if trap already exists
      * @param $oid
      */
     public function testTrapExistence($oid = null)
     {
-        $id = null;
-        if (isset($this->form)) {
-            $id = $this->form->getSubmitValue('traps_id');
-        }
-        $query = "SELECT traps_oid, traps_id FROM traps WHERE traps_oid = '" . $this->db->escape($oid) . "'";
-        $res = $this->db->query($query);
-        $trap = $res->fetchRow();
+        if ($oid !== null && $this->testOidFormat($oid) === true) {
+            $id = null;
+            if (isset($this->form)) {
+                $id = $this->form->getSubmitValue('traps_id');
+            }
+            $query = "SELECT traps_oid, traps_id FROM traps WHERE traps_oid = :oid ";
 
-        if ($res->rowCount() >= 1 && $trap["traps_id"] == $id) {
-            return true;
-        } elseif ($res->rowCount() >= 1 && $trap["traps_id"] != $id) {
-            return false;
-        } else {
-            return true;
+            $statement = $this->db->prepare($query);
+            $statement->bindValue(':oid', $oid, \PDO::PARAM_STR);
+            $statement->execute();
+
+            $trap = $statement->fetch(\PDO::FETCH_ASSOC);
+
+            /**
+             * If the trap already existing return false to trigger an error with the form validation rule
+             */
+            if ($statement->rowCount() >= 1 && $trap["traps_id"] != $id) {
+                return false;
+            } else {
+                return true;
+            }
         }
     }
 
@@ -149,15 +206,25 @@ class CentreonTraps
      * Delete Traps
      * @param $traps
      */
-    public function delete($traps = array())
+    public function delete($traps = [])
     {
-        foreach ($traps as $key => $value) {
-            $res2 = $this->db->query(
-                "SELECT traps_name FROM `traps` WHERE `traps_id` = '" . $this->db->escape($key) . "' LIMIT 1"
-            );
-            $row = $res2->fetchRow();
-            $res = $this->db->query("DELETE FROM traps WHERE traps_id = '" . $this->db->escape($key) . "'");
-            $this->centreon->CentreonLogAction->insertLog("traps", $key, $row['traps_name'], "d");
+        $querySelect = "SELECT traps_name FROM `traps` WHERE `traps_id` = :trapsId LIMIT 1";
+        $queryDelete = "DELETE FROM traps WHERE traps_id = :trapsId ";
+
+        $statementSelect = $this->db->prepare($querySelect);
+        $statementDelete = $this->db->prepare($queryDelete);
+        foreach (array_keys($traps) as $trapsId) {
+            if (is_int($trapsId)) {
+                $statementSelect->bindValue(':trapsId', $trapsId, \PDO::PARAM_INT);
+                $statementSelect->execute();
+                $row = $statementSelect->fetch(\PDO::FETCH_ASSOC);
+
+                $statementDelete->bindValue(':trapsId', $trapsId, \PDO::PARAM_INT);
+                $statementDelete->execute();
+                if ($statementDelete->rowCount() > 0) {
+                    $this->centreon->CentreonLogAction->insertLog("traps", $trapsId, $row['traps_name'], "d");
+                }
+            }
         }
     }
 
@@ -167,15 +234,15 @@ class CentreonTraps
      * @param string $trapName Trap name to find
      * @return boolean
      */
-    public function trapNameExists($trapName)
+    public function trapNameExists(string $trapName)
     {
         if (!empty($trapName)) {
-            $prepare = $this->db->prepare(
+            $statement = $this->db->prepare(
                 "SELECT COUNT(*) AS total FROM traps WHERE traps_name = :trap_name"
             );
-            $prepare->bindValue(':trap_name', $trapName, \PDO::PARAM_STR);
-            $prepare->execute();
-            $result = $prepare->fetch(\PDO::FETCH_ASSOC);
+            $statement->bindValue(':trap_name', $trapName, \PDO::PARAM_STR);
+            $statement->execute();
+            $result = $statement->fetch(\PDO::FETCH_ASSOC);
             return ((int)$result['total']) > 0;
         }
         return false;
@@ -187,19 +254,42 @@ class CentreonTraps
      * @param $traps
      * @param $nbrDup
      */
-    public function duplicate($traps = array(), $nbrDup = array())
+    public function duplicate($traps = [], $nbrDup = [])
     {
+        $querySelectTrap = "SELECT * FROM traps WHERE traps_id = :trapsId LIMIT 1";
+        $queryInsertTrapServiceRelation = "
+            INSERT INTO traps_service_relation (traps_id, service_id)
+            (SELECT :maxTrapsId, service_id
+                FROM traps_service_relation
+                WHERE traps_id = :trapsId)";
+        $queryInsertPreexec = "
+            INSERT INTO traps_preexec (trap_id, tpe_string, tpe_order)
+            (SELECT :maxTrapsId, tpe_string, tpe_order
+                FROM traps_preexec
+                WHERE trap_id = :trapsId)";
+        $querySelectMatching = "SELECT * FROM traps_matching_properties WHERE trap_id = :trapsId";
+        $queryInsertMatching = "
+            INSERT INTO traps_matching_properties
+            (`trap_id`,`tmo_order`,`tmo_regexp`,`tmo_string`,`tmo_status`,`severity_id`)
+            VALUES (:trap_id, :tmo_order, :tmo_regexp, :tmo_string, :tmo_status, :severity_id)";
+
+        $stmtSelectTrap = $this->db->prepare($querySelectTrap);
+        $stmtInsertTrapServiceRelation = $this->db->prepare($queryInsertTrapServiceRelation);
+        $stmtInsertPreexec = $this->db->prepare($queryInsertPreexec);
+        $stmtSelectMatching = $this->db->prepare($querySelectMatching);
+        $stmtInsertMatching = $this->db->prepare($queryInsertMatching);
         foreach (array_keys($traps) as $trapsId) {
             if (is_int($trapsId)) {
-                $res = $this->db->query(
-                    "SELECT * FROM traps WHERE traps_id = $trapsId LIMIT 1"
-                );
-                $trapConfigurations = $res->fetchRow();
+
+                $stmtSelectTrap->bindValue(':trapsId', $trapsId, \PDO::PARAM_INT);
+                $stmtSelectTrap->execute();
+
+                $trapConfigurations = $stmtSelectTrap->fetch(\PDO::FETCH_ASSOC);
                 $trapConfigurations["traps_id"] = '';
                 for ($newIndex = 1; $newIndex <= $nbrDup[$trapsId]; $newIndex++) {
                     $val = null;
                     $trapName = null;
-                    $fields = array();
+                    $fields = [];
                     foreach ($trapConfigurations as $cfgName => $cfgValue) {
                         if ($cfgName == 'traps_name') {
                             $cfgValue .= '_' . $newIndex;
@@ -228,33 +318,31 @@ class CentreonTraps
                         $res2 = $this->db->query("SELECT MAX(traps_id) FROM traps");
                         $maxId = $res2->fetch();
 
-                        $this->db->query("INSERT INTO traps_service_relation (traps_id, service_id) 
-                                        (SELECT " . $maxId['MAX(traps_id)'] . ", service_id 
-                                            FROM traps_service_relation 
-                                            WHERE traps_id = $trapsId)");
+                        $stmtInsertTrapServiceRelation->bindValue(
+                            ':maxTrapsId',
+                            $maxId['MAX(traps_id)'],
+                            \PDO::PARAM_INT
+                        );
+                        $stmtInsertTrapServiceRelation->bindValue(':trapsId', $trapsId, \PDO::PARAM_INT);
+                        $stmtInsertTrapServiceRelation->execute();
 
-                        $this->db->query("INSERT INTO traps_preexec (trap_id, tpe_string, tpe_order) 
-                                        (SELECT " . $maxId['MAX(traps_id)'] . ", tpe_string, tpe_order
-                                            FROM traps_preexec 
-                                            WHERE trap_id = $trapsId)");
+                        $stmtInsertPreexec->bindValue(':maxTrapsId', $maxId['MAX(traps_id)'], \PDO::PARAM_INT);
+                        $stmtInsertPreexec->bindValue(':trapsId', $trapsId, \PDO::PARAM_INT);
+                        $stmtInsertPreexec->execute();
 
-                        $query = "SELECT * FROM traps_matching_properties WHERE trap_id = " . (int)$trapsId;
+                        $stmtSelectMatching->bindValue(':trapsId', $trapsId, \PDO::PARAM_INT);
+                        $stmtSelectMatching->execute();
 
-                        $dbResult = $this->db->query($query);
-
-                        while ($row = $dbResult->fetch()) {
+                        while ($row = $stmtSelectMatching->fetch()) {
                             $severity = $row['severity_id'] ?? null;
-                            $query = "INSERT INTO traps_matching_properties " .
-                                "(`trap_id`,`tmo_order`,`tmo_regexp`,`tmo_string`,`tmo_status`,`severity_id`) " .
-                                "VALUES (:trap_id, :tmo_order, :tmo_regexp, :tmo_string, :tmo_status, :severity_id)";
-                            $stmt = $this->db->prepare($query);
-                            $stmt->bindValue(':trap_id', $maxId['MAX(traps_id)'], \PDO::PARAM_INT);
-                            $stmt->bindValue(':tmo_order', $row['tmo_order'], \PDO::PARAM_INT);
-                            $stmt->bindValue(':tmo_regexp', $row['tmo_regexp'], \PDO::PARAM_STR);
-                            $stmt->bindValue(':tmo_string', $row['tmo_string'], \PDO::PARAM_STR);
-                            $stmt->bindValue(':tmo_status', $row['tmo_status'], \PDO::PARAM_INT);
-                            $stmt->bindValue(':severity_id', $severity, \PDO::PARAM_INT);
-                            $stmt->execute();
+
+                            $stmtInsertMatching->bindValue(':trap_id', $maxId['MAX(traps_id)'], \PDO::PARAM_INT);
+                            $stmtInsertMatching->bindValue(':tmo_order', $row['tmo_order'], \PDO::PARAM_INT);
+                            $stmtInsertMatching->bindValue(':tmo_regexp', $row['tmo_regexp'], \PDO::PARAM_STR);
+                            $stmtInsertMatching->bindValue(':tmo_string', $row['tmo_string'], \PDO::PARAM_STR);
+                            $stmtInsertMatching->bindValue(':tmo_status', $row['tmo_status'], \PDO::PARAM_INT);
+                            $stmtInsertMatching->bindValue(':severity_id', $severity, \PDO::PARAM_INT);
+                            $stmtInsertMatching->execute();
                         }
 
                         $this->centreon->CentreonLogAction->insertLog(
@@ -281,7 +369,7 @@ class CentreonTraps
         }
 
         $ret = $this->form->getSubmitValues();
-        $retValue = array();
+        $retValue = [];
 
         $rq = "UPDATE traps SET ";
         $rq .= "`traps_name` = ";
@@ -491,7 +579,7 @@ class CentreonTraps
         $retValue[':traps_id'] = (int)$traps_id;
 
         $stmt = $this->db->prepare($rq);
-        foreach ($retValue as $key => $value){
+        foreach ($retValue as $key => $value) {
             $stmt->bindValue($key, $value);
         }
         $stmt->execute();
@@ -510,26 +598,46 @@ class CentreonTraps
      *
      * @param int $trapId
      */
-    protected function setPreexec($trapId)
+    protected function setPreexec(int $trapId)
     {
-        $this->db->query("DELETE FROM traps_preexec WHERE trap_id = " . $this->db->escape($trapId));
-        $insertStr = "";
-        if (isset($_REQUEST['preexec'])) {
-            $preexec = $_REQUEST['preexec'];
-            $i = 1;
-            foreach ($preexec as $value) {
-                if (is_null($value) || $value == "") {
-                    continue;
+        if ($trapId > 0) {
+            $query = "DELETE FROM traps_preexec WHERE trap_id = :trapId";
+            $statement = $this->db->prepare($query);
+            $statement->bindValue(':trapId', $trapId, \PDO::PARAM_INT);
+            $statement->execute();
+
+            $insertStr = "";
+            if (isset($_REQUEST['preexec'])) {
+                $preexec = $_REQUEST['preexec'];
+                $i = 1;
+                $queryValues = [];
+                foreach ($preexec as $key => $value) {
+                    if (is_null($value) || $value == "") {
+                        continue;
+                    }
+                    $queryValues[':value'. $key] = [
+                        \PDO::PARAM_STR => $value
+                    ];
+                    if ($insertStr) {
+                        $insertStr .= ", ";
+                    }
+                    $insertStr .= "(:trapId, :value". $key . ", $i)";
+                    $i++;
                 }
-                if ($insertStr) {
-                    $insertStr .= ", ";
-                }
-                $insertStr .= "($trapId, '" . $this->db->escape($value) . "', $i)";
-                $i++;
             }
-        }
-        if ($insertStr) {
-            $this->db->query("INSERT INTO traps_preexec (trap_id, tpe_string, tpe_order) VALUES $insertStr");
+            if ($insertStr) {
+                $query = "INSERT INTO traps_preexec (trap_id, tpe_string, tpe_order) VALUES $insertStr";
+                $statement = $this->db->prepare($query);
+                $statement->bindValue(':trapId', $trapId, \PDO::PARAM_INT);
+                if (isset($queryValues)) {
+                    foreach ($queryValues as $bindId => $bindData) {
+                        foreach ($bindData as $bindType => $bindValue) {
+                            $statement->bindValue($bindId, $bindValue, $bindType);
+                        }
+                    }
+                }
+                $statement->execute();
+            }
         }
     }
 
@@ -538,32 +646,44 @@ class CentreonTraps
      *
      * @param int $trapId
      */
-    protected function setServiceRelations($trapId)
+    protected function setServiceRelations(int $trapId)
     {
-        $this->db->query("DELETE FROM traps_service_relation 
-                WHERE traps_id = " . $this->db->escape($trapId) . "
-                AND NOT EXISTS (SELECT s.service_id 
-                    FROM service s 
-                    WHERE s.service_register = '0'
-                    AND s.service_id = traps_service_relation.service_id)");
-        $services = CentreonUtils::mergeWithInitialValues($this->form, 'services');
-        $insertStr = "";
-        $first = true;
-        $already = array();
-        foreach ($services as $id) {
-            $t = preg_split("/\-/", $id);
-            if (!isset($already[$t[1]])) {
-                if (!$first) {
-                    $insertStr .= ",";
-                } else {
-                    $first = false;
+        if ($trapId > 0) {
+            $query = "
+                DELETE FROM traps_service_relation
+                    WHERE traps_id = :trapId
+                    AND NOT EXISTS (
+                        SELECT s.service_id
+                        FROM service s
+                        WHERE s.service_register = '0'
+                        AND s.service_id = traps_service_relation.service_id)";
+
+            $statement = $this->db->prepare($query);
+            $statement->bindValue(':trapId', $trapId, \PDO::PARAM_INT);
+            $statement->execute();
+
+            $services = CentreonUtils::mergeWithInitialValues($this->form, 'services');
+            $insertStr = "";
+            $first = true;
+            $already = [];
+            foreach ($services as $id) {
+                $t = preg_split("/\-/", $id);
+                if (!isset($already[$t[1]])) {
+                    if (!$first) {
+                        $insertStr .= ",";
+                    } else {
+                        $first = false;
+                    }
+                    $insertStr .= "(:trapId, " . (int)$t[1] . ")";
+                    $already[$t[1]] = true;
                 }
-                $insertStr .= "($trapId, $t[1])";
-                $already[$t[1]] = true;
             }
-        }
-        if ($insertStr) {
-            $this->db->query("INSERT INTO traps_service_relation (traps_id, service_id) VALUES $insertStr");
+            if ($insertStr) {
+                $query = "INSERT INTO traps_service_relation (traps_id, service_id) VALUES $insertStr";
+                $statement = $this->db->prepare($query);
+                $statement->bindValue(':trapId', $trapId, \PDO::PARAM_INT);
+                $statement->execute();
+            }
         }
     }
 
@@ -572,27 +692,38 @@ class CentreonTraps
      *
      * @param int $trapId
      */
-    protected function setServiceTemplateRelations($trapId)
+    protected function setServiceTemplateRelations(int $trapId)
     {
-        $this->db->query("DELETE FROM traps_service_relation 
-                WHERE traps_id = " . $this->db->escape($trapId) . "
-                AND NOT EXISTS (SELECT s.service_id 
-                    FROM service s 
+        if ($trapId > 0) {
+            $query = "
+                DELETE FROM traps_service_relation
+                WHERE traps_id = :trapId
+                AND NOT EXISTS (SELECT s.service_id
+                    FROM service s
                     WHERE s.service_register = '1'
-                    AND s.service_id = traps_service_relation.service_id)");
-        $serviceTpl = (array)$this->form->getSubmitValue('service_templates');
-        $insertStr = "";
-        $first = true;
-        foreach ($serviceTpl as $tpl) {
-            if (!$first) {
-                $insertStr .= ",";
-            } else {
-                $first = false;
+                    AND s.service_id = traps_service_relation.service_id)";
+
+            $statement = $this->db->prepare($query);
+            $statement->bindValue(':trapId', $trapId, \PDO::PARAM_INT);
+            $statement->execute();
+
+            $serviceTpl = (array)$this->form->getSubmitValue('service_templates');
+            $insertStr = "";
+            $first = true;
+            foreach ($serviceTpl as $tpl) {
+                if (!$first) {
+                    $insertStr .= ",";
+                } else {
+                    $first = false;
+                }
+                $insertStr .= "(:trapId, $tpl)";
             }
-            $insertStr .= "($trapId, $tpl)";
-        }
-        if ($insertStr) {
-            $this->db->query("INSERT INTO traps_service_relation (traps_id, service_id) VALUES $insertStr");
+            if ($insertStr) {
+                $query = "INSERT INTO traps_service_relation (traps_id, service_id) VALUES $insertStr";
+                $statement = $this->db->prepare($query);
+                $statement->bindValue(':trapId',$trapId,\PDO::PARAM_INT);
+                $statement->execute();
+            }
         }
     }
 
@@ -602,14 +733,14 @@ class CentreonTraps
      * @param array $ret
      * @return mixed
      */
-    public function insert($ret = array())
+    public function insert($ret = [])
     {
         if (!count($ret)) {
             $ret = $this->form->getSubmitValues();
         }
 
         $sqlValue = '';
-        $retValue = array();
+        $retValue = [];
 
         $rq = 'INSERT INTO traps (';
         $rq .= "`traps_name`, ";
@@ -818,7 +949,7 @@ class CentreonTraps
         $rq .= ') VALUES (' . $sqlValue . ')';
 
         $stmt = $this->db->prepare($rq);
-        foreach ($retValue as $key => $value){
+        foreach ($retValue as $key => $value) {
             $stmt->bindValue($key, $value);
         }
         $stmt->execute();
@@ -850,19 +981,27 @@ class CentreonTraps
      * @param int $trapId
      * @return array
      */
-    public function getPreexecFromTrapId($trapId)
+    public function getPreexecFromTrapId(int $trapId)
     {
-        $res = $this->db->query("SELECT tpe_string
+        if ($trapId > 0) {
+            $query = "
+                SELECT tpe_string
                 FROM traps_preexec
-                WHERE trap_id = " . $this->db->escape($trapId) . "
-                ORDER BY tpe_order");
-        $arr = array();
-        $i = 0;
-        while ($row = $res->fetchRow()) {
-            $arr[$i] = array("preexec_#index#" => $row['tpe_string']);
-            $i++;
+                WHERE trap_id = :trapId
+                ORDER BY tpe_order";
+
+            $statement = $this->db->prepare($query);
+            $statement->bindValue(':trapId', $trapId, \PDO::PARAM_INT);
+            $statement->execute();
+
+            $arr = [];
+            $i = 0;
+            while ($row = $statement->fetch(\PDO::FETCH_ASSOC)) {
+                $arr[$i] = array("preexec_#index#" => $row['tpe_string']);
+                $i++;
+            }
+            return $arr;
         }
-        return $arr;
     }
 
     /**
@@ -871,24 +1010,32 @@ class CentreonTraps
      * @param int $trapId
      * @return array
      */
-    public function getMatchingRulesFromTrapId($trapId)
+    public function getMatchingRulesFromTrapId(int $trapId)
     {
-        $res = $this->db->query("SELECT tmo_string, tmo_regexp, tmo_status, severity_id
+        if ($trapId > 0) {
+            $query = "
+                SELECT tmo_string, tmo_regexp, tmo_status, severity_id
                 FROM traps_matching_properties
-                WHERE trap_id = " . $this->db->escape($trapId) . "
-                ORDER BY tmo_order");
-        $arr = array();
-        $i = 0;
-        while ($row = $res->fetchRow()) {
-            $arr[$i] = array(
-                "rule_#index#" => $row['tmo_string'],
-                "regexp_#index#" => $row['tmo_regexp'],
-                "rulestatus_#index#" => $row['tmo_status'],
-                "ruleseverity_#index#" => $row['severity_id']
-            );
-            $i++;
+                WHERE trap_id = :trapId
+                ORDER BY tmo_order";
+
+            $statement = $this->db->prepare($query);
+            $statement->bindValue(':trapId', $trapId, \PDO::PARAM_INT);
+            $statement->execute();
+
+            $arr = [];
+            $i = 0;
+            while ($row = $statement->fetch(\PDO::FETCH_ASSOC)) {
+                $arr[$i] = array(
+                    "rule_#index#" => $row['tmo_string'],
+                    "regexp_#index#" => $row['tmo_regexp'],
+                    "rulestatus_#index#" => $row['tmo_status'],
+                    "ruleseverity_#index#" => $row['severity_id']
+                );
+                $i++;
+            }
+            return $arr;
         }
-        return $arr;
     }
 
     /**
@@ -898,7 +1045,7 @@ class CentreonTraps
      */
     public static function getDefaultValuesParameters($field)
     {
-        $parameters = array();
+        $parameters = [];
         $parameters['currentObject']['table'] = 'traps';
         $parameters['currentObject']['id'] = 'traps_id';
         $parameters['currentObject']['name'] = 'traps_name';
@@ -946,11 +1093,11 @@ class CentreonTraps
      * @param type $values
      * @return type
      */
-    public function getObjectForSelect2($values = array(), $options = array())
+    public function getObjectForSelect2($values = [], $options = [])
     {
-        $items = array();
+        $items = [];
         $listValues = '';
-        $queryValues = array();
+        $queryValues = [];
         if (!empty($values)) {
             foreach ($values as $k => $v) {
                 $listValues .= ':traps' . $v . ',';

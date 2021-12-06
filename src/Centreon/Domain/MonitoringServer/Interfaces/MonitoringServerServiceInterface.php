@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
  *
@@ -22,7 +23,12 @@ declare(strict_types=1);
 namespace Centreon\Domain\MonitoringServer\Interfaces;
 
 use Centreon\Domain\MonitoringServer\MonitoringServer;
+use Centreon\Domain\MonitoringServer\Exception\MonitoringServerException;
+use Centreon\Domain\MonitoringServer\MonitoringServerResource;
 
+/**
+ * @package Centreon\Domain\MonitoringServer\Interfaces
+ */
 interface MonitoringServerServiceInterface
 {
 
@@ -30,7 +36,59 @@ interface MonitoringServerServiceInterface
      * Find pollers.
      *
      * @return MonitoringServer[]
-     * @throws \Exception
+     * @throws MonitoringServerException
      */
     public function findServers(): array;
+
+    /**
+     * Find a resource of monitoring servers identified by his name.
+     *
+     * @param int $monitoringServerId Id of the monitoring server for which we want their resources
+     * @param string $resourceName Resource name to find
+     * @return MonitoringServerResource|null
+     * @throws MonitoringServerException
+     */
+    public function findResource(int $monitoringServerId, string $resourceName): ?MonitoringServerResource;
+
+    /**
+     * Find the local monitoring server.
+     *
+     * @return MonitoringServer|null
+     * @throws MonitoringServerException
+     */
+    public function findLocalServer(): ?MonitoringServer;
+
+    /**
+     * We notify that the configuration has changed.
+     *
+     * @param MonitoringServer $monitoringServer Monitoring server to notify
+     * @throws MonitoringServerException
+     */
+    public function notifyConfigurationChanged(MonitoringServer $monitoringServer): void;
+
+    /**
+     * Find a monitoring server.
+     *
+     * @param int $monitoringServerId Id of the monitoring server to be found.
+     * @return MonitoringServer|null
+     * @throws MonitoringServerException
+     */
+    public function findServer(int $monitoringServerId): ?MonitoringServer;
+
+    /**
+     * Find a monitoring server by its name.
+     *
+     * @param string $monitoringServerName Name to find
+     * @return MonitoringServer|null
+     * @throws MonitoringServerException
+     */
+    public function findServerByName(string $monitoringServerName): ?MonitoringServer;
+
+    /**
+     * Delete a monitoring server.
+     *
+     * @param int $monitoringServerId
+     * @throws MonitoringServerException
+     */
+    public function deleteServer(int $monitoringServerId): void;
 }

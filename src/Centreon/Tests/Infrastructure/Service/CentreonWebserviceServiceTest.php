@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -39,43 +40,40 @@ namespace Centreon\Tests\Infrastructure\Service;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use Centreon\Infrastructure\Service\CentreonWebserviceService;
-use Centreon\Tests\Resource\Mock\WebserviceMock;
+use Centreon\Tests\Resources\Mock\WebserviceMock;
+use Centreon\Infrastructure\Service\Exception\NotFoundException;
 
 class CentreonWebserviceServiceTest extends TestCase
 {
-
     public function testAdd()
     {
-        $service = new CentreonWebserviceService;
+        $service = new CentreonWebserviceService();
         $this->assertInstanceOf(ContainerInterface::class, $service);
 
         // check if return this object and add webservice
         $this->assertInstanceOf(CentreonWebserviceService::class, $service->add(WebserviceMock::class));
-        
+
         $serviceId = strtolower(WebserviceMock::getName());
 
         // check is webservice is added
-        $this->assertAttributeEquals([
-            $serviceId => WebserviceMock::class,
-        ], 'objects', $service);
+        $this->assertSame(WebserviceMock::class, $service->get($serviceId));
     }
 
-    /**
-     * @expectedException \Centreon\Infrastructure\Service\Exception\NotFoundException
-     */
     public function testAddWithoutInterface()
     {
-        $service = new CentreonWebserviceService;
+        $service = new CentreonWebserviceService();
         $this->assertInstanceOf(ContainerInterface::class, $service);
+
+        $this->expectException(NotFoundException::class);
 
         $service->add(\stdClass::class);
     }
 
     public function testAll()
     {
-        $service = new CentreonWebserviceService;
+        $service = new CentreonWebserviceService();
         $service->add(WebserviceMock::class);
-        
+
         $serviceId = strtolower(WebserviceMock::getName());
 
         // check is webservice is added
@@ -86,9 +84,9 @@ class CentreonWebserviceServiceTest extends TestCase
 
     public function testHas()
     {
-        $service = new CentreonWebserviceService;
+        $service = new CentreonWebserviceService();
         $service->add(WebserviceMock::class);
-        
+
         $serviceId = strtolower(WebserviceMock::getName());
 
         $this->assertTrue($service->has($serviceId));
@@ -98,19 +96,18 @@ class CentreonWebserviceServiceTest extends TestCase
 
     public function testGet()
     {
-        $service = new CentreonWebserviceService;
+        $service = new CentreonWebserviceService();
         $service->add(WebserviceMock::class);
-        
+
         $this->assertEquals(WebserviceMock::class, $service->get(WebserviceMock::getName()));
     }
 
-    /**
-     * @expectedException \Centreon\Infrastructure\Service\Exception\NotFoundException
-     */
     public function testGetWithNonExistsId()
     {
-        $service = new CentreonWebserviceService;
-        
+        $service = new CentreonWebserviceService();
+
+        $this->expectException(NotFoundException::class);
+
         $this->assertEquals(WebserviceMock::class, $service->get(WebserviceMock::getName()));
     }
 }

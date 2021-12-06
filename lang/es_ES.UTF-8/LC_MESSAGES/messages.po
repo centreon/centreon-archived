@@ -562,55 +562,46 @@ msgid "Yes"
 msgstr "Sí"
 
 #: centreon-web/www/class/centreonGraphPoller.class.php:150
-#: centreon-web/www/include/Administration/corePerformance/getStats.php:127
 #: centreon-web/www/include/Administration/corePerformance/nagiosStats.php:160
 msgid "Host Check Execution Time"
 msgstr "Duración del cheque de acogida"
 
 #: centreon-web/www/class/centreonGraphPoller.class.php:151
-#: centreon-web/www/include/Administration/corePerformance/getStats.php:128
 #: centreon-web/www/include/Administration/corePerformance/nagiosStats.php:161
 msgid "Hosts Actively Checked"
 msgstr "Actualmente verificados hosts"
 
 #: centreon-web/www/class/centreonGraphPoller.class.php:152
-#: centreon-web/www/include/Administration/corePerformance/getStats.php:129
 #: centreon-web/www/include/Administration/corePerformance/nagiosStats.php:162
 msgid "Host check latency"
 msgstr "Latencia del control del host."
 
 #: centreon-web/www/class/centreonGraphPoller.class.php:153
-#: centreon-web/www/include/Administration/corePerformance/getStats.php:130
 #: centreon-web/www/include/Administration/corePerformance/nagiosStats.php:163
 msgid "Service Check Execution Time"
 msgstr "Período de verificación de servicio"
 
 #: centreon-web/www/class/centreonGraphPoller.class.php:154
-#: centreon-web/www/include/Administration/corePerformance/getStats.php:131
 #: centreon-web/www/include/Administration/corePerformance/nagiosStats.php:164
 msgid "Services Actively Checked"
 msgstr "Servicios actualmente controlados"
 
 #: centreon-web/www/class/centreonGraphPoller.class.php:155
-#: centreon-web/www/include/Administration/corePerformance/getStats.php:132
 #: centreon-web/www/include/Administration/corePerformance/nagiosStats.php:165
 msgid "Service check latency"
 msgstr "Latencia del control de servicio."
 
 #: centreon-web/www/class/centreonGraphPoller.class.php:156
-#: centreon-web/www/include/Administration/corePerformance/getStats.php:133
 #: centreon-web/www/include/Administration/corePerformance/nagiosStats.php:166
 msgid "Commands in buffer"
 msgstr "Comandos en el buffer"
 
 #: centreon-web/www/class/centreonGraphPoller.class.php:157
-#: centreon-web/www/include/Administration/corePerformance/getStats.php:134
 #: centreon-web/www/include/Administration/corePerformance/nagiosStats.php:167
 msgid "Host status"
 msgstr "Estado de acogida"
 
 #: centreon-web/www/class/centreonGraphPoller.class.php:158
-#: centreon-web/www/include/Administration/corePerformance/getStats.php:135
 #: centreon-web/www/include/Administration/corePerformance/nagiosStats.php:168
 msgid "Service status"
 msgstr "Estado del servicio"
@@ -2183,7 +2174,7 @@ msgid "Performances"
 msgstr "Información de rendimiento"
 
 #: centreon-web/www/install/smarty_translate.php:831
-msgid "Host Informations"
+msgid "Host Information"
 msgstr "Información sobre el anfitrión"
 
 #: centreon-web/www/install/smarty_translate.php:834 centreon-web/www/install/smarty_translate.php:885
@@ -2581,6 +2572,9 @@ msgstr "Iniciar sesión"
 msgid "Password"
 msgstr "Contraseña"
 
+msgid "Username"
+msgstr "Nombre de usuario"
+
 #: centreon-web/www/install/steps/step5.php:80
 msgid "Confirm password"
 msgstr "confirmar la contraseña"
@@ -2973,8 +2967,11 @@ msgstr "métrica"
 msgid "MIBs"
 msgstr "MIBs"
 
-#: centreon-web/www/install/menu_translation.php:109
-#: centreon-web/www/include/configuration/configObject/command/listCommand.php:129
+#: centreon/www/include/configuration/configObject/command/listCommand.php:127
+#: centreon/www/install/menu_translation.php:95
+#: centreon/www/include/options/oreon/generalOpt/colors/form.php:59
+#: centreon/www/include/configuration/configServers/formServers.php:122
+#: /www/include/configuration/configServers/formServers.php:104
 msgid "Miscellaneous"
 msgstr "Diverso"
 
@@ -3241,8 +3238,8 @@ msgstr "Los archivos SQL se encuentran en %s"
 
 #: centreon-web/www/install/step_upgrade/step4.php:87
 #, php-format
-msgid "Please check the \"upgrade.log\" and the \"sql-error.log\" located in \"%s\" for more details"
-msgstr ""
+#~ msgid "Please check the \"upgrade.log\" and the \"sql-error.log\" located in \"%s\" for more details"
+#~ msgstr ""
 
 #: centreon-web/www/install/step_upgrade/step4.php:72
 msgid "But do not edit the SQL files unless you know what you are doing.Refresh this page when the problem is fixed."
@@ -3265,6 +3262,19 @@ msgstr "Se recomienda encarecidamente realizar una copia de seguridad de sus bas
 #: centreon-web/www/install/step_upgrade/step3.php:46
 msgid "Release notes"
 msgstr "Notas de lanzamiento"
+
+#: centreon-web/www/install/step_upgrade/step3.php:46
+msgid "Everything is ready !"
+msgstr "Todo está listo !"
+
+#: centreon-web/www/install/step_upgrade/step3.php:46
+msgid "Your Centreon Platform is about to be upgraded from version "
+msgstr "Su plataforma Centreon está a punto de ser actualizada de la versión "
+
+#: centreon-web/www/install/step_upgrade/step3.php:46
+msgid "For further details on changes, please find the complete changelog on "
+msgstr "Para más detalles sobre los cambios, por favor encuentre el registro completo de cambios en "
+
 
 #: centreon-web/www/install/step_upgrade/step5.php:44
 msgid "Upgrade finished"
@@ -4029,13 +4039,13 @@ msgstr "Cambiar las opciones de Centcore"
 
 #: centreon-web/www/include/Administration/parameters/api/api.php:61
 #: centreon-web/www/include/Administration/parameters/centcore/centcore.php:59
-msgid "Enable Broker Statistics Collection"
+msgid "Enable Broker statistics collection"
 msgstr "Habilitar la recuperación de archivos de estadísticas de componentes de Centreon Broker"
 
 #: centreon-web/www/include/Administration/parameters/api/api.php:62
 #: centreon-web/www/include/Administration/parameters/centcore/centcore.php:60
-msgid "Timeout value for Centcore commands"
-msgstr "Tiempo máximo para ejecutar comandos centcore."
+msgid "Timeout value for Gorgone commands"
+msgstr "Tiempo máximo para ejecutar comandos Gorgone."
 
 #: centreon-web/www/include/Administration/parameters/api/api.php:77
 #: centreon-web/www/include/options/accessLists/groupsACL/formGroupConfig.php:175
@@ -4595,8 +4605,8 @@ msgid "LDAP User Import debug"
 msgstr "Depuración de las importaciones de usuarios LDAP"
 
 #: centreon-web/www/include/Administration/parameters/debug/form.php:62
-msgid "Centcore Engine debug"
-msgstr "Depurando el motor de Centcore"
+msgid "Centreon Gorgone debug"
+msgstr "Depurando de Centreon Gorgone "
 
 #: centreon-web/www/include/Administration/parameters/debug/form.php:63
 msgid "Centreontrapd debug"
@@ -4951,6 +4961,10 @@ msgstr "Protocolo proxy de internet"
 msgid "Proxy URL"
 msgstr "URL du proxy web"
 
+#: centreon-web/www/include/Administration/parameters/general/form.php:153
+msgid "Test Internet Connection"
+msgstr "Prueba de conexión a Internet"
+
 #: centreon-web/www/include/Administration/parameters/general/form.php:156
 msgid "Proxy port"
 msgstr "Puerto de acceso al proxy de internet."
@@ -4970,26 +4984,38 @@ msgstr "Habilitar autenticación SSO"
 msgid "Are you sure you want to change this parameter? Please read the help before."
 msgstr "¿Seguro que quieres cambiar este parámetro? Por favor, lea la ayuda primero."
 
-msgid "Keycloak trusted client addresses"
-msgstr "Direcciones de confianza de SSO Keycloak"
+msgid "Trusted client addresses"
+msgstr "Direcciones de confianza"
 
-msgid "Keycloak blacklist client addresses"
-msgstr "Direcciones de clientes de cerraduras Keycloak"
+msgid "Blacklist client addresses"
+msgstr "Direcciones de clientes de cerraduras"
 
-msgid "Keycloak Server Url"
-msgstr "URL de servidor Keycloak"
+msgid "Base Url"
+msgstr "URL base"
 
-msgid "Keycloak Redirect Url"
-msgstr "Dirección de redireccionamiento de Centreon a Keycloak"
+msgid "Authorization Endpoint"
+msgstr "Punto final de autorización"
 
-msgid "Keycloak Client Realm"
-msgstr "Dominio cliente Keycloak"
+msgid "Token Endpoint"
+msgstr "Punto final de token"
 
-msgid "Keycloak Client ID"
-msgstr "Identificación de cliente Keycloak"
+msgid "Introspection Token Endpoint"
+msgstr "Punto final de introspección de token"
 
-msgid "Keycloak Client Secret"
-msgstr "Secreto de cliente Keycloak"
+msgid "User Information Endpoint"
+msgstr "Punto final de información del usuario"
+
+msgid "Scope"
+msgstr "Alcance"
+
+msgid "Redirect Url"
+msgstr "Redireccionar URL"
+
+msgid "Client ID"
+msgstr "Identificación de cliente"
+
+msgid "Client Secret"
+msgstr "Secreto de cliente"
 
 #: centreon-web/www/include/Administration/parameters/general/form.php:192
 msgid "SSO only"
@@ -7735,14 +7761,6 @@ msgstr "Archivo de configuracion principal"
 msgid "Temp File"
 msgstr "Archivo temporal"
 
-#: centreon-web/www/include/configuration/configNagios/formNagios.php:165
-msgid "Check result directory"
-msgstr "Directorio en caché"
-
-#: centreon-web/www/include/configuration/configNagios/formNagios.php:166
-msgid "Max Check Result File Age"
-msgstr "Edad máxima del archivo de caché"
-
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:171
 msgid "Monitoring system User"
 msgstr "Sistema de supervisión del usuario"
@@ -8437,10 +8455,6 @@ msgstr "directorios"
 msgid "Host Check Options"
 msgstr "Opciones de control de host"
 
-#: centreon-web/www/include/configuration/configNagios/formNagios.php:875
-msgid "Result Cache"
-msgstr "Resultados de caching"
-
 #: centreon-web/www/include/configuration/configNagios/formNagios.php:876
 #: centreon-web/www/include/configuration/configObject/host/formHost.php:642
 #: centreon-web/www/include/configuration/configObject/host/formHost.php:1200
@@ -8909,6 +8923,9 @@ msgstr "Nombre del fabricante"
 #: centreon-web/www/include/configuration/configObject/traps/listTraps.php:85
 msgid "OID"
 msgstr "OID"
+
+# msgid "Bad OID Format"
+# msgstr ""
 
 #: centreon-web/www/include/configuration/configObject/traps/formTraps.php:169
 msgid "Default Status"
@@ -9797,14 +9814,6 @@ msgstr "Valor de la macro"
 msgid "Impossible to change server due to parentship with other hosts"
 msgstr "No se puede cambiar el servidor debido a una relación con otros hosts"
 
-#: centreon-web/www/include/configuration/configObject/host/formHost.php:1043
-msgid "Some hosts parent has not the same instance"
-msgstr "Algunos hosts principales no son supervisados ​​por el mismo programador"
-
-#: centreon-web/www/include/configuration/configObject/host/formHost.php:1044
-msgid "Some hosts child has not the same instance"
-msgstr "Algunos anfitriones secundarios no son supervisados ​​por el mismo programador"
-
 #: centreon-web/www/include/configuration/configObject/host/formHost.php:1050
 msgid "_Module_ is not a legal expression"
 msgstr "_Module_ no es una expresión permitida"
@@ -10210,7 +10219,7 @@ msgstr "Argumentos claros"
 
 #: centreon-web/www/include/configuration/configObject/command/formCommand.php:214
 msgid "Describe macros"
-msgstr "Describe los marcros"
+msgstr "Describe los macros"
 
 #: centreon-web/www/include/configuration/configObject/command/formCommand.php:215
 #: centreon-web/www/include/configuration/configObject/command/formCommand.php:364
@@ -11249,16 +11258,12 @@ msgid "Server Information"
 msgstr "Información del servidor"
 
 #: centreon-web/www/include/configuration/configServers/formServers.php:102
-msgid "SSH Information"
-msgstr "Información SSH"
+msgid "Gorgone Information"
+msgstr "Información Gorgone"
 
 #: centreon-web/www/include/configuration/configServers/formServers.php:103
 msgid "Monitoring Engine Information"
 msgstr "Información sobre el motor de supervisión."
-
-#: centreon-web/www/include/configuration/configServers/formServers.php:104
-msgid "Miscelleneous"
-msgstr "Diverso"
 
 #: centreon-web/www/include/configuration/configServers/formServers.php:105
 msgid "Centreon Trap Collector"
@@ -14032,9 +14037,6 @@ msgstr "cubo de basura"
 #~ msgid "On Problem Host"
 #~ msgstr "Sobre el problema del huésped."
 
-#~ msgid "Unhandled"
-#~ msgstr "No tratados"
-
 #~ msgid "Unhandled Service problems (last %s)"
 #~ msgstr ""
 #~ "awk: cmd. line:1: (FILENAME=- FNR=1) fatal: not enough arguments to satisfy format string\n"
@@ -14295,3 +14297,452 @@ msgstr "Adjunte Remote Servers adicionales"
 
 #~ msgid "This value needs to be an integer lesser than"
 #~ msgstr ""
+
+msgid "IP address or hostname"
+msgstr "Dirección IP o nombre de host"
+
+msgid "Use SSL/TLS"
+msgstr "Use SSL/TLS"
+
+msgid "Allow self signed certificate"
+msgstr "Permitir certificado autofirmado"
+
+#  msgid "Acknowledged by"
+#  msgstr ""
+
+#  msgid "Acknowledge services attached to host"
+#  msgstr ""
+
+#  msgid "at"
+#  msgstr ""
+
+#  msgid "Clear"
+#  msgstr ""
+
+#  msgid "Criterias"
+#  msgstr ""
+
+#  msgid "Copy"
+#  msgstr ""
+
+#  msgid "Command copied to clipboard"
+#  msgstr ""
+
+#  msgid "Current notification number"
+#  msgstr ""
+
+#  msgid "Current status duration"
+#  msgstr ""
+
+#  msgid "Downtime duration"
+#  msgstr ""
+
+#  msgid "End date must be greater than start date"
+#  msgstr ""
+
+#  msgid "End time"
+#  msgstr ""
+
+#  msgid "This Resource is flapping"
+#  msgstr ""
+
+#  msgid "Show criterias filters"
+#  msgstr ""
+
+#  msgid "Start date"
+#  msgstr ""
+
+#  msgid "Change start date"
+#  msgstr ""
+
+#  msgid "Change start time"
+#  msgstr ""
+
+#  msgid "Host group"
+#  msgstr ""
+
+#  msgid "Downtime"
+#  msgstr ""
+
+#  msgid "In downtime"
+#  msgstr ""
+
+# msgid "1 day"
+# msgstr ""
+
+# msgid "7 days"
+# msgstr ""
+
+# msgid "31 days"
+# msgstr ""
+
+# msgid "Last day"
+# msgstr ""
+
+# msgid "Last 7 days"
+# msgstr ""
+
+# msgid "Last 31 days"
+# msgstr ""
+
+#  msgid "Set downtime on"
+#  msgstr ""
+
+#  msgid "Downtime set by"
+#  msgstr ""
+
+#  msgid "Set downtime on services attached to host"
+#  msgstr ""
+
+#  msgid "Last notification"
+#  msgstr ""
+
+#  msgid "Last status change"
+#  msgstr ""
+
+#  msgid "Next check"
+#  msgstr ""
+
+#  msgid "If checked, a notification is sent to the contacts linked to the object to warn that the incident of the resource has been acknowledged"
+#  msgstr ""
+
+#  msgid "Open"
+#  msgstr ""
+
+#  msgid "Status change percentage"
+#  msgstr ""
+
+#  msgid "Resource name"
+#  msgstr ""
+
+#  msgid "Resource problems"
+#  msgstr ""
+
+#  msgid "Rows per page"
+#  msgstr ""
+
+#  msgid "of"
+#  msgstr ""
+
+#  msgid "More"
+#  msgstr ""
+
+#  msgid "Disable autorefresh"
+#  msgstr ""
+
+#  msgid "Enable autorefresh"
+#  msgstr ""
+
+#  msgid "Search help"
+#  msgstr ""
+
+#  msgid "This search bar will search matching occurences you type, contained in: host name or alias or address or service description"
+#  msgstr ""
+
+#  msgid "You can use regular expression syntax to retrieve more relevant results"
+#  msgstr ""
+
+#  msgid "It's possible to specify the criteria you precisely want to search, by using the following syntax:"
+#  msgstr ""
+
+#  msgid "Some examples:"
+#  msgstr ""
+
+#  msgid "will display resources with host name starting by'"
+#  msgstr ""
+
+#  msgid "will display resources with service description finishing by"
+#  msgstr ""
+
+#  msgid "will display all resources with host having alias containing"
+#  msgstr ""
+
+#  msgid "will display resources having FQDN that doesn't contain"
+#  msgstr ""
+
+#  msgid "and host alias containing"
+#  msgstr ""
+
+#  msgid "Tips"
+#  msgstr ""
+
+#  msgid "get some help while creating your regular expression query at"
+#  msgstr ""
+
+#  msgid "Service group"
+#  msgstr ""
+
+#  msgid "State filter"
+#  msgstr ""
+
+#  msgid "Acknowledge command sent"
+#  msgstr ""
+
+#  msgid "Downtime command sent"
+#  msgstr ""
+
+#  msgid "Check command sent"
+#  msgstr ""
+
+#  msgid "Type of resource"
+#  msgstr ""
+
+#  msgid "Unhandled problems"
+#  msgstr ""
+
+#  msgid "Unhandled"
+#  msgstr "No tratados"
+
+#  msgid "Oops, something went wrong"
+#  msgstr ""
+
+#  msgid "Seems that your Apache configuration is not up-to-date"
+#  msgstr ""
+
+#  msgid "Contact your Centreon administrator or update the following file"
+#  msgstr ""
+
+#  msgid "See Documentation"
+#  msgstr ""
+
+#  msgid "Services will not be affected because you don't have sufficient permission"
+#  msgstr ""
+
+#  msgid "Hosts will not be affected because you don't have sufficient permission"
+#  msgstr ""
+
+#  msgid "No results found"
+#  msgstr ""
+
+#  msgid "Error when decoding sent data"
+#  msgstr ""
+
+#  msgid "Error when retrieving selected options"
+#  msgstr ""
+
+#  msgid "Filter id %d not found"
+#  msgstr ""
+
+#  msgid "Filter already exists"
+#  msgstr ""
+
+#  msgid "Error when adding filter %s"
+#  msgstr ""
+
+#  msgid "Error when updating filter %s"
+#  msgstr ""
+
+#  msgid "Error when deleting filter %s"
+#  msgstr ""
+
+#  msgid "Error when searching filters"
+#  msgstr ""
+
+#  msgid "Error when searching filter id %d"
+#  msgstr ""
+
+#  msgid "Save filter"
+#  msgstr ""
+
+#  msgid "Save as new"
+#  msgstr ""
+
+#  msgid "My filters"
+#  msgstr ""
+
+#  msgid "New filter"
+#  msgstr ""
+
+#  msgid "Filter created"
+#  msgstr ""
+
+#  msgid "Filter saved"
+#  msgid ""
+
+#  msgid "Edit filters"
+#  msgstr ""
+
+#  msgid "Rename"
+#  msgstr ""
+
+#  msgid "Delete filter?"
+#  msgstr ""
+
+#  msgid "Filter deleted"
+#  msgstr ""
+
+#  msgid "Filter updated"
+#  msgstr ""
+
+#  msgid "Name cannot be empty"
+#  msgstr ""
+
+#  msgid "Timeline"
+#  msgstr ""
+
+#  msgid "by"
+#  msgstr ""
+
+#  msgid "Notification sent to"
+#  msgstr ""
+
+#  msgid "Shortcuts"
+#  msgstr ""
+
+#  msgid "View logs"
+#  msgstr ""
+
+#  msgid "Configure"
+#  msgstr ""
+
+#  msgid "View report"
+#  msgstr ""
+
+#  msgid "Copy the link to this resource"
+#  msgstr ""
+
+#  msgid "Resource link copied to the clipboard"
+#  msgstr ""
+
+#  msgid "More actions"
+#  msgstr ""
+
+#  msgid "Disacknowledge"
+#  msgstr ""
+
+#  msgid "Disacknowledge services attached to hosts"
+#  msgstr ""
+
+#  msgid "Disacknowledgement command sent"
+#  msgstr ""
+
+#  msgid "Submit a status"
+#  msgstr ""
+
+#  msgid "Status submitted"
+#  msgstr ""
+
+#  msgid "No resource found"
+#  msgstr ""
+
+#  msgid "FQDN / Address"
+#  msgstr ""
+
+#  msgid "Groups"
+#  msgstr ""
+
+#  msgid "Comment added"
+#  msgstr ""
+
+#  msgid "Display events"
+#  msgstr ""
+
+#  msgid "Export to png"
+#  msgstr ""
+
+#  msgid "Go to performance page"
+#  msgstr ""
+
+#  msgid "Parent"
+#  msgstr ""
+
+#  msgid "Switch to graph mode"
+#  msgstr ""
+
+#  msgid "Switch to list mode"
+#  msgstr ""
+
+#  msgid "Select criterias"
+#  msgstr ""
+
+#  msgid "Monitoring server"
+#  msgstr ""
+
+#  msgid "The end date must be greater than the start date"
+#  msgstr ""
+
+#  msgid "Forward"
+#  msgstr ""
+
+#  msgid "Backward"
+#  msgstr ""
+
+# msgid "Graph options"
+# msgstr ""
+
+# msgid "Check duration"
+# msgstr ""
+
+# msgid "Avg"
+# msgstr ""
+
+# msgid "Compact time period"
+# msgstr ""
+
+#  msgid "Check duration"
+
+#  msgid "Display tooltips"
+#  msgstr ""
+
+#  msgid "Check duration"
+#  msgstr ""
+
+#  msgid "Check duration"
+#  msgstr ""
+
+#  msgid "Notifications disabled"
+#  msgstr ""
+
+#  msgid "All checks are disabled"
+#  msgstr ""
+
+#  msgid "Only passive checks are enabled"
+#  msgstr ""
+
+#  msgid "Calculation type"
+#  msgstr ""
+
+#  msgid "Mandatory data to create the entity '%s' is missing"
+#  msgstr ""
+
+#  msgid "At least one column must be selected"
+#  msgstr ""
+
+#  msgid "The duration must be lesser than a year"
+#  msgstr ""
+
+#  msgid "As displayed"
+#  msgstr ""
+
+#  msgid "Medium size"
+#  msgstr ""
+
+#  msgid "Small size"
+#  msgstr ""
+
+# msgid "Display the complete graph"
+# msgstr ""
+
+# msgid "Action not permitted"
+# msgstr ""
+
+# msgid "Scroll to top"
+# msgstr ""
+
+# msgid "This week"
+# msgstr ""
+
+# msgid "Before last year"
+# msgstr ""
+
+# msgid "Filter options"
+# msgstr ""
+
+# msgid "Service graphs"
+# msgstr ""
+
+msgid "Clear filter"
+msgstr ""
+
+msgid "Last check with OK status"
+msgstr "" 

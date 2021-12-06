@@ -1,50 +1,49 @@
+import * as React from 'react';
+
 import routeMap from './route-map';
-import PollerStepOne from '../route-components/pollerStep1';
-import PollerStepTwo from '../route-components/pollerStep2';
-import PollerStepThree from '../route-components/pollerStep3';
-import RemoteServerStepOne from '../route-components/remoteServerStep1';
-import RemoteServerStepTwo from '../route-components/remoteServerStep2';
-import RemoteServerStepThree from '../route-components/remoteServerStep3';
-import ServerConfigurationWizard from '../route-components/serverConfigurationWizard';
-import ExtensionsManagerPage from '../route-components/administration/extensions/manager';
-import NotAllowedPage from '../route-components/notAllowedPage';
 
 const reactRoutes = [
   {
+    comp: React.lazy(() => import('../route-components/pollerStep1')),
     path: routeMap.pollerStep1,
-    comp: PollerStepOne,
   },
   {
+    comp: React.lazy(() => import('../route-components/pollerStep2')),
     path: routeMap.pollerStep2,
-    comp: PollerStepTwo,
   },
   {
+    comp: React.lazy(() => import('../route-components/pollerStep3')),
     path: routeMap.pollerStep3,
-    comp: PollerStepThree,
   },
   {
+    comp: React.lazy(() => import('../route-components/remoteServerStep1')),
     path: routeMap.remoteServerStep1,
-    comp: RemoteServerStepOne,
   },
   {
+    comp: React.lazy(() => import('../route-components/remoteServerStep2')),
     path: routeMap.remoteServerStep2,
-    comp: RemoteServerStepTwo,
   },
   {
+    comp: React.lazy(() => import('../route-components/remoteServerStep3')),
     path: routeMap.remoteServerStep3,
-    comp: RemoteServerStepThree,
   },
   {
+    comp: React.lazy(() =>
+      import('../route-components/serverConfigurationWizard'),
+    ),
     path: routeMap.serverConfigurationWizard,
-    comp: ServerConfigurationWizard,
   },
   {
+    comp: React.lazy(() => import('../Extensions')),
     path: routeMap.extensionsManagerPage,
-    comp: ExtensionsManagerPage,
   },
   {
+    comp: React.lazy(() => import('../route-components/notAllowedPage')),
     path: routeMap.notAllowedPage,
-    comp: NotAllowedPage,
+  },
+  {
+    comp: React.lazy(() => import('../Resources')),
+    path: routeMap.resources,
   },
 ];
 

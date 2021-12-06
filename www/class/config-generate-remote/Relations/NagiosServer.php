@@ -47,14 +47,15 @@ class NagiosServer extends AbstractObject
         'centreonbroker_module_path',
         'centreonconnector_path',
         'ssh_port',
-        'ssh_private_key',
+        'gorgone_communication_type',
+        'gorgone_port',
         'init_script_centreontrapd',
         'snmp_trapd_path_conf',
         'engine_name',
         'engine_version',
         'centreonbroker_logs_path',
         'remote_id',
-        'remote_server_centcore_ssh_proxy'
+        'remote_server_use_as_proxy'
     ];
 
     /**

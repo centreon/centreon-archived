@@ -1,7 +1,8 @@
 <?php
+
 /*
- * Copyright 2005-2018 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2021 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -43,24 +44,33 @@ $SearchStr = '';
 $search = null;
 
 if (isset($_POST['searchACLA'])) {
-    $search = $_POST['searchACLA'];
+    $search = filter_var($_POST['searchACLA'], FILTER_SANITIZE_STRING);
     $centreon->historySearch[$url] = $search;
 } elseif (isset($_GET['searchACLA'])) {
-    $search = $_GET['searchACLA'];
+    $search = filter_var($_GET['searchACLA'], FILTER_SANITIZE_STRING);
     $centreon->historySearch[$url] = $search;
 } elseif (isset($centreon->historySearch[$url])) {
     $search = $centreon->historySearch[$url];
 }
 
 if ($search) {
-    $SearchStr .= " WHERE (acl_action_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") .
-        "%' OR acl_action_description LIKE '" . htmlentities($search, ENT_QUOTES, "UTF-8") . "')";
+    $SearchStr .= " WHERE (acl_action_name LIKE :search OR acl_action_description LIKE :search)";
 }
 
-$rq = "SELECT SQL_CALC_FOUND_ROWS acl_action_id, acl_action_name, acl_action_description, acl_action_activate " .
-    "FROM acl_actions $SearchStr ORDER BY acl_action_name LIMIT " . $num * $limit . ", " . $limit;
+$rq = "
+    SELECT SQL_CALC_FOUND_ROWS acl_action_id, acl_action_name, acl_action_description, acl_action_activate
+    FROM acl_actions
+    $SearchStr
+    ORDER BY acl_action_name LIMIT :num, :limit
+";
 
-$DBRESULT = $pearDB->query($rq);
+$statement = $pearDB->prepare($rq);
+if ($search) {
+    $statement->bindValue(':search', '%' . $search . '%', \PDO::PARAM_STR);
+}
+$statement->bindValue(':num', $num * $limit, \PDO::PARAM_INT);
+$statement->bindValue(':limit', $limit, \PDO::PARAM_INT);
+$statement->execute();
 $rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
 
 include("./include/common/checkPagination.php");
@@ -68,7 +78,7 @@ include("./include/common/checkPagination.php");
 /* Smarty template Init */
 
 $tpl = new Smarty();
-$tpl = initSmartyTpl($path, $tpl);
+$tpl = initSmartyTpl(__DIR__, $tpl);
 
 /* start header menu */
 
@@ -87,15 +97,19 @@ $style = "one";
 
 /* Fill a tab with a mutlidimensionnal Array we put in $tpl */
 $elemArr = array();
-for ($i = 0; $topo = $DBRESULT->fetchRow(); $i++) {
+$centreonToken = createCSRFToken();
+
+for ($i = 0; $topo = $statement->fetchRow(); $i++) {
     $selectedElements = $form->addElement('checkbox', "select[" . $topo['acl_action_id'] . "]");
     if ($topo["acl_action_activate"]) {
         $moptions = "<a href='main.php?p=" . $p . "&acl_action_id=" . $topo['acl_action_id'] . "&o=u&limit=" . $limit .
-            "&num=" . $num . "&search=" . $search . "'><img src='img/icons/disabled.png' class='ico-14 margin_right' " .
+            "&num=" . $num . "&search=" . $search . "&centreon_token=" . $centreonToken .
+            "'><img src='img/icons/disabled.png' class='ico-14 margin_right' " .
             "border='0' alt='" . _("Disabled") . "'></a>&nbsp;&nbsp;";
     } else {
         $moptions = "<a href='main.php?p=" . $p . "&acl_action_id=" . $topo['acl_action_id'] . "&o=s&limit=" . $limit .
-            "&num=" . $num . "&search=" . $search . "'><img src='img/icons/enabled.png' class='ico-14 margin_right' " .
+            "&num=" . $num . "&search=" . $search . "&centreon_token=" . $centreonToken .
+            "'><img src='img/icons/enabled.png' class='ico-14 margin_right' " .
             "border='0' alt='" . _("Enabled") . "'></a>&nbsp;&nbsp;";
     }
     $moptions .= "&nbsp;";

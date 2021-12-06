@@ -68,32 +68,42 @@ $FlagSearchService = 1;
 $tpl = new Smarty();
 $tpl = initSmartyTpl("./include/eventLogs/template", $tpl);
 
-$engine = 'false';
-if (isset($_GET["engine"]) && $_GET["engine"] == 'true') {
-    $engine = 'true';
-}
+$filterParameters = [
+    'engine' => [
+        'filter' => FILTER_VALIDATE_BOOLEAN,
+        'options' => [
+            'default' => false
+        ]
+    ],
+    'id' => [
+        'filter' => FILTER_VALIDATE_INT,
+        'options' => [
+            'default' => 1
+        ],
+    ],
+    'h' => FILTER_SANITIZE_STRING,
+    'hg' => FILTER_SANITIZE_STRING,
+    'poller' => FILTER_SANITIZE_STRING,
+    'svc' => FILTER_SANITIZE_STRING,
+    'svcg' => FILTER_SANITIZE_STRING,
+    'output' => FILTER_SANITIZE_STRING,
+];
 
-$output = "";
-if (isset($_GET["output"])) {
-    $output = $_GET["output"];
-}
-
-$openid = '0';
-if (isset($_GET["openid"])) {
-    $openid = $_GET["openid"];
-}
-
-$id = filter_var(
-    $_GET['id'] ?? $_POST['id'] ?? 1,
-    FILTER_VALIDATE_INT
+$getInputs = filter_input_array(
+    INPUT_GET,
+    $filterParameters
+);
+$postInputs = filter_input_array(
+    INPUT_POST,
+    $filterParameters
 );
 
 $serviceGrpArray = array();
 $pollerArray = array();
 
 $defaultHosts = array();
-if (isset($_GET['h'])) {
-    $h = explode(",", $_GET['h']);
+if (isset($getInputs['h'])) {
+    $h = explode(",", $getInputs['h']);
     $hostObj = new CentreonHost($pearDB);
     $hostArray = $hostObj->getHostsNames($h);
     foreach ($hostArray as $defaultHost) {
@@ -102,8 +112,8 @@ if (isset($_GET['h'])) {
 }
 
 $defaultHostgroups = array();
-if (isset($_GET['hg'])) {
-    $hg = explode(",", $_GET['hg']);
+if (isset($getInputs['hg'])) {
+    $hg = explode(",", $getInputs['hg']);
     $hostGrpObj = new CentreonHostgroups($pearDB);
     $hostGrpArray = $hostGrpObj->getHostsgroups($hg);
     foreach ($hostGrpArray as $defaultHostgroup) {
@@ -112,8 +122,8 @@ if (isset($_GET['hg'])) {
 }
 
 $defaultServices = array();
-if (isset($_GET['svc'])) {
-    $svc = explode(",", $_GET['svc']);
+if (isset($getInputs['svc'])) {
+    $svc = explode(",", $getInputs['svc']);
     $serviceObj = new CentreonService($pearDB);
     $serviceArray = $serviceObj->getServicesDescr($svc);
     foreach ($serviceArray as $defaultService) {
@@ -130,8 +140,8 @@ if (isset($_GET['svc'])) {
 }
 
 $defaultServicegroups = array();
-if (isset($_GET['svcg'])) {
-    $svcg = explode(",", $_GET['svcg']);
+if (isset($getInputs['svcg'])) {
+    $svcg = explode(",", $getInputs['svcg']);
     $serviceGrpObj = new CentreonServicegroups($pearDB);
     $serviceGrpArray = $serviceGrpObj->getServicesGroups($svcg);
     foreach ($serviceGrpArray as $defaultServicegroup) {
@@ -140,8 +150,8 @@ if (isset($_GET['svcg'])) {
 }
 
 $defaultPollers = array();
-if (isset($_GET['poller'])) {
-    $poller = explode(",", $_GET['poller']);
+if (isset($getInputs['poller'])) {
+    $poller = explode(",", $getInputs['poller']);
     $pollerObj = new CentreonInstance($pearDB, $pearDBO);
     $pollerArray = $pollerObj->getInstancesMonitoring($poller);
     foreach ($pollerArray as $defaultPoller) {
@@ -155,7 +165,7 @@ if (isset($_GET['poller'])) {
 $form = new HTML_QuickFormCustom('FormPeriod', 'get', "?p=" . $p);
 $form->addElement('header', 'title', _("Choose the source"));
 
-$periods = array(
+$periods = [
     "" => "",
     "10800" => _("Last 3 Hours"),
     "21600" => _("Last 6 Hours"),
@@ -172,9 +182,9 @@ $periods = array(
     "10368000" => _("Last 4 Months"),
     "15552000" => _("Last 6 Months"),
     "31104000" => _("Last Year")
-);
+];
 
-$lang = array(
+$lang = [
     "ty" => _("Message Type"),
     "n" => _("Notifications"),
     "a" => _("Alerts"),
@@ -189,7 +199,7 @@ $lang = array(
     "uk" => _("Unknown"),
     "oh" => _("Hard Only"),
     "sch" => _("Search")
-);
+];
 
 $form->addElement('select', 'period', _("Log Period"), $periods);
 $form->addElement(
@@ -268,7 +278,7 @@ $form->addElement(
     )
 );
 
-if ($engine == "false") {
+if (!$getInputs['engine']) {
     $form->addElement(
         'button',
         'graph',
@@ -383,7 +393,7 @@ $tpl->assign('form', $renderer->toArray());
 $tpl->assign('user_params', $user_params);
 $tpl->assign('lang', $lang);
 
-if ($engine == 'false') {
+if (!$getInputs['engine']) {
     $tpl->display("viewLog.ihtml");
 } else {
     $tpl->display("viewLogEngine.ihtml");
@@ -398,7 +408,9 @@ if ($engine == 'false') {
      */
     function apply_period() {
         var openid = getArgsForHost();
-        logs(openid[0], '', '');
+        const args = openid[0];
+        document.getElementById('openid').innerHTML = args;
+        logs(args, '', '');
     }
 
     function apply_period_engine() {
@@ -424,7 +436,8 @@ if ($engine == 'false') {
     }
     var _host = <?php echo !empty($user_params["log_filter_host"]) ? $user_params["log_filter_host"] : 'false'; ?>;
     var _service = <?php echo !empty($user_params["log_filter_svc"]) ? $user_params["log_filter_svc"] : 'false'; ?>;
-    var _engine = <?php echo $engine; ?>;
+    // Casting engine variable so that it can be properly interpreted in JS
+    var _engine = <?php echo (int) $getInputs['engine']; ?>;
 
     var _down = <?php echo $user_params["log_filter_host_down"]; ?>;
     <?php echo !empty($user_params["log_filter_notif"]) ? $user_params["log_filter_notif"] : 'false'; ?>;
@@ -724,7 +737,7 @@ if ($engine == 'false') {
 
     function getArgsForHost() {
         var host_value = jQuery("#host_filter").val();
-        var service_value = jQuery("#service_filter").val();
+        const serviceValues = jQuery("#service_filter").select2('data');
         var hg_value = jQuery("#host_group_filter").val();
         var sg_value = jQuery("#service_group_filter").val();
 
@@ -748,11 +761,11 @@ if ($engine == 'false') {
                 }
             });
         }
-        if (service_value !== null) {
+        if (serviceValues.length > 0) {
             urlargs += "&svc=";
             var flagfirst = true;
-            service_value.forEach(function (val) {
-                if (val !== " " && val !== "") {
+            serviceValues.forEach(function (val) {
+                if (val.id !== " " && val.id !== "") {
                     if (args !== "") {
                         args += ",";
                     }
@@ -761,8 +774,12 @@ if ($engine == 'false') {
                     } else {
                         flagfirst = false;
                     }
-                    urlargs += val.replace("-", "_");
-                    args += "HS_" + val.replace("-", "_");
+                    urlargs += val.id.replace("-", "_");
+                    if (val.text.substring(0, 5) === 'Meta ') {
+                        args += "MS_" + val.id.replace("-", "_");
+                    } else {
+                        args += "HS_" + val.id.replace("-", "_");
+                    }
                 }
             });
         }

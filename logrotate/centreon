@@ -1,4 +1,4 @@
-@CENTREON_LOG@/centAcl.log @CENTREON_LOG@/centreon-backup.log @CENTREON_LOG@/centreon-partitioning.log @CENTREON_LOG@/centreon-purge.log @CENTREON_LOG@/dashboardBuilder.log @CENTREON_LOG@/downtimeManager.log @CENTREON_LOG@/eventReportBuilder.log @CENTREON_LOG@/knowledgebase.log @CENTREON_LOG@/ldap*.log @CENTREON_LOG@/login.log @CENTREON_LOG@/nagiosPerfTrace.log @CENTREON_LOG@/sql-error.log {
+@CENTREON_LOG@/centAcl.log @CENTREON_LOG@/centreon-backup.log @CENTREON_LOG@/centreon-partitioning.log @CENTREON_LOG@/centreon-purge.log @CENTREON_LOG@/dashboardBuilder.log @CENTREON_LOG@/downtimeManager.log @CENTREON_LOG@/eventReportBuilder.log @CENTREON_LOG@/knowledgebase.log @CENTREON_LOG@/ldap*.log @CENTREON_LOG@/login.log @CENTREON_LOG@/sql-error.log {
     copytruncate
     weekly
     rotate 52

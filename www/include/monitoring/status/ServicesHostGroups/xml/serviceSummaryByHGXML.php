@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2019 Centreon
+ * Copyright 2005-2021 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -51,6 +52,17 @@ if (!isset($obj->session_id) || !CentreonSession::checkSession($obj->session_id,
 // Set Default Poller
 $obj->getDefaultFilters();
 
+/**
+ * @var Centreon $centreon
+ */
+$centreon = $_SESSION["centreon"];
+
+/**
+ * true: URIs will correspond to deprecated pages
+ * false: URIs will correspond to new page (Resource Status)
+ */
+$useDeprecatedPages = $centreon->user->doesShowDeprecatedPages();
+
 /*
  * Check Arguments From GET request
  */
@@ -66,6 +78,11 @@ $sort_type = filter_input(INPUT_GET, 'sort_type', FILTER_SANITIZE_STRING, ['opti
 $order = isset($_GET['order']) && $_GET['order'] === "DESC" ? "DESC" : "ASC";
 
 $grouplistStr = $obj->access->getAccessGroupsString();
+
+$kernel = \App\Kernel::createForWeb();
+$resourceController = $kernel->getContainer()->get(
+    \Centreon\Application\Controller\MonitoringResourceController::class
+);
 
 //saving bound values
 $queryValues = [];
@@ -187,6 +204,31 @@ while ($ndo = $dbResult->fetch()) {
 }
 $dbResult->closeCursor();
 
+$buildParameter = function (string $id, string $name) {
+    return [
+        'id' => $id,
+        'name' => $name,
+    ];
+};
+
+$buildServicesUri = function (string $hostname, array $statuses) use ($resourceController, $buildParameter) {
+    return $resourceController->buildListingUri([
+        'filter' => json_encode([
+            'criterias' => [
+                'search' => 'h.name:^' . $hostname . '$',
+                'resourceTypes' => [$buildParameter('service', 'Service')],
+                'statuses' => $statuses,
+            ],
+        ]),
+    ]);
+};
+
+$okStatus = $buildParameter('OK', 'Ok');
+$warningStatus = $buildParameter('WARNING', 'Warning');
+$criticalStatus = $buildParameter('CRITICAL', 'Critical');
+$unknownStatus = $buildParameter('UNKNOWN', 'Unknown');
+$pendingStatus = $buildParameter('PENDING', 'Pending');
+
 $hg = "";
 $count = 0;
 if (isset($tab_final)) {
@@ -224,6 +266,55 @@ if (isset($tab_final)) {
             $obj->XML->writeElement("hcount", $count);
             $obj->XML->writeElement("hs", $obj->statusHost[$tab["cs"]]);
             $obj->XML->writeElement("hc", $obj->colorHost[$tab["cs"]]);
+            $obj->XML->writeElement(
+                "h_details_uri",
+                $useDeprecatedPages
+                    ? 'main.php?p=20202&o=hd&host_name=' . $host_name
+                    : $resourceController->buildHostDetailsUri($tab["hid"])
+            );
+            $serviceListingDeprecatedUri = 'main.php?p=20201&o=svc&host_search=' . $host_name;
+            $obj->XML->writeElement(
+                "s_listing_uri",
+                $useDeprecatedPages
+                    ? $serviceListingDeprecatedUri . '&statusFilter='
+                    : $resourceController->buildListingUri([
+                        'filter' => json_encode([
+                            'criterias' => [
+                                'search' => 'h.name:^' . $host_name . '$',
+                            ],
+                        ]),
+                    ])
+            );
+            $obj->XML->writeElement(
+                "s_listing_ok",
+                $useDeprecatedPages
+                    ? $serviceListingDeprecatedUri . '&statusFilter=ok'
+                    : $buildServicesUri($host_name, [$okStatus])
+            );
+            $obj->XML->writeElement(
+                "s_listing_warning",
+                $useDeprecatedPages
+                    ? $serviceListingDeprecatedUri . '&statusFilter=warning'
+                    : $buildServicesUri($host_name, [$warningStatus])
+            );
+            $obj->XML->writeElement(
+                "s_listing_critical",
+                $useDeprecatedPages
+                    ? $serviceListingDeprecatedUri . '&statusFilter=critical'
+                    : $buildServicesUri($host_name, [$criticalStatus])
+            );
+            $obj->XML->writeElement(
+                "s_listing_unknown",
+                $useDeprecatedPages
+                    ? $serviceListingDeprecatedUri . '&statusFilter=unknown'
+                    : $buildServicesUri($host_name, [$unknownStatus])
+            );
+            $obj->XML->writeElement(
+                "s_listing_pending",
+                $useDeprecatedPages
+                    ? $serviceListingDeprecatedUri . '&statusFilter=pending'
+                    : $buildServicesUri($host_name, [$pendingStatus])
+            );
             $obj->XML->endElement();
             $count++;
         }

@@ -125,9 +125,10 @@ class Backend
                     throw new Exception("Generation path '" . $dir . "' is not a directory.");
                 }
             } else {
-                if (!mkdir($dir, 0775, true)) {
+                if (!mkdir($dir, 0770, true)) {
                     throw new Exception("Cannot create directory '" . $dir . "'");
                 }
+                chmod($dir, 0770);
             }
         }
 

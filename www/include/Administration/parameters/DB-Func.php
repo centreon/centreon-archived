@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2019 Centreon
+ * Copyright 2005-2020 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -33,14 +34,13 @@
  *
  */
 
-
 function updateOption($pearDB, $key, $value)
 {
     /*
      * Purge
      */
     $pearDB->query("DELETE FROM `options` WHERE `key` = '$key'");
-    
+
     /*
      * Add
      */
@@ -48,6 +48,25 @@ function updateOption($pearDB, $key, $value)
         $value = "'$value'";
     }
     $pearDB->query("INSERT INTO `options` (`key`, `value`) VALUES ('$key', $value)");
+}
+
+/**
+ * Used to update fields in the 'centreon.informations' table
+ *
+ * @param object $pearDB : database connection
+ * @param string $key : name of the row
+ * @param string $value : value of the row
+ */
+function updateInformations($pearDB, string $key, string $value): void
+{
+    $stmt = $pearDB->prepare("DELETE FROM `informations` WHERE `key` = :key");
+    $stmt->bindValue(':key', $key, \PDO::PARAM_STR);
+    $stmt->execute();
+
+    $stmt = $pearDB->prepare("INSERT INTO `informations` (`key`, `value`) VALUES (:key, :value)");
+    $stmt->bindValue(':key', $key, \PDO::PARAM_STR);
+    $stmt->bindValue(':value', $value, \PDO::PARAM_STR);
+    $stmt->execute();
 }
 
 function is_valid_path_images($path)
@@ -277,31 +296,54 @@ function updateNagiosConfigData($gopt_id = null)
         'monitoring_svc_notification_3',
         isset($ret["monitoring_svc_notification_3"]) && $ret['monitoring_svc_notification_3'] ? 1 : 0
     );
-        
+
     $centreon->initOptGen($pearDB);
 }
 
-function updateCentcoreConfigData($db, $form, $centreon)
+function updateGorgoneConfigData($db, $form, $centreon)
 {
     $ret = $form->getSubmitValues();
-    updateOption(
-        $db,
-        "enable_perfdata_sync",
-        isset($ret["enable_perfdata_sync"]) && $ret['enable_perfdata_sync'] ? 1 : 0
-    );
-    updateOption($db, "enable_logs_sync", isset($ret["enable_logs_sync"]) && $ret['enable_logs_sync'] ? 1 : 0);
     updateOption($db, "enable_broker_stats", isset($ret["enable_broker_stats"]) && $ret['enable_broker_stats'] ? 1 : 0);
     updateOption(
         $db,
-        "centcore_cmd_timeout",
-        isset($ret["centcore_cmd_timeout"]) && $ret['centcore_cmd_timeout'] ? $ret['centcore_cmd_timeout'] : 0
+        'gorgone_cmd_timeout',
+        $ret['gorgone_cmd_timeout'] ?? 0
     );
     updateOption(
         $db,
-        "centcore_illegal_characters",
-        isset($ret["centcore_illegal_characters"]) && $ret['centcore_illegal_characters']
-            ? $ret['centcore_illegal_characters']
-            : ""
+        'gorgone_illegal_characters',
+        $ret['gorgone_illegal_characters'] ?? ''
+    );
+    //API
+    updateOption(
+        $db,
+        'gorgone_api_address',
+        $ret['gorgone_api_address'] ?? '127.0.0.1'
+    );
+    updateOption(
+        $db,
+        'gorgone_api_port',
+        $ret['gorgone_api_port'] ?? '8085'
+    );
+    updateOption(
+        $db,
+        'gorgone_api_username',
+        $ret['gorgone_api_username'] ?? ''
+    );
+    updateOption(
+        $db,
+        'gorgone_api_password',
+        $ret['gorgone_api_password'] ?? ''
+    );
+    updateOption(
+        $db,
+        'gorgone_api_ssl',
+        $ret['gorgone_api_ssl'] ?? '0'
+    );
+    updateOption(
+        $db,
+        'gorgone_api_allow_self_signed',
+        $ret['gorgone_api_allow_self_signed'] ?? '1'
     );
     $centreon->initOptGen($db);
 }
@@ -361,7 +403,7 @@ function updateDebugConfigData($gopt_id = null)
     updateOption(
         $pearDB,
         "debug_path",
-        isset($ret["debug_path"]) && $ret["debug_path"] != null ? $ret["debug_path"]: "NULL"
+        isset($ret["debug_path"]) && $ret["debug_path"] != null ? $ret["debug_path"] : "NULL"
     );
     updateOption($pearDB, "debug_auth", isset($ret["debug_auth"]) && $ret['debug_auth'] ? 1 : 0);
     updateOption(
@@ -372,7 +414,7 @@ function updateDebugConfigData($gopt_id = null)
     updateOption($pearDB, "debug_rrdtool", isset($ret["debug_rrdtool"]) && $ret['debug_rrdtool'] ? 1 : 0);
     updateOption($pearDB, "debug_ldap_import", isset($ret["debug_ldap_import"]) && $ret['debug_ldap_import'] ? 1 : 0);
     updateOption($pearDB, "debug_sql", isset($ret["debug_sql"]) && $ret['debug_sql'] ? 1 : 0);
-    updateOption($pearDB, "debug_centcore", isset($ret["debug_centcore"]) && $ret['debug_centcore'] ? 1 : 0);
+    updateOption($pearDB, "debug_gorgone", isset($ret["debug_gorgone"]) && $ret['debug_gorgone'] ? 1 : 0);
     updateOption($pearDB, "debug_centstorage", isset($ret["debug_centstorage"]) && $ret['debug_centstorage'] ? 1 : 0);
     updateOption(
         $pearDB,
@@ -394,73 +436,73 @@ function updateLdapConfigData($gopt_id = null)
         $pearDB,
         "ldap_host",
         isset($ret["ldap_host"]) && $ret["ldap_host"] != null
-            ? htmlentities($ret["ldap_host"], ENT_QUOTES, "UTF-8"): "NULL"
+            ? htmlentities($ret["ldap_host"], ENT_QUOTES, "UTF-8") : "NULL"
     );
     updateOption(
         $pearDB,
         "ldap_port",
         isset($ret["ldap_port"]) && $ret["ldap_port"] != null
-            ? htmlentities($ret["ldap_port"], ENT_QUOTES, "UTF-8"): "NULL"
+            ? htmlentities($ret["ldap_port"], ENT_QUOTES, "UTF-8") : "NULL"
     );
     updateOption(
         $pearDB,
         "ldap_base_dn",
         isset($ret["ldap_base_dn"]) && $ret["ldap_base_dn"] != null
-            ? htmlentities($ret["ldap_base_dn"], ENT_QUOTES, "UTF-8"): "NULL"
+            ? htmlentities($ret["ldap_base_dn"], ENT_QUOTES, "UTF-8") : "NULL"
     );
     updateOption(
         $pearDB,
         "ldap_login_attrib",
         isset($ret["ldap_login_attrib"]) && $ret["ldap_login_attrib"] != null
-            ? htmlentities($ret["ldap_login_attrib"], ENT_QUOTES, "UTF-8"): ""
+            ? htmlentities($ret["ldap_login_attrib"], ENT_QUOTES, "UTF-8") : ""
     );
     updateOption(
         $pearDB,
         "ldap_ssl",
         isset($ret["ldap_ssl"]["ldap_ssl"]) && $ret["ldap_ssl"]["ldap_ssl"] != null
-            ? htmlentities($ret["ldap_ssl"]["ldap_ssl"], ENT_QUOTES, "UTF-8"): "NULL"
+            ? htmlentities($ret["ldap_ssl"]["ldap_ssl"], ENT_QUOTES, "UTF-8") : "NULL"
     );
     updateOption(
         $pearDB,
         "ldap_auth_enable",
         isset($ret["ldap_auth_enable"]["ldap_auth_enable"]) && $ret["ldap_auth_enable"]["ldap_auth_enable"] != null
-            ? htmlentities($ret["ldap_auth_enable"]["ldap_auth_enable"], ENT_QUOTES, "UTF-8"): "NULL"
+            ? htmlentities($ret["ldap_auth_enable"]["ldap_auth_enable"], ENT_QUOTES, "UTF-8") : "NULL"
     );
     updateOption(
         $pearDB,
         "ldap_search_user",
         isset($ret["ldap_search_user"]) && $ret["ldap_search_user"] != null
-            ? htmlentities($ret["ldap_search_user"], ENT_QUOTES, "UTF-8"): ""
+            ? htmlentities($ret["ldap_search_user"], ENT_QUOTES, "UTF-8") : ""
     );
     updateOption(
         $pearDB,
         "ldap_search_user_pwd",
         isset($ret["ldap_search_user_pwd"]) && $ret["ldap_search_user_pwd"] != null
-            ? htmlentities($ret["ldap_search_user_pwd"], ENT_QUOTES, "UTF-8"): ""
+            ? htmlentities($ret["ldap_search_user_pwd"], ENT_QUOTES, "UTF-8") : ""
     );
     updateOption(
         $pearDB,
         "ldap_search_filter",
         isset($ret["ldap_search_filter"]) && $ret["ldap_search_filter"] != null
-            ? htmlentities($ret["ldap_search_filter"], ENT_QUOTES, "UTF-8"): "NULL"
+            ? htmlentities($ret["ldap_search_filter"], ENT_QUOTES, "UTF-8") : "NULL"
     );
     updateOption(
         $pearDB,
         "ldap_search_timeout",
         isset($ret["ldap_search_timeout"]) && $ret["ldap_search_timeout"] != null
-            ? htmlentities($ret["ldap_search_timeout"], ENT_QUOTES, "UTF-8"): "NULL"
+            ? htmlentities($ret["ldap_search_timeout"], ENT_QUOTES, "UTF-8") : "NULL"
     );
     updateOption(
         $pearDB,
         "ldap_search_limit",
         isset($ret["ldap_search_limit"]) && $ret["ldap_search_limit"] != null
-            ? htmlentities($ret["ldap_search_limit"], ENT_QUOTES, "UTF-8"): "NULL"
+            ? htmlentities($ret["ldap_search_limit"], ENT_QUOTES, "UTF-8") : "NULL"
     );
     updateOption(
         $pearDB,
         "ldap_protocol_version",
         isset($ret["ldap_protocol_version"]) && $ret["ldap_protocol_version"] != null
-            ? htmlentities($ret["ldap_protocol_version"], ENT_QUOTES, "UTF-8"): "NULL"
+            ? htmlentities($ret["ldap_protocol_version"], ENT_QUOTES, "UTF-8") : "NULL"
     );
 
     $centreon->initOptGen($pearDB);
@@ -473,6 +515,10 @@ function updateGeneralConfigData($gopt_id = null)
     $ret = array();
     $ret = $form->getSubmitValues();
 
+    if (!isset($ret['AjaxTimeReloadStatistic'])) {
+        throw new \InvalidArgumentException('Missing submitted values');
+    }
+
     if (!isset($ret["session_expire"]) || $ret["session_expire"] == 0) {
         $ret["session_expire"] = 2;
     }
@@ -481,19 +527,19 @@ function updateGeneralConfigData($gopt_id = null)
         $pearDB,
         "oreon_path",
         isset($ret["oreon_path"]) && $ret["oreon_path"] != null
-            ? htmlentities($ret["oreon_path"], ENT_QUOTES, "UTF-8"): "NULL"
+            ? htmlentities($ret["oreon_path"], ENT_QUOTES, "UTF-8") : "NULL"
     );
     updateOption(
         $pearDB,
         "oreon_web_path",
         isset($ret["oreon_web_path"]) && $ret["oreon_web_path"] != null
-            ? htmlentities($ret["oreon_web_path"], ENT_QUOTES, "UTF-8"): "NULL"
+            ? htmlentities($ret["oreon_web_path"], ENT_QUOTES, "UTF-8") : "NULL"
     );
     updateOption(
         $pearDB,
         "oreon_refresh",
         isset($ret["oreon_refresh"]) && $ret["oreon_refresh"] != null
-            ? htmlentities($ret["oreon_refresh"], ENT_QUOTES, "UTF-8"): "NULL"
+            ? htmlentities($ret["oreon_refresh"], ENT_QUOTES, "UTF-8") : "NULL"
     );
     updateOption(
         $pearDB,
@@ -506,126 +552,127 @@ function updateGeneralConfigData($gopt_id = null)
         $pearDB,
         "session_expire",
         isset($ret["session_expire"]) && $ret["session_expire"] != null
-            ? htmlentities($ret["session_expire"], ENT_QUOTES, "UTF-8"): "NULL"
+            ? htmlentities($ret["session_expire"], ENT_QUOTES, "UTF-8") : "NULL"
     );
     updateOption(
         $pearDB,
         "maxViewMonitoring",
         isset($ret["maxViewMonitoring"]) && $ret["maxViewMonitoring"] != null
-            ? htmlentities($ret["maxViewMonitoring"], ENT_QUOTES, "UTF-8"): "NULL"
+            ? htmlentities($ret["maxViewMonitoring"], ENT_QUOTES, "UTF-8") : "NULL"
     );
     updateOption(
         $pearDB,
         "maxViewConfiguration",
         isset($ret["maxViewConfiguration"]) && $ret["maxViewConfiguration"] != null
-            ? htmlentities($ret["maxViewConfiguration"], ENT_QUOTES, "UTF-8"): "NULL"
+            ? htmlentities($ret["maxViewConfiguration"], ENT_QUOTES, "UTF-8") : "NULL"
     );
     updateOption(
         $pearDB,
         "maxGraphPerformances",
         isset($ret["maxGraphPerformances"]) && $ret["maxGraphPerformances"] != null
-            ? htmlentities($ret["maxGraphPerformances"], ENT_QUOTES, "UTF-8"): "NULL"
+            ? htmlentities($ret["maxGraphPerformances"], ENT_QUOTES, "UTF-8") : "NULL"
     );
     updateOption(
         $pearDB,
         "selectPaginationSize",
         isset($ret["selectPaginationSize"]) && $ret["selectPaginationSize"] != null
-            ? htmlentities($ret["selectPaginationSize"], ENT_QUOTES, "UTF-8"): "NULL"
+            ? htmlentities($ret["selectPaginationSize"], ENT_QUOTES, "UTF-8") : "NULL"
     );
     updateOption(
         $pearDB,
         "AjaxTimeReloadMonitoring",
         isset($ret["AjaxTimeReloadMonitoring"]) && $ret["AjaxTimeReloadMonitoring"] != null
-            ? htmlentities($ret["AjaxTimeReloadMonitoring"], ENT_QUOTES, "UTF-8"): "NULL"
+            ? htmlentities($ret["AjaxTimeReloadMonitoring"], ENT_QUOTES, "UTF-8") : "NULL"
     );
     updateOption(
         $pearDB,
         "AjaxTimeReloadStatistic",
         isset($ret["AjaxTimeReloadStatistic"]) && $ret["AjaxTimeReloadStatistic"] != null
-            ? htmlentities($ret["AjaxTimeReloadStatistic"], ENT_QUOTES, "UTF-8"): "NULL"
+            ? htmlentities($ret["AjaxTimeReloadStatistic"], ENT_QUOTES, "UTF-8") : "NULL"
     );
     updateOption(
         $pearDB,
         "enable_gmt",
         isset($ret["enable_gmt"]["yes"]) && $ret["enable_gmt"]["yes"] != null
-            ? htmlentities($ret["enable_gmt"]["yes"], ENT_QUOTES, "UTF-8"): "0"
+            ? htmlentities($ret["enable_gmt"]["yes"], ENT_QUOTES, "UTF-8") : "0"
     );
     updateOption(
         $pearDB,
         "gmt",
-        isset($ret["gmt"]) && $ret["gmt"] != null ? htmlentities($ret["gmt"], ENT_QUOTES, "UTF-8"): "NULL"
+        isset($ret["gmt"]) && $ret["gmt"] != null ? htmlentities($ret["gmt"], ENT_QUOTES, "UTF-8") : "NULL"
     );
     updateOption(
         $pearDB,
         "global_sort_type",
         isset($ret["global_sort_type"]) && $ret["global_sort_type"] != null
-            ? htmlentities($ret["global_sort_type"], ENT_QUOTES, "UTF-8"): "NULL"
+            ? htmlentities($ret["global_sort_type"], ENT_QUOTES, "UTF-8") : "NULL"
     );
     updateOption(
         $pearDB,
         "global_sort_order",
         isset($ret["global_sort_order"]) && $ret["global_sort_order"] != null
-            ? htmlentities($ret["global_sort_order"], ENT_QUOTES, "UTF-8"): "NULL"
+            ? htmlentities($ret["global_sort_order"], ENT_QUOTES, "UTF-8") : "NULL"
     );
     updateOption(
         $pearDB,
         "problem_sort_type",
         isset($ret["problem_sort_type"]) && $ret["problem_sort_type"] != null
-            ? htmlentities($ret["problem_sort_type"], ENT_QUOTES, "UTF-8"): "NULL"
+            ? htmlentities($ret["problem_sort_type"], ENT_QUOTES, "UTF-8") : "NULL"
     );
     updateOption(
         $pearDB,
         "problem_sort_order",
         isset($ret["problem_sort_order"]) && $ret["problem_sort_order"] != null
-            ? htmlentities($ret["problem_sort_order"], ENT_QUOTES, "UTF-8"): "NULL"
+            ? htmlentities($ret["problem_sort_order"], ENT_QUOTES, "UTF-8") : "NULL"
     );
     updateOption(
         $pearDB,
         'proxy_url',
         isset($ret["proxy_url"]) && $ret["proxy_url"] != null
-            ? htmlentities($ret["proxy_url"], ENT_QUOTES, "UTF-8"): "NULL"
+            ? htmlentities($ret["proxy_url"], ENT_QUOTES, "UTF-8") : "NULL"
     );
     updateOption(
         $pearDB,
         'proxy_port',
         isset($ret["proxy_port"]) && $ret["proxy_port"] != null
-            ? htmlentities($ret["proxy_port"], ENT_QUOTES, "UTF-8"): "NULL"
+            ? htmlentities($ret["proxy_port"], ENT_QUOTES, "UTF-8") : "NULL"
     );
     updateOption(
         $pearDB,
         'proxy_user',
         isset($ret["proxy_user"]) && $ret["proxy_user"] != null
-            ? htmlentities($ret["proxy_user"], ENT_QUOTES, "UTF-8"): "NULL"
+            ? htmlentities($ret["proxy_user"], ENT_QUOTES, "UTF-8") : "NULL"
     );
-    updateOption(
-        $pearDB,
-        'proxy_password',
-        isset($ret["proxy_password"]) && $ret["proxy_password"] != null
-            ? htmlentities($ret["proxy_password"], ENT_QUOTES, "UTF-8"): "NULL"
-    );
+    if (isset($ret["proxy_password"]) && $ret['proxy_password'] != CentreonAuth::PWS_OCCULTATION) {
+        updateOption(
+            $pearDB,
+            'proxy_password',
+            $ret["proxy_password"] != null ? htmlentities($ret["proxy_password"], ENT_QUOTES, "UTF-8") : "NULL"
+        );
+    }
     updateOption(
         $pearDB,
         'display_downtime_chart',
         isset($ret["display_downtime_chart"]["yes"]) && $ret["display_downtime_chart"]["yes"] != null
-            ? htmlentities($ret["display_downtime_chart"]["yes"], ENT_QUOTES, "UTF-8"): "0"
+            ? htmlentities($ret["display_downtime_chart"]["yes"], ENT_QUOTES, "UTF-8") : "0"
     );
     updateOption(
         $pearDB,
         'display_comment_chart',
         isset($ret["display_comment_chart"]["yes"]) && $ret["display_comment_chart"]["yes"] != null
-            ? htmlentities($ret["display_comment_chart"]["yes"], ENT_QUOTES, "UTF-8"): "0"
+            ? htmlentities($ret["display_comment_chart"]["yes"], ENT_QUOTES, "UTF-8") : "0"
     );
     updateOption(
         $pearDB,
         "enable_autologin",
         isset($ret["enable_autologin"]["yes"]) && $ret["enable_autologin"]["yes"] != null
-            ? htmlentities($ret["enable_autologin"]["yes"], ENT_QUOTES, "UTF-8"): "0"
+            ? htmlentities($ret["enable_autologin"]["yes"], ENT_QUOTES, "UTF-8") : "0"
     );
     updateOption(
         $pearDB,
         "display_autologin_shortcut",
         isset($ret["display_autologin_shortcut"]["yes"]) && $ret["display_autologin_shortcut"]["yes"] != null
-            ? htmlentities($ret["display_autologin_shortcut"]["yes"], ENT_QUOTES, "UTF-8"): "0"
+            ? htmlentities($ret["display_autologin_shortcut"]["yes"], ENT_QUOTES, "UTF-8") : "0"
     );
     updateOption(
         $pearDB,
@@ -670,68 +717,124 @@ function updateGeneralConfigData($gopt_id = null)
     );
     updateOption(
         $pearDB,
-        "keycloak_enable",
-        isset($ret["keycloak_enable"]["yes"]) && $ret["keycloak_enable"]["yes"] != null ? 1 : 0
+        "openid_connect_enable",
+        isset($ret["openid_connect_enable"]["yes"]) && $ret["openid_connect_enable"]["yes"] != null ? 1 : 0
     );
     updateOption(
         $pearDB,
-        "keycloak_mode",
-        isset($ret["keycloak_mode"]["keycloak_mode"]) && $ret["keycloak_mode"]["keycloak_mode"] != null
-            ? $pearDB->escape($ret["keycloak_mode"]["keycloak_mode"]) : 1
+        "openid_connect_mode",
+        (int) $ret["openid_connect_mode"]["openid_connect_mode"]
     );
     updateOption(
         $pearDB,
-        "keycloak_trusted_clients",
-        isset($ret["keycloak_trusted_clients"]) && $ret["keycloak_trusted_clients"] != null
-            ? $pearDB->escape($ret["keycloak_trusted_clients"]) : ""
+        "openid_connect_trusted_clients",
+        isset($ret["openid_connect_trusted_clients"]) && $ret["openid_connect_trusted_clients"] != null
+            ? $pearDB->escape($ret["openid_connect_trusted_clients"]) : ""
     );
     updateOption(
         $pearDB,
-        "keycloak_blacklist_clients",
-        isset($ret["keycloak_blacklist_clients"]) && $ret["keycloak_blacklist_clients"] != null
-            ? $pearDB->escape($ret["keycloak_blacklist_clients"]) : ""
+        "openid_connect_blacklist_clients",
+        isset($ret["openid_connect_blacklist_clients"]) && $ret["openid_connect_blacklist_clients"] != null
+            ? $pearDB->escape($ret["openid_connect_blacklist_clients"]) : ""
     );
     updateOption(
         $pearDB,
-        "keycloak_url",
-        isset($ret["keycloak_url"]) && $ret["keycloak_url"] != null
-            ? $pearDB->escape($ret["keycloak_url"]) : ""
+        "openid_connect_base_url",
+        isset($ret["openid_connect_base_url"]) && $ret["openid_connect_base_url"] != null
+            ? $pearDB->escape($ret["openid_connect_base_url"]) : ""
     );
     updateOption(
         $pearDB,
-        "keycloak_redirect_url",
-        isset($ret["keycloak_redirect_url"]) && $ret["keycloak_redirect_url"] != null
-            ? $pearDB->escape($ret["keycloak_redirect_url"]) : ""
+        "openid_connect_authorization_endpoint",
+        isset($ret["openid_connect_authorization_endpoint"]) && $ret["openid_connect_authorization_endpoint"] != null
+            ? $pearDB->escape($ret["openid_connect_authorization_endpoint"]) : ""
     );
     updateOption(
         $pearDB,
-        "keycloak_realm",
-        isset($ret["keycloak_realm"]) && $ret["keycloak_realm"] != null
-            ? $pearDB->escape($ret["keycloak_realm"]) : ""
+        "openid_connect_token_endpoint",
+        isset($ret["openid_connect_token_endpoint"]) && $ret["openid_connect_token_endpoint"] != null
+            ? $pearDB->escape($ret["openid_connect_token_endpoint"]) : ""
     );
     updateOption(
         $pearDB,
-        "keycloak_client_id",
-        isset($ret["keycloak_client_id"]) && $ret["keycloak_client_id"] != null
-            ? $pearDB->escape($ret["keycloak_client_id"]) : ""
+        "openid_connect_introspection_endpoint",
+        isset($ret["openid_connect_introspection_endpoint"]) && $ret["openid_connect_introspection_endpoint"] != null
+            ? $pearDB->escape($ret["openid_connect_introspection_endpoint"]) : ""
     );
     updateOption(
         $pearDB,
-        "keycloak_client_secret",
-        isset($ret["keycloak_client_secret"]) && $ret["keycloak_client_secret"] != null
-            ? $pearDB->escape($ret["keycloak_client_secret"]) : ""
+        "openid_connect_userinfo_endpoint",
+        isset($ret["openid_connect_userinfo_endpoint"]) && $ret["openid_connect_userinfo_endpoint"] != null
+            ? $pearDB->escape($ret["openid_connect_userinfo_endpoint"]) : ""
+    );
+    updateOption(
+        $pearDB,
+        "openid_connect_end_session_endpoint",
+        isset($ret["openid_connect_end_session_endpoint"]) && $ret["openid_connect_end_session_endpoint"] != null
+            ? $pearDB->escape($ret["openid_connect_end_session_endpoint"]) : ""
+    );
+    updateOption(
+        $pearDB,
+        "openid_connect_scope",
+        isset($ret["openid_connect_scope"]) && $ret["openid_connect_scope"] != null
+            ? $pearDB->escape($ret["openid_connect_scope"]) : ""
+    );
+    updateOption(
+        $pearDB,
+        "openid_connect_login_claim",
+        isset($ret["openid_connect_login_claim"]) ? $pearDB->escape($ret["openid_connect_login_claim"]) : ""
+    );
+    updateOption(
+        $pearDB,
+        "openid_connect_redirect_url",
+        isset($ret["openid_connect_redirect_url"]) && $ret["openid_connect_redirect_url"] != null
+            ? $pearDB->escape($ret["openid_connect_redirect_url"]) : ""
+    );
+
+    if (
+        isset($ret["openid_connect_client_id"])
+        && $ret["openid_connect_client_id"] !== CentreonAuth::PWS_OCCULTATION
+    ) {
+        updateOption(
+            $pearDB,
+            "openid_connect_client_id",
+            $pearDB->escape($ret["openid_connect_client_id"])
+        );
+    }
+
+    if (
+        isset($ret["openid_connect_client_secret"])
+        && $ret["openid_connect_client_secret"] !== CentreonAuth::PWS_OCCULTATION
+    ) {
+        updateOption(
+            $pearDB,
+            "openid_connect_client_secret",
+            $pearDB->escape($ret["openid_connect_client_secret"])
+        );
+    }
+
+    updateOption(
+        $pearDB,
+        "openid_connect_client_basic_auth",
+        isset($ret["openid_connect_client_basic_auth"]["yes"])
+            && $ret["openid_connect_client_basic_auth"]["yes"] != null ? 1 : 0
+    );
+    updateOption(
+        $pearDB,
+        "openid_connect_verify_peer",
+        isset($ret["openid_connect_verify_peer"]["yes"]) && $ret["openid_connect_verify_peer"]["yes"] != null ? 1 : 0
     );
     updateOption(
         $pearDB,
         "centreon_support_email",
         isset($ret["centreon_support_email"]) && $ret["centreon_support_email"] != null
-            ? htmlentities($ret["centreon_support_email"], ENT_QUOTES, "UTF-8"): "NULL"
+            ? htmlentities($ret["centreon_support_email"], ENT_QUOTES, "UTF-8") : "NULL"
     );
     updateOption(
         $pearDB,
         "send_statistics",
         isset($ret["send_statistics"]["yes"]) && $ret["send_statistics"]["yes"] != null
-            ? htmlentities($ret["send_statistics"]["yes"], ENT_QUOTES, "UTF-8"): "0"
+            ? htmlentities($ret["send_statistics"]["yes"], ENT_QUOTES, "UTF-8") : "0"
     );
 
     $centreon->initOptGen($pearDB);
@@ -778,13 +881,13 @@ function updateRRDToolConfigData($gopt_id = null)
 function updatePartitioningConfigData($db, $form, $centreon)
 {
     $ret = $form->getSubmitValues();
-    
+
     foreach ($ret as $key => $value) {
         if (preg_match('/^partitioning_/', $key)) {
             updateOption($db, $key, $value);
         }
     }
-    
+
     $centreon->initOptGen($db);
 }
 
@@ -818,7 +921,7 @@ function updateODSConfigData()
     if ($ret["RRDdatabase_path"][strlen($ret["RRDdatabase_path"]) - 1] != "/") {
         $ret["RRDdatabase_path"] .= "/";
     }
-    
+
     if (!isset($ret["len_storage_downtimes"])) {
         $ret["len_storage_downtimes"] = 0;
     }
@@ -851,7 +954,7 @@ function updateODSConfigData()
         $pearDB,
         "centstorage",
         isset($ret["enable_centstorage"]) && $ret["enable_centstorage"] != null
-            ? htmlentities($ret["enable_centstorage"], ENT_QUOTES, "UTF-8"): "0"
+            ? htmlentities($ret["enable_centstorage"], ENT_QUOTES, "UTF-8") : "0"
     );
     updateOption($pearDB, "centstorage_auto_drop", isset($ret['centstorage_auto_drop']) ? '1' : '0');
     updateOption(
@@ -940,11 +1043,56 @@ function updateKnowledgeBaseData($db, $form, $centreon)
     if (!isset($ret['kb_wiki_certificate'])) {
         $ret['kb_wiki_certificate'] = 0;
     }
+
+    if (isset($ret["kb_wiki_password"]) && $ret["kb_wiki_password"] === CentreonAuth::PWS_OCCULTATION) {
+        unset($ret["kb_wiki_password"]);
+    }
+
     foreach ($ret as $key => $value) {
         if (preg_match('/^kb_/', $key)) {
-                updateOption($db, $key, $value);
+            updateOption($db, $key, $value);
         }
     }
 
     $centreon->initOptGen($db);
+}
+
+/**
+ * Used to update Central's credentials on a remote server
+ *
+ * @param object $db : database connection
+ * @param object $form : form data
+ * @param \Security\Encryption $centreonEncryption : Encryption object
+ */
+function updateRemoteAccessCredentials($db, $form, $centreonEncryption): void
+{
+    $ret = $form->getSubmitValues();
+    $passApi = $ret['apiCredentials'];
+
+    //clean useless values
+    unset($ret['submitC']);
+    unset($ret['o']);
+    unset($ret['centreon_token']);
+    unset($ret['apiCredentials']);
+
+    //convert values
+    $ret['apiPeerValidation'] = (int) $ret['apiPeerValidation'] === 1 ? 'no' : 'yes';
+
+    //update information
+    foreach ($ret as $key => $value) {
+        updateInformations($db, $key, $value);
+    }
+
+    if (CentreonAuth::PWS_OCCULTATION !== $passApi) {
+        try {
+            updateInformations(
+                $db,
+                'apiCredentials',
+                $centreonEncryption->crypt($passApi)
+            );
+        } catch (Exception $e) {
+            $errorMsg = _('The password cannot be crypted. Please re-submit the form');
+            echo "<div class='msg' align='center'>" . $errorMsg . "</div>";
+        }
+    }
 }

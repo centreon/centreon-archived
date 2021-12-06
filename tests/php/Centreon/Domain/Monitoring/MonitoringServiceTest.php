@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,18 +21,52 @@
 
 namespace Tests\Centreon\Domain\Monitoring;
 
-use Centreon\Domain\Contact\Interfaces\ContactInterface;
+use Centreon\Domain\HostConfiguration\Interfaces\HostConfigurationServiceInterface;
 use Centreon\Domain\Monitoring\Host;
 use Centreon\Domain\Monitoring\HostGroup;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
 use Centreon\Domain\Monitoring\MonitoringService;
 use Centreon\Domain\Monitoring\Service;
 use Centreon\Domain\Monitoring\ServiceGroup;
+use Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerServiceInterface;
 use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
+use Centreon\Domain\ServiceConfiguration\Interfaces\ServiceConfigurationServiceInterface;
 use PHPUnit\Framework\TestCase;
 
 class MonitoringServiceTest extends TestCase
 {
+    /**
+     * @var MonitoringRepositoryInterface&\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $monitoringRepository;
+
+    /**
+     * @var AccessGroupRepositoryInterface&\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $accessGroupRepository;
+
+    /**
+     * @var ServiceConfigurationServiceInterface&\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $serviceConfiguration;
+    /**
+     * @var HostConfigurationServiceInterface&\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $hostConfiguration;
+    /**
+     * @var MonitoringServerServiceInterface&\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $monitoringServerService;
+
+    protected function setUp(): void
+    {
+        $this->monitoringRepository = $this->createMock(MonitoringRepositoryInterface::class);
+        $this->accessGroupRepository = $this->createMock(AccessGroupRepositoryInterface::class);
+        $this->serviceConfiguration = $this->createMock(ServiceConfigurationServiceInterface::class);
+        $this->hostConfiguration = $this->createMock(HostConfigurationServiceInterface::class);
+        $this->monitoringServerService = $this->createMock(MonitoringServerServiceInterface::class);
+    }
+
     /**
      * @throws \Exception
      */
@@ -41,13 +76,17 @@ class MonitoringServiceTest extends TestCase
             ->setId(1)
             ->setDisplayName('test');
 
-        $repository = $this->createMock(MonitoringRepositoryInterface::class);
-        $repository->expects(self::any())
+        $this->monitoringRepository->expects(self::any())
             ->method('findServices')
             ->willReturn([$service]); // values returned for the all next tests
 
-        $accessGroup = $this->createMock(AccessGroupRepositoryInterface::class);
-        $monitoringService = new MonitoringService($repository, $accessGroup);
+        $monitoringService = new MonitoringService(
+            $this->monitoringRepository,
+            $this->accessGroupRepository,
+            $this->serviceConfiguration,
+            $this->hostConfiguration,
+            $this->monitoringServerService
+        );
 
         $servicesFound = $monitoringService->findServices();
         $this->assertCount(
@@ -67,14 +106,18 @@ class MonitoringServiceTest extends TestCase
             ->setDisplayName('test');
         $hostId = 1;
 
-        $repository = $this->createMock(MonitoringRepositoryInterface::class);
-        $repository->expects(self::any())
-            ->method('findServicesByHost')
+        $this->monitoringRepository->expects(self::any())
+            ->method('findServicesByHostWithRequestParameters')
             ->with($hostId)
             ->willReturn([$service]); // values returned for the all next tests
 
-        $accessGroup = $this->createMock(AccessGroupRepositoryInterface::class);
-        $monitoringService = new MonitoringService($repository, $accessGroup);
+        $monitoringService = new MonitoringService(
+            $this->monitoringRepository,
+            $this->accessGroupRepository,
+            $this->serviceConfiguration,
+            $this->hostConfiguration,
+            $this->monitoringServerService
+        );
 
         $servicesFound = $monitoringService->findServicesByHost($hostId);
         $this->assertCount(
@@ -97,25 +140,27 @@ class MonitoringServiceTest extends TestCase
             ->setId(1)
             ->setDisplayName('test');
 
-        $repository = $this->createMock(MonitoringRepositoryInterface::class);
-
-        $repository->expects(self::any())
+        $this->monitoringRepository->expects(self::any())
             ->method('findHosts')
             ->willReturn([$host]); // values returned for the all next tests
 
-        $repository->expects(self::any())
-            ->method('findServicesOnMultipleHosts')
+        $this->monitoringRepository->expects(self::any())
+            ->method('findServicesByHosts')
             ->with([$host->getId()])
             ->willReturn([$host->getId() => [$service]]); // values returned for the all next tests
 
-        $accessGroup = $this->createMock(AccessGroupRepositoryInterface::class);
-
-        $monitoringService = new MonitoringService($repository, $accessGroup);
+        $monitoringService = new MonitoringService(
+            $this->monitoringRepository,
+            $this->accessGroupRepository,
+            $this->serviceConfiguration,
+            $this->hostConfiguration,
+            $this->monitoringServerService
+        );
 
         /**
          * @var Host[] $hostsFound
          */
-        $hostsFound = $monitoringService->findHosts();
+        $hostsFound = $monitoringService->findHosts(true);
         $this->assertCount(
             1,
             $hostsFound,
@@ -151,15 +196,18 @@ class MonitoringServiceTest extends TestCase
             ->setId(3)
             ->setHosts([$host]);
 
-        $repository = $this->createMock(MonitoringRepositoryInterface::class);
-
-        $repository->expects(self::any())
+        $this->monitoringRepository->expects(self::any())
             ->method('findServiceGroups')
             ->willReturn([$serviceGroup]); // values returned for the all next tests
 
-        $accessGroup = $this->createMock(AccessGroupRepositoryInterface::class);
+        $monitoringService = new MonitoringService(
+            $this->monitoringRepository,
+            $this->accessGroupRepository,
+            $this->serviceConfiguration,
+            $this->hostConfiguration,
+            $this->monitoringServerService
+        );
 
-        $monitoringService = new MonitoringService($repository, $accessGroup);
         /**
          * @var ServiceGroup[] $servicesGroupsFound
          */
@@ -187,16 +235,18 @@ class MonitoringServiceTest extends TestCase
             ->setId(1)
             ->setDisplayName('test');
 
-        $repository = $this->createMock(MonitoringRepositoryInterface::class);
-
-        $repository->expects(self::any())
+        $this->monitoringRepository->expects(self::any())
             ->method('findOneService')
             ->with($host->getId(), $service->getId())
             ->willReturn($service); // values returned for the all next tests
 
-        $accessGroup = $this->createMock(AccessGroupRepositoryInterface::class);
-
-        $monitoringService = new MonitoringService($repository, $accessGroup);
+        $monitoringService = new MonitoringService(
+            $this->monitoringRepository,
+            $this->accessGroupRepository,
+            $this->serviceConfiguration,
+            $this->hostConfiguration,
+            $this->monitoringServerService
+        );
 
         $oneService = $monitoringService->findOneService($host->getId(), $service->getId());
         $this->assertNotNull($oneService);
@@ -221,16 +271,18 @@ class MonitoringServiceTest extends TestCase
             ->setDisplayName('test');
         $host->addService($service);
 
-        $repository = $this->createMock(MonitoringRepositoryInterface::class);
-
-        $repository->expects(self::any())
+        $this->monitoringRepository->expects(self::any())
             ->method('findOneHost')
             ->with($host->getId())
             ->willReturn($host, null);
 
-        $accessGroup = $this->createMock(AccessGroupRepositoryInterface::class);
-
-        $monitoringService = new MonitoringService($repository, $accessGroup);
+        $monitoringService = new MonitoringService(
+            $this->monitoringRepository,
+            $this->accessGroupRepository,
+            $this->serviceConfiguration,
+            $this->hostConfiguration,
+            $this->monitoringServerService
+        );
 
         $hostFound = $monitoringService->findOneHost($host->getId());
         $this->assertNotNull($hostFound);
@@ -259,15 +311,17 @@ class MonitoringServiceTest extends TestCase
             ->setId(1)
             ->addHost($host);
 
-        $repository = $this->createMock(MonitoringRepositoryInterface::class);
-
-        $repository->expects(self::any())
+        $this->monitoringRepository->expects(self::any())
             ->method('findHostGroups')
             ->willReturn([$hostGroup]);
 
-        $accessGroup = $this->createMock(AccessGroupRepositoryInterface::class);
-
-        $monitoringService = new MonitoringService($repository, $accessGroup);
+        $monitoringService = new MonitoringService(
+            $this->monitoringRepository,
+            $this->accessGroupRepository,
+            $this->serviceConfiguration,
+            $this->hostConfiguration,
+            $this->monitoringServerService
+        );
 
         /**
          * @var HostGroup[] $hostsGroupsFound
@@ -292,15 +346,18 @@ class MonitoringServiceTest extends TestCase
             ->setId(1)
             ->setDisplayName('test');
 
-        $repository = $this->createMock(MonitoringRepositoryInterface::class);
-
-        $repository->expects(self::any())
+        $this->monitoringRepository->expects(self::any())
             ->method('findOneHost')
             ->with($host->getId())
             ->willReturn($host, null);
 
-        $accessGroup = $this->createMock(AccessGroupRepositoryInterface::class);
-        $monitoringService = new MonitoringService($repository, $accessGroup);
+        $monitoringService = new MonitoringService(
+            $this->monitoringRepository,
+            $this->accessGroupRepository,
+            $this->serviceConfiguration,
+            $this->hostConfiguration,
+            $this->monitoringServerService
+        );
 
         // First test when the 'findOneHost' returns one host
         $isHostExist = $monitoringService->isHostExists($host->getId());
@@ -309,5 +366,80 @@ class MonitoringServiceTest extends TestCase
         // Second test when the 'findOneHost' returns null
         $isHostExist = $monitoringService->isHostExists($host->getId());
         $this->assertfalse($isHostExist);
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function testIsServiceExist()
+    {
+        $host = (new Host())
+            ->setId(1)
+            ->setDisplayName('test');
+
+        $service = (new Service())
+            ->setId(1)
+            ->setHost($host);
+
+        $this->monitoringRepository->expects(self::any())
+            ->method('findOneService')
+            ->with($host->getId(), $service->getId())
+            ->willReturn($service, null);
+
+        $monitoringService = new MonitoringService(
+            $this->monitoringRepository,
+            $this->accessGroupRepository,
+            $this->serviceConfiguration,
+            $this->hostConfiguration,
+            $this->monitoringServerService
+        );
+
+        $exists = $monitoringService->isServiceExists($host->getId(), $service->getId());
+        $this->assertTrue($exists);
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function testFindServiceGroupsByHostAndService()
+    {
+        $service = (new Service())
+            ->setId(1)
+            ->setDisplayName('test');
+
+        $host = (new Host())
+            ->setId(2)
+            ->setDisplayName('test');
+        $host->addService($service);
+
+        $serviceGroup = (new ServiceGroup())
+            ->setId(3)
+            ->setHosts([$host]);
+
+        $this->monitoringRepository->expects(self::any())
+            ->method('findServiceGroupsByHostAndService')
+            ->with($host->getId(), $service->getId())
+            ->willReturn([$serviceGroup]); // values returned for the all next tests
+
+        $monitoringService = new MonitoringService(
+            $this->monitoringRepository,
+            $this->accessGroupRepository,
+            $this->serviceConfiguration,
+            $this->hostConfiguration,
+            $this->monitoringServerService
+        );
+
+        /**
+         * @var ServiceGroup[] $servicesGroupsFound
+         */
+        $servicesGroupsFound = $monitoringService->findServiceGroupsByHostAndService($host->getId(), $service->getId());
+        $this->assertCount(
+            1,
+            $servicesGroupsFound,
+            "Error, this method must relay the 'findServiceGroupsByHostAndService' method of the monitoring repository"
+        );
+        $this->assertEquals($serviceGroup->getId(), $servicesGroupsFound[0]->getId());
+        $this->assertEquals($host->getId(), $serviceGroup->getHosts()[0]->getId());
+        $this->assertEquals($service->getId(), $serviceGroup->getHosts()[0]->getServices()[0]->getId());
     }
 }

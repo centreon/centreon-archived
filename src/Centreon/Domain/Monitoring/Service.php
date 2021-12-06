@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,223 +22,233 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Monitoring;
 
-use JMS\Serializer\Annotation as Serializer;
-use Centreon\Domain\Annotation\EntityDescriptor as Desc;
+use Centreon\Domain\Acknowledgement\Acknowledgement;
+use Centreon\Domain\Downtime\Downtime;
+use Centreon\Domain\Monitoring\ResourceStatus;
+use Centreon\Domain\Service\EntityDescriptorMetadataInterface;
+use CentreonDuration;
 
 /**
  * Class representing a record of a service in the repository.
  *
  * @package Centreon\Domain\Monitoring
  */
-class Service
+class Service implements EntityDescriptorMetadataInterface
 {
-    /**
-     * @Serializer\Groups({"service_min", "service_main", "service_full"})
-     * @Desc(column="service_id", modifier="setId")
-     * @var int Unique index
-     */
-    private $id;
+    // Groups for serilizing
+    public const SERIALIZER_GROUP_MIN = 'service_min';
+    public const SERIALIZER_GROUP_MAIN = 'service_main';
+    public const SERIALIZER_GROUP_FULL = 'service_full';
+    public const SERIALIZER_GROUP_WITH_HOST = 'service_with_host';
 
     /**
-     * @Serializer\Groups({"service_main", "service_full"})
+     * @var int|null Unique index
+     */
+    protected $id;
+
+    /**
      * @var int
      */
-    private $checkAttempt;
+    protected $checkAttempt;
 
     /**
-     * @Serializer\Groups({"service_full"})
      * @var string|null
      */
-    private $checkCommand;
+    protected $checkCommand;
 
     /**
-     * @Serializer\Groups({"service_full"})
      * @var float|null
      */
-    private $checkInterval;
+    protected $checkInterval;
 
     /**
-     * @Serializer\Groups({"service_full"})
      * @var string|null
      */
-    private $checkPeriod;
+    protected $checkPeriod;
 
     /**
-     * @Serializer\Groups({"service_full"})
      * @var int|null
      */
-    private $checkType;
+    protected $checkType;
 
     /**
-     * @Serializer\Groups({"service_full"})
      * @var string|null
      */
-    private $commandLine;
+    protected $commandLine;
 
     /**
-     * @Serializer\Groups({"service_min", "service_main", "service_full"})
      * @var string
      */
-    private $description;
+    protected $description;
 
     /**
-     * @Serializer\Groups({"service_min", "service_main", "service_full"})
      * @var string
      */
-    private $displayName;
+    protected $displayName;
 
     /**
-     * @Serializer\Groups({"service_full"})
      * @var float|null
      */
-    private $executionTime;
+    protected $executionTime;
 
     /**
-     * @Serializer\Groups({"service_with_host"})
      * @var Host|null
      */
-    private $host;
+    protected $host;
 
     /**
-     * @Serializer\Groups({"service_main", "service_full"})
      * @var string|null
      */
-    private $iconImage;
+    protected $iconImage;
 
     /**
-     * @Serializer\Groups({"service_main", "service_full"})
      * @var string|null
      */
-    private $iconImageAlt;
+    protected $iconImageAlt;
 
     /**
-     * @Serializer\Groups({"service_full"})
-     * @Desc(column="acknowledged", modifier="setAcknowledged")
      * @var bool
      */
-    private $isAcknowledged;
+    protected $isAcknowledged;
 
     /**
-     * @Serializer\Groups({"service_full"})
-     * @Desc(column="active_checks", modifier="setActiveCheck")
      * @var bool
      */
-    private $isActiveCheck;
+    protected $isActiveCheck;
 
     /**
-     * @Serializer\Groups({"service_full"})
-     * @Desc(column="checked", modifier="setChecked")
      * @var bool
      */
-    private $isChecked;
+    protected $isChecked;
 
     /**
-     * @Serializer\Groups({"service_full"})
      * @var int|null
      */
-    private $scheduledDowntimeDepth;
-
-    /**
-     * @Serializer\Groups({"service_main", "service_full"})
-     * @var \DateTime|null
-     */
-    private $lastCheck;
-
-    /**
-     * @Serializer\Groups({"service_full"})
-     * @var \DateTime|null
-     */
-    private $lastHardStateChange;
-
-    /**
-     * @Serializer\Groups({"service_full"})
-     * @var \DateTime|null
-     */
-    private $lastNotification;
-
-    /**
-     * @Serializer\Groups({"service_full"})
-     * @var \DateTime|null
-     */
-    private $lastTimeCritical;
-
-    /**
-     * @Serializer\Groups({"service_full"})
-     * @var \DateTime|null
-     */
-    private $lastTimeOk;
-
-    /**
-     * @Serializer\Groups({"service_full"})
-     * @var \DateTime|null
-     */
-    private $lastTimeUnknown;
-
-    /**
-     * @Serializer\Groups({"service_full"})
-     * @var \DateTime|null
-     */
-    private $lastTimeWarning;
+    protected $scheduledDowntimeDepth;
 
     /**
      * @var \DateTime|null
-     * @Serializer\Groups({"service_full"})
      */
-    private $lastUpdate;
+    protected $lastCheck;
 
     /**
-     * @Serializer\Groups({"service_main", "service_full"})
      * @var \DateTime|null
      */
-    private $lastStateChange;
+    protected $lastHardStateChange;
 
     /**
-     * @Serializer\Groups({"service_full"})
+     * @var \DateTime|null
+     */
+    protected $lastNotification;
+
+    /**
+     * @var \DateTime|null
+     */
+    protected $lastTimeCritical;
+
+    /**
+     * @var \DateTime|null
+     */
+    protected $lastTimeOk;
+
+    /**
+     * @var \DateTime|null
+     */
+    protected $lastTimeUnknown;
+
+    /**
+     * @var \DateTime|null
+     */
+    protected $lastTimeWarning;
+
+    /**
+     * @var \DateTime|null
+     */
+    protected $lastUpdate;
+
+    /**
+     * @var \DateTime|null
+     */
+    protected $lastStateChange;
+
+    /**
      * @var float|null
      */
-    private $latency;
+    protected $latency;
 
     /**
      * @var int
-     * @Serializer\Groups({"service_main", "service_full"})
      */
-    private $maxCheckAttempts;
+    protected $maxCheckAttempts;
 
     /**
      * @var \DateTime
-     * @Serializer\Groups({"service_full"})
      */
-    private $nextCheck;
+    protected $nextCheck;
 
     /**
-     * @Serializer\Groups({"service_main", "service_full"})
      * @var string
      */
-    private $output;
+    protected $output;
 
     /**
-     * @Serializer\Groups({"service_full"})
-     * @Desc(column="perfdata", modifier="setPerformanceData")
      * @var string
      */
-    private $performanceData;
+    protected $performanceData;
 
     /**
-     * @Serializer\Groups({"service_min", "service_main", "service_full"})
      * @var int ['0' => 'OK', '1' => 'WARNING', '2' => 'CRITICAL', '3' => 'UNKNOWN', '4' => 'PENDING']
      */
-    private $state;
+    protected $state;
 
     /**
-     * @Serializer\Groups({"service_main", "service_full"})
      * @var int ('1' => 'HARD', '0' => 'SOFT')
      */
-    private $stateType;
+    protected $stateType;
 
     /**
-     * @return int
+     * @var int
      */
-    public function getId(): int
+    protected $criticality;
+
+    /**
+     * @var Downtime[]
+     */
+    protected $downtimes = [];
+
+    /**
+     * @var Acknowledgement|null
+     */
+    protected $acknowledgement;
+
+    /**
+     * @var bool|null
+     */
+    protected $flapping;
+
+    /**
+     * @var \Centreon\Domain\Monitoring\ResourceStatus|null
+     */
+    private $status;
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function loadEntityDescriptorMetadata(): array
+    {
+        return [
+            'service_id' => 'setId',
+            'acknowledged' => 'setAcknowledged',
+            'active_checks' => 'setActiveCheck',
+            'checked' => 'setChecked',
+            'perfdata' => 'setPerformanceData',
+        ];
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -327,7 +338,7 @@ class Service
     /**
      * @return string|null
      */
-    public function getCommandLine(): string
+    public function getCommandLine(): ?string
     {
         return $this->commandLine;
     }
@@ -467,6 +478,15 @@ class Service
     }
 
     /**
+     * virtual property used by resource details endpoint
+     * @return bool
+     */
+    public function getActiveCheck(): bool
+    {
+        return $this->isActiveCheck;
+    }
+
+    /**
      * @return bool
      */
     public function isActiveCheck(): bool
@@ -529,7 +549,7 @@ class Service
     }
 
     /**
-     * @param int|null $scheduledDowntimeDepth
+     * @param int $scheduledDowntimeDepth
      * @return Service
      */
     public function setScheduledDowntimeDepth(int $scheduledDowntimeDepth): Service
@@ -619,7 +639,7 @@ class Service
     }
 
     /**
-     * @param \DateTime $nextCheck
+     * @param \DateTime|null $nextCheck
      * @return Service|null
      */
     public function setNextCheck(?\DateTime $nextCheck): Service
@@ -824,5 +844,110 @@ class Service
     {
         $this->stateType = $stateType;
         return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getCriticality(): ?int
+    {
+        return $this->criticality;
+    }
+
+    /**
+     * @param int|null $criticality
+     * @return Service
+     */
+    public function setCriticality(?int $criticality): Service
+    {
+        $this->criticality = $criticality;
+        return $this;
+    }
+
+    /**
+     * @return Downtime[]
+     */
+    public function getDowntimes(): array
+    {
+        return $this->downtimes;
+    }
+
+    /**
+     * @param Downtime[] $downtimes
+     * @return Service
+     */
+    public function setDowntimes(array $downtimes): self
+    {
+        $this->downtimes = $downtimes;
+        return $this;
+    }
+
+    /**
+     * @return Acknowledgement|null
+     */
+    public function getAcknowledgement(): ?Acknowledgement
+    {
+        return $this->acknowledgement;
+    }
+
+    /**
+     * @param Acknowledgement|null $acknowledgement
+     * @return Service
+     */
+    public function setAcknowledgement(?Acknowledgement $acknowledgement): self
+    {
+        $this->acknowledgement = $acknowledgement;
+        return $this;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getFlapping(): ?bool
+    {
+        return $this->flapping;
+    }
+
+    /**
+     * @param bool|null $flapping
+     * @return Service
+     */
+    public function setFlapping(?bool $flapping): self
+    {
+        $this->flapping = $flapping;
+        return $this;
+    }
+
+    /**
+     * @return \Centreon\Domain\Monitoring\ResourceStatus|null
+     */
+    public function getStatus(): ?ResourceStatus
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param \Centreon\Domain\Monitoring\ResourceStatus|null $status
+     * @return \Centreon\Domain\Monitoring\Resource
+     */
+    public function setStatus(?ResourceStatus $status): self
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getDuration(): ?string
+    {
+        $duration = null;
+
+        if ($this->getLastStateChange()) {
+            $duration = CentreonDuration::toString(time() - $this->getLastStateChange()->getTimestamp());
+        }
+
+        return $duration;
     }
 }

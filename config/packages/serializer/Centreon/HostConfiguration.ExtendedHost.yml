@@ -1,0 +1,25 @@
+Centreon\Domain\HostConfiguration\ExtendedHost:
+  properties:
+    id:
+      type: integer
+      groups:
+        - 'host_extended'
+    hostId:
+      type: integer
+      groups:
+        - 'host_extended'
+    notes:
+      type: string
+      groups:
+        - 'host_extended'
+        - 'host_extended_group_1'
+    notesUrl:
+      type: string
+      groups:
+        - 'host_extended'
+        - 'host_extended_group_1'
+    actionUrl:
+      type: string
+      groups:
+        - 'host_extended'
+        - 'host_extended_group_1'

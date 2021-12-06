@@ -3,11 +3,12 @@
     <head>
         <title>Centreon - IT & Network Monitoring</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-        <meta name="Generator" content="Centreon - Copyright (C) 2005 - 2020 Open Source Matters. All rights reserved." />
+        <meta name="Generator" content="Centreon - Copyright (C) 2005 - 2021 Open Source Matters. All rights reserved." />
         <meta name="robots" content="index, nofollow" />
         <meta http-equiv="refresh" content="840">
         <link href="./Themes/Centreon-2/login.css" rel="stylesheet" type="text/css">
         <link rel="shortcut icon" href="./img/favicon.ico">
+        <script type="text/javascript" src="./include/common/javascript/jquery/jquery.min.js"></script>
     </head>
     <body OnLoad="document.login.useralias.focus();">
         <form action="./index.php" method="post" name="login" style="height:370px">
@@ -16,14 +17,14 @@
             {/if}
             <div class="login_wrapper">
                 <div class="LoginInvitLogo">
-                    {foreach from=$loginMessages item=message}
-                        <div class="error_msg"><span class='msg'>{$message}</span></div>
-                    {/foreach}
+                    <div class="error_msg" style="visibility: hidden">
+                        <span class='msg'></span>
+                    </div>
                    <img src="img/centreon.png" alt="Centreon Logo" title="Centreon Logo" />
                 </div>
                 <div class="logintab">
                     <table id="logintab1" style="text-align:center;" align="center">
-                       {if $keycloakEnabled == 0 || ($keycloakEnabled == 1 && $keycloakMode == 1)}
+                       {if $openIdConnectEnabled == 0 || ($openIdConnectEnabled == 1 && $openIdConnectMode == 1)}
                        <tr>
                             <td align='right'>{$form.useralias.label}</td>
                             <td>{$form.useralias.html}</td>
@@ -36,14 +37,14 @@
                             <td colspan="2" align='center'>{$form.submitLogin.html}</td>
                         </tr>
                         {/if}
-                        {if $keycloakEnabled == 1}
-                            <td colspan="2" align='center'><a href="?force=1"><input class="btc bt_info" name="submitLogin" value="Connect with Keycloak" type="button"/></a></td>
+                        {if $openIdConnectEnabled == 1}
+                            <td colspan="2" align='center'><a href="?force=1"><input class="btc bt_info" name="submitLogin" value="Connect with OpenId Connect" type="button"/></a></td>
                         {/if}
                     </table>
                 </div>
                 <div class="LoginInvitVersion">
                     <span id="LoginInvitcpy">
-                        &copy; <a href="mailto:contact@centreon.com">Centreon</a> 2005 - 2020
+                        &copy; <a href="mailto:contact@centreon.com">Centreon</a> 2005 - 2021
                     </span>
                     <br>
                     <span>
@@ -55,6 +56,41 @@
         </form>
         {literal}
         <script type="text/javascript">
+            jQuery(() => {
+                jQuery('form[name="login"]').submit(() => {
+                    jQuery('input[type="submit"]').prop('disabled', true)
+                    jQuery.ajax({
+                        url: './authentication/providers/configurations/local',
+                        data: JSON.stringify({
+                            login: jQuery('input[name="useralias"]').val(),
+                            password: jQuery('input[name="password"]').val()
+                        }),
+                        method: 'POST',
+                        contentType: 'application/json'
+                    }).done((res) => {
+                        window.location.href = res.redirect_uri
+                    }).fail((err) => {
+                        if (err.status === 401) {
+                            if (err?.responseJSON?.message) {
+                                jQuery('span.msg').text(err.responseJSON.message)
+                            } else {
+                                jQuery('span.msg').text('Your credentials are incorrect')
+                            }
+                        } else {
+                            jQuery('span.msg').text('Internal server error')
+                        }
+                        jQuery('div.error_msg').css('visibility', '')
+                    }).always(() => {
+                        jQuery('input[type="submit"]').prop('disabled', false)
+                    })
+                    return false;
+                });
+            });
+
+            if (window.location.href.match(/\/index.php\?disconnect=1/)) {
+                localStorage.removeItem('centreonPlatformData');
+            }
+
           // check :
           //  - if login page is in an iframe
           //  - if iframe url is login page with disconnect parameter

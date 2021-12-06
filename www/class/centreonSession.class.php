@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2019 Centreon
+ * Copyright 2005-2021 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -36,11 +37,11 @@
 class CentreonSession
 {
     /*
-	 * Constructor class
-	 *
-	 * @access public
-	 * @return 	object	object session
-	 */
+     * Constructor class
+     *
+     * @access public
+     * @return 	object	object session
+     */
     public function __construct()
     {
     }
@@ -68,6 +69,19 @@ class CentreonSession
         session_regenerate_id(true);
     }
 
+    /**
+     * Write value in php session and close it
+     *
+     * @param  string $key   session attribute
+     * @param  mixed  $value session value to save
+     */
+    public static function writeSessionClose($key, $value)
+    {
+        session_start();
+        $_SESSION[$key] = $value;
+        session_write_close();
+    }
+
     public function s_unset()
     {
         session_unset();
@@ -88,13 +102,16 @@ class CentreonSession
     /**
      * Check user session status
      *
-     * @param string $sessionId Session id to check
-     * @param CentreonDB $db
+     * @param  string        $sessionId Session id to check
+     * @param  CentreonDB    $db
      * @return int
      * @throws PDOException
      */
     public static function checkSession($sessionId, CentreonDB $db)
     {
+        // First, Drop expired sessions
+        self::deleteExpiredSession($db);
+
         if (empty($sessionId)) {
             return 0;
         }
@@ -106,12 +123,33 @@ class CentreonSession
     }
 
     /**
+     * Delete all expired sessions
+     * @param CentreonDB $db
+     */
+    public static function deleteExpiredSession(CentreonDB $db): void
+    {
+        $db->query(
+            "DELETE FROM `session`
+            WHERE last_reload <
+                (SELECT UNIX_TIMESTAMP(NOW() - INTERVAL (`value` * 60) SECOND)
+                FROM `options`
+                WHERE `key` = 'session_expire')
+            OR last_reload IS NULL"
+        );
+
+        $db->query(
+            "DELETE FROM `security_token`
+            WHERE expiration_date < UNIX_TIMESTAMP(NOW())"
+        );
+    }
+
+    /**
      * Update session to keep alive
      *
      * @param \CentreonDB $pearDB
      * @return bool If the session is updated or not
      */
-    public function updateSession($pearDB) : bool
+    public function updateSession($pearDB): bool
     {
         $sessionUpdated = false;
 
@@ -120,12 +158,37 @@ class CentreonSession
 
         if (self::checkSession($sessionId, $pearDB) === 1) {
             try {
-                /* Update last_reload parameter */
-                $query = 'UPDATE `session` '
-                    . 'SET `last_reload` = "' . time() . '", '
-                    . '`ip_address` = "' . $_SERVER["REMOTE_ADDR"] . '" '
-                    . 'WHERE `session_id` = "' . $sessionId . '" ';
-                $pearDB->query($query);
+                $sessionStatement = $pearDB->prepare(
+                    "UPDATE `session`
+                    SET `last_reload` = :lastReload, `ip_address` = :ipAddress
+                    WHERE `session_id` = :sessionId"
+                );
+                $sessionStatement->bindValue(':lastReload', time(), \PDO::PARAM_INT);
+                $sessionStatement->bindValue(':ipAddress', $_SERVER["REMOTE_ADDR"], \PDO::PARAM_STR);
+                $sessionStatement->bindValue(':sessionId', $sessionId, \PDO::PARAM_STR);
+
+                $sessionExpire = 120;
+                $optionResult = $pearDB->query(
+                    "SELECT `value`
+                    FROM `options`
+                    WHERE `key` = 'session_expire'"
+                );
+                if (($option = $optionResult->fetch()) && !empty($option['value'])) {
+                    $sessionExpire = (int) $option['value'];
+                }
+
+                $expirationDate = (new \Datetime())
+                    ->add(new DateInterval('PT' . $sessionExpire . 'M'))
+                    ->getTimestamp();
+                $tokenStatement = $pearDB->prepare(
+                    "UPDATE `security_token`
+                    SET `expiration_date` = :expirationDate
+                    WHERE `token` = :sessionId"
+                );
+                $tokenStatement->bindValue(':expirationDate', $expirationDate, \PDO::PARAM_STR);
+                $tokenStatement->bindValue(':sessionId', $sessionId, \PDO::PARAM_STR);
+                $tokenStatement->execute();
+
                 $sessionUpdated = true; // return true if session is properly updated
             } catch (\PDOException $e) {
                 $sessionUpdated = false; // return false if session is not properly updated in database

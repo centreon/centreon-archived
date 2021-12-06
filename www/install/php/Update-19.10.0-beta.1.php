@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -47,8 +48,8 @@ $pearDB->query(
     WHERE topology_url LIKE "/poller-wizard/%"'
 );
 
-
 try {
+    $pearDB->query('SET SESSION innodb_strict_mode=OFF');
     // Add trap regexp matching
     if (!$pearDB->isColumnExist('traps', 'traps_mode')) {
         $pearDB->query(
@@ -60,4 +61,6 @@ try {
         2,
         "UPGRADE : 19.10.0-beta.1 Unable to modify regexp matching in the database"
     );
+} finally {
+    $pearDB->query('SET SESSION innodb_strict_mode=ON');
 }

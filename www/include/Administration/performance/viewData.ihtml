@@ -12,17 +12,9 @@
             <td><h4>{$Pollers}</h4></td>
         </tr>
         <tr>
-            <td><input type='text' name='searchH' value="{$searchH}"/></td>
-            <td><input type='text' name='searchS' value="{$searchS}"/></td>
-            <td>
-                <select name="searchP">
-                    <option value=""></option>
-                    {foreach from=$instances key=instanceId item=instanceName}
-                    <option value="{$instanceId}" {if $instanceId== $searchP} selected{
-                    /if}>{$instanceName}</option>
-                    {/foreach}
-                </select>
-            </td>
+            <td><input type='text' name='searchH' value="{if isset($searchH)}{$searchH}{/if}"/></td>
+            <td><input type='text' name='searchS' value="{if isset($searchS)}{$searchS}{/if}"/></td>
+            <td>{$form.searchP.html}</td>
             <td>{$form.Search.html}</td>
         </tr>
         </tbody>
@@ -30,10 +22,9 @@
     <table class="ToolbarTable table">
         <tr class="ToolbarTR">
             <td>
-                {$msg.options} {$form.o1.html}
+                {$form.o1.html}
                 &nbsp;&nbsp;&nbsp;
             </td>
-            <input name="p" value="{$p}" type="hidden">
             {php}
             include('./include/common/pagination.php');
             {/php}
@@ -74,10 +65,9 @@
     <table class="ToolbarTable table">
         <tr class="ToolbarTR">
             <td>
-                {$msg.options} {$form.o2.html}
+                {$form.o2.html}
                 &nbsp;&nbsp;&nbsp;
             </td>
-            <input name="p" value="{$p}" type="hidden">
             {php}
             include('./include/common/pagination.php');
             {/php}

@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,12 +22,20 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Monitoring\Interfaces;
 
-use Centreon\Domain\Contact\Interfaces\ContactFilterInterface;
 use Centreon\Domain\Monitoring\Host;
-use Centreon\Domain\Monitoring\HostGroup;
 use Centreon\Domain\Monitoring\Service;
+use Centreon\Domain\Monitoring\HostGroup;
 use Centreon\Domain\Monitoring\ServiceGroup;
+use Centreon\Domain\Repository\RepositoryException;
+use Centreon\Domain\Contact\Interfaces\ContactFilterInterface;
+use Centreon\Domain\MonitoringServer\Exception\MonitoringServerException;
+use Centreon\Domain\HostConfiguration\HostConfigurationException;
+use Centreon\Domain\Monitoring\Exception\MonitoringServiceException;
+use Centreon\Domain\ServiceConfiguration\ServiceConfigurationException;
 
+/**
+ * @package Centreon\Domain\Monitoring\Interfaces
+ */
 interface MonitoringServiceInterface extends ContactFilterInterface
 {
     /**
@@ -43,10 +52,11 @@ interface MonitoringServiceInterface extends ContactFilterInterface
      *
      * @param bool $withHosts Indicates whether hosts groups must be completed with their hosts
      * @param bool $withServices Indicates whether hosts must be completed with their services
+     * @param int|null $hostId Return only hostgroups for specific host null by default
      * @return HostGroup[]
      * @throws \Exception
      */
-    public function findHostGroups(bool $withHosts = false, bool $withServices = false): array;
+    public function findHostGroups(bool $withHosts = false, bool $withServices = false, int $hostId = null): array;
 
     /**
      * Find a host based on his ID.
@@ -66,6 +76,15 @@ interface MonitoringServiceInterface extends ContactFilterInterface
      * @throws \Exception
      */
     public function findOneService(int $hostId, int $serviceId): ?Service;
+
+    /**
+     * Find a service based on its description
+     *
+     * @param string $description description of the service
+     * @return Service|null
+     * @throws \Exception
+     */
+    public function findOneServiceByDescription(string $description): ?Service;
 
     /**
      * Find all service groups.
@@ -102,4 +121,64 @@ interface MonitoringServiceInterface extends ContactFilterInterface
      * @throws \Exception
      */
     public function isHostExists(int $hostId): bool;
+
+    /**
+     * Indicates whether a service exists.
+     *
+     * @param int $hostId Host id to find
+     * @param int $serviceId Service id to find
+     * @return bool
+     * @throws \Exception
+     */
+    public function isServiceExists(int $hostId, int $serviceId): bool;
+
+    /**
+     * Find all service groups by host and service ids.
+     *
+     * @param int $hostId
+     * @param int $serviceId
+     * @return ServiceGroup[]
+     */
+    public function findServiceGroupsByHostAndService(int $hostId, int $serviceId): array;
+
+    /**
+     * Try to hide all macro password values of the host command line.
+     *
+     * @param Host $monitoringHost Monitoring host
+     * @param string $replacementValue Replacement value used instead of macro password value
+     * @throws HostConfigurationException
+     * @throws MonitoringServiceException
+     * @throws RepositoryException
+     * @throws ServiceConfigurationException
+     * @throws MonitoringServerException
+     */
+    public function hidePasswordInHostCommandLine(Host $monitoringHost, string $replacementValue = '***'): void;
+
+    /**
+     * Try to hide all macro password values of the service command line.
+     *
+     * @param Service $monitoringService Monitoring service
+     * @param string $replacementValue Replacement value used instead of macro password value
+     * @throws HostConfigurationException
+     * @throws MonitoringServiceException
+     * @throws RepositoryException
+     * @throws ServiceConfigurationException
+     * @throws MonitoringServerException
+     */
+    public function hidePasswordInServiceCommandLine(
+        Service $monitoringService,
+        string $replacementValue = '***'
+    ): void;
+
+    /**
+     * Find the command line of a service.
+     *
+     * If a password exists, it will be hidden.
+     *
+     * @param int $hostId Host id associated to the service
+     * @param int $serviceId Service id
+     * @return string|null Return the command line if it exists
+     * @throws MonitoringServiceException
+     */
+    public function findCommandLineOfService(int $hostId, int $serviceId): ?string;
 }

@@ -2,12 +2,28 @@
 #----
 ## @Synopsis	Install script for CentStorage
 ## @Copyright	Copyright 2008, Guillaume Watteeux
+## @Copyright	Copyright 2008-2020, Centreon
 ## @license	GPL : http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
 ## Install script for CentStorage
 #----
-# install centreon centstorage  
-#################################
-# SVN: $Id$
+## Centreon is developed with GPL Licence 2.0
+##
+## GPL License: http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+##
+## Developed by : Julien Mathis - Romain Le Merlus
+## Contributors : Guillaume Watteeux - Maximilien Bersoult
+##
+## This program is free software; you can redistribute it and/or
+## modify it under the terms of the GNU General Public License
+## as published by the Free Software Foundation; either version 2
+## of the License, or (at your option) any later version.
+##
+## This program is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+## GNU General Public License for more details.
+##
+##    For information : infos@centreon.com
 
 echo -e "\n$line"
 echo -e "\t$(gettext "Starting CentStorage Installation")"
@@ -142,20 +158,6 @@ $INSTALL_DIR/cinstall $cinstall_opts \
 	$TMP_DIR/src/bin/logAnalyserBroker \
 	$CENTSTORAGE_BINDIR/logAnalyserBroker >> $LOG_FILE 2>&1
 check_result $?  "$(gettext "Install logAnalyserBroker")"
-
-## nagiosPerfTrace
-
-log "INFO" "$(gettext "Install nagiosPerfTrace")"
-$INSTALL_DIR/cinstall $cinstall_opts \
-	-u "$CENTREON_USER" -g "$CENTREON_GROUP" -m 755 \
-	$TMP_DIR/src/cron/nagiosPerfTrace \
-	$INSTALL_DIR_CENTREON/cron/nagiosPerfTrace >> $LOG_FILE 2>&1
-check_result $? "$(gettext "Install nagiosPerfTrace")"
-
-if [ -f "$CENTREON_LOG/nagiosPerfTrace.log" ]; then
-    log "INFO" "$(gettext "Applying proper permissions to nagiosPerfTrace.log file")"
-    $CHOWN $CENTREON_USER:$CENTREON_GROUP $CENTREON_LOG/nagiosPerfTrace.log
-fi
 
 ## cron file
 log "INFO" "$(gettext "Change macros for centstorage.cron")"

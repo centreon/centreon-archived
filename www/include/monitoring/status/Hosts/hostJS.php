@@ -209,7 +209,7 @@ if (isset($_GET["acknowledge"])) {
         setTimeout(mainLoopHost, 250);
     }
 
-    function initM(_time_reload, _sid, _o) {
+    function initM(_time_reload, _o) {
 
         // INIT Select objects
         construct_selecteList_ndo_instance('instance_selected');
@@ -234,11 +234,11 @@ if (isset($_GET["acknowledge"])) {
 
         _time =<?php echo $time; ?>;
         if (_on) {
-            goM(_time_reload, _sid, _o);
+            goM(_time_reload, _o);
         }
     }
 
-    function goM(_time_reload, _sid, _o) {
+    function goM(_time_reload, _o) {
         if (_on == 0) {
             return;
         }
@@ -269,7 +269,7 @@ if (isset($_GET["acknowledge"])) {
         if (_timeoutID) { // Kill next execution if in queue
             clearTimeout(_timeoutID);
         }
-        _timeoutID = cycleVisibilityChange(function(){goM(_time_reload, _sid, _o)}, _time_reload);
+        _timeoutID = cycleVisibilityChange(function(){goM(_time_reload, _o)}, _time_reload);
         _time_live = _time_reload;
         _on = 1;
 
@@ -292,6 +292,7 @@ if (isset($_GET["acknowledge"])) {
         var keyz;
 
         _cmd = cmd;
+        var resources = [];
         _getVar = "";
         if (cmd != '72' && cmd != '75') {
             return 1;
@@ -302,13 +303,14 @@ if (isset($_GET["acknowledge"])) {
                     document.getElementById(decodeURIComponent(keyz))
                 ) {
                     if (document.getElementById(decodeURIComponent(keyz)).checked) {
-                        _getVar += '&select[' + encodeURIComponent(keyz) + ']=1';
+                        resources.push(encodeURIComponent(keyz));
                     }
                 }
             }
 
-            var url = './include/monitoring/external_cmd/popup/popup.php?sid=' + _sid + '&o=' + _o + '&p=' + _p +
-                '&cmd=' + cmd + _getVar;
+            _getVar = JSON.stringify(resources)
+            var url = './include/monitoring/external_cmd/popup/popup.php?o=' + _o + '&p=' + _p +
+                '&cmd=' + cmd;
 
             var popin = jQuery('<div>');
             popin.centreonPopin({open: true, url: url});
@@ -362,12 +364,21 @@ if (isset($_GET["acknowledge"])) {
             var author = document.getElementById('author').value;
 
             xhr_cmd.open(
-                "GET",
-                "./include/monitoring/external_cmd/cmdPopup.php?cmd=" + _cmd + "&comment=" + comment +
-                "&sticky=" + sticky + "&persistent=" + persistent + "&notify=" + notify +
-                "&ackhostservice=" + ackhostservice + "&force_check=" + force_check + "&author=" + author + _getVar,
+                "POST",
+                "./include/monitoring/external_cmd/cmdPopup.php",
                 true
             );
+
+            var data = new FormData();
+            data.append('cmd', _cmd);
+            data.append('comment', comment);
+            data.append('sticky', sticky);
+            data.append('persistent', persistent);
+            data.append('notify', notify);
+            data.append('ackhostservice', ackhostservice);
+            data.append('force_check', force_check);
+            data.append('author', author);
+            data.append('resources', _getVar);
         }
         else if (_cmd == '74' || _cmd == '75') {
             var downtimehostservice = 0;
@@ -393,27 +404,38 @@ if (isset($_GET["acknowledge"])) {
                 host_or_centreon_time = tmp.value;
             }
             xhr_cmd.open(
-                "GET",
-                "./include/monitoring/external_cmd/cmdPopup.php?cmd=" + _cmd + "&duration=" + duration +
-                "&duration_scale=" + duration_scale + "&start=" + start + "&end=" + end + "&comment=" + comment +
-                "&fixed=" + fixed + "&host_or_centreon_time=" + host_or_centreon_time +
-                "&downtimehostservice=" + downtimehostservice + "&author=" + author + _getVar,
+                "POST",
+                "./include/monitoring/external_cmd/cmdPopup.php",
                 true
             );
+            var data = new FormData();
+            data.append('cmd', _cmd);
+            data.append('duration', duration);
+            data.append('duration_scale', duration_scale);
+            data.append('comment', comment);
+            data.append('start', start);
+            data.append('end', end);
+            data.append('host_or_centreon_time', host_or_centreon_time);
+            data.append('fixed', fixed);
+            data.append('downtimehostservice', downtimehostservice);
+            data.append('author', author);
+            data.append('resources', _getVar);
         }
-        xhr_cmd.send(null);
+        xhr_cmd.send(data);
         window.currentPopin.centreonPopin("close");
         unsetCheckboxes();
     }
 
     function toggleFields(fixed) {
-        var dur;
-        dur = document.getElementById('duration');
+        var durationField = jQuery('#duration');
+        var durationScaleField = jQuery('#duration_scale');
+
         if (fixed.checked) {
-            dur.disabled = true;
-        }
-        else {
-            dur.disabled = false;
+            durationField.attr('disabled', true);
+            durationScaleField.attr('disabled', true);
+        } else {
+            durationField.removeAttr('disabled');
+            durationScaleField.removeAttr('disabled');
         }
     }
 </script>

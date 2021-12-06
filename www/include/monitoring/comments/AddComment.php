@@ -1,7 +1,7 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2020 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -166,14 +166,15 @@ if (!$centreon->user->access->checkAction("service_comment")) {
              */
 
             //catch fix input host_id
-            if (!is_array($_POST["host_id"])) {
-                $_POST["host_id"] = array($_POST["host_id"]);
-            }
+            if (isset($_POST["host_id"])) {
+                if (!is_array($_POST["host_id"])) {
+                    $_POST["host_id"] = array($_POST["host_id"]);
+                }
 
-            foreach ($_POST["host_id"] as $host_id) {
-                AddHostComment($host_id, $_POST["comment"], $_POST["persistant"]);
+                foreach ($_POST["host_id"] as $host_id) {
+                    AddHostComment($host_id, $_POST["comment"], $_POST["persistant"]);
+                }
             }
-
             $valid = true;
             require_once($path . "listComment.php");
         } elseif ($values['commentType']['commentType'] == 2) {

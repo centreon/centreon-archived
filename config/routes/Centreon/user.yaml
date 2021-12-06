@@ -1,0 +1,11 @@
+centreon_application_user_getActionsAuthorization:
+  methods: GET
+  path: /users/acl/actions
+  controller: 'Centreon\Application\Controller\UserController::getActionsAuthorization'
+  condition: "request.attributes.get('version') >= 21.10"
+
+centreon_application_user_getParameters:
+  methods: GET
+  path: /configuration/users/current/parameters
+  controller: 'Centreon\Application\Controller\UserController::getUserParameters'
+  condition: "request.attributes.get('version') >= 21.10"

@@ -548,6 +548,7 @@ p.description a, p.description a:visited {
     font-size: 10px;
     font-weight: bold;
     text-transform: uppercase;
+    white-space: nowrap;
 }
 
 .badge a            {
@@ -568,6 +569,7 @@ p.description a, p.description a:visited {
 .pending    {background-color: #2AD1D4;}
 .service_unknown    {background-color: #bcbdc0;}
 .info {background-color: #00bfb3;}
+.ack {background-color: #AA9C24;}
 
 .bdg_dtm:before {
     padding: 2px 4px;
@@ -1463,10 +1465,18 @@ div.update_readme,div.update_output {background-color:#FFF;border:1px #AEAEAE so
 /* Specifique Appli */
 /*  Arbo ACL */
 .arbo_a     {margin-left:30px;padding-top:0;}
-.arbo_a li  {list-style:none;margin-left:0;padding-left:0;padding-top:1px;}
+.arbo_a .bg_grey {background-color: #BBBBBB;}
+.arbo_a .bg_grey_mid {background-color: #CCCCCC;}
+.arbo_a .bg_grey_light {background-color: #DDDDDD;}
+.arbo_a .bg_grey_white {background-color: #EEEEEE;}
+.arbo_a li  {list-style: none;margin: 1px 0 0 0;}
+.arbo_a td  {padding: 4px 2px;}
+.arbo_a img {width: 10px;cursor: pointer;}
 .arbo_b     {display:none;margin-left:40px;padding-top:1px;}
 .arbo_c     {display:none;margin-left:50px;padding-top:0;}
-.arbo_d     {display:none;list-style:none;margin-left:30px;padding-top:5px;}
+.arbo_d     {display:none;list-style:none;margin:0px;padding-left:25px;}
+.arbo_d .td_label    {padding: 5px 10px;}
+.arbo_d .td_checkbox    {text-align:right;padding:5px 10px;}
 
 /* Search Options */
 .search_input_host  {padding:2px 2px 3px 18px; background: #FFFFFF url("../../img/icones/16x16/server_network.gif") no-repeat scroll 1px 0px;}
@@ -2835,4 +2845,20 @@ ul.module_list {
     padding: 0;
     margin: 0;
     line-height: 14px;
+}
+
+/* configuration pollers action buttons */
+.ui-icon-white {
+  background-image: url("./jquery-ui/images/ui-icons_ffffff_256x240.png") !important;
+}
+
+.bt-poller-action{
+    line-height: 20px;
+    font-size: 13.3333px;
+    margin: 4px 6px 0px 0px !important;
+}
+
+.bt-poller-action:disabled {
+    background: #cdcdcd !important;
+    cursor: not-allowed;
 }

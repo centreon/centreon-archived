@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2018 Centreon
+ * Copyright 2005-2021 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -52,7 +53,16 @@ if (!CentreonSession::checkSession(session_id(), $pearDB)) {
     exit();
 }
 
+/**
+ * @var Centreon $centreon
+ */
 $centreon = $_SESSION["centreon"];
+
+/**
+ * true: URIs will correspond to deprecated pages
+ * false: URIs will correspond to new page (Resource Status)
+ */
+$useDeprecatedPages = $centreon->user->doesShowDeprecatedPages();
 
 /**
  * Language informations init
@@ -75,11 +85,21 @@ define("STATUS_UNREACHABLE", 2);
 define("TYPE_SOFT", 0);
 define("TYPE_HARD", 1);
 
+/**
+ * Defining constants for the ACK message types
+ */
+define('SERVICE_ACKNOWLEDGEMENT_MSG_TYPE', 10);
+define('HOST_ACKNOWLEDGEMENT_MSG_TYPE', 11);
+
 // Include Access Class
 include_once _CENTREON_PATH_ . "www/class/centreonACL.class.php";
 include_once _CENTREON_PATH_ . "www/class/centreonXML.class.php";
 include_once _CENTREON_PATH_ . "www/class/centreonGMT.class.php";
 include_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
+
+$defaultLimit = $centreon->optGen['maxViewConfiguration'] > 1
+    ? (int) $centreon->optGen['maxViewConfiguration']
+    : 30;
 
 /**
  * Get input vars
@@ -87,13 +107,23 @@ include_once _CENTREON_PATH_ . "www/include/common/common-Func.php";
 $inputArguments = array(
     'lang' => FILTER_SANITIZE_STRING,
     'id' => FILTER_SANITIZE_STRING,
-    'num' => FILTER_SANITIZE_STRING,
-    'limit' => FILTER_SANITIZE_STRING,
+    'num' => [
+        'filter' => FILTER_VALIDATE_INT,
+        'options' => [
+            'default' => 0
+        ]
+    ],
+    'limit' => [
+        'filter' => FILTER_VALIDATE_INT,
+        'options' => [
+            'default' => $defaultLimit
+        ]
+    ],
     'StartDate' => FILTER_SANITIZE_STRING,
     'EndDate' => FILTER_SANITIZE_STRING,
     'StartTime' => FILTER_SANITIZE_STRING,
     'EndTime' => FILTER_SANITIZE_STRING,
-    'period' => FILTER_SANITIZE_STRING,
+    'period' => FILTER_VALIDATE_INT,
     'engine' => FILTER_SANITIZE_STRING,
     'up' => FILTER_SANITIZE_STRING,
     'down' => FILTER_SANITIZE_STRING,
@@ -113,6 +143,10 @@ $inputArguments = array(
     'search_service' => FILTER_SANITIZE_STRING,
     'export' => FILTER_SANITIZE_STRING,
 );
+
+// Saving bound values
+$queryValues = [];
+
 $inputGet = filter_input_array(
     INPUT_GET,
     $inputArguments
@@ -124,12 +158,19 @@ $inputPost = filter_input_array(
 
 $inputs = array();
 foreach ($inputArguments as $argumentName => $argumentValue) {
-    if (!is_null($inputGet[$argumentName])) {
+    if (!empty($inputGet[$argumentName])) {
         $inputs[$argumentName] = $inputGet[$argumentName];
-    } else {
+    } elseif ((!empty($inputPost[$argumentName]))) {
         $inputs[$argumentName] = $inputPost[$argumentName];
+    } else {
+        $inputs[$argumentName] = null;
     }
 }
+
+$kernel = \App\Kernel::createForWeb();
+$resourceController = $kernel->getContainer()->get(
+    \Centreon\Application\Controller\MonitoringResourceController::class
+);
 
 // Start XML document root
 $buffer = new CentreonXML();
@@ -170,13 +211,15 @@ if (isset($sid) && $sid) {
     );
 }
 
-$num = isset($inputs["num"]) ? htmlentities($inputs["num"]) : "0";
-$limit = isset($inputs["limit"]) ? htmlentities($inputs["limit"]) : "30";
+// binding limit value
+$limit = $inputs['limit'];
+$num = $inputs['num'];
+
 $StartDate = isset($inputs["StartDate"]) ? htmlentities($inputs["StartDate"]) : "";
 $EndDate = isset($inputs["EndDate"]) ? $EndDate = htmlentities($inputs["EndDate"]) : "";
 $StartTime = isset($inputs["StartTime"]) ? $StartTime = htmlentities($inputs["StartTime"]) : "";
 $EndTime = isset($inputs["EndTime"]) ? $EndTime = htmlentities($inputs["EndTime"]) : "";
-$auto_period = isset($inputs["period"]) ? $auto_period = htmlentities($inputs["period"]) : "-1";
+$auto_period = isset($inputs["period"]) ? $auto_period = (int) $inputs["period"] : -1;
 $engine = isset($inputs["engine"]) ? $engine = htmlentities($inputs["engine"]) : "false";
 $up = isset($inputs["up"]) ? htmlentities($inputs["up"]) : "true";
 $down = isset($inputs["down"]) ? htmlentities($inputs["down"]) : "true";
@@ -274,6 +317,10 @@ $tab_status_service = array(
     "2" => "CRITICAL",
     "3" => "UNKNOWN"
 );
+$acknowlegementMessageType = [
+    'badgeColor' => 'ack',
+    'badgeText' => 'ACK'
+];
 
 /*
  * Create IP Cache
@@ -293,7 +340,6 @@ $logs = array();
  * Print infos..
  */
 $buffer->startElement("infos");
-$buffer->writeElement("sid", $sid);
 $buffer->writeElement("opid", $openid);
 $buffer->writeElement("start", $start);
 $buffer->writeElement("end", $end);
@@ -361,13 +407,29 @@ $flag_begin = 0;
 
 $whereOutput = "";
 if (isset($output) && $output != "") {
-    $whereOutput = " AND logs.output like '%" . $pearDBO->escape($output) . "%' ";
+    $queryValues[':output'] = [\PDO::PARAM_STR => '%' . $output . '%'];
+    $whereOutput = " AND logs.output like :output ";
 }
 
 $innerJoinEngineLog = "";
 if ($engine == "true" && isset($openid) && $openid != "") {
-    $innerJoinEngineLog = " INNER JOIN instances i ON i.name = logs.instance_name AND i.instance_id IN (" .
-        $pearDBO->escape($openid) . ") ";
+    // filtering poller ids and keeping only real ids
+    $pollerIds = explode(',', $openid);
+    $filteredIds = array_filter($pollerIds, function ($id) {
+        return is_numeric($id);
+    });
+
+    $pollerParams = [];
+    if (count($filteredIds) > 0) {
+        $in = '';
+        foreach ($filteredIds as $index => $filteredId) {
+            $key = ':pollerId' . $index;
+            $queryValues[$key] = [\PDO::PARAM_INT => $filteredId];
+            $pollerIds[] = $key;
+        }
+        $innerJoinEngineLog = ' INNER JOIN instances i ON i.name = logs.instance_name'
+            . ' AND i.instance_id IN ( ' . implode(',', array_values($pollerIds)) . ')';
+    }
 }
 
 if ($notification == 'true') {
@@ -452,10 +514,10 @@ foreach ($tab_id as $openid) {
     $hostId = "";
 
     if (isset($tab_tmp[2])) {
-        $hostId = $tab_tmp[1];
-        $id = $tab_tmp[2];
+        $hostId = (int)$tab_tmp[1];
+        $id = (int)$tab_tmp[2];
     } elseif (isset($tab_tmp[1])) {
-        $id = $tab_tmp[1];
+        $id = (int)$tab_tmp[1];
     }
 
     if ($id == "") {
@@ -508,19 +570,19 @@ foreach ($tab_id as $openid) {
 }
 
 // Build final request
-$req = "SELECT SQL_CALC_FOUND_ROWS " . (!$is_admin ? "DISTINCT" : "") . " 
-        logs.ctime, 
-        logs.host_id, 
-        logs.host_name, 
-        logs.service_id, 
-        logs.service_description, 
-        logs.msg_type, 
-        logs.notification_cmd, 
-        logs.notification_contact, 
-        logs.output, 
-        logs.retry, 
-        logs.status, 
-        logs.type, 
+$req = "SELECT SQL_CALC_FOUND_ROWS " . (!$is_admin ? "DISTINCT" : "") . "
+        logs.ctime,
+        logs.host_id,
+        logs.host_name,
+        logs.service_id,
+        logs.service_description,
+        logs.msg_type,
+        logs.notification_cmd,
+        logs.notification_contact,
+        logs.output,
+        logs.retry,
+        logs.status,
+        logs.type,
         logs.instance_name
         FROM logs " . $innerJoinEngineLog
     . (
@@ -551,7 +613,7 @@ if (count($tab_host_ids) == 0 && count($tab_svc) == 0) {
         }
     }
     if ($str_unitH != "") {
-        $str_unitH = "(logs.host_id IN ($str_unitH) AND logs.service_id IS NULL)";
+        $str_unitH = "(logs.host_id IN ($str_unitH) AND (logs.service_id IS NULL OR logs.service_id = 0))";
         if (isset($search_host) && $search_host != "") {
             $host_search_sql = " AND logs.host_name LIKE '%" . $pearDBO->escape($search_host) . "%' ";
         }
@@ -563,7 +625,8 @@ if (count($tab_host_ids) == 0 && count($tab_svc) == 0) {
     $flag = 0;
     $str_unitSVC = "";
     $service_search_sql = "";
-    if ((count($tab_svc) || count($tab_host_ids)) &&
+    if (
+        (count($tab_svc) || count($tab_host_ids)) &&
         (
             $up == 'true' ||
             $down == 'true' ||
@@ -584,7 +647,12 @@ if (count($tab_host_ids) == 0 && count($tab_svc) == 0) {
                 }
             }
             if ($str != "") {
-                $str_unitSVC .= $req_append . " (logs.host_id = '" . $host_id . "' AND logs.service_id IN ($str)) ";
+                if ($host_id === '_Module_Meta') {
+                    $str_unitSVC .= $req_append . " (logs.host_name = '" . $host_id . "' "
+                        . "AND logs.service_id IN (" . $str . ")) ";
+                } else {
+                    $str_unitSVC .= $req_append . " (logs.host_id = '" . $host_id . "' AND logs.service_id IN ($str)) ";
+                }
                 $req_append = " OR";
             }
         }
@@ -617,19 +685,32 @@ if (isset($req) && $req) {
     }
 
     $limitReq = "";
-    $limitReq2 = "";
     if ($export !== "1") {
-        $limitReq = " LIMIT " . $num * $limit . ", " . $limit;
+        $offset = $num * $limit;
+        $queryValues['offset'] = [\PDO::PARAM_INT => $offset];
+        $queryValues['limit'] = [\PDO::PARAM_INT => $limit];
+        $limitReq = " LIMIT :offset, :limit";
     }
-    $dbResult = $pearDBO->query($req . $limitReq);
-    $rows = $pearDBO->query("SELECT FOUND_ROWS()")->fetchColumn();
-
-    if (!($dbResult->rowCount()) && ($num != 0)) {
-        if ($export !== "1") {
-            $limitReq2 = " LIMIT " . (floor($rows / $limit) * $limit) . ", " . $limit;
+    $stmt = $pearDBO->prepare($req . $limitReq);
+    foreach ($queryValues as $bindId => $bindData) {
+        foreach ($bindData as $bindType => $bindValue) {
+            $stmt->bindValue($bindId, $bindValue, $bindType);
         }
-        $dbResult = $pearDBO->query($req . $limitReq2);
     }
+    $stmt->execute();
+
+    if (!($stmt->rowCount()) && ($num != 0)) {
+        if ($export !== "1") {
+            $offset = floor($rows / $limit) * $limit;
+        }
+        $stmt->bindValue(':offset', $offset, \PDO::PARAM_INT);
+        $stmt->execute();
+    }
+
+    $logs = $stmt->fetchAll();
+    $stmt->closeCursor();
+
+    $rows = $pearDBO->query("SELECT FOUND_ROWS()")->fetchColumn();
 
     $buffer->startElement("selectLimit");
     for ($i = 10; $i <= 100; $i = $i + 10) {
@@ -731,24 +812,42 @@ if (isset($req) && $req) {
      * Full Request
      */
     $cpts = 0;
-    while ($log = $dbResult->fetch()) {
+    foreach ($logs as $log) {
         $buffer->startElement("line");
         $buffer->writeElement("msg_type", $log["msg_type"]);
-        $displayType = $log['type'];
-        if (isset($tab_type[$log['type']])) {
-            $displayType = $tab_type[$log['type']];
+
+        /**
+         * For an ACK there is no point to display RETRY and TYPE columns
+         */
+        $displayType = '';
+        if (
+            $log['msg_type'] != HOST_ACKNOWLEDGEMENT_MSG_TYPE
+            && $log['msg_type'] != SERVICE_ACKNOWLEDGEMENT_MSG_TYPE
+        ) {
+            $displayType = $log['type'];
+
+            if (isset($tab_type[$log['type']])) {
+                $displayType = $tab_type[$log['type']];
+            }
+            $log["msg_type"] > 1 ? $buffer->writeElement("retry", "") : $buffer->writeElement("retry", $log["retry"]);
+            $log["msg_type"] == 2 || $log["msg_type"] == 3
+                ? $buffer->writeElement("type", "NOTIF")
+                : $buffer->writeElement("type", $displayType);
         }
-        $log["msg_type"] > 1 ? $buffer->writeElement("retry", "") : $buffer->writeElement("retry", $log["retry"]);
-        $log["msg_type"] == 2 || $log["msg_type"] == 3
-            ? $buffer->writeElement("type", "NOTIF")
-            : $buffer->writeElement("type", $displayType);
 
         /*
          * Color initialisation for services and hosts status
+         * For ACK message types, display a badge 'ACK' in Yellow
          */
         $color = '';
-        if (isset($log["status"])) {
-            if (isset($tab_color_service[$log["status"]])
+        if (
+            $log['msg_type'] == HOST_ACKNOWLEDGEMENT_MSG_TYPE
+            || $log['msg_type'] == SERVICE_ACKNOWLEDGEMENT_MSG_TYPE
+        ) {
+            $color = $acknowlegementMessageType['badgeColor'];
+        } elseif (isset($log["status"])) {
+            if (
+                isset($tab_color_service[$log["status"]])
                 && !empty($log["service_description"])
             ) {
                 $color = $tab_color_service[$log["status"]];
@@ -767,7 +866,12 @@ if (isset($req) && $req) {
         $buffer->startElement("status");
         $buffer->writeAttribute("color", $color);
         $displayStatus = $log["status"];
-        if ($log['service_description'] && isset($tab_status_service[$log['status']])) {
+        if (
+            $log['msg_type'] == HOST_ACKNOWLEDGEMENT_MSG_TYPE
+            || $log['msg_type'] == SERVICE_ACKNOWLEDGEMENT_MSG_TYPE
+        ) {
+            $displayStatus = $acknowlegementMessageType['badgeText'];
+        } elseif ($log['service_description'] && isset($tab_status_service[$log['status']])) {
             $displayStatus = $tab_status_service[$log['status']];
         } elseif (isset($tab_status_host[$log['status']])) {
             $displayStatus = $tab_status_host[$log['status']];
@@ -791,8 +895,31 @@ if (isset($req) && $req) {
             }
             $buffer->writeElement("service_description", $log["service_description"], false);
             $buffer->writeElement("real_service_name", $log["service_description"], false);
+
+            $serviceTimelineRedirectionUri = $useDeprecatedPages
+                ? 'main.php?p=20201&amp;o=svcd&amp;host_name=' . $log['host_name'] . '&amp;service_description='
+                    . $log['service_description']
+                : $resourceController->buildServiceUri(
+                    $log['host_id'],
+                    $log['service_id'],
+                    $resourceController::TAB_TIMELINE_NAME
+                );
+
+            $buffer->writeElement(
+                "s_timeline_uri",
+                $serviceTimelineRedirectionUri
+            );
         }
         $buffer->writeElement("real_name", $log["host_name"], false);
+
+        $hostTimelineRedirectionUri = $useDeprecatedPages
+            ? 'main.php?p=20202&amp;o=hd&amp;host_name=' . $log['host_name']
+            : $resourceController->buildHostUri($log['host_id'], $resourceController::TAB_TIMELINE_NAME);
+
+        $buffer->writeElement(
+            "h_timeline_uri",
+            $hostTimelineRedirectionUri
+        );
         $buffer->writeElement("class", $tab_class[$cpts % 2]);
         $buffer->writeElement("poller", $log["instance_name"]);
         $buffer->writeElement("date", $log["ctime"]);

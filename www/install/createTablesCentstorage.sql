@@ -116,7 +116,7 @@ UNLOCK TABLES;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `index_data` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   `host_name` varchar(255) DEFAULT NULL,
   `host_id` int(11) DEFAULT NULL,
   `service_description` varchar(255) DEFAULT NULL,
@@ -157,7 +157,8 @@ CREATE TABLE `log_action` (
   `log_contact_id` int(11) NOT NULL,
   PRIMARY KEY (`action_log_id`),
   KEY `log_contact_id` (`log_contact_id`),
-  KEY `action_log_date` (`action_log_date`)
+  KEY `action_log_date` (`action_log_date`),
+  KEY `action_object_date` (`object_type`,`action_log_date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -201,7 +202,7 @@ UNLOCK TABLES;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `metrics` (
   `metric_id` int(11) NOT NULL AUTO_INCREMENT,
-  `index_id` int(11) DEFAULT NULL,
+  `index_id` BIGINT UNSIGNED DEFAULT NULL,
   `metric_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
   `data_source_type` enum('0','1','2','3') DEFAULT NULL,
   `unit_name` varchar(32) DEFAULT NULL,

@@ -1,7 +1,8 @@
 <?php
+
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2020 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -45,20 +46,25 @@ class CentreonHosttemplates extends CentreonHost
 {
     /**
      *
-     * @param array $values
-     * @param array $options
+     * @param array  $values
+     * @param array  $options
      * @param string $register
+     *
      * @return array
      */
-    public function getObjectForSelect2($values = array(), $options = array(), $register = '1')
+    public function getObjectForSelect2($values = [], $options = [], $register = '1')
     {
         return parent::getObjectForSelect2($values, $options, '0');
     }
-    
+
     /**
      * Returns array of host linked to the template
      *
+     * @param string $hostTemplateName
+     * @param bool   $checkTemplates
+     *
      * @return array
+     * @throws \Exception
      */
     public function getLinkedHostsByName($hostTemplateName, $checkTemplates = true)
     {
@@ -68,22 +74,24 @@ class CentreonHosttemplates extends CentreonHost
             $register = 1;
         }
 
-        $linkedHosts = array();
-        $query = 'SELECT DISTINCT h.host_name '
-            . 'FROM host_template_relation htr, host h, host ht '
-            . 'WHERE htr.host_tpl_id = ht.host_id '
-            . 'AND htr.host_host_id = h.host_id '
-            . 'AND ht.host_register = "0" '
-            . 'AND h.host_register = "' . $register . '" '
-            . 'AND ht.host_name = "' . $this->db->escape($hostTemplateName) . '" ';
-
+        $linkedHosts = [];
+        $query = 'SELECT DISTINCT h.host_name
+            FROM host_template_relation htr, host h, host ht
+            WHERE htr.host_tpl_id = ht.host_id
+            AND htr.host_host_id = h.host_id
+            AND ht.host_register = "0"
+            AND h.host_register = :register
+            AND ht.host_name = :hostTplName';
         try {
-            $result = $this->db->query($query);
-        } catch (\PDOException $e) {
-            throw new \Exception('Error while getting linked hosts of ' . $hostTemplateName);
+            $result = $this->db->prepare($query);
+            $result->bindValue(':register', $register, \PDO::PARAM_STR);
+            $result->bindValue(':hostTplName', $this->db->escape($hostTemplateName), PDO::PARAM_STR);
+            $result->execute();
+        } catch (PDOException $e) {
+            throw new Exception('Error while getting linked hosts of ' . $hostTemplateName);
         }
 
-        while ($row = $result->fetchRow()) {
+        while ($row = $result->fetch()) {
             $linkedHosts[] = $row['host_name'];
         }
 

@@ -1,7 +1,8 @@
 <?php
+
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -23,41 +24,72 @@ require_once __DIR__ . '/../www/class/centreonRestHttp.class.php';
 require_once __DIR__ . '/../config/centreon-statistics.config.php';
 require_once __DIR__ . '/../www/class/centreonStatistics.class.php';
 
-$sendStatistics = 0;
-$isRemote = 0;
+use Symfony\Component\Console\Logger\ConsoleLogger;
+use Symfony\Component\Console\Output\ConsoleOutput;
+
+$output = new ConsoleOutput();
+$logger = new ConsoleLogger($output);
+
+$shouldSendStatistics = false;
+$isRemote = false;
 $hasValidLicenses = false;
 $isImpUser = false;
 
+/**
+ * @var CentreonDB $db
+ */
 $db = $dependencyInjector['configuration_db'];
 
+/**
+ * Log a message.
+ *
+ * If an exception is provided, the message will be stored in the PHP log.
+ *
+ * @param string $message Message to log
+ * @param Throwable $exception
+ */
+function logger(string $message, Throwable $exception = null)
+{
+    try {
+        $datetime = new DateTime();
+        $datetime->setTimezone(new DateTimeZone('UTC'));
+        $logEntry = is_null($exception) ? $message : $message . ' - ' . $exception->getMessage();
+        printf("%s - %s\n", $datetime->format('Y/m/d H:i:s'), $logEntry);
+    } catch (Exception $ex) {
+        printf("Exception: %s\n", $ex->getMessage());
+    }
+}
 // Check if CEIP is enable
 $result = $db->query("SELECT `value` FROM `options` WHERE `key` = 'send_statistics'");
 if ($row = $result->fetch()) {
-    $sendStatistics = (int)$row['value'];
+    $shouldSendStatistics = (bool)$row['value'];
 }
 
 // Check if it's a Central server
 $result = $db->query("SELECT `value` FROM `informations` WHERE `key` = 'isRemote'");
 if ($row = $result->fetch()) {
-    $isRemote = $row['value'];
+    $isRemote = $row['value'] === 'yes';
 }
 
 // Check if valid Centreon licences exist
 $centreonLicensesDir = "/etc/centreon/license.d/";
-if (is_dir($centreonLicensesDir)) {
-    if ($dh = opendir($centreonLicensesDir)) {
-       $dateNow = new DateTime('NOW');
-        while (($file = readdir($dh)) !== false) {
-            if (is_file($centreonLicensesDir . $file)) {
-                $licenseContent = file_get_contents($centreonLicensesDir . $file);
+if (is_dir($centreonLicensesDir) && ($dh = opendir($centreonLicensesDir)) !== false) {
+    $dateNow = new DateTime('NOW');
+    while (($file = readdir($dh)) !== false) {
+        try {
+            $statisticsFileName = $centreonLicensesDir . $file;
+            if (is_file($statisticsFileName)) {
+                $licenseContent = file_get_contents($statisticsFileName);
                 if (preg_match('/"end": "(\d{4}\-\d{2}\-\d{2})"/', $licenseContent, $matches)) {
-                    $dateLicense = new DateTime($matches[1]);
+                    $dateLicense = new DateTime((string)$matches[1]);
                     if ($dateLicense >= $dateNow) {
                         $hasValidLicenses = true;
-                        break ;
+                        break;
                     }
                 }
             }
+        } catch (Exception $ex) {
+            logger('Error while reading statistics file ' . $statisticsFileName, $ex);
         }
     }
 }
@@ -71,42 +103,52 @@ if ($row = $result->fetch()) {
 }
 
 // Only send telemetry & statistics if it's a Centreon central server
-if ($isRemote !== 'yes') {
-    $http = new CentreonRestHttp();
-    $oStatistics = new CentreonStatistics();
-    $timestamp = time();
-    $UUID = $oStatistics->getCentreonUUID();
-    if (empty($UUID)) {
-        \error_log($timestamp . " : No UUID specified");
-        return;
-    }
-    $versions = $oStatistics->getVersion();
-    $infos = $oStatistics->getPlatformInfo();
-    $timez = $oStatistics->getPlatformTimezone();
-    $additional = [];
-
-    /*
-     * Only send statistics if user using a free version has enabled this option
-     * or if at least a Centreon license is valid
-     */
-    if ($sendStatistics || $hasValidLicenses || $isRemote) {
-        $additional = $oStatistics->getAdditionalData();
-    }
-
-    // Construct the object gathering datas
-    $data = array(
-        'timestamp' => "$timestamp",
-        'UUID' => $UUID,
-        'versions' => $versions,
-        'infos' => $infos,
-        'timezone' => $timez,
-        'additional' => $additional
-    );
-
+if ($isRemote === false) {
     try {
+        $http = new CentreonRestHttp();
+        $oStatistics = new CentreonStatistics($logger);
+        $timestamp = time();
+        $uuid = $oStatistics->getCentreonUUID();
+        if (empty($uuid)) {
+            throw new Exception("No UUID specified");
+        }
+        $versions = $oStatistics->getVersion();
+        $infos = $oStatistics->getPlatformInfo();
+        $timezone = $oStatistics->getPlatformTimezone();
+        $additional = [];
+
+        /*
+         * Only send statistics if user using a free version has enabled this option
+         * or if at least a Centreon license is valid
+         */
+        if ($shouldSendStatistics || $hasValidLicenses || $isRemote) {
+            try {
+                $additional = $oStatistics->getAdditionalData();
+            } catch (\Throwable $e) {
+                $logger->error('Cannot get stats from modules');
+            }
+        }
+
+        // Construct the object gathering datas
+        $data = array(
+            'timestamp' => "$timestamp",
+            'UUID' => $uuid,
+            'versions' => $versions,
+            'infos' => $infos,
+            'timezone' => $timezone,
+            'additional' => $additional
+        );
+
         $returnData = $http->call(CENTREON_STATS_URL, 'POST', $data, array(), true);
-        echo "statusCode :" . $returnData['statusCode'] . ',body : ' . $returnData['body'];
-    } catch (Exception $e) {
-        echo 'Caught exception: ' .  $e->getMessage() . '\n';
+        logger(
+            sprintf(
+                'Response from [%s] : %s,body : %s',
+                CENTREON_STATS_URL,
+                $returnData['statusCode'],
+                $returnData['body']
+            )
+        );
+    } catch (Exception $ex) {
+        logger('Got error while sending data to [' . CENTREON_STATS_URL . ']', $ex);
     }
 }

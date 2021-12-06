@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2019 Centreon
+ * Copyright 2005-2021 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -44,12 +45,12 @@ use Symfony\Component\Validator\Constraints\CallbackValidator;
 use Psr\Container\ContainerInterface;
 use Centreon\Infrastructure\Service\CentreonDBManagerService;
 use Centreon\ServiceProvider;
+use Centreon\Application\Validation\Validator\Interfaces\CentreonValidatorInterface;
 
-class RepositoryCallbackValidator extends CallbackValidator
+class RepositoryCallbackValidator extends CallbackValidator implements CentreonValidatorInterface
 {
-
     /**
-     * @var CentreonDBManagerService;
+     * @var CentreonDBManagerService
      */
     private $db;
 
@@ -65,6 +66,7 @@ class RepositoryCallbackValidator extends CallbackValidator
 
     /**
      * {@inheritdoc}
+     * @return void
      */
     public function validate($object, Constraint $constraint)
     {
@@ -78,25 +80,25 @@ class RepositoryCallbackValidator extends CallbackValidator
         $value = $object->$fieldAccessor();
         $field = $constraint->fields;
 
-        if (!\is_callable($constraint->repository, $method)) {
+        if (!method_exists($constraint->repository, $method)) {
             throw new ConstraintDefinitionException(sprintf(
                 '%s targeted by Callback constraint is not a valid callable in the repository',
                 json_encode($method)
             ));
         } elseif (null !== $object && !$repo->$method($object)) {
-                $this->context->buildViolation($constraint->message)
-                    ->atPath($field)
-                    ->setInvalidValue($value)
-                    ->setCode(RepositoryCallback::NOT_VALID_REPO_CALLBACK)
-                    ->setCause('Not Satisfying method:'.$method)
-                    ->addViolation();
+            $this->context->buildViolation($constraint->message)
+                ->atPath($field)
+                ->setInvalidValue($value)
+                ->setCode(RepositoryCallback::NOT_VALID_REPO_CALLBACK)
+                ->setCause('Not Satisfying method:' . $method)
+                ->addViolation();
         }
     }
 
     /**
      * List of required services
      *
-     * @return array
+     * @return string[]
      */
     public static function dependencies(): array
     {

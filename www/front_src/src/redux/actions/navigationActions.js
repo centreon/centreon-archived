@@ -31,11 +31,11 @@ const fetchNavigationBegin = () => ({
 });
 
 const fetchNavigationSuccess = (items) => ({
-  type: FETCH_NAVIGATION_SUCCESS,
   items,
+  type: FETCH_NAVIGATION_SUCCESS,
 });
 
 const fetchNavigationFailure = (error) => ({
-  type: FETCH_NAVIGATION_FAILURE,
   error,
+  type: FETCH_NAVIGATION_FAILURE,
 });

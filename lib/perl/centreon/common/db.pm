@@ -268,7 +268,7 @@ sub query {
             $status = $self->connect();
             if ($status != -1) {
                 for (my $i = 0; $i < scalar(@{$self->{args}}); $i++) {
-                    my $str_quoted = $self->quote(${$self->{args}}[0]);
+                    my $str_quoted = $self->quote(${$self->{args}}[$i]);
                     $query =~ s/##__ARG__$i##/$str_quoted/;
                 }
                 $self->{args} = [];

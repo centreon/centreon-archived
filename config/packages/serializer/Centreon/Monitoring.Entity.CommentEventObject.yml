@@ -1,0 +1,7 @@
+Centreon\Domain\Monitoring\Entity\CommentEventObject:
+    properties:
+        id:
+            type: int
+            groups:
+                - 'comment_event_list'
+                - 'comment_event_full'

@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,37 +24,45 @@ namespace Centreon\Domain\RequestParameters;
 
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 
+/**
+ * @package Centreon\Domain\RequestParameters
+ */
 class RequestParameters implements RequestParametersInterface
 {
-    const NAME_FOR_LIMIT = 'limit';
-    const NAME_FOR_PAGE = 'page';
-    const NAME_FOR_SEARCH = 'search';
-    const NAME_FOR_SORT = 'sort_by';
-    const NAME_FOR_TOTAL = 'total';
+    public const NAME_FOR_LIMIT = 'limit';
+    public const NAME_FOR_PAGE = 'page';
+    public const NAME_FOR_SEARCH = 'search';
+    public const NAME_FOR_SORT = 'sort_by';
+    public const NAME_FOR_TOTAL = 'total';
 
-    const ORDER_ASC = 'ASC';
-    const ORDER_DESC = 'DESC';
-    const DEFAULT_ORDER = self::ORDER_ASC;
+    public const ORDER_ASC = 'ASC';
+    public const ORDER_DESC = 'DESC';
+    public const DEFAULT_ORDER = self::ORDER_ASC;
 
-    const DEFAULT_LIMIT = 10;
-    const DEFAULT_PAGE = 1;
-    const DEFAULT_SEARCH_OPERATOR = self::OPERATOR_EQUAL;
+    public const DEFAULT_LIMIT = 10;
+    public const DEFAULT_PAGE = 1;
+    public const DEFAULT_SEARCH_OPERATOR = self::OPERATOR_EQUAL;
 
-    const OPERATOR_EQUAL = '$eq';
-    const OPERATOR_NOT_EQUAL = '$neq';
-    const OPERATOR_LESS_THAN = '$lt';
-    const OPERATOR_LESS_THAN_OR_EQUAL = '$le';
-    const OPERATOR_GREATER_THAN = '$gt';
-    const OPERATOR_GREATER_THAN_OR_EQUAL = '$ge';
-    const OPERATOR_LIKE = '$lk';
-    const OPERATOR_NOT_LIKE = '$nk';
-    const OPERATOR_IN = '$in';
-    const OPERATOR_NOT_IN = '$ni';
+    public const OPERATOR_EQUAL = '$eq';
+    public const OPERATOR_NOT_EQUAL = '$neq';
+    public const OPERATOR_LESS_THAN = '$lt';
+    public const OPERATOR_LESS_THAN_OR_EQUAL = '$le';
+    public const OPERATOR_GREATER_THAN = '$gt';
+    public const OPERATOR_GREATER_THAN_OR_EQUAL = '$ge';
+    public const OPERATOR_LIKE = '$lk';
+    public const OPERATOR_NOT_LIKE = '$nk';
+    public const OPERATOR_REGEXP = '$rg';
+    public const OPERATOR_IN = '$in';
+    public const OPERATOR_NOT_IN = '$ni';
 
-    const AGGREGATE_OPERATOR_OR = '$or';
-    const AGGREGATE_OPERATOR_AND = '$and';
-    const CONCORDANCE_MODE_STRICT = 1;
-    const CONCORDANCE_MODE_NO_STRICT = 0;
+    public const AGGREGATE_OPERATOR_OR = '$or';
+    public const AGGREGATE_OPERATOR_AND = '$and';
+
+    public const CONCORDANCE_MODE_NO_STRICT = 0;
+    public const CONCORDANCE_MODE_STRICT = 1;
+
+    public const CONCORDANCE_ERRMODE_SILENT = 0;
+    public const CONCORDANCE_ERRMODE_EXCEPTION = 1;
 
     private $authorizedOrders = [self::ORDER_ASC, self::ORDER_DESC];
 
@@ -64,6 +73,11 @@ class RequestParameters implements RequestParametersInterface
      * Used in the data repository classes.
      */
     private $concordanceStrictMode = self::CONCORDANCE_MODE_NO_STRICT;
+
+    /**
+     * @var int Indicates error behaviour when there unknown search parameters in strict mode.
+     */
+    private $concordanceErrorMode = self::CONCORDANCE_ERRMODE_EXCEPTION;
 
     /**
      * @var array Array representing fields to search for
@@ -99,14 +113,6 @@ class RequestParameters implements RequestParametersInterface
     }
 
     /**
-     * @return int
-     */
-    public function getConcordanceStrictMode(): int
-    {
-        return $this->concordanceStrictMode;
-    }
-
-    /**
      * @inheritDoc
      */
     public function getExtraParameter(string $parameterName)
@@ -120,34 +126,55 @@ class RequestParameters implements RequestParametersInterface
     /**
      * @inheritDoc
      */
-    public function setConcordanceStrictMode(int $concordanceStrictMode): void
+    public function getConcordanceStrictMode(): int
+    {
+        return $this->concordanceStrictMode;
+    }
+
+    /**
+     * {@inheritDoc}
+     * @return RequestParameters
+     */
+    public function setConcordanceStrictMode(int $concordanceStrictMode): self
     {
         $this->concordanceStrictMode = $concordanceStrictMode;
+        return $this;
     }
 
     /**
      * @inheritDoc
      */
-    public function findSearchParameter(string $keyToFind, array $parameters): ?string
+    public function getConcordanceErrorMode(): int
+    {
+        return $this->concordanceErrorMode;
+    }
+
+    /**
+     * {@inheritDoc}
+     * @return RequestParameters
+     */
+    public function setConcordanceErrorMode(int $concordanceErrorMode): self
+    {
+        $this->concordanceErrorMode = $concordanceErrorMode;
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function hasSearchParameter(string $keyToFind, array $parameters): bool
     {
         foreach ($parameters as $key => $value) {
             if ($key === $keyToFind) {
-                if (is_object($value)) {
-                    $value = (array)$value;
-                    return $value[key($value)];
-                } else {
-                    return $value;
-                }
-            } else {
-                if (is_array($value) || is_object($value)) {
-                    $value = (array) $value;
-                    if (($value = $this->findSearchParameter($keyToFind, $value)) !== null) {
-                        return $value;
-                    }
+                return true;
+            } elseif (is_array($value) || is_object($value)) {
+                $value = (array) $value;
+                if ($this->hasSearchParameter($keyToFind, $value)) {
+                    return true;
                 }
             }
         }
-        return null;
+        return false;
     }
 
     /**
@@ -166,14 +193,14 @@ class RequestParameters implements RequestParametersInterface
             self::OPERATOR_GREATER_THAN_OR_EQUAL,
             self::OPERATOR_LIKE,
             self::OPERATOR_NOT_LIKE,
+            self::OPERATOR_REGEXP,
             self::OPERATOR_IN,
             self::OPERATOR_NOT_IN
         ];
         $names = [];
-        $searchIn = null;
         $searchIn = function ($data) use (&$searchIn, &$names, $notAllowedKeys) {
             foreach ($data as $key => $value) {
-                if (!in_array($key, $names) && !in_array($key, $notAllowedKeys)) {
+                if (!in_array($key, $names) && !in_array($key, $notAllowedKeys) && !is_int($key)) {
                     $names[] = $key;
                 }
                 if (is_object($value) || is_array($value)) {
@@ -195,7 +222,8 @@ class RequestParameters implements RequestParametersInterface
         $search = $this->search;
 
         if (!empty($search)) {
-            if ((
+            if (
+                (
                     !isset($search[RequestParameters::AGGREGATE_OPERATOR_AND])
                     && !isset($search[RequestParameters::AGGREGATE_OPERATOR_OR])
                 )
@@ -210,14 +238,6 @@ class RequestParameters implements RequestParametersInterface
     /**
      * @inheritDoc
      */
-    public function isSearchParameterDefined(string $parameter): bool
-    {
-        return $this->findSearchParameter($parameter, (array) $this->getSearch()) !== null;
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function toArray(): array
     {
         return [
@@ -225,10 +245,10 @@ class RequestParameters implements RequestParametersInterface
             self::NAME_FOR_LIMIT => $this->limit,
             self::NAME_FOR_SEARCH => !empty($this->search)
                 ? json_decode(json_encode($this->search), true)
-                : new \stdClass,
+                : new \stdClass(),
             self::NAME_FOR_SORT => !empty($this->sort)
                 ? json_decode(json_encode($this->sort), true)
-                : new \stdClass,
+                : new \stdClass(),
             self::NAME_FOR_TOTAL => $this->total
         ];
     }
@@ -239,7 +259,7 @@ class RequestParameters implements RequestParametersInterface
     public function unsetSearchParameter(string $parameterToExtract)
     {
         $parameters = $this->search;
-        $extractFunction = null;
+
         $extractFunction = function (string $parameterToExtract, &$parameters) use (&$extractFunction) {
             foreach ($parameters as $key => &$value) {
                 if ($key === $parameterToExtract) {
@@ -299,7 +319,7 @@ class RequestParameters implements RequestParametersInterface
      */
     public function setSearch(string $search): void
     {
-        $search = json_decode($search ?? '{}');
+        $search = json_decode($search ?? '{}', true);
         $this->search = (array) $search;
         $this->fixSchema();
     }
@@ -324,7 +344,7 @@ class RequestParameters implements RequestParametersInterface
             } else {
                 throw new \RestBadRequestException("Bad format for the sort request parameter");
             }
-        } elseif (is_array($sortRequestToAnalyze)) {
+        } else {
             foreach ($sortRequestToAnalyze as $name => $order) {
                 $isMatched = preg_match(
                     '/^([a-zA-Z0-9_.-]*)$/i',

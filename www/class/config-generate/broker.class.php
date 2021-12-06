@@ -51,7 +51,11 @@ class Broker extends AbstractObjectJSON
         command_file,
         cache_directory,
         stats_activate,
-        daemon
+        daemon,
+        log_directory,
+        log_filename,
+        log_max_size,
+        pool_size
     ';
     protected $attributes_select_parameters = '
         config_group,
@@ -82,6 +86,7 @@ class Broker extends AbstractObjectJSON
     protected $stmt_broker_parameters = null;
     protected $stmt_engine_parameters = null;
     protected $cacheExternalValue = null;
+    protected $cacheLogValue = null;
 
     private function getExternalValues()
     {
@@ -102,6 +107,26 @@ class Broker extends AbstractObjectJSON
         $stmt->execute();
         while (($row = $stmt->fetch(PDO::FETCH_ASSOC))) {
             $this->cacheExternalValue[$row['name']] = $row['external'];
+        }
+    }
+
+    private function getLogsValues(): void
+    {
+        if (!is_null($this->cacheLogValue)) {
+            return;
+        }
+        $this->cacheLogValue = array();
+        $stmt = $this->backend_instance->db->prepare("
+            SELECT relation.`id_centreonbroker`, log.`name`, lvl.`name` as level
+            FROM `cfg_centreonbroker_log` relation
+            INNER JOIN `cb_log` log
+                ON relation.`id_log` = log.`id`
+            INNER JOIN `cb_log_level` lvl
+                ON relation.`id_level` = lvl.`id`
+        ");
+        $stmt->execute();
+        while (($row = $stmt->fetch(PDO::FETCH_ASSOC))) {
+            $this->cacheLogValue[$row['id_centreonbroker']][$row['name']] = $row['level'];
         }
     }
 
@@ -127,11 +152,13 @@ class Broker extends AbstractObjectJSON
               $this->attributes_select_parameters
             FROM cfg_centreonbroker_info
             WHERE config_id = :config_id
+            AND config_group <> 'logger'
             ORDER BY config_group, config_group_id
             ");
         }
 
         $watchdog = [];
+        $anomalyDetectionLuaOutputGroupID = -1;
 
         $result = $this->stmt_broker->fetchAll(PDO::FETCH_ASSOC);
         foreach ($result as $row) {
@@ -153,6 +180,9 @@ class Broker extends AbstractObjectJSON
             $object['event_queue_max_size'] = (int)$row['event_queue_max_size'];
             $object['command_file'] = (string) $row['command_file'];
             $object['cache_directory'] = (string) $cache_directory;
+            if (!empty($row['pool_size'])) {
+                $object['pool_size'] = (int)$row['pool_size'];
+            }
 
             if ($row['daemon'] == '1') {
                 $watchdog['cbd'][] = [
@@ -166,6 +196,14 @@ class Broker extends AbstractObjectJSON
             $this->stmt_broker_parameters->bindParam(':config_id', $row['config_id'], PDO::PARAM_INT);
             $this->stmt_broker_parameters->execute();
             $resultParameters = $this->stmt_broker_parameters->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_ASSOC);
+
+            //logger
+            $object['log']['directory'] = filter_var($row['log_directory'], FILTER_SANITIZE_STRING);
+            $object['log']['filename'] = filter_var($row['log_filename'], FILTER_SANITIZE_STRING);
+            $object['log']['max_size'] = filter_var($row['log_max_size'], FILTER_VALIDATE_INT);
+            $this->getLogsValues();
+            $logs = $this->cacheLogValue[$object['broker_id']];
+            $object['log']['loggers'] = $logs;
 
             // Flow parameters
             foreach ($resultParameters as $key => $value) {
@@ -233,6 +271,18 @@ class Broker extends AbstractObjectJSON
                         $object[$key][$subvalue['config_group_id']][$res[0]][(int)$subvalue['fieldIndex']][$res[1]] =
                             $subvalue['config_value'];
                         $subValuesToCastInArray[$subvalue['config_group_id']][] = $res[0];
+
+                        if ((strcmp(
+                                $object[$key][$subvalue['config_group_id']]['name'],
+                                "forward-to-anomaly-detection"
+                            ) == 0)
+                            && (strcmp(
+                                $object[$key][$subvalue['config_group_id']]['path'],
+                                "/usr/share/centreon-broker/lua/centreon-anomaly-detection.lua"
+                            ) == 0)
+                        ) {
+                            $anomalyDetectionLuaOutputGroupID = $subvalue['config_group_id'];
+                        }
                     }
                 }
 
@@ -266,6 +316,23 @@ class Broker extends AbstractObjectJSON
                     ],
                 ];
             }
+
+            if ($anomalyDetectionLuaOutputGroupID >= 0) {
+                $luaParameters = $this->generateAnomalyDetectionLuaParameters();
+                if (!empty($luaParameters)) {
+                    $object["output"][$anomalyDetectionLuaOutputGroupID]['lua_parameter'] = array_merge_recursive(
+                        $object["output"][$anomalyDetectionLuaOutputGroupID]['lua_parameter'],
+                        $luaParameters
+                    );
+                }
+                $anomalyDetectionLuaOutputGroupID = -1;
+            }
+
+            // gRPC parameters
+            $object['grpc'] = [
+                'port' => 51000 + (int) $row['config_id']
+            ];
+
 
             // Generate file
             $this->generateFile($object);
@@ -425,5 +492,73 @@ class Broker extends AbstractObjectJSON
             throw new InvalidArgumentException('Unrecognized symbol ' . $item);
         }
         return $result;
+    }
+
+    /**
+     * Generate complete proxy url
+     *
+     * @return array with lua parameters
+     */
+    private function generateAnomalyDetectionLuaParameters(): array
+    {
+        global $pearDB;
+
+        $luaParameters = [];
+
+        $stmt = $pearDB->query(
+            "SELECT * FROM options WHERE options.key IN ('saas_token', 'saas_use_proxy', 'saas_url')"
+        );
+        while ($item = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            if ($item['key'] == "saas_token") {
+                $luaParameters[] = [
+                    "type" => "string",
+                    "name" => "token",
+                    "value" => $item['value']
+                ];
+            } elseif ($item['key'] == "saas_url") {
+                $luaParameters[] = [
+                    "type" => "string",
+                    "name" => "destination",
+                    "value" => $item['value']
+                ];
+            } elseif (($item['key'] == "saas_use_proxy") && ($item['value'] == "1")) {
+                $proxyInfo = [];
+                $stmtProxy = $pearDB->query(
+                    "SELECT * FROM options WHERE options.key IN ('proxy_url', 'proxy_port', 'proxy_user', 'proxy_password')"
+                );
+                while ($data = $stmtProxy->fetch(PDO::FETCH_ASSOC)) {
+                    $proxyInfo[$data['key']] = $data['value'];
+                }
+
+                // Generate proxy URL
+                $proxy = '';
+                if (
+                    !empty($proxyInfo['proxy_user'])
+                    && !empty($proxyInfo['proxy_password'])
+                ) {
+                    $proxy = $proxyInfo['proxy_user'] . ':' . $proxyInfo['proxy_password'] . '@';
+                }
+
+                $proxy = (parse_url($proxyInfo['proxy_url'], PHP_URL_SCHEME)
+                            ? (parse_url($proxyInfo['proxy_url'], PHP_URL_SCHEME) . '://')
+                            : 'http://'
+                        ) .  $proxy;
+
+                $proxy .= (parse_url($proxyInfo['proxy_url'], PHP_URL_SCHEME))
+                    ? parse_url($proxyInfo['proxy_url'], PHP_URL_HOST)
+                    : parse_url($proxyInfo['proxy_url'], PHP_URL_PATH);
+                if (isset($proxyInfo['proxy_port']) && !empty($proxyInfo['proxy_port'])) {
+                    $proxy .= ':' . $proxyInfo['proxy_port'];
+                }
+
+                $luaParameters[] = [
+                    "type" => "string",
+                    "name" => "proxy",
+                    "value" => $proxy
+                ];
+            }
+        }
+
+        return $luaParameters;
     }
 }

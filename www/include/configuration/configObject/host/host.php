@@ -1,7 +1,8 @@
 <?php
+
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2020 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -37,17 +38,11 @@ if (!isset($centreon)) {
     exit();
 }
 
-isset($_GET["host_id"]) ? $hG = $_GET["host_id"] : $hG = null;
-isset($_POST["host_id"]) ? $hP = $_POST["host_id"] : $hP = null;
-$hG ? $host_id = $hG : $host_id = $hP;
+$host_id = filter_var(
+    $_GET['host_id'] ?? $_POST['host_id'] ?? null,
+    FILTER_VALIDATE_INT
+);
 
-isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = null;
-isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = null;
-$cG ? $select = $cG : $select = $cP;
-
-isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = null;
-isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = null;
-$cG ? $dupNbr = $cG : $dupNbr = $cP;
 
 /*
  * Path to the configuration dir
@@ -59,8 +54,17 @@ $path = "./include/configuration/configObject/host/";
 /*
  * PHP functions
  */
-require_once $path."DB-Func.php";
+require_once $path . "DB-Func.php";
 require_once "./include/common/common-Func.php";
+
+$select = filter_var_array(
+    getSelectOption(),
+    FILTER_VALIDATE_INT
+);
+$dupNbr = filter_var_array(
+    getDuplicateNumberOption(),
+    FILTER_VALIDATE_INT
+);
 
 if (isset($_POST["o1"]) && isset($_POST["o2"])) {
     if ($_POST["o1"] != "") {
@@ -74,7 +78,7 @@ if (isset($_POST["o1"]) && isset($_POST["o2"])) {
 /* Set the real page */
 if (isset($ret2) && is_array($ret2) && $ret2['topology_page'] != "" && $p != $ret2['topology_page']) {
     $p = $ret2['topology_page'];
-} elseif ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
+} elseif (isset($ret) && is_array($ret) && $ret['topology_page'] != "" && $p != $ret['topology_page']) {
     $p = $ret['topology_page'];
 }
 
@@ -85,51 +89,99 @@ $hgs = $acl->getHostGroupAclConf(null, 'broker');
 $aclHostString = $acl->getHostsString('ID', $dbmon);
 $aclPollerString = $acl->getPollerString();
 
+const HOST_ADD = 'a';
+const HOST_WATCH = 'w';
+const HOST_MODIFY = 'c';
+const HOST_MASSIVE_CHANGE = 'mc';
+const HOST_ACTIVATION = 's';
+const HOST_MASSIVE_ACTIVATION = 'ms';
+const HOST_DEACTIVATION = 'u';
+const HOST_MASSIVE_DEACTIVATION = 'mu';
+const HOST_DUPLICATION = 'm';
+const HOST_DELETION = 'd';
+const HOST_SERVICE_DEPLOYMENT = 'dp';
+
 switch ($o) {
-    case "a":
-        require_once($path."formHost.php");
-        break; #Add a host
-    case "w":
-        require_once($path."formHost.php");
-        break; #Watch a host
-    case "c":
-        require_once($path."formHost.php");
-        break; #Modify a host
-    case "mc":
-        require_once($path."formHost.php");
-        break; # Massive Change
-    case "s":
-        enableHostInDB($host_id);
-        require_once($path."listHost.php");
+    case HOST_ADD:
+    case HOST_WATCH:
+    case HOST_MODIFY:
+    case HOST_MASSIVE_CHANGE:
+        require_once($path . "formHost.php");
+        break;
+    case HOST_ACTIVATION:
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            enableHostInDB($host_id);
+        } else {
+            unvalidFormMessage();
+        }
+        require_once($path . "listHost.php");
         break; #Activate a host
-    case "ms":
-        enableHostInDB(null, isset($select) ? $select : array());
-        require_once($path."listHost.php");
+    case HOST_MASSIVE_ACTIVATION:
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            enableHostInDB(null, $select ?? []);
+        } else {
+            unvalidFormMessage();
+        }
+        require_once($path . "listHost.php");
         break;
-    case "u":
-        disableHostInDB($host_id);
-        require_once($path."listHost.php");
+    case HOST_DEACTIVATION:
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            disableHostInDB($host_id);
+        } else {
+            unvalidFormMessage();
+        }
+        require_once($path . "listHost.php");
         break; #Desactivate a host
-    case "mu":
-        disableHostInDB(null, isset($select) ? $select : array());
-        require_once($path."listHost.php");
+    case HOST_MASSIVE_DEACTIVATION:
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            disableHostInDB(null, $select ?? []);
+        } else {
+            unvalidFormMessage();
+        }
+        require_once($path . "listHost.php");
         break;
-    case "m":
-        multipleHostInDB(isset($select) ? $select : array(), $dupNbr);
+    case HOST_DUPLICATION:
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            multipleHostInDB($select ?? [], $dupNbr);
+        } else {
+            unvalidFormMessage();
+        }
         $hgs = $acl->getHostGroupAclConf(null, 'broker');
         $aclHostString = $acl->getHostsString('ID', $dbmon);
         $aclPollerString = $acl->getPollerString();
-        require_once($path."listHost.php");
-        break; #Duplicate n hosts
-    case "d":
-        deleteHostInDB(isset($select) ? $select : array());
-        require_once($path."listHost.php");
-        break; #Delete n hosts
-    case "dp":
-        applytpl(isset($select) ? $select : array());
-        require_once($path."listHost.php");
+        require_once($path . "listHost.php");
+        break;
+    case HOST_DELETION:
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            deleteHostInDB($select ?? []);
+        } else {
+            unvalidFormMessage();
+        }
+        require_once($path . "listHost.php");
+        break;
+    case HOST_SERVICE_DEPLOYMENT:
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            applytpl($select ?? []);
+        } else {
+            unvalidFormMessage();
+        }
+        require_once($path . "listHost.php");
         break; #Deploy service n hosts
     default:
-        require_once($path."listHost.php");
+        require_once($path . "listHost.php");
         break;
 }

@@ -3,3 +3,14 @@ framework:
 
     php_errors:
         log: true
+
+    http_client:
+        default_options:
+            max_redirects: 7
+
+    session:
+        enabled: true
+        use_cookies: true
+        handler_id: null
+        cookie_secure: 'auto'
+        storage_id: 'session.storage.native'

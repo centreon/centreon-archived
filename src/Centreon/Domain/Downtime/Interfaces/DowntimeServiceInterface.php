@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +25,7 @@ namespace Centreon\Domain\Downtime\Interfaces;
 use Centreon\Domain\Downtime\Downtime;
 use Centreon\Domain\Monitoring\Host;
 use Centreon\Domain\Monitoring\Service;
+use Centreon\Domain\Monitoring\Resource as ResourceEntity;
 
 interface DowntimeServiceInterface
 {
@@ -92,22 +94,31 @@ interface DowntimeServiceInterface
     public function findDowntimesByService(int $hostId, int $serviceId): array;
 
     /**
-     * Add a downtime on a host.
+     * Find all downtimes for a metaservice.
+     *
+     * @param int $metaId ID of the metaservice
+     * @return Downtime[]
+     * @throws \Exception
+     */
+    public function findDowntimesByMetaService(int $metaId): array;
+
+    /**
+     * Add a downtime on multiple hosts.
      *
      * @param Downtime $downtime Downtime to add
-     * @param Host $host Host for which we want to add the downtime
+     * @param Host $host Host to add a downtime
      * @throws \Exception
      */
     public function addHostDowntime(Downtime $downtime, Host $host): void;
 
     /**
-     * Add a downtime for each given service.
+     * Add a downtime on multiple services.
      *
      * @param Downtime $downtime Downtime to add for each service
-     * @param Service[] $services Services list (the host property of each service must to be correctly defined)
+     * @param Service $service Service (the host property of each service must to be correctly defined)
      * @throws \Exception
      */
-    public function addServicesDowntime(Downtime $downtime, array $services): void;
+    public function addServiceDowntime(Downtime $downtime, Service $service): void;
 
     /**
      * Cancel one downtime.
@@ -117,4 +128,11 @@ interface DowntimeServiceInterface
      * @throws \Exception
      */
     public function cancelDowntime(int $downtimeId, Host $host): void;
+
+    /**
+     * @param ResourceEntity $resource
+     * @param Downtime $downtime
+     * @throws \Exception
+     */
+    public function addResourceDowntime(ResourceEntity $resource, Downtime $downtime): void;
 }

@@ -1,14 +1,33 @@
 {literal}
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
 <script type='text/javascript'>
-
     function applyConfiguration() {
         var pollers = [];
-        jQuery('form tr').not('.row_disabled').find('input[id^="poller_"]:checked').each(function(){
+        jQuery('form tr').not('.row_disabled').find('input[id^="poller_"]:checked').each(function() {
             pollers.push(this.id.substr(7));
         });
         window.location.href = "?p=60902&poller=" + pollers.join(',');
     }
+
+    function setO(_i) {
+        document.forms['form'].elements['o'].value = _i;
+    }
+
+    function hasPollersSelected(){
+        var nbSelectedPollers = jQuery('form tr').find('input[id^="poller_"]:checked').length;
+        var buttons = jQuery('form').find('button[name="delete_action"],button[name="duplicate_action"]');
+
+        if (nbSelectedPollers > 0) {
+            buttons.each(function() {
+                $(this).prop("disabled",false);
+            });
+        } else {
+            buttons.each(function() {
+                $(this).prop("disabled",true);
+            });
+        }
+    }
+    hasPollersSelected();
 
 </script>
 {/literal}
@@ -30,19 +49,31 @@
     <table class="ToolbarTable table">
         <tr class="ToolbarTR">
             <td>
-                {if $mode_access == 'w'}
-                {$msg.options} {$form.o1.html}
-                &nbsp;&nbsp;&nbsp;
-                <a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
-                <a href="./poller-wizard/1" target="_top" class="btc bt_info">{t}Add server with wizard{/t}</a>
-                {else}
-                &nbsp;
-                {/if}
-                {if $is_admin == 1 || $can_generate == 1}
-                    {$form.apply_configuration.html}
+                {if !$isRemote}
+                    {if $mode_access == 'w'}
+                        <a href="{$wizardAddBtn.link}" class="{$wizardAddBtn.class}" target="_top">
+                            <span class="ui-icon ui-icon-white {$wizardAddBtn.iconClass}"></span> {$wizardAddBtn.text}
+                        </a>
+                        <a href="{$addBtn.link}" class="{$addBtn.class}">
+                            <span class="ui-icon ui-icon-white {$addBtn.iconClass}"></span> {$addBtn.text}
+                        </a>
+                    {/if}
+                    {if $is_admin == 1 || $can_generate == 1}
+                         <button type="button" class="{$exportBtn.class}" name="{$exportBtn.name}"
+                             onClick="{$exportBtn.onClickAction}">
+                             <span class="ui-icon ui-icon-white {$exportBtn.iconClass}"></span> {$exportBtn.text}
+                         </button>
+                    {/if}
+                    {if $mode_access == 'w'}
+                        <button type="submit" class="{$duplicateBtn.class}" name="{$duplicateBtn.name}" onClick="{$duplicateBtn.onClickAction}">
+                            <span class="ui-icon ui-icon-white {$duplicateBtn.iconClass}"></span> {$duplicateBtn.text}
+                        </button>
+                        <button type="submit" class="{$deleteBtn.class}" name="{$deleteBtn.name}" onClick="{$deleteBtn.onClickAction}">
+                            <span class="ui-icon ui-icon-white {$deleteBtn.iconClass}"></span> {$deleteBtn.text}
+                        </button>
+                    {/if}
                 {/if}
             </td>
-            <input name="p" value="{$p}" type="hidden">
             {php}
                include('./include/common/pagination.php');
             {/php}
@@ -51,10 +82,13 @@
     <table class="ListTable">
         <tr class="ListHeader">
             <td class="ListColHeaderPicker">
+            {if !$isRemote}
                 <div class="md-checkbox md-checkbox-inline">
-                    <input type="checkbox" id="checkall" name="checkall" onclick="checkUncheckAll(this);"/>
+                    <input type="checkbox" id="checkall" name="checkall"
+                        onclick="checkUncheckAll(this); hasPollersSelected();"/>
                     <label class="empty-label" for="checkall"></label>
                 </div>
+            {/if}
             </td>
             <td class="ListColHeaderLeft">{$headerMenu_name}</td>
             <td class="ListColHeaderCenter">{$headerMenu_ip_address}</td>
@@ -72,7 +106,7 @@
         </tr>
         {section name=elem loop=$elemArr}
         <tr class={$elemArr[elem].MenuClass}>
-            <td class="ListColPicker">{$elemArr[elem].RowMenu_select}</td>
+            <td class="ListColPicker">{if !$isRemote}{$elemArr[elem].RowMenu_select} {/if}</td>
             <td class="ListColLeft">{if $mode_access == 'w'}<a href="{$elemArr[elem].RowMenu_link}">{/if}{$elemArr[elem].RowMenu_name}{if $mode_access == 'w'}</a>{/if}</td>
             <td class="ListColCenter">{if $mode_access == 'w'}<a href="{$elemArr[elem].RowMenu_link}">{/if}{$elemArr[elem].RowMenu_ip_address}{if $mode_access == 'w'}</a>{/if}</td>
             <td class="ListColCenter">{$elemArr[elem].RowMenu_type}</td>
@@ -94,29 +128,27 @@
             <td class="ListColCenter">{$elemArr[elem].RowMenu_is_default}</td>
             <td class="ListColCenter"><span class="badge {$elemArr[elem].RowMenu_badge}">{$elemArr[elem].RowMenu_status}</span></td>
             <td class="ListColCenter">
-              {if $mode_access == 'w' && $elemArr[elem].RowMenu_cfg_id != ""} 
-              <!-- Link for edit poller monitoring engine configuration -->
-              <a href="./main.php?p=60903&o=c&nagios_id={$elemArr[elem].RowMenu_cfg_id}">
-                <img src="./img/icons/edit_conf.png" class="ico-16" title="Edit monitoring engine configuration">
-              </a>
-              {/if}
+                {if $mode_access == 'w' && $elemArr[elem].RowMenu_cfg_id != "" && !$isRemote}
+                <!-- Link for edit poller monitoring engine configuration -->
+                <a href="./main.php?p=60903&o=c&nagios_id={$elemArr[elem].RowMenu_cfg_id}">
+                    <img src="./img/icons/edit_conf.png" class="ico-16" title="Edit monitoring engine configuration">
+                </a>
+                {/if}
+
+                {if ($elemArr[elem].RowMenu_gorgone_protocol == 1 && $elemArr[elem].RowMenu_statusVal == 1)
+                || $elemArr[elem].RowMenu_type == 'Central'}
+                <!-- Link for edit poller monitoring engine configuration -->
+                <span  {literal}onclick="displayPopup('{/literal}{$elemArr[elem].RowMenu_server_id}{literal}'){/literal}" >
+                    <img src="./img/icons/show_template.png" class="ico-16" style="cursor: pointer" title="Gorgone configuration">
+                </span>
+                {/if}
             </td>
-            <td class="ListColRight">{if $mode_access == 'w' }{$elemArr[elem].RowMenu_options}{else}&nbsp;{/if}</td>
+            <td class="ListColRight">{if $mode_access == 'w' && !$isRemote }{$elemArr[elem].RowMenu_options}{else}&nbsp;{/if}</td>
         </tr>
         {/section}
     </table>
     <table class="ToolbarTable table">
         <tr class="ToolbarTR">
-            { if $mode_access == 'w' }
-            <td>
-                {$msg.options} {$form.o2.html}
-                &nbsp;&nbsp;&nbsp;
-                <a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
-            </td>
-            { else }
-            <td>&nbsp;</td>
-            { /if }
-            <input name="p" value="{$p}" type="hidden">
             {php}
                include('./include/common/pagination.php');
             {/php}
@@ -126,16 +158,34 @@
         </tr>
     </table>
 <input type='hidden' name='o' id='o' value='42'>
-<input type='hidden' id='limit' name='limit' value='{$limit}'>  
+<input type='hidden' id='limit' name='limit' value='{$limit}'>
 {$form.hidden}
 </form>
 {literal}
 <script type='text/javascript'>
+    function displayPopup(id) {
+        let popin = jQuery(
+            '<div id="config-popin">' +
+                '<div id="loading">' +
+                    '<img src="./img/misc/ajax-loader.gif" />' +
+                '</div>' +
+            '</div>'
+        );
+        let url = './include/configuration/configServers/popup/popup.php?id=' + id;
+        popin.centreonPopin({
+            url: url,
+            open: true,
+            ajaxType: 'GET',
+            ajaxDataType: 'html'
+        });
+    };
 
     setDisabledRowStyle();
-
-
     //formatting the tags containing a class isTimestamp
     formatDateMoment();
+
+    jQuery(document).ready(function () {
+        hasPollersSelected();
+    });
 </script>
 {/literal}

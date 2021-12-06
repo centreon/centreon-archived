@@ -1,7 +1,8 @@
 <?php
+
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2020 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -36,7 +37,7 @@
 require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
 require_once _CENTREON_PATH_ . "/www/class/centreonACL.class.php";
 require_once _CENTREON_PATH_ . "/www/class/centreonHook.class.php";
-require_once dirname(__FILE__) . "/centreon_configuration_objects.class.php";
+require_once __DIR__ . "/centreon_configuration_objects.class.php";
 
 class CentreonPerformanceService extends CentreonConfigurationObjects
 {
@@ -61,7 +62,7 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
      */
     public function getList()
     {
-        global $centreon;
+        global $centreon, $conf_centreon;
 
         $userId = $centreon->user->user_id;
         $isAdmin = $centreon->user->admin;
@@ -69,6 +70,7 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
         $additionalValues = array();
         $additionalCondition = '';
         $bindParams = array();
+        $excludeAnomalyDetection = false;
 
         /* Get ACL if user is not admin */
         $acl = null;
@@ -80,6 +82,10 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
             $bindParams[':fullName'] = '%%';
         } else {
             $bindParams[':fullName'] = '%' . (string)$this->arguments['q'] . '%';
+        }
+
+        if (isset($this->arguments['e']) && strcmp('anomaly', $this->arguments['e']) == 0) {
+            $excludeAnomalyDetection = true;
         }
 
         $query = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT fullname, host_id, service_id, index_id ' .
@@ -106,6 +112,9 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
                 'AND acl.group_id IN (' . $acl->getAccessGroupsString() . ') ';
         }
 
+        if ($excludeAnomalyDetection) {
+            $additionalCondition .= 'AND s.service_id NOT IN (SELECT service_id FROM ' . $conf_centreon['db'] . '.mod_anomaly_service) ';
+        }
         if (isset($this->arguments['hostgroup'])) {
             $additionalCondition .= 'AND (hg.host_id = i.host_id ' .
                 'AND hg.hostgroup_id IN (';
@@ -172,8 +181,12 @@ class CentreonPerformanceService extends CentreonConfigurationObjects
             'ORDER BY fullname ';
 
         if (isset($this->arguments['page_limit']) && isset($this->arguments['page'])) {
-            if (!is_numeric($this->arguments['page']) || !is_numeric($this->arguments['page_limit'])) {
-                throw new \RestBadRequestException('Error, limit must be numerical');
+            if (
+                !is_numeric($this->arguments['page'])
+                || !is_numeric($this->arguments['page_limit'])
+                || $this->arguments['page_limit'] < 1
+            ) {
+                throw new \RestBadRequestException('Error, limit must be an integer greater than zero');
             }
             $offset = ($this->arguments['page'] - 1) * $this->arguments['page_limit'];
             $query .= 'LIMIT :offset, :limit';

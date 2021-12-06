@@ -1,0 +1,11 @@
+configuration.proxy.getProxy:
+    methods: GET
+    path: /configuration/proxy
+    controller: 'Centreon\Application\Controller\Configuration\ProxyController::getProxy'
+    condition: "request.attributes.get('version') >= 21.10"
+
+configuration.proxy.updateProxy:
+    methods: PUT
+    path: /configuration/proxy
+    controller: 'Centreon\Application\Controller\Configuration\ProxyController::updateProxy'
+    condition: "request.attributes.get('version') >= 21.10"

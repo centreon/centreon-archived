@@ -1,0 +1,55 @@
+centreon_application_monitoring_getservices:
+    methods: GET
+    path: /monitoring/services
+    controller: 'Centreon\Application\Controller\MonitoringServicesController::getServices'
+    condition: "request.attributes.get('version') >= 21.10"
+
+centreon_application_monitoring_getservicesbyservicegroups:
+    methods: GET
+    path: /monitoring/servicegroups
+    controller: 'Centreon\Application\Controller\MonitoringServicesController::getServicesByServiceGroups'
+    condition: "request.attributes.get('version') >= 21.10"
+
+centreon_application_monitoring_gethostgroups:
+    methods: GET
+    path: /monitoring/hostgroups
+    controller: 'Centreon\Application\Controller\MonitoringHostsController::getHostGroups'
+    condition: "request.attributes.get('version') >= 21.10"
+
+centreon_application_monitoring_gethosts:
+    methods: GET
+    path: /monitoring/hosts
+    controller: 'Centreon\Application\Controller\MonitoringHostsController::getHosts'
+    condition: "request.attributes.get('version') >= 21.10"
+
+centreon_application_monitoring_getonehost:
+    methods: GET
+    path: /monitoring/hosts/{hostId}
+    requirements:
+        hostId: '\d+'
+    controller: 'Centreon\Application\Controller\MonitoringHostsController::getOneHost'
+    condition: "request.attributes.get('version') >= 21.10"
+
+centreon_application_monitoring_getservicesbyhost:
+    methods: GET
+    path: /monitoring/hosts/{hostId}/services
+    controller: 'Centreon\Application\Controller\MonitoringHostsController::getServicesByHost'
+    condition: "request.attributes.get('version') >= 21.10"
+
+centreon_application_monitoring_getoneservice:
+    methods: GET
+    path: /monitoring/hosts/{hostId}/services/{serviceId}
+    controller: 'Centreon\Application\Controller\MonitoringHostsController::getOneService'
+    condition: "request.attributes.get('version') >= 21.10"
+
+centreon_application_monitoring_getservicegroupsbyhostandservice:
+    methods: GET
+    path: /monitoring/hosts/{hostId}/services/{serviceId}/servicegroups
+    controller: 'Centreon\Application\Controller\MonitoringServicesController::getServiceGroupsByHostAndService'
+    condition: "request.attributes.get('version') >= 21.10"
+
+centreon_application_monitoring_gethostgroupsbyhost:
+    methods: GET
+    path: /monitoring/hosts/{hostId}/hostgroups
+    controller: 'Centreon\Application\Controller\MonitoringHostsController::getHostGroupsByHost'
+    condition: "request.attributes.get('version') >= 21.10"

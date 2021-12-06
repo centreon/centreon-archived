@@ -171,8 +171,11 @@ class CentreonHomeCustomview extends CentreonWebService
      */
     public function getPreferences()
     {
-        if (!isset($this->arguments['widgetId']) || !isset($this->arguments['viewId'])) {
-            throw new \Exception('Missing argument');
+        if (
+            filter_var(($widgetId = $this->arguments['widgetId'] ?? false), FILTER_VALIDATE_INT) === false
+            || filter_var(($viewId = $this->arguments['viewId'] ?? false), FILTER_VALIDATE_INT) === false
+        ) {
+            throw new \InvalidArgumentException('Bad argument format');
         }
 
         require_once _CENTREON_PATH_ . "www/class/centreonWidget.class.php";
@@ -190,8 +193,6 @@ class CentreonHomeCustomview extends CentreonWebService
 
         global $centreon;
 
-        $viewId = $this->arguments['viewId'];
-        $widgetId = $this->arguments['widgetId'];
         $action = "setPreferences";
 
         $viewObj = new CentreonCustomView($centreon, $this->pearDB);
@@ -218,15 +219,15 @@ class CentreonHomeCustomview extends CentreonWebService
          * Smarty template Init
          */
         $libDir = __DIR__ . "/../../../GPL_LIB";
-        $tpl = new \Smarty();
-        $tpl->compile_dir = $libDir . '/SmartyCache/compile';
-        $tpl->config_dir = $libDir . '/SmartyCache/config';
-        $tpl->cache_dir = $libDir . '/SmartyCache/cache';
-        $tpl->template_dir = _CENTREON_PATH_ . '/www/include/home/customViews/';
-        $tpl->plugins_dir[] = $libDir . '/smarty-plugins';
-        $tpl->caching = 0;
-        $tpl->compile_check = true;
-        $tpl->force_compile = true;
+        $tpl = new \SmartyBC();
+        $tpl->setTemplateDir(_CENTREON_PATH_ . '/www/include/home/customViews/');
+        $tpl->setCompileDir($libDir . '/SmartyCache/compile');
+        $tpl->setConfigDir($libDir . '/SmartyCache/config');
+        $tpl->setCacheDir($libDir . '/SmartyCache/cache');
+        $tpl->addPluginsDir($libDir . '/smarty-plugins');
+        $tpl->loadPlugin('smarty_function_eval');
+        $tpl->setForceCompile(true);
+        $tpl->setAutoLiteral(false);
 
         $form = new HTML_QuickFormCustom('Form', 'post', "?p=103");
         $form->addElement('header', 'title', $title);
@@ -337,7 +338,7 @@ class CentreonHomeCustomview extends CentreonWebService
         $widgetId = $this->arguments['widgetId'];
         $widgetObj = new CentreonWidget($centreon, $this->pearDB);
 
-       return $widgetObj->getWidgetPreferences($widgetId);
+        return $widgetObj->getWidgetPreferences($widgetId);
     }
 
     /**

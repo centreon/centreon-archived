@@ -1,8 +1,8 @@
 <?php
 
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2020 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -54,52 +54,60 @@ $path = "./include/monitoring/downtime/";
  * PHP functions
  */
 require_once "./include/common/common-Func.php";
-require_once $path."common-Func.php";
+require_once $path . "common-Func.php";
 require_once "./include/monitoring/external_cmd/functions.php";
 
 switch ($o) {
+    case "a":
+        require_once($path . "AddDowntime.php");
+        break;
     case "ds":
-        if (isset($_POST["select"])) {
-            foreach ($_POST["select"] as $key => $value) {
-                $res = explode(';', urldecode($key));
-                $ishost = isDownTimeHost($res[2]);
-                if ($oreon->user->access->admin ||
-                    ($ishost && $oreon->user->access->checkAction("host_schedule_downtime")) ||
-                    (!$ishost && $oreon->user->access->checkAction("service_schedule_downtime"))
-                ) {
-                    $ecObj->deleteDowntime($res[0], array($res[1] . ';' . $res[2] => 'on'));
-                    deleteDowntimeFromDb($oreon, array($res[1] . ';' . $res[2] => 'on'));
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            if (isset($_POST["select"])) {
+                foreach ($_POST["select"] as $key => $value) {
+                    $res = explode(';', urldecode($key));
+                    $ishost = isDownTimeHost($res[2]);
+                    if (
+                        $oreon->user->access->admin
+                        || ($ishost && $oreon->user->access->checkAction("host_schedule_downtime"))
+                        || (!$ishost && $oreon->user->access->checkAction("service_schedule_downtime"))
+                    ) {
+                        $ecObj->deleteDowntime($res[0], array($res[1] . ';' . $res[2] => 'on'));
+                        deleteDowntimeFromDb($oreon, array($res[1] . ';' . $res[2] => 'on'));
+                    }
                 }
             }
+        } else {
+            unvalidFormMessage();
         }
-        
         require_once($path . "listDowntime.php");
         break;
     case "cs":
-        if (isset($_POST["select"])) {
-            foreach ($_POST["select"] as $key => $value) {
-                $res = explode(';', urldecode($key));
-                $ishost = isDownTimeHost($res[2]);
-                if ($oreon->user->access->admin ||
-                    ($ishost && $oreon->user->access->checkAction("host_schedule_downtime")) ||
-                    (!$ishost && $oreon->user->access->checkAction("service_schedule_downtime"))
-                ) {
-                    $ecObj->deleteDowntime($res[0], array($res[1] . ';' . $res[2] => 'on'));
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            if (isset($_POST["select"])) {
+                foreach ($_POST["select"] as $key => $value) {
+                    $res = explode(';', urldecode($key));
+                    $ishost = isDownTimeHost($res[2]);
+                    if (
+                        $oreon->user->access->admin
+                        || ($ishost && $oreon->user->access->checkAction("host_schedule_downtime"))
+                        || (!$ishost && $oreon->user->access->checkAction("service_schedule_downtime"))
+                    ) {
+                        $ecObj->deleteDowntime($res[0], array($res[1] . ';' . $res[2] => 'on'));
+                    }
                 }
             }
+        } else {
+            unvalidFormMessage();
         }
-        require_once($path . "listDowntime.php");
-        break;
+        // then, as all the next cases, requiring the listDowntime.php
     case "vs":
-        require_once($path . "listDowntime.php");
-        break;
-    case "a":
-        require_once($path."AddDowntime.php");
-        break;
     case "vh":
-        require_once($path."listDowntime.php");
-        break;
     default:
-        require_once($path."listDowntime.php");
+        require_once($path . "listDowntime.php");
         break;
 }

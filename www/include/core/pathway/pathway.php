@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2015 Centreon
+ * Copyright 2005-2020 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  * 
@@ -50,7 +51,7 @@ if (isset($url)) {
     $statementSelect->bindValue(':topology_page', $p, \PDO::PARAM_INT);
     if ($statementSelect->execute()) {
         $result = $statementSelect->fetch(\PDO::FETCH_ASSOC);
-        if ($result['topology_url'] != $url) {
+        if ($result !== false && $result['topology_url'] != $url) {
             /**
              * If urls are not equal we can retrieve the topology page number
              * associated to this url because there is multiple topology page
@@ -75,7 +76,7 @@ if (isset($url)) {
  */
 $pdoStatement = $pearDB->prepare(
     'SELECT `topology_url`, `topology_url_opt`, `topology_parent`,
-    `topology_name`, `topology_page`
+    `topology_name`, `topology_page`, `is_react`
     FROM topology where topology_page IN
         (SELECT :topology_page
         UNION
@@ -94,6 +95,10 @@ $pdoStatement = $pearDB->prepare(
 $pdoStatement->bindValue(':topology_page', (int) $p, \PDO::PARAM_INT);
 
 $breadcrumbData = [];
+$basePath = '/' . trim(explode('main.get.php', $_SERVER['REQUEST_URI'])[0], "/");
+/*
+ * <a href="<?= $details['is_react'] ? "{$basePath}{$details['url']}" : "main.php?p={$page}{$details["opt"]}" ?>" class="pathWay"><?= _($details["name"]); ?></a>
+ */
 
 if ($pdoStatement->execute()) {
     while ($result = $pdoStatement->fetch(\PDO::FETCH_ASSOC)) {
@@ -116,6 +121,7 @@ if ($pdoStatement->execute()) {
         }
 
         $breadcrumbData[$result['topology_page']] = [
+            'is_react' => $result['is_react'],
             'name' => $result['topology_name'],
             'url' => $result['topology_url'],
             'opt' => $result['topology_url_opt'],
@@ -131,7 +137,7 @@ if ($centreon->user->access->page($p)) {
     foreach ($breadcrumbData as $page => $details) {
         echo $flag;
         ?>
-        <a href="main.php?p=<?= $page . $details["opt"]; ?>" class="pathWay"><?= _($details["name"]); ?></a>
+        <a href="<?= $details['is_react'] ? "{$basePath}{$details['url']}" : "main.php?p={$page}{$details["opt"]}" ?>"<?= $details['is_react'] ? ' isreact="isreact"' : '' ?> class="pathWay"><?= _($details["name"]); ?></a>
         <?php
         $flag = '<span class="pathWayBracket" >  &nbsp;&#62;&nbsp; </span>';
     }

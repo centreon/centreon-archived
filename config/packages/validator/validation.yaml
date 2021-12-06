@@ -1,52 +1,58 @@
 Centreon\Domain\Acknowledgement\Acknowledgement:
     properties:
-        authorId:
-            - Type:
-                type: integer
-            - NotNull: ~
         comment:
             - Type:
                 type: string
-                groups: [Default, add_host_ack, add_service_ack]
+                groups: [Default, ack_resource]
             - NotNull:
-                  groups: [Default, add_host_ack, add_service_ack]
-        entryTime:
-            - Type:
-                type: integer
-        hostId:
-            - Type:
-                type: integer
-                groups: [Default, add_host_ack, add_service_ack]
-            - NotNull:
-                groups: [Default, add_host_ack, add_service_ack]
-        pollerId:
-            - Type:
-                type: integer
-            - NotNull: ~
+                groups: [Default, ack_resource]
         isNotifyContacts:
             - Type:
                 type: boolean
-                groups: [Default, add_host_ack, add_service_ack]
+                groups: [Default, ack_resource]
             - NotNull:
-                groups: [Default, add_host_ack, add_service_ack]
+                groups: [Default, ack_resource]
         isPersistentComment:
             - Type:
                 type: boolean
-                groups: [Default, add_host_ack, add_service_ack]
-            - NotNull:
-                groups: [Default, add_host_ack, add_service_ack]
+            - NotNull: ~
         isSticky:
             - Type:
                 type: boolean
-                groups: [Default, add_host_ack, add_service_ack]
-            - NotNull:
-                groups: [Default, add_host_ack, add_service_ack]
-        serviceId:
+            - NotNull: ~
+        resourceId:
             - Type:
-                type: integer
-                groups: [Default, add_service_ack]
+                type: int
+                groups: [add_host_acks, add_service_acks]
+            - GreaterThan:
+                value: 0
+                groups: [add_host_acks, add_service_acks]
             - NotNull:
-                groups: [add_service_ack]
+                groups: [add_host_acks, add_service_acks]
+        parentResourceId:
+            - Type:
+                type: int
+                groups: [add_service_acks]
+            - GreaterThan:
+                value: 0
+                groups: [add_service_acks]
+        withServices:
+            - Type:
+                type: boolean
+                groups: [add_host_acks, add_host_ack, ack_resource]
+
+# Used to validate the Comment entity
+Centreon\Domain\Monitoring\Comment:
+    properties:
+        date:
+            - Type:
+                type: DateTime
+                groups: [add_host_comment, add_service_comment]
+        comment:
+            - Type:
+                type: string
+                groups: [add_host_comment, add_service_comment]
+            - NotNull: ~
 
 # Used to validate the Downtime entity
 Centreon\Domain\Downtime\Downtime:
@@ -54,25 +60,34 @@ Centreon\Domain\Downtime\Downtime:
         startTime:
             - Type:
                 type: DateTime
-            - NotNull: ~
+                groups: [resource_dt]
+            - NotNull:
+                groups: [resource_dt]
         endTime:
             - Type:
                 type: DateTime
-            - NotNull: ~
+                groups: [resource_dt]
+            - NotNull:
+                groups: [resource_dt]
         isFixed:
             - Type:
                 type: boolean
+                groups: [resource_dt]
         duration:
             - Type:
                 type: integer
-            - NotNull: ~
+                groups: [resource_dt]
+            - NotNull:
+                groups: [resource_dt]
         authorId:
             - Type:
                 type: integer
         comment:
             - Type:
                 type: string
-            - NotNull: ~
+                groups: [resource_dt]
+            - NotNull:
+                groups: [resource_dt]
         hostId:
             - Type:
                 type: integer
@@ -82,6 +97,66 @@ Centreon\Domain\Downtime\Downtime:
         pollerId:
             - Type:
                 type: integer
+        withServices:
+            - Type:
+                type: boolean
+                groups: [resource_dt]
+
+# Used to validate the Check entity
+Centreon\Domain\Check\Check:
+    properties:
+        checkTime:
+            - Type:
+                type: DateTime
+                groups: [Default, check_host, check_service, check_meta_service]
+        isForced:
+            - Type:
+                type: boolean
+                groups: [Default, check_host, check_service, check_meta_service]
+        resourceId:
+            - Type:
+                type: int
+                groups: [Default, check_host, check_service, check_meta_service]
+            - GreaterThan: 0
+            - NotNull: ~
+        parentResourceId:
+            - Type:
+                type: int
+                groups: [Default, check_service]
+            - GreaterThan: 0
+        withServices:
+            - Type:
+                type: boolean
+
+# Used to validate the SubmitResult entity
+Centreon\Domain\Monitoring\SubmitResult\SubmitResult:
+    properties:
+        performanceData:
+            - Type:
+                type: string
+                groups: [Default, submit_result_host, submit_result_service]
+        output:
+            - Type:
+                type: string
+                groups: [Default, submit_result_host, submit_result_service]
+        status:
+            - Type:
+                type: int
+                groups: [Default, submit_result_host, submit_result_service]
+            - GreaterThan: 0
+            - LessThanOrEqual: 3
+            - NotNull: ~
+        resourceId:
+            - Type:
+                type: int
+                groups: [Default, submit_result_host, submit_result_service]
+            - GreaterThan: 0
+            - NotNull: ~
+        parentResourceId:
+            - Type:
+                type: int
+                groups: [Default, submit_result_service]
+            - GreaterThan: 0
 
 # Used to validate the Proxy entity
 Centreon\Domain\Proxy\Proxy:
@@ -104,3 +179,97 @@ Centreon\Domain\Proxy\Proxy:
             - Type:
                   type: string
             - NotNull: ~
+
+# Used to validate the ResourceFilter entity
+Centreon\Domain\Monitoring\ResourceFilter:
+    properties:
+        types:
+            - Type:
+                type: array
+                groups: [Default]
+            - Choice:
+                choices:
+                    - service
+                    - host
+                    - metaservice
+                multiple: true
+                groups: [Default]
+        states:
+            - Type:
+                type: array
+                groups: [Default]
+            - Choice:
+                choices:
+                    - unhandled_problems
+                    - resources_problems
+                    - in_downtime
+                    - acknowledged
+                    - all
+                multiple: true
+                groups: [Default]
+        statuses:
+            - Type:
+                type: array
+                groups: [Default]
+            - Choice:
+                choices:
+                    - OK
+                    - UP
+                    - WARNING
+                    - DOWN
+                    - CRITICAL
+                    - UNREACHABLE
+                    - UNKNOWN
+                    - PENDING
+                multiple: true
+                groups: [Default]
+        hostgroupNames:
+            - Type:
+                type: array
+                groups: [Default]
+            - All:
+                - Type:
+                    type: string
+                    groups: [Default]
+        servicegroupNames:
+            - Type:
+                type: array
+                groups: [Default]
+            - All:
+                - Type:
+                    type: string
+                    groups: [Default]
+        monitoringServerNames:
+            - Type:
+                type: array
+                groups: [Default]
+            - All:
+                - Type:
+                    type: string
+                    groups: [Default]
+        onlyWithPerformanceData:
+            - Type:
+                type: boolean
+                groups: [Default]
+
+# Used to validate the Resource Entity
+Centreon\Domain\Monitoring\Resource:
+    properties:
+        id:
+            - Type:
+                type: int
+                groups: [Default, ack_host, ack_service, ack_meta, disack_host, disack_service, disack_meta, downtime_host, downtime_service]
+        type:
+            - Type:
+                type: string
+                groups: [Default, ack_host, ack_service, ack_meta, disack_host, disack_service, disack_meta, downtime_host, downtime_service]
+            - Choice:
+                choices:
+                    - service
+                    - host
+                    - metaservice
+                multiple: false
+                groups: [Default, ack_host, ack_service, ack_meta, disack_host, disack_service, disack_meta, downtime_host, downtime_service]
+        parent:
+            - NotNull:
+                groups: [ack_service, downtime_service]

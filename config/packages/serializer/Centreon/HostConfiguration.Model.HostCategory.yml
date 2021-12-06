@@ -1,0 +1,10 @@
+Centreon\Domain\HostConfiguration\Model\HostCategory:
+  properties:
+    name:
+      type: string
+      groups:
+        - 'host_category_conf_min'
+    id:
+      type: integer
+      groups:
+        - 'host_category_conf_min'

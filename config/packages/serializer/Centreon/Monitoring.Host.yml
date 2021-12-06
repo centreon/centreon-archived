@@ -1,0 +1,247 @@
+Centreon\Domain\Monitoring\Host:
+    properties:
+        id:
+            type: int
+            groups:
+                - 'host_min'
+                - 'host_main'
+                - 'host_full'
+        pollerId:
+            type: int
+            groups:
+                - 'host_main'
+                - 'host_full'
+        name:
+            type: string
+            groups:
+                - 'host_min'
+                - 'host_main'
+                - 'host_full'
+        acknowledged:
+            type: bool
+            groups:
+                - 'host_main'
+                - 'host_full'
+        activeChecks:
+            type: bool
+            groups:
+                - 'host_full'
+        addressIp:
+            type: string
+            groups:
+                - 'host_main'
+                - 'host_full'
+        alias:
+            type: string
+            groups:
+                - 'host_min'
+                - 'host_main'
+                - 'host_full'
+        checkAttempt:
+            type: int
+            groups:
+                - 'host_main'
+                - 'host_full'
+        checkCommand:
+            type: string
+            groups:
+                - 'host_full'
+        checkInterval:
+            type: double
+            groups:
+                - 'host_full'
+        checkPeriod:
+            type: string
+            groups:
+                - 'host_full'
+        checkType:
+            type: int
+            groups:
+                - 'host_full'
+        checked:
+            type: bool
+            groups:
+                - 'host_main'
+                - 'host_full'
+        displayName:
+            type: string
+            groups:
+                - 'host_min'
+                - 'host_main'
+                - 'host_full'
+        executionTime:
+            type: double
+            groups:
+                - 'host_main'
+                - 'host_full'
+        iconImage:
+            type: string
+            groups:
+                - 'host_main'
+                - 'host_full'
+        iconImageAlt:
+            type: string
+            groups:
+                - 'host_main'
+                - 'host_full'
+        lastCheck:
+            type: DateTime
+            groups:
+                - 'host_main'
+                - 'host_full'
+        lastHardState:
+            type: int
+            groups:
+                - 'host_full'
+        lastHardStateChange:
+            type: DateTime
+            groups:
+                - 'host_main'
+                - 'host_full'
+        lastNotification:
+            type: DateTime
+            groups:
+                - 'host_full'
+        lastStateChange:
+            type: DateTime
+            groups:
+                - 'host_main'
+                - 'host_full'
+        lastTimeDown:
+            type: DateTime
+            groups:
+                - 'host_main'
+                - 'host_full'
+        lastTimeUnreachable:
+            type: DateTime
+            groups:
+                - 'host_main'
+                - 'host_full'
+        lastTimeUp:
+            type: DateTime
+            groups:
+                - 'host_main'
+                - 'host_full'
+        lastUpdate:
+            type: DateTime
+            groups:
+                - 'host_main'
+                - 'host_full'
+        latency:
+            type: double
+            groups:
+                - 'host_full'
+        maxCheckAttempts:
+            type: int
+            groups:
+                - 'host_main'
+                - 'host_full'
+        nextCheck:
+            type: DateTime
+            groups:
+                - 'host_full'
+        nextHostNotification:
+            type: int
+            groups:
+                - 'host_full'
+        notificationInterval:
+            type: double
+            groups:
+                - 'host_full'
+        notificationNumber:
+            type: int
+            groups:
+                - 'host_full'
+        notificationPeriod:
+            type: string
+            groups:
+                - 'host_full'
+        notify:
+            type: bool
+            groups:
+                - 'host_full'
+        notifyOnDown:
+            type: bool
+            groups:
+                - 'host_full'
+        notifyOnDowntime:
+            type: bool
+            groups:
+                - 'host_full'
+        notifyOnFlapping:
+            type: bool
+            groups:
+                - 'host_full'
+        notifyOnRecovery:
+            type: bool
+            groups:
+                - 'host_full'
+        notifyOnUnreachable:
+            type: bool
+            groups:
+                - 'host_full'
+        output:
+            type: string
+            groups:
+                - 'host_main'
+                - 'host_full'
+        passiveChecks:
+            type: bool
+            groups:
+                - 'host_main'
+                - 'host_full'
+        services:
+            type: array<Centreon\Domain\Monitoring\Service>
+            groups:
+                - 'host_full'
+                - 'host_with_services'
+        state:
+            type: int
+            groups:
+                - 'host_min'
+                - 'host_main'
+                - 'host_full'
+        stateType:
+            type: int
+            groups:
+                - 'host_main'
+                - 'host_full'
+        timezone:
+            type: string
+            access_type: public_method
+            accessor:
+              getter: getSanitizedTimezone
+              setter: setTimezone
+            groups:
+                - 'host_main'
+                - 'host_full'
+        scheduledDowntimeDepth:
+            type: int
+            groups:
+                - 'host_main'
+                - 'host_full'
+        criticality:
+            type: string
+            groups:
+                - 'host_main'
+                - 'host_full'
+        downtimes:
+            type: array<Centreon\Domain\Downtime\Downtime>
+            groups:
+                - 'host_full'
+        acknowledgement:
+            type: Centreon\Domain\Acknowledgement\Acknowledgement
+            groups:
+                - 'host_full'
+        flapping:
+            type: bool
+            groups:
+                - 'host_full'
+        percentStateChange:
+            type: double
+            groups:
+                - 'host_full'
+        pollerName:
+            type: string
+            groups:
+                - 'host_full'

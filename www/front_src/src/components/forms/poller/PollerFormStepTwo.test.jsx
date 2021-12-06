@@ -1,8 +1,10 @@
 import '@babel/polyfill';
 import React from 'react';
+
 import configureStore from 'redux-mock-store';
 import { render, fireEvent, queryByAttribute } from '@testing-library/react';
 import { Provider } from 'react-redux';
+
 import PollerFormStepTwo from './PollerFormStepTwo';
 
 const queryByName = queryByAttribute.bind(null, 'name');
@@ -31,16 +33,6 @@ const TwoPollers = [
 const store = mockStore({});
 
 describe('PollerFormStepTwo', () => {
-  it('renders', () => {
-    const { container } = render(
-      <Provider store={store}>
-        <PollerFormStepTwo pollers={TwoPollers} onSubmit={jest.fn()} />
-      </Provider>,
-    );
-
-    expect(container.firstChild).toMatchSnapshot();
-  });
-
   it('does not display selects if no one remote server exists', () => {
     const { container } = render(
       <Provider store={store}>
@@ -75,7 +67,6 @@ describe('PollerFormStepTwo', () => {
 
     fireEvent.change(masterSelect, { target: { value: '1' } });
 
-    expect(container.firstChild).toMatchSnapshot();
     expect(queryByName(container, 'linked_remote_slaves')).toBeInTheDocument();
   });
 });

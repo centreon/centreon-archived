@@ -81,10 +81,31 @@ function disableMetaServiceInDB($meta_id = null)
     $pearDB->query("UPDATE meta_service SET meta_activate = '0' WHERE meta_id = '" . $meta_id . "'");
 }
 
+/**
+ * @param int $serviceId
+ */
+function removeRelationLastMetaServiceDependency(int $serviceId): void
+{
+    global $pearDB;
+
+    $query = 'SELECT count(dependency_dep_id) AS nb_dependency , dependency_dep_id AS id 
+              FROM dependency_metaserviceParent_relation 
+              WHERE dependency_dep_id = (SELECT dependency_dep_id FROM dependency_metaserviceParent_relation 
+                                         WHERE meta_service_meta_id =  ' . $serviceId . ')';
+    $dbResult = $pearDB->query($query);
+    $result = $dbResult->fetch();
+
+    //is last parent
+    if ($result['nb_dependency'] == 1) {
+        $pearDB->query("DELETE FROM dependency WHERE dep_id = " . $result['id']);
+    }
+}
+
 function deleteMetaServiceInDB($metas = array())
 {
     global $pearDB;
     foreach ($metas as $key => $value) {
+        removeRelationLastMetaServiceDependency((int)$key);
         $pearDB->query("DELETE FROM meta_service WHERE meta_id = '" . $pearDB->escape($key) . "'");
         $query = "DELETE FROM service WHERE service_description = 'meta_" .
             $pearDB->escape($key) . "' AND service_register = '2'";
@@ -229,7 +250,16 @@ function checkMetaHost()
     $query = "SELECT host_id FROM host WHERE host_register = '2'  AND host_name = '_Module_Meta' ";
     $res = $pearDB->query($query);
     if (!$res->rowCount()) {
+        # Add virtual _Module_Meta host
         $query = "INSERT INTO host (host_name, host_register) VALUES ('_Module_Meta', '2') ";
+        $pearDB->query($query);
+        # Link _Module_Meta to default localhost poller
+        $query = "INSERT INTO ns_host_relation(`nagios_server_id`, `host_host_id`)
+        VALUES(
+            (SELECT id FROM nagios_server WHERE localhost = '1'),
+            (SELECT host_id FROM host WHERE host_name = '_Module_Meta')
+        )
+        ON DUPLICATE KEY UPDATE nagios_server_id = (SELECT id FROM nagios_server WHERE localhost = '1')";
         $pearDB->query($query);
     }
 }

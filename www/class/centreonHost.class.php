@@ -1,7 +1,8 @@
 <?php
+
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2020 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -33,15 +34,14 @@
  *
  */
 
-require_once _CENTREON_PATH_ . 'www/class/centreonInstance.class.php';
-require_once _CENTREON_PATH_ . 'www/class/centreonService.class.php';
-require_once _CENTREON_PATH_ . 'www/class/centreonCommand.class.php';
-require_once _CENTREON_PATH_ . 'www/class/centreonLogAction.class.php';
+require_once __DIR__ . '/centreonInstance.class.php';
+require_once __DIR__ . '/centreonService.class.php';
+require_once __DIR__ . '/centreonCommand.class.php';
+require_once __DIR__ . '/centreonLogAction.class.php';
 
 /*
  *  Class that contains various methods for managing hosts
  */
-
 class CentreonHost
 {
     /**
@@ -76,9 +76,12 @@ class CentreonHost
     }
 
     /**
+     * get all host templates saved in the DB
+     *
      * @param bool $enable
      * @param bool $template
      * @param null|int $exclude - host id to exclude in returned result
+     *
      * @return array
      * @throws Exception
      */
@@ -112,6 +115,93 @@ class CentreonHost
             $listHost[$row['host_id']] = $row['host_name'];
         }
         return $listHost;
+    }
+
+    /**
+     * get the template currently saved for this host
+     *
+     * @param $hostId
+     *
+     * @return array
+     */
+    public function getSavedTpl($hostId): array
+    {
+        $mTp = [];
+        $dbResult = $this->db->prepare(
+            'SELECT host_tpl_id, host.host_name
+            FROM host_template_relation, host
+            WHERE host_host_id = :hostId
+            AND host_tpl_id = host.host_id'
+        );
+        $dbResult->bindValue(':hostId', $hostId, \PDO::PARAM_INT);
+        $dbResult->execute();
+        while ($multiTp = $dbResult->fetch()) {
+            $mTp[$multiTp["host_tpl_id"]] = $multiTp["host_name"];
+        }
+
+        return $mTp;
+    }
+
+    /**
+     *  get number of hosts
+     *
+     * @return int
+     */
+    private function getHostNumber(): int
+    {
+        $query = $this->db->query('SELECT COUNT(*) AS `num` FROM host WHERE host_register = "1"');
+        return ((int)$query->fetch()['num']);
+    }
+
+    /**
+     * Returns a filtered array with only integer ids
+     *
+     * @param  int[] $ids
+     * @return int[] filtered
+     */
+    private function filteredArrayId(array $ids): array
+    {
+        return array_filter($ids, function ($id) {
+            return is_numeric($id);
+        });
+    }
+
+    /**
+     *  get list of inherited templates from plugin pack
+     *
+     * @return array
+     * @throws Exception
+     */
+    public function getLimitedList(): array
+    {
+        $freePp = array(
+            'applications-databases-mysql',
+            'applications-monitoring-centreon-central',
+            'applications-monitoring-centreon-database',
+            'applications-monitoring-centreon-poller',
+            'base-generic',
+            'hardware-printers-standard-rfc3805-snmp',
+            'hardware-ups-standard-rfc1628-snmp',
+            'network-cisco-standard-snmp',
+            'operatingsystems-linux-snmp',
+            'operatingsystems-windows-snmp'
+        );
+        $ppList = array();
+        $dbResult = $this->db->query('SELECT `name` FROM modules_informations WHERE `name` = "centreon-pp-manager"');
+        if (empty($dbResult->fetch()) || true === $this->isAllowed()) {
+            return $ppList;
+        }
+        $dbResult = $this->db->query(
+            'SELECT ph.host_id 
+            FROM mod_ppm_pluginpack_host ph, mod_ppm_pluginpack pp
+            WHERE ph.pluginpack_id = pp.pluginpack_id
+            AND pp.slug NOT IN ("' . implode('","', $freePp) . '")'
+        );
+        while ($row = $dbResult->fetch()) {
+            $this->getHostChain($row['host_id'], $ppList);
+        }
+        asort($ppList);
+        return $ppList;
     }
 
     /**
@@ -328,40 +418,46 @@ class CentreonHost
     }
 
     /**
-     * @param array $hostId
-     * @return array
-     * @throws Exception
+     * @param int[] $hostId
+     * @return array $hosts [['id' => integer, 'name' => string],...]
      */
-    public function getHostsNames($hostId = array())
+    public function getHostsNames($hostId = []): array
     {
-        $arrayReturn = array();
-        $explodedValues = '';
+        $hosts = [];
         if (!empty($hostId)) {
-            $query = 'SELECT host_id, host_name ' .
-                'FROM host where host_id IN (';
+            /*
+            * Checking here that the array provided as parameter
+             * is exclusively made of integers (host ids)
+             */
+            $filteredHostIds = $this->filteredArrayId($hostId);
+            $hostParams = [];
+            if (count($filteredHostIds) > 0) {
+                /*
+                 * Building the hostParams hash table in order to correctly
+                 * bind ids as ints for the request.
+                 */
+                foreach ($filteredHostIds as $index => $filteredHostId) {
+                    $hostParams[':hostId' . $index] = $filteredHostId;
+                }
 
-            for ($i = 1; $i <= count($hostId); $i++) {
-                $explodedValues .= '?,';
-            }
-            $explodedValues = rtrim($explodedValues, ',');
-            $hostId = array_map(
-                function ($var) {
-                    return (int)$var;
-                },
-                $hostId
-            );
-            $query .= $explodedValues . ') ';
-            $stmt = $this->db->prepare($query);
-            $dbResult = $stmt->execute($hostId);
-            if (!$dbResult) {
-                throw new \Exception("An error occured");
-            }
+                $stmt = $this->db->prepare('SELECT host_id, host_name ' .
+                    'FROM host where host_id IN ( ' . implode(',', array_keys($hostParams)) . ' )');
 
-            while ($row = $stmt->fetch()) {
-                $arrayReturn[] = array("id" => $row['host_id'], "name" => $row['host_name']);
+                foreach ($hostParams as $index => $value) {
+                    $stmt->bindValue($index, $value, \PDO::PARAM_INT);
+                }
+
+                $dbResult = $stmt->execute();
+
+                while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+                    $hosts[] = [
+                        'id' => $row['host_id'],
+                        'name' => $row['host_name']
+                    ];
+                }
             }
         }
-        return $arrayReturn;
+        return $hosts;
     }
 
     /**
@@ -383,7 +479,6 @@ class CentreonHost
             return $row['command_command_id'];
         }
     }
-
 
     /**
      * @param $hostId
@@ -447,7 +542,6 @@ class CentreonHost
         return null;
     }
 
-
     /**
      * @param $address
      * @param array $params
@@ -479,7 +573,6 @@ class CentreonHost
         }
         return $hostList;
     }
-
 
     /**
      * @param $hostName
@@ -547,34 +640,37 @@ class CentreonHost
     }
 
     /**
-     * @param $hostId
-     * @return null
+     * Returns the poller id of the host linked to hostId provided
+     * @param int $hostId
+     * @return int|null $pollerId
      * @throws Exception
      */
-    public function getHostPollerId($hostId)
+    public function getHostPollerId(int $hostId): ?int
     {
         $pollerId = null;
-        $query = 'SELECT nagios_server_id FROM ns_host_relation WHERE host_host_id = :hostId LIMIT 1';
-        $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':hostId', $hostId, PDO::PARAM_INT);
-        $dbResult = $stmt->execute();
-        if (!$dbResult) {
-            throw new \Exception("An error occured");
-        }
-        if ($stmt->rowCount()) {
-            $row = $stmt->fetch();
-            $pollerId = $row['nagios_server_id'];
-        } else {
-            $hostName = $this->getHostName($hostId);
-            if (preg_match('/^_Module_Meta/', $hostName)) {
-                $query = 'SELECT id ' .
-                    'FROM nagios_server ' .
-                    'WHERE localhost = "1" ' .
-                    'LIMIT 1 ';
-                $res = $this->db->query($query);
-                if ($res->rowCount()) {
-                    $row = $res->fetch();
-                    $pollerId = $row['id'];
+        if ($hostId) {
+            $query = 'SELECT nagios_server_id FROM ns_host_relation WHERE host_host_id = :hostId LIMIT 1';
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':hostId', $hostId, PDO::PARAM_INT);
+            $dbResult = $stmt->execute();
+            if (!$dbResult) {
+                throw new \Exception("An error occured");
+            }
+            if ($stmt->rowCount()) {
+                $row = $stmt->fetch();
+                $pollerId = (int) $row['nagios_server_id'];
+            } else {
+                $hostName = $this->getHostName($hostId);
+                if (preg_match('/^_Module_Meta/', $hostName)) {
+                    $query = 'SELECT id ' .
+                        'FROM nagios_server ' .
+                        'WHERE localhost = "1" ' .
+                        'LIMIT 1 ';
+                    $res = $this->db->query($query);
+                    if ($res->rowCount()) {
+                        $row = $res->fetch();
+                        $pollerId = (int) $row['id'];
+                    }
                 }
             }
         }
@@ -802,7 +898,6 @@ class CentreonHost
         return $arr;
     }
 
-
     /**
      * @param null $hostId
      * @param bool $realKeys
@@ -993,15 +1088,21 @@ class CentreonHost
         if (!isset($cmdId)) {
             $cmdId = "";
         }
-        $aMacros = $this->getMacros($host_id, false, $aTemplates, $cmdId);
+        $aMacros = $this->getMacros($host_id, $aTemplates, $cmdId);
         foreach ($aMacros as $macro) {
             foreach ($macroInput as $ind => $input) {
-                if ($input == $macro['macroInput_#index#'] &&
-                    $macroValue[$ind] == $macro["macroValue_#index#"] &&
-                    $macroPassword[$ind] == $macro['macroPassword_#index#']
+                if (
+                    isset($macro['macroInput_#index#'])
+                    && isset($macro["macroValue_#index#"])
+                    && isset($macro['macroPassword_#index#'])
                 ) {
-                    unset($macroInput[$ind]);
-                    unset($macroValue[$ind]);
+                    if ($input == $macro['macroInput_#index#'] &&
+                        $macroValue[$ind] == $macro["macroValue_#index#"] &&
+                        $macroPassword[$ind] == $macro['macroPassword_#index#']
+                    ) {
+                        unset($macroInput[$ind]);
+                        unset($macroValue[$ind]);
+                    }
                 }
             }
         }
@@ -1032,14 +1133,14 @@ class CentreonHost
 
     /**
      * This method get the macro attached to the host
-     *
      * @param int $iHostId
-     * @param int $bIsTemplate
-     * @param array $aListTemplate
+     * @param $aListTemplate
      * @param int $iIdCommande
+     * @param array $form
      * @return array
+     * @throws Exception
      */
-    public function getMacros($iHostId, $bIsTemplate, $aListTemplate, $iIdCommande, $form = array())
+    public function getMacros($iHostId, $aListTemplate, $iIdCommande, $form = array())
     {
         $macroArray = $this->getMacroFromForm($form, "direct");
         $aMacroTemplate[] = $this->getMacroFromForm($form, "fromTpl");
@@ -1130,7 +1231,6 @@ class CentreonHost
         $aFinalMacro = $this->macroUnique($aTempMacro);
         return $aFinalMacro;
     }
-
 
     public function ajaxMacroControl($form)
     {
@@ -1241,7 +1341,6 @@ class CentreonHost
         return $macros;
     }
 
-
     /**
      * @param $hostId
      * @param array $alreadyProcessed
@@ -1259,11 +1358,11 @@ class CentreonHost
         $fields = array()
     ) {
         $templates = array();
-
         if (($depth == -1) || ($depth > 0)) {
             if ($depth > 0) {
                 $depth--;
             }
+
             if (in_array($hostId, $alreadyProcessed)) {
                 return $templates;
             } else {
@@ -1314,6 +1413,32 @@ class CentreonHost
 
     /**
      * @param $hostId
+     * @param $alreadyProcessed
+     * @throws Exception
+     */
+    private function getHostChain(
+        $hostId,
+        &$alreadyProcessed
+    ) {
+        if (!in_array($hostId, $alreadyProcessed)) {
+            $alreadyProcessed[$hostId] = $hostId;
+            $query = 'SELECT host_host_id FROM host_template_relation htr 
+                WHERE htr.host_tpl_id = :hostId 
+                ORDER BY `order` ASC';
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':hostId', $hostId, PDO::PARAM_INT);
+            $dbResult = $stmt->execute();
+            if (!$dbResult) {
+                throw new \Exception("An error occured");
+            }
+            while ($row = $stmt->fetch()) {
+                $this->getHostChain($row['host_host_id'], $alreadyProcessed);
+            }
+        }
+    }
+
+    /**
+     * @param $hostId
      * @return array
      * @throws Exception
      */
@@ -1354,7 +1479,6 @@ class CentreonHost
         $fields = array(),
         $values = array()
     ) {
-
         if ($depth != 0) {
             $depth--;
             if (in_array($hostId, $alreadyProcessed)) {
@@ -1374,15 +1498,14 @@ class CentreonHost
                     }
                 }
                 $query = 'SELECT ' . $queryFields . ' ' .
-                    'FROM host h ' .
-                    'WHERE host_id = :hostId';
+                    'FROM host h, extended_host_information ehi ' .
+                    'WHERE host_id = :hostId AND host_id = ehi.host_host_id';
                 $stmt = $this->db->prepare($query);
                 $stmt->bindParam(':hostId', $hostId, PDO::PARAM_INT);
                 $dbResult = $stmt->execute();
                 if (!$dbResult) {
                     throw new \Exception("An error occured");
                 }
-
                 while ($row = $stmt->fetch()) {
                     if (!count($alreadyProcessed)) {
                         $fields = array_keys($row);
@@ -1405,6 +1528,45 @@ class CentreonHost
     }
 
     /**
+     * check host limitation
+     *
+     * @return bool
+     * @throws \Exception
+     */
+    private function isAllowed(): bool
+    {
+        $dbResult = $this->db->query(
+            'SELECT `name` FROM modules_informations
+            WHERE `name` = "centreon-license-manager"'
+        );
+
+        if (empty($dbResult->fetch())) {
+            return false;
+        }
+        try {
+            $container = \Centreon\LegacyContainer::getInstance();
+        } catch (Exception $e) {
+            throw new Exception('Cannot instantiate container');
+        }
+
+        $container[\CentreonLicense\ServiceProvider::LM_PRODUCT_NAME] = 'epp';
+        $container[\CentreonLicense\ServiceProvider::LM_HOST_CHECK] = true;
+
+        if (!$container[\CentreonLicense\ServiceProvider::LM_LICENSE]) {
+            return false;
+        }
+
+        $licenceManager = $container[\CentreonLicense\ServiceProvider::LM_LICENSE];
+        if (!$licenceManager->validate()) {
+            return false;
+        }
+        $licenseData = ((int)$licenceManager->getData()['licensing']['hosts']) ?? 0;
+        $num = $this->getHostNumber();
+
+        return ($licenseData === -1 || $licenseData > $num);
+    }
+
+    /**
      * Returns array of locked host templates
      *
      * @return array
@@ -1412,7 +1574,6 @@ class CentreonHost
     public function getLockedHostTemplates()
     {
         static $arr = null;
-
         if (is_null($arr)) {
             $arr = array();
             $stmt = $this->db->query("SELECT host_id FROM host WHERE host_locked = 1");
@@ -1809,7 +1970,6 @@ class CentreonHost
         }
         return $listServices;
     }
-
 
     /**
      * @param $hostId
@@ -2271,7 +2431,6 @@ class CentreonHost
         }
     }
 
-
     /**
      * @param $hostId
      * @param $pollerId
@@ -2293,12 +2452,13 @@ class CentreonHost
      * @param array $values
      * @param array $options
      * @param string $register
+     *
      * @return array
      */
-    public function getObjectForSelect2($values = array(), $options = array(), $register = '1')
+    public function getObjectForSelect2($values = [], $options = [], $register = '1')
     {
         global $centreon;
-        $items = array();
+        $items = [];
         $useAcl = false;
         if (!$centreon->user->access->admin && $register == '1') {
             $useAcl = true;
@@ -2309,24 +2469,24 @@ class CentreonHost
             $hAcl = $centreon->user->access->getHostAclConf(
                 null,
                 'broker',
-                array(
+                [
                     'distinct' => true,
-                    'fields' => array('host.host_id'),
+                    'fields' => ['host.host_id'],
                     'get_row' => 'host_id',
-                    'keys' => array('host_id'),
-                    'conditions' => array(
-                        'host.host_id' => array(
+                    'keys' => ['host_id'],
+                    'conditions' => [
+                        'host.host_id' => [
                             'IN',
-                            $values
-                        )
-                    )
-                ),
+                            $values,
+                        ],
+                    ],
+                ],
                 false
             );
         }
 
         $listValues = '';
-        $queryValues = array();
+        $queryValues = [];
         if (!empty($values)) {
             foreach ($values as $k => $v) {
                 $listValues .= ':host' . $v . ',';
@@ -2360,12 +2520,13 @@ class CentreonHost
                 $hide = true;
             }
 
-            $items[] = array(
+            $items[] = [
                 'id' => $row['host_id'],
                 'text' => $row['host_name'],
-                'hide' => $hide
-            );
+                'hide' => $hide,
+            ];
         }
+
         return $items;
     }
 

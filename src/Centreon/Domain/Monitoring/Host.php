@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,300 +22,310 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Monitoring;
 
-use JMS\Serializer\Annotation as Serializer;
-use Centreon\Domain\Annotation\EntityDescriptor as Desc;
+use Centreon\Domain\Acknowledgement\Acknowledgement;
+use Centreon\Domain\Downtime\Downtime;
+use Centreon\Domain\Service\EntityDescriptorMetadataInterface;
 
 /**
  * Class representing a record of a host in the repository.
  *
  * @package Centreon\Domain\Monitoring
  */
-class Host
+class Host implements EntityDescriptorMetadataInterface
 {
+    // Groups for serilizing
+    public const SERIALIZER_GROUP_MIN = 'host_min';
+    public const SERIALIZER_GROUP_MAIN = 'host_main';
+    public const SERIALIZER_GROUP_FULL = 'host_full';
+    public const SERIALIZER_GROUP_WITH_SERVICES = 'host_with_services';
+
+    // Status options
     public const STATUS_UP          = 0;
     public const STATUS_DOWN        = 1;
     public const STATUS_UNREACHABLE = 2;
 
     /**
-     * @Serializer\Groups({"host_min", "host_main", "host_full"})
-     * @Desc(column="host_id", modifier="setId")
-     * @var int Id of host
+     * @var int|null Id of host
      */
-    private $id;
+    protected $id;
 
     /**
-     * @Serializer\Groups({"host_main", "host_full"})
-     * @Desc(column="instance_id", modifier="setPollerId")
      * @var int Poller id
      */
-    private $pollerId;
+    protected $pollerId;
 
     /**
-     * @Serializer\Groups({"host_min", "host_main", "host_full"})
      * @var string Name of host
      */
-    private $name;
+    protected $name;
 
     /**
-     * @Serializer\Groups({"host_main", "host_full"})
      * @var bool|null
      */
-    private $acknowledged;
+    protected $acknowledged;
 
     /**
-     * @Serializer\Groups({"host_full"})
      * @var bool|null
      */
-    private $activeChecks;
+    protected $activeChecks;
+
     /**
-     * @Serializer\Groups({"host_main", "host_full"})
-     * @Desc(column="address", modifier="setAddressIp")
      * @var string|null Ip address or domain name
      */
-    private $addressIp;
+    protected $addressIp;
+
     /**
-     * @Serializer\Groups({"host_min", "host_main", "host_full"})
      * @var string|null Alias of host
      */
-    private $alias;
+    protected $alias;
 
     /**
-     * @Serializer\Groups({"host_main", "host_full"})
      * @var int|null
      */
-    private $checkAttempt;
+    protected $checkAttempt;
 
     /**
-     * @Serializer\Groups({"host_full"})
      * @var string|null
      */
-    private $checkCommand;
+    protected $checkCommand;
 
     /**
-     * @Serializer\Groups({"host_full"})
      * @var double|null
      */
-    private $checkInterval;
+    protected $checkInterval;
 
     /**
-     * @Serializer\Groups({"host_full"})
      * @var string|null
      */
-    private $checkPeriod;
+    protected $checkPeriod;
 
     /**
-     * @Serializer\Groups({"host_full"})
      * @var int|null
      */
-    private $checkType;
+    protected $checkType;
 
     /**
-     * @Serializer\Groups({"host_main", "host_full"})
      * @var bool|null
      */
-    private $checked;
+    protected $checked;
 
     /**
-     * @Serializer\Groups({"host_min", "host_main", "host_full"})
      * @var string|null
      */
-    private $displayName;
+    protected $displayName;
 
     /**
      * @var bool
      */
-    private $enabled;
+    protected $enabled;
 
     /**
-     * @Serializer\Groups({"host_main", "host_full"})
      * @var double|null
      */
-    private $executionTime;
+    protected $executionTime;
 
     /**
-     * @Serializer\Groups({"host_main", "host_full"})
      * @var string|null
      */
-    private $iconImage;
+    protected $iconImage;
 
     /**
-     * @Serializer\Groups({"host_main", "host_full"})
      * @var string|null
      */
-    private $iconImageAlt;
+    protected $iconImageAlt;
 
     /**
-     * @Serializer\Groups({"host_main", "host_full"})
      * @var \DateTime|null
      */
-    private $lastCheck;
+    protected $lastCheck;
 
     /**
-     * @Serializer\Groups({"host_full"})
      * @var int|null
      */
-    private $lastHardState;
+    protected $lastHardState;
 
     /**
-     * @Serializer\Groups({"host_main", "host_full"})
      * @var \DateTime|null
      */
-    private $lastHardStateChange;
+    protected $lastHardStateChange;
 
     /**
-     * @Serializer\Groups({"host_full"})
      * @var \DateTime|null
      */
-    private $lastNotification;
+    protected $lastNotification;
 
     /**
-     * @Serializer\Groups({"host_main", "host_full"})
      * @var \DateTime|null
      */
-    private $lastStateChange;
+    protected $lastStateChange;
 
     /**
-     * @Serializer\Groups({"host_main", "host_full"})
      * @var \DateTime|null
      */
-    private $lastTimeDown;
+    protected $lastTimeDown;
 
     /**
-     * @Serializer\Groups({"host_main", "host_full"})
      * @var \DateTime|null
      */
-    private $lastTimeUnreachable;
+    protected $lastTimeUnreachable;
 
     /**
-     * @Serializer\Groups({"host_main", "host_full"})
      * @var \DateTime|null
      */
-    private $lastTimeUp;
+    protected $lastTimeUp;
 
     /**
-     * @Serializer\Groups({"host_main", "host_full"})
      * @var \DateTime|null
      */
-    private $lastUpdate;
+    protected $lastUpdate;
 
     /**
-     * @Serializer\Groups({"host_full"})
      * @var double|null
      */
-    private $latency;
+    protected $latency;
 
     /**
-     * @Serializer\Groups({"host_main", "host_full"})
      * @var int|null
      */
-    private $maxCheckAttempts;
+    protected $maxCheckAttempts;
 
     /**
-     * @Serializer\Groups({"host_full"})
      * @var \DateTime|null
      */
-    private $nextCheck;
+    protected $nextCheck;
 
     /**
-     * @Serializer\Groups({"host_full"})
      * @var int|null
      */
-    private $nextHostNotification;
+    protected $nextHostNotification;
 
     /**
-     * @Serializer\Groups({"host_full"})
      * @var double|null
      */
-    private $notificationInterval;
+    protected $notificationInterval;
 
     /**
-     * @Serializer\Groups({"host_full"})
      * @var int|null
      */
-    private $notificationNumber;
+    protected $notificationNumber;
 
     /**
-     * @Serializer\Groups({"host_full"})
      * @var string|null
      */
-    private $notificationPeriod;
+    protected $notificationPeriod;
 
     /**
-     * @Serializer\Groups({"host_full"})
      * @var bool|null
      */
-    private $notify;
+    protected $notify;
 
     /**
-     * @Serializer\Groups({"host_full"})
      * @var bool|null
      */
-    private $notifyOnDown;
+    protected $notifyOnDown;
 
     /**
-     * @Serializer\Groups({"host_full"})
      * @var bool|null
      */
-    private $notifyOnDowntime;
+    protected $notifyOnDowntime;
 
     /**
-     * @Serializer\Groups({"host_full"})
      * @var bool|null
      */
-    private $notifyOnFlapping;
+    protected $notifyOnFlapping;
 
     /**
-     * @Serializer\Groups({"host_full"})
      * @var bool|null
      */
-    private $notifyOnRecovery;
+    protected $notifyOnRecovery;
 
     /**
-     * @Serializer\Groups({"host_full"})
      * @var bool|null
      */
-    private $notifyOnUnreachable;
+    protected $notifyOnUnreachable;
 
     /**
-     * @Serializer\Groups({"host_main", "host_full"})
      * @var string|null
      */
-    private $output;
+    protected $output;
 
     /**
-     * @Serializer\Groups({"host_main", "host_full"})
      * @var bool|null
      */
-    private $passiveChecks;
+    protected $passiveChecks;
 
     /**
-     * @Serializer\Groups({"host_full", "host_with_services"})
      * @var Service[]
      */
-    private $services = [];
+    protected $services = [];
 
     /**
-     * @Serializer\Groups({"host_min", "host_main", "host_full"})
      * @var int|null ['0' => 'UP', '1' => 'DOWN', '2' => 'UNREACHABLE', '4' => 'PENDING']
      */
-    private $state;
+    protected $state;
 
     /**
-     * @Serializer\Groups({"host_main", "host_full"})
      * @var int|null
      */
-    private $stateType;
+    protected $stateType;
 
     /**
-     * @Serializer\Groups({"host_main", "host_full"})
      * @var string|null
      */
-    private $timezone;
+    protected $timezone;
 
     /**
-     * @return int
+     * @var int|null
      */
-    public function getId(): int
+    protected $scheduledDowntimeDepth;
+
+    /**
+     * @var int|null
+     */
+    protected $criticality;
+
+    /**
+     * @var bool|null
+     */
+    protected $flapping;
+
+    /**
+     * @var double|null
+     */
+    protected $percentStateChange;
+
+    /**
+     * @var Downtime[]
+     */
+    protected $downtimes = [];
+
+    /**
+     * @var Acknowledgement|null
+     */
+    protected $acknowledgement;
+
+    /**
+     * @var string|null
+     */
+    protected $pollerName;
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function loadEntityDescriptorMetadata(): array
+    {
+        return [
+            'host_id' => 'setId',
+            'instance_id' => 'setPollerId',
+            'address' => 'setAddressIp',
+            'acknowledged' => 'setAcknowledged',
+        ];
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -1138,12 +1149,149 @@ class Host
     }
 
     /**
+     * @return null|string
+     */
+    public function getSanitizedTimezone(): ?string
+    {
+        return (null !== $this->timezone) ?
+            preg_replace('/^:/', '', $this->timezone) :
+            $this->timezone;
+    }
+
+    /**
      * @param string|null $timezone
      * @return Host
      */
     public function setTimezone(?string $timezone): Host
     {
         $this->timezone = $timezone;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getScheduledDowntimeDepth(): ?int
+    {
+        return $this->scheduledDowntimeDepth;
+    }
+
+    /**
+     * @param int|null $scheduledDowntimeDepth
+     * @return Host
+     */
+    public function setScheduledDowntimeDepth(?int $scheduledDowntimeDepth): Host
+    {
+        $this->scheduledDowntimeDepth = $scheduledDowntimeDepth;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getCriticality(): ?int
+    {
+        return $this->criticality;
+    }
+
+    /**
+     * @param int|null $criticality
+     * @return Host
+     */
+    public function setCriticality(?int $criticality): Host
+    {
+        $this->criticality = $criticality;
+        return $this;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getFlapping(): ?bool
+    {
+        return $this->flapping;
+    }
+
+    /**
+     * @param bool|null $flapping
+     * @return Host
+     */
+    public function setFlapping(?bool $flapping): Host
+    {
+        $this->flapping = $flapping;
+        return $this;
+    }
+
+    /**
+     * @return float|null
+     */
+    public function getPercentStateChange(): ?float
+    {
+        return $this->percentStateChange;
+    }
+
+    /**
+     * @param float|null $percentStateChange
+     * @return Host
+     */
+    public function setPercentStateChange(?float $percentStateChange): Host
+    {
+        $this->percentStateChange = $percentStateChange;
+        return $this;
+    }
+
+    /**
+     * @return Downtime[]
+     */
+    public function getDowntimes(): array
+    {
+        return $this->downtimes;
+    }
+
+    /**
+     * @param Downtime[] $downtimes
+     * @return Host
+     */
+    public function setDowntimes(array $downtimes): self
+    {
+        $this->downtimes = $downtimes;
+        return $this;
+    }
+
+    /**
+     * @return Acknowledgement|null
+     */
+    public function getAcknowledgement(): ?Acknowledgement
+    {
+        return $this->acknowledgement;
+    }
+
+    /**
+     * @param Acknowledgement|null $acknowledgement
+     * @return Host
+     */
+    public function setAcknowledgement(?Acknowledgement $acknowledgement): self
+    {
+        $this->acknowledgement = $acknowledgement;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPollerName(): ?string
+    {
+        return $this->pollerName;
+    }
+
+    /**
+     * @param string|null $pollerName
+     * @return self
+     */
+    public function setPollerName(?string $pollerName): self
+    {
+        $this->pollerName = $pollerName;
+
         return $this;
     }
 }

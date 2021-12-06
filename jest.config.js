@@ -1,17 +1,13 @@
-module.exports = {
-  setupFilesAfterEnv: [
-    '@testing-library/react/cleanup-after-each',
-    '@testing-library/jest-dom/extend-expect',
-  ],
-  roots: ['<rootDir>/www/front_src/src/'],
-  transform: {
-    '^.+\\.[jt]sx?$': 'babel-jest',
+const { mergeDeepRight } = require('ramda');
+
+module.exports = mergeDeepRight(
+  require('@centreon/centreon-frontend/packages/frontend-config/jest'),
+  {
+    roots: ['<rootDir>/www/front_src/src/'],
+    setupFilesAfterEnv: [
+      '@testing-library/jest-dom/extend-expect',
+      '<rootDir>/setupTest.js',
+    ],
+    testEnvironment: 'jsdom',
   },
-  transformIgnorePatterns: ['/node_modules/(?!@centreon/ui).+\\.jsx?$'],
-  moduleNameMapper: {
-    '\\.(s?css|png|svg)$': 'identity-obj-proxy',
-    '^@centreon/ui/(.*)$': '@centreon/ui/src/$1',
-    '^@centreon/ui$': '@centreon/ui/src',
-  },
-  testPathIgnorePatterns: ['/node_modules/'],
-};
+);

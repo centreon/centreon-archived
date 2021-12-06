@@ -62,36 +62,47 @@ function myDecodeService($arg)
     return html_entity_decode($arg, ENT_QUOTES, "UTF-8");
 }
 
-if (!$centreon->user->admin) {
-    if ($service_id) {
-        $checkres = $pearDB->query("SELECT service_id
-                                        FROM $aclDbName.centreon_acl
-                                        WHERE service_id = " . $pearDB->escape($service_id) . "
-                                        AND group_id IN (" . $acl->getAccessGroupsString() . ")");
-        if (!$checkres->rowCount()) {
-            $msg = new CentreonMsg();
-            $msg->setImage("./img/icons/warning.png");
-            $msg->setTextStyle("bold");
-            $msg->setText(_('You are not allowed to access this service'));
-            return null;
-        }
+if (!$centreon->user->admin && is_numeric($service_id)) {
+    $checkres = $pearDB->query(
+        "SELECT service_id
+        FROM $aclDbName.centreon_acl
+        WHERE service_id = " . $pearDB->escape($service_id) . "
+        AND group_id IN (" . $acl->getAccessGroupsString() . ")"
+    );
+    if (!$checkres->rowCount()) {
+        $msg = new CentreonMsg();
+        $msg->setImage("./img/icons/warning.png");
+        $msg->setTextStyle("bold");
+        $msg->setText(_('You are not allowed to access this service'));
+        return null;
     }
 }
+
+const PASSWORD_REPLACEMENT_VALUE = '**********';
 
 $cmdId = 0;
 $service = array();
 $serviceTplId = null;
 $initialValues = array();
-if (($o == "c" || $o == "w") && $service_id) {
-    $DBRESULT = $pearDB->query("SELECT *
-                                FROM service
-                                LEFT JOIN extended_service_information esi
-                                ON esi.service_service_id = service_id
-                                WHERE service_id = '" . $service_id . "' LIMIT 1");
+
+// Used to store all macro passwords
+$macroPasswords = [];
+
+if (($o == SERVICE_MODIFY || $o == SERVICE_WATCH) && $service_id) {
+    $statement = $pearDB->prepare(
+        'SELECT * 
+        FROM service
+        LEFT JOIN extended_service_information esi
+            ON esi.service_service_id = service_id
+        WHERE service_id = :service_id LIMIT 1'
+    );
+    $statement->bindValue(':service_id', $service_id, \PDO::PARAM_INT);
+    $statement->execute();
+
     /*
      * Set base value
      */
-    $service = array_map("myDecodeService", $DBRESULT->fetchRow());
+    $service = array_map("myDecodeService", $statement->fetch());
     $serviceTplId = $service['service_template_model_stm_id'];
     $cmdId = $service['command_command_id'];
 
@@ -114,15 +125,18 @@ if (($o == "c" || $o == "w") && $service_id) {
     /*
      * Set criticality
      */
-    $res = $pearDB->query("SELECT sc.sc_id 
-                            FROM service_categories sc, service_categories_relation scr
-                            WHERE scr.service_service_id = " . $pearDB->escape($service_id) . "
-                            AND scr.sc_id = sc.sc_id
-                            AND sc.level IS NOT NULL
-                            ORDER BY sc.level ASC
-                            LIMIT 1");
-    if ($res->rowCount()) {
-        $cr = $res->fetchRow();
+    $statement = $pearDB->prepare(
+        'SELECT sc.sc_id 
+        FROM service_categories sc
+        INNER JOIN service_categories_relation scr
+            ON scr.sc_id = sc.sc_id
+        WHERE scr.service_service_id = :service_id AND sc.level IS NOT NULL
+        ORDER BY sc.level ASC LIMIT 1'
+    );
+    $statement->bindValue(':service_id', $service_id, \PDO::PARAM_INT);
+    $statement->execute();
+    if ($statement->rowCount()) {
+        $cr = $statement->fetch();
         $service['criticality_id'] = $cr['sc_id'];
     }
 }
@@ -133,13 +147,62 @@ if (($o == "c" || $o == "w") && $service_id) {
 
 $aMacros = array();
 
-if (($o == "c" || $o == "w") && $service_id) {
+if (($o == SERVICE_MODIFY || $o == SERVICE_WATCH) && $service_id) {
     $aListTemplate = getListTemplates($pearDB, $service_id);
 
     if (!isset($cmdId)) {
         $cmdId = "";
     }
+
+    if (isset($_REQUEST['macroInput'])) {
+        /**
+         * We don't taking into account the POST data sent from the interface in order the retrieve the original value
+         * of all passwords.
+         */
+        $aMacros = $serviceObj->getMacros($service_id, $aListTemplate, $cmdId);
+
+        /**
+         * If a password has been modified from the interface, we retrieve the old password existing in the repository
+         * (giving by the $aMacros variable) to inject it before saving.
+         * Passwords will be saved using the $_REQUEST variable.
+         */
+        foreach ($_REQUEST['macroInput'] as $index => $macroName) {
+            if (
+                !isset($_REQUEST['macroFrom'][$index])
+                || !isset($_REQUEST['macroPassword'][$index])
+                || $_REQUEST['macroPassword'][$index] !== '1'                      // Not a password
+                || $_REQUEST['macroValue'][$index] !== PASSWORD_REPLACEMENT_VALUE  // The password has not changed
+            ) {
+                continue;
+            }
+            foreach ($aMacros as $macroAlreadyExist) {
+                if (
+                    $macroAlreadyExist['macroInput_#index#'] === $macroName
+                    && $_REQUEST['macroFrom'][$index] === $macroAlreadyExist['source']
+                ) {
+                    /**
+                     * if the password has not been changed, we replace the password coming from the interface with
+                     * the original value (from the repository) before saving.
+                     */
+                    $_REQUEST['macroValue'][$index] = $macroAlreadyExist['macroValue_#index#'];
+                }
+            }
+        }
+    }
+    // We taking into account the POST data sent from the interface
     $aMacros = $serviceObj->getMacros($service_id, $aListTemplate, $cmdId, $_POST);
+
+    // We hide all passwords in the jsData property to prevent them from appearing in the HTML code.
+    foreach ($aMacros as $index => $macroValues) {
+        if ($macroValues['macroPassword_#index#'] === 1) {
+            $macroPasswords[$index]['password'] = $aMacros[$index]['macroValue_#index#'];
+            // It's a password macro
+            $aMacros[$index]['macroOldValue_#index#'] = PASSWORD_REPLACEMENT_VALUE;
+            $aMacros[$index]['macroValue_#index#'] = PASSWORD_REPLACEMENT_VALUE;
+            // Keep the original name of the input field in case its name changes.
+            $aMacros[$index]['macroOriginalName_#index#'] = $aMacros[$index]['macroInput_#index#'];
+        }
+    }
 }
 
 $cdata = CentreonData::getInstance();
@@ -270,13 +333,13 @@ unset($_POST['o']);
 ## Form begin
 #
 $form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
-if ($o == "a") {
+if ($o == SERVICE_ADD) {
     $form->addElement('header', 'title', _("Add a Service"));
-} elseif ($o == "c") {
+} elseif ($o == SERVICE_MODIFY) {
     $form->addElement('header', 'title', _("Modify a Service"));
-} elseif ($o == "w") {
+} elseif ($o == SERVICE_WATCH) {
     $form->addElement('header', 'title', _("View a Service"));
-} elseif ($o == "mc") {
+} elseif ($o == SERVICE_MASSIVE_CHANGE) {
     $form->addElement('header', 'title', _("Massive Change"));
 }
 
@@ -288,7 +351,7 @@ if ($o == "a") {
  * - No possibility to change name and alias, because there's no interest
  * - May be ? #409
  */
-if ($o != "mc") {
+if ($o != SERVICE_MASSIVE_CHANGE) {
     $form->addElement('text', 'service_description', _("Description"), $attrsText);
 }
 $form->addElement('text', 'service_alias', _("Alias"), $attrsText);
@@ -319,7 +382,7 @@ $serviceIV[] = $form->createElement('radio', 'service_is_volatile', null, _("Yes
 $serviceIV[] = $form->createElement('radio', 'service_is_volatile', null, _("No"), '0');
 $serviceIV[] = $form->createElement('radio', 'service_is_volatile', null, _("Default"), '2');
 $form->addGroup($serviceIV, 'service_is_volatile', _("Is Volatile"), '&nbsp;');
-if ($o != "mc") {
+if ($o != SERVICE_MASSIVE_CHANGE) {
     $form->setDefaults(array('service_is_volatile' => '2'));
 }
 $availableCommandRoute1 = './include/common/webServices/rest/internal.php?object=centreon_configuration_command' .
@@ -334,7 +397,7 @@ $attrCommand1 = array_merge(
     )
 );
 $checkCommandSelect = $form->addElement('select2', 'command_command_id', _("Check Command"), array(), $attrCommand1);
-if ($o == "mc") {
+if ($o == SERVICE_MASSIVE_CHANGE) {
     $checkCommandSelect->addJsCallback(
         'change',
         'setArgument(jQuery(this).closest("form").get(0),"command_command_id","example1");'
@@ -352,7 +415,7 @@ $serviceEHE[] = $form->createElement('radio', 'service_event_handler_enabled', n
 $serviceEHE[] = $form->createElement('radio', 'service_event_handler_enabled', null, _("No"), '0');
 $serviceEHE[] = $form->createElement('radio', 'service_event_handler_enabled', null, _("Default"), '2');
 $form->addGroup($serviceEHE, 'service_event_handler_enabled', _("Event Handler Enabled"), '&nbsp;');
-if ($o != "mc") {
+if ($o != SERVICE_MASSIVE_CHANGE) {
     $form->setDefaults(array('service_event_handler_enabled' => '2'));
 }
 
@@ -379,7 +442,7 @@ $serviceACE[] = $form->createElement('radio', 'service_active_checks_enabled', n
 $serviceACE[] = $form->createElement('radio', 'service_active_checks_enabled', null, _("No"), '0');
 $serviceACE[] = $form->createElement('radio', 'service_active_checks_enabled', null, _("Default"), '2');
 $form->addGroup($serviceACE, 'service_active_checks_enabled', _("Active Checks Enabled"), '&nbsp;');
-if ($o != "mc") {
+if ($o != SERVICE_MASSIVE_CHANGE) {
     $form->setDefaults(array('service_active_checks_enabled' => '2'));
 }
 
@@ -387,7 +450,7 @@ $servicePCE[] = $form->createElement('radio', 'service_passive_checks_enabled', 
 $servicePCE[] = $form->createElement('radio', 'service_passive_checks_enabled', null, _("No"), '0');
 $servicePCE[] = $form->createElement('radio', 'service_passive_checks_enabled', null, _("Default"), '2');
 $form->addGroup($servicePCE, 'service_passive_checks_enabled', _("Passive Checks Enabled"), '&nbsp;');
-if ($o != "mc") {
+if ($o != SERVICE_MASSIVE_CHANGE) {
     $form->setDefaults(array('service_passive_checks_enabled' => '2'));
 }
 $attrTimeperiodRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_timeperiod'
@@ -453,11 +516,11 @@ $serviceNE[] = $form->createElement('radio', 'service_notifications_enabled', nu
 $serviceNE[] = $form->createElement('radio', 'service_notifications_enabled', null, _("No"), '0');
 $serviceNE[] = $form->createElement('radio', 'service_notifications_enabled', null, _("Default"), '2');
 $form->addGroup($serviceNE, 'service_notifications_enabled', _("Notification Enabled"), '&nbsp;');
-if ($o != "mc") {
+if ($o != SERVICE_MASSIVE_CHANGE) {
     $form->setDefaults(array('service_notifications_enabled' => '2'));
 }
 
-if ($o == "mc") {
+if ($o == SERVICE_MASSIVE_CHANGE) {
     $mc_mod_cgs = array();
     $mc_mod_cgs[] = $form->createElement('radio', 'mc_mod_cgs', null, _("Incremental"), '0');
     $mc_mod_cgs[] = $form->createElement('radio', 'mc_mod_cgs', null, _("Replacement"), '1');
@@ -477,14 +540,14 @@ $form->addGroup(
     _("Inherit only contacts/contacts group from host"),
     '&nbsp;'
 );
-if ($o != "mc") {
+if ($o != SERVICE_MASSIVE_CHANGE) {
     $form->setDefaults(array('service_use_only_contacts_from_host' => '0'));
 }
 
 /*
  * Additive
  */
-if ($o == "mc") {
+if ($o == SERVICE_MASSIVE_CHANGE) {
     $contactAdditive[] = $form->createElement('radio', 'mc_contact_additive_inheritance', null, _("Yes"), '1');
     $contactAdditive[] = $form->createElement('radio', 'mc_contact_additive_inheritance', null, _("No"), '0');
     $contactAdditive[] = $form->createElement(
@@ -539,7 +602,7 @@ $attrContactgroup1 = array_merge(
 $form->addElement('select2', 'service_cgs', _("Implied Contact Groups"), array(), $attrContactgroup1);
 
 
-if ($o == "mc") {
+if ($o == SERVICE_MASSIVE_CHANGE) {
     $mc_mod_notifopt_first_notification_delay = array();
     $mc_mod_notifopt_first_notification_delay[] = $form->createElement(
         'radio',
@@ -568,7 +631,7 @@ $form->addElement('text', 'service_first_notification_delay', _("First notificat
 
 $form->addElement('text', 'service_recovery_notification_delay', _("Recovery notification delay"), $attrsText2);
 
-if ($o == "mc") {
+if ($o == SERVICE_MASSIVE_CHANGE) {
     $mc_mod_notifopt_notification_interval = array();
     $mc_mod_notifopt_notification_interval[] = $form->createElement(
         'radio',
@@ -595,7 +658,7 @@ if ($o == "mc") {
 
 $form->addElement('text', 'service_notification_interval', _("Notification Interval"), $attrsText2);
 
-if ($o == "mc") {
+if ($o == SERVICE_MASSIVE_CHANGE) {
     $mc_mod_notifopt_timeperiod = array();
     $mc_mod_notifopt_timeperiod[] = $form->createElement(
         'radio',
@@ -623,7 +686,7 @@ $attrTimeperiod2 = array_merge(
 );
 $form->addElement('select2', 'timeperiod_tp_id2', _("Notification Period"), array(), $attrTimeperiod2);
 
-if ($o == "mc") {
+if ($o == SERVICE_MASSIVE_CHANGE) {
     $mc_mod_notifopts = array();
     $mc_mod_notifopts[] = $form->createElement('radio', 'mc_mod_notifopts', null, _("Incremental"), '0');
     $mc_mod_notifopts[] = $form->createElement('radio', 'mc_mod_notifopts', null, _("Replacement"), '1');
@@ -695,7 +758,7 @@ $form->addElement('header', 'furtherInfos', _("Additional Information"));
 $serviceActivation[] = $form->createElement('radio', 'service_activate', null, _("Enabled"), '1');
 $serviceActivation[] = $form->createElement('radio', 'service_activate', null, _("Disabled"), '0');
 $form->addGroup($serviceActivation, 'service_activate', _("Status"), '&nbsp;');
-if ($o != "mc") {
+if ($o != SERVICE_MASSIVE_CHANGE) {
     $form->setDefaults(array('service_activate' => '1'));
 }
 $form->addElement('textarea', 'service_comment', _("Comments"), $attrsTextarea);
@@ -703,17 +766,17 @@ $form->addElement('textarea', 'service_comment', _("Comments"), $attrsTextarea);
 #
 ## Sort 2 - Service Relations
 #
-if ($o == "a") {
+if ($o == SERVICE_ADD) {
     $form->addElement('header', 'title2', _("Add relations"));
-} elseif ($o == "c") {
+} elseif ($o == SERVICE_MODIFY) {
     $form->addElement('header', 'title2', _("Modify relations"));
-} elseif ($o == "w") {
+} elseif ($o == SERVICE_WATCH) {
     $form->addElement('header', 'title2', _("View relations"));
-} elseif ($o == "mc") {
+} elseif ($o == SERVICE_MASSIVE_CHANGE) {
     $form->addElement('header', 'title2', _("Massive Change"));
 }
 
-if ($o == "mc") {
+if ($o == SERVICE_MASSIVE_CHANGE) {
     $mc_mod_Pars = array();
     $mc_mod_Pars[] = $form->createElement('radio', 'mc_mod_Pars', null, _("Incremental"), '0');
     $mc_mod_Pars[] = $form->createElement('radio', 'mc_mod_Pars', null, _("Replacement"), '1');
@@ -753,7 +816,7 @@ if ($form_service_type == "BYHOSTGROUP") {
 
 // Service relations
 $form->addElement('header', 'links', _("Relations"));
-if ($o == "mc") {
+if ($o == SERVICE_MASSIVE_CHANGE) {
     $mc_mod_sgs = array();
     $mc_mod_sgs[] = $form->createElement('radio', 'mc_mod_sgs', null, _("Incremental"), '0');
     $mc_mod_sgs[] = $form->createElement('radio', 'mc_mod_sgs', null, _("Replacement"), '1');
@@ -772,7 +835,7 @@ if ($sgReadOnly === true) {
 }
 
 $form->addElement('header', 'traps', _("SNMP Traps"));
-if ($o == "mc") {
+if ($o == SERVICE_MASSIVE_CHANGE) {
     $mc_mod_traps = array();
     $mc_mod_traps[] = $form->createElement('radio', 'mc_mod_traps', null, _("Incremental"), '0');
     $mc_mod_traps[] = $form->createElement('radio', 'mc_mod_traps', null, _("Replacement"), '1');
@@ -790,13 +853,13 @@ $form->addElement('select2', 'service_traps', _("Service Trap Relation"), array(
 #
 ## Sort 3 - Data treatment
 #
-if ($o == "a") {
+if ($o == SERVICE_ADD) {
     $form->addElement('header', 'title3', _("Add Data Processing"));
-} elseif ($o == "c") {
+} elseif ($o == SERVICE_MODIFY) {
     $form->addElement('header', 'title3', _("Modify Data Processing"));
-} elseif ($o == "w") {
+} elseif ($o == SERVICE_WATCH) {
     $form->addElement('header', 'title3', _("View Data Processing"));
-} elseif ($o == "mc") {
+} elseif ($o == SERVICE_MASSIVE_CHANGE) {
     $form->addElement('header', 'title2', _("Massive Change"));
 }
 
@@ -806,7 +869,7 @@ $serviceOOS[] = $form->createElement('radio', 'service_obsess_over_service', nul
 $serviceOOS[] = $form->createElement('radio', 'service_obsess_over_service', null, _("No"), '0');
 $serviceOOS[] = $form->createElement('radio', 'service_obsess_over_service', null, _("Default"), '2');
 $form->addGroup($serviceOOS, 'service_obsess_over_service', _("Obsess Over Service"), '&nbsp;');
-if ($o != "mc") {
+if ($o != SERVICE_MASSIVE_CHANGE) {
     $form->setDefaults(array('service_obsess_over_service' => '2'));
 }
 
@@ -814,7 +877,7 @@ $serviceCF[] = $form->createElement('radio', 'service_check_freshness', null, _(
 $serviceCF[] = $form->createElement('radio', 'service_check_freshness', null, _("No"), '0');
 $serviceCF[] = $form->createElement('radio', 'service_check_freshness', null, _("Default"), '2');
 $form->addGroup($serviceCF, 'service_check_freshness', _("Check Freshness"), '&nbsp;');
-if ($o != "mc") {
+if ($o != SERVICE_MASSIVE_CHANGE) {
     $form->setDefaults(array('service_check_freshness' => '2'));
 }
 
@@ -822,7 +885,7 @@ $serviceFDE[] = $form->createElement('radio', 'service_flap_detection_enabled', 
 $serviceFDE[] = $form->createElement('radio', 'service_flap_detection_enabled', null, _("No"), '0');
 $serviceFDE[] = $form->createElement('radio', 'service_flap_detection_enabled', null, _("Default"), '2');
 $form->addGroup($serviceFDE, 'service_flap_detection_enabled', _("Flap Detection Enabled"), '&nbsp;');
-if ($o != "mc") {
+if ($o != SERVICE_MASSIVE_CHANGE) {
     $form->setDefaults(array('service_flap_detection_enabled' => '2'));
 }
 
@@ -834,7 +897,7 @@ $serviceRSI[] = $form->createElement('radio', 'service_retain_status_information
 $serviceRSI[] = $form->createElement('radio', 'service_retain_status_information', null, _("No"), '0');
 $serviceRSI[] = $form->createElement('radio', 'service_retain_status_information', null, _("Default"), '2');
 $form->addGroup($serviceRSI, 'service_retain_status_information', _("Retain Status Information"), '&nbsp;');
-if ($o != "mc") {
+if ($o != SERVICE_MASSIVE_CHANGE) {
     $form->setDefaults(array('service_retain_status_information' => '2'));
 }
 
@@ -842,21 +905,22 @@ $serviceRNI[] = $form->createElement('radio', 'service_retain_nonstatus_informat
 $serviceRNI[] = $form->createElement('radio', 'service_retain_nonstatus_information', null, _("No"), '0');
 $serviceRNI[] = $form->createElement('radio', 'service_retain_nonstatus_information', null, _("Default"), '2');
 $form->addGroup($serviceRNI, 'service_retain_nonstatus_information', _("Retain Non Status Information"), '&nbsp;');
-if ($o != "mc") {
+if ($o != SERVICE_MASSIVE_CHANGE) {
     $form->setDefaults(array('service_retain_nonstatus_information' => '2'));
 }
 
 #
 ## Sort 4 - Extended Infos
 #
-if ($o == "a") {
+if ($o == SERVICE_ADD) {
     $form->addElement('header', 'title4', _("Add an Extended Info"));
-} elseif ($o == "c") {
+} elseif ($o == SERVICE_MODIFY) {
     $form->addElement('header', 'title4', _("Modify an Extended Info"));
-} elseif ($o == "w") {
+} elseif ($o == SERVICE_WATCH) {
     $form->addElement('header', 'title4', _("View an Extended Info"));
-} elseif ($o == "mc") {
+} elseif ($o == SERVICE_MASSIVE_CHANGE) {
     $form->addElement('header', 'title3', _("Massive Change"));
+    $form->addElement('header', 'title4', _("Modify an Extended Info"));
 }
 
 $form->addElement('header', 'nagios', _("Monitoring Engine"));
@@ -869,7 +933,10 @@ $form->addElement('select', 'esi_icon_image', _("Icon"), $extImg, array(
     "onkeyup" => "this.blur();this.focus();"
 ));
 $form->addElement('text', 'esi_icon_image_alt', _("Alt icon"), $attrsText);
+
+$form->registerRule('validate_geo_coords', 'function', 'validateGeoCoords');
 $form->addElement('text', 'geo_coords', _("Geo coordinates"), $attrsText);
+$form->addRule('geo_coords', _("geo coords are not valid"), 'validate_geo_coords');
 
 /*
  * Criticality
@@ -892,7 +959,7 @@ $attrGraphtemplate1 = array_merge(
 );
 $form->addElement('select2', 'graph_id', _("Graph Template"), array(), $attrGraphtemplate1);
 
-if ($o == "mc") {
+if ($o == SERVICE_MASSIVE_CHANGE) {
     $mc_mod_sc = array();
     $mc_mod_sc[] = $form->createElement('radio', 'mc_mod_sc', null, _("Incremental"), '0');
     $mc_mod_sc[] = $form->createElement('radio', 'mc_mod_sc', null, _("Replacement"), '1');
@@ -912,13 +979,13 @@ $form->addElement('select2', 'service_categories', _("Categories"), array(), $at
 /*
  * Sort 5
  */
-if ($o == "a") {
+if ($o == SERVICE_ADD) {
     $form->addElement('header', 'title5', _("Add macros"));
-} elseif ($o == "c") {
+} elseif ($o == SERVICE_MODIFY) {
     $form->addElement('header', 'title5', _("Modify macros"));
-} elseif ($o == "w") {
+} elseif ($o == SERVICE_WATCH) {
     $form->addElement('header', 'title5', _("View macros"));
-} elseif ($o == "mc") {
+} elseif ($o == SERVICE_MASSIVE_CHANGE) {
     $form->addElement('header', 'title5', _("Massive Change"));
 }
 
@@ -942,12 +1009,8 @@ $init = $form->addElement('hidden', 'initialValues');
 $init->setValue(serialize($initialValues));
 
 if (is_array($select)) {
-    $select_str = null;
-    foreach ($select as $key => $value) {
-        $select_str .= $key . ",";
-    }
     $select_pear = $form->addElement('hidden', 'select');
-    $select_pear->setValue($select_str);
+    $select_pear->setValue(implode(',', array_keys($select)));
 }
 
 /*
@@ -955,7 +1018,7 @@ if (is_array($select)) {
  */
 $form->applyFilter('__ALL__', 'myTrim');
 $from_list_menu = false;
-if ($o != "mc") {
+if ($o != SERVICE_MASSIVE_CHANGE) {
     $form->addRule('service_description', _("Compulsory Name"), 'required');
     # If we are using a Template, no need to check the value, we hope there are in the Template
     if (!$form->getSubmitValue("service_template_model_stm_id")) {
@@ -999,7 +1062,7 @@ if ($o != "mc") {
     );
 
     $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;" . _("Required fields"));
-} elseif ($o == "mc") {
+} elseif ($o == SERVICE_MASSIVE_CHANGE) {
     if ($form->getSubmitValue("submitMC")) {
         $from_list_menu = false;
     } else {
@@ -1025,7 +1088,7 @@ $tpl->assign(
 );
 
 // Just watch a host information
-if ($o == "w") {
+if ($o == SERVICE_WATCH) {
     if (!$min && $centreon->user->access->page($p) != 2) {
         $form->addElement(
             "button",
@@ -1036,7 +1099,7 @@ if ($o == "w") {
     }
     $form->setDefaults($service);
     $form->freeze();
-} elseif ($o == "c") {
+} elseif ($o == SERVICE_MODIFY) {
     // Modify a service information
     $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement(
@@ -1046,11 +1109,11 @@ if ($o == "w") {
         array("onClick" => "history.go(0);", "class" => "btc bt_default")
     );
     $form->setDefaults($service);
-} elseif ($o == "a") {
+} elseif ($o == SERVICE_ADD) {
     // Add a service information
     $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
-} elseif ($o == "mc") {
+} elseif ($o == SERVICE_MASSIVE_CHANGE) {
     // Massive Change
     $subMC = $form->addElement('submit', 'submitMC', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
@@ -1086,16 +1149,36 @@ if ($form->validate() && $from_list_menu == false) {
     if ($form->getSubmitValue("submitA")) {
         $serviceObj->setValue(insertServiceInDB());
     } elseif ($form->getSubmitValue("submitC")) {
-        updateServiceInDB($serviceObj->getValue());
-    } elseif ($form->getSubmitValue("submitMC")) {
-        $select = explode(",", $select);
-        foreach ($select as $key => $value) {
-            if ($value) {
-                updateServiceInDB($value, true);
+        /*
+         * Before saving, we check if a password macro has changed its name to be able to give it the right password
+         * instead of wildcards (PASSWORD_REPLACEMENT_VALUE).
+         */
+        if (array_key_exists('macroInput', $_REQUEST)) {
+            foreach ($_REQUEST['macroInput'] as $index => $macroName) {
+                if (array_key_exists('macroOriginalName_' . $index, $_REQUEST)) {
+                    $originalMacroName = $_REQUEST['macroOriginalName_' . $index];
+                    if ($_REQUEST['macroValue'][$index] === PASSWORD_REPLACEMENT_VALUE) {
+                        /*
+                         * The password has not been changed along with the name, so its value is equal to the wildcard.
+                         * We will therefore recover the password stored for its original name.
+                         */
+                        foreach ($aMacros as $indexMacro => $macroDetails) {
+                            if ($macroDetails['macroInput_#index#'] === $originalMacroName) {
+                                $_REQUEST['macroValue'][$index] = $macroPasswords[$indexMacro]['password'];
+                                break;
+                            }
+                        }
+                    }
+                }
             }
         }
+        updateServiceInDB($serviceObj->getValue());
+    } elseif ($form->getSubmitValue("submitMC")) {
+        foreach (array_keys($select) as $serviceIdToUpdate) {
+            updateServiceInDB($serviceIdToUpdate, true);
+        }
     }
-    $o = "w";
+    $o = SERVICE_WATCH;
     $valid = true;
 } elseif ($form->isSubmitted()) {
     $tpl->assign("argChecker", "<font color='red'>" . $form->getElementError("argChecker") . "</font>");

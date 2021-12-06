@@ -43,17 +43,49 @@ $_SESSION['step'] = STEP_NUMBER;
 require_once '../steps/functions.php';
 $template = getTemplate('templates');
 
+require_once __DIR__ . "/../../../config/centreon.config.php";
+require_once __DIR__ . "/../../class/centreonDB.class.php";
+
 $title = _('Release notes');
 
-if (is_file('../RELEASENOTES.html')) {
-    $contents = "<div id='releasenotes'></div>";
-} else {
-    $releasenotesContent = '';
-    if (file_exists('../RELEASENOTES')) {
-        $releasenotesContent = file_get_contents('../RELEASENOTES');
+$db = new CentreonDB();
+$res = $db->query("SELECT `value` FROM `informations` WHERE `key` = 'version'");
+$row = $res->fetchRow();
+$current = $row['value'];
+
+$_SESSION['CURRENT_VERSION'] = $current;
+
+/*
+** To find the final version that we should update to, we will look in
+** the www/install/php directory where all PHP update scripts are
+** stored. We will extract the target version from the filename and find
+** the farthest version to the current version.
+*/
+$next = '';
+if ($handle = opendir('../php')) {
+    while (false !== ($file = readdir($handle))) {
+        if (preg_match('/Update-([a-zA-Z0-9\-\.]+)\.php/', $file, $matches)) {
+            if ((version_compare($current, $matches[1]) < 0) &&
+                (empty($next) || (version_compare($next, $matches[1]) < 0))) {
+                $next = $matches[1];
+            }
+        }
     }
-    $contents = "<textarea cols='100' rows='30' readonly>" . $releasenotesContent . "</textarea>";
+    closedir($handle);
 }
+
+$majors = preg_match('/^(\d+\.\d+)/', $next, $matches);
+if (!isset($matches[1])) {
+    $matches[1] = "current";
+}
+$releaseNoteLink = "https://documentation.centreon.com/" . $matches[1] . '/en/releases/centreon-core.html';
+
+$title = _('Release notes');
+
+$contents = '<p><b>' . _('Everything is ready !') . '</b></p>';
+$contents .= '<p>' . _('Your Centreon Platform is about to be upgraded from version ') . $current . _(' to ') . $next . '</p>';
+$contents .= '<p>' . _('For further details on changes, please find the complete changelog on ');
+$contents .= '<a href="' . $releaseNoteLink . '"target="_blank" style="text-decoration:underline;font-size:11px">documentation.centreon.com</a></p>';
 
 $template->assign('step', STEP_NUMBER);
 $template->assign('title', $title);
@@ -62,36 +94,10 @@ $template->assign('blockPreview', 1);
 $template->display('content.tpl');
 ?>
 <script type='text/javascript'>
-    var step3_s = 10;
+    var step3_s = 3;
     var step3_t;
 
     jQuery(function () {
-        jQuery('#releasenotes').load('RELEASENOTES.html', function() {
-            /* add accordion class to all div matching centreon-web-* id */
-            jQuery('div[id^="centreon-web-"]').addClass('accordion');
-
-            var acc = document.getElementsByClassName("accordion");
-            var i;
-
-            for (i = 0; i < acc.length; i++) {
-              acc[i].addEventListener("click", function() {
-                /* Toggle between adding and removing the "active" class,
-                to highlight the button that controls the panel */
-                this.classList.toggle("active");
-
-                /* Toggle between hiding and showing the active panel */
-                var panels = this.getElementsByClassName("section");
-                var j;
-                for (j = 0; j < panels.length; j++) {
-                    if (panels[j].style.display === "block") {
-                        panels[j].style.display = "none";
-                    } else {
-                        panels[j].style.display = "block";
-                    }
-                }
-              });
-            }
-        });
         jQuery('#next').attr('disabled', 'disabled');
         timeout_button();
     });
