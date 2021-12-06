@@ -21,8 +21,8 @@ import {
 } from '@material-ui/pickers';
 import { Alert } from '@material-ui/lab';
 
-import { Dialog, TextField, SelectField } from '@centreon/ui';
 import { userAtom } from '@centreon/ui-context';
+import { Dialog, TextField, SelectField } from '@centreon/ui';
 
 import {
   labelCancel,

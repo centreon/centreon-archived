@@ -8,7 +8,7 @@ import { refreshIntervalAtom } from '@centreon/ui-context';
 import Hook from '../components/Hook';
 
 import styles from './header.scss';
-import PollerMenu from './PollerMenu';
+import PollerMenu from './pollerMenu';
 import UserMenu from './userMenu';
 import ServiceStatusCounter from './RessourceStatusCounter/Service';
 import HostStatusCounter from './RessourceStatusCounter/Host';
