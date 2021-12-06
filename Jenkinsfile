@@ -204,40 +204,6 @@ try {
     }
   }
 
-
-  stage('Violations to Github') {
-    node {
-      if (env.CHANGE_ID) { // pull request to comment with coding style issues
-        if (hasBackendChanges) {
-          unstash 'codestyle-be.xml'
-          unstash 'phpstan.xml'
-        }
-
-        if (hasFrontendChanges) {
-          unstash 'codestyle-fe.xml'
-        }
-
-        ViolationsToGitHub([
-          repositoryName: 'centreon',
-          pullRequestId: env.CHANGE_ID,
-          createSingleFileComments: true,
-          commentOnlyChangedContent: true,
-          commentOnlyChangedFiles: true,
-          keepOldComments: false,
-          commentTemplate: "**{{violation.severity}}**: {{violation.message}}",
-          violationConfigs: [
-            [parser: 'CHECKSTYLE', pattern: '.*/codestyle-be.xml$', reporter: 'Checkstyle'],
-            [parser: 'CHECKSTYLE', pattern: '.*/phpstan.xml$', reporter: 'Checkstyle'],
-            [parser: 'CHECKSTYLE', pattern: '.*/codestyle-fe.xml$', reporter: 'Checkstyle']
-          ]
-        ])
-      }
-    }
-    if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-      error("Reports stage failure");
-    }
-  }
-
   stage("$DELIVERY_STAGE") {
     node {
       checkoutCentreonBuild()
