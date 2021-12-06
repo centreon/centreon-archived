@@ -414,7 +414,7 @@ try {
       }
     }
   }
-  
+
   stage('Acceptance tests') {
     parallelsAlwaysFailFast()
     if (hasBackendChanges || hasFrontendChanges) {
@@ -423,23 +423,27 @@ try {
         def feature = x
         atparallelSteps[feature] = {
           node {
-            checkoutCentreonBuild()     
+            checkoutCentreonBuild()
             unstash 'tar-sources'
             unstash 'vendor'
             def acceptanceStatus = sh(
               script: "./centreon-build/jobs/web/${serie}/mon-web-acceptance.sh centos7 features/${feature} ${acceptanceTag}",
               returnStatus: true
             )
+            echo 'acceptance status : ' + acceptanceStatus
+            echo 'build result : ' + currentBuild.result
             junit 'xunit-reports/**/*.xml'
-            if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0))
+            if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0)) {
+              echo feature + ' failed !'
               currentBuild.result = 'FAILURE'
+            }
             archiveArtifacts allowEmptyArchive: true, artifacts: 'acceptance-logs/*.txt, acceptance-logs/*.png, acceptance-logs/*.flv'
           }
         }
       }
       parallel atparallelSteps
       if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-        error('Critical tests stage failure');
+        error('Acceptance tests stage failure');
       }
     }
   }
