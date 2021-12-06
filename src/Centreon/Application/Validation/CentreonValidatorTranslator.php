@@ -38,7 +38,6 @@ namespace Centreon\Application\Validation;
 
 use Psr\Container\ContainerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Symfony\Component\Translation\TranslatorInterface as DeprecatedTranslatorInterface;
 
 /**
  * The interface Symfony\Component\Translation\TranslatorInterface will be deprecated
@@ -48,10 +47,9 @@ use Symfony\Component\Translation\TranslatorInterface as DeprecatedTranslatorInt
  * @todo remove implementation of Symfony\Component\Translation\TranslatorInterface interface
  * @todo remove transChoice, setLocale, and getLocale methods
  */
-class CentreonValidatorTranslator implements TranslatorInterface, DeprecatedTranslatorInterface
+class CentreonValidatorTranslator implements TranslatorInterface
 {
-
-    /**
+        /**
      * {@inheritdoc}
      */
     public function trans($id, array $parameters = array(), $domain = null, $locale = null)
