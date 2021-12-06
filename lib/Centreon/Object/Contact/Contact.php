@@ -154,4 +154,88 @@ class Centreon_Object_Contact extends Centreon_Object
         }
         return $this->getResult($sql, $filterTab, "fetchAll");
     }
+
+    /**
+     * Used for updating contact in database
+     *
+     * @param int $contactId
+     * @param array $params
+     * @return void
+     */
+    public function update($contactId, $params = array())
+    {
+        $sql = "UPDATE $this->table SET ";
+        $sqlUpdate = "";
+        $sqlParams = array();
+        $not_null_attributes = array();
+
+        // Store password value and remove it from the array to not inserting it in contact table.
+        if (isset($params['contact_passwd'])) {
+            $password = $params['contact_passwd'];
+            unset($params['contact_passwd']);
+        }
+
+        if (array_search("", $params)) {
+            $sql_attr = "SHOW FIELDS FROM $this->table";
+            $res = $this->getResult($sql_attr, array(), "fetchAll");
+            foreach ($res as $tab) {
+                if ($tab['Null'] == 'NO') {
+                    $not_null_attributes[$tab['Field']] = true;
+                }
+            }
+        }
+
+        foreach ($params as $key => $value) {
+            if ($key == $this->primaryKey) {
+                continue;
+            }
+            if ($sqlUpdate != "") {
+                $sqlUpdate .= ",";
+            }
+            $sqlUpdate .= $key . " = ? ";
+            if ($value === "" && !isset($not_null_attributes[$key])) {
+                $value = null;
+            }
+            if (!is_null($value)) {
+                $value = str_replace("<br/>", "\n", $value);
+            }
+            $sqlParams[] = $value;
+        }
+
+        if ($sqlUpdate) {
+            $sqlParams[] = $contactId;
+            $sql .= $sqlUpdate . " WHERE $this->primaryKey = ?";
+            $this->db->query($sql, $sqlParams);
+        }
+
+        if (isset($password) && isset($contactId)) {
+            //Get three last saved password.
+            $statement = $this->db->prepare(
+                'SELECT id, password, creation_date from `contact_password`
+                WHERE `contact_id` = :contactId ORDER BY `creation_date` DESC'
+            );
+            $statement->bindValue(':contactId', $contactId, PDO::PARAM_INT);
+            $statement->execute();
+            //If 3 or more passwords are saved, delete the oldest one.
+            if (($result = $statement->fetchAll()) && count($result) >= 3) {
+                $creationDates = array_column($result, 'creation_date');
+                $oldestPassword = $result[array_search(min($creationDates), $creationDates)];
+                $statement = $this->db->prepare(
+                    'DELETE FROM `contact_password` WHERE `id` < :id AND contact_id = :contactId'
+                );
+                $statement->bindValue(':id', $oldestPassword['id'], PDO::PARAM_INT);
+                $statement->bindValue(':contactId', $contactId, PDO::PARAM_INT);
+                $statement->execute();
+            }
+
+            $statement = $this->db->prepare(
+                'INSERT INTO `contact_password` (`password`, `contact_id`, `creation_date`)
+                VALUES (:password, :contactId, :creationDate)'
+            );
+            $statement->bindValue(':password', $password, PDO::PARAM_STR);
+            $statement->bindValue(':contactId', $contactId, PDO::PARAM_INT);
+            $statement->bindValue(':creationDate', time(), PDO::PARAM_STR);
+            $statement->execute();
+        }
+    }
 }

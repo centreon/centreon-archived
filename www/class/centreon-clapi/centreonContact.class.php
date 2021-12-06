@@ -377,7 +377,10 @@ class CentreonContact extends CentreonObject
                     $params[2] = $completeLanguage;
                 } elseif ($params[1] == "password") {
                     $params[1] = "passwd";
-                    $params[2] = md5(trim($params[2]));
+                    $params[2] = $this->dependencyInjector['utils']->encodePass(
+                        $params[self::ORDER_PASS],
+                        PASSWORD_BCRYPT
+                    );
                 } elseif ($params[1] == "hostnotifopt") {
                     $params[1] = "host_notification_options";
                     $aNotifs = explode(",", $params[2]);
