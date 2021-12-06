@@ -9,10 +9,10 @@ Feature: Downtime DST
 
 # summer changing time
 
-#  Scenario: realtime downtime starting on summer changing time
-#    Given a downtime starting on summer changing time
-#    When realtime downtime is applied
-#    Then the downtime is properly scheduled
+  Scenario: realtime downtime starting on summer changing time
+    Given a downtime starting on summer changing time
+    When realtime downtime is applied
+    Then the downtime is properly scheduled
 
   Scenario: realtime downtime ending on summer changing time
     Given a downtime ending on summer changing time
