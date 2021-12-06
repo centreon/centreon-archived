@@ -422,10 +422,6 @@ class CentreonGraphNg
             $legend = str_replace(":", "\:", $legend);
         }
 
-        if ($metric["unit"] != "") {
-            $legend .= " (" . $metric["unit"] . ")";
-        }
-        
         return $legend;
     }
 
