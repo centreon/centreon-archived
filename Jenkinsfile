@@ -423,26 +423,32 @@ try {
         def feature = x
         atparallelSteps[feature] = {
           node {
+            echo 'build result 1 : ' + currentBuild.result
             checkoutCentreonBuild()
+            echo 'build result 2 : ' + currentBuild.result
             unstash 'tar-sources'
             unstash 'vendor'
+            echo 'build result 3 : ' + currentBuild.result
             def acceptanceStatus = sh(
               script: "./centreon-build/jobs/web/${serie}/mon-web-acceptance.sh centos7 features/${feature} ${acceptanceTag}",
               returnStatus: true
             )
             echo 'acceptance status : ' + acceptanceStatus
-            echo 'build result : ' + currentBuild.result
+            echo 'build result 4 : ' + currentBuild.result
             junit 'xunit-reports/**/*.xml'
             if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0)) {
               echo feature + ' failed !'
               currentBuild.result = 'FAILURE'
             }
+            echo 'build result 5 : ' + currentBuild.result
             archiveArtifacts allowEmptyArchive: true, artifacts: 'acceptance-logs/*.txt, acceptance-logs/*.png, acceptance-logs/*.flv'
+            echo 'build result 6 : ' + currentBuild.result
           }
         }
       }
       parallel atparallelSteps
       if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+        echo 'build result 7 : ' + currentBuild.result
         error('Acceptance tests stage failure');
       }
     }
