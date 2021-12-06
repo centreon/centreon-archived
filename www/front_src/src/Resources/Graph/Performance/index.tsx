@@ -84,6 +84,7 @@ interface Props {
   displayCompleteGraph?: () => void;
   displayEventAnnotations?: boolean;
   displayTitle?: boolean;
+  enableIntersectionObserver?: () => void;
   endpoint?: string;
   graphHeight: number;
   isInViewport?: boolean;
@@ -170,6 +171,7 @@ const PerformanceGraph = ({
   limitLegendRows,
   isInViewport = true,
   displayCompleteGraph,
+  enableIntersectionObserver,
 }: Props): JSX.Element | null => {
   const classes = useStyles({
     canAdjustTimePeriod: not(isNil(adjustTimePeriod)),
@@ -267,6 +269,14 @@ const PerformanceGraph = ({
         performanceGraphRef.current.clientHeight;
     }
   }, [isInViewport, lineData]);
+
+  React.useEffect(() => {
+    if (isNil(lineData)) {
+      return;
+    }
+
+    enableIntersectionObserver?.();
+  }, [lineData]);
 
   if (isNil(lineData) || isNil(timeline) || isNil(endpoint)) {
     return (
