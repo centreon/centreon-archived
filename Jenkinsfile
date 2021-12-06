@@ -350,6 +350,7 @@ try {
   }
 
   stage('API // E2E // Lighthouse CI') {
+    parallelsAlwaysFailFast()
     parallel 'API Tests': {
       if (hasBackendChanges) {
         def parallelSteps = [:]
@@ -415,6 +416,7 @@ try {
   }
   
   stage('Acceptance tests') {
+    parallelsAlwaysFailFast()
     if (hasBackendChanges || hasFrontendChanges) {
       def atparallelSteps = [:]
       for (x in featureFiles) {
