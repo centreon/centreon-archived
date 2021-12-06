@@ -315,7 +315,7 @@ function prepare_register_payload() {
 
   cat << EOD
 
-  Summary of the information that will be send:
+  Summary of the information that will be sent:
 
   Api Connection:
   username: ${API_USERNAME}
@@ -330,7 +330,7 @@ function prepare_register_payload() {
 
 EOD
 
-  read -p 'Do you want to register this server with those information? (y/n): ' IS_VALID
+  read -p 'Do you want to register this server with the previous information? (y/n): ' IS_VALID
 
   if [[ $IS_VALID != 'y' ]];
   then
@@ -463,7 +463,7 @@ function request_to_remote() {
 #========= begin of set_remote_parameters_manually()
 function set_remote_parameters_manually() {
     # ask information to connect to Remote API
-    echo "A few more information are required to convert your platform into Remote : "
+    echo "More information is required to convert your platform into Remote : "
     read -p "${PARSED_CURRENT_NODE_URL[HOST]} : Please enter your username: " API_CURRENT_NODE_USERNAME
     read -sp "Please enter the password of ${PARSED_CURRENT_NODE_URL[HOST]}: " API_CURRENT_NODE_PASSWORD; echo ""
     if [ -z ${PARSED_CURRENT_NODE_URL[SCHEME]} ];then
