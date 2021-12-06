@@ -12,6 +12,7 @@ import {
   Criteria,
   criticalStatus,
   downStatus,
+  hardStateType,
   selectableResourceTypes,
   selectableStates,
   selectableStatuses,
@@ -40,6 +41,7 @@ const newFilter = {
 const unhandledProblemsFilter: Filter = {
   criterias: getDefaultCriterias({
     states: [unhandledState],
+    statusTypes: [hardStateType],
     statuses: [warningStatus, downStatus, criticalStatus, unknownStatus],
   }),
   id: 'unhandled_problems',
