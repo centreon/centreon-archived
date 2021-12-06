@@ -90,6 +90,7 @@ const ExportablePerformanceGraphWithTimeline = ({
   const retrieveTimeline = (): void => {
     if (or(isNil(timelineEndpoint), not(displayEventAnnotations))) {
       setTimeline([]);
+
       return;
     }
 
@@ -126,10 +127,6 @@ const ExportablePerformanceGraphWithTimeline = ({
     retrieveTimeline();
   }, [endpoint, selectedTimePeriod, customTimePeriod, displayEventAnnotations]);
 
-  React.useEffect(() => {
-    setElement(graphContainerRef.current);
-  }, []);
-
   const getEndpoint = (): string | undefined => {
     if (isNil(endpoint)) {
       return undefined;
@@ -151,6 +148,10 @@ const ExportablePerformanceGraphWithTimeline = ({
     ]);
   };
 
+  const enableIntersectionObserver = (): void => {
+    setElement(graphContainerRef.current);
+  };
+
   return (
     <Paper className={classes.graphContainer}>
       <div
@@ -162,6 +163,7 @@ const ExportablePerformanceGraphWithTimeline = ({
           adjustTimePeriod={adjustTimePeriod}
           customTimePeriod={customTimePeriod}
           displayEventAnnotations={displayEventAnnotations}
+          enableIntersectionObserver={enableIntersectionObserver}
           endpoint={getEndpoint()}
           graphHeight={graphHeight}
           isInViewport={isInViewport}
