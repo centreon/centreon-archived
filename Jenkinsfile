@@ -452,5 +452,6 @@ try {
             "*INFO*: ${e}"
   }
 
+  echo 'Error occurred: ' + e.toString()
   currentBuild.result = 'FAILURE'
 }
