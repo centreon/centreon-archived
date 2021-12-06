@@ -61,7 +61,6 @@ const useStatusStyles = makeStyles<Theme, StyleProps>((theme) => {
     icon: {
       fontSize: theme.typography.body1.fontSize,
       height: theme.spacing(4),
-      margin: '6px',
       position: 'relative',
       width: theme.spacing(4),
     },
