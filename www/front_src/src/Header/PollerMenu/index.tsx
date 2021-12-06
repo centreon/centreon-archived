@@ -134,9 +134,7 @@ const PollerMenu = ({
     sendRequest(`./api/${endpoint}`)
       .then((retrievedPollerData) => {
         setIssues(
-          isEmpty(retrievedPollerData.issues)
-            ? null
-            : retrievedPollerData.issues,
+          isEmpty(retrievedPollerData.issues) ? {} : retrievedPollerData.issues,
         );
         setTotal(retrievedPollerData.totalPoller);
       })
