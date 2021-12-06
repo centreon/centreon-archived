@@ -973,6 +973,7 @@ paths:
         * last_check
         * information
         * monitoring_server_name
+        * status_types
 
         Only for **searching**:
 
@@ -991,8 +992,10 @@ paths:
         - $ref: '#/components/parameters/ResourceFilterType'
         - $ref: '#/components/parameters/ResourceFilterState'
         - $ref: '#/components/parameters/ResourceFilterStatus'
-        - $ref: '#/components/parameters/ResourceFilterHostgroupId'
-        - $ref: '#/components/parameters/ResourceFilterServicegroupId'
+        - $ref: '#/components/parameters/ResourceFilterHostgroupName'
+        - $ref: '#/components/parameters/ResourceFilterServicegroupName'
+        - $ref: '#/components/parameters/ResourceFilterMonitoringServerName'
+        - $ref: '#/components/parameters/ResourceFilterStatusTypes'
       responses:
         '200':
           description: "OK"
@@ -3369,6 +3372,31 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /administration/authentication/local/security-policy:
+    get:
+      tags:
+        - Administration
+      summary: get security policy configuration for local authentication
+      responses:
+        '200':
+            description: "OK"
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/AuthenticationLocalSecurityPolicy'
+    put:
+      tags:
+        - Administration
+      summary: update security policy configuration for local authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthenticationLocalSecurityPolicy'
+      responses:
+        '204':
+            description: "OK"
   /administration/parameters:
     post:
       tags:
@@ -3572,28 +3600,47 @@ components:
           type: string
           enum: [OK, UP, WARNING, DOWN, CRITICAL, UNREACHABLE, UNKNOWN, PENDING]
         example: '["OK", "UP", "PENDING"]'
-    ResourceFilterHostgroupId:
+    ResourceFilterHostgroupName:
       in: query
-      name: hostgroup_ids
+      name: hostgroup_names
       required: false
-      description: "Filter the resources by host group ID"
+      description: "Filter the resources by host group names"
       schema:
         type: array
         items:
-          type: integer
-          format: int64
-        example: '[13, 22, 31]'
-    ResourceFilterServicegroupId:
+          type: string
+        example: '["ESX-Paris", "ESX-London"]'
+    ResourceFilterServicegroupName:
       in: query
-      name: servicegroup_ids
+      name: servicegroup_names
       required: false
-      description: "Filter the resources by service group ID"
+      description: "Filter the resources by service group names"
       schema:
         type: array
         items:
-          type: integer
-          format: int64
-        example: '[2033]'
+          type: string
+        example: '["Memory-Services", "Ping-Services"]'
+    ResourceFilterMonitoringServerName:
+      in: query
+      name: monitoring_server_names
+      required: false
+      description: "Filter the resources by monitoring server names"
+      schema:
+        type: array
+        items:
+          type: string
+        example: '["Central", "Remote-Server-Paris", "Poller-Lyon"]'
+    ResourceFilterStatusTypes:
+      in: query
+      name: status_types
+      required: false
+      description: "Filter the resources by status types"
+      schema:
+        type: array
+        items:
+          type: string
+          enum: ["soft", "hard"]
+        example: '["soft"]'
     ShowHost:
       in: query
       name: show_host
@@ -3864,6 +3911,73 @@ components:
           type: integer
           description: "Number of items found"
           example: 1
+    AuthenticationLocalSecurityPolicy:
+      type: object
+      required:
+        - password_min_length
+        - has_uppercase
+        - has_lowercase
+        - has_number
+        - has_special_character
+        - attempts
+        - blocking_duration
+        - password_expiration
+        - can_reuse_passwords
+        - delay_before_new_password
+      properties:
+        password_min_length:
+          description: minimum length of the password
+          type: integer
+          minimum: 8
+          maximum: 128
+          default: 12
+        has_uppercase:
+          description: if the password must contain uppercase character
+          type: boolean
+          default: true
+        has_lowercase:
+          description: if the password must contain lowercase character
+          type: boolean
+          default: true
+        has_number:
+          description: if the password must contain number
+          type: boolean
+          default: true
+        has_special_character:
+          description: if the password must contain special character
+          type: boolean
+          default: true
+        attempts:
+          description: login attempts before blocking
+          type: integer
+          nullable: true
+          minimum: 1
+          maximum: 10
+          default: 5
+        blocking_duration:
+          description: blocking duration in seconds before new login attempt
+          type: integer
+          nullable: true
+          maximum: 604800
+          default: 900
+        password_expiration:
+          description: password expiration time in seconds
+          type: integer
+          nullable: true
+          minimum: 604800
+          maximum: 31557600
+          default: 7776000
+        can_reuse_passwords:
+          description: is allowed or not to reuse a password among 3 last
+          type: boolean
+          default: false
+        delay_before_new_password:
+          description: delay in seconds before a new password can be set
+          type: integer
+          nullable: true
+          minimum: 3600
+          maximum: 604800
+          default: 3600
     Comment.Resources:
       type: object
       required: [ resources ]

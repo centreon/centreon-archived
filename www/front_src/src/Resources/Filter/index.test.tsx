@@ -30,6 +30,8 @@ import {
   labelUnhandledProblems,
   labelNewFilter,
   labelSearchOptions,
+  labelStatusType,
+  labelSoft,
 } from '../translatedLabels';
 import useListing from '../Listing/useListing';
 import useActions from '../testUtils/useActions';
@@ -42,6 +44,7 @@ import {
   getFilterWithUpdatedCriteria,
   getListingEndpoint,
   searchableFields,
+  defaultStateTypes,
 } from '../testUtils';
 import useLoadDetails from '../testUtils/useLoadDetails';
 import useDetails from '../Details/useDetails';
@@ -97,6 +100,14 @@ const filterParams: Array<FilterParameter> = [
     labelOk,
     {
       statuses: [...defaultStatuses, 'OK'],
+    },
+    undefined,
+  ],
+  [
+    labelStatusType,
+    labelSoft,
+    {
+      statusTypes: [...defaultStateTypes, 'soft'],
     },
     undefined,
   ],
@@ -381,6 +392,7 @@ describe(Filter, () => {
       {
         resourceTypes: [],
         states: [],
+        statusTypes: [],
         statuses: defaultStatuses,
       },
     ],
@@ -389,6 +401,7 @@ describe(Filter, () => {
       {
         resourceTypes: [],
         states: [],
+        statusTypes: [],
         statuses: [],
       },
     ],
@@ -409,11 +422,7 @@ describe(Filter, () => {
 
       await waitFor(() => {
         expect(mockedAxios.get).toHaveBeenLastCalledWith(
-          getListingEndpoint({
-            resourceTypes: criterias.resourceTypes,
-            states: criterias.states,
-            statuses: criterias.statuses,
-          }),
+          getListingEndpoint(criterias),
           cancelTokenRequestParam,
         );
       });

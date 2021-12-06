@@ -4,6 +4,7 @@ import {
   CriteriaNames,
   selectableResourceTypes,
   selectableStates,
+  selectableStateTypes,
   selectableStatuses,
 } from '../models';
 
@@ -17,12 +18,13 @@ export interface CriteriaValueSuggestionsProps {
 }
 
 export const criteriaNameSortOrder = {
-  [CriteriaNames.hostGroups]: 4,
-  [CriteriaNames.monitoringServers]: 6,
+  [CriteriaNames.hostGroups]: 5,
+  [CriteriaNames.monitoringServers]: 7,
   [CriteriaNames.resourceTypes]: 1,
-  [CriteriaNames.serviceGroups]: 5,
+  [CriteriaNames.serviceGroups]: 6,
   [CriteriaNames.states]: 2,
   [CriteriaNames.statuses]: 3,
+  [CriteriaNames.statusTypes]: 4,
 };
 
 export interface AutocompleteSuggestionProps {
@@ -59,6 +61,7 @@ const staticCriteriaValuesByName = {
   resource_type: selectableResourceTypes,
   state: selectableStates,
   status: selectableStatuses,
+  status_type: selectableStateTypes,
 };
 
 export const dynamicCriteriaValuesByName = [
