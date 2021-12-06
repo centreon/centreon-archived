@@ -66,7 +66,7 @@ class Router implements RouterInterface, RequestMatcherInterface
     /**
      * @inheritdoc
      */
-    public function generate($name, $parameters = [], $referenceType = self::ABSOLUTE_PATH)
+    public function generate(string $name, array $parameters = [], int $referenceType = self::ABSOLUTE_PATH)
     {
         if (isset($_SERVER['REQUEST_URI']) && preg_match('/^(.+)\/api\/.+/', $_SERVER['REQUEST_URI'], $matches)) {
             $parameters['base_uri'] = trim($matches[1], '/') . '/';

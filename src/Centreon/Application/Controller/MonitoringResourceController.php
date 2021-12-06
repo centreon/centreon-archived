@@ -57,7 +57,7 @@ class MonitoringResourceController extends AbstractController
     /**
      * List of external parameters for list action
      *
-     * @var array
+     * @var array<string>
      */
     public const EXTRA_PARAMETERS_LIST = [
         'types',
@@ -891,7 +891,7 @@ class MonitoringResourceController extends AbstractController
     /**
      * Build uri to access listing page of resources with specific parameters
      *
-     * @param array $parameters
+     * @param array<string> $parameters
      * @return string
      */
     public function buildListingUri(array $parameters): string
