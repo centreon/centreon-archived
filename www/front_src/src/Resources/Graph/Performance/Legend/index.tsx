@@ -57,12 +57,6 @@ const useStyles = makeStyles<Theme, MakeStylesProps, string>((theme) => ({
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
   }),
-  captionUnit: {
-    justifyContent: 'start',
-    marginRight: theme.spacing(0.5),
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-  },
   highlight: {
     color: theme.typography.body1.color,
   },
