@@ -5,10 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { useAtomValue } from 'jotai/utils';
 
 import { useSnackbar, useRequest, useLocaleDateTimeFormat } from '@centreon/ui';
-import {
-  userAtom,
-  downtimeAtom,
-} from '@centreon/centreon-frontend/packages/ui-context/src';
+import { downtimeAtom, userAtom } from '@centreon/ui-context';
 
 import {
   labelDowntimeCommandSent,
