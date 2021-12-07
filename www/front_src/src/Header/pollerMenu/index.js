@@ -18,7 +18,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { withTranslation } from 'react-i18next';
-import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import PollerIcon from '@material-ui/icons/DeviceHub';
@@ -178,9 +177,7 @@ class PollerMenu extends Component {
   redirectsToPollersPage = () => {
     this.closeSubmenu();
 
-    this.props.history.push(
-      `/main.php?p=${POLLER_CONFIGURATION_TOPOLOGY_PAGE}`,
-    );
+    window.location.href = `/centreon/main.php?p=${POLLER_CONFIGURATION_TOPOLOGY_PAGE}`;
   };
 
   // hide poller detailed data if click outside
@@ -344,8 +341,8 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {};
 
-export default withRouter(
-  withTranslation()(connect(mapStateToProps, mapDispatchToProps)(PollerMenu)),
+export default withTranslation()(
+  connect(mapStateToProps, mapDispatchToProps)(PollerMenu),
 );
 
 PollerMenu.propTypes = {

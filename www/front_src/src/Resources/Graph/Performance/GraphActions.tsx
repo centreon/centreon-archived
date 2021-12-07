@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { isNil } from 'ramda';
 import { useTranslation } from 'react-i18next';
-import { useHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import { makeStyles, Menu, MenuItem } from '@material-ui/core';
 import SaveAsImageIcon from '@material-ui/icons/SaveAlt';
@@ -59,7 +59,7 @@ const GraphActions = ({
   const [menuAnchor, setMenuAnchor] = React.useState<Element | null>(null);
   const [exporting, setExporting] = React.useState<boolean>(false);
   const { format } = useLocaleDateTimeFormat();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const openSizeExportMenu = (event: React.MouseEvent): void => {
     setMenuAnchor(event.currentTarget);
@@ -88,7 +88,7 @@ const GraphActions = ({
       return params.toString();
     };
 
-    history.push(`/main.php?p=204&${urlParameters()}`);
+    navigate(`/main.php?p=204&${urlParameters()}`);
   };
 
   const convertToPng = (ratio: number): void => {

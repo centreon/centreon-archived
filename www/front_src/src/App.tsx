@@ -6,20 +6,24 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/jsx-filename-extension */
 
-import React, { Component, ReactNode, Suspense } from 'react';
+import * as React from 'react';
 
 import { connect } from 'react-redux';
-import { ConnectedRouter } from 'connected-react-router';
+import {
+  BrowserRouter as Router,
+  useSearchParams,
+  useNavigate,
+} from 'react-router-dom';
 import Fullscreen from 'react-fullscreen-crossbrowser';
-import queryString from 'query-string';
+import { Dispatch } from 'redux';
+import { equals, not, pathEq } from 'ramda';
 
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
-import { withStyles, createStyles, Fab } from '@material-ui/core';
+import { makeStyles, Fab } from '@material-ui/core';
 
-import { ThemeProvider } from '@centreon/ui';
+import { getData, ThemeProvider, useRequest } from '@centreon/ui';
 
 import Header from './Header';
-import { history } from './store';
 import Nagigation from './Navigation';
 import Footer from './components/footer';
 import axios from './axios';
@@ -29,7 +33,7 @@ import Provider from './Provider';
 
 const MainRouter = React.lazy(() => import('./components/mainRouter'));
 
-const styles = createStyles({
+const useStyles = makeStyles({
   content: {
     display: 'flex',
     flexDirection: 'column',
@@ -64,154 +68,103 @@ const styles = createStyles({
   },
 });
 
-// Extends Window interface
-declare global {
-  interface Window {
-    fullscreenHash: string | null;
-    fullscreenSearch: string | null;
-  }
-}
-
 interface Props {
-  classes;
-  fetchExternalComponents: () => void;
+  getExternalComponents: () => void;
 }
 
-interface State {
-  isFullscreenEnabled: boolean;
-}
+const keepAliveEndpoint =
+  './api/internal.php?object=centreon_keepalive&action=keepAlive';
 
-class App extends Component<Props, State> {
-  public state = {
-    isFullscreenEnabled: false,
+const App = ({ getExternalComponents }: Props): JSX.Element => {
+  const classes = useStyles();
+
+  const [isFullscreenEnabled, setIsFullscreenEnabled] = React.useState(false);
+  const keepAliveIntervalRef = React.useRef<NodeJS.Timer | null>(null);
+
+  const { sendRequest: keepAliveRequest } = useRequest({
+    request: getData,
+  });
+
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  const hasMinArgument = (): boolean => equals(searchParams.get('min'), '1');
+
+  const displayInFullScreen = (): void => {
+    setIsFullscreenEnabled(true);
   };
 
-  private keepAliveTimeout: NodeJS.Timeout | null = null;
-
-  // check in arguments if min=1
-  private getMinArgument = (): boolean => {
-    const { search } = history.location;
-    const parsedArguments = queryString.parse(search);
-
-    return parsedArguments.min === '1';
+  const removeFullscreen = (): void => {
+    setIsFullscreenEnabled(false);
   };
 
-  // enable fullscreen
-  private goFull = (): void => {
-    // set fullscreen url parameters
-    // this will be used to init iframe src
-    window.fullscreenSearch = window.location.search;
-    window.fullscreenHash = window.location.hash;
+  const keepAlive = (): void => {
+    keepAliveRequest(keepAliveEndpoint).catch((error) => {
+      if (not(pathEq(['response', 'status'], 401, error))) {
+        return;
+      }
 
-    // enable fullscreen after 200ms
-    setTimeout(() => {
-      this.setState({ isFullscreenEnabled: true });
-    }, 200);
+      clearInterval(keepAliveIntervalRef.current as NodeJS.Timer);
+      navigate('index.php?disconnect=1');
+    });
   };
 
-  // disable fullscreen
-  private removeFullscreenParams = (): void => {
-    if (history.location.pathname === '/main.php') {
-      history.push({
-        hash: window.fullscreenHash,
-        pathname: '/main.php',
-        search: window.fullscreenSearch,
-      });
-    }
+  React.useEffect(() => {
+    getExternalComponents();
+    keepAlive();
 
-    // remove fullscreen parameters to keep normal routing
-    window.fullscreenSearch = null;
-    window.fullscreenHash = null;
-  };
+    keepAliveIntervalRef.current = setInterval(keepAlive, 15000);
+  }, []);
 
-  // keep alive (redirect to login page if session is expired)
-  private keepAlive = (): void => {
-    this.keepAliveTimeout = setTimeout(() => {
-      axios('internal.php?object=centreon_keepalive&action=keepAlive')
-        .get()
-        .then(() => this.keepAlive())
-        .catch((error) => {
-          if (error.response && error.response.status === 401) {
-            // redirect to login page
-            window.location.href = 'index.php?disconnect=1';
-          } else {
-            // keepalive must be done cause it may failed due to temporary unavailability
-            this.keepAlive();
-          }
-        });
-    }, 15000);
-  };
+  const min = hasMinArgument();
 
-  public componentDidMount(): void {
-    // 2 - fetch external components (pages, hooks...)
-    this.props.fetchExternalComponents();
-
-    this.keepAlive();
-  }
-
-  public render(): ReactNode {
-    const min = this.getMinArgument();
-
-    const { classes } = this.props;
-
-    return (
-      <Suspense fallback={<PageLoader />}>
-        <ConnectedRouter history={history}>
-          <ThemeProvider>
-            <div className={classes.wrapper}>
-              {!min && <Nagigation />}
-              <div className={classes.content} id="content">
-                {!min && <Header />}
-                <div
-                  className={classes.fullScreenWrapper}
-                  id="fullscreen-wrapper"
-                >
-                  <Fullscreen
-                    enabled={this.state.isFullscreenEnabled}
-                    onChange={(isFullscreenEnabled): void => {
-                      this.setState({ isFullscreenEnabled });
-                    }}
-                    onClose={this.removeFullscreenParams}
-                  >
-                    <div className={classes.mainContent}>
-                      <MainRouter />
-                    </div>
-                  </Fullscreen>
-                </div>
-                {!min && <Footer />}
-              </div>
-              <Fab
-                className={classes.fullscreenButton}
-                color="default"
-                size="small"
-                onClick={this.goFull}
+  return (
+    <React.Suspense fallback={<PageLoader />}>
+      <ThemeProvider>
+        <div className={classes.wrapper}>
+          {not(min) && <Nagigation />}
+          <div className={classes.content} id="content">
+            {not(min) && <Header />}
+            <div className={classes.fullScreenWrapper} id="fullscreen-wrapper">
+              <Fullscreen
+                enabled={isFullscreenEnabled}
+                onClose={removeFullscreen}
               >
-                <FullscreenIcon />
-              </Fab>
+                <div className={classes.mainContent}>
+                  <MainRouter />
+                </div>
+              </Fullscreen>
             </div>
-          </ThemeProvider>
-        </ConnectedRouter>
-      </Suspense>
-    );
-  }
-}
+            {!min && <Footer />}
+          </div>
+          <Fab
+            className={classes.fullscreenButton}
+            color="default"
+            size="small"
+            onClick={displayInFullScreen}
+          >
+            <FullscreenIcon />
+          </Fab>
+        </div>
+      </ThemeProvider>
+    </React.Suspense>
+  );
+};
 
-interface DispatchProps {
-  fetchExternalComponents: () => void;
-}
-
-const mapDispatchToProps = (dispatch: (any) => void): DispatchProps => {
+const mapDispatchToProps = (dispatch: Dispatch): Props => {
   return {
-    fetchExternalComponents: (): void => {
+    getExternalComponents: (): void => {
       dispatch(fetchExternalComponents());
     },
   };
 };
 
-const CentreonApp = connect(null, mapDispatchToProps)(withStyles(styles)(App));
+const CentreonApp = connect(null, mapDispatchToProps)(App);
 
 export default (): JSX.Element => (
   <Provider>
-    <CentreonApp />
+    <Router basename="/centreon">
+      <CentreonApp />
+    </Router>
   </Provider>
 );
