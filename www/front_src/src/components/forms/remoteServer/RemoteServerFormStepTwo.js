@@ -54,6 +54,7 @@ class RemoteServerFormStepTwo extends Component {
               size="small"
               type="submit"
               variant="contained"
+              onClick={handleSubmit}
             >
               {t('Apply')}
             </Button>

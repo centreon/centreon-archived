@@ -1,10 +1,6 @@
-/* eslint-disable react/jsx-no-undef */
-/* eslint-disable react/jsx-filename-extension */
-/* eslint-disable react/prop-types */
-
 import * as React from 'react';
 
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 
 import { PageSkeleton } from '@centreon/ui';
 
