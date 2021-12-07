@@ -15,7 +15,6 @@ import { listCustomFiltersDecoder } from './api/decoders';
 import { Filter } from './models';
 import { build } from './Criterias/searchQueryLanguage';
 import {
-  applyFilterDerivedAtom,
   currentFilterAtom,
   customFiltersAtom,
   filterWithParsedSearchDerivedAtom,
@@ -47,10 +46,8 @@ const useFilter = (): void => {
   const filterWithParsedSearch = useAtomValue(
     filterWithParsedSearchDerivedAtom,
   );
-  const defaultFilter = useAtomValue(storedFilterAtom);
   const setCustomFilters = useUpdateAtom(customFiltersAtom);
   const setSearch = useUpdateAtom(searchAtom);
-  const applyFilter = useUpdateAtom(applyFilterDerivedAtom);
   const storeFilter = useUpdateAtom(storedFilterAtom);
   const setSendingFilter = useUpdateAtom(sendingFilterAtom);
 
@@ -99,7 +96,7 @@ const useFilter = (): void => {
       },
     ]);
 
-    applyFilter(defaultFilter);
+    // applyFilter(defaultFilter());
   }, [getUrlQueryParameters().fromTopCounter]);
 
   React.useEffect(() => {

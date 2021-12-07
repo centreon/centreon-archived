@@ -51,7 +51,7 @@ export const storedFilterAtom = atomWithStorage<Filter>(
   unhandledProblemsFilter,
 );
 
-export const getDefaultFilterDerivedAtom = atom((): Filter => {
+export const getDefaultFilterDerivedAtom = atom(() => (): Filter => {
   const storedFilter = getStoredOrDefaultFilter(unhandledProblemsFilter);
   const urlQueryParameters = getUrlQueryParameters();
   const filterQueryParameter = urlQueryParameters.filter as Filter | undefined;
@@ -78,10 +78,10 @@ export const getDefaultFilterDerivedAtom = atom((): Filter => {
 
 export const customFiltersAtom = atom<Array<Filter>>([]);
 export const currentFilterAtom = atomWithDefault<Filter>((get) =>
-  get(getDefaultFilterDerivedAtom),
+  get(getDefaultFilterDerivedAtom)(),
 );
 export const appliedFilterAtom = atomWithDefault<Filter>((get) =>
-  get(getDefaultFilterDerivedAtom),
+  get(getDefaultFilterDerivedAtom)(),
 );
 export const editPanelOpenAtom = atom(false);
 export const searchAtom = atom('');
