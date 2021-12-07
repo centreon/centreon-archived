@@ -20,10 +20,7 @@ import {
   getUrlQueryParameters,
   copyToClipboard,
 } from '@centreon/ui';
-import {
-  refreshIntervalAtom,
-  userAtom,
-} from '@centreon/centreon-frontend/packages/ui-context/src';
+import { refreshIntervalAtom, userAtom } from '@centreon/ui-context';
 
 import {
   labelMore,
