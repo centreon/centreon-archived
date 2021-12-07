@@ -9,11 +9,7 @@
 import * as React from 'react';
 
 import { connect } from 'react-redux';
-import {
-  BrowserRouter as Router,
-  useSearchParams,
-  useNavigate,
-} from 'react-router-dom';
+import { BrowserRouter as Router, useSearchParams } from 'react-router-dom';
 import Fullscreen from 'react-fullscreen-crossbrowser';
 import { Dispatch } from 'redux';
 import { equals, not, pathEq } from 'ramda';
@@ -26,7 +22,6 @@ import { getData, ThemeProvider, useRequest } from '@centreon/ui';
 import Header from './Header';
 import Nagigation from './Navigation';
 import Footer from './components/footer';
-import axios from './axios';
 import { fetchExternalComponents } from './redux/actions/externalComponentsActions';
 import PageLoader from './components/PageLoader';
 import Provider from './Provider';
@@ -85,7 +80,6 @@ const App = ({ getExternalComponents }: Props): JSX.Element => {
     request: getData,
   });
 
-  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
   const hasMinArgument = (): boolean => equals(searchParams.get('min'), '1');
@@ -105,7 +99,7 @@ const App = ({ getExternalComponents }: Props): JSX.Element => {
       }
 
       clearInterval(keepAliveIntervalRef.current as NodeJS.Timer);
-      navigate('index.php?disconnect=1');
+      window.location.href = './index.php?disconnect=1';
     });
   };
 
