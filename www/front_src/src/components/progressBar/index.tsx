@@ -30,7 +30,7 @@ const ProgressBar = ({ links }: Props): JSX.Element => {
                 <li
                   className={styles['progress-bar-item']}
                   key={`${link.number}-${link.active}`}
-                  onClick={goToPath()}
+                  onClick={goToPath(link.path)}
                 >
                   <span
                     className={classnames(
