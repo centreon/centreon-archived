@@ -51,12 +51,8 @@ require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonXML.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonSession.class.php";
 
-if (!isset($dependencyInjector)) {
-    $dependencyInjector = \Centreon\LegacyContainer::getInstance();
-}
-if (!isset($GLOBALS['pearDB'])) {
-    global $pearDB;
-}
+global $dependencyInjector;
+$pearDB = $dependencyInjector["configuration_db"];
 $pearDB = $dependencyInjector["configuration_db"];
 
 $xml = new CentreonXML();
