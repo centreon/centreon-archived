@@ -448,7 +448,6 @@ class CentreonAuthSSO extends CentreonAuth
         }
 
         if ($this->debug && isset($result)) {
-
             $resultForDebug = $result;
 
             if (isset($resultForDebug["access_token"])) {
@@ -519,7 +518,6 @@ class CentreonAuthSSO extends CentreonAuth
         }
 
         if ($this->debug && isset($result)) {
-
             $resultForDebug = $result;
 
             if (isset($resultForDebug['jti'])) {
