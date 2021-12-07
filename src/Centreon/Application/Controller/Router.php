@@ -116,7 +116,11 @@ class Router implements RouterInterface, RequestMatcherInterface, WarmableInterf
         return $this->requestMatcher->matchRequest($request);
     }
 
+    /**
+     * @inheritDoc
+     */
     public function warmUp(string $cacheDir)
     {
+        return [];
     }
 }
