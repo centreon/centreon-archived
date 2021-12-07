@@ -14,9 +14,9 @@ parameters:
     api.header: "Api-Version"
     api.version.latest: "21.10"
     debug_log_file: '%log_path%/centreon-web.log'
-    env(DEBUG_LEVEL): !!str !php/const Monolog\Logger::NOTICE
+    env(DEBUG_LEVEL): !php/const Monolog\Logger::NOTICE
     curl.timeout: 60
-    debug_level: "%env(DEBUG_LEVEL)%"
+    debug_level: "%env(string:DEBUG_LEVEL)%"
     env(DEBUG_CONTACT): null
 
 services:
