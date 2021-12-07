@@ -449,20 +449,22 @@ class CentreonAuthSSO extends CentreonAuth
 
         if ($this->debug && isset($result)) {
 
-            if (isset($result["access_token"])) {
-                $result["access_token"] = substr($result["access_token"], 0, 8);
+            $resultForDebug = $result;
+
+            if (isset($resultForDebug["access_token"])) {
+                $resultForDebug["access_token"] = substr($resultForDebug["access_token"], 0, 8);
             }
 
-            if (isset($result["id_token"])) {
-                $result["id_token"] = substr($result["id_token"], 0, 8);
+            if (isset($resultForDebug["id_token"])) {
+                $resultForDebug["id_token"] = substr($resultForDebug["id_token"], 0, 8);
             }
 
-            if (isset($result["refresh_token"])) {
-                $result["refresh_token"] = substr($result["refresh_token"], 0, 8);
+            if (isset($resultForDebug["refresh_token"])) {
+                $resultForDebug["refresh_token"] = substr($resultForDebug["refresh_token"], 0, 8);
             }
             $this->CentreonLog->insertLog(
                 1,
-                "[" . $this->source . "] [Debug] Token Access Information: " . json_encode($result)
+                "[" . $this->source . "] [Debug] Token Access Information: " . json_encode($resultForDebug)
             );
         }
 
@@ -518,13 +520,15 @@ class CentreonAuthSSO extends CentreonAuth
 
         if ($this->debug && isset($result)) {
 
-            if (isset($result['jti'])) {
-                $result['jti'] = substr($result['jti'], 0, 8);
+            $resultForDebug = $result;
+
+            if (isset($resultForDebug['jti'])) {
+                $resultForDebug['jti'] = substr($resultForDebug['jti'], 0, 8);
             }
 
             $this->CentreonLog->insertLog(
                 1,
-                "[" . $this->source . "] [Debug] Token Introspection Information: " . json_encode($result)
+                "[" . $this->source . "] [Debug] Token Introspection Information: " . json_encode($resultForDebug)
             );
         }
 
