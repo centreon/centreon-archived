@@ -448,6 +448,18 @@ class CentreonAuthSSO extends CentreonAuth
         }
 
         if ($this->debug && isset($result)) {
+
+            if (isset($result["access_token"])) {
+                $result["access_token"] = substr($result["access_token"], 0, 8);
+            }
+
+            if (isset($result["id_token"])) {
+                $result["id_token"] = substr($result["id_token"], 0, 8);
+            }
+
+            if (isset($result["refresh_token"])) {
+                $result["refresh_token"] = substr($result["refresh_token"], 0, 8);
+            }
             $this->CentreonLog->insertLog(
                 1,
                 "[" . $this->source . "] [Debug] Token Access Information: " . json_encode($result)
@@ -505,6 +517,11 @@ class CentreonAuthSSO extends CentreonAuth
         }
 
         if ($this->debug && isset($result)) {
+
+            if (isset($result['jti'])) {
+                $result['jti'] = substr($result['jti'], 0, 8);
+            }
+
             $this->CentreonLog->insertLog(
                 1,
                 "[" . $this->source . "] [Debug] Token Introspection Information: " . json_encode($result)
