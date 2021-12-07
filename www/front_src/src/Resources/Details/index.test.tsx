@@ -12,6 +12,7 @@ import {
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Provider } from 'jotai';
+import { BrowserRouter } from 'react-router-dom';
 
 import {
   ThemeProvider,
@@ -511,9 +512,11 @@ const DetailsTest = (): JSX.Element => {
 
   return (
     <ThemeProvider>
-      <Context.Provider value={context}>
-        <Details />
-      </Context.Provider>
+      <BrowserRouter>
+        <Context.Provider value={context}>
+          <Details />
+        </Context.Provider>
+      </BrowserRouter>
     </ThemeProvider>
   );
 };
