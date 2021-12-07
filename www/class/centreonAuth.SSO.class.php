@@ -44,6 +44,8 @@ class CentreonAuthSSO extends CentreonAuth
 
     private const SOURCE_SSO = 'sso';
     private const SOURCE_OPENID_CONNECT = 'OpenId';
+    private const START = 0;
+    private const LENGTH = 8;
 
     /**
      * @var string
@@ -451,15 +453,15 @@ class CentreonAuthSSO extends CentreonAuth
             $resultForDebug = $result;
 
             if (isset($resultForDebug["access_token"])) {
-                $resultForDebug["access_token"] = substr($resultForDebug["access_token"], 0, 8);
+                $resultForDebug["access_token"] = substr($resultForDebug["access_token"], self::START, self::LENGTH);
             }
 
             if (isset($resultForDebug["id_token"])) {
-                $resultForDebug["id_token"] = substr($resultForDebug["id_token"], 0, 8);
+                $resultForDebug["id_token"] = substr($resultForDebug["id_token"], self::START, self::LENGTH);
             }
 
             if (isset($resultForDebug["refresh_token"])) {
-                $resultForDebug["refresh_token"] = substr($resultForDebug["refresh_token"], 0, 8);
+                $resultForDebug["refresh_token"] = substr($resultForDebug["refresh_token"], self::START, self::LENGTH);
             }
             $this->CentreonLog->insertLog(
                 1,
@@ -521,9 +523,8 @@ class CentreonAuthSSO extends CentreonAuth
             $resultForDebug = $result;
 
             if (isset($resultForDebug['jti'])) {
-                $resultForDebug['jti'] = substr($resultForDebug['jti'], 0, 8);
+                $resultForDebug['jti'] = substr($resultForDebug['jti'], self::START, self::LENGTH);
             }
-
             $this->CentreonLog->insertLog(
                 1,
                 "[" . $this->source . "] [Debug] Token Introspection Information: " . json_encode($resultForDebug)
