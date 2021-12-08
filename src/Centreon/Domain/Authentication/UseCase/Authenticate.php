@@ -215,12 +215,21 @@ class Authenticate
             '[AUTHENTICATE] Check user authorization to log in web application',
             ['user' => $userName]
         );
+
         $contact = $this->contactService->findByName($userName);
+
+        if ($contact === null) {
+            $this->debug(
+                '[AUTHENTICATE] User is not found locally so authorization is delegated to the provider',
+                ['user' => $userName]
+            );
+        }
+
         if ($contact !== null && !$contact->isAllowedToReachWeb()) {
             $this->critical(
-                "[AUTHENTICATE] User is not allowed to reach web application",
+                '[AUTHENTICATE] User is not allowed to reach web application',
                 [
-                    "user" => $userName
+                    'user' => $userName
                 ]
             );
             throw AuthenticationException::notAllowedToReachWebApplication();
