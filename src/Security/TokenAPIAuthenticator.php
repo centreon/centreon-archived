@@ -22,27 +22,33 @@ declare(strict_types=1);
 
 namespace Security;
 
-use Centreon\Domain\Exception\ContactDisabledException;
-use Centreon\Domain\Option\Interfaces\OptionServiceInterface;
-use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
-use Centreon\Domain\Contact\Interfaces\ContactRepositoryInterface;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\Exception\AuthenticationException;
-use Symfony\Component\Security\Core\Exception\CredentialsExpiredException;
-use Symfony\Component\Security\Core\Exception\TokenNotFoundException;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Centreon\Domain\Exception\ContactDisabledException;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Guard\AuthenticatorInterface;
+use Centreon\Domain\Option\Interfaces\OptionServiceInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
-use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
+use Centreon\Domain\Contact\Interfaces\ContactRepositoryInterface;
+use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
+use Symfony\Component\Security\Core\Exception\TokenNotFoundException;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Http\Authenticator\AbstractAuthenticator;
+use Symfony\Component\Security\Core\Exception\CredentialsExpiredException;
+use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
+use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
+use Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface;
+use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
+use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 
 /**
  * Class used to authenticate a request by using a security token.
  *
  * @package Security
  */
-class TokenAPIAuthenticator extends AbstractGuardAuthenticator
+class TokenAPIAuthenticator extends AbstractAuthenticator implements AuthenticationEntryPointInterface
 {
     public const EXPIRATION_DELAY = 120;
 
@@ -119,7 +125,7 @@ class TokenAPIAuthenticator extends AbstractGuardAuthenticator
      *
      * @return bool
      */
-    public function supports(Request $request)
+    public function supports(Request $request): bool
     {
         return $request->headers->has('X-AUTH-TOKEN');
     }
@@ -240,7 +246,7 @@ class TokenAPIAuthenticator extends AbstractGuardAuthenticator
      *
      * @return Response|null
      */
-    public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
+    public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
         $data = [
             'message' => strtr($exception->getMessageKey(), $exception->getMessageData())
@@ -267,7 +273,7 @@ class TokenAPIAuthenticator extends AbstractGuardAuthenticator
      *
      * @return Response|null
      */
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
+    public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey): ?Response
     {
         return null;
     }
@@ -289,5 +295,18 @@ class TokenAPIAuthenticator extends AbstractGuardAuthenticator
     public function supportsRememberMe()
     {
         return false;
+    }
+
+    public function authenticate(Request $request): Passport
+    {
+        $apiToken = $request->headers->get('X-AUTH-TOKEN');
+        if (null === $apiToken) {
+            // The token header was empty, authentication fails with HTTP Status
+            // Code 401 "Unauthorized"
+            throw new CustomUserMessageAuthenticationException('No API token provided');
+        }
+        $contact = $this->contactRepository->findByAuthenticationToken($apiToken);
+        $contact->setToken($apiToken);
+        return new SelfValidatingPassport(new UserBadge($contact->getUserIdentifier()));
     }
 }

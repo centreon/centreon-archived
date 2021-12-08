@@ -28,22 +28,25 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Centreon\Domain\Exception\ContactDisabledException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
-use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
 use Centreon\Domain\Contact\Interfaces\ContactRepositoryInterface;
+use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Security\Domain\Authentication\Exceptions\AuthenticatorException;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Symfony\Component\Security\Core\Exception\SessionUnavailableException;
-use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
-use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
+use Symfony\Component\Security\Http\Authenticator\AbstractAuthenticator;
 use Security\Domain\Authentication\Interfaces\SessionRepositoryInterface;
+use Symfony\Component\Security\Core\Exception\SessionUnavailableException;
+use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
+use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
+use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
+use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 
 /**
  * Class used to authenticate a request by using a session id.
  *
  * @package Security
  */
-class SessionAPIAuthenticator extends AbstractGuardAuthenticator
+class SessionAPIAuthenticator extends AbstractAuthenticator
 {
     /**
      * @var AuthenticationServiceInterface
@@ -118,7 +121,7 @@ class SessionAPIAuthenticator extends AbstractGuardAuthenticator
      *
      * @return bool
      */
-    public function supports(Request $request)
+    public function supports(Request $request): bool
     {
         return $request->headers->has('Cookie') && $request->cookies->has('PHPSESSID');
     }
@@ -234,7 +237,7 @@ class SessionAPIAuthenticator extends AbstractGuardAuthenticator
      *
      * @return Response|null
      */
-    public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
+    public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
         $data = [
             'message' => strtr($exception->getMessageKey(), $exception->getMessageData())
@@ -261,7 +264,7 @@ class SessionAPIAuthenticator extends AbstractGuardAuthenticator
      *
      * @return Response|null
      */
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
+    public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey): ?Response
     {
         return null;
     }
@@ -283,5 +286,17 @@ class SessionAPIAuthenticator extends AbstractGuardAuthenticator
     public function supportsRememberMe()
     {
         return false;
+    }
+
+    public function authenticate(Request $request): Passport
+    {
+        $apiToken = $request->headers->get('PHPSESSID');
+        if (null === $apiToken) {
+            // The token header was empty, authentication fails with HTTP Status
+            // Code 401 "Unauthorized"
+            throw new CustomUserMessageAuthenticationException('No API token provided');
+        }
+
+        return new SelfValidatingPassport(new UserBadge($apiToken));
     }
 }
