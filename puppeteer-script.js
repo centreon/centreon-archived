@@ -5,7 +5,7 @@ module.exports = async (browser) => {
   const page = await browser.newPage();
   await page.goto(baseUrl);
   await page.type('[name="useralias"]', 'admin');
-  await page.type('[name="password"]', 'centreon');
+  await page.type('[name="password"]', 'Centreon!2021');
   await page.click('[type="submit"]');
   await page.waitForNavigation();
   // close session for next run
