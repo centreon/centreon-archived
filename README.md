@@ -25,9 +25,9 @@ on the market; it is absolutely free and Open Source.
 Regarding the [Products Lifecycle Policy](https://docs.centreon.com/current/en/releases/lifecycle.html),
 only the following versions are supported:
 
-* Centreon 21.04.x, released on April 21, 2021, full support
-* Centreon 20.10.x, released on October 21, 2020, security and blocking issue support only
-* Centreon 20.04.x, released on April 22, 2020, security support only
+* Centreon 21.10.x, released on November 2, 2021, full support
+* Centreon 21.04.x, released on April 21, 2021, security and blocking issue support only
+* Centreon 20.10.x, released on October 21, 2020, security support only
 
 If your version is not one of the 3 versions specified above, we recommend that
 you [upgrade your platform](https://docs.centreon.com/current/en/upgrade/introduction.html)
