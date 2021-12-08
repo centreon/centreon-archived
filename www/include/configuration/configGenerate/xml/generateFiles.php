@@ -52,6 +52,7 @@ require_once _CENTREON_PATH_ . "www/class/centreonXML.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonSession.class.php";
 
 global $dependencyInjector;
+global $pearDB;
 
 $pearDB = $dependencyInjector["configuration_db"];
 
