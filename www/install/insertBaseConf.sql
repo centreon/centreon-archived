@@ -508,7 +508,6 @@ INSERT INTO `cb_log_level` (`id`, `name`) VALUES
 
 INSERT INTO `cb_tag` (`cb_tag_id`, `tagname`) VALUES
 (2, 'input'),
-(3, 'logger'),
 (1, 'output');
 
 --
