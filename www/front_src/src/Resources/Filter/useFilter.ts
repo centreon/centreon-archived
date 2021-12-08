@@ -95,8 +95,6 @@ const useFilter = (): void => {
         value: false,
       },
     ]);
-
-    // applyFilter(defaultFilter());
   }, [getUrlQueryParameters().fromTopCounter]);
 
   React.useEffect(() => {
