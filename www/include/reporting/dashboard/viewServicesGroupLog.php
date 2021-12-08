@@ -65,9 +65,9 @@ $serviceGroupRoute = array(
         './api/internal.php?object=centreon_configuration_servicegroup'
         . '&action=defaultValues&target=service&field=service_sgs&id=' . $id,
 );
-$serviceGroupSelectBox = $serviceGroupForm->addElement(
+$serviceGroupSelectBox = $formPeriod->addElement(
     'select2',
-    'item',
+    'itemElement',
     _("Service Group"),
     [],
     $serviceGroupRoute
