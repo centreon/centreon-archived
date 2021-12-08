@@ -290,13 +290,13 @@ class SessionAPIAuthenticator extends AbstractAuthenticator
 
     public function authenticate(Request $request): Passport
     {
-        $apiToken = $request->headers->get('PHPSESSID');
+        $apiToken = $request->cookies->get('PHPSESSID');
         if (null === $apiToken) {
             // The token header was empty, authentication fails with HTTP Status
             // Code 401 "Unauthorized"
             throw new CustomUserMessageAuthenticationException('No API token provided');
         }
-
-        return new SelfValidatingPassport(new UserBadge($apiToken));
+        $contact = $this->contactRepository->findByAuthenticationToken($apiToken);
+        return new SelfValidatingPassport(new UserBadge($contact->getUserIdentifier()));
     }
 }

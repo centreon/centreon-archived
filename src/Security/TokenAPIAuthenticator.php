@@ -306,7 +306,6 @@ class TokenAPIAuthenticator extends AbstractAuthenticator implements Authenticat
             throw new CustomUserMessageAuthenticationException('No API token provided');
         }
         $contact = $this->contactRepository->findByAuthenticationToken($apiToken);
-        $contact->setToken($apiToken);
         return new SelfValidatingPassport(new UserBadge($contact->getUserIdentifier()));
     }
 }
