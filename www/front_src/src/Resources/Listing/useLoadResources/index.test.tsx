@@ -1,7 +1,6 @@
 import * as React from 'react';
 
 import axios from 'axios';
-import { useSelector } from 'react-redux';
 import { render, act, waitFor, RenderResult } from '@testing-library/react';
 import { Provider } from 'jotai';
 
@@ -71,20 +70,8 @@ const TestComponentWithJotai = (): JSX.Element => (
 const renderLoadResources = (): RenderResult =>
   render(<TestComponentWithJotai />);
 
-const appState = {
-  intervals: {
-    AjaxTimeReloadMonitoring: 60,
-  },
-};
-
-const mockedSelector = useSelector as jest.Mock;
-
 describe(useLoadResources, () => {
   beforeEach(() => {
-    mockedSelector.mockImplementation((callback) => {
-      return callback(appState);
-    });
-
     mockedAxios.get.mockResolvedValue({
       data: {
         meta: {

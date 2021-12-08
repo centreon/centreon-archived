@@ -33,6 +33,8 @@ import {
 
 import createStore from '../store';
 import PageLoader from '../components/PageLoader';
+import useNavigation from '../Navigation/useNavigation';
+import useExternalComponents from '../externalComponents/useExternalComponents';
 
 import {
   parametersEndpoint,
@@ -81,6 +83,9 @@ const AppProvider = ({ children }: Props): JSX.Element => {
   const setAcl = useUpdateAtom(aclAtom);
   const setAcknowledgement = useUpdateAtom(acknowledgementAtom);
 
+  const { getNavigation } = useNavigation();
+  const { getExternalComponents } = useExternalComponents();
+
   const initializeI18n = ({ retrievedUser, retrievedTranslations }): void => {
     const locale = (retrievedUser.locale || navigator.language)?.slice(0, 2);
 
@@ -101,6 +106,8 @@ const AppProvider = ({ children }: Props): JSX.Element => {
   };
 
   React.useEffect(() => {
+    getNavigation();
+    getExternalComponents();
     Promise.all([
       getUser(userEndpoint),
       getParameters(parametersEndpoint),

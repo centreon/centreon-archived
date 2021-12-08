@@ -13,6 +13,7 @@ import { dynamicImport } from '../../helpers/dynamicImport';
 import NotAllowedPage from '../../route-components/notAllowedPage';
 import BreadcrumbTrail from '../../BreadcrumbTrail';
 import { allowedPagesSelector } from '../../redux/selectors/navigation/allowedPages';
+import useNavigation from '../../Navigation/useNavigation';
 
 const PageContainer = styled('div')(({ theme }) => ({
   background: theme.palette.background.default,
@@ -52,13 +53,13 @@ const getExternalPageRoutes = ({
 };
 
 interface Props {
-  allowedPages: Array<string>;
   externalPagesFetched: boolean;
   pages: Record<string, unknown>;
 }
 
 const ReactRouter = React.memo<Props>(
-  ({ allowedPages, pages, externalPagesFetched }: Props) => {
+  ({ pages, externalPagesFetched }: Props) => {
+    const { allowedPages } = useNavigation();
     const basename = useHref('/');
     if (!externalPagesFetched || !allowedPages) {
       return <PageSkeleton />;
@@ -94,12 +95,10 @@ const ReactRouter = React.memo<Props>(
   },
   (previousProps, nextProps) =>
     equals(previousProps.pages, nextProps.pages) &&
-    equals(previousProps.allowedPages, nextProps.allowedPages) &&
     equals(previousProps.externalPagesFetched, nextProps.externalPagesFetched),
 );
 
 const mapStateToProps = (state): Props => ({
-  allowedPages: allowedPagesSelector(state),
   externalPagesFetched: state.externalComponents.fetched,
   pages: state.externalComponents.pages,
 });
