@@ -25,7 +25,7 @@ import {
   SubmenuHeader,
   IconToggleSubmenu,
 } from '@centreon/ui';
-import { refreshIntervalAtom } from '@centreon/centreon-frontend/packages/ui-context/src';
+import { refreshIntervalAtom } from '@centreon/ui-context';
 
 import styles from '../header.scss';
 import { allowedPagesSelector } from '../../redux/selectors/navigation/allowedPages';
