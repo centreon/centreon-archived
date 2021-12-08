@@ -35,14 +35,14 @@ class CfgCentreonBrokerInfo
                 'output_rrd'      => OutputRrdMaster::getConfiguration(),
                 'output_forward'  => OutputForwardMaster::getConfiguration(),
                 'output_prefdata' => OutputPerfdata::getConfiguration($dbUser, $dbPassword),
-                'output_sql'      => OutputSqlMaster::getConfiguration($dbUser, $dbPassword),
+                'output_sql'      => OutputSqlMaster::getConfiguration($dbUser, $dbPassword)
             ],
             'central-module' => [
-                'output' => OutputModuleMaster::getConfiguration(),
+                'output' => OutputModuleMaster::getConfiguration()
             ],
             'central-rrd' => [
                 'input'  => InputRrd::getConfiguration(),
-                'output' => OutputRrd::getConfiguration(),
+                'output' => OutputRrd::getConfiguration()
             ]
         ];
 
