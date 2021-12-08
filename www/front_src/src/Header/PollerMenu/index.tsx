@@ -197,7 +197,7 @@ const PollerMenu = ({
               [styles['submenu-toggle-active'] as string]: toggled,
             })}
           >
-            {!isNil(issues) ? (
+            {!isEmpty(issues) ? (
               Object.entries(issues).map(([key, issue]) => {
                 return (
                   <div className={classes.pollerDetailRow} key={key}>
