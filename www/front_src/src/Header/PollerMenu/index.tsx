@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { includes, isEmpty, isNil } from 'ramda';
+import { isEmpty, isNil } from 'ramda';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import classnames from 'classnames';
