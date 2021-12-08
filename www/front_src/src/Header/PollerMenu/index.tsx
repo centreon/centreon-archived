@@ -179,7 +179,6 @@ const PollerMenu = ({
       }}
     >
       <>
-        {/* <div className={classes.pollerMenu}> */}
         <SubmenuHeader active={toggled}>
           <IconHeader
             Icon={PollerIcon}
@@ -237,7 +236,6 @@ const PollerMenu = ({
             <ExportConfiguration setIsExportingConfiguration={newExporting} />
           </div>
         </SubmenuHeader>
-        {/* </div> */}
       </>
     </ClickAwayListener>
   );
