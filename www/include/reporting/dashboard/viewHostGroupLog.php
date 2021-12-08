@@ -57,40 +57,49 @@ $id = filter_var($_GET['item'] ?? $_POST['item'] ?? false, FILTER_VALIDATE_INT);
  *
  */
 
-$form = new HTML_QuickFormCustom('formItem', 'post', "?p=" . $p);
+$formHostGroup = new HTML_QuickFormCustom('formHostGroup', 'post', "?p=" . $p);
+$redirect = $formHostGroup->addElement('hidden', 'o');
+$redirect->setValue($o);
 
-$items = getAllHostgroupsForReporting($is_admin, $lcaHostGroupstr);
-$select = $form->addElement(
-    'select',
+$hostsGroupRoute = array(
+    'datasourceOrigin' => 'ajax',
+    'multiple' => false,
+    'linkedObject' => 'centreonHostgroups',
+    'availableDatasetRoute' =>
+        './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=list',
+    'defaultDatasetRoute' =>
+        './api/internal.php?object=centreon_configuration_hostgroup'
+        . '&action=defaultValues&target=service&field=service_hgPars&id=' . $id,
+);
+$hostGroupSelectBox = $formHostGroup->addElement(
+    'select2',
     'item',
     _("Host Group"),
-    $items,
-    array(
-        "onChange" =>"this.form.submit();"
-    )
+    [],
+    $hostsGroupRoute
 );
-
-$form->addElement(
+$hostGroupSelectBox->addJsCallback(
+    'change',
+    'this.form.submit();'
+);
+$formHostGroup->addElement(
     'hidden',
     'period',
     $period
 );
-$form->addElement(
+$formHostGroup->addElement(
     'hidden',
     'StartDate',
     $get_date_start
 );
-$form->addElement(
+$formHostGroup->addElement(
     'hidden',
     'EndDate',
     $get_date_end
 );
 
-$redirect = $form->addElement('hidden', 'o');
-$redirect->setValue($o);
-
 if (isset($id)) {
-    $form->setDefaults(array('item' => $id));
+    $formHostGroup->setDefaults(array('item' => $id));
 }
 
 /*
@@ -125,7 +134,6 @@ if ($id !== false) {
     /*
      * Exporting variables for ihtml
      */
-    $tpl->assign('name', $items[$id]);
     $tpl->assign('totalAlert', $hostgroupStats["average"]["TOTAL_ALERTS"]);
     $tpl->assign('summary', $hostgroupStats["average"]);
 
@@ -187,8 +195,8 @@ $formPeriod->accept($renderer);
 $tpl->assign('formPeriod', $renderer->toArray());
 
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-$form->accept($renderer);
-$tpl->assign('formItem', $renderer->toArray());
+$formHostGroup->accept($renderer);
+$tpl->assign('formHostGroup', $renderer->toArray());
 
 if (
     !$formPeriod->isSubmitted()

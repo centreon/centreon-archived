@@ -63,10 +63,10 @@ $hostsRoute = array(
     'multiple' => false,
     'linkedObject' => 'centreonHost',
     'availableDatasetRoute' =>
-    './include/common/webServices/rest/internal.php?object=centreon_configuration_host&action=list',
+        './api/internal.php?object=centreon_configuration_host&action=list',
     'defaultDatasetRoute' =>
-    './include/common/webServices/rest/internal.php?object=centreon_configuration_host
-    &action=defaultValues&target=host&field=host_id&id=' . $id,
+        './api/internal.php?object=centreon_configuration_host
+        &action=defaultValues&target=host&field=host_id&id=' . $id,
 );
 $selHost = $formHost->addElement(
     'select2',
@@ -138,7 +138,6 @@ if ($id !== false) {
     /*
      * Exporting variables for ihtml
      */
-    $tpl->assign("name", $hosts[$id]);
     $tpl->assign("totalAlert", $hostStats["TOTAL_ALERTS"]);
     $tpl->assign("totalTime", $hostStats["TOTAL_TIME_F"]);
     $tpl->assign("summary", $hostStats);
