@@ -727,30 +727,6 @@ function getreportingTimePeriod()
 }
 
 /*
- * Get all hostgroups linked with at least one host
- */
-function getAllHostgroupsForReporting($is_admin, $lcaHostGroupstr, $search = null)
-{
-    global $centreon;
-
-    $hgs = array("NULL" => "");
-    $hgs += $centreon->user->access->getHostGroupAclConf($search, 'broker');
-    return $hgs;
-}
-
-/*
- * Get all servicesgroup with at least one service
- */
-function getAllServicesgroupsForReporting($search = null)
-{
-    global $centreon;
-
-    $sg_array = array("NULL" => "");
-    $sg_array += $centreon->user->access->getServiceGroupAclConf($search, 'broker');
-    return $sg_array;
-}
-
-/*
  * Functions to get objects names from their ID
  */
 function getHostNameFromId($host_id)
