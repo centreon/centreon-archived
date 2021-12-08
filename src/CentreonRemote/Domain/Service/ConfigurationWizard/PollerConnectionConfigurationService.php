@@ -4,7 +4,6 @@ namespace CentreonRemote\Domain\Service\ConfigurationWizard;
 
 use Centreon\Domain\Repository\Interfaces\CfgCentreonBrokerInterface;
 use Centreon\Domain\Service\BrokerConfigurationService;
-
 use CentreonRemote\Domain\Resources\RemoteConfig\CfgCentreonBroker;
 use CentreonRemote\Domain\Resources\RemoteConfig\CfgCentreonBrokerInfo;
 use CentreonRemote\Domain\Resources\RemoteConfig\InputFlowOnePeerRetention;
