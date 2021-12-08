@@ -1,11 +1,3 @@
-/* eslint-disable jsx-a11y/no-static-element-interactions */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable react/destructuring-assignment */
-/* eslint-disable react/sort-comp */
-/* eslint-disable import/no-extraneous-dependencies */
-/* eslint-disable react/prop-types */
-/* eslint-disable react/jsx-filename-extension */
-
 import * as React from 'react';
 
 import { connect } from 'react-redux';
@@ -17,7 +9,7 @@ import { equals, not, pathEq } from 'ramda';
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
 import { makeStyles, Fab } from '@material-ui/core';
 
-import { getData, ThemeProvider, useRequest } from '@centreon/ui';
+import { getData, useRequest } from '@centreon/ui';
 
 import Header from './Header';
 import Nagigation from './Navigation';
@@ -114,33 +106,31 @@ const App = ({ getExternalComponents }: Props): JSX.Element => {
 
   return (
     <React.Suspense fallback={<PageLoader />}>
-      <ThemeProvider>
-        <div className={classes.wrapper}>
-          {not(min) && <Nagigation />}
-          <div className={classes.content} id="content">
-            {not(min) && <Header />}
-            <div className={classes.fullScreenWrapper} id="fullscreen-wrapper">
-              <Fullscreen
-                enabled={isFullscreenEnabled}
-                onClose={removeFullscreen}
-              >
-                <div className={classes.mainContent}>
-                  <MainRouter />
-                </div>
-              </Fullscreen>
-            </div>
-            {!min && <Footer />}
+      <div className={classes.wrapper}>
+        {not(min) && <Nagigation />}
+        <div className={classes.content} id="content">
+          {not(min) && <Header />}
+          <div className={classes.fullScreenWrapper} id="fullscreen-wrapper">
+            <Fullscreen
+              enabled={isFullscreenEnabled}
+              onClose={removeFullscreen}
+            >
+              <div className={classes.mainContent}>
+                <MainRouter />
+              </div>
+            </Fullscreen>
           </div>
-          <Fab
-            className={classes.fullscreenButton}
-            color="default"
-            size="small"
-            onClick={displayInFullScreen}
-          >
-            <FullscreenIcon />
-          </Fab>
+          {!min && <Footer />}
         </div>
-      </ThemeProvider>
+        <Fab
+          className={classes.fullscreenButton}
+          color="default"
+          size="small"
+          onClick={displayInFullScreen}
+        >
+          <FullscreenIcon />
+        </Fab>
+      </div>
     </React.Suspense>
   );
 };
