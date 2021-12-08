@@ -1,9 +1,7 @@
 import * as React from 'react';
 
-import { connect } from 'react-redux';
 import { BrowserRouter as Router, useSearchParams } from 'react-router-dom';
 import Fullscreen from 'react-fullscreen-crossbrowser';
-import { Dispatch } from 'redux';
 import { equals, not, pathEq } from 'ramda';
 
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
@@ -14,7 +12,6 @@ import { getData, useRequest } from '@centreon/ui';
 import Header from './Header';
 import Nagigation from './Navigation';
 import Footer from './components/footer';
-import { fetchExternalComponents } from './redux/actions/externalComponentsActions';
 import PageLoader from './components/PageLoader';
 import Provider from './Provider';
 
@@ -55,14 +52,10 @@ const useStyles = makeStyles({
   },
 });
 
-interface Props {
-  getExternalComponents: () => void;
-}
-
 const keepAliveEndpoint =
   './api/internal.php?object=centreon_keepalive&action=keepAlive';
 
-const App = ({ getExternalComponents }: Props): JSX.Element => {
+const App = (): JSX.Element => {
   const classes = useStyles();
 
   const [isFullscreenEnabled, setIsFullscreenEnabled] = React.useState(false);
@@ -96,7 +89,6 @@ const App = ({ getExternalComponents }: Props): JSX.Element => {
   };
 
   React.useEffect(() => {
-    getExternalComponents();
     keepAlive();
 
     keepAliveIntervalRef.current = setInterval(keepAlive, 15000);
@@ -135,20 +127,10 @@ const App = ({ getExternalComponents }: Props): JSX.Element => {
   );
 };
 
-const mapDispatchToProps = (dispatch: Dispatch): Props => {
-  return {
-    getExternalComponents: (): void => {
-      dispatch(fetchExternalComponents());
-    },
-  };
-};
-
-const CentreonApp = connect(null, mapDispatchToProps)(App);
-
 export default (): JSX.Element => (
   <Provider>
     <Router basename="/centreon">
-      <CentreonApp />
+      <App />
     </Router>
   </Provider>
 );

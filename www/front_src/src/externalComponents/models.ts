@@ -1,5 +1,3 @@
-import { path } from 'ramda';
-
 interface StaticJS {
   bundle: string;
   chunks: Array<string>;
@@ -11,7 +9,7 @@ interface Files {
   js: StaticJS;
 }
 
-interface ExternalComponent {
+export interface ExternalComponent {
   [path: string]: Files;
 }
 

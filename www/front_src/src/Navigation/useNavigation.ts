@@ -63,8 +63,8 @@ const useNavigation = (): UseNavigationState => {
     return newAccumulator;
   }, []);
 
-  const filterShowableElements = React.useCallback((acc, page): Array<Page> => {
-    if (not(page.show)) {
+  const filterShowableElements = (acc, page): Array<Page> => {
+    if (equals(page.show, false)) {
       return acc;
     }
 
@@ -73,21 +73,21 @@ const useNavigation = (): UseNavigationState => {
         return null;
       }
 
-      return [
-        ...acc,
-        {
-          ...page,
-          [property]: page[property].reduce(filterShowableElements, []),
-        },
-      ];
+      return {
+        ...page,
+        [property]: page[property].reduce(filterShowableElements, []),
+      };
     });
 
     if (any((subPage) => not(isNil(subPage)), pages)) {
-      return find((subPage) => not(isNil(subPage)), pages) as Array<Page>;
+      return [
+        ...acc,
+        find((subPage) => not(isNil(subPage)), pages) as Array<Page>,
+      ];
     }
 
     return [...acc, page];
-  }, []);
+  };
 
   const filterNotEmptyGroup = React.useCallback((group): boolean => {
     if (not(group.children)) {

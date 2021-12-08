@@ -1,19 +1,29 @@
 import * as React from 'react';
 
-import { connect } from 'react-redux';
-import { equals } from 'ramda';
+import { isNil, propOr } from 'ramda';
 import { useHref } from 'react-router';
+import { useAtomValue } from 'jotai/utils';
+
+import { useMemoComponent } from '@centreon/ui';
 
 import { dynamicImport } from '../../helpers/dynamicImport';
 import MenuLoader from '../MenuLoader';
+import { externalComponentsAtom } from '../../externalComponents/atoms';
+import ExternalComponents, {
+  ExternalComponent,
+} from '../../externalComponents/models';
 
 interface Props {
-  hooks;
-  path;
+  hooks?: ExternalComponent;
+  path: string;
 }
 
-const LoadableHooks = ({ hooks, path, ...rest }: Props): JSX.Element => {
+const LoadableHooks = ({ hooks, path, ...rest }: Props): JSX.Element | null => {
   const basename = useHref('/');
+
+  if (isNil(hooks)) {
+    return null;
+  }
 
   return (
     <>
@@ -34,16 +44,19 @@ const LoadableHooks = ({ hooks, path, ...rest }: Props): JSX.Element => {
   );
 };
 
-const Hook = React.memo(
-  (props: Props) => {
-    return <LoadableHooks {...props} />;
-  },
-  ({ hooks: previousHooks }, { hooks: nextHooks }) =>
-    equals(previousHooks, nextHooks),
-);
+const Hook = (props: Pick<Props, 'path'>): JSX.Element | null => {
+  const externalComponents = useAtomValue(externalComponentsAtom);
 
-const mapStateToProps = ({ externalComponents }): Record<string, unknown> => ({
-  hooks: externalComponents.hooks,
-});
+  const hooks = propOr<undefined, ExternalComponents | null, ExternalComponent>(
+    undefined,
+    'hooks',
+    externalComponents,
+  );
 
-export default connect(mapStateToProps)(Hook);
+  return useMemoComponent({
+    Component: <LoadableHooks {...props} hooks={hooks} />,
+    memoProps: [hooks],
+  });
+};
+
+export default Hook;
