@@ -143,12 +143,9 @@ const HostStatusCounter = (): JSX.Element => {
     (e): void => {
       e.preventDefault();
       toggle?.();
-      if (use_deprecated_pages) {
-        navigate(link);
-
-        return;
+      if (!use_deprecated_pages) {
+        applyFilter({ criterias, id: '', name: 'New Filter' });
       }
-      applyFilter({ criterias, id: '', name: 'New Filter' });
       navigate(link);
     };
 
