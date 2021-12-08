@@ -1,13 +1,16 @@
-import React, { useMemo } from 'react';
+import * as React from 'react';
 
-import { connect } from 'react-redux';
+import { useAtomValue } from 'jotai/utils';
+import { isNil } from 'ramda';
 
 import { makeStyles, Breadcrumbs as MuiBreadcrumbs } from '@material-ui/core';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 
-import breadcrumbSelector from './selector';
+import navigationAtom from '../Navigation/navigationAtoms';
+
 import { Breadcrumb as BreadcrumbModel, BreadcrumbsByPath } from './models';
 import Breadcrumb from './Breadcrumb';
+import getBreadcrumbsByPath from './getBreadcrumbsByPath';
 
 const useStyles = makeStyles({
   item: {
@@ -43,7 +46,7 @@ const getBreadcrumbs = ({
 const BreadcrumbTrail = ({ breadcrumbsByPath, path }: Props): JSX.Element => {
   const classes = useStyles();
 
-  const breadcrumbs = useMemo(
+  const breadcrumbs = React.useMemo(
     () => getBreadcrumbs({ breadcrumbsByPath, path }),
     [breadcrumbsByPath, path],
   );
@@ -65,8 +68,19 @@ const BreadcrumbTrail = ({ breadcrumbsByPath, path }: Props): JSX.Element => {
   );
 };
 
-const mapStateToProps = (state): { breadcrumbsByPath: BreadcrumbsByPath } => ({
-  breadcrumbsByPath: breadcrumbSelector(state),
-});
+const Breadcrumbs = ({ path }: Pick<Props, 'path'>): JSX.Element | null => {
+  const navigation = useAtomValue(navigationAtom);
 
-export default connect(mapStateToProps)(BreadcrumbTrail);
+  if (isNil(navigation)) {
+    return null;
+  }
+
+  return (
+    <BreadcrumbTrail
+      breadcrumbsByPath={getBreadcrumbsByPath(navigation.result)}
+      path={path}
+    />
+  );
+};
+
+export default Breadcrumbs;

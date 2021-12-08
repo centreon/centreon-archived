@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
-import { createSelector } from 'reselect';
+
+import { Page } from '../../Navigation/models';
+import { BreadcrumbsByPath } from '../models';
 
 /**
  * get URL from legacy or react pages
@@ -63,19 +65,11 @@ const getBreadcrumbStep = (item): Breadcrumb | null => {
     : null;
 };
 
-interface NavigationItem {
-  children: Array<NavigationItem>;
-  groups: Array<NavigationItem>;
-}
-
-const getNavigationItems = (state): Array<NavigationItem> =>
-  state.navigation.items;
-
-const breadcrumbSelector = createSelector(getNavigationItems, (navItems) => {
+const getBreadcrumbsByPath = (navigation: Array<Page>): BreadcrumbsByPath => {
   const breadcrumbs = {};
 
   // build level 1 breadcrumbs
-  navItems.forEach((itemLvl1) => {
+  navigation.forEach((itemLvl1) => {
     const stepLvl1 = getBreadcrumbStep(itemLvl1);
     if (stepLvl1 === null) {
       return;
@@ -137,6 +131,6 @@ const breadcrumbSelector = createSelector(getNavigationItems, (navItems) => {
   });
 
   return breadcrumbs;
-});
+};
 
-export default breadcrumbSelector;
+export default getBreadcrumbsByPath;
