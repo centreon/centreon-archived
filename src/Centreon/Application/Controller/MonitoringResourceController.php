@@ -66,6 +66,7 @@ class MonitoringResourceController extends AbstractController
         'hostgroup_names',
         'servicegroup_names',
         'monitoring_server_names',
+        'status_types',
     ];
 
     public const FILTER_RESOURCES_ON_PERFORMANCE_DATA_AVAILABILITY = 'only_with_performance_data';

@@ -415,6 +415,7 @@ if ($form->validate()) {
     if (
         $form->getSubmitValue("contact_lang") !== $cct['contact_lang']
         || $showDeprecatedPages !== $cct['show_deprecated_pages']
+        || $form->getSubmitValue('enable_one_click_export') !== $cct['enable_one_click_export']
     ) {
         $contactStatement = $pearDB->prepare(
             'SELECT * FROM contact WHERE contact_id = :contact_id'

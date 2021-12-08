@@ -60,15 +60,14 @@ $serviceGroupRoute = array(
     'multiple' => false,
     'linkedObject' => 'centreonServicegroups',
     'availableDatasetRoute' =>
-    './include/common/webServices/rest/internal.php'
-    . '?object=centreon_configuration_servicegroup&action=list',
+        './api/internal.php?object=centreon_configuration_servicegroup&action=list',
     'defaultDatasetRoute' =>
-    './include/common/webServices/rest/internal.php?object=centreon_configuration_servicegroup'
-    . '&action=defaultValues&target=service&field=service_sgs&id=' . $id,
+        './api/internal.php?object=centreon_configuration_servicegroup'
+        . '&action=defaultValues&target=service&field=service_sgs&id=' . $id,
 );
-$serviceGroupSelectBox = $formPeriod->addElement(
+$serviceGroupSelectBox = $serviceGroupForm->addElement(
     'select2',
-    'itemElement',
+    'item',
     _("Service Group"),
     [],
     $serviceGroupRoute
