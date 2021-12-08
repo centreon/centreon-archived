@@ -10,7 +10,6 @@ import React, { Component } from 'react';
 
 import classnames from 'classnames';
 import { withTranslation } from 'react-i18next';
-import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 import { Typography, withStyles, createStyles } from '@material-ui/core';
@@ -18,11 +17,11 @@ import UserIcon from '@material-ui/icons/AccountCircle';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import CheckIcon from '@material-ui/icons/Check';
 
-import { allowedPagesSelector } from '../../redux/selectors/navigation/allowedPages';
 import styles from '../header.scss';
 import Clock from '../Clock';
 import axios from '../../axios';
 import MenuLoader from '../../components/MenuLoader';
+import useNavigation from '../../Navigation/useNavigation';
 
 const EDIT_PROFILE_TOPOLOGY_PAGE = '50104';
 
@@ -226,12 +225,10 @@ class UserMenu extends Component {
   }
 }
 
-const mapStateToProps = (state) => ({
-  allowedPages: allowedPagesSelector(state),
-});
+const UserTopCounter = (props) => {
+  const { allowedPages } = useNavigation();
 
-const mapDispatchToProps = {};
+  return <UserMenu {...props} allowedPages={allowedPages} />;
+};
 
-export default withStyles(MuiStyles)(
-  withTranslation()(connect(mapStateToProps, mapDispatchToProps)(UserMenu)),
-);
+export default withStyles(MuiStyles)(withTranslation()(UserTopCounter));

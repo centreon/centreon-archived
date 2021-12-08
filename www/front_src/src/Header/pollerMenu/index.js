@@ -18,7 +18,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { withTranslation } from 'react-i18next';
-import { connect } from 'react-redux';
 
 import PollerIcon from '@material-ui/icons/DeviceHub';
 import StorageIcon from '@material-ui/icons/Storage';
@@ -29,8 +28,8 @@ import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 
 import axios from '../../axios';
 import styles from '../header.scss';
-import { allowedPagesSelector } from '../../redux/selectors/navigation/allowedPages';
 import MenuLoader from '../../components/MenuLoader';
+import useNavigation from '../../Navigation/useNavigation';
 
 import ExportConfiguration from './ExportConfiguration';
 
@@ -335,15 +334,19 @@ class PollerMenu extends Component {
   }
 }
 
-const mapStateToProps = (state) => ({
-  allowedPages: allowedPagesSelector(state),
-});
+const PollerTopCounter = ({ refreshInterval, ...props }) => {
+  const { allowedPages } = useNavigation();
 
-const mapDispatchToProps = {};
+  return (
+    <PollerMenu
+      {...props}
+      allowedPages={allowedPages}
+      refreshInterval={refreshInterval}
+    />
+  );
+};
 
-export default withTranslation()(
-  connect(mapStateToProps, mapDispatchToProps)(PollerMenu),
-);
+export default withTranslation()(PollerTopCounter);
 
 PollerMenu.propTypes = {
   allowedPages: PropTypes.arrayOf(PropTypes.string),
@@ -352,4 +355,8 @@ PollerMenu.propTypes = {
 
 PollerMenu.defaultProps = {
   allowedPages: [],
+};
+
+PollerTopCounter.propTypes = {
+  refreshInterval: PropTypes.number.isRequired,
 };
