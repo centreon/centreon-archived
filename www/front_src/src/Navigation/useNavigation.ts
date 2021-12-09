@@ -2,17 +2,23 @@ import * as React from 'react';
 
 import { useAtom } from 'jotai';
 import {
+  always,
   any,
   append,
+  cond,
   equals,
   filter,
   find,
   flatten,
   includes,
   isNil,
+  map,
   mapObjIndexed,
   not,
   pipe,
+  prop,
+  propEq,
+  T,
 } from 'ramda';
 
 import { getData, useRequest } from '@centreon/ui';
@@ -30,6 +36,26 @@ interface UseNavigationState {
   reactRoutes?: Record<string, string>;
 }
 
+const exists = pipe(isNil, not);
+const propExists = <T>(property: string): ((obj: T) => boolean) =>
+  pipe(prop(property) as (obj: T) => unknown, exists);
+
+const getAllowedPages = ({
+  page,
+  newAccumulator,
+}): ((...a: Array<Page>) => Array<string>) =>
+  cond<Page, Array<string>>([
+    [
+      propEq('is_react', true) as (obj: Page) => boolean,
+      always(append<string>(page.url as string, newAccumulator)),
+    ],
+    [
+      propExists<Page>('page'),
+      always(append<string>(page.page as string, newAccumulator)),
+    ],
+    [T, always(newAccumulator)],
+  ]);
+
 const useNavigation = (): UseNavigationState => {
   const { sendRequest } = useRequest<Navigation>({
     request: getData,
@@ -40,53 +66,51 @@ const useNavigation = (): UseNavigationState => {
     sendRequest(navigationEndpoint).then(setNavigation);
   };
 
-  const getAllowedPages = React.useCallback((acc, page): Array<string> => {
-    const children = ['groups', 'children']
-      .map((property) => {
-        if (!page[property]) {
-          return null;
-        }
+  const reduceAllowedPages = React.useCallback(
+    (acc: Array<string>, page: Page): Array<string> => {
+      const children = pipe(
+        map<string, string | null>((property) => {
+          if (!page[property]) {
+            return null;
+          }
 
-        return page[property].reduce(getAllowedPages, []);
-      })
-      .filter(pipe(isNil, not));
+          return page[property].reduce(reduceAllowedPages, []);
+        }),
+        filter(exists),
+      )(['groups', 'children']) as Array<string>;
 
-    const newAccumulator = [...acc, ...flatten(children)];
+      const newAccumulator = [...acc, ...flatten(children)];
 
-    if (equals(page.is_react, true)) {
-      return append(page.url, newAccumulator);
-    }
-    if (page.page) {
-      return append(page.page, newAccumulator);
-    }
-
-    return newAccumulator;
-  }, []);
+      return getAllowedPages({ newAccumulator, page })(page);
+    },
+    [],
+  );
 
   const filterShowableElements = (acc, page): Array<Page> => {
     if (equals(page.show, false)) {
       return acc;
     }
 
-    const pages = ['groups', 'children'].map((property) => {
-      if (!page[property]) {
-        return null;
-      }
+    const pages = map(
+      (property) => {
+        if (!page[property]) {
+          return null;
+        }
 
-      return {
-        ...page,
-        [property]: page[property].reduce(filterShowableElements, []),
-      };
-    });
+        return {
+          ...page,
+          [property]: page[property].reduce(filterShowableElements, []),
+        };
+      },
+      ['groups', 'children'],
+    );
 
-    if (any((subPage) => not(isNil(subPage)), pages)) {
-      return [
-        ...acc,
-        find((subPage) => not(isNil(subPage)), pages) as Array<Page>,
-      ];
-    }
+    const getShowablePages = cond([
+      [any(exists), find(exists)],
+      [T, always(page)],
+    ]);
 
-    return [...acc, page];
+    return [...acc, getShowablePages(pages)];
   };
 
   const filterNotEmptyGroup = React.useCallback((group): boolean => {
@@ -154,22 +178,31 @@ const useNavigation = (): UseNavigationState => {
     [],
   );
 
-  const allowedPages = isNil(navigation)
-    ? undefined
-    : navigation.result.reduce(
-        getAllowedPages,
-        [] as Array<string | Array<string>>,
-      );
+  const allowedPages = React.useMemo(
+    (): Array<string> | undefined =>
+      isNil(navigation)
+        ? undefined
+        : navigation.result.reduce(reduceAllowedPages, [] as Array<string>),
+    [navigation],
+  );
 
-  const menu = isNil(navigation)
-    ? undefined
-    : navigation.result
-        .reduce(filterShowableElements, [])
-        .reduce(removeEmptyGroups, []);
+  const menu = React.useMemo(
+    (): Array<Page> | undefined =>
+      isNil(navigation)
+        ? undefined
+        : navigation.result
+            .reduce(filterShowableElements, [])
+            .reduce(removeEmptyGroups, []),
+    [navigation],
+  );
 
-  const reactRoutes = isNil(navigation)
-    ? undefined
-    : navigation.result.reduce(findReactRoutes, {});
+  const reactRoutes = React.useMemo(
+    (): Record<string, string> | undefined =>
+      isNil(navigation)
+        ? undefined
+        : navigation.result.reduce(findReactRoutes, {}),
+    [navigation],
+  );
 
   return {
     allowedPages,
