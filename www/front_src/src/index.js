@@ -19,12 +19,6 @@ import AppProvider from './App';
   window.ReactRouterDOM = window.ReactRouterDom = await import(
     /* webpackChunkName: "external" */ 'react-router-dom'
   );
-  window.ReactRedux = await import(
-    /* webpackChunkName: "external" */ 'react-redux'
-  );
-  window.ReduxForm = await import(
-    /* webpackChunkName: "external" */ 'redux-form'
-  );
   window.ReactI18Next = await import(
     /* webpackChunkName: "external" */ 'react-i18next'
   );
