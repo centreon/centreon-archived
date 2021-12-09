@@ -1,4 +1,5 @@
 import { useUpdateAtom } from 'jotai/utils';
+import { useAtom } from 'jotai';
 
 import { getData, useRequest } from '@centreon/ui';
 
@@ -9,6 +10,7 @@ const externalComponentsEndpoint =
   './api/internal.php?object=centreon_frontend_component&action=components';
 
 interface UseExternalComponentsState {
+  externalComponents: ExternalComponents | null;
   getExternalComponents: () => void;
 }
 
@@ -17,13 +19,16 @@ const useExternalComponents = (): UseExternalComponentsState => {
     request: getData,
   });
 
-  const setExternalComponents = useUpdateAtom(externalComponentsAtom);
+  const [externalComponents, setExternalComponents] = useAtom(
+    externalComponentsAtom,
+  );
 
   const getExternalComponents = (): void => {
     sendRequest(externalComponentsEndpoint).then(setExternalComponents);
   };
 
   return {
+    externalComponents,
     getExternalComponents,
   };
 };
