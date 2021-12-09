@@ -42,7 +42,7 @@ import {
 import ExportConfiguration from './ExportConfiguration';
 import PollerStatusIcon from './PollerStatusIcon';
 
-export const pollerConfigurationNumberPage = '60901';
+export const pollerConfigurationPageNumber = '60901';
 
 const pollerIssueKeyToMessage = {
   database: labelDatabaseUpdatesNotActive,
@@ -161,12 +161,12 @@ const PollerMenu = ({
   }
 
   const allowPollerConfiguration = allowedPages?.includes(
-    pollerConfigurationNumberPage,
+    pollerConfigurationPageNumber,
   );
 
   const redirectToPollerConfiguration = (): void => {
     closeSubmenu();
-    history.push(`/main.php?p=${pollerConfigurationNumberPage}`);
+    history.push(`/main.php?p=${pollerConfigurationPageNumber}`);
   };
 
   return (
