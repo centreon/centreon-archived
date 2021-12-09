@@ -69,13 +69,15 @@ $hostsRoute = array(
         './api/internal.php?object=centreon_configuration_host
         &action=defaultValues&target=host&field=host_id&id=' . $id,
 );
-$selHost = $formHost->addElement(
+
+$selHost = $formPeriod->addElement(
     'select2',
-    'host',
+    'hostElement',
     _("Host"),
     [],
     $hostsRoute
 );
+
 $selHost->addJsCallback(
     'change',
     'this.form.submit();'
