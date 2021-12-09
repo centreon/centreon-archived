@@ -11,3 +11,19 @@ export const labelConfigurationExportedAndReloaded =
   'Configuration exported and reloaded';
 export const labelFailedToExportAndReloadConfiguration =
   'Failed to export and reload the configuration';
+export const labelPoller = 'Pollers';
+export const labelLatency = 'Latency';
+export const labelDatabase = 'Database';
+export const labelNoLatencyDetected =
+  'OK: no latency detected on your platform';
+export const labelLatencyDetected =
+  'Latency detected, check configuration for better optimization';
+export const labelDatabaseUpdateAndActive =
+  'OK: all database poller updates are active';
+export const labelDatabaseNotActive =
+  'Some database poller updates are not active; check your configuration';
+export const labelDatabaseUpdatesNotActive = 'Database issue';
+export const labelPollerNotRunning = 'Pollers not running';
+export const labelPollerRunning = 'Everything Ok';
+export const labelConfigurePollers = ' Configure pollers';
+export const labelAllPollers = 'All pollers:';
