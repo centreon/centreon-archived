@@ -18,3 +18,34 @@
  * For more information : contact@centreon.com
  *
  */
+
+
+include_once __DIR__ . "/../../class/centreonLog.class.php";
+$centreonLog = new CentreonLog();
+
+//error specific content
+$versionOfTheUpgrade = 'UPGRADE - 22.04.0-beta.1: ';
+
+/**
+ * Query with transaction
+ */
+try {
+    $errorMessage  = 'Unable to update cb_tag';
+    $pearDB->beginTransaction();
+    $statement = $pearDB->query("DELETE FROM cb_tag where tagname = 'logger'");
+    if ($pearDB->inTransaction()) {
+        $pearDB->commit();
+    }
+} catch (\Exception $e) {
+    if ($pearDB->inTransaction()) {
+        $pearDB->rollBack();
+    }
+    $centreonLog->insertLog(
+        4,
+        $versionOfTheUpgrade . $errorMessage .
+        " - Code : " . (int)$e->getCode() .
+        " - Error : " . $e->getMessage() .
+        " - Trace : " . $e->getTraceAsString()
+    );
+    throw new \Exception($versionOfTheUpgrade . $errorMessage, (int)$e->getCode(), $e);
+}
