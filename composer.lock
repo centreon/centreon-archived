@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f443e1644696d0d88c72f8dce706ebf2",
+    "content-hash": "d59ac149f27d87975aeeaa7af153f295",
     "packages": [
         {
             "name": "beberlei/assert",
@@ -6713,16 +6713,16 @@
         },
         {
             "name": "centreon/centreon-test-lib",
-            "version": "dev-MON-6465",
+            "version": "dev-password-security-policy",
             "source": {
                 "type": "git",
                 "url": "https://github.com/centreon/centreon-test-lib.git",
-                "reference": "48d050a104db1d7c8c4ef3f6d97fff1f5b8b2e2b"
+                "reference": "194f9732cb090cbb8a4381fa4068d3fd1ad57e3f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/48d050a104db1d7c8c4ef3f6d97fff1f5b8b2e2b",
-                "reference": "48d050a104db1d7c8c4ef3f6d97fff1f5b8b2e2b",
+                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/194f9732cb090cbb8a4381fa4068d3fd1ad57e3f",
+                "reference": "194f9732cb090cbb8a4381fa4068d3fd1ad57e3f",
                 "shasum": ""
             },
             "require": {
@@ -6769,9 +6769,9 @@
             ],
             "support": {
                 "issues": "https://github.com/centreon/centreon-test-lib/issues",
-                "source": "https://github.com/centreon/centreon-test-lib/tree/MON-6465"
+                "source": "https://github.com/centreon/centreon-test-lib/tree/password-security-policy"
             },
-            "time": "2021-11-24T14:54:54+00:00"
+            "time": "2021-12-09T11:14:08+00:00"
         },
         {
             "name": "friends-of-behat/mink",
