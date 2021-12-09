@@ -4,8 +4,6 @@ import axios from 'axios';
 import { render, waitFor, fireEvent } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 
-import createStore from '../../../store';
-
 import ServiceStatusCounter from '.';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
