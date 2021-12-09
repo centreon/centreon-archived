@@ -49,7 +49,7 @@ require_once './include/reporting/dashboard/initReport.php';
 /*
  *  Getting hostgroup to report
  */
-$id = filter_var($_GET['item'] ?? $_POST['item'] ?? false, FILTER_VALIDATE_INT);
+$id = filter_var($_GET['itemElement'] ?? $_POST['itemElement'] ?? false, FILTER_VALIDATE_INT);
 /*
  * Formulary
  *
@@ -66,14 +66,14 @@ $hostsGroupRoute = array(
     'multiple' => false,
     'linkedObject' => 'centreonHostgroups',
     'availableDatasetRoute' =>
-        './include/common/webServices/rest/internal.php?object=centreon_configuration_hostgroup&action=list',
+    './api/internal.php?object=centreon_configuration_hostgroup&action=list',
     'defaultDatasetRoute' =>
-        './api/internal.php?object=centreon_configuration_hostgroup'
-        . '&action=defaultValues&target=service&field=service_hgPars&id=' . $id,
+    './api/internal.php?object=centreon_configuration_hostgroup'
+    . '&action=defaultValues&target=service&field=service_hgPars&id=' . $id,
 );
-$hostGroupSelectBox = $formHostGroup->addElement(
+$hostGroupSelectBox = $formPeriod->addElement(
     'select2',
-    'item',
+    'itemElement',
     _("Host Group"),
     [],
     $hostsGroupRoute
