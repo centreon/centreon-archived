@@ -1,4 +1,3 @@
-import { useUpdateAtom } from 'jotai/utils';
 import { useAtom } from 'jotai';
 
 import { getData, useRequest } from '@centreon/ui';
