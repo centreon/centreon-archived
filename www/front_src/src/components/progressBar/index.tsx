@@ -1,6 +1,5 @@
 import * as React from 'react';
 
-import classnames from 'classnames';
 import { useTranslation } from 'react-i18next';
 
 import { Step, StepLabel, Stepper } from '@material-ui/core';
