@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 
 import WizardFormInstallingStatus from '../../components/wizardFormInstallingStatus';
 import ProgressBar from '../../components/progressBar';
-import BaseWizard from '../../components/forms/baseWizard';
+import BaseWizard from '../forms/baseWizard';
 
 const links = [
   {
@@ -22,7 +22,7 @@ interface Props {
   pollerData;
 }
 
-const PollerStepThreeRoute = ({ pollerData }: Props): JSX.Element => {
+const FormPollerStepThree = ({ pollerData }: Props): JSX.Element => {
   const { t } = useTranslation();
 
   return (
@@ -43,6 +43,8 @@ const mapStateToProps = ({ pollerForm }): Props => ({
 
 const mapDispatchToProps = {};
 
-export default withTranslation()(
-  connect(mapStateToProps, mapDispatchToProps)(PollerStepThreeRoute),
+const PollerStepThree = withTranslation()(
+  connect(mapStateToProps, mapDispatchToProps)(FormPollerStepThree),
 );
+
+export default (): JSX.Element => <PollerStepThree />;

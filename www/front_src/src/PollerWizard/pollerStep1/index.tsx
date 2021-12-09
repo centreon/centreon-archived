@@ -1,15 +1,14 @@
 import * as React from 'react';
 
 import { connect } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 
 import { postData, useRequest } from '@centreon/ui';
 
-import Form from '../../components/forms/poller/PollerFormStepOne';
+import Form from '../forms/poller/PollerFormStepOne';
 import { setPollerWizard } from '../../redux/actions/pollerWizardActions';
 import ProgressBar from '../../components/progressBar';
 import routeMap from '../../route-maps/route-map';
-import BaseWizard from '../../components/forms/baseWizard';
+import BaseWizard from '../forms/baseWizard';
 
 const links = [
   {
@@ -27,15 +26,15 @@ const pollerWaitListEndpoint =
   './api/internal.php?object=centreon_configuration_remote&action=getPollerWaitList';
 
 interface Props {
+  goToNextStep: () => void;
   setWizard: (pollerWizard) => Record<string, unknown>;
 }
 
-const PollerStepOneRoute = ({ setWizard }: Props): JSX.Element => {
+const FormPollerStepOne = ({ setWizard, goToNextStep }: Props): JSX.Element => {
   const [waitList, setWaitList] = React.useState<Array<unknown> | null>(null);
   const { sendRequest } = useRequest<Array<unknown>>({
     request: postData,
   });
-  const navigate = useNavigate();
 
   const getWaitList = (): void => {
     sendRequest({
@@ -56,7 +55,7 @@ const PollerStepOneRoute = ({ setWizard }: Props): JSX.Element => {
 
   const handleSubmit = (data): void => {
     setWizard(data);
-    navigate(routeMap.pollerStep2);
+    goToNextStep();
   };
 
   return (
@@ -70,4 +69,9 @@ const PollerStepOneRoute = ({ setWizard }: Props): JSX.Element => {
 const mapDispatchToProps = {
   setWizard: setPollerWizard,
 };
-export default connect(null, mapDispatchToProps)(PollerStepOneRoute);
+
+const PollerStepOne = connect(null, mapDispatchToProps)(FormPollerStepOne);
+
+export default (props: Pick<Props, 'goToNextStep'>): JSX.Element => {
+  return <PollerStepOne {...props} />;
+};

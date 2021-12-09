@@ -1,15 +1,14 @@
 import * as React from 'react';
 
 import { connect } from 'react-redux';
-import { useNavigate } from 'react-router';
 
 import { postData, useRequest } from '@centreon/ui';
 
-import Form from '../../components/forms/remoteServer/RemoteServerFormStepOne';
+import Form from '../forms/remoteServer/RemoteServerFormStepOne';
 import { setPollerWizard } from '../../redux/actions/pollerWizardActions';
 import ProgressBar from '../../components/progressBar';
 import routeMap from '../../route-maps/route-map';
-import BaseWizard from '../../components/forms/baseWizard';
+import BaseWizard from '../forms/baseWizard';
 
 const links = [
   {
@@ -27,19 +26,20 @@ const remoteServerWaitListEndpoint =
   './api/internal.php?object=centreon_configuration_remote&action=getWaitList';
 
 interface Props {
+  goToNextStep: () => void;
   pollerData: Record<string, unknown>;
   setWizard: (pollerWizard) => Record<string, unknown>;
 }
 
-const RemoteServerStepOneRoute = ({
+const FormRemoteServerStepOne = ({
   setWizard,
   pollerData,
+  goToNextStep,
 }: Props): JSX.Element => {
   const [waitList, setWaitList] = React.useState<Array<unknown> | null>(null);
   const { sendRequest } = useRequest<Array<unknown>>({
     request: postData,
   });
-  const navigate = useNavigate();
 
   const getWaitList = (): void => {
     sendRequest({
@@ -60,7 +60,7 @@ const RemoteServerStepOneRoute = ({
 
   const handleSubmit = (data): void => {
     setWizard(data);
-    navigate(routeMap.remoteServerStep2);
+    goToNextStep();
   };
 
   return (
@@ -83,7 +83,11 @@ const mapDispatchToProps = {
   setWizard: setPollerWizard,
 };
 
-export default connect(
+const RemoteServerStepOne = connect(
   mapStateToProps,
   mapDispatchToProps,
-)(RemoteServerStepOneRoute);
+)(FormRemoteServerStepOne);
+
+export default (props: Pick<Props, 'goToNextStep'>): JSX.Element => {
+  return <RemoteServerStepOne {...props} />;
+};

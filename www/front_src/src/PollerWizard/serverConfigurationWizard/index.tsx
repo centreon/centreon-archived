@@ -1,12 +1,11 @@
 import * as React from 'react';
 
-import { useNavigate } from 'react-router-dom';
 import { equals } from 'ramda';
 
-import Form from '../../components/forms/ServerConfigurationWizardForm';
 import routeMap from '../../route-maps/route-map';
 import ProgressBar from '../../components/progressBar';
-import BaseWizard from '../../components/forms/baseWizard';
+import BaseWizard from '../forms/baseWizard';
+import Form from '../forms/ServerConfigurationWizardForm';
 
 const links = [
   { active: true, number: 1, path: routeMap.serverConfigurationWizard },
@@ -15,16 +14,24 @@ const links = [
   { active: false, number: 4 },
 ];
 
-const ServerConfigurationWizardRoute = (): JSX.Element => {
-  const navigate = useNavigate();
+interface Props {
+  changeServerType: (type: number) => void;
+  goToNextStep: () => void;
+}
 
+const ServerConfigurationWizard = ({
+  changeServerType,
+  goToNextStep,
+}: Props): JSX.Element => {
   const handleSubmit = ({ server_type }): void => {
     if (equals(server_type, '1')) {
-      navigate(routeMap.remoteServerStep1);
+      changeServerType(0);
     }
     if (equals(server_type, '2')) {
-      navigate(routeMap.pollerStep1);
+      changeServerType(1);
     }
+
+    goToNextStep();
   };
 
   return (
@@ -35,4 +42,4 @@ const ServerConfigurationWizardRoute = (): JSX.Element => {
   );
 };
 
-export default ServerConfigurationWizardRoute;
+export default ServerConfigurationWizard;

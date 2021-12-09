@@ -5,11 +5,11 @@ import { useNavigate } from 'react-router';
 
 import { useRequest, postData } from '@centreon/ui';
 
-import Form from '../../components/forms/poller/PollerFormStepTwo';
+import Form from '../forms/poller/PollerFormStepTwo';
 import ProgressBar from '../../components/progressBar';
 import routeMap from '../../route-maps/route-map';
 import { setPollerWizard } from '../../redux/actions/pollerWizardActions';
-import BaseWizard from '../../components/forms/baseWizard';
+import BaseWizard from '../forms/baseWizard';
 
 const getPollersEndpoint =
   './api/internal.php?object=centreon_configuration_remote&action=getRemotesList';
@@ -29,11 +29,16 @@ const links = [
 ];
 
 interface Props {
+  goToNextStep: () => void;
   pollerData: Record<string, unknown>;
   setWizard: (data) => void;
 }
 
-const PollerStepTwoRoute = ({ setWizard, pollerData }: Props): JSX.Element => {
+const FormPollerStepTwo = ({
+  setWizard,
+  pollerData,
+  goToNextStep,
+}: Props): JSX.Element => {
   const [pollers, setPollers] = React.useState<Array<unknown>>([]);
 
   const { sendRequest: getPollersRequest } = useRequest<Array<unknown>>({
@@ -68,7 +73,7 @@ const PollerStepTwoRoute = ({ setWizard, pollerData }: Props): JSX.Element => {
       .then(({ success }) => {
         setWizard({ submitStatus: success });
         if (pollerData.linked_remote_master) {
-          navigate(routeMap.pollerStep3);
+          goToNextStep();
         } else {
           navigate(routeMap.pollerList);
         }
@@ -96,4 +101,11 @@ const mapDispatchToProps = {
   setWizard: setPollerWizard,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(PollerStepTwoRoute);
+const PollwerStepTwo = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(FormPollerStepTwo);
+
+export default (props: Pick<Props, 'goToNextStep'>): JSX.Element => {
+  return <PollwerStepTwo {...props} />;
+};

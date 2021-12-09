@@ -13,10 +13,10 @@ import { withTranslation } from 'react-i18next';
 import { Paper, Typography, Button } from '@material-ui/core';
 
 import styles from '../../../styles/partials/form/_form.scss';
-import InputField from '../../form-fields/InputField';
-import SelectField from '../../form-fields/SelectField';
-import RadioField from '../../form-fields/PreselectedRadioField';
-import CheckboxField from '../../form-fields/CheckboxField';
+import InputField from '../../../components/form-fields/InputField';
+import SelectField from '../../../components/form-fields/SelectField';
+import RadioField from '../../../components/form-fields/PreselectedRadioField';
+import CheckboxField from '../../../components/form-fields/CheckboxField';
 import { validateFieldRequired } from '../../../helpers/validators';
 
 class RemoteServerFormStepOne extends Component {

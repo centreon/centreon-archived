@@ -13,7 +13,7 @@ import {
 import WizardFormInstallingStatus from '../../components/wizardFormInstallingStatus';
 import ProgressBar from '../../components/progressBar';
 import routeMap from '../../route-maps/route-map';
-import BaseWizard from '../../components/forms/baseWizard';
+import BaseWizard from '../forms/baseWizard';
 
 const links = [
   {
@@ -27,13 +27,13 @@ const links = [
 ];
 
 interface Props {
-  pollerData: Record<string, unknown>;
+  pollerData;
 }
 
 const exportTaskEndpoint =
   'internal.php?object=centreon_task_service&action=getTaskStatus';
 
-const RemoteServerStepThreeRoute = ({ pollerData }: Props): JSX.Element => {
+const FormRemoteServerStepThree = ({ pollerData }: Props): JSX.Element => {
   const { t } = useTranslation();
 
   const [error, setError] = React.useState<string | null>(null);
@@ -116,6 +116,10 @@ const mapStateToProps = ({ pollerForm }): Props => ({
   pollerData: pollerForm,
 });
 
-export default withTranslation()(
-  connect(mapStateToProps, null)(RemoteServerStepThreeRoute),
+const mapDispatchToProps = {};
+
+const RemoteServerStepThree = withTranslation()(
+  connect(mapStateToProps, mapDispatchToProps)(FormRemoteServerStepThree),
 );
+
+export default (): JSX.Element => <RemoteServerStepThree />;

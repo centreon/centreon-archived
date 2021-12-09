@@ -11,7 +11,7 @@ import { useTranslation } from 'react-i18next';
 import { Button, Typography, Paper } from '@material-ui/core';
 
 import styles from '../../styles/partials/form/_form.scss';
-import RadioGroupFields from '../form-fields/RadioGroupFields';
+import RadioGroupFields from '../../components/form-fields/RadioGroupFields';
 
 const configurationTypes = [
   {

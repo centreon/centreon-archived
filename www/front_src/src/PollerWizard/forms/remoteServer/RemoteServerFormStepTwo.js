@@ -10,7 +10,7 @@ import { withTranslation } from 'react-i18next';
 import { Paper, Typography, Button } from '@material-ui/core';
 
 import styles from '../../../styles/partials/form/_form.scss';
-import fieldHoc from '../../form-fields/hoc';
+import fieldHoc from '../../../components/form-fields/hoc';
 
 class RemoteServerFormStepTwo extends Component {
   state = {

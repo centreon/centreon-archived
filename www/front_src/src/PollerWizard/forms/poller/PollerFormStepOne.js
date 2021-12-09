@@ -12,9 +12,9 @@ import { withTranslation } from 'react-i18next';
 import { Paper, Typography, Button } from '@material-ui/core';
 
 import styles from '../../../styles/partials/form/_form.scss';
-import InputField from '../../form-fields/InputField';
-import RadioField from '../../form-fields/PreselectedRadioField';
-import SelectField from '../../form-fields/SelectField';
+import InputField from '../../../components/form-fields/InputField';
+import RadioField from '../../../components/form-fields/PreselectedRadioField';
+import SelectField from '../../../components/form-fields/SelectField';
 import { validateFieldRequired } from '../../../helpers/validators';
 
 class PollerFormStepOne extends Component {

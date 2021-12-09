@@ -6,11 +6,11 @@ import { isEmpty } from 'ramda';
 
 import { postData, useRequest } from '@centreon/ui';
 
-import Form from '../../components/forms/remoteServer/RemoteServerFormStepTwo';
+import Form from '../forms/remoteServer/RemoteServerFormStepTwo';
 import routeMap from '../../route-maps/route-map';
 import ProgressBar from '../../components/progressBar';
 import { setPollerWizard } from '../../redux/actions/pollerWizardActions';
-import BaseWizard from '../../components/forms/baseWizard';
+import BaseWizard from '../forms/baseWizard';
 
 const links = [
   {
@@ -30,6 +30,7 @@ const links = [
 ];
 
 interface Props {
+  goToNextStep: () => void;
   pollerData: Record<string, unknown>;
   setWizard: (pollerWizard) => Record<string, unknown>;
 }
@@ -39,9 +40,10 @@ const getRemoteServersEndpoint =
 const wizardFormEndpoint =
   './api/internal.php?object=centreon_configuration_remote&action=linkCentreonRemoteServer';
 
-const RemoteServerStepTwoRoute = ({
+const FormRemoteServerStepTwo = ({
   pollerData,
   setWizard,
+  goToNextStep,
 }: Props): JSX.Element => {
   const [remoteServers, setRemoteServers] = React.useState<Record<
     string,
@@ -99,7 +101,7 @@ const RemoteServerStepTwoRoute = ({
             submitStatus: success,
             taskId: task_id,
           });
-          navigate(routeMap.remoteServerStep3);
+          goToNextStep();
         } else {
           navigate(routeMap.pollerList);
         }
@@ -123,7 +125,11 @@ const mapDispatchToProps = {
   setWizard: setPollerWizard,
 };
 
-export default connect(
+const RemoteServerStepTwo = connect(
   mapStateToProps,
   mapDispatchToProps,
-)(RemoteServerStepTwoRoute);
+)(FormRemoteServerStepTwo);
+
+export default (props: Pick<Props, 'goToNextStep'>): JSX.Element => {
+  return <RemoteServerStepTwo {...props} />;
+};

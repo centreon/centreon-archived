@@ -14,9 +14,9 @@ import Select from 'react-select';
 import { Paper, Typography, Button } from '@material-ui/core';
 
 import styles from '../../../styles/partials/form/_form.scss';
-import SelectField from '../../form-fields/SelectField';
-import CheckboxField from '../../form-fields/CheckboxField';
-import fieldHoc from '../../form-fields/hoc';
+import SelectField from '../../../components/form-fields/SelectField';
+import CheckboxField from '../../../components/form-fields/CheckboxField';
+import fieldHoc from '../../../components/form-fields/hoc';
 
 class PollerFormStepTwo extends Component {
   state = {
