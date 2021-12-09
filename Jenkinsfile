@@ -248,7 +248,7 @@ try {
           sh "./centreon-build/jobs/web/${serie}/mon-web-analysis.sh"
         }
         // sonarQube step to get qualityGate result
-        sleep(300)
+        sleep(120)
         timeout(time: 10, unit: 'MINUTES') {
           def qualityGate = waitForQualityGate()
           if (qualityGate.status != 'OK') {
