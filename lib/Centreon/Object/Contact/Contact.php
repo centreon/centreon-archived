@@ -47,10 +47,7 @@ class Centreon_Object_Contact extends Centreon_Object
     protected $uniqueLabelField = "contact_alias";
 
     /**
-     * Used for inserting contact into database
-     *
-     * @param array $params
-     * @return int
+     * @inheritDoc
      */
     public function insert($params = [])
     {
@@ -156,11 +153,7 @@ class Centreon_Object_Contact extends Centreon_Object
     }
 
     /**
-     * Used for updating contact in database
-     *
-     * @param int $contactId
-     * @param array $params
-     * @return void
+     * @inheritDoc
      */
     public function update($contactId, $params = array())
     {
