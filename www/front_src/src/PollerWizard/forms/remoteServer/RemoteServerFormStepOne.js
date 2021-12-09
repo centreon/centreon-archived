@@ -10,7 +10,7 @@ import React, { Component } from 'react';
 import { Field, reduxForm as connectForm } from 'redux-form';
 import { withTranslation } from 'react-i18next';
 
-import { Paper, Typography, Button } from '@material-ui/core';
+import { Typography, Button } from '@material-ui/core';
 
 import styles from '../../../styles/partials/form/_form.scss';
 import InputField from '../../../components/form-fields/InputField';
@@ -58,11 +58,12 @@ class RemoteServerFormStepOne extends Component {
   };
 
   render() {
-    const { error, handleSubmit, onSubmit, waitList, t } = this.props;
+    const { error, handleSubmit, onSubmit, waitList, t, goToPreviousStep } =
+      this.props;
     const { inputTypeManual } = this.state;
 
     return (
-      <Paper className={styles['form-container']}>
+      <div>
         <div className={styles['form-heading']}>
           <Typography variant="h6">
             {t('Remote Server Configuration')}
@@ -231,6 +232,9 @@ class RemoteServerFormStepOne extends Component {
           ) : null}
 
           <div className={styles['form-buttons']}>
+            <Button size="small" onClick={goToPreviousStep}>
+              {t('Previous')}
+            </Button>
             <Button
               color="primary"
               size="small"
@@ -246,7 +250,7 @@ class RemoteServerFormStepOne extends Component {
             </Typography>
           ) : null}
         </form>
-      </Paper>
+      </div>
     );
   }
 }

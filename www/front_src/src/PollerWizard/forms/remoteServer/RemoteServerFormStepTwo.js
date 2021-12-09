@@ -7,7 +7,7 @@ import { Field, reduxForm as connectForm } from 'redux-form';
 import Select from 'react-select';
 import { withTranslation } from 'react-i18next';
 
-import { Paper, Typography, Button } from '@material-ui/core';
+import { Typography, Button } from '@material-ui/core';
 
 import styles from '../../../styles/partials/form/_form.scss';
 import fieldHoc from '../../../components/form-fields/hoc';
@@ -22,11 +22,12 @@ class RemoteServerFormStepTwo extends Component {
   };
 
   render() {
-    const { error, handleSubmit, onSubmit, pollers, t } = this.props;
+    const { error, handleSubmit, onSubmit, pollers, t, goToPreviousStep } =
+      this.props;
     const { value } = this.state;
 
     return (
-      <Paper className={styles['form-container']}>
+      <div>
         <div className={styles['form-heading']}>
           <Typography variant="h6">
             {t('Select pollers to be attached to this new Remote Server')}
@@ -49,6 +50,9 @@ class RemoteServerFormStepTwo extends Component {
             />
           ) : null}
           <div className={styles['form-buttons']}>
+            <Button size="small" onClick={goToPreviousStep}>
+              {t('Previous')}
+            </Button>
             <Button
               color="primary"
               size="small"
@@ -65,7 +69,7 @@ class RemoteServerFormStepTwo extends Component {
             </Typography>
           )}
         </form>
-      </Paper>
+      </div>
     );
   }
 }

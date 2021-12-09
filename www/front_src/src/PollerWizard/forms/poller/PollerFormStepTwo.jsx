@@ -11,7 +11,7 @@ import { Field, reduxForm as connectForm } from 'redux-form';
 import { withTranslation } from 'react-i18next';
 import Select from 'react-select';
 
-import { Paper, Typography, Button } from '@material-ui/core';
+import { Typography, Button } from '@material-ui/core';
 
 import styles from '../../../styles/partials/form/_form.scss';
 import SelectField from '../../../components/form-fields/SelectField';
@@ -76,83 +76,83 @@ class PollerFormStepTwo extends Component {
   };
 
   render() {
-    const { error, handleSubmit, onSubmit, pollers, t } = this.props;
+    const { error, handleSubmit, onSubmit, pollers, t, goToPreviousStep } =
+      this.props;
     const { selectedMaster } = this.state;
 
     const availableAdditionals = this.getAvailableAdditionals();
 
     return (
-      <Paper className={styles['form-container']}>
-        <div className={styles['form-inner']}>
-          <form autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
-            {pollers.length ? (
-              <>
-                <Typography variant="h6">
-                  {t('Attach poller to a master remote server')}
-                </Typography>
-                <Field
-                  component={SelectField}
-                  name="linked_remote_master"
-                  options={[
-                    {
-                      text: '',
-                      value: null,
-                    },
-                  ].concat(
-                    pollers.map((c) => ({
-                      label: c.name,
-                      text: c.name,
-                      value: c.id,
-                    })),
-                  )}
-                  value={selectedMaster}
-                  onChange={this.handleChangeMaster}
-                />
-              </>
-            ) : null}
-            {selectedMaster && pollers.length >= 2 ? (
-              <>
-                <Typography variant="h6">
-                  {t('Attach poller to additional remote servers')}
-                </Typography>
-                <div className={styles['form-item']}>
-                  <Field
-                    isMulti
-                    component={fieldHoc(Select)}
-                    name="linked_remote_slaves"
-                    options={availableAdditionals.map((remote) => ({
-                      label: remote.name,
-                      value: remote.id,
-                    }))}
-                    onChange={this.handleChangeAdditionals}
-                  />
-                </div>
-              </>
-            ) : null}
+      <form autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
+        {pollers.length ? (
+          <>
+            <Typography variant="h6">
+              {t('Attach poller to a master remote server')}
+            </Typography>
             <Field
-              component={CheckboxField}
-              defaultValue={false}
-              label={t('Advanced: reverse Centreon Broker communication flow')}
-              name="open_broker_flow"
+              component={SelectField}
+              name="linked_remote_master"
+              options={[
+                {
+                  text: '',
+                  value: null,
+                },
+              ].concat(
+                pollers.map((c) => ({
+                  label: c.name,
+                  text: c.name,
+                  value: c.id,
+                })),
+              )}
+              value={selectedMaster}
+              onChange={this.handleChangeMaster}
             />
-            <div className={styles['form-buttons']}>
-              <Button
-                color="primary"
-                size="small"
-                type="submit"
-                variant="contained"
-              >
-                {t('Apply')}
-              </Button>
+          </>
+        ) : null}
+        {selectedMaster && pollers.length >= 2 ? (
+          <>
+            <Typography variant="h6">
+              {t('Attach poller to additional remote servers')}
+            </Typography>
+            <div className={styles['form-item']}>
+              <Field
+                isMulti
+                component={fieldHoc(Select)}
+                name="linked_remote_slaves"
+                options={availableAdditionals.map((remote) => ({
+                  label: remote.name,
+                  value: remote.id,
+                }))}
+                onChange={this.handleChangeAdditionals}
+              />
             </div>
-            {error ? (
-              <Typography color="error" variant="body2">
-                {error.message}
-              </Typography>
-            ) : null}
-          </form>
+          </>
+        ) : null}
+        <Field
+          component={CheckboxField}
+          defaultValue={false}
+          label={t('Advanced: reverse Centreon Broker communication flow')}
+          name="open_broker_flow"
+        />
+        <div className={styles['form-buttons']}>
+          <Button size="small" onClick={goToPreviousStep}>
+            {t('Previous')}
+          </Button>
+          <Button
+            color="primary"
+            size="small"
+            type="submit"
+            variant="contained"
+          >
+            {t('Apply')}
+          </Button>
         </div>
-      </Paper>
+        {error ? (
+          <Typography color="error" variant="body2">
+            {error.message}
+          </Typography>
+        ) : null}
+      </form>
     );
   }
 }

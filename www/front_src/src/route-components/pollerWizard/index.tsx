@@ -1,36 +1,99 @@
 import * as React from 'react';
 
-import PollerStep1 from '../../PollerWizard/pollerStep1';
-import RemoteServerStep1 from '../../PollerWizard/remoteServerStep1';
-import PollerStep2 from '../../PollerWizard/pollerStep2';
-import RemoteServerStep2 from '../../PollerWizard/remoteServerStep2';
-import PollerStep3 from '../../PollerWizard/pollerStep3';
-import RemoteServerStep3 from '../../PollerWizard/remoteServerStep3';
-import ServerConfigurationWizard from '../../PollerWizard/serverConfigurationWizard';
+import { equals, isNil, path } from 'ramda';
+
+import { makeStyles } from '@material-ui/core';
+
+import { ServerType, WizardFormProps } from '../../PollerWizard/models';
+import BaseWizard from '../../PollerWizard/forms/baseWizard';
+import ProgressBar from '../../components/progressBar';
+import LoadingSkeleton from '../../PollerWizard/LoadingSkeleton';
+
+import {
+  labelAddAdvancedConfiguration,
+  labelConfigureServer,
+  labelFinishTheSetup,
+  labelSelectServerType,
+} from './translatedLabels';
+
+const ServerConfigurationWizard = React.lazy(
+  () => import('../../PollerWizard/serverConfigurationWizard'),
+);
+const RemoteServerStep1 = React.lazy(
+  () => import('../../PollerWizard/remoteServerStep1'),
+);
+const PollerStep1 = React.lazy(() => import('../../PollerWizard/pollerStep1'));
+const RemoteServerStep2 = React.lazy(
+  () => import('../../PollerWizard/remoteServerStep2'),
+);
+const PollerStep2 = React.lazy(() => import('../../PollerWizard/pollerStep2'));
+const RemoteServerStep3 = React.lazy(
+  () => import('../../PollerWizard/remoteServerStep3'),
+);
+const PollerStep3 = React.lazy(() => import('../../PollerWizard/pollerStep3'));
 
 const formSteps = [
-  [ServerConfigurationWizard],
-  [RemoteServerStep1, PollerStep1],
-  [RemoteServerStep2, PollerStep2],
-  [RemoteServerStep3, PollerStep3],
+  { [ServerType.Base]: ServerConfigurationWizard },
+  { [ServerType.Remote]: RemoteServerStep1, [ServerType.Poller]: PollerStep1 },
+  { [ServerType.Remote]: RemoteServerStep2, [ServerType.Poller]: PollerStep2 },
+  { [ServerType.Remote]: RemoteServerStep3, [ServerType.Poller]: PollerStep3 },
 ];
 
-const PollerWizard = (): JSX.Element => {
+const steps = [
+  labelSelectServerType,
+  labelConfigureServer,
+  labelAddAdvancedConfiguration,
+  labelFinishTheSetup,
+];
+
+const useStyles = makeStyles((theme) => ({
+  formContainer: {
+    margin: theme.spacing(2, 4),
+  },
+}));
+
+const PollerWizard = (): JSX.Element | null => {
+  const classes = useStyles();
+
   const [currentStep, setCurrentStep] = React.useState(0);
-  const [serverType, setServerType] = React.useState<number | null>(null);
+  const [serverType, setServerType] = React.useState<ServerType>(
+    ServerType.Base,
+  );
 
   const goToNextStep = (): void => {
-    setCurrentStep(currentStep + 1);
+    setCurrentStep((step) => step + 1);
   };
 
-  const changeServerType = (type: number): void => {
+  const goToPreviousStep = (): void => {
+    setCurrentStep((step) => step - 1);
+  };
+
+  const changeServerType = (type: ServerType): void => {
     setServerType(type);
   };
 
-  const TestForm = formSteps[currentStep][serverType || 0];
+  const Form = path<(props: WizardFormProps) => JSX.Element>(
+    [currentStep, equals(currentStep, 0) ? ServerType.Base : serverType],
+    formSteps,
+  );
+
+  if (isNil(Form)) {
+    return null;
+  }
 
   return (
-    <TestForm changeServerType={changeServerType} goToNextStep={goToNextStep} />
+    <BaseWizard>
+      <ProgressBar activeStep={currentStep} steps={steps} />
+      <div className={classes.formContainer}>
+        <React.Suspense fallback={<LoadingSkeleton />}>
+          <Form
+            changeServerType={changeServerType}
+            goToNextStep={goToNextStep}
+            goToPreviousStep={goToPreviousStep}
+          />
+        </React.Suspense>
+      </div>
+    </BaseWizard>
   );
 };
 

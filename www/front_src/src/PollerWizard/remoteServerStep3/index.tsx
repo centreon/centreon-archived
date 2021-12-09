@@ -11,20 +11,7 @@ import {
 } from '@centreon/centreon-frontend/packages/centreon-ui/src';
 
 import WizardFormInstallingStatus from '../../components/wizardFormInstallingStatus';
-import ProgressBar from '../../components/progressBar';
 import routeMap from '../../route-maps/route-map';
-import BaseWizard from '../forms/baseWizard';
-
-const links = [
-  {
-    active: true,
-    number: 1,
-    prevActive: true,
-  },
-  { active: true, number: 2, prevActive: true },
-  { active: true, number: 3, prevActive: true },
-  { active: true, number: 4 },
-];
 
 interface Props {
   pollerData;
@@ -100,15 +87,12 @@ const FormRemoteServerStepThree = ({ pollerData }: Props): JSX.Element => {
   }, []);
 
   return (
-    <BaseWizard>
-      <ProgressBar links={links} />
-      <WizardFormInstallingStatus
-        error={error}
-        formTitle={`${t('Finalizing Setup')}`}
-        statusCreating={pollerData.submitStatus}
-        statusGenerating={generateStatus}
-      />
-    </BaseWizard>
+    <WizardFormInstallingStatus
+      error={error}
+      formTitle={`${t('Finalizing Setup')}`}
+      statusCreating={pollerData.submitStatus}
+      statusGenerating={generateStatus}
+    />
   );
 };
 

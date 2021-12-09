@@ -9,7 +9,7 @@ import React, { Component } from 'react';
 import { Field, reduxForm as connectForm } from 'redux-form';
 import { withTranslation } from 'react-i18next';
 
-import { Paper, Typography, Button } from '@material-ui/core';
+import { Typography, Button } from '@material-ui/core';
 
 import styles from '../../../styles/partials/form/_form.scss';
 import InputField from '../../../components/form-fields/InputField';
@@ -56,131 +56,131 @@ class PollerFormStepOne extends Component {
   };
 
   render() {
-    const { error, handleSubmit, onSubmit, waitList, t } = this.props;
+    const { error, handleSubmit, onSubmit, waitList, t, goToPreviousStep } =
+      this.props;
     const { inputTypeManual } = this.state;
 
     return (
-      <Paper className={styles['form-container']}>
-        <div className={styles['form-inner']}>
-          <div className={styles['form-heading']}>
-            <Typography variant="h6">{t('Server Configuration')}</Typography>
-          </div>
-          <form autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
-            <Field
-              checked={inputTypeManual}
-              component={RadioField}
-              label={t('Create new Poller')}
-              name="inputTypeManual"
-              onChange={() => {
-                this.onManualInputChanged(true);
-              }}
-            />
-            {inputTypeManual ? (
-              <div>
-                <Field
-                  component={InputField}
-                  label={`${t('Server Name')}`}
-                  name="server_name"
-                  placeholder=""
-                  type="text"
-                  validate={validateFieldRequired(t)}
-                />
-                <Field
-                  component={InputField}
-                  label={`${t('Server IP address')}`}
-                  name="server_ip"
-                  placeholder=""
-                  type="text"
-                  validate={validateFieldRequired(t)}
-                />
-                <Field
-                  component={InputField}
-                  label={`${t(
-                    'Centreon Central IP address, as seen by this server',
-                  )}`}
-                  name="centreon_central_ip"
-                  placeholder=""
-                  type="text"
-                  validate={validateFieldRequired(t)}
-                />
-              </div>
-            ) : null}
-            <Field
-              checked={!inputTypeManual}
-              component={RadioField}
-              label={`${t('Select a Poller')}`}
-              name="inputTypeManual"
-              onClick={() => {
-                this.onManualInputChanged(false);
-              }}
-            />
-            {!inputTypeManual ? (
-              <div>
-                {waitList ? (
-                  <Field
-                    required
-                    component={SelectField}
-                    label={`${t('Select Pending Poller IP')}`}
-                    name="server_ip"
-                    options={[
-                      {
-                        disabled: true,
-                        selected: true,
-                        text: t('Select IP'),
-                        value: '',
-                      },
-                    ].concat(
-                      waitList.map((c) => ({ text: c.ip, value: c.ip })),
-                    )}
-                    onChange={this.handleChange}
-                  />
-                ) : null}
-                <Field
-                  component={InputField}
-                  label={`${t('Server Name')}`}
-                  name="server_name"
-                  placeholder=""
-                  type="text"
-                  validate={validateFieldRequired(t)}
-                />
-                <Field
-                  component={InputField}
-                  label={`${t('Server IP address')}`}
-                  name="server_ip"
-                  placeholder=""
-                  type="text"
-                  validate={validateFieldRequired(t)}
-                />
-                <Field
-                  component={InputField}
-                  label={`${t(
-                    'Centreon Central IP address, as seen by this server',
-                  )}`}
-                  name="centreon_central_ip"
-                  placeholder=""
-                  type="text"
-                  validate={validateFieldRequired(t)}
-                />
-              </div>
-            ) : null}
-            <div className={styles['form-buttons']}>
-              <Button
-                color="primary"
-                size="small"
-                type="submit"
-                variant="contained"
-              >
-                {t('Next')}
-              </Button>
-            </div>
-            {error ? (
-              <Typography color="error" variant="body2">
-                {error.message}
-              </Typography>
-            ) : null}
-          </form>
+      <div>
+        <div className={styles['form-heading']}>
+          <Typography variant="h6">{t('Server Configuration')}</Typography>
         </div>
-      </Paper>
+        <form autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
+          <Field
+            checked={inputTypeManual}
+            component={RadioField}
+            label={t('Create new Poller')}
+            name="inputTypeManual"
+            onChange={() => {
+              this.onManualInputChanged(true);
+            }}
+          />
+          {inputTypeManual ? (
+            <div>
+              <Field
+                component={InputField}
+                label={`${t('Server Name')}`}
+                name="server_name"
+                placeholder=""
+                type="text"
+                validate={validateFieldRequired(t)}
+              />
+              <Field
+                component={InputField}
+                label={`${t('Server IP address')}`}
+                name="server_ip"
+                placeholder=""
+                type="text"
+                validate={validateFieldRequired(t)}
+              />
+              <Field
+                component={InputField}
+                label={`${t(
+                  'Centreon Central IP address, as seen by this server',
+                )}`}
+                name="centreon_central_ip"
+                placeholder=""
+                type="text"
+                validate={validateFieldRequired(t)}
+              />
+            </div>
+          ) : null}
+          <Field
+            checked={!inputTypeManual}
+            component={RadioField}
+            label={`${t('Select a Poller')}`}
+            name="inputTypeManual"
+            onClick={() => {
+              this.onManualInputChanged(false);
+            }}
+          />
+          {!inputTypeManual ? (
+            <div>
+              {waitList ? (
+                <Field
+                  required
+                  component={SelectField}
+                  label={`${t('Select Pending Poller IP')}`}
+                  name="server_ip"
+                  options={[
+                    {
+                      disabled: true,
+                      selected: true,
+                      text: t('Select IP'),
+                      value: '',
+                    },
+                  ].concat(waitList.map((c) => ({ text: c.ip, value: c.ip })))}
+                  onChange={this.handleChange}
+                />
+              ) : null}
+              <Field
+                component={InputField}
+                label={`${t('Server Name')}`}
+                name="server_name"
+                placeholder=""
+                type="text"
+                validate={validateFieldRequired(t)}
+              />
+              <Field
+                component={InputField}
+                label={`${t('Server IP address')}`}
+                name="server_ip"
+                placeholder=""
+                type="text"
+                validate={validateFieldRequired(t)}
+              />
+              <Field
+                component={InputField}
+                label={`${t(
+                  'Centreon Central IP address, as seen by this server',
+                )}`}
+                name="centreon_central_ip"
+                placeholder=""
+                type="text"
+                validate={validateFieldRequired(t)}
+              />
+            </div>
+          ) : null}
+          <div className={styles['form-buttons']}>
+            <Button size="small" onClick={goToPreviousStep}>
+              {t('Previous')}
+            </Button>
+            <Button
+              color="primary"
+              size="small"
+              type="submit"
+              variant="contained"
+            >
+              {t('Next')}
+            </Button>
+          </div>
+          {error ? (
+            <Typography color="error" variant="body2">
+              {error.message}
+            </Typography>
+          ) : null}
+        </form>
+      </div>
     );
   }
 }

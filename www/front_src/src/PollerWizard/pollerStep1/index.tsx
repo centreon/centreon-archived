@@ -6,31 +6,21 @@ import { postData, useRequest } from '@centreon/ui';
 
 import Form from '../forms/poller/PollerFormStepOne';
 import { setPollerWizard } from '../../redux/actions/pollerWizardActions';
-import ProgressBar from '../../components/progressBar';
-import routeMap from '../../route-maps/route-map';
-import BaseWizard from '../forms/baseWizard';
-
-const links = [
-  {
-    active: true,
-    number: 1,
-    path: routeMap.serverConfigurationWizard,
-    prevActive: true,
-  },
-  { active: true, number: 2, path: routeMap.pollerStep1 },
-  { active: false, number: 3 },
-  { active: false, number: 4 },
-];
+import { WizardFormProps } from '../models';
 
 const pollerWaitListEndpoint =
   './api/internal.php?object=centreon_configuration_remote&action=getPollerWaitList';
 
-interface Props {
-  goToNextStep: () => void;
+interface Props
+  extends Pick<WizardFormProps, 'goToNextStep' | 'goToPreviousStep'> {
   setWizard: (pollerWizard) => Record<string, unknown>;
 }
 
-const FormPollerStepOne = ({ setWizard, goToNextStep }: Props): JSX.Element => {
+const FormPollerStepOne = ({
+  setWizard,
+  goToNextStep,
+  goToPreviousStep,
+}: Props): JSX.Element => {
   const [waitList, setWaitList] = React.useState<Array<unknown> | null>(null);
   const { sendRequest } = useRequest<Array<unknown>>({
     request: postData,
@@ -59,10 +49,12 @@ const FormPollerStepOne = ({ setWizard, goToNextStep }: Props): JSX.Element => {
   };
 
   return (
-    <BaseWizard>
-      <ProgressBar links={links} />
-      <Form initialValues={{}} waitList={waitList} onSubmit={handleSubmit} />
-    </BaseWizard>
+    <Form
+      goToPreviousStep={goToPreviousStep}
+      initialValues={{}}
+      waitList={waitList}
+      onSubmit={handleSubmit}
+    />
   );
 };
 
@@ -72,6 +64,8 @@ const mapDispatchToProps = {
 
 const PollerStepOne = connect(null, mapDispatchToProps)(FormPollerStepOne);
 
-export default (props: Pick<Props, 'goToNextStep'>): JSX.Element => {
+export default (
+  props: Pick<WizardFormProps, 'goToNextStep' | 'goToPreviousStep'>,
+): JSX.Element => {
   return <PollerStepOne {...props} />;
 };

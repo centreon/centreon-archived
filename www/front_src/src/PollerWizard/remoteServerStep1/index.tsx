@@ -6,27 +6,13 @@ import { postData, useRequest } from '@centreon/ui';
 
 import Form from '../forms/remoteServer/RemoteServerFormStepOne';
 import { setPollerWizard } from '../../redux/actions/pollerWizardActions';
-import ProgressBar from '../../components/progressBar';
-import routeMap from '../../route-maps/route-map';
-import BaseWizard from '../forms/baseWizard';
-
-const links = [
-  {
-    active: true,
-    number: 1,
-    path: routeMap.serverConfigurationWizard,
-    prevActive: true,
-  },
-  { active: true, number: 2, path: routeMap.remoteServerStep1 },
-  { active: false, number: 3 },
-  { active: false, number: 4 },
-];
+import { WizardFormProps } from '../models';
 
 const remoteServerWaitListEndpoint =
   './api/internal.php?object=centreon_configuration_remote&action=getWaitList';
 
-interface Props {
-  goToNextStep: () => void;
+interface Props
+  extends Pick<WizardFormProps, 'goToPreviousStep' | 'goToNextStep'> {
   pollerData: Record<string, unknown>;
   setWizard: (pollerWizard) => Record<string, unknown>;
 }
@@ -35,6 +21,7 @@ const FormRemoteServerStepOne = ({
   setWizard,
   pollerData,
   goToNextStep,
+  goToPreviousStep,
 }: Props): JSX.Element => {
   const [waitList, setWaitList] = React.useState<Array<unknown> | null>(null);
   const { sendRequest } = useRequest<Array<unknown>>({
@@ -64,14 +51,12 @@ const FormRemoteServerStepOne = ({
   };
 
   return (
-    <BaseWizard>
-      <ProgressBar links={links} />
-      <Form
-        initialValues={{ ...pollerData, centreon_folder: '/centreon/' }}
-        waitList={waitList}
-        onSubmit={handleSubmit}
-      />
-    </BaseWizard>
+    <Form
+      goToPreviousStep={goToPreviousStep}
+      initialValues={{ ...pollerData, centreon_folder: '/centreon/' }}
+      waitList={waitList}
+      onSubmit={handleSubmit}
+    />
   );
 };
 
@@ -88,6 +73,8 @@ const RemoteServerStepOne = connect(
   mapDispatchToProps,
 )(FormRemoteServerStepOne);
 
-export default (props: Pick<Props, 'goToNextStep'>): JSX.Element => {
+export default (
+  props: Pick<WizardFormProps, 'goToNextStep' | 'goToPreviousStep'>,
+): JSX.Element => {
   return <RemoteServerStepOne {...props} />;
 };

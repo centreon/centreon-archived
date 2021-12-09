@@ -1,44 +1,27 @@
-/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-
 import * as React from 'react';
 
 import classnames from 'classnames';
-import { useNavigate } from 'react-router';
+import { useTranslation } from 'react-i18next';
 
-import { Typography } from '@material-ui/core';
-
-import styles from './progressbar.scss';
+import { Step, StepLabel, Stepper } from '@material-ui/core';
 
 interface Props {
-  links;
+  activeStep: number;
+  steps: Array<string>;
 }
 
-const ProgressBar = ({ links }: Props): JSX.Element => (
-  <div className={styles['progress-bar']}>
-    <div className={styles['progress-bar-wrapper']}>
-      <ul className={styles['progress-bar-items']}>
-        {links
-          ? links.map((link) => (
-              <li
-                className={styles['progress-bar-item']}
-                key={`${link.number}-${link.active}`}
-              >
-                <span
-                  className={classnames(
-                    styles['progress-bar-link'],
-                    { [styles.active as string]: link.active },
-                    { [styles.prev as string]: link.prevActive },
-                  )}
-                >
-                  <Typography>{link.number}</Typography>
-                </span>
-              </li>
-            ))
-          : null}
-      </ul>
-    </div>
-  </div>
-);
+const ProgressBar = ({ steps, activeStep }: Props): JSX.Element => {
+  const { t } = useTranslation();
+
+  return (
+    <Stepper alternativeLabel activeStep={activeStep}>
+      {steps.map((label) => (
+        <Step key={label}>
+          <StepLabel>{t(label)}</StepLabel>
+        </Step>
+      ))}
+    </Stepper>
+  );
+};
 
 export default ProgressBar;

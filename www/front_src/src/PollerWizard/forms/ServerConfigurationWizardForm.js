@@ -4,11 +4,10 @@
 
 import React from 'react';
 
-import classnames from 'classnames';
 import { Field, reduxForm as connectForm } from 'redux-form';
 import { useTranslation } from 'react-i18next';
 
-import { Button, Typography, Paper } from '@material-ui/core';
+import { Button, Typography } from '@material-ui/core';
 
 import styles from '../../styles/partials/form/_form.scss';
 import RadioGroupFields from '../../components/form-fields/RadioGroupFields';
@@ -28,35 +27,33 @@ const ServerConfigurationWizardForm = ({ error, handleSubmit, onSubmit }) => {
   const { t } = useTranslation();
 
   return (
-    <Paper className={classnames(styles['form-container'])}>
-      <div className={styles['form-inner']}>
-        <div className={styles['form-heading']}>
-          <Typography variant="h6">{t('Choose a server type')}</Typography>
-        </div>
-        <form autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
-          <Field
-            component={RadioGroupFields}
-            name="server_type"
-            options={configurationTypes}
-          />
-          <div className={styles['form-buttons']}>
-            <Button
-              color="primary"
-              size="small"
-              type="submit"
-              variant="contained"
-            >
-              {t('Next')}
-            </Button>
-          </div>
-          {error ? (
-            <Typography style={{ color: '#d0021b' }} variant="body2">
-              {error}
-            </Typography>
-          ) : null}
-        </form>
+    <div>
+      <div className={styles['form-heading']}>
+        <Typography variant="h6">{t('Choose a server type')}</Typography>
       </div>
-    </Paper>
+      <form autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
+        <Field
+          component={RadioGroupFields}
+          name="server_type"
+          options={configurationTypes}
+        />
+        <div className={styles['form-buttons']}>
+          <Button
+            color="primary"
+            size="small"
+            type="submit"
+            variant="contained"
+          >
+            {t('Next')}
+          </Button>
+        </div>
+        {error ? (
+          <Typography style={{ color: '#d0021b' }} variant="body2">
+            {error}
+          </Typography>
+        ) : null}
+      </form>
+    </div>
   );
 };
 

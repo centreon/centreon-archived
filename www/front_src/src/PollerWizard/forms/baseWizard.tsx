@@ -1,12 +1,12 @@
 import * as React from 'react';
 
-import { makeStyles } from '@material-ui/core';
+import { makeStyles, Paper } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
   page: {
     margin: '0 auto',
     padding: theme.spacing(2, 0),
-    width: '50%',
+    width: '40%',
   },
 }));
 
@@ -17,7 +17,7 @@ interface Props {
 const BaseWizard = ({ children }: Props): JSX.Element => {
   const classes = useStyles();
 
-  return <div className={classes.page}>{children}</div>;
+  return <Paper className={classes.page}>{children}</Paper>;
 };
 
 export default BaseWizard;

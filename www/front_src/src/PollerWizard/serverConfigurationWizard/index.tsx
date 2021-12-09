@@ -1,21 +1,12 @@
 import * as React from 'react';
 
-import { equals } from 'ramda';
+import { equals, isNil } from 'ramda';
 
-import routeMap from '../../route-maps/route-map';
-import ProgressBar from '../../components/progressBar';
-import BaseWizard from '../forms/baseWizard';
 import Form from '../forms/ServerConfigurationWizardForm';
-
-const links = [
-  { active: true, number: 1, path: routeMap.serverConfigurationWizard },
-  { active: false, number: 2 },
-  { active: false, number: 3 },
-  { active: false, number: 4 },
-];
+import { ServerType } from '../models';
 
 interface Props {
-  changeServerType: (type: number) => void;
+  changeServerType: (type: ServerType) => void;
   goToNextStep: () => void;
 }
 
@@ -24,22 +15,21 @@ const ServerConfigurationWizard = ({
   goToNextStep,
 }: Props): JSX.Element => {
   const handleSubmit = ({ server_type }): void => {
+    if (isNil(server_type)) {
+      return;
+    }
+
     if (equals(server_type, '1')) {
-      changeServerType(0);
+      changeServerType(ServerType.Remote);
     }
     if (equals(server_type, '2')) {
-      changeServerType(1);
+      changeServerType(ServerType.Poller);
     }
 
     goToNextStep();
   };
 
-  return (
-    <BaseWizard>
-      <ProgressBar links={links} />
-      <Form onSubmit={handleSubmit} />
-    </BaseWizard>
-  );
+  return <Form onSubmit={handleSubmit} />;
 };
 
 export default ServerConfigurationWizard;

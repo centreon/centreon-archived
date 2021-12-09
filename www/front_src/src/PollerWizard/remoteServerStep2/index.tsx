@@ -8,29 +8,11 @@ import { postData, useRequest } from '@centreon/ui';
 
 import Form from '../forms/remoteServer/RemoteServerFormStepTwo';
 import routeMap from '../../route-maps/route-map';
-import ProgressBar from '../../components/progressBar';
 import { setPollerWizard } from '../../redux/actions/pollerWizardActions';
-import BaseWizard from '../forms/baseWizard';
+import { WizardFormProps } from '../models';
 
-const links = [
-  {
-    active: true,
-    number: 1,
-    path: routeMap.serverConfigurationWizard,
-    prevActive: true,
-  },
-  {
-    active: true,
-    number: 2,
-    path: routeMap.remoteServerStep1,
-    prevActive: true,
-  },
-  { active: true, number: 3 },
-  { active: false, number: 4 },
-];
-
-interface Props {
-  goToNextStep: () => void;
+interface Props
+  extends Pick<WizardFormProps, 'goToNextStep' | 'goToPreviousStep'> {
   pollerData: Record<string, unknown>;
   setWizard: (pollerWizard) => Record<string, unknown>;
 }
@@ -44,6 +26,7 @@ const FormRemoteServerStepTwo = ({
   pollerData,
   setWizard,
   goToNextStep,
+  goToPreviousStep,
 }: Props): JSX.Element => {
   const [remoteServers, setRemoteServers] = React.useState<Record<
     string,
@@ -110,10 +93,11 @@ const FormRemoteServerStepTwo = ({
   };
 
   return (
-    <BaseWizard>
-      <ProgressBar links={links} />
-      <Form pollers={remoteServers} onSubmit={handleSubmit} />
-    </BaseWizard>
+    <Form
+      goToPreviousStep={goToPreviousStep}
+      pollers={remoteServers}
+      onSubmit={handleSubmit}
+    />
   );
 };
 
@@ -130,6 +114,8 @@ const RemoteServerStepTwo = connect(
   mapDispatchToProps,
 )(FormRemoteServerStepTwo);
 
-export default (props: Pick<Props, 'goToNextStep'>): JSX.Element => {
+export default (
+  props: Pick<WizardFormProps, 'goToNextStep' | 'goToPreviousStep'>,
+): JSX.Element => {
   return <RemoteServerStepTwo {...props} />;
 };
