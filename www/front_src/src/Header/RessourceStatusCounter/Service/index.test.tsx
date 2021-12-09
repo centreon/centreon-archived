@@ -2,7 +2,6 @@ import * as React from 'react';
 
 import axios from 'axios';
 import { render, waitFor, fireEvent } from '@testing-library/react';
-import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 
 import createStore from '../../../store';
@@ -16,8 +15,6 @@ describe(ServiceStatusCounter, () => {
   });
 
   it('redirects to the Resource status page with the resource type filter set to service and the corresponding status when a status chip is clicked', async () => {
-    const store = createStore();
-
     mockedAxios.get.mockResolvedValue({
       data: {
         critical: {
@@ -41,9 +38,7 @@ describe(ServiceStatusCounter, () => {
 
     const { getByText, getAllByText } = render(
       <BrowserRouter>
-        <Provider store={store}>
-          <ServiceStatusCounter />
-        </Provider>
+        <ServiceStatusCounter />
       </BrowserRouter>,
     );
 

@@ -19,11 +19,6 @@ jest.mock('@centreon/ui-context', () =>
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
-jest.mock('react-redux', () => ({
-  ...(jest.requireActual('react-redux') as jest.Mocked<unknown>),
-  useSelector: jest.fn(),
-}));
-
 const mockUser = {
   locale: 'en',
   timezone: 'Europe/Paris',
