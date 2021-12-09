@@ -1,0 +1,1 @@
+DELETE FROM `cb_tag` where `tagname` = 'logger';
