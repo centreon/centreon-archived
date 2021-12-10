@@ -30,7 +30,6 @@ use Security\Domain\Authentication\Model\ProviderConfiguration;
 use Centreon\Domain\Authentication\UseCase\Authenticate;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Security\Domain\Authentication\Model\AuthenticationTokens;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Centreon\Domain\Authentication\UseCase\AuthenticateRequest;
 use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
 use Centreon\Domain\Authentication\UseCase\AuthenticateResponse;
@@ -43,6 +42,7 @@ use Security\Domain\Authentication\Interfaces\SessionRepositoryInterface;
 use Security\Domain\Authentication\Interfaces\ProviderServiceInterface;
 use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
 use Centreon\Domain\Repository\Interfaces\DataStorageEngineInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * @package Tests\Centreon\Domain\Authentication\UseCase
@@ -65,9 +65,9 @@ class AuthenticateTest extends TestCase
     private $contactService;
 
     /**
-     * @var SessionInterface|\PHPUnit\Framework\MockObject\MockObject
+     * @var RequestStack|\PHPUnit\Framework\MockObject\MockObject
      */
-    private $session;
+    private $requestStack;
 
     /**
      * @var ProviderInterface|\PHPUnit\Framework\MockObject\MockObject
@@ -114,7 +114,7 @@ class AuthenticateTest extends TestCase
         $this->authenticationService = $this->createMock(AuthenticationServiceInterface::class);
         $this->providerService = $this->createMock(ProviderServiceInterface::class);
         $this->contactService = $this->createMock(ContactServiceInterface::class);
-        $this->session = $this->createMock(SessionInterface::class);
+        $this->requestStack = $this->createMock(RequestStack::class);
         $this->provider = $this->createMock(ProviderInterface::class);
         $this->contact = $this->createMock(ContactInterface::class);
         $this->authenticationTokens = $this->createMock(AuthenticationTokens::class);
@@ -135,7 +135,7 @@ class AuthenticateTest extends TestCase
             $this->authenticationService,
             $this->providerService,
             $this->contactService,
-            $this->session,
+            $this->requestStack,
             $this->menuService,
             $this->authenticationRepository,
             $this->sessionRepository,
@@ -177,7 +177,7 @@ class AuthenticateTest extends TestCase
             $this->authenticationService,
             $this->providerService,
             $this->contactService,
-            $this->session,
+            $this->requestStack,
             $this->menuService,
             $this->authenticationRepository,
             $this->sessionRepository,
@@ -219,7 +219,7 @@ class AuthenticateTest extends TestCase
             $this->authenticationService,
             $this->providerService,
             $this->contactService,
-            $this->session,
+            $this->requestStack,
             $this->menuService,
             $this->authenticationRepository,
             $this->sessionRepository,
@@ -266,7 +266,7 @@ class AuthenticateTest extends TestCase
             $this->authenticationService,
             $this->providerService,
             $this->contactService,
-            $this->session,
+            $this->requestStack,
             $this->menuService,
             $this->authenticationRepository,
             $this->sessionRepository,
@@ -323,7 +323,7 @@ class AuthenticateTest extends TestCase
             ->method('addUser')
             ->with($this->contact);
 
-        $this->session
+        $this->requestStack
             ->expects($this->once())
             ->method('getId')
             ->willReturn('abdef');
@@ -338,7 +338,7 @@ class AuthenticateTest extends TestCase
             $this->authenticationService,
             $this->providerService,
             $this->contactService,
-            $this->session,
+            $this->requestStack,
             $this->menuService,
             $this->authenticationRepository,
             $this->sessionRepository,
@@ -392,7 +392,7 @@ class AuthenticateTest extends TestCase
             $this->authenticationService,
             $this->providerService,
             $this->contactService,
-            $this->session,
+            $this->requestStack,
             $this->menuService,
             $this->authenticationRepository,
             $this->sessionRepository,
@@ -444,7 +444,7 @@ class AuthenticateTest extends TestCase
             ->method('updateUser')
             ->with($this->contact);
 
-        $this->session
+        $this->requestStack
             ->expects($this->once())
             ->method('getId')
             ->willReturn('abdef');
@@ -459,7 +459,7 @@ class AuthenticateTest extends TestCase
             $this->authenticationService,
             $this->providerService,
             $this->contactService,
-            $this->session,
+            $this->requestStack,
             $this->menuService,
             $this->authenticationRepository,
             $this->sessionRepository,
@@ -508,7 +508,7 @@ class AuthenticateTest extends TestCase
             ->method('updateUser')
             ->with($this->contact);
 
-        $this->session
+        $this->requestStack
             ->expects($this->any())
             ->method('getId')
             ->willReturn('abdef');
@@ -542,7 +542,7 @@ class AuthenticateTest extends TestCase
             $this->authenticationService,
             $this->providerService,
             $this->contactService,
-            $this->session,
+            $this->requestStack,
             $this->menuService,
             $this->authenticationRepository,
             $this->sessionRepository,
@@ -586,7 +586,7 @@ class AuthenticateTest extends TestCase
             ->method('exists')
             ->willReturn(true);
 
-        $this->session
+        $this->requestStack
             ->expects($this->any())
             ->method('getId')
             ->willReturn('abdef');
@@ -611,7 +611,7 @@ class AuthenticateTest extends TestCase
             $this->authenticationService,
             $this->providerService,
             $this->contactService,
-            $this->session,
+            $this->requestStack,
             $this->menuService,
             $this->authenticationRepository,
             $this->sessionRepository,
@@ -658,7 +658,7 @@ class AuthenticateTest extends TestCase
             ->method('exists')
             ->willReturn(true);
 
-        $this->session
+        $this->requestStack
             ->expects($this->any())
             ->method('getId')
             ->willReturn('abdef');
@@ -683,7 +683,7 @@ class AuthenticateTest extends TestCase
             $this->authenticationService,
             $this->providerService,
             $this->contactService,
-            $this->session,
+            $this->requestStack,
             $this->menuService,
             $this->authenticationRepository,
             $this->sessionRepository,
