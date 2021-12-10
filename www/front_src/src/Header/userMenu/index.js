@@ -38,7 +38,7 @@ const MuiStyles = createStyles({
   },
 });
 
-class UserMenu extends Component {
+class UserMenuContent extends Component {
   userService = axios('internal.php?object=centreon_topcounter&action=user');
 
   refreshTimeout = null;
@@ -225,10 +225,10 @@ class UserMenu extends Component {
   }
 }
 
-const UserTopCounter = (props) => {
+const UserMenu = (props) => {
   const { allowedPages } = useNavigation();
 
-  return <UserMenu {...props} allowedPages={allowedPages} />;
+  return <UserMenuContent {...props} allowedPages={allowedPages} />;
 };
 
-export default withStyles(MuiStyles)(withTranslation()(UserTopCounter));
+export default withStyles(MuiStyles)(withTranslation()(UserMenuContent));
