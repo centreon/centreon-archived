@@ -1,8 +1,3 @@
-/* eslint-disable no-undef */
-/* eslint-disable react/jsx-filename-extension */
-/* eslint-disable react/prop-types */
-/* eslint-disable no-shadow */
-
 import * as React from 'react';
 
 import { useMemoComponent } from '@centreon/ui';
