@@ -15317,3 +15317,12 @@ msgstr ""
 
 # msgid "This will not be used because number of attempts is not defined"
 # msgstr "" 
+
+# msgid "Status type"
+# msgstr ""
+
+# msgid "Hard"
+# msgstr ""
+
+# msgid "Soft"
+# msgstr ""

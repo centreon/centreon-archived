@@ -15304,4 +15304,13 @@ msgstr ""
 # msgstr ""
 
 # msgid "This will not be used because number of attempts is not defined"
-# msgstr "" 
+# msgstr ""
+
+# msgid "Status type"
+# msgstr ""
+
+# msgid "Hard"
+# msgstr ""
+
+# msgid "Soft"
+# msgstr ""

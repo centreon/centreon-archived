@@ -174,7 +174,7 @@ const AppProviderWithSnackbar = withSnackbar({ Component: AppProvider });
 
 const Provider = ({ children }: Props): JSX.Element => (
   <ThemeProvider>
-    <JotaiProvider>
+    <JotaiProvider scope="ui-context">
       <AppProviderWithSnackbar>{children}</AppProviderWithSnackbar>
     </JotaiProvider>
   </ThemeProvider>
