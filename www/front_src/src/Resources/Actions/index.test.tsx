@@ -96,6 +96,8 @@ const mockUser = {
 const mockRefreshInterval = 15;
 const mockDowntime = {
   default_duration: 7200,
+  default_fixed: true,
+  default_with_services: false,
 };
 const mockAcl = {
   actions: {
