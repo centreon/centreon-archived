@@ -111,12 +111,11 @@ class LocalProvider implements ProviderInterface
             $this->dependencyInjector,
             $credentials['login'],
             $credentials['password'],
-            0,
+            \CentreonAuth::AUTOLOGIN_DISABLE,
             $this->dependencyInjector['configuration_db'],
             $log,
-            1,
-            "",
-            "WEB"
+            \CentreonAuth::ENCRYPT_MD5,
+            ""
         );
         $this->debug(
             '[LOCAL PROVIDER] local provider trying to authenticate using legacy Authentication',
@@ -126,10 +125,10 @@ class LocalProvider implements ProviderInterface
             function () use ($auth) {
                 $userInfos = $auth->userInfos;
                 return [
-                    'contact_id' => $userInfos['contact_id'],
-                    'contact_alias' => $userInfos['contact_alias'],
-                    'contact_auth_type' => $userInfos['contact_auth_type'],
-                    'contact_ldap_dn' => $userInfos['contact_ldap_dn']
+                    'contact_id' => $userInfos['contact_id'] ?? null,
+                    'contact_alias' => $userInfos['contact_alias'] ?? null,
+                    'contact_auth_type' => $userInfos['contact_auth_type'] ?? null,
+                    'contact_ldap_dn' => $userInfos['contact_ldap_dn'] ?? null
                 ];
             }
         );

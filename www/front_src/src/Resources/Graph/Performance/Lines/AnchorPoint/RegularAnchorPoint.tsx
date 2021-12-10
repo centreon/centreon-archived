@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { equals, isNil, prop } from 'ramda';
+import { equals, isNil, not, prop } from 'ramda';
 import { ScaleLinear, ScaleTime } from 'd3-scale';
 
 import { bisectDate } from '../../Graph';
@@ -11,6 +11,7 @@ import AnchorPoint from '.';
 
 interface Props {
   areaColor: string;
+  displayTimeValues: boolean;
   lineColor: string;
   metric: string;
   timeSeries: Array<TimeValue>;
@@ -41,8 +42,9 @@ const RegularAnchorPoint = ({
   areaColor,
   transparency,
   lineColor,
+  displayTimeValues,
 }: Props): JSX.Element | null => {
-  if (isNil(timeTick)) {
+  if (isNil(timeTick) || not(displayTimeValues)) {
     return null;
   }
   const xAnchorPoint = xScale(timeTick);
@@ -53,6 +55,10 @@ const RegularAnchorPoint = ({
     timeTick,
     yScale,
   });
+
+  if (isNil(yAnchorPoint)) {
+    return null;
+  }
 
   return (
     <AnchorPoint

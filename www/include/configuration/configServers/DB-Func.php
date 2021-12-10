@@ -999,7 +999,10 @@ function updateServer(int $id, array $data): void
     }
 
     updateRemoteServerInformation($data, $ipAddressBeforeChanges);
-    additionnalRemoteServersByPollerId($id, $data["remote_additional_id"]);
+    additionnalRemoteServersByPollerId(
+        $id,
+        $data["remote_additional_id"] ?? null
+    );
 
     if (isset($_REQUEST['pollercmd'])) {
         $instanceObj = new CentreonInstance($pearDB);

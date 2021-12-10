@@ -17,6 +17,7 @@ import {
   difference,
   uniq,
 } from 'ramda';
+import { useAtom } from 'jotai';
 
 import { Box, Grid } from '@material-ui/core';
 
@@ -29,10 +30,7 @@ import {
 
 import getDetailCardLines, { DetailCardLine } from '../DetailsCard/cards';
 import { ResourceDetails } from '../../../models';
-import {
-  getStoredOrDefaultDetailsCards,
-  storeDetailsCards,
-} from '../storedDetailsCards';
+import { detailsCardsAtom } from '../detailsCardsAtom';
 
 import { CardsLayout, ChangeExpandedCardsProps, ExpandAction } from './models';
 import Content from './Content';
@@ -64,7 +62,7 @@ const SortableCards = ({ panelWidth, details }: Props): JSX.Element => {
   const { t } = useTranslation();
   const [expandedCards, setExpandedCards] = React.useState<Array<string>>([]);
 
-  const storedDetailsCards = getStoredOrDefaultDetailsCards([]);
+  const [storedDetailsCards, storeDetailsCards] = useAtom(detailsCardsAtom);
 
   const changeExpandedCards = ({
     action,
@@ -110,6 +108,7 @@ const SortableCards = ({ panelWidth, details }: Props): JSX.Element => {
     ({ shouldBeDisplayed }) => shouldBeDisplayed,
     cards,
   );
+
   const RootComponent = ({ children }: RootComponentProps): JSX.Element => (
     <Grid container spacing={1} style={{ width: panelWidth }}>
       {children}
@@ -124,6 +123,7 @@ const SortableCards = ({ panelWidth, details }: Props): JSX.Element => {
     Component: (
       <Box>
         <SortableItems<CardsLayout>
+          updateSortableItemsOnItemsChange
           Content={Content}
           RootComponent={RootComponent}
           collisionDetection={rectIntersection}
@@ -141,7 +141,7 @@ const SortableCards = ({ panelWidth, details }: Props): JSX.Element => {
         />
       </Box>
     ),
-    memoProps: [defaultDetailsCardsLayout, panelWidth, expandedCards],
+    memoProps: [panelWidth, expandedCards, details],
   });
 };
 

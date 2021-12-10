@@ -1,11 +1,12 @@
 import { concat, pipe, prop, toLower } from 'ramda';
 
+import { labelSoft } from '../../../translatedLabels';
 import { selectableResourceTypes, selectableStatuses } from '../models';
 
 import { build, parse, getAutocompleteSuggestions } from './index';
 
 const search =
-  'type:host,service state:unhandled status:ok,up host_group:Linux-Servers monitoring_server:Central h.name:centreon';
+  'type:host,service state:unhandled status:ok,up status_type:soft host_group:Linux-Servers monitoring_server:Central h.name:centreon';
 
 const parsedSearch = [
   {
@@ -31,6 +32,12 @@ const parsedSearch = [
       { id: 'OK', name: 'Ok' },
       { id: 'UP', name: 'Up' },
     ],
+  },
+  {
+    name: 'status_types',
+    object_type: null,
+    type: 'multi_select',
+    value: [{ id: 'soft', name: labelSoft }],
   },
   {
     name: 'host_groups',
@@ -73,7 +80,7 @@ describe(getAutocompleteSuggestions, () => {
   const testCases = [
     {
       cursorPosition: 3,
-      expectedResult: ['state:', 'status:'],
+      expectedResult: ['state:', 'status:', 'status_type:'],
       inputSearch: 'sta',
     },
     {
@@ -97,9 +104,9 @@ describe(getAutocompleteSuggestions, () => {
       inputSearch: 'state:unhandled,',
     },
     {
-      cursorPosition: 18,
-      expectedResult: ['status:'],
-      inputSearch: 'state:unhandled st',
+      cursorPosition: 22,
+      expectedResult: ['status:', 'status_type:'],
+      inputSearch: 'state:unhandled statu',
     },
     {
       cursorPosition: 23,
