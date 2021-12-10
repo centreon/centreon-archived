@@ -13,10 +13,10 @@ import {
   labelChooseAValueBetween1and10,
   labelDay,
   labelGood,
+  labelMinute,
   labelMinutes,
   labelNumberOfAttemptsBeforeBlockNewAttempt,
   labelPasswordBlockingPolicy,
-  labelSecond,
   labelStrong,
   labelThisWillNotBeUsedBecauseNumberOfAttemptsIsNotDefined,
   labelWeak,
@@ -158,7 +158,7 @@ describe('Password Blocking Policy', () => {
 
     userEvent.type(
       screen.getByLabelText(
-        `${labelBlockingTimeBeforeNewConnectionAttempt} ${labelSecond}`,
+        `${labelBlockingTimeBeforeNewConnectionAttempt} ${labelMinute}`,
       ),
       '1',
     );

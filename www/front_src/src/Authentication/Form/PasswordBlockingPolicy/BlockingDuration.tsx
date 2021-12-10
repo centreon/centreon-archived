@@ -93,7 +93,7 @@ const BlockingDuration = (): JSX.Element => {
           baseName={blockingDurationFieldName}
           inputLabel={labelBlockingTimeBeforeNewConnectionAttempt}
           timeValue={blockingDurationValue}
-          units={['days', 'hours', 'minutes', 'seconds']}
+          units={['days', 'hours', 'minutes']}
           onChange={change}
         />
         {blockingDurationError && (
