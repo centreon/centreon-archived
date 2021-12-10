@@ -709,7 +709,7 @@
         legendDiv = jQuery('<div>').addClass('chart-legend')
             .data('curveid', curveId)
             .data('legend', i);
-        legendText = legend.legend;
+        let legendText = legend.legend;
         if (legend.unit) {
             legendText += ' (' + legend.unit + ')';
         }
