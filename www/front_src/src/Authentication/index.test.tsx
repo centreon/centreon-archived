@@ -4,13 +4,8 @@ import { RenderResult, render, screen, waitFor } from '@testing-library/react';
 import axios from 'axios';
 import userEvent from '@testing-library/user-event';
 
-import { labelReset } from '@centreon/centreon-frontend/packages/centreon-ui/src/InputField/Select/IconPopover/translatedLabels';
-
 import {
-  defaultSecurityPolicyAPI,
-  retrievedSecurityPolicyAPI,
-} from './Form/defaults';
-import {
+  labelReset,
   labelDefinePasswordSecurityPolicy,
   labelDoYouWantToResetTheForm,
   labelNumberOfAttemptsBeforeBlockNewAttempt,
@@ -21,6 +16,10 @@ import {
   labelResetTheForm,
   labelSave,
 } from './translatedLabels';
+import {
+  defaultSecurityPolicyAPI,
+  retrievedSecurityPolicyAPI,
+} from './Form/defaults';
 import { securityPolicyEndpoint } from './api/endpoints';
 import { SecurityPolicyAPI } from './models';
 

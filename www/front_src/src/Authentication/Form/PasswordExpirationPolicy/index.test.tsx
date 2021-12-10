@@ -14,7 +14,6 @@ import {
   labelDay,
   labelDays,
   labelHour,
-  labelMinute,
   labelMonth,
   labelPasswordExpiration,
   labelPasswordExpirationPolicy,
@@ -146,33 +145,6 @@ describe('Password expiration policy', () => {
       expect(
         screen.queryByText(labelChooseADurationBetween1HourAnd12Months),
       ).not.toBeInTheDocument();
-    });
-  });
-
-  it('displays an error message when the delay before new password time is 59 minutes', async () => {
-    renderPasswordExpirationPolicy();
-
-    await waitFor(() => {
-      expect(
-        screen.getByText(labelPasswordExpirationPolicy),
-      ).toBeInTheDocument();
-    });
-    expect(screen.getByText(labelTimeBeforeSetNewPassword)).toBeInTheDocument();
-
-    userEvent.type(
-      screen.getByLabelText(`${labelTimeBeforeSetNewPassword} ${labelHour}`),
-      '{selectall}{backspace}',
-    );
-
-    userEvent.type(
-      screen.getByLabelText(`${labelTimeBeforeSetNewPassword} ${labelMinute}`),
-      '59',
-    );
-
-    await waitFor(() => {
-      expect(
-        screen.getByText(labelChooseADurationBetween1HourAnd1Week),
-      ).toBeInTheDocument();
     });
   });
 

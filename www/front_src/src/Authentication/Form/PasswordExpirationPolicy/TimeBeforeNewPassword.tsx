@@ -40,7 +40,7 @@ const TimeBeforeNewPassword = (): JSX.Element => {
           baseName={delayBeforeNewPasswordFieldName}
           inputLabel={labelTimeBeforeSetNewPassword}
           timeValue={delayBeforeNewPasswordValue}
-          units={['days', 'hours', 'minutes', 'seconds']}
+          units={['days', 'hours']}
           onChange={change}
         />
         {delayBeforeNewPasswordError && (
