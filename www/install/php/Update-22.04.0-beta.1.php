@@ -30,9 +30,9 @@ $versionOfTheUpgrade = 'UPGRADE - 22.04.0-beta.1: ';
  * Query with transaction
  */
 try {
-    $errorMessage  = 'Unable to update cb_tag';
+    $errorMessage  = 'Unable to delete logger entry in cb_tag';
     $pearDB->beginTransaction();
-    $statement = $pearDB->query("DELETE FROM cb_tag where tagname = 'logger'");
+    $statement = $pearDB->query("DELETE FROM cb_tag WHERE tagname = 'logger'");
     if ($pearDB->inTransaction()) {
         $pearDB->commit();
     }
