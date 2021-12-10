@@ -4,6 +4,7 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { not } from 'ramda';
 import { useAtomValue } from 'jotai/utils';
+import { FormikErrors, FormikHandlers, FormikValues } from 'formik';
 
 import {
   Checkbox,
@@ -49,18 +50,20 @@ import { Resource } from '../../../models';
 import useAclQuery from '../aclQuery';
 import useDateTimePickerAdapter from '../../../useDateTimePickerAdapter';
 
+import { DowntimeFormValues } from '.';
+
 const maxEndDate = new Date('2100-01-01');
 
-interface Props {
+interface Props extends Pick<FormikHandlers, 'handleChange'> {
   canConfirm: boolean;
-  errors?;
+  errors?: FormikErrors<DowntimeFormValues>;
   handleChange;
-  onCancel;
-  onConfirm;
+  onCancel: () => void;
+  onConfirm: () => Promise<unknown>;
   resources: Array<Resource>;
   setFieldValue;
   submitting: boolean;
-  values;
+  values: FormikValues;
 }
 
 const pickerCommonProps = {
