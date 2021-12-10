@@ -36,9 +36,9 @@ interface UseNavigationState {
   reactRoutes?: Record<string, string>;
 }
 
-const exists = pipe(isNil, not);
+const isDefined = pipe(isNil, not);
 const propExists = <T>(property: string): ((obj: T) => boolean) =>
-  pipe(prop(property) as (obj: T) => unknown, exists);
+  pipe(prop(property) as (obj: T) => unknown, isDefined);
 
 const getAllowedPages = ({
   page,
@@ -76,7 +76,7 @@ const useNavigation = (): UseNavigationState => {
 
           return page[property].reduce(reduceAllowedPages, []);
         }),
-        filter(exists),
+        filter(isDefined),
       )(['groups', 'children']) as Array<string>;
 
       const newAccumulator = [...acc, ...flatten(children)];
@@ -106,7 +106,7 @@ const useNavigation = (): UseNavigationState => {
     );
 
     const getShowablePages = cond([
-      [any(exists), find(exists)],
+      [any(isDefined), find(isDefined)],
       [T, always(page)],
     ]);
 
