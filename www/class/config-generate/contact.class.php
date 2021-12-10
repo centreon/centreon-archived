@@ -98,7 +98,6 @@ class Contact extends AbstractObject
 
     public const ENABLE_NOTIFICATIONS = '1';
     public const DEFAULT_NOTIFICATIONS = '2';
-    public const CONTACT_OBJECT = '1';
 
     private function getContactCache()
     {
@@ -191,8 +190,8 @@ class Contact extends AbstractObject
     {
         if (!isset($this->contacts[$contact_id][$label . '_commands_cache'])) {
             if (is_null($this->stmt_commands[$label])) {
-                $this->stmt_commands[$label] = $this->backend_instance->db->prepare("
-                    SELECT command_command_id
+                $this->stmt_commands[$label] = $this->backend_instance->db->prepare("SELECT
+                        command_command_id
                     FROM contact_" . $label . "commands_relation
                     WHERE contact_contact_id = :contact_id
                 ");
@@ -277,10 +276,7 @@ class Contact extends AbstractObject
         $this->contacts[$contact_id]['use'] = [
             $this->generateFromContactId($this->contacts[$contact_id]['contact_template_id'])
         ];
-        if (
-            $this->contacts[$contact_id]['register'] === self::CONTACT_OBJECT
-            && !$this->shouldContactBeNotified($contact_id)
-        ) {
+        if (!$this->shouldContactBeNotified($contact_id)) {
             return null;
         }
         $this->getContactNotificationCommands($contact_id, 'host');
