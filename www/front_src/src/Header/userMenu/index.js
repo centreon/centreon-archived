@@ -231,4 +231,4 @@ const UserMenu = (props) => {
   return <UserMenuContent {...props} allowedPages={allowedPages} />;
 };
 
-export default withStyles(MuiStyles)(withTranslation()(UserMenuContent));
+export default withStyles(MuiStyles)(withTranslation()(UserMenu));
