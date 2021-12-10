@@ -5,7 +5,7 @@ import classnames from 'classnames';
 import Hook from '../components/Hook';
 
 import styles from './header.scss';
-import PollerMenu, { pollerConfigurationPageNumber } from './PollerMenu';
+import PollerMenu from './PollerMenu';
 import UserMenu from './userMenu';
 import ServiceStatusCounter from './RessourceStatusCounter/Service';
 import HostStatusCounter from './RessourceStatusCounter/Host';
@@ -20,11 +20,7 @@ const Header = (): JSX.Element => {
     <header className={styles.header}>
       <div className={styles['header-icons']}>
         <div className={classnames(styles.wrap, styles['wrap-left'])}>
-          <PollerMenu
-            allowedPages={[pollerConfigurationPageNumber]}
-            endpoint={pollerListIssues}
-            loaderWidth={27}
-          />
+          <PollerMenu endpoint={pollerListIssues} loaderWidth={27} />
         </div>
         <div className={classnames(styles.wrap, styles['wrap-right'])}>
           <HookComponent path="/header/topCounter" />

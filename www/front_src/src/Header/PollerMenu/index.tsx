@@ -56,7 +56,6 @@ export interface Issue {
   warning: number;
 }
 interface Props {
-  allowedPages: Array<string>;
   endpoint: string;
   loaderWidth: number;
 }
@@ -97,14 +96,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const PollerMenu = ({
-  endpoint,
-  loaderWidth,
-  allowedPages,
-}: Props): JSX.Element => {
+const PollerMenu = ({ endpoint, loaderWidth }: Props): JSX.Element => {
   const classes = useStyles();
 
   const { t } = useTranslation();
+  const allowedPages = pollerConfigurationPageNumber;
+  const allowPollerConfiguration = allowedPages?.includes(
+    pollerConfigurationPageNumber,
+  );
 
   const [issues, setIssues] = React.useState<Issues | null>(null);
   const [totalPoller, setTotal] = React.useState<PollerData | number>(0);
@@ -159,10 +158,6 @@ const PollerMenu = ({
   if (isNil(issues)) {
     return <MenuLoader width={loaderWidth} />;
   }
-
-  const allowPollerConfiguration = allowedPages?.includes(
-    pollerConfigurationPageNumber,
-  );
 
   const redirectToPollerConfiguration = (): void => {
     closeSubmenu();
