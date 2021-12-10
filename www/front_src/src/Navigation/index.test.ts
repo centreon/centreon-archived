@@ -12,6 +12,7 @@ describe('navigation', () => {
     mockedAxios.get.mockReset();
     mockedAxios.get.mockResolvedValue({ data: retrievedNavigation });
   });
+
   it('gets the allowed pages with the navigation data retrieved from the API', async () => {
     const { result } = renderHook(() => useNavigation());
 
