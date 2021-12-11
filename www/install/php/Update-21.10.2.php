@@ -30,13 +30,15 @@ $versionOfTheUpgrade = 'UPGRADE - 21.10.2: ';
  * Query with transaction
  */
 try {
-    $errorMessage  = 'Unable to delete logger entry in cb_tag';
     $pearDB->beginTransaction();
+
+    $errorMessage  = 'Unable to delete rows in cb_tag_type_relation';
     $statement = $pearDB->query("DELETE FROM cb_tag_type_relation where cb_tag_id = 3");
+
+    $errorMessage  = 'Unable to delete logger entry in cb_tag';
     $statement = $pearDB->query("DELETE FROM cb_tag WHERE tagname = 'logger'");
-    if ($pearDB->inTransaction()) {
-        $pearDB->commit();
-    }
+
+    $pearDB->commit();
 } catch (\Exception $e) {
     if ($pearDB->inTransaction()) {
         $pearDB->rollBack();
