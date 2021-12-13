@@ -26,7 +26,8 @@
         "symfony/web-profiler-bundle": "^5.4",
         "twig/twig": "^3.3",
         "webmozart/assert": "^1.8",
-        "zircote/swagger-php": "^4.0"
+        "zircote/swagger-php": "^4.0",
+        "behat/mink-selenium2-driver": "^1.5"
     },
     "require": {
         "beberlei/assert": "^3.3",
