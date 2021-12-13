@@ -579,7 +579,7 @@ describe(Details, () => {
 
     expect(getByText('10')).toBeInTheDocument();
 
-    expect(getByText('CRITICAL')).toBeInTheDocument();
+    expect(getByText('Critical')).toBeInTheDocument();
     expect(getByText('Centreon')).toBeInTheDocument();
 
     const fqdnText = await findByText(labelFqdn);
@@ -1175,13 +1175,13 @@ describe(Details, () => {
       expect.anything(),
     );
 
-    expect(getByText('OK')).toBeInTheDocument();
+    expect(getByText('Ok')).toBeInTheDocument();
     expect(getByText('Ping')).toBeInTheDocument();
     expect(getByText('OK - 127.0.0.1 rta 0ms lost 0%'));
     expect(getByText('22m')).toBeInTheDocument();
 
     expect(getByText('Disk')).toBeInTheDocument();
-    expect(getByText('UNKNOWN')).toBeInTheDocument();
+    expect(getByText('Unknown')).toBeInTheDocument();
     expect(getByText('No output'));
     expect(getByText('21m')).toBeInTheDocument();
 
@@ -1199,12 +1199,6 @@ describe(Details, () => {
     await waitFor(() => {
       expect(queryByText(labelServices)).toBeNull();
     });
-
-    // act(() => {
-    //   result.current.setServicesTabParameters({
-    //     options: defaultGraphOptions,
-    //   });
-    // });
   });
 
   it('displays the linked service graphs when the Graph tab of a host is clicked', async () => {
