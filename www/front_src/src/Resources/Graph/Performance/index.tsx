@@ -180,7 +180,9 @@ const PerformanceGraph = ({
       return;
     }
 
-    sendGetGraphDataRequest(endpoint)
+    sendGetGraphDataRequest({
+      endpoint,
+    })
       .then((graphData) => {
         setTimeSeries(getTimeSeries(graphData));
         setBase(graphData.global.base);
