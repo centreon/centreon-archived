@@ -45,7 +45,7 @@ require_once './include/reporting/dashboard/initReport.php';
 /*
  *  Getting host to report
  */
-$id = filter_var($_GET['host'] ?? $_POST['host'] ?? false, FILTER_VALIDATE_INT);
+$id = filter_var($_GET['hostElement'] ?? $_POST['hostElement'] ?? false, FILTER_VALIDATE_INT);
 
 /*
  * Formulary
@@ -58,15 +58,28 @@ $formHost = new HTML_QuickFormCustom('formHost', 'post', "?p=" . $p);
 $redirect = $formHost->addElement('hidden', 'o');
 $redirect->setValue($o);
 
-$hosts = getAllHostsForReporting($is_admin, $lcaHoststr);
-$selHost = $formHost->addElement(
-    'select',
-    'host',
+$hostsRoute = array(
+    'datasourceOrigin' => 'ajax',
+    'multiple' => false,
+    'linkedObject' => 'centreonHost',
+    'availableDatasetRoute' =>
+        './api/internal.php?object=centreon_configuration_host&action=list',
+    'defaultDatasetRoute' =>
+        './api/internal.php?object=centreon_configuration_host
+        &action=defaultValues&target=host&field=host_id&id=' . $id,
+);
+
+$selHost = $formPeriod->addElement(
+    'select2',
+    'hostElement',
     _("Host"),
-    $hosts,
-    array(
-        "onChange" =>"this.form.submit();"
-    )
+    [],
+    $hostsRoute
+);
+
+$selHost->addJsCallback(
+    'change',
+    'this.form.submit();'
 );
 $formHost->addElement(
     'hidden',
@@ -85,7 +98,7 @@ $formHost->addElement(
 );
 
 if (isset($id)) {
-    $formHost->setDefaults(array('host' => $id));
+    $formHost->setDefaults(['host' => $id]);
 }
 
 /*
@@ -103,17 +116,17 @@ if ($id !== false) {
      * Getting periods values
      */
     $dates = getPeriodToReport("alternate");
-    $start_date = $dates[0];
-    $end_date = $dates[1];
+    $startDate = $dates[0];
+    $endDate = $dates[1];
     //$formPeriod->setDefaults(array('period' => $period));
 
     /*
      * Getting host and his services stats
      */
-    $hostStats = array();
-    $hostStats = getLogInDbForHost($id, $start_date, $end_date, $reportingTimePeriod);
-    $hostServicesStats = array();
-    $hostServicesStats = getLogInDbForHostSVC($id, $start_date, $end_date, $reportingTimePeriod);
+    $hostStats = [];
+    $hostStats = getLogInDbForHost($id, $startDate, $endDate, $reportingTimePeriod);
+    $hostServicesStats = [];
+    $hostServicesStats = getLogInDbForHostSVC($id, $startDate, $endDate, $reportingTimePeriod);
 
     /*
      * Chart datas
@@ -127,16 +140,15 @@ if ($id !== false) {
     /*
      * Exporting variables for ihtml
      */
-    $tpl->assign("name", $hosts[$id]);
     $tpl->assign("totalAlert", $hostStats["TOTAL_ALERTS"]);
     $tpl->assign("totalTime", $hostStats["TOTAL_TIME_F"]);
     $tpl->assign("summary", $hostStats);
     $tpl->assign("components_avg", array_pop($hostServicesStats));
     $tpl->assign("components", $hostServicesStats);
     $tpl->assign("period_name", _("From"));
-    $tpl->assign("date_start", $start_date);
+    $tpl->assign("date_start", $startDate);
     $tpl->assign("to", _("to"));
-    $tpl->assign("date_end", $end_date);
+    $tpl->assign("date_end", $endDate);
     $tpl->assign("period", $period);
     $tpl->assign("host_id", $id);
     $tpl->assign("Alert", _("Alert"));
@@ -148,7 +160,7 @@ if ($id !== false) {
     $tpl->assign(
         "link_csv_url",
         "./include/reporting/dashboard/csvExport/csv_HostLogs.php?host=" .
-            $id . "&start=" . $start_date . "&end=" . $end_date
+            $id . "&start=" . $startDate . "&end=" . $endDate
     );
     $tpl->assign("link_csv_name", _("Export in CSV format"));
 
@@ -156,7 +168,7 @@ if ($id !== false) {
      * Status colors
      */
     $color = substr($colors["up"], 1)
-        . ':'.substr($colors["down"], 1)
+        . ':' . substr($colors["down"], 1)
         . ':' . substr($colors["unreachable"], 1)
         . ':' . substr($colors["undetermined"], 1)
         . ':' . substr($colors["maintenance"], 1);

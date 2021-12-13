@@ -15,8 +15,9 @@ import {
   reject,
 } from 'ramda';
 import { useTranslation } from 'react-i18next';
+import { useAtomValue } from 'jotai/utils';
 
-import { useUserContext } from '@centreon/ui-context';
+import { aclAtom } from '@centreon/ui-context';
 
 import { Resource } from '../../models';
 import { labelServicesDenied, labelHostsDenied } from '../../translatedLabels';
@@ -38,7 +39,7 @@ interface AclQuery {
 
 const useAclQuery = (): AclQuery => {
   const { t } = useTranslation();
-  const { acl } = useUserContext();
+  const acl = useAtomValue(aclAtom);
 
   const toType = ({ type }): string => type;
 

@@ -60,7 +60,7 @@
                 jQuery('form[name="login"]').submit(() => {
                     jQuery('input[type="submit"]').prop('disabled', true)
                     jQuery.ajax({
-                        url: '/centreon/authentication/providers/configurations/local',
+                        url: './authentication/providers/configurations/local',
                         data: JSON.stringify({
                             login: jQuery('input[name="useralias"]').val(),
                             password: jQuery('input[name="password"]').val()
@@ -70,7 +70,15 @@
                     }).done((res) => {
                         window.location.href = res.redirect_uri
                     }).fail((err) => {
-                        jQuery('span.msg').text('Your credentials are incorrect.')
+                        if (err.status === 401) {
+                            if (err?.responseJSON?.message) {
+                                jQuery('span.msg').text(err.responseJSON.message)
+                            } else {
+                                jQuery('span.msg').text('Your credentials are incorrect')
+                            }
+                        } else {
+                            jQuery('span.msg').text('Internal server error')
+                        }
                         jQuery('div.error_msg').css('visibility', '')
                     }).always(() => {
                         jQuery('input[type="submit"]').prop('disabled', false)
@@ -78,6 +86,11 @@
                     return false;
                 });
             });
+
+            if (window.location.href.match(/\/index.php\?disconnect=1/)) {
+                localStorage.removeItem('centreonPlatformData');
+            }
+
           // check :
           //  - if login page is in an iframe
           //  - if iframe url is login page with disconnect parameter

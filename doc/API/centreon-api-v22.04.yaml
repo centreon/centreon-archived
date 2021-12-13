@@ -22,7 +22,7 @@ info:
   license:
     name: Apache 2.0
     url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
-  version: "21.10"
+  version: "22.04"
 externalDocs:
   description: You can contact us on our community Slack
   url: 'https://centreon.slack.com/messages/CCRGLQSE5'
@@ -42,7 +42,7 @@ servers:
         default: '80'
         description: "Port used by HTTP server"
       version:
-        default: v21.10
+        default: v22.04
         description: "Version of the API"
 tags:
   - name: Acknowledgement
@@ -973,6 +973,7 @@ paths:
         * last_check
         * information
         * monitoring_server_name
+        * status_types
 
         Only for **searching**:
 
@@ -991,8 +992,10 @@ paths:
         - $ref: '#/components/parameters/ResourceFilterType'
         - $ref: '#/components/parameters/ResourceFilterState'
         - $ref: '#/components/parameters/ResourceFilterStatus'
-        - $ref: '#/components/parameters/ResourceFilterHostgroupId'
-        - $ref: '#/components/parameters/ResourceFilterServicegroupId'
+        - $ref: '#/components/parameters/ResourceFilterHostgroupName'
+        - $ref: '#/components/parameters/ResourceFilterServicegroupName'
+        - $ref: '#/components/parameters/ResourceFilterMonitoringServerName'
+        - $ref: '#/components/parameters/ResourceFilterStatusTypes'
       responses:
         '200':
           description: "OK"
@@ -3572,28 +3575,47 @@ components:
           type: string
           enum: [OK, UP, WARNING, DOWN, CRITICAL, UNREACHABLE, UNKNOWN, PENDING]
         example: '["OK", "UP", "PENDING"]'
-    ResourceFilterHostgroupId:
+    ResourceFilterHostgroupName:
       in: query
-      name: hostgroup_ids
+      name: hostgroup_names
       required: false
-      description: "Filter the resources by host group ID"
+      description: "Filter the resources by host group names"
       schema:
         type: array
         items:
-          type: integer
-          format: int64
-        example: '[13, 22, 31]'
-    ResourceFilterServicegroupId:
+          type: string
+        example: '["ESX-Paris", "ESX-London"]'
+    ResourceFilterServicegroupName:
       in: query
-      name: servicegroup_ids
+      name: servicegroup_names
       required: false
-      description: "Filter the resources by service group ID"
+      description: "Filter the resources by service group names"
       schema:
         type: array
         items:
-          type: integer
-          format: int64
-        example: '[2033]'
+          type: string
+        example: '["Memory-Services", "Ping-Services"]'
+    ResourceFilterMonitoringServerName:
+      in: query
+      name: monitoring_server_names
+      required: false
+      description: "Filter the resources by monitoring server names"
+      schema:
+        type: array
+        items:
+          type: string
+        example: '["Central", "Remote-Server-Paris", "Poller-Lyon"]'
+    ResourceFilterStatusTypes:
+      in: query
+      name: status_types
+      required: false
+      description: "Filter the resources by status types"
+      schema:
+        type: array
+        items:
+          type: string
+          enum: ["soft", "hard"]
+        example: '["soft"]'
     ShowHost:
       in: query
       name: show_host

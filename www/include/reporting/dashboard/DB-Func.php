@@ -34,18 +34,6 @@
  */
 
 /*
- * Get all hosts from DB
- */
-function getAllHostsForReporting($is_admin, $lcaHoststr, $search = null)
-{
-    global $centreon;
-
-    $hosts = array("NULL" => "");
-    $hosts += $centreon->user->access->getHostAclConf($search, 'broker');
-    return $hosts;
-}
-
-/*
  * returns days of week taken in account for reporting in a string
  */
 function getReportDaysStr($reportTimePeriod)
@@ -724,30 +712,6 @@ function getreportingTimePeriod()
         }
     }
     return $reportingTimePeriod;
-}
-
-/*
- * Get all hostgroups linked with at least one host
- */
-function getAllHostgroupsForReporting($is_admin, $lcaHostGroupstr, $search = null)
-{
-    global $centreon;
-
-    $hgs = array("NULL" => "");
-    $hgs += $centreon->user->access->getHostGroupAclConf($search, 'broker');
-    return $hgs;
-}
-
-/*
- * Get all servicesgroup with at least one service
- */
-function getAllServicesgroupsForReporting($search = null)
-{
-    global $centreon;
-
-    $sg_array = array("NULL" => "");
-    $sg_array += $centreon->user->access->getServiceGroupAclConf($search, 'broker');
-    return $sg_array;
 }
 
 /*

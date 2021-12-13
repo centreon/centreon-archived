@@ -111,6 +111,7 @@ services:
 
     Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerConfigurationRepositoryInterface:
         class: Centreon\Infrastructure\MonitoringServer\Repository\MonitoringServerConfigurationRepositoryApi
+        public: true
         calls:
         - method: setTimeout
           arguments: ['%curl.timeout%']
@@ -337,3 +338,6 @@ services:
     Centreon\Domain\Log\ContactForDebug:
         class: Centreon\Domain\Log\ContactForDebug
         arguments: ['%env(DEBUG_CONTACT)%']
+
+    Centreon\Domain\Log\LegacyLogger:
+        public: true

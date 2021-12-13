@@ -4,6 +4,7 @@ import dayjs from 'dayjs';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import { and, or } from 'ramda';
 import { useTranslation } from 'react-i18next';
+import { useAtomValue } from 'jotai/utils';
 
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import {
@@ -15,8 +16,8 @@ import {
 } from '@material-ui/core';
 import AccessTimeIcon from '@material-ui/icons/AccessTime';
 
-import { useUserContext } from '@centreon/ui-context';
 import { dateTimeFormat, useLocaleDateTimeFormat } from '@centreon/ui';
+import { userAtom } from '@centreon/centreon-frontend/packages/ui-context/src';
 
 import {
   labelEndDate,
@@ -113,9 +114,9 @@ const CustomTimePeriodPickers = ({
   const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
   const [start, setStart] = React.useState<Date>(customTimePeriod.start);
   const [end, setEnd] = React.useState<Date>(customTimePeriod.end);
-  const { locale } = useUserContext();
   const { format } = useLocaleDateTimeFormat();
   const { Adapter, isMeridianFormat } = useDateTimePickerAdapter();
+  const { locale } = useAtomValue(userAtom);
 
   const isInvalidDate = ({ startDate, endDate }): boolean =>
     dayjs(startDate).isSameOrAfter(dayjs(endDate), 'minute');

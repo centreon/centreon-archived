@@ -51,8 +51,12 @@ require_once _CENTREON_PATH_ . "www/class/centreonBroker.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonACL.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonUser.class.php";
 
-define('STATUS_OK', 0);
-define('STATUS_NOK', 1);
+if (!defined('STATUS_OK')) {
+    define('STATUS_OK', 0);
+}
+if (!defined('STATUS_NOK')) {
+    define('STATUS_NOK', 1);
+}
 
 $pearDB = new CentreonDB();
 $xml = new CentreonXML();
@@ -79,10 +83,12 @@ if (isset($_SERVER['HTTP_X_AUTH_TOKEN'])) {
         $xml->writeElement("error", 'Contact not found');
         $xml->endElement();
 
-        header('Content-Type: application/xml');
-        header('Cache-Control: no-cache');
-        header('Expires: 0');
-        header('Cache-Control: no-cache, must-revalidate');
+        if (!headers_sent()) {
+            header('Content-Type: application/xml');
+            header('Cache-Control: no-cache');
+            header('Expires: 0');
+            header('Cache-Control: no-cache, must-revalidate');
+        }
 
         $xml->output();
         exit();
@@ -95,7 +101,6 @@ if (isset($_SERVER['HTTP_X_AUTH_TOKEN'])) {
         'contact_admin' => $contact->isAdmin(),
         'contact_lang' => null,
         'contact_passwd' => null,
-        'contact_js_effects' => null,
         'contact_autologin_key' => null,
         'contact_location' => null,
         'reach_api' => $contact->hasAccessToApiConfiguration(),
@@ -129,10 +134,9 @@ $generatePhpErrors = array();
  *
  * @see set_error_handler
  */
-function log_error($errno, $errstr, $errfile, $errline)
-{
+$log_error = function ($errno, $errstr, $errfile, $errline) {
     global $generatePhpErrors;
-    if (!(error_reporting() & $errno)) {
+    if (!(error_reporting() && $errno)) {
         return;
     }
 
@@ -149,7 +153,7 @@ function log_error($errno, $errstr, $errfile, $errline)
             break;
     }
     return true;
-}
+};
 
 try {
     $pollers = explode(',', $_POST['poller']);
@@ -163,7 +167,7 @@ try {
     $centreonBrokerPath = _CENTREON_CACHEDIR_ . "/config/broker/";
 
     /*  Set new error handler */
-    set_error_handler('log_error');
+    set_error_handler($log_error);
 
     if (defined('_CENTREON_VARLIB_')) {
         $centcore_pipe = _CENTREON_VARLIB_ . "/centcore.cmd";
@@ -289,10 +293,12 @@ $xml->endElement();
 $xml->endElement();
 
 // Headers
-header('Content-Type: application/xml');
-header('Cache-Control: no-cache');
-header('Expires: 0');
-header('Cache-Control: no-cache, must-revalidate');
+if (!headers_sent()) {
+    header('Content-Type: application/xml');
+    header('Cache-Control: no-cache');
+    header('Expires: 0');
+    header('Cache-Control: no-cache, must-revalidate');
+}
 
 // Send Data
 $xml->output();

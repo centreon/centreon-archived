@@ -139,6 +139,7 @@ final class HostProvider extends Provider
             h.last_state_change AS `last_status_change`,
             h.last_notification AS `last_notification`,
             h.notification_number AS `notification_number`,
+            h.state_type AS `state_type`,
             CONCAT(h.check_attempt, '/', h.max_check_attempts, ' (', CASE
                 WHEN h.state_type = 1 THEN 'H'
                 WHEN h.state_type = 0 THEN 'S'
@@ -224,6 +225,21 @@ final class HostProvider extends Provider
             }
 
             $sql .= ' AND h.state IN (' . implode(', ', $statusList) . ')';
+        }
+
+        // apply the state types filter to SQL query
+        $statusTypes = ResourceFilter::map($filter->getStatusTypes(), ResourceFilter::MAP_STATUS_TYPES);
+        if ($statusTypes) {
+            $statusTypesList = [];
+
+            foreach ($statusTypes as $index => $statusType) {
+                $key = ":hostStateTypes_{$index}";
+
+                $statusTypesList[] = $key;
+                $collector->addValue($key, $statusType, \PDO::PARAM_INT);
+            }
+
+            $sql .= ' AND h.state_type IN (' . implode(', ', $statusTypesList) . ')';
         }
 
         if (!empty($filter->getHostIds())) {
