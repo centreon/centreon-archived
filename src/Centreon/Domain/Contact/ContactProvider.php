@@ -95,13 +95,4 @@ class ContactProvider implements UserProviderInterface
     {
         return $class === Contact::class;
     }
-
-    public function loadUserByIdentifier($identifier)
-    {
-        $contact = $this->contactRepository->findByName($identifier);
-        if (is_null($contact)) {
-            throw new UsernameNotFoundException();
-        }
-        return $contact;
-    }
 }

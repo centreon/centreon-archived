@@ -310,11 +310,19 @@ class TokenAPIAuthenticator extends AbstractAuthenticator implements Authenticat
             // Code 401 "Unauthorized"
             throw new CustomUserMessageAuthenticationException('No API token provided');
         }
-        $contact = $this->contactRepository->findByAuthenticationToken($apiToken);
-        if (null === $contact) {
-            // No contact for this token was found, authentication fails.
-            throw new TokenNotFoundException();
-        }
-        return new SelfValidatingPassport(new UserBadge($contact->getUserIdentifier()));
+
+        return new SelfValidatingPassport(
+            new UserBadge(
+                $apiToken,
+                function ($userIdentifier) {
+                    $contact = $this->contactRepository->findByAuthenticationToken($userIdentifier);
+                    if (null === $contact) {
+                        throw new CustomUserMessageAuthenticationException('No contact found for this API token');
+                    }
+
+                    return $contact;
+                }
+            )
+        );
     }
 }
