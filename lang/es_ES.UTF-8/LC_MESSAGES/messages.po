@@ -14828,7 +14828,7 @@ msgstr ""
 # msgid "Can reuse last 3 passwords"
 # msgstr ""
 
-# msgid "Time before set new password"
+# msgid "Time before setting a new password"
 # msgstr ""
 
 # msgid "Choose a duration between 1 hour and 1 week"
@@ -14837,7 +14837,7 @@ msgstr ""
 # msgid "Password blocking policy"
 # msgstr ""
 
-# msgid "Number of attempts before block new attempt"
+# msgid "Number of attempts before blocking new attempts"
 # msgstr ""
 
 # msgid "Choose a value between 1 and 10"
@@ -14846,7 +14846,7 @@ msgstr ""
 # msgid "Blocking time before new connection attempt"
 # msgstr ""
 
-# msgid "Blocking duration must be less or equal than 7 days"
+# msgid "Blocking duration must be less than or equal to 7 days"
 # msgstr ""
 
 # msgid "Saving..."
@@ -14864,7 +14864,7 @@ msgstr ""
 # msgid "Failed to save password security policy"
 # msgstr ""
 
-# msgid "This will not be used because number of attempts is not defined"
+# msgid "This will not be used because the number of attempts is not defined"
 # msgstr "" 
 
 # msgid "Status type"

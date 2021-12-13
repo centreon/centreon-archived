@@ -17,7 +17,7 @@ import {
   labelMonth,
   labelPasswordExpiration,
   labelPasswordExpirationPolicy,
-  labelTimeBeforeSetNewPassword,
+  labelTimeBeforeSettingNewPassword,
 } from '../../translatedLabels';
 
 import PasswordExpirationPolicy from '.';
@@ -73,10 +73,10 @@ describe('Password expiration policy', () => {
 
     expect(screen.getByText(labelDays)).toBeInTheDocument();
 
-    expect(screen.getByText(labelTimeBeforeSetNewPassword)).toBeInTheDocument();
+    expect(screen.getByText(labelTimeBeforeSettingNewPassword)).toBeInTheDocument();
 
     expect(
-      screen.getByLabelText(`${labelTimeBeforeSetNewPassword} ${labelHour}`),
+      screen.getByLabelText(`${labelTimeBeforeSettingNewPassword} ${labelHour}`),
     ).toHaveValue(1);
   });
 
@@ -156,15 +156,15 @@ describe('Password expiration policy', () => {
         screen.getByText(labelPasswordExpirationPolicy),
       ).toBeInTheDocument();
     });
-    expect(screen.getByText(labelTimeBeforeSetNewPassword)).toBeInTheDocument();
+    expect(screen.getByText(labelTimeBeforeSettingNewPassword)).toBeInTheDocument();
 
     userEvent.type(
-      screen.getByLabelText(`${labelTimeBeforeSetNewPassword} ${labelHour}`),
+      screen.getByLabelText(`${labelTimeBeforeSettingNewPassword} ${labelHour}`),
       '{selectall}{backspace}',
     );
 
     userEvent.type(
-      screen.getByLabelText(`${labelTimeBeforeSetNewPassword} ${labelDay}`),
+      screen.getByLabelText(`${labelTimeBeforeSettingNewPassword} ${labelDay}`),
       '8',
     );
 
@@ -183,10 +183,10 @@ describe('Password expiration policy', () => {
         screen.getByText(labelPasswordExpirationPolicy),
       ).toBeInTheDocument();
     });
-    expect(screen.getByText(labelTimeBeforeSetNewPassword)).toBeInTheDocument();
+    expect(screen.getByText(labelTimeBeforeSettingNewPassword)).toBeInTheDocument();
 
     userEvent.type(
-      screen.getByLabelText(`${labelTimeBeforeSetNewPassword} ${labelHour}`),
+      screen.getByLabelText(`${labelTimeBeforeSettingNewPassword} ${labelHour}`),
       '{selectall}{backspace}',
     );
 

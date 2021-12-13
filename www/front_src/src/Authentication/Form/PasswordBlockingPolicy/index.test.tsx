@@ -8,14 +8,14 @@ import { SecurityPolicy } from '../../models';
 import useValidationSchema from '../../useValidationSchema';
 import { defaultSecurityPolicy } from '../defaults';
 import {
-  labelBlockingDurationMustBeLessOrEqualThan7Days,
+  labelBlockingDurationMustBeLessThanOrEqualTo7Days,
   labelBlockingTimeBeforeNewConnectionAttempt,
   labelChooseAValueBetween1and10,
   labelDay,
   labelGood,
   labelMinute,
   labelMinutes,
-  labelNumberOfAttemptsBeforeBlockNewAttempt,
+  labelNumberOfAttemptsBeforeBlockingNewAttempts,
   labelPasswordBlockingPolicy,
   labelStrong,
   labelThisWillNotBeUsedBecauseNumberOfAttemptsIsNotDefined,
@@ -60,7 +60,7 @@ describe('Password Blocking Policy', () => {
     });
 
     expect(
-      screen.getByLabelText(labelNumberOfAttemptsBeforeBlockNewAttempt),
+      screen.getByLabelText(labelNumberOfAttemptsBeforeBlockingNewAttempts),
     ).toHaveValue(5);
 
     expect(
@@ -84,7 +84,7 @@ describe('Password Blocking Policy', () => {
     });
 
     userEvent.type(
-      screen.getByLabelText(labelNumberOfAttemptsBeforeBlockNewAttempt),
+      screen.getByLabelText(labelNumberOfAttemptsBeforeBlockingNewAttempts),
       '0',
     );
 
@@ -103,7 +103,7 @@ describe('Password Blocking Policy', () => {
     });
 
     userEvent.type(
-      screen.getByLabelText(labelNumberOfAttemptsBeforeBlockNewAttempt),
+      screen.getByLabelText(labelNumberOfAttemptsBeforeBlockingNewAttempts),
       '11',
     );
 
@@ -122,7 +122,7 @@ describe('Password Blocking Policy', () => {
     });
 
     userEvent.type(
-      screen.getByLabelText(labelNumberOfAttemptsBeforeBlockNewAttempt),
+      screen.getByLabelText(labelNumberOfAttemptsBeforeBlockingNewAttempts),
       '{selectall}{backspace}',
     );
 
@@ -165,7 +165,7 @@ describe('Password Blocking Policy', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText(labelBlockingDurationMustBeLessOrEqualThan7Days),
+        screen.getByText(labelBlockingDurationMustBeLessThanOrEqualTo7Days),
       ).toBeInTheDocument();
     });
   });
@@ -178,7 +178,7 @@ describe('Password Blocking Policy', () => {
     });
 
     userEvent.type(
-      screen.getByLabelText(labelNumberOfAttemptsBeforeBlockNewAttempt),
+      screen.getByLabelText(labelNumberOfAttemptsBeforeBlockingNewAttempts),
       '{selectall}{backspace}8',
     );
 
@@ -195,7 +195,7 @@ describe('Password Blocking Policy', () => {
     });
 
     userEvent.type(
-      screen.getByLabelText(labelNumberOfAttemptsBeforeBlockNewAttempt),
+      screen.getByLabelText(labelNumberOfAttemptsBeforeBlockingNewAttempts),
       '{selectall}{backspace}6',
     );
 

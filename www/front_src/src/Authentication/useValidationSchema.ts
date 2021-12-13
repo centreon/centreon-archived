@@ -10,7 +10,7 @@ import {
   labelMaximum128Characters,
   labelMinimum8Characters,
   labelRequired,
-  labelBlockingDurationMustBeLessOrEqualThan7Days,
+  labelBlockingDurationMustBeLessThanOrEqualTo7Days,
 } from './translatedLabels';
 
 const useValidationSchema = (): Yup.SchemaOf<SecurityPolicy> => {
@@ -23,7 +23,7 @@ const useValidationSchema = (): Yup.SchemaOf<SecurityPolicy> => {
       .nullable()
       .defined(),
     blockingDuration: Yup.number()
-      .max(sevenDays, t(labelBlockingDurationMustBeLessOrEqualThan7Days))
+      .max(sevenDays, t(labelBlockingDurationMustBeLessThanOrEqualTo7Days))
       .nullable()
       .defined(),
     canReusePasswords: Yup.boolean().defined(),

@@ -7,7 +7,7 @@ import { FormHelperText, FormLabel } from '@material-ui/core';
 
 import { useMemoComponent } from '@centreon/centreon-frontend/packages/centreon-ui/src';
 
-import { labelTimeBeforeSetNewPassword } from '../../translatedLabels';
+import { labelTimeBeforeSettingNewPassword } from '../../translatedLabels';
 import { getField } from '../utils';
 import TimeInputs from '../../TimeInputs';
 
@@ -35,10 +35,10 @@ const TimeBeforeNewPassword = (): JSX.Element => {
   return useMemoComponent({
     Component: (
       <div>
-        <FormLabel>{t(labelTimeBeforeSetNewPassword)}</FormLabel>
+        <FormLabel>{t(labelTimeBeforeSettingNewPassword)}</FormLabel>
         <TimeInputs
           baseName={delayBeforeNewPasswordFieldName}
-          inputLabel={labelTimeBeforeSetNewPassword}
+          inputLabel={labelTimeBeforeSettingNewPassword}
           timeValue={delayBeforeNewPasswordValue}
           units={['days', 'hours']}
           onChange={change}

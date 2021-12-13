@@ -8,7 +8,7 @@ import {
   labelReset,
   labelDefinePasswordSecurityPolicy,
   labelDoYouWantToResetTheForm,
-  labelNumberOfAttemptsBeforeBlockNewAttempt,
+  labelNumberOfAttemptsBeforeBlockingNewAttempts,
   labelPasswordBlockingPolicy,
   labelPasswordCasePolicy,
   labelPasswordExpirationPolicy,
@@ -128,7 +128,7 @@ describe('Authentication', () => {
     );
 
     userEvent.type(
-      screen.getByLabelText(labelNumberOfAttemptsBeforeBlockNewAttempt),
+      screen.getByLabelText(labelNumberOfAttemptsBeforeBlockingNewAttempts),
       '{selectall}{backspace}8',
     );
 
@@ -175,7 +175,7 @@ describe('Authentication', () => {
     });
 
     userEvent.type(
-      screen.getByLabelText(labelNumberOfAttemptsBeforeBlockNewAttempt),
+      screen.getByLabelText(labelNumberOfAttemptsBeforeBlockingNewAttempts),
       '{selectall}{backspace}2',
     );
 

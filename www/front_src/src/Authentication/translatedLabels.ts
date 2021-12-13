@@ -34,17 +34,18 @@ export const labelMinutes = 'Minutes';
 export const labelSecond = 'Second';
 export const labelSeconds = 'Seconds';
 export const labelCanReuseLast3Passwords = 'Can reuse last 3 passwords';
-export const labelTimeBeforeSetNewPassword = 'Time before set new password';
+export const labelTimeBeforeSettingNewPassword =
+  'Time before setting a new password';
 export const labelChooseADurationBetween1HourAnd1Week =
   'Choose a duration between 1 hour and 1 week';
 export const labelPasswordBlockingPolicy = 'Password blocking policy';
-export const labelNumberOfAttemptsBeforeBlockNewAttempt =
-  'Number of attempts before block new attempt';
+export const labelNumberOfAttemptsBeforeBlockingNewAttempts =
+  'Number of attempts before blocking new attempts';
 export const labelChooseAValueBetween1and10 = 'Choose a value between 1 and 10';
 export const labelBlockingTimeBeforeNewConnectionAttempt =
   'Blocking time before new connection attempt';
-export const labelBlockingDurationMustBeLessOrEqualThan7Days =
-  'Blocking duration must be less or equal than 7 days';
+export const labelBlockingDurationMustBeLessThanOrEqualTo7Days =
+  'Blocking duration must be less than or equal to 7 days';
 export const labelSave = 'Save';
 export const labelSaving = 'Saving...';
 export const labelSaved = 'Saved';
@@ -54,7 +55,7 @@ export const labelPasswordSecurityPolicySaved =
 export const labelFailedToSavePasswordSecurityPolicy =
   'Failed to save password security policy';
 export const labelThisWillNotBeUsedBecauseNumberOfAttemptsIsNotDefined =
-  'This will not be used because number of attempts is not defined';
+  'This will not be used because the number of attempts is not defined';
 export const labelCancel = 'Cancel';
 export const labelResetTheForm = 'Reset the form';
 export const labelDoYouWantToResetTheForm = 'Do you want to reset the form?';
