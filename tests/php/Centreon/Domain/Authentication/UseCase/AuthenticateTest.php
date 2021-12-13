@@ -43,6 +43,8 @@ use Security\Domain\Authentication\Interfaces\ProviderServiceInterface;
 use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
 use Centreon\Domain\Repository\Interfaces\DataStorageEngineInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 /**
  * @package Tests\Centreon\Domain\Authentication\UseCase
@@ -68,6 +70,16 @@ class AuthenticateTest extends TestCase
      * @var RequestStack|\PHPUnit\Framework\MockObject\MockObject
      */
     private $requestStack;
+
+    /**
+     * @var Request|\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $request;
+
+    /**
+     * @var SessionInterface|\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $session;
 
     /**
      * @var ProviderInterface|\PHPUnit\Framework\MockObject\MockObject
@@ -114,7 +126,6 @@ class AuthenticateTest extends TestCase
         $this->authenticationService = $this->createMock(AuthenticationServiceInterface::class);
         $this->providerService = $this->createMock(ProviderServiceInterface::class);
         $this->contactService = $this->createMock(ContactServiceInterface::class);
-        $this->requestStack = $this->createMock(RequestStack::class);
         $this->provider = $this->createMock(ProviderInterface::class);
         $this->contact = $this->createMock(ContactInterface::class);
         $this->authenticationTokens = $this->createMock(AuthenticationTokens::class);
@@ -123,6 +134,21 @@ class AuthenticateTest extends TestCase
         $this->authenticationRepository = $this->createMock(AuthenticationRepositoryInterface::class);
         $this->sessionRepository = $this->createMock(SessionRepositoryInterface::class);
         $this->dataStorageEngine = $this->createMock(DataStorageEngineInterface::class);
+        $this->session = $this->createMock(SessionInterface::class);
+        $this->session
+            ->expects($this->any())
+            ->method('getId')
+            ->willReturn('session_abcd');
+        $this->request = $this->createMock(Request::class);
+        $this->request
+            ->expects($this->any())
+            ->method('getSession')
+            ->willReturn($this->session);
+        $this->requestStack = $this->createMock(RequestStack::class);
+        $this->requestStack
+            ->expects($this->any())
+            ->method('getCurrentRequest')
+            ->willReturn($this->request);
     }
 
     /**
@@ -323,11 +349,6 @@ class AuthenticateTest extends TestCase
             ->method('addUser')
             ->with($this->contact);
 
-        $this->requestStack
-            ->expects($this->once())
-            ->method('getId')
-            ->willReturn('abdef');
-
         $this->authenticationService
             ->expects($this->once())
             ->method('findAuthenticationTokensByToken')
@@ -444,11 +465,6 @@ class AuthenticateTest extends TestCase
             ->method('updateUser')
             ->with($this->contact);
 
-        $this->requestStack
-            ->expects($this->once())
-            ->method('getId')
-            ->willReturn('abdef');
-
         $this->authenticationService
             ->expects($this->once())
             ->method('findAuthenticationTokensByToken')
@@ -507,11 +523,6 @@ class AuthenticateTest extends TestCase
             ->expects($this->once())
             ->method('updateUser')
             ->with($this->contact);
-
-        $this->requestStack
-            ->expects($this->any())
-            ->method('getId')
-            ->willReturn('abdef');
 
         $this->authenticationService
             ->expects($this->once())
@@ -586,11 +597,6 @@ class AuthenticateTest extends TestCase
             ->method('exists')
             ->willReturn(true);
 
-        $this->requestStack
-            ->expects($this->any())
-            ->method('getId')
-            ->willReturn('abdef');
-
         $this->authenticationService
             ->expects($this->once())
             ->method('findAuthenticationTokensByToken')
@@ -657,11 +663,6 @@ class AuthenticateTest extends TestCase
             ->expects($this->once())
             ->method('exists')
             ->willReturn(true);
-
-        $this->requestStack
-            ->expects($this->any())
-            ->method('getId')
-            ->willReturn('abdef');
 
         $this->authenticationService
             ->expects($this->once())
