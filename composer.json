@@ -12,6 +12,7 @@
     "require-dev": {
         "adlawson/vfs": "^0.12.1",
         "behat/behat": "^3.10",
+        "behat/mink-selenium2-driver": "^1.5",
         "friends-of-behat/mink": "^1.9",
         "friends-of-behat/mink-extension": "^2.5",
         "centreon/centreon-test-lib": "dev-MON-6124",
@@ -26,8 +27,7 @@
         "symfony/web-profiler-bundle": "^5.4",
         "twig/twig": "^3.3",
         "webmozart/assert": "^1.8",
-        "zircote/swagger-php": "^4.0",
-        "behat/mink-selenium2-driver": "^1.5"
+        "zircote/swagger-php": "^4.0"
     },
     "require": {
         "beberlei/assert": "^3.3",
