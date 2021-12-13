@@ -45,7 +45,7 @@ require_once './include/reporting/dashboard/initReport.php';
 /*
  *  Getting host to report
  */
-$id = filter_var($_GET['host'] ?? $_POST['host'] ?? false, FILTER_VALIDATE_INT);
+$id = filter_var($_GET['hostElement'] ?? $_POST['hostElement'] ?? false, FILTER_VALIDATE_INT);
 
 /*
  * Formulary
@@ -68,13 +68,15 @@ $hostsRoute = array(
         './api/internal.php?object=centreon_configuration_host
         &action=defaultValues&target=host&field=host_id&id=' . $id,
 );
-$selHost = $formHost->addElement(
+
+$selHost = $formPeriod->addElement(
     'select2',
-    'host',
+    'hostElement',
     _("Host"),
     [],
     $hostsRoute
 );
+
 $selHost->addJsCallback(
     'change',
     'this.form.submit();'
