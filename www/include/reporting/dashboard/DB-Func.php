@@ -158,6 +158,12 @@ function getLogInDbForHostGroup($hostgroup_id, $start_date, $end_date, $reportTi
 
     $hosts_id = $centreon->user->access->getHostHostGroupAclConf($hostgroup_id, 'broker');
     if (count($hosts_id) == 0) {
+        $hostgroupStats["average"]["UP_MP"] = 0;
+        $hostgroupStats["average"]["DOWN_MP"] = 0;
+        $hostgroupStats["average"]["UNREACHABLE_MP"] = 0;
+        $hostgroupStats["average"]["UNDETERMINED_TP"] = 100;
+        $hostgroupStats["average"]["MAINTENANCE_TP"] = 0;
+        $hostgroupStats["average"]["TOTAL_ALERTS"] = 0;
         return $hostgroupStats;
     }
 
@@ -543,6 +549,16 @@ function getLogInDbForServicesGroup($servicegroupId, $startDate, $endDate, $repo
     $count = 0;
     $services = getServiceGroupActivateServices($servicegroupId);
 
+    if (empty($services)) {
+        $serviceGroupStats["average"]["UNDETERMINED_TP"] = 100;
+        $serviceGroupStats["average"]["TOTAL_ALERTS"] = 0;
+        $serviceGroupStats["average"]["OK_MP"] = 0;
+        $serviceGroupStats["average"]["WARNING_MP"] = 0;
+        $serviceGroupStats["average"]["CRITICAL_MP"] = 0;
+        $serviceGroupStats["average"]["UNKNOWN_MP"] = 0;
+        return $serviceGroupStats;
+    }
+    
     $servicesParameter = [];
     foreach ($services as $service) {
         $servicesParameter[] = [

@@ -6,9 +6,6 @@ on:
     branches: [ develop ]
 
 env:
-  JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
-  JIRA_USER_EMAIL: ${{ secrets.JIRA_USER_EMAIL }}
-  JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
   JIRA_PROJECT_KEY: "MON"
   JIRA_ISSUE_TYPE: "Technical"
 
@@ -24,15 +21,19 @@ jobs:
 
       - name: Login to Jira
         uses: atlassian/gajira-login@v2.0.0
-        env:
+        id: login
+        with:
           JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
           JIRA_USER_EMAIL: ${{ secrets.JIRA_USER_EMAIL }}
           JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
 
       - name: Create Jira Issue
-        id: create
         uses: atlassian/gajira-create@v2.0.1
+        id: create
         with:
+          JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
+          JIRA_USER_EMAIL: ${{ secrets.JIRA_USER_EMAIL }}
+          JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
           project: ${{ env.JIRA_PROJECT_KEY }}
           issuetype: ${{ env.JIRA_ISSUE_TYPE }}
           summary: |
@@ -52,7 +53,6 @@ jobs:
             {panel}
 
             *Github Advisory*
-
 
           fields:
             '{
