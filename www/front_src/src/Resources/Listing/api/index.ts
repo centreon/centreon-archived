@@ -9,6 +9,8 @@ import { buildResourcesEndpoint, ListResourcesProps } from './endpoint';
 const listResources =
   (cancelToken: CancelToken) =>
   (parameters: ListResourcesProps): Promise<ResourceListing> =>
-    getData<ResourceListing>(cancelToken)(buildResourcesEndpoint(parameters));
+    getData<ResourceListing>(cancelToken)({
+      endpoint: buildResourcesEndpoint(parameters),
+    });
 
 export { listResources };

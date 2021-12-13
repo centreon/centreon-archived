@@ -152,8 +152,8 @@ const Filter = (): JSX.Element => {
 
     const selectedValues = remove(-1, 1, values);
 
-    sendDynamicCriteriaValueRequests(
-      buildAutocompleteEndpoint({
+    sendDynamicCriteriaValueRequests({
+      endpoint: buildAutocompleteEndpoint({
         limit: 5,
         page: 1,
         search: {
@@ -172,7 +172,7 @@ const Filter = (): JSX.Element => {
           },
         },
       }),
-    ).then(({ result }): void => {
+    }).then(({ result }): void => {
       const names = pluck('name', result);
 
       const lastValueEqualsToAResult = find(equals(lastValue), names);
