@@ -126,10 +126,13 @@ function getHostStatsValueName()
             "UNDETERMINED_T",
             "MAINTENANCE_T",
             "UP_TP",
+            "UP_MP",
             "DOWN_TP",
+            "DOWN_MP",
             "UNREACHABLE_TP",
+            "UNREACHABLE_MP",
             "UNDETERMINED_TP",
-            "MAINTENANCE_TP"
+            "MAINTENANCE_TP",
         )
     );
 }
@@ -153,9 +156,13 @@ function getServicesStatsValueName()
             "UNDETERMINED_T",
             "MAINTENANCE_T",
             "OK_TP",
+            "OK_MP",
             "WARNING_TP",
+            "WARNING_MP",
             "CRITICAL_TP",
+            "CRITICAL_MP",
             "UNKNOWN_TP",
+            "UNKNOWN_MP",
             "UNDETERMINED_TP",
             "MAINTENANCE_TP"
         )

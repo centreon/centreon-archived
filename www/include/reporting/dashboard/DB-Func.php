@@ -230,7 +230,7 @@ function getLogInDbForHostGroup($hostgroup_id, $start_date, $end_date, $reportTi
 }
 
 /*
- * Return a table a (which reference is given in parameter) 
+ * Return a table a (which reference is given in parameter)
  * that contains stats on services for a given host defined by $host_id
  */
 function getLogInDbForHostSVC($host_id, $start_date, $end_date, $reportTimePeriod)
@@ -558,7 +558,7 @@ function getLogInDbForServicesGroup($servicegroupId, $startDate, $endDate, $repo
         $serviceGroupStats["average"]["UNKNOWN_MP"] = 0;
         return $serviceGroupStats;
     }
-    
+
     $servicesParameter = [];
     foreach ($services as $service) {
         $servicesParameter[] = [
