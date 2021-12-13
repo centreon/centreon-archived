@@ -73,10 +73,14 @@ describe('Password expiration policy', () => {
 
     expect(screen.getByText(labelDays)).toBeInTheDocument();
 
-    expect(screen.getByText(labelTimeBeforeSettingNewPassword)).toBeInTheDocument();
+    expect(
+      screen.getByText(labelTimeBeforeSettingNewPassword),
+    ).toBeInTheDocument();
 
     expect(
-      screen.getByLabelText(`${labelTimeBeforeSettingNewPassword} ${labelHour}`),
+      screen.getByLabelText(
+        `${labelTimeBeforeSettingNewPassword} ${labelHour}`,
+      ),
     ).toHaveValue(1);
   });
 
@@ -156,10 +160,14 @@ describe('Password expiration policy', () => {
         screen.getByText(labelPasswordExpirationPolicy),
       ).toBeInTheDocument();
     });
-    expect(screen.getByText(labelTimeBeforeSettingNewPassword)).toBeInTheDocument();
+    expect(
+      screen.getByText(labelTimeBeforeSettingNewPassword),
+    ).toBeInTheDocument();
 
     userEvent.type(
-      screen.getByLabelText(`${labelTimeBeforeSettingNewPassword} ${labelHour}`),
+      screen.getByLabelText(
+        `${labelTimeBeforeSettingNewPassword} ${labelHour}`,
+      ),
       '{selectall}{backspace}',
     );
 
@@ -183,10 +191,14 @@ describe('Password expiration policy', () => {
         screen.getByText(labelPasswordExpirationPolicy),
       ).toBeInTheDocument();
     });
-    expect(screen.getByText(labelTimeBeforeSettingNewPassword)).toBeInTheDocument();
+    expect(
+      screen.getByText(labelTimeBeforeSettingNewPassword),
+    ).toBeInTheDocument();
 
     userEvent.type(
-      screen.getByLabelText(`${labelTimeBeforeSettingNewPassword} ${labelHour}`),
+      screen.getByLabelText(
+        `${labelTimeBeforeSettingNewPassword} ${labelHour}`,
+      ),
       '{selectall}{backspace}',
     );
 

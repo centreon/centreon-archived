@@ -34,11 +34,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const commonSkeletonProps: SkeletonProps = {
-  animation: 'wave',
-  variant: 'rect',
-};
-
 const AuthenticationLoadingSkeleton = (): JSX.Element => {
   const classes = useStyles();
 
