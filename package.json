@@ -17,6 +17,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.15.5",
+    "@babel/eslint-parser": "^7.16.3",
     "@babel/plugin-proposal-class-properties": "^7.14.5",
     "@babel/plugin-syntax-dynamic-import": "^7.8.3",
     "@babel/plugin-transform-arrow-functions": "^7.14.5",
@@ -32,7 +33,7 @@
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.2.1",
-    "@types/ramda": "^0.27.45",
+    "@types/ramda": "0.27.45",
     "@types/react-router": "^5.1.16",
     "@typescript-eslint/eslint-plugin": "^4.33.0",
     "@typescript-eslint/parser": "^4.33.0",
