@@ -116,7 +116,7 @@ function getPeriodToReport(?string $alternate = null): array
 function getHostStatsValueName()
 {
     return (
-        array(
+        [
             "UP_T",
             "UP_A",
             "DOWN_T",
@@ -132,8 +132,8 @@ function getHostStatsValueName()
             "UNREACHABLE_TP",
             "UNREACHABLE_MP",
             "UNDETERMINED_TP",
-            "MAINTENANCE_TP",
-        )
+            "MAINTENANCE_TP"
+        ]
     );
 }
 
@@ -144,7 +144,7 @@ function getHostStatsValueName()
 function getServicesStatsValueName()
 {
     return (
-        array(
+        [
             "OK_T",
             "OK_A",
             "WARNING_T",
@@ -165,7 +165,7 @@ function getServicesStatsValueName()
             "UNKNOWN_MP",
             "UNDETERMINED_TP",
             "MAINTENANCE_TP"
-        )
+        ]
     );
 }
 /*
