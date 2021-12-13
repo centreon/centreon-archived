@@ -1,7 +1,9 @@
 import * as React from 'react';
 
 import { Divider, makeStyles } from '@material-ui/core';
-import { Skeleton, SkeletonProps } from '@material-ui/lab';
+import { SkeletonProps } from '@material-ui/lab';
+
+import { LoadingSkeleton } from '@centreon/ui';
 
 const useStyles = makeStyles((theme) => ({
   buttonsGroup: {
@@ -37,42 +39,42 @@ const commonSkeletonProps: SkeletonProps = {
   variant: 'rect',
 };
 
-const LoadingSkeleton = (): JSX.Element => {
+const AuthenticationLoadingSkeleton = (): JSX.Element => {
   const classes = useStyles();
 
   return (
     <div className={classes.formContainer}>
       <div className={classes.formGroup}>
-        <Skeleton {...commonSkeletonProps} height={32} width={230} />
+        <LoadingSkeleton height={32} width={230} />
         <div className={classes.passwordCaseGroup}>
-          <Skeleton {...commonSkeletonProps} height={51} width="100%" />
-          <Skeleton {...commonSkeletonProps} height={51} width="100%" />
+          <LoadingSkeleton height={51} width="100%" />
+          <LoadingSkeleton height={51} width="100%" />
         </div>
       </div>
       <Divider />
       <div className={classes.formGroup}>
-        <Skeleton {...commonSkeletonProps} height={32} width={260} />
+        <LoadingSkeleton height={32} width={260} />
         <div className={classes.passwordExpirationAndBlockingGroups}>
-          <Skeleton {...commonSkeletonProps} height={53} width="40%" />
-          <Skeleton {...commonSkeletonProps} height={53} width="90%" />
-          <Skeleton {...commonSkeletonProps} height={24} width="35%" />
+          <LoadingSkeleton height={53} width="40%" />
+          <LoadingSkeleton height={53} width="90%" />
+          <LoadingSkeleton height={24} width="35%" />
         </div>
       </div>
       <Divider />
       <div className={classes.formGroup}>
-        <Skeleton {...commonSkeletonProps} height={32} width={260} />
+        <LoadingSkeleton height={32} width={260} />
         <div className={classes.passwordExpirationAndBlockingGroups}>
-          <Skeleton {...commonSkeletonProps} height={62} width="70%" />
-          <Skeleton {...commonSkeletonProps} height={70} width="95%" />
+          <LoadingSkeleton height={62} width="70%" />
+          <LoadingSkeleton height={70} width="95%" />
         </div>
       </div>
       <Divider />
       <div className={classes.buttonsGroup}>
-        <Skeleton {...commonSkeletonProps} height={30} width="100%" />
-        <Skeleton {...commonSkeletonProps} height={30} width="80%" />
+        <LoadingSkeleton height={30} width="100%" />
+        <LoadingSkeleton height={30} width="80%" />
       </div>
     </div>
   );
 };
 
-export default LoadingSkeleton;
+export default AuthenticationLoadingSkeleton;
