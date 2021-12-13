@@ -104,10 +104,18 @@ const AppProvider = ({ children }: Props): JSX.Element => {
 
   React.useEffect(() => {
     Promise.all([
-      getUser(userEndpoint),
-      getParameters(parametersEndpoint),
-      getTranslations(translationEndpoint),
-      getAcl(aclEndpoint),
+      getUser({
+        endpoint: userEndpoint,
+      }),
+      getParameters({
+        endpoint: parametersEndpoint,
+      }),
+      getTranslations({
+        endpoint: translationEndpoint,
+      }),
+      getAcl({
+        endpoint: aclEndpoint,
+      }),
     ])
       .then(
         ([
@@ -129,6 +137,8 @@ const AppProvider = ({ children }: Props): JSX.Element => {
               retrievedParameters.monitoring_default_downtime_duration,
               10,
             ),
+            default_fixed: false,
+            default_with_services: false,
           });
           setRefreshInterval(
             parseInt(

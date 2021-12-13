@@ -9,7 +9,9 @@ import { adaptSecurityPolicyToAPI } from './adapters';
 
 export const getSecurityPolicy =
   (cancelToken: CancelToken) => (): Promise<SecurityPolicy> =>
-    getData<SecurityPolicy>(cancelToken)(securityPolicyEndpoint);
+    getData<SecurityPolicy>(cancelToken)({
+      endpoint: securityPolicyEndpoint,
+    });
 
 export const putSecurityPolicy =
   (cancelToken: CancelToken) =>
