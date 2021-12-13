@@ -1,7 +1,6 @@
 import * as React from 'react';
 
 import { Divider, makeStyles } from '@material-ui/core';
-import { SkeletonProps } from '@material-ui/lab';
 
 import { LoadingSkeleton } from '@centreon/ui';
 
