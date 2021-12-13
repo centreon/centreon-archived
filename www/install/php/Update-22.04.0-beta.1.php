@@ -32,9 +32,6 @@ $versionOfTheUpgrade = 'UPGRADE - 22.04.0-beta.1: ';
 try {
     $pearDB->beginTransaction();
 
-    $errorMessage  = 'Unable to delete rows in cb_tag_type_relation';
-    $statement = $pearDB->query("DELETE FROM cb_tag_type_relation where cb_tag_id = 3");
-
     $errorMessage  = 'Unable to delete logger entry in cb_tag';
     $statement = $pearDB->query("DELETE FROM cb_tag WHERE tagname = 'logger'");
 
