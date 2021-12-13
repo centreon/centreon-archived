@@ -22,23 +22,21 @@ declare(strict_types=1);
 
 namespace Security;
 
+use Centreon\Domain\Contact\Interfaces\ContactRepositoryInterface;
+use Centreon\Domain\Exception\ContactDisabledException;
+use Centreon\Domain\Option\Interfaces\OptionServiceInterface;
+use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Centreon\Domain\Exception\ContactDisabledException;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Security\Guard\AuthenticatorInterface;
-use Centreon\Domain\Option\Interfaces\OptionServiceInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
-use Centreon\Domain\Contact\Interfaces\ContactRepositoryInterface;
-use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
-use Symfony\Component\Security\Core\Exception\TokenNotFoundException;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use Symfony\Component\Security\Core\Exception\TokenNotFoundException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Http\Authenticator\AbstractAuthenticator;
 use Symfony\Component\Security\Core\Exception\CredentialsExpiredException;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
-use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
 use Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
@@ -297,7 +295,14 @@ class TokenAPIAuthenticator extends AbstractAuthenticator implements Authenticat
         return false;
     }
 
-    public function authenticate(Request $request): Passport
+    /**
+     * {@inheritdoc}
+     *
+     * @return SelfValidatingPassport
+     * @throws CustomUserMessageAuthenticationException
+     * @throws TokenNotFoundException
+     */
+    public function authenticate(Request $request): SelfValidatingPassport
     {
         $apiToken = $request->headers->get('X-AUTH-TOKEN');
         if (null === $apiToken) {

@@ -329,7 +329,7 @@ class Authenticate
         $this->info('[AUTHENTICATE] Starting Centreon Session');
         $this->requestStack->getCurrentRequest()->getSession()->start();
         $this->requestStack->getCurrentRequest()->getSession()->set('centreon', $legacySession);
-        $_SESSION['centreon'] = $legacySession;
+        $_SESSION['centreon'] = &$legacySession;
     }
 
     /**

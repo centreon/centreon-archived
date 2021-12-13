@@ -22,22 +22,22 @@ declare(strict_types=1);
 
 namespace Security;
 
+use Centreon\Domain\Contact\Interfaces\ContactRepositoryInterface;
+use Centreon\Domain\Exception\ContactDisabledException;
+use Security\Domain\Authentication\Exceptions\AuthenticatorException;
+use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
+use Security\Domain\Authentication\Interfaces\SessionRepositoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Centreon\Domain\Exception\ContactDisabledException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
-use Centreon\Domain\Contact\Interfaces\ContactRepositoryInterface;
-use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
-use Security\Domain\Authentication\Exceptions\AuthenticatorException;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use Symfony\Component\Security\Core\Exception\TokenNotFoundException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Http\Authenticator\AbstractAuthenticator;
-use Security\Domain\Authentication\Interfaces\SessionRepositoryInterface;
 use Symfony\Component\Security\Core\Exception\SessionUnavailableException;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
-use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 
@@ -288,7 +288,14 @@ class SessionAPIAuthenticator extends AbstractAuthenticator
         return false;
     }
 
-    public function authenticate(Request $request): Passport
+    /**
+     * {@inheritdoc}
+     *
+     * @return SelfValidatingPassport
+     * @throws CustomUserMessageAuthenticationException
+     * @throws TokenNotFoundException
+     */
+    public function authenticate(Request $request): SelfValidatingPassport
     {
         $apiToken = $request->cookies->get('PHPSESSID');
         if (null === $apiToken) {
