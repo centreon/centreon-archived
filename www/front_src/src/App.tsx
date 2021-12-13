@@ -10,7 +10,7 @@ import { makeStyles, Fab } from '@material-ui/core';
 import { getData, useRequest } from '@centreon/ui';
 
 import Header from './Header';
-import Nagigation from './Navigation';
+import Navigation from './Navigation';
 import Footer from './components/footer';
 import PageLoader from './components/PageLoader';
 import Provider from './Provider';
@@ -99,7 +99,7 @@ const App = (): JSX.Element => {
   return (
     <React.Suspense fallback={<PageLoader />}>
       <div className={classes.wrapper}>
-        {not(min) && <Nagigation />}
+        {not(min) && <Navigation />}
         <div className={classes.content} id="content">
           {not(min) && <Header />}
           <div className={classes.fullScreenWrapper} id="fullscreen-wrapper">
