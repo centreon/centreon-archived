@@ -196,7 +196,7 @@ class CentreonCentbrokerCfg extends CentreonObject
         $name = strtolower($name);
 
         /* Get the action and the object */
-        if (preg_match("/^(list|get|set|add|del)(input|output)/", $name, $matches)) {
+        if (preg_match("/^(list|get|set|add|del)(input|output|logger)/", $name, $matches)) {
             $tagName = $matches[2];
 
             /* Parse arguments */
