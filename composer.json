@@ -69,7 +69,8 @@
         "symfony/serializer": "5.4.*",
         "symfony/translation": "5.4.*",
         "symfony/validator": "5.4.*",
-        "symfony/yaml": "5.4.*"
+        "symfony/yaml": "5.4.*",
+        "psr/container": "^1.1"
     },
     "autoload": {
         "psr-4": {
