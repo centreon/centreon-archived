@@ -23,7 +23,9 @@ const useExternalComponents = (): UseExternalComponentsState => {
   );
 
   const getExternalComponents = (): void => {
-    sendRequest(externalComponentsEndpoint).then(setExternalComponents);
+    sendRequest({
+      endpoint: externalComponentsEndpoint,
+    }).then(setExternalComponents);
   };
 
   return {

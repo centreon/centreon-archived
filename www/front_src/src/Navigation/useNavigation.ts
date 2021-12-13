@@ -63,7 +63,9 @@ const useNavigation = (): UseNavigationState => {
   const [navigation, setNavigation] = useAtom(navigationAtom);
 
   const getNavigation = (): void => {
-    sendRequest(navigationEndpoint).then(setNavigation);
+    sendRequest({
+      endpoint: navigationEndpoint,
+    }).then(setNavigation);
   };
 
   const reduceAllowedPages = React.useCallback(
