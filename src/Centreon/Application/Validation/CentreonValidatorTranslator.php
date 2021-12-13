@@ -49,7 +49,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class CentreonValidatorTranslator implements TranslatorInterface
 {
-        /**
+    /**
      * {@inheritdoc}
      */
     public function trans($id, array $parameters = array(), $domain = null, $locale = null)
