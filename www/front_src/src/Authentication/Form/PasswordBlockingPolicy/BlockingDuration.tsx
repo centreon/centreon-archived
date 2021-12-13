@@ -6,7 +6,7 @@ import { isNil, not } from 'ramda';
 
 import { FormHelperText, FormLabel, useTheme } from '@material-ui/core';
 
-import { useMemoComponent } from '@centreon/centreon-frontend/packages/centreon-ui/src';
+import { useMemoComponent } from '@centreon/ui';
 
 import TimeInputs from '../../TimeInputs';
 import {
