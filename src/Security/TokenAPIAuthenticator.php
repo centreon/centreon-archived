@@ -24,8 +24,8 @@ namespace Security;
 
 use Centreon\Domain\Contact\Interfaces\ContactRepositoryInterface;
 use Centreon\Domain\Exception\ContactDisabledException;
-use Centreon\Domain\Option\Interfaces\OptionServiceInterface;
 use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
+use Security\Domain\Authentication\Model\LocalProvider;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -61,25 +61,24 @@ class TokenAPIAuthenticator extends AbstractAuthenticator implements Authenticat
     private $contactRepository;
 
     /**
-     * @var OptionServiceInterface
+     * @var LocalProvider
      */
-    private $optionService;
+    private $localProvider;
 
     /**
      * TokenAPIAuthenticator constructor.
      *
      * @param AuthenticationRepositoryInterface $authenticationRepository
      * @param ContactRepositoryInterface $contactRepository
-     * @param OptionServiceInterface $optionService
      */
     public function __construct(
         AuthenticationRepositoryInterface $authenticationRepository,
         ContactRepositoryInterface $contactRepository,
-        OptionServiceInterface $optionService
+        LocalProvider $localProvider
     ) {
         $this->authenticationRepository = $authenticationRepository;
         $this->contactRepository = $contactRepository;
-        $this->optionService = $optionService;
+        $this->localProvider = $localProvider;
     }
 
     /**
@@ -88,8 +87,7 @@ class TokenAPIAuthenticator extends AbstractAuthenticator implements Authenticat
     public function start(Request $request, AuthenticationException $authException = null)
     {
         $data = [
-            // you might translate this message
-            'message' => 'Authentication Required'
+            'message' => _('Authentication Required')
         ];
 
         return new JsonResponse($data, Response::HTTP_UNAUTHORIZED);
@@ -110,12 +108,9 @@ class TokenAPIAuthenticator extends AbstractAuthenticator implements Authenticat
     {
         $data = [
             'message' => strtr($exception->getMessageKey(), $exception->getMessageData())
-
-            // or to translate this message
-            // $this->translator->trans($exception->getMessageKey(), $exception->getMessageData())
         ];
 
-        return new JsonResponse($data, Response::HTTP_FORBIDDEN);
+        return new JsonResponse($data, Response::HTTP_UNAUTHORIZED);
     }
 
     /**
@@ -164,33 +159,20 @@ class TokenAPIAuthenticator extends AbstractAuthenticator implements Authenticat
      */
     private function getUserAndUpdateToken(string $apiToken): UserInterface
     {
-        $tokens = $this->authenticationRepository->findAuthenticationTokensByToken($apiToken);
-        if ($tokens === null) {
-            throw new TokenNotFoundException();
-        }
+        $providerToken = $this->localProvider->getProviderToken($apiToken);
 
-        $providerToken = $tokens->getProviderToken();
         $expirationDate = $providerToken->getExpirationDate();
         if ($expirationDate !== null && $expirationDate->getTimestamp() < time()) {
             throw new CredentialsExpiredException();
         }
 
-        $contact = $this->contactRepository->findById($tokens->getUserId());
+        $contact = $this->contactRepository->findByAuthenticationToken($providerToken->getToken());
         if ($contact === null) {
             throw new UserNotFoundException();
         }
         if (!$contact->isActive()) {
             throw new ContactDisabledException();
         }
-
-        $expirationSessionDelay = self::EXPIRATION_DELAY;
-        $sessionExpireOption = $this->optionService->findSelectedOptions(['session_expire']);
-        if (!empty($sessionExpireOption)) {
-            $expirationSessionDelay = (int) $sessionExpireOption[0]->getValue();
-        }
-        $providerToken->setExpirationDate(
-            (new \DateTime())->add(new \DateInterval('PT' . $expirationSessionDelay . 'M'))
-        );
 
         $this->authenticationRepository->updateProviderToken($providerToken);
 

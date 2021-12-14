@@ -89,45 +89,19 @@ class SessionAPIAuthenticator extends AbstractAuthenticator
     }
 
     /**
-     * Called when authentication executed, but failed (e.g. wrong username password).
-     *
-     * This should return the Response sent back to the user, like a
-     * RedirectResponse to the login page or a 403 response.
-     *
-     * If you return null, the request will continue, but the user will
-     * not be authenticated. This is probably not what you want to do.
-     *
-     * @param Request $request
-     * @param AuthenticationException $exception
-     *
-     * @return Response|null
+     * @inheritDoc
      */
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
         $data = [
             'message' => strtr($exception->getMessageKey(), $exception->getMessageData())
-
-            // or to translate this message
-            // $this->translator->trans($exception->getMessageKey(), $exception->getMessageData())
         ];
 
-        return new JsonResponse($data, Response::HTTP_FORBIDDEN);
+        return new JsonResponse($data, Response::HTTP_UNAUTHORIZED);
     }
 
     /**
-     * Called when authentication executed and was successful!
-     *
-     * This should return the Response sent back to the user, like a
-     * RedirectResponse to the last page they visited.
-     *
-     * If you return null, the current request will continue, and the user
-     * will be authenticated. This makes sense, for example, with an API.
-     *
-     * @param Request $request
-     * @param TokenInterface $token
-     * @param string $providerKey The provider (i.e. firewall) key
-     *
-     * @return Response|null
+     * @inheritDoc
      */
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey): ?Response
     {
