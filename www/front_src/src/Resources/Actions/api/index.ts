@@ -60,7 +60,7 @@ const setDowntimeOnResources =
           end_time: params.timeEnd,
           is_fixed: params.fixed,
           start_time: params.timeStart,
-          with_services: params.downtimeWithServices,
+          with_services: params.isDowntimeWithServices,
         },
         resources: map(pick(['type', 'id', 'parent']), resources),
       },

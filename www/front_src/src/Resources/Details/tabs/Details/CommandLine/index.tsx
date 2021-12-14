@@ -14,9 +14,9 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     marginLeft: theme.spacing(1),
   },
-  command: {
-    fontWeight: theme.typography.fontWeightBold,
-  },
+  // command: {
+  //   fontWeight: theme.typography.fontWeightBold,
+  // },
   pipe: {
     marginRight: theme.spacing(1),
   },
@@ -46,9 +46,7 @@ const CommandWithArguments = ({ commandLine }: Props): JSX.Element => {
                   |
                 </Typography>
               )}
-              <Typography className={classes.command} variant="body2">
-                {command}
-              </Typography>
+              <Typography variant="body2">{command}</Typography>
             </div>
             {args.map(([argument, value]) => {
               return (

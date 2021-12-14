@@ -28,12 +28,12 @@ export interface DowntimeFormValues {
   comment?: string;
   dateEnd: Date;
   dateStart: Date;
-  downtimeWithServices: boolean;
   duration: {
     unit: string;
     value: number;
   };
   fixed: boolean;
+  isDowntimeWithServices: boolean;
   timeEnd: Date;
   timeStart: Date;
 }
@@ -68,12 +68,12 @@ const DowntimeForm = ({
       comment: undefined,
       dateEnd: defaultEndDate,
       dateStart: currentDate,
-      downtimeWithServices: downtime.default_with_services,
       duration: {
         unit: 'seconds',
         value: downtime.default_duration,
       },
       fixed: downtime.default_fixed,
+      isDowntimeWithServices: downtime.default_with_services,
       timeEnd: defaultEndDate,
       timeStart: currentDate,
     },
