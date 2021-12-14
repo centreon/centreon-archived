@@ -160,11 +160,14 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
         $statement->bindValue(':token', $token, \PDO::PARAM_STR);
         $statement->execute();
 
+        $contact = null;
         if ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
-            return $this->createContact($result);
+            $contact = $this->createContact($result);
+            $this->addActionRules($contact);
+            $this->addTopologyRules($contact);
         }
 
-        return null;
+        return $contact;
     }
 
     /**
