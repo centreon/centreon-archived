@@ -1,7 +1,6 @@
 import * as React from 'react';
 
 import { useTheme, makeStyles, alpha } from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
 
 import { LoadingSkeleton } from '@centreon/centreon-frontend/packages/centreon-ui/src';
 
