@@ -31,6 +31,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Symfony\Component\Security\Core\Exception\SessionUnavailableException;
 use Symfony\Component\Security\Core\Exception\TokenNotFoundException;
 use Symfony\Component\Security\Core\Exception\UserNotFoundException;
@@ -171,7 +172,10 @@ class SessionAPIAuthenticator extends AbstractAuthenticator
      */
     private function getUserAndUpdateSession(string $sessionId): UserInterface
     {
-        $this->authenticationService->isValidToken($sessionId);
+        if (!$this->authenticationService->isValidToken($sessionId)) {
+            throw new BadCredentialsException();
+        }
+
         $this->sessionRepository->deleteExpiredSession();
 
         $contact = $this->contactRepository->findBySession($sessionId);
