@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,19 +24,18 @@ namespace Security;
 
 use Centreon\Domain\Contact\Interfaces\ContactRepositoryInterface;
 use Centreon\Domain\Exception\ContactDisabledException;
-use Security\Domain\Authentication\Exceptions\AuthenticatorException;
 use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
 use Security\Domain\Authentication\Interfaces\SessionRepositoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use Symfony\Component\Security\Core\Exception\SessionUnavailableException;
 use Symfony\Component\Security\Core\Exception\TokenNotFoundException;
+use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Http\Authenticator\AbstractAuthenticator;
-use Symfony\Component\Security\Core\Exception\SessionUnavailableException;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
@@ -81,146 +80,11 @@ class SessionAPIAuthenticator extends AbstractAuthenticator
     }
 
     /**
-     * Returns a response that directs the user to authenticate.
-     *
-     * This is called when an anonymous request accesses a resource that
-     * requires authentication. The job of this method is to return some
-     * response that "helps" the user start into the authentication process.
-     *
-     * Examples:
-     *
-     * - For a form login, you might redirect to the login page
-     *
-     *     return new RedirectResponse('/login');
-     *
-     * - For an API token authentication system, you return a 401 response
-     *
-     *     return new Response('Auth header required', 401);
-     *
-     * @param Request $request The request that resulted in an AuthenticationException
-     * @param AuthenticationException $authException The exception that started the authentication process
-     *
-     * @return Response
-     */
-    public function start(Request $request, AuthenticationException $authException = null)
-    {
-        $data = [
-            // you might translate this message
-            'message' => 'Authentication Required'
-        ];
-
-        return new JsonResponse($data, Response::HTTP_UNAUTHORIZED);
-    }
-
-    /**
-     * Does the authenticator support the given Request?
-     *
-     * If this returns false, the authenticator will be skipped.
-     *
-     * @param Request $request
-     *
-     * @return bool
+     * @inheritDoc
      */
     public function supports(Request $request): bool
     {
         return $request->headers->has('Cookie') && $request->cookies->has('PHPSESSID');
-    }
-
-    /**
-     * Get the authentication credentials from the request and return them
-     * as any type (e.g. an associate array).
-     *
-     * Whatever value you return here will be passed to getUser() and checkCredentials()
-     *
-     * For example, for a form login, you might:
-     *
-     *      return [
-     *          'username' => $request->request->get('_username'),
-     *          'password' => $request->request->get('_password'),
-     *      ];
-     *
-     * Or for an API token that's on a header, you might use:
-     *
-     *      return ['api_key' => $request->headers->get('X-API-TOKEN')];
-     *
-     * @param Request $request
-     *
-     * @return mixed Any non-null value
-     *
-     * @throws \UnexpectedValueException If null is returned
-     */
-    public function getCredentials(Request $request)
-    {
-        return [
-            'session' => $request->cookies->get('PHPSESSID'),
-        ];
-    }
-
-    /**
-     * Return a UserInterface object based on the credentials.
-     *
-     * The *credentials* are the return value from getCredentials()
-     *
-     * You may throw an AuthenticationException if you wish. If you return
-     * null, then a UsernameNotFoundException is thrown for you.
-     *
-     * @param mixed $credentials
-     * @param UserProviderInterface $userProvider
-     *
-     * @return UserInterface|null
-     * @throws AuthenticationException
-     * @throws \Exception
-     *
-     */
-    public function getUser($credentials, UserProviderInterface $userProvider)
-    {
-        $sessionId = $credentials['session'];
-        if (null === $sessionId) {
-            return null;
-        }
-
-        $this->sessionRepository->deleteExpiredSession();
-
-        $contact = $this->contactRepository->findBySession($sessionId);
-        if ($contact === null) {
-            throw new SessionUnavailableException();
-        }
-        if ($contact->isActive() === false) {
-            throw new ContactDisabledException();
-        }
-
-        // force api access to true cause it comes from session
-        $contact
-            ->setAccessToApiRealTime(true)
-            ->setAccessToApiConfiguration(true);
-
-        // It's an internal API call, so this contact has all roles
-        return $contact;
-    }
-
-    /**
-     * Returns true if the credentials are valid.
-     *
-     * If any value other than true is returned, authentication will
-     * fail. You may also throw an AuthenticationException if you wish
-     * to cause authentication to fail.
-     *
-     * The *credentials* are the return value from getCredentials()
-     *
-     * @param mixed $credentials
-     * @param UserInterface $user
-     *
-     * @return bool
-     *
-     * @throws AuthenticationException
-     */
-    public function checkCredentials($credentials, UserInterface $user)
-    {
-        if (!array_key_exists('session', $credentials)) {
-            throw AuthenticatorException::sessionTokenNotFound();
-        }
-
-        return $this->authenticationService->isValidToken($credentials['session']);
     }
 
     /**
@@ -270,25 +134,6 @@ class SessionAPIAuthenticator extends AbstractAuthenticator
     }
 
     /**
-     * Does this method support remember me cookies?
-     *
-     * Remember me cookie will be set if *all* of the following are met:
-     *  A) This method returns true
-     *  B) The remember_me key under your firewall is configured
-     *  C) The "remember me" functionality is activated. This is usually
-     *      done by having a _remember_me checkbox in your form, but
-     *      can be configured by the "always_remember_me" and "remember_me_parameter"
-     *      parameters under the "remember_me" firewall key
-     *  D) The onAuthenticationSuccess method returns a Response object
-     *
-     * @return bool
-     */
-    public function supportsRememberMe()
-    {
-        return false;
-    }
-
-    /**
      * {@inheritdoc}
      *
      * @return SelfValidatingPassport
@@ -301,23 +146,48 @@ class SessionAPIAuthenticator extends AbstractAuthenticator
         if (null === $apiToken) {
             // The token header was empty, authentication fails with HTTP Status
             // Code 401 "Unauthorized"
-            throw new CustomUserMessageAuthenticationException('No API token provided');
+            throw new SessionUnavailableException('Session id not provided');
         }
 
         return new SelfValidatingPassport(
             new UserBadge(
                 $apiToken,
                 function ($userIdentifier) {
-                    $contact = $this->contactRepository->findByAuthenticationToken($userIdentifier);
-                    if (null === $contact) {
-                        throw new CustomUserMessageAuthenticationException('No contact found for this API token');
-                    }
-                    $contact
-                        ->setAccessToApiRealTime(true)
-                        ->setAccessToApiConfiguration(true);
-                    return $contact;
+                    return $this->getUserAndUpdateSession($userIdentifier);
                 }
             )
         );
+    }
+
+    /**
+     * Return a UserInterface object based on session id provided.
+     *
+     * @param string $apiToken
+     *
+     * @return UserInterface
+     * @throws TokenNotFoundException
+     * @throws CredentialsExpiredException
+     * @throws ContactDisabledException
+     */
+    private function getUserAndUpdateSession(string $sessionId): UserInterface
+    {
+        $this->authenticationService->isValidToken($sessionId);
+        $this->sessionRepository->deleteExpiredSession();
+
+        $contact = $this->contactRepository->findBySession($sessionId);
+        if ($contact === null) {
+            throw new UserNotFoundException();
+        }
+        if (!$contact->isActive()) {
+            throw new ContactDisabledException();
+        }
+
+        // force api access to true cause it comes from session
+        $contact
+            ->setAccessToApiRealTime(true)
+            ->setAccessToApiConfiguration(true);
+
+        // It's an internal API call, so this contact has all roles
+        return $contact;
     }
 }
