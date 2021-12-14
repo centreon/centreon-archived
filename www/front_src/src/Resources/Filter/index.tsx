@@ -504,7 +504,9 @@ const Filter = (): JSX.Element => {
       content={
         <div className={classes.container}>
           <React.Suspense
-            fallback={<LoadingSkeleton variant="circle" width={20} />}
+            fallback={
+              <LoadingSkeleton height={24} variant="circle" width={24} />
+            }
           >
             <SaveFilter />
           </React.Suspense>
@@ -523,7 +525,9 @@ const Filter = (): JSX.Element => {
             </React.Suspense>
           )}
           <React.Suspense
-            fallback={<LoadingSkeleton variant="circle" width={20} />}
+            fallback={
+              <LoadingSkeleton height={24} variant="circle" width={24} />
+            }
           >
             <Criterias />
           </React.Suspense>
