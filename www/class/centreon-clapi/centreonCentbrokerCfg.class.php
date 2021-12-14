@@ -763,6 +763,9 @@ class CentreonCentbrokerCfg extends CentreonObject
             $resultSet = $res->fetchAll();
             unset($res);
             foreach ($resultSet as $row) {
+                if (strtoupper($row['config_group']) === "LOGGER") {
+                    continue;
+                }
                 if ($row['config_key'] != 'name'
                     && $row['config_key'] != 'blockId'
                     && $row['config_key'] != 'filters'
@@ -806,6 +809,9 @@ class CentreonCentbrokerCfg extends CentreonObject
                 }
                 if (isset($categories[$id])) {
                     list($configGroup, $configGroupId) = explode('_', $id);
+                    if (strtoupper($configGroup) === "LOGGER") {
+                        continue;
+                    }
                     echo $this->action . $this->delim . "SET" . strtoupper($configGroup)
                         . $this->delim . $element['config_name']
                         . $this->delim . $configGroupId
