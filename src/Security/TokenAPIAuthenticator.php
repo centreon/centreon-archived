@@ -48,8 +48,6 @@ use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationExc
  */
 class TokenAPIAuthenticator extends AbstractAuthenticator implements AuthenticationEntryPointInterface
 {
-    public const EXPIRATION_DELAY = 120;
-
     /**
      * @var AuthenticationRepositoryInterface
      */
@@ -116,7 +114,7 @@ class TokenAPIAuthenticator extends AbstractAuthenticator implements Authenticat
     /**
      * @inheritDoc
      */
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey): ?Response
+    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $providerKey): ?Response
     {
         return null;
     }

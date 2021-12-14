@@ -103,7 +103,7 @@ class SessionAPIAuthenticator extends AbstractAuthenticator
     /**
      * @inheritDoc
      */
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey): ?Response
+    public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $providerKey): ?Response
     {
         return null;
     }
@@ -117,8 +117,11 @@ class SessionAPIAuthenticator extends AbstractAuthenticator
      */
     public function authenticate(Request $request): SelfValidatingPassport
     {
-        $apiToken = $request->cookies->get('PHPSESSID');
-        if (null === $apiToken) {
+        /**
+         * @var string|null $sessionId
+         */
+        $sessionId = $request->cookies->get('PHPSESSID');
+        if (null === $sessionId) {
             // The token header was empty, authentication fails with HTTP Status
             // Code 401 "Unauthorized"
             throw new SessionUnavailableException('Session id not provided');
@@ -126,7 +129,7 @@ class SessionAPIAuthenticator extends AbstractAuthenticator
 
         return new SelfValidatingPassport(
             new UserBadge(
-                $apiToken,
+                $sessionId,
                 function ($userIdentifier) {
                     return $this->getUserAndUpdateSession($userIdentifier);
                 }
@@ -137,11 +140,11 @@ class SessionAPIAuthenticator extends AbstractAuthenticator
     /**
      * Return a UserInterface object based on session id provided.
      *
-     * @param string $apiToken
+     * @param string $sessionId
      *
      * @return UserInterface
-     * @throws TokenNotFoundException
-     * @throws CredentialsExpiredException
+     * @throws BadCredentialsException
+     * @throws UserNotFoundException
      * @throws ContactDisabledException
      */
     private function getUserAndUpdateSession(string $sessionId): UserInterface
