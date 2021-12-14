@@ -2,6 +2,7 @@
 
 namespace CentreonRemote\Domain\Resources\RemoteConfig;
 
+use CentreonRemote\Domain\Resources\RemoteConfig\BrokerInfo\LoggerModule;
 use CentreonRemote\Domain\Resources\RemoteConfig\BrokerInfo\InputBroker;
 use CentreonRemote\Domain\Resources\RemoteConfig\BrokerInfo\InputRrd;
 use CentreonRemote\Domain\Resources\RemoteConfig\BrokerInfo\OutputPerfdata;
@@ -38,6 +39,7 @@ class CfgCentreonBrokerInfo
                 'output_sql'      => OutputSqlMaster::getConfiguration($dbUser, $dbPassword)
             ],
             'central-module' => [
+                'logger' => LoggerModule::getConfiguration(),
                 'output' => OutputModuleMaster::getConfiguration()
             ],
             'central-rrd' => [
