@@ -13,7 +13,7 @@
 import React, { Component } from 'react';
 
 import clsx from 'clsx';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 
 import Link from '@material-ui/core/Link';
 import { Typography, styled } from '@material-ui/core';
@@ -102,7 +102,7 @@ class NavigationMenu extends Component {
   };
 
   render() {
-    const { navigationData, sidebarActive, reactRoutes } = this.props;
+    const { navigationData, sidebarActive, reactRoutes, navigate } = this.props;
     const {
       activeSecondLevel,
       doubleClickedLevel,
@@ -190,11 +190,7 @@ class NavigationMenu extends Component {
                         hrefOfIframe: false,
                       },
                       () => {
-                        window.history.pushState(
-                          {},
-                          '',
-                          this.getUrlFromEntry(firstLevel),
-                        );
+                        navigate(this.getUrlFromEntry(firstLevel));
                       },
                     );
                   }}
@@ -404,4 +400,8 @@ class NavigationMenu extends Component {
   }
 }
 
-export default NavigationMenu;
+export default (props) => {
+  const navigate = useNavigate();
+
+  return <NavigationMenu {...props} navigate={navigate} />;
+};
