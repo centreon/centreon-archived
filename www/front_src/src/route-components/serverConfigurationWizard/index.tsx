@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { equals } from 'ramda';
 
 import Form from '../../components/forms/ServerConfigurationWizardForm';
-import routeMap from '../../route-maps/route-map';
+import routeMap from '../../reactRoutes/route-map';
 import ProgressBar from '../../components/progressBar';
 import BaseWizard from '../../components/forms/baseWizard';
 

@@ -8,7 +8,7 @@ import { styled } from '@material-ui/core';
 
 import { PageSkeleton } from '@centreon/ui';
 
-import internalPagesRoutes from '../../route-maps';
+import internalPagesRoutes from '../../reactRoutes';
 import { dynamicImport } from '../../helpers/dynamicImport';
 import NotAllowedPage from '../../route-components/notAllowedPage';
 import BreadcrumbTrail from '../../BreadcrumbTrail';

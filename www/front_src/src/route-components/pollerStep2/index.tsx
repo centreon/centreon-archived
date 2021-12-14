@@ -7,7 +7,7 @@ import { useRequest, postData } from '@centreon/ui';
 
 import Form from '../../components/forms/poller/PollerFormStepTwo';
 import ProgressBar from '../../components/progressBar';
-import routeMap from '../../route-maps/route-map';
+import routeMap from '../../reactRoutes/route-map';
 import { setPollerWizard } from '../../redux/actions/pollerWizardActions';
 import BaseWizard from '../../components/forms/baseWizard';
 

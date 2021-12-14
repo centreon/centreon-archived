@@ -12,7 +12,7 @@ import {
 
 import WizardFormInstallingStatus from '../../components/wizardFormInstallingStatus';
 import ProgressBar from '../../components/progressBar';
-import routeMap from '../../route-maps/route-map';
+import routeMap from '../../reactRoutes/route-map';
 import BaseWizard from '../../components/forms/baseWizard';
 
 const links = [
