@@ -1,8 +1,13 @@
 /* eslint-disable class-methods-use-this */
 import DayjsAdapter from '@date-io/dayjs';
 import dayjs from 'dayjs';
+import { includes } from 'ramda';
+import { useAtomValue } from 'jotai/utils';
 
 import { MuiPickersAdapter } from '@mui/lab';
+
+import { useLocaleDateTimeFormat } from '@centreon/ui';
+import { userAtom } from '@centreon/ui-context';
 
 interface UseDateTimePickerAdapterProps {
   Adapter;
@@ -12,14 +17,14 @@ interface Props {
   locale: string;
   tz: string;
 }
+const meridians = ['AM', 'PM'];
 
-const useDateTimePickerAdapter = ({
-  locale,
-  tz,
-}: Props): UseDateTimePickerAdapterProps => {
+const useDateTimePickerAdapter = (): UseDateTimePickerAdapterProps => {
+  const { locale, timezone } = useAtomValue(userAtom);
+  const { format, toTime } = useLocaleDateTimeFormat();
   class Adapter extends DayjsAdapter {
     public static date(value): dayjs.Dayjs {
-      return dayjs(value).locale(locale).tz(tz);
+      return dayjs(value).locale(locale).tz(timezone);
     }
 
     public static startOfMonth(date: dayjs.Dayjs): dayjs.Dayjs {

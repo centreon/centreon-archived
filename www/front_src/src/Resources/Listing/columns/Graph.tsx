@@ -1,6 +1,7 @@
 import * as React from 'react';
 
-import { path, isNil } from 'ramda';
+import { path, isNil, not } from 'ramda';
+import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 
 import { Paper } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
@@ -12,7 +13,12 @@ import { labelGraph, labelServiceGraphs } from '../../translatedLabels';
 import PerformanceGraph from '../../Graph/Performance';
 import { ResourceDetails } from '../../Details/models';
 import { Resource } from '../../models';
-import useTimePeriod from '../../Graph/Performance/TimePeriods/useTimePeriod';
+import {
+  changeMousePositionAndTimeValueDerivedAtom,
+  isListingGraphOpenAtom,
+} from '../../Graph/Performance/Graph/mouseTimeValueAtoms';
+import { graphQueryParametersDerivedAtom } from '../../Graph/Performance/TimePeriods/timePeriodAtoms';
+import { lastDayPeriod } from '../../Details/tabs/Graph/models';
 
 import HoverChip from './HoverChip';
 import IconColumn from './IconColumn';
@@ -37,14 +43,31 @@ const Graph = ({
   endpoint,
   displayCompleteGraph,
 }: GraphProps): JSX.Element => {
-  const { periodQueryParameters } = useTimePeriod({});
+  const getGraphQueryParameters = useAtomValue(graphQueryParametersDerivedAtom);
+  const setIsListingGraphOpen = useUpdateAtom(isListingGraphOpenAtom);
+  const changeMousePositionAndTimeValue = useUpdateAtom(
+    changeMousePositionAndTimeValueDerivedAtom,
+  );
+
+  const graphQueryParameters = getGraphQueryParameters({
+    timePeriod: lastDayPeriod,
+  });
+
+  React.useEffect(() => {
+    setIsListingGraphOpen(true);
+
+    return (): void => {
+      setIsListingGraphOpen(false);
+      changeMousePositionAndTimeValue({ position: null, timeValue: null });
+    };
+  }, []);
 
   return (
     <PerformanceGraph
       limitLegendRows
       displayCompleteGraph={displayCompleteGraph}
       displayTitle={false}
-      endpoint={`${endpoint}${periodQueryParameters}`}
+      endpoint={`${endpoint}${graphQueryParameters}`}
       graphHeight={150}
       resource={row}
       timeline={[]}
@@ -59,6 +82,7 @@ const GraphColumn = ({
 }): ((props: ComponentColumnProps) => JSX.Element | null) => {
   const GraphHoverChip = ({
     row,
+    isHovered,
   }: ComponentColumnProps): JSX.Element | null => {
     const classes = useStyles();
 
@@ -89,10 +113,11 @@ const GraphColumn = ({
               <IconGraph fontSize="small" />
             </IconButton>
           )}
+          isHovered={isHovered}
           label={label}
         >
-          {({ close }): JSX.Element => {
-            if (isHost) {
+          {({ close, isChipHovered }): JSX.Element => {
+            if (isHost || not(isChipHovered) || not(isHovered)) {
               return <div />;
             }
 

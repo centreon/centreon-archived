@@ -53,7 +53,9 @@ const DetailsTable = <TDetails extends { id: number }>({
   });
 
   useEffect(() => {
-    sendRequest(endpoint).then((retrievedDetails) => {
+    sendRequest({
+      endpoint,
+    }).then((retrievedDetails) => {
       setDetails(retrievedDetails.result);
     });
   }, []);

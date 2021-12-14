@@ -70,7 +70,15 @@
                     }).done((res) => {
                         window.location.href = res.redirect_uri
                     }).fail((err) => {
-                        jQuery('span.msg').text('Your credentials are incorrect.')
+                        if (err.status === 401) {
+                            if (err?.responseJSON?.message) {
+                                jQuery('span.msg').text(err.responseJSON.message)
+                            } else {
+                                jQuery('span.msg').text('Your credentials are incorrect')
+                            }
+                        } else {
+                            jQuery('span.msg').text('Internal server error')
+                        }
                         jQuery('div.error_msg').css('visibility', '')
                     }).always(() => {
                         jQuery('input[type="submit"]').prop('disabled', false)

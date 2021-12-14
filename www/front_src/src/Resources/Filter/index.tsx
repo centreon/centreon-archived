@@ -22,6 +22,8 @@ import {
   remove,
 } from 'ramda';
 import { useTranslation } from 'react-i18next';
+import { useAtomValue, useUpdateAtom } from 'jotai/utils';
+import { useAtom } from 'jotai';
 
 import CloseIcon from '@mui/icons-material/Close';
 import { CircularProgress, ClickAwayListener, MenuItem, Paper, Popper } from '@mui/material';
@@ -43,7 +45,6 @@ import {
   labelMyFilters,
   labelClearFilter,
 } from '../translatedLabels';
-import { useResourceContext } from '../Context';
 
 import SaveFilter from './Save';
 import FilterLoadingSkeleton from './FilterLoadingSkeleton';
@@ -60,6 +61,16 @@ import {
   getDynamicCriteriaParametersAndValue,
   DynamicCriteriaParametersAndValues,
 } from './Criterias/searchQueryLanguage';
+import {
+  applyCurrentFilterDerivedAtom,
+  applyFilterDerivedAtom,
+  clearFilterDerivedAtom,
+  currentFilterAtom,
+  customFiltersAtom,
+  searchAtom,
+  sendingFilterAtom,
+  setNewFilterDerivedAtom,
+} from './filterAtoms';
 
 interface DynamicCriteriaResult {
   result: Array<{ name: string }>;
@@ -88,18 +99,6 @@ const Filter = (): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
 
-  const {
-    applyFilter,
-    customFilters,
-    customFiltersLoading,
-    setSearch,
-    setNewFilter,
-    currentFilter,
-    search,
-    applyCurrentFilter,
-    clearFilter,
-  } = useResourceContext();
-
   const [isSearchFieldFocus, setIsSearchFieldFocused] = React.useState(false);
   const [autocompleteAnchor, setAutocompleteAnchor] =
     React.useState<HTMLDivElement | null>(null);
@@ -121,6 +120,15 @@ const Filter = (): JSX.Element => {
     request: getData,
   });
 
+  const [search, setSearch] = useAtom(searchAtom);
+  const customFilters = useAtomValue(customFiltersAtom);
+  const currentFilter = useAtomValue(currentFilterAtom);
+  const sendingFilter = useAtomValue(sendingFilterAtom);
+  const applyCurrentFilter = useUpdateAtom(applyCurrentFilterDerivedAtom);
+  const applyFilter = useUpdateAtom(applyFilterDerivedAtom);
+  const setNewFilter = useUpdateAtom(setNewFilterDerivedAtom);
+  const clearFilter = useUpdateAtom(clearFilterDerivedAtom);
+
   const open = Boolean(autocompleteAnchor);
 
   const clearDebounceDynamicSuggestions = (): void => {
@@ -139,8 +147,8 @@ const Filter = (): JSX.Element => {
 
     const selectedValues = remove(-1, 1, values);
 
-    sendDynamicCriteriaValueRequests(
-      buildAutocompleteEndpoint({
+    sendDynamicCriteriaValueRequests({
+      endpoint: buildAutocompleteEndpoint({
         limit: 5,
         page: 1,
         search: {
@@ -159,7 +167,7 @@ const Filter = (): JSX.Element => {
           },
         },
       }),
-    ).then(({ result }): void => {
+    }).then(({ result }): void => {
       const names = pluck('name', result);
 
       const lastValueEqualsToAResult = find(equals(lastValue), names);
@@ -258,7 +266,7 @@ const Filter = (): JSX.Element => {
   }, [autoCompleteSuggestions]);
 
   const acceptAutocompleteSuggestionAtIndex = (index: number): void => {
-    setNewFilter();
+    setNewFilter(t);
 
     const acceptedSuggestion = autoCompleteSuggestions[index];
 
@@ -414,7 +422,7 @@ const Filter = (): JSX.Element => {
 
     setSearch(value);
 
-    setNewFilter();
+    setNewFilter(t);
   };
 
   const changeFilter = (event): void => {
@@ -473,7 +481,7 @@ const Filter = (): JSX.Element => {
 
   const memoProps = [
     customFilters,
-    customFiltersLoading,
+    sendingFilter,
     search,
     cursorPosition,
     autoCompleteSuggestions,
@@ -489,7 +497,7 @@ const Filter = (): JSX.Element => {
       content={
         <div className={classes.container}>
           <SaveFilter />
-          {customFiltersLoading ? (
+          {sendingFilter ? (
             <FilterLoadingSkeleton />
           ) : (
             <SelectFilter

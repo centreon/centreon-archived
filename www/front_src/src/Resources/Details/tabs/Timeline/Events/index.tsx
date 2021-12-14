@@ -3,6 +3,7 @@ import * as React from 'react';
 import { equals, last, not, isEmpty } from 'ramda';
 import { useTranslation } from 'react-i18next';
 import { Dayjs } from 'dayjs';
+import { useAtomValue } from 'jotai/utils';
 
 import { Typography, Paper } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
@@ -15,8 +16,8 @@ import {
   TimelineSeparator,
 } from '@mui/lab';
 
-import { useUserContext } from '@centreon/ui-context';
-import { useLocaleDateTimeFormat } from '@centreon/centreon-frontend/packages/centreon-ui/src';
+import { useLocaleDateTimeFormat } from '@centreon/ui';
+import { userAtom } from '@centreon/ui-context';
 
 import { labelFrom, labelTo } from '../../../../translatedLabels';
 import { TimelineEvent } from '../models';
@@ -63,7 +64,7 @@ interface Props {
 const Events = ({ timeline, infiniteScrollTriggerRef }: Props): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
-  const { locale } = useUserContext();
+  const { locale } = useAtomValue(userAtom);
   const { format } = useLocaleDateTimeFormat();
 
   const lastEvent = last(timeline.sort(sortEventsByDate));

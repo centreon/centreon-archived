@@ -6,6 +6,7 @@ import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
 import { labelBackward, labelForward } from '../../../../translatedLabels';
+import memoizeComponent from '../../../../memoizedComponent';
 
 import TimeShiftZone, { timeShiftZoneWidth } from './Zone';
 import TimeShiftIcon, { timeShiftIconSize } from './Icon';
@@ -75,4 +76,4 @@ const TimeShifts = (): JSX.Element | null => {
   );
 };
 
-export default TimeShifts;
+export default memoizeComponent({ Component: TimeShifts, memoProps: [] });

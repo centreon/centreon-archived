@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
+import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 
 import { Button, Grid } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
@@ -8,16 +9,19 @@ import TuneIcon from '@mui/icons-material/Tune';
 
 import { PopoverMenu, SelectEntry, useMemoComponent } from '@centreon/ui';
 
-import { useResourceContext } from '../../Context';
 import {
   labelClear,
   labelSearch,
   labelSearchOptions,
 } from '../../translatedLabels';
-import { FilterState } from '../useFilter';
+import {
+  applyCurrentFilterDerivedAtom,
+  clearFilterDerivedAtom,
+  filterWithParsedSearchDerivedAtom,
+  multiSelectCriteriasDerivedAtom,
+} from '../filterAtoms';
 
 import Criteria from './Criteria';
-import { Criteria as CriteriaInterface } from './models';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -28,19 +32,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-interface Props
-  extends Pick<FilterState, 'applyCurrentFilter' | 'clearFilter'> {
-  criterias: Array<CriteriaInterface>;
-}
-
-const CriteriasContent = ({
-  criterias,
-  applyCurrentFilter,
-  clearFilter,
-}: Props): JSX.Element => {
+const CriteriasContent = (): JSX.Element => {
   const classes = useStyles();
 
   const { t } = useTranslation();
+
+  const criterias = useAtomValue(multiSelectCriteriasDerivedAtom);
+  const applyCurrentFilter = useUpdateAtom(applyCurrentFilterDerivedAtom);
+  const clearFilter = useUpdateAtom(clearFilterDerivedAtom);
 
   return (
     <PopoverMenu
@@ -88,24 +87,13 @@ const CriteriasContent = ({
 };
 
 const Criterias = (): JSX.Element => {
-  const {
-    getMultiSelectCriterias,
-    applyCurrentFilter,
-    clearFilter,
-    filterWithParsedSearch,
-  } = useResourceContext();
-
-  const criterias = getMultiSelectCriterias();
+  const filterWithParsedSearch = useAtomValue(
+    filterWithParsedSearchDerivedAtom,
+  );
 
   return useMemoComponent({
-    Component: (
-      <CriteriasContent
-        applyCurrentFilter={applyCurrentFilter}
-        clearFilter={clearFilter}
-        criterias={criterias}
-      />
-    ),
-    memoProps: [criterias, filterWithParsedSearch],
+    Component: <CriteriasContent />,
+    memoProps: [filterWithParsedSearch],
   });
 };
 

@@ -28,7 +28,6 @@ import {
   labelLinkCopied,
   labelSomethingWentWrong,
 } from '../translatedLabels';
-import memoizeComponent from '../memoizedComponent';
 import { Parent, ResourceUris } from '../models';
 
 import SelectableResourceName from './tabs/Details/SelectableResourceName';
@@ -51,9 +50,6 @@ const useStyles = makeStyles<Theme, MakeStylesProps>((theme) => ({
     height: 43,
     padding: theme.spacing(0, 1),
   }),
-}));
-
-const useStylesHeaderContent = makeStyles((theme) => ({
   parent: {
     alignItems: 'center',
     display: 'grid',
@@ -106,10 +102,12 @@ type Props = {
   onSelectParent: (parent: Parent) => void;
 } & DetailsSectionProps;
 
-const HeaderContent = ({ details, onSelectParent }: Props): JSX.Element => {
+const Header = ({ details, onSelectParent }: Props): JSX.Element => {
   const { t } = useTranslation();
   const { showSuccessMessage, showErrorMessage } = useSnackbar();
-  const classes = useStylesHeaderContent();
+  const classes = useStyles({
+    displaySeverity: not(isNil(details?.severity_level)),
+  });
 
   const copyResourceLink = (): void => {
     try {
@@ -140,7 +138,7 @@ const HeaderContent = ({ details, onSelectParent }: Props): JSX.Element => {
     : 'primary';
 
   return (
-    <>
+    <div className={classes.header}>
       {details?.severity_level && (
         <StatusChip
           label={details?.severity_level.toString()}
@@ -204,23 +202,8 @@ const HeaderContent = ({ details, onSelectParent }: Props): JSX.Element => {
       >
         <CopyIcon fontSize="small" />
       </IconButton>
-    </>
-  );
-};
-
-const Header = ({ details, onSelectParent }: Props): JSX.Element => {
-  const classes = useStyles({
-    displaySeverity: not(isNil(details?.severity_level)),
-  });
-
-  return (
-    <div className={classes.header}>
-      <HeaderContent details={details} onSelectParent={onSelectParent} />
     </div>
   );
 };
 
-export default memoizeComponent<Props>({
-  Component: Header,
-  memoProps: ['details'],
-});
+export default Header;

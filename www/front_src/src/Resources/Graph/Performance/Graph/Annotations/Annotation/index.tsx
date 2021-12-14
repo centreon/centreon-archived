@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
+import { useUpdateAtom } from 'jotai/utils';
 
 import { Tooltip, Paper, Typography } from '@mui/material';
 
@@ -9,6 +10,7 @@ import makeStyles from '@mui/styles/makeStyles';
 import truncate from '../../../../../truncate';
 import { TimelineEvent } from '../../../../../Details/tabs/Timeline/models';
 import { labelBy } from '../../../../../translatedLabels';
+import { annotationHoveredAtom } from '../../annotationsAtoms';
 
 const yMargin = -32;
 const iconSize = 20;
@@ -27,9 +29,7 @@ export interface Props {
   header: string;
   icon: JSX.Element;
   marker: JSX.Element;
-  setAnnotationHovered: React.Dispatch<
-    React.SetStateAction<TimelineEvent | undefined>
-  >;
+  resourceId: string;
   xIcon: number;
 }
 
@@ -39,10 +39,12 @@ const Annotation = ({
   event,
   xIcon,
   marker,
-  setAnnotationHovered,
+  resourceId,
 }: Props): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
+
+  const setAnnotationHovered = useUpdateAtom(annotationHoveredAtom);
 
   const content = `${truncate(event.content)} (${t(labelBy)} ${
     event.contact?.name
@@ -64,7 +66,9 @@ const Annotation = ({
           width={iconSize}
           x={xIcon}
           y={yMargin}
-          onMouseEnter={(): void => setAnnotationHovered(() => event)}
+          onMouseEnter={(): void =>
+            setAnnotationHovered(() => ({ event, resourceId }))
+          }
           onMouseLeave={(): void => setAnnotationHovered(() => undefined)}
         >
           <rect fill="transparent" height={iconSize} width={iconSize} />

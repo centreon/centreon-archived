@@ -23,6 +23,7 @@ import RegularAnchorPoint from './AnchorPoint/RegularAnchorPoint';
 import StackedLines from './StackedLines';
 
 interface Props {
+  displayTimeValues: boolean;
   graphHeight: number;
   leftScale: ScaleLinear<number, number>;
   lines: Array<Line>;
@@ -79,6 +80,7 @@ const Lines = ({
   lines,
   graphHeight,
   timeTick,
+  displayTimeValues,
 }: Props): JSX.Element => {
   const [, secondUnit, thirdUnit] = getUnits(lines);
 
@@ -101,8 +103,9 @@ const Lines = ({
   const regularLines = difference(lines, stackedLines);
 
   return (
-    <>
+    <g>
       <StackedLines
+        displayTimeValues={displayTimeValues}
         lines={regularStackedLines}
         timeSeries={regularStackedTimeSeries}
         timeTick={timeTick}
@@ -110,13 +113,14 @@ const Lines = ({
         yScale={stackedYScale}
       />
       <StackedLines
+        displayTimeValues={displayTimeValues}
         lines={invertedStackedLines}
         timeSeries={invertedStackedTimeSeries}
         timeTick={timeTick}
         xScale={xScale}
         yScale={stackedYScale}
       />
-      <>
+      <g>
         {regularLines.map(
           ({
             metric,
@@ -138,9 +142,10 @@ const Lines = ({
             });
 
             return (
-              <React.Fragment key={metric}>
+              <g key={metric}>
                 <RegularAnchorPoint
                   areaColor={areaColor}
+                  displayTimeValues={displayTimeValues}
                   lineColor={lineColor}
                   metric={metric}
                   timeSeries={timeSeries}
@@ -162,12 +167,12 @@ const Lines = ({
                   xScale={xScale}
                   yScale={yScale}
                 />
-              </React.Fragment>
+              </g>
             );
           },
         )}
-      </>
-    </>
+      </g>
+    </g>
   );
 };
 

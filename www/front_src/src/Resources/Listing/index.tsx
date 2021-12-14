@@ -2,6 +2,8 @@ import * as React from 'react';
 
 import { equals, includes, not } from 'ramda';
 import { useTranslation } from 'react-i18next';
+import { useAtomValue, useUpdateAtom } from 'jotai/utils';
+import { useAtom } from 'jotai';
 
 import { useTheme, alpha } from '@mui/material';
 
@@ -9,13 +11,39 @@ import { MemoizedListing as Listing, useSnackbar } from '@centreon/ui';
 
 import { graphTabId } from '../Details/tabs';
 import { rowColorConditions } from '../colors';
-import { useResourceContext } from '../Context';
 import Actions from '../Actions';
 import { Resource, SortOrder } from '../models';
 import { labelSelectAtLeastOneColumn, labelStatus } from '../translatedLabels';
+import {
+  openDetailsTabIdAtom,
+  selectedResourceIdAtom,
+  selectedResourceParentIdAtom,
+  selectedResourceParentTypeAtom,
+  selectedResourceTypeAtom,
+  selectedResourceUuidAtom,
+} from '../Details/detailsAtoms';
+import {
+  resourcesToAcknowledgeAtom,
+  resourcesToCheckAtom,
+  resourcesToSetDowntimeAtom,
+  selectedResourcesAtom,
+} from '../Actions/actionsAtoms';
+import {
+  getCriteriaValueDerivedAtom,
+  searchAtom,
+  setCriteriaAndNewFilterDerivedAtom,
+} from '../Filter/filterAtoms';
 
 import { getColumns, defaultSelectedColumnIds } from './columns';
 import useLoadResources from './useLoadResources';
+import {
+  enabledAutorefreshAtom,
+  limitAtom,
+  listingAtom,
+  pageAtom,
+  selectedColumnIdsAtom,
+  sendingAtom,
+} from './listingAtoms';
 
 export const okStatuses = ['OK', 'UP'];
 
@@ -24,30 +52,37 @@ const ResourceListing = (): JSX.Element => {
   const { t } = useTranslation();
   const { showWarningMessage } = useSnackbar();
 
-  const {
-    listing,
-    setLimit,
-    page,
-    setPage,
-    setOpenDetailsTabId,
-    setSelectedResourceUuid,
-    setSelectedResourceId,
-    setSelectedResourceParentId,
-    setSelectedResourceType,
-    setSelectedResourceParentType,
-    selectedResourceUuid,
-    setSelectedResources,
-    selectedResources,
-    setResourcesToAcknowledge,
-    setResourcesToSetDowntime,
-    setResourcesToCheck,
-    sending,
-    setCriteriaAndNewFilter,
-    getCriteriaValue,
-    selectedColumnIds,
-    setSelectedColumnIds,
-    search,
-  } = useResourceContext();
+  const [selectedResourceUuid, setSelectedResourceUuid] = useAtom(
+    selectedResourceUuidAtom,
+  );
+  const [page, setPage] = useAtom(pageAtom);
+  const [selectedColumnIds, setSelectedColumnIds] = useAtom(
+    selectedColumnIdsAtom,
+  );
+  const [selectedResources, setSelectedResources] = useAtom(
+    selectedResourcesAtom,
+  );
+  const listing = useAtomValue(listingAtom);
+  const sending = useAtomValue(sendingAtom);
+  const enabledAutoRefresh = useAtomValue(enabledAutorefreshAtom);
+  const getCriteriaValue = useAtomValue(getCriteriaValueDerivedAtom);
+  const search = useAtomValue(searchAtom);
+  const setSelectedResourceParentType = useUpdateAtom(
+    selectedResourceParentTypeAtom,
+  );
+  const setSelectedResourceType = useUpdateAtom(selectedResourceTypeAtom);
+  const setSelectedResourceParentId = useUpdateAtom(
+    selectedResourceParentIdAtom,
+  );
+  const setSelectedResourceId = useUpdateAtom(selectedResourceIdAtom);
+  const setOpenDetailsTabId = useUpdateAtom(openDetailsTabIdAtom);
+  const setLimit = useUpdateAtom(limitAtom);
+  const setResourcesToAcknowledge = useUpdateAtom(resourcesToAcknowledgeAtom);
+  const setResourcesToSetDowntime = useUpdateAtom(resourcesToSetDowntimeAtom);
+  const setResourcesToCheck = useUpdateAtom(resourcesToCheckAtom);
+  const setCriteriaAndNewFilter = useUpdateAtom(
+    setCriteriaAndNewFilterDerivedAtom,
+  );
 
   const { initAutorefreshAndLoad } = useLoadResources();
 
@@ -158,6 +193,7 @@ const ResourceListing = (): JSX.Element => {
         selectedResources,
         selectedResourceUuid,
         sending,
+        enabledAutoRefresh,
       ]}
       predefinedRowsSelection={predefinedRowsSelection}
       rowColorConditions={[

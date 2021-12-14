@@ -142,7 +142,7 @@ class AuthenticateTest extends TestCase
             $this->dataStorageEngine
         );
 
-        $credentials = (new Credentials('admin', 'centreon'));
+        $credentials = new Credentials('admin', 'centreon');
         $authenticateRequest = new AuthenticateRequest(
             $credentials,
             'provider_configuration_1',
@@ -184,7 +184,7 @@ class AuthenticateTest extends TestCase
             $this->dataStorageEngine
         );
 
-        $credentials = (new Credentials('admin', 'centreon'));
+        $credentials = new Credentials('admin', 'centreon');
         $authenticateRequest = new AuthenticateRequest(
             $credentials,
             'provider_configuration_1',
@@ -200,9 +200,51 @@ class AuthenticateTest extends TestCase
     }
 
     /**
+     * test execute when user is not authorizer to log in web app
+     */
+    public function testExecuteUserNotAuthorizeToLogInWeb(): void
+    {
+        $this->contact
+            ->expects($this->once())
+            ->method('isAllowedToReachWeb')
+            ->willReturn(false);
+
+        $this->contactService
+            ->expects($this->once())
+            ->method('findByName')
+            ->willReturn($this->contact);
+
+        $authenticate = new Authenticate(
+            '/monitoring/resources',
+            $this->authenticationService,
+            $this->providerService,
+            $this->contactService,
+            $this->session,
+            $this->menuService,
+            $this->authenticationRepository,
+            $this->sessionRepository,
+            $this->dataStorageEngine
+        );
+
+        $credentials = new Credentials('admin', 'centreon');
+        $authenticateRequest = new AuthenticateRequest(
+            $credentials,
+            'provider_configuration_1',
+            '/',
+            null,
+            '127.0.0.1'
+        );
+
+        $this->expectException(AuthenticationException::class);
+        $this->expectExceptionMessage('User is not allowed to reach web application');
+
+        $authenticate->execute($authenticateRequest, $this->response);
+    }
+
+    /**
      * test execute when user is not found by provider
      */
-    public function testExecuteUserNotFound(): void
+    public function testExecuteUserNotFoundByProvider(): void
     {
         $this->provider
             ->expects($this->once())
@@ -231,7 +273,7 @@ class AuthenticateTest extends TestCase
             $this->dataStorageEngine
         );
 
-        $credentials = (new Credentials('admin', 'centreon'));
+        $credentials = new Credentials('admin', 'centreon');
         $authenticateRequest = new AuthenticateRequest(
             $credentials,
             'provider_configuration_1',
@@ -303,7 +345,7 @@ class AuthenticateTest extends TestCase
             $this->dataStorageEngine
         );
 
-        $credentials = (new Credentials('admin', 'centreon'));
+        $credentials = new Credentials('admin', 'centreon');
         $authenticateRequest = new AuthenticateRequest(
             $credentials,
             'provider_configuration_1',
@@ -357,7 +399,7 @@ class AuthenticateTest extends TestCase
             $this->dataStorageEngine
         );
 
-        $credentials = (new Credentials('admin', 'centreon'));
+        $credentials = new Credentials('admin', 'centreon');
         $authenticateRequest = new AuthenticateRequest(
             $credentials,
             'provider_configuration_1',
@@ -424,7 +466,7 @@ class AuthenticateTest extends TestCase
             $this->dataStorageEngine
         );
 
-        $credentials = (new Credentials('admin', 'centreon'));
+        $credentials = new Credentials('admin', 'centreon');
         $authenticateRequest = new AuthenticateRequest(
             $credentials,
             'provider_configuration_1',
@@ -507,7 +549,7 @@ class AuthenticateTest extends TestCase
             $this->dataStorageEngine
         );
 
-        $credentials = (new Credentials('admin', 'centreon'));
+        $credentials = new Credentials('admin', 'centreon');
         $authenticateRequest = new AuthenticateRequest(
             $credentials,
             'provider_configuration_1',
@@ -576,7 +618,7 @@ class AuthenticateTest extends TestCase
             $this->dataStorageEngine
         );
 
-        $credentials = (new Credentials('admin', 'centreon'));
+        $credentials = new Credentials('admin', 'centreon');
         $authenticateRequest = new AuthenticateRequest(
             $credentials,
             'provider_configuration_1',
@@ -648,7 +690,7 @@ class AuthenticateTest extends TestCase
             $this->dataStorageEngine
         );
 
-        $credentials = (new Credentials('admin', 'centreon'));
+        $credentials = new Credentials('admin', 'centreon');
         $authenticateRequest = new AuthenticateRequest(
             $credentials,
             'provider_configuration_1',

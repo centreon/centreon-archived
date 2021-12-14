@@ -3,9 +3,9 @@ import * as React from 'react';
 import { useTheme, Grid } from '@mui/material';
 
 import ResourceActions from './Resource';
-import GlobalActions, { ActionsProps } from './Refresh';
+import GlobalActions, { Props } from './Refresh';
 
-const Actions = ({ onRefresh }: ActionsProps): JSX.Element => {
+const Actions = ({ onRefresh }: Props): JSX.Element => {
   const theme = useTheme();
 
   return (

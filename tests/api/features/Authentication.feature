@@ -9,9 +9,9 @@ Feature:
     Scenario:
         Given the endpoints are described in Centreon Web API documentation
         When I log in with invalid credentials
-        Then the response code should be "500"
-        And the JSON node "code" should be equal to the number "500"
-        And the JSON node "message" should be equal to the string "Invalid Credentials"
+        Then the response code should be "401"
+        And the JSON node "code" should be equal to the number "401"
+        And the JSON node "message" should be equal to the string "Invalid credentials"
 
     # Internal local authentication
     Scenario:

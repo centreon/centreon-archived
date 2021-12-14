@@ -10,13 +10,20 @@ import DowntimeAnnotations from './Area/Downtime';
 
 export interface Props {
   graphHeight: number;
+  resourceId: string;
   timeline: Array<TimelineEvent>;
   xScale: ScaleTime<number, number>;
 }
 
-const Annotations = ({ xScale, timeline, graphHeight }: Props): JSX.Element => {
+const Annotations = ({
+  xScale,
+  timeline,
+  graphHeight,
+  resourceId,
+}: Props): JSX.Element => {
   const props = {
     graphHeight,
+    resourceId,
     timeline,
     xScale,
   };

@@ -11,6 +11,7 @@ import dayjs from 'dayjs';
 //   DatePickerProps,
 //   TimePickerProps,
 // } from '@material-ui/pickers';
+import { useAtomValue } from 'jotai/utils';
 
 import {
   DatePicker,
@@ -31,7 +32,7 @@ import {
 import { Box } from '@mui/system';
 
 import { Dialog, TextField, SelectField } from '@centreon/ui';
-import { useUserContext } from '@centreon/ui-context';
+import { userAtom } from '@centreon/ui-context';
 
 import {
   labelCancel,
@@ -109,10 +110,11 @@ const DialogDowntime = ({
 
   const { getDowntimeDeniedTypeAlert, canDowntimeServices } = useAclQuery();
   const [isPickerOpened, setIsPickerOpened] = React.useState(false);
-  const { locale, timezone } = useUserContext();
+
+  const { locale } = useAtomValue(userAtom);
   const theme = useTheme();
 
-  const { Adapter } = useDateTimePickerAdapter({ locale, tz: timezone });
+  const { Adapter } = useDateTimePickerAdapter();
 
   const open = resources.length > 0;
 
