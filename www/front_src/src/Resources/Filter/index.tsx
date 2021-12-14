@@ -41,6 +41,7 @@ import {
   IconButton,
   getData,
   useRequest,
+  LoadingSkeleton,
 } from '@centreon/ui';
 
 import {
@@ -51,16 +52,13 @@ import {
   labelClearFilter,
 } from '../translatedLabels';
 
-import SaveFilter from './Save';
 import FilterLoadingSkeleton from './FilterLoadingSkeleton';
-import Criterias from './Criterias';
 import {
   standardFilterById,
   unhandledProblemsFilter,
   resourceProblemsFilter,
   allFilter,
 } from './models';
-import SelectFilter from './Fields/SelectFilter';
 import {
   getAutocompleteSuggestions,
   getDynamicCriteriaParametersAndValue,
@@ -95,6 +93,10 @@ const useStyles = makeStyles((theme) => ({
   },
   loader: { display: 'flex', justifyContent: 'center' },
 }));
+
+const SaveFilter = React.lazy(() => import('./Save'));
+const SelectFilter = React.lazy(() => import('./Fields/SelectFilter'));
+const Criterias = React.lazy(() => import('./Criterias'));
 
 const debounceTimeInMs = 500;
 
@@ -501,20 +503,30 @@ const Filter = (): JSX.Element => {
     <MemoizedFilter
       content={
         <div className={classes.container}>
-          <SaveFilter />
+          <React.Suspense
+            fallback={<LoadingSkeleton variant="circle" width={20} />}
+          >
+            <SaveFilter />
+          </React.Suspense>
           {sendingFilter ? (
             <FilterLoadingSkeleton />
           ) : (
-            <SelectFilter
-              ariaLabel={t(labelStateFilter)}
-              options={options.map(pick(['id', 'name', 'type']))}
-              selectedOptionId={
-                canDisplaySelectedFilter ? currentFilter.id : ''
-              }
-              onChange={changeFilter}
-            />
+            <React.Suspense fallback={<FilterLoadingSkeleton />}>
+              <SelectFilter
+                ariaLabel={t(labelStateFilter)}
+                options={options.map(pick(['id', 'name', 'type']))}
+                selectedOptionId={
+                  canDisplaySelectedFilter ? currentFilter.id : ''
+                }
+                onChange={changeFilter}
+              />
+            </React.Suspense>
           )}
-          <Criterias />
+          <React.Suspense
+            fallback={<LoadingSkeleton variant="circle" width={20} />}
+          >
+            <Criterias />
+          </React.Suspense>
           <ClickAwayListener onClickAway={closeSuggestionPopover}>
             <div>
               <SearchField
