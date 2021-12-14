@@ -208,6 +208,7 @@ class CentreonCentbrokerCfg extends CentreonObject
             if (!count($configIds)) {
                 throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $args[0]);
             }
+
             $configId = $configIds[0];
 
             switch ($matches[1]) {

@@ -2,9 +2,6 @@
 
 namespace CentreonRemote\Domain\Resources\RemoteConfig;
 
-use CentreonRemote\Domain\Resources\RemoteConfig\BrokerInfo\LoggerBroker;
-use CentreonRemote\Domain\Resources\RemoteConfig\BrokerInfo\LoggerModule;
-use CentreonRemote\Domain\Resources\RemoteConfig\BrokerInfo\LoggerRrd;
 use CentreonRemote\Domain\Resources\RemoteConfig\BrokerInfo\InputBroker;
 use CentreonRemote\Domain\Resources\RemoteConfig\BrokerInfo\InputRrd;
 use CentreonRemote\Domain\Resources\RemoteConfig\BrokerInfo\OutputPerfdata;
@@ -34,24 +31,20 @@ class CfgCentreonBrokerInfo
 
         $data = [
             'central-broker' => [
-                'logger'          => LoggerBroker::getConfiguration(),
                 'broker'          => InputBroker::getConfiguration(),
                 'output_rrd'      => OutputRrdMaster::getConfiguration(),
                 'output_forward'  => OutputForwardMaster::getConfiguration(),
                 'output_prefdata' => OutputPerfdata::getConfiguration($dbUser, $dbPassword),
-                'output_sql'      => OutputSqlMaster::getConfiguration($dbUser, $dbPassword)
+                'output_sql'      => OutputSqlMaster::getConfiguration($dbUser, $dbPassword),
             ],
             'central-module' => [
-                'logger' => LoggerModule::getConfiguration(),
-                'output' => OutputModuleMaster::getConfiguration()
+                'output' => OutputModuleMaster::getConfiguration(),
             ],
             'central-rrd' => [
-                'logger' => LoggerRrd::getConfiguration(),
                 'input'  => InputRrd::getConfiguration(),
-                'output' => OutputRrd::getConfiguration()
+                'output' => OutputRrd::getConfiguration(),
             ]
         ];
-
         return $data;
     }
 }
