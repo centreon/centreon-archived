@@ -85,7 +85,9 @@ const App = ({ getExternalComponents }: Props): JSX.Element => {
   };
 
   const keepAlive = (): void => {
-    keepAliveRequest(keepAliveEndpoint).catch((error) => {
+    keepAliveRequest({
+      endpoint: keepAliveEndpoint
+    }).catch((error) => {
       if (not(pathEq(['response', 'status'], 401, error))) {
         return;
       }
