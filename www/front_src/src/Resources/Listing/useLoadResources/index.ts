@@ -121,7 +121,9 @@ const useLoadResources = (): LoadResources => {
       return;
     }
 
-    sendLoadDetailsRequest(selectedResourceDetailsEndpoint)
+    sendLoadDetailsRequest({
+      endpoint: selectedResourceDetailsEndpoint,
+    })
       .then(setDetails)
       .catch(() => {
         clearSelectedResource();
