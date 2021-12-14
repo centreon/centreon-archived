@@ -161,9 +161,8 @@ describe(Provider, () => {
       expect(atomsValue.downtime).toEqual({
         default_duration:
           retrievedDefaultParameters.monitoring_default_downtime_duration,
-        fixed: retrievedDefaultParameters.monitoring_default_downtime_fixed,
-        with_services:
-          retrievedDefaultParameters.monitoring_default_downtime_with_services,
+        default_fixed: false,
+        default_with_services: false,
       });
       expect(atomsValue.refreshInterval).toEqual(
         retrievedDefaultParameters.monitoring_default_refresh_interval,
