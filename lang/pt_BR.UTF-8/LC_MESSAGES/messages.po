@@ -15252,25 +15252,10 @@ msgstr ""
 # msgid "Months"
 # msgstr ""
 
-# msgid "Day"
-# msgstr ""
-
-# msgid "Days"
-# msgstr ""
-
 # msgid "Hour"
 # msgstr ""
 
-# msgid "Hours"
-# msgstr ""
-
 # msgid "Minute"
-# msgstr ""
-
-# msgid "Minutes"
-# msgstr ""
-
-# msgid "Second"
 # msgstr ""
 
 # msgid "Second"
@@ -15304,9 +15289,6 @@ msgstr ""
 # msgstr ""
 
 # msgid "Saved"
-# msgstr ""
-
-# msgid "Reset"
 # msgstr ""
 
 # msgid "Password security policy saved"

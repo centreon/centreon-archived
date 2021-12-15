@@ -16369,23 +16369,11 @@ msgstr "Mois"
 msgid "Months"
 msgstr "Mois"
 
-msgid "Day"
-msgstr "Jour"
-
-msgid "Days"
-msgstr "Jours"
-
 msgid "Hour"
 msgstr "Heure"
 
-msgid "Hours"
-msgstr "Heures"
-
 msgid "Minute"
 msgstr "Minute"
-
-msgid "Minutes"
-msgstr "Minutes"
 
 msgid "Second"
 msgstr "Seconde"
@@ -16422,9 +16410,6 @@ msgstr "En cours de sauvegarde..."
 
 msgid "Saved"
 msgstr "Sauvegardé"
-
-msgid "Reset"
-msgstr "Réinitialiser"
 
 msgid "Password security policy saved"
 msgstr "Politique de sécurité de mot de passe sauvegardée"
