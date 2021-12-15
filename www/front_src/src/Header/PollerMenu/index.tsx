@@ -31,6 +31,7 @@ import styles from '../header.scss';
 import { allowedPagesSelector } from '../../redux/selectors/navigation/allowedPages';
 import MenuLoader from '../../components/MenuLoader';
 
+import { Issues } from './models';
 import {
   labelAllPollers,
   labelConfigurePollers,
@@ -49,20 +50,6 @@ const pollerIssueKeyToMessage = {
   latency: labelLatencyDetected,
   stability: labelPollerNotRunning,
 };
-
-export interface Issue {
-  critical: number;
-  total: number;
-  warning: number;
-}
-interface Props {
-  endpoint: string;
-  loaderWidth: number;
-}
-
-interface Issues {
-  [key: string]: Issue;
-}
 
 interface PollerData {
   issues: Issues;
@@ -96,7 +83,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const PollerMenu = ({ endpoint, loaderWidth }: Props): JSX.Element => {
+const PollerMenu = (): JSX.Element => {
   const classes = useStyles();
 
   const { t } = useTranslation();
@@ -135,6 +122,11 @@ const PollerMenu = ({ endpoint, loaderWidth }: Props): JSX.Element => {
       clearInterval(interval.current);
     };
   }, []);
+  const loaderWidth = 27;
+  const pollerListIssues =
+    'internal.php?object=centreon_topcounter&action=pollersListIssues';
+
+  const endpoint = pollerListIssues;
 
   const loadPollerData = (): void => {
     sendRequest(`./api/${endpoint}`)
@@ -244,6 +236,4 @@ const mapStateToProps = (state): StateToProps => ({
   allowedPages: allowedPagesSelector(state),
 });
 
-export default connect(mapStateToProps)(withRouter(PollerMenu)) as (
-  props: Props,
-) => JSX.Element;
+export default connect(mapStateToProps)(withRouter(PollerMenu));

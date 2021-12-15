@@ -17,11 +17,7 @@ import {
   labelLatencyDetected,
   labelNoLatencyDetected,
 } from '../translatedLabels';
-import { Issue } from '..';
-
-interface Issues {
-  [key: string]: Issue;
-}
+import { Issues } from '../models';
 
 interface PollerStatusIconProps {
   issues: Issues | null;
