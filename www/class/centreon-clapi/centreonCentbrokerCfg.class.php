@@ -764,11 +764,6 @@ class CentreonCentbrokerCfg extends CentreonObject
             unset($res);
             foreach ($resultSet as $row) {
                 if (
-                    strtoupper($row['config_group']) === "LOGGER"
-                ) {
-                    continue;
-                }
-                if (
                     $row['config_key'] != 'name'
                     && $row['config_key'] != 'blockId'
                     && $row['config_key'] != 'filters'
