@@ -19,26 +19,27 @@
  *
  */
 
+
 include_once __DIR__ . "/../../class/centreonLog.class.php";
 $centreonLog = new CentreonLog();
 
 //error specific content
-$versionOfTheUpgrade = 'UPGRADE - 22.04.0-beta.1: ';
+$versionOfTheUpgrade = 'UPGRADE - 22.04.0-beta.2: ';
 
 /**
  * Query with transaction
  */
 try {
-    $errorMessage = 'Impossible to add "contact_js_effects" column to "contact" table';
+    $pearDB->beginTransaction();
 
-    if (!$pearDB->isColumnExist('contact', 'contact_js_effects')) {
-        $pearDB->query(
-            "ALTER TABLE `contact`
-            ADD COLUMN `contact_js_effects` enum('0','1') DEFAULT '0'
-            AFTER `contact_comment`"
-        );
-    }
+    $errorMessage  = 'Unable to delete logger entry in cb_tag';
+    $statement = $pearDB->query("DELETE FROM cb_tag WHERE tagname = 'logger'");
+
+    $pearDB->commit();
 } catch (\Exception $e) {
+    if ($pearDB->inTransaction()) {
+        $pearDB->rollBack();
+    }
     $centreonLog->insertLog(
         4,
         $versionOfTheUpgrade . $errorMessage .
@@ -46,6 +47,5 @@ try {
         " - Error : " . $e->getMessage() .
         " - Trace : " . $e->getTraceAsString()
     );
-
     throw new \Exception($versionOfTheUpgrade . $errorMessage, (int)$e->getCode(), $e);
 }
