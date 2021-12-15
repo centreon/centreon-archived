@@ -38,6 +38,18 @@ export interface DowntimeFormValues {
   timeStart: Date;
 }
 
+export interface DowntimeToPost {
+  comment?: string;
+  duration: {
+    unit: string;
+    value: number;
+  };
+  endTime: string;
+  fixed: boolean;
+  isDowntimeWithServices: boolean;
+  startTime: string;
+}
+
 const DowntimeForm = ({
   resources,
   onClose,
