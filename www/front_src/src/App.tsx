@@ -86,7 +86,7 @@ const App = ({ getExternalComponents }: Props): JSX.Element => {
 
   const keepAlive = (): void => {
     keepAliveRequest({
-      endpoint: keepAliveEndpoint
+      endpoint: keepAliveEndpoint,
     }).catch((error) => {
       if (not(pathEq(['response', 'status'], 401, error))) {
         return;
@@ -147,10 +147,16 @@ const mapDispatchToProps = (dispatch: Dispatch): Props => {
 
 const CentreonApp = connect(null, mapDispatchToProps)(App);
 
-export default (): JSX.Element => (
-  <Provider>
-    <Router basename="/centreon">
-      <CentreonApp />
-    </Router>
-  </Provider>
-);
+export default (): JSX.Element => {
+  const basename =
+    (document.getElementsByTagName('base')[0].getAttribute('href') as string) ||
+    '';
+
+  return (
+    <Provider>
+      <Router basename={basename}>
+        <CentreonApp />
+      </Router>
+    </Provider>
+  );
+};
