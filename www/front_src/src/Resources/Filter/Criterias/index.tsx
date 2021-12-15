@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
+import { isNil, pipe, reject, sortBy } from 'ramda';
 
 import { Button, Grid, makeStyles } from '@material-ui/core';
 import TuneIcon from '@material-ui/icons/Tune';
@@ -17,10 +18,11 @@ import {
   applyCurrentFilterDerivedAtom,
   clearFilterDerivedAtom,
   filterWithParsedSearchDerivedAtom,
-  multiSelectCriteriasDerivedAtom,
 } from '../filterAtoms';
 
-import Criteria from './Criteria';
+import FilterCriteria from './Criteria';
+import { Criteria, CriteriaDisplayProps, selectableCriterias } from './models';
+import { criteriaNameSortOrder } from './searchQueryLanguage/models';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -31,14 +33,35 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const getCriterias = (filterWithParsedSearch): Array<Criteria> => {
+  const getSelectableCriteriaByName = (name: string): CriteriaDisplayProps =>
+    selectableCriterias[name];
+
+  const isNonSelectableCriteria = (criteria: Criteria): boolean =>
+    pipe(({ name }) => name, getSelectableCriteriaByName, isNil)(criteria);
+
+  const criterias = sortBy<Criteria>(
+    ({ name }) => criteriaNameSortOrder[name],
+    filterWithParsedSearch.criterias,
+  );
+
+  return pipe(
+    reject(isNonSelectableCriteria) as (criterias) => Array<Criteria>,
+  )(criterias);
+};
+
 const CriteriasContent = (): JSX.Element => {
   const classes = useStyles();
 
   const { t } = useTranslation();
 
-  const criterias = useAtomValue(multiSelectCriteriasDerivedAtom);
+  const filterWithParsedSearch = useAtomValue(
+    filterWithParsedSearchDerivedAtom,
+  );
   const applyCurrentFilter = useUpdateAtom(applyCurrentFilterDerivedAtom);
   const clearFilter = useUpdateAtom(clearFilterDerivedAtom);
+
+  const criterias = getCriterias(filterWithParsedSearch);
 
   return (
     <PopoverMenu
@@ -58,7 +81,10 @@ const CriteriasContent = (): JSX.Element => {
           {criterias.map(({ name, value }) => {
             return (
               <Grid item key={name}>
-                <Criteria name={name} value={value as Array<SelectEntry>} />
+                <FilterCriteria
+                  name={name}
+                  value={value as Array<SelectEntry>}
+                />
               </Grid>
             );
           })}
