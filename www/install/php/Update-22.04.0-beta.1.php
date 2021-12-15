@@ -19,7 +19,6 @@
  *
  */
 
-
 include_once __DIR__ . "/../../class/centreonLog.class.php";
 $centreonLog = new CentreonLog();
 
