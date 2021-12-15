@@ -129,10 +129,16 @@ const App = (): JSX.Element => {
   );
 };
 
-export default (): JSX.Element => (
-  <Provider>
-    <Router basename="/centreon">
-      <App />
-    </Router>
-  </Provider>
-);
+export default (): JSX.Element => {
+  const basename =
+    (document.getElementsByTagName('base')[0].getAttribute('href') as string) ||
+    '';
+
+  return (
+    <Provider>
+      <Router basename={basename}>
+        <App />
+      </Router>
+    </Provider>
+  );
+};
