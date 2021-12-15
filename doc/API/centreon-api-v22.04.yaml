@@ -3401,7 +3401,7 @@ paths:
                       type: boolean
                       description: Default monitoring acknowledgement sticky option
                       example: true
-                      monitoring_default_downtime_fixed:
+                    monitoring_default_downtime_fixed:
                       type: boolean
                       description: Default monitoring downtime fixed option
                       example: true
