@@ -607,6 +607,7 @@ ENGINECFG;setparam;Centreon Engine Central;broker_module;/usr/lib64/centreon-eng
 CONTACTTPL;ADD;contact_template;contact_template;;md5__d41d8cd98f00b204e9800998ecf8427e;0;1;;local
 CONTACTTPL;setparam;contact_template;hostnotifopt;n
 CONTACTTPL;setparam;contact_template;servicenotifopt;n
+CONTACTTPL;setparam;contact_template;contact_js_effects;0
 CONTACTTPL;setparam;contact_template;timezone;0
 CONTACTTPL;setparam;contact_template;reach_api;0
 CONTACTTPL;setparam;contact_template;reach_api_rt;0
@@ -620,6 +621,7 @@ CONTACTTPL;setparam;contact_template;enable_one_click_export;0
 CONTACTTPL;ADD;test_name;test_contact-template;;md5__b0e52a1510c9012ebae9e9dc1ae0c46e;0;1;;local
 CONTACTTPL;setparam;test_contact-template;hostnotifopt;n
 CONTACTTPL;setparam;test_contact-template;servicenotifopt;n
+CONTACTTPL;setparam;test_contact-template;contact_js_effects;0
 CONTACTTPL;setparam;test_contact-template;timezone;0
 CONTACTTPL;setparam;test_contact-template;reach_api;0
 CONTACTTPL;setparam;test_contact-template;reach_api_rt;0
@@ -635,6 +637,7 @@ CONTACT;setparam;admin;hostnotifperiod;24x7
 CONTACT;setparam;admin;svcnotifperiod;24x7
 CONTACT;setparam;admin;hostnotifopt;n
 CONTACT;setparam;admin;servicenotifopt;n
+CONTACT;setparam;admin;contact_js_effects;0
 CONTACT;setparam;admin;timezone;0
 CONTACT;setparam;admin;reach_api;0
 CONTACT;setparam;admin;reach_api_rt;0
@@ -652,6 +655,7 @@ CONTACT;setparam;guest;hostnotifperiod;24x7
 CONTACT;setparam;guest;svcnotifperiod;24x7
 CONTACT;setparam;guest;hostnotifopt;n
 CONTACT;setparam;guest;servicenotifopt;n
+CONTACT;setparam;guest;contact_js_effects;0
 CONTACT;setparam;guest;timezone;0
 CONTACT;setparam;guest;reach_api;0
 CONTACT;setparam;guest;reach_api_rt;0
@@ -667,6 +671,7 @@ CONTACT;setparam;guest;svcnotifcmd;service-notify-by-email
 CONTACT;ADD;Jean-Pierre;jeanpierre;Jean-Pierre@hotmail.fr;md5__d41d8cd98f00b204e9800998ecf8427e;0;1;browser;local
 CONTACT;setparam;jeanpierre;hostnotifopt;n
 CONTACT;setparam;jeanpierre;servicenotifopt;n
+CONTACT;setparam;jeanpierre;contact_js_effects;0
 CONTACT;setparam;jeanpierre;timezone;0
 CONTACT;setparam;jeanpierre;reach_api;0
 CONTACT;setparam;jeanpierre;reach_api_rt;0
@@ -680,6 +685,7 @@ CONTACT;setparam;jeanpierre;enable_one_click_export;0
 CONTACT;ADD;test_contact;test_contact;test@localhost;md5__b0e52a1510c9012ebae9e9dc1ae0c46e;0;0;en_US.UTF-8;local
 CONTACT;setparam;test_contact;hostnotifopt;n
 CONTACT;setparam;test_contact;servicenotifopt;n
+CONTACT;setparam;test_contact;contact_js_effects;0
 CONTACT;setparam;test_contact;timezone;0
 CONTACT;setparam;test_contact;reach_api;0
 CONTACT;setparam;test_contact;reach_api_rt;0
@@ -695,6 +701,7 @@ CONTACT;setparam;user;hostnotifperiod;24x7
 CONTACT;setparam;user;svcnotifperiod;24x7
 CONTACT;setparam;user;hostnotifopt;n
 CONTACT;setparam;user;servicenotifopt;n
+CONTACT;setparam;user;contact_js_effects;0
 CONTACT;setparam;user;timezone;0
 CONTACT;setparam;user;reach_api;0
 CONTACT;setparam;user;reach_api_rt;0
