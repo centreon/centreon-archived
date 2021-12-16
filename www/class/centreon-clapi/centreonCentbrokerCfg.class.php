@@ -196,7 +196,7 @@ class CentreonCentbrokerCfg extends CentreonObject
         $name = strtolower($name);
 
         /* Get the action and the object */
-        if (preg_match("/^(list|get|set|add|del)(input|output|logger)/", $name, $matches)) {
+        if (preg_match("/^(list|get|set|add|del)(input|output)/", $name, $matches)) {
             $tagName = $matches[2];
 
             /* Parse arguments */
@@ -762,10 +762,12 @@ class CentreonCentbrokerCfg extends CentreonObject
             $resultSet = $res->fetchAll();
             unset($res);
             foreach ($resultSet as $row) {
-                if ($row['config_key'] != 'name'
+                if (
+                    $row['config_key'] != 'name'
                     && $row['config_key'] != 'blockId'
                     && $row['config_key'] != 'filters'
-                    && $row['config_key'] != 'category') {
+                    && $row['config_key'] != 'category'
+                ) {
                     if (!isset($setParamStr[$row['config_group'] . '_' . $row['config_group_id']])) {
                         $setParamStr[$row['config_group'] . '_' . $row['config_group_id']] = "";
                     }

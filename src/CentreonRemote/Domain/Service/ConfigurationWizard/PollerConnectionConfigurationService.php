@@ -56,11 +56,6 @@ class PollerConnectionConfigurationService extends ServerConnectionConfiguration
         $onePeerRetentionMode = 'no';
         $moduleID = $this->insertWithAdapter('cfg_centreonbroker', $configCentreonBrokerData['module']);
 
-        foreach ($configCentreonBrokerInfoData['central-module']['logger'] as $row) {
-            $row['config_id'] = $moduleID;
-            $this->insertWithAdapter('cfg_centreonbroker_info', $row);
-        }
-
         // if one peer retention mode is enabled,
         // we need to add an input in central broker configuration
         if ($this->onePeerRetention) {
