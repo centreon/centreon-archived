@@ -74,9 +74,17 @@ const useStyles = makeStyles({
   },
 });
 
+interface Props {
+  areTranslationsLoaded: boolean;
+  changeAreTranslationsLoaded: (areTranslationsLoaded: boolean) => void;
+}
+
 const MainRouter = React.lazy(() => import('../components/mainRouter'));
 
-const App = (): JSX.Element => {
+const App = ({
+  areTranslationsLoaded,
+  changeAreTranslationsLoaded,
+}: Props): JSX.Element => {
   const classes = useStyles();
   const {
     dataLoaded,
@@ -84,7 +92,10 @@ const App = (): JSX.Element => {
     isFullscreenEnabled,
     displayInFullScreen,
     removeFullscreen,
-  } = useApp();
+  } = useApp({
+    areTranslationsLoaded,
+    changeAreTranslationsLoaded,
+  });
 
   if (!dataLoaded) {
     return <PageLoader />;

@@ -22,6 +22,8 @@ const Main = (): JSX.Element => {
   const [webVersions, setWebVersions] = React.useState<WebVersions | null>(
     null,
   );
+  const [areTranslationsLoaded, setAreTranslationsLoaded] =
+    React.useState(false);
 
   const navigate = useNavigate();
   const { sendRequest: getUser } = useRequest<User>({
@@ -35,6 +37,10 @@ const Main = (): JSX.Element => {
     });
 
   const setUser = useUpdateAtom(userAtom);
+
+  const changeAreTranslationsLoaded = (loaded): void => {
+    setAreTranslationsLoaded(loaded);
+  };
 
   const loadUser = (): Promise<void | User> =>
     getUser({
@@ -93,7 +99,10 @@ const Main = (): JSX.Element => {
 
   return (
     <React.Suspense fallback={<Typography>sdhssddsisdsdssds</Typography>}>
-      <App />
+      <App
+        areTranslationsLoaded={areTranslationsLoaded}
+        changeAreTranslationsLoaded={changeAreTranslationsLoaded}
+      />
     </React.Suspense>
   );
 };

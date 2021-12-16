@@ -38,7 +38,15 @@ interface UseAppState {
   removeFullscreen: () => void;
 }
 
-const useApp = (): UseAppState => {
+interface Props {
+  areTranslationsLoaded: boolean;
+  changeAreTranslationsLoaded: (loaded: boolean) => void;
+}
+
+const useApp = ({
+  areTranslationsLoaded,
+  changeAreTranslationsLoaded,
+}: Props): UseAppState => {
   const [dataLoaded, setDataLoaded] = React.useState(false);
   const [isFullscreenEnabled, setIsFullscreenEnabled] = React.useState(false);
   const keepAliveIntervalRef = React.useRef<NodeJS.Timer | null>(null);
@@ -69,8 +77,11 @@ const useApp = (): UseAppState => {
   const { getNavigation } = useNavigation();
   const { getExternalComponents } = useExternalComponents();
 
+  const getLocale = (): string =>
+    (user.locale || navigator.language)?.slice(0, 2);
+
   const initializeI18n = (retrievedTranslations): void => {
-    const locale = (user.locale || navigator.language)?.slice(0, 2);
+    const locale = getLocale();
 
     i18next.use(initReactI18next).init({
       fallbackLng: 'en',
@@ -88,21 +99,28 @@ const useApp = (): UseAppState => {
     });
   };
 
+  const changeLanguage = (): void => {
+    const locale = getLocale();
+    i18next.changeLanguage(locale);
+  };
+
   React.useEffect(() => {
     getNavigation();
     getExternalComponents();
-    Promise.all([
+
+    Promise.all<DefaultParameters, Actions, ResourceLanguage | boolean>([
       getParameters({
         endpoint: parametersEndpoint,
-      }),
-      getTranslations({
-        endpoint: translationEndpoint,
       }),
       getAcl({
         endpoint: aclEndpoint,
       }),
+      not(areTranslationsLoaded) &&
+        getTranslations({
+          endpoint: translationEndpoint,
+        }),
     ])
-      .then(([retrievedParameters, retrievedTranslations, retrievedAcl]) => {
+      .then(([retrievedParameters, retrievedAcl, retrievedTranslations]) => {
         setDowntime({
           default_duration: parseInt(
             retrievedParameters.monitoring_default_downtime_duration,
@@ -121,7 +139,14 @@ const useApp = (): UseAppState => {
           sticky: retrievedParameters.monitoring_default_acknowledgement_sticky,
         });
 
+        if (areTranslationsLoaded) {
+          changeLanguage();
+          setDataLoaded(true);
+
+          return;
+        }
         initializeI18n(retrievedTranslations);
+        changeAreTranslationsLoaded(true);
 
         setDataLoaded(true);
       })
