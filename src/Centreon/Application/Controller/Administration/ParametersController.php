@@ -56,7 +56,7 @@ class ParametersController extends AbstractController
         self::DEFAULT_ACKNOWLEDGEMENT_STICKY => 'monitoring_default_acknowledgement_sticky',
         self::DEFAULT_ACKNOWLEDGEMENT_PERSISTENT => 'monitoring_default_acknowledgement_persistent',
         self::DEFAULT_DOWNTIME_FIXED => 'monitoring_default_downtime_fixed',
-        self::DEFAULT_DOWNTIME_WITH_SERVICES => 'monitoring_default_downtime_with_services', 
+        self::DEFAULT_DOWNTIME_WITH_SERVICES => 'monitoring_default_downtime_with_services',
     ];
 
     /**
@@ -119,7 +119,7 @@ class ParametersController extends AbstractController
                     break;
                 case self::DEFAULT_DOWNTIME_FIXED:
                     $isDowntimeFixed = (int) $option->getValue() === 1 ? true : false;
-                     break;  
+                     break;
                 default:
                     break;
             }
