@@ -46,7 +46,9 @@ const CommandWithArguments = ({ commandLine }: Props): JSX.Element => {
                   |
                 </Typography>
               )}
-              <Typography variant="body2">{command}</Typography>
+              <Typography className={classes.command} variant="body2">
+                {command}
+              </Typography>
             </div>
             {args.map(([argument, value]) => {
               return (
