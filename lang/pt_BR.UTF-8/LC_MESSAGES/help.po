@@ -1787,8 +1787,8 @@ msgstr ""
 "mecanismo de monitoramento."
 
 #: centreon-web/www/include/configuration/configCentreonBroker/help.php:88
-msgid "Time in seconds to wait between each connection attempt."
-msgstr "Tempo de espera em segundos entre cada tentativa de conexão."
+msgid "Time in seconds to wait between each connection attempt. The default value is 30s."
+msgstr "Tempo de espera em segundos entre cada tentativa de conexão (valor padrão: 30s)."
 
 #: centreon-web/www/include/configuration/configCentreonBroker/help.php:89
 msgid "RRD file directory, for example /var/lib/centreon/status"
