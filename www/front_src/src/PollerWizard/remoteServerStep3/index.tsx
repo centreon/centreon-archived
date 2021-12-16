@@ -11,7 +11,7 @@ import {
 } from '@centreon/centreon-frontend/packages/centreon-ui/src';
 
 import WizardFormInstallingStatus from '../../components/wizardFormInstallingStatus';
-import routeMap from '../../reactRoutes/route-map';
+import routeMap from '../../reactRoutes/routeMap';
 
 interface Props {
   pollerData;

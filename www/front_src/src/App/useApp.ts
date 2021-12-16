@@ -4,7 +4,7 @@ import i18next, { Resource, ResourceLanguage } from 'i18next';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { equals, mergeAll, not, pathEq, pipe, reduce, toPairs } from 'ramda';
 import { initReactI18next } from 'react-i18next';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 
 import {
   acknowledgementAtom,
@@ -18,6 +18,7 @@ import { getData, useRequest } from '@centreon/ui';
 
 import useExternalComponents from '../externalComponents/useExternalComponents';
 import useNavigation from '../Navigation/useNavigation';
+import reactRoutes from '../reactRoutes/routeMap';
 
 import {
   aclEndpoint,
@@ -46,6 +47,7 @@ const useApp = (): UseAppState => {
     request: getData,
   });
 
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
   const { sendRequest: getParameters } = useRequest<DefaultParameters>({
@@ -125,7 +127,7 @@ const useApp = (): UseAppState => {
       })
       .catch((error) => {
         if (pathEq(['response', 'status'], 401)(error)) {
-          window.location.href = 'index.php?disconnect=1';
+          navigate(reactRoutes.login);
         }
       });
   }, []);
@@ -149,7 +151,7 @@ const useApp = (): UseAppState => {
       }
 
       clearInterval(keepAliveIntervalRef.current as NodeJS.Timer);
-      window.location.href = './index.php?disconnect=1';
+      navigate(reactRoutes.login);
     });
   };
 

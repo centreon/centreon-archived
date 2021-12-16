@@ -12,10 +12,11 @@ import { User, userAtom } from '@centreon/ui-context';
 import Provider from './Provider';
 import { userDecoder, webVersionsDecoder } from './api/decoders';
 import { userEndpoint, webVersionsEndpoint } from './api/endpoint';
-import reactRoutes from './reactRoutes/route-map';
-import LoginPage from './Login';
+import reactRoutes from './reactRoutes/routeMap';
 import { WebVersions } from './api/models';
-import App from './App';
+
+const App = React.lazy(() => import('./App'));
+const LoginPage = React.lazy(() => import('./Login'));
 
 const Main = (): JSX.Element => {
   const [webVersions, setWebVersions] = React.useState<WebVersions | null>(
@@ -76,13 +77,13 @@ const Main = (): JSX.Element => {
     }
 
     if (isNil(webVersions.installedVersion)) {
-      navigate('./install/install.php');
+      navigate(reactRoutes.install);
 
       return;
     }
 
     if (not(isNil(webVersions.availableVersion))) {
-      navigate('./install/upgrade.php');
+      navigate(reactRoutes.upgrade);
     }
   }, [webVersions]);
 
@@ -90,7 +91,11 @@ const Main = (): JSX.Element => {
     return <Typography>Loading...</Typography>;
   }
 
-  return <App />;
+  return (
+    <React.Suspense fallback={<Typography>sdhssddsisdsdssds</Typography>}>
+      <App />
+    </React.Suspense>
+  );
 };
 
 export default (): JSX.Element => (

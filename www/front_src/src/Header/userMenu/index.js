@@ -205,7 +205,7 @@ class UserMenuContent extends Component {
                 )}
               </ul>
               <div className={styles['submenu-content']}>
-                <a className={styles.logoutLink} href="index.php?disconnect=1">
+                <Link className={styles.logoutLink} to="/login">
                   <button
                     className={classnames(
                       styles.btn,
@@ -215,7 +215,7 @@ class UserMenuContent extends Component {
                   >
                     {t('Logout')}
                   </button>
-                </a>
+                </Link>
               </div>
             </div>
           </div>

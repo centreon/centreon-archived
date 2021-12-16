@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import routeMap from './route-map';
+import routeMap from './routeMap';
 
 const reactRoutes = [
   {
