@@ -158,6 +158,7 @@ function getLogInDbForHostGroup($hostgroup_id, $start_date, $end_date, $reportTi
 
     $hosts_id = $centreon->user->access->getHostHostGroupAclConf($hostgroup_id, 'broker');
     if (count($hosts_id) == 0) {
+        $hostgroupStats["average"]["UNDETERMINED_TP"] = 100;
         return $hostgroupStats;
     }
 
@@ -224,7 +225,7 @@ function getLogInDbForHostGroup($hostgroup_id, $start_date, $end_date, $reportTi
 }
 
 /*
- * Return a table a (which reference is given in parameter) 
+ * Return a table a (which reference is given in parameter)
  * that contains stats on services for a given host defined by $host_id
  */
 function getLogInDbForHostSVC($host_id, $start_date, $end_date, $reportTimePeriod)
@@ -554,6 +555,11 @@ function getLogInDbForServicesGroup($servicegroupId, $startDate, $endDate, $repo
     /* $count count the number of services in servicegroup */
     $count = 0;
     $services = getServiceGroupActivateServices($servicegroupId);
+
+    if (empty($services)) {
+        $serviceGroupStats["average"]["UNDETERMINED_TP"] = 100;
+        return $serviceGroupStats;
+    }
 
     $servicesParameter = [];
     foreach ($services as $service) {
