@@ -24,7 +24,7 @@ include_once __DIR__ . "/../../class/centreonLog.class.php";
 $centreonLog = new CentreonLog();
 
 //error specific content
-$versionOfTheUpgrade = 'UPGRADE - 21.10.0: ';
+$versionOfTheUpgrade = 'UPGRADE - 21.10.2: ';
 
 /**
  * Query with transaction
