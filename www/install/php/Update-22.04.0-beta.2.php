@@ -34,8 +34,11 @@ try {
     $errorMessage = 'Unable to delete logger entry in cb_tag';
     $statement = $pearDB->query("DELETE FROM cb_tag WHERE tagname = 'logger'");
     $errorMessage = 'Unable to update the description in cb_field';
-    $statement = $pearDB->query("UPDATE cb_field SET `description` =
-    'Time in seconds to wait between each connection attempt. The default value is 30s.' WHERE `cb_field_id` = 31");
+    $statement = $pearDB->query("
+        UPDATE cb_field
+        SET `description` = 'Time in seconds to wait between each connection attempt. The default value is 30s.'
+        WHERE `cb_field_id` = 31
+    ");
     $pearDB->commit();
 } catch (\Exception $e) {
     if ($pearDB->inTransaction()) {
