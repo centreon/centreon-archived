@@ -29,7 +29,6 @@ $versionOfTheUpgrade = 'UPGRADE - 22.04.0-beta.1: ';
  * Query with transaction
  */
 try {
-    $pearDB->beginTransaction();
     $errorMessage = 'Impossible to add "contact_js_effects" column to "contact" table';
 
     if (!$pearDB->isColumnExist('contact', 'contact_js_effects')) {
@@ -42,8 +41,6 @@ try {
 
     $errorMessage  = 'Unable to delete logger entry in cb_tag';
     $statement = $pearDB->query("DELETE FROM cb_tag WHERE tagname = 'logger'");
-
-    $pearDB->commit();
 } catch (\Exception $e) {
     $centreonLog->insertLog(
         4,
