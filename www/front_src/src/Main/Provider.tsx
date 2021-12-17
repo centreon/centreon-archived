@@ -3,6 +3,8 @@ import * as React from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { Provider as JotaiProvider } from 'jotai';
 
+import { makeStyles } from '@material-ui/core';
+
 import { ThemeProvider } from '@centreon/ui';
 
 interface Props {

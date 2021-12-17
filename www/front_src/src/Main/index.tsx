@@ -17,17 +17,17 @@ import { isNil, not, pathEq } from 'ramda';
 import { useNavigate, Routes, Route } from 'react-router-dom';
 import { useAtom } from 'jotai';
 
-import { Typography } from '@material-ui/core';
-
 import { getData, useRequest, withSnackbar } from '@centreon/ui';
 import { User, userAtom } from '@centreon/ui-context';
 
+import { webVersionsDecoder, userDecoder } from '../api/decoders';
+import { userEndpoint, webVersionsEndpoint } from '../api/endpoint';
+import reactRoutes from '../reactRoutes/routeMap';
+import { WebVersions } from '../api/models';
+import { webVersionsAtom } from '../webVersionsAtom';
+
 import Provider from './Provider';
-import { webVersionsDecoder, userDecoder } from './api/decoders';
-import { userEndpoint, webVersionsEndpoint } from './api/endpoint';
-import reactRoutes from './reactRoutes/routeMap';
-import { WebVersions } from './api/models';
-import { webVersionsAtom } from './webVersionsAtom';
+import MainLoader from './MainLoader';
 
 dayjs.extend(localizedFormat);
 dayjs.extend(utcPlugin);
@@ -38,8 +38,8 @@ dayjs.extend(weekday);
 dayjs.extend(isBetween);
 dayjs.extend(isSameOrBefore);
 
-const App = React.lazy(() => import('./App'));
-const LoginPage = React.lazy(() => import('./Login'));
+const App = React.lazy(() => import('../App'));
+const LoginPage = React.lazy(() => import('../Login'));
 
 const MainContent = (): JSX.Element => {
   const [webVersionsLoaded, setWebVersionsLoaded] = React.useState(false);
@@ -150,11 +150,11 @@ const MainContent = (): JSX.Element => {
     isNil(user) ||
     isUserDisconnected
   ) {
-    return <Typography>Loading...</Typography>;
+    return <MainLoader />;
   }
 
   return (
-    <React.Suspense fallback={<Typography>sdhssddsisdsdssds</Typography>}>
+    <React.Suspense fallback={<MainLoader />}>
       <App
         areTranslationsLoaded={areTranslationsLoaded}
         changeAreTranslationsLoaded={changeAreTranslationsLoaded}
@@ -165,7 +165,7 @@ const MainContent = (): JSX.Element => {
 
 const Main = (): JSX.Element => (
   <Provider>
-    <React.Suspense fallback={<Typography>Loading...</Typography>}>
+    <React.Suspense fallback={<MainLoader allowTransition />}>
       <Routes>
         <Route element={<LoginPage />} path={reactRoutes.login} />
         <Route element={<MainContent />} path="*" />

@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { Formik } from 'formik';
-import { isNil, not, pipe, prop, propOr } from 'ramda';
+import { isNil, not, pipe, propOr } from 'ramda';
 
 import { Paper, makeStyles, Typography } from '@material-ui/core';
 
@@ -76,7 +76,7 @@ const LoginPage = (): JSX.Element => {
             v{webVersions?.installedVersion}
           </Typography>
         ) : (
-          <LoadingSkeleton />
+          <LoadingSkeleton variant="text" width="40%" />
         )}
       </div>
     </div>
