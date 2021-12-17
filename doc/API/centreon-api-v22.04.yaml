@@ -154,7 +154,7 @@ paths:
                     type: boolean
                     description: "Provider forced or not"
                     example: false
-  /authentication/providers/{provider_configuration_name}:
+  /authentication/providers/configurations/{provider_configuration_name}:
     post:
       tags:
        - Authentication
