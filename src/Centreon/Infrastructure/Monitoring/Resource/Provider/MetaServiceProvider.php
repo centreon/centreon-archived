@@ -163,7 +163,7 @@ final class MetaServiceProvider extends Provider
             AND sh.name LIKE '\_Module\_Meta%'
             AND sh.enabled = 1";
 
-            // get monitoring server information
+        // get monitoring server information
         $sql .= " INNER JOIN `:dbstg`.`instances` AS i ON i.instance_id = sh.instance_id";
 
         // show active services only
