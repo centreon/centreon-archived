@@ -14,9 +14,7 @@ import {
   prop,
   propEq,
   reduce,
-  reject,
   set as update,
-  sortBy,
   values,
 } from 'ramda';
 import { TFunction } from 'react-i18next';
@@ -26,12 +24,7 @@ import { getUrlQueryParameters } from '@centreon/ui';
 import { baseKey } from '../storage';
 import { labelNewFilter } from '../translatedLabels';
 
-import {
-  Criteria,
-  CriteriaDisplayProps,
-  CriteriaValue,
-  selectableCriterias,
-} from './Criterias/models';
+import { Criteria, CriteriaValue } from './Criterias/models';
 import {
   allFilter,
   Filter,
@@ -42,7 +35,6 @@ import {
 } from './models';
 import { build, parse } from './Criterias/searchQueryLanguage';
 import { getStoredOrDefaultFilter } from './storedFilter';
-import { criteriaNameSortOrder } from './Criterias/searchQueryLanguage/models';
 
 export const filterKey = `${baseKey}filter`;
 
