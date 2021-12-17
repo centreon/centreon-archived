@@ -1,15 +1,11 @@
-import React from 'react';
-
 import { useNavigate } from 'react-router-dom';
 import { FormikHelpers, FormikValues } from 'formik';
-import { not, replace } from 'ramda';
+import { replace } from 'ramda';
 import { useAtom } from 'jotai';
 import { useTranslation } from 'react-i18next';
-import { useAtomValue } from 'jotai/utils';
 
 import { useRequest, useSnackbar } from '@centreon/ui';
 
-import { areUserParametersLoadedAtom } from '../Main/mainAtom';
 import { WebVersions } from '../api/models';
 import { webVersionsAtom } from '../webVersionsAtom';
 import useUser from '../Main/useUser';
@@ -30,7 +26,6 @@ interface UseLoginState {
 
 const useLogin = (): UseLoginState => {
   const { t, i18n } = useTranslation();
-  const [loggingIn, setLoggingIn] = React.useState(false);
 
   const { sendRequest, sending } = useRequest<Redirect>({
     decoder: redirectDecoder,
@@ -48,7 +43,6 @@ const useLogin = (): UseLoginState => {
     values: LoginFormValues,
     { setSubmitting },
   ): void => {
-    setLoggingIn(true);
     sendRequest({
       login: values.alias,
       password: values.password,
@@ -60,7 +54,6 @@ const useLogin = (): UseLoginState => {
       .catch(() => {
         showErrorMessage(t(labelLoginFailed));
         setSubmitting(false);
-        setLoggingIn(false);
       });
   };
 

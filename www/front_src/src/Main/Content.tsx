@@ -1,22 +1,18 @@
 import * as React from 'react';
 
-import { isNil, not, pathEq } from 'ramda';
+import { isNil, not } from 'ramda';
 import { useNavigate } from 'react-router-dom';
 import { useAtom } from 'jotai';
 import { useAtomValue } from 'jotai/utils';
-import { useTranslation } from 'react-i18next';
 
-import { getData, useRequest } from '@centreon/ui';
-import { User, userAtom } from '@centreon/ui-context';
+import { userAtom } from '@centreon/ui-context';
 
-import { userDecoder } from '../api/decoders';
-import { userEndpoint } from '../api/endpoint';
 import { webVersionsAtom } from '../webVersionsAtom';
 import reactRoutes from '../reactRoutes/routeMap';
 import PageLoader from '../components/PageLoader';
 
 import MainLoader from './MainLoader';
-import { areUserParametersLoadedAtom } from './mainAtom';
+import { areUserParametersLoadedAtom } from './useUser';
 
 const App = React.lazy(() => import('../App'));
 

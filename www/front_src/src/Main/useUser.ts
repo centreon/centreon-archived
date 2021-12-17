@@ -1,4 +1,4 @@
-import { useAtom } from 'jotai';
+import { useAtom, atom } from 'jotai';
 import { useUpdateAtom } from 'jotai/utils';
 import { isNil, pathEq } from 'ramda';
 
@@ -8,7 +8,7 @@ import { useRequest, getData } from '@centreon/ui';
 import { userDecoder } from '../api/decoders';
 import { userEndpoint } from '../api/endpoint';
 
-import { areUserParametersLoadedAtom } from './mainAtom';
+export const areUserParametersLoadedAtom = atom<boolean | null>(null);
 
 const useUser = (
   changeLanguage: (locale: string) => void,

@@ -23,7 +23,7 @@ import Clock from '../Clock';
 import axios from '../../axios';
 import MenuLoader from '../../components/MenuLoader';
 import useNavigation from '../../Navigation/useNavigation';
-import { areUserParametersLoadedAtom } from '../../Main/mainAtom';
+import { areUserParametersLoadedAtom } from '../../Main/useUser';
 
 const EDIT_PROFILE_TOPOLOGY_PAGE = '50104';
 

@@ -14,7 +14,7 @@ import weekday from 'dayjs/plugin/weekday';
 import isBetween from 'dayjs/plugin/isBetween';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 import { equals, isNil, mergeAll, not, pipe, reduce, toPairs } from 'ramda';
-import i18next, { Resource, ResourceLanguage, TFunction } from 'i18next';
+import i18next, { Resource, ResourceLanguage } from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import { useAtom } from 'jotai';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
@@ -31,8 +31,7 @@ import reactRoutes from '../reactRoutes/routeMap';
 
 import Provider from './Provider';
 import MainLoader from './MainLoader';
-import useUser from './useUser';
-import { areUserParametersLoadedAtom } from './mainAtom';
+import useUser, { areUserParametersLoadedAtom } from './useUser';
 
 dayjs.extend(localizedFormat);
 dayjs.extend(utcPlugin);
