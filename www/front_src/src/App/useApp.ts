@@ -39,15 +39,7 @@ interface UseAppState {
   removeFullscreen: () => void;
 }
 
-interface Props {
-  areTranslationsLoaded: boolean;
-  changeAreTranslationsLoaded: (loaded: boolean) => void;
-}
-
-const useApp = ({
-  areTranslationsLoaded,
-  changeAreTranslationsLoaded,
-}: Props): UseAppState => {
+const useApp = (): UseAppState => {
   const [dataLoaded, setDataLoaded] = React.useState(false);
   const [isFullscreenEnabled, setIsFullscreenEnabled] = React.useState(false);
   const keepAliveIntervalRef = React.useRef<NodeJS.Timer | null>(null);
@@ -64,14 +56,10 @@ const useApp = ({
   const { sendRequest: getParameters } = useRequest<DefaultParameters>({
     request: getData,
   });
-  const { sendRequest: getTranslations } = useRequest<ResourceLanguage>({
-    request: getData,
-  });
   const { sendRequest: getAcl } = useRequest<Actions>({
     request: getData,
   });
 
-  const user = useAtomValue(userAtom);
   const setDowntime = useUpdateAtom(downtimeAtom);
   const setRefreshInterval = useUpdateAtom(refreshIntervalAtom);
   const setAcl = useUpdateAtom(aclAtom);
@@ -80,50 +68,19 @@ const useApp = ({
   const { getNavigation } = useNavigation();
   const { getExternalComponents } = useExternalComponents();
 
-  const getLocale = (): string =>
-    (user.locale || navigator.language)?.slice(0, 2);
-
-  const initializeI18n = (retrievedTranslations): void => {
-    const locale = getLocale();
-
-    i18next.use(initReactI18next).init({
-      fallbackLng: 'en',
-      keySeparator: false,
-      lng: locale,
-      nsSeparator: false,
-      resources: pipe(
-        toPairs as (t) => Array<[string, ResourceLanguage]>,
-        reduce(
-          (acc, [language, values]) =>
-            mergeAll([acc, { [language]: { translation: values } }]),
-          {},
-        ),
-      )(retrievedTranslations) as Resource,
-    });
-  };
-
-  const changeLanguage = (): void => {
-    const locale = getLocale();
-    i18next.changeLanguage(locale);
-  };
-
   React.useEffect(() => {
     getNavigation();
     getExternalComponents();
 
-    Promise.all<DefaultParameters, Actions, ResourceLanguage | boolean>([
+    Promise.all<DefaultParameters, Actions>([
       getParameters({
         endpoint: parametersEndpoint,
       }),
       getAcl({
         endpoint: aclEndpoint,
       }),
-      not(areTranslationsLoaded) &&
-        getTranslations({
-          endpoint: translationEndpoint,
-        }),
     ])
-      .then(([retrievedParameters, retrievedAcl, retrievedTranslations]) => {
+      .then(([retrievedParameters, retrievedAcl]) => {
         setDowntime({
           default_duration: parseInt(
             retrievedParameters.monitoring_default_downtime_duration,
@@ -141,15 +98,6 @@ const useApp = ({
             retrievedParameters.monitoring_default_acknowledgement_persistent,
           sticky: retrievedParameters.monitoring_default_acknowledgement_sticky,
         });
-
-        if (areTranslationsLoaded) {
-          changeLanguage();
-          setDataLoaded(true);
-
-          return;
-        }
-        initializeI18n(retrievedTranslations);
-        changeAreTranslationsLoaded(true);
 
         setDataLoaded(true);
       })

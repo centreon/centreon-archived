@@ -1,4 +1,4 @@
-const legacyEndpoint = './api/internal.php';
+const legacyEndpoint = './api/external.php';
 const translationEndpoint = `${legacyEndpoint}?object=centreon_i18n&action=translation`;
 const baseEndpoint = './api/latest';
 const userEndpoint = `${baseEndpoint}/configuration/users/current/parameters`;

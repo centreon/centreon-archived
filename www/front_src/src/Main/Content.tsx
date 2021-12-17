@@ -3,27 +3,25 @@ import * as React from 'react';
 import { isNil, not, pathEq } from 'ramda';
 import { useNavigate } from 'react-router-dom';
 import { useAtom } from 'jotai';
+import { useAtomValue } from 'jotai/utils';
+import { useTranslation } from 'react-i18next';
 
 import { getData, useRequest } from '@centreon/ui';
 import { User, userAtom } from '@centreon/ui-context';
 
-import { webVersionsDecoder, userDecoder } from '../api/decoders';
-import { userEndpoint, webVersionsEndpoint } from '../api/endpoint';
-import { WebVersions } from '../api/models';
+import { userDecoder } from '../api/decoders';
+import { userEndpoint } from '../api/endpoint';
 import { webVersionsAtom } from '../webVersionsAtom';
 import reactRoutes from '../reactRoutes/routeMap';
-
-import MainLoader from './MainLoader';
+import PageLoader from '../components/PageLoader';
 
 const App = React.lazy(() => import('../App'));
 
 const MainContent = (): JSX.Element => {
-  const [webVersionsLoaded, setWebVersionsLoaded] = React.useState(false);
+  const { i18n } = useTranslation();
   const [isUserDisconnected, setIsUserDisconnected] = React.useState<
     boolean | null
   >(null);
-  const [areTranslationsLoaded, setAreTranslationsLoaded] =
-    React.useState(false);
 
   const navigate = useNavigate();
   const { sendRequest: getUser } = useRequest<User>({
@@ -31,17 +29,12 @@ const MainContent = (): JSX.Element => {
     request: getData,
     showErrorOnPermissionDenied: false,
   });
-  const { sendRequest: getWebVersions, sending: sendingWebVersions } =
-    useRequest<WebVersions>({
-      decoder: webVersionsDecoder,
-      request: getData,
-    });
 
   const [user, setUser] = useAtom(userAtom);
-  const [webVersions, setWebVersions] = useAtom(webVersionsAtom);
+  const webVersions = useAtomValue(webVersionsAtom);
 
-  const changeAreTranslationsLoaded = (loaded): void => {
-    setAreTranslationsLoaded(loaded);
+  const changeLanguage = (locale: string): void => {
+    i18n.changeLanguage(locale.slice(0, 2));
   };
 
   const loadUser = (): Promise<void | User> =>
@@ -57,51 +50,35 @@ const MainContent = (): JSX.Element => {
     });
 
   React.useEffect(() => {
-    Promise.all<void | User, boolean | WebVersions>([
-      loadUser(),
-      isNil(webVersions) &&
-        getWebVersions({
-          endpoint: webVersionsEndpoint,
-        }),
-    ])
-      .then(([retrievedUser, retrievedWebVersions]) => {
-        if (isNil(webVersions)) {
-          setWebVersions(retrievedWebVersions as WebVersions);
-        }
-        setWebVersionsLoaded(true);
+    loadUser().then((retrievedUser) => {
+      if (isNil(retrievedUser)) {
+        return;
+      }
 
-        if (isNil(retrievedUser)) {
-          return;
-        }
+      const {
+        alias,
+        isExportButtonEnabled,
+        locale,
+        name,
+        timezone,
+        use_deprecated_pages: useDeprecatedPages,
+      } = retrievedUser as User;
 
-        const {
-          alias,
-          isExportButtonEnabled,
-          locale,
-          name,
-          timezone,
-          use_deprecated_pages: useDeprecatedPages,
-        } = retrievedUser as User;
-
-        setUser({
-          alias,
-          isExportButtonEnabled,
-          locale: locale || 'en',
-          name,
-          timezone,
-          use_deprecated_pages: useDeprecatedPages,
-        });
-        setIsUserDisconnected(false);
-      })
-      .catch(() => undefined);
+      setUser({
+        alias,
+        isExportButtonEnabled,
+        locale: locale || 'en',
+        name,
+        timezone,
+        use_deprecated_pages: useDeprecatedPages,
+      });
+      changeLanguage((retrievedUser as User).locale);
+      setIsUserDisconnected(false);
+    });
   }, []);
 
   React.useEffect(() => {
-    if (
-      isNil(webVersions) ||
-      not(webVersionsLoaded) ||
-      isNil(isUserDisconnected)
-    ) {
+    if (isNil(webVersions) || isNil(isUserDisconnected)) {
       return;
     }
 
@@ -118,25 +95,21 @@ const MainContent = (): JSX.Element => {
     if (isUserDisconnected) {
       navigate(reactRoutes.login);
     }
-  }, [webVersions, webVersionsLoaded, isUserDisconnected]);
+  }, [webVersions, isUserDisconnected]);
 
   if (
-    sendingWebVersions ||
     isNil(webVersions) ||
     isNil(user) ||
     isUserDisconnected ||
     isNil(webVersions.installedVersion) ||
     not(isNil(webVersions.availableVersion))
   ) {
-    return <MainLoader />;
+    return <PageLoader />;
   }
 
   return (
-    <React.Suspense fallback={<MainLoader />}>
-      <App
-        areTranslationsLoaded={areTranslationsLoaded}
-        changeAreTranslationsLoaded={changeAreTranslationsLoaded}
-      />
+    <React.Suspense fallback={<PageLoader />}>
+      <App />
     </React.Suspense>
   );
 };
