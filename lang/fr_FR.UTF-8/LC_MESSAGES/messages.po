@@ -16314,3 +16314,27 @@ msgstr "Souple"
 
 msgid "User is not allowed to reach web application"
 msgstr "L'utilisateur n'est pas autorisé à joindre l'application web"
+
+msgid "You are disconnected"
+msgstr "Vous êtes déconnecté"
+
+msgid "Centreon is loading..."
+msgstr "Centreon est en cours de chargement..."
+
+msgid "Alias is required"
+msgstr "L'alias est obligatoire"
+
+msgid "Password is required"
+msgstr "Le mot de passe est obligatoire"
+
+msgid "Login failed"
+msgstr "Echec de la connexion"
+
+msgid "Login succeeded"
+msgstr "Connexion réussie"
+
+msgid "Login"
+msgstr "Connexion"
+
+msgid "Centreon Logo"
+msgstr "Logo de Centreon"

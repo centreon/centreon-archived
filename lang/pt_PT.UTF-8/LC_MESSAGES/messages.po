@@ -15194,3 +15194,27 @@ msgstr ""
 
 # msgid "Soft"
 # msgstr ""
+
+# msgid "You are disconnected"
+# msgstr ""
+
+# msgid "Centreon is loading..."
+# msgstr ""
+
+# msgid "Alias is required"
+# msgstr ""
+
+# msgid "Password is required"
+# msgstr ""
+
+# msgid "Login failed"
+# msgstr ""
+
+# msgid "Login succeeded"
+# msgstr ""
+
+# msgid "Login"
+# msgstr ""
+
+# msgid "Centreon Logo"
+# msgstr ""
