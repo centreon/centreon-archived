@@ -3,15 +3,9 @@ import * as React from 'react';
 import { render, RenderResult, waitFor, screen } from '@testing-library/react';
 import axios from 'axios';
 import { Provider } from 'jotai';
-import mockDate from 'mockdate';
 
 import { userEndpoint, webVersionsEndpoint } from '../api/endpoint';
-import {
-  labelAlias,
-  labelCentreonLogo,
-  labelLogin,
-  labelPassword,
-} from '../Login/translatedLabels';
+import { labelLogin } from '../Login/translatedLabels';
 import {
   aclEndpoint,
   parametersEndpoint,
@@ -77,8 +71,6 @@ const renderMain = (): RenderResult =>
       <Main />
     </Provider>,
   );
-
-const mockNow = '2020-01-01';
 
 const mockDefaultGetRequests = (): void => {
   mockedAxios.get
@@ -157,15 +149,6 @@ const mockUpgradeGetRequests = (): void => {
 };
 
 describe('Main', () => {
-  beforeEach(() => {
-    mockDate.set(mockNow);
-  });
-
-  afterEach(() => {
-    mockDate.reset();
-    mockedAxios.get.mockReset();
-  });
-
   it('displays the login page when the path is "/login" and the user is not connected', async () => {
     window.history.pushState({}, '', '/login');
     mockNotConnectedGetRequests();
@@ -195,12 +178,8 @@ describe('Main', () => {
       );
     });
 
-    expect(screen.getByLabelText(labelCentreonLogo)).toBeInTheDocument();
-    expect(screen.getByLabelText(labelAlias)).toBeInTheDocument();
-    expect(screen.getByLabelText(labelPassword)).toBeInTheDocument();
+    expect(window.location.href).toBe('http://localhost/login');
     expect(screen.getByLabelText(labelLogin)).toBeInTheDocument();
-    expect(screen.getByText('v. 21.10.1')).toBeInTheDocument();
-    expect(screen.getByText('Copyright © 2005 - 2020')).toBeInTheDocument();
   });
 
   it('redirects the user to the install page when the retrieved web versions does not contain an installed version', async () => {
