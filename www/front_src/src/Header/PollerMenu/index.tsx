@@ -77,13 +77,6 @@ const useStyles = makeStyles((theme) => ({
   pollerDetailTitle: {
     flexGrow: 1,
   },
-  pollerIcons: {
-    padding: theme.spacing(1, 1, 1, 2),
-  },
-  pollerMenu: {
-    display: 'flex',
-    padding: theme.spacing(1, 1, 1, 2),
-  },
 }));
 
 const PollerMenu = (): JSX.Element => {
