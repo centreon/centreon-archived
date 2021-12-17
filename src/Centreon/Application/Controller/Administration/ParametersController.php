@@ -119,7 +119,7 @@ class ParametersController extends AbstractController
                     break;
                 case self::DEFAULT_DOWNTIME_FIXED:
                     $isDowntimeFixed = (int) $option->getValue() === 1 ? true : false;
-                     break;
+                    break;
                 default:
                     break;
             }
