@@ -21,7 +21,7 @@ import { ThemeProvider } from '@centreon/ui';
 import Header from './Header';
 import { history } from './store';
 import Nagigation from './Navigation';
-import Footer from './components/footer';
+import Footer from './Footer';
 import axios from './axios';
 import { fetchExternalComponents } from './redux/actions/externalComponentsActions';
 import PageLoader from './components/PageLoader';
