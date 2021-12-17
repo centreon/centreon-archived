@@ -1,7 +1,7 @@
 const routeMap = {
   extensionsManagerPage: '/administration/extensions/manager',
   install: '/install/install.php',
-  login: '/authentication/login',
+  login: '/login',
   notAllowedPage: '/not-allowed',
   pollerList: '/main.php?p=60901',
   pollerWizard: '/poller-wizard/1',
