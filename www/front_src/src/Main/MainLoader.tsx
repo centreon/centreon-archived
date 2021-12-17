@@ -19,21 +19,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-interface Props {
-  allowTransition?: boolean;
-}
-
-const MainLoader = ({ allowTransition = false }: Props): JSX.Element => {
+const MainLoader = (): JSX.Element => {
   const classes = useStyles();
 
   return (
     <div className={classes.loader}>
-      <Fade in={allowTransition}>
-        <div>
-          <img alt="Centreon Logo" src={logoCentreon} />
-          <Typography>{labelCentreonIsLoading}</Typography>
-        </div>
-      </Fade>
+      <img alt="Centreon Logo" src={logoCentreon} />
+      <Typography>{labelCentreonIsLoading}</Typography>
     </div>
   );
 };
