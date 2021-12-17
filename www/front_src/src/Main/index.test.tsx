@@ -80,6 +80,82 @@ const renderMain = (): RenderResult =>
 
 const mockNow = '2020-01-01';
 
+const mockDefaultGetRequests = (): void => {
+  mockedAxios.get
+    .mockResolvedValueOnce({
+      data: {
+        available_version: null,
+        installed_version: '21.10.0',
+      },
+    })
+    .mockResolvedValueOnce({
+      data: retrievedTranslations,
+    })
+    .mockResolvedValueOnce({
+      data: retrievedUser,
+    })
+    .mockResolvedValueOnce({
+      data: retrievedNavigation,
+    })
+    .mockResolvedValueOnce({
+      data: retrievedExternalComponents,
+    })
+    .mockResolvedValueOnce({
+      data: retrievedParameters,
+    })
+    .mockResolvedValueOnce({
+      data: retrievedActionsAcl,
+    });
+};
+
+const mockNotConnectedGetRequests = (): void => {
+  mockedAxios.get
+    .mockResolvedValueOnce({
+      data: {
+        available_version: null,
+        installed_version: '21.10.1',
+      },
+    })
+    .mockResolvedValueOnce({
+      data: retrievedTranslations,
+    })
+    .mockRejectedValueOnce({
+      response: { status: 403 },
+    });
+};
+
+const mockInstallGetRequests = (): void => {
+  mockedAxios.get
+    .mockResolvedValueOnce({
+      data: {
+        available_version: '21.10.1',
+        installed_version: null,
+      },
+    })
+    .mockResolvedValueOnce({
+      data: retrievedTranslations,
+    })
+    .mockResolvedValueOnce({
+      data: retrievedUser,
+    });
+};
+
+const mockUpgradeGetRequests = (): void => {
+  mockedAxios.get
+    .mockResolvedValueOnce({
+      data: {
+        available_version: '21.10.1',
+        installed_version: '21.10.0',
+      },
+    })
+    .mockResolvedValueOnce({
+      data: retrievedTranslations,
+    })
+    .mockResolvedValueOnce({
+      data: retrievedUser,
+    });
+};
+
 describe('Main', () => {
   beforeEach(() => {
     mockDate.set(mockNow);
@@ -90,21 +166,9 @@ describe('Main', () => {
     mockedAxios.get.mockReset();
   });
 
-  it('displays the login page when the path is "/login"', async () => {
+  it('displays the login page when the path is "/login" and the user is not connected', async () => {
     window.history.pushState({}, '', '/login');
-    mockedAxios.get
-      .mockResolvedValueOnce({
-        data: {
-          available_version: null,
-          installed_version: '21.10.1',
-        },
-      })
-      .mockResolvedValueOnce({
-        data: retrievedTranslations,
-      })
-      .mockRejectedValueOnce({
-        response: { status: 403 },
-      });
+    mockNotConnectedGetRequests();
 
     renderMain();
 
@@ -141,19 +205,7 @@ describe('Main', () => {
 
   it('redirects the user to the install page when the retrieved web versions does not contain an installed version', async () => {
     window.history.pushState({}, '', '/');
-    mockedAxios.get
-      .mockResolvedValueOnce({
-        data: {
-          available_version: '21.10.1',
-          installed_version: null,
-        },
-      })
-      .mockResolvedValueOnce({
-        data: retrievedTranslations,
-      })
-      .mockResolvedValueOnce({
-        data: retrievedUser,
-      });
+    mockInstallGetRequests();
 
     renderMain();
 
@@ -180,19 +232,7 @@ describe('Main', () => {
 
   it('redirects the user to the upgrade page when the retrieved web versions contains an available version', async () => {
     window.history.pushState({}, '', '/');
-    mockedAxios.get
-      .mockResolvedValueOnce({
-        data: {
-          available_version: '21.10.1',
-          installed_version: '21.10.0',
-        },
-      })
-      .mockResolvedValueOnce({
-        data: retrievedTranslations,
-      })
-      .mockResolvedValueOnce({
-        data: retrievedUser,
-      });
+    mockUpgradeGetRequests();
 
     renderMain();
 
@@ -219,31 +259,7 @@ describe('Main', () => {
 
   it('gets the translations, navigation data and the parameters related to the account when the user is already connected', async () => {
     window.history.pushState({}, '', '/');
-    mockedAxios.get
-      .mockResolvedValueOnce({
-        data: {
-          available_version: null,
-          installed_version: '21.10.0',
-        },
-      })
-      .mockResolvedValueOnce({
-        data: retrievedTranslations,
-      })
-      .mockResolvedValueOnce({
-        data: retrievedUser,
-      })
-      .mockResolvedValueOnce({
-        data: retrievedNavigation,
-      })
-      .mockResolvedValueOnce({
-        data: retrievedExternalComponents,
-      })
-      .mockResolvedValueOnce({
-        data: retrievedParameters,
-      })
-      .mockResolvedValueOnce({
-        data: retrievedActionsAcl,
-      });
+    mockDefaultGetRequests();
 
     renderMain();
 
@@ -287,5 +303,27 @@ describe('Main', () => {
       translationEndpoint,
       cancelTokenRequestParam,
     );
+  });
+
+  it('redirects the user to his default page when the current location is the login page and the user is connected', async () => {
+    window.history.pushState({}, '', '/login');
+    mockDefaultGetRequests();
+
+    renderMain();
+
+    expect(screen.getByText(labelCentreonIsLoading)).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        webVersionsEndpoint,
+        cancelTokenRequestParam,
+      );
+    });
+
+    await waitFor(() => {
+      expect(window.location.href).toBe(
+        'http://localhost/monitoring/resources',
+      );
+    });
   });
 });
