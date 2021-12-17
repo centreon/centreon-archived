@@ -27,6 +27,8 @@ use Centreon\Domain\Authentication\Model\Credentials;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Cookie;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Centreon\Domain\Authentication\UseCase\Logout;
 use Centreon\Domain\Authentication\UseCase\Authenticate;
 use Centreon\Domain\Authentication\UseCase\LogoutRequest;
@@ -134,7 +136,8 @@ class AuthenticationController extends AbstractController
         Request $request,
         Authenticate $authenticate,
         string $providerConfigurationName,
-        AuthenticateResponse $response
+        AuthenticateResponse $response,
+        SessionInterface $session
     ): View {
         // submitted from form directly
         $data = $request->request->getIterator();
@@ -168,6 +171,12 @@ class AuthenticationController extends AbstractController
             );
         }
 
-        return $this->view($response->getRedirectionUriApi());
+        return $this->view(
+            $response->getRedirectionUriApi(),
+            Response::HTTP_OK,
+            [
+                Cookie::create('PHPSESSID', $session->getId())
+            ]
+        );
     }
 }
