@@ -191,25 +191,6 @@ export const clearFilterDerivedAtom = atom(null, (_, set) => {
   set(applyFilterDerivedAtom, allFilter);
 });
 
-export const multiSelectCriteriasDerivedAtom = atom((get) => {
-  const filterWithParsedSearch = get(filterWithParsedSearchDerivedAtom);
-
-  const getSelectableCriteriaByName = (name: string): CriteriaDisplayProps =>
-    selectableCriterias[name];
-
-  const isNonSelectableCriteria = (criteria: Criteria): boolean =>
-    pipe(({ name }) => name, getSelectableCriteriaByName, isNil)(criteria);
-
-  const criterias = sortBy(
-    ({ name }) => criteriaNameSortOrder[name],
-    filterWithParsedSearch.criterias,
-  );
-
-  return pipe(
-    reject(isNonSelectableCriteria) as (criterias) => Array<Criteria>,
-  )(criterias);
-});
-
 export const filtersDerivedAtom = atom((get) => [
   unhandledProblemsFilter,
   allFilter,
