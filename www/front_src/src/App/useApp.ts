@@ -14,7 +14,7 @@ import {
   refreshIntervalAtom,
   userAtom,
 } from '@centreon/ui-context';
-import { getData, useRequest } from '@centreon/ui';
+import { getData, useRequest, useSnackbar } from '@centreon/ui';
 
 import useExternalComponents from '../externalComponents/useExternalComponents';
 import useNavigation from '../Navigation/useNavigation';
@@ -26,6 +26,7 @@ import {
   translationEndpoint,
 } from './endpoint';
 import { DefaultParameters } from './models';
+import { labelYouAreDisconnected } from './translatedLabels';
 
 const keepAliveEndpoint =
   './api/internal.php?object=centreon_keepalive&action=keepAlive';
@@ -53,6 +54,8 @@ const useApp = ({
 
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+
+  const { showErrorMessage } = useSnackbar();
 
   const { sendRequest: keepAliveRequest } = useRequest({
     request: getData,
@@ -174,6 +177,7 @@ const useApp = ({
       if (not(pathEq(['response', 'status'], 401, error))) {
         return;
       }
+      showErrorMessage(labelYouAreDisconnected);
 
       clearInterval(keepAliveIntervalRef.current as NodeJS.Timer);
       navigate(reactRoutes.login);
