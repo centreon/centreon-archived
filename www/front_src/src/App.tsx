@@ -13,7 +13,7 @@ import { getData, useRequest } from '@centreon/ui';
 
 import Header from './Header';
 import Nagigation from './Navigation';
-import Footer from './components/footer';
+import Footer from './Footer';
 import { fetchExternalComponents } from './redux/actions/externalComponentsActions';
 import PageLoader from './components/PageLoader';
 import Provider from './Provider';
