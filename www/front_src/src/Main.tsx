@@ -1,5 +1,18 @@
 import * as React from 'react';
 
+import 'dayjs/locale/en';
+import 'dayjs/locale/pt';
+import 'dayjs/locale/fr';
+import 'dayjs/locale/es';
+import dayjs from 'dayjs';
+import timezonePlugin from 'dayjs/plugin/timezone';
+import utcPlugin from 'dayjs/plugin/utc';
+import localizedFormat from 'dayjs/plugin/localizedFormat';
+import isToday from 'dayjs/plugin/isToday';
+import isYesterday from 'dayjs/plugin/isYesterday';
+import weekday from 'dayjs/plugin/weekday';
+import isBetween from 'dayjs/plugin/isBetween';
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 import { isNil, not, pathEq } from 'ramda';
 import { useNavigate, Routes, Route } from 'react-router-dom';
 import { useAtom } from 'jotai';
@@ -14,14 +27,21 @@ import { webVersionsDecoder, userDecoder } from './api/decoders';
 import { userEndpoint, webVersionsEndpoint } from './api/endpoint';
 import reactRoutes from './reactRoutes/routeMap';
 import { WebVersions } from './api/models';
+import { webVersionsAtom } from './webVersionsAtom';
+
+dayjs.extend(localizedFormat);
+dayjs.extend(utcPlugin);
+dayjs.extend(timezonePlugin);
+dayjs.extend(isToday);
+dayjs.extend(isYesterday);
+dayjs.extend(weekday);
+dayjs.extend(isBetween);
+dayjs.extend(isSameOrBefore);
 
 const App = React.lazy(() => import('./App'));
 const LoginPage = React.lazy(() => import('./Login'));
 
 const MainContent = (): JSX.Element => {
-  const [webVersions, setWebVersions] = React.useState<WebVersions | null>(
-    null,
-  );
   const [webVersionsLoaded, setWebVersionsLoaded] = React.useState(false);
   const [isUserDisconnected, setIsUserDisconnected] = React.useState<
     boolean | null
@@ -42,6 +62,7 @@ const MainContent = (): JSX.Element => {
     });
 
   const [user, setUser] = useAtom(userAtom);
+  const [webVersions, setWebVersions] = useAtom(webVersionsAtom);
 
   const changeAreTranslationsLoaded = (loaded): void => {
     setAreTranslationsLoaded(loaded);
@@ -60,14 +81,17 @@ const MainContent = (): JSX.Element => {
     });
 
   React.useEffect(() => {
-    Promise.all([
-      getWebVersions({
-        endpoint: webVersionsEndpoint,
-      }),
+    Promise.all<void | User, boolean | WebVersions>([
       loadUser(),
+      isNil(webVersions) &&
+        getWebVersions({
+          endpoint: webVersionsEndpoint,
+        }),
     ])
-      .then(([retrievedWebVersions, retrievedUser]) => {
-        setWebVersions(retrievedWebVersions);
+      .then(([retrievedUser, retrievedWebVersions]) => {
+        if (isNil(webVersions)) {
+          setWebVersions(retrievedWebVersions as WebVersions);
+        }
         setWebVersionsLoaded(true);
 
         if (isNil(retrievedUser)) {

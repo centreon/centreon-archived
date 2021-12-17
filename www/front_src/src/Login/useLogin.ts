@@ -1,8 +1,16 @@
+import React from 'react';
+
 import { useNavigate } from 'react-router-dom';
 import { FormikHelpers, FormikValues } from 'formik';
 import { replace } from 'ramda';
+import { useAtom } from 'jotai';
 
-import { useRequest, useSnackbar } from '@centreon/ui';
+import { getData, useRequest, useSnackbar } from '@centreon/ui';
+
+import { WebVersions } from '../api/models';
+import { webVersionsDecoder } from '../api/decoders';
+import { webVersionsEndpoint } from '../api/endpoint';
+import { webVersionsAtom } from '../webVersionsAtom';
 
 import postLogin from './api';
 import { redirectDecoder } from './api/decoder';
@@ -15,6 +23,7 @@ interface UseLoginState {
     values: LoginFormValues,
     { setSubmitting }: Pick<FormikHelpers<FormikValues>, 'setSubmitting'>,
   ) => void;
+  webVersions: WebVersions | null;
 }
 
 const useLogin = (): UseLoginState => {
@@ -22,8 +31,15 @@ const useLogin = (): UseLoginState => {
     decoder: redirectDecoder,
     request: postLogin,
   });
+  const { sendRequest: getWebVersions } = useRequest<WebVersions>({
+    decoder: webVersionsDecoder,
+    request: getData,
+  });
+
   const { showSuccessMessage, showErrorMessage } = useSnackbar();
   const navigate = useNavigate();
+
+  const [webVersions, setWebVersions] = useAtom(webVersionsAtom);
 
   const submitLoginForm = (
     values: LoginFormValues,
@@ -44,9 +60,22 @@ const useLogin = (): UseLoginState => {
       });
   };
 
+  const loadWebVersions = (): void => {
+    getWebVersions({
+      endpoint: webVersionsEndpoint,
+    }).then((retrievedWebVersions) => {
+      setWebVersions(retrievedWebVersions);
+    });
+  };
+
+  React.useEffect(() => {
+    loadWebVersions();
+  }, []);
+
   return {
     sending,
     submitLoginForm,
+    webVersions,
   };
 };
 
