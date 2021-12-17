@@ -205,7 +205,14 @@ class UserMenuContent extends Component {
                 )}
               </ul>
               <div className={styles['submenu-content']}>
-                <Link className={styles.logoutLink} to="/login">
+                <Link
+                  className={styles.logoutLink}
+                  to="/index.php"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    window.location.href = './index.php?disconnect=1';
+                  }}
+                >
                   <button
                     className={classnames(
                       styles.btn,
