@@ -14,6 +14,7 @@ import useValidationSchema from './validationSchema';
 import { LoginFormValues } from './models';
 import useLogin from './useLogin';
 import LoginForm from './Form';
+import { labelCentreonLogo } from './translatedLabels';
 
 const useStyles = makeStyles((theme) => ({
   copyrightAndVersion: {
@@ -58,7 +59,11 @@ const LoginPage = (): JSX.Element => {
   return (
     <div className={classes.loginBackground}>
       <Paper className={classes.loginPaper}>
-        <img alt="Centreon Logo" src={logoCentreon} />
+        <img
+          alt={labelCentreonLogo}
+          aria-label={labelCentreonLogo}
+          src={logoCentreon}
+        />
         <Formik<LoginFormValues>
           validateOnBlur
           validateOnMount

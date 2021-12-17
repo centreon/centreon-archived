@@ -54,6 +54,7 @@ const LoginForm = (): JSX.Element => {
   return (
     <form className={classes.form} onSubmit={handleSubmit}>
       <TextField
+        ariaLabel={labelAlias}
         error={aliasError}
         label={labelAlias}
         value={aliasValue || ''}
@@ -61,6 +62,7 @@ const LoginForm = (): JSX.Element => {
         onChange={handleChange(aliasFieldName)}
       />
       <TextField
+        ariaLabel={labelPassword}
         error={passwordError}
         label={labelPassword}
         type="password"
@@ -70,6 +72,7 @@ const LoginForm = (): JSX.Element => {
       />
       <Button
         fullWidth
+        aria-label={labelLogin}
         color="primary"
         disabled={isDisabled}
         endIcon={isSubmitting && <CircularProgress color="inherit" size={20} />}

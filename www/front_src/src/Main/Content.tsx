@@ -97,6 +97,7 @@ const MainContent = (): JSX.Element => {
   }, []);
 
   React.useEffect(() => {
+    console.log(webVersions, user, isUserDisconnected);
     if (
       isNil(webVersions) ||
       not(webVersionsLoaded) ||

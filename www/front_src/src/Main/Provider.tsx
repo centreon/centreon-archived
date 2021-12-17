@@ -13,8 +13,9 @@ interface Props {
 
 const Provider = ({ children }: Props): JSX.Element => {
   const basename =
-    (document.getElementsByTagName('base')[0].getAttribute('href') as string) ||
-    '';
+    (document
+      .getElementsByTagName('base')[0]
+      ?.getAttribute('href') as string) || '';
 
   return (
     <Router basename={basename}>
