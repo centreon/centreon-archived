@@ -1,9 +1,8 @@
 import * as React from 'react';
 
-import i18next, { Resource, ResourceLanguage } from 'i18next';
-import { useAtomValue, useUpdateAtom } from 'jotai/utils';
-import { equals, mergeAll, not, pathEq, pipe, reduce, toPairs } from 'ramda';
-import { initReactI18next } from 'react-i18next';
+import { useUpdateAtom } from 'jotai/utils';
+import { equals, not, pathEq } from 'ramda';
+import { useTranslation } from 'react-i18next';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 
 import {
@@ -12,7 +11,6 @@ import {
   Actions,
   downtimeAtom,
   refreshIntervalAtom,
-  userAtom,
 } from '@centreon/ui-context';
 import { getData, useRequest, useSnackbar } from '@centreon/ui';
 
@@ -20,11 +18,7 @@ import useExternalComponents from '../externalComponents/useExternalComponents';
 import useNavigation from '../Navigation/useNavigation';
 import reactRoutes from '../reactRoutes/routeMap';
 
-import {
-  aclEndpoint,
-  parametersEndpoint,
-  translationEndpoint,
-} from './endpoint';
+import { aclEndpoint, parametersEndpoint } from './endpoint';
 import { DefaultParameters } from './models';
 import { labelYouAreDisconnected } from './translatedLabels';
 
@@ -40,6 +34,8 @@ interface UseAppState {
 }
 
 const useApp = (): UseAppState => {
+  const { t } = useTranslation();
+
   const [dataLoaded, setDataLoaded] = React.useState(false);
   const [isFullscreenEnabled, setIsFullscreenEnabled] = React.useState(false);
   const keepAliveIntervalRef = React.useRef<NodeJS.Timer | null>(null);
@@ -125,7 +121,7 @@ const useApp = (): UseAppState => {
       if (not(pathEq(['response', 'status'], 401, error))) {
         return;
       }
-      showErrorMessage(labelYouAreDisconnected);
+      showErrorMessage(t(labelYouAreDisconnected));
 
       clearInterval(keepAliveIntervalRef.current as NodeJS.Timer);
       navigate(reactRoutes.login);

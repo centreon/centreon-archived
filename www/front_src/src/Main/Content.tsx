@@ -15,70 +15,20 @@ import { webVersionsAtom } from '../webVersionsAtom';
 import reactRoutes from '../reactRoutes/routeMap';
 import PageLoader from '../components/PageLoader';
 
+import MainLoader from './MainLoader';
+import { areUserParametersLoadedAtom } from './mainAtom';
+
 const App = React.lazy(() => import('../App'));
 
 const MainContent = (): JSX.Element => {
-  const { i18n } = useTranslation();
-  const [isUserDisconnected, setIsUserDisconnected] = React.useState<
-    boolean | null
-  >(null);
-
   const navigate = useNavigate();
-  const { sendRequest: getUser } = useRequest<User>({
-    decoder: userDecoder,
-    request: getData,
-    showErrorOnPermissionDenied: false,
-  });
 
-  const [user, setUser] = useAtom(userAtom);
+  const [areUserParametersLoaded] = useAtom(areUserParametersLoadedAtom);
+  const user = useAtomValue(userAtom);
   const webVersions = useAtomValue(webVersionsAtom);
 
-  const changeLanguage = (locale: string): void => {
-    i18n.changeLanguage(locale.slice(0, 2));
-  };
-
-  const loadUser = (): Promise<void | User> =>
-    getUser({
-      endpoint: userEndpoint,
-    }).catch((error) => {
-      if (
-        pathEq(['response', 'status'], 403)(error) ||
-        pathEq(['response', 'status'], 401)(error)
-      ) {
-        setIsUserDisconnected(true);
-      }
-    });
-
   React.useEffect(() => {
-    loadUser().then((retrievedUser) => {
-      if (isNil(retrievedUser)) {
-        return;
-      }
-
-      const {
-        alias,
-        isExportButtonEnabled,
-        locale,
-        name,
-        timezone,
-        use_deprecated_pages: useDeprecatedPages,
-      } = retrievedUser as User;
-
-      setUser({
-        alias,
-        isExportButtonEnabled,
-        locale: locale || 'en',
-        name,
-        timezone,
-        use_deprecated_pages: useDeprecatedPages,
-      });
-      changeLanguage((retrievedUser as User).locale);
-      setIsUserDisconnected(false);
-    });
-  }, []);
-
-  React.useEffect(() => {
-    if (isNil(webVersions) || isNil(isUserDisconnected)) {
+    if (isNil(webVersions) || isNil(areUserParametersLoaded)) {
       return;
     }
 
@@ -92,19 +42,20 @@ const MainContent = (): JSX.Element => {
       navigate(reactRoutes.upgrade);
     }
 
-    if (isUserDisconnected) {
+    if (not(areUserParametersLoaded)) {
       navigate(reactRoutes.login);
     }
-  }, [webVersions, isUserDisconnected]);
+  }, [webVersions, areUserParametersLoaded]);
 
   if (
     isNil(webVersions) ||
     isNil(user) ||
-    isUserDisconnected ||
+    isNil(areUserParametersLoaded) ||
+    not(areUserParametersLoaded) ||
     isNil(webVersions.installedVersion) ||
     not(isNil(webVersions.availableVersion))
   ) {
-    return <PageLoader />;
+    return <MainLoader />;
   }
 
   return (

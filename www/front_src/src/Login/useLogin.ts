@@ -2,15 +2,17 @@ import React from 'react';
 
 import { useNavigate } from 'react-router-dom';
 import { FormikHelpers, FormikValues } from 'formik';
-import { replace } from 'ramda';
+import { not, replace } from 'ramda';
 import { useAtom } from 'jotai';
+import { useTranslation } from 'react-i18next';
+import { useAtomValue } from 'jotai/utils';
 
-import { getData, useRequest, useSnackbar } from '@centreon/ui';
+import { useRequest, useSnackbar } from '@centreon/ui';
 
+import { areUserParametersLoadedAtom } from '../Main/mainAtom';
 import { WebVersions } from '../api/models';
-import { webVersionsDecoder } from '../api/decoders';
-import { webVersionsEndpoint } from '../api/endpoint';
 import { webVersionsAtom } from '../webVersionsAtom';
+import useUser from '../Main/useUser';
 
 import postLogin from './api';
 import { redirectDecoder } from './api/decoder';
@@ -27,50 +29,40 @@ interface UseLoginState {
 }
 
 const useLogin = (): UseLoginState => {
+  const { t, i18n } = useTranslation();
+  const [loggingIn, setLoggingIn] = React.useState(false);
+
   const { sendRequest, sending } = useRequest<Redirect>({
     decoder: redirectDecoder,
     request: postLogin,
-  });
-  const { sendRequest: getWebVersions } = useRequest<WebVersions>({
-    decoder: webVersionsDecoder,
-    request: getData,
+    showErrorOnPermissionDenied: false,
   });
 
   const { showSuccessMessage, showErrorMessage } = useSnackbar();
   const navigate = useNavigate();
+  const loadUser = useUser(i18n.changeLanguage);
 
-  const [webVersions, setWebVersions] = useAtom(webVersionsAtom);
+  const [webVersions] = useAtom(webVersionsAtom);
 
   const submitLoginForm = (
     values: LoginFormValues,
     { setSubmitting },
   ): void => {
+    setLoggingIn(true);
     sendRequest({
       login: values.alias,
       password: values.password,
     })
       .then(({ redirectUri }) => {
-        showSuccessMessage(labelLoginSucceeded);
-        // window.location.href = redirectUri;
-        navigate(replace('/centreon', '', redirectUri));
+        showSuccessMessage(t(labelLoginSucceeded));
+        loadUser()?.then(() => navigate(replace('/centreon', '', redirectUri)));
       })
       .catch(() => {
-        showErrorMessage(labelLoginFailed);
+        showErrorMessage(t(labelLoginFailed));
         setSubmitting(false);
+        setLoggingIn(false);
       });
   };
-
-  const loadWebVersions = (): void => {
-    getWebVersions({
-      endpoint: webVersionsEndpoint,
-    }).then((retrievedWebVersions) => {
-      setWebVersions(retrievedWebVersions);
-    });
-  };
-
-  React.useEffect(() => {
-    loadWebVersions();
-  }, []);
 
   return {
     sending,

@@ -11,6 +11,7 @@ import React, { Component } from 'react';
 import classnames from 'classnames';
 import { withTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
+import { useUpdateAtom } from 'jotai/utils';
 
 import { Typography, withStyles, createStyles } from '@material-ui/core';
 import UserIcon from '@material-ui/icons/AccountCircle';
@@ -22,6 +23,7 @@ import Clock from '../Clock';
 import axios from '../../axios';
 import MenuLoader from '../../components/MenuLoader';
 import useNavigation from '../../Navigation/useNavigation';
+import { areUserParametersLoadedAtom } from '../../Main/mainAtom';
 
 const EDIT_PROFILE_TOPOLOGY_PAGE = '50104';
 
@@ -122,7 +124,7 @@ class UserMenuContent extends Component {
     }
 
     // check if edit profile page (My Account) is allowed
-    const { allowedPages, t, classes } = this.props;
+    const { allowedPages, t, classes, setAreUserParametersLoaded } = this.props;
     const allowEditProfile = allowedPages?.includes(EDIT_PROFILE_TOPOLOGY_PAGE);
 
     const { fullname, username, autologinkey } = data;
@@ -210,6 +212,7 @@ class UserMenuContent extends Component {
                   to="/index.php"
                   onClick={(e) => {
                     e.preventDefault();
+                    setAreUserParametersLoaded(null);
                     window.location.href = './index.php?disconnect=1';
                   }}
                 >
@@ -235,7 +238,15 @@ class UserMenuContent extends Component {
 const UserMenu = (props) => {
   const { allowedPages } = useNavigation();
 
-  return <UserMenuContent {...props} allowedPages={allowedPages} />;
+  const setAreUserParametersLoaded = useUpdateAtom(areUserParametersLoadedAtom);
+
+  return (
+    <UserMenuContent
+      {...props}
+      allowedPages={allowedPages}
+      setAreUserParametersLoaded={setAreUserParametersLoaded}
+    />
+  );
 };
 
 export default withStyles(MuiStyles)(withTranslation()(UserMenu));

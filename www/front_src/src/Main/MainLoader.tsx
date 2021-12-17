@@ -1,8 +1,11 @@
 import * as React from 'react';
 
+import { useTranslation } from 'react-i18next';
+
 import { makeStyles, Typography } from '@material-ui/core';
 
 import logoCentreon from '../Navigation/Sidebar/Logo/centreon.png';
+import { labelCentreonLogo } from '../Login/translatedLabels';
 
 import { labelCentreonIsLoading } from './translatedLabels';
 
@@ -21,11 +24,12 @@ const useStyles = makeStyles((theme) => ({
 
 const MainLoader = (): JSX.Element => {
   const classes = useStyles();
+  const { t } = useTranslation();
 
   return (
     <div className={classes.loader}>
-      <img alt="Centreon Logo" src={logoCentreon} />
-      <Typography>{labelCentreonIsLoading}</Typography>
+      <img alt={t(labelCentreonLogo)} src={logoCentreon} />
+      <Typography>{t(labelCentreonIsLoading)}</Typography>
     </div>
   );
 };

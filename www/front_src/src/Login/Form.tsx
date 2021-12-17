@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import { FormikValues, useFormikContext } from 'formik';
 import { isEmpty, not, prop } from 'ramda';
+import { useTranslation } from 'react-i18next';
 
 import { Button, CircularProgress, makeStyles } from '@material-ui/core';
 
@@ -26,6 +27,7 @@ const getTouchedError = ({ fieldName, errors, touched }): string | undefined =>
 
 const LoginForm = (): JSX.Element => {
   const classes = useStyles();
+  const { t } = useTranslation();
   const {
     values,
     handleChange,
@@ -54,17 +56,17 @@ const LoginForm = (): JSX.Element => {
   return (
     <form className={classes.form} onSubmit={handleSubmit}>
       <TextField
-        ariaLabel={labelAlias}
+        ariaLabel={t(labelAlias)}
         error={aliasError}
-        label={labelAlias}
+        label={t(labelAlias)}
         value={aliasValue || ''}
         onBlur={handleBlur(aliasFieldName)}
         onChange={handleChange(aliasFieldName)}
       />
       <TextField
-        ariaLabel={labelPassword}
+        ariaLabel={t(labelPassword)}
         error={passwordError}
-        label={labelPassword}
+        label={t(labelPassword)}
         type="password"
         value={passwordValue || ''}
         onBlur={handleBlur(passwordFieldName)}
@@ -72,14 +74,14 @@ const LoginForm = (): JSX.Element => {
       />
       <Button
         fullWidth
-        aria-label={labelLogin}
+        aria-label={t(labelLogin)}
         color="primary"
         disabled={isDisabled}
         endIcon={isSubmitting && <CircularProgress color="inherit" size={20} />}
         type="submit"
         variant="contained"
       >
-        {labelLogin}
+        {t(labelLogin)}
       </Button>
     </form>
   );

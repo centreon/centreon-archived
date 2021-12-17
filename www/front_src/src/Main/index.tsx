@@ -13,23 +13,26 @@ import isYesterday from 'dayjs/plugin/isYesterday';
 import weekday from 'dayjs/plugin/weekday';
 import isBetween from 'dayjs/plugin/isBetween';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
-import { Routes, Route } from 'react-router-dom';
-import { useAtom } from 'jotai';
-import { isNil, mergeAll, pipe, reduce, toPairs } from 'ramda';
-import i18next, { Resource, ResourceLanguage } from 'i18next';
+import { equals, isNil, mergeAll, not, pipe, reduce, toPairs } from 'ramda';
+import i18next, { Resource, ResourceLanguage, TFunction } from 'i18next';
 import { initReactI18next } from 'react-i18next';
+import { useAtom } from 'jotai';
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import { useAtomValue } from 'jotai/utils';
 
 import { getData, useRequest, withSnackbar } from '@centreon/ui';
 
-import reactRoutes from '../reactRoutes/routeMap';
 import { webVersionsDecoder } from '../api/decoders';
 import { WebVersions } from '../api/models';
 import { webVersionsEndpoint } from '../api/endpoint';
 import { webVersionsAtom } from '../webVersionsAtom';
 import { translationEndpoint } from '../App/endpoint';
+import reactRoutes from '../reactRoutes/routeMap';
 
-import MainLoader from './MainLoader';
 import Provider from './Provider';
+import MainLoader from './MainLoader';
+import useUser from './useUser';
+import { areUserParametersLoadedAtom } from './mainAtom';
 
 dayjs.extend(localizedFormat);
 dayjs.extend(utcPlugin);
@@ -54,16 +57,19 @@ const Main = (): JSX.Element => {
   });
 
   const [webVersions, setWebVersions] = useAtom(webVersionsAtom);
+  const areUserParametersLoaded = useAtomValue(areUserParametersLoadedAtom);
+
+  const loadUser = useUser(i18next.changeLanguage);
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const getLocale = (): string => navigator.language.slice(0, 2);
 
   const initializeI18n = (retrievedTranslations): void => {
-    const locale = getLocale();
-
     i18next.use(initReactI18next).init({
       fallbackLng: 'en',
       keySeparator: false,
-      lng: locale,
+      lng: getLocale(),
       nsSeparator: false,
       resources: pipe(
         toPairs as (t) => Array<[string, ResourceLanguage]>,
@@ -86,10 +92,24 @@ const Main = (): JSX.Element => {
       }),
     ]).then(([retrievedWebVersions, retrievedTranslations]) => {
       setWebVersions(retrievedWebVersions);
-
+      loadUser();
       initializeI18n(retrievedTranslations);
     });
   }, []);
+
+  React.useEffect(() => {
+    if (isNil(areUserParametersLoaded) && i18next.isInitialized) {
+      i18next?.changeLanguage(getLocale());
+    }
+    if (
+      not(areUserParametersLoaded) ||
+      not(equals(location.pathname, reactRoutes.login))
+    ) {
+      return;
+    }
+
+    navigate('/monitoring/resources');
+  }, [location, areUserParametersLoaded]);
 
   if (isNil(webVersions)) {
     return <MainLoader />;
