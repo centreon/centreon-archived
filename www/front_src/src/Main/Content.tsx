@@ -97,7 +97,6 @@ const MainContent = (): JSX.Element => {
   }, []);
 
   React.useEffect(() => {
-    console.log(webVersions, user, isUserDisconnected);
     if (
       isNil(webVersions) ||
       not(webVersionsLoaded) ||
@@ -125,7 +124,9 @@ const MainContent = (): JSX.Element => {
     sendingWebVersions ||
     isNil(webVersions) ||
     isNil(user) ||
-    isUserDisconnected
+    isUserDisconnected ||
+    isNil(webVersions.installedVersion) ||
+    not(isNil(webVersions.availableVersion))
   ) {
     return <MainLoader />;
   }

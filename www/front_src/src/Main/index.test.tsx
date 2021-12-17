@@ -12,6 +12,15 @@ import {
   labelLogin,
   labelPassword,
 } from '../Login/translatedLabels';
+import {
+  aclEndpoint,
+  parametersEndpoint,
+  translationEndpoint,
+} from '../App/endpoint';
+import { retrievedNavigation } from '../Navigation/mocks';
+import { retrievedExternalComponents } from '../externalComponents/mocks';
+import { navigationEndpoint } from '../Navigation/useNavigation';
+import { externalComponentsEndpoint } from '../externalComponents/useExternalComponents';
 
 import { labelCentreonIsLoading } from './translatedLabels';
 
@@ -34,6 +43,32 @@ const retrievedUser = {
   name: 'Admin',
   timezone: 'Europe/Paris',
   use_deprecated_pages: false,
+};
+
+const retrievedParameters = {
+  monitoring_default_acknowledgement_persistent: true,
+  monitoring_default_acknowledgement_sticky: true,
+  monitoring_default_downtime_duration: 3600,
+  monitoring_default_refresh_interval: 15,
+};
+
+const retrievedActionsAcl = {
+  host: {
+    acknowledgement: true,
+    check: true,
+    downtime: true,
+  },
+  service: {
+    acknowledgement: true,
+    check: true,
+    downtime: true,
+  },
+};
+
+const retrievedTranslations = {
+  en: {
+    hello: 'Hello',
+  },
 };
 
 const renderMain = (): RenderResult =>
@@ -83,17 +118,17 @@ describe('Main', () => {
     expect(screen.getByText('Copyright © 2005 - 2020')).toBeInTheDocument();
   });
 
-  it('redirects the user to the install page when web versions does not contain an installed version', async () => {
+  it('redirects the user to the install page when the retrieved web versions does not contain an installed version', async () => {
     window.history.pushState({}, '', '/');
     mockedAxios.get
+      .mockResolvedValueOnce({
+        data: retrievedUser,
+      })
       .mockResolvedValueOnce({
         data: {
           available_version: '21.10.1',
           installed_version: null,
         },
-      })
-      .mockResolvedValueOnce({
-        data: retrievedUser,
       });
 
     renderMain();
@@ -114,8 +149,116 @@ describe('Main', () => {
 
     await waitFor(() => {
       expect(decodeURI(window.location.href)).toBe(
-        'http://localhost/centreon/install/install.php',
+        'http://localhost/install/install.php',
       );
     });
+  });
+
+  it('redirects the user to the upgrade page when the retrieved web versions contains an available version', async () => {
+    window.history.pushState({}, '', '/');
+    mockedAxios.get
+      .mockResolvedValueOnce({
+        data: retrievedUser,
+      })
+      .mockResolvedValueOnce({
+        data: {
+          available_version: '21.10.1',
+          installed_version: '21.10.0',
+        },
+      });
+
+    renderMain();
+
+    expect(screen.getByText(labelCentreonIsLoading)).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        webVersionsEndpoint,
+        cancelTokenRequestParam,
+      );
+    });
+
+    expect(mockedAxios.get).toHaveBeenCalledWith(
+      userEndpoint,
+      cancelTokenRequestParam,
+    );
+
+    await waitFor(() => {
+      expect(decodeURI(window.location.href)).toBe(
+        'http://localhost/install/upgrade.php',
+      );
+    });
+  });
+
+  it('gets the translations, navigation data and the parameters related to the account when the user is already connected', async () => {
+    window.history.pushState({}, '', '/');
+    mockedAxios.get
+      .mockResolvedValueOnce({
+        data: retrievedUser,
+      })
+      .mockResolvedValueOnce({
+        data: {
+          available_version: null,
+          installed_version: '21.10.0',
+        },
+      })
+      .mockResolvedValueOnce({
+        data: retrievedNavigation,
+      })
+      .mockResolvedValueOnce({
+        data: retrievedExternalComponents,
+      })
+      .mockResolvedValueOnce({
+        data: retrievedParameters,
+      })
+      .mockResolvedValueOnce({
+        data: retrievedActionsAcl,
+      })
+      .mockResolvedValueOnce({
+        data: retrievedTranslations,
+      });
+
+    renderMain();
+
+    expect(screen.getByText(labelCentreonIsLoading)).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        webVersionsEndpoint,
+        cancelTokenRequestParam,
+      );
+    });
+
+    expect(mockedAxios.get).toHaveBeenCalledWith(
+      userEndpoint,
+      cancelTokenRequestParam,
+    );
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        navigationEndpoint,
+        cancelTokenRequestParam,
+      );
+    });
+
+    expect(mockedAxios.get).toHaveBeenCalledWith(
+      externalComponentsEndpoint,
+      cancelTokenRequestParam,
+    );
+
+    expect(mockedAxios.get).toHaveBeenCalledWith(
+      parametersEndpoint,
+      cancelTokenRequestParam,
+    );
+
+    expect(mockedAxios.get).toHaveBeenCalledWith(
+      aclEndpoint,
+      cancelTokenRequestParam,
+    );
+
+    expect(mockedAxios.get).toHaveBeenCalledWith(
+      translationEndpoint,
+      cancelTokenRequestParam,
+    );
   });
 });
