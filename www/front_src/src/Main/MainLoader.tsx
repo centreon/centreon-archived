@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Fade, makeStyles, Typography } from '@material-ui/core';
+import { makeStyles, Typography } from '@material-ui/core';
 
 import logoCentreon from '../Navigation/Sidebar/Logo/centreon.png';
 
