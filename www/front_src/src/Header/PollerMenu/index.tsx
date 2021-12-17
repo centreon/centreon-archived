@@ -53,7 +53,7 @@ const pollerIssueKeyToMessage = {
 
 interface PollerData {
   issues: Issues;
-  totalPoller: number;
+  total: number;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -68,6 +68,9 @@ const useStyles = makeStyles((theme) => ({
     textDecoration: 'none',
   },
   pollerDetailRow: {
+    borderBottomStyle: 'solid',
+    borderWidth: '1px',
+    color: theme.palette.common.white,
     display: 'flex',
     gap: theme.spacing(1),
   },
@@ -93,7 +96,7 @@ const PollerMenu = (): JSX.Element => {
   );
 
   const [issues, setIssues] = React.useState<Issues | null>(null);
-  const [totalPoller, setTotal] = React.useState<PollerData | number>(0);
+  const [pollerCount, setPollerCount] = React.useState<PollerData | number>(0);
   const [isExporting, setIsExportingConfiguration] = React.useState<boolean>();
   const [toggled, setToggled] = React.useState<boolean>(false);
   const interval = React.useRef<number>();
@@ -129,12 +132,10 @@ const PollerMenu = (): JSX.Element => {
   const endpoint = pollerListIssues;
 
   const loadPollerData = (): void => {
-    sendRequest(`./api/${endpoint}`)
+    sendRequest({ endpoint: `./api/${endpoint}` })
       .then((retrievedPollerData) => {
-        setIssues(
-          isEmpty(retrievedPollerData.issues) ? {} : retrievedPollerData.issues,
-        );
-        setTotal(retrievedPollerData.totalPoller);
+        setIssues(retrievedPollerData.issues);
+        setPollerCount(retrievedPollerData.total);
       })
       .catch((error) => {
         if (error.response && error.response.status === 401) {
@@ -195,7 +196,7 @@ const PollerMenu = (): JSX.Element => {
                       ])}
                       variant="body2"
                     >
-                      {t(pollerIssueKeyToMessage[key])}
+                      <li>{t(pollerIssueKeyToMessage[key])}</li>
                     </Typography>
                     <Typography className={classes.label} variant="body2">
                       {issue.total ? issue.total : ''}
@@ -204,9 +205,12 @@ const PollerMenu = (): JSX.Element => {
                 );
               })
             ) : (
-              <Typography className={classes.label} variant="body2">
-                {t(labelAllPollers)}
-                {totalPoller}
+              <Typography
+                className={clsx(classes.label, classes.pollerDetailRow)}
+                variant="body2"
+              >
+                <li {...t(labelAllPollers)} />
+                {pollerCount}
               </Typography>
             )}
             {allowPollerConfiguration && (
