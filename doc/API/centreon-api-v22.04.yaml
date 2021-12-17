@@ -154,7 +154,7 @@ paths:
                     type: boolean
                     description: "Provider forced or not"
                     example: false
-  /authentication/providers/{provider_configuration_name}:
+  /authentication/providers/configurations/{provider_configuration_name}:
     post:
       tags:
        - Authentication
@@ -3194,6 +3194,35 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /platform/versions/web:
+    get:
+      tags:
+        - Platform
+      summary: "Get centreon web versions"
+      description: "Get installed and available versions of centreon web"
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                required: ["installed_version", "available_version"]
+                properties:
+                  installed_version:
+                    type: string
+                    nullable: true
+                    description: |
+                      installed version of centreon web
+                      null if centreon web is not installed
+                    example: 21.10.0
+                  available_version:
+                    type: string
+                    nullable: true
+                    description: |
+                      available version of centreon web
+                      null if no upgrade is available
+                    example: 21.10.1
   /platform/topology:
     post:
       tags:
