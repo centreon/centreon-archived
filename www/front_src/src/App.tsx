@@ -27,7 +27,7 @@ import Provider from './Provider';
 const MainRouter = React.lazy(() => import('./components/mainRouter'));
 const Header = React.lazy(() => import('./Header'));
 const Navigation = React.lazy(() => import('./Navigation'));
-const Footer = React.lazy(() => import('./components/footer'));
+const Footer = React.lazy(() => import('./Footer'));
 
 const styles = createStyles({
   content: {

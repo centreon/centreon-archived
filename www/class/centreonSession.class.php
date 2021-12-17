@@ -166,6 +166,7 @@ class CentreonSession
                 $sessionStatement->bindValue(':lastReload', time(), \PDO::PARAM_INT);
                 $sessionStatement->bindValue(':ipAddress', $_SERVER["REMOTE_ADDR"], \PDO::PARAM_STR);
                 $sessionStatement->bindValue(':sessionId', $sessionId, \PDO::PARAM_STR);
+                $sessionStatement->execute();
 
                 $sessionExpire = 120;
                 $optionResult = $pearDB->query(
@@ -185,7 +186,7 @@ class CentreonSession
                     SET `expiration_date` = :expirationDate
                     WHERE `token` = :sessionId"
                 );
-                $tokenStatement->bindValue(':expirationDate', $expirationDate, \PDO::PARAM_STR);
+                $tokenStatement->bindValue(':expirationDate', $expirationDate, \PDO::PARAM_INT);
                 $tokenStatement->bindValue(':sessionId', $sessionId, \PDO::PARAM_STR);
                 $tokenStatement->execute();
 
