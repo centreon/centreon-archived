@@ -79,22 +79,17 @@ $release = $dbResult->fetchRow();
                 <td style="padding-top :10px;">
                     <p>Adrien Gelibert</p>
                     <p>Adrien Morais</p>
+                    <p>Allyriane Launois</p>
                     <p>Bruno D'auria</p>
                     <p>David Boucher</p>
-                    <p>Etienne Gautier</p>
                     <p>Jérémy Delpierre</p>
                     <p>Jérémy Jaouen</p>
-                    <p>Jiliang Wang</p>
                     <p>Kevin Duret</p>
                     <p>Laurent Calvet</p>
                     <p>Laurent Pinsivy</p>
-                    <p>Loïc Laurent</p>
-                    <p>Lotfi Zaouche</p>
                     <p>Maximilien Bersoult</p>
                     <p>Quentin Garnier</p>
-                    <p>Samir Brizini</p>
-                    <p>Stéphane Chapron</p>
-                    <p>Remi Grès</p>
+                    <p>Tamaz Cheishvili</p>
                     <p>Tom Darneix</p>
                     <p>Thomas Arnaud</p>
                 </td>
@@ -106,6 +101,14 @@ $release = $dbResult->fetchRow();
                 </td>
                 <td style="padding-top: 10px;" colspan="2">
                     <table class="table">
+                        <tr>
+                            <td>Loïc Laurent</td>
+                            <td>Jiliang Wang</td>
+                        </tr>
+                        <tr>
+                            <td>Etienne Gautier</td>
+                            <td>Samir Brizini</td>
+                        </tr>
                         <tr>
                             <td>Thi Uyên Dang</td>
                             <td>Thomas Untoja</td>
@@ -164,6 +167,11 @@ $release = $dbResult->fetchRow();
                         </tr>
                         <tr>
                             <td>Colin Gagnaire</td>
+                            <td>Remi Grès</td>
+                        </tr>
+                        <tr>
+                            <td>Lotfi Zaouche</td>
+                            <td>Stéphane Chapron</td>
                         </tr>
                         <tr>
                             <td colspan="2">
