@@ -2,15 +2,15 @@ import * as React from 'react';
 
 import { isNil, not, pathEq } from 'ramda';
 import { useNavigate, Routes, Route } from 'react-router-dom';
-import { useUpdateAtom } from 'jotai/utils';
+import { useAtom } from 'jotai';
 
 import { Typography } from '@material-ui/core';
 
-import { getData, useRequest } from '@centreon/ui';
+import { getData, useRequest, withSnackbar } from '@centreon/ui';
 import { User, userAtom } from '@centreon/ui-context';
 
 import Provider from './Provider';
-import { userDecoder, webVersionsDecoder } from './api/decoders';
+import { webVersionsDecoder, userDecoder } from './api/decoders';
 import { userEndpoint, webVersionsEndpoint } from './api/endpoint';
 import reactRoutes from './reactRoutes/routeMap';
 import { WebVersions } from './api/models';
@@ -18,10 +18,14 @@ import { WebVersions } from './api/models';
 const App = React.lazy(() => import('./App'));
 const LoginPage = React.lazy(() => import('./Login'));
 
-const Main = (): JSX.Element => {
+const MainContent = (): JSX.Element => {
   const [webVersions, setWebVersions] = React.useState<WebVersions | null>(
     null,
   );
+  const [webVersionsLoaded, setWebVersionsLoaded] = React.useState(false);
+  const [isUserDisconnected, setIsUserDisconnected] = React.useState<
+    boolean | null
+  >(null);
   const [areTranslationsLoaded, setAreTranslationsLoaded] =
     React.useState(false);
 
@@ -29,6 +33,7 @@ const Main = (): JSX.Element => {
   const { sendRequest: getUser } = useRequest<User>({
     decoder: userDecoder,
     request: getData,
+    showErrorOnPermissionDenied: false,
   });
   const { sendRequest: getWebVersions, sending: sendingWebVersions } =
     useRequest<WebVersions>({
@@ -36,7 +41,7 @@ const Main = (): JSX.Element => {
       request: getData,
     });
 
-  const setUser = useUpdateAtom(userAtom);
+  const [user, setUser] = useAtom(userAtom);
 
   const changeAreTranslationsLoaded = (loaded): void => {
     setAreTranslationsLoaded(loaded);
@@ -46,8 +51,11 @@ const Main = (): JSX.Element => {
     getUser({
       endpoint: userEndpoint,
     }).catch((error) => {
-      if (pathEq(['response', 'status'], 401)(error)) {
-        navigate(reactRoutes.login);
+      if (
+        pathEq(['response', 'status'], 403)(error) ||
+        pathEq(['response', 'status'], 401)(error)
+      ) {
+        setIsUserDisconnected(true);
       }
     });
 
@@ -57,28 +65,43 @@ const Main = (): JSX.Element => {
         endpoint: webVersionsEndpoint,
       }),
       loadUser(),
-    ]).then(([retrievedWebVersions, retrievedUser]) => {
-      setWebVersions(retrievedWebVersions);
+    ])
+      .then(([retrievedWebVersions, retrievedUser]) => {
+        setWebVersions(retrievedWebVersions);
+        setWebVersionsLoaded(true);
 
-      if (isNil(retrievedUser)) {
-        return;
-      }
+        if (isNil(retrievedUser)) {
+          return;
+        }
 
-      const user = retrievedUser as User;
+        const {
+          alias,
+          isExportButtonEnabled,
+          locale,
+          name,
+          timezone,
+          use_deprecated_pages: useDeprecatedPages,
+        } = retrievedUser as User;
 
-      setUser({
-        alias: user.alias,
-        isExportButtonEnabled: user.isExportButtonEnabled,
-        locale: user.locale || 'en',
-        name: user.name,
-        timezone: user.timezone,
-        use_deprecated_pages: user.use_deprecated_pages,
-      });
-    });
+        setUser({
+          alias,
+          isExportButtonEnabled,
+          locale: locale || 'en',
+          name,
+          timezone,
+          use_deprecated_pages: useDeprecatedPages,
+        });
+        setIsUserDisconnected(false);
+      })
+      .catch(() => undefined);
   }, []);
 
   React.useEffect(() => {
-    if (isNil(webVersions)) {
+    if (
+      isNil(webVersions) ||
+      not(webVersionsLoaded) ||
+      isNil(isUserDisconnected)
+    ) {
       return;
     }
 
@@ -91,9 +114,18 @@ const Main = (): JSX.Element => {
     if (not(isNil(webVersions.availableVersion))) {
       navigate(reactRoutes.upgrade);
     }
-  }, [webVersions]);
 
-  if (sendingWebVersions || isNil(webVersions)) {
+    if (isUserDisconnected) {
+      navigate(reactRoutes.login);
+    }
+  }, [webVersions, webVersionsLoaded, isUserDisconnected]);
+
+  if (
+    sendingWebVersions ||
+    isNil(webVersions) ||
+    isNil(user) ||
+    isUserDisconnected
+  ) {
     return <Typography>Loading...</Typography>;
   }
 
@@ -107,11 +139,17 @@ const Main = (): JSX.Element => {
   );
 };
 
-export default (): JSX.Element => (
+const Main = (): JSX.Element => (
   <Provider>
-    <Routes>
-      <Route element={<LoginPage />} path={reactRoutes.login} />
-      <Route element={<Main />} path="*" />
-    </Routes>
+    <React.Suspense fallback={<Typography>Loading...</Typography>}>
+      <Routes>
+        <Route element={<LoginPage />} path={reactRoutes.login} />
+        <Route element={<MainContent />} path="*" />
+      </Routes>
+    </React.Suspense>
   </Provider>
 );
+
+export default withSnackbar({
+  Component: Main,
+});

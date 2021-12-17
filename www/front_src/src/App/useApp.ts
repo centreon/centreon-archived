@@ -51,13 +51,13 @@ const useApp = ({
   const [isFullscreenEnabled, setIsFullscreenEnabled] = React.useState(false);
   const keepAliveIntervalRef = React.useRef<NodeJS.Timer | null>(null);
 
-  const { sendRequest: keepAliveRequest } = useRequest({
-    request: getData,
-  });
-
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
+  const { sendRequest: keepAliveRequest } = useRequest({
+    request: getData,
+    showErrorOnPermissionDenied: false,
+  });
   const { sendRequest: getParameters } = useRequest<DefaultParameters>({
     request: getData,
   });
