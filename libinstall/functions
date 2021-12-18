@@ -1417,7 +1417,7 @@ ServerTokens Prod
     </LocationMatch>
 
     ProxyTimeout 300
-    DirectoryIndex index.php
+    DirectoryIndex index.html
     Options -Indexes +FollowSymLinks
 
     <IfModule mod_security2.c>
