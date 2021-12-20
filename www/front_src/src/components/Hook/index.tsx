@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { isNil, propOr } from 'ramda';
+import { isNil, not, propOr } from 'ramda';
 import { useHref } from 'react-router';
 import { useAtomValue } from 'jotai/utils';
 
@@ -14,34 +14,33 @@ import ExternalComponents, {
 } from '../../externalComponents/models';
 
 interface Props {
-  hooks?: ExternalComponent;
+  hooks: ExternalComponent;
   path: string;
 }
 
 const LoadableHooks = ({ hooks, path, ...rest }: Props): JSX.Element | null => {
   const basename = useHref('/');
 
-  if (isNil(hooks)) {
-    return null;
-  }
+  return useMemoComponent({
+    Component: (
+      <>
+        {Object.entries(hooks)
+          .filter(([hook]) => hook.includes(path))
+          .map(([, parameters]) => {
+            const HookComponent = React.lazy(() =>
+              dynamicImport(basename, parameters),
+            );
 
-  return (
-    <>
-      {Object.entries(hooks)
-        .filter(([hook]) => hook.includes(path))
-        .map(([, parameters]) => {
-          const HookComponent = React.lazy(() =>
-            dynamicImport(basename, parameters),
-          );
-
-          return (
-            <React.Suspense fallback={<MenuLoader width={29} />} key={path}>
-              <HookComponent {...rest} />
-            </React.Suspense>
-          );
-        })}
-    </>
-  );
+            return (
+              <React.Suspense fallback={<MenuLoader width={29} />} key={path}>
+                <HookComponent {...rest} />
+              </React.Suspense>
+            );
+          })}
+      </>
+    ),
+    memoProps: [hooks],
+  });
 };
 
 const Hook = (props: Pick<Props, 'path'>): JSX.Element | null => {
@@ -53,10 +52,11 @@ const Hook = (props: Pick<Props, 'path'>): JSX.Element | null => {
     externalComponents,
   );
 
-  return useMemoComponent({
-    Component: <LoadableHooks {...props} hooks={hooks} />,
-    memoProps: [hooks],
-  });
+  if (isNil(hooks)) {
+    return null;
+  }
+
+  return <LoadableHooks hooks={hooks} {...props} />;
 };
 
 export default Hook;
