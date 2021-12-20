@@ -30,8 +30,6 @@ $versionOfTheUpgrade = 'UPGRADE - 22.04.0-beta-1: ';
  * Query with transaction
  */
 try {
-    $pearDB->beginTransaction();
-
     $errorMessage = 'Impossible to add "contact_js_effects" column to "contact" table';
     if (!$pearDB->isColumnExist('contact', 'contact_js_effects')) {
         $pearDB->query(
@@ -50,7 +48,6 @@ try {
         SET `description` = 'Time in seconds to wait between each connection attempt (Default value: 30s).'
         WHERE `cb_field_id` = 31
     ");
-    $pearDB->commit();
 } catch (\Exception $e) {
     if ($pearDB->inTransaction()) {
         $pearDB->rollBack();
