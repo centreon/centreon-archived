@@ -33,13 +33,13 @@ const useMain = (): void => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const getLocale = (): string => navigator.language.slice(0, 2);
+  const getBrowserLocale = (): string => navigator.language.slice(0, 2);
 
   const initializeI18n = (retrievedTranslations): void => {
     i18next.use(initReactI18next).init({
       fallbackLng: 'en',
       keySeparator: false,
-      lng: getLocale(),
+      lng: getBrowserLocale(),
       nsSeparator: false,
       resources: pipe(
         toPairs as (t) => Array<[string, ResourceLanguage]>,
@@ -69,7 +69,7 @@ const useMain = (): void => {
 
   React.useEffect(() => {
     if (isNil(areUserParametersLoaded) && i18next.isInitialized) {
-      i18next?.changeLanguage(getLocale());
+      i18next?.changeLanguage(getBrowserLocale());
     }
     if (
       not(areUserParametersLoaded) ||
