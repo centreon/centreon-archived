@@ -34,12 +34,12 @@
  *
  */
 
-require_once __DIR__ . '/../../../../class/centreonContact.class.php';
-require_once __DIR__ . '/../../../../class/centreonAuth.class.php';
+require_once __DIR__ . '/../../../class/centreonContact.class.php';
+require_once __DIR__ . '/../../../class/centreonAuth.class.php';
 
 function testExistence($name = null)
 {
-    global $pearDB, $form, $centreon;
+    global $pearDB, $centreon;
 
     $query = "SELECT contact_name, contact_id FROM contact WHERE contact_name = '" .
         htmlentities($name, ENT_QUOTES, "UTF-8") . "'";
@@ -62,7 +62,7 @@ function testExistence($name = null)
 
 function testAliasExistence($alias = null)
 {
-    global $pearDB, $form, $centreon;
+    global $pearDB, $centreon;
 
     $query = "SELECT contact_alias, contact_id FROM contact " .
         "WHERE contact_alias = '" . htmlentities($alias, ENT_QUOTES, "UTF-8") . "'";
@@ -118,7 +118,7 @@ function updateContactInDB($contact_id = null)
 
 function updateContact($contactId = null)
 {
-    global $form, $pearDB, $centreon, $dependencyInjector;
+    global $form, $pearDB, $centreon;
 
     if (!$contactId) {
         return;
