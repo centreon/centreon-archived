@@ -56,5 +56,6 @@ try {
         " - Error : " . $e->getMessage() .
         " - Trace : " . $e->getTraceAsString()
     );
+
     throw new \Exception($versionOfTheUpgrade . $errorMessage, (int)$e->getCode(), $e);
 }
