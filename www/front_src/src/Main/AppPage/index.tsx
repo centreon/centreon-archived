@@ -7,16 +7,15 @@ import { useAtomValue } from 'jotai/utils';
 
 import { userAtom } from '@centreon/ui-context';
 
-import { webVersionsAtom } from '../webVersionsAtom';
-import reactRoutes from '../reactRoutes/routeMap';
-import PageLoader from '../components/PageLoader';
+import { webVersionsAtom } from '../../webVersionsAtom';
+import reactRoutes from '../../reactRoutes/routeMap';
+import PageLoader from '../../components/PageLoader';
+import MainLoader from '../MainLoader';
+import { areUserParametersLoadedAtom } from '../useUser';
 
-import MainLoader from './MainLoader';
-import { areUserParametersLoadedAtom } from './useUser';
+const App = React.lazy(() => import('../../App'));
 
-const App = React.lazy(() => import('../App'));
-
-const MainContent = (): JSX.Element => {
+const AppPage = (): JSX.Element => {
   const navigate = useNavigate();
 
   const [areUserParametersLoaded] = useAtom(areUserParametersLoadedAtom);
@@ -61,4 +60,4 @@ const MainContent = (): JSX.Element => {
   );
 };
 
-export default MainContent;
+export default AppPage;
