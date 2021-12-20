@@ -690,7 +690,7 @@ function updateContact_MC($contact_id = null)
 {
     global $form, $pearDB, $centreon;
 
-    if ($contact_id == null || $contact_id === false) {
+    if ($contact_id === null || $contact_id === false) {
         return;
     }
 
