@@ -34,15 +34,15 @@
  *
  */
 
-require_once "Centreon/Object/Object.php";
-require_once __DIR__ . '/../../../www/class/centreonContact.class.php';
+require_once __DIR__ . '/../Object.php';
+require_once __DIR__ . '/../../../../www/class/centreonContact.class.php';
 
 /**
  * Used for interacting with Contact objects
  *
  * @author sylvestre
  */
-class Centreon_Object_Contact extends Centreon_Object
+class Centreon_Object_Contact extends \Centreon_Object
 {
     protected $table = "contact";
     protected $primaryKey = "contact_id";
