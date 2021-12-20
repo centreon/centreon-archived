@@ -36,6 +36,7 @@
 
 session_start();
 require_once __DIR__ . '/../../../../bootstrap.php';
+require_once __DIR__ . '/../../../class/centreonAuth.class.php';
 
 $err = array(
     'required' => array(),
@@ -74,7 +75,10 @@ if (
 ) {
     $err['password_security_policy'] = false;
 } else {
-    $parameters['admin_password'] = password_hash($parameters['admin_password'], PASSWORD_BCRYPT);
+    $parameters['admin_password'] = password_hash(
+        $parameters['admin_password'],
+        \CentreonAuth::PASSWORD_HASH_ALGORITHM
+    );
 }
 
 if (!count($err['required']) && $err['password'] && $err['email']) {
