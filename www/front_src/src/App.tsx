@@ -11,7 +11,7 @@ import { getData, useRequest } from '@centreon/ui';
 
 import Header from './Header';
 import Navigation from './Navigation';
-import Footer from './components/footer';
+import Footer from './Footer';
 import PageLoader from './components/PageLoader';
 import Provider from './Provider';
 

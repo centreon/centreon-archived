@@ -34,7 +34,7 @@
     "@testing-library/react": "^12.1.2",
     "@testing-library/react-hooks": "^7.0.2",
     "@testing-library/user-event": "^13.2.1",
-    "@types/ramda": "^0.27.45",
+    "@types/ramda": "0.27.45",
     "@types/react-router": "^5.1.16",
     "@typescript-eslint/eslint-plugin": "^4.33.0",
     "@typescript-eslint/parser": "^4.33.0",
