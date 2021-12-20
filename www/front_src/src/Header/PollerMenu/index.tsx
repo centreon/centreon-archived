@@ -8,7 +8,6 @@ import classnames from 'classnames';
 import clsx from 'clsx';
 import { useAtomValue } from 'jotai/utils';
 import { useHistory } from 'react-router';
-
 import PollerIcon from '@material-ui/icons/DeviceHub';
 import {
   Button,

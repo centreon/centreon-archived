@@ -85,7 +85,7 @@ const CriteriasContent = (): JSX.Element => {
                 <FilterCriteria
                   name={name}
                   value={value as Array<SelectEntry>}
-                />{' '}
+                />
               </Grid>
             );
           })}

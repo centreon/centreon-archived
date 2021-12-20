@@ -31,6 +31,7 @@ interface Props {
 
 const useStyles = makeStyles((theme) => ({
   exportButton: {
+    display: 'flex',
     marginTop: theme.spacing(1),
   },
   pollerText: {
