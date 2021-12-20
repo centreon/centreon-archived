@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2015 CENTREON
+ * Copyright 2005-2021 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -34,6 +35,7 @@
  */
 
 require_once "Centreon/Object/Object.php";
+require_once __DIR__ . '/../../../www/class/centreonContact.class.php';
 
 /**
  * Used for interacting with Contact objects
@@ -80,14 +82,8 @@ class Centreon_Object_Contact extends Centreon_Object
             $this->db->query($sql, $sqlParams);
             $contactId = $this->db->lastInsertId();
             if (isset($password) && isset($contactId)) {
-                $statement = $this->db->prepare(
-                    "INSERT INTO `contact_password` (password, contact_id, creation_date)
-                    VALUES (:password, :contactId, :creationDate)"
-                );
-                $statement->bindValue(':password', $password, \PDO::PARAM_STR);
-                $statement->bindValue(':contactId', $contactId, \PDO::PARAM_INT);
-                $statement->bindValue(':creationDate', time(), \PDO::PARAM_INT);
-                $statement->execute();
+                $contact = new \CentreonContact($this->db);
+                $contact->insertPasswordByContactId($contactId, $password);
             }
             return $contactId;
         }
@@ -202,33 +198,8 @@ class Centreon_Object_Contact extends Centreon_Object
         }
 
         if (isset($password) && isset($contactId)) {
-            //Get three last saved password.
-            $statement = $this->db->prepare(
-                'SELECT id, password, creation_date from `contact_password`
-                WHERE `contact_id` = :contactId ORDER BY `creation_date` DESC'
-            );
-            $statement->bindValue(':contactId', $contactId, PDO::PARAM_INT);
-            $statement->execute();
-            //If 3 or more passwords are saved, delete the oldest one.
-            if (($result = $statement->fetchAll()) && count($result) >= 3) {
-                $creationDates = array_column($result, 'creation_date');
-                $oldestPassword = $result[array_search(min($creationDates), $creationDates)];
-                $statement = $this->db->prepare(
-                    'DELETE FROM `contact_password` WHERE `id` < :id AND contact_id = :contactId'
-                );
-                $statement->bindValue(':id', $oldestPassword['id'], PDO::PARAM_INT);
-                $statement->bindValue(':contactId', $contactId, PDO::PARAM_INT);
-                $statement->execute();
-            }
-
-            $statement = $this->db->prepare(
-                'INSERT INTO `contact_password` (`password`, `contact_id`, `creation_date`)
-                VALUES (:password, :contactId, :creationDate)'
-            );
-            $statement->bindValue(':password', $password, PDO::PARAM_STR);
-            $statement->bindValue(':contactId', $contactId, PDO::PARAM_INT);
-            $statement->bindValue(':creationDate', time(), PDO::PARAM_STR);
-            $statement->execute();
+            $contact = new \CentreonContact($this->db);
+            $contact->updatePasswordByContactId($contactId, $password);
         }
     }
 }
