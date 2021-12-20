@@ -64,8 +64,9 @@ try {
         REFERENCES `contact` (`contact_id`) ON DELETE CASCADE)"
     );
 
-    $errorMessage = "Unable to select existing passwords from 'contact' table";
     $pearDB->beginTransaction();
+
+    $errorMessage = "Unable to select existing passwords from 'contact' table";
     $dbResult = $pearDB->query(
         "SELECT `contact_id`, `contact_passwd` FROM `contact` WHERE `contact_passwd` IS NOT NULL"
     );
@@ -73,6 +74,7 @@ try {
         "INSERT INTO `contact_password` (`password`, `contact_id`, `creation_date`)
         VALUES (:password, :contactId, :creationDate)"
     );
+
     $errorMessage = "Unable to insert password in 'contact_password' table";
     while ($row = $dbResult->fetch()) {
         $statement->bindValue(':password', $row['contact_passwd'], \PDO::PARAM_STR);
@@ -80,6 +82,7 @@ try {
         $statement->bindValue(':creationDate', time(), \PDO::PARAM_INT);
         $statement->execute();
     }
+
     $pearDB->commit();
 
     $errorMessage = "Unable to drop column 'contact_passwd' from 'contact' table";
