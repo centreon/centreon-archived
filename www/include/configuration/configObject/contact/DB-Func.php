@@ -363,7 +363,7 @@ function multipleContactInDB($contacts = array(), $nbrDup = array())
         for ($i = 1; $i <= $nbrDup[$key]; $i++) {
             $val = null;
             foreach ($row as $key2 => $value2) {
-                if (in_array(['creation_date', 'password'], $key2) == false) {
+                if (in_array($key2, ['creation_date', 'password']) === false) {
                     $key2 == "contact_name" ? ($contact_name = $value2 = $value2 . "_" . $i) : null;
                     $key2 == "contact_alias" ? ($contact_alias = $value2 = $value2 . "_" . $i) : null;
                     $val ? $val .= ($value2 != null ? (", '" . $value2 . "'") : ", NULL") : $val .=
