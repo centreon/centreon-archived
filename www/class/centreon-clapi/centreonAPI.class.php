@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright 2005-2015 CENTREON
+ * Copyright 2005-2021 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -40,6 +41,7 @@ require_once realpath(dirname(__FILE__) . "/../centreonDB.class.php");
 require_once realpath(dirname(__FILE__) . "/../centreonXML.class.php");
 require_once _CENTREON_PATH_ . "www/include/configuration/configGenerate/DB-Func.php";
 require_once _CENTREON_PATH_ . 'www/class/config-generate/generate.class.php';
+require_once __DIR__ . '/../centreonAuth.class.php';
 require_once _CENTREON_PATH_ . "www/class/centreonAuth.LDAP.class.php";
 require_once _CENTREON_PATH_ . 'www/class/centreonLog.class.php';
 require_once realpath(dirname(__FILE__) . "/../centreonSession.class.php");
@@ -522,15 +524,13 @@ class CentreonAPI
                 str_starts_with($row["contact_passwd"], 'md5__')
                 && $row["contact_passwd"] === $this->dependencyInjector['utils']->encodePass($this->password, 'md5')
             ) {
-                $newPassword = password_hash($this->password, PASSWORD_BCRYPT);
-                $statement = $this->DB->prepare(
-                    "UPDATE `contact_password` SET password = :newPassword
-                    WHERE password = :oldPassword AND contact_id = :contactId"
+                $hashedPassword = password_hash($this->password, \CentreonAuth::PASSWORD_HASH_ALGORITHM);
+                $contact = new \CentreonContact($this->pearDB);
+                $contact->replacePasswordByContactId(
+                    (int) $this->userInfos['contact_id'],
+                    $row["contact_passwd"],
+                    $hashedPassword
                 );
-                $statement->bindValue(':newPassword', $newPassword, \PDO::PARAM_STR);
-                $statement->bindValue(':oldPassword', $row["contact_passwd"], \PDO::PARAM_STR);
-                $statement->bindValue(':contactId', $row["contact_id"], \PDO::PARAM_INT);
-                $statement->execute();
                 \CentreonClapi\CentreonUtils::setUserId($row['contact_id']);
                 return 1;
             }
@@ -761,7 +761,7 @@ class CentreonAPI
                         $this->launchActionForImport();
                     } catch (CentreonClapiException $e) {
                         echo "Line $i : " . $e->getMessage() . "\n";
-                    } catch (Exception $e) {
+                    } catch (\Exception $e) {
                         echo "Line $i : " . $e->getMessage() . "\n";
                     }
                     if ($this->return_code) {

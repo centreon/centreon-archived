@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2019 Centreon
+ * Copyright 2005-2021 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -37,7 +38,9 @@ if (!isset($centreon)) {
     exit();
 }
 
-require_once _CENTREON_PATH_ . 'bootstrap.php';
+require_once __DIR__ . '/../../../../../bootstrap.php';
+require_once __DIR__ . '/../../../../class/centreonAuth.class.php';
+require_once __DIR__ . '/../../../../class/centreonContact.class.php';
 
 /**
  * @param null $name
@@ -581,17 +584,11 @@ function insertContact($ret = array())
     $contactId = $dbResult->fetch();
 
     if (isset($ret["contact_passwd"]) && !empty($ret["contact_passwd"])) {
-        $ret["contact_passwd"] = $ret["contact_passwd2"]
-            = $dependencyInjector['utils']->encodePass($ret["contact_passwd"], PASSWORD_BCRYPT);
+        $ret["contact_passwd"] = password_hash($ret["contact_passwd"], \CentreonAuth::PASSWORD_HASH_ALGORITHM);
+        $ret["contact_passwd2"] = $ret["contact_passwd"];
 
-        $statement = $pearDB->prepare(
-            'INSERT INTO `contact_password` (password, contact_id, creation_date)
-            VALUES (:password, :contactId, :creationDate)'
-        );
-        $statement->bindValue(':password', $ret['contact_passwd'], PDO::PARAM_STR);
-        $statement->bindValue(':contactId', $contactId['MAX(contact_id)'], PDO::PARAM_INT);
-        $statement->bindValue(':creationDate', time(), PDO::PARAM_INT);
-        $statement->execute();
+        $contact = new \CentreonContact($pearDB);
+        $contact->insertPasswordByContactId($contactId, $ret["contact_passwd"]);
     }
 
     /* Prepare value for changelog */
@@ -645,37 +642,11 @@ function updateContact($contactId = null)
     }
 
     if (isset($ret["contact_passwd"]) && !empty($ret["contact_passwd"])) {
-        $ret["contact_passwd"] = $ret["contact_passwd2"]
-            = $dependencyInjector['utils']->encodePass($ret["contact_passwd"], PASSWORD_BCRYPT);
+        $ret["contact_passwd"] = password_hash($ret["contact_passwd"], \CentreonAuth::PASSWORD_HASH_ALGORITHM);
+        $ret["contact_passwd2"] = $ret["contact_passwd"];
 
-        //Get three last saved password.
-        $statement = $pearDB->prepare(
-            'SELECT id, password, creation_date from `contact_password`
-            WHERE `contact_id` = :contactId ORDER BY `creation_date` DESC'
-        );
-        $statement->bindValue(':contactId', $contactId, PDO::PARAM_INT);
-        $statement->execute();
-        //If 3 or more passwords are saved, delete the oldest one.
-        if (($result = $statement->fetchAll()) && count($result) >= 3) {
-            $creationDates = array_column($result, 'creation_date');
-            $oldestPassword = $result[array_search(min($creationDates), $creationDates)];
-
-            $statement = $pearDB->prepare(
-                'DELETE FROM `contact_password` WHERE `id` < :id AND contact_id = :contactId'
-            );
-            $statement->bindValue(':id', $oldestPassword['id'], PDO::PARAM_INT);
-            $statement->bindValue(':contactId', $contactId, PDO::PARAM_INT);
-            $statement->execute();
-        }
-
-        $statement = $pearDB->prepare(
-            'INSERT INTO `contact_password` (password, contact_id, creation_date)
-            VALUES (:password, :contactId, :creationDate)'
-        );
-        $statement->bindValue(':password', $ret['contact_passwd'], PDO::PARAM_STR);
-        $statement->bindValue(':contactId', $contactId, PDO::PARAM_INT);
-        $statement->bindValue(':creationDate', time(), PDO::PARAM_INT);
-        $statement->execute();
+        $contact = new \CentreonContact($pearDB);
+        $contact->updatePasswordByContactId($contactId, $ret["contact_passwd"]);
     }
 
     /* Prepare value for changelog */

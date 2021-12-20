@@ -34,6 +34,8 @@
  *
  */
 
+require_once __DIR__ . '/centreonContact.class.php';
+
 class CentreonAuth
 {
     /**
@@ -44,6 +46,8 @@ class CentreonAuth
 
     public const AUTOLOGIN_ENABLE = 1;
     public const AUTOLOGIN_DISABLE = 0;
+
+    public const PASSWORD_HASH_ALGORITHM = PASSWORD_BCRYPT;
 
     public const ENCRYPT_MD5 = 1;
     public const ENCRYPT_SHA1 = 2;
@@ -198,74 +202,32 @@ class CentreonAuth
                     ) {
                         $this->passwdOk = 1;
                         if (isset($this->ldap_store_password[$arId]) && $this->ldap_store_password[$arId]) {
-                            $statement = $this->pearDB->prepare(
-                                "INSERT INTO contact_password (password, contact_id, creation_date) " .
-                                "VALUES (:password, :contactId, :creationDate)"
+                            $hashedPassword = password_hash($this->password, self::PASSWORD_HASH_ALGORITHM);
+                            $contact = new \CentreonContact($this->pearDB);
+                            $contact->insertPasswordByContactId(
+                                (int) $this->userInfos['contact_id'],
+                                $hashedPassword
                             );
-                            $statement->bindValue(
-                                ':password',
-                                $this->dependencyInjector['utils']->encodePass($this->password, PASSWORD_BCRYPT),
-                                \PDO::PARAM_STR
-                            );
-                            $statement->bindValue(
-                                ':contactId',
-                                $this->userInfos['contact_id'],
-                                \PDO::PARAM_INT
-                            );
-                            $statement->bindValue(
-                                ':creationDate',
-                                time(),
-                                \PDO::PARAM_INT
-                            );
-                            $statement->execute();
                         }
                     }
                 } elseif ($this->passwdOk == 1) {
                     if (isset($this->ldap_store_password[$arId]) && $this->ldap_store_password[$arId]) {
                         if (!isset($this->userInfos["contact_passwd"])) {
-                            $statement = $this->pearDB->prepare(
-                                "INSERT INTO contact_password (password, contact_id, creation_date) " .
-                                "VALUES (:password, :contactId, :creationDate)"
+                            $hashedPassword = password_hash($this->password, self::PASSWORD_HASH_ALGORITHM);
+                            $contact = new \CentreonContact($this->pearDB);
+                            $contact->insertPasswordByContactId(
+                                (int) $this->userInfos['contact_id'],
+                                $hashedPassword
                             );
-                            $statement->bindValue(
-                                ':password',
-                                $this->dependencyInjector['utils']->encodePass($this->password, PASSWORD_BCRYPT),
-                                \PDO::PARAM_STR
-                            );
-                            $statement->bindValue(
-                                ':contactId',
-                                $this->userInfos['contact_id'],
-                                \PDO::PARAM_INT
-                            );
-                            $statement->bindValue(
-                                ':creationDate',
-                                time(),
-                                \PDO::PARAM_INT
-                            );
-                            $statement->execute();
-
                         // Update password if LDAP authentication is valid but password not up to date in Centreon.
                         } elseif (!password_verify($this->password, $this->userInfos["contact_passwd"])) {
-                            $statement = $this->pearDB->prepare(
-                                "UPDATE contact_password SET password = :newPassword WHERE " .
-                                "password = :oldPassword AND contact_id= :contactId"
+                            $hashedPassword = password_hash($this->password, self::PASSWORD_HASH_ALGORITHM);
+                            $contact = new \CentreonContact($this->pearDB);
+                            $contact->replacePasswordByContactId(
+                                (int) $this->userInfos['contact_id'],
+                                $this->userInfos["contact_passwd"],
+                                $hashedPassword
                             );
-                            $statement->bindValue(
-                                ':newPassword',
-                                $this->dependencyInjector['utils']->encodePass($this->password, PASSWORD_BCRYPT),
-                                \PDO::PARAM_STR
-                            );
-                            $statement->bindValue(
-                                ':oldPassword',
-                                $this->userInfos['contact_passwd'],
-                                \PDO::PARAM_INT
-                            );
-                            $statement->bindValue(
-                                ':contactId',
-                                $this->userInfos['contact_id'],
-                                \PDO::PARAM_INT
-                            );
-                            $statement->execute();
                         }
                     }
                 }
@@ -294,7 +256,7 @@ class CentreonAuth
                 && str_starts_with($this->userInfos["contact_passwd"], 'md5__')
                 && $this->userInfos["contact_passwd"] === $this->myCrypt($password)
             ) {
-                $newPassword = $this->dependencyInjector['utils']->encodePass($password, PASSWORD_BCRYPT);
+                $newPassword = password_hash($password, self::PASSWORD_HASH_ALGORITHM);
                 $statement = $this->pearDB->prepare(
                     "UPDATE `contact_password` SET password = :newPassword
                     WHERE password = :oldPassword AND contact_id = :contactId"

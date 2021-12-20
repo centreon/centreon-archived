@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2015 CENTREON
+ * Copyright 2005-2021 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -43,6 +44,7 @@ require_once "Centreon/Object/Command/Command.php";
 require_once "Centreon/Object/Timezone/Timezone.php";
 require_once "Centreon/Object/Relation/Contact/Command/Host.php";
 require_once "Centreon/Object/Relation/Contact/Command/Service.php";
+require_once __DIR__ . '/../centreonAuth.class.php';
 
 /**
  * Class for managing Contact configuration
@@ -279,10 +281,7 @@ class CentreonContact extends CentreonObject
         $addParams[$this->object->getUniqueLabelField()] = $params[self::ORDER_UNIQUENAME];
         $addParams['contact_name'] = $this->checkIllegalChar($params[self::ORDER_NAME]);
         $addParams['contact_email'] = $params[self::ORDER_MAIL];
-        $addParams['contact_passwd'] = $this->dependencyInjector['utils']->encodePass(
-            $params[self::ORDER_PASS],
-            PASSWORD_BCRYPT
-        );
+        $addParams['contact_passwd'] = password_hash($params[self::ORDER_PASS], \CentreonAuth::PASSWORD_HASH_ALGORITHM);
 
 
         $addParams['contact_admin'] = $params[self::ORDER_ADMIN];
@@ -377,10 +376,7 @@ class CentreonContact extends CentreonObject
                     $params[2] = $completeLanguage;
                 } elseif ($params[1] == "password") {
                     $params[1] = "passwd";
-                    $params[2] = $this->dependencyInjector['utils']->encodePass(
-                        $params[2],
-                        PASSWORD_BCRYPT
-                    );
+                    $params[2] = password_hash($params[2], \CentreonAuth::PASSWORD_HASH_ALGORITHM);
                 } elseif ($params[1] == "hostnotifopt") {
                     $params[1] = "host_notification_options";
                     $aNotifs = explode(",", $params[2]);

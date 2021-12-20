@@ -34,6 +34,9 @@
  *
  */
 
+require_once __DIR__ . '/../../../../class/centreonContact.class.php';
+require_once __DIR__ . '/../../../../class/centreonAuth.class.php';
+
 function testExistence($name = null)
 {
     global $pearDB, $form, $centreon;
@@ -179,36 +182,9 @@ function updateContact($contactId = null)
     $stmt->execute();
 
     if (isset($ret["contact_passwd"]) && !empty($ret["contact_passwd"])) {
-        $ret["contact_passwd"] = $ret["contact_passwd2"]
-            = $dependencyInjector['utils']->encodePass($ret["contact_passwd"], PASSWORD_BCRYPT);
-
-        //Get three last saved password.
-        $statement = $pearDB->prepare(
-            'SELECT id, password, creation_date from `contact_password`
-            WHERE `contact_id` = :contactId ORDER BY `creation_date` DESC'
-        );
-        $statement->bindValue(':contactId', $contactId, PDO::PARAM_INT);
-        $statement->execute();
-        //If 3 or more passwords are saved, delete the oldest one.
-        if (($result = $statement->fetchAll()) && count($result) >= 3) {
-            $creationDates = array_column($result, 'creation_date');
-            $oldestPassword = $result[array_search(min($creationDates), $creationDates)];
-            $statement = $pearDB->prepare(
-                'DELETE FROM `contact_password` WHERE `id` < :id AND contact_id = :contactId'
-            );
-            $statement->bindValue(':id', $oldestPassword['id'], PDO::PARAM_INT);
-            $statement->bindValue(':contactId', $contactId, PDO::PARAM_INT);
-            $statement->execute();
-        }
-
-        $statement = $pearDB->prepare(
-            'INSERT INTO `contact_password` (password, contact_id, creation_date)
-            VALUES (:password, :contactId, :creationDate)'
-        );
-        $statement->bindValue(':password', $ret['contact_passwd'], PDO::PARAM_STR);
-        $statement->bindValue(':contactId', $contactId, PDO::PARAM_INT);
-        $statement->bindValue(':creationDate', time(), PDO::PARAM_INT);
-        $statement->execute();
+        $hashedPassword = password_hash($ret["contact_passwd"], \CentreonAuth::PASSWORD_HASH_ALGORITHM);
+        $contact = new \CentreonContact($pearDB);
+        $contact->updatePasswordByContactId($contactId, $hashedPassword);
     }
 
     /*
