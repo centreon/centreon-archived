@@ -65,6 +65,7 @@ try {
     );
 
     $errorMessage = "Unable to select existing passwords from 'contact' table";
+    $pearDB->beginTransaction();
     $dbResult = $pearDB->query(
         "SELECT `contact_id`, `contact_passwd` FROM `contact` WHERE `contact_passwd` IS NOT NULL"
     );
@@ -72,15 +73,17 @@ try {
         "INSERT INTO `contact_password` (`password`, `contact_id`, `creation_date`)
         VALUES (:password, :contactId, :creationDate)"
     );
+    $errorMessage = "Unable to insert password in 'contact_password' table";
     while ($row = $dbResult->fetch()) {
-        $errorMessage = "Unable to insert password in 'contact_password' table";
-        $statement->bindValue(':password', $row['contact_passwd']);
-        $statement->bindValue(':contactId', $row['contact_id']);
-        $statement->bindValue(':creationDate', time());
+        $statement->bindValue(':password', $row['contact_passwd'], \PDO::PARAM_STR);
+        $statement->bindValue(':contactId', $row['contact_id'], \PDO::PARAM_INT);
+        $statement->bindValue(':creationDate', time(), \PDO::PARAM_INT);
         $statement->execute();
     }
+    $pearDB->commit();
+
     $errorMessage = "Unable to drop column 'contact_passwd' from 'contact' table";
-    $dbResult = $pearDB->query("ALTER TABLE `contact` DROP COLUMN `contact_passwd`");
+    $pearDB->query("ALTER TABLE `contact` DROP COLUMN `contact_passwd`");
 
     $errorMessage = 'Impossible to add "contact_js_effects" column to "contact" table';
 
@@ -92,6 +95,10 @@ try {
         );
     }
 } catch (\Exception $e) {
+    if ($pearDB->inTransaction()) {
+        $pearDB->rollBack();
+    }
+
     $centreonLog->insertLog(
         4,
         $versionOfTheUpgrade . $errorMessage .
