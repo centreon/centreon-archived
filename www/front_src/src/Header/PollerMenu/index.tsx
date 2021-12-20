@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import classnames from 'classnames';
 import clsx from 'clsx';
 import { useAtomValue } from 'jotai/utils';
-import { useHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import PollerIcon from '@material-ui/icons/DeviceHub';
 import {
@@ -93,7 +93,7 @@ const PollerMenu = (): JSX.Element => {
   const [isExporting, setIsExportingConfiguration] = React.useState<boolean>();
   const [toggled, setToggled] = React.useState<boolean>(false);
   const interval = React.useRef<number>();
-  const history = useHistory();
+  const navigate = useNavigate();
   const { sendRequest } = useRequest<PollerData>({
     request: getData,
   });
@@ -147,7 +147,7 @@ const PollerMenu = (): JSX.Element => {
 
   const redirectToPollerConfiguration = (): void => {
     closeSubmenu();
-    history.push(`/main.php?p=${pollerConfigurationPageNumber}`);
+    navigate(`/main.php?p=${pollerConfigurationPageNumber}`);
   };
 
   return (
