@@ -49,10 +49,6 @@ default:
       paths: [ "%paths.base%/features/AcknowledgementTimeout.feature" ]
       contexts: [ AcknowledgementTimeoutContext ]
 
-    recovery_notification_delay:
-      paths: [ "%paths.base%/features/RecoveryNotificationDelay.feature" ]
-      contexts: [ RecoveryNotificationDelayContext ]
-
     partitioning:
       paths: [ "%paths.base%/features/Partitioning.feature" ]
       contexts: [ PartitioningContext ]
@@ -325,10 +321,6 @@ default:
     vendor_configuration:
       paths: [ "%paths.base%/features/VendorConfiguration.feature" ]
       contexts: [ VendorConfigurationContext ]
-
-    first_notification_delay:
-      paths: [ "%paths.base%/features/FirstNotificationDelay.feature" ]
-      contexts: [ FirstNotificationDelayContext ]
 
     meta_service_dependency_configuration:
       paths: [ "%paths.base%/features/MetaServiceDependencyConfiguration.feature" ]
