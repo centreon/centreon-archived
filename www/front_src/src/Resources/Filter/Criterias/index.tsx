@@ -33,23 +33,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const getCriterias = (filterWithParsedSearch): Array<Criteria> => {
-  const getSelectableCriteriaByName = (name: string): CriteriaDisplayProps =>
-    selectableCriterias[name];
-
-  const isNonSelectableCriteria = (criteria: Criteria): boolean =>
-    pipe(({ name }) => name, getSelectableCriteriaByName, isNil)(criteria);
-
-  const criterias = sortBy<Criteria>(
-    ({ name }) => criteriaNameSortOrder[name],
-    filterWithParsedSearch.criterias,
-  );
-
-  return pipe(
-    reject(isNonSelectableCriteria) as (criterias) => Array<Criteria>,
-  )(criterias);
-};
-
 const CriteriasContent = (): JSX.Element => {
   const classes = useStyles();
 
