@@ -400,9 +400,8 @@ function multipleContactInDB($contacts = array(), $nbrDup = array())
                             SET creation_date = :creationDate
                             WHERE contact_id = :contactId"
                         );
-                        $statement->bindValue(':password', $row['password'], \PDO::PARAM_STR);
                         $statement->bindValue(':creationDate', $row['creation_date'], \PDO::PARAM_INT);
-                        $statement->bindValue(':contactId', $lastId, \PDO::PARAM_INT);
+                        $statement->bindValue(':contactId', (int) $lastId, \PDO::PARAM_INT);
                         $statement->execute();
                     }
                     $newContactIds[$key][] = $lastId;
