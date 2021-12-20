@@ -83,7 +83,7 @@ echo _("Public certificate file path when TLS encryption is used.");
 echo _("The maximum queries per transaction before commit.");
 echo _("The transaction timeout before running commit.");
 echo _("The interval between check if some metrics must be rebuild. The default value is 300s");
-echo _("Time in seconds to wait between each connection attempt.");
+echo _("Time in seconds to wait between each connection attempt (Default value: 30s).");
 echo _("RRD file directory, for example /var/lib/centreon/status");
 echo _("It should be enabled to control whether or not Centreon Broker
  should insert performance data in the data_bin table.");
