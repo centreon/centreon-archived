@@ -597,7 +597,7 @@ function insertContact($ret = array())
         $ret["contact_passwd2"] = $ret["contact_passwd"];
 
         $contact = new \CentreonContact($pearDB);
-        $contact->insertPasswordByContactId($contactId, $ret["contact_passwd"]);
+        $contact->insertPasswordByContactId($contactId["MAX(contact_id)"], $ret["contact_passwd"]);
     }
 
     /* Prepare value for changelog */
@@ -610,7 +610,7 @@ function insertContact($ret = array())
         $fields
     );
 
-    return ($contactId["MAX(contact_id)"]);
+    return $contactId["MAX(contact_id)"];
 }
 
 /**
