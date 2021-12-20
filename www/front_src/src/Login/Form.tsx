@@ -17,8 +17,8 @@ const useStyles = makeStyles((theme) => ({
   form: {
     display: 'flex',
     flexDirection: 'column',
-    marginTop: theme.spacing(3),
     rowGap: theme.spacing(2),
+    width: '100%',
   },
 }));
 
@@ -56,6 +56,7 @@ const LoginForm = (): JSX.Element => {
   return (
     <form className={classes.form} onSubmit={handleSubmit}>
       <TextField
+        fullWidth
         ariaLabel={t(labelAlias)}
         error={aliasError}
         label={t(labelAlias)}
@@ -64,6 +65,7 @@ const LoginForm = (): JSX.Element => {
         onChange={handleChange(aliasFieldName)}
       />
       <TextField
+        fullWidth
         ariaLabel={t(labelPassword)}
         error={passwordError}
         label={t(labelPassword)}

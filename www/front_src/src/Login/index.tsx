@@ -38,8 +38,12 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
   },
   loginPaper: {
-    padding: theme.spacing(2, 3),
-    width: 'fit-content',
+    display: 'grid',
+    flexDirection: 'column',
+    justifyItems: 'center',
+    minWidth: theme.spacing(30),
+    padding: theme.spacing(4, 5),
+    width: '17%',
   },
 }));
 
@@ -68,12 +72,12 @@ const LoginPage = (): JSX.Element => {
 
   return (
     <div className={classes.loginBackground}>
+      <img
+        alt={t(labelCentreonLogo)}
+        aria-label={t(labelCentreonLogo)}
+        src={logoCentreon}
+      />
       <Paper className={classes.loginPaper}>
-        <img
-          alt={t(labelCentreonLogo)}
-          aria-label={t(labelCentreonLogo)}
-          src={logoCentreon}
-        />
         <Formik<LoginFormValues>
           validateOnBlur
           validateOnMount
