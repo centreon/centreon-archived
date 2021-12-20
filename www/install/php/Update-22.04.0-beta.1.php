@@ -49,9 +49,6 @@ try {
         WHERE `cb_field_id` = 31
     ");
 } catch (\Exception $e) {
-    if ($pearDB->inTransaction()) {
-        $pearDB->rollBack();
-    }
     $centreonLog->insertLog(
         4,
         $versionOfTheUpgrade . $errorMessage .
