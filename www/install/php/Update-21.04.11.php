@@ -30,16 +30,9 @@ $versionOfTheUpgrade = 'UPGRADE - 21.04.11: ';
  * Query with transaction
  */
 try {
-    $pearDB->beginTransaction();
-
     $errorMessage  = 'Unable to delete logger entry in cb_tag';
     $statement = $pearDB->query("DELETE FROM cb_tag WHERE tagname = 'logger'");
-
-    $pearDB->commit();
 } catch (\Exception $e) {
-    if ($pearDB->inTransaction()) {
-        $pearDB->rollBack();
-    }
     $centreonLog->insertLog(
         4,
         $versionOfTheUpgrade . $errorMessage .
