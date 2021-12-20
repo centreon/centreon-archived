@@ -12,7 +12,7 @@ const reactRoutes = [
     path: routeMap.extensionsManagerPage,
   },
   {
-    comp: React.lazy(() => import('../route-components/notAllowedPage')),
+    comp: React.lazy(() => import('../route-components/NotAllowedPage')),
     path: routeMap.notAllowedPage,
   },
   {
