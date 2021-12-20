@@ -58,6 +58,7 @@ const CriteriasContent = (): JSX.Element => {
   const filterWithParsedSearch = useAtomValue(
     filterWithParsedSearchDerivedAtom,
   );
+
   const applyCurrentFilter = useUpdateAtom(applyCurrentFilterDerivedAtom);
   const clearFilter = useUpdateAtom(clearFilterDerivedAtom);
 
