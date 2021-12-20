@@ -2,7 +2,6 @@ import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { isEmpty, isNil } from 'ramda';
-import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import classnames from 'classnames';
 import clsx from 'clsx';
@@ -202,8 +201,7 @@ const PollerMenu = (): JSX.Element => {
                 className={clsx(classes.label, classes.pollerDetailRow)}
                 variant="body2"
               >
-                <li {...t(labelAllPollers)} />
-                {pollerCount}
+                {`${t(labelAllPollers)} ${pollerCount}`}
               </Typography>
             )}
             {allowPollerConfiguration && (
@@ -233,4 +231,4 @@ const mapStateToProps = (state): StateToProps => ({
   allowedPages: allowedPagesSelector(state),
 });
 
-export default connect(mapStateToProps)(withRouter(PollerMenu));
+export default connect(mapStateToProps)(PollerMenu);
