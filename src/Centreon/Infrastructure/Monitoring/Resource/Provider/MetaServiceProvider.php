@@ -105,8 +105,8 @@ final class MetaServiceProvider extends Provider
             NULL AS `action_url`,
             NULL AS `notes_url`,
             NULL AS `notes_label`,
-            NULL AS `monitoring_server_name`,
-            NULL AS `monitoring_server_id`,
+            i.name AS `monitoring_server_name`,
+            i.instance_id AS `monitoring_server_id`,
             s.command_line AS `command_line`,
             NULL AS `timezone`,
             NULL AS `parent_id`,
@@ -162,6 +162,9 @@ final class MetaServiceProvider extends Provider
             ON sh.host_id = s.host_id
             AND sh.name LIKE '\_Module\_Meta%'
             AND sh.enabled = 1";
+
+        // get monitoring server information
+        $sql .= " INNER JOIN `:dbstg`.`instances` AS i ON i.instance_id = sh.instance_id";
 
         // show active services only
         $sql .= ' WHERE s.enabled = 1 ';
