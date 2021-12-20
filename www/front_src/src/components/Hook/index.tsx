@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { isNil, not, propOr } from 'ramda';
+import { isNil, propOr } from 'ramda';
 import { useHref } from 'react-router';
 import { useAtomValue } from 'jotai/utils';
 
