@@ -27,11 +27,17 @@ use Core\Application\Common\UseCase\ResponseStatusInterface;
 
 class ErrorResponse implements ResponseStatusInterface
 {
+    /**
+     * @param string $message
+     */
     public function __construct(private string $message)
     {
     }
 
-    public function getMessage(): ?string
+    /**
+     * @inheritDoc
+     */
+    public function getMessage(): string
     {
         return _($this->message);
     }

@@ -23,7 +23,7 @@ declare(strict_types=1);
 namespace Core\Infrastructure\RealTime\Repository\Acknowledgement;
 
 use Core\Domain\RealTime\Model\Acknowledgement;
-use Core\Infrastructure\RealTime\Repository\Common\DbFactoryUtilitiesTrait;
+use Core\Infrastructure\Common\Repository\DbFactoryUtilitiesTrait;
 
 class DbFactoryAcknowledgement
 {

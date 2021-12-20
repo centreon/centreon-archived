@@ -21,24 +21,15 @@
 
 declare(strict_types=1);
 
-namespace Core\Application\Common\UseCase;
+namespace Core\Application\RealTime\Repository;
 
-use Core\Application\Common\UseCase\ResponseStatusInterface;
+use Core\Domain\RealTime\Model\Acknowledgement;
 
-abstract class NotFoundResponse implements ResponseStatusInterface
+interface ReadAcknowledgementRepositoryInterface
 {
     /**
-     * @param string $objectNotFound
+     * @param int $hostId
+     * @return Acknowledgement|null
      */
-    public function __construct(private string $objectNotFound)
-    {
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getMessage(): string
-    {
-        return _($this->objectNotFound . ' not found');
-    }
+    public function findOnGoingAcknowledgementByHostId(int $hostId): ?Acknowledgement;
 }

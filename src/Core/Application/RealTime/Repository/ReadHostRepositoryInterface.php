@@ -23,13 +23,24 @@ declare(strict_types=1);
 
 namespace Core\Application\RealTime\Repository;
 
-use Core\Domain\RealTime\Model\Acknowledgement;
+use Core\Domain\RealTime\Model\Host;
 
-interface DbReadAcknowledgementRepositoryInterface
+interface ReadHostRepositoryInterface
 {
     /**
+     * Find Host without ACL
+     *
      * @param int $hostId
-     * @return Acknowledgement|null
+     * @return Host|null
      */
-    public function findOnGoingAcknowledgementByHostId(int $hostId): ?Acknowledgement;
+    public function findHostById(int $hostId): ?Host;
+
+    /**
+     * Find Host regarding user ACL
+     *
+     * @param int $hostId
+     * @param int[] $accessGroupIds
+     * @return Host|null
+     */
+    public function findHostByIdAndAccessGroupIds(int $hostId, array $accessGroupIds): ?Host;
 }

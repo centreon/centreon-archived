@@ -33,7 +33,7 @@ class HypermediaService
     private $hypermediaProviders;
 
     /**
-     * @var iterable<HypermediaProviderInterface> hypermediaProviders
+     * @param iterable<HypermediaProviderInterface> $hypermediaProviders
      * @return void
      */
     public function setHypermediaProviders(iterable $hypermediaProviders): void

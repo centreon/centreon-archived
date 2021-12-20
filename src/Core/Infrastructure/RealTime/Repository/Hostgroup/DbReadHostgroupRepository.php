@@ -25,9 +25,9 @@ namespace Core\Infrastructure\RealTime\Repository\Hostgroup;
 use Core\Domain\RealTime\Model\Hostgroup;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
-use Core\Application\RealTime\Repository\DbReadHostgroupRepositoryInterface;
+use Core\Application\RealTime\Repository\ReadHostgroupRepositoryInterface;
 
-class DbReadHostgroupRepository extends AbstractRepositoryDRB implements DbReadHostgroupRepositoryInterface
+class DbReadHostgroupRepository extends AbstractRepositoryDRB implements ReadHostgroupRepositoryInterface
 {
     /**
      * @param DatabaseConnection $db

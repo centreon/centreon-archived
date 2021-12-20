@@ -25,7 +25,7 @@ namespace Core\Infrastructure\RealTime\Repository\Host;
 use Core\Domain\RealTime\Model\Host;
 use Core\Infrastructure\RealTime\Repository\Icon\DbIconFactory;
 use Core\Infrastructure\RealTime\Repository\Host\DbHostStatusFactory;
-use Core\Infrastructure\RealTime\Repository\Common\DbFactoryUtilitiesTrait;
+use Core\Infrastructure\Common\Repository\DbFactoryUtilitiesTrait;
 
 class DbHostFactory
 {

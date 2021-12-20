@@ -21,25 +21,21 @@
 
 declare(strict_types=1);
 
-namespace Core\Application\RealTime\Repository;
+namespace Core\Application\RealTime\UseCase\FindHost;
 
-use Core\Domain\RealTime\Model\Hostgroup;
+use Core\Application\Common\UseCase\NotFoundResponse;
 
-interface DbReadHostgroupRepositoryInterface
+class HostNotFoundResponse extends NotFoundResponse
 {
+    public function __construct()
+    {
+        parent::__construct('Host');
+    }
     /**
-     * Find related hostgroups regarding a host without ACL
-     *
-     * @return Hostgroup[]
+     * @return string
      */
-    public function findAllByHostId(int $hostId): array;
-
-    /**
-     * Find related hostgroups regarding a host without ACL
-     *
-     * @param int $hostId
-     * @param array<int, int> $accessGroupIds
-     * @return Hostgroup[]
-     */
-    public function findAllByHostIdAndAccessGroupIds(int $hostId, array $accessGroupIds): array;
+    public function getMessage(): string
+    {
+        return parent::getMessage();
+    }
 }

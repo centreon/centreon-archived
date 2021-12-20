@@ -31,6 +31,137 @@ use Core\Domain\RealTime\Model\Hostgroup;
 class FindHostResponse
 {
     /**
+     * @var int
+     */
+    public $id;
+
+    /**
+     * @var string
+     */
+    public $name;
+
+    /**
+     * @var string
+     */
+
+    public $address;
+
+    /**
+     * @var string
+     */
+    public $monitoringServerName;
+
+    /**
+     * @var string|null
+     */
+    public $timezone;
+
+    /**
+     * @var string|null
+     */
+    public $alias;
+
+    /**
+     * @var bool|null
+     */
+    public $isFlapping;
+
+    /**
+     * @var bool|null
+     */
+    public $isAcknowledged;
+
+    /**
+     * @var bool|null
+     */
+    public $isInDowntime;
+
+    /**
+     * @var string|null
+     */
+    public $output;
+
+    /**
+     * @var string|null
+     */
+    public $performanceData;
+
+    /**
+     * @var string|null
+     */
+    public $commandLine;
+
+    /**
+     * @var int|null
+     */
+    public $notificationNumber;
+
+    /**
+     * @var \DateTime|null
+     */
+    public $lastStatusChange;
+
+    /**
+     * @var \DateTime|null
+     */
+    public $lastNotification;
+
+    /**
+     * @var float|null
+     */
+    public $latency;
+
+    /**
+     * @var float|null
+     */
+    public $executionTime;
+
+    /**
+     * @var float|null
+     */
+    public $statusChangePercentage;
+
+    /**
+     * @var \DateTime|null
+     */
+    public $nextCheck;
+
+    /**
+     * @var \DateTime|null
+     */
+    public $lastCheck;
+
+    /**
+     * @var bool|null
+     */
+    public $hasActiveChecks;
+
+    /**
+     * @var bool|null
+     */
+    public $hasPassiveChecks;
+
+    /**
+     * @var \DateTime|null
+     */
+    public $lastTimeUp;
+
+    /**
+     * @var int|null
+     */
+    public $severityLevel;
+
+    /**
+     * @var int|null
+     */
+    public $checkAttempts;
+
+    /**
+     * @var int|null
+     */
+    public $maxCheckAttempts;
+
+    /**
      * @var array<string, string|null>|null
      */
     public $icon;
@@ -56,30 +187,6 @@ class FindHostResponse
     public $acknowledgement;
 
     /**
-     * @param int $id
-     * @param string $name
-     * @param string $address
-     * @param string $monitoringServerName
-     * @param string|null $timezone
-     * @param string|null $alias
-     * @param boolean|null $isFlapping
-     * @param boolean|null $isAcknowledged
-     * @param boolean|null $isInDowntime
-     * @param string|null $output
-     * @param string|null $performanceData
-     * @param string|null $commandLine
-     * @param int|null $notificationNumber
-     * @param \DateTime|null $lastStatusChange
-     * @param \DateTime|null $lastNotification
-     * @param float|null $latency
-     * @param float|null $executionTime
-     * @param float|null $statusChangePercentage
-     * @param \DateTime|null $nextCheck
-     * @param \DateTime|null $lastCheck
-     * @param boolean|null $hasPassiveChecks
-     * @param boolean|null $hasActiveChecks
-     * @param \DateTime|null $lastTimeUp
-     * @param int|null $severityLevel
      * @param Status $status
      * @param Icon|null $icon
      * @param Hostgroup[] $hostgroups
@@ -87,32 +194,6 @@ class FindHostResponse
      * @param Acknowledgement|null $acknowledgement
      */
     public function __construct(
-        public int $id,
-        public string $name,
-        public string $address,
-        public string $monitoringServerName,
-        public ?string $timezone,
-        public ?string $alias,
-        public ?bool $isFlapping,
-        public ?bool $isAcknowledged,
-        public ?bool $isInDowntime,
-        public ?string $output,
-        public ?string $performanceData,
-        public ?string $commandLine,
-        public ?int $notificationNumber,
-        public ?\DateTime $lastStatusChange,
-        public ?\DateTime $lastNotification,
-        public ?float $latency,
-        public ?float $executionTime,
-        public ?float $statusChangePercentage,
-        public ?\DateTime $nextCheck,
-        public ?\DateTime $lastCheck,
-        public ?bool $hasPassiveChecks,
-        public ?bool $hasActiveChecks,
-        public ?\DateTime $lastTimeUp,
-        public ?int $severityLevel,
-        public ?int $checkAttempts,
-        public ?int $maxCheckAttempts,
         Status $status,
         ?Icon $icon,
         array $hostgroups,

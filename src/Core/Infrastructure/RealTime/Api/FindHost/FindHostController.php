@@ -34,7 +34,7 @@ class FindHostController extends AbstractController
         int $hostId,
         FindHost $useCase,
         FindHostPresenterInterface $presenter
-    ): Response {
+    ): Object {
         /**
          * Deny access if user has no rights on the real time
          */

@@ -23,24 +23,13 @@ declare(strict_types=1);
 
 namespace Core\Application\RealTime\Repository;
 
-use Core\Domain\RealTime\Model\Host;
+use Core\Domain\RealTime\Model\Downtime;
 
-interface DbReadHostRepositoryInterface
+interface ReadDowntimeRepositoryInterface
 {
     /**
-     * Find Host without ACL
-     *
      * @param int $hostId
-     * @return Host|null
+     * @return Downtime[]
      */
-    public function findHostById(int $hostId): ?Host;
-
-    /**
-     * Find Host regarding user ACL
-     *
-     * @param int $hostId
-     * @param array<int, int> $accessGroupIds
-     * @return Host|null
-     */
-    public function findHostByIdAndAccessGroupIds(int $hostId, array $accessGroupIds): ?Host;
+    public function findOnGoingDowntimesByHostId(int $hostId): array;
 }

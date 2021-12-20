@@ -25,46 +25,39 @@ namespace Core\Application\RealTime\UseCase\FindHost;
 use Centreon\Domain\Contact\Contact;
 use Core\Domain\RealTime\Model\Host;
 use Core\Domain\RealTime\Model\Downtime;
-use Centreon\Domain\Security\AccessGroup;
 use Core\Domain\RealTime\Model\Acknowledgement;
-use Core\Application\Common\UseCase\NotFoundResponse;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Log\LoggerTrait;
 use Centreon\Domain\Monitoring\Host as LegacyHost;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
 use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
-use Core\Application\RealTime\Repository\DbReadHostRepositoryInterface;
+use Core\Application\RealTime\Repository\ReadHostRepositoryInterface;
 use Core\Application\RealTime\UseCase\FindHost\FindHostPresenterInterface;
-use Core\Application\RealTime\Repository\DbReadDowntimeRepositoryInterface;
-use Core\Application\RealTime\Repository\DbReadHostgroupRepositoryInterface;
-use Core\Application\RealTime\Repository\DbReadAcknowledgementRepositoryInterface;
+use Core\Application\RealTime\Repository\ReadDowntimeRepositoryInterface;
+use Core\Application\RealTime\Repository\ReadHostgroupRepositoryInterface;
+use Core\Application\RealTime\Repository\ReadAcknowledgementRepositoryInterface;
+use Core\Application\RealTime\UseCase\FindHost\HostNotFoundResponse;
 
 class FindHost
 {
     use LoggerTrait;
 
     /**
-     * @var ContactInterface
-     */
-    private $contact;
-
-    /**
-     * @param DbReadHostRepositoryInterface $repository
-     * @param DbReadHostgroupRepositoryInterface $hostgroupRepository
+     * @param ReadHostRepositoryInterface $repository
+     * @param ReadHostgroupRepositoryInterface $hostgroupRepository
      * @param ContactInterface $contact
      * @param AccessGroupRepositoryInterface $accessGroupRepository
-     * @param DbReadDowntimeRepositoryInterface $downtimeRepository
+     * @param ReadDowntimeRepositoryInterface $downtimeRepository
      */
     public function __construct(
-        private DbReadHostRepositoryInterface $repository,
-        private DbReadHostgroupRepositoryInterface $hostgroupRepository,
-        ContactInterface $contact,
+        private ReadHostRepositoryInterface $repository,
+        private ReadHostgroupRepositoryInterface $hostgroupRepository,
+        private ContactInterface $contact,
         private AccessGroupRepositoryInterface $accessGroupRepository,
-        private DbReadDowntimeRepositoryInterface $downtimeRepository,
-        private DbReadAcknowledgementRepositoryInterface $acknowledgementRepository,
+        private ReadDowntimeRepositoryInterface $downtimeRepository,
+        private ReadAcknowledgementRepositoryInterface $acknowledgementRepository,
         private MonitoringServiceInterface $monitoringService,
     ) {
-        $this->contact = $contact;
     }
 
     /**
@@ -74,41 +67,33 @@ class FindHost
      */
     public function __invoke(int $hostId, FindHostPresenterInterface $presenter): void
     {
-        /**
-         * @var Contact
-         */
-        $contact = $this->contact;
+        $hostgroups = [];
 
         $this->debug(
-            "[FindHost] Searching details for host",
+            "Searching details for host",
             [
                 "id" => $hostId
             ]
         );
 
-        if ($contact->isAdmin() === true) {
+        if ($this->contact->isAdmin()) {
             $host = $this->repository->findHostById($hostId);
             if ($host === null) {
                 $this->debug(
-                    "[FindHost] Host not found",
+                    "Host not found",
                     [
                         'id' => $hostId,
-                        'userId' => $contact->getId()
+                        'userId' => $this->contact->getId()
                     ]
                 );
-                $presenter->setResponseStatus(new NotFoundResponse('Host'));
+                $presenter->setResponseStatus(new HostNotFoundResponse());
                 return;
             }
             $hostgroups = $this->hostgroupRepository->findAllByHostId($hostId);
         } else {
-            /**
-             * @var AccessGroup[]
-             */
-            $accessGroups = $this->accessGroupRepository->findByContact($contact);
+            $accessGroups = $this->accessGroupRepository->findByContact($this->contact);
             $accessGroupIds = array_map(
-                function ($accessGroup) {
-                    return $accessGroup->getId();
-                },
+                fn($accessGroup) => $accessGroup->getId(),
                 $accessGroups
             );
             $host = $this->repository->findHostByIdAndAccessGroupIds($hostId, $accessGroupIds);
@@ -117,58 +102,28 @@ class FindHost
                     "[FindHost] Host not found",
                     [
                         'id' => $hostId,
-                        'userId' => $contact->getId()
+                        'userId' => $this->contact->getId()
                     ]
                 );
-                $presenter->setResponseStatus(new NotFoundResponse('Host'));
+                $presenter->setResponseStatus(new HostNotFoundResponse());
                 return;
             }
             $hostgroups = $this->hostgroupRepository->findAllByHostIdAndAccessGroupIds($hostId, $accessGroupIds);
         }
 
-        if (!empty($hostgroups)) {
-            foreach ($hostgroups as $hostgroup) {
-                $host->addHostgroup($hostgroup);
-            }
+        foreach ($hostgroups as $hostgroup) {
+            $host->addHostgroup($hostgroup);
         }
 
         /**
-         * Check if user can see the commandLine.
-         * If so, then hide potential passwords.
+         * Offuscate the passwords in Host commandLine
          */
-        if (
-            $contact->isAdmin() ||
-            $contact->hasRole(Contact::ROLE_DISPLAY_COMMAND)
-        ) {
-            try {
-                /**
-                 * @todo Workaround as we did not moved the monitoring service into new architecture
-                 */
-                $legacyHost = (new LegacyHost())
-                    ->setId($host->getId())
-                    ->setCheckCommand($host->getCommandLine());
-
-                $this->monitoringService->hidePasswordInHostCommandLine($legacyHost);
-            } catch (\Throwable $ex) {
-                $this->debug(
-                    "[FindHost] Failed to hide password in host command line",
-                    [
-                        'id' => $hostId,
-                        'reason' => $ex->getMessage()
-                    ]
-                );
-                $host->setCommandLine(
-                    sprintf(_('Unable to hide passwords in command (Reason: %s)'), $ex->getMessage())
-                );
-            }
-        } else {
-            $host->setCommandLine(null);
-        }
+        $host->setCommandLine($this->offuscatePasswordInHostCommandLine($host));
 
         $presenter->present(
             $this->createResponse(
                 $host,
-                $this->downtimeRepository->findDowntimesByHostId($hostId),
+                $this->downtimeRepository->findOnGoingDowntimesByHostId($hostId),
                 $this->acknowledgementRepository->findOnGoingAcknowledgementByHostId($hostId)
             )
         );
@@ -182,38 +137,85 @@ class FindHost
      */
     private function createResponse(Host $host, array $downtimes, ?Acknowledgement $acknowledgement): FindHostResponse
     {
-        return new FindHostResponse(
-            $host->getId(),
-            $host->getName(),
-            $host->getAddress(),
-            $host->getMonitoringServerName(),
-            $host->getTimezone(),
-            $host->getAlias(),
-            $host->isFlapping(),
-            $host->isAcknowledged(),
-            $host->isInDowntime(),
-            $host->getOutput(),
-            $host->getPerformanceData(),
-            $host->getCommandLine(),
-            $host->getNotificationNumber(),
-            $host->getLastStatusChange(),
-            $host->getLastNotification(),
-            $host->getLatency(),
-            $host->getExecutionTime(),
-            $host->getStatusChangePercentage(),
-            $host->getNextCheck(),
-            $host->getLastCheck(),
-            $host->hasPassiveChecks(),
-            $host->hasActiveChecks(),
-            $host->getLastTimeUp(),
-            $host->getSeverityLevel(),
-            $host->getCheckAttemps(),
-            $host->getMaxCheckAttemps(),
+        $findHostResponse = new FindHostResponse(
             $host->getStatus(),
             $host->getIcon(),
             $host->getHostgroups(),
             $downtimes,
             $acknowledgement
         );
+
+        $findHostResponse->id = $host->getId();
+        $findHostResponse->name = $host->getName();
+        $findHostResponse->address = $host->getAddress();
+        $findHostResponse->monitoringServerName = $host->getMonitoringServerName();
+        $findHostResponse->timezone = $host->getTimezone();
+        $findHostResponse->alias = $host->getAlias();
+        $findHostResponse->isFlapping = $host->isFlapping();
+        $findHostResponse->isAcknowledged = $host->isAcknowledged();
+        $findHostResponse->isInDowntime = $host->isInDowntime();
+        $findHostResponse->output = $host->getOutput();
+        $findHostResponse->performanceData = $host->getPerformanceData();
+        $findHostResponse->commandLine = $host->getCommandLine();
+        $findHostResponse->notificationNumber = $host->getNotificationNumber();
+        $findHostResponse->lastStatusChange = $host->getLastStatusChange();
+        $findHostResponse->lastNotification = $host->getLastNotification();
+        $findHostResponse->latency = $host->getLatency();
+        $findHostResponse->executionTime = $host->getExecutionTime();
+        $findHostResponse->statusChangePercentage = $host->getStatusChangePercentage();
+        $findHostResponse->nextCheck = $host->getNextCheck();
+        $findHostResponse->lastCheck = $host->getLastCheck();
+        $findHostResponse->hasPassiveChecks = $host->hasPassiveChecks();
+        $findHostResponse->hasActiveChecks = $host->hasActiveChecks();
+        $findHostResponse->lastTimeUp = $host->getLastTimeUp();
+        $findHostResponse->severityLevel = $host->getSeverityLevel();
+        $findHostResponse->checkAttempts = $host->getCheckAttemps();
+        $findHostResponse->maxCheckAttempts = $host->getMaxCheckAttemps();
+
+        return $findHostResponse;
+    }
+
+    /**
+     * Offuscate passwords in the commandline
+     *
+     * @param Host $host
+     * @return string|null
+     */
+    private function offuscatePasswordInHostCommandLine(Host $host): ?string
+    {
+        $obfuscatedCommandLine = null;
+
+        /**
+         * Check if user can see the commandLine.
+         * If so, then hide potential passwords.
+         */
+        if (
+            $this->contact->isAdmin()
+            || $this->contact->hasRole(Contact::ROLE_DISPLAY_COMMAND)
+            || $host->getCommandLine() !== null
+        ) {
+            try {
+                $legacyHost = (new LegacyHost())
+                    ->setId($host->getId())
+                    ->setCheckCommand($host->getCommandLine());
+
+                $this->monitoringService->hidePasswordInHostCommandLine($legacyHost);
+                $obfuscatedCommandLine = $legacyHost->getCheckCommand();
+            } catch (\Throwable $ex) {
+                $this->debug(
+                    "[FindHost] Failed to hide password in host command line",
+                    [
+                        'id' => $host->getId(),
+                        'reason' => $ex->getMessage()
+                    ]
+                );
+                $obfuscatedCommandLine = sprintf(
+                    _('Unable to hide passwords in command (Reason: %s)'),
+                    $ex->getMessage()
+                );
+            }
+        }
+
+        return $obfuscatedCommandLine;
     }
 }

@@ -20,12 +20,12 @@
  */
 declare(strict_types=1);
 
-namespace Core\Infrastructure\RealTime\Repository\Common;
+namespace Core\Infrastructure\Common\Repository;
 
 /**
  * This class is design to provide all common methods to handle db records.
  *
- * @package Core\Infrastructure\RealTime\Repository\Common
+ * @package  Core\Infrastructure\Common\Repository
  */
 trait DbFactoryUtilitiesTrait
 {

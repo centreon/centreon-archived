@@ -25,5 +25,8 @@ namespace Core\Application\Common\UseCase;
 
 interface ResponseStatusInterface
 {
-    public function getMessage(): ?string;
+    /**
+     * @return string
+     */
+    public function getMessage(): string;
 }

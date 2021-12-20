@@ -25,9 +25,9 @@ namespace Core\Infrastructure\RealTime\Repository\Acknowledgement;
 use Centreon\Infrastructure\DatabaseConnection;
 use Core\Domain\RealTime\Model\Acknowledgement;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
-use Core\Application\RealTime\Repository\DbReadAcknowledgementRepositoryInterface;
+use Core\Application\RealTime\Repository\ReadAcknowledgementRepositoryInterface;
 
-class DbReadAcknowledgementRepository extends AbstractRepositoryDRB implements DbReadAcknowledgementRepositoryInterface
+class DbReadAcknowledgementRepository extends AbstractRepositoryDRB implements ReadAcknowledgementRepositoryInterface
 {
     /**
      * @param DatabaseConnection $db

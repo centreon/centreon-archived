@@ -26,9 +26,9 @@ use Core\Domain\RealTime\Model\Downtime;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Core\Infrastructure\RealTime\Repository\Downtime\DbDowntimeFactory;
-use Core\Application\RealTime\Repository\DbReadDowntimeRepositoryInterface;
+use Core\Application\RealTime\Repository\ReadDowntimeRepositoryInterface;
 
-class DbReadDowntimeRepository extends AbstractRepositoryDRB implements DbReadDowntimeRepositoryInterface
+class DbReadDowntimeRepository extends AbstractRepositoryDRB implements ReadDowntimeRepositoryInterface
 {
     /**
      * @param DatabaseConnection $db
@@ -41,9 +41,9 @@ class DbReadDowntimeRepository extends AbstractRepositoryDRB implements DbReadDo
     /**
      * @inheritDoc
      */
-    public function findDowntimesByHostId(int $hostId): array
+    public function findOnGoingDowntimesByHostId(int $hostId): array
     {
-        return $this->findDowntimes($hostId, 0);
+        return $this->findOnGoingDowntimes($hostId, 0);
     }
 
     /**
@@ -53,7 +53,7 @@ class DbReadDowntimeRepository extends AbstractRepositoryDRB implements DbReadDo
      * @param int $serviceId
      * @return Downtime[]
      */
-    private function findDowntimes(int $hostId, int $serviceId): array
+    private function findOnGoingDowntimes(int $hostId, int $serviceId): array
     {
         $downtimes = [];
 

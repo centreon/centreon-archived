@@ -30,21 +30,15 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class HostHypermediaProvider extends AbstractHypermediaProvider implements HypermediaProviderInterface
 {
-    /**
-     * @var Contact
-     */
-    private $contact;
-
     public const URI_CONFIGURATION = '/main.php?p=60101&o=c&host_id={hostId}',
                  URI_EVENT_LOGS = '/main.php?p=20301&h={hostId}',
                  URI_REPORTING = '/main.php?p=307&host={hostId}',
                  ENDPOINT_HOST_TIMELINE = 'centreon_application_monitoring_gettimelinebyhost';
 
     public function __construct(
-        ContactInterface $contact,
+        private ContactInterface $contact,
         protected UrlGeneratorInterface $router
     ) {
-        $this->contact = $contact;
     }
 
     /**

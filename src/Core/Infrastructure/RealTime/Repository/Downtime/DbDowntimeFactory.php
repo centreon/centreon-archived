@@ -23,7 +23,7 @@ declare(strict_types=1);
 namespace Core\Infrastructure\RealTime\Repository\Downtime;
 
 use Core\Domain\RealTime\Model\Downtime;
-use Core\Infrastructure\RealTime\Repository\Common\DbFactoryUtilitiesTrait;
+use Core\Infrastructure\Common\Repository\DbFactoryUtilitiesTrait;
 
 class DbDowntimeFactory
 {

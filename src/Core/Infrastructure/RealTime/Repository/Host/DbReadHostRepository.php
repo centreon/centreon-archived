@@ -25,9 +25,9 @@ namespace Core\Infrastructure\RealTime\Repository\Host;
 use Core\Domain\RealTime\Model\Host;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
-use Core\Application\RealTime\Repository\DbReadHostRepositoryInterface;
+use Core\Application\RealTime\Repository\ReadHostRepositoryInterface;
 
-class DbReadHostRepository extends AbstractRepositoryDRB implements DbReadHostRepositoryInterface
+class DbReadHostRepository extends AbstractRepositoryDRB implements ReadHostRepositoryInterface
 {
     /**
      * @param DatabaseConnection $db
