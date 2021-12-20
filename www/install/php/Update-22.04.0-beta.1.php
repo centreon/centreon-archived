@@ -47,7 +47,7 @@ try {
     $errorMessage = 'Unable to update the description in cb_field';
     $statement = $pearDB->query("
         UPDATE cb_field
-        SET `description` = 'Time in seconds to wait between each connection attempt. The default value is 30s.'
+        SET `description` = 'Time in seconds to wait between each connection attempt (Default value: 30s).'
         WHERE `cb_field_id` = 31
     ");
     $pearDB->commit();
