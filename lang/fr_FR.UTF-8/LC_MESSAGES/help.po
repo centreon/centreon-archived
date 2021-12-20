@@ -304,7 +304,7 @@ msgstr "Temps en secondes à attendre avant d'activer le basculement."
 #: centreon-web/help.php:50
 #: centreon-web/www/include/configuration/configCentreonBroker/help.php:88
 msgid "Time in seconds to wait between each connection attempt (Default value: 30s)."
-msgstr "Temps d'attente en secondes entre chaque tentative de connexion (Valeur par défaut 30s)."
+msgstr "Temps d'attente en secondes entre chaque tentative de connexion (Valeur par défaut: 30s)."
 
 #: centreon-web/help.php:51
 #: centreon-web/www/include/configuration/configCentreonBroker/help.php:39
