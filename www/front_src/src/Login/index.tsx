@@ -21,6 +21,10 @@ import LoginForm from './Form';
 import { labelCentreonLogo } from './translatedLabels';
 
 const useStyles = makeStyles((theme) => ({
+  centreonLogo: {
+    height: 'auto',
+    width: 'auto',
+  },
   copyrightAndVersion: {
     alignItems: 'center',
     display: 'flex',
@@ -75,6 +79,7 @@ const LoginPage = (): JSX.Element => {
       <img
         alt={t(labelCentreonLogo)}
         aria-label={t(labelCentreonLogo)}
+        className={classes.centreonLogo}
         src={logoCentreon}
       />
       <Paper className={classes.loginPaper}>
