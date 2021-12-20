@@ -158,6 +158,7 @@ function getLogInDbForHostGroup($hostgroup_id, $start_date, $end_date, $reportTi
 
     $hosts_id = $centreon->user->access->getHostHostGroupAclConf($hostgroup_id, 'broker');
     if (count($hosts_id) == 0) {
+        $hostgroupStats["average"]["UNDETERMINED_TP"] = 100;
         return $hostgroupStats;
     }
 
@@ -224,7 +225,7 @@ function getLogInDbForHostGroup($hostgroup_id, $start_date, $end_date, $reportTi
 }
 
 /*
- * Return a table a (which reference is given in parameter) 
+ * Return a table a (which reference is given in parameter)
  * that contains stats on services for a given host defined by $host_id
  */
 function getLogInDbForHostSVC($host_id, $start_date, $end_date, $reportTimePeriod)
@@ -543,6 +544,11 @@ function getLogInDbForServicesGroup($servicegroupId, $startDate, $endDate, $repo
     $count = 0;
     $services = getServiceGroupActivateServices($servicegroupId);
 
+    if (empty($services)) {
+        $serviceGroupStats["average"]["UNDETERMINED_TP"] = 100;
+        return $serviceGroupStats;
+    }
+
     $servicesParameter = [];
     foreach ($services as $service) {
         $servicesParameter[] = [
@@ -712,30 +718,6 @@ function getreportingTimePeriod()
         }
     }
     return $reportingTimePeriod;
-}
-
-/*
- * Get all hostgroups linked with at least one host
- */
-function getAllHostgroupsForReporting($is_admin, $lcaHostGroupstr, $search = null)
-{
-    global $centreon;
-
-    $hgs = array("NULL" => "");
-    $hgs += $centreon->user->access->getHostGroupAclConf($search, 'broker');
-    return $hgs;
-}
-
-/*
- * Get all servicesgroup with at least one service
- */
-function getAllServicesgroupsForReporting($search = null)
-{
-    global $centreon;
-
-    $sg_array = array("NULL" => "");
-    $sg_array += $centreon->user->access->getServiceGroupAclConf($search, 'broker');
-    return $sg_array;
 }
 
 /*

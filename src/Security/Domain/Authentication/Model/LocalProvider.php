@@ -125,10 +125,10 @@ class LocalProvider implements ProviderInterface
             function () use ($auth) {
                 $userInfos = $auth->userInfos;
                 return [
-                    'contact_id' => $userInfos['contact_id'],
-                    'contact_alias' => $userInfos['contact_alias'],
-                    'contact_auth_type' => $userInfos['contact_auth_type'],
-                    'contact_ldap_dn' => $userInfos['contact_ldap_dn']
+                    'contact_id' => $userInfos['contact_id'] ?? null,
+                    'contact_alias' => $userInfos['contact_alias'] ?? null,
+                    'contact_auth_type' => $userInfos['contact_auth_type'] ?? null,
+                    'contact_ldap_dn' => $userInfos['contact_ldap_dn'] ?? null
                 ];
             }
         );

@@ -30,7 +30,7 @@ try {
     $errorMessage = "Unable to create table 'password_security_policy'";
     $pearDB->query(
         "CREATE TABLE `password_security_policy` (
-        `password_length` int(11) UNSIGNED NOT NULL DEFAULT 12,
+        `password_length` tinyint UNSIGNED NOT NULL DEFAULT 12,
         `uppercase_characters` enum('0', '1') NOT NULL DEFAULT '1',
         `lowercase_characters` enum('0', '1') NOT NULL DEFAULT '1',
         `integer_characters` enum('0', '1') NOT NULL DEFAULT '1',
@@ -53,7 +53,7 @@ try {
     $errorMessage = "Unable to create table 'contact_password'";
     $pearDB->query(
         "CREATE TABLE `contact_password` (
-        `id` int(11) NOT NULL AUTO_INCREMENT,
+        `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
         `password` varchar(255) NOT NULL,
         `contact_id` int(11) NOT NULL,
         `creation_date` BIGINT UNSIGNED NOT NULL,
@@ -81,7 +81,17 @@ try {
     }
     $errorMessage = "Unable to drop column 'contact_passwd' from 'contact' table";
     $dbResult = $pearDB->query("ALTER TABLE `contact` DROP COLUMN `contact_passwd`");
-} catch (Exception $e) {
+
+    $errorMessage = 'Impossible to add "contact_js_effects" column to "contact" table';
+
+    if (!$pearDB->isColumnExist('contact', 'contact_js_effects')) {
+        $pearDB->query(
+            "ALTER TABLE `contact`
+            ADD COLUMN `contact_js_effects` enum('0','1') DEFAULT '0'
+            AFTER `contact_comment`"
+        );
+    }
+} catch (\Exception $e) {
     $centreonLog->insertLog(
         4,
         $versionOfTheUpgrade . $errorMessage .
@@ -89,5 +99,6 @@ try {
         " - Error : " . $e->getMessage() .
         " - Trace : " . $e->getTraceAsString()
     );
+
     throw new \Exception($versionOfTheUpgrade . $errorMessage, (int)$e->getCode(), $e);
 }

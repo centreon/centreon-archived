@@ -31,6 +31,7 @@ import AppProvider from './App';
   window.CentreonUiContext = await import(
     /* webpackChunkName: "external" */ '@centreon/ui-context'
   );
+  window.Jotai = await import(/* webpackChunkName: "external" */ 'jotai');
 
   window.ReactDOM.render(<AppProvider />, document.getElementById('root'));
 })();

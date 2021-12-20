@@ -741,6 +741,7 @@ CREATE TABLE `contact` (
   `contact_address5` varchar(200) DEFAULT NULL,
   `contact_address6` varchar(200) DEFAULT NULL,
   `contact_comment` text,
+  `contact_js_effects` enum('0','1') DEFAULT '0',
   `contact_location` int(11) DEFAULT '0',
   `contact_oreon` enum('0','1') DEFAULT NULL,
   `reach_api` int(11) DEFAULT '0',
@@ -2421,7 +2422,7 @@ CREATE TABLE `security_authentication_tokens` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `password_security_policy` (
-  `password_length` int(11) UNSIGNED NOT NULL DEFAULT 12,
+  `password_length` tinyint UNSIGNED NOT NULL DEFAULT 12,
   `uppercase_characters` enum('0', '1') NOT NULL DEFAULT '1',
   `lowercase_characters` enum('0', '1') NOT NULL DEFAULT '1',
   `integer_characters` enum('0', '1') NOT NULL DEFAULT '1',
@@ -2434,7 +2435,7 @@ CREATE TABLE `password_security_policy` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `contact_password` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `password` varchar(255) NOT NULL,
   `contact_id` int(11) NOT NULL,
   `creation_date` BIGINT UNSIGNED NOT NULL,
