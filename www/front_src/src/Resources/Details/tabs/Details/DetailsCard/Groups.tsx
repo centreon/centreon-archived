@@ -37,6 +37,7 @@ const Groups = ({ details }: Props): JSX.Element => {
               clickable
               color="primary"
               label={group.name}
+              size="small"
               onClick={(): void => filterByGroup(group)}
             />
           </Grid>
