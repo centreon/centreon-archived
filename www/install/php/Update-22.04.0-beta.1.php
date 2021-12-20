@@ -52,6 +52,28 @@ try {
         VALUES (12, '1', '1', '1', '1', 5, 900, 7776000, 3600)");
     }
     $pearDB->commit();
-} catch (Exception $e) {
-    $pearDB->rollback();
+
+    $errorMessage = 'Impossible to add "contact_js_effects" column to "contact" table';
+
+    if (!$pearDB->isColumnExist('contact', 'contact_js_effects')) {
+        $pearDB->query(
+            "ALTER TABLE `contact`
+            ADD COLUMN `contact_js_effects` enum('0','1') DEFAULT '0'
+            AFTER `contact_comment`"
+        );
+    }
+} catch (\Exception $e) {
+    if ($pearDB->inTransaction()) {
+        $pearDB->rollBack();
+    }
+
+    $centreonLog->insertLog(
+        4,
+        $versionOfTheUpgrade . $errorMessage .
+        " - Code : " . (int)$e->getCode() .
+        " - Error : " . $e->getMessage() .
+        " - Trace : " . $e->getTraceAsString()
+    );
+
+    throw new \Exception($versionOfTheUpgrade . $errorMessage, (int)$e->getCode(), $e);
 }
