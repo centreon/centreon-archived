@@ -346,18 +346,24 @@ function multipleContactInDB($contacts = array(), $nbrDup = array())
     $newContactIds = [];
     foreach ($contacts as $key => $value) {
         $newContactIds[$key] = [];
-        $dbResult = $pearDB->query(
-            "SELECT `contact`.*, cp.password
+        $statement = $pearDB->prepare(
+            "SELECT `contact`.*, cp.password, cp.creation_date
             FROM contact
             LEFT JOIN contact_password cp ON cp.contact_id = contact.contact_id
-            WHERE `contact`.contact_id = '" . (int)$key . "' LIMIT 1"
+            WHERE `contact`.contact_id = :contactId LIMIT 1"
         );
-        $row = $dbResult->fetch();
+        $statement->bindValue(':contactId', (int)$key, \PDO::PARAM_INT);
+        $statement->execute();
+        $row = $statement->fetch();
+        if ($row === false) {
+            return;
+        }
+
         $row["contact_id"] = null;
         for ($i = 1; $i <= $nbrDup[$key]; $i++) {
             $val = null;
             foreach ($row as $key2 => $value2) {
-                if ($key2 !== "password") {
+                if (in_array(['creation_date', 'password'], $key2) == false) {
                     $key2 == "contact_name" ? ($contact_name = $value2 = $value2 . "_" . $i) : null;
                     $key2 == "contact_alias" ? ($contact_alias = $value2 = $value2 . "_" . $i) : null;
                     $val ? $val .= ($value2 != null ? (", '" . $value2 . "'") : ", NULL") : $val .=
@@ -387,13 +393,16 @@ function multipleContactInDB($contacts = array(), $nbrDup = array())
                      * Don't insert password for a contact_template.
                      */
                     if ($row['password'] !== null) {
+                        $contact = new \CentreonContact($pearDB);
+                        $contact->insertPasswordByContactId((int) $lastId, $row['password']);
                         $statement = $pearDB->prepare(
-                            "INSERT INTO contact_password (password, contact_id, creation_date)
-                            VALUES (:password, :contactId, :creationDate)"
+                            "UPDATE contact_password
+                            SET creation_date = :creationDate
+                            WHERE contact_id = :contactId"
                         );
                         $statement->bindValue(':password', $row['password'], \PDO::PARAM_STR);
+                        $statement->bindValue(':creationDate', $row['creation_date'], \PDO::PARAM_INT);
                         $statement->bindValue(':contactId', $lastId, \PDO::PARAM_INT);
-                        $statement->bindValue(':creationDate', time(), \PDO::PARAM_INT);
                         $statement->execute();
                     }
                     $newContactIds[$key][] = $lastId;
