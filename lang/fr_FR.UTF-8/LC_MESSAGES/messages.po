@@ -16338,3 +16338,6 @@ msgstr "Connexion"
 
 msgid "Centreon Logo"
 msgstr "Logo de Centreon"
+
+msgid "You are not allowed to see this page"
+msgstr "Vous n'êtes pas autorisé à voir cette page"

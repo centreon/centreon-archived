@@ -15218,3 +15218,6 @@ msgstr ""
 
 # msgid "Centreon Logo"
 # msgstr ""
+
+# msgid "You are not allowed to see this page"
+# msgstr ""
