@@ -16378,9 +16378,6 @@ msgstr "Minute"
 msgid "Second"
 msgstr "Seconde"
 
-msgid "Second"
-msgstr "Secondes"
-
 msgid "Can reuse last 3 passwords"
 msgstr "Peut réutiliser les 3 derniers mot de passe"
 
