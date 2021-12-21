@@ -14,6 +14,12 @@ import { labelMore, labelLess } from '../../../translatedLabels';
 import Card from './Card';
 import { ChangeExpandedCardsProps, ExpandAction } from './SortableCards/models';
 
+const Line = (line, index): JSX.Element => (
+  <Typography component="p" key={`${line}-${index}`} variant="body2">
+    {line}
+  </Typography>
+);
+
 const useStyles = makeStyles<Theme, { severityCode?: number }>((theme) => {
   const getStatusBackgroundColor = (severityCode): string =>
     getStatusColors({
@@ -66,12 +72,6 @@ const ExpandableCard = ({
 
     changeExpandedCards({ action: ExpandAction.add, card: title });
   };
-
-  const Line = (line, index): JSX.Element => (
-    <Typography component="p" key={`${line}-${index}`} variant="body2">
-      {line}
-    </Typography>
-  );
 
   return (
     <Card className={classes.card}>

@@ -25,6 +25,18 @@ class RemoteServerFormStepOne extends Component {
     inputTypeManual: true,
   };
 
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    const { waitList } = nextProps;
+    const { initialized } = this.state;
+    if (waitList && !initialized) {
+      this.initializeFromRest(waitList.length > 0);
+    }
+    this.setState({
+      centreon_folder: '/centreon/',
+      initialized: true,
+    });
+  }
+
   onManualInputChanged(inputTypeManual) {
     this.setState({
       inputTypeManual,
@@ -36,18 +48,6 @@ class RemoteServerFormStepOne extends Component {
     this.setState({
       initialized: true,
       inputTypeManual: !value,
-    });
-  };
-
-  UNSAFE_componentWillReceiveProps = (nextProps) => {
-    const { waitList } = nextProps;
-    const { initialized } = this.state;
-    if (waitList && !initialized) {
-      this.initializeFromRest(waitList.length > 0);
-    }
-    this.setState({
-      centreon_folder: '/centreon/',
-      initialized: true,
     });
   };
 

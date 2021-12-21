@@ -37,6 +37,10 @@ class PollerStepOneRoute extends Component {
     'internal.php?object=centreon_configuration_remote&action=getPollerWaitList',
   );
 
+  componentDidMount() {
+    this.getWaitList();
+  }
+
   getWaitList = () => {
     this.wizardFormWaitListApi
       .post()
@@ -46,10 +50,6 @@ class PollerStepOneRoute extends Component {
       .catch(() => {
         this.setState({ waitList: [] });
       });
-  };
-
-  componentDidMount = () => {
-    this.getWaitList();
   };
 
   handleSubmit = (data) => {

@@ -24,6 +24,7 @@ const renderDateTimePickerTextField =
     return (
       <TextField
         disabled
+        // eslint-disable-next-line react/no-unstable-nested-components
         EndAdornment={(): JSX.Element => <div>{InputProps?.endAdornment}</div>}
         inputProps={{
           ...inputProps,

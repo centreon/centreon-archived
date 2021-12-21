@@ -5,7 +5,6 @@ import * as yup from 'yup';
 import { useAtomValue } from 'jotai/utils';
 
 import { ClickAwayListener } from '@mui/material';
-
 import makeStyles from '@mui/styles/makeStyles';
 
 import { refreshIntervalAtom } from '@centreon/ui-context';

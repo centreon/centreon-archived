@@ -125,9 +125,10 @@ const GraphActions = ({
           <IconButton
             disableTouchRipple
             disabled={isNil(timeline)}
+            size="large"
             title={t(labelExportToPng)}
             onClick={openSizeExportMenu}
-            size="large">
+          >
             <SaveAsImageIcon style={{ fontSize: 18 }} />
           </IconButton>
           <Menu

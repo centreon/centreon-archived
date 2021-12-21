@@ -82,6 +82,7 @@ const AcknowledgementDetailsTable = ({
     },
 
     {
+      // eslint-disable-next-line react/no-unstable-nested-components
       getContent: ({ comment }: AcknowledgementDetails): JSX.Element => {
         return (
           <span className={classes.comment}>

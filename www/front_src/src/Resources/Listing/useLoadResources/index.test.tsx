@@ -36,6 +36,7 @@ let context: ResourceContext;
 const LoadResourcesComponent = (): JSX.Element => {
   useLoadResources();
 
+  // eslint-disable-next-line react/jsx-no-useless-fragment
   return <></>;
 };
 

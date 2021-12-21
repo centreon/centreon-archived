@@ -71,6 +71,7 @@ const DowntimeDetailsTable = ({ endpoint }: Props): JSX.Element => {
       width: 150,
     },
     {
+      // eslint-disable-next-line react/no-unstable-nested-components
       getContent: ({ end_time }: DowntimeDetails): JSX.Element => (
         <span>{toDateTime(end_time)}</span>
       ),
@@ -83,6 +84,7 @@ const DowntimeDetailsTable = ({ endpoint }: Props): JSX.Element => {
     {
       className: classes.comment,
 
+      // eslint-disable-next-line react/no-unstable-nested-components
       getContent: ({ comment }: DowntimeDetails): JSX.Element => {
         return (
           <span className={classes.comment}>

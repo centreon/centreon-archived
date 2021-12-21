@@ -6,8 +6,14 @@ import { useTranslation } from 'react-i18next';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import LogsIcon from '@mui/icons-material/Assignment';
 import ReportIcon from '@mui/icons-material/Assessment';
-import { Link, List, ListItem, ListItemIcon, ListItemText, Tooltip } from '@mui/material';
-
+import {
+  Link,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Tooltip,
+} from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 
 import { PopoverMenu } from '@centreon/ui';

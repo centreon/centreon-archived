@@ -104,12 +104,14 @@ const GraphColumn = ({
     return (
       <IconColumn>
         <HoverChip
+          // eslint-disable-next-line react/no-unstable-nested-components
           Chip={(): JSX.Element => (
             <IconButton
               ariaLabel={label}
+              size="large"
               title={label}
               onClick={(): void => onClick(row)}
-              size="large">
+            >
               <IconGraph fontSize="small" />
             </IconButton>
           )}

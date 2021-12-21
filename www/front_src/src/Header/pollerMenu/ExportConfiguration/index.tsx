@@ -5,7 +5,6 @@ import { not } from 'ramda';
 import { useAtomValue } from 'jotai/utils';
 
 import { Button, Paper, Typography } from '@mui/material';
-
 import makeStyles from '@mui/styles/makeStyles';
 
 import { getData, useRequest, useSnackbar, Dialog } from '@centreon/ui';

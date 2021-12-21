@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-constructed-context-values */
 import * as React from 'react';
 
 import axios from 'axios';
@@ -191,7 +192,7 @@ describe(EditFilterPanel, () => {
   it('reorders the filter and sends a reorder request when it is dragged to a different position', async () => {
     const [firstFilter] = retrievedCustomFilters.result;
 
-    const { getByText, container } = renderEditFilterPanel();
+    const { container } = renderEditFilterPanel();
 
     act(() => {
       filterState.loadCustomFilters();

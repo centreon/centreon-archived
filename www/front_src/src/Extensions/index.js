@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unused-class-component-methods */
 /* eslint-disable react/jsx-no-bind */
 /* eslint-disable react/jsx-filename-extension */
 /* eslint-disable camelcase */
@@ -50,9 +51,9 @@ class ExtensionsRoute extends Component {
     widgetsActive: false,
   };
 
-  componentDidMount = () => {
+  componentDidMount() {
     this.getData();
-  };
+  }
 
   onChange = (value, key) => {
     const { filters } = this.state;

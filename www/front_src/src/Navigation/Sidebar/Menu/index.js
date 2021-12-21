@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this */
 /* eslint-disable jsx-a11y/mouse-events-have-key-events */
 /* eslint-disable no-useless-concat */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
@@ -85,15 +86,6 @@ class NavigationMenu extends Component {
     }
 
     return index;
-  };
-
-  onNavigate = (id, url) => {
-    const { onNavigate } = this.props;
-    this.setState({
-      hrefOfIframe: false,
-      navigatedPageId: id,
-    });
-    onNavigate(id, url);
   };
 
   areSamePage = (page, level, imersion) => {

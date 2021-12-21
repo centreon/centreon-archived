@@ -1,3 +1,5 @@
+/* eslint-disable react/no-unused-class-component-methods */
+/* eslint-disable class-methods-use-this */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable react/destructuring-assignment */

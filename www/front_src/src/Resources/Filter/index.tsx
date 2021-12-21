@@ -77,6 +77,20 @@ import {
   setNewFilterDerivedAtom,
 } from './filterAtoms';
 
+const renderClearFilter = (onClear) => (): JSX.Element => {
+  const { t } = useTranslation();
+
+  return (
+    <IconButton
+      ariaLabel={t(labelClearFilter)}
+      size="small"
+      title={t(labelClearFilter)}
+      onClick={onClear}
+    >
+      <CloseIcon color="action" fontSize="small" />
+    </IconButton>
+  );
+};
 interface DynamicCriteriaResult {
   result: Array<{ name: string }>;
 }
@@ -519,16 +533,7 @@ const Filter = (): JSX.Element => {
             <div>
               <SearchField
                 fullWidth
-                EndAdornment={(): JSX.Element => (
-                  <IconButton
-                    ariaLabel={t(labelClearFilter)}
-                    size="small"
-                    title={t(labelClearFilter)}
-                    onClick={clearFilter}
-                  >
-                    <CloseIcon color="action" fontSize="small" />
-                  </IconButton>
-                )}
+                EndAdornment={renderClearFilter(clearFilter)}
                 inputRef={searchRef as React.RefObject<HTMLInputElement>}
                 placeholder={t(labelSearch)}
                 value={search}

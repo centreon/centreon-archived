@@ -6,9 +6,15 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { hasPath, isNil, not, path, prop } from 'ramda';
 
-import { Grid, Typography, Theme, Link, Tooltip } from '@mui/material';
+import {
+  Grid,
+  Typography,
+  Theme,
+  Link,
+  Tooltip,
+  Skeleton,
+} from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
-import { Skeleton } from '@mui/material';
 import CopyIcon from '@mui/icons-material/FileCopy';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { CreateCSSProperties } from '@mui/styles';

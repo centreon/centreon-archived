@@ -3,7 +3,6 @@ import * as React from 'react';
 import { equals, or } from 'ramda';
 
 import { Theme } from '@mui/material';
-
 import makeStyles from '@mui/styles/makeStyles';
 
 import { TabProps } from '..';

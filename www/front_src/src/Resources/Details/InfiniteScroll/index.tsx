@@ -15,7 +15,13 @@ import {
 import { useTranslation } from 'react-i18next';
 import { useAtomValue } from 'jotai/utils';
 
-import { CircularProgress, Fab, Fade, LinearProgress, Tooltip } from '@mui/material';
+import {
+  CircularProgress,
+  Fab,
+  Fade,
+  LinearProgress,
+  Tooltip,
+} from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 

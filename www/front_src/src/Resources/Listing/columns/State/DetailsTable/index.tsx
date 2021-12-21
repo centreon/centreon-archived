@@ -10,8 +10,8 @@ import {
   TableHead,
   TableCell,
   TableBody,
+  Skeleton,
 } from '@mui/material';
-import { Skeleton } from '@mui/material';
 
 import {
   useRequest,

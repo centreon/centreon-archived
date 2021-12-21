@@ -23,6 +23,17 @@ class PollerFormStepOne extends Component {
     inputTypeManual: true,
   };
 
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    const { waitList } = nextProps;
+    const { initialized } = this.state;
+    if (waitList && !initialized) {
+      this.initializeFromRest(waitList.length > 0);
+    }
+    this.setState({
+      initialized: true,
+    });
+  }
+
   onManualInputChanged(inputTypeManual) {
     this.setState({
       inputTypeManual,
@@ -35,17 +46,6 @@ class PollerFormStepOne extends Component {
     this.setState({
       initialized: true,
       inputTypeManual: !value,
-    });
-  };
-
-  UNSAFE_componentWillReceiveProps = (nextProps) => {
-    const { waitList } = nextProps;
-    const { initialized } = this.state;
-    if (waitList && !initialized) {
-      this.initializeFromRest(waitList.length > 0);
-    }
-    this.setState({
-      initialized: true,
     });
   };
 

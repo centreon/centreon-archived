@@ -5,8 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { useAtom } from 'jotai';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 
-import { useTheme, alpha } from '@mui/material';
-import { Skeleton } from '@mui/material';
+import { useTheme, alpha, Skeleton } from '@mui/material';
 
 import { MemoizedPanel as Panel, Tab } from '@centreon/ui';
 

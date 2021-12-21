@@ -21,7 +21,6 @@ import { userAtom } from '@centreon/ui-context';
 import {
   labelCancel,
   labelEndTime,
-  labelStartDate,
   labelComment,
   labelDowntime,
   labelDuration,
@@ -57,6 +56,7 @@ const renderDateTimePickerTextField =
   ({ inputRef, inputProps, InputProps }: TextFieldProps): JSX.Element => {
     return (
       <TextField
+        // eslint-disable-next-line react/no-unstable-nested-components
         EndAdornment={(): JSX.Element => <div>{InputProps?.endAdornment}</div>}
         inputProps={{
           ...inputProps,

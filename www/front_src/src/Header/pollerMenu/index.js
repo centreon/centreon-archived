@@ -124,6 +124,20 @@ class PollerMenu extends Component {
     window.addEventListener('mousedown', this.handleClick, false);
   }
 
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    const { refreshInterval } = nextProps;
+    const { intervalApplied } = this.state;
+    if (refreshInterval && !intervalApplied) {
+      this.getData();
+      this.refreshIntervalRef = setInterval(() => {
+        this.getData();
+      }, refreshInterval * 1000);
+      this.setState({
+        intervalApplied: true,
+      });
+    }
+  }
+
   componentWillUnmount() {
     window.removeEventListener('mousedown', this.handleClick, false);
     clearInterval(this.refreshIntervalRef);
@@ -145,20 +159,6 @@ class PollerMenu extends Component {
           });
         }
       });
-  };
-
-  UNSAFE_componentWillReceiveProps = (nextProps) => {
-    const { refreshInterval } = nextProps;
-    const { intervalApplied } = this.state;
-    if (refreshInterval && !intervalApplied) {
-      this.getData();
-      this.refreshIntervalRef = setInterval(() => {
-        this.getData();
-      }, refreshInterval * 1000);
-      this.setState({
-        intervalApplied: true,
-      });
-    }
   };
 
   // display/hide detailed poller data

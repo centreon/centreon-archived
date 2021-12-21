@@ -6,7 +6,15 @@ import { equals, find, gt, includes, isNil, length, slice, split } from 'ramda';
 import { useTranslation } from 'react-i18next';
 import { useAtomValue } from 'jotai/utils';
 
-import { Typography, useTheme, alpha, Theme, Tooltip, Box, Button } from '@mui/material';
+import {
+  Typography,
+  useTheme,
+  alpha,
+  Theme,
+  Tooltip,
+  Box,
+  Button,
+} from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import { CreateCSSProperties } from '@mui/styles';

@@ -4,9 +4,8 @@ import { equals, isNil } from 'ramda';
 import { Responsive } from '@visx/visx';
 import { useAtomValue } from 'jotai/utils';
 
-import { styled } from '@mui/material';
+import { styled, Skeleton } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
-import { Skeleton } from '@mui/material';
 
 import { detailsAtom } from '../../detailsAtoms';
 

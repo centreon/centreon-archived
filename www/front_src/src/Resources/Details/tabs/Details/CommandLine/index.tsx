@@ -3,7 +3,6 @@ import * as React from 'react';
 import { isNil } from 'ramda';
 
 import { Typography } from '@mui/material';
-
 import makeStyles from '@mui/styles/makeStyles';
 
 import { getCommandsWithArguments } from './utils';

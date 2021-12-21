@@ -28,16 +28,19 @@ const Listing = ({
   const classes = useStyles();
   const { t } = useTranslation();
 
-  return <>
-    <IconButton
-      ariaLabel={t(switchButtonLabel)}
-      title={t(switchButtonLabel)}
-      onClick={onSwitchButtonClick}
-      size="large">
-      {switchButtonIcon}
-    </IconButton>
-    <div className={classes.list}>{list}</div>
-  </>;
+  return (
+    <>
+      <IconButton
+        ariaLabel={t(switchButtonLabel)}
+        size="large"
+        title={t(switchButtonLabel)}
+        onClick={onSwitchButtonClick}
+      >
+        {switchButtonIcon}
+      </IconButton>
+      <div className={classes.list}>{list}</div>
+    </>
+  );
 };
 
 export default Listing;

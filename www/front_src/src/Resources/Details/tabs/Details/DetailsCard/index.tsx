@@ -1,7 +1,6 @@
 import * as React from 'react';
 
 import { Typography } from '@mui/material';
-
 import makeStyles from '@mui/styles/makeStyles';
 
 import Card from '../Card';

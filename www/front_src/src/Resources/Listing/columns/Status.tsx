@@ -85,34 +85,37 @@ const StatusColumnOnHover = ({
         ariaLabel={`${t(labelAcknowledge)} ${row.name}`}
         color="primary"
         disabled={disableAcknowledge}
+        size="large"
         title={getActionTitle({
           isActionPermitted: isAcknowledePermitted,
           labelAction: labelAcknowledge,
         })}
         onClick={(): void => actions.onAcknowledge(row)}
-        size="large">
+      >
         <IconAcknowledge fontSize="small" />
       </IconButton>
       <IconButton
         ariaLabel={`${t(labelSetDowntimeOn)} ${row.name}`}
         disabled={disableDowntime}
+        size="large"
         title={getActionTitle({
           isActionPermitted: isDowntimePermitted,
           labelAction: labelSetDowntime,
         })}
         onClick={(): void => actions.onDowntime(row)}
-        size="large">
+      >
         <IconDowntime fontSize="small" />
       </IconButton>
       <IconButton
         ariaLabel={`${t(labelCheck)} ${row.name}`}
         disabled={disableCheck}
+        size="large"
         title={getActionTitle({
           isActionPermitted: isCheckPermitted,
           labelAction: labelCheck,
         })}
         onClick={(): void => actions.onCheck(row)}
-        size="large">
+      >
         <IconCheck fontSize="small" />
       </IconButton>
     </div>
