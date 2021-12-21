@@ -159,7 +159,7 @@ class SessionAPIAuthenticator extends AbstractAuthenticator
         if ($contact === null) {
             throw new UserNotFoundException();
         }
-        if (!$contact->isActive()) {
+        if ($contact->isActive() === false) {
             throw new ContactDisabledException();
         }
 
