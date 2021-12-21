@@ -19,18 +19,18 @@ import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import { Fab } from '@mui/material';
 import { styled } from '@mui/system';
 
-import { ThemeProvider } from '@centreon/ui';
+import { LoadingSkeleton, ThemeProvider } from '@centreon/ui';
 
-import Header from './Header';
 import { history } from './store';
-import Nagigation from './Navigation';
-import Footer from './components/footer';
 import axios from './axios';
 import { fetchExternalComponents } from './redux/actions/externalComponentsActions';
 import PageLoader from './components/PageLoader';
 import Provider from './Provider';
 
 const MainRouter = React.lazy(() => import('./components/mainRouter'));
+const Header = React.lazy(() => import('./Header'));
+const Navigation = React.lazy(() => import('./Navigation'));
+const Footer = React.lazy(() => import('./Footer'));
 
 const Content = styled('div')({
   display: 'flex',
@@ -161,9 +161,21 @@ class App extends Component<Props, State> {
         <ConnectedRouter history={history}>
           <ThemeProvider>
             <Wrapper>
-              {!min && <Nagigation />}
+              {!min && (
+                <React.Suspense
+                  fallback={<LoadingSkeleton height="100%" width={45} />}
+                >
+                  <Navigation />
+                </React.Suspense>
+              )}
               <Content id="content">
-                {!min && <Header />}
+                {!min && (
+                  <React.Suspense
+                    fallback={<LoadingSkeleton height={56} width="100%" />}
+                  >
+                    <Header />
+                  </React.Suspense>
+                )}
                 <FullscreenWrapper id="fullscreen-wrapper">
                   <Fullscreen
                     enabled={this.state.isFullscreenEnabled}
@@ -177,7 +189,13 @@ class App extends Component<Props, State> {
                     </RouterWrapper>
                   </Fullscreen>
                 </FullscreenWrapper>
-                {!min && <Footer />}
+                {!min && (
+                  <React.Suspense
+                    fallback={<LoadingSkeleton height={30} width="100%" />}
+                  >
+                    <Footer />
+                  </React.Suspense>
+                )}
               </Content>
               <FullscreenButton
                 color="default"

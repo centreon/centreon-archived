@@ -1,7 +1,5 @@
 import * as React from 'react';
 
-import fs from 'fs';
-
 import mockDate from 'mockdate';
 import axios from 'axios';
 import { last, pick, map, head } from 'ramda';
@@ -37,7 +35,6 @@ import {
   labelAcknowledgeServices,
   labelNotify,
   labelFixed,
-  labelChangeEndDate,
   labelCheck,
   labelServicesDenied,
   labelHostsDenied,
@@ -57,7 +54,6 @@ import {
   labelUnknown,
   labelAddComment,
   labelPersistent,
-  labelTo,
   labelEndTime,
   labelEndDateGreaterThanStartDate,
   labelInvalidFormat,
@@ -429,8 +425,6 @@ describe(Actions, () => {
     fireEvent.click(last(getAllByText(labelSetDowntime)) as HTMLElement);
 
     await findByText(labelDowntimeByAdmin);
-
-    fs.writeFileSync('./test', document.body.innerHTML as string);
 
     fireEvent.click(getByLabelText(labelFixed));
     fireEvent.change(getByDisplayValue('7200'), {
