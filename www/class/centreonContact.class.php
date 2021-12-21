@@ -267,8 +267,6 @@ class CentreonContact
         $statement->bindValue(':contactId', $contactId, \PDO::PARAM_INT);
         $statement->bindValue(':creationDate', time(), \PDO::PARAM_INT);
         $statement->execute();
-
-        $this->deleteOldPasswords($contactId);
     }
 
     /**
