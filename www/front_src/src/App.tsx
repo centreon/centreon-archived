@@ -12,7 +12,6 @@ import { connect } from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router';
 import Fullscreen from 'react-fullscreen-crossbrowser';
 import queryString from 'query-string';
-
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
 import { withStyles, createStyles, Fab } from '@material-ui/core';
 
@@ -27,7 +26,7 @@ import Provider from './Provider';
 const MainRouter = React.lazy(() => import('./components/mainRouter'));
 const Header = React.lazy(() => import('./Header'));
 const Navigation = React.lazy(() => import('./Navigation'));
-const Footer = React.lazy(() => import('./components/footer'));
+const Footer = React.lazy(() => import('./Footer'));
 
 const styles = createStyles({
   content: {
