@@ -68,6 +68,7 @@ class TokenAPIAuthenticator extends AbstractAuthenticator implements Authenticat
      *
      * @param AuthenticationRepositoryInterface $authenticationRepository
      * @param ContactRepositoryInterface $contactRepository
+     * @param LocalProvider $localProvider
      */
     public function __construct(
         AuthenticationRepositoryInterface $authenticationRepository,

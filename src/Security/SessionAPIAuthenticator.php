@@ -34,7 +34,6 @@ use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Symfony\Component\Security\Core\Exception\SessionUnavailableException;
 use Symfony\Component\Security\Core\Exception\TokenNotFoundException;
-use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Http\Authenticator\AbstractAuthenticator;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
@@ -144,7 +143,7 @@ class SessionAPIAuthenticator extends AbstractAuthenticator
      *
      * @return UserInterface
      * @throws BadCredentialsException
-     * @throws UserNotFoundException
+     * @throws SessionUnavailableException
      * @throws ContactDisabledException
      */
     private function getUserAndUpdateSession(string $sessionId): UserInterface
@@ -157,7 +156,7 @@ class SessionAPIAuthenticator extends AbstractAuthenticator
 
         $contact = $this->contactRepository->findBySession($sessionId);
         if ($contact === null) {
-            throw new UserNotFoundException();
+            throw new SessionUnavailableException();
         }
         if ($contact->isActive() === false) {
             throw new ContactDisabledException();
