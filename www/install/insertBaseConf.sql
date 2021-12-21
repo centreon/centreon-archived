@@ -508,7 +508,6 @@ INSERT INTO `cb_log_level` (`id`, `name`) VALUES
 
 INSERT INTO `cb_tag` (`cb_tag_id`, `tagname`) VALUES
 (2, 'input'),
-(3, 'logger'),
 (1, 'output');
 
 --
@@ -745,10 +744,6 @@ INSERT INTO `cb_tag_type_relation` (`cb_tag_id`, `cb_type_id`, `cb_type_uniq`) V
 (2, 3, 0),
 (2, 10, 0),
 (2, 11, 0),
-(3, 17, 0),
-(3, 18, 0),
-(3, 19, 0),
-(3, 24, 0),
 (1, 28, 1),
 (1, 29, 1),
 (1, 30, 0),
