@@ -2,7 +2,16 @@ import * as React from 'react';
 
 import i18next, { Resource, ResourceLanguage } from 'i18next';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
-import { equals, isNil, mergeAll, not, pipe, reduce, toPairs } from 'ramda';
+import {
+  equals,
+  includes,
+  isNil,
+  mergeAll,
+  not,
+  pipe,
+  reduce,
+  toPairs,
+} from 'ramda';
 import { initReactI18next } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router';
 
@@ -73,7 +82,7 @@ const useMain = (): void => {
     }
     if (
       not(areUserParametersLoaded) ||
-      not(equals(location.pathname, reactRoutes.login))
+      not(includes(location.pathname, [reactRoutes.login, '/']))
     ) {
       return;
     }
