@@ -16341,3 +16341,6 @@ msgstr "Logo de Centreon"
 
 msgid "You are not allowed to see this page"
 msgstr "Vous n'êtes pas autorisé à voir cette page"
+
+msgid "This page could not be found"
+msgstr "Cette page n'a pas pu être trouvée"
