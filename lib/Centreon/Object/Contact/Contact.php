@@ -83,7 +83,7 @@ class Centreon_Object_Contact extends \Centreon_Object
             $contactId = $this->db->lastInsertId();
             if (isset($password) && isset($contactId)) {
                 $contact = new \CentreonContact($this->db);
-                $contact->insertPasswordByContactId($contactId, $password);
+                $contact->addPasswordByContactId($contactId, $password);
             }
             return $contactId;
         }
@@ -199,7 +199,7 @@ class Centreon_Object_Contact extends \Centreon_Object
 
         if (isset($password) && isset($contactId)) {
             $contact = new \CentreonContact($this->db);
-            $contact->updatePasswordByContactId($contactId, $password);
+            $contact->renewPasswordByContactId($contactId, $password);
         }
     }
 }

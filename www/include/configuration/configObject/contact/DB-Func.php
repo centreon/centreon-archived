@@ -394,7 +394,7 @@ function multipleContactInDB($contacts = array(), $nbrDup = array())
                      */
                     if ($row['password'] !== null) {
                         $contact = new \CentreonContact($pearDB);
-                        $contact->insertPasswordByContactId((int) $lastId, $row['password']);
+                        $contact->addPasswordByContactId((int) $lastId, $row['password']);
                         $statement = $pearDB->prepare(
                             "UPDATE contact_password
                             SET creation_date = :creationDate
@@ -596,7 +596,7 @@ function insertContact($ret = array())
         $ret["contact_passwd2"] = $ret["contact_passwd"];
 
         $contact = new \CentreonContact($pearDB);
-        $contact->insertPasswordByContactId($contactId["MAX(contact_id)"], $ret["contact_passwd"]);
+        $contact->addPasswordByContactId($contactId["MAX(contact_id)"], $ret["contact_passwd"]);
     }
 
     /* Prepare value for changelog */
@@ -654,7 +654,7 @@ function updateContact($contactId = null)
         $ret["contact_passwd2"] = $ret["contact_passwd"];
 
         $contact = new \CentreonContact($pearDB);
-        $contact->updatePasswordByContactId($contactId, $ret["contact_passwd"]);
+        $contact->renewPasswordByContactId($contactId, $ret["contact_passwd"]);
     }
 
     /* Prepare value for changelog */

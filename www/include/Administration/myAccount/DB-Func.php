@@ -184,7 +184,7 @@ function updateContact($contactId = null)
     if (isset($ret["contact_passwd"]) && !empty($ret["contact_passwd"])) {
         $hashedPassword = password_hash($ret["contact_passwd"], \CentreonAuth::PASSWORD_HASH_ALGORITHM);
         $contact = new \CentreonContact($pearDB);
-        $contact->updatePasswordByContactId($contactId, $hashedPassword);
+        $contact->renewPasswordByContactId($contactId, $hashedPassword);
     }
 
     /*

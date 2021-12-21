@@ -250,14 +250,14 @@ class CentreonContact
     }
 
     /**
-     * Insert contact password
+     * Add new password to a contact
      *
      * @param int $contactId
      * @param string $hashedPassword
      * @return void
      * @throws \PDOException
      */
-    public function insertPasswordByContactId(int $contactId, string $hashedPassword): void
+    public function addPasswordByContactId(int $contactId, string $hashedPassword): void
     {
         $statement = $this->db->prepare(
             'INSERT INTO `contact_password` (`password`, `contact_id`, `creation_date`)
@@ -298,16 +298,16 @@ class CentreonContact
     }
 
     /**
-     * Update contact password
+     * add new contact password and delete old passwords
      *
      * @param int $contactId
      * @param string $hashedPassword
      * @return void
      * @throws \PDOException
      */
-    public function updatePasswordByContactId(int $contactId, string $hashedPassword): void
+    public function renewPasswordByContactId(int $contactId, string $hashedPassword): void
     {
-        $this->insertPasswordByContactId($contactId, $hashedPassword);
+        $this->addPasswordByContactId($contactId, $hashedPassword);
 
         $this->deleteOldPasswords($contactId);
     }

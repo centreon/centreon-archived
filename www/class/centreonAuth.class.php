@@ -204,7 +204,7 @@ class CentreonAuth
                         if (isset($this->ldap_store_password[$arId]) && $this->ldap_store_password[$arId]) {
                             $hashedPassword = password_hash($this->password, self::PASSWORD_HASH_ALGORITHM);
                             $contact = new \CentreonContact($this->pearDB);
-                            $contact->insertPasswordByContactId(
+                            $contact->addPasswordByContactId(
                                 (int) $this->userInfos['contact_id'],
                                 $hashedPassword
                             );
@@ -215,7 +215,7 @@ class CentreonAuth
                         if (!isset($this->userInfos["contact_passwd"])) {
                             $hashedPassword = password_hash($this->password, self::PASSWORD_HASH_ALGORITHM);
                             $contact = new \CentreonContact($this->pearDB);
-                            $contact->insertPasswordByContactId(
+                            $contact->addPasswordByContactId(
                                 (int) $this->userInfos['contact_id'],
                                 $hashedPassword
                             );
