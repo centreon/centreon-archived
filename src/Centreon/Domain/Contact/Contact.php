@@ -652,7 +652,7 @@ class Contact implements UserInterface, ContactInterface
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function getUserIdentifier(): string
     {
