@@ -48,7 +48,6 @@ try {
 
     $errorMessage = 'Unable to delete logger entry in cb_tag';
     $statement = $pearDB->query("DELETE FROM cb_tag WHERE tagname = 'logger'");
-
 } catch (\Exception $e) {
     $centreonLog->insertLog(
         4,
