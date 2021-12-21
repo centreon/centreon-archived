@@ -514,6 +514,7 @@ class CentreonAPI
         $DBRESULT->execute();
         if ($DBRESULT->rowCount()) {
             $row = $DBRESULT->fetchRow();
+            var_dump($row);
             if ($row['contact_admin'] == 0) {
                 print "You don't have permissions for CLAPI.\n";
                 exit(1);
@@ -521,13 +522,17 @@ class CentreonAPI
 
             // Update password from md5 to bcrypt if old md5 password is valid.
             if (
-                str_starts_with($row["contact_passwd"], 'md5__')
-                && $row["contact_passwd"] === $this->dependencyInjector['utils']->encodePass($this->password, 'md5')
+                (str_starts_with($row["contact_passwd"], 'md5__')
+                && $row["contact_passwd"] === $this->dependencyInjector['utils']->encodePass($this->password, 'md5'))
+                || 'md5__' . $row["contact_passwd"] === $this->dependencyInjector['utils']->encodePass(
+                    $this->password,
+                    'md5'
+                )
             ) {
                 $hashedPassword = password_hash($this->password, \CentreonAuth::PASSWORD_HASH_ALGORITHM);
-                $contact = new \CentreonContact($this->pearDB);
+                $contact = new \CentreonContact($this->DB);
                 $contact->replacePasswordByContactId(
-                    (int) $this->userInfos['contact_id'],
+                    (int) $row['contact_id'],
                     $row["contact_passwd"],
                     $hashedPassword
                 );

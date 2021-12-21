@@ -253,8 +253,9 @@ class CentreonAuth
             // Update password from md5 to bcrypt if old md5 password is valid.
             } elseif (
                 !empty($password)
-                && str_starts_with($this->userInfos["contact_passwd"], 'md5__')
+                && (str_starts_with($this->userInfos["contact_passwd"], 'md5__')
                 && $this->userInfos["contact_passwd"] === $this->myCrypt($password)
+                || 'md5__' . $this->userInfos["contact_passwd"] === $this->myCrypt($password))
             ) {
                 $newPassword = password_hash($password, self::PASSWORD_HASH_ALGORITHM);
                 $statement = $this->pearDB->prepare(
