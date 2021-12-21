@@ -8,11 +8,16 @@ import { useAtomValue } from 'jotai/utils';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 
 import { FormHelperText, Typography, Button, Popover } from '@mui/material';
+import { LocalizationProvider } from '@mui/lab';
 import makeStyles from '@mui/styles/makeStyles';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 
-import { dateTimeFormat, useLocaleDateTimeFormat } from '@centreon/ui';
-import { userAtom } from '@centreon/centreon-frontend/packages/ui-context/src';
+import {
+  dateTimeFormat,
+  useLocaleDateTimeFormat,
+  TextField,
+} from '@centreon/ui';
+import { userAtom } from '@centreon/ui-context';
 
 import {
   labelEndDate,
@@ -110,8 +115,8 @@ const CustomTimePeriodPickers = ({
   const [start, setStart] = React.useState<Date>(customTimePeriod.start);
   const [end, setEnd] = React.useState<Date>(customTimePeriod.end);
   const { format } = useLocaleDateTimeFormat();
-  const { Adapter } = useDateTimePickerAdapter();
   const { locale } = useAtomValue(userAtom);
+  const { Adapter } = useDateTimePickerAdapter();
 
   const isInvalidDate = ({ startDate, endDate }): boolean =>
     dayjs(startDate).isSameOrAfter(dayjs(endDate), 'minute');
@@ -160,15 +165,6 @@ const CustomTimePeriodPickers = ({
 
   const error = isInvalidDate({ endDate: end, startDate: start });
 
-  const commonPickersProps = {
-    InputProps: {
-      disableUnderline: true,
-    },
-    autoOk: true,
-    error: undefined,
-    format: dateTimeFormat,
-  };
-
   return (
     <>
       <Button
@@ -213,20 +209,16 @@ const CustomTimePeriodPickers = ({
         }}
         onClose={closePopover}
       >
-        <div className={classes.popover}>
-          <MuiPickersUtilsProvider
-            locale={locale.substring(0, 2)}
-            utils={Adapter}
-          >
+        <LocalizationProvider
+          dateAdapter={Adapter}
+          locale={locale.substring(0, 2)}
+        >
+          <div className={classes.popover}>
             <div>
               <Typography>{t(labelFrom)}</Typography>
               <div aria-label={t(labelStartDate)}>
                 <DateTimePickerInput
                   changeDate={changeDate}
-                  commonPickersProps={{
-                    ...commonPickersProps,
-                    ampm: false,
-                  }}
                   date={start}
                   maxDate={customTimePeriod.end}
                   property={CustomTimePeriodProperty.start}
@@ -239,10 +231,6 @@ const CustomTimePeriodPickers = ({
               <div aria-label={t(labelEndDate)}>
                 <DateTimePickerInput
                   changeDate={changeDate}
-                  commonPickersProps={{
-                    ...commonPickersProps,
-                    ampm: false,
-                  }}
                   date={end}
                   minDate={customTimePeriod.start}
                   property={CustomTimePeriodProperty.end}
@@ -250,13 +238,14 @@ const CustomTimePeriodPickers = ({
                 />
               </div>
             </div>
-          </MuiPickersUtilsProvider>
-          {error && (
-            <FormHelperText error className={classes.error}>
-              {t(labelEndDateGreaterThanStartDate)}
-            </FormHelperText>
-          )}
-        </div>
+
+            {error && (
+              <FormHelperText error className={classes.error}>
+                {t(labelEndDateGreaterThanStartDate)}
+              </FormHelperText>
+            )}
+          </div>
+        </LocalizationProvider>
       </Popover>
     </>
   );

@@ -1,18 +1,20 @@
 import * as React from 'react';
 
 import axios from 'axios';
+import {} from '@testing-library/react';
+import { Simulate } from 'react-dom/test-utils';
+import userEvent from '@testing-library/user-event';
+import { Provider } from 'jotai';
+
 import {
+  setUrlQueryParameters,
+  getUrlQueryParameters,
   fireEvent,
   waitFor,
   render,
   RenderResult,
   act,
-} from '@testing-library/react';
-import { Simulate } from 'react-dom/test-utils';
-import userEvent from '@testing-library/user-event';
-import { Provider } from 'jotai';
-
-import { setUrlQueryParameters, getUrlQueryParameters } from '@centreon/ui';
+} from '@centreon/ui';
 import { refreshIntervalAtom, userAtom } from '@centreon/ui-context';
 
 import {

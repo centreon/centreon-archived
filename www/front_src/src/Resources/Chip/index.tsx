@@ -11,8 +11,6 @@ const Chip = ({ icon, color }: Props): JSX.Element => {
   return (
     <Box
       sx={{
-        height: 2.5,
-        width: 2.5,
         ...(color && {
           color,
         }),

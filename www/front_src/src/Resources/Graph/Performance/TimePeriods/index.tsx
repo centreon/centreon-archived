@@ -5,7 +5,14 @@ import { always, cond, lt, lte, map, not, pick, T } from 'ramda';
 import { Responsive } from '@visx/visx';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 
-import { Paper, ButtonGroup, Button, useTheme, Tooltip, Theme } from '@mui/material';
+import {
+  Paper,
+  ButtonGroup,
+  Button,
+  useTheme,
+  Tooltip,
+  Theme,
+} from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import { CreateCSSProperties } from '@mui/styles';
 
@@ -135,6 +142,7 @@ const TimePeriodButtonGroup = ({
       disableGraphOptions,
       disablePaper,
       selectedTimePeriod?.id,
+      customTimePeriod,
     ],
   });
 };

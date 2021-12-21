@@ -157,41 +157,48 @@ const SaveFilterMenu = (): JSX.Element => {
   const canSaveFilter = and(isFilterDirty(), not(isNewFilter));
   const canSaveFilterAsNew = or(isFilterDirty(), isNewFilter);
 
-  return <>
-    <IconButton title={t(labelSaveFilter)} onClick={openSaveFilterMenu} size="large">
-      <SettingsIcon />
-    </IconButton>
-    <Menu
-      keepMounted
-      anchorEl={menuAnchor}
-      open={Boolean(menuAnchor)}
-      onClose={closeSaveFilterMenu}
-    >
-      <MenuItem
-        disabled={!canSaveFilterAsNew}
-        onClick={openCreateFilterDialog}
+  return (
+    <>
+      <IconButton
+        aria-label={t(labelSaveFilter)}
+        size="large"
+        title={t(labelSaveFilter)}
+        onClick={openSaveFilterMenu}
       >
-        {t(labelSaveAsNew)}
-      </MenuItem>
-      <MenuItem disabled={!canSaveFilter} onClick={updateFilter}>
-        <div className={classes.save}>
-          <span>{t(labelSave)}</span>
-          {sendingUpdateFilterRequest && <CircularProgress size={15} />}
-        </div>
-      </MenuItem>
-      <MenuItem disabled={isEmpty(customFilters)} onClick={openEditPanel}>
-        {t(labelEditFilters)}
-      </MenuItem>
-    </Menu>
-    {createFilterDialogOpen && (
-      <CreateFilterDialog
-        open
-        filter={currentFilter}
-        onCancel={closeCreateFilterDialog}
-        onCreate={confirmCreateFilter}
-      />
-    )}
-  </>;
+        <SettingsIcon />
+      </IconButton>
+      <Menu
+        keepMounted
+        anchorEl={menuAnchor}
+        open={Boolean(menuAnchor)}
+        onClose={closeSaveFilterMenu}
+      >
+        <MenuItem
+          disabled={!canSaveFilterAsNew}
+          onClick={openCreateFilterDialog}
+        >
+          {t(labelSaveAsNew)}
+        </MenuItem>
+        <MenuItem disabled={!canSaveFilter} onClick={updateFilter}>
+          <div className={classes.save}>
+            <span>{t(labelSave)}</span>
+            {sendingUpdateFilterRequest && <CircularProgress size={15} />}
+          </div>
+        </MenuItem>
+        <MenuItem disabled={isEmpty(customFilters)} onClick={openEditPanel}>
+          {t(labelEditFilters)}
+        </MenuItem>
+      </Menu>
+      {createFilterDialogOpen && (
+        <CreateFilterDialog
+          open
+          filter={currentFilter}
+          onCancel={closeCreateFilterDialog}
+          onCreate={confirmCreateFilter}
+        />
+      )}
+    </>
+  );
 };
 
 export default SaveFilterMenu;

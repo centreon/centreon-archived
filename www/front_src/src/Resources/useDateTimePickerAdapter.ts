@@ -1,111 +1,64 @@
 /* eslint-disable class-methods-use-this */
 import DayjsAdapter from '@date-io/dayjs';
 import dayjs from 'dayjs';
-import { includes } from 'ramda';
+import { equals } from 'ramda';
 import { useAtomValue } from 'jotai/utils';
-
-import { MuiPickersAdapter } from '@mui/lab';
 
 import { useLocaleDateTimeFormat } from '@centreon/ui';
 import { userAtom } from '@centreon/ui-context';
 
 interface UseDateTimePickerAdapterProps {
   Adapter;
+  getLocalAndConfiguredTimezoneOffset: () => number;
 }
-
-interface Props {
-  locale: string;
-  tz: string;
-}
-const meridians = ['AM', 'PM'];
 
 const useDateTimePickerAdapter = (): UseDateTimePickerAdapterProps => {
-  const { locale, timezone } = useAtomValue(userAtom);
-  const { format, toTime } = useLocaleDateTimeFormat();
-  class Adapter extends DayjsAdapter {
-    public static date(value): dayjs.Dayjs {
-      return dayjs(value).locale(locale).tz(timezone);
-    }
+  const { timezone } = useAtomValue(userAtom);
+  const { format } = useLocaleDateTimeFormat();
 
-    public static startOfMonth(date: dayjs.Dayjs): dayjs.Dayjs {
-      return dayjs(date.tz()).startOf('month');
-    }
+  const getLocalAndConfiguredTimezoneOffset = (): number => {
+    const localTimezone = new Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const now = new Date();
+
+    const localDate = dayjs.tz(now, localTimezone).format('H');
+    const dateWithConfiguredTimezone = dayjs.tz(now, timezone).format('H');
+
+    return Number(localDate) - Number(dateWithConfiguredTimezone);
+  };
+
+  class Adapter extends DayjsAdapter {
+    public formatByString = (value, formatKey: string): string => {
+      if (equals(formatKey, 'L hh:mm A')) {
+        return format({ date: value, formatString: formatKey });
+      }
+
+      return value.format(formatKey);
+    };
 
     public isEqual = (value, comparing): boolean => {
       if (value === null && comparing === null) {
         return true;
       }
 
-      return dayjs(value).isSame(dayjs(comparing), 'minute');
+      return equals(
+        format({ date: value, formatString: 'LT' }),
+        format({ date: comparing, formatString: 'LT' }),
+      );
+    };
+
+    public getHours = (date): number => {
+      return date.tz(timezone).get('hour');
+    };
+
+    public setHours = (date: dayjs.Dayjs, count: number): dayjs.Dayjs => {
+      return date.set('hour', count + getLocalAndConfiguredTimezoneOffset());
     };
   }
 
   return {
     Adapter,
+    getLocalAndConfiguredTimezoneOffset,
   };
 };
 
 export default useDateTimePickerAdapter;
-
-// /* eslint-disable class-methods-use-this */
-// import DayjsAdapter from '@date-io/dayjs';
-// import dayjs from 'dayjs';
-// import { includes } from 'ramda';
-
-// import { useUserContext } from '@centreon/ui-context';
-// import { useLocaleDateTimeFormat } from '@centreon/ui';
-
-// interface UseDateTimePickerAdapterProps {
-//   Adapter: typeof DayjsAdapter;
-//   isMeridianFormat: (date: Date) => boolean;
-// }
-
-// const meridians = ['AM', 'PM'];
-
-// const useDateTimePickerAdapter = (): UseDateTimePickerAdapterProps => {
-//   const { locale, timezone } = useUserContext();
-//   const { format, toTime } = useLocaleDateTimeFormat();
-
-//   class Adapter extends DayjsAdapter {
-//     public format(date, formatString): string {
-//       return format({ date, formatString });
-//     }
-
-//     public date(value): dayjs.Dayjs {
-//       return dayjs(value).locale(locale);
-//     }
-
-//     public startOfMonth(date: dayjs.Dayjs): dayjs.Dayjs {
-//       return dayjs(date.tz()).startOf('month');
-//     }
-
-//     public isEqual = (value, comparing): boolean => {
-//       if (value === null && comparing === null) {
-//         return true;
-//       }
-
-//       return dayjs(value).isSame(dayjs(comparing), 'minute');
-//     };
-
-//     public getHours(date): number {
-//       return date.locale(locale).tz(timezone).hour();
-//     }
-
-//     public setHours(date: dayjs.Dayjs, count: number): dayjs.Dayjs {
-//       return date.locale(locale).tz(timezone).set('hour', count);
-//     }
-//   }
-
-//   const isMeridianFormat = (date: Date): boolean => {
-//     const localizedTime = toTime(date);
-
-//     return meridians.some((meridian) => includes(meridian, localizedTime));
-//   };
-
-//   return {
-//     Adapter,
-//     isMeridianFormat,
-//   };
-// };
-
-// export default useDateTimePickerAdapter;

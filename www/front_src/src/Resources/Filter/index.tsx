@@ -26,8 +26,13 @@ import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { useAtom } from 'jotai';
 
 import CloseIcon from '@mui/icons-material/Close';
-import { CircularProgress, ClickAwayListener, MenuItem, Paper, Popper } from '@mui/material';
-
+import {
+  CircularProgress,
+  ClickAwayListener,
+  MenuItem,
+  Paper,
+  Popper,
+} from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 
 import {

@@ -1,16 +1,11 @@
 import * as React from 'react';
 
 import axios from 'axios';
-import {
-  RenderResult,
-  render,
-  waitFor,
-  fireEvent,
-  act,
-} from '@testing-library/react';
 import { omit, head, prop } from 'ramda';
 import { makeDnd, DND_DIRECTION_DOWN } from 'react-beautiful-dnd-test-utils';
 import { Provider } from 'jotai';
+
+import { RenderResult, render, waitFor, fireEvent, act } from '@centreon/ui';
 
 import Context, { ResourceContext } from '../../testUtils/Context';
 import useFilter from '../../testUtils/useFilter';
@@ -164,7 +159,7 @@ describe(EditFilterPanel, () => {
   });
 
   it('deletes a filter and sends a delete request when the corresponding delete button is clicked', async () => {
-    const { getAllByTitle, getByText } = renderEditFilterPanel();
+    const { getAllByLabelText, getByText } = renderEditFilterPanel();
 
     const [firstFilter] = retrievedCustomFilters.result;
 
@@ -178,9 +173,9 @@ describe(EditFilterPanel, () => {
     });
 
     fireEvent.click(
-      head(getAllByTitle(labelDelete))?.firstElementChild as HTMLElement,
+      head(getAllByLabelText(labelDelete))?.firstElementChild as HTMLElement,
     );
-    fireEvent.click(getByText(labelDelete).parentElement as HTMLElement);
+    fireEvent.click(getByText(labelDelete) as HTMLElement);
 
     await waitFor(() => {
       expect(filterState.customFilters.map(prop('id'))).not.toContain(
@@ -213,8 +208,8 @@ describe(EditFilterPanel, () => {
 
     await makeDnd({
       direction: DND_DIRECTION_DOWN,
-      getByText,
-      getDragEl: () => firstFilterDraggable,
+      // getByText,
+      getDragElement: () => firstFilterDraggable,
       positions: 1,
     });
 

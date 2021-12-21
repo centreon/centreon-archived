@@ -172,7 +172,12 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
         loading={sendingRequest}
         loadingIndicatorSize={24}
       >
-        <IconButton title={t(labelDelete)} onClick={askDelete} size="large">
+        <IconButton
+          aria-label={t(labelDelete)}
+          size="large"
+          title={t(labelDelete)}
+          onClick={askDelete}
+        >
           <DeleteIcon fontSize="small" />
         </IconButton>
       </ContentWithCircularLoading>
