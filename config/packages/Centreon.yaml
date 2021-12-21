@@ -31,7 +31,6 @@ services:
 
     Core\:
         resource: '../../src/Core/*'
-        exclude: '../../src/Core/Tests'
 
     Centreon\Infrastructure\DatabaseConnection:
         class: Centreon\Infrastructure\DatabaseConnection
