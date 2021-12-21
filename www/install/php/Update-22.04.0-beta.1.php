@@ -19,6 +19,7 @@
  *
  */
 
+
 include_once __DIR__ . "/../../class/centreonLog.class.php";
 $centreonLog = new CentreonLog();
 
@@ -30,7 +31,6 @@ $versionOfTheUpgrade = 'UPGRADE - 22.04.0-beta.1: ';
  */
 try {
     $errorMessage = 'Impossible to add "contact_js_effects" column to "contact" table';
-
     if (!$pearDB->isColumnExist('contact', 'contact_js_effects')) {
         $pearDB->query(
             "ALTER TABLE `contact`
@@ -41,6 +41,7 @@ try {
 
     $errorMessage  = 'Unable to delete logger entry in cb_tag';
     $statement = $pearDB->query("DELETE FROM cb_tag WHERE tagname = 'logger'");
+
 } catch (\Exception $e) {
     $centreonLog->insertLog(
         4,
