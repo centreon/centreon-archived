@@ -38,6 +38,13 @@ try {
             AFTER `contact_comment`"
         );
     }
+    
+    $errorMessage = 'Unable to update the description in cb_field';
+    $statement = $pearDB->query("
+        UPDATE cb_field
+        SET `description` = 'Time in seconds to wait between each connection attempt (Default value: 30s).'
+        WHERE `cb_field_id` = 31
+    ");
 
     $errorMessage = 'Unable to delete logger entry in cb_tag';
     $statement = $pearDB->query("DELETE FROM cb_tag WHERE tagname = 'logger'");
