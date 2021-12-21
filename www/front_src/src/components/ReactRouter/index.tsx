@@ -10,13 +10,14 @@ import { PageSkeleton, useMemoComponent } from '@centreon/ui';
 
 import internalPagesRoutes from '../../reactRoutes';
 import { dynamicImport } from '../../helpers/dynamicImport';
-import NotAllowedPage from '../../route-components/NotAllowedPage';
+import NotAllowedPage from '../../NotAllowedPage';
 import BreadcrumbTrail from '../../BreadcrumbTrail';
 import useNavigation from '../../Navigation/useNavigation';
 import { externalComponentsAtom } from '../../externalComponents/atoms';
 import ExternalComponents, {
   ExternalComponent,
 } from '../../externalComponents/models';
+import NotFoundPage from '../../NotFoundPage';
 
 const PageContainer = styled('div')(({ theme }) => ({
   background: theme.palette.background.default,
@@ -93,7 +94,7 @@ const ReactRouterContent = ({
           ))}
           {getExternalPageRoutes({ allowedPages, basename, pages })}
           {externalPagesFetched && (
-            <Route element={<NotAllowedPage />} path="*" />
+            <Route element={<NotFoundPage />} path="*" />
           )}
         </Routes>
       </React.Suspense>
