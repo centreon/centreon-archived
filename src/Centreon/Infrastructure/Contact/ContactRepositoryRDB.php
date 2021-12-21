@@ -71,9 +71,8 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
 
         if (($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
             $contact = $this->createContact($result);
-            $this->addActionRules($contact);
-            $this->addTopologyRules($contact);
         }
+
         return $contact;
     }
 
@@ -100,8 +99,6 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
         $contact = null;
         if (($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
             $contact = $this->createContact($result);
-            $this->addActionRules($contact);
-            $this->addTopologyRules($contact);
         }
 
         return $contact;
@@ -131,8 +128,6 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
         $contact = null;
         if (($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
             $contact = $this->createContact($result);
-            $this->addActionRules($contact);
-            $this->addTopologyRules($contact);
         }
 
         return $contact;
@@ -163,8 +158,6 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
         $contact = null;
         if ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
             $contact = $this->createContact($result);
-            $this->addActionRules($contact);
-            $this->addTopologyRules($contact);
         }
 
         return $contact;
@@ -369,7 +362,7 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
             }
         }
 
-        return (new Contact())
+        $contact = (new Contact())
             ->setId((int) $contact['contact_id'])
             ->setName($contact['contact_name'])
             ->setAlias($contact['contact_alias'])
@@ -387,6 +380,11 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
             ->setDefaultPage($page)
             ->setUseDeprecatedPages($contact['show_deprecated_pages'] === '1')
             ->setOneClickExportEnabled($contact['enable_one_click_export'] === '1');
+
+        $this->addActionRules($contact);
+        $this->addTopologyRules($contact);
+
+        return $contact;
     }
 
     /**

@@ -27,11 +27,12 @@ use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Routing\Matcher\RequestMatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\CacheWarmer\WarmableInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Override symfony router to generate base URI
  */
-class Router implements RouterInterface, RequestMatcherInterface, WarmableInterface
+class Router implements RouterInterface, RequestMatcherInterface, WarmableInterface, UrlGeneratorInterface
 {
     /**
      * @var RouterInterface
@@ -67,7 +68,7 @@ class Router implements RouterInterface, RequestMatcherInterface, WarmableInterf
     /**
      * @inheritDoc
      */
-    public function generate($name, $parameters = [], $referenceType = self::ABSOLUTE_PATH)
+    public function generate(string $name, array $parameters = [], int $referenceType = self::ABSOLUTE_PATH)
     {
         if (isset($_SERVER['REQUEST_URI']) && preg_match('/^(.+)\/api\/.+/', $_SERVER['REQUEST_URI'], $matches)) {
             $parameters['base_uri'] = trim($matches[1], '/') . '/';
@@ -77,7 +78,7 @@ class Router implements RouterInterface, RequestMatcherInterface, WarmableInterf
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function setContext(RequestContext $context)
     {
@@ -85,7 +86,7 @@ class Router implements RouterInterface, RequestMatcherInterface, WarmableInterf
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function getContext()
     {
@@ -93,7 +94,7 @@ class Router implements RouterInterface, RequestMatcherInterface, WarmableInterf
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function getRouteCollection()
     {
@@ -101,15 +102,15 @@ class Router implements RouterInterface, RequestMatcherInterface, WarmableInterf
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function match($pathinfo)
+    public function match(string $pathinfo)
     {
         return $this->router->match($pathinfo);
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function matchRequest(Request $request)
     {
@@ -119,7 +120,7 @@ class Router implements RouterInterface, RequestMatcherInterface, WarmableInterf
     /**
      * @inheritDoc
      */
-    public function warmUp($cacheDir)
+    public function warmUp(string $cacheDir)
     {
         return [];
     }
