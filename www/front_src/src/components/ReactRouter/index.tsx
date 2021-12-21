@@ -10,14 +10,15 @@ import { PageSkeleton, useMemoComponent } from '@centreon/ui';
 
 import internalPagesRoutes from '../../reactRoutes';
 import { dynamicImport } from '../../helpers/dynamicImport';
-import NotAllowedPage from '../../NotAllowedPage';
 import BreadcrumbTrail from '../../BreadcrumbTrail';
 import useNavigation from '../../Navigation/useNavigation';
 import { externalComponentsAtom } from '../../externalComponents/atoms';
 import ExternalComponents, {
   ExternalComponent,
 } from '../../externalComponents/models';
-import NotFoundPage from '../../NotFoundPage';
+
+const NotAllowedPage = React.lazy(() => import('../../NotFoundPage'));
+const NotFoundPage = React.lazy(() => import('../../NotFoundPage'));
 
 const PageContainer = styled('div')(({ theme }) => ({
   background: theme.palette.background.default,
