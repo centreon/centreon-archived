@@ -514,7 +514,7 @@ class CentreonAPI
         $DBRESULT->execute();
         if ($DBRESULT->rowCount()) {
             $row = $DBRESULT->fetchRow();
-            var_dump($row);
+
             if ($row['contact_admin'] == 0) {
                 print "You don't have permissions for CLAPI.\n";
                 exit(1);
