@@ -63,6 +63,11 @@ class Status
      */
     private $order;
 
+    /**
+     * @param string $name
+     * @param int $code
+     * @param int $type
+     */
     public function __construct(
         private string $name,
         private int $code,

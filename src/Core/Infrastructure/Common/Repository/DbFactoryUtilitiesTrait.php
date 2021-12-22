@@ -25,7 +25,7 @@ namespace Core\Infrastructure\Common\Repository;
 /**
  * This class is design to provide all common methods to handle db records.
  *
- * @package  Core\Infrastructure\Common\Repository
+ * @package Core\Infrastructure\Common\Repository
  */
 trait DbFactoryUtilitiesTrait
 {
@@ -35,7 +35,7 @@ trait DbFactoryUtilitiesTrait
      * @param int|null $timestamp
      * @return \DateTime|null
      */
-    private static function createDateTimeFromTimestamp(?int $timestamp): ?\DateTime
+    private function createDateTimeFromTimestamp(?int $timestamp): ?\DateTime
     {
         return ($timestamp !== null
             ? (new \DateTime())->setTimestamp($timestamp)
@@ -47,7 +47,7 @@ trait DbFactoryUtilitiesTrait
      * @param int|string|null $property
      * @return int|null
      */
-    private static function getIntOrNull($property): ?int
+    private function getIntOrNull($property): ?int
     {
         return ($property !== null) ? (int) $property : null;
     }
@@ -56,7 +56,7 @@ trait DbFactoryUtilitiesTrait
      * @param float|string|null $property
      * @return float|null
      */
-    private static function getFloatOrNull($property): ?float
+    private function getFloatOrNull($property): ?float
     {
         return ($property !== null) ? (float) $property : null;
     }

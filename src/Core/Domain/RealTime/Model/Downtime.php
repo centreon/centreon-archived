@@ -73,7 +73,7 @@ class Downtime
     /**
      * @var int|null
      */
-    private $internalId;
+    private $engineDowntimeId;
 
     /**
      * @var bool
@@ -116,6 +116,9 @@ class Downtime
     private $maxDate;
 
     /**
+     * @param int $id
+     * @param int $hostId
+     * @param int $serviceId
      * @throws \Exception
      */
     public function __construct(
@@ -333,18 +336,18 @@ class Downtime
     /**
      * @return int|null
      */
-    public function getInternalId(): ?int
+    public function getEngineDowntimeId(): ?int
     {
-        return $this->internalId;
+        return $this->engineDowntimeId;
     }
 
     /**
-     * @param int|null $internalId
+     * @param int|null $engineDowntimeId
      * @return self
      */
-    public function setInternalId(?int $internalId): self
+    public function setEngineDowntimeId(?int $engineDowntimeId): self
     {
-        $this->internalId = $internalId;
+        $this->engineDowntimeId = $engineDowntimeId;
         return $this;
     }
 

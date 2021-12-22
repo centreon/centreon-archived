@@ -31,27 +31,6 @@ use Core\Domain\RealTime\Model\Hostgroup;
 class FindHostResponse
 {
     /**
-     * @var int
-     */
-    public $id;
-
-    /**
-     * @var string
-     */
-    public $name;
-
-    /**
-     * @var string
-     */
-
-    public $address;
-
-    /**
-     * @var string
-     */
-    public $monitoringServerName;
-
-    /**
      * @var string|null
      */
     public $timezone;
@@ -194,6 +173,10 @@ class FindHostResponse
      * @param Acknowledgement|null $acknowledgement
      */
     public function __construct(
+        private int $id,
+        private string $name,
+        private string $address,
+        private string $monitoringServerName,
         Status $status,
         ?Icon $icon,
         array $hostgroups,
@@ -248,14 +231,15 @@ class FindHostResponse
     */
     private static function hostgroupsToArray(array $hostgroups): array
     {
-        $arrHostgroups = [];
-        foreach ($hostgroups as $hostgroup) {
-            $arrHostgroups[] = [
+        return array_reduce(
+            $hostgroups,
+            fn (Hostgroup $hostgroup) => [
                 'id' => $hostgroup->getId(),
                 'name' => $hostgroup->getName()
-            ];
-        }
-        return $arrHostgroups;
+            ]
+            ,
+            []
+        );
     }
 
     /**
@@ -297,9 +281,9 @@ class FindHostResponse
     */
     private static function downtimeToArray(array $downtimes): array
     {
-        $arrayDowntimes = [];
-        foreach ($downtimes as $downtime) {
-            $arrayDowntimes[] = [
+        return array_reduce(
+            $downtimes,
+            fn (Downtime $downtime) => [
                 'start_time' => $downtime->getStartTime(),
                 'end_time' => $downtime->getEndTime(),
                 'actual_start_time' => $downtime->getActualStartTime(),
@@ -313,12 +297,12 @@ class FindHostResponse
                 'comment' => $downtime->getComment(),
                 'deletion_time' => $downtime->getDeletionTime(),
                 'duration' => $downtime->getDuration(),
-                'internal_id' => $downtime->getInternalId(),
+                'internal_id' => $downtime->getEngineDowntimeId(),
                 'is_fixed' => $downtime->isFixed(),
                 'poller_id' => $downtime->getInstanceId(),
                 'is_started' => $downtime->isStarted()
-            ];
-        }
-        return $arrayDowntimes;
+            ],
+            []
+        );
     }
 }

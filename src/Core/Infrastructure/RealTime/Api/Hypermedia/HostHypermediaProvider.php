@@ -25,16 +25,23 @@ namespace Core\Infrastructure\RealTime\Api\Hypermedia;
 
 use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
-use Core\Application\RealTime\UseCase\FindHost\FindHostResponse;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Core\Application\RealTime\UseCase\FindHost\FindHostResponse;
+use Core\Infrastructure\RealTime\Api\Hypermedia\HypermediaProviderTrait;
 
-class HostHypermediaProvider extends AbstractHypermediaProvider implements HypermediaProviderInterface
+class HostHypermediaProvider implements HypermediaProviderInterface
 {
+    use HypermediaProviderTrait;
+
     public const URI_CONFIGURATION = '/main.php?p=60101&o=c&host_id={hostId}',
                  URI_EVENT_LOGS = '/main.php?p=20301&h={hostId}',
                  URI_REPORTING = '/main.php?p=307&host={hostId}',
                  ENDPOINT_HOST_TIMELINE = 'centreon_application_monitoring_gettimelinebyhost';
 
+    /**
+     * @param ContactInterface $contact
+     * @param UrlGeneratorInterface $router
+     */
     public function __construct(
         private ContactInterface $contact,
         protected UrlGeneratorInterface $router

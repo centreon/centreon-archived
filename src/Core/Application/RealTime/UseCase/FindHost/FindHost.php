@@ -99,7 +99,7 @@ class FindHost
             $host = $this->repository->findHostByIdAndAccessGroupIds($hostId, $accessGroupIds);
             if ($host === null) {
                 $this->debug(
-                    "[FindHost] Host not found",
+                    "Host not found",
                     [
                         'id' => $hostId,
                         'userId' => $this->contact->getId()
@@ -118,7 +118,7 @@ class FindHost
         /**
          * Offuscate the passwords in Host commandLine
          */
-        $host->setCommandLine($this->offuscatePasswordInHostCommandLine($host));
+        $host->setCommandLine($this->obfuscatePasswordInHostCommandLine($host));
 
         $presenter->present(
             $this->createResponse(
@@ -138,6 +138,10 @@ class FindHost
     private function createResponse(Host $host, array $downtimes, ?Acknowledgement $acknowledgement): FindHostResponse
     {
         $findHostResponse = new FindHostResponse(
+            $host->getId(),
+            $host->getName(),
+            $host->getAddress(),
+            $host->getMonitoringServerName(),
             $host->getStatus(),
             $host->getIcon(),
             $host->getHostgroups(),
@@ -169,8 +173,8 @@ class FindHost
         $findHostResponse->hasActiveChecks = $host->hasActiveChecks();
         $findHostResponse->lastTimeUp = $host->getLastTimeUp();
         $findHostResponse->severityLevel = $host->getSeverityLevel();
-        $findHostResponse->checkAttempts = $host->getCheckAttemps();
-        $findHostResponse->maxCheckAttempts = $host->getMaxCheckAttemps();
+        $findHostResponse->checkAttempts = $host->getCheckAttempts();
+        $findHostResponse->maxCheckAttempts = $host->getMaxCheckAttempts();
 
         return $findHostResponse;
     }
@@ -181,7 +185,7 @@ class FindHost
      * @param Host $host
      * @return string|null
      */
-    private function offuscatePasswordInHostCommandLine(Host $host): ?string
+    private function obfuscatePasswordInHostCommandLine(Host $host): ?string
     {
         $obfuscatedCommandLine = null;
 
@@ -203,7 +207,7 @@ class FindHost
                 $obfuscatedCommandLine = $legacyHost->getCheckCommand();
             } catch (\Throwable $ex) {
                 $this->debug(
-                    "[FindHost] Failed to hide password in host command line",
+                    "Failed to hide password in host command line",
                     [
                         'id' => $host->getId(),
                         'reason' => $ex->getMessage()

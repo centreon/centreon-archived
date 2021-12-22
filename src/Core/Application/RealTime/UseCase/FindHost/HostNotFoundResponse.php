@@ -31,11 +31,4 @@ class HostNotFoundResponse extends NotFoundResponse
     {
         parent::__construct('Host');
     }
-    /**
-     * @return string
-     */
-    public function getMessage(): string
-    {
-        return parent::getMessage();
-    }
 }

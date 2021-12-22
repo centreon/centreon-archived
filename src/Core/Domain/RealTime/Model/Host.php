@@ -49,19 +49,19 @@ class Host
     private $timezone;
 
     /**
-     * @var boolean|null
+     * @var boolean
      */
-    private $isInDowntime;
+    private $isInDowntime = false;
 
     /**
-     * @var boolean|null
+     * @var boolean
      */
-    private $isAcknowledged;
+    private $isAcknowledged = false;
 
     /**
-     * @var boolean|null
+     * @var boolean
      */
-    private $isFlapping;
+    private $isFlapping = false;
 
     /**
      * @var int|null
@@ -119,14 +119,14 @@ class Host
     private $lastCheck;
 
     /**
-     * @var bool|null
+     * @var bool
      */
-    private $activeChecks;
+    private $activeChecks = true;
 
     /**
-     * @var bool|null
+     * @var bool
      */
-    private $passiveChecks;
+    private $passiveChecks = false;
 
     /**
      * @var \DateTime|null
@@ -147,11 +147,6 @@ class Host
      * @var Icon|null
      */
     private $icon;
-
-    /**
-     * @var Status
-     */
-    private $status;
 
     /**
      * @var int|null
@@ -177,12 +172,12 @@ class Host
         private string $name,
         private string $address,
         private string $monitoringServerName,
-        Status $status
+        private Status $status
     ) {
         Assertion::maxLength($name, self::MAX_NAME_LENGTH, 'Host::name');
+        Assertion::notEmpty($name, 'Host::name');
         Assertion::maxLength($address, self::MAX_ADDRESS_LENGTH, 'Host::address');
-
-        $this->status = $status;
+        Assertion::notEmpty($address, 'Host::address');
     }
 
     /**
@@ -257,55 +252,55 @@ class Host
     }
 
     /**
-     * @return boolean|null
+     * @return boolean
      */
-    public function isFlapping(): ?bool
+    public function isFlapping(): bool
     {
         return $this->isFlapping;
     }
 
     /**
-     * @param boolean|null $isFlapping
+     * @param boolean $isFlapping
      * @return self
      */
-    public function setIsFlapping(?bool $isFlapping): self
+    public function setIsFlapping(bool $isFlapping): self
     {
         $this->isFlapping = $isFlapping;
         return $this;
     }
 
     /**
-     * @return boolean|null
+     * @return boolean
      */
-    public function isAcknowledged(): ?bool
+    public function isAcknowledged(): bool
     {
         return $this->isAcknowledged;
     }
 
     /**
-     * @param boolean|null $isAcknowledged
+     * @param boolean $isAcknowledged
      * @return self
      */
-    public function setIsAcknowledged(?bool $isAcknowledged): self
+    public function setIsAcknowledged(bool $isAcknowledged): self
     {
         $this->isAcknowledged = $isAcknowledged;
         return $this;
     }
 
     /**
-     * @param boolean|null $isInDowntime
+     * @param boolean $isInDowntime
      * @return self
      */
-    public function setIsInDowntime(?bool $isInDowntime): self
+    public function setIsInDowntime(bool $isInDowntime): self
     {
         $this->isInDowntime = $isInDowntime;
         return $this;
     }
 
     /**
-     * @return boolean|null
+     * @return boolean
      */
-    public function isInDowntime(): ?bool
+    public function isInDowntime(): bool
     {
         return $this->isInDowntime;
     }
@@ -509,37 +504,37 @@ class Host
     }
 
     /**
-     * @param boolean|null $activeChecks
+     * @param boolean $activeChecks
      * @return self
      */
-    public function setActiveChecks(?bool $activeChecks): self
+    public function setActiveChecks(bool $activeChecks): self
     {
         $this->activeChecks = $activeChecks;
         return $this;
     }
 
     /**
-     * @return boolean|null
+     * @return boolean
      */
-    public function hasActiveChecks(): ?bool
+    public function hasActiveChecks(): bool
     {
         return $this->activeChecks;
     }
 
     /**
-     * @param boolean|null $passiveChecks
+     * @param boolean $passiveChecks
      * @return self
      */
-    public function setPassiveChecks(?bool $passiveChecks): self
+    public function setPassiveChecks(bool $passiveChecks): self
     {
         $this->passiveChecks = $passiveChecks;
         return $this;
     }
 
     /**
-     * @return boolean|null
+     * @return boolean
      */
-    public function hasPassiveChecks(): ?bool
+    public function hasPassiveChecks(): bool
     {
         return $this->passiveChecks;
     }
@@ -580,6 +575,10 @@ class Host
         return $this->severityLevel;
     }
 
+    /**
+     * @param Hostgroup $hostgroup
+     * @return self
+     */
     public function addHostgroup(Hostgroup $hostgroup): self
     {
         $this->hostgroups[] = $hostgroup;
@@ -624,7 +623,7 @@ class Host
     /**
      * @return int|null
      */
-    public function getMaxCheckAttemps(): ?int
+    public function getMaxCheckAttempts(): ?int
     {
         return $this->maxCheckAttempts;
     }
@@ -643,7 +642,7 @@ class Host
      * @param int|null $checkAttempts
      * @return self
      */
-    public function setCheckAttemps(?int $checkAttempts): self
+    public function setCheckAttempts(?int $checkAttempts): self
     {
         $this->checkAttempts = $checkAttempts;
         return $this;
@@ -652,7 +651,7 @@ class Host
     /**
      * @return int|null
      */
-    public function getCheckAttemps(): ?int
+    public function getCheckAttempts(): ?int
     {
         return $this->checkAttempts;
     }

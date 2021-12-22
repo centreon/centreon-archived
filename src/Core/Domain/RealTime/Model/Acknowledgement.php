@@ -37,7 +37,7 @@ class Acknowledgement
     }
 
     /**
-     * @var int
+     * @var int|null
      */
     private $instanceId;
 
@@ -100,16 +100,6 @@ class Acknowledgement
     }
 
     /**
-     * @param int $id
-     * @return self
-     */
-    public function setId(int $id): self
-    {
-        $this->id = $id;
-        return $this;
-    }
-
-    /**
      * @return int|null
      */
     public function getInstanceId(): ?int
@@ -136,31 +126,11 @@ class Acknowledgement
     }
 
     /**
-     * @param int $hostId
-     * @return self
-     */
-    public function setHostId(int $hostId): self
-    {
-        $this->hostId = $hostId;
-        return $this;
-    }
-
-    /**
      * @return int
      */
     public function getServiceId(): int
     {
         return $this->serviceId;
-    }
-
-    /**
-     * @param int $serviceId
-     * @return self
-     */
-    public function setServiceId(int $serviceId): self
-    {
-        $this->serviceId = $serviceId;
-        return $this;
     }
 
     /**

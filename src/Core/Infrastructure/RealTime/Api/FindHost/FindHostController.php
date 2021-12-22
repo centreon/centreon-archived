@@ -30,11 +30,17 @@ use Core\Application\RealTime\UseCase\FindHost\FindHostPresenterInterface;
 
 class FindHostController extends AbstractController
 {
+    /**
+     * @param int $hostId
+     * @param FindHost $useCase
+     * @param FindHostPresenterInterface $presenter
+     * @return object
+     */
     public function __invoke(
         int $hostId,
         FindHost $useCase,
         FindHostPresenterInterface $presenter
-    ): Object {
+    ): object {
         /**
          * Deny access if user has no rights on the real time
          */

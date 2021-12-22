@@ -39,6 +39,7 @@ class FindHostPresenter implements FindHostPresenterInterface
 
     /**
      * @param HypermediaService $hypermediaService
+     * @param PresenterFormatterInterface $presenterFormatter
      */
     public function __construct(
         private HypermediaService $hypermediaService,

@@ -45,7 +45,6 @@ class JsonPresenter implements PresenterFormatterInterface
      */
     public function show(): JsonResponse
     {
-        dd($this->data);
         if (is_subclass_of($this->data, NotFoundResponse::class, false)) {
             return new JsonResponse(
                 [
@@ -54,7 +53,7 @@ class JsonPresenter implements PresenterFormatterInterface
                 ],
                 JsonResponse::HTTP_NOT_FOUND
             );
-        } elseif ($this->data instanceof ErrorResponse) {
+        } elseif (is_subclass_of($this->data, ErrorResponse::class, false)) {
             return new JsonResponse(
                 [
                     'code' => JsonResponse::HTTP_INTERNAL_SERVER_ERROR,

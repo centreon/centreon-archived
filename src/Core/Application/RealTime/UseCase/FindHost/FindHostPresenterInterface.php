@@ -32,9 +32,4 @@ interface FindHostPresenterInterface extends PresenterInterface
      * @return void
      */
     public function present(FindHostResponse $response): void;
-
-    /**
-     * @return Object
-     */
-    public function show(): Object;
 }

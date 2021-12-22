@@ -43,7 +43,7 @@ class DbDowntimeFactory
             ->setFixed((int) $data['fixed'] === 1)
             ->setStarted((int) $data['started'] === 1)
             ->setInstanceId(self::getIntOrNull($data['instance_id']))
-            ->setInternalId(self::getIntOrNull($data['internal_id']))
+            ->setEngineDowntimeId(self::getIntOrNull($data['internal_id']))
             ->setDuration(self::getIntOrNull($data['duration']))
             ->setDeletionTime(self::createDateTimeFromTimestamp((int) $data['deletion_time']))
             ->setEndTime(self::createDateTimeFromTimestamp((int) $data['end_time']))
