@@ -5,14 +5,15 @@ import { useAtomValue } from 'jotai/utils';
 
 import { ListingPage, useMemoComponent, WithPanel } from '@centreon/ui';
 
-import Filter from './Filter';
-import Listing from './Listing';
 import Details from './Details';
 import EditFiltersPanel from './Filter/Edit';
 import { selectedResourceIdAtom } from './Details/detailsAtoms';
 import useDetails from './Details/useDetails';
 import { editPanelOpenAtom } from './Filter/filterAtoms';
 import useFilter from './Filter/useFilter';
+
+const Filter = React.lazy(() => import('./Filter'));
+const Listing = React.lazy(() => import('./Listing'));
 
 const ResourcesPage = (): JSX.Element => {
   const selectedResourceId = useAtomValue(selectedResourceIdAtom);
