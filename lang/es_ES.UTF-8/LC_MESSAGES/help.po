@@ -213,8 +213,8 @@ msgid "Time in seconds to wait before launching failover."
 msgstr "Tiempo en segundos para esperar antes de habilitar la conmutación por error."
 
 #: centreon-web/help.php:50 centreon-web/www/include/configuration/configCentreonBroker/help.php:88
-msgid "Time in seconds to wait between each connection attempt."
-msgstr "Tiempo de espera en segundos entre cada intento de conexión."
+msgid "Time in seconds to wait between each connection attempt (Default value: 30s)."
+msgstr "Tiempo de espera en segundos entre cada intento de conexión (valor predeterminado: 30s)."
 
 #: centreon-web/help.php:51 centreon-web/www/include/configuration/configCentreonBroker/help.php:39
 msgid "Trusted CA's certificate."
