@@ -1,7 +1,8 @@
 import * as React from 'react';
 
 import { useTheme, makeStyles, alpha } from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
+
+import { LoadingSkeleton } from '@centreon/centreon-frontend/packages/centreon-ui/src';
 
 const useStyles = makeStyles((theme) => ({
   skeleton: {
@@ -19,10 +20,10 @@ const MenuLoader = ({ width = 15 }: Props): JSX.Element => {
   const classes = useStyles();
 
   return (
-    <Skeleton
-      animation="wave"
+    <LoadingSkeleton
       className={classes.skeleton}
-      height={theme.spacing(5)}
+      height={theme.spacing(5.5)}
+      variant="text"
       width={theme.spacing(width)}
     />
   );
