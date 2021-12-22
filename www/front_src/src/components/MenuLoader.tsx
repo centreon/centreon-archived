@@ -21,7 +21,6 @@ const MenuLoader = ({ width = 15 }: Props): JSX.Element => {
 
   return (
     <LoadingSkeleton
-      animation="wave"
       className={classes.skeleton}
       height={theme.spacing(5)}
       variant="text"

@@ -120,7 +120,7 @@ class UserMenuContent extends Component {
     const { data, toggled, copied } = this.state;
 
     if (!data) {
-      return <MenuLoader width={21} />;
+      return <MenuLoader width={20} />;
     }
 
     // check if edit profile page (My Account) is allowed

@@ -7,11 +7,10 @@ import { not } from 'ramda';
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
 import { makeStyles, Fab } from '@material-ui/core';
 
+import { LoadingSkeleton } from '@centreon/ui';
+
 import PageLoader from '../components/PageLoader';
 import createStore from '../store';
-import Header from '../Header';
-import Navigation from '../Navigation';
-import Footer from '../Footer';
 
 import useApp from './useApp';
 
@@ -53,6 +52,9 @@ const useStyles = makeStyles({
 });
 
 const MainRouter = React.lazy(() => import('../components/mainRouter'));
+const Header = React.lazy(() => import('../Header'));
+const Navigation = React.lazy(() => import('../Navigation'));
+const Footer = React.lazy(() => import('../Footer'));
 
 const App = (): JSX.Element => {
   const classes = useStyles();
@@ -74,9 +76,21 @@ const App = (): JSX.Element => {
     <ReduxProvider store={store}>
       <React.Suspense fallback={<PageLoader />}>
         <div className={classes.wrapper}>
-          {not(min) && <Navigation />}
+          {not(min) && (
+            <React.Suspense
+              fallback={<LoadingSkeleton height="100%" width={45} />}
+            >
+              <Navigation />
+            </React.Suspense>
+          )}
           <div className={classes.content} id="content">
-            {not(min) && <Header />}
+            {not(min) && (
+              <React.Suspense
+                fallback={<LoadingSkeleton height={56} width="100%" />}
+              >
+                <Header />
+              </React.Suspense>
+            )}
             <div className={classes.fullScreenWrapper} id="fullscreen-wrapper">
               <Fullscreen
                 enabled={isFullscreenEnabled}
@@ -87,7 +101,13 @@ const App = (): JSX.Element => {
                 </div>
               </Fullscreen>
             </div>
-            {!min && <Footer />}
+            {not(min) && (
+              <React.Suspense
+                fallback={<LoadingSkeleton height={30} width="100%" />}
+              >
+                <Footer />
+              </React.Suspense>
+            )}
           </div>
           <Fab
             className={classes.fullscreenButton}

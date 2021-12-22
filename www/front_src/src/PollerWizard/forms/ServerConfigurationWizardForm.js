@@ -11,14 +11,18 @@ import { Button, Typography } from '@material-ui/core';
 
 import styles from '../../styles/partials/form/_form.scss';
 import RadioGroupFields from '../../components/form-fields/RadioGroupFields';
+import {
+  labelAddACentreonPoller,
+  labelAddACentreonRemoteServer,
+} from '../translatedLabels';
 
 const configurationTypes = [
   {
-    label: 'Add a Centreon Remote Server',
+    label: labelAddACentreonRemoteServer,
     value: 1,
   },
   {
-    label: 'Add a Centreon Poller',
+    label: labelAddACentreonPoller,
     value: 2,
   },
 ];
