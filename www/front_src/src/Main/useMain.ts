@@ -4,7 +4,6 @@ import i18next, { Resource, ResourceLanguage } from 'i18next';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import {
   and,
-  equals,
   includes,
   isNil,
   mergeAll,
