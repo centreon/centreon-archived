@@ -209,7 +209,6 @@ describe(EditFilterPanel, () => {
 
     await makeDnd({
       direction: DND_DIRECTION_DOWN,
-      // getByText,
       getDragElement: () => firstFilterDraggable,
       positions: 1,
     });
