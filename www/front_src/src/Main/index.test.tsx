@@ -65,6 +65,28 @@ const retrievedTranslations = {
   },
 };
 
+jest.mock('../Header', () => {
+  const Footer = (): JSX.Element => {
+    return <></>;
+  };
+
+  return {
+    __esModule: true,
+    default: Footer,
+  };
+});
+
+jest.mock('../components/mainRouter', () => {
+  const MainRouter = (): JSX.Element => {
+    return <></>;
+  };
+
+  return {
+    __esModule: true,
+    default: MainRouter,
+  };
+});
+
 const renderMain = (): RenderResult =>
   render(
     <Provider>
@@ -97,6 +119,9 @@ const mockDefaultGetRequests = (): void => {
     })
     .mockResolvedValueOnce({
       data: retrievedActionsAcl,
+    })
+    .mockResolvedValueOnce({
+      data: null,
     });
 };
 
@@ -127,12 +152,28 @@ const mockInstallGetRequests = (): void => {
     .mockResolvedValueOnce({
       data: retrievedTranslations,
     })
-    .mockResolvedValueOnce({
-      data: retrievedUser,
+    .mockRejectedValueOnce({
+      response: { status: 403 },
     });
 };
 
-const mockUpgradeGetRequests = (): void => {
+const mockUpgradeAndUserDisconnectedGetRequests = (): void => {
+  mockedAxios.get
+    .mockResolvedValueOnce({
+      data: {
+        available_version: '21.10.1',
+        installed_version: '21.10.0',
+      },
+    })
+    .mockResolvedValueOnce({
+      data: retrievedTranslations,
+    })
+    .mockRejectedValueOnce({
+      response: { status: 403 },
+    });
+};
+
+const mockUpgradeAndUserConnectedGetRequests = (): void => {
   mockedAxios.get
     .mockResolvedValueOnce({
       data: {
@@ -145,6 +186,21 @@ const mockUpgradeGetRequests = (): void => {
     })
     .mockResolvedValueOnce({
       data: retrievedUser,
+    })
+    .mockResolvedValueOnce({
+      data: retrievedNavigation,
+    })
+    .mockResolvedValueOnce({
+      data: retrievedExternalComponents,
+    })
+    .mockResolvedValueOnce({
+      data: retrievedParameters,
+    })
+    .mockResolvedValueOnce({
+      data: retrievedActionsAcl,
+    })
+    .mockResolvedValueOnce({
+      data: null,
     });
 };
 
@@ -209,9 +265,9 @@ describe('Main', () => {
     });
   });
 
-  it('redirects the user to the upgrade page when the retrieved web versions contains an available version', async () => {
+  it('redirects the user to the upgrade page when the retrieved web versions contains an available version and the user is disconnected', async () => {
     window.history.pushState({}, '', '/');
-    mockUpgradeGetRequests();
+    mockUpgradeAndUserDisconnectedGetRequests();
 
     renderMain();
 
@@ -232,6 +288,33 @@ describe('Main', () => {
     await waitFor(() => {
       expect(decodeURI(window.location.href)).toBe(
         'http://localhost/install/upgrade.php',
+      );
+    });
+  });
+
+  it('does not the user to the upgrade page when the retrieved web versions contains an available version and the user is connected', async () => {
+    window.history.pushState({}, '', '/');
+    mockUpgradeAndUserConnectedGetRequests();
+
+    renderMain();
+
+    expect(screen.getByText(labelCentreonIsLoading)).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        webVersionsEndpoint,
+        cancelTokenRequestParam,
+      );
+    });
+
+    expect(mockedAxios.get).toHaveBeenCalledWith(
+      userEndpoint,
+      cancelTokenRequestParam,
+    );
+
+    await waitFor(() => {
+      expect(decodeURI(window.location.href)).toBe(
+        'http://localhost/monitoring/resources',
       );
     });
   });
