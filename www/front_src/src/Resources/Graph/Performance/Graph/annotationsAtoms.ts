@@ -19,7 +19,8 @@ import {
   T,
   __,
 } from 'ramda';
-import { alpha } from '@material-ui/core';
+
+import { alpha } from '@mui/material';
 
 import { TimelineEvent } from '../../../Details/tabs/Timeline/models';
 

@@ -154,63 +154,72 @@ const PollerMenu = (): JSX.Element => {
         toggleDetailedView();
       }}
     >
-      <SubmenuHeader active={toggled}>
-        <IconHeader
-          Icon={PollerIcon}
-          iconName={t(labelPoller)}
-          onClick={toggleDetailedView}
-        />
-        <PollerStatusIcon issues={issues} />
-        <IconToggleSubmenu
-          cursor="pointer"
-          iconType="arrow"
-          rotate={toggled}
-          onClick={toggleDetailedView}
-        />
-        <div
-          className={classnames(styles['submenu-toggle'], {
-            [styles['submenu-toggle-active'] as string]: toggled,
-          })}
-        >
-          {!isEmpty(issues) ? (
-            Object.entries(issues).map(([key, issue]) => {
-              return (
-                <div className={classes.pollerDetailRow} key={key}>
-                  <Typography
-                    className={clsx([classes.label, classes.pollerDetailTitle])}
-                    variant="body2"
-                  >
-                    <li>{t(pollerIssueKeyToMessage[key])}</li>
-                  </Typography>
-                  <Typography className={classes.label} variant="body2">
-                    {issue.total ? issue.total : ''}
-                  </Typography>
-                </div>
-              );
-            })
-          ) : (
-            <Typography
-              className={clsx(classes.label, classes.pollerDetailRow)}
-              variant="body2"
-            >
-              <li {...t(labelAllPollers)} />
-              {pollerCount}
-            </Typography>
-          )}
-          {allowPollerConfiguration && (
-            <Paper className={classes.confButton}>
-              <Button
-                size="small"
-                variant="contained"
-                onClick={redirectToPollerConfiguration}
-              >
-                {t(labelConfigurePollers)}
-              </Button>
-            </Paper>
-          )}
-          <ExportConfiguration setIsExportingConfiguration={newExporting} />
-        </div>
-      </SubmenuHeader>
+      <div>
+        <SubmenuHeader active={toggled}>
+          <IconHeader
+            Icon={PollerIcon}
+            iconName={t(labelPoller)}
+            onClick={toggleDetailedView}
+          />
+          <PollerStatusIcon issues={issues} />
+          <IconToggleSubmenu
+            cursor="pointer"
+            iconType="arrow"
+            rotate={toggled}
+            onClick={toggleDetailedView}
+          />
+          <div
+            className={classnames(styles['submenu-toggle'], {
+              [styles['submenu-toggle-active'] as string]: toggled,
+            })}
+          >
+            {!isEmpty(issues) ? (
+              Object.entries(issues).map(([key, issue]) => {
+                return (
+                  <div className={classes.pollerDetailRow} key={key}>
+                    <Typography
+                      className={clsx([
+                        classes.label,
+                        classes.pollerDetailTitle,
+                      ])}
+                      variant="body2"
+                    >
+                      <li>{t(pollerIssueKeyToMessage[key])}</li>
+                    </Typography>
+                    <Typography className={classes.label} variant="body2">
+                      {issue.total ? issue.total : ''}
+                    </Typography>
+                  </div>
+                );
+              })
+            ) : (
+              <div className={classes.pollerDetailRow}>
+                <Typography
+                  className={clsx(classes.label, classes.pollerDetailTitle)}
+                  variant="body2"
+                >
+                  {t(labelAllPollers)}
+                </Typography>
+                <Typography className={clsx(classes.label)} variant="body2">
+                  {pollerCount}
+                </Typography>
+              </div>
+            )}
+            {allowPollerConfiguration && (
+              <Paper className={classes.confButton}>
+                <Button
+                  size="small"
+                  variant="contained"
+                  onClick={redirectToPollerConfiguration}
+                >
+                  {t(labelConfigurePollers)}
+                </Button>
+              </Paper>
+            )}
+            <ExportConfiguration setIsExportingConfiguration={newExporting} />
+          </div>
+        </SubmenuHeader>
+      </div>
     </ClickAwayListener>
   );
 };
