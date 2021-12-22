@@ -84,8 +84,6 @@ const LoginPage = (): JSX.Element => {
       />
       <Paper className={classes.loginPaper}>
         <Formik<LoginFormValues>
-          validateOnBlur
-          validateOnMount
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={submitLoginForm}

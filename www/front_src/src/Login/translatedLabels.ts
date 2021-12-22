@@ -1,5 +1,4 @@
-export const labelAliasIsRequired = 'Alias is required';
-export const labelPasswordIsRequired = 'Password is required';
+export const labelRequired = 'Required';
 export const labelLoginFailed = 'Login failed';
 export const labelLoginSucceeded = 'Login succeeded';
 export const labelAlias = 'Alias';

@@ -7,7 +7,7 @@ import { BrowserRouter } from 'react-router-dom';
 import axios from 'axios';
 import userEvent from '@testing-library/user-event';
 
-import { withSnackbar } from '@centreon/centreon-frontend/packages/centreon-ui/src';
+import { withSnackbar } from '@centreon/ui';
 
 import { areUserParametersLoadedAtom } from '../Main/useUser';
 import { labelAlias } from '../Resources/translatedLabels';
@@ -15,13 +15,12 @@ import { webVersionsAtom } from '../webVersionsAtom';
 import { userEndpoint } from '../api/endpoint';
 
 import {
-  labelAliasIsRequired,
   labelCentreonLogo,
   labelLogin,
   labelLoginFailed,
   labelLoginSucceeded,
   labelPassword,
-  labelPasswordIsRequired,
+  labelRequired,
 } from './translatedLabels';
 import { loginEndpoint } from './api/endpoint';
 
@@ -178,7 +177,7 @@ describe('Login Page', () => {
       expect(screen.getByLabelText(labelLogin)).toBeDisabled();
     });
 
-    expect(screen.getByText(labelAliasIsRequired)).toBeInTheDocument();
-    expect(screen.getByText(labelPasswordIsRequired)).toBeInTheDocument();
+    expect(screen.getByText(labelRequired)).toBeInTheDocument();
+    expect(screen.getByText(labelRequired)).toBeInTheDocument();
   });
 });

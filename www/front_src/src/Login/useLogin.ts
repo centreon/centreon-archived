@@ -33,7 +33,7 @@ const useLogin = (): UseLoginState => {
     showErrorOnPermissionDenied: false,
   });
 
-  const { showSuccessMessage, showErrorMessage } = useSnackbar();
+  const { showSuccessMessage } = useSnackbar();
   const navigate = useNavigate();
   const loadUser = useUser(i18n.changeLanguage);
 
@@ -51,8 +51,7 @@ const useLogin = (): UseLoginState => {
         showSuccessMessage(t(labelLoginSucceeded));
         loadUser()?.then(() => navigate(replace('/centreon', '', redirectUri)));
       })
-      .catch(() => {
-        showErrorMessage(t(labelLoginFailed));
+      .finally(() => {
         setSubmitting(false);
       });
   };

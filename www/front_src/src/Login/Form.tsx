@@ -57,6 +57,7 @@ const LoginForm = (): JSX.Element => {
     <form className={classes.form} onSubmit={handleSubmit}>
       <TextField
         fullWidth
+        required
         ariaLabel={t(labelAlias)}
         error={aliasError}
         label={t(labelAlias)}
@@ -66,6 +67,7 @@ const LoginForm = (): JSX.Element => {
       />
       <TextField
         fullWidth
+        required
         ariaLabel={t(labelPassword)}
         error={passwordError}
         label={t(labelPassword)}
