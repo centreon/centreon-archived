@@ -37,7 +37,7 @@ dayjs.extend(isSameOrBefore);
 
 const LoginPage = React.lazy(() => import('../Login'));
 
-const AppPage = React.lazy(() => import('./AppPage'));
+const AppPage = React.lazy(() => import('./InitializationPage'));
 
 const Main = (): JSX.Element => {
   useMain();

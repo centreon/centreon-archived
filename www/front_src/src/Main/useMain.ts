@@ -8,7 +8,6 @@ import {
   isNil,
   mergeAll,
   not,
-  or,
   pipe,
   reduce,
   toPairs,
@@ -86,12 +85,12 @@ const useMain = (): void => {
       i18next?.changeLanguage(getBrowserLocale());
     }
 
-    const cannotRedirectToUserDefaultPage = or(
-      not(areUserParametersLoaded),
-      not(includes(location.pathname, [reactRoutes.login, '/'])),
+    const canRedirectToUserDefaultPage = and(
+      areUserParametersLoaded,
+      includes(location.pathname, [reactRoutes.login, '/']),
     );
 
-    if (cannotRedirectToUserDefaultPage) {
+    if (not(canRedirectToUserDefaultPage)) {
       return;
     }
 
