@@ -62,6 +62,7 @@ const useUser = (
           pathEq(['response', 'status'], 403)(error),
           pathEq(['response', 'status'], 401)(error),
         );
+
         if (isUserNotAllowed) {
           setAreUserParametersLoaded(false);
         }

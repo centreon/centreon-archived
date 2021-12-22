@@ -42,14 +42,15 @@ const AppPage = (): JSX.Element => {
     }
   }, [webVersions, areUserParametersLoaded]);
 
-  if (
+  const cannotDisplayApp =
     isNil(webVersions) ||
     isNil(user) ||
     isNil(areUserParametersLoaded) ||
     not(areUserParametersLoaded) ||
     isNil(webVersions.installedVersion) ||
-    not(isNil(webVersions.availableVersion))
-  ) {
+    not(isNil(webVersions.availableVersion));
+
+  if (cannotDisplayApp) {
     return <MainLoader />;
   }
 

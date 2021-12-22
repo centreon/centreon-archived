@@ -3,11 +3,13 @@ import * as React from 'react';
 import i18next, { Resource, ResourceLanguage } from 'i18next';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import {
+  and,
   equals,
   includes,
   isNil,
   mergeAll,
   not,
+  or,
   pipe,
   reduce,
   toPairs,
@@ -77,13 +79,20 @@ const useMain = (): void => {
   }, []);
 
   React.useEffect(() => {
-    if (isNil(areUserParametersLoaded) && i18next.isInitialized) {
+    const canChangeToBrowserLanguage = and(
+      isNil(areUserParametersLoaded),
+      i18next.isInitialized,
+    );
+    if (canChangeToBrowserLanguage) {
       i18next?.changeLanguage(getBrowserLocale());
     }
-    if (
-      not(areUserParametersLoaded) ||
-      not(includes(location.pathname, [reactRoutes.login, '/']))
-    ) {
+
+    const cannotRedirectToUserDefaultPage = or(
+      not(areUserParametersLoaded),
+      not(includes(location.pathname, [reactRoutes.login, '/'])),
+    );
+
+    if (cannotRedirectToUserDefaultPage) {
       return;
     }
 
