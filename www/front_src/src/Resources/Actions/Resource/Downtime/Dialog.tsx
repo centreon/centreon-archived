@@ -101,8 +101,8 @@ const DialogDowntime = ({
 
   const deniedTypeAlert = getDowntimeDeniedTypeAlert(resources);
 
-  const handleInputChange =
-    ({ field }: { field: string }) =>
+  const changeTime =
+    (field) =>
     (newValue: dayjs.Dayjs | null, keyBoardValue: string | undefined): void => {
       const value = isPickerOpened
         ? dayjs(newValue).toDate()
@@ -143,7 +143,7 @@ const DialogDowntime = ({
               maxDate={dayjs(maxEndDate)}
               renderInput={renderDateTimePickerTextField(t(labelStartTime))}
               value={values.startTime}
-              onChange={handleInputChange({ field: 'startTime' })}
+              onChange={changeTime('startTime')}
               onClose={(): void => setIsPickerOpened(false)}
               onOpen={(): void => setIsPickerOpened(true)}
             />
@@ -151,7 +151,7 @@ const DialogDowntime = ({
             <DateTimePicker<dayjs.Dayjs>
               renderInput={renderDateTimePickerTextField(t(labelEndTime))}
               value={values.endTime}
-              onChange={handleInputChange({ field: 'endTime' })}
+              onChange={changeTime('endTime')}
               onClose={(): void => setIsPickerOpened(false)}
               onOpen={(): void => setIsPickerOpened(true)}
             />
