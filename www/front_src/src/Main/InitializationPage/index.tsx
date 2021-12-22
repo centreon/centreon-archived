@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { isNil, not } from 'ramda';
+import { and, isNil, not } from 'ramda';
 import { useNavigate } from 'react-router-dom';
 import { useAtom } from 'jotai';
 import { useAtomValue } from 'jotai/utils';
@@ -15,12 +15,17 @@ import { areUserParametersLoadedAtom } from '../useUser';
 
 const App = React.lazy(() => import('../../App'));
 
-const AppPage = (): JSX.Element => {
+const InitializationPage = (): JSX.Element => {
   const navigate = useNavigate();
 
   const [areUserParametersLoaded] = useAtom(areUserParametersLoadedAtom);
   const user = useAtomValue(userAtom);
   const webVersions = useAtomValue(webVersionsAtom);
+
+  const navigateTo = (path: string): void => {
+    navigate(path);
+    window.location.reload();
+  };
 
   React.useEffect(() => {
     if (isNil(webVersions) || isNil(areUserParametersLoaded)) {
@@ -28,13 +33,20 @@ const AppPage = (): JSX.Element => {
     }
 
     if (isNil(webVersions.installedVersion)) {
-      navigate(reactRoutes.install);
+      navigateTo(reactRoutes.install);
 
       return;
     }
 
-    if (not(isNil(webVersions.availableVersion))) {
-      navigate(reactRoutes.upgrade);
+    const canUpgrade = and(
+      not(isNil(webVersions.availableVersion)),
+      not(areUserParametersLoaded),
+    );
+
+    if (canUpgrade) {
+      navigateTo(reactRoutes.upgrade);
+
+      return;
     }
 
     if (not(areUserParametersLoaded)) {
@@ -42,15 +54,10 @@ const AppPage = (): JSX.Element => {
     }
   }, [webVersions, areUserParametersLoaded]);
 
-  const cannotDisplayApp =
-    isNil(webVersions) ||
-    isNil(user) ||
-    isNil(areUserParametersLoaded) ||
-    not(areUserParametersLoaded) ||
-    isNil(webVersions.installedVersion) ||
-    not(isNil(webVersions.availableVersion));
+  const canDisplayApp =
+    not(isNil(webVersions)) && not(isNil(user)) && areUserParametersLoaded;
 
-  if (cannotDisplayApp) {
+  if (not(canDisplayApp)) {
     return <MainLoader />;
   }
 
@@ -61,4 +68,4 @@ const AppPage = (): JSX.Element => {
   );
 };
 
-export default AppPage;
+export default InitializationPage;
