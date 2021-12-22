@@ -46,8 +46,8 @@ const useApp = (): UseAppState => {
   const { showErrorMessage } = useSnackbar();
 
   const { sendRequest: keepAliveRequest } = useRequest({
+    httpCodesForBypassShowErrorMessage: [401],
     request: getData,
-    showErrorOnPermissionDenied: false,
   });
   const { sendRequest: getParameters } = useRequest<DefaultParameters>({
     request: getData,

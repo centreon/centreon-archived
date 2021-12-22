@@ -13,7 +13,7 @@ import useUser from '../Main/useUser';
 import postLogin from './api';
 import { redirectDecoder } from './api/decoder';
 import { LoginFormValues, Redirect } from './models';
-import { labelLoginFailed, labelLoginSucceeded } from './translatedLabels';
+import { labelLoginSucceeded } from './translatedLabels';
 
 interface UseLoginState {
   sending: boolean;
@@ -30,7 +30,6 @@ const useLogin = (): UseLoginState => {
   const { sendRequest, sending } = useRequest<Redirect>({
     decoder: redirectDecoder,
     request: postLogin,
-    showErrorOnPermissionDenied: false,
   });
 
   const { showSuccessMessage } = useSnackbar();
@@ -51,6 +50,7 @@ const useLogin = (): UseLoginState => {
         showSuccessMessage(t(labelLoginSucceeded));
         loadUser()?.then(() => navigate(replace('/centreon', '', redirectUri)));
       })
+      .catch(() => undefined)
       .finally(() => {
         setSubmitting(false);
       });
