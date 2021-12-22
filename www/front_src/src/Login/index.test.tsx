@@ -17,7 +17,6 @@ import { userEndpoint } from '../api/endpoint';
 import {
   labelCentreonLogo,
   labelLogin,
-  labelLoginFailed,
   labelLoginSucceeded,
   labelPassword,
   labelRequired,
@@ -70,6 +69,7 @@ const TestComponentWithSnackbar = withSnackbar({
 const renderLoginPage = (): RenderResult =>
   render(<TestComponentWithSnackbar />);
 
+const labelInvalidCredentials = 'Invalid credentials';
 describe('Login Page', () => {
   beforeEach(() => {
     mockDate.set(mockNow);
@@ -129,7 +129,10 @@ describe('Login Page', () => {
   it(`submits invalid credentials when fields are filled and the "${labelLogin}" is clicked`, async () => {
     mockedAxios.post.mockReset();
     mockedAxios.post.mockRejectedValueOnce({
-      response: { status: 401 },
+      response: {
+        data: { code: 401, message: labelInvalidCredentials },
+        status: 401,
+      },
     });
     renderLoginPage();
 
@@ -149,7 +152,7 @@ describe('Login Page', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText(labelLoginFailed)).toBeInTheDocument();
+      expect(screen.getByText(labelInvalidCredentials)).toBeInTheDocument();
     });
 
     expect(window.location.href).toBe('http://localhost/');
@@ -177,7 +180,6 @@ describe('Login Page', () => {
       expect(screen.getByLabelText(labelLogin)).toBeDisabled();
     });
 
-    expect(screen.getByText(labelRequired)).toBeInTheDocument();
-    expect(screen.getByText(labelRequired)).toBeInTheDocument();
+    expect(screen.getAllByText(labelRequired)).toHaveLength(2);
   });
 });
