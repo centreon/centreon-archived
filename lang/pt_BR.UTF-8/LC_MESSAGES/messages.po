@@ -15213,15 +15213,6 @@ msgstr ""
 # msgid "Centreon is loading..."
 # msgstr ""
 
-# msgid "Alias is required"
-# msgstr ""
-
-# msgid "Password is required"
-# msgstr ""
-
-# msgid "Login failed"
-# msgstr ""
-
 # msgid "Login succeeded"
 # msgstr ""
 
