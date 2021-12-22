@@ -25,8 +25,8 @@ before(() => {
     cy.visit(`${Cypress.config().baseUrl}`);
 
     cy.fixture('users/admin.json').then((userAdmin) => {
-      cy.get('input[placeholder="Login"]').type(userAdmin.login);
-      cy.get('input[placeholder="Password"]').type(userAdmin.password);
+      cy.get('input[aria-label="Alias"]').type(userAdmin.login);
+      cy.get('input[aria-label="Password"]').type(userAdmin.password);
     });
 
     cy.get('form').submit();
