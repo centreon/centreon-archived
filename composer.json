@@ -16,7 +16,7 @@
         "behat/mink-extension": "^2.3",
         "behat/mink-selenium2-driver": "^1.4",
         "centreon/centreon-test-lib": "dev-master",
-        "phpstan/phpstan": "^1.2",
+        "phpstan/phpstan": "^0.12.59",
         "phpstan/phpstan-beberlei-assert": "^0.12",
         "phpunit/phpunit": "^9.5",
         "sensiolabs/security-checker": "^6.0",
@@ -127,3 +127,4 @@
         "phpstan:ci": "@phpstan --error-format=absolute --no-interaction --no-progress"
     }
 }
+    
