@@ -39,7 +39,7 @@ const ResourceActionButton = ({
         title={title}
         onClick={onClick}
       >
-        {icon}
+        <div aria-label={label}>{icon}</div>
       </IconButton>
     );
   }

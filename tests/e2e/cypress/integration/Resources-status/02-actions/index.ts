@@ -25,8 +25,8 @@ When('I select the acknowledge action on a problematic Resource', () => {
     .find('input[type="checkbox"]:first')
     .click();
 
-  cy.get(`[title="${actions.acknowledge}"]`)
-    .children('button')
+  cy.get(`[aria-label="${actions.acknowledge}"]`)
+    .parent('button')
     .first()
     .should('be.enabled')
     .click();
@@ -49,8 +49,8 @@ When('I select the downtime action on a problematic Resource', () => {
     .find('input[type="checkbox"]:first')
     .click();
 
-  cy.get(`[title="${actions.setDowntime}"]`)
-    .children('button')
+  cy.get(`[aria-label="${actions.setDowntime}"]`)
+    .parent('button')
     .first()
     .should('be.enabled')
     .click();
