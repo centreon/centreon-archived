@@ -28,6 +28,7 @@ use Centreon\Domain\Log\LoggerTrait;
 use Centreon\Domain\Authentication\Exception\AuthenticationException;
 use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
 use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
+use Security\Domain\Authentication\Interfaces\SessionRepositoryInterface;
 
 class Logout
 {
@@ -43,12 +44,19 @@ class Logout
      */
     private $authenticationRepository;
 
+    /**
+     * @var SessionRepositoryInterface
+     */
+    private $sessionRepository;
+
     public function __construct(
         AuthenticationServiceInterface $authenticationService,
-        AuthenticationRepositoryInterface $authenticationRepository
+        AuthenticationRepositoryInterface $authenticationRepository,
+        SessionRepositoryInterface $sessionRepository
     ) {
         $this->authenticationService = $authenticationService;
         $this->authenticationRepository = $authenticationRepository;
+        $this->sessionRepository = $sessionRepository;
     }
 
     /**
@@ -62,6 +70,10 @@ class Logout
         $token = $request->getToken();
         $this->info('[LOGOUT] Deleting Session...');
         $this->authenticationService->deleteExpiredSecurityTokens();
-        $this->authenticationRepository->deleteSecurityToken($token);
+        if ($request->getTokenType() === 'PHPSESSID') {
+            $this->sessionRepository->deleteSession($token);
+        } else {
+            $this->authenticationRepository->deleteSecurityToken($token);
+        }
     }
 }

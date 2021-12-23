@@ -27,6 +27,7 @@ use Centreon\Domain\Authentication\UseCase\Logout;
 use Centreon\Domain\Authentication\UseCase\LogoutRequest;
 use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
 use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
+use Security\Domain\Authentication\Interfaces\SessionRepositoryInterface;
 
 /**
  * @package Tests\Centreon\Domain\Authentication\UseCase
@@ -47,16 +48,17 @@ class LogoutTest extends TestCase
     {
         $this->authenticationService = $this->createMock(AuthenticationServiceInterface::class);
         $this->authenticationRepository = $this->createMock(AuthenticationRepositoryInterface::class);
+        $this->sessionRepository = $this->createMock(SessionRepositoryInterface::class);
     }
 
     /**
-     * test execute
+     * test execute with Api Token
      */
-    public function testExecute(): void
+    public function testExecuteLogoutApiToken(): void
     {
-        $logout = new Logout($this->authenticationService, $this->authenticationRepository);
+        $logout = new Logout($this->authenticationService, $this->authenticationRepository, $this->sessionRepository);
 
-        $logoutRequest = new LogoutRequest('abc123');
+        $logoutRequest = new LogoutRequest(['X-AUTH-TOKEN' => 'abc123']);
 
         $this->authenticationService
             ->expects($this->once())
@@ -65,6 +67,27 @@ class LogoutTest extends TestCase
         $this->authenticationRepository
             ->expects($this->once())
             ->method('deleteSecurityToken')
+            ->with('abc123');
+
+        $logout->execute($logoutRequest);
+    }
+
+    /**
+     * test execute with Session ID.
+     */
+    public function testExecuteLogoutSessionToken(): void
+    {
+        $logout = new Logout($this->authenticationService, $this->authenticationRepository, $this->sessionRepository);
+
+        $logoutRequest = new LogoutRequest(['PHPSESSID' => 'abc123']);
+
+        $this->authenticationService
+            ->expects($this->once())
+            ->method('deleteExpiredSecurityTokens');
+
+        $this->sessionRepository
+            ->expects($this->once())
+            ->method('deleteSession')
             ->with('abc123');
 
         $logout->execute($logoutRequest);

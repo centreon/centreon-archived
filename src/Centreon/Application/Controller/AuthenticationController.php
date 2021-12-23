@@ -94,9 +94,13 @@ class AuthenticationController extends AbstractController
      */
     public function logout(Request $request, Logout $logout): View
     {
-        $token = $request->headers->get('X-AUTH-TOKEN');
+        if ($request->headers->get('X-AUTH-TOKEN') !== null) {
+            $token = ['X-AUTH-TOKEN' => $request->headers->get('X-AUTH-TOKEN')];
+        } elseif ($request->cookies->get('PHPSESSID') !== null) {
+            $token = ['PHPSESSID' => $request->cookies->get('PHPSESSID')];
+        }
 
-        if ($token === null) {
+        if (!isset($token)) {
             return $this->view([
                 "code" => Response::HTTP_UNAUTHORIZED,
                 "message" => _(self::INVALID_CREDENTIALS_MESSAGE)

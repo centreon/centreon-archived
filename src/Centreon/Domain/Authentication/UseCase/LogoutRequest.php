@@ -32,9 +32,22 @@ class LogoutRequest
      */
     private $token;
 
-    public function __construct(string $token)
+    /**
+     * Authentication Token Type
+     *
+     * @var string
+     */
+    private $tokenType;
+
+    /**
+     * @param array<string,string> $token
+     */
+    public function __construct(array $token)
     {
-        $this->token = $token;
+        foreach ($token as $tokenType => $token) {
+            $this->tokenType = $tokenType;
+            $this->token = $token;
+        }
     }
 
     /**
@@ -43,5 +56,13 @@ class LogoutRequest
     public function getToken(): string
     {
         return $this->token;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTokenType(): string
+    {
+        return $this->tokenType;
     }
 }
