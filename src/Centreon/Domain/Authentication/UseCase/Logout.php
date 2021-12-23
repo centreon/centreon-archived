@@ -49,6 +49,11 @@ class Logout
      */
     private $sessionRepository;
 
+    /**
+     * @param AuthenticationServiceInterface $authenticationService
+     * @param AuthenticationRepositoryInterface $authenticationRepository
+     * @param SessionRepositoryInterface $sessionRepository
+     */
     public function __construct(
         AuthenticationServiceInterface $authenticationService,
         AuthenticationRepositoryInterface $authenticationRepository,
