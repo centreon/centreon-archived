@@ -16,6 +16,7 @@ import { initReactI18next } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router';
 
 import { getData, useRequest } from '@centreon/ui';
+import { userAtom } from '@centreon/ui-context';
 
 import { webVersionsDecoder } from '../api/decoders';
 import { webVersionsEndpoint } from '../api/endpoint';
@@ -35,6 +36,7 @@ const useMain = (): void => {
     request: getData,
   });
 
+  const user = useAtomValue(userAtom);
   const areUserParametersLoaded = useAtomValue(areUserParametersLoadedAtom);
   const setWebVersions = useUpdateAtom(webVersionsAtom);
 
@@ -94,8 +96,8 @@ const useMain = (): void => {
       return;
     }
 
-    navigate('/monitoring/resources');
-  }, [location, areUserParametersLoaded]);
+    navigate(user.default_page);
+  }, [location, areUserParametersLoaded, user]);
 };
 
 export default useMain;

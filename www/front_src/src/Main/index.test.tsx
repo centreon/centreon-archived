@@ -32,6 +32,7 @@ jest.mock('@centreon/ui-context', () =>
 
 const retrievedUser = {
   alias: 'Admin alias',
+  default_page: '/monitoring/resources',
   is_export_button_enabled: true,
   locale: 'fr_FR.UTF8',
   name: 'Admin',

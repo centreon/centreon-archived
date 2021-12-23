@@ -7,6 +7,7 @@ import { WebVersions } from './models';
 export const userDecoder = JsonDecoder.object<User>(
   {
     alias: JsonDecoder.string,
+    default_page: JsonDecoder.string,
     isExportButtonEnabled: JsonDecoder.boolean,
     locale: JsonDecoder.string,
     name: JsonDecoder.string,

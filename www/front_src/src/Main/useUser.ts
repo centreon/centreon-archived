@@ -48,6 +48,7 @@ const useUser = (
 
         setUser({
           alias,
+          default_page: '/monitoring/resources',
           isExportButtonEnabled,
           locale: locale || 'en',
           name,
