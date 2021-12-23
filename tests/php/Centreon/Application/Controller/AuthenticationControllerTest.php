@@ -219,6 +219,13 @@ class AuthenticationControllerTest extends TestCase
             }
         };
 
+        $this->request->cookies = new class () {
+            public function get(): void
+            {
+                return;
+            }
+        };
+
         $view = $authenticationController->logout($this->request, $this->logout);
 
         $this->assertEquals(
