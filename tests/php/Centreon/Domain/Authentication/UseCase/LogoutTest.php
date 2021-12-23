@@ -44,6 +44,11 @@ class LogoutTest extends TestCase
      */
     private $authenticationRepository;
 
+    /**
+     * @var SessionRepositoryInterface|\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $sessionRepository;
+
     protected function setUp(): void
     {
         $this->authenticationService = $this->createMock(AuthenticationServiceInterface::class);
