@@ -60,12 +60,16 @@ class PlatformController extends AbstractController
     public function getVersions(): View
     {
         $webVersion = $this->informationService->getWebVersion();
+        $webUpgradeVersion = $this->informationService->getWebUpgradeVersion();
         $modulesVersion = $this->informationService->getModulesVersion();
         $widgetsVersion = $this->informationService->getWidgetsVersion();
 
+        $webVersion = $this->extractVersion($webVersion);
+        $webVersion['available_version'] = $webUpgradeVersion;
+
         return $this->view(
             [
-                'web' => $this->extractVersion($webVersion),
+                'web' => $webVersion,
                 'modules' => array_map(
                     function ($version) {
                         return $this->extractVersion($version);

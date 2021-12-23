@@ -190,6 +190,11 @@ services:
     Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationServiceInterface:
         class: Centreon\Domain\PlatformInformation\PlatformInformationService
 
+    Centreon\Domain\Platform\Interfaces\PlatformServiceInterface:
+        class: Centreon\Domain\Platform\PlatformService
+        arguments: ['%kernel.root_dir%']
+
+
     Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationRepositoryInterface:
         class: Centreon\Infrastructure\PlatformInformation\Repository\PlatformInformationRepositoryRDB
         calls:

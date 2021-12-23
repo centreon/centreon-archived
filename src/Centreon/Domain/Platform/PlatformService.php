@@ -39,10 +39,16 @@ class PlatformService implements PlatformServiceInterface
     private $platformRepository;
 
     /**
+     * @var string
+     */
+    private $projectDir;
+
+    /**
      * @param PlatformRepositoryInterface $informationRepository
      */
-    public function __construct(PlatformRepositoryInterface $informationRepository)
+    public function __construct(string $projectDir, PlatformRepositoryInterface $informationRepository)
     {
+        $this->projectDir = $projectDir;
         $this->platformRepository = $informationRepository;
     }
 
@@ -81,5 +87,53 @@ class PlatformService implements PlatformServiceInterface
         } catch (\Exception $ex) {
             throw new PlatformException('Error while searching for the widgets version of the Centreon platform');
         }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getWebUpgradeVersion(): ?string
+    {
+        $upgradeVersion = null;
+        if (is_dir($this->projectDir . '/../www/install')) {
+            $installDir = $this->projectDir . '/../www/install';
+            $upgradePhp = $this->getLastAvailableUpgrade($installDir . '/php');
+            $upgradeSql = $this->getLastAvailableUpgrade($installDir . '/sql/centreon');
+            $upgradeVersion = $this->getHigherUpgradeVersion($upgradePhp, $upgradeSql);
+        }
+
+        return $upgradeVersion;
+    }
+
+    private function getLastAvailableUpgrade(string $upgradeDir): string
+    {
+        $updateFiles = array_diff(scandir($upgradeDir), ['.', '..', 'index.php']);
+
+        return $this->extractVersionFromUpgradeFile(end($updateFiles));
+    }
+
+    /**
+     * Extract version number from a file name.
+     * @param string $upgradeFileName
+     * @return string
+     */
+    private function extractVersionFromUpgradeFile(string $upgradeFileName): string
+    {
+        $version = preg_replace('/^Update(-DB-|-)/', '', $upgradeFileName);
+        $version = preg_replace('/\.sql|\.php$/', '', $version);
+
+        return $version;
+    }
+
+    /**
+     * Return the higher version.
+     *
+     * @param string $upgradePhpVersion
+     * @param string $upgradeSqlVersion
+     * @return string
+     */
+    private function getHigherUpgradeVersion(string $upgradePhpVersion, string $upgradeSqlVersion): string
+    {
+        return $upgradePhpVersion > $upgradeSqlVersion ? $upgradePhpVersion : $upgradeSqlVersion;
     }
 }

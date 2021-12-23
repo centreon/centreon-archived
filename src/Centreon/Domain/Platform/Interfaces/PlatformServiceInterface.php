@@ -49,4 +49,11 @@ interface PlatformServiceInterface
      * @throws PlatformException
      */
     public function getWidgetsVersion(): array;
+
+    /**
+     * Retrieves the available upgrade version of the Centreon platform.
+     *
+     * @return string|null
+     */
+    public function getWebUpgradeVersion(): ?string;
 }
