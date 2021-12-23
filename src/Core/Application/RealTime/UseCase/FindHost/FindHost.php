@@ -149,10 +149,6 @@ class FindHost
             $acknowledgement
         );
 
-        $findHostResponse->id = $host->getId();
-        $findHostResponse->name = $host->getName();
-        $findHostResponse->address = $host->getAddress();
-        $findHostResponse->monitoringServerName = $host->getMonitoringServerName();
         $findHostResponse->timezone = $host->getTimezone();
         $findHostResponse->alias = $host->getAlias();
         $findHostResponse->isFlapping = $host->isFlapping();

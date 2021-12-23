@@ -20,21 +20,28 @@
  */
 declare(strict_types=1);
 
-namespace Core\Application\RealTime\UseCase\FindHost;
+namespace Core\Domain\RealTime\Model;
 
-use Core\Application\Common\UseCase\PresenterInterface;
-use Symfony\Component\HttpFoundation\Response;
-
-interface FindHostPresenterInterface extends PresenterInterface
+class HostStatus extends Status
 {
-    /**
-     * @param FindHostResponse $response
-     * @return void
-     */
-    public function present(FindHostResponse $response): void;
+    public const STATUS_NAME_UP = 'UP',
+                 STATUS_NAME_DOWN = 'DOWN',
+                 STATUS_NAME_UNREACHABLE = 'UNREACHABLE';
+
+    public const STATUS_CODE_UP = 0,
+                 STATUS_CODE_DOWN = 1,
+                 STATUS_CODE_UNREACHABLE = 2;
 
     /**
-     * @return Response
+     * @param string $name
+     * @param int $code
+     * @param int $type
      */
-    public function show(): Response;
+    public function __construct(
+        private string $name,
+        private int $code,
+        private int $type
+    ) {
+        parent::__construct($name, $code, $type);
+    }
 }

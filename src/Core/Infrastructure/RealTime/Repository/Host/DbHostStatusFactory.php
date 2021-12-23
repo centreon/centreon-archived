@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace Core\Infrastructure\RealTime\Repository\Host;
 
 use Core\Domain\RealTime\Model\Status;
+use Core\Domain\RealTime\Model\HostStatus;
 
 class DbHostStatusFactory
 {
@@ -35,34 +36,34 @@ class DbHostStatusFactory
         $statusType = (int) $data['state_type'];
 
         switch ((int) $data['status_code']) {
-            case Status::HOST_STATUS_CODE_UP:
-                return (new Status(
-                    Status::HOST_STATUS_NAME_UP,
-                    Status::HOST_STATUS_CODE_UP,
+            case HostStatus::STATUS_CODE_UP:
+                return (new HostStatus(
+                    HostStatus::STATUS_NAME_UP,
+                    HostStatus::STATUS_CODE_UP,
                     $statusType
                 ))
-                ->setOrder(Status::STATUS_ORDER_OK);
-            case Status::HOST_STATUS_CODE_DOWN:
-                return (new Status(
-                    Status::HOST_STATUS_NAME_DOWN,
-                    Status::HOST_STATUS_CODE_DOWN,
+                ->setOrder(HostStatus::STATUS_ORDER_OK);
+            case HostStatus::STATUS_CODE_DOWN:
+                return (new HostStatus(
+                    HostStatus::STATUS_NAME_DOWN,
+                    HostStatus::STATUS_CODE_DOWN,
                     $statusType
                 ))
-                ->setOrder(Status::STATUS_ORDER_HIGH);
-            case Status::HOST_STATUS_CODE_UNREACHABLE:
-                return (new Status(
-                    Status::HOST_STATUS_NAME_UNREACHABLE,
-                    Status::HOST_STATUS_CODE_UNREACHABLE,
+                ->setOrder(HostStatus::STATUS_ORDER_HIGH);
+            case HostStatus::STATUS_CODE_UNREACHABLE:
+                return (new HostStatus(
+                    HostStatus::STATUS_NAME_UNREACHABLE,
+                    HostStatus::STATUS_CODE_UNREACHABLE,
                     $statusType
                 ))
-                ->setOrder(Status::STATUS_ORDER_LOW);
-            case Status::STATUS_CODE_PENDING:
-                return (new Status(
-                    Status::STATUS_NAME_PENDING,
-                    Status::STATUS_CODE_PENDING,
+                ->setOrder(HostStatus::STATUS_ORDER_LOW);
+            case HostStatus::STATUS_CODE_PENDING:
+                return (new HostStatus(
+                    HostStatus::STATUS_NAME_PENDING,
+                    HostStatus::STATUS_CODE_PENDING,
                     $statusType
                 ))
-                ->setOrder(Status::STATUS_ORDER_PENDING);
+                ->setOrder(HostStatus::STATUS_ORDER_PENDING);
         }
     }
 }

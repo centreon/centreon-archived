@@ -163,6 +163,9 @@ class FindHostPresenter implements FindHostPresenterInterface
      */
     public function show(): Response
     {
+        if ($this->getResponseStatus() !== null) {
+            $this->presenterFormatter->present($this->getResponseStatus());
+        }
         return $this->presenterFormatter->show();
     }
 

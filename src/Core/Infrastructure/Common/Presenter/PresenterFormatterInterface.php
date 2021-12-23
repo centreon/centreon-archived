@@ -27,9 +27,9 @@ use Symfony\Component\HttpFoundation\Response;
 interface PresenterFormatterInterface
 {
     /**
-     * @param array<string, mixed> $data
+     * @param mixed $data
      */
-    public function present(array $data): void;
+    public function present(mixed $data): void;
 
     public function show(): Response;
 }
