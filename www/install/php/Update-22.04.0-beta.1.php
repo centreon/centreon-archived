@@ -38,7 +38,7 @@ try {
             AFTER `contact_comment`"
         );
     }
-    
+
     $errorMessage = 'Unable to update the description in cb_field';
     $statement = $pearDB->query("
         UPDATE cb_field
