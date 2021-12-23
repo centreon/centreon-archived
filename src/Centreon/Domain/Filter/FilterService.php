@@ -116,6 +116,7 @@ class FilterService extends AbstractCentreonService implements FilterServiceInte
             $filter->getPageName(),
             $filter->getName()
         );
+
         if ($foundFilter !== null && $filter->getId() !== $foundFilter->getId()) {
             throw new FilterException(_('Filter name already used'));
         }
