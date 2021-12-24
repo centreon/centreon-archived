@@ -33,6 +33,7 @@ class TimeperiodWebservice extends Webservice\WebServiceAbstract implements
     Webservice\WebserviceAutorizeRestApiInterface
 {
     use Webservice\DependenciesTrait;
+
     /**
      * {@inheritdoc}
      */

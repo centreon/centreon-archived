@@ -43,7 +43,7 @@ class TimeperiodRepository extends ServiceEntityRepository implements Pagination
     /**
      * Check list of IDs
      *
-     * @param array<int,int> $ids
+     * @param int[] $ids
      * @return bool
      */
     public function checkListOfIds(array $ids): bool

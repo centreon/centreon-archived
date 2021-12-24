@@ -97,18 +97,16 @@ class TimeperiodRepositoryTest extends TestCase
 
     /**
      * Test the method entityClass
-     * @return void
      */
-    public function testEntityClass()
+    public function testEntityClass(): void
     {
         $this->assertEquals(Timeperiod::class, TimeperiodRepository::entityClass());
     }
 
     /**
      * Test the method checkListOfIds
-     * @return void
      */
-    public function testCheckListOfIds()
+    public function testCheckListOfIds(): void
     {
         $this->checkListOfIdsTrait(
             TimeperiodRepository::class,
@@ -118,18 +116,16 @@ class TimeperiodRepositoryTest extends TestCase
 
     /**
      * Test the method getPaginationList
-     * @return void
      */
-    public function testGetPaginationList()
+    public function testGetPaginationList(): void
     {
         $this->getPaginationListTrait($this->datasets[0]['data'][0]);
     }
 
     /**
      * Test the method getPaginationList with different set of arguments
-     * @return void
      */
-    public function testGetPaginationListWithArguments()
+    public function testGetPaginationListWithArguments(): void
     {
         $this->getPaginationListTrait(
             $this->datasets[1]['data'][0],
@@ -148,9 +144,8 @@ class TimeperiodRepositoryTest extends TestCase
 
     /**
      * Test the method getPaginationListTotal
-     * @return void
      */
-    public function testGetPaginationListTotal()
+    public function testGetPaginationListTotal(): void
     {
         $this->getPaginationListTotalTrait(
             $this->datasets[2]['data'][0]['number']

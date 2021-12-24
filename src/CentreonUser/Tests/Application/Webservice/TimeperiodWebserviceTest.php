@@ -42,7 +42,7 @@ class TimeperiodWebserviceTest extends TestCase
     /**
      * Undocumented variable
      *
-     * @var \PHPUnit\Framework\MockObject\MockObject
+     * @var TimeperiodWebservice|\PHPUnit\Framework\MockObject\MockObject
      */
     private $webservice;
 
@@ -69,9 +69,8 @@ class TimeperiodWebserviceTest extends TestCase
 
     /**
      * Test the method getList
-     * @return void
      */
-    public function testGetList()
+    public function testGetList(): void
     {
         // without applied filters
         $this->mockQuery();
@@ -81,9 +80,8 @@ class TimeperiodWebserviceTest extends TestCase
     /**
      * Test the method getList with different filter
      *
-     * @return void
      */
-    public function testGetList2()
+    public function testGetList2(): void
     {
         // with search, searchByIds, limit, and offset
         $this->mockQuery([
@@ -98,9 +96,8 @@ class TimeperiodWebserviceTest extends TestCase
     /**
      * Test the method getName
      *
-     * @return void
      */
-    public function testGetName()
+    public function testGetName(): void
     {
         $this->assertEquals('centreon_timeperiod', TimeperiodWebservice::getName());
     }
