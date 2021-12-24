@@ -36,6 +36,7 @@ class ContactRepositoryTest extends TestCase
 
     /**
      * Test the method checkListOfIds
+     * @return void
      */
     public function testCheckListOfIds()
     {

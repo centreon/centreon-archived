@@ -37,9 +37,14 @@ class TimeperiodRepositoryTest extends TestCase
     use Traits\PaginationListTrait;
 
     /**
-     * @var array
+     * @var array<int, array<string, array<int, array<string, int|string>>|string>>
      */
     protected $datasets = [];
+
+    /**
+     * @var CentreonDB
+     */
+    private $db;
 
     /**
      * {@inheritdoc}
@@ -92,6 +97,7 @@ class TimeperiodRepositoryTest extends TestCase
 
     /**
      * Test the method entityClass
+     * @return void
      */
     public function testEntityClass()
     {
@@ -100,6 +106,7 @@ class TimeperiodRepositoryTest extends TestCase
 
     /**
      * Test the method checkListOfIds
+     * @return void
      */
     public function testCheckListOfIds()
     {
@@ -111,6 +118,7 @@ class TimeperiodRepositoryTest extends TestCase
 
     /**
      * Test the method getPaginationList
+     * @return void
      */
     public function testGetPaginationList()
     {
@@ -119,6 +127,7 @@ class TimeperiodRepositoryTest extends TestCase
 
     /**
      * Test the method getPaginationList with different set of arguments
+     * @return void
      */
     public function testGetPaginationListWithArguments()
     {
@@ -139,6 +148,7 @@ class TimeperiodRepositoryTest extends TestCase
 
     /**
      * Test the method getPaginationListTotal
+     * @return void
      */
     public function testGetPaginationListTotal()
     {

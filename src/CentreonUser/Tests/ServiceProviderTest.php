@@ -61,6 +61,7 @@ class ServiceProviderTest extends TestCase
     /**
      * Test the webservices registration
      * @covers \CentreonUser\ServiceProvider::register
+     * @return void
      */
     public function testWebservices()
     {
@@ -74,6 +75,7 @@ class ServiceProviderTest extends TestCase
     /**
      * Test the method order
      * @covers \CentreonUser\ServiceProvider::order
+     * @return void
      */
     public function testOrder()
     {

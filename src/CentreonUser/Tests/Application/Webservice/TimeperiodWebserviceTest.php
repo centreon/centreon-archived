@@ -40,6 +40,13 @@ class TimeperiodWebserviceTest extends TestCase
     protected const METHOD_GET_LIST = 'getList';
 
     /**
+     * Undocumented variable
+     *
+     * @var \PHPUnit\Framework\MockObject\MockObject
+     */
+    private $webservice;
+
+    /**
      * {@inheritdoc}
      */
     protected function setUp(): void
@@ -62,6 +69,7 @@ class TimeperiodWebserviceTest extends TestCase
 
     /**
      * Test the method getList
+     * @return void
      */
     public function testGetList()
     {
@@ -72,6 +80,8 @@ class TimeperiodWebserviceTest extends TestCase
 
     /**
      * Test the method getList with different filter
+     *
+     * @return void
      */
     public function testGetList2()
     {
@@ -87,6 +97,8 @@ class TimeperiodWebserviceTest extends TestCase
 
     /**
      * Test the method getName
+     *
+     * @return void
      */
     public function testGetName()
     {
