@@ -116,15 +116,18 @@ class CentreonStatsModules
      */
     public function getModulesStatistics()
     {
-        $data = array();
+        $data = [];
         $moduleObjects = $this->getModuleObjects(
             $this->getInstalledModules()
         );
-
         if (is_array($moduleObjects)) {
             foreach ($moduleObjects as $moduleObject) {
-                $oModuleObject = new $moduleObject();
-                $data[] = $oModuleObject->getStats();
+                try {
+                    $oModuleObject = new $moduleObject();
+                    $data[] = $oModuleObject->getStats();
+                } catch (\Throwable $e) {
+                    $this->logger->error($e->getMessage, ['context' => $e]);
+                }
             }
         }
         return $data;
