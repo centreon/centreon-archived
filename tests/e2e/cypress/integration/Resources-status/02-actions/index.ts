@@ -39,7 +39,9 @@ Then('The problematic Resource is displayed as acknowledged', () => {
   refreshListing(5000);
 
   cy.contains(serviceName)
-    .parents('div[role="cell"]:first')
+    .parent()
+    .parent()
+    .parent()
     .should('have.css', 'background-color', actionBackgroundColors.acknowledge);
 });
 
@@ -63,6 +65,8 @@ Then('The problematic Resource is displayed as in downtime', () => {
   refreshListing(5000);
 
   cy.contains(serviceNameDowntime)
-    .parents('div[role="cell"]:first')
+    .parent()
+    .parent()
+    .parent()
     .should('have.css', 'background-color', actionBackgroundColors.inDowntime);
 });
