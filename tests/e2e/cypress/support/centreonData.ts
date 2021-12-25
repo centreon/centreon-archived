@@ -41,27 +41,6 @@ const refreshListing = (timeout = 0): Cypress.Chainable => {
   return cy.get(refreshButton).click();
 };
 
-const fixtureResourcesShouldBeDisplayed = (): Cypress.Chainable => {
-  cy.readFile('cypress/fixtures/resources.txt').then((data) => {
-    const resourceLines = data.split('\n').filter((d) => d.includes('ADD'));
-
-    const resources = resourceLines.map((line: string) => {
-      const [name, description] = line
-        .split(';')
-        .filter((_, index: number) => index === 2 || index === 3);
-      return { description, name };
-    });
-    cy.wrap(resources).as('resources');
-  });
-
-  return cy.get<Array<Resource>>('@resources').then((resources) => {
-    return resources.forEach(({ name }) => {
-      cy.contains(name).should('exist');
-      cy.contains('CRITICAL');
-    });
-  });
-};
-
 const executeActionViaClapi = (
   bodyContent: ActionClapi,
   method?: string,
@@ -164,17 +143,16 @@ const updateFixturesResult = (): Cypress.Chainable => {
 
 const submitResultsViaClapi = (): Cypress.Chainable => {
   return updateFixturesResult().then((submitResults) => {
-    return cy
-      .request({
-        body: { results: submitResults },
-        headers: {
-          'Content-Type': 'application/json',
-          'centreon-auth-token': window.localStorage.getItem('userTokenApiV1'),
-        },
-        method: 'POST',
-        url: `${apiActionV1}?action=submit&object=centreon_submit_results`,
-      })
-      .then((resp) => expect([200, 204, 206]).to.include(resp.status));
+    return cy.request({
+      body: { results: submitResults },
+      headers: {
+        'Content-Type': 'application/json',
+        'centreon-auth-token': window.localStorage.getItem('userTokenApiV1'),
+      },
+      method: 'POST',
+      url: `${apiActionV1}?action=submit&object=centreon_submit_results`,
+    });
+    // .then((resp) => expect([200, 204, 206]).to.include(resp.status));
   });
 };
 
@@ -193,6 +171,10 @@ const initializeResourceData = (): Cypress.Chainable => {
     'resources/clapi/service2/02-set-max-check.json',
     'resources/clapi/service2/03-disable-active-check.json',
     'resources/clapi/service2/04-enable-passive-check.json',
+    'resources/clapi/service3/01-add.json',
+    'resources/clapi/service3/02-set-max-check.json',
+    'resources/clapi/service3/03-disable-active-check.json',
+    'resources/clapi/service3/04-enable-passive-check.json',
   ];
 
   return cy.wrap(Promise.all(files.map(insertFixture)));
@@ -223,6 +205,5 @@ export {
   initializeResourceData,
   removeResourceData,
   applyConfigurationViaClapi,
-  fixtureResourcesShouldBeDisplayed,
   refreshListing,
 };

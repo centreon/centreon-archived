@@ -11,34 +11,39 @@ import {
   checkThatFixtureServicesExistInDatabase,
 } from './database';
 
-before(() => {
-  setUserTokenApiV1();
-  setUserTokenApiV2();
+const login = (adminUser): Cypress.Chainable => {
+  cy.get('input[placeholder="Login"]').type(adminUser.login);
+  cy.get('input[placeholder="Password"]').type(adminUser.password);
 
-  initializeResourceData()
-    .then(() => applyConfigurationViaClapi())
-    .then(() => checkThatConfigurationIsExported())
-    .then(() => submitResultsViaClapi())
-    .then(() => checkThatFixtureServicesExistInDatabase());
-
-  cy.exec(`npx wait-on ${Cypress.config().baseUrl}`).then(() => {
-    cy.visit(`${Cypress.config().baseUrl}`);
-
-    cy.fixture('users/admin.json').then((userAdmin) => {
-      cy.get('input[placeholder="Login"]').type(userAdmin.login);
-      cy.get('input[placeholder="Password"]').type(userAdmin.password);
-    });
-
-    cy.get('form').submit();
-  });
+  cy.get('form').submit();
 
   Cypress.Cookies.defaults({
     preserve: 'PHPSESSID',
   });
+
+  return cy.wrap({});
+};
+
+before(() => {
+  return cy
+    .exec(`npx wait-on ${Cypress.config().baseUrl}`)
+    .then(setUserTokenApiV1)
+    .then(setUserTokenApiV2)
+    .then(initializeResourceData)
+    .then(applyConfigurationViaClapi)
+    .then(checkThatConfigurationIsExported)
+    .then(submitResultsViaClapi)
+    .then(checkThatFixtureServicesExistInDatabase)
+    .then(() => cy.visit(`${Cypress.config().baseUrl}`))
+    .then(() => cy.fixture('users/admin.json'))
+    .then(login);
 });
 
 after(() => {
-  setUserTokenApiV1().then(() => {
-    removeResourceData().then(() => applyConfigurationViaClapi());
-  });
+  return setUserTokenApiV1()
+    .then(removeResourceData)
+    .then(applyConfigurationViaClapi)
+    .then(() =>
+      cy.visit(`${Cypress.config().baseUrl}/centreon/index.php?disconnect=1`),
+    );
 });

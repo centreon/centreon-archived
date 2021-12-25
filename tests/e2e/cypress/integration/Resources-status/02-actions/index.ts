@@ -2,13 +2,14 @@ import { When, Then, Before } from 'cypress-cucumber-preprocessor/steps';
 
 import {
   stateFilterContainer,
-  serviceName,
-  serviceNameDowntime,
   resourceMonitoringApi,
   actionBackgroundColors,
   actions,
 } from '../common';
 import { refreshListing } from '../../../support/centreonData';
+
+const serviceName = 'service_test';
+const serviceInDowntimeName = 'service_test_dt';
 
 Before(() => {
   cy.get(stateFilterContainer).click().get('[data-value="all"]').click();
@@ -35,16 +36,18 @@ When('I select the acknowledge action on a problematic Resource', () => {
   cy.get('button').contains('Acknowledge').click();
 });
 
-Then('The problematic Resource is displayed as acknowledged', () => {
+Then('the problematic Resource is displayed as acknowledged', () => {
   refreshListing(5000);
 
   cy.contains(serviceName)
-    .parents('div[role="cell"]:first')
+    .parent()
+    .parent()
+    .parent()
     .should('have.css', 'background-color', actionBackgroundColors.acknowledge);
 });
 
 When('I select the downtime action on a problematic Resource', () => {
-  cy.contains(serviceNameDowntime)
+  cy.contains(serviceInDowntimeName)
     .parents('div[role="row"]:first')
     .find('input[type="checkbox"]:first')
     .click();
@@ -59,10 +62,12 @@ When('I select the downtime action on a problematic Resource', () => {
   cy.get('button').contains(`${actions.setDowntime}`).click();
 });
 
-Then('The problematic Resource is displayed as in downtime', () => {
+Then('the problematic Resource is displayed as in downtime', () => {
   refreshListing(5000);
 
-  cy.contains(serviceNameDowntime)
-    .parents('div[role="cell"]:first')
+  cy.contains(serviceInDowntimeName)
+    .parent()
+    .parent()
+    .parent()
     .should('have.css', 'background-color', actionBackgroundColors.inDowntime);
 });
