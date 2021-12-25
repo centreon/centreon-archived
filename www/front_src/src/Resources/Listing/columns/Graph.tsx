@@ -75,6 +75,20 @@ const Graph = ({
   );
 };
 
+const renderChip =
+  ({ onClick, label }) =>
+  (): JSX.Element =>
+    (
+      <IconButton
+        ariaLabel={label}
+        size="large"
+        title={label}
+        onClick={onClick}
+      >
+        <IconGraph fontSize="small" />
+      </IconButton>
+    );
+
 const GraphColumn = ({
   onClick,
 }: {
@@ -104,17 +118,7 @@ const GraphColumn = ({
     return (
       <IconColumn>
         <HoverChip
-          // eslint-disable-next-line react/no-unstable-nested-components
-          Chip={(): JSX.Element => (
-            <IconButton
-              ariaLabel={label}
-              size="large"
-              title={label}
-              onClick={(): void => onClick(row)}
-            >
-              <IconGraph fontSize="small" />
-            </IconButton>
-          )}
+          Chip={renderChip({ label, onClick: () => onClick(row) })}
           isHovered={isHovered}
           label={label}
         >

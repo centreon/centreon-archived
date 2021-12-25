@@ -51,13 +51,15 @@ interface Props {
   values;
 }
 
+const renderDateTimePickerEndAdornment = (InputProps) => (): JSX.Element =>
+  <div>{InputProps?.endAdornment}</div>;
+
 const renderDateTimePickerTextField =
   (ariaLabel: string) =>
   ({ inputRef, inputProps, InputProps }: TextFieldProps): JSX.Element => {
     return (
       <TextField
-        // eslint-disable-next-line react/no-unstable-nested-components
-        EndAdornment={(): JSX.Element => <div>{InputProps?.endAdornment}</div>}
+        EndAdornment={renderDateTimePickerEndAdornment(InputProps)}
         inputProps={{
           ...inputProps,
           'aria-label': ariaLabel,

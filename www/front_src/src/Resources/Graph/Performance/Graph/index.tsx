@@ -560,16 +560,25 @@ const GraphContent = ({
             />
           </Group.Group>
           <TimeShiftContext.Provider
-            // eslint-disable-next-line react/jsx-no-constructed-context-values
-            value={{
-              canAdjustTimePeriod,
-              graphHeight,
-              graphWidth,
-              loading,
-              marginLeft: margin.left,
-              marginTop: margin.top,
-              shiftTime,
-            }}
+            value={React.useMemo(
+              () => ({
+                canAdjustTimePeriod,
+                graphHeight,
+                graphWidth,
+                loading,
+                marginLeft: margin.left,
+                marginTop: margin.top,
+                shiftTime,
+              }),
+              [
+                canAdjustTimePeriod,
+                graphHeight,
+                graphWidth,
+                loading,
+                margin,
+                shiftTime,
+              ],
+            )}
           >
             <TimeShiftZones />
           </TimeShiftContext.Provider>

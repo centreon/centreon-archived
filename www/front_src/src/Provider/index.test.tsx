@@ -69,8 +69,7 @@ const retrievedTranslations = {
 
 jest.mock('../App', () => {
   const ComponentWithUserContext = (): JSX.Element => {
-    // eslint-disable-next-line react/jsx-no-useless-fragment
-    return <></>;
+    return <div />;
   };
 
   return {
