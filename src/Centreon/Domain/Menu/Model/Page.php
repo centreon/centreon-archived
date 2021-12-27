@@ -117,7 +117,7 @@ class Page
      */
     public function getRedirectionUri(): string
     {
-        if ($this->isReact === true) {
+        if ($this->isReact) {
             return $this->url;
         }
 

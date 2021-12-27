@@ -94,7 +94,7 @@ class UserController extends AbstractController
             'is_admin' => $user->isAdmin(),
             'use_deprecated_pages' => $user->isUsingDeprecatedPages(),
             'is_export_button_enabled' => $user->isOneClickExportEnabled(),
-            'default_page' => $user->getDefaultPage() !== null ? $user->getDefaultPage()->getRedirectionUri() : null
+            'default_page' => $user->getDefaultPage()?->getRedirectionUri()
         ]);
     }
 
