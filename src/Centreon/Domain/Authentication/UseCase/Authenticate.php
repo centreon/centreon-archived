@@ -342,14 +342,14 @@ class Authenticate
         $refererRedirectionPage = $this->getRedirectionPageFromReferer($request);
         if ($refererRedirectionPage !== null) {
             $response->setRedirectionUri(
-                $request->getCentreonBaseUri() . $this->buildDefaultRedirectionUri($refererRedirectionPage)
+                $this->buildDefaultRedirectionUri($refererRedirectionPage)
             );
         } elseif ($providerUser->getDefaultPage() !== null && $providerUser->getDefaultPage()->getUrl() !== null) {
             $response->setRedirectionUri(
-                $request->getCentreonBaseUri() . $this->buildDefaultRedirectionUri($providerUser->getDefaultPage())
+                $this->buildDefaultRedirectionUri($providerUser->getDefaultPage())
             );
         } else {
-            $response->setRedirectionUri($request->getCentreonBaseUri() . $this->redirectDefaultPage);
+            $response->setRedirectionUri($this->redirectDefaultPage);
         }
     }
 
