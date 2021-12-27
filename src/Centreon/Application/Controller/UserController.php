@@ -93,7 +93,8 @@ class UserController extends AbstractController
             'locale' => $user->getLocale(),
             'is_admin' => $user->isAdmin(),
             'use_deprecated_pages' => $user->isUsingDeprecatedPages(),
-            'is_export_button_enabled' => $user->isOneClickExportEnabled()
+            'is_export_button_enabled' => $user->isOneClickExportEnabled(),
+            'default_page' => $user->getDefaultPage() !== null ? $user->getDefaultPage()->getRedirectionUri() : null
         ]);
     }
 

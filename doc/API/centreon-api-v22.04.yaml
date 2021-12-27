@@ -748,10 +748,15 @@ paths:
                     type: boolean
                     description: If the current user is an administrator
                     example: true
-                  useDeprecatedPages:
+                  use_deprecated_pages:
                     type: boolean
                     description: Indicates if user wants to use deprecated monitoring pages
                     example: false
+                  default_page:
+                    type: string
+                    nullable: true
+                    description: Default page for the current user
+                    example: '/main.php?p=60901'
         '403':
           $ref: '#/components/responses/Forbidden'
         '500':

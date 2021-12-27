@@ -25,6 +25,8 @@ namespace Centreon\Domain\Menu\Model;
 
 class Page
 {
+    public const LEGACY_PAGE_BASE_URI = '/main.php?p=';
+
     /**
      * @var int
      */
@@ -106,5 +108,24 @@ class Page
     public function isReact(): bool
     {
         return $this->isReact;
+    }
+
+    /**
+     * Return the redirection uri of the page.
+     *
+     * @return string
+     */
+    public function getRedirectionUri(): string
+    {
+        if ($this->isReact === true) {
+            return $this->url;
+        }
+
+        $redirectionUri = self::LEGACY_PAGE_BASE_URI . (string) $this->pageNumber;
+        if ($this->urlOptions !== null) {
+            $redirectionUri .= $this->urlOptions;
+        }
+
+        return $redirectionUri;
     }
 }
