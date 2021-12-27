@@ -121,7 +121,7 @@ class Page
             return $this->url;
         }
 
-        $redirectionUri = self::LEGACY_PAGE_BASE_URI . (string) $this->pageNumber;
+        $redirectionUri = self::LEGACY_PAGE_BASE_URI . $this->pageNumber;
         if ($this->urlOptions !== null) {
             $redirectionUri .= $this->urlOptions;
         }
