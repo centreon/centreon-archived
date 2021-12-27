@@ -101,7 +101,7 @@ class ExportManifestTest extends TestCase
     /**
      * @covers \CentreonRemote\Infrastructure\Export\ExportManifest::get
      */
-    public function testGet()
+    public function testGet(): void
     {
         $this->assertNull($this->manifest->get('missing-data'));
     }
@@ -109,7 +109,7 @@ class ExportManifestTest extends TestCase
     /**
      * @covers \CentreonRemote\Infrastructure\Export\ExportManifest::dump
      */
-    public function testDump()
+    public function testDump(): void
     {
         $date = date('l jS \of F Y h:i:s A');
         $this->manifest->dump([

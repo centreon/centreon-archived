@@ -25,6 +25,7 @@ class LinkedPollerConfigurationService
     /** @var \CentreonDB */
     private $db;
 
+    /** @var bool */
     protected $onePeerRetention = false;
 
     /**
@@ -57,7 +58,7 @@ class LinkedPollerConfigurationService
      *
      * @param CfgCentreonBrokerInterface $cfgCentreonBroker the centreon broker configuration repository
      */
-    public function setBrokerRepository(CfgCentreonBrokerInterface $cfgCentreonBroker)
+    public function setBrokerRepository(CfgCentreonBrokerInterface $cfgCentreonBroker): void
     {
         $this->brokerRepository = $cfgCentreonBroker;
     }
@@ -67,7 +68,7 @@ class LinkedPollerConfigurationService
      *
      * @param BrokerConfigurationService $brokerConfigurationService the service to manage broker confiration
      */
-    public function setBrokerConfigurationService(BrokerConfigurationService $brokerConfigurationService)
+    public function setBrokerConfigurationService(BrokerConfigurationService $brokerConfigurationService): void
     {
         $this->brokerConfigurationService = $brokerConfigurationService;
     }
@@ -77,7 +78,7 @@ class LinkedPollerConfigurationService
      *
      * @param PollerInteractionService $pollerInteractionService the poller interaction service
      */
-    public function setPollerInteractionService(pollerInteractionService $pollerInteractionService)
+    public function setPollerInteractionService(pollerInteractionService $pollerInteractionService): void
     {
         $this->pollerInteractionService = $pollerInteractionService;
     }
@@ -87,7 +88,7 @@ class LinkedPollerConfigurationService
      *
      * @param TaskService $taskService the task service
      */
-    public function setTaskService(TaskService $taskService)
+    public function setTaskService(TaskService $taskService): void
     {
         $this->taskService = $taskService;
     }
@@ -108,7 +109,7 @@ class LinkedPollerConfigurationService
      * @param PollerServer[] $pollers
      * @param PollerServer   $remote
      */
-    public function linkPollersToParentPoller(array $pollers, PollerServer $remote)
+    public function linkPollersToParentPoller(array $pollers, PollerServer $remote): void
     {
         $pollerIds = array_map(function ($poller) {
             return $poller->getId();
@@ -138,7 +139,7 @@ class LinkedPollerConfigurationService
      * @param PollerServer   $poller
      * @param PollerServer[] $remotes
      */
-    public function linkPollerToAdditionalRemoteServers(PollerServer $poller, array $remotes)
+    public function linkPollerToAdditionalRemoteServers(PollerServer $poller, array $remotes): void
     {
         foreach ($remotes as $remote) {
             // If one peer retention is enabled, add input on remote server to get data from poller
@@ -157,8 +158,8 @@ class LinkedPollerConfigurationService
     /**
      * Add broker input configuration on remote server to get data from poller
      *
-     * @param int $pollerId
-     * @param PollerServer $remote
+     * @param int $remoteId
+     * @param PollerServer $poller
      */
     private function setBrokerInputOfRemoteServer($remoteId, PollerServer $poller): void
     {
@@ -173,10 +174,10 @@ class LinkedPollerConfigurationService
     /**
      * Add relation between poller and Remote Servers
      *
-     * @param int            $pollerId
-     * @param PollerServer[] $remote
+     * @param PollerServer   $poller
+     * @param PollerServer[] $remotes
      */
-    private function insertAddtitionnalRemoteServersRelations(PollerServer $poller, array $remotes)
+    private function insertAddtitionnalRemoteServersRelations(PollerServer $poller, array $remotes): void
     {
         $query = 'INSERT INTO `rs_poller_relation` VALUES (:remoteId, :pollerId)';
         $this->db->beginTransaction();
@@ -188,7 +189,7 @@ class LinkedPollerConfigurationService
                 $statement->execute();
             }
             $this->db->commit();
-        } catch (PDOException $Exception) {
+        } catch (\PDOException $Exception) {
             $this->db->rollBack();
         }
     }

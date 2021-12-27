@@ -29,13 +29,15 @@ use ConfigGenerateRemote\Manifest;
 class ConfigurationExporter extends ExporterServiceAbstract
 {
 
-    const NAME = 'configuration';
-    const MEDIA_PATH = _CENTREON_PATH_ . 'www/img/media';
+    private const NAME = 'configuration';
+    private const MEDIA_PATH = _CENTREON_PATH_ . 'www/img/media';
+
+    /** @var \ConfigGenerateRemote\Generate */
+    private $generateService;
 
     /**
      * Set generate service
      *
-     * @param Container $dependencyInjector
      * @param \ConfigGenerateRemote\Generate $generateService
      * @return void
      */
@@ -46,6 +48,7 @@ class ConfigurationExporter extends ExporterServiceAbstract
 
     /**
      * Export data
+     * @param int $remoteId
      */
     public function export(int $remoteId): array
     {
@@ -120,8 +123,10 @@ class ConfigurationExporter extends ExporterServiceAbstract
 
     /**
      * Copy directory recursively
+     * @param string $src
+     * @param string $dst
      */
-    private function recursiveCopy($src, $dst)
+    private function recursiveCopy($src, $dst): void
     {
         $dir = opendir($src);
         @mkdir($dst, $this->commitment->getFilePermission(), true);

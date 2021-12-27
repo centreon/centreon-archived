@@ -15,22 +15,31 @@ abstract class ServerConnectionConfigurationService
     /** @var CentreonDBAdapter */
     protected $dbAdapter;
 
+    /** @var string */
     protected $serverIp;
 
+    /** @var string */
     protected $centralIp;
 
+    /** @var string|null */
     protected $dbUser;
 
+    /** @var string|null */
     protected $dbPassword;
 
+    /** @var string */
     protected $name;
 
+    /** @var bool */
     protected $onePeerRetention = false;
 
+    /** @var bool */
     protected $shouldInsertBamBrokers = false;
 
+    /** @var bool */
     protected $isLinkedToCentralServer = false;
 
+    /** @var int */
     protected $brokerID = null;
 
     public function __construct(CentreonDBAdapter $dbAdapter)
@@ -85,7 +94,7 @@ abstract class ServerConnectionConfigurationService
      *
      * @throws \Exception
      */
-    public function insert()
+    public function insert(): int
     {
         $this->getDbAdapter()->beginTransaction();
 
@@ -110,12 +119,16 @@ abstract class ServerConnectionConfigurationService
         return $serverID;
     }
 
-    protected function insertNagiosServer()
+    protected function insertNagiosServer(): int
     {
         return $this->insertWithAdapter('nagios_server', NagiosServer::getConfiguration($this->name, $this->serverIp));
     }
 
-    protected function insertConfigNagios($serverID)
+    /**
+     *
+     * @param int $serverID
+     */
+    protected function insertConfigNagios($serverID): int
     {
         $configID = $this->insertWithAdapter('cfg_nagios', CfgNagios::getConfiguration($this->name, $serverID));
 
@@ -127,7 +140,11 @@ abstract class ServerConnectionConfigurationService
         return $configID;
     }
 
-    protected function insertConfigResources($serverID)
+    /**
+     *
+     * @throws Exception
+     */
+    protected function insertConfigResources($serverID): void
     {
         $sql = 'SELECT `resource_id`, `resource_name` FROM `cfg_resource`';
         $sql .= "WHERE `resource_name` IN('\$USER1$', '\$CENTREONPLUGINS$') ORDER BY `resource_name` DESC";
@@ -152,7 +169,11 @@ abstract class ServerConnectionConfigurationService
         $this->insertWithAdapter('cfg_resource_instance_relations', $pluginResourceData);
     }
 
-    protected function insertBamBrokers()
+    /**
+     *
+     * @throws Exception
+     */
+    protected function insertBamBrokers(): void
     {
         global $conf_centreon;
 
@@ -173,7 +194,14 @@ abstract class ServerConnectionConfigurationService
         }
     }
 
-    protected function insertWithAdapter($table, array $data)
+    /**
+     *
+     * @param string $table
+     * @param array<string,int> $data
+     * @throws Exception
+     * @return integer
+     */
+    protected function insertWithAdapter($table, array $data): int
     {
         try {
             $result = $this->getDbAdapter()->insert($table, $data);
@@ -185,12 +213,12 @@ abstract class ServerConnectionConfigurationService
         return $result;
     }
 
-    public function shouldInsertBamBrokers()
+    public function shouldInsertBamBrokers(): void
     {
         $this->shouldInsertBamBrokers = true;
     }
 
-    public function isLinkedToCentralServer()
+    public function isLinkedToCentralServer(): void
     {
         $this->isLinkedToCentralServer = true;
     }

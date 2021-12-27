@@ -10,6 +10,11 @@ use CentreonRemote\Infrastructure\Service\ExporterCacheService;
  */
 class ExporterCacheServiceTest extends TestCase
 {
+    /**
+     *
+     * @var ExporterCacheService
+     */
+    private $cache;
 
     protected function setUp(): void
     {
@@ -21,7 +26,7 @@ class ExporterCacheServiceTest extends TestCase
     /**
      * @covers \CentreonRemote\Infrastructure\Service\ExporterCacheService::getIf
      */
-    public function testGetIf()
+    public function testGetIf(): void
     {
         $callable = function () {
             return 'val1a';
@@ -39,7 +44,7 @@ class ExporterCacheServiceTest extends TestCase
     /**
      * @covers \CentreonRemote\Infrastructure\Service\ExporterCacheService::get
      */
-    public function testGet()
+    public function testGet(): void
     {
         $result = $this->cache->get('key1');
 
@@ -53,7 +58,7 @@ class ExporterCacheServiceTest extends TestCase
     /**
      * @covers \CentreonRemote\Infrastructure\Service\ExporterCacheService::has
      */
-    public function testHas()
+    public function testHas(): void
     {
         $result = $this->cache->has('key1');
 
@@ -67,7 +72,7 @@ class ExporterCacheServiceTest extends TestCase
     /**
      * @covers \CentreonRemote\Infrastructure\Service\ExporterCacheService::merge
      */
-    public function testMerge()
+    public function testMerge(): void
     {
         $this->cache->set('key3', ['val3']);
         $this->cache->merge('key3', ['val3a']);
@@ -82,7 +87,7 @@ class ExporterCacheServiceTest extends TestCase
     /**
      * @covers \CentreonRemote\Infrastructure\Service\ExporterCacheService::set
      */
-    public function testSet()
+    public function testSet(): void
     {
         $this->cache->set('key4', 'val4');
 
@@ -97,7 +102,7 @@ class ExporterCacheServiceTest extends TestCase
     /**
      * @covers \CentreonRemote\Infrastructure\Service\ExporterCacheService::destroy
      */
-    public function testDestroy()
+    public function testDestroy(): void
     {
         $this->assertTrue($this->cache->has('key1'));
 

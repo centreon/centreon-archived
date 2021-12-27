@@ -2,13 +2,7 @@ parameters:
   bootstrapFiles:
     - config/centreon.config.php.template
   paths:
-    - %currentWorkingDirectory%/src/Centreon
-    - %currentWorkingDirectory%/src/EventSubscriber
-    - %currentWorkingDirectory%/src/Security
-    - %currentWorkingDirectory%/src/Utility
-    - %currentWorkingDirectory%/tests/php/Centreon
-    - %currentWorkingDirectory%/tests/php/Security
-    - %currentWorkingDirectory%/tests/php/Utility
+    - %currentWorkingDirectory%/src/CentreonRemote
 services:
   errorFormatter.absolute:
     class: Centreon\PHPStan\AbsolutePathErrorFormatter

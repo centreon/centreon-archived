@@ -46,7 +46,30 @@ class ExportServiceTest extends TestCase
 {
     use TestCaseExtensionTrait;
 
+    /**
+     *
+     * @var boolean
+     */
     private $aclReload = false;
+
+    /**
+     *
+     * @var Container
+     */
+    private $container;
+
+    /**
+     *
+     * @var FileSystem
+     */
+    private $fs;
+
+    /**
+     *
+     * @var ExportService
+     */
+    private $export;
+
 
     /**
      * {@inheritdoc}
@@ -111,7 +134,7 @@ class ExportServiceTest extends TestCase
     /**
      * @covers \CentreonRemote\Infrastructure\Service\ExportService::export
      */
-    public function testExport()
+    public function testExport(): void
     {
         $path = "vfs://export";
 
@@ -132,7 +155,7 @@ class ExportServiceTest extends TestCase
     /**
      * @covers \CentreonRemote\Infrastructure\Service\ExportService::import
      */
-    public function testImport()
+    public function testImport(): void
     {
         $path = "vfs://export";
 
@@ -209,7 +232,7 @@ class ExportServiceTest extends TestCase
     /**
      * @covers \CentreonRemote\Infrastructure\Service\ExportService::refreshAcl
      */
-    public function testRefreshAcl()
+    public function testRefreshAcl(): void
     {
         $this->invokeMethod($this->export, 'refreshAcl');
 
