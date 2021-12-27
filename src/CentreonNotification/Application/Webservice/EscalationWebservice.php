@@ -46,11 +46,13 @@ class EscalationWebservice extends Webservice\WebServiceAbstract implements
 
     /**
      * {@inheritdoc}
+     *
+     * @return array<ServiceProvider::CENTREON_PAGINATION>
      */
     public static function dependencies(): array
     {
         return [
-            ServiceProvider::CENTREON_PAGINATION,
+            ServiceProvider::CENTREON_PAGINATION
         ];
     }
 

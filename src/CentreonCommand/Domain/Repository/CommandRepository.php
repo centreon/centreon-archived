@@ -88,7 +88,7 @@ class CommandRepository extends ServiceEntityRepository implements PaginationRep
         $collector->bind($stmt);
 
         $stmt->execute();
-        $stmt->setFetchMode(PDO::FETCH_CLASS, Command::class);
+        $stmt->setFetchMode(PDO::FETCH_CLASS, (object)Command::class);
         $result = $stmt->fetchAll();
 
         return $result;
