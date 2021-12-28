@@ -249,6 +249,11 @@ class SecurityPolicyTest extends TestCase
         );
     }
 
+    /**
+     * Create a model used for testing purpose.
+     *
+     * @return SecurityPolicy
+     */
     public static function createSecurityPolicyModel(): SecurityPolicy
     {
         return new SecurityPolicy(
