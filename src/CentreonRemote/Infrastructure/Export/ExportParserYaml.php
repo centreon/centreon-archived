@@ -7,6 +7,12 @@ use Symfony\Component\Yaml\Yaml;
 class ExportParserYaml implements ExportParserInterface
 {
 
+    /**
+     *
+     * @param string $filename
+     * @param callable|null $macros
+     * @return array<mixed>
+     */
     public function parse(string $filename, callable $macros = null): array
     {
         if (!file_exists($filename)) {
@@ -24,6 +30,12 @@ class ExportParserYaml implements ExportParserInterface
         return $value;
     }
 
+    /**
+     *
+     * @param string[] $input
+     * @param string $filename
+     * @return void
+     */
     public function dump(array $input, string $filename): void
     {
         if (!$input) {

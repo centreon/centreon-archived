@@ -33,7 +33,8 @@ interface ExporterServiceInterface
 
     public function setManifest(ExportManifest $manifest): void;
 
-    public function export(int $remoteId): array;
+    /** @return array<mixed> */
+    public function export(int $remoteId);
 
     public function import(ExportManifest $manifest): void;
 

@@ -8,9 +8,14 @@ use Centreon\Infrastructure\Service\Traits\ServiceContainerTrait;
 
 class ExporterService implements ContainerInterface
 {
-
     use ServiceContainerTrait;
 
+    /**
+     *
+     * @param string $object
+     * @param callable $factory
+     * @return void
+     */
     public function add(string $object, callable $factory): void
     {
         $interface = ExporterServiceInterface::class;
@@ -25,12 +30,16 @@ class ExporterService implements ContainerInterface
         $this->objects[$name] = [
             'name' => $name,
             'classname' => $object,
-            'factory' => $factory,
+            'factory' => $factory
         ];
 
         $this->sort();
     }
 
+    /**
+     *
+     * @param string $id
+     */
     public function has($id): bool
     {
         $result = $this->getKey($id);
@@ -38,7 +47,11 @@ class ExporterService implements ContainerInterface
         return $result !== null;
     }
 
-    public function get($id): array
+    /**
+     *
+     * @param string $id
+     */
+    public function get($id): object
     {
         $key = $this->getKey($id);
         if ($key === null) {
@@ -50,6 +63,10 @@ class ExporterService implements ContainerInterface
         return $result;
     }
 
+    /**
+     *
+     * @param string $id
+     */
     private function getKey($id): ?int
     {
         foreach ($this->objects as $key => $object) {

@@ -141,6 +141,7 @@ class LinkedPollerConfigurationService
      */
     public function linkPollerToAdditionalRemoteServers(PollerServer $poller, array $remotes): void
     {
+
         foreach ($remotes as $remote) {
             // If one peer retention is enabled, add input on remote server to get data from poller
             if ($this->onePeerRetention) {
@@ -183,9 +184,11 @@ class LinkedPollerConfigurationService
         $this->db->beginTransaction();
         $statement = $this->db->prepare($query);
         try {
+            $pollerId = $poller->getId();
             foreach ($remotes as $remote) {
-                $statement->bindParam(':remoteId', $remote->getId(), \PDO::PARAM_INT);
-                $statement->bindParam(':pollerId', $poller->getId(), \PDO::PARAM_INT);
+                $remoteId = $remote->getId();
+                $statement->bindParam(':remoteId', $remoteId, \PDO::PARAM_INT);
+                $statement->bindParam(':pollerId', $pollerId, \PDO::PARAM_INT);
                 $statement->execute();
             }
             $this->db->commit();
@@ -217,7 +220,7 @@ class LinkedPollerConfigurationService
                 WHERE `config_id` = :id");
             $statement->bindParam(':id', $configId, \PDO::PARAM_INT);
             $statement->execute();
-            $configGRoupId = $statement->fetchColumn('config_group_id') + 1;
+            $configGRoupId = $statement->fetchColumn(intval('config_group_id')) + 1;
 
             $defaultBrokerOutput = (new OutputForwardMaster)->getConfiguration();
             $defaultBrokerOutput[0]['config_value'] = 'forward-to-' . str_replace(' ', '-', $remote->getName());
@@ -247,7 +250,7 @@ class LinkedPollerConfigurationService
                     $statement->execute();
                 }
                 $this->db->commit();
-            } catch (PDOException $Exception) {
+            } catch (\PDOException $Exception) {
                 $this->db->rollBack();
             }
         } else { // update host field of poller module output to link it the remote server

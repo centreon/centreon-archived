@@ -17,7 +17,7 @@ class InputFlowOnePeerRetention
      * @param string $pollerIP the poller ip address
      * @return CfgCentreonBrokerInfo[] the configuration template
      */
-    public static function getConfiguration(string $pollerName, string $pollerIP): array
+    public static function getConfiguration(string $pollerName, string $pollerIP)
     {
         return [
             new CfgCentreonBrokerInfo('name', "connection-to-${pollerName}"),

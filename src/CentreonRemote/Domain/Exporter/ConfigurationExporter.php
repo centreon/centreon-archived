@@ -28,8 +28,6 @@ use ConfigGenerateRemote\Manifest;
 
 class ConfigurationExporter extends ExporterServiceAbstract
 {
-
-    private const NAME = 'configuration';
     private const MEDIA_PATH = _CENTREON_PATH_ . 'www/img/media';
 
     /** @var \ConfigGenerateRemote\Generate */
@@ -117,7 +115,7 @@ class ConfigurationExporter extends ExporterServiceAbstract
 
         // media copy
         $exportPathMedia = $this->commitment->getPath() . "/media";
-        $mediaPath = static::MEDIA_PATH;
+        $mediaPath = self::MEDIA_PATH;
         $this->recursiveCopy($exportPathMedia, $mediaPath);
     }
 

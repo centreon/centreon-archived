@@ -82,9 +82,9 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      *
      * Get remotes servers waitlist
      *
-     * @return array
+     * @return array<int, array<mixed>>
      */
-    public function postGetWaitList(): array
+    public function postGetWaitList()
     {
         $statement = $this->pearDB->query("
             SELECT id, address as ip, name as server_name FROM `platform_topology`
@@ -97,9 +97,9 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
     /**
      * Get Pollers servers waitlist
      *
-     * @return array
+     * @return array<int, array<mixed>>
      */
-    public function postGetPollerWaitList(): array
+    public function postGetPollerWaitList()
     {
         $statement = $this->pearDB->query("
             SELECT id, address as ip, name as server_name FROM `platform_topology`
@@ -150,10 +150,10 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      *
      * Get list with connected remotes
      *
-     * @return array
+     * @return array<int, array<mixed>>
      * @example [['id' => 'poller id', 'ip' => 'poller ip address', 'name' => 'poller name']]
      */
-    public function getList(): array
+    public function getList()
     {
         $list = [];
         foreach ($this->postGetRemotesList() as $row) {
@@ -205,7 +205,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      *
      * Get list with connected remotes
      *
-     * @return array
+     * @return array<int, array<mixed>>
      * @example [['id' => 'poller id', 'ip' => 'poller ip address', 'name' => 'poller name']]
      */
     public function postGetRemotesList(): array
@@ -329,14 +329,14 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      *
      * Link centreon remote server
      *
-     * @return array
+     * @return array<string,bool|int|string|null>
      * @throws \RestBadRequestException
      * @throws \Exception
      * @example ['success' => true, 'task_id' => 'task id']
      *
      * @example ['error' => true, 'message' => 'error message']
      */
-    public function postLinkCentreonRemoteServer(): array
+    public function postLinkCentreonRemoteServer()
     {
         // retrieve post values to be used in other classes
         $_POST = json_decode(file_get_contents('php://input'), true);
@@ -520,13 +520,13 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      *
      * @return bool If the user has access to the action
      */
-    public function authorize($action, $user, $isInternal = false)
+    public function authorize($action, $user, $isInternal = false): bool
     {
         if (parent::authorize($action, $user, $isInternal)) {
             return true;
         }
 
-        return $user && $user->hasAccessRestApiConfiguration();
+        return $user->hasAccessRestApiConfiguration();
     }
 
     /**
@@ -582,7 +582,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
     /**
      * Set current centreon instance as central
      */
-    private function setCentreonInstanceAsCentral()
+    private function setCentreonInstanceAsCentral(): void
     {
         $dbAdapter = $this->getDi()[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]->getAdapter('configuration_db');
 
@@ -606,7 +606,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      * Create New Task for export
      *
      * @return bool|int
-     * @var $params array
+     * @param array<string,mixed> $params
      */
     private function createExportTask(array $params)
     {
@@ -614,10 +614,10 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
     }
 
     /**
-     * @param array $topologyInformation
+     * @param array<string,mixed> $topologyInformation
      * @throws \Exception
      */
-    private function updateServerInPlatformTopology(array $topologyInformation): void
+    private function updateServerInPlatformTopology($topologyInformation): void
     {
         /**
          * Get platform_topology id

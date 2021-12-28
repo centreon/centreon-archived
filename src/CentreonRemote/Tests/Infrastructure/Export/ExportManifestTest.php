@@ -51,7 +51,7 @@ class ExportManifestTest extends TestCase
     protected $version = '18.10';
 
     /**
-     * @var array
+     * @var array<mixed>
      */
     protected $dumpData = [];
 

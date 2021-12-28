@@ -10,9 +10,9 @@ class CfgCentreonBrokerInfo
      * Get template configuration
      * @todo move it as yml
      *
-     * @return array the configuration template
+     * @return array<int, array<string,int|string>> the configuration template
      */
-    public static function getConfiguration(): array
+    public static function getConfiguration()
     {
         return [
             [

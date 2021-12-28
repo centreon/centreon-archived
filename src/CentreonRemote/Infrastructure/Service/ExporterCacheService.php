@@ -5,7 +5,7 @@ class ExporterCacheService
 {
 
     /**
-     * @var array
+     * @var mixed
      */
     private $data;
 

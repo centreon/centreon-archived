@@ -64,7 +64,7 @@ class ExportCommitmentTest extends TestCase
 
     /**
      *
-     * @var array
+     * @var array<mixed>
      */
     protected $exporters = [];
 

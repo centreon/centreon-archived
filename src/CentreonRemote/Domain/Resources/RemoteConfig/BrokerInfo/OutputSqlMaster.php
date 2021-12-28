@@ -13,9 +13,9 @@ class OutputSqlMaster
      *
      * @param string|null $dbUser the database user
      * @param string|null $dbPassword the database password
-     * @return array the configuration template
+     * @return array<int, string[]> the configuration template
      */
-    public static function getConfiguration($dbUser, $dbPassword): array
+    public static function getConfiguration($dbUser, $dbPassword)
     {
         return [
             [

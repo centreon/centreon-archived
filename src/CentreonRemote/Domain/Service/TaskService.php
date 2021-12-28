@@ -91,7 +91,7 @@ class TaskService
      * Adds a new task
      *
      * @param string $type
-     * @param array $params
+     * @param array<string, array<string,mixed>> $params
      * @param int $parentId
      * @return int|bool
      */

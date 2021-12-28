@@ -42,7 +42,7 @@ final class ExportCommitment
     private $parser;
 
     /**
-     * @var array
+     * @var array<mixed>
      */
     private $exporters;
 
@@ -61,10 +61,10 @@ final class ExportCommitment
      *
      * @param int $remote
      * @param int[] $pollers
-     * @param array $meta
+     * @param array<mixed> $meta
      * @param \CentreonRemote\Infrastructure\Export\ExportParserInterface $parser
      * @param string $path
-     * @param array $exporters
+     * @param array<int,string> $exporters
      */
     public function __construct(
         int $remote = null,
@@ -105,7 +105,11 @@ final class ExportCommitment
         return $this->pollers;
     }
 
-    public function getMeta(): ?array
+    /**
+     *
+     * @return array<mixed>|null
+     */
+    public function getMeta()
     {
         return $this->meta;
     }
@@ -115,7 +119,11 @@ final class ExportCommitment
         return $this->path;
     }
 
-    public function getExporters(): array
+    /**
+     *
+     * @return array<mixed>
+     */
+    public function getExporters()
     {
         return $this->exporters;
     }

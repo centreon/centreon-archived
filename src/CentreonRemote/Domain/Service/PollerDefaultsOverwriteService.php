@@ -148,7 +148,7 @@ class PollerDefaultsOverwriteService
      * Get global macro information
      *
      * @param array<string|int, array<string,int>> $data the global macro data
-     * @return array the complete global macro data
+     * @return array<string|int, array<string, int>> the complete global macro data
      */
     public function getCfgResource(array $data): array
     {
