@@ -24,6 +24,7 @@ declare(strict_types=1);
 namespace Core\Domain\Security\Model;
 
 use Centreon\Domain\Common\Assertion\Assertion;
+use Centreon\Domain\Common\Assertion\AssertionException;
 
 class SecurityPolicy
 {
@@ -51,6 +52,7 @@ class SecurityPolicy
      * @param int|null $blockingDuration
      * @param int|null $passwordExpiration
      * @param int|null $delayBeforeNewPassword
+     * @throws AssertionException
      */
     public function __construct(
         private int $passwordMinimumLength,
