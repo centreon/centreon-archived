@@ -20,12 +20,13 @@ class PollerServer
     private $ip;
 
 
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
-    public function setId($id)
+    /** @param int $id */
+    public function setId($id): void
     {
         $this->id = $id;
     }
@@ -50,12 +51,13 @@ class PollerServer
         $this->name = $name;
     }
 
-    public function getIp()
+    public function getIp(): string
     {
         return $this->ip;
     }
 
-    public function setIp($ip)
+    /** @param string $ip */
+    public function setIp($ip): void
     {
         $this->ip = $ip;
     }

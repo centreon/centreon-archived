@@ -49,27 +49,32 @@ abstract class ServerConnectionConfigurationService
 
     abstract protected function insertConfigCentreonBroker(int $serverID): void;
 
-    public function setServerIp($ip)
+    /** @param string $ip */
+    public function setServerIp($ip): void
     {
         $this->serverIp = $ip;
     }
 
-    public function setName($name)
+    /** @param string $name */
+    public function setName($name): void
     {
         $this->name = $name;
     }
 
-    public function setCentralIp($ip)
+    /** @param string $ip */
+    public function setCentralIp($ip): void
     {
         $this->centralIp = $ip;
     }
 
-    public function setDbUser($user)
+    /** @param string|null $user */
+    public function setDbUser($user): void
     {
         $this->dbUser = $user;
     }
 
-    public function setDbPassword($password)
+    /** @param string|null $password */
+    public function setDbPassword($password): void
     {
         $this->dbPassword = $password;
     }
@@ -90,7 +95,6 @@ abstract class ServerConnectionConfigurationService
     }
 
     /**
-     * @return bool
      *
      * @throws \Exception
      */
@@ -142,7 +146,8 @@ abstract class ServerConnectionConfigurationService
 
     /**
      *
-     * @throws Exception
+     * @throws \Exception
+     * @param int $serverID
      */
     protected function insertConfigResources($serverID): void
     {
@@ -171,7 +176,7 @@ abstract class ServerConnectionConfigurationService
 
     /**
      *
-     * @throws Exception
+     * @throws \Exception
      */
     protected function insertBamBrokers(): void
     {
@@ -198,7 +203,7 @@ abstract class ServerConnectionConfigurationService
      *
      * @param string $table
      * @param array<string,int> $data
-     * @throws Exception
+     * @throws \Exception
      * @return integer
      */
     protected function insertWithAdapter($table, array $data): int

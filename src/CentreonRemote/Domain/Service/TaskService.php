@@ -65,7 +65,7 @@ class TaskService
     }
 
     /**
-     * @return \CentreonRestHttp
+     * @param \CentreonRestHttp $centreonRestHttp
      */
     public function setCentreonRestHttp(\CentreonRestHttp $centreonRestHttp): void
     {
@@ -95,7 +95,7 @@ class TaskService
      * @param int $parentId
      * @return int|bool
      */
-    public function addTask(string $type, array $params, int $parentId = null)
+    public function addTask(string $type, array $params, int $parentId = null): int|bool
     {
         $newTask = new Task();
         $newTask->setStatus(Task::STATE_PENDING);

@@ -77,7 +77,7 @@ class ServiceProviderTest extends TestCase
         $this->container[\Centreon\ServiceProvider::CENTREON_WEBSERVICE] =
         $this->container[\Centreon\ServiceProvider::CENTREON_CLAPI] = new class {
 
-            public function add($class)
+            public function add(): self
             {
                 return $this;
             }

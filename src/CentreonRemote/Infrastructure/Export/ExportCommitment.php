@@ -27,9 +27,9 @@ final class ExportCommitment
 {
 
     /**
-     * @var int
+     * @var int[]
      */
-    private $poller;
+    private $pollers;
 
     /**
      * @var string
@@ -50,6 +50,11 @@ final class ExportCommitment
      * @var int
      */
     private $filePermission = 0775;
+
+    /**
+     * @var int
+     */
+    private $remote;
 
     /**
      * Construct
@@ -83,7 +88,7 @@ final class ExportCommitment
             $this->path = _CENTREON_CACHEDIR_ . '/config/export/' . $this->remote;
         }
 
-        $this->parser = $parser ?? new ExportParserJson;
+        $this->parser = $parser ?? new ExportParserJson();
     }
 
     public function getRemote(): int
@@ -91,7 +96,11 @@ final class ExportCommitment
         return $this->remote;
     }
 
-    public function getPollers(): array
+    /**
+     *
+     * @return int[]
+     */
+    public function getPollers()
     {
         return $this->pollers;
     }
