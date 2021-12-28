@@ -36,7 +36,7 @@ abstract class Status
     /**
      * @var int|null
      */
-    private $order;
+    protected $order;
 
     public function __construct(
         private string $name,
@@ -71,9 +71,9 @@ abstract class Status
 
     /**
      * @param int|null $order
-     * @return self
+     * @return static
      */
-    public function setOrder(?int $order): self
+    public function setOrder(?int $order): static
     {
         $this->order = $order;
         return $this;

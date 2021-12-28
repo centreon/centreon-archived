@@ -22,9 +22,7 @@ declare(strict_types=1);
 
 namespace Core\Infrastructure\RealTime\Api\FindHost;
 
-use Symfony\Component\HttpFoundation\Response;
 use Centreon\Application\Controller\AbstractController;
-use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Core\Application\RealTime\UseCase\FindHost\FindHost;
 use Core\Application\RealTime\UseCase\FindHost\FindHostPresenterInterface;
 

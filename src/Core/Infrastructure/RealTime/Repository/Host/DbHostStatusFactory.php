@@ -22,16 +22,15 @@ declare(strict_types=1);
 
 namespace Core\Infrastructure\RealTime\Repository\Host;
 
-use Core\Domain\RealTime\Model\Status;
 use Core\Domain\RealTime\Model\HostStatus;
 
 class DbHostStatusFactory
 {
     /**
      * @param array<string, mixed> $data
-     * @return Status
+     * @return HostStatus
      */
-    public static function createFromRecord(array $data): Status
+    public static function createFromRecord(array $data): HostStatus
     {
         $statusType = (int) $data['state_type'];
 
@@ -42,22 +41,22 @@ class DbHostStatusFactory
                     HostStatus::STATUS_CODE_UP,
                     $statusType
                 ))
-                ->setOrder(HostStatus::STATUS_ORDER_OK);
+                ->setOrder(HostStatus::STATUS_ORDER_UP);
             case HostStatus::STATUS_CODE_DOWN:
                 return (new HostStatus(
                     HostStatus::STATUS_NAME_DOWN,
                     HostStatus::STATUS_CODE_DOWN,
                     $statusType
                 ))
-                ->setOrder(HostStatus::STATUS_ORDER_HIGH);
+                ->setOrder(HostStatus::STATUS_ORDER_DOWN);
             case HostStatus::STATUS_CODE_UNREACHABLE:
                 return (new HostStatus(
                     HostStatus::STATUS_NAME_UNREACHABLE,
                     HostStatus::STATUS_CODE_UNREACHABLE,
                     $statusType
                 ))
-                ->setOrder(HostStatus::STATUS_ORDER_LOW);
-            case HostStatus::STATUS_CODE_PENDING:
+                ->setOrder(HostStatus::STATUS_ORDER_UNREACHABLE);
+            default:
                 return (new HostStatus(
                     HostStatus::STATUS_NAME_PENDING,
                     HostStatus::STATUS_CODE_PENDING,

@@ -22,14 +22,14 @@ declare(strict_types=1);
 
 namespace Tests\Core\Domain\RealTime\Model;
 
+use DateTime;
 use PHPUnit\Framework\TestCase;
 use Core\Domain\RealTime\Model\Host;
 use Core\Domain\RealTime\Model\Icon;
-use Core\Domain\RealTime\Model\Status;
-use Core\Domain\RealTime\Model\Hostgroup;
-use Centreon\Domain\Common\Assertion\AssertionException;
 use Core\Domain\RealTime\Model\Downtime;
-use DateTime;
+use Core\Domain\RealTime\Model\Hostgroup;
+use Core\Domain\RealTime\Model\HostStatus;
+use Centreon\Domain\Common\Assertion\AssertionException;
 
 class HostTest extends TestCase
 {
@@ -48,18 +48,15 @@ class HostTest extends TestCase
                'Host::name'
            )->getMessage()
        );
-       new Host(1, $hostName, 'localhost', 'central', new Status('UP', 0, 0));
+       new Host(1, $hostName, 'localhost', 'central', new HostStatus('UP', 0, 0));
    }
     /**
      * @return Host
      */
     public static function createHostModel(): Host
     {
-        /**
-         * @var Status
-         */
-        $status = (new Status('UP', 0, 1))
-            ->setOrder(Status::STATUS_ORDER_OK);
+        $status = (new HostStatus('UP', 0, 1))
+            ->setOrder(HostStatus::STATUS_ORDER_OK);
 
         /**
          * @var Icon
@@ -67,11 +64,6 @@ class HostTest extends TestCase
         $icon = (new Icon())
             ->setName('dog')
             ->setUrl('/dog.png');
-
-        /**
-         * @var Hostgroup
-         */
-        $hostgroup = new Hostgroup(10, 'ALL');
 
         return (new Host(1, 'Centreon-Central', 'localhost', 'Central', $status))
             ->setAlias('Central')
@@ -93,8 +85,7 @@ class HostTest extends TestCase
             ->setPerformanceData('rta=0.342ms;200.000;400.000;0; pl=0%;20;50;0;100 rtmax=0.439ms;;;; rtmin=0.260ms;;;;')
             ->setExecutionTime(0.1)
             ->setLatency(0.214)
-            ->addHostgroup($hostgroup)
             ->setMaxCheckAttempts(5)
-            ->setCheckAttemps(2);
+            ->setCheckAttempts(2);
     }
 }

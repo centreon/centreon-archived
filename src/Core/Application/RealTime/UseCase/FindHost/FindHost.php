@@ -23,20 +23,21 @@ declare(strict_types=1);
 namespace Core\Application\RealTime\UseCase\FindHost;
 
 use Centreon\Domain\Contact\Contact;
+use Centreon\Domain\Log\LoggerTrait;
 use Core\Domain\RealTime\Model\Host;
 use Core\Domain\RealTime\Model\Downtime;
 use Core\Domain\RealTime\Model\Acknowledgement;
-use Centreon\Domain\Contact\Interfaces\ContactInterface;
-use Centreon\Domain\Log\LoggerTrait;
 use Centreon\Domain\Monitoring\Host as LegacyHost;
+use Centreon\Domain\Contact\Interfaces\ContactInterface;
+use Core\Application\RealTime\UseCase\FindHost\FindHostResponse;
+use Core\Application\RealTime\UseCase\FindHost\HostNotFoundResponse;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
-use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadHostRepositoryInterface;
-use Core\Application\RealTime\UseCase\FindHost\FindHostPresenterInterface;
+use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadDowntimeRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadHostgroupRepositoryInterface;
+use Core\Application\RealTime\UseCase\FindHost\FindHostPresenterInterface;
 use Core\Application\RealTime\Repository\ReadAcknowledgementRepositoryInterface;
-use Core\Application\RealTime\UseCase\FindHost\HostNotFoundResponse;
 
 class FindHost
 {
@@ -117,6 +118,7 @@ class FindHost
 
         /**
          * Offuscate the passwords in Host commandLine
+         * @todo Re-write this code when monitoring repository will be migrated to new architecture
          */
         $host->setCommandLine($this->obfuscatePasswordInHostCommandLine($host));
 

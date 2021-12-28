@@ -231,17 +231,22 @@ class FindHostResponse
     */
     private static function hostgroupsToArray(array $hostgroups): array
     {
+        return array_map(
+            fn($hostgroup) => [
+                'id' => $hostgroup->getId(),
+                'name' => $hostgroup->getName()
+            ],
+            $hostgroups
+        );
+        /*
         return array_reduce(
             $hostgroups,
             fn (Hostgroup $hostgroup) => [
-                [
-                    'id' => $hostgroup->getId(),
-                    'name' => $hostgroup->getName()
-                ]
-            ]
-            ,
-            []
-        );
+                'id' => $hostgroup->getId(),
+                'name' => $hostgroup->getName()
+            ],
+            $hostgroups
+        ); */
     }
 
     /**
@@ -283,10 +288,8 @@ class FindHostResponse
     */
     private static function downtimeToArray(array $downtimes): array
     {
-        return array_reduce(
-            $downtimes,
+        return array_map(
             fn (Downtime $downtime) => [
-                [
                     'start_time' => $downtime->getStartTime(),
                     'end_time' => $downtime->getEndTime(),
                     'actual_start_time' => $downtime->getActualStartTime(),
@@ -304,9 +307,8 @@ class FindHostResponse
                     'is_fixed' => $downtime->isFixed(),
                     'poller_id' => $downtime->getInstanceId(),
                     'is_started' => $downtime->isStarted()
-                ]
             ],
-            []
+            $downtimes
         );
     }
 }

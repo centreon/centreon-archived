@@ -25,22 +25,23 @@ namespace Tests\Core\Application\RealTime\UseCase\FindHost;
 use PHPUnit\Framework\TestCase;
 use Centreon\Domain\Contact\Contact;
 use Core\Domain\RealTime\Model\Host;
+use Core\Domain\RealTime\Model\Downtime;
+use Core\Domain\RealTime\Model\Hostgroup;
 use Tests\Core\Domain\RealTime\Model\HostTest;
+use Core\Domain\RealTime\Model\Acknowledgement;
 use Core\Application\Common\UseCase\NotFoundResponse;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
-use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
 use Core\Application\RealTime\UseCase\FindHost\FindHost;
-use Core\Application\RealTime\UseCase\FindHost\FindHostResponse;
 use Core\Infrastructure\RealTime\Api\FindHost\FindHostPresenter;
 use Core\Infrastructure\RealTime\Api\Hypermedia\HypermediaService;
+use Core\Application\RealTime\UseCase\FindHost\HostNotFoundResponse;
+use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
+use Core\Application\RealTime\Repository\ReadHostRepositoryInterface;
 use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
 use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
-use Core\Application\RealTime\Repository\DbReadHostRepositoryInterface;
-use Core\Application\RealTime\Repository\DbReadDowntimeRepositoryInterface;
-use Core\Application\RealTime\Repository\DbReadHostgroupRepositoryInterface;
-use Core\Application\RealTime\Repository\DbReadAcknowledgementRepositoryInterface;
-use Core\Domain\RealTime\Model\Acknowledgement;
-use Core\Domain\RealTime\Model\Downtime;
+use Core\Application\RealTime\Repository\ReadDowntimeRepositoryInterface;
+use Core\Application\RealTime\Repository\ReadHostgroupRepositoryInterface;
+use Core\Application\RealTime\Repository\ReadAcknowledgementRepositoryInterface;
 
 /**
  * @package Tests\Core\Application\RealTime\UseCase\FindHost
@@ -48,12 +49,12 @@ use Core\Domain\RealTime\Model\Downtime;
 class FindHostTest extends TestCase
 {
     /**
-     * @var DbReadHostRepositoryInterface&\PHPUnit\Framework\MockObject\MockObject
+     * @var ReadHostRepositoryInterface&\PHPUnit\Framework\MockObject\MockObject
      */
     private $repository;
 
     /**
-     * @var DbReadHostgroupRepositoryInterface&\PHPUnit\Framework\MockObject\MockObject
+     * @var ReadHostgroupRepositoryInterface&\PHPUnit\Framework\MockObject\MockObject
      */
     private $hostgroupRepository;
 
@@ -63,12 +64,12 @@ class FindHostTest extends TestCase
     private $accessGroupRepository;
 
     /**
-     * @var DbReadDowntimeRepositoryInterface&\PHPUnit\Framework\MockObject\MockObject
+     * @var ReadDowntimeRepositoryInterface&\PHPUnit\Framework\MockObject\MockObject
      */
     private $downtimeRepository;
 
     /**
-     * @var DbReadAcknowledgementRepositoryInterface&\PHPUnit\Framework\MockObject\MockObject
+     * @var ReadAcknowledgementRepositoryInterface&\PHPUnit\Framework\MockObject\MockObject
      */
     private $acknowledgementRepository;
 
@@ -89,11 +90,11 @@ class FindHostTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->repository = $this->createMock(DbReadHostRepositoryInterface::class);
-        $this->hostgroupRepository = $this->createMock(DbReadHostgroupRepositoryInterface::class);
+        $this->repository = $this->createMock(ReadHostRepositoryInterface::class);
+        $this->hostgroupRepository = $this->createMock(ReadHostgroupRepositoryInterface::class);
         $this->accessGroupRepository = $this->createMock(AccessGroupRepositoryInterface::class);
-        $this->downtimeRepository = $this->createMock(DbReadDowntimeRepositoryInterface::class);
-        $this->acknowledgementRepository = $this->createMock(DbReadAcknowledgementRepositoryInterface::class);
+        $this->downtimeRepository = $this->createMock(ReadDowntimeRepositoryInterface::class);
+        $this->acknowledgementRepository = $this->createMock(ReadAcknowledgementRepositoryInterface::class);
         $this->hypermediaService = $this->createMock(HypermediaService::class);
         $this->presenterFormatter = $this->createMock(PresenterFormatterInterface::class);
         $this->monitoringService = $this->createMock(MonitoringServiceInterface::class);
@@ -128,9 +129,7 @@ class FindHostTest extends TestCase
 
         $findHost(1, $findHostPresenter);
 
-        $notFoundResponse = new NotFoundResponse('Host');
-
-        $this->assertEquals($findHostPresenter->getResponseStatus(), $notFoundResponse);
+        $this->assertEquals($findHostPresenter->getResponseStatus(), new HostNotFoundResponse());
     }
 
     public function testNotFoundAsNonAdmin(): void
@@ -167,9 +166,7 @@ class FindHostTest extends TestCase
 
         $findHost(1, $findHostPresenter);
 
-        $notFoundResponse = new NotFoundResponse('Host');
-
-        $this->assertEquals($findHostPresenter->getResponseStatus(), $notFoundResponse);
+        $this->assertEquals($findHostPresenter->getResponseStatus(), new HostNotFoundResponse());
     }
 
     public function testFindHostAsAdmin(): void
@@ -202,18 +199,19 @@ class FindHostTest extends TestCase
             ->method('findHostById')
             ->willReturn($host);
 
-        $downtimes = [];
         $downtimes[] = (new Downtime(1, 1, 10))
             ->setCancelled(false);
 
         $acknowledgement = new Acknowledgement(1, 1, 10, new \DateTime('yesterday'));
+
+        $hostgroups[] = new Hostgroup(10, 'ALL');
 
         /**
          * Ajouter les downtimes + ack
          */
         $this->downtimeRepository
             ->expects($this->once())
-            ->method('findDowntimesByHostId')
+            ->method('findOnGoingDowntimesByHostId')
             ->willReturn($downtimes);
 
         $this->acknowledgementRepository
@@ -221,14 +219,15 @@ class FindHostTest extends TestCase
             ->method('findOnGoingAcknowledgementByHostId')
             ->willReturn($acknowledgement);
 
+        $this->hostgroupRepository
+            ->expects($this->once())
+            ->method('findAllByHostId')
+            ->willReturn($hostgroups);
+
         $findHostPresenter = new FindHostPresenterFake($this->hypermediaService, $this->presenterFormatter);
 
         $findHost(1, $findHostPresenter);
-        /**
-  +downtimes: []
-  +acknowledgement: []
-}
-         */
+
         $this->assertEquals($findHostPresenter->response->name, $host->getName());
         $this->assertEquals($findHostPresenter->response->id, $host->getId());
         $this->assertEquals($findHostPresenter->response->address, $host->getAddress());
@@ -248,8 +247,8 @@ class FindHostTest extends TestCase
         $this->assertEquals($findHostPresenter->response->hasActiveChecks, $host->hasActiveChecks());
         $this->assertEquals($findHostPresenter->response->hasPassiveChecks, $host->hasPassiveChecks());
         $this->assertEquals($findHostPresenter->response->severityLevel, $host->getSeverityLevel());
-        $this->assertEquals($findHostPresenter->response->checkAttempts, $host->getCheckAttemps());
-        $this->assertEquals($findHostPresenter->response->maxCheckAttempts, $host->getMaxCheckAttemps());
+        $this->assertEquals($findHostPresenter->response->checkAttempts, $host->getCheckAttempts());
+        $this->assertEquals($findHostPresenter->response->maxCheckAttempts, $host->getMaxCheckAttempts());
         $this->assertEquals($findHostPresenter->response->lastTimeUp, $host->getLastTimeUp());
         $this->assertEquals($findHostPresenter->response->lastCheck, $host->getLastCheck());
         $this->assertEquals($findHostPresenter->response->nextCheck, $host->getNextCheck());

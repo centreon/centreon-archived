@@ -23,8 +23,8 @@ declare(strict_types=1);
 namespace Core\Domain\RealTime\Model;
 
 use Core\Domain\RealTime\Model\Icon;
-use Core\Domain\RealTime\Model\Status;
 use Core\Domain\RealTime\Model\Hostgroup;
+use Core\Domain\RealTime\Model\HostStatus;
 use Centreon\Domain\Common\Assertion\Assertion;
 
 /**
@@ -165,14 +165,14 @@ class Host
      * @param string $name
      * @param string $address
      * @param string $monitoringServerName
-     * @param Status $status
+     * @param HostStatus $status
      */
     public function __construct(
         private int $id,
         private string $name,
         private string $address,
         private string $monitoringServerName,
-        private Status $status
+        private HostStatus $status
     ) {
         Assertion::maxLength($name, self::MAX_NAME_LENGTH, 'Host::name');
         Assertion::notEmpty($name, 'Host::name');
