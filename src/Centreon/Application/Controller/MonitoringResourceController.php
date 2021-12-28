@@ -63,9 +63,10 @@ class MonitoringResourceController extends AbstractController
         'types',
         'states',
         'statuses',
-        'hostgroup_ids',
-        'servicegroup_ids',
-        'monitoring_server_ids',
+        'hostgroup_names',
+        'servicegroup_names',
+        'monitoring_server_names',
+        'status_types',
     ];
 
     public const FILTER_RESOURCES_ON_PERFORMANCE_DATA_AVAILABILITY = 'only_with_performance_data';
@@ -779,12 +780,12 @@ class MonitoringResourceController extends AbstractController
      */
     private function generateResourceUri(ResourceEntity $resource, string $relativeUri): string
     {
-        $relativeUri = str_replace('{resource_id}', $resource->getId(), $relativeUri);
-        $relativeUri = str_replace('{host_id}', $resource->getHostId(), $relativeUri);
-        $relativeUri = str_replace('{service_id}', $resource->getServiceId(), $relativeUri);
+        $relativeUri = str_replace('{resource_id}', (string) $resource->getId(), $relativeUri);
+        $relativeUri = str_replace('{host_id}', (string) $resource->getHostId(), $relativeUri);
+        $relativeUri = str_replace('{service_id}', (string) $resource->getServiceId(), $relativeUri);
 
         if ($resource->getParent() !== null) {
-            $relativeUri = str_replace('{parent_resource_id}', $resource->getParent()->getId(), $relativeUri);
+            $relativeUri = str_replace('{parent_resource_id}', (string) $resource->getParent()->getId(), $relativeUri);
         }
 
         return $this->getBaseUri() . $relativeUri;
@@ -858,6 +859,31 @@ class MonitoringResourceController extends AbstractController
                 'id' => $serviceId,
                 'tab' => $tab,
                 'uuid' => 's' . $serviceId
+            ]),
+        ]);
+    }
+
+    /**
+     * Build uri to access meta service panel
+     *
+     * @param integer $metaId
+     * @param string $tab tab name
+     * @return string
+     */
+    public function buildMetaServiceDetailsUri(int $metaId, string $tab = self::TAB_DETAILS_NAME): string
+    {
+        if (!in_array($tab, static::ALLOWED_TABS)) {
+            throw new ResourceException(sprintf(_('Cannot build uri to unknown tab : %s'), $tab));
+        }
+
+        return $this->buildListingUri([
+            'details' => json_encode([
+                'parentType' => null,
+                'parentId' => null,
+                'type' => ResourceEntity::TYPE_META,
+                'id' => $metaId,
+                'tab' => $tab,
+                'uuid' => 'm' . $metaId
             ]),
         ]);
     }

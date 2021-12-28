@@ -3,7 +3,21 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { rectIntersection } from '@dnd-kit/core';
 import { rectSortingStrategy } from '@dnd-kit/sortable';
-import { filter, find, isEmpty, isNil, map, pluck, propEq } from 'ramda';
+import {
+  append,
+  equals,
+  filter,
+  find,
+  findIndex,
+  isEmpty,
+  map,
+  pluck,
+  propEq,
+  remove,
+  difference,
+  uniq,
+} from 'ramda';
+import { useAtom } from 'jotai';
 
 import { Box, Grid } from '@material-ui/core';
 
@@ -11,16 +25,14 @@ import {
   SortableItems,
   useLocaleDateTimeFormat,
   RootComponentProps,
+  useMemoComponent,
 } from '@centreon/ui';
 
 import getDetailCardLines, { DetailCardLine } from '../DetailsCard/cards';
 import { ResourceDetails } from '../../../models';
-import {
-  getStoredOrDefaultDetailsCards,
-  storeDetailsCards,
-} from '../storedDetailsCards';
+import { detailsCardsAtom } from '../detailsCardsAtom';
 
-import { CardsLayout } from './models';
+import { CardsLayout, ChangeExpandedCardsProps, ExpandAction } from './models';
 import Content from './Content';
 
 interface Props {
@@ -28,17 +40,60 @@ interface Props {
   panelWidth: number;
 }
 
+interface MergeDefaultAndStoredCardsProps {
+  defaultCards: Array<string>;
+  storedCards: Array<string>;
+}
+
+const mergeDefaultAndStoredCards = ({
+  defaultCards,
+  storedCards,
+}: MergeDefaultAndStoredCardsProps): Array<string> => {
+  const differenceBetweenDefaultAndStoredCards = difference(
+    defaultCards,
+    storedCards,
+  );
+
+  return uniq([...storedCards, ...differenceBetweenDefaultAndStoredCards]);
+};
+
 const SortableCards = ({ panelWidth, details }: Props): JSX.Element => {
-  const { t } = useTranslation();
   const { toDateTime } = useLocaleDateTimeFormat();
+  const { t } = useTranslation();
+  const [expandedCards, setExpandedCards] = React.useState<Array<string>>([]);
 
-  const storedDetailsCards = getStoredOrDefaultDetailsCards([]);
+  const [storedDetailsCards, storeDetailsCards] = useAtom(detailsCardsAtom);
 
-  const allDetailsCards = getDetailCardLines({ details, t, toDateTime });
+  const changeExpandedCards = ({
+    action,
+    card,
+  }: ChangeExpandedCardsProps): void => {
+    if (equals(action, ExpandAction.add)) {
+      setExpandedCards(append(card, expandedCards));
+
+      return;
+    }
+
+    const expandedCardIndex = findIndex(equals(card), expandedCards);
+    setExpandedCards(remove(expandedCardIndex, 1, expandedCards));
+  };
+
+  const allDetailsCards = getDetailCardLines({
+    changeExpandedCards,
+    details,
+    expandedCards,
+    t,
+    toDateTime,
+  });
+
+  const allDetailsCardsTitle = pluck('title', allDetailsCards);
 
   const defaultDetailsCardsLayout = isEmpty(storedDetailsCards)
-    ? pluck('title', allDetailsCards)
-    : storedDetailsCards;
+    ? allDetailsCardsTitle
+    : mergeDefaultAndStoredCards({
+        defaultCards: allDetailsCardsTitle,
+        storedCards: storedDetailsCards,
+      });
 
   const cards = map<string, CardsLayout>(
     (title) => ({
@@ -50,7 +105,7 @@ const SortableCards = ({ panelWidth, details }: Props): JSX.Element => {
   );
 
   const displayedCards = filter(
-    ({ field }) => !isNil(field) && !isEmpty(field),
+    ({ shouldBeDisplayed }) => shouldBeDisplayed,
     cards,
   );
 
@@ -64,27 +119,30 @@ const SortableCards = ({ panelWidth, details }: Props): JSX.Element => {
     storeDetailsCards(items);
   };
 
-  return (
-    <Box>
-      <SortableItems<CardsLayout>
-        Content={Content}
-        RootComponent={RootComponent}
-        collisionDetection={rectIntersection}
-        itemProps={[
-          'field',
-          'line',
-          'xs',
-          'active',
-          'isCustomCard',
-          'width',
-          'title',
-        ]}
-        items={displayedCards}
-        sortingStrategy={rectSortingStrategy}
-        onDragEnd={dragEnd}
-      />
-    </Box>
-  );
+  return useMemoComponent({
+    Component: (
+      <Box>
+        <SortableItems<CardsLayout>
+          updateSortableItemsOnItemsChange
+          Content={Content}
+          RootComponent={RootComponent}
+          collisionDetection={rectIntersection}
+          itemProps={[
+            'shouldBeDisplayed',
+            'line',
+            'xs',
+            'isCustomCard',
+            'width',
+            'title',
+          ]}
+          items={displayedCards}
+          sortingStrategy={rectSortingStrategy}
+          onDragEnd={dragEnd}
+        />
+      </Box>
+    ),
+    memoProps: [panelWidth, expandedCards, details],
+  });
 };
 
 export default SortableCards;

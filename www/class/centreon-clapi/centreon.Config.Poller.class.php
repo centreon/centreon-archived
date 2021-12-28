@@ -58,7 +58,6 @@ class CentreonConfigPoller
     private $DBC;
     private $dependencyInjector;
     private $resultTest;
-    private $optGen;
     private $brokerCachePath;
     private $engineCachePath;
     private $centreon_path;
@@ -84,18 +83,6 @@ class CentreonConfigPoller
         $this->centreon_path = $centreon_path;
         $this->resultTest = array("warning" => 0, "errors" => 0);
         $this->centcore_pipe = _CENTREON_VARLIB_ . "/centcore.cmd";
-    }
-
-    /**
-     * Get General option of Centreon
-     */
-    private function getOptGen()
-    {
-        $DBRESULT = $this->DB->query("SELECT * FROM options");
-        while ($row = $DBRESULT->fetchRow()) {
-            $this->optGen[$row["key"]] = $row["value"];
-        }
-        $DBRESULT->closeCursor();
     }
 
     /**

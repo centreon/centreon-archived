@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -51,6 +52,14 @@ $path = "./include/configuration/configResources/";
 require_once $path . "DB-Func.php";
 require_once "./include/common/common-Func.php";
 
+/**
+ *  Page forbidden if server is a remote
+ */
+if ($isRemote) {
+    require_once($path . "../../core/errors/alt_error.php");
+    exit();
+}
+
 define('MACRO_ADD', 'a');
 define('MACRO_DELETE', 'd');
 define('MACRO_DISABLE', 'u');
@@ -63,7 +72,7 @@ $action = filter_var(
     $_POST['o1'] ?? $_POST['o2'] ?? null,
     FILTER_VALIDATE_REGEXP,
     array(
-        "options" => array("regexp"=>"/([a|c|d|m|s|u|w]{1})/")
+        "options" => array("regexp" => "/([a|c|d|m|s|u|w]{1})/")
     )
 );
 if ($action !== false) {
@@ -89,7 +98,7 @@ $duplicateNbr = filter_var_array(
 );
 
 /* Set the real page */
-if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
+if (isset($ret) && is_array($ret) && $ret['topology_page'] != "" && $p != $ret['topology_page']) {
     $p = $ret['topology_page'];
 }
 
@@ -129,8 +138,14 @@ switch ($o) {
         /*
          * Activate a Resource
          */
-        if ($resourceId !== false) {
-            enableResourceInDB($resourceId);
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            if ($resourceId !== false) {
+                enableResourceInDB($resourceId);
+            }
+        } else {
+            unvalidFormMessage();
         }
         require_once($path . "listResources.php");
         break;
@@ -138,8 +153,14 @@ switch ($o) {
         /*
          * Desactivate a Resource
          */
-        if ($resourceId !== false) {
-            disableResourceInDB($resourceId);
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            if ($resourceId !== false) {
+                disableResourceInDB($resourceId);
+            }
+        } else {
+            unvalidFormMessage();
         }
         require_once($path . "listResources.php");
         break;
@@ -147,11 +168,17 @@ switch ($o) {
         /*
          * Duplicate n resources only if data sent are correctly typed
          */
-        if (!in_array(false, $selectIds) && !in_array(false, $duplicateNbr)) {
-            multipleResourceInDB(
-                $selectIds,
-                $duplicateNbr
-            );
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            if (!in_array(false, $selectIds) && !in_array(false, $duplicateNbr)) {
+                multipleResourceInDB(
+                    $selectIds,
+                    $duplicateNbr
+                );
+            }
+        } else {
+            unvalidFormMessage();
         }
         require_once($path . "listResources.php");
         break;
@@ -159,8 +186,14 @@ switch ($o) {
         /*
          * Delete n resources only if data sent are correctly typed
          */
-        if (!in_array(false, $selectIds)) {
-            deleteResourceInDB($selectIds);
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            if (!in_array(false, $selectIds)) {
+                deleteResourceInDB($selectIds);
+            }
+        } else {
+            unvalidFormMessage();
         }
         require_once($path . "listResources.php");
         break;

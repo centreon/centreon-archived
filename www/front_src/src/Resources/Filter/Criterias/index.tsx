@@ -1,22 +1,28 @@
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
+import { useAtomValue, useUpdateAtom } from 'jotai/utils';
+import { isNil, pipe, reject, sortBy } from 'ramda';
 
 import { Button, Grid, makeStyles } from '@material-ui/core';
 import TuneIcon from '@material-ui/icons/Tune';
 
 import { PopoverMenu, SelectEntry, useMemoComponent } from '@centreon/ui';
 
-import { useResourceContext } from '../../Context';
 import {
   labelClear,
   labelSearch,
   labelSearchOptions,
 } from '../../translatedLabels';
-import { FilterState } from '../useFilter';
+import {
+  applyCurrentFilterDerivedAtom,
+  clearFilterDerivedAtom,
+  filterWithParsedSearchDerivedAtom,
+} from '../filterAtoms';
 
-import Criteria from './Criteria';
-import { Criteria as CriteriaInterface } from './models';
+import FilterCriteria from './Criteria';
+import { Criteria, CriteriaDisplayProps, selectableCriterias } from './models';
+import { criteriaNameSortOrder } from './searchQueryLanguage/models';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -27,25 +33,43 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-interface Props
-  extends Pick<FilterState, 'applyCurrentFilter' | 'clearFilter'> {
-  criterias: Array<CriteriaInterface>;
-}
+const getCriterias = (filterWithParsedSearch): Array<Criteria> => {
+  const getSelectableCriteriaByName = (name: string): CriteriaDisplayProps =>
+    selectableCriterias[name];
 
-const CriteriasContent = ({
-  criterias,
-  applyCurrentFilter,
-  clearFilter,
-}: Props): JSX.Element => {
+  const isNonSelectableCriteria = (criteria: Criteria): boolean =>
+    pipe(({ name }) => name, getSelectableCriteriaByName, isNil)(criteria);
+
+  const criterias = sortBy<Criteria>(
+    ({ name }) => criteriaNameSortOrder[name],
+    filterWithParsedSearch.criterias,
+  );
+
+  return pipe(
+    reject(isNonSelectableCriteria) as (criterias) => Array<Criteria>,
+  )(criterias);
+};
+
+const CriteriasContent = (): JSX.Element => {
   const classes = useStyles();
 
   const { t } = useTranslation();
+
+  const filterWithParsedSearch = useAtomValue(
+    filterWithParsedSearchDerivedAtom,
+  );
+
+  const applyCurrentFilter = useUpdateAtom(applyCurrentFilterDerivedAtom);
+  const clearFilter = useUpdateAtom(clearFilterDerivedAtom);
+
+  const criterias = getCriterias(filterWithParsedSearch);
 
   return (
     <PopoverMenu
       icon={<TuneIcon fontSize="small" />}
       popperPlacement="bottom-start"
       title={t(labelSearchOptions)}
+      onClose={applyCurrentFilter}
     >
       {(): JSX.Element => (
         <Grid
@@ -58,7 +82,10 @@ const CriteriasContent = ({
           {criterias.map(({ name, value }) => {
             return (
               <Grid item key={name}>
-                <Criteria name={name} value={value as Array<SelectEntry>} />
+                <FilterCriteria
+                  name={name}
+                  value={value as Array<SelectEntry>}
+                />
               </Grid>
             );
           })}
@@ -86,24 +113,13 @@ const CriteriasContent = ({
 };
 
 const Criterias = (): JSX.Element => {
-  const {
-    getMultiSelectCriterias,
-    applyCurrentFilter,
-    clearFilter,
-    filterWithParsedSearch,
-  } = useResourceContext();
-
-  const criterias = getMultiSelectCriterias();
+  const filterWithParsedSearch = useAtomValue(
+    filterWithParsedSearchDerivedAtom,
+  );
 
   return useMemoComponent({
-    Component: (
-      <CriteriasContent
-        applyCurrentFilter={applyCurrentFilter}
-        clearFilter={clearFilter}
-        criterias={criterias}
-      />
-    ),
-    memoProps: [criterias, filterWithParsedSearch],
+    Component: <CriteriasContent />,
+    memoProps: [filterWithParsedSearch],
   });
 };
 

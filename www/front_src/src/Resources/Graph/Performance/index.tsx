@@ -17,51 +17,31 @@ import {
   add,
   negate,
   or,
-  pathOr,
   propOr,
 } from 'ramda';
 import { useTranslation } from 'react-i18next';
-import { useHistory } from 'react-router';
+import { useAtomValue } from 'jotai/utils';
 
-import {
-  makeStyles,
-  Typography,
-  Theme,
-  MenuItem,
-  Menu,
-  ButtonGroup,
-} from '@material-ui/core';
-import SaveAsImageIcon from '@material-ui/icons/SaveAlt';
-import LaunchIcon from '@material-ui/icons/Launch';
+import { makeStyles, Typography, Theme } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 
 import {
   useRequest,
   getData,
   timeFormat,
-  ContentWithCircularLoading,
-  IconButton,
   useLocaleDateTimeFormat,
-  Button,
 } from '@centreon/ui';
 
 import { TimelineEvent } from '../../Details/tabs/Timeline/models';
 import { Resource } from '../../models';
 import { ResourceDetails } from '../../Details/models';
 import { CommentParameters } from '../../Actions/api';
-import {
-  labelAsDisplayed,
-  labelExportToPng,
-  labelSmallSize,
-  labelMediumSize,
-  labelNoDataForThisPeriod,
-  labelPerformancePage,
-} from '../../translatedLabels';
+import { labelNoDataForThisPeriod } from '../../translatedLabels';
 import {
   CustomTimePeriod,
   CustomTimePeriodProperty,
 } from '../../Details/tabs/Graph/models';
-import { useResourceContext } from '../../Context';
+import { selectedResourceIdAtom } from '../../Details/detailsAtoms';
 
 import Graph from './Graph';
 import Legend from './Legend';
@@ -71,12 +51,14 @@ import {
   TimeValue,
   Line as LineModel,
   AdjustTimePeriodProps,
-  Metric,
 } from './models';
-import { getTimeSeries, getLineData } from './timeSeries';
-import useMetricsValue, { MetricsValueContext } from './Graph/useMetricsValue';
+import { getTimeSeries, getLineData, getMetrics } from './timeSeries';
 import { TimeShiftDirection } from './Graph/TimeShiftZones';
-import exportToPng from './ExportableGraphWithTimeline/exportToPng';
+import MemoizedGraphActions from './GraphActions';
+import {
+  isListingGraphOpenAtom,
+  timeValueAtom,
+} from './Graph/mouseTimeValueAtoms';
 
 interface Props {
   adjustTimePeriod?: (props: AdjustTimePeriodProps) => void;
@@ -101,13 +83,6 @@ interface MakeStylesProps extends Pick<Props, 'graphHeight' | 'displayTitle'> {
 }
 
 const useStyles = makeStyles<Theme, MakeStylesProps>((theme) => ({
-  buttonGroup: {
-    alignSelf: 'center',
-  },
-  buttonLink: {
-    background: 'transparent',
-    border: 'none',
-  },
   container: {
     display: 'grid',
     flexDirection: 'column',
@@ -115,9 +90,8 @@ const useStyles = makeStyles<Theme, MakeStylesProps>((theme) => ({
     gridTemplateRows: ({ graphHeight, displayTitle }): string =>
       `${displayTitle ? 'min-content' : ''} ${theme.spacing(
         2,
-      )}px ${graphHeight}px auto`,
+      )}px ${graphHeight}px min-content`,
     height: '100%',
-    justifyItems: 'center',
     width: 'auto',
   },
   graphHeader: {
@@ -136,10 +110,6 @@ const useStyles = makeStyles<Theme, MakeStylesProps>((theme) => ({
     margin: theme.spacing(0, 1),
     width: '90%',
   },
-  legend: {
-    height: '100%',
-    width: '100%',
-  },
   loadingContainer: {
     height: theme.spacing(2),
     width: theme.spacing(2),
@@ -149,6 +119,12 @@ const useStyles = makeStyles<Theme, MakeStylesProps>((theme) => ({
     display: 'flex',
     height: '100%',
     justifyContent: 'center',
+  },
+  title: {
+    maxWidth: '100%',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
   },
 }));
 
@@ -170,56 +146,20 @@ const PerformanceGraph = ({
   limitLegendRows,
   isInViewport = true,
   displayCompleteGraph,
-}: Props): JSX.Element | null => {
+}: Props): JSX.Element => {
   const classes = useStyles({
     canAdjustTimePeriod: not(isNil(adjustTimePeriod)),
     displayTitle,
     graphHeight,
   });
   const { t } = useTranslation();
-  const { format } = useLocaleDateTimeFormat();
-  const history = useHistory();
 
   const [timeSeries, setTimeSeries] = React.useState<Array<TimeValue>>([]);
   const [lineData, setLineData] = React.useState<Array<LineModel>>();
   const [title, setTitle] = React.useState<string>();
   const [base, setBase] = React.useState<number>();
-  const [exporting, setExporting] = React.useState<boolean>(false);
   const performanceGraphRef = React.useRef<HTMLDivElement | null>(null);
   const performanceGraphHeightRef = React.useRef<number>(0);
-  const [menuAnchor, setMenuAnchor] = React.useState<Element | null>(null);
-
-  const openSizeExportMenu = (event: React.MouseEvent): void => {
-    setMenuAnchor(event.currentTarget);
-  };
-  const closeSizeExportMenu = (): void => {
-    setMenuAnchor(null);
-  };
-  const goToPerformancePage = (): void => {
-    const startTimestamp = format({
-      date: customTimePeriod?.start as Date,
-      formatString: 'X',
-    });
-    const endTimestamp = format({
-      date: customTimePeriod?.end as Date,
-      formatString: 'X',
-    });
-
-    const urlParameters = (): string => {
-      const params = new URLSearchParams({
-        end: endTimestamp,
-        mode: '0',
-        start: startTimestamp,
-        svc_id: `${resource.parent?.name};${resource.name}`,
-      });
-
-      return params.toString();
-    };
-
-    history.push(`/main.php?p=204&${urlParameters()}`);
-  };
-
-  const { selectedResourceId } = useResourceContext();
 
   const {
     sendRequest: sendGetGraphDataRequest,
@@ -227,7 +167,12 @@ const PerformanceGraph = ({
   } = useRequest<GraphData>({
     request: getData,
   });
-  const metricsValueProps = useMetricsValue(isInViewport);
+
+  const selectedResourceId = useAtomValue(selectedResourceIdAtom);
+
+  const timeValue = useAtomValue(timeValueAtom);
+  const isListingGraphOpen = useAtomValue(isListingGraphOpenAtom);
+
   const { toDateTime } = useLocaleDateTimeFormat();
 
   React.useEffect(() => {
@@ -235,23 +180,28 @@ const PerformanceGraph = ({
       return;
     }
 
-    sendGetGraphDataRequest(endpoint).then((graphData) => {
-      setTimeSeries(getTimeSeries(graphData));
-      setBase(graphData.global.base);
-      setTitle(graphData.global.title);
-      const newLineData = getLineData(graphData);
-      if (lineData) {
-        setLineData(
-          newLineData.map((line) => ({
-            ...line,
-            display: find(propEq('name', line.name), lineData)?.display ?? true,
-          })),
-        );
+    sendGetGraphDataRequest({
+      endpoint,
+    })
+      .then((graphData) => {
+        setTimeSeries(getTimeSeries(graphData));
+        setBase(graphData.global.base);
+        setTitle(graphData.global.title);
+        const newLineData = getLineData(graphData);
+        if (lineData) {
+          setLineData(
+            newLineData.map((line) => ({
+              ...line,
+              display:
+                find(propEq('name', line.name), lineData)?.display ?? true,
+            })),
+          );
 
-        return;
-      }
-      setLineData(newLineData);
-    });
+          return;
+        }
+        setLineData(newLineData);
+      })
+      .catch(() => undefined);
   }, [endpoint]);
 
   React.useEffect(() => {
@@ -390,98 +340,53 @@ const PerformanceGraph = ({
     });
   };
 
-  const convertToPng = (ratio: number): void => {
-    setMenuAnchor(null);
-    setExporting(true);
-    exportToPng({
-      element: performanceGraphRef.current as HTMLElement,
-      ratio,
-      title: `${resource?.name}-performance`,
-    }).finally(() => {
-      setExporting(false);
-    });
-  };
-
-  const timeTick = pathOr(
+  const timeTick = propOr<string, TimeValue | null, string>(
     '',
-    ['metricsValue', 'timeValue', 'timeTick'],
-    metricsValueProps,
+    'timeTick',
+    timeValue,
   );
 
-  const metricsValue = prop('metricsValue', metricsValueProps);
-
-  const metrics = propOr([] as Array<Metric>, 'metrics', metricsValue);
+  const metrics = getMetrics(timeValue as TimeValue);
 
   const containsMetrics = not(isNil(metrics)) && not(isEmpty(metrics));
 
+  const isDisplayedInListing = not(displayTitle);
+
+  const displayTimeValues = not(isListingGraphOpen) || isDisplayedInListing;
+
   return (
-    <MetricsValueContext.Provider value={metricsValueProps}>
-      <div
-        className={classes.container}
-        ref={
-          performanceGraphRef as React.MutableRefObject<HTMLDivElement | null>
-        }
-      >
-        {displayTitle && (
-          <div className={classes.graphHeader}>
-            <div />
-            <Typography color="textPrimary" variant="body1">
-              {title}
-            </Typography>
-            <ButtonGroup className={classes.buttonGroup} size="small">
-              <IconButton
-                disableTouchRipple
-                className={classes.buttonLink}
-                color="primary"
-                title={t(labelPerformancePage)}
-                onClick={goToPerformancePage}
-              >
-                <LaunchIcon style={{ fontSize: 18 }} />
-              </IconButton>
-              <Button className={classes.buttonLink}>
-                <ContentWithCircularLoading
-                  alignCenter={false}
-                  loading={exporting}
-                  loadingIndicatorSize={16}
-                >
-                  <>
-                    <IconButton
-                      disableTouchRipple
-                      disabled={isNil(timeline)}
-                      title={t(labelExportToPng)}
-                      onClick={openSizeExportMenu}
-                    >
-                      <SaveAsImageIcon style={{ fontSize: 18 }} />
-                    </IconButton>
-                    <Menu
-                      keepMounted
-                      anchorEl={menuAnchor}
-                      open={Boolean(menuAnchor)}
-                      onClose={closeSizeExportMenu}
-                    >
-                      <MenuItem onClick={(): void => convertToPng(1)}>
-                        {t(labelAsDisplayed)}
-                      </MenuItem>
-                      <MenuItem onClick={(): void => convertToPng(0.75)}>
-                        {t(labelMediumSize)}
-                      </MenuItem>
-                      <MenuItem onClick={(): void => convertToPng(0.5)}>
-                        {t(labelSmallSize)}
-                      </MenuItem>
-                    </Menu>
-                  </>
-                </ContentWithCircularLoading>
-              </Button>
-            </ButtonGroup>
-          </div>
-        )}
-
-        <div>
-          {timeTick && containsMetrics && (
-            <Typography variant="body1">{toDateTime(timeTick)}</Typography>
-          )}
+    <div
+      className={classes.container}
+      ref={performanceGraphRef as React.MutableRefObject<HTMLDivElement | null>}
+    >
+      {displayTitle && (
+        <div className={classes.graphHeader}>
+          <div />
+          <Typography
+            className={classes.title}
+            color="textPrimary"
+            variant="body1"
+          >
+            {title}
+          </Typography>
+          <MemoizedGraphActions
+            customTimePeriod={customTimePeriod}
+            performanceGraphRef={performanceGraphRef}
+            resourceName={resource.name}
+            resourceParentName={resource.parent?.name}
+            timeline={timeline}
+          />
         </div>
+      )}
 
+      <div>
+        {displayTimeValues && timeTick && containsMetrics && (
+          <Typography align="center" variant="body1">
+            {toDateTime(timeTick)}
+          </Typography>
+        )}
+      </div>
+      <div>
         <Responsive.ParentSize>
           {({ width, height }): JSX.Element => (
             <Graph
@@ -490,6 +395,7 @@ const PerformanceGraph = ({
               canAdjustTimePeriod={not(isNil(adjustTimePeriod))}
               containsMetrics={containsMetrics}
               displayEventAnnotations={displayEventAnnotations}
+              displayTimeValues={displayTimeValues}
               height={height}
               lines={displayedLines}
               loading={
@@ -505,21 +411,21 @@ const PerformanceGraph = ({
             />
           )}
         </Responsive.ParentSize>
-        <div className={classes.legend}>
-          <Legend
-            base={base as number}
-            displayCompleteGraph={displayCompleteGraph}
-            limitLegendRows={limitLegendRows}
-            lines={sortedLines}
-            toggable={toggableLegend}
-            onClearHighlight={clearHighlight}
-            onHighlight={highlightLine}
-            onSelect={selectMetricLine}
-            onToggle={toggleMetricLine}
-          />
-        </div>
       </div>
-    </MetricsValueContext.Provider>
+      <Legend
+        base={base as number}
+        displayCompleteGraph={displayCompleteGraph}
+        displayTimeValues={displayTimeValues}
+        limitLegendRows={limitLegendRows}
+        lines={sortedLines}
+        timeSeries={timeSeries}
+        toggable={toggableLegend}
+        onClearHighlight={clearHighlight}
+        onHighlight={highlightLine}
+        onSelect={selectMetricLine}
+        onToggle={toggleMetricLine}
+      />
+    </div>
   );
 };
 

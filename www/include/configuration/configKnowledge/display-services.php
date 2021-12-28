@@ -232,7 +232,6 @@ try {
     $tpl->assign("host_name", _("Hosts"));
     $tpl->assign("p", 61002);
     $tpl->assign("service_description", _("Services"));
-    $selection = $proc->serviceList;
 
     $diff = [];
     $templateHostArray = [];

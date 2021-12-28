@@ -82,7 +82,9 @@ try {
     if (empty($data)) {
         try {
             // at first run (eg: after the install), data may be missing.
-            $pearDB->query("INSERT INTO cron_operation (name, system, activate) VALUES ('centAcl.php', '1', '1')");
+            $pearDB->query(
+                "INSERT INTO `cron_operation` (`name`, `system`, `activate`) VALUES ('centAcl.php', '1', '1')"
+            );
         } catch (\PDOException $e) {
             programExit("Error can't insert centAcl values in the `cron_operation` table.");
         }

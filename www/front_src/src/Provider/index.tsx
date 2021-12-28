@@ -13,21 +13,22 @@ import isYesterday from 'dayjs/plugin/isYesterday';
 import weekday from 'dayjs/plugin/weekday';
 import isBetween from 'dayjs/plugin/isBetween';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
-import { Provider } from 'react-redux';
+import { Provider as ReduxProvider } from 'react-redux';
 import { pathEq, toPairs, pipe, reduce, mergeAll } from 'ramda';
 import i18n, { Resource, ResourceLanguage } from 'i18next';
 import { initReactI18next } from 'react-i18next';
+import { Provider as JotaiProvider } from 'jotai';
+import { useUpdateAtom } from 'jotai/utils';
 
-import { useRequest, getData } from '@centreon/ui';
+import { useRequest, getData, withSnackbar, ThemeProvider } from '@centreon/ui';
 import {
-  Context,
-  useUser,
-  useAcl,
-  useDowntime,
-  useRefreshInterval,
+  userAtom,
   User,
   Actions,
-  useCloudServices,
+  downtimeAtom,
+  refreshIntervalAtom,
+  acknowledgementAtom,
+  aclAtom,
 } from '@centreon/ui-context';
 
 import createStore from '../store';
@@ -40,6 +41,7 @@ import {
   userEndpoint,
 } from './endpoint';
 import { DefaultParameters } from './models';
+import { userDecoder } from './decoder';
 
 dayjs.extend(localizedFormat);
 dayjs.extend(utcPlugin);
@@ -50,19 +52,17 @@ dayjs.extend(weekday);
 dayjs.extend(isBetween);
 dayjs.extend(isSameOrBefore);
 
-const App = React.lazy(() => import('../App'));
-
 const store = createStore();
 
-const AppProvider = (): JSX.Element | null => {
-  const { user, setUser } = useUser();
-  const { downtime, setDowntime } = useDowntime();
-  const { refreshInterval, setRefreshInterval } = useRefreshInterval();
-  const { actionAcl, setActionAcl } = useAcl();
-  const cloudServices = useCloudServices();
+interface Props {
+  children: React.ReactNode;
+}
+
+const AppProvider = ({ children }: Props): JSX.Element => {
   const [dataLoaded, setDataLoaded] = React.useState(false);
 
   const { sendRequest: getUser } = useRequest<User>({
+    decoder: userDecoder,
     request: getData,
   });
   const { sendRequest: getParameters } = useRequest<DefaultParameters>({
@@ -74,6 +74,12 @@ const AppProvider = (): JSX.Element | null => {
   const { sendRequest: getAcl } = useRequest<Actions>({
     request: getData,
   });
+
+  const setUser = useUpdateAtom(userAtom);
+  const setDowntime = useUpdateAtom(downtimeAtom);
+  const setRefreshInterval = useUpdateAtom(refreshIntervalAtom);
+  const setAcl = useUpdateAtom(aclAtom);
+  const setAcknowledgement = useUpdateAtom(acknowledgementAtom);
 
   const initializeI18n = ({ retrievedUser, retrievedTranslations }): void => {
     const locale = (retrievedUser.locale || navigator.language)?.slice(0, 2);
@@ -96,10 +102,18 @@ const AppProvider = (): JSX.Element | null => {
 
   React.useEffect(() => {
     Promise.all([
-      getUser(userEndpoint),
-      getParameters(parametersEndpoint),
-      getTranslations(translationEndpoint),
-      getAcl(aclEndpoint),
+      getUser({
+        endpoint: userEndpoint,
+      }),
+      getParameters({
+        endpoint: parametersEndpoint,
+      }),
+      getTranslations({
+        endpoint: translationEndpoint,
+      }),
+      getAcl({
+        endpoint: aclEndpoint,
+      }),
     ])
       .then(
         ([
@@ -114,12 +128,15 @@ const AppProvider = (): JSX.Element | null => {
             locale: retrievedUser.locale || 'en',
             name: retrievedUser.name,
             timezone: retrievedUser.timezone,
+            use_deprecated_pages: retrievedUser.use_deprecated_pages,
           });
           setDowntime({
             default_duration: parseInt(
               retrievedParameters.monitoring_default_downtime_duration,
               10,
             ),
+            default_fixed: false,
+            default_with_services: false,
           });
           setRefreshInterval(
             parseInt(
@@ -127,7 +144,13 @@ const AppProvider = (): JSX.Element | null => {
               10,
             ),
           );
-          setActionAcl(retrievedAcl);
+          setAcl({ actions: retrievedAcl });
+          setAcknowledgement({
+            persistent:
+              retrievedParameters.monitoring_default_acknowledgement_persistent,
+            sticky:
+              retrievedParameters.monitoring_default_acknowledgement_sticky,
+          });
 
           initializeI18n({
             retrievedTranslations,
@@ -149,24 +172,20 @@ const AppProvider = (): JSX.Element | null => {
   }
 
   return (
-    <Context.Provider
-      value={{
-        ...user,
-        acl: {
-          actions: actionAcl,
-        },
-        cloudServices,
-        downtime,
-        refreshInterval,
-      }}
-    >
-      <Provider store={store}>
-        <React.Suspense fallback={<PageLoader />}>
-          <App />
-        </React.Suspense>
-      </Provider>
-    </Context.Provider>
+    <ReduxProvider store={store}>
+      <React.Suspense fallback={<PageLoader />}>{children}</React.Suspense>
+    </ReduxProvider>
   );
 };
 
-export default AppProvider;
+const AppProviderWithSnackbar = withSnackbar({ Component: AppProvider });
+
+const Provider = ({ children }: Props): JSX.Element => (
+  <ThemeProvider>
+    <JotaiProvider scope="ui-context">
+      <AppProviderWithSnackbar>{children}</AppProviderWithSnackbar>
+    </JotaiProvider>
+  </ThemeProvider>
+);
+
+export default Provider;

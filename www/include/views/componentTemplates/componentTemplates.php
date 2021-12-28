@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -36,6 +37,13 @@
 if (!isset($centreon)) {
     exit();
 }
+
+const ADD_COMPONENT_TEMPLATE = 'a';
+const WATCH_COMPONENT_TEMPLATE = 'w';
+const MODIFY_COMPONENT_TEMPLATE = 'c';
+const DUPLICATE_COMPONENT_TEMPLATE = 'm';
+const DELETE_COMPONENT_TEMPLATE = 'd';
+
 
 $duplicationNumbers = [];
 $selectedCurveTemplates = [];
@@ -76,26 +84,30 @@ require_once $path . 'DB-Func.php';
 require_once './include/common/common-Func.php';
 
 switch ($o) {
-    case 'a':
+    case ADD_COMPONENT_TEMPLATE:
+    case WATCH_COMPONENT_TEMPLATE:
+    case MODIFY_COMPONENT_TEMPLATE:
         require_once $path . 'formComponentTemplate.php';
-        break; //Add a Component Template
-    case 'w':
-        require_once $path . 'formComponentTemplate.php';
-        break; //Watch a Component Template
-    case 'c':
-        require_once $path . 'formComponentTemplate.php';
-        break; //Modify a Component Template
-    case 'm':
-        multipleComponentTemplateInDB(
-            isset($selectedCurveTemplates) ? $selectedCurveTemplates : [],
-            $duplicationNumbers
-        );
+        break;
+    case DUPLICATE_COMPONENT_TEMPLATE:
+        if (isCSRFTokenValid()) {
+            multipleComponentTemplateInDB(
+                isset($selectedCurveTemplates) ? $selectedCurveTemplates : [],
+                $duplicationNumbers
+            );
+        } else {
+            unvalidFormMessage();
+        }
         require_once $path . 'listComponentTemplates.php';
-        break; //Duplicate n Component Templates
-    case 'd':
-        deleteComponentTemplateInDB(isset($selectedCurveTemplates) ? $selectedCurveTemplates : []);
+        break;
+    case DELETE_COMPONENT_TEMPLATE:
+        if (isCSRFTokenValid()) {
+            deleteComponentTemplateInDB(isset($selectedCurveTemplates) ? $selectedCurveTemplates : []);
+        } else {
+            unvalidFormMessage();
+        }
         require_once $path . 'listComponentTemplates.php';
-        break; //Delete n Component Templates
+        break;
     default:
         require_once $path . 'listComponentTemplates.php';
         break;

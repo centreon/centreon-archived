@@ -11,10 +11,23 @@ import {
   length,
   dec,
   isNil,
+  not,
+  map,
+  difference,
+  pluck,
+  concat,
+  pipe,
+  dropLast,
+  or,
+  remove,
 } from 'ramda';
 import { useTranslation } from 'react-i18next';
+import { useAtomValue, useUpdateAtom } from 'jotai/utils';
+import { useAtom } from 'jotai';
 
+import CloseIcon from '@material-ui/icons/Close';
 import {
+  CircularProgress,
   ClickAwayListener,
   makeStyles,
   MenuItem,
@@ -22,27 +35,49 @@ import {
   Popper,
 } from '@material-ui/core';
 
-import { MemoizedFilter, SearchField } from '@centreon/ui';
+import {
+  MemoizedFilter,
+  SearchField,
+  IconButton,
+  getData,
+  useRequest,
+  LoadingSkeleton,
+} from '@centreon/ui';
 
 import {
   labelStateFilter,
   labelSearch,
   labelNewFilter,
   labelMyFilters,
+  labelClearFilter,
 } from '../translatedLabels';
-import { useResourceContext } from '../Context';
 
-import SaveFilter from './Save';
 import FilterLoadingSkeleton from './FilterLoadingSkeleton';
-import Criterias from './Criterias';
 import {
   standardFilterById,
   unhandledProblemsFilter,
   resourceProblemsFilter,
   allFilter,
 } from './models';
-import SelectFilter from './Fields/SelectFilter';
-import { getAutocompleteSuggestions } from './Criterias/searchQueryLanguage';
+import {
+  getAutocompleteSuggestions,
+  getDynamicCriteriaParametersAndValue,
+  DynamicCriteriaParametersAndValues,
+} from './Criterias/searchQueryLanguage';
+import {
+  applyCurrentFilterDerivedAtom,
+  applyFilterDerivedAtom,
+  clearFilterDerivedAtom,
+  currentFilterAtom,
+  customFiltersAtom,
+  searchAtom,
+  sendingFilterAtom,
+  setNewFilterDerivedAtom,
+} from './filterAtoms';
+
+interface DynamicCriteriaResult {
+  result: Array<{ name: string }>;
+}
 
 const useStyles = makeStyles((theme) => ({
   autocompletePopper: {
@@ -53,27 +88,25 @@ const useStyles = makeStyles((theme) => ({
     display: 'grid',
     gridAutoFlow: 'column',
     gridGap: theme.spacing(1),
-    gridTemplateColumns: 'auto auto auto 1fr',
+    gridTemplateColumns: 'auto 175px auto 1fr',
     width: '100%',
   },
+  loader: { display: 'flex', justifyContent: 'center' },
 }));
 
+const SaveFilter = React.lazy(() => import('./Save'));
+const SelectFilter = React.lazy(() => import('./Fields/SelectFilter'));
+const Criterias = React.lazy(() => import('./Criterias'));
+
+const debounceTimeInMs = 500;
+
+const isDefined = pipe(isNil, not);
+
 const Filter = (): JSX.Element => {
-  const { t } = useTranslation();
   const classes = useStyles();
+  const { t } = useTranslation();
 
-  const {
-    applyFilter,
-    customFilters,
-    customFiltersLoading,
-    setSearch,
-    setNewFilter,
-    currentFilter,
-    search,
-    applyCurrentFilter,
-  } = useResourceContext();
-
-  const [isSearchFieldFocus, setIsSearchFieldFocus] = React.useState(false);
+  const [isSearchFieldFocus, setIsSearchFieldFocused] = React.useState(false);
   const [autocompleteAnchor, setAutocompleteAnchor] =
     React.useState<HTMLDivElement | null>(null);
   const searchRef = React.useRef<HTMLInputElement>();
@@ -83,11 +116,123 @@ const Filter = (): JSX.Element => {
   const [cursorPosition, setCursorPosition] = React.useState(0);
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] =
     React.useState(0);
+  const dynamicSuggestionsDebounceRef = React.useRef<NodeJS.Timeout | null>(
+    null,
+  );
+
+  const {
+    sendRequest: sendDynamicCriteriaValueRequests,
+    sending: sendingDynamicCriteriaValueRequests,
+  } = useRequest<DynamicCriteriaResult>({
+    request: getData,
+  });
+
+  const [search, setSearch] = useAtom(searchAtom);
+  const customFilters = useAtomValue(customFiltersAtom);
+  const currentFilter = useAtomValue(currentFilterAtom);
+  const sendingFilter = useAtomValue(sendingFilterAtom);
+  const applyCurrentFilter = useUpdateAtom(applyCurrentFilterDerivedAtom);
+  const applyFilter = useUpdateAtom(applyFilterDerivedAtom);
+  const setNewFilter = useUpdateAtom(setNewFilterDerivedAtom);
+  const clearFilter = useUpdateAtom(clearFilterDerivedAtom);
 
   const open = Boolean(autocompleteAnchor);
 
+  const clearDebounceDynamicSuggestions = (): void => {
+    if (dynamicSuggestionsDebounceRef.current) {
+      clearInterval(dynamicSuggestionsDebounceRef.current as NodeJS.Timeout);
+    }
+  };
+
+  const loadDynamicCriteriaSuggestion = ({
+    criteria,
+    values,
+  }: DynamicCriteriaParametersAndValues): void => {
+    const { buildAutocompleteEndpoint, autocompleteSearch } = criteria;
+
+    const lastValue = last(values);
+
+    const selectedValues = remove(-1, 1, values);
+
+    sendDynamicCriteriaValueRequests({
+      endpoint: buildAutocompleteEndpoint({
+        limit: 5,
+        page: 1,
+        search: {
+          conditions: [
+            ...(autocompleteSearch?.conditions || []),
+            not(isEmpty(selectedValues))
+              ? {
+                  field: 'name',
+                  values: { $ni: selectedValues },
+                }
+              : {},
+          ],
+          regex: {
+            fields: ['name'],
+            value: lastValue,
+          },
+        },
+      }),
+    }).then(({ result }): void => {
+      const names = pluck('name', result);
+
+      const lastValueEqualsToAResult = find(equals(lastValue), names);
+
+      const notSelectedValues = difference(names, values);
+
+      if (or(lastValueEqualsToAResult, isEmpty(names))) {
+        const res = [
+          ...notSelectedValues,
+          ...map(concat(','), notSelectedValues),
+        ];
+
+        setAutoCompleteSuggestions(res);
+
+        return;
+      }
+
+      setAutoCompleteSuggestions(names);
+    });
+  };
+
+  const debounceDynamicSuggestions = (
+    props: DynamicCriteriaParametersAndValues,
+  ): void => {
+    clearDebounceDynamicSuggestions();
+
+    dynamicSuggestionsDebounceRef.current = setTimeout((): void => {
+      loadDynamicCriteriaSuggestion(props);
+    }, debounceTimeInMs);
+  };
+
   React.useEffect(() => {
     setSelectedSuggestionIndex(0);
+
+    if (isEmpty(search.charAt(dec(cursorPosition)).trim())) {
+      clearDebounceDynamicSuggestions();
+      setAutoCompleteSuggestions([]);
+      setAutocompleteAnchor(null);
+
+      return;
+    }
+
+    const dynamicCriteriaParameters = getDynamicCriteriaParametersAndValue({
+      cursorPosition,
+      search,
+    });
+
+    if (isDefined(dynamicCriteriaParameters) && isSearchFieldFocus) {
+      debounceDynamicSuggestions(
+        dynamicCriteriaParameters as DynamicCriteriaParametersAndValues,
+      );
+
+      return;
+    }
+
+    clearDebounceDynamicSuggestions();
+    setAutoCompleteSuggestions([]);
+
     setAutoCompleteSuggestions(
       getAutocompleteSuggestions({
         cursorPosition,
@@ -104,19 +249,21 @@ const Filter = (): JSX.Element => {
     updateCursorPosition();
   }, [searchRef?.current?.selectionStart]);
 
-  const memoProps = [
-    customFilters,
-    customFiltersLoading,
-    search,
-    cursorPosition,
-    autoCompleteSuggestions,
-    open,
-    selectedSuggestionIndex,
-    currentFilter,
-  ];
-
   React.useEffect(() => {
-    if (equals(autoCompleteSuggestions, []) || !isSearchFieldFocus) {
+    const dynamicCriteriaParameters = getDynamicCriteriaParametersAndValue({
+      cursorPosition,
+      search,
+    });
+
+    const isDynamicCriteria = isDefined(dynamicCriteriaParameters);
+
+    if (isDynamicCriteria && isSearchFieldFocus) {
+      setAutocompleteAnchor(searchRef?.current as HTMLDivElement);
+
+      return;
+    }
+
+    if (isEmpty(autoCompleteSuggestions)) {
       setAutocompleteAnchor(null);
 
       return;
@@ -126,7 +273,7 @@ const Filter = (): JSX.Element => {
   }, [autoCompleteSuggestions]);
 
   const acceptAutocompleteSuggestionAtIndex = (index: number): void => {
-    setNewFilter();
+    setNewFilter(t);
 
     const acceptedSuggestion = autoCompleteSuggestions[index];
 
@@ -169,14 +316,27 @@ const Filter = (): JSX.Element => {
     const searchBeforeCompletedWord = search.slice(0, searchCutPosition);
     const searchAfterCompletedWord = search.slice(searchCutPosition);
 
+    const searchBeforeSuggestion = isEmpty(expressionAfterSeparator.trim())
+      ? searchBeforeCompletedWord.trim()
+      : dropLast(
+          expressionAfterSeparator.length,
+          searchBeforeCompletedWord.trim(),
+        );
+
+    const suggestion = isEmpty(expressionAfterSeparator.trim())
+      ? completedWord
+      : acceptedSuggestion;
+
     const searchWithAcceptedSuggestion = [
-      searchBeforeCompletedWord.trim(),
-      completedWord,
+      searchBeforeSuggestion,
+      suggestion,
       searchAfterCompletedWord.trim() === '' ? '' : ' ',
       searchAfterCompletedWord,
     ].join('');
 
     setCursorPosition(cursorPosition + cursorCompletionShift);
+    setAutoCompleteSuggestions([]);
+    clearDebounceDynamicSuggestions();
 
     if (isNil(search[cursorPosition])) {
       setSearch(searchWithAcceptedSuggestion);
@@ -239,11 +399,18 @@ const Filter = (): JSX.Element => {
 
     if (escapeKeyPressed) {
       closeSuggestionPopover();
+      setAutoCompleteSuggestions([]);
 
       return;
     }
 
-    if (tabKeyPressed && hasAutocompleteSuggestions) {
+    const isSearchFieldFocusedAndEnterKeyPressed =
+      enterKeyPressed && isSearchFieldFocus;
+
+    const canAcceptSuggestion =
+      tabKeyPressed || isSearchFieldFocusedAndEnterKeyPressed;
+
+    if (canAcceptSuggestion && hasAutocompleteSuggestions) {
       event.preventDefault();
       acceptAutocompleteSuggestionAtIndex(selectedSuggestionIndex);
 
@@ -262,7 +429,7 @@ const Filter = (): JSX.Element => {
 
     setSearch(value);
 
-    setNewFilter();
+    setNewFilter(t);
   };
 
   const changeFilter = (event): void => {
@@ -307,37 +474,86 @@ const Filter = (): JSX.Element => {
     setAutocompleteAnchor(null);
   };
 
+  const blurInput = (): void => {
+    setIsSearchFieldFocused(false);
+    clearDebounceDynamicSuggestions();
+  };
+
+  const dynamicCriteriaParameters = getDynamicCriteriaParametersAndValue({
+    cursorPosition,
+    search,
+  });
+
+  const isDynamicCriteria = isDefined(dynamicCriteriaParameters);
+
+  const memoProps = [
+    customFilters,
+    sendingFilter,
+    search,
+    cursorPosition,
+    autoCompleteSuggestions,
+    open,
+    selectedSuggestionIndex,
+    currentFilter,
+    isDynamicCriteria,
+    sendingDynamicCriteriaValueRequests,
+  ];
+
   return (
     <MemoizedFilter
       content={
         <div className={classes.container}>
-          <SaveFilter />
-          {customFiltersLoading ? (
+          <React.Suspense
+            fallback={
+              <LoadingSkeleton height={24} variant="circle" width={24} />
+            }
+          >
+            <SaveFilter />
+          </React.Suspense>
+          {sendingFilter ? (
             <FilterLoadingSkeleton />
           ) : (
-            <SelectFilter
-              ariaLabel={t(labelStateFilter)}
-              options={options.map(pick(['id', 'name', 'type']))}
-              selectedOptionId={
-                canDisplaySelectedFilter ? currentFilter.id : ''
-              }
-              onChange={changeFilter}
-            />
+            <React.Suspense fallback={<FilterLoadingSkeleton />}>
+              <SelectFilter
+                ariaLabel={t(labelStateFilter)}
+                options={options.map(pick(['id', 'name', 'type']))}
+                selectedOptionId={
+                  canDisplaySelectedFilter ? currentFilter.id : ''
+                }
+                onChange={changeFilter}
+              />
+            </React.Suspense>
           )}
-          <Criterias />
+          <React.Suspense
+            fallback={
+              <LoadingSkeleton height={24} variant="circle" width={24} />
+            }
+          >
+            <Criterias />
+          </React.Suspense>
           <ClickAwayListener onClickAway={closeSuggestionPopover}>
             <div>
               <SearchField
                 fullWidth
+                EndAdornment={(): JSX.Element => (
+                  <IconButton
+                    ariaLabel={t(labelClearFilter)}
+                    size="small"
+                    title={t(labelClearFilter)}
+                    onClick={clearFilter}
+                  >
+                    <CloseIcon color="action" fontSize="small" />
+                  </IconButton>
+                )}
                 inputRef={searchRef as React.RefObject<HTMLInputElement>}
                 placeholder={t(labelSearch)}
                 value={search}
-                onBlur={(): void => setIsSearchFieldFocus(false)}
+                onBlur={blurInput}
                 onChange={prepareSearch}
                 onClick={(): void => {
                   setCursorPosition(searchRef?.current?.selectionStart || 0);
                 }}
-                onFocus={(): void => setIsSearchFieldFocus(true)}
+                onFocus={(): void => setIsSearchFieldFocused(true)}
                 onKeyDown={inputKey}
               />
               <Popper
@@ -349,6 +565,11 @@ const Filter = (): JSX.Element => {
                 }}
               >
                 <Paper square>
+                  {isDynamicCriteria && sendingDynamicCriteriaValueRequests && (
+                    <MenuItem className={classes.loader}>
+                      <CircularProgress size={20} />
+                    </MenuItem>
+                  )}
                   {autoCompleteSuggestions.map((suggestion, index) => {
                     return (
                       <MenuItem

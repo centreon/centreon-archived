@@ -1,0 +1,13 @@
+// Centreon logo
+.logo {
+  padding: 10px 12px;
+  box-sizing: border-box;
+  height: 51px;
+  a {
+    display: block;
+  }
+  &-image {
+    max-width: 100%;
+    height: auto;
+  }
+}

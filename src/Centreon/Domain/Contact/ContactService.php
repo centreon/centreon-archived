@@ -22,10 +22,10 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Contact;
 
+use Centreon\Domain\Contact\Exception\ContactServiceException;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Contact\Interfaces\ContactRepositoryInterface;
 use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
-use Centreon\Domain\Menu\Interfaces\MenuRepositoryInterface;
 
 class ContactService implements ContactServiceInterface
 {
@@ -34,15 +34,9 @@ class ContactService implements ContactServiceInterface
      */
     private $contactRepository;
 
-    /**
-     * @var MenuRepositoryInterface
-     */
-    private $menuRepository;
-
-    public function __construct(ContactRepositoryInterface $contactRepository, MenuRepositoryInterface $menuRepository)
+    public function __construct(ContactRepositoryInterface $contactRepository)
     {
         $this->contactRepository = $contactRepository;
-        $this->menuRepository = $menuRepository;
     }
 
     /**
@@ -62,7 +56,7 @@ class ContactService implements ContactServiceInterface
     /**
      * @inheritDoc
      */
-    public function findContact(int $id): ?Contact
+    public function findContact(int $id): ?ContactInterface
     {
         return $this->contactRepository->findById($id);
     }
@@ -79,8 +73,28 @@ class ContactService implements ContactServiceInterface
     /**
      * @inheritDoc
      */
-    public function findBySession(string $session): ?Contact
+    public function findByName(string $name): ?ContactInterface
+    {
+        return $this->contactRepository->findByName($name);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findBySession(string $session): ?ContactInterface
     {
         return $this->contactRepository->findBySession($session);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findByAuthenticationToken(string $token): ?ContactInterface
+    {
+        try {
+            return $this->contactRepository->findByAuthenticationToken($token);
+        } catch (\Exception $ex) {
+            throw ContactServiceException::errorWhileSearchingContact($ex);
+        }
     }
 }

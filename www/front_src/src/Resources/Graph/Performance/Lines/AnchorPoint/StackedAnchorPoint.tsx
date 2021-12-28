@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { equals, isNil, map, pipe } from 'ramda';
+import { equals, isNil, map, pipe, not } from 'ramda';
 import { ScaleLinear, ScaleTime } from 'd3-scale';
 
 import { bisectDate } from '../../Graph';
@@ -16,6 +16,7 @@ export type StackValue = [number, number, StackData];
 
 interface Props {
   areaColor: string;
+  displayTimeValues: boolean;
   lineColor: string;
   stackValues: Array<StackValue>;
   timeTick: Date | null;
@@ -53,8 +54,9 @@ const StackedAnchorPoint = ({
   areaColor,
   transparency,
   lineColor,
+  displayTimeValues,
 }: Props): JSX.Element | null => {
-  if (isNil(timeTick)) {
+  if (isNil(timeTick) || not(displayTimeValues)) {
     return null;
   }
   const xAnchorPoint = xScale(timeTick);
@@ -64,6 +66,10 @@ const StackedAnchorPoint = ({
     timeTick,
     yScale,
   });
+
+  if (isNil(yAnchorPoint)) {
+    return null;
+  }
 
   return (
     <AnchorPoint

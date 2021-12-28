@@ -45,7 +45,7 @@ final class HostProvider extends Provider
                 $filter->getStatuses(),
                 ResourceFilter::MAP_STATUS_HOST
             ))
-            || $filter->getServicegroupIds()
+            || $filter->getServicegroupNames()
         ) {
             return false;
         }
@@ -69,9 +69,9 @@ final class HostProvider extends Provider
         StatementCollector $collector,
         array $accessGroupIds
     ): string {
-        $aclSubQuery = ' INNER JOIN `:dbstg`.`centreon_acl` AS host_acl ON host_acl.host_id = h.host_id
+        $aclSubQuery = ' EXISTS (SELECT 1 FROM `:dbstg`.`centreon_acl` AS host_acl WHERE host_acl.host_id = h.host_id
             AND host_acl.service_id IS NULL
-            AND host_acl.group_id IN (' . implode(',', $accessGroupIds) . ') ';
+            AND host_acl.group_id IN (' . implode(',', $accessGroupIds) . ') LIMIT 1) ';
 
         return $this->prepareSubQuery($filter, $collector, $aclSubQuery);
     }
@@ -89,7 +89,7 @@ final class HostProvider extends Provider
         StatementCollector $collector,
         ?string $aclSubQuery
     ): string {
-        $sql = "SELECT DISTINCT
+        $sql = "SELECT
             h.host_id AS `id`,
             'host' AS `type`,
             h.name AS `name`,
@@ -139,6 +139,7 @@ final class HostProvider extends Provider
             h.last_state_change AS `last_status_change`,
             h.last_notification AS `last_notification`,
             h.notification_number AS `notification_number`,
+            h.state_type AS `state_type`,
             CONCAT(h.check_attempt, '/', h.max_check_attempts, ' (', CASE
                 WHEN h.state_type = 1 THEN 'H'
                 WHEN h.state_type = 0 THEN 'S'
@@ -152,7 +153,8 @@ final class HostProvider extends Provider
             h.perfdata AS `performance_data`,
             h.execution_time AS `execution_time`,
             h.latency AS `latency`,
-            h.notify AS `notification_enabled`
+            h.notify AS `notification_enabled`,
+            h.last_time_up AS `last_time_with_no_issue`
             FROM `:dbstg`.`hosts` AS h";
 
         // get monitoring server information
@@ -162,11 +164,6 @@ final class HostProvider extends Provider
         $sql .= ' LEFT JOIN `:dbstg`.`customvariables` AS host_cvl ON host_cvl.host_id = h.host_id
             AND host_cvl.service_id = 0
             AND host_cvl.name = "CRITICALITY_LEVEL"';
-
-        // set ACL limitations
-        if ($aclSubQuery !== null) {
-            $sql .= $aclSubQuery;
-        }
 
         $hasWhereCondition = false;
 
@@ -182,9 +179,15 @@ final class HostProvider extends Provider
             $sql .= $searchRequest;
         }
 
+        // set ACL limitations
+        if ($aclSubQuery !== null) {
+            $sql .= ($hasWhereCondition ? ' AND ' : ' WHERE ') . $aclSubQuery;
+            $hasWhereCondition = true;
+        }
+
         // show active hosts and aren't related to some module
         $sql .= ($hasWhereCondition ? ' AND ' : ' WHERE ')
-            . 'h.enabled = 1 AND h.name NOT LIKE "_Module_%"';
+            . 'h.enabled = 1 AND h.name NOT LIKE "\_Module\_%"';
 
         // apply the state filter to SQL query
         if ($filter->getStates() && !$filter->hasState(ResourceServiceInterface::STATE_ALL)) {
@@ -224,6 +227,21 @@ final class HostProvider extends Provider
             $sql .= ' AND h.state IN (' . implode(', ', $statusList) . ')';
         }
 
+        // apply the state types filter to SQL query
+        $statusTypes = ResourceFilter::map($filter->getStatusTypes(), ResourceFilter::MAP_STATUS_TYPES);
+        if ($statusTypes) {
+            $statusTypesList = [];
+
+            foreach ($statusTypes as $index => $statusType) {
+                $key = ":hostStateTypes_{$index}";
+
+                $statusTypesList[] = $key;
+                $collector->addValue($key, $statusType, \PDO::PARAM_INT);
+            }
+
+            $sql .= ' AND h.state_type IN (' . implode(', ', $statusTypesList) . ')';
+        }
+
         if (!empty($filter->getHostIds())) {
             $hostIds = [];
 
@@ -238,17 +256,17 @@ final class HostProvider extends Provider
         }
 
         // apply the monitoring server filter to SQL query
-        if (!empty($filter->getMonitoringServerIds())) {
-            $monitoringServerIds = [];
+        if (!empty($filter->getMonitoringServerNames())) {
+            $monitoringServerNames = [];
 
-            foreach ($filter->getMonitoringServerIds() as $index => $monitoringServerId) {
-                $key = ":monitoringServerId_{$index}";
+            foreach ($filter->getMonitoringServerNames() as $index => $monitoringServerName) {
+                $key = ":monitoringServerName_{$index}";
 
-                $monitoringServerIds[] = $key;
-                $collector->addValue($key, $monitoringServerId, \PDO::PARAM_INT);
+                $monitoringServerNames[] = $key;
+                $collector->addValue($key, $monitoringServerName, \PDO::PARAM_STR);
             }
 
-            $sql .= ' AND i.instance_id IN (' . implode(', ', $monitoringServerIds) . ')';
+            $sql .= ' AND i.name IN (' . implode(', ', $monitoringServerNames) . ')';
         }
 
         return $sql;

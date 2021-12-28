@@ -178,7 +178,8 @@ $help['openid_connect_login_claim'] = dgettext(
 );
 $help['openid_connect_redirect_url'] = dgettext(
     'help',
-    'Your OpenId Connect redirect url (this server).'
+    'Your OpenId Connect redirect url (this server, {scheme}, {hostname} and {port} can be used for substitions,'
+    . ' default is {scheme}://{hostname}:{port}/your_centreon_path/index.php if left empty).'
 );
 $help['openid_connect_client_id'] = dgettext(
     'help',
@@ -187,6 +188,10 @@ $help['openid_connect_client_id'] = dgettext(
 $help['openid_connect_client_secret'] = dgettext(
     'help',
     'Your OpenId Connect client secret.'
+);
+$help['openid_connect_client_basic_auth'] = dgettext(
+    'help',
+    'Switch token_endpoint_auth_method from client_secret_post to client_secret_basic'
 );
 
 /**

@@ -1394,55 +1394,52 @@ prepare_apache_config() {
 
     # Prepare apache config
     ${CAT} << __EOT__ > $directory/centreon.apache.conf
-Header set X-Frame-Options: "sameorigin"
-ServerSignature Off
+Define base_uri "/centreon"
+Define install_dir "$INSTALL_DIR_CENTREON"
+
 ServerTokens Prod
-TraceEnable Off
 
-Alias /centreon/api $INSTALL_DIR_CENTREON
-Alias /centreon $INSTALL_DIR_CENTREON/www/
+<VirtualHost *:80>
+    Header set X-Frame-Options: "sameorigin"
+    Header always edit Set-Cookie ^(.*)$ $1;HttpOnly
+    ServerSignature Off
+    TraceEnable Off
 
-<LocationMatch ^/centreon/(?!api/latest/|api/beta/|api/v[0-9]+/|api/v[0-9]+\.[0-9]+/)(.*\.php(/.*)?)$>
-  ProxyPassMatch fcgi://127.0.0.1:9042${INSTALL_DIR_CENTREON}/www/\$1
-</LocationMatch>
+    Alias ${base_uri}/api ${install_dir}
+    Alias ${base_uri} ${install_dir}/www/
 
-<LocationMatch ^/centreon/(authentication|api/(latest|beta|v[0-9]+|v[0-9]+\.[0-9]+))/.*$>
-  ProxyPassMatch fcgi://127.0.0.1:9042${INSTALL_DIR_CENTREON}/api/index.php/\$1
-</LocationMatch>
+    <LocationMatch ^\${base_uri}/?(?!api/latest/|api/beta/|api/v[0-9]+/|api/v[0-9]+\.[0-9]+/)(.*\.php(/.*)?)$>
+        ProxyPassMatch "fcgi://127.0.0.1:9042${install_dir}/www/$1"
+    </LocationMatch>
 
-ProxyTimeout 300
+    <LocationMatch ^\${base_uri}/?(authentication|api/(latest|beta|v[0-9]+|v[0-9]+\.[0-9]+))/.*$>
+        ProxyPassMatch "fcgi://127.0.0.1:9042${install_dir}/api/index.php/$1"
+    </LocationMatch>
 
-<Directory "$INSTALL_DIR_CENTREON/www">
+    ProxyTimeout 300
     DirectoryIndex index.php
-    Options Indexes
-    AllowOverride all
-    Order allow,deny
-    Allow from all
-    Require all granted
-    <IfModule mod_php5.c>
-        php_admin_value engine Off
+    Options -Indexes +FollowSymLinks
+
+    <IfModule mod_security2.c>
+        # https://github.com/SpiderLabs/ModSecurity/issues/652
+        SecRuleRemoveById 200003
     </IfModule>
 
-    FallbackResource /centreon/index.html
+    <Directory "${install_dir}/www">
+        AllowOverride none
+        Require all granted
+        FallbackResource ${base_uri}/index.html
+    </Directory>
 
-    AddType text/plain hbs
-</Directory>
+    <Directory "${install_dir}/api">
+        AllowOverride none
+        Require all granted
+    </Directory>
 
-<Directory "$INSTALL_DIR_CENTREON/api">
-    Options Indexes
-    AllowOverride all
-    Order allow,deny
-    Allow from all
-    Require all granted
-    <IfModule mod_php5.c>
-        php_admin_value engine Off
-    </IfModule>
-
-    AddType text/plain hbs
-</Directory>
-
-RedirectMatch ^/$ /centreon
-
+    <If "'${base_uri}' != '/'">
+        RedirectMatch ^/$ ${base_uri}
+    </If>
+</VirtualHost>
 __EOT__
 
     if [ -e $directory/centreon.apache.conf ] ; then
@@ -1459,18 +1456,10 @@ __EOT__
 #----
 check_php_fpm_directory() {
     if [ -z "$DIR_PHP_FPM_CONF" ] ; then
-        if [ -d /etc/php/7.2/fpm/pool.d ]; then
-            DIR_PHP_FPM_CONF="/etc/php/7.2/fpm/pool.d"
-        elif [ -d /etc/opt/rh/rh-php72/php-fpm.d ] ; then
-            DIR_PHP_FPM_CONF="/etc/opt/rh/rh-php72/php-fpm.d"
-        elif [ -d /etc/php/7.3/fpm/pool.d ]; then
-            DIR_PHP_FPM_CONF="/etc/php/7.3/fpm/pool.d"
-        elif [ -d /etc/opt/rh/rh-php73/php-fpm.d ] ; then
-            DIR_PHP_FPM_CONF="/etc/opt/rh/rh-php73/php-fpm.d"
-        elif [ -d /etc/php/7.1/fpm/pool.d ]; then
-            DIR_PHP_FPM_CONF="/etc/php/7.1/fpm/pool.d"
-        elif [ -d /etc/opt/rh/rh-php71/php-fpm.d ] ; then
-            DIR_PHP_FPM_CONF="/etc/opt/rh/rh-php71/php-fpm.d"
+        if [ -d /etc/php/8.0/fpm/pool.d ]; then
+            DIR_PHP_FPM_CONF="/etc/php/8.0/fpm/pool.d"
+        elif [ -d /etc/php-fpm.d ] ; then
+            DIR_PHP_FPM_CONF="/etc/php-fpm.d"
         else
             echo_passed "$(gettext "PHP FPM config directory not found")" "$critical"
             answer_with_testdir "$(gettext "Where is your PHP FPM conf.d directory")" "NO_DEFAULT" "DIR_PHP_FPM_CONF"

@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -122,17 +123,22 @@ $style = "one";
 
 // Fill a tab with a multidimensional Array we put in $tpl
 $elemArr = array();
+$centreonToken = createCSRFToken();
+
+
 for ($i = 0; $config = $dbResult->fetch(); $i++) {
     $moptions = "";
     $selectedElements = $form->addElement('checkbox', "select[" . $config['config_id'] . "]");
 
     if ($config["config_activate"]) {
         $moptions .= "<a href='main.php?p=" . $p . "&id=" . $config['config_id'] . "&o=u&limit=" . $limit . "&num="
-            . $num . "&search=" . $search . "'><img src='img/icons/disabled.png' class='ico-14' border='0' alt='"
+            . $num . "&search=" . $search . "&centreon_token=" . $centreonToken .
+            "'><img src='img/icons/disabled.png' class='ico-14' border='0' alt='"
             . _("Disabled") . "'></a>&nbsp;&nbsp;";
     } else {
         $moptions .= "<a href='main.php?p=" . $p . "&id=" . $config['config_id'] . "&o=s&limit=" . $limit . "&num=" .
-            $num . "&search=" . $search . "'><img src='img/icons/enabled.png' class='ico-14' border='0' alt='"
+            $num . "&search=" . $search . "&centreon_token=" . $centreonToken .
+            "'><img src='img/icons/enabled.png' class='ico-14' border='0' alt='"
             . _("Enabled") . "'></a>&nbsp;&nbsp;";
     }
     $moptions .= "&nbsp;<input onKeypress=\"if(event.keyCode > 31 "

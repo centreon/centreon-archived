@@ -7,6 +7,8 @@ import { Field, reduxForm as connectForm } from 'redux-form';
 import Select from 'react-select';
 import { withTranslation } from 'react-i18next';
 
+import { Paper, Typography, Button } from '@material-ui/core';
+
 import styles from '../../../styles/partials/form/_form.scss';
 import fieldHoc from '../../form-fields/hoc';
 
@@ -24,40 +26,45 @@ class RemoteServerFormStepTwo extends Component {
     const { value } = this.state;
 
     return (
-      <div className={styles['form-wrapper']}>
-        <div className={styles['form-inner']}>
-          <div className={styles['form-heading']}>
-            <h2 className={styles['form-title']}>
-              {t('Select pollers to be attached to this new Remote Server')}
-            </h2>
-          </div>
-          <form autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
-            {pollers ? (
-              <Field
-                isMulti
-                multi
-                component={fieldHoc(Select)}
-                label={`${t('Select linked Remote Server')}:`}
-                name="linked_pollers"
-                options={pollers.items.map((c) => ({
-                  label: c.text,
-                  value: c.id,
-                }))}
-                value={value}
-                onChange={this.handleChange}
-              />
-            ) : null}
-            <div className={styles['form-buttons']}>
-              <button className={styles.button} type="submit">
-                {t('Apply')}
-              </button>
-            </div>
-            {error ? (
-              <div className={styles['error-block']}>{error.message}</div>
-            ) : null}
-          </form>
+      <Paper className={styles['form-container']}>
+        <div className={styles['form-heading']}>
+          <Typography variant="h6">
+            {t('Select pollers to be attached to this new Remote Server')}
+          </Typography>
         </div>
-      </div>
+        <form autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
+          {pollers ? (
+            <Field
+              isMulti
+              multi
+              component={fieldHoc(Select)}
+              label={`${t('Select linked Remote Server')}:`}
+              name="linked_pollers"
+              options={pollers.items.map((c) => ({
+                label: c.text,
+                value: c.id,
+              }))}
+              value={value}
+              onChange={this.handleChange}
+            />
+          ) : null}
+          <div className={styles['form-buttons']}>
+            <Button
+              color="primary"
+              size="small"
+              type="submit"
+              variant="contained"
+            >
+              {t('Apply')}
+            </Button>
+          </div>
+          {error && (
+            <Typography color="error" variant="body2">
+              {error.message}
+            </Typography>
+          )}
+        </form>
+      </Paper>
     );
   }
 }

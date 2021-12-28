@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2019 Centreon
+ * Copyright 2005-2021 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -41,13 +42,36 @@ use Symfony\Component\Validator\Constraint;
 
 class RepositoryCallback extends Constraint
 {
+    /**
+     * @var string|null
+     */
     public $fieldAccessor = null;
+
+    /**
+     * @var string|null
+     */
     public $repoMethod = null;
+
+    /**
+     * @var string|null
+     */
     public $repository = null;
-    public $fields = [];
-    const NOT_VALID_REPO_CALLBACK = '13bd9dbf-6b9b-41cd-a99e-4844bcf3077z';
+
+    /**
+     * @var string
+     */
+    public $fields = '';
+
+    public const NOT_VALID_REPO_CALLBACK = '13bd9dbf-6b9b-41cd-a99e-4844bcf3077z';
+
+    /**
+     * @var string
+     */
     public $message = 'Does not satisfy validation callback. Check Repository.';
 
+    /**
+     * @var array<string,string>
+     */
     protected static $errorNames = [
         self::NOT_VALID_REPO_CALLBACK => 'NOT_VALID_REPO_CALLBACK',
     ];

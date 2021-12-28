@@ -1,6 +1,5 @@
 import * as React from 'react';
 
-import { useSelector } from 'react-redux';
 import {
   render,
   RenderResult,
@@ -27,24 +26,40 @@ import {
   find,
   isNil,
   last,
+  equals,
+  not,
 } from 'ramda';
 import userEvent from '@testing-library/user-event';
+import { Provider } from 'jotai';
 
 import { Column } from '@centreon/ui';
+import {
+  refreshIntervalAtom,
+  userAtom,
+} from '@centreon/centreon-frontend/packages/ui-context/src';
 
 import { Resource, ResourceType } from '../models';
-import Context, { ResourceContext } from '../Context';
-import useActions from '../Actions/useActions';
-import useDetails from '../Details/useDetails';
-import useFilter from '../Filter/useFilter';
+import Context, { ResourceContext } from '../testUtils/Context';
+import useActions from '../testUtils/useActions';
+import useFilter from '../testUtils/useFilter';
 import { labelInDowntime, labelAcknowledged } from '../translatedLabels';
-import { getListingEndpoint, cancelTokenRequestParam } from '../testUtils';
+import {
+  getListingEndpoint,
+  cancelTokenRequestParam,
+  defaultSecondSortCriteria,
+} from '../testUtils';
 import { unhandledProblemsFilter } from '../Filter/models';
+import useLoadDetails from '../testUtils/useLoadDetails';
+import useDetails from '../Details/useDetails';
 
 import useListing from './useListing';
 import { getColumns, defaultSelectedColumnIds } from './columns';
 
 import Listing from '.';
+
+jest.mock('@centreon/ui-context', () =>
+  jest.requireActual('@centreon/centreon-frontend/packages/ui-context'),
+);
 
 const columns = getColumns({
   actions: { onAcknowledge: jest.fn() },
@@ -53,18 +68,15 @@ const columns = getColumns({
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
-jest.mock('react-redux', () => ({
-  ...(jest.requireActual('react-redux') as jest.Mocked<unknown>),
-  useSelector: jest.fn(),
-}));
+const mockUser = {
+  isExportButtonEnabled: true,
+  locale: 'en',
+  timezone: 'Europe/Paris',
+};
+const mockRefreshInterval = 60;
 
 jest.mock('../icons/Downtime');
-
-const appState = {
-  intervals: {
-    AjaxTimeReloadMonitoring: 60,
-  },
-};
+jest.useFakeTimers();
 
 const fillEntities = (): Array<Resource> => {
   const entityCount = 31;
@@ -129,8 +141,10 @@ let context: ResourceContext;
 const ListingTest = (): JSX.Element => {
   const listingState = useListing();
   const actionsState = useActions();
-  const detailsState = useDetails();
+  const detailsState = useLoadDetails();
   const filterState = useFilter();
+
+  useDetails();
 
   context = {
     ...listingState,
@@ -146,16 +160,21 @@ const ListingTest = (): JSX.Element => {
   );
 };
 
-const mockedSelector = useSelector as jest.Mock;
+const ListingTestWithJotai = (): JSX.Element => (
+  <Provider
+    initialValues={[
+      [userAtom, mockUser],
+      [refreshIntervalAtom, mockRefreshInterval],
+    ]}
+  >
+    <ListingTest />
+  </Provider>
+);
 
-const renderListing = (): RenderResult => render(<ListingTest />);
+const renderListing = (): RenderResult => render(<ListingTestWithJotai />);
 
 describe(Listing, () => {
   beforeEach(() => {
-    mockedSelector.mockImplementation((callback) => {
-      return callback(appState);
-    });
-
     mockedAxios.get
       .mockResolvedValueOnce({
         data: {
@@ -171,7 +190,6 @@ describe(Listing, () => {
   });
 
   afterEach(() => {
-    mockedSelector.mockClear();
     mockedAxios.get.mockReset();
   });
 
@@ -207,7 +225,7 @@ describe(Listing, () => {
   describe('column sorting', () => {
     afterEach(async () => {
       act(() => {
-        context.setCurrentFilter(unhandledProblemsFilter);
+        context.setCurrentFilter?.(unhandledProblemsFilter);
       });
 
       await waitFor(() => {
@@ -235,10 +253,17 @@ describe(Listing, () => {
 
         userEvent.click(getByLabelText(`Column ${label}`));
 
+        const secondSortCriteria =
+          not(equals(sortField, 'last_status_change')) &&
+          defaultSecondSortCriteria;
+
         await waitFor(() => {
           expect(mockedAxios.get).toHaveBeenLastCalledWith(
             getListingEndpoint({
-              sort: { [sortBy]: 'desc' },
+              sort: {
+                [sortBy]: 'desc',
+                ...secondSortCriteria,
+              },
             }),
             cancelTokenRequestParam,
           );
@@ -249,7 +274,10 @@ describe(Listing, () => {
         await waitFor(() =>
           expect(mockedAxios.get).toHaveBeenLastCalledWith(
             getListingEndpoint({
-              sort: { [sortBy]: 'asc' },
+              sort: {
+                [sortBy]: 'asc',
+                ...secondSortCriteria,
+              },
             }),
             cancelTokenRequestParam,
           ),

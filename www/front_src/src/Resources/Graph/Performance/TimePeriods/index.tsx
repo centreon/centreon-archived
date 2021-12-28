@@ -3,6 +3,7 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { always, cond, lt, lte, map, not, pick, T } from 'ramda';
 import { Responsive } from '@visx/visx';
+import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 
 import {
   Paper,
@@ -15,11 +16,18 @@ import {
 } from '@material-ui/core';
 import { CreateCSSProperties } from '@material-ui/styles';
 
+import { useMemoComponent } from '@centreon/ui';
+
 import { timePeriods } from '../../../Details/tabs/Graph/models';
 import GraphOptions from '../ExportableGraphWithTimeline/GraphOptions';
-import { useResourceContext } from '../../../Context';
 
 import CustomTimePeriodPickers from './CustomTimePeriodPickers';
+import {
+  changeCustomTimePeriodDerivedAtom,
+  changeSelectedTimePeriodDerivedAtom,
+  customTimePeriodAtom,
+  selectedTimePeriodAtom,
+} from './timePeriodAtoms';
 
 interface StylesProps {
   disablePaper: boolean;
@@ -58,16 +66,18 @@ const TimePeriodButtonGroup = ({
   disableGraphOptions = false,
   disablePaper = false,
 }: Props): JSX.Element => {
-  const { t } = useTranslation();
   const classes = useStyles({ disablePaper });
+  const { t } = useTranslation();
   const theme = useTheme();
 
-  const {
-    customTimePeriod,
-    changeCustomTimePeriod,
-    changeSelectedTimePeriod,
-    selectedTimePeriod,
-  } = useResourceContext();
+  const customTimePeriod = useAtomValue(customTimePeriodAtom);
+  const selectedTimePeriod = useAtomValue(selectedTimePeriodAtom);
+  const changeCustomTimePeriod = useUpdateAtom(
+    changeCustomTimePeriodDerivedAtom,
+  );
+  const changeSelectedTimePeriod = useUpdateAtom(
+    changeSelectedTimePeriodDerivedAtom,
+  );
 
   const translatedTimePeriodOptions = timePeriodOptions.map((timePeriod) => ({
     ...timePeriod,
@@ -78,52 +88,62 @@ const TimePeriodButtonGroup = ({
   const changeDate = ({ property, date }): void =>
     changeCustomTimePeriod({ date, property });
 
-  return (
-    <Responsive.ParentSize>
-      {({ width }): JSX.Element => {
-        const isCompact = lt(width, theme.breakpoints.values.sm);
+  return useMemoComponent({
+    Component: (
+      <Responsive.ParentSize>
+        {({ width }): JSX.Element => {
+          const isCompact = lt(width, theme.breakpoints.values.sm);
 
-        return (
-          <Paper className={classes.header}>
-            <ButtonGroup
-              className={classes.buttonGroup}
-              color="primary"
-              component="span"
-              disabled={disabled}
-              size="small"
-            >
-              {map(
-                ({ id, name, largeName }) => (
-                  <Tooltip key={name} placement="top" title={largeName}>
-                    <Button
-                      className={classes.button}
-                      component="span"
-                      variant={
-                        selectedTimePeriod?.id === id ? 'contained' : 'outlined'
-                      }
-                      onClick={(): void => changeSelectedTimePeriod(id)}
-                    >
-                      {cond<number, string>([
-                        [lte(theme.breakpoints.values.md), always(largeName)],
-                        [T, always(name)],
-                      ])(width)}
-                    </Button>
-                  </Tooltip>
-                ),
-                translatedTimePeriodOptions,
-              )}
-            </ButtonGroup>
-            <CustomTimePeriodPickers
-              acceptDate={changeDate}
-              customTimePeriod={customTimePeriod}
-              isCompact={isCompact}
-            />
-            {not(disableGraphOptions) && <GraphOptions />}
-          </Paper>
-        );
-      }}
-    </Responsive.ParentSize>
-  );
+          return (
+            <Paper className={classes.header}>
+              <ButtonGroup
+                className={classes.buttonGroup}
+                color="primary"
+                component="span"
+                disabled={disabled}
+                size="small"
+              >
+                {map(
+                  ({ id, name, largeName }) => (
+                    <Tooltip key={name} placement="top" title={largeName}>
+                      <Button
+                        className={classes.button}
+                        component="span"
+                        variant={
+                          selectedTimePeriod?.id === id
+                            ? 'contained'
+                            : 'outlined'
+                        }
+                        onClick={(): void => changeSelectedTimePeriod(id)}
+                      >
+                        {cond<number, string>([
+                          [lte(theme.breakpoints.values.md), always(largeName)],
+                          [T, always(name)],
+                        ])(width)}
+                      </Button>
+                    </Tooltip>
+                  ),
+                  translatedTimePeriodOptions,
+                )}
+              </ButtonGroup>
+              <CustomTimePeriodPickers
+                acceptDate={changeDate}
+                customTimePeriod={customTimePeriod}
+                isCompact={isCompact}
+              />
+              {not(disableGraphOptions) && <GraphOptions />}
+            </Paper>
+          );
+        }}
+      </Responsive.ParentSize>
+    ),
+    memoProps: [
+      disabled,
+      disableGraphOptions,
+      disablePaper,
+      selectedTimePeriod?.id,
+    ],
+  });
 };
 
 export default TimePeriodButtonGroup;

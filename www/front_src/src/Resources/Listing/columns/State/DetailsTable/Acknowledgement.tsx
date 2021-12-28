@@ -1,3 +1,6 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable react/no-unused-prop-types */
+
 import * as React from 'react';
 
 import parse from 'html-react-parser';
@@ -31,7 +34,6 @@ interface AcknowledgementDetails {
   author_name: string;
   comment: string;
   entry_time: Date | string;
-  // eslint-disable-next-line react/no-unused-prop-types
   id: number;
   is_persistent_comment: boolean;
   is_sticky: boolean;
@@ -80,10 +82,10 @@ const AcknowledgementDetailsTable = ({
     },
 
     {
-      getContent: (details: AcknowledgementDetails): JSX.Element => {
+      getContent: ({ comment }: AcknowledgementDetails): JSX.Element => {
         return (
           <span className={classes.comment}>
-            {parse(DOMPurify.sanitize(details.comment))}
+            {parse(DOMPurify.sanitize(comment))}
           </span>
         );
       },

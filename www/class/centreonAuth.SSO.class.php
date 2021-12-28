@@ -39,19 +39,23 @@ require_once _CENTREON_PATH_ . "/www/class/centreonRestHttp.class.php";
 
 class CentreonAuthSSO extends CentreonAuth
 {
-
     protected $ssoOptions = array();
     protected $ssoMandatory = 0;
+
+    private const SOURCE_SSO = 'sso';
+    private const SOURCE_OPENID_CONNECT = 'OpenId';
+    private const START = 0;
+    private const LENGTH = 8;
+
+    /**
+     * @var string
+     */
+    private $source;
 
     /**
      * @var using a proxy
      */
     private $proxy = null;
-
-    /**
-     * @var proxy authentication information
-     */
-    private $proxyAuthentication = null;
 
     public function __construct(
         $dependencyInjector,
@@ -87,6 +91,7 @@ class CentreonAuthSSO extends CentreonAuth
                     );
                 }
             }
+            $this->source = self::SOURCE_SSO;
         } elseif (
             isset($this->ssoOptions['openid_connect_enable'])
             && (int) $this->ssoOptions['openid_connect_enable'] === 1
@@ -94,28 +99,66 @@ class CentreonAuthSSO extends CentreonAuth
             && !empty($this->ssoOptions['openid_connect_authorization_endpoint'])
             && !empty($this->ssoOptions['openid_connect_token_endpoint'])
             && !empty($this->ssoOptions['openid_connect_introspection_endpoint'])
-            && !empty($this->ssoOptions['openid_connect_redirect_url'])
             && !empty($this->ssoOptions['openid_connect_client_id'])
             && !empty($this->ssoOptions['openid_connect_client_secret'])
         ) {
-            $this->source = "OpenId";
+            $this->source = self::SOURCE_OPENID_CONNECT;
 
             # Get configured values
+            $clientBasicAuth = $this->ssoOptions['openid_connect_client_basic_auth'];
             $clientId = $this->ssoOptions['openid_connect_client_id'];
             $clientSecret = $this->ssoOptions['openid_connect_client_secret'];
-            $redirectNoEncode = $this->ssoOptions['openid_connect_redirect_url'];
+            if (empty($this->ssoOptions['openid_connect_redirect_url'])) {
+                $redirectNoEncode = '{scheme}://{hostname}:{port}'
+                . "/" . trim($this->ssoOptions['oreon_web_path'], "/") . "/" . 'index.php';
+            } else {
+                $redirectNoEncode = $this->ssoOptions['openid_connect_redirect_url'];
+            }
+            $redirectSubstitutions = [
+                '{scheme}' => $_SERVER['REQUEST_SCHEME'],
+                '{hostname}' => $_SERVER['SERVER_NAME'],
+                '{port}' => $_SERVER['SERVER_PORT']
+            ];
+            $redirectNoEncode = strtr($redirectNoEncode, $redirectSubstitutions);
             $verifyPeer = $this->ssoOptions['openid_connect_verify_peer'];
 
             # Build endpoint urls
             $baseUrl = rtrim($this->ssoOptions['openid_connect_base_url'], "/");
-            $authEndpoint = $baseUrl . rtrim($this->ssoOptions['openid_connect_authorization_endpoint'], "/");
-            $tokenEndpoint = $baseUrl . rtrim($this->ssoOptions['openid_connect_token_endpoint'], "/");
-            $introspectionEndpoint = $baseUrl . rtrim($this->ssoOptions['openid_connect_introspection_endpoint'], "/");
-            if (!empty($this->ssoOptions['openid_connect_userinfo_endpoint'])) {
-                $userInfoEndpoint = $baseUrl . rtrim($this->ssoOptions['openid_connect_userinfo_endpoint'], "/");
+
+            if (filter_var($this->ssoOptions['openid_connect_authorization_endpoint'], FILTER_VALIDATE_URL)) {
+                $authEndpoint = rtrim($this->ssoOptions['openid_connect_authorization_endpoint'], "/");
+            } else {
+                $authEndpoint = $baseUrl . rtrim($this->ssoOptions['openid_connect_authorization_endpoint'], "/");
             }
+
+            if (filter_var($this->ssoOptions['openid_connect_token_endpoint'], FILTER_VALIDATE_URL)) {
+                $tokenEndpoint = rtrim($this->ssoOptions['openid_connect_token_endpoint'], "/");
+            } else {
+                $tokenEndpoint = $baseUrl . rtrim($this->ssoOptions['openid_connect_token_endpoint'], "/");
+            }
+
+            if (filter_var($this->ssoOptions['openid_connect_introspection_endpoint'], FILTER_VALIDATE_URL)) {
+                $introspectionEndpoint = rtrim($this->ssoOptions['openid_connect_introspection_endpoint'], "/");
+            } else {
+                $introspectionEndpoint = $baseUrl
+                    . rtrim($this->ssoOptions['openid_connect_introspection_endpoint'], "/");
+            }
+
+            if (!empty($this->ssoOptions['openid_connect_userinfo_endpoint'])) {
+                if (filter_var($this->ssoOptions['openid_connect_userinfo_endpoint'], FILTER_VALIDATE_URL)) {
+                    $userInfoEndpoint = rtrim($this->ssoOptions['openid_connect_userinfo_endpoint'], "/");
+                } else {
+                    $userInfoEndpoint = $baseUrl . rtrim($this->ssoOptions['openid_connect_userinfo_endpoint'], "/");
+                }
+            }
+
             if (!empty($this->ssoOptions['openid_connect_end_session_endpoint'])) {
-                $endSessionEndpoint = $baseUrl . rtrim($this->ssoOptions['openid_connect_end_session_endpoint'], "/");
+                if (filter_var($this->ssoOptions['openid_connect_end_session_endpoint'], FILTER_VALIDATE_URL)) {
+                    $endSessionEndpoint = rtrim($this->ssoOptions['openid_connect_end_session_endpoint'], "/");
+                } else {
+                    $endSessionEndpoint = $baseUrl
+                        . rtrim($this->ssoOptions['openid_connect_end_session_endpoint'], "/");
+                }
             }
             $redirect = urlencode($redirectNoEncode);
             $authUrl = $authEndpoint . "?client_id=" . $clientId . "&response_type=code&redirect_uri=" . $redirect;
@@ -153,6 +196,7 @@ class CentreonAuthSSO extends CentreonAuth
                     $clientId,
                     $clientSecret,
                     $inputCode,
+                    $clientBasicAuth,
                     $verifyPeer
                 );
 
@@ -167,6 +211,7 @@ class CentreonAuthSSO extends CentreonAuth
                         $clientId,
                         $clientSecret,
                         $tokenInfo['refresh_token'],
+                        $clientBasicAuth,
                         $verifyPeer,
                         !empty($this->ssoOptions['openid_connect_scope'])
                             ? $this->ssoOptions['openid_connect_scope']
@@ -186,6 +231,7 @@ class CentreonAuthSSO extends CentreonAuth
                                 $clientId,
                                 $clientSecret,
                                 $tokenInfo['refresh_token'],
+                                $clientBasicAuth,
                                 $verifyPeer
                             );
                         }
@@ -350,12 +396,13 @@ class CentreonAuthSSO extends CentreonAuth
     /**
      * Connect to OpenId Connect and get token access
      *
-     * @param string $url          OpenId Connect Client Token endpoint
-     * @param string $redirectUri  OpenId Connect Redirect Url
-     * @param string $clientId     OpenId Connect Client ID
-     * @param string $clientSecret OpenId Connect Client Secret
-     * @param string $code         OpenId Connect Authorization Code
-     * @param bool   $verifyPeer   Disable SSL verify peer
+     * @param string $url             OpenId Connect Client Token endpoint
+     * @param string $redirectUri     OpenId Connect Redirect Url
+     * @param string $clientId        OpenId Connect Client ID
+     * @param string $clientSecret    OpenId Connect Client Secret
+     * @param string $code            OpenId Connect Authorization Code
+     * @param bool   $clientBasicAuth OpenId Connect use Basic Auth method
+     * @param bool   $verifyPeer      Disable SSL verify peer
      *
      * @return array|null
     */
@@ -365,15 +412,20 @@ class CentreonAuthSSO extends CentreonAuth
         string $clientId,
         string $clientSecret,
         string $code,
+        bool $clientBasicAuth,
         bool $verifyPeer
     ): ?array {
         $data = [
-            "client_id" => $clientId,
-            "client_secret" => $clientSecret,
             "grant_type" => "authorization_code",
             "code" => $code,
             "redirect_uri" => $redirectUri
         ];
+        if ($clientBasicAuth) {
+            $authentication =  "Authorization: Basic " . base64_encode($clientId . ":" . $clientSecret);
+        } else {
+            $data["client_id"] = $clientId;
+            $data["client_secret"] = $clientSecret;
+        }
 
         $restHttp = new \CentreonRestHttp('application/x-www-form-urlencoded');
         try {
@@ -381,7 +433,7 @@ class CentreonAuthSSO extends CentreonAuth
                 $url,
                 'POST',
                 $data,
-                null,
+                $clientBasicAuth ? [$authentication] : null,
                 true,
                 $verifyPeer
             );
@@ -389,7 +441,7 @@ class CentreonAuthSSO extends CentreonAuth
             $this->CentreonLog->insertLog(
                 1,
                 sprintf(
-                    "[%s] [Error] Unable to get Token Access Information: %S, message: %s",
+                    "[%s] [Error] Unable to get Token Access Information: %s, message: %s",
                     $this->source,
                     get_class($e),
                     $e->getMessage()
@@ -398,9 +450,22 @@ class CentreonAuthSSO extends CentreonAuth
         }
 
         if ($this->debug && isset($result)) {
+            $resultForDebug = $result;
+
+            if (isset($resultForDebug["access_token"])) {
+                $resultForDebug["access_token"] = substr($resultForDebug["access_token"], self::START, self::LENGTH);
+            }
+
+            if (isset($resultForDebug["id_token"])) {
+                $resultForDebug["id_token"] = substr($resultForDebug["id_token"], self::START, self::LENGTH);
+            }
+
+            if (isset($resultForDebug["refresh_token"])) {
+                $resultForDebug["refresh_token"] = substr($resultForDebug["refresh_token"], self::START, self::LENGTH);
+            }
             $this->CentreonLog->insertLog(
                 1,
-                "[" . $this->source . "] [Debug] Token Access Information: " . json_encode($result)
+                "[" . $this->source . "] [Debug] Token Access Information: " . json_encode($resultForDebug)
             );
         }
 
@@ -433,11 +498,12 @@ class CentreonAuthSSO extends CentreonAuth
 
         $restHttp = new \CentreonRestHttp('application/x-www-form-urlencoded');
         try {
+            $authentication = "Authorization: Bearer " . trim($token);
             $result = $restHttp->call(
                 $url,
                 'POST',
                 $data,
-                ["Authorization" => "Bearer " . $token],
+                [$authentication],
                 true,
                 $verifyPeer
             );
@@ -454,9 +520,14 @@ class CentreonAuthSSO extends CentreonAuth
         }
 
         if ($this->debug && isset($result)) {
+            $resultForDebug = $result;
+
+            if (isset($resultForDebug['jti'])) {
+                $resultForDebug['jti'] = substr($resultForDebug['jti'], self::START, self::LENGTH);
+            }
             $this->CentreonLog->insertLog(
                 1,
-                "[" . $this->source . "] [Debug] Token Introspection Information: " . json_encode($result)
+                "[" . $this->source . "] [Debug] Token Introspection Information: " . json_encode($resultForDebug)
             );
         }
 
@@ -482,7 +553,7 @@ class CentreonAuthSSO extends CentreonAuth
         try {
             $result = $restHttp->call(
                 $url,
-                'POST',
+                'GET',
                 $data,
                 [$authentication],
                 true,
@@ -513,12 +584,13 @@ class CentreonAuthSSO extends CentreonAuth
     /**
      * Refresh the OpenId Connect token
      *
-     * @param string      $url          OpenId Connect Introspection Token Endpoint
-     * @param string      $clientId     OpenId Connect Client ID
-     * @param string      $clientSecret OpenId Connect Client Secret
-     * @param string      $refreshToken OpenId Connect Refresh Token Access
-     * @param bool        $verifyPeer   Disable SSL verify peer
-     * @param string|null $scope        The scope
+     * @param string      $url             OpenId Connect Introspection Token Endpoint
+     * @param string      $clientId        OpenId Connect Client ID
+     * @param string      $clientSecret    OpenId Connect Client Secret
+     * @param string      $refreshToken    OpenId Connect Refresh Token Access
+     * @param bool        $clientBasicAuth OpenId Connect use Basic Auth method
+     * @param bool        $verifyPeer      Disable SSL verify peer
+     * @param string|null $scope           The scope
      *
      * @return array|null
      */
@@ -527,16 +599,21 @@ class CentreonAuthSSO extends CentreonAuth
         string $clientId,
         string $clientSecret,
         string $refreshToken,
+        bool $clientBasicAuth,
         bool $verifyPeer,
         string $scope = null
     ): ?array {
         $data = [
-            "client_id" => $clientId,
-            "client_secret" => $clientSecret,
             "grant_type" => "refresh_token",
             "refresh_token" => $refreshToken,
             "scope" => $scope
         ];
+        if ($clientBasicAuth) {
+            $authentication =  "Authorization: Basic " . base64_encode($clientId . ":" . $clientSecret);
+        } else {
+            $data["client_id"] = $clientId;
+            $data["client_secret"] = $clientSecret;
+        }
 
         $restHttp = new \CentreonRestHttp('application/x-www-form-urlencoded');
         try {
@@ -544,7 +621,7 @@ class CentreonAuthSSO extends CentreonAuth
                 $url,
                 'POST',
                 $data,
-                null,
+                $clientBasicAuth ? [$authentication] : null,
                 true,
                 $verifyPeer
             );
@@ -573,11 +650,12 @@ class CentreonAuthSSO extends CentreonAuth
     /**
      * Logout the OpenId session
      *
-     * @param string $url          OpenId Connect Introspection Token Endpoint
-     * @param string $clientId     OpenId Connect Client ID
-     * @param string $clientSecret OpenId Connect Client Secret
-     * @param string $refreshToken OpenId Connect Refresh Token Access
-     * @param bool   $verifyPeer   Disable SSL verify peer
+     * @param string $url             OpenId Connect Introspection Token Endpoint
+     * @param string $clientId        OpenId Connect Client ID
+     * @param string $clientSecret    OpenId Connect Client Secret
+     * @param string $refreshToken    OpenId Connect Refresh Token Access
+     * @param bool   $clientBasicAuth OpenId Connect use Basic Auth method
+     * @param bool   $verifyPeer      Disable SSL verify peer
      *
      * @return array|null
      */
@@ -586,13 +664,18 @@ class CentreonAuthSSO extends CentreonAuth
         string $clientId,
         string $clientSecret,
         string $refreshToken,
+        bool $clientBasicAuth,
         bool $verifyPeer
     ): ?array {
         $data = [
-            "client_id" => $clientId,
-            "client_secret" => $clientSecret,
             "refresh_token" => $refreshToken
         ];
+        if ($clientBasicAuth) {
+            $authentication =  "Authorization: Basic " . base64_encode($clientId . ":" . $clientSecret);
+        } else {
+            $data["client_id"] = $clientId;
+            $data["client_secret"] = $clientSecret;
+        }
 
         $restHttp = new \CentreonRestHttp('application/x-www-form-urlencoded');
         try {
@@ -600,7 +683,7 @@ class CentreonAuthSSO extends CentreonAuth
                 $url,
                 'POST',
                 $data,
-                null,
+                $clientBasicAuth ? [$authentication] : null,
                 true,
                 $verifyPeer
             );

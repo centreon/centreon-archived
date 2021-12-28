@@ -303,8 +303,8 @@ msgstr "Temps en secondes à attendre avant d'activer le basculement."
 
 #: centreon-web/help.php:50
 #: centreon-web/www/include/configuration/configCentreonBroker/help.php:88
-msgid "Time in seconds to wait between each connection attempt."
-msgstr "Temps d'attente en secondes entre chaque tentative de connexion."
+msgid "Time in seconds to wait between each connection attempt (Default value: 30s)."
+msgstr "Temps d'attente en secondes entre chaque tentative de connexion (Valeur par défaut: 30s)."
 
 #: centreon-web/help.php:51
 #: centreon-web/www/include/configuration/configCentreonBroker/help.php:39
@@ -7240,3 +7240,6 @@ msgstr ""
 "Si l'option est activée l'utilisation des pages dépréciées sera totalement rétablie"
 "Cela inclu: l'affichage des pages mais également toutes les redirections entre pages dépréciées"
 "Si l'option n'est pas activée l'utilisation de la nouvelle page de Monitoring Resource Status sera pleinement activée"
+
+msgid "Expected TLS certificate common name (CN) - leave blank if unsure."
+msgstr "Champ common name (CN) attendu dans le certificat TLS - laisser vide en cas de doute"

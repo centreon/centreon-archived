@@ -78,7 +78,7 @@ if (isset($_POST["o1"]) && isset($_POST["o2"])) {
 /* Set the real page */
 if (isset($ret2) && is_array($ret2) && $ret2['topology_page'] != "" && $p != $ret2['topology_page']) {
     $p = $ret2['topology_page'];
-} elseif ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
+} elseif (isset($ret) && is_array($ret) && $ret['topology_page'] != "" && $p != $ret['topology_page']) {
     $p = $ret['topology_page'];
 }
 
@@ -109,34 +109,76 @@ switch ($o) {
         require_once($path . "formHost.php");
         break;
     case HOST_ACTIVATION:
-        enableHostInDB($host_id);
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            enableHostInDB($host_id);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listHost.php");
         break; #Activate a host
     case HOST_MASSIVE_ACTIVATION:
-        enableHostInDB(null, $select ?? []);
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            enableHostInDB(null, $select ?? []);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listHost.php");
         break;
     case HOST_DEACTIVATION:
-        disableHostInDB($host_id);
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            disableHostInDB($host_id);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listHost.php");
         break; #Desactivate a host
     case HOST_MASSIVE_DEACTIVATION:
-        disableHostInDB(null, $select ?? []);
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            disableHostInDB(null, $select ?? []);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listHost.php");
         break;
     case HOST_DUPLICATION:
-        multipleHostInDB($select ?? [], $dupNbr);
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            multipleHostInDB($select ?? [], $dupNbr);
+        } else {
+            unvalidFormMessage();
+        }
         $hgs = $acl->getHostGroupAclConf(null, 'broker');
         $aclHostString = $acl->getHostsString('ID', $dbmon);
         $aclPollerString = $acl->getPollerString();
         require_once($path . "listHost.php");
         break;
     case HOST_DELETION:
-        deleteHostInDB($select ?? []);
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            deleteHostInDB($select ?? []);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listHost.php");
         break;
     case HOST_SERVICE_DEPLOYMENT:
-        applytpl($select ?? []);
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            applytpl($select ?? []);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listHost.php");
         break; #Deploy service n hosts
     default:

@@ -68,7 +68,7 @@ class MetricUtils
         if (is_null(self::$instance)) {
             self::$instance = new MetricUtils();
         }
- 
+
         return self::$instance;
     }
 
@@ -141,12 +141,17 @@ class CentreonGraphNg
     protected $generalOpt;
     protected $dbPath;
     protected $dbStatusPath;
-    protected $indexData;
+    protected $indexData = [
+        'host_id' => null,
+        'host_name' => null,
+        'service_id' => null,
+        'service_description' => null,
+    ];
     protected $templateId;
     protected $templateInformations;
     protected $metrics;
     protected $indexIds;
-    
+
     protected $dsDefault;
     protected $colorCache;
     protected $componentsDsCache;
@@ -213,7 +218,6 @@ class CentreonGraphNg
         $this->dsDefault = null;
         $this->colorCache = null;
         $this->userId = $userId;
-        $this->indexData = null;
         $this->componentsDsCache = null;
         $this->listMetricsId = array();
         $this->metrics = array();
@@ -415,10 +419,6 @@ class CentreonGraphNg
             $legend = str_replace(":", "\:", $legend);
         }
 
-        if ($metric["unit"] != "") {
-            $legend .= " (" . $metric["unit"] . ")";
-        }
-        
         return $legend;
     }
 
@@ -896,12 +896,12 @@ class CentreonGraphNg
             $stmt->bindParam(':command_id', $commandId, PDO::PARAM_INT);
             $stmt->execute();
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            if (!is_null($row) && $row["graph_id"] != 0) {
+            if ($row !== false && $row["graph_id"] != 0) {
                 $this->templateId = $row["graph_id"];
                 return ;
             }
         }
-        
+
         $stmt = $this->db->prepare("SELECT graph_id FROM giv_graphs_template WHERE default_tpl1 = '1'");
         $stmt->execute();
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -918,28 +918,31 @@ class CentreonGraphNg
         $serviceId = $this->indexData["service_id"];
 
         $stmt = $this->db->prepare("SELECT
-                esi.graph_id, service_template_model_stm_id FROM service 
-            LEFT JOIN extended_service_information esi 
+                esi.graph_id, service_template_model_stm_id FROM service
+            LEFT JOIN extended_service_information esi
                 ON esi.service_service_id = service_id
                 WHERE service_id = :service_id");
         $tab = array();
         while (1) {
             $stmt->bindParam(':service_id', $serviceId, PDO::PARAM_INT);
             $stmt->execute();
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            if ($row["graph_id"]) {
-                return $row["graph_id"];
-            } elseif ($row["service_template_model_stm_id"]) {
-                if (isset($tab[$row['service_template_model_stm_id']])) {
+            if ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                if ($row["graph_id"]) {
+                    return $row["graph_id"];
+                } elseif ($row["service_template_model_stm_id"]) {
+                    if (isset($tab[$row['service_template_model_stm_id']])) {
+                        break;
+                    }
+                    $serviceId = $row["service_template_model_stm_id"];
+                    $tab[$serviceId] = 1;
+                } else {
                     break;
                 }
-                $serviceId = $row["service_template_model_stm_id"];
-                $tab[$serviceId] = 1;
             } else {
                 break;
             }
         }
-        
+
         return null;
     }
 
@@ -958,12 +961,17 @@ class CentreonGraphNg
          */
         $keys = array_keys($this->indexIds);
         $indexId = array_shift($keys);
-        
+
         $this->log("index_data for " . $indexId);
-        $stmt = $this->dbCs->prepare("SELECT * FROM index_data WHERE id = :index_id");
+        $stmt = $this->dbCs->prepare(
+            "SELECT host_id, host_name, service_id, service_description FROM index_data WHERE id = :index_id"
+        );
         $stmt->bindParam(':index_id', $indexId, PDO::PARAM_INT);
         $stmt->execute();
-        $this->indexData = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $this->indexData = $row;
+        }
+
         if (preg_match("/meta_([0-9]*)/", $this->indexData["service_description"], $matches)) {
             $stmt = $this->db->prepare("SELECT meta_name FROM meta_service WHERE `meta_id` = :meta_id");
             $stmt->bindParam(':meta_id', $matches[1], PDO::PARAM_INT);
@@ -971,7 +979,7 @@ class CentreonGraphNg
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             $this->indexData["service_description"] = $row["meta_name"];
         }
-        
+
         if ($this->indexData["host_name"] != "_Module_Meta") {
             $this->extraDatas['title'] = $this->indexData['service_description'] . " " . _("graph on") . " "
                 . $this->indexData['host_name'];
@@ -979,7 +987,7 @@ class CentreonGraphNg
             $this->extraDatas['title'] = _("Graph") . " " . $this->indexData["service_description"];
         }
     }
-    
+
     /**
      * Assign graph template
      *
@@ -1052,11 +1060,12 @@ class CentreonGraphNg
     {
         $this->graphData['times'] = [];
 
-        $size = (is_array($rrdData['data']) || $rrdData['data'] instanceof \Countable)
+        $size = isset($rrdData['data']) && (is_array($rrdData['data']) || $rrdData['data'] instanceof \Countable)
             ? count($rrdData['data'])
-            : $rrdData['data'];
+            : 0;
 
-        $gprintsSize = (is_array($rrdData['meta']['gprints']) || $rrdData['meta']['gprints'] instanceof \Countable)
+        $gprintsSize = isset($rrdData['meta']['gprints'])
+            && (is_array($rrdData['meta']['gprints']) || $rrdData['meta']['gprints'] instanceof \Countable)
             ? count($rrdData['meta']['gprints'])
             : 0;
 

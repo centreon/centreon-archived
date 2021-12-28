@@ -1,55 +1,32 @@
 import * as React from 'react';
 
-import { isNil } from 'ramda';
+import { equals, isNil } from 'ramda';
 import { Responsive } from '@visx/visx';
+import { useAtomValue } from 'jotai/utils';
 
-import { styled, makeStyles } from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
-
-import { ResourceDetails } from '../../models';
+import { detailsAtom } from '../../detailsAtoms';
+import DetailsLoadingSkeleton from '../../LoadingSkeleton';
 
 import SortableCards from './SortableCards';
 
-const useStyles = makeStyles((theme) => ({
-  loadingSkeleton: {
-    display: 'grid',
-    gridRowGap: theme.spacing(2),
-    gridTemplateRows: '67px',
-  },
-}));
-
-const CardSkeleton = styled(Skeleton)(() => ({
-  transform: 'none',
-}));
-
-const LoadingSkeleton = (): JSX.Element => {
-  const classes = useStyles();
-
-  return (
-    <div className={classes.loadingSkeleton}>
-      <CardSkeleton height="100%" />
-      <CardSkeleton height="100%" />
-      <CardSkeleton height="100%" />
-    </div>
-  );
-};
-
-interface Props {
-  details?: ResourceDetails;
-}
-
-const DetailsTab = ({ details }: Props): JSX.Element => {
-  if (isNil(details)) {
-    return <LoadingSkeleton />;
-  }
+const DetailsTab = (): JSX.Element => {
+  const details = useAtomValue(detailsAtom);
 
   return (
     <Responsive.ParentSize>
-      {({ width }): JSX.Element => (
-        <div>
-          <SortableCards details={details} panelWidth={width} />
-        </div>
-      )}
+      {({ width }): JSX.Element => {
+        const loading = isNil(details) || equals(width, 0);
+
+        if (loading) {
+          return <DetailsLoadingSkeleton />;
+        }
+
+        return (
+          <div>
+            <SortableCards details={details} panelWidth={width} />
+          </div>
+        );
+      }}
     </Responsive.ParentSize>
   );
 };

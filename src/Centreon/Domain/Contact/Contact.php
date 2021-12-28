@@ -114,6 +114,11 @@ class Contact implements UserInterface, ContactInterface
     private $isActive;
 
     /**
+     * @var bool Indicates whether this contact is allowed to reach centreon application
+     */
+    private $isAllowedToReachWeb;
+
+    /**
      * @var string|null Authentication Token
      */
     private $token;
@@ -157,6 +162,18 @@ class Contact implements UserInterface, ContactInterface
      * @var Page|null
      */
     private $defaultPage;
+
+    /**
+     * Indicates if user uses deprecated pages
+     *
+     * @var bool
+     */
+    private $useDeprecatedPages;
+
+    /**
+     * @var bool
+     */
+    private $isOneClickExportEnabled = false;
 
     /**
      * @return int
@@ -249,7 +266,7 @@ class Contact implements UserInterface, ContactInterface
     }
 
     /**
-     * @return bool
+     * @inheritDoc
      */
     public function isAdmin(): bool
     {
@@ -257,10 +274,12 @@ class Contact implements UserInterface, ContactInterface
     }
 
     /**
+     * Set if the user is admin or not.
+     *
      * @param bool $isAdmin
-     * @return self
+     * @return static
      */
-    public function setAdmin(bool $isAdmin): self
+    public function setAdmin(bool $isAdmin): static
     {
         $this->isAdmin = $isAdmin;
         if ($this->isAdmin) {
@@ -280,9 +299,9 @@ class Contact implements UserInterface, ContactInterface
 
     /**
      * @param int $templateId
-     * @return self
+     * @return static
      */
-    public function setTemplateId(?int $templateId): self
+    public function setTemplateId(?int $templateId): static
     {
         $this->templateId = $templateId;
         return $this;
@@ -298,11 +317,29 @@ class Contact implements UserInterface, ContactInterface
 
     /**
      * @param bool $isActive
-     * @return self
+     * @return static
      */
-    public function setIsActive(bool $isActive): self
+    public function setIsActive(bool $isActive): static
     {
         $this->isActive = $isActive;
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isAllowedToReachWeb(): bool
+    {
+        return $this->isAllowedToReachWeb;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setAllowedToReachWeb(bool $isAllowed): static
+    {
+        $this->isAllowedToReachWeb = $isAllowed;
+
         return $this;
     }
 
@@ -316,9 +353,9 @@ class Contact implements UserInterface, ContactInterface
 
     /**
      * @param string|null $token
-     * @return self
+     * @return static
      */
-    public function setToken(?string $token): self
+    public function setToken(?string $token): static
     {
         $this->token = $token;
         return $this;
@@ -334,9 +371,9 @@ class Contact implements UserInterface, ContactInterface
 
     /**
      * @param string|null $encodedPassword
-     * @return self
+     * @return static
      */
-    public function setEncodedPassword(?string $encodedPassword): self
+    public function setEncodedPassword(?string $encodedPassword): static
     {
         $this->encodedPassword = $encodedPassword;
         return $this;
@@ -417,9 +454,9 @@ class Contact implements UserInterface, ContactInterface
 
     /**
      * @param bool $hasAccessToApiConfiguration
-     * @return self
+     * @return static
      */
-    public function setAccessToApiConfiguration(bool $hasAccessToApiConfiguration): self
+    public function setAccessToApiConfiguration(bool $hasAccessToApiConfiguration): static
     {
         $this->hasAccessToApiConfiguration = $hasAccessToApiConfiguration;
 
@@ -442,9 +479,9 @@ class Contact implements UserInterface, ContactInterface
 
     /**
      * @param bool $hasAccessToApiRealTime
-     * @return self
+     * @return static
      */
-    public function setAccessToApiRealTime(bool $hasAccessToApiRealTime): self
+    public function setAccessToApiRealTime(bool $hasAccessToApiRealTime): static
     {
         $this->hasAccessToApiRealTime = $hasAccessToApiRealTime;
         if ($this->hasAccessToApiRealTime) {
@@ -515,9 +552,9 @@ class Contact implements UserInterface, ContactInterface
      * timezone setter
      *
      * @param \DateTimeZone $timezone
-     * @return self
+     * @return static
      */
-    public function setTimezone(\DateTimeZone $timezone): self
+    public function setTimezone(\DateTimeZone $timezone): static
     {
         $this->timezone = $timezone;
         return $this;
@@ -556,10 +593,9 @@ class Contact implements UserInterface, ContactInterface
     }
 
     /**
-     * @param Page|null $defaultPage
-     * @return self
+     * @inheritDoc
      */
-    public function setDefaultPage(?Page $defaultPage)
+    public function setDefaultPage(?Page $defaultPage): static
     {
         $this->defaultPage = $defaultPage;
         return $this;
@@ -573,5 +609,45 @@ class Contact implements UserInterface, ContactInterface
     public function getDefaultPage(): ?Page
     {
         return $this->defaultPage;
+    }
+
+    /**
+     * Indicates if user uses deprecated pages
+     *
+     * @return  bool
+     */
+    public function isUsingDeprecatedPages()
+    {
+        return $this->useDeprecatedPages;
+    }
+
+    /**
+     * @param  bool  $useDeprecatedPages  Indicates if user uses deprecated pages
+     * @return  self
+     */
+    public function setUseDeprecatedPages(bool $useDeprecatedPages)
+    {
+        $this->useDeprecatedPages = $useDeprecatedPages;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isOneClickExportEnabled(): bool
+    {
+        return $this->isOneClickExportEnabled;
+    }
+
+    /**
+     * @param bool $isOneClickExportEnabled
+     * @return static
+     */
+    public function setOneClickExportEnabled(bool $isOneClickExportEnabled): static
+    {
+        $this->isOneClickExportEnabled = $isOneClickExportEnabled;
+
+        return $this;
     }
 }

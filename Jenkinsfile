@@ -4,24 +4,32 @@ import org.jenkinsci.plugins.pipeline.modeldefinition.Utils
 /*
 ** Variables.
 */
-def serie = '21.10'
-def maintenanceBranch = "${serie}.x"
-def qaBranch = "dev-${serie}.x"
-env.REF_BRANCH = 'master'
+def serie = '22.04'
+def stableBranch = "master"
+def devBranch = "develop"
+env.REF_BRANCH = stableBranch
 env.PROJECT='centreon-web'
 if (env.BRANCH_NAME.startsWith('release-')) {
   env.BUILD = 'RELEASE'
-} else if ((env.BRANCH_NAME == env.REF_BRANCH) || (env.BRANCH_NAME == maintenanceBranch)) {
+  env.DELIVERY_STAGE = 'Delivery to testing'
+  env.DOCKER_STAGE = 'Docker packaging'
+} else if (env.BRANCH_NAME == stableBranch) {
   env.BUILD = 'REFERENCE'
-} else if ((env.BRANCH_NAME == 'develop') || (env.BRANCH_NAME == qaBranch)) {
+  env.DELIVERY_STAGE = 'Delivery to canary'
+  env.DOCKER_STAGE = 'Docker packaging with canary rpms'
+} else if (env.BRANCH_NAME == devBranch) {
   env.BUILD = 'QA'
+  env.DELIVERY_STAGE = 'Delivery to unstable'
+  env.DOCKER_STAGE = 'Docker packaging with unstable rpms'
 } else {
   env.BUILD = 'CI'
+  env.DELIVERY_STAGE = 'Delivery to canary'
+  env.DOCKER_STAGE = 'Docker packaging with canary rpms'
 }
 
-def buildBranch = env.BRANCH_NAME
+env.BUILD_BRANCH = env.BRANCH_NAME
 if (env.CHANGE_BRANCH) {
-  buildBranch = env.CHANGE_BRANCH
+  env.BUILD_BRANCH = env.CHANGE_BRANCH
 }
 
 def backendFiles = [
@@ -101,31 +109,20 @@ def hasChanges(patterns) {
   return isMatching
 }
 
-def checkoutCentreonBuild(buildBranch) {
-  def getCentreonBuildGitConfiguration = { branchName -> [
-    $class: 'GitSCM',
-    branches: [[name: "refs/heads/${branchName}"]],
-    doGenerateSubmoduleConfigurations: false,
-    userRemoteConfigs: [[
-      $class: 'UserRemoteConfig',
-      url: "ssh://git@github.com/centreon/centreon-build.git"
-    ]]
-  ]}
-
+def checkoutCentreonBuild() {
   dir('centreon-build') {
-    try {
-      checkout(getCentreonBuildGitConfiguration(buildBranch))
-    } catch(e) {
-      echo "branch '${buildBranch}' does not exist in centreon-build, then fallback to master"
-      checkout(getCentreonBuildGitConfiguration('master'))
-    }
+    checkout resolveScm(source: [$class: 'GitSCMSource',
+      remote: 'https://github.com/centreon/centreon-build.git',
+      credentialsId: 'technique-ci',
+      traits: [[$class: 'jenkins.plugins.git.traits.BranchDiscoveryTrait']]],
+      targets: [env.BUILD_BRANCH, 'master'])
   }
 }
 
 /*
 ** Pipeline code.
 */
-stage('Source') {
+stage('Deliver sources') {
   node {
     dir('centreon-web') {
       checkout scm
@@ -135,7 +132,7 @@ stage('Source') {
       }
     }
 
-    checkoutCentreonBuild(buildBranch)
+    checkoutCentreonBuild()
 
     // git repository is stored for the Sonar analysis below.
     sh 'tar czf centreon-web-git.tar.gz centreon-web'
@@ -150,7 +147,7 @@ stage('Source') {
     stash name: 'cypress-node-modules', includes: "cypress-node-modules.tar.gz"
     stash name: 'vendor', includes: 'vendor.tar.gz'
     stash name: 'node_modules', includes: 'node_modules.tar.gz'
-    stash name: 'api-doc', includes: 'centreon-api-v21.10.html'
+    stash name: 'api-doc', includes: 'centreon-api-v22.04.html'
     publishHTML([
       allowMissing: false,
       keepAll: true,
@@ -187,7 +184,7 @@ try {
         Utils.markStageSkippedForConditional('frontend')
       } else {
         node {
-          checkoutCentreonBuild(buildBranch)
+          checkoutCentreonBuild()
           unstash 'tar-sources'
           unstash 'node_modules'
           sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh frontend"
@@ -200,6 +197,8 @@ try {
             trendChartType: 'NONE'
           )
           junit 'ut-fe.xml'
+          stash name: 'ut-fe.xml', includes: 'ut-fe.xml'
+          stash name: 'codestyle-fe.xml', includes: 'codestyle-fe.xml'
         }
       }
     },
@@ -208,7 +207,7 @@ try {
         Utils.markStageSkippedForConditional('backend')
       } else {
         node {
-          checkoutCentreonBuild(buildBranch)
+          checkoutCentreonBuild()      
           unstash 'tar-sources'
           unstash 'vendor'
           sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh backend"
@@ -228,15 +227,23 @@ try {
             trendChartType: 'NONE'
           )
           junit 'ut-be.xml'
+          stash name: 'ut-be.xml', includes: 'ut-be.xml'
+          stash name: 'coverage-be.xml', includes: 'coverage-be.xml'
+          stash name: 'codestyle-be.xml', includes: 'codestyle-be.xml'
+          stash name: 'phpstan.xml', includes: 'phpstan.xml'
         }
       }
     },
     'sonar': {
       node {
         // Run sonarQube analysis
-        checkoutCentreonBuild(buildBranch)
+        checkoutCentreonBuild()
         unstash 'git-sources'
+        unstash 'vendor'
+        unstash 'node_modules'
         sh 'rm -rf centreon-web && tar xzf centreon-web-git.tar.gz'
+        sh 'rm -rf centreon-web/vendor && tar xzf vendor.tar.gz -C centreon-web'
+        sh 'rm -rf centreon-web/node_modules && tar xzf node_modules.tar.gz -C centreon-web'
         withSonarQubeEnv('SonarQubeDev') {
           sh "./centreon-build/jobs/web/${serie}/mon-web-analysis.sh"
         }
@@ -252,7 +259,7 @@ try {
     },
     'rpm packaging centos7': {
       node {
-        checkoutCentreonBuild(buildBranch)
+        checkoutCentreonBuild()
         unstash 'tar-sources'
         sh "./centreon-build/jobs/web/${serie}/mon-web-package.sh centos7"
         archiveArtifacts artifacts: "rpms-centos7.tar.gz"
@@ -262,13 +269,13 @@ try {
     },
     'rpm packaging centos8': {
       node {
-        checkoutCentreonBuild(buildBranch)
+        checkoutCentreonBuild()           
         unstash 'tar-sources'
         sh "./centreon-build/jobs/web/${serie}/mon-web-package.sh centos8"
         archiveArtifacts artifacts: "rpms-centos8.tar.gz"
         stash name: "rpms-centos8", includes: 'output/noarch/*.rpm'
         sh 'rm -rf output'
-      }      
+      }
     }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
       error('Unit tests // RPM Packaging Failure');
@@ -279,6 +286,15 @@ try {
   stage('Violations to Github') {
     node {
       if (env.CHANGE_ID) { // pull request to comment with coding style issues
+        if (hasBackendChanges) {
+          unstash 'codestyle-be.xml'
+          unstash 'phpstan.xml'
+        }
+
+        if (hasFrontendChanges) {
+          unstash 'codestyle-fe.xml'
+        }
+
         ViolationsToGitHub([
           repositoryName: 'centreon',
           pullRequestId: env.CHANGE_ID,
@@ -300,31 +316,29 @@ try {
     }
   }
 
-  if ((env.BUILD == 'CI')) {
-    stage('Delivery to unstable') {
-      node {
-        checkoutCentreonBuild(buildBranch)
-        sh 'rm -rf output'
-        unstash 'tar-sources'
-        unstash 'api-doc'
-        unstash 'rpms-centos8'
-        unstash 'rpms-centos7'
-        sh "./centreon-build/jobs/web/${serie}/mon-web-delivery.sh"
-      }
-      if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-        error('Delivery stage failure');
-      }
-    } 
+  stage("$DELIVERY_STAGE") {
+    node {
+      checkoutCentreonBuild()    
+      sh 'rm -rf output'
+      unstash 'tar-sources'
+      unstash 'api-doc'
+      unstash 'rpms-centos8'
+      unstash 'rpms-centos7'
+      sh "./centreon-build/jobs/web/${serie}/mon-web-delivery.sh"
+    }
+    if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+      error('Delivery stage failure');
+    }
   }
-
-  stage('Docker packaging') {
+  
+  stage("$DOCKER_STAGE") {
     def parallelSteps = [:]
     def osBuilds = isStableBuild() ? ['centos7', 'centos8'] : ['centos7']
     for (x in osBuilds) {
       def osBuild = x
       parallelSteps[osBuild] = {
         node {
-          checkoutCentreonBuild(buildBranch)
+          checkoutCentreonBuild()
           sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh ${osBuild}"
         }
       }
@@ -335,7 +349,7 @@ try {
     }
   }
 
-  stage('API // E2E') {
+  stage('API // E2E // Lighthouse CI') {
     parallel 'API Tests': {
       if (hasBackendChanges) {
         def parallelSteps = [:]
@@ -343,7 +357,7 @@ try {
           def feature = x
           parallelSteps[feature] = {
             node {
-              checkoutCentreonBuild(buildBranch)
+              checkoutCentreonBuild()
               unstash 'tar-sources'
               unstash 'vendor'
               def acceptanceStatus = sh(
@@ -366,7 +380,7 @@ try {
         def feature = x
         parallelSteps[feature] = {
           node {
-            checkoutCentreonBuild(buildBranch)
+            checkoutCentreonBuild()
             unstash 'tar-sources'
             unstash 'cypress-node-modules'
             timeout(time: 10, unit: 'MINUTES') {
@@ -380,61 +394,53 @@ try {
         }
       }
       parallel parallelSteps
+    },
+    'Lighthouse CI': {
+      if (hasFrontendChanges) {
+        node {
+          checkoutCentreonBuild();
+          unstash 'tar-sources'
+          sh "./centreon-build/jobs/web/${serie}/mon-web-lighthouse-ci.sh centos7"
+          publishHTML([
+            allowMissing: false,
+            keepAll: true,
+            reportDir: "$PROJECT-$VERSION/.lighthouseci",
+            reportFiles: 'lighthouseci-index.html',
+            reportName: 'Centreon Web Performances',
+            reportTitles: ''
+          ])
+        }
+      }
     }
   }
-  if ((env.BUILD == 'RELEASE') || (env.BUILD == 'QA')) {
-    stage('Acceptance tests') {
-      if (hasBackendChanges || hasFrontendChanges) {
-        def atparallelSteps = [:]
-        for (x in featureFiles) {
-          def feature = x
-          atparallelSteps[feature] = {
-            node {
-              checkoutCentreonBuild(buildBranch)
-              unstash 'tar-sources'
-              unstash 'vendor'
-              def acceptanceStatus = sh(
-                script: "./centreon-build/jobs/web/${serie}/mon-web-acceptance.sh centos7 features/${feature} ${acceptanceTag}",
-                returnStatus: true
-              )
-              junit 'xunit-reports/**/*.xml'
-              if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0))
-                currentBuild.result = 'FAILURE'
-              archiveArtifacts allowEmptyArchive: true, artifacts: 'acceptance-logs/*.txt, acceptance-logs/*.png, acceptance-logs/*.flv'
-            }
+  
+  stage('Acceptance tests') {
+    if (hasBackendChanges || hasFrontendChanges) {
+      def atparallelSteps = [:]
+      for (x in featureFiles) {
+        def feature = x
+        atparallelSteps[feature] = {
+          node {
+            checkoutCentreonBuild()     
+            unstash 'tar-sources'
+            unstash 'vendor'
+            def acceptanceStatus = sh(
+              script: "./centreon-build/jobs/web/${serie}/mon-web-acceptance.sh centos7 features/${feature} ${acceptanceTag}",
+              returnStatus: true
+            )
+            junit 'xunit-reports/**/*.xml'
+            if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0))
+              currentBuild.result = 'FAILURE'
+            archiveArtifacts allowEmptyArchive: true, artifacts: 'acceptance-logs/*.txt, acceptance-logs/*.png, acceptance-logs/*.flv'
           }
         }
-        parallel atparallelSteps
-        if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-          error('Critical tests stage failure');
-        }
+      }
+      parallel atparallelSteps
+      if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+        error('Critical tests stage failure');
       }
     }
-  }  
-
-  if ((env.BUILD == 'RELEASE') || (env.BUILD == 'QA')) {
-    stage('Delivery to unstable') {
-      node {
-        checkoutCentreonBuild(buildBranch)
-        unstash 'tar-sources'
-        unstash 'api-doc'
-        unstash 'rpms-centos8'
-        unstash 'rpms-centos7'
-        sh "./centreon-build/jobs/web/${serie}/mon-web-delivery.sh"
-      }
-      if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-        error('Delivery stage failure');
-      }
-    } 
-
-    build job: "centreon-autodiscovery/${env.BRANCH_NAME}", wait: false
-    build job: "centreon-awie/${env.BRANCH_NAME}", wait: false
-    build job: "centreon-license-manager/${env.BRANCH_NAME}", wait: false
-    build job: "centreon-pp-manager/${env.BRANCH_NAME}", wait: false
-    build job: "centreon-bam/${env.BRANCH_NAME}", wait: false
-    build job: "centreon-mbi/${env.BRANCH_NAME}", wait: false
   }
-
 } catch(e) {
   if (isStableBuild()) {
     slackSend channel: "#monitoring-metrology",

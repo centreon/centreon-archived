@@ -2,26 +2,48 @@ import * as React from 'react';
 
 import axios from 'axios';
 import { render, RenderResult, waitFor } from '@testing-library/react';
+import { Provider as JotaiProvider } from 'jotai';
+import { useAtomValue } from 'jotai/utils';
 
 import {
-  useUser,
-  useAcl,
-  useDowntime,
-  useRefreshInterval,
+  aclAtom,
+  userAtom,
+  downtimeAtom,
+  acknowledgementAtom,
+  refreshIntervalAtom,
 } from '@centreon/ui-context';
 
-import AppProvider from '.';
+import { cancelTokenRequestParam } from '../Resources/testUtils';
+
+import Provider from '.';
+
+jest.mock('@centreon/ui-context', () =>
+  jest.requireActual('@centreon/centreon-frontend/packages/ui-context'),
+);
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 const retrievedUser = {
   alias: 'Admin alias',
+  is_export_button_enabled: true,
   locale: 'fr_FR.UTF8',
   name: 'Admin',
   timezone: 'Europe/Paris',
+  use_deprecated_pages: false,
+};
+
+const contextUser = {
+  alias: 'Admin alias',
+  isExportButtonEnabled: true,
+  locale: 'fr_FR.UTF8',
+  name: 'Admin',
+  timezone: 'Europe/Paris',
+  use_deprecated_pages: false,
 };
 
 const retrievedDefaultParameters = {
+  monitoring_default_acknowledgement_persistent: true,
+  monitoring_default_acknowledgement_sticky: false,
   monitoring_default_downtime_duration: 1458,
   monitoring_default_refresh_interval: 15,
 };
@@ -56,11 +78,37 @@ jest.mock('../App', () => {
   };
 });
 
-const renderComponent = (): RenderResult => {
-  return render(<AppProvider />);
+let atomsValue;
+
+const TestComponent = (): JSX.Element => {
+  const acl = useAtomValue(aclAtom);
+  const user = useAtomValue(userAtom);
+  const downtime = useAtomValue(downtimeAtom);
+  const acknowledgement = useAtomValue(acknowledgementAtom);
+  const refreshInterval = useAtomValue(refreshIntervalAtom);
+
+  atomsValue = {
+    acknowledgement,
+    acl,
+    downtime,
+    refreshInterval,
+    user,
+  };
+
+  return <div />;
 };
 
-describe(AppProvider, () => {
+const renderComponent = (): RenderResult => {
+  return render(
+    <JotaiProvider>
+      <Provider>
+        <TestComponent />
+      </Provider>
+    </JotaiProvider>,
+  );
+};
+
+describe(Provider, () => {
   beforeEach(() => {
     mockedAxios.get
       .mockResolvedValueOnce({
@@ -77,19 +125,52 @@ describe(AppProvider, () => {
       });
   });
 
-  it('populates the userContext', async () => {
+  it('populates the user atoms', async () => {
     renderComponent();
 
     await waitFor(() => {
-      expect(useAcl().setActionAcl).toHaveBeenCalledWith(retrievedActionsAcl);
-      expect(useUser().setUser).toHaveBeenCalledWith(retrievedUser);
-      expect(useDowntime().setDowntime).toHaveBeenCalledWith({
+      expect(mockedAxios.get).toHaveBeenCalledTimes(4);
+    });
+
+    expect(mockedAxios.get).toHaveBeenNthCalledWith(
+      1,
+      './api/latest/configuration/users/current/parameters',
+      cancelTokenRequestParam,
+    );
+    expect(mockedAxios.get).toHaveBeenNthCalledWith(
+      2,
+      './api/latest/administration/parameters',
+      cancelTokenRequestParam,
+    );
+    expect(mockedAxios.get).toHaveBeenNthCalledWith(
+      3,
+      './api/internal.php?object=centreon_i18n&action=translation',
+      cancelTokenRequestParam,
+    );
+    expect(mockedAxios.get).toHaveBeenNthCalledWith(
+      4,
+      './api/latest/users/acl/actions',
+      cancelTokenRequestParam,
+    );
+
+    await waitFor(() => {
+      expect(atomsValue.acl).toEqual({ actions: retrievedActionsAcl });
+      expect(atomsValue.user).toEqual(contextUser);
+      expect(atomsValue.downtime).toEqual({
         default_duration:
           retrievedDefaultParameters.monitoring_default_downtime_duration,
+        default_fixed: false,
+        default_with_services: false,
       });
-      expect(useRefreshInterval().setRefreshInterval).toHaveBeenCalledWith(
+      expect(atomsValue.refreshInterval).toEqual(
         retrievedDefaultParameters.monitoring_default_refresh_interval,
       );
+      expect(atomsValue.acknowledgement).toEqual({
+        persistent:
+          retrievedDefaultParameters.monitoring_default_acknowledgement_persistent,
+        sticky:
+          retrievedDefaultParameters.monitoring_default_acknowledgement_sticky,
+      });
     });
   });
 });

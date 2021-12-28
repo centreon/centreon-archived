@@ -46,7 +46,7 @@ class CfgCentreonBrokerInfo
             [
                 'config_id'       => 1,
                 'config_key'      => 'retry_interval',
-                'config_value'    => '60',
+                'config_value'    => '15',
                 'config_group'    => 'input',
                 'config_group_id' => 1,
             ],
@@ -214,7 +214,7 @@ class CfgCentreonBrokerInfo
             [
                 'config_id'       => 1,
                 'config_key'      => 'retry_interval',
-                'config_value'    => '60',
+                'config_value'    => '15',
                 'config_group'    => 'output',
                 'config_group_id' => 1,
             ],
@@ -319,7 +319,7 @@ class CfgCentreonBrokerInfo
             [
                 'config_id'       => 1,
                 'config_key'      => 'retry_interval',
-                'config_value'    => '60',
+                'config_value'    => '15',
                 'config_group'    => 'output',
                 'config_group_id' => 2,
             ],
@@ -424,7 +424,7 @@ class CfgCentreonBrokerInfo
             [
                 'config_id'       => 1,
                 'config_key'      => 'retry_interval',
-                'config_value'    => '60',
+                'config_value'    => '15',
                 'config_group'    => 'output',
                 'config_group_id' => 3,
             ],
@@ -579,7 +579,7 @@ class CfgCentreonBrokerInfo
             [
                 'config_id'       => 2,
                 'config_key'      => 'retry_interval',
-                'config_value'    => '60',
+                'config_value'    => '15',
                 'config_group'    => 'input',
                 'config_group_id' => 1
             ],
@@ -754,7 +754,7 @@ class CfgCentreonBrokerInfo
             [
                 'config_id'       => 2,
                 'config_key'      => 'retry_interval',
-                'config_value'    => '60',
+                'config_value'    => '15',
                 'config_group'    => 'output',
                 'config_group_id' => 1
             ],
@@ -901,7 +901,7 @@ class CfgCentreonBrokerInfo
             [
                 'config_id'       => 3,
                 'config_key'      => 'retry_interval',
-                'config_value'    => '60',
+                'config_value'    => '15',
                 'config_group'    => 'output',
                 'config_group_id' => 1
             ],

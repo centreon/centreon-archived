@@ -3,9 +3,10 @@ import * as React from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
+import { useAtomValue } from 'jotai/utils';
 
 import { useSnackbar, useRequest } from '@centreon/ui';
-import { useUserContext } from '@centreon/ui-context';
+import { acknowledgementAtom, userAtom } from '@centreon/ui-context';
 
 import {
   labelRequired,
@@ -19,13 +20,23 @@ import DialogAcknowledge from './Dialog';
 
 const validationSchema = Yup.object().shape({
   comment: Yup.string().required(labelRequired),
+  is_sticky: Yup.boolean(),
   notify: Yup.boolean(),
+  persistent: Yup.boolean(),
 });
 
 interface Props {
-  onClose;
-  onSuccess;
+  onClose: () => void;
+  onSuccess: () => void;
   resources: Array<Resource>;
+}
+
+export interface AcknowledgeFormValues {
+  acknowledgeAttachedResources: boolean;
+  comment?: string;
+  isSticky: boolean;
+  notify: boolean;
+  persistent: boolean;
 }
 
 const AcknowledgeForm = ({
@@ -36,8 +47,6 @@ const AcknowledgeForm = ({
   const { t } = useTranslation();
   const { showSuccessMessage } = useSnackbar();
 
-  const { alias } = useUserContext();
-
   const {
     sendRequest: sendAcknowledgeResources,
     sending: sendingAcknowledgeResources,
@@ -45,13 +54,18 @@ const AcknowledgeForm = ({
     request: acknowledgeResources,
   });
 
-  const form = useFormik({
+  const { alias } = useAtomValue(userAtom);
+  const acknowledgement = useAtomValue(acknowledgementAtom);
+
+  const form = useFormik<AcknowledgeFormValues>({
     initialValues: {
       acknowledgeAttachedResources: false,
       comment: undefined,
+      isSticky: acknowledgement.sticky,
       notify: false,
+      persistent: acknowledgement.persistent,
     },
-    onSubmit: (values) => {
+    onSubmit: (values): void => {
       sendAcknowledgeResources({
         params: values,
         resources,
