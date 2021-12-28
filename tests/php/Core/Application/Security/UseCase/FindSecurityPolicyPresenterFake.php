@@ -25,7 +25,6 @@ namespace Tests\Core\Application\Security\UseCase;
 
 use Core\Application\Security\UseCase\FindSecurityPolicy\FindSecurityPolicyPresenterInterface;
 use Core\Application\Security\UseCase\FindSecurityPolicy\FindSecurityPolicyResponse;
-use stdClass;
 
 class FindSecurityPolicyPresenterFake implements FindSecurityPolicyPresenterInterface
 {
@@ -47,6 +46,6 @@ class FindSecurityPolicyPresenterFake implements FindSecurityPolicyPresenterInte
      */
     public function show(): object
     {
-        return new stdClass();
+        return new \stdClass();
     }
 }

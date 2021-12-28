@@ -23,6 +23,8 @@ declare(strict_types=1);
 
 namespace Core\Application\Security\UseCase\FindSecurityPolicy;
 
+use Core\Application\Security\UseCase\FindSecurityPolicy\FindSecurityPolicyResponse;
+
 interface FindSecurityPolicyPresenterInterface
 {
     /**
