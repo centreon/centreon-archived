@@ -89,7 +89,6 @@ const ExportConfiguration = ({
         <Button
           disabled={disableButton}
           size="small"
-          variant="contained"
           onClick={askBeforeExportConfiguration}
         >
           {t(labelExportConfiguration)}
