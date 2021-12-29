@@ -28,7 +28,6 @@ use Centreon\Domain\Common\Assertion\AssertionException;
 
 class SecurityPolicy
 {
-
     public const SPECIAL_CHARACTERS_LIST = '@$!%*?&',
          MIN_PASSWORD_LENGTH = 8,
          MAX_PASSWORD_LENGTH = 128,

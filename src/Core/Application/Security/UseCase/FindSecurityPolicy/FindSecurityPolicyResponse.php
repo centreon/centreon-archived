@@ -58,20 +58,20 @@ class FindSecurityPolicyResponse
     /**
      * @var int|null
      */
-    public ?int $attempts = null;
+    public ?int $attempts;
 
     /**
      * @var int|null
      */
-    public ?int $blockingDuration = null;
+    public ?int $blockingDuration;
 
     /**
      * @var int|null
      */
-    public ?int $passwordExpiration = null;
+    public ?int $passwordExpiration;
 
     /**
      * @var int|null
      */
-    public ?int $delayBeforeNewPassword = null;
+    public ?int $delayBeforeNewPassword;
 }

@@ -33,6 +33,7 @@ class FindSecurityPolicyController extends AbstractController
     /**
      * @param FindSecurityPolicy $useCase
      * @param FindSecurityPolicyPresenterInterface $presenter
+     * @return object
      */
     public function __invoke(FindSecurityPolicy $useCase, FindSecurityPolicyPresenterInterface $presenter): object
     {
