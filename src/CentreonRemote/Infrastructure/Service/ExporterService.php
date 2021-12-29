@@ -50,8 +50,9 @@ class ExporterService implements ContainerInterface
     /**
      *
      * @param string $id
+     * @return int[]
      */
-    public function get($id): object
+    public function get($id)
     {
         $key = $this->getKey($id);
         if ($key === null) {
