@@ -3244,8 +3244,7 @@ paths:
                 properties:
                   is_installed:
                     type: boolean
-                    description: |
-                      Installation status of centreon web
+                    description: Installation status of centreon web
                     example: true
                   available_version:
                     type: string

@@ -32,7 +32,6 @@ interface PlatformVersionServiceInterface
      */
     public function getWebUpgradeVersion(): ?string;
 
-
     /**
      * Check if centreon is installed.
      *
