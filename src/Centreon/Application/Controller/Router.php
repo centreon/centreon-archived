@@ -27,12 +27,11 @@ use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Routing\Matcher\RequestMatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\CacheWarmer\WarmableInterface;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Override symfony router to generate base URI
  */
-class Router implements RouterInterface, RequestMatcherInterface, WarmableInterface, UrlGeneratorInterface
+class Router implements RouterInterface, WarmableInterface
 {
     /**
      * @var RouterInterface
@@ -46,6 +45,7 @@ class Router implements RouterInterface, RequestMatcherInterface, WarmableInterf
 
     /**
      * MyRouter constructor.
+     *
      * @param RouterInterface $router
      * @param RequestMatcherInterface $requestMatcher
      */
@@ -66,7 +66,11 @@ class Router implements RouterInterface, RequestMatcherInterface, WarmableInterf
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     *
+     * @param string $name
+     * @param array<string,mixed> $parameters
+     * @param int $referenceType
      */
     public function generate(string $name, array $parameters = [], int $referenceType = self::ABSOLUTE_PATH)
     {
@@ -78,7 +82,10 @@ class Router implements RouterInterface, RequestMatcherInterface, WarmableInterf
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     *
+     * @param RequestContext $context
+     * @return void
      */
     public function setContext(RequestContext $context)
     {
@@ -102,7 +109,9 @@ class Router implements RouterInterface, RequestMatcherInterface, WarmableInterf
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     *
+     * @return array<string,mixed>
      */
     public function match(string $pathinfo)
     {
@@ -110,7 +119,9 @@ class Router implements RouterInterface, RequestMatcherInterface, WarmableInterf
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     *
+     * @return array<string,mixed>
      */
     public function matchRequest(Request $request)
     {
