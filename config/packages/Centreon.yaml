@@ -29,6 +29,9 @@ services:
         resource: '../../src/Centreon/*'
         exclude: '../../src/Centreon/Tests'
 
+    Core\:
+        resource: '../../src/Core/*'
+
     Centreon\Infrastructure\DatabaseConnection:
         class: Centreon\Infrastructure\DatabaseConnection
         arguments:
