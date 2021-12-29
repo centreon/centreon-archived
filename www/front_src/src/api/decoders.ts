@@ -23,11 +23,11 @@ export const userDecoder = JsonDecoder.object<User>(
 export const webVersionsDecoder = JsonDecoder.object<WebVersions>(
   {
     availableVersion: JsonDecoder.nullable(JsonDecoder.string),
-    installedVersion: JsonDecoder.nullable(JsonDecoder.string),
+    isInstalled: JsonDecoder.boolean,
   },
   'Web versions',
   {
     availableVersion: 'available_version',
-    installedVersion: 'installed_version',
+    isInstalled: 'is_installed',
   },
 );

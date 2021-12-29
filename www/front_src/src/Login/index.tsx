@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { Formik } from 'formik';
-import { isNil, not, pipe, propOr } from 'ramda';
+import { isNil } from 'ramda';
 import { useTranslation } from 'react-i18next';
 import { useAtomValue } from 'jotai/utils';
 
@@ -61,14 +61,8 @@ const LoginPage = (): JSX.Element => {
   const { t } = useTranslation();
   const validationSchema = useValidationSchema();
 
-  const { submitLoginForm, webVersions } = useLogin();
+  const { submitLoginForm, platformVersions } = useLogin();
   const areUserParametersLoaded = useAtomValue(areUserParametersLoadedAtom);
-
-  const hasInstalledVersion = pipe(
-    propOr(null, 'installedVersion'),
-    isNil,
-    not,
-  );
 
   if (areUserParametersLoaded || isNil(areUserParametersLoaded)) {
     return <MainLoader />;
@@ -93,12 +87,12 @@ const LoginPage = (): JSX.Element => {
       </Paper>
       <div className={classes.copyrightAndVersion}>
         <Copyright />
-        {hasInstalledVersion(webVersions) ? (
-          <Typography variant="body2">
-            v. {webVersions?.installedVersion}
-          </Typography>
-        ) : (
+        {isNil(platformVersions) ? (
           <LoadingSkeleton variant="text" width="40%" />
+        ) : (
+          <Typography variant="body2">
+            v. {platformVersions?.web.version}
+          </Typography>
         )}
       </div>
     </div>

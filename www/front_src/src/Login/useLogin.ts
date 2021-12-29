@@ -1,21 +1,24 @@
+import React from 'react';
+
 import { useNavigate } from 'react-router-dom';
 import { FormikHelpers, FormikValues } from 'formik';
 import { useAtom } from 'jotai';
 import { useTranslation } from 'react-i18next';
 
-import { useRequest, useSnackbar } from '@centreon/ui';
+import { useRequest, useSnackbar, getData } from '@centreon/ui';
 
 import { WebVersions } from '../api/models';
 import { webVersionsAtom } from '../webVersionsAtom';
 import useUser from '../Main/useUser';
 
 import postLogin from './api';
-import { redirectDecoder } from './api/decoder';
-import { LoginFormValues, Redirect } from './models';
+import { platformVersionsDecoder, redirectDecoder } from './api/decoder';
+import { LoginFormValues, PlatformVersions, Redirect } from './models';
 import { labelLoginSucceeded } from './translatedLabels';
+import { platformVersionsEndpoint } from './api/endpoint';
 
 interface UseLoginState {
-  sending: boolean;
+  platformVersions: PlatformVersions | null;
   submitLoginForm: (
     values: LoginFormValues,
     { setSubmitting }: Pick<FormikHelpers<FormikValues>, 'setSubmitting'>,
@@ -25,10 +28,17 @@ interface UseLoginState {
 
 const useLogin = (): UseLoginState => {
   const { t, i18n } = useTranslation();
+  const [platformVersions, setPlatformVersions] =
+    React.useState<PlatformVersions | null>(null);
 
-  const { sendRequest, sending } = useRequest<Redirect>({
+  const { sendRequest: sendLogin } = useRequest<Redirect>({
     decoder: redirectDecoder,
     request: postLogin,
+  });
+
+  const { sendRequest: sendPlatformVersions } = useRequest<PlatformVersions>({
+    decoder: platformVersionsDecoder,
+    request: getData,
   });
 
   const { showSuccessMessage } = useSnackbar();
@@ -41,7 +51,7 @@ const useLogin = (): UseLoginState => {
     values: LoginFormValues,
     { setSubmitting },
   ): void => {
-    sendRequest({
+    sendLogin({
       login: values.alias,
       password: values.password,
     })
@@ -55,8 +65,14 @@ const useLogin = (): UseLoginState => {
       });
   };
 
+  React.useEffect(() => {
+    sendPlatformVersions({
+      endpoint: platformVersionsEndpoint,
+    }).then(setPlatformVersions);
+  }, []);
+
   return {
-    sending,
+    platformVersions,
     submitLoginForm,
     webVersions,
   };

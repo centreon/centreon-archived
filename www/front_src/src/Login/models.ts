@@ -11,3 +11,9 @@ export interface LoginFormValues {
 export interface Redirect {
   redirectUri: string;
 }
+
+export interface PlatformVersions {
+  web: {
+    version: string;
+  };
+}

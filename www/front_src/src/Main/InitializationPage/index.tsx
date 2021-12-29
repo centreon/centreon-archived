@@ -32,7 +32,7 @@ const InitializationPage = (): JSX.Element => {
       return;
     }
 
-    if (isNil(webVersions.installedVersion)) {
+    if (not(webVersions.isInstalled)) {
       navigateTo(reactRoutes.install);
 
       return;
