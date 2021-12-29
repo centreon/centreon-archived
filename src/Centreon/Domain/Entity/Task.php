@@ -9,17 +9,17 @@ class Task implements EntityInterface
     /**
      * Task types
      */
-    const TYPE_EXPORT = 'export';
-    const TYPE_IMPORT = 'import';
-    const TYPE_VERIFY = 'verify';
+    public const TYPE_EXPORT = 'export';
+    public const TYPE_IMPORT = 'import';
+    public const TYPE_VERIFY = 'verify';
 
     /**
      * Task states
      */
-    const STATE_PENDING = 'pending';
-    const STATE_PROGRESS = 'inprogress';
-    const STATE_COMPLETED = 'completed';
-    const STATE_FAILED = 'failed';
+    public const STATE_PENDING = 'pending';
+    public const STATE_PROGRESS = 'inprogress';
+    public const STATE_COMPLETED = 'completed';
+    public const STATE_FAILED = 'failed';
 
     /**
      * Task type
@@ -71,6 +71,14 @@ class Task implements EntityInterface
     public function getId(): int
     {
         return $this->id;
+    }
+
+    /**
+     * @param int $id
+     */
+    public function setId($id): void
+    {
+        $this->id = $id;
     }
 
     /**

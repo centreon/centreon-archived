@@ -891,7 +891,7 @@ class MonitoringResourceController extends AbstractController
     /**
      * Build uri to access listing page of resources with specific parameters
      *
-     * @param array $parameters
+     * @param string[] $parameters
      * @return string
      */
     public function buildListingUri(array $parameters): string
