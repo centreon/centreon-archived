@@ -76,7 +76,7 @@ describe('Login Page', () => {
     mockDate.set(mockNow);
     mockedAxios.post.mockResolvedValue({
       data: {
-        redirect_uri: '/centreon/monitoring/resources',
+        redirect_uri: '/monitoring/resources',
       },
     });
     mockedAxios.get.mockResolvedValue({

@@ -1,6 +1,5 @@
 import { useNavigate } from 'react-router-dom';
 import { FormikHelpers, FormikValues } from 'formik';
-import { replace } from 'ramda';
 import { useAtom } from 'jotai';
 import { useTranslation } from 'react-i18next';
 
@@ -48,7 +47,7 @@ const useLogin = (): UseLoginState => {
     })
       .then(({ redirectUri }) => {
         showSuccessMessage(t(labelLoginSucceeded));
-        loadUser()?.then(() => navigate(replace('/centreon', '', redirectUri)));
+        loadUser()?.then(() => navigate(redirectUri));
       })
       .catch(() => undefined)
       .finally(() => {
