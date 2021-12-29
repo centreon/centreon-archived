@@ -79,6 +79,7 @@ class Image
         try {
             $ref = new ReflectionClass(ImageDir::class);
         } catch (\ReflectionException $e) {
+            throw new \ReflectionException($e->getMessage(), $e->getCode(), $e);
         }
 
         $props = $ref->getProperties();

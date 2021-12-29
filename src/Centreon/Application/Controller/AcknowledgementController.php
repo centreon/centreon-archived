@@ -721,7 +721,7 @@ class AcknowledgementController extends AbstractController
         $errorList = new ConstraintViolationList();
 
         //validate resources
-        $resources = $ackRequest->getResources() ?? [];
+        $resources = $ackRequest->getResources();
         foreach ($resources as $resource) {
             switch ($resource->getType()) {
                 case ResourceEntity::TYPE_HOST:
