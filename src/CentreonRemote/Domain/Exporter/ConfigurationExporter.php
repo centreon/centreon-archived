@@ -28,7 +28,7 @@ use ConfigGenerateRemote\Manifest;
 
 class ConfigurationExporter extends ExporterServiceAbstract
 {
-    private const NAME = 'configuration';
+    public const NAME = 'configuration';
     private const MEDIA_PATH = _CENTREON_PATH_ . 'www/img/media';
 
     /** @var \ConfigGenerateRemote\Generate */
