@@ -295,11 +295,11 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
     /**
      * Completes hosts with their services.
      *
-     * @param array $hosts Host list for which we want to complete with their services
-     * @return array Returns the host list with their services
+     * @param array<mixed> $hosts Host list for which we want to complete with their services
+     * @return array<mixed> Returns the host list with their services
      * @throws \Exception
      */
-    private function completeHostsWithTheirServices(array $hosts): array
+    private function completeHostsWithTheirServices(array $hosts)
     {
         $hostIds = [];
         foreach ($hosts as $host) {

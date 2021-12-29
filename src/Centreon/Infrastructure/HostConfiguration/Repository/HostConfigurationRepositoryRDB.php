@@ -588,7 +588,7 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
             $names[] = (string) $name;
         }
 
-        if (empty($names)) {
+        if (count($names) === 0) {
             return [];
         }
 

@@ -316,6 +316,7 @@ class RequestParameters implements RequestParametersInterface
 
     /**
      * @inheritDoc
+     * @param string $search
      */
     public function setSearch(string $search): void
     {
@@ -326,6 +327,7 @@ class RequestParameters implements RequestParametersInterface
 
     /**
      * @inheritDoc
+     * @return array<mixed>
      */
     public function getSort(): array
     {

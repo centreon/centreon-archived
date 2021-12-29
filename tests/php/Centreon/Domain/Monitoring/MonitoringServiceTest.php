@@ -65,7 +65,7 @@ class MonitoringServiceTest extends TestCase
     /**
      * @throws \Exception
      */
-    public function testFindServices()
+    public function testFindServices(): void
     {
         $service = (new Service())
             ->setId(1)
@@ -93,7 +93,7 @@ class MonitoringServiceTest extends TestCase
     /**
      * @throws \Exception
      */
-    public function testFindServicesByHost()
+    public function testFindServicesByHost(): void
     {
         $service = (new Service())
             ->setId(1)
@@ -124,7 +124,7 @@ class MonitoringServiceTest extends TestCase
     /**
      * @throws \Exception
      */
-    public function testFindHosts()
+    public function testFindHosts(): void
     {
         $service = (new Service())
             ->setId(1)
@@ -175,7 +175,7 @@ class MonitoringServiceTest extends TestCase
     /**
      * @throws \Exception
      */
-    public function testFindServiceGroups()
+    public function testFindServiceGroups(): void
     {
         $service = (new Service())
             ->setId(1)
@@ -219,7 +219,7 @@ class MonitoringServiceTest extends TestCase
     /**
      * @throws \Exception
      */
-    public function testFindOneService()
+    public function testFindOneService(): void
     {
         $service = (new Service())
             ->setId(1)
@@ -254,7 +254,7 @@ class MonitoringServiceTest extends TestCase
     /**
      * @throws \Exception
      */
-    public function testFindOneHost()
+    public function testFindOneHost(): void
     {
         $service = (new Service())
             ->setId(1)
@@ -290,7 +290,7 @@ class MonitoringServiceTest extends TestCase
     /**
      * @throws \Exception
      */
-    public function testFindHostGroups()
+    public function testFindHostGroups(): void
     {
         $service = (new Service())
             ->setId(3)
@@ -334,7 +334,7 @@ class MonitoringServiceTest extends TestCase
     /**
      * @throws \Exception
      */
-    public function testIsHostExist()
+    public function testIsHostExist(): void
     {
         $host = (new Host())
             ->setId(1)
@@ -365,7 +365,7 @@ class MonitoringServiceTest extends TestCase
     /**
      * @throws \Exception
      */
-    public function testIsServiceExist()
+    public function testIsServiceExist(): void
     {
         $host = (new Host())
             ->setId(1)
@@ -395,7 +395,7 @@ class MonitoringServiceTest extends TestCase
     /**
      * @throws \Exception
      */
-    public function testFindServiceGroupsByHostAndService()
+    public function testFindServiceGroupsByHostAndService(): void
     {
         $service = (new Service())
             ->setId(1)

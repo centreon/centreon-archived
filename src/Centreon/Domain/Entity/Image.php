@@ -74,14 +74,9 @@ class Image
      * @param string $prop
      * @param string $val
      */
-    public function __set($prop, $val)
+    public function __set($prop, $val): void
     {
-        try {
-            $ref = new ReflectionClass(ImageDir::class);
-        } catch (\ReflectionException $e) {
-            throw new \ReflectionException($e->getMessage(), $e->getCode(), $e);
-        }
-
+        $ref = new ReflectionClass(ImageDir::class);
         $props = $ref->getProperties();
         $propArray = [];
 

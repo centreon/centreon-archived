@@ -114,8 +114,6 @@ class HostGroupRepositoryRDB extends AbstractRepositoryDRB implements
             | AssertionFailedException $ex
         ) {
             throw new RepositoryException($ex->getMessage(), 0, $ex);
-        } catch (\Exception $ex) {
-            throw $ex;
         }
     }
 
