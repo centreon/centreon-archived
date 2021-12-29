@@ -21,7 +21,7 @@ import {
   labelPassword,
   labelRequired,
 } from './translatedLabels';
-import { loginEndpoint } from './api/endpoint';
+import { loginEndpoint, platformVersionsEndpoint } from './api/endpoint';
 
 import LoginPage from '.';
 
@@ -45,6 +45,12 @@ const retrievedUser = {
   name: 'Admin',
   timezone: 'Europe/Paris',
   use_deprecated_pages: false,
+};
+
+const retrievedWeb = {
+  web: {
+    version: '21.10.1',
+  },
 };
 
 const TestComponent = (): JSX.Element => (
@@ -79,9 +85,13 @@ describe('Login Page', () => {
         redirect_uri: '/monitoring/resources',
       },
     });
-    mockedAxios.get.mockResolvedValue({
-      data: retrievedUser,
-    });
+    mockedAxios.get
+      .mockResolvedValueOnce({
+        data: retrievedWeb,
+      })
+      .mockResolvedValue({
+        data: retrievedUser,
+      });
   });
 
   afterEach(() => {
@@ -92,9 +102,15 @@ describe('Login Page', () => {
   });
   it('displays the login form', async () => {
     renderLoginPage();
+
     await waitFor(() => {
-      expect(screen.getByLabelText(labelAlias)).toBeInTheDocument();
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        platformVersionsEndpoint,
+        cancelTokenRequestParam,
+      );
     });
+
+    expect(screen.getByLabelText(labelAlias)).toBeInTheDocument();
     expect(screen.getByLabelText(labelPassword)).toBeInTheDocument();
     expect(screen.getByLabelText(labelLogin)).toBeInTheDocument();
     expect(screen.getByLabelText(labelCentreonLogo)).toBeInTheDocument();
