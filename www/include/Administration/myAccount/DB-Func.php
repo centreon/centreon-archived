@@ -34,9 +34,12 @@
  *
  */
 
+require_once __DIR__ . '/../../../class/centreonContact.class.php';
+require_once __DIR__ . '/../../../class/centreonAuth.class.php';
+
 function testExistence($name = null)
 {
-    global $pearDB, $form, $centreon;
+    global $pearDB, $centreon;
 
     $query = "SELECT contact_name, contact_id FROM contact WHERE contact_name = '" .
         htmlentities($name, ENT_QUOTES, "UTF-8") . "'";
@@ -59,7 +62,7 @@ function testExistence($name = null)
 
 function testAliasExistence($alias = null)
 {
-    global $pearDB, $form, $centreon;
+    global $pearDB, $centreon;
 
     $query = "SELECT contact_alias, contact_id FROM contact " .
         "WHERE contact_alias = '" . htmlentities($alias, ENT_QUOTES, "UTF-8") . "'";
@@ -113,11 +116,11 @@ function updateContactInDB($contact_id = null)
     updateNotificationOptions($contact_id);
 }
 
-function updateContact($contact_id = null)
+function updateContact($contactId = null)
 {
-    global $form, $pearDB, $centreon, $encryptType;
+    global $form, $pearDB, $centreon;
 
-    if (!$contact_id) {
+    if (!$contactId) {
         return;
     }
 
@@ -146,17 +149,6 @@ function updateContact($contact_id = null)
           'show_deprecated_pages = :showDeprecatedPages, ' .
           'contact_autologin_key = :contactAutologinKey, ' .
           'enable_one_click_export = :enableOneClickExport';
-
-    $password_encrypted = null;
-    if (!empty($ret['contact_passwd'])) {
-        $rq .= ', contact_passwd = :contactPasswd';
-        if ($encryptType == 2) {
-            $password_encrypted = sha1($ret['contact_passwd']);
-        } else {
-            $password_encrypted = md5($ret['contact_passwd']);
-        }
-    }
-
     $rq .= ' WHERE contact_id = :contactId';
 
     $stmt = $pearDB->prepare($rq);
@@ -186,11 +178,14 @@ function updateContact($contact_id = null)
     $stmt->bindValue(':defaultPage', !empty($ret['default_page']) ? $ret['default_page'] : null, \PDO::PARAM_INT);
     $stmt->bindValue(':showDeprecatedPages', isset($ret['show_deprecated_pages']) ? 1 : 0, \PDO::PARAM_STR);
     $stmt->bindValue(':enableOneClickExport', isset($ret['enable_one_click_export']) ? '1' : '0', \PDO::PARAM_STR);
-    $stmt->bindValue(':contactId', $contact_id, \PDO::PARAM_INT);
-    if (!is_null($password_encrypted)) {
-        $stmt->bindValue(':contactPasswd', $password_encrypted, \PDO::PARAM_STR);
-    }
+    $stmt->bindValue(':contactId', $contactId, \PDO::PARAM_INT);
     $stmt->execute();
+
+    if (isset($ret["contact_passwd"]) && !empty($ret["contact_passwd"])) {
+        $hashedPassword = password_hash($ret["contact_passwd"], \CentreonAuth::PASSWORD_HASH_ALGORITHM);
+        $contact = new \CentreonContact($pearDB);
+        $contact->renewPasswordByContactId($contactId, $hashedPassword);
+    }
 
     /*
      * Update user object..
@@ -200,4 +195,83 @@ function updateContact($contact_id = null)
     $centreon->user->lang = $ret['contact_lang'];
     $centreon->user->email = $ret['contact_email'];
     $centreon->user->setToken(isset($ret['contact_autologin_key']) ? $ret['contact_autologin_key'] : "''");
+}
+
+/**
+ * @param array<string,mixed> $fields
+ */
+function validatePasswordModification(array $fields)
+{
+    global $pearDB, $centreon;
+    $errors = [];
+    $password = $fields['contact_passwd'];
+    $contactId = (int) $centreon->user->get_id();
+    if (empty($password)) {
+        return true;
+    }
+
+    try {
+        $statement = $pearDB->query("SELECT * from password_security_policy");
+        $statement2 = $pearDB->prepare(
+            "SELECT creation_date FROM contact_password " .
+            "WHERE contact_id = :contactId ORDER BY creation_date DESC LIMIT 1"
+        );
+        $statement2->bindValue(':contactId', $centreon->user->get_id(), \PDO::PARAM_INT);
+        $statement2->execute();
+    } catch (\PDOException $e) {
+        return false;
+    }
+    $passwordPolicy = $statement->fetch(\PDO::FETCH_ASSOC);
+    if ($passwordCreationDate = $statement2->fetchColumn()) {
+        $delayBeforeNewPassword = (int) $passwordPolicy['delay_before_new_password'];
+        $isPasswordCanBeChanged = (int) $passwordCreationDate + $delayBeforeNewPassword < time();
+        if (!$isPasswordCanBeChanged) {
+            $errors['contact_passwd'] = _(
+                "You can't change your password because the delay before changing password is not over."
+            );
+        }
+    };
+    if (strlen($password) < (int) $passwordPolicy['password_length']) {
+        $errors['contact_passwd'] = sprintf(
+            _("Your password should be %d characters long."),
+            (int) $passwordPolicy['password_length']
+        );
+    }
+    if ((bool) $passwordPolicy['uppercase_characters'] === true && !preg_match('/[A-Z]/', $password)) {
+        $errors['contact_passwd'] = _("Your password should contains uppercase characters.");
+    }
+    if ((bool) $passwordPolicy['lowercase_characters'] === true && !preg_match('/[a-z]/', $password)) {
+        $errors['contact_passwd'] = _("Your password should contains lowercase characters.");
+    }
+    if ((bool) $passwordPolicy['integer_characters'] === true && !preg_match('/[0-9]/', $password)) {
+        $errors['contact_passwd'] = _("Your password should contains integer characters.");
+    }
+    if ((bool) $passwordPolicy['special_characters'] === true && !preg_match('/[@$!%*?&]/', $password)) {
+        $errors['contact_passwd'] = _("Your password should contains special characters form the list '@$!%*?&'.");
+    }
+
+    if ((bool) $passwordPolicy['can_reuse_password'] === false) {
+        try {
+            $statement = $pearDB->prepare(
+                "SELECT id, password FROM `contact_password` WHERE `contact_id` = :contactId"
+            );
+            $statement->bindParam(':contactId', $contactId, \PDO::PARAM_INT);
+            $statement->execute();
+
+            $passwordHistory = $statement->fetchAll(\PDO::FETCH_ASSOC);
+            foreach ($passwordHistory as $contactPassword) {
+                if (password_verify($password, $contactPassword['password'])) {
+                    $errors['contact_passwd'] = _(
+                        "Your password has already been used. " .
+                        "Please choose a different password from the previous three."
+                    );
+                    break;
+                }
+            }
+        } catch (\PDOException $e) {
+            return false;
+        }
+    }
+
+    return count($errors) > 0 ? $errors : true;
 }
