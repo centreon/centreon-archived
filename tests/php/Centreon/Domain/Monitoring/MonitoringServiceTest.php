@@ -110,7 +110,6 @@ class MonitoringServiceTest extends TestCase
             $this->accessGroupRepository,
             $this->serviceConfiguration,
             $this->hostConfiguration
-
         );
 
         $servicesFound = $monitoringService->findServicesByHost($hostId);
@@ -148,7 +147,6 @@ class MonitoringServiceTest extends TestCase
             $this->accessGroupRepository,
             $this->serviceConfiguration,
             $this->hostConfiguration
-
         );
 
         /**
@@ -199,7 +197,6 @@ class MonitoringServiceTest extends TestCase
             $this->accessGroupRepository,
             $this->serviceConfiguration,
             $this->hostConfiguration
-
         );
 
         /**
@@ -239,7 +236,6 @@ class MonitoringServiceTest extends TestCase
             $this->accessGroupRepository,
             $this->serviceConfiguration,
             $this->hostConfiguration
-
         );
 
         $oneService = $monitoringService->findOneService($host->getId(), $service->getId());
@@ -275,7 +271,6 @@ class MonitoringServiceTest extends TestCase
             $this->accessGroupRepository,
             $this->serviceConfiguration,
             $this->hostConfiguration
-
         );
 
         $hostFound = $monitoringService->findOneHost($host->getId());
@@ -314,7 +309,6 @@ class MonitoringServiceTest extends TestCase
             $this->accessGroupRepository,
             $this->serviceConfiguration,
             $this->hostConfiguration
-
         );
 
         /**
@@ -350,7 +344,6 @@ class MonitoringServiceTest extends TestCase
             $this->accessGroupRepository,
             $this->serviceConfiguration,
             $this->hostConfiguration
-
         );
 
         // First test when the 'findOneHost' returns one host
@@ -419,7 +412,6 @@ class MonitoringServiceTest extends TestCase
             $this->accessGroupRepository,
             $this->serviceConfiguration,
             $this->hostConfiguration
-
         );
 
         /**
