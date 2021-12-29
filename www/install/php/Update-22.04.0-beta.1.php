@@ -24,7 +24,7 @@ include_once __DIR__ . "/../../class/centreonLog.class.php";
 $centreonLog = new CentreonLog();
 
 //error specific content
-$versionOfTheUpgrade = 'UPGRADE - 22.04.0-beta-1: ';
+$versionOfTheUpgrade = 'UPGRADE - 22.04.0-beta.1: ';
 
 /**
  * Query with transaction
@@ -39,15 +39,15 @@ try {
         );
     }
 
-    $errorMessage = 'Unable to delete logger entry in cb_tag';
-    $statement = $pearDB->query("DELETE FROM cb_tag WHERE tagname = 'logger'");
-
     $errorMessage = 'Unable to update the description in cb_field';
     $statement = $pearDB->query("
         UPDATE cb_field
         SET `description` = 'Time in seconds to wait between each connection attempt (Default value: 30s).'
         WHERE `cb_field_id` = 31
     ");
+
+    $errorMessage = 'Unable to delete logger entry in cb_tag';
+    $statement = $pearDB->query("DELETE FROM cb_tag WHERE tagname = 'logger'");
 } catch (\Exception $e) {
     $centreonLog->insertLog(
         4,
