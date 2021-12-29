@@ -224,10 +224,10 @@ class NavigationList implements JsonSerializable
     /**
      * Extract the array without keys to avoid serialization into objects
      *
-     * @param  array<array> $naviList
-     * @return array<array>
+     * @param  array<mixed> $naviList
+     * @return array<mixed>
      */
-    private function removeKeysFromArray(array $naviList): array
+    private function removeKeysFromArray(array $naviList)
     {
         foreach ($naviList as $key => &$value) {
             if (!empty($value['children'])) {

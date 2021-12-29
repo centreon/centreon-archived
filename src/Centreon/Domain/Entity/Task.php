@@ -56,7 +56,7 @@ class Task implements EntityInterface
 
     /**
      * Parameters to be serialized into DB that define task options
-     * @var array
+     * @var string
      */
     private $params;
 
@@ -179,6 +179,7 @@ class Task implements EntityInterface
 
     /**
      * convert parameters to array
+     * @return array<string,string|int>
      */
     public function toArray(): array
     {
@@ -193,12 +194,13 @@ class Task implements EntityInterface
 
     /**
      * return all statuses
+     * @return array<mixed>
      */
-    public function getStatuses(): array
+    public function getStatuses()
     {
         $ref = new ReflectionClass(__CLASS__);
         $constants = $ref->getConstants();
-        $statusConstants = self::array_filter_key($constants, function ($key) {
+        $statusConstants = $this->arrayFilterKey($constants, function ($key) {
             return strpos($key, 'STATE_') === 0;
         });
         $statuses = [];
@@ -210,14 +212,14 @@ class Task implements EntityInterface
 
     /**
      * Filters array keys
-     * @param $input
-     * @param $callback
-     * @return array|null
+     * @param array<mixed> $input
+     * @param mixed $callback
+     * @return array<mixed>|null
      */
-    private function array_filter_key($input, $callback)
+    private function arrayFilterKey($input, $callback)
     {
         if (!is_array($input)) {
-            trigger_error('array_filter_key() expects parameter 1 to be array, ' . gettype($input) .
+            trigger_error('arrayFilterKey() expects parameter 1 to be array, ' . gettype($input) .
                 ' given', E_USER_WARNING);
             return null;
         }

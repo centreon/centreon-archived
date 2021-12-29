@@ -27,7 +27,6 @@ use Centreon\Domain\HostConfiguration\Interfaces\HostConfigurationServiceInterfa
 use Centreon\Domain\Monitoring\Exception\MonitoringServiceException;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
-use Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerServiceInterface;
 use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
 use Centreon\Domain\Service\AbstractCentreonService;
 use Centreon\Domain\ServiceConfiguration\Interfaces\ServiceConfigurationServiceInterface;
@@ -62,30 +61,23 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
      * @var HostConfigurationServiceInterface
      */
     private $hostConfiguration;
-    /**
-     * @var MonitoringServerServiceInterface
-     */
-    private $monitoringServerService;
 
     /**
      * @param MonitoringRepositoryInterface $monitoringRepository
      * @param AccessGroupRepositoryInterface $accessGroupRepository
      * @param ServiceConfigurationServiceInterface $serviceConfigurationService
      * @param HostConfigurationServiceInterface $hostConfigurationService
-     * @param MonitoringServerServiceInterface $monitoringServerService
      */
     public function __construct(
         MonitoringRepositoryInterface $monitoringRepository,
         AccessGroupRepositoryInterface $accessGroupRepository,
         ServiceConfigurationServiceInterface $serviceConfigurationService,
         HostConfigurationServiceInterface $hostConfigurationService,
-        MonitoringServerServiceInterface $monitoringServerService
     ) {
         $this->monitoringRepository = $monitoringRepository;
         $this->accessGroupRepository = $accessGroupRepository;
         $this->serviceConfiguration = $serviceConfigurationService;
         $this->hostConfiguration = $hostConfigurationService;
-        $this->monitoringServerService = $monitoringServerService;
     }
 
     /**
@@ -151,14 +143,14 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
                     $hostGroupIds[] = $hostGroup->getId();
                 }
 
-                if (!empty($hostGroupIds)) {
+                if (count($hostGroupIds) !== 0) {
                     $hostsByHostsGroups = $this->monitoringRepository->findHostsByHostsGroups($hostGroupIds);
 
                     foreach ($hostGroups as $hostGroup) {
                         if (array_key_exists($hostGroup->getId(), $hostsByHostsGroups)) {
                             $hostGroup->setHosts($hostsByHostsGroups[$hostGroup->getId()]);
                             // We keep the host ids if we must to retrieve their services
-                            if ($withServices && !empty($hostGroup->getHosts())) {
+                            if ($withServices && $hostGroup->getHosts() !== null) {
                                 foreach ($hostGroup->getHosts() as $host) {
                                     if (!in_array($host->getId(), $hostIds)) {
                                         $hostIds[] = $host->getId();

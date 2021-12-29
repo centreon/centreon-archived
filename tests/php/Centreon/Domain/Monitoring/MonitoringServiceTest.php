@@ -53,10 +53,6 @@ class MonitoringServiceTest extends TestCase
      * @var HostConfigurationServiceInterface&\PHPUnit\Framework\MockObject\MockObject
      */
     private $hostConfiguration;
-    /**
-     * @var MonitoringServerServiceInterface&\PHPUnit\Framework\MockObject\MockObject
-     */
-    private $monitoringServerService;
 
     protected function setUp(): void
     {
@@ -64,7 +60,6 @@ class MonitoringServiceTest extends TestCase
         $this->accessGroupRepository = $this->createMock(AccessGroupRepositoryInterface::class);
         $this->serviceConfiguration = $this->createMock(ServiceConfigurationServiceInterface::class);
         $this->hostConfiguration = $this->createMock(HostConfigurationServiceInterface::class);
-        $this->monitoringServerService = $this->createMock(MonitoringServerServiceInterface::class);
     }
 
     /**
@@ -84,8 +79,7 @@ class MonitoringServiceTest extends TestCase
             $this->monitoringRepository,
             $this->accessGroupRepository,
             $this->serviceConfiguration,
-            $this->hostConfiguration,
-            $this->monitoringServerService
+            $this->hostConfiguration
         );
 
         $servicesFound = $monitoringService->findServices();
@@ -115,8 +109,8 @@ class MonitoringServiceTest extends TestCase
             $this->monitoringRepository,
             $this->accessGroupRepository,
             $this->serviceConfiguration,
-            $this->hostConfiguration,
-            $this->monitoringServerService
+            $this->hostConfiguration
+
         );
 
         $servicesFound = $monitoringService->findServicesByHost($hostId);
@@ -153,8 +147,8 @@ class MonitoringServiceTest extends TestCase
             $this->monitoringRepository,
             $this->accessGroupRepository,
             $this->serviceConfiguration,
-            $this->hostConfiguration,
-            $this->monitoringServerService
+            $this->hostConfiguration
+
         );
 
         /**
@@ -204,8 +198,8 @@ class MonitoringServiceTest extends TestCase
             $this->monitoringRepository,
             $this->accessGroupRepository,
             $this->serviceConfiguration,
-            $this->hostConfiguration,
-            $this->monitoringServerService
+            $this->hostConfiguration
+
         );
 
         /**
@@ -244,8 +238,8 @@ class MonitoringServiceTest extends TestCase
             $this->monitoringRepository,
             $this->accessGroupRepository,
             $this->serviceConfiguration,
-            $this->hostConfiguration,
-            $this->monitoringServerService
+            $this->hostConfiguration
+
         );
 
         $oneService = $monitoringService->findOneService($host->getId(), $service->getId());
@@ -280,8 +274,8 @@ class MonitoringServiceTest extends TestCase
             $this->monitoringRepository,
             $this->accessGroupRepository,
             $this->serviceConfiguration,
-            $this->hostConfiguration,
-            $this->monitoringServerService
+            $this->hostConfiguration
+
         );
 
         $hostFound = $monitoringService->findOneHost($host->getId());
@@ -319,8 +313,8 @@ class MonitoringServiceTest extends TestCase
             $this->monitoringRepository,
             $this->accessGroupRepository,
             $this->serviceConfiguration,
-            $this->hostConfiguration,
-            $this->monitoringServerService
+            $this->hostConfiguration
+
         );
 
         /**
@@ -355,8 +349,8 @@ class MonitoringServiceTest extends TestCase
             $this->monitoringRepository,
             $this->accessGroupRepository,
             $this->serviceConfiguration,
-            $this->hostConfiguration,
-            $this->monitoringServerService
+            $this->hostConfiguration
+
         );
 
         // First test when the 'findOneHost' returns one host
@@ -390,8 +384,8 @@ class MonitoringServiceTest extends TestCase
             $this->monitoringRepository,
             $this->accessGroupRepository,
             $this->serviceConfiguration,
-            $this->hostConfiguration,
-            $this->monitoringServerService
+            $this->hostConfiguration
+
         );
 
         $exists = $monitoringService->isServiceExists($host->getId(), $service->getId());
@@ -425,8 +419,8 @@ class MonitoringServiceTest extends TestCase
             $this->monitoringRepository,
             $this->accessGroupRepository,
             $this->serviceConfiguration,
-            $this->hostConfiguration,
-            $this->monitoringServerService
+            $this->hostConfiguration
+
         );
 
         /**
