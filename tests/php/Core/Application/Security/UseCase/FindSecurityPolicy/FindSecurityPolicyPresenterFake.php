@@ -21,7 +21,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\Application\Security\UseCase;
+namespace Tests\Core\Application\Security\UseCase\FindSecurityPolicy;
 
 use Core\Application\Security\UseCase\FindSecurityPolicy\FindSecurityPolicyPresenterInterface;
 use Core\Application\Security\UseCase\FindSecurityPolicy\FindSecurityPolicyResponse;
