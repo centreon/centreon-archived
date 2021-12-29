@@ -61,10 +61,10 @@ class SecurityPolicy
         private bool $hasNumber,
         private bool $hasSpecialCharacter,
         private bool $canReusePassword,
-        private ?int $attempts = null,
-        private ?int $blockingDuration = null,
-        private ?int $passwordExpiration = null,
-        private ?int $delayBeforeNewPassword = null
+        private ?int $attempts,
+        private ?int $blockingDuration,
+        private ?int $passwordExpiration,
+        private ?int $delayBeforeNewPassword
     ) {
         Assertion::min($passwordMinimumLength, self::MIN_PASSWORD_LENGTH, 'SecurityPolicy::passwordMinimumLength');
         Assertion::max($passwordMinimumLength, self::MAX_PASSWORD_LENGTH, 'SecurityPolicy::passwordMinimumLength');
