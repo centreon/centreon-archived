@@ -385,7 +385,6 @@ class MonitoringServiceTest extends TestCase
             $this->accessGroupRepository,
             $this->serviceConfiguration,
             $this->hostConfiguration
-
         );
 
         $exists = $monitoringService->isServiceExists($host->getId(), $service->getId());
