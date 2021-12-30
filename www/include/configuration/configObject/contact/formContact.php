@@ -84,6 +84,17 @@ if ($result === false) {
 }
 $dbResult->closeCursor();
 
+/**
+ * Get the Security Policy for automatic generation password.
+ */
+try {
+    $statement = $pearDB->query("SELECT * from password_security_policy");
+} catch (\PDOException $e) {
+    return false;
+}
+$passwordPolicy = $statement->fetch(\PDO::FETCH_ASSOC);
+$encodedPasswordPolicy = json_encode($passwordPolicy);
+
 $cct = array();
 if (($o == MODIFY_CONTACT || $o == WATCH_CONTACT) && $contactId) {
     /**
@@ -306,11 +317,16 @@ if ($o != MASSIVE_CHANGE) {
     $form->addElement('text', 'contact_name', _("Full Name"), $attrsTextDescr);
     $form->addElement('text', 'contact_alias', _("Alias / Login"), $attrsText);
     $form->addElement('text', 'contact_autologin_key', _("Autologin Key"), array("size" => "90", "id" => "aKey"));
-    $form->addElement('button', 'contact_gen_akey', _("Generate"), array('onclick' => 'generatePassword("aKey");'));
+    $form->addElement(
+        'button',
+        'contact_gen_akey',
+        _("Generate"),
+        ['onclick' => "generatePassword('aKey', '$encodedPasswordPolicy');"]
+    );
+    $form->addElement('text', 'contact_email', _("Email"), $attrsTextMail);
+    $form->addElement('text', 'contact_pager', _("Pager"), $attrsText);
 }
 
-$form->addElement('text', 'contact_email', _("Email"), $attrsTextMail);
-$form->addElement('text', 'contact_pager', _("Pager"), $attrsText);
 
 /**
  * Contact template used
@@ -355,19 +371,36 @@ $tab[] = $form->createElement('radio', 'contact_oreon', null, _("Yes"), '1');
 $tab[] = $form->createElement('radio', 'contact_oreon', null, _("No"), '0');
 $form->addGroup($tab, 'contact_oreon', _("Reach Centreon Front-end"), '&nbsp;');
 
-$form->addElement(
-    'password',
-    'contact_passwd',
-    _("Password"),
-    array("size" => "30", "autocomplete" => "new-password", "id" => "passwd1", "onkeypress" => "resetPwdType(this);")
-);
-$form->addElement(
-    'password',
-    'contact_passwd2',
-    _("Confirm Password"),
-    array("size" => "30", "autocomplete" => "new-password", "id" => "passwd2", "onkeypress" => "resetPwdType(this);")
-);
-$form->addElement('button', 'contact_gen_passwd', _("Generate"), array('onclick' => 'generatePassword("passwd");'));
+if ($o !== MASSIVE_CHANGE) {
+    $form->addElement(
+        'password',
+        'contact_passwd',
+        _("Password"),
+        array(
+            "size" => "30",
+            "autocomplete" => "new-password",
+            "id" => "passwd1",
+            "onkeypress" => "resetPwdType(this);"
+        )
+    );
+    $form->addElement(
+        'password',
+        'contact_passwd2',
+        _("Confirm Password"),
+        array(
+            "size" => "30",
+            "autocomplete" => "new-password",
+            "id" => "passwd2",
+            "onkeypress" => "resetPwdType(this);"
+        )
+    );
+    $form->addElement(
+        'button',
+        'contact_gen_passwd',
+        _("Generate"),
+        ['onclick' => "generatePassword('passwd', '$encodedPasswordPolicy');"]
+    );
+}
 
 $form->addElement('select', 'contact_lang', _("Default Language"), $langs);
 $form->addElement(
@@ -714,6 +747,12 @@ if ($o != MASSIVE_CHANGE) {
     }
 
     $form->addRule(array('contact_passwd', 'contact_passwd2'), _("Passwords do not match"), 'compare');
+    if ($o === ADD_CONTACT || $o === MODIFY_CONTACT) {
+        $form->addFormRule('validatePasswordCreation');
+    }
+    if ($o === MODIFY_CONTACT) {
+        $form->addFormRule('validatePasswordModification');
+    }
     $form->registerRule('exist', 'callback', 'testContactExistence');
     $form->addRule('contact_name', "<font style='color: red;'>*</font>&nbsp;" . _("Contact already exists"), 'exist');
     $form->registerRule('existAlias', 'callback', 'testAliasExistence');

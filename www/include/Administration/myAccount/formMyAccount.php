@@ -57,6 +57,13 @@ if (!isset($centreonFeature)) {
     $centreonFeature = new CentreonFeature($pearDB);
 }
 
+/**
+ * Get the Security Policy for automatic generation password.
+ */
+$statement = $pearDB->query("SELECT * from password_security_policy");
+$passwordPolicy = $statement->fetch(\PDO::FETCH_ASSOC);
+$encodedPasswordPolicy = json_encode($passwordPolicy);
+
 /*
  * Database retrieve information for the User
  */
@@ -109,6 +116,26 @@ if ($cct["contact_auth_type"] != 'ldap') {
 $form->addElement('text', 'contact_email', _("Email"), $attrsText);
 $form->addElement('text', 'contact_pager', _("Pager"), $attrsText);
 if ($cct["contact_auth_type"] != 'ldap') {
+    $form->addFormRule('validatePasswordModification');
+    $statement = $pearDB->prepare(
+        "SELECT creation_date FROM contact_password WHERE contact_id = :contactId ORDER BY creation_date DESC LIMIT 1"
+    );
+    $statement->bindValue(':contactId', $centreon->user->get_id(), \PDO::PARAM_INT);
+    $statement->execute();
+    $result = $statement->fetchColumn();
+    if ($result) {
+        $passwordCreationDate = (int) $result;
+        $passwordExpirationDate = $passwordCreationDate + $passwordPolicy['password_expiration'];
+        $isPasswordExpired = time() > $passwordExpirationDate;
+        if ($isPasswordExpired) {
+            $expirationMessage = _("Your password has expired. Please change it.");
+        } else {
+            $expirationMessage = sprintf(
+                _("Your password will expire in %s days."),
+                ceil(($passwordExpirationDate - time()) / 86400)
+            );
+        }
+    }
     $form->addElement(
         'password',
         'contact_passwd',
@@ -125,7 +152,7 @@ if ($cct["contact_auth_type"] != 'ldap') {
         'button',
         'contact_gen_passwd',
         _("Generate"),
-        array('onclick' => 'generatePassword("passwd");', 'class' => 'btc bt_info')
+        ['onclick' => "generatePassword('passwd', '$encodedPasswordPolicy');", 'class' => 'btc bt_info']
     );
 }
 $form->addElement('text', 'contact_autologin_key', _("Autologin Key"), array("size" => "30", "id" => "aKey"));
@@ -133,7 +160,7 @@ $form->addElement(
     'button',
     'contact_gen_akey',
     _("Generate"),
-    array('onclick' => 'generatePassword("aKey");', 'class' => 'btc bt_info')
+    ['onclick' => "generatePassword('aKey', '$encodedPasswordPolicy');", 'class' => 'btc bt_info']
 );
 $form->addElement('select', 'contact_lang', _("Language"), $langs);
 $form->addElement('checkbox', 'show_deprecated_pages', _("Use deprecated pages"), null, $attrsText);
@@ -449,6 +476,9 @@ $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font
 $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());
+if (isset($expirationMessage)) {
+    $tpl->assign('expirationMessage', $expirationMessage);
+}
 $tpl->assign('cct', $cct);
 $tpl->assign('o', $o);
 $tpl->assign('featuresFlipping', (count($features) > 0));

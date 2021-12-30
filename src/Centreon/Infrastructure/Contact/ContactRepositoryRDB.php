@@ -54,13 +54,17 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
     public function findById(int $contactId): ?Contact
     {
         $request = $this->translateDbName(
-            'SELECT contact.*, t.topology_url, t.topology_url_opt, t.is_react, t.topology_id, tz.timezone_name
+            'SELECT contact.*, cp.password AS contact_passwd, t.topology_url,
+            t.topology_url_opt, t.is_react, t.topology_id, tz.timezone_name
             FROM `:db`.contact
+            LEFT JOIN `:db`.contact_password cp
+                ON cp.contact_id = contact.contact_id
             LEFT JOIN `:db`.timezone tz
                 ON tz.timezone_id = contact.contact_location
             LEFT JOIN `:db`.topology t
                 ON t.topology_page = contact.default_page
-            WHERE contact_id = :contact_id'
+            WHERE contact.contact_id = :contact_id
+            ORDER BY cp.creation_date DESC LIMIT 1'
         );
 
         $statement = $this->db->prepare($request);
@@ -83,14 +87,17 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
     public function findByName(string $name): ?Contact
     {
         $request = $this->translateDbName(
-            'SELECT contact.*, t.topology_url, t.topology_url_opt, t.is_react, t.topology_id, tz.timezone_name
+            'SELECT contact.*, cp.password AS contact_passwd, t.topology_url,
+            t.topology_url_opt, t.is_react, t.topology_id, tz.timezone_name
             FROM `:db`.contact
+            LEFT JOIN `:db`.contact_password cp
+                ON cp.contact_id = contact.contact_id
             LEFT JOIN `:db`.timezone tz
                 ON tz.timezone_id = contact.contact_location
             LEFT JOIN `:db`.topology t
                 ON t.topology_page = contact.default_page
             WHERE contact_alias = :username
-            LIMIT 1'
+            ORDER BY cp.creation_date DESC LIMIT 1'
         );
         $statement = $this->db->prepare($request);
         $statement->bindValue(':username', $name, \PDO::PARAM_STR);
@@ -113,8 +120,11 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
     public function findBySession(string $sessionId): ?Contact
     {
         $request = $this->translateDbName(
-            'SELECT contact.*, t.topology_url, t.topology_url_opt, t.is_react, t.topology_id, tz.timezone_name
+            'SELECT contact.*, cp.password AS contact_passwd, t.topology_url,
+            t.topology_url_opt, t.is_react, t.topology_id, tz.timezone_name
             FROM `:db`.contact
+            LEFT JOIN `:db`.contact_password cp
+                ON cp.contact_id = contact.contact_id
             LEFT JOIN `:db`.timezone tz
                 ON tz.timezone_id = contact.contact_location
             LEFT JOIN `:db`.topology t
@@ -122,7 +132,7 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
             INNER JOIN `:db`.session
               on session.user_id = contact.contact_id
             WHERE session.session_id = :session_id
-            LIMIT 1'
+            ORDER BY cp.creation_date DESC LIMIT 1'
         );
         $statement = $this->db->prepare($request);
         $statement->bindValue(':session_id', $sessionId, \PDO::PARAM_STR);
@@ -146,15 +156,19 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
     {
         $statement = $this->db->prepare(
             $this->translateDbName(
-                "SELECT contact.*, t.topology_url, t.topology_url_opt, t.is_react, t.topology_id, tz.timezone_name
+                "SELECT contact.*, cp.password AS contact_passwd, t.topology_url,
+                t.topology_url_opt, t.is_react, t.topology_id, tz.timezone_name
                 FROM `:db`.contact
+                LEFT JOIN `:db`.contact_password cp
+                    ON cp.contact_id = contact.contact_id
                 LEFT JOIN `:db`.timezone tz
                     ON tz.timezone_id = contact.contact_location
                 LEFT JOIN `:db`.topology t
                     ON t.topology_page = contact.default_page
                 INNER JOIN `:db`.security_authentication_tokens sat
                     ON sat.user_id = contact.contact_id
-                WHERE sat.token = :token"
+                WHERE sat.token = :token
+                ORDER BY cp.creation_date DESC LIMIT 1"
             )
         );
         $statement->bindValue(':token', $token, \PDO::PARAM_STR);

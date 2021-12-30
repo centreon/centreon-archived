@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2015 CENTREON
+ * Copyright 2005-2021 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -43,6 +44,7 @@ require_once "Centreon/Object/Command/Command.php";
 require_once "Centreon/Object/Timezone/Timezone.php";
 require_once "Centreon/Object/Relation/Contact/Command/Host.php";
 require_once "Centreon/Object/Relation/Contact/Command/Service.php";
+require_once __DIR__ . '/../centreonAuth.class.php';
 
 /**
  * Class for managing Contact configuration
@@ -279,14 +281,8 @@ class CentreonContact extends CentreonObject
         $addParams[$this->object->getUniqueLabelField()] = $params[self::ORDER_UNIQUENAME];
         $addParams['contact_name'] = $this->checkIllegalChar($params[self::ORDER_NAME]);
         $addParams['contact_email'] = $params[self::ORDER_MAIL];
-        $addParams['contact_passwd'] = md5($params[self::ORDER_PASS]);
+        $addParams['contact_passwd'] = password_hash($params[self::ORDER_PASS], \CentreonAuth::PASSWORD_HASH_ALGORITHM);
 
-        $algo = $this->dependencyInjector['utils']->detectPassPattern($params[self::ORDER_PASS]);
-        if (!$algo) {
-            $addParams['contact_passwd'] = $this->dependencyInjector['utils']->encodePass($params[self::ORDER_PASS]);
-        } else {
-            $addParams['contact_passwd'] = $params[self::ORDER_PASS];
-        }
 
         $addParams['contact_admin'] = $params[self::ORDER_ADMIN];
         if ($addParams['contact_admin'] == '') {
@@ -380,7 +376,7 @@ class CentreonContact extends CentreonObject
                     $params[2] = $completeLanguage;
                 } elseif ($params[1] == "password") {
                     $params[1] = "passwd";
-                    $params[2] = md5(trim($params[2]));
+                    $params[2] = password_hash($params[2], \CentreonAuth::PASSWORD_HASH_ALGORITHM);
                 } elseif ($params[1] == "hostnotifopt") {
                     $params[1] = "host_notification_options";
                     $aNotifs = explode(",", $params[2]);
@@ -527,10 +523,6 @@ class CentreonContact extends CentreonObject
             "AND"
         );
         foreach ($elements as $element) {
-            $algo = $this->dependencyInjector['utils']->detectPassPattern($element['contact_passwd']);
-            if (!$algo) {
-                $element['contact_passwd'] = $this->dependencyInjector['utils']->encodePass($element['contact_passwd']);
-            }
             $addStr = $this->action . $this->delim . "ADD";
             foreach ($this->insertParams as $param) {
                 $addStr .= $this->delim . $element[$param];

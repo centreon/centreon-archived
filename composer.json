@@ -11,11 +11,11 @@
     },
     "require-dev": {
         "adlawson/vfs": "^0.12.1",
-        "behat/behat": "^3.8",
-        "behat/mink": "dev-master#a534fe7dac9525e8e10ca68e737c3d7e5058ec83",
-        "behat/mink-extension": "^2.3",
+        "behat/behat": "^3.10",
+        "friends-of-behat/mink": "^1.9",
+        "friends-of-behat/mink-extension": "^2.5",
         "behat/mink-selenium2-driver": "^1.4",
-        "centreon/centreon-test-lib": "dev-master",
+        "centreon/centreon-test-lib": "dev-password-security-policy",
         "phpstan/phpstan": "^0.12.59",
         "phpstan/phpstan-beberlei-assert": "^0.12",
         "phpunit/phpunit": "^9.5",
@@ -28,7 +28,8 @@
         "symfony/web-profiler-bundle": "^4.4",
         "twig/twig": "^2.0",
         "webmozart/assert": "^1.8",
-        "zircote/swagger-php": "^3.0"
+        "zircote/swagger-php": "^3.0",
+        "psr/container": "~1.0.0"
     },
     "require": {
         "beberlei/assert": "^3.3",

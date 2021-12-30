@@ -8,11 +8,11 @@ INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '22.04.0-beta.1')
 -- Contenu de la table `contact`
 --
 
-INSERT INTO `contact` (`contact_id`, `timeperiod_tp_id`, `timeperiod_tp_id2`, `contact_name`, `contact_alias`, `contact_passwd`, `contact_lang`, `contact_host_notification_options`, `contact_service_notification_options`, `contact_email`, `contact_pager`, `contact_comment`, `contact_oreon`, `contact_admin`, `contact_type_msg`, `contact_activate`, `contact_auth_type`, `contact_ldap_dn`, `contact_enable_notifications`) VALUES(1, 1, 1, '@firstname@ @lastname@', 'admin', MD5('@admin_password@'), 'en_US.UTF-8', 'n', 'n', '@email@', NULL, NULL, '1', '1', 'txt', '1', 'local', NULL, '1');
-INSERT INTO `contact` (`contact_id`, `timeperiod_tp_id`, `timeperiod_tp_id2`, `contact_name`, `contact_alias`, `contact_passwd`, `contact_lang`, `contact_host_notification_options`, `contact_service_notification_options`, `contact_email`, `contact_pager`, `contact_comment`, `contact_oreon`, `contact_admin`, `contact_type_msg`, `contact_activate`, `contact_auth_type`, `contact_ldap_dn`) VALUES(17, 1, 1, 'Guest', 'guest', NULL, 'en_US.UTF-8', 'n', 'n', 'guest@localhost', NULL, NULL, '0', '0', 'txt', '0', 'local', NULL);
-INSERT INTO `contact` (`contact_id`, `timeperiod_tp_id`, `timeperiod_tp_id2`, `contact_name`, `contact_alias`, `contact_passwd`, `contact_lang`, `contact_host_notification_options`, `contact_service_notification_options`, `contact_email`, `contact_pager`, `contact_comment`, `contact_oreon`, `contact_admin`, `contact_type_msg`, `contact_activate`, `contact_auth_type`, `contact_ldap_dn`) VALUES(18, 1, 1, 'User', 'user', NULL, 'en_US.UTF-8', 'n', 'n', 'user@localhost', NULL, NULL, '0', '0', 'txt', '0', 'local', NULL);
+INSERT INTO `contact` (`contact_id`, `timeperiod_tp_id`, `timeperiod_tp_id2`, `contact_name`, `contact_alias`, `contact_lang`, `contact_host_notification_options`, `contact_service_notification_options`, `contact_email`, `contact_pager`, `contact_comment`, `contact_oreon`, `contact_admin`, `contact_type_msg`, `contact_activate`, `contact_auth_type`, `contact_ldap_dn`, `contact_enable_notifications`) VALUES(1, 1, 1, '@firstname@ @lastname@', 'admin', 'en_US.UTF-8', 'n', 'n', '@email@', NULL, NULL, '1', '1', 'txt', '1', 'local', NULL, '1');
+INSERT INTO `contact` (`contact_id`, `timeperiod_tp_id`, `timeperiod_tp_id2`, `contact_name`, `contact_alias`, `contact_lang`, `contact_host_notification_options`, `contact_service_notification_options`, `contact_email`, `contact_pager`, `contact_comment`, `contact_oreon`, `contact_admin`, `contact_type_msg`, `contact_activate`, `contact_auth_type`, `contact_ldap_dn`) VALUES(17, 1, 1, 'Guest', 'guest', 'en_US.UTF-8', 'n', 'n', 'guest@localhost', NULL, NULL, '0', '0', 'txt', '0', 'local', NULL);
+INSERT INTO `contact` (`contact_id`, `timeperiod_tp_id`, `timeperiod_tp_id2`, `contact_name`, `contact_alias`, `contact_lang`, `contact_host_notification_options`, `contact_service_notification_options`, `contact_email`, `contact_pager`, `contact_comment`, `contact_oreon`, `contact_admin`, `contact_type_msg`, `contact_activate`, `contact_auth_type`, `contact_ldap_dn`) VALUES(18, 1, 1, 'User', 'user', 'en_US.UTF-8', 'n', 'n', 'user@localhost', NULL, NULL, '0', '0', 'txt', '0', 'local', NULL);
 
-
+INSERT INTO `contact_password` (`password`, `contact_id`, `creation_date`) VALUES ('@admin_password@', 1, (SELECT UNIX_TIMESTAMP(NOW())));
 --
 -- Contenu de la table `contact_param`
 --
@@ -1400,5 +1400,5 @@ VALUES ('local', 'local', true, true);
 
 INSERT INTO `password_security_policy`
 (`password_length`, `uppercase_characters`, `lowercase_characters`, `integer_characters`, `special_characters`,
-`attempts`, `blocking_duration`, `password_expiration`, `delay_before_new_password`)
-VALUES (12, '1', '1', '1', '1', 5, 900, 7776000, 3600);
+`attempts`, `blocking_duration`, `password_expiration`, `delay_before_new_password`, `can_reuse_password`)
+VALUES (12, '1', '1', '1', '1', 5, 900, 7776000, 3600, '0');
