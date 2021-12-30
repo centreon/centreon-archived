@@ -72,7 +72,7 @@ const useStyles = makeStyles((theme) => ({
     borderWidth: '1px',
     color: theme.palette.common.white,
     display: 'flex',
-    gap: theme.spacing(1),
+    gap: theme.spacing(9),
   },
   pollerDetailTitle: {
     flexGrow: 1,
@@ -202,7 +202,7 @@ const PollerMenu = (): JSX.Element => {
                 className={clsx(classes.label, classes.pollerDetailRow)}
                 variant="body2"
               >
-                <li {...t(labelAllPollers)} />
+                <li> {t(labelAllPollers)} </li>
                 {pollerCount}
               </Typography>
             )}
