@@ -43,6 +43,7 @@ import CommandLineCard from './CommandLineCard';
 export interface DetailCardLine {
   active?: boolean;
   isCustomCard?: boolean;
+  isHovered?: boolean;
   line: JSX.Element;
   shouldBeDisplayed: boolean;
   title: string;
@@ -186,6 +187,7 @@ const getDetailCardLines = ({
       title: labelCalculationType,
     },
     {
+      isHovered: true,
       line: <Groups details={details} />,
       shouldBeDisplayed: !isEmpty(details.groups),
       title: labelGroups,
