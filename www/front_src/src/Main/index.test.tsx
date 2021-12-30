@@ -66,6 +66,12 @@ const retrievedTranslations = {
   },
 };
 
+const retrievedWeb = {
+  web: {
+    version: '21.10.1',
+  },
+};
+
 jest.mock('../Header', () => {
   const Footer = (): JSX.Element => {
     return <></>;
@@ -100,11 +106,45 @@ const mockDefaultGetRequests = (): void => {
     .mockResolvedValueOnce({
       data: {
         available_version: null,
-        installed_version: '21.10.0',
+        is_installed: true,
       },
     })
     .mockResolvedValueOnce({
       data: retrievedTranslations,
+    })
+    .mockResolvedValueOnce({
+      data: retrievedUser,
+    })
+    .mockResolvedValueOnce({
+      data: retrievedNavigation,
+    })
+    .mockResolvedValueOnce({
+      data: retrievedExternalComponents,
+    })
+    .mockResolvedValueOnce({
+      data: retrievedParameters,
+    })
+    .mockResolvedValueOnce({
+      data: retrievedActionsAcl,
+    })
+    .mockResolvedValueOnce({
+      data: null,
+    });
+};
+
+const mockRedirectFromLoginPageGetRequests = (): void => {
+  mockedAxios.get
+    .mockResolvedValueOnce({
+      data: {
+        available_version: null,
+        is_installed: true,
+      },
+    })
+    .mockResolvedValueOnce({
+      data: retrievedTranslations,
+    })
+    .mockResolvedValueOnce({
+      data: retrievedWeb,
     })
     .mockResolvedValueOnce({
       data: retrievedUser,
@@ -131,7 +171,7 @@ const mockNotConnectedGetRequests = (): void => {
     .mockResolvedValueOnce({
       data: {
         available_version: null,
-        installed_version: '21.10.1',
+        is_installed: true,
       },
     })
     .mockResolvedValueOnce({
@@ -139,6 +179,9 @@ const mockNotConnectedGetRequests = (): void => {
     })
     .mockRejectedValueOnce({
       response: { status: 403 },
+    })
+    .mockResolvedValueOnce({
+      data: retrievedWeb,
     });
 };
 
@@ -147,7 +190,7 @@ const mockInstallGetRequests = (): void => {
     .mockResolvedValueOnce({
       data: {
         available_version: '21.10.1',
-        installed_version: null,
+        is_installed: false,
       },
     })
     .mockResolvedValueOnce({
@@ -163,7 +206,7 @@ const mockUpgradeAndUserDisconnectedGetRequests = (): void => {
     .mockResolvedValueOnce({
       data: {
         available_version: '21.10.1',
-        installed_version: '21.10.0',
+        is_installed: true,
       },
     })
     .mockResolvedValueOnce({
@@ -179,7 +222,7 @@ const mockUpgradeAndUserConnectedGetRequests = (): void => {
     .mockResolvedValueOnce({
       data: {
         available_version: '21.10.1',
-        installed_version: '21.10.0',
+        is_installed: true,
       },
     })
     .mockResolvedValueOnce({
@@ -206,6 +249,11 @@ const mockUpgradeAndUserConnectedGetRequests = (): void => {
 };
 
 describe('Main', () => {
+  beforeEach(() => {
+    mockedAxios.get.mockReset();
+    window.history.pushState({}, '', '/');
+  });
+
   it('displays the login page when the path is "/login" and the user is not connected', async () => {
     window.history.pushState({}, '', '/login');
     mockNotConnectedGetRequests();
@@ -370,7 +418,7 @@ describe('Main', () => {
 
   it('redirects the user to his default page when the current location is the login page and the user is connected', async () => {
     window.history.pushState({}, '', '/login');
-    mockDefaultGetRequests();
+    mockRedirectFromLoginPageGetRequests();
 
     renderMain();
 
@@ -379,6 +427,13 @@ describe('Main', () => {
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
         webVersionsEndpoint,
+        cancelTokenRequestParam,
+      );
+    });
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        aclEndpoint,
         cancelTokenRequestParam,
       );
     });
