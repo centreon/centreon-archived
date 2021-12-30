@@ -186,7 +186,7 @@ paths:
         '302':
           description: "Found"
   /authentication/logout:
-    get:
+    post:
       tags:
         - Authentication
       summary: "Logout Session"

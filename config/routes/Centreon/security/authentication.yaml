@@ -9,7 +9,7 @@ centreon_security_authentication_login:
     controller: 'Centreon\Application\Controller\AuthenticationController::authentication'
 
 centreon_application_authentication_logout:
-    methods: GET
+    methods: POST
     path: /authentication/logout
     controller: 'Core\Infrastructure\Security\Api\LogoutSession\LogoutSessionController'
     condition: "request.attributes.get('version') >= 22.04"
