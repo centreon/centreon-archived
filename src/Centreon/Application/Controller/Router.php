@@ -27,11 +27,12 @@ use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Routing\Matcher\RequestMatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\CacheWarmer\WarmableInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Override symfony router to generate base URI
  */
-class Router implements RouterInterface, WarmableInterface
+class Router implements RouterInterface, RequestMatcherInterface, WarmableInterface, UrlGeneratorInterface
 {
     /**
      * @var RouterInterface
