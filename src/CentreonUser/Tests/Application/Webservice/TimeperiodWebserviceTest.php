@@ -40,7 +40,6 @@ class TimeperiodWebserviceTest extends TestCase
     protected const METHOD_GET_LIST = 'getList';
 
     /**
-     * Undocumented variable
      *
      * @var TimeperiodWebservice|\PHPUnit\Framework\MockObject\MockObject
      */

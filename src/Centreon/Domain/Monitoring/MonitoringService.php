@@ -143,18 +143,16 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
                     $hostGroupIds[] = $hostGroup->getId();
                 }
 
-                if (count($hostGroupIds) !== 0) {
-                    $hostsByHostsGroups = $this->monitoringRepository->findHostsByHostsGroups($hostGroupIds);
+                $hostsByHostsGroups = $this->monitoringRepository->findHostsByHostsGroups($hostGroupIds);
 
-                    foreach ($hostGroups as $hostGroup) {
-                        if (array_key_exists($hostGroup->getId(), $hostsByHostsGroups)) {
-                            $hostGroup->setHosts($hostsByHostsGroups[$hostGroup->getId()]);
-                            // We keep the host ids if we must to retrieve their services
-                            if ($withServices && $hostGroup->getHosts() !== null) {
-                                foreach ($hostGroup->getHosts() as $host) {
-                                    if (!in_array($host->getId(), $hostIds)) {
-                                        $hostIds[] = $host->getId();
-                                    }
+                foreach ($hostGroups as $hostGroup) {
+                    if (array_key_exists($hostGroup->getId(), $hostsByHostsGroups)) {
+                        $hostGroup->setHosts($hostsByHostsGroups[$hostGroup->getId()]);
+                        // We keep the host ids if we must to retrieve their services
+                        if ($withServices) {
+                            foreach ($hostGroup->getHosts() as $host) {
+                                if (!in_array($host->getId(), $hostIds)) {
+                                    $hostIds[] = $host->getId();
                                 }
                             }
                         }
@@ -299,7 +297,7 @@ class MonitoringService extends AbstractCentreonService implements MonitoringSer
      * @return array<mixed> Returns the host list with their services
      * @throws \Exception
      */
-    private function completeHostsWithTheirServices(array $hosts)
+    private function completeHostsWithTheirServices(array $hosts): array
     {
         $hostIds = [];
         foreach ($hosts as $host) {
