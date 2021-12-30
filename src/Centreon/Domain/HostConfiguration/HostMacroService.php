@@ -24,7 +24,6 @@ namespace Centreon\Domain\HostConfiguration;
 
 use Centreon\Domain\HostConfiguration\Exception\HostMacroException;
 use Centreon\Domain\HostConfiguration\Interfaces\HostMacro\HostMacroServiceInterface;
-use Centreon\Domain\HostConfiguration\Interfaces\HostMacro\HostMacroReadRepositoryInterface;
 use Centreon\Domain\HostConfiguration\Interfaces\HostMacro\HostMacroWriteRepositoryInterface;
 
 /**
@@ -35,10 +34,6 @@ use Centreon\Domain\HostConfiguration\Interfaces\HostMacro\HostMacroWriteReposit
 class HostMacroService implements HostMacroServiceInterface
 {
     /**
-     * @var HostMacroReadRepositoryInterface
-     */
-    private $readRepository;
-    /**
      * @var HostMacroWriteRepositoryInterface
      */
     private $writeRepository;
@@ -46,14 +41,11 @@ class HostMacroService implements HostMacroServiceInterface
     /**
      * HostMacroService constructor.
      *
-     * @param HostMacroReadRepositoryInterface $readRepository
      * @param HostMacroWriteRepositoryInterface $writeRepository
      */
     public function __construct(
-        HostMacroReadRepositoryInterface $readRepository,
         HostMacroWriteRepositoryInterface $writeRepository
     ) {
-        $this->readRepository = $readRepository;
         $this->writeRepository = $writeRepository;
     }
 

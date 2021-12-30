@@ -588,10 +588,6 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
             $names[] = (string) $name;
         }
 
-        if (empty($names)) {
-            return [];
-        }
-
         $statement = $this->db->prepare(
             $this->translateDbName(
                 sprintf(
