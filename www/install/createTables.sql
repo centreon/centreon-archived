@@ -729,7 +729,6 @@ CREATE TABLE `contact` (
   `timeperiod_tp_id2` int(11) DEFAULT NULL,
   `contact_name` varchar(200) DEFAULT NULL,
   `contact_alias` varchar(200) DEFAULT NULL,
-  `contact_passwd` varchar(255) DEFAULT NULL,
   `contact_lang` varchar(255) DEFAULT 'browser',
   `contact_host_notification_options` varchar(200) DEFAULT NULL,
   `contact_service_notification_options` varchar(200) DEFAULT NULL,
@@ -2423,15 +2422,28 @@ CREATE TABLE `security_authentication_tokens` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `password_security_policy` (
-  `password_length` int(11) UNSIGNED NOT NULL DEFAULT 12,
+  `password_length` tinyint UNSIGNED NOT NULL DEFAULT 12,
   `uppercase_characters` enum('0', '1') NOT NULL DEFAULT '1',
   `lowercase_characters` enum('0', '1') NOT NULL DEFAULT '1',
   `integer_characters` enum('0', '1') NOT NULL DEFAULT '1',
   `special_characters` enum('0', '1') NOT NULL DEFAULT '1',
-  `attempts` int(11) UNSIGNED NOT NULL DEFAULT 5,
-  `blocking_duration` int(11) UNSIGNED NOT NULL DEFAULT 900,
-  `password_expiration` int(11) UNSIGNED NOT NULL DEFAULT 7776000,
-  `delay_before_new_password` int(11) UNSIGNED NOT NULL DEFAULT 3600
+  `attempts` int(11) UNSIGNED DEFAULT 5,
+  `blocking_duration` int(11) UNSIGNED DEFAULT 900,
+  `password_expiration` int(11) UNSIGNED DEFAULT 7776000,
+  `delay_before_new_password` int(11) UNSIGNED DEFAULT 3600,
+  `can_reuse_password` enum('0', '1') NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `contact_password` (
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `password` varchar(255) NOT NULL,
+  `contact_id` int(11) NOT NULL,
+  `creation_date` BIGINT UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `contact_password_contact_id_fk` (`contact_id`),
+  INDEX `creation_date_index` (`creation_date`),
+  CONSTRAINT `contact_password_contact_id_fk` FOREIGN KEY (`contact_id`)
+  REFERENCES `contact` (`contact_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;

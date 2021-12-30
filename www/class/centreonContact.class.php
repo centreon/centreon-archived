@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2013 Centreon
+ * Copyright 2005-2021 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -246,5 +247,98 @@ class CentreonContact
             );
         }
         return $items;
+    }
+
+    /**
+     * Add new password to a contact
+     *
+     * @param int $contactId
+     * @param string $hashedPassword
+     * @return void
+     * @throws \PDOException
+     */
+    public function addPasswordByContactId(int $contactId, string $hashedPassword): void
+    {
+        $statement = $this->db->prepare(
+            'INSERT INTO `contact_password` (`password`, `contact_id`, `creation_date`)
+            VALUES (:password, :contactId, :creationDate)'
+        );
+        $statement->bindValue(':password', $hashedPassword, \PDO::PARAM_STR);
+        $statement->bindValue(':contactId', $contactId, \PDO::PARAM_INT);
+        $statement->bindValue(':creationDate', time(), \PDO::PARAM_INT);
+        $statement->execute();
+    }
+
+    /**
+     * Replace stored password for a contact
+     *
+     * @param int $contactId
+     * @param string $oldHashedPassword
+     * @param string $newHashedPassword
+     * @return void
+     * @throws \PDOException
+     */
+    public function replacePasswordByContactId(
+        int $contactId,
+        string $oldHashedPassword,
+        string $newHashedPassword
+    ): void {
+        $statement = $this->db->prepare(
+            'UPDATE `contact_password`
+            SET password = :newPassword
+            WHERE contact_id = :contactId
+            AND password = :oldPassword'
+        );
+        $statement->bindValue(':oldPassword', $oldHashedPassword, \PDO::PARAM_STR);
+        $statement->bindValue(':newPassword', $newHashedPassword, \PDO::PARAM_STR);
+        $statement->bindValue(':contactId', $contactId, \PDO::PARAM_INT);
+        $statement->execute();
+    }
+
+    /**
+     * add new contact password and delete old passwords
+     *
+     * @param int $contactId
+     * @param string $hashedPassword
+     * @return void
+     * @throws \PDOException
+     */
+    public function renewPasswordByContactId(int $contactId, string $hashedPassword): void
+    {
+        $this->addPasswordByContactId($contactId, $hashedPassword);
+
+        $this->deleteOldPasswords($contactId);
+    }
+
+    /**
+     * Delete old passwords to store only 3 last passwords
+     *
+     * @param int $contactId
+     * @return void
+     * @throws \PDOException
+     */
+    private function deleteOldPasswords(int $contactId): void
+    {
+        $statement = $this->db->prepare(
+            'SELECT creation_date
+            FROM `contact_password`
+            WHERE `contact_id` = :contactId
+            ORDER BY `creation_date` DESC'
+        );
+        $statement->bindValue(':contactId', $contactId, \PDO::PARAM_INT);
+        $statement->execute();
+
+        //If 3 or more passwords are saved, delete the oldest ones.
+        if (($result = $statement->fetchAll()) && count($result) > 3) {
+            $maxCreationDateToDelete = $result[3]['creation_date'];
+            $statement = $this->db->prepare(
+                'DELETE FROM `contact_password`
+                WHERE contact_id = :contactId
+                AND creation_date <= :creationDate'
+            );
+            $statement->bindValue(':contactId', $contactId, \PDO::PARAM_INT);
+            $statement->bindValue(':creationDate', $maxCreationDateToDelete, \PDO::PARAM_INT);
+            $statement->execute();
+        }
     }
 }

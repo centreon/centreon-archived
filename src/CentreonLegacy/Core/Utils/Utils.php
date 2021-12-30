@@ -113,7 +113,7 @@ class Utils
 
     /**
      *
-     * @param type $fileName
+     * @param string $fileName
      * @throws \Exception
      */
     public function executePhpFile($fileName)
@@ -214,6 +214,9 @@ class Utils
                 break;
             case 'sha1':
                 $encodePassword .= 'sha1__' . sha1($password);
+                break;
+            case PASSWORD_BCRYPT:
+                $encodePassword = password_hash($password, PASSWORD_BCRYPT);
                 break;
             default:
                 $encodePassword .= 'md5__' . md5($password);
