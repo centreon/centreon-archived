@@ -316,7 +316,6 @@ class RequestParameters implements RequestParametersInterface
 
     /**
      * @inheritDoc
-     * @param string $search
      */
     public function setSearch(string $search): void
     {
