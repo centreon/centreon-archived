@@ -24,6 +24,7 @@ declare(strict_types=1);
 namespace Core\Application\Common\UseCase;
 
 use Core\Application\Common\UseCase\ResponseStatusInterface;
+use Symfony\Component\HttpFoundation\Response;
 
 interface PresenterInterface
 {
@@ -37,4 +38,9 @@ interface PresenterInterface
      * @return ResponseStatusInterface|null
      */
     public function getResponseStatus(): ?ResponseStatusInterface;
+
+    /**
+     * @return Response
+     */
+    public function show(): Response;
 }

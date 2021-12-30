@@ -23,10 +23,6 @@ declare(strict_types=1);
 namespace Core\Infrastructure\Common\Repository;
 
 /**
- * @todo change this into a Trait
- */
-
-/**
  * This class is design to provide all common methods to handle db records.
  *
  * @package Core\Infrastructure\Common\Repository

@@ -62,6 +62,13 @@ class DbReadHostRepository extends AbstractRepositoryDRB implements ReadHostRepo
         return $this->findHostRequest($hostId, $accessGroupRequest);
     }
 
+    /**
+     * Find host request according to accessgroups or not.
+     *
+     * @param int $hostId
+     * @param string|null $accessGroupRequest
+     * @return Host|null
+     */
     private function findHostRequest(int $hostId, ?string $accessGroupRequest = null): ?Host
     {
         $request = "SELECT

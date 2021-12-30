@@ -23,7 +23,6 @@ declare(strict_types=1);
 namespace Core\Application\RealTime\UseCase\FindHost;
 
 use Core\Application\Common\UseCase\PresenterInterface;
-use Symfony\Component\HttpFoundation\Response;
 
 interface FindHostPresenterInterface extends PresenterInterface
 {
@@ -32,9 +31,4 @@ interface FindHostPresenterInterface extends PresenterInterface
      * @return void
      */
     public function present(FindHostResponse $response): void;
-
-    /**
-     * @return Response
-     */
-    public function show(): Response;
 }

@@ -33,8 +33,8 @@ class DbIconFactory
     public static function createFromRecord(array $data): ?Icon
     {
         if (
-            $data['icon_name'] != null
-            && $data['icon_url'] != null
+            $data['icon_name'] !== null
+            && $data['icon_url'] !== null
         ) {
             return (new Icon())
                 ->setName($data['icon_name'])

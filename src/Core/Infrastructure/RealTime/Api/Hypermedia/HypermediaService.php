@@ -89,7 +89,7 @@ class HypermediaService
 
     /**
      * @param mixed $response
-     * @return string
+     * @return string|null
      */
     public function createForTimelineEndpoint(mixed $response): ?string
     {

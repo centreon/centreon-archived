@@ -35,6 +35,9 @@ class JsonPresenter implements PresenterFormatterInterface
      */
     private $data;
 
+    /**
+     * @param mixed $data
+     */
     public function present(mixed $data): void
     {
         $this->data = $data;

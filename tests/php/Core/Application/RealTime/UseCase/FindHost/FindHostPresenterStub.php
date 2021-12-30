@@ -27,12 +27,13 @@ use Core\Application\RealTime\UseCase\FindHost\FindHostPresenterInterface;
 use Core\Application\RealTime\UseCase\FindHost\FindHostResponse;
 use Symfony\Component\HttpFoundation\Response;
 
-class FindHostPresenterFake implements FindHostPresenterInterface
+class FindHostPresenterStub implements FindHostPresenterInterface
 {
     /**
      * @var FindHostResponse
      */
     public $response;
+
     /**
      * @var ResponseStatusInterface|null
      */

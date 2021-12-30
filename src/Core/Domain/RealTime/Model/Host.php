@@ -166,6 +166,7 @@ class Host
      * @param string $address
      * @param string $monitoringServerName
      * @param HostStatus $status
+     * @throws \AssertionException
      */
     public function __construct(
         private int $id,

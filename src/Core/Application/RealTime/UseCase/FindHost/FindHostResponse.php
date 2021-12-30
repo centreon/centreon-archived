@@ -41,17 +41,17 @@ class FindHostResponse
     public $alias;
 
     /**
-     * @var bool|null
+     * @var bool
      */
     public $isFlapping;
 
     /**
-     * @var bool|null
+     * @var bool
      */
     public $isAcknowledged;
 
     /**
-     * @var bool|null
+     * @var bool
      */
     public $isInDowntime;
 
@@ -111,12 +111,12 @@ class FindHostResponse
     public $lastCheck;
 
     /**
-     * @var bool|null
+     * @var bool
      */
     public $hasActiveChecks;
 
     /**
-     * @var bool|null
+     * @var bool
      */
     public $hasPassiveChecks;
 
@@ -166,6 +166,10 @@ class FindHostResponse
     public $acknowledgement;
 
     /**
+     * @param int $id
+     * @param string $name
+     * @param string $address
+     * @param string $monitoringServerName
      * @param Status $status
      * @param Icon|null $icon
      * @param Hostgroup[] $hostgroups
@@ -232,21 +236,12 @@ class FindHostResponse
     private static function hostgroupsToArray(array $hostgroups): array
     {
         return array_map(
-            fn($hostgroup) => [
-                'id' => $hostgroup->getId(),
-                'name' => $hostgroup->getName()
-            ],
-            $hostgroups
-        );
-        /*
-        return array_reduce(
-            $hostgroups,
             fn (Hostgroup $hostgroup) => [
                 'id' => $hostgroup->getId(),
                 'name' => $hostgroup->getName()
             ],
             $hostgroups
-        ); */
+        );
     }
 
     /**
@@ -290,23 +285,23 @@ class FindHostResponse
     {
         return array_map(
             fn (Downtime $downtime) => [
-                    'start_time' => $downtime->getStartTime(),
-                    'end_time' => $downtime->getEndTime(),
-                    'actual_start_time' => $downtime->getActualStartTime(),
-                    'id' => $downtime->getId(),
-                    'entry_time' => $downtime->getEntryTime(),
-                    'author_id' => $downtime->getAuthorId(),
-                    'author_name' => $downtime->getAuthorName(),
-                    'host_id' => $downtime->getHostId(),
-                    'service_id' => $downtime->getServiceId(),
-                    'is_cancelled' => $downtime->isCancelled(),
-                    'comment' => $downtime->getComment(),
-                    'deletion_time' => $downtime->getDeletionTime(),
-                    'duration' => $downtime->getDuration(),
-                    'internal_id' => $downtime->getEngineDowntimeId(),
-                    'is_fixed' => $downtime->isFixed(),
-                    'poller_id' => $downtime->getInstanceId(),
-                    'is_started' => $downtime->isStarted()
+                'start_time' => $downtime->getStartTime(),
+                'end_time' => $downtime->getEndTime(),
+                'actual_start_time' => $downtime->getActualStartTime(),
+                'id' => $downtime->getId(),
+                'entry_time' => $downtime->getEntryTime(),
+                'author_id' => $downtime->getAuthorId(),
+                'author_name' => $downtime->getAuthorName(),
+                'host_id' => $downtime->getHostId(),
+                'service_id' => $downtime->getServiceId(),
+                'is_cancelled' => $downtime->isCancelled(),
+                'comment' => $downtime->getComment(),
+                'deletion_time' => $downtime->getDeletionTime(),
+                'duration' => $downtime->getDuration(),
+                'internal_id' => $downtime->getEngineDowntimeId(),
+                'is_fixed' => $downtime->isFixed(),
+                'poller_id' => $downtime->getInstanceId(),
+                'is_started' => $downtime->isStarted()
             ],
             $downtimes
         );

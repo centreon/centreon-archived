@@ -4,21 +4,13 @@ centreon_application_monitoring_resource_list:
     controller: 'Centreon\Application\Controller\MonitoringResourceController::list'
     condition: "request.attributes.get('version') >= 21.10"
 
-centreon_application_monitoring_resource_details_host_beta:
-    methods: GET
-    path: /monitoring/resources/hosts/{hostId}
-    controller: 'Centreon\Application\Controller\MonitoringResourceController::detailsHost'
-    requirements:
-        hostId: '\d+'
-    condition: "request.attributes.get('version') >= 22.04"
-
 centreon_application_monitoring_resource_details_host:
     methods: GET
     path: /monitoring/resources/hosts/{hostId}
     controller: 'Core\Infrastructure\RealTime\Api\FindHost\FindHostController'
     requirements:
         hostId: '\d+'
-    condition: "request.attributes.get('version') == 21.10"
+    condition: "request.attributes.get('version') >= 22.04"
 
 centreon_application_monitoring_resource_details_service:
     methods: GET
