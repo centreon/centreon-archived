@@ -52,6 +52,6 @@ class LogoutSessionController extends AbstractController
         $request = new LogoutSessionRequest($token);
         $useCase($request);
 
-        return $this->view(['message' => 'Successful logout']);
+        return $this->view(['message' => _('Successful logout')]);
     }
 }

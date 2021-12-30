@@ -26,14 +26,9 @@ namespace Core\Application\Security\UseCase\LogoutSession;
 class LogoutSessionRequest
 {
     /**
-     * @var string
-     */
-    public $token;
-
-    /**
      * @param string $token
      */
-    public function __construct(string $token)
+    public function __construct(public string $token)
     {
         $this->token = $token;
     }
