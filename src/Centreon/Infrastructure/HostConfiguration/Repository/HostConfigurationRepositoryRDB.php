@@ -576,8 +576,6 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
 
     /**
      * @inheritDoc
-     * @param string[] $namesToCheck
-     * @return string[]
      */
     public function findHostNamesAlreadyUsed(array $namesToCheck): array
     {
