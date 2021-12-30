@@ -31,5 +31,8 @@ interface PresenterFormatterInterface
      */
     public function present(mixed $data): void;
 
+    /**
+     * @return Response
+     */
     public function show(): Response;
 }
