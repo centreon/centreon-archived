@@ -30,6 +30,7 @@ interface ReadHostgroupRepositoryInterface
     /**
      * Find related hostgroups regarding a host without ACL
      *
+     * @param int $hostId
      * @return Hostgroup[]
      */
     public function findAllByHostId(int $hostId): array;
