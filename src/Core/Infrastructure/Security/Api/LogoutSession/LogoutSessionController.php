@@ -35,8 +35,6 @@ class LogoutSessionController extends AbstractController
     private const INVALID_CREDENTIALS_MESSAGE = 'Invalid credentials';
 
     /**
-     * Undocumented function
-     *
      * @param LogoutSession $useCase
      * @param Request $request
      * @return View
