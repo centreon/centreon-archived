@@ -38,6 +38,11 @@ abstract class Status
      */
     protected $order;
 
+    /**
+     * @param string $name
+     * @param integer $code
+     * @param integer $type
+     */
     public function __construct(
         private string $name,
         private int $code,
