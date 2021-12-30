@@ -30,6 +30,5 @@ class LogoutSessionRequest
      */
     public function __construct(public string $token)
     {
-        $this->token = $token;
     }
 }
