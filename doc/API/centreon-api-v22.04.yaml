@@ -185,6 +185,25 @@ paths:
                     example: "/centreon/main.php?p=50113&o=ldap"
         '302':
           description: "Found"
+  /authentication/logout:
+    post:
+      tags:
+        - Authentication
+      summary: "Logout Session"
+      description: "Entry point to delete an existing session token."
+      security:
+        - Token: []
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogoutAuthenticationResponse'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /configuration/hosts/templates:
     get:
       tags:
