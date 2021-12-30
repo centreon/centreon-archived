@@ -37,7 +37,7 @@ class ContactRepositoryTest extends TestCase
     /**
      * Test the method checkListOfIds
      */
-    public function testCheckListOfIds()
+    public function testCheckListOfIds(): void
     {
         $this->checkListOfIdsTrait(
             ContactRepository::class,
