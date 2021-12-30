@@ -1,0 +1,372 @@
+Monitoring.HostDetail:
+  type: object
+  properties:
+    uuid:
+      type: string
+      description: "Unique identifier of the Host resource"
+      example: "h14"
+    id:
+      type: integer
+      format: int32
+      description: "Id of the Host resource"
+      example: 14
+    name:
+      type: string
+      description: "Name of the Host resource"
+      example: "Centreon-Central"
+    monitoring_server_name:
+      type: string
+      description: "Name of the monitoring server that monitors the Host resource"
+      example: "Central"
+    type:
+      type: string
+      description: "Type of the Host Resource"
+      example: "host"
+    short_type:
+      type: string
+      description: "Shorter version of the Host Resource type"
+      example: "h"
+    fqdn:
+      type: string
+      description: "FQDN of the Host Resource"
+      example: "localhost|127.0.0.1"
+    alias:
+      type: string
+      nullable: true
+      description: "Alias given to the Host Resource"
+      example: "central"
+    status:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: |
+            Host resource status code
+            * `0` - UP
+            * `1` - DOWN
+            * `2` - UNREACHABLE
+          example: 0
+        name:
+          type: string
+          description: |
+            Host resource status name
+            * UP
+            * DOWN
+            * UNREACHABLE
+          example: "UP"
+        severity_code:
+          type: integer
+          description: |
+            Host resource status severity code
+            * `1` - DOWN
+            * `3` - UNREACHABLE
+            * `4` - PENDING
+            * `5` - UP
+          example: 1
+        type:
+          type: integer
+          description: |
+            Host resource status type
+            * `0` - Soft
+            * `1` - Hard
+          example: 1
+    in_downtime:
+      type: boolean
+      description: "Indicates if the Host resource is currently in downtime"
+      example: true
+    acknowledged:
+      type: boolean
+      description: "Indicates if the Host resource is currently acknowledged"
+      example: false
+    flapping:
+      type: boolean
+      description: "Indicates if the Host resource is currently flapping"
+      example: false
+    performance_data:
+      type: string
+      description: "Performance data of the last plugin check"
+      example: "rta=0.025ms;200.000;400.000;0; rtmax=0.061ms;;;; rtmin=0.015ms;;;; pl=0%;20;50;0;100"
+    information:
+      type: string
+      description: "Output of the last plugin check"
+      example: "OK - 127.0.0.1 rta 0.284ms lost 0%\n"
+    command_line:
+      type: string
+      description: "Command used for active checks"
+      example: "/usr/lib64/nagios/plugins/check_icmp -H 127.0.0.1 -n 5 -w 200,20% -c 400,50%"
+    notification_number:
+      type: integer
+      description: "Number of notifications sent since last status change"
+      example: 3
+    latency:
+      type: number
+      format: float
+      description: "Time difference between scheduled check time and actual check time"
+      example: 0.031
+    percent_state_change:
+      type: number
+      format: float
+      description: "Percent state change since last check"
+      example: 3.5
+    passive_checks:
+      type: boolean
+      description: "Indicates whether the check script is passive or not"
+      example: false
+    execution_time:
+      type: number
+      format: float
+      description: "Time duration to check the service"
+      example: 0.179335
+    active_checks:
+      type: boolean
+      description: "Indicates whether the check script is active or not"
+      example: true
+    severity_level:
+      type: integer
+      nullable: true
+      description: "Indicates the severity level"
+      example: 1
+    parent: null
+    icon:
+      type: object
+      nullable: true
+      properties:
+        name:
+          type: string
+          description: "Name of the icon"
+          example: "memory"
+        url:
+          type: string
+          description: "Url of the icon"
+          example: "/media/memory.png"
+    groups:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: "ID of the hostgroup"
+          example: 28
+        name:
+          type: string
+          description: "Name of the hostgroup"
+          example: "Linux-Servers"
+    acknowledgement:
+      type: object
+      nullable: true
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: "ID of the acknowledgement"
+          example: 34
+        poller_id:
+          type: integer
+          format: int64
+          description: "ID of the poller"
+          example: 1
+        host_id:
+          type: integer
+          format: int64
+          description: "ID of the host"
+          example: 12
+        service_id:
+          type: integer
+          format: int64
+          description: "ID of the service"
+          example: 55
+        author_id:
+          type: integer
+          format: int64
+          description: "ID of the contact who submitted an acknowledgement"
+          example: 3
+        author_name:
+          type: string
+          description: "Name of the contact who submitted an acknowledgement"
+          example: "admin"
+        comment:
+          type: string
+          description: "Short description of the acknowledgement"
+          example: "Acknowledged by admin"
+        deletion_time:
+          type: string
+          format: date-time
+          nullable: true
+          description: "Date of the request for cancellation of the acknowledgement (ISO8601)"
+        entry_time:
+          type: string
+          format: date-time
+          description: "Date of the request for acknowledgement (ISO8601)"
+        is_notify_contacts:
+          type: boolean
+          description: "Indicates whether notification is sent to the contacts linked to the host"
+          example: false
+        is_persistent_comment:
+          type: boolean
+          description: "Indicates whether acknowledgement is maintained in the case of a restart of the scheduler"
+          example: true
+        is_sticky:
+          type: boolean
+          description: "Indicates whether acknowledgement is maintained in the case of a change of status"
+          example: true
+        state:
+          type: integer
+          description: |
+            State type
+            * `1` - WARNING
+            * `2` - CRITICAL
+            * `3` - UNKNOWN
+          example: 1
+        type:
+          type: integer
+          description: "Acknowledegement type seen by the scheduler"
+          example: 1
+        with_services:
+          type: boolean
+          description: "Indicates whether services linked to the Host resource will also be acknowledged"
+    downtimes:
+      type: array
+      items:
+        type: object
+        properties:
+          start_time:
+            type: string
+            nullable: true
+            format: date-time
+            description: "Scheduled start date of the downtime (ISO8601)"
+          end_time:
+            type: string
+            nullable: true
+            format: date-time
+            description: "Scheduled end date of the downtime (ISO8601)"
+          actual_start_time:
+            type: string
+            nullable: true
+            format: date-time
+            description: "Actual start date of the downtime (ISO8601)"
+          id:
+            type: integer
+            description: "ID of the downtime"
+            example: 329
+          entry_time:
+            type: string
+            format: date-time
+            description: "Date of the request to create the downtime (ISO8601)"
+          author_id:
+            type: integer
+            nullable: true
+            description: "ID of the contact who requested the downtime"
+            example: 3
+          author_name:
+            type: string
+            nullable: true
+            description: "Name of the contact who requested the downtime"
+            example: "admin"
+          host_id:
+            type: integer
+            description: "ID of the host on which the downtime is set"
+            example: 12
+          service_id:
+            type: integer
+            description: "ID of the service on which the downtime is set"
+            example: 12
+          is_cancelled:
+            type: boolean
+            description: "Indicates whether the downtime has been cancelled or not"
+            example: false
+          comment:
+            type: string
+            nullable: true
+            description: "Comment of set on the downtime"
+            example: "Downtime set by admin"
+          deletion_time:
+            type: string
+            format: date-time
+            nullable: true
+            description: "Date of cancellation of downtime (ISO8601)"
+            example: null
+          duration:
+            type: integer
+            nullable: true
+            description: "Downtime duration in seconds"
+            example: 7200
+          internal_id:
+            type: integer
+            description: "ID of the downtime seen by the scheduler"
+            example: 42
+          is_fixed:
+            type: boolean
+            description: "Indicates whether the downtime is fixed"
+            example: true
+          is_started:
+            type: boolean
+            description: "Indicates whether the downtime has started"
+            example: true
+    timezone:
+      type: string
+      nullable: true
+      description: "Timezone configured on the Host resource"
+      example: 'Europe/Paris'
+    duration:
+      type: string
+      nullable: true
+      description: "Duration since last status change"
+      example: "2h 3m"
+    next_check:
+      type: string
+      nullable: true
+      format: date-time
+      description: "Scheduled date for the next check (ISO8601)"
+    last_check:
+      type: string
+      nullable: true
+      format: date-time
+      description: "Date of the last check (ISO8601)"
+    last_time_with_no_issue:
+      type: string
+      nullable: true
+      format: date-time
+      description: "Date of the last time Host Resource was UP (ISO8601)"
+    last_status_change:
+      type: string
+      nullable: true
+      format: date-time
+      description: "Date of the last status change (ISO8601)"
+    last_notification:
+      type: string
+      nullable: true
+      format: date-time
+      description: "Date of the last notification sent (ISO8601)"
+    tries:
+      type: string
+      description: "Indicates the current number of check attempts"
+      example: "(1/3) (S)"
+    links:
+      type: object
+      properties:
+        uris:
+          type: object
+          properties:
+            configuration:
+              type: string
+              nullable: true
+              description: "configuration uri"
+              example: "/centreon/main.php?p=60101&o=c&host_id=11"
+            logs:
+              type: string
+              nullable: true
+              description: "logs uri"
+              example: "/centreon/main.php?p=20301&h=11"
+            reporting:
+              type: string
+              nullable: true
+              description: "reporting uri"
+              example: "/centreon/main.php?p=307&host=11"
+        endpoints:
+          type: object
+          properties:
+            timeline:
+              type: string
+              nullable: true
+              description: "resource timeline endpoint"
+              example: "/centreon/api/latest/monitoring/hosts/11/timeline"
