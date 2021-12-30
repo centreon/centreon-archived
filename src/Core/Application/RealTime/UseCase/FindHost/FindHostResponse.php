@@ -141,12 +141,12 @@ class FindHostResponse
     public $maxCheckAttempts;
 
     /**
-     * @var array<string, string|null>|null
+     * @var array<string, string|null>
      */
     public $icon;
 
     /**
-     * @var array<int, array<string, mixed>>
+     * @var array<array<string, mixed>>
      */
     public $hostgroups;
 

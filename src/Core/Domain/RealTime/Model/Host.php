@@ -166,7 +166,7 @@ class Host
      * @param string $address
      * @param string $monitoringServerName
      * @param HostStatus $status
-     * @throws \AssertionException
+     * @throws \Assert\AssertionFailedException
      */
     public function __construct(
         private int $id,
@@ -215,6 +215,7 @@ class Host
 
     /**
      * @param string|null $alias
+     * @throws \Assert\AssertionFailedException
      * @return self
      */
     public function setAlias(?string $alias): self

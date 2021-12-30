@@ -233,7 +233,7 @@ class FindHostTest extends TestCase
             ->method('findAllByHostId')
             ->willReturn($hostgroups);
 
-        $findHostPresenter = new FindHostPresenterStub($this->hypermediaService, $this->presenterFormatter);
+        $findHostPresenter = new FindHostPresenterStub();
 
         $findHost(1, $findHostPresenter);
 
@@ -269,13 +269,16 @@ class FindHostTest extends TestCase
         $this->assertEquals($findHostPresenter->response->status['severity_code'], $host->getStatus()->getOrder());
         $this->assertEquals($findHostPresenter->response->hostgroups[0]['id'], $host->getHostgroups()[0]->getId());
         $this->assertEquals($findHostPresenter->response->hostgroups[0]['name'], $host->getHostgroups()[0]->getName());
-        $this->assertEquals($findHostPresenter->response->icon['name'], $host->getIcon()->getName());
-        $this->assertEquals($findHostPresenter->response->icon['url'], $host->getIcon()->getUrl());
+        $this->assertEquals($findHostPresenter->response->icon['name'], $host->getIcon()?->getName());
+        $this->assertEquals($findHostPresenter->response->icon['url'], $host->getIcon()?->getUrl());
         $this->assertEquals($findHostPresenter->response->downtimes[0]['id'], $downtimes[0]->getId());
         $this->assertEquals($findHostPresenter->response->downtimes[0]['service_id'], $downtimes[0]->getServiceId());
         $this->assertEquals($findHostPresenter->response->downtimes[0]['host_id'], $downtimes[0]->getHostId());
         $this->assertEquals($findHostPresenter->response->acknowledgement['id'], $acknowledgement->getId());
-        $this->assertEquals($findHostPresenter->response->acknowledgement['service_id'], $acknowledgement->getServiceId());
+        $this->assertEquals(
+            $findHostPresenter->response->acknowledgement['service_id'],
+            $acknowledgement->getServiceId()
+        );
         $this->assertEquals($findHostPresenter->response->acknowledgement['host_id'], $acknowledgement->getHostId());
     }
 
@@ -337,7 +340,7 @@ class FindHostTest extends TestCase
             ->method('findAllByHostIdAndAccessGroupIds')
             ->willReturn($hostgroups);
 
-        $findHostPresenter = new FindHostPresenterStub($this->hypermediaService, $this->presenterFormatter);
+        $findHostPresenter = new FindHostPresenterStub();
 
         $findHost(1, $findHostPresenter);
 
@@ -373,13 +376,20 @@ class FindHostTest extends TestCase
         $this->assertEquals($findHostPresenter->response->status['severity_code'], $host->getStatus()->getOrder());
         $this->assertEquals($findHostPresenter->response->hostgroups[0]['id'], $host->getHostgroups()[0]->getId());
         $this->assertEquals($findHostPresenter->response->hostgroups[0]['name'], $host->getHostgroups()[0]->getName());
-        $this->assertEquals($findHostPresenter->response->icon['name'], $host->getIcon()->getName());
-        $this->assertEquals($findHostPresenter->response->icon['url'], $host->getIcon()->getUrl());
+        $this->assertEquals($findHostPresenter->response->icon['name'], $host->getIcon()?->getName());
+        $this->assertEquals($findHostPresenter->response->icon['url'], $host->getIcon()?->getUrl());
         $this->assertEquals($findHostPresenter->response->downtimes[0]['id'], $downtimes[0]->getId());
         $this->assertEquals($findHostPresenter->response->downtimes[0]['service_id'], $downtimes[0]->getServiceId());
         $this->assertEquals($findHostPresenter->response->downtimes[0]['host_id'], $downtimes[0]->getHostId());
         $this->assertEquals($findHostPresenter->response->acknowledgement['id'], $acknowledgement->getId());
-        $this->assertEquals($findHostPresenter->response->acknowledgement['service_id'], $acknowledgement->getServiceId());
+        $this->assertEquals(
+            $findHostPresenter->response->acknowledgement['service_id'],
+            $acknowledgement->getServiceId()
+        );
         $this->assertEquals($findHostPresenter->response->acknowledgement['host_id'], $acknowledgement->getHostId());
+        $this->assertEquals(
+            $findHostPresenter->response->acknowledgement['entry_time'],
+            $acknowledgement->getEntryTime()
+        );
     }
 }

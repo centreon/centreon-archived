@@ -27,20 +27,20 @@ use Core\Domain\RealTime\Model\Icon;
 class DbIconFactory
 {
     /**
-     * @param array<string, string> $data
+     * @param array<string, string|null> $data
      * @return Icon|null
      */
     public static function createFromRecord(array $data): ?Icon
     {
         if (
-            $data['icon_name'] !== null
-            && $data['icon_url'] !== null
+            $data['icon_name'] === null
+            && $data['icon_url'] === null
         ) {
-            return (new Icon())
-                ->setName($data['icon_name'])
-                ->setUrl($data['icon_url']);
+            return null;
         }
 
-        return null;
+        return (new Icon())
+            ->setName($data['icon_name'])
+            ->setUrl($data['icon_url']);
     }
 }
