@@ -72,7 +72,7 @@ const useStyles = makeStyles((theme) => ({
     borderWidth: '1px',
     color: theme.palette.common.white,
     display: 'flex',
-    gap: theme.spacing(9),
+    justifyContent: 'space-between',
   },
   pollerDetailTitle: {
     flexGrow: 1,
