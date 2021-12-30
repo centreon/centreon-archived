@@ -25,7 +25,7 @@ namespace Core\Infrastructure\RealTime\Repository\Acknowledgement;
 use Core\Domain\RealTime\Model\Acknowledgement;
 use Core\Infrastructure\Common\Repository\DbFactoryUtilitiesTrait;
 
-class DbFactoryAcknowledgement
+class DbAcknowledgementFactory
 {
     use DbFactoryUtilitiesTrait;
 

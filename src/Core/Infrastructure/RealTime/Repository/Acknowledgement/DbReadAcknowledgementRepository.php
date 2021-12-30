@@ -26,6 +26,7 @@ use Centreon\Infrastructure\DatabaseConnection;
 use Core\Domain\RealTime\Model\Acknowledgement;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Core\Application\RealTime\Repository\ReadAcknowledgementRepositoryInterface;
+use Core\Infrastructure\RealTime\Repository\Acknowledgement\DbAcknowledgementFactory;
 
 class DbReadAcknowledgementRepository extends AbstractRepositoryDRB implements ReadAcknowledgementRepositoryInterface
 {
@@ -67,7 +68,7 @@ class DbReadAcknowledgementRepository extends AbstractRepositoryDRB implements R
         $statement->execute();
 
         if ($row = $statement->fetch(\PDO::FETCH_ASSOC)) {
-            return DbFactoryAcknowledgement::createFromRecord($row);
+            return DbAcknowledgementFactory::createFromRecord($row);
         }
 
         return $acknowledgement;
