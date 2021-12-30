@@ -100,7 +100,7 @@ class ExportService
      *
      * @throws \Exception
      */
-    public function import(ExportCommitment $commitment = null): void
+    public function import(ExportCommitment $commitment = null): mixed
     {
         $commitment = $commitment ?? new ExportCommitment(null, null, null, null, $this->pathExportedData);
 
@@ -108,7 +108,7 @@ class ExportService
         $exportPath = $commitment->getPath();
 
         if (!is_dir($exportPath)) {
-            return;
+            return null;
         }
 
         // parse manifest

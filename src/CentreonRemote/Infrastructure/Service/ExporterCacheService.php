@@ -10,6 +10,14 @@ class ExporterCacheService
     private $data;
 
     /**
+     * @param mixed $data
+     */
+    public function __construct($data)
+    {
+        $this->data = $data;
+    }
+
+    /**
      * Get info if exists and if not add it using callback function
      *
      * @param string $key

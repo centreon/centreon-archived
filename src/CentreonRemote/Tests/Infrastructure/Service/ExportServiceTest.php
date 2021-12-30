@@ -189,7 +189,7 @@ class ExportServiceTest extends TestCase
             ->getMock();
 
         $container['centreon_remote.exporter']->method('get')
-            ->will($this->returnCallback(function ($arg) use ($points, $manifest) {
+            ->will($this->returnCallback(function ($arg) use ($points) {
                 $this->assertEquals('configuration', $arg);
 
                 return [

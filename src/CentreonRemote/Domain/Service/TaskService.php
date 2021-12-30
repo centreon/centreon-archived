@@ -28,11 +28,6 @@ class TaskService
     private $cmdService;
 
     /**
-     * @var \CentreonRestHttp
-     */
-    private $centreonRestHttp;
-
-    /**
      * @return CentcoreCommandService
      */
     public function getCmdService(): CentcoreCommandService
@@ -62,14 +57,6 @@ class TaskService
     public function getDbManager(): CentreonDBManagerService
     {
         return $this->dbManager;
-    }
-
-    /**
-     * @param \CentreonRestHttp $centreonRestHttp
-     */
-    public function setCentreonRestHttp(\CentreonRestHttp $centreonRestHttp): void
-    {
-        $this->centreonRestHttp = $centreonRestHttp;
     }
 
     /**
@@ -127,7 +114,7 @@ class TaskService
     public function getStatus(string $taskId)
     {
         $task = $this->getDbManager()->getAdapter('configuration_db')->getRepository(TaskRepository::class)
-            ->findOneById($taskId);
+            ->findOneById(intval($taskId));
         return $task ? $task->getStatus() : null;
     }
 
@@ -159,7 +146,7 @@ class TaskService
         $task = $this->getDbManager()
             ->getAdapter('configuration_db')
             ->getRepository(TaskRepository::class)
-            ->findOneById($taskId);
+            ->findOneById(intval($taskId));
 
         if (!in_array($status, $task->getStatuses())) {
             return false;

@@ -37,7 +37,7 @@ class WizardConfigurationRequestValidator
      */
     public static function validate(): void
     {
-        (new self)->validateServerPostData();
+        (new self())->validateServerPostData();
     }
 
     /**
