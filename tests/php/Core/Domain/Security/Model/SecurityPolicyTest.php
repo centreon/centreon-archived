@@ -42,7 +42,7 @@ class SecurityPolicyTest extends TestCase
             'SecurityPolicy::passwordMinimumLength'
         )->getMessage());
 
-        new SecurityPolicy($passwordMinimumLength, true, true, true, true, true);
+        new SecurityPolicy($passwordMinimumLength, true, true, true, true, true, null, null, null, null);
     }
 
     /**
@@ -58,7 +58,7 @@ class SecurityPolicyTest extends TestCase
             'SecurityPolicy::passwordMinimumLength'
         )->getMessage());
 
-        new SecurityPolicy($passwordMinimumLength, true, true, true, true, true);
+        new SecurityPolicy($passwordMinimumLength, true, true, true, true, true, null, null, null, null);
     }
 
     /**
@@ -74,7 +74,18 @@ class SecurityPolicyTest extends TestCase
             'SecurityPolicy::attempts'
         )->getMessage());
 
-        new SecurityPolicy(SecurityPolicy::MIN_PASSWORD_LENGTH, true, true, true, true, true, $attempts);
+        new SecurityPolicy(
+            SecurityPolicy::MIN_PASSWORD_LENGTH,
+            true,
+            true,
+            true,
+            true,
+            true,
+            $attempts,
+            null,
+            null,
+            null
+        );
     }
 
     /**
@@ -90,7 +101,18 @@ class SecurityPolicyTest extends TestCase
             'SecurityPolicy::attempts'
         )->getMessage());
 
-        new SecurityPolicy(SecurityPolicy::MIN_PASSWORD_LENGTH, true, true, true, true, true, $attempts);
+        new SecurityPolicy(
+            SecurityPolicy::MIN_PASSWORD_LENGTH,
+            true,
+            true,
+            true,
+            true,
+            true,
+            $attempts,
+            null,
+            null,
+            null
+        );
     }
 
     /**
@@ -114,7 +136,9 @@ class SecurityPolicyTest extends TestCase
             true,
             true,
             SecurityPolicy::MIN_ATTEMPTS,
-            $blockingDuration
+            $blockingDuration,
+            null,
+            null
         );
     }
 
@@ -139,7 +163,9 @@ class SecurityPolicyTest extends TestCase
             true,
             true,
             SecurityPolicy::MIN_ATTEMPTS,
-            $blockingDuration
+            $blockingDuration,
+            null,
+            null
         );
     }
 
@@ -165,7 +191,8 @@ class SecurityPolicyTest extends TestCase
             true,
             SecurityPolicy::MIN_ATTEMPTS,
             SecurityPolicy::MIN_BLOCKING_DURATION,
-            $passwordExpiration
+            $passwordExpiration,
+            null
         );
     }
 
@@ -191,7 +218,8 @@ class SecurityPolicyTest extends TestCase
             true,
             SecurityPolicy::MIN_ATTEMPTS,
             SecurityPolicy::MIN_BLOCKING_DURATION,
-            $passwordExpiration
+            $passwordExpiration,
+            null
         );
     }
 
