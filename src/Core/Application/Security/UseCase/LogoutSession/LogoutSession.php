@@ -24,14 +24,18 @@ declare(strict_types=1);
 namespace Core\Application\Security\UseCase\LogoutSession;
 
 use Core\Application\Security\Repository\WriteSessionRepositoryInterface;
+use Core\Application\Security\Service\TokenServiceInterface;
 
 class LogoutSession
 {
     /**
      * @param WriteSessionRepositoryInterface $repository
+     * @param TokenServiceInterface $tokenService
      */
-    public function __construct(private WriteSessionRepositoryInterface $repository)
-    {
+    public function __construct(
+        private WriteSessionRepositoryInterface $repository,
+        private TokenServiceInterface $tokenService
+    ) {
     }
 
     /**
@@ -39,6 +43,7 @@ class LogoutSession
      */
     public function __invoke(LogoutSessionRequest $request): void
     {
+        $this->tokenService->deleteExpiredSecurityTokens();
         $this->repository->deleteSession($request->token);
     }
 }
