@@ -363,7 +363,7 @@ class Authenticate
     {
         if ($defaultPage->isReact() === true) {
             // redirect to the react path
-            $redirectUri = null !== $defaultPage->getUrl() ? $defaultPage->getUrl() : '';
+            $redirectUri = $defaultPage->getUrl();
         } else {
             $redirectUri = "/main.php?p=" . $defaultPage->getPageNumber();
             if ($defaultPage->getUrlOptions() !== null) {

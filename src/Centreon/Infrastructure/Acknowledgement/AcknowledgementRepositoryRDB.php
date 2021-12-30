@@ -124,7 +124,6 @@ final class AcknowledgementRepositoryRDB extends AbstractRepositoryDRB implement
 
     /**
      * @inheritDoc
-     * @param bool $isAdmin
      */
     public function setAdmin(bool $isAdmin): AcknowledgementRepositoryInterface
     {
