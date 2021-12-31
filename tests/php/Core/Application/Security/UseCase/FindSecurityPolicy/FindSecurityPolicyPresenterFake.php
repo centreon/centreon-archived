@@ -25,6 +25,7 @@ namespace Tests\Core\Application\Security\UseCase\FindSecurityPolicy;
 
 use Core\Application\Security\UseCase\FindSecurityPolicy\FindSecurityPolicyPresenterInterface;
 use Core\Application\Security\UseCase\FindSecurityPolicy\FindSecurityPolicyResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class FindSecurityPolicyPresenterFake implements FindSecurityPolicyPresenterInterface
 {
@@ -44,8 +45,8 @@ class FindSecurityPolicyPresenterFake implements FindSecurityPolicyPresenterInte
     /**
      * @return object
      */
-    public function show(): object
+    public function show(): Response
     {
-        return new \stdClass();
+        return new Response();
     }
 }
