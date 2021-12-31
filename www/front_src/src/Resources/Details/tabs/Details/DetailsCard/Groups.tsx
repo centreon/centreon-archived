@@ -47,72 +47,72 @@ interface Props {
   details: ResourceDetails;
 }
 
-// const GroupsOnHover = ({ details }: Props): JSX.Element => {
-//   const classes = useStyles();
-//   const { t } = useTranslation();
+const GroupsOnHover = ({ details }: Props): JSX.Element => {
+  const classes = useStyles();
+  const { t } = useTranslation();
 
-//   const setCriteriaAndNewFilter = useUpdateAtom(
-//     setCriteriaAndNewFilterDerivedAtom,
-//   );
+  const setCriteriaAndNewFilter = useUpdateAtom(
+    setCriteriaAndNewFilterDerivedAtom,
+  );
 
-//   const resourceUris = path<ResourceUris>(
-//     ['links', 'uris'],
-//     details,
-//   ) as ResourceUris;
+  const resourceUris = path<ResourceUris>(
+    ['links', 'uris'],
+    details,
+  ) as ResourceUris;
 
-//   const resourceConfigurationUri = prop('configuration', resourceUris);
+  const resourceConfigurationUri = prop('configuration', resourceUris);
 
-//   const resourceConfigurationUriTitle = isNil(resourceConfigurationUri)
-//     ? t(labelActionNotPermitted)
-//     : '';
+  const resourceConfigurationUriTitle = isNil(resourceConfigurationUri)
+    ? t(labelActionNotPermitted)
+    : '';
 
-//   const filterByGroup = (group: NamedEntity): void => {
-//     setCriteriaAndNewFilter({
-//       name: equals(details.type, ResourceType.host)
-//         ? CriteriaNames.hostGroups
-//         : CriteriaNames.serviceGroups,
-//       value: [group],
-//     });
-//   };
+  const filterByGroup = (group: NamedEntity): void => {
+    setCriteriaAndNewFilter({
+      name: equals(details.type, ResourceType.host)
+        ? CriteriaNames.hostGroups
+        : CriteriaNames.serviceGroups,
+      value: [group],
+    });
+  };
 
-//   const resourceConfigurationIconColor = isNil(resourceConfigurationUri)
-//     ? 'disabled'
-//     : 'primary';
+  const resourceConfigurationIconColor = isNil(resourceConfigurationUri)
+    ? 'disabled'
+    : 'primary';
 
-//   return (
-//     <Grid container spacing={1}>
-//       {details.groups?.map((group) => {
-//         return (
-//           <div className={classes.actions}>
-//             <Tooltip title={resourceConfigurationUriTitle}>
-//               <div className={classes.resourceNameConfigurationIcon}>
-//                 <Link
-//                   aria-label={`${t(labelConfigure)}_${details.name}`}
-//                   className={classes.resourceNameConfigurationLink}
-//                   href={resourceConfigurationUri}
-//                 >
-//                   <SettingsIcon
-//                     color={resourceConfigurationIconColor}
-//                     fontSize="small"
-//                   />
-//                 </Link>
-//               </div>
-//             </Tooltip>
-//             <IconButton
-//               ariaLabel={t(labelConfigure)}
-//               color="primary"
-//               title={labelConfigure}
-//               onClick={(): void => filterByGroup(group)}
-//             >
-//               <IconFilterList fontSize="small" />
-//             </IconButton>
-//           </div>
-//         );
-//       })}
-//       ;
-//     </Grid>
-//   );
-// };
+  return (
+    <Grid container spacing={1}>
+      {details.groups?.map((group) => {
+        return (
+          <div className={classes.actions}>
+            <Tooltip title={resourceConfigurationUriTitle}>
+              <div className={classes.resourceNameConfigurationIcon}>
+                <Link
+                  aria-label={`${t(labelConfigure)}_${details.name}`}
+                  className={classes.resourceNameConfigurationLink}
+                  href={resourceConfigurationUri}
+                >
+                  <SettingsIcon
+                    color={resourceConfigurationIconColor}
+                    fontSize="small"
+                  />
+                </Link>
+              </div>
+            </Tooltip>
+            <IconButton
+              ariaLabel={t(labelConfigure)}
+              color="primary"
+              title={labelConfigure}
+              onClick={(): void => filterByGroup(group)}
+            >
+              <IconFilterList fontSize="small" />
+            </IconButton>
+          </div>
+        );
+      })}
+      ;
+    </Grid>
+  );
+};
 
 const Groups = ({ details }: Props): JSX.Element => {
   const [isHovered, setIsHovered] = React.useState<boolean>(false);
