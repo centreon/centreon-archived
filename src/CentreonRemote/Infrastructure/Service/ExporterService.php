@@ -11,14 +11,6 @@ class ExporterService implements ContainerInterface
     use ServiceContainerTrait;
 
     /**
-     * @param mixed $data
-     */
-    public function __construct($objects)
-    {
-        $this->objects = $objects;
-    }
-
-    /**
      *
      * @param string $object
      * @param callable $factory
