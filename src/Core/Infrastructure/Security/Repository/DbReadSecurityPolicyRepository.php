@@ -34,8 +34,9 @@ class DbReadSecurityPolicyRepository extends AbstractRepositoryDRB implements Re
     /**
      * @param DatabaseConnection $db
      */
-    public function __construct(private DatabaseConnection $db)
+    public function __construct(DatabaseConnection $db)
     {
+        $this->db = $db;
     }
 
     /**
@@ -46,7 +47,7 @@ class DbReadSecurityPolicyRepository extends AbstractRepositoryDRB implements Re
         $statement = $this->db->query("SELECT * FROM password_security_policy");
 
         $securityPolicy = null;
-        if ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
+        if ($statement !== false && $result = $statement->fetch(\PDO::FETCH_ASSOC)) {
             $securityPolicy = DbSecurityPolicyFactory::createFromRecord($result);
         }
         return $securityPolicy;
