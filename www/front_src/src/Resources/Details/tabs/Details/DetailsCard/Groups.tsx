@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface Props {
-  details: ResourceDetails;
+  details: ResourceDetails | undefined;
 }
 
 const GroupsOnHover = ({ details }: Props): JSX.Element => {
@@ -68,7 +68,7 @@ const GroupsOnHover = ({ details }: Props): JSX.Element => {
 
   const filterByGroup = (group: NamedEntity): void => {
     setCriteriaAndNewFilter({
-      name: equals(details.type, ResourceType.host)
+      name: equals(details?.type, ResourceType.host)
         ? CriteriaNames.hostGroups
         : CriteriaNames.serviceGroups,
       value: [group],
@@ -81,7 +81,7 @@ const GroupsOnHover = ({ details }: Props): JSX.Element => {
 
   return (
     <Grid container spacing={1}>
-      {details.groups?.map((group) => {
+      {details?.groups?.map((group) => {
         return (
           <div className={classes.actions}>
             <Tooltip title={resourceConfigurationUriTitle}>
@@ -123,7 +123,7 @@ const Groups = ({ details }: Props): JSX.Element => {
 
   const filterByGroup = (group: NamedEntity): void => {
     setCriteriaAndNewFilter({
-      name: equals(details.type, ResourceType.host)
+      name: equals(details?.type, ResourceType.host)
         ? CriteriaNames.hostGroups
         : CriteriaNames.serviceGroups,
       value: [group],
@@ -131,7 +131,10 @@ const Groups = ({ details }: Props): JSX.Element => {
   };
 
   return (
-    <Grid container spacing={1}>
+  <Grid container spacing={1}>
+      {isHovered ? (
+      <GroupsOnHover details={details} />
+      ) : (
       {details.groups?.map((group) => {
         return (
           <Grid item key={group.name}>
@@ -147,6 +150,7 @@ const Groups = ({ details }: Props): JSX.Element => {
           </Grid>
         );
       })}
+      )}
     </Grid>
   );
 };
