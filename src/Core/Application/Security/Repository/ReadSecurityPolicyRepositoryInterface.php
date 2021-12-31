@@ -30,7 +30,7 @@ interface ReadSecurityPolicyRepositoryInterface
     /**
      * Find the platform security policy.
      *
-     * @return SecurityPolicy
+     * @return SecurityPolicy|null
      */
-    public function findSecurityPolicy(): SecurityPolicy;
+    public function findSecurityPolicy(): ?SecurityPolicy;
 }
