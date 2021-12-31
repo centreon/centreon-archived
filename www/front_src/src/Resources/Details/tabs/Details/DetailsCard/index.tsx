@@ -20,7 +20,6 @@ const useStyles = makeStyles((theme) => ({
 
 interface Props {
   isCustomCard?: boolean;
-  isHovered?: boolean;
   line: JSX.Element;
   title: string;
 }
@@ -28,16 +27,11 @@ interface Props {
 const DetailsCard = ({
   title,
   line,
-  isHovered = false,
   isCustomCard = false,
 }: Props): JSX.Element => {
   const classes = useStyles();
 
   if (isCustomCard) {
-    return line;
-  }
-
-  if (isHovered) {
     return line;
   }
 
