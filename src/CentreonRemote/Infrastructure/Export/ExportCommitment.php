@@ -47,6 +47,11 @@ final class ExportCommitment
     private $exporters;
 
     /**
+     * @var array<mixed>
+     */
+    private $meta;
+
+    /**
      * @var int
      */
     private $filePermission = 0775;

@@ -141,6 +141,9 @@ class LinkedPollerConfigurationService
      */
     public function linkPollerToAdditionalRemoteServers(PollerServer $poller, array $remotes): void
     {
+        $pollerIds = array_map(function ($poller) {
+            return $poller->getId();
+        }, $remotes);
 
         foreach ($remotes as $remote) {
             // If one peer retention is enabled, add input on remote server to get data from poller
@@ -153,7 +156,7 @@ class LinkedPollerConfigurationService
         $this->insertAddtitionnalRemoteServersRelations($poller, $remotes);
 
         // Generate configuration for poller and restart it
-        $this->pollerInteractionService->generateAndExport($remotes);
+        $this->pollerInteractionService->generateAndExport($pollerIds);
     }
 
     /**

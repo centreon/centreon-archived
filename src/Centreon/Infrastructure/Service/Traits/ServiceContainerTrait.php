@@ -8,7 +8,7 @@ trait ServiceContainerTrait
 {
 
     /**
-     * @var object[]
+     * @var array<string|int,mixed>
      */
     private $objects = [];
 
