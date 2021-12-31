@@ -21,15 +21,26 @@
 
 declare(strict_types=1);
 
-namespace Core\Application\Security\UseCase\FindSecurityPolicy;
+namespace Core\Application\Common\UseCase;
 
-use Core\Application\Common\UseCase\PresenterInterface;
-use Core\Application\Security\UseCase\FindSecurityPolicy\FindSecurityPolicyResponse;
+use Core\Application\Common\UseCase\ResponseStatusInterface;
+use Symfony\Component\HttpFoundation\Response;
 
-interface FindSecurityPolicyPresenterInterface extends PresenterInterface
+interface PresenterInterface
 {
     /**
-     * @param FindSecurityPolicyResponse $response
+     * @param ResponseStatusInterface|null $responseStatus
+     * @return void
      */
-    public function present(FindSecurityPolicyResponse $response): void;
+    public function setResponseStatus(?ResponseStatusInterface $responseStatus): void;
+
+    /**
+     * @return ResponseStatusInterface|null
+     */
+    public function getResponseStatus(): ?ResponseStatusInterface;
+
+    /**
+     * @return Response
+     */
+    public function show(): Response;
 }

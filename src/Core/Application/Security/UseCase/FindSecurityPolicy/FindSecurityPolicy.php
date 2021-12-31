@@ -23,7 +23,6 @@ declare(strict_types=1);
 
 namespace Core\Application\Security\UseCase\FindSecurityPolicy;
 
-use Core\Application\Security\Exception\SecurityPolicyException;
 use Core\Application\Security\Repository\ReadSecurityPolicyRepositoryInterface;
 use Core\Application\Security\UseCase\FindSecurityPolicy\FindSecurityPolicyPresenterInterface;
 use Core\Domain\Security\Model\SecurityPolicy;
@@ -44,7 +43,12 @@ class FindSecurityPolicy
     {
         $securityPolicy = $this->repository->findSecurityPolicy();
         if ($securityPolicy === null) {
-            throw SecurityPolicyException::securityPolicyNotFound();
+            $presenter->setResponseStatus(
+                new FindSecurityPolicyErrorResponse(
+                    'Security policy not found. Please verify that your installation is valid'
+                )
+            );
+            return;
         }
         $presenter->present($this->createResponse($securityPolicy));
     }

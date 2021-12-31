@@ -23,13 +23,8 @@ declare(strict_types=1);
 
 namespace Core\Application\Security\UseCase\FindSecurityPolicy;
 
-use Core\Application\Common\UseCase\PresenterInterface;
-use Core\Application\Security\UseCase\FindSecurityPolicy\FindSecurityPolicyResponse;
+use Core\Application\Common\UseCase\ErrorResponse;
 
-interface FindSecurityPolicyPresenterInterface extends PresenterInterface
+class FindSecurityPolicyErrorResponse extends ErrorResponse
 {
-    /**
-     * @param FindSecurityPolicyResponse $response
-     */
-    public function present(FindSecurityPolicyResponse $response): void;
 }

@@ -18,18 +18,21 @@
  * For more information : contact@centreon.com
  *
  */
-
 declare(strict_types=1);
 
-namespace Core\Application\Security\UseCase\FindSecurityPolicy;
+namespace Core\Application\Common\Presenter;
 
-use Core\Application\Common\UseCase\PresenterInterface;
-use Core\Application\Security\UseCase\FindSecurityPolicy\FindSecurityPolicyResponse;
+use Symfony\Component\HttpFoundation\Response;
 
-interface FindSecurityPolicyPresenterInterface extends PresenterInterface
+interface PresenterFormatterInterface
 {
     /**
-     * @param FindSecurityPolicyResponse $response
+     * @param mixed $data
      */
-    public function present(FindSecurityPolicyResponse $response): void;
+    public function present(mixed $data): void;
+
+    /**
+     * @return Response
+     */
+    public function show(): Response;
 }
