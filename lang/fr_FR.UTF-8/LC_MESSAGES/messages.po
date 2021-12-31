@@ -16341,3 +16341,6 @@ msgstr "Votre mot de passe a expiré. Veuillez le changer."
 
 msgid "Your password will expire in %s days."
 msgstr "Votre mot de passe expirera dans %s jours."
+
+msgid "Security policy not found. Please verify that your installation is valid"
+msgstr "Politique de sécurité non trouvée. Veuillez vérifier que votre installation est valide"

@@ -23,6 +23,7 @@ declare(strict_types=1);
 
 namespace Core\Application\Security\UseCase\FindSecurityPolicy;
 
+use Core\Application\Security\Exception\SecurityPolicyException;
 use Core\Application\Security\Repository\ReadSecurityPolicyRepositoryInterface;
 use Core\Application\Security\UseCase\FindSecurityPolicy\FindSecurityPolicyPresenterInterface;
 use Core\Domain\Security\Model\SecurityPolicy;
@@ -42,6 +43,9 @@ class FindSecurityPolicy
     public function __invoke(FindSecurityPolicyPresenterInterface $presenter): void
     {
         $securityPolicy = $this->repository->findSecurityPolicy();
+        if ($securityPolicy === null) {
+            throw SecurityPolicyException::securityPolicyNotFound();
+        }
         $presenter->present($this->createResponse($securityPolicy));
     }
 
