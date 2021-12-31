@@ -262,13 +262,13 @@ const DialogDowntime = ({
                 control={
                   <Checkbox
                     checked={
-                      canDowntimeServices() && values.downtimeAttachedResources
+                      canDowntimeServices() && values.isDowntimeWithServices
                     }
                     color="primary"
                     disabled={!canDowntimeServices()}
                     inputProps={{ 'aria-label': labelSetDowntimeOnServices }}
                     size="small"
-                    onChange={handleChange('downtimeAttachedResources')}
+                    onChange={handleChange('isDowntimeWithServices')}
                   />
                 }
                 label={t(labelSetDowntimeOnServices)}
