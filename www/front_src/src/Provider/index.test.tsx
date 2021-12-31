@@ -102,8 +102,9 @@ describe(Provider, () => {
       expect(useDowntime().setDowntime).toHaveBeenCalledWith({
         default_duration:
           retrievedDefaultParameters.monitoring_default_downtime_duration,
-        fixed: retrievedDefaultParameters.monitoring_default_downtime_fixed,
-        with_services:
+        default_fixed:
+          retrievedDefaultParameters.monitoring_default_downtime_fixed,
+        default_with_services:
           retrievedDefaultParameters.monitoring_default_downtime_with_services,
       });
       expect(useRefreshInterval().setRefreshInterval).toHaveBeenCalledWith(
