@@ -464,7 +464,7 @@ describe(Actions, () => {
             end_time: '2020-01-01T02:00:00Z',
             is_fixed: true,
             start_time: '2020-01-01T00:00:00Z',
-            with_services: true,
+            with_services: false,
           },
           resources: map(pick(['type', 'id', 'parent']), selectedResources),
         },
