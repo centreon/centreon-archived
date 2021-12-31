@@ -28,6 +28,7 @@ interface Props {
 
 const useStyles = makeStyles((theme) => ({
   exportButton: {
+    display: 'flex',
     marginTop: theme.spacing(1),
   },
   pollerText: {
@@ -63,7 +64,9 @@ const ExportConfiguration = ({
 
   const confirmExportAndReload = (): void => {
     showInfoMessage(t(labelExportingAndReloadingTheConfiguration));
-    sendRequest(exportAndReloadConfigurationEndpoint).then(() => {
+    sendRequest({
+      endpoint: exportAndReloadConfigurationEndpoint,
+    }).then(() => {
       showSuccessMessage(t(labelConfigurationExportedAndReloaded));
     });
     closeConfirmDialog();
