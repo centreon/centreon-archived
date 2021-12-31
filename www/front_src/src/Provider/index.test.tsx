@@ -37,6 +37,8 @@ const retrievedDefaultParameters = {
   monitoring_default_acknowledgement_persistent: true,
   monitoring_default_acknowledgement_sticky: false,
   monitoring_default_downtime_duration: 1458,
+  monitoring_default_downtime_fixed: true,
+  monitoring_default_downtime_with_services: false,
   monitoring_default_refresh_interval: 15,
 };
 
@@ -100,6 +102,9 @@ describe(Provider, () => {
       expect(useDowntime().setDowntime).toHaveBeenCalledWith({
         default_duration:
           retrievedDefaultParameters.monitoring_default_downtime_duration,
+        fixed: retrievedDefaultParameters.monitoring_default_downtime_fixed,
+        with_services:
+          retrievedDefaultParameters.monitoring_default_downtime_with_services,
       });
       expect(useRefreshInterval().setRefreshInterval).toHaveBeenCalledWith(
         retrievedDefaultParameters.monitoring_default_refresh_interval,

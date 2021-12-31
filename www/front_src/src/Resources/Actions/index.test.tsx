@@ -103,6 +103,8 @@ const mockUserContext = {
   alias: 'admin',
   downtime: {
     default_duration: 7200,
+    default_fixed: true,
+    default_with_services: false,
   },
   locale: 'en',
   name: 'admin',
