@@ -176,6 +176,7 @@ describe(Actions, () => {
   const mockNow = '2020-01-01';
 
   beforeEach(() => {
+    mockedAxios.post.mockReset();
     mockedAxios.get
       .mockResolvedValueOnce({
         data: {
@@ -207,6 +208,7 @@ describe(Actions, () => {
     await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
 
     mockedAxios.get.mockResolvedValueOnce({ data: {} });
+    mockedAxios.post.mockResolvedValueOnce({});
 
     const refreshButton = getByLabelText(labelRefresh);
 
@@ -290,7 +292,7 @@ describe(Actions, () => {
     fireEvent.click(getByLabelText(labelAcknowledgeServices));
 
     mockedAxios.get.mockResolvedValueOnce({ data: {} });
-    mockedAxios.post.mockResolvedValueOnce({}).mockResolvedValueOnce({});
+    mockedAxios.post.mockResolvedValueOnce({});
 
     fireEvent.click(last(getAllByText(labelAcknowledge)) as HTMLElement);
 
@@ -482,7 +484,7 @@ describe(Actions, () => {
 
     mockedAxios.get.mockResolvedValueOnce({ data: {} });
     mockedAxios.all.mockResolvedValueOnce([]);
-    mockedAxios.post.mockResolvedValueOnce({}).mockResolvedValueOnce({});
+    mockedAxios.post.mockResolvedValueOnce({});
 
     fireEvent.click(getByText(labelCheck));
 
@@ -498,7 +500,7 @@ describe(Actions, () => {
   });
 
   it('sends a submit status request when a Resource is selected and the Submit status action is clicked', async () => {
-    mockedAxios.post.mockResolvedValueOnce({}).mockResolvedValueOnce({});
+    mockedAxios.post.mockResolvedValueOnce({});
 
     const { getByText, getByLabelText, getByTitle } = renderActions();
 

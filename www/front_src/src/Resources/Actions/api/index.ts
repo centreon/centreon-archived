@@ -3,7 +3,7 @@ import { map, pick } from 'ramda';
 
 import { Resource } from '../../models';
 import { AcknowledgeFormValues } from '../Resource/Acknowledge';
-import { DowntimeFormValues } from '../Resource/Downtime';
+import { DowntimeToPost } from '../Resource/Downtime';
 
 import {
   acknowledgeEndpoint,
@@ -41,7 +41,7 @@ const acknowledgeResources =
   };
 
 interface ResourcesWithDowntimeParams {
-  params: DowntimeFormValues;
+  params: DowntimeToPost;
   resources: Array<Resource>;
 }
 
@@ -57,10 +57,10 @@ const setDowntimeOnResources =
         downtime: {
           comment: params.comment,
           duration: params.duration,
-          end_time: params.timeEnd,
+          end_time: params.endTime,
           is_fixed: params.fixed,
-          start_time: params.timeStart,
-          with_services: params.downtimeWithServices,
+          start_time: params.startTime,
+          with_services: params.isDowntimeWithServices,
         },
         resources: map(pick(['type', 'id', 'parent']), resources),
       },
