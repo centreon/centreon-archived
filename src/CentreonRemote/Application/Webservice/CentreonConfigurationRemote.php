@@ -84,7 +84,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      *
      * @return array<int, array<mixed>>
      */
-    public function postGetWaitList()
+    public function postGetWaitList(): array
     {
         $statement = $this->pearDB->query("
             SELECT id, address as ip, name as server_name FROM `platform_topology`
@@ -153,7 +153,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      * @return array<int, array<mixed>>
      * @example [['id' => 'poller id', 'ip' => 'poller ip address', 'name' => 'poller name']]
      */
-    public function getList()
+    public function getList(): array
     {
         $list = [];
         foreach ($this->postGetRemotesList() as $row) {

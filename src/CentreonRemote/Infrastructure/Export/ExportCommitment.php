@@ -105,7 +105,7 @@ final class ExportCommitment
      *
      * @return int[]
      */
-    public function getPollers()
+    public function getPollers(): array
     {
         return $this->pollers;
     }
@@ -128,7 +128,7 @@ final class ExportCommitment
      *
      * @return array<mixed>
      */
-    public function getExporters()
+    public function getExporters(): array
     {
         return $this->exporters;
     }
