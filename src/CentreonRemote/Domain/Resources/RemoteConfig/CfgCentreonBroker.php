@@ -15,7 +15,7 @@ class CfgCentreonBroker
      * @param string $pollerName the poller name
      * @return array<string, array<string, int|string>> the configuration template
      */
-    public static function getConfiguration(int $serverID, string $pollerName)
+    public static function getConfiguration(int $serverID, string $pollerName): array
     {
         $configName = strtolower(str_replace(' ', '-', $pollerName));
 

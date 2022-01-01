@@ -99,7 +99,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      *
      * @return array<int, array<mixed>>
      */
-    public function postGetPollerWaitList()
+    public function postGetPollerWaitList(): array
     {
         $statement = $this->pearDB->query("
             SELECT id, address as ip, name as server_name FROM `platform_topology`
@@ -336,7 +336,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      *
      * @example ['error' => true, 'message' => 'error message']
      */
-    public function postLinkCentreonRemoteServer()
+    public function postLinkCentreonRemoteServer(): array
     {
         // retrieve post values to be used in other classes
         $_POST = json_decode(file_get_contents('php://input'), true);

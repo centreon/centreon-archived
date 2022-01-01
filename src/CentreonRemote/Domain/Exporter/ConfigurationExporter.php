@@ -23,7 +23,6 @@ namespace CentreonRemote\Domain\Exporter;
 use Pimple\Container;
 use CentreonRemote\Infrastructure\Export\ExportManifest;
 use CentreonRemote\Infrastructure\Service\ExporterServiceAbstract;
-
 use ConfigGenerateRemote\Manifest;
 
 class ConfigurationExporter extends ExporterServiceAbstract
@@ -31,7 +30,9 @@ class ConfigurationExporter extends ExporterServiceAbstract
     public const NAME = 'configuration';
     private const MEDIA_PATH = _CENTREON_PATH_ . 'www/img/media';
 
-    /** @var \ConfigGenerateRemote\Generate */
+    /**
+     * @var \ConfigGenerateRemote\Generate
+     */
     private $generateService;
 
     /**
@@ -48,6 +49,7 @@ class ConfigurationExporter extends ExporterServiceAbstract
     /**
      * Export data
      * @param int $remoteId
+     * @return mixed[]
      */
     public function export(int $remoteId): array
     {

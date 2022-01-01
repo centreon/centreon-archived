@@ -8,7 +8,6 @@ class ExportParserYaml implements ExportParserInterface
 {
 
     /**
-     *
      * @param string $filename
      * @param callable|null $macros
      * @return array<mixed>
@@ -31,7 +30,6 @@ class ExportParserYaml implements ExportParserInterface
     }
 
     /**
-     *
      * @param string[] $input
      * @param string $filename
      * @return void

@@ -15,10 +15,10 @@ abstract class ServerConnectionConfigurationService
     /** @var CentreonDBAdapter */
     protected $dbAdapter;
 
-    /** @var string */
+    /** @var string|null */
     protected $serverIp;
 
-    /** @var string */
+    /** @var string|null */
     protected $centralIp;
 
     /** @var string|null */
@@ -27,7 +27,7 @@ abstract class ServerConnectionConfigurationService
     /** @var string|null */
     protected $dbPassword;
 
-    /** @var string */
+    /** @var string|null */
     protected $name;
 
     /** @var bool */
@@ -39,7 +39,7 @@ abstract class ServerConnectionConfigurationService
     /** @var bool */
     protected $isLinkedToCentralServer = false;
 
-    /** @var int */
+    /** @var int|null */
     protected $brokerID = null;
 
     public function __construct(CentreonDBAdapter $dbAdapter)
@@ -49,19 +49,19 @@ abstract class ServerConnectionConfigurationService
 
     abstract protected function insertConfigCentreonBroker(int $serverID): void;
 
-    /** @param string $ip */
+    /** @param string|null $ip */
     public function setServerIp($ip): void
     {
         $this->serverIp = $ip;
     }
 
-    /** @param string $name */
+    /** @param string|null $name */
     public function setName($name): void
     {
         $this->name = $name;
     }
 
-    /** @param string $ip */
+    /** @param string|null $ip */
     public function setCentralIp($ip): void
     {
         $this->centralIp = $ip;
@@ -204,7 +204,7 @@ abstract class ServerConnectionConfigurationService
      * @param string $table
      * @param array<string,int> $data
      * @throws \Exception
-     * @return integer
+     * @return int
      */
     protected function insertWithAdapter($table, array $data): int
     {

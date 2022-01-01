@@ -12,7 +12,7 @@ class CfgCentreonBrokerInfo
      *
      * @return array<int, array<string,int|string>> the configuration template
      */
-    public static function getConfiguration()
+    public static function getConfiguration(): array
     {
         return [
             [

@@ -30,40 +30,33 @@ use CentreonRemote\Infrastructure\Export\ExportParserInterface;
  */
 class ExportCommitmentTest extends TestCase
 {
-
     /**
-     *
      * @var ExportCommitment
      */
     protected $commitment;
 
     /**
-     *
      * @var int
      */
     protected $remote = 1;
 
     /**
-     *
      * @var int[]
      */
     protected $pollers = [2, 3];
 
     /**
-     *
      * @var array<int,string>
      */
     protected $meta = [''];
 
     /**
-     *
      * @var string
      */
     protected $path = '/tmp';
 
 
     /**
-     *
      * @var array<mixed>
      */
     protected $exporters = [];

@@ -55,7 +55,9 @@ class CentreonDBManagerService
         return $this->manager[$this->defaultManager];
     }
 
-    /** @param mixed $repository */
+    /**
+     * @param mixed $repository
+     */
     public function getRepository($repository): mixed
     {
         $manager = $this->manager[$this->defaultManager]

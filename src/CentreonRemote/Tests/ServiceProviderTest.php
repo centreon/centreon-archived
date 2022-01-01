@@ -42,13 +42,11 @@ class ServiceProviderTest extends TestCase
 {
 
     /**
-     *
      * @var Container
      */
     protected $container;
 
     /**
-     *
      * @var ServiceProvider
      */
     protected $provider;

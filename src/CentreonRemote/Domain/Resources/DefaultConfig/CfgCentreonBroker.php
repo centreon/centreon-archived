@@ -12,7 +12,7 @@ class CfgCentreonBroker
      *
      * @return array<int, array<string,int|string>> the configuration template
      */
-    public static function getConfiguration()
+    public static function getConfiguration(): array
     {
         return [
             [
@@ -25,7 +25,7 @@ class CfgCentreonBroker
                 'event_queue_max_size'   => 100000,
                 'cache_directory'        => '@centreonbroker_varlib@',
                 'command_file'           => '@centreonbroker_varlib@/command.sock',
-                'daemon'                 => 1
+                'daemon'                 => 1,
             ],
             [
                 'config_id'              => 2,
@@ -37,7 +37,7 @@ class CfgCentreonBroker
                 'ns_nagios_server'       => 1,
                 'event_queue_max_size'   => 100000,
                 'cache_directory'        => '@centreonbroker_varlib@',
-                'daemon'                 => 1
+                'daemon'                 => 1,
             ],
             [
                 'config_id'              => 3,
@@ -49,8 +49,8 @@ class CfgCentreonBroker
                 'ns_nagios_server'       => 1,
                 'event_queue_max_size'   => 100000,
                 'cache_directory'        => '@monitoring_var_lib@',
-                'daemon'                 => 0
-            ]
+                'daemon'                 => 0,
+            ],
         ];
     }
 }

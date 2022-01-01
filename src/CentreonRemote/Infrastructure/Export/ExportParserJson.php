@@ -26,7 +26,6 @@ class ExportParserJson implements ExportParserInterface
 {
 
     /**
-     *
      * @param string $filename
      * @param callable|null $macros
      * @return array<mixed>

@@ -13,7 +13,7 @@ class CfgNagios
      *
      * @return array<string, int|string|null> the configuration template
      */
-    public static function getConfiguration()
+    public static function getConfiguration(): array
     {
         return [
             'nagios_id'                                   => 1,
@@ -135,7 +135,7 @@ class CfgNagios
             'debug_level_opt'                             => '0',
             'debug_verbosity'                             => '2',
             'max_debug_file_size'                         => null,
-            'cfg_file'                                    => 'centengine.cfg'
+            'cfg_file'                                    => 'centengine.cfg',
         ];
     }
 }

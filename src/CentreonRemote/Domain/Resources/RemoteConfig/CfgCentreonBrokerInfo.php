@@ -25,7 +25,7 @@ class CfgCentreonBrokerInfo
      * @param string|null $dbPassword the database password
      * @return array<string, array<string, array<int, array<string>>>> the configuration template
      */
-    public static function getConfiguration(string $serverName, $dbUser, $dbPassword)
+    public static function getConfiguration(string $serverName, $dbUser, $dbPassword): array
     {
         $serverName = strtolower(str_replace(' ', '-', $serverName));
 

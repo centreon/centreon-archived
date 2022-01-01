@@ -13,7 +13,7 @@ class CfgResource
      *
      * @return array<int, string[]> the configuration template
      */
-    public static function getConfiguration()
+    public static function getConfiguration(): array
     {
         return [
             [
@@ -26,8 +26,8 @@ class CfgResource
                 'resource_name'     => '$CENTREONPLUGINS$',
                 'resource_line'     => '@centreonplugins@',
                 'resource_comment'  => 'Centreon Plugins Path',
-                'resource_activate' => '1'
-            ]
+                'resource_activate' => '1',
+            ],
         ];
     }
 }

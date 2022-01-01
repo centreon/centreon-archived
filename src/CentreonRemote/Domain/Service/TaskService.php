@@ -72,6 +72,9 @@ class TaskService
         $this->centreonRestHttp = $centreonRestHttp;
     }
 
+    /**
+     * @return \CentreonRestHttp
+     */
     public function getCentreonRestHttp(): \CentreonRestHttp
     {
         return $this->centreonRestHttp;

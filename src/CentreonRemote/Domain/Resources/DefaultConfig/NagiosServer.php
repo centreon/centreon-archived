@@ -13,7 +13,7 @@ class NagiosServer
      *
      * @return array<string, int|string>
      */
-    public static function getConfiguration()
+    public static function getConfiguration(): array
     {
         return [
             'name'                       => 'Central',
@@ -37,7 +37,7 @@ class NagiosServer
             'gorgone_communication_type' => '1',
             'gorgone_port'               => 5556,
             'init_script_centreontrapd'  => 'centreontrapd',
-            'snmp_trapd_path_conf'       => '/etc/snmp/centreon_traps/'
+            'snmp_trapd_path_conf'       => '/etc/snmp/centreon_traps/',
         ];
     }
 }

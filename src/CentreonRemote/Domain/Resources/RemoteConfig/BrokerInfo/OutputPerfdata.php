@@ -15,7 +15,7 @@ class OutputPerfdata
      * @param string|null $dbPassword the database password
      * @return array<int, string[]> the configuration template
      */
-    public static function getConfiguration($dbUser, $dbPassword)
+    public static function getConfiguration($dbUser, $dbPassword): array
     {
         return [
             [

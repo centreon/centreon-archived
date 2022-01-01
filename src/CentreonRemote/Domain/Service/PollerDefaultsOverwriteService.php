@@ -8,7 +8,7 @@ use CentreonRemote\Domain\Resources\DefaultConfig\CfgCentreonBrokerInfo;
 class PollerDefaultsOverwriteService
 {
 
-    /** @var int */
+    /** @var int|null */
     private $pollerID = null;
 
     /** @var int[] */
@@ -18,7 +18,7 @@ class PollerDefaultsOverwriteService
     private $nagiosConfigIDs = [];
 
     /**
-     * @param int $pollerID
+     * @param int|null $pollerID
      */
     public function setPollerID($pollerID): void
     {
@@ -32,7 +32,7 @@ class PollerDefaultsOverwriteService
      *
      * @return array<string|int, array<string,int>>
      */
-    private function findPollerAndSetResourceData(array $data, $columnName, $resourceName)
+    private function findPollerAndSetResourceData(array $data, $columnName, $resourceName): array
     {
         // Remove remote poller resources in the array by the column name and pollerID
         $data = array_filter($data, function ($pollerData) use ($columnName) {
@@ -74,7 +74,7 @@ class PollerDefaultsOverwriteService
      * @param array<string|int, array<string,int>> $data the engine data
      * @return array<string|int, array<string,int>> the complete engine data
      */
-    public function getCfgNagios(array $data)
+    public function getCfgNagios(array $data): array
     {
         $configsOfRemote = array_filter($data, function ($pollerData) {
             return $pollerData['nagios_server_id'] == $this->pollerID;
@@ -94,7 +94,7 @@ class PollerDefaultsOverwriteService
      * @param array<string|int, array<string,int>> $data the engine broker module data
      * @return array<string|int, array<string,int>> the complete engine broker module data
      */
-    public function getCfgNagiosBroker(array $data)
+    public function getCfgNagiosBroker(array $data): array
     {
         // Remove nagios config info which is related to the broker module of the remote poller
         $data = array_filter($data, function ($pollerData) {
@@ -112,7 +112,7 @@ class PollerDefaultsOverwriteService
      * @param array<string|int, array<string,int>> $data the broker data
      * @return array<string|int, array<string,int>> the complete broker data
      */
-    public function getCfgCentreonBroker(array $data)
+    public function getCfgCentreonBroker(array $data): array
     {
         $configsOfRemote = array_filter($data, function ($pollerData) {
             return $pollerData['ns_nagios_server'] == $this->pollerID;
@@ -132,7 +132,7 @@ class PollerDefaultsOverwriteService
      * @param array<string|int, array<string,int>> $data the broker detailed data
      * @return array<string|int, array<string,int>> the complete broker detailed data
      */
-    public function getCfgCentreonBrokerInfo(array $data)
+    public function getCfgCentreonBrokerInfo(array $data): array
     {
         // Remove broker config info which is related to the broker module of the remote poller
         $data = array_filter($data, function ($pollerData) {

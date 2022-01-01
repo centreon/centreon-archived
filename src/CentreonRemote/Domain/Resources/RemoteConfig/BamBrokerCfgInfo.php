@@ -14,7 +14,7 @@ class BamBrokerCfgInfo
      * @param string $dbPassword the centreon database password
      * @return array<string, array<int, string[]>> the configuration template
      */
-    public static function getConfiguration(string $dbPassword)
+    public static function getConfiguration(string $dbPassword): array
     {
         return [
             'monitoring' => [

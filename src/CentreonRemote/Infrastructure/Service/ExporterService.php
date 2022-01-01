@@ -39,6 +39,7 @@ class ExporterService implements ContainerInterface
     /**
      *
      * @param string $id
+     * @return bool
      */
     public function has($id): bool
     {
@@ -52,7 +53,7 @@ class ExporterService implements ContainerInterface
      * @param string $id
      * @return int[]
      */
-    public function get($id)
+    public function get($id): array
     {
         $key = $this->getKey($id);
         if ($key === null) {
@@ -67,6 +68,7 @@ class ExporterService implements ContainerInterface
     /**
      *
      * @param string $id
+     * @return int|null
      */
     private function getKey($id): ?int
     {
