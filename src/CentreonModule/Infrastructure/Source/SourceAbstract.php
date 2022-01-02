@@ -60,6 +60,21 @@ abstract class SourceAbstract implements SourceInterface
     protected $path;
 
     /**
+     * @var mixed
+     */
+    private $installer;
+
+    /**
+     * @var mixed
+     */
+    private $upgrader;
+
+    /**
+     * @var mixed
+     */
+    private $remover;
+
+    /**
      * Construct
      *
      * @param \Psr\Container\ContainerInterface $services
@@ -91,7 +106,7 @@ abstract class SourceAbstract implements SourceInterface
         return $this->getDetail($id);
     }
 
-    public function remove(string $id)
+    public function remove(string $id): void
     {
         ($this->remover)($id)->remove();
     }
@@ -113,6 +128,11 @@ abstract class SourceAbstract implements SourceInterface
         return true;
     }
 
+    /**
+     * @param string $installedVersion
+     * @param string $codeVersion
+     * @return boolean
+     */
     public function isUpdated($installedVersion, $codeVersion): bool
     {
         $result = false;
@@ -132,6 +152,6 @@ abstract class SourceAbstract implements SourceInterface
      */
     protected function getPath(): string
     {
-        return $this->path . static::PATH;
+        return $this->path . self::PATH;
     }
 }

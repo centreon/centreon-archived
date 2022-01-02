@@ -44,7 +44,7 @@ class CentreonModuleService
 {
 
     /**
-     * @var array
+     * @var array<string,mixed>
      */
     protected $sources = [];
 
@@ -58,6 +58,13 @@ class CentreonModuleService
         $this->initSources($services);
     }
 
+    /**
+     * @param string|null $search
+     * @param boolean|null $installed
+     * @param boolean|null $updated
+     * @param array<mixed>|null $typeList
+     * @return array<string|int,\CentreonModule\Infrastructure\Entity\Module[]>
+     */
     public function getList(
         string $search = null,
         bool $installed = null,
@@ -89,6 +96,11 @@ class CentreonModuleService
         return $result;
     }
 
+    /**
+     * @param string $id
+     * @param string $type
+     * @return Module|null
+     */
     public function getDetail(string $id, string $type): ?Module
     {
         if (!array_key_exists($type, $this->sources)) {
@@ -100,6 +112,11 @@ class CentreonModuleService
         return $result;
     }
 
+    /**
+     * @param string $id
+     * @param string $type
+     * @return Module|null
+     */
     public function install(string $id, string $type): ?Module
     {
         if (!array_key_exists($type, $this->sources)) {
@@ -111,6 +128,11 @@ class CentreonModuleService
         return $result;
     }
 
+    /**
+     * @param string $id
+     * @param string $type
+     * @return Module|null
+     */
     public function update(string $id, string $type): ?Module
     {
         if (!array_key_exists($type, $this->sources)) {
@@ -122,6 +144,11 @@ class CentreonModuleService
         return $result;
     }
 
+    /**
+     * @param string $id
+     * @param string $type
+     * @return bool|null
+     */
     public function remove(string $id, string $type): ?bool
     {
         if (!array_key_exists($type, $this->sources)) {
@@ -138,7 +165,7 @@ class CentreonModuleService
      *
      * @param ContainerInterface $services
      */
-    protected function initSources(ContainerInterface $services)
+    protected function initSources(ContainerInterface $services): void
     {
         $this->sources = [
             Source\ModuleSource::TYPE => new Source\ModuleSource($services),
@@ -154,8 +181,9 @@ class CentreonModuleService
      * - Installed (then by name)
      *
      * @param \CentreonModule\Infrastructure\Entity\Module[] $list
+     * @return \CentreonModule\Infrastructure\Entity\Module[]
      */
-    protected function sortList(array $list)
+    protected function sortList(array $list): array
     {
         usort($list, function ($a, $b) {
             $aVal = $a->getName();

@@ -54,13 +54,18 @@ class CentreonModuleServiceTest extends TestCase
     use TestCaseExtensionTrait;
     use SourceDependencyTrait;
 
+    /**
+     * @var CentreonModuleService|\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $service;
+
     protected function setUp(): void
     {
         $this->service = $this->getMockBuilder(CentreonModuleService::class)
             ->onlyMethods([
                 'initSources',
             ])
-            ->setConstructorArgs([new ContainerWrap(new Container)])
+            ->setConstructorArgs([new ContainerWrap(new Container())])
             ->getMock()
         ;
 
@@ -133,7 +138,7 @@ class CentreonModuleServiceTest extends TestCase
             ;
             $sources[$type]
                 ->method('remove')
-                ->will($this->returnCallback(function ($id) use ($type) {
+                ->will($this->returnCallback(function ($id) {
                     if ($id === ModuleSourceTest::$moduleName) {
                         throw new \Exception('Removed');
                     }
@@ -145,7 +150,10 @@ class CentreonModuleServiceTest extends TestCase
         $this->setProtectedProperty($this->service, 'sources', $sources);
     }
 
-    public function testGetList()
+    /**
+     * @return void
+     */
+    public function testGetList(): void
     {
         (function () {
             $result = $this->service->getList();
@@ -169,7 +177,10 @@ class CentreonModuleServiceTest extends TestCase
         })();
     }
 
-    public function testGetDetails()
+    /**
+     * @return void
+     */
+    public function testGetDetails(): void
     {
         (function () {
             $result = $this->service->getDetail('test-module', Source\ModuleSource::TYPE);
@@ -185,7 +196,10 @@ class CentreonModuleServiceTest extends TestCase
         })();
     }
 
-    public function testInstall()
+    /**
+     * @return void
+     */
+    public function testInstall(): void
     {
         $result = $this->service->install(ModuleSourceTest::$moduleName, Source\ModuleSource::TYPE);
 
@@ -194,15 +208,19 @@ class CentreonModuleServiceTest extends TestCase
 
     /**
      * @covers \CentreonModule\Infrastructure\Service\CentreonModuleService::install
+     * @return void
      */
-    public function testInstallMissingType()
+    public function testInstallMissingType(): void
     {
         $result = $this->service->install(ModuleSourceTest::$moduleName, 'missing-type');
 
         $this->assertNull($result);
     }
 
-    public function testUpdate()
+    /**
+     * @return void
+     */
+    public function testUpdate(): void
     {
         $result = $this->service->update(ModuleSourceTest::$moduleName, Source\ModuleSource::TYPE);
 
@@ -211,15 +229,20 @@ class CentreonModuleServiceTest extends TestCase
 
     /**
      * @covers \CentreonModule\Infrastructure\Service\CentreonModuleService::update
+     * @return void
      */
-    public function testUpdateMissingType()
+    public function testUpdateMissingType(): void
     {
         $result = $this->service->update(ModuleSourceTest::$moduleName, 'missing-type');
 
         $this->assertNull($result);
     }
 
-    public function testRemove()
+    /**
+     * @throws \Exception
+     * @return void
+     */
+    public function testRemove(): void
     {
         (function () {
             $result = null;
@@ -239,8 +262,9 @@ class CentreonModuleServiceTest extends TestCase
 
     /**
      * @covers \CentreonModule\Infrastructure\Service\CentreonModuleService::remove
+     * @return void
      */
-    public function testRemoveMissingType()
+    public function testRemoveMissingType(): void
     {
         $result = $this->service->remove(ModuleSourceTest::$moduleName, 'missing-type');
 
@@ -249,8 +273,9 @@ class CentreonModuleServiceTest extends TestCase
 
     /**
      * @covers \CentreonModule\Infrastructure\Service\CentreonModuleService::initSources
+     * @return void
      */
-    public function testInitSources()
+    public function testInitSources(): void
     {
         $container = new Container;
         $container['finder'] = null;
@@ -276,7 +301,10 @@ class CentreonModuleServiceTest extends TestCase
         $this->assertInstanceOf(Source\WidgetSource::class, $sources[Source\WidgetSource::TYPE]);
     }
 
-    public function testSortList()
+    /**
+     * @return void
+     */
+    public function testSortList(): void
     {
         $service = $this->createMock(CentreonModuleService::class);
 

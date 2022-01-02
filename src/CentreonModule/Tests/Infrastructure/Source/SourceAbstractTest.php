@@ -45,7 +45,12 @@ use CentreonModule\Tests\Infrastructure\Source\ModuleSourceTest;
 class SourceAbstractTest extends TestCase
 {
 
-    const RESULT_SUCCESS = 'OK';
+    public const RESULT_SUCCESS = 'OK';
+
+    /**
+     * @var SourceAbstract|\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $source;
 
     protected function setUp(): void
     {
@@ -82,9 +87,16 @@ class SourceAbstractTest extends TestCase
         $this->source->installer = function ($id) {
             $mock = new class {
 
+                /**
+                 * @var string
+                 */
                 public $id;
 
-                public function install()
+                /**
+                 * @throws \Exception
+                 * @return void
+                 */
+                public function install(): void
                 {
                     if ($this->id === ModuleSourceTest::$moduleName) {
                         throw new \Exception(SourceAbstractTest::RESULT_SUCCESS, 1);
@@ -100,9 +112,16 @@ class SourceAbstractTest extends TestCase
         $this->source->upgrader = function ($id) {
             $mock = new class {
 
+                /**
+                 * @var string
+                 */
                 public $id;
 
-                public function upgrade()
+                /**
+                 * @throws \Exception
+                 * @return void
+                 */
+                public function upgrade(): void
                 {
                     if ($this->id === ModuleSourceTest::$moduleName) {
                         throw new \Exception(SourceAbstractTest::RESULT_SUCCESS, 2);
@@ -118,9 +137,16 @@ class SourceAbstractTest extends TestCase
         $this->source->remover = function ($id) {
             $mock = new class {
 
+                /**
+                 * @var string
+                 */
                 public $id;
 
-                public function remove()
+                /**
+                 * @throws \Exception
+                 * @return void
+                 */
+                public function remove(): void
                 {
                     if ($this->id === ModuleSourceTest::$moduleName) {
                         throw new \Exception(SourceAbstractTest::RESULT_SUCCESS, 3);
@@ -134,7 +160,7 @@ class SourceAbstractTest extends TestCase
         };
     }
 
-    public function testInstall()
+    public function testInstall(): void
     {
         (function () {
             $result = null;
@@ -145,7 +171,7 @@ class SourceAbstractTest extends TestCase
                 $result = $ex->getMessage();
             }
 
-            $this->assertEquals(static::RESULT_SUCCESS, $result);
+            $this->assertEquals(self::RESULT_SUCCESS, $result);
         })();
 
         (function () {
@@ -153,7 +179,7 @@ class SourceAbstractTest extends TestCase
         })();
     }
 
-    public function testUpdate()
+    public function testUpdate(): void
     {
         (function () {
             $result = null;
@@ -164,7 +190,7 @@ class SourceAbstractTest extends TestCase
                 $result = $ex->getMessage();
             }
 
-            $this->assertEquals(static::RESULT_SUCCESS, $result);
+            $this->assertEquals(self::RESULT_SUCCESS, $result);
         })();
 
         (function () {
@@ -172,7 +198,7 @@ class SourceAbstractTest extends TestCase
         })();
     }
 
-    public function testRemove()
+    public function testRemove(): void
     {
         (function () {
             $result = null;
@@ -183,17 +209,17 @@ class SourceAbstractTest extends TestCase
                 $result = $ex->getMessage();
             }
 
-            $this->assertEquals(static::RESULT_SUCCESS, $result);
+            $this->assertEquals(self::RESULT_SUCCESS, $result);
         })();
 
         (function () {
-            $result = $this->source->remove(ModuleSourceTest::$moduleNameMissing);
+            $this->source->remove(ModuleSourceTest::$moduleNameMissing);
         })();
     }
 
-    public function testIsEligible()
+    public function testIsEligible(): void
     {
-        $entity = new Module;
+        $entity = new Module();
         $entity->setName('tesat');
         $entity->setKeywords('test,module,lorem');
         $entity->setInstalled(true);
@@ -215,7 +241,7 @@ class SourceAbstractTest extends TestCase
         $this->assertTrue($this->source->isEligible($entity, null, null, false));
     }
 
-    public function testIsUpdated()
+    public function testIsUpdated(): void
     {
         $this->assertTrue($this->source->isUpdated('1.0.0', '1.0.0'));
         $this->assertFalse($this->source->isUpdated('1.0.1', '1.0.0'));

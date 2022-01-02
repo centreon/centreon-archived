@@ -44,10 +44,21 @@ use CentreonModule\Application\Webservice\CentreonModulesWebservice;
 
 class CentreonModulesWebserviceTest extends TestCase
 {
+    /**
+     * @var CentreonModulesWebservice|\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $webservice;
 
+    /**
+     * @var array<string,mixed>
+     */
     public static $sqlQueriesWitoutData = [
         'SELECT * FROM modules_informations ' => [],
     ];
+
+    /**
+     * @var string[][][]
+     */
     public static $sqlQueries = [
         'SELECT * FROM modules_informations ' => [
             [
@@ -75,11 +86,12 @@ class CentreonModulesWebserviceTest extends TestCase
 
     /**
      * @covers \CentreonModule\Application\Webservice\CentreonModulesWebservice::postGetBamModuleInfo
+     * @return void
      */
-    public function testPostGetBamModuleInfoWithoutModule()
+    public function testPostGetBamModuleInfoWithoutModule(): void
     {
         // dependencies
-        $container = new Container;
+        $container = new Container();
         $container[\CentreonLegacy\ServiceProvider::CENTREON_LEGACY_MODULE_INFORMATION] = $this
             ->getMockBuilder(\CentreonLegacy\Core\Module\Information::class)
             ->disableOriginalConstructor()
@@ -107,10 +119,11 @@ class CentreonModulesWebserviceTest extends TestCase
 
     /**
      * @covers \CentreonModule\Application\Webservice\CentreonModulesWebservice::postGetBamModuleInfo
+     * @return void
      */
-    public function testPostGetBamModuleInfoWithModule()
+    public function testPostGetBamModuleInfoWithModule(): void
     {
-        $container = new Container;
+        $container = new Container();
         $container[\CentreonLegacy\ServiceProvider::CENTREON_LEGACY_MODULE_INFORMATION] = $this
             ->getMockBuilder(\CentreonLegacy\Core\Module\Information::class)
             ->disableOriginalConstructor()
@@ -135,13 +148,13 @@ class CentreonModulesWebserviceTest extends TestCase
         $this->assertTrue($result['enabled']);
     }
 
-    public function testAuthorize()
+    public function testAuthorize(): void
     {
         $result = $this->webservice->authorize(null, null);
         $this->assertTrue($result);
     }
 
-    public function testGetName()
+    public function testGetName(): void
     {
         $this->assertEquals('centreon_modules_webservice', CentreonModulesWebservice::getName());
     }

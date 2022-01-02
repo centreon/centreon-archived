@@ -56,7 +56,14 @@ class ServiceProviderTest extends TestCase
 {
     use SourceDependencyTrait;
 
+    /**
+     * @var Container
+     */
     protected $container;
+
+    /**
+     * @var ServiceProvider
+     */
     protected $provider;
 
     protected function setUp(): void
@@ -85,15 +92,28 @@ class ServiceProviderTest extends TestCase
         $this->container[\Centreon\ServiceProvider::CENTREON_DB_MANAGER] = new CentreonDBManagerService($locator);
         $this->container[\Centreon\ServiceProvider::CENTREON_WEBSERVICE] = new class {
 
+            /**
+             * @var array<mixed>
+             */
             protected $services = [];
 
-            public function add($class)
+            /**
+             * @param mixed $class
+             * @return void
+             */
+            public function add($class): void
             {
                 $this->services[$class] = $class;
             }
 
+            /**
+             * @return array<mixed>
+             */
             public function getServices(): array
             {
+                /**
+                 * @return array<mixed>
+                 */
                 return $this->services;
             }
         };
@@ -103,8 +123,9 @@ class ServiceProviderTest extends TestCase
 
     /**
      * @covers \CentreonModule\ServiceProvider::register
+     * @return void
      */
-    public function testCheckServicesByList()
+    public function testCheckServicesByList(): void
     {
         $checkList = [
             ServiceProvider::CENTREON_MODULE => Service\CentreonModuleService::class,
@@ -133,8 +154,9 @@ class ServiceProviderTest extends TestCase
 
     /**
      * @covers \CentreonModule\ServiceProvider::order
+     * @return void
      */
-    public function testOrder()
+    public function testOrder(): void
     {
         $this->assertGreaterThanOrEqual(1, $this->provider::order());
         $this->assertLessThanOrEqual(20, $this->provider::order());

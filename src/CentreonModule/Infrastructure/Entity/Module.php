@@ -62,7 +62,7 @@ class Module implements SourceDataInterface
     private $description;
 
     /**
-     * @var array
+     * @var array<int,string>
      */
     private $images = [];
 
@@ -97,7 +97,7 @@ class Module implements SourceDataInterface
     private $keywords;
 
     /**
-     * @var string
+     * @var string|array<string,string|bool>
      */
     private $license;
 
@@ -126,7 +126,11 @@ class Module implements SourceDataInterface
         return $this->id;
     }
 
-    public function setId(string $id)
+    /**
+     * @param string $id
+     * @return void
+     */
+    public function setId(string $id): void
     {
         $this->id = $id;
     }
@@ -136,7 +140,11 @@ class Module implements SourceDataInterface
         return $this->type;
     }
 
-    public function setType(string $type)
+    /**
+     * @param string $type
+     * @return void
+     */
+    public function setType(string $type): void
     {
         $this->type = $type;
     }
@@ -146,7 +154,11 @@ class Module implements SourceDataInterface
         return $this->name;
     }
 
-    public function setName(string $name)
+    /**
+     * @param string $name
+     * @return void
+     */
+    public function setName(string $name): void
     {
         $this->name = $name;
     }
@@ -156,17 +168,28 @@ class Module implements SourceDataInterface
         return $this->description;
     }
 
-    public function setDescription(string $description)
+    /**
+     * @param string $description
+     * @return void
+     */
+    public function setDescription(string $description): void
     {
         $this->description = $description;
     }
 
+    /**
+     * @return array<int,string>
+     */
     public function getImages(): array
     {
         return $this->images;
     }
 
-    public function addImage(string $image)
+    /**
+     * @param string $image
+     * @return void
+     */
+    public function addImage(string $image): void
     {
         $this->images[] = $image;
     }
@@ -176,7 +199,11 @@ class Module implements SourceDataInterface
         return $this->author;
     }
 
-    public function setAuthor(string $author)
+    /**
+     * @param string $author
+     * @return void
+     */
+    public function setAuthor(string $author): void
     {
         $this->author = $author;
     }
@@ -186,7 +213,11 @@ class Module implements SourceDataInterface
         return $this->version;
     }
 
-    public function setVersion(string $version)
+    /**
+     * @param string $version
+     * @return void
+     */
+    public function setVersion(string $version): void
     {
         $this->version = $version;
     }
@@ -196,7 +227,11 @@ class Module implements SourceDataInterface
         return $this->versionCurrent;
     }
 
-    public function setVersionCurrent(string $versionCurrent)
+    /**
+     * @param string $versionCurrent
+     * @return void
+     */
+    public function setVersionCurrent(string $versionCurrent): void
     {
         $this->versionCurrent = $versionCurrent;
     }
@@ -206,7 +241,11 @@ class Module implements SourceDataInterface
         return $this->path;
     }
 
-    public function setPath(string $path)
+    /**
+     * @param string $path
+     * @return void
+     */
+    public function setPath(string $path): void
     {
         $this->path = $path;
     }
@@ -216,7 +255,11 @@ class Module implements SourceDataInterface
         return $this->stability;
     }
 
-    public function setStability(string $stability)
+    /**
+     * @param string $stability
+     * @return void
+     */
+    public function setStability(string $stability): void
     {
         $this->stability = $stability;
     }
@@ -226,17 +269,28 @@ class Module implements SourceDataInterface
         return $this->keywords;
     }
 
-    public function setKeywords(string $keywords)
+    /**
+     * @param string $keywords
+     * @return void
+     */
+    public function setKeywords(string $keywords): void
     {
         $this->keywords = $keywords;
     }
 
+    /**
+     * @return array<string,string|bool>|null
+     */
     public function getLicense(): ?array
     {
         return $this->license;
     }
 
-    public function setLicense(array $license = null)
+    /**
+     * @param array<mixed>|null $license
+     * @return void
+     */
+    public function setLicense(array $license = null): void
     {
         $this->license = $license;
     }
@@ -246,7 +300,11 @@ class Module implements SourceDataInterface
         return $this->lastUpdate;
     }
 
-    public function setLastUpdate(string $lastUpdate)
+    /**
+     * @param string $lastUpdate
+     * @return void
+     */
+    public function setLastUpdate(string $lastUpdate): void
     {
         $this->lastUpdate = $lastUpdate;
     }
@@ -256,7 +314,11 @@ class Module implements SourceDataInterface
         return $this->releaseNote;
     }
 
-    public function setReleaseNote(string $releaseNote)
+    /**
+     * @param string $releaseNote
+     * @return void
+     */
+    public function setReleaseNote(string $releaseNote): void
     {
         $this->releaseNote = $releaseNote;
     }
@@ -266,7 +328,11 @@ class Module implements SourceDataInterface
         return $this->isInstalled;
     }
 
-    public function setInstalled(bool $value)
+    /**
+     * @param bool $value
+     * @return void
+     */
+    public function setInstalled(bool $value): void
     {
         $this->isInstalled = $value;
     }
@@ -276,7 +342,11 @@ class Module implements SourceDataInterface
         return $this->isUpdated;
     }
 
-    public function setUpdated(bool $value)
+    /**
+     * @param bool $value
+     * @return void
+     */
+    public function setUpdated(bool $value): void
     {
         $this->isUpdated = $value;
     }

@@ -52,12 +52,37 @@ use CentreonModule\Tests\Resources\Traits\SourceDependencyTrait;
 
 class ModuleSourceTest extends TestCase
 {
-
     use TestCaseExtensionTrait;
     use SourceDependencyTrait;
 
+    /**
+     * @var ModuleSource|\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $source;
+
+    /**
+     * @var ContainerWrap
+     */
+    private $containerWrap;
+
+    /**
+     * @var FileSystem
+     */
+    private $fs;
+
+    /**
+     * @var string
+     */
     public static $moduleName = 'test-module';
+
+    /**
+     * @var string
+     */
     public static $moduleNameMissing = 'missing-module';
+
+    /**
+     * @var string[]
+     */
     public static $moduleInfo = [
         'rname' => 'Curabitur congue porta neque',
         'name' => 'test-module',
@@ -70,6 +95,10 @@ class ModuleSourceTest extends TestCase
         'release_note' => 'http://localhost',
         'images' => 'images/image1.png',
     ];
+
+    /**
+     * @var string[][][]
+     */
     public static $sqlQueryVsData = [
         "SELECT `name` AS `id`, `mod_release` AS `version` FROM `modules_informations`" => [
             [
@@ -90,22 +119,22 @@ class ModuleSourceTest extends TestCase
         $this->fs = FileSystem::factory('vfs://');
         $this->fs->mount();
         $this->fs->get('/')->add('modules', new Directory([]));
-        $this->fs->get('/modules')->add(static::$moduleName, new Directory([]));
-        $this->fs->get('/modules/' . static::$moduleName)
-            ->add(ModuleSource::CONFIG_FILE, new File(static::buildConfContent()))
+        $this->fs->get('/modules')->add(self::$moduleName, new Directory([]));
+        $this->fs->get('/modules/' . self::$moduleName)
+            ->add(ModuleSource::CONFIG_FILE, new File(self::buildConfContent()))
         ;
-        $this->fs->get('/modules/' . static::$moduleName)
+        $this->fs->get('/modules/' . self::$moduleName)
             ->add(ModuleSource::LICENSE_FILE, new File(''))
         ;
 
         // provide services
-        $container = new Container;
-        $container['finder'] = new Finder;
+        $container = new Container();
+        $container['finder'] = new Finder();
         $container['configuration'] = $this->createMock(Configuration::class);
 
         // DB service
         $container[\Centreon\ServiceProvider::CENTREON_DB_MANAGER] = new Mock\CentreonDBManagerService;
-        foreach (static::$sqlQueryVsData as $query => $data) {
+        foreach (self::$sqlQueryVsData as $query => $data) {
             $container[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]->addResultSet($query, $data);
         }
 
@@ -133,11 +162,11 @@ class ModuleSourceTest extends TestCase
         $this->source
             ->method('getModuleConf')
             ->will($this->returnCallback(function () {
-                    $result = [
+                $result = [
                         ModuleSourceTest::$moduleName => ModuleSourceTest::$moduleInfo,
                     ];
 
-                    return $result;
+                return $result;
             }))
         ;
     }
@@ -148,73 +177,84 @@ class ModuleSourceTest extends TestCase
         $this->fs->unmount();
     }
 
-    public function testGetList()
+    public function testGetList(): void
     {
         $result = $this->source->getList();
 
         $this->assertTrue(is_array($result));
 
-        $result2 = $this->source->getList(static::$moduleNameMissing);
+        $result2 = $this->source->getList(self::$moduleNameMissing);
         $this->assertEquals([], $result2);
     }
 
-    public function testGetDetail()
+    public function testGetDetail(): void
     {
         (function () {
-            $result = $this->source->getDetail(static::$moduleNameMissing);
+            $result = $this->source->getDetail(self::$moduleNameMissing);
 
             $this->assertNull($result);
         })();
 
         (function () {
-            $result = $this->source->getDetail(static::$moduleName);
+            $result = $this->source->getDetail(self::$moduleName);
 
             $this->assertInstanceOf(Module::class, $result);
         })();
     }
 
-    public function testRemove()
+    /**
+     * @throws \Exception
+     * @return void
+     */
+    public function testRemove(): void
     {
         try {
-            $this->source->remove(static::$moduleNameMissing);
+            $this->source->remove(self::$moduleNameMissing);
         } catch (\Exception $ex) {
-            $this->assertEquals(static::$moduleNameMissing, $ex->getMessage());
+            $this->assertEquals(self::$moduleNameMissing, $ex->getMessage());
             $this->assertEquals(1, $ex->getCode()); // check moduleId
         }
 
-        $this->source->remove(static::$moduleName);
+        $this->source->remove(self::$moduleName);
     }
 
-    public function testUpdate()
+    /**
+    * @throws \Exception
+    * @return void
+    */
+    public function testUpdate(): void
     {
         try {
-            $this->assertNull($this->source->update(static::$moduleNameMissing));
+            $this->assertNull($this->source->update(self::$moduleNameMissing));
         } catch (\Exception $ex) {
-            $this->assertEquals(static::$moduleNameMissing, $ex->getMessage());
+            $this->assertEquals(self::$moduleNameMissing, $ex->getMessage());
             $this->assertEquals(1, $ex->getCode()); // check moduleId
         }
 
-        $this->source->update(static::$moduleName);
+        $this->source->update(self::$moduleName);
     }
 
-    public function testCreateEntityFromConfig()
+    /**
+    * @return void
+    */
+    public function testCreateEntityFromConfig(): void
     {
-        $configFile = static::getConfFilePath();
+        $configFile = self::getConfFilePath();
         $result = $this->source->createEntityFromConfig($configFile);
         $images = [
-            ModuleSource::PATH_WEB . $result->getId() . '/' . static::$moduleInfo['images'],
+            ModuleSource::PATH_WEB . $result->getId() . '/' . self::$moduleInfo['images'],
         ];
 
         $this->assertInstanceOf(Module::class, $result);
-        $this->assertEquals(static::$moduleName, $result->getId());
+        $this->assertEquals(self::$moduleName, $result->getId());
         $this->assertEquals(ModuleSource::TYPE, $result->getType());
-        $this->assertEquals(static::$moduleInfo['rname'], $result->getName());
-        $this->assertEquals(static::$moduleInfo['author'], $result->getAuthor());
-        $this->assertEquals(static::$moduleInfo['mod_release'], $result->getVersion());
+        $this->assertEquals(self::$moduleInfo['rname'], $result->getName());
+        $this->assertEquals(self::$moduleInfo['author'], $result->getAuthor());
+        $this->assertEquals(self::$moduleInfo['mod_release'], $result->getVersion());
         $this->assertEquals($images, $result->getImages());
-        $this->assertEquals(static::$moduleInfo['stability'], $result->getStability());
-        $this->assertEquals(static::$moduleInfo['last_update'], $result->getLastUpdate());
-        $this->assertEquals(static::$moduleInfo['release_note'], $result->getReleaseNote());
+        $this->assertEquals(self::$moduleInfo['stability'], $result->getStability());
+        $this->assertEquals(self::$moduleInfo['last_update'], $result->getLastUpdate());
+        $this->assertEquals(self::$moduleInfo['release_note'], $result->getReleaseNote());
         $this->assertTrue($result->isInstalled());
         $this->assertFalse($result->isUpdated());
     }
@@ -222,27 +262,22 @@ class ModuleSourceTest extends TestCase
 //    public function testGetModuleConf()
 //    {
 //        $moduleSource = new ModuleSource($this->containerWrap);
-//        $result = $this->invokeMethod($moduleSource, 'getModuleConf', [static::getConfFilePath()]);
+//        $result = $this->invokeMethod($moduleSource, 'getModuleConf', [self::getConfFilePath()]);
 //        //'php://filter/read=string.rot13/resource=' .
 //    }
 
     public static function getConfFilePath(): string
     {
-        return 'vfs://modules/' . static::$moduleName . '/' . ModuleSource::CONFIG_FILE;
+        return 'vfs://modules/' . self::$moduleName . '/' . ModuleSource::CONFIG_FILE;
     }
 
     public static function buildConfContent(): string
     {
         $result = '<?php';
-        $moduleName = static::$moduleName;
+        $moduleName = self::$moduleName;
 
-        foreach (static::$moduleInfo as $key => $data) {
-            if (is_string($data)) {
-                $result .= "\n\$module_conf['{$moduleName}']['{$key}'] = '{$data}'";
-            } elseif (is_array($data)) {
-                $data = implode("','", $data);
-                $result .= "\n\$module_conf['{$moduleName}']['{$key}'] = ['{$data}']";
-            }
+        foreach (self::$moduleInfo as $key => $data) {
+            $result .= "\n\$module_conf['{$moduleName}']['{$key}'] = '{$data}'";
         }
 
         return $result;

@@ -43,6 +43,7 @@ class ModulesInformationsRepository extends ServiceEntityRepository
 
     /**
      * Get an associative array of all modules vs versions
+     * @return string[]
      */
     public function getAllModuleVsVersion(): array
     {
@@ -62,6 +63,7 @@ class ModulesInformationsRepository extends ServiceEntityRepository
 
     /**
      * Get id by name
+     * @param string $name
      */
     public function findIdByName($name): ?int
     {

@@ -44,12 +44,12 @@ use CentreonLegacy\ServiceProvider as ServiceProviderLegacy;
 
 class WidgetSource extends SourceAbstract
 {
-    const TYPE = 'widget';
-    const PATH = 'www/widgets/';
-    const CONFIG_FILE = 'configs.xml';
+    public const TYPE = 'widget';
+    public const PATH = 'www/widgets/';
+    public const CONFIG_FILE = 'configs.xml';
 
     /**
-     * @var array
+     * @var string[]
      */
     private $info;
 
@@ -62,6 +62,11 @@ class WidgetSource extends SourceAbstract
      * @var \CentreonLegacy\Core\Widget\Upgrader
      */
     protected $upgrader;
+
+    /**
+     * @var \CentreonLegacy\Core\Widget\Remover
+     */
+    protected $remover;
 
     /**
      * Construct
@@ -77,7 +82,7 @@ class WidgetSource extends SourceAbstract
         parent::__construct($services);
     }
 
-    public function initInfo()
+    public function initInfo(): void
     {
         $this->info = $this->db
             ->getRepository(WidgetModelsRepository::class)
@@ -85,7 +90,13 @@ class WidgetSource extends SourceAbstract
         ;
     }
 
-    public function getList(string $search = null, bool $installed = null, bool $updated = null) : array
+    /**
+     * @param string|null $search
+     * @param boolean|null $installed
+     * @param boolean|null $updated
+     * @return array<int,\CentreonModule\Infrastructure\Entity\Module>
+     */
+    public function getList(string $search = null, bool $installed = null, bool $updated = null): array
     {
         $files = $this->finder
             ->files()
@@ -109,6 +120,10 @@ class WidgetSource extends SourceAbstract
         return $result;
     }
 
+    /**
+     * @param string $id
+     * @return Module|null
+     */
     public function getDetail(string $id): ?Module
     {
         $result = null;
@@ -133,6 +148,10 @@ class WidgetSource extends SourceAbstract
         return $result;
     }
 
+    /**
+     * @param string $configFile
+     * @return Module
+     */
     public function createEntityFromConfig(string $configFile): Module
     {
         // force linux path format
