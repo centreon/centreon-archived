@@ -40,6 +40,7 @@ use Psr\Container\ContainerInterface;
 use CentreonLegacy\Core\Configuration\Configuration;
 use CentreonModule\Infrastructure\Entity\Module;
 use CentreonModule\Infrastructure\Source\SourceInterface;
+use CentreonLegacy\ServiceProvider as ServiceProviderLegacy;
 
 abstract class SourceAbstract implements SourceInterface
 {
@@ -62,17 +63,22 @@ abstract class SourceAbstract implements SourceInterface
     /**
      * @var mixed
      */
-    private $installer;
+    protected $upgrader;
+
+    /**
+     * @var \CentreonLegacy\Core\Module\License
+     */
+    protected $license;
 
     /**
      * @var mixed
      */
-    private $upgrader;
+    protected $remover;
 
     /**
      * @var mixed
      */
-    private $remover;
+    protected $installer;
 
     /**
      * Construct
@@ -81,6 +87,9 @@ abstract class SourceAbstract implements SourceInterface
      */
     public function __construct(ContainerInterface $services)
     {
+        $this->installer = $services->get(ServiceProviderLegacy::CENTREON_LEGACY_MODULE_INSTALLER);
+        $this->upgrader = $services->get(ServiceProviderLegacy::CENTREON_LEGACY_MODULE_UPGRADER);
+        $this->remover = $services->get(ServiceProviderLegacy::CENTREON_LEGACY_MODULE_REMOVER);
         $this->db = $services->get(\Centreon\ServiceProvider::CENTREON_DB_MANAGER);
         $this->finder = $services->get('finder');
         $this->path = $services->get('configuration')
