@@ -32,13 +32,12 @@ We don't have a bug bounty program but this is something we are thinking about.
 
 | Tag | Value |
 | -- | -- |
-| ID | 8F7D860C6C32543A |
+| ID | F92686A9EC269C1A |
 | Type | RSA |
 | Size | 4096 |
 | Created | 2022-12-28 |
 | Expires | 2023-01-22 |
-| Fingerprint | F4A2 2EA4 1FA1 F308 A66A C046 8F7D 860C 6C32 543A |
-
+| Fingerprint | 3552 91EA 7DAF 9E2A 192C 62B6 F926 86A9 EC26 9C1A |
 ```
 -----BEGIN PGP PUBLIC KEY BLOCK-----
 
