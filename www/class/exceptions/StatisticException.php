@@ -1,7 +1,8 @@
 <?php
 
 /*
- * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
+ * Copyright 2005-2021 CENTREON
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,22 +19,6 @@
  * For more information : contact@centreon.com
  *
  */
-declare(strict_types=1);
-
-namespace Security\Domain\Authentication\Exceptions;
-
-/**
- * This class is designed to contain all exceptions for both contexts of SessionAPI & TokenAPI authenticators.
- *
- * @package Security\Domain\Authentication\Exceptions
- */
-class AuthenticatorException extends \Exception
+class StatisticException extends Exception
 {
-    /**
-     * @return self
-     */
-    public static function sessionTokenNotFound(): self
-    {
-        return new self(_('Session token not found'));
-    }
 }

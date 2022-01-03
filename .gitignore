@@ -75,3 +75,8 @@ ehthumbs_vista.db
 
 .lighthouseci
 manifest.json
+
+!config/packages/serializer/Centreon/
+config/packages/serializer/Centreon*
+config/packages/dev/Centreon*
+config/packages/prod/Centreon*

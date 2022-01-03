@@ -29,6 +29,7 @@ use Centreon\Domain\Monitoring\HostGroup\Interfaces\HostGroupServiceInterface;
 use Centreon\Domain\Monitoring\HostGroup;
 use Centreon\Domain\Monitoring\ServiceGroup\Interfaces\ServiceGroupServiceInterface;
 use Centreon\Domain\Contact\Contact;
+use Centreon\Domain\Filter\FilterException;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\MockObject\MockObject;
 
@@ -166,5 +167,32 @@ class FilterServiceTest extends TestCase
             0,
             $this->filter->getCriterias()[1]->getValue()
         );
+    }
+
+    /**
+     * test update filter with name already in use
+     */
+    public function testUpdateFilterNameExists(): void
+    {
+        $this->filterRepository->expects($this->once())
+            ->method('findFilterByUserIdAndName')
+            ->willReturn($this->filter);
+
+        $filterUpdate = (new Filter())
+            ->setId(2)
+            ->setName($this->filter->getName())
+            ->setUserId($this->filter->getUserId())
+            ->setPageName($this->filter->getPageName());
+
+        $filterService = new FilterService(
+            $this->hostGroupService,
+            $this->serviceGroupService,
+            $this->filterRepository
+        );
+
+        $this->expectException(FilterException::class);
+        $this->expectExceptionMessage('Filter name already used');
+
+        $filterService->updateFilter($filterUpdate);
     }
 }

@@ -3,6 +3,8 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
 import { useAtomValue } from 'jotai/utils';
+import { FormikErrors, FormikHandlers, FormikValues } from 'formik';
+import { isNil } from 'ramda';
 
 import { LocalizationProvider, DateTimePicker } from '@mui/lab';
 import {
@@ -37,27 +39,31 @@ import { Resource } from '../../../models';
 import useAclQuery from '../aclQuery';
 import useDateTimePickerAdapter from '../../../useDateTimePickerAdapter';
 
+import { DowntimeFormValues } from '.';
+
 const maxEndDate = new Date('2100-01-01');
 
-interface Props {
+interface Props extends Pick<FormikHandlers, 'handleChange'> {
   canConfirm: boolean;
-  errors?;
+  errors?: FormikErrors<DowntimeFormValues>;
   handleChange;
-  onCancel;
-  onConfirm;
+  onCancel: () => void;
+  onConfirm: () => Promise<unknown>;
   resources: Array<Resource>;
   setFieldValue;
   submitting: boolean;
-  values;
+  values: FormikValues;
 }
+
+const renderDateTimePickerEndAdornment = (InputProps) => (): JSX.Element =>
+  <div>{InputProps?.endAdornment}</div>;
 
 const renderDateTimePickerTextField =
   (ariaLabel: string) =>
   ({ inputRef, inputProps, InputProps }: TextFieldProps): JSX.Element => {
     return (
       <TextField
-        // eslint-disable-next-line react/no-unstable-nested-components
-        EndAdornment={(): JSX.Element => <div>{InputProps?.endAdornment}</div>}
+        EndAdornment={renderDateTimePickerEndAdornment(InputProps)}
         inputProps={{
           ...inputProps,
           'aria-label': ariaLabel,
@@ -155,16 +161,16 @@ const DialogDowntime = ({
               onClose={(): void => setIsPickerOpened(false)}
               onOpen={(): void => setIsPickerOpened(true)}
             />
-            {errors.startTime ? (
-              <FormHelperText error>{errors.startTime}</FormHelperText>
-            ) : (
+            {isNil(errors?.startTime) ? (
               <div />
+            ) : (
+              <FormHelperText error>{errors?.startTime}</FormHelperText>
             )}
             <div />
-            {errors.endTime ? (
-              <FormHelperText error>{errors.endTime}</FormHelperText>
-            ) : (
+            {isNil(errors?.endTime) ? (
               <div />
+            ) : (
+              <FormHelperText error>{errors?.endTime}</FormHelperText>
             )}
           </Box>
 
@@ -226,13 +232,13 @@ const DialogDowntime = ({
               control={
                 <Checkbox
                   checked={
-                    canDowntimeServices() && values.downtimeAttachedResources
+                    canDowntimeServices() && values.isDowntimeWithServices
                   }
                   color="primary"
                   disabled={!canDowntimeServices()}
                   inputProps={{ 'aria-label': labelSetDowntimeOnServices }}
                   size="small"
-                  onChange={handleChange('downtimeAttachedResources')}
+                  onChange={handleChange('isDowntimeWithServices')}
                 />
               }
               label={t(labelSetDowntimeOnServices) as string}
