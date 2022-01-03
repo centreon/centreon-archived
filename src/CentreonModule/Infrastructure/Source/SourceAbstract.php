@@ -87,9 +87,6 @@ abstract class SourceAbstract implements SourceInterface
      */
     public function __construct(ContainerInterface $services)
     {
-        $this->installer = $services->get(ServiceProviderLegacy::CENTREON_LEGACY_MODULE_INSTALLER);
-        $this->upgrader = $services->get(ServiceProviderLegacy::CENTREON_LEGACY_MODULE_UPGRADER);
-        $this->remover = $services->get(ServiceProviderLegacy::CENTREON_LEGACY_MODULE_REMOVER);
         $this->db = $services->get(\Centreon\ServiceProvider::CENTREON_DB_MANAGER);
         $this->finder = $services->get('finder');
         $this->path = $services->get('configuration')
@@ -108,7 +105,7 @@ abstract class SourceAbstract implements SourceInterface
 
     public function update(string $id): ?Module
     {
-        ($this->upgrader)($id)->upgrade();
+        ($this->upgrader)($id)->update();
 
         $this->initInfo();
 
