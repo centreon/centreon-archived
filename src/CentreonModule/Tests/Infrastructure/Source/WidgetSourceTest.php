@@ -121,7 +121,7 @@ class WidgetSourceTest extends TestCase
         $container['configuration'] = $this->createMock(Configuration::class);
 
         // DB service
-        $container[\Centreon\ServiceProvider::CENTREON_DB_MANAGER] = new Mock\CentreonDBManagerService;
+        $container[\Centreon\ServiceProvider::CENTREON_DB_MANAGER] = new Mock\CentreonDBManagerService();
         foreach (static::$sqlQueryVsData as $query => $data) {
             $container[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]->addResultSet($query, $data);
         }
@@ -155,7 +155,7 @@ class WidgetSourceTest extends TestCase
         $this->fs->unmount();
     }
 
-    public function testGetList():void
+    public function testGetList(): void
     {
         $result = $this->source->getList();
 
