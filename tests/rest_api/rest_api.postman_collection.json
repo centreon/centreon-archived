@@ -15646,7 +15646,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"contact\",\n  \"values\": \"{{contact_alias}};password;{{contact_pwd}}\"\n}"
+                            "raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"contact\",\n  \"values\": \"{{contact_alias}};password;{{contact_pwd2}}\"\n}"
                         },
                         "url": {
                             "raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
