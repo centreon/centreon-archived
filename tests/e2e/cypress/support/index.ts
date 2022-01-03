@@ -1,3 +1,5 @@
+import 'cypress-wait-until';
+
 import {
   initializeResourceData,
   setUserTokenApiV1,

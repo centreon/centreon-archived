@@ -37,13 +37,15 @@ When('I select the acknowledge action on a problematic Resource', () => {
 });
 
 Then('the problematic Resource is displayed as acknowledged', () => {
-  refreshListing(5000);
-
-  cy.contains(serviceName)
-    .parent()
-    .parent()
-    .parent()
-    .should('have.css', 'background-color', actionBackgroundColors.acknowledge);
+  cy.waitUntil(() => { 
+    return refreshListing().then(() => cy.contains(serviceName))
+      .parent()
+      .parent()
+      .parent()
+      .then((val) => {
+        return val.css('background-color') === actionBackgroundColors.acknowledge
+      })
+    });
 });
 
 When('I select the downtime action on a problematic Resource', () => {
@@ -63,11 +65,13 @@ When('I select the downtime action on a problematic Resource', () => {
 });
 
 Then('the problematic Resource is displayed as in downtime', () => {
-  refreshListing(5000);
-
-  cy.contains(serviceInDowntimeName)
+  cy.waitUntil(() => { 
+    return refreshListing().then(() => cy.contains(serviceInDowntimeName))
     .parent()
     .parent()
     .parent()
-    .should('have.css', 'background-color', actionBackgroundColors.inDowntime);
+    .then((val) => {
+      return val.css('background-color') === actionBackgroundColors.inDowntime
+    })
+  });
 });

@@ -31,13 +31,7 @@ interface Resource {
   type: 'host' | 'service';
 }
 
-const refreshListing = (timeout = 0): Cypress.Chainable => {
-  // "wait" here, it's necessary to allow time for the action
-  // to be taken into account before launching a call to the API.
-  if (timeout > 0) {
-    cy.wait(timeout);
-  }
-  cy.get(refreshButton).children('button').should('be.enabled');
+const refreshListing = (): Cypress.Chainable => {
   return cy.get(refreshButton).click();
 };
 
@@ -152,7 +146,6 @@ const submitResultsViaClapi = (): Cypress.Chainable => {
       method: 'POST',
       url: `${apiActionV1}?action=submit&object=centreon_submit_results`,
     });
-    // .then((resp) => expect([200, 204, 206]).to.include(resp.status));
   });
 };
 
