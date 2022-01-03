@@ -41,7 +41,6 @@ use Centreon\Infrastructure\Webservice\WebServiceAbstract;
 
 class WebServiceAbstractTest extends TestCase
 {
-
     public function setUp(): void
     {
         $this->webservice = $this->getMockBuilder(WebServiceAbstract::class)

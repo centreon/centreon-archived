@@ -43,7 +43,6 @@ use Centreon\Tests\Resources\Mock\EntityMock;
 
 class EntityPersisterTest extends TestCase
 {
-
     public function testLoad()
     {
         $metadata = new ClassMetadata();

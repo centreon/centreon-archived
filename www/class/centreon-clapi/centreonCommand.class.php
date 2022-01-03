@@ -237,7 +237,7 @@ class CentreonCommand extends CentreonObject
                             break;
                     }
 
-                    
+
                     $ret = $this->object->getParameters($objectId, $field);
                     $ret = $ret[$field];
 
@@ -249,7 +249,7 @@ class CentreonCommand extends CentreonObject
                             $ret = $ret[$field];
                             break;
                     }
-                    
+
                     if (!isset($exportedFields[$paramSearch])) {
                         $resultString .= $ret . $this->delim;
                         $exportedFields[$paramSearch] = 1;

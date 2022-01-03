@@ -45,10 +45,9 @@ use Centreon\Tests\Resources\Mock\ClapiMock;
 
 class CentreonClapiServiceTest extends TestCase
 {
-
     public function testAdd()
     {
-        $service = new CentreonClapiService;
+        $service = new CentreonClapiService();
         $this->assertInstanceOf(ContainerInterface::class, $service);
 
         // check if return this object and add webservice

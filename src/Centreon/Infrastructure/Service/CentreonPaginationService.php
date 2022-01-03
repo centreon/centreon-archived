@@ -47,7 +47,6 @@ use RuntimeException;
 
 class CentreonPaginationService
 {
-
     const LIMIT_MAX = 500;
 
     /**

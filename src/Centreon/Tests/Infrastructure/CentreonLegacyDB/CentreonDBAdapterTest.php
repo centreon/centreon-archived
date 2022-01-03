@@ -48,13 +48,12 @@ use Centreon\Test\Traits\TestCaseExtensionTrait;
 
 class CentreonDBAdapterTest extends TestCase
 {
-
     use TestCaseExtensionTrait;
 
     public function setUp(): void
     {
-        $this->db = new CentreonDB;
-        $this->manager = new CentreonDBManagerService;
+        $this->db = new CentreonDB();
+        $this->manager = new CentreonDBManagerService();
         $this->dbAdapter = new CentreonDBAdapter($this->db, $this->manager);
     }
 
@@ -83,7 +82,7 @@ class CentreonDBAdapterTest extends TestCase
 
     public function testQuery()
     {
-        $checkPoint = new CheckPoint;
+        $checkPoint = new CheckPoint();
         $checkPoint->add('select');
 
         $id = 1;

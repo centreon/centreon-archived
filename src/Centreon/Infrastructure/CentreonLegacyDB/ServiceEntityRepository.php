@@ -46,7 +46,6 @@ use Centreon\Infrastructure\CentreonLegacyDB\Mapping;
  */
 abstract class ServiceEntityRepository
 {
-
     /**
      * @var \CentreonDB
      */

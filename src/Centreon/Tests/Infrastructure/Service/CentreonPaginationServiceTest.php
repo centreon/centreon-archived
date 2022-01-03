@@ -57,7 +57,7 @@ class CentreonPaginationServiceTest extends TestCase
 
     public function setUp(): void
     {
-        $this->container = new Container;
+        $this->container = new Container();
         $this->setUpCentreonDbManager($this->container);
         $this->container[ServiceProvider::SERIALIZER] = $this->createMock(Serializer::class);
 

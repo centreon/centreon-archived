@@ -11,13 +11,12 @@ use Centreon\Domain\Repository\TopologyRepository;
  */
 class TopologyRepositoryTest extends TestCase
 {
-
     protected $datasets = [];
     protected $repository;
 
     protected function setUp(): void
     {
-        $db = new CentreonDB;
+        $db = new CentreonDB();
         $this->datasets = [
             [
                 'query' => "SELECT topology_url "
@@ -84,7 +83,7 @@ class TopologyRepositoryTest extends TestCase
             $db->addResultSet($dataset['query'], $dataset['data']);
             unset($dataset);
         }
-        
+
         $this->repository = new TopologyRepository($db);
     }
 
@@ -108,7 +107,6 @@ class TopologyRepositoryTest extends TestCase
 
         // if user admin
         $user = new class {
-
             public $admin = true;
         };
 
@@ -124,14 +122,12 @@ class TopologyRepositoryTest extends TestCase
     {
         // if user non-admin
         $user = new class {
-
             public $admin = false;
             public $access;
 
             public function __construct()
             {
                 $this->access = new class {
-
                     public function getAccessGroups()
                     {
                         return [1];

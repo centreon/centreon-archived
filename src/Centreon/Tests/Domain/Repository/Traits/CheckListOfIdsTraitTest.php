@@ -44,15 +44,13 @@ use Centreon\Domain\Repository\Traits\CheckListOfIdsTrait;
 
 class CheckListOfIdsTraitTest extends TestCase
 {
-
     public function testCheckListOfIdsTrait()
     {
         $ids = [1, 3, 4];
 
-        $db = new CentreonDB;
-        $manager = new CentreonDBManagerService;
-        $trait = new class($db, $manager) extends RepositoryMock {
-
+        $db = new CentreonDB();
+        $manager = new CentreonDBManagerService();
+        $trait = new class ($db, $manager) extends RepositoryMock {
             use checkListOfIdsTrait;
 
             public function checkListOfIds(

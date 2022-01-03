@@ -155,7 +155,7 @@ SQL;
         while ($row = $stmt->fetch()) {
             $isExisting = array_key_exists($row['id'], $result);
             $result[$row['id']] = $row['id'];
-            
+
             if (!$isExisting) {
                 $this->getChainByParant($row['id'], $result);
             }

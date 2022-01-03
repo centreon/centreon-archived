@@ -167,7 +167,7 @@ class CentreonMonitoring
         }
 
         $rq .= " order by tri asc, service_name";
-        
+
         $tab = array();
         $DBRESULT = $objXMLBG->DBC->query($rq);
         while ($svc = $DBRESULT->fetchRow()) {

@@ -74,12 +74,11 @@ class CentreonConfigurationHostcategory extends CentreonConfigurationObjects
                 $aclHostCategories .= 'AND hc.hc_id IN (' . $aclHostCategoryIds . ') ';
             }
         }
-        /*
-		 * Check for select2 't' argument
-		 * 'a' or empty = category and severitiy
-		 * 'c' = catagory only
-		 * 's' = severity only
-		 */
+        /* Check for select2
+        't' argument
+        'a' or empty = category and severitiy
+        'c' = catagory only
+        's' = severity only */
         if (isset($this->arguments['t'])) {
             $selectList = array('a', 'c', 's');
             if (in_array(strtolower($this->arguments['t']), $selectList)) {

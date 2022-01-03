@@ -28,7 +28,7 @@ SQL;
         if ($stmt->rowCount() === 0) {
             return null;
         }
-        
+
         $result = $stmt->fetch();
 
         return $result;
