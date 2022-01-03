@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -40,7 +41,6 @@ use JsonSerializable;
 
 class NavigationList implements JsonSerializable
 {
-
     /**
      * @var array
      */
@@ -64,7 +64,7 @@ class NavigationList implements JsonSerializable
         $this->entities = $entities;
     }
 
-    public function getNavConfig() : array
+    public function getNavConfig(): array
     {
         return $this->navConfig;
     }
@@ -188,10 +188,18 @@ class NavigationList implements JsonSerializable
                     ];
 
                     //check if topology has group index
-                    if (!is_null($entity->getTopologyGroup())
-                        && isset($groups[$levelTwo][$entity->getTopologyGroup()])) {
-                        if (!isset($naviList[$matches[1]]['children'][$levelTwo]['groups']
-                                [$entity->getTopologyGroup()])) {
+                    if (
+                        !is_null(
+                            $entity->getTopologyGroup()
+                        )
+                        && isset(
+                            $groups[$levelTwo][$entity->getTopologyGroup()]
+                        )
+                    ) {
+                        if (
+                            !isset($naviList[$matches[1]]['children'][$levelTwo]['groups']
+                                [$entity->getTopologyGroup()])
+                        ) {
                             $naviList[$matches[1]]['children'][$levelTwo]['groups'][$entity->getTopologyGroup()] = [
                                 'label' => $groups[$levelTwo][$entity->getTopologyGroup()]['name'],
                                 'children' => []

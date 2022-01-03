@@ -50,7 +50,6 @@ use Symfony\Component\Translation\TranslatorInterface as DeprecatedTranslatorInt
  */
 class CentreonValidatorTranslator implements TranslatorInterface, DeprecatedTranslatorInterface
 {
-
     /**
      * {@inheritdoc}
      */

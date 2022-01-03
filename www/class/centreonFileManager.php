@@ -41,7 +41,6 @@
  */
 class CentreonFileManager implements iFileManager
 {
-
     protected $rawFile;
     protected $dependencyInjector;
     protected $comment;

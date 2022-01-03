@@ -6,7 +6,6 @@ use PDO;
 
 class TimePeriodRepository extends ServiceEntityRepository
 {
-
     /**
      * Export
      *

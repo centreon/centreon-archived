@@ -39,7 +39,6 @@ require_once __DIR__ . "/centreon_configuration_objects.class.php";
 
 class CentreonConfigurationHostcategory extends CentreonConfigurationObjects
 {
-
     /**
      * @var CentreonDB
      */

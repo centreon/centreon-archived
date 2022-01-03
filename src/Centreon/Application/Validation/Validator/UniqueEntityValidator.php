@@ -47,7 +47,6 @@ use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
 class UniqueEntityValidator extends ConstraintValidator implements CentreonValidatorInterface
 {
-
     /**
      * @var \Centreon\Infrastructure\Service\CentreonDBManagerService;
      */

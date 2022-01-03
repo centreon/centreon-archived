@@ -6,7 +6,6 @@ use PDO;
 
 class HostTemplateRelationRepository extends ServiceEntityRepository
 {
-
     /**
      * Export host's templates relation
      *

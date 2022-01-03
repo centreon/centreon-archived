@@ -49,7 +49,6 @@ require_once "Centreon/Object/Service/Template.php";
  */
 class CentreonServiceTemplate extends CentreonObject
 {
-
     public const ORDER_SVCDESC = 0;
     public const ORDER_SVCALIAS = 1;
     public const ORDER_SVCTPL = 2;

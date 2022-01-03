@@ -40,7 +40,6 @@ require_once _CENTREON_PATH_ . 'www/class/centreonLDAP.class.php';
  */
 class CentreonAuthLDAP
 {
-
     protected $pearDB;
     protected $ldap;
     protected $CentreonLog;

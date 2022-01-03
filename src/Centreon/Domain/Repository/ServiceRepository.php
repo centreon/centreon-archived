@@ -42,7 +42,6 @@ use Centreon\Infrastructure\CentreonLegacyDB\StatementCollector;
 
 class ServiceRepository extends ServiceEntityRepository
 {
-
     /**
      * Export
      *

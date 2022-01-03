@@ -51,7 +51,6 @@ require_once _CENTREON_PATH_ . '/www/class/centreon-clapi/centreonAPI.class.php'
  */
 class CentreonClapi extends CentreonWebService implements CentreonWebServiceDiInterface
 {
-
     /**
      * @var \Pimple\Container
      */

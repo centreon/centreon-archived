@@ -37,7 +37,6 @@ namespace CentreonClapi;
 
 class CentreonExported
 {
-
     private $exported = array();
     private $ariane = array();
     private $filter = 0;

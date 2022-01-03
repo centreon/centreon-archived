@@ -41,7 +41,6 @@
  */
 class CentreonMonitoring
 {
-
     protected $poller;
     protected $DB;
     protected $objBroker;

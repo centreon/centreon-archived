@@ -5,7 +5,6 @@ use Centreon\Infrastructure\CentreonLegacyDB\ServiceEntityRepository;
 
 class TrapPreexecRepository extends ServiceEntityRepository
 {
-
     /**
      * Export
      *

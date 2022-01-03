@@ -6,7 +6,6 @@ use PDO;
 
 class TimezoneRepository extends ServiceEntityRepository
 {
-
     /**
      * Get by ID
      *
@@ -25,7 +24,7 @@ SQL;
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
-        
+
         if ($stmt->rowCount() === 0) {
             return null;
         }

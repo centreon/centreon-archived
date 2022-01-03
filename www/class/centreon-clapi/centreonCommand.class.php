@@ -48,11 +48,10 @@ require_once "Centreon/Object/Graph/Template/Template.php";
  */
 class CentreonCommand extends CentreonObject
 {
-
-    const ORDER_UNIQUENAME = 0;
-    const ORDER_TYPE = 1;
-    const ORDER_COMMAND = 2;
-    const UNKNOWN_CMD_TYPE = "Unknown command type";
+    public const ORDER_UNIQUENAME = 0;
+    public const ORDER_TYPE = 1;
+    public const ORDER_COMMAND = 2;
+    public const UNKNOWN_CMD_TYPE = "Unknown command type";
 
     public $aTypeCommand = array(
         'host' => array(
