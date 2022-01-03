@@ -23,7 +23,6 @@ namespace Tests\Security;
 use PHPUnit\Framework\Error\Warning;
 use PHPUnit\Framework\TestCase;
 use Security\Encryption;
-use ValueError;
 
 class EncryptionTest extends TestCase
 {
