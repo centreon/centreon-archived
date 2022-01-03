@@ -38,6 +38,7 @@ We don't have a bug bounty program but this is something we are thinking about.
 | Created | 2022-12-28 |
 | Expires | 2023-01-22 |
 | Fingerprint | 3552 91EA 7DAF 9E2A 192C 62B6 F926 86A9 EC26 9C1A |
+
 ```
 -----BEGIN PGP PUBLIC KEY BLOCK-----
 
