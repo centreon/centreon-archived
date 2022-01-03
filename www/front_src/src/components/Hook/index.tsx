@@ -4,8 +4,9 @@ import { connect } from 'react-redux';
 import { equals } from 'ramda';
 import { useHref } from 'react-router';
 
+import { MenuSkeleton } from '@centreon/ui';
+
 import { dynamicImport } from '../../helpers/dynamicImport';
-import MenuLoader from '../MenuLoader';
 
 interface Props {
   hooks;
@@ -25,7 +26,7 @@ const LoadableHooks = ({ hooks, path, ...rest }: Props): JSX.Element => {
           );
 
           return (
-            <React.Suspense fallback={<MenuLoader width={29} />} key={path}>
+            <React.Suspense fallback={<MenuSkeleton width={29} />} key={path}>
               <HookComponent {...rest} />
             </React.Suspense>
           );

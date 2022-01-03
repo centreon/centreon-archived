@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { useTheme, Grid } from '@material-ui/core';
+import { useTheme, Grid } from '@mui/material';
 
 import { Props } from './Refresh';
 import GlobalActionsSkeleton from './GlobalActionsSkeleton';

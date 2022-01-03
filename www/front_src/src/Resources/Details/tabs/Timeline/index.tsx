@@ -5,7 +5,8 @@ import { useTranslation } from 'react-i18next';
 import { prop, isEmpty, path, isNil } from 'ramda';
 import { useAtomValue } from 'jotai/utils';
 
-import { makeStyles, Paper } from '@material-ui/core';
+import { Paper } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 
 import {
   useRequest,

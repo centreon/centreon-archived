@@ -256,7 +256,7 @@ class Resource
      */
     private $calculationType;
 
-    /*
+    /**
      * Indicates if notifications are enabled for the Resource
      *
      * @var bool

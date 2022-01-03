@@ -6,7 +6,7 @@ import * as React from 'react';
 import classnames from 'classnames';
 import { useNavigate } from 'react-router';
 
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 
 import styles from './progressbar.scss';
 

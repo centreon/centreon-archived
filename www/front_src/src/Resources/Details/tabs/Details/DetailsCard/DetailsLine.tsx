@@ -2,7 +2,8 @@ import * as React from 'react';
 
 import { Responsive } from '@visx/visx';
 
-import { Typography, Box, makeStyles } from '@material-ui/core';
+import { Typography, Box } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 
 const useStyles = makeStyles((theme) => ({
   lineText: {
