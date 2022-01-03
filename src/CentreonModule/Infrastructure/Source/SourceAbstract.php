@@ -158,6 +158,6 @@ abstract class SourceAbstract implements SourceInterface
      */
     protected function getPath(): string
     {
-        return $this->path . self::PATH;
+        return $this->path . static::PATH;
     }
 }
