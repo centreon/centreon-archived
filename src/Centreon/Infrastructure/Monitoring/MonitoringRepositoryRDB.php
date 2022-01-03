@@ -47,16 +47,6 @@ use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
 final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements MonitoringRepositoryInterface
 {
     /**
-     * @var string Name of the configuration database
-     */
-    private $centreonDbName;
-
-    /**
-     * @var string Name of the storage database
-     */
-    private $storageDbName;
-
-    /**
      * @var AccessGroup[] List of access group used to filter the requests
      */
     private $accessGroups = [];
@@ -79,8 +69,6 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
     public function __construct(DatabaseConnection $pdo)
     {
         $this->db = $pdo;
-        $this->centreonDbName = $this->db->getCentreonDbName();
-        $this->storageDbName = $this->db->getStorageDbName();
     }
 
     /**

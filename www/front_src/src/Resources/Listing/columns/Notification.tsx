@@ -2,8 +2,8 @@ import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import NotificationsOffIcon from '@material-ui/icons/NotificationsOff';
-import { Tooltip } from '@material-ui/core';
+import NotificationsOffIcon from '@mui/icons-material/NotificationsOff';
+import { Tooltip } from '@mui/material';
 
 import { ComponentColumnProps } from '@centreon/ui';
 

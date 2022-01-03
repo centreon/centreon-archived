@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable react/jsx-indent */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
@@ -9,7 +10,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import classnames from 'classnames';
 
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 
 import { history } from '../../store';
 

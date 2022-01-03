@@ -1,7 +1,7 @@
 import * as React from 'react';
 
-import { makeStyles } from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
+import makeStyles from '@mui/styles/makeStyles';
+import { Skeleton } from '@mui/material';
 
 interface Props {
   displayTitleSkeleton: boolean;
@@ -15,7 +15,7 @@ const useSkeletonStyles = makeStyles((theme) => ({
     gridTemplateRows: ({ graphHeight, displayTitleSkeleton }: Props): string =>
       `${displayTitleSkeleton ? '1fr' : ''} ${graphHeight}px ${theme.spacing(
         7,
-      )}px`,
+      )}`,
     height: '100%',
   },
   loadingSkeletonLine: {

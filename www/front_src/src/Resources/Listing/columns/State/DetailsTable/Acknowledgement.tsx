@@ -7,7 +7,7 @@ import parse from 'html-react-parser';
 import DOMPurify from 'dompurify';
 import { useTranslation } from 'react-i18next';
 
-import { makeStyles } from '@material-ui/core';
+import makeStyles from '@mui/styles/makeStyles';
 
 import { ColumnType, useLocaleDateTimeFormat } from '@centreon/ui';
 
@@ -82,6 +82,7 @@ const AcknowledgementDetailsTable = ({
     },
 
     {
+      // eslint-disable-next-line react/no-unstable-nested-components
       getContent: ({ comment }: AcknowledgementDetails): JSX.Element => {
         return (
           <span className={classes.comment}>

@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { makeStyles } from '@material-ui/core';
+import { makeStyles } from '@mui/styles';
 
 import { LoadingSkeleton } from '@centreon/ui';
 
@@ -24,7 +24,7 @@ const ResourceActionsSkeleton = (): JSX.Element => {
       <LoadingSkeleton height="100%" />
       <LoadingSkeleton height="100%" />
       <LoadingSkeleton height="100%" />
-      <LoadingSkeleton height={24} variant="circle" width={24} />
+      <LoadingSkeleton height={24} variant="circular" width={24} />
     </div>
   );
 };

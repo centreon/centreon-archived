@@ -4,8 +4,9 @@ import * as React from 'react';
 import { equals, last } from 'ramda';
 import { useUpdateAtom } from 'jotai/utils';
 
-import { makeStyles, Typography } from '@material-ui/core';
-import ShowChartOutlinedIcon from '@material-ui/icons/ShowChartOutlined';
+import { Typography } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import ShowChartOutlinedIcon from '@mui/icons-material/ShowChartOutlined';
 
 import Card from '../Details/Card';
 import SelectableResourceName from '../Details/SelectableResourceName';

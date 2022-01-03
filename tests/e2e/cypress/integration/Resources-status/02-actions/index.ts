@@ -25,8 +25,8 @@ When('I select the acknowledge action on a problematic Resource', () => {
     .find('input[type="checkbox"]:first')
     .click();
 
-  cy.get(`[title="${actions.acknowledge}"]`)
-    .children('button')
+  cy.get(`[aria-label="${actions.acknowledge}"]`)
+    .parent('button')
     .first()
     .should('be.enabled')
     .click();
@@ -39,7 +39,9 @@ Then('The problematic Resource is displayed as acknowledged', () => {
   refreshListing(5000);
 
   cy.contains(serviceName)
-    .parents('div[role="cell"]:first')
+    .parent()
+    .parent()
+    .parent()
     .should('have.css', 'background-color', actionBackgroundColors.acknowledge);
 });
 
@@ -49,8 +51,8 @@ When('I select the downtime action on a problematic Resource', () => {
     .find('input[type="checkbox"]:first')
     .click();
 
-  cy.get(`[title="${actions.setDowntime}"]`)
-    .children('button')
+  cy.get(`[aria-label="${actions.setDowntime}"]`)
+    .parent('button')
     .first()
     .should('be.enabled')
     .click();
@@ -63,6 +65,8 @@ Then('The problematic Resource is displayed as in downtime', () => {
   refreshListing(5000);
 
   cy.contains(serviceNameDowntime)
-    .parents('div[role="cell"]:first')
+    .parent()
+    .parent()
+    .parent()
     .should('have.css', 'background-color', actionBackgroundColors.inDowntime);
 });

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Switch, Route, withRouter } from 'react-router-dom';
 import { equals } from 'ramda';
 
-import { styled } from '@material-ui/core';
+import { styled } from '@mui/material';
 
 import { PageSkeleton } from '@centreon/ui';
 

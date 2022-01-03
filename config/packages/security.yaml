@@ -1,5 +1,9 @@
 security:
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
+    enable_authenticator_manager: true
+    access_decision_manager:
+        strategy: unanimous
+        allow_if_all_abstain: false
     role_hierarchy:
         ROLE_ADMIN: ROLE_USER # An admin is also an user
     providers:
@@ -17,10 +21,9 @@ security:
             stateless: true
             pattern: ^(?!.*/api/(?:latest|beta|v[0-9]+|v[0-9]+\.[0-9]+)/login)/.*
             security: true
-            guard:
-                authenticators:
-                    - security.provider.tokenapi
-                    - security.provider.sessionapi
+            custom_authenticators:
+                - security.provider.tokenapi
+                - security.provider.sessionapi
             entry_point: security.provider.tokenapi
         login:
             pattern: ^.*/api/(?:latest|beta|v[0-9]+|v[0-9]+\.[0-9]+)/login$

@@ -6,7 +6,7 @@ import React from 'react';
 
 import classnames from 'classnames';
 
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 
 import styles from '../../styles/partials/form/_form.scss';
 
