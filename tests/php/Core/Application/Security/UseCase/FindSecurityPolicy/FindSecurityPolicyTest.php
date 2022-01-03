@@ -24,9 +24,9 @@ declare(strict_types=1);
 namespace Tests\Core\Application\Security\UseCase\FindSecurityPolicy;
 
 use PHPUnit\Framework\TestCase;
-use Tests\Core\Domain\Security\Model\SecurityPolicyTest;
-use Core\Application\Security\Repository\ReadSecurityPolicyRepositoryInterface;
+use Core\Domain\Security\Model\SecurityPolicy;
 use Core\Application\Security\UseCase\FindSecurityPolicy\FindSecurityPolicy;
+use Core\Application\Security\Repository\ReadSecurityPolicyRepositoryInterface;
 
 class FindSecurityPolicyTest extends TestCase
 {
@@ -45,7 +45,18 @@ class FindSecurityPolicyTest extends TestCase
      */
     public function testFindSecurityPolicy(): void
     {
-        $securityPolicy = SecurityPolicyTest::createSecurityPolicyModel();
+        $securityPolicy = new SecurityPolicy(
+            SecurityPolicy::MIN_PASSWORD_LENGTH,
+            true,
+            true,
+            true,
+            true,
+            true,
+            SecurityPolicy::MIN_ATTEMPTS,
+            SecurityPolicy::MIN_BLOCKING_DURATION,
+            SecurityPolicy::MIN_PASSWORD_EXPIRATION,
+            SecurityPolicy::MIN_NEW_PASSWORD_DELAY
+        );
 
         $useCase = new FindSecurityPolicy($this->repository);
 
