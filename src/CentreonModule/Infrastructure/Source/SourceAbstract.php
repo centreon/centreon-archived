@@ -61,7 +61,7 @@ abstract class SourceAbstract implements SourceInterface
     protected $path;
 
     /**
-     * @var \CentreonLegacy\Core\Widget\Upgrader
+     * @var \CentreonLegacy\Core\Widget\Upgrader|\CentreonLegacy\Core\Module\Upgrader
      */
     protected $upgrader;
 
@@ -71,12 +71,12 @@ abstract class SourceAbstract implements SourceInterface
     protected $license;
 
     /**
-     * @var \CentreonLegacy\Core\Widget\Remover
+     * @var \CentreonLegacy\Core\Widget\Remover|\CentreonLegacy\Core\Module\Remover
      */
     protected $remover;
 
     /**
-     * @var \CentreonLegacy\Core\Widget\Installer
+     * @var \CentreonLegacy\Core\Widget\Installer|\CentreonLegacy\Core\Module\Installer
      */
     protected $installer;
 
@@ -105,7 +105,7 @@ abstract class SourceAbstract implements SourceInterface
 
     public function update(string $id): ?Module
     {
-        ($this->upgrader)($id)->update();
+        ($this->upgrader)($id)->upgrade();
 
         $this->initInfo();
 

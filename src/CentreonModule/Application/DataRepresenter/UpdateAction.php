@@ -80,7 +80,9 @@ class UpdateAction implements JsonSerializable
     {
         $entity = null;
 
-        $entity = new ModuleEntity($this->entity);
+        if ($this->entity !== null) {
+            $entity = new ModuleEntity($this->entity);
+        }
 
         return [
             'entity' => $entity,

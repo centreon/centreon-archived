@@ -54,21 +54,6 @@ class WidgetSource extends SourceAbstract
     private $info;
 
     /**
-     * @var \CentreonLegacy\Core\Widget\Installer
-     */
-    protected $installer;
-
-    /**
-     * @var \CentreonLegacy\Core\Widget\Upgrader
-     */
-    protected $upgrader;
-
-    /**
-     * @var \CentreonLegacy\Core\Widget\Remover
-     */
-    protected $remover;
-
-    /**
      * Construct
      *
      * @param \Psr\Container\ContainerInterface $services
