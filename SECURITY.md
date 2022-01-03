@@ -98,7 +98,7 @@ i51yIfcTAPmxOst/YN5WXOxWHZjZ/STVi0Y=
 
 ### Revoked Public key
 
-==Kindly use the new key instead==
+**_Kindlyuse the new key instead_**
 
 | Tag | Value |
 | -- | -- |
