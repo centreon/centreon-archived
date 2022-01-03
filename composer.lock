@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "af06b58d5d3f65788840f57508a26d7c",
+    "content-hash": "3e630d6ca922bd1315cb02289acca773",
     "packages": [
         {
             "name": "beberlei/assert",
@@ -6538,16 +6538,16 @@
         },
         {
             "name": "centreon/centreon-test-lib",
-            "version": "dev-MON-6124",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/centreon/centreon-test-lib.git",
-                "reference": "4a60e60967276f069824c8a4def74eb26ea133be"
+                "reference": "dc77ceedfa000100b6f58b4234655d5b459d16f9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/4a60e60967276f069824c8a4def74eb26ea133be",
-                "reference": "4a60e60967276f069824c8a4def74eb26ea133be",
+                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/dc77ceedfa000100b6f58b4234655d5b459d16f9",
+                "reference": "dc77ceedfa000100b6f58b4234655d5b459d16f9",
                 "shasum": ""
             },
             "require": {
@@ -6566,6 +6566,7 @@
                 "behat/mink-selenium2-driver": "Mink driver using Selenium",
                 "phpstan/phpstan": "PHP static analysis"
             },
+            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -6588,9 +6589,9 @@
             ],
             "support": {
                 "issues": "https://github.com/centreon/centreon-test-lib/issues",
-                "source": "https://github.com/centreon/centreon-test-lib/tree/MON-6124"
+                "source": "https://github.com/centreon/centreon-test-lib/tree/master"
             },
-            "time": "2021-12-13T08:48:48+00:00"
+            "time": "2022-01-03T12:56:39+00:00"
         },
         {
             "name": "friends-of-behat/mink",
