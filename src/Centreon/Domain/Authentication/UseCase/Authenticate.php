@@ -95,7 +95,7 @@ class Authenticate
      * @param AuthenticationServiceInterface $authenticationService
      * @param ProviderServiceInterface $providerService
      * @param ContactServiceInterface $contactService
-     * @param RequestStack $session
+     * @param RequestStack $requestStack
      * @param MenuServiceInterface $menuService
      * @param AuthenticationRepositoryInterface $authenticationRepository
      * @param SessionRepositoryInterface $sessionRepository
