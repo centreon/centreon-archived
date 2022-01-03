@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
 import { useAtomValue } from 'jotai/utils';
 import { FormikErrors, FormikHandlers, FormikValues } from 'formik';
+import { isNil } from 'ramda';
 
 import { LocalizationProvider, DateTimePicker } from '@mui/lab';
 import {
@@ -39,7 +40,6 @@ import useAclQuery from '../aclQuery';
 import useDateTimePickerAdapter from '../../../useDateTimePickerAdapter';
 
 import { DowntimeFormValues } from '.';
-import { isNil } from 'ramda';
 
 const maxEndDate = new Date('2100-01-01');
 
@@ -162,13 +162,13 @@ const DialogDowntime = ({
               onOpen={(): void => setIsPickerOpened(true)}
             />
             {isNil(errors?.startTime) ? (
-                           <div />
+              <div />
             ) : (
               <FormHelperText error>{errors?.startTime}</FormHelperText>
             )}
             <div />
             {isNil(errors?.endTime) ? (
-                            <div />
+              <div />
             ) : (
               <FormHelperText error>{errors?.endTime}</FormHelperText>
             )}
@@ -207,13 +207,11 @@ const DialogDowntime = ({
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={
-                      canDowntimeServices() && values.isDowntimeWithServices
-                    }
+                    checked={values.fixed}
                     color="primary"
                     inputProps={{ 'aria-label': t(labelFixed) }}
                     size="small"
-                    onChange={handleChange('isDowntimeWithServices')}
+                    onChange={handleChange('fixed')}
                   />
                 }
                 label={t(labelFixed) as string}
@@ -234,13 +232,13 @@ const DialogDowntime = ({
               control={
                 <Checkbox
                   checked={
-                    canDowntimeServices() && values.downtimeAttachedResources
+                    canDowntimeServices() && values.isDowntimeWithServices
                   }
                   color="primary"
                   disabled={!canDowntimeServices()}
                   inputProps={{ 'aria-label': labelSetDowntimeOnServices }}
                   size="small"
-                  onChange={handleChange('downtimeAttachedResources')}
+                  onChange={handleChange('isDowntimeWithServices')}
                 />
               }
               label={t(labelSetDowntimeOnServices) as string}

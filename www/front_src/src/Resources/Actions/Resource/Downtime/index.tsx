@@ -30,10 +30,10 @@ export interface DowntimeFormValues {
     unit: string;
     value: number;
   };
+  endTime: Date;
   fixed: boolean;
   isDowntimeWithServices: boolean;
   startTime: Date;
-  endTime: Date;
 }
 
 export interface DowntimeToPost {
@@ -80,9 +80,9 @@ const DowntimeForm = ({
         unit: 'seconds',
         value: downtime.default_duration,
       },
+      endTime: defaultEndDate,
       fixed: downtime.default_fixed,
       isDowntimeWithServices: downtime.default_with_services,
-      endTime: defaultEndDate,
       startTime: currentDate,
     },
     onSubmit: (values, { setSubmitting }) => {
