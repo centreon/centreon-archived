@@ -23,20 +23,24 @@ declare(strict_types=1);
 
 namespace Core\Application\RealTime\Repository;
 
-use Core\Domain\RealTime\Model\Acknowledgement;
+use Core\Domain\RealTime\Model\Service;
 
-interface ReadAcknowledgementRepositoryInterface
+interface ReadServiceRepositoryInterface
 {
     /**
-     * @param int $hostId
-     * @return Acknowledgement|null
+     * Find Service without ACL
+     *
+     * @param integer $serviceId
+     * @return Service|null
      */
-    public function findOnGoingAcknowledgementByHostId(int $hostId): ?Acknowledgement;
+    public function findServiceById(int $serviceId): ?Service;
 
     /**
-     * @param int $hostId
+     * Find Service with ACL
+     *
      * @param int $serviceId
-     * @return Acknowledgement|null
+     * @param int[] $accessGroupIds
+     * @return Service|null
      */
-    public function findOnGoingAcknowledgementByHostIdAndServiceId(int $hostId, int $serviceId): ?Acknowledgement;
+    public function findServiceByIdAndAccessGroupIds(int $serviceId, array $accessGroupIds): ?Service;
 }

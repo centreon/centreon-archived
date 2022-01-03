@@ -21,22 +21,14 @@
 
 declare(strict_types=1);
 
-namespace Core\Application\RealTime\Repository;
+namespace Core\Application\RealTime\UseCase\FindService;
 
-use Core\Domain\RealTime\Model\Acknowledgement;
+use Core\Application\Common\UseCase\NotFoundResponse;
 
-interface ReadAcknowledgementRepositoryInterface
+class ServiceNotFoundResponse extends NotFoundResponse
 {
-    /**
-     * @param int $hostId
-     * @return Acknowledgement|null
-     */
-    public function findOnGoingAcknowledgementByHostId(int $hostId): ?Acknowledgement;
-
-    /**
-     * @param int $hostId
-     * @param int $serviceId
-     * @return Acknowledgement|null
-     */
-    public function findOnGoingAcknowledgementByHostIdAndServiceId(int $hostId, int $serviceId): ?Acknowledgement;
+    public function __construct()
+    {
+        parent::__construct('Service');
+    }
 }
