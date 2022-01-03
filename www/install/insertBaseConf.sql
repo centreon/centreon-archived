@@ -508,7 +508,6 @@ INSERT INTO `cb_log_level` (`id`, `name`) VALUES
 
 INSERT INTO `cb_tag` (`cb_tag_id`, `tagname`) VALUES
 (2, 'input'),
-(3, 'logger'),
 (1, 'output');
 
 --
@@ -589,7 +588,7 @@ INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`
 (26, 'compression_level', 'Compression level', 'Ranges from 0 (no compression) to 9 (best compression). Default is -1 (zlib compression)', 'int', NULL),
 (27, 'compression_buffer', 'Compression buffer size', 'The higher the buffer size is, the best compression. This however increase data streaming latency. Use with caution.', 'int', NULL),
 (28, 'failover', 'Failover name', 'Name of the input or output object that will act as failover.', 'text', NULL),
-(31, 'retry_interval', 'Retry interval', 'Time in seconds to wait between each connection attempt.', 'int', NULL),
+(31, 'retry_interval', 'Retry interval', 'Time in seconds to wait between each connection attempt (Default value: 30s).', 'int', NULL),
 (32, 'buffering_timeout', 'Buffering timeout', 'Time in seconds to wait before launching failover.', 'int', NULL),
 (33, 'fifo', 'File for Centreon Broker statistics', 'File where Centreon Broker statistics will be stored', 'text', NULL),
 (34, 'queries_per_transaction', 'Maximum queries per transaction', 'The maximum queries per transaction before commit.', 'int', NULL),
@@ -745,10 +744,6 @@ INSERT INTO `cb_tag_type_relation` (`cb_tag_id`, `cb_type_id`, `cb_type_uniq`) V
 (2, 3, 0),
 (2, 10, 0),
 (2, 11, 0),
-(3, 17, 0),
-(3, 18, 0),
-(3, 19, 0),
-(3, 24, 0),
 (1, 28, 1),
 (1, 29, 1),
 (1, 30, 0),

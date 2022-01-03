@@ -110,8 +110,8 @@ class EngineService extends AbstractCentreonService implements
             'ACKNOWLEDGE_HOST_PROBLEM;%s;%d;%d;%d;%s;%s',
             $host->getName(),
             $acknowledgement->isSticky()
-                ? static::ACKNOWLEDGEMENT_WITH_STICKY_OPTION
-                : static::ACKNOWLEDGEMENT_WITH_NO_STICKY_OPTION,
+                ? self::ACKNOWLEDGEMENT_WITH_STICKY_OPTION
+                : self::ACKNOWLEDGEMENT_WITH_NO_STICKY_OPTION,
             (int) $acknowledgement->isNotifyContacts(),
             (int) $acknowledgement->isPersistentComment(),
             $this->contact->getAlias(),
@@ -144,8 +144,8 @@ class EngineService extends AbstractCentreonService implements
             $service->getHost()->getName(),
             $service->getDescription(),
             $acknowledgement->isSticky()
-                ? static::ACKNOWLEDGEMENT_WITH_STICKY_OPTION
-                : static::ACKNOWLEDGEMENT_WITH_NO_STICKY_OPTION,
+                ? self::ACKNOWLEDGEMENT_WITH_STICKY_OPTION
+                : self::ACKNOWLEDGEMENT_WITH_NO_STICKY_OPTION,
             (int) $acknowledgement->isNotifyContacts(),
             (int) $acknowledgement->isPersistentComment(),
             $this->contact->getAlias(),
