@@ -1,7 +1,8 @@
 <?php
 
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005-2021 CENTREON
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,25 +19,6 @@
  * For more information : contact@centreon.com
  *
  */
-
-namespace CentreonUser\Domain\Repository;
-
-use Centreon\Infrastructure\CentreonLegacyDB\ServiceEntityRepository;
-use CentreonUser\Domain\Entity\Contact;
-use Centreon\Domain\Repository\Traits\CheckListOfIdsTrait;
-
-class ContactRepository extends ServiceEntityRepository
+class StatisticException extends Exception
 {
-    use CheckListOfIdsTrait;
-
-    /**
-     * Check list of IDs
-     *
-     * @param int[] $ids
-     * @return bool
-     */
-    public function checkListOfIds(array $ids): bool
-    {
-        return $this->checkListOfIdsTrait($ids, Contact::TABLE, Contact::ENTITY_IDENTIFICATOR_COLUMN);
-    }
 }
