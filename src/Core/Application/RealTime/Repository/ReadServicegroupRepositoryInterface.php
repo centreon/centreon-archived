@@ -44,5 +44,9 @@ interface ReadServicegroupRepositoryInterface
      * @param int[] $accessGroupIds
      * @return Servicegroup[]
      */
-    public function findAllByServiceIdAndAccessGroupIds(int $hostId, int $serviceId, array $accessGroupIds): array;
+    public function findAllByHostIdAndServiceIdAndAccessGroupIds(
+        int $hostId,
+        int $serviceId,
+        array $accessGroupIds
+    ): array;
 }
