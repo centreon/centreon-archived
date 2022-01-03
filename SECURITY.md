@@ -22,9 +22,93 @@ To help us better understand the nature and scope of the possible issue, please 
 * Proof-of-concept or exploit code (if possible)
 * Impact of the issue, including how an attacker might exploit the issue
 
+## Bug bounty
+
+We don't have a bug bounty program but this is something we are thinking about.
+
 ## PGP information
 
 ### Public key
+
+| Tag | Value |
+| -- | -- |
+| ID | 8F7D860C6C32543A |
+| Type | RSA |
+| Size | 4096 |
+| Created | 2022-12-28 |
+| Expires | 2023-01-22 |
+| Fingerprint | F4A2 2EA4 1FA1 F308 A66A C046 8F7D 860C 6C32 543A |
+
+```
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+mQINBGHLO4IBEADB5ZlFUNNH/Y5TEVHAAHIMjHEt63M5hA+C94EYv89R2+swz212
+Hla4f5sVl5wPNSwiIAed+bJNKnGiaDM/508aMcTHurGRu3x5/MyvuxpXmzOSY1Mt
+JZxLBBkonL1iX0tCytWriOhgAty9gi58DPKA6f7sVDgt3Hm/NtIEULSbXy6xfDYo
+m+Sz39+hb0PcKKEkacRGzOGDIR0UgOAUGDBEbDoLPxjM6flHjXcjs4fZNY2HHQXO
+AB65qM9my4ALxxsrIbsKfu25HY52qSZoqZD90AxKdNtRFlnkXClWN0l26fVqiGjv
+oCPMYGPp80OYvymE2QhtlD+jRAepwyWx1YY96VFIA9LsZtjmoRxw/KLghdeP4Q7p
+/BUCVkT393OOTayNhoNa7iCqbK0lmB6mequi7KV3vNXn79WP0Hm8AQ9/9bEJaY8x
+oNTKAxsR6gLP1fc7S/zg9iIHUuTj6XU9CbW45ADrCJRel5LoM+MZ3DWXh+kd0Iuw
+yANU+XVgC1fXQOf76BJeYSalZS8Ln1vpYjDwEZBSmLdyefCYBjspxjDNzpCAy+wH
+gc/vpQbjmFxgkbZ3AroGDaNu1JVhA3yy8oXAEwAxl8BzsYye2YbhAUb2RgZhIndd
+TCcWkwhEWey3XYMCtnFWxsXnteA1cvWD8PvCiWy53yc/Ng59H3XyB3sJbQARAQAB
+tJJDZW50cmVvbiBTZWN1cml0eSAoRW1haWwgdXNlZCB0byByZXBvcnQgYSB2dWxu
+ZXJhYmlsaXR5IG9uIENlbnRyZW9uJ3MgcHJvZHVjdHMgb3IgdG8gY29udGFjdCB0
+aGUgQ2VudHJlb24ncyBzZWN1cml0eSB0ZWFtKSA8c2VjdXJpdHlAY2VudHJlb24u
+Y29tPokCVAQTAQoAPhYhBPSiLqQfofMIpmrARo99hgxsMlQ6BQJhyzuCAhsDBQkC
+AikABQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAAAoJEI99hgxsMlQ6Ms0P/1lJfoaj
+5/mRIKvaWZnTZm6OCpJtRT/9WrBGxbVi0TfyFb8M5OHeoz2oXc7WEPDJNNW9aRat
+i40oHfQExW0UBsMvpfGlhPc5nwIxzpvFuckPrSTU3Y9ZLQvCoyxPIWMsXlghwwHD
+OFW5oYg+rAvtmFuLyM18MdkH3YmrUHs7wyZczvi5hqdv5yB92kEjDTRbCYG8k9ep
+P1rr3U/WyQ6u5BEZLTFNceK//VQsEfN7l8QLQV5CtG7PtdnLh5V4lkDHV7DW3PCg
+TXyy8A5IatLh7z+ODQ/GDwCw7NNQm5M8dB1T/tLZn7+kTf8KqjHz4Qbh2PFBu5R7
+sDPEM81EMSAN/dfuZyQKbABnJk0JalvZeuZYUQYZWTgK6mSFJ3Rac8aX4TX7fwfS
+kjh0ivG/FWzKaDa/dGfpH0J69IE2SACLRF+022hPLz7dRmSyNQSFZ4McXC+ihQps
+mDJrqLmBPSNIRkfTwczINPSAX051w3GsJDSoAID+X0iqmoZTPYuf9XJO689vx+5B
+g4FwhFwETkCqq6sZLzBI8+8dHKCn7imCtmrJ7JN8uy4mPS4Y2yVTBr1sZiAuvHzN
+4314o3N30OZeqG61OuE6XO67mlw5Rk5Kay7P/s3uu5wXEL01z5+VKH/hjzVV+GXq
+9J+VKYfXOcvu9PDhVBzlXgtP5xNuhh/IlvoDuQINBGHLPM4BEADdN4QbeuBSFts7
+9iIJXBmYiwcfDUOyZYaam6tI1fi1MbWCTAwpDpR0e8wdAon5yrF5jF6f6PIzqSfV
+jc1rtLfdftVlzCMobXyjPxO9LkwChSm+b1tR6R7FyxfkUu5Og7TdrTpzzbTPN6TA
+0BReEy20NpU6b3xC96BdaxE2ePlDOm26C5ygmAWszGD29ztxVtbBq7w0M+q7MO5Q
+UH286bNQXKL5C5wZuA18li/hk7Cri4XwtRyMMh0dlT7hYYuKKJN5d8swx793JdlP
+uYxmL93bM7rlka+W9fHYEbW5Zr7KUKwGygju/R2kx567iZyNwhFdeNsMFXFRIxCL
+sEqNBc6EexafaxoJc4Ms0FD5WXiy9Je5+c5ue5Qb3SzavRu8u/z4bnjmpXqodBOS
+jB4KPPGp4iCZPIOD98HyQ4XlYPSFc4hFEDxM6JGjfiKzFGaSmroSqwoKYYUjLsI+
+SuFPciOnH73KvwGX0uDYOKKZp5kmhKwu+AWaOfjoMGC2j+aOCQswziYBwr32bgyf
+S/CM4uha7XhY4vi5IaRgXrSSsCRFwskTRQwtAHtu8m17D0CH7K5blKXtx+pHB+6x
+cYTX9u2N2rqnOTma6+KEXFzVj0JiXsT3OwFmAFRvDU+erGSlAF3bQkZcu0hoFZmh
+XBeRV+vA3D/rkwXal8vMRcn2V+XZ5wARAQABiQI8BBgBCgAmFiEE9KIupB+h8wim
+asBGj32GDGwyVDoFAmHLPM4CGwwFCQICKQAACgkQj32GDGwyVDqkbg/+NVEZw2A4
+Uk6h4Exo9T0+ttd/ywi8P5aGnoiJ9Fw92RHgmSNUwIwgdeGKrgBbhVaO/V4CDGJp
+iiwIAxzU/xCNibEGTUkH79AZvFHXxXwRKf/vWW1w3gyh9ppRLBlUw3S2DdEkxlzJ
+5R1ryYTeV4yFAVK1Ln1v/UCA2WHho3IN/PIgDt701zONUEn1OOxHrMlKsgHIBAAk
+NA6IQ1Tr8RW9abK3uAtJxxnyOqEMkiE03sJfd1dAUtvirGxr7g3t1Gfi8BPnQR5T
+ZNqDOblM6fiY05AngPOLtV0n6LazK/buNenvUUhT0R9noMX6ZcApGpS4fFhADw1q
+vrFYSG/4rLSGKvLqw5pQ7PzLDHPfn/HIME//SPuBnYrTYjiupzdmgtjGOc1iMV0X
+YVXuA1yj+aJFaObLnVD31v2GIKvVS4WMsG74Mf5vMiMkbc0Zg2ULGun3sXscW0Yh
+2MnvI5oYQcKmzjmhPdKHrmkiy9QC4442PbE8Bn9KUpcVoxCtFr/Zsc18iUVHYyIG
+rrmZBE8MF1tGGBsdFC4Aktujuj3EevBo26QLozyfOLXXATHhmGh4SWsH68iyzynw
+ARzB/pCyvB1Y/QbRn3ClFIksAyjrMxiNkSQXgToc8Ph+vLnHS3Y4399c74WZCHCH
+i51yIfcTAPmxOst/YN5WXOxWHZjZ/STVi0Y=
+=8Gny
+-----END PGP PUBLIC KEY BLOCK-----
+```
+
+### Revoked Public key
+
+==Kindly use the new key instead==
+
+| Tag | Value |
+| -- | -- |
+| ID | BEAF6EBF631106F9 |
+| Type | RSA |
+| Size | 4096 |
+| Created | 2020-02-11 |
+| Expires | 2022-01-13 |
+| Cipher |AES-256|
+| Fingerprint | C377 E9D5 2D5C 137D 3DD5 73B5 BEA F6EBF 6311 06F9 |
 
 ```
 -----BEGIN PGP PUBLIC KEY BLOCK-----
@@ -80,17 +164,3 @@ SL4taAGY0BDuA3zhB7p5tP8=
 =YBvx
 -----END PGP PUBLIC KEY BLOCK-----
 ```
-
-| Tag | Value |
-| -- | -- |
-| ID | BEAF6EBF631106F9 |
-| Type | RSA |
-| Size | 4096 |
-| Created | 2020-02-11 |
-| Expires | 2022-01-13 |
-| Cipher |AES-256|
-| Fingerprint | C377 E9D5 2D5C 137D 3DD5 73B5 BEA F6EBF 6311 06F9 |
-
-## Bug bounty
-
-We don't have a bug bounty program but this is something we are thinking about.
