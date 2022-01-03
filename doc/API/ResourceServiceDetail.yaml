@@ -41,6 +41,12 @@ Monitoring.ServiceDetail:
           example: 0
         name:
           type: string
+          enum:
+            - OK
+            - WARNING
+            - CRITICAL
+            - UNKNOWN
+            - PENDING
           description: |
             Service resource status name
             * OK

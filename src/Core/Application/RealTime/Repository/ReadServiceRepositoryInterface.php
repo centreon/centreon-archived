@@ -30,7 +30,7 @@ interface ReadServiceRepositoryInterface
     /**
      * Find Service without ACL
      *
-     * @param integer $serviceId
+     * @param int $serviceId
      * @return Service|null
      */
     public function findServiceById(int $serviceId): ?Service;
