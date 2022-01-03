@@ -4,10 +4,10 @@ import { useTranslation } from 'react-i18next';
 import { isNil } from 'ramda';
 import clsx from 'clsx';
 
-import StorageIcon from '@material-ui/icons/Storage';
-import LatencyIcon from '@material-ui/icons/Speed';
-import { Avatar, makeStyles, Theme } from '@material-ui/core';
-import { CreateCSSProperties } from '@material-ui/styles';
+import StorageIcon from '@mui/icons-material/Storage';
+import LatencyIcon from '@mui/icons-material/Speed';
+import { Avatar, Theme } from '@mui/material';
+import { CreateCSSProperties, makeStyles } from '@mui/styles';
 
 import { getStatusColors, SeverityCode } from '@centreon/ui';
 

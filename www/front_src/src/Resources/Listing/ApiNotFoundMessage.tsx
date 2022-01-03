@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import { Link } from '@material-ui/core';
+import { Link } from '@mui/material';
 
 import {
   labelApiNotFoundNotUpToDate,

@@ -5,7 +5,8 @@ import { useTranslation } from 'react-i18next';
 import { Dayjs } from 'dayjs';
 import { useAtomValue } from 'jotai/utils';
 
-import { Typography, Paper, makeStyles } from '@material-ui/core';
+import { Typography, Paper } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import {
   Timeline,
   TimelineConnector,
@@ -13,7 +14,7 @@ import {
   TimelineDot,
   TimelineItem,
   TimelineSeparator,
-} from '@material-ui/lab';
+} from '@mui/lab';
 
 import { useLocaleDateTimeFormat } from '@centreon/ui';
 import { userAtom } from '@centreon/ui-context';

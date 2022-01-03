@@ -1,18 +1,21 @@
+/* eslint-disable react/jsx-no-constructed-context-values */
 import * as React from 'react';
 
 import axios from 'axios';
+import {} from '@testing-library/react';
+import { Simulate } from 'react-dom/test-utils';
+import userEvent from '@testing-library/user-event';
+import { Provider } from 'jotai';
+
 import {
+  setUrlQueryParameters,
+  getUrlQueryParameters,
   fireEvent,
   waitFor,
   render,
   RenderResult,
   act,
-} from '@testing-library/react';
-import { Simulate } from 'react-dom/test-utils';
-import userEvent from '@testing-library/user-event';
-import { Provider } from 'jotai';
-
-import { setUrlQueryParameters, getUrlQueryParameters } from '@centreon/ui';
+} from '@centreon/ui';
 import { refreshIntervalAtom, userAtom } from '@centreon/ui-context';
 
 import {
@@ -645,6 +648,7 @@ describe(Filter, () => {
         queryByLabelText,
         findByPlaceholderText,
         getByLabelText,
+        findByText,
       } = renderResult;
 
       await waitFor(() => expect(mockedAxios.get).toHaveBeenCalledTimes(2));
@@ -678,7 +682,9 @@ describe(Filter, () => {
 
       await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
 
-      expect(getByText(linuxServersHostGroup.name)).toBeInTheDocument();
+      const linuxServerOption = await findByText(linuxServersHostGroup.name);
+
+      expect(linuxServerOption).toBeInTheDocument();
 
       act(() => {
         fireEvent.click(getByText(labelServiceGroup));
@@ -686,7 +692,11 @@ describe(Filter, () => {
 
       await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
 
-      expect(getByText(webAccessServiceGroup.name)).toBeInTheDocument();
+      const webAccessServiceGroupOption = await findByText(
+        webAccessServiceGroup.name,
+      );
+
+      expect(webAccessServiceGroupOption).toBeInTheDocument();
     });
 
     it('stores filter values in localStorage when updated', async () => {
