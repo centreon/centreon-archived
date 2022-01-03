@@ -228,6 +228,9 @@
     "psr/container": {
         "version": "1.1.1"
     },
+    "psr/event-dispatcher": {
+        "version": "1.0.0"
+    },
     "psr/http-client": {
         "version": "1.0.1"
     },
@@ -484,6 +487,9 @@
     "symfony/options-resolver": {
         "version": "v4.4.30"
     },
+    "symfony/password-hasher": {
+        "version": "v5.4.0"
+    },
     "symfony/phpunit-bridge": {
         "version": "4.3",
         "recipe": {
@@ -498,6 +504,9 @@
             "phpunit.xml.dist",
             "tests/bootstrap.php"
         ]
+    },
+    "symfony/polyfill-intl-grapheme": {
+        "version": "v1.23.1"
     },
     "symfony/polyfill-intl-idn": {
         "version": "v1.23.0"
@@ -572,6 +581,9 @@
     },
     "symfony/stopwatch": {
         "version": "v4.4.27"
+    },
+    "symfony/string": {
+        "version": "v5.4.2"
     },
     "symfony/translation": {
         "version": "3.3",
