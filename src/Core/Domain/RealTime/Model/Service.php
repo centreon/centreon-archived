@@ -111,7 +111,7 @@ class Service
     /**
      * @var \DateTime|null
      */
-    private $lastTimeUp;
+    private $lastTimeOk;
 
     /**
      * @var int|null
@@ -487,23 +487,22 @@ class Service
         return $this->passiveChecks;
     }
 
-    // * TODO CHECK IF IS THE SAME
     /**
-     * @param \DateTime|null $lastTimeUp
+     * @param \DateTime|null $lastTimeOk
      * @return self
      */
-    public function setLastTimeUp(?\DateTime $lastTimeUp): self
+    public function setLastTimeOk(?\DateTime $lastTimeOk): self
     {
-        $this->lastTimeUp = $lastTimeUp;
+        $this->lastTimeOk = $lastTimeOk;
         return $this;
     }
 
     /**
      * @return \DateTime|null
      */
-    public function getLastTimeUp(): ?\DateTime
+    public function getLastTimeOk(): ?\DateTime
     {
-        return $this->lastTimeUp;
+        return $this->lastTimeOk;
     }
 
     /**
