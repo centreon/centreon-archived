@@ -19,9 +19,33 @@ import DialogDowntime from './Dialog';
 import { getValidationSchema } from './validation';
 
 interface Props {
-  onClose;
-  onSuccess;
+  onClose: () => void;
+  onSuccess: () => void;
   resources: Array<Resource>;
+}
+
+export interface DowntimeFormValues {
+  comment?: string;
+  duration: {
+    unit: string;
+    value: number;
+  };
+  fixed: boolean;
+  isDowntimeWithServices: boolean;
+  startTime: Date;
+  endTime: Date;
+}
+
+export interface DowntimeToPost {
+  comment?: string;
+  duration: {
+    unit: string;
+    value: number;
+  };
+  endTime: string;
+  fixed: boolean;
+  isDowntimeWithServices: boolean;
+  startTime: string;
 }
 
 const DowntimeForm = ({
@@ -49,16 +73,16 @@ const DowntimeForm = ({
     .add(dayjs.duration({ seconds: downtime.default_duration }))
     .toDate();
 
-  const form = useFormik({
+  const form = useFormik<DowntimeFormValues>({
     initialValues: {
       comment: undefined,
-      downtimeAttachedResources: true,
       duration: {
         unit: 'seconds',
         value: downtime.default_duration,
       },
+      fixed: downtime.default_fixed,
+      isDowntimeWithServices: downtime.default_with_services,
       endTime: defaultEndDate,
-      fixed: true,
       startTime: currentDate,
     },
     onSubmit: (values, { setSubmitting }) => {

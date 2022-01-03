@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "74ec0c199110e2586a3d4ff7b2b9c7ea",
+    "content-hash": "6622f443c938a76728e534f1dab0f1f7",
     "packages": [
         {
             "name": "beberlei/assert",
@@ -6839,12 +6839,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/centreon/centreon-test-lib.git",
-                "reference": "8816d93fc20e7ad2796dd44b99d43b3225edfed6"
+                "reference": "371645f440bfcdeb947cf1c6eb62e923dbe0eff0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/8816d93fc20e7ad2796dd44b99d43b3225edfed6",
-                "reference": "8816d93fc20e7ad2796dd44b99d43b3225edfed6",
+                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/371645f440bfcdeb947cf1c6eb62e923dbe0eff0",
+                "reference": "371645f440bfcdeb947cf1c6eb62e923dbe0eff0",
                 "shasum": ""
             },
             "require": {
@@ -6853,7 +6853,6 @@
                 "justinrainbow/json-schema": "^5.2",
                 "league/openapi-psr7-validator": "^0.16",
                 "nyholm/psr7": "^1.3",
-                "phpstan/phpstan": "^0.12",
                 "psr/http-client": "^1.0",
                 "symfony/http-client": "4.4.*",
                 "symfony/property-access": "4.4.*",
@@ -6861,7 +6860,8 @@
             },
             "suggest": {
                 "behat/mink": "Browser controller/emulator abstraction for PHP",
-                "behat/mink-selenium2-driver": "Mink driver using Selenium"
+                "behat/mink-selenium2-driver": "Mink driver using Selenium",
+                "phpstan/phpstan": "PHP static analysis"
             },
             "default-branch": true,
             "type": "library",
@@ -6894,7 +6894,7 @@
                 "issues": "https://github.com/centreon/centreon-test-lib/issues",
                 "source": "https://github.com/centreon/centreon-test-lib/tree/master"
             },
-            "time": "2021-10-19T14:30:15+00:00"
+            "time": "2021-12-13T08:39:09+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -7879,16 +7879,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "0.12.99",
+            "version": "1.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "b4d40f1d759942f523be267a1bab6884f46ca3f7"
+                "reference": "ffc5aee6019eeae4ea618d97dd290ab95e77be59"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/b4d40f1d759942f523be267a1bab6884f46ca3f7",
-                "reference": "b4d40f1d759942f523be267a1bab6884f46ca3f7",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/ffc5aee6019eeae4ea618d97dd290ab95e77be59",
+                "reference": "ffc5aee6019eeae4ea618d97dd290ab95e77be59",
                 "shasum": ""
             },
             "require": {
@@ -7904,7 +7904,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.12-dev"
+                    "dev-master": "1.3-dev"
                 }
             },
             "autoload": {
@@ -7919,7 +7919,7 @@
             "description": "PHPStan - PHP Static Analysis Tool",
             "support": {
                 "issues": "https://github.com/phpstan/phpstan/issues",
-                "source": "https://github.com/phpstan/phpstan/tree/0.12.99"
+                "source": "https://github.com/phpstan/phpstan/tree/1.3.0"
             },
             "funding": [
                 {
@@ -7939,38 +7939,38 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-09-12T20:09:55+00:00"
+            "time": "2021-12-29T17:03:31+00:00"
         },
         {
             "name": "phpstan/phpstan-beberlei-assert",
-            "version": "0.12.6",
+            "version": "1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan-beberlei-assert.git",
-                "reference": "daf1176ee507b7dcd01276fabf20a0a308c94124"
+                "reference": "b60cedb58a3668136977bf9e6e9bd7292391c78a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan-beberlei-assert/zipball/daf1176ee507b7dcd01276fabf20a0a308c94124",
-                "reference": "daf1176ee507b7dcd01276fabf20a0a308c94124",
+                "url": "https://api.github.com/repos/phpstan/phpstan-beberlei-assert/zipball/b60cedb58a3668136977bf9e6e9bd7292391c78a",
+                "reference": "b60cedb58a3668136977bf9e6e9bd7292391c78a",
                 "shasum": ""
             },
             "require": {
                 "php": "^7.1 || ^8.0",
-                "phpstan/phpstan": "^0.12.40"
+                "phpstan/phpstan": "^1.0"
             },
             "require-dev": {
                 "beberlei/assert": "^3.3.0",
-                "phing/phing": "^2.16.3",
+                "nikic/php-parser": "^4.13.0",
                 "php-parallel-lint/php-parallel-lint": "^1.2",
-                "phpstan/phpstan-phpunit": "^0.12.16",
-                "phpstan/phpstan-strict-rules": "^0.12.5",
-                "phpunit/phpunit": "^7.5.20"
+                "phpstan/phpstan-phpunit": "^1.0",
+                "phpstan/phpstan-strict-rules": "^1.0",
+                "phpunit/phpunit": "^9.5"
             },
             "type": "phpstan-extension",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.12-dev"
+                    "dev-master": "1.0-dev"
                 },
                 "phpstan": {
                     "includes": [
@@ -7990,9 +7990,9 @@
             "description": "PHPStan beberlei/assert extension",
             "support": {
                 "issues": "https://github.com/phpstan/phpstan-beberlei-assert/issues",
-                "source": "https://github.com/phpstan/phpstan-beberlei-assert/tree/0.12.6"
+                "source": "https://github.com/phpstan/phpstan-beberlei-assert/tree/1.0.0"
             },
-            "time": "2021-01-25T12:31:38+00:00"
+            "time": "2021-10-14T08:11:20+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",

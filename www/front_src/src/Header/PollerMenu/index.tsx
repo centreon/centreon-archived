@@ -67,7 +67,7 @@ const useStyles = makeStyles((theme) => ({
     borderWidth: '1px',
     color: theme.palette.common.white,
     display: 'flex',
-    gap: theme.spacing(1),
+    justifyContent: 'space-between',
   },
   pollerDetailTitle: {
     flexGrow: 1,
@@ -193,17 +193,13 @@ const PollerMenu = (): JSX.Element => {
                 );
               })
             ) : (
-              <div className={classes.pollerDetailRow}>
-                <Typography
-                  className={clsx(classes.label, classes.pollerDetailTitle)}
-                  variant="body2"
-                >
-                  {t(labelAllPollers)}
-                </Typography>
-                <Typography className={clsx(classes.label)} variant="body2">
-                  {pollerCount}
-                </Typography>
-              </div>
+              <Typography
+                className={clsx(classes.label, classes.pollerDetailRow)}
+                variant="body2"
+              >
+                <li> {t(labelAllPollers)} </li>
+                {pollerCount}
+              </Typography>
             )}
             {allowPollerConfiguration && (
               <Paper className={classes.confButton}>

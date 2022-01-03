@@ -100,6 +100,8 @@ const mockUser = {
 const mockRefreshInterval = 15;
 const mockDowntime = {
   default_duration: 7200,
+  default_fixed: true,
+  default_with_services: false,
 };
 const mockAcl = {
   actions: {
@@ -213,6 +215,7 @@ describe(Actions, () => {
       writable: true,
     });
 
+    mockedAxios.post.mockReset();
     mockedAxios.get
       .mockResolvedValueOnce({
         data: {
@@ -324,7 +327,7 @@ describe(Actions, () => {
     fireEvent.click(getByLabelText(labelAcknowledgeServices));
 
     mockedAxios.get.mockResolvedValueOnce({ data: {} });
-    mockedAxios.post.mockResolvedValueOnce({}).mockResolvedValueOnce({});
+    mockedAxios.post.mockResolvedValueOnce({});
 
     fireEvent.click(last(getAllByText(labelAcknowledge)) as HTMLElement);
 
@@ -523,7 +526,7 @@ describe(Actions, () => {
     fireEvent.click(last(getAllByText(labelSetDowntime)) as HTMLElement);
 
     mockedAxios.get.mockResolvedValueOnce({ data: {} });
-    mockedAxios.post.mockResolvedValueOnce({}).mockResolvedValueOnce({});
+    mockedAxios.post.mockResolvedValueOnce({});
 
     await findAllByText(labelDowntimeByAdmin);
 
@@ -539,7 +542,7 @@ describe(Actions, () => {
             end_time: '2020-01-01T02:00:00Z',
             is_fixed: true,
             start_time: '2020-01-01T00:00:00Z',
-            with_services: true,
+            with_services: false,
           },
           resources: map(pick(['type', 'id', 'parent']), selectedResources),
         },
@@ -559,7 +562,7 @@ describe(Actions, () => {
 
     mockedAxios.get.mockResolvedValueOnce({ data: {} });
     mockedAxios.all.mockResolvedValueOnce([]);
-    mockedAxios.post.mockResolvedValueOnce({}).mockResolvedValueOnce({});
+    mockedAxios.post.mockResolvedValueOnce({});
 
     fireEvent.click(getByText(labelCheck));
 
@@ -575,7 +578,7 @@ describe(Actions, () => {
   });
 
   it('sends a submit status request when a Resource is selected and the Submit status action is clicked', async () => {
-    mockedAxios.post.mockResolvedValueOnce({}).mockResolvedValueOnce({});
+    mockedAxios.post.mockResolvedValueOnce({});
 
     const { getByText, getByLabelText } = renderActions();
 
