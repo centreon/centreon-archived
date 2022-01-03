@@ -61,7 +61,7 @@ abstract class SourceAbstract implements SourceInterface
     protected $path;
 
     /**
-     * @var mixed
+     * @var \CentreonLegacy\Core\Widget\Upgrader
      */
     protected $upgrader;
 
@@ -71,12 +71,12 @@ abstract class SourceAbstract implements SourceInterface
     protected $license;
 
     /**
-     * @var mixed
+     * @var \CentreonLegacy\Core\Widget\Remover
      */
     protected $remover;
 
     /**
-     * @var mixed
+     * @var \CentreonLegacy\Core\Widget\Installer
      */
     protected $installer;
 

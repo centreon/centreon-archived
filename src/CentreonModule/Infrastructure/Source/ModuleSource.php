@@ -57,26 +57,6 @@ class ModuleSource extends SourceAbstract
     protected $info;
 
     /**
-     * @var \CentreonLegacy\Core\Module\Installer
-     */
-    protected $installer;
-
-    /**
-     * @var \CentreonLegacy\Core\Module\Upgrader
-     */
-    protected $upgrader;
-
-    /**
-     * @var \CentreonLegacy\Core\Module\License
-     */
-    protected $license;
-
-    /**
-     * @var \CentreonLegacy\Core\Module\Remover
-     */
-    protected $remover;
-
-    /**
      * Construct
      *
      * @param \Psr\Container\ContainerInterface $services

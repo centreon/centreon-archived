@@ -84,7 +84,7 @@ class SourceAbstractTest extends TestCase
             }))
         ;
 
-        $this->source->installer = function ($id) {
+        $installer = function ($id) {
             $mock = new class {
 
                 /**
@@ -109,7 +109,7 @@ class SourceAbstractTest extends TestCase
             return $mock;
         };
 
-        $this->source->upgrader = function ($id) {
+        $upgrader = function ($id) {
             $mock = new class {
 
                 /**
@@ -134,7 +134,7 @@ class SourceAbstractTest extends TestCase
             return $mock;
         };
 
-        $this->source->remover = function ($id) {
+        $remover = function ($id) {
             $mock = new class {
 
                 /**

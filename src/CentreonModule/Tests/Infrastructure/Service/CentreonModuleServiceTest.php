@@ -277,10 +277,10 @@ class CentreonModuleServiceTest extends TestCase
      */
     public function testInitSources(): void
     {
-        $container = new Container;
+        $container = new Container();
         $container['finder'] = null;
         $container['configuration'] = $this->createMock(Configuration::class);
-        $container[\Centreon\ServiceProvider::CENTREON_DB_MANAGER] = new Mock\CentreonDBManagerService;
+        $container[\Centreon\ServiceProvider::CENTREON_DB_MANAGER] = new Mock\CentreonDBManagerService();
 
         // Data sets
         $queries = array_merge(ModuleSourceTest::$sqlQueryVsData, WidgetSourceTest::$sqlQueryVsData);
