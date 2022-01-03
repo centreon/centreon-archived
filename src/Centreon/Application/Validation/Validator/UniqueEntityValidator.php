@@ -87,7 +87,7 @@ class UniqueEntityValidator extends ConstraintValidator implements CentreonValid
         }
 
         foreach ($fields as $field) {
-            $methodValueGetter = 'get'. ucfirst($field);
+            $methodValueGetter = 'get' . ucfirst($field);
             $value = $entity->$methodValueGetter();
 
             $result = $this->db->getRepository($constraint->repository)
