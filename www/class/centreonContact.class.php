@@ -341,14 +341,14 @@ class CentreonContact
      */
     private function respectPasswordChangePolicyOrFail(array $passwordPolicy, string $password, int $contactId): void
     {
-        $statement2 = $this->db->prepare(
+        $statement = $this->db->prepare(
             "SELECT creation_date FROM contact_password "
             . "WHERE contact_id = :contactId "
             . "ORDER BY creation_date DESC LIMIT 1"
         );
-        $statement2->bindValue(':contactId', $contactId, \PDO::PARAM_INT);
-        $statement2->execute();
-        if ($passwordCreationDate = $statement2->fetchColumn()) {
+        $statement->bindValue(':contactId', $contactId, \PDO::PARAM_INT);
+        $statement->execute();
+        if ($passwordCreationDate = $statement->fetchColumn()) {
             $delayBeforeNewPassword = (int) $passwordPolicy['delay_before_new_password'];
             $isPasswordCanBeChanged = (int) $passwordCreationDate + $delayBeforeNewPassword < time();
             if (!$isPasswordCanBeChanged) {
