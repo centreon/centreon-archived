@@ -28,7 +28,6 @@ interface FindServicePresenterInterface extends PresenterInterface
 {
     /**
      * @param FindServiceResponse $response
-     * @return void
      */
     public function present(FindServiceResponse $response): void;
 }
