@@ -57,6 +57,7 @@ class CheckListOfIdsTraitTest extends TestCase
              * @param int[] $ids
              * @param string|null $tableName
              * @param string|null $columnNameOfIdentificator
+             * @return boolean
              */
             public function checkListOfIds(
                 array $ids,

@@ -153,6 +153,9 @@ class TopologyRepositoryTest extends TestCase
                         return [1];
                     }
 
+                    /**
+                     * @return string
+                     */
                     public function getAccessGroupsString(): string
                     {
                         return '1';

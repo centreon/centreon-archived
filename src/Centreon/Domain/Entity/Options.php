@@ -22,6 +22,9 @@ class Options
         $this->key = $key;
     }
 
+    /**
+     * @return string
+     */
     public function getKey(): string
     {
         return $this->key;
@@ -35,6 +38,9 @@ class Options
         $this->value = $value;
     }
 
+    /**
+     * @return string|null
+     */
     public function getValue(): ?string
     {
         return $this->value;
