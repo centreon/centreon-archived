@@ -25,8 +25,12 @@ namespace Tests\Core\Application\Security\UseCase\FindSecurityPolicy;
 
 use PHPUnit\Framework\TestCase;
 use Core\Domain\Security\Model\SecurityPolicy;
+use Core\Application\Common\Presenter\PresenterFormatterInterface;
 use Core\Application\Security\UseCase\FindSecurityPolicy\FindSecurityPolicy;
 use Core\Application\Security\Repository\ReadSecurityPolicyRepositoryInterface;
+use Core\Application\Security\UseCase\FindSecurityPolicy\FindSecurityPolicyErrorResponse;
+use Core\Infrastructure\Security\Api\FindSecurityPolicy\FindSecurityPolicyPresenter;
+use Tests\Core\Application\Security\UseCase\FindSecurityPolicy\FindSecurityPolicyPresenterFake;
 
 class FindSecurityPolicyTest extends TestCase
 {
@@ -35,9 +39,15 @@ class FindSecurityPolicyTest extends TestCase
      */
     private $repository;
 
+    /**
+     * @var PresenterFormatterInterface&\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $presenterFormatter;
+
     public function setUp(): void
     {
         $this->repository = $this->createMock(ReadSecurityPolicyRepositoryInterface::class);
+        $this->presenterFormatter = $this->createMock(PresenterFormatterInterface::class);
     }
 
     /**
@@ -79,5 +89,27 @@ class FindSecurityPolicyTest extends TestCase
         $this->assertEquals($presenter->response->blockingDuration, $securityPolicy->getBlockingDuration());
         $this->assertEquals($presenter->response->passwordExpiration, $securityPolicy->getPasswordExpiration());
         $this->assertEquals($presenter->response->delayBeforeNewPassword, $securityPolicy->getDelayBeforeNewPassword());
+    }
+
+    /**
+     * Test that an error message is returned by the API when no security policy was found.
+     */
+    public function testFindSecurityPolicyError(): void
+    {
+        $this->repository
+            ->expects($this->once())
+            ->method('findSecurityPolicy')
+            ->willReturn(null);
+        $useCase = new FindSecurityPolicy($this->repository);
+        $presenter = new FindSecurityPolicyPresenter($this->presenterFormatter);
+
+        $useCase($presenter);
+
+        $this->assertEquals(
+            $presenter->getResponseStatus(),
+            new FindSecurityPolicyErrorResponse(
+                'Security policy not found. Please verify that your installation is valid'
+            )
+        );
     }
 }
