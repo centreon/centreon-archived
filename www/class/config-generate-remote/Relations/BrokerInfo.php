@@ -129,7 +129,7 @@ class BrokerInfo extends AbstractObject
                 "SELECT *
                 FROM cfg_centreonbroker_info
                 WHERE config_id = :config_id
-                AND config_group <> 'logger'"
+                AND config_group"
             );
         }
 
