@@ -268,7 +268,7 @@ class CentreonContact extends CentreonObject
         if (password_needs_rehash($params[self::ORDER_PASS], \CentreonAuth::PASSWORD_HASH_ALGORITHM)) {
             $contact = new \CentreonContact($this->db);
             try {
-                $contact->respectPasswordPolicyOrFail($params[2], null);
+                $contact->respectPasswordPolicyOrFail($params[self::ORDER_PASS], null);
             } catch (\Throwable $e) {
                 throw new CentreonClapiException($e->getMessage(), $e->getCode(), $e);
             }
