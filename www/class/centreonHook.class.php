@@ -35,7 +35,6 @@
 
 class CentreonHook
 {
-
     /**
      * Class constructor
      *

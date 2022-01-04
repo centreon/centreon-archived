@@ -10,7 +10,6 @@ use Centreon\Infrastructure\CentreonLegacyDB\ServiceEntityRepository;
  */
 class CentreonDBManagerService
 {
-
     /**
      * @var string
      */
