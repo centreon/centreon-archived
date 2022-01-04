@@ -23,6 +23,7 @@ declare(strict_types=1);
 
 namespace Core\Infrastructure\Common\Presenter;
 
+use Centreon\Domain\Log\LoggerTrait;
 use Core\Application\Common\UseCase\ErrorResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Core\Application\Common\UseCase\NotFoundResponse;
@@ -30,6 +31,8 @@ use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
 
 class JsonPresenter implements PresenterFormatterInterface
 {
+    use LoggerTrait;
+
     /**
      * @var mixed $data
      */
@@ -49,6 +52,7 @@ class JsonPresenter implements PresenterFormatterInterface
     public function show(): JsonResponse
     {
         if (is_subclass_of($this->data, NotFoundResponse::class, false)) {
+            $this->debug('Data couldn\'t be found, generate not found response');
             return new JsonResponse(
                 [
                     'code' => JsonResponse::HTTP_NOT_FOUND,
@@ -57,6 +61,7 @@ class JsonPresenter implements PresenterFormatterInterface
                 JsonResponse::HTTP_NOT_FOUND
             );
         } elseif (is_subclass_of($this->data, ErrorResponse::class, false)) {
+            $this->debug('Error with your data, generate error response');
             return new JsonResponse(
                 [
                     'code' => JsonResponse::HTTP_INTERNAL_SERVER_ERROR,
