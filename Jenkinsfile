@@ -36,7 +36,9 @@ def backendFiles = [
   'Jenkinsfile',
   'sonar-project.properties',
   '**/*.php',
-  'www/**/*.js',
+  'www/include/**/*.js',
+  'www/class/**/*.js',
+  'www/lib/**/*.js',
   '**/*.sh',
   'composer.*',
   'symfony.lock',
@@ -415,7 +417,7 @@ try {
   }
   
   stage('Acceptance tests') {
-    if (hasBackendChanges || hasFrontendChanges) {
+    if (hasBackendChanges) {
       def atparallelSteps = [:]
       for (x in featureFiles) {
         def feature = x
