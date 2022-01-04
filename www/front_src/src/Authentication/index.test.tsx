@@ -1,8 +1,9 @@
 import * as React from 'react';
 
-import { RenderResult, render, screen, waitFor } from '@testing-library/react';
 import axios from 'axios';
 import userEvent from '@testing-library/user-event';
+
+import { RenderResult, render, screen, waitFor } from '@centreon/ui';
 
 import {
   labelReset,
@@ -73,7 +74,7 @@ describe('Authentication', () => {
     expect(screen.getByText(labelPasswordBlockingPolicy)).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(screen.getByText(labelSave).parentElement).not.toBeDisabled();
+      expect(screen.getByText(labelSave)).not.toBeDisabled();
     });
 
     userEvent.type(
@@ -82,7 +83,7 @@ describe('Authentication', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText(labelSave).parentElement).not.toBeDisabled();
+      expect(screen.getByText(labelSave)).not.toBeDisabled();
     });
 
     userEvent.click(screen.getByText(labelSave));
@@ -119,7 +120,7 @@ describe('Authentication', () => {
     expect(screen.getByText(labelPasswordBlockingPolicy)).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(screen.getByText(labelReset).parentElement).toBeDisabled();
+      expect(screen.getByText(labelReset)).toBeDisabled();
     });
 
     userEvent.type(
@@ -133,7 +134,7 @@ describe('Authentication', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText(labelReset).parentElement).not.toBeDisabled();
+      expect(screen.getByText(labelReset)).not.toBeDisabled();
     });
 
     userEvent.click(screen.getByText(labelReset));
@@ -171,7 +172,7 @@ describe('Authentication', () => {
     expect(screen.getByText(labelPasswordBlockingPolicy)).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(screen.getByText(labelSave).parentElement).toBeDisabled();
+      expect(screen.getByText(labelSave)).toBeDisabled();
     });
 
     userEvent.type(
@@ -180,7 +181,7 @@ describe('Authentication', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText(labelSave).parentElement).not.toBeDisabled();
+      expect(screen.getByText(labelSave)).not.toBeDisabled();
     });
 
     userEvent.click(screen.getByText(labelSave));

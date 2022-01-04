@@ -5,17 +5,13 @@ interface GetFieldProps {
   object;
 }
 
-export const getField = <T extends unknown>({
-  field,
-  object,
-}: GetFieldProps): T => prop(field, object);
+export const getField = <T>({ field, object }: GetFieldProps): T =>
+  prop(field, object);
 
 interface GetFieldsProps {
   fields: Array<string>;
   object;
 }
 
-export const getFields = <T extends unknown>({
-  fields,
-  object,
-}: GetFieldsProps): Array<T> => props<string, T>(fields, object);
+export const getFields = <T>({ fields, object }: GetFieldsProps): Array<T> =>
+  props<string, T>(fields, object);

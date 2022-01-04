@@ -1,8 +1,9 @@
 import * as React from 'react';
 
-import { render, RenderResult, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Formik } from 'formik';
+
+import { render, RenderResult, screen, waitFor } from '@centreon/ui';
 
 import { SecurityPolicy } from '../../models';
 import useValidationSchema from '../../useValidationSchema';
@@ -63,11 +64,17 @@ describe('Password case policy', () => {
     });
 
     expect(screen.getByLabelText(labelPasswordLength)).toHaveValue(12);
-    expect(screen.getByLabelText(labelForceToUseLowerCase)).toBeInTheDocument();
-    expect(screen.getByLabelText(labelForceToUseUpperCase)).toBeInTheDocument();
-    expect(screen.getByLabelText(labelForceToUseNumbers)).toBeInTheDocument();
     expect(
-      screen.getByLabelText(labelForceToUseSpecialCharacters),
+      screen.getAllByLabelText(labelForceToUseLowerCase)[0],
+    ).toBeInTheDocument();
+    expect(
+      screen.getAllByLabelText(labelForceToUseUpperCase)[0],
+    ).toBeInTheDocument();
+    expect(
+      screen.getAllByLabelText(labelForceToUseNumbers)[0],
+    ).toBeInTheDocument();
+    expect(
+      screen.getAllByLabelText(labelForceToUseSpecialCharacters)[0],
     ).toBeInTheDocument();
     expect(screen.getByText(labelStrong)).toBeInTheDocument();
   });
@@ -126,10 +133,12 @@ describe('Password case policy', () => {
   it('displays "Strong" when all cases buttons are selected', async () => {
     renderPasswordCasePolicy(defaultSecurityPolicyWithNullValues);
 
-    userEvent.click(screen.getByLabelText(labelForceToUseLowerCase));
-    userEvent.click(screen.getByLabelText(labelForceToUseUpperCase));
-    userEvent.click(screen.getByLabelText(labelForceToUseNumbers));
-    userEvent.click(screen.getByLabelText(labelForceToUseSpecialCharacters));
+    userEvent.click(screen.getAllByLabelText(labelForceToUseLowerCase)[0]);
+    userEvent.click(screen.getAllByLabelText(labelForceToUseUpperCase)[0]);
+    userEvent.click(screen.getAllByLabelText(labelForceToUseNumbers)[0]);
+    userEvent.click(
+      screen.getAllByLabelText(labelForceToUseSpecialCharacters)[0],
+    );
 
     await waitFor(() => {
       expect(screen.getByText(labelStrong)).toBeInTheDocument();
@@ -139,9 +148,11 @@ describe('Password case policy', () => {
   it('displays "Good" when only 3 cases buttons are selected', async () => {
     renderPasswordCasePolicy(defaultSecurityPolicyWithNullValues);
 
-    userEvent.click(screen.getByLabelText(labelForceToUseLowerCase));
-    userEvent.click(screen.getByLabelText(labelForceToUseUpperCase));
-    userEvent.click(screen.getByLabelText(labelForceToUseSpecialCharacters));
+    userEvent.click(screen.getAllByLabelText(labelForceToUseLowerCase)[0]);
+    userEvent.click(screen.getAllByLabelText(labelForceToUseUpperCase)[0]);
+    userEvent.click(
+      screen.getAllByLabelText(labelForceToUseSpecialCharacters)[0],
+    );
 
     await waitFor(() => {
       expect(screen.getByText(labelGood)).toBeInTheDocument();
@@ -151,8 +162,10 @@ describe('Password case policy', () => {
   it('displays "Weak" when only 2 cases buttons are selected', async () => {
     renderPasswordCasePolicy(defaultSecurityPolicyWithNullValues);
 
-    userEvent.click(screen.getByLabelText(labelForceToUseNumbers));
-    userEvent.click(screen.getByLabelText(labelForceToUseSpecialCharacters));
+    userEvent.click(screen.getAllByLabelText(labelForceToUseNumbers)[0]);
+    userEvent.click(
+      screen.getAllByLabelText(labelForceToUseSpecialCharacters)[0],
+    );
 
     await waitFor(() => {
       expect(screen.getByText(labelWeak)).toBeInTheDocument();

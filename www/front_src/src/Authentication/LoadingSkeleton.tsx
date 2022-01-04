@@ -1,6 +1,7 @@
 import * as React from 'react';
 
-import { Divider, makeStyles } from '@material-ui/core';
+import { Divider } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 
 import { LoadingSkeleton } from '@centreon/ui';
 

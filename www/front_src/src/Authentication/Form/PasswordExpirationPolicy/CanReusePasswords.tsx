@@ -3,7 +3,8 @@ import * as React from 'react';
 import { FormikValues, useFormikContext } from 'formik';
 import { useTranslation } from 'react-i18next';
 
-import { FormControlLabel, makeStyles, Switch } from '@material-ui/core';
+import { FormControlLabel, Switch } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 
 import { useMemoComponent } from '@centreon/centreon-frontend/packages/centreon-ui/src';
 

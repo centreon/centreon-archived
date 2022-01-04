@@ -4,7 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { FormikValues, useFormikContext } from 'formik';
 import { equals, not } from 'ramda';
 
-import { Button, makeStyles } from '@material-ui/core';
+import { Button } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 
 import { ConfirmDialog, SaveButton, useMemoComponent } from '@centreon/ui';
 

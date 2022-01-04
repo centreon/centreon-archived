@@ -3,13 +3,8 @@ import * as React from 'react';
 import { findLast, gt } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
-import {
-  alpha,
-  LinearProgress,
-  makeStyles,
-  Theme,
-  Typography,
-} from '@material-ui/core';
+import { alpha, LinearProgress, Theme, Typography } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 
 import memoizeComponent from '../Resources/memoizedComponent';
 

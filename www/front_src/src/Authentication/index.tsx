@@ -3,13 +3,8 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { isNil, not } from 'ramda';
 
-import {
-  Paper,
-  makeStyles,
-  Theme,
-  Typography,
-  LinearProgress,
-} from '@material-ui/core';
+import { Paper, Theme, Typography, LinearProgress } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 
 import { labelDefinePasswordSecurityPolicy } from './translatedLabels';
 import useAuthentication from './useAuthentication';

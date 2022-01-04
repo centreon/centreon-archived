@@ -4,7 +4,7 @@ import { FormikValues, useFormikContext } from 'formik';
 import { useTranslation } from 'react-i18next';
 import { isNil, not } from 'ramda';
 
-import { FormHelperText, FormLabel, useTheme } from '@material-ui/core';
+import { FormHelperText, FormLabel, useTheme } from '@mui/material';
 
 import { useMemoComponent } from '@centreon/ui';
 

@@ -3,7 +3,8 @@ import * as React from 'react';
 import { Formik } from 'formik';
 import { useTranslation } from 'react-i18next';
 
-import { Divider, makeStyles } from '@material-ui/core';
+import { Divider } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 
 import { useRequest, useSnackbar } from '@centreon/ui';
 

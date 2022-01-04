@@ -3,7 +3,7 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { FormikValues, useFormikContext } from 'formik';
 
-import { FormHelperText, FormLabel } from '@material-ui/core';
+import { FormHelperText, FormLabel } from '@mui/material';
 
 import { useMemoComponent } from '@centreon/centreon-frontend/packages/centreon-ui/src';
 

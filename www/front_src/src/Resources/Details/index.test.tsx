@@ -12,7 +12,6 @@ import {
   fireEvent,
   RenderResult,
   act,
-  ThemeProvider,
   setUrlQueryParameters,
   getUrlQueryParameters,
   copyToClipboard,
@@ -505,11 +504,9 @@ const DetailsTest = (): JSX.Element => {
   } as ResourceContext;
 
   return (
-    <ThemeProvider>
-      <Context.Provider value={context}>
-        <Details />
-      </Context.Provider>
-    </ThemeProvider>
+    <Context.Provider value={context}>
+      <Details />
+    </Context.Provider>
   );
 };
 

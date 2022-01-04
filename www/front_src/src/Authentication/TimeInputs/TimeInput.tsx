@@ -4,7 +4,8 @@ import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
 import { and, equals, gt, path, subtract } from 'ramda';
 
-import { makeStyles, Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 
 import { TextField, useMemoComponent } from '@centreon/ui';
 
@@ -42,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     columnGap: theme.spacing(0.5),
     display: 'grid',
-    gridTemplateColumns: `${theme.spacing(8)}px auto`,
+    gridTemplateColumns: `${theme.spacing(8)} auto`,
   },
 }));
 

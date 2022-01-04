@@ -27,7 +27,9 @@ const ResourceActionButton = ({
   const theme = useTheme();
   const { t } = useTranslation();
 
-  const displayCondensed = Boolean(useMediaQuery(theme.breakpoints.down(1100)));
+  const displayCondensed = Boolean(
+    useMediaQuery(theme.breakpoints.down(undefined)),
+  );
 
   const title = permitted ? label : `${label} (${t(labelActionNotPermitted)})`;
 

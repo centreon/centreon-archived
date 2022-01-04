@@ -4,7 +4,8 @@ import { FormikValues, useFormikContext } from 'formik';
 import { useTranslation } from 'react-i18next';
 import { isEmpty, isNil, not, path } from 'ramda';
 
-import { makeStyles, useTheme } from '@material-ui/core';
+import { useTheme } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 
 import { TextField, useMemoComponent } from '@centreon/ui';
 

@@ -1,8 +1,9 @@
 import * as React from 'react';
 
-import { render, RenderResult, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Formik } from 'formik';
+
+import { render, RenderResult, screen, waitFor } from '@centreon/ui';
 
 import { SecurityPolicy } from '../../models';
 import useValidationSchema from '../../useValidationSchema';
