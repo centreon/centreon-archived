@@ -58,7 +58,6 @@ class FindServicePresenterStub implements FindServicePresenterInterface
 
     /**
      * @param ResponseStatusInterface|null $responseStatus
-     * @return void
      */
     public function setResponseStatus(?ResponseStatusInterface $responseStatus): void
     {
