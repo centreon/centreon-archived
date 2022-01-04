@@ -49,14 +49,13 @@ class NavigationList implements JsonSerializable
     /**
      * Configurations from navigation.yml
      *
-     * @var array
+     * @var array<mixed>
      */
     private $navConfig;
 
     /**
-     * Construct
-     *
-     * @param array
+     * @param array<mixed> $entities
+     * @param array<mixed> $navConfig
      */
     public function __construct(array $entities, array $navConfig = [])
     {
@@ -64,6 +63,9 @@ class NavigationList implements JsonSerializable
         $this->entities = $entities;
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function getNavConfig(): array
     {
         return $this->navConfig;
@@ -72,7 +74,7 @@ class NavigationList implements JsonSerializable
     /**
      * JSON serialization of entity
      *
-     * @return array
+     * @return array<mixed>
      */
     public function jsonSerialize()
     {

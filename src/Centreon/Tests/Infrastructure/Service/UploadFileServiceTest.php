@@ -44,6 +44,11 @@ use Centreon\Infrastructure\Service\UploadFileService;
 
 class UploadFileServiceTest extends TestCase
 {
+    /**
+     * @var array<string, array<string, array<int,string>|string>>
+     */
+    private $filesRequest;
+
     public function setUp(): void
     {
         $container = new ContainerWrap(new Container());
@@ -82,7 +87,7 @@ class UploadFileServiceTest extends TestCase
         $this->service = new UploadFileService($container, $this->filesRequest);
     }
 
-    public function testGetFiles()
+    public function testGetFiles(): void
     {
         (function () {
             $result = $this->service->getFiles('field1');
@@ -100,7 +105,7 @@ class UploadFileServiceTest extends TestCase
         })();
     }
 
-    public function testPrepare()
+    public function testPrepare(): void
     {
         (function () {
             $result = $this->service->prepare('field1');

@@ -42,7 +42,10 @@ use Centreon\Application\DataRepresenter\Listing;
 
 class BulkTest extends TestCase
 {
-    public function testJsonSerialize()
+    /**
+     * @return void
+     */
+    public function testJsonSerialize(): void
     {
         $lists = [
             'mocks' => [

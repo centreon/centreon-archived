@@ -42,7 +42,10 @@ use Centreon\Application\DataRepresenter\Listing;
 
 class ListingTest extends TestCase
 {
-    public function testJsonSerialize()
+    /**
+     * @return void
+     */
+    public function testJsonSerialize(): void
     {
         $data = [
             1, 2, 3, 4, 5, 6,

@@ -51,6 +51,16 @@ class CentreonDBManagerServiceTest extends TestCase
      */
     protected $service;
 
+    /**
+     * @var CentreonDB
+     */
+    protected $db1;
+
+    /**
+     * @var CentreonDB
+     */
+    protected $db2;
+
     public function setUp(): void
     {
         $this->db1 = new CentreonDB('database_1');

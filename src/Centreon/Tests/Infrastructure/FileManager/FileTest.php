@@ -7,7 +7,7 @@ use Centreon\Infrastructure\FileManager\File;
 
 class FileTest extends TestCase
 {
-    public function testAll()
+    public function testAll(): void
     {
         $data = [
             'name' => 'A.txt',

@@ -68,7 +68,7 @@ class Entity implements JsonSerializable
     }
 
     /**
-     * @param $object
+     * @param object $object
      * @return array
      * @throws \ReflectionException
      */
