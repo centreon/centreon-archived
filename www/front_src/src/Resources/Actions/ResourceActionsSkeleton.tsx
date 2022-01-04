@@ -11,7 +11,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'grid',
     gridTemplateColumns: `${theme.spacing(18)} ${theme.spacing(
       17,
-    )}px ${theme.spacing(11)} min-content`,
+    )} ${theme.spacing(11)} min-content`,
     gridTemplateRows: theme.spacing(3.5),
   },
 }));
