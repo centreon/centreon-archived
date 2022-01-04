@@ -61,7 +61,7 @@ class JsonPresenter implements PresenterFormatterInterface
                 JsonResponse::HTTP_NOT_FOUND
             );
         } elseif (is_subclass_of($this->data, ErrorResponse::class, false)) {
-            $this->debug('Error with your data, generate error response');
+            $this->debug('Data error. Generating an error response');
             return new JsonResponse(
                 [
                     'code' => JsonResponse::HTTP_INTERNAL_SERVER_ERROR,
