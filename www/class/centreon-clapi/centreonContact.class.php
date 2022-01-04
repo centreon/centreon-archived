@@ -266,6 +266,12 @@ class CentreonContact extends CentreonObject
         $addParams['contact_email'] = $params[self::ORDER_MAIL];
 
         if (password_needs_rehash($params[self::ORDER_PASS], \CentreonAuth::PASSWORD_HASH_ALGORITHM)) {
+            $contact = new \CentreonContact($this->db);
+            try {
+                $contact->respectPasswordPolicyOrFail($params[2], null);
+            } catch (\Throwable $e) {
+                throw new CentreonClapiException($e->getMessage(), $e->getCode(), $e);
+            }
             $addParams['contact_passwd'] = password_hash(
                 $params[self::ORDER_PASS],
                 \CentreonAuth::PASSWORD_HASH_ALGORITHM
@@ -365,14 +371,14 @@ class CentreonContact extends CentreonObject
                     $params[1] = "lang";
                     $params[2] = $completeLanguage;
                 } elseif ($params[1] === "password") {
-                    $contact = new \CentreonContact($this->db);
-                    try {
-                        $contact->respectPasswordPolicyOrFail($params[2], $objectId);
-                    } catch (\Throwable $e) {
-                        throw new CentreonClapiException($e->getMessage(), $e->getCode(), $e);
-                    }
                     $params[1] = "passwd";
                     if (password_needs_rehash($params[2], \CentreonAuth::PASSWORD_HASH_ALGORITHM)) {
+                        $contact = new \CentreonContact($this->db);
+                        try {
+                            $contact->respectPasswordPolicyOrFail($params[2], $objectId);
+                        } catch (\Throwable $e) {
+                            throw new CentreonClapiException($e->getMessage(), $e->getCode(), $e);
+                        }
                         $params[2] = password_hash($params[2], \CentreonAuth::PASSWORD_HASH_ALGORITHM);
                     }
                 } elseif ($params[1] == "hostnotifopt") {
