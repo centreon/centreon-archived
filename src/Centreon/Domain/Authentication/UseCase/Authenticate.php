@@ -26,10 +26,10 @@ use Centreon;
 use Centreon\Domain\Log\LoggerTrait;
 use Centreon\Domain\Menu\Model\Page;
 use Security\Domain\Authentication\Model\Session;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Security\Domain\Authentication\Model\ProviderToken;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Menu\Interfaces\MenuServiceInterface;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
 use Centreon\Domain\Authentication\UseCase\AuthenticateResponse;
 use Security\Domain\Authentication\Exceptions\ProviderException;
@@ -66,9 +66,9 @@ class Authenticate
     private $redirectDefaultPage;
 
     /**
-     * @var SessionInterface
+     * @var RequestStack
      */
-    private $session;
+    private $requestStack;
 
     /**
      * @var MenuServiceInterface
@@ -95,7 +95,7 @@ class Authenticate
      * @param AuthenticationServiceInterface $authenticationService
      * @param ProviderServiceInterface $providerService
      * @param ContactServiceInterface $contactService
-     * @param SessionInterface $session
+     * @param RequestStack $requestStack
      * @param MenuServiceInterface $menuService
      * @param AuthenticationRepositoryInterface $authenticationRepository
      * @param SessionRepositoryInterface $sessionRepository
@@ -106,7 +106,7 @@ class Authenticate
         AuthenticationServiceInterface $authenticationService,
         ProviderServiceInterface $providerService,
         ContactServiceInterface $contactService,
-        SessionInterface $session,
+        RequestStack $requestStack,
         MenuServiceInterface $menuService,
         AuthenticationRepositoryInterface $authenticationRepository,
         SessionRepositoryInterface $sessionRepository,
@@ -116,7 +116,7 @@ class Authenticate
         $this->authenticationService = $authenticationService;
         $this->providerService = $providerService;
         $this->contactService = $contactService;
-        $this->session = $session;
+        $this->requestStack = $requestStack;
         $this->menuService = $menuService;
         $this->authenticationRepository = $authenticationRepository;
         $this->sessionRepository = $sessionRepository;
@@ -150,14 +150,20 @@ class Authenticate
          * Search for an already existing and available authentications token.
          * Create a new one if no one are found.
          */
-        $authenticationTokens = $this->authenticationService->findAuthenticationTokensByToken($this->session->getId());
+        $authenticationTokens = $this->authenticationService->findAuthenticationTokensByToken(
+            $this->requestStack->getCurrentRequest()->getSession()->getId()
+        );
         if ($authenticationTokens === null) {
             $this->createAuthenticationTokens(
-                $this->session->getId(),
+                $this->requestStack->getCurrentRequest()->getSession()->getId(),
                 $authenticationProvider->getConfiguration()->getName(),
                 $providerUser,
-                $authenticationProvider->getProviderToken($this->session->getId()),
-                $authenticationProvider->getProviderRefreshToken($this->session->getId()),
+                $authenticationProvider->getProviderToken(
+                    $this->requestStack->getCurrentRequest()->getSession()->getId()
+                ),
+                $authenticationProvider->getProviderRefreshToken(
+                    $this->requestStack->getCurrentRequest()->getSession()->getId()
+                ),
                 $request->getClientIp()
             );
         }
@@ -320,7 +326,8 @@ class Authenticate
     private function startLegacySession(Centreon $legacySession): void
     {
         $this->info('[AUTHENTICATE] Starting Centreon Session');
-        $this->session->start();
+        $this->requestStack->getCurrentRequest()->getSession()->start();
+        $this->requestStack->getCurrentRequest()->getSession()->set('centreon', $legacySession);
         $_SESSION['centreon'] = $legacySession;
     }
 
@@ -363,7 +370,7 @@ class Authenticate
     {
         if ($defaultPage->isReact() === true) {
             // redirect to the react path
-            $redirectUri = $defaultPage->getUrl() ?? '';
+            $redirectUri = $defaultPage->getUrl();
         } else {
             $redirectUri = "/main.php?p=" . $defaultPage->getPageNumber();
             if ($defaultPage->getUrlOptions() !== null) {

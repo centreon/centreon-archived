@@ -8,16 +8,16 @@ import { useAtomValue } from 'jotai/utils';
 
 import {
   Typography,
-  makeStyles,
   useTheme,
   alpha,
   Theme,
   Tooltip,
   Box,
   Button,
-} from '@material-ui/core';
-import BarChartIcon from '@material-ui/icons/BarChart';
-import { CreateCSSProperties } from '@material-ui/styles';
+} from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import BarChartIcon from '@mui/icons-material/BarChart';
+import { CreateCSSProperties } from '@mui/styles';
 
 import { Line, TimeValue } from '../models';
 import memoizeComponent from '../../../memoizedComponent';
@@ -104,7 +104,7 @@ const useStyles = makeStyles<Theme, MakeStylesProps, string>((theme) => ({
   minMaxAvgContainer: {
     columnGap: theme.spacing(0.5),
     display: 'grid',
-    gridAutoRows: `${theme.spacing(2)}px`,
+    gridAutoRows: theme.spacing(2),
     gridTemplateColumns: 'repeat(2, min-content)',
     whiteSpace: 'nowrap',
   },

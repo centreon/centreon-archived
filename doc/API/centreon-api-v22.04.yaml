@@ -185,6 +185,25 @@ paths:
                     example: "/centreon/main.php?p=50113&o=ldap"
         '302':
           description: "Found"
+  /authentication/logout:
+    post:
+      tags:
+        - Authentication
+      summary: "Logout Session"
+      description: "Entry point to delete an existing session token."
+      security:
+        - Token: []
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogoutAuthenticationResponse'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /configuration/hosts/templates:
     get:
       tags:
@@ -3199,12 +3218,40 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
-  /platform/versions/web:
+  /platform/versions:
+    get:
+      tags:
+        - Platform
+      summary: "List versions of web, widgets and modules"
+      description: "List versions of web, widgets and modules"
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  web:
+                      $ref: '#/components/schemas/Platform.Versions'
+                  widgets:
+                    type: object
+                    properties:
+                      widgetName:
+                        type: object
+                        $ref: '#/components/schemas/Platform.Versions'
+                  modules:
+                    type: object
+                    properties:
+                      moduleName:
+                        type: object
+                        $ref: '#/components/schemas/Platform.Versions'
+  /platform/installation/status:
     get:
       tags:
         - Platform
       summary: "Get centreon web versions"
-      description: "Get installed and available versions of centreon web"
+      description: "Get installation status and available versions of centreon web"
       responses:
         '200':
           description: "OK"
@@ -3214,13 +3261,10 @@ paths:
                 type: object
                 required: ["installed_version", "available_version"]
                 properties:
-                  installed_version:
-                    type: string
-                    nullable: true
-                    description: |
-                      installed version of centreon web
-                      null if centreon web is not installed
-                    example: 21.10.0
+                  is_installed:
+                    type: boolean
+                    description: Installation status of centreon web
+                    example: true
                   available_version:
                     type: string
                     nullable: true
@@ -3434,6 +3478,14 @@ paths:
                     monitoring_default_acknowledgement_sticky:
                       type: boolean
                       description: Default monitoring acknowledgement sticky option
+                      example: true
+                    monitoring_default_downtime_fixed:
+                      type: boolean
+                      description: Default monitoring downtime fixed option
+                      example: true
+                    monitoring_default_downtime_with_services:
+                      type: boolean
+                      description: Default set downtimes on services attached to hosts option
                       example: true
         '400':
           $ref: '#/components/responses/BadRequest'
@@ -6043,3 +6095,23 @@ components:
                 type: string
                 description: "Data on JSON Format"
                 example: "{\"action\":\"getthumbprint\",\"data\":{\"thumbprint\":\"xxxx_xxxxxxxxx\"},\"message\":\"ok\"}"
+    Platform.Versions:
+      type: object
+      description: "version"
+      properties:
+        version:
+          type: string
+          description: "Full Version"
+          example: 22.04.0
+        major:
+          type: string
+          description: "Major version"
+          example: "22"
+        minor:
+          type: string
+          description: "Minor version"
+          example: "04"
+        fix:
+          type: string
+          description: "Fix version"
+          example: "0"

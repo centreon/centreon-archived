@@ -1,8 +1,9 @@
 import * as React from 'react';
 
 import axios from 'axios';
-import { render, waitFor, fireEvent } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
+
+import { render, waitFor, fireEvent } from '@centreon/ui';
 
 import HostStatusCounter from '.';
 

@@ -15,7 +15,7 @@ const useUser = (
 ): (() => null | Promise<void>) => {
   const { sendRequest: getUser } = useRequest<User>({
     decoder: userDecoder,
-    httpCodesForBypassShowErrorMessage: [403, 401],
+    httpCodesBypassErrorSnackbar: [403, 401],
     request: getData,
   });
 

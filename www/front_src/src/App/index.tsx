@@ -4,8 +4,10 @@ import { Provider as ReduxProvider } from 'react-redux';
 import Fullscreen from 'react-fullscreen-crossbrowser';
 import { not } from 'ramda';
 
-import FullscreenIcon from '@material-ui/icons/Fullscreen';
-import { makeStyles, Fab } from '@material-ui/core';
+import FullscreenIcon from '@mui/icons-material/Fullscreen';
+import { Fab } from '@mui/material';
+
+import makeStyles from '@mui/styles/makeStyles';
 
 import { LoadingSkeleton } from '@centreon/ui';
 

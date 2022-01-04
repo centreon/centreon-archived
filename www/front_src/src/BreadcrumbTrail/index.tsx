@@ -3,8 +3,9 @@ import * as React from 'react';
 import { useAtomValue } from 'jotai/utils';
 import { isNil } from 'ramda';
 
-import { makeStyles, Breadcrumbs as MuiBreadcrumbs } from '@material-ui/core';
-import NavigateNextIcon from '@material-ui/icons/NavigateNext';
+import { Breadcrumbs as MuiBreadcrumbs } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 
 import navigationAtom from '../Navigation/navigationAtoms';
 

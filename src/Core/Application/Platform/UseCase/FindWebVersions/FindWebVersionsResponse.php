@@ -18,22 +18,20 @@
  * For more information : contact@centreon.com
  *
  */
+
 declare(strict_types=1);
 
-namespace Security\Domain\Authentication\Exceptions;
+namespace Core\Application\Platform\UseCase\FindWebVersions;
 
-/**
- * This class is designed to contain all exceptions for both contexts of SessionAPI & TokenAPI authenticators.
- *
- * @package Security\Domain\Authentication\Exceptions
- */
-class AuthenticatorException extends \Exception
+class FindWebVersionsResponse
 {
     /**
-     * @return self
+     * @var bool
      */
-    public static function sessionTokenNotFound(): self
-    {
-        return new self(_('Session token not found'));
-    }
+    public bool $isCentreonWebInstalled;
+
+    /**
+     * @var string|null
+     */
+    public ?string $centreonUpgradeVersion;
 }

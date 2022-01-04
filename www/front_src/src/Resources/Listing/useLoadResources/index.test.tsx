@@ -30,7 +30,7 @@ let context: ResourceContext;
 const LoadResourcesComponent = (): JSX.Element => {
   useLoadResources();
 
-  return <></>;
+  return <div />;
 };
 
 const TestComponent = (): JSX.Element => {

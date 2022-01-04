@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { makeStyles } from '@material-ui/core';
+import { makeStyles } from '@mui/styles';
 
 import { LoadingSkeleton } from '@centreon/ui';
 
@@ -9,10 +9,10 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     columnGap: theme.spacing(1),
     display: 'grid',
-    gridTemplateColumns: `${theme.spacing(18)}px ${theme.spacing(
+    gridTemplateColumns: `${theme.spacing(18)} ${theme.spacing(
       17,
-    )}px ${theme.spacing(11)}px min-content`,
-    gridTemplateRows: `${theme.spacing(3.5)}px`,
+    )} ${theme.spacing(11)} min-content`,
+    gridTemplateRows: theme.spacing(3.5),
   },
 }));
 
@@ -24,7 +24,7 @@ const ResourceActionsSkeleton = (): JSX.Element => {
       <LoadingSkeleton height="100%" />
       <LoadingSkeleton height="100%" />
       <LoadingSkeleton height="100%" />
-      <LoadingSkeleton height={24} variant="circle" width={24} />
+      <LoadingSkeleton height={24} variant="circular" width={24} />
     </div>
   );
 };

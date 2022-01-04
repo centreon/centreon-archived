@@ -4,7 +4,9 @@ import { FormikValues, useFormikContext } from 'formik';
 import { isEmpty, not, prop } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
-import { Button, CircularProgress, makeStyles } from '@material-ui/core';
+import { Button, CircularProgress } from '@mui/material';
+
+import makeStyles from '@mui/styles/makeStyles';
 
 import { TextField } from '@centreon/ui';
 

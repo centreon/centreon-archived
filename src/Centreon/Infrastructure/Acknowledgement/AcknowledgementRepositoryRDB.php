@@ -132,6 +132,14 @@ final class AcknowledgementRepositoryRDB extends AbstractRepositoryDRB implement
     }
 
     /**
+     * @inheritDoc
+     */
+    public function getAdmin(): bool
+    {
+        return $this->isAdmin;
+    }
+
+    /**
      * {@inheritDoc}
      * @throws \PDOException
      */

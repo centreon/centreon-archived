@@ -2,7 +2,9 @@ import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import { Divider, makeStyles, Typography } from '@material-ui/core';
+import { Divider, Typography } from '@mui/material';
+
+import makeStyles from '@mui/styles/makeStyles';
 
 import centreonLogo from '../img/centreon.png';
 import { labelCentreonLogo } from '../Login/translatedLabels';

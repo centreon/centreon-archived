@@ -15,13 +15,9 @@ import { useTranslation } from 'react-i18next';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { useAtom } from 'jotai';
 
-import {
-  Menu,
-  MenuItem,
-  CircularProgress,
-  makeStyles,
-} from '@material-ui/core';
-import SettingsIcon from '@material-ui/icons/Settings';
+import { Menu, MenuItem, CircularProgress } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import SettingsIcon from '@mui/icons-material/Settings';
 
 import { IconButton, useRequest, useSnackbar } from '@centreon/ui';
 
@@ -163,7 +159,12 @@ const SaveFilterMenu = (): JSX.Element => {
 
   return (
     <>
-      <IconButton title={t(labelSaveFilter)} onClick={openSaveFilterMenu}>
+      <IconButton
+        aria-label={t(labelSaveFilter)}
+        size="large"
+        title={t(labelSaveFilter)}
+        onClick={openSaveFilterMenu}
+      >
         <SettingsIcon />
       </IconButton>
       <Menu

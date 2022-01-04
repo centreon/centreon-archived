@@ -5,7 +5,9 @@ import { isNil } from 'ramda';
 import { useTranslation } from 'react-i18next';
 import { useAtomValue } from 'jotai/utils';
 
-import { Paper, makeStyles, Typography } from '@material-ui/core';
+import { Paper, Typography } from '@mui/material';
+
+import makeStyles from '@mui/styles/makeStyles';
 
 import { LoadingSkeleton } from '@centreon/ui';
 

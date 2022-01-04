@@ -3,19 +3,16 @@ import * as React from 'react';
 import { equals, reject, path, isNil } from 'ramda';
 import axios from 'axios';
 import mockDate from 'mockdate';
+import userEvent from '@testing-library/user-event';
+import { Provider } from 'jotai';
+import { BrowserRouter } from 'react-router-dom';
+
 import {
   render,
   waitFor,
   fireEvent,
   RenderResult,
   act,
-} from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { Provider } from 'jotai';
-import { BrowserRouter } from 'react-router-dom';
-
-import {
-  ThemeProvider,
   setUrlQueryParameters,
   getUrlQueryParameters,
   copyToClipboard,
@@ -508,13 +505,11 @@ const DetailsTest = (): JSX.Element => {
   } as ResourceContext;
 
   return (
-    <ThemeProvider>
-      <BrowserRouter>
-        <Context.Provider value={context}>
-          <Details />
-        </Context.Provider>
-      </BrowserRouter>
-    </ThemeProvider>
+    <BrowserRouter>
+      <Context.Provider value={context}>
+        <Details />
+      </Context.Provider>
+    </BrowserRouter>
   );
 };
 
@@ -795,11 +790,11 @@ describe(Details, () => {
       },
     ]);
 
-    const { getByTitle } = renderDetails();
+    const { getByLabelText } = renderDetails();
 
     await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
 
-    fireEvent.click(getByTitle(labelCopy));
+    fireEvent.click(getByLabelText(labelCopy));
 
     await waitFor(() =>
       expect(copyToClipboard).toHaveBeenCalledWith(
@@ -1234,7 +1229,7 @@ describe(Details, () => {
 
     await findByText(retrievedPerformanceGraphData.global.title);
 
-    userEvent.click(getByText(label7Days).parentElement as HTMLElement);
+    userEvent.click(getByText(label7Days) as HTMLElement);
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
@@ -1329,7 +1324,7 @@ describe(Details, () => {
     expect(getByText('01/20/2020 7:00 AM')).toBeInTheDocument();
     expect(getByText('01/21/2020 7:00 AM')).toBeInTheDocument();
 
-    userEvent.click(getByText(label7Days).parentElement as HTMLElement);
+    userEvent.click(getByText(label7Days) as HTMLElement);
 
     expect(getByText('01/14/2020 7:00 AM')).toBeInTheDocument();
     expect(getByText('01/21/2020 7:00 AM')).toBeInTheDocument();
@@ -1652,7 +1647,7 @@ describe(Details, () => {
       ),
     );
 
-    userEvent.click(getByText(label7Days).parentElement as HTMLElement);
+    userEvent.click(getByText(label7Days) as HTMLElement);
 
     await waitFor(() =>
       expect(mockedAxios.get).toHaveBeenCalledWith(

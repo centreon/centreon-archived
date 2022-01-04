@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this */
 /* eslint-disable jsx-a11y/mouse-events-have-key-events */
 /* eslint-disable no-useless-concat */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
@@ -15,9 +16,9 @@ import React, { Component } from 'react';
 import clsx from 'clsx';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 
-import Link from '@material-ui/core/Link';
-import { Typography, styled } from '@material-ui/core';
-import ArrowForwardIcon from '@material-ui/icons/ArrowForwardIos';
+import Link from '@mui/material/Link';
+import { Typography, styled } from '@mui/material';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForwardIos';
 
 import BoundingBox from './BoundingBox';
 import styles from './menu.scss';
@@ -84,15 +85,6 @@ class NavigationMenu extends Component {
     }
 
     return index;
-  };
-
-  onNavigate = (id, url) => {
-    const { onNavigate } = this.props;
-    this.setState({
-      hrefOfIframe: false,
-      navigatedPageId: id,
-    });
-    onNavigate(id, url);
   };
 
   areSamePage = (page, level, imersion) => {

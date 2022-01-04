@@ -2,8 +2,8 @@ import React from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import { Alert } from '@material-ui/lab';
-import { makeStyles } from '@material-ui/core';
+import { Alert } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 
 import { labelYouAreNotAllowedToSeeThisPage } from './translatedLabels';
 

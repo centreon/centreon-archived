@@ -16338,3 +16338,6 @@ msgstr "Vous n'êtes pas autorisé à voir cette page"
 
 msgid "This page could not be found"
 msgstr "Cette page n'a pas pu être trouvée"
+
+msgid "Successful logout"
+msgstr "Déconnexion réussie"
