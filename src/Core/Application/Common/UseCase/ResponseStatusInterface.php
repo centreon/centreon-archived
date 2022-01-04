@@ -21,15 +21,12 @@
 
 declare(strict_types=1);
 
-namespace Core\Application\Security\UseCase\FindSecurityPolicy;
+namespace Core\Application\Common\UseCase;
 
-use Core\Application\Common\UseCase\PresenterInterface;
-use Core\Application\Security\UseCase\FindSecurityPolicy\FindSecurityPolicyResponse;
-
-interface FindSecurityPolicyPresenterInterface extends PresenterInterface
+interface ResponseStatusInterface
 {
     /**
-     * @param FindSecurityPolicyResponse $response
+     * @return string
      */
-    public function present(FindSecurityPolicyResponse $response): void;
+    public function getMessage(): string;
 }

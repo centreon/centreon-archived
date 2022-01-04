@@ -26,7 +26,6 @@ namespace Core\Infrastructure\Security\Api\FindSecurityPolicy;
 use Centreon\Application\Controller\AbstractController;
 use Core\Application\Security\UseCase\FindSecurityPolicy\FindSecurityPolicy;
 use Core\Application\Security\UseCase\FindSecurityPolicy\FindSecurityPolicyPresenterInterface;
-use Symfony\Component\HttpFoundation\Response;
 
 class FindSecurityPolicyController extends AbstractController
 {

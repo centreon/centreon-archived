@@ -21,15 +21,24 @@
 
 declare(strict_types=1);
 
-namespace Core\Application\Security\UseCase\FindSecurityPolicy;
+namespace Core\Application\Common\UseCase;
 
-use Core\Application\Common\UseCase\PresenterInterface;
-use Core\Application\Security\UseCase\FindSecurityPolicy\FindSecurityPolicyResponse;
+use Core\Application\Common\UseCase\ResponseStatusInterface;
 
-interface FindSecurityPolicyPresenterInterface extends PresenterInterface
+class ErrorResponse implements ResponseStatusInterface
 {
     /**
-     * @param FindSecurityPolicyResponse $response
+     * @param string $message
      */
-    public function present(FindSecurityPolicyResponse $response): void;
+    public function __construct(private string $message)
+    {
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getMessage(): string
+    {
+        return _($this->message);
+    }
 }
