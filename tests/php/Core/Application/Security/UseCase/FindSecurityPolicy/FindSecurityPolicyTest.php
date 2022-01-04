@@ -25,7 +25,7 @@ namespace Tests\Core\Application\Security\UseCase\FindSecurityPolicy;
 
 use PHPUnit\Framework\TestCase;
 use Core\Domain\Security\Model\SecurityPolicy;
-use Core\Application\Common\Presenter\PresenterFormatterInterface;
+use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
 use Core\Application\Security\UseCase\FindSecurityPolicy\FindSecurityPolicy;
 use Core\Application\Security\Repository\ReadSecurityPolicyRepositoryInterface;
 use Core\Application\Security\UseCase\FindSecurityPolicy\FindSecurityPolicyErrorResponse;
