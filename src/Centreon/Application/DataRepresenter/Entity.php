@@ -60,7 +60,7 @@ class Entity implements JsonSerializable
     /**
      * JSON serialization of entity
      *
-     * @return array
+     * @return array<mixed>
      */
     public function jsonSerialize()
     {
@@ -69,7 +69,7 @@ class Entity implements JsonSerializable
 
     /**
      * @param object $object
-     * @return array
+     * @return array<mixed>
      * @throws \ReflectionException
      */
     public static function dismount(object $object): array

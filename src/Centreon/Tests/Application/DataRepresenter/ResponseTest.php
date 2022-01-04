@@ -41,9 +41,6 @@ use Centreon\Application\DataRepresenter\Response;
 
 class ResponseTest extends TestCase
 {
-    /**
-     * @return void
-     */
     public function testJsonSerialize(): void
     {
         $data = 'OK';

@@ -60,9 +60,7 @@ SQL;
 
     /**
      * Export filter
-     *
      * @param int[] $pollerIds
-     * @return string
      */
     public static function exportFilterSql(array $pollerIds): string
     {

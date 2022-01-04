@@ -44,9 +44,6 @@ use Centreon\Domain\Repository\Traits\CheckListOfIdsTrait;
 
 class CheckListOfIdsTraitTest extends TestCase
 {
-    /**
-     * @return void
-     */
     public function testCheckListOfIdsTrait(): void
     {
         $ids = [1, 3, 4];
@@ -60,7 +57,6 @@ class CheckListOfIdsTraitTest extends TestCase
              * @param int[] $ids
              * @param string|null $tableName
              * @param string|null $columnNameOfIdentificator
-             * @return boolean
              */
             public function checkListOfIds(
                 array $ids,
