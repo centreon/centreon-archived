@@ -22,31 +22,20 @@ declare(strict_types=1);
 
 namespace Core\Domain\RealTime\Model;
 
+use Core\Domain\RealTime\Model\Host;
 use Core\Domain\RealTime\Model\Icon;
-use Core\Domain\RealTime\Model\Hostgroup;
-use Core\Domain\RealTime\Model\HostStatus;
+use Core\Domain\RealTime\Model\Servicegroup;
+use Core\Domain\RealTime\Model\ServiceStatus;
 use Centreon\Domain\Common\Assertion\Assertion;
 
-/**
- * Class representing a host entity in real time context.
- *
- * @package Core\Domain\RealTime\Model
- */
-class Host
+class Service
 {
     public const MAX_NAME_LENGTH = 255;
-    public const MAX_ADDRESS_LENGTH = 75;
-    public const MAX_ALIAS_LENTH = 100;
 
     /**
-     * @var string|null
+     * @var Servicegroup[]
      */
-    private $alias;
-
-    /**
-     * @var string|null
-     */
-    private $timezone;
+    private $servicegroups = [];
 
     /**
      * @var boolean
@@ -57,12 +46,6 @@ class Host
      * @var boolean
      */
     private $isAcknowledged = false;
-
-    /**
-     * @var boolean
-     */
-    private $isFlapping = false;
-
     /**
      * @var int|null
      */
@@ -131,17 +114,12 @@ class Host
     /**
      * @var \DateTime|null
      */
-    private $lastTimeUp;
+    private $lastTimeOk;
 
     /**
      * @var int|null
      */
     private $severityLevel;
-
-    /**
-     * @var Hostgroup[]
-     */
-    private $hostgroups = [];
 
     /**
      * @var Icon|null
@@ -159,26 +137,25 @@ class Host
     private $checkAttempts;
 
     /**
-     * Host constructor
-     *
+     * @var boolean
+     */
+    private $isFlapping = false;
+
+    /**
      * @param int $id
+     * @param int $hostId
      * @param string $name
-     * @param string $address
-     * @param string $monitoringServerName
-     * @param HostStatus $status
+     * @param ServiceStatus $status
      * @throws \Assert\AssertionFailedException
      */
     public function __construct(
         private int $id,
+        private int $hostId,
         private string $name,
-        private string $address,
-        private string $monitoringServerName,
-        private HostStatus $status
+        private ServiceStatus $status
     ) {
-        Assertion::maxLength($name, self::MAX_NAME_LENGTH, 'Host::name');
-        Assertion::notEmpty($name, 'Host::name');
-        Assertion::maxLength($address, self::MAX_ADDRESS_LENGTH, 'Host::address');
-        Assertion::notEmpty($address, 'Host::address');
+        Assertion::maxLength($name, self::MAX_NAME_LENGTH, 'Service::name');
+        Assertion::notEmpty($name, 'Service::name');
     }
 
     /**
@@ -198,59 +175,29 @@ class Host
     }
 
     /**
-     * @return string
+     * @return Servicegroup[]
      */
-    public function getAddress(): string
+    public function getServicegroups(): array
     {
-        return $this->address;
+        return $this->servicegroups;
     }
 
     /**
-     * @return string|null
-     */
-    public function getAlias(): ?string
-    {
-        return $this->alias;
-    }
-
-    /**
-     * @param string|null $alias
-     * @throws \Assert\AssertionFailedException
+     * @param Servicegroup $servicegroup
      * @return self
      */
-    public function setAlias(?string $alias): self
+    public function addServicegroup(Servicegroup $servicegroup): self
     {
-        if ($alias !== null) {
-            Assertion::maxLength($alias, self::MAX_NAME_LENGTH, 'Host::name');
-        }
-        $this->alias = $alias;
+        $this->servicegroups[] = $servicegroup;
         return $this;
     }
 
     /**
-     * @return string
+     * @return ServiceStatus
      */
-    public function getMonitoringServerName(): string
+    public function getStatus(): ServiceStatus
     {
-        return $this->monitoringServerName;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getTimezone(): ?string
-    {
-        return $this->timezone;
-    }
-
-    /**
-     * @param string|null $timezone
-     * @return self
-     */
-    public function setTimezone(?string $timezone): self
-    {
-        $this->timezone = $timezone;
-        return $this;
+        return $this->status;
     }
 
     /**
@@ -542,21 +489,21 @@ class Host
     }
 
     /**
-     * @param \DateTime|null $lastTimeUp
+     * @param \DateTime|null $lastTimeOk
      * @return self
      */
-    public function setLastTimeUp(?\DateTime $lastTimeUp): self
+    public function setLastTimeOk(?\DateTime $lastTimeOk): self
     {
-        $this->lastTimeUp = $lastTimeUp;
+        $this->lastTimeOk = $lastTimeOk;
         return $this;
     }
 
     /**
      * @return \DateTime|null
      */
-    public function getLastTimeUp(): ?\DateTime
+    public function getLastTimeOk(): ?\DateTime
     {
-        return $this->lastTimeUp;
+        return $this->lastTimeOk;
     }
 
     /**
@@ -578,24 +525,6 @@ class Host
     }
 
     /**
-     * @param Hostgroup $hostgroup
-     * @return self
-     */
-    public function addHostgroup(Hostgroup $hostgroup): self
-    {
-        $this->hostgroups[] = $hostgroup;
-        return $this;
-    }
-
-    /**
-     * @return Hostgroup[]
-     */
-    public function getHostgroups(): array
-    {
-        return $this->hostgroups;
-    }
-
-    /**
      *
      * @param ?Icon $icon
      * @return self
@@ -612,14 +541,6 @@ class Host
     public function getIcon(): ?Icon
     {
         return $this->icon;
-    }
-
-    /**
-     * @return HostStatus
-     */
-    public function getStatus(): HostStatus
-    {
-        return $this->status;
     }
 
     /**
@@ -656,5 +577,10 @@ class Host
     public function getCheckAttempts(): ?int
     {
         return $this->checkAttempts;
+    }
+
+    public function getHostId(): int
+    {
+        return $this->hostId;
     }
 }

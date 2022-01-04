@@ -100,4 +100,32 @@ class HypermediaService
         }
         return null;
     }
+
+    /**
+     * @param mixed $response
+     * @return string|null
+     */
+    public function createForStatusGraphEndpoint(mixed $response): ?string
+    {
+        foreach ($this->hypermediaProviders as $hypermediaProvider) {
+            if ($hypermediaProvider->isValidFor($response)) {
+                return $hypermediaProvider->createForStatusGraphEndpoint($response);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @param mixed $response
+     * @return string|null
+     */
+    public function createForPerformanceDataEndpoint(mixed $response): ?string
+    {
+        foreach ($this->hypermediaProviders as $hypermediaProvider) {
+            if ($hypermediaProvider->isValidFor($response)) {
+                return $hypermediaProvider->createForPerformanceDataEndpoint($response);
+            }
+        }
+        return null;
+    }
 }

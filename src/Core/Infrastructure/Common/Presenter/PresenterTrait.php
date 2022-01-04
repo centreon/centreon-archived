@@ -18,25 +18,20 @@
  * For more information : contact@centreon.com
  *
  */
-
 declare(strict_types=1);
 
-namespace Core\Application\RealTime\Repository;
+namespace Core\Infrastructure\Common\Presenter;
 
-use Core\Domain\RealTime\Model\Acknowledgement;
-
-interface ReadAcknowledgementRepositoryInterface
+trait PresenterTrait
 {
     /**
-     * @param int $hostId
-     * @return Acknowledgement|null
+     * Convert a DateTime into a string format ISO 8601
+     *
+     * @param \DateTime|null $date
+     * @return string|null
      */
-    public function findOnGoingAcknowledgementByHostId(int $hostId): ?Acknowledgement;
-
-    /**
-     * @param int $hostId
-     * @param int $serviceId
-     * @return Acknowledgement|null
-     */
-    public function findOnGoingAcknowledgementByHostIdAndServiceId(int $hostId, int $serviceId): ?Acknowledgement;
+    public function formatDateToIso8601(?\DateTime $date): ?string
+    {
+        return ($date !== null ? $date->format(\DateTime::ISO8601) : $date);
+    }
 }

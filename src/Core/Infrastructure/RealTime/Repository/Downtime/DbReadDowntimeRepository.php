@@ -47,6 +47,14 @@ class DbReadDowntimeRepository extends AbstractRepositoryDRB implements ReadDown
     }
 
     /**
+     * @inheritDoc
+     */
+    public function findOnGoingDowntimesByHostIdAndServiceId(int $hostId, int $serviceId): array
+    {
+        return $this->findOnGoingDowntimes($hostId, $serviceId);
+    }
+
+    /**
      * Find downtimes
      *
      * @param int $hostId

@@ -28,6 +28,7 @@ use Core\Domain\RealTime\Model\Host;
 use Core\Domain\RealTime\Model\Downtime;
 use Core\Domain\RealTime\Model\Acknowledgement;
 use Centreon\Domain\Monitoring\Host as LegacyHost;
+use Core\Application\Common\UseCase\NotFoundResponse;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Core\Application\RealTime\UseCase\FindHost\FindHostResponse;
 use Core\Application\RealTime\UseCase\FindHost\HostNotFoundResponse;
@@ -70,7 +71,7 @@ class FindHost
     {
         $hostgroups = [];
 
-        $this->debug(
+        $this->info(
             "Searching details for host",
             [
                 "id" => $hostId
@@ -80,14 +81,14 @@ class FindHost
         if ($this->contact->isAdmin()) {
             $host = $this->repository->findHostById($hostId);
             if ($host === null) {
-                $this->debug(
+                $this->critical(
                     "Host not found",
                     [
                         'id' => $hostId,
                         'userId' => $this->contact->getId()
                     ]
                 );
-                $presenter->setResponseStatus(new HostNotFoundResponse());
+                $presenter->setResponseStatus(new NotFoundResponse('Host'));
                 return;
             }
             $hostgroups = $this->hostgroupRepository->findAllByHostId($hostId);
@@ -99,14 +100,14 @@ class FindHost
             );
             $host = $this->repository->findHostByIdAndAccessGroupIds($hostId, $accessGroupIds);
             if ($host === null) {
-                $this->debug(
+                $this->critical(
                     "Host not found",
                     [
                         'id' => $hostId,
                         'userId' => $this->contact->getId()
                     ]
                 );
-                $presenter->setResponseStatus(new HostNotFoundResponse());
+                $presenter->setResponseStatus(new NotFoundResponse('Host'));
                 return;
             }
             $hostgroups = $this->hostgroupRepository->findAllByHostIdAndAccessGroupIds($hostId, $accessGroupIds);
@@ -117,7 +118,7 @@ class FindHost
         }
 
         /**
-         * Offuscate the passwords in Host commandLine
+         * Obfuscate the passwords in Host commandLine
          * @todo Re-write this code when monitoring repository will be migrated to new architecture
          */
         $host->setCommandLine($this->obfuscatePasswordInHostCommandLine($host));

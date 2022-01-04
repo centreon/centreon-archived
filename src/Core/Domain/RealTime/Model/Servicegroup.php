@@ -18,17 +18,35 @@
  * For more information : contact@centreon.com
  *
  */
-
 declare(strict_types=1);
 
-namespace Core\Application\RealTime\UseCase\FindHost;
+namespace Core\Domain\RealTime\Model;
 
-use Core\Application\Common\UseCase\NotFoundResponse;
-
-class HostNotFoundResponse extends NotFoundResponse
+class Servicegroup
 {
-    public function __construct()
+    /**
+     * @param int $id
+     * @param string $name
+     */
+    public function __construct(
+        private int $id,
+        private string $name
+    ) {
+    }
+
+    /**
+     * @return int
+     */
+    public function getId(): int
     {
-        parent::__construct('Host');
+        return $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return $this->name;
     }
 }

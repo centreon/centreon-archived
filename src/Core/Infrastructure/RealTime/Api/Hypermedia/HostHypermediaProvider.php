@@ -101,6 +101,22 @@ class HostHypermediaProvider implements HypermediaProviderInterface
      */
     public function createForTimelineEndpoint(mixed $response): string
     {
-        return $this->router->generate(static::ENDPOINT_HOST_TIMELINE, ['hostId' => $response->id]);
+        return $this->router->generate(self::ENDPOINT_HOST_TIMELINE, ['hostId' => $response->id]);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function createForPerformanceDataEndpoint(mixed $data): string
+    {
+        return '';
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function createForStatusGraphEndpoint(mixed $data): string
+    {
+        return '';
     }
 }

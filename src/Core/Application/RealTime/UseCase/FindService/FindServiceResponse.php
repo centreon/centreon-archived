@@ -20,28 +20,19 @@
  */
 declare(strict_types=1);
 
-namespace Core\Application\RealTime\UseCase\FindHost;
+namespace Core\Application\RealTime\UseCase\FindService;
 
-use Core\Application\RealTime\Common\RealTimeResponseTrait;
-use Core\Domain\RealTime\Model\Acknowledgement;
+use Core\Domain\RealTime\Model\Host;
 use Core\Domain\RealTime\Model\Icon;
-use Core\Domain\RealTime\Model\HostStatus;
 use Core\Domain\RealTime\Model\Downtime;
-use Core\Domain\RealTime\Model\Hostgroup;
+use Core\Domain\RealTime\Model\Servicegroup;
+use Core\Domain\RealTime\Model\ServiceStatus;
+use Core\Domain\RealTime\Model\Acknowledgement;
+use Core\Application\RealTime\Common\RealTimeResponseTrait;
 
-class FindHostResponse
+class FindServiceResponse
 {
     use RealTimeResponseTrait;
-
-    /**
-     * @var string|null
-     */
-    public $timezone;
-
-    /**
-     * @var string|null
-     */
-    public $alias;
 
     /**
      * @var bool
@@ -126,7 +117,7 @@ class FindHostResponse
     /**
      * @var \DateTime|null
      */
-    public $lastTimeUp;
+    public $lastTimeOk;
 
     /**
      * @var int|null
@@ -151,7 +142,7 @@ class FindHostResponse
     /**
      * @var array<array<string, mixed>>
      */
-    public $hostgroups;
+    public $servicegroups;
 
     /**
      * @var array<string, mixed>
@@ -159,7 +150,7 @@ class FindHostResponse
     public $status;
 
     /**
-     * @var array<int, array<string, mixed>>
+     * @var array<array<string, mixed>>
      */
     public $downtimes;
 
@@ -169,48 +160,71 @@ class FindHostResponse
     public $acknowledgement;
 
     /**
+     * @var array<string, mixed>
+     */
+    public $host;
+
+    /**
      * @param int $id
+     * @param int $hostId
      * @param string $name
-     * @param string $address
-     * @param string $monitoringServerName
-     * @param HostStatus $status
+     * @param ServiceStatus $status
      * @param Icon|null $icon
-     * @param Hostgroup[] $hostgroups
+     * @param Servicegroup[] $servicegroups
      * @param Downtime[] $downtimes
      * @param Acknowledgement|null $acknowledgement
+     * @param Host $host
      */
     public function __construct(
         public int $id,
+        public int $hostId,
         public string $name,
-        public string $address,
-        public string $monitoringServerName,
-        HostStatus $status,
+        ServiceStatus $status,
         ?Icon $icon,
-        array $hostgroups,
+        array $servicegroups,
         array $downtimes,
-        ?Acknowledgement $acknowledgement
+        ?Acknowledgement $acknowledgement,
+        Host $host
     ) {
-        $this->icon = self::iconToArray($icon);
+        $this->servicegroups = self::servicegroupsToArray($servicegroups);
         $this->status = self::statusToArray($status);
-        $this->hostgroups = self::hostgroupsToArray($hostgroups);
+        $this->icon = self::iconToArray($icon);
         $this->downtimes = self::downtimesToArray($downtimes);
         $this->acknowledgement = self::acknowledgementToArray($acknowledgement);
+        $this->host = self::hostToArray($host);
     }
 
     /**
-     * Converts an array of Hostgroups model into an array
+     * Converts an array of Servicegroups model into an array
      *
-     * @param Hostgroup[] $hostgroups
+     * @param Servicegroup[] $servicegroups
      * @return array<int, array<string, mixed>>
      */
-    private static function hostgroupsToArray(array $hostgroups): array
+    private static function servicegroupsToArray(array $servicegroups): array
     {
         return array_map(
-            fn (Hostgroup $hostgroup) => [
-                'id' => $hostgroup->getId(),
-                'name' => $hostgroup->getName()
+            fn (Servicegroup $servicegroup) => [
+                'id' => $servicegroup->getId(),
+                'name' => $servicegroup->getName()
             ],
-            $hostgroups
+            $servicegroups
         );
+    }
+
+    /**
+     * Converts a Host entity into an array
+     *
+     * @param Host $host
+     * @return array<string, mixed>
+     */
+    private static function hostToArray(Host $host): array
+    {
+        return [
+            'type' => 'host',
+            'id' => $host->getId(),
+            'name' => $host->getName(),
+            'status' => self::statusToArray($host->getStatus()),
+            'monitoring_server_name' => $host->getMonitoringServerName()
+        ];
     }
 }

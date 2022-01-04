@@ -18,27 +18,28 @@
  * For more information : contact@centreon.com
  *
  */
-
 declare(strict_types=1);
 
-namespace Core\Application\Common\UseCase;
+namespace Core\Infrastructure\RealTime\Api\FindService;
 
-use Core\Application\Common\UseCase\ResponseStatusInterface;
+use Centreon\Application\Controller\AbstractController;
+use Core\Application\RealTime\UseCase\FindService\FindService;
+use Core\Application\RealTime\UseCase\FindService\FindServicePresenterInterface;
 
-class NotFoundResponse implements ResponseStatusInterface
+class FindServiceController extends AbstractController
 {
-    /**
-     * @param string $objectNotFound
-     */
-    public function __construct(private string $objectNotFound)
-    {
-    }
+    public function __invoke(
+        int $hostId,
+        int $serviceId,
+        FindService $useCase,
+        FindServicePresenterInterface $presenter
+    ): object {
+        /**
+         * Deny access if user has no rights on the real time
+         */
+        $this->denyAccessUnlessGrantedForApiRealtime();
 
-    /**
-     * @inheritDoc
-     */
-    public function getMessage(): string
-    {
-        return _($this->objectNotFound . ' not found');
+        $useCase($hostId, $serviceId, $presenter);
+        return $presenter->show();
     }
 }

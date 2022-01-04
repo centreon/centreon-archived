@@ -18,25 +18,20 @@
  * For more information : contact@centreon.com
  *
  */
-
 declare(strict_types=1);
 
-namespace Core\Application\RealTime\Repository;
+namespace Core\Infrastructure\RealTime\Repository\Servicegroup;
 
-use Core\Domain\RealTime\Model\Acknowledgement;
+use Core\Domain\RealTime\Model\Servicegroup;
 
-interface ReadAcknowledgementRepositoryInterface
+class DbServicegroupFactory
 {
     /**
-     * @param int $hostId
-     * @return Acknowledgement|null
+     * @param array<string, mixed> $data
+     * @return Servicegroup
      */
-    public function findOnGoingAcknowledgementByHostId(int $hostId): ?Acknowledgement;
-
-    /**
-     * @param int $hostId
-     * @param int $serviceId
-     * @return Acknowledgement|null
-     */
-    public function findOnGoingAcknowledgementByHostIdAndServiceId(int $hostId, int $serviceId): ?Acknowledgement;
+    public static function createFromRecord(array $data): Servicegroup
+    {
+        return new Servicegroup((int) $data['servicegroup_id'], $data['servicegroup_name']);
+    }
 }

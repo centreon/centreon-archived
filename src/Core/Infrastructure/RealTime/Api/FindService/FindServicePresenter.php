@@ -20,18 +20,17 @@
  */
 declare(strict_types=1);
 
-namespace Core\Infrastructure\RealTime\Api\FindHost;
+namespace Core\Infrastructure\RealTime\Api\FindService;
 
-use CentreonDuration;
 use Core\Infrastructure\RealTime\Api\Hypermedia\HypermediaService;
 use Symfony\Component\HttpFoundation\Response;
 use Core\Application\Common\UseCase\ResponseStatusInterface;
-use Core\Application\RealTime\UseCase\FindHost\FindHostResponse;
-use Core\Application\RealTime\UseCase\FindHost\FindHostPresenterInterface;
+use Core\Application\RealTime\UseCase\FindService\FindServiceResponse;
+use Core\Application\RealTime\UseCase\FindService\FindServicePresenterInterface;
 use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
 use Core\Infrastructure\Common\Presenter\PresenterTrait;
 
-class FindHostPresenter implements FindHostPresenterInterface
+class FindServicePresenter implements FindServicePresenterInterface
 {
     use PresenterTrait;
 
@@ -53,17 +52,14 @@ class FindHostPresenter implements FindHostPresenterInterface
     /**
      * @inheritDoc
      */
-    public function present(FindHostResponse $response): void
+    public function present(FindServiceResponse $response): void
     {
         $presenterResponse = [
-            'uuid' => 'h' . $response->id,
+            'uuid' => 'h' . $response->hostId . '-s' . $response->id,
             'id' => $response->id,
             'name' => $response->name,
-            'monitoring_server_name' => $response->monitoringServerName,
-            'type' => 'host',
-            'short_type' => 'h',
-            'fqdn' => $response->address,
-            'alias' => $response->alias,
+            'type' => 'service',
+            'short_type' => 's',
             'status' => $response->status,
             'in_downtime' => $response->isInDowntime,
             'acknowledged' => $response->isAcknowledged,
@@ -78,9 +74,10 @@ class FindHostPresenter implements FindHostPresenterInterface
             'execution_time' => $response->executionTime,
             'active_checks' => $response->hasActiveChecks,
             'severity_level' => $response->severityLevel,
-            'parent' => null,
             'icon' => $response->icon,
-            'groups' => $response->hostgroups
+            'groups' => $response->servicegroups,
+            'parent' => $response->host,
+            'monitoring_server_name' => $response->host['monitoring_server_name']
         ];
 
         $acknowledgement = null;
@@ -116,17 +113,10 @@ class FindHostPresenter implements FindHostPresenterInterface
         $presenterResponse['downtimes'] = $formattedDatesDowntimes;
 
         /**
-         * Remove ':' character from the timezone string
-         */
-        $presenterResponse['timezone'] = !empty($response->timezone)
-            ? preg_replace('/^:/', '', $response->timezone)
-            : null;
-
-        /**
          * Calculate the duration
          */
         $presenterResponse['duration'] = $response->lastStatusChange !== null
-            ? CentreonDuration::toString(time() - $response->lastStatusChange->getTimestamp())
+            ? \CentreonDuration::toString(time() - $response->lastStatusChange->getTimestamp())
             : null;
 
         /**
@@ -134,7 +124,7 @@ class FindHostPresenter implements FindHostPresenterInterface
          */
         $presenterResponse['next_check'] = $this->formatDateToIso8601($response->nextCheck);
         $presenterResponse['last_check'] = $this->formatDateToIso8601($response->lastCheck);
-        $presenterResponse['last_time_with_no_issue'] = $this->formatDateToIso8601($response->lastTimeUp);
+        $presenterResponse['last_time_with_no_issue'] = $this->formatDateToIso8601($response->lastTimeOk);
         $presenterResponse['last_status_change'] = $this->formatDateToIso8601($response->lastStatusChange);
         $presenterResponse['last_notification'] = $this->formatDateToIso8601($response->lastNotification);
 
@@ -155,7 +145,9 @@ class FindHostPresenter implements FindHostPresenterInterface
                 'reporting' => $this->hypermediaService->createForReporting($response)
             ],
             'endpoints' => [
-                'timeline' => $this->hypermediaService->createForTimelineEndpoint($response)
+                'timeline' => $this->hypermediaService->createForTimelineEndpoint($response),
+                'status_graph' => $this->hypermediaService->createForStatusGraphEndpoint($response),
+                'performance_graph' => $this->hypermediaService->createForPerformanceDataEndpoint($response)
             ]
         ];
         $this->presenterFormatter->present($presenterResponse);
