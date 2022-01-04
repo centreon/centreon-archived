@@ -18,25 +18,13 @@
  * For more information : contact@centreon.com
  *
  */
-
 declare(strict_types=1);
 
-namespace Core\Application\RealTime\Repository;
+namespace Core\Application\RealTime\UseCase\FindService;
 
-use Core\Domain\RealTime\Model\Acknowledgement;
-
-interface ReadAcknowledgementRepositoryInterface
+class FindServiceResponse
 {
-    /**
-     * @param int $hostId
-     * @return Acknowledgement|null
-     */
-    public function findOnGoingAcknowledgementByHostId(int $hostId): ?Acknowledgement;
-
-    /**
-     * @param int $hostId
-     * @param int $serviceId
-     * @return Acknowledgement|null
-     */
-    public function findOnGoingAcknowledgementByHostIdAndServiceId(int $hostId, int $serviceId): ?Acknowledgement;
+    public function __construct()
+    {
+    }
 }

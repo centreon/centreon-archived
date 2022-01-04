@@ -47,6 +47,14 @@ class DbReadAcknowledgementRepository extends AbstractRepositoryDRB implements R
     }
 
     /**
+     * @inheritDoc
+     */
+    public function findOnGoingAcknowledgementByHostIdAndServiceId(int $hostId, int $serviceId): ?Acknowledgement
+    {
+        return null;
+    }
+
+    /**
      * @param int $hostId
      * @param int $serviceId
      * @return Acknowledgement|null
