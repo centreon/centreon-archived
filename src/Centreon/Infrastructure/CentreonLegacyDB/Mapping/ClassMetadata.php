@@ -40,9 +40,9 @@ use PDO;
 
 class ClassMetadata
 {
-    const COLUMN = 'column';
-    const TYPE = 'type';
-    const FORMATTER = 'formatter';
+    public const COLUMN = 'column';
+    public const TYPE = 'type';
+    public const FORMATTER = 'formatter';
 
     /**
      * Table name of entity

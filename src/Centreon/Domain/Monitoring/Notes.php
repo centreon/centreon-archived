@@ -29,7 +29,6 @@ namespace Centreon\Domain\Monitoring;
  */
 class Notes
 {
-
     /**
      * @var string|null
      */

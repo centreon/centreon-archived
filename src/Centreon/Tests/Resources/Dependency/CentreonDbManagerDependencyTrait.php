@@ -49,7 +49,6 @@ use Centreon\ServiceProvider;
  */
 trait CentreonDbManagerDependencyTrait
 {
-
     /**
      * Set up DB manager service in container
      *

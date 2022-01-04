@@ -43,7 +43,6 @@ require_once realpath(dirname(__FILE__) . "/centreonDB.class.php");
 
 class CentreonDBInstance
 {
-
     private static $confInstance;
     private static $monInstance;
 
