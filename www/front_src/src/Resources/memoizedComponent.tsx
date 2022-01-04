@@ -7,7 +7,7 @@ interface memoizeComponentParameters {
   memoProps: Array<string>;
 }
 
-const memoizeComponent = <T extends unknown>({
+const memoizeComponent = <T,>({
   memoProps,
   Component,
 }: memoizeComponentParameters): React.NamedExoticComponent<T> =>

@@ -23,8 +23,10 @@ declare(strict_types=1);
 
 namespace Tests\Core\Application\Security\UseCase\FindSecurityPolicy;
 
+use Core\Application\Common\UseCase\ResponseStatusInterface;
 use Core\Application\Security\UseCase\FindSecurityPolicy\FindSecurityPolicyPresenterInterface;
 use Core\Application\Security\UseCase\FindSecurityPolicy\FindSecurityPolicyResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class FindSecurityPolicyPresenterFake implements FindSecurityPolicyPresenterInterface
 {
@@ -32,6 +34,11 @@ class FindSecurityPolicyPresenterFake implements FindSecurityPolicyPresenterInte
      * @var FindSecurityPolicyResponse
      */
     public $response;
+
+    /**
+     * @var ResponseStatusInterface|null
+     */
+    private $responseStatus;
 
     /**
      * @param FindSecurityPolicyResponse $response
@@ -42,10 +49,26 @@ class FindSecurityPolicyPresenterFake implements FindSecurityPolicyPresenterInte
     }
 
     /**
-     * @return object
+     * @return Response
      */
-    public function show(): object
+    public function show(): Response
     {
-        return new \stdClass();
+        return new Response();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setResponseStatus(?ResponseStatusInterface $responseStatus): void
+    {
+        $this->responseStatus = $responseStatus;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getResponseStatus(): ?ResponseStatusInterface
+    {
+        return $this->responseStatus;
     }
 }

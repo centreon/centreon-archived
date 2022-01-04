@@ -23,15 +23,11 @@ declare(strict_types=1);
 
 namespace Core\Application\Security\UseCase\FindSecurityPolicy;
 
+use Core\Application\Common\UseCase\PresenterInterface;
 use Core\Application\Security\UseCase\FindSecurityPolicy\FindSecurityPolicyResponse;
 
-interface FindSecurityPolicyPresenterInterface
+interface FindSecurityPolicyPresenterInterface extends PresenterInterface
 {
-    /**
-     * @return object
-     */
-    public function show(): object;
-
     /**
      * @param FindSecurityPolicyResponse $response
      */

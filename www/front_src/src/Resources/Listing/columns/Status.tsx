@@ -6,9 +6,9 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { pathEq } from 'ramda';
 
-import { makeStyles } from '@material-ui/core';
-import IconAcknowledge from '@material-ui/icons/Person';
-import IconCheck from '@material-ui/icons/Sync';
+import makeStyles from '@mui/styles/makeStyles';
+import IconAcknowledge from '@mui/icons-material/Person';
+import IconCheck from '@mui/icons-material/Sync';
 
 import {
   ComponentColumnProps,
@@ -85,6 +85,7 @@ const StatusColumnOnHover = ({
         ariaLabel={`${t(labelAcknowledge)} ${row.name}`}
         color="primary"
         disabled={disableAcknowledge}
+        size="large"
         title={getActionTitle({
           isActionPermitted: isAcknowledePermitted,
           labelAction: labelAcknowledge,
@@ -96,6 +97,7 @@ const StatusColumnOnHover = ({
       <IconButton
         ariaLabel={`${t(labelSetDowntimeOn)} ${row.name}`}
         disabled={disableDowntime}
+        size="large"
         title={getActionTitle({
           isActionPermitted: isDowntimePermitted,
           labelAction: labelSetDowntime,
@@ -107,6 +109,7 @@ const StatusColumnOnHover = ({
       <IconButton
         ariaLabel={`${t(labelCheck)} ${row.name}`}
         disabled={disableCheck}
+        size="large"
         title={getActionTitle({
           isActionPermitted: isCheckPermitted,
           labelAction: labelCheck,

@@ -9,14 +9,9 @@ import clsx from 'clsx';
 import { useAtomValue } from 'jotai/utils';
 import { useHistory } from 'react-router';
 
-import PollerIcon from '@material-ui/icons/DeviceHub';
-import {
-  Button,
-  ClickAwayListener,
-  makeStyles,
-  Paper,
-  Typography,
-} from '@material-ui/core';
+import PollerIcon from '@mui/icons-material/DeviceHub';
+import { Button, ClickAwayListener, Paper, Typography } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 
 import {
   getData,
@@ -159,7 +154,7 @@ const PollerMenu = (): JSX.Element => {
         toggleDetailedView();
       }}
     >
-      <>
+      <div>
         <SubmenuHeader active={toggled}>
           <IconHeader
             Icon={PollerIcon}
@@ -208,11 +203,7 @@ const PollerMenu = (): JSX.Element => {
             )}
             {allowPollerConfiguration && (
               <Paper className={classes.confButton}>
-                <Button
-                  size="small"
-                  variant="contained"
-                  onClick={redirectToPollerConfiguration}
-                >
+                <Button size="small" onClick={redirectToPollerConfiguration}>
                   {t(labelConfigurePollers)}
                 </Button>
               </Paper>
@@ -220,7 +211,7 @@ const PollerMenu = (): JSX.Element => {
             <ExportConfiguration setIsExportingConfiguration={newExporting} />
           </div>
         </SubmenuHeader>
-      </>
+      </div>
     </ClickAwayListener>
   );
 };

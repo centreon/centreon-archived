@@ -3,7 +3,7 @@ import * as React from 'react';
 import { equals } from 'ramda';
 import { useUpdateAtom } from 'jotai/utils';
 
-import { Grid, Chip } from '@material-ui/core';
+import { Grid, Chip } from '@mui/material';
 
 import { setCriteriaAndNewFilterDerivedAtom } from '../../../../Filter/filterAtoms';
 import { CriteriaNames } from '../../../../Filter/Criterias/models';

@@ -1,6 +1,7 @@
 import * as React from 'react';
 
-import { makeStyles, styled } from '@material-ui/core';
+import { styled } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 
 import { LoadingSkeleton } from '@centreon/ui';
 
