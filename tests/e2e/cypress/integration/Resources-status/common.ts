@@ -1,9 +1,6 @@
 const stateFilterContainer = '[aria-label="State filter"]';
 const searchInput = 'input[placeholder="Search"]';
 const refreshButton = '[aria-label="Refresh"]';
-const serviceName = 'service_test';
-const serviceNameDowntime = 'service_test_dt';
-const searchValue = `s.description:${serviceName}`;
 const resourceMonitoringApi = /.+api\/beta\/monitoring\/resources.?page.+/;
 
 const actionBackgroundColors = {
@@ -19,9 +16,6 @@ export {
   stateFilterContainer,
   searchInput,
   refreshButton,
-  serviceName,
-  serviceNameDowntime,
-  searchValue,
   resourceMonitoringApi,
   actionBackgroundColors,
   actions,

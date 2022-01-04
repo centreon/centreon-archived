@@ -5,7 +5,7 @@ import { ScaleTime } from 'd3-scale';
 import { pick } from 'ramda';
 import { useAtomValue } from 'jotai/utils';
 
-import { makeStyles } from '@material-ui/core';
+import makeStyles from '@mui/styles/makeStyles';
 
 import { useLocaleDateTimeFormat, useMemoComponent } from '@centreon/ui';
 

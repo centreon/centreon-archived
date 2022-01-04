@@ -4,7 +4,7 @@ import { difference, min, max, isNil } from 'ramda';
 import { Scale } from '@visx/visx';
 import { ScaleLinear, ScaleTime } from 'd3-scale';
 
-import { alpha } from '@material-ui/core';
+import { alpha } from '@mui/material';
 
 import { Line, TimeValue } from '../models';
 import {

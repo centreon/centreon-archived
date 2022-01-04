@@ -2,7 +2,8 @@ import * as React from 'react';
 
 import { dec, equals, length, not, pipe } from 'ramda';
 
-import { Link, makeStyles, Typography } from '@material-ui/core';
+import { Link, Typography } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles((theme) => ({
   lastLink: {
