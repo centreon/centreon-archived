@@ -49,7 +49,7 @@ class FindSecurityPolicyPresenterFake implements FindSecurityPolicyPresenterInte
     }
 
     /**
-     * @return object
+     * @return Response
      */
     public function show(): Response
     {
