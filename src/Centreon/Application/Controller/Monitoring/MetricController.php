@@ -112,12 +112,16 @@ class MetricController extends AbstractController
     /**
      * Normalize dates (from timestamp to DateTime using timezone)
      *
-     * @param array $metrics
-     * @return array The normalized metrics
+     * @param array<string,mixed> $metrics
+     * @return array<string,mixed> The normalized metrics
      */
     private function normalizePerformanceMetricsDates(array $metrics): array
     {
-        $timezone = $this->getUser()->getTimezone();
+        /**
+         * @var Contact $contact
+         */
+        $contact = $this->getUser();
+        $timezone = $contact->getTimezone();
 
         $metrics['global']['start'] = $this->formatTimestampToDateTime((int) $metrics['global']['start'], $timezone);
 
@@ -135,7 +139,7 @@ class MetricController extends AbstractController
      * Validate and extract start/end dates from request parameters
      *
      * @param RequestParametersInterface $requestParameters
-     * @return array
+     * @return array<\DateTime>
      * @example [new \Datetime('yesterday'), new \Datetime('today')]
      * @throws NotFoundHttpException
      * @throws \LogicException

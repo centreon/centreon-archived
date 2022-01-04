@@ -1,7 +1,7 @@
 import * as React from 'react';
 
-import { useTheme, makeStyles } from '@material-ui/core';
-import { Skeleton, SkeletonProps } from '@material-ui/lab';
+import { useTheme, Skeleton, SkeletonProps } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 
 const headerHeight = 3.8;
 
@@ -32,7 +32,7 @@ export const SliderSkeleton = ({
     <BaseSkeleton
       animate={animate}
       height={theme.spacing(50)}
-      variant="rect"
+      variant="rectangular"
       width={width}
     />
   );
@@ -47,14 +47,14 @@ export const HeaderSkeleton = ({ animate = true }: Props): JSX.Element => {
       <BaseSkeleton
         animate={animate}
         height={theme.spacing(headerHeight)}
-        variant="rect"
+        variant="rectangular"
         width={theme.spacing(10)}
       />
       <BaseSkeleton
         animate={animate}
         className={classes.nextContent}
         height={theme.spacing(headerHeight)}
-        variant="rect"
+        variant="rectangular"
         width={theme.spacing(20)}
       />
     </>
@@ -69,19 +69,19 @@ export const ContentSkeleton = ({ animate = true }: Props): JSX.Element => {
     <>
       <BaseSkeleton
         animate={animate}
-        variant="text"
+        variant="rectangular"
         width={theme.spacing(20)}
       />
       <BaseSkeleton
         animate={animate}
         className={classes.nextContent}
-        variant="text"
+        variant="rectangular"
         width={theme.spacing(15)}
       />
       <BaseSkeleton
         animate={animate}
         className={classes.nextContent}
-        variant="text"
+        variant="rectangular"
         width={theme.spacing(25)}
       />
     </>
@@ -96,13 +96,13 @@ export const ReleaseNoteSkeleton = ({ animate = true }: Props): JSX.Element => {
     <>
       <BaseSkeleton
         animate={animate}
-        variant="text"
+        variant="rectangular"
         width={theme.spacing(15)}
       />
       <BaseSkeleton
         animate={animate}
         className={classes.nextContent}
-        variant="text"
+        variant="rectangular"
         width={theme.spacing(25)}
       />
     </>

@@ -2,8 +2,8 @@ import * as React from 'react';
 
 import { not } from 'ramda';
 
-import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
-import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
 import { labelBackward, labelForward } from '../../../../translatedLabels';
 import memoizeComponent from '../../../../memoizedComponent';

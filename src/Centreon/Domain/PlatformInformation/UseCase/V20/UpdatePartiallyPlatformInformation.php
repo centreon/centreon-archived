@@ -212,7 +212,7 @@ class UpdatePartiallyPlatformInformation
     ): void {
         if ($platformInformationToUpdate->isRemote()) {
             $this->convertCentralToRemote($platformInformationToUpdate, $currentPlatformInformation);
-        } elseif (!$platformInformationToUpdate->isRemote() && $currentPlatformInformation->isRemote()) {
+        } elseif ($platformInformationToUpdate->isRemote() === false && $currentPlatformInformation->isRemote()) {
             /**
              * Use the current information
              * as they contains all the information required to remove the Remote to its Parent

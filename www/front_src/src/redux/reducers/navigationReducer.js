@@ -1,3 +1,4 @@
+/* eslint-disable default-param-last */
 /* eslint-disable no-case-declarations */
 
 import * as actions from '../actions/navigationActions';

@@ -1,5 +1,5 @@
 framework:
-    secret: '%env(qd:APP_SECRET)%'
+    secret: '%env(APP_SECRET)%'
 
     php_errors:
         log: true

@@ -15500,6 +15500,9 @@ msgstr "Filtre id %s non trouvé"
 msgid "Filter already exists"
 msgstr "Le filtre existe déjà"
 
+msgid "Filter name already used"
+msgstr "Le nom de filtre est déjà utilisé"
+
 msgid "Error when adding filter %s"
 msgstr "Erreur lors de l'ajout du filtre %s"
 
@@ -16415,4 +16418,31 @@ msgid "Failed to save password security policy"
 msgstr "La sauvegarde de la politique de définition de mot de passe a échoué"
 
 msgid "This will not be used because the number of attempts is not defined"
-msgstr "Ceci ne va pas être utilisé car le nombre de tentatives n'est pas défini" 
+msgstr "Ceci ne va pas être utilisé car le nombre de tentatives n'est pas défini"
+
+msgid "You can't change your password because the delay before changing password is not over."
+msgstr "Vous ne pouvez pas changer votre mot de passe car le délai avant changement de mot de passe n'est pas encore terminé."
+
+msgid "Your password should be %d characters long."
+msgstr "Votre mot de passe doit contenir %d caractères."
+
+msgid "Your password should contains uppercase characters."
+msgstr "Votre mot de passe doit contenir des caractères majuscules."
+
+msgid "Your password should contains lowercase characters."
+msgstr "Votre mot de passe doit contenir des caractères minuscules."
+
+msgid "Your password should contains integer characters."
+msgstr "Votre mot de passe doit contenir des caractères numériques."
+
+msgid "Your password should contains special characters form the list '@$!%*?&'."
+msgstr "Votre mot de passe doit contenir des caractères spéciaux de la liste '@$!%*?&'."
+
+msgid "Your password has already been used. Please choose a different password from the previous three."
+msgstr "Votre mot de passe a déjà été utilisé. Veuillez choisir un mot de passe différent des trois précédents."
+
+msgid "Your password has expired. Please change it."
+msgstr "Votre mot de passe a expiré. Veuillez le changer."
+
+msgid "Your password will expire in %s days."
+msgstr "Votre mot de passe expirera dans %s jours."

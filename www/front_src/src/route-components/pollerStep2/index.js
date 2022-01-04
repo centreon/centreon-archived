@@ -40,14 +40,14 @@ class PollerStepTwoRoute extends Component {
     'internal.php?object=centreon_configuration_remote&action=linkCentreonRemoteServer',
   );
 
+  componentDidMount() {
+    this.getPollers();
+  }
+
   getPollers = () => {
     this.pollerListApi.post().then((response) => {
       this.setState({ pollers: response.data });
     });
-  };
-
-  componentDidMount = () => {
-    this.getPollers();
   };
 
   handleSubmit = (data) => {

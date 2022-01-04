@@ -59,7 +59,7 @@ module.exports = merge(baseConfig, devConfig, {
   plugins,
   resolve: {
     alias: {
-      '@material-ui/core': path.resolve('./node_modules/@material-ui/core'),
+      '@mui/material': path.resolve('./node_modules/@mui/material'),
       dayjs: path.resolve('./node_modules/dayjs'),
       'react-router-dom': path.resolve('./node_modules/react-router-dom'),
     },

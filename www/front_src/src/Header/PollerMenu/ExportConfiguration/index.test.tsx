@@ -1,11 +1,16 @@
 import * as React from 'react';
 
 import axios from 'axios';
-import { render, waitFor, RenderResult, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Provider } from 'jotai';
 
-import { withSnackbar } from '@centreon/ui';
+import {
+  render,
+  waitFor,
+  RenderResult,
+  screen,
+  withSnackbar,
+} from '@centreon/ui';
 import { refreshIntervalAtom, userAtom } from '@centreon/ui-context';
 
 import { cancelTokenRequestParam } from '../../../Resources/testUtils';

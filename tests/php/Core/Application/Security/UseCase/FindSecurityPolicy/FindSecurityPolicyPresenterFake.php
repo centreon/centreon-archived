@@ -18,22 +18,34 @@
  * For more information : contact@centreon.com
  *
  */
+
 declare(strict_types=1);
 
-namespace Security\Domain\Authentication\Exceptions;
+namespace Tests\Core\Application\Security\UseCase\FindSecurityPolicy;
 
-/**
- * This class is designed to contain all exceptions for both contexts of SessionAPI & TokenAPI authenticators.
- *
- * @package Security\Domain\Authentication\Exceptions
- */
-class AuthenticatorException extends \Exception
+use Core\Application\Security\UseCase\FindSecurityPolicy\FindSecurityPolicyPresenterInterface;
+use Core\Application\Security\UseCase\FindSecurityPolicy\FindSecurityPolicyResponse;
+
+class FindSecurityPolicyPresenterFake implements FindSecurityPolicyPresenterInterface
 {
     /**
-     * @return self
+     * @var FindSecurityPolicyResponse
      */
-    public static function sessionTokenNotFound(): self
+    public $response;
+
+    /**
+     * @param FindSecurityPolicyResponse $response
+     */
+    public function present(FindSecurityPolicyResponse $response): void
     {
-        return new self(_('Session token not found'));
+        $this->response = $response;
+    }
+
+    /**
+     * @return object
+     */
+    public function show(): object
+    {
+        return new \stdClass();
     }
 }

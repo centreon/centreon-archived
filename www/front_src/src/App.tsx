@@ -1,3 +1,5 @@
+/* eslint-disable react/no-unused-class-component-methods */
+/* eslint-disable class-methods-use-this */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable react/destructuring-assignment */
@@ -13,55 +15,58 @@ import { ConnectedRouter } from 'connected-react-router';
 import Fullscreen from 'react-fullscreen-crossbrowser';
 import queryString from 'query-string';
 
-import FullscreenIcon from '@material-ui/icons/Fullscreen';
-import { withStyles, createStyles, Fab } from '@material-ui/core';
+import FullscreenIcon from '@mui/icons-material/Fullscreen';
+import { Fab } from '@mui/material';
+import { styled } from '@mui/system';
 
-import { ThemeProvider } from '@centreon/ui';
+import { LoadingSkeleton, ThemeProvider } from '@centreon/ui';
 
-import Header from './Header';
 import { history } from './store';
-import Nagigation from './Navigation';
-import Footer from './Footer';
 import axios from './axios';
 import { fetchExternalComponents } from './redux/actions/externalComponentsActions';
 import PageLoader from './components/PageLoader';
 import Provider from './Provider';
 
 const MainRouter = React.lazy(() => import('./components/mainRouter'));
+const Header = React.lazy(() => import('./Header'));
+const Navigation = React.lazy(() => import('./Navigation'));
+const Footer = React.lazy(() => import('./Footer'));
 
-const styles = createStyles({
-  content: {
-    display: 'flex',
-    flexDirection: 'column',
-    height: ' 100vh',
-    overflow: 'hidden',
-    position: 'relative',
-    transition: 'all 0.3s',
-    width: '100%',
-  },
-  fullScreenWrapper: {
-    flexGrow: 1,
-    height: '100%',
-    overflow: 'hidden',
-    width: '100%',
-  },
-  fullscreenButton: {
-    bottom: '10px',
-    position: 'absolute',
-    right: '20px',
-    zIndex: 1500,
-  },
-  mainContent: {
-    backgroundcolor: 'white',
-    height: '100%',
-    width: '100%',
-  },
-  wrapper: {
-    alignItems: 'stretch',
-    display: 'flex',
-    height: '100%',
-    overflow: 'hidden',
-  },
+const Content = styled('div')({
+  display: 'flex',
+  flexDirection: 'column',
+  height: ' 100vh',
+  overflow: 'hidden',
+  position: 'relative',
+  transition: 'all 0.3s',
+  width: '100%',
+});
+
+const FullscreenWrapper = styled('div')({
+  flexGrow: 1,
+  height: '100%',
+  overflow: 'hidden',
+  width: '100%',
+});
+
+const FullscreenButton = styled(Fab)({
+  bottom: '10px',
+  position: 'absolute',
+  right: '20px',
+  zIndex: 1500,
+});
+
+const RouterWrapper = styled('div')({
+  backgroundcolor: 'white',
+  height: '100%',
+  width: '100%',
+});
+
+const Wrapper = styled('div')({
+  alignItems: 'stretch',
+  display: 'flex',
+  height: '100%',
+  overflow: 'hidden',
 });
 
 // Extends Window interface
@@ -73,7 +78,6 @@ declare global {
 }
 
 interface Props {
-  classes;
   fetchExternalComponents: () => void;
 }
 
@@ -152,20 +156,27 @@ class App extends Component<Props, State> {
   public render(): ReactNode {
     const min = this.getMinArgument();
 
-    const { classes } = this.props;
-
     return (
       <Suspense fallback={<PageLoader />}>
         <ConnectedRouter history={history}>
           <ThemeProvider>
-            <div className={classes.wrapper}>
-              {!min && <Nagigation />}
-              <div className={classes.content} id="content">
-                {!min && <Header />}
-                <div
-                  className={classes.fullScreenWrapper}
-                  id="fullscreen-wrapper"
+            <Wrapper>
+              {!min && (
+                <React.Suspense
+                  fallback={<LoadingSkeleton height="100%" width={45} />}
                 >
+                  <Navigation />
+                </React.Suspense>
+              )}
+              <Content id="content">
+                {!min && (
+                  <React.Suspense
+                    fallback={<LoadingSkeleton height={56} width="100%" />}
+                  >
+                    <Header />
+                  </React.Suspense>
+                )}
+                <FullscreenWrapper id="fullscreen-wrapper">
                   <Fullscreen
                     enabled={this.state.isFullscreenEnabled}
                     onChange={(isFullscreenEnabled): void => {
@@ -173,22 +184,27 @@ class App extends Component<Props, State> {
                     }}
                     onClose={this.removeFullscreenParams}
                   >
-                    <div className={classes.mainContent}>
+                    <RouterWrapper>
                       <MainRouter />
-                    </div>
+                    </RouterWrapper>
                   </Fullscreen>
-                </div>
-                {!min && <Footer />}
-              </div>
-              <Fab
-                className={classes.fullscreenButton}
+                </FullscreenWrapper>
+                {!min && (
+                  <React.Suspense
+                    fallback={<LoadingSkeleton height={30} width="100%" />}
+                  >
+                    <Footer />
+                  </React.Suspense>
+                )}
+              </Content>
+              <FullscreenButton
                 color="default"
                 size="small"
                 onClick={this.goFull}
               >
                 <FullscreenIcon />
-              </Fab>
-            </div>
+              </FullscreenButton>
+            </Wrapper>
           </ThemeProvider>
         </ConnectedRouter>
       </Suspense>
@@ -208,7 +224,7 @@ const mapDispatchToProps = (dispatch: (any) => void): DispatchProps => {
   };
 };
 
-const CentreonApp = connect(null, mapDispatchToProps)(withStyles(styles)(App));
+const CentreonApp = connect(null, mapDispatchToProps)(App);
 
 export default (): JSX.Element => (
   <Provider>

@@ -13,10 +13,12 @@ import { withTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
-import { Typography, withStyles, createStyles } from '@material-ui/core';
-import UserIcon from '@material-ui/icons/AccountCircle';
-import FileCopyIcon from '@material-ui/icons/FileCopy';
-import CheckIcon from '@material-ui/icons/Check';
+import { Typography } from '@mui/material';
+import withStyles from '@mui/styles/withStyles';
+import createStyles from '@mui/styles/createStyles';
+import UserIcon from '@mui/icons-material/AccountCircle';
+import FileCopyIcon from '@mui/icons-material/FileCopy';
+import CheckIcon from '@mui/icons-material/Check';
 
 import { allowedPagesSelector } from '../../redux/selectors/navigation/allowedPages';
 import styles from '../header.scss';
