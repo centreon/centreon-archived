@@ -49,7 +49,6 @@ class FindServicePresenterStub implements FindServicePresenterInterface
 
     /**
      * @param FindServiceResponse $response
-     * @return void
      */
     public function present(FindServiceResponse $response): void
     {
