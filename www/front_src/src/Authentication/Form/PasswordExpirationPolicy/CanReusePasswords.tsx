@@ -42,7 +42,7 @@ const CanReusePasswords = (): JSX.Element => {
               onChange={handleChange(fieldName)}
             />
           }
-          label={t(labelCanReuseLast3Passwords)}
+          label={t(labelCanReuseLast3Passwords) as string}
         />
       </div>
     ),
