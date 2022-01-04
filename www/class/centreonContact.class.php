@@ -34,8 +34,6 @@
  *
  */
 
-require_once __DIR__ . '/../../bootstrap.php';
-
 use Core\Domain\Security\Model\SecurityPolicy;
 
 class CentreonContact
