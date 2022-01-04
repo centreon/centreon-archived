@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 import { move, isNil } from 'ramda';
 import { useUpdateAtom } from 'jotai/utils';
 import { useAtom } from 'jotai';
-
 import { Typography, LinearProgress, Paper } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import MoveIcon from '@mui/icons-material/UnfoldMore';

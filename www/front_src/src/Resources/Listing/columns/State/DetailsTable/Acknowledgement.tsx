@@ -6,7 +6,6 @@ import * as React from 'react';
 import parse from 'html-react-parser';
 import DOMPurify from 'dompurify';
 import { useTranslation } from 'react-i18next';
-
 import makeStyles from '@mui/styles/makeStyles';
 
 import { ColumnType, useLocaleDateTimeFormat } from '@centreon/ui';

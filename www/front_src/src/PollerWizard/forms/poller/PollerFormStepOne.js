@@ -8,7 +8,6 @@ import React, { Component } from 'react';
 
 import { Field, reduxForm as connectForm } from 'redux-form';
 import { withTranslation } from 'react-i18next';
-
 import { Typography, Button } from '@mui/material';
 
 import styles from '../../../styles/partials/form/_form.scss';

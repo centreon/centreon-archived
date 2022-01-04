@@ -2,7 +2,6 @@ import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { isEmpty, pipe, reject, slice } from 'ramda';
-
 import { Typography, Divider, CardActions, Button, Theme } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import { CreateCSSProperties } from '@mui/styles';

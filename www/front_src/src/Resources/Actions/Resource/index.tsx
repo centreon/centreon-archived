@@ -3,7 +3,6 @@ import * as React from 'react';
 import { all, head, pathEq } from 'ramda';
 import { useTranslation } from 'react-i18next';
 import { useAtom } from 'jotai';
-
 import makeStyles from '@mui/styles/makeStyles';
 import IconAcknowledge from '@mui/icons-material/Person';
 import IconCheck from '@mui/icons-material/Sync';

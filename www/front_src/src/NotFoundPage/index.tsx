@@ -1,9 +1,7 @@
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
-
 import { Divider, Typography } from '@mui/material';
-
 import makeStyles from '@mui/styles/makeStyles';
 
 import centreonLogo from '../img/centreon.png';

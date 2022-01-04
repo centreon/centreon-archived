@@ -1,7 +1,6 @@
 import * as React from 'react';
 
 import { not } from 'ramda';
-
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 

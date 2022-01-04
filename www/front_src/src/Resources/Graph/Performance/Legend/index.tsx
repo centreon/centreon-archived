@@ -5,7 +5,6 @@ import clsx from 'clsx';
 import { equals, find, gt, includes, isNil, length, slice, split } from 'ramda';
 import { useTranslation } from 'react-i18next';
 import { useAtomValue } from 'jotai/utils';
-
 import {
   Typography,
   useTheme,

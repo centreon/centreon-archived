@@ -24,7 +24,6 @@ import {
 import { useTranslation } from 'react-i18next';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { useAtom } from 'jotai';
-
 import CloseIcon from '@mui/icons-material/Close';
 import {
   CircularProgress,

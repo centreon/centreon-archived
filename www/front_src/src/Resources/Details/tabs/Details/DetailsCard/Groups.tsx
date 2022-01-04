@@ -2,7 +2,6 @@ import * as React from 'react';
 
 import { equals } from 'ramda';
 import { useUpdateAtom } from 'jotai/utils';
-
 import { Grid, Chip } from '@mui/material';
 
 import { setCriteriaAndNewFilterDerivedAtom } from '../../../../Filter/filterAtoms';

@@ -3,7 +3,6 @@ import * as React from 'react';
 import { isNil, not, pluck, values } from 'ramda';
 import { useTranslation } from 'react-i18next';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
-
 import { FormControlLabel, FormGroup, Popover, Switch } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import SettingsIcon from '@mui/icons-material/Settings';

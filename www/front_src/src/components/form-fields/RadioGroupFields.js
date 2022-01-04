@@ -10,7 +10,6 @@ import React from 'react';
 
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
-
 import { Radio, FormControlLabel, Typography } from '@mui/material';
 
 import styles from '../../styles/partials/form/_form.scss';

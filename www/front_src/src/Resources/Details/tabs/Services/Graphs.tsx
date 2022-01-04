@@ -1,7 +1,6 @@
 import * as React from 'react';
 
 import { path, isNil, equals, last, pipe, not } from 'ramda';
-
 import makeStyles from '@mui/styles/makeStyles';
 
 import { Resource } from '../../../models';

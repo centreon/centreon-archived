@@ -1,7 +1,6 @@
 import * as React from 'react';
 
 import { equals, isNil, path } from 'ramda';
-
 import makeStyles from '@mui/styles/makeStyles';
 
 import { ServerType, WizardFormProps } from '../../PollerWizard/models';

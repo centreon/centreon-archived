@@ -1,8 +1,9 @@
 import * as React from 'react';
 
-import { render, RenderResult, waitFor, screen } from '@testing-library/react';
 import axios from 'axios';
 import { Provider } from 'jotai';
+
+import { render, RenderResult, waitFor, screen } from '@centreon/ui';
 
 import { userEndpoint, webVersionsEndpoint } from '../api/endpoint';
 import { labelLogin } from '../Login/translatedLabels';
@@ -74,7 +75,7 @@ const retrievedWeb = {
 
 jest.mock('../Header', () => {
   const Footer = (): JSX.Element => {
-    return <></>;
+    return <div />;
   };
 
   return {
@@ -85,7 +86,7 @@ jest.mock('../Header', () => {
 
 jest.mock('../components/mainRouter', () => {
   const MainRouter = (): JSX.Element => {
-    return <></>;
+    return <div />;
   };
 
   return {

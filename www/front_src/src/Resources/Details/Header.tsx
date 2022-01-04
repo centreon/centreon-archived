@@ -5,7 +5,6 @@ import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { hasPath, isNil, not, path, prop } from 'ramda';
-
 import {
   Grid,
   Typography,

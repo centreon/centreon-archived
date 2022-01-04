@@ -2,7 +2,6 @@ import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { equals } from 'ramda';
-
 import SyncDisabledIcon from '@mui/icons-material/SyncDisabled';
 import SyncProblemIcon from '@mui/icons-material/SyncProblem';
 import { Tooltip } from '@mui/material';

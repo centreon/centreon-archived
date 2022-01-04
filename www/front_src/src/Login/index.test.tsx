@@ -1,13 +1,18 @@
 import * as React from 'react';
 
-import { render, RenderResult, screen, waitFor } from '@testing-library/react';
 import { Provider } from 'jotai';
 import mockDate from 'mockdate';
 import { BrowserRouter } from 'react-router-dom';
 import axios from 'axios';
 import userEvent from '@testing-library/user-event';
 
-import { withSnackbar } from '@centreon/ui';
+import {
+  render,
+  RenderResult,
+  screen,
+  waitFor,
+  withSnackbar,
+} from '@centreon/ui';
 
 import { areUserParametersLoadedAtom } from '../Main/useUser';
 import { labelAlias } from '../Resources/translatedLabels';

@@ -5,7 +5,6 @@ import dayjs from 'dayjs';
 import { useAtomValue } from 'jotai/utils';
 import { FormikErrors, FormikHandlers, FormikValues } from 'formik';
 import { isNil } from 'ramda';
-
 import { LocalizationProvider, DateTimePicker } from '@mui/lab';
 import {
   Checkbox,

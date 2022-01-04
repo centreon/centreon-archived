@@ -2,7 +2,6 @@ import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { useUpdateAtom } from 'jotai/utils';
-
 import { Tooltip, Paper, Typography } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 

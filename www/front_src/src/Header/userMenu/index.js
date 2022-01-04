@@ -12,7 +12,6 @@ import classnames from 'classnames';
 import { withTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { useUpdateAtom } from 'jotai/utils';
-
 import { Typography } from '@mui/material';
 import withStyles from '@mui/styles/withStyles';
 import createStyles from '@mui/styles/createStyles';

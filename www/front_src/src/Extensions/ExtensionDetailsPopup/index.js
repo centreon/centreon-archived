@@ -6,7 +6,6 @@ import React from 'react';
 
 import Carousel from 'react-material-ui-carousel';
 import { Responsive } from '@visx/visx';
-
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { Chip, Typography, Divider, Grid, Button, Link } from '@mui/material';

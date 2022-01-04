@@ -2,7 +2,6 @@ import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { isEmpty, isNil, pipe, trim } from 'ramda';
-
 import { Grid, Typography } from '@mui/material';
 
 import {

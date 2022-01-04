@@ -1,5 +1,4 @@
 import { pipe, split, head, propOr, T } from 'ramda';
-
 import makeStyles from '@mui/styles/makeStyles';
 
 import { ColumnType, Column } from '@centreon/ui';

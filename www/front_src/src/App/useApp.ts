@@ -46,7 +46,7 @@ const useApp = (): UseAppState => {
   const { showErrorMessage } = useSnackbar();
 
   const { sendRequest: keepAliveRequest } = useRequest({
-    httpCodesForBypassShowErrorMessage: [401],
+    httpCodesBypassErrorSnackbar: [401],
     request: getData,
   });
   const { sendRequest: getParameters } = useRequest<DefaultParameters>({
@@ -68,7 +68,7 @@ const useApp = (): UseAppState => {
     getNavigation();
     getExternalComponents();
 
-    Promise.all<DefaultParameters, Actions>([
+    Promise.all([
       getParameters({
         endpoint: parametersEndpoint,
       }),

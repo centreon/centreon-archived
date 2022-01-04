@@ -1,7 +1,6 @@
 import * as React from 'react';
 
 import { Responsive } from '@visx/visx';
-
 import { Typography, Box } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 

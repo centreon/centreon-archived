@@ -4,7 +4,6 @@ import { Shape } from '@visx/visx';
 import { ScaleTime } from 'd3-scale';
 import { pick } from 'ramda';
 import { useAtomValue } from 'jotai/utils';
-
 import makeStyles from '@mui/styles/makeStyles';
 
 import { useLocaleDateTimeFormat, useMemoComponent } from '@centreon/ui';

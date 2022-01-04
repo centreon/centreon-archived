@@ -3,7 +3,6 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { isNil } from 'ramda';
 import clsx from 'clsx';
-
 import StorageIcon from '@mui/icons-material/Storage';
 import LatencyIcon from '@mui/icons-material/Speed';
 import { Avatar, Theme } from '@mui/material';

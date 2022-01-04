@@ -2,7 +2,6 @@ import * as React from 'react';
 
 import { isNil, prop } from 'ramda';
 import { useTranslation } from 'react-i18next';
-
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import LogsIcon from '@mui/icons-material/Assignment';
 import ReportIcon from '@mui/icons-material/Assessment';

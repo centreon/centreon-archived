@@ -2,7 +2,6 @@ import * as React from 'react';
 
 import { path, isNil, or, not } from 'ramda';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
-
 import { Paper, Theme } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 

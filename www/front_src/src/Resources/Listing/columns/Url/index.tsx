@@ -1,7 +1,6 @@
 import * as React from 'react';
 
 import { isNil, isEmpty } from 'ramda';
-
 import { Avatar, Tooltip } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 
