@@ -617,7 +617,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      * @param array<string,mixed> $topologyInformation
      * @throws \Exception
      */
-    private function updateServerInPlatformTopology($topologyInformation): void
+    private function updateServerInPlatformTopology(array $topologyInformation): void
     {
         /**
          * Get platform_topology id

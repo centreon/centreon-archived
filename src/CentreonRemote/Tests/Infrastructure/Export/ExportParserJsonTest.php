@@ -48,7 +48,7 @@ class ExportParserJsonTest extends TestCase
         // mount VFS
         $this->fs = FileSystem::factory('vfs://');
         $this->fs->mount();
-        $this->fs->get('/')->add('tmp', new Directory([])); /** @phpstan-ignore-line */
+        $this->fs->get('/')->add('tmp', new Directory([]));
         $this->parser = new ExportParserJson();
     }
 
@@ -75,7 +75,7 @@ class ExportParserJsonTest extends TestCase
     public function testParse2(): void
     {
         // add file
-        $this->fs->get('/tmp')->add('test1.json', new File('{"key":"val"}')); /** @phpstan-ignore-line */
+        $this->fs->get('/tmp')->add('test1.json', new File('{"key":"val"}'));
 
         $result = $this->parser->parse('vfs://tmp/test1.json');
 
@@ -88,7 +88,7 @@ class ExportParserJsonTest extends TestCase
     public function testParse3(): void
     {
         // add file with macros
-        $this->fs->get('/tmp')->add('test2.json', new File('{"key":"@val@"}')); /** @phpstan-ignore-line */
+        $this->fs->get('/tmp')->add('test2.json', new File('{"key":"@val@"}'));
 
         $result = $this->parser->parse(
             'vfs://tmp/test2.json',

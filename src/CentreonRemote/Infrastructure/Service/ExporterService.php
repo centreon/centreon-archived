@@ -30,7 +30,7 @@ class ExporterService implements ContainerInterface
         $this->objects[$name] = [
             'name' => $name,
             'classname' => $object,
-            'factory' => $factory
+            'factory' => $factory,
         ];
 
         $this->sort();

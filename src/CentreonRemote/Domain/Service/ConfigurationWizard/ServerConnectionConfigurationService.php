@@ -95,8 +95,8 @@ abstract class ServerConnectionConfigurationService
     }
 
     /**
-     *
      * @throws \Exception
+     * @return int
      */
     public function insert(): int
     {
@@ -129,8 +129,8 @@ abstract class ServerConnectionConfigurationService
     }
 
     /**
-     *
      * @param int $serverID
+     * @return int
      */
     protected function insertConfigNagios($serverID): int
     {
