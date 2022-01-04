@@ -18,25 +18,16 @@
  * For more information : contact@centreon.com
  *
  */
-
 declare(strict_types=1);
 
-namespace Core\Application\RealTime\Repository;
+namespace Core\Application\RealTime\UseCase\FindService;
 
-use Core\Domain\RealTime\Model\Acknowledgement;
+use Core\Application\Common\UseCase\PresenterInterface;
 
-interface ReadAcknowledgementRepositoryInterface
+interface FindServicePresenterInterface extends PresenterInterface
 {
     /**
-     * @param int $hostId
-     * @return Acknowledgement|null
+     * @param FindServiceResponse $response
      */
-    public function findOnGoingAcknowledgementByHostId(int $hostId): ?Acknowledgement;
-
-    /**
-     * @param int $hostId
-     * @param int $serviceId
-     * @return Acknowledgement|null
-     */
-    public function findOnGoingAcknowledgementByHostIdAndServiceId(int $hostId, int $serviceId): ?Acknowledgement;
+    public function present(FindServiceResponse $response): void;
 }

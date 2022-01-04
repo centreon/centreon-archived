@@ -1035,6 +1035,28 @@ paths:
           $ref: '#/components/responses/HostNotFound'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /monitoring/resources/hosts/{host_id}/services/{service_id}:
+    get:
+      tags:
+        - Resource
+      summary: "Get a Service resource type detail"
+      description: "Return the full detail of a resource typed Service."
+      parameters:
+        - $ref: '#/components/parameters/HostId'
+        - $ref: '#/components/parameters/ServiceId'
+      responses:
+        '200':
+          description: "Successful request"
+          content:
+            application/json:
+              schema:
+                $ref: './ResourceServiceDetail.yaml'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFoundHostOrService'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /monitoring/hosts:
     get:
       tags:

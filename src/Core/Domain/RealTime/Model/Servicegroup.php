@@ -18,25 +18,35 @@
  * For more information : contact@centreon.com
  *
  */
-
 declare(strict_types=1);
 
-namespace Core\Application\RealTime\Repository;
+namespace Core\Domain\RealTime\Model;
 
-use Core\Domain\RealTime\Model\Acknowledgement;
-
-interface ReadAcknowledgementRepositoryInterface
+class Servicegroup
 {
     /**
-     * @param int $hostId
-     * @return Acknowledgement|null
+     * @param int $id
+     * @param string $name
      */
-    public function findOnGoingAcknowledgementByHostId(int $hostId): ?Acknowledgement;
+    public function __construct(
+        private int $id,
+        private string $name
+    ) {
+    }
 
     /**
-     * @param int $hostId
-     * @param int $serviceId
-     * @return Acknowledgement|null
+     * @return int
      */
-    public function findOnGoingAcknowledgementByHostIdAndServiceId(int $hostId, int $serviceId): ?Acknowledgement;
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return $this->name;
+    }
 }
