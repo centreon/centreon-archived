@@ -6,13 +6,9 @@ import { move, isNil } from 'ramda';
 import { useUpdateAtom } from 'jotai/utils';
 import { useAtom } from 'jotai';
 
-import {
-  Typography,
-  makeStyles,
-  LinearProgress,
-  Paper,
-} from '@material-ui/core';
-import MoveIcon from '@material-ui/icons/UnfoldMore';
+import { Typography, LinearProgress, Paper } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import MoveIcon from '@mui/icons-material/UnfoldMore';
 
 import { MemoizedSectionPanel as SectionPanel, useRequest } from '@centreon/ui';
 

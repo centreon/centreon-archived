@@ -25,15 +25,15 @@ import { useTranslation } from 'react-i18next';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { useAtom } from 'jotai';
 
-import CloseIcon from '@material-ui/icons/Close';
+import CloseIcon from '@mui/icons-material/Close';
 import {
   CircularProgress,
   ClickAwayListener,
-  makeStyles,
   MenuItem,
   Paper,
   Popper,
-} from '@material-ui/core';
+} from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 
 import {
   MemoizedFilter,
@@ -75,6 +75,20 @@ import {
   setNewFilterDerivedAtom,
 } from './filterAtoms';
 
+const renderClearFilter = (onClear) => (): JSX.Element => {
+  const { t } = useTranslation();
+
+  return (
+    <IconButton
+      ariaLabel={t(labelClearFilter)}
+      size="small"
+      title={t(labelClearFilter)}
+      onClick={onClear}
+    >
+      <CloseIcon color="action" fontSize="small" />
+    </IconButton>
+  );
+};
 interface DynamicCriteriaResult {
   result: Array<{ name: string }>;
 }
@@ -505,7 +519,7 @@ const Filter = (): JSX.Element => {
         <div className={classes.container}>
           <React.Suspense
             fallback={
-              <LoadingSkeleton height={24} variant="circle" width={24} />
+              <LoadingSkeleton height={24} variant="circular" width={24} />
             }
           >
             <SaveFilter />
@@ -526,7 +540,7 @@ const Filter = (): JSX.Element => {
           )}
           <React.Suspense
             fallback={
-              <LoadingSkeleton height={24} variant="circle" width={24} />
+              <LoadingSkeleton height={24} variant="circular" width={24} />
             }
           >
             <Criterias />
@@ -535,16 +549,7 @@ const Filter = (): JSX.Element => {
             <div>
               <SearchField
                 fullWidth
-                EndAdornment={(): JSX.Element => (
-                  <IconButton
-                    ariaLabel={t(labelClearFilter)}
-                    size="small"
-                    title={t(labelClearFilter)}
-                    onClick={clearFilter}
-                  >
-                    <CloseIcon color="action" fontSize="small" />
-                  </IconButton>
-                )}
+                EndAdornment={renderClearFilter(clearFilter)}
                 inputRef={searchRef as React.RefObject<HTMLInputElement>}
                 placeholder={t(labelSearch)}
                 value={search}

@@ -7,8 +7,8 @@ import React, { Component } from 'react';
 
 import clsx from 'clsx';
 
-import ArrowForwardIcon from '@material-ui/icons/ArrowForwardIos';
-import ArrowBackIcon from '@material-ui/icons/ArrowBackIos';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForwardIos';
+import ArrowBackIcon from '@mui/icons-material/ArrowBackIos';
 
 import NavigationMenu from './Menu';
 import Logo from './Logo';

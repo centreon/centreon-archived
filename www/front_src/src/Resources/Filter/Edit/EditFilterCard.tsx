@@ -16,8 +16,8 @@ import { useTranslation } from 'react-i18next';
 import { useUpdateAtom } from 'jotai/utils';
 import { useAtom } from 'jotai';
 
-import DeleteIcon from '@material-ui/icons/Delete';
-import { makeStyles } from '@material-ui/core';
+import DeleteIcon from '@mui/icons-material/Delete';
+import makeStyles from '@mui/styles/makeStyles';
 
 import {
   ContentWithCircularLoading,
@@ -172,7 +172,12 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
         loading={sendingRequest}
         loadingIndicatorSize={24}
       >
-        <IconButton title={t(labelDelete)} onClick={askDelete}>
+        <IconButton
+          aria-label={t(labelDelete)}
+          size="large"
+          title={t(labelDelete)}
+          onClick={askDelete}
+        >
           <DeleteIcon fontSize="small" />
         </IconButton>
       </ContentWithCircularLoading>

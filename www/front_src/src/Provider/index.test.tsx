@@ -71,7 +71,7 @@ const retrievedTranslations = {
 
 jest.mock('../App', () => {
   const ComponentWithUserContext = (): JSX.Element => {
-    return <></>;
+    return <div />;
   };
 
   return {

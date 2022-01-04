@@ -2,7 +2,8 @@ import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import { makeStyles, Paper, Typography } from '@material-ui/core';
+import { Paper, Typography } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 
 import { Status } from '../../../models';
 import CompactStatusChip from '../CompactStatusChip';
