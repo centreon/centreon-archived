@@ -2,31 +2,30 @@ import * as React from 'react';
 
 import { isNil } from 'ramda';
 
-import { createStyles, makeStyles, Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 
 import { getCommandsWithArguments } from './utils';
 
-const useStyles = makeStyles((theme) =>
-  createStyles({
-    argument: {
-      marginRight: theme.spacing(0.5),
-    },
-    argumentWithValue: {
-      display: 'flex',
-      marginLeft: theme.spacing(1),
-    },
-    command: {
-      fontWeight: 'bold',
-    },
-    pipe: {
-      marginRight: theme.spacing(1),
-    },
-    pipedCommand: {
-      display: 'flex',
-      flexDirection: 'row',
-    },
-  }),
-);
+const useStyles = makeStyles((theme) => ({
+  argument: {
+    marginRight: theme.spacing(0.5),
+  },
+  argumentWithValue: {
+    display: 'flex',
+    marginLeft: theme.spacing(1),
+  },
+  command: {
+    fontWeight: 'bold',
+  },
+  pipe: {
+    marginRight: theme.spacing(1),
+  },
+  pipedCommand: {
+    display: 'flex',
+    flexDirection: 'row',
+  },
+}));
 
 interface Props {
   commandLine: string;

@@ -142,8 +142,10 @@ const AppProvider = ({ children }: Props): JSX.Element => {
               retrievedParameters.monitoring_default_downtime_duration,
               10,
             ),
-            default_fixed: false,
-            default_with_services: false,
+            default_fixed:
+              retrievedParameters.monitoring_default_downtime_fixed,
+            default_with_services:
+              retrievedParameters.monitoring_default_downtime_with_services,
           });
           setRefreshInterval(
             parseInt(

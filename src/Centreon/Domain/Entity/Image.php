@@ -74,13 +74,9 @@ class Image
      * @param string $prop
      * @param string $val
      */
-    public function __set($prop, $val)
+    public function __set($prop, $val): void
     {
-        try {
-            $ref = new ReflectionClass(ImageDir::class);
-        } catch (\ReflectionException $e) {
-        }
-
+        $ref = new ReflectionClass(ImageDir::class);
         $props = $ref->getProperties();
         $propArray = [];
 
@@ -124,7 +120,7 @@ class Image
     }
 
     /**
-     * @param int $img_id
+     * @param int $id
      */
     public function setImgId(int $id): void
     {
@@ -140,7 +136,7 @@ class Image
     }
 
     /**
-     * @param string $img_name
+     * @param string $name
      */
     public function setImgName(string $name = null): void
     {
@@ -156,7 +152,7 @@ class Image
     }
 
     /**
-     * @param string $img_path
+     * @param string $path
      */
     public function setImgPath(string $path = null): void
     {
@@ -172,7 +168,7 @@ class Image
     }
 
     /**
-     * @param string $img_comment
+     * @param string $comment
      */
     public function setImgComment(string $comment = null): void
     {
@@ -200,7 +196,7 @@ class Image
      */
 
     /**
-     * @param int $dir_id
+     * @param int $dirId
      */
     public function setDirId(int $dirId = null): void
     {
@@ -208,7 +204,7 @@ class Image
     }
 
     /**
-     * @param string $dir_name
+     * @param string $dirName
      */
     public function setDirName(string $dirName = null): void
     {
@@ -216,7 +212,7 @@ class Image
     }
 
     /**
-     * @param string $dir_alias
+     * @param string $dirAlias
      */
     public function setDirAlias(string $dirAlias = null): void
     {
@@ -224,7 +220,7 @@ class Image
     }
 
     /**
-     * @param string $dir_comment
+     * @param string $dirComment
      */
     public function setDirComment(string $dirComment = null): void
     {

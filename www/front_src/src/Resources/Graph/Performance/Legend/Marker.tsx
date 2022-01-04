@@ -3,8 +3,9 @@ import * as React from 'react';
 import clsx from 'clsx';
 import { equals } from 'ramda';
 
-import { makeStyles, Theme } from '@material-ui/core';
-import { CreateCSSProperties } from '@material-ui/styles';
+import { Theme } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import { CreateCSSProperties } from '@mui/styles';
 
 export enum LegendMarkerVariant {
   'dot',

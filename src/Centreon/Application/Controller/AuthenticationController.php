@@ -140,7 +140,7 @@ class AuthenticationController extends AbstractController
         SessionInterface $session
     ): View {
         // submitted from form directly
-        $data = $request->request->getIterator();
+        $data = json_decode((string) $request->getContent(), true);
         $referer = $request->headers->get('referer');
         $clientIp = $request->getClientIp();
         if ($clientIp === null) {

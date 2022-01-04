@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unused-class-component-methods */
 /* eslint-disable react/jsx-no-bind */
 /* eslint-disable react/jsx-filename-extension */
 /* eslint-disable camelcase */
@@ -9,9 +10,9 @@
 
 import * as React from 'react';
 
-import UpdateIcon from '@material-ui/icons/SystemUpdateAlt';
-import InstallIcon from '@material-ui/icons/Add';
-import { Button } from '@material-ui/core';
+import UpdateIcon from '@mui/icons-material/SystemUpdateAlt';
+import InstallIcon from '@mui/icons-material/Add';
+import { Button } from '@mui/material';
 
 import Hook from '../components/Hook';
 import axios from '../axios';
@@ -47,9 +48,9 @@ class ExtensionsManager extends React.Component {
     widgetsActive: false,
   };
 
-  componentDidMount = () => {
+  componentDidMount() {
     this.getData();
-  };
+  }
 
   onChange = (value, key) => {
     const { filters } = this.state;

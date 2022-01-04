@@ -138,7 +138,7 @@ class PlatformRegistered implements PlatformInterface
             $type = strtolower($type);
 
             // Check if the server_type is available
-            if (!in_array($type, static::AVAILABLE_TYPES)) {
+            if (!in_array($type, self::AVAILABLE_TYPES)) {
                 throw new \InvalidArgumentException(
                     sprintf(
                         _("The platform type of '%s'@'%s' is not consistent"),

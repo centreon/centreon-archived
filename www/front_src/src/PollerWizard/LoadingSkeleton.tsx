@@ -1,7 +1,7 @@
 import * as React from 'react';
 
-import { Skeleton } from '@material-ui/lab';
-import { makeStyles } from '@material-ui/core';
+import { Skeleton } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 
 const useStyles = makeStyles((theme) => ({
   skeleton: {
@@ -21,7 +21,7 @@ const LoadingSkeleton = (): JSX.Element => {
 
   return (
     <div className={classes.skeletonContainer}>
-      <Skeleton className={classes.skeleton} variant="rect" />
+      <Skeleton className={classes.skeleton} variant="rectangular" />
     </div>
   );
 };

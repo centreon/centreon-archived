@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import { Step, StepLabel, Stepper } from '@material-ui/core';
+import { Step, StepLabel, Stepper } from '@mui/material';
 
 interface Props {
   activeStep: number;

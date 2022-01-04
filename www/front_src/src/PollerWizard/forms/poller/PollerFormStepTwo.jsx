@@ -11,7 +11,7 @@ import { Field, reduxForm as connectForm } from 'redux-form';
 import { withTranslation } from 'react-i18next';
 import Select from 'react-select';
 
-import { Typography, Button } from '@material-ui/core';
+import { Typography, Button } from '@mui/material';
 
 import styles from '../../../styles/partials/form/_form.scss';
 import SelectField from '../../../components/form-fields/SelectField';

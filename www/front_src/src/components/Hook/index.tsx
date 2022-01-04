@@ -4,10 +4,9 @@ import { isNil, propOr } from 'ramda';
 import { useHref } from 'react-router';
 import { useAtomValue } from 'jotai/utils';
 
-import { useMemoComponent } from '@centreon/ui';
+import { useMemoComponent, MenuSkeleton } from '@centreon/ui';
 
 import { dynamicImport } from '../../helpers/dynamicImport';
-import MenuLoader from '../MenuLoader';
 import { externalComponentsAtom } from '../../externalComponents/atoms';
 import ExternalComponents, {
   ExternalComponent,
@@ -35,7 +34,7 @@ const LoadableHooks = ({ hooks, path, ...rest }: Props): JSX.Element | null => {
           );
 
           return (
-            <React.Suspense fallback={<MenuLoader width={29} />} key={path}>
+            <React.Suspense fallback={<MenuSkeleton width={29} />} key={path}>
               <HookComponent {...rest} />
             </React.Suspense>
           );

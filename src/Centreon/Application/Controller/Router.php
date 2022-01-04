@@ -26,11 +26,13 @@ use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Routing\Matcher\RequestMatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\CacheWarmer\WarmableInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Override symfony router to generate base URI
  */
-class Router implements RouterInterface, RequestMatcherInterface
+class Router implements RouterInterface, RequestMatcherInterface, WarmableInterface, UrlGeneratorInterface
 {
     /**
      * @var RouterInterface
@@ -44,6 +46,7 @@ class Router implements RouterInterface, RequestMatcherInterface
 
     /**
      * MyRouter constructor.
+     *
      * @param RouterInterface $router
      * @param RequestMatcherInterface $requestMatcher
      */
@@ -64,9 +67,13 @@ class Router implements RouterInterface, RequestMatcherInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritDoc}
+     *
+     * @param string $name
+     * @param array<string,mixed> $parameters
+     * @param int $referenceType
      */
-    public function generate($name, $parameters = [], $referenceType = self::ABSOLUTE_PATH)
+    public function generate(string $name, array $parameters = [], int $referenceType = self::ABSOLUTE_PATH)
     {
         if (isset($_SERVER['REQUEST_URI']) && preg_match('/^(.+)\/api\/.+/', $_SERVER['REQUEST_URI'], $matches)) {
             $parameters['base_uri'] = trim($matches[1], '/') . '/';
@@ -76,7 +83,10 @@ class Router implements RouterInterface, RequestMatcherInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritDoc}
+     *
+     * @param RequestContext $context
+     * @return void
      */
     public function setContext(RequestContext $context)
     {
@@ -84,7 +94,7 @@ class Router implements RouterInterface, RequestMatcherInterface
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function getContext()
     {
@@ -92,7 +102,7 @@ class Router implements RouterInterface, RequestMatcherInterface
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function getRouteCollection()
     {
@@ -100,18 +110,30 @@ class Router implements RouterInterface, RequestMatcherInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritDoc}
+     *
+     * @return array<string,mixed>
      */
-    public function match($pathinfo)
+    public function match(string $pathinfo)
     {
         return $this->router->match($pathinfo);
     }
 
     /**
-     * @inheritdoc
+     * {@inheritDoc}
+     *
+     * @return array<string,mixed>
      */
     public function matchRequest(Request $request)
     {
         return $this->requestMatcher->matchRequest($request);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function warmUp(string $cacheDir)
+    {
+        return [];
     }
 }

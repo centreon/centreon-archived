@@ -3,6 +3,7 @@ import * as React from 'react';
 import { useFormik } from 'formik';
 import { useTranslation } from 'react-i18next';
 import { useAtomValue } from 'jotai/utils';
+import dayjs from 'dayjs';
 
 import { useSnackbar, useRequest, useLocaleDateTimeFormat } from '@centreon/ui';
 import { downtimeAtom, userAtom } from '@centreon/ui-context';
@@ -15,13 +16,36 @@ import { Resource } from '../../../models';
 import { setDowntimeOnResources } from '../../api';
 
 import DialogDowntime from './Dialog';
-import { getValidationSchema, validate } from './validation';
-import { formatDateInterval } from './utils';
+import { getValidationSchema } from './validation';
 
 interface Props {
-  onClose;
-  onSuccess;
+  onClose: () => void;
+  onSuccess: () => void;
   resources: Array<Resource>;
+}
+
+export interface DowntimeFormValues {
+  comment?: string;
+  duration: {
+    unit: string;
+    value: number;
+  };
+  endTime: Date;
+  fixed: boolean;
+  isDowntimeWithServices: boolean;
+  startTime: Date;
+}
+
+export interface DowntimeToPost {
+  comment?: string;
+  duration: {
+    unit: string;
+    value: number;
+  };
+  endTime: string;
+  fixed: boolean;
+  isDowntimeWithServices: boolean;
+  startTime: string;
 }
 
 const DowntimeForm = ({
@@ -45,28 +69,26 @@ const DowntimeForm = ({
   const downtime = useAtomValue(downtimeAtom);
 
   const currentDate = new Date();
+  const defaultEndDate = dayjs(currentDate)
+    .add(dayjs.duration({ seconds: downtime.default_duration }))
+    .toDate();
 
-  const defaultDurationInMs = downtime.default_duration * 1000;
-  const defaultEndDate = new Date(currentDate.getTime() + defaultDurationInMs);
-
-  const form = useFormik({
+  const form = useFormik<DowntimeFormValues>({
     initialValues: {
       comment: undefined,
-      dateEnd: defaultEndDate,
-      dateStart: currentDate,
-      downtimeAttachedResources: true,
       duration: {
         unit: 'seconds',
         value: downtime.default_duration,
       },
-      fixed: true,
-      timeEnd: defaultEndDate,
-      timeStart: currentDate,
+      endTime: defaultEndDate,
+      fixed: downtime.default_fixed,
+      isDowntimeWithServices: downtime.default_with_services,
+      startTime: currentDate,
     },
     onSubmit: (values, { setSubmitting }) => {
       setSubmitting(true);
 
-      const [startTime, endTime] = formatDateInterval(values);
+      const { startTime, endTime } = values;
 
       const unitMultipliers = {
         hours: 3600,
@@ -89,7 +111,6 @@ const DowntimeForm = ({
         onSuccess();
       });
     },
-    validate: (values) => validate({ t, values }),
     validationSchema: getValidationSchema(t),
   });
 

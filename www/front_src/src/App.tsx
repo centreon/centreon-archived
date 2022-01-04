@@ -4,8 +4,9 @@ import { BrowserRouter as Router, useSearchParams } from 'react-router-dom';
 import Fullscreen from 'react-fullscreen-crossbrowser';
 import { equals, not, pathEq } from 'ramda';
 
-import FullscreenIcon from '@material-ui/icons/Fullscreen';
-import { makeStyles, Fab } from '@material-ui/core';
+import FullscreenIcon from '@mui/icons-material/Fullscreen';
+import { Fab } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 
 import { getData, LoadingSkeleton, useRequest } from '@centreon/ui';
 
