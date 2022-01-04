@@ -23,12 +23,15 @@ declare(strict_types=1);
 
 namespace Core\Application\Security\UseCase\FindSecurityPolicy;
 
+use Centreon\Domain\Log\LoggerTrait;
 use Core\Application\Security\Repository\ReadSecurityPolicyRepositoryInterface;
 use Core\Application\Security\UseCase\FindSecurityPolicy\FindSecurityPolicyPresenterInterface;
 use Core\Domain\Security\Model\SecurityPolicy;
 
 class FindSecurityPolicy
 {
+    use LoggerTrait;
+
     /**
      * @param ReadSecurityPolicyRepositoryInterface $repository
      */
@@ -41,8 +44,13 @@ class FindSecurityPolicy
      */
     public function __invoke(FindSecurityPolicyPresenterInterface $presenter): void
     {
+        $this->debug('Searching for security policy');
         $securityPolicy = $this->repository->findSecurityPolicy();
         if ($securityPolicy === null) {
+            $this->critical(
+                'No security policy are present, check that your installation / upgrade went well. ' .
+                'A security Policy is necessary to create / update passwords'
+            );
             $presenter->setResponseStatus(
                 new FindSecurityPolicyErrorResponse(
                     'Security policy not found. Please verify that your installation is valid'
