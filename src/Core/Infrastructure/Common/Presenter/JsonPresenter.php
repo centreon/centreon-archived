@@ -52,7 +52,7 @@ class JsonPresenter implements PresenterFormatterInterface
     public function show(): JsonResponse
     {
         if (is_subclass_of($this->data, NotFoundResponse::class, false)) {
-            $this->debug('Data couldn\'t be found, generate not found response');
+            $this->debug('Data not found. Generating a not found response');
             return new JsonResponse(
                 [
                     'code' => JsonResponse::HTTP_NOT_FOUND,
