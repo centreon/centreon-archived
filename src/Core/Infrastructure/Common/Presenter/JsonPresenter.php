@@ -26,7 +26,7 @@ namespace Core\Infrastructure\Common\Presenter;
 use Core\Application\Common\UseCase\ErrorResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Core\Application\Common\UseCase\NotFoundResponse;
-use Core\Application\Common\Presenter\PresenterFormatterInterface;
+use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
 
 class JsonPresenter implements PresenterFormatterInterface
 {

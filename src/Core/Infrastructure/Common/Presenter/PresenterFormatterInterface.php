@@ -20,7 +20,7 @@
  */
 declare(strict_types=1);
 
-namespace Core\Application\Common\Presenter;
+namespace Core\Infrastructure\Common\Presenter;
 
 use Symfony\Component\HttpFoundation\Response;
 
