@@ -57,7 +57,7 @@ class MonitoringResourceController extends AbstractController
     /**
      * List of external parameters for list action
      *
-     * @var array
+     * @var array<string>
      */
     public const EXTRA_PARAMETERS_LIST = [
         'types',
@@ -192,11 +192,11 @@ class MonitoringResourceController extends AbstractController
 
         // set default values of filter data
         $filterData = [];
-        foreach (static::EXTRA_PARAMETERS_LIST as $param) {
+        foreach (self::EXTRA_PARAMETERS_LIST as $param) {
             $filterData[$param] = [];
         }
 
-        $filterData[static::FILTER_RESOURCES_ON_PERFORMANCE_DATA_AVAILABILITY] = false;
+        $filterData[self::FILTER_RESOURCES_ON_PERFORMANCE_DATA_AVAILABILITY] = false;
 
         // load filter data with the query parameters
         foreach ($request->query->all() as $param => $data) {
@@ -228,7 +228,7 @@ class MonitoringResourceController extends AbstractController
         );
 
         $context = (new Context())
-            ->setGroups(static::SERIALIZER_GROUPS_LISTING)
+            ->setGroups(self::SERIALIZER_GROUPS_LISTING)
             ->enableMaxDepth();
 
         $context->addExclusionStrategy(new ResourceExclusionStrategy());
@@ -312,7 +312,7 @@ class MonitoringResourceController extends AbstractController
 
         $context = (new Context())
             ->setGroups(array_merge(
-                static::SERIALIZER_GROUPS_LISTING,
+                self::SERIALIZER_GROUPS_LISTING,
                 [ResourceEntity::SERIALIZER_GROUP_DETAILS, Acknowledgement::SERIALIZER_GROUP_FULL],
                 Downtime::SERIALIZER_GROUPS_SERVICE
             ))
@@ -382,7 +382,7 @@ class MonitoringResourceController extends AbstractController
 
         $context = (new Context())
             ->setGroups(array_merge(
-                static::SERIALIZER_GROUPS_LISTING,
+                self::SERIALIZER_GROUPS_LISTING,
                 [ResourceEntity::SERIALIZER_GROUP_DETAILS, Acknowledgement::SERIALIZER_GROUP_FULL],
                 Downtime::SERIALIZER_GROUPS_SERVICE
             ))
@@ -431,7 +431,7 @@ class MonitoringResourceController extends AbstractController
 
         $context = (new Context())
             ->setGroups(array_merge(
-                static::SERIALIZER_GROUPS_LISTING,
+                self::SERIALIZER_GROUPS_LISTING,
                 [ResourceEntity::SERIALIZER_GROUP_DETAILS, Acknowledgement::SERIALIZER_GROUP_FULL],
                 Downtime::SERIALIZER_GROUPS_SERVICE
             ))
@@ -549,35 +549,35 @@ class MonitoringResourceController extends AbstractController
 
             $resource->getLinks()->getEndpoints()->setDetails(
                 $this->router->generate(
-                    static::SERVICE_DETAILS_ROUTE,
+                    self::SERVICE_DETAILS_ROUTE,
                     $parameters
                 )
             );
 
             $resource->getLinks()->getEndpoints()->setTimeline(
                 $this->router->generate(
-                    static::SERVICE_TIMELINE_ROUTE,
+                    self::SERVICE_TIMELINE_ROUTE,
                     $parameters
                 )
             );
 
             $resource->getLinks()->getEndpoints()->setAcknowledgement(
                 $this->router->generate(
-                    static::SERVICE_ACKNOWLEDGEMENT_ROUTE,
+                    self::SERVICE_ACKNOWLEDGEMENT_ROUTE,
                     array_merge($parameters, $acknowledgementFilter)
                 )
             );
 
             $resource->getLinks()->getEndpoints()->setDowntime(
                 $this->router->generate(
-                    static::SERVICE_DOWNTIME_ROUTE,
+                    self::SERVICE_DOWNTIME_ROUTE,
                     array_merge($parameters, $downtimeFilter)
                 )
             );
 
             $resource->getLinks()->getEndpoints()->setStatusGraph(
                 $this->router->generate(
-                    static::SERVICE_STATUS_GRAPH_ROUTE,
+                    self::SERVICE_STATUS_GRAPH_ROUTE,
                     $parameters
                 )
             );
@@ -588,42 +588,42 @@ class MonitoringResourceController extends AbstractController
 
             $resource->getLinks()->getEndpoints()->setDetails(
                 $this->router->generate(
-                    static::META_SERVICE_DETAILS_ROUTE,
+                    self::META_SERVICE_DETAILS_ROUTE,
                     $parameters
                 )
             );
 
             $resource->getLinks()->getEndpoints()->setTimeline(
                 $this->router->generate(
-                    static::META_SERVICE_TIMELINE_ROUTE,
+                    self::META_SERVICE_TIMELINE_ROUTE,
                     $parameters
                 )
             );
 
             $resource->getLinks()->getEndpoints()->setAcknowledgement(
                 $this->router->generate(
-                    static::META_SERVICE_ACKNOWLEDGEMENT_ROUTE,
+                    self::META_SERVICE_ACKNOWLEDGEMENT_ROUTE,
                     array_merge($parameters, $acknowledgementFilter)
                 )
             );
 
             $resource->getLinks()->getEndpoints()->setDowntime(
                 $this->router->generate(
-                    static::META_SERVICE_DOWNTIME_ROUTE,
+                    self::META_SERVICE_DOWNTIME_ROUTE,
                     array_merge($parameters, $downtimeFilter)
                 )
             );
 
             $resource->getLinks()->getEndpoints()->setStatusGraph(
                 $this->router->generate(
-                    static::META_SERVICE_STATUS_GRAPH_ROUTE,
+                    self::META_SERVICE_STATUS_GRAPH_ROUTE,
                     $parameters
                 )
             );
 
             $resource->getLinks()->getEndpoints()->setMetrics(
                 $this->router->generate(
-                    static::META_SERVICE_METRIC_LIST_ROUTE,
+                    self::META_SERVICE_METRIC_LIST_ROUTE,
                     $parameters
                 )
             );
@@ -636,28 +636,28 @@ class MonitoringResourceController extends AbstractController
 
             $hostResource->getLinks()->getEndpoints()->setDetails(
                 $this->router->generate(
-                    static::HOST_DETAILS_ROUTE,
+                    self::HOST_DETAILS_ROUTE,
                     $parameters
                 )
             );
 
             $hostResource->getLinks()->getEndpoints()->setTimeline(
                 $this->router->generate(
-                    static::HOST_TIMELINE_ROUTE,
+                    self::HOST_TIMELINE_ROUTE,
                     $parameters
                 )
             );
 
             $hostResource->getLinks()->getEndpoints()->setAcknowledgement(
                 $this->router->generate(
-                    static::HOST_ACKNOWLEDGEMENT_ROUTE,
+                    self::HOST_ACKNOWLEDGEMENT_ROUTE,
                     array_merge($parameters, $acknowledgementFilter)
                 )
             );
 
             $hostResource->getLinks()->getEndpoints()->setDowntime(
                 $this->router->generate(
-                    static::HOST_DOWNTIME_ROUTE,
+                    self::HOST_DOWNTIME_ROUTE,
                     array_merge($parameters, $downtimeFilter)
                 )
             );
@@ -697,19 +697,19 @@ class MonitoringResourceController extends AbstractController
             || $contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_HOSTS_READ)
         ) {
             $resource->getLinks()->getUris()->setConfiguration(
-                $this->generateResourceUri($resource, static::HOST_CONFIGURATION_URI)
+                $this->generateResourceUri($resource, self::HOST_CONFIGURATION_URI)
             );
         }
 
         if ($contact->hasTopologyRole(Contact::ROLE_MONITORING_EVENT_LOGS)) {
             $resource->getLinks()->getUris()->setLogs(
-                $this->generateResourceUri($resource, static::HOST_LOGS_URI)
+                $this->generateResourceUri($resource, self::HOST_LOGS_URI)
             );
         }
 
         if ($contact->hasTopologyRole(Contact::ROLE_REPORTING_DASHBOARD_HOSTS)) {
             $resource->getLinks()->getUris()->setReporting(
-                $this->generateResourceUri($resource, static::HOST_REPORTING_URI)
+                $this->generateResourceUri($resource, self::HOST_REPORTING_URI)
             );
         }
     }
@@ -728,19 +728,19 @@ class MonitoringResourceController extends AbstractController
             || $contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_SERVICES_READ)
         ) {
             $resource->getLinks()->getUris()->setConfiguration(
-                $this->generateResourceUri($resource, static::SERVICE_CONFIGURATION_URI)
+                $this->generateResourceUri($resource, self::SERVICE_CONFIGURATION_URI)
             );
         }
 
         if ($contact->hasTopologyRole(Contact::ROLE_MONITORING_EVENT_LOGS)) {
             $resource->getLinks()->getUris()->setLogs(
-                $this->generateResourceUri($resource, static::SERVICE_LOGS_URI)
+                $this->generateResourceUri($resource, self::SERVICE_LOGS_URI)
             );
         }
 
         if ($contact->hasTopologyRole(Contact::ROLE_REPORTING_DASHBOARD_SERVICES)) {
             $resource->getLinks()->getUris()->setReporting(
-                $this->generateResourceUri($resource, static::SERVICE_REPORTING_URI)
+                $this->generateResourceUri($resource, self::SERVICE_REPORTING_URI)
             );
         }
     }
@@ -760,13 +760,13 @@ class MonitoringResourceController extends AbstractController
             || $contact->isAdmin()
         ) {
             $resource->getLinks()->getUris()->setConfiguration(
-                $this->generateResourceUri($resource, static::META_SERVICE_CONFIGURATION_URI)
+                $this->generateResourceUri($resource, self::META_SERVICE_CONFIGURATION_URI)
             );
         }
 
         if ($contact->hasTopologyRole(Contact::ROLE_MONITORING_EVENT_LOGS)) {
             $resource->getLinks()->getUris()->setLogs(
-                $this->generateResourceUri($resource, static::META_SERVICE_LOGS_URI)
+                $this->generateResourceUri($resource, self::META_SERVICE_LOGS_URI)
             );
         }
     }
@@ -811,7 +811,7 @@ class MonitoringResourceController extends AbstractController
      */
     public function buildHostUri(int $hostId, string $tab = self::TAB_DETAILS_NAME): string
     {
-        if (!in_array($tab, static::ALLOWED_TABS)) {
+        if (!in_array($tab, self::ALLOWED_TABS)) {
             throw new ResourceException(sprintf(_('Cannot build uri to unknown tab : %s'), $tab));
         }
 
@@ -847,7 +847,7 @@ class MonitoringResourceController extends AbstractController
      */
     public function buildServiceUri(int $hostId, int $serviceId, string $tab = self::TAB_DETAILS_NAME): string
     {
-        if (!in_array($tab, static::ALLOWED_TABS)) {
+        if (!in_array($tab, self::ALLOWED_TABS)) {
             throw new ResourceException(sprintf(_('Cannot build uri to unknown tab : %s'), $tab));
         }
 
@@ -872,7 +872,7 @@ class MonitoringResourceController extends AbstractController
      */
     public function buildMetaServiceDetailsUri(int $metaId, string $tab = self::TAB_DETAILS_NAME): string
     {
-        if (!in_array($tab, static::ALLOWED_TABS)) {
+        if (!in_array($tab, self::ALLOWED_TABS)) {
             throw new ResourceException(sprintf(_('Cannot build uri to unknown tab : %s'), $tab));
         }
 
@@ -891,7 +891,7 @@ class MonitoringResourceController extends AbstractController
     /**
      * Build uri to access listing page of resources with specific parameters
      *
-     * @param array $parameters
+     * @param string[] $parameters
      * @return string
      */
     public function buildListingUri(array $parameters): string

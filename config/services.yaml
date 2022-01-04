@@ -59,8 +59,8 @@ services:
         factory: ['Centreon\LegacyContainer', 'getInstance']
 
     Centreon\Application\Controller\Router:
-        decorates: 'router'
-        arguments: ['@Centreon\Application\Controller\Router.inner']
+        decorates: router
+        arguments: ['@.inner']
 
 
     # Security

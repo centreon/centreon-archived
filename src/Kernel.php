@@ -37,6 +37,10 @@ class Kernel extends BaseKernel
 {
     use MicroKernelTrait;
 
+    /**
+     *
+     * @var \App\Kernel
+     */
     private static $instance;
 
     /**
@@ -56,18 +60,18 @@ class Kernel extends BaseKernel
      */
     public static function createForWeb(): Kernel
     {
-        if (static::$instance === null) {
+        if (self::$instance === null) {
             include_once __DIR__ . '/../config/bootstrap.php';
             if ($_SERVER['APP_DEBUG']) {
                 umask(0000);
 
                 Debug::enable();
             }
-            static::$instance = new Kernel($_SERVER['APP_ENV'], (bool)$_SERVER['APP_DEBUG']);
-            static::$instance->boot();
+            self::$instance = new Kernel($_SERVER['APP_ENV'], (bool)$_SERVER['APP_DEBUG']);
+            self::$instance->boot();
         }
 
-        return static::$instance;
+        return self::$instance;
     }
 
     /**
@@ -88,7 +92,7 @@ class Kernel extends BaseKernel
     }
 
     /**
-     * @return iterable
+     * @return iterable<mixed>
      */
     public function registerBundles(): iterable
     {
