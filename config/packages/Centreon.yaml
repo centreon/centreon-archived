@@ -32,7 +32,6 @@ services:
     Core\:
         resource: '../../src/Core/*'
 
-
     Centreon\Infrastructure\DatabaseConnection:
         class: Centreon\Infrastructure\DatabaseConnection
         arguments:
