@@ -34,6 +34,10 @@
  *
  */
 
+require_once __DIR__ . '/../../bootstrap.php';
+
+use Core\Domain\Security\Model\SecurityPolicy;
+
 class CentreonContact
 {
     protected $db;
@@ -306,13 +310,13 @@ class CentreonContact
                 'error_message' =>  _("integer characters"),
             ],
             'special_characters' => [
-                'pattern' => '/[@$!%*?&]/',
-                'error_message' =>  _("special characters among '@$!%*?&'"),
+                'pattern' => '/[' . SecurityPolicy::SPECIAL_CHARACTERS_LIST . ']/',
+                'error_message' => sprintf(_("special characters among '%s'"), SecurityPolicy::SPECIAL_CHARACTERS_LIST),
             ],
         ];
         $characterPolicyErrorMessages = [];
 
-        foreach($characterRules as $characterRule => $characterRuleParameters) {
+        foreach ($characterRules as $characterRule => $characterRuleParameters) {
             if ((bool) $passwordPolicy[$characterRule] === true) {
                 $characterPolicyErrorMessages[] = $characterRuleParameters['error_message'];
                 if (!preg_match($characterRuleParameters['pattern'], $password)) {
