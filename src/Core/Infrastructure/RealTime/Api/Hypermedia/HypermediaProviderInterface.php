@@ -53,4 +53,16 @@ interface HypermediaProviderInterface
      * @return string
      */
     public function createForTimelineEndpoint(mixed $data): string;
+
+    /**
+     * @param mixed $data
+     * @return string
+     */
+    public function createForStatusGraphEndpoint(mixed $data): string;
+
+    /**
+     * @param mixed $data
+     * @return string
+     */
+    public function createForPerformanceDataEndpoint(mixed $data): string;
 }

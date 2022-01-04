@@ -29,9 +29,12 @@ use Core\Application\Common\UseCase\ResponseStatusInterface;
 use Core\Application\RealTime\UseCase\FindHost\FindHostResponse;
 use Core\Application\RealTime\UseCase\FindHost\FindHostPresenterInterface;
 use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
+use Core\Infrastructure\Common\Presenter\PresenterTrait;
 
 class FindHostPresenter implements FindHostPresenterInterface
 {
+    use PresenterTrait;
+
     /**
      * @var ResponseStatusInterface|null
      */
@@ -167,17 +170,6 @@ class FindHostPresenter implements FindHostPresenterInterface
             $this->presenterFormatter->present($this->getResponseStatus());
         }
         return $this->presenterFormatter->show();
-    }
-
-    /**
-     * Convert a DateTime into a string format ISO 8601
-     *
-     * @param \DateTime|null $date
-     * @return string|null
-     */
-    private function formatDateToIso8601(?\DateTime $date): ?string
-    {
-        return ($date !== null ? $date->format(\DateTime::ISO8601) : $date);
     }
 
     /**

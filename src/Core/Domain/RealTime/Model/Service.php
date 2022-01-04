@@ -26,13 +26,16 @@ use Core\Domain\RealTime\Model\Host;
 use Core\Domain\RealTime\Model\Icon;
 use Core\Domain\RealTime\Model\Servicegroup;
 use Core\Domain\RealTime\Model\ServiceStatus;
+use Centreon\Domain\Common\Assertion\Assertion;
 
 class Service
 {
+    public const MAX_NAME_LENGTH = 255;
+
     /**
      * @var Servicegroup[]
      */
-    private $servicegroups;
+    private $servicegroups = [];
 
     /**
      * @var boolean
@@ -139,22 +142,20 @@ class Service
     private $isFlapping = false;
 
     /**
-     * @var Host
-     */
-    private $host;
-
-    /**
      * @param int $id
+     * @param int $hostId
      * @param string $name
      * @param ServiceStatus $status
-     * @param string $monitoringServerName
+     * @throws \Assert\AssertionFailedException
      */
     public function __construct(
         private int $id,
+        private int $hostId,
         private string $name,
-        private ServiceStatus $status,
-        private string $monitoringServerName
+        private ServiceStatus $status
     ) {
+        Assertion::maxLength($name, self::MAX_NAME_LENGTH, 'Service::name');
+        Assertion::notEmpty($name, 'Service::name');
     }
 
     /**
@@ -578,29 +579,8 @@ class Service
         return $this->checkAttempts;
     }
 
-    /**
-     * @return Host
-     */
-    public function getHost(): Host
+    public function getHostId(): int
     {
-        return $this->host;
-    }
-
-    /**
-     * @param Host $host
-     * @return self
-     */
-    public function setHost(Host $host): self
-    {
-        $this->host = $host;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getMonitoringServerName(): string
-    {
-        return $this->monitoringServerName;
+        return $this->hostId;
     }
 }

@@ -40,8 +40,8 @@ abstract class Status
 
     /**
      * @param string $name
-     * @param integer $code
-     * @param integer $type
+     * @param int $code
+     * @param int $type
      */
     public function __construct(
         private string $name,

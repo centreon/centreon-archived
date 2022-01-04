@@ -18,27 +18,20 @@
  * For more information : contact@centreon.com
  *
  */
-
 declare(strict_types=1);
 
-namespace Core\Application\Common\UseCase;
+namespace Core\Infrastructure\RealTime\Repository\Servicegroup;
 
-use Core\Application\Common\UseCase\ResponseStatusInterface;
+use Core\Domain\RealTime\Model\Servicegroup;
 
-class NotFoundResponse implements ResponseStatusInterface
+class DbServicegroupFactory
 {
     /**
-     * @param string $objectNotFound
+     * @param array<string, mixed> $data
+     * @return Servicegroup
      */
-    public function __construct(private string $objectNotFound)
+    public static function createFromRecord(array $data): Servicegroup
     {
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getMessage(): string
-    {
-        return _($this->objectNotFound . ' not found');
+        return new Servicegroup((int) $data['servicegroup_id'], $data['servicegroup_name']);
     }
 }

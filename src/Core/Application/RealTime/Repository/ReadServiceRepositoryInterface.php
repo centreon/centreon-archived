@@ -30,17 +30,19 @@ interface ReadServiceRepositoryInterface
     /**
      * Find Service without ACL
      *
+     * @param int $hostId
      * @param int $serviceId
      * @return Service|null
      */
-    public function findServiceById(int $serviceId): ?Service;
+    public function findServiceById(int $hostId, int $serviceId): ?Service;
 
     /**
      * Find Service with ACL
      *
+     * @param int $hostId
      * @param int $serviceId
      * @param int[] $accessGroupIds
      * @return Service|null
      */
-    public function findServiceByIdAndAccessGroupIds(int $serviceId, array $accessGroupIds): ?Service;
+    public function findServiceByIdAndAccessGroupIds(int $hostId, int $serviceId, array $accessGroupIds): ?Service;
 }

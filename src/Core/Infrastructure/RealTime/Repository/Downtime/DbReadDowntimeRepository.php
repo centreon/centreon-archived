@@ -51,7 +51,7 @@ class DbReadDowntimeRepository extends AbstractRepositoryDRB implements ReadDown
      */
     public function findOnGoingDowntimesByHostIdAndServiceId(int $hostId, int $serviceId): array
     {
-        return [];
+        return $this->findOnGoingDowntimes($hostId, $serviceId);
     }
 
     /**

@@ -18,17 +18,20 @@
  * For more information : contact@centreon.com
  *
  */
-
 declare(strict_types=1);
 
-namespace Core\Application\RealTime\UseCase\FindHost;
+namespace Core\Infrastructure\Common\Presenter;
 
-use Core\Application\Common\UseCase\NotFoundResponse;
-
-class HostNotFoundResponse extends NotFoundResponse
+trait PresenterTrait
 {
-    public function __construct()
+    /**
+     * Convert a DateTime into a string format ISO 8601
+     *
+     * @param \DateTime|null $date
+     * @return string|null
+     */
+    public function formatDateToIso8601(?\DateTime $date): ?string
     {
-        parent::__construct('Host');
+        return ($date !== null ? $date->format(\DateTime::ISO8601) : $date);
     }
 }

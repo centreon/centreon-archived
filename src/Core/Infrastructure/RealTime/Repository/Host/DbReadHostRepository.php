@@ -42,7 +42,7 @@ class DbReadHostRepository extends AbstractRepositoryDRB implements ReadHostRepo
      */
     public function findHostById(int $hostId): ?Host
     {
-        return $this->findHostRequest($hostId);
+        return $this->findHost($hostId);
     }
 
     /**
@@ -59,7 +59,7 @@ class DbReadHostRepository extends AbstractRepositoryDRB implements ReadHostRepo
             AND host_acl.service_id IS NULL
             AND host_acl.group_id IN (' . implode(',', $accessGroupIds) . ') ';
 
-        return $this->findHostRequest($hostId, $accessGroupRequest);
+        return $this->findHost($hostId, $accessGroupRequest);
     }
 
     /**
@@ -69,7 +69,7 @@ class DbReadHostRepository extends AbstractRepositoryDRB implements ReadHostRepo
      * @param string|null $accessGroupRequest
      * @return Host|null
      */
-    private function findHostRequest(int $hostId, ?string $accessGroupRequest = null): ?Host
+    private function findHost(int $hostId, ?string $accessGroupRequest = null): ?Host
     {
         $request = "SELECT
                 h.host_id,

@@ -43,7 +43,15 @@ class DbReadAcknowledgementRepository extends AbstractRepositoryDRB implements R
      */
     public function findOnGoingAcknowledgementByHostId(int $hostId): ?Acknowledgement
     {
-        return $this->findOnGoingAcknowledegementRequest($hostId, 0);
+        return $this->findOnGoingAcknowledegement($hostId, 0);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findOnGoingAcknowledgementByHostIdAndServiceId(int $hostId, int $serviceId): ?Acknowledgement
+    {
+        return $this->findOnGoingAcknowledegement($hostId, $serviceId);
     }
 
     /**
@@ -59,7 +67,7 @@ class DbReadAcknowledgementRepository extends AbstractRepositoryDRB implements R
      * @param int $serviceId
      * @return Acknowledgement|null
      */
-    private function findOnGoingAcknowledegementRequest(int $hostId, int $serviceId): ?Acknowledgement
+    private function findOnGoingAcknowledegement(int $hostId, int $serviceId): ?Acknowledgement
     {
         $acknowledgement = null;
         $sql = "SELECT ack.*, contact.contact_id AS author_id
