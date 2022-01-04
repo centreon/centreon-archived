@@ -3372,7 +3372,7 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
-  /administration/authentication/local/security-policy:
+  /administration/security-policy:
     get:
       tags:
         - Administration
