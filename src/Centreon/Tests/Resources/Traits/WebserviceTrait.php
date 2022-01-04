@@ -65,7 +65,6 @@ trait WebserviceTrait
     public function setUpWebservice(Container $container)
     {
         $this->container[ServiceProvider::CENTREON_WEBSERVICE] = new class {
-
             protected $services = [];
 
             public function add($class)

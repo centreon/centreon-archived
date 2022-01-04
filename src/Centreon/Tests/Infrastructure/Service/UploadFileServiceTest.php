@@ -49,6 +49,11 @@ class UploadFileServiceTest extends TestCase
      */
     private $filesRequest;
 
+    /**
+     * @var UploadFileService
+     */
+    private $service;
+
     public function setUp(): void
     {
         $container = new ContainerWrap(new Container());
