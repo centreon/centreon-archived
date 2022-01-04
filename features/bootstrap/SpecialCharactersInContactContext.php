@@ -14,7 +14,6 @@ class SpecialCharactersInContactContext extends CentreonContext
     protected $page;
     protected $accentedAndSpeacialCharsAlias = 'guést@';
 
-
     /**
      * @Given one non admin contact has been created
      */
