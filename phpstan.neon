@@ -10,7 +10,6 @@ parameters:
     - %currentWorkingDirectory%/tests/php/Centreon
     - %currentWorkingDirectory%/tests/php/Security
     - %currentWorkingDirectory%/tests/php/Utility
-    - %currentWorkingDirectory%/tests/php/Core
 services:
   errorFormatter.absolute:
     class: Centreon\PHPStan\AbsolutePathErrorFormatter
