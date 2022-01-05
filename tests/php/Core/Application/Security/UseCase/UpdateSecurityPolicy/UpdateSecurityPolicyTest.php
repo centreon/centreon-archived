@@ -85,7 +85,7 @@ class UpdateSecurityPolicyTest extends TestCase
 
         $this->presenter
             ->expects($this->once())
-            ->method('present');
+            ->method('setResponseStatus');
 
         $useCase = new UpdateSecurityPolicy($this->repository);
         $useCase($this->presenter, $request);

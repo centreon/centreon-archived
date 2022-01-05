@@ -33,6 +33,7 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Core\Infrastructure\Security\Api\UpdateSecurityPolicy\UpdateSecurityPolicyController;
 use Core\Application\Security\UseCase\UpdateSecurityPolicy\UpdateSecurityPolicyPresenterInterface;
+use Core\Infrastructure\Security\Api\Exception\SecurityPolicyApiException;
 
 class UpdateSecurityPolicyControllerTest extends TestCase
 {
@@ -89,12 +90,10 @@ class UpdateSecurityPolicyControllerTest extends TestCase
             ->method('get')
             ->withConsecutive(
                 [$this->equalTo('security.authorization_checker')],
-                [$this->equalTo('security.token_storage')],
                 [$this->equalTo('parameter_bag')]
             )
             ->willReturnOnConsecutiveCalls(
                 $authorizationChecker,
-                $tokenStorage,
                 new class () {
                     public function get(): string
                     {
@@ -122,8 +121,7 @@ class UpdateSecurityPolicyControllerTest extends TestCase
             ->method('getContent')
             ->willReturn($invalidPayload);
 
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Bad Parameters');
+        $this->expectException(SecurityPolicyApiException::class);
         $controller($this->useCase, $this->request, $this->presenter);
     }
 }

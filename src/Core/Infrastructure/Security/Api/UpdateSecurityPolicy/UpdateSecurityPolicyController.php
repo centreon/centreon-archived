@@ -92,12 +92,11 @@ class UpdateSecurityPolicyController extends AbstractController
         }
         $receivedData = Validator::arrayToObjectRecursive($receivedData);
         $validator = new Validator();
-        $centreonPath = $this->getParameter('centreon_path');
         $validator->validate(
             $receivedData,
             (object) [
                 '$ref' => 'file://' . realpath(
-                    $centreonPath . $jsonValidationFile
+                    $jsonValidationFile
                 )
             ],
             Constraint::CHECK_MODE_VALIDATE_SCHEMA
