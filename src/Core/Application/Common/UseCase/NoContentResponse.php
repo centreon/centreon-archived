@@ -28,13 +28,6 @@ use Core\Application\Common\UseCase\ResponseStatusInterface;
 class NoContentResponse implements ResponseStatusInterface
 {
     /**
-     * @param string $message
-     */
-    public function __construct(private string $message)
-    {
-    }
-
-    /**
      * @inheritDoc
      */
     public function getMessage(): string
