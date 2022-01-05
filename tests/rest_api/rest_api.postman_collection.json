@@ -13208,7 +13208,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"action\": \"add\",\n  \"object\": \"contact\",\n  \"values\": \"test_name;test_alias;test@localhost;pwd;0;0;en_US;Idap\"\n}"
+							"raw": "{\n  \"action\": \"add\",\n  \"object\": \"contact\",\n  \"values\": \"test_name;test_alias;test@localhost;Centreon!2022;0;0;en_US;Idap\"\n}"
 						},
 						"url": {
 							"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
@@ -13425,60 +13425,6 @@
 						"body": {
 							"mode": "raw",
 							"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"contact\",\n  \"values\": \"{{contact_alias}};email;{{contact_mail}}\"\n}"
-						},
-						"url": {
-							"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",
-							"protocol": "http",
-							"host": [
-								"{{url}}"
-							],
-							"path": [
-								"centreon",
-								"api",
-								"index.php"
-							],
-							"query": [
-								{
-									"key": "action",
-									"value": "action"
-								},
-								{
-									"key": "object",
-									"value": "centreon_clapi"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Setparam password",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"tests[\"Status code is 200\"] = responseCode.code === 200;"
-								]
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							},
-							{
-								"key": "centreon-auth-token",
-								"value": "{{token}}"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"action\": \"setparam\",\n  \"object\": \"contact\",\n  \"values\": \"{{contact_alias}};password;{{contact_pwd}}\"\n}"
 						},
 						"url": {
 							"raw": "http://{{url}}/centreon/api/index.php?action=action&object=centreon_clapi",

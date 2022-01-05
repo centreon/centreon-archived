@@ -48,7 +48,6 @@ use Centreon\ServiceProvider;
 class TopologyWebservice extends Webservice\WebServiceAbstract implements
     Webservice\WebserviceAutorizePublicInterface
 {
-
     /**
      * List of required services
      *

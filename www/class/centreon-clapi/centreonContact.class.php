@@ -36,6 +36,7 @@
 
 namespace CentreonClapi;
 
+require_once __DIR__ . '/../../../bootstrap.php';
 require_once "centreonObject.class.php";
 require_once "centreonUtils.class.php";
 require_once "centreonTimePeriod.class.php";
@@ -44,7 +45,6 @@ require_once "Centreon/Object/Command/Command.php";
 require_once "Centreon/Object/Timezone/Timezone.php";
 require_once "Centreon/Object/Relation/Contact/Command/Host.php";
 require_once "Centreon/Object/Relation/Contact/Command/Service.php";
-require_once __DIR__ . '/../centreonAuth.class.php';
 
 /**
  * Class for managing Contact configuration
@@ -53,23 +53,22 @@ require_once __DIR__ . '/../centreonAuth.class.php';
  */
 class CentreonContact extends CentreonObject
 {
-
-    const ORDER_UNIQUENAME = 1;
-    const ORDER_NAME = 0;
-    const ORDER_MAIL = 2;
-    const ORDER_PASS = 3;
-    const ORDER_ADMIN = 4;
-    const ORDER_ACCESS = 5;
-    const ORDER_LANG = 6;
-    const ORDER_AUTHTYPE = 7;
-    const HOST_NOTIF_TP = "hostnotifperiod";
-    const SVC_NOTIF_TP = "svcnotifperiod";
-    const HOST_NOTIF_CMD = "hostnotifcmd";
-    const SVC_NOTIF_CMD = "svcnotifcmd";
-    const UNKNOWN_LOCALE = "Invalid locale";
-    const UNKNOWN_TIMEZONE = "Invalid timezone";
-    const CONTACT_LOCATION = "timezone";
-    const UNKNOWN_NOTIFICATION_OPTIONS = "Invalid notifications options";
+    public const ORDER_UNIQUENAME = 1;
+    public const ORDER_NAME = 0;
+    public const ORDER_MAIL = 2;
+    public const ORDER_PASS = 3;
+    public const ORDER_ADMIN = 4;
+    public const ORDER_ACCESS = 5;
+    public const ORDER_LANG = 6;
+    public const ORDER_AUTHTYPE = 7;
+    public const HOST_NOTIF_TP = "hostnotifperiod";
+    public const SVC_NOTIF_TP = "svcnotifperiod";
+    public const HOST_NOTIF_CMD = "hostnotifcmd";
+    public const SVC_NOTIF_CMD = "svcnotifcmd";
+    public const UNKNOWN_LOCALE = "Invalid locale";
+    public const UNKNOWN_TIMEZONE = "Invalid timezone";
+    public const CONTACT_LOCATION = "timezone";
+    public const UNKNOWN_NOTIFICATION_OPTIONS = "Invalid notifications options";
 
     protected $register;
     public static $aDepends = array(
@@ -176,22 +175,6 @@ class CentreonContact extends CentreonObject
     }
 
     /**
-     * Validate Name format
-     *
-     * @param $name
-     * @return mixed
-     */
-    protected function validateName($name)
-    {
-        if (preg_match('/^[0-9a-zA-Z\_\-\ \/\\\.]*$/', $name, $matches) && strlen($name)) {
-            return $this->checkNameformat($name);
-        } else {
-            print "Name '$name' doesn't match with Centreon naming rules.\n";
-            exit(1);
-        }
-    }
-
-    /**
      * Checks if language exists
      *
      * @param string $locale
@@ -281,8 +264,21 @@ class CentreonContact extends CentreonObject
         $addParams[$this->object->getUniqueLabelField()] = $params[self::ORDER_UNIQUENAME];
         $addParams['contact_name'] = $this->checkIllegalChar($params[self::ORDER_NAME]);
         $addParams['contact_email'] = $params[self::ORDER_MAIL];
-        $addParams['contact_passwd'] = password_hash($params[self::ORDER_PASS], \CentreonAuth::PASSWORD_HASH_ALGORITHM);
 
+        if (password_needs_rehash($params[self::ORDER_PASS], \CentreonAuth::PASSWORD_HASH_ALGORITHM)) {
+            $contact = new \CentreonContact($this->db);
+            try {
+                $contact->respectPasswordPolicyOrFail($params[self::ORDER_PASS], null);
+            } catch (\Throwable $e) {
+                throw new CentreonClapiException($e->getMessage(), $e->getCode(), $e);
+            }
+            $addParams['contact_passwd'] = password_hash(
+                $params[self::ORDER_PASS],
+                \CentreonAuth::PASSWORD_HASH_ALGORITHM
+            );
+        } else {
+            $addParams['contact_passwd'] = $params[self::ORDER_PASS];
+        }
 
         $addParams['contact_admin'] = $params[self::ORDER_ADMIN];
         if ($addParams['contact_admin'] == '') {
@@ -374,9 +370,17 @@ class CentreonContact extends CentreonObject
                     }
                     $params[1] = "lang";
                     $params[2] = $completeLanguage;
-                } elseif ($params[1] == "password") {
+                } elseif ($params[1] === "password") {
                     $params[1] = "passwd";
-                    $params[2] = password_hash($params[2], \CentreonAuth::PASSWORD_HASH_ALGORITHM);
+                    if (password_needs_rehash($params[2], \CentreonAuth::PASSWORD_HASH_ALGORITHM)) {
+                        $contact = new \CentreonContact($this->db);
+                        try {
+                            $contact->respectPasswordPolicyOrFail($params[2], $objectId);
+                        } catch (\Throwable $e) {
+                            throw new CentreonClapiException($e->getMessage(), $e->getCode(), $e);
+                        }
+                        $params[2] = password_hash($params[2], \CentreonAuth::PASSWORD_HASH_ALGORITHM);
+                    }
                 } elseif ($params[1] == "hostnotifopt") {
                     $params[1] = "host_notification_options";
                     $aNotifs = explode(",", $params[2]);

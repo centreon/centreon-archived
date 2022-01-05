@@ -31,7 +31,6 @@ use Centreon\Domain\MonitoringServer\MonitoringServerResource;
  */
 interface MonitoringServerServiceInterface
 {
-
     /**
      * Find pollers.
      *

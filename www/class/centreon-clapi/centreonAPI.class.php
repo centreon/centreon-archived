@@ -854,8 +854,8 @@ class CentreonAPI
 
 
         if (isset($this->options['select'])) {
-            CentreonExported::getInstance()->set_filter(1);
-            CentreonExported::getInstance()->set_options($this->options);
+            CentreonExported::getInstance()->setFilter(1);
+            CentreonExported::getInstance()->setOptions($this->options);
             $selected = $this->options['select'];
 
             if (!is_array($this->options['select'])) {
