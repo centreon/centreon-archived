@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,25 +22,24 @@ declare(strict_types=1);
 
 namespace Core\Application\Security\UseCase\LogoutSession;
 
+use Core\Application\Security\Repository\WriteSessionTokenRepositoryInterface;
 use Core\Application\Security\Repository\WriteSessionRepositoryInterface;
 use Core\Application\Security\Service\TokenServiceInterface;
 use Centreon\Domain\Log\LoggerTrait;
-use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class LogoutSession
 {
     use LoggerTrait;
 
     /**
+     * @param WriteSessionTokenRepositoryInterface $writeSessionTokenRepository
      * @param WriteSessionRepositoryInterface $writeSessionRepository
      * @param TokenServiceInterface $tokenService
      */
     public function __construct(
+        private WriteSessionTokenRepositoryInterface $writeSessionTokenRepository,
         private WriteSessionRepositoryInterface $writeSessionRepository,
         private TokenServiceInterface $tokenService,
-        private RequestStack $requestStack,
-        private SessionInterface $session
     ) {
     }
 
@@ -51,8 +50,7 @@ class LogoutSession
     {
         $this->debug('Processing session logout...');
         $this->tokenService->deleteExpiredSecurityTokens();
-        $this->writeSessionRepository->deleteSession($request->token);
-        //$this->requestStack->getCurrentRequest()->getSession()->invalidate(); // move to application service ?
-        $this->session->invalidate();
+        $this->writeSessionTokenRepository->deleteSession($request->token);
+        $this->writeSessionRepository->invalidate();
     }
 }
