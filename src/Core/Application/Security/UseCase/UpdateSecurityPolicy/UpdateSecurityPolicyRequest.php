@@ -87,19 +87,4 @@ class UpdateSecurityPolicyRequest
      * @var int|null
      */
     public ?int $delayBeforeNewPassword;
-
-    /**
-     * Validate that all the mandatory parameters are present.
-     *
-     * @param array<string,mixed> $requestData
-     * @throws \InvalidArgumentException
-     */
-    public static function validateRequestOrFail(array $requestData): void
-    {
-        foreach (self::MANDATORY_FIELDS as $mandatoryField) {
-            if (!array_key_exists($mandatoryField, $requestData)) {
-                throw new \InvalidArgumentException(_('Bad Parameters'));
-            }
-        }
-    }
 }
