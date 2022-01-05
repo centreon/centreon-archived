@@ -25,7 +25,6 @@ use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 interface JsonValidatorInterface
 {
-
     /**
      * Validate a JSON string according to a model.
      *

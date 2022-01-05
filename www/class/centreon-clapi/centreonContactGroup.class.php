@@ -48,9 +48,8 @@ require_once "Centreon/Object/Relation/Contact/Group/Contact.php";
  */
 class CentreonContactGroup extends CentreonObject
 {
-
-    const ORDER_UNIQUENAME = 0;
-    const ORDER_ALIAS = 1;
+    public const ORDER_UNIQUENAME = 0;
+    public const ORDER_ALIAS = 1;
 
     public static $aDepends = array(
         'CMD',

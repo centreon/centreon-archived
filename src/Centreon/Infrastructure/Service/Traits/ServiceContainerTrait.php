@@ -6,7 +6,6 @@ use Centreon\Infrastructure\Service\Exception\NotFoundException;
 
 trait ServiceContainerTrait
 {
-
     /**
      * @var object[]
      */
