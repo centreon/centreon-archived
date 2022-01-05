@@ -152,7 +152,6 @@ class Broker extends AbstractObjectJSON
               $this->attributes_select_parameters
             FROM cfg_centreonbroker_info
             WHERE config_id = :config_id
-            AND config_group
             ORDER BY config_group, config_group_id
             ");
         }
