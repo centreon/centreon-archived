@@ -61,7 +61,7 @@ class UpdateSecurityPolicyController extends AbstractController
         $requestData = json_decode((string) $request->getContent(), true);
         UpdateSecurityPolicyRequest::validateRequestOrFail($requestData);
         $updateSecurityPolicyRequest = new UpdateSecurityPolicyRequest();
-        $updateSecurityPolicyRequest->passwordMinimumLength = $requestData['password_length'];
+        $updateSecurityPolicyRequest->passwordMinimumLength = $requestData['password_min_length'];
         $updateSecurityPolicyRequest->hasUppercase = $requestData['has_uppercase'];
         $updateSecurityPolicyRequest->hasLowercase = $requestData['has_lowercase'];
         $updateSecurityPolicyRequest->hasNumber = $requestData['has_number'];
