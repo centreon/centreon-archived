@@ -33,7 +33,7 @@ const LegacyRoute = (): JSX.Element => {
             return;
           }
 
-          navigate(replace('./', '/', href), { replace: true });
+          navigate(`/${replace('./', '', href)}`, { replace: true });
         },
         { once: true },
       );
