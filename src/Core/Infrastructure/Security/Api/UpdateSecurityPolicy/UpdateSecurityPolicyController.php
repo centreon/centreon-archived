@@ -60,18 +60,18 @@ class UpdateSecurityPolicyController extends AbstractController
     {
         $requestData = json_decode((string) $request->getContent(), true);
         UpdateSecurityPolicyRequest::validateRequestOrFail($requestData);
-        $request = new UpdateSecurityPolicyRequest();
-        $request->passwordMinimumLength = $requestData['password_length'];
-        $request->hasUppercase = $requestData['has_uppercase'];
-        $request->hasLowercase = $requestData['has_lowercase'];
-        $request->hasNumber = $requestData['has_number'];
-        $request->hasSpecialCharacter = $requestData['has_special_character'];
-        $request->attempts = $requestData['attempts'];
-        $request->blockingDuration = $requestData['blocking_duration'];
-        $request->passwordExpiration = $requestData['password_expiration'];
-        $request->canReusePassword = $requestData['can_reuse_passwords'];
-        $request->delayBeforeNewPassword = $requestData['delay_before_new_password'];
+        $updateSecurityPolicyRequest = new UpdateSecurityPolicyRequest();
+        $updateSecurityPolicyRequest->passwordMinimumLength = $requestData['password_length'];
+        $updateSecurityPolicyRequest->hasUppercase = $requestData['has_uppercase'];
+        $updateSecurityPolicyRequest->hasLowercase = $requestData['has_lowercase'];
+        $updateSecurityPolicyRequest->hasNumber = $requestData['has_number'];
+        $updateSecurityPolicyRequest->hasSpecialCharacter = $requestData['has_special_character'];
+        $updateSecurityPolicyRequest->attempts = $requestData['attempts'];
+        $updateSecurityPolicyRequest->blockingDuration = $requestData['blocking_duration'];
+        $updateSecurityPolicyRequest->passwordExpiration = $requestData['password_expiration'];
+        $updateSecurityPolicyRequest->canReusePassword = $requestData['can_reuse_passwords'];
+        $updateSecurityPolicyRequest->delayBeforeNewPassword = $requestData['delay_before_new_password'];
 
-        return $request;
+        return $updateSecurityPolicyRequest;
     }
 }
