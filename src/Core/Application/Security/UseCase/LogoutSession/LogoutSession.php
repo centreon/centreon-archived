@@ -25,16 +25,21 @@ namespace Core\Application\Security\UseCase\LogoutSession;
 
 use Core\Application\Security\Repository\WriteSessionRepositoryInterface;
 use Core\Application\Security\Service\TokenServiceInterface;
+use Centreon\Domain\Log\LoggerTrait;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class LogoutSession
 {
+    use LoggerTrait;
+
     /**
-     * @param WriteSessionRepositoryInterface $repository
+     * @param WriteSessionRepositoryInterface $writeSessionRepository
      * @param TokenServiceInterface $tokenService
      */
     public function __construct(
-        private WriteSessionRepositoryInterface $repository,
-        private TokenServiceInterface $tokenService
+        private WriteSessionRepositoryInterface $writeSessionRepository,
+        private TokenServiceInterface $tokenService,
+        private RequestStack $requestStack
     ) {
     }
 
@@ -43,7 +48,9 @@ class LogoutSession
      */
     public function __invoke(LogoutSessionRequest $request): void
     {
+        $this->debug('Processing session logout...');
         $this->tokenService->deleteExpiredSecurityTokens();
-        $this->repository->deleteSession($request->token);
+        $this->writeSessionRepository->deleteSession($request->token);
+        $this->requestStack->getCurrentRequest()->getSession()->invalidate(); // move to application service ?
     }
 }

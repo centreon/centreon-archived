@@ -18,7 +18,6 @@
  * For more information : contact@centreon.com
  *
  */
-
 declare(strict_types=1);
 
 namespace Core\Application\Security\UseCase\LogoutSession;

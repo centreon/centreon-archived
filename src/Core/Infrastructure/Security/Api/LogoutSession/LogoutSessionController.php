@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@
  * For more information : contact@centreon.com
  *
  */
-
 declare(strict_types=1);
 
 namespace Core\Infrastructure\Security\Api\LogoutSession;
@@ -42,16 +41,16 @@ class LogoutSessionController extends AbstractController
     public function __invoke(LogoutSession $useCase, Request $request): View
     {
         $token = $request->cookies->get('PHPSESSID');
-
         if (!isset($token)) {
             return $this->view([
                 "code" => Response::HTTP_UNAUTHORIZED,
                 "message" => _(self::INVALID_CREDENTIALS_MESSAGE)
             ], Response::HTTP_UNAUTHORIZED);
         }
+
         $request = new LogoutSessionRequest($token);
         $useCase($request);
 
-        return $this->view(['message' => _('Successful logout')]);
+        return $this->view(['message' => _('Successful logout')]); // should we create a presenter with static content ?
     }
 }

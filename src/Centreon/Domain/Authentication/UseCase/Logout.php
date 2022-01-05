@@ -59,9 +59,8 @@ class Logout
      */
     public function execute(LogoutRequest $request): void
     {
-        $token = $request->getToken();
-        $this->info('[LOGOUT] Deleting Session...');
+        $this->debug('Processing api logout...');
         $this->authenticationService->deleteExpiredSecurityTokens();
-        $this->authenticationRepository->deleteSecurityToken($token);
+        $this->authenticationRepository->deleteSecurityToken($request->getToken());
     }
 }
