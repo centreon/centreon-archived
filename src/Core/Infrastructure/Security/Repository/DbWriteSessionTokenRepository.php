@@ -20,12 +20,13 @@
  */
 declare(strict_types=1);
 
-namespace Core\Infrastructur\Security\Repository;
+namespace Core\Infrastructure\Security\Repository;
 
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Centreon\Infrastructure\DatabaseConnection;
+use Core\Application\Security\Repository\WriteSessionTokenRepositoryInterface;
 
-class WriteSessionRepository extends AbstractRepositoryDRB
+class DbWriteSessionTokenRepository extends AbstractRepositoryDRB implements WriteSessionTokenRepositoryInterface
 {
     /**
      * @param DatabaseConnection $db

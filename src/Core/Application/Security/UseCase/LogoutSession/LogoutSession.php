@@ -18,7 +18,6 @@
  * For more information : contact@centreon.com
  *
  */
-
 declare(strict_types=1);
 
 namespace Core\Application\Security\UseCase\LogoutSession;
@@ -27,6 +26,7 @@ use Core\Application\Security\Repository\WriteSessionRepositoryInterface;
 use Core\Application\Security\Service\TokenServiceInterface;
 use Centreon\Domain\Log\LoggerTrait;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class LogoutSession
 {
@@ -39,7 +39,8 @@ class LogoutSession
     public function __construct(
         private WriteSessionRepositoryInterface $writeSessionRepository,
         private TokenServiceInterface $tokenService,
-        private RequestStack $requestStack
+        private RequestStack $requestStack,
+        private SessionInterface $session
     ) {
     }
 
@@ -51,6 +52,7 @@ class LogoutSession
         $this->debug('Processing session logout...');
         $this->tokenService->deleteExpiredSecurityTokens();
         $this->writeSessionRepository->deleteSession($request->token);
-        $this->requestStack->getCurrentRequest()->getSession()->invalidate(); // move to application service ?
+        //$this->requestStack->getCurrentRequest()->getSession()->invalidate(); // move to application service ?
+        $this->session->invalidate();
     }
 }
