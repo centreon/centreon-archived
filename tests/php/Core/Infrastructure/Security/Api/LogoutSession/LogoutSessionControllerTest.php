@@ -28,9 +28,9 @@ use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\InputBag;
 use Core\Application\Security\UseCase\LogoutSession\LogoutSession;
 use Core\Infrastructure\Security\Api\LogoutSession\LogoutSessionController;
-use Symfony\Component\HttpFoundation\ParameterBag;
 
 class LogoutSessionControllerTest extends TestCase
 {
@@ -50,16 +50,16 @@ class LogoutSessionControllerTest extends TestCase
     private $container;
 
     /**
-     * @var ParameterBag&\PHPUnit\Framework\MockObject\MockObject
+     * @var InputBag&\PHPUnit\Framework\MockObject\MockObject
      */
-    private $parameterBag; //@phpstan-ignore-line
+    private $inputBag;
 
     public function setUp(): void
     {
         $this->request = $this->createMock(Request::class);
         $this->useCase = $this->createMock(LogoutSession::class);
         $this->container = $this->createMock(ContainerInterface::class);
-        $this->parameterBag = $this->createMock(ParameterBag::class);
+        $this->inputBag = $this->createMock(InputBag::class);
     }
 
     /**
@@ -70,9 +70,9 @@ class LogoutSessionControllerTest extends TestCase
         $logoutSessionController = new LogoutSessionController();
         $logoutSessionController->setContainer($this->container);
 
-        $this->request->cookies = $this->parameterBag;
+        $this->request->cookies = $this->inputBag;
 
-        $this->parameterBag
+        $this->inputBag
             ->expects($this->once())
             ->method('get')
             ->willReturn('token');
@@ -95,9 +95,9 @@ class LogoutSessionControllerTest extends TestCase
         $logoutSessionController = new LogoutSessionController();
         $logoutSessionController->setContainer($this->container);
 
-        $this->request->cookies = $this->parameterBag;
+        $this->request->cookies = $this->inputBag;
 
-        $this->parameterBag
+        $this->inputBag
             ->expects($this->once())
             ->method('get')
             ->willReturn(null);
