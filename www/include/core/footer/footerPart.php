@@ -270,7 +270,6 @@ foreach ($jsdata as $k => $val) {
     // send an event to parent for change in iframe URL
     function parentHrefUpdate(href) {
         let parentHref = window.parent.location.href;
-        href = href.replace('main.get.php', 'main.php');
 
         if (parentHref.localeCompare(href) === 0) {
             return;
