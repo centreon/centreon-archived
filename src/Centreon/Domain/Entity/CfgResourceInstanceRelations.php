@@ -3,7 +3,6 @@ namespace Centreon\Domain\Entity;
 
 class CfgResourceInstanceRelations
 {
-
     /**
      * Relation with cfg_resource.id
      *

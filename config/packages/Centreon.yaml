@@ -12,7 +12,7 @@ jms_serializer:
                 path: '%kernel.project_dir%/config/packages/serializer/Infrastructure'
 parameters:
     api.header: "Api-Version"
-    api.version.latest: "21.10"
+    api.version.latest: "22.04"
     debug_log_file: '%log_path%/centreon-web.log'
     env(DEBUG_LEVEL): !php/const Monolog\Logger::NOTICE
     curl.timeout: 60

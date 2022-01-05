@@ -38,7 +38,6 @@ namespace Centreon\Tests\Resources\Traits;
 
 trait PaginationListTrait
 {
-
     /**
      * @var \Centreon\Infrastructure\CentreonLegacyDB\Interfaces\PaginationRepositoryInterface
      */
