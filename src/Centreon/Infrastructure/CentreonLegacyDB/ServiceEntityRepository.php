@@ -97,7 +97,7 @@ abstract class ServiceEntityRepository
     {
         $this->db = $db;
         $this->manager = $manager;
-        $this->classMetadata = new Mapping\ClassMetadata;
+        $this->classMetadata = new Mapping\ClassMetadata();
 
         // load metadata for Entity implemented MetadataInterface
         $this->loadMetadata();

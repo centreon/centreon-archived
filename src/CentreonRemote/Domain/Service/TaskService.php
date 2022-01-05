@@ -65,11 +65,19 @@ class TaskService
     }
 
     /**
-     * @return \CentreonRestHttp
+     * @param \CentreonRestHttp $centreonRestHttp
      */
     public function setCentreonRestHttp(\CentreonRestHttp $centreonRestHttp): void
     {
         $this->centreonRestHttp = $centreonRestHttp;
+    }
+
+    /**
+     * @return \CentreonRestHttp
+     */
+    public function getCentreonRestHttp(): \CentreonRestHttp
+    {
+        return $this->centreonRestHttp;
     }
 
     /**
@@ -91,11 +99,11 @@ class TaskService
      * Adds a new task
      *
      * @param string $type
-     * @param array $params
+     * @param array<string, array<string,mixed>> $params
      * @param int $parentId
      * @return int|bool
      */
-    public function addTask(string $type, array $params, int $parentId = null)
+    public function addTask(string $type, array $params, int $parentId = null): int|bool
     {
         $newTask = new Task();
         $newTask->setStatus(Task::STATE_PENDING);

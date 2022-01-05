@@ -1,7 +1,8 @@
 <?php
+
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
- * 
+ * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -18,20 +19,19 @@
  *
  */
 
-namespace CentreonRemote\Infrastructure\Export;
+declare(strict_types=1);
 
-interface ExportParserInterface
+namespace Core\Application\Common\UseCase;
+
+use Core\Application\Common\UseCase\ResponseStatusInterface;
+
+class NoContentResponse implements ResponseStatusInterface
 {
     /**
-     * @param string $filename
-     * @param callable|null $macros
-     * @return array<mixed>
+     * @inheritDoc
      */
-    public function parse(string $filename, callable $macros = null): array;
-
-    /**
-     * @param array<mixed> $input
-     * @param string $filename
-     */
-    public function dump(array $input, string $filename): void;
+    public function getMessage(): string
+    {
+        return 'No content';
+    }
 }

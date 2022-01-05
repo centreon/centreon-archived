@@ -7,7 +7,7 @@ use Centreon\Infrastructure\Service\Exception\NotFoundException;
 trait ServiceContainerTrait
 {
     /**
-     * @var object[]
+     * @var array<string|int,mixed>
      */
     private $objects = [];
 
