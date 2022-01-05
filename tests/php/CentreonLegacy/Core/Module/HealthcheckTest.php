@@ -34,7 +34,6 @@ use CentreonLegacy\Core\Module\Exception;
  */
 class HealthcheckTest extends TestCase
 {
-
     protected $isModuleFs;
 
     public function setUp(): void

@@ -84,7 +84,6 @@ use Centreon\ServiceProvider;
  */
 abstract class WebServiceAbstract extends \CentreonWebService
 {
-
     /** @var Container */
     protected $di;
 

@@ -5,7 +5,6 @@ use Centreon\Infrastructure\CentreonLegacyDB\ServiceEntityRepository;
 
 class GivGraphTemplateRepository extends ServiceEntityRepository
 {
-
     /**
      * Export
      *

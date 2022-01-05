@@ -51,23 +51,22 @@ require_once "Centreon/Object/Relation/Contact/Command/Service.php";
  */
 class CentreonContact extends CentreonObject
 {
-
-    const ORDER_UNIQUENAME = 1;
-    const ORDER_NAME = 0;
-    const ORDER_MAIL = 2;
-    const ORDER_PASS = 3;
-    const ORDER_ADMIN = 4;
-    const ORDER_ACCESS = 5;
-    const ORDER_LANG = 6;
-    const ORDER_AUTHTYPE = 7;
-    const HOST_NOTIF_TP = "hostnotifperiod";
-    const SVC_NOTIF_TP = "svcnotifperiod";
-    const HOST_NOTIF_CMD = "hostnotifcmd";
-    const SVC_NOTIF_CMD = "svcnotifcmd";
-    const UNKNOWN_LOCALE = "Invalid locale";
-    const UNKNOWN_TIMEZONE = "Invalid timezone";
-    const CONTACT_LOCATION = "timezone";
-    const UNKNOWN_NOTIFICATION_OPTIONS = "Invalid notifications options";
+    public const ORDER_UNIQUENAME = 1;
+    public const ORDER_NAME = 0;
+    public const ORDER_MAIL = 2;
+    public const ORDER_PASS = 3;
+    public const ORDER_ADMIN = 4;
+    public const ORDER_ACCESS = 5;
+    public const ORDER_LANG = 6;
+    public const ORDER_AUTHTYPE = 7;
+    public const HOST_NOTIF_TP = "hostnotifperiod";
+    public const SVC_NOTIF_TP = "svcnotifperiod";
+    public const HOST_NOTIF_CMD = "hostnotifcmd";
+    public const SVC_NOTIF_CMD = "svcnotifcmd";
+    public const UNKNOWN_LOCALE = "Invalid locale";
+    public const UNKNOWN_TIMEZONE = "Invalid timezone";
+    public const CONTACT_LOCATION = "timezone";
+    public const UNKNOWN_NOTIFICATION_OPTIONS = "Invalid notifications options";
 
     protected $register;
     public static $aDepends = array(
