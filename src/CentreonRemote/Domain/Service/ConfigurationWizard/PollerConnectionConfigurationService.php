@@ -26,7 +26,7 @@ class PollerConnectionConfigurationService extends ServerConnectionConfiguration
      *
      * @param CfgCentreonBrokerInterface $cfgCentreonBroker the centreon broker configuration repository
      */
-    public function setBrokerRepository(CfgCentreonBrokerInterface $cfgCentreonBroker)
+    public function setBrokerRepository(CfgCentreonBrokerInterface $cfgCentreonBroker): void
     {
         $this->brokerRepository = $cfgCentreonBroker;
     }
@@ -36,7 +36,7 @@ class PollerConnectionConfigurationService extends ServerConnectionConfiguration
      *
      * @param BrokerConfigurationService $brokerConfigurationService the service to manage broker confiration
      */
-    public function setBrokerConfigurationService(BrokerConfigurationService $brokerConfigurationService)
+    public function setBrokerConfigurationService(BrokerConfigurationService $brokerConfigurationService): void
     {
         $this->brokerConfigurationService = $brokerConfigurationService;
     }

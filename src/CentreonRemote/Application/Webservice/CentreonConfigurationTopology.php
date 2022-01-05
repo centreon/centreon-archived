@@ -89,7 +89,7 @@ class CentreonConfigurationTopology extends CentreonWebServiceAbstract
      * )
      *
      * Get data for topology_id
-     * @return array
+     * @return array<string,string|bool>
      * @throws \RestBadRequestException
      */
     public function postGetTopologyData()
@@ -130,6 +130,6 @@ class CentreonConfigurationTopology extends CentreonWebServiceAbstract
             return true;
         }
 
-        return $user && $user->hasAccessRestApiConfiguration();
+        return $user->hasAccessRestApiConfiguration();
     }
 }
