@@ -96,8 +96,8 @@ class UpdateSecurityPolicyRequest
      */
     public static function validateRequestOrFail(array $requestData): void
     {
-        foreach (self::MANDATORY_FIELDS as $mandatoryFields) {
-            if (!array_key_exists($mandatoryFields, $requestData)) {
+        foreach (self::MANDATORY_FIELDS as $mandatoryField) {
+            if (!array_key_exists($mandatoryField, $requestData)) {
                 throw new \InvalidArgumentException(_('Bad Parameters'));
             }
         }

@@ -67,7 +67,7 @@ class UpdateSecurityPolicyTest extends TestCase
         );
 
         $request = new UpdateSecurityPolicyRequest();
-        $request->passwordMinimumLength = 8;
+        $request->passwordMinimumLength = SecurityPolicy::MIN_PASSWORD_LENGTH;
         $request->hasUppercase = true;
         $request->hasLowercase = true;
         $request->hasNumber = true;

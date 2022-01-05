@@ -39,7 +39,6 @@ class UpdateSecurityPolicy
     /**
      * @param UpdateSecurityPolicyPresenterInterface $presenter
      * @param UpdateSecurityPolicyRequest $request
-     * @return void
      */
     public function __invoke(
         UpdateSecurityPolicyPresenterInterface $presenter,
