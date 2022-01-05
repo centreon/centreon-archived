@@ -222,7 +222,7 @@ try {
           recordIssues(
             referenceJobName: "centreon-web/${env.REF_BRANCH}",
             enabledForFailure: true,
-            qualityGates: [[threshold: 1, type: 'DELTA', unstable: false]],
+            qualityGates: [[threshold: 1200, type: 'DELTA', unstable: false]],
             tool: phpStan(id: 'phpstan', name: 'phpstan', pattern: 'phpstan.xml'),
             trendChartType: 'NONE'
           )
