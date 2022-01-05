@@ -27,17 +27,51 @@ use Symfony\Component\HttpFoundation\Request;
 use Centreon\Application\Controller\AbstractController;
 use Core\Application\Security\UseCase\UpdateSecurityPolicy\UpdateSecurityPolicy;
 use Core\Application\Security\UseCase\UpdateSecurityPolicy\UpdateSecurityPolicyPresenterInterface;
+use Core\Application\Security\UseCase\UpdateSecurityPolicy\UpdateSecurityPolicyRequest;
 
 class UpdateSecurityPolicyController extends AbstractController
 {
+    /**
+     * @param UpdateSecurityPolicy $useCase
+     * @param Request $request
+     * @param UpdateSecurityPolicyPresenterInterface $presenter
+     * @return object
+     */
     public function __invoke(
         UpdateSecurityPolicy $useCase,
         Request $request,
         UpdateSecurityPolicyPresenterInterface $presenter
     ): object {
         $this->denyAccessUnlessGrantedForApiConfiguration();
+        $request = $this->createUpdateSecurityPolicyRequestOrFail($request);
         $useCase($presenter, $request);
 
         return $presenter->show();
+    }
+
+    /**
+     * Create a DTO from HTTP Request or throw an exception if the body is incorrect.
+     *
+     * @param Request $request
+     * @return UpdateSecurityPolicyRequest
+     * @throws \InvalidArgumentException
+     */
+    private function createUpdateSecurityPolicyRequestOrFail(Request $request): UpdateSecurityPolicyRequest
+    {
+        $requestData = json_decode((string) $request->getContent(), true);
+        UpdateSecurityPolicyRequest::validateRequestOrFail($requestData);
+        $request = new UpdateSecurityPolicyRequest();
+        $request->passwordMinimumLength = $requestData['password_length'];
+        $request->hasUppercase = $requestData['has_uppercase'];
+        $request->hasLowercase = $requestData['has_lowercase'];
+        $request->hasNumber = $requestData['has_number'];
+        $request->hasSpecialCharacter = $requestData['has_special_character'];
+        $request->attempts = $requestData['attempts'];
+        $request->blockingDuration = $requestData['blocking_duration'];
+        $request->passwordExpiration = $requestData['password_expiration'];
+        $request->canReusePassword = $requestData['can_reuse_passwords'];
+        $request->delayBeforeNewPassword = $requestData['delay_before_new_password'];
+
+        return $request;
     }
 }

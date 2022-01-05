@@ -27,4 +27,8 @@ use Core\Application\Common\UseCase\PresenterInterface;
 
 interface UpdateSecurityPolicyPresenterInterface extends PresenterInterface
 {
+    /**
+     * Present no content.
+     */
+    public function present(): void;
 }

@@ -21,31 +21,33 @@
 
 declare(strict_types=1);
 
-namespace Core\Application\Security\UseCase\UpdateSecurityPolicy;
+namespace Core\Domain\Security\Model;
 
-use Core\Domain\Security\Model\SecurityPolicyFactory;
-use Core\Application\Security\Repository\WriteSecurityPolicyRepositoryInterface;
+use Centreon\Domain\Common\Assertion\AssertionException;
 use Core\Application\Security\UseCase\UpdateSecurityPolicy\UpdateSecurityPolicyRequest;
 
-class UpdateSecurityPolicy
+class SecurityPolicyFactory
 {
     /**
-     * @param WriteSecurityPolicyRepositoryInterface $repository
-     */
-    public function __construct(private WriteSecurityPolicyRepositoryInterface $repository)
-    {
-    }
-
-    /**
-     * @param UpdateSecurityPolicyPresenterInterface $presenter
+     * Create a Security Policy from the DTO.
+     *
      * @param UpdateSecurityPolicyRequest $request
-     * @return void
+     * @return SecurityPolicy
+     * @throws AssertionException
      */
-    public function __invoke(
-        UpdateSecurityPolicyPresenterInterface $presenter,
-        UpdateSecurityPolicyRequest $request
-    ): void {
-        $this->repository->updateSecurityPolicy(SecurityPolicyFactory::createFromRequest($request));
-        $presenter->present();
+    public static function createFromRequest(UpdateSecurityPolicyRequest $request): SecurityPolicy
+    {
+        return new SecurityPolicy(
+            $request->passwordMinimumLength,
+            $request->hasUppercase,
+            $request->hasUppercase,
+            $request->hasNumber,
+            $request->hasSpecialCharacter,
+            $request->canReusePassword,
+            $request->attempts,
+            $request->blockingDuration,
+            $request->passwordExpiration,
+            $request->delayBeforeNewPassword
+        );
     }
 }

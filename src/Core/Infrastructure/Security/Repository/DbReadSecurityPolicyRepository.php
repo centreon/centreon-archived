@@ -50,6 +50,7 @@ class DbReadSecurityPolicyRepository extends AbstractRepositoryDRB implements Re
         if ($statement !== false && $result = $statement->fetch(\PDO::FETCH_ASSOC)) {
             $securityPolicy = DbSecurityPolicyFactory::createFromRecord($result);
         }
+
         return $securityPolicy;
     }
 }

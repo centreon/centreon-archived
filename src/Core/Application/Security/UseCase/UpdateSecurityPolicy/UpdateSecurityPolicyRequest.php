@@ -89,6 +89,8 @@ class UpdateSecurityPolicyRequest
     public ?int $delayBeforeNewPassword;
 
     /**
+     * Validate that all the mandatory parameters are present.
+     *
      * @param array<string,mixed> $requestData
      * @throws \InvalidArgumentException
      */
