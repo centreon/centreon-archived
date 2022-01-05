@@ -214,8 +214,8 @@ try {
           //Recording issues in Jenkins job
           recordIssues(
             referenceJobName: "centreon-web/${env.REF_BRANCH}",
-            enabledForFailure: false,
-            qualityGates: [[threshold: 1200, type: 'DELTA', unstable: false]],
+            enabledForFailure: true,
+            qualityGates: [[threshold: 1, type: 'DELTA', unstable: false]],
             tool: phpCodeSniffer(id: 'phpcs', name: 'phpcs', pattern: 'codestyle-be.xml'),
             trendChartType: 'NONE'
           )
