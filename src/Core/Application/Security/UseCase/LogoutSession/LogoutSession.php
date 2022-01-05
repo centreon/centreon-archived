@@ -46,11 +46,14 @@ class LogoutSession
     /**
      * @param LogoutSessionRequest $request
      */
-    public function __invoke(LogoutSessionRequest $request): void
-    {
+    public function __invoke(
+        LogoutSessionRequest $request,
+        LogoutPresenterInterface $presenter,
+    ): void{
         $this->debug('Processing session logout...');
         $this->tokenService->deleteExpiredSecurityTokens();
         $this->writeSessionTokenRepository->deleteSession($request->token);
         $this->writeSessionRepository->invalidate();
+        $presenter->setResponseStatus(new LogoutResponse());
     }
 }
