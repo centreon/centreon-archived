@@ -32,7 +32,6 @@ interface ExportParserInterface
     /**
      * @param array<mixed> $input
      * @param string $filename
-     * @return void
      */
     public function dump(array $input, string $filename): void;
 }

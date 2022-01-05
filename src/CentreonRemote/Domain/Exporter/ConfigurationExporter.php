@@ -39,7 +39,6 @@ class ConfigurationExporter extends ExporterServiceAbstract
      * Set generate service
      *
      * @param \ConfigGenerateRemote\Generate $generateService
-     * @return void
      */
     public function setGenerateService(\ConfigGenerateRemote\Generate $generateService): void
     {
