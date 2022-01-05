@@ -49,17 +49,11 @@ class LogoutSessionControllerTest extends TestCase
      */
     private $container;
 
-    /**
-     * @var InputBag&\PHPUnit\Framework\MockObject\MockObject
-     */
-    private $inputBag;
-
     public function setUp(): void
     {
         $this->request = $this->createMock(Request::class);
         $this->useCase = $this->createMock(LogoutSession::class);
         $this->container = $this->createMock(ContainerInterface::class);
-        $this->inputBag = $this->createMock(InputBag::class);
     }
 
     /**
@@ -70,12 +64,7 @@ class LogoutSessionControllerTest extends TestCase
         $logoutSessionController = new LogoutSessionController();
         $logoutSessionController->setContainer($this->container);
 
-        $this->request->cookies = $this->inputBag;
-
-        $this->inputBag
-            ->expects($this->once())
-            ->method('get')
-            ->willReturn('token');
+        $this->request->cookies = new InputBag(['PHPSESSID' => 'token']);
 
         $view = $logoutSessionController($this->useCase, $this->request);
 
@@ -95,12 +84,7 @@ class LogoutSessionControllerTest extends TestCase
         $logoutSessionController = new LogoutSessionController();
         $logoutSessionController->setContainer($this->container);
 
-        $this->request->cookies = $this->inputBag;
-
-        $this->inputBag
-            ->expects($this->once())
-            ->method('get')
-            ->willReturn(null);
+        $this->request->cookies = new InputBag([]);
 
         $view = $logoutSessionController($this->useCase, $this->request);
 
