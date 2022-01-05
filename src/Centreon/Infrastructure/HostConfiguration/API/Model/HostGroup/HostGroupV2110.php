@@ -29,7 +29,6 @@ namespace Centreon\Infrastructure\HostConfiguration\API\Model\HostGroup;
  */
 class HostGroupV2110
 {
-
     /**
      * @var int|null
      */

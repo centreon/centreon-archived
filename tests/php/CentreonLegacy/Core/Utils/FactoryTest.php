@@ -28,7 +28,6 @@ use CentreonLegacy\ServiceProvider;
  */
 class FactoryTest extends TestCase
 {
-
     public function setUp(): void
     {
         $this->container = new ServiceContainer();

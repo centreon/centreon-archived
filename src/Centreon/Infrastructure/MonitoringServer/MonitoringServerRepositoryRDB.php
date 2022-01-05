@@ -38,7 +38,6 @@ use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
  */
 class MonitoringServerRepositoryRDB extends AbstractRepositoryDRB implements MonitoringServerRepositoryInterface
 {
-
     /**
      * @var SqlRequestParametersTranslator
      */
