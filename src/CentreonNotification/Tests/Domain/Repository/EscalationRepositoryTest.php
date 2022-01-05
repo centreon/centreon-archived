@@ -37,9 +37,16 @@ class EscalationRepositoryTest extends TestCase
     use Traits\PaginationListTrait;
 
     /**
-     * @var array
+     *
+     * @var array<int, array<string, string|array<int, array<string, string>>>>
      */
     protected $datasets = [];
+
+    /**
+     *
+     * @var CentreonDB
+     */
+    private $db;
 
     /**
      * {@inheritdoc}
@@ -92,7 +99,7 @@ class EscalationRepositoryTest extends TestCase
     /**
      * Test the method entityClass
      */
-    public function testEntityClass()
+    public function testEntityClass(): void
     {
         $this->assertEquals(Escalation::class, EscalationRepository::entityClass());
     }
@@ -100,7 +107,7 @@ class EscalationRepositoryTest extends TestCase
     /**
      * Test the method checkListOfIds
      */
-    public function testCheckListOfIds()
+    public function testCheckListOfIds(): void
     {
         $this->checkListOfIdsTrait(
             EscalationRepository::class,
@@ -111,7 +118,7 @@ class EscalationRepositoryTest extends TestCase
     /**
      * Test the method getPaginationList
      */
-    public function testGetPaginationList()
+    public function testGetPaginationList(): void
     {
         $this->getPaginationListTrait($this->datasets[0]['data'][0]);
     }
@@ -119,7 +126,7 @@ class EscalationRepositoryTest extends TestCase
     /**
      * Test the method getPaginationList with different set of arguments
      */
-    public function testGetPaginationListWithArguments()
+    public function testGetPaginationListWithArguments(): void
     {
         $this->getPaginationListTrait(
             $this->datasets[1]['data'][0],
@@ -135,7 +142,7 @@ class EscalationRepositoryTest extends TestCase
     /**
      * Test the method getPaginationTotal
      */
-    public function testGetPaginationListTotal()
+    public function testGetPaginationListTotal(): void
     {
         $this->getPaginationListTotalTrait(
             $this->datasets[2]['data'][0]['number']
