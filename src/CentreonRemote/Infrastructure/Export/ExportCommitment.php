@@ -25,7 +25,6 @@ use CentreonRemote\Infrastructure\Export\ExportParserInterface;
 
 final class ExportCommitment
 {
-
     /**
      * @var int[]
      */

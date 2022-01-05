@@ -40,7 +40,6 @@ use CentreonRestHttp;
  */
 class ServiceProviderTest extends TestCase
 {
-
     /**
      * @var Container
      */

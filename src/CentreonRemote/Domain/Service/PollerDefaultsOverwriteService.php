@@ -7,7 +7,6 @@ use CentreonRemote\Domain\Resources\DefaultConfig\CfgCentreonBrokerInfo;
 
 class PollerDefaultsOverwriteService
 {
-
     /** @var int|null */
     private $pollerID = null;
 

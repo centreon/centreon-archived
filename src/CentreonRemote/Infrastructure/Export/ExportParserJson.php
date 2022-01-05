@@ -24,7 +24,6 @@ use CentreonRemote\Infrastructure\Export\ExportParserInterface;
 
 class ExportParserJson implements ExportParserInterface
 {
-
     /**
      * @param string $filename
      * @param callable|null $macros

@@ -3,7 +3,6 @@ namespace CentreonRemote\Infrastructure\Service;
 
 class ExporterCacheService
 {
-
     /**
      * @var mixed
      */

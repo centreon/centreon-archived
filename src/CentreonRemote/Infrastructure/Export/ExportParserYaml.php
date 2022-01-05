@@ -6,7 +6,6 @@ use Symfony\Component\Yaml\Yaml;
 
 class ExportParserYaml implements ExportParserInterface
 {
-
     /**
      * @param string $filename
      * @param callable|null $macros
