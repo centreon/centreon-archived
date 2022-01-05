@@ -77,8 +77,8 @@ class UpdateSecurityPolicyController extends AbstractController
         return $updateSecurityPolicyRequest;
     }
 
-        /**
-     * Validate and retrieve the data sent.
+    /**
+     * Validate the data sent.
      *
      * @param Request $request Request sent by client
      * @param string $jsonValidationFile Json validation file
