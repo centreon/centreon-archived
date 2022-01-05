@@ -33,7 +33,6 @@ class PollerInteractionService
 
 
     /**
-     *
      * @param int[] $pollers
      */
     public function generateAndExport($pollers): void
@@ -46,7 +45,6 @@ class PollerInteractionService
     }
 
     /**
-     *
      * @throws \Exception
      * @param int[] $pollerIDs
      */
@@ -76,7 +74,6 @@ class PollerInteractionService
     }
 
     /**
-     *
      * @throws \Exception
      * @param int[] $pollerIDs
      */
@@ -130,7 +127,6 @@ class PollerInteractionService
     }
 
     /**
-     *
      * @throws \Exception
      * @param int[] $pollerIDs
      */

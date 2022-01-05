@@ -71,9 +71,7 @@ abstract class ExporterServiceAbstract implements ExporterServiceInterface
     }
 
     /**
-     *
      * @param ExporterCacheService $cache
-     * @return void
      */
     public function setCache(ExporterCacheService $cache): void
     {
@@ -81,9 +79,7 @@ abstract class ExporterServiceAbstract implements ExporterServiceInterface
     }
 
     /**
-     *
      * @param ExportCommitment $commitment
-     * @return void
      */
     public function setCommitment(ExportCommitment $commitment): void
     {
@@ -91,15 +87,16 @@ abstract class ExporterServiceAbstract implements ExporterServiceInterface
     }
 
     /**
-     *
      * @param ExportManifest $manifest
-     * @return void
      */
     public function setManifest(ExportManifest $manifest): void
     {
         $this->manifest = $manifest;
     }
 
+    /**
+     * @return string
+     */
     public static function getName(): string
     {
         return static::NAME;

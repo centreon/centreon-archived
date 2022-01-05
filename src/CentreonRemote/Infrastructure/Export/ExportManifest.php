@@ -51,7 +51,6 @@ class ExportManifest
     private $data;
 
     /**
-     *
      * @param ExportCommitment $commitment
      * @param string|null $version
      */

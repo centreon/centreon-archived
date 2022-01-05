@@ -32,7 +32,6 @@ class ExportParserYaml implements ExportParserInterface
     /**
      * @param string[] $input
      * @param string $filename
-     * @return void
      */
     public function dump(array $input, string $filename): void
     {

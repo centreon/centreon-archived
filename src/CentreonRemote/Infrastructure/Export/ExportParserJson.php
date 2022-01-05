@@ -49,7 +49,6 @@ class ExportParserJson implements ExportParserInterface
     }
 
     /**
-     *
      * @param string[] $input
      * @param string $filename
      * @return void

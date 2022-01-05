@@ -47,25 +47,21 @@ class ExportServiceTest extends TestCase
     use TestCaseExtensionTrait;
 
     /**
-     *
      * @var boolean
      */
     private $aclReload = false;
 
     /**
-     *
      * @var Container
      */
     private $container;
 
     /**
-     *
      * @var FileSystem
      */
     private $fs;
 
     /**
-     *
      * @var ExportService
      */
     private $export;

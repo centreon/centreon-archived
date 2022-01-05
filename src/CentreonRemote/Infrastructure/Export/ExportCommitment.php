@@ -102,7 +102,6 @@ final class ExportCommitment
     }
 
     /**
-     *
      * @return int[]
      */
     public function getPollers(): array
@@ -111,7 +110,6 @@ final class ExportCommitment
     }
 
     /**
-     *
      * @return array<mixed>|null
      */
     public function getMeta()
@@ -125,7 +123,6 @@ final class ExportCommitment
     }
 
     /**
-     *
      * @return array<mixed>
      */
     public function getExporters(): array

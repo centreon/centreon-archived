@@ -11,10 +11,8 @@ class ExporterService implements ContainerInterface
     use ServiceContainerTrait;
 
     /**
-     *
      * @param string $object
      * @param callable $factory
-     * @return void
      */
     public function add(string $object, callable $factory): void
     {
@@ -37,7 +35,6 @@ class ExporterService implements ContainerInterface
     }
 
     /**
-     *
      * @param string $id
      * @return bool
      */
@@ -49,7 +46,6 @@ class ExporterService implements ContainerInterface
     }
 
     /**
-     *
      * @param string $id
      * @return int[]
      */
@@ -66,7 +62,6 @@ class ExporterService implements ContainerInterface
     }
 
     /**
-     *
      * @param string $id
      * @return int|null
      */

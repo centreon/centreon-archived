@@ -145,7 +145,6 @@ abstract class ServerConnectionConfigurationService
     }
 
     /**
-     *
      * @throws \Exception
      * @param int $serverID
      */
@@ -175,7 +174,6 @@ abstract class ServerConnectionConfigurationService
     }
 
     /**
-     *
      * @throws \Exception
      */
     protected function insertBamBrokers(): void
@@ -200,7 +198,6 @@ abstract class ServerConnectionConfigurationService
     }
 
     /**
-     *
      * @param string $table
      * @param array<string,int> $data
      * @throws \Exception

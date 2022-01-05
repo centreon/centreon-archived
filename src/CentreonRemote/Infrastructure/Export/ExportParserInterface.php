@@ -23,7 +23,6 @@ namespace CentreonRemote\Infrastructure\Export;
 interface ExportParserInterface
 {
     /**
-     *
      * @param string $filename
      * @param callable|null $macros
      * @return array<mixed>
@@ -31,7 +30,6 @@ interface ExportParserInterface
     public function parse(string $filename, callable $macros = null): array;
 
     /**
-     *
      * @param array<mixed> $input
      * @param string $filename
      * @return void

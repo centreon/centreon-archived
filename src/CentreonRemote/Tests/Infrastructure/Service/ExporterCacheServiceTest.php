@@ -11,7 +11,6 @@ use CentreonRemote\Infrastructure\Service\ExporterCacheService;
 class ExporterCacheServiceTest extends TestCase
 {
     /**
-     *
      * @var ExporterCacheService
      */
     private $cache;
