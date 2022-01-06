@@ -46,7 +46,7 @@ class LogoutSession
     }
 
     /**
-     * @param LogoutSessionRequest $request
+     * @param string|null $token
      * @param LogoutSessionPresenterInterface $presenter
      */
     public function __invoke(
