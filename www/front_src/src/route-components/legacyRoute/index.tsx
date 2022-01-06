@@ -8,6 +8,8 @@ import { PageSkeleton } from '@centreon/ui';
 
 import styles from '../../Header/header.scss';
 
+const baseUrlsToRedirect = [/^main.php/, /^include/];
+
 const LegacyRoute = (): JSX.Element => {
   const [loading, setLoading] = React.useState(true);
   const mainContainerRef = React.useRef<HTMLElement | null>(null);
@@ -26,8 +28,14 @@ const LegacyRoute = (): JSX.Element => {
       element.addEventListener(
         'click',
         (e) => {
-          e.preventDefault();
           const href = (e.target as HTMLLinkElement).getAttribute('href');
+          const target = (e.target as HTMLLinkElement).getAttribute('target');
+
+          if (equals(target, '_blank')) {
+            return;
+          }
+
+          e.preventDefault();
 
           if (isNil(href)) {
             return;
