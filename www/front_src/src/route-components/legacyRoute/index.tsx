@@ -33,15 +33,13 @@ const LegacyRoute = (): JSX.Element => {
             return;
           }
 
-          if (equals(href, '#')) {
+          const formattedHref = replace('./', '', href);
+
+          if (equals(formattedHref, '#') || !formattedHref.match(/^main.php/)) {
             return;
           }
 
-          if (href.match(/^https?:\/\//)) {
-            return;
-          }
-
-          navigate(`/${replace('./', '', href)}`, { replace: true });
+          navigate(`/${formattedHref}`, { replace: true });
         },
         { once: true },
       );
