@@ -3,15 +3,18 @@ import * as React from 'react';
 import { equals, reject, path, isNil } from 'ramda';
 import axios from 'axios';
 import mockDate from 'mockdate';
-import userEvent from '@testing-library/user-event';
-import { Provider } from 'jotai';
-
 import {
   render,
   waitFor,
   fireEvent,
   RenderResult,
   act,
+} from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { Provider } from 'jotai';
+import { BrowserRouter } from 'react-router-dom';
+
+import {
   ThemeProvider,
   setUrlQueryParameters,
   getUrlQueryParameters,
@@ -506,9 +509,11 @@ const DetailsTest = (): JSX.Element => {
 
   return (
     <ThemeProvider>
-      <Context.Provider value={context}>
-        <Details />
-      </Context.Provider>
+      <BrowserRouter>
+        <Context.Provider value={context}>
+          <Details />
+        </Context.Provider>
+      </BrowserRouter>
     </ThemeProvider>
   );
 };
