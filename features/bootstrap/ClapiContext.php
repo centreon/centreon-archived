@@ -4,7 +4,6 @@ use Centreon\Test\Behat\CentreonContext;
 
 class ClapiContext extends CentreonContext
 {
-
     protected $test;
     protected $object;
     protected $parameter;

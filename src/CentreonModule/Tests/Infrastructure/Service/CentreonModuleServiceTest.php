@@ -318,7 +318,7 @@ class CentreonModuleServiceTest extends TestCase
         ];
         $list = [
             (function () {
-                    $entity = new Module;
+                    $entity = new Module();
                     $entity->setName('B');
                     $entity->setInstalled(true);
                     $entity->setUpdated(true);
@@ -326,7 +326,7 @@ class CentreonModuleServiceTest extends TestCase
                     return $entity;
             })(),
             (function () {
-                    $entity = new Module;
+                    $entity = new Module();
                     $entity->setName('A');
                     $entity->setInstalled(true);
                     $entity->setUpdated(true);
@@ -334,7 +334,7 @@ class CentreonModuleServiceTest extends TestCase
                     return $entity;
             })(),
             (function () {
-                    $entity = new Module;
+                    $entity = new Module();
                     $entity->setName('B');
                     $entity->setInstalled(true);
                     $entity->setUpdated(false);
@@ -342,7 +342,7 @@ class CentreonModuleServiceTest extends TestCase
                     return $entity;
             })(),
             (function () {
-                    $entity = new Module;
+                    $entity = new Module();
                     $entity->setName('C');
                     $entity->setInstalled(true);
                     $entity->setUpdated(false);
@@ -350,7 +350,7 @@ class CentreonModuleServiceTest extends TestCase
                     return $entity;
             })(),
             (function () {
-                    $entity = new Module;
+                    $entity = new Module();
                     $entity->setName('D');
                     $entity->setInstalled(false);
                     $entity->setUpdated(false);
@@ -358,7 +358,7 @@ class CentreonModuleServiceTest extends TestCase
                     return $entity;
             })(),
             (function () {
-                    $entity = new Module;
+                    $entity = new Module();
                     $entity->setName('F');
                     $entity->setInstalled(false);
                     $entity->setUpdated(false);

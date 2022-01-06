@@ -57,7 +57,7 @@ class MonitoringResourceController extends AbstractController
     /**
      * List of external parameters for list action
      *
-     * @var array
+     * @var array<string>
      */
     public const EXTRA_PARAMETERS_LIST = [
         'types',

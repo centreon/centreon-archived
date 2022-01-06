@@ -7,19 +7,12 @@ import React from 'react';
 import Carousel from 'react-material-ui-carousel';
 import { Responsive } from '@visx/visx';
 
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import {
-  Chip,
-  Typography,
-  Divider,
-  Grid,
-  Button,
-  Link,
-} from '@material-ui/core';
-import UpdateIcon from '@material-ui/icons/SystemUpdateAlt';
-import DeleteIcon from '@material-ui/icons/Delete';
-import InstallIcon from '@material-ui/icons/Add';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import { Chip, Typography, Divider, Grid, Button, Link } from '@mui/material';
+import UpdateIcon from '@mui/icons-material/SystemUpdateAlt';
+import DeleteIcon from '@mui/icons-material/Delete';
+import InstallIcon from '@mui/icons-material/Add';
 
 import { Dialog, IconButton } from '@centreon/ui';
 
@@ -61,6 +54,7 @@ class ExtensionDetailPopup extends React.Component {
                   <SliderSkeleton animate={animate} width={width} />
                 ) : (
                   <Carousel
+                    fullHeightHover
                     NextIcon={<ChevronRightIcon />}
                     PrevIcon={<ChevronLeftIcon />}
                     animation="slide"
@@ -77,6 +71,7 @@ class ExtensionDetailPopup extends React.Component {
           <Grid item>
             {modalDetails.version.installed && modalDetails.version.outdated ? (
               <IconButton
+                size="large"
                 onClick={() => {
                   onUpdateClicked(modalDetails.id, modalDetails.type);
                 }}

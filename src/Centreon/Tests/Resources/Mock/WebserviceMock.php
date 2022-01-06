@@ -45,7 +45,6 @@ use Centreon\Application\DataRepresenter;
 class WebserviceMock extends Webservice\WebServiceAbstract implements
     Webservice\WebserviceAutorizeRestApiInterface
 {
-
     /**
      * {@inheritdoc}
      */

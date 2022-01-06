@@ -40,7 +40,6 @@ use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRegisterReposito
 
 class RemoteServerService implements RemoteServerServiceInterface
 {
-
     /**
      * @var MenuRepositoryInterface
      */

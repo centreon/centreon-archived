@@ -25,11 +25,10 @@ use CentreonRemote\Infrastructure\Export\ExportParserInterface;
 
 final class ExportCommitment
 {
-
     /**
-     * @var int
+     * @var int[]
      */
-    private $poller;
+    private $pollers;
 
     /**
      * @var string
@@ -42,9 +41,14 @@ final class ExportCommitment
     private $parser;
 
     /**
-     * @var array
+     * @var array<mixed>
      */
     private $exporters;
+
+    /**
+     * @var array<mixed>
+     */
+    private $meta;
 
     /**
      * @var int
@@ -52,14 +56,19 @@ final class ExportCommitment
     private $filePermission = 0775;
 
     /**
+     * @var int
+     */
+    private $remote;
+
+    /**
      * Construct
      *
      * @param int $remote
      * @param int[] $pollers
-     * @param array $meta
+     * @param array<mixed> $meta
      * @param \CentreonRemote\Infrastructure\Export\ExportParserInterface $parser
      * @param string $path
-     * @param array $exporters
+     * @param array<int,string> $exporters
      */
     public function __construct(
         int $remote = null,
@@ -83,7 +92,7 @@ final class ExportCommitment
             $this->path = _CENTREON_CACHEDIR_ . '/config/export/' . $this->remote;
         }
 
-        $this->parser = $parser ?? new ExportParserJson;
+        $this->parser = $parser ?? new ExportParserJson();
     }
 
     public function getRemote(): int
@@ -91,12 +100,18 @@ final class ExportCommitment
         return $this->remote;
     }
 
+    /**
+     * @return int[]
+     */
     public function getPollers(): array
     {
         return $this->pollers;
     }
 
-    public function getMeta(): ?array
+    /**
+     * @return array<mixed>|null
+     */
+    public function getMeta()
     {
         return $this->meta;
     }
@@ -106,6 +121,9 @@ final class ExportCommitment
         return $this->path;
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function getExporters(): array
     {
         return $this->exporters;

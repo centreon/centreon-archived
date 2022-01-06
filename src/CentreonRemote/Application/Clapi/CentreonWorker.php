@@ -183,7 +183,7 @@ class CentreonWorker implements CentreonClapiServiceInterface
                 $url,
                 'POST',
                 ['parent_id' => $task->getId()],
-                null,
+                [],
                 false,
                 $params['no_check_certificate'],
                 $params['no_proxy']

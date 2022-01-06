@@ -32,7 +32,10 @@ class PollerInteractionService
     }
 
 
-    public function generateAndExport($pollers)
+    /**
+     * @param int[] $pollers
+     */
+    public function generateAndExport($pollers): void
     {
         $pollers = (array) $pollers;
 
@@ -41,7 +44,11 @@ class PollerInteractionService
         $this->restartPoller($pollers);
     }
 
-    private function generateConfiguration(array $pollerIDs)
+    /**
+     * @throws \Exception
+     * @param int[] $pollerIDs
+     */
+    private function generateConfiguration(array $pollerIDs): void
     {
         $username = 'unknown';
 
@@ -66,7 +73,11 @@ class PollerInteractionService
         }
     }
 
-    private function moveConfigurationFiles(array $pollerIDs)
+    /**
+     * @throws \Exception
+     * @param int[] $pollerIDs
+     */
+    private function moveConfigurationFiles(array $pollerIDs): void
     {
         $centreonBrokerPath = _CENTREON_CACHEDIR_ . '/config/broker/';
 
@@ -115,7 +126,11 @@ class PollerInteractionService
         }
     }
 
-    private function restartPoller(array $pollerIDs)
+    /**
+     * @throws \Exception
+     * @param int[] $pollerIDs
+     */
+    private function restartPoller(array $pollerIDs): void
     {
         $tabServers = [];
 

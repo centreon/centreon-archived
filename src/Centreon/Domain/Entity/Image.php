@@ -26,7 +26,6 @@ use ReflectionClass;
 
 class Image
 {
-
     public const TABLE = 'view_img';
     public const MEDIA_DIR = 'img/media/';
     public const SERIALIZER_GROUP_LIST = 'image-list';
