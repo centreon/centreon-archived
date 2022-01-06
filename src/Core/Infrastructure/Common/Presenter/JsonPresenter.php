@@ -54,7 +54,7 @@ class JsonPresenter implements PresenterFormatterInterface
     public function show(): JsonResponse
     {
         switch (true) {
-            case is_subclass_of($this->data, NotFoundResponse::class, false):
+            case is_a($this->data, NotFoundResponse::class, false):
                 $this->debug('Data not found. Generating a not found response');
                 return new JsonResponse(
                     [
@@ -63,7 +63,7 @@ class JsonPresenter implements PresenterFormatterInterface
                     ],
                     JsonResponse::HTTP_NOT_FOUND
                 );
-            case is_subclass_of($this->data, ErrorResponse::class, false):
+            case is_a($this->data, ErrorResponse::class, false):
                 $this->debug('Data error. Generating an error response');
                 return new JsonResponse(
                     [
@@ -72,12 +72,12 @@ class JsonPresenter implements PresenterFormatterInterface
                     ],
                     JsonResponse::HTTP_INTERNAL_SERVER_ERROR
                 );
-            case is_subclass_of($this->data, CreatedResponse::class, false):
+            case is_a($this->data, CreatedResponse::class, false):
                 return new JsonResponse(
                     null,
                     JsonResponse::HTTP_CREATED
                 );
-            case is_subclass_of($this->data, NoContentResponse::class, false):
+            case is_a($this->data, NoContentResponse::class, false):
                 return new JsonResponse(
                     null,
                     JsonResponse::HTTP_NO_CONTENT
