@@ -163,8 +163,8 @@ class ModuleSourceTest extends TestCase
             ->method('getModuleConf')
             ->will($this->returnCallback(function () {
                 $result = [
-                        ModuleSourceTest::$moduleName => ModuleSourceTest::$moduleInfo,
-                    ];
+                    ModuleSourceTest::$moduleName => ModuleSourceTest::$moduleInfo,
+                ];
 
                 return $result;
             }))
