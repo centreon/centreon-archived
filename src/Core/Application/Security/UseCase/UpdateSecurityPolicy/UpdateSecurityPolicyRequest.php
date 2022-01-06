@@ -25,19 +25,6 @@ namespace Core\Application\Security\UseCase\UpdateSecurityPolicy;
 
 class UpdateSecurityPolicyRequest
 {
-    private const MANDATORY_FIELDS = [
-        'password_min_length',
-        'has_uppercase',
-        'has_lowercase',
-        'has_number',
-        'has_special_character',
-        'attempts',
-        'blocking_duration',
-        'password_expiration',
-        'can_reuse_passwords',
-        'delay_before_new_password',
-    ];
-
     /**
      * @var int
      */
