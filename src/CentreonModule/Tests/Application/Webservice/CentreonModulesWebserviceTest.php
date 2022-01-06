@@ -86,7 +86,6 @@ class CentreonModulesWebserviceTest extends TestCase
 
     /**
      * @covers \CentreonModule\Application\Webservice\CentreonModulesWebservice::postGetBamModuleInfo
-     * @return void
      */
     public function testPostGetBamModuleInfoWithoutModule(): void
     {
@@ -119,7 +118,6 @@ class CentreonModulesWebserviceTest extends TestCase
 
     /**
      * @covers \CentreonModule\Application\Webservice\CentreonModulesWebservice::postGetBamModuleInfo
-     * @return void
      */
     public function testPostGetBamModuleInfoWithModule(): void
     {
