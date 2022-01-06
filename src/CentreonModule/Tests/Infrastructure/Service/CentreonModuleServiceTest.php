@@ -92,48 +92,48 @@ class CentreonModuleServiceTest extends TestCase
             $sources[$type]
                 ->method('getList')
                 ->will($this->returnCallback(function () use ($type) {
-                        return [$type];
+                    return [$type];
                 }))
             ;
             $sources[$type]
                 ->method('getDetail')
                 ->will($this->returnCallback(function () use ($type) {
-                        $entity = new Module();
-                        $entity->setType($type);
-                        $entity->setName($type);
-                        $entity->setKeywords('test,module,lorem');
-                        $entity->setInstalled(true);
-                        $entity->setUpdated(false);
+                    $entity = new Module();
+                    $entity->setType($type);
+                    $entity->setName($type);
+                    $entity->setKeywords('test,module,lorem');
+                    $entity->setInstalled(true);
+                    $entity->setUpdated(false);
 
-                        return $entity;
+                    return $entity;
                 }))
             ;
             $sources[$type]
                 ->method('install')
                 ->will($this->returnCallback(function ($id) use ($type) {
-                        $entity = new Module();
-                        $entity->setId($id);
-                        $entity->setType($type);
-                        $entity->setName($type);
-                        $entity->setKeywords('test,module,lorem');
-                        $entity->setInstalled(true);
-                        $entity->setUpdated(false);
+                    $entity = new Module();
+                    $entity->setId($id);
+                    $entity->setType($type);
+                    $entity->setName($type);
+                    $entity->setKeywords('test,module,lorem');
+                    $entity->setInstalled(true);
+                    $entity->setUpdated(false);
 
-                        return $entity;
+                    return $entity;
                 }))
             ;
             $sources[$type]
                 ->method('update')
                 ->will($this->returnCallback(function ($id) use ($type) {
-                        $entity = new Module();
-                        $entity->setId($id);
-                        $entity->setType($type);
-                        $entity->setName($type);
-                        $entity->setKeywords('test,module,lorem');
-                        $entity->setInstalled(true);
-                        $entity->setUpdated(false);
+                    $entity = new Module();
+                    $entity->setId($id);
+                    $entity->setType($type);
+                    $entity->setName($type);
+                    $entity->setKeywords('test,module,lorem');
+                    $entity->setInstalled(true);
+                    $entity->setUpdated(false);
 
-                        return $entity;
+                    return $entity;
                 }))
             ;
             $sources[$type]
@@ -150,9 +150,6 @@ class CentreonModuleServiceTest extends TestCase
         $this->setProtectedProperty($this->service, 'sources', $sources);
     }
 
-    /**
-     * @return void
-     */
     public function testGetList(): void
     {
         (function () {
@@ -177,9 +174,6 @@ class CentreonModuleServiceTest extends TestCase
         })();
     }
 
-    /**
-     * @return void
-     */
     public function testGetDetails(): void
     {
         (function () {
@@ -196,9 +190,6 @@ class CentreonModuleServiceTest extends TestCase
         })();
     }
 
-    /**
-     * @return void
-     */
     public function testInstall(): void
     {
         $result = $this->service->install(ModuleSourceTest::$moduleName, Source\ModuleSource::TYPE);
@@ -208,7 +199,6 @@ class CentreonModuleServiceTest extends TestCase
 
     /**
      * @covers \CentreonModule\Infrastructure\Service\CentreonModuleService::install
-     * @return void
      */
     public function testInstallMissingType(): void
     {
@@ -217,9 +207,6 @@ class CentreonModuleServiceTest extends TestCase
         $this->assertNull($result);
     }
 
-    /**
-     * @return void
-     */
     public function testUpdate(): void
     {
         $result = $this->service->update(ModuleSourceTest::$moduleName, Source\ModuleSource::TYPE);
@@ -229,7 +216,6 @@ class CentreonModuleServiceTest extends TestCase
 
     /**
      * @covers \CentreonModule\Infrastructure\Service\CentreonModuleService::update
-     * @return void
      */
     public function testUpdateMissingType(): void
     {
@@ -240,7 +226,6 @@ class CentreonModuleServiceTest extends TestCase
 
     /**
      * @throws \Exception
-     * @return void
      */
     public function testRemove(): void
     {
@@ -262,7 +247,6 @@ class CentreonModuleServiceTest extends TestCase
 
     /**
      * @covers \CentreonModule\Infrastructure\Service\CentreonModuleService::remove
-     * @return void
      */
     public function testRemoveMissingType(): void
     {
@@ -273,7 +257,6 @@ class CentreonModuleServiceTest extends TestCase
 
     /**
      * @covers \CentreonModule\Infrastructure\Service\CentreonModuleService::initSources
-     * @return void
      */
     public function testInitSources(): void
     {
@@ -301,9 +284,6 @@ class CentreonModuleServiceTest extends TestCase
         $this->assertInstanceOf(Source\WidgetSource::class, $sources[Source\WidgetSource::TYPE]);
     }
 
-    /**
-     * @return void
-     */
     public function testSortList(): void
     {
         $service = $this->createMock(CentreonModuleService::class);
@@ -318,52 +298,52 @@ class CentreonModuleServiceTest extends TestCase
         ];
         $list = [
             (function () {
-                    $entity = new Module();
-                    $entity->setName('B');
-                    $entity->setInstalled(true);
-                    $entity->setUpdated(true);
+                $entity = new Module();
+                $entity->setName('B');
+                $entity->setInstalled(true);
+                $entity->setUpdated(true);
 
-                    return $entity;
+                return $entity;
             })(),
             (function () {
-                    $entity = new Module();
-                    $entity->setName('A');
-                    $entity->setInstalled(true);
-                    $entity->setUpdated(true);
+                $entity = new Module();
+                $entity->setName('A');
+                $entity->setInstalled(true);
+                $entity->setUpdated(true);
 
-                    return $entity;
+                return $entity;
             })(),
             (function () {
-                    $entity = new Module();
-                    $entity->setName('B');
-                    $entity->setInstalled(true);
-                    $entity->setUpdated(false);
+                $entity = new Module();
+                $entity->setName('B');
+                $entity->setInstalled(true);
+                $entity->setUpdated(false);
 
-                    return $entity;
+                return $entity;
             })(),
             (function () {
-                    $entity = new Module();
-                    $entity->setName('C');
-                    $entity->setInstalled(true);
-                    $entity->setUpdated(false);
+                $entity = new Module();
+                $entity->setName('C');
+                $entity->setInstalled(true);
+                $entity->setUpdated(false);
 
-                    return $entity;
+                return $entity;
             })(),
             (function () {
-                    $entity = new Module();
-                    $entity->setName('D');
-                    $entity->setInstalled(false);
-                    $entity->setUpdated(false);
+                $entity = new Module();
+                $entity->setName('D');
+                $entity->setInstalled(false);
+                $entity->setUpdated(false);
 
-                    return $entity;
+                return $entity;
             })(),
             (function () {
-                    $entity = new Module();
-                    $entity->setName('F');
-                    $entity->setInstalled(false);
-                    $entity->setUpdated(false);
+                $entity = new Module();
+                $entity->setName('F');
+                $entity->setInstalled(false);
+                $entity->setUpdated(false);
 
-                    return $entity;
+                return $entity;
             })(),
         ];
         $list = $this->invokeMethod($service, 'sortList', [$list]);

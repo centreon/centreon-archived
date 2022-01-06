@@ -133,7 +133,7 @@ class ModuleSourceTest extends TestCase
         $container['configuration'] = $this->createMock(Configuration::class);
 
         // DB service
-        $container[\Centreon\ServiceProvider::CENTREON_DB_MANAGER] = new Mock\CentreonDBManagerService;
+        $container[\Centreon\ServiceProvider::CENTREON_DB_MANAGER] = new Mock\CentreonDBManagerService();
         foreach (static::$sqlQueryVsData as $query => $data) {
             $container[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]->addResultSet($query, $data);
         }
@@ -204,7 +204,6 @@ class ModuleSourceTest extends TestCase
 
     /**
      * @throws \Exception
-     * @return void
      */
     public function testRemove(): void
     {
@@ -220,7 +219,6 @@ class ModuleSourceTest extends TestCase
 
     /**
     * @throws \Exception
-    * @return void
     */
     public function testUpdate(): void
     {
@@ -234,9 +232,6 @@ class ModuleSourceTest extends TestCase
         $this->source->update(static::$moduleName);
     }
 
-    /**
-    * @return void
-    */
     public function testCreateEntityFromConfig(): void
     {
         $configFile = static::getConfFilePath();
@@ -266,11 +261,17 @@ class ModuleSourceTest extends TestCase
 //        //'php://filter/read=string.rot13/resource=' .
 //    }
 
+    /**
+     * @return string
+     */
     public static function getConfFilePath(): string
     {
         return 'vfs://modules/' . static::$moduleName . '/' . ModuleSource::CONFIG_FILE;
     }
 
+    /**
+     * @return string
+     */
     public static function buildConfContent(): string
     {
         $result = '<?php';

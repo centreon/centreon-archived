@@ -79,6 +79,9 @@ class ModuleSource extends SourceAbstract
         ;
     }
 
+    /**
+     * @param string $id
+     */
     public function remove(string $id): void
     {
         $recordId = $this->db
@@ -89,6 +92,9 @@ class ModuleSource extends SourceAbstract
         ($this->remover)($id, $recordId)->remove();
     }
 
+    /**
+     * @param string $id
+     */
     public function update(string $id): ?Module
     {
         $recordId = $this->db

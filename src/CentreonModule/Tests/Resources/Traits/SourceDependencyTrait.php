@@ -50,7 +50,6 @@ trait SourceDependencyTrait
 {
     /**
      * @param array<ServiceProvider::CENTREON_LEGACY_MODULE_LICENSE> $container
-     * @return void
      */
     public function setUpSourceDependency(&$container): void
     {

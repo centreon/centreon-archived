@@ -40,7 +40,6 @@ use CentreonModule\Infrastructure\Source\SourceDataInterface;
 
 class Module implements SourceDataInterface
 {
-
     /**
      * @var string
      */
@@ -97,7 +96,7 @@ class Module implements SourceDataInterface
     private $keywords;
 
     /**
-     * @var string|array<string,string|bool>
+     * @var array<string,string|bool>
      */
     private $license;
 
@@ -121,6 +120,9 @@ class Module implements SourceDataInterface
      */
     private $isUpdated = false;
 
+    /**
+     * @return string
+     */
     public function getId(): string
     {
         return $this->id;
@@ -128,13 +130,15 @@ class Module implements SourceDataInterface
 
     /**
      * @param string $id
-     * @return void
      */
     public function setId(string $id): void
     {
         $this->id = $id;
     }
 
+    /**
+     * @return string
+     */
     public function getType(): string
     {
         return $this->type;
@@ -142,13 +146,15 @@ class Module implements SourceDataInterface
 
     /**
      * @param string $type
-     * @return void
      */
     public function setType(string $type): void
     {
         $this->type = $type;
     }
 
+    /**
+     * @return string
+     */
     public function getName(): string
     {
         return $this->name;
@@ -156,13 +162,15 @@ class Module implements SourceDataInterface
 
     /**
      * @param string $name
-     * @return void
      */
     public function setName(string $name): void
     {
         $this->name = $name;
     }
 
+    /**
+     * @return string|null
+     */
     public function getDescription(): ?string
     {
         return $this->description;
@@ -170,7 +178,6 @@ class Module implements SourceDataInterface
 
     /**
      * @param string $description
-     * @return void
      */
     public function setDescription(string $description): void
     {
@@ -187,13 +194,15 @@ class Module implements SourceDataInterface
 
     /**
      * @param string $image
-     * @return void
      */
     public function addImage(string $image): void
     {
         $this->images[] = $image;
     }
 
+    /**
+     * @return string
+     */
     public function getAuthor(): string
     {
         return $this->author;
@@ -201,13 +210,15 @@ class Module implements SourceDataInterface
 
     /**
      * @param string $author
-     * @return void
      */
     public function setAuthor(string $author): void
     {
         $this->author = $author;
     }
 
+    /**
+     * @return string
+     */
     public function getVersion(): string
     {
         return $this->version;
@@ -215,13 +226,15 @@ class Module implements SourceDataInterface
 
     /**
      * @param string $version
-     * @return void
      */
     public function setVersion(string $version): void
     {
         $this->version = $version;
     }
 
+    /**
+     * @return string
+     */
     public function getVersionCurrent(): ?string
     {
         return $this->versionCurrent;
@@ -229,13 +242,15 @@ class Module implements SourceDataInterface
 
     /**
      * @param string $versionCurrent
-     * @return void
      */
     public function setVersionCurrent(string $versionCurrent): void
     {
         $this->versionCurrent = $versionCurrent;
     }
 
+    /**
+     * @return string
+     */
     public function getPath(): string
     {
         return $this->path;
@@ -243,13 +258,15 @@ class Module implements SourceDataInterface
 
     /**
      * @param string $path
-     * @return void
      */
     public function setPath(string $path): void
     {
         $this->path = $path;
     }
 
+    /**
+     * @return string
+     */
     public function getStability(): string
     {
         return $this->stability;
@@ -257,13 +274,15 @@ class Module implements SourceDataInterface
 
     /**
      * @param string $stability
-     * @return void
      */
     public function setStability(string $stability): void
     {
         $this->stability = $stability;
     }
 
+    /**
+     * @return string
+     */
     public function getKeywords(): string
     {
         return $this->keywords;
@@ -271,7 +290,6 @@ class Module implements SourceDataInterface
 
     /**
      * @param string $keywords
-     * @return void
      */
     public function setKeywords(string $keywords): void
     {
@@ -288,13 +306,15 @@ class Module implements SourceDataInterface
 
     /**
      * @param array<mixed>|null $license
-     * @return void
      */
     public function setLicense(array $license = null): void
     {
         $this->license = $license;
     }
 
+    /**
+     * @return string|null
+     */
     public function getLastUpdate(): ?string
     {
         return $this->lastUpdate;
@@ -302,13 +322,15 @@ class Module implements SourceDataInterface
 
     /**
      * @param string $lastUpdate
-     * @return void
      */
     public function setLastUpdate(string $lastUpdate): void
     {
         $this->lastUpdate = $lastUpdate;
     }
 
+    /**
+     * @return string|null
+     */
     public function getReleaseNote(): ?string
     {
         return $this->releaseNote;
@@ -316,13 +338,15 @@ class Module implements SourceDataInterface
 
     /**
      * @param string $releaseNote
-     * @return void
      */
     public function setReleaseNote(string $releaseNote): void
     {
         $this->releaseNote = $releaseNote;
     }
 
+    /**
+     * @return bool
+     */
     public function isInstalled(): bool
     {
         return $this->isInstalled;
@@ -330,13 +354,16 @@ class Module implements SourceDataInterface
 
     /**
      * @param bool $value
-     * @return void
+     * @return bool
      */
     public function setInstalled(bool $value): void
     {
         $this->isInstalled = $value;
     }
 
+    /**
+     * @return string
+     */
     public function isUpdated(): bool
     {
         return $this->isUpdated;
@@ -344,7 +371,7 @@ class Module implements SourceDataInterface
 
     /**
      * @param bool $value
-     * @return void
+     * @return bool
      */
     public function setUpdated(bool $value): void
     {

@@ -69,7 +69,7 @@ class ServiceProviderTest extends TestCase
     protected function setUp(): void
     {
         $this->provider = new ServiceProvider();
-        $this->container = new Container;
+        $this->container = new Container();
         $this->container['finder'] = $this->getMockBuilder(Finder::class)
             ->disableOriginalConstructor()
             ->getMock()
@@ -79,7 +79,7 @@ class ServiceProviderTest extends TestCase
 
         $this->container['configuration'] = $this->createMock(Configuration::class);
 
-        $this->container['realtime_db'] = $this->container['configuration_db'] = new Mock\CentreonDB;
+        $this->container['realtime_db'] = $this->container['configuration_db'] = new Mock\CentreonDB();
         $this->container['configuration_db']
             ->addResultSet("SELECT `name` AS `id`, `mod_release` AS `version` FROM `modules_informations`", [])
             ->addResultSet("SELECT `directory` AS `id`, `version` FROM `widget_models`", [])
@@ -99,7 +99,6 @@ class ServiceProviderTest extends TestCase
 
             /**
              * @param mixed $class
-             * @return void
              */
             public function add($class): void
             {
@@ -123,7 +122,6 @@ class ServiceProviderTest extends TestCase
 
     /**
      * @covers \CentreonModule\ServiceProvider::register
-     * @return void
      */
     public function testCheckServicesByList(): void
     {
@@ -154,7 +152,6 @@ class ServiceProviderTest extends TestCase
 
     /**
      * @covers \CentreonModule\ServiceProvider::order
-     * @return void
      */
     public function testOrder(): void
     {
