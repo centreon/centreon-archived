@@ -9,7 +9,7 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.success.main,
   },
   container: {
-    height: 65,
+    height: 70,
     overflow: 'hidden',
   },
   title: {

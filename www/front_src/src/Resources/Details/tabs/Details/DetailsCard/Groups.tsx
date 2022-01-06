@@ -5,7 +5,15 @@ import { equals, isNil, path, prop } from 'ramda';
 import { useUpdateAtom } from 'jotai/utils';
 import { useTranslation } from 'react-i18next';
 
-import { Grid, Chip, makeStyles, Tooltip, Link } from '@material-ui/core';
+import {
+  Grid,
+  Chip,
+  makeStyles,
+  Tooltip,
+  Link,
+  Typography,
+  useTheme,
+} from '@material-ui/core';
 import SettingsIcon from '@material-ui/icons/Settings';
 import IconFilterList from '@material-ui/icons/FilterList';
 
@@ -14,6 +22,7 @@ import { IconButton } from '@centreon/ui';
 import {
   labelActionNotPermitted,
   labelConfigure,
+  labelFilter,
 } from '../../../../translatedLabels';
 import { setCriteriaAndNewFilterDerivedAtom } from '../../../../Filter/filterAtoms';
 import { CriteriaNames } from '../../../../Filter/Criterias/models';
@@ -80,28 +89,39 @@ const GroupsOnHover = ({ details }: Props): JSX.Element => {
     : 'primary';
 
   return (
-    <Grid container spacing={1}>
+    <Grid item>
       {details?.groups?.map((group) => {
         return (
           <div className={classes.actions}>
             <Tooltip title={resourceConfigurationUriTitle}>
               <div className={classes.resourceNameConfigurationIcon}>
+                <Chip
+                  clickable
+                  color="primary"
+                  label={
+                    <Grid container spacing={1}>
+                      <Grid item>
+                        <SettingsIcon />
+                      </Grid>
+                      <Grid item>
+                        <SettingsIcon />
+                      </Grid>
+                    </Grid>
+                  }
+                  // icon={<SettingsIcon color={resourceConfigurationIconColor} />}
+                  size="small"
+                />
                 <Link
                   aria-label={`${t(labelConfigure)}_${details.name}`}
                   className={classes.resourceNameConfigurationLink}
                   href={resourceConfigurationUri}
-                >
-                  <SettingsIcon
-                    color={resourceConfigurationIconColor}
-                    fontSize="small"
-                  />
-                </Link>
+                />
               </div>
             </Tooltip>
             <IconButton
-              ariaLabel={t(labelConfigure)}
+              ariaLabel={t(labelFilter)}
               color="primary"
-              title={labelConfigure}
+              title={t(labelFilter)}
               onClick={(): void => filterByGroup(group)}
             >
               <IconFilterList fontSize="small" />
@@ -109,48 +129,67 @@ const GroupsOnHover = ({ details }: Props): JSX.Element => {
           </div>
         );
       })}
-      ;
     </Grid>
   );
 };
 
 const Groups = ({ details }: Props): JSX.Element => {
-  const [isHovered, setIsHovered] = React.useState<boolean>(false);
+  const theme = useTheme();
 
-  const setCriteriaAndNewFilter = useUpdateAtom(
-    setCriteriaAndNewFilterDerivedAtom,
-  );
-
-  const filterByGroup = (group: NamedEntity): void => {
-    setCriteriaAndNewFilter({
-      name: equals(details?.type, ResourceType.host)
-        ? CriteriaNames.hostGroups
-        : CriteriaNames.serviceGroups,
-      value: [group],
-    });
-  };
+  const [hoveredGroupId, setHoveredGroupId] = React.useState<number>();
 
   return (
-  <Grid container spacing={1}>
-      {isHovered ? (
-      <GroupsOnHover details={details} />
-      ) : (
-      {details.groups?.map((group) => {
+    <Grid container spacing={1}>
+      {details?.groups?.map((group) => {
         return (
-          <Grid item key={group.name}>
+          <Grid
+            item
+            key={group.name}
+            onMouseEnter={(): void => setHoveredGroupId(group.id)}
+            onMouseLeave={(): void => setHoveredGroupId(undefined)}
+          >
             <Chip
-              clickable
               color="primary"
-              label={group.name}
-              size="small"
-              onClick={(): void => filterByGroup(group)}
-              onMouseEnter={(): void => setIsHovered(true)}
-              onMouseLeave={(): void => setIsHovered(false)}
+              label={
+                <div
+                  style={{
+                    alignItems: 'center',
+                    display: 'grid',
+                    gridTemplateColumns: 'auto',
+                    justifyItems: 'center',
+                    padding: 0,
+                  }}
+                >
+                  <Typography
+                    style={{
+                      // color: isHovered ? 'transparent' : 'unset',
+                      gridArea: '1/1',
+                    }}
+                    variant="body2"
+                  >
+                    {group.name}
+                  </Typography>
+
+                  {hoveredGroupId === group.id && (
+                    <div
+                      style={{
+                        backgroundColor: theme.palette.primary.main,
+                        display: 'flex',
+                        gap: theme.spacing(0.5),
+                        gridArea: '1/1',
+                        justifySelf: 'flex-end',
+                      }}
+                    >
+                      <IconFilterList fontSize="small" />
+                      <SettingsIcon fontSize="small" />
+                    </div>
+                  )}
+                </div>
+              }
             />
           </Grid>
         );
       })}
-      )}
     </Grid>
   );
 };
