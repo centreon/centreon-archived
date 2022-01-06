@@ -25,6 +25,7 @@ namespace Core\Application\Security\UseCase\LogoutSession;
 use Core\Application\Security\Repository\WriteSessionTokenRepositoryInterface;
 use Core\Application\Security\Repository\WriteSessionRepositoryInterface;
 use Core\Application\Security\Service\TokenServiceInterface;
+use Core\Application\Common\UseCase\NoContentResponse;
 use Centreon\Domain\Log\LoggerTrait;
 
 class LogoutSession
@@ -48,12 +49,12 @@ class LogoutSession
      */
     public function __invoke(
         LogoutSessionRequest $request,
-        LogoutPresenterInterface $presenter,
+        LogoutSessionPresenterInterface $presenter,
     ): void{
         $this->debug('Processing session logout...');
         $this->tokenService->deleteExpiredSecurityTokens();
         $this->writeSessionTokenRepository->deleteSession($request->token);
         $this->writeSessionRepository->invalidate();
-        $presenter->setResponseStatus(new LogoutResponse());
+        $presenter->setResponseStatus(new NoContentResponse());
     }
 }
