@@ -23,10 +23,10 @@ declare(strict_types=1);
 
 namespace Core\Application\Security\UseCase\UpdateSecurityPolicy;
 
+use Core\Application\Common\UseCase\NoContentResponse;
 use Core\Domain\Security\Model\SecurityPolicyFactory;
 use Core\Application\Security\Repository\WriteSecurityPolicyRepositoryInterface;
 use Core\Application\Security\UseCase\UpdateSecurityPolicy\UpdateSecurityPolicyRequest;
-use Core\Application\Security\UseCase\UpdateSecurityPolicy\UpdateSecurityPolicyNoContentResponse;
 
 class UpdateSecurityPolicy
 {
@@ -46,6 +46,6 @@ class UpdateSecurityPolicy
         UpdateSecurityPolicyRequest $request
     ): void {
         $this->repository->updateSecurityPolicy(SecurityPolicyFactory::createFromRequest($request));
-        $presenter->setResponseStatus(new UpdateSecurityPolicyNoContentResponse());
+        $presenter->setResponseStatus(new NoContentResponse());
     }
 }
