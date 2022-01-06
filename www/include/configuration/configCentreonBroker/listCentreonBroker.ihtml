@@ -42,7 +42,6 @@
             <td class="ListColHeaderLeft">{$headerMenu_desc}</td>
             <td class="ListColHeaderCenter">{$headerMenu_inputs}</td>
             <td class="ListColHeaderCenter">{$headerMenu_outputs}</td>
-            <td class="ListColHeaderCenter">{$headerMenu_loggers}</td>
             <td class="ListColHeaderCenter">{$headerMenu_status}</td>
             <td class="ListColHeaderRight">{$headerMenu_options}</td>
         </tr>
@@ -53,7 +52,6 @@
             <td class="ListColLeft"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_desc}</a></td>
             <td class="ListColCenter">{$elemArr[elem].RowMenu_inputs}</td>
             <td class="ListColCenter">{$elemArr[elem].RowMenu_outputs}</td>
-            <td class="ListColCenter">{$elemArr[elem].RowMenu_loggers}</td>
             <td class="ListColCenter"><span class="badge {$elemArr[elem].RowMenu_badge}">{$elemArr[elem].RowMenu_status}</span></td>
             <td class="ListColRight">{if $mode_access == 'w' }{$elemArr[elem].RowMenu_options}{else}&nbsp;{/if}</td>
         </tr>
@@ -76,7 +74,7 @@
         </tr>
     </table>
 <input type='hidden' name='o' id='o' value='42'>
-<input type='hidden' id='limit' name='limit' value='{$limit}'>  
+<input type='hidden' id='limit' name='limit' value='{$limit}'>
 {$form.hidden}
 </form>
 {literal}

@@ -47,6 +47,9 @@ try {
 
     $errorMessage = 'Unable to delete logger entry in cb_tag';
     $statement = $pearDB->query("DELETE FROM cb_tag WHERE tagname = 'logger'");
+
+    $errorMessage = 'Unable to delete old logger configuration';
+    $statement = $pearDB->query("DELETE FROM cfg_centreonbroker_info WHERE config_group = 'logger'");
 } catch (\Exception $e) {
     $centreonLog->insertLog(
         4,
