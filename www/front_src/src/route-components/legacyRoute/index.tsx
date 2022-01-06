@@ -37,6 +37,10 @@ const LegacyRoute = (): JSX.Element => {
             return;
           }
 
+          if (href.match(/^https?:\/\//)) {
+            return;
+          }
+
           navigate(`/${replace('./', '', href)}`, { replace: true });
         },
         { once: true },
