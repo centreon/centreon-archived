@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import classnames from 'classnames';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { isNil, replace } from 'ramda';
+import { equals, isNil, replace } from 'ramda';
 
 import { PageSkeleton } from '@centreon/ui';
 
@@ -30,6 +30,10 @@ const LegacyRoute = (): JSX.Element => {
           const href = (e.target as HTMLLinkElement).getAttribute('href');
 
           if (isNil(href)) {
+            return;
+          }
+
+          if (equals(href, '#')) {
             return;
           }
 
