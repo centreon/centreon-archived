@@ -24,7 +24,11 @@ use CentreonRemote\Infrastructure\Export\ExportParserInterface;
 
 class ExportParserJson implements ExportParserInterface
 {
-
+    /**
+     * @param string $filename
+     * @param callable|null $macros
+     * @return array<mixed>
+     */
     public function parse(string $filename, callable $macros = null): array
     {
         if (!file_exists($filename)) {
@@ -43,6 +47,10 @@ class ExportParserJson implements ExportParserInterface
         return $value;
     }
 
+    /**
+     * @param string[] $input
+     * @param string $filename
+     */
     public function dump(array $input, string $filename): void
     {
         if (!$input) {
