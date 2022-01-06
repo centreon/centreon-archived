@@ -13,7 +13,7 @@ class CfgCentreonBroker
      *
      * @param int $serverID the poller id
      * @param string $pollerName the poller name
-     * @return array the configuration template
+     * @return array<string, array<string, int|string>> the configuration template
      */
     public static function getConfiguration(int $serverID, string $pollerName): array
     {

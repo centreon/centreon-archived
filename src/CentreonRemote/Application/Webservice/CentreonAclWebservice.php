@@ -75,7 +75,7 @@ class CentreonAclWebservice extends CentreonWebServiceAbstract
      *   )
      * )
      *
-     * @return []
+     * @return array<int,string|null>
      */
     public function getGetCurrentAcl()
     {
