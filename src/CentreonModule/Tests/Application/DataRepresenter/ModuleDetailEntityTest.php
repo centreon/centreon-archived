@@ -42,7 +42,6 @@ use CentreonModule\Application\DataRepresenter\ModuleDetailEntity;
 
 class ModuleDetailEntityTest extends TestCase
 {
-
     public function testJsonSerialize(): void
     {
         $data = [

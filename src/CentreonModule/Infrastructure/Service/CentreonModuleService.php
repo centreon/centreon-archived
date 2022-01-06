@@ -42,7 +42,6 @@ use CentreonModule\Infrastructure\Entity\Module;
 
 class CentreonModuleService
 {
-
     /**
      * @var array<string,mixed>
      */

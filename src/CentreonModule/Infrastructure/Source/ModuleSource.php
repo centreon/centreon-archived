@@ -44,7 +44,6 @@ use CentreonLegacy\ServiceProvider as ServiceProviderLegacy;
 
 class ModuleSource extends SourceAbstract
 {
-
     public const TYPE = 'module';
     public const PATH = 'www/modules/';
     public const PATH_WEB = 'modules/';

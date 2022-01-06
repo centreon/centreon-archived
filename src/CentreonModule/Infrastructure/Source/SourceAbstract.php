@@ -44,7 +44,6 @@ use CentreonLegacy\ServiceProvider as ServiceProviderLegacy;
 
 abstract class SourceAbstract implements SourceInterface
 {
-
     /**
      * @var \Centreon\Infrastructure\Service\CentreonDBManagerService
      */

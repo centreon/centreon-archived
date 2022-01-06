@@ -40,7 +40,6 @@ use CentreonModule\Infrastructure\Entity\Module;
 
 interface SourceInterface
 {
-
     public function initInfo(): void;
 
     /**

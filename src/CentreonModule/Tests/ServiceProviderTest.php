@@ -91,7 +91,6 @@ class ServiceProviderTest extends TestCase
         ]);
         $this->container[\Centreon\ServiceProvider::CENTREON_DB_MANAGER] = new CentreonDBManagerService($locator);
         $this->container[\Centreon\ServiceProvider::CENTREON_WEBSERVICE] = new class {
-
             /**
              * @var array<mixed>
              */
