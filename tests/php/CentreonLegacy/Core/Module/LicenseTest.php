@@ -30,7 +30,6 @@ use CentreonLegacy\Core\Module\Healthcheck;
  */
 class LicenseTest extends TestCase
 {
-
     public function setUp(): void
     {
         $this->container = new ServiceContainer();

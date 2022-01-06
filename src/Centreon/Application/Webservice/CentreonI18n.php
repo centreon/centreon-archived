@@ -46,7 +46,6 @@ use Pimple\Psr11\ServiceLocator;
 class CentreonI18n extends Webservice\WebServiceAbstract implements
     Webservice\WebserviceAutorizePublicInterface
 {
-
     /**
      * Name of web service object
      *

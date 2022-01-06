@@ -48,13 +48,27 @@ use Centreon\Test\Traits\TestCaseExtensionTrait;
 
 class CentreonDBAdapterTest extends TestCase
 {
-
     use TestCaseExtensionTrait;
+
+    /**
+     * @var CentreonDB
+     */
+    private $db;
+
+    /**
+     * @var CentreonDBManagerService
+     */
+    private $manager;
+
+    /**
+     * @var CentreonDBAdapter
+     */
+    private $dbAdapter;
 
     public function setUp(): void
     {
-        $this->db = new CentreonDB;
-        $this->manager = new CentreonDBManagerService;
+        $this->db = new CentreonDB();
+        $this->manager = new CentreonDBManagerService();
         $this->dbAdapter = new CentreonDBAdapter($this->db, $this->manager);
     }
 
@@ -81,9 +95,9 @@ class CentreonDBAdapterTest extends TestCase
         );
     }
 
-    public function testQuery()
+    public function testQuery(): void
     {
-        $checkPoint = new CheckPoint;
+        $checkPoint = new CheckPoint();
         $checkPoint->add('select');
 
         $id = 1;
@@ -119,7 +133,7 @@ class CentreonDBAdapterTest extends TestCase
         $checkPoint->assert($this);
     }
 
-    public function testQueryWithPrepareException()
+    public function testQueryWithPrepareException(): void
     {
         $db = $this->createMock(CentreonDB::class);
         $db->method('prepare')
@@ -132,7 +146,7 @@ class CentreonDBAdapterTest extends TestCase
             ->query('SELECT 1');
     }
 
-    public function testQueryWithExceptionInExecution()
+    public function testQueryWithExceptionInExecution(): void
     {
         $db = $this->createMock(CentreonDB::class);
         $db
@@ -153,7 +167,7 @@ class CentreonDBAdapterTest extends TestCase
             ->query('SELECT 1');
     }
 
-    public function testQueryWithoutSelectQuery()
+    public function testQueryWithoutSelectQuery(): void
     {
         $errorInfo = 'test info for DB error';
 
@@ -179,9 +193,9 @@ class CentreonDBAdapterTest extends TestCase
         $this->assertEquals($errorInfo, $dbAdapter->errorInfo());
     }
 
-    public function testInsert()
+    public function testInsert(): void
     {
-        $checkPoint = new CheckPoint;
+        $checkPoint = new CheckPoint();
         $checkPoint->add('insert');
 
         $name = 'test name';
@@ -208,7 +222,7 @@ class CentreonDBAdapterTest extends TestCase
         $checkPoint->assert($this);
     }
 
-    public function testInsertWithoutFields()
+    public function testInsertWithoutFields(): void
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage("The argument `fields` can't be empty");
@@ -217,7 +231,7 @@ class CentreonDBAdapterTest extends TestCase
             ->insert('some_table', []);
     }
 
-    public function testInsertWithExceptionInExecution()
+    public function testInsertWithExceptionInExecution(): void
     {
         $db = $this->createMock(CentreonDB::class);
         $db
@@ -240,9 +254,9 @@ class CentreonDBAdapterTest extends TestCase
             ]);
     }
 
-    public function testUpdate()
+    public function testUpdate(): void
     {
-        $checkPoint = new CheckPoint;
+        $checkPoint = new CheckPoint();
         $checkPoint->add('update');
 
         $id = 1;
@@ -274,7 +288,7 @@ class CentreonDBAdapterTest extends TestCase
         $checkPoint->assert($this);
     }
 
-    public function testUpdateWithExceptionInExecution()
+    public function testUpdateWithExceptionInExecution(): void
     {
         $id = 1;
 
@@ -299,7 +313,7 @@ class CentreonDBAdapterTest extends TestCase
             ], $id);
     }
 
-    public function testFails()
+    public function testFails(): void
     {
         $dbAdapter = new CentreonDBAdapter($this->db, $this->manager);
         $this->setProtectedProperty($dbAdapter, 'error', true);
@@ -308,7 +322,7 @@ class CentreonDBAdapterTest extends TestCase
         $this->assertFalse($dbAdapter->passes());
     }
 
-    public function testErrorInfo()
+    public function testErrorInfo(): void
     {
         $msg = 'test msg';
         $dbAdapter = new CentreonDBAdapter($this->db, $this->manager);
@@ -317,9 +331,9 @@ class CentreonDBAdapterTest extends TestCase
         $this->assertEquals($msg, $dbAdapter->errorInfo());
     }
 
-    public function testTransaction()
+    public function testTransaction(): void
     {
-        $checkPoint = new CheckPoint;
+        $checkPoint = new CheckPoint();
         $checkPoint->add('beginTransaction');
         $checkPoint->add('commit');
         $checkPoint->add('rollBack');

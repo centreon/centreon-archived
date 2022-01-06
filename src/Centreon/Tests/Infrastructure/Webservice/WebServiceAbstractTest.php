@@ -41,6 +41,10 @@ use Centreon\Infrastructure\Webservice\WebServiceAbstract;
 
 class WebServiceAbstractTest extends TestCase
 {
+    /**
+     * @var WebServiceAbstract|\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $webservice;
 
     public function setUp(): void
     {
