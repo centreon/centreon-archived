@@ -59,7 +59,7 @@ class Logout
      */
     public function execute(LogoutRequest $request): void
     {
-        $this->debug('Processing api logout...');
+        $this->info('Processing api logout...');
         $this->authenticationService->deleteExpiredSecurityTokens();
         $this->authenticationRepository->deleteSecurityToken($request->getToken());
     }

@@ -20,14 +20,12 @@
  */
 declare(strict_types=1);
 
-namespace Core\Application\Security\UseCase\LogoutSession;
+namespace Core\Application\Security\Repository;
 
-class LogoutSessionRequest
+interface WriteTokenRepositoryInterface
 {
     /**
-     * @param string $token
+     * Delete all expired tokens registered.
      */
-    public function __construct(public string $token)
-    {
-    }
+    public function deleteExpiredSecurityTokens(): void;
 }

@@ -24,7 +24,8 @@ namespace Core\Application\Security\UseCase\LogoutSession;
 
 use Core\Application\Security\Repository\WriteSessionTokenRepositoryInterface;
 use Core\Application\Security\Repository\WriteSessionRepositoryInterface;
-use Core\Application\Security\Service\TokenServiceInterface;
+use Core\Application\Security\Repository\WriteTokenRepositoryInterface;
+use Core\Application\Common\UseCase\ErrorResponse;
 use Core\Application\Common\UseCase\NoContentResponse;
 use Centreon\Domain\Log\LoggerTrait;
 
@@ -35,26 +36,35 @@ class LogoutSession
     /**
      * @param WriteSessionTokenRepositoryInterface $writeSessionTokenRepository
      * @param WriteSessionRepositoryInterface $writeSessionRepository
-     * @param TokenServiceInterface $tokenService
+     * @param WriteTokenRepositoryInterface $writeTokenRepository
      */
     public function __construct(
         private WriteSessionTokenRepositoryInterface $writeSessionTokenRepository,
         private WriteSessionRepositoryInterface $writeSessionRepository,
-        private TokenServiceInterface $tokenService,
+        private WriteTokenRepositoryInterface $writeTokenRepository,
     ) {
     }
 
     /**
      * @param LogoutSessionRequest $request
+     * @param LogoutSessionPresenterInterface $presenter
      */
     public function __invoke(
-        LogoutSessionRequest $request,
+        ?string $token,
         LogoutSessionPresenterInterface $presenter,
-    ): void{
-        $this->debug('Processing session logout...');
-        $this->tokenService->deleteExpiredSecurityTokens();
-        $this->writeSessionTokenRepository->deleteSession($request->token);
+    ): void {
+        $this->info('Processing session logout...');
+
+        if ($token === null) {
+            $this->debug('Try to logout without token');
+            $presenter->setResponseStatus(new ErrorResponse(_('No session token provided.')));
+            return;
+        }
+
+        $this->writeTokenRepository->deleteExpiredSecurityTokens();
+        $this->writeSessionTokenRepository->deleteSession($token);
         $this->writeSessionRepository->invalidate();
+
         $presenter->setResponseStatus(new NoContentResponse());
     }
 }

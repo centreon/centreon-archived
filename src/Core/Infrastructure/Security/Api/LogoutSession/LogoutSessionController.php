@@ -22,35 +22,26 @@ declare(strict_types=1);
 
 namespace Core\Infrastructure\Security\Api\LogoutSession;
 
-use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Centreon\Application\Controller\AbstractController;
 use Core\Application\Security\UseCase\LogoutSession\LogoutSession;
-use Core\Application\Security\UseCase\LogoutSession\LogoutSessionRequest;
+use Core\Application\Security\UseCase\LogoutSession\LogoutSessionPresenterInterface;
 
 class LogoutSessionController extends AbstractController
 {
-    private const INVALID_CREDENTIALS_MESSAGE = 'Invalid credentials';
-
     /**
      * @param LogoutSession $useCase
      * @param Request $request
-     * @return View
+     * @param LogoutSessionPresenterInterface $presenter
+     * @return object
      */
-    public function __invoke(LogoutSession $useCase, Request $request): View
-    {
-        $token = $request->cookies->get('PHPSESSID');
-        if (!isset($token)) {
-            return $this->view([
-                "code" => Response::HTTP_UNAUTHORIZED,
-                "message" => _(self::INVALID_CREDENTIALS_MESSAGE)
-            ], Response::HTTP_UNAUTHORIZED);
-        }
+    public function __invoke(
+        LogoutSession $useCase,
+        Request $request,
+        LogoutSessionPresenterInterface $presenter,
+    ): object {
+        $useCase($request->cookies->get('PHPSESSID'), $presenter);
 
-        $request = new LogoutSessionRequest($token);
-        $useCase($request);
-
-        return $this->view(['message' => _('Successful logout')]); // should we create a presenter with static content ?
+        return $presenter->show();
     }
 }
