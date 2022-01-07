@@ -5,7 +5,7 @@ import { SecurityPolicy } from './models';
 import { oneHour, sevenDays, twelveMonths } from './timestamps';
 import {
   labelChooseAValueBetween1and10,
-  labelChooseADurationBetween1HourAnd12Months,
+  labelChooseADurationBetween7DaysAnd12Months,
   labelChooseADurationBetween1HourAnd1Week,
   labelMaximum128Characters,
   labelMinimum8Characters,
@@ -37,8 +37,8 @@ const useValidationSchema = (): Yup.SchemaOf<SecurityPolicy> => {
     hasSpecialCharacter: Yup.boolean().defined(),
     hasUpperCase: Yup.boolean().defined(),
     passwordExpiration: Yup.number()
-      .min(sevenDays, t(labelChooseADurationBetween1HourAnd12Months))
-      .max(twelveMonths, t(labelChooseADurationBetween1HourAnd12Months))
+      .min(sevenDays, t(labelChooseADurationBetween7DaysAnd12Months))
+      .max(twelveMonths, t(labelChooseADurationBetween7DaysAnd12Months))
       .nullable()
       .defined(),
     passwordMinLength: Yup.number()

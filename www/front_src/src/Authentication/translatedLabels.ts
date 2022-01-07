@@ -21,8 +21,8 @@ export const labelStrong = 'Strong';
 export const labelUnknown = 'Unknown';
 export const labelPasswordExpirationPolicy = 'Password expiration policy';
 export const labelPasswordExpiration = 'Password expiration';
-export const labelChooseADurationBetween1HourAnd12Months =
-  'Choose a duration between 1 hour and 12 months';
+export const labelChooseADurationBetween7DaysAnd12Months =
+  'Choose a duration between 7 days and 12 months';
 export const labelMonth = 'Month';
 export const labelMonths = 'Months';
 export const labelDay = 'Day';

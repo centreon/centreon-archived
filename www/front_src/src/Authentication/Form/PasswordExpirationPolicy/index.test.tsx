@@ -10,7 +10,7 @@ import useValidationSchema from '../../useValidationSchema';
 import { defaultSecurityPolicy } from '../defaults';
 import {
   labelCanReuseLast3Passwords,
-  labelChooseADurationBetween1HourAnd12Months,
+  labelChooseADurationBetween7DaysAnd12Months,
   labelChooseADurationBetween1HourAnd1Week,
   labelDay,
   labelDays,
@@ -101,7 +101,7 @@ describe('Password expiration policy', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText(labelChooseADurationBetween1HourAnd12Months),
+        screen.getByText(labelChooseADurationBetween7DaysAnd12Months),
       ).toBeInTheDocument();
     });
   });
@@ -127,7 +127,7 @@ describe('Password expiration policy', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText(labelChooseADurationBetween1HourAnd12Months),
+        screen.getByText(labelChooseADurationBetween7DaysAnd12Months),
       ).toBeInTheDocument();
     });
   });
@@ -148,7 +148,7 @@ describe('Password expiration policy', () => {
 
     await waitFor(() => {
       expect(
-        screen.queryByText(labelChooseADurationBetween1HourAnd12Months),
+        screen.queryByText(labelChooseADurationBetween7DaysAnd12Months),
       ).not.toBeInTheDocument();
     });
   });
