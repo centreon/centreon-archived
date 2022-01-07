@@ -7,7 +7,10 @@ import { render, RenderResult, screen, waitFor } from '@centreon/ui';
 
 import { SecurityPolicy } from '../../models';
 import useValidationSchema from '../../useValidationSchema';
-import { defaultSecurityPolicy } from '../defaults';
+import {
+  defaultSecurityPolicy,
+  securityPolicyWithInvalidBlockingDuration,
+} from '../defaults';
 import {
   labelBlockingDurationMustBeLessThanOrEqualTo7Days,
   labelBlockingTimeBeforeNewConnectionAttempt,
@@ -135,26 +138,12 @@ describe('Password Blocking Policy', () => {
     });
   });
 
-  it('displays an error message when the time blocking duration is 7 days and 1 second', async () => {
-    renderPasswordBlockingPolicy();
+  it('displays an error message when the time blocking duration is 7 days and 1 hour', async () => {
+    renderPasswordBlockingPolicy(securityPolicyWithInvalidBlockingDuration);
 
     await waitFor(() => {
       expect(screen.getByText(labelPasswordBlockingPolicy)).toBeInTheDocument();
     });
-
-    userEvent.click(
-      screen.getByLabelText(
-        `${labelBlockingTimeBeforeNewConnectionAttempt} ${labelDay}`,
-      ),
-    );
-    userEvent.click(screen.getByText('7'));
-
-    userEvent.click(
-      screen.getByLabelText(
-        `${labelBlockingTimeBeforeNewConnectionAttempt} ${labelMinutes}`,
-      ),
-    );
-    userEvent.click(screen.getAllByText('1')[1]);
 
     await waitFor(() => {
       expect(

@@ -76,3 +76,16 @@ export const securityPolicyWithInvalidDelayBeforeNewPassword: SecurityPolicy = {
   passwordExpiration: sevenDays,
   passwordMinLength: 12,
 };
+
+export const securityPolicyWithInvalidBlockingDuration: SecurityPolicy = {
+  attempts: 5,
+  blockingDuration: sevenDays + oneHour,
+  canReusePasswords: false,
+  delayBeforeNewPassword: oneHour,
+  hasLowerCase: true,
+  hasNumber: true,
+  hasSpecialCharacter: true,
+  hasUpperCase: true,
+  passwordExpiration: sevenDays,
+  passwordMinLength: 12,
+};
