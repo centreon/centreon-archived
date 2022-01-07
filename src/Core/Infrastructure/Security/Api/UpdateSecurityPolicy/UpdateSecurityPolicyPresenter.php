@@ -23,56 +23,15 @@ declare(strict_types=1);
 
 namespace Core\Infrastructure\Security\Api\UpdateSecurityPolicy;
 
-use Symfony\Component\HttpFoundation\Response;
-use Core\Application\Common\UseCase\ResponseStatusInterface;
-use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
+use Core\Application\Common\UseCase\AbstractPresenter;
 use Core\Application\Security\UseCase\UpdateSecurityPolicy\UpdateSecurityPolicyPresenterInterface;
 
-class UpdateSecurityPolicyPresenter implements UpdateSecurityPolicyPresenterInterface
+class UpdateSecurityPolicyPresenter extends AbstractPresenter implements UpdateSecurityPolicyPresenterInterface
 {
-    /**
-     * @var ResponseStatusInterface|null
-     */
-    private $responseStatus;
-
-    /**
-     * @param PresenterFormatterInterface $presenterFormatter
-     */
-    public function __construct(private PresenterFormatterInterface $presenterFormatter)
-    {
-    }
-
     /**
      * @inheritDoc
      */
     public function present(): void
     {
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function show(): Response
-    {
-        if ($this->getResponseStatus() !== null) {
-            $this->presenterFormatter->present($this->getResponseStatus());
-        }
-        return $this->presenterFormatter->show();
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function setResponseStatus(?ResponseStatusInterface $responseStatus): void
-    {
-        $this->responseStatus = $responseStatus;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getResponseStatus(): ?ResponseStatusInterface
-    {
-        return $this->responseStatus;
     }
 }
