@@ -24,7 +24,9 @@ declare(strict_types=1);
 namespace Core\Infrastructure\Common\Presenter;
 
 use Centreon\Domain\Log\LoggerTrait;
+use Core\Application\Common\UseCase\CreatedResponse;
 use Core\Application\Common\UseCase\ErrorResponse;
+use Core\Application\Common\UseCase\NoContentResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Core\Application\Common\UseCase\NotFoundResponse;
 use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
@@ -51,25 +53,37 @@ class JsonPresenter implements PresenterFormatterInterface
      */
     public function show(): JsonResponse
     {
-        if (is_subclass_of($this->data, NotFoundResponse::class, false)) {
-            $this->debug('Data not found. Generating a not found response');
-            return new JsonResponse(
-                [
-                    'code' => JsonResponse::HTTP_NOT_FOUND,
-                    'message' => $this->data->getMessage()
-                ],
-                JsonResponse::HTTP_NOT_FOUND
-            );
-        } elseif (is_subclass_of($this->data, ErrorResponse::class, false)) {
-            $this->debug('Data error. Generating an error response');
-            return new JsonResponse(
-                [
-                    'code' => JsonResponse::HTTP_INTERNAL_SERVER_ERROR,
-                    'message' => $this->data->getMessage()
-                ],
-                JsonResponse::HTTP_INTERNAL_SERVER_ERROR
-            );
+        switch (true) {
+            case is_a($this->data, NotFoundResponse::class, false):
+                $this->debug('Data not found. Generating a not found response');
+                return new JsonResponse(
+                    [
+                        'code' => JsonResponse::HTTP_NOT_FOUND,
+                        'message' => $this->data->getMessage()
+                    ],
+                    JsonResponse::HTTP_NOT_FOUND
+                );
+            case is_a($this->data, ErrorResponse::class, false):
+                $this->debug('Data error. Generating an error response');
+                return new JsonResponse(
+                    [
+                        'code' => JsonResponse::HTTP_INTERNAL_SERVER_ERROR,
+                        'message' => $this->data->getMessage()
+                    ],
+                    JsonResponse::HTTP_INTERNAL_SERVER_ERROR
+                );
+            case is_a($this->data, CreatedResponse::class, false):
+                return new JsonResponse(
+                    null,
+                    JsonResponse::HTTP_CREATED
+                );
+            case is_a($this->data, NoContentResponse::class, false):
+                return new JsonResponse(
+                    null,
+                    JsonResponse::HTTP_NO_CONTENT
+                );
+            default:
+                return new JsonResponse($this->data, JsonResponse::HTTP_OK);
         }
-        return new JsonResponse($this->data, JsonResponse::HTTP_OK);
     }
 }
