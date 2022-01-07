@@ -31,14 +31,16 @@ use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
 abstract class AbstractPresenter implements PresenterInterface
 {
     /**
-     * @var PresenterFormatterInterface
-     */
-    protected $presenterFormatter;
-
-    /**
      * @var ResponseStatusInterface|null
      */
     protected $responseStatus;
+
+    /**
+     * @param PresenterFormatterInterface $presenterFormatter
+     */
+    public function __construct(protected PresenterFormatterInterface $presenterFormatter)
+    {
+    }
 
     /**
      * @inheritDoc
