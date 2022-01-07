@@ -92,9 +92,11 @@ const Groups = ({ details }: Props): JSX.Element => {
                   style={{
                     alignItems: 'center',
                     display: 'grid',
-                    gridTemplateColumns: 'auto',
                     justifyItems: 'center',
-                    padding: 0,
+                    maxWidth: theme.spacing(12),
+                    minWidth: theme.spacing(8),
+                    overflow: 'hidden',
+                    padding: 1,
                   }}
                 >
                   <Typography
@@ -102,6 +104,7 @@ const Groups = ({ details }: Props): JSX.Element => {
                       color:
                         hoveredGroupId === group.id ? 'transparent' : 'unset',
                       gridArea: '1/1',
+                      overflow: 'hidden',
                     }}
                     variant="body2"
                   >
@@ -113,7 +116,6 @@ const Groups = ({ details }: Props): JSX.Element => {
                       style={{
                         backgroundColor: theme.palette.primary.main,
                         display: 'flex',
-                        gap: theme.spacing(0.5),
                         gridArea: '1/1',
                         justifySelf: 'center',
                       }}
