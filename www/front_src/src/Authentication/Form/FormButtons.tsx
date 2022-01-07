@@ -47,7 +47,6 @@ const FormButtons = (): JSX.Element => {
         setTimeout(() => {
           setSubmitted(false);
         }, 700);
-        resetForm(values);
       })
       .catch(() => undefined);
   };
