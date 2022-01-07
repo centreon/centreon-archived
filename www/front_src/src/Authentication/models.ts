@@ -27,3 +27,16 @@ export interface SecurityPolicyAPI {
 }
 
 export type Unit = DurationUnitType;
+
+export interface UnitValueLimit {
+  max: number;
+  min: number;
+}
+
+export type PartialUnitValueLimit = Partial<UnitValueLimit>;
+
+export interface TimeInputConfiguration {
+  maxValue?: number;
+  minValue?: number;
+  unit: Unit;
+}

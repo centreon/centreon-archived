@@ -4,12 +4,19 @@ import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
 import { and, equals, gt, path, subtract } from 'ramda';
 
-import { Typography } from '@mui/material';
+import { SelectChangeEvent, Typography } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 
-import { TextField, useMemoComponent } from '@centreon/ui';
+import { SelectField, useMemoComponent } from '@centreon/ui';
 
 import { Unit } from '../models';
+
+import {
+  getDaysOptions,
+  getHoursOptions,
+  getMinutesOptions,
+  getMonthsOptions,
+} from './options';
 
 const weeksUnit = 'weeks';
 
@@ -17,6 +24,13 @@ const normalizeValue = ({ unit, value, functionGetDurationValue }): number =>
   equals(unit, weeksUnit)
     ? dayjs.duration(value)[functionGetDurationValue]('days') / 7
     : dayjs.duration(value)[functionGetDurationValue](unit);
+
+const getTimeOptions = {
+  days: getDaysOptions,
+  hours: getHoursOptions,
+  minutes: getMinutesOptions,
+  months: getMonthsOptions,
+};
 
 interface Labels {
   plural: string;
@@ -27,6 +41,8 @@ export interface TimeInputProps {
   getAbsoluteValue?: boolean;
   inputLabel: string;
   labels: Labels;
+  maxValue?: number;
+  minValue?: number;
   name: string;
   onChange: (value: number) => void;
   required?: boolean;
@@ -56,6 +72,8 @@ const TimeInput = ({
   required = false,
   getAbsoluteValue = false,
   inputLabel,
+  maxValue,
+  minValue,
 }: TimeInputProps): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
@@ -63,7 +81,7 @@ const TimeInput = ({
   const functionGetDurationValue = getAbsoluteValue ? 'as' : 'get';
 
   const changeInput = React.useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>): void => {
+    (event: SelectChangeEvent<unknown>): void => {
       const value = parseInt(path(['target', 'value'], event) as string, 10);
 
       const currentDuration = dayjs.duration(timeValue || 0);
@@ -126,16 +144,14 @@ const TimeInput = ({
   return useMemoComponent({
     Component: (
       <div className={classes.timeInput}>
-        <TextField
+        <SelectField
           inputProps={{
             'aria-label': `${t(inputLabel)} ${t(label)}`,
-            className: classes.small,
-            min: 0,
           }}
           name={name}
+          options={getTimeOptions[unit]({ max: maxValue, min: minValue })}
           required={required}
-          type="number"
-          value={equals(inputValue, 0) ? '' : inputValue}
+          selectedOptionId={inputValue}
           onChange={changeInput}
         />
         <Typography>{t(label)}</Typography>

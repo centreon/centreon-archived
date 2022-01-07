@@ -10,8 +10,14 @@ import { useMemoComponent } from '@centreon/centreon-frontend/packages/centreon-
 import { labelTimeBeforeSettingNewPassword } from '../../translatedLabels';
 import { getField } from '../utils';
 import TimeInputs from '../../TimeInputs';
+import { TimeInputConfiguration } from '../../models';
 
 const delayBeforeNewPasswordFieldName = 'delayBeforeNewPassword';
+
+const timeInputConfigurations: Array<TimeInputConfiguration> = [
+  { maxValue: 7, unit: 'days' },
+  { unit: 'hours' },
+];
 
 const TimeBeforeNewPassword = (): JSX.Element => {
   const { t } = useTranslation();
@@ -39,8 +45,8 @@ const TimeBeforeNewPassword = (): JSX.Element => {
         <TimeInputs
           baseName={delayBeforeNewPasswordFieldName}
           inputLabel={labelTimeBeforeSettingNewPassword}
+          timeInputConfigurations={timeInputConfigurations}
           timeValue={delayBeforeNewPasswordValue}
-          units={['days', 'hours']}
           onChange={change}
         />
         {delayBeforeNewPasswordError && (

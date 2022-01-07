@@ -24,27 +24,28 @@ describe('Time input', () => {
       unit: 'minutes',
     });
 
-    userEvent.type(screen.getByLabelText(`input ${labelMinute}`), '34');
+    userEvent.click(screen.getByLabelText(`input ${labelMinute}`));
+    userEvent.click(screen.getByText('34'));
 
     expect(mockChange).toHaveBeenCalledWith(2040000);
   });
 
-  it('updates the time value to 0 milliseconds value when input is emptied', () => {
+  it('does not display options below the configured min value except 0', () => {
     renderTimeInput({
       inputLabel: 'input',
       labels: { plural: labelMinutes, singular: labelMinute },
+      minValue: 2,
       name: 'input',
       onChange: mockChange,
-      timeValue: 1200000,
+      timeValue: 0,
       unit: 'minutes',
     });
 
-    userEvent.type(
-      screen.getByLabelText(`input ${labelMinutes}`),
-      '{selectall}{backspace}',
-    );
+    userEvent.click(screen.getByLabelText(`input ${labelMinute}`));
 
-    expect(mockChange).toHaveBeenCalledWith(0);
+    expect(screen.getAllByText('0')[0]).toBeInTheDocument();
+    expect(screen.queryByText('1')).not.toBeInTheDocument();
+    expect(screen.getByText('2')).toBeInTheDocument();
   });
 
   it('displays the label text in singular when the input value is 0', () => {

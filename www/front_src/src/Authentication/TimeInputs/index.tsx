@@ -16,7 +16,7 @@ import {
   labelMonths,
   labelSecond,
 } from '../translatedLabels';
-import { Unit } from '../models';
+import { TimeInputConfiguration } from '../models';
 
 import TimeInput from './TimeInput';
 
@@ -48,13 +48,13 @@ interface Props {
   baseName: string;
   inputLabel: string;
   onChange: (value: number) => void;
+  timeInputConfigurations: Array<TimeInputConfiguration>;
   timeValue: number;
-  units: Array<Unit>;
 }
 
 const TimeInputs = ({
   baseName,
-  units,
+  timeInputConfigurations,
   onChange,
   timeValue,
   inputLabel,
@@ -63,7 +63,7 @@ const TimeInputs = ({
 
   return (
     <div className={classes.timeInputs}>
-      {units.map((unit, idx) => {
+      {timeInputConfigurations.map(({ unit, maxValue, minValue }, idx) => {
         const { pluralLabel, singularLabel } = find(
           propEq('unit', unit),
           mapUnitAndLabels,
@@ -78,6 +78,8 @@ const TimeInputs = ({
               plural: pluralLabel,
               singular: singularLabel,
             }}
+            maxValue={maxValue}
+            minValue={minValue}
             name={`${baseName}_${singularLabel}`}
             timeValue={timeValue}
             unit={unit}

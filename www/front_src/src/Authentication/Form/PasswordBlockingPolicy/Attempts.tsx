@@ -60,9 +60,9 @@ const Attempts = (): JSX.Element => {
 
   const thresholds = React.useMemo(
     () => [
-      { color: theme.palette.error.main, label: labelWeak, value: 3 },
-      { color: theme.palette.warning.main, label: labelGood, value: 6 },
-      { color: theme.palette.success.main, label: labelStrong, value: 8 },
+      { color: theme.palette.success.main, label: labelStrong, value: 0 },
+      { color: theme.palette.warning.main, label: labelGood, value: 3 },
+      { color: theme.palette.error.main, label: labelWeak, value: 6 },
       { color: theme.palette.grey[500], label: labelUnknown, value: 11 },
     ],
     [],

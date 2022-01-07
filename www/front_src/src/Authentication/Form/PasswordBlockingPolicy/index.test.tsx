@@ -14,7 +14,6 @@ import {
   labelChooseAValueBetween1and10,
   labelDay,
   labelGood,
-  labelMinute,
   labelMinutes,
   labelNumberOfAttemptsBeforeBlockingNewAttempts,
   labelPasswordBlockingPolicy,
@@ -72,9 +71,9 @@ describe('Password Blocking Policy', () => {
       screen.getByLabelText(
         `${labelBlockingTimeBeforeNewConnectionAttempt} ${labelMinutes}`,
       ),
-    ).toHaveValue(15);
+    ).toHaveTextContent('15');
 
-    expect(screen.getAllByText(labelWeak)).toHaveLength(2);
+    expect(screen.getByText(labelWeak)).toBeInTheDocument();
   });
 
   it('displays an error message when the number of attempts is 0', async () => {
@@ -143,26 +142,19 @@ describe('Password Blocking Policy', () => {
       expect(screen.getByText(labelPasswordBlockingPolicy)).toBeInTheDocument();
     });
 
-    userEvent.type(
-      screen.getByLabelText(
-        `${labelBlockingTimeBeforeNewConnectionAttempt} ${labelMinutes}`,
-      ),
-      '{selectall}{backspace}',
-    );
-
-    userEvent.type(
+    userEvent.click(
       screen.getByLabelText(
         `${labelBlockingTimeBeforeNewConnectionAttempt} ${labelDay}`,
       ),
-      '7',
     );
+    userEvent.click(screen.getByText('7'));
 
-    userEvent.type(
+    userEvent.click(
       screen.getByLabelText(
-        `${labelBlockingTimeBeforeNewConnectionAttempt} ${labelMinute}`,
+        `${labelBlockingTimeBeforeNewConnectionAttempt} ${labelMinutes}`,
       ),
-      '1',
     );
+    userEvent.click(screen.getAllByText('1')[1]);
 
     await waitFor(() => {
       expect(
@@ -171,7 +163,7 @@ describe('Password Blocking Policy', () => {
     });
   });
 
-  it('displays "Strong" when the number of attempts is 8', async () => {
+  it('displays "Strong" when the number of attempts is 2', async () => {
     renderPasswordBlockingPolicy();
 
     await waitFor(() => {
@@ -180,7 +172,7 @@ describe('Password Blocking Policy', () => {
 
     userEvent.type(
       screen.getByLabelText(labelNumberOfAttemptsBeforeBlockingNewAttempts),
-      '{selectall}{backspace}8',
+      '{selectall}{backspace}2',
     );
 
     await waitFor(() => {
@@ -188,7 +180,7 @@ describe('Password Blocking Policy', () => {
     });
   });
 
-  it('displays "Good" when the number of attempts is 6', async () => {
+  it('displays "Good" when the number of attempts is 4', async () => {
     renderPasswordBlockingPolicy();
 
     await waitFor(() => {
@@ -197,7 +189,7 @@ describe('Password Blocking Policy', () => {
 
     userEvent.type(
       screen.getByLabelText(labelNumberOfAttemptsBeforeBlockingNewAttempts),
-      '{selectall}{backspace}6',
+      '{selectall}{backspace}4',
     );
 
     await waitFor(() => {
@@ -212,19 +204,12 @@ describe('Password Blocking Policy', () => {
       expect(screen.getByText(labelPasswordBlockingPolicy)).toBeInTheDocument();
     });
 
-    userEvent.type(
+    userEvent.click(
       screen.getByLabelText(
         `${labelBlockingTimeBeforeNewConnectionAttempt} ${labelDay}`,
       ),
-      '{selectall}{backspace}6',
     );
-
-    userEvent.type(
-      screen.getByLabelText(
-        `${labelBlockingTimeBeforeNewConnectionAttempt} ${labelMinutes}`,
-      ),
-      '{selectall}{backspace}',
-    );
+    userEvent.click(screen.getByText('6'));
 
     await waitFor(() => {
       expect(screen.getByText(labelStrong)).toBeInTheDocument();

@@ -7,7 +7,11 @@ import { render, RenderResult, screen, waitFor } from '@centreon/ui';
 
 import { SecurityPolicy } from '../../models';
 import useValidationSchema from '../../useValidationSchema';
-import { defaultSecurityPolicy } from '../defaults';
+import {
+  defaultSecurityPolicy,
+  securityPolicyWithInvalidDelayBeforeNewPassword,
+  securityPolicyWithInvalidPasswordExpiration,
+} from '../defaults';
 import {
   labelCanReuseLast3Passwords,
   labelChooseADurationBetween7DaysAnd12Months,
@@ -70,7 +74,7 @@ describe('Password expiration policy', () => {
 
     expect(
       screen.getByLabelText(`${labelPasswordExpiration} ${labelDays}`),
-    ).toHaveValue(7);
+    ).toHaveTextContent('7');
 
     expect(screen.getByText(labelDays)).toBeInTheDocument();
 
@@ -82,32 +86,11 @@ describe('Password expiration policy', () => {
       screen.getByLabelText(
         `${labelTimeBeforeSettingNewPassword} ${labelHour}`,
       ),
-    ).toHaveValue(1);
-  });
-
-  it('displays an error message when the password expiration time is 6 days', async () => {
-    renderPasswordExpirationPolicy();
-
-    await waitFor(() => {
-      expect(
-        screen.getByText(labelPasswordExpirationPolicy),
-      ).toBeInTheDocument();
-    });
-    expect(screen.getByText(labelPasswordExpiration)).toBeInTheDocument();
-    userEvent.type(
-      screen.getByLabelText(`${labelPasswordExpiration} ${labelDays}`),
-      '{selectall}{backspace}6',
-    );
-
-    await waitFor(() => {
-      expect(
-        screen.getByText(labelChooseADurationBetween7DaysAnd12Months),
-      ).toBeInTheDocument();
-    });
+    ).toHaveTextContent('1');
   });
 
   it('displays an error message when the password expiration time is 12 months and 1 day', async () => {
-    renderPasswordExpirationPolicy();
+    renderPasswordExpirationPolicy(securityPolicyWithInvalidPasswordExpiration);
 
     await waitFor(() => {
       expect(
@@ -115,15 +98,6 @@ describe('Password expiration policy', () => {
       ).toBeInTheDocument();
     });
     expect(screen.getByText(labelPasswordExpiration)).toBeInTheDocument();
-
-    userEvent.type(
-      screen.getByLabelText(`${labelPasswordExpiration} ${labelMonth}`),
-      '12',
-    );
-    userEvent.type(
-      screen.getByLabelText(`${labelPasswordExpiration} ${labelDays}`),
-      '{selectall}{backspace}1',
-    );
 
     await waitFor(() => {
       expect(
@@ -154,7 +128,9 @@ describe('Password expiration policy', () => {
   });
 
   it('displays an error message when the delay before new password time is 8 days', async () => {
-    renderPasswordExpirationPolicy();
+    renderPasswordExpirationPolicy(
+      securityPolicyWithInvalidDelayBeforeNewPassword,
+    );
 
     await waitFor(() => {
       expect(
@@ -164,18 +140,6 @@ describe('Password expiration policy', () => {
     expect(
       screen.getByText(labelTimeBeforeSettingNewPassword),
     ).toBeInTheDocument();
-
-    userEvent.type(
-      screen.getByLabelText(
-        `${labelTimeBeforeSettingNewPassword} ${labelHour}`,
-      ),
-      '{selectall}{backspace}',
-    );
-
-    userEvent.type(
-      screen.getByLabelText(`${labelTimeBeforeSettingNewPassword} ${labelDay}`),
-      '8',
-    );
 
     await waitFor(() => {
       expect(

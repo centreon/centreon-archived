@@ -24,10 +24,17 @@ import {
   strongBlockingDuration,
   weakBlockingDuration,
 } from '../../timestamps';
+import { TimeInputConfiguration } from '../../models';
 
 import { attemptsFieldName } from './Attempts';
 
 const blockingDurationFieldName = 'blockingDuration';
+
+const timeInputConfigurations: Array<TimeInputConfiguration> = [
+  { maxValue: 7, unit: 'days' },
+  { unit: 'hours' },
+  { unit: 'minutes' },
+];
 
 const BlockingDuration = (): JSX.Element => {
   const { t } = useTranslation();
@@ -92,8 +99,8 @@ const BlockingDuration = (): JSX.Element => {
         <TimeInputs
           baseName={blockingDurationFieldName}
           inputLabel={labelBlockingTimeBeforeNewConnectionAttempt}
+          timeInputConfigurations={timeInputConfigurations}
           timeValue={blockingDurationValue}
-          units={['days', 'hours', 'minutes']}
           onChange={change}
         />
         {blockingDurationError && (
