@@ -57,7 +57,7 @@ class LogoutSession
 
         if ($token === null) {
             $this->debug('Try to logout without token');
-            $presenter->setResponseStatus(new ErrorResponse(_('No session token provided.')));
+            $presenter->setResponseStatus(new ErrorResponse(_('No session token provided')));
             return;
         }
 
