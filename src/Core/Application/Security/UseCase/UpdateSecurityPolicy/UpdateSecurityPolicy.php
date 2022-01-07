@@ -54,7 +54,7 @@ class UpdateSecurityPolicy
         try {
             $securityPolicy = SecurityPolicyFactory::createFromRequest($request);
         } catch (AssertionException $ex) {
-            $this->error('Unable to create Security Policy because of one or many parameters are invalid');
+            $this->error('Unable to create Security Policy because one or many parameters are invalid');
             $presenter->setResponseStatus(new ErrorResponse($ex->getMessage()));
             return;
         }
