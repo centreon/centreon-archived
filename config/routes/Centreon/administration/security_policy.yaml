@@ -7,5 +7,5 @@ centreon_security_security_policy_find_security_policy:
 centreon_security_security_policy_put_security_policy:
     methods: PUT
     path: /administration/authentication/local/security-policy
-    controller: 'Core\Infrastructure\Security\Api\FindSecurityPolicy\UpdateSecurityPolicyController'
+    controller: 'Core\Infrastructure\Security\Api\UpdateSecurityPolicy\UpdateSecurityPolicyController'
     condition: "request.attributes.get('version') >= 22.04"
