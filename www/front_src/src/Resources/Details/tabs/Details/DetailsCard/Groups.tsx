@@ -17,7 +17,7 @@ import {
 import SettingsIcon from '@material-ui/icons/Settings';
 import IconFilterList from '@material-ui/icons/FilterList';
 
-import { IconButton } from '@centreon/ui';
+import { IconButton, PopoverMenu } from '@centreon/ui';
 
 import {
   labelActionNotPermitted,
@@ -56,8 +56,74 @@ interface Props {
   details: ResourceDetails | undefined;
 }
 
-const GroupsOnHover = ({ details }: Props): JSX.Element => {
-  const classes = useStyles();
+const Groups = ({ details }: Props): JSX.Element => {
+  const theme = useTheme();
+
+  const [hoveredGroupId, setHoveredGroupId] = React.useState<number>();
+
+  return (
+    <Grid container spacing={1}>
+      {details?.groups?.map((group) => {
+        return (
+          <Grid
+            item
+            key={group.id}
+            onMouseEnter={(): void => setHoveredGroupId(group.id)}
+            onMouseLeave={(): void => setHoveredGroupId(undefined)}
+          >
+            <Chip
+              color="primary"
+              label={
+                <div
+                  style={{
+                    alignItems: 'center',
+                    display: 'grid',
+                    gridTemplateColumns: 'auto',
+                    justifyItems: 'center',
+                    padding: 0,
+                  }}
+                >
+                  <Typography
+                    style={{
+                      color:
+                        hoveredGroupId === group.id ? 'transparent' : 'unset',
+                      gridArea: '1/1',
+                    }}
+                    variant="body2"
+                  >
+                    {group.name}
+                  </Typography>
+
+                  {hoveredGroupId === group.id && (
+                    <div
+                      style={{
+                        backgroundColor: theme.palette.primary.main,
+                        display: 'flex',
+                        gap: theme.spacing(0.5),
+                        gridArea: '1/1',
+                        justifySelf: 'center',
+                      }}
+                    >
+                      <IconFilterList fontSize="small" />
+                      <SettingsIcon fontSize="small" />
+                    </div>
+                  )}
+                </div>
+              }
+              onMouseEnter={(): void => setHoveredGroupId(group.id)}
+              onMouseLeave={(): void => setHoveredGroupId(undefined)}
+            />{' '}
+          </Grid>
+        );
+      })}
+    </Grid>
+  );
+};
+
+export default Groups;
+
+/*
+const classes = useStyles();
   const { t } = useTranslation();
 
   const setCriteriaAndNewFilter = useUpdateAtom(
@@ -87,111 +153,4 @@ const GroupsOnHover = ({ details }: Props): JSX.Element => {
   const resourceConfigurationIconColor = isNil(resourceConfigurationUri)
     ? 'disabled'
     : 'primary';
-
-  return (
-    <Grid item>
-      {details?.groups?.map((group) => {
-        return (
-          <div className={classes.actions}>
-            <Tooltip title={resourceConfigurationUriTitle}>
-              <div className={classes.resourceNameConfigurationIcon}>
-                <Chip
-                  clickable
-                  color="primary"
-                  label={
-                    <Grid container spacing={1}>
-                      <Grid item>
-                        <SettingsIcon />
-                      </Grid>
-                      <Grid item>
-                        <SettingsIcon />
-                      </Grid>
-                    </Grid>
-                  }
-                  // icon={<SettingsIcon color={resourceConfigurationIconColor} />}
-                  size="small"
-                />
-                <Link
-                  aria-label={`${t(labelConfigure)}_${details.name}`}
-                  className={classes.resourceNameConfigurationLink}
-                  href={resourceConfigurationUri}
-                />
-              </div>
-            </Tooltip>
-            <IconButton
-              ariaLabel={t(labelFilter)}
-              color="primary"
-              title={t(labelFilter)}
-              onClick={(): void => filterByGroup(group)}
-            >
-              <IconFilterList fontSize="small" />
-            </IconButton>
-          </div>
-        );
-      })}
-    </Grid>
-  );
-};
-
-const Groups = ({ details }: Props): JSX.Element => {
-  const theme = useTheme();
-
-  const [hoveredGroupId, setHoveredGroupId] = React.useState<number>();
-
-  return (
-    <Grid container spacing={1}>
-      {details?.groups?.map((group) => {
-        return (
-          <Grid
-            item
-            key={group.name}
-            onMouseEnter={(): void => setHoveredGroupId(group.id)}
-            onMouseLeave={(): void => setHoveredGroupId(undefined)}
-          >
-            <Chip
-              color="primary"
-              label={
-                <div
-                  style={{
-                    alignItems: 'center',
-                    display: 'grid',
-                    gridTemplateColumns: 'auto',
-                    justifyItems: 'center',
-                    padding: 0,
-                  }}
-                >
-                  <Typography
-                    style={{
-                      // color: isHovered ? 'transparent' : 'unset',
-                      gridArea: '1/1',
-                    }}
-                    variant="body2"
-                  >
-                    {group.name}
-                  </Typography>
-
-                  {hoveredGroupId === group.id && (
-                    <div
-                      style={{
-                        backgroundColor: theme.palette.primary.main,
-                        display: 'flex',
-                        gap: theme.spacing(0.5),
-                        gridArea: '1/1',
-                        justifySelf: 'flex-end',
-                      }}
-                    >
-                      <IconFilterList fontSize="small" />
-                      <SettingsIcon fontSize="small" />
-                    </div>
-                  )}
-                </div>
-              }
-            />
-          </Grid>
-        );
-      })}
-    </Grid>
-  );
-};
-
-export default Groups;
+    */
