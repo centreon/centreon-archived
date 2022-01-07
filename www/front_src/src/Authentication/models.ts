@@ -36,7 +36,7 @@ export interface UnitValueLimit {
 export type PartialUnitValueLimit = Partial<UnitValueLimit>;
 
 export interface TimeInputConfiguration {
-  maxValue?: number;
-  minValue?: number;
+  maxOption?: number;
+  minOption?: number;
   unit: Unit;
 }

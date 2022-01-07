@@ -34,7 +34,7 @@ describe('Time input', () => {
     renderTimeInput({
       inputLabel: 'input',
       labels: { plural: labelMinutes, singular: labelMinute },
-      minValue: 2,
+      minOption: 2,
       name: 'input',
       onChange: mockChange,
       timeValue: 0,

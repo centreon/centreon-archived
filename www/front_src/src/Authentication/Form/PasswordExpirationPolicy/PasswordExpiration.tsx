@@ -43,7 +43,7 @@ const PasswordExpiration = (): JSX.Element => {
     object: errors,
   });
 
-  const minDaysValue = React.useMemo(
+  const minDaysOption = React.useMemo(
     (): number | undefined =>
       lte(
         dayjs.duration({ months: 1 }).asMilliseconds(),
@@ -54,7 +54,7 @@ const PasswordExpiration = (): JSX.Element => {
     [passwordExpirationValue],
   );
 
-  const maxDaysValue = React.useMemo(
+  const maxDaysOption = React.useMemo(
     (): number | undefined =>
       lte(
         dayjs.duration({ years: 1 }).asMilliseconds(),
@@ -67,7 +67,7 @@ const PasswordExpiration = (): JSX.Element => {
 
   const timeInputConfiguration: Array<TimeInputConfiguration> = [
     { unit: 'months' },
-    { maxValue: maxDaysValue, minValue: minDaysValue, unit: 'days' },
+    { maxOption: maxDaysOption, minOption: minDaysOption, unit: 'days' },
   ];
 
   return useMemoComponent({

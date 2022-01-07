@@ -2,7 +2,8 @@ import * as React from 'react';
 
 import { FormikValues, useFormikContext } from 'formik';
 import { useTranslation } from 'react-i18next';
-import { isNil, not } from 'ramda';
+import { isNil, lte, not } from 'ramda';
+import dayjs from 'dayjs';
 
 import { FormHelperText, FormLabel, useTheme } from '@mui/material';
 
@@ -29,12 +30,6 @@ import { TimeInputConfiguration } from '../../models';
 import { attemptsFieldName } from './Attempts';
 
 const blockingDurationFieldName = 'blockingDuration';
-
-const timeInputConfigurations: Array<TimeInputConfiguration> = [
-  { maxValue: 7, unit: 'days' },
-  { unit: 'hours' },
-  { unit: 'minutes' },
-];
 
 const BlockingDuration = (): JSX.Element => {
   const { t } = useTranslation();
@@ -91,6 +86,20 @@ const BlockingDuration = (): JSX.Element => {
       not(areAttemptsEmpty),
     [blockingDurationError, blockingDurationValue, areAttemptsEmpty],
   );
+
+  const maxHoursAndMinutesOption = React.useMemo(
+    (): number | undefined =>
+      lte(dayjs.duration({ days: 7 }).asMilliseconds(), blockingDurationValue)
+        ? 0
+        : undefined,
+    [blockingDurationValue],
+  );
+
+  const timeInputConfigurations: Array<TimeInputConfiguration> = [
+    { maxOption: 7, unit: 'days' },
+    { maxOption: maxHoursAndMinutesOption, unit: 'hours' },
+    { maxOption: maxHoursAndMinutesOption, unit: 'minutes' },
+  ];
 
   return useMemoComponent({
     Component: (

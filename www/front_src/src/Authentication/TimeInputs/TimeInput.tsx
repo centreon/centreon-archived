@@ -41,8 +41,8 @@ export interface TimeInputProps {
   getAbsoluteValue?: boolean;
   inputLabel: string;
   labels: Labels;
-  maxValue?: number;
-  minValue?: number;
+  maxOption?: number;
+  minOption?: number;
   name: string;
   onChange: (value: number) => void;
   required?: boolean;
@@ -72,8 +72,8 @@ const TimeInput = ({
   required = false,
   getAbsoluteValue = false,
   inputLabel,
-  maxValue,
-  minValue,
+  maxOption,
+  minOption,
 }: TimeInputProps): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
@@ -149,7 +149,7 @@ const TimeInput = ({
             'aria-label': `${t(inputLabel)} ${t(label)}`,
           }}
           name={name}
-          options={getTimeOptions[unit]({ max: maxValue, min: minValue })}
+          options={getTimeOptions[unit]({ max: maxOption, min: minOption })}
           required={required}
           selectedOptionId={inputValue}
           onChange={changeInput}

@@ -63,7 +63,7 @@ const TimeInputs = ({
 
   return (
     <div className={classes.timeInputs}>
-      {timeInputConfigurations.map(({ unit, maxValue, minValue }, idx) => {
+      {timeInputConfigurations.map(({ unit, maxOption, minOption }, idx) => {
         const { pluralLabel, singularLabel } = find(
           propEq('unit', unit),
           mapUnitAndLabels,
@@ -78,8 +78,8 @@ const TimeInputs = ({
               plural: pluralLabel,
               singular: singularLabel,
             }}
-            maxValue={maxValue}
-            minValue={minValue}
+            maxOption={maxOption}
+            minOption={minOption}
             name={`${baseName}_${singularLabel}`}
             timeValue={timeValue}
             unit={unit}

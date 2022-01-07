@@ -2,6 +2,8 @@ import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { FormikValues, useFormikContext } from 'formik';
+import dayjs from 'dayjs';
+import { lte } from 'ramda';
 
 import { FormHelperText, FormLabel } from '@mui/material';
 
@@ -13,11 +15,6 @@ import TimeInputs from '../../TimeInputs';
 import { TimeInputConfiguration } from '../../models';
 
 const delayBeforeNewPasswordFieldName = 'delayBeforeNewPassword';
-
-const timeInputConfigurations: Array<TimeInputConfiguration> = [
-  { maxValue: 7, unit: 'days' },
-  { unit: 'hours' },
-];
 
 const TimeBeforeNewPassword = (): JSX.Element => {
   const { t } = useTranslation();
@@ -37,6 +34,22 @@ const TimeBeforeNewPassword = (): JSX.Element => {
     field: delayBeforeNewPasswordFieldName,
     object: errors,
   });
+
+  const maxHoursOption = React.useMemo(
+    (): number | undefined =>
+      lte(
+        dayjs.duration({ days: 7 }).asMilliseconds(),
+        delayBeforeNewPasswordValue,
+      )
+        ? 0
+        : undefined,
+    [delayBeforeNewPasswordValue],
+  );
+
+  const timeInputConfigurations: Array<TimeInputConfiguration> = [
+    { maxOption: 7, unit: 'days' },
+    { maxOption: maxHoursOption, unit: 'hours' },
+  ];
 
   return useMemoComponent({
     Component: (
