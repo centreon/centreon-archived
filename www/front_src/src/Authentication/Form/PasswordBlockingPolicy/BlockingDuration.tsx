@@ -108,6 +108,7 @@ const BlockingDuration = (): JSX.Element => {
         <TimeInputs
           baseName={blockingDurationFieldName}
           inputLabel={labelBlockingTimeBeforeNewConnectionAttempt}
+          maxDuration={sevenDays}
           timeInputConfigurations={timeInputConfigurations}
           timeValue={blockingDurationValue}
           onChange={change}

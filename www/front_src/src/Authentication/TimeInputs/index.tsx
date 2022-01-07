@@ -47,6 +47,7 @@ const mapUnitAndLabels: Array<UnitAndLabels> = [
 interface Props {
   baseName: string;
   inputLabel: string;
+  maxDuration?: number;
   onChange: (value: number) => void;
   timeInputConfigurations: Array<TimeInputConfiguration>;
   timeValue: number;
@@ -58,6 +59,7 @@ const TimeInputs = ({
   onChange,
   timeValue,
   inputLabel,
+  maxDuration,
 }: Props): JSX.Element => {
   const classes = useStyles();
 
@@ -78,6 +80,7 @@ const TimeInputs = ({
               plural: pluralLabel,
               singular: singularLabel,
             }}
+            maxDuration={maxDuration}
             maxOption={maxOption}
             minOption={minOption}
             name={`${baseName}_${singularLabel}`}

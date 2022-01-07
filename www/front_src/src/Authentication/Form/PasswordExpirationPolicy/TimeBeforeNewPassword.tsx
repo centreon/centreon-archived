@@ -13,6 +13,7 @@ import { labelTimeBeforeSettingNewPassword } from '../../translatedLabels';
 import { getField } from '../utils';
 import TimeInputs from '../../TimeInputs';
 import { TimeInputConfiguration } from '../../models';
+import { sevenDays } from '../../timestamps';
 
 const delayBeforeNewPasswordFieldName = 'delayBeforeNewPassword';
 
@@ -58,6 +59,7 @@ const TimeBeforeNewPassword = (): JSX.Element => {
         <TimeInputs
           baseName={delayBeforeNewPasswordFieldName}
           inputLabel={labelTimeBeforeSettingNewPassword}
+          maxDuration={sevenDays}
           timeInputConfigurations={timeInputConfigurations}
           timeValue={delayBeforeNewPasswordValue}
           onChange={change}

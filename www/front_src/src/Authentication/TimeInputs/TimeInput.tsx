@@ -41,7 +41,9 @@ export interface TimeInputProps {
   getAbsoluteValue?: boolean;
   inputLabel: string;
   labels: Labels;
+  maxDuration?: number;
   maxOption?: number;
+  minDuration?: number;
   minOption?: number;
   name: string;
   onChange: (value: number) => void;
@@ -74,11 +76,20 @@ const TimeInput = ({
   inputLabel,
   maxOption,
   minOption,
+  maxDuration,
 }: TimeInputProps): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
 
   const functionGetDurationValue = getAbsoluteValue ? 'as' : 'get';
+
+  const normalizeDuration = (duration: number): number => {
+    if (maxDuration && gt(duration, maxDuration)) {
+      return maxDuration;
+    }
+
+    return duration;
+  };
 
   const changeInput = React.useCallback(
     (event: SelectChangeEvent<unknown>): void => {
@@ -91,12 +102,12 @@ const TimeInput = ({
       );
 
       if (Number.isNaN(value)) {
-        onChange(
-          currentDuration
-            .clone()
-            .subtract(previousValue, unit)
-            .as('milliseconds'),
-        );
+        const newDuration = currentDuration
+          .clone()
+          .subtract(previousValue, unit)
+          .as('milliseconds');
+
+        onChange(normalizeDuration(newDuration));
 
         return;
       }
@@ -111,19 +122,21 @@ const TimeInput = ({
           ),
         )
       ) {
-        onChange(
-          currentDuration
-            .clone()
-            .subtract(previousValue, 'months')
-            .add(1, 'years')
-            .asMilliseconds(),
-        );
+        const newDuration = currentDuration
+          .clone()
+          .subtract(previousValue, 'months')
+          .add(1, 'years')
+          .asMilliseconds();
+        onChange(normalizeDuration(newDuration));
 
         return;
       }
-      onChange(
-        currentDuration.clone().add(diffDuration, unit).asMilliseconds(),
-      );
+
+      const newDuration = currentDuration
+        .clone()
+        .add(diffDuration, unit)
+        .asMilliseconds();
+      onChange(normalizeDuration(newDuration));
     },
     [functionGetDurationValue, unit, timeValue],
   );

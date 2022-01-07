@@ -14,6 +14,7 @@ import { labelPasswordExpiration } from '../../translatedLabels';
 import { getField } from '../utils';
 import TimeInputs from '../../TimeInputs';
 import { TimeInputConfiguration } from '../../models';
+import { sevenDays, twelveMonths } from '../../timestamps';
 
 const passwordExpirationFieldName = 'passwordExpiration';
 
@@ -77,6 +78,7 @@ const PasswordExpiration = (): JSX.Element => {
         <TimeInputs
           baseName={passwordExpirationFieldName}
           inputLabel={labelPasswordExpiration}
+          maxDuration={twelveMonths}
           timeInputConfigurations={timeInputConfiguration}
           timeValue={passwordExpirationValue}
           onChange={change}
