@@ -40,7 +40,6 @@ use CentreonModule\Infrastructure\Source\SourceDataInterface;
 
 class Module implements SourceDataInterface
 {
-
     /**
      * @var string
      */
@@ -62,7 +61,7 @@ class Module implements SourceDataInterface
     private $description;
 
     /**
-     * @var array
+     * @var array<int,string>
      */
     private $images = [];
 
@@ -97,7 +96,7 @@ class Module implements SourceDataInterface
     private $keywords;
 
     /**
-     * @var string
+     * @var array<string,string|bool>
      */
     private $license;
 
@@ -121,162 +120,260 @@ class Module implements SourceDataInterface
      */
     private $isUpdated = false;
 
+    /**
+     * @return string
+     */
     public function getId(): string
     {
         return $this->id;
     }
 
-    public function setId(string $id)
+    /**
+     * @param string $id
+     */
+    public function setId(string $id): void
     {
         $this->id = $id;
     }
 
+    /**
+     * @return string
+     */
     public function getType(): string
     {
         return $this->type;
     }
 
-    public function setType(string $type)
+    /**
+     * @param string $type
+     */
+    public function setType(string $type): void
     {
         $this->type = $type;
     }
 
+    /**
+     * @return string
+     */
     public function getName(): string
     {
         return $this->name;
     }
 
-    public function setName(string $name)
+    /**
+     * @param string $name
+     */
+    public function setName(string $name): void
     {
         $this->name = $name;
     }
 
+    /**
+     * @return string|null
+     */
     public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    public function setDescription(string $description)
+    /**
+     * @param string $description
+     */
+    public function setDescription(string $description): void
     {
         $this->description = $description;
     }
 
+    /**
+     * @return array<int,string>
+     */
     public function getImages(): array
     {
         return $this->images;
     }
 
-    public function addImage(string $image)
+    /**
+     * @param string $image
+     */
+    public function addImage(string $image): void
     {
         $this->images[] = $image;
     }
 
+    /**
+     * @return string
+     */
     public function getAuthor(): string
     {
         return $this->author;
     }
 
-    public function setAuthor(string $author)
+    /**
+     * @param string $author
+     */
+    public function setAuthor(string $author): void
     {
         $this->author = $author;
     }
 
+    /**
+     * @return string
+     */
     public function getVersion(): string
     {
         return $this->version;
     }
 
-    public function setVersion(string $version)
+    /**
+     * @param string $version
+     */
+    public function setVersion(string $version): void
     {
         $this->version = $version;
     }
 
+    /**
+     * @return string
+     */
     public function getVersionCurrent(): ?string
     {
         return $this->versionCurrent;
     }
 
-    public function setVersionCurrent(string $versionCurrent)
+    /**
+     * @param string $versionCurrent
+     */
+    public function setVersionCurrent(string $versionCurrent): void
     {
         $this->versionCurrent = $versionCurrent;
     }
 
+    /**
+     * @return string
+     */
     public function getPath(): string
     {
         return $this->path;
     }
 
-    public function setPath(string $path)
+    /**
+     * @param string $path
+     */
+    public function setPath(string $path): void
     {
         $this->path = $path;
     }
 
+    /**
+     * @return string
+     */
     public function getStability(): string
     {
         return $this->stability;
     }
 
-    public function setStability(string $stability)
+    /**
+     * @param string $stability
+     */
+    public function setStability(string $stability): void
     {
         $this->stability = $stability;
     }
 
+    /**
+     * @return string
+     */
     public function getKeywords(): string
     {
         return $this->keywords;
     }
 
-    public function setKeywords(string $keywords)
+    /**
+     * @param string $keywords
+     */
+    public function setKeywords(string $keywords): void
     {
         $this->keywords = $keywords;
     }
 
+    /**
+     * @return array<string,string|bool>|null
+     */
     public function getLicense(): ?array
     {
         return $this->license;
     }
 
-    public function setLicense(array $license = null)
+    /**
+     * @param array<mixed>|null $license
+     */
+    public function setLicense(array $license = null): void
     {
         $this->license = $license;
     }
 
+    /**
+     * @return string|null
+     */
     public function getLastUpdate(): ?string
     {
         return $this->lastUpdate;
     }
 
-    public function setLastUpdate(string $lastUpdate)
+    /**
+     * @param string $lastUpdate
+     */
+    public function setLastUpdate(string $lastUpdate): void
     {
         $this->lastUpdate = $lastUpdate;
     }
 
+    /**
+     * @return string|null
+     */
     public function getReleaseNote(): ?string
     {
         return $this->releaseNote;
     }
 
-    public function setReleaseNote(string $releaseNote)
+    /**
+     * @param string $releaseNote
+     */
+    public function setReleaseNote(string $releaseNote): void
     {
         $this->releaseNote = $releaseNote;
     }
 
+    /**
+     * @return bool
+     */
     public function isInstalled(): bool
     {
         return $this->isInstalled;
     }
 
-    public function setInstalled(bool $value)
+    /**
+     * @param bool $value
+     * @return bool
+     */
+    public function setInstalled(bool $value): void
     {
         $this->isInstalled = $value;
     }
 
+    /**
+     * @return string
+     */
     public function isUpdated(): bool
     {
         return $this->isUpdated;
     }
 
-    public function setUpdated(bool $value)
+    /**
+     * @param bool $value
+     * @return bool
+     */
+    public function setUpdated(bool $value): void
     {
         $this->isUpdated = $value;
     }
