@@ -23,6 +23,9 @@ declare(strict_types=1);
 
 namespace Core\Application\Security\UseCase\UpdateSecurityPolicy;
 
+use Centreon\Domain\Common\Assertion\AssertionException;
+use Centreon\Domain\Log\LoggerTrait;
+use Core\Application\Common\UseCase\ErrorResponse;
 use Core\Application\Common\UseCase\NoContentResponse;
 use Core\Domain\Security\Model\SecurityPolicyFactory;
 use Core\Application\Security\Repository\WriteSecurityPolicyRepositoryInterface;
@@ -30,6 +33,8 @@ use Core\Application\Security\UseCase\UpdateSecurityPolicy\UpdateSecurityPolicyR
 
 class UpdateSecurityPolicy
 {
+    use LoggerTrait;
+
     /**
      * @param WriteSecurityPolicyRepositoryInterface $repository
      */
@@ -45,7 +50,16 @@ class UpdateSecurityPolicy
         UpdateSecurityPolicyPresenterInterface $presenter,
         UpdateSecurityPolicyRequest $request
     ): void {
-        $this->repository->updateSecurityPolicy(SecurityPolicyFactory::createFromRequest($request));
+        $this->info('Updating Security Policy');
+        try {
+            $securityPolicy = SecurityPolicyFactory::createFromRequest($request);
+        } catch (AssertionException $ex) {
+            $this->error('Unable to create Security Policy because one or many parameters are invalid');
+            $presenter->setResponseStatus(new ErrorResponse($ex->getMessage()));
+            return;
+        }
+
+        $this->repository->updateSecurityPolicy($securityPolicy);
         $presenter->setResponseStatus(new NoContentResponse());
     }
 }
