@@ -103,6 +103,8 @@ const mockUserContext = {
   alias: 'admin',
   downtime: {
     default_duration: 7200,
+    default_fixed: true,
+    default_with_services: false,
   },
   locale: 'en',
   name: 'admin',
@@ -174,6 +176,7 @@ describe(Actions, () => {
   const mockNow = '2020-01-01';
 
   beforeEach(() => {
+    mockedAxios.post.mockReset();
     mockedAxios.get
       .mockResolvedValueOnce({
         data: {
@@ -205,6 +208,7 @@ describe(Actions, () => {
     await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
 
     mockedAxios.get.mockResolvedValueOnce({ data: {} });
+    mockedAxios.post.mockResolvedValueOnce({});
 
     const refreshButton = getByLabelText(labelRefresh);
 
@@ -288,7 +292,7 @@ describe(Actions, () => {
     fireEvent.click(getByLabelText(labelAcknowledgeServices));
 
     mockedAxios.get.mockResolvedValueOnce({ data: {} });
-    mockedAxios.post.mockResolvedValueOnce({}).mockResolvedValueOnce({});
+    mockedAxios.post.mockResolvedValueOnce({});
 
     fireEvent.click(last(getAllByText(labelAcknowledge)) as HTMLElement);
 
@@ -460,7 +464,7 @@ describe(Actions, () => {
             end_time: '2020-01-01T02:00:00Z',
             is_fixed: true,
             start_time: '2020-01-01T00:00:00Z',
-            with_services: true,
+            with_services: false,
           },
           resources: map(pick(['type', 'id', 'parent']), selectedResources),
         },
@@ -480,7 +484,7 @@ describe(Actions, () => {
 
     mockedAxios.get.mockResolvedValueOnce({ data: {} });
     mockedAxios.all.mockResolvedValueOnce([]);
-    mockedAxios.post.mockResolvedValueOnce({}).mockResolvedValueOnce({});
+    mockedAxios.post.mockResolvedValueOnce({});
 
     fireEvent.click(getByText(labelCheck));
 
@@ -496,7 +500,7 @@ describe(Actions, () => {
   });
 
   it('sends a submit status request when a Resource is selected and the Submit status action is clicked', async () => {
-    mockedAxios.post.mockResolvedValueOnce({}).mockResolvedValueOnce({});
+    mockedAxios.post.mockResolvedValueOnce({});
 
     const { getByText, getByLabelText, getByTitle } = renderActions();
 
