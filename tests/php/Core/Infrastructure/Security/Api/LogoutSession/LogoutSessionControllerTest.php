@@ -28,9 +28,9 @@ use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\InputBag;
 use Core\Application\Security\UseCase\LogoutSession\LogoutSession;
 use Core\Infrastructure\Security\Api\LogoutSession\LogoutSessionController;
-use Symfony\Component\HttpFoundation\ParameterBag;
 
 class LogoutSessionControllerTest extends TestCase
 {
@@ -49,17 +49,11 @@ class LogoutSessionControllerTest extends TestCase
      */
     private $container;
 
-    /**
-     * @var ParameterBag&\PHPUnit\Framework\MockObject\MockObject
-     */
-    private $parameterBag; //@phpstan-ignore-line
-
     public function setUp(): void
     {
         $this->request = $this->createMock(Request::class);
         $this->useCase = $this->createMock(LogoutSession::class);
         $this->container = $this->createMock(ContainerInterface::class);
-        $this->parameterBag = $this->createMock(ParameterBag::class);
     }
 
     /**
@@ -70,12 +64,7 @@ class LogoutSessionControllerTest extends TestCase
         $logoutSessionController = new LogoutSessionController();
         $logoutSessionController->setContainer($this->container);
 
-        $this->request->cookies = $this->parameterBag;
-
-        $this->parameterBag
-            ->expects($this->once())
-            ->method('get')
-            ->willReturn('token');
+        $this->request->cookies = new InputBag(['PHPSESSID' => 'token']);
 
         $view = $logoutSessionController($this->useCase, $this->request);
 
@@ -95,12 +84,7 @@ class LogoutSessionControllerTest extends TestCase
         $logoutSessionController = new LogoutSessionController();
         $logoutSessionController->setContainer($this->container);
 
-        $this->request->cookies = $this->parameterBag;
-
-        $this->parameterBag
-            ->expects($this->once())
-            ->method('get')
-            ->willReturn(null);
+        $this->request->cookies = new InputBag([]);
 
         $view = $logoutSessionController($this->useCase, $this->request);
 

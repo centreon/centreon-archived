@@ -1,5 +1,5 @@
 {
-  "name": "E2E",
+  "name": "OK services",
   "criterias": [
     {
       "name": "resource_types",
@@ -14,12 +14,7 @@
     },
     {
       "name": "states",
-      "value": [
-        {
-          "id": "unhandled_problems",
-          "name": "Unhandled"
-        }
-      ],
+      "value": [],
       "type": "multi_select",
       "object_type": null
     },
@@ -27,20 +22,8 @@
       "name": "statuses",
       "value": [
         {
-          "id": "WARNING",
-          "name": "Warning"
-        },
-        {
-          "id": "DOWN",
-          "name": "Down"
-        },
-        {
-          "id": "CRITICAL",
-          "name": "Critical"
-        },
-        {
-          "id": "UNKNOWN",
-          "name": "Unknown"
+          "id": "OK",
+          "name": "Ok"
         }
       ],
       "type": "multi_select",

@@ -38,7 +38,6 @@ use CentreonLegacy\Core\Utils\Factory;
 
 trait CentreonWebServiceDiAndUtilisTrait
 {
-
     /**
      * @var \Pimple\Container
      */

@@ -131,7 +131,6 @@ class CentreonUserLog
 
 class CentreonLog
 {
-
     private $errorType;
     private $path;
 

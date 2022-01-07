@@ -54,7 +54,6 @@ use PHPUnit\Framework\TestCase;
  */
 class CheckPoint
 {
-
     /**
      * @var array
      */

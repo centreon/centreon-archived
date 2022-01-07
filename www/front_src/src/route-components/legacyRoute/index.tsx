@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import classnames from 'classnames';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { isNil, replace } from 'ramda';
+import { equals, isNil, replace } from 'ramda';
 
 import { PageSkeleton } from '@centreon/ui';
 
@@ -26,14 +26,26 @@ const LegacyRoute = (): JSX.Element => {
       element.addEventListener(
         'click',
         (e) => {
-          e.preventDefault();
           const href = (e.target as HTMLLinkElement).getAttribute('href');
+          const target = (e.target as HTMLLinkElement).getAttribute('target');
+
+          if (equals(target, '_blank')) {
+            return;
+          }
+
+          e.preventDefault();
 
           if (isNil(href)) {
             return;
           }
 
-          navigate(replace('./', '/', href), { replace: true });
+          const formattedHref = replace('./', '', href);
+
+          if (equals(formattedHref, '#') || !formattedHref.match(/^main.php/)) {
+            return;
+          }
+
+          navigate(`/${formattedHref}`, { replace: true });
         },
         { once: true },
       );
