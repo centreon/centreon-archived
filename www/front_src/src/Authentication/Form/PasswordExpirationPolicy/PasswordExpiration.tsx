@@ -14,7 +14,7 @@ import { labelPasswordExpiration } from '../../translatedLabels';
 import { getField } from '../utils';
 import TimeInputs from '../../TimeInputs';
 import { TimeInputConfiguration } from '../../models';
-import { sevenDays, twelveMonths } from '../../timestamps';
+import { twelveMonths } from '../../timestamps';
 
 const passwordExpirationFieldName = 'passwordExpiration';
 

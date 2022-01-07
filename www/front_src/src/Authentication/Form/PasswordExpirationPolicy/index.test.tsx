@@ -16,7 +16,6 @@ import {
   labelCanReuseLast3Passwords,
   labelChooseADurationBetween7DaysAnd12Months,
   labelChooseADurationBetween1HourAnd1Week,
-  labelDay,
   labelDays,
   labelHour,
   labelMonth,
