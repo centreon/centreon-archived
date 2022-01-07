@@ -18,9 +18,35 @@ import { getValidationSchema, validate } from './validation';
 import { formatDateInterval } from './utils';
 
 interface Props {
-  onClose;
-  onSuccess;
+  onClose: () => void;
+  onSuccess: () => void;
   resources: Array<Resource>;
+}
+
+export interface DowntimeFormValues {
+  comment?: string;
+  dateEnd: Date;
+  dateStart: Date;
+  duration: {
+    unit: string;
+    value: number;
+  };
+  fixed: boolean;
+  isDowntimeWithServices: boolean;
+  timeEnd: Date;
+  timeStart: Date;
+}
+
+export interface DowntimeToPost {
+  comment?: string;
+  duration: {
+    unit: string;
+    value: number;
+  };
+  endTime: string;
+  fixed: boolean;
+  isDowntimeWithServices: boolean;
+  startTime: string;
 }
 
 const DowntimeForm = ({
@@ -46,17 +72,17 @@ const DowntimeForm = ({
   const defaultDurationInMs = downtime.default_duration * 1000;
   const defaultEndDate = new Date(currentDate.getTime() + defaultDurationInMs);
 
-  const form = useFormik({
+  const form = useFormik<DowntimeFormValues>({
     initialValues: {
       comment: undefined,
       dateEnd: defaultEndDate,
       dateStart: currentDate,
-      downtimeAttachedResources: true,
       duration: {
         unit: 'seconds',
         value: downtime.default_duration,
       },
-      fixed: true,
+      fixed: downtime.default_fixed,
+      isDowntimeWithServices: downtime.default_with_services,
       timeEnd: defaultEndDate,
       timeStart: currentDate,
     },

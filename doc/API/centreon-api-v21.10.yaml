@@ -3398,6 +3398,14 @@ paths:
                       type: boolean
                       description: Default monitoring acknowledgement sticky option
                       example: true
+                    monitoring_default_downtime_fixed:
+                      type: boolean
+                      description: Default monitoring downtime fixed option
+                      example: true
+                    monitoring_default_downtime_with_services:
+                      type: boolean
+                      description: Default set downtimes on services attached to hosts option
+                      example: true
         '400':
           $ref: '#/components/responses/BadRequest'
         '403':
