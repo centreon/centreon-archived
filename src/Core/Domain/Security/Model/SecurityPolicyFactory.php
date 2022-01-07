@@ -40,7 +40,7 @@ class SecurityPolicyFactory
         return new SecurityPolicy(
             $request->passwordMinimumLength,
             $request->hasUppercase,
-            $request->hasUppercase,
+            $request->hasLowercase,
             $request->hasNumber,
             $request->hasSpecialCharacter,
             $request->canReusePassword,
