@@ -21,7 +21,7 @@
 
 declare(strict_types=1);
 
-namespace Core\Infrastructure\Security\Api\FindSecurityPolicy;
+namespace Core\Infrastructure\Security\Api\UpdateSecurityPolicy;
 
 use Symfony\Component\HttpFoundation\Response;
 use Core\Application\Common\UseCase\ResponseStatusInterface;

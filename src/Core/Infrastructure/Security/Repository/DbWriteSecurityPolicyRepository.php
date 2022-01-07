@@ -44,22 +44,25 @@ class DbWriteSecurityPolicyRepository extends AbstractRepositoryDRB implements W
     public function updateSecurityPolicy(SecurityPolicy $securityPolicy): void
     {
         $statement = $this->db->prepare(
-            "UPDATE `:db`.password_security_policy SET " .
-            "password_length = :passwordLength, uppercase_characters = :uppercase, lowercase_characters = :lowercase " .
-            "integer_characters = :integer, special_characters = :special, attempts = :attempts, " .
-            "blocking_duration = :blockingDuration, password_expiration = :passwordExpiration, " .
-            "delay_before_new_password = :delayBeforeNewPassword, can_reuse_password = :canReusePassword"
+            $this->translateDbName(
+                "UPDATE `:db`.password_security_policy SET " .
+                "password_length = :passwordLength, uppercase_characters = :uppercase, " .
+                "lowercase_characters = :lowercase, integer_characters = :integer, special_characters = :special, " .
+                "attempts = :attempts, blocking_duration = :blockingDuration, " .
+                "password_expiration = :passwordExpiration, delay_before_new_password = :delayBeforeNewPassword, " .
+                "can_reuse_password = :canReusePassword"
+            )
         );
         $statement->bindValue(':passwordLength', $securityPolicy->getPasswordMinimumLength(), \PDO::PARAM_INT);
-        $statement->bindValue(':uppercase', (string) $securityPolicy->hasUppercase(), \PDO::PARAM_STR);
-        $statement->bindValue(':lowercase', (string) $securityPolicy->hasLowercase(), \PDO::PARAM_STR);
-        $statement->bindValue(':integer', (string) $securityPolicy->hasNumber(), \PDO::PARAM_STR);
-        $statement->bindValue(':special', (string) $securityPolicy->hasSpecialCharacter(), \PDO::PARAM_STR);
+        $statement->bindValue(':uppercase', $securityPolicy->hasUppercase() ? '1' : '0', \PDO::PARAM_STR);
+        $statement->bindValue(':lowercase', $securityPolicy->hasLowercase() ? '1' : '0', \PDO::PARAM_STR);
+        $statement->bindValue(':integer', $securityPolicy->hasNumber() ? '1' : '0', \PDO::PARAM_STR);
+        $statement->bindValue(':special', $securityPolicy->hasSpecialCharacter() ? '1' : '0', \PDO::PARAM_STR);
         $statement->bindValue(':attempts', $securityPolicy->getAttempts(), \PDO::PARAM_INT);
         $statement->bindValue(':blockingDuration', $securityPolicy->getBlockingDuration(), \PDO::PARAM_INT);
         $statement->bindValue(':passwordExpiration', $securityPolicy->getPasswordExpiration(), \PDO::PARAM_INT);
         $statement->bindValue(':delayBeforeNewPassword', $securityPolicy->getDelayBeforeNewPassword(), \PDO::PARAM_INT);
-        $statement->bindValue(':canReusePassword', (string) $securityPolicy->canReusePassword(), \PDO::PARAM_INT);
+        $statement->bindValue(':canReusePassword', $securityPolicy->canReusePassword() ? '1' : '0', \PDO::PARAM_STR);
         $statement->execute();
     }
 }
