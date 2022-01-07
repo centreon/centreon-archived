@@ -5,7 +5,6 @@ use Centreon\Infrastructure\CentreonLegacyDB\ServiceEntityRepository;
 
 class TimePeriodIncludeRelationRepository extends ServiceEntityRepository
 {
-
     /**
      * Export
      *

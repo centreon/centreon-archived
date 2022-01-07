@@ -48,8 +48,8 @@ function testExistence($name = null)
         $id = $form->getSubmitValue('id');
     }
 
-    $dbResult = $pearDB->query("SELECT config_name, config_id 
-                                FROM `cfg_centreonbroker` 
+    $dbResult = $pearDB->query("SELECT config_name, config_id
+                                FROM `cfg_centreonbroker`
                                 WHERE `config_name` = '" . htmlentities($name, ENT_QUOTES, "UTF-8") . "'");
     $ndomod = $dbResult->fetch();
     if ($dbResult->rowCount() >= 1 && $ndomod["config_id"] == $id) {
@@ -216,7 +216,6 @@ function multipleCentreonBrokerInDB($ids, $nbrDup)
         $dbResult = $pearDB->query($query);
         $values['output'] = array();
         $values['input'] = array();
-        $values['logger'] = array();
         while ($rowOpt = $dbResult->fetch()) {
             if ($rowOpt['config_key'] == 'filters') {
                 continue;

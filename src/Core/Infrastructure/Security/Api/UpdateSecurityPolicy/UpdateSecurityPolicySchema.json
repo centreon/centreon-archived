@@ -1,0 +1,49 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Update a security policy",
+    "type": "object",
+    "required": ["password_min_length", "has_uppercase", "has_lowercase", "has_number", "has_special_character", "attempts", "blocking_duration", "password_expiration", "can_reuse_passwords", "delay_before_new_password"],
+    "additionalProperties": false,
+    "properties": {
+      "password_min_length": {
+        "type": "integer",
+        "minimum": 8,
+        "maximum": 128
+      },
+      "has_uppercase": {
+        "type": "boolean"
+      },
+      "has_lowercase": {
+        "type": "boolean"
+      },
+      "has_number": {
+        "type": "boolean"
+      },
+      "has_special_character": {
+        "type": "boolean"
+      },
+      "attempts": {
+          "type": ["integer", "null"],
+          "minimum": 1,
+          "maximum": 10
+      },
+      "blocking_duration": {
+        "type": ["integer", "null"],
+        "minimum": 1,
+        "maximum": 604800
+      },
+      "password_expiration": {
+          "type": ["integer", "null"],
+          "minimum": 604800,
+          "maximum": 31536000
+      },
+      "can_reuse_passwords": {
+          "type": "boolean"
+      },
+      "delay_before_new_password": {
+          "type": ["integer", "null"],
+          "minimum": 3600,
+          "maximum": 604800
+      }
+    }
+}

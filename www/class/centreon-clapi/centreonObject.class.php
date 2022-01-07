@@ -473,9 +473,9 @@ abstract class CentreonObject
         $filterId = $this->getObjectId($filterName);
         $filterIds = is_array($filterId) ? $filterId : [$filterId];
         foreach ($filterIds as $filterId) {
-            $exported->ariane_push($this->action, $filterId, $filterName);
-            if ($exported->is_exported($this->action, $filterId, $filterName)) {
-                $exported->ariane_pop();
+            $exported->arianePush($this->action, $filterId, $filterName);
+            if ($exported->isExported($this->action, $filterId, $filterName)) {
+                $exported->arianePop();
                 return false;
             }
         }
@@ -538,7 +538,7 @@ abstract class CentreonObject
             }
         }
 
-        CentreonExported::getInstance()->ariane_pop();
+        CentreonExported::getInstance()->arianePop();
         return true;
     }
 

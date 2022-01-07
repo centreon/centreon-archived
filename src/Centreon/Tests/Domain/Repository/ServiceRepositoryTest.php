@@ -46,7 +46,6 @@ use Centreon\Domain\Repository\ServiceRepository;
  */
 class ServiceRepositoryTest extends TestCase
 {
-
     /**
      * @var \Centreon\Test\Mock\CentreonDB
      */

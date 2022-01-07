@@ -16423,20 +16423,23 @@ msgstr "Ceci ne va pas être utilisé car le nombre de tentatives n'est pas déf
 msgid "You can't change your password because the delay before changing password is not over."
 msgstr "Vous ne pouvez pas changer votre mot de passe car le délai avant changement de mot de passe n'est pas encore terminé."
 
-msgid "Your password should be %d characters long."
-msgstr "Votre mot de passe doit contenir %d caractères."
+msgid "Your password must be %d characters long"
+msgstr "Votre mot de passe doit contenir %d caractères"
 
-msgid "Your password should contains uppercase characters."
-msgstr "Votre mot de passe doit contenir des caractères majuscules."
+msgid "and must contain"
+msgstr "et doit contenir"
 
-msgid "Your password should contains lowercase characters."
-msgstr "Votre mot de passe doit contenir des caractères minuscules."
+msgid "uppercase characters"
+msgstr "caractères majuscules"
 
-msgid "Your password should contains integer characters."
-msgstr "Votre mot de passe doit contenir des caractères numériques."
+msgid "lowercase characters"
+msgstr "caractères minuscules"
 
-msgid "Your password should contains special characters form the list '@$!%*?&'."
-msgstr "Votre mot de passe doit contenir des caractères spéciaux de la liste '@$!%*?&'."
+msgid "integer characters"
+msgstr "caractères numériques"
+
+msgid "special characters among '%s'"
+msgstr "caractères spéciaux parmi '%s'"
 
 msgid "Your password has already been used. Please choose a different password from the previous three."
 msgstr "Votre mot de passe a déjà été utilisé. Veuillez choisir un mot de passe différent des trois précédents."

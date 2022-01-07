@@ -11,7 +11,7 @@ class NagiosServer
      * Get template configuration
      * @todo move it as yml
      *
-     * @return array the configuration template
+     * @return array<string, int|string>
      */
     public static function getConfiguration(): array
     {

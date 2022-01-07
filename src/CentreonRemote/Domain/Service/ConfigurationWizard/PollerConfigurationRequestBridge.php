@@ -82,10 +82,10 @@ class PollerConfigurationRequestBridge
     /**
      * Get pollers to link a set of poller information
      *
-     * @param array $pollers the pollers to get list of poller objects
+     * @param array<mixed> $pollers the pollers to get list of poller objects
      * @return PollerServer[] the pollers to link
      */
-    private function getPollersToLink(array $pollers): array
+    private function getPollersToLink(array $pollers)
     {
         if (empty($pollers)) {
             return [];
@@ -112,7 +112,7 @@ class PollerConfigurationRequestBridge
         $data = [];
 
         foreach ($results as $result) {
-            $poller = new PollerServer;
+            $poller = new PollerServer();
             $poller->setId($result->id);
             $poller->setName($result->name);
             $poller->setIp($result->ip);

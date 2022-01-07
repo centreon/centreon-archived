@@ -4,7 +4,6 @@ use Centreon\Test\Behat\CentreonContext;
 
 class ClapiContext extends CentreonContext
 {
-    private $file;
     private const CLAPI_ACTIONS_ORDER = [
         "ACLACTION",
         "INSTANCE",
@@ -55,6 +54,10 @@ class ClapiContext extends CentreonContext
     ];
 
     private const CONFIGURATION_EXPORT_FILENAME = 'clapi-export.txt';
+    protected $test;
+    protected $object;
+    protected $parameter;
+    protected $file;
 
     public function exportClapi($file = null, $selectList = array(), $filter = null)
     {

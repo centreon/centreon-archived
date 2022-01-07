@@ -208,7 +208,6 @@ class CentreonConfigCentreonBroker
         }
         $query = "SELECT cb_tag_id, tagname
             FROM cb_tag
-            WHERE tagname <> 'logger'
             ORDER BY tagname";
         try {
             $res = $this->db->query($query);
