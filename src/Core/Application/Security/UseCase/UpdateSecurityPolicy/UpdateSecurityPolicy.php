@@ -56,6 +56,7 @@ class UpdateSecurityPolicy
         } catch (AssertionException $ex) {
             $this->error('Unable to create Security Policy because of one or many parameters are invalid');
             $presenter->setResponseStatus(new ErrorResponse($ex->getMessage()));
+            return;
         }
 
         $this->repository->updateSecurityPolicy($securityPolicy);
