@@ -58,8 +58,22 @@ interface Props {
 
 const Groups = ({ details }: Props): JSX.Element => {
   const theme = useTheme();
+  const { t } = useTranslation();
 
   const [hoveredGroupId, setHoveredGroupId] = React.useState<number>();
+
+  const setCriteriaAndNewFilter = useUpdateAtom(
+    setCriteriaAndNewFilterDerivedAtom,
+  );
+
+  const filterByGroup = (group: NamedEntity): void => {
+    setCriteriaAndNewFilter({
+      name: equals(details?.type, ResourceType.host)
+        ? CriteriaNames.hostGroups
+        : CriteriaNames.serviceGroups,
+      value: [group],
+    });
+  };
 
   return (
     <Grid container spacing={1}>
@@ -105,16 +119,16 @@ const Groups = ({ details }: Props): JSX.Element => {
                       }}
                     >
                       <IconButton
-                        color="default"
+                        title={t(labelFilter)}
                         onClick={(): void => console.log('FILTER')}
                       >
-                        <IconFilterList fontSize="small" />
+                        <IconFilterList fontSize="small" htmlColor="#FFFFFF" />
                       </IconButton>
                       <IconButton
-                        color="default"
+                        title={t(labelConfigure)}
                         onClick={(): void => console.log('GO TO CONF')}
                       >
-                        <SettingsIcon fontSize="small" />
+                        <SettingsIcon fontSize="small" htmlColor="#FFFFFF" />
                       </IconButton>
                     </div>
                   )}
@@ -122,7 +136,7 @@ const Groups = ({ details }: Props): JSX.Element => {
               }
               onMouseEnter={(): void => setHoveredGroupId(group.id)}
               onMouseLeave={(): void => setHoveredGroupId(undefined)}
-            />{' '}
+            />
           </Grid>
         );
       })}
