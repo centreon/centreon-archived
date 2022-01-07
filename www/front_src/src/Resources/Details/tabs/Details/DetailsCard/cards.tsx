@@ -187,7 +187,6 @@ const getDetailCardLines = ({
       title: labelCalculationType,
     },
     {
-      isHovered: true,
       line: <Groups details={details} />,
       shouldBeDisplayed: !isEmpty(details.groups),
       title: labelGroups,
