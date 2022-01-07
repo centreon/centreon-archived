@@ -46,8 +46,7 @@ class ParametersController extends AbstractController
                   DEFAULT_ACKNOWLEDGEMENT_PERSISTENT = 'monitoring_ack_persistent',
                   DEFAULT_DOWNTIME_FIXED = 'monitoring_dwt_fixed',
                   DEFAULT_DOWNTIME_WITH_SERVICES = 'monitoring_dwt_svc';
-                  
-
+    
     /**
      * Needed to make response "more readable"
      */
