@@ -26,7 +26,6 @@ use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Centreon\Infrastructure\DatabaseConnection;
 use Core\Application\Security\Repository\WriteTokenRepositoryInterface;
 
-
 class DbWriteTokenRepository extends AbstractRepositoryDRB implements WriteTokenRepositoryInterface
 {
     /**
