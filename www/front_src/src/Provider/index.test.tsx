@@ -3,8 +3,7 @@ import * as React from 'react';
 import axios from 'axios';
 import { render, RenderResult, waitFor } from '@testing-library/react';
 
-import { useUserContext as mockUseUserContext } from './UserContext';
-import { UserContext } from './models';
+import { useUser, useAcl, useRefreshInterval } from '@centreon/ui-context';
 
 import AppProvider from '.';
 
@@ -15,6 +14,7 @@ const retrievedUser = {
   locale: 'fr_FR.UTF8',
   name: 'Admin',
   timezone: 'Europe/Paris',
+  use_deprecated_pages: false,
 };
 
 const retrievedDefaultParameters = {
@@ -41,12 +41,8 @@ const retrievedTranslations = {
   },
 };
 
-let userContext: UserContext | null = null;
-
 jest.mock('../App', () => {
   const ComponentWithUserContext = (): JSX.Element => {
-    userContext = mockUseUserContext();
-
     return <></>;
   };
 
@@ -77,26 +73,16 @@ describe(AppProvider, () => {
       });
   });
 
-  afterEach(() => {
-    userContext = null;
-  });
-
   it('populates the userContext', async () => {
     renderComponent();
 
-    await waitFor(() =>
-      expect(userContext).toEqual({
-        ...retrievedUser,
-        acl: {
-          actions: retrievedActionsAcl,
-        },
-        downtime: {
-          default_duration:
-            retrievedDefaultParameters.monitoring_default_downtime_duration,
-        },
-        refreshInterval:
-          retrievedDefaultParameters.monitoring_default_refresh_interval,
-      }),
-    );
+    await waitFor(() => {
+      expect(useAcl().setActionAcl).toHaveBeenCalledWith(retrievedActionsAcl);
+      expect(useUser().setUser).toHaveBeenCalledWith(retrievedUser);
+
+      expect(useRefreshInterval().setRefreshInterval).toHaveBeenCalledWith(
+        retrievedDefaultParameters.monitoring_default_refresh_interval,
+      );
+    });
   });
 });

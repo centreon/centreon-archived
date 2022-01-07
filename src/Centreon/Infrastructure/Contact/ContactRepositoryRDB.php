@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -270,7 +271,7 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
                 ON rules.acl_action_rule_id = actions.acl_action_id
             WHERE contact.contact_id = :contact_id
                 AND rules.acl_action_name IS NOT NULL
-            ORDER BY contact.contact_id, rules.acl_action_name';
+            ORDER BY rules.acl_action_name';
 
         $request = $this->translateDbName($request);
         $statement = $this->db->prepare($request);
@@ -328,7 +329,8 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
             ->setAccessToApiRealTime($contact['reach_api_rt'] === '1')
             ->setAccessToApiConfiguration($contact['reach_api'] === '1')
             ->setTimezone(new \DateTimeZone($contactTimezoneName))
-            ->setLocale($contactLocale);
+            ->setLocale($contactLocale)
+            ->setUseDeprecatedPages($contact['show_deprecated_pages'] === '1');
     }
 
     /**

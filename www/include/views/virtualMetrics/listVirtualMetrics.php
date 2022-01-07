@@ -110,15 +110,19 @@ $form->addElement('submit', 'Search', _("Search"), $attrBtnSuccess);
 $deftype = array(0 => "CDEF", 1 => "VDEF");
 $yesOrNo = array(null => "No", 0 => "No", 1 => "Yes");
 $elemArr = array();
+$centreonToken = createCSRFToken();
+
 for ($i = 0; $vmetric = $stmt->fetch(); $i++) {
     $selectedElements = $form->addElement('checkbox', "select[" . $vmetric['vmetric_id'] . "]");
     if ($vmetric["vmetric_activate"]) {
         $moptions = "<a href='main.php?p=" . $p . "&vmetric_id=" . $vmetric['vmetric_id'] . "&o=u&limit=" . $limit .
-            "&num=" . $num . "&search=" . $search . "'><img src='img/icons/disabled.png' class='ico-14 margin_right' " .
+            "&num=" . $num . "&search=" . $search . "&centreon_token=" . $centreonToken .
+            "'><img src='img/icons/disabled.png' class='ico-14 margin_right' " .
             "border='0' alt='" . _("Disabled") . "'></a>";
     } else {
         $moptions = "<a href='main.php?p=" . $p . "&vmetric_id=" . $vmetric['vmetric_id'] . "&o=s&limit=" . $limit .
-            "&num=" . $num . "&search=" . $search . "'><img src='img/icons/enabled.png' class='ico-14 margin_right' " .
+            "&num=" . $num . "&search=" . $search . "&centreon_token=" . $centreonToken .
+            "'><img src='img/icons/enabled.png' class='ico-14 margin_right' " .
             "border = '0' alt = '" . _("Enabled") . "' ></a > ";
     }
     $moptions .= " &nbsp;<input onKeypress = \"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) " .

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005-2020 Centreon
+ * Copyright 2005-2021 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -57,6 +57,12 @@ if (!CentreonSession::checkSession(session_id(), $pearDB)) {
  * @var Centreon $centreon
  */
 $centreon = $_SESSION["centreon"];
+
+/**
+ * true: URIs will correspond to deprecated pages
+ * false: URIs will correspond to new page (Resource Status)
+ */
+$useDeprecatedPages = $centreon->user->doesShowDeprecatedPages();
 
 /**
  * Language informations init
@@ -882,19 +888,30 @@ if (isset($req) && $req) {
             }
             $buffer->writeElement("service_description", $log["service_description"], false);
             $buffer->writeElement("real_service_name", $log["service_description"], false);
-            $buffer->writeElement(
-                "s_timeline_uri",
-                $resourceController->buildServiceUri(
+
+            $serviceTimelineRedirectionUri = $useDeprecatedPages
+                ? 'main.php?p=20201&amp;o=svcd&amp;host_name=' . $log['host_name'] . '&amp;service_description='
+                    . $log['service_description']
+                : $resourceController->buildServiceUri(
                     $log['host_id'],
                     $log['service_id'],
                     $resourceController::TAB_TIMELINE_NAME
-                )
+                );
+
+            $buffer->writeElement(
+                "s_timeline_uri",
+                $serviceTimelineRedirectionUri
             );
         }
         $buffer->writeElement("real_name", $log["host_name"], false);
+
+        $hostTimelineRedirectionUri = $useDeprecatedPages
+            ? 'main.php?p=20202&amp;o=hd&amp;host_name=' . $log['host_name']
+            : $resourceController->buildHostUri($log['host_id'], $resourceController::TAB_TIMELINE_NAME);
+
         $buffer->writeElement(
             "h_timeline_uri",
-            $resourceController->buildHostUri($log['host_id'], $resourceController::TAB_TIMELINE_NAME)
+            $hostTimelineRedirectionUri
         );
         $buffer->writeElement("class", $tab_class[$cpts % 2]);
         $buffer->writeElement("poller", $log["instance_name"]);

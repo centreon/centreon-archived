@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { isNil } from 'ramda';
 
 import { Severity, useSnackbar, useRequest } from '@centreon/ui';
+import { useUserContext } from '@centreon/ui-context';
 
 import {
   labelRequired,
@@ -13,7 +14,6 @@ import {
   labelAcknowledgedBy,
 } from '../../../translatedLabels';
 import { Resource } from '../../../models';
-import { useUserContext } from '../../../../Provider/UserContext';
 import { acknowledgeResources } from '../../api';
 
 import DialogAcknowledge from './Dialog';

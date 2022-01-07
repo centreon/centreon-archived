@@ -389,7 +389,7 @@ class CentreonAuthSSO extends CentreonAuth
             $this->CentreonLog->insertLog(
                 1,
                 sprintf(
-                    "[%s] [Error] Unable to get Token Access Information: %S, message: %s",
+                    "[%s] [Error] Unable to get Token Access Information: %s, message: %s",
                     $this->source,
                     get_class($e),
                     $e->getMessage()
@@ -482,7 +482,7 @@ class CentreonAuthSSO extends CentreonAuth
         try {
             $result = $restHttp->call(
                 $url,
-                'POST',
+                'GET',
                 $data,
                 [$authentication],
                 true,

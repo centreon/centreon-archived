@@ -223,7 +223,7 @@ class ProceduresProxy
          */
         $serviceId = $this->getServiceId($hostName, $serviceDescription);
         $templates = $this->serviceObj->getTemplatesChain($serviceId);
-        foreach ($templates as $templateId) {
+        foreach (array_reverse($templates) as $templateId) {
             $templateDescription = $this->serviceObj->getServiceDesc($templateId);
             $notesUrl = $this->getServiceNotesUrl((int) $templateId);
             if ($notesUrl !== null) {

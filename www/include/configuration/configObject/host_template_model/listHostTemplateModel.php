@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -129,6 +130,8 @@ $form->addElement('submit', 'Search', _("Search"), $attrBtnSuccess);
 
 /* Fill a tab with a multidimensional Array we put in $tpl */
 $elemArr = array();
+$centreonToken = createCSRFToken();
+
 for ($i = 0; $host = $DBRESULT->fetch(); $i++) {
     $moptions = "";
     $selectedElements = $form->addElement('checkbox', "select[" . $host['host_id'] . "]");
@@ -137,11 +140,13 @@ for ($i = 0; $host = $DBRESULT->fetch(); $i++) {
     } else {
         if ($host["host_activate"]) {
             $moptions .= "<a href='main.php?p=" . $p . "&host_id=" . $host['host_id'] . "&o=u&limit=" . $limit .
-                "&num=" . $num . "&search=" . $search . "'><img src='img/icons/disabled.png' " .
+                "&num=" . $num . "&search=" . $search . "&centreon_token=" . $centreonToken .
+                "'><img src='img/icons/disabled.png' " .
                 "class='ico-14 margin_right' border='0' alt='" . _("Disabled") . "'></a>&nbsp;&nbsp;";
         } else {
             $moptions .= "<a href='main.php?p=" . $p . "&host_id=" . $host['host_id'] . "&o=s&limit=" . $limit .
-                "&num=" . $num . "&search=" . $search . "'><img src='img/icons/enabled.png' " .
+                "&num=" . $num . "&search=" . $search . "&centreon_token=" . $centreonToken .
+                "'><img src='img/icons/enabled.png' " .
                 "class='ico-14 margin_right' border='0' alt='" . _("Enabled") . "'></a>&nbsp;&nbsp;";
         }
         $moptions .= "&nbsp;";
@@ -175,10 +180,11 @@ for ($i = 0; $host = $DBRESULT->fetch(); $i++) {
     //Check icon
     if ((isset($ehiCache[$host["host_id"]]) && $ehiCache[$host["host_id"]])) {
         $host_icone = "./img/media/" . $mediaObj->getFilename($ehiCache[$host["host_id"]]);
-    } elseif ($icone = $host_method->replaceMacroInString(
-        $host["host_id"],
-        getMyHostExtendedInfoImage($host["host_id"], "ehi_icon_image", 1)
-    )
+    } elseif (
+        $icone = $host_method->replaceMacroInString(
+            $host["host_id"],
+            getMyHostExtendedInfoImage($host["host_id"], "ehi_icon_image", 1)
+        )
     ) {
         $host_icone = "./img/media/" . $icone;
     } else {

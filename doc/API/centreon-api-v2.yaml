@@ -21,7 +21,7 @@ info:
   license:
     name: Apache 2.0
     url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
-  version: "beta"
+  version: "20.10"
 externalDocs:
   description: You can contact us on our community Slack
   url: 'https://centreon.slack.com/messages/CCRGLQSE5'
@@ -283,6 +283,10 @@ paths:
               schema:
                 type: object
                 properties:
+                  id:
+                    type: integer
+                    description: Contact ID
+                    example: 1
                   name:
                     type: string
                     description: Name of the current user
@@ -304,6 +308,14 @@ paths:
                     nullable: true
                     description: Locale of the current user
                     example: en_US
+                  is_admin:
+                    type: boolean
+                    description: If the current user is an administrator
+                    example: true
+                  use_deprecated_pages:
+                    type: boolean
+                    description: Indicates if user wants to use deprecated monitoring pages
+                    example: false
         '403':
           $ref: '#/components/responses/Forbidden'
         '500':
