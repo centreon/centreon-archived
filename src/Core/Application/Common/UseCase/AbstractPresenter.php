@@ -25,9 +25,21 @@ namespace Core\Application\Common\UseCase;
 
 use Symfony\Component\HttpFoundation\Response;
 use Core\Application\Common\UseCase\PresenterInterface;
+use Core\Application\Common\UseCase\ResponseStatusInterface;
+use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
 
 abstract class AbstractPresenter implements PresenterInterface
 {
+    /**
+     * @var PresenterFormatterInterface
+     */
+    protected $presenterFormatter;
+
+    /**
+     * @var ResponseStatusInterface|null
+     */
+    protected $responseStatus;
+
     /**
      * @inheritDoc
      */
