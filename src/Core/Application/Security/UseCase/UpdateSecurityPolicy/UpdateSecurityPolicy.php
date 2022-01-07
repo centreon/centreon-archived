@@ -50,7 +50,7 @@ class UpdateSecurityPolicy
         UpdateSecurityPolicyPresenterInterface $presenter,
         UpdateSecurityPolicyRequest $request
     ): void {
-        $this->debug('Updating Security Policy');
+        $this->info('Updating Security Policy');
         try {
             $securityPolicy = SecurityPolicyFactory::createFromRequest($request);
         } catch (AssertionException $ex) {
