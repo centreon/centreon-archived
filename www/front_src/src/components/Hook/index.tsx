@@ -1,30 +1,20 @@
 import * as React from 'react';
 
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
 import { equals } from 'ramda';
+import { useHref } from 'react-router';
 
 import { MenuSkeleton } from '@centreon/ui';
 
 import { dynamicImport } from '../../helpers/dynamicImport';
 
 interface Props {
-  history;
   hooks;
   path;
 }
 
-const LoadableHooks = ({
-  history,
-  hooks,
-  path,
-  ...rest
-}: Props): JSX.Element => {
-  const basename = history.createHref({
-    hash: '',
-    pathname: '/',
-    search: '',
-  });
+const LoadableHooks = ({ hooks, path, ...rest }: Props): JSX.Element => {
+  const basename = useHref('/');
 
   return (
     <>
@@ -57,4 +47,4 @@ const mapStateToProps = ({ externalComponents }): Record<string, unknown> => ({
   hooks: externalComponents.hooks,
 });
 
-export default connect(mapStateToProps)(withRouter(Hook));
+export default connect(mapStateToProps)(Hook);

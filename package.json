@@ -134,7 +134,7 @@
     "react-i18next": "^11.15.1",
     "react-material-ui-carousel": "^3.1.1",
     "react-redux": "^7.2.6",
-    "react-router-dom": "5.2.1",
+    "react-router-dom": "^6.2.1",
     "react-select": "^5.2.1",
     "react-spring": "^9.3.2",
     "redux": "^4.1.2",

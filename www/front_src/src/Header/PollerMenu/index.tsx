@@ -2,12 +2,11 @@ import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { isEmpty, isNil } from 'ramda';
-import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import classnames from 'classnames';
 import clsx from 'clsx';
 import { useAtomValue } from 'jotai/utils';
-import { useHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import PollerIcon from '@mui/icons-material/DeviceHub';
 import { Button, ClickAwayListener, Paper, Typography } from '@mui/material';
@@ -88,7 +87,7 @@ const PollerMenu = (): JSX.Element => {
   const [isExporting, setIsExportingConfiguration] = React.useState<boolean>();
   const [toggled, setToggled] = React.useState<boolean>(false);
   const interval = React.useRef<number>();
-  const history = useHistory();
+  const navigate = useNavigate();
   const { sendRequest } = useRequest<PollerData>({
     request: getData,
   });
@@ -142,7 +141,7 @@ const PollerMenu = (): JSX.Element => {
 
   const redirectToPollerConfiguration = (): void => {
     closeSubmenu();
-    history.push(`/main.php?p=${pollerConfigurationPageNumber}`);
+    navigate(`/main.php?p=${pollerConfigurationPageNumber}`);
   };
 
   return (
@@ -224,4 +223,4 @@ const mapStateToProps = (state): StateToProps => ({
   allowedPages: allowedPagesSelector(state),
 });
 
-export default connect(mapStateToProps)(withRouter(PollerMenu));
+export default connect(mapStateToProps)(PollerMenu);
