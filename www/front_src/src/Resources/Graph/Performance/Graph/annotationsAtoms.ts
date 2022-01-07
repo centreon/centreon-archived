@@ -19,6 +19,7 @@ import {
   T,
   __,
 } from 'ramda';
+
 import { alpha } from '@mui/material';
 
 import { TimelineEvent } from '../../../Details/tabs/Timeline/models';

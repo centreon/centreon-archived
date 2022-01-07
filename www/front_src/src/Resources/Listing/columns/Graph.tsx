@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import { path, isNil, not } from 'ramda';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
+
 import { Paper } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import IconGraph from '@mui/icons-material/BarChart';

@@ -5,6 +5,7 @@ import React from 'react';
 
 import classnames from 'classnames';
 import { useTranslation } from 'react-i18next';
+
 import { Typography, Paper } from '@mui/material';
 
 import { ContentWithCircularLoading } from '@centreon/ui';

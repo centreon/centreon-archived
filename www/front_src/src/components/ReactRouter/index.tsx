@@ -3,6 +3,7 @@ import * as React from 'react';
 import { Routes, Route, useHref } from 'react-router-dom';
 import { isNil, not, propOr } from 'ramda';
 import { useAtomValue } from 'jotai/utils';
+
 import { styled } from '@mui/material';
 
 import { PageSkeleton, useMemoComponent } from '@centreon/ui';

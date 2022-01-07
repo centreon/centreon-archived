@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import { Shape } from '@visx/visx';
 import { equals, negate } from 'ramda';
+
 import { alpha, useTheme } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 

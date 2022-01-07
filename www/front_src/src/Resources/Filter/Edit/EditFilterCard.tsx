@@ -15,6 +15,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { useUpdateAtom } from 'jotai/utils';
 import { useAtom } from 'jotai';
+
 import DeleteIcon from '@mui/icons-material/Delete';
 import makeStyles from '@mui/styles/makeStyles';
 

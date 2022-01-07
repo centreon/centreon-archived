@@ -14,6 +14,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { useAtom } from 'jotai';
+
 import { Menu, MenuItem, CircularProgress } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import SettingsIcon from '@mui/icons-material/Settings';

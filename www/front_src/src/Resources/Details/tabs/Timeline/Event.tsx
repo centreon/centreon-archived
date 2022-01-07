@@ -6,6 +6,7 @@ import * as React from 'react';
 import { prop, isNil, filter, equals } from 'ramda';
 import { TFunction, useTranslation } from 'react-i18next';
 import dayjs, { Dayjs } from 'dayjs';
+
 import { Chip, Typography } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import EventIcon from '@mui/icons-material/Event';

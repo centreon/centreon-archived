@@ -5,6 +5,7 @@ import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { pathEq } from 'ramda';
+
 import makeStyles from '@mui/styles/makeStyles';
 import IconAcknowledge from '@mui/icons-material/Person';
 import IconCheck from '@mui/icons-material/Sync';

@@ -13,6 +13,7 @@ import { bisector } from 'd3-array';
 import { ScaleLinear } from 'd3-scale';
 import { useTranslation } from 'react-i18next';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
+
 import {
   Button,
   ClickAwayListener,

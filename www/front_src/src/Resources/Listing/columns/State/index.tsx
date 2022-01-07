@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { path } from 'ramda';
+
 import { Grid } from '@mui/material';
 
 import { ComponentColumnProps } from '@centreon/ui';

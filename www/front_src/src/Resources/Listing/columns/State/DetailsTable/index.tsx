@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 import { map, prop, sum, pipe } from 'ramda';
+
 import {
   TableContainer,
   TableRow,

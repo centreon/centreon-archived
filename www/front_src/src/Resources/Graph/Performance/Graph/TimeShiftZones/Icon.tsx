@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { equals, not } from 'ramda';
+
 import makeStyles from '@mui/styles/makeStyles';
 
 import { useMemoComponent } from '@centreon/ui';

@@ -4,6 +4,7 @@ import { isNil, isEmpty, pipe, not, defaultTo, propEq, findIndex } from 'ramda';
 import { useTranslation } from 'react-i18next';
 import { useAtom } from 'jotai';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
+
 import { useTheme, alpha, Skeleton } from '@mui/material';
 
 import { MemoizedPanel as Panel, Tab } from '@centreon/ui';

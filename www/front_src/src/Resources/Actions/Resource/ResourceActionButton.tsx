@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
+
 import { Tooltip, useMediaQuery, useTheme } from '@mui/material';
 
 import { IconButton } from '@centreon/ui';
