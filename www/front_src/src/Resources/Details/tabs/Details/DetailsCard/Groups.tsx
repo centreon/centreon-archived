@@ -104,8 +104,18 @@ const Groups = ({ details }: Props): JSX.Element => {
                         justifySelf: 'center',
                       }}
                     >
-                      <IconFilterList fontSize="small" />
-                      <SettingsIcon fontSize="small" />
+                      <IconButton
+                        color="default"
+                        onClick={(): void => console.log('FILTER')}
+                      >
+                        <IconFilterList fontSize="small" />
+                      </IconButton>
+                      <IconButton
+                        color="default"
+                        onClick={(): void => console.log('GO TO CONF')}
+                      >
+                        <SettingsIcon fontSize="small" />
+                      </IconButton>
                     </div>
                   )}
                 </div>
