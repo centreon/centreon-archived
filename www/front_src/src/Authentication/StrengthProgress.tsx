@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { findLast, gt } from 'ramda';
+import { findLast, gt, lt } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
 import { alpha, LinearProgress, Theme, Typography } from '@mui/material';
@@ -15,6 +15,7 @@ interface Threshold {
 }
 
 interface Props {
+  isInverted?: boolean;
   max: number;
   thresholds: Array<Threshold>;
   value: number;
@@ -38,7 +39,12 @@ const useStyles = makeStyles<Theme, Threshold>((theme) => ({
   },
 }));
 
-const StrengthProgress = ({ thresholds, max, value }: Props): JSX.Element => {
+const StrengthProgress = ({
+  thresholds,
+  max,
+  value,
+  isInverted = false,
+}: Props): JSX.Element => {
   const currentThreshold = React.useMemo(
     () =>
       findLast((threshold) => value >= threshold.value, thresholds) ||
@@ -50,7 +56,15 @@ const StrengthProgress = ({ thresholds, max, value }: Props): JSX.Element => {
 
   const { label } = currentThreshold;
 
-  const progressValue = gt(value, max) ? 100 : (value / max) * 100;
+  const computeProgress = (): number =>
+    gt(value, max) ? 100 : (value / max) * 100;
+
+  const computeInvertedProgress = (): number =>
+    lt(value, 1) ? 100 : ((max + 1 - value) / max) * 100;
+
+  const progressValue = isInverted
+    ? computeInvertedProgress()
+    : computeProgress();
 
   return (
     <div className={classes.progressContainer}>

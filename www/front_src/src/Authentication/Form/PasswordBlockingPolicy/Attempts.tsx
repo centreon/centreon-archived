@@ -92,6 +92,7 @@ const Attempts = (): JSX.Element => {
         />
         {displayStrengthProgress && (
           <StrengthProgress
+            isInverted
             max={10}
             thresholds={thresholds}
             value={attemptsValue || 0}
