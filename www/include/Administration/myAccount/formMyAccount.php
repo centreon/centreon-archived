@@ -63,7 +63,7 @@ if (!isset($centreonFeature)) {
 $cct = array();
 if ($o == "c") {
     $query = "SELECT contact_id, contact_name, contact_alias, contact_lang, contact_email, contact_pager,
-        contact_js_effects, contact_autologin_key, default_page, show_deprecated_pages, contact_auth_type
+        contact_js_effects, contact_autologin_key, default_page, show_deprecated_pages, contact_auth_type, contact_theme
         FROM contact WHERE contact_id = :id";
     $DBRESULT = $pearDB->prepare($query);
     $DBRESULT->bindValue(':id', $centreon->user->get_id(), \PDO::PARAM_INT);
@@ -107,6 +107,12 @@ if ($cct["contact_auth_type"] != 'ldap') {
 }
 $form->addElement('text', 'contact_email', _("Email"), $attrsText);
 $form->addElement('text', 'contact_pager', _("Pager"), $attrsText);
+
+$tab = array();
+$tab[] = $form->createElement('radio', 'contact_theme', null, _("Clear"), 'Centreon-2');
+$tab[] = $form->createElement('radio', 'contact_theme', null, _("Dark"), 'Centreon-Dark');
+$form->addGroup($tab, 'contact_theme', _("Front-end Theme"), '&nbsp;');
+
 if ($cct["contact_auth_type"] != 'ldap') {
     $form->addElement(
         'password',

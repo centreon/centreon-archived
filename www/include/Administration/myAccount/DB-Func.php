@@ -144,7 +144,8 @@ function updateContact($contact_id = null)
           'default_page = :defaultPage, ' .
           'contact_js_effects = :contactJsEffects, ' .
           'show_deprecated_pages = :showDeprecatedPages, ' .
-          'contact_autologin_key = :contactAutologinKey';
+          'contact_autologin_key = :contactAutologinKey, ' .
+          'contact_theme = :contactTheme';
     $password_encrypted = null;
     if (!empty($ret['contact_passwd'])) {
         $rq .= ', contact_passwd = :contactPasswd';
@@ -180,6 +181,11 @@ function updateContact($contact_id = null)
         ':contactLocation',
         !empty($ret['contact_location']) ? $ret['contact_location'] : null,
         \PDO::PARAM_INT
+    );
+    $stmt->bindValue(
+        ':contactTheme',
+        !empty($ret['contact_theme']['contact_theme']) ? $ret['contact_theme']['contact_theme'] : "Centreon-2",
+        \PDO::PARAM_STR
     );
     $stmt->bindValue(':defaultPage', !empty($ret['default_page']) ? $ret['default_page'] : null, \PDO::PARAM_INT);
     $stmt->bindValue(':contactJsEffects', isset($ret['contact_js_effects']) ? 1 : 0, \PDO::PARAM_STR);
