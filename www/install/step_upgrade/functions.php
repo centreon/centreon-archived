@@ -36,6 +36,7 @@
  *
  */
 
+
 function aff_header($str, $str2, $nb)
 {
     ?>
