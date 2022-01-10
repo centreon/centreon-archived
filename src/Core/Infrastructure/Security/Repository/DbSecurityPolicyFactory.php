@@ -29,19 +29,19 @@ use Centreon\Domain\Common\Assertion\AssertionException;
 class DbSecurityPolicyFactory
 {
     /**
-     * @param array<string, mixed> $data
+     * @param string $data
      * @return SecurityPolicy
      * @throws AssertionException
      */
-    public static function createFromRecord(array $data): SecurityPolicy
+    public static function createFromRecord(string $data): SecurityPolicy
     {
-        $securityPolicyData = json_decode($data['configuration'], true)['password_security_policy'];
+        $securityPolicyData = json_decode($data, true)['password_security_policy'];
 
         return new SecurityPolicy(
             $securityPolicyData['password_length'],
             $securityPolicyData['has_uppercase_characters'],
             $securityPolicyData['has_lowercase_characters'],
-            $securityPolicyData['has_numvers'],
+            $securityPolicyData['has_numbers'],
             $securityPolicyData['has_special_characters'],
             $securityPolicyData['can_reuse_passwords'],
             $securityPolicyData['attempts'],
