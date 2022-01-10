@@ -67,6 +67,7 @@ require_once dirname(__FILE__) . '/resource.class.php';
 require_once dirname(__FILE__) . '/engine.class.php';
 require_once dirname(__FILE__) . '/broker.class.php';
 require_once dirname(__FILE__) . '/timezone.class.php';
+require_once dirname(__FILE__) . '/plugins.class.php';
 
 class Generate
 {
@@ -240,6 +241,7 @@ class Generate
         MetaHost::getInstance($this->dependencyInjector)->reset();
         Connector::getInstance($this->dependencyInjector)->reset();
         Resource::getInstance($this->dependencyInjector)->reset();
+        Plugins::getInstance($this->dependencyInjector)->reset();
         Engine::getInstance($this->dependencyInjector)->reset();
         Broker::getInstance($this->dependencyInjector)->reset();
         $this->resetModuleObjects();
@@ -257,6 +259,7 @@ class Generate
             $this->current_poller['localhost']
         );
         $this->generateModuleObjects(1);
+        Plugins::getInstance($this->dependencyInjector)->generate();
         Engine::getInstance($this->dependencyInjector)->generateFromPoller($this->current_poller);
         $this->backend_instance->movePath($this->current_poller['id']);
 
