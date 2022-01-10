@@ -44,7 +44,9 @@ class DbReadSecurityPolicyRepository extends AbstractRepositoryDRB implements Re
      */
     public function findSecurityPolicy(): ?SecurityPolicy
     {
-        $statement = $this->db->query("SELECT * FROM password_security_policy");
+        $statement = $this->db->query(
+            "SELECT `configuration` FROM `provider_configuration` WHERE `name` = 'local'"
+        );
 
         $securityPolicy = null;
         if ($statement !== false && $result = $statement->fetch(\PDO::FETCH_ASSOC)) {

@@ -44,7 +44,7 @@ class DbSecurityPolicyFactoryTest extends TestCase
             'lowercase_characters' => true,
             'integer_characters' => true,
             'special_characters' => true,
-            'can_reuse_password' => true,
+            'can_reuse_passwords' => true,
             'attempts' => SecurityPolicy::MIN_ATTEMPTS,
             'blocking_duration' => SecurityPolicy::MIN_BLOCKING_DURATION,
             'password_expiration' => SecurityPolicy::MIN_PASSWORD_EXPIRATION,
@@ -239,8 +239,8 @@ class DbSecurityPolicyFactoryTest extends TestCase
             $createdSecurityPolicy->hasSpecialCharacter()
         );
         $this->assertEquals(
-            $this->securityPolicyData['can_reuse_password'],
-            $createdSecurityPolicy->canReusePassword()
+            $this->securityPolicyData['can_reuse_passwords'],
+            $createdSecurityPolicy->canReusePasswords()
         );
         $this->assertEquals(
             $this->securityPolicyData['attempts'],

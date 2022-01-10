@@ -84,7 +84,7 @@ class FindSecurityPolicyTest extends TestCase
         $this->assertEquals($presenter->response->hasLowercase, $securityPolicy->hasLowercase());
         $this->assertEquals($presenter->response->hasNumber, $securityPolicy->hasNumber());
         $this->assertEquals($presenter->response->hasSpecialCharacter, $securityPolicy->hasSpecialCharacter());
-        $this->assertEquals($presenter->response->canReusePassword, $securityPolicy->canReusePassword());
+        $this->assertEquals($presenter->response->canReusePasswords, $securityPolicy->canReusePasswords());
         $this->assertEquals($presenter->response->attempts, $securityPolicy->getAttempts());
         $this->assertEquals($presenter->response->blockingDuration, $securityPolicy->getBlockingDuration());
         $this->assertEquals($presenter->response->passwordExpiration, $securityPolicy->getPasswordExpiration());

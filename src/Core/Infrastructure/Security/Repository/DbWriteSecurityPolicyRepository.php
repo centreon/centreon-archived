@@ -43,26 +43,28 @@ class DbWriteSecurityPolicyRepository extends AbstractRepositoryDRB implements W
      */
     public function updateSecurityPolicy(SecurityPolicy $securityPolicy): void
     {
+        $configuration = json_encode([
+            "security_policy" => [
+                "password_length" => $securityPolicy->getPasswordMinimumLength(),
+                "has_uppercase_characters" => $securityPolicy->hasUppercase(),
+                "has_lowercase_characters" => $securityPolicy->hasLowercase(),
+                "has_numbers" => $securityPolicy->hasNumber(),
+                "has_special_characters" => $securityPolicy->hasSpecialCharacter(),
+                "attempts" => $securityPolicy->getAttempts(),
+                "blocking_duration" => $securityPolicy->getBlockingDuration(),
+                "password_expiration" => $securityPolicy->getPasswordExpiration(),
+                "delay_before_new_password" => $securityPolicy->getDelayBeforeNewPassword(),
+                "can_reuse_passwords" => $securityPolicy->canReusePasswords(),
+            ],
+        ]);
         $statement = $this->db->prepare(
             $this->translateDbName(
-                "UPDATE `:db`.password_security_policy SET " .
-                "password_length = :passwordLength, uppercase_characters = :uppercase, " .
-                "lowercase_characters = :lowercase, integer_characters = :integer, special_characters = :special, " .
-                "attempts = :attempts, blocking_duration = :blockingDuration, " .
-                "password_expiration = :passwordExpiration, delay_before_new_password = :delayBeforeNewPassword, " .
-                "can_reuse_passwords = :canReusePasswords"
+                "UPDATE `provider_configuration`
+                SET `configuration` = :localProviderConfiguration
+                WHERE `name` = 'local'"
             )
         );
-        $statement->bindValue(':passwordLength', $securityPolicy->getPasswordMinimumLength(), \PDO::PARAM_INT);
-        $statement->bindValue(':uppercase', $securityPolicy->hasUppercase() ? '1' : '0', \PDO::PARAM_STR);
-        $statement->bindValue(':lowercase', $securityPolicy->hasLowercase() ? '1' : '0', \PDO::PARAM_STR);
-        $statement->bindValue(':integer', $securityPolicy->hasNumber() ? '1' : '0', \PDO::PARAM_STR);
-        $statement->bindValue(':special', $securityPolicy->hasSpecialCharacter() ? '1' : '0', \PDO::PARAM_STR);
-        $statement->bindValue(':attempts', $securityPolicy->getAttempts(), \PDO::PARAM_INT);
-        $statement->bindValue(':blockingDuration', $securityPolicy->getBlockingDuration(), \PDO::PARAM_INT);
-        $statement->bindValue(':passwordExpiration', $securityPolicy->getPasswordExpiration(), \PDO::PARAM_INT);
-        $statement->bindValue(':delayBeforeNewPassword', $securityPolicy->getDelayBeforeNewPassword(), \PDO::PARAM_INT);
-        $statement->bindValue(':canReusePasswords', $securityPolicy->canReusePasswords() ? '1' : '0', \PDO::PARAM_STR);
+        $statement->bindValue(':localProviderConfiguration', $configuration, \PDO::PARAM_STR);
         $statement->execute();
     }
 }

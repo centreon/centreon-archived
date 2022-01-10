@@ -33,8 +33,8 @@ try {
     );
 
     $errorMessage = "Unable to insert default local security policy configuration";
-    $localProviderConfiguration = json_encode(
-        [
+    $localProviderConfiguration = json_encode([
+        "security_policy" => [
             "password_length" => 12,
             "has_uppercase_characters" => true,
             "has_lowercase_characters" => true,
@@ -45,14 +45,14 @@ try {
             "password_expiration" => 7776000,
             "delay_before_new_password" => 3600,
             "can_reuse_passwords" => false,
-        ]
-    );
+        ],
+    ]);
     $statement = $pearDB->prepare(
         "UPDATE `provider_configuration`
         SET `configuration` = :localProviderConfiguration
         WHERE `name` = 'local'"
     );
-    $statement->bindValue(':localProviderConfiguration', $localProviderConfiguration, PDO::PARAM_STR);
+    $statement->bindValue(':localProviderConfiguration', $localProviderConfiguration, \PDO::PARAM_STR);
     $statement->execute();
 
     $errorMessage = "Unable to create table 'contact_password'";

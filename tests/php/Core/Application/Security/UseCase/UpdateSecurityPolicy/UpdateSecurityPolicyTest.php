@@ -72,7 +72,7 @@ class UpdateSecurityPolicyTest extends TestCase
         $request->hasLowercase = true;
         $request->hasNumber = true;
         $request->hasSpecialCharacter = true;
-        $request->canReusePassword = true;
+        $request->canReusePasswords = true;
         $request->attempts = SecurityPolicy::MIN_ATTEMPTS;
         $request->blockingDuration = SecurityPolicy::MIN_BLOCKING_DURATION;
         $request->passwordExpiration = SecurityPolicy::MIN_PASSWORD_EXPIRATION;
