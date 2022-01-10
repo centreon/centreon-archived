@@ -125,7 +125,8 @@ if ($cct["contact_auth_type"] != 'ldap') {
     $result = $statement->fetchColumn();
     if ($result) {
         $passwordCreationDate = (int) $result;
-        $passwordExpirationDate = $passwordCreationDate + $encodedPasswordPolicy['password_expiration'];
+        $passwordExpirationDate =
+            $passwordCreationDate + $passwordSecurityPolicy['password_expiration'];
         $isPasswordExpired = time() > $passwordExpirationDate;
         if ($isPasswordExpired) {
             $expirationMessage = _("Your password has expired. Please change it.");
