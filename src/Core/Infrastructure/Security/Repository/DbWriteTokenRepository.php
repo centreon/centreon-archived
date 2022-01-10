@@ -18,17 +18,33 @@
  * For more information : contact@centreon.com
  *
  */
-
 declare(strict_types=1);
 
-namespace Core\Application\Security\UseCase\LogoutSession;
+namespace Core\Infrastructure\Security\Repository;
 
-class LogoutSessionRequest
+use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
+use Centreon\Infrastructure\DatabaseConnection;
+use Core\Application\Security\Repository\WriteTokenRepositoryInterface;
+
+class DbWriteTokenRepository extends AbstractRepositoryDRB implements WriteTokenRepositoryInterface
 {
     /**
-     * @param string $token
+     * @param DatabaseConnection $db
      */
-    public function __construct(public string $token)
+    public function __construct(DatabaseConnection $db)
     {
+        $this->db = $db;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function deleteExpiredSecurityTokens(): void
+    {
+        $this->db->query(
+            $this->translateDbName(
+                "DELETE FROM `:db`.security_token WHERE expiration_date < UNIX_TIMESTAMP(NOW())"
+            )
+        );
     }
 }
