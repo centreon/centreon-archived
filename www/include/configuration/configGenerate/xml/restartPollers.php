@@ -204,6 +204,8 @@ try {
         }
     }
 
+    $syncPlugins = isSyncPlugins();
+
     /*
      * Restart broker
      */
@@ -213,7 +215,7 @@ try {
     foreach ($poller as $host) {
         if ($ret["restart_mode"] == 1) {
             if ($fh = @fopen($centcore_pipe, 'a+')) {
-                fwrite($fh, "RELOAD:" . $host["id"] . "\n");
+                fwrite($fh, ($syncPlugins == 1 ? 'ENGINERELOAD' : 'RELOAD') . ":" . $host["id"] . "\n");
                 fclose($fh);
             } else {
                 throw new Exception(_("Could not write into centcore.cmd. Please check file permissions."));
@@ -229,7 +231,7 @@ try {
             );
         } elseif ($ret["restart_mode"] == 2) {
             if ($fh = @fopen($centcore_pipe, 'a+')) {
-                fwrite($fh, "RESTART:" . $host["id"] . "\n");
+                fwrite($fh, ($syncPlugins == 1 ? 'ENGINERESTART' : 'RESTART') . ":" . $host["id"] . "\n");
                 fclose($fh);
             } else {
                 throw new Exception(_("Could not write into centcore.cmd. Please check file permissions."));

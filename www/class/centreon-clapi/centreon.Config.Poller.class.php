@@ -86,6 +86,21 @@ class CentreonConfigPoller
     }
 
     /**
+     * Get the option pack_sync_plugins
+     *
+     * @return int
+     */
+    private function isSyncPlugins()
+    {
+        $DBRESULT = $this->DB->query("SELECT `value` FROM `options` WHERE `key` = 'pack_sync_plugins'");
+        if ($data = $DBRESULT->fetchRow()) {
+            return ($data['value'] == 1 ? 1 : 0);
+        }
+
+        return 0;
+    }
+
+    /**
      *
      * @param type $poller
      * @return type
@@ -181,7 +196,8 @@ class CentreonConfigPoller
         $host = $result->fetch();
         $result->closeCursor();
 
-        exec("echo 'RELOAD:" . $host["id"] . "' >> " . $this->centcore_pipe, $stdout, $return_code);
+        $syncPlugins = $this->isSyncPlugins();
+        exec("echo '" . ($syncPlugins == 1 ? 'ENGINERELOAD' : 'RELOAD') . ":" . $host["id"] . "' >> " . $this->centcore_pipe, $stdout, $return_code);
         exec("echo 'RELOADBROKER:" . $host["id"] . "' >> " . $this->centcore_pipe, $stdout, $return_code);
         $msg_restart = _("OK: A reload signal has been sent to '" . $host["name"] . "'");
         print $msg_restart . "\n";
@@ -249,7 +265,8 @@ class CentreonConfigPoller
         $host = $result->fetch();
         $result->closeCursor();
 
-        exec("echo 'RESTART:" . $host["id"] . "' >> " . $this->centcore_pipe, $stdout, $return_code);
+        $syncPlugins = $this->isSyncPlugins();
+        exec("echo '" . ($syncPlugins == 1 ? 'ENGINERESTART' : 'RESTART') . ":" . $host["id"] . "' >> " . $this->centcore_pipe, $stdout, $return_code);
         exec("echo 'RELOADBROKER:" . $host["id"] . "' >> " . $this->centcore_pipe, $stdout, $return_code);
         $msg_restart = _("OK: A restart signal has been sent to '" . $host["name"] . "'");
         print $msg_restart . "\n";

@@ -53,3 +53,20 @@ function getCentreonBrokerDirCfg($ns_id)
     }
     return null;
 }
+
+/**
+ * Get the option pack_sync_plugins
+ *
+ * @return int
+ */
+function isSyncPlugins()
+{
+    global $pearDB;
+
+    $res = $pearDB->query("SELECT `value` FROM `options` WHERE `key` = 'pack_sync_plugins'");
+    if ($data = $res->fetch()) {
+        return ($data['value'] == 1 ? 1 : 0);
+    }
+
+    return 0;
+}
