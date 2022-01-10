@@ -16333,8 +16333,8 @@ msgstr "caractères majuscules"
 msgid "lowercase characters"
 msgstr "caractères minuscules"
 
-msgid "integer characters"
-msgstr "caractères numériques"
+msgid "numbers"
+msgstr "nombres"
 
 msgid "special characters among '%s'"
 msgstr "caractères spéciaux parmi '%s'"

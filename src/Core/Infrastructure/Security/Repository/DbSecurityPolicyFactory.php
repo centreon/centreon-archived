@@ -41,7 +41,7 @@ class DbSecurityPolicyFactory
             (bool) $data['lowercase_characters'],
             (bool) $data['integer_characters'],
             (bool) $data['special_characters'],
-            (bool) $data['can_reuse_password'],
+            (bool) $data['can_reuse_passwords'],
             $data['attempts'] !== null ? (int) $data['attempts'] : null,
             $data['blocking_duration'] !== null ? (int) $data['blocking_duration'] : null,
             $data['password_expiration'] !== null ? (int) $data['password_expiration'] : null,

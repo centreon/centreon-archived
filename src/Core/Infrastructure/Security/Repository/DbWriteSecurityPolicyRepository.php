@@ -50,7 +50,7 @@ class DbWriteSecurityPolicyRepository extends AbstractRepositoryDRB implements W
                 "lowercase_characters = :lowercase, integer_characters = :integer, special_characters = :special, " .
                 "attempts = :attempts, blocking_duration = :blockingDuration, " .
                 "password_expiration = :passwordExpiration, delay_before_new_password = :delayBeforeNewPassword, " .
-                "can_reuse_password = :canReusePassword"
+                "can_reuse_passwords = :canReusePasswords"
             )
         );
         $statement->bindValue(':passwordLength', $securityPolicy->getPasswordMinimumLength(), \PDO::PARAM_INT);
@@ -62,7 +62,7 @@ class DbWriteSecurityPolicyRepository extends AbstractRepositoryDRB implements W
         $statement->bindValue(':blockingDuration', $securityPolicy->getBlockingDuration(), \PDO::PARAM_INT);
         $statement->bindValue(':passwordExpiration', $securityPolicy->getPasswordExpiration(), \PDO::PARAM_INT);
         $statement->bindValue(':delayBeforeNewPassword', $securityPolicy->getDelayBeforeNewPassword(), \PDO::PARAM_INT);
-        $statement->bindValue(':canReusePassword', $securityPolicy->canReusePassword() ? '1' : '0', \PDO::PARAM_STR);
+        $statement->bindValue(':canReusePasswords', $securityPolicy->canReusePasswords() ? '1' : '0', \PDO::PARAM_STR);
         $statement->execute();
     }
 }

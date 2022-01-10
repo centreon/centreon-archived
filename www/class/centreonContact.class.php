@@ -295,19 +295,19 @@ class CentreonContact
         }
 
         $characterRules = [
-            'uppercase_characters' => [
+            'has_uppercase_characters' => [
                 'pattern' => '/[A-Z]/',
                 'error_message' =>  _("uppercase characters"),
             ],
-            'lowercase_characters' => [
+            'has_lowercase_characters' => [
                 'pattern' => '/[a-z]/',
                 'error_message' =>  _("lowercase characters"),
             ],
-            'integer_characters' => [
+            'has_numbers' => [
                 'pattern' => '/[0-9]/',
-                'error_message' =>  _("integer characters"),
+                'error_message' =>  _("numbers"),
             ],
-            'special_characters' => [
+            'has_special_characters' => [
                 'pattern' => '/[' . SecurityPolicy::SPECIAL_CHARACTERS_LIST . ']/',
                 'error_message' => sprintf(_("special characters among '%s'"), SecurityPolicy::SPECIAL_CHARACTERS_LIST),
             ],
@@ -360,7 +360,7 @@ class CentreonContact
             }
         };
 
-        if ((bool) $passwordPolicy['can_reuse_password'] === false) {
+        if ((bool) $passwordPolicy['can_reuse_passwords'] === false) {
             $statement = $this->db->prepare(
                 "SELECT id, password FROM `contact_password` WHERE `contact_id` = :contactId"
             );

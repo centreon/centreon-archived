@@ -57,7 +57,7 @@ class FindSecurityPolicyPresenter implements FindSecurityPolicyPresenterInterfac
             'attempts' => $response->attempts,
             'blocking_duration' => $response->blockingDuration,
             'password_expiration' => $response->passwordExpiration,
-            'can_reuse_passwords' => $response->canReusePassword,
+            'can_reuse_passwords' => $response->canReusePasswords,
             'delay_before_new_password' => $response->delayBeforeNewPassword,
         ];
 

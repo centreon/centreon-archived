@@ -43,7 +43,7 @@ class SecurityPolicyFactory
             $request->hasLowercase,
             $request->hasNumber,
             $request->hasSpecialCharacter,
-            $request->canReusePassword,
+            $request->canReusePasswords,
             $request->attempts,
             $request->blockingDuration,
             $request->passwordExpiration,

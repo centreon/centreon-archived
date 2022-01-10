@@ -46,7 +46,7 @@ class SecurityPolicy
      * @param bool $hasLowercase
      * @param bool $hasNumber
      * @param bool $hasSpecialCharacter
-     * @param bool $canReusePassword
+     * @param bool $canReusePasswords
      * @param int|null $attempts
      * @param int|null $blockingDuration
      * @param int|null $passwordExpiration
@@ -59,7 +59,7 @@ class SecurityPolicy
         private bool $hasLowercase,
         private bool $hasNumber,
         private bool $hasSpecialCharacter,
-        private bool $canReusePassword,
+        private bool $canReusePasswords,
         private ?int $attempts,
         private ?int $blockingDuration,
         private ?int $passwordExpiration,
@@ -187,18 +187,18 @@ class SecurityPolicy
     /**
      * @return bool
      */
-    public function canReusePassword(): bool
+    public function canReusePasswords(): bool
     {
-        return $this->canReusePassword;
+        return $this->canReusePasswords;
     }
 
     /**
-     * @param bool $canReusePassword
+     * @param bool $canReusePasswords
      * @return self
      */
-    public function setReusePassword(bool $canReusePassword): self
+    public function setReusePassword(bool $canReusePasswords): self
     {
-        $this->canReusePassword = $canReusePassword;
+        $this->canReusePasswords = $canReusePasswords;
         return $this;
     }
 

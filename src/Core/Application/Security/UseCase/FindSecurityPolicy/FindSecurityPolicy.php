@@ -73,7 +73,7 @@ class FindSecurityPolicy
         $response->hasLowercase = $securityPolicy->hasLowercase();
         $response->hasNumber = $securityPolicy->hasNumber();
         $response->hasSpecialCharacter = $securityPolicy->hasSpecialCharacter();
-        $response->canReusePassword = $securityPolicy->canReusePassword();
+        $response->canReusePasswords = $securityPolicy->canReusePasswords();
         $response->attempts = $securityPolicy->getAttempts();
         $response->blockingDuration = $securityPolicy->getBlockingDuration();
         $response->passwordExpiration = $securityPolicy->getPasswordExpiration();

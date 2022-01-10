@@ -71,7 +71,7 @@ class UpdateSecurityPolicyController extends AbstractController
         $updateSecurityPolicyRequest->attempts = $requestData['attempts'];
         $updateSecurityPolicyRequest->blockingDuration = $requestData['blocking_duration'];
         $updateSecurityPolicyRequest->passwordExpiration = $requestData['password_expiration'];
-        $updateSecurityPolicyRequest->canReusePassword = $requestData['can_reuse_passwords'];
+        $updateSecurityPolicyRequest->canReusePasswords = $requestData['can_reuse_passwords'];
         $updateSecurityPolicyRequest->delayBeforeNewPassword = $requestData['delay_before_new_password'];
 
         return $updateSecurityPolicyRequest;

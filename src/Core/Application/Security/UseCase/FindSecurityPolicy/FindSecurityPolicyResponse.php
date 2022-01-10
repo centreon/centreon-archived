@@ -53,7 +53,7 @@ class FindSecurityPolicyResponse
     /**
      * @var bool
      */
-    public bool $canReusePassword;
+    public bool $canReusePasswords;
 
     /**
      * @var int|null

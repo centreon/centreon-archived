@@ -53,7 +53,7 @@ class UpdateSecurityPolicyRequest
     /**
      * @var boolean
      */
-    public bool $canReusePassword;
+    public bool $canReusePasswords;
 
     /**
      * @var int|null
