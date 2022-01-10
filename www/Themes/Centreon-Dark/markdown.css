@@ -1,0 +1,185 @@
+/*
+ * Inspired from https://github.com/jasonm23/markdown-css-themes/blob/gh-pages/markdown10.css
+ */
+
+.full-page {
+    width: 90%;
+    max-height: none;
+    margin: 10px auto;
+    display: block;
+    float: none;
+    padding: 10px;
+    border: 0;
+}
+
+.md-preview p {
+    margin: 1em 0;
+    line-height: 1.5em;
+}
+.md-preview table {
+    font-size: inherit;
+    font: 100%;
+    margin: 1em;
+}
+.md-preview table th {
+    border-bottom: 1px solid #bbb;
+    padding: .2em 1em;
+}
+.md-preview table td {
+    border-bottom: 1px solid #ddd;
+    padding: .2em 1em;
+}
+.md-preview input[type=text],
+.md-preview input[type=password],
+.md-preview input[type=image],
+.md-preview textarea {
+    font: 99% helvetica, arial, freesans, sans-serif;
+}
+.md-preview select,
+.md-preview option {
+    padding: 0 .25em;
+}
+.md-preview optgroup {
+    margin-top: .5em;
+}
+.md-preview pre,
+.md-preview code {
+    font: 12px Menlo, Monaco, "DejaVu Sans Mono", "Bitstream Vera Sans Mono", monospace;
+}
+.md-preview pre {
+    margin: 1em 0;
+    font-size: 12px;
+    background-color: #eee;
+    border: 1px solid #ddd;
+    padding: 5px;
+    line-height: 1.5em;
+    color: #444;
+    overflow: auto;
+    -webkit-box-shadow: rgba(0, 0, 0, 0.07) 0 1px 2px inset;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+.md-preview pre code {
+    padding: 0;
+    font-size: 12px;
+    background-color: #eee;
+    border: none;
+}
+.md-preview code {
+    font-size: 12px;
+    background-color: #f8f8ff;
+    color: #444;
+    padding: 0 .2em;
+    border: 1px solid #dedede;
+}
+.md-preview img {
+    border: 0;
+    max-width: 100%;
+}
+.md-preview abbr {
+    border-bottom: none;
+}
+.md-preview a {
+    color: #4183c4;
+    text-decoration: none;
+}
+.md-preview a:hover {
+    text-decoration: underline;
+}
+.md-preview a code,
+.md-preview a:link code,
+.md-preview a:visited code {
+    color: #4183c4;
+}
+.md-preview h2,
+.md-preview h3 {
+    margin: 1em 0;
+}
+.md-preview h1,
+.md-preview h2,
+.md-preview h3,
+.md-preview h4,
+.md-preview h5,
+.md-preview h6 {
+    border: 0;
+}
+.md-preview h1 {
+    font-size: 170%;
+    border-top: 4px solid #aaa;
+    padding-top: .5em;
+    margin-top: 1.5em;
+}
+.md-preview h1:first-child {
+    margin-top: 0;
+    padding-top: .25em;
+    border-top: none;
+}
+.md-preview h2 {
+    font-size: 150%;
+    margin-top: 1.5em;
+    border-top: 4px solid #e0e0e0;
+    padding-top: .5em;
+}
+.md-preview h3 {
+    margin-top: 1em;
+}
+.md-preview hr {
+    border: 1px solid #ddd;
+}
+.md-preview ul {
+    margin: 1em 0 1em 2em;
+}
+.md-preview ol {
+    margin: 1em 0 1em 2em;
+}
+.md-preview ul li,
+.md-preview ol li {
+    margin-top: .5em;
+    margin-bottom: .5em;
+    list-style: circle;
+}
+.md-preview ul ul,
+.md-preview ul ol,
+.md-preview ol ol,
+.md-preview ol ul {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+.md-preview blockquote {
+    margin: 1em 0;
+    border-left: 5px solid #ddd;
+    padding-left: .6em;
+    color: #555;
+}
+.md-preview dt {
+    font-weight: bold;
+    margin-left: 1em;
+}
+.md-preview dd {
+    margin-left: 2em;
+    margin-bottom: 1em;
+}
+.md-preview sup {
+    font-size: 0.83em;
+    vertical-align: super;
+    line-height: 0;
+}
+.md-preview * {
+    -webkit-print-color-adjust: exact;
+}
+@media screen and (min-width: 914px) {
+    .md-preview body {
+        width: 854px;
+        margin: 0 auto;
+    }
+}
+@media print {
+    .md-preview table,
+    .md-preview pre {
+        page-break-inside: avoid;
+    }
+    .md-preview pre {
+        word-wrap: break-word;
+    }
+}
