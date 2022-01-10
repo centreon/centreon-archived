@@ -314,10 +314,7 @@ $elemArr = array();
 $search = str_replace('\_', "_", $search);
 
 
-$form->createSecurityToken();
-$token = is_array($form->getElementValue('centreon_token')) ?
-    end($form->getElementValue('centreon_token')) :
-    $form->getElementValue('centreon_token');
+$centreonToken = createCSRFToken();
 
 for ($i = 0; $host = $dbResult->fetch(); $i++) {
     if (
@@ -332,15 +329,15 @@ for ($i = 0; $host = $dbResult->fetch(); $i++) {
 
         if ($host["host_activate"]) {
             $moptions = "<a href='main.php?p=$p&host_id={$host['host_id']}"
-                . "&o=u&limit=$limit&num=$num&searchH=$search'>"
+                . "&o=u&limit=$limit&num=$num&searchH=$search"
                 . "&centreon_token=" . $centreonToken
-                . "<img src='img/icons/disabled.png' class='ico-14 margin_right' "
+                . "'><img src='img/icons/disabled.png' class='ico-14 margin_right' "
                 . "border='0' alt='" . _("Disabled") . "'></a>";
         } else {
             $moptions = "<a href='main.php?p=$p&host_id={$host['host_id']}"
-                . "&o=s&limit=$limit&num=$num&searchH=$search'>"
+                . "&o=s&limit=$limit&num=$num&searchH=$search"
                 . "&centreon_token=" . $centreonToken
-                . "<img src='img/icons/enabled.png' class='ico-14 margin_right' "
+                . "'><img src='img/icons/enabled.png' class='ico-14 margin_right' "
                 . "border='0' alt='" . _("Enabled") . "'></a>";
         }
 

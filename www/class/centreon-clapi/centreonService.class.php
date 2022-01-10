@@ -1260,6 +1260,10 @@ class CentreonService extends CentreonObject
                             }
                         }
                     }
+                    if (in_array($matches[2], ["servicegroup", "host"])) {
+                        $aclObj = new CentreonACL($this->dependencyInjector);
+                        $aclObj->reload(true);
+                    }
                 }
             } else {
                 throw new CentreonClapiException(self::UNKNOWN_METHOD);

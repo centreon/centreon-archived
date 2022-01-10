@@ -15492,6 +15492,9 @@ msgstr "Filtre id %s non trouvé"
 msgid "Filter already exists"
 msgstr "Le filtre existe déjà"
 
+msgid "Filter name already used"
+msgstr "Le nom de filtre est déjà utilisé"
+
 msgid "Error when adding filter %s"
 msgstr "Erreur lors de l'ajout du filtre %s"
 

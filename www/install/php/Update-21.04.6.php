@@ -24,8 +24,6 @@ $centreonLog = new CentreonLog();
 //error specific content
 $versionOfTheUpgrade = 'UPGRADE - 21.04.6:';
 
-$pearDB = new CentreonDB('centreon', 3, false);
-
 /**
  * Query with transaction
  */
@@ -39,6 +37,8 @@ try {
     $errorMessage = 'Impossible to purge the table ws_token';
     $pearDB->query("DELETE FROM `ws_token`");
 
+    $pearDB->commit();
+
     $constraintStatement = $pearDB->query(
         "SELECT COUNT(*) as count FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS WHERE CONSTRAINT_NAME='session_ibfk_1'"
     );
@@ -51,11 +51,13 @@ try {
     }
 
     $errorMessage = "Impossible to drop column 'contact_platform_data_sending' from 'contact' table";
-    $pearDB->query("ALTER TABLE `contact` DROP COLUMN `contact_platform_data_sending`");
-
-    $pearDB->commit();
+    if ($pearDB->isColumnExist('contact', 'contact_platform_data_sending')) {
+        $pearDB->query("ALTER TABLE `contact` DROP COLUMN `contact_platform_data_sending`");
+    }
 } catch (\Exception $e) {
-    $pearDB->rollBack();
+    if ($pearDB->inTransaction()) {
+        $pearDB->rollBack();
+    }
     $centreonLog->insertLog(
         4,
         $versionOfTheUpgrade . $errorMessage .

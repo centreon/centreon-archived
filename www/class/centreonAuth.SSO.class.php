@@ -43,6 +43,9 @@ class CentreonAuthSSO extends CentreonAuth
     protected $ssoOptions = array();
     protected $ssoMandatory = 0;
 
+    private const START = 0;
+    private const LENGTH = 8;
+
     /**
      * @var using a proxy
      */
@@ -105,7 +108,7 @@ class CentreonAuthSSO extends CentreonAuth
             $clientSecret = $this->ssoOptions['openid_connect_client_secret'];
             if (empty($this->ssoOptions['openid_connect_redirect_url'])) {
                 $redirectNoEncode = '{scheme}://{hostname}:{port}'
-                . rtim($this->ssoOptions['oreon_web_path'], "/") . "/" . 'index.php';
+                . "/" . trim($this->ssoOptions['oreon_web_path'], "/") . "/" . 'index.php';
             } else {
                 $redirectNoEncode = $this->ssoOptions['openid_connect_redirect_url'];
             }
@@ -436,7 +439,7 @@ class CentreonAuthSSO extends CentreonAuth
             $this->CentreonLog->insertLog(
                 1,
                 sprintf(
-                    "[%s] [Error] Unable to get Token Access Information: %S, message: %s",
+                    "[%s] [Error] Unable to get Token Access Information: %s, message: %s",
                     $this->source,
                     get_class($e),
                     $e->getMessage()
@@ -445,9 +448,22 @@ class CentreonAuthSSO extends CentreonAuth
         }
 
         if ($this->debug && isset($result)) {
+            $resultForDebug = $result;
+
+            if (isset($resultForDebug["access_token"])) {
+                $resultForDebug["access_token"] = substr($resultForDebug["access_token"], self::START, self::LENGTH);
+            }
+
+            if (isset($resultForDebug["id_token"])) {
+                $resultForDebug["id_token"] = substr($resultForDebug["id_token"], self::START, self::LENGTH);
+            }
+
+            if (isset($resultForDebug["refresh_token"])) {
+                $resultForDebug["refresh_token"] = substr($resultForDebug["refresh_token"], self::START, self::LENGTH);
+            }
             $this->CentreonLog->insertLog(
                 1,
-                "[" . $this->source . "] [Debug] Token Access Information: " . json_encode($result)
+                "[" . $this->source . "] [Debug] Token Access Information: " . json_encode($resultForDebug)
             );
         }
 
@@ -502,9 +518,14 @@ class CentreonAuthSSO extends CentreonAuth
         }
 
         if ($this->debug && isset($result)) {
+            $resultForDebug = $result;
+
+            if (isset($resultForDebug['jti'])) {
+                $resultForDebug['jti'] = substr($resultForDebug['jti'], self::START, self::LENGTH);
+            }
             $this->CentreonLog->insertLog(
                 1,
-                "[" . $this->source . "] [Debug] Token Introspection Information: " . json_encode($result)
+                "[" . $this->source . "] [Debug] Token Introspection Information: " . json_encode($resultForDebug)
             );
         }
 

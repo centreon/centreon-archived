@@ -112,7 +112,7 @@ class RealTimeMonitoringServerRepositoryRDB extends AbstractRepositoryDRB implem
             $request = $this->translateDbName(
                 'SELECT SQL_CALC_FOUND_ROWS instances.*
                 FROM `:dbstg`.instances
-                INNER JOIN `:db`.acl_resources_poller_relation arpr
+                INNER JOIN `:db`.acl_resources_poller_relations arpr
                     ON instances.instance_id = arpr.poller_id
                 INNER JOIN `:db`.acl_resources res
                     ON arpr.acl_res_id = res.acl_res_id

@@ -71,7 +71,7 @@ stage('Deliver sources') {
     env.RELEASE = "${source.RELEASE}"
     stash name: 'tar-sources', includes: "centreon-web-${env.VERSION}.tar.gz"
     stash name: 'vendor', includes: 'vendor.tar.gz'
-    stash name: 'api-doc', includes: 'centreon-api-v2.html'
+    stash name: 'api-doc', includes: 'centreon-api-v2.1.html'
     publishHTML([
       allowMissing: false,
       keepAll: true,
@@ -122,12 +122,14 @@ try {
           trendChartType: 'NONE'
         )
         recordIssues(
+          referenceJobName: "centreon-web/${env.REF_BRANCH}",
           enabledForFailure: true,
           qualityGates: [[threshold: 1, type: 'DELTA', unstable: false]],
           tool: phpStan(id: 'phpstan', name: 'phpstan', pattern: 'phpstan.xml'),
           trendChartType: 'NONE'
         )
         recordIssues(
+          referenceJobName: "centreon-web/${env.REF_BRANCH}",
           enabledForFailure: true,
           failOnError: true,
           qualityGates: [[threshold: 1, type: 'NEW', unstable: false]],
@@ -182,7 +184,7 @@ try {
     }
   }
 
-  if ((env.BUILD == 'CI') || (env.BUILD == 'QA')) {
+  if ((env.BUILD == 'QA')) {
     stage('Delivery to unstable') {
       node {
         checkoutCentreonBuild(buildBranch)
@@ -198,6 +200,22 @@ try {
     }
   }
 
+  if ((env.BUILD == 'REFERENCE')) {
+    stage('Delivery') {
+      node {
+        checkoutCentreonBuild(buildBranch)
+        unstash 'tar-sources'
+        unstash 'api-doc'
+        unstash 'rpms-centos7'
+        unstash 'rpms-centos8'
+        sh "./centreon-build/jobs/web/${serie}/mon-web-delivery.sh"
+      }
+      if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+        error('Delivery stage failure.');
+      }
+    }
+  }
+  
   stage('Docker creation') {
     parallel 'Docker centos7': {
       node {
@@ -216,26 +234,43 @@ try {
     }
   }
 
-  stage('API integration tests') {
-    def parallelSteps = [:]
-    for (x in apiFeatureFiles) {
-      def feature = x
-      parallelSteps[feature] = {
-        node {
-          checkoutCentreonBuild(buildBranch)
-          unstash 'tar-sources'
-          unstash 'vendor'
-          def acceptanceStatus = sh(script: "./centreon-build/jobs/web/${serie}/mon-web-api-integration-test.sh centos7 tests/api/features/${feature}", returnStatus: true)
-          junit 'xunit-reports/**/*.xml'
-          if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0))
-            currentBuild.result = 'FAILURE'
-          archiveArtifacts allowEmptyArchive: true, artifacts: 'api-integration-test-logs/*.txt'
+  stage('API integration tests // Lighthouse CI') {
+    parallel 'API integration tests': {
+      def parallelSteps = [:]
+      for (x in apiFeatureFiles) {
+        def feature = x
+        parallelSteps[feature] = {
+          node {
+            checkoutCentreonBuild(buildBranch)
+            unstash 'tar-sources'
+            unstash 'vendor'
+            def acceptanceStatus = sh(script: "./centreon-build/jobs/web/${serie}/mon-web-api-integration-test.sh centos7 tests/api/features/${feature}", returnStatus: true)
+            junit 'xunit-reports/**/*.xml'
+            if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0))
+              currentBuild.result = 'FAILURE'
+            archiveArtifacts allowEmptyArchive: true, artifacts: 'api-integration-test-logs/*.txt'
+          }
         }
       }
-    }
-    parallel parallelSteps
-    if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-      error('API integration tests stage failure.');
+      parallel parallelSteps
+      if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+        error('API integration tests stage failure.');
+      }
+    },
+    'Lighthouse CI': {
+      node {
+        checkoutCentreonBuild(buildBranch);
+        unstash 'tar-sources'
+        sh "./centreon-build/jobs/web/${serie}/mon-web-lighthouse-ci.sh centos7"
+        publishHTML([
+          allowMissing: false,
+          keepAll: true,
+          reportDir: "$PROJECT-$VERSION/.lighthouseci",
+          reportFiles: 'lighthouseci-index.html',
+          reportName: 'Centreon Web Performances',
+          reportTitles: ''
+        ])
+      }
     }
   }
 
