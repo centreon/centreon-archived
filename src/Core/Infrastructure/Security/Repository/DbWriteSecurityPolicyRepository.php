@@ -44,7 +44,7 @@ class DbWriteSecurityPolicyRepository extends AbstractRepositoryDRB implements W
     public function updateSecurityPolicy(SecurityPolicy $securityPolicy): void
     {
         $configuration = json_encode([
-            "security_policy" => [
+            "password_security_policy" => [
                 "password_length" => $securityPolicy->getPasswordMinimumLength(),
                 "has_uppercase_characters" => $securityPolicy->hasUppercase(),
                 "has_lowercase_characters" => $securityPolicy->hasLowercase(),

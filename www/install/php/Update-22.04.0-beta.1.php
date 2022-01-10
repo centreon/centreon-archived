@@ -27,14 +27,17 @@ $centreonLog = new CentreonLog();
 $versionOfTheUpgrade = 'UPGRADE - 22.04.0-beta.1: ';
 
 try {
-    $errorMessage = "Unable to drop table 'configuration' column to table 'provider_configuration'";
+    $errorMessage = "Unable to drop table 'password_security_policy'";
+    $pearDB->query("DROP TABLE IF EXISTS `password_security_policy`");
+
+    $errorMessage = "Unable to add column 'configuration' to table 'provider_configuration'";
     $pearDB->query(
         "ALTER TABLE `provider_configuration` ADD COLUMN `configuration` JSON NOT NULL AFTER `name`"
     );
 
     $errorMessage = "Unable to insert default local security policy configuration";
     $localProviderConfiguration = json_encode([
-        "security_policy" => [
+        "password_security_policy" => [
             "password_length" => 12,
             "has_uppercase_characters" => true,
             "has_lowercase_characters" => true,

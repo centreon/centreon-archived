@@ -35,14 +35,14 @@ class DbSecurityPolicyFactory
      */
     public static function createFromRecord(array $data): SecurityPolicy
     {
-        $securityPolicyData = json_decode($data['configuration'], true)['security_policy'];
+        $securityPolicyData = json_decode($data['configuration'], true)['password_security_policy'];
 
         return new SecurityPolicy(
             $securityPolicyData['password_length'],
-            $securityPolicyData['uppercase_characters'],
-            $securityPolicyData['lowercase_characters'],
-            $securityPolicyData['integer_characters'],
-            $securityPolicyData['special_characters'],
+            $securityPolicyData['has_uppercase_characters'],
+            $securityPolicyData['has_lowercase_characters'],
+            $securityPolicyData['has_numvers'],
+            $securityPolicyData['has_special_characters'],
             $securityPolicyData['can_reuse_passwords'],
             $securityPolicyData['attempts'],
             $securityPolicyData['blocking_duration'],

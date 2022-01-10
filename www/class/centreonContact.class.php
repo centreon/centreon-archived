@@ -252,6 +252,24 @@ class CentreonContact
     }
 
     /**
+     * Get password security policy
+     *
+     * @return array<string,mixed>
+     */
+    public function getPasswordSecurityPolicy(): array
+    {
+        $result = $this->db->query("SELECT `configuration` FROM `provider_configuration` WHERE `name` = 'local'");
+        $configuration = $result->fetch(\PDO::FETCH_ASSOC);
+        if ($configuration === false || empty($configuration['configuration'])) {
+            throw new \Exception('Password security policy not found');
+        }
+
+        $securityPolicyData = json_decode($configuration['configuration'], true)['password_security_policy'];
+
+        return $securityPolicyData;
+    }
+
+    /**
      * Check if a password respects configured policy
      *
      * @param string $password
@@ -261,16 +279,16 @@ class CentreonContact
      */
     public function respectPasswordPolicyOrFail(string $password, ?int $contactId): void
     {
-        $result = $this->db->query("SELECT * from password_security_policy");
-        $passwordPolicy = $result->fetch(\PDO::FETCH_ASSOC);
-        if ($passwordPolicy === false) {
-            throw new \Exception('Password security policy not found');
-        }
+        $passwordSecurityPolicy = $this->getPasswordSecurityPolicy();
 
-        $this->respectPasswordCharactersOrFail($passwordPolicy, $password);
+        $this->respectPasswordCharactersOrFail($passwordSecurityPolicy, $password);
 
         if ($contactId !== null) {
-            $this->respectPasswordChangePolicyOrFail($passwordPolicy, $password, $contactId);
+            $this->respectPasswordChangePolicyOrFail(
+                $passwordSecurityPolicy,
+                $password,
+                $contactId,
+            );
         }
     }
 
