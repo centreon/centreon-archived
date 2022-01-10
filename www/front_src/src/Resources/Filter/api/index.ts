@@ -30,9 +30,9 @@ const buildListCustomFiltersEndpoint = (
 
 const listCustomFilters =
   (cancelToken: CancelToken) => (): Promise<ListingModel<Filter>> =>
-    getData<ListingModel<Filter>>(cancelToken)(
-      buildListCustomFiltersEndpoint({ limit: 100, page: 1 }),
-    );
+    getData<ListingModel<Filter>>(cancelToken)({
+      endpoint: buildListCustomFiltersEndpoint({ limit: 100, page: 1 }),
+    });
 
 type FilterWithoutId = Omit<Filter, 'id'>;
 

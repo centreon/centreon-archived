@@ -68,7 +68,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
     private $accessGroups = [];
 
     /**
-     * @var array Association of resource search parameters
+     * @var array<string, string> Association of resource search parameters
      */
     private $resourceConcordances = [
         'id' => 'resource.id',
@@ -162,7 +162,7 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
         }
 
         $collector = new StatementCollector();
-        $request = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT '
+        $request = 'SELECT SQL_CALC_FOUND_ROWS '
             . 'resource.id, resource.type, resource.name, resource.alias, resource.fqdn, '
             . 'resource.host_id, resource.service_id, '
             . 'resource.status_code, resource.status_name, resource.status_severity_code, ' // status
@@ -181,10 +181,10 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             . 'resource.active_checks, resource.passive_checks,'
             . 'resource.last_status_change, '
             . 'resource.last_notification, resource.notification_number, '
-            . 'resource.tries, resource.last_check, resource.next_check, '
+            . 'resource.state_type, resource.tries, resource.last_check, resource.next_check, '
             . 'resource.information, resource.performance_data, '
             . 'resource.execution_time, resource.latency, '
-            . 'resource.notification_enabled '
+            . 'resource.notification_enabled, resource.last_time_with_no_issue '
             . 'FROM (';
 
         $subRequests = [];
@@ -211,39 +211,12 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             return [];
         }
 
-        $request .= implode('UNION ALL ', $subRequests);
+        $request .= implode(' UNION ALL ', $subRequests);
         unset($subRequests);
 
         $request .= ') AS `resource`';
 
-        // apply the host group filter to SQL query
-        if ($filter->getHostgroupIds()) {
-            $groupList = [];
-
-            foreach ($filter->getHostgroupIds() as $index => $groupId) {
-                $key = ":resourceHostgroupId_{$index}";
-                $groupList[] = $key;
-                $collector->addValue($key, $groupId, \PDO::PARAM_INT);
-            }
-
-            $request .= ' INNER JOIN `:dbstg`.`hosts_hostgroups` AS hhg
-                ON hhg.host_id = resource.host_id
-                AND hhg.hostgroup_id IN (' . implode(', ', $groupList) . ') ';
-        }
-
-        /**
-         * If we specify that user only wants resources with available performance datas.
-         * Then only resources with existing metrics referencing index_data services will be returned.
-         */
-        if ($filter->getOnlyWithPerformanceData() === true) {
-            $request .= ' INNER JOIN `:dbstg`.index_data AS idata
-                  ON idata.host_id = resource.parent_id
-                  AND idata.service_id = resource.id
-                  AND resource.type = "service"
-                INNER JOIN `:dbstg`.metrics AS m
-                  ON m.index_id = idata.id
-                  AND m.hidden = "0" ';
-        }
+        $hasWhereCondition = false;
 
         // Search
         $this->sqlRequestTranslator->setConcordanceArray($this->resourceConcordances);
@@ -253,7 +226,49 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             throw new RepositoryException($ex->getMessage(), 0, $ex);
         }
 
-        $request .= $searchRequest !== null ? $searchRequest : '';
+        if ($searchRequest !== null) {
+            $hasWhereCondition = true;
+            $request .= $searchRequest;
+        }
+
+        // apply the host group filter to SQL query
+        if ($filter->getHostgroupNames()) {
+            $groupList = [];
+
+            foreach ($filter->getHostgroupNames() as $index => $groupName) {
+                $key = ":resourceHostgroupName_{$index}";
+                $groupList[] = $key;
+                $collector->addValue($key, $groupName, \PDO::PARAM_STR);
+            }
+
+            $request .= ($hasWhereCondition === false) ? ' WHERE ' : ' AND ';
+            $hasWhereCondition = true;
+
+            $request .= ' EXISTS (
+                SELECT 1 FROM `:dbstg`.`hosts_hostgroups` AS hhg
+                WHERE hhg.host_id = resource.host_id
+                    AND EXISTS (
+                        SELECT 1 FROM `:dbstg`.`hostgroups` AS hg
+                        WHERE hg.hostgroup_id = hhg.hostgroup_id AND hg.name IN (' . implode(', ', $groupList) . ')
+                        LIMIT 1)
+                LIMIT 1) ';
+        }
+
+        /**
+         * If we specify that user only wants resources with available performance datas.
+         * Then only resources with existing metrics referencing index_data services will be returned.
+         */
+        if ($filter->getOnlyWithPerformanceData() === true) {
+            $request .= $hasWhereCondition ? ' AND ' : ' WHERE ';
+            $request .= ' EXISTS (
+                SELECT 1 FROM `:dbstg`.index_data AS idata
+                  WHERE idata.host_id = resource.parent_id
+                  AND idata.service_id = resource.id
+                  AND resource.type = "service"
+                AND EXISTS (SELECT 1 FROM `:dbstg`.metrics AS m
+                  WHERE m.index_id = idata.id
+                  AND m.hidden = "0" LIMIT 1) LIMIT 1) ';
+        }
 
         foreach ($this->sqlRequestTranslator->getSearchValues() as $key => $data) {
             $collector->addValue($key, current($data), key($data));

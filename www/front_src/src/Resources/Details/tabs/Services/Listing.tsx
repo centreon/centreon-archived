@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import { makeStyles } from '@material-ui/core';
+import makeStyles from '@mui/styles/makeStyles';
 
 import { IconButton } from '@centreon/ui';
 
@@ -25,13 +25,14 @@ const Listing = ({
   switchButtonIcon,
   onSwitchButtonClick,
 }: Props): JSX.Element => {
-  const { t } = useTranslation();
   const classes = useStyles();
+  const { t } = useTranslation();
 
   return (
     <>
       <IconButton
         ariaLabel={t(switchButtonLabel)}
+        size="large"
         title={t(switchButtonLabel)}
         onClick={onSwitchButtonClick}
       >

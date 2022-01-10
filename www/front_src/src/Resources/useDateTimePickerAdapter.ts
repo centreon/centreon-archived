@@ -1,45 +1,64 @@
 /* eslint-disable class-methods-use-this */
 import DayjsAdapter from '@date-io/dayjs';
 import dayjs from 'dayjs';
+import { equals } from 'ramda';
+import { useAtomValue } from 'jotai/utils';
 
-import { useUserContext } from '@centreon/ui-context';
 import { useLocaleDateTimeFormat } from '@centreon/ui';
+import { userAtom } from '@centreon/ui-context';
 
-const useDateTimePickerAdapter = (): typeof DayjsAdapter => {
-  const { locale, timezone } = useUserContext();
+interface UseDateTimePickerAdapterProps {
+  Adapter;
+  getLocalAndConfiguredTimezoneOffset: () => number;
+}
+
+const useDateTimePickerAdapter = (): UseDateTimePickerAdapterProps => {
+  const { timezone } = useAtomValue(userAtom);
   const { format } = useLocaleDateTimeFormat();
 
+  const getLocalAndConfiguredTimezoneOffset = (): number => {
+    const localTimezone = new Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const now = new Date();
+
+    const localDate = dayjs.tz(now, localTimezone).format('H');
+    const dateWithConfiguredTimezone = dayjs.tz(now, timezone).format('H');
+
+    return Number(localDate) - Number(dateWithConfiguredTimezone);
+  };
+
   class Adapter extends DayjsAdapter {
-    public format(date, formatString): string {
-      return format({ date, formatString });
-    }
+    public formatByString = (value, formatKey: string): string => {
+      if (equals(formatKey, 'L hh:mm A')) {
+        return format({ date: value, formatString: formatKey });
+      }
 
-    public date(value): dayjs.Dayjs {
-      return dayjs(value).locale(locale);
-    }
+      return value.format(formatKey);
+    };
 
-    public startOfMonth(date: dayjs.Dayjs) {
-      return dayjs(date.tz()).startOf('month');
-    }
-
-    public isEqual = (value, comparing) => {
+    public isEqual = (value, comparing): boolean => {
       if (value === null && comparing === null) {
         return true;
       }
 
-      return dayjs(value).isSame(dayjs(comparing), 'minute');
+      return equals(
+        format({ date: value, formatString: 'LT' }),
+        format({ date: comparing, formatString: 'LT' }),
+      );
     };
 
-    public getHours(date) {
-      return date.locale(locale).tz(timezone).hour();
-    }
+    public getHours = (date): number => {
+      return date.tz(timezone).get('hour');
+    };
 
-    public setHours(date: dayjs.Dayjs, count: number) {
-      return date.locale(locale).tz(timezone).set('hour', count);
-    }
+    public setHours = (date: dayjs.Dayjs, count: number): dayjs.Dayjs => {
+      return date.set('hour', count + getLocalAndConfiguredTimezoneOffset());
+    };
   }
 
-  return Adapter;
+  return {
+    Adapter,
+    getLocalAndConfiguredTimezoneOffset,
+  };
 };
 
 export default useDateTimePickerAdapter;

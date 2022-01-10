@@ -1,6 +1,7 @@
 import * as React from 'react';
 
-import { Paper, makeStyles } from '@material-ui/core';
+import { Paper } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 
 const useStyles = makeStyles((theme) => ({
   content: {
@@ -17,7 +18,7 @@ const Card = ({ children, className }: Props): JSX.Element => {
   const classes = useStyles();
 
   return (
-    <Paper className={className}>
+    <Paper className={className} elevation={0}>
       <div className={classes.content}>{children}</div>
     </Paper>
   );

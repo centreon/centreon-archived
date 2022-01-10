@@ -74,7 +74,7 @@ class PlatformTopologyController extends AbstractController
         $validator = new Validator();
         $validator->validate(
             $platformTopologySchemaToValidate,
-            (object) ['ref' => 'file://' . $schemaPath],
+            (object) ['$ref' => 'file://' . $schemaPath],
             Constraint::CHECK_MODE_VALIDATE_SCHEMA
         );
 
@@ -99,8 +99,13 @@ class PlatformTopologyController extends AbstractController
         // check user rights
         $this->denyAccessUnlessGrantedForApiConfiguration();
 
+        /**
+         * @var Contact $contact
+         */
+        $contact = $this->getUser();
+
         // Check Topology access to Configuration > Pollers page
-        if (!$this->getUser()->hasTopologyRole(Contact::ROLE_CONFIGURATION_MONITORING_SERVER_READ_WRITE)) {
+        if (!$contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_MONITORING_SERVER_READ_WRITE)) {
             return $this->view(null, Response::HTTP_FORBIDDEN);
         }
 
@@ -128,8 +133,11 @@ class PlatformTopologyController extends AbstractController
                 ->setName($platformToAdd['name'])
                 ->setAddress($platformToAdd['address'])
                 ->setType($platformToAdd['type'])
-                ->setHostname($platformToAdd['hostname'])
                 ->setParentAddress($platformToAdd['parent_address']);
+
+            if (isset($platformToAdd['hostname'])) {
+                $platformTopology->setHostname($platformToAdd['hostname']);
+            }
 
             $this->platformTopologyService->addPendingPlatformToTopology($platformTopology);
 
@@ -152,6 +160,10 @@ class PlatformTopologyController extends AbstractController
         $this->denyAccessUnlessGrantedForApiConfiguration();
 
         // Check Topology access to Configuration > Pollers page
+
+        /**
+         * @var Contact $user
+         */
         $user = $this->getUser();
         if (
             !$user->hasTopologyRole(Contact::ROLE_CONFIGURATION_MONITORING_SERVER_READ)
@@ -204,7 +216,11 @@ class PlatformTopologyController extends AbstractController
         $this->denyAccessUnlessGrantedForApiConfiguration();
 
         // Check Topology access to Configuration > Pollers page
-        if (!$this->getUser()->hasTopologyRole(Contact::ROLE_CONFIGURATION_MONITORING_SERVER_READ_WRITE)) {
+        /**
+         * @var Contact $contact
+         */
+        $contact = $this->getUser();
+        if (!$contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_MONITORING_SERVER_READ_WRITE)) {
             return $this->view(null, Response::HTTP_FORBIDDEN);
         }
 

@@ -2846,3 +2846,19 @@ ul.module_list {
     margin: 0;
     line-height: 14px;
 }
+
+/* configuration pollers action buttons */
+.ui-icon-white {
+  background-image: url("./jquery-ui/images/ui-icons_ffffff_256x240.png") !important;
+}
+
+.bt-poller-action{
+    line-height: 20px;
+    font-size: 13.3333px;
+    margin: 4px 6px 0px 0px !important;
+}
+
+.bt-poller-action:disabled {
+    background: #cdcdcd !important;
+    cursor: not-allowed;
+}

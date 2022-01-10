@@ -10,7 +10,6 @@ CENTREON_BASE_URI=""
 INSECURE=""
 TEMPLATE_FILE=""
 API_TOKEN=""
-REMOTE_API_TOKEN=""
 RESPONSE_MESSAGE=""
 
 declare -A SUPPORTED_LOG_LEVEL=([INFO]=0 [ERROR]=1)
@@ -176,12 +175,6 @@ function log() {
 function parse_fqdn() {
   # extract the user (if any)
   userpass="$(echo $1 | grep @ | cut -d@ -f1)"
-  pass="$(echo $userpass | grep : | cut -d: -f2)"
-  if [ -n "$pass" ]; then
-    user="$(echo $userpass | grep : | cut -d: -f1)"
-  else
-    user=$userpass
-  fi
   url="$(echo ${1/${userpass}"@"/})"
   # extract the Scheme
   SCHEME="$(echo $url | grep :// | cut -d: -f1)"
@@ -212,12 +205,6 @@ function parse_fqdn() {
 function parse_current_node_fqdn() {
   # extract the user (if any)
   userpass="$(echo $1 | grep @ | cut -d@ -f1)"
-  pass="$(echo $userpass | grep : | cut -d: -f2)"
-  if [ -n "$pass" ]; then
-    user="$(echo $userpass | grep : | cut -d: -f1)"
-  else
-    user=$userpass
-  fi
   url="$(echo ${1/${userpass}"@"/})"
   # extract the Scheme
   SCHEME="$(echo $url | grep :// | cut -d: -f1)"
@@ -250,10 +237,10 @@ function parse_current_node_fqdn() {
 # Display the usage message
 function usage() {
   cat << EOF
-  This script will register a platform (CURRENT NODE) on another (TARGET NODE).
-  If you register a CURRENT NODE on a TARGET NODE that is already linked to a Central,
-  your informations will automatically be forwarded to the Central.
-  If you register a Remote Server, this script will automatically convert your CURRENT NODE in Remote Server.
+  This script will register a platform (CURRENT NODE) onto another (TARGET NODE).
+  If you register the CURRENT NODE onto a TARGET NODE that is already linked to a Central,
+  your information will be automatically forwarded to the Central.
+  If you register a Remote Server, this script will automatically convert your CURRENT NODE into a Remote Server.
   After executing the script, please use the wizard on your Central to complete your installation.
 
   Global Options: (Be aware that all options are case sensitive)
@@ -266,18 +253,18 @@ function usage() {
               - mbi
     -n [--name] <mandatory>              name of the CURRENT NODE that will be displayed on the TARGET NODE
 
-    --help <optional>           get information about the parameters available
-    --root <optional>           your Centreon root path on TARGET NODE (by default "centreon")
-    --node-address <optional>   provide your FQDN or IP of the CURRENT NODE. FQDN must be resolvable on the TARGET NODE
-    --insecure <optional>       allow self-signed certificate
-    --template <optional>       provide the path of a register topology configuration file to automate the script
+    --help <optional>                    get information about the parameters available
+    --root <optional>                    your Centreon root path on TARGET NODE (by default "centreon")
+    --node-address <optional>            provide your FQDN or IP of the CURRENT NODE. FQDN must be resolvable on the TARGET NODE
+    --insecure <optional>                allow self-signed certificate
+    --template <optional>                provide the path of a register topology configuration file to automate the script
               - API_USERNAME             <mandatory> string
               - API_TARGET_PASSWORD      <mandatory> string
               - CURRENT_NODE_TYPE        <mandatory> string
               - TARGET_NODE_ADDRESS      <mandatory> string (PARENT NODE ADDRESS)
               - CURRENT_NODE_NAME        <mandatory> string (CURRENT NODE NAME)
               - CURRENT_NODE_ADDRESS     <mandatory> string (CURRENT NODE IP OR FQDN)
-              - CENTREON_BASE_URI     <optional> string (CENTRAL ROOT CENTREON FOLDER)
+              - CENTREON_BASE_URI        <optional> string (CENTRAL ROOT CENTREON FOLDER)
               - INSECURE                 <optional> boolean
 
               Additional Properties for Remote:
@@ -328,7 +315,7 @@ function prepare_register_payload() {
 
   cat << EOD
 
-  Summary of the information that will be send:
+  Summary of the information that will be sent:
 
   Api Connection:
   username: ${API_USERNAME}
@@ -343,7 +330,7 @@ function prepare_register_payload() {
 
 EOD
 
-  read -p 'Do you want to register this server with those information? (y/n): ' IS_VALID
+  read -p 'Do you want to register this server with the previous information? (y/n): ' IS_VALID
 
   if [[ $IS_VALID != 'y' ]];
   then
@@ -476,7 +463,7 @@ function request_to_remote() {
 #========= begin of set_remote_parameters_manually()
 function set_remote_parameters_manually() {
     # ask information to connect to Remote API
-    echo "A few more information are required to convert your platform into Remote : "
+    echo "More information is required to convert your platform into Remote : "
     read -p "${PARSED_CURRENT_NODE_URL[HOST]} : Please enter your username: " API_CURRENT_NODE_USERNAME
     read -sp "Please enter the password of ${PARSED_CURRENT_NODE_URL[HOST]}: " API_CURRENT_NODE_PASSWORD; echo ""
     if [ -z ${PARSED_CURRENT_NODE_URL[SCHEME]} ];then

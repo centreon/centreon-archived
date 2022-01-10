@@ -71,8 +71,8 @@ class AcknowledgementController extends AbstractController
      *
      * @param Request $request
      * @param string $jsonValidatorFile
-     * @return array $results
-     * @throws InvalidArgumentException
+     * @return array<string,mixed> $results
+     * @throws \InvalidArgumentException
      */
     private function validateAndRetrievePostData(Request $request, string $jsonValidatorFile): array
     {
@@ -108,14 +108,12 @@ class AcknowledgementController extends AbstractController
      * Entry point to find the hosts acknowledgements.
      *
      * @param RequestParametersInterface $requestParameters
-     * @param Request $request
      * @return View
      * @throws \Exception
      */
-    public function findHostsAcknowledgements(RequestParametersInterface $requestParameters, Request $request): View
+    public function findHostsAcknowledgements(RequestParametersInterface $requestParameters): View
     {
         $this->denyAccessUnlessGrantedForApiRealtime();
-        $isBeta = (bool) $request->attributes->get('version.is_beta');
         $hostsAcknowledgements = $this->acknowledgementService
             ->filterByContact($this->getUser())
             ->findHostsAcknowledgements();
@@ -125,9 +123,7 @@ class AcknowledgementController extends AbstractController
         return $this->view(
             [
                 'result' => $hostsAcknowledgements,
-                'meta' => !$isBeta
-                    ? ['pagination' => $requestParameters->toArray()]
-                    : $requestParameters->toArray()
+                'meta' => $requestParameters->toArray()
             ]
         )->setContext($context);
     }
@@ -137,17 +133,14 @@ class AcknowledgementController extends AbstractController
      *
      * @param RequestParametersInterface $requestParameters
      * @param int $hostId
-     * @param Request $request
      * @return View
      * @throws \Exception
      */
     public function findAcknowledgementsByHost(
         RequestParametersInterface $requestParameters,
-        int $hostId,
-        Request $request
+        int $hostId
     ): View {
         $this->denyAccessUnlessGrantedForApiRealtime();
-        $isBeta = (bool) $request->attributes->get('version.is_beta');
         $hostsAcknowledgements = $this->acknowledgementService
             ->filterByContact($this->getUser())
             ->findAcknowledgementsByHost($hostId);
@@ -157,9 +150,7 @@ class AcknowledgementController extends AbstractController
         return $this->view(
             [
                 'result' => $hostsAcknowledgements,
-                'meta' => !$isBeta
-                    ? ['pagination' => $requestParameters->toArray()]
-                    : $requestParameters->toArray()
+                'meta' => $requestParameters->toArray()
             ]
         )->setContext($context);
     }
@@ -168,14 +159,12 @@ class AcknowledgementController extends AbstractController
      * Entry point to find the services acknowledgements.
      *
      * @param RequestParametersInterface $requestParameters
-     * @param Request $request
      * @return View
      * @throws \Exception
      */
-    public function findServicesAcknowledgements(RequestParametersInterface $requestParameters, Request $request): View
+    public function findServicesAcknowledgements(RequestParametersInterface $requestParameters): View
     {
         $this->denyAccessUnlessGrantedForApiRealtime();
-        $isBeta = (bool) $request->attributes->get('version.is_beta');
         $servicesAcknowledgements = $this->acknowledgementService
             ->filterByContact($this->getUser())
             ->findServicesAcknowledgements();
@@ -184,9 +173,7 @@ class AcknowledgementController extends AbstractController
         return $this->view(
             [
                 'result' => $servicesAcknowledgements,
-                'meta' => !$isBeta
-                    ? ['pagination' => $requestParameters->toArray()]
-                    : $requestParameters->toArray()
+                'meta' => $requestParameters->toArray()
             ]
         )->setContext($context);
     }
@@ -197,18 +184,15 @@ class AcknowledgementController extends AbstractController
      * @param RequestParametersInterface $requestParameters
      * @param int $hostId
      * @param int $serviceId
-     * @param Request $request
      * @return View
      * @throws \Exception
      */
     public function findAcknowledgementsByService(
         RequestParametersInterface $requestParameters,
         int $hostId,
-        int $serviceId,
-        Request $request
+        int $serviceId
     ): View {
         $this->denyAccessUnlessGrantedForApiRealtime();
-        $isBeta = (bool) $request->attributes->get('version.is_beta');
         $servicesAcknowledgements = $this->acknowledgementService
             ->filterByContact($this->getUser())
             ->findAcknowledgementsByService($hostId, $serviceId);
@@ -217,9 +201,7 @@ class AcknowledgementController extends AbstractController
         return $this->view(
             [
                 'result' => $servicesAcknowledgements,
-                'meta' => !$isBeta
-                    ? ['pagination' => $requestParameters->toArray()]
-                    : $requestParameters->toArray()
+                'meta' => $requestParameters->toArray()
             ]
         )->setContext($context);
     }
@@ -229,14 +211,12 @@ class AcknowledgementController extends AbstractController
      *
      * @param RequestParametersInterface $requestParameters
      * @param int $metaId
-     * @param Request $request
      * @return View
      * @throws \Exception
      */
     public function findAcknowledgementsByMetaService(
         RequestParametersInterface $requestParameters,
-        int $metaId,
-        Request $request
+        int $metaId
     ): View {
         $this->denyAccessUnlessGrantedForApiRealtime();
         $metaServicesAcknowledgements = $this->acknowledgementService
@@ -437,6 +417,9 @@ class AcknowledgementController extends AbstractController
     ): View {
         $this->denyAccessUnlessGrantedForApiRealtime();
 
+        /**
+         * @var Contact $contact
+         */
         $contact = $this->getUser();
         if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_SERVICE_ACKNOWLEDGEMENT)) {
             return $this->view(null, Response::HTTP_UNAUTHORIZED);
@@ -490,6 +473,9 @@ class AcknowledgementController extends AbstractController
     ): View {
         $this->denyAccessUnlessGrantedForApiRealtime();
 
+        /**
+         * @var Contact $contact
+         */
         $contact = $this->getUser();
         if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_SERVICE_ACKNOWLEDGEMENT)) {
             return $this->view(null, Response::HTTP_UNAUTHORIZED);
@@ -535,6 +521,9 @@ class AcknowledgementController extends AbstractController
     {
         $this->denyAccessUnlessGrantedForApiRealtime();
 
+        /**
+         * @var Contact $contact
+         */
         $contact = $this->getUser();
 
         if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_HOST_DISACKNOWLEDGEMENT)) {
@@ -560,6 +549,9 @@ class AcknowledgementController extends AbstractController
     {
         $this->denyAccessUnlessGrantedForApiRealtime();
 
+        /**
+         * @var Contact $contact
+         */
         $contact = $this->getUser();
 
         if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_SERVICE_DISACKNOWLEDGEMENT)) {
@@ -584,6 +576,9 @@ class AcknowledgementController extends AbstractController
     {
         $this->denyAccessUnlessGrantedForApiRealtime();
 
+        /**
+         * @var Contact $contact
+         */
         $contact = $this->getUser();
 
         if (!$contact->isAdmin() && !$contact->hasRole(Contact::ROLE_SERVICE_DISACKNOWLEDGEMENT)) {
@@ -627,14 +622,12 @@ class AcknowledgementController extends AbstractController
      * Entry point to find all acknowledgements.
      *
      * @param RequestParametersInterface $requestParameters
-     * @param Request $request
      * @return View
      * @throws \Exception
      */
-    public function findAcknowledgements(RequestParametersInterface $requestParameters, Request $request): View
+    public function findAcknowledgements(RequestParametersInterface $requestParameters): View
     {
         $this->denyAccessUnlessGrantedForApiRealtime();
-        $isBeta = (bool) $request->attributes->get('version.is_beta');
         $acknowledgements = $this->acknowledgementService
             ->filterByContact($this->getUser())
             ->findAcknowledgements();
@@ -644,9 +637,7 @@ class AcknowledgementController extends AbstractController
         return $this->view(
             [
                 'result' => $acknowledgements,
-                'meta' => !$isBeta
-                    ? ['pagination' => $requestParameters->toArray()]
-                    : $requestParameters->toArray()
+                'meta' => $requestParameters->toArray()
             ]
         )->setContext($context);
     }
@@ -745,7 +736,7 @@ class AcknowledgementController extends AbstractController
         $errorList = new ConstraintViolationList();
 
         //validate resources
-        $resources = $ackRequest->getResources() ?? [];
+        $resources = $ackRequest->getResources();
         foreach ($resources as $resource) {
             switch ($resource->getType()) {
                 case ResourceEntity::TYPE_HOST:
@@ -787,10 +778,6 @@ class AcknowledgementController extends AbstractController
         if ($errorList->count() > 0) {
             throw new ValidationFailedException($errorList);
         }
-
-        // set default values [sticky, persistent_comment] to true
-        $acknowledgement->setSticky(true);
-        $acknowledgement->setPersistentComment(true);
 
         foreach ($resources as $resource) {
             // start acknowledgement process

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { SvgIconProps } from '@material-ui/core';
+import { SvgIconProps } from '@mui/material';
 
 const Downtime = (props: SvgIconProps): JSX.Element => <svg {...props} />;
 

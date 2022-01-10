@@ -1,11 +1,13 @@
 import * as React from 'react';
 
-import { useTheme, makeStyles, fade } from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
+import { useTheme, alpha } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+
+import { LoadingSkeleton } from '@centreon/centreon-frontend/packages/centreon-ui/src';
 
 const useStyles = makeStyles((theme) => ({
   skeleton: {
-    backgroundColor: fade(theme.palette.grey[50], 0.4),
+    backgroundColor: alpha(theme.palette.grey[50], 0.4),
     margin: theme.spacing(0.5, 2, 1, 2),
   },
 }));
@@ -19,10 +21,10 @@ const MenuLoader = ({ width = 15 }: Props): JSX.Element => {
   const classes = useStyles();
 
   return (
-    <Skeleton
-      animation="wave"
+    <LoadingSkeleton
       className={classes.skeleton}
-      height={theme.spacing(5)}
+      height={theme.spacing(5.5)}
+      variant="text"
       width={theme.spacing(width)}
     />
   );

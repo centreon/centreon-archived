@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -40,7 +41,6 @@ use JsonSerializable;
 
 class NavigationList implements JsonSerializable
 {
-
     /**
      * @var array
      */
@@ -49,14 +49,13 @@ class NavigationList implements JsonSerializable
     /**
      * Configurations from navigation.yml
      *
-     * @var array
+     * @var array<mixed>
      */
     private $navConfig;
 
     /**
-     * Construct
-     *
-     * @param array
+     * @param array<mixed> $entities
+     * @param array<mixed> $navConfig
      */
     public function __construct(array $entities, array $navConfig = [])
     {
@@ -64,7 +63,10 @@ class NavigationList implements JsonSerializable
         $this->entities = $entities;
     }
 
-    public function getNavConfig() : array
+    /**
+     * @return array<mixed>
+     */
+    public function getNavConfig(): array
     {
         return $this->navConfig;
     }
@@ -72,7 +74,7 @@ class NavigationList implements JsonSerializable
     /**
      * JSON serialization of entity
      *
-     * @return array
+     * @return array<mixed>
      */
     public function jsonSerialize()
     {
@@ -154,7 +156,10 @@ class NavigationList implements JsonSerializable
                     'is_react' => (bool)$entity->getIsReact(),
                     'show' => (bool)$entity->getTopologyShow()
                 ];
-            } elseif (preg_match('/^(\d)(\d\d)$/', $entity->getTopologyPage(), $matches)) {
+            } elseif (
+                preg_match('/^(\d)(\d\d)$/', $entity->getTopologyPage(), $matches)
+                && !empty($naviList[$matches[1]])
+            ) {
                 $naviList[$matches[1]]['children'][$entity->getTopologyPage()] = [
                     'page' => $entity->getTopologyPage(),
                     'label' => $entity->getTopologyName(),
@@ -164,7 +169,10 @@ class NavigationList implements JsonSerializable
                     'is_react' => (bool)$entity->getIsReact(),
                     'show' => (bool)$entity->getTopologyShow()
                 ];
-            } elseif (preg_match('/^(\d)(\d\d)(\d\d)$/', $entity->getTopologyPage(), $matches)) { // level 3
+            } elseif (
+                preg_match('/^(\d)(\d\d)(\d\d)$/', $entity->getTopologyPage(), $matches)
+                && !empty($naviList[$matches[1]]['children'][$matches[1] . $matches[2]])
+            ) { // level 3
                 $levelTwo = $matches[1] . $matches[2];
 
                 //level 3 items can be grouped for better display
@@ -182,10 +190,18 @@ class NavigationList implements JsonSerializable
                     ];
 
                     //check if topology has group index
-                    if (!is_null($entity->getTopologyGroup())
-                        && isset($groups[$levelTwo][$entity->getTopologyGroup()])) {
-                        if (!isset($naviList[$matches[1]]['children'][$levelTwo]['groups']
-                                [$entity->getTopologyGroup()])) {
+                    if (
+                        !is_null(
+                            $entity->getTopologyGroup()
+                        )
+                        && isset(
+                            $groups[$levelTwo][$entity->getTopologyGroup()]
+                        )
+                    ) {
+                        if (
+                            !isset($naviList[$matches[1]]['children'][$levelTwo]['groups']
+                                [$entity->getTopologyGroup()])
+                        ) {
                             $naviList[$matches[1]]['children'][$levelTwo]['groups'][$entity->getTopologyGroup()] = [
                                 'label' => $groups[$levelTwo][$entity->getTopologyGroup()]['name'],
                                 'children' => []
@@ -218,10 +234,10 @@ class NavigationList implements JsonSerializable
     /**
      * Extract the array without keys to avoid serialization into objects
      *
-     * @param  $naviList
-     * @return array
+     * @param  array<mixed> $naviList
+     * @return array<mixed>
      */
-    private function removeKeysFromArray($naviList)
+    private function removeKeysFromArray(array $naviList): array
     {
         foreach ($naviList as $key => &$value) {
             if (!empty($value['children'])) {

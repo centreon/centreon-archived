@@ -2,14 +2,13 @@ import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 
 import {
   useSnackbar,
   Dialog,
   SelectField,
   useRequest,
-  Severity,
   TextField,
 } from '@centreon/ui';
 
@@ -45,7 +44,7 @@ const SubmitStatusForm = ({
   onSuccess,
 }: Props): JSX.Element => {
   const { t } = useTranslation();
-  const { showMessage } = useSnackbar();
+  const { showSuccessMessage } = useSnackbar();
 
   const [selectedStatusId, setSelectedStatusId] = React.useState(0);
   const [output, setOutput] = React.useState('');
@@ -91,10 +90,7 @@ const SubmitStatusForm = ({
       resource,
       statusId: selectedStatusId,
     }).then(() => {
-      showMessage({
-        message: t(labelStatusSubmitted),
-        severity: Severity.success,
-      });
+      showSuccessMessage(t(labelStatusSubmitted));
       onSuccess();
     });
   };

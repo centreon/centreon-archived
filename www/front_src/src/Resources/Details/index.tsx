@@ -1,43 +1,31 @@
 import * as React from 'react';
 
-import {
-  isNil,
-  isEmpty,
-  pipe,
-  not,
-  defaultTo,
-  propEq,
-  findIndex,
-  pick,
-} from 'ramda';
+import { isNil, isEmpty, pipe, not, defaultTo, propEq, findIndex } from 'ramda';
 import { useTranslation } from 'react-i18next';
+import { useAtom } from 'jotai';
+import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 
-import { useTheme, fade } from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
+import { useTheme, alpha, Skeleton } from '@mui/material';
 
 import { MemoizedPanel as Panel, Tab } from '@centreon/ui';
 
-import { useResourceContext } from '../Context';
 import { rowColorConditions } from '../colors';
 
 import Header from './Header';
 import { ResourceDetails } from './models';
 import { TabById, detailsTabId, tabs } from './tabs';
 import { Tab as TabModel, TabId } from './tabs/models';
+import {
+  clearSelectedResourceDerivedAtom,
+  detailsAtom,
+  openDetailsTabIdAtom,
+  panelWidthStorageAtom,
+  selectResourceDerivedAtom,
+} from './detailsAtoms';
 
 export interface DetailsSectionProps {
   details?: ResourceDetails;
 }
-
-export interface TabBounds {
-  bottom: number;
-  top: number;
-}
-
-const Context = React.createContext<TabBounds>({
-  bottom: 0,
-  top: 0,
-});
 
 const Details = (): JSX.Element | null => {
   const { t } = useTranslation();
@@ -45,15 +33,11 @@ const Details = (): JSX.Element | null => {
 
   const panelRef = React.useRef<HTMLDivElement>();
 
-  const {
-    openDetailsTabId,
-    details,
-    panelWidth,
-    setOpenDetailsTabId,
-    clearSelectedResource,
-    setPanelWidth,
-    selectResource,
-  } = useResourceContext();
+  const [panelWidth, setPanelWidth] = useAtom(panelWidthStorageAtom);
+  const [openDetailsTabId, setOpenDetailsTabId] = useAtom(openDetailsTabIdAtom);
+  const details = useAtomValue(detailsAtom);
+  const clearSelectedResource = useUpdateAtom(clearSelectedResourceDerivedAtom);
+  const selectResource = useUpdateAtom(selectResourceDerivedAtom);
 
   React.useEffect(() => {
     if (isNil(details)) {
@@ -102,38 +86,30 @@ const Details = (): JSX.Element | null => {
       return theme.palette.common.white;
     }
 
-    return fade(foundColorCondition.color, 0.8);
+    return alpha(foundColorCondition.color, 0.8);
   };
 
   return (
-    <Context.Provider
-      value={pick(
-        ['top', 'bottom'],
-        panelRef.current?.getBoundingClientRect() || { bottom: 0, top: 0 },
-      )}
-    >
-      <Panel
-        header={<Header details={details} onSelectParent={selectResource} />}
-        headerBackgroundColor={getHeaderBackgroundColor()}
-        memoProps={[openDetailsTabId, details, panelWidth]}
-        ref={panelRef as React.RefObject<HTMLDivElement>}
-        selectedTab={<TabById details={details} id={openDetailsTabId} />}
-        selectedTabId={getTabIndex(openDetailsTabId)}
-        tabs={getVisibleTabs().map(({ id, title }) => (
-          <Tab
-            disabled={isNil(details)}
-            key={id}
-            label={isNil(details) ? <Skeleton width={60} /> : t(title)}
-            onClick={changeSelectedTabId(id)}
-          />
-        ))}
-        width={panelWidth}
-        onClose={clearSelectedResource}
-        onResize={setPanelWidth}
-      />
-    </Context.Provider>
+    <Panel
+      header={<Header details={details} onSelectParent={selectResource} />}
+      headerBackgroundColor={getHeaderBackgroundColor()}
+      memoProps={[openDetailsTabId, details, panelWidth]}
+      ref={panelRef as React.RefObject<HTMLDivElement>}
+      selectedTab={<TabById details={details} id={openDetailsTabId} />}
+      selectedTabId={getTabIndex(openDetailsTabId)}
+      tabs={getVisibleTabs().map(({ id, title }) => (
+        <Tab
+          disabled={isNil(details)}
+          key={id}
+          label={isNil(details) ? <Skeleton width={60} /> : t(title)}
+          onClick={changeSelectedTabId(id)}
+        />
+      ))}
+      width={panelWidth}
+      onClose={clearSelectedResource}
+      onResize={setPanelWidth}
+    />
   );
 };
 
 export default Details;
-export { Context as TabContext };

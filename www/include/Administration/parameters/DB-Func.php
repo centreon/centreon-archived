@@ -781,22 +781,43 @@ function updateGeneralConfigData($gopt_id = null)
     );
     updateOption(
         $pearDB,
+        "openid_connect_login_claim",
+        isset($ret["openid_connect_login_claim"]) ? $pearDB->escape($ret["openid_connect_login_claim"]) : ""
+    );
+    updateOption(
+        $pearDB,
         "openid_connect_redirect_url",
         isset($ret["openid_connect_redirect_url"]) && $ret["openid_connect_redirect_url"] != null
             ? $pearDB->escape($ret["openid_connect_redirect_url"]) : ""
     );
 
+    if (
+        isset($ret["openid_connect_client_id"])
+        && $ret["openid_connect_client_id"] !== CentreonAuth::PWS_OCCULTATION
+    ) {
+        updateOption(
+            $pearDB,
+            "openid_connect_client_id",
+            $pearDB->escape($ret["openid_connect_client_id"])
+        );
+    }
+
+    if (
+        isset($ret["openid_connect_client_secret"])
+        && $ret["openid_connect_client_secret"] !== CentreonAuth::PWS_OCCULTATION
+    ) {
+        updateOption(
+            $pearDB,
+            "openid_connect_client_secret",
+            $pearDB->escape($ret["openid_connect_client_secret"])
+        );
+    }
+
     updateOption(
         $pearDB,
-        "openid_connect_client_id",
-        isset($ret["openid_connect_client_id"]) && $ret["openid_connect_client_id"] != null
-            ? $pearDB->escape($ret["openid_connect_client_id"]) : ""
-    );
-    updateOption(
-        $pearDB,
-        "openid_connect_client_secret",
-        isset($ret["openid_connect_client_secret"]) && $ret["openid_connect_client_secret"] != null
-            ? $pearDB->escape($ret["openid_connect_client_secret"]) : ""
+        "openid_connect_client_basic_auth",
+        isset($ret["openid_connect_client_basic_auth"]["yes"])
+            && $ret["openid_connect_client_basic_auth"]["yes"] != null ? 1 : 0
     );
     updateOption(
         $pearDB,

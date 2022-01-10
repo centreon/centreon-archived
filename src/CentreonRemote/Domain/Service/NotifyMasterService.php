@@ -64,8 +64,9 @@ class NotifyMasterService
      * Ping the master IP requesting to be slave for it.
      * @param string $ip The IP address of the master
      * @param boolean $noCheckCertificate To do not check SLL CA on master
-     * @param array $data The information for the master how to contact the remote
-     * @return array
+     * @param boolean $noProxy
+     * @param (string|null|false)[] $data The information for the master how to contact the remote
+     * @return string[]
      * @throws \ErrorException
      */
     public function pingMaster($ip, $data, $noCheckCertificate = false, $noProxy = false)

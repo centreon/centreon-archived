@@ -130,7 +130,7 @@ if ($form->validate()) {
     $ret = $form->getSubmitValues();
     $host_list = array();
     foreach ($tab_nagios_server as $key => $value) {
-        if ($key && ($res["host"] == 0 || $res["host"] == $key)) {
+        if ($key && ($ret["host"] == 0 || $ret["host"] == $key)) {
             $host_list[$key] = $value;
         }
     }

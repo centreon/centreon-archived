@@ -23,12 +23,15 @@ declare(strict_types=1);
 namespace Centreon\Domain\Engine;
 
 use Centreon\Domain\Check\Check;
+use Centreon\Domain\Common\Assertion\Assertion;
+use Centreon\Domain\Engine\Exception\EngineConfigurationException;
 use Centreon\Domain\Monitoring\Host;
 use Centreon\Domain\Downtime\Downtime;
 use Centreon\Domain\Monitoring\Service;
 use Centreon\Domain\Entity\EntityValidator;
 use Centreon\Domain\Downtime\DowntimeService;
 use Centreon\Domain\Acknowledgement\Acknowledgement;
+use Centreon\Domain\MonitoringServer\MonitoringServer;
 use Centreon\Domain\Service\AbstractCentreonService;
 use JMS\Serializer\Exception\ValidationFailedException;
 use Centreon\Domain\Monitoring\SubmitResult\SubmitResult;
@@ -66,6 +69,9 @@ class EngineService extends AbstractCentreonService implements
      */
     private $engineConfigurationRepository;
 
+    private const ACKNOWLEDGEMENT_WITH_STICKY_OPTION = 2;
+    private const ACKNOWLEDGEMENT_WITH_NO_STICKY_OPTION = 0;
+
     /**
      * CentCoreService constructor.
      *
@@ -95,10 +101,17 @@ class EngineService extends AbstractCentreonService implements
             throw new EngineException('Host name can not be empty');
         }
 
+        /**
+         * Specificity of the engine.
+         * We do consider that an acknowledgement is sticky when value 2 is sent.
+         * 0 or 1 is considered as a normal acknowledgement.
+         */
         $preCommand = sprintf(
             'ACKNOWLEDGE_HOST_PROBLEM;%s;%d;%d;%d;%s;%s',
             $host->getName(),
-            (int) $acknowledgement->isSticky(),
+            $acknowledgement->isSticky()
+                ? self::ACKNOWLEDGEMENT_WITH_STICKY_OPTION
+                : self::ACKNOWLEDGEMENT_WITH_NO_STICKY_OPTION,
             (int) $acknowledgement->isNotifyContacts(),
             (int) $acknowledgement->isPersistentComment(),
             $this->contact->getAlias(),
@@ -121,11 +134,18 @@ class EngineService extends AbstractCentreonService implements
             throw new EngineException('The host of service is not defined');
         }
 
+        /**
+         * Specificity of the engine.
+         * We do consider that an acknowledgement is sticky when value 2 is sent.
+         * 0 or 1 is considered as a normal acknowledgement.
+         */
         $preCommand = sprintf(
             'ACKNOWLEDGE_SVC_PROBLEM;%s;%s;%d;%d;%d;%s;%s',
             $service->getHost()->getName(),
             $service->getDescription(),
-            (int) $acknowledgement->isSticky(),
+            $acknowledgement->isSticky()
+                ? self::ACKNOWLEDGEMENT_WITH_STICKY_OPTION
+                : self::ACKNOWLEDGEMENT_WITH_NO_STICKY_OPTION,
             (int) $acknowledgement->isNotifyContacts(),
             (int) $acknowledgement->isPersistentComment(),
             $this->contact->getAlias(),
@@ -180,9 +200,6 @@ class EngineService extends AbstractCentreonService implements
     {
         if (empty($this->contact->getAlias())) {
             throw new EngineException(_('The contact alias is empty'));
-        }
-        if ($host === null) {
-            throw new EngineException(_('Host of downtime not found'));
         }
         if (empty($host->getName())) {
             throw new EngineException(_('Host name can not be empty'));
@@ -274,6 +291,24 @@ class EngineService extends AbstractCentreonService implements
         $command = $this->createCommandHeader($service->getHost()->getPollerId()) . $commandToSend;
 
         $this->engineRepository->sendExternalCommand($command);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findEngineConfigurationByMonitoringServer(MonitoringServer $monitoringServer): ?EngineConfiguration
+    {
+        try {
+            Assertion::notNull($monitoringServer->getId(), 'MonitoringServer::id');
+            return $this->engineConfigurationRepository->findEngineConfigurationByMonitoringServerId(
+                $monitoringServer->getId()
+            );
+        } catch (\Throwable $ex) {
+            throw EngineConfigurationException::findEngineConfigurationException(
+                $ex,
+                ['id' => $monitoringServer->getId()]
+            );
+        }
     }
 
     /**

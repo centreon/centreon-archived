@@ -47,8 +47,7 @@ use Exception;
  */
 class AutoloadServiceProvider
 {
-
-    const ERR_TWICE_LOADED = 2001;
+    public const ERR_TWICE_LOADED = 2001;
 
     /**
      * Register service providers

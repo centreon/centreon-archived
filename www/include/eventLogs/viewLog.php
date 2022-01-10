@@ -437,7 +437,7 @@ if (!$getInputs['engine']) {
     var _host = <?php echo !empty($user_params["log_filter_host"]) ? $user_params["log_filter_host"] : 'false'; ?>;
     var _service = <?php echo !empty($user_params["log_filter_svc"]) ? $user_params["log_filter_svc"] : 'false'; ?>;
     // Casting engine variable so that it can be properly interpreted in JS
-    var _engine = <?php echo (int)$engine; ?>;
+    var _engine = <?php echo (int) $getInputs['engine']; ?>;
 
     var _down = <?php echo $user_params["log_filter_host_down"]; ?>;
     <?php echo !empty($user_params["log_filter_notif"]) ? $user_params["log_filter_notif"] : 'false'; ?>;

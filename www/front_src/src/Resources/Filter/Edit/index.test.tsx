@@ -1,18 +1,15 @@
+/* eslint-disable react/jsx-no-constructed-context-values */
 import * as React from 'react';
 
 import axios from 'axios';
-import {
-  RenderResult,
-  render,
-  waitFor,
-  fireEvent,
-  act,
-} from '@testing-library/react';
 import { omit, head, prop } from 'ramda';
 import { makeDnd, DND_DIRECTION_DOWN } from 'react-beautiful-dnd-test-utils';
+import { Provider } from 'jotai';
 
-import Context, { ResourceContext } from '../../Context';
-import useFilter from '../useFilter';
+import { RenderResult, render, waitFor, fireEvent, act } from '@centreon/ui';
+
+import Context, { ResourceContext } from '../../testUtils/Context';
+import useFilter from '../../testUtils/useFilter';
 import { labelFilter, labelName, labelDelete } from '../../translatedLabels';
 import { filterEndpoint } from '../api';
 import { defaultSortField, defaultSortOrder } from '../Criterias/default';
@@ -38,6 +35,12 @@ const EditFilterPanelTest = (): JSX.Element => {
     </Context.Provider>
   );
 };
+
+const EditFilterPanelTestWithJotai = (): JSX.Element => (
+  <Provider>
+    <EditFilterPanelTest />
+  </Provider>
+);
 
 const retrievedCustomFilters = {
   meta: {
@@ -96,7 +99,7 @@ const retrievedCustomFilters = {
 };
 
 const renderEditFilterPanel = (): RenderResult =>
-  render(<EditFilterPanelTest />);
+  render(<EditFilterPanelTestWithJotai />);
 
 describe(EditFilterPanel, () => {
   beforeEach(() => {
@@ -157,7 +160,7 @@ describe(EditFilterPanel, () => {
   });
 
   it('deletes a filter and sends a delete request when the corresponding delete button is clicked', async () => {
-    const { getAllByTitle, getByText } = renderEditFilterPanel();
+    const { getAllByLabelText, getByText } = renderEditFilterPanel();
 
     const [firstFilter] = retrievedCustomFilters.result;
 
@@ -171,9 +174,9 @@ describe(EditFilterPanel, () => {
     });
 
     fireEvent.click(
-      head(getAllByTitle(labelDelete))?.firstElementChild as HTMLElement,
+      head(getAllByLabelText(labelDelete))?.firstElementChild as HTMLElement,
     );
-    fireEvent.click(getByText(labelDelete).parentElement as HTMLElement);
+    fireEvent.click(getByText(labelDelete) as HTMLElement);
 
     await waitFor(() => {
       expect(filterState.customFilters.map(prop('id'))).not.toContain(
@@ -189,7 +192,7 @@ describe(EditFilterPanel, () => {
   it('reorders the filter and sends a reorder request when it is dragged to a different position', async () => {
     const [firstFilter] = retrievedCustomFilters.result;
 
-    const { getByText, container } = renderEditFilterPanel();
+    const { container } = renderEditFilterPanel();
 
     act(() => {
       filterState.loadCustomFilters();
@@ -206,8 +209,7 @@ describe(EditFilterPanel, () => {
 
     await makeDnd({
       direction: DND_DIRECTION_DOWN,
-      getByText,
-      getDragEl: () => firstFilterDraggable,
+      getDragElement: () => firstFilterDraggable,
       positions: 1,
     });
 

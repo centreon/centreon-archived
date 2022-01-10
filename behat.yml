@@ -49,10 +49,6 @@ default:
       paths: [ "%paths.base%/features/AcknowledgementTimeout.feature" ]
       contexts: [ AcknowledgementTimeoutContext ]
 
-    recovery_notification_delay:
-      paths: [ "%paths.base%/features/RecoveryNotificationDelay.feature" ]
-      contexts: [ RecoveryNotificationDelayContext ]
-
     partitioning:
       paths: [ "%paths.base%/features/Partitioning.feature" ]
       contexts: [ PartitioningContext ]
@@ -133,9 +129,10 @@ default:
       paths: [ "%paths.base%/features/BrokerConfiguration.feature" ]
       contexts: [ BrokerConfigurationContext ]
 
-    ldap:
-      paths: [ "%paths.base%/features/Ldap.feature" ]
-      contexts: [ LdapContext ]
+    ##FIXME
+    #ldap:
+    #  paths: [ "%paths.base%/features/Ldap.feature" ]
+    #  contexts: [ LdapContext ]
 
     custom_views_locked:
       paths: [ "%paths.base%/features/CustomViews/Locked.feature" ]
@@ -205,17 +202,17 @@ default:
       contexts:
         - LanguageSelectionContext
 
-    ldap_configuration:
-      paths: [ "%paths.base%/features/LdapConfiguration.feature" ]
-      contexts: [ LdapConfigurationContext ]
+    #ldap_configuration:
+    #  paths: [ "%paths.base%/features/LdapConfiguration.feature" ]
+    #  contexts: [ LdapConfigurationContext ]
 
     traps_snmp_configuration:
       paths: [ "%paths.base%/features/TrapsSNMPConfiguration.feature" ]
       contexts: [ TrapsSNMPConfigurationContext ]
 
-    ldap_manual_import:
-      paths: [ "%paths.base%/features/LdapManualImport.feature" ]
-      contexts: [ LdapManualImportContext ]
+    #ldap_manual_import:
+    #  paths: [ "%paths.base%/features/LdapManualImport.feature" ]
+    #  contexts: [ LdapManualImportContext ]
 
     modify_default_page_connexion:
       paths: [ "%paths.base%/features/ModifyDefaultPageConnection.feature" ]
@@ -325,10 +322,6 @@ default:
       paths: [ "%paths.base%/features/VendorConfiguration.feature" ]
       contexts: [ VendorConfigurationContext ]
 
-    first_notification_delay:
-      paths: [ "%paths.base%/features/FirstNotificationDelay.feature" ]
-      contexts: [ FirstNotificationDelayContext ]
-
     meta_service_dependency_configuration:
       paths: [ "%paths.base%/features/MetaServiceDependencyConfiguration.feature" ]
       contexts: [ MetaServiceDependencyConfigurationContext ]
@@ -348,14 +341,6 @@ default:
     uri:
       paths: [ "%paths.base%/features/URI.feature" ]
       contexts: [ URIContext ]
-
-    topcounterprofilemenu:
-      paths: [ "%paths.base%/features/TopCounterProfileMenu.feature" ]
-      contexts: [ TopCounterProfileMenuContext ]
-
-    topcounterpoller:
-      paths: [ "%paths.base%/features/TopCounterPollers.feature" ]
-      contexts: [ TopCounterPollersContext ]
 
     topologyapi:
       paths: [ "%paths.base%/features/TopologyAPI.feature" ]

@@ -1,10 +1,10 @@
 import * as React from 'react';
 
 import { difference, min, max, isNil } from 'ramda';
-import { scaleLinear } from '@visx/visx';
+import { Scale } from '@visx/visx';
 import { ScaleLinear, ScaleTime } from 'd3-scale';
 
-import { fade } from '@material-ui/core';
+import { alpha } from '@mui/material';
 
 import { Line, TimeValue } from '../models';
 import {
@@ -23,6 +23,7 @@ import RegularAnchorPoint from './AnchorPoint/RegularAnchorPoint';
 import StackedLines from './StackedLines';
 
 interface Props {
+  displayTimeValues: boolean;
   graphHeight: number;
   leftScale: ScaleLinear<number, number>;
   lines: Array<Line>;
@@ -53,7 +54,7 @@ const getStackedYScale = ({
   const minRange = min(getMin(leftScale.range()), getMin(rightScale.range()));
   const maxRange = max(getMax(leftScale.range()), getMax(rightScale.range()));
 
-  return scaleLinear<number>({
+  return Scale.scaleLinear<number>({
     domain: [minDomain, maxDomain],
     nice: true,
     range: [maxRange, minRange],
@@ -69,7 +70,7 @@ export const getFillColor = ({
   transparency,
   areaColor,
 }: FillColor): string | undefined =>
-  transparency ? fade(areaColor, 1 - transparency * 0.01) : undefined;
+  transparency ? alpha(areaColor, 1 - transparency * 0.01) : undefined;
 
 const Lines = ({
   xScale,
@@ -79,6 +80,7 @@ const Lines = ({
   lines,
   graphHeight,
   timeTick,
+  displayTimeValues,
 }: Props): JSX.Element => {
   const [, secondUnit, thirdUnit] = getUnits(lines);
 
@@ -101,8 +103,9 @@ const Lines = ({
   const regularLines = difference(lines, stackedLines);
 
   return (
-    <>
+    <g>
       <StackedLines
+        displayTimeValues={displayTimeValues}
         lines={regularStackedLines}
         timeSeries={regularStackedTimeSeries}
         timeTick={timeTick}
@@ -110,13 +113,14 @@ const Lines = ({
         yScale={stackedYScale}
       />
       <StackedLines
+        displayTimeValues={displayTimeValues}
         lines={invertedStackedLines}
         timeSeries={invertedStackedTimeSeries}
         timeTick={timeTick}
         xScale={xScale}
         yScale={stackedYScale}
       />
-      <>
+      <g>
         {regularLines.map(
           ({
             metric,
@@ -138,9 +142,10 @@ const Lines = ({
             });
 
             return (
-              <React.Fragment key={metric}>
+              <g key={metric}>
                 <RegularAnchorPoint
                   areaColor={areaColor}
+                  displayTimeValues={displayTimeValues}
                   lineColor={lineColor}
                   metric={metric}
                   timeSeries={timeSeries}
@@ -162,12 +167,12 @@ const Lines = ({
                   xScale={xScale}
                   yScale={yScale}
                 />
-              </React.Fragment>
+              </g>
             );
           },
         )}
-      </>
-    </>
+      </g>
+    </g>
   );
 };
 

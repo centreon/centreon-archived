@@ -248,15 +248,6 @@ $attrServicetemplates = array(
     'linkedObject' => 'centreonServicetemplates'
 );
 
-$servGrAvRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_servicegroup'
-    . '&action=list';
-$attrServicegroups = array(
-    'datasourceOrigin' => 'ajax',
-    'availableDatasetRoute' => $servGrAvRoute,
-    'multiple' => true,
-    'linkedObject' => 'centreonServicegroups'
-);
-
 $servCatAvRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_servicecategory'
     . '&action=list';
 $attrServicecategories = array(
@@ -1046,7 +1037,8 @@ if ($form->validate() && $from_list_menu == false) {
         }
     }
     $action = $form->getSubmitValue("action");
-    if (!$action["action"]["action"]) {
+    var_dump($action);
+    if ($action !== null && !$action["action"]["action"]) {
         $o = SERVICE_TEMPLATE_WATCH;
     } else {
         $o = null;

@@ -46,7 +46,26 @@ class ExportServiceTest extends TestCase
 {
     use TestCaseExtensionTrait;
 
+    /**
+     * @var boolean
+     */
     private $aclReload = false;
+
+    /**
+     * @var Container
+     */
+    private $container;
+
+    /**
+     * @var FileSystem
+     */
+    private $fs;
+
+    /**
+     * @var ExportService
+     */
+    private $export;
+
 
     /**
      * {@inheritdoc}
@@ -111,7 +130,7 @@ class ExportServiceTest extends TestCase
     /**
      * @covers \CentreonRemote\Infrastructure\Service\ExportService::export
      */
-    public function testExport()
+    public function testExport(): void
     {
         $path = "vfs://export";
 
@@ -124,7 +143,7 @@ class ExportServiceTest extends TestCase
         $this->export->export($commitment);
 
         // @todo replace system('rm -rf vfs://...')
-        // $this->assertFileNotExists("{$path}/test.txt");
+        // $this->assertFileDoesNotExist("{$path}/test.txt");
 
         $this->assertFileExists("{$path}/manifest.json");
     }
@@ -132,7 +151,7 @@ class ExportServiceTest extends TestCase
     /**
      * @covers \CentreonRemote\Infrastructure\Service\ExportService::import
      */
-    public function testImport()
+    public function testImport(): void
     {
         $path = "vfs://export";
 
@@ -166,7 +185,7 @@ class ExportServiceTest extends TestCase
             ->getMock();
 
         $container['centreon_remote.exporter']->method('get')
-            ->will($this->returnCallback(function ($arg) use ($points, $manifest) {
+            ->will($this->returnCallback(function ($arg) use ($points) {
                 $this->assertEquals('configuration', $arg);
 
                 return [
@@ -209,7 +228,7 @@ class ExportServiceTest extends TestCase
     /**
      * @covers \CentreonRemote\Infrastructure\Service\ExportService::refreshAcl
      */
-    public function testRefreshAcl()
+    public function testRefreshAcl(): void
     {
         $this->invokeMethod($this->export, 'refreshAcl');
 

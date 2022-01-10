@@ -41,8 +41,6 @@ use FOS\RestBundle\Context\Context;
 use FOS\RestBundle\View\View;
 use Psr\Container\ContainerInterface;
 use PHPUnit\Framework\TestCase;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class MonitoringResourceControllerTest extends TestCase
 {
@@ -195,18 +193,18 @@ class MonitoringResourceControllerTest extends TestCase
 
         $this->assertEquals(
             $resource->getLinks()->getEndpoints()->getDetails(),
-            '/centreon/api/beta/monitoring/resources/hosts/1'
+            '/centreon/api/v21.10/monitoring/resources/hosts/1'
         );
         $this->assertEquals(
             $resource->getLinks()->getEndpoints()->getTimeline(),
-            '/centreon/api/beta/monitoring/hosts/1/timeline'
+            '/centreon/api/v21.10/monitoring/hosts/1/timeline'
         );
         $this->assertEquals(
             $resource->getLinks()->getEndpoints()->getAcknowledgement(),
-            '/centreon/api/beta/monitoring/hosts/1/acknowledgements?limit=1'
+            '/centreon/api/v21.10/monitoring/hosts/1/acknowledgements?limit=1'
         );
-        $this->assertRegExp(
-            '#/centreon/api/beta/monitoring/hosts/1/downtimes\?'
+        $this->assertMatchesRegularExpression(
+            '#/centreon/api/v21.10/monitoring/hosts/1/downtimes\?'
                 . 'search=\{"\$and":\[\{"start_time":\{"\$lt":\d+\},"end_time":\{"\$gt":\d+\},'
                 . '"0":\{"\$or":\{"is_cancelled":\{"\$neq":1\},"deletion_time":\{"\$gt":\d+\}\}\}\}\]\}#',
             urldecode($resource->getLinks()->getEndpoints()->getDowntime())

@@ -1,20 +1,16 @@
 import * as React from 'react';
 
-import { DateTimePicker } from '@material-ui/pickers';
+import dayjs from 'dayjs';
+
+import { DateTimePicker } from '@mui/lab';
+import { TextFieldProps } from '@mui/material';
 
 import { TextField } from '@centreon/ui';
 
 import { CustomTimePeriodProperty } from '../../../Details/tabs/Graph/models';
 
-const DateTimeTextField = React.forwardRef(
-  (props, ref: React.ForwardedRef<HTMLDivElement>): JSX.Element => (
-    <TextField {...props} ref={ref} size="small" />
-  ),
-);
-
 interface Props {
   changeDate: (props) => () => void;
-  commonPickersProps;
   date: Date;
   maxDate?: Date;
   minDate?: Date;
@@ -22,31 +18,52 @@ interface Props {
   setDate: React.Dispatch<React.SetStateAction<Date>>;
 }
 
+const renderDateTimePickerTextField =
+  (onClick) =>
+  ({ inputRef, inputProps, InputProps }: TextFieldProps): JSX.Element => {
+    return (
+      <TextField
+        disabled
+        // eslint-disable-next-line react/no-unstable-nested-components
+        EndAdornment={(): JSX.Element => <div>{InputProps?.endAdornment}</div>}
+        inputProps={{
+          ...inputProps,
+          ref: inputRef,
+          style: { padding: 8 },
+        }}
+        onClick={onClick}
+      />
+    );
+  };
+
 const DateTimePickerInput = ({
-  commonPickersProps,
   date,
-  minDate,
   maxDate,
+  minDate,
   property,
   setDate,
   changeDate,
 }: Props): JSX.Element => {
-  const inputProp = {
-    TextFieldComponent: DateTimeTextField,
+  const [isOpen, setIsOpen] = React.useState(false);
+
+  const toggleIsOpen = (): void => {
+    setIsOpen(!isOpen);
   };
 
   return (
-    <DateTimePicker
-      {...commonPickersProps}
-      {...inputProp}
+    <DateTimePicker<dayjs.Dayjs>
       hideTabs
-      inputVariant="filled"
-      maxDate={maxDate}
-      minDate={minDate}
-      size="small"
+      PopperProps={{
+        open: isOpen,
+      }}
+      maxDate={dayjs(maxDate)}
+      minDate={dayjs(minDate)}
+      open={isOpen}
+      renderInput={renderDateTimePickerTextField(toggleIsOpen)}
       value={date}
-      variant="inline"
-      onChange={(value) => setDate(new Date(value?.toDate() || 0))}
+      onChange={(value): void => {
+        setDate(new Date(value?.toDate() || 0));
+      }}
       onClose={changeDate({
         date,
         property,

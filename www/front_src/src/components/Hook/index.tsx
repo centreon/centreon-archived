@@ -4,9 +4,9 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { equals } from 'ramda';
 
+import { MenuSkeleton } from '@centreon/ui';
+
 import { dynamicImport } from '../../helpers/dynamicImport';
-import centreonAxios from '../../axios';
-import MenuLoader from '../MenuLoader';
 
 interface Props {
   history;
@@ -36,8 +36,8 @@ const LoadableHooks = ({
           );
 
           return (
-            <React.Suspense fallback={<MenuLoader width={29} />} key={path}>
-              <HookComponent centreonAxios={centreonAxios} {...rest} />
+            <React.Suspense fallback={<MenuSkeleton width={29} />} key={path}>
+              <HookComponent {...rest} />
             </React.Suspense>
           );
         })}

@@ -1,3 +1,4 @@
+/* eslint-disable import/no-relative-packages */
 /* eslint-disable no-console */
 /* eslint-disable no-async-promise-executor */
 /* eslint-disable consistent-return */
@@ -14,6 +15,7 @@ const getGlobalName = (filename) => {
   const normalizedFilename = filename
     .replace(/(^\.?\/)|(\.js)/g, '')
     .replace(/\//g, '$');
+
   return `$centreonExternalModule$${normalizedFilename}`;
 };
 
@@ -42,6 +44,7 @@ const importModules = ({ basename, files }) => {
   const promises = files.map((file) => {
     return importModule({ basename, file });
   });
+
   return Promise.all(promises);
 };
 
@@ -55,6 +58,7 @@ export const dynamicImport = (basename, parameters) =>
     } = parameters;
     if (!bundle) {
       console.error(new Error('dynamic import should contains js parameter.'));
+
       return null;
     }
 

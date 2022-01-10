@@ -3,29 +3,31 @@ import * as React from 'react';
 import clsx from 'clsx';
 import { equals } from 'ramda';
 
-import { makeStyles, Theme } from '@material-ui/core';
+import { Theme } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import { CreateCSSProperties } from '@mui/styles';
 
 export enum LegendMarkerVariant {
   'dot',
   'bar',
 }
 
-const useStyles = makeStyles<
-  Theme,
-  { color?: string; variant: LegendMarkerVariant }
->((theme) => ({
+interface StylesProps {
+  color?: string;
+  variant: LegendMarkerVariant;
+}
+
+const useStyles = makeStyles<Theme, StylesProps>((theme) => ({
   disabled: {
     color: theme.palette.text.disabled,
   },
-  icon: {
-    backgroundColor: ({ color }) => color,
-    borderRadius: ({ variant }) =>
-      equals(LegendMarkerVariant.dot, variant) ? '50%' : 0,
-    height: ({ variant }) =>
-      equals(LegendMarkerVariant.dot, variant) ? 9 : '100%',
+  icon: ({ color, variant }): CreateCSSProperties<StylesProps> => ({
+    backgroundColor: color,
+    borderRadius: equals(LegendMarkerVariant.dot, variant) ? '50%' : 0,
+    height: equals(LegendMarkerVariant.dot, variant) ? 9 : '100%',
     marginRight: theme.spacing(0.5),
     width: 9,
-  },
+  }),
 }));
 
 interface Props {

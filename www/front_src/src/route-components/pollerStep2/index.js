@@ -40,20 +40,21 @@ class PollerStepTwoRoute extends Component {
     'internal.php?object=centreon_configuration_remote&action=linkCentreonRemoteServer',
   );
 
+  componentDidMount() {
+    this.getPollers();
+  }
+
   getPollers = () => {
     this.pollerListApi.post().then((response) => {
       this.setState({ pollers: response.data });
     });
   };
 
-  componentDidMount = () => {
-    this.getPollers();
-  };
-
   handleSubmit = (data) => {
     const { history, pollerData, setPollerWizard } = this.props;
     const postData = { ...data, ...pollerData };
     postData.server_type = 'poller';
+
     return this.wizardFormApi
       .post('', postData)
       .then((response) => {
@@ -73,6 +74,7 @@ class PollerStepTwoRoute extends Component {
     const { links } = this;
     const { pollerData } = this.props;
     const { pollers } = this.state;
+
     return (
       <BaseWizard>
         <ProgressBar links={links} />

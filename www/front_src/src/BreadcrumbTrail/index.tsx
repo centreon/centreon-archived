@@ -2,8 +2,9 @@ import React, { useMemo } from 'react';
 
 import { connect } from 'react-redux';
 
-import { makeStyles, Breadcrumbs as MuiBreadcrumbs } from '@material-ui/core';
-import NavigateNextIcon from '@material-ui/icons/NavigateNext';
+import { Breadcrumbs as MuiBreadcrumbs } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 
 import breadcrumbSelector from './selector';
 import { Breadcrumb as BreadcrumbModel, BreadcrumbsByPath } from './models';

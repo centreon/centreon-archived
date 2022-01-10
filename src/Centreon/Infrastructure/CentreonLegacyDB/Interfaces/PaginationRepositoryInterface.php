@@ -38,15 +38,14 @@ namespace Centreon\Infrastructure\CentreonLegacyDB\Interfaces;
 
 interface PaginationRepositoryInterface
 {
-
     /**
      * Get a list of elements by criteria
      *
      * @param mixed $filters
      * @param int $limit
      * @param int $offset
-     * @param array $ordering
-     * @return array
+     * @param array<string,string> $ordering
+     * @return array<int,mixed>
      */
     public function getPaginationList($filters = null, int $limit = null, int $offset = null, $ordering = []): array;
 

@@ -1,103 +1,63 @@
 import * as React from 'react';
 
-import { isNil, ifElse, pathEq, always, pathOr } from 'ramda';
-import { useTranslation } from 'react-i18next';
+import { isNil } from 'ramda';
+import { useAtom } from 'jotai';
+import { useAtomValue, useUpdateAtom } from 'jotai/utils';
+
+import { getUrlQueryParameters, setUrlQueryParameters } from '@centreon/ui';
 
 import {
-  getUrlQueryParameters,
-  setUrlQueryParameters,
-  useRequest,
-  getData,
-} from '@centreon/ui';
+  customTimePeriodAtom,
+  selectedTimePeriodAtom,
+} from '../Graph/Performance/TimePeriods/timePeriodAtoms';
+import useTimePeriod from '../Graph/Performance/TimePeriods/useTimePeriod';
 
-import { resourcesEndpoint } from '../api/endpoint';
+import { getTabIdFromLabel, getTabLabelFromId } from './tabs';
+import { DetailsUrlQueryParameters } from './models';
 import {
-  labelNoResourceFound,
-  labelSomethingWentWrong,
-} from '../translatedLabels';
-import { Resource } from '../models';
+  defaultSelectedCustomTimePeriodAtom,
+  defaultSelectedTimePeriodIdAtom,
+  openDetailsTabIdAtom,
+  selectedResourceIdAtom,
+  selectedResourceParentIdAtom,
+  selectedResourceParentTypeAtom,
+  selectedResourceTypeAtom,
+  selectedResourceUuidAtom,
+  sendingDetailsAtom,
+  tabParametersAtom,
+} from './detailsAtoms';
 
-import { detailsTabId, getTabIdFromLabel, getTabLabelFromId } from './tabs';
-import { TabId } from './tabs/models';
-import {
-  DetailsUrlQueryParameters,
-  ResourceDetails,
-  ServicesTabParameters,
-  GraphTabParameters,
-  TabParameters,
-} from './models';
-import { getStoredOrDefaultPanelWidth, storePanelWidth } from './storedDetails';
-
-export interface DetailsState {
-  clearSelectedResource: () => void;
-  details?: ResourceDetails;
-  getSelectedResourceDetailsEndpoint: () => string | undefined;
-  loadDetails: () => void;
-  openDetailsTabId: TabId;
-  panelWidth: number;
-  selectResource: (resource: Resource) => void;
-  selectedResourceId?: number;
-  selectedResourceParentId?: number;
-  selectedResourceUuid?: string;
-  setGraphTabParameters: (parameters: GraphTabParameters) => void;
-  setOpenDetailsTabId: React.Dispatch<React.SetStateAction<TabId>>;
-  setPanelWidth: React.Dispatch<React.SetStateAction<number>>;
-  setSelectedResourceId: React.Dispatch<
-    React.SetStateAction<number | undefined>
-  >;
-  setSelectedResourceParentId: React.Dispatch<
-    React.SetStateAction<number | undefined>
-  >;
-  setSelectedResourceParentType: React.Dispatch<
-    React.SetStateAction<string | undefined>
-  >;
-  setSelectedResourceType: React.Dispatch<
-    React.SetStateAction<string | undefined>
-  >;
-  setSelectedResourceUuid: React.Dispatch<
-    React.SetStateAction<string | undefined>
-  >;
-  setServicesTabParameters: (parameters: ServicesTabParameters) => void;
-  tabParameters: TabParameters;
-}
-
-const useDetails = (): DetailsState => {
-  const [openDetailsTabId, setOpenDetailsTabId] =
-    React.useState<TabId>(detailsTabId);
-  const [selectedResourceUuid, setSelectedResourceUuid] =
-    React.useState<string>();
-  const [selectedResourceId, setSelectedResourceId] = React.useState<number>();
-  const [selectedResourceParentId, setSelectedResourceParentId] =
-    React.useState<number>();
-  const [selectedResourceType, setSelectedResourceType] =
-    React.useState<string>();
-  const [selectedResourceParentType, setSelectedResourceParentType] =
-    React.useState<string>();
-  const [details, setDetails] = React.useState<ResourceDetails>();
-  const [tabParameters, setTabParameters] = React.useState<TabParameters>({});
-  const [panelWidth, setPanelWidth] = React.useState(
-    getStoredOrDefaultPanelWidth(550),
+const useDetails = (): void => {
+  const [openDetailsTabId, setOpenDetailsTabId] = useAtom(openDetailsTabIdAtom);
+  const [selectedResourceUuid, setSelectedResourceUuid] = useAtom(
+    selectedResourceUuidAtom,
+  );
+  const [selectedResourceId, setSelectedResourceId] = useAtom(
+    selectedResourceIdAtom,
+  );
+  const [selectedResourceParentId, setSelectedResourceParentId] = useAtom(
+    selectedResourceParentIdAtom,
+  );
+  const [selectedResourceType, setSelectedResourceType] = useAtom(
+    selectedResourceTypeAtom,
+  );
+  const [selectedResourceParentType, setSelectedResourceParentType] = useAtom(
+    selectedResourceParentTypeAtom,
+  );
+  const [tabParameters, setTabParameters] = useAtom(tabParametersAtom);
+  const customTimePeriod = useAtomValue(customTimePeriodAtom);
+  const selectedTimePeriod = useAtomValue(selectedTimePeriodAtom);
+  const sendingDetails = useAtomValue(sendingDetailsAtom);
+  const setDefaultSelectedTimePeriodId = useUpdateAtom(
+    defaultSelectedTimePeriodIdAtom,
+  );
+  const setDefaultSelectedCustomTimePeriod = useUpdateAtom(
+    defaultSelectedCustomTimePeriodAtom,
   );
 
-  const { t } = useTranslation();
-
-  const { sendRequest } = useRequest<ResourceDetails>({
-    getErrorMessage: ifElse(
-      pathEq(['response', 'status'], 404),
-      always(t(labelNoResourceFound)),
-      pathOr(t(labelSomethingWentWrong), ['response', 'data', 'message']),
-    ),
-    request: getData,
+  useTimePeriod({
+    sending: sendingDetails,
   });
-
-  const selectResource = (resource: Resource): void => {
-    setOpenDetailsTabId(detailsTabId);
-    setSelectedResourceUuid(resource.uuid);
-    setSelectedResourceId(resource.id);
-    setSelectedResourceType(resource.type);
-    setSelectedResourceParentType(resource?.parent?.type);
-    setSelectedResourceParentId(resource?.parent?.id);
-  };
 
   React.useEffect(() => {
     const urlQueryParameters = getUrlQueryParameters();
@@ -117,6 +77,8 @@ const useDetails = (): DetailsState => {
       parentType,
       tab,
       tabParameters: tabParametersFromUrl,
+      selectedTimePeriodId,
+      customTimePeriod: customTimePeriodFromUrl,
     } = detailsUrlQueryParameters;
 
     if (!isNil(tab)) {
@@ -129,6 +91,8 @@ const useDetails = (): DetailsState => {
     setSelectedResourceType(type);
     setSelectedResourceParentType(parentType);
     setTabParameters(tabParametersFromUrl || {});
+    setDefaultSelectedTimePeriodId(selectedTimePeriodId);
+    setDefaultSelectedCustomTimePeriod(customTimePeriodFromUrl);
   }, []);
 
   React.useEffect(() => {
@@ -136,9 +100,11 @@ const useDetails = (): DetailsState => {
       {
         name: 'details',
         value: {
+          customTimePeriod,
           id: selectedResourceId,
           parentId: selectedResourceParentId,
           parentType: selectedResourceParentType,
+          selectedTimePeriodId: selectedTimePeriod?.id,
           tab: getTabLabelFromId(openDetailsTabId),
           tabParameters,
           type: selectedResourceType,
@@ -153,77 +119,9 @@ const useDetails = (): DetailsState => {
     selectedResourceParentType,
     selectedResourceParentType,
     tabParameters,
+    selectedTimePeriod,
+    customTimePeriod,
   ]);
-
-  const getSelectedResourceDetailsEndpoint = (): string | undefined => {
-    if (!isNil(selectedResourceParentId)) {
-      return `${resourcesEndpoint}/${selectedResourceParentType}s/${selectedResourceParentId}/${selectedResourceType}s/${selectedResourceId}`;
-    }
-
-    return `${resourcesEndpoint}/${selectedResourceType}s/${selectedResourceId}`;
-  };
-
-  const clearSelectedResource = (): void => {
-    setSelectedResourceUuid(undefined);
-    setSelectedResourceId(undefined);
-    setSelectedResourceParentId(undefined);
-    setSelectedResourceParentType(undefined);
-    setSelectedResourceType(undefined);
-  };
-
-  const loadDetails = (): void => {
-    if (isNil(selectedResourceId)) {
-      return;
-    }
-
-    sendRequest(getSelectedResourceDetailsEndpoint())
-      .then(setDetails)
-      .catch(() => {
-        clearSelectedResource();
-      });
-  };
-
-  React.useEffect(() => {
-    setDetails(undefined);
-    loadDetails();
-  }, [selectedResourceUuid]);
-
-  React.useEffect(() => {
-    storePanelWidth(panelWidth);
-  }, [panelWidth]);
-
-  const setServicesTabParameters = (
-    parameters: ServicesTabParameters,
-  ): void => {
-    setTabParameters({ ...tabParameters, services: parameters });
-  };
-
-  const setGraphTabParameters = (parameters: GraphTabParameters): void => {
-    setTabParameters({ ...tabParameters, graph: parameters });
-  };
-
-  return {
-    clearSelectedResource,
-    details,
-    getSelectedResourceDetailsEndpoint,
-    loadDetails,
-    openDetailsTabId,
-    panelWidth,
-    selectResource,
-    selectedResourceId,
-    selectedResourceParentId,
-    selectedResourceUuid,
-    setGraphTabParameters,
-    setOpenDetailsTabId,
-    setPanelWidth,
-    setSelectedResourceId,
-    setSelectedResourceParentId,
-    setSelectedResourceParentType,
-    setSelectedResourceType,
-    setSelectedResourceUuid,
-    setServicesTabParameters,
-    tabParameters,
-  };
 };
 
 export default useDetails;

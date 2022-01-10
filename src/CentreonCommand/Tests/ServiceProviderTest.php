@@ -63,7 +63,7 @@ class ServiceProviderTest extends TestCase
      *
      * @covers \CentreonCommand\ServiceProvider::register
      */
-    public function testWebservices()
+    public function testWebservices(): void
     {
         $checkList = [
             Webservice\CommandWebservice::class,
@@ -77,7 +77,7 @@ class ServiceProviderTest extends TestCase
      *
      * @covers \CentreonCommand\ServiceProvider::order
      */
-    public function testOrder()
+    public function testOrder(): void
     {
         $this->assertEquals(51, $this->provider::order());
     }

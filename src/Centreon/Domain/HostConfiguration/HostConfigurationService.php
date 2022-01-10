@@ -31,11 +31,10 @@ use Centreon\Domain\HostConfiguration\Interfaces\HostConfigurationRepositoryInte
 use Centreon\Domain\HostConfiguration\Interfaces\HostConfigurationServiceInterface;
 use Centreon\Domain\HostConfiguration\Interfaces\HostGroup\HostGroupServiceInterface;
 use Centreon\Domain\HostConfiguration\Interfaces\HostMacro\HostMacroServiceInterface;
-use Centreon\Domain\HostConfiguration\Interfaces\HostSeverity\HostSeverityServiceInterface;
 use Centreon\Domain\HostConfiguration\Model\HostCategory;
 use Centreon\Domain\HostConfiguration\Model\HostGroup;
 use Centreon\Domain\Repository\Interfaces\DataStorageEngineInterface;
-use Centreon\Infrastructure\HostConfiguration\API\Model\HostCategory\HostCategoryV21Factory;
+use Centreon\Infrastructure\HostConfiguration\API\Model\HostCategory\HostCategoryV2110Factory;
 
 /**
  * @package Centreon\Domain\HostConfiguration
@@ -70,10 +69,6 @@ class HostConfigurationService implements HostConfigurationServiceInterface
      * @var HostGroupServiceInterface
      */
     private $hostGroupService;
-    /**
-     * @var HostSeverityServiceInterface
-     */
-    private $hostSeverityService;
 
     /**
      * @param HostConfigurationRepositoryInterface $hostConfigurationRepository
@@ -81,7 +76,6 @@ class HostConfigurationService implements HostConfigurationServiceInterface
      * @param EngineConfigurationServiceInterface $engineConfigurationService
      * @param HostMacroServiceInterface $hostMacroService
      * @param HostCategoryServiceInterface $hostCategoryService
-     * @param HostSeverityServiceInterface $hostSeverityService
      * @param HostGroupServiceInterface $hostGroupService
      * @param DataStorageEngineInterface $dataStorageEngine
      */
@@ -91,7 +85,6 @@ class HostConfigurationService implements HostConfigurationServiceInterface
         EngineConfigurationServiceInterface $engineConfigurationService,
         HostMacroServiceInterface $hostMacroService,
         HostCategoryServiceInterface $hostCategoryService,
-        HostSeverityServiceInterface $hostSeverityService,
         HostGroupServiceInterface $hostGroupService,
         DataStorageEngineInterface $dataStorageEngine
     ) {
@@ -100,7 +93,6 @@ class HostConfigurationService implements HostConfigurationServiceInterface
         $this->engineConfigurationService = $engineConfigurationService;
         $this->hostMacroService = $hostMacroService;
         $this->hostCategoryService = $hostCategoryService;
-        $this->hostSeverityService = $hostSeverityService;
         $this->hostGroupService = $hostGroupService;
         $this->dataStorageEngine = $dataStorageEngine;
     }
@@ -133,10 +125,7 @@ class HostConfigurationService implements HostConfigurationServiceInterface
                 throw new HostConfigurationException(_('Unable to find the Engine configuration'));
             }
 
-            $safedHostName = EngineConfiguration::removeIllegalCharacters(
-                $host->getName(),
-                $engineConfiguration->getIllegalObjectNameCharacters()
-            );
+            $safedHostName = $engineConfiguration->removeIllegalCharacters($host->getName());
             if (empty($safedHostName)) {
                 throw new HostConfigurationException(_('Host name can not be empty'));
             }

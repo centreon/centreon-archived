@@ -2,7 +2,7 @@ import React from 'react';
 
 import { path } from 'ramda';
 
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 
 import { ComponentColumnProps } from '@centreon/ui';
 
@@ -30,7 +30,7 @@ const StateHoverChip = ({
 }: StateChipProps): JSX.Element => {
   return (
     <HoverChip Chip={Chip} label={label}>
-      <DetailsTable endpoint={endpoint} />
+      {(): JSX.Element => <DetailsTable endpoint={endpoint} />}
     </HoverChip>
   );
 };
@@ -74,7 +74,7 @@ const AcknowledgeHoverChip = ({
 
 const StateColumn = ({ row }: ComponentColumnProps): JSX.Element => {
   return (
-    <Grid container justify="center" spacing={1}>
+    <Grid container justifyContent="center" spacing={1}>
       {row.in_downtime && (
         <Grid item>
           <DowntimeHoverChip resource={row} />

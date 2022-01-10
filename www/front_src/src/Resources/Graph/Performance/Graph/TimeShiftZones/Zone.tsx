@@ -1,9 +1,10 @@
 import * as React from 'react';
 
-import { Bar } from '@visx/visx';
+import { Shape } from '@visx/visx';
 import { equals, negate } from 'ramda';
 
-import { fade, makeStyles, useTheme } from '@material-ui/core';
+import { alpha, useTheme } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 
 import { useMemoComponent } from '@centreon/ui';
 
@@ -36,11 +37,11 @@ const TimeShiftZone = ({
 
   return useMemoComponent({
     Component: (
-      <Bar
+      <Shape.Bar
         className={classes.translationZone}
         fill={
           equals(directionHovered, direction)
-            ? fade(theme.palette.common.white, 0.5)
+            ? alpha(theme.palette.common.white, 0.5)
             : 'transparent'
         }
         height={graphHeight}
@@ -51,7 +52,7 @@ const TimeShiftZone = ({
             : graphWidth) + marginLeft
         }
         y={marginTop}
-        onClick={() => shiftTime?.(direction)}
+        onClick={(): void => shiftTime?.(direction)}
         onMouseLeave={onDirectionHover(null)}
         onMouseOver={onDirectionHover(direction)}
       />

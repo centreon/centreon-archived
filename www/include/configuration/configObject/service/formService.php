@@ -920,6 +920,7 @@ if ($o == SERVICE_ADD) {
     $form->addElement('header', 'title4', _("View an Extended Info"));
 } elseif ($o == SERVICE_MASSIVE_CHANGE) {
     $form->addElement('header', 'title3', _("Massive Change"));
+    $form->addElement('header', 'title4', _("Modify an Extended Info"));
 }
 
 $form->addElement('header', 'nagios', _("Monitoring Engine"));
@@ -1152,18 +1153,20 @@ if ($form->validate() && $from_list_menu == false) {
          * Before saving, we check if a password macro has changed its name to be able to give it the right password
          * instead of wildcards (PASSWORD_REPLACEMENT_VALUE).
          */
-        foreach ($_REQUEST['macroInput'] as $index => $macroName) {
-            if (array_key_exists('macroOriginalName_' . $index, $_REQUEST)) {
-                $originalMacroName = $_REQUEST['macroOriginalName_' . $index];
-                if ($_REQUEST['macroValue'][$index] === PASSWORD_REPLACEMENT_VALUE) {
-                    /*
-                     * The password has not been changed along with the name, so its value is equal to the wildcard.
-                     * We will therefore recover the password stored for its original name.
-                     */
-                    foreach ($aMacros as $indexMacro => $macroDetails) {
-                        if ($macroDetails['macroInput_#index#'] === $originalMacroName) {
-                            $_REQUEST['macroValue'][$index] = $macroPasswords[$indexMacro]['password'];
-                            break;
+        if (array_key_exists('macroInput', $_REQUEST)) {
+            foreach ($_REQUEST['macroInput'] as $index => $macroName) {
+                if (array_key_exists('macroOriginalName_' . $index, $_REQUEST)) {
+                    $originalMacroName = $_REQUEST['macroOriginalName_' . $index];
+                    if ($_REQUEST['macroValue'][$index] === PASSWORD_REPLACEMENT_VALUE) {
+                        /*
+                         * The password has not been changed along with the name, so its value is equal to the wildcard.
+                         * We will therefore recover the password stored for its original name.
+                         */
+                        foreach ($aMacros as $indexMacro => $macroDetails) {
+                            if ($macroDetails['macroInput_#index#'] === $originalMacroName) {
+                                $_REQUEST['macroValue'][$index] = $macroPasswords[$indexMacro]['password'];
+                                break;
+                            }
                         }
                     }
                 }

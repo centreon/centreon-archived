@@ -23,11 +23,6 @@ class ExportService
     private $exporter;
 
     /**
-     * @var \CentreonRemote\Infrastructure\Service\ExporterCacheService
-     */
-    private $cache;
-
-    /**
      * @var \CentreonClapi\CentreonACL
      */
     private $acl;
@@ -50,7 +45,6 @@ class ExportService
     public function __construct(ContainerInterface $services)
     {
         $this->exporter = $services->get('centreon_remote.exporter');
-        $this->cache = $services->get('centreon_remote.exporter.cache');
         $this->acl = $services->get('centreon.acl');
         $this->db = $services->get(\Centreon\ServiceProvider::CENTREON_DB_MANAGER);
 

@@ -22,6 +22,9 @@ import {
   labelStatus,
   labelMonitoringServer,
   labelMetaService,
+  labelStatusType,
+  labelHard,
+  labelSoft,
 } from '../../translatedLabels';
 import {
   buildHostGroupsEndpoint,
@@ -48,10 +51,12 @@ const criteriaValueNameById = {
   UP: labelUp,
   WARNING: labelWarning,
   acknowledged: labelAcknowledged,
+  hard: labelHard,
   host: labelHost,
   in_downtime: labelInDowntime,
   metaservice: labelMetaService,
   service: labelService,
+  soft: labelSoft,
   unhandled_problems: labelUnhandled,
 };
 
@@ -152,49 +157,70 @@ const selectableStatuses = [
   pendingStatus,
 ];
 
+const hardStateTypeId = 'hard';
+const hardStateType = {
+  id: hardStateTypeId,
+  name: criteriaValueNameById[hardStateTypeId],
+};
+
+const softStateTypeId = 'soft';
+const softStateType = {
+  id: softStateTypeId,
+  name: criteriaValueNameById[softStateTypeId],
+};
+
+const selectableStateTypes = [hardStateType, softStateType];
+
 export interface CriteriaDisplayProps {
-  autocompleteSearch?: Record<string, unknown>;
+  autocompleteSearch?: { conditions: Array<Record<string, unknown>> };
   buildAutocompleteEndpoint?;
   label: string;
   options?: Array<SelectEntry>;
-  sortId: number;
 }
 
 export interface CriteriaById {
   [criteria: string]: CriteriaDisplayProps;
 }
 
+export enum CriteriaNames {
+  hostGroups = 'host_groups',
+  monitoringServers = 'monitoring_servers',
+  resourceTypes = 'resource_types',
+  serviceGroups = 'service_groups',
+  states = 'states',
+  statusTypes = 'status_types',
+  statuses = 'statuses',
+}
+
 const selectableCriterias: CriteriaById = {
-  host_groups: {
+  [CriteriaNames.resourceTypes]: {
+    label: labelResource,
+    options: selectableResourceTypes,
+  },
+  [CriteriaNames.states]: {
+    label: labelState,
+    options: selectableStates,
+  },
+  [CriteriaNames.statuses]: {
+    label: labelStatus,
+    options: selectableStatuses,
+  },
+  [CriteriaNames.statusTypes]: {
+    label: labelStatusType,
+    options: selectableStateTypes,
+  },
+  [CriteriaNames.hostGroups]: {
     buildAutocompleteEndpoint: buildHostGroupsEndpoint,
     label: labelHostGroup,
-    sortId: 3,
   },
-  monitoring_servers: {
+  [CriteriaNames.serviceGroups]: {
+    buildAutocompleteEndpoint: buildServiceGroupsEndpoint,
+    label: labelServiceGroup,
+  },
+  [CriteriaNames.monitoringServers]: {
     autocompleteSearch: { conditions: [{ field: 'running', value: true }] },
     buildAutocompleteEndpoint: buildMonitoringServersEndpoint,
     label: labelMonitoringServer,
-    sortId: 5,
-  },
-  resource_types: {
-    label: labelResource,
-    options: selectableResourceTypes,
-    sortId: 0,
-  },
-  service_groups: {
-    buildAutocompleteEndpoint: buildServiceGroupsEndpoint,
-    label: labelServiceGroup,
-    sortId: 4,
-  },
-  states: {
-    label: labelState,
-    options: selectableStates,
-    sortId: 1,
-  },
-  statuses: {
-    label: labelStatus,
-    options: selectableStatuses,
-    sortId: 2,
   },
 };
 
@@ -209,4 +235,6 @@ export {
   selectableStates,
   selectableStatuses,
   selectableCriterias,
+  selectableStateTypes,
+  hardStateType,
 };

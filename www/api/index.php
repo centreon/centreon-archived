@@ -43,61 +43,38 @@ ini_set('display_errors', 0);
 
 $pearDB = $dependencyInjector['configuration_db'];
 
-/* Purge old token */
-$pearDB->query("DELETE FROM ws_token WHERE generate_date < DATE_SUB(NOW(), INTERVAL 1 HOUR)");
+$kernel = \App\Kernel::createForWeb();
 
 /* Test if the call is for authenticate */
-if ($_SERVER['REQUEST_METHOD'] === 'POST' &&
-    isset($_GET['action']) && $_GET['action'] == 'authenticate'
-) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action']) && $_GET['action'] == 'authenticate') {
     if (false === isset($_POST['username']) || false === isset($_POST['password'])) {
         CentreonWebService::sendResult("Bad parameters", 400);
     }
 
-    /* @todo Check if user already have valid token */
-    require_once _CENTREON_PATH_ . "/www/class/centreonLog.class.php";
-    require_once _CENTREON_PATH_ . "/www/class/centreonAuth.class.php";
+    $credentials = [
+        "login" => $_POST['username'],
+        "password" => $_POST['password'],
+    ];
+    $authenticateApiUseCase = $kernel->getContainer()->get(
+        \Centreon\Domain\Authentication\UseCase\AuthenticateApi::class
+    );
+    $request = new \Centreon\Domain\Authentication\UseCase\AuthenticateApiRequest(
+        $credentials['login'],
+        $credentials['password']
+    );
+    $response = new \Centreon\Domain\Authentication\UseCase\AuthenticateApiResponse();
+    $authenticateApiUseCase->execute($request, $response);
 
-    /* Authenticate the user */
-    $log = new CentreonUserLog(0, $pearDB);
-    $auth = new CentreonAuth($dependencyInjector, $_POST['username'], $_POST['password'], 0, $pearDB, $log, 1, "", "API");
-
-    if ($auth->passwdOk == 0) {
-        CentreonWebService::sendResult("Bad credentials", 403);
-        exit();
+    if (!empty($response->getApiAuthentication()['security']['token'])) {
+        CentreonWebService::sendResult(['authToken' => $response->getApiAuthentication()['security']['token']]);
+    } else {
+        CentreonWebService::sendResult('Invalid credentials', 403);
     }
-
-    /* Check if user exists in contact table */
-    $reachAPI = 0;
-    $query = "SELECT contact_id, reach_api, reach_api_rt, contact_admin FROM contact " .
-        "WHERE contact_activate = '1' AND contact_register = '1' AND contact_alias = ?";
-    $res = $pearDB->prepare($query);
-    $res->execute(array($_POST['username']));
-    while ($data = $res->fetch()) {
-        if (isset($data['contact_admin']) && $data['contact_admin'] == 1) {
-            $reachAPI = 1;
-        } else {
-            if (isset($data['reach_api']) && $data['reach_api'] == 1) {
-                $reachAPI = 1;
-            } else if (isset($data['reach_api_rt']) && $data['reach_api_rt'] == 1) {
-                $reachAPI = 1;
-            }
-        }
-    }
-
-    /* Sorry no access for this user */
-    if ($reachAPI == 0) {
-        CentreonWebService::sendResult("Unauthorized - Account not enabled", 401);
-        exit();
-    }
-
-    /* Insert Token in API webservice session table */
-    $token = base64_encode(random_bytes(32));
-    $res = $pearDB->prepare("INSERT INTO ws_token (contact_id, token, generate_date) VALUES (?, ?, NOW())");
-    $res->execute(array($auth->userInfos['contact_id'], $token));
-
-    /* Send Data in Json */
-    CentreonWebService::sendResult(array('authToken' => $token));
+} else { // Purge old tokens
+    $authenticationService = $kernel->getContainer()->get(
+        \Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface::class
+    );
+    $authenticationService->deleteExpiredSecurityTokens();
 }
 
 /* Test authentication */
@@ -107,17 +84,23 @@ if (false === isset($_SERVER['HTTP_CENTREON_AUTH_TOKEN'])) {
 
 /* Create the default object */
 try {
-    $res = $pearDB->prepare("SELECT c.* FROM ws_token w, contact c WHERE c.contact_id = w.contact_id AND token = ?");
-    $res->execute(array($_SERVER['HTTP_CENTREON_AUTH_TOKEN']));
+    $contactStatement = $pearDB->prepare(
+        "SELECT c.*
+        FROM security_authentication_tokens sat, contact c
+        WHERE c.contact_id = sat.user_id
+        AND sat.token = :token"
+    );
+    $contactStatement->bindValue(':token', $_SERVER['HTTP_CENTREON_AUTH_TOKEN'], \PDO::PARAM_STR);
+    $contactStatement->execute();
 } catch (\PDOException $e) {
     CentreonWebService::sendResult("Database error", 500);
 }
-$userInfos = $res->fetch();
+$userInfos = $contactStatement->fetch();
 if (is_null($userInfos)) {
     CentreonWebService::sendResult("Unauthorized", 401);
 }
 
-$centreon = new Centreon($userInfos);
+$centreon = new \Centreon($userInfos);
 $oreon = $centreon;
 
 CentreonWebService::router($dependencyInjector, $centreon->user);

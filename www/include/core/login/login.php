@@ -46,18 +46,36 @@ $release = $result->fetch();
  * Getting OpenId Connect login state
  */
 $result = $pearDB->query("SELECT `value` FROM `options` WHERE `key` = 'openid_connect_enable' LIMIT 1");
-$openIdConnectEnabled = $result->fetch()["value"];
+$openIdConnectEnabled = "0";
+if (($row = $result->fetch()) !== false) {
+    $openIdConnectEnabled = $row["value"];
+}
+
 
 $result = $pearDB->query("SELECT `value` FROM `options` WHERE `key` = 'openid_connect_mode' LIMIT 1");
-$openIdConnectMode = $result->fetch()["value"];
+$openIdConnectMode = "0";
+if (($row = $result->fetch()) !== false) {
+    $openIdConnectMode = $row["value"];
+}
+
 
 /**
  * Defining Login Form
  */
 $form = new HTML_QuickFormCustom('Form', 'post', './index.php');
-$form->addElement('text', 'useralias', _("Login:"), array('class' => 'inputclassic', 'autocomplete' => 'off'));
-$form->addElement('password', 'password', _("Password"), array('class' => 'inputclassicPass'));
-$submitLogin = $form->addElement('submit', 'submitLogin', _("Connect"), array('class' => 'btc bt_info'));
+
+$optionsAliasField = array('placeholder' => _("Login"), 'class' => 'inputclassic', 'autocomplete' => 'off');
+$form->addElement('text', 'useralias', null, $optionsAliasField);
+
+$optionsPasswordField = array('placeholder' => _("Password"), 'class' => 'inputclassicPass');
+$form->addElement('password', 'password', null, $optionsPasswordField);
+
+$submitLogin = $form->addElement(
+    'submit',
+    'submitLogin',
+    _("Connect"),
+    ['class' => 'btc bt_info']
+);
 
 $loginValidate = $form->validate();
 

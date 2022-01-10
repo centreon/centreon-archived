@@ -1,3 +1,5 @@
+/* eslint-disable class-methods-use-this */
+/* eslint-disable react/no-unused-class-component-methods */
 /* eslint-disable react/jsx-filename-extension */
 /* eslint-disable react/prop-types */
 /* eslint-disable react/sort-comp */
@@ -8,7 +10,7 @@ import classnames from 'classnames';
 
 import { PageSkeleton } from '@centreon/ui';
 
-import styles from '../../components/header/header.scss';
+import styles from '../../Header/header.scss';
 
 class LegacyRoute extends Component {
   constructor(props) {

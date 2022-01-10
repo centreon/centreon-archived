@@ -1,22 +1,16 @@
 import * as React from 'react';
 
-import { path } from 'ramda';
+import { equals, or } from 'ramda';
 
-import { Theme, makeStyles } from '@material-ui/core';
+import { Theme } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 
 import { TabProps } from '..';
-import useTimePeriod from '../../../Graph/Performance/TimePeriods/useTimePeriod';
 import TimePeriodButtonGroup from '../../../Graph/Performance/TimePeriods';
 import ExportablePerformanceGraphWithTimeline from '../../../Graph/Performance/ExportableGraphWithTimeline';
-import { ResourceContext, useResourceContext } from '../../../Context';
 import memoizeComponent from '../../../memoizedComponent';
-import { GraphOptions } from '../../models';
-import useGraphOptions, {
-  GraphOptionsContext,
-} from '../../../Graph/Performance/ExportableGraphWithTimeline/useGraphOptions';
-import useMousePosition, {
-  MousePositionContext,
-} from '../../../Graph/Performance/ExportableGraphWithTimeline/useMousePosition';
+
+import HostGraph from './HostGraph';
 
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
@@ -41,94 +35,39 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-type GraphTabContentProps = TabProps &
-  Pick<ResourceContext, 'tabParameters' | 'setGraphTabParameters'>;
-
-const GraphTabContent = ({
-  details,
-  tabParameters,
-  setGraphTabParameters,
-}: GraphTabContentProps): JSX.Element => {
+const GraphTabContent = ({ details }: TabProps): JSX.Element => {
   const classes = useStyles();
 
-  const {
-    selectedTimePeriod,
-    changeSelectedTimePeriod,
-    periodQueryParameters,
-    getIntervalDates,
-    customTimePeriod,
-    changeCustomTimePeriod,
-    adjustTimePeriod,
-    resourceDetailsUpdated,
-  } = useTimePeriod({
-    defaultGraphOptions: path(['graph', 'graphOptions'], tabParameters),
-    defaultSelectedCustomTimePeriod: path(
-      ['graph', 'selectedCustomTimePeriod'],
-      tabParameters,
-    ),
-    defaultSelectedTimePeriodId: path(
-      ['graph', 'selectedTimePeriodId'],
-      tabParameters,
-    ),
-    details,
-    onTimePeriodChange: setGraphTabParameters,
-  });
+  const type = details?.type as string;
+  const equalsService = equals('service');
+  const equalsMetaService = equals('metaservice');
 
-  const mousePositionProps = useMousePosition();
-
-  const changeTabGraphOptions = (graphOptions: GraphOptions) => {
-    setGraphTabParameters({
-      ...tabParameters.graph,
-      graphOptions,
-    });
-  };
-
-  const graphOptions = useGraphOptions({
-    changeTabGraphOptions,
-    graphTabParameters: tabParameters.graph,
-  });
+  const isService = or(equalsService(type), equalsMetaService(type));
 
   return (
-    <GraphOptionsContext.Provider value={graphOptions}>
-      <div className={classes.container}>
-        <TimePeriodButtonGroup
-          changeCustomTimePeriod={changeCustomTimePeriod}
-          customTimePeriod={customTimePeriod}
-          selectedTimePeriodId={selectedTimePeriod?.id}
-          onChange={changeSelectedTimePeriod}
-        />
-        <MousePositionContext.Provider value={mousePositionProps}>
+    <div className={classes.container}>
+      {isService ? (
+        <>
+          <TimePeriodButtonGroup />
           <ExportablePerformanceGraphWithTimeline
-            adjustTimePeriod={adjustTimePeriod}
-            customTimePeriod={customTimePeriod}
-            getIntervalDates={getIntervalDates}
             graphHeight={280}
-            periodQueryParameters={periodQueryParameters}
             resource={details}
-            resourceDetailsUpdated={resourceDetailsUpdated}
-            selectedTimePeriod={selectedTimePeriod}
           />
-        </MousePositionContext.Provider>
-      </div>
-    </GraphOptionsContext.Provider>
+        </>
+      ) : (
+        <HostGraph details={details} />
+      )}
+    </div>
   );
 };
 
-const MemoizedGraphTabContent = memoizeComponent<GraphTabContentProps>({
+const MemoizedGraphTabContent = memoizeComponent<TabProps>({
   Component: GraphTabContent,
-  memoProps: ['details', 'tabParameters'],
+  memoProps: ['details'],
 });
 
 const GraphTab = ({ details }: TabProps): JSX.Element => {
-  const { tabParameters, setGraphTabParameters } = useResourceContext();
-
-  return (
-    <MemoizedGraphTabContent
-      details={details}
-      setGraphTabParameters={setGraphTabParameters}
-      tabParameters={tabParameters}
-    />
-  );
+  return <MemoizedGraphTabContent details={details} />;
 };
 
 export default GraphTab;

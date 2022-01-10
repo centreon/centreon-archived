@@ -24,13 +24,12 @@ declare(strict_types=1);
 namespace Centreon\Domain\PlatformTopology;
 
 use Centreon\Domain\Engine\EngineException;
-use Centreon\Domain\Engine\EngineConfiguration;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformInterface;
 use Centreon\Domain\PlatformTopology\Model\PlatformPending;
 use Centreon\Domain\PlatformTopology\Model\PlatformRelation;
 use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Domain\Proxy\Interfaces\ProxyServiceInterface;
-use Centreon\Domain\MonitoringServer\MonitoringServerException;
+use Centreon\Domain\MonitoringServer\Exception\MonitoringServerException;
 use Centreon\Domain\Broker\Interfaces\BrokerRepositoryInterface;
 use Centreon\Domain\PlatformInformation\Model\PlatformInformation;
 use Centreon\Domain\Engine\Interfaces\EngineConfigurationServiceInterface;
@@ -292,10 +291,7 @@ class PlatformTopologyService implements PlatformTopologyServiceInterface
             throw PlatformTopologyException::unableToFindEngineConfiguration();
         }
 
-        $foundIllegalCharacters = EngineConfiguration::hasIllegalCharacters(
-            $stringToCheck,
-            $engineConfiguration->getIllegalObjectNameCharacters()
-        );
+        $foundIllegalCharacters = $engineConfiguration->hasIllegalCharacters($stringToCheck);
         if (true === $foundIllegalCharacters) {
             throw PlatformTopologyException::illegalCharacterFound(
                 $engineConfiguration->getIllegalObjectNameCharacters(),

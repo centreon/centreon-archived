@@ -1,17 +1,21 @@
 import { SelectEntry } from '@centreon/ui';
 
+import { SortOrder } from '../../models';
+
 import { Criteria } from './models';
 
 interface DefaultCriteriaValues {
   hostGroups?: Array<SelectEntry>;
+  monitoringServers?: Array<SelectEntry>;
   resourceTypes?: Array<SelectEntry>;
   serviceGroups?: Array<SelectEntry>;
   states?: Array<SelectEntry>;
+  statusTypes?: Array<SelectEntry>;
   statuses?: Array<SelectEntry>;
 }
 
 const defaultSortField = 'status_severity_code';
-const defaultSortOrder = 'asc';
+const defaultSortOrder = SortOrder.asc;
 
 const getDefaultCriterias = (
   {
@@ -20,11 +24,15 @@ const getDefaultCriterias = (
     statuses = [],
     hostGroups = [],
     serviceGroups = [],
+    monitoringServers = [],
+    statusTypes = [],
   }: DefaultCriteriaValues = {
     hostGroups: [],
+    monitoringServers: [],
     resourceTypes: [],
     serviceGroups: [],
     states: [],
+    statusTypes: [],
     statuses: [],
   },
 ): Array<Criteria> => {
@@ -48,6 +56,12 @@ const getDefaultCriterias = (
       value: statuses,
     },
     {
+      name: 'status_types',
+      object_type: null,
+      type: 'multi_select',
+      value: statusTypes,
+    },
+    {
       name: 'host_groups',
       object_type: 'host_groups',
       type: 'multi_select',
@@ -58,6 +72,12 @@ const getDefaultCriterias = (
       object_type: 'service_groups',
       type: 'multi_select',
       value: serviceGroups,
+    },
+    {
+      name: 'monitoring_servers',
+      object_type: 'monitoring_servers',
+      type: 'multi_select',
+      value: monitoringServers,
     },
     {
       name: 'search',

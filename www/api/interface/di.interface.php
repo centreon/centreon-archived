@@ -37,7 +37,6 @@ use Pimple\Container;
 
 interface CentreonWebServiceDiInterface
 {
-
     /**
      *
      * @param \Pimple\Container $dependencyInjector

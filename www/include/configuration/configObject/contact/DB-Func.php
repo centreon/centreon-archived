@@ -207,7 +207,15 @@ function deleteContactInDB($contacts = array())
         "SELECT contact_name FROM `contact` WHERE `contact_id` = :contactId LIMIT 1"
     );
 
-    $dbResult = $pearDB->prepare(
+    $contactTokenStmt = $pearDB->prepare(
+        "SELECT token FROM `security_authentication_tokens` WHERE `user_id` = :contactId"
+    );
+
+    $deleteTokenStmt = $pearDB->prepare(
+        "DELETE FROM `security_token` WHERE `token` = :token"
+    );
+
+    $deleteContactStmt = $pearDB->prepare(
         "DELETE FROM contact WHERE contact_id = :contactId"
     );
 
@@ -218,8 +226,15 @@ function deleteContactInDB($contacts = array())
             $contactNameStmt->execute();
             $row = $contactNameStmt->fetch();
 
-            $dbResult->bindValue(':contactId', (int)$key, \PDO::PARAM_INT);
-            $dbResult->execute();
+            $contactTokenStmt->bindValue(':contactId', (int)$key, \PDO::PARAM_INT);
+            $contactTokenStmt->execute();
+            while ($rowContact = $contactTokenStmt->fetch()) {
+                $deleteTokenStmt->bindValue(':token', $rowContact['token'], \PDO::PARAM_STR);
+                $deleteTokenStmt->execute();
+            }
+
+            $deleteContactStmt->bindValue(':contactId', (int)$key, \PDO::PARAM_INT);
+            $deleteContactStmt->execute();
 
             $centreon->CentreonLogAction->insertLog("contact", $key, $row['contact_name'], "d");
         }
@@ -1204,13 +1219,20 @@ function sanitizeFormContactParameters(array $ret): array
                     }
                 }
                 break;
-            case 'contact_name':
             case 'contact_alias':
-                $inputValue = filter_var($inputValue, FILTER_SANITIZE_STRING);
-                if (empty($inputValue)) {
-                    throw new \InvalidArgumentException('Bad Parameter');
-                } else {
-                    $bindParams[':' . $inputName] = [\PDO::PARAM_STR => $inputValue];
+            case 'contact_name':
+                if (
+                    $inputValue = filter_var(
+                        $inputValue ?? "",
+                        FILTER_SANITIZE_STRING,
+                        FILTER_FLAG_NO_ENCODE_QUOTES
+                    )
+                ) {
+                    if (!empty($inputValue)) {
+                        $bindParams[':' . $inputName] = [\PDO::PARAM_STR => $inputValue];
+                    } else {
+                        throw new \InvalidArgumentException('Bad Parameter');
+                    }
                 }
                 break;
             case 'contact_autologin_key':
@@ -1224,8 +1246,14 @@ function sanitizeFormContactParameters(array $ret): array
             case 'contact_address4':
             case 'contact_address5':
             case 'contact_address6':
-                if (!empty($inputValue)) {
-                    if ($inputValue = filter_var($inputValue, FILTER_SANITIZE_STRING)) {
+                if (
+                    $inputValue = filter_var(
+                        $inputValue ?? "",
+                        FILTER_SANITIZE_STRING,
+                        FILTER_FLAG_NO_ENCODE_QUOTES
+                    )
+                ) {
+                    if (!empty($inputValue)) {
                         $bindParams[':' . $inputName] = [\PDO::PARAM_STR => $inputValue];
                     }
                 }

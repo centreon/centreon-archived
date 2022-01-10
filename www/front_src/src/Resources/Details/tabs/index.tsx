@@ -1,34 +1,32 @@
 import * as React from 'react';
 
-import { isNil, find, propEq, any, invertObj, path } from 'ramda';
+import { isNil, find, propEq, invertObj, path, equals } from 'ramda';
 
-import { makeStyles } from '@material-ui/core';
+import makeStyles from '@mui/styles/makeStyles';
 
 import {
   labelDetails,
   labelGraph,
   labelTimeline,
-  labelShortcuts,
   labelServices,
   labelMetrics,
 } from '../../translatedLabels';
 import { ResourceDetails } from '../models';
-import hasDefinedValues from '../../hasDefinedValues';
+import DetailsLoadingSkeleton from '../LoadingSkeleton';
 
-import DetailsTab from './Details';
-import GraphTab from './Graph';
 import { Tab, TabId } from './models';
-import TimelineTab from './Timeline';
-import ShortcutsTab from './Shortcuts';
-import ServicesTab from './Services';
-import MetricsTab from './Metrics';
+
+const DetailsTab = React.lazy(() => import('./Details'));
+const GraphTab = React.lazy(() => import('./Graph'));
+const TimelineTab = React.lazy(() => import('./Timeline'));
+const ServicesTab = React.lazy(() => import('./Services'));
+const MetricsTab = React.lazy(() => import('./Metrics'));
 
 const detailsTabId = 0;
 const servicesTabId = 1;
 const timelineTabId = 2;
 const graphTabId = 3;
 const metricsTabId = 4;
-const shortcutsTabId = 5;
 
 export interface TabProps {
   details?: ResourceDetails;
@@ -62,6 +60,10 @@ const tabs: Array<Tab> = [
         return false;
       }
 
+      if (equals(details.type, 'host')) {
+        return true;
+      }
+
       return !isNil(path(['links', 'endpoints', 'performance_graph'], details));
     },
     id: graphTabId,
@@ -78,21 +80,6 @@ const tabs: Array<Tab> = [
     },
     id: metricsTabId,
     title: labelMetrics,
-  },
-  {
-    Component: ShortcutsTab,
-    getIsActive: (details: ResourceDetails): boolean => {
-      if (isNil(details)) {
-        return false;
-      }
-
-      const { links, parent } = details;
-      const parentUris = parent?.links?.uris;
-
-      return any(hasDefinedValues, [parentUris, links.uris]);
-    },
-    id: shortcutsTabId,
-    title: labelShortcuts,
   },
 ];
 
@@ -114,7 +101,9 @@ const TabById = ({ id, details }: TabByIdProps): JSX.Element | null => {
 
   return (
     <div className={classes.container}>
-      <Component details={details} />
+      <React.Suspense fallback={<DetailsLoadingSkeleton />}>
+        <Component details={details} />
+      </React.Suspense>
     </div>
   );
 };
@@ -124,7 +113,6 @@ const tabIdByLabel = {
   graph: graphTabId,
   metrics: metricsTabId,
   services: servicesTabId,
-  shortcuts: shortcutsTabId,
   timeline: timelineTabId,
 };
 
@@ -146,7 +134,6 @@ export {
   detailsTabId,
   timelineTabId,
   graphTabId,
-  shortcutsTabId,
   servicesTabId,
   metricsTabId,
   tabs,

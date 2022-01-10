@@ -103,7 +103,7 @@ class Resource
     protected $commandLine;
 
     /**
-     * @var string|null
+     * @var string
      */
     private $monitoringServerName;
 
@@ -180,12 +180,22 @@ class Resource
     /**
      * @var \DateTime|null
      */
+    private $lastTimeWithNoIssue;
+
+    /**
+     * @var \DateTime|null
+     */
     private $lastNotification;
 
     /**
      * @var int|null
      */
     private $notificationNumber;
+
+    /**
+     * @var int
+     */
+    private $stateType;
 
     /**
      * @var string|null
@@ -246,7 +256,7 @@ class Resource
      */
     private $calculationType;
 
-    /*
+    /**
      * Indicates if notifications are enabled for the Resource
      *
      * @var bool
@@ -276,7 +286,7 @@ class Resource
     {
         $result = null;
 
-        if ($this->getLastStatusChange()) {
+        if ($this->getLastStatusChange() !== null) {
             $result = CentreonDuration::toString(time() - $this->getLastStatusChange()->getTimestamp());
         }
 
@@ -290,7 +300,7 @@ class Resource
     {
         $result = null;
 
-        if ($this->getLastCheck()) {
+        if ($this->getLastCheck() !== null) {
             $result = CentreonDuration::toString(time() - $this->getLastCheck()->getTimestamp());
         }
 
@@ -494,10 +504,10 @@ class Resource
     }
 
    /**
-     * @param string|null $monitoringServerName
+     * @param string $monitoringServerName
      * @return self
      */
-    public function setMonitoringServerName(?string $monitoringServerName): self
+    public function setMonitoringServerName(string $monitoringServerName): self
     {
         $this->monitoringServerName = $monitoringServerName;
         return $this;
@@ -772,6 +782,23 @@ class Resource
         return $this;
     }
 
+   /**
+     * @return \DateTime|null
+     */
+    public function getLastTimeWithNoIssue(): ?\DateTime
+    {
+        return $this->lastTimeWithNoIssue;
+    }
+
+    /**
+     * @param \DateTime|null $lastTimeWithNoIssue
+     * @return self
+     */
+    public function setLastTimeWithNoIssue(?\DateTime $lastTimeWithNoIssue): self
+    {
+        $this->lastTimeWithNoIssue = $lastTimeWithNoIssue;
+        return $this;
+    }
     /**
      * @return \DateTime|null
      */
@@ -805,6 +832,24 @@ class Resource
     public function setNotificationNumber(?int $notificationNumber): self
     {
         $this->notificationNumber = $notificationNumber;
+        return $this;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getStateType(): int
+    {
+        return $this->stateType;
+    }
+
+    /**
+     * @param integer $stateType
+     * @return self
+     */
+    public function setStateType(int $stateType): self
+    {
+        $this->stateType = $stateType;
         return $this;
     }
 
@@ -879,7 +924,7 @@ class Resource
      */
     public function setInformation(?string $information): self
     {
-        $this->information = trim($information);
+        $this->information = $information !== null ? trim($information) : null;
 
         return $this;
     }

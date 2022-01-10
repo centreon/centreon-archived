@@ -22,17 +22,17 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\MonitoringServer\Interfaces;
 
+use Centreon\Domain\MonitoringServer\MonitoringServer;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\MonitoringServer\Model\RealTimeMonitoringServer;
 
 /**
- * This interface gathers all the reading operations on the host category repository.
+ * This interface gathers all the reading operations on the realtime monitoring server repository.
  *
- * @package Centreon\Domain\HostConfiguration\Interfaces
+ * @package Centreon\Domain\MonitoringServer\Interfaces
  */
 interface RealTimeMonitoringServerRepositoryInterface
 {
-
     /**
      * Find all Real Time Monitoring Servers.
      *
@@ -42,11 +42,20 @@ interface RealTimeMonitoringServerRepositoryInterface
     public function findAll(): array;
 
     /**
-     * Find all Real Time Monitoring Servers by contact.
+     * Find all Real Time Monitoring Servers by ids.
      *
-     * @param ContactInterface $contact Contact related to host categories
+     * @param int[] $ids
      * @return RealTimeMonitoringServer[]
      * @throws \Throwable
      */
-    public function findAllByContact(ContactInterface $contact): array;
+    public function findByIds(array $ids): array;
+
+    /**
+     * Find all the Monitoring Servers that user is allowed to see.
+     *
+     * @param ContactInterface $contact Contact related to monitoring servers
+     * @return MonitoringServer[]
+     * @throws \Throwable
+     */
+    public function findAllowedMonitoringServers(ContactInterface $contact): array;
 }

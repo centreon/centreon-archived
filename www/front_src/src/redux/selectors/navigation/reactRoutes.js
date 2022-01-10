@@ -27,5 +27,5 @@ const getNavigationItems = (state) => state.navigation.items;
 
 export const reactRoutesSelector = createSelector(
   getNavigationItems,
-  (navItems) => navItems.reduce(findReactRoutes, {}),
+  (navItems) => navItems?.reduce(findReactRoutes, {}),
 );

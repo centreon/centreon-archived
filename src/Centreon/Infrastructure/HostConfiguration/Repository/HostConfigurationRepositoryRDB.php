@@ -47,7 +47,6 @@ use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
  */
 class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements HostConfigurationRepositoryInterface
 {
-
     /**
      * @var SqlRequestParametersTranslator
      */
@@ -588,10 +587,6 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
             $names[] = (string) $name;
         }
 
-        if (empty($names)) {
-            return [];
-        }
-
         $statement = $this->db->prepare(
             $this->translateDbName(
                 sprintf(
@@ -632,15 +627,15 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
                     ON h.host_id = ext.host_host_id
                 LEFT JOIN `:db`.view_img icon
                     ON icon.img_id = ext.ehi_icon_image
-                LEFT JOIN `centreon`.view_img_dir_relation iconR
+                LEFT JOIN `:db`.view_img_dir_relation iconR
                     ON iconR.img_img_id = icon.img_id
-                LEFT JOIN `centreon`.view_img_dir iconD
+                LEFT JOIN `:db`.view_img_dir iconD
                     ON iconD.dir_id = iconR.dir_dir_parent_id
                 LEFT JOIN `:db`.view_img smi
                     ON smi.img_id = ext.ehi_statusmap_image
-                LEFT JOIN centreon.host_template_relation htr
+                LEFT JOIN `:db`.host_template_relation htr
                     ON htr.host_host_id = h.host_id
-                LEFT JOIN centreon.options AS opt
+                LEFT JOIN `:db`.options AS opt
                     ON opt.key = \'nagios_path_img\''
             );
             // Search

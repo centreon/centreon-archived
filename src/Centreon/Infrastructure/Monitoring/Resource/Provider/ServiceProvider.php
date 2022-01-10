@@ -71,9 +71,12 @@ final class ServiceProvider extends Provider
         StatementCollector $collector,
         array $accessGroupIds
     ): string {
-        $aclSubQuery = ' INNER JOIN `:dbstg`.`centreon_acl` AS service_acl ON service_acl.host_id = s.host_id
-            AND service_acl.service_id = s.service_id
-            AND service_acl.group_id IN (' . implode(',', $accessGroupIds) . ') ';
+        $aclSubQuery = ' EXISTS (
+            SELECT 1 FROM `:dbstg`.`centreon_acl` AS service_acl
+            WHERE service_acl.host_id = s.host_id
+                AND service_acl.service_id = s.service_id
+                AND service_acl.group_id IN (' . implode(',', $accessGroupIds) . ')
+            LIMIT 1) ';
 
         return $this->prepareSubQuery($filter, $collector, $aclSubQuery);
     }
@@ -153,6 +156,7 @@ final class ServiceProvider extends Provider
             s.last_state_change AS `last_status_change`,
             s.last_notification AS `last_notification`,
             s.notification_number AS `notification_number`,
+            s.state_type AS `state_type`,
             CONCAT(s.check_attempt, '/', s.max_check_attempts, ' (', CASE
                 WHEN s.state_type = 1 THEN 'H'
                 WHEN s.state_type = 0 THEN 'S'
@@ -166,7 +170,8 @@ final class ServiceProvider extends Provider
             s.perfdata AS `performance_data`,
             s.execution_time AS `execution_time`,
             s.latency AS `latency`,
-            s.notify AS `notification_enabled`
+            s.notify AS `notification_enabled`,
+            s.last_time_ok AS `last_time_with_no_issue`
             FROM `:dbstg`.`services` AS s
             INNER JOIN `:dbstg`.`hosts` sh
                 ON sh.host_id = s.host_id
@@ -180,28 +185,6 @@ final class ServiceProvider extends Provider
         $sql .= ' LEFT JOIN `:dbstg`.`customvariables` AS service_cvl ON service_cvl.host_id = s.host_id
             AND service_cvl.service_id = s.service_id
             AND service_cvl.name = "CRITICALITY_LEVEL"';
-
-        // set ACL limitations
-        if ($aclSubQuery !== null) {
-            $sql .= $aclSubQuery;
-        }
-
-        // apply the service group filter to SQL query
-        if ($filter->getServicegroupIds()) {
-            $groupList = [];
-
-            foreach ($filter->getServicegroupIds() as $index => $groupId) {
-                $key = ":serviceServicegroupId_{$index}";
-
-                $groupList[] = $key;
-                $collector->addValue($key, $groupId, \PDO::PARAM_INT);
-            }
-
-            $sql .= ' INNER JOIN `:dbstg`.`services_servicegroups` AS ssg
-                  ON ssg.host_id = s.host_id
-                  AND ssg.service_id = s.service_id
-                  AND ssg.servicegroup_id IN (' . implode(', ', $groupList) . ') ';
-        }
 
         $hasWhereCondition = false;
 
@@ -220,6 +203,29 @@ final class ServiceProvider extends Provider
         // show active services only
         $sql .= ($hasWhereCondition ? ' AND ' : ' WHERE ')
             . 's.enabled = 1';
+
+        // set ACL limitations
+        if ($aclSubQuery !== null) {
+            $sql .= ' AND ' . $aclSubQuery;
+        }
+
+        // apply the service group filter to SQL query
+        if ($filter->getServicegroupNames()) {
+            $groupList = [];
+
+            foreach ($filter->getServicegroupNames() as $index => $groupName) {
+                $key = ":serviceServicegroupName_{$index}";
+
+                $groupList[] = $key;
+                $collector->addValue($key, $groupName, \PDO::PARAM_STR);
+            }
+
+            $sql .= ' AND EXISTS (SELECT 1 FROM `:dbstg`.`services_servicegroups` AS ssg
+                  WHERE ssg.host_id = s.host_id AND ssg.service_id = s.service_id
+                    AND EXISTS (SELECT 1 FROM `:dbstg`.`servicegroups` AS sg
+                  WHERE ssg.servicegroup_id = sg.servicegroup_id
+                    AND sg.name IN (' . implode(', ', $groupList) . ') LIMIT 1) LIMIT 1)';
+        }
 
         // apply the state filter to SQL query
         if ($filter->getStates() && !$filter->hasState(ResourceServiceInterface::STATE_ALL)) {
@@ -260,6 +266,21 @@ final class ServiceProvider extends Provider
             $sql .= ' AND s.state IN (' . implode(', ', $statusList) . ')';
         }
 
+        // apply the state types filter to SQL query
+        $statusTypes = ResourceFilter::map($filter->getStatusTypes(), ResourceFilter::MAP_STATUS_TYPES);
+        if ($statusTypes) {
+            $statusTypesList = [];
+
+            foreach ($statusTypes as $index => $statusType) {
+                $key = ":serviceStateType_{$index}";
+
+                $statusTypesList[] = $key;
+                $collector->addValue($key, $statusType, \PDO::PARAM_INT);
+            }
+
+            $sql .= ' AND s.state_type IN (' . implode(', ', $statusTypesList) . ')';
+        }
+
         if (!empty($filter->getHostIds())) {
             $hostIds = [];
 
@@ -287,19 +308,18 @@ final class ServiceProvider extends Provider
         }
 
         // apply the monitoring server filter to SQL query
-        if (!empty($filter->getMonitoringServerIds())) {
-            $monitoringServerIds = [];
+        if (!empty($filter->getMonitoringServerNames())) {
+            $monitoringServerNames = [];
 
-            foreach ($filter->getMonitoringServerIds() as $index => $monitoringServerId) {
-                $key = ":monitoringServerId_{$index}";
+            foreach ($filter->getMonitoringServerNames() as $index => $monitoringServerName) {
+                $key = ":monitoringServerName_{$index}";
 
-                $monitoringServerIds[] = $key;
-                $collector->addValue($key, $monitoringServerId, \PDO::PARAM_INT);
+                $monitoringServerNames[] = $key;
+                $collector->addValue($key, $monitoringServerName, \PDO::PARAM_STR);
             }
 
-            $sql .= ' AND i.instance_id IN (' . implode(', ', $monitoringServerIds) . ')';
+            $sql .= ' AND i.name IN (' . implode(', ', $monitoringServerNames) . ')';
         }
-
         return $sql;
     }
 

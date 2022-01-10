@@ -3,9 +3,10 @@ import * as React from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
+import { useAtomValue } from 'jotai/utils';
 
-import { Severity, useSnackbar, useRequest } from '@centreon/ui';
-import { useUserContext } from '@centreon/ui-context';
+import { useSnackbar, useRequest } from '@centreon/ui';
+import { acknowledgementAtom, userAtom } from '@centreon/ui-context';
 
 import {
   labelRequired,
@@ -19,13 +20,23 @@ import DialogAcknowledge from './Dialog';
 
 const validationSchema = Yup.object().shape({
   comment: Yup.string().required(labelRequired),
+  is_sticky: Yup.boolean(),
   notify: Yup.boolean(),
+  persistent: Yup.boolean(),
 });
 
 interface Props {
-  onClose;
-  onSuccess;
+  onClose: () => void;
+  onSuccess: () => void;
   resources: Array<Resource>;
+}
+
+export interface AcknowledgeFormValues {
+  acknowledgeAttachedResources: boolean;
+  comment?: string;
+  isSticky: boolean;
+  notify: boolean;
+  persistent: boolean;
 }
 
 const AcknowledgeForm = ({
@@ -34,9 +45,7 @@ const AcknowledgeForm = ({
   onSuccess,
 }: Props): JSX.Element | null => {
   const { t } = useTranslation();
-  const { showMessage } = useSnackbar();
-
-  const { alias } = useUserContext();
+  const { showSuccessMessage } = useSnackbar();
 
   const {
     sendRequest: sendAcknowledgeResources,
@@ -45,21 +54,23 @@ const AcknowledgeForm = ({
     request: acknowledgeResources,
   });
 
-  const showSuccess = (message): void =>
-    showMessage({ message, severity: Severity.success });
+  const { alias } = useAtomValue(userAtom);
+  const acknowledgement = useAtomValue(acknowledgementAtom);
 
-  const form = useFormik({
+  const form = useFormik<AcknowledgeFormValues>({
     initialValues: {
       acknowledgeAttachedResources: false,
       comment: undefined,
+      isSticky: acknowledgement.sticky,
       notify: false,
+      persistent: acknowledgement.persistent,
     },
-    onSubmit: (values) => {
+    onSubmit: (values): void => {
       sendAcknowledgeResources({
         params: values,
         resources,
       }).then(() => {
-        showSuccess(t(labelAcknowledgeCommandSent));
+        showSuccessMessage(t(labelAcknowledgeCommandSent));
         onSuccess();
       });
     },

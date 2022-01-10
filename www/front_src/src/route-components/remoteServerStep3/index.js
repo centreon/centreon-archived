@@ -1,3 +1,5 @@
+/* eslint-disable class-methods-use-this */
+/* eslint-disable react/no-unused-class-component-methods */
 /* eslint-disable react/jsx-filename-extension */
 /* eslint-disable camelcase */
 /* eslint-disable react/destructuring-assignment */
@@ -36,15 +38,15 @@ class RemoteServerStepThreeRoute extends Component {
 
   remainingGenerationTimeout = 30;
 
+  componentDidMount() {
+    this.setGenerationTimeout();
+  }
+
   /**
    * axios call to get task status on central server
    */
   getExportTask = () =>
     axios('internal.php?object=centreon_task_service&action=getTaskStatus');
-
-  componentDidMount = () => {
-    this.setGenerationTimeout();
-  };
 
   /**
    * check export files generation step each second (30 tries)
@@ -101,12 +103,13 @@ class RemoteServerStepThreeRoute extends Component {
     const { links } = this;
     const { pollerData, t } = this.props;
     const { generateStatus, error } = this.state;
+
     return (
       <BaseWizard>
         <ProgressBar links={links} />
         <WizardFormInstallingStatus
           error={error}
-          formTitle={`${t('Finalizing Setup')}:`}
+          formTitle={`${t('Finalizing Setup')}`}
           statusCreating={pollerData.submitStatus}
           statusGenerating={generateStatus}
         />

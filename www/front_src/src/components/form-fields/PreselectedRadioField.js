@@ -6,9 +6,10 @@ import React from 'react';
 
 import classnames from 'classnames';
 
+import { FormControlLabel, Radio, Typography } from '@mui/material';
+
 import styles from '../../styles/partials/form/_form.scss';
 
-import { prepareInputProps } from './utils';
 import fieldHoc from './hoc';
 
 const RadioField = ({ checked, error, label, info, className, ...rest }) => (
@@ -19,27 +20,19 @@ const RadioField = ({ checked, error, label, info, className, ...rest }) => (
       styles['form-group'],
     )}
   >
-    <input
-      info
-      aria-checked={checked}
+    <FormControlLabel
       checked={checked}
-      className={styles['form-check-input']}
-      type="radio"
-      {...prepareInputProps(rest)}
+      control={<Radio color="primary" size="small" />}
+      label={label}
+      onChange={rest.onChange}
+      onClick={rest.onClick}
     />
-
-    <label className={styles['custom-control-label']} htmlFor={rest.id}>
-      {label}
-      {info}
-    </label>
 
     {error ? (
       <div className={styles['invalid-feedback']}>
-        <div
-          className={classnames(styles.field__msg, styles['field__msg--error'])}
-        >
+        <Typography color="error" variant="body2">
           {error}
-        </div>
+        </Typography>
       </div>
     ) : null}
   </div>

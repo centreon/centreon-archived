@@ -44,8 +44,8 @@ final class MetaServiceProvider extends Provider
                 $filter->getStatuses(),
                 ResourceFilter::MAP_STATUS_SERVICE
             ))
-            || $filter->getHostgroupIds()
-            || $filter->getServicegroupIds()
+            || $filter->getHostgroupNames()
+            || $filter->getServicegroupNames()
         ) {
             return false;
         }
@@ -69,9 +69,12 @@ final class MetaServiceProvider extends Provider
         StatementCollector $collector,
         array $accessGroupIds
     ): string {
-        $aclSubQuery = ' INNER JOIN `:dbstg`.`centreon_acl` AS service_acl ON service_acl.host_id = s.host_id
-            AND service_acl.service_id = s.service_id
-            AND service_acl.group_id IN (' . implode(',', $accessGroupIds) . ') ';
+        $aclSubQuery = ' EXISTS (
+            SELECT 1 FROM `:dbstg`.`centreon_acl` AS service_acl
+            WHERE service_acl.host_id = s.host_id
+                AND service_acl.service_id = s.service_id
+                AND service_acl.group_id IN (' . implode(',', $accessGroupIds) . ')
+            LIMIT 1) ';
 
         return $this->prepareSubQuery($filter, $collector, $aclSubQuery);
     }
@@ -89,7 +92,7 @@ final class MetaServiceProvider extends Provider
         StatementCollector $collector,
         ?string $aclSubQuery
     ): string {
-        $sql = "SELECT DISTINCT
+        $sql = "SELECT
             SUBSTRING(s.description, 6) AS `id`,
             'metaservice' AS `type`,
             s.display_name AS `name`,
@@ -102,8 +105,8 @@ final class MetaServiceProvider extends Provider
             NULL AS `action_url`,
             NULL AS `notes_url`,
             NULL AS `notes_label`,
-            NULL AS `monitoring_server_name`,
-            NULL AS `monitoring_server_id`,
+            i.name AS `monitoring_server_name`,
+            i.instance_id AS `monitoring_server_id`,
             s.command_line AS `command_line`,
             NULL AS `timezone`,
             NULL AS `parent_id`,
@@ -141,6 +144,7 @@ final class MetaServiceProvider extends Provider
             s.last_state_change AS `last_status_change`,
             s.last_notification AS `last_notification`,
             s.notification_number AS `notification_number`,
+            s.state_type AS `state_type`,
             CONCAT(s.check_attempt, '/', s.max_check_attempts, ' (', CASE
                 WHEN s.state_type = 1 THEN 'H'
                 WHEN s.state_type = 0 THEN 'S'
@@ -151,20 +155,25 @@ final class MetaServiceProvider extends Provider
             s.perfdata AS `performance_data`,
             s.execution_time AS `execution_time`,
             s.latency AS `latency`,
-            s.notify AS `notification_enabled`
+            s.notify AS `notification_enabled`,
+            s.last_time_ok AS `last_time_with_no_issue`
             FROM `:dbstg`.`services` AS s
             INNER JOIN `:dbstg`.`hosts` sh
             ON sh.host_id = s.host_id
-            AND sh.name LIKE '_Module_Meta%'
+            AND sh.name LIKE '\_Module\_Meta%'
             AND sh.enabled = 1";
+
+        // get monitoring server information
+        $sql .= " INNER JOIN `:dbstg`.`instances` AS i ON i.instance_id = sh.instance_id";
+
+        // show active services only
+        $sql .= ' WHERE s.enabled = 1 ';
+
 
         // set ACL limitations
         if ($aclSubQuery !== null) {
-            $sql .= $aclSubQuery;
+            $sql .= ' AND ' . $aclSubQuery;
         }
-
-        // show active services only
-        $sql .= ' WHERE s.enabled = 1';
 
         // apply the state filter to SQL query
         if ($filter->getStates() && !$filter->hasState(ResourceServiceInterface::STATE_ALL)) {
@@ -216,6 +225,21 @@ final class MetaServiceProvider extends Provider
             }
 
             $sql .= ' AND s.description IN (' . implode(', ', $metaServiceIds) . ')';
+        }
+
+        // apply the state types filter to SQL query
+        $stateTypes = ResourceFilter::map($filter->getStatusTypes(), ResourceFilter::MAP_STATUS_TYPES);
+        if ($stateTypes) {
+            $stateTypesList = [];
+
+            foreach ($stateTypes as $index => $stateType) {
+                $key = ":serviceStateType_{$index}";
+
+                $stateTypesList[] = $key;
+                $collector->addValue($key, $stateType, \PDO::PARAM_INT);
+            }
+
+            $sql .= ' AND s.state_type IN (' . implode(', ', $stateTypesList) . ')';
         }
 
         return $sql;

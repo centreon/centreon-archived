@@ -1,93 +1,70 @@
 import { findIndex, lensPath, propEq, set } from 'ramda';
 
 import { CriteriaValue } from '../Filter/Criterias/models';
+import { searchableFields } from '../Filter/Criterias/searchQueryLanguage';
 import { Filter } from '../Filter/models';
 import { buildResourcesEndpoint } from '../Listing/api/endpoint';
+import { SortOrder } from '../models';
 
 interface EndpointParams {
-  hostGroupIds?: Array<number>;
+  hostGroups?: Array<string>;
   limit?: number;
-  monitoringServerIds?: Array<number>;
+  monitoringServers?: Array<string>;
   page?: number;
   resourceTypes?: Array<string>;
   search?: string;
-  serviceGroupIds?: Array<number>;
+  serviceGroups?: Array<string>;
   sort?;
   states?: Array<string>;
+  statusTypes?: Array<string>;
   statuses?: Array<string>;
 }
 
 const defaultStatuses = ['WARNING', 'DOWN', 'CRITICAL', 'UNKNOWN'];
 const defaultResourceTypes = [];
 const defaultStates = ['unhandled_problems'];
+const defaultStateTypes = ['hard'];
 
-const searchableFields = [
-  'h.name',
-  'h.alias',
-  'h.address',
-  's.description',
-  'name',
-  'alias',
-  'parent_name',
-  'parent_alias',
-  'fqdn',
-  'information',
-];
+const defaultSecondSortCriteria = { last_status_change: SortOrder.desc };
 
 const getListingEndpoint = ({
   page = 1,
   limit = 30,
-  sort = { status_severity_code: 'asc' },
+  sort = {
+    status_severity_code: SortOrder.asc,
+    ...defaultSecondSortCriteria,
+  },
   statuses = defaultStatuses,
   states = defaultStates,
   resourceTypes = defaultResourceTypes,
-  hostGroupIds = [],
-  serviceGroupIds = [],
-  monitoringServerIds = [],
+  hostGroups = [],
+  serviceGroups = [],
+  monitoringServers = [],
   search,
+  statusTypes = defaultStateTypes,
 }: EndpointParams): string =>
   buildResourcesEndpoint({
-    hostGroupIds,
+    hostGroups,
     limit,
-    monitoringServerIds,
+    monitoringServers,
     page,
     resourceTypes,
     search: search
       ? {
           regex: {
-            fields: [
-              'h.name',
-              'h.alias',
-              'h.address',
-              's.description',
-              'name',
-              'alias',
-              'parent_name',
-              'parent_alias',
-              'fqdn',
-              'information',
-            ],
+            fields: searchableFields,
             value: search,
           },
         }
       : undefined,
-    serviceGroupIds,
+    serviceGroups,
     sort,
     states,
+    statusTypes,
     statuses,
   });
 
 const cancelTokenRequestParam = { cancelToken: {} };
-
-const mockAppStateSelector = (useSelector: jest.Mock): void => {
-  const appState = {
-    intervals: {
-      AjaxTimeReloadMonitoring: 60,
-    },
-  };
-
-  useSelector.mockImplementation((callback) => callback(appState));
-};
 
 interface CriteriaValueProps {
   filter: Filter;
@@ -119,7 +96,6 @@ const getFilterWithUpdatedCriteria = ({
 };
 
 export {
-  mockAppStateSelector,
   getListingEndpoint,
   cancelTokenRequestParam,
   defaultStatuses,
@@ -128,4 +104,6 @@ export {
   searchableFields,
   getCriteriaValue,
   getFilterWithUpdatedCriteria,
+  defaultSecondSortCriteria,
+  defaultStateTypes,
 };

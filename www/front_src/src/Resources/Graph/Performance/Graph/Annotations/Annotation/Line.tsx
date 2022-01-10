@@ -1,14 +1,20 @@
 import * as React from 'react';
 
-import { Line } from '@visx/visx';
+import { Shape } from '@visx/visx';
 import { ScaleTime } from 'd3-scale';
-import { prop } from 'ramda';
+import { pick } from 'ramda';
+import { useAtomValue } from 'jotai/utils';
 
-import { makeStyles } from '@material-ui/core';
+import makeStyles from '@mui/styles/makeStyles';
 
 import { useLocaleDateTimeFormat, useMemoComponent } from '@centreon/ui';
 
-import useAnnotationsContext from '../../Context';
+import {
+  annotationHoveredAtom,
+  getIconColorDerivedAtom,
+  getStrokeOpacityDerivedAtom,
+  getStrokeWidthDerivedAtom,
+} from '../../annotationsAtoms';
 
 import Annotation, { Props as AnnotationProps, yMargin, iconSize } from '.';
 
@@ -45,13 +51,10 @@ const LineAnnotation = ({
 
   const classes = useStyles();
 
-  const {
-    annotationHovered,
-    setAnnotationHovered,
-    getStrokeWidth,
-    getStrokeOpacity,
-    getIconColor,
-  } = useAnnotationsContext();
+  const annotationHovered = useAtomValue(annotationHoveredAtom);
+  const getStrokeWidth = useAtomValue(getStrokeWidthDerivedAtom);
+  const getStrokeOpacity = useAtomValue(getStrokeOpacityDerivedAtom);
+  const getIconColor = useAtomValue(getIconColorDerivedAtom);
 
   const xIconMargin = -iconSize / 2;
 
@@ -59,12 +62,14 @@ const LineAnnotation = ({
 
   const header = toDateTime(date);
 
+  const annotation = pick(['event', 'resourceId'], props);
+
   const line = (
-    <Line
+    <Shape.Line
       from={{ x: xIcon, y: yMargin + iconSize + 2 }}
       stroke={color}
-      strokeOpacity={getStrokeOpacity(prop('event', props))}
-      strokeWidth={getStrokeWidth(prop('event', props))}
+      strokeOpacity={getStrokeOpacity(annotation)}
+      strokeWidth={getStrokeWidth(annotation)}
       to={{ x: xIcon, y: graphHeight }}
     />
   );
@@ -76,8 +81,8 @@ const LineAnnotation = ({
       height={iconSize}
       style={{
         color: getIconColor({
+          annotation,
           color,
-          event: prop('event', props),
         }),
       }}
       width={iconSize}
@@ -90,7 +95,6 @@ const LineAnnotation = ({
         header={header}
         icon={icon}
         marker={line}
-        setAnnotationHovered={setAnnotationHovered}
         xIcon={xIcon + xIconMargin}
         {...props}
       />

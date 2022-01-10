@@ -138,7 +138,6 @@ class ServiceTemplate extends AbstractService
                     $this->current_host_id,
                     $this->current_host_name
                 );
-                break;
             }
         }
     }

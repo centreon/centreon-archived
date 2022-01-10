@@ -13,6 +13,7 @@ interface Props {
   ariaLabel: string;
   color: string;
   graphHeight: number;
+  resourceId: string;
   timeline: Array<TimelineEvent>;
   type: string;
   xScale: ScaleTime<number, number>;
@@ -26,8 +27,9 @@ const EventAnnotations = ({
   Icon,
   ariaLabel,
   color,
+  resourceId,
 }: Props): JSX.Element => {
-  const events = filter<TimelineEvent>(propEq('type', type), timeline);
+  const events = filter(propEq('type', type), timeline);
 
   return (
     <>
@@ -38,6 +40,7 @@ const EventAnnotations = ({
           color,
           event,
           graphHeight,
+          resourceId,
           xScale,
         };
 

@@ -3,7 +3,7 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { equals, not } from 'ramda';
 
-import { makeStyles } from '@material-ui/core';
+import makeStyles from '@mui/styles/makeStyles';
 
 import { useMemoComponent } from '@centreon/ui';
 
@@ -44,7 +44,12 @@ const TimeShiftIcon = ({
     'aria-label': t(ariaLabel),
     className: classes.icon,
     height: timeShiftIconSize,
-    onClick: () => not(loading) && shiftTime?.(direction),
+    onClick: (): void => {
+      if (loading) {
+        return;
+      }
+      shiftTime?.(direction);
+    },
     width: timeShiftIconSize,
     x: xIcon,
     y: graphHeight / 2 - timeShiftIconSize / 2 + marginTop,

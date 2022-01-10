@@ -2,10 +2,11 @@ import * as React from 'react';
 
 import { not } from 'ramda';
 
-import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
-import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
 import { labelBackward, labelForward } from '../../../../translatedLabels';
+import memoizeComponent from '../../../../memoizedComponent';
 
 import TimeShiftZone, { timeShiftZoneWidth } from './Zone';
 import TimeShiftIcon, { timeShiftIconSize } from './Icon';
@@ -38,7 +39,7 @@ const TimeShifts = (): JSX.Element | null => {
 
   const { graphWidth, canAdjustTimePeriod } = useTimeShiftContext();
 
-  const hoverDirection = (direction: TimeShiftDirection | null) => () =>
+  const hoverDirection = (direction: TimeShiftDirection | null) => (): void =>
     setDirectionHovered(direction);
 
   if (not(canAdjustTimePeriod)) {
@@ -75,4 +76,4 @@ const TimeShifts = (): JSX.Element | null => {
   );
 };
 
-export default TimeShifts;
+export default memoizeComponent({ Component: TimeShifts, memoProps: [] });

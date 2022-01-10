@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Log;
 
+use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -32,162 +33,213 @@ use Psr\Log\LoggerInterface;
 trait LoggerTrait
 {
     /**
+     * @var ContactInterface
+     */
+    private $loggerContact;
+
+    /**
      * @var LoggerInterface
      */
     private $logger;
 
     /**
+     * @var ContactForDebug
+     */
+    private $loggerContactForDebug;
+
+    /**
+     * @param ContactInterface $loggerContact
+     * @required
+     */
+    public function setLoggerContact(ContactInterface $loggerContact): void
+    {
+        $this->loggerContact = $loggerContact;
+    }
+
+    /**
+     * @param ContactForDebug $loggerContactForDebug
+     * @required
+     */
+    public function setLoggerContactForDebug(ContactForDebug $loggerContactForDebug): void
+    {
+        $this->loggerContactForDebug = $loggerContactForDebug;
+    }
+
+    /**
      * @param LoggerInterface $centreonLogger
      * @required
      */
-    public function setLogger(LoggerInterface $centreonLogger)
+    public function setLogger(LoggerInterface $centreonLogger): void
     {
         $this->logger = $centreonLogger;
     }
 
     /**
      * @param string $message
-     * @param array $context
+     * @param mixed[] $context
      * @param callable|null $callable
      * @see \Psr\Log\LoggerInterface::emergency()
      */
     private function emergency(string $message, array $context = [], callable $callable = null): void
     {
-        if ($this->logger !== null) {
+        if ($this->canBeLogged()) {
             if ($callable !== null) {
                 $context = array_merge($context, $callable());
             }
-            $this->logger->emergency($message, $context);
+            $this->logger->emergency($this->prefixMessage($message), $context);
         }
     }
 
     /**
      * @param string $message
-     * @param array $context
+     * @param mixed[] $context
      * @param callable|null $callable
      * @see \Psr\Log\LoggerInterface::alert()
      */
     private function alert(string $message, array $context = [], callable $callable = null): void
     {
-        if ($this->logger !== null) {
+        if ($this->canBeLogged()) {
             if ($callable !== null) {
                 $context = array_merge($context, $callable());
             }
-            $this->logger->alert($message, $context);
+            $this->logger->alert($this->prefixMessage($message), $context);
         }
     }
 
     /**
      * @param string $message
-     * @param array $context
+     * @param mixed[] $context
      * @param callable|null $callable
      * @see \Psr\Log\LoggerInterface::critical()
      */
     private function critical(string $message, array $context = [], callable $callable = null): void
     {
-        if ($this->logger !== null) {
+        if ($this->canBeLogged()) {
             if ($callable !== null) {
                 $context = array_merge($context, $callable());
             }
-            $this->logger->critical($message, $context);
+            $this->logger->critical($this->prefixMessage($message), $context);
         }
     }
 
     /**
      * @param string $message
-     * @param array $context
+     * @param mixed[] $context
      * @param callable|null $callable
      * @see \Psr\Log\LoggerInterface::error()
      */
     private function error(string $message, array $context = [], callable $callable = null): void
     {
-        if ($this->logger !== null) {
+        if ($this->canBeLogged()) {
             if ($callable !== null) {
                 $context = array_merge($context, $callable());
             }
-            $this->logger->error($message, $context);
+            $this->logger->error($this->prefixMessage($message), $context);
         }
     }
 
     /**
      * @param string $message
-     * @param array $context
+     * @param mixed[] $context
      * @param callable|null $callable
      * @see \Psr\Log\LoggerInterface::warning()
      */
     private function warning(string $message, array $context = [], callable $callable = null): void
     {
-        if ($this->logger !== null) {
+        if ($this->canBeLogged()) {
             if ($callable !== null) {
                 $context = array_merge($context, $callable());
             }
-            $this->logger->warning($message, $context);
+            $this->logger->warning($this->prefixMessage($message), $context);
         }
     }
 
     /**
      * @param string $message
-     * @param array $context
+     * @param mixed[] $context
      * @param callable|null $callable
      * @see \Psr\Log\LoggerInterface::notice()
      */
     private function notice(string $message, array $context = [], callable $callable = null): void
     {
-        if ($this->logger !== null) {
+        if ($this->canBeLogged()) {
             if ($callable !== null) {
                 $context = array_merge($context, $callable());
             }
-            $this->logger->notice($message, $context);
+            $this->logger->notice($this->prefixMessage($message), $context);
         }
     }
 
     /**
      * @param string $message
-     * @param array $context
+     * @param mixed[] $context
      * @param callable|null $callable
      * @see \Psr\Log\LoggerInterface::info()
      */
     private function info(string $message, array $context = [], callable $callable = null): void
     {
-        if ($this->logger !== null) {
+        if ($this->canBeLogged()) {
             if ($callable !== null) {
                 $context = array_merge($context, $callable());
             }
-            $this->logger->info($message, $context);
+            $this->logger->info($this->prefixMessage($message), $context);
         }
     }
 
     /**
      * @param string $message
-     * @param array $context
+     * @param mixed[] $context
      * @param callable|null $callable
      * @see \Psr\Log\LoggerInterface::debug()
      */
     private function debug(string $message, array $context = [], callable $callable = null): void
     {
-        if ($this->logger !== null) {
+        if ($this->canBeLogged()) {
             if ($callable !== null) {
                 $context = array_merge($context, $callable());
             }
-            $this->logger->debug($message, $context);
+            $this->logger->debug($this->prefixMessage($message), $context);
         }
     }
 
     /**
      * @param mixed $level
-     * @param $message
-     * @param array $context
+     * @param string $message
+     * @param mixed[] $context
      * @param callable|null $callable
      * @throws \Psr\Log\InvalidArgumentException
      * @see \Psr\Log\LoggerInterface::log()
      */
-    private function log($level, $message, array $context = [], callable $callable = null): void
+    private function log($level, string $message, array $context = [], callable $callable = null): void
     {
-        if ($this->logger !== null) {
+        if ($this->canBeLogged()) {
             if ($callable !== null) {
                 $context = array_merge($context, $callable());
             }
-            $this->logger->log($level, $message, $context);
+            $this->logger->log($level, $this->prefixMessage($message), $context);
         }
+    }
+
+    /**
+     * @param string $message
+     * @return string
+     */
+    private function prefixMessage(string $message): string
+    {
+        $debugTrace = debug_backtrace();
+        $callingClass = (count($debugTrace) >= 2)
+            ? $debugTrace[1]['class'] . ':' . $debugTrace[1]['line']
+            : get_called_class();
+        return sprintf('[%s]: %s', $callingClass, $message);
+    }
+
+    /**
+     * @return bool
+     */
+    private function canBeLogged(): bool
+    {
+        return $this->logger !== null
+            && $this->loggerContactForDebug !== null
+            && $this->loggerContactForDebug->isValidForContact($this->loggerContact);
     }
 }

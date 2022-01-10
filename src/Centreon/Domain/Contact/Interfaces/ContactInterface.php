@@ -21,6 +21,8 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Contact\Interfaces;
 
+use Centreon\Domain\Menu\Model\Page;
+
 interface ContactInterface
 {
     /**
@@ -41,6 +43,21 @@ interface ContactInterface
      * @return bool
      */
     public function isActive(): bool;
+
+    /**
+     * Indicates whether the contact is allowed to reach web application.
+     *
+     * @return bool
+     */
+    public function isAllowedToReachWeb(): bool;
+
+    /**
+     * Allow user or not to reach web application.
+     *
+     * @param bool $isAllowed
+     * @return static
+     */
+    public function setAllowedToReachWeb(bool $isAllowed): static;
 
     /**
      * Contact name.
@@ -120,4 +137,17 @@ interface ContactInterface
      * @return string|null
      */
     public function getLocale(): ?string;
+
+    /**
+     * Contact default page.
+     *
+     * @return Page|null
+     */
+    public function getDefaultPage(): ?Page;
+
+    /**
+     * @param Page|null $defaultPage
+     * @return static
+     */
+    public function setDefaultPage(?Page $defaultPage): static;
 }

@@ -9,6 +9,8 @@ import React, { Component } from 'react';
 import { Field, reduxForm as connectForm } from 'redux-form';
 import { withTranslation } from 'react-i18next';
 
+import { Paper, Typography, Button } from '@mui/material';
+
 import styles from '../../../styles/partials/form/_form.scss';
 import InputField from '../../form-fields/InputField';
 import RadioField from '../../form-fields/PreselectedRadioField';
@@ -20,6 +22,17 @@ class PollerFormStepOne extends Component {
     initialized: false,
     inputTypeManual: true,
   };
+
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    const { waitList } = nextProps;
+    const { initialized } = this.state;
+    if (waitList && !initialized) {
+      this.initializeFromRest(waitList.length > 0);
+    }
+    this.setState({
+      initialized: true,
+    });
+  }
 
   onManualInputChanged(inputTypeManual) {
     this.setState({
@@ -36,17 +49,6 @@ class PollerFormStepOne extends Component {
     });
   };
 
-  UNSAFE_componentWillReceiveProps = (nextProps) => {
-    const { waitList } = nextProps;
-    const { initialized } = this.state;
-    if (waitList && !initialized) {
-      this.initializeFromRest(waitList.length > 0);
-    }
-    this.setState({
-      initialized: true,
-    });
-  };
-
   handleChange = (e, value) => {
     const { waitList, change } = this.props;
     const platform = waitList.find((server) => server.ip === value);
@@ -56,13 +58,12 @@ class PollerFormStepOne extends Component {
   render() {
     const { error, handleSubmit, onSubmit, waitList, t } = this.props;
     const { inputTypeManual } = this.state;
+
     return (
-      <div className={styles['form-wrapper']}>
+      <Paper className={styles['form-container']}>
         <div className={styles['form-inner']}>
           <div className={styles['form-heading']}>
-            <h2 className={styles['form-title']}>
-              {t('Server Configuration')}
-            </h2>
+            <Typography variant="h6">{t('Server Configuration')}</Typography>
           </div>
           <form autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
             <Field
@@ -78,7 +79,7 @@ class PollerFormStepOne extends Component {
               <div>
                 <Field
                   component={InputField}
-                  label={`${t('Server Name')}:`}
+                  label={`${t('Server Name')}`}
                   name="server_name"
                   placeholder=""
                   type="text"
@@ -86,7 +87,7 @@ class PollerFormStepOne extends Component {
                 />
                 <Field
                   component={InputField}
-                  label={`${t('Server IP address')}:`}
+                  label={`${t('Server IP address')}`}
                   name="server_ip"
                   placeholder=""
                   type="text"
@@ -96,7 +97,7 @@ class PollerFormStepOne extends Component {
                   component={InputField}
                   label={`${t(
                     'Centreon Central IP address, as seen by this server',
-                  )}:`}
+                  )}`}
                   name="centreon_central_ip"
                   placeholder=""
                   type="text"
@@ -107,7 +108,7 @@ class PollerFormStepOne extends Component {
             <Field
               checked={!inputTypeManual}
               component={RadioField}
-              label={`${t('Select a Poller')}:`}
+              label={`${t('Select a Poller')}`}
               name="inputTypeManual"
               onClick={() => {
                 this.onManualInputChanged(false);
@@ -119,7 +120,7 @@ class PollerFormStepOne extends Component {
                   <Field
                     required
                     component={SelectField}
-                    label={`${t('Select Pending Poller IP')}:`}
+                    label={`${t('Select Pending Poller IP')}`}
                     name="server_ip"
                     options={[
                       {
@@ -136,7 +137,7 @@ class PollerFormStepOne extends Component {
                 ) : null}
                 <Field
                   component={InputField}
-                  label={`${t('Server Name')}:`}
+                  label={`${t('Server Name')}`}
                   name="server_name"
                   placeholder=""
                   type="text"
@@ -144,7 +145,7 @@ class PollerFormStepOne extends Component {
                 />
                 <Field
                   component={InputField}
-                  label={`${t('Server IP address')}:`}
+                  label={`${t('Server IP address')}`}
                   name="server_ip"
                   placeholder=""
                   type="text"
@@ -154,7 +155,7 @@ class PollerFormStepOne extends Component {
                   component={InputField}
                   label={`${t(
                     'Centreon Central IP address, as seen by this server',
-                  )}:`}
+                  )}`}
                   name="centreon_central_ip"
                   placeholder=""
                   type="text"
@@ -163,16 +164,23 @@ class PollerFormStepOne extends Component {
               </div>
             ) : null}
             <div className={styles['form-buttons']}>
-              <button className={styles.button} type="submit">
+              <Button
+                color="primary"
+                size="small"
+                type="submit"
+                variant="contained"
+              >
                 {t('Next')}
-              </button>
+              </Button>
             </div>
             {error ? (
-              <div className={styles['error-block']}>{error.message}</div>
+              <Typography color="error" variant="body2">
+                {error.message}
+              </Typography>
             ) : null}
           </form>
         </div>
-      </div>
+      </Paper>
     );
   }
 }

@@ -2,15 +2,17 @@
 import * as React from 'react';
 
 import { equals, last } from 'ramda';
+import { useUpdateAtom } from 'jotai/utils';
 
-import { makeStyles, Typography } from '@material-ui/core';
-import ShowChartOutlinedIcon from '@material-ui/icons/ShowChartOutlined';
+import { Typography } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import ShowChartOutlinedIcon from '@mui/icons-material/ShowChartOutlined';
 
-import { ResourceContext } from '../../../Context';
 import Card from '../Details/Card';
 import SelectableResourceName from '../Details/SelectableResourceName';
 import { Resource } from '../../../models';
 import ShortTypeChip from '../../../ShortTypeChip';
+import { selectResourceDerivedAtom } from '../../detailsAtoms';
 
 import { MetaServiceMetric } from './models';
 
@@ -41,17 +43,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-type Props = {
+interface Props {
   infiniteScrollTriggerRef: React.RefObject<HTMLDivElement>;
   metrics: Array<MetaServiceMetric>;
-} & Pick<ResourceContext, 'selectResource'>;
+}
 
-const Metrics = ({
-  infiniteScrollTriggerRef,
-  metrics,
-  selectResource,
-}: Props): JSX.Element => {
+const Metrics = ({ infiniteScrollTriggerRef, metrics }: Props): JSX.Element => {
   const classes = useStyles();
+
+  const selectResource = useUpdateAtom(selectResourceDerivedAtom);
 
   return (
     <>
@@ -71,7 +71,9 @@ const Metrics = ({
                   <SelectableResourceName
                     name={resource.parent?.name as string}
                     variant="body2"
-                    onSelect={() => selectResource(resource.parent as Resource)}
+                    onSelect={(): void =>
+                      selectResource(resource.parent as Resource)
+                    }
                   />
                 </div>
                 <div className={classes.iconValuePair}>
@@ -79,7 +81,7 @@ const Metrics = ({
                   <SelectableResourceName
                     name={resource.name}
                     variant="body2"
-                    onSelect={() => selectResource(resource)}
+                    onSelect={(): void => selectResource(resource)}
                   />
                 </div>
               </div>

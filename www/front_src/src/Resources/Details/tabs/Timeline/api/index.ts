@@ -29,9 +29,9 @@ const listTimelineEvents =
     endpoint,
     parameters,
   }: ListTimeLineEventsProps): Promise<ListingModel<TimelineEvent>> => {
-    return getData<ListingModel<TimelineEvent>>(cancelToken)(
-      buildListTimelineEventsEndpoint({ endpoint, parameters }),
-    );
+    return getData<ListingModel<TimelineEvent>>(cancelToken)({
+      endpoint: buildListTimelineEventsEndpoint({ endpoint, parameters }),
+    });
   };
 
 export { listTimelineEvents, buildListTimelineEventsEndpoint };

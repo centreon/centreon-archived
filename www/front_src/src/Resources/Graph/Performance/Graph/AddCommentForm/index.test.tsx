@@ -1,14 +1,19 @@
 import * as React from 'react';
 
 import axios from 'axios';
-import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+
+import { render, screen, waitFor } from '@centreon/ui';
 
 import { Resource } from '../../../../models';
 import { labelComment, labelAdd } from '../../../../translatedLabels';
 import { commentEndpoint } from '../../../../Actions/api/endpoint';
 
 import AddCommentForm from '.';
+
+jest.mock('@centreon/ui-context', () =>
+  jest.requireActual('@centreon/centreon-frontend/packages/ui-context'),
+);
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
@@ -39,7 +44,7 @@ describe(AddCommentForm, () => {
       />,
     );
 
-    expect(screen.getByText(labelAdd).parentElement).toBeDisabled();
+    expect(screen.getByText(labelAdd)).toBeDisabled();
 
     userEvent.type(screen.getByLabelText(labelComment), 'plop');
 

@@ -1,3 +1,4 @@
+/* eslint-disable default-param-last */
 import * as actions from '../actions/pollerWizardActions';
 
 const initialState = {};

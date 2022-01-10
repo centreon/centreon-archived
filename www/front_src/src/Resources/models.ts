@@ -1,6 +1,10 @@
 import { ListingModel } from '@centreon/ui';
 
-export type ResourceType = 'host' | 'service' | 'metaservice';
+export enum ResourceType {
+  host = 'host',
+  metaservice = 'metaservice',
+  service = 'service',
+}
 
 export type ResourceShortType = 'h' | 's' | 'm';
 
@@ -92,4 +96,7 @@ export interface ResourceLinks {
 
 export type TranslationType = (label: string) => string;
 
-export type SortOrder = 'asc' | 'desc';
+export enum SortOrder {
+  asc = 'asc',
+  desc = 'desc',
+}
