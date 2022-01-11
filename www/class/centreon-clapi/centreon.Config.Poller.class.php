@@ -478,7 +478,7 @@ class CentreonConfigPoller
             $Nagioscfg = $statement->fetchRow();
             $statement->closeCursor();
 
-            foreach (glob($this->engineCachePath . '/' . $pollerId . "/*.cfg") as $filename) {
+            foreach (glob($this->engineCachePath . '/' . $pollerId . "/*.{json,cfg}", GLOB_BRACE) as $filename) {
                 $bool = @copy($filename, $Nagioscfg["cfg_dir"] . "/" . basename($filename));
                 $result = explode("/", $filename);
                 $filename = array_pop($result);
@@ -490,7 +490,7 @@ class CentreonConfigPoller
 
             /* Change files owner */
             if ($apacheUser != "") {
-                foreach (glob($Nagioscfg["cfg_dir"] . "/*.cfg") as $file) {
+                foreach (glob($Nagioscfg["cfg_dir"] . "/*.{json,cfg}", GLOB_BRACE) as $file) {
                     @chown($file, $apacheUser);
                     @chgrp($file, $apacheUser);
                 }
