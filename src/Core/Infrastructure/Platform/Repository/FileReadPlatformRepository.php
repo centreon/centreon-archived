@@ -19,6 +19,8 @@
  *
  */
 
+declare(strict_types=1);
+
 namespace Core\Infrastructure\Platform\Repository;
 
 use Core\Application\Platform\Repository\ReadPlatformRepositoryInterface;
