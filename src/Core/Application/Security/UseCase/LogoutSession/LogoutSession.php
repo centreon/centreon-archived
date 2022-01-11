@@ -46,16 +46,16 @@ class LogoutSession
     }
 
     /**
-     * @param string|null $token
+     * @param mixed $token
      * @param LogoutSessionPresenterInterface $presenter
      */
     public function __invoke(
-        ?string $token,
+        mixed $token,
         LogoutSessionPresenterInterface $presenter,
     ): void {
         $this->info('Processing session logout...');
 
-        if ($token === null) {
+        if ($token === null || is_string($token) === false) {
             $this->debug('Try to logout without token');
             $presenter->setResponseStatus(new ErrorResponse(_('No session token provided')));
             return;
