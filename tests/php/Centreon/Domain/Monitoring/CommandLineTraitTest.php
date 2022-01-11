@@ -78,6 +78,54 @@ class CommandLineTraitTest extends TestCase
         $this->replacementValue = '*****';
     }
 
+    public function testCustomer(): void
+    {
+        $configurationCommand = '/centreon/plugins/centreon_plugins.pl --plugin=cloud::prometheus::direct::kubernetes::plugin '
+            . "--mode='\$_SERVICEMODE\$' "
+            . "--hostname='\$_SERVICEHOSTNAME\$' "
+            . "--url-path='\$_SERVICEURLPATH\$' "
+            . "--port='\$_SERVICEPORT\$' "
+            . "--header='Authorization: Bearer \$_SERVICETOKEN\$' "
+            . "--proto='\$_SERVICEPROTOCOL\$' "
+            . "--deployment='\$_SERVICEDEPLOYMENT\$' "
+            . "--extra-filter='namespace=\"\$_SERVICENAMESPACE\$\"' "
+            . '$_SERVICEEXTRAOPTIONS$';
+
+        $monitoringCommand = '/centreon/plugins/centreon_plugins.pl --plugin=cloud::prometheus::direct::kubernetes::plugin '
+            . "--mode='deployment-status' "
+            . "--hostname='k8s-gestion.yaencontre.run' "
+            . "--url-path='/k8s/clusters/local/api/v1/namespace' "
+            . "--port='443' "
+            . "--header='Authorization: Bearer *****' "
+            . "--proto='https' "
+            . "--deployment='rancher-monitoring-grafana' "
+            . "--extra-filter='namespace=\"cattle-monitoring-system\"' "
+            . '';
+
+        $macros = [
+            (new ServiceMacro())->setName('$_SERVICEMODE$')->setValue('deployment-status'),
+            (new ServiceMacro())->setName('$_SERVICEHOSTNAME$')->setValue('k8s-gestion.yaencontre.run'),
+            (new ServiceMacro())->setName('$_SERVICEURLPATH$')->setValue('/k8s/clusters/local/api/v1/namespace'),
+            (new ServiceMacro())->setName('$_SERVICEPORT$')->setValue('443'),
+            (new ServiceMacro())->setName('$_SERVICETOKEN$')->setValue('bliblo')->setPassword(true),
+            (new ServiceMacro())->setName('$_SERVICEPROTOCOL$')->setValue('https'),
+            (new ServiceMacro())->setName('$_SERVICEDEPLOYMENT$')->setValue('rancher-monitoring-grafana'),
+            (new ServiceMacro())->setName('$_SERVICENAMESPACE$')->setValue('cattle-monitoring-system'),
+            (new ServiceMacro())->setName('$_SERVICEEXTRAOPTIONS$')->setValue(''),
+        ];
+
+        $result = $this->buildCommandLineFromConfiguration(
+            $configurationCommand,
+            $monitoringCommand,
+            $macros,
+            $this->replacementValue
+        );
+
+        $this->assertEquals($monitoringCommand, $result);
+
+        //var_dump("\n" . $result);
+    }
+
     /**
      * Test built command line which does not contain any password
      *

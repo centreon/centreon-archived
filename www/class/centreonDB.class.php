@@ -248,38 +248,8 @@ class CentreonDB extends \PDO
      *
      * @return \PDOStatement
      */
-    public function query($queryString = null, $parameters = null)
+    public function query(string $query, ?int $fetchMode = null, mixed ...$fetchModeArgs)
     {
-        if (!is_null($parameters) && !is_array($parameters)) {
-            $parameters = [$parameters];
-        }
-
-        /*
-         * Launch request
-         */
-        $sth = null;
-        try {
-            if (is_null($parameters)) {
-                $sth = parent::query($queryString);
-            } else {
-                $sth = $this->prepare($queryString);
-                $sth->execute($parameters);
-            }
-        } catch (\PDOException $e) {
-            // skip if we use CentreonDBStatement::execute method
-            if ($this->debug && is_null($parameters)) {
-                $string = str_replace("`", "", $queryString);
-                $string = str_replace('*', "\*", $string);
-                $this->log->insertLog(2, " QUERY : " . $string);
-            }
-
-            throw new \PDOException($e->getMessage(), hexdec($e->getCode()));
-        }
-
-        $this->queryNumber++;
-        $this->successQueryNumber++;
-
-        return $sth;
     }
 
     /**
