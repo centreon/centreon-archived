@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,13 +21,14 @@
 
 declare(strict_types=1);
 
-namespace Core\Application\Security\Service;
+namespace Core\Application\Security\UseCase\LogoutSession;
 
-interface TokenServiceInterface
+use Core\Application\Common\UseCase\PresenterInterface;
+
+interface LogoutSessionPresenterInterface extends PresenterInterface
 {
     /**
-     * Delete all expired API tokens
-     * @throws AuthenticationException
+     * Present no content.
      */
-    public function deleteExpiredSecurityTokens(): void;
+    public function present(): void;
 }

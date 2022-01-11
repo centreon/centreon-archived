@@ -43,6 +43,10 @@ use CentreonModule\Application\DataRepresenter\ModuleEntity;
 
 class UpdateActionTest extends TestCase
 {
+    /**
+     * @var Module
+     */
+    private $entity;
 
     public function setUp(): void
     {
@@ -59,7 +63,7 @@ class UpdateActionTest extends TestCase
             ],
         ];
 
-        $this->entity = new Module;
+        $this->entity = new Module();
         $this->entity->setId($data['id']);
         $this->entity->setType($data['type']);
         $this->entity->setName($data['name']);
@@ -69,7 +73,7 @@ class UpdateActionTest extends TestCase
         $this->entity->setLicense($data['license']);
     }
 
-    public function testJsonSerialize()
+    public function testJsonSerialize(): void
     {
         $this->entity = $this->entity;
         $message = 'OK';
@@ -88,14 +92,14 @@ class UpdateActionTest extends TestCase
     /**
      * @covers \CentreonModule\Application\DataRepresenter\UpdateAction::jsonSerialize
      */
-    public function testJsonSerializeWithoutEntityAndMessage()
+    public function testJsonSerializeWithoutEntityAndMessage(): void
     {
         $controlResult = [
             'entity' => null,
             'message' => null,
         ];
 
-        $dataRepresenter = new UpdateAction;
+        $dataRepresenter = new UpdateAction();
         $result = $dataRepresenter->jsonSerialize();
 
         $this->assertEquals($result, $controlResult);

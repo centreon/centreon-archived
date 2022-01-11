@@ -22,10 +22,12 @@ declare(strict_types=1);
 
 namespace Core\Application\Security\Repository;
 
-interface WriteSessionRepositoryInterface
+interface WriteSessionTokenRepositoryInterface
 {
     /**
-     * Invalidate a session.
+     * Delete a session.
+     *
+     * @param string $token
      */
-    public function invalidate(): void;
+    public function deleteSession(string $token): void;
 }

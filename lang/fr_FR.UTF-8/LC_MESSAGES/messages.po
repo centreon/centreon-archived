@@ -16320,3 +16320,6 @@ msgstr "L'utilisateur n'est pas autorisé à joindre l'application web"
 
 msgid "Successful logout"
 msgstr "Déconnexion réussie"
+
+msgid "No session token provided"
+msgstr "Aucun jeton de session fourni"
