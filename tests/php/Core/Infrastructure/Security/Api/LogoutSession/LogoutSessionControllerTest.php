@@ -23,14 +23,16 @@ declare(strict_types=1);
 
 namespace Tests\Infrastructure\Security\Api\LogoutSession;
 
-use FOS\RestBundle\View\View;
 use PHPUnit\Framework\TestCase;
-use Psr\Container\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\InputBag;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Core\Application\Security\UseCase\LogoutSession\LogoutSession;
 use Core\Infrastructure\Security\Api\LogoutSession\LogoutSessionController;
+use Core\Infrastructure\Security\Api\LogoutSession\LogoutSessionPresenter;
+use Core\Infrastructure\Common\Presenter\JsonPresenter;
+use Core\Application\Common\UseCase\NoContentResponse;
+use Core\Application\Common\UseCase\ErrorResponse;
 
 class LogoutSessionControllerTest extends TestCase
 {
@@ -45,15 +47,15 @@ class LogoutSessionControllerTest extends TestCase
     private $useCase;
 
     /**
-     * @var ContainerInterface&\PHPUnit\Framework\MockObject\MockObject
+     * @var LogoutSessionPresenter
      */
-    private $container;
+    private $logoutSessionPresenter;
 
     public function setUp(): void
     {
         $this->request = $this->createMock(Request::class);
         $this->useCase = $this->createMock(LogoutSession::class);
-        $this->container = $this->createMock(ContainerInterface::class);
+        $this->logoutSessionPresenter = new LogoutSessionPresenter(new JsonPresenter());
     }
 
     /**
@@ -62,17 +64,20 @@ class LogoutSessionControllerTest extends TestCase
     public function testLogout(): void
     {
         $logoutSessionController = new LogoutSessionController();
-        $logoutSessionController->setContainer($this->container);
 
         $this->request->cookies = new InputBag(['PHPSESSID' => 'token']);
 
-        $view = $logoutSessionController($this->useCase, $this->request);
+        $this->logoutSessionPresenter->setResponseStatus(new NoContentResponse());
+
+        $this->useCase->expects($this->once())
+            ->method('__invoke')
+            ->with('token', $this->logoutSessionPresenter);
+
+        $response = $logoutSessionController($this->useCase, $this->request, $this->logoutSessionPresenter);
 
         $this->assertEquals(
-            View::create([
-                "message" => 'Successful logout'
-            ]),
-            $view
+            new JsonResponse(null, JsonResponse::HTTP_NO_CONTENT),
+            $response
         );
     }
 
@@ -82,21 +87,26 @@ class LogoutSessionControllerTest extends TestCase
     public function testLogoutFailed(): void
     {
         $logoutSessionController = new LogoutSessionController();
-        $logoutSessionController->setContainer($this->container);
 
         $this->request->cookies = new InputBag([]);
 
-        $view = $logoutSessionController($this->useCase, $this->request);
+        $this->logoutSessionPresenter->setResponseStatus(new ErrorResponse('No session token provided'));
+
+        $this->useCase->expects($this->once())
+            ->method('__invoke')
+            ->with(null, $this->logoutSessionPresenter);
+
+        $response = $logoutSessionController($this->useCase, $this->request, $this->logoutSessionPresenter);
 
         $this->assertEquals(
-            View::create(
+            new JsonResponse(
                 [
-                    "code" => Response::HTTP_UNAUTHORIZED,
-                    "message" => 'Invalid credentials'
+                    'code' => JsonResponse::HTTP_INTERNAL_SERVER_ERROR,
+                    'message' => 'No session token provided',
                 ],
-                Response::HTTP_UNAUTHORIZED
+                JsonResponse::HTTP_INTERNAL_SERVER_ERROR
             ),
-            $view
+            $response
         );
     }
 }
