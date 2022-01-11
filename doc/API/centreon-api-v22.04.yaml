@@ -3259,19 +3259,17 @@ paths:
             application/json:
               schema:
                 type: object
-                required: ["installed_version", "available_version"]
+                required: ["installed_version", "upgrade_available"]
                 properties:
                   is_installed:
                     type: boolean
                     description: Installation status of centreon web
                     example: true
-                  available_version:
-                    type: string
-                    nullable: true
+                  upgrade_available:
+                    type: boolean
                     description: |
-                      available version of centreon web
-                      null if no upgrade is available
-                    example: 21.10.1
+                      upgrade available or not
+                    example: true
   /platform/topology:
     post:
       tags:

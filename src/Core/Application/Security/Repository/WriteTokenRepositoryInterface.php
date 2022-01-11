@@ -22,10 +22,10 @@ declare(strict_types=1);
 
 namespace Core\Application\Security\Repository;
 
-interface WriteSessionRepositoryInterface
+interface WriteTokenRepositoryInterface
 {
     /**
-     * Invalidate a session.
+     * Delete all expired tokens registered.
      */
-    public function invalidate(): void;
+    public function deleteExpiredSecurityTokens(): void;
 }

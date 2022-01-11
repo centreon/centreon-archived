@@ -22,26 +22,15 @@ declare(strict_types=1);
 
 namespace Core\Infrastructure\Security\Api\LogoutSession;
 
-use Symfony\Component\HttpFoundation\Request;
-use Centreon\Application\Controller\AbstractController;
-use Core\Application\Security\UseCase\LogoutSession\LogoutSession;
+use Core\Application\Common\UseCase\AbstractPresenter;
 use Core\Application\Security\UseCase\LogoutSession\LogoutSessionPresenterInterface;
 
-class LogoutSessionController extends AbstractController
+class LogoutSessionPresenter extends AbstractPresenter implements LogoutSessionPresenterInterface
 {
     /**
-     * @param LogoutSession $useCase
-     * @param Request $request
-     * @param LogoutSessionPresenterInterface $presenter
-     * @return object
+     * @inheritDoc
      */
-    public function __invoke(
-        LogoutSession $useCase,
-        Request $request,
-        LogoutSessionPresenterInterface $presenter,
-    ): object {
-        $useCase($request->cookies->get('PHPSESSID'), $presenter);
-
-        return $presenter->show();
+    public function present(): void
+    {
     }
 }
