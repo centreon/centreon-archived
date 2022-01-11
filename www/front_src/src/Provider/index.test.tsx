@@ -69,6 +69,16 @@ const retrievedTranslations = {
   },
 };
 
+const retrievedNavigation = {
+  result: [],
+  status: true,
+};
+
+const retrievedExternalComponents = {
+  hooks: [],
+  pages: [],
+};
+
 jest.mock('../App', () => {
   const ComponentWithUserContext = (): JSX.Element => {
     return <div />;
@@ -114,6 +124,12 @@ describe(Provider, () => {
   beforeEach(() => {
     mockedAxios.get
       .mockResolvedValueOnce({
+        data: retrievedNavigation,
+      })
+      .mockResolvedValueOnce({
+        data: retrievedExternalComponents,
+      })
+      .mockResolvedValueOnce({
         data: retrievedUser,
       })
       .mockResolvedValueOnce({
@@ -131,26 +147,36 @@ describe(Provider, () => {
     renderComponent();
 
     await waitFor(() => {
-      expect(mockedAxios.get).toHaveBeenCalledTimes(4);
+      expect(mockedAxios.get).toHaveBeenCalledTimes(6);
     });
 
     expect(mockedAxios.get).toHaveBeenNthCalledWith(
       1,
-      './api/latest/configuration/users/current/parameters',
+      './api/internal.php?object=centreon_topology&action=navigationList',
       cancelTokenRequestParam,
     );
     expect(mockedAxios.get).toHaveBeenNthCalledWith(
       2,
-      './api/latest/administration/parameters',
+      './api/internal.php?object=centreon_frontend_component&action=components',
       cancelTokenRequestParam,
     );
     expect(mockedAxios.get).toHaveBeenNthCalledWith(
       3,
-      './api/internal.php?object=centreon_i18n&action=translation',
+      './api/latest/configuration/users/current/parameters',
       cancelTokenRequestParam,
     );
     expect(mockedAxios.get).toHaveBeenNthCalledWith(
       4,
+      './api/latest/administration/parameters',
+      cancelTokenRequestParam,
+    );
+    expect(mockedAxios.get).toHaveBeenNthCalledWith(
+      5,
+      './api/internal.php?object=centreon_i18n&action=translation',
+      cancelTokenRequestParam,
+    );
+    expect(mockedAxios.get).toHaveBeenNthCalledWith(
+      6,
       './api/latest/users/acl/actions',
       cancelTokenRequestParam,
     );

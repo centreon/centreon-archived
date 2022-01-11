@@ -1,9 +1,7 @@
 import * as React from 'react';
 
-import { connect } from 'react-redux';
 import { BrowserRouter as Router, useSearchParams } from 'react-router-dom';
 import Fullscreen from 'react-fullscreen-crossbrowser';
-import { Dispatch } from 'redux';
 import { equals, not, pathEq } from 'ramda';
 
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
@@ -12,7 +10,6 @@ import { makeStyles } from '@mui/styles';
 
 import { getData, LoadingSkeleton, useRequest } from '@centreon/ui';
 
-import { fetchExternalComponents } from './redux/actions/externalComponentsActions';
 import PageLoader from './components/PageLoader';
 import Provider from './Provider';
 
@@ -56,14 +53,10 @@ const useStyles = makeStyles({
   },
 });
 
-interface Props {
-  getExternalComponents: () => void;
-}
-
 const keepAliveEndpoint =
   './api/internal.php?object=centreon_keepalive&action=keepAlive';
 
-const App = ({ getExternalComponents }: Props): JSX.Element => {
+const App = (): JSX.Element => {
   const classes = useStyles();
 
   const [isFullscreenEnabled, setIsFullscreenEnabled] = React.useState(false);
@@ -99,7 +92,6 @@ const App = ({ getExternalComponents }: Props): JSX.Element => {
   };
 
   React.useEffect(() => {
-    getExternalComponents();
     keepAlive();
 
     keepAliveIntervalRef.current = setInterval(keepAlive, 15000);
@@ -110,7 +102,7 @@ const App = ({ getExternalComponents }: Props): JSX.Element => {
   return (
     <React.Suspense fallback={<PageLoader />}>
       <div className={classes.wrapper}>
-        {!min && (
+        {not(min) && (
           <React.Suspense
             fallback={<LoadingSkeleton height="100%" width={45} />}
           >
@@ -156,16 +148,6 @@ const App = ({ getExternalComponents }: Props): JSX.Element => {
   );
 };
 
-const mapDispatchToProps = (dispatch: Dispatch): Props => {
-  return {
-    getExternalComponents: (): void => {
-      dispatch(fetchExternalComponents());
-    },
-  };
-};
-
-const CentreonApp = connect(null, mapDispatchToProps)(App);
-
 export default (): JSX.Element => {
   const basename =
     (document.getElementsByTagName('base')[0].getAttribute('href') as string) ||
@@ -174,7 +156,7 @@ export default (): JSX.Element => {
   return (
     <Provider>
       <Router basename={basename}>
-        <CentreonApp />
+        <App />
       </Router>
     </Provider>
   );

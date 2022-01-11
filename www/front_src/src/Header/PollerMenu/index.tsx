@@ -2,7 +2,6 @@ import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { isEmpty, isNil } from 'ramda';
-import { connect } from 'react-redux';
 import classnames from 'classnames';
 import clsx from 'clsx';
 import { useAtomValue } from 'jotai/utils';
@@ -22,8 +21,8 @@ import {
 import { refreshIntervalAtom } from '@centreon/ui-context';
 
 import styles from '../header.scss';
-import { allowedPagesSelector } from '../../redux/selectors/navigation/allowedPages';
 import MenuLoader from '../../components/MenuLoader';
+import useNavigation from '../../Navigation/useNavigation';
 
 import { Issues } from './models';
 import {
@@ -77,7 +76,7 @@ const PollerMenu = (): JSX.Element => {
   const classes = useStyles();
 
   const { t } = useTranslation();
-  const allowedPages = pollerConfigurationPageNumber;
+  const { allowedPages } = useNavigation();
   const allowPollerConfiguration = allowedPages?.includes(
     pollerConfigurationPageNumber,
   );
@@ -215,12 +214,4 @@ const PollerMenu = (): JSX.Element => {
   );
 };
 
-interface StateToProps {
-  allowedPages: Array<string>;
-}
-
-const mapStateToProps = (state): StateToProps => ({
-  allowedPages: allowedPagesSelector(state),
-});
-
-export default connect(mapStateToProps)(PollerMenu);
+export default PollerMenu;

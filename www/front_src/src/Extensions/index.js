@@ -8,10 +8,7 @@
 /* eslint-disable no-plusplus */
 /* eslint-disable react/destructuring-assignment */
 
-import React, { Component } from 'react';
-
-import { connect } from 'react-redux';
-import { batchActions } from 'redux-batched-actions';
+import * as React from 'react';
 
 import UpdateIcon from '@mui/icons-material/SystemUpdateAlt';
 import InstallIcon from '@mui/icons-material/Add';
@@ -19,8 +16,8 @@ import { Button } from '@mui/material';
 
 import Hook from '../components/Hook';
 import axios from '../axios';
-import { fetchNavigationData } from '../redux/actions/navigationActions';
-import { fetchExternalComponents } from '../redux/actions/externalComponentsActions';
+import useNavigation from '../Navigation/useNavigation';
+import useExternalComponents from '../externalComponents/useExternalComponents';
 
 import ExtensionsHolder from './ExtensionsHolder';
 import ExtensionDetailsPopup from './ExtensionDetailsPopup';
@@ -28,7 +25,7 @@ import ExtensionDeletePopup from './ExtensionDeletePopup';
 import TopFilters from './TopFilters';
 import Wrapper from './Wrapper';
 
-class ExtensionsRoute extends Component {
+class ExtensionsManager extends React.Component {
   state = {
     confirmedDeletingEntityId: null,
     deleteToggled: false,
@@ -604,15 +601,16 @@ class ExtensionsRoute extends Component {
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    reloadNavigation: () => {
-      // batch actions to avoid useless multiple rendering
-      dispatch(
-        batchActions([fetchNavigationData(), fetchExternalComponents()]),
-      );
-    },
-  };
+const ExtensionsRoute = () => {
+  const { getNavigation } = useNavigation();
+  const { getExternalComponents } = useExternalComponents();
+
+  const reloadNavigation = React.useCallback(() => {
+    getNavigation();
+    getExternalComponents();
+  }, []);
+
+  return <ExtensionsManager reloadNavigation={reloadNavigation} />;
 };
 
-export default connect(null, mapDispatchToProps)(ExtensionsRoute);
+export default ExtensionsRoute;

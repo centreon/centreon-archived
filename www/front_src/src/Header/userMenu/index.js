@@ -10,7 +10,6 @@ import React, { Component } from 'react';
 
 import classnames from 'classnames';
 import { withTranslation } from 'react-i18next';
-import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 import { Typography } from '@mui/material';
@@ -20,11 +19,11 @@ import UserIcon from '@mui/icons-material/AccountCircle';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import CheckIcon from '@mui/icons-material/Check';
 
-import { allowedPagesSelector } from '../../redux/selectors/navigation/allowedPages';
 import styles from '../header.scss';
 import Clock from '../Clock';
 import axios from '../../axios';
 import MenuLoader from '../../components/MenuLoader';
+import useNavigation from '../../Navigation/useNavigation';
 
 const EDIT_PROFILE_TOPOLOGY_PAGE = '50104';
 
@@ -41,7 +40,7 @@ const MuiStyles = createStyles({
   },
 });
 
-class UserMenu extends Component {
+class UserMenuContent extends Component {
   userService = axios('internal.php?object=centreon_topcounter&action=user');
 
   refreshTimeout = null;
@@ -228,12 +227,10 @@ class UserMenu extends Component {
   }
 }
 
-const mapStateToProps = (state) => ({
-  allowedPages: allowedPagesSelector(state),
-});
+const UserMenu = (props) => {
+  const { allowedPages } = useNavigation();
 
-const mapDispatchToProps = {};
+  return <UserMenuContent {...props} allowedPages={allowedPages} />;
+};
 
-export default withStyles(MuiStyles)(
-  withTranslation()(connect(mapStateToProps, mapDispatchToProps)(UserMenu)),
-);
+export default withStyles(MuiStyles)(withTranslation()(UserMenu));
