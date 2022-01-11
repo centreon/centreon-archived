@@ -9,6 +9,8 @@ import { Grid, Chip, Typography, useTheme, Tooltip } from '@material-ui/core';
 import SettingsIcon from '@material-ui/icons/Settings';
 import IconFilterList from '@material-ui/icons/FilterList';
 
+import { IconButton } from '@centreon/ui';
+
 import { labelConfigure, labelFilter } from '../../../../translatedLabels';
 import { setCriteriaAndNewFilterDerivedAtom } from '../../../../Filter/filterAtoms';
 import { CriteriaNames } from '../../../../Filter/Criterias/models';
@@ -48,7 +50,6 @@ const Groups = ({ details }: Props): JSX.Element => {
           <Grid
             item
             key={group.id}
-            spacing={1}
             style={{
               alignSelf: 'center',
               display: 'flex',
@@ -63,71 +64,57 @@ const Groups = ({ details }: Props): JSX.Element => {
                   style={{
                     display: 'grid',
                     justifyItems: 'center',
-                    minWidth: theme.spacing(6),
+                    minWidth: theme.spacing(7),
                     overflow: 'hidden',
                   }}
                 >
-                  <Typography
-                    style={{
-                      color:
-                        hoveredGroupId === group.id ? 'transparent' : 'unset',
-                      gridArea: '1/1',
-                      maxWidth: theme.spacing(12),
-                    }}
-                    variant="body2"
-                  >
-                    {group.name}
-                  </Typography>
+                  <Tooltip title={group.name}>
+                    <Typography
+                      style={{
+                        color:
+                          hoveredGroupId === group.id ? 'transparent' : 'unset',
+                        gridArea: '1/1',
+                        maxWidth: theme.spacing(14),
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                      }}
+                      variant="body2"
+                    >
+                      {group.name}
+                    </Typography>
+                  </Tooltip>
 
                   {hoveredGroupId === group.id && (
                     <Grid
                       style={{
                         backgroundColor: theme.palette.primary.main,
                         display: 'flex',
+                        gap: theme.spacing(0.25),
                         gridArea: '1/1',
                       }}
                     >
-                      <Tooltip placement="top" title={title}>
-                        <Chip
-                          icon={
-                            <IconFilterList
-                              fontSize="small"
-                              style={{ color: 'unset' }}
-                            />
-                          }
-                          style={{
-                            backgroundColor: theme.palette.primary.main,
-                            color: 'unset',
-                            display: 'grid',
-                            justifyItems: 'center',
-                            minWidth: theme.spacing(3),
-                            overflow: 'hidden',
-                          }}
-                          onClick={(): void => filterByGroup(group)}
-                        />
-                      </Tooltip>
-                      <Tooltip placement="top" title={titleSettings}>
-                        <Chip
-                          icon={
-                            <SettingsIcon
-                              fontSize="small"
-                              style={{ color: 'unset' }}
-                            />
-                          }
-                          style={{
-                            backgroundColor: theme.palette.primary.main,
-                            color: 'unset',
-                            display: 'grid',
-                            justifyItems: 'center',
-                            minWidth: theme.spacing(3),
-                            overflow: 'hidden',
-                          }}
-                          onClick={(): void => filterByGroup(group)}
-                        />
-                      </Tooltip>
+                      <IconButton
+                        style={{ color: theme.palette.common.white }}
+                        title={t(labelConfigure)}
+                        onClick={(): void => filterByGroup(group)}
+                      >
+                        <IconFilterList fontSize="small" />
+                      </IconButton>
+                      <IconButton
+                        style={{ color: theme.palette.common.white }}
+                        title={t(labelFilter)}
+                        onClick={(): void => filterByGroup(group)}
+                      >
+                        <SettingsIcon fontSize="small" />
+                      </IconButton>
                     </Grid>
                   )}
                 </div>
+              }
+              style={
+                {
+                  // padding: 0,
+                }
               }
               onMouseEnter={(): void => setHoveredGroupId(group.id)}
               onMouseLeave={(): void => setHoveredGroupId(undefined)}
@@ -140,23 +127,3 @@ const Groups = ({ details }: Props): JSX.Element => {
 };
 
 export default Groups;
-
-/*
-const classes = useStyles();
-  const { t } = useTranslation();
-
-  const resourceUris = path<ResourceUris>(
-    ['links', 'uris'],
-    details,
-  ) as ResourceUris;
-
-  const resourceConfigurationUri = prop('configuration', resourceUris);
-
-  const resourceConfigurationUriTitle = isNil(resourceConfigurationUri)
-    ? t(labelActionNotPermitted)
-    : '';
-
-  const resourceConfigurationIconColor = isNil(resourceConfigurationUri)
-    ? 'disabled'
-    : 'primary';
-    */
