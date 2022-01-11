@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom';
 import { useTranslation, withTranslation } from 'react-i18next';
 import { useAtomValue } from 'jotai/utils';
 
-import ServiceIcon from '@material-ui/icons/Grain';
+import ServiceIcon from '@mui/icons-material/Grain';
 
 import {
   IconHeader,

@@ -2,7 +2,8 @@ import * as React from 'react';
 
 import { not } from 'ramda';
 
-import { Tooltip, makeStyles } from '@material-ui/core';
+import { Tooltip } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 
 import { useMemoComponent } from '@centreon/ui';
 
@@ -49,7 +50,6 @@ const HoverChip = ({
   return useMemoComponent({
     Component: (
       <Tooltip
-        interactive
         PopperProps={{
           onClick: (e): void => {
             e.preventDefault();

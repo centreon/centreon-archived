@@ -7,14 +7,14 @@ import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 
 import {
   Paper,
-  makeStyles,
   ButtonGroup,
   Button,
   useTheme,
   Tooltip,
   Theme,
-} from '@material-ui/core';
-import { CreateCSSProperties } from '@material-ui/styles';
+} from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import { CreateCSSProperties } from '@mui/styles';
 
 import { useMemoComponent } from '@centreon/ui';
 
@@ -45,7 +45,7 @@ const useStyles = makeStyles<Theme, StylesProps>((theme) => ({
     backgroundColor: disablePaper ? 'transparent' : 'undefined',
     border: disablePaper ? 'unset' : 'undefined',
     boxShadow: disablePaper ? 'unset' : 'undefined',
-    columnGap: `${theme.spacing(2)}px`,
+    columnGap: theme.spacing(2),
     display: 'grid',
     gridTemplateColumns: `repeat(3, auto)`,
     justifyContent: 'center',
@@ -142,6 +142,7 @@ const TimePeriodButtonGroup = ({
       disableGraphOptions,
       disablePaper,
       selectedTimePeriod?.id,
+      customTimePeriod,
     ],
   });
 };

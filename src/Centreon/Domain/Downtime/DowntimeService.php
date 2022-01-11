@@ -26,7 +26,6 @@ use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Downtime\Interfaces\DowntimeRepositoryInterface;
 use Centreon\Domain\Downtime\Interfaces\DowntimeServiceInterface;
 use Centreon\Domain\Engine\Interfaces\EngineServiceInterface;
-use Centreon\Domain\Entity\EntityValidator;
 use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Domain\Monitoring\Host;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
@@ -55,10 +54,7 @@ class DowntimeService extends AbstractCentreonService implements DowntimeService
      * @var EngineServiceInterface For all downtimes requests except reading
      */
     private $engineService;
-    /**
-     * @var EntityValidator
-     */
-    private $validator;
+
     /**
      * @var DowntimeRepositoryInterface
      */
@@ -78,20 +74,17 @@ class DowntimeService extends AbstractCentreonService implements DowntimeService
      *
      * @param AccessGroupRepositoryInterface $accessGroupRepository
      * @param EngineServiceInterface $engineService
-     * @param EntityValidator $validator
      * @param DowntimeRepositoryInterface $downtimeRepository
      * @param MonitoringRepositoryInterface $monitoringRepository
      */
     public function __construct(
         AccessGroupRepositoryInterface $accessGroupRepository,
         EngineServiceInterface $engineService,
-        EntityValidator $validator,
         DowntimeRepositoryInterface $downtimeRepository,
         MonitoringRepositoryInterface $monitoringRepository
     ) {
         $this->accessGroupRepository = $accessGroupRepository;
         $this->engineService = $engineService;
-        $this->validator = $validator;
         $this->downtimeRepository = $downtimeRepository;
         $this->monitoringRepository = $monitoringRepository;
     }

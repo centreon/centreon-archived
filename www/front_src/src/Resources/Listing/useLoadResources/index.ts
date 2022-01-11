@@ -121,7 +121,9 @@ const useLoadResources = (): LoadResources => {
       return;
     }
 
-    sendLoadDetailsRequest(selectedResourceDetailsEndpoint)
+    sendLoadDetailsRequest({
+      endpoint: selectedResourceDetailsEndpoint,
+    })
       .then(setDetails)
       .catch(() => {
         clearSelectedResource();
@@ -167,6 +169,7 @@ const useLoadResources = (): LoadResources => {
       serviceGroups: getCriteriaNames('service_groups'),
       sort: getSort(),
       states: getCriteriaIds('states'),
+      statusTypes: getCriteriaIds('status_types'),
       statuses: getCriteriaIds('statuses'),
     }).then(setListing);
 

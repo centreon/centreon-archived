@@ -18,22 +18,27 @@
  * For more information : contact@centreon.com
  *
  */
+
 declare(strict_types=1);
 
-namespace Security\Domain\Authentication\Exceptions;
+namespace Core\Application\Common\UseCase;
 
-/**
- * This class is designed to contain all exceptions for both contexts of SessionAPI & TokenAPI authenticators.
- *
- * @package Security\Domain\Authentication\Exceptions
- */
-class AuthenticatorException extends \Exception
+use Core\Application\Common\UseCase\ResponseStatusInterface;
+
+abstract class NotFoundResponse implements ResponseStatusInterface
 {
     /**
-     * @return self
+     * @param string $objectNotFound
      */
-    public static function sessionTokenNotFound(): self
+    public function __construct(private string $objectNotFound)
     {
-        return new self(_('Session token not found'));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getMessage(): string
+    {
+        return _($this->objectNotFound . ' not found');
     }
 }

@@ -20,10 +20,10 @@ import {
   Fab,
   Fade,
   LinearProgress,
-  makeStyles,
   Tooltip,
-} from '@material-ui/core';
-import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
+} from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 
 import { useIntersectionObserver, ListingModel } from '@centreon/ui';
 

@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { useTheme } from '@material-ui/core';
+import { useTheme } from '@mui/material';
 
 import IconDowntime from '../icons/Downtime';
 

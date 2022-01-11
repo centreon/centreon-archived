@@ -17,7 +17,6 @@ import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import {
   Button,
   ClickAwayListener,
-  makeStyles,
   Paper,
   Typography,
   Theme,
@@ -25,8 +24,9 @@ import {
   useTheme,
   CircularProgress,
   Tooltip,
-} from '@material-ui/core';
-import { grey } from '@material-ui/core/colors';
+} from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import { grey } from '@mui/material/colors';
 
 import {
   dateTimeFormat,
@@ -560,15 +560,25 @@ const GraphContent = ({
             />
           </Group.Group>
           <TimeShiftContext.Provider
-            value={{
-              canAdjustTimePeriod,
-              graphHeight,
-              graphWidth,
-              loading,
-              marginLeft: margin.left,
-              marginTop: margin.top,
-              shiftTime,
-            }}
+            value={React.useMemo(
+              () => ({
+                canAdjustTimePeriod,
+                graphHeight,
+                graphWidth,
+                loading,
+                marginLeft: margin.left,
+                marginTop: margin.top,
+                shiftTime,
+              }),
+              [
+                canAdjustTimePeriod,
+                graphHeight,
+                graphWidth,
+                loading,
+                margin,
+                shiftTime,
+              ],
+            )}
           >
             <TimeShiftZones />
           </TimeShiftContext.Provider>

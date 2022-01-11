@@ -2,25 +2,26 @@ import * as React from 'react';
 
 import mockDate from 'mockdate';
 import axios from 'axios';
-import { last, pick, map } from 'ramda';
+import { last, pick, map, head } from 'ramda';
+import userEvent from '@testing-library/user-event';
+import { Provider } from 'jotai';
+import dayjs from 'dayjs';
+
 import {
   render,
   RenderResult,
   waitFor,
   fireEvent,
   act,
-} from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { Provider } from 'jotai';
-
-import { SeverityCode } from '@centreon/ui';
+  SeverityCode,
+} from '@centreon/ui';
 import {
   acknowledgementAtom,
   aclAtom,
   downtimeAtom,
   refreshIntervalAtom,
   userAtom,
-} from '@centreon/centreon-frontend/packages/ui-context/src';
+} from '@centreon/ui-context';
 
 import {
   labelAcknowledgedBy,
@@ -34,7 +35,6 @@ import {
   labelAcknowledgeServices,
   labelNotify,
   labelFixed,
-  labelChangeEndDate,
   labelCheck,
   labelServicesDenied,
   labelHostsDenied,
@@ -54,6 +54,10 @@ import {
   labelUnknown,
   labelAddComment,
   labelPersistent,
+  labelEndTime,
+  labelEndDateGreaterThanStartDate,
+  labelInvalidFormat,
+  labelStartTime,
 } from '../translatedLabels';
 import useLoadResources from '../Listing/useLoadResources';
 import useListing from '../Listing/useListing';
@@ -96,6 +100,8 @@ const mockUser = {
 const mockRefreshInterval = 15;
 const mockDowntime = {
   default_duration: 7200,
+  default_fixed: true,
+  default_with_services: false,
 };
 const mockAcl = {
   actions: {
@@ -192,6 +198,24 @@ describe(Actions, () => {
   const mockNow = '2020-01-01';
 
   beforeEach(() => {
+    Object.defineProperty(window, 'matchMedia', {
+      value: (query: string): MediaQueryList => ({
+        addEventListener: (): void => undefined,
+
+        addListener: (): void => undefined,
+
+        dispatchEvent: (): boolean => true,
+        // this is the media query that @material-ui/pickers uses to determine if a device is a desktop device
+        matches: query === '(pointer: fine)',
+        media: query,
+        onchange: (): void => undefined,
+        removeEventListener: (): void => undefined,
+        removeListener: (): void => undefined,
+      }),
+      writable: true,
+    });
+
+    mockedAxios.post.mockReset();
     mockedAxios.get
       .mockResolvedValueOnce({
         data: {
@@ -209,6 +233,10 @@ describe(Actions, () => {
   });
 
   afterEach(() => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    delete window.matchMedia;
+
     mockDate.reset();
     mockedAxios.get.mockReset();
   });
@@ -269,14 +297,11 @@ describe(Actions, () => {
 
       const commentField = await findByText(labelComment);
 
-      fireEvent.change(commentField, {
-        target: { value: '' },
-      });
+      userEvent.clear(commentField);
 
       await waitFor(() =>
         expect(
-          (last<HTMLElement>(getAllByText(labelConfirmAction)) as HTMLElement)
-            .parentElement,
+          last<HTMLElement>(getAllByText(labelConfirmAction)) as HTMLElement,
         ).toBeDisabled(),
       );
     },
@@ -302,7 +327,7 @@ describe(Actions, () => {
     fireEvent.click(getByLabelText(labelAcknowledgeServices));
 
     mockedAxios.get.mockResolvedValueOnce({ data: {} });
-    mockedAxios.post.mockResolvedValueOnce({}).mockResolvedValueOnce({});
+    mockedAxios.post.mockResolvedValueOnce({});
 
     fireEvent.click(last(getAllByText(labelAcknowledge)) as HTMLElement);
 
@@ -326,7 +351,7 @@ describe(Actions, () => {
   });
 
   it('sends a discknowledgement request when Resources are selected and the Disackowledgement action is clicked and confirmed', async () => {
-    const { getByTitle, getAllByText, getByText } = renderActions();
+    const { getByLabelText, getAllByText, getByText } = renderActions();
 
     const selectedResources = [host];
 
@@ -334,7 +359,7 @@ describe(Actions, () => {
       context.setSelectedResources?.(selectedResources);
     });
 
-    fireEvent.click(getByTitle(labelMoreActions).firstChild as HTMLElement);
+    fireEvent.click(getByLabelText(labelMoreActions).firstChild as HTMLElement);
 
     fireEvent.click(getByText(labelDisacknowledge));
 
@@ -373,7 +398,7 @@ describe(Actions, () => {
   });
 
   it('does not display the "Discknowledge services attached to host" checkbox when only services are selected and the Disacknowledge action is clicked', async () => {
-    const { getByText, queryByText, getByTitle } = renderActions();
+    const { getByText, queryByText, getByLabelText } = renderActions();
 
     const selectedResources = [service];
 
@@ -381,7 +406,7 @@ describe(Actions, () => {
       context.setSelectedResources?.(selectedResources);
     });
 
-    fireEvent.click(getByTitle(labelMoreActions).firstChild as HTMLElement);
+    fireEvent.click(getByLabelText(labelMoreActions).firstChild as HTMLElement);
 
     fireEvent.click(getByText(labelDisacknowledge));
 
@@ -411,13 +436,13 @@ describe(Actions, () => {
 
     await waitFor(() =>
       expect(
-        (last(getAllByText(labelSetDowntime)) as HTMLElement).parentElement,
+        last(getAllByText(labelSetDowntime)) as HTMLElement,
       ).toBeDisabled(),
     );
   });
 
   it('cannot send a downtime request when Downtime action is clicked and start date is greater than end date', async () => {
-    const { container, getByLabelText, getAllByText, findByText } =
+    const { getByLabelText, getAllByText, findByText, getByText } =
       renderActions();
 
     const selectedResources = [host];
@@ -426,23 +451,66 @@ describe(Actions, () => {
       context.setSelectedResources?.(selectedResources);
     });
 
-    await waitFor(() =>
-      expect(last(getAllByText(labelSetDowntime))).toBeEnabled(),
-    );
-
-    fireEvent.click(last(getAllByText(labelSetDowntime)) as HTMLElement);
+    fireEvent.click(head(getAllByText(labelSetDowntime)) as HTMLElement);
 
     await findByText(labelDowntimeByAdmin);
 
-    // set previous day as end date using left arrow key
-    fireEvent.click(getByLabelText(labelChangeEndDate));
-    fireEvent.keyDown(container, { code: 37, key: 'ArrowLeft' });
-    fireEvent.keyDown(container, { code: 13, key: 'Enter' });
+    userEvent.clear(getByLabelText(labelEndTime));
+    userEvent.type(getByLabelText(labelEndTime), dayjs(mockNow).format('L LT'));
 
     await waitFor(() =>
       expect(
-        (last(getAllByText(labelSetDowntime)) as HTMLElement).parentElement,
+        last(getAllByText(labelSetDowntime)) as HTMLElement,
       ).toBeDisabled(),
+    );
+
+    expect(getByText(labelEndDateGreaterThanStartDate)).toBeInTheDocument();
+  });
+
+  it('cannot send a downtime request when the Downtime action is clicked and the input dates have an invalid format', async () => {
+    const { getByLabelText, getAllByText, findByText, getByText } =
+      renderActions();
+
+    const selectedResources = [host];
+
+    act(() => {
+      context.setSelectedResources?.(selectedResources);
+    });
+
+    fireEvent.click(head(getAllByText(labelSetDowntime)) as HTMLElement);
+
+    await findByText(labelDowntimeByAdmin);
+
+    userEvent.type(getByLabelText(labelStartTime), 'l');
+
+    await waitFor(() =>
+      expect(
+        last(getAllByText(labelSetDowntime)) as HTMLElement,
+      ).toBeDisabled(),
+    );
+
+    expect(getByText(labelInvalidFormat)).toBeInTheDocument();
+
+    userEvent.type(getByLabelText(labelStartTime), '{backspace}');
+
+    await waitFor(() =>
+      expect(last(getAllByText(labelSetDowntime)) as HTMLElement).toBeEnabled(),
+    );
+
+    userEvent.type(getByLabelText(labelEndTime), 'a');
+
+    await waitFor(() =>
+      expect(
+        last(getAllByText(labelSetDowntime)) as HTMLElement,
+      ).toBeDisabled(),
+    );
+
+    expect(getByText(labelInvalidFormat)).toBeInTheDocument();
+
+    userEvent.type(getByLabelText(labelEndTime), '{backspace}');
+
+    await waitFor(() =>
+      expect(last(getAllByText(labelSetDowntime)) as HTMLElement).toBeEnabled(),
     );
   });
 
@@ -458,7 +526,7 @@ describe(Actions, () => {
     fireEvent.click(last(getAllByText(labelSetDowntime)) as HTMLElement);
 
     mockedAxios.get.mockResolvedValueOnce({ data: {} });
-    mockedAxios.post.mockResolvedValueOnce({}).mockResolvedValueOnce({});
+    mockedAxios.post.mockResolvedValueOnce({});
 
     await findAllByText(labelDowntimeByAdmin);
 
@@ -474,7 +542,7 @@ describe(Actions, () => {
             end_time: '2020-01-01T02:00:00Z',
             is_fixed: true,
             start_time: '2020-01-01T00:00:00Z',
-            with_services: true,
+            with_services: false,
           },
           resources: map(pick(['type', 'id', 'parent']), selectedResources),
         },
@@ -494,7 +562,7 @@ describe(Actions, () => {
 
     mockedAxios.get.mockResolvedValueOnce({ data: {} });
     mockedAxios.all.mockResolvedValueOnce([]);
-    mockedAxios.post.mockResolvedValueOnce({}).mockResolvedValueOnce({});
+    mockedAxios.post.mockResolvedValueOnce({});
 
     fireEvent.click(getByText(labelCheck));
 
@@ -510,17 +578,19 @@ describe(Actions, () => {
   });
 
   it('sends a submit status request when a Resource is selected and the Submit status action is clicked', async () => {
-    mockedAxios.post.mockResolvedValueOnce({}).mockResolvedValueOnce({});
+    mockedAxios.post.mockResolvedValueOnce({});
 
-    const { getByText, getByLabelText, getByTitle } = renderActions();
+    const { getByText, getByLabelText } = renderActions();
 
     act(() => {
       context.setSelectedResources?.([service]);
     });
 
-    fireEvent.click(getByTitle(labelMoreActions).firstChild as HTMLElement);
+    fireEvent.click(
+      getByLabelText(labelMoreActions).firstElementChild as HTMLElement,
+    );
 
-    fireEvent.click(getByText(labelSubmitStatus));
+    fireEvent.click(getByText(labelSubmitStatus) as HTMLElement);
 
     userEvent.click(getByText(labelOk));
 
@@ -570,7 +640,9 @@ describe(Actions, () => {
       context.setSelectedResources?.([host]);
     });
 
-    fireEvent.click(getByTitle(labelMoreActions).firstChild as HTMLElement);
+    fireEvent.click(
+      getByLabelText(labelMoreActions).firstElementChild as HTMLElement,
+    );
 
     fireEvent.click(getByText(labelSubmitStatus));
 
@@ -583,7 +655,7 @@ describe(Actions, () => {
   });
 
   it('cannot execute an action when associated ACL are not sufficient', async () => {
-    const { getByText, getByTitle } = renderActions({
+    const { getByText, getByLabelText } = renderActions({
       actions: {
         host: {
           acknowledgement: false,
@@ -611,12 +683,12 @@ describe(Actions, () => {
     });
 
     await waitFor(() => {
-      expect(getByText(labelCheck).parentElement).toBeDisabled();
-      expect(getByText(labelAcknowledge).parentElement).toBeDisabled();
-      expect(getByText(labelSetDowntime).parentElement).toBeDisabled();
+      expect(getByText(labelCheck)).toBeDisabled();
+      expect(getByText(labelAcknowledge)).toBeDisabled();
+      expect(getByText(labelSetDowntime)).toBeDisabled();
     });
 
-    fireEvent.click(getByTitle(labelMoreActions).firstChild as HTMLElement);
+    fireEvent.click(getByLabelText(labelMoreActions).firstChild as HTMLElement);
 
     expect(getByText(labelDisacknowledge)).toHaveAttribute(
       'aria-disabled',
@@ -719,7 +791,7 @@ describe(Actions, () => {
   ])(
     'displays a warning message when trying to %p with limited ACL',
     async (_, labelAction, labelAclWarning, acl) => {
-      const { getByText, getByTitle } = renderActions(acl);
+      const { getByText, getByLabelText } = renderActions(acl);
 
       const selectedResources = [host, service];
 
@@ -727,7 +799,9 @@ describe(Actions, () => {
         context.setSelectedResources?.(selectedResources);
       });
 
-      fireEvent.click(getByTitle(labelMoreActions).firstChild as HTMLElement);
+      fireEvent.click(
+        getByLabelText(labelMoreActions).firstChild as HTMLElement,
+      );
 
       fireEvent.click(getByText(labelAction));
 
@@ -759,13 +833,15 @@ describe(Actions, () => {
   ])(
     'disables services propagation option when trying to %p on hosts when ACL on services are not sufficient',
     async (_, labelAction, labelAppliesOnServices, acl) => {
-      const { getByText, getByTitle } = renderActions(acl);
+      const { getByText, getByLabelText } = renderActions(acl);
 
       act(() => {
         context.setSelectedResources?.([host]);
       });
 
-      fireEvent.click(getByTitle(labelMoreActions).firstChild as HTMLElement);
+      fireEvent.click(
+        getByLabelText(labelMoreActions).firstChild as HTMLElement,
+      );
 
       fireEvent.click(getByText(labelAction));
 
@@ -780,7 +856,7 @@ describe(Actions, () => {
   );
 
   it('disables the submit status action when one of the following condition is met: ACL are not sufficient, more than one resource is selected, selected resource is not passive', async () => {
-    const { getByText, getByTitle } = renderActions({
+    const { getByText, getByLabelText } = renderActions({
       actions: {
         ...mockAcl.actions,
         host: {
@@ -794,7 +870,7 @@ describe(Actions, () => {
       context.setSelectedResources?.([host, service]);
     });
 
-    fireEvent.click(getByTitle(labelMoreActions).firstChild as HTMLElement);
+    fireEvent.click(getByLabelText(labelMoreActions).firstChild as HTMLElement);
 
     await waitFor(() => {
       expect(getByText(labelSubmitStatus)).toHaveAttribute(
@@ -819,10 +895,7 @@ describe(Actions, () => {
     });
 
     await waitFor(() => {
-      expect(getByText(labelSubmitStatus)).toHaveAttribute(
-        'aria-disabled',
-        'false',
-      );
+      expect(getByText(labelSubmitStatus)).not.toHaveAttribute('aria-disabled');
     });
 
     act(() => {
@@ -838,7 +911,7 @@ describe(Actions, () => {
   });
 
   it('disables the comment action when the ACL are not sufficient or more than one resource is selected', async () => {
-    const { getByText, getByTitle } = renderActions({
+    const { getByText, getByLabelText } = renderActions({
       actions: {
         ...mockAcl.actions,
         host: {
@@ -852,7 +925,7 @@ describe(Actions, () => {
       context.setSelectedResources?.([host, service]);
     });
 
-    fireEvent.click(getByTitle(labelMoreActions).firstChild as HTMLElement);
+    fireEvent.click(getByLabelText(labelMoreActions).firstChild as HTMLElement);
 
     await waitFor(() => {
       expect(getByText(labelAddComment)).toHaveAttribute(
@@ -877,10 +950,7 @@ describe(Actions, () => {
     });
 
     await waitFor(() => {
-      expect(getByText(labelAddComment)).toHaveAttribute(
-        'aria-disabled',
-        'false',
-      );
+      expect(getByText(labelAddComment)).not.toHaveAttribute('aria-disabled');
     });
   });
 
@@ -907,7 +977,7 @@ describe(Actions, () => {
     });
 
     await waitFor(() => {
-      expect(getByText(labelAcknowledge).parentElement).toBeDisabled();
+      expect(getByText(labelAcknowledge)).toBeDisabled();
     });
   });
 });

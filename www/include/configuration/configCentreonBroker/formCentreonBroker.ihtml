@@ -10,9 +10,6 @@
 			<a href="#" onclick="javascript:montre('{math equation="x + y" x=$smarty.foreach.tabForeach.index y=2}');
 			changeTab('tab{math equation="x + y" x=$smarty.foreach.tabForeach.index y=2}');">
 			{$tab.id|capitalize}
-			{if $tab.id|capitalize eq 'Logger'}
-			(deprecated)
-			{/if}
 			</a>
 		</li>
 		{/foreach}

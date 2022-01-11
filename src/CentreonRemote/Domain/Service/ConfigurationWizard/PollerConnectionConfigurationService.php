@@ -4,7 +4,6 @@ namespace CentreonRemote\Domain\Service\ConfigurationWizard;
 
 use Centreon\Domain\Repository\Interfaces\CfgCentreonBrokerInterface;
 use Centreon\Domain\Service\BrokerConfigurationService;
-
 use CentreonRemote\Domain\Resources\RemoteConfig\CfgCentreonBroker;
 use CentreonRemote\Domain\Resources\RemoteConfig\CfgCentreonBrokerInfo;
 use CentreonRemote\Domain\Resources\RemoteConfig\InputFlowOnePeerRetention;
@@ -26,7 +25,7 @@ class PollerConnectionConfigurationService extends ServerConnectionConfiguration
      *
      * @param CfgCentreonBrokerInterface $cfgCentreonBroker the centreon broker configuration repository
      */
-    public function setBrokerRepository(CfgCentreonBrokerInterface $cfgCentreonBroker)
+    public function setBrokerRepository(CfgCentreonBrokerInterface $cfgCentreonBroker): void
     {
         $this->brokerRepository = $cfgCentreonBroker;
     }
@@ -36,7 +35,7 @@ class PollerConnectionConfigurationService extends ServerConnectionConfiguration
      *
      * @param BrokerConfigurationService $brokerConfigurationService the service to manage broker confiration
      */
-    public function setBrokerConfigurationService(BrokerConfigurationService $brokerConfigurationService)
+    public function setBrokerConfigurationService(BrokerConfigurationService $brokerConfigurationService): void
     {
         $this->brokerConfigurationService = $brokerConfigurationService;
     }
@@ -55,11 +54,6 @@ class PollerConnectionConfigurationService extends ServerConnectionConfiguration
         $outputHost = $this->centralIp;
         $onePeerRetentionMode = 'no';
         $moduleID = $this->insertWithAdapter('cfg_centreonbroker', $configCentreonBrokerData['module']);
-
-        foreach ($configCentreonBrokerInfoData['central-module']['logger'] as $row) {
-            $row['config_id'] = $moduleID;
-            $this->insertWithAdapter('cfg_centreonbroker_info', $row);
-        }
 
         // if one peer retention mode is enabled,
         // we need to add an input in central broker configuration

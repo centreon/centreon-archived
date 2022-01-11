@@ -10,7 +10,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
-import { FormControlLabel, Checkbox, Typography } from '@material-ui/core';
+import { FormControlLabel, Checkbox, Typography } from '@mui/material';
 
 import styles from '../../styles/partials/form/_form.scss';
 

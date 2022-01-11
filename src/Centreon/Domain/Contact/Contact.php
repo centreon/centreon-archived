@@ -650,4 +650,12 @@ class Contact implements UserInterface, ContactInterface
 
         return $this;
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function getUserIdentifier(): string
+    {
+        return $this->alias;
+    }
 }
