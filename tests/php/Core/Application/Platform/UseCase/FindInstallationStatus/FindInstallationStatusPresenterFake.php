@@ -21,22 +21,22 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\Application\Platform\UseCase\FindWebVersions;
+namespace Tests\Core\Application\Platform\UseCase\FindInstallationStatus;
 
-use Core\Application\Platform\UseCase\FindWebVersions\FindWebVersionsPresenterInterface;
-use Core\Application\Platform\UseCase\FindWebVersions\FindWebVersionsResponse;
+use Core\Application\Platform\UseCase\FindInstallationStatus\FindInstallationStatusPresenterInterface;
+use Core\Application\Platform\UseCase\FindInstallationStatus\FindInstallationStatusResponse;
 
-class FindWebVersionsPresenterFake implements FindWebVersionsPresenterInterface
+class FindInstallationStatusPresenterFake implements FindInstallationStatusPresenterInterface
 {
     /**
-     * @var FindWebVersionsResponse
+     * @var FindInstallationStatusResponse
      */
     public $response;
 
     /**
      * @inheritDoc
      */
-    public function present(FindWebVersionsResponse $response): void
+    public function present(FindInstallationStatusResponse $response): void
     {
         $this->response = $response;
     }

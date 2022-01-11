@@ -21,39 +21,39 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\Application\Platform\UseCase\FindWebVersions;
+namespace Tests\Core\Application\Platform\UseCase\FindInstallationStatus;
 
-use Core\Application\Platform\Service\PlatformVersionServiceInterface;
-use Core\Application\Platform\UseCase\FindWebVersions\FindWebVersions;
+use Core\Application\Platform\Repository\ReadPlatformRepositoryInterface;
+use Core\Application\Platform\UseCase\FindInstallationStatus\FindInstallationStatus;
 use PHPUnit\Framework\TestCase;
 
-class FindWebVersionsTest extends TestCase
+class FindInstallationStatusTest extends TestCase
 {
     /**
-     * @var PlatformVersionServiceInterface&\PHPUnit\Framework\MockObject\MockObject
+     * @var ReadPlatformRepositoryInterface&\PHPUnit\Framework\MockObject\MockObject
      */
-    public $platformVersionService;
+    public $repository;
 
     public function setUp(): void
     {
-        $this->platformVersionService = $this->createMock(PlatformVersionServiceInterface::class);
+        $this->repository = $this->createMock(ReadPlatformRepositoryInterface::class);
     }
 
     /**
      * Test that the use case will correctly pass the versions to the presenter.
      */
-    public function testFindWebVersions(): void
+    public function testFindInstallationStatus(): void
     {
-        $useCase = new FindWebVersions($this->platformVersionService);
+        $useCase = new FindInstallationStatus($this->repository);
 
-        $presenter = new FindWebVersionsPresenterFake();
+        $presenter = new FindInstallationStatusPresenterFake();
 
-        $this->platformVersionService
+        $this->repository
             ->expects($this->once())
-            ->method('getWebUpgradeVersion')
-            ->willReturn('22.04.1');
+            ->method('isCentreonWebUpgradeAvailable')
+            ->willReturn(true);
 
-        $this->platformVersionService
+        $this->repository
             ->expects($this->once())
             ->method('isCentreonWebInstalled')
             ->willReturn(true);
@@ -61,6 +61,6 @@ class FindWebVersionsTest extends TestCase
         $useCase($presenter);
 
         $this->assertEquals($presenter->response->isCentreonWebInstalled, true);
-        $this->assertEquals($presenter->response->centreonUpgradeVersion, '22.04.1');
+        $this->assertEquals($presenter->response->isCentreonWebUpgradeAvailable, true);
     }
 }

@@ -21,21 +21,23 @@
 
 declare(strict_types=1);
 
-namespace Core\Application\Platform\Service;
+namespace Core\Infrastructure\Platform\Api\FindInstallationStatus;
 
-interface PlatformVersionServiceInterface
+use Centreon\Application\Controller\AbstractController;
+use Core\Application\Platform\UseCase\FindInstallationStatus\FindInstallationStatus;
+use Core\Application\Platform\UseCase\FindInstallationStatus\FindInstallationStatusPresenterInterface;
+
+class FindInstallationStatusController extends AbstractController
 {
     /**
-     * Get the upgrade version if an upgrade is available.
-     *
-     * @return string|null
+     * @param FindInstallationStatus $useCase
+     * @param FindInstallationStatusPresenterInterface $presenter
+     * @return object
      */
-    public function getWebUpgradeVersion(): ?string;
+    public function __invoke(FindInstallationStatus $useCase, FindInstallationStatusPresenterInterface $presenter): object
+    {
+        $useCase($presenter);
 
-    /**
-     * Check if centreon is installed.
-     *
-     * @return bool
-     */
-    public function isCentreonWebInstalled(): bool;
+        return $presenter->show();
+    }
 }

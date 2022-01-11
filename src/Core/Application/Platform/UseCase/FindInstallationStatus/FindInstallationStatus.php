@@ -21,46 +21,46 @@
 
 declare(strict_types=1);
 
-namespace Core\Application\Platform\UseCase\FindWebVersions;
+namespace Core\Application\Platform\UseCase\FindInstallationStatus;
 
-use Core\Application\Platform\Service\PlatformVersionServiceInterface;
-use Core\Application\Platform\UseCase\FindWebVersions\FindWebVersionsResponse;
+use Core\Application\Platform\Repository\ReadPlatformRepositoryInterface;
+use Core\Application\Platform\UseCase\FindInstallationStatus\FindInstallationStatusResponse;
 
-class FindWebVersions
+class FindInstallationStatus
 {
     /**
-     * @param PlatformVersionServiceInterface $platformVersionService
+     * @param ReadPlatformRepositoryInterface $repository
      */
-    public function __construct(private PlatformVersionServiceInterface $platformVersionService)
+    public function __construct(private ReadPlatformRepositoryInterface $repository)
     {
     }
 
     /**
-     * @param FindWebVersionsPresenterInterface $presenter
+     * @param FindInstallationStatusPresenterInterface $presenter
      */
-    public function __invoke(FindWebVersionsPresenterInterface $presenter): void
+    public function __invoke(FindInstallationStatusPresenterInterface $presenter): void
     {
-        $isCentreonWebInstalled = $this->platformVersionService->isCentreonWebInstalled();
-        $centreonUpgradeVersion = $this->platformVersionService->getWebUpgradeVersion();
+        $isCentreonWebInstalled = $this->repository->isCentreonWebInstalled();
+        $isCentreonWebUpgradeAvailable = $this->repository->isCentreonWebUpgradeAvailable();
 
         $presenter->present($this->createResponse(
             $isCentreonWebInstalled,
-            $centreonUpgradeVersion
+            $isCentreonWebUpgradeAvailable
         ));
     }
 
     /**
      * @param boolean $isCentreonWebInstalled
-     * @param string|null $centreonUpgradeVersion
-     * @return FindWebVersionsResponse
+     * @param boolean $isCentreonWebUpgradeAvailable
+     * @return FindInstallationStatusResponse
      */
     private function createResponse(
         bool $isCentreonWebInstalled,
-        ?string $centreonUpgradeVersion
-    ): FindWebVersionsResponse {
-        $response = new FindWebVersionsResponse();
+        bool $isCentreonWebUpgradeAvailable
+    ): FindInstallationStatusResponse {
+        $response = new FindInstallationStatusResponse();
         $response->isCentreonWebInstalled = $isCentreonWebInstalled;
-        $response->centreonUpgradeVersion = $centreonUpgradeVersion;
+        $response->isCentreonWebUpgradeAvailable = $isCentreonWebUpgradeAvailable;
 
         return $response;
     }
