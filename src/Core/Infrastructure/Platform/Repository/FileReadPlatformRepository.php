@@ -19,7 +19,7 @@
  *
  */
 
-namespace Core\Infrastrcture\Platform\Repository;
+namespace Core\Infrastructure\Platform\Repository;
 
 use Core\Application\Platform\Repository\ReadPlatformRepositoryInterface;
 
