@@ -23,17 +23,13 @@ declare(strict_types=1);
 
 namespace Core\Application\Platform\UseCase\FindInstallationStatus;
 
+use Core\Application\Common\UseCase\PresenterInterface;
 use Core\Application\Platform\UseCase\FindInstallationStatus\FindInstallationStatusResponse;
 
-interface FindInstallationStatusPresenterInterface
+interface FindInstallationStatusPresenterInterface extends PresenterInterface
 {
     /**
      * @param FindInstallationStatusResponse $response
      */
     public function present(FindInstallationStatusResponse $response): void;
-
-    /**
-     * @return object
-     */
-    public function show(): object;
 }

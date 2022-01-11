@@ -34,8 +34,10 @@ class FindInstallationStatusController extends AbstractController
      * @param FindInstallationStatusPresenterInterface $presenter
      * @return object
      */
-    public function __invoke(FindInstallationStatus $useCase, FindInstallationStatusPresenterInterface $presenter): object
-    {
+    public function __invoke(
+        FindInstallationStatus $useCase,
+        FindInstallationStatusPresenterInterface $presenter
+    ): object {
         $useCase($presenter);
 
         return $presenter->show();

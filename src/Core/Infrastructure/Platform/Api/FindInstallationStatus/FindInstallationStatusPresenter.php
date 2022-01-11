@@ -21,31 +21,24 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\Application\Platform\UseCase\FindInstallationStatus;
+namespace Core\Infrastructure\Platform\Api\FindInstallationStatus;
 
+use Core\Application\Common\UseCase\AbstractPresenter;
 use Core\Application\Platform\UseCase\FindInstallationStatus\FindInstallationStatusPresenterInterface;
 use Core\Application\Platform\UseCase\FindInstallationStatus\FindInstallationStatusResponse;
 
-class FindInstallationStatusPresenterFake implements FindInstallationStatusPresenterInterface
+class FindInstallationStatusPresenter extends AbstractPresenter implements FindInstallationStatusPresenterInterface
 {
-    /**
-     * @var FindInstallationStatusResponse
-     */
-    public $response;
-
     /**
      * @inheritDoc
      */
     public function present(FindInstallationStatusResponse $response): void
     {
-        $this->response = $response;
-    }
+        $presenterResponse = [
+            'is_installed' => $response->isCentreonWebInstalled,
+            'upgrade_available' => $response->isCentreonWebUpgradeAvailable
+        ];
 
-    /**
-     * @inheritDoc
-     */
-    public function show(): object
-    {
-        return new \stdClass();
+        $this->presenterFormatter->present($presenterResponse);
     }
 }

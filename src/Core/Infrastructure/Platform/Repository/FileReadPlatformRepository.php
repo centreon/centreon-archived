@@ -19,23 +19,37 @@
  *
  */
 
-declare(strict_types=1);
+namespace Core\Infrastrcture\Platform\Repository;
 
-namespace Core\Application\Platform\Repository;
+use Core\Application\Platform\Repository\ReadPlatformRepositoryInterface;
 
-interface ReadPlatformRepositoryInterface
+class FileReadPlatformRepository implements ReadPlatformRepositoryInterface
 {
-    /**
-     * Check if an upgrade is available.
-     *
-     * @return bool
-     */
-    public function isCentreonWebUpgradeAvailable(): bool;
+    public function __construct(private string $etcDir, private string $installDir)
+    {
+    }
 
     /**
-     * Check if centreon is installed.
-     *
-     * @return bool
+     * @inheritdoc
      */
-    public function isCentreonWebInstalled(): bool;
+    public function isCentreonWebInstalled(): bool
+    {
+        if (file_exists($this->etcDir . '/centreon.conf.php')) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isCentreonWebUpgradeAvailable(): bool
+    {
+        if (is_dir($this->installDir)) {
+            return true;
+        }
+
+        return false;
+    }
 }
