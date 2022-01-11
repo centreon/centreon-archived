@@ -308,7 +308,7 @@ try {
                 /*
                  * Copy monitoring engine's configuration files
                  */
-                foreach (glob($nagiosCFGPath . $host["id"] . "/*.cfg") as $filename) {
+                foreach (glob($nagiosCFGPath . $host['id'] . "/*.{json,cfg}", GLOB_BRACE) as $filename) {
                     $succeded = @copy(
                         $filename,
                         rtrim($nagiosCfg["cfg_dir"], "/") . '/' . basename($filename)
