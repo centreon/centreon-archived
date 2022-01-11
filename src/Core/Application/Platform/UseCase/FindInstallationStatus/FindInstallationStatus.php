@@ -23,11 +23,15 @@ declare(strict_types=1);
 
 namespace Core\Application\Platform\UseCase\FindInstallationStatus;
 
+use Centreon\Domain\Log\LoggerTrait;
+use Core\Application\Common\UseCase\ErrorResponse;
 use Core\Application\Platform\Repository\ReadPlatformRepositoryInterface;
 use Core\Application\Platform\UseCase\FindInstallationStatus\FindInstallationStatusResponse;
 
 class FindInstallationStatus
 {
+    use LoggerTrait;
+
     /**
      * @param ReadPlatformRepositoryInterface $repository
      */
@@ -40,8 +44,18 @@ class FindInstallationStatus
      */
     public function __invoke(FindInstallationStatusPresenterInterface $presenter): void
     {
+        $this->info('check installation status');
         $isCentreonWebInstalled = $this->repository->isCentreonWebInstalled();
         $isCentreonWebUpgradeAvailable = $this->repository->isCentreonWebUpgradeAvailable();
+
+        if ($isCentreonWebInstalled === false && $isCentreonWebUpgradeAvailable === false) {
+            $this->critical(
+                'something went wrong during your rpm installation, no centreon.conf.php or install dir was found'
+            );
+            $presenter->setResponseStatus(new ErrorResponse(
+                _('centreon is not properly installed')
+            ));
+        }
 
         $presenter->present($this->createResponse(
             $isCentreonWebInstalled,
