@@ -1,4 +1,4 @@
 export interface WebVersions {
-  availableVersion: string | null;
   isInstalled: boolean;
+  upgradeAvailable: boolean;
 }

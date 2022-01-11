@@ -39,7 +39,7 @@ const InitializationPage = (): JSX.Element => {
     }
 
     const canUpgrade = and(
-      not(isNil(webVersions.availableVersion)),
+      webVersions.upgradeAvailable,
       not(areUserParametersLoaded),
     );
 

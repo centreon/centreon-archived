@@ -106,8 +106,8 @@ const mockDefaultGetRequests = (): void => {
   mockedAxios.get
     .mockResolvedValueOnce({
       data: {
-        available_version: null,
         is_installed: true,
+        upgrade_available: false,
       },
     })
     .mockResolvedValueOnce({
@@ -137,8 +137,8 @@ const mockRedirectFromLoginPageGetRequests = (): void => {
   mockedAxios.get
     .mockResolvedValueOnce({
       data: {
-        available_version: null,
         is_installed: true,
+        upgrade_available: false,
       },
     })
     .mockResolvedValueOnce({
@@ -171,8 +171,8 @@ const mockNotConnectedGetRequests = (): void => {
   mockedAxios.get
     .mockResolvedValueOnce({
       data: {
-        available_version: null,
         is_installed: true,
+        upgrade_available: false,
       },
     })
     .mockResolvedValueOnce({
@@ -190,8 +190,8 @@ const mockInstallGetRequests = (): void => {
   mockedAxios.get
     .mockResolvedValueOnce({
       data: {
-        available_version: '21.10.1',
         is_installed: false,
+        upgrade_available: false,
       },
     })
     .mockResolvedValueOnce({
@@ -206,8 +206,8 @@ const mockUpgradeAndUserDisconnectedGetRequests = (): void => {
   mockedAxios.get
     .mockResolvedValueOnce({
       data: {
-        available_version: '21.10.1',
         is_installed: true,
+        upgrade_available: true,
       },
     })
     .mockResolvedValueOnce({
@@ -222,8 +222,8 @@ const mockUpgradeAndUserConnectedGetRequests = (): void => {
   mockedAxios.get
     .mockResolvedValueOnce({
       data: {
-        available_version: '21.10.1',
         is_installed: true,
+        upgrade_available: true,
       },
     })
     .mockResolvedValueOnce({

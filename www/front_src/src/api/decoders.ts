@@ -22,12 +22,12 @@ export const userDecoder = JsonDecoder.object<User>(
 
 export const webVersionsDecoder = JsonDecoder.object<WebVersions>(
   {
-    availableVersion: JsonDecoder.nullable(JsonDecoder.string),
     isInstalled: JsonDecoder.boolean,
+    upgradeAvailable: JsonDecoder.boolean,
   },
   'Web versions',
   {
-    availableVersion: 'available_version',
     isInstalled: 'is_installed',
+    upgradeAvailable: 'upgrade_available',
   },
 );
