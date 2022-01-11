@@ -16323,3 +16323,6 @@ msgstr "Déconnexion réussie"
 
 msgid "No session token provided"
 msgstr "Aucun jeton de session fourni"
+
+msgid "centreon is not properly installed"
+msgstr "centreon n'est pas correctement installé"
