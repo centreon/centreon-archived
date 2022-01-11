@@ -43,7 +43,6 @@ import CommandLineCard from './CommandLineCard';
 export interface DetailCardLine {
   active?: boolean;
   isCustomCard?: boolean;
-  isHovered?: boolean;
   line: JSX.Element;
   shouldBeDisplayed: boolean;
   title: string;
