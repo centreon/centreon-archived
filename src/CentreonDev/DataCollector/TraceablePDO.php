@@ -20,19 +20,19 @@ class TraceablePDO extends DatabaseConnection
         parent::__construct($host, $basename, $login, $password, $port);
         $this->setAttribute(
             PDO::ATTR_STATEMENT_CLASS,
-            array('Centreon\Profiler\DataCollector\TraceablePDOStatement', array($this))
+            [TraceablePDOStatement::class, [$this]]
         );
     }
 
-    public function exec($sql)
+    public function exec(string $statement): int|false
     {
-        return $this->profileCall('parent::exec', $sql, func_get_args());
+        return $this->profileCall('parent::exec', $statement, func_get_args());
     }
 
     /**
      * {@inheritdoc}
      */
-    public function query($statement)
+    public function query($statement, $parameters = null, ...$parametersArgs): \PDOStatement|false
     {
         return $this->profileCall('parent::query', $statement, func_get_args());
     }
@@ -68,6 +68,7 @@ class TraceablePDO extends DatabaseConnection
         if ($this->getAttribute(PDO::ATTR_ERRMODE) === PDO::ERRMODE_EXCEPTION && $ex !== null) {
             throw $ex;
         }
+
         return $result;
     }
 

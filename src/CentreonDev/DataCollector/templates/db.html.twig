@@ -11,16 +11,14 @@
         {% endif %}
     {% endset %}
     {% set text %}
-        {% spaceless %}
-            <div class="sf-toolbar-info-piece">
-                <b>DB Queries</b>
-                <span>{{ collector.querycount }}</span>
-            </div>
-            <div class="sf-toolbar-info-piece">
-                <b>Query time</b>
-                <span>{{ '%0.2f'|format(collector.time * 1000) }} ms</span>
-            </div>
-        {% endspaceless %}
+        <div class="sf-toolbar-info-piece">
+            <b>DB Queries</b>
+            <span>{{ collector.querycount }}</span>
+        </div>
+        <div class="sf-toolbar-info-piece">
+            <b>Query time</b>
+            <span>{{ '%0.2f'|format(collector.time * 1000) }} ms</span>
+        </div>
     {% endset %}
     {% include '@WebProfiler/Profiler/toolbar_item.html.twig' with { 'link': profiler_url } %}
 {% endblock %}
