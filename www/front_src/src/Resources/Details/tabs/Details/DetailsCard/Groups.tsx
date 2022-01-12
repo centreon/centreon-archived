@@ -1,6 +1,7 @@
 /* eslint-disable react/jsx-key */
 import * as React from 'react';
 
+import { useHistory } from 'react-router-dom';
 import { equals } from 'ramda';
 import { useUpdateAtom } from 'jotai/utils';
 import { useTranslation } from 'react-i18next';
@@ -27,10 +28,6 @@ import { setCriteriaAndNewFilterDerivedAtom } from '../../../../Filter/filterAto
 import { CriteriaNames } from '../../../../Filter/Criterias/models';
 import { ResourceDetails } from '../../../models';
 import { NamedEntity, ResourceType } from '../../../../models';
-
-interface Props {
-  details: ResourceDetails | undefined;
-}
 
 const useStyles = makeStyles((theme) => ({
   chipsGroups: {
@@ -61,9 +58,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+interface Props {
+  details: ResourceDetails | undefined;
+}
+
 const Groups = ({ details }: Props): JSX.Element => {
   const theme = useTheme();
   const classes = useStyles();
+  const navigate = useHistory();
 
   const { t } = useTranslation();
 
@@ -119,15 +121,18 @@ const Groups = ({ details }: Props): JSX.Element => {
                     <Grid className={classes.test}>
                       <IconButton
                         style={{ color: theme.palette.common.white }}
-                        title={t(labelConfigure)}
+                        title={t(labelFilter)}
                         onClick={(): void => filterByGroup(group)}
                       >
                         <IconFilterList fontSize="small" />
                       </IconButton>
                       <IconButton
                         style={{ color: theme.palette.common.white }}
-                        title={t(labelFilter)}
-                        onClick={(): void => filterByGroup(group)}
+                        title={t(labelConfigure)}
+                        onClick={(): void => {
+                          // in waiting pair programming with Tom maybe
+                          navigate.push(`/main.php?p=60102&o=c&hg_id=60`);
+                        }}
                       >
                         <SettingsIcon fontSize="small" />
                       </IconButton>
