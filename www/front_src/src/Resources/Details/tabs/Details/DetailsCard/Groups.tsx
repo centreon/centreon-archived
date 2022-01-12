@@ -1,7 +1,6 @@
 /* eslint-disable react/jsx-key */
 import * as React from 'react';
 
-import { useHistory } from 'react-router-dom';
 import { equals } from 'ramda';
 import { useUpdateAtom } from 'jotai/utils';
 import { useTranslation } from 'react-i18next';
@@ -65,7 +64,6 @@ interface Props {
 const Groups = ({ details }: Props): JSX.Element => {
   const theme = useTheme();
   const classes = useStyles();
-  const navigate = useHistory();
 
   const { t } = useTranslation();
 
@@ -130,8 +128,8 @@ const Groups = ({ details }: Props): JSX.Element => {
                         style={{ color: theme.palette.common.white }}
                         title={t(labelConfigure)}
                         onClick={(): void => {
-                          // in waiting pair programming with Tom maybe
-                          navigate.push(`/main.php?p=60102&o=c&hg_id=60`);
+                          window.location.href =
+                            group.configuration_uri as string;
                         }}
                       >
                         <SettingsIcon fontSize="small" />
