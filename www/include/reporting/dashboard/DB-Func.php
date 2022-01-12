@@ -278,7 +278,7 @@ function getLogInDbForHostSVC($host_id, $start_date, $end_date, $reportTimePerio
             $hostServiceStats[$id][$name] = 0;
         }
     }
-    
+
     $days_of_week = getReportDaysStr($reportTimePeriod);
     $aclCondition = '';
     if (!$centreon->user->admin) {
