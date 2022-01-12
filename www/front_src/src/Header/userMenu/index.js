@@ -10,7 +10,7 @@ import React, { Component } from 'react';
 
 import classnames from 'classnames';
 import { withTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useUpdateAtom } from 'jotai/utils';
 
 import { Typography } from '@mui/material';
@@ -20,12 +20,17 @@ import UserIcon from '@mui/icons-material/AccountCircle';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import CheckIcon from '@mui/icons-material/Check';
 
+import { postData, useRequest, getData } from '@centreon/ui';
+
 import styles from '../header.scss';
 import Clock from '../Clock';
-import axios from '../../axios';
 import MenuLoader from '../../components/MenuLoader';
 import useNavigation from '../../Navigation/useNavigation';
 import { areUserParametersLoadedAtom } from '../../Main/useUser';
+import { logoutEndpoint } from '../../api/endpoint';
+import reactRoutes from '../../reactRoutes/routeMap';
+
+import { userEndpoint } from './api/endpoint';
 
 const EDIT_PROFILE_TOPOLOGY_PAGE = '50104';
 
@@ -43,8 +48,6 @@ const MuiStyles = createStyles({
 });
 
 class UserMenuContent extends Component {
-  userService = axios('internal.php?object=centreon_topcounter&action=user');
-
   refreshTimeout = null;
 
   state = {
@@ -65,9 +68,9 @@ class UserMenuContent extends Component {
 
   // fetch api to get user data
   getData = () => {
-    this.userService
-      .get()
-      .then(({ data }) => {
+    this.props
+      .getUser()
+      .then((data) => {
         this.setState(
           {
             data,
@@ -126,7 +129,7 @@ class UserMenuContent extends Component {
     }
 
     // check if edit profile page (My Account) is allowed
-    const { allowedPages, t, classes, setAreUserParametersLoaded } = this.props;
+    const { allowedPages, t, classes, logout } = this.props;
     const allowEditProfile = allowedPages?.includes(EDIT_PROFILE_TOPOLOGY_PAGE);
 
     const { fullname, username, autologinkey } = data;
@@ -200,6 +203,7 @@ class UserMenuContent extends Component {
                       {copied ? <CheckIcon /> : <FileCopyIcon />}
                     </button>
                     <textarea
+                      readOnly
                       className={styles['hidden-input']}
                       id="autologin-input"
                       ref={(node) => (this.autologinNode = node)}
@@ -214,8 +218,7 @@ class UserMenuContent extends Component {
                   to="/index.php"
                   onClick={(e) => {
                     e.preventDefault();
-                    setAreUserParametersLoaded(null);
-                    window.location.href = './index.php?disconnect=1';
+                    logout();
                   }}
                 >
                   <button
@@ -239,14 +242,34 @@ class UserMenuContent extends Component {
 
 const UserMenu = (props) => {
   const { allowedPages } = useNavigation();
+  const { sendRequest: logoutRequest } = useRequest({
+    request: postData,
+  });
+  const { sendRequest: userRequest } = useRequest({
+    request: getData,
+  });
+  const navigate = useNavigate();
 
   const setAreUserParametersLoaded = useUpdateAtom(areUserParametersLoadedAtom);
+
+  const logout = () => {
+    logoutRequest({
+      data: {},
+      endpoint: logoutEndpoint,
+    }).then(() => {
+      setAreUserParametersLoaded(false);
+      navigate(reactRoutes.login);
+    });
+  };
+
+  const getUser = () => userRequest({ endpoint: userEndpoint });
 
   return (
     <UserMenuContent
       {...props}
       allowedPages={allowedPages}
-      setAreUserParametersLoaded={setAreUserParametersLoaded}
+      getUser={getUser}
+      logout={logout}
     />
   );
 };
