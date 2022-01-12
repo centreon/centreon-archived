@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2021 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -54,27 +55,61 @@ $cssThemes = "Centreon-2";
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta name="Generator" content="Centreon - Copyright (C) 2005 - 2021 Open Source Matters. All rights reserved."/>
     <meta name="robots" content="index, nofollow"/>
-    
+
     <?php if (isset($isMobile) && $isMobile) : ?>
     <link href="./Themes/<?php echo $cssThemes; ?>/MobileMenu/css/material_icons.css" rel="stylesheet" type="text/css"/>
     <link href="./Themes/<?php echo $cssThemes; ?>/MobileMenu/css/menu.css" rel="stylesheet" type="text/css"/>
     <?php endif; ?>
-    
-    <link href="./include/common/javascript/jquery/plugins/jpaginator/jPaginator.css" rel="stylesheet" type="text/css"/>
-    
-    <!-- Theme selection -->
-    <link href="./Themes/<?php echo $cssThemes; ?>/style.css<?php echo $versionParam; ?>" rel="stylesheet" type="text/css"/>
-    <link href="./Themes/<?php echo $cssThemes; ?>/centreon-loading.css<?php echo $versionParam; ?>" rel="stylesheet" type="text/css"/>
-    <link href="./Themes/<?php echo $cssThemes; ?>/responsive-style.css<?php echo $versionParam; ?>" rel="stylesheet" type="text/css"/>
-    <link href="./Themes/<?php echo $cssThemes; ?>/color_css.php<?php echo $versionParam; ?>" rel="stylesheet" type="text/css"/>
-    <link href="./Themes/<?php echo $cssThemes; ?>/jquery-ui/jquery-ui.css<?php echo $versionParam; ?>" rel="stylesheet" type="text/css"/>
-    <link href="./Themes/<?php echo $cssThemes; ?>/jquery-ui/jquery-ui-centreon.css<?php echo $versionParam; ?>" rel="stylesheet" type="text/css"/>
 
-    <link href="./include/common/javascript/jquery/plugins/timepicker/jquery.ui.timepicker.css" rel="stylesheet" type="text/css" media="screen"/>
-    <link href="./include/common/javascript/jquery/plugins/select2/css/select2.css" rel="stylesheet" type="text/css" media="screen"/>
+    <link href="./include/common/javascript/jquery/plugins/jpaginator/jPaginator.css" rel="stylesheet" type="text/css"/>
+
+    <!-- Theme selection -->
+    <link
+        href="./Themes/<?php echo $cssThemes; ?>/style.css<?php echo $versionParam; ?>"
+        rel="stylesheet"
+        type="text/css"
+    />
+    <link
+        href="./Themes/<?php echo $cssThemes; ?>/centreon-loading.css<?php echo $versionParam; ?>"
+        rel="stylesheet"
+        type="text/css"
+    />
+    <link
+        href="./Themes/<?php echo $cssThemes; ?>/responsive-style.css<?php echo $versionParam; ?>"
+        rel="stylesheet"
+        type="text/css"
+    />
+    <link
+        href="./Themes/<?php echo $cssThemes; ?>/color_css.php<?php echo $versionParam; ?>"
+        rel="stylesheet"
+        type="text/css"
+    />
+    <link
+        href="./Themes/<?php echo $cssThemes; ?>/jquery-ui/jquery-ui.css<?php echo $versionParam; ?>"
+        rel="stylesheet"
+        type="text/css"
+    />
+    <link
+        href="./Themes/<?php echo $cssThemes; ?>/jquery-ui/jquery-ui-centreon.css<?php echo $versionParam; ?>"
+        rel="stylesheet"
+        type="text/css"
+    />
+
+    <link
+        href="./include/common/javascript/jquery/plugins/timepicker/jquery.ui.timepicker.css"
+        rel="stylesheet"
+        type="text/css"
+        media="screen"
+    />
+    <link
+        href="./include/common/javascript/jquery/plugins/select2/css/select2.css"
+        rel="stylesheet"
+        type="text/css"
+        media="screen"
+    />
     <link href="./include/common/javascript/jquery/plugins/colorbox/colorbox.css" rel="stylesheet" type="text/css"/>
     <link href="./include/common/javascript/jquery/plugins/qtip/jquery-qtip.css" rel="stylesheet" type="text/css"/>
-    
+
     <!-- graph css -->
     <link href="./include/common/javascript/charts/c3.min.css" type="text/css" rel="stylesheet" />
     <link href="./include/views/graphs/javascript/centreon-status-chart.css" type="text/css" rel="stylesheet" />
@@ -87,20 +122,26 @@ $cssThemes = "Centreon-2";
         }
     }
 
-    if (!isset($_REQUEST['iframe']) || (isset($_REQUEST['iframe']) && $_REQUEST['iframe'] != 1)) { 
+    if (!isset($_REQUEST['iframe']) || (isset($_REQUEST['iframe']) && $_REQUEST['iframe'] != 1)) {
     ?>
     <script type="text/javascript" src="./include/common/javascript/jquery/jquery.min.js"></script>
-    <script type="text/javascript" src="./include/common/javascript/jquery/plugins/toggleClick/jquery.toggleClick.js"></script>
-    <script type="text/javascript" src="./include/common/javascript/jquery/plugins/select2/js/select2.full.min.js"></script>
+    <script type="text/javascript" src="./include/common/javascript/jquery/plugins/toggleClick/jquery.toggleClick.js">
+    </script>
+    <script type="text/javascript" src="./include/common/javascript/jquery/plugins/select2/js/select2.full.min.js">
+    </script>
     <script type="text/javascript" src="./include/common/javascript/centreon/centreon-select2.js"></script>
     <script type="text/javascript" src="./include/common/javascript/jquery/jquery-ui.js"></script>
     <script type="text/javascript" src="./include/common/javascript/jquery/jquery-ui-tabs-rotate.js"></script>
-    <script type="text/javascript" src="./include/common/javascript/jquery/plugins/colorbox/jquery.colorbox-min.js"></script>
-    <script type="text/javascript" src="./include/common/javascript/jquery/plugins/jeditable/jquery.jeditable-min.js"></script>
-    <script type="text/javascript" src="./include/common/javascript/jquery/plugins/timepicker/jquery.ui.timepicker.js"></script>
+    <script type="text/javascript" src="./include/common/javascript/jquery/plugins/colorbox/jquery.colorbox-min.js">
+    </script>
+    <script type="text/javascript" src="./include/common/javascript/jquery/plugins/jeditable/jquery.jeditable-min.js">
+    </script>
+    <script type="text/javascript" src="./include/common/javascript/jquery/plugins/timepicker/jquery.ui.timepicker.js">
+    </script>
     <script type="text/javascript" src="./include/common/javascript/jquery/plugins/noty/jquery.noty.js"></script>
     <script type="text/javascript" src="./include/common/javascript/jquery/plugins/noty/themes/default.js"></script>
-    <script type="text/javascript" src="./include/common/javascript/jquery/plugins/noty/layouts/bottomRight.js"></script>
+    <script type="text/javascript" src="./include/common/javascript/jquery/plugins/noty/layouts/bottomRight.js">
+    </script>
     <script type="text/javascript" src="./include/common/javascript/jquery/plugins/buzz/buzz.min.js"></script>
     <script type='text/javascript' src='./include/common/javascript/visibility.min.js'></script>
     <script type="text/javascript" src="./include/common/javascript/centreon/notifier.js"></script>
@@ -114,7 +155,7 @@ $cssThemes = "Centreon-2";
     <script type='text/javascript' src='./include/common/javascript/linkify/linkify-jquery.min.js'></script>
     <?php } ?>
     <script type="text/javascript" src="./class/centreonToolTip.js"></script>
-    
+
     <!-- graph js -->
     <script src="./include/common/javascript/charts/d3.min.js"></script>
     <script src="./include/common/javascript/charts/c3.min.js"></script>
@@ -125,7 +166,7 @@ $cssThemes = "Centreon-2";
     <script src="./include/views/graphs/javascript/centreon-status-chart.js"></script>
     <script src="./include/common/javascript/moment-with-locales.min.2.21.js"></script>
     <script src="./include/common/javascript/moment-timezone-with-data.min.js"></script>
-    
+
     <?php if (isset($isMobile) && $isMobile) : ?>
     <script type="text/javascript">
       var text_back = '<?= gettext('Back') ?>'

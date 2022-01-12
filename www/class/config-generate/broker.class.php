@@ -90,8 +90,6 @@ class Broker extends AbstractObjectJSON
 
     private function getExternalValues()
     {
-        global $pearDB;
-
         if (!is_null($this->cacheExternalValue)) {
             return;
         }
@@ -208,7 +206,6 @@ class Broker extends AbstractObjectJSON
             foreach ($resultParameters as $key => $value) {
                 // We search the BlockId
                 $blockId = 0;
-                $configGroupdId = null;
                 for ($i = count($value); $i > 0; $i--) {
                     if (isset($value[$i]['config_key']) && $value[$i]['config_key'] == 'blockId') {
                         $blockId = $value[$i]['config_value'];
@@ -220,9 +217,10 @@ class Broker extends AbstractObjectJSON
                 $subValuesToCastInArray = [];
                 $rrdCacheOption = 'disable';
                 foreach ($value as $subvalue) {
-                    if (!isset($subvalue['fieldIndex']) ||
-                        $subvalue['fieldIndex'] == "" ||
-                        is_null($subvalue['fieldIndex'])
+                    if (
+                        !isset($subvalue['fieldIndex'])
+                        || $subvalue['fieldIndex'] == ""
+                        || is_null($subvalue['fieldIndex'])
                     ) {
                         if (in_array($subvalue['config_key'], $this->exclude_parameters)) {
                             continue;
@@ -257,11 +255,16 @@ class Broker extends AbstractObjectJSON
                             // We override with external values
                             if (isset($this->cacheExternalValue[$subvalue['config_key'] . '_' . $blockId])) {
                                 $object[$key][$subvalue['config_group_id']][$subvalue['config_key']] =
-                                    $this->getInfoDb($this->cacheExternalValue[$subvalue['config_key'] . '_' . $blockId]);
+                                    $this->getInfoDb(
+                                        $this->cacheExternalValue[$subvalue['config_key'] . '_' . $blockId]
+                                    );
                             }
                             // Let broker insert in index data in pollers
-                            if ($subvalue['config_key'] == 'type' && $subvalue['config_value'] == 'storage'
-                                && !$localhost) {
+                            if (
+                                $subvalue['config_key'] === 'type'
+                                && $subvalue['config_value'] === 'storage'
+                                && !$localhost
+                            ) {
                                 $object[$key][$subvalue['config_group_id']]['insert_in_index_data'] = 'yes';
                             }
                         }
