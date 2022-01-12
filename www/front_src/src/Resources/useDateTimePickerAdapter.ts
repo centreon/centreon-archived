@@ -28,11 +28,7 @@ const useDateTimePickerAdapter = (): UseDateTimePickerAdapterProps => {
 
   class Adapter extends DayjsAdapter {
     public formatByString = (value, formatKey: string): string => {
-      if (equals(formatKey, 'L hh:mm A')) {
-        return format({ date: value, formatString: formatKey });
-      }
-
-      return value.format(formatKey);
+      return format({ date: value, formatString: formatKey });
     };
 
     public isEqual = (value, comparing): boolean => {
