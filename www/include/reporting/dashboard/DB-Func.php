@@ -244,6 +244,7 @@ function getLogInDbForHostSVC($host_id, $start_date, $end_date, $reportTimePerio
      */
     $services_ids = $centreon->user->access->getHostServiceAclConf($host_id, 'broker');
     $svcStr = "";
+    $status = array("OK", "WARNING", "CRITICAL", "UNKNOWN", "UNDETERMINED", "MAINTENANCE");
     if (count($services_ids) > 0) {
         foreach ($services_ids as $id => $description) {
             if ($svcStr) {
@@ -252,10 +253,19 @@ function getLogInDbForHostSVC($host_id, $start_date, $end_date, $reportTimePerio
             $svcStr .= $id;
         }
     } else {
+        foreach ($status as $name) {
+            if ($name === "UNDETERMINED") {
+                $hostServiceStats["average"]["UNDETERMINED_TP"] = 100;
+            } elseif ($name === "MAINTENANCE") {
+                $hostServiceStats["average"]["MAINTENANCE_TP"] = 0;
+            } else {
+                $hostServiceStats["average"][$name . "_MP"] = 0;
+                $hostServiceStats["average"][$name . "_TP"] = 0;
+                $hostServiceStats["average"][$name . "_A"] = 0;
+            }
+        }
         return ($hostServiceStats);
     }
-    $status = array("OK", "WARNING", "CRITICAL", "UNKNOWN", "UNDETERMINED", "MAINTENANCE");
-
     /* initialising all host services stats to 0 */
     foreach ($services_ids as $id => $description) {
         foreach (getServicesStatsValueName() as $name) {
