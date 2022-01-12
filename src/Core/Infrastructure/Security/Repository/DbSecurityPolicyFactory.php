@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,36 +18,31 @@
  * For more information : contact@centreon.com
  *
  */
-
 declare(strict_types=1);
 
 namespace Core\Infrastructure\Security\Repository;
 
 use Core\Domain\Security\Model\SecurityPolicy;
-use Centreon\Domain\Common\Assertion\AssertionException;
 
 class DbSecurityPolicyFactory
 {
     /**
-     * @param string $data
+     * @param array<string,mixed> securityPolicyConfiguration
      * @return SecurityPolicy
-     * @throws AssertionException
      */
-    public static function createFromRecord(string $data): SecurityPolicy
+    public static function createFromRecord(array $securityPolicyConfiguration): SecurityPolicy
     {
-        $securityPolicyData = json_decode($data, true)['password_security_policy'];
-
         return new SecurityPolicy(
-            $securityPolicyData['password_length'],
-            $securityPolicyData['has_uppercase_characters'],
-            $securityPolicyData['has_lowercase_characters'],
-            $securityPolicyData['has_numbers'],
-            $securityPolicyData['has_special_characters'],
-            $securityPolicyData['can_reuse_passwords'],
-            $securityPolicyData['attempts'],
-            $securityPolicyData['blocking_duration'],
-            $securityPolicyData['password_expiration'],
-            $securityPolicyData['delay_before_new_password'],
+            $securityPolicyConfiguration['password_length'],
+            $securityPolicyConfiguration['has_uppercase_characters'],
+            $securityPolicyConfiguration['has_lowercase_characters'],
+            $securityPolicyConfiguration['has_numbers'],
+            $securityPolicyConfiguration['has_special_characters'],
+            $securityPolicyConfiguration['can_reuse_passwords'],
+            $securityPolicyConfiguration['attempts'],
+            $securityPolicyConfiguration['blocking_duration'],
+            $securityPolicyConfiguration['password_expiration'],
+            $securityPolicyConfiguration['delay_before_new_password'],
         );
     }
 }

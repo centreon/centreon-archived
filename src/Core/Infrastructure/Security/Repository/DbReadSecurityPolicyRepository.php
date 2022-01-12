@@ -23,14 +23,20 @@ declare(strict_types=1);
 
 namespace Core\Infrastructure\Security\Repository;
 
+use Centreon\Domain\Log\LoggerTrait;
 use Core\Domain\Security\Model\SecurityPolicy;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Core\Infrastructure\Security\Repository\DbSecurityPolicyFactory;
+use Core\Infrastructure\Security\Repository\SecurityPolicyException;
 use Core\Application\Security\Repository\ReadSecurityPolicyRepositoryInterface;
+use JsonSchema\Validator;
+use JsonSchema\Constraints\Constraint;
 
 class DbReadSecurityPolicyRepository extends AbstractRepositoryDRB implements ReadSecurityPolicyRepositoryInterface
 {
+    use LoggerTrait;
+
     /**
      * @param DatabaseConnection $db
      */
@@ -50,9 +56,47 @@ class DbReadSecurityPolicyRepository extends AbstractRepositoryDRB implements Re
 
         $securityPolicy = null;
         if ($statement !== false && $result = $statement->fetch(\PDO::FETCH_ASSOC)) {
-            $securityPolicy = DbSecurityPolicyFactory::createFromRecord($result['configuration']);
+            $this->validateReadSecurityPolicy($result['configuration']);
+            $securityPolicy = DbSecurityPolicyFactory::createFromRecord(
+                json_decode($result['configuration'], true)['password_security_policy']
+            );
         }
 
         return $securityPolicy;
+    }
+
+    /**
+     * Validate the password security policy format
+     *
+     * @param string $configuration provider configuration
+     * @throws SecurityPolicyException
+     */
+    private function validateReadSecurityPolicy(string $configuration): void
+    {
+        $decodedConfiguration = json_decode($configuration, true);
+
+        if (is_array($decodedConfiguration) === false) {
+            $this->critical('Password security policy configuration is not a valid json');
+            SecurityPolicyException::errorWhileReadingPasswordSecurityPolicy();
+        }
+
+        $decodedConfiguration = Validator::arrayToObjectRecursive($decodedConfiguration);
+        $validator = new Validator();
+        $validator->validate(
+            $decodedConfiguration,
+            (object) [
+                '$ref' => 'file://' . __DIR__ . '/SeurityPolicySchema.json',
+            ],
+            Constraint::CHECK_MODE_VALIDATE_SCHEMA
+        );
+
+        if ($validator->isValid() === false) {
+            $message = '';
+            foreach ($validator->getErrors() as $error) {
+                $message .= sprintf("[%s] %s\n", $error['property'], $error['message']);
+            }
+            $this->critical($message);
+            SecurityPolicyException::errorWhileReadingPasswordSecurityPolicy($message);
+        }
     }
 }

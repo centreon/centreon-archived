@@ -24,6 +24,7 @@ declare(strict_types=1);
 namespace Core\Application\Security\UseCase\FindSecurityPolicy;
 
 use Centreon\Domain\Log\LoggerTrait;
+use Centreon\Domain\Repository\RepositoryException;
 use Core\Application\Security\Repository\ReadSecurityPolicyRepositoryInterface;
 use Core\Application\Security\UseCase\FindSecurityPolicy\FindSecurityPolicyPresenterInterface;
 use Core\Domain\Security\Model\SecurityPolicy;
@@ -45,7 +46,17 @@ class FindSecurityPolicy
     public function __invoke(FindSecurityPolicyPresenterInterface $presenter): void
     {
         $this->debug('Searching for security policy');
-        $securityPolicy = $this->repository->findSecurityPolicy();
+
+        try {
+            $securityPolicy = $this->repository->findSecurityPolicy();
+        } catch (RepositoryException $e) {
+            $this->critical($e->getMessage());
+            $presenter->setResponseStatus(
+                new FindSecurityPolicyErrorResponse($e->getMessage())
+            );
+            return;
+        }
+
         if ($securityPolicy === null) {
             $this->critical(
                 'No security policy are present, check that your installation / upgrade went well. ' .
@@ -58,6 +69,7 @@ class FindSecurityPolicy
             );
             return;
         }
+
         $presenter->present($this->createResponse($securityPolicy));
     }
 

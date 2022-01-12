@@ -38,18 +38,15 @@ class DbSecurityPolicyFactoryTest extends TestCase
     public function setUp(): void
     {
         $this->securityPolicyData = [
-            'password_security_policy' => [
-                'password_length' => SecurityPolicy::MIN_PASSWORD_LENGTH,
-                'has_uppercase_characters' => true,
-                'has_lowercase_characters' => true,
-                'has_numbers' => true,
-                'has_special_characters' => true,
-                'can_reuse_passwords' => true,
-                'attempts' => SecurityPolicy::MIN_ATTEMPTS,
-                'blocking_duration' => SecurityPolicy::MIN_BLOCKING_DURATION,
-                'password_expiration' => SecurityPolicy::MIN_PASSWORD_EXPIRATION,
-                'delay_before_new_password' => SecurityPolicy::MIN_NEW_PASSWORD_DELAY,
-            ],
+            'password_length' => SecurityPolicy::MIN_PASSWORD_LENGTH,
+            'has_uppercase_characters' => true,
+            'has_lowercase_characters' => true,
+            'has_numbers' => true,
+            'has_special_characters' => true,
+            'can_reuse_passwords' => true,
+            'attempts' => SecurityPolicy::MIN_ATTEMPTS,
+            'blocking_duration' => SecurityPolicy::MIN_BLOCKING_DURATION,
+            'password_expiration' => SecurityPolicy::MIN_PASSWORD_EXPIRATION,
         ];
     }
     /**
@@ -57,16 +54,16 @@ class DbSecurityPolicyFactoryTest extends TestCase
      */
     public function testPasswordMinimumLengthTooSmallException(): void
     {
-        $this->securityPolicyData['password_security_policy']['password_length'] =
+        $this->securityPolicyData['password_length'] =
         SecurityPolicy::MIN_PASSWORD_LENGTH - 1;
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage(AssertionException::min(
-            $this->securityPolicyData['password_security_policy']['password_length'],
+            $this->securityPolicyData['password_length'],
             SecurityPolicy::MIN_PASSWORD_LENGTH,
             'SecurityPolicy::passwordMinimumLength'
         )->getMessage());
 
-        DbSecurityPolicyFactory::createFromRecord(json_encode($this->securityPolicyData));
+        DbSecurityPolicyFactory::createFromRecord($this->securityPolicyData);
     }
 
     /**
@@ -74,16 +71,16 @@ class DbSecurityPolicyFactoryTest extends TestCase
      */
     public function testPasswordMinimumLengthTooHighException(): void
     {
-        $this->securityPolicyData['password_security_policy']['password_length'] =
+        $this->securityPolicyData['password_length'] =
             SecurityPolicy::MAX_PASSWORD_LENGTH + 1;
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage(AssertionException::max(
-            $this->securityPolicyData['password_security_policy']['password_length'],
+            $this->securityPolicyData['password_length'],
             SecurityPolicy::MAX_PASSWORD_LENGTH,
             'SecurityPolicy::passwordMinimumLength'
         )->getMessage());
 
-        DbSecurityPolicyFactory::createFromRecord(json_encode($this->securityPolicyData));
+        DbSecurityPolicyFactory::createFromRecord($this->securityPolicyData);
     }
 
     /**
@@ -91,16 +88,16 @@ class DbSecurityPolicyFactoryTest extends TestCase
      */
     public function testAttemptsTooSmallException(): void
     {
-        $this->securityPolicyData['password_security_policy']['attempts'] =
+        $this->securityPolicyData['attempts'] =
             SecurityPolicy::MIN_ATTEMPTS - 1;
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage(AssertionException::min(
-            $this->securityPolicyData['password_security_policy']['attempts'],
+            $this->securityPolicyData['attempts'],
             SecurityPolicy::MIN_ATTEMPTS,
             'SecurityPolicy::attempts'
         )->getMessage());
 
-        DbSecurityPolicyFactory::createFromRecord(json_encode($this->securityPolicyData));
+        DbSecurityPolicyFactory::createFromRecord($this->securityPolicyData);
     }
 
     /**
@@ -108,16 +105,16 @@ class DbSecurityPolicyFactoryTest extends TestCase
      */
     public function testAttemptsTooHighException(): void
     {
-        $this->securityPolicyData['password_security_policy']['attempts'] =
+        $this->securityPolicyData['attempts'] =
             SecurityPolicy::MAX_ATTEMPTS + 1;
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage(AssertionException::max(
-            $this->securityPolicyData['password_security_policy']['attempts'],
+            $this->securityPolicyData['attempts'],
             SecurityPolicy::MAX_ATTEMPTS,
             'SecurityPolicy::attempts'
         )->getMessage());
 
-        DbSecurityPolicyFactory::createFromRecord(json_encode($this->securityPolicyData));
+        DbSecurityPolicyFactory::createFromRecord($this->securityPolicyData);
     }
 
     /**
@@ -125,16 +122,16 @@ class DbSecurityPolicyFactoryTest extends TestCase
      */
     public function testBlockingDurationTooSmallException(): void
     {
-        $this->securityPolicyData['password_security_policy']['blocking_duration'] =
+        $this->securityPolicyData['blocking_duration'] =
             SecurityPolicy::MIN_BLOCKING_DURATION - 1;
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage(AssertionException::min(
-            $this->securityPolicyData['password_security_policy']['blocking_duration'],
+            $this->securityPolicyData['blocking_duration'],
             SecurityPolicy::MIN_BLOCKING_DURATION,
             'SecurityPolicy::blockingDuration'
         )->getMessage());
 
-        DbSecurityPolicyFactory::createFromRecord(json_encode($this->securityPolicyData));
+        DbSecurityPolicyFactory::createFromRecord($this->securityPolicyData);
     }
 
     /**
@@ -142,16 +139,16 @@ class DbSecurityPolicyFactoryTest extends TestCase
      */
     public function testBlockingDurationTooHighException(): void
     {
-        $this->securityPolicyData['password_security_policy']['blocking_duration'] =
+        $this->securityPolicyData['blocking_duration'] =
             SecurityPolicy::MAX_BLOCKING_DURATION + 1;
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage(AssertionException::max(
-            $this->securityPolicyData['password_security_policy']['blocking_duration'],
+            $this->securityPolicyData['blocking_duration'],
             SecurityPolicy::MAX_BLOCKING_DURATION,
             'SecurityPolicy::blockingDuration'
         )->getMessage());
 
-        DbSecurityPolicyFactory::createFromRecord(json_encode($this->securityPolicyData));
+        DbSecurityPolicyFactory::createFromRecord($this->securityPolicyData);
     }
 
     /**
@@ -159,16 +156,16 @@ class DbSecurityPolicyFactoryTest extends TestCase
      */
     public function testPasswordExpirationTooSmallException(): void
     {
-        $this->securityPolicyData['password_security_policy']['password_expiration'] =
+        $this->securityPolicyData['password_expiration'] =
             SecurityPolicy::MIN_PASSWORD_EXPIRATION - 1;
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage(AssertionException::min(
-            $this->securityPolicyData['password_security_policy']['password_expiration'],
+            $this->securityPolicyData['password_expiration'],
             SecurityPolicy::MIN_PASSWORD_EXPIRATION,
             'SecurityPolicy::passwordExpiration'
         )->getMessage());
 
-        DbSecurityPolicyFactory::createFromRecord(json_encode($this->securityPolicyData));
+        DbSecurityPolicyFactory::createFromRecord($this->securityPolicyData);
     }
 
     /**
@@ -176,16 +173,16 @@ class DbSecurityPolicyFactoryTest extends TestCase
      */
     public function testPasswordExpirationTooHighException(): void
     {
-        $this->securityPolicyData['password_security_policy']['password_expiration'] =
+        $this->securityPolicyData['password_expiration'] =
             SecurityPolicy::MAX_PASSWORD_EXPIRATION + 1;
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage(AssertionException::max(
-            $this->securityPolicyData['password_security_policy']['password_expiration'],
+            $this->securityPolicyData['password_expiration'],
             SecurityPolicy::MAX_PASSWORD_EXPIRATION,
             'SecurityPolicy::passwordExpiration'
         )->getMessage());
 
-        DbSecurityPolicyFactory::createFromRecord(json_encode($this->securityPolicyData));
+        DbSecurityPolicyFactory::createFromRecord($this->securityPolicyData);
     }
 
     /**
@@ -193,16 +190,16 @@ class DbSecurityPolicyFactoryTest extends TestCase
      */
     public function testDelayBeforeNewPasswordTooSmallException(): void
     {
-        $this->securityPolicyData['password_security_policy']['delay_before_new_password'] =
+        $this->securityPolicyData['delay_before_new_password'] =
             SecurityPolicy::MIN_NEW_PASSWORD_DELAY - 1;
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage(AssertionException::min(
-            $this->securityPolicyData['password_security_policy']['delay_before_new_password'],
+            $this->securityPolicyData['delay_before_new_password'],
             SecurityPolicy::MIN_NEW_PASSWORD_DELAY,
             'SecurityPolicy::delayBeforeNewPassword'
         )->getMessage());
 
-        DbSecurityPolicyFactory::createFromRecord(json_encode($this->securityPolicyData));
+        DbSecurityPolicyFactory::createFromRecord($this->securityPolicyData);
     }
 
     /**
@@ -210,16 +207,16 @@ class DbSecurityPolicyFactoryTest extends TestCase
      */
     public function testDelayBeforeNewPasswordTooHighException(): void
     {
-        $this->securityPolicyData['password_security_policy']['delay_before_new_password'] =
+        $this->securityPolicyData['delay_before_new_password'] =
             SecurityPolicy::MAX_NEW_PASSWORD_DELAY + 1;
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage(AssertionException::max(
-            $this->securityPolicyData['password_security_policy']['delay_before_new_password'],
+            $this->securityPolicyData['delay_before_new_password'],
             SecurityPolicy::MAX_NEW_PASSWORD_DELAY,
             'SecurityPolicy::delayBeforeNewPassword'
         )->getMessage());
 
-        DbSecurityPolicyFactory::createFromRecord(json_encode($this->securityPolicyData));
+        DbSecurityPolicyFactory::createFromRecord($this->securityPolicyData);
     }
 
     /**
@@ -227,46 +224,46 @@ class DbSecurityPolicyFactoryTest extends TestCase
      */
     public function testSecurityPolicyCorrectlyCreated(): void
     {
-        $createdSecurityPolicy = DbSecurityPolicyFactory::createFromRecord(json_encode($this->securityPolicyData));
+        $createdSecurityPolicy = DbSecurityPolicyFactory::createFromRecord($this->securityPolicyData);
 
         $this->assertEquals(
-            $this->securityPolicyData['password_security_policy']['password_length'],
+            $this->securityPolicyData['password_length'],
             $createdSecurityPolicy->getPasswordMinimumLength()
         );
         $this->assertEquals(
-            $this->securityPolicyData['password_security_policy']['has_uppercase_characters'],
+            $this->securityPolicyData['has_uppercase_characters'],
             $createdSecurityPolicy->hasUppercase()
         );
         $this->assertEquals(
-            $this->securityPolicyData['password_security_policy']['has_lowercase_characters'],
+            $this->securityPolicyData['has_lowercase_characters'],
             $createdSecurityPolicy->hasLowercase()
         );
         $this->assertEquals(
-            $this->securityPolicyData['password_security_policy']['has_numbers'],
+            $this->securityPolicyData['has_numbers'],
             $createdSecurityPolicy->hasNumber()
         );
         $this->assertEquals(
-            $this->securityPolicyData['password_security_policy']['has_special_characters'],
+            $this->securityPolicyData['has_special_characters'],
             $createdSecurityPolicy->hasSpecialCharacter()
         );
         $this->assertEquals(
-            $this->securityPolicyData['password_security_policy']['can_reuse_passwords'],
+            $this->securityPolicyData['can_reuse_passwords'],
             $createdSecurityPolicy->canReusePasswords()
         );
         $this->assertEquals(
-            $this->securityPolicyData['password_security_policy']['attempts'],
+            $this->securityPolicyData['attempts'],
             $createdSecurityPolicy->getAttempts()
         );
         $this->assertEquals(
-            $this->securityPolicyData['password_security_policy']['blocking_duration'],
+            $this->securityPolicyData['blocking_duration'],
             $createdSecurityPolicy->getBlockingDuration()
         );
         $this->assertEquals(
-            $this->securityPolicyData['password_security_policy']['password_expiration'],
+            $this->securityPolicyData['password_expiration'],
             $createdSecurityPolicy->getPasswordExpiration()
         );
         $this->assertEquals(
-            $this->securityPolicyData['password_security_policy']['delay_before_new_password'],
+            $this->securityPolicyData['delay_before_new_password'],
             $createdSecurityPolicy->getDelayBeforeNewPassword()
         );
     }
