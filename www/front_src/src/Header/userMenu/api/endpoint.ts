@@ -1,2 +1,2 @@
 export const userEndpoint =
-  'internal.php?object=centreon_topcounter&action=user';
+  './api/internal.php?object=centreon_topcounter&action=user';

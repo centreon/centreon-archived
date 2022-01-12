@@ -17,7 +17,7 @@ import { isNil } from 'ramda';
 import { Route, Routes } from 'react-router-dom';
 import { useAtomValue } from 'jotai/utils';
 
-import { withSnackbar } from '@centreon/ui';
+import { SnackbarProvider } from '@centreon/ui';
 
 import { webVersionsAtom } from '../webVersionsAtom';
 import reactRoutes from '../reactRoutes/routeMap';
@@ -58,12 +58,10 @@ const Main = (): JSX.Element => {
   );
 };
 
-const MainWithSnackbar = withSnackbar({
-  Component: Main,
-});
-
 export default (): JSX.Element => (
   <Provider>
-    <MainWithSnackbar />
+    <SnackbarProvider>
+      <Main />
+    </SnackbarProvider>
   </Provider>
 );

@@ -11,7 +11,7 @@ import {
   RenderResult,
   screen,
   waitFor,
-  withSnackbar,
+  SnackbarProvider,
 } from '@centreon/ui';
 
 import { areUserParametersLoadedAtom } from '../Main/useUser';
@@ -62,26 +62,23 @@ const retrievedWeb = {
 
 const TestComponent = (): JSX.Element => (
   <BrowserRouter>
-    <Provider
-      initialValues={[
-        [areUserParametersLoadedAtom, false],
-        [
-          webVersionsAtom,
-          { availableVersion: null, installedVersion: '21.10.1' },
-        ],
-      ]}
-    >
-      <LoginPage />
-    </Provider>
+    <SnackbarProvider>
+      <Provider
+        initialValues={[
+          [areUserParametersLoadedAtom, false],
+          [
+            webVersionsAtom,
+            { availableVersion: null, installedVersion: '21.10.1' },
+          ],
+        ]}
+      >
+        <LoginPage />
+      </Provider>
+    </SnackbarProvider>
   </BrowserRouter>
 );
 
-const TestComponentWithSnackbar = withSnackbar({
-  Component: TestComponent,
-});
-
-const renderLoginPage = (): RenderResult =>
-  render(<TestComponentWithSnackbar />);
+const renderLoginPage = (): RenderResult => render(<TestComponent />);
 
 const labelInvalidCredentials = 'Invalid credentials';
 describe('Login Page', () => {

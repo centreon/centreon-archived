@@ -94,7 +94,7 @@
     "webpack-merge": "^5.8.0"
   },
   "dependencies": {
-    "@centreon/centreon-frontend": "git+https://centreon@github.com/centreon/centreon-frontend.git#adapt-for-login-page",
+    "@centreon/centreon-frontend": "git+https://centreon@github.com/centreon/centreon-frontend.git#develop",
     "@date-io/dayjs": "^2.11.0",
     "@emotion/react": "^11.7.1",
     "@emotion/styled": "^11.6.0",
