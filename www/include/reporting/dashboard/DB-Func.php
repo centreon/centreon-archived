@@ -260,6 +260,7 @@ function getLogInDbForHostSVC($host_id, $start_date, $end_date, $reportTimePerio
                 $hostServiceStats["average"][$name . "_MP"] = 0;
                 $hostServiceStats["average"][$name . "_TP"] = 0;
                 $hostServiceStats["average"][$name . "_A"] = 0;
+                break;
         }
     }
     if (count($services_ids) > 0) {
