@@ -45,14 +45,17 @@ use Centreon\Domain\Entity\EntityValidator;
 use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 use Centreon\Domain\RequestParameters\RequestParameters;
+use Centreon\Domain\RequestParameters\RequestParametersException;
 use Centreon\Domain\VersionHelper;
 use JMS\Serializer\Exception\ValidationFailedException;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Core\Security;
@@ -73,13 +76,7 @@ class CentreonEventSubscriber implements EventSubscriberInterface
      * If no version has been defined in the configuration,
      * this version will be used by default
      */
-    public const DEFAULT_API_VERSION = "2.0";
-
-    /**
-     * If no beta version has been defined in the configuration,
-     * this version will be used by default
-     */
-    public const DEFAULT_API_BETA_VERSION = "2.1";
+    public const DEFAULT_API_VERSION = "21.10";
 
     /**
      * If no API header name has been defined in the configuration,
@@ -110,6 +107,10 @@ class CentreonEventSubscriber implements EventSubscriberInterface
      * @var ContactInterface
      */
     private $contact;
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
 
     /**
      * @param RequestParametersInterface $requestParameters
@@ -117,19 +118,22 @@ class CentreonEventSubscriber implements EventSubscriberInterface
      * @param Security $security
      * @param ApiPlatform $apiPlatform
      * @param ContactInterface $contact
+     * @param LoggerInterface $logger
      */
     public function __construct(
         RequestParametersInterface $requestParameters,
         ContainerInterface $container,
         Security $security,
         ApiPlatform $apiPlatform,
-        ContactInterface $contact
+        ContactInterface $contact,
+        LoggerInterface $logger
     ) {
         $this->container = $container;
         $this->requestParameters = $requestParameters;
         $this->security = $security;
         $this->apiPlatform = $apiPlatform;
         $this->contact = $contact;
+        $this->logger = $logger;
     }
 
     /**
@@ -149,7 +153,7 @@ class CentreonEventSubscriber implements EventSubscriberInterface
                 ['addApiVersion', 10]
             ],
             KernelEvents::EXCEPTION => [
-                ['onKernelException', -10]
+                ['onKernelException', 10]
             ]
         ];
     }
@@ -158,6 +162,7 @@ class CentreonEventSubscriber implements EventSubscriberInterface
      * Use to update the api version into all responses
      *
      * @param ResponseEvent $event
+     * @throws \Symfony\Component\DependencyInjection\Exception\InvalidArgumentException
      */
     public function addApiVersion(ResponseEvent $event): void
     {
@@ -183,10 +188,22 @@ class CentreonEventSubscriber implements EventSubscriberInterface
     {
         $query = $request->getRequest()->query->all();
 
-        $limit = (int) ($query[RequestParameters::NAME_FOR_LIMIT] ?? RequestParameters::DEFAULT_LIMIT);
+        $limit = filter_var(
+            $query[RequestParameters::NAME_FOR_LIMIT] ?? RequestParameters::DEFAULT_LIMIT,
+            FILTER_VALIDATE_INT
+        );
+        if (false === $limit) {
+            throw RequestParametersException::integer(RequestParameters::NAME_FOR_LIMIT);
+        }
         $this->requestParameters->setLimit($limit);
 
-        $page = (int) ($query[RequestParameters::NAME_FOR_PAGE] ?? RequestParameters::DEFAULT_PAGE);
+        $page = filter_var(
+            $query[RequestParameters::NAME_FOR_PAGE] ?? RequestParameters::DEFAULT_PAGE,
+            FILTER_VALIDATE_INT
+        );
+        if (false === $page) {
+            throw RequestParametersException::integer(RequestParameters::NAME_FOR_PAGE);
+        }
         $this->requestParameters->setPage($page);
 
         if (isset($query[RequestParameters::NAME_FOR_SORT])) {
@@ -259,6 +276,7 @@ class CentreonEventSubscriber implements EventSubscriberInterface
      * the kernel to use it in routing conditions.
      *
      * @param RequestEvent $event
+     * @throws \Symfony\Component\DependencyInjection\Exception\InvalidArgumentException
      */
     public function defineApiVersionInAttributes(RequestEvent $event): void
     {
@@ -270,12 +288,6 @@ class CentreonEventSubscriber implements EventSubscriberInterface
         $event->getRequest()->attributes->set('version.latest', $latestVersion);
         $event->getRequest()->attributes->set('version.is_latest', false);
 
-        if ($this->container->hasParameter('api.version.beta')) {
-            $betaVersion = $this->container->getParameter('api.version.beta');
-        } else {
-            $betaVersion = self::DEFAULT_API_BETA_VERSION;
-        }
-        $event->getRequest()->attributes->set('version.beta', $betaVersion);
         $event->getRequest()->attributes->set('version.is_beta', false);
         $event->getRequest()->attributes->set('version.not_beta', true);
 
@@ -297,13 +309,9 @@ class CentreonEventSubscriber implements EventSubscriberInterface
                 $event->getRequest()->attributes->set('version.is_latest', true);
                 $requestApiVersion = $latestVersion;
             }
-            if (
-                $requestApiVersion === 'beta'
-                || VersionHelper::compare($requestApiVersion, $betaVersion, VersionHelper::EQUAL)
-            ) {
+            if ($requestApiVersion === 'beta') {
                 $event->getRequest()->attributes->set('version.is_beta', true);
                 $event->getRequest()->attributes->set('version.not_beta', false);
-                $requestApiVersion = $betaVersion;
             }
 
             /**
@@ -323,6 +331,7 @@ class CentreonEventSubscriber implements EventSubscriberInterface
      * Used to manage exceptions outside controllers.
      *
      * @param ExceptionEvent $event
+     * @throws \InvalidArgumentException
      */
     public function onKernelException(ExceptionEvent $event): void
     {
@@ -330,7 +339,7 @@ class CentreonEventSubscriber implements EventSubscriberInterface
         $errorIsBeforeController = true;
 
         // We detect if the exception occurred before the kernel called the controller
-        foreach ($event->getException()->getTrace() as $trace) {
+        foreach ($event->getThrowable()->getTrace() as $trace) {
             if (
                 array_key_exists('class', $trace)
                 && strlen($trace['class']) > strlen($flagController)
@@ -347,56 +356,56 @@ class CentreonEventSubscriber implements EventSubscriberInterface
          * If we don't do that a HTML error will appeared.
          */
         if ($errorIsBeforeController) {
-            if ($event->getException()->getCode() !== 403) {
-                $errorCode = $event->getException()->getCode() > 0
-                    ? $event->getException()->getCode()
+            if ($event->getThrowable()->getCode() !== 403) {
+                $errorCode = $event->getThrowable()->getCode() > 0
+                    ? $event->getThrowable()->getCode()
                     : Response::HTTP_INTERNAL_SERVER_ERROR;
                 $statusCode = Response::HTTP_INTERNAL_SERVER_ERROR;
             } else {
-                $errorCode = $event->getException()->getCode();
+                $errorCode = $event->getThrowable()->getCode();
                 $statusCode = Response::HTTP_FORBIDDEN;
             }
-
+            $this->logException($event->getThrowable());
             // Manage exception outside controllers
             $event->setResponse(
                 new Response(
                     json_encode([
                         'code' => $errorCode,
-                        'message' => $event->getException()->getMessage()
+                        'message' => $event->getThrowable()->getMessage()
                     ]),
                     $statusCode
                 )
             );
         } else {
-            $errorCode = $event->getException()->getCode() > 0
-                ? $event->getException()->getCode()
+            $errorCode = $event->getThrowable()->getCode() > 0
+                ? $event->getThrowable()->getCode()
                 : Response::HTTP_INTERNAL_SERVER_ERROR;
-            $httpCode = ($event->getException()->getCode() >= 100 && $event->getException()->getCode() < 600)
-                ? $event->getException()->getCode()
+            $httpCode = ($event->getThrowable()->getCode() >= 100 && $event->getThrowable()->getCode() < 600)
+                ? $event->getThrowable()->getCode()
                 : Response::HTTP_INTERNAL_SERVER_ERROR;
 
-            if ($event->getException() instanceof EntityNotFoundException) {
+            if ($event->getThrowable() instanceof EntityNotFoundException) {
                 $errorMessage = json_encode([
                     'code' => Response::HTTP_NOT_FOUND,
-                    'message' => $event->getException()->getMessage()
+                    'message' => $event->getThrowable()->getMessage()
                 ]);
                 $httpCode = Response::HTTP_NOT_FOUND;
-            } elseif ($event->getException() instanceof ValidationFailedException) {
+            } elseif ($event->getThrowable() instanceof ValidationFailedException) {
                 $errorMessage = json_encode([
                     'code' => $errorCode,
                     'message' => EntityValidator::formatErrors(
-                        $event->getException()->getConstraintViolationList(),
+                        $event->getThrowable()->getConstraintViolationList(),
                         true
                     )
                 ]);
-            } elseif ($event->getException() instanceof \PDOException) {
+            } elseif ($event->getThrowable() instanceof \PDOException) {
                 $errorMessage = json_encode([
                     'code' => $errorCode,
                     'message' => 'An error has occurred in a repository'
                 ]);
-            } elseif ($event->getException() instanceof AccessDeniedException) {
+            } elseif ($event->getThrowable() instanceof AccessDeniedException) {
                 $errorMessage = null;
-            } elseif (get_class($event->getException()) == \Exception::class) {
+            } elseif (get_class($event->getThrowable()) == \Exception::class) {
                 $errorMessage = json_encode([
                     'code' => $errorCode,
                     'message' => 'Internal error'
@@ -404,12 +413,27 @@ class CentreonEventSubscriber implements EventSubscriberInterface
             } else {
                 $errorMessage = json_encode([
                     'code' => $errorCode,
-                    'message' => $event->getException()->getMessage()
+                    'message' => $event->getThrowable()->getMessage()
                 ]);
             }
+            $this->logException($event->getThrowable());
             $event->setResponse(
                 new Response($errorMessage, $httpCode)
             );
+        }
+    }
+
+    /**
+     * Used to log the message according to the code and type of exception.
+     *
+     * @param \Throwable $exception
+     */
+    private function logException(\Throwable $exception): void
+    {
+        if (!$exception instanceof HttpExceptionInterface || $exception->getCode() >= 500) {
+            $this->logger->critical($exception->getMessage(), ['context' => $exception]);
+        } else {
+            $this->logger->error($exception->getMessage(), ['context' => $exception]);
         }
     }
 

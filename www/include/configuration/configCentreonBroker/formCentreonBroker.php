@@ -37,8 +37,18 @@ if (!isset($centreon)) {
     exit();
 }
 
-if (!$centreon->user->admin && isset($_GET['id'])
-    && count($allowedBrokerConf) && !isset($allowedBrokerConf[$_GET['id']])) {
+$id = filter_var(
+    $_REQUEST['id'] ?? null,
+    FILTER_VALIDATE_INT,
+    ['options' => ['default' => 0]]
+);
+
+if (
+    !$centreon->user->admin
+    && $id !== 0
+    && count($allowedBrokerConf)
+    && !isset($allowedBrokerConf[$id])
+) {
     $msg = new CentreonMsg();
     $msg->setImage("./img/icons/warning.png");
     $msg->setTextStyle("bold");
@@ -187,8 +197,7 @@ if (isset($_GET["o"]) && $_GET["o"] == 'a') {
     );
     $form->setDefaults($result);
     $tpl->assign('config_id', 0);
-} elseif (isset($_GET['id']) && $_GET['id'] != 0) {
-    $id = $_GET['id'];
+} elseif ($id !== 0) {
     $tpl->assign('config_id', $id);
     $defaultBrokerInformation = getCentreonBrokerInformation($id);
     if (!isset($defaultBrokerInformation['log_core'])) {

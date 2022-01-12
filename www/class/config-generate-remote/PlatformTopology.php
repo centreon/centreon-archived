@@ -21,7 +21,7 @@
 
 namespace ConfigGenerateRemote;
 
-use Centreon\Domain\PlatformTopology\Platform as PlatformEntity;
+use Centreon\Domain\PlatformTopology\Model\PlatformRegistered;
 use Exception;
 use PDO;
 use ConfigGenerateRemote\Abstracts\AbstractObject;
@@ -71,7 +71,7 @@ class PlatformTopology extends AbstractObject
 
         $result = $this->stmtPlatformTopology->fetchAll(PDO::FETCH_ASSOC);
         foreach ($result as $entry) {
-            if ($entry['type'] === PlatformEntity::TYPE_REMOTE) {
+            if ($entry['type'] === PlatformRegistered::TYPE_REMOTE) {
                 $entry['parent_id'] = null;
             }
             $this->generateObjectInFile($entry);

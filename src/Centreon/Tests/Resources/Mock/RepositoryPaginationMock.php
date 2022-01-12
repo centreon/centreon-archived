@@ -47,7 +47,6 @@ use PDO;
  */
 class RepositoryPaginationMock extends ServiceEntityRepository implements PaginationRepositoryInterface
 {
-
     /**
      * {@inheritdoc}
      */

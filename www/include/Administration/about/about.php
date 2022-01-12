@@ -54,9 +54,9 @@ $release = $dbResult->fetchRow();
                     </p><br>
                 </td>
                 <td>
-                    Developed by <a
-                        href="http://www.centreon.com">Centreon</a> and <a
-                        href="https://centreon.github.io/">community</a>
+                    Developed by
+                    <a href="http://www.centreon.com">Centreon</a> and
+                    <a href="https://centreon.github.io/">community</a>
                 </td>
                 <td style="text-align: center" rowspan="3">
                     <img src="./img/centreon.png" alt="logo centreon" />
@@ -80,7 +80,6 @@ $release = $dbResult->fetchRow();
                     <p>Adrien Gelibert</p>
                     <p>Adrien Morais</p>
                     <p>Bruno D'auria</p>
-                    <p>Colin Gagnaire</p>
                     <p>David Boucher</p>
                     <p>Etienne Gautier</p>
                     <p>Jérémy Delpierre</p>
@@ -164,6 +163,9 @@ $release = $dbResult->fetchRow();
                             <td>SuL</td>
                         </tr>
                         <tr>
+                            <td>Colin Gagnaire</td>
+                        </tr>
+                        <tr>
                             <td colspan="2">
                                 <br /><?php print _("And many others..."); ?><br />
                                 <?php print _("You can see the full list by visiting the Centreon's Github"); ?>
@@ -172,7 +174,24 @@ $release = $dbResult->fetchRow();
                     </table>
                 </td>
             </tr>
+            <tr>
+                <td  style="vertical-align: top;padding-top :10px;">
+                    <h3 style='text-align:left;'><?php echo _("Security Acknowledgement"); ?></h3>
+                </td>
+                <td style="padding-top: 10px;" colspan="2">
+                    <table class="table" aria-label="Security Acknowledgement">
+                        <tr>
+                            <td>
+                                Many thanks to all the contributors to the security of Centreon
+                            </td>
+                        </tr>
+                        <tr><td>
+                            <a href="https://github.com/centreon/centreon/blob/master/SECURITY_ACK.md"
+                            title='Security Acknowledgement' target='_blank' rel="noopener">List of contributors</a>
+                        </td></tr>
+                    </table>
+                </td>
+            </tr>
         </table>
     </div>
-</div>
 </center>

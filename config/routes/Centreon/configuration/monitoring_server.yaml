@@ -1,0 +1,41 @@
+configuration.monitoring-servers.findServer:
+    methods: GET
+    path: /configuration/monitoring-servers
+    controller: 'Centreon\Application\Controller\Configuration\MonitoringServerController::findServers'
+    condition: "request.attributes.get('version') >= 21.10"
+
+configuration_monitoring_server_generate:
+    methods: GET
+    path: /configuration/monitoring-servers/{monitoringServerId}/generate
+    controller: 'Centreon\Application\Controller\Configuration\MonitoringServerController::generateConfiguration'
+    condition: "request.attributes.get('version') >= 21.10"
+
+configuration_monitoring_server_reload:
+    methods: GET
+    path: /configuration/monitoring-servers/{monitoringServerId}/reload
+    controller: 'Centreon\Application\Controller\Configuration\MonitoringServerController::reloadConfiguration'
+    condition: "request.attributes.get('version') >= 21.10"
+
+configuration_monitoring_server_generate_and_reload:
+    methods: GET
+    path: /configuration/monitoring-servers/{monitoringServerId}/generate-and-reload
+    controller: 'Centreon\Application\Controller\Configuration\MonitoringServerController::generateAndReloadConfiguration'
+    condition: "request.attributes.get('version') >= 21.10"
+
+configuration_monitoring_server_generate_all:
+    methods: GET
+    path: /configuration/monitoring-servers/generate
+    controller: 'Centreon\Application\Controller\Configuration\MonitoringServerController::generateAllConfigurations'
+    condition: "request.attributes.get('version') >= 21.10"
+
+configuration_monitoring_server_reload_all:
+    methods: GET
+    path: /configuration/monitoring-servers/reload
+    controller: 'Centreon\Application\Controller\Configuration\MonitoringServerController::reloadAllConfigurations'
+    condition: "request.attributes.get('version') >= 21.10"
+
+configuration_monitoring_server_generate_and_reload_all:
+    methods: GET
+    path: /configuration/monitoring-servers/generate-and-reload
+    controller: 'Centreon\Application\Controller\Configuration\MonitoringServerController::generateAndReloadAllConfigurations'
+    condition: "request.attributes.get('version') >= 21.10"

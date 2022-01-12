@@ -2,8 +2,8 @@ import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import { useTheme } from '@material-ui/core';
-import IconComment from '@material-ui/icons/Comment';
+import { useTheme } from '@mui/material';
+import IconComment from '@mui/icons-material/Comment';
 
 import { labelComment } from '../../../../../translatedLabels';
 import { Props } from '..';
@@ -15,10 +15,10 @@ const CommentAnnotations = (props: Props): JSX.Element => {
 
   return (
     <EventAnnotations
-      type="comment"
       Icon={IconComment}
-      color={theme.palette.primary.main}
       ariaLabel={t(labelComment)}
+      color={theme.palette.primary.main}
+      type="comment"
       {...props}
     />
   );

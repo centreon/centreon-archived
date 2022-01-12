@@ -23,7 +23,9 @@ declare(strict_types=1);
 namespace Centreon\Infrastructure\MonitoringServer\Repository;
 
 use Assert\AssertionFailedException;
+use Centreon\Domain\Entity\EntityCreator;
 use Centreon\Infrastructure\DatabaseConnection;
+use Centreon\Domain\MonitoringServer\MonitoringServer;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\RequestParameters\RequestParameters;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
@@ -31,6 +33,7 @@ use Centreon\Domain\MonitoringServer\Model\RealTimeMonitoringServer;
 use Centreon\Infrastructure\RequestParameters\Interfaces\NormalizerInterface;
 use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
 use Centreon\Domain\MonitoringServer\Interfaces\RealTimeMonitoringServerRepositoryInterface;
+use Centreon\Infrastructure\CentreonLegacyDB\StatementCollector;
 use Centreon\Infrastructure\MonitoringServer\Repository\Model\RealTimeMonitoringServerFactoryRdb;
 
 /**
@@ -64,27 +67,89 @@ class RealTimeMonitoringServerRepositoryRDB extends AbstractRepositoryDRB implem
      */
     public function findAll(): array
     {
-        return $this->findAllRequest(null);
+        return $this->findAllRequest([]);
     }
 
     /**
      * @inheritDoc
      */
-    public function findAllByContact(ContactInterface $contact): array
+    public function findByIds(array $ids): array
     {
-        return $this->findAllRequest($contact->getId());
+        return $this->findAllRequest($ids);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findAllowedMonitoringServers(ContactInterface $contact): array
+    {
+        $request = $this->translateDbName(
+            'SELECT SQL_CALC_FOUND_ROWS *
+            FROM `:db`.nagios_server as ns
+            INNER JOIN `:db`.acl_resources_poller_relations arpr
+                ON ns.id = arpr.poller_id
+            INNER JOIN `:db`.acl_resources res
+                ON arpr.acl_res_id = res.acl_res_id
+            INNER JOIN `:db`.acl_res_group_relations argr
+                ON res.acl_res_id = argr.acl_res_id
+            INNER JOIN `:db`.acl_groups ag
+                ON argr.acl_group_id = ag.acl_group_id
+            LEFT JOIN `:db`.acl_group_contacts_relations agcr
+                ON ag.acl_group_id = agcr.acl_group_id
+            LEFT JOIN `:db`.acl_group_contactgroups_relations agcgr
+                ON ag.acl_group_id = agcgr.acl_group_id
+            LEFT JOIN `:db`.contactgroup_contact_relation cgcr
+                ON cgcr.contactgroup_cg_id = agcgr.cg_cg_id
+            WHERE (agcr.contact_contact_id = :contact_id OR cgcr.contact_contact_id = :contact_id)'
+        );
+
+        $statement = $this->db->prepare($request);
+        $statement->bindValue(':contact_id', $contact->getId(), \PDO::PARAM_INT);
+        $statement->execute();
+
+        $result = $this->db->query('SELECT FOUND_ROWS()');
+
+        /**
+         * @var MonitoringServer[] $allowedMonitoringServers
+         */
+        $allowedMonitoringServers = [];
+
+        if ($result !== false && ($total = $result->fetchColumn()) !== false) {
+            // it means here that there is poller relations with this user
+            if ((int) $total > 0) {
+                while (($record = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
+                    $allowedMonitoringServers[] = EntityCreator::createEntityByArray(
+                        MonitoringServer::class,
+                        $record
+                    );
+                }
+            } else {
+                // if no relations found for this user it means that he can see all
+                $statement = $this->db->prepare('SELECT * FROM nagios_server');
+                $statement->execute();
+                while (($record = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
+                    $allowedMonitoringServers[] = EntityCreator::createEntityByArray(
+                        MonitoringServer::class,
+                        $record
+                    );
+                }
+            }
+        }
+
+        return $allowedMonitoringServers;
     }
 
     /**
      * Find all RealTime Monitoring Servers filtered by contact id.
      *
-     * @param int|null $contactId Contact id related to Real Time Monitoring Servers
+     * @param int[] $ids Monitoring Server ids
      * @return RealTimeMonitoringServer[]
      * @throws AssertionFailedException
      * @throws \InvalidArgumentException
      */
-    private function findAllRequest(?int $contactId): array
+    private function findAllRequest(array $ids): array
     {
+        $collector = new StatementCollector();
         $this->sqlRequestTranslator->setConcordanceArray([
             'id' => 'instances.instance_id',
             'name' => 'instances.name',
@@ -106,35 +171,22 @@ class RealTimeMonitoringServerRepositoryRDB extends AbstractRepositoryDRB implem
                 }
             }
         );
-        if ($contactId === null) {
-            $request = $this->translateDbName('SELECT SQL_CALC_FOUND_ROWS * FROM `:dbstg`.instances');
-        } else {
-            $request = $this->translateDbName(
-                'SELECT SQL_CALC_FOUND_ROWS instances.*
-                FROM `:dbstg`.instances
-                INNER JOIN `:db`.acl_resources_poller_relation arpr
-                    ON instances.instance_id = arpr.poller_id
-                INNER JOIN `:db`.acl_resources res
-                    ON arpr.acl_res_id = res.acl_res_id
-                INNER JOIN `:db`.acl_res_group_relations argr
-                    ON res.acl_res_id = argr.acl_res_id
-                INNER JOIN `:db`.acl_groups ag
-                    ON argr.acl_group_id = ag.acl_group_id
-                LEFT JOIN `:db`.acl_group_contacts_relations agcr
-                    ON ag.acl_group_id = agcr.acl_group_id
-                LEFT JOIN `:db`.acl_group_contactgroups_relations agcgr
-                    ON ag.acl_group_id = agcgr.acl_group_id
-                LEFT JOIN `:db`.contactgroup_contact_relation cgcr
-                    ON cgcr.contactgroup_cg_id = agcgr.cg_cg_id'
-            );
-        }
 
-            // Search
+        $request = $this->translateDbName('SELECT SQL_CALC_FOUND_ROWS * FROM `:dbstg`.instances');
+
+        // Search
         $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
-        $request .= !is_null($searchRequest) ? $searchRequest : '';
+        $request .= $searchRequest !== null ? $searchRequest : '';
 
-        if ($contactId !== null) {
-            $request .= ' AND (agcr.contact_contact_id = :contact_id OR cgcr.contact_contact_id = :contact_id)';
+        if (!empty($ids)) {
+            $instanceIds = [];
+            $request .= (empty($searchRequest)) ? ' WHERE ' : ' AND ';
+            foreach ($ids as $index => $instanceId) {
+                $key = ":instanceId_{$index}";
+                $instanceIds[] = $key;
+                $collector->addValue($key, $instanceId, \PDO::PARAM_INT);
+            }
+            $request .= 'instances.instance_id IN (' . implode(', ', $instanceIds) . ')';
         }
 
         // Sort
@@ -150,11 +202,10 @@ class RealTimeMonitoringServerRepositoryRDB extends AbstractRepositoryDRB implem
         foreach ($this->sqlRequestTranslator->getSearchValues() as $key => $data) {
             $type = key($data);
             $value = $data[$type];
-            $statement->bindValue($key, $value, $type);
+            $collector->addValue($key, $value, $type);
         }
-        if ($contactId !== null) {
-            $statement->bindValue(':contact_id', $contactId, \PDO::PARAM_INT);
-        }
+
+        $collector->bind($statement);
         $statement->execute();
 
         $result = $this->db->query('SELECT FOUND_ROWS()');
@@ -166,6 +217,7 @@ class RealTimeMonitoringServerRepositoryRDB extends AbstractRepositoryDRB implem
         while (($record = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
             $realTimeMonitoringServers[] = RealTimeMonitoringServerFactoryRdb::create($record);
         }
+
         return $realTimeMonitoringServers;
     }
 }

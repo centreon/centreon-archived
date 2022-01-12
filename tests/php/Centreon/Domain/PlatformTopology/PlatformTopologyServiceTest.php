@@ -28,7 +28,6 @@ use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Engine\EngineException;
 use PHPUnit\Framework\MockObject\MockObject;
 use Centreon\Domain\Engine\EngineConfiguration;
-use Centreon\Domain\Repository\RepositoryException;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Domain\MonitoringServer\MonitoringServer;
@@ -37,15 +36,15 @@ use Centreon\Domain\PlatformTopology\Model\PlatformPending;
 use Centreon\Domain\Proxy\Interfaces\ProxyServiceInterface;
 use Centreon\Domain\Broker\Interfaces\BrokerRepositoryInterface;
 use Centreon\Domain\PlatformTopology\PlatformTopologyService;
-use Centreon\Domain\MonitoringServer\MonitoringServerException;
+use Centreon\Domain\MonitoringServer\Exception\MonitoringServerException;
 use Centreon\Domain\PlatformTopology\Exception\PlatformTopologyException;
 use Centreon\Domain\PlatformInformation\Exception\PlatformInformationException;
-use Centreon\Domain\PlatformTopology\Exception\PlatformTopologyConflictException;
 use Centreon\Domain\Engine\Interfaces\EngineConfigurationServiceInterface;
 use Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerServiceInterface;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryInterface;
 use Centreon\Domain\PlatformInformation\Interfaces\PlatformInformationServiceInterface;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRegisterRepositoryInterface;
+use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryExceptionInterface;
 use Centreon\Domain\RemoteServer\Interfaces\RemoteServerRepositoryInterface;
 
 class PlatformTopologyServiceTest extends TestCase
@@ -181,12 +180,11 @@ class PlatformTopologyServiceTest extends TestCase
 
     /**
      * test addPendingPlatformToTopology with already existing platform
-     * @throws PlatformTopologyConflictException
      * @throws MonitoringServerException
      * @throws EngineException
      * @throws PlatformTopologyException
      * @throws EntityNotFoundException
-     * @throws RepositoryException
+     * @throws PlatformTopologyRepositoryExceptionInterface
      * @throws PlatformInformationException
      */
     public function testaddPendingPlatformToTopologyAlreadyExists(): void
@@ -222,20 +220,19 @@ class PlatformTopologyServiceTest extends TestCase
             $this->remoteServerRepository
         );
 
-        $this->expectException(PlatformTopologyConflictException::class);
+        $this->expectException(PlatformTopologyException::class);
         $this->expectExceptionMessage("A platform using the name : 'poller1' or address : '1.1.1.2' already exists");
         $platformTopologyService->addPendingPlatformToTopology($this->platform);
     }
 
     /**
      * test addPendingPlatformToTopology with not found parent
-     * @throws PlatformTopologyConflictException
      * @throws MonitoringServerException
      * @throws EngineException
      * @throws PlatformTopologyException
      * @throws EntityNotFoundException
      * @throws PlatformInformationException
-     * @throws RepositoryException
+     * @throws PlatformTopologyRepositoryExceptionInterface
      */
     public function testaddPendingPlatformToTopologyNotFoundParent(): void
     {
@@ -282,13 +279,12 @@ class PlatformTopologyServiceTest extends TestCase
 
     /**
      * test addPendingPlatformToTopology which succeed
-     * @throws PlatformTopologyConflictException
      * @throws MonitoringServerException
      * @throws EngineException
      * @throws PlatformTopologyException
      * @throws EntityNotFoundException
      * @throws PlatformInformationException
-     * @throws RepositoryException
+     * @throws PlatformTopologyRepositoryExceptionInterface
      */
     /*
      * @TODO refacto the test when MBI, MAP and failover
@@ -429,25 +425,14 @@ class PlatformTopologyServiceTest extends TestCase
             ->setConfigurationKey('one_peer_retention_mode')
             ->setConfigurationValue('yes');
 
-        $this->brokerRepository
-            ->expects($this->at(0))
+        $this->brokerRepository->expects($this->exactly(4))
             ->method('findByMonitoringServerAndParameterName')
-            ->willReturn([$this->brokerConfiguration]);
-
-        $this->brokerRepository
-            ->expects($this->at(1))
-            ->method('findByMonitoringServerAndParameterName')
-            ->willReturn([$this->brokerConfiguration]);
-
-        $this->brokerRepository
-            ->expects($this->at(2))
-            ->method('findByMonitoringServerAndParameterName')
-            ->willReturn([$brokerConfigurationPeerRetention]);
-
-        $this->brokerRepository
-            ->expects($this->at(3))
-            ->method('findByMonitoringServerAndParameterName')
-            ->willReturn([$brokerConfigurationPeerRetention]);
+            ->willReturnOnConsecutiveCalls(
+                [$this->brokerConfiguration],
+                [$this->brokerConfiguration],
+                [$brokerConfigurationPeerRetention],
+                [$brokerConfigurationPeerRetention]
+            );
 
         $platformTopologyService = new PlatformTopologyService(
             $this->platformTopologyRepository,

@@ -7,5 +7,4 @@ use Centreon\Test\Behat\CentreonAPIContext;
  */
 class ModuleApiContext extends CentreonAPIContext
 {
-    
 }

@@ -24,15 +24,13 @@ declare(strict_types=1);
 namespace Centreon\Domain\RemoteServer;
 
 use Centreon\Domain\Menu\MenuException;
-use Centreon\Domain\PlatformTopology\Interfaces\PlatformInterface;
 use Centreon\Domain\PlatformTopology\Model\PlatformRegistered;
-use Centreon\Domain\Repository\RepositoryException;
+use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryExceptionInterface;
 use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Domain\PlatformTopology\Exception\PlatformTopologyException;
 use Centreon\Domain\RemoteServer\RemoteServerException;
 use Centreon\Domain\Proxy\Interfaces\ProxyServiceInterface;
 use Centreon\Domain\Menu\Interfaces\MenuRepositoryInterface;
-use Centreon\Domain\PlatformTopology\Exception\PlatformTopologyConflictException;
 use Centreon\Domain\PlatformInformation\Model\PlatformInformation;
 use Centreon\Domain\RemoteServer\Interfaces\RemoteServerServiceInterface;
 use Centreon\Domain\RemoteServer\Interfaces\RemoteServerLocalConfigurationRepositoryInterface;
@@ -42,7 +40,6 @@ use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRegisterReposito
 
 class RemoteServerService implements RemoteServerServiceInterface
 {
-
     /**
      * @var MenuRepositoryInterface
      */
@@ -169,7 +166,7 @@ class RemoteServerService implements RemoteServerServiceInterface
             }
 
             $this->menuRepository->disableCentralMenus();
-        } catch (RepositoryException | PlatformTopologyConflictException $ex) {
+        } catch (PlatformTopologyRepositoryExceptionInterface | PlatformTopologyException $ex) {
             $this->updatePlatformTypeParameters(PlatformRegistered::TYPE_CENTRAL);
             throw $ex;
         } catch (\Exception $ex) {
@@ -211,6 +208,7 @@ class RemoteServerService implements RemoteServerServiceInterface
             if ($childrenPlatform->getServerId() !== null) {
                 $this->monitoringServerService->deleteServer($childrenPlatform->getServerId());
             }
+            $this->platformTopologyRepository->deletePlatform($childrenPlatform->getId());
         }
 
         /**

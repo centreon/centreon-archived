@@ -38,16 +38,20 @@ abstract class AbstractController extends AbstractFOSRestController
 
     public function denyAccessUnlessGrantedForApiConfiguration(): void
     {
-        parent::denyAccessUnlessGranted([
+        parent::denyAccessUnlessGranted(
             static::ROLE_API_CONFIGURATION,
-        ], static::ROLE_API_CONFIGURATION_EXCEPTION_MESSAGE);
+            null,
+            static::ROLE_API_CONFIGURATION_EXCEPTION_MESSAGE
+        );
     }
 
     public function denyAccessUnlessGrantedForApiRealtime(): void
     {
-        parent::denyAccessUnlessGranted([
+        parent::denyAccessUnlessGranted(
             static::ROLE_API_REALTIME,
-        ], static::ROLE_API_REALTIME_EXCEPTION_MESSAGE);
+            null,
+            static::ROLE_API_REALTIME_EXCEPTION_MESSAGE
+        );
     }
 
     /**
@@ -62,7 +66,7 @@ abstract class AbstractController extends AbstractFOSRestController
         if (
             isset($_SERVER['REQUEST_URI'])
             && preg_match(
-                '/^(.+)\/((api|widgets|modules|include)\/|main(\.get)?\.php).+/',
+                '/^(.+)\/((api|widgets|modules|include|authentication)\/|main(\.get)?\.php).+/',
                 $_SERVER['REQUEST_URI'],
                 $matches
             )

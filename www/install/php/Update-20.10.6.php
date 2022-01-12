@@ -21,30 +21,45 @@
 
 include_once __DIR__ . "/../../class/centreonLog.class.php";
 
-// error specific content
+//error specific content
 $versionOfTheUpgrade = 'UPGRADE - 20.10.6 : ';
+$errorMessage = '';
 
-// Part requiring rollback management
 try {
-    // Platform_topology refacto
-    $errorMessage = "Unable to add pending column to platform_topology table";
-    $statement = $pearDB->query(
-        "SELECT COLUMN_DEFAULT
-        FROM information_schema.COLUMNS
-        WHERE TABLE_SCHEMA = 'centreon'
-          AND TABLE_NAME = 'platform_topology'
-          AND COLUMN_NAME = 'pending'"
-    );
-    if ($statement->fetch(\PDO::FETCH_ASSOC) === false) {
-        //Create the new column
-        $pearDB->query(
-            "ALTER TABLE `platform_topology` ADD COLUMN `pending` enum('0','1') DEFAULT ('1') AFTER `parent_id`"
-        );
+    //engine postpone
+    if ($pearDB->isColumnExist('cfg_nagios', 'postpone_notification_to_timeperiod')) {
+        // An update is required
+        $errorMessage = 'Impossible to drop postpone_notification_to_timeperiod from fg_nagios';
+        $pearDB->query('ALTER TABLE `cfg_nagios` DROP COLUMN `postpone_notification_to_timeperiod`');
     }
 
+    // Platform_topology refacto
+    if (0 === $pearDB->isColumnExist('platform_topology', 'pending')) {
+        //Create the new column
+        $errorMessage = "Unable to add pending column to platform_topology table";
+        $pearDB->query(
+            "ALTER TABLE `platform_topology` ADD COLUMN `pending` enum('0','1') DEFAULT '1' AFTER `parent_id`"
+        );
+    }
+    $errorMessage = '';
+} catch (\Exception $e) {
+    (new CentreonLog())->insertLog(
+        4,
+        $versionOfTheUpgrade . $errorMessage .
+        " - Code : " . (int)$e->getCode() .
+        " - Error : " . $e->getMessage() .
+        " - Trace : " . $e->getTraceAsString()
+    );
+    throw new \Exception($versionOfTheUpgrade . $errorMessage, (int)$e->getCode(), $e);
+}
+
+/**
+ * Queries needing exception management and rollback if failing
+ */
+try {
     $pearDB->beginTransaction();
     $errorMessage = "Unable to update pending state on platform_topology table";
-    // find registered platforms in monitoring table
+    // find registered platforms
     $statement = $pearDB->query(
         "SELECT id FROM `platform_topology`
         WHERE `type` NOT IN ('central', 'remote', 'poller') OR `server_id` IS NOT NULL"
@@ -62,15 +77,14 @@ try {
         WHERE id IN ($registeredPlatforms)"
     );
     $pearDB->commit();
-    $errorMessage = '';
-} catch (\Throwable $ex) {
+} catch (\Exception $e) {
     $pearDB->rollBack();
     (new CentreonLog())->insertLog(
         4,
         $versionOfTheUpgrade . $errorMessage .
-        " - Code : " . $ex->getCode() .
-        " - Error : " . $ex->getMessage() .
-        " - Trace : " . $ex->getTraceAsString()
+        " - Code : " . (int)$e->getCode() .
+        " - Error : " . $e->getMessage() .
+        " - Trace : " . $e->getTraceAsString()
     );
-    throw new \Exception($versionOfTheUpgrade . $errorMessage, $ex->getCode(), $ex);
+    throw new \Exception($versionOfTheUpgrade . $errorMessage, (int)$e->getCode(), $e);
 }

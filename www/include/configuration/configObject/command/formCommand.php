@@ -1,7 +1,8 @@
 <?php
+
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2021 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -65,12 +66,17 @@ if (($o == "c" || $o == "w") && $command_id) {
     if (isset($lockedElements[$command_id])) {
         $o = "w";
     }
-    $DBRESULT = $pearDB->query("SELECT * FROM `command` WHERE `command_id` = '" . $command_id . "' LIMIT 1");
+    $DBRESULT = $pearDB->prepare('SELECT * FROM `command` WHERE `command_id` = :command_id LIMIT 1');
+    $DBRESULT->bindValue(':command_id', $command_id, PDO::PARAM_INT);
+    $DBRESULT->execute();
 
     # Set base value
     $cmd = array_map("myDecodeCommand", $DBRESULT->fetchRow());
 
-    $DBRESULT = $pearDB->query("SELECT * FROM `command_arg_description` WHERE `cmd_id` = '" . $command_id . "'");
+    $DBRESULT = $pearDB->prepare('SELECT * FROM `command_arg_description` WHERE `cmd_id` = :command_id');
+    $DBRESULT->bindValue(':command_id', $command_id, PDO::PARAM_INT);
+    $DBRESULT->execute();
+
     $strArgDesc = "";
     $nbRow = 0;
     while ($row = $DBRESULT->fetchRow()) {
@@ -90,7 +96,7 @@ if (count($aMacroDescription) > 0) {
             $macro['description'] . "\n";
         $nbRowMacro++;
     }
-} elseif (array_key_exists('command_line', $cmd)) {
+} elseif ($command_id !== false && array_key_exists('command_line', $cmd)) {
     $macrosHostDesc = $oCommande->matchObject($command_id, $cmd['command_line'], '1');
     $macrosServiceDesc = $oCommande->matchObject($command_id, $cmd['command_line'], '2');
 
@@ -172,7 +178,7 @@ if ($o == "a") {
 /*
  * Command information
  */
-if (isset($tabCommandType[$type])) {
+if ($type !== false && isset($tabCommandType[$type])) {
     $form->addElement('header', 'information', $tabCommandType[$type]);
 } else {
     $form->addElement('header', 'information', _("Information"));
@@ -193,7 +199,7 @@ foreach ($tabCommandType as $id => $name) {
 
 $form->addGroup($cmdType, 'command_type', _("Command Type"), '&nbsp;&nbsp;');
 
-if (isset($type) && $type != "") {
+if ($type !== false) {
     $form->setDefaults(array('command_type' => $type));
 } else {
     $form->setDefaults(array('command_type' => '2'));
@@ -276,7 +282,7 @@ $tpl->assign("helptext", $helptext);
  * Just watch a Command information
  */
 if ($o == "w") {
-    if ($centreon->user->access->page($p) != 2 && !isset($lockedElements[$command_id])) {
+    if ($command_id !== false && $centreon->user->access->page($p) != 2 && !isset($lockedElements[$command_id])) {
         $form->addElement(
             "button",
             "change",

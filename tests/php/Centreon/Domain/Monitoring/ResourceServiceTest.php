@@ -21,13 +21,14 @@
 
 namespace Tests\Centreon\Domain\Monitoring;
 
-use Centreon\Domain\Monitoring\Interfaces\ResourceRepositoryInterface;
-use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
-use Centreon\Domain\Monitoring\ResourceService;
+use PHPUnit\Framework\TestCase;
 use Centreon\Domain\Monitoring\Resource;
 use Centreon\Domain\Monitoring\ResourceFilter;
+use Centreon\Domain\Monitoring\ResourceService;
+use Centreon\Domain\Monitoring\Interfaces\ResourceRepositoryInterface;
 use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
-use PHPUnit\Framework\TestCase;
+use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
+use Centreon\Domain\MetaServiceConfiguration\Interfaces\MetaServiceConfigurationReadRepositoryInterface;
 
 class ResourceServiceTest extends TestCase
 {
@@ -55,7 +56,14 @@ class ResourceServiceTest extends TestCase
 
         $accessGroup = $this->createMock(AccessGroupRepositoryInterface::class);
 
-        $resourceService = new ResourceService($resourceRepository, $monitoringRepository, $accessGroup);
+        $metaServiceConfigurationRepository = $this->createMock(MetaServiceConfigurationReadRepositoryInterface::class);
+
+        $resourceService = new ResourceService(
+            $resourceRepository,
+            $monitoringRepository,
+            $accessGroup,
+            $metaServiceConfigurationRepository
+        );
 
         $resourcesFound = $resourceService->findResources(new ResourceFilter());
 

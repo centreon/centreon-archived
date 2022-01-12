@@ -26,14 +26,13 @@
 		<tr class="ToolbarTR">
 			{ if $mode_access == 'w' }
 			<td>
-				{$msg.options} {$form.o1.html}
+				{$form.o1.html}
 				&nbsp;&nbsp;&nbsp;
 				<a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
 			</td>
 			{ else }
 			<td>&nbsp;</td>
 			{ /if }
-			<input name="p" value="{$p}" type="hidden">
 			{php}
 			   include('./include/common/pagination.php');
 			{/php}
@@ -54,22 +53,10 @@
 			<td class="ListColHeaderCenter">{$headerMenu_status}</td>
 			<td class="ListColHeaderRight">{$headerMenu_options}</td>
 		</tr>
-		{assign var=pattern_mode value=0}
 		{section name=elem loop=$elemArr}
-			{if $elemArr[elem].pattern != $pattern_value}
-				{assign var=pattern_mode value=0}
-			{/if}
-			{if $elemArr[elem].pattern && $pattern_mode == 0}
-				<tr class="list_lvl_1">
-					<td class="ListColLeft" colspan="7"><b>{$elemArr[elem].pattern}</b></td>
-				</tr>
-				{assign var=pattern_mode value=1}
-				{assign var=pattern_value value=$elemArr[elem].pattern}
-			{/if}
 			<tr class="{$elemArr[elem].MenuClass}">
 				<td class="ListColPicker">{$elemArr[elem].RowMenu_select}</td>
 				<td class="ListColLeft">
-					{if $elemArr[elem].pattern}&nbsp;&nbsp;&nbsp;&nbsp;{/if}
 					<a href="{$elemArr[elem].RowMenu_link}"> <img src="{$elemArr[elem].RowMenu_icone}" class="ico-16 margin_right" />{$elemArr[elem].RowMenu_name}</a>
 				</td>
 				<td class="ListColLeft resizeTitle"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_desc}</a></td>
@@ -78,33 +65,31 @@
 				<td class="ListColCenter"><span class="badge {$elemArr[elem].RowMenu_badge}">{$elemArr[elem].RowMenu_status}</span></td>
 				<td class="ListColRight" align="right">{if $mode_access == 'w' }{$elemArr[elem].RowMenu_options}{else}&nbsp;{/if}</td>
 			</tr>
-		{/section}	
+		{/section}
 	</table>
 	<table class="ToolbarTable table">
-		<tr class="ToolbarTR">	
+		<tr class="ToolbarTR">
 			{ if $mode_access == 'w' }
 			<td>
-				{$msg.options} {$form.o2.html}
+				{$form.o2.html}
 				&nbsp;&nbsp;&nbsp;
 				<a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
 			</td>
 			{ else }
 			<td>&nbsp;</td>
 			{ /if }
-			<input name="p" value="{$p}" type="hidden">
 			{php}
 			   include('./include/common/pagination.php');
 			{/php}
 		</tr>
 	</table>
 <input type='hidden' name='o' id='o' value='42'>
-<input type='hidden' id='limit' name='limit' value='{$limit}'>	
+<input type='hidden' id='limit' name='limit' value='{$limit}'>
 {$form.hidden}
 </form>
 {literal}
 <script type='text/javascript'>
     setDisabledRowStyle();
     setOverflowDivToTitle(('.resizeTitle'));
-        
 </script>
 {/literal}

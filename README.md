@@ -1,6 +1,6 @@
 <h1> Centreon - IT and Application monitoring software </h1>
 
-[![stable version](https://img.shields.io/github/release/centreon/centreon.svg?style=flat)](https://github.com/centreon/centreon/releases/latest) &nbsp;[![License](https://img.shields.io/badge/license-GPL--2.0-blue.svg)](https://raw.githubusercontent.com/centreon/centreon/master/LICENSE) &nbsp;[![Centreon bug tracker](https://img.shields.io/github/issues/centreon/centreon.svg?style=flat)](https://github.com/centreon/centreon/issues) &nbsp;[![Official documentation](https://img.shields.io/badge/official-documentation-orange.svg)](https://docs.centreon.com/) &nbsp;[![Official Slack](https://img.shields.io/badge/official-slack-orange.svg)](https://centreon.github.io/register-slack) &nbsp;[![Official website](https://img.shields.io/badge/official-website-orange.svg)](https://www.centreon.com/en/) &nbsp;[![Official Download](https://img.shields.io/badge/official-download-orange.svg)](https://download.centreon.com/) &nbsp;
+[![stable version](https://img.shields.io/github/release/centreon/centreon.svg?style=flat)](https://github.com/centreon/centreon/releases/latest) &nbsp;[![License](https://img.shields.io/badge/license-GPL--2.0-blue.svg)](https://raw.githubusercontent.com/centreon/centreon/master/LICENSE.md) &nbsp;[![Centreon bug tracker](https://img.shields.io/github/issues/centreon/centreon.svg?style=flat)](https://github.com/centreon/centreon/issues) &nbsp;[![Official documentation](https://img.shields.io/badge/official-documentation-orange.svg)](https://docs.centreon.com/) &nbsp;[![Official Slack](https://img.shields.io/badge/official-slack-orange.svg)](https://centreon.github.io/register-slack) &nbsp;[![Official website](https://img.shields.io/badge/official-website-orange.svg)](https://www.centreon.com/en/) &nbsp;[![Official Download](https://img.shields.io/badge/official-download-orange.svg)](https://download.centreon.com/) &nbsp;
 
 [![Centreon Twitter](https://img.shields.io/twitter/follow/centreon.svg?style=social)](https://twitter.com/centreon) &nbsp;[![Centreon Labs Twitter](https://img.shields.io/twitter/follow/centreonlabs.svg?style=social)](https://twitter.com/centreonlabs) &nbsp;
 
@@ -20,6 +20,19 @@ on the market; it is absolutely free and Open Source.
 * Using the [**ISO**](https://docs.centreon.com/current/en/installation/installation-of-a-central-server/using-centreon-iso.html)
 * Using the [**VM**](https://docs.centreon.com/current/en/installation/installation-of-a-central-server/using-virtual-machines.html) (tutorial available on [Youtube](https://www.youtube.com/watch?v=rnq9QnljaQE))
 
+<h2> Supported versions </h2>
+
+Regarding the [Products Lifecycle Policy](https://docs.centreon.com/current/en/releases/lifecycle.html),
+only the following versions are supported:
+
+* Centreon 21.10.x, released on November 2, 2021, full support
+* Centreon 21.04.x, released on April 21, 2021, security and blocking issue support only
+* Centreon 20.10.x, released on October 21, 2020, security support only
+
+If your version is not one of the 3 versions specified above, we recommend that
+you [upgrade your platform](https://docs.centreon.com/current/en/upgrade/introduction.html)
+immediately.
+
 <h3> Authors </h3>
 
 <h4> Project leaders </h4>
@@ -29,12 +42,9 @@ on the market; it is absolutely free and Open Source.
 
 <h4> Product managers </h4>
 
-<a href="https://github.com/lpinsivy"><img src="https://avatars2.githubusercontent.com/u/3351916?s=400&v=4" title="Laurent Pinsivy" width="80" height="80"></a>&nbsp;
-<a href="https://github.com/sbrizini"><img src="https://avatars.githubusercontent.com/u/40829131?s=400&v=4" title="Samir Brizini" width="80" height="80"></a>&nbsp;
-
-<h4> Product Owner </h4>
-
-<a href="https://github.com/cgagnaire"><img src="https://avatars1.githubusercontent.com/u/23257354?s=400&v=4" title="Colin Gagnaire" width="80" height="80"></a> &nbsp;
+<a href="https://github.com/sbrizini"><img src="https://avatars.githubusercontent.com/u/40829131?v=4" title="Samir Brizini" width="80" height="80"></a> &nbsp;
+<a href="https://github.com/omercier"><img src="https://avatars.githubusercontent.com/u/32134301?v=4" title="Olivier Mercier" width="80" height="80"></a> &nbsp;
+<a href="https://github.com/lpinsivy"><img src="https://avatars2.githubusercontent.com/u/3351916?s=400&v=4" title="Laurent Pinsivy" width="80" height="80"></a> &nbsp;
 
 <h4> Development team </h4>
 
@@ -62,6 +72,10 @@ on the market; it is absolutely free and Open Source.
 <a href="https://github.com/chgautier"><img src="https://avatars.githubusercontent.com/u/33026375?s=400&v=4" title="Charles Gautier" width="80" height="80"></a> &nbsp;
 
 See also the list of our [**contributors**](https://github.com/centreon/centreon/graphs/contributors)
+
+<h4> Security Acknowledgement page </h4>
+
+We want to thank all [reporters and pentesters](SECURITY_ACK.md) who help us improve our product each day.
 
 <h2> Contributing </h2>
 

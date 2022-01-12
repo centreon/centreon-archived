@@ -100,7 +100,10 @@ class CentreonGraph
     protected $dbPath;
     protected $dbStatusPath;
     protected $index;
-    protected $indexData;
+    protected $indexData = [
+        "host_name" => "",
+        "service_description" => ""
+    ];
     protected $templateId;
     protected $templateInformations;
     protected $gprintScaleOption;
@@ -395,7 +398,8 @@ class CentreonGraph
                 $this->setRRDOption("upper-limit", $upperLimit);
             }
         }
-        if ((isset($this->templateInformations["lower_limit"]) &&
+        if (
+            (isset($this->templateInformations["lower_limit"]) &&
                 $this->templateInformations["lower_limit"] != null) ||
             (isset($this->templateInformations["upper_limit"]) &&
                 $this->templateInformations["upper_limit"] != null)
@@ -533,7 +537,8 @@ class CentreonGraph
                  */
                 $this->listMetricsId[] = $metric["metric_id"];
 
-                if (isset($this->metricsEnabled) &&
+                if (
+                    isset($this->metricsEnabled) &&
                     count($this->metricsEnabled) &&
                     !in_array($metric["metric_id"], $this->metricsEnabled)
                 ) {
@@ -569,7 +574,8 @@ class CentreonGraph
                         $metricPattern = str_replace('\\*', '.*', $metricPattern);
 
                         # Check associated
-                        if (($dsVal['host_id'] == $metric['host_id'] || $dsVal['host_id'] == '') &&
+                        if (
+                            ($dsVal['host_id'] == $metric['host_id'] || $dsVal['host_id'] == '') &&
                             ($dsVal['service_id'] == $metric['service_id'] || $dsVal['service_id'] == '') &&
                             preg_match($metricPattern, $metric['metric_name'])
                         ) {
@@ -585,7 +591,8 @@ class CentreonGraph
                         }
 
                         /* Check regular */
-                        if (is_null($ds_data_regular) &&
+                        if (
+                            is_null($ds_data_regular) &&
                             preg_match('/^' . preg_quote($dsVal['ds_name'], '/') . '$/i', $metric["metric_name"])
                         ) {
                             $ds_data_regular = $dsVal;
@@ -682,11 +689,11 @@ class CentreonGraph
 
                     $this->metrics[$metric["metric_id"]]["legend_len"] =
                         mb_strlen($this->metrics[$metric["metric_id"]]["legend"], 'UTF-8') - $escaped_chars_nb;
-                    $this->metrics[$metric["metric_id"]]["stack"] = (
-                    isset($ds_data["ds_stack"]) && $ds_data["ds_stack"] ? $ds_data["ds_stack"] : 0
-                    );
+                    $this->metrics[$metric["metric_id"]]["stack"] =
+                        isset($ds_data["ds_stack"]) && $ds_data["ds_stack"] ? $ds_data["ds_stack"] : 0;
                     if ($this->onecurve) {
-                        if (isset($metric["warn"]) &&
+                        if (
+                            isset($metric["warn"]) &&
                             $metric["warn"] != 0 &&
                             $metric["warn"] != self::ENGINE_LOW_INFINITE &&
                             $metric["warn"] != self::ENGINE_HIGH_INFINITE
@@ -697,7 +704,8 @@ class CentreonGraph
                                     $this->generalOpt["color_warning"];
                             }
                         }
-                        if (isset($metric["crit"]) &&
+                        if (
+                            isset($metric["crit"]) &&
                             $metric["crit"] != 0 &&
                             $metric["crit"] != self::ENGINE_LOW_INFINITE &&
                             $metric["crit"] != self::ENGINE_HIGH_INFINITE
@@ -957,9 +965,14 @@ class CentreonGraph
                 $vdefs = array();
                 $prints = array();
 
-
-                foreach (array("last" => "LAST", "min" => "MINIMUM", "max" => "MAXIMUM",
-                               "average" => "AVERAGE", "total" => "TOTAL") as $name => $cf) {
+                $cfNames = [
+                    "last" => "LAST",
+                    "min" => "MINIMUM",
+                    "max" => "MAXIMUM",
+                    "average" => "AVERAGE",
+                    "total" => "TOTAL",
+                ];
+                foreach ($cfNames as $name => $cf) {
                     if (!$tm["ds_" . $name]) {
                         continue;
                     }
@@ -1209,9 +1222,7 @@ class CentreonGraph
 
         $this->log("index_data for " . $svc_instance);
         $DBRESULT = $this->DBC->query("SELECT * FROM index_data WHERE id = '" . $svc_instance . "' LIMIT 1");
-        if (!$DBRESULT->rowCount()) {
-            $this->indexData = 0;
-        } else {
+        if ($DBRESULT->rowCount()) {
             $this->indexData = $DBRESULT->fetch();
             /*
              * Check Meta Service description
@@ -1581,7 +1592,7 @@ class CentreonGraph
             '#ff66ff', '#ff9900', '#ff9933', '#ff9966', '#ff9999', '#ff99cc',
             '#ff99ff', '#ffcc00', '#ffcc33', '#ffcc66', '#ffcc99', '#ffcccc',
             '#ffccff');
-            return $webSafeColors[rand(0, sizeof($webSafeColors)-1)];
+            return $webSafeColors[rand(0, sizeof($webSafeColors) - 1)];
     }
 
     /**
@@ -1766,7 +1777,7 @@ class CentreonGraph
      */
     private function log($message)
     {
-        if ($this->generalOpt['debug_rrdtool'] && is_writable($this->generalOpt['debug_path'])) {
+        if (isset($this->generalOpt['debug_rrdtool']) && is_writable($this->generalOpt['debug_path'])) {
             error_log(
                 "[" . date("d/m/Y H:i") . "] RDDTOOL : " . $message . " \n",
                 3,
@@ -1796,7 +1807,8 @@ class CentreonGraph
      */
     protected function flushRrdcached($metricsId)
     {
-        if (!isset($this->rrdCachedOptions['rrd_cached_option'])
+        if (
+            !isset($this->rrdCachedOptions['rrd_cached_option'])
             || !in_array($this->rrdCachedOptions['rrd_cached_option'], ['unix', 'tcp'])
         ) {
             return true;

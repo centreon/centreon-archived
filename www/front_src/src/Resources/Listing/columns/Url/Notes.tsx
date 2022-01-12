@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { path } from 'ramda';
 
-import IconLink from '@material-ui/icons/Link';
+import IconLink from '@mui/icons-material/Link';
 
 import { ComponentColumnProps } from '@centreon/ui';
 
@@ -21,9 +21,10 @@ const NotesUrlColumn = ({ row }: ComponentColumnProps): JSX.Element => {
 
   return (
     <UrlColumn
+      avatarTitle="N"
       endpoint={endpoint}
-      title={title || endpoint}
       icon={<IconLink fontSize="small" />}
+      title={title}
     />
   );
 };

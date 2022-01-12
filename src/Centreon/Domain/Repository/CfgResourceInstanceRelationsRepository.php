@@ -6,7 +6,6 @@ use PDO;
 
 class CfgResourceInstanceRelationsRepository extends ServiceEntityRepository
 {
-
     /**
      * Export
      *

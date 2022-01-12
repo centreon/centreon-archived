@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import { useTheme } from '@material-ui/core';
+import { useTheme } from '@mui/material';
 
 import { labelDowntime } from '../../../../../translatedLabels';
 import IconDowntime from '../../../../../icons/Downtime';
@@ -17,10 +17,10 @@ const DowntimeAnnotations = (props: Props): JSX.Element => {
 
   return (
     <EventAnnotations
-      type="downtime"
       Icon={IconDowntime}
       ariaLabel={t(labelDowntime)}
       color={color}
+      type="downtime"
       {...props}
     />
   );

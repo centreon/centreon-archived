@@ -25,8 +25,6 @@ $centreonLog = new CentreonLog();
 //error specific content
 $versionOfTheUpgrade = 'UPGRADE - 21.04.0-beta.1: ';
 
-$pearDB = new CentreonDB('centreon', 3, false);
-
 $criteriasConcordanceArray = [
     'states' => [
         'acknowledged' => 'Acknowledged',
@@ -86,6 +84,22 @@ try {
         'CREATE TABLE IF NOT EXISTS `cb_log_level`
         (`id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,`name` varchar(255) NOT NULL)'
     );
+
+    $errorMessage = 'Impossible to create the table cfg_centreonbroker_log';
+    $pearDB->query(
+        'CREATE TABLE IF NOT EXISTS `cfg_centreonbroker_log`
+        (`id` INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+        `id_centreonbroker` INT(11)  NOT NULL,
+        `id_log` INT(11)  NOT NULL,
+        `id_level` INT(11)  NOT NULL)'
+    );
+
+    if ($pearDB->isColumnExist('cfg_nagios', 'use_aggressive_host_checking')) {
+        // An update is required
+        $errorMessage = 'Impossible to drop column use_aggressive_host_checking from cfg_nagios';
+        $pearDB->query('ALTER TABLE `cfg_nagios` DROP COLUMN `use_aggressive_host_checking`');
+    }
+
     $errorMessage = "";
 } catch (\Exception $e) {
     $centreonLog->insertLog(

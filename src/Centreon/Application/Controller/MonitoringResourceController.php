@@ -57,23 +57,36 @@ class MonitoringResourceController extends AbstractController
     /**
      * List of external parameters for list action
      *
-     * @var array
+     * @var array<string>
      */
     public const EXTRA_PARAMETERS_LIST = [
         'types',
         'states',
         'statuses',
-        'hostgroup_ids',
-        'servicegroup_ids',
-        'monitoring_server_ids',
+        'hostgroup_names',
+        'servicegroup_names',
+        'monitoring_server_names',
+        'status_types',
     ];
 
     public const FILTER_RESOURCES_ON_PERFORMANCE_DATA_AVAILABILITY = 'only_with_performance_data';
+
+
+    private const META_SERVICE_CONFIGURATION_URI = '/main.php?p=60204&o=c&meta_id={resource_id}';
+    private const META_SERVICE_DETAILS_ROUTE = 'centreon_application_monitoring_resource_details_meta_service';
+    private const META_SERVICE_TIMELINE_ROUTE = 'centreon_application_monitoring_gettimelinebymetaservices';
+    private const META_SERVICE_DOWNTIME_ROUTE = 'monitoring.downtime.addMetaServiceDowntime';
+    private const META_SERVICE_ACKNOWLEDGEMENT_ROUTE =
+        'centreon_application_acknowledgement_addmetaserviceacknowledgement';
+    private const META_SERVICE_STATUS_GRAPH_ROUTE = 'monitoring.metric.getMetaServiceStatusMetrics';
+    private const META_SERVICE_METRIC_LIST_ROUTE = 'centreon_application_find_meta_service_metrics';
+    private const META_SERVICE_PERFORMANCE_GRAPH_ROUTE = 'monitoring.metric.getMetaServicePerformanceMetrics';
 
     private const HOST_CONFIGURATION_URI = '/main.php?p=60101&o=c&host_id={resource_id}';
     private const SERVICE_CONFIGURATION_URI = '/main.php?p=60201&o=c&service_id={resource_id}';
     private const HOST_LOGS_URI = '/main.php?p=20301&h={resource_id}';
     private const SERVICE_LOGS_URI = '/main.php?p=20301&svc={parent_resource_id}_{resource_id}';
+    private const META_SERVICE_LOGS_URI = '/main.php?p=20301&svc={host_id}_{service_id}';
     private const HOST_REPORTING_URI = '/main.php?p=307&host={resource_id}';
     private const SERVICE_REPORTING_URI =
         '/main.php?p=30702&period=yesterday&start=&end=&host_id={parent_resource_id}&item={resource_id}';
@@ -179,11 +192,11 @@ class MonitoringResourceController extends AbstractController
 
         // set default values of filter data
         $filterData = [];
-        foreach (static::EXTRA_PARAMETERS_LIST as $param) {
+        foreach (self::EXTRA_PARAMETERS_LIST as $param) {
             $filterData[$param] = [];
         }
 
-        $filterData[static::FILTER_RESOURCES_ON_PERFORMANCE_DATA_AVAILABILITY] = false;
+        $filterData[self::FILTER_RESOURCES_ON_PERFORMANCE_DATA_AVAILABILITY] = false;
 
         // load filter data with the query parameters
         foreach ($request->query->all() as $param => $data) {
@@ -215,7 +228,7 @@ class MonitoringResourceController extends AbstractController
         );
 
         $context = (new Context())
-            ->setGroups(static::SERIALIZER_GROUPS_LISTING)
+            ->setGroups(self::SERIALIZER_GROUPS_LISTING)
             ->enableMaxDepth();
 
         $context->addExclusionStrategy(new ResourceExclusionStrategy());
@@ -279,20 +292,27 @@ class MonitoringResourceController extends AbstractController
 
         $this->resource->enrichHostWithDetails($resource);
 
-        try {
-            $host = (new Host())->setId($resource->getId())
-                ->setCheckCommand($resource->getCommandLine());
-            $this->monitoring->hidePasswordInHostCommandLine($host);
-            $resource->setCommandLine($host->getCheckCommand());
-        } catch (\Throwable $ex) {
-            $resource->setCommandLine(
-                sprintf(_('Unable to hide passwords in command (Reason: %s)'), $ex->getMessage())
-            );
+        if (
+            $contact->hasRole(Contact::ROLE_DISPLAY_COMMAND) ||
+            $contact->isAdmin()
+        ) {
+            try {
+                $host = (new Host())->setId($resource->getId())
+                    ->setCheckCommand($resource->getCommandLine());
+                $this->monitoring->hidePasswordInHostCommandLine($host);
+                $resource->setCommandLine($host->getCheckCommand());
+            } catch (\Throwable $ex) {
+                $resource->setCommandLine(
+                    sprintf(_('Unable to hide passwords in command (Reason: %s)'), $ex->getMessage())
+                );
+            }
+        } else {
+            $resource->setCommandLine(null);
         }
 
         $context = (new Context())
             ->setGroups(array_merge(
-                static::SERIALIZER_GROUPS_LISTING,
+                self::SERIALIZER_GROUPS_LISTING,
                 [ResourceEntity::SERIALIZER_GROUP_DETAILS, Acknowledgement::SERIALIZER_GROUP_FULL],
                 Downtime::SERIALIZER_GROUPS_SERVICE
             ))
@@ -340,22 +360,78 @@ class MonitoringResourceController extends AbstractController
 
         $this->resource->enrichServiceWithDetails($resource);
 
-        try {
-            $service = (new Service())
-                ->setId($resource->getId())
-                ->setHost((new Host())->setId($resource->getParent()->getId()))
-                ->setCommandLine($resource->getCommandLine());
-            $this->monitoring->hidePasswordInServiceCommandLine($service);
-            $resource->setCommandLine($service->getCommandLine());
-        } catch (\Throwable $ex) {
-            $resource->setCommandLine(
-                sprintf(_('Unable to hide passwords in command (Reason: %s)'), $ex->getMessage())
-            );
+        if (
+            $contact->hasRole(Contact::ROLE_DISPLAY_COMMAND) ||
+            $contact->isAdmin()
+        ) {
+            try {
+                $service = (new Service())
+                    ->setId($resource->getId())
+                    ->setHost((new Host())->setId($resource->getParent()->getId()))
+                    ->setCommandLine($resource->getCommandLine());
+                $this->monitoring->hidePasswordInServiceCommandLine($service);
+                $resource->setCommandLine($service->getCommandLine());
+            } catch (\Throwable $ex) {
+                $resource->setCommandLine(
+                    sprintf(_('Unable to hide passwords in command (Reason: %s)'), $ex->getMessage())
+                );
+            }
+        } else {
+            $resource->setCommandLine(null);
         }
 
         $context = (new Context())
             ->setGroups(array_merge(
-                static::SERIALIZER_GROUPS_LISTING,
+                self::SERIALIZER_GROUPS_LISTING,
+                [ResourceEntity::SERIALIZER_GROUP_DETAILS, Acknowledgement::SERIALIZER_GROUP_FULL],
+                Downtime::SERIALIZER_GROUPS_SERVICE
+            ))
+            ->enableMaxDepth();
+
+        $context->addExclusionStrategy(new ResourceExclusionStrategy());
+
+        return $this
+            ->view($resource)
+            ->setContext($context);
+    }
+
+    /**
+     * Get resource details related to the service
+     *
+     * @return View
+     */
+    public function detailsMetaService(int $metaId): View
+    {
+        // ACL check
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
+        /**
+         * @var Contact $contact
+         */
+        $contact = $this->getUser();
+
+        $filter = (new ResourceFilter())
+            ->setTypes([ResourceFilter::TYPE_META])
+            ->setMetaServiceIds([$metaId]);
+
+        $resources = $this->resource
+            ->filterByContact($contact)
+            ->findResources($filter);
+
+        if (empty($resources)) {
+            return View::create(null, Response::HTTP_NOT_FOUND, []);
+        }
+
+        $resource = $resources[0];
+
+        $this->providePerformanceGraphEndpoint([$resource]);
+        $this->provideLinks($resource, $contact);
+
+        $this->resource->enrichMetaServiceWithDetails($resource);
+
+        $context = (new Context())
+            ->setGroups(array_merge(
+                self::SERIALIZER_GROUPS_LISTING,
                 [ResourceEntity::SERIALIZER_GROUP_DETAILS, Acknowledgement::SERIALIZER_GROUP_FULL],
                 Downtime::SERIALIZER_GROUPS_SERVICE
             ))
@@ -379,23 +455,34 @@ class MonitoringResourceController extends AbstractController
         $resourcesWithGraphData = $this->resource->extractResourcesWithGraphData($resources);
 
         foreach ($resources as $resource) {
-            if ($resource->getParent() !== null) {
-                foreach ($resourcesWithGraphData as $resourceWithGraphData) {
-                    if (
-                        $resource->getParent()->getId() === $resourceWithGraphData->getParent()->getId()
-                        && $resource->getId() === $resourceWithGraphData->getId()
-                    ) {
-                        // set service performance graph endpoint from metrics controller
-                        $resource->getLinks()->getEndpoints()->setPerformanceGraph(
-                            $this->router->generate(
-                                static::SERVICE_PERFORMANCE_GRAPH_ROUTE,
-                                [
-                                    'hostId' => $resource->getParent()->getId(),
-                                    'serviceId' => $resource->getId(),
-                                ]
-                            )
-                        );
-                    }
+            foreach ($resourcesWithGraphData as $resourceWithGraphData) {
+                if (
+                    $resource->getType() === ResourceEntity::TYPE_SERVICE
+                    && $resourceWithGraphData->getType() === ResourceEntity::TYPE_SERVICE
+                    && $resource->getParent()->getId() === $resourceWithGraphData->getParent()->getId()
+                    && $resource->getId() === $resourceWithGraphData->getId()
+                ) {
+                    // set service performance graph endpoint from metrics controller
+                    $resource->getLinks()->getEndpoints()->setPerformanceGraph(
+                        $this->router->generate(
+                            self::SERVICE_PERFORMANCE_GRAPH_ROUTE,
+                            [
+                                'hostId' => $resource->getParent()->getId(),
+                                'serviceId' => $resource->getId(),
+                            ]
+                        )
+                    );
+                } elseif (
+                    $resource->getType() === ResourceEntity::TYPE_META
+                    && $resource->getId() === $resourceWithGraphData->getId()
+                ) {
+                    // set service performance graph endpoint from metrics controller
+                    $resource->getLinks()->getEndpoints()->setPerformanceGraph(
+                        $this->router->generate(
+                            self::META_SERVICE_PERFORMANCE_GRAPH_ROUTE,
+                            ['metaId' => $resource->getId()]
+                        )
+                    );
                 }
             }
         }
@@ -462,35 +549,81 @@ class MonitoringResourceController extends AbstractController
 
             $resource->getLinks()->getEndpoints()->setDetails(
                 $this->router->generate(
-                    static::SERVICE_DETAILS_ROUTE,
+                    self::SERVICE_DETAILS_ROUTE,
                     $parameters
                 )
             );
 
             $resource->getLinks()->getEndpoints()->setTimeline(
                 $this->router->generate(
-                    static::SERVICE_TIMELINE_ROUTE,
+                    self::SERVICE_TIMELINE_ROUTE,
                     $parameters
                 )
             );
 
             $resource->getLinks()->getEndpoints()->setAcknowledgement(
                 $this->router->generate(
-                    static::SERVICE_ACKNOWLEDGEMENT_ROUTE,
+                    self::SERVICE_ACKNOWLEDGEMENT_ROUTE,
                     array_merge($parameters, $acknowledgementFilter)
                 )
             );
 
             $resource->getLinks()->getEndpoints()->setDowntime(
                 $this->router->generate(
-                    static::SERVICE_DOWNTIME_ROUTE,
+                    self::SERVICE_DOWNTIME_ROUTE,
                     array_merge($parameters, $downtimeFilter)
                 )
             );
 
             $resource->getLinks()->getEndpoints()->setStatusGraph(
                 $this->router->generate(
-                    static::SERVICE_STATUS_GRAPH_ROUTE,
+                    self::SERVICE_STATUS_GRAPH_ROUTE,
+                    $parameters
+                )
+            );
+        } elseif ($resource->getType() === ResourceEntity::TYPE_META) {
+            $parameters = [
+                'metaId' => $resource->getId(),
+            ];
+
+            $resource->getLinks()->getEndpoints()->setDetails(
+                $this->router->generate(
+                    self::META_SERVICE_DETAILS_ROUTE,
+                    $parameters
+                )
+            );
+
+            $resource->getLinks()->getEndpoints()->setTimeline(
+                $this->router->generate(
+                    self::META_SERVICE_TIMELINE_ROUTE,
+                    $parameters
+                )
+            );
+
+            $resource->getLinks()->getEndpoints()->setAcknowledgement(
+                $this->router->generate(
+                    self::META_SERVICE_ACKNOWLEDGEMENT_ROUTE,
+                    array_merge($parameters, $acknowledgementFilter)
+                )
+            );
+
+            $resource->getLinks()->getEndpoints()->setDowntime(
+                $this->router->generate(
+                    self::META_SERVICE_DOWNTIME_ROUTE,
+                    array_merge($parameters, $downtimeFilter)
+                )
+            );
+
+            $resource->getLinks()->getEndpoints()->setStatusGraph(
+                $this->router->generate(
+                    self::META_SERVICE_STATUS_GRAPH_ROUTE,
+                    $parameters
+                )
+            );
+
+            $resource->getLinks()->getEndpoints()->setMetrics(
+                $this->router->generate(
+                    self::META_SERVICE_METRIC_LIST_ROUTE,
                     $parameters
                 )
             );
@@ -503,28 +636,28 @@ class MonitoringResourceController extends AbstractController
 
             $hostResource->getLinks()->getEndpoints()->setDetails(
                 $this->router->generate(
-                    static::HOST_DETAILS_ROUTE,
+                    self::HOST_DETAILS_ROUTE,
                     $parameters
                 )
             );
 
             $hostResource->getLinks()->getEndpoints()->setTimeline(
                 $this->router->generate(
-                    static::HOST_TIMELINE_ROUTE,
+                    self::HOST_TIMELINE_ROUTE,
                     $parameters
                 )
             );
 
             $hostResource->getLinks()->getEndpoints()->setAcknowledgement(
                 $this->router->generate(
-                    static::HOST_ACKNOWLEDGEMENT_ROUTE,
+                    self::HOST_ACKNOWLEDGEMENT_ROUTE,
                     array_merge($parameters, $acknowledgementFilter)
                 )
             );
 
             $hostResource->getLinks()->getEndpoints()->setDowntime(
                 $this->router->generate(
-                    static::HOST_DOWNTIME_ROUTE,
+                    self::HOST_DOWNTIME_ROUTE,
                     array_merge($parameters, $downtimeFilter)
                 )
             );
@@ -543,6 +676,8 @@ class MonitoringResourceController extends AbstractController
         if ($resource->getType() === ResourceEntity::TYPE_SERVICE && $resource->getParent()) {
             $this->provideHostInternalUris($resource->getParent(), $contact);
             $this->provideServiceInternalUris($resource, $contact);
+        } elseif ($resource->getType() === ResourceEntity::TYPE_META) {
+            $this->provideMetaServiceInternalUris($resource, $contact);
         } else {
             $this->provideHostInternalUris($resource, $contact);
         }
@@ -562,19 +697,19 @@ class MonitoringResourceController extends AbstractController
             || $contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_HOSTS_READ)
         ) {
             $resource->getLinks()->getUris()->setConfiguration(
-                $this->generateResourceUri($resource, static::HOST_CONFIGURATION_URI)
+                $this->generateResourceUri($resource, self::HOST_CONFIGURATION_URI)
             );
         }
 
         if ($contact->hasTopologyRole(Contact::ROLE_MONITORING_EVENT_LOGS)) {
             $resource->getLinks()->getUris()->setLogs(
-                $this->generateResourceUri($resource, static::HOST_LOGS_URI)
+                $this->generateResourceUri($resource, self::HOST_LOGS_URI)
             );
         }
 
         if ($contact->hasTopologyRole(Contact::ROLE_REPORTING_DASHBOARD_HOSTS)) {
             $resource->getLinks()->getUris()->setReporting(
-                $this->generateResourceUri($resource, static::HOST_REPORTING_URI)
+                $this->generateResourceUri($resource, self::HOST_REPORTING_URI)
             );
         }
     }
@@ -593,19 +728,45 @@ class MonitoringResourceController extends AbstractController
             || $contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_SERVICES_READ)
         ) {
             $resource->getLinks()->getUris()->setConfiguration(
-                $this->generateResourceUri($resource, static::SERVICE_CONFIGURATION_URI)
+                $this->generateResourceUri($resource, self::SERVICE_CONFIGURATION_URI)
             );
         }
 
         if ($contact->hasTopologyRole(Contact::ROLE_MONITORING_EVENT_LOGS)) {
             $resource->getLinks()->getUris()->setLogs(
-                $this->generateResourceUri($resource, static::SERVICE_LOGS_URI)
+                $this->generateResourceUri($resource, self::SERVICE_LOGS_URI)
             );
         }
 
         if ($contact->hasTopologyRole(Contact::ROLE_REPORTING_DASHBOARD_SERVICES)) {
             $resource->getLinks()->getUris()->setReporting(
-                $this->generateResourceUri($resource, static::SERVICE_REPORTING_URI)
+                $this->generateResourceUri($resource, self::SERVICE_REPORTING_URI)
+            );
+        }
+    }
+
+    /**
+     * Add service internal uris (configuration, logs, reporting) to the given resource
+     *
+     * @param ResourceEntity $resource
+     * @param Contact $contact
+     * @return void
+     */
+    private function provideMetaServiceInternalUris(ResourceEntity $resource, Contact $contact): void
+    {
+        if (
+            $contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_META_SERVICES_WRITE)
+            || $contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_META_SERVICES_READ)
+            || $contact->isAdmin()
+        ) {
+            $resource->getLinks()->getUris()->setConfiguration(
+                $this->generateResourceUri($resource, self::META_SERVICE_CONFIGURATION_URI)
+            );
+        }
+
+        if ($contact->hasTopologyRole(Contact::ROLE_MONITORING_EVENT_LOGS)) {
+            $resource->getLinks()->getUris()->setLogs(
+                $this->generateResourceUri($resource, self::META_SERVICE_LOGS_URI)
             );
         }
     }
@@ -619,13 +780,15 @@ class MonitoringResourceController extends AbstractController
      */
     private function generateResourceUri(ResourceEntity $resource, string $relativeUri): string
     {
-        $uri = str_replace('{resource_id}', $resource->getId(), $relativeUri);
+        $relativeUri = str_replace('{resource_id}', (string) $resource->getId(), $relativeUri);
+        $relativeUri = str_replace('{host_id}', (string) $resource->getHostId(), $relativeUri);
+        $relativeUri = str_replace('{service_id}', (string) $resource->getServiceId(), $relativeUri);
 
         if ($resource->getParent() !== null) {
-            $uri = str_replace('{parent_resource_id}', $resource->getParent()->getId(), $uri);
+            $relativeUri = str_replace('{parent_resource_id}', (string) $resource->getParent()->getId(), $relativeUri);
         }
 
-        return $this->getBaseUri() . $uri;
+        return $this->getBaseUri() . $relativeUri;
     }
 
     /**
@@ -648,7 +811,7 @@ class MonitoringResourceController extends AbstractController
      */
     public function buildHostUri(int $hostId, string $tab = self::TAB_DETAILS_NAME): string
     {
-        if (!in_array($tab, static::ALLOWED_TABS)) {
+        if (!in_array($tab, self::ALLOWED_TABS)) {
             throw new ResourceException(sprintf(_('Cannot build uri to unknown tab : %s'), $tab));
         }
 
@@ -657,6 +820,7 @@ class MonitoringResourceController extends AbstractController
                 'type' => ResourceEntity::TYPE_HOST,
                 'id' => $hostId,
                 'tab' => $tab,
+                'uuid' => 'h' . $hostId
             ]),
         ]);
     }
@@ -683,7 +847,7 @@ class MonitoringResourceController extends AbstractController
      */
     public function buildServiceUri(int $hostId, int $serviceId, string $tab = self::TAB_DETAILS_NAME): string
     {
-        if (!in_array($tab, static::ALLOWED_TABS)) {
+        if (!in_array($tab, self::ALLOWED_TABS)) {
             throw new ResourceException(sprintf(_('Cannot build uri to unknown tab : %s'), $tab));
         }
 
@@ -694,6 +858,32 @@ class MonitoringResourceController extends AbstractController
                 'type' => ResourceEntity::TYPE_SERVICE,
                 'id' => $serviceId,
                 'tab' => $tab,
+                'uuid' => 's' . $serviceId
+            ]),
+        ]);
+    }
+
+    /**
+     * Build uri to access meta service panel
+     *
+     * @param integer $metaId
+     * @param string $tab tab name
+     * @return string
+     */
+    public function buildMetaServiceDetailsUri(int $metaId, string $tab = self::TAB_DETAILS_NAME): string
+    {
+        if (!in_array($tab, self::ALLOWED_TABS)) {
+            throw new ResourceException(sprintf(_('Cannot build uri to unknown tab : %s'), $tab));
+        }
+
+        return $this->buildListingUri([
+            'details' => json_encode([
+                'parentType' => null,
+                'parentId' => null,
+                'type' => ResourceEntity::TYPE_META,
+                'id' => $metaId,
+                'tab' => $tab,
+                'uuid' => 'm' . $metaId
             ]),
         ]);
     }
@@ -701,7 +891,7 @@ class MonitoringResourceController extends AbstractController
     /**
      * Build uri to access listing page of resources with specific parameters
      *
-     * @param array $parameters
+     * @param string[] $parameters
      * @return string
      */
     public function buildListingUri(array $parameters): string

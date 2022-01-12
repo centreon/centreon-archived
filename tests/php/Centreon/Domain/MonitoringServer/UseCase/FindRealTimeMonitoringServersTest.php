@@ -24,28 +24,36 @@ namespace Tests\Centreon\Domain\MonitoringServer\UseCase;
 
 use PHPUnit\Framework\TestCase;
 use Centreon\Domain\Contact\Contact;
-use Centreon\Domain\MonitoringServer\RealTimeMonitoringServerService;
+use Centreon\Domain\MonitoringServer\MonitoringServer;
 use Centreon\Domain\MonitoringServer\UseCase\RealTimeMonitoringServer\FindRealTimeMonitoringServers;
+use Centreon\Infrastructure\MonitoringServer\Repository\RealTimeMonitoringServerRepositoryRDB;
 use Tests\Centreon\Domain\MonitoringServer\Model\RealTimeMonitoringServerTest;
 
 /**
- * @package Tests\Centreon\Domain\HostConfiguration\UseCase\V21\HostCategory
+ * @package Tests\Centreon\Domain\MonitoringServer\UseCase
  */
 class FindRealTimeMonitoringServersTest extends TestCase
 {
     /**
-     * @var RealTimeMonitoringServerService&\PHPUnit\Framework\MockObject\MockObject
+     * @var RealTimeMonitoringServerRepositoryRDB&\PHPUnit\Framework\MockObject\MockObject
      */
-    private $realTimeMonitoringServerService;
+    private $realTimeMonitoringServerRepository;
+
     /**
      * @var \Centreon\Domain\MonitoringServer\Model\RealTimeMonitoringServer
      */
     private $realTimeMonitoringServer;
 
+    /**
+     * @var MonitoringServer
+     */
+    private $monitoringServer;
+
     protected function setUp(): void
     {
-        $this->realTimeMonitoringServerService = $this->createMock(RealTimeMonitoringServerService::class);
+        $this->realTimeMonitoringServerRepository = $this->createMock(RealTimeMonitoringServerRepositoryRDB::class);
         $this->realTimeMonitoringServer = RealTimeMonitoringServerTest::createEntity();
+        $this->monitoringServer = (new MonitoringServer())->setId(1);
     }
 
     /**
@@ -53,15 +61,15 @@ class FindRealTimeMonitoringServersTest extends TestCase
      */
     public function testExecuteAsAdmin(): void
     {
-        $this->realTimeMonitoringServerService
+        $this->realTimeMonitoringServerRepository
             ->expects($this->once())
-            ->method('findAllWithoutAcl')
+            ->method('findAll')
             ->willReturn([$this->realTimeMonitoringServer]);
 
         $contact = new Contact();
         $contact->setAdmin(true);
         $findRealTimeMonitoringServers = new FindRealTimeMonitoringServers(
-            $this->realTimeMonitoringServerService,
+            $this->realTimeMonitoringServerRepository,
             $contact
         );
         $response = $findRealTimeMonitoringServers->execute();
@@ -73,15 +81,20 @@ class FindRealTimeMonitoringServersTest extends TestCase
     */
     public function testExecuteAsNonAdmin(): void
     {
-        $this->realTimeMonitoringServerService
+        $this->realTimeMonitoringServerRepository
             ->expects($this->once())
-            ->method('findAllWithAcl')
+            ->method('findAllowedMonitoringServers')
+            ->willReturn([$this->monitoringServer]);
+
+        $this->realTimeMonitoringServerRepository
+            ->expects($this->once())
+            ->method('findByIds')
             ->willReturn([$this->realTimeMonitoringServer]);
 
         $contact = new Contact();
         $contact->setAdmin(false);
         $findRealTimeMonitoringServers = new FindRealTimeMonitoringServers(
-            $this->realTimeMonitoringServerService,
+            $this->realTimeMonitoringServerRepository,
             $contact
         );
         $response = $findRealTimeMonitoringServers->execute();

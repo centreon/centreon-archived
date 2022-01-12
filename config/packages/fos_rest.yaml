@@ -11,9 +11,7 @@ fos_rest:
         mime_types:
             json: ['application/json', 'application/json;version=1.0']
 
-    routing_loader:
-        prefix_methods: true
-        include_format: false
+    routing_loader: false
     param_fetcher_listener: true
     exception:
         enabled: true # All exceptions will be serialized to Json

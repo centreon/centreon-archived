@@ -303,8 +303,8 @@ msgstr "Temps en secondes à attendre avant d'activer le basculement."
 
 #: centreon-web/help.php:50
 #: centreon-web/www/include/configuration/configCentreonBroker/help.php:88
-msgid "Time in seconds to wait between each connection attempt."
-msgstr "Temps d'attente en secondes entre chaque tentative de connexion."
+msgid "Time in seconds to wait between each connection attempt (Default value: 30s)."
+msgstr "Temps d'attente en secondes entre chaque tentative de connexion (Valeur par défaut: 30s)."
 
 #: centreon-web/help.php:51
 #: centreon-web/www/include/configuration/configCentreonBroker/help.php:39
@@ -2466,24 +2466,22 @@ msgstr ""
 
 #: centreon-web/www/include/configuration/configNagios/help.php:413
 msgid ""
-"This option determines the maximum number of minutes from when Monitoring "
-"Engine starts that all services (that are scheduled to be regularly checked) "
-"are checked. This option will automatically adjust the service inter-check "
-"delay method (if necessary) to ensure that the initial checks of all services "
-"occur within the timeframe you specify. In general, this option will not have "
-"an effect on service check scheduling if scheduling information is being "
-"retained using the use_retained_scheduling_info option. Default value is 30 "
-"(minutes)."
+"This option determines the maximum number of minutes from when Monitoring Engine starts until all services "
+"(that are scheduled to be regularly checked) are checked. This option will automatically adjust the service "
+"inter-check delay method (if necessary) to ensure that the initial checks of all services occur within the "
+"timeframe you specify. In general, this option will not have an effect on service check scheduling if "
+"scheduling information is being retained using the use_retained_scheduling_info option. Default value in "
+"centengine is 5 (minutes) but it should be raised to 30 if the poller monitors more than 5000 services to "
+"avoid load issues."
 msgstr ""
-"Cette option détermine le nombre maximal de minutes entre le démarrage du "
-"moteur de supervision et la vérification de tous les services (qui doivent "
-"être régulièrement vérifiés). Cette option permet de régler automatiquement la "
-"stratégie de délai entre les vérifications de service (si nécessaire) pour "
-"s'assurer que les vérifications initiales de tous les services se produisent "
-"dans l'intervalle de temps spécifié. En général, cette option n'a pas d'effet "
-"sur ​​la planification des vérifications de service si l'information sur la "
-"planification est conservée en utilisant l'option "
-"use_retained_scheduling_info. La valeur par défaut est 30 (minutes)."
+"Cette option détermine le nombre maximal de minutes entre le démarrage du moteur de supervision "
+"et la vérification de tous les services (qui doivent être régulièrement vérifiés). "
+"Cette option permet de régler automatiquement la stratégie de délai entre les vérifications de service "
+"(si nécessaire) pour s'assurer que les vérifications initiales de tous les services se produisent dans "
+"l'intervalle de temps spécifié. En général, cette option n'a pas d'effet sur la planification des "
+"vérifications de service si l'information sur la planification est conservée en utilisant l'option "
+"use_retained_scheduling_info. La valeur par défaut est 5 (minutes) mais elle doit être augmentée à 30 si "
+"le collecteur supervise plus de 5000 services pour éviter des problèmes de charge."
 
 #: centreon-web/www/include/configuration/configNagios/help.php:414
 msgid ""
@@ -7233,3 +7231,15 @@ msgstr "URL complète permettant d'accéder à l'API du serveur central Centreon
 
 msgid "Allows to skip the SSL certificate check on the Centreon's central server."
 msgstr "Permet de ne pas vérifier le certificat SSL du serveur central Centreon."
+
+msgid ""
+"If checked this option will restore the use of the deprecated pages."
+"This includes display of the deprecated pages and internal redirections between pages"
+"If not checked this option will enable the full use of the new Monitoring page Resource Status"
+msgstr ""
+"Si l'option est activée l'utilisation des pages dépréciées sera totalement rétablie"
+"Cela inclu: l'affichage des pages mais également toutes les redirections entre pages dépréciées"
+"Si l'option n'est pas activée l'utilisation de la nouvelle page de Monitoring Resource Status sera pleinement activée"
+
+msgid "Expected TLS certificate common name (CN) - leave blank if unsure."
+msgstr "Champ common name (CN) attendu dans le certificat TLS - laisser vide en cas de doute"

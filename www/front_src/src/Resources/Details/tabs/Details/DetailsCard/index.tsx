@@ -1,27 +1,49 @@
 import * as React from 'react';
 
-import { Card, CardContent, Typography, Grid } from '@material-ui/core';
+import { Typography } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+
+import Card from '../Card';
+
+const useStyles = makeStyles((theme) => ({
+  active: {
+    color: theme.palette.success.main,
+  },
+  container: {
+    height: 65,
+    overflow: 'hidden',
+  },
+  title: {
+    display: 'flex',
+    gridGap: theme.spacing(1),
+  },
+}));
 
 interface Props {
+  isCustomCard?: boolean;
+  line: JSX.Element;
   title: string;
-  lines: Array<{ key: string; line: JSX.Element | null }>;
 }
 
-const DetailsCard = ({ title, lines }: Props): JSX.Element => {
+const DetailsCard = ({
+  title,
+  line,
+  isCustomCard = false,
+}: Props): JSX.Element => {
+  const classes = useStyles();
+
+  if (isCustomCard) {
+    return line;
+  }
+
   return (
-    <Card style={{ height: '100%' }}>
-      <CardContent>
-        <Typography variant="subtitle2" color="textSecondary" gutterBottom>
+    <Card className={classes.container}>
+      <div className={classes.title}>
+        <Typography gutterBottom color="textSecondary" variant="body1">
           {title}
         </Typography>
-        <Grid direction="column" container spacing={1}>
-          {lines.map(({ key, line }) => (
-            <Grid item key={key}>
-              {line}
-            </Grid>
-          ))}
-        </Grid>
-      </CardContent>
+      </div>
+      {line}
     </Card>
   );
 };

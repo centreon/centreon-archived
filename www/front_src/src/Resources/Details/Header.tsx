@@ -1,43 +1,90 @@
+/* eslint-disable hooks/sort */
+// Issue : https://github.com/hiukky/eslint-plugin-hooks/issues/3
+
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
+import { hasPath, isNil, not, path, prop } from 'ramda';
 
-import { Grid, Typography, makeStyles } from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
-import CopyIcon from '@material-ui/icons/FileCopy';
+import {
+  Grid,
+  Typography,
+  Theme,
+  Link,
+  Tooltip,
+  Skeleton,
+} from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import CopyIcon from '@mui/icons-material/FileCopy';
+import SettingsIcon from '@mui/icons-material/Settings';
+import { CreateCSSProperties } from '@mui/styles';
 
 import {
   StatusChip,
   SeverityCode,
   IconButton,
   useSnackbar,
-  Severity,
+  copyToClipboard,
 } from '@centreon/ui';
-import copyToClipboard from '@centreon/ui/src/utils/copy';
 
 import {
+  labelActionNotPermitted,
+  labelConfigure,
   labelCopyLink,
   labelLinkCopied,
   labelSomethingWentWrong,
 } from '../translatedLabels';
-import memoizeComponent from '../memoizedComponent';
+import { Parent, ResourceUris } from '../models';
+
+import SelectableResourceName from './tabs/Details/SelectableResourceName';
+import ShortcutsTooltip from './ShortcutsTooltip';
 
 import { DetailsSectionProps } from '.';
 
-const useStyles = makeStyles((theme) => ({
-  header: {
-    height: 43,
-    padding: theme.spacing(0, 1),
+interface MakeStylesProps {
+  displaySeverity: boolean;
+}
+
+const useStyles = makeStyles<Theme, MakeStylesProps>((theme) => ({
+  header: ({ displaySeverity }): CreateCSSProperties<MakeStylesProps> => ({
+    alignItems: 'center',
     display: 'grid',
     gridGap: theme.spacing(2),
-    gridTemplateColumns: 'auto minmax(0, 1fr) auto',
-    alignItems: 'center',
-  },
+    gridTemplateColumns: `${
+      displaySeverity ? 'auto' : ''
+    } auto minmax(0, 1fr) auto auto`,
+    height: 43,
+    padding: theme.spacing(0, 1),
+  }),
   parent: {
+    alignItems: 'center',
     display: 'grid',
     gridGap: theme.spacing(1),
     gridTemplateColumns: 'auto minmax(0, 1fr)',
+  },
+  resourceName: {
     alignItems: 'center',
+    columnGap: theme.spacing(1),
+    display: 'grid',
+    gridTemplateColumns: 'minmax(auto, min-content) min-content',
+    height: '100%',
+  },
+  resourceNameConfigurationIcon: {
+    alignSelf: 'center',
+    display: 'flex',
+    minWidth: theme.spacing(2.5),
+  },
+  resourceNameConfigurationLink: {
+    height: theme.spacing(2.5),
+  },
+  resourceNameContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100%',
+    width: '100%',
+  },
+  resourceNameTooltip: {
+    maxWidth: 'none',
   },
   truncated: {
     overflow: 'hidden',
@@ -47,33 +94,33 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const LoadingSkeleton = (): JSX.Element => (
-  <Grid container spacing={2} alignItems="center" item style={{ flexGrow: 1 }}>
+  <Grid container item alignItems="center" spacing={2} style={{ flexGrow: 1 }}>
     <Grid item>
-      <Skeleton variant="circle" width={25} height={25} />
+      <Skeleton height={25} variant="circular" width={25} />
     </Grid>
     <Grid item>
-      <Skeleton width={250} height={25} />
+      <Skeleton height={25} width={250} />
     </Grid>
   </Grid>
 );
 
-const HeaderContent = ({ details }: DetailsSectionProps): JSX.Element => {
+type Props = {
+  onSelectParent: (parent: Parent) => void;
+} & DetailsSectionProps;
+
+const Header = ({ details, onSelectParent }: Props): JSX.Element => {
   const { t } = useTranslation();
-  const { showMessage } = useSnackbar();
-  const classes = useStyles();
+  const { showSuccessMessage, showErrorMessage } = useSnackbar();
+  const classes = useStyles({
+    displaySeverity: not(isNil(details?.severity_level)),
+  });
 
   const copyResourceLink = (): void => {
     try {
       copyToClipboard(window.location.href);
-      showMessage({
-        message: t(labelLinkCopied),
-        severity: Severity.success,
-      });
+      showSuccessMessage(t(labelLinkCopied));
     } catch (_) {
-      showMessage({
-        message: t(labelSomethingWentWrong),
-        severity: Severity.error,
-      });
+      showErrorMessage(t(labelSomethingWentWrong));
     }
   };
 
@@ -81,52 +128,88 @@ const HeaderContent = ({ details }: DetailsSectionProps): JSX.Element => {
     return <LoadingSkeleton />;
   }
 
+  const resourceUris = path<ResourceUris>(
+    ['links', 'uris'],
+    details,
+  ) as ResourceUris;
+
+  const resourceConfigurationUri = prop('configuration', resourceUris);
+
+  const resourceConfigurationUriTitle = isNil(resourceConfigurationUri)
+    ? t(labelActionNotPermitted)
+    : '';
+
+  const resourceConfigurationIconColor = isNil(resourceConfigurationUri)
+    ? 'disabled'
+    : 'primary';
+
   return (
-    <>
-      {details.severity_level && (
+    <div className={classes.header}>
+      {details?.severity_level && (
         <StatusChip
+          label={details?.severity_level.toString()}
           severityCode={SeverityCode.None}
-          label={details.severity_level.toString()}
         />
       )}
       <StatusChip
-        severityCode={details.status.severity_code}
         label={t(details.status.name)}
+        severityCode={details.status.severity_code}
       />
-      <div>
-        <Typography className={classes.truncated}>{details.name}</Typography>
-        {details.parent && (
-          <div className={classes.parent}>
-            <StatusChip severityCode={details.parent.status?.severity_code} />
-            <Typography variant="caption" className={classes.truncated}>
-              {details.parent.name}
+      <div className={classes.resourceNameContainer}>
+        <div
+          aria-label={`${details.name}_hover`}
+          className={classes.resourceName}
+        >
+          <Tooltip
+            classes={{ tooltip: classes.resourceNameTooltip }}
+            placement="top"
+            title={details.name}
+          >
+            <Typography className={classes.truncated}>
+              {details.name}
             </Typography>
+          </Tooltip>
+          <Tooltip title={resourceConfigurationUriTitle}>
+            <div className={classes.resourceNameConfigurationIcon}>
+              <Link
+                aria-label={`${t(labelConfigure)}_${details.name}`}
+                className={classes.resourceNameConfigurationLink}
+                href={resourceConfigurationUri}
+              >
+                <SettingsIcon
+                  color={resourceConfigurationIconColor}
+                  fontSize="small"
+                />
+              </Link>
+            </div>
+          </Tooltip>
+        </div>
+        {hasPath(['parent', 'status'], details) && (
+          <div className={classes.parent}>
+            <StatusChip
+              severityCode={
+                details.parent.status?.severity_code || SeverityCode.None
+              }
+            />
+            <SelectableResourceName
+              name={details.parent.name}
+              variant="caption"
+              onSelect={(): void => onSelectParent(details.parent)}
+            />
           </div>
         )}
       </div>
+      <ShortcutsTooltip resourceUris={resourceUris} />
       <IconButton
+        ariaLabel={t(labelCopyLink)}
         size="small"
         title={t(labelCopyLink)}
-        ariaLabel={t(labelCopyLink)}
         onClick={copyResourceLink}
       >
         <CopyIcon fontSize="small" />
       </IconButton>
-    </>
-  );
-};
-
-const Header = ({ details }: DetailsSectionProps): JSX.Element => {
-  const classes = useStyles();
-
-  return (
-    <div className={classes.header}>
-      <HeaderContent details={details} />
     </div>
   );
 };
 
-export default memoizeComponent<DetailsSectionProps>({
-  memoProps: ['details'],
-  Component: Header,
-});
+export default Header;

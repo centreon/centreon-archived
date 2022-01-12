@@ -1,9 +1,9 @@
 import * as React from 'react';
 
-import { Skeleton } from '@material-ui/lab';
+import { Skeleton } from '@mui/material';
 
 const FilterLoadingSkeleton = (): JSX.Element => {
-  return <Skeleton width={200} height={36} style={{ transform: 'none' }} />;
+  return <Skeleton height={33} style={{ transform: 'none' }} width={175} />;
 };
 
 export default FilterLoadingSkeleton;

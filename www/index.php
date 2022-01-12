@@ -61,7 +61,6 @@ require_once $classdir . "/centreonSession.class.php";
 require_once $classdir . "/centreonAuth.SSO.class.php";
 require_once $classdir . "/centreonLog.class.php";
 require_once $classdir . "/centreonDB.class.php";
-require_once SMARTY_DIR . "Smarty.class.php";
 
 /*
  * Get auth type
@@ -126,6 +125,10 @@ if (isset($_GET["disconnect"])) {
         $CentreonLog->insertLog(1, "Contact '" . $centreon->user->get_alias() . "' logout");
 
         $pearDB->query("DELETE FROM session WHERE session_id = '" . session_id() . "'");
+
+        $sessionStatement = $pearDB->prepare("DELETE FROM security_token WHERE token = :sessionId");
+        $sessionStatement->bindValue(':sessionId', session_id(), \PDO::PARAM_STR);
+        $sessionStatement->execute();
 
         CentreonSession::restart();
     }

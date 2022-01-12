@@ -10,9 +10,8 @@ Feature:
   Scenario: Real Time Monitoring Server Listing
     Given I am logged in
     And the configuration is generated and exported
-
-    When I send a GET request to '/beta/monitoring/servers'
+    And I wait to get 1 result from "/api/v21.10/monitoring/servers" (tries: 30)
+    When I send a GET request to '/api/v21.10/monitoring/servers'
     Then the response code should be "200"
     And the response should be formatted like JSON format "standard/listing.json"
-    And the json node "result" should have 1 elements
     And the JSON node "result[0].name" should be equal to the string "Central"

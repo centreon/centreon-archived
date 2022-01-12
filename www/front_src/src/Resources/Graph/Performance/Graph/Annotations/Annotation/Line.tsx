@@ -1,24 +1,30 @@
 import * as React from 'react';
 
-import { Line } from '@visx/visx';
+import { Shape } from '@visx/visx';
 import { ScaleTime } from 'd3-scale';
-import { prop } from 'ramda';
+import { pick } from 'ramda';
+import { useAtomValue } from 'jotai/utils';
 
-import { makeStyles } from '@material-ui/core';
+import makeStyles from '@mui/styles/makeStyles';
 
 import { useLocaleDateTimeFormat, useMemoComponent } from '@centreon/ui';
 
-import useAnnotationsContext from '../../Context';
+import {
+  annotationHoveredAtom,
+  getIconColorDerivedAtom,
+  getStrokeOpacityDerivedAtom,
+  getStrokeWidthDerivedAtom,
+} from '../../annotationsAtoms';
 
 import Annotation, { Props as AnnotationProps, yMargin, iconSize } from '.';
 
 type Props = {
-  color: string;
-  graphHeight: number;
-  xScale: ScaleTime<number, number>;
-  date: string;
   Icon: (props) => JSX.Element;
   ariaLabel: string;
+  color: string;
+  date: string;
+  graphHeight: number;
+  xScale: ScaleTime<number, number>;
 } & Omit<
   AnnotationProps,
   'marker' | 'xIcon' | 'header' | 'icon' | 'setAnnotationHovered'
@@ -45,13 +51,10 @@ const LineAnnotation = ({
 
   const classes = useStyles();
 
-  const {
-    annotationHovered,
-    setAnnotationHovered,
-    getStrokeWidth,
-    getStrokeOpacity,
-    getIconColor,
-  } = useAnnotationsContext();
+  const annotationHovered = useAtomValue(annotationHoveredAtom);
+  const getStrokeWidth = useAtomValue(getStrokeWidthDerivedAtom);
+  const getStrokeOpacity = useAtomValue(getStrokeOpacityDerivedAtom);
+  const getIconColor = useAtomValue(getIconColorDerivedAtom);
 
   const xIconMargin = -iconSize / 2;
 
@@ -59,43 +62,44 @@ const LineAnnotation = ({
 
   const header = toDateTime(date);
 
+  const annotation = pick(['event', 'resourceId'], props);
+
   const line = (
-    <Line
+    <Shape.Line
       from={{ x: xIcon, y: yMargin + iconSize + 2 }}
-      to={{ x: xIcon, y: graphHeight }}
       stroke={color}
-      strokeWidth={getStrokeWidth(prop('event', props))}
-      strokeOpacity={getStrokeOpacity(prop('event', props))}
+      strokeOpacity={getStrokeOpacity(annotation)}
+      strokeWidth={getStrokeWidth(annotation)}
+      to={{ x: xIcon, y: graphHeight }}
     />
   );
 
   const icon = (
     <Icon
       aria-label={ariaLabel}
+      className={classes.icon}
       height={iconSize}
-      width={iconSize}
       style={{
         color: getIconColor({
+          annotation,
           color,
-          event: prop('event', props),
         }),
       }}
-      className={classes.icon}
+      width={iconSize}
     />
   );
 
   return useMemoComponent({
     Component: (
       <Annotation
-        xIcon={xIcon + xIconMargin}
-        marker={line}
         header={header}
         icon={icon}
-        setAnnotationHovered={setAnnotationHovered}
+        marker={line}
+        xIcon={xIcon + xIconMargin}
         {...props}
       />
     ),
-    memoProps: [annotationHovered],
+    memoProps: [annotationHovered, xIcon],
   });
 };
 

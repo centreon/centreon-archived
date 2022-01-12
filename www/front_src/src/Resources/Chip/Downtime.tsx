@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { useTheme } from '@material-ui/core';
+import { useTheme } from '@mui/material';
 
 import IconDowntime from '../icons/Downtime';
 
@@ -11,8 +11,8 @@ const DowntimeChip = (): JSX.Element => {
 
   return (
     <Chip
-      icon={<IconDowntime fontSize="small" />}
       color={theme.palette.action.inDowntime}
+      icon={<IconDowntime fontSize="small" />}
     />
   );
 };

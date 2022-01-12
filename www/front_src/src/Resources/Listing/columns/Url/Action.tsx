@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { path } from 'ramda';
 
-import IconAction from '@material-ui/icons/FlashOn';
+import IconAction from '@mui/icons-material/FlashOn';
 
 import { ComponentColumnProps } from '@centreon/ui';
 
@@ -15,11 +15,7 @@ const ActionUrlColumn = ({ row }: ComponentColumnProps): JSX.Element => {
   );
 
   return (
-    <UrlColumn
-      endpoint={endpoint}
-      title={endpoint}
-      icon={<IconAction fontSize="small" />}
-    />
+    <UrlColumn endpoint={endpoint} icon={<IconAction fontSize="small" />} />
   );
 };
 

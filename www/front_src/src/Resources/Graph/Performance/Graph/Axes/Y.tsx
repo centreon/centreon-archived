@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { AxisRight, AxisLeft } from '@visx/visx';
+import { Axis } from '@visx/visx';
 import { isNil } from 'ramda';
 import { ScaleLinear } from 'd3-scale';
 
@@ -11,25 +11,25 @@ import { Line } from '../../models';
 import { commonTickLabelProps } from '.';
 
 interface Props {
-  lines: Array<Line>;
-  graphWidth: number;
-  graphHeight: number;
   base: number;
+  graphHeight: number;
+  graphWidth: number;
   leftScale: ScaleLinear<number, number>;
+  lines: Array<Line>;
   rightScale: ScaleLinear<number, number>;
 }
 
 interface UnitLabelProps {
-  x: number;
   unit: string;
+  x: number;
 }
 
 const UnitLabel = ({ x, unit }: UnitLabelProps): JSX.Element => (
   <text
+    fontFamily={commonTickLabelProps.fontFamily}
+    fontSize={commonTickLabelProps.fontSize}
     x={x}
     y={-8}
-    fontSize={commonTickLabelProps.fontSize}
-    fontFamily={commonTickLabelProps.fontFamily}
   >
     {unit}
   </text>
@@ -43,13 +43,15 @@ const YAxes = ({
   rightScale,
   graphHeight,
 }: Props): JSX.Element => {
-  const formatTick = ({ unit }) => (value): string => {
-    if (isNil(value)) {
-      return '';
-    }
+  const formatTick =
+    ({ unit }) =>
+    (value): string => {
+      if (isNil(value)) {
+        return '';
+      }
 
-    return formatMetricValue({ value, unit, base }) as string;
-  };
+      return formatMetricValue({ base, unit, value }) as string;
+    };
 
   const [firstUnit, secondUnit, thirdUnit] = getUnits(lines);
 
@@ -60,29 +62,29 @@ const YAxes = ({
 
   return (
     <>
-      {!hasMoreThanTwoUnits && <UnitLabel x={0} unit={firstUnit} />}
-      <AxisLeft
+      {!hasMoreThanTwoUnits && <UnitLabel unit={firstUnit} x={0} />}
+      <Axis.AxisLeft
+        numTicks={ticksCount}
         orientation="left"
+        scale={leftScale}
+        tickFormat={formatTick({ unit: hasMoreThanTwoUnits ? '' : firstUnit })}
         tickLabelProps={(): Record<string, unknown> => ({
           ...commonTickLabelProps,
-          textAnchor: 'end',
-          dy: 4,
           dx: -2,
+          dy: 4,
+          textAnchor: 'end',
         })}
-        tickFormat={formatTick({ unit: hasMoreThanTwoUnits ? '' : firstUnit })}
-        numTicks={ticksCount}
         tickLength={2}
-        scale={leftScale}
       />
       {hasTwoUnits && (
         <>
-          <AxisRight
-            orientation="right"
+          <Axis.AxisRight
             left={graphWidth}
+            numTicks={ticksCount}
+            orientation="right"
+            scale={rightScale}
             tickFormat={formatTick({ unit: secondUnit })}
             tickLength={2}
-            scale={rightScale}
-            numTicks={ticksCount}
           />
           <UnitLabel unit={secondUnit} x={graphWidth} />
         </>

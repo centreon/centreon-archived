@@ -2,8 +2,8 @@ import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import { useTheme } from '@material-ui/core';
-import IconAcknowledge from '@material-ui/icons/Person';
+import { useTheme } from '@mui/material';
+import IconAcknowledge from '@mui/icons-material/Person';
 
 import { Props } from '..';
 import { labelAcknowledgement } from '../../../../../translatedLabels';
@@ -17,10 +17,10 @@ const AcknowledgementAnnotations = (props: Props): JSX.Element => {
 
   return (
     <EventAnnotations
-      type="acknowledgement"
       Icon={IconAcknowledge}
       ariaLabel={t(labelAcknowledgement)}
       color={color}
+      type="acknowledgement"
       {...props}
     />
   );

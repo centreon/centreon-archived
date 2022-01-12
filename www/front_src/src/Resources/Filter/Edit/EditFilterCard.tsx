@@ -13,9 +13,11 @@ import {
   omit,
 } from 'ramda';
 import { useTranslation } from 'react-i18next';
+import { useUpdateAtom } from 'jotai/utils';
+import { useAtom } from 'jotai';
 
-import DeleteIcon from '@material-ui/icons/Delete';
-import { makeStyles } from '@material-ui/core';
+import DeleteIcon from '@mui/icons-material/Delete';
+import makeStyles from '@mui/styles/makeStyles';
 
 import {
   ContentWithCircularLoading,
@@ -24,7 +26,6 @@ import {
   useRequest,
   ConfirmDialog,
   useSnackbar,
-  Severity,
 } from '@centreon/ui';
 
 import {
@@ -38,46 +39,33 @@ import {
   labelNameCannotBeEmpty,
 } from '../../translatedLabels';
 import { updateFilter, deleteFilter } from '../api';
-import { Filter } from '../models';
-import { ResourceContext, useResourceContext } from '../../Context';
-import memoizeComponent from '../../memoizedComponent';
+import { Filter, newFilter } from '../models';
+import {
+  appliedFilterAtom,
+  currentFilterAtom,
+  customFiltersAtom,
+} from '../filterAtoms';
 
 const useStyles = makeStyles((theme) => ({
   filterCard: {
+    alignItems: 'center',
     display: 'grid',
     gridAutoFlow: 'column',
     gridGap: theme.spacing(2),
-    alignItems: 'center',
     gridTemplateColumns: 'auto 1fr',
   },
 }));
 
-interface EditFilterCardProps {
+interface Props {
   filter: Filter;
 }
 
-interface Props
-  extends EditFilterCardProps,
-    Pick<
-      ResourceContext,
-      'customFilters' | 'setFilter' | 'setCustomFilters' | 'setNewFilter'
-    > {
-  currentFilter: Filter;
-}
-
-const EditFilterCardContent = ({
-  filter,
-  currentFilter,
-  customFilters,
-  setFilter,
-  setCustomFilters,
-  setNewFilter,
-}: Props): JSX.Element => {
+const EditFilterCard = ({ filter }: Props): JSX.Element => {
   const classes = useStyles();
 
   const { t } = useTranslation();
 
-  const { showMessage } = useSnackbar();
+  const { showSuccessMessage } = useSnackbar();
 
   const [deleting, setDeleting] = React.useState(false);
 
@@ -95,6 +83,10 @@ const EditFilterCardContent = ({
     request: deleteFilter,
   });
 
+  const [currentFilter, setCurrentFilter] = useAtom(currentFilterAtom);
+  const [customFilters, setCustomFilters] = useAtom(customFiltersAtom);
+  const setAppliedFilter = useUpdateAtom(appliedFilterAtom);
+
   const { name, id } = filter;
 
   const validationSchema = Yup.object().shape({
@@ -106,7 +98,6 @@ const EditFilterCardContent = ({
     initialValues: {
       name,
     },
-    validationSchema,
     onSubmit: (values) => {
       const updatedFilter = { ...filter, name: values.name };
 
@@ -114,13 +105,10 @@ const EditFilterCardContent = ({
         filter: omit(['id'], updatedFilter),
         id: updatedFilter.id,
       }).then(() => {
-        showMessage({
-          message: t(labelFilterUpdated),
-          severity: Severity.success,
-        });
+        showSuccessMessage(t(labelFilterUpdated));
 
         if (equals(updatedFilter.id, currentFilter.id)) {
-          setFilter(updatedFilter);
+          setCurrentFilter(updatedFilter);
         }
 
         const index = findIndex(propEq('id', updatedFilter.id), customFilters);
@@ -128,6 +116,7 @@ const EditFilterCardContent = ({
         setCustomFilters(update(index, updatedFilter, customFilters));
       });
     },
+    validationSchema,
   });
 
   const askDelete = (): void => {
@@ -138,13 +127,11 @@ const EditFilterCardContent = ({
     setDeleting(false);
 
     sendDeleteFilterRequest(filter).then(() => {
-      showMessage({
-        message: t(labelFilterDeleted),
-        severity: Severity.success,
-      });
+      showSuccessMessage(t(labelFilterDeleted));
 
       if (equals(filter.id, currentFilter.id)) {
-        setNewFilter();
+        setCurrentFilter({ ...filter, ...newFilter });
+        setAppliedFilter({ ...filter, ...newFilter });
       }
 
       setCustomFilters(reject(equals(filter), customFilters));
@@ -181,63 +168,40 @@ const EditFilterCardContent = ({
   return (
     <div className={classes.filterCard}>
       <ContentWithCircularLoading
+        alignCenter={false}
         loading={sendingRequest}
         loadingIndicatorSize={24}
-        alignCenter={false}
       >
-        <IconButton title={t(labelDelete)} onClick={askDelete}>
+        <IconButton
+          aria-label={t(labelDelete)}
+          size="large"
+          title={t(labelDelete)}
+          onClick={askDelete}
+        >
           <DeleteIcon fontSize="small" />
         </IconButton>
       </ContentWithCircularLoading>
       <TextField
+        transparent
         ariaLabel={`${t(labelFilter)}-${id}-${t(labelName)}`}
-        value={form.values.name}
         error={form.errors.name}
+        value={form.values.name}
+        onBlur={rename}
         onChange={form.handleChange('name') as (event) => void}
         onKeyDown={renameOnEnterKey}
-        onBlur={rename}
-        transparent
       />
 
       {deleting && (
         <ConfirmDialog
-          labelConfirm={t(labelDelete)}
+          open
           labelCancel={t(labelCancel)}
-          onConfirm={confirmDelete}
+          labelConfirm={t(labelDelete)}
           labelTitle={t(labelAskDelete)}
           onCancel={cancelDelete}
-          open
+          onConfirm={confirmDelete}
         />
       )}
     </div>
-  );
-};
-
-const memoProps = ['filter', 'currentFilter', 'customFilters'];
-
-const MemoizedEditFilterCardContent = memoizeComponent<Props>({
-  memoProps,
-  Component: EditFilterCardContent,
-});
-
-const EditFilterCard = ({ filter }: EditFilterCardProps): JSX.Element => {
-  const {
-    setFilter,
-    filter: currentFilter,
-    setCustomFilters,
-    customFilters,
-    setNewFilter,
-  } = useResourceContext();
-
-  return (
-    <MemoizedEditFilterCardContent
-      filter={filter}
-      currentFilter={currentFilter}
-      customFilters={customFilters}
-      setFilter={setFilter}
-      setCustomFilters={setCustomFilters}
-      setNewFilter={setNewFilter}
-    />
   );
 };
 

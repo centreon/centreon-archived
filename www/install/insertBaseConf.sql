@@ -2,7 +2,7 @@
 -- Insert version
 --
 
-INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '21.04.0-beta.1');
+INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '22.04.0-beta.1');
 
 --
 -- Contenu de la table `contact`
@@ -147,7 +147,24 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('gorgone_api_ssl', '0'),
 ('gorgone_api_allow_self_signed', '1'),
 ('gorgone_cmd_timeout', '5'),
-('enable_broker_stats', '0');
+('enable_broker_stats', '0'),
+('openid_connect_enable', '0'),
+('openid_connect_mode', '1'),
+('openid_connect_trusted_clients', ''),
+('openid_connect_blacklist_clients', ''),
+('openid_connect_base_url', ''),
+('openid_connect_authorization_endpoint', ''),
+('openid_connect_token_endpoint', ''),
+('openid_connect_introspection_endpoint', ''),
+('openid_connect_userinfo_endpoint', ''),
+('openid_connect_end_session_endpoint', ''),
+('openid_connect_scope', ''),
+('openid_connect_login_claim', ''),
+('openid_connect_redirect_url', ''),
+('openid_connect_client_id', ''),
+('openid_connect_client_secret', ''),
+('openid_connect_client_basic_auth', '0'),
+('openid_connect_verify_peer', '0');
 
 --
 -- Contenu de la table `giv_components_template`
@@ -491,7 +508,6 @@ INSERT INTO `cb_log_level` (`id`, `name`) VALUES
 
 INSERT INTO `cb_tag` (`cb_tag_id`, `tagname`) VALUES
 (2, 'input'),
-(3, 'logger'),
 (1, 'output');
 
 --
@@ -572,7 +588,7 @@ INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`
 (26, 'compression_level', 'Compression level', 'Ranges from 0 (no compression) to 9 (best compression). Default is -1 (zlib compression)', 'int', NULL),
 (27, 'compression_buffer', 'Compression buffer size', 'The higher the buffer size is, the best compression. This however increase data streaming latency. Use with caution.', 'int', NULL),
 (28, 'failover', 'Failover name', 'Name of the input or output object that will act as failover.', 'text', NULL),
-(31, 'retry_interval', 'Retry interval', 'Time in seconds to wait between each connection attempt.', 'int', NULL),
+(31, 'retry_interval', 'Retry interval', 'Time in seconds to wait between each connection attempt (Default value: 30s).', 'int', NULL),
 (32, 'buffering_timeout', 'Buffering timeout', 'Time in seconds to wait before launching failover.', 'int', NULL),
 (33, 'fifo', 'File for Centreon Broker statistics', 'File where Centreon Broker statistics will be stored', 'text', NULL),
 (34, 'queries_per_transaction', 'Maximum queries per transaction', 'The maximum queries per transaction before commit.', 'int', NULL),
@@ -601,7 +617,8 @@ INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`
 (68, 'storage_db_port', 'Storage DB port', 'Port on which the DB server listens', 'int', NULL),
 (69, 'storage_db_type', 'Storage DB type', 'Target DBMS.', 'select', NULL),
 (74, 'path', 'Path', 'Path of the lua script.', 'text', NULL),
-(75, 'connections_count', 'Number of connection to the database', 'Usually cpus/2', 'int', NULL);
+(75, 'connections_count', 'Number of connection to the database', 'Usually cpus/2', 'int', NULL),
+(76, 'tls_hostname', 'TLS Host name', 'Expected TLS certificate common name (CN) - leave blank if unsure.', 'text', NULL);
 
 INSERT INTO `cb_fieldgroup` (`cb_fieldgroup_id`, `groupname`, `displayname`, `multiple`, `group_parent_id`) VALUES
 (1, 'filters', '', 0, NULL),
@@ -727,10 +744,6 @@ INSERT INTO `cb_tag_type_relation` (`cb_tag_id`, `cb_type_id`, `cb_type_uniq`) V
 (2, 3, 0),
 (2, 10, 0),
 (2, 11, 0),
-(3, 17, 0),
-(3, 18, 0),
-(3, 19, 0),
-(3, 24, 0),
 (1, 28, 1),
 (1, 29, 1),
 (1, 30, 0),
@@ -869,7 +882,8 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 (33, 74, 1, 1),
 (33, 47, 0, 2),
 (33, 72, 0, 3),
-(33, 71, 0, 4);
+(33, 71, 0, 4),
+(3, 76, 0, 5);
 
 --
 -- Contenu de la table `cb_type_field_relation`
@@ -1374,3 +1388,7 @@ VALUES
   ('partitioning_retention', 365),
   ('partitioning_retention_forward', 10),
   ('partitioning_backup_directory', '/var/cache/centreon/backup');
+
+-- Insert local authentication provider configuration
+INSERT INTO `provider_configuration` (type, name, is_active, is_forced)
+VALUES ('local', 'local', true, true);

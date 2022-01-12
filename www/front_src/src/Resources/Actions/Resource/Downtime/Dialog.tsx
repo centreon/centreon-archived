@@ -1,91 +1,78 @@
-/* eslint-disable class-methods-use-this */
 import * as React from 'react';
 
-import dayjs from 'dayjs';
-import DayjsAdapter from '@date-io/dayjs';
 import { useTranslation } from 'react-i18next';
+import dayjs from 'dayjs';
+import { useAtomValue } from 'jotai/utils';
+import { FormikErrors, FormikHandlers, FormikValues } from 'formik';
+import { isNil } from 'ramda';
 
+import { LocalizationProvider, DateTimePicker } from '@mui/lab';
 import {
   Checkbox,
   FormControlLabel,
   FormHelperText,
-  Grid,
-} from '@material-ui/core';
-import {
-  MuiPickersUtilsProvider,
-  KeyboardTimePicker,
-  KeyboardDatePicker,
-  DatePickerProps,
-  TimePickerProps,
-} from '@material-ui/pickers';
-import { Alert } from '@material-ui/lab';
+  Alert,
+  TextFieldProps,
+  Stack,
+} from '@mui/material';
+import { Box } from '@mui/system';
 
-import {
-  Dialog,
-  TextField,
-  SelectField,
-  useLocaleDateTimeFormat,
-} from '@centreon/ui';
-import { useUserContext } from '@centreon/ui-context';
+import { Dialog, TextField, SelectField } from '@centreon/ui';
+import { userAtom } from '@centreon/ui-context';
 
 import {
   labelCancel,
-  labelEndDate,
   labelEndTime,
-  labelStartDate,
-  labelStartTime,
-  labelChangeEndDate,
-  labelChangeEndTime,
-  labelChangeStartDate,
-  labelChangeStartTime,
   labelComment,
   labelDowntime,
   labelDuration,
   labelFixed,
-  labelFrom,
   labelHours,
   labelMinutes,
   labelSeconds,
   labelSetDowntime,
   labelSetDowntimeOnServices,
   labelTo,
+  labelStartTime,
 } from '../../../translatedLabels';
 import { Resource } from '../../../models';
 import useAclQuery from '../aclQuery';
+import useDateTimePickerAdapter from '../../../useDateTimePickerAdapter';
 
-interface Props {
-  resources: Array<Resource>;
+import { DowntimeFormValues } from '.';
+
+const maxEndDate = new Date('2100-01-01');
+
+interface Props extends Pick<FormikHandlers, 'handleChange'> {
   canConfirm: boolean;
-  onCancel;
-  onConfirm;
-  errors?;
-  values;
+  errors?: FormikErrors<DowntimeFormValues>;
   handleChange;
+  onCancel: () => void;
+  onConfirm: () => Promise<unknown>;
+  resources: Array<Resource>;
   setFieldValue;
   submitting: boolean;
+  values: FormikValues;
 }
 
-const pickerCommonProps = {
-  disableToolbar: true,
-  variant: 'inline',
-  margin: 'none',
-  inputVariant: 'filled',
-  TextFieldComponent: TextField,
-  InputProps: {
-    disableUnderline: true,
-  },
-};
+const renderDateTimePickerEndAdornment = (InputProps) => (): JSX.Element =>
+  <div>{InputProps?.endAdornment}</div>;
 
-const datePickerProps = {
-  ...pickerCommonProps,
-  format: 'L',
-} as Omit<DatePickerProps, 'onChange'>;
-
-const timePickerProps = {
-  ...pickerCommonProps,
-  format: 'LT',
-  ampm: false,
-} as Omit<TimePickerProps, 'onChange'>;
+const renderDateTimePickerTextField =
+  (ariaLabel: string) =>
+  ({ inputRef, inputProps, InputProps }: TextFieldProps): JSX.Element => {
+    return (
+      <TextField
+        EndAdornment={renderDateTimePickerEndAdornment(InputProps)}
+        inputProps={{
+          ...inputProps,
+          'aria-label': ariaLabel,
+          ref: inputRef,
+          style: { padding: 8 },
+        }}
+      />
+    );
+  };
 
 const DialogDowntime = ({
   resources,
@@ -99,189 +86,166 @@ const DialogDowntime = ({
   setFieldValue,
 }: Props): JSX.Element => {
   const { t } = useTranslation();
-  const { locale, timezone } = useUserContext();
+
   const { getDowntimeDeniedTypeAlert, canDowntimeServices } = useAclQuery();
-  const { format } = useLocaleDateTimeFormat();
+  const [isPickerOpened, setIsPickerOpened] = React.useState(false);
+
+  const { locale } = useAtomValue(userAtom);
+
+  const { Adapter, getLocalAndConfiguredTimezoneOffset } =
+    useDateTimePickerAdapter();
 
   const open = resources.length > 0;
 
   const hasHosts = resources.find((resource) => resource.type === 'host');
 
-  const changeDate = (field) => (value): void => {
-    setFieldValue(field, value);
-  };
+  const changeDate =
+    (field) =>
+    (value): void => {
+      setFieldValue(field, value);
+    };
 
   const deniedTypeAlert = getDowntimeDeniedTypeAlert(resources);
 
-  class Adapter extends DayjsAdapter {
-    public format(date, formatString): string {
-      return format({ date, formatString });
-    }
+  const changeTime =
+    (field) =>
+    (newValue: dayjs.Dayjs | null, keyBoardValue: string | undefined): void => {
+      const value = isPickerOpened
+        ? dayjs(newValue).toDate()
+        : dayjs(keyBoardValue)
+            .add(
+              dayjs.duration({ hours: getLocalAndConfiguredTimezoneOffset() }),
+            )
+            .toDate();
 
-    public date(value): dayjs.Dayjs {
-      return dayjs(value).locale(locale).tz(timezone);
-    }
-  }
+      changeDate(field)(value);
+    };
 
   return (
     <Dialog
+      confirmDisabled={!canConfirm}
       labelCancel={t(labelCancel)}
       labelConfirm={t(labelSetDowntime)}
       labelTitle={t(labelDowntime)}
       open={open}
-      onClose={onCancel}
-      onCancel={onCancel}
-      onConfirm={onConfirm}
-      confirmDisabled={!canConfirm}
       submitting={submitting}
+      onCancel={onCancel}
+      onClose={onCancel}
+      onConfirm={onConfirm}
     >
       {deniedTypeAlert && <Alert severity="warning">{deniedTypeAlert}</Alert>}
-      <MuiPickersUtilsProvider utils={Adapter} locale={locale.substring(0, 2)}>
-        <Grid direction="column" container spacing={1}>
-          <Grid item>
-            <FormHelperText>{t(labelFrom)}</FormHelperText>
-            <Grid direction="row" container spacing={1}>
-              <Grid item style={{ width: 240 }}>
-                <KeyboardDatePicker
-                  aria-label={t(labelStartDate)}
-                  value={values.dateStart}
-                  onChange={changeDate('dateStart')}
-                  inputMode="text"
-                  KeyboardButtonProps={{
-                    'aria-label': t(labelChangeStartDate),
-                  }}
-                  error={errors?.dateStart !== undefined}
-                  helperText={errors?.dateStart}
-                  {...datePickerProps}
-                />
-              </Grid>
-              <Grid item style={{ width: 200 }}>
-                <KeyboardTimePicker
-                  aria-label={t(labelStartTime)}
-                  value={values.timeStart}
-                  onChange={changeDate('timeStart')}
-                  KeyboardButtonProps={{
-                    'aria-label': t(labelChangeStartTime),
-                  }}
-                  error={errors?.timeStart !== undefined}
-                  helperText={errors?.timeStart}
-                  {...timePickerProps}
-                />
-              </Grid>
-            </Grid>
-          </Grid>
-          <Grid item>
+      <LocalizationProvider
+        dateAdapter={Adapter}
+        locale={locale.substring(0, 2)}
+      >
+        <Stack spacing={1}>
+          <Box
+            alignItems="center"
+            display="grid"
+            gap={1}
+            gridTemplateColumns="1fr auto 1fr"
+          >
+            <DateTimePicker<dayjs.Dayjs>
+              maxDate={dayjs(maxEndDate)}
+              renderInput={renderDateTimePickerTextField(t(labelStartTime))}
+              value={values.startTime}
+              onChange={changeTime('startTime')}
+              onClose={(): void => setIsPickerOpened(false)}
+              onOpen={(): void => setIsPickerOpened(true)}
+            />
             <FormHelperText>{t(labelTo)}</FormHelperText>
-            <Grid direction="row" container spacing={1}>
-              <Grid item style={{ width: 240 }}>
-                <KeyboardDatePicker
-                  aria-label={t(labelEndDate)}
-                  value={values.dateEnd}
-                  onChange={changeDate('dateEnd')}
-                  KeyboardButtonProps={{
-                    'aria-label': t(labelChangeEndDate),
-                  }}
-                  error={errors?.dateEnd !== undefined}
-                  helperText={errors?.dateEnd}
-                  {...datePickerProps}
-                />
-              </Grid>
-              <Grid item style={{ width: 200 }}>
-                <KeyboardTimePicker
-                  aria-label={t(labelEndTime)}
-                  value={values.timeEnd}
-                  onChange={changeDate('timeEnd')}
-                  KeyboardButtonProps={{
-                    'aria-label': t(labelChangeEndTime),
-                  }}
-                  error={errors?.timeEnd !== undefined}
-                  helperText={errors?.timeEnd}
-                  {...timePickerProps}
-                />
-              </Grid>
-            </Grid>
-          </Grid>
-          <Grid item>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={values.fixed}
-                  inputProps={{ 'aria-label': t(labelFixed) }}
-                  color="primary"
-                  onChange={handleChange('fixed')}
-                  size="small"
-                />
-              }
-              label={t(labelFixed)}
+            <DateTimePicker<dayjs.Dayjs>
+              renderInput={renderDateTimePickerTextField(t(labelEndTime))}
+              value={values.endTime}
+              onChange={changeTime('endTime')}
+              onClose={(): void => setIsPickerOpened(false)}
+              onOpen={(): void => setIsPickerOpened(true)}
             />
-          </Grid>
-          <Grid item>
+            {isNil(errors?.startTime) ? (
+              <div />
+            ) : (
+              <FormHelperText error>{errors?.startTime}</FormHelperText>
+            )}
+            <div />
+            {isNil(errors?.endTime) ? (
+              <div />
+            ) : (
+              <FormHelperText error>{errors?.endTime}</FormHelperText>
+            )}
+          </Box>
+
+          <Stack>
             <FormHelperText>{t(labelDuration)}</FormHelperText>
-            <Grid direction="row" container spacing={1}>
-              <Grid item style={{ width: 150 }}>
-                <TextField
-                  disabled={values.fixed}
-                  type="number"
-                  onChange={handleChange('duration.value')}
-                  value={values.duration.value}
-                  error={errors?.duration?.value}
-                />
-              </Grid>
-              <Grid item style={{ width: 150 }}>
-                <SelectField
-                  disabled={values.fixed}
-                  options={[
-                    {
-                      id: 'seconds',
-                      name: t(labelSeconds),
-                    },
-                    {
-                      id: 'minutes',
-                      name: t(labelMinutes),
-                    },
-                    {
-                      id: 'hours',
-                      name: t(labelHours),
-                    },
-                  ]}
-                  selectedOptionId={values.duration.unit}
-                  onChange={handleChange('duration.unit')}
-                />
-              </Grid>
-            </Grid>
-          </Grid>
-          <Grid item>
-            <TextField
-              value={values.comment}
-              onChange={handleChange('comment')}
-              multiline
-              label={t(labelComment)}
-              fullWidth
-              rows={3}
-              error={errors?.comment}
-            />
-          </Grid>
-          {hasHosts && (
-            <Grid item>
+
+            <Stack alignItems="center" direction="row" spacing={1}>
+              <TextField
+                disabled={values.fixed}
+                error={errors?.duration?.value}
+                type="number"
+                value={values.duration.value}
+                onChange={handleChange('duration.value')}
+              />
+              <SelectField
+                disabled={values.fixed}
+                options={[
+                  {
+                    id: 'seconds',
+                    name: t(labelSeconds),
+                  },
+                  {
+                    id: 'minutes',
+                    name: t(labelMinutes),
+                  },
+                  {
+                    id: 'hours',
+                    name: t(labelHours),
+                  },
+                ]}
+                selectedOptionId={values.duration.unit}
+                onChange={handleChange('duration.unit')}
+              />
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={
-                      canDowntimeServices() && values.downtimeAttachedResources
-                    }
-                    disabled={!canDowntimeServices()}
-                    inputProps={{ 'aria-label': labelSetDowntimeOnServices }}
+                    checked={values.fixed}
                     color="primary"
-                    onChange={handleChange('downtimeAttachedResources')}
+                    inputProps={{ 'aria-label': t(labelFixed) }}
                     size="small"
+                    onChange={handleChange('fixed')}
                   />
                 }
-                label={t(labelSetDowntimeOnServices)}
+                label={t(labelFixed) as string}
               />
-            </Grid>
+            </Stack>
+          </Stack>
+          <TextField
+            fullWidth
+            multiline
+            error={errors?.comment}
+            label={t(labelComment)}
+            rows={3}
+            value={values.comment}
+            onChange={handleChange('comment')}
+          />
+          {hasHosts && (
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={
+                    canDowntimeServices() && values.isDowntimeWithServices
+                  }
+                  color="primary"
+                  disabled={!canDowntimeServices()}
+                  inputProps={{ 'aria-label': labelSetDowntimeOnServices }}
+                  size="small"
+                  onChange={handleChange('isDowntimeWithServices')}
+                />
+              }
+              label={t(labelSetDowntimeOnServices) as string}
+            />
           )}
-        </Grid>
-      </MuiPickersUtilsProvider>
+        </Stack>
+      </LocalizationProvider>
     </Dialog>
   );
 };

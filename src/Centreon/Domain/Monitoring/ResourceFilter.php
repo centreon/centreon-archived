@@ -31,6 +31,7 @@ class ResourceFilter
 {
     public const TYPE_SERVICE = 'service';
     public const TYPE_HOST = 'host';
+    public const TYPE_META = 'metaservice';
 
     /**
      * Non-ok status in hard state , not acknowledged & not in downtime
@@ -66,6 +67,12 @@ class ResourceFilter
     public const STATUS_UNKNOWN = 'UNKNOWN';
     public const STATUS_PENDING = 'PENDING';
 
+    /**
+     * Available state types
+     */
+    public const HARD_STATUS_TYPE = 'hard';
+    public const SOFT_STATUS_TYPE = 'soft';
+
     public const MAP_STATUS_SERVICE = [
         self::STATUS_OK => 0,
         self::STATUS_WARNING => 1,
@@ -79,6 +86,11 @@ class ResourceFilter
         self::STATUS_DOWN => 1,
         self::STATUS_UNREACHABLE => 2,
         self::STATUS_PENDING => 4,
+    ];
+
+    public const MAP_STATUS_TYPES = [
+        self::HARD_STATUS_TYPE => 1,
+        self::SOFT_STATUS_TYPE => 0,
     ];
 
     /**
@@ -97,19 +109,19 @@ class ResourceFilter
     private $statuses = [];
 
     /**
-     * @var int[]
+     * @var string[]
      */
-    private $hostgroupIds = [];
+    private $hostgroupNames = [];
 
     /**
-     * @var int[]
+     * @var string[]
      */
-    private $servicegroupIds = [];
+    private $servicegroupNames = [];
 
     /**
-     * @var int[]
+     * @var string[]
      */
-    private $monitoringServerIds = [];
+    private $monitoringServerNames = [];
 
     /**
      * @var int[]
@@ -122,16 +134,26 @@ class ResourceFilter
     private $serviceIds = [];
 
     /**
+     * @var int[]
+     */
+    private $metaServiceIds = [];
+
+    /**
      * @var boolean
      */
     private $onlyWithPerformanceData = false;
 
     /**
+     * @var string[]
+     */
+    private $statusTypes = [];
+
+    /**
      * Transform result by map
      *
-     * @param array $list
-     * @param array $map
-     * @return array
+     * @param array<mixed, mixed> $list
+     * @param array<mixed, mixed> $map
+     * @return array<int, mixed>
      */
     public static function map(array $list, array $map): array
     {
@@ -233,58 +255,58 @@ class ResourceFilter
     }
 
     /**
-     * @return int[]
+     * @return string[]
      */
-    public function getHostgroupIds(): array
+    public function getHostgroupNames(): array
     {
-        return $this->hostgroupIds;
+        return $this->hostgroupNames;
     }
 
     /**
-     * @param int[] $hostgroupIds
+     * @param string[] $hostgroupNames
      * @return \Centreon\Domain\Monitoring\ResourceFilter
      */
-    public function setHostgroupIds(array $hostgroupIds): self
+    public function setHostgroupNames(array $hostgroupNames): self
     {
-        $this->hostgroupIds = $hostgroupIds;
+        $this->hostgroupNames = $hostgroupNames;
 
         return $this;
     }
 
     /**
-     * @return int[]
+     * @return string[]
      */
-    public function getMonitoringServerIds(): array
+    public function getMonitoringServerNames(): array
     {
-        return $this->monitoringServerIds;
+        return $this->monitoringServerNames;
     }
 
     /**
-     * @param int[] $monitoringServerIds
+     * @param string[] $monitoringServerNames
      * @return \Centreon\Domain\Monitoring\ResourceFilter
      */
-    public function setMonitoringServerIds(array $monitoringServerIds): self
+    public function setMonitoringServerNames(array $monitoringServerNames): self
     {
-        $this->monitoringServerIds = $monitoringServerIds;
+        $this->monitoringServerNames = $monitoringServerNames;
 
         return $this;
     }
 
     /**
-     * @return int[]
+     * @return string[]
      */
-    public function getServicegroupIds(): array
+    public function getServicegroupNames(): array
     {
-        return $this->servicegroupIds;
+        return $this->servicegroupNames;
     }
 
     /**
-     * @param int[] $servicegroupIds
+     * @param string[] $servicegroupNames
      * @return \Centreon\Domain\Monitoring\ResourceFilter
      */
-    public function setServicegroupIds(array $servicegroupIds): self
+    public function setServicegroupNames(array $servicegroupNames): self
     {
-        $this->servicegroupIds = $servicegroupIds;
+        $this->servicegroupNames = $servicegroupNames;
 
         return $this;
     }
@@ -340,6 +362,31 @@ class ResourceFilter
     }
 
     /**
+     * @return int[]
+     */
+    public function getMetaServiceIds(): array
+    {
+        return $this->metaServiceIds;
+    }
+
+    /**
+     * @param int[] $metaServiceIds
+     * @return \Centreon\Domain\Monitoring\ResourceFilter
+     */
+    public function setMetaServiceIds(array $metaServiceIds): self
+    {
+        foreach ($metaServiceIds as $metaServiceId) {
+            if (!is_int($metaServiceId)) {
+                throw new \InvalidArgumentException('Meta Service ids must be an array of integers');
+            }
+        }
+
+        $this->metaServiceIds = $metaServiceIds;
+
+        return $this;
+    }
+
+    /**
      * @param boolean $onlyWithPerformanceData
      * @return \Centreon\Domain\Monitoring\ResourceFilter
      */
@@ -355,5 +402,23 @@ class ResourceFilter
     public function getOnlyWithPerformanceData(): bool
     {
         return $this->onlyWithPerformanceData;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getStatusTypes(): array
+    {
+        return $this->statusTypes;
+    }
+
+    /**
+     * @param string[] $statusTypes
+     * @return self
+     */
+    public function setStatusTypes(array $statusTypes): self
+    {
+        $this->statusTypes = $statusTypes;
+        return $this;
     }
 }

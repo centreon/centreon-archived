@@ -145,7 +145,7 @@ class CentreonService extends CentreonObject
      * @param string $name
      * @return int
      */
-    public function getObjectId($name)
+    public function getObjectId($name, int $type = CentreonObject::SINGLE_VALUE)
     {
         if (isset($this->objectIds[$name])) {
             return $this->objectIds[$name];
@@ -158,7 +158,7 @@ class CentreonService extends CentreonObject
                 return $this->objectIds[$name];
             }
         } else {
-            return parent::getObjectId($name);
+            return parent::getObjectId($name, $type);
         }
 
         return 0;
@@ -1259,6 +1259,10 @@ class CentreonService extends CentreonObject
                                 }
                             }
                         }
+                    }
+                    if (in_array($matches[2], ["servicegroup", "host"])) {
+                        $aclObj = new CentreonACL($this->dependencyInjector);
+                        $aclObj->reload(true);
                     }
                 }
             } else {

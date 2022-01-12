@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -39,19 +40,27 @@ if (!isset($centreon)) {
 
 $tp = array();
 if (($o == "c" || $o == "w") && $tp_id) {
-    $dbResult = $pearDB->query("SELECT * FROM timeperiod WHERE tp_id = '" . $tp_id . "' LIMIT 1");
+    $dbResult = $pearDB->prepare('SELECT * FROM timeperiod WHERE tp_id = :tp_id LIMIT 1');
+    $dbResult->bindValue(':tp_id', $tp_id, PDO::PARAM_INT);
+    $dbResult->execute();
 
     /*
-	 * Set base value
-	 */
+     * Set base value
+     */
     $tp = array_map("myDecode", $dbResult->fetchRow());
     $tp["contact_exclude"] = array();
 }
 
 $j = 0;
-$query = "SELECT exception_id, timeperiod_id, days, timerange FROM timeperiod_exceptions " .
-    "WHERE timeperiod_id = '" . $tp_id . "' ORDER BY `days`";
-$dbResult = $pearDB->query($query);
+
+$dbResult = $pearDB->prepare(
+    'SELECT exception_id, timeperiod_id, days, timerange
+    FROM timeperiod_exceptions
+    WHERE timeperiod_id = :tp_id ORDER BY `days`'
+);
+$dbResult->bindValue(':tp_id', $tp_id, PDO::PARAM_INT);
+$dbResult->execute();
+
 while ($exceptionTab = $dbResult->fetchRow()) {
     $exception_id[$j] = $exceptionTab["exception_id"];
     $exception_days[$j] = $exceptionTab["days"];
@@ -84,7 +93,13 @@ $attrTimeperiods = array(
 /*
  * Form begin
  */
-$form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p, '', ['onsubmit' => 'return formValidate()', 'data-centreon-validate' => '']);
+$form = new HTML_QuickFormCustom(
+    'Form',
+    'post',
+    "?p=" . $p,
+    '',
+    ['onsubmit' => 'return formValidate()', 'data-centreon-validate' => '']
+);
 if ($o == "a") {
     $form->addElement('header', 'title', _("Add a Time Period"));
 } elseif ($o == "c") {
@@ -129,7 +144,11 @@ $form->addElement('select2', 'tp_include', _("Timeperiod templates"), array(), $
  */
 $mTp = array();
 $k = 0;
-$DBRESULT = $pearDB->query("SELECT exception_id FROM timeperiod_exceptions WHERE timeperiod_id = '" . $tp_id . "'");
+
+$DBRESULT = $pearDB->prepare('SELECT exception_id FROM timeperiod_exceptions WHERE timeperiod_id = :tp_id');
+$DBRESULT->bindValue(':tp_id', $tp_id, PDO::PARAM_INT);
+$DBRESULT->execute();
+
 while ($multiTp = $DBRESULT->fetchRow()) {
     $mTp[$k] = $multiTp["exception_id"];
     $k++;
@@ -218,8 +237,8 @@ $tpl = initSmartyTpl($path, $tpl);
 
 if ($o == "w") {
     /*
-	 * Just watch a Time Period information
-	 */
+     * Just watch a Time Period information
+     */
     if ($centreon->user->access->page($p) != 2) {
         $form->addElement(
             "button",
@@ -232,15 +251,15 @@ if ($o == "w") {
     $form->freeze();
 } elseif ($o == "c") {
     /*
-	 * Modify a Time Period information
-	 */
+     * Modify a Time Period information
+     */
     $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
     $form->setDefaults($tp);
 } elseif ($o == "a") {
     /*
-	 * Add a Time Period information
-	 */
+     * Add a Time Period information
+     */
     $subA = $form->addElement('submit', 'submitA', _("Save"), array("class" => "btc bt_success"));
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 }
@@ -282,8 +301,8 @@ if ($valid) {
     require_once($path . "listTimeperiod.php");
 } else {
     /*
-	 * Apply a template definition
-	 */
+     * Apply a template definition
+     */
     $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
     $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
     $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
@@ -293,9 +312,6 @@ if ($valid) {
     $tpl->assign('gmtUsed', $centreon->CentreonGMT->used());
     $tpl->assign('noExceptionMessage', _('GMT is activated on your system. Exceptions will not be generated.'));
     $tpl->assign('exceptionLabel', _('Exceptions'));
+    $tpl->assign('countExceptions', $k);
     $tpl->display("formTimeperiod.ihtml");
 }
-?>
-<script type="text/javascript">
-    displayExistingExceptions(<?php echo $k;?>);
-</script>

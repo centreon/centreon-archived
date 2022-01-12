@@ -2,19 +2,20 @@ import React, { useMemo } from 'react';
 
 import { connect } from 'react-redux';
 
-import { makeStyles, Breadcrumbs as MuiBreadcrumbs } from '@material-ui/core';
-import NavigateNextIcon from '@material-ui/icons/NavigateNext';
+import { Breadcrumbs as MuiBreadcrumbs } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 
 import breadcrumbSelector from './selector';
 import { Breadcrumb as BreadcrumbModel, BreadcrumbsByPath } from './models';
 import Breadcrumb from './Breadcrumb';
 
 const useStyles = makeStyles({
-  root: {
-    padding: '4px 16px',
-  },
   item: {
     display: 'flex',
+  },
+  root: {
+    padding: '4px 16px',
   },
 });
 
@@ -50,14 +51,14 @@ const BreadcrumbTrail = ({ breadcrumbsByPath, path }: Props): JSX.Element => {
 
   return (
     <MuiBreadcrumbs
-      classes={{ root: classes.root, li: classes.item }}
-      separator={<NavigateNextIcon fontSize="small" />}
       aria-label="Breadcrumb"
+      classes={{ li: classes.item, root: classes.root }}
+      separator={<NavigateNextIcon fontSize="small" />}
     >
       {breadcrumbs.map((breadcrumb, index) => (
         <Breadcrumb
-          key={breadcrumb.label}
           breadcrumb={breadcrumb}
+          key={breadcrumb.label}
           last={index === breadcrumbs.length - 1}
         />
       ))}

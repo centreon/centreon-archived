@@ -1,80 +1,176 @@
 import * as React from 'react';
 
-import {
-  reduceBy,
-  pipe,
-  prop,
-  toPairs,
-  sortWith,
-  descend,
-  head,
-  equals,
-  last,
-} from 'ramda';
+import { equals, last, not, isEmpty } from 'ramda';
+import { useTranslation } from 'react-i18next';
+import { Dayjs } from 'dayjs';
+import { useAtomValue } from 'jotai/utils';
 
-import { Typography, Paper, makeStyles } from '@material-ui/core';
+import { Typography, Paper } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import {
+  Timeline,
+  TimelineConnector,
+  TimelineContent,
+  TimelineDot,
+  TimelineItem,
+  TimelineSeparator,
+} from '@mui/lab';
 
 import { useLocaleDateTimeFormat } from '@centreon/ui';
+import { userAtom } from '@centreon/ui-context';
 
+import { labelFrom, labelTo } from '../../../../translatedLabels';
 import { TimelineEvent } from '../models';
-import { TimelineEventByType } from '../Event';
+import {
+  eventsByDateDivisions,
+  TimelineEventByType,
+  TimelineIconByType,
+  sortEventsByDate,
+} from '../Event';
 
 const useStyles = makeStyles((theme) => ({
+  divisionSubtitle: {
+    marginLeft: theme.spacing(4),
+  },
+  event: {
+    '&:before': {
+      flex: 0,
+      padding: 0,
+    },
+    minHeight: theme.spacing(7),
+  },
   events: {
     display: 'grid',
     gridAutoFlow: 'row',
-    gridGap: theme.spacing(1),
     width: '100%',
+  },
+  timeline: {
+    margin: 0,
+  },
+  timelineDot: {
+    alignItems: 'center',
+    display: 'grid',
+    height: theme.spacing(3),
+    justifyItems: 'center',
+    width: theme.spacing(3),
   },
 }));
 
-type DateEvents = Array<[string, Array<TimelineEvent>]>;
-
 interface Props {
-  timeline: Array<TimelineEvent>;
   infiniteScrollTriggerRef: React.RefObject<HTMLDivElement>;
+  timeline: Array<TimelineEvent>;
 }
 
 const Events = ({ timeline, infiniteScrollTriggerRef }: Props): JSX.Element => {
   const classes = useStyles();
-  const { toDate } = useLocaleDateTimeFormat();
+  const { t } = useTranslation();
+  const { locale } = useAtomValue(userAtom);
+  const { format } = useLocaleDateTimeFormat();
 
-  const eventsByDate = pipe(
-    reduceBy<TimelineEvent, Array<TimelineEvent>>(
-      (acc, event) => acc.concat(event),
-      [],
-      pipe(prop('date'), toDate),
-    ),
-    toPairs,
-    sortWith([descend(pipe(head, Date.parse))]),
-  )(timeline) as DateEvents;
+  const lastEvent = last(timeline.sort(sortEventsByDate));
 
-  const dates = eventsByDate.map(head);
+  const formattedLocale = locale.substring(0, 2);
 
   return (
-    <div>
-      {eventsByDate.map(
-        ([date, events]): JSX.Element => {
-          const isLastDate = equals(last(dates), date);
+    <div aria-label="test">
+      {eventsByDateDivisions.map(
+        ({
+          label,
+          getEventsByDate,
+          startDate,
+          endDate,
+        }): JSX.Element | null => {
+          const eventsByDate = getEventsByDate({
+            events: timeline,
+            locale: formattedLocale,
+          });
+
+          if (isEmpty(eventsByDate)) {
+            return null;
+          }
+
+          const formattedStartDate = startDate
+            ? [
+                t(labelFrom),
+                format({
+                  date: startDate(formattedLocale).toISOString(),
+                  formatString: 'LL',
+                }),
+              ]
+            : [];
+
+          const formattedDivisionDates = endDate
+            ? [
+                ...(formattedStartDate || []),
+                t(labelTo).toLowerCase(),
+                format({
+                  date: endDate(formattedLocale).toISOString(),
+                  formatString: 'LL',
+                }),
+              ]
+            : formattedStartDate;
+
+          const areStartAndEndDateEqual =
+            not(isEmpty(formattedDivisionDates)) &&
+            equals(formattedDivisionDates[1], formattedDivisionDates[3]);
 
           return (
-            <div key={date}>
+            <div key={label}>
               <div className={classes.events}>
-                <Typography variant="h6">{date}</Typography>
+                <Typography display="inline" variant="h6">
+                  {t(label)}
+                  <span className={classes.divisionSubtitle}>
+                    <Typography display="inline">
+                      {areStartAndEndDateEqual
+                        ? format({
+                            date: (
+                              startDate?.(formattedLocale) as Dayjs
+                            )?.toISOString(),
+                            formatString: 'LL',
+                          })
+                        : formattedDivisionDates.join(' ')}
+                    </Typography>
+                  </span>
+                </Typography>
+                <Timeline className={classes.timeline}>
+                  {eventsByDate.map((event) => {
+                    const { id, type } = event;
 
-                {events.map((event) => {
-                  const { id, type } = event;
+                    const Event = TimelineEventByType[type];
 
-                  const Event = TimelineEventByType[type];
+                    const icon = TimelineIconByType[type];
 
-                  return (
-                    <Paper key={`${id}-${type}`}>
-                      <Event event={event} />
-                    </Paper>
-                  );
-                })}
+                    const isNotLastEvent = not(
+                      equals(event, last(eventsByDate)),
+                    );
+
+                    return (
+                      <TimelineItem
+                        className={classes.event}
+                        key={`${id}-${type}`}
+                      >
+                        <TimelineSeparator>
+                          <TimelineDot
+                            className={classes.timelineDot}
+                            variant="outlined"
+                          >
+                            {icon(t)}
+                          </TimelineDot>
+                          {isNotLastEvent && <TimelineConnector />}
+                        </TimelineSeparator>
+                        <TimelineContent>
+                          <Paper>
+                            <Event event={event} />
+                          </Paper>
+                          {equals(lastEvent, event) && (
+                            <div ref={infiniteScrollTriggerRef} />
+                          )}
+                        </TimelineContent>
+                      </TimelineItem>
+                    );
+                  })}
+                </Timeline>
               </div>
-              {isLastDate && <div ref={infiniteScrollTriggerRef} />}
             </div>
           );
         },

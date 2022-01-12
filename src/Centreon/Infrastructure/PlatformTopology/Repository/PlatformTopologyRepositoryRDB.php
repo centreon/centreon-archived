@@ -24,7 +24,6 @@ declare(strict_types=1);
 
 namespace Centreon\Infrastructure\PlatformTopology\Repository;
 
-use Centreon\Domain\Entity\EntityCreator;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformInterface;
 use Centreon\Domain\PlatformTopology\Interfaces\PlatformTopologyRepositoryInterface;
 use Centreon\Infrastructure\DatabaseConnection;

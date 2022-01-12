@@ -1,3 +1,5 @@
+/* eslint-disable class-methods-use-this */
+/* eslint-disable react/no-unused-class-component-methods */
 /* eslint-disable react/jsx-filename-extension */
 /* eslint-disable react/prop-types */
 /* eslint-disable react/sort-comp */
@@ -8,7 +10,7 @@ import classnames from 'classnames';
 
 import { PageSkeleton } from '@centreon/ui';
 
-import styles from '../../components/header/header.scss';
+import styles from '../../Header/header.scss';
 
 class LegacyRoute extends Component {
   constructor(props) {
@@ -81,14 +83,14 @@ class LegacyRoute extends Component {
       <>
         {loading && <PageSkeleton />}
         <iframe
-          id="main-content"
-          title="Main Content"
-          frameBorder="0"
-          onLoad={this.load}
-          scrolling="yes"
           className={classnames({ [styles.hidden]: loading })}
-          style={{ width: '100%', height: '100%' }}
+          frameBorder="0"
+          id="main-content"
+          scrolling="yes"
           src={`./main.get.php${params}`}
+          style={{ height: '100%', width: '100%' }}
+          title="Main Content"
+          onLoad={this.load}
         />
       </>
     );

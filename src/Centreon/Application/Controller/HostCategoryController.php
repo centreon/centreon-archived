@@ -23,9 +23,9 @@ declare(strict_types=1);
 namespace Centreon\Application\Controller;
 
 use Centreon\Domain\HostConfiguration\Exception\HostCategoryException;
-use Centreon\Domain\HostConfiguration\UseCase\V21\HostCategory\FindHostCategories;
+use Centreon\Domain\HostConfiguration\UseCase\V2110\HostCategory\FindHostCategories;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
-use Centreon\Infrastructure\HostConfiguration\API\Model\HostCategory\HostCategoryV21Factory;
+use Centreon\Infrastructure\HostConfiguration\API\Model\HostCategory\HostCategoryV2110Factory;
 use FOS\RestBundle\View\View;
 
 /**
@@ -49,7 +49,7 @@ class HostCategoryController extends AbstractController
         $response = $findHostCategories->execute();
         return $this->view(
             [
-                'result' => HostCategoryV21Factory::createFromResponse($response),
+                'result' => HostCategoryV2110Factory::createFromResponse($response),
                 'meta' => $requestParameters->toArray()
             ]
         );

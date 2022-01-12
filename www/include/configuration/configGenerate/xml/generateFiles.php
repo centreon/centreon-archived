@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -33,9 +34,13 @@
  *
  */
 
+use App\Kernel;
+use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
+
 ini_set("display_errors", "Off");
 
 require_once realpath(__DIR__ . "/../../../../../config/centreon.config.php");
+require_once realpath(__DIR__ . "/../../../../../config/bootstrap.php");
 require_once realpath(__DIR__ . "/../../../../../bootstrap.php");
 require_once _CENTREON_PATH_ . "www/include/configuration/configGenerate/DB-Func.php";
 require_once _CENTREON_PATH_ . 'www/class/config-generate/generate.class.php';
@@ -46,15 +51,65 @@ require_once _CENTREON_PATH_ . "www/class/centreonDB.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonXML.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonSession.class.php";
 
+global $dependencyInjector;
+global $pearDB;
+
 $pearDB = $dependencyInjector["configuration_db"];
 
-/* Check Session */
-CentreonSession::start(1);
-if (!CentreonSession::checkSession(session_id(), $pearDB)) {
-    print "Bad Session";
-    exit();
+$xml = new CentreonXML();
+$okMsg = "<b><font color='green'>OK</font></b>";
+$nokMsg = "<b><font color='red'>NOK</font></b>";
+
+if (isset($_SERVER['HTTP_X_AUTH_TOKEN'])) {
+    $kernel = new Kernel('prod', false);
+    $kernel->boot();
+
+    $container = $kernel->getContainer();
+    if ($container == null) {
+        throw new Exception(_('Unable to load the Symfony container'));
+    }
+    $contactService = $container->get(ContactServiceInterface::class);
+    $contact = $contactService->findByAuthenticationToken($_SERVER['HTTP_X_AUTH_TOKEN']);
+    if ($contact === null) {
+        $xml->startElement("response");
+        $xml->writeElement("status", $nokMsg);
+        $xml->writeElement("statuscode", 1);
+        $xml->writeElement("error", 'Contact not found');
+        $xml->endElement();
+
+        if (!headers_sent()) {
+            header('Content-Type: application/xml');
+            header('Cache-Control: no-cache');
+            header('Expires: 0');
+            header('Cache-Control: no-cache, must-revalidate');
+        }
+
+        $xml->output();
+        exit();
+    }
+    $centreon = new Centreon([
+        'contact_id' => $contact->getId(),
+        'contact_name' => $contact->getName(),
+        'contact_alias' => $contact->getAlias(),
+        'contact_email' => $contact->getEmail(),
+        'contact_admin' => $contact->isAdmin(),
+        'contact_lang' => null,
+        'contact_passwd' => null,
+        'contact_autologin_key' => null,
+        'contact_location' => null,
+        'reach_api' => $contact->hasAccessToApiConfiguration(),
+        'reach_api_rt' => $contact->hasAccessToApiRealTime(),
+        'show_deprecated_pages' => false
+    ]);
+} else {
+    /* Check Session */
+    CentreonSession::start(1);
+    if (!CentreonSession::checkSession(session_id(), $pearDB)) {
+        print "Bad Session";
+        exit();
+    }
+    $centreon = $_SESSION['centreon'];
 }
-$centreon = $_SESSION['centreon'];
 
 if (!isset($_POST['poller']) || !isset($_POST['debug'])) {
     exit();
@@ -73,7 +128,6 @@ $username = 'unknown';
 if (isset($centreon->user->name)) {
     $username = $centreon->user->name;
 }
-$xml = new CentreonXML();
 $config_generate = new Generate($dependencyInjector);
 
 $pollers = explode(',', $_POST['poller']);
@@ -84,11 +138,34 @@ $ret = array();
 $ret['host'] = $pollers;
 $ret['debug'] = $debug;
 
-// Set new error handler
-set_error_handler('log_error');
+/**
+ * The error handler for get error from PHP
+ *
+ * @see set_error_handler
+ */
+$log_error = function ($errno, $errstr, $errfile, $errline) {
+    global $generatePhpErrors;
+    if (!(error_reporting() && $errno)) {
+        return;
+    }
 
-$okMsg = "<b><font color='green'>OK</font></b>";
-$nokMsg = "<b><font color='red'>NOK</font></b>";
+    switch ($errno) {
+        case E_ERROR:
+        case E_USER_ERROR:
+        case E_CORE_ERROR:
+            $generatePhpErrors[] = array('error', $errstr);
+            break;
+        case E_WARNING:
+        case E_USER_WARNING:
+        case E_CORE_WARNING:
+            $generatePhpErrors[] = array('warning', $errstr);
+            break;
+    }
+    return true;
+};
+
+// Set new error handler
+set_error_handler($log_error);
 
 $xml->startElement("response");
 try {
@@ -150,40 +227,14 @@ foreach ($generatePhpErrors as $error) {
 }
 $xml->endElement();
 
-header('Content-Type: application/xml');
-header('Cache-Control: no-cache');
-header('Expires: 0');
-header('Cache-Control: no-cache, must-revalidate');
+if (!headers_sent()) {
+    header('Content-Type: application/xml');
+    header('Cache-Control: no-cache');
+    header('Expires: 0');
+    header('Cache-Control: no-cache, must-revalidate');
+}
 
 $xml->output();
-
-
-/**
- * The error handler for get error from PHP
- *
- * @see set_error_handler
- */
-function log_error($errno, $errstr, $errfile, $errline)
-{
-    global $generatePhpErrors;
-    if (!(error_reporting() && $errno)) {
-        return;
-    }
-
-    switch ($errno) {
-        case E_ERROR:
-        case E_USER_ERROR:
-        case E_CORE_ERROR:
-            $generatePhpErrors[] = array('error', $errstr);
-            break;
-        case E_WARNING:
-        case E_USER_WARNING:
-        case E_CORE_WARNING:
-            $generatePhpErrors[] = array('warning', $errstr);
-            break;
-    }
-    return true;
-}
 
 function printDebug($xml, $tabs)
 {
@@ -246,7 +297,8 @@ function printDebug($xml, $tabs)
         $msg_debug[$host['id']] = "";
         $i = 0;
         foreach ($lines as $line) {
-            if (strncmp($line, "Processing object config file", strlen("Processing object config file"))
+            if (
+                strncmp($line, "Processing object config file", strlen("Processing object config file"))
                 && strncmp($line, "Website: http://www.nagios.org", strlen("Website: http://www.nagios.org"))
             ) {
                 $msg_debug[$host['id']] .= $line . "<br>";

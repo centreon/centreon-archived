@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable react/jsx-indent */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
@@ -8,6 +9,8 @@ import React, { Component } from 'react';
 
 import { connect } from 'react-redux';
 import classnames from 'classnames';
+
+import { Typography } from '@mui/material';
 
 import { history } from '../../store';
 
@@ -20,6 +23,7 @@ class ProgressBar extends Component {
 
   render() {
     const { links } = this.props;
+
     return (
       <div className={styles['progress-bar']}>
         <div className={styles['progress-bar-wrapper']}>
@@ -27,8 +31,8 @@ class ProgressBar extends Component {
             {links
               ? links.map((link) => (
                   <li
-                    key={link.path}
                     className={styles['progress-bar-item']}
+                    key={link.path}
                     onClick={this.goToPath.bind(this, link.path)}
                   >
                     <span
@@ -38,7 +42,7 @@ class ProgressBar extends Component {
                         { [styles.prev]: link.prevActive },
                       )}
                     >
-                      {link.number}
+                      <Typography>{link.number}</Typography>
                     </span>
                   </li>
                 ))

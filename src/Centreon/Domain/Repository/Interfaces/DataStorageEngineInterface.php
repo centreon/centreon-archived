@@ -29,7 +29,6 @@ namespace Centreon\Domain\Repository\Interfaces;
  */
 interface DataStorageEngineInterface
 {
-
     /**
      * Rollback the operations in the transaction
      *
@@ -50,4 +49,11 @@ interface DataStorageEngineInterface
      * @return bool
      */
     public function commitTransaction(): bool;
+
+    /**
+     * Check if a transaction is already started.
+     *
+     * @return bool
+     */
+    public function isAlreadyinTransaction(): bool;
 }

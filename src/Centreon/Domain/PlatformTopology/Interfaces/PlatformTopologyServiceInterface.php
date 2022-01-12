@@ -25,11 +25,9 @@ namespace Centreon\Domain\PlatformTopology\Interfaces;
 
 use Centreon\Domain\Engine\EngineException;
 use Centreon\Domain\Exception\EntityNotFoundException;
-use Centreon\Domain\MonitoringServer\MonitoringServerException;
-use Centreon\Domain\PlatformTopology\Exception\PlatformTopologyConflictException;
+use Centreon\Domain\MonitoringServer\Exception\MonitoringServerException;
 use Centreon\Domain\PlatformTopology\Exception\PlatformTopologyException;
 use Centreon\Domain\PlatformInformation\Exception\PlatformInformationException;
-use Centreon\Domain\Repository\RepositoryException;
 
 interface PlatformTopologyServiceInterface
 {
@@ -37,13 +35,12 @@ interface PlatformTopologyServiceInterface
      * Add new server as a pending platform
      *
      * @param PlatformInterface $platformPending
-     * @throws PlatformTopologyConflictException
      * @throws MonitoringServerException
      * @throws EngineException
      * @throws PlatformTopologyException
      * @throws EntityNotFoundException
      * @throws PlatformInformationException
-     * @throws RepositoryException
+     * @throws PlatformTopologyRepositoryExceptionInterface
      */
     public function addPendingPlatformToTopology(PlatformInterface $platformPending): void;
 

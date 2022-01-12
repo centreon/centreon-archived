@@ -34,7 +34,7 @@
  *
  */
 
-use Centreon\Domain\PlatformTopology\Platform;
+use Centreon\Domain\PlatformTopology\Model\PlatformRegistered;
 
 if (!isset($centreon)) {
     exit();
@@ -261,7 +261,7 @@ function deleteServerInDB(array $serverIds): void
         //If the deleted platform is a remote, reassign the parent_id of its children to the top level platform
         if (
             ($platformInTopology = $statement->fetch(\PDO::FETCH_ASSOC))
-            && $platformInTopology['type'] === Platform::TYPE_REMOTE
+            && $platformInTopology['type'] === PlatformRegistered::TYPE_REMOTE
         ) {
             $statement = $pearDB->query('SELECT id FROM `platform_topology` WHERE parent_id IS NULL');
             if ($topPlatform = $statement->fetch(\PDO::FETCH_ASSOC)) {
@@ -746,30 +746,35 @@ function addUserRessource(int $serverId): bool
 }
 
 /**
- * Update Remote Server informations
+ * Update Remote Server information
  *
  * @param array $data
- *
+ * @param string|null $oldIpAddress Old IP address of the server before the upgrade
  */
-function updateRemoteServerInformation(array $data)
+function updateRemoteServerInformation(array $data, string $oldIpAddress = null)
 {
-    global $pearDB, $centreon;
+    global $pearDB;
 
-    $res = $pearDB->query("SELECT * FROM `remote_servers` WHERE ip = '" . $data["ns_ip_address"] . "'");
-    $rows = $res->fetch(\PDO::FETCH_ASSOC);
+    $statement = $pearDB->prepare("SELECT COUNT(*) AS total FROM remote_servers WHERE ip = :ip");
+    $statement->bindValue(':ip', $oldIpAddress ?? $data["ns_ip_address"]);
+    $statement->execute();
+    $total = (int) $statement->fetch(\PDO::FETCH_ASSOC)['total'];
 
-    if ($rows > 1) {
-        $rq = "UPDATE `remote_servers` SET ";
-        $rq .= "http_method = '" . $data["http_method"] . "', ";
-        isset($data["http_port"]) && !empty($data["http_port"])
-            ? $rq .= "http_port = '" . $data["http_port"] . "', "
-            : $rq .= "http_port = NULL, ";
-        $rq .= "no_check_certificate = '" . $data["no_check_certificate"]["no_check_certificate"] . "', ";
-        $rq .= "no_proxy = '" . $data["no_proxy"]["no_proxy"] . "' ";
-        $rq .= "WHERE ip = '" . $data["ns_ip_address"] . "'";
-        $pearDB->query($rq);
+    if ($total === 1) {
+        $statement = $pearDB->prepare("
+            UPDATE remote_servers 
+            SET http_method = :http_method, http_port = :http_port,
+                no_check_certificate = :no_check_certificate, no_proxy = :no_proxy, ip = :new_ip
+            WHERE ip = :ip
+        ");
+        $statement->bindValue(':http_method', $data["http_method"]);
+        $statement->bindValue(':http_port', $data["http_port"] ?? null, \PDO::PARAM_INT);
+        $statement->bindValue(':no_proxy', $data["no_proxy"]["no_proxy"]);
+        $statement->bindValue(':no_check_certificate', $data["no_check_certificate"]["no_check_certificate"]);
+        $statement->bindValue(':new_ip', $data["ns_ip_address"]);
+        $statement->bindValue(':ip', $oldIpAddress ?? $data["ns_ip_address"]);
+        $statement->execute();
     }
-    $res->closeCursor();
 }
 
 /**
@@ -791,6 +796,14 @@ function updateServer(int $id, array $data): void
         $pearDB->query("UPDATE `nagios_server` SET `is_default` = '0'");
     }
     $retValue = [];
+
+    // We retrieve IP address that was defined before the update request
+    $statement = $pearDB->prepare('SELECT ns_ip_address FROM nagios_server WHERE id = :id');
+    $statement->bindValue(':id', $id, \PDO::PARAM_INT);
+    $statement->execute();
+    $ipAddressBeforeChanges = ($result = $statement->fetch(\PDO::FETCH_ASSOC))
+        ? $result['ns_ip_address']
+        : null;
 
     $rq = "UPDATE `nagios_server` SET ";
     $rq .= "`name` = ";
@@ -985,8 +998,11 @@ function updateServer(int $id, array $data): void
         // catch exception but don't return anything to avoid blank pages on form
     }
 
-    updateRemoteServerInformation($data);
-    additionnalRemoteServersByPollerId($id, $data["remote_additional_id"]);
+    updateRemoteServerInformation($data, $ipAddressBeforeChanges);
+    additionnalRemoteServersByPollerId(
+        $id,
+        $data["remote_additional_id"] ?? null
+    );
 
     if (isset($_REQUEST['pollercmd'])) {
         $instanceObj = new CentreonInstance($pearDB);
@@ -1446,18 +1462,18 @@ function ipCanBeUpdated(array $options): bool
             return true;
         }
         return false;
-    } else {
-        /**
-         * If nothing was found in nagios server check if it exists in platform topology
-         * e.g: a Central is 127.0.0.1 in NS but is displayed with its true IP in platform_topology
-         */
-        $statement = $pearDB->prepare("SELECT * FROM `platform_topology` WHERE `address` = :address");
-        $statement->bindValue(':address', $serverIp, \PDO::PARAM_STR);
-        $statement->execute();
-        $platformInTopology = $statement->fetch(\PDO::FETCH_ASSOC);
-        if ($platformInTopology) {
-            return false;
-        }
-        return true;
     }
+
+    /**
+     * If nothing was found in nagios server check if it exists in platform topology
+     * e.g: a Central is 127.0.0.1 in NS but is displayed with its true IP in platform_topology
+     */
+    $statement = $pearDB->prepare("SELECT * FROM `platform_topology` WHERE `address` = :address");
+    $statement->bindValue(':address', $serverIp, \PDO::PARAM_STR);
+    $statement->execute();
+    $platformInTopology = $statement->fetch(\PDO::FETCH_ASSOC);
+    if ($platformInTopology && (int)$platformInTopology['server_id'] !== $serverId) {
+        return false;
+    }
+    return true;
 }

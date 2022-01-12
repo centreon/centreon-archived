@@ -6,7 +6,6 @@ use Centreon\Test\Behat\Configuration\BrokerConfigurationPage;
 
 class BrokerConfigurationContext extends CentreonContext
 {
-
     private $currentPage;
 
     private $initialProperties = array(
@@ -33,7 +32,7 @@ class BrokerConfigurationContext extends CentreonContext
         $this->assertFind('css', 'table.ToolbarTable.table a.btc.bt_success')->click();
         $page = $this->currentPage = new BrokerConfigurationPage($this);
         $this->currentPage->setProperties($this->initialProperties);
-        $this->assertFind('css', '#c4')->click();
+        $this->assertFind('css', '#c3')->click();
         $this->selectInList('#block_output', 'Generic - Stream connector');
         $this->assertFind('css', 'a#add_output.btc.bt_success')->click();
         $this->currentPage;

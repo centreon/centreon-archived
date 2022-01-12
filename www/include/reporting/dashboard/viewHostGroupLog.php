@@ -49,7 +49,7 @@ require_once './include/reporting/dashboard/initReport.php';
 /*
  *  Getting hostgroup to report
  */
-$id = filter_var($_GET['item'] ?? $_POST['item'] ?? false, FILTER_VALIDATE_INT);
+$id = filter_var($_GET['itemElement'] ?? $_POST['itemElement'] ?? false, FILTER_VALIDATE_INT);
 /*
  * Formulary
  *
@@ -57,60 +57,49 @@ $id = filter_var($_GET['item'] ?? $_POST['item'] ?? false, FILTER_VALIDATE_INT);
  *
  */
 
-$form = new HTML_QuickFormCustom('formItem', 'post', "?p=" . $p);
+$formHostGroup = new HTML_QuickFormCustom('formHostGroup', 'post', "?p=" . $p);
+$redirect = $formHostGroup->addElement('hidden', 'o');
+$redirect->setValue($o);
 
-$items = getAllHostgroupsForReporting($is_admin, $lcaHostGroupstr);
-$select = $form->addElement(
-    'select',
-    'item',
-    _("Host Group"),
-    $items,
-    array(
-        "onChange" =>"this.form.submit();"
-    )
+$hostsGroupRoute = array(
+    'datasourceOrigin' => 'ajax',
+    'multiple' => false,
+    'linkedObject' => 'centreonHostgroups',
+    'availableDatasetRoute' =>
+    './api/internal.php?object=centreon_configuration_hostgroup&action=list',
+    'defaultDatasetRoute' =>
+    './api/internal.php?object=centreon_configuration_hostgroup'
+    . '&action=defaultValues&target=service&field=service_hgPars&id=' . $id,
 );
-
-$form->addElement(
+$hostGroupSelectBox = $formPeriod->addElement(
+    'select2',
+    'itemElement',
+    _("Host Group"),
+    [],
+    $hostsGroupRoute
+);
+$hostGroupSelectBox->addJsCallback(
+    'change',
+    'this.form.submit();'
+);
+$formHostGroup->addElement(
     'hidden',
     'period',
     $period
 );
-$form->addElement(
+$formHostGroup->addElement(
     'hidden',
     'StartDate',
     $get_date_start
 );
-$form->addElement(
+$formHostGroup->addElement(
     'hidden',
     'EndDate',
     $get_date_end
 );
 
-/* adding hidden fields to get the result of datepicker in an unlocalized format */
-$formPeriod->addElement(
-    'hidden',
-    'alternativeDateStartDate',
-    '',
-    array(
-        'size' => 10,
-        'class' => 'alternativeDate'
-    )
-);
-$formPeriod->addElement(
-    'hidden',
-    'alternativeDateEndDate',
-    '',
-    array(
-        'size' => 10,
-        'class' => 'alternativeDate'
-    )
-);
-
-$redirect = $form->addElement('hidden', 'o');
-$redirect->setValue($o);
-
 if (isset($id)) {
-    $form->setDefaults(array('item' => $id));
+    $formHostGroup->setDefaults(array('item' => $id));
 }
 
 /*
@@ -145,7 +134,6 @@ if ($id !== false) {
     /*
      * Exporting variables for ihtml
      */
-    $tpl->assign('name', $items[$id]);
     $tpl->assign('totalAlert', $hostgroupStats["average"]["TOTAL_ALERTS"]);
     $tpl->assign('summary', $hostgroupStats["average"]);
 
@@ -207,8 +195,8 @@ $formPeriod->accept($renderer);
 $tpl->assign('formPeriod', $renderer->toArray());
 
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-$form->accept($renderer);
-$tpl->assign('formItem', $renderer->toArray());
+$formHostGroup->accept($renderer);
+$tpl->assign('formHostGroup', $renderer->toArray());
 
 if (
     !$formPeriod->isSubmitted()

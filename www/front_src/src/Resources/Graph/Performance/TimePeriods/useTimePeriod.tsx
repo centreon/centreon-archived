@@ -1,69 +1,93 @@
 import * as React from 'react';
 
+import { equals, isNil, not, propOr } from 'ramda';
+import dayjs from 'dayjs';
+import duration from 'dayjs/plugin/duration';
+import { useAtom } from 'jotai';
+import { useAtomValue, useUpdateAtom } from 'jotai/utils';
+
 import {
-  last24hPeriod,
-  TimePeriod,
   getTimePeriodById,
   TimePeriodId,
 } from '../../../Details/tabs/Graph/models';
+import {
+  defaultSelectedCustomTimePeriodAtom,
+  defaultSelectedTimePeriodIdAtom,
+  detailsAtom,
+} from '../../../Details/detailsAtoms';
 
-interface TimePeriodState {
-  changeSelectedTimePeriod: (timePeriod: TimePeriodId) => void;
-  selectedTimePeriod: TimePeriod;
-  periodQueryParameters: string;
-  getIntervalDates: () => [string, string];
-}
+import {
+  customTimePeriodAtom,
+  getNewCustomTimePeriod,
+  getTimeperiodFromNow,
+  resourceDetailsUpdatedAtom,
+  selectedTimePeriodAtom,
+} from './timePeriodAtoms';
+
+dayjs.extend(duration);
 
 interface Props {
-  defaultSelectedTimePeriodId?: TimePeriodId;
-  onTimePeriodChange?: (TimePeriodId) => void;
+  sending?: boolean;
 }
 
-const useTimePeriod = ({
-  defaultSelectedTimePeriodId = last24hPeriod.id,
-  onTimePeriodChange,
-}: Props): TimePeriodState => {
-  const defaultTimePeriod = getTimePeriodById(defaultSelectedTimePeriodId);
-
-  const [
-    selectedTimePeriod,
-    setSelectedTimePeriod,
-  ] = React.useState<TimePeriod>(defaultTimePeriod);
-
-  const getIntervalDates = (timePeriod): [string, string] => {
-    return [
-      timePeriod.getStart().toISOString(),
-      new Date(Date.now()).toISOString(),
-    ];
-  };
-
-  const getGraphQueryParameters = (timePeriod): string => {
-    const [start, end] = getIntervalDates(timePeriod);
-
-    return `?start=${start}&end=${end}`;
-  };
-
-  const [periodQueryParameters, setPeriodQueryParameters] = React.useState(
-    getGraphQueryParameters(selectedTimePeriod),
+const useTimePeriod = ({ sending = false }: Props): void => {
+  const [customTimePeriod, setCustomTimePeriod] = useAtom(customTimePeriodAtom);
+  const [selectedTimePeriod, setSelectedTimePeriod] = useAtom(
+    selectedTimePeriodAtom,
   );
+  const details = useAtomValue(detailsAtom);
+  const defaultSelectedTimePeriodId = useAtomValue(
+    defaultSelectedTimePeriodIdAtom,
+  );
+  const defaultSelectedCustomTimePeriod = useAtomValue(
+    defaultSelectedCustomTimePeriodAtom,
+  );
+  const setResourceDetailsUpdated = useUpdateAtom(resourceDetailsUpdatedAtom);
 
-  const changeSelectedTimePeriod = (timePeriodId: TimePeriodId): void => {
-    const timePeriod = getTimePeriodById(timePeriodId);
+  React.useEffect(() => {
+    if (isNil(selectedTimePeriod) || isNil(details) || not(sending)) {
+      return;
+    }
 
-    setSelectedTimePeriod(timePeriod);
-    onTimePeriodChange?.(timePeriod.id);
+    const newTimePeriod = getTimeperiodFromNow(selectedTimePeriod);
 
-    const queryParamsForSelectedPeriodId = getGraphQueryParameters(timePeriod);
-    setPeriodQueryParameters(queryParamsForSelectedPeriodId);
-  };
+    setCustomTimePeriod(newTimePeriod);
+    setResourceDetailsUpdated(true);
+  }, [sending]);
 
-  return {
-    changeSelectedTimePeriod,
-    selectedTimePeriod,
-    periodQueryParameters,
-    getIntervalDates: (): [string, string] =>
-      getIntervalDates(selectedTimePeriod),
-  };
+  React.useEffect(() => {
+    if (
+      not(isNil(defaultSelectedTimePeriodId)) ||
+      isNil(defaultSelectedCustomTimePeriod) ||
+      (equals(defaultSelectedCustomTimePeriod.start, customTimePeriod.start) &&
+        equals(defaultSelectedCustomTimePeriod.end, customTimePeriod.end))
+    ) {
+      return;
+    }
+
+    const newCustomTimePeriod = getNewCustomTimePeriod({
+      end: new Date(propOr(0, 'end', defaultSelectedCustomTimePeriod)),
+      start: new Date(propOr(0, 'start', defaultSelectedCustomTimePeriod)),
+    });
+
+    setCustomTimePeriod(newCustomTimePeriod);
+    setSelectedTimePeriod(null);
+  }, [defaultSelectedCustomTimePeriod]);
+
+  React.useEffect(() => {
+    if (
+      isNil(defaultSelectedTimePeriodId) ||
+      equals(defaultSelectedTimePeriodId, selectedTimePeriod?.id)
+    ) {
+      return;
+    }
+
+    const newTimePeriod = getTimePeriodById(
+      defaultSelectedTimePeriodId as TimePeriodId,
+    );
+
+    setSelectedTimePeriod(newTimePeriod);
+  }, [defaultSelectedTimePeriodId]);
 };
 
 export default useTimePeriod;

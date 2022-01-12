@@ -23,6 +23,8 @@ declare(strict_types=1);
 namespace Centreon\Domain\Monitoring;
 
 use Centreon\Domain\Entity\EntityValidator;
+use Centreon\Domain\MetaServiceConfiguration\Exception\MetaServiceConfigurationException;
+use Centreon\Domain\MetaServiceConfiguration\Interfaces\MetaServiceConfigurationReadRepositoryInterface;
 use Centreon\Domain\Monitoring\ResourceGroup;
 use Centreon\Domain\Monitoring\ResourceFilter;
 use Centreon\Domain\Repository\RepositoryException;
@@ -58,6 +60,11 @@ class ResourceService extends AbstractCentreonService implements ResourceService
     private $accessGroupRepository;
 
     /**
+     * @var MetaServiceConfigurationReadRepositoryInterface
+     */
+    private $metaServiceConfigurationRepository;
+
+    /**
      * @param ResourceRepositoryInterface $resourceRepository
      * @param MonitoringRepositoryInterface $monitoringRepository,
      * @param AccessGroupRepositoryInterface $accessGroupRepository
@@ -65,11 +72,13 @@ class ResourceService extends AbstractCentreonService implements ResourceService
     public function __construct(
         ResourceRepositoryInterface $resourceRepository,
         MonitoringRepositoryInterface $monitoringRepository,
-        AccessGroupRepositoryInterface $accessGroupRepository
+        AccessGroupRepositoryInterface $accessGroupRepository,
+        MetaServiceConfigurationReadRepositoryInterface $metaServiceConfigurationRepository
     ) {
         $this->resourceRepository = $resourceRepository;
         $this->monitoringRepository = $monitoringRepository;
         $this->accessGroupRepository = $accessGroupRepository;
+        $this->metaServiceConfigurationRepository = $metaServiceConfigurationRepository;
     }
 
     /**
@@ -115,7 +124,7 @@ class ResourceService extends AbstractCentreonService implements ResourceService
         } catch (RepositoryException $ex) {
             throw new ResourceException($ex->getMessage(), 0, $ex);
         } catch (\Exception $ex) {
-            throw new ResourceException(_('Error while searching for resources'), 0, $ex);
+            throw new ResourceException($ex->getMessage(), 0, $ex);
         }
 
         return $list;
@@ -204,6 +213,40 @@ class ResourceService extends AbstractCentreonService implements ResourceService
         $resource->setGroups($resourceGroups);
     }
 
+
+    /**
+     * {@inheritDoc}
+     */
+    public function enrichMetaServiceWithDetails(ResourceEntity $resource): void
+    {
+        $downtimes = $this->monitoringRepository->findDowntimes(
+            $resource->getHostId(),
+            $resource->getServiceId()
+        );
+        $resource->setDowntimes($downtimes);
+
+        if ($resource->getAcknowledged()) {
+            $acknowledgements = $this->monitoringRepository->findAcknowledgements(
+                $resource->getHostId(),
+                $resource->getServiceId()
+            );
+            if (!empty($acknowledgements)) {
+                $resource->setAcknowledgement($acknowledgements[0]);
+            }
+        }
+        /**
+         * Specific to the Meta Service Resource Type
+         * we need to add the Meta Service calculationType
+         */
+        $metaConfiguration = $this->contact->isAdmin()
+            ? $this->metaServiceConfigurationRepository->findById($resource->getId())
+            : $this->metaServiceConfigurationRepository->findByIdAndContact($resource->getId(), $this->contact);
+
+        if (!is_null($metaConfiguration)) {
+            $resource->setCalculationType($metaConfiguration->getCalculationType());
+        }
+    }
+
     /**
      * Find host id by resource
      * @param ResourceEntity $resource
@@ -233,7 +276,7 @@ class ResourceService extends AbstractCentreonService implements ResourceService
         $url = str_replace('$HOSTADDRESS$', $resource->getFqdn(), $url);
         $url = str_replace('$HOSTNAME$', $resource->getName(), $url);
         $url = str_replace('$HOSTSTATE$', $resource->getStatus()->getName(), $url);
-        $url = str_replace('$HOSTSTATEID$', $resource->getStatus()->getCode(), $url);
+        $url = str_replace('$HOSTSTATEID$', (string) $resource->getStatus()->getCode(), $url);
         $url = str_replace('$HOSTALIAS$', $resource->getAlias(), $url);
 
         return $url;
@@ -251,11 +294,11 @@ class ResourceService extends AbstractCentreonService implements ResourceService
         $url = str_replace('$HOSTADDRESS$', $resource->getParent()->getFqdn(), $url);
         $url = str_replace('$HOSTNAME$', $resource->getParent()->getName(), $url);
         $url = str_replace('$HOSTSTATE$', $resource->getParent()->getStatus()->getName(), $url);
-        $url = str_replace('$HOSTSTATEID$', $resource->getParent()->getStatus()->getCode(), $url);
+        $url = str_replace('$HOSTSTATEID$', (string) $resource->getParent()->getStatus()->getCode(), $url);
         $url = str_replace('$HOSTALIAS$', $resource->getParent()->getAlias(), $url);
         $url = str_replace('$SERVICEDESC$', $resource->getName(), $url);
         $url = str_replace('$SERVICESTATE$', $resource->getStatus()->getName(), $url);
-        $url = str_replace('$SERVICESTATEID$', $resource->getStatus()->getCode(), $url);
+        $url = str_replace('$SERVICESTATEID$', (string) $resource->getStatus()->getCode(), $url);
 
         return $url;
     }
@@ -293,7 +336,7 @@ class ResourceService extends AbstractCentreonService implements ResourceService
      * Validates input for resource based on groups
      * @param EntityValidator $validator
      * @param ResourceEntity $resource
-     * @param array<string, mixed> $contextGroups
+     * @param array<string> $contextGroups
      * @return ConstraintViolationListInterface<mixed>
      */
     public static function validateResource(

@@ -23,11 +23,11 @@ class PollerStepTwoRoute extends Component {
   links = [
     {
       active: true,
-      prevActive: true,
       number: 1,
       path: routeMap.serverConfigurationWizard,
+      prevActive: true,
     },
-    { active: true, prevActive: true, number: 2, path: routeMap.pollerStep1 },
+    { active: true, number: 2, path: routeMap.pollerStep1, prevActive: true },
     { active: true, number: 3 },
     { active: false, number: 4 },
   ];
@@ -40,20 +40,21 @@ class PollerStepTwoRoute extends Component {
     'internal.php?object=centreon_configuration_remote&action=linkCentreonRemoteServer',
   );
 
+  componentDidMount() {
+    this.getPollers();
+  }
+
   getPollers = () => {
     this.pollerListApi.post().then((response) => {
       this.setState({ pollers: response.data });
     });
   };
 
-  componentDidMount = () => {
-    this.getPollers();
-  };
-
   handleSubmit = (data) => {
     const { history, pollerData, setPollerWizard } = this.props;
     const postData = { ...data, ...pollerData };
     postData.server_type = 'poller';
+
     return this.wizardFormApi
       .post('', postData)
       .then((response) => {
@@ -73,12 +74,13 @@ class PollerStepTwoRoute extends Component {
     const { links } = this;
     const { pollerData } = this.props;
     const { pollers } = this.state;
+
     return (
       <BaseWizard>
         <ProgressBar links={links} />
         <Form
-          pollers={pollers}
           initialValues={pollerData}
+          pollers={pollers}
           onSubmit={this.handleSubmit.bind(this)}
         />
       </BaseWizard>

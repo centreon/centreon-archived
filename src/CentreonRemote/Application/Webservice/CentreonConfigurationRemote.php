@@ -82,7 +82,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      *
      * Get remotes servers waitlist
      *
-     * @return array
+     * @return array<int, array<mixed>>
      */
     public function postGetWaitList(): array
     {
@@ -97,7 +97,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
     /**
      * Get Pollers servers waitlist
      *
-     * @return array
+     * @return array<int, array<mixed>>
      */
     public function postGetPollerWaitList(): array
     {
@@ -150,7 +150,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      *
      * Get list with connected remotes
      *
-     * @return array
+     * @return array<int, array<mixed>>
      * @example [['id' => 'poller id', 'ip' => 'poller ip address', 'name' => 'poller name']]
      */
     public function getList(): array
@@ -205,7 +205,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      *
      * Get list with connected remotes
      *
-     * @return array
+     * @return array<int, array<mixed>>
      * @example [['id' => 'poller id', 'ip' => 'poller ip address', 'name' => 'poller name']]
      */
     public function postGetRemotesList(): array
@@ -329,7 +329,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      *
      * Link centreon remote server
      *
-     * @return array
+     * @return array<string,bool|int|string|null>
      * @throws \RestBadRequestException
      * @throws \Exception
      * @example ['success' => true, 'task_id' => 'task id']
@@ -520,13 +520,13 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      *
      * @return bool If the user has access to the action
      */
-    public function authorize($action, $user, $isInternal = false)
+    public function authorize($action, $user, $isInternal = false): bool
     {
         if (parent::authorize($action, $user, $isInternal)) {
             return true;
         }
 
-        return $user && $user->hasAccessRestApiConfiguration();
+        return $user->hasAccessRestApiConfiguration();
     }
 
     /**
@@ -582,7 +582,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
     /**
      * Set current centreon instance as central
      */
-    private function setCentreonInstanceAsCentral()
+    private function setCentreonInstanceAsCentral(): void
     {
         $dbAdapter = $this->getDi()[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]->getAdapter('configuration_db');
 
@@ -606,7 +606,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
      * Create New Task for export
      *
      * @return bool|int
-     * @var $params array
+     * @param array<string,mixed> $params
      */
     private function createExportTask(array $params)
     {
@@ -614,7 +614,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
     }
 
     /**
-     * @param array $topologyInformation
+     * @param array<string,mixed> $topologyInformation
      * @throws \Exception
      */
     private function updateServerInPlatformTopology(array $topologyInformation): void
@@ -648,6 +648,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
         /**
          * If the server is already registered in platform_topology Update else insert
          */
+        $insertedPlatform = [];
         if (!empty($server['id'])) {
             $statement = $this->pearDB->prepare(
                 "UPDATE `platform_topology` SET
@@ -692,7 +693,7 @@ class CentreonConfigurationRemote extends CentreonWebServiceAbstract
             foreach ($topologyInformation['children_pollers'] as $poller) {
                 $statement->bindValue(
                     ':parentId',
-                    (int)$insertedPlatform['last_id'] ?? (int)$server['id'],
+                    isset($insertedPlatform['last_id']) ? (int)$insertedPlatform['last_id'] : (int)$server['id'],
                     \PDO::PARAM_INT
                 );
                 $statement->bindValue(':pollerId', (int)$poller->getId(), \PDO::PARAM_INT);

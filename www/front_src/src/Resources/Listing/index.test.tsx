@@ -1,6 +1,29 @@
 import * as React from 'react';
 
-import { useSelector } from 'react-redux';
+import axios from 'axios';
+import {
+  partition,
+  where,
+  contains,
+  head,
+  split,
+  pipe,
+  identity,
+  prop,
+  reject,
+  map,
+  includes,
+  __,
+  propEq,
+  find,
+  isNil,
+  last,
+  equals,
+  not,
+} from 'ramda';
+import userEvent from '@testing-library/user-event';
+import { Provider } from 'jotai';
+
 import {
   render,
   RenderResult,
@@ -8,100 +31,106 @@ import {
   fireEvent,
   Matcher,
   act,
-} from '@testing-library/react';
-import axios from 'axios';
-import { partition, where, contains, head, split, pipe, identity } from 'ramda';
+  Column,
+} from '@centreon/ui';
+import { refreshIntervalAtom, userAtom } from '@centreon/ui-context';
 
-import { Resource } from '../models';
-import Context, { ResourceContext } from '../Context';
-import useActions from '../Actions/useActions';
-import useDetails from '../Details/useDetails';
-import useFilter from '../Filter/useFilter';
+import { Resource, ResourceType } from '../models';
+import Context, { ResourceContext } from '../testUtils/Context';
+import useActions from '../testUtils/useActions';
+import useFilter from '../testUtils/useFilter';
 import { labelInDowntime, labelAcknowledged } from '../translatedLabels';
-import { getListingEndpoint, cancelTokenRequestParam } from '../testUtils';
+import {
+  getListingEndpoint,
+  cancelTokenRequestParam,
+  defaultSecondSortCriteria,
+} from '../testUtils';
 import { unhandledProblemsFilter } from '../Filter/models';
+import useLoadDetails from '../testUtils/useLoadDetails';
+import useDetails from '../Details/useDetails';
 
 import useListing from './useListing';
-import { getColumns } from './columns';
+import { getColumns, defaultSelectedColumnIds } from './columns';
 
 import Listing from '.';
+
+jest.mock('@centreon/ui-context', () =>
+  jest.requireActual('@centreon/centreon-frontend/packages/ui-context'),
+);
 
 const columns = getColumns({
   actions: { onAcknowledge: jest.fn() },
   t: identity,
-});
+}) as Array<Column>;
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
-jest.mock('react-redux', () => ({
-  ...(jest.requireActual('react-redux') as jest.Mocked<unknown>),
-  useSelector: jest.fn(),
-}));
+const mockUser = {
+  isExportButtonEnabled: true,
+  locale: 'en',
+  timezone: 'Europe/Paris',
+};
+const mockRefreshInterval = 60;
 
 jest.mock('../icons/Downtime');
-
-const appState = {
-  intervals: {
-    AjaxTimeReloadMonitoring: 60,
-  },
-};
+jest.useFakeTimers();
 
 const fillEntities = (): Array<Resource> => {
   const entityCount = 31;
+
   return new Array(entityCount).fill(0).map((_, index) => ({
-    uuid: `${index}`,
-    id: index,
-    name: `E${index}`,
-    severity_level: 1,
-    status: {
-      name: 'OK',
-      severity_code: 5,
-    },
     acknowledged: index % 2 === 0,
-    in_downtime: index % 3 === 0,
     duration: '1m',
-    last_check: '1m',
-    tries: '1',
-    short_type: index % 4 === 0 ? 's' : 'h',
+    id: index,
+    in_downtime: index % 3 === 0,
     information:
       index % 5 === 0 ? `Entity ${index}` : `Entity ${index}\n Line ${index}`,
-    type: index % 4 === 0 ? 'service' : 'host',
+    last_check: '1m',
     links: {
       endpoints: {
         acknowledgement: `/monitoring/acknowledgement/${index}`,
         details: 'endpoint',
         downtime: `/monitoring/downtime/${index}`,
-        performance_graph: index % 6 === 0 ? 'endpoint' : null,
-        status_graph: index % 3 === 0 ? 'endpoint' : null,
+        metrics: 'endpoint',
+        performance_graph: index % 6 === 0 ? 'endpoint' : undefined,
+        status_graph: index % 3 === 0 ? 'endpoint' : undefined,
         timeline: 'endpoint',
       },
-      uris: {
-        configuration: index % 7 === 0 ? 'uri' : null,
-        logs: index % 4 === 0 ? 'uri' : null,
-        reporting: index % 3 === 0 ? 'uri' : null,
-      },
       externals: {
-        action_url: null,
         notes: {
-          label: null,
           url: 'https://centreon.com',
         },
       },
+      uris: {
+        configuration: index % 7 === 0 ? 'uri' : undefined,
+        logs: index % 4 === 0 ? 'uri' : undefined,
+        reporting: index % 3 === 0 ? 'uri' : undefined,
+      },
     },
+    name: `E${index}`,
     passive_checks: index % 8 === 0,
+    severity_level: 1,
+    short_type: index % 4 === 0 ? 's' : 'h',
+    status: {
+      name: 'OK',
+      severity_code: 5,
+    },
+    tries: '1',
+    type: index % 4 === 0 ? ResourceType.service : ResourceType.host,
+    uuid: `${index}`,
   }));
 };
 
 const entities = fillEntities();
 const retrievedListing = {
-  result: entities,
   meta: {
-    page: 1,
     limit: 10,
+    page: 1,
     search: {},
     sort_by: {},
     total: entities.length,
   },
+  result: entities,
 };
 
 let context: ResourceContext;
@@ -109,8 +138,10 @@ let context: ResourceContext;
 const ListingTest = (): JSX.Element => {
   const listingState = useListing();
   const actionsState = useActions();
-  const detailsState = useDetails();
+  const detailsState = useLoadDetails();
   const filterState = useFilter();
+
+  useDetails();
 
   context = {
     ...listingState,
@@ -126,33 +157,36 @@ const ListingTest = (): JSX.Element => {
   );
 };
 
-const renderListing = (): RenderResult => render(<ListingTest />);
+const ListingTestWithJotai = (): JSX.Element => (
+  <Provider
+    initialValues={[
+      [userAtom, mockUser],
+      [refreshIntervalAtom, mockRefreshInterval],
+    ]}
+  >
+    <ListingTest />
+  </Provider>
+);
 
-window.clearInterval = jest.fn();
-window.setInterval = jest.fn();
+const renderListing = (): RenderResult => render(<ListingTestWithJotai />);
 
 describe(Listing, () => {
   beforeEach(() => {
-    useSelector.mockImplementation((callback) => {
-      return callback(appState);
-    });
-
     mockedAxios.get
       .mockResolvedValueOnce({
         data: {
-          result: [],
           meta: {
-            page: 1,
             limit: 30,
+            page: 1,
             total: 0,
           },
+          result: [],
         },
       })
       .mockResolvedValueOnce({ data: retrievedListing });
   });
 
   afterEach(() => {
-    useSelector.mockClear();
     mockedAxios.get.mockReset();
   });
 
@@ -171,21 +205,24 @@ describe(Listing, () => {
     resourcesWithMultipleLines.forEach(({ information }) => {
       expect(
         getByText(
-          pipe<string, Array<string>, Matcher>(split('\n'), head)(information),
+          pipe<string, Array<string>, Matcher>(
+            split('\n'),
+            head,
+          )(information as string),
         ),
       ).toBeInTheDocument();
-      expect(queryByText(information)).not.toBeInTheDocument();
+      expect(queryByText(information as string)).not.toBeInTheDocument();
     });
 
     resourcesWithSingleLines.forEach(({ information }) => {
-      expect(getByText(information)).toBeInTheDocument();
+      expect(getByText(information as string)).toBeInTheDocument();
     });
   });
 
   describe('column sorting', () => {
     afterEach(async () => {
       act(() => {
-        context.setFilter(unhandledProblemsFilter);
+        context.setCurrentFilter?.(unhandledProblemsFilter);
       });
 
       await waitFor(() => {
@@ -196,30 +233,49 @@ describe(Listing, () => {
     it.each(
       columns
         .filter(({ sortable }) => sortable !== false)
+        .filter(({ id }) => includes(id, defaultSelectedColumnIds))
         .map(({ id, label, sortField }) => [id, label, sortField]),
     )(
       'executes a listing request with sort_by param and stores the order parameter in the URL when %p column is clicked',
       async (id, label, sortField) => {
         const { getByLabelText } = renderListing();
 
+        await waitFor(() => {
+          expect(mockedAxios.get).toHaveBeenCalled();
+        });
+
         mockedAxios.get.mockResolvedValue({ data: retrievedListing });
 
         const sortBy = (sortField || id) as string;
 
-        fireEvent.click(getByLabelText(`Column ${label}`));
+        userEvent.click(getByLabelText(`Column ${label}`));
+
+        const secondSortCriteria =
+          not(equals(sortField, 'last_status_change')) &&
+          defaultSecondSortCriteria;
 
         await waitFor(() => {
           expect(mockedAxios.get).toHaveBeenLastCalledWith(
-            getListingEndpoint({ sort: { [sortBy]: 'desc' } }),
+            getListingEndpoint({
+              sort: {
+                [sortBy]: 'desc',
+                ...secondSortCriteria,
+              },
+            }),
             cancelTokenRequestParam,
           );
         });
 
-        fireEvent.click(getByLabelText(`Column ${label}`));
+        userEvent.click(getByLabelText(`Column ${label}`));
 
         await waitFor(() =>
           expect(mockedAxios.get).toHaveBeenLastCalledWith(
-            getListingEndpoint({ sort: { [sortBy]: 'asc' } }),
+            getListingEndpoint({
+              sort: {
+                [sortBy]: 'asc',
+                ...secondSortCriteria,
+              },
+            }),
             cancelTokenRequestParam,
           ),
         );
@@ -241,7 +297,7 @@ describe(Listing, () => {
       },
     });
 
-    fireEvent.click(getByLabelText('Next Page'));
+    fireEvent.click(getByLabelText('Next page'));
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenLastCalledWith(
@@ -257,7 +313,7 @@ describe(Listing, () => {
       },
     });
 
-    fireEvent.click(getByLabelText('Previous Page'));
+    fireEvent.click(getByLabelText('Previous page'));
 
     expect(mockedAxios.get).toHaveBeenLastCalledWith(
       getListingEndpoint({ page: 1 }),
@@ -271,7 +327,7 @@ describe(Listing, () => {
       },
     });
 
-    fireEvent.click(getByLabelText('Last Page'));
+    fireEvent.click(getByLabelText('Last page'));
 
     expect(mockedAxios.get).toHaveBeenLastCalledWith(
       getListingEndpoint({ page: 4 }),
@@ -285,7 +341,7 @@ describe(Listing, () => {
       },
     });
 
-    fireEvent.click(getByLabelText('First Page'));
+    fireEvent.click(getByLabelText('First page'));
 
     await waitFor(() =>
       expect(mockedAxios.get).toHaveBeenLastCalledWith(
@@ -321,12 +377,12 @@ describe(Listing, () => {
       data: {
         result: [
           {
-            id: 0,
             author_name: 'admin',
-            start_time: '2020-02-28T08:16:16Z',
-            end_time: '2020-02-28T08:18:16Z',
-            is_fixed: true,
             comment: 'Set by admin',
+            end_time: '2020-02-28T08:18:16Z',
+            id: 0,
+            is_fixed: true,
+            start_time: '2020-02-28T08:16:16Z',
           },
         ],
       },
@@ -343,7 +399,7 @@ describe(Listing, () => {
 
     await waitFor(() =>
       expect(mockedAxios.get).toHaveBeenLastCalledWith(
-        entityInDowntime?.links.endpoints.downtime,
+        entityInDowntime?.links?.endpoints.downtime,
         cancelTokenRequestParam,
       ),
     );
@@ -366,12 +422,12 @@ describe(Listing, () => {
       data: {
         result: [
           {
-            id: 0,
             author_name: 'admin',
+            comment: 'Set by admin',
             entry_time: '2020-02-28T08:16:00Z',
+            id: 0,
             is_persistent_comment: true,
             is_sticky: false,
-            comment: 'Set by admin',
           },
         ],
       },
@@ -388,7 +444,7 @@ describe(Listing, () => {
 
     await waitFor(() =>
       expect(mockedAxios.get).toHaveBeenLastCalledWith(
-        acknowledgedEntity?.links.endpoints.acknowledgement,
+        acknowledgedEntity?.links?.endpoints.acknowledgement,
         cancelTokenRequestParam,
       ),
     );
@@ -399,4 +455,47 @@ describe(Listing, () => {
     expect(getByText('No')).toBeInTheDocument();
     expect(getByText('Set by admin')).toBeInTheDocument();
   });
+
+  const columnIds = map(prop('id'), columns);
+
+  const additionalIds = reject(
+    includes(__, defaultSelectedColumnIds),
+    columnIds,
+  );
+
+  it.each(additionalIds)(
+    'displays additional columns when selected from the corresponding menu',
+    async (columnId) => {
+      const { getAllByText, getByLabelText, getByText } = renderListing();
+
+      await waitFor(() => {
+        expect(mockedAxios.get).toHaveBeenCalled();
+      });
+
+      fireEvent.click(getByLabelText('Add columns').firstChild as HTMLElement);
+
+      const column = find(propEq('id', columnId), columns);
+      const columnLabel = column?.label as string;
+
+      const columnShortLabel = column?.shortLabel as string;
+
+      const hasShortLabel = !isNil(columnShortLabel);
+
+      const columnDisplayLabel = hasShortLabel
+        ? `${columnLabel} (${columnShortLabel})`
+        : columnLabel;
+
+      fireEvent.click(last(getAllByText(columnDisplayLabel)) as HTMLElement);
+
+      const expectedLabelCount = hasShortLabel ? 1 : 2;
+
+      expect(getAllByText(columnDisplayLabel).length).toEqual(
+        expectedLabelCount,
+      );
+
+      if (hasShortLabel) {
+        expect(getByText(columnDisplayLabel)).toBeInTheDocument();
+      }
+    },
+  );
 });

@@ -275,7 +275,7 @@ try {
             );
             break;
         case 'position':
-            $widgetObj->updateWidgetPositions($postInputs['custom_view_id'], $positions, $permission);
+            $widgetObj->updateWidgetPositions($postInputs['custom_view_id'], $permission, $positions);
             break;
         case 'deleteView':
             if ($postInputs['custom_view_id']) {

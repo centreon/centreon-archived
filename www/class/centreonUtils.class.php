@@ -242,7 +242,14 @@ class CentreonUtils
         $init = array();
         try {
             $initForm = $form->getElement('initialValues');
-            $initialValues = unserialize($initForm->getValue());
+            $initForm = filter_var($initForm->getValue(), FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+
+            if ($initForm === false) {
+                throw new \InvalidArgumentException('Invalid Parameters');
+            }
+
+            $initialValues = unserialize($initForm, ['allowed_classes' => false]);
+
             if (!empty($initialValues) && isset($initialValues[$key])) {
                 $init = $initialValues[$key];
             }
@@ -357,18 +364,18 @@ class CentreonUtils
                 return str_replace(str_split($pattern), "", $stringToEscape);
         }
     }
-    
+
     /**
      * Convert all html tags into HTML entities
      *
-     * @param type $stringToEscape String to escape
+     * @param string $stringToEscape String to escape
      * @return string Converted string
      */
     public static function escapeAll($stringToEscape)
     {
         return htmlentities($stringToEscape, ENT_QUOTES, 'UTF-8');
     }
-    
+
     /**
      * Convert all HTML tags into HTML entities except those defined in parameter
      *
@@ -462,8 +469,9 @@ class CentreonUtils
     {
         $occurrences = false;
         $start = 0;
-        if (($start = stripos($html, "<$tag", $start)) !== false &&
-            ($end = stripos($html, "</$tag>", $end + strlen("</$tag>")))
+        if (
+            ($start = stripos($html, "<$tag", $start)) !== false &&
+            ($end = stripos($html, "</$tag>", strlen("</$tag>")))
         ) {
             if (!is_array($occurrences[$tag])) {
                 $occurrences[$tag] = array();

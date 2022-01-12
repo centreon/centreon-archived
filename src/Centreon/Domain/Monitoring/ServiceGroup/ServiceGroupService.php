@@ -76,4 +76,16 @@ final class ServiceGroupService extends AbstractCentreonService implements Servi
             throw new ServiceGroupException(_('Error when searching servicegroups'), 0, $e);
         }
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function findServiceGroupsByNames(array $serviceGroupNames): array
+    {
+        try {
+            return $this->serviceGroupRepository->findServiceGroupsByNames($serviceGroupNames);
+        } catch (\Throwable $e) {
+            throw new ServiceGroupException(_('Error when searching servicegroups'), 0, $e);
+        }
+    }
 }
