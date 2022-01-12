@@ -21,10 +21,12 @@ import { userEndpoint } from '../api/endpoint';
 
 import {
   labelCentreonLogo,
-  labelLogin,
+  labelDisplayThePassword,
+  labelConnect,
   labelLoginSucceeded,
   labelPassword,
   labelRequired,
+  labelHideThePassword,
 } from './translatedLabels';
 import { loginEndpoint, platformVersionsEndpoint } from './api/endpoint';
 
@@ -117,18 +119,18 @@ describe('Login Page', () => {
 
     expect(screen.getByLabelText(labelAlias)).toBeInTheDocument();
     expect(screen.getByLabelText(labelPassword)).toBeInTheDocument();
-    expect(screen.getByLabelText(labelLogin)).toBeInTheDocument();
+    expect(screen.getByLabelText(labelConnect)).toBeInTheDocument();
     expect(screen.getByLabelText(labelCentreonLogo)).toBeInTheDocument();
     expect(screen.getByText('v. 21.10.1')).toBeInTheDocument();
     expect(screen.getByText('Copyright © 2005 - 2020')).toBeInTheDocument();
   });
 
-  it(`submits valid credentials when fields are filled and the "${labelLogin}" is clicked`, async () => {
+  it(`submits valid credentials when fields are filled and the "${labelConnect}" is clicked`, async () => {
     renderLoginPage();
 
     userEvent.type(screen.getByLabelText(labelAlias), 'admin');
     userEvent.type(screen.getByLabelText(labelPassword), 'centreon');
-    userEvent.click(screen.getByLabelText(labelLogin));
+    userEvent.click(screen.getByLabelText(labelConnect));
 
     await waitFor(() => {
       expect(mockedAxios.post).toHaveBeenCalledWith(loginEndpoint, {
@@ -148,7 +150,7 @@ describe('Login Page', () => {
     expect(window.location.href).toBe('http://localhost/monitoring/resources');
   });
 
-  it(`submits invalid credentials when fields are filled and the "${labelLogin}" is clicked`, async () => {
+  it(`submits invalid credentials when fields are filled and the "${labelConnect}" button is clicked`, async () => {
     mockedAxios.post.mockReset();
     mockedAxios.post.mockRejectedValueOnce({
       response: {
@@ -160,7 +162,7 @@ describe('Login Page', () => {
 
     userEvent.type(screen.getByLabelText(labelAlias), 'invalid_alias');
     userEvent.type(screen.getByLabelText(labelPassword), 'invalid_pwd');
-    userEvent.click(screen.getByLabelText(labelLogin));
+    userEvent.click(screen.getByLabelText(labelConnect));
 
     await waitFor(() => {
       expect(mockedAxios.post).toHaveBeenCalledWith(loginEndpoint, {
@@ -183,13 +185,13 @@ describe('Login Page', () => {
   it('displays errors when fields are not emptied', async () => {
     renderLoginPage();
 
-    expect(screen.getByLabelText(labelLogin)).toBeDisabled();
+    expect(screen.getByLabelText(labelConnect)).toBeDisabled();
 
     userEvent.type(screen.getByLabelText(labelAlias), 'admin');
     userEvent.type(screen.getByLabelText(labelPassword), 'centreon');
 
     await waitFor(() => {
-      expect(screen.getByLabelText(labelLogin)).not.toBeDisabled();
+      expect(screen.getByLabelText(labelConnect)).not.toBeDisabled();
     });
 
     userEvent.type(screen.getByLabelText(labelAlias), '{selectall}{backspace}');
@@ -199,9 +201,23 @@ describe('Login Page', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByLabelText(labelLogin)).toBeDisabled();
+      expect(screen.getByLabelText(labelConnect)).toBeDisabled();
     });
 
     expect(screen.getAllByText(labelRequired)).toHaveLength(2);
+  });
+
+  it('displays the password when the corresponding icon button is clicked', () => {
+    renderLoginPage();
+
+    userEvent.click(
+      screen.getByLabelText(labelDisplayThePassword).firstChild as HTMLElement,
+    );
+
+    expect(screen.getByLabelText(labelPassword)).toHaveAttribute(
+      'type',
+      'text',
+    );
+    expect(screen.getByLabelText(labelHideThePassword)).toBeInTheDocument();
   });
 });

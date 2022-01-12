@@ -14776,3 +14776,9 @@ msgstr ""
 
 # msgid "This page could not be found"
 # msgstr ""
+
+# msgid "Display the password"
+# msgstr ""
+
+# msgid "Hide the password"
+# msgstr ""

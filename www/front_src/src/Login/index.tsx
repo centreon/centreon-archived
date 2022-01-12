@@ -19,7 +19,7 @@ import useValidationSchema from './validationSchema';
 import { LoginFormValues } from './models';
 import useLogin from './useLogin';
 import LoginForm from './Form';
-import { labelCentreonLogo } from './translatedLabels';
+import { labelCentreonLogo, labelLogin } from './translatedLabels';
 
 const useStyles = makeStyles((theme) => ({
   centreonLogo: {
@@ -43,11 +43,13 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
   },
   loginPaper: {
+    alignItems: 'center',
     display: 'grid',
     flexDirection: 'column',
     justifyItems: 'center',
     minWidth: theme.spacing(30),
     padding: theme.spacing(4, 5),
+    rowGap: theme.spacing(4),
     width: '17%',
   },
 }));
@@ -78,6 +80,7 @@ const LoginPage = (): JSX.Element => {
         src={logoCentreon}
       />
       <Paper className={classes.loginPaper}>
+        <Typography variant="h5">{t(labelLogin)}</Typography>
         <Formik<LoginFormValues>
           initialValues={initialValues}
           validationSchema={validationSchema}

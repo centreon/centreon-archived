@@ -96,7 +96,7 @@ const useMain = (): void => {
       return;
     }
 
-    navigate(user.default_page);
+    navigate(user.default_page as string);
   }, [location, areUserParametersLoaded, user]);
 };
 

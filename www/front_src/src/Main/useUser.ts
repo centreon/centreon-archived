@@ -44,11 +44,12 @@ const useUser = (
           name,
           timezone,
           use_deprecated_pages: useDeprecatedPages,
+          default_page: defaultPage,
         } = retrievedUser as User;
 
         setUser({
           alias,
-          default_page: '/monitoring/resources',
+          default_page: defaultPage || '/monitoring/resources',
           isExportButtonEnabled,
           locale: locale || 'en',
           name,

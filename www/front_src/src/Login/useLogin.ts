@@ -65,7 +65,10 @@ const useLogin = (): UseLoginState => {
       });
   };
 
+  const getBrowserLocale = (): string => navigator.language.slice(0, 2);
+
   React.useEffect(() => {
+    i18n.changeLanguage(getBrowserLocale());
     sendPlatformVersions({
       endpoint: platformVersionsEndpoint,
     }).then(setPlatformVersions);

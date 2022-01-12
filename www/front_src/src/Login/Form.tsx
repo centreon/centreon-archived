@@ -6,10 +6,13 @@ import { useTranslation } from 'react-i18next';
 
 import { Button, CircularProgress } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
+import PersonIcon from '@mui/icons-material/Person';
+import LockIcon from '@mui/icons-material/Lock';
 
 import { TextField } from '@centreon/ui';
 
-import { labelAlias, labelLogin, labelPassword } from './translatedLabels';
+import { labelAlias, labelConnect, labelPassword } from './translatedLabels';
+import PasswordEndAdornment from './PasswordEndAdornment';
 
 const aliasFieldName = 'alias';
 const passwordFieldName = 'password';
@@ -29,6 +32,7 @@ const getTouchedError = ({ fieldName, errors, touched }): string | undefined =>
 const LoginForm = (): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
+  const [isVisible, setIsVisible] = React.useState(false);
   const {
     values,
     handleChange,
@@ -39,6 +43,10 @@ const LoginForm = (): JSX.Element => {
     isSubmitting,
     handleSubmit,
   } = useFormikContext<FormikValues>();
+
+  const changeVisibility = (): void => {
+    setIsVisible((currentIsVisible) => !currentIsVisible);
+  };
 
   const aliasValue = prop(aliasFieldName, values);
   const aliasError = getTouchedError({
@@ -54,11 +62,22 @@ const LoginForm = (): JSX.Element => {
   });
   const isDisabled = not(isEmpty(errors)) || isSubmitting || not(dirty);
 
+  const passwordEndAdornment = React.useCallback(
+    (): JSX.Element => (
+      <PasswordEndAdornment
+        changeVisibility={changeVisibility}
+        isVisible={isVisible}
+      />
+    ),
+    [isVisible],
+  );
+
   return (
     <form className={classes.form} onSubmit={handleSubmit}>
       <TextField
         fullWidth
         required
+        StartAdornment={PersonIcon}
         ariaLabel={t(labelAlias)}
         error={aliasError}
         label={t(labelAlias)}
@@ -69,24 +88,26 @@ const LoginForm = (): JSX.Element => {
       <TextField
         fullWidth
         required
+        EndAdornment={passwordEndAdornment}
+        StartAdornment={LockIcon}
         ariaLabel={t(labelPassword)}
         error={passwordError}
         label={t(labelPassword)}
-        type="password"
+        type={isVisible ? 'text' : 'password'}
         value={passwordValue || ''}
         onBlur={handleBlur(passwordFieldName)}
         onChange={handleChange(passwordFieldName)}
       />
       <Button
         fullWidth
-        aria-label={t(labelLogin)}
+        aria-label={t(labelConnect)}
         color="primary"
         disabled={isDisabled}
         endIcon={isSubmitting && <CircularProgress color="inherit" size={20} />}
         type="submit"
         variant="contained"
       >
-        {t(labelLogin)}
+        {t(labelConnect)}
       </Button>
     </form>
   );

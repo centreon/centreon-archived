@@ -16344,3 +16344,9 @@ msgstr "Déconnexion réussie"
 
 msgid "No session token provided"
 msgstr "Aucun jeton de session fourni"
+
+msgid "Display the password"
+msgstr "Afficher le mot de passe"
+
+msgid "Hide the password"
+msgstr "Cacher le mot de passe"
