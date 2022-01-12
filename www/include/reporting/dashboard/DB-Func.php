@@ -251,7 +251,7 @@ function getLogInDbForHostSVC($host_id, $start_date, $end_date, $reportTimePerio
     foreach ($status as $name) {
         switch ($name) {
             case "UNDETERMINED":
-                $hostServiceStats["average"]["UNDETERMINED_TP"] = 100;
+                $hostServiceStats["average"]["UNDETERMINED_TP"] = 0;
                 break;
             case "MAINTENANCE":
                 $hostServiceStats["average"]["MAINTENANCE_TP"] = 0;
@@ -260,6 +260,8 @@ function getLogInDbForHostSVC($host_id, $start_date, $end_date, $reportTimePerio
                 $hostServiceStats["average"][$name . "_MP"] = 0;
                 $hostServiceStats["average"][$name . "_TP"] = 0;
                 $hostServiceStats["average"][$name . "_A"] = 0;
+                $hostServiceStats["average"]["DESCRIPTION"] = "";
+                $hostServiceStats["average"]["ID"] = 0;
                 break;
         }
     }
@@ -271,6 +273,7 @@ function getLogInDbForHostSVC($host_id, $start_date, $end_date, $reportTimePerio
             $svcStr .= $id;
         }
     } else {
+        $hostServiceStats["average"]["UNDETERMINED_TP"] = 100;
         return $hostServiceStats;
     }
     /* initialising all host services stats to 0 */
