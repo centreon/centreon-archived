@@ -11,6 +11,10 @@ import {
 
 import { CustomTimePeriod, TimePeriodId } from './tabs/Graph/models';
 
+interface Group extends NamedEntity {
+  configuration_uri: string | null;
+}
+
 export interface ResourceDetails extends NamedEntity {
   acknowledged: boolean;
   acknowledgement?: Acknowledgement;
@@ -23,7 +27,7 @@ export interface ResourceDetails extends NamedEntity {
   execution_time: number;
   flapping: boolean;
   fqdn?: string;
-  groups?: Array<NamedEntity>;
+  groups?: Array<Group>;
   information: string;
   last_check: string;
   last_notification: string;
