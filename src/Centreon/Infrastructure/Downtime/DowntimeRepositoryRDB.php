@@ -379,11 +379,32 @@ class DowntimeRepositoryRDB extends AbstractRepositoryDRB implements DowntimeRep
                 . $this->accessGroupIdToString($this->accessGroups) . ')';
         }
 
-        $request =
-            'SELECT SQL_CALC_FOUND_ROWS DISTINCT dwt.*, contact.contact_id AS author_id
+        $request = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT
+            dwt.downtime_id,
+            dwt.entry_time,
+            dwt.host_id,
+            dwt.service_id,
+            dwt.author,
+            dwt.cancelled,
+            `cmts`.data AS `comment_data`,
+            dwt.deletion_time,
+            dwt.duration,
+            dwt.end_time,
+            dwt.fixed,
+            dwt.instance_id,
+            dwt.internal_id,
+            dwt.start_time,
+            dwt.actual_start_time,
+            dwt.actual_end_time,
+            dwt.started,
+            dwt.triggered_by,
+            dwt.type,
+            contact.contact_id AS `author_id`
             FROM `:dbstg`.downtimes dwt
             LEFT JOIN `:db`.`contact`
                 ON contact.contact_alias = dwt.author
+            LEFT JOIN `:dbstg`.`comments` AS `cmts`
+                ON `cmts`.host_id = dwt.host_id AND `cmts`.service_id = dwt.service_id
             INNER JOIN `:dbstg`.hosts
               ON hosts.host_id = dwt.host_id
               AND dwt.host_id = :host_id'
@@ -522,8 +543,27 @@ class DowntimeRepositoryRDB extends AbstractRepositoryDRB implements DowntimeRep
                 . $this->accessGroupIdToString($this->accessGroups) . ')';
         }
 
-        $request =
-            'SELECT SQL_CALC_FOUND_ROWS DISTINCT dwt.*, contact.contact_id AS author_id
+        $request = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT
+            dwt.downtime_id,
+            dwt.entry_time,
+            dwt.host_id,
+            dwt.service_id,
+            dwt.author,
+            dwt.cancelled,
+            `cmts`.data AS `comment_data`,
+            dwt.deletion_time,
+            dwt.duration,
+            dwt.end_time,
+            dwt.fixed,
+            dwt.instance_id,
+            dwt.internal_id,
+            dwt.start_time,
+            dwt.actual_start_time,
+            dwt.actual_end_time,
+            dwt.started,
+            dwt.triggered_by,
+            dwt.type,
+            contact.contact_id AS `author_id`
             FROM `:dbstg`.downtimes dwt
             INNER JOIN `:dbstg`.hosts
                 ON hosts.host_id = dwt.host_id
@@ -533,7 +573,10 @@ class DowntimeRepositoryRDB extends AbstractRepositoryDRB implements DowntimeRep
                 AND dwt.host_id = :host_id
                 AND srv.service_id = :service_id
             LEFT JOIN `:db`.`contact`
-                ON contact.contact_alias = dwt.author'
+                ON contact.contact_alias = dwt.author
+            LEFT JOIN `:dbstg`.`comments` AS `cmts`
+                ON `cmts`.host_id = dwt.host_id AND `cmts`.service_id = dwt.service_id
+                AND `cmts`.deletion_time IS NULL'
             . $aclRequest;
 
         $this->sqlRequestTranslator->addSearchValue(':host_id', [\PDO::PARAM_INT => $hostId]);
