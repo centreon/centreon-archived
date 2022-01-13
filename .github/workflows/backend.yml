@@ -37,7 +37,7 @@ jobs:
     - uses: actions/checkout@v2
 
     - id: foo
-      uses: ./.github/actions/composer_checkout@master
+      uses: kduret/centreon/.github/actions/composer_checkout@master
 
     - name: Setup PHP 8.0
       uses: shivammathur/setup-php@v2
