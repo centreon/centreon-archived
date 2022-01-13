@@ -71,7 +71,7 @@ jobs:
       with:
         name: checkstyle            # Name of the check run which will be created
         path: checkstyle-be.xml    # Path to test results
-        reporter: jest-junit
+        reporter: java-junit
 
     # - name: Run phpcs
     #   uses: chekalsky/phpcs-action@v1
