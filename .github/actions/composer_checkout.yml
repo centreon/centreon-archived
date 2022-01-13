@@ -3,7 +3,7 @@ description: 'Composer checkout'
 runs:
   using: "composite"
   steps:
-    - uses: actions/checkout@v2
+    # - uses: actions/checkout@v2
 
     - name: Cache Composer
       uses: actions/cache@v2
