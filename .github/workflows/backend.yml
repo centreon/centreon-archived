@@ -57,10 +57,24 @@ jobs:
 
     - id: files
       uses: jitterbit/get-changed-files@v1
+    #- run: |
+    #      composer require staabm/annotate-pull-request-from-checkstyle
+    #      ./vendor/bin/phpcs --extensions=php --standard=./ruleset.xml --report=checkstyle --report-file=./checkstyle-be.xml bootstrap.php | ./vendor/bin/cs2pr
     - run: |
-          composer require staabm/annotate-pull-request-from-checkstyle
-          ./vendor/bin/phpcs --extensions=php --standard=./ruleset.xml --report=checkstyle --report-file=./checkstyle-be.xml bootstrap.php | ./vendor/bin/cs2pr
+          ./vendor/bin/phpcs --extensions=php --standard=./ruleset.xml --report=checkstyle --report-file=./checkstyle-be.xml bootstrap.php
       continue-on-error: true
+
+    - name: Checkout Private GitHub Action Repo
+      uses: actions/checkout@v2
+      with:
+        repository: kduret/custom-github-action
+        path: my-action
+        ref: master
+        token: ${{ secrets.custom_github_action }} # stored in GitHub secrets
+
+    - name: Annotate PR from PHPCS result
+      run: |
+        ./my-action/cs2pr.php --prefix=PHPCS checkstyle-be.xml
 #    - run: |
 #        ./vendor/bin/phpcs --extensions=php --standard=./ruleset.xml --report=checkstyle --report-file=./checkstyle-be.xml ${{ steps.files.outputs.added }} ${{ steps.files.outputs.modified }}
 #      continue-on-error: true
