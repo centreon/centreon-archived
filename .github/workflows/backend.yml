@@ -28,7 +28,7 @@ jobs:
   #     run: composer install --prefer-dist --no-progress --no-suggest
 
   be-phpcs:
-    needs: be-dependencies
+#    needs: be-dependencies
 
     runs-on: ubuntu-latest
 
