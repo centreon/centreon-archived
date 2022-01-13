@@ -3,14 +3,13 @@ description: 'Composer checkout'
 runs:
   using: "composite"
   steps:
-    # - uses: actions/checkout@v2
-
     - name: Cache Composer
       uses: actions/cache@v2
       id: composer-cache
       with:
         path: vendor
         key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+      shell: bash
 
     - name: Install composer dependencies
       if: steps.composer-cache.outputs.cache-hit != 'true'
