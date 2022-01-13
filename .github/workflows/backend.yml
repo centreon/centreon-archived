@@ -33,7 +33,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    
+
+    - name: Cache Composer
+      uses: actions/cache@v2
+      id: composer-cache
+      with:
+        path: vendor
+        key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+
     - name: Run phpcs
       uses: chekalsky/phpcs-action@v1
       with:
