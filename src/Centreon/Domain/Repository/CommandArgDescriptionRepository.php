@@ -5,7 +5,6 @@ use Centreon\Infrastructure\CentreonLegacyDB\ServiceEntityRepository;
 
 class CommandArgDescriptionRepository extends ServiceEntityRepository
 {
-
     /**
      * Export
      *

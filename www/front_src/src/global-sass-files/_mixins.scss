@@ -1,0 +1,113 @@
+// Mixins
+
+// Clearfix
+@mixin clearfix() {
+  &::after {
+    display: block;
+    clear: both;
+    content: "";
+  }
+}
+
+// Flex
+
+// Buttons
+// Round button
+@mixin border-radius($radius) {
+  -webkit-border-radius: $radius;
+     -moz-border-radius: $radius;
+      -ms-border-radius: $radius;
+          border-radius: $radius;
+}
+
+// Flexbox cross-browser
+@mixin flexbox() {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+// Vertical align position absolute
+@mixin centerAbsolute(){
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+// Vertical align flexbox
+@mixin center($position) {
+  @include flexbox;
+  
+  @if $position == 'both' {
+    align-items: center;
+    justify-content: center;
+  }
+  
+  @else if $position == 'vertical' {
+    align-items: center;
+  }
+  
+  @else if $position == 'horizontal' {
+    justify-content: center;
+  }
+
+  @else if $position == 'baseline' {
+    align-items: baseline;
+  }
+  
+  @else if $position == 'none' {
+    align-items: stretch;
+    justify-content: flex-start;
+  }
+}
+// center both vertical & horizontal
+.center-both {
+  @include center(both);
+}
+// center only vertical
+.center-vertical {
+  @include center(vertical);
+}
+// center only horizontal
+.center-horizontal {
+  @include center(horizontal);
+}
+// Clear both horizontal & vertical
+.center-baseline {
+  @include center(baseline);
+}
+// Clear both horizontal & vertical
+.center-none {
+  @include center(none);
+}
+
+// Flex none
+.flex-none {
+  flex: none !important;
+  max-width: none !important;
+}
+
+// Import iconmoon
+@mixin iconmoon(){
+  font-family: 'icomoon' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+// The opacity @for directive 
+@for $i from 1 through 10 {
+  @for $j from 1 through 10 {
+    .opacity-#{$i}-#{$j} {
+      opacity: $i/$j
+    }
+  }
+}

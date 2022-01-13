@@ -6,17 +6,13 @@ import pollerWizardReducer from './pollerWizardReducer';
 import navigationReducer from './navigationReducer';
 import refreshReducer from './refreshReducer';
 import externalComponentsReducer from './externalComponentsReducer';
-import tooltipReducer from './tooltipReducer';
-import axiosReducer from './axiosReducer';
 
 export default (history) =>
   combineReducers({
-    router: connectRouter(history),
-    form: formReducer,
-    pollerForm: pollerWizardReducer,
-    navigation: navigationReducer,
-    remoteData: axiosReducer,
-    intervals: refreshReducer,
     externalComponents: externalComponentsReducer,
-    tooltip: tooltipReducer,
+    form: formReducer,
+    intervals: refreshReducer,
+    navigation: navigationReducer,
+    pollerForm: pollerWizardReducer,
+    router: connectRouter(history),
   });

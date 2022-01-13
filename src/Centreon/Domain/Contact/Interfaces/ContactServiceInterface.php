@@ -22,15 +22,58 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Contact\Interfaces;
 
-use Centreon\Domain\Contact\Contact;
-
 interface ContactServiceInterface
 {
+    /**
+     * Find a contact based on its name.
+     *
+     * @param string $name Contact name
+     * @return ContactInterface|null
+     */
+    public function findByName(string $name): ?ContactInterface;
+
     /**
      * Find a contact based on their session number.
      *
      * @param string $session Contact session number
-     * @return Contact|null
+     * @return ContactInterface|null
      */
-    public function findBySession(string $session): ?Contact;
+    public function findBySession(string $session): ?ContactInterface;
+
+    /**
+     * Find a contact based on its id
+     *
+     * @param integer $id
+     * @return ContactInterface|null
+     */
+    public function findContact(int $id): ?ContactInterface;
+
+    /**
+     * Find a contact by an authentication token
+     * @param string $token
+     * @return ContactInterface|null
+     */
+    public function findByAuthenticationToken(string $token): ?ContactInterface;
+
+    /**
+     * Indicates whether or not the contact exists.
+     *
+     * @param ContactInterface $contact
+     * @return bool
+     */
+    public function exists(ContactInterface $contact): bool;
+
+    /**
+     * Add the contact.
+     *
+     * @param ContactInterface $contact Contact to be added
+     */
+    public function addUser(ContactInterface $contact): void;
+
+    /**
+     * Update the contact.
+     *
+     * @param ContactInterface $contact Contact to be updated
+     */
+    public function updateUser(ContactInterface $contact): void;
 }

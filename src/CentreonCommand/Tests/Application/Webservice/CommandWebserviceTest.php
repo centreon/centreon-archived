@@ -25,8 +25,8 @@ use PHPUnit\Framework\TestCase;
 use Pimple\Container;
 use Centreon\ServiceProvider;
 use CentreonCommand\Application\Webservice\CommandWebservice;
-use Centreon\Tests\Resource\Mock\CentreonPaginationServiceMock;
-use Centreon\Tests\Resource\Traits;
+use Centreon\Tests\Resources\Mock\CentreonPaginationServiceMock;
+use Centreon\Tests\Resources\Traits;
 
 /**
  * @group CentreonCommand
@@ -40,9 +40,15 @@ class CommandWebserviceTest extends TestCase
     protected const METHOD_GET_LIST = 'getList';
 
     /**
+     *
+     * @var CommandWebservice|\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $webservice;
+
+    /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         // dependencies
         $container = new Container();
@@ -63,7 +69,7 @@ class CommandWebserviceTest extends TestCase
     /**
      * Test the method getList
      */
-    public function testGetList()
+    public function testGetList(): void
     {
         // without applied filters
         $this->mockQuery();
@@ -73,7 +79,7 @@ class CommandWebserviceTest extends TestCase
     /**
      * Test the method getList with a different set of filters
      */
-    public function testGetList2()
+    public function testGetList2(): void
     {
         // with search, searchByIds, limit, and offset
         $this->mockQuery([
@@ -89,7 +95,7 @@ class CommandWebserviceTest extends TestCase
     /**
      * Test the method getName
      */
-    public function testGetName()
+    public function testGetName(): void
     {
         $this->assertEquals('centreon_command', CommandWebservice::getName());
     }

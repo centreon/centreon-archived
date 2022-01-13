@@ -1,93 +1,98 @@
 import * as React from 'react';
 
+import { isNil } from 'ramda';
+import { useAtom } from 'jotai';
+import { useAtomValue, useUpdateAtom } from 'jotai/utils';
+
+import { getUrlQueryParameters, setUrlQueryParameters } from '@centreon/ui';
+
 import {
-  getUrlQueryParameters,
-  setUrlQueryParameters,
-  useRequest,
-  getData,
-} from '@centreon/ui';
+  customTimePeriodAtom,
+  selectedTimePeriodAtom,
+} from '../Graph/Performance/TimePeriods/timePeriodAtoms';
+import useTimePeriod from '../Graph/Performance/TimePeriods/useTimePeriod';
 
-import { isNil, ifElse, pathEq, always, pathOr } from 'ramda';
-import { useTranslation } from 'react-i18next';
-import { detailsTabId, getTabIdFromLabel, getTabLabelFromId } from './tabs';
-import { TabId } from './tabs/models';
-import { DetailsUrlQueryParameters, ResourceDetails } from './models';
-import { resourcesEndpoint } from '../api/endpoint';
+import { getTabIdFromLabel, getTabLabelFromId } from './tabs';
+import { DetailsUrlQueryParameters } from './models';
 import {
-  labelNoResourceFound,
-  labelSomethingWentWrong,
-} from '../translatedLabels';
+  defaultSelectedCustomTimePeriodAtom,
+  defaultSelectedTimePeriodIdAtom,
+  openDetailsTabIdAtom,
+  selectedResourceIdAtom,
+  selectedResourceParentIdAtom,
+  selectedResourceParentTypeAtom,
+  selectedResourceTypeAtom,
+  selectedResourceUuidAtom,
+  sendingDetailsAtom,
+  tabParametersAtom,
+} from './detailsAtoms';
 
-export interface DetailsState {
-  clearSelectedResource: () => void;
-  getSelectedResourceDetailsEndpoint: () => string | undefined;
-  selectedResourceId?: number;
-  setSelectedResourceId: React.Dispatch<
-    React.SetStateAction<number | undefined>
-  >;
-  setSelectedResourceType: React.Dispatch<
-    React.SetStateAction<string | undefined>
-  >;
-  setSelectedResourceParentId: React.Dispatch<
-    React.SetStateAction<number | undefined>
-  >;
-  setSelectedResourceParentType: React.Dispatch<
-    React.SetStateAction<string | undefined>
-  >;
-  openDetailsTabId: TabId;
-  setOpenDetailsTabId: React.Dispatch<React.SetStateAction<TabId>>;
-  details?: ResourceDetails;
-  loadDetails: () => void;
-}
-
-const useDetails = (): DetailsState => {
-  const [openDetailsTabId, setOpenDetailsTabId] = React.useState<TabId>(
-    detailsTabId,
+const useDetails = (): void => {
+  const [openDetailsTabId, setOpenDetailsTabId] = useAtom(openDetailsTabIdAtom);
+  const [selectedResourceUuid, setSelectedResourceUuid] = useAtom(
+    selectedResourceUuidAtom,
   );
-  const [selectedResourceId, setSelectedResourceId] = React.useState<number>();
-  const [
-    selectedResourceParentId,
-    setSelectedResourceParentId,
-  ] = React.useState<number>();
-  const [selectedResourceType, setSelectedResourceType] = React.useState<
-    string
-  >();
-  const [
-    selectedResourceParentType,
-    setSelectedResourceParentType,
-  ] = React.useState<string>();
-  const [details, setDetails] = React.useState<ResourceDetails>();
+  const [selectedResourceId, setSelectedResourceId] = useAtom(
+    selectedResourceIdAtom,
+  );
+  const [selectedResourceParentId, setSelectedResourceParentId] = useAtom(
+    selectedResourceParentIdAtom,
+  );
+  const [selectedResourceType, setSelectedResourceType] = useAtom(
+    selectedResourceTypeAtom,
+  );
+  const [selectedResourceParentType, setSelectedResourceParentType] = useAtom(
+    selectedResourceParentTypeAtom,
+  );
+  const [tabParameters, setTabParameters] = useAtom(tabParametersAtom);
+  const customTimePeriod = useAtomValue(customTimePeriodAtom);
+  const selectedTimePeriod = useAtomValue(selectedTimePeriodAtom);
+  const sendingDetails = useAtomValue(sendingDetailsAtom);
+  const setDefaultSelectedTimePeriodId = useUpdateAtom(
+    defaultSelectedTimePeriodIdAtom,
+  );
+  const setDefaultSelectedCustomTimePeriod = useUpdateAtom(
+    defaultSelectedCustomTimePeriodAtom,
+  );
 
-  const { t } = useTranslation();
-
-  const { sendRequest } = useRequest<ResourceDetails>({
-    request: getData,
-    getErrorMessage: ifElse(
-      pathEq(['response', 'status'], 404),
-      always(t(labelNoResourceFound)),
-      pathOr(t(labelSomethingWentWrong), ['response', 'data', 'message']),
-    ),
+  useTimePeriod({
+    sending: sendingDetails,
   });
 
   React.useEffect(() => {
     const urlQueryParameters = getUrlQueryParameters();
 
-    const detailsUrlQueryParameters = urlQueryParameters.details as DetailsUrlQueryParameters;
+    const detailsUrlQueryParameters =
+      urlQueryParameters.details as DetailsUrlQueryParameters;
 
     if (isNil(detailsUrlQueryParameters)) {
       return;
     }
 
-    const { id, parentId, type, parentType, tab } = detailsUrlQueryParameters;
+    const {
+      uuid,
+      id,
+      parentId,
+      type,
+      parentType,
+      tab,
+      tabParameters: tabParametersFromUrl,
+      selectedTimePeriodId,
+      customTimePeriod: customTimePeriodFromUrl,
+    } = detailsUrlQueryParameters;
 
     if (!isNil(tab)) {
       setOpenDetailsTabId(getTabIdFromLabel(tab));
     }
 
+    setSelectedResourceUuid(uuid);
     setSelectedResourceId(id);
     setSelectedResourceParentId(parentId);
     setSelectedResourceType(type);
     setSelectedResourceParentType(parentType);
+    setTabParameters(tabParametersFromUrl || {});
+    setDefaultSelectedTimePeriodId(selectedTimePeriodId);
+    setDefaultSelectedCustomTimePeriod(customTimePeriodFromUrl);
   }, []);
 
   React.useEffect(() => {
@@ -95,11 +100,15 @@ const useDetails = (): DetailsState => {
       {
         name: 'details',
         value: {
+          customTimePeriod,
           id: selectedResourceId,
           parentId: selectedResourceParentId,
-          type: selectedResourceType,
           parentType: selectedResourceParentType,
+          selectedTimePeriodId: selectedTimePeriod?.id,
           tab: getTabLabelFromId(openDetailsTabId),
+          tabParameters,
+          type: selectedResourceType,
+          uuid: selectedResourceUuid,
         },
       },
     ]);
@@ -109,53 +118,10 @@ const useDetails = (): DetailsState => {
     selectedResourceType,
     selectedResourceParentType,
     selectedResourceParentType,
+    tabParameters,
+    selectedTimePeriod,
+    customTimePeriod,
   ]);
-
-  const getSelectedResourceDetailsEndpoint = (): string | undefined => {
-    if (!isNil(selectedResourceParentId)) {
-      return `${resourcesEndpoint}/${selectedResourceParentType}s/${selectedResourceParentId}/${selectedResourceType}s/${selectedResourceId}`;
-    }
-
-    return `${resourcesEndpoint}/${selectedResourceType}s/${selectedResourceId}`;
-  };
-
-  const clearSelectedResource = (): void => {
-    setSelectedResourceId(undefined);
-    setSelectedResourceParentId(undefined);
-    setSelectedResourceParentType(undefined);
-    setSelectedResourceType(undefined);
-  };
-
-  const loadDetails = (): void => {
-    if (isNil(selectedResourceId)) {
-      return;
-    }
-
-    sendRequest(getSelectedResourceDetailsEndpoint())
-      .then(setDetails)
-      .catch(() => {
-        clearSelectedResource();
-      });
-  };
-
-  React.useEffect(() => {
-    setDetails(undefined);
-    loadDetails();
-  }, [selectedResourceId]);
-
-  return {
-    clearSelectedResource,
-    selectedResourceId,
-    setSelectedResourceId,
-    setSelectedResourceType,
-    setSelectedResourceParentId,
-    setSelectedResourceParentType,
-    openDetailsTabId,
-    setOpenDetailsTabId,
-    getSelectedResourceDetailsEndpoint,
-    details,
-    loadDetails,
-  };
 };
 
 export default useDetails;

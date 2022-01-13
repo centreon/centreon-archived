@@ -57,30 +57,31 @@
 
         jQuery.ajax({
             type: 'POST',
-            url: dbSteps[key].file
-        }).success(function (response) {
-            var data = jQuery.parseJSON(response);
-            if (data['result'] == 0) {
-                jQuery('#' + data['id']).html('<span style="color:#88b917;">OK</span>');
-                if (key == 'configfile') {
-                    nextInstallStep('dbconf');
-                } else if (key == 'dbconf') {
-                    nextInstallStep('dbstorage');
-                } else if (key == 'dbstorage') {
-                    nextInstallStep('createuser');
-                } else if (key == 'createuser') {
-                    nextInstallStep('baseconf');
-                } else if (key == 'baseconf') {
-                    nextInstallStep('dbpartitioning');
-                } else if (key == 'dbpartitioning') {
-                  nextInstallStep('generationCache');
-                } else if (key == 'generationCache') {
-                  jQuery("#next").show();
+            url: dbSteps[key].file,
+            success: (response) => {
+                var data = jQuery.parseJSON(response);
+                if (data['result'] == 0) {
+                    jQuery('#' + data['id']).html('<span style="color:#88b917;">OK</span>');
+                    if (key == 'configfile') {
+                        nextInstallStep('dbconf');
+                    } else if (key == 'dbconf') {
+                        nextInstallStep('dbstorage');
+                    } else if (key == 'dbstorage') {
+                        nextInstallStep('createuser');
+                    } else if (key == 'createuser') {
+                        nextInstallStep('baseconf');
+                    } else if (key == 'baseconf') {
+                        nextInstallStep('dbpartitioning');
+                    } else if (key == 'dbpartitioning') {
+                        nextInstallStep('generationCache');
+                    } else if (key == 'generationCache') {
+                        jQuery("#next").show();
+                    }
+                } else {
+                    jQuery("#previous").show();
+                    jQuery("#refresh").show();
+                    jQuery('#'+data['id']).html('<span style="color:#8B0000;">' + data['msg'] + '</span>');
                 }
-            } else {
-                jQuery("#previous").show();
-                jQuery("#refresh").show();
-                jQuery('#'+data['id']).html('<span style="color:#8B0000;">' + data['msg'] + '</span>');
             }
         });
     }

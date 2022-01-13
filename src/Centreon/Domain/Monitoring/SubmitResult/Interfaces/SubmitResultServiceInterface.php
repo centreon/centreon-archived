@@ -38,6 +38,14 @@ interface SubmitResultServiceInterface extends ContactFilterInterface
     public function submitServiceResult(SubmitResult $result): void;
 
     /**
+     * Function allowing user to submit a result to a meta service
+     *
+     * @param  SubmitResult $result
+     * @return void
+     */
+    public function submitMetaServiceResult(SubmitResult $result): void;
+
+    /**
      * Function allowing user to submit a result to a host
      *
      * @param  SubmitResult $result

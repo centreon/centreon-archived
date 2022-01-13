@@ -1088,15 +1088,21 @@ class CentreonHost
         if (!isset($cmdId)) {
             $cmdId = "";
         }
-        $aMacros = $this->getMacros($host_id, false, $aTemplates, $cmdId);
+        $aMacros = $this->getMacros($host_id, $aTemplates, $cmdId);
         foreach ($aMacros as $macro) {
             foreach ($macroInput as $ind => $input) {
-                if ($input == $macro['macroInput_#index#'] &&
-                    $macroValue[$ind] == $macro["macroValue_#index#"] &&
-                    $macroPassword[$ind] == $macro['macroPassword_#index#']
+                if (
+                    isset($macro['macroInput_#index#'])
+                    && isset($macro["macroValue_#index#"])
+                    && isset($macro['macroPassword_#index#'])
                 ) {
-                    unset($macroInput[$ind]);
-                    unset($macroValue[$ind]);
+                    if ($input == $macro['macroInput_#index#'] &&
+                        $macroValue[$ind] == $macro["macroValue_#index#"] &&
+                        $macroPassword[$ind] == $macro['macroPassword_#index#']
+                    ) {
+                        unset($macroInput[$ind]);
+                        unset($macroValue[$ind]);
+                    }
                 }
             }
         }
@@ -1127,14 +1133,14 @@ class CentreonHost
 
     /**
      * This method get the macro attached to the host
-     *
      * @param int $iHostId
-     * @param int $bIsTemplate
-     * @param array $aListTemplate
+     * @param $aListTemplate
      * @param int $iIdCommande
+     * @param array $form
      * @return array
+     * @throws Exception
      */
-    public function getMacros($iHostId, $bIsTemplate, $aListTemplate, $iIdCommande, $form = array())
+    public function getMacros($iHostId, $aListTemplate, $iIdCommande, $form = array())
     {
         $macroArray = $this->getMacroFromForm($form, "direct");
         $aMacroTemplate[] = $this->getMacroFromForm($form, "fromTpl");
@@ -1492,8 +1498,8 @@ class CentreonHost
                     }
                 }
                 $query = 'SELECT ' . $queryFields . ' ' .
-                    'FROM host h ' .
-                    'WHERE host_id = :hostId';
+                    'FROM host h, extended_host_information ehi ' .
+                    'WHERE host_id = :hostId AND host_id = ehi.host_host_id';
                 $stmt = $this->db->prepare($query);
                 $stmt->bindParam(':hostId', $hostId, PDO::PARAM_INT);
                 $dbResult = $stmt->execute();

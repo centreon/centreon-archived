@@ -474,31 +474,30 @@ class HTML_QuickForm_select2 extends HTML_QuickForm_select
      */
     public function setDefaultAjaxDatas()
     {
+        if (preg_match('/id=$/', $this->_defaultDatasetRoute)) {
+            // do not fetch data if id is not set
+            // it happens when creating a new object
+            return '';
+        }
+
         $ajaxDefaultDatas = '$request' . $this->getName() . ' = jQuery.ajax({
             url: "' . $this->_defaultDatasetRoute . '",
-        });
+            success: (data) => {
+                let options = "";
+                data.map((item) => {
+                    // Create the DOM option that is pre-selected by default
+                    options += "<option selected=\"selected\" value=\"" + item.id + "\" ";
+                    if (item.hide === true) {
+                        options += "hidden";
+                    }
+                    options += ">" + item.text + "</option>";
+                })
+                // Append it to the select
+                $currentSelect2Object' . $this->getName() . '.append(options);
 
-        $request' . $this->getName() . '.success(function (data) {
-            let options = "";
-            for (var d = 0; d < data.length; d++) {
-                var item = data[d];
-
-                // Create the DOM option that is pre-selected by default
-                options += "<option selected=\"selected\" value=\"" + item.id + "\" ";
-                if (item.hide === true) {
-                    options += "hidden";
-                }
-                options += ">" + item.text + "</option>";
+                // Update the selected options that are displayed
+                $currentSelect2Object' . $this->getName() . '.trigger("change",[{origin:\'select2defaultinit\'}]);
             }
-            // Append it to the select
-            $currentSelect2Object' . $this->getName() . '.append(options);
-
-            // Update the selected options that are displayed
-            $currentSelect2Object' . $this->getName() . '.trigger("change",[{origin:\'select2defaultinit\'}]);
-        });
-
-        $request' . $this->getName() . '.error(function(data) {
-
         });
         ';
 

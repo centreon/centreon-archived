@@ -2,11 +2,11 @@ import React from 'react';
 
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import { path, not, or } from 'ramda';
+import { useTranslation } from 'react-i18next';
 
 import { Dialog, TextField, useRequest } from '@centreon/ui';
 
-import { path, not, or, omit } from 'ramda';
-import { useTranslation } from 'react-i18next';
 import {
   labelSave,
   labelCancel,
@@ -15,16 +15,15 @@ import {
   labelRequired,
 } from '../../translatedLabels';
 import { createFilter } from '../api';
-import { Filter, RawFilter } from '../models';
-import useAdapters from '../api/adapters';
+import { Filter } from '../models';
 
 type InputChangeEvent = (event: React.ChangeEvent<HTMLInputElement>) => void;
 
 interface Props {
-  onCreate: (filter) => void;
-  onCancel: () => void;
-  open: boolean;
   filter: Filter;
+  onCancel: () => void;
+  onCreate: (filter) => void;
+  open: boolean;
 }
 
 const CreateFilterDialog = ({
@@ -33,33 +32,17 @@ const CreateFilterDialog = ({
   open,
   onCancel,
 }: Props): JSX.Element => {
-  const { toFilter, toRawFilter } = useAdapters();
-
   const { t } = useTranslation();
 
-  const { sendRequest, sending } = useRequest<RawFilter>({
+  const { sendRequest, sending } = useRequest<Filter>({
     request: createFilter,
   });
-
   const form = useFormik({
     initialValues: {
       name: '',
     },
-    validationSchema: Yup.object().shape({
-      name: Yup.string().required(labelRequired),
-    }),
     onSubmit: (values) => {
-      sendRequest(
-        omit(
-          ['id'],
-          toRawFilter({
-            id: '',
-            name: values.name,
-            criterias: filter.criterias,
-          }),
-        ),
-      )
-        .then(toFilter)
+      sendRequest({ criterias: filter.criterias, name: values.name })
         .then(onCreate)
         .catch((requestError) => {
           form.setFieldError(
@@ -68,6 +51,9 @@ const CreateFilterDialog = ({
           );
         });
     },
+    validationSchema: Yup.object().shape({
+      name: Yup.string().required(labelRequired),
+    }),
   });
 
   const submitFormOnEnterKey = (event: React.KeyboardEvent): void => {
@@ -82,23 +68,23 @@ const CreateFilterDialog = ({
 
   return (
     <Dialog
-      open={open}
-      labelCancel={t(labelCancel)}
-      labelTitle={t(labelNewFilter)}
-      labelConfirm={t(labelSave)}
-      onConfirm={form.submitForm}
       confirmDisabled={confirmDisabled}
-      onCancel={onCancel}
+      labelCancel={t(labelCancel)}
+      labelConfirm={t(labelSave)}
+      labelTitle={t(labelNewFilter)}
+      open={open}
       submitting={sending}
+      onCancel={onCancel}
+      onConfirm={form.submitForm}
     >
       <TextField
+        autoFocus
+        ariaLabel={t(labelName)}
+        error={form.errors.name}
         label={t(labelName)}
         value={form.values.name}
-        error={form.errors.name}
         onChange={form.handleChange('name') as InputChangeEvent}
         onKeyDown={submitFormOnEnterKey}
-        ariaLabel={t(labelName)}
-        autoFocus
       />
     </Dialog>
   );

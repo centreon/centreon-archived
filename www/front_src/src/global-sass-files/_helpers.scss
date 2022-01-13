@@ -1,0 +1,166 @@
+@import './variables';
+
+// Helpers
+.m-0 {
+  margin: 0 !important;
+}
+.mb-0 {
+  margin-bottom: 0 !important;
+}
+.mb-1 {
+  margin-bottom: 10px;
+}
+.mb-2 {
+  margin-bottom: 20px;
+}
+.mr-2 {
+  margin-right: 20px;
+}
+.mr-4 {
+  margin-right: 40px;
+}
+.ml-1 {
+  margin-left: 10px;
+}
+.ml-2 {
+  margin-left: 20px;
+}
+.mt-03 {
+  margin-top: 3px !important;
+}
+.mt-05 {
+  margin-top: 5px !important;
+}
+.mt-1 {
+  margin-top: 10px;
+}
+.mt-2 {
+  margin-top: 20px;
+}
+.p-1 {
+  padding: 10px;
+}
+.p-2 {
+  padding: 20px;
+}
+.pt-24 {
+  padding-top: 24px;
+}
+.pt-25 {
+  padding-top: 25px;
+}
+.pb-25 {
+  padding-bottom: 25px;
+}
+.p-0 {
+  padding: 0 !important;
+}
+.pr-0 {
+  padding-right: 0 !important;
+}
+.pr-05 {
+  padding-right: 5px !important;
+}
+.pr-08 {
+  padding-right: 8px !important;
+}
+.pr-09 {
+  padding-right: 9px !important;
+}
+.pr-2 {
+  padding-right: 20px !important;
+}
+.pr-23 {
+  padding-right: 23px !important;
+}
+.pr-24 {
+  padding-right: 24px !important;
+}
+.pl-05 {
+  padding-left: 5px !important;
+}
+.pl-2 {
+  padding-left: 20px !important;
+}
+.pl-22 {
+  padding-left: 22px !important;
+}
+
+.list-unstyled {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+.img-responsive {
+  max-width: 100%;
+  height: auto;
+}
+
+// Text align
+.text-left {
+  text-align-last: left;
+}
+.text-right {
+  text-align: right;
+}
+.text-center {
+  text-align: center;
+}
+.w-100 {
+  width: 100%;
+}
+
+// Float elements
+.f-r {
+  float: right;
+}
+
+// Decorators
+.red-decorater {
+  color: $content-red-color;
+}
+
+// Background decorators
+.blue-background-decorator {
+  background-color: $content-blue-color;
+}
+.red-background-decorator {
+  background-color: $content-red-color;
+}
+
+// Loading animation
+.loading-animation{
+  -webkit-animation: spinner 1s infinite linear;
+  top: 20% !important;
+}
+
+@-webkit-keyframes spinner {
+  0% {
+     -webkit-transform: rotate3d(0, 0, 1, 0deg);
+     -ms-transform: rotate3d(0, 0, 1, 0deg);
+     -o-transform: rotate3d(0, 0, 1, 0deg);
+     transform: rotate3d(0, 0, 1, 0deg);
+  }
+  50% {
+     -webkit-transform: rotate3d(0, 0, 1, 180deg);
+     -ms-transform: rotate3d(0, 0, 1, 180deg);
+     -o-transform: rotate3d(0, 0, 1, 180deg);
+     transform: rotate3d(0, 0, 1, 180deg);
+  }
+  100% {
+      -webkit-transform: rotate3d(0, 0, 1, 360deg);
+     -ms-transform: rotate3d(0, 0, 1, 360deg);
+     -o-transform: rotate3d(0, 0, 1, 360deg);
+     transform: rotate3d(0, 0, 1, 360deg);
+  }
+}
+
+// Opacity
+.half-opacity {
+  opacity: .5;
+}
+
+// Borders
+.border-right {
+  border-right: 2px solid #dcdcdc;
+}

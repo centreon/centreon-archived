@@ -46,7 +46,7 @@ use Symfony\Component\Finder\Finder;
 use CentreonModule\Application\Webservice;
 use Centreon\Infrastructure\Service\CentreonDBManagerService;
 use CentreonLegacy\Core\Configuration\Configuration;
-use CentreonModule\Tests\Resource\Traits\SourceDependencyTrait;
+use CentreonModule\Tests\Resources\Traits\SourceDependencyTrait;
 
 /**
  * @group CentreonModule
@@ -56,13 +56,20 @@ class ServiceProviderTest extends TestCase
 {
     use SourceDependencyTrait;
 
+    /**
+     * @var Container
+     */
     protected $container;
+
+    /**
+     * @var ServiceProvider
+     */
     protected $provider;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->provider = new ServiceProvider();
-        $this->container = new Container;
+        $this->container = new Container();
         $this->container['finder'] = $this->getMockBuilder(Finder::class)
             ->disableOriginalConstructor()
             ->getMock()
@@ -72,7 +79,7 @@ class ServiceProviderTest extends TestCase
 
         $this->container['configuration'] = $this->createMock(Configuration::class);
 
-        $this->container['realtime_db'] = $this->container['configuration_db'] = new Mock\CentreonDB;
+        $this->container['realtime_db'] = $this->container['configuration_db'] = new Mock\CentreonDB();
         $this->container['configuration_db']
             ->addResultSet("SELECT `name` AS `id`, `mod_release` AS `version` FROM `modules_informations`", [])
             ->addResultSet("SELECT `directory` AS `id`, `version` FROM `widget_models`", [])
@@ -84,16 +91,27 @@ class ServiceProviderTest extends TestCase
         ]);
         $this->container[\Centreon\ServiceProvider::CENTREON_DB_MANAGER] = new CentreonDBManagerService($locator);
         $this->container[\Centreon\ServiceProvider::CENTREON_WEBSERVICE] = new class {
-
+            /**
+             * @var array<mixed>
+             */
             protected $services = [];
 
-            public function add($class)
+            /**
+             * @param mixed $class
+             */
+            public function add($class): void
             {
                 $this->services[$class] = $class;
             }
 
+            /**
+             * @return array<mixed>
+             */
             public function getServices(): array
             {
+                /**
+                 * @return array<mixed>
+                 */
                 return $this->services;
             }
         };
@@ -104,7 +122,7 @@ class ServiceProviderTest extends TestCase
     /**
      * @covers \CentreonModule\ServiceProvider::register
      */
-    public function testCheckServicesByList()
+    public function testCheckServicesByList(): void
     {
         $checkList = [
             ServiceProvider::CENTREON_MODULE => Service\CentreonModuleService::class,
@@ -134,7 +152,7 @@ class ServiceProviderTest extends TestCase
     /**
      * @covers \CentreonModule\ServiceProvider::order
      */
-    public function testOrder()
+    public function testOrder(): void
     {
         $this->assertGreaterThanOrEqual(1, $this->provider::order());
         $this->assertLessThanOrEqual(20, $this->provider::order());

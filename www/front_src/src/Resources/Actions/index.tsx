@@ -3,11 +3,7 @@ import * as React from 'react';
 import { useTheme, Grid } from '@material-ui/core';
 
 import ResourceActions from './Resource';
-import GlobalActions from './Refresh';
-
-interface Props {
-  onRefresh: () => void;
-}
+import GlobalActions, { Props } from './Refresh';
 
 const Actions = ({ onRefresh }: Props): JSX.Element => {
   const theme = useTheme();

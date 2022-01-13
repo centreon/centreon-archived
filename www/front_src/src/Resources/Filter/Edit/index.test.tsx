@@ -1,7 +1,6 @@
 import * as React from 'react';
 
 import axios from 'axios';
-
 import {
   RenderResult,
   render,
@@ -11,12 +10,15 @@ import {
 } from '@testing-library/react';
 import { omit, head, prop } from 'ramda';
 import { makeDnd, DND_DIRECTION_DOWN } from 'react-beautiful-dnd-test-utils';
+import { Provider } from 'jotai';
 
-import EditFilterPanel from '.';
-import Context, { ResourceContext } from '../../Context';
-import useFilter from '../useFilter';
+import Context, { ResourceContext } from '../../testUtils/Context';
+import useFilter from '../../testUtils/useFilter';
 import { labelFilter, labelName, labelDelete } from '../../translatedLabels';
 import { filterEndpoint } from '../api';
+import { defaultSortField, defaultSortOrder } from '../Criterias/default';
+
+import EditFilterPanel from '.';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
@@ -38,54 +40,70 @@ const EditFilterPanelTest = (): JSX.Element => {
   );
 };
 
+const EditFilterPanelTestWithJotai = (): JSX.Element => (
+  <Provider>
+    <EditFilterPanelTest />
+  </Provider>
+);
+
 const retrievedCustomFilters = {
+  meta: {
+    limit: 30,
+    page: 1,
+    total: 1,
+  },
   result: [0, 1].map((index) => ({
-    id: index,
-    name: `My filter ${index}`,
     criterias: [
       {
         name: 'resource_types',
+        object_type: null,
         type: 'multi_select',
         value: [],
       },
       {
         name: 'states',
+        object_type: null,
         type: 'multi_select',
         value: [],
       },
       {
         name: 'statuses',
+        object_type: null,
         type: 'multi_select',
         value: [],
       },
       {
         name: 'host_groups',
+        object_type: 'host_groups',
         type: 'multi_select',
         value: [],
-        object_type: 'host_groups',
       },
       {
         name: 'service_groups',
+        object_type: 'service_groups',
         type: 'multi_select',
         value: [],
-        object_type: 'service_groups',
       },
       {
         name: 'search',
+        object_type: null,
         type: 'text',
         value: '',
       },
+      {
+        name: 'sort',
+        object_type: null,
+        type: 'array',
+        value: [defaultSortField, defaultSortOrder],
+      },
     ],
+    id: index,
+    name: `My filter ${index}`,
   })),
-  meta: {
-    page: 1,
-    limit: 30,
-    total: 1,
-  },
 };
 
 const renderEditFilterPanel = (): RenderResult =>
-  render(<EditFilterPanelTest />);
+  render(<EditFilterPanelTestWithJotai />);
 
 describe(EditFilterPanel, () => {
   beforeEach(() => {
@@ -194,9 +212,9 @@ describe(EditFilterPanel, () => {
     );
 
     await makeDnd({
+      direction: DND_DIRECTION_DOWN,
       getByText,
       getDragEl: () => firstFilterDraggable,
-      direction: DND_DIRECTION_DOWN,
       positions: 1,
     });
 

@@ -41,23 +41,59 @@ use Symfony\Component\Validator\Constraint;
 
 class UniqueEntity extends Constraint
 {
+    public const NOT_UNIQUE_ERROR = '23bd9dbf-6b9b-41cd-a99e-4844bcf3077c';
 
-    const NOT_UNIQUE_ERROR = '23bd9dbf-6b9b-41cd-a99e-4844bcf3077c';
-
+    /**
+     * @var mixed
+     */
     public $validatorClass = UniqueEntityValidator::class;
+
+    /**
+     * @var string
+     */
     public $message = 'This value is already used.';
+
+    /**
+     * @var string
+     */
     public $entityIdentificatorMethod = 'getId';
+
+    /**
+     * @var string
+     */
     public $entityIdentificatorColumn = 'id';
+
+    /**
+     * @var mixed
+     */
     public $repository = null;
+
+    /**
+     * @var string
+     */
     public $repositoryMethod = 'findOneBy';
+
+    /**
+     * @var array<mixed>
+     */
     public $fields = [];
+
+    /**
+     * @var string|null
+     */
     public $errorPath = null;
+
+    /**
+     * @var bool
+     */
     public $ignoreNull = true;
 
+    /**
+     * @var string[]
+     */
     protected static $errorNames = [
         self::NOT_UNIQUE_ERROR => 'NOT_UNIQUE_ERROR',
     ];
-
 
     /**
      * {@inheritdoc}

@@ -1,0 +1,5 @@
+centreon_application_find_real_time_monitoring_servers:
+  methods: GET
+  path: /monitoring/servers
+  controller: 'Centreon\Application\Controller\Monitoring\RealTimeMonitoringServerController::findRealTimeMonitoringServers'
+  condition: "request.attributes.get('version') >= 21.10"

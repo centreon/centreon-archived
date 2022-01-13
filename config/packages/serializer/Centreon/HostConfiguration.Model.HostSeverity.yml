@@ -1,0 +1,6 @@
+Centreon\Domain\HostConfiguration\Model\HostSeverity:
+  properties:
+    name:
+      type: string
+      groups:
+        - 'host_severity_conf_min'

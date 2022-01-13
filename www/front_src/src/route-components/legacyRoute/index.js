@@ -3,10 +3,12 @@
 /* eslint-disable react/sort-comp */
 
 import React, { Component } from 'react';
+
 import classnames from 'classnames';
-import styles from '../../components/header/header.scss';
-import loaderStyles from '../../components/loader/loader.scss';
-import Loader from '../../components/loader';
+
+import { PageSkeleton } from '@centreon/ui';
+
+import styles from '../../Header/header.scss';
 
 class LegacyRoute extends Component {
   constructor(props) {
@@ -77,20 +79,16 @@ class LegacyRoute extends Component {
 
     return (
       <>
-        {loading && (
-          <span className={loaderStyles['main-loader']}>
-            <Loader />
-          </span>
-        )}
+        {loading && <PageSkeleton />}
         <iframe
-          id="main-content"
-          title="Main Content"
-          frameBorder="0"
-          onLoad={this.load}
-          scrolling="yes"
           className={classnames({ [styles.hidden]: loading })}
-          style={{ width: '100%', height: '100%' }}
+          frameBorder="0"
+          id="main-content"
+          scrolling="yes"
           src={`./main.get.php${params}`}
+          style={{ height: '100%', width: '100%' }}
+          title="Main Content"
+          onLoad={this.load}
         />
       </>
     );

@@ -5,6 +5,7 @@
 /* eslint-disable react/no-unused-state */
 
 import React, { Component } from 'react';
+
 import { connect } from 'react-redux';
 
 import Form from '../../components/forms/poller/PollerFormStepOne';
@@ -18,9 +19,9 @@ class PollerStepOneRoute extends Component {
   links = [
     {
       active: true,
-      prevActive: true,
       number: 1,
       path: routeMap.serverConfigurationWizard,
+      prevActive: true,
     },
     { active: true, number: 2, path: routeMap.pollerStep1 },
     { active: false, number: 3 },
@@ -60,13 +61,14 @@ class PollerStepOneRoute extends Component {
   render() {
     const { links } = this;
     const { waitList } = this.state;
+
     return (
       <BaseWizard>
         <ProgressBar links={links} />
         <Form
-          onSubmit={this.handleSubmit.bind(this)}
           initialValues={{}}
           waitList={waitList}
+          onSubmit={this.handleSubmit.bind(this)}
         />
       </BaseWizard>
     );

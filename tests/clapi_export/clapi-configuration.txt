@@ -45,9 +45,7 @@ ACLMENU;GRANTRW;test_access-group;0;Configuration;Knowledge Base;Service Templat
 ACLMENU;GRANTRW;test_access-group;0;Configuration;Pollers;Export configuration;
 ACLMENU;GRANTRW;test_access-group;0;Configuration;Pollers;Pollers;
 ACLMENU;GRANTRW;test_access-group;0;Configuration;Pollers;Engine configuration;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Pollers;Broker configuration;Wizard;
 ACLMENU;GRANTRW;test_access-group;0;Configuration;Pollers;Broker configuration;
-ACLMENU;GRANTRW;test_access-group;0;Configuration;Pollers;Broker configuration;WizardAjax;
 ACLMENU;GRANTRW;test_access-group;0;Configuration;
 ACLMENU;GRANTRW;test_access-group;0;Configuration;Pollers;
 ACLMENU;GRANTRW;test_access-group;0;Configuration;Pollers;Resources;
@@ -417,6 +415,7 @@ CENTBROKERCFG;SETPARAM;central-broker-master;filename;central-broker.json
 CENTBROKERCFG;SETPARAM;central-broker-master;cache_directory;/var/lib/centreon-broker
 CENTBROKERCFG;SETPARAM;central-broker-master;stats_activate;1
 CENTBROKERCFG;SETPARAM;central-broker-master;daemon;1
+CENTBROKERCFG;SETPARAM;central-broker-master;pool_size;
 CENTBROKERCFG;ADDINPUT;central-broker-master;central-broker-master-input;ipv4
 CENTBROKERCFG;SETINPUT;central-broker-master;0;type;ipv4
 CENTBROKERCFG;SETINPUT;central-broker-master;0;negotiation;yes
@@ -427,13 +426,6 @@ CENTBROKERCFG;SETINPUT;central-broker-master;0;protocol;bbdo
 CENTBROKERCFG;SETINPUT;central-broker-master;0;tls;no
 CENTBROKERCFG;SETINPUT;central-broker-master;0;one_peer_retention_mode;no
 CENTBROKERCFG;SETINPUT;central-broker-master;0;compression;no
-CENTBROKERCFG;ADDLOGGER;central-broker-master;/var/log/centreon-broker/central-broker-master.log;file
-CENTBROKERCFG;SETLOGGER;central-broker-master;0;type;file
-CENTBROKERCFG;SETLOGGER;central-broker-master;0;config;yes
-CENTBROKERCFG;SETLOGGER;central-broker-master;0;debug;no
-CENTBROKERCFG;SETLOGGER;central-broker-master;0;error;yes
-CENTBROKERCFG;SETLOGGER;central-broker-master;0;info;no
-CENTBROKERCFG;SETLOGGER;central-broker-master;0;level;low
 CENTBROKERCFG;ADDOUTPUT;central-broker-master;central-broker-master-sql;sql
 CENTBROKERCFG;SETOUTPUT;central-broker-master;0;type;sql
 CENTBROKERCFG;SETOUTPUT;central-broker-master;0;db_type;mysql
@@ -444,6 +436,13 @@ CENTBROKERCFG;SETOUTPUT;central-broker-master;0;db_password;centreon
 CENTBROKERCFG;SETOUTPUT;central-broker-master;0;db_name;centreon_storage
 CENTBROKERCFG;SETOUTPUT;central-broker-master;0;retry_interval;60
 CENTBROKERCFG;SETOUTPUT;central-broker-master;0;buffering_timeout;0
+CENTBROKERCFG;ADDLOGGER;central-broker-master;/var/log/centreon-broker/central-broker-master.log;file
+CENTBROKERCFG;SETLOGGER;central-broker-master;0;type;file
+CENTBROKERCFG;SETLOGGER;central-broker-master;0;config;yes
+CENTBROKERCFG;SETLOGGER;central-broker-master;0;debug;no
+CENTBROKERCFG;SETLOGGER;central-broker-master;0;error;yes
+CENTBROKERCFG;SETLOGGER;central-broker-master;0;info;no
+CENTBROKERCFG;SETLOGGER;central-broker-master;0;level;low
 CENTBROKERCFG;ADDOUTPUT;central-broker-master;centreon-broker-master-rrd;ipv4
 CENTBROKERCFG;SETOUTPUT;central-broker-master;1;type;ipv4
 CENTBROKERCFG;SETOUTPUT;central-broker-master;1;one_peer_retention_mode;no
@@ -475,13 +474,7 @@ CENTBROKERCFG;SETPARAM;central-module-master;filename;central-module.json
 CENTBROKERCFG;SETPARAM;central-module-master;cache_directory;/var/lib/centreon-engine
 CENTBROKERCFG;SETPARAM;central-module-master;stats_activate;1
 CENTBROKERCFG;SETPARAM;central-module-master;daemon;0
-CENTBROKERCFG;ADDLOGGER;central-module-master;/var/log/centreon-broker/central-module-master.log;file
-CENTBROKERCFG;SETLOGGER;central-module-master;0;type;file
-CENTBROKERCFG;SETLOGGER;central-module-master;0;config;yes
-CENTBROKERCFG;SETLOGGER;central-module-master;0;debug;no
-CENTBROKERCFG;SETLOGGER;central-module-master;0;error;yes
-CENTBROKERCFG;SETLOGGER;central-module-master;0;info;no
-CENTBROKERCFG;SETLOGGER;central-module-master;0;level;low
+CENTBROKERCFG;SETPARAM;central-module-master;pool_size;
 CENTBROKERCFG;ADDOUTPUT;central-module-master;central-module-master-output;ipv4
 CENTBROKERCFG;SETOUTPUT;central-module-master;0;type;ipv4
 CENTBROKERCFG;SETOUTPUT;central-module-master;0;negotiation;yes
@@ -493,11 +486,19 @@ CENTBROKERCFG;SETOUTPUT;central-module-master;0;buffering_timeout;0
 CENTBROKERCFG;SETOUTPUT;central-module-master;0;protocol;bbdo
 CENTBROKERCFG;SETOUTPUT;central-module-master;0;tls;no
 CENTBROKERCFG;SETOUTPUT;central-module-master;0;compression;no
+CENTBROKERCFG;ADDLOGGER;central-module-master;/var/log/centreon-broker/central-module-master.log;file
+CENTBROKERCFG;SETLOGGER;central-module-master;0;type;file
+CENTBROKERCFG;SETLOGGER;central-module-master;0;config;yes
+CENTBROKERCFG;SETLOGGER;central-module-master;0;debug;no
+CENTBROKERCFG;SETLOGGER;central-module-master;0;error;yes
+CENTBROKERCFG;SETLOGGER;central-module-master;0;info;no
+CENTBROKERCFG;SETLOGGER;central-module-master;0;level;low
 CENTBROKERCFG;ADD;central-rrd-master;Central
 CENTBROKERCFG;SETPARAM;central-rrd-master;filename;central-rrd.json
 CENTBROKERCFG;SETPARAM;central-rrd-master;cache_directory;/var/lib/centreon-broker
 CENTBROKERCFG;SETPARAM;central-rrd-master;stats_activate;1
 CENTBROKERCFG;SETPARAM;central-rrd-master;daemon;1
+CENTBROKERCFG;SETPARAM;central-rrd-master;pool_size;
 CENTBROKERCFG;ADDINPUT;central-rrd-master;central-rrd-master-input;ipv4
 CENTBROKERCFG;SETINPUT;central-rrd-master;0;type;ipv4
 CENTBROKERCFG;SETINPUT;central-rrd-master;0;one_peer_retention_mode;no
@@ -508,13 +509,6 @@ CENTBROKERCFG;SETINPUT;central-rrd-master;0;retry_interval;60
 CENTBROKERCFG;SETINPUT;central-rrd-master;0;protocol;bbdo
 CENTBROKERCFG;SETINPUT;central-rrd-master;0;tls;auto
 CENTBROKERCFG;SETINPUT;central-rrd-master;0;compression;auto
-CENTBROKERCFG;ADDLOGGER;central-rrd-master;/var/log/centreon-broker/central-rrd-master.log;file
-CENTBROKERCFG;SETLOGGER;central-rrd-master;0;type;file
-CENTBROKERCFG;SETLOGGER;central-rrd-master;0;config;yes
-CENTBROKERCFG;SETLOGGER;central-rrd-master;0;debug;no
-CENTBROKERCFG;SETLOGGER;central-rrd-master;0;error;yes
-CENTBROKERCFG;SETLOGGER;central-rrd-master;0;info;no
-CENTBROKERCFG;SETLOGGER;central-rrd-master;0;level;low
 CENTBROKERCFG;ADDOUTPUT;central-rrd-master;central-rrd-master-output;rrd
 CENTBROKERCFG;SETOUTPUT;central-rrd-master;0;type;rrd
 CENTBROKERCFG;SETOUTPUT;central-rrd-master;0;metrics_path;/var/lib/centreon/metrics
@@ -557,13 +551,14 @@ ENGINECFG;setparam;Centreon Engine Central;log_external_commands;1
 ENGINECFG;setparam;Centreon Engine Central;log_passive_checks;2
 ENGINECFG;setparam;Centreon Engine Central;sleep_time;0.2
 ENGINECFG;setparam;Centreon Engine Central;service_inter_check_delay_method;s
+ENGINECFG;setparam;Centreon Engine Central;host_inter_check_delay_method;s
 ENGINECFG;setparam;Centreon Engine Central;service_interleave_factor;s
 ENGINECFG;setparam;Centreon Engine Central;max_concurrent_checks;400
 ENGINECFG;setparam;Centreon Engine Central;max_service_check_spread;5
+ENGINECFG;setparam;Centreon Engine Central;max_host_check_spread;15
 ENGINECFG;setparam;Centreon Engine Central;check_result_reaper_frequency;5
 ENGINECFG;setparam;Centreon Engine Central;interval_length;60
 ENGINECFG;setparam;Centreon Engine Central;auto_reschedule_checks;2
-ENGINECFG;setparam;Centreon Engine Central;use_aggressive_host_checking;1
 ENGINECFG;setparam;Centreon Engine Central;enable_flap_detection;0
 ENGINECFG;setparam;Centreon Engine Central;low_service_flap_threshold;25.0
 ENGINECFG;setparam;Centreon Engine Central;high_service_flap_threshold;50.0
@@ -587,6 +582,7 @@ ENGINECFG;setparam;Centreon Engine Central;check_for_orphaned_hosts;0
 ENGINECFG;setparam;Centreon Engine Central;check_service_freshness;1
 ENGINECFG;setparam;Centreon Engine Central;check_host_freshness;2
 ENGINECFG;setparam;Centreon Engine Central;date_format;euro
+ENGINECFG;setparam;Centreon Engine Central;instance_heartbeat_interval;30
 ENGINECFG;setparam;Centreon Engine Central;illegal_object_name_chars;~!$%^&*"|'<>?,()=
 ENGINECFG;setparam;Centreon Engine Central;illegal_macro_output_chars;`~$^&"|'<>
 ENGINECFG;setparam;Centreon Engine Central;use_regexp_matching;2
@@ -612,7 +608,7 @@ CONTACTTPL;ADD;contact_template;contact_template;;md5__d41d8cd98f00b204e9800998e
 CONTACTTPL;setparam;contact_template;hostnotifopt;n
 CONTACTTPL;setparam;contact_template;servicenotifopt;n
 CONTACTTPL;setparam;contact_template;contact_js_effects;0
-CONTACTTPL;setparam;contact_template;timezone;
+CONTACTTPL;setparam;contact_template;timezone;0
 CONTACTTPL;setparam;contact_template;reach_api;0
 CONTACTTPL;setparam;contact_template;reach_api_rt;0
 CONTACTTPL;setparam;contact_template;contact_enable_notifications;2
@@ -621,11 +617,12 @@ CONTACTTPL;setparam;contact_template;contact_activate;1
 CONTACTTPL;setparam;contact_template;show_deprecated_pages;0
 CONTACTTPL;setparam;contact_template;contact_ldap_last_sync;0
 CONTACTTPL;setparam;contact_template;contact_ldap_required_sync;0
+CONTACTTPL;setparam;contact_template;enable_one_click_export;0
 CONTACTTPL;ADD;test_name;test_contact-template;;md5__b0e52a1510c9012ebae9e9dc1ae0c46e;0;1;;local
 CONTACTTPL;setparam;test_contact-template;hostnotifopt;n
 CONTACTTPL;setparam;test_contact-template;servicenotifopt;n
 CONTACTTPL;setparam;test_contact-template;contact_js_effects;0
-CONTACTTPL;setparam;test_contact-template;timezone;
+CONTACTTPL;setparam;test_contact-template;timezone;0
 CONTACTTPL;setparam;test_contact-template;reach_api;0
 CONTACTTPL;setparam;test_contact-template;reach_api_rt;0
 CONTACTTPL;setparam;test_contact-template;contact_enable_notifications;0
@@ -634,65 +631,14 @@ CONTACTTPL;setparam;test_contact-template;contact_activate;1
 CONTACTTPL;setparam;test_contact-template;show_deprecated_pages;0
 CONTACTTPL;setparam;test_contact-template;contact_ldap_last_sync;0
 CONTACTTPL;setparam;test_contact-template;contact_ldap_required_sync;0
-LDAP;ADD;openldap;openldap;
-LDAP;SETPARAM;openldap;enable;1;
-LDAP;ADDSERVER;openldap;openldap;389;0;0;
-LDAP;SETPARAM;openldap;alias;uid;
-LDAP;SETPARAM;openldap;bind_dn;cn=admin,dc=centreon,dc=com;
-LDAP;SETPARAM;openldap;bind_pass;centreon;
-LDAP;SETPARAM;openldap;group_base_search;dc=centreon,dc=com;
-LDAP;SETPARAM;openldap;group_filter;(&(cn=%s)(objectClass=groupOfNames));
-LDAP;SETPARAM;openldap;group_member;member;
-LDAP;SETPARAM;openldap;group_name;cn;
-LDAP;SETPARAM;openldap;ldap_auto_import;1;
-LDAP;SETPARAM;openldap;ldap_contact_tmpl;contact_template;
-LDAP;SETPARAM;openldap;ldap_dns_use_domain;;
-LDAP;SETPARAM;openldap;ldap_search_limit;60;
-LDAP;SETPARAM;openldap;ldap_search_timeout;60;
-LDAP;SETPARAM;openldap;ldap_srv_dns;0;
-LDAP;SETPARAM;openldap;ldap_store_password;1;
-LDAP;SETPARAM;openldap;ldap_template;Posix;
-LDAP;SETPARAM;openldap;protocol_version;3;
-LDAP;SETPARAM;openldap;user_base_search;dc=centreon,dc=com;
-LDAP;SETPARAM;openldap;user_email;mail;
-LDAP;SETPARAM;openldap;user_filter;(&(uid=%s)(objectClass=posixAccount));
-LDAP;SETPARAM;openldap;user_firstname;givenname;
-LDAP;SETPARAM;openldap;user_group;;
-LDAP;SETPARAM;openldap;user_lastname;sn;
-LDAP;SETPARAM;openldap;user_name;cn;
-LDAP;SETPARAM;openldap;user_pager;mobile;
-LDAP;ADD;test_configuration-LDAP;test_configuration-LDAP;
-LDAP;SETPARAM;test_configuration-LDAP;enable;0;
-LDAP;SETPARAM;test_configuration-LDAP;alias;samaccountname;
-LDAP;SETPARAM;test_configuration-LDAP;bind_dn;;
-LDAP;SETPARAM;test_configuration-LDAP;bind_pass;;
-LDAP;SETPARAM;test_configuration-LDAP;group_base_search;;
-LDAP;SETPARAM;test_configuration-LDAP;group_filter;(&(samAccountName=%s)(objectClass=group)(samAccountType=268435456));
-LDAP;SETPARAM;test_configuration-LDAP;group_member;member;
-LDAP;SETPARAM;test_configuration-LDAP;group_name;samaccountname;
-LDAP;SETPARAM;test_configuration-LDAP;ldap_auto_import;1;
-LDAP;SETPARAM;test_configuration-LDAP;ldap_dns_use_domain;;
-LDAP;SETPARAM;test_configuration-LDAP;ldap_search_limit;60;
-LDAP;SETPARAM;test_configuration-LDAP;ldap_search_timeout;60;
-LDAP;SETPARAM;test_configuration-LDAP;ldap_srv_dns;0;
-LDAP;SETPARAM;test_configuration-LDAP;ldap_store_password;0;
-LDAP;SETPARAM;test_configuration-LDAP;ldap_template;Active Directory;
-LDAP;SETPARAM;test_configuration-LDAP;protocol_version;2;
-LDAP;SETPARAM;test_configuration-LDAP;user_base_search;;
-LDAP;SETPARAM;test_configuration-LDAP;user_email;mail;
-LDAP;SETPARAM;test_configuration-LDAP;user_filter;(&(samAccountName=%s)(objectClass=user)(samAccountType=805306368));
-LDAP;SETPARAM;test_configuration-LDAP;user_firstname;givenname;
-LDAP;SETPARAM;test_configuration-LDAP;user_group;memberOf;
-LDAP;SETPARAM;test_configuration-LDAP;user_lastname;sn;
-LDAP;SETPARAM;test_configuration-LDAP;user_name;name;
-LDAP;SETPARAM;test_configuration-LDAP;user_pager;mobile;
-CONTACT;ADD;admin admin;admin;admin@centreon.com;md5__2f0a912f1c89b4f4fc9edd324d9d1c89;1;1;en_US;local
+CONTACTTPL;setparam;test_contact-template;enable_one_click_export;0
+CONTACT;ADD;admin admin;admin;admin@centreon.com;md5__2f0a912f1c89b4f4fc9edd324d9d1c89;1;1;en_US.UTF-8;local
 CONTACT;setparam;admin;hostnotifperiod;24x7
 CONTACT;setparam;admin;svcnotifperiod;24x7
 CONTACT;setparam;admin;hostnotifopt;n
 CONTACT;setparam;admin;servicenotifopt;n
 CONTACT;setparam;admin;contact_js_effects;0
-CONTACT;setparam;admin;timezone;
+CONTACT;setparam;admin;timezone;0
 CONTACT;setparam;admin;reach_api;0
 CONTACT;setparam;admin;reach_api_rt;0
 CONTACT;setparam;admin;contact_enable_notifications;1
@@ -701,15 +647,16 @@ CONTACT;setparam;admin;contact_activate;1
 CONTACT;setparam;admin;show_deprecated_pages;0
 CONTACT;setparam;admin;contact_ldap_last_sync;0
 CONTACT;setparam;admin;contact_ldap_required_sync;0
+CONTACT;setparam;admin;enable_one_click_export;0
 CONTACT;setparam;admin;hostnotifcmd;host-notify-by-email
 CONTACT;setparam;admin;svcnotifcmd;service-notify-by-email
-CONTACT;ADD;Guest;guest;guest@localhost;md5__d41d8cd98f00b204e9800998ecf8427e;0;0;en_US;local
+CONTACT;ADD;Guest;guest;guest@localhost;md5__d41d8cd98f00b204e9800998ecf8427e;0;0;en_US.UTF-8;local
 CONTACT;setparam;guest;hostnotifperiod;24x7
 CONTACT;setparam;guest;svcnotifperiod;24x7
 CONTACT;setparam;guest;hostnotifopt;n
 CONTACT;setparam;guest;servicenotifopt;n
 CONTACT;setparam;guest;contact_js_effects;0
-CONTACT;setparam;guest;timezone;
+CONTACT;setparam;guest;timezone;0
 CONTACT;setparam;guest;reach_api;0
 CONTACT;setparam;guest;reach_api_rt;0
 CONTACT;setparam;guest;contact_enable_notifications;2
@@ -718,13 +665,14 @@ CONTACT;setparam;guest;contact_activate;0
 CONTACT;setparam;guest;show_deprecated_pages;0
 CONTACT;setparam;guest;contact_ldap_last_sync;0
 CONTACT;setparam;guest;contact_ldap_required_sync;0
+CONTACT;setparam;guest;enable_one_click_export;0
 CONTACT;setparam;guest;hostnotifcmd;host-notify-by-email
 CONTACT;setparam;guest;svcnotifcmd;service-notify-by-email
 CONTACT;ADD;Jean-Pierre;jeanpierre;Jean-Pierre@hotmail.fr;md5__d41d8cd98f00b204e9800998ecf8427e;0;1;browser;local
 CONTACT;setparam;jeanpierre;hostnotifopt;n
 CONTACT;setparam;jeanpierre;servicenotifopt;n
 CONTACT;setparam;jeanpierre;contact_js_effects;0
-CONTACT;setparam;jeanpierre;timezone;
+CONTACT;setparam;jeanpierre;timezone;0
 CONTACT;setparam;jeanpierre;reach_api;0
 CONTACT;setparam;jeanpierre;reach_api_rt;0
 CONTACT;setparam;jeanpierre;contact_enable_notifications;2
@@ -733,11 +681,12 @@ CONTACT;setparam;jeanpierre;contact_activate;1
 CONTACT;setparam;jeanpierre;show_deprecated_pages;0
 CONTACT;setparam;jeanpierre;contact_ldap_last_sync;0
 CONTACT;setparam;jeanpierre;contact_ldap_required_sync;0
-CONTACT;ADD;test_contact;test_contact;test@localhost;md5__b0e52a1510c9012ebae9e9dc1ae0c46e;0;0;en_US;local
+CONTACT;setparam;jeanpierre;enable_one_click_export;0
+CONTACT;ADD;test_contact;test_contact;test@localhost;md5__b0e52a1510c9012ebae9e9dc1ae0c46e;0;0;en_US.UTF-8;local
 CONTACT;setparam;test_contact;hostnotifopt;n
 CONTACT;setparam;test_contact;servicenotifopt;n
 CONTACT;setparam;test_contact;contact_js_effects;0
-CONTACT;setparam;test_contact;timezone;
+CONTACT;setparam;test_contact;timezone;0
 CONTACT;setparam;test_contact;reach_api;0
 CONTACT;setparam;test_contact;reach_api_rt;0
 CONTACT;setparam;test_contact;contact_enable_notifications;0
@@ -746,13 +695,14 @@ CONTACT;setparam;test_contact;contact_activate;1
 CONTACT;setparam;test_contact;show_deprecated_pages;0
 CONTACT;setparam;test_contact;contact_ldap_last_sync;0
 CONTACT;setparam;test_contact;contact_ldap_required_sync;0
-CONTACT;ADD;User;user;user@localhost;md5__d41d8cd98f00b204e9800998ecf8427e;0;0;en_US;local
+CONTACT;setparam;test_contact;enable_one_click_export;0
+CONTACT;ADD;User;user;user@localhost;md5__d41d8cd98f00b204e9800998ecf8427e;0;0;en_US.UTF-8;local
 CONTACT;setparam;user;hostnotifperiod;24x7
 CONTACT;setparam;user;svcnotifperiod;24x7
 CONTACT;setparam;user;hostnotifopt;n
 CONTACT;setparam;user;servicenotifopt;n
 CONTACT;setparam;user;contact_js_effects;0
-CONTACT;setparam;user;timezone;
+CONTACT;setparam;user;timezone;0
 CONTACT;setparam;user;reach_api;0
 CONTACT;setparam;user;reach_api_rt;0
 CONTACT;setparam;user;contact_enable_notifications;2
@@ -761,6 +711,7 @@ CONTACT;setparam;user;contact_activate;0
 CONTACT;setparam;user;show_deprecated_pages;0
 CONTACT;setparam;user;contact_ldap_last_sync;0
 CONTACT;setparam;user;contact_ldap_required_sync;0
+CONTACT;setparam;user;enable_one_click_export;0
 CONTACT;setparam;user;hostnotifcmd;host-notify-by-email
 CONTACT;setparam;user;svcnotifcmd;service-notify-by-email
 TRAP;ADD;adDiagCancelled;.1.3.6.1.4.1.674.10893.1.1.200.0.537
@@ -4893,6 +4844,58 @@ CG;addcontact;Guest;guest;guest
 CG;addcontact;Guest;user;user
 CG;addcontact;Supervisors;admin;admin
 CG;addcontact;test_contact-group;test_contact;test_contact
+LDAP;ADD;openldap;openldap;
+LDAP;SETPARAM;openldap;enable;1;
+LDAP;ADDSERVER;openldap;openldap;389;0;0;
+LDAP;SETPARAM;openldap;alias;uid;
+LDAP;SETPARAM;openldap;bind_dn;cn=admin,dc=centreon,dc=com;
+LDAP;SETPARAM;openldap;bind_pass;centreon;
+LDAP;SETPARAM;openldap;group_base_search;dc=centreon,dc=com;
+LDAP;SETPARAM;openldap;group_filter;(&(cn=%s)(objectClass=groupOfNames));
+LDAP;SETPARAM;openldap;group_member;member;
+LDAP;SETPARAM;openldap;group_name;cn;
+LDAP;SETPARAM;openldap;ldap_auto_import;1;
+LDAP;SETPARAM;openldap;ldap_contact_tmpl;contact_template;
+LDAP;SETPARAM;openldap;ldap_dns_use_domain;;
+LDAP;SETPARAM;openldap;ldap_search_limit;60;
+LDAP;SETPARAM;openldap;ldap_search_timeout;60;
+LDAP;SETPARAM;openldap;ldap_srv_dns;0;
+LDAP;SETPARAM;openldap;ldap_store_password;1;
+LDAP;SETPARAM;openldap;ldap_template;Posix;
+LDAP;SETPARAM;openldap;protocol_version;3;
+LDAP;SETPARAM;openldap;user_base_search;dc=centreon,dc=com;
+LDAP;SETPARAM;openldap;user_email;mail;
+LDAP;SETPARAM;openldap;user_filter;(&(uid=%s)(objectClass=posixAccount));
+LDAP;SETPARAM;openldap;user_firstname;givenname;
+LDAP;SETPARAM;openldap;user_group;;
+LDAP;SETPARAM;openldap;user_lastname;sn;
+LDAP;SETPARAM;openldap;user_name;cn;
+LDAP;SETPARAM;openldap;user_pager;mobile;
+LDAP;ADD;test_configuration-LDAP;test_configuration-LDAP;
+LDAP;SETPARAM;test_configuration-LDAP;enable;0;
+LDAP;SETPARAM;test_configuration-LDAP;alias;samaccountname;
+LDAP;SETPARAM;test_configuration-LDAP;bind_dn;;
+LDAP;SETPARAM;test_configuration-LDAP;bind_pass;;
+LDAP;SETPARAM;test_configuration-LDAP;group_base_search;;
+LDAP;SETPARAM;test_configuration-LDAP;group_filter;(&(samAccountName=%s)(objectClass=group)(samAccountType=268435456));
+LDAP;SETPARAM;test_configuration-LDAP;group_member;member;
+LDAP;SETPARAM;test_configuration-LDAP;group_name;samaccountname;
+LDAP;SETPARAM;test_configuration-LDAP;ldap_auto_import;1;
+LDAP;SETPARAM;test_configuration-LDAP;ldap_dns_use_domain;;
+LDAP;SETPARAM;test_configuration-LDAP;ldap_search_limit;60;
+LDAP;SETPARAM;test_configuration-LDAP;ldap_search_timeout;60;
+LDAP;SETPARAM;test_configuration-LDAP;ldap_srv_dns;0;
+LDAP;SETPARAM;test_configuration-LDAP;ldap_store_password;0;
+LDAP;SETPARAM;test_configuration-LDAP;ldap_template;Active Directory;
+LDAP;SETPARAM;test_configuration-LDAP;protocol_version;2;
+LDAP;SETPARAM;test_configuration-LDAP;user_base_search;;
+LDAP;SETPARAM;test_configuration-LDAP;user_email;mail;
+LDAP;SETPARAM;test_configuration-LDAP;user_filter;(&(samAccountName=%s)(objectClass=user)(samAccountType=805306368));
+LDAP;SETPARAM;test_configuration-LDAP;user_firstname;givenname;
+LDAP;SETPARAM;test_configuration-LDAP;user_group;memberOf;
+LDAP;SETPARAM;test_configuration-LDAP;user_lastname;sn;
+LDAP;SETPARAM;test_configuration-LDAP;user_name;name;
+LDAP;SETPARAM;test_configuration-LDAP;user_pager;mobile;
 HOST;ADD;test_host;test_host;0.0.0.0;;Central;
 HOST;setparam;test_host;host_active_checks_enabled;2
 HOST;setparam;test_host;host_passive_checks_enabled;2
@@ -5584,4 +5587,3 @@ ACLGROUP;SETACTION;ALL;Simple User;
 ACLGROUP;SETRESOURCE;ALL;All Resources;
 ACLGROUP;SETCONTACT;ALL;test_contact;
 ACLGROUP;SETCONTACTGROUP;ALL;Guest|test_contact-group;
-

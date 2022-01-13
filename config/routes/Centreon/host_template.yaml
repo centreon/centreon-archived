@@ -1,0 +1,5 @@
+centreon_application_find_host_templates:
+  methods: GET
+  path: /configuration/hosts/templates
+  controller: 'Centreon\Application\Controller\HostTemplateController::findHostTemplates'
+  condition: "request.attributes.get('version') >= 21.10"

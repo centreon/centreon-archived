@@ -1,8 +1,9 @@
+/* eslint-disable class-methods-use-this */
 import * as React from 'react';
 
-import moment from 'moment-timezone/builds/moment-timezone-with-data-10-year-range';
-import MomentUtils from '@date-io/moment';
 import { useTranslation } from 'react-i18next';
+import { not } from 'ramda';
+import { useAtomValue } from 'jotai/utils';
 
 import {
   Checkbox,
@@ -19,7 +20,8 @@ import {
 } from '@material-ui/pickers';
 import { Alert } from '@material-ui/lab';
 
-import { Dialog, TextField, SelectField, Loader } from '@centreon/ui';
+import { Dialog, TextField, SelectField } from '@centreon/ui';
+import { userAtom } from '@centreon/ui-context';
 
 import {
   labelCancel,
@@ -45,47 +47,44 @@ import {
 } from '../../../translatedLabels';
 import { Resource } from '../../../models';
 import useAclQuery from '../aclQuery';
+import useDateTimePickerAdapter from '../../../useDateTimePickerAdapter';
+
+const maxEndDate = new Date('2100-01-01');
 
 interface Props {
-  locale: string | null;
-  timezone: string | null;
-  resources: Array<Resource>;
   canConfirm: boolean;
+  errors?;
+  handleChange;
   onCancel;
   onConfirm;
-  errors?;
-  values;
-  handleChange;
+  resources: Array<Resource>;
   setFieldValue;
   submitting: boolean;
-  loading: boolean;
+  values;
 }
 
 const pickerCommonProps = {
-  disableToolbar: true,
-  variant: 'inline',
-  margin: 'none',
-  inputVariant: 'filled',
-  TextFieldComponent: TextField,
   InputProps: {
     disableUnderline: true,
   },
+  TextFieldComponent: TextField,
+  inputVariant: 'filled',
+  margin: 'none',
+  variant: 'inline',
 };
 
 const datePickerProps = {
   ...pickerCommonProps,
-  format: 'LL',
-} as Omit<DatePickerProps, 'onChange'>;
+  disableToolbar: true,
+  format: 'L',
+} as Omit<DatePickerProps, 'onChange' | 'value'>;
 
 const timePickerProps = {
   ...pickerCommonProps,
-  ampm: false,
   format: 'LT',
-} as Omit<TimePickerProps, 'onChange'>;
+} as Omit<TimePickerProps, 'onChange' | 'value'>;
 
 const DialogDowntime = ({
-  locale,
-  timezone,
   resources,
   canConfirm,
   onCancel,
@@ -95,75 +94,68 @@ const DialogDowntime = ({
   submitting,
   handleChange,
   setFieldValue,
-  loading,
 }: Props): JSX.Element => {
   const { t } = useTranslation();
+  const { locale } = useAtomValue(userAtom);
   const { getDowntimeDeniedTypeAlert, canDowntimeServices } = useAclQuery();
+  const { Adapter, isMeridianFormat } = useDateTimePickerAdapter();
 
   const open = resources.length > 0;
 
   const hasHosts = resources.find((resource) => resource.type === 'host');
 
-  const changeDate = (field) => (value): void => {
-    setFieldValue(field, value);
-  };
-
-  React.useEffect(() => {
-    moment.locale(locale);
-  }, [locale]);
-
-  React.useEffect(() => {
-    moment.tz.setDefault(timezone);
-  }, [timezone]);
+  const changeDate =
+    (field) =>
+    (value): void => {
+      setFieldValue(field, value);
+    };
 
   const deniedTypeAlert = getDowntimeDeniedTypeAlert(resources);
 
   return (
     <Dialog
+      confirmDisabled={!canConfirm}
       labelCancel={t(labelCancel)}
       labelConfirm={t(labelSetDowntime)}
       labelTitle={t(labelDowntime)}
       open={open}
-      onClose={onCancel}
-      onCancel={onCancel}
-      onConfirm={onConfirm}
-      confirmDisabled={!canConfirm}
       submitting={submitting}
+      onCancel={onCancel}
+      onClose={onCancel}
+      onConfirm={onConfirm}
     >
-      {loading && <Loader fullContent />}
       {deniedTypeAlert && <Alert severity="warning">{deniedTypeAlert}</Alert>}
-      <MuiPickersUtilsProvider
-        libInstance={moment}
-        utils={MomentUtils}
-        locale={locale}
-      >
-        <Grid direction="column" container spacing={1}>
+      <MuiPickersUtilsProvider locale={locale.substring(0, 2)} utils={Adapter}>
+        <Grid container direction="column" spacing={1}>
           <Grid item>
             <FormHelperText>{t(labelFrom)}</FormHelperText>
-            <Grid direction="row" container spacing={1}>
+            <Grid container direction="row" spacing={1}>
               <Grid item style={{ width: 240 }}>
                 <KeyboardDatePicker
-                  aria-label={t(labelStartDate)}
-                  value={values.dateStart}
-                  onChange={changeDate('dateStart')}
                   KeyboardButtonProps={{
                     'aria-label': t(labelChangeStartDate),
                   }}
+                  aria-label={t(labelStartDate)}
                   error={errors?.dateStart !== undefined}
                   helperText={errors?.dateStart}
+                  inputMode="text"
+                  maxDate={maxEndDate}
+                  value={values.dateStart}
+                  onChange={changeDate('dateStart')}
                   {...datePickerProps}
                 />
               </Grid>
               <Grid item style={{ width: 200 }}>
                 <KeyboardTimePicker
-                  aria-label={t(labelStartTime)}
-                  value={values.timeStart}
-                  onChange={changeDate('timeStart')}
                   KeyboardButtonProps={{
                     'aria-label': t(labelChangeStartTime),
                   }}
+                  ampm={isMeridianFormat(values.timeStart)}
+                  aria-label={t(labelStartTime)}
                   error={errors?.timeStart !== undefined}
                   helperText={errors?.timeStart}
+                  value={values.timeStart}
+                  onChange={changeDate('timeStart')}
                   {...timePickerProps}
                 />
               </Grid>
@@ -171,30 +163,32 @@ const DialogDowntime = ({
           </Grid>
           <Grid item>
             <FormHelperText>{t(labelTo)}</FormHelperText>
-            <Grid direction="row" container spacing={1}>
+            <Grid container direction="row" spacing={1}>
               <Grid item style={{ width: 240 }}>
                 <KeyboardDatePicker
-                  aria-label={t(labelEndDate)}
-                  value={values.dateEnd}
-                  onChange={changeDate('dateEnd')}
                   KeyboardButtonProps={{
                     'aria-label': t(labelChangeEndDate),
                   }}
+                  aria-label={t(labelEndDate)}
                   error={errors?.dateEnd !== undefined}
                   helperText={errors?.dateEnd}
+                  value={values.dateEnd}
+                  onChange={changeDate('dateEnd')}
                   {...datePickerProps}
                 />
               </Grid>
               <Grid item style={{ width: 200 }}>
                 <KeyboardTimePicker
-                  aria-label={t(labelEndTime)}
-                  value={values.timeEnd}
-                  onChange={changeDate('timeEnd')}
                   KeyboardButtonProps={{
                     'aria-label': t(labelChangeEndTime),
                   }}
+                  ampm={isMeridianFormat(values.timeEnd)}
+                  aria-label={t(labelEndTime)}
+                  disableToolbar={not(isMeridianFormat(values.timeEnd))}
                   error={errors?.timeEnd !== undefined}
                   helperText={errors?.timeEnd}
+                  value={values.timeEnd}
+                  onChange={changeDate('timeEnd')}
                   {...timePickerProps}
                 />
               </Grid>
@@ -205,25 +199,25 @@ const DialogDowntime = ({
               control={
                 <Checkbox
                   checked={values.fixed}
-                  inputProps={{ 'aria-label': t(labelFixed) }}
                   color="primary"
-                  onChange={handleChange('fixed')}
+                  inputProps={{ 'aria-label': t(labelFixed) }}
                   size="small"
+                  onChange={handleChange('fixed')}
                 />
               }
-              label={labelFixed}
+              label={t(labelFixed)}
             />
           </Grid>
           <Grid item>
             <FormHelperText>{t(labelDuration)}</FormHelperText>
-            <Grid direction="row" container spacing={1}>
+            <Grid container direction="row" spacing={1}>
               <Grid item style={{ width: 150 }}>
                 <TextField
                   disabled={values.fixed}
-                  type="number"
-                  onChange={handleChange('duration.value')}
-                  value={values.duration.value}
                   error={errors?.duration?.value}
+                  type="number"
+                  value={values.duration.value}
+                  onChange={handleChange('duration.value')}
                 />
               </Grid>
               <Grid item style={{ width: 150 }}>
@@ -251,13 +245,13 @@ const DialogDowntime = ({
           </Grid>
           <Grid item>
             <TextField
+              fullWidth
+              multiline
+              error={errors?.comment}
+              label={t(labelComment)}
+              rows={3}
               value={values.comment}
               onChange={handleChange('comment')}
-              multiline
-              label={t(labelComment)}
-              fullWidth
-              rows={3}
-              error={errors?.comment}
             />
           </Grid>
           {hasHosts && (
@@ -268,11 +262,11 @@ const DialogDowntime = ({
                     checked={
                       canDowntimeServices() && values.downtimeAttachedResources
                     }
+                    color="primary"
                     disabled={!canDowntimeServices()}
                     inputProps={{ 'aria-label': labelSetDowntimeOnServices }}
-                    color="primary"
-                    onChange={handleChange('downtimeAttachedResources')}
                     size="small"
+                    onChange={handleChange('downtimeAttachedResources')}
                   />
                 }
                 label={t(labelSetDowntimeOnServices)}

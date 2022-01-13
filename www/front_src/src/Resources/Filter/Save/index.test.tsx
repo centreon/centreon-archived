@@ -9,31 +9,41 @@ import {
 } from '@testing-library/react';
 import axios from 'axios';
 import { last, omit, propEq } from 'ramda';
-
 import userEvent from '@testing-library/user-event';
-import SaveMenu from '.';
-import useFilter from '../useFilter';
-import Context, { ResourceContext } from '../../Context';
+import { Provider } from 'jotai';
+
+import useFilter from '../../testUtils/useFilter';
+import Context, { ResourceContext } from '../../testUtils/Context';
 import {
   labelSaveFilter,
   labelSave,
   labelSaveAsNew,
   labelName,
 } from '../../translatedLabels';
-
 import { filterEndpoint } from '../api';
-import { RawFilter, Filter } from '../models';
+import { Filter } from '../models';
+import useListing from '../../Listing/useListing';
+import { defaultSortField, defaultSortOrder } from '../Criterias/default';
+import { getFilterWithUpdatedCriteria } from '../../testUtils';
 
-let filterState;
+import SaveMenu from '.';
+
+let context;
 
 const SaveMenuTest = (): JSX.Element => {
-  filterState = useFilter();
+  const listingState = useListing();
+  const filterState = useFilter();
+
+  context = {
+    ...listingState,
+    ...filterState,
+  };
 
   return (
     <Context.Provider
       value={
         {
-          ...filterState,
+          ...context,
         } as ResourceContext
       }
     >
@@ -42,21 +52,23 @@ const SaveMenuTest = (): JSX.Element => {
   );
 };
 
-const renderSaveMenu = (): RenderResult => render(<SaveMenuTest />);
+const SaveMenuTestWithJotai = (): JSX.Element => (
+  <Provider>
+    <SaveMenuTest />
+  </Provider>
+);
+
+const renderSaveMenu = (): RenderResult => render(<SaveMenuTestWithJotai />);
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
-const rawFilterId = 0;
+const filterId = 0;
 
-const getRawFilter = ({
-  search = 'my search',
-  name = 'MyFilter',
-}): RawFilter => ({
-  id: rawFilterId,
-  name,
+const getFilter = ({ search = 'my search', name = 'MyFilter' }): Filter => ({
   criterias: [
     {
       name: 'resource_types',
+      object_type: null,
       type: 'multi_select',
       value: [
         {
@@ -67,6 +79,7 @@ const getRawFilter = ({
     },
     {
       name: 'states',
+      object_type: null,
       type: 'multi_select',
       value: [
         {
@@ -77,6 +90,7 @@ const getRawFilter = ({
     },
     {
       name: 'statuses',
+      object_type: null,
       type: 'multi_select',
       value: [
         {
@@ -87,6 +101,7 @@ const getRawFilter = ({
     },
     {
       name: 'host_groups',
+      object_type: 'host_groups',
       type: 'multi_select',
       value: [
         {
@@ -94,10 +109,10 @@ const getRawFilter = ({
           name: 'Linux-servers',
         },
       ],
-      object_type: 'host_groups',
     },
     {
       name: 'service_groups',
+      object_type: 'service_groups',
       type: 'multi_select',
       value: [
         {
@@ -105,33 +120,47 @@ const getRawFilter = ({
           name: 'Web-services',
         },
       ],
-      object_type: 'service_groups',
+    },
+    {
+      name: 'monitoring_servers',
+      object_type: 'monitoring_servers',
+      type: 'multi_select',
+      value: [],
     },
     {
       name: 'search',
+      object_type: null,
       type: 'text',
       value: search,
     },
+    {
+      name: 'sort',
+      object_type: null,
+      type: 'array',
+      value: [defaultSortField, defaultSortOrder],
+    },
   ],
+  id: filterId,
+  name,
 });
 
 const retrievedCustomFilters = {
-  result: [getRawFilter({})],
   meta: {
-    page: 1,
     limit: 30,
+    page: 1,
     total: 1,
   },
+  result: [getFilter({})],
 };
 
 const getCustomFilter = (): Filter =>
-  filterState.customFilters.find(propEq('id', rawFilterId));
+  context.customFilters.find(propEq('id', filterId));
 
 describe(SaveMenu, () => {
   beforeEach(() => {
     mockedAxios.get.mockResolvedValue({ data: retrievedCustomFilters });
     mockedAxios.put.mockResolvedValue({ data: {} });
-    mockedAxios.post.mockResolvedValue({ data: getRawFilter({}) });
+    mockedAxios.post.mockResolvedValue({ data: getFilter({}) });
   });
 
   afterEach(() => {
@@ -163,17 +192,15 @@ describe(SaveMenu, () => {
     await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
 
     const filter = getCustomFilter();
-    const { criterias } = filter;
 
     act(() => {
-      filterState.setFilter(filter);
-      filterState.setResourceTypes(criterias.resourceTypes);
-      filterState.setHostGroups(criterias.hostGroups);
-      filterState.setServiceGroups(criterias.serviceGroups);
-      filterState.setStates(criterias.states);
-      filterState.setStatuses(criterias.statuses);
-
-      filterState.setNextSearch('toto');
+      context.setCurrentFilter(
+        getFilterWithUpdatedCriteria({
+          criteriaName: 'search',
+          criteriaValue: 'toto',
+          filter,
+        }),
+      );
     });
 
     expect(
@@ -195,7 +222,7 @@ describe(SaveMenu, () => {
     await waitFor(() => {
       expect(mockedAxios.post).toHaveBeenCalledWith(
         filterEndpoint,
-        omit(['id'], getRawFilter({ name: 'My new filter', search: 'toto' })),
+        omit(['id'], getFilter({ name: 'My new filter', search: 'toto' })),
         expect.anything(),
       );
     });
@@ -207,23 +234,21 @@ describe(SaveMenu, () => {
     await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
 
     const filter = getCustomFilter();
-    const { criterias } = filter;
 
     const newSearch = 'new search';
 
-    const updatedFilterRaw = getRawFilter({ search: newSearch });
+    const updatedFilter = getFilter({ search: newSearch });
 
-    mockedAxios.put.mockResolvedValue({ data: updatedFilterRaw });
+    mockedAxios.put.mockResolvedValue({ data: updatedFilter });
 
     act(() => {
-      filterState.setFilter(filter);
-      filterState.setResourceTypes(criterias.resourceTypes);
-      filterState.setHostGroups(criterias.hostGroups);
-      filterState.setServiceGroups(criterias.serviceGroups);
-      filterState.setStates(criterias.states);
-      filterState.setStatuses(criterias.statuses);
-
-      filterState.setNextSearch(newSearch);
+      context.setCurrentFilter(
+        getFilterWithUpdatedCriteria({
+          criteriaName: 'search',
+          criteriaValue: newSearch,
+          filter,
+        }),
+      );
     });
 
     expect(
@@ -234,8 +259,8 @@ describe(SaveMenu, () => {
 
     await waitFor(() => {
       expect(mockedAxios.put).toHaveBeenCalledWith(
-        `${filterEndpoint}/${filterState.updatedFilter.id}`,
-        omit(['id'], getRawFilter({ search: newSearch })),
+        `${filterEndpoint}/${context.currentFilter.id}`,
+        omit(['id'], getFilter({ search: newSearch })),
         expect.anything(),
       );
     });

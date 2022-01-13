@@ -42,6 +42,14 @@ class CentreonAuth
     public const DEFAULT_PAGE = 200;
     public const PWS_OCCULTATION = '******';
 
+    public const AUTOLOGIN_ENABLE = 1;
+    public const AUTOLOGIN_DISABLE = 0;
+
+    public const ENCRYPT_MD5 = 1;
+    public const ENCRYPT_SHA1 = 2;
+
+    protected const SOURCE_LOCAL = 'local';
+
     // Declare Values
     public $userInfos;
     protected $login;
@@ -54,9 +62,6 @@ class CentreonAuth
     protected $pearDB;
     protected $debug;
     protected $dependencyInjector;
-
-    // Web UI or API
-    protected $source;
 
     // Flags
     public $passwdOk;
@@ -78,7 +83,7 @@ class CentreonAuth
      * @param string $password
      * @param int $autologin
      * @param CentreonDB $pearDB
-     * @param CentreonLog $CentreonLog
+     * @param CentreonUserLog $CentreonLog
      * @param int $encryptType
      * @param string $token | for autologin
      * @return void
@@ -90,12 +95,9 @@ class CentreonAuth
         $autologin,
         $pearDB,
         $CentreonLog,
-        $encryptType = 1,
-        $token = "",
-        $source = "WEB"
+        $encryptType = self::ENCRYPT_MD5,
+        $token = ""
     ) {
-        global $centreon_crypt;
-
         $this->dependencyInjector = $dependencyInjector;
         $this->cryptPossibilities = array('MD5', 'SHA1');
         $this->CentreonLog = $CentreonLog;
@@ -108,7 +110,6 @@ class CentreonAuth
         $this->ldap_auto_import = array();
         $this->ldap_store_password = array();
         $this->default_page = self::DEFAULT_PAGE;
-        $this->source = $source;
 
         $res = $pearDB->query(
             "SELECT ar.ar_id, ari.ari_value, ari.ari_name " .
@@ -318,26 +319,18 @@ class CentreonAuth
             $this->getCryptFunction();
             $this->checkPassword($password, $token);
             if ($this->passwdOk == 1) {
-                if ($this->userInfos["contact_oreon"]
-                    || ($this->userInfos["contact_oreon"] == 0 && $this->source == 'API')
-                ) {
-                    $this->CentreonLog->setUID($this->userInfos["contact_id"]);
-                    $this->CentreonLog->insertLog(
-                        1,
-                        "[" . $this->source . "] [" . $_SERVER["REMOTE_ADDR"] . "] Authentication succeeded for '" . $username . "'"
-                    );
-                } else {
-                    $this->CentreonLog->insertLog(
-                        1,
-                        "[" . $this->source . "] [" . $_SERVER["REMOTE_ADDR"] . "] '" . $username . "' is not allowed to reach Centreon"
-                    );
-                    $this->error = _('Your credentials are incorrect.');
-                }
+                $this->CentreonLog->setUID($this->userInfos["contact_id"]);
+                $this->CentreonLog->insertLog(
+                    CentreonUserLog::TYPE_LOGIN,
+                    "[" . self::SOURCE_LOCAL . "] [" . $_SERVER["REMOTE_ADDR"] . "] "
+                        . "Authentication succeeded for '" . $username . "'"
+                );
             } else {
                 //  Take care before modifying this message pattern as it may break tools such as fail2ban
                 $this->CentreonLog->insertLog(
-                    1,
-                    "[" . $this->source . "] [" . $_SERVER["REMOTE_ADDR"] . "] Authentication failed for '" . $username . "'"
+                    CentreonUserLog::TYPE_LOGIN,
+                    "[" . self::SOURCE_LOCAL . "] [" . $_SERVER["REMOTE_ADDR"] . "] "
+                        . "Authentication failed for '" . $username . "'"
                 );
                 $this->error = _('Your credentials are incorrect.');
             }
@@ -375,8 +368,9 @@ class CentreonAuth
             if (strlen($username) > 0) {
                 //  Take care before modifying this message pattern as it may break tools such as fail2ban
                 $this->CentreonLog->insertLog(
-                    1,
-                    "[" . $this->source . "] [" . $_SERVER["REMOTE_ADDR"] . "] Authentication failed for '" . $username . "' : not found"
+                    CentreonUserLog::TYPE_LOGIN,
+                    "[" . self::SOURCE_LOCAL . "] [" . $_SERVER["REMOTE_ADDR"] . "] "
+                        . "Authentication failed for '" . $username . "' : not found"
                 );
             }
             $this->error = _('Your credentials are incorrect.');
@@ -390,10 +384,10 @@ class CentreonAuth
     {
         if (isset($this->cryptEngine)) {
             switch ($this->cryptEngine) {
-                case 1:
+                case self::ENCRYPT_MD5:
                     return "MD5";
                     break;
-                case 2:
+                case self::ENCRYPT_SHA1:
                     return "SHA1";
                     break;
                 default:

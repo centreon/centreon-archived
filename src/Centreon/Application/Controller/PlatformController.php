@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,13 +18,19 @@
  * For more information : contact@centreon.com
  *
  */
+
 declare(strict_types=1);
 
 namespace Centreon\Application\Controller;
 
-use Centreon\Domain\Platform\PlatformException;
-use Centreon\Domain\Platform\Interfaces\PlatformServiceInterface;
 use FOS\RestBundle\View\View;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Centreon\Domain\Platform\PlatformException;
+use Centreon\Domain\PlatformInformation\UseCase\V20\UpdatePartiallyPlatformInformation;
+use Centreon\Domain\Platform\Interfaces\PlatformServiceInterface;
+use Centreon\Domain\PlatformInformation\Model\PlatformInformationDtoValidator;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
  * This controller is designed to manage API requests concerning the versions of the different modules, widgets on the
@@ -39,8 +45,9 @@ class PlatformController extends AbstractController
      */
     private $informationService;
 
-    public function __construct(PlatformServiceInterface $informationService)
-    {
+    public function __construct(
+        PlatformServiceInterface $informationService
+    ) {
         $this->informationService = $informationService;
     }
 
@@ -90,5 +97,36 @@ class PlatformController extends AbstractController
             'minor' => $minor,
             'fix' => !empty($fix) ? $fix : '0'
         ];
+    }
+
+    /**
+     * Update the platform
+     * @param Request $request
+     * @param UpdatePartiallyPlatformInformation $updatePartiallyPlatformInformation
+     * @return View
+     * @throws \Throwable
+     */
+    public function updatePlatform(
+        Request $request,
+        UpdatePartiallyPlatformInformation $updatePartiallyPlatformInformation
+    ): View {
+        $this->denyAccessUnlessGrantedForApiConfiguration();
+
+        $updatePartiallyPlatformInformation->addValidators(
+            [
+                new PlatformInformationDtoValidator(
+                    $this->getParameter('centreon_path')
+                    . 'config/json_validator/latest/Centreon/PlatformInformation/Update.json'
+                )
+            ]
+        );
+
+        $request = json_decode((string) $request->getContent(), true);
+        if (!is_array($request)) {
+            throw new BadRequestHttpException(_('Error when decoding sent data'));
+        }
+
+        $updatePartiallyPlatformInformation->execute($request);
+        return $this->view(null, Response::HTTP_NO_CONTENT);
     }
 }

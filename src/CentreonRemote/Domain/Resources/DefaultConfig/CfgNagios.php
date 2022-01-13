@@ -11,7 +11,7 @@ class CfgNagios
      * Get template configuration
      * @todo move it as yml
      *
-     * @return array the configuration template
+     * @return array<string, int|string|null> the configuration template
      */
     public static function getConfiguration(): array
     {
@@ -60,20 +60,19 @@ class CfgNagios
             'log_passive_checks'                          => '2',
             'global_host_event_handler'                   => null,
             'global_service_event_handler'                => null,
-            'sleep_time'                                  => '0.2',
+            'sleep_time'                                  => '1',
             'service_inter_check_delay_method'            => 's',
             'host_inter_check_delay_method'               => null,
             'service_interleave_factor'                   => 's',
-            'max_concurrent_checks'                       => 400,
-            'max_service_check_spread'                    => 5,
-            'max_host_check_spread'                       => null,
+            'max_concurrent_checks'                       => 0,
+            'max_service_check_spread'                    => 15,
+            'max_host_check_spread'                       => 15,
             'check_result_reaper_frequency'               => 5,
             'max_check_result_reaper_time'                => null,
             'interval_length'                             => 60,
             'auto_reschedule_checks'                      => '2',
             'auto_rescheduling_interval'                  => null,
             'auto_rescheduling_window'                    => null,
-            'use_aggressive_host_checking'                => '1',
             'enable_flap_detection'                       => '0',
             'low_service_flap_threshold'                  => '25.0',
             'high_service_flap_threshold'                 => '50.0',
@@ -136,7 +135,7 @@ class CfgNagios
             'debug_level_opt'                             => '0',
             'debug_verbosity'                             => '2',
             'max_debug_file_size'                         => null,
-            'cfg_file'                                    => 'centengine.cfg'
+            'cfg_file'                                    => 'centengine.cfg',
         ];
     }
 }

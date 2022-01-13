@@ -2,11 +2,15 @@
 /* eslint-disable react/prop-types */
 
 import React from 'react';
+
 import classnames from 'classnames';
 import { useTranslation } from 'react-i18next';
 
+import { Typography, Paper } from '@material-ui/core';
+
+import { ContentWithCircularLoading } from '@centreon/ui';
+
 import styles from '../../styles/partials/form/_form.scss';
-import Loader from '../loader';
 
 export default ({ formTitle, statusCreating, statusGenerating, error }) => {
   const { t } = useTranslation();
@@ -15,47 +19,62 @@ export default ({ formTitle, statusCreating, statusGenerating, error }) => {
     (statusCreating === false || statusGenerating === false) && error;
 
   return (
-    <div className={classnames(styles['form-wrapper'], styles.installation)}>
+    <Paper
+      className={classnames(styles['form-container'], styles.installation)}
+    >
       <div className={styles['form-inner']}>
         <div className={styles['form-heading']}>
-          <h2 className={styles['form-title']}>{formTitle}</h2>
+          <Typography variant="h6">{formTitle}</Typography>
         </div>
         {/* display loader until tasks are finished or error is displayed */}
-        {loading && <Loader />}
         <p className={styles['form-text']}>
-          {t('Creating Export Task')}
-          <span
-            className={classnames(
-              styles['form-status'],
-              styles[statusCreating ? 'valid' : 'failed'],
-            )}
-          >
-            {statusCreating != null ? (
-              <span>{statusCreating ? '[OK]' : '[FAIL]'}</span>
-            ) : (
-              '...'
-            )}
-          </span>
+          <Typography>{t('Creating Export Task')}</Typography>
+          <ContentWithCircularLoading alignCenter loading={loading}>
+            <>
+              <span
+                className={classnames(
+                  styles['form-status'],
+                  styles[statusCreating ? 'valid' : 'failed'],
+                )}
+              >
+                {statusCreating != null ? (
+                  <Typography variant="body2">
+                    {statusCreating ? '[OK]' : '[FAIL]'}
+                  </Typography>
+                ) : (
+                  '...'
+                )}
+              </span>
+            </>
+          </ContentWithCircularLoading>
         </p>
         <p className={styles['form-text']}>
-          {t('Generating Export Files')}
-          <span
-            className={classnames(
-              styles['form-status'],
-              styles[statusGenerating ? 'valid' : 'failed'],
-            )}
-          >
-            {statusGenerating != null ? (
-              <span>{statusGenerating ? '[OK]' : '[FAIL]'}</span>
-            ) : (
-              '...'
-            )}
-          </span>
+          <Typography>{t('Generating Export Files')}</Typography>
+          <ContentWithCircularLoading alignCenter loading={loading}>
+            <>
+              <span
+                className={classnames(
+                  styles['form-status'],
+                  styles[statusGenerating ? 'valid' : 'failed'],
+                )}
+              >
+                {statusGenerating != null ? (
+                  <Typography variant="body2">
+                    {statusGenerating ? '[OK]' : '[FAIL]'}
+                  </Typography>
+                ) : (
+                  '...'
+                )}
+              </span>
+            </>
+          </ContentWithCircularLoading>
         </p>
         {hasError && (
-          <span className={styles['form-error-message']}>{error}</span>
+          <Typography color="error" variant="body2">
+            {error}
+          </Typography>
         )}
       </div>
-    </div>
+    </Paper>
   );
 };

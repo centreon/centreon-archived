@@ -1,8 +1,8 @@
 <?php
 
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2021 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -37,7 +37,7 @@
 /*
  * Need Centreon Configuration file
  */
-require_once realpath(dirname(__FILE__) . "/../../config/centreon.config.php");
+require_once realpath(__DIR__ . "/../../config/centreon.config.php");
 require_once realpath(__DIR__ . "/../../bootstrap.php");
 
 /** * ****************************
@@ -216,18 +216,6 @@ class CentreonXMLBGRequest
     }
 
     /*
-     * Update session table for this user.
-     * 	=> value used for logout session
-     */
-
-    public function reloadSession()
-    {
-        $query = "UPDATE `session` SET `last_reload` = '" . time() . "', `ip_address` = '" . $_SERVER["REMOTE_ADDR"] .
-            "' WHERE `session_id` = '" . $this->session_id . "'";
-        $this->DB->query($query);
-    }
-
-    /*
      * Check if user is admin
      */
 
@@ -238,7 +226,7 @@ class CentreonXMLBGRequest
         $dbResult = $this->DB->query($query);
         $admin = $dbResult->fetchRow();
         $dbResult->closeCursor();
-        if ($admin["contact_admin"]) {
+        if ($admin !== false && $admin["contact_admin"]) {
             $this->is_admin = 1;
         } else {
             $this->is_admin = 0;
@@ -287,7 +275,6 @@ class CentreonXMLBGRequest
     /*
      * Send headers information for web server
      */
-
     public function header()
     {
         /* Force no encoding compress */
@@ -343,7 +330,7 @@ class CentreonXMLBGRequest
 
     public function setServiceGroupsHistory($sg)
     {
-        $_SESSION['monitoring_default_servicegroups'] = sg;
+        $_SESSION['monitoring_default_servicegroups'] = $sg;
     }
 
     public function setCriticality($criticality)

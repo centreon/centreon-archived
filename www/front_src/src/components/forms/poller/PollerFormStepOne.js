@@ -5,8 +5,11 @@
 /* eslint-disable import/no-named-as-default */
 
 import React, { Component } from 'react';
+
 import { Field, reduxForm as connectForm } from 'redux-form';
 import { withTranslation } from 'react-i18next';
+
+import { Paper, Typography, Button } from '@material-ui/core';
 
 import styles from '../../../styles/partials/form/_form.scss';
 import InputField from '../../form-fields/InputField';
@@ -16,8 +19,8 @@ import { validateFieldRequired } from '../../../helpers/validators';
 
 class PollerFormStepOne extends Component {
   state = {
-    inputTypeManual: true,
     initialized: false,
+    inputTypeManual: true,
   };
 
   onManualInputChanged(inputTypeManual) {
@@ -55,72 +58,70 @@ class PollerFormStepOne extends Component {
   render() {
     const { error, handleSubmit, onSubmit, waitList, t } = this.props;
     const { inputTypeManual } = this.state;
+
     return (
-      <div className={styles['form-wrapper']}>
+      <Paper className={styles['form-container']}>
         <div className={styles['form-inner']}>
           <div className={styles['form-heading']}>
-            <h2 className={styles['form-title']}>
-              {t('Server Configuration')}
-            </h2>
+            <Typography variant="h6">{t('Server Configuration')}</Typography>
           </div>
           <form autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
             <Field
+              checked={inputTypeManual}
+              component={RadioField}
+              label={t('Create new Poller')}
               name="inputTypeManual"
               onChange={() => {
                 this.onManualInputChanged(true);
               }}
-              checked={inputTypeManual}
-              component={RadioField}
-              label={t('Create new Poller')}
             />
             {inputTypeManual ? (
               <div>
                 <Field
+                  component={InputField}
+                  label={`${t('Server Name')}`}
                   name="server_name"
-                  component={InputField}
-                  type="text"
                   placeholder=""
-                  label={`${t('Server Name')}:`}
+                  type="text"
                   validate={validateFieldRequired(t)}
                 />
                 <Field
+                  component={InputField}
+                  label={`${t('Server IP address')}`}
                   name="server_ip"
-                  component={InputField}
-                  type="text"
                   placeholder=""
-                  label={`${t('Server IP address')}:`}
+                  type="text"
                   validate={validateFieldRequired(t)}
                 />
                 <Field
-                  name="centreon_central_ip"
                   component={InputField}
-                  type="text"
-                  placeholder=""
                   label={`${t(
                     'Centreon Central IP address, as seen by this server',
-                  )}:`}
+                  )}`}
+                  name="centreon_central_ip"
+                  placeholder=""
+                  type="text"
                   validate={validateFieldRequired(t)}
                 />
               </div>
             ) : null}
             <Field
+              checked={!inputTypeManual}
+              component={RadioField}
+              label={`${t('Select a Poller')}`}
               name="inputTypeManual"
               onClick={() => {
                 this.onManualInputChanged(false);
               }}
-              checked={!inputTypeManual}
-              component={RadioField}
-              label={`${t('Select a Poller')}:`}
             />
             {!inputTypeManual ? (
               <div>
                 {waitList ? (
                   <Field
-                    name="server_ip"
-                    onChange={this.handleChange}
-                    component={SelectField}
-                    label={`${t('Select Pending Poller IP')}:`}
                     required
+                    component={SelectField}
+                    label={`${t('Select Pending Poller IP')}`}
+                    name="server_ip"
                     options={[
                       {
                         disabled: true,
@@ -129,58 +130,66 @@ class PollerFormStepOne extends Component {
                         value: '',
                       },
                     ].concat(
-                      waitList.map((c) => ({ value: c.ip, text: c.ip })),
+                      waitList.map((c) => ({ text: c.ip, value: c.ip })),
                     )}
+                    onChange={this.handleChange}
                   />
                 ) : null}
                 <Field
+                  component={InputField}
+                  label={`${t('Server Name')}`}
                   name="server_name"
-                  component={InputField}
-                  type="text"
                   placeholder=""
-                  label={`${t('Server Name')}:`}
+                  type="text"
                   validate={validateFieldRequired(t)}
                 />
                 <Field
+                  component={InputField}
+                  label={`${t('Server IP address')}`}
                   name="server_ip"
-                  component={InputField}
-                  type="text"
                   placeholder=""
-                  label={`${t('Server IP address')}:`}
+                  type="text"
                   validate={validateFieldRequired(t)}
                 />
                 <Field
-                  name="centreon_central_ip"
                   component={InputField}
-                  type="text"
-                  placeholder=""
                   label={`${t(
                     'Centreon Central IP address, as seen by this server',
-                  )}:`}
+                  )}`}
+                  name="centreon_central_ip"
+                  placeholder=""
+                  type="text"
                   validate={validateFieldRequired(t)}
                 />
               </div>
             ) : null}
             <div className={styles['form-buttons']}>
-              <button className={styles.button} type="submit">
+              <Button
+                color="primary"
+                size="small"
+                type="submit"
+                variant="contained"
+              >
                 {t('Next')}
-              </button>
+              </Button>
             </div>
             {error ? (
-              <div className={styles['error-block']}>{error.message}</div>
+              <Typography color="error" variant="body2">
+                {error.message}
+              </Typography>
             ) : null}
           </form>
         </div>
-      </div>
+      </Paper>
     );
   }
 }
 
 export default withTranslation()(
   connectForm({
-    form: 'PollerFormStepOne',
-    enableReinitialize: true,
     destroyOnUnmount: false,
+    enableReinitialize: true,
+    form: 'PollerFormStepOne',
     keepDirtyOnReinitialize: true,
   })(PollerFormStepOne),
 );

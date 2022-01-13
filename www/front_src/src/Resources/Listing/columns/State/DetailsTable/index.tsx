@@ -13,7 +13,13 @@ import {
 } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 
-import { useRequest, getData, ListingModel, Column } from '@centreon/ui';
+import {
+  useRequest,
+  getData,
+  ListingModel,
+  Column,
+  ColumnType,
+} from '@centreon/ui';
 
 import {
   labelSomethingWentWrong,
@@ -21,18 +27,22 @@ import {
   labelNo,
 } from '../../../../translatedLabels';
 
-const getYesNoLabel = (value): string => (value ? labelYes : labelNo);
+const getYesNoLabel = (value: boolean): string => (value ? labelYes : labelNo);
 
 interface DetailsTableColumn extends Column {
   getContent: (details) => string | JSX.Element;
+  id: string;
+  label: string;
+  type: ColumnType;
+  width: number;
 }
 
 export interface DetailsTableProps {
-  endpoint: string;
   columns: Array<DetailsTableColumn>;
+  endpoint: string;
 }
 
-const DetailsTable = <TDetails extends unknown>({
+const DetailsTable = <TDetails extends { id: number }>({
   endpoint,
   columns,
 }: DetailsTableProps): JSX.Element => {
@@ -43,9 +53,11 @@ const DetailsTable = <TDetails extends unknown>({
   });
 
   useEffect(() => {
-    sendRequest(endpoint).then((retrievedDetails) =>
-      setDetails(retrievedDetails.result),
-    );
+    sendRequest({
+      endpoint,
+    }).then((retrievedDetails) => {
+      setDetails(retrievedDetails.result);
+    });
   }, []);
 
   const loading = details === undefined;
@@ -68,13 +80,13 @@ const DetailsTable = <TDetails extends unknown>({
           {loading && (
             <TableRow>
               <TableCell colSpan={columns.length}>
-                <Skeleton height={20} animation="wave" />
+                <Skeleton animation="wave" height={20} />
               </TableCell>
             </TableRow>
           )}
           {success &&
-            details?.map((detail, index) => (
-              <TableRow key={index}>
+            details?.map((detail) => (
+              <TableRow key={detail.id}>
                 {columns.map(({ label, getContent, width }) => (
                   <TableCell key={label} style={{ maxWidth: width }}>
                     <span>{getContent?.(detail)}</span>

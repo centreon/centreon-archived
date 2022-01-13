@@ -1,46 +1,82 @@
+import { GraphOptionId } from '../Graph/Performance/models';
 import {
   Status,
   Acknowledgement,
   Downtime,
   Parent,
   ResourceLinks,
-  Severity,
+  NamedEntity,
+  ResourceType,
 } from '../models';
 
-export interface ResourceDetails {
-  id: number;
-  name: string;
-  status: Status;
-  parent: Parent;
-  links: ResourceLinks;
-  severity: Severity;
-  information: string;
-  downtimes: Array<Downtime>;
-  acknowledgement?: Acknowledgement;
+import { CustomTimePeriod, TimePeriodId } from './tabs/Graph/models';
+
+export interface ResourceDetails extends NamedEntity {
   acknowledged: boolean;
-  duration: string;
-  tries: string;
-  poller_name?: string;
-  timezone?: string;
-  last_status_change: string;
-  last_check: string;
-  next_check: string;
+  acknowledgement?: Acknowledgement;
   active_checks: boolean;
-  execution_time: number;
-  latency: number;
-  flapping: boolean;
-  percent_state_change: number;
-  last_notification: string;
-  notification_number: number;
-  performance_data?: string;
+  alias?: string;
+  calculation_type?: string;
   command_line?: string;
-  type: 'service' | 'host';
+  downtimes: Array<Downtime>;
+  duration: string;
+  execution_time: number;
+  flapping: boolean;
+  fqdn?: string;
+  groups?: Array<NamedEntity>;
+  information: string;
+  last_check: string;
+  last_notification: string;
+  last_status_change: string;
+  last_time_with_no_issue: string;
+  latency: number;
+  links: ResourceLinks;
+  monitoring_server_name?: string;
+  next_check: string;
+  notification_number: number;
+  parent: Parent;
+  passive_checks?: boolean;
+  percent_state_change: number;
+  performance_data?: string;
+  severity_level: number;
+  status: Status;
+  timezone?: string;
+  tries: string;
+  type: ResourceType;
+  uuid: string;
+}
+
+export interface GraphOption {
+  id: GraphOptionId;
+  label: string;
+  value: boolean;
+}
+
+export interface GraphOptions {
+  [GraphOptionId.displayEvents]: GraphOption;
+}
+
+export interface GraphTabParameters {
+  options?: GraphOptions;
+}
+
+export interface ServicesTabParameters {
+  options: GraphOptions;
+}
+
+export interface TabParameters {
+  graph?: GraphTabParameters;
+  services?: ServicesTabParameters;
 }
 
 export interface DetailsUrlQueryParameters {
+  customTimePeriod?: CustomTimePeriod;
   id: number;
   parentId?: number;
   parentType?: string;
-  type: string;
+  selectedTimePeriodId?: TimePeriodId;
   tab?: string;
+  tabParameters?: TabParameters;
+  type: string;
+  uuid: string;
 }

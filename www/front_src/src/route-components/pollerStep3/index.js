@@ -2,6 +2,7 @@
 /* eslint-disable react/prop-types */
 
 import React, { Component } from 'react';
+
 import { withTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 
@@ -17,11 +18,11 @@ class PollerStepThreeRoute extends Component {
   links = [
     {
       active: true,
-      prevActive: true,
       number: 1,
+      prevActive: true,
     },
-    { active: true, prevActive: true, number: 2 },
-    { active: true, prevActive: true, number: 3 },
+    { active: true, number: 2, prevActive: true },
+    { active: true, number: 3, prevActive: true },
     { active: true, number: 4 },
   ];
 
@@ -29,13 +30,14 @@ class PollerStepThreeRoute extends Component {
     const { links } = this;
     const { pollerData, t } = this.props;
     const { generateStatus } = this.state;
+
     return (
       <BaseWizard>
         <ProgressBar links={links} />
         <WizardFormInstallingStatus
+          formTitle={`${t('Finalizing Setup')}`}
           statusCreating={pollerData.submitStatus}
           statusGenerating={generateStatus}
-          formTitle={`${t('Finalizing Setup')}:`}
         />
       </BaseWizard>
     );

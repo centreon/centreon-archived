@@ -7,7 +7,7 @@ monitoring.metric.getServiceMetrics:
         start: '\S+'
         end: '\S+'
     controller: 'Centreon\Application\Controller\Monitoring\MetricController::getServiceMetrics'
-    condition: "request.attributes.get('version') >= 2.0"
+    condition: "request.attributes.get('version') >= 21.10"
 
 monitoring.metric.getServiceStatus:
     methods: GET
@@ -18,7 +18,7 @@ monitoring.metric.getServiceStatus:
         start: '\S+'
         end: '\S+'
     controller: 'Centreon\Application\Controller\Monitoring\MetricController::getServiceStatus'
-    condition: "request.attributes.get('version') >= 2.0"
+    condition: "request.attributes.get('version') >= 21.10"
 
 monitoring.metric.getServicePerformanceMetrics:
     methods: GET
@@ -27,7 +27,7 @@ monitoring.metric.getServicePerformanceMetrics:
         hostId: '\d+'
         serviceId: '\d+'
     controller: 'Centreon\Application\Controller\Monitoring\MetricController::getServicePerformanceMetrics'
-    condition: "request.attributes.get('version') >= 2.0"
+    condition: "request.attributes.get('version') >= 21.10"
 
 monitoring.metric.getServiceStatusMetrics:
     methods: GET
@@ -36,4 +36,20 @@ monitoring.metric.getServiceStatusMetrics:
         hostId: '\d+'
         serviceId: '\d+'
     controller: 'Centreon\Application\Controller\Monitoring\MetricController::getServiceStatusMetrics'
-    condition: "request.attributes.get('version') >= 2.0"
+    condition: "request.attributes.get('version') >= 21.10"
+
+monitoring.metric.getMetaServicePerformanceMetrics:
+    methods: GET
+    path: /monitoring/metaservices/{metaId}/metrics/performance
+    requirements:
+        metaId: '\d+'
+    controller: 'Centreon\Application\Controller\Monitoring\MetricController::getMetaServicePerformanceMetrics'
+    condition: "request.attributes.get('version') >= 21.10"
+
+monitoring.metric.getMetaServiceStatusMetrics:
+    methods: GET
+    path: /monitoring/metaservices/{metaId}/metrics/status
+    requirements:
+        metaId: '\d+'
+    controller: 'Centreon\Application\Controller\Monitoring\MetricController::getMetaServiceStatusMetrics'
+    condition: "request.attributes.get('version') >= 21.10"

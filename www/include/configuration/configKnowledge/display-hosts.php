@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2019 CENTREON
+ * Copyright 2005-2020 CENTREON
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -99,11 +100,8 @@ try {
         1 => "<font color='green'> " . _("Wiki page defined") . " </font>"
     ];
     $line = [0 => "list_one", 1 => "list_two"];
-    $proc = new procedures(
-        $pearDB
-    );
-    $proc->setHostInformations();
-    $proc->setServiceInformations();
+    $proc = new procedures($pearDB);
+    $proc->fetchProcedures();
 
     $queryValues = [];
     $query = "
@@ -155,7 +153,6 @@ try {
         if ($data["host_register"] == 1) {
             $selection[$data["host_name"]] = $data["host_id"];
         }
-        $proc->hostIconeList[$data["host_name"]] = "./img/media/" . $proc->getImageFilePath($data["ehi_icon_image"]);
     }
     $statement->closeCursor();
     unset($data);
@@ -220,7 +217,6 @@ try {
     $tpl->assign("content", $diff);
     $tpl->assign("status", $status);
     $tpl->assign("selection", 0);
-    $tpl->assign("icone", $proc->getIconeList());
 
     /*
      * Send template in order to open

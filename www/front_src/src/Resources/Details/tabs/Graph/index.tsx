@@ -1,123 +1,72 @@
 import * as React from 'react';
 
-import { pick, map, path, isNil } from 'ramda';
-import { useTranslation } from 'react-i18next';
+import { equals, or } from 'ramda';
 
-import { Paper, Theme, makeStyles } from '@material-ui/core';
+import { Theme, makeStyles } from '@material-ui/core';
 
-import { SelectField } from '@centreon/ui';
-
-import {
-  timePeriods,
-  getTimePeriodById,
-  last24hPeriod,
-  TimePeriod,
-} from './models';
-import PerformanceGraph from '../../../Graph/Performance';
 import { TabProps } from '..';
+import TimePeriodButtonGroup from '../../../Graph/Performance/TimePeriods';
+import ExportablePerformanceGraphWithTimeline from '../../../Graph/Performance/ExportableGraphWithTimeline';
+import memoizeComponent from '../../../memoizedComponent';
+
+import HostGraph from './HostGraph';
 
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
     display: 'grid',
-    gridTemplateRows: 'auto 1fr',
     gridRowGap: theme.spacing(2),
+    gridTemplateRows: 'auto 1fr',
   },
-  header: {
-    padding: theme.spacing(2),
+  exportToPngButton: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    margin: theme.spacing(0, 1, 1, 2),
   },
-  periodSelect: {
-    width: 250,
+  graph: {
+    height: '100%',
+    margin: 'auto',
+    width: '100%',
   },
   graphContainer: {
     display: 'grid',
-    padding: theme.spacing(2, 1, 1),
     gridTemplateRows: '1fr',
-  },
-  graph: {
-    margin: 'auto',
-    height: '100%',
-  },
-  performance: {
-    width: '100%',
-  },
-  status: {
-    marginTop: theme.spacing(2),
-    width: '100%',
+    padding: theme.spacing(2, 1, 1),
   },
 }));
 
-const timePeriodSelectOptions = map(pick(['id', 'name']), timePeriods);
-
-const defaultTimePeriod = last24hPeriod;
-
-const GraphTab = ({ details }: TabProps): JSX.Element => {
+const GraphTabContent = ({ details }: TabProps): JSX.Element => {
   const classes = useStyles();
-  const { t } = useTranslation();
 
-  const translatedTimePeriodSelectOptions = timePeriodSelectOptions.map(
-    (timePeriod) => ({
-      ...timePeriod,
-      name: t(timePeriod.name),
-    }),
-  );
+  const type = details?.type as string;
+  const equalsService = equals('service');
+  const equalsMetaService = equals('metaservice');
 
-  const endpoint = path(['links', 'endpoints', 'performance_graph'], details);
-
-  const [selectedTimePeriod, setSelectedTimePeriod] = React.useState<
-    TimePeriod
-  >(defaultTimePeriod);
-
-  const getQueryParams = (timePeriod): string => {
-    const now = new Date(Date.now()).toISOString();
-    const start = timePeriod.getStart().toISOString();
-
-    return `?start=${start}&end=${now}`;
-  };
-
-  const [periodQueryParams, setPeriodQueryParams] = React.useState(
-    getQueryParams(selectedTimePeriod),
-  );
-
-  const changeSelectedPeriod = (event): void => {
-    const timePeriodId = event.target.value;
-    const timePeriod = getTimePeriodById(timePeriodId);
-
-    setSelectedTimePeriod(timePeriod);
-
-    const queryParamsForSelectedPeriodId = getQueryParams(timePeriod);
-    setPeriodQueryParams(queryParamsForSelectedPeriodId);
-  };
-
-  const getEndpoint = (): string | undefined => {
-    if (isNil(endpoint)) {
-      return undefined;
-    }
-
-    return `${endpoint}${periodQueryParams}`;
-  };
+  const isService = or(equalsService(type), equalsMetaService(type));
 
   return (
     <div className={classes.container}>
-      <Paper className={classes.header}>
-        <SelectField
-          className={classes.periodSelect}
-          options={translatedTimePeriodSelectOptions}
-          selectedOptionId={selectedTimePeriod.id}
-          onChange={changeSelectedPeriod}
-        />
-      </Paper>
-      <Paper className={classes.graphContainer}>
-        <div className={`${classes.graph} ${classes.performance}`}>
-          <PerformanceGraph
-            endpoint={getEndpoint()}
+      {isService ? (
+        <>
+          <TimePeriodButtonGroup />
+          <ExportablePerformanceGraphWithTimeline
             graphHeight={280}
-            xAxisTickFormat={selectedTimePeriod.timeFormat}
-            toggableLegend
+            resource={details}
           />
-        </div>
-      </Paper>
+        </>
+      ) : (
+        <HostGraph details={details} />
+      )}
     </div>
   );
+};
+
+const MemoizedGraphTabContent = memoizeComponent<TabProps>({
+  Component: GraphTabContent,
+  memoProps: ['details'],
+});
+
+const GraphTab = ({ details }: TabProps): JSX.Element => {
+  return <MemoizedGraphTabContent details={details} />;
 };
 
 export default GraphTab;

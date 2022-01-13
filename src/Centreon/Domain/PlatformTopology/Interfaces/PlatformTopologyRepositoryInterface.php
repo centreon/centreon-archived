@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,57 +18,13 @@
  * For more information : contact@centreon.com
  *
  */
+
 declare(strict_types=1);
 
 namespace Centreon\Domain\PlatformTopology\Interfaces;
 
-use Centreon\Domain\PlatformTopology\PlatformTopology;
-
-interface PlatformTopologyRepositoryInterface
+interface PlatformTopologyRepositoryInterface extends
+    PlatformTopologyReadRepositoryInterface,
+    PlatformTopologyWriteRepositoryInterface
 {
-    /**
-     * Register a new platform to topology
-     *
-     * @param PlatformTopology $platformTopology
-     */
-    public function addPlatformToTopology(PlatformTopology $platformTopology): void;
-
-    /**
-     * Search for already registered servers using same name or address
-     *
-     * @param string $serverAddress
-     * @param string $serverName
-     * @return bool returns true if a server is already registered using same address or name
-     */
-    public function isPlatformAlreadyRegisteredInTopology(
-        string $serverAddress,
-        string $serverName
-    ): bool;
-
-    /**
-     * Search for platform's ID using its address
-     *
-     * @param string $serverAddress
-     * @return PlatformTopology|null
-     * @throws \Exception
-     */
-    public function findPlatformTopologyByAddress(string $serverAddress): ?PlatformTopology;
-
-    /**
-     * Search for platform's name and address using its type
-     *
-     * @param string $serverType
-     * @return PlatformTopology|null
-     * * @throws \Exception
-     */
-    public function findPlatformTopologyByType(string $serverType): ?PlatformTopology;
-
-    /**
-     * Search for local platform's monitoring Id using its name
-     *
-     * @param string $serverName
-     * @return PlatformTopology|null
-     * @throws \Exception
-     */
-    public function findLocalMonitoringIdFromName(string $serverName): ?PlatformTopology;
 }

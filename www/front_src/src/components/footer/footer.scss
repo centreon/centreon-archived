@@ -15,7 +15,6 @@
     height: 100%;
     span {
       color: $white-color;
-      font-family: $primary-font-light;
       font-size: 0.75rem;
     }
   }
@@ -24,10 +23,10 @@
       display: inline-block;
       padding-right: 40px;
       position: relative;
-      font-family: $primary-font-regular;
       font-size: 0.75rem;
       &:after {
         position: absolute;
+        top: 2px;
         right: 20px;
         content: "|";
         color: $white-color;
@@ -47,17 +46,4 @@
 }
 .sidebar.active + .content .footer {
   left: 160px;
-}
-.full-screen {
-  position: fixed;
-  right: 10px;
-  border-radius: 4px;
-  background: url("../../img/icons/icon-full-screen.png") no-repeat center center;
-  background-size: cover;
-  cursor: pointer;
-  z-index: 99;
-  bottom: 14px;
-  width: 38px;
-  height: 32px;
-  display: inline-block;
 }

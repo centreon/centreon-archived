@@ -1,32 +1,77 @@
-export interface CriteriaValue {
-  id: number | string;
-  name: string;
-}
+import { isNil } from 'ramda';
 
-export interface Criterias {
-  resourceTypes: Array<CriteriaValue>;
-  states: Array<CriteriaValue>;
-  statuses: Array<CriteriaValue>;
-  hostGroups: Array<CriteriaValue>;
-  serviceGroups: Array<CriteriaValue>;
-  search?: string;
-}
+import {
+  labelAll,
+  labelNewFilter,
+  labelUnhandledProblems,
+  labelResourceProblems,
+} from '../translatedLabels';
+
+import getDefaultCriterias from './Criterias/default';
+import {
+  Criteria,
+  criticalStatus,
+  downStatus,
+  selectableResourceTypes,
+  selectableStates,
+  selectableStatuses,
+  unhandledState,
+  unknownStatus,
+  warningStatus,
+} from './Criterias/models';
 
 export interface Filter {
-  id: string | number;
-  name: string;
-  criterias: Criterias;
-}
-
-export interface RawCriteria {
-  name: string;
-  object_type?: string;
-  type: string;
-  value?: Array<CriteriaValue> | string | boolean;
-}
-
-export interface RawFilter {
+  criterias: Array<Criteria>;
   id: number | string;
   name: string;
-  criterias: Array<RawCriteria>;
 }
+
+const allFilter = {
+  criterias: getDefaultCriterias(),
+  id: 'all',
+  name: labelAll,
+};
+
+const newFilter = {
+  id: '',
+  name: labelNewFilter,
+} as Filter;
+
+const unhandledProblemsFilter: Filter = {
+  criterias: getDefaultCriterias({
+    states: [unhandledState],
+    statuses: [warningStatus, downStatus, criticalStatus, unknownStatus],
+  }),
+  id: 'unhandled_problems',
+  name: labelUnhandledProblems,
+};
+
+const resourceProblemsFilter: Filter = {
+  criterias: getDefaultCriterias({
+    statuses: [warningStatus, downStatus, criticalStatus, unknownStatus],
+  }),
+  id: 'resource_problems',
+  name: labelResourceProblems,
+};
+
+const standardFilterById = {
+  all: allFilter,
+  resource_problems: resourceProblemsFilter,
+  unhandled_problems: unhandledProblemsFilter,
+};
+
+const isCustom = ({ id }: Filter): boolean => {
+  return isNil(standardFilterById[id]);
+};
+
+export {
+  allFilter,
+  unhandledProblemsFilter,
+  resourceProblemsFilter,
+  newFilter,
+  selectableResourceTypes,
+  selectableStates,
+  selectableStatuses,
+  standardFilterById,
+  isCustom,
+};

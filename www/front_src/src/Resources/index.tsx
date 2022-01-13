@@ -1,50 +1,43 @@
 import * as React from 'react';
 
 import { isNil } from 'ramda';
+import { useAtomValue } from 'jotai/utils';
 
-import { withSnackbar, ListingPage } from '@centreon/ui';
+import { ListingPage, useMemoComponent, WithPanel } from '@centreon/ui';
 
-import WithPanel from '@centreon/ui/src/Panel/WithPanel';
-import Context from './Context';
 import Filter from './Filter';
 import Listing from './Listing';
 import Details from './Details';
-import useFilter from './Filter/useFilter';
-import useListing from './Listing/useListing';
-import useActions from './Actions/useActions';
-import useDetails from './Details/useDetails';
 import EditFiltersPanel from './Filter/Edit';
+import { selectedResourceIdAtom } from './Details/detailsAtoms';
+import useDetails from './Details/useDetails';
+import { editPanelOpenAtom } from './Filter/filterAtoms';
+import useFilter from './Filter/useFilter';
 
-const Resources = (): JSX.Element => {
-  const listingContext = useListing();
-  const filterContext = useFilter();
-  const detailsContext = useDetails();
-  const actionsContext = useActions();
+const ResourcesPage = (): JSX.Element => {
+  const selectedResourceId = useAtomValue(selectedResourceIdAtom);
+  const editPanelOpen = useAtomValue(editPanelOpenAtom);
 
-  const { selectedResourceId } = detailsContext;
-
-  return (
-    <Context.Provider
-      value={{
-        ...listingContext,
-        ...filterContext,
-        ...detailsContext,
-        ...actionsContext,
-      }}
-    >
-      <WithPanel
-        panel={<EditFiltersPanel />}
-        open={filterContext.editPanelOpen}
-      >
+  return useMemoComponent({
+    Component: (
+      <WithPanel open={editPanelOpen} panel={<EditFiltersPanel />}>
         <ListingPage
-          panelOpen={!isNil(selectedResourceId)}
-          filters={<Filter />}
+          filter={<Filter />}
           listing={<Listing />}
           panel={<Details />}
+          panelOpen={!isNil(selectedResourceId)}
         />
       </WithPanel>
-    </Context.Provider>
-  );
+    ),
+    memoProps: [selectedResourceId, editPanelOpen],
+  });
 };
 
-export default withSnackbar(Resources);
+const Resources = (): JSX.Element => {
+  useDetails();
+  useFilter();
+
+  return <ResourcesPage />;
+};
+
+export default Resources;

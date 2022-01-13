@@ -50,6 +50,7 @@ $transcoKey = array(
     "display_autologin_shortcut" => "yes",
     "sso_enable" => "yes",
     "openid_connect_enable" => "yes",
+    "openid_connect_client_basic_auth" => "yes",
     "openid_connect_verify_peer" => "yes",
     "enable_gmt" => "yes",
     "strict_hostParent_poller_management" => "yes",
@@ -89,12 +90,6 @@ $form->addElement('text', 'oreon_path', _("Directory"), $attrsText);
 $form->addElement('text', 'oreon_web_path', _("Centreon Web Directory"), $attrsText);
 
 $form->addElement('text', 'session_expire', _("Sessions Expiration Time"), $attrsText2);
-$form->registerRule('isSessionDurationValid', 'callback', 'isSessionDurationValid');
-$form->addRule(
-    'session_expire',
-    _("This value needs to be an integer lesser than") . " " . SESSION_DURATION_LIMIT . " min",
-    'isSessionDurationValid'
-);
 
 $inheritanceMode = array();
 $inheritanceMode[] = $form->createElement(
@@ -301,9 +296,23 @@ $form->addElement(
 $form->addElement('text', 'openid_connect_userinfo_endpoint', _('User Information Endpoint'), array('size' => 50));
 $form->addElement('text', 'openid_connect_end_session_endpoint', _('End Session Endpoint'), array('size' => 50));
 $form->addElement('text', 'openid_connect_scope', _('Scope'), array('size' => 50));
+$form->addElement('text', 'openid_connect_login_claim', _('Login claim value'), array('size' => 50));
 $form->addElement('text', 'openid_connect_redirect_url', _('Redirect Url'), array('size' => 50));
-$form->addElement('text', 'openid_connect_client_id', _('Client ID'), array('size' => 50));
-$form->addElement('text', 'openid_connect_client_secret', _('Client Secret'), array('size' => 50));
+$form->addElement('password', 'openid_connect_client_id', _('Client ID'), array('size' => 50, 'autocomplete' => 'off'));
+$form->addElement(
+    'password',
+    'openid_connect_client_secret',
+    _('Client Secret'),
+    array('size' => 50, 'autocomplete' => 'off')
+);
+
+$openIdConnectClientBasicAuth[] = $form->createElement('checkbox', 'yes', '&nbsp;', '');
+$form->addGroup(
+    $openIdConnectClientBasicAuth,
+    'openid_connect_client_basic_auth',
+    _("Use Basic Auth for Token Endpoint Authentication"),
+    '&nbsp;&nbsp;'
+);
 
 $openIdConnectVerifyPeer[] = $form->createElement(
     'checkbox',
@@ -335,7 +344,29 @@ $form->registerRule('is_executable_binary', 'callback', 'is_executable_binary');
 $form->registerRule('is_writable_path', 'callback', 'is_writable_path');
 $form->registerRule('is_writable_file', 'callback', 'is_writable_file');
 $form->registerRule('is_writable_file_if_exist', 'callback', 'is_writable_file_if_exist');
+$form->addRule('oreon_path', _('Mandatory field'), 'required');
 $form->addRule('oreon_path', _("Can't write in directory"), 'is_valid_path');
+$form->addRule('oreon_web_path', _('Mandatory field'), 'required');
+$form->addRule('AjaxTimeReloadMonitoring', _('Mandatory field'), 'required');
+$form->addRule('AjaxTimeReloadMonitoring', _('Must be a number'), 'numeric');
+$form->addRule('AjaxTimeReloadStatistic', _('Mandatory field'), 'required');
+$form->addRule('AjaxTimeReloadStatistic', _('Must be a number'), 'numeric');
+$form->addRule('selectPaginationSize', _('Mandatory field'), 'required');
+$form->addRule('selectPaginationSize', _('Must be a number'), 'numeric');
+$form->addRule('maxGraphPerformances', _('Mandatory field'), 'required');
+$form->addRule('maxGraphPerformances', _('Must be a number'), 'numeric');
+$form->addRule('maxViewConfiguration', _('Mandatory field'), 'required');
+$form->addRule('maxViewConfiguration', _('Must be a number'), 'numeric');
+$form->addRule('maxViewMonitoring', _('Mandatory field'), 'required');
+$form->addRule('maxViewMonitoring', _('Must be a number'), 'numeric');
+$form->addRule('session_expire', _('Mandatory field'), 'required');
+$form->addRule('session_expire', _('Must be a number'), 'numeric');
+$form->registerRule('isSessionDurationValid', 'callback', 'isSessionDurationValid');
+$form->addRule(
+    'session_expire',
+    _("This value needs to be an integer lesser than") . " " . SESSION_DURATION_LIMIT . " min",
+    'isSessionDurationValid'
+);
 
 /*
  * Smarty template Init
@@ -343,6 +374,12 @@ $form->addRule('oreon_path', _("Can't write in directory"), 'is_valid_path');
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path . 'general/', $tpl);
 
+if (!empty($gopt['openid_connect_client_id'])) {
+    $gopt['openid_connect_client_id'] = CentreonAuth::PWS_OCCULTATION;
+}
+if (!empty($gopt['openid_connect_client_secret'])) {
+    $gopt['openid_connect_client_secret'] = CentreonAuth::PWS_OCCULTATION;
+}
 $form->setDefaults($gopt);
 
 $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
@@ -350,19 +387,24 @@ $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default
 
 $valid = false;
 if ($form->validate()) {
-    /*
-     * Update in DB
-     */
-    updateGeneralConfigData(1);
+    try {
+        /*
+        * Update in DB
+        */
+        updateGeneralConfigData(1);
 
-    /*
-     * Update in Oreon Object
-     */
-    $centreon->initOptGen($pearDB);
+        /*
+        * Update in Oreon Object
+        */
+        $centreon->initOptGen($pearDB);
 
-    $o = null;
-    $valid = true;
-    $form->freeze();
+        $o = null;
+        $valid = true;
+        $form->freeze();
+    } catch (\InvalidArgumentException $e) {
+        print("<div class='msg' align='center'>" . $e->getMessage() . "</div>");
+        $valid = false;
+    }
 }
 
 if (!$form->validate() && isset($_POST["gopt_id"])) {
@@ -393,6 +435,7 @@ $tpl->assign("genOpt_time_zone", _("Time Zone"));
 $tpl->assign("genOpt_auth", _("Authentication properties"));
 $tpl->assign("genOpt_openid_connect", _("Authentication by OpenId Connect"));
 $tpl->assign("support", _("Support Information"));
+$tpl->assign('statistics', _("Statistics"));
 $tpl->assign('valid', $valid);
 
 /*

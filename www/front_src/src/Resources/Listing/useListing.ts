@@ -1,68 +1,24 @@
 import * as React from 'react';
 
-import { ifElse, pathEq, always, pathOr } from 'ramda';
+import { useUpdateAtom } from 'jotai/utils';
+import { useAtom } from 'jotai';
 
-import { useRequest } from '@centreon/ui';
-
-import { ResourceListing } from '../models';
-import { defaultSortOrder, defaultSortField } from './columns';
-import ApiNotFoundMessage from './ApiNotFoundMessage';
-import { labelSomethingWentWrong } from '../translatedLabels';
-import { listResources } from './api';
-
-type SortOrder = 'asc' | 'desc';
-
-type ListingDispatch<T> = React.Dispatch<React.SetStateAction<T>>;
+import { limitAtom, pageAtom } from './listingAtoms';
 
 export interface ListingState {
-  listing?: ResourceListing;
-  setListing: ListingDispatch<ResourceListing | undefined>;
-  sorto: SortOrder;
-  sortf: string;
-  setSortf: ListingDispatch<string>;
-  setSorto: ListingDispatch<SortOrder>;
-  limit: number;
-  setLimit: ListingDispatch<number>;
   page?: number;
-  setPage: ListingDispatch<number | undefined>;
-  enabledAutorefresh: boolean;
-  setEnabledAutorefresh: ListingDispatch<boolean>;
-  sendRequest: (params) => Promise<ResourceListing>;
-  sending: boolean;
+  setLimit: (limit: React.SetStateAction<number>) => void;
+  setPage: (page: React.SetStateAction<number | undefined>) => void;
 }
 
 const useListing = (): ListingState => {
-  const [listing, setListing] = React.useState<ResourceListing>();
-  const [sorto, setSorto] = React.useState<SortOrder>(defaultSortOrder);
-  const [sortf, setSortf] = React.useState<string>(defaultSortField);
-  const [limit, setLimit] = React.useState<number>(30);
-  const [page, setPage] = React.useState<number>();
-  const [enabledAutorefresh, setEnabledAutorefresh] = React.useState(true);
-
-  const { sendRequest, sending } = useRequest<ResourceListing>({
-    request: listResources,
-    getErrorMessage: ifElse(
-      pathEq(['response', 'status'], 404),
-      always(ApiNotFoundMessage),
-      pathOr(labelSomethingWentWrong, ['response', 'data', 'message']),
-    ),
-  });
+  const [page, setPage] = useAtom(pageAtom);
+  const setLimit = useUpdateAtom(limitAtom);
 
   return {
-    listing,
-    setListing,
-    sorto,
-    setSorto,
-    sortf,
-    setSortf,
-    limit,
-    setLimit,
     page,
+    setLimit,
     setPage,
-    enabledAutorefresh,
-    setEnabledAutorefresh,
-    sendRequest,
-    sending,
   };
 };
 

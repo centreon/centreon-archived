@@ -4,6 +4,7 @@
 /* eslint-disable react/prop-types */
 
 import React, { Component } from 'react';
+
 import { connect } from 'react-redux';
 
 import Form from '../../components/forms/remoteServer/RemoteServerFormStepOne';
@@ -17,9 +18,9 @@ class RemoteServerStepOneRoute extends Component {
   links = [
     {
       active: true,
-      prevActive: true,
       number: 1,
       path: routeMap.serverConfigurationWizard,
+      prevActive: true,
     },
     { active: true, number: 2, path: routeMap.remoteServerStep1 },
     { active: false, number: 3 },
@@ -59,12 +60,13 @@ class RemoteServerStepOneRoute extends Component {
     const { links } = this;
     const { pollerData } = this.props;
     const { waitList } = this.state;
+
     return (
       <BaseWizard>
         <ProgressBar links={links} />
         <Form
-          waitList={waitList}
           initialValues={{ ...pollerData, centreon_folder: '/centreon/' }}
+          waitList={waitList}
           onSubmit={this.handleSubmit.bind(this)}
         />
       </BaseWizard>

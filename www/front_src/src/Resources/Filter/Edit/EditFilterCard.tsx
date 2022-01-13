@@ -1,18 +1,5 @@
 import * as React from 'react';
 
-import { makeStyles } from '@material-ui/core';
-import DeleteIcon from '@material-ui/icons/Delete';
-
-import {
-  ContentWithCircularLoading,
-  TextField,
-  IconButton,
-  useRequest,
-  ConfirmDialog,
-  useSnackbar,
-  Severity,
-} from '@centreon/ui';
-
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import {
@@ -26,6 +13,20 @@ import {
   omit,
 } from 'ramda';
 import { useTranslation } from 'react-i18next';
+import { useUpdateAtom } from 'jotai/utils';
+import { useAtom } from 'jotai';
+
+import DeleteIcon from '@material-ui/icons/Delete';
+import { makeStyles } from '@material-ui/core';
+
+import {
+  ContentWithCircularLoading,
+  TextField,
+  IconButton,
+  useRequest,
+  ConfirmDialog,
+  useSnackbar,
+} from '@centreon/ui';
 
 import {
   labelDelete,
@@ -38,20 +39,21 @@ import {
   labelNameCannotBeEmpty,
 } from '../../translatedLabels';
 import { updateFilter, deleteFilter } from '../api';
-import { Filter } from '../models';
-import { useResourceContext } from '../../Context';
-import useFilterModels from '../useFilterModels';
-import useAdapters from '../api/adapters';
+import { Filter, newFilter } from '../models';
+import {
+  appliedFilterAtom,
+  currentFilterAtom,
+  customFiltersAtom,
+} from '../filterAtoms';
 
 const useStyles = makeStyles((theme) => ({
   filterCard: {
+    alignItems: 'center',
     display: 'grid',
     gridAutoFlow: 'column',
     gridGap: theme.spacing(2),
-    alignItems: 'center',
     gridTemplateColumns: 'auto 1fr',
   },
-  filterNameInput: {},
 }));
 
 interface Props {
@@ -61,17 +63,9 @@ interface Props {
 const EditFilterCard = ({ filter }: Props): JSX.Element => {
   const classes = useStyles();
 
-  const { newFilter } = useFilterModels();
-  const { toRawFilter } = useAdapters();
   const { t } = useTranslation();
-  const {
-    setFilter,
-    filter: currentFilter,
-    setCustomFilters,
-    customFilters,
-  } = useResourceContext();
 
-  const { showMessage } = useSnackbar();
+  const { showSuccessMessage } = useSnackbar();
 
   const [deleting, setDeleting] = React.useState(false);
 
@@ -89,6 +83,10 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
     request: deleteFilter,
   });
 
+  const [currentFilter, setCurrentFilter] = useAtom(currentFilterAtom);
+  const [customFilters, setCustomFilters] = useAtom(customFiltersAtom);
+  const setAppliedFilter = useUpdateAtom(appliedFilterAtom);
+
   const { name, id } = filter;
 
   const validationSchema = Yup.object().shape({
@@ -100,21 +98,17 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
     initialValues: {
       name,
     },
-    validationSchema,
     onSubmit: (values) => {
       const updatedFilter = { ...filter, name: values.name };
 
       sendUpdateFilterRequest({
-        rawFilter: omit(['id'], toRawFilter(updatedFilter)),
+        filter: omit(['id'], updatedFilter),
         id: updatedFilter.id,
       }).then(() => {
-        showMessage({
-          message: t(labelFilterUpdated),
-          severity: Severity.success,
-        });
+        showSuccessMessage(t(labelFilterUpdated));
 
         if (equals(updatedFilter.id, currentFilter.id)) {
-          setFilter(updatedFilter);
+          setCurrentFilter(updatedFilter);
         }
 
         const index = findIndex(propEq('id', updatedFilter.id), customFilters);
@@ -122,6 +116,7 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
         setCustomFilters(update(index, updatedFilter, customFilters));
       });
     },
+    validationSchema,
   });
 
   const askDelete = (): void => {
@@ -132,13 +127,11 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
     setDeleting(false);
 
     sendDeleteFilterRequest(filter).then(() => {
-      showMessage({
-        message: t(labelFilterDeleted),
-        severity: Severity.success,
-      });
+      showSuccessMessage(t(labelFilterDeleted));
 
       if (equals(filter.id, currentFilter.id)) {
-        setFilter(newFilter as Filter);
+        setCurrentFilter({ ...filter, ...newFilter });
+        setAppliedFilter({ ...filter, ...newFilter });
       }
 
       setCustomFilters(reject(equals(filter), customFilters));
@@ -175,33 +168,32 @@ const EditFilterCard = ({ filter }: Props): JSX.Element => {
   return (
     <div className={classes.filterCard}>
       <ContentWithCircularLoading
+        alignCenter={false}
         loading={sendingRequest}
         loadingIndicatorSize={24}
-        alignCenter={false}
       >
         <IconButton title={t(labelDelete)} onClick={askDelete}>
           <DeleteIcon fontSize="small" />
         </IconButton>
       </ContentWithCircularLoading>
       <TextField
-        className={classes.filterNameInput}
+        transparent
         ariaLabel={`${t(labelFilter)}-${id}-${t(labelName)}`}
-        value={form.values.name}
         error={form.errors.name}
+        value={form.values.name}
+        onBlur={rename}
         onChange={form.handleChange('name') as (event) => void}
         onKeyDown={renameOnEnterKey}
-        onBlur={rename}
-        transparent
       />
 
       {deleting && (
         <ConfirmDialog
-          labelConfirm={t(labelDelete)}
+          open
           labelCancel={t(labelCancel)}
-          onConfirm={confirmDelete}
+          labelConfirm={t(labelDelete)}
           labelTitle={t(labelAskDelete)}
           onCancel={cancelDelete}
-          open
+          onConfirm={confirmDelete}
         />
       )}
     </div>

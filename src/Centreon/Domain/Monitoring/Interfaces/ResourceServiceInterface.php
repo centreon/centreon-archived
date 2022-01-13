@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ namespace Centreon\Domain\Monitoring\Interfaces;
 
 use Centreon\Domain\Monitoring\ResourceFilter;
 use Centreon\Domain\Monitoring\Resource as ResourceEntity;
+use Centreon\Domain\Monitoring\Exception\ResourceException;
 
 interface ResourceServiceInterface
 {
@@ -125,8 +126,25 @@ interface ResourceServiceInterface
      * Enrich resource object with specific service data
      *
      * @param ResourceEntity $resource
+     * @throws ResourceException
      */
     public function enrichServiceWithDetails(ResourceEntity $resource): void;
+
+    /**
+     * Enrich resource object with specific meta service data
+     *
+     * @param ResourceEntity $resource
+     * @throws ResourceException
+     */
+    public function enrichMetaServiceWithDetails(ResourceEntity $resource): void;
+
+    /**
+     * Replace macros set in the external links by their actual values
+     *
+     * @param ResourceEntity $resource
+     * @return void
+     */
+    public function replaceMacrosInExternalLinks(ResourceEntity $resource): void;
 
     /**
      * Used to filter requests according to a contact.

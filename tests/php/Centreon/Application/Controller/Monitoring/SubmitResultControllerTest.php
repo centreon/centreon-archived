@@ -52,7 +52,7 @@ class SubmitResultControllerTest extends TestCase
 
     protected $request;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $timezone = new \DateTimeZone('Europe/Paris');
 

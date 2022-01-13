@@ -10,13 +10,25 @@ class ModuleContext extends CentreonContext
 {
     protected $page;
     private $type = ExtensionsPage::MODULE_TYPE;
-    private $moduleName = 'centreon-license-manager';
+    private $moduleName = 'centreon-test';
 
     /**
      * @Given a module is ready to install
      */
     public function aModuleIsReadyToInstall()
     {
+        $this->container->execute(
+            'mkdir /usr/share/centreon/www/modules/centreon-test',
+            'web',
+            true
+        );
+
+        $this->container->copyToContainer(
+            __DIR__ . '/../assets/centreon-test.conf.php',
+            '/usr/share/centreon/www/modules/centreon-test/conf.php',
+            'web'
+        );
+
         $this->page = new ExtensionsPage($this);
         $module = $this->page->getEntry($this->type, $this->moduleName);
         if (!$module['actions']['install']) {

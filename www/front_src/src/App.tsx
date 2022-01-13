@@ -6,70 +6,75 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/jsx-filename-extension */
 
-import React, { Component, ReactNode } from 'react';
+import React, { Component, ReactNode, Suspense } from 'react';
 
-import { hot } from 'react-hot-loader/root';
 import { connect } from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router';
 import Fullscreen from 'react-fullscreen-crossbrowser';
 import queryString from 'query-string';
-import { pipe } from 'ramda';
+
+import FullscreenIcon from '@material-ui/icons/Fullscreen';
+import { withStyles, createStyles, Fab } from '@material-ui/core';
 
 import { ThemeProvider } from '@centreon/ui';
 
-import { withStyles, createStyles } from '@material-ui/core';
-
-import Header from './components/header';
+import Header from './Header';
 import { history } from './store';
-import NavigationComponent from './components/navigation';
-import Tooltip from './components/tooltip';
+import Nagigation from './Navigation';
 import Footer from './components/footer';
-import MainRouter from './components/mainRouter';
 import axios from './axios';
 import { fetchExternalComponents } from './redux/actions/externalComponentsActions';
+import PageLoader from './components/PageLoader';
+import Provider from './Provider';
 
-import footerStyles from './components/footer/footer.scss';
+const MainRouter = React.lazy(() => import('./components/mainRouter'));
 
 const styles = createStyles({
-  wrapper: {
-    display: 'flex',
-    alignItems: 'stretch',
-    height: '100%',
-    overflow: 'hidden',
-  },
-  fullScreenWrapper: {
-    width: '100%',
-    height: '100%',
-    overflow: 'hidden',
-    flexGrow: 1,
-  },
-  mainContent: {
-    height: '100%',
-    width: '100%',
-    backgroundcolor: 'white',
-  },
   content: {
     display: 'flex',
     flexDirection: 'column',
+    height: ' 100vh',
+    overflow: 'hidden',
+    position: 'relative',
+    transition: 'all 0.3s',
+    width: '100%',
+  },
+  fullScreenWrapper: {
+    flexGrow: 1,
+    height: '100%',
     overflow: 'hidden',
     width: '100%',
-    height: ' 100vh',
-    transition: 'all 0.3s',
-    position: 'relative',
+  },
+  fullscreenButton: {
+    bottom: '10px',
+    position: 'absolute',
+    right: '20px',
+    zIndex: 1500,
+  },
+  mainContent: {
+    backgroundcolor: 'white',
+    height: '100%',
+    width: '100%',
+  },
+  wrapper: {
+    alignItems: 'stretch',
+    display: 'flex',
+    height: '100%',
+    overflow: 'hidden',
   },
 });
 
 // Extends Window interface
 declare global {
   interface Window {
-    fullscreenSearch: string;
-    fullscreenHash: string;
+    fullscreenHash: string | null;
+    fullscreenSearch: string | null;
   }
 }
 
 interface Props {
-  fetchExternalComponents: () => void;
   classes;
+  fetchExternalComponents: () => void;
 }
 
 interface State {
@@ -108,15 +113,15 @@ class App extends Component<Props, State> {
   private removeFullscreenParams = (): void => {
     if (history.location.pathname === '/main.php') {
       history.push({
+        hash: window.fullscreenHash,
         pathname: '/main.php',
         search: window.fullscreenSearch,
-        hash: window.fullscreenHash,
       });
     }
 
     // remove fullscreen parameters to keep normal routing
-    delete window.fullscreenSearch;
-    delete window.fullscreenHash;
+    window.fullscreenSearch = null;
+    window.fullscreenHash = null;
   };
 
   // keep alive (redirect to login page if session is expired)
@@ -150,38 +155,43 @@ class App extends Component<Props, State> {
     const { classes } = this.props;
 
     return (
-      <ConnectedRouter history={history}>
-        <ThemeProvider>
-          <div className={classes.wrapper}>
-            {!min && <NavigationComponent />}
-            <Tooltip />
-            <div id="content" className={classes.content}>
-              {!min && <Header />}
-              <div
-                id="fullscreen-wrapper"
-                className={classes.fullScreenWrapper}
-              >
-                <Fullscreen
-                  enabled={this.state.isFullscreenEnabled}
-                  onClose={this.removeFullscreenParams}
-                  onChange={(isFullscreenEnabled): void => {
-                    this.setState({ isFullscreenEnabled });
-                  }}
+      <Suspense fallback={<PageLoader />}>
+        <ConnectedRouter history={history}>
+          <ThemeProvider>
+            <div className={classes.wrapper}>
+              {!min && <Nagigation />}
+              <div className={classes.content} id="content">
+                {!min && <Header />}
+                <div
+                  className={classes.fullScreenWrapper}
+                  id="fullscreen-wrapper"
                 >
-                  <div className={classes.mainContent}>
-                    <MainRouter />
-                  </div>
-                </Fullscreen>
+                  <Fullscreen
+                    enabled={this.state.isFullscreenEnabled}
+                    onChange={(isFullscreenEnabled): void => {
+                      this.setState({ isFullscreenEnabled });
+                    }}
+                    onClose={this.removeFullscreenParams}
+                  >
+                    <div className={classes.mainContent}>
+                      <MainRouter />
+                    </div>
+                  </Fullscreen>
+                </div>
+                {!min && <Footer />}
               </div>
-              {!min && <Footer />}
+              <Fab
+                className={classes.fullscreenButton}
+                color="default"
+                size="small"
+                onClick={this.goFull}
+              >
+                <FullscreenIcon />
+              </Fab>
             </div>
-            <span
-              className={footerStyles['full-screen']}
-              onClick={this.goFull}
-            />
-          </div>
-        </ThemeProvider>
-      </ConnectedRouter>
+          </ThemeProvider>
+        </ConnectedRouter>
+      </Suspense>
     );
   }
 }
@@ -198,8 +208,10 @@ const mapDispatchToProps = (dispatch: (any) => void): DispatchProps => {
   };
 };
 
-export default pipe(
-  hot,
-  connect(null, mapDispatchToProps),
-  withStyles(styles),
-)(App);
+const CentreonApp = connect(null, mapDispatchToProps)(withStyles(styles)(App));
+
+export default (): JSX.Element => (
+  <Provider>
+    <CentreonApp />
+  </Provider>
+);

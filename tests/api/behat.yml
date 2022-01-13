@@ -4,6 +4,14 @@ default:
   gherkin:
     cache: ~
   suites:
+    host_category:
+      paths: [ "%paths.base%/features/HostCategory.feature" ]
+      contexts:
+        - Centreon\Test\Api\Context\HostCategoryContext
+    host_severity:
+      paths: [ "%paths.base%/features/HostSeverity.feature" ]
+      contexts:
+        - Centreon\Test\Api\Context\HostSeverityContext
     host_monitoring:
       paths: [ "%paths.base%/features/HostMonitoring.feature" ]
       contexts:
@@ -16,6 +24,10 @@ default:
       paths: [ "%paths.base%/features/ResourceMonitoring.feature" ]
       contexts:
         - Centreon\Test\Api\Context\ResourceMonitoringContext
+    real_time_monitoring_server:
+      paths: [ "%paths.base%/features/RealTimeMonitoringServer.feature" ]
+      contexts:
+        - Centreon\Test\Api\Context\RealTimeMonitoringServerContext
     authentication:
       paths: [ "%paths.base%/features/Authentication.feature" ]
       contexts:
@@ -24,6 +36,10 @@ default:
       paths: [ "%paths.base%/features/UserFilter.feature" ]
       contexts:
         - Centreon\Test\Api\Context\UserFilterContext
+    user_parameters:
+      paths: [ "%paths.base%/features/UserParameters.feature" ]
+      contexts:
+        - Centreon\Test\Api\Context\UserParametersContext
     check:
       paths: [ "%paths.base%/features/Check.feature" ]
       contexts:
@@ -32,6 +48,10 @@ default:
       paths: [ "%paths.base%/features/SubmitResult.feature" ]
       contexts:
         - Centreon\Test\Api\Context\SubmitResultContext
+    comment:
+      paths: [ "%paths.base%/features/Comment.feature" ]
+      contexts:
+        - Centreon\Test\Api\Context\CommentContext
     acknowledgement:
       paths: [ "%paths.base%/features/Acknowledgement.feature" ]
       contexts:
@@ -40,8 +60,19 @@ default:
       paths: [ "%paths.base%/features/MonitoringTimeline.feature" ]
       contexts:
         - Centreon\Test\Api\Context\MonitoringTimelineContext
-
     platform_topology:
       paths: [ "%paths.base%/features/PlatformTopology.feature" ]
       contexts:
         - Centreon\Test\Api\Context\PlatformTopologyContext
+    platform_information:
+      paths: [ "%paths.base%/features/PlatformInformation.feature" ]
+      contexts:
+        - Centreon\Test\Api\Context\PlatformInformationContext
+    host_groups:
+      paths: [ "%paths.base%/features/HostGroup.feature" ]
+      contexts:
+        - Centreon\Test\Api\Context\HostGroupContext
+    monitoring_server_configuration:
+      paths: [ "%paths.base%/features/MonitoringServerConfiguration.feature" ]
+      contexts:
+        - Centreon\Test\Api\Context\MonitoringServerConfigurationContext

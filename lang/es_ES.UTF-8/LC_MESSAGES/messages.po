@@ -562,55 +562,46 @@ msgid "Yes"
 msgstr "Sí"
 
 #: centreon-web/www/class/centreonGraphPoller.class.php:150
-#: centreon-web/www/include/Administration/corePerformance/getStats.php:127
 #: centreon-web/www/include/Administration/corePerformance/nagiosStats.php:160
 msgid "Host Check Execution Time"
 msgstr "Duración del cheque de acogida"
 
 #: centreon-web/www/class/centreonGraphPoller.class.php:151
-#: centreon-web/www/include/Administration/corePerformance/getStats.php:128
 #: centreon-web/www/include/Administration/corePerformance/nagiosStats.php:161
 msgid "Hosts Actively Checked"
 msgstr "Actualmente verificados hosts"
 
 #: centreon-web/www/class/centreonGraphPoller.class.php:152
-#: centreon-web/www/include/Administration/corePerformance/getStats.php:129
 #: centreon-web/www/include/Administration/corePerformance/nagiosStats.php:162
 msgid "Host check latency"
 msgstr "Latencia del control del host."
 
 #: centreon-web/www/class/centreonGraphPoller.class.php:153
-#: centreon-web/www/include/Administration/corePerformance/getStats.php:130
 #: centreon-web/www/include/Administration/corePerformance/nagiosStats.php:163
 msgid "Service Check Execution Time"
 msgstr "Período de verificación de servicio"
 
 #: centreon-web/www/class/centreonGraphPoller.class.php:154
-#: centreon-web/www/include/Administration/corePerformance/getStats.php:131
 #: centreon-web/www/include/Administration/corePerformance/nagiosStats.php:164
 msgid "Services Actively Checked"
 msgstr "Servicios actualmente controlados"
 
 #: centreon-web/www/class/centreonGraphPoller.class.php:155
-#: centreon-web/www/include/Administration/corePerformance/getStats.php:132
 #: centreon-web/www/include/Administration/corePerformance/nagiosStats.php:165
 msgid "Service check latency"
 msgstr "Latencia del control de servicio."
 
 #: centreon-web/www/class/centreonGraphPoller.class.php:156
-#: centreon-web/www/include/Administration/corePerformance/getStats.php:133
 #: centreon-web/www/include/Administration/corePerformance/nagiosStats.php:166
 msgid "Commands in buffer"
 msgstr "Comandos en el buffer"
 
 #: centreon-web/www/class/centreonGraphPoller.class.php:157
-#: centreon-web/www/include/Administration/corePerformance/getStats.php:134
 #: centreon-web/www/include/Administration/corePerformance/nagiosStats.php:167
 msgid "Host status"
 msgstr "Estado de acogida"
 
 #: centreon-web/www/class/centreonGraphPoller.class.php:158
-#: centreon-web/www/include/Administration/corePerformance/getStats.php:135
 #: centreon-web/www/include/Administration/corePerformance/nagiosStats.php:168
 msgid "Service status"
 msgstr "Estado del servicio"
@@ -2976,8 +2967,11 @@ msgstr "métrica"
 msgid "MIBs"
 msgstr "MIBs"
 
-#: centreon-web/www/install/menu_translation.php:109
-#: centreon-web/www/include/configuration/configObject/command/listCommand.php:129
+#: centreon/www/include/configuration/configObject/command/listCommand.php:127
+#: centreon/www/install/menu_translation.php:95
+#: centreon/www/include/options/oreon/generalOpt/colors/form.php:59
+#: centreon/www/include/configuration/configServers/formServers.php:122
+#: /www/include/configuration/configServers/formServers.php:104
 msgid "Miscellaneous"
 msgstr "Diverso"
 
@@ -9820,14 +9814,6 @@ msgstr "Valor de la macro"
 msgid "Impossible to change server due to parentship with other hosts"
 msgstr "No se puede cambiar el servidor debido a una relación con otros hosts"
 
-#: centreon-web/www/include/configuration/configObject/host/formHost.php:1043
-msgid "Some hosts parent has not the same instance"
-msgstr "Algunos hosts principales no son supervisados ​​por el mismo programador"
-
-#: centreon-web/www/include/configuration/configObject/host/formHost.php:1044
-msgid "Some hosts child has not the same instance"
-msgstr "Algunos anfitriones secundarios no son supervisados ​​por el mismo programador"
-
 #: centreon-web/www/include/configuration/configObject/host/formHost.php:1050
 msgid "_Module_ is not a legal expression"
 msgstr "_Module_ no es una expresión permitida"
@@ -11278,10 +11264,6 @@ msgstr "Información Gorgone"
 #: centreon-web/www/include/configuration/configServers/formServers.php:103
 msgid "Monitoring Engine Information"
 msgstr "Información sobre el motor de supervisión."
-
-#: centreon-web/www/include/configuration/configServers/formServers.php:104
-msgid "Miscelleneous"
-msgstr "Diverso"
 
 #: centreon-web/www/include/configuration/configServers/formServers.php:105
 msgid "Centreon Trap Collector"
@@ -14334,7 +14316,7 @@ msgstr "Permitir certificado autofirmado"
 #  msgid "at"
 #  msgstr ""
 
-#  msgid "Clear all"
+#  msgid "Clear"
 #  msgstr ""
 
 #  msgid "Criterias"
@@ -14349,7 +14331,7 @@ msgstr "Permitir certificado autofirmado"
 #  msgid "Current notification number"
 #  msgstr ""
 
-#  msgid "Current state duration"
+#  msgid "Current status duration"
 #  msgstr ""
 
 #  msgid "Downtime duration"
@@ -14361,7 +14343,7 @@ msgstr "Permitir certificado autofirmado"
 #  msgid "End time"
 #  msgstr ""
 
-#  msgid "Is this resource flapping?"
+#  msgid "This Resource is flapping"
 #  msgstr ""
 
 #  msgid "Show criterias filters"
@@ -14385,14 +14367,23 @@ msgstr "Permitir certificado autofirmado"
 #  msgid "In downtime"
 #  msgstr ""
 
-#  msgid "Last 24 hours"
-#  msgstr ""
+# msgid "1 day"
+# msgstr ""
 
-#  msgid "Last 7 days"
-#  msgstr ""
+# msgid "7 days"
+# msgstr ""
 
-#  msgid "Last 31 days"
-#  msgstr ""
+# msgid "31 days"
+# msgstr ""
+
+# msgid "Last day"
+# msgstr ""
+
+# msgid "Last 7 days"
+# msgstr ""
+
+# msgid "Last 31 days"
+# msgstr ""
 
 #  msgid "Set downtime on"
 #  msgstr ""
@@ -14406,7 +14397,7 @@ msgstr "Permitir certificado autofirmado"
 #  msgid "Last notification"
 #  msgstr ""
 
-#  msgid "Last state change"
+#  msgid "Last status change"
 #  msgstr ""
 
 #  msgid "Next check"
@@ -14418,7 +14409,7 @@ msgstr "Permitir certificado autofirmado"
 #  msgid "Open"
 #  msgstr ""
 
-#  msgid "Percent state change"
+#  msgid "Status change percentage"
 #  msgstr ""
 
 #  msgid "Resource name"
@@ -14526,6 +14517,9 @@ msgstr "Permitir certificado autofirmado"
 #  msgid "Error when decoding sent data"
 #  msgstr ""
 
+#  msgid "Error when retrieving selected options"
+#  msgstr ""
+
 #  msgid "Filter id %d not found"
 #  msgstr ""
 
@@ -14630,3 +14624,125 @@ msgstr "Permitir certificado autofirmado"
 
 #  msgid "No resource found"
 #  msgstr ""
+
+#  msgid "FQDN / Address"
+#  msgstr ""
+
+#  msgid "Groups"
+#  msgstr ""
+
+#  msgid "Comment added"
+#  msgstr ""
+
+#  msgid "Display events"
+#  msgstr ""
+
+#  msgid "Export to png"
+#  msgstr ""
+
+#  msgid "Go to performance page"
+#  msgstr ""
+
+#  msgid "Parent"
+#  msgstr ""
+
+#  msgid "Switch to graph mode"
+#  msgstr ""
+
+#  msgid "Switch to list mode"
+#  msgstr ""
+
+#  msgid "Select criterias"
+#  msgstr ""
+
+#  msgid "Monitoring server"
+#  msgstr ""
+
+#  msgid "The end date must be greater than the start date"
+#  msgstr ""
+
+#  msgid "Forward"
+#  msgstr ""
+
+#  msgid "Backward"
+#  msgstr ""
+
+# msgid "Graph options"
+# msgstr ""
+
+# msgid "Check duration"
+# msgstr ""
+
+# msgid "Avg"
+# msgstr ""
+
+# msgid "Compact time period"
+# msgstr ""
+
+#  msgid "Check duration"
+
+#  msgid "Display tooltips"
+#  msgstr ""
+
+#  msgid "Check duration"
+#  msgstr ""
+
+#  msgid "Check duration"
+#  msgstr ""
+
+#  msgid "Notifications disabled"
+#  msgstr ""
+
+#  msgid "All checks are disabled"
+#  msgstr ""
+
+#  msgid "Only passive checks are enabled"
+#  msgstr ""
+
+#  msgid "Calculation type"
+#  msgstr ""
+
+#  msgid "Mandatory data to create the entity '%s' is missing"
+#  msgstr ""
+
+#  msgid "At least one column must be selected"
+#  msgstr ""
+
+#  msgid "The duration must be lesser than a year"
+#  msgstr ""
+
+#  msgid "As displayed"
+#  msgstr ""
+
+#  msgid "Medium size"
+#  msgstr ""
+
+#  msgid "Small size"
+#  msgstr ""
+
+# msgid "Display the complete graph"
+# msgstr ""
+
+# msgid "Action not permitted"
+# msgstr ""
+
+# msgid "Scroll to top"
+# msgstr ""
+
+# msgid "This week"
+# msgstr ""
+
+# msgid "Before last year"
+# msgstr ""
+
+# msgid "Filter options"
+# msgstr ""
+
+# msgid "Service graphs"
+# msgstr ""
+
+msgid "Clear filter"
+msgstr ""
+
+msgid "Last check with OK status"
+msgstr "" 

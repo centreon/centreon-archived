@@ -51,23 +51,22 @@ require_once "Centreon/Object/Relation/Contact/Command/Service.php";
  */
 class CentreonContact extends CentreonObject
 {
-
-    const ORDER_UNIQUENAME = 1;
-    const ORDER_NAME = 0;
-    const ORDER_MAIL = 2;
-    const ORDER_PASS = 3;
-    const ORDER_ADMIN = 4;
-    const ORDER_ACCESS = 5;
-    const ORDER_LANG = 6;
-    const ORDER_AUTHTYPE = 7;
-    const HOST_NOTIF_TP = "hostnotifperiod";
-    const SVC_NOTIF_TP = "svcnotifperiod";
-    const HOST_NOTIF_CMD = "hostnotifcmd";
-    const SVC_NOTIF_CMD = "svcnotifcmd";
-    const UNKNOWN_LOCALE = "Invalid locale";
-    const UNKNOWN_TIMEZONE = "Invalid timezone";
-    const CONTACT_LOCATION = "timezone";
-    const UNKNOWN_NOTIFICATION_OPTIONS = "Invalid notifications options";
+    public const ORDER_UNIQUENAME = 1;
+    public const ORDER_NAME = 0;
+    public const ORDER_MAIL = 2;
+    public const ORDER_PASS = 3;
+    public const ORDER_ADMIN = 4;
+    public const ORDER_ACCESS = 5;
+    public const ORDER_LANG = 6;
+    public const ORDER_AUTHTYPE = 7;
+    public const HOST_NOTIF_TP = "hostnotifperiod";
+    public const SVC_NOTIF_TP = "svcnotifperiod";
+    public const HOST_NOTIF_CMD = "hostnotifcmd";
+    public const SVC_NOTIF_CMD = "svcnotifcmd";
+    public const UNKNOWN_LOCALE = "Invalid locale";
+    public const UNKNOWN_TIMEZONE = "Invalid timezone";
+    public const CONTACT_LOCATION = "timezone";
+    public const UNKNOWN_NOTIFICATION_OPTIONS = "Invalid notifications options";
 
     protected $register;
     public static $aDepends = array(
@@ -133,7 +132,7 @@ class CentreonContact extends CentreonObject
             'contact_activate' => '1',
             'contact_register' => '1'
         );
-        $this->insertParams = array(
+        $this->insertParams = [
             'contact_name',
             'contact_alias',
             'contact_email',
@@ -142,12 +141,13 @@ class CentreonContact extends CentreonObject
             'contact_oreon',
             'contact_lang',
             'contact_auth_type'
-        );
+        ];
         $this->exportExcludedParams = array_merge(
             $this->insertParams,
             array(
                 $this->object->getPrimaryKey(),
-                "contact_register"
+                "contact_register",
+                "ar_id"
             )
         );
         $this->action = "CONTACT";
@@ -199,7 +199,7 @@ class CentreonContact extends CentreonObject
         if (!$locale || $locale == "") {
             return true;
         }
-        if (strtolower($locale) == "en_us" || strtolower($locale) == "browser") {
+        if (strtolower($locale) === "en_us.utf-8" || strtolower($locale) === "browser") {
             return true;
         }
         $centreonDir = realpath(__DIR__ . "/../../../");
@@ -295,10 +295,19 @@ class CentreonContact extends CentreonObject
         if ($addParams['contact_oreon'] == '') {
             $addParams['contact_oreon'] = '1';
         }
-        if ($this->checkLang($params[self::ORDER_LANG]) == false) {
+        if (
+            empty($params[self::ORDER_LANG])
+            || strtolower($params[self::ORDER_LANG]) === "browser"
+            || strtoupper(substr($params[self::ORDER_LANG], -6)) === '.UTF-8'
+        ) {
+            $completeLanguage = $params[self::ORDER_LANG];
+        } else {
+            $completeLanguage = $params[self::ORDER_LANG] . '.UTF-8';
+        }
+        if ($this->checkLang($completeLanguage) == false) {
             throw new CentreonClapiException(self::UNKNOWN_LOCALE);
         }
-        $addParams['contact_lang'] = $params[self::ORDER_LANG];
+        $addParams['contact_lang'] = $completeLanguage;
         $addParams['contact_auth_type'] = $params[self::ORDER_AUTHTYPE];
         $this->params = array_merge($this->params, $addParams);
         $this->checkParameters();
@@ -354,10 +363,20 @@ class CentreonContact extends CentreonObject
                 } elseif ($params[1] == "authtype") {
                     $params[1] = "auth_type";
                 } elseif ($params[1] == "lang" || $params[1] == "language" || $params[1] == "locale") {
-                    if ($this->checkLang($params[2]) == false) {
+                    if (
+                        empty($params[2])
+                        || strtoupper(substr($params[2], -6)) === '.UTF-8'
+                        || strtolower($params[2]) === "browser"
+                    ) {
+                        $completeLanguage = $params[2];
+                    } else {
+                        $completeLanguage = $params[2] . '.UTF-8';
+                    }
+                    if ($this->checkLang($completeLanguage) == false) {
                         throw new CentreonClapiException(self::UNKNOWN_LOCALE);
                     }
                     $params[1] = "lang";
+                    $params[2] = $completeLanguage;
                 } elseif ($params[1] == "password") {
                     $params[1] = "passwd";
                     $params[2] = md5(trim($params[2]));
@@ -381,7 +400,13 @@ class CentreonContact extends CentreonObject
                 if (
                     !in_array(
                         $params[1],
-                        ['reach_api', 'reach_api_rt', 'default_page', 'ar_id', 'show_deprecated_pages']
+                        [
+                            'reach_api',
+                            'reach_api_rt',
+                            'default_page',
+                            'show_deprecated_pages',
+                            'enable_one_click_export'
+                        ]
                     )
                 ) {
                     $params[1] = "contact_" . $params[1];
@@ -538,7 +563,9 @@ class CentreonContact extends CentreonObject
                             $value,
                             $this->timezoneObject->getUniqueLabelField()
                         );
-                        $value = $result[$this->timezoneObject->getUniqueLabelField()];
+                        if ($result !== false) {
+                            $value = $result[$this->timezoneObject->getUniqueLabelField()];
+                        }
                     }
                     $value = CentreonUtils::convertLineBreak($value);
                     echo $this->action . $this->delim

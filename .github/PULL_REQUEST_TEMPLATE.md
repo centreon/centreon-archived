@@ -15,10 +15,10 @@ Please include a short resume of the changes and what is the purpose of PR. Any 
 
 ## Target serie
 
-- [ ] 19.04.x
-- [ ] 19.10.x
-- [ ] 20.04.x
-- [ ] 20.10.x (master)
+- [ ] 20.10.x
+- [ ] 21.04.x
+- [ ] 21.10.x
+- [ ] 22.04.x (master)
 
 <h2> How this pull request can be tested ? </h2>
 
@@ -28,7 +28,7 @@ Any **relevant details** of the configuration to perform the test should be adde
 
 ## Checklist
 
-- [ ] I followed the **coding style guidelines** provided by Centreon
+- [ ] I have followed the **coding style guidelines** provided by Centreon
 - [ ] I have commented my code, especially new **classes**, **functions** or any **legacy code** modified. (***docblock***)
 - [ ] I have commented my code, especially **hard-to-understand areas** of the PR.
 - [ ] I have made corresponding changes to the **documentation**.

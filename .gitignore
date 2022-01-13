@@ -36,6 +36,7 @@ config/centreon.config.php
 
 #continuous integration and testing files
 *-dev.yml
+.phpunit.result.cache
 coverage-report/
 centreon-build/
 secret
@@ -63,3 +64,14 @@ src/Centreon*
 www/modules/centreon-*
 www/widgets
 !www/widgets/require.php
+
+.DS_store
+
+# Windows thumbnail cache files
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+
+.lighthouseci
+manifest.json

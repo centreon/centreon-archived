@@ -8,3 +8,7 @@ Centreon\Domain\Monitoring\ResourceLinks:
             type: Centreon\Domain\Monitoring\ResourceLinksEndpoints
             groups:
                 - 'resource_status_main'
+        externals:
+            type: Centreon\Domain\Monitoring\ResourceExternalLinks
+            groups:
+                - 'resource_status_main'

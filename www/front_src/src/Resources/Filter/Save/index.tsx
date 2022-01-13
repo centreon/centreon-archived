@@ -1,7 +1,19 @@
 import * as React from 'react';
 
-import { equals, or, and, not, isEmpty, omit } from 'ramda';
+import {
+  or,
+  and,
+  not,
+  isEmpty,
+  omit,
+  find,
+  propEq,
+  pipe,
+  symmetricDifference,
+} from 'ramda';
 import { useTranslation } from 'react-i18next';
+import { useAtomValue, useUpdateAtom } from 'jotai/utils';
+import { useAtom } from 'jotai';
 
 import {
   Menu,
@@ -11,7 +23,7 @@ import {
 } from '@material-ui/core';
 import SettingsIcon from '@material-ui/icons/Settings';
 
-import { IconButton, useRequest, useSnackbar, Severity } from '@centreon/ui';
+import { IconButton, useRequest, useSnackbar } from '@centreon/ui';
 
 import {
   labelSaveFilter,
@@ -21,19 +33,28 @@ import {
   labelFilterSaved,
   labelEditFilters,
 } from '../../translatedLabels';
+import { listCustomFilters, updateFilter as updateFilterRequest } from '../api';
 import { Filter } from '../models';
-import { useResourceContext } from '../../Context';
+import {
+  applyFilterDerivedAtom,
+  currentFilterAtom,
+  customFiltersAtom,
+  editPanelOpenAtom,
+  filtersDerivedAtom,
+  sendingFilterAtom,
+} from '../filterAtoms';
+import { listCustomFiltersDecoder } from '../api/decoders';
+
 import CreateFilterDialog from './CreateFilterDialog';
-import { updateFilter as updateFilterRequest } from '../api';
-import useFilterModels from '../useFilterModels';
-import useAdapters from '../api/adapters';
+
+const areValuesEqual = pipe(symmetricDifference, isEmpty) as (a, b) => boolean;
 
 const useStyles = makeStyles((theme) => ({
   save: {
+    alignItems: 'center',
     display: 'grid',
     gridAutoFlow: 'column',
     gridGap: theme.spacing(2),
-    alignItems: 'center',
   },
 }));
 
@@ -41,13 +62,15 @@ const SaveFilterMenu = (): JSX.Element => {
   const classes = useStyles();
 
   const { t } = useTranslation();
-  const { isCustom } = useFilterModels();
-  const { toRawFilter, toFilter } = useAdapters();
 
   const [menuAnchor, setMenuAnchor] = React.useState<Element | null>(null);
-  const [createFilterDialogOpen, setCreateFilterDialogOpen] = React.useState(
-    false,
-  );
+  const [createFilterDialogOpen, setCreateFilterDialogOpen] =
+    React.useState(false);
+
+  const { sendRequest: sendListCustomFiltersRequest, sending } = useRequest({
+    decoder: listCustomFiltersDecoder,
+    request: listCustomFilters,
+  });
 
   const {
     sendRequest: sendUpdateFilterRequest,
@@ -56,18 +79,14 @@ const SaveFilterMenu = (): JSX.Element => {
     request: updateFilterRequest,
   });
 
-  const { showMessage } = useSnackbar();
+  const [customFilters, setCustomFilters] = useAtom(customFiltersAtom);
+  const currentFilter = useAtomValue(currentFilterAtom);
+  const filters = useAtomValue(filtersDerivedAtom);
+  const applyFilter = useUpdateAtom(applyFilterDerivedAtom);
+  const setEditPanelOpen = useUpdateAtom(editPanelOpenAtom);
+  const setSendingFilter = useUpdateAtom(sendingFilterAtom);
 
-  const {
-    filter,
-    updatedFilter,
-    setFilter,
-    setHostGroups,
-    setServiceGroups,
-    loadCustomFilters,
-    customFilters,
-    setEditPanelOpen,
-  } = useResourceContext();
+  const { showSuccessMessage } = useSnackbar();
 
   const openSaveFilterMenu = (event: React.MouseEvent): void => {
     setMenuAnchor(event.currentTarget);
@@ -86,39 +105,37 @@ const SaveFilterMenu = (): JSX.Element => {
     setCreateFilterDialogOpen(false);
   };
 
+  const loadCustomFilters = (): Promise<Array<Filter>> => {
+    return sendListCustomFiltersRequest().then(({ result }) => {
+      setCustomFilters(result.map(omit(['order'])));
+
+      return result;
+    });
+  };
+
   const loadFiltersAndUpdateCurrent = (newFilter: Filter): void => {
     closeCreateFilterDialog();
 
-    loadCustomFilters().then(() => {
-      setFilter(newFilter);
-
-      // update criterias with deletable objects
-      setHostGroups(newFilter.criterias.hostGroups);
-      setServiceGroups(newFilter.criterias.serviceGroups);
+    loadCustomFilters?.().then(() => {
+      applyFilter(newFilter);
     });
   };
 
   const confirmCreateFilter = (newFilter: Filter): void => {
-    showMessage({
-      message: t(labelFilterCreated),
-      severity: Severity.success,
-    });
+    showSuccessMessage(t(labelFilterCreated));
 
-    loadFiltersAndUpdateCurrent(newFilter);
+    loadFiltersAndUpdateCurrent(omit(['order'], newFilter));
   };
 
   const updateFilter = (): void => {
     sendUpdateFilterRequest({
-      id: updatedFilter.id,
-      rawFilter: omit(['id'], toRawFilter(updatedFilter)),
+      filter: omit(['id'], currentFilter),
+      id: currentFilter.id,
     }).then((savedFilter) => {
       closeSaveFilterMenu();
-      showMessage({
-        message: t(labelFilterSaved),
-        severity: Severity.success,
-      });
+      showSuccessMessage(t(labelFilterSaved));
 
-      loadFiltersAndUpdateCurrent(toFilter(savedFilter));
+      loadFiltersAndUpdateCurrent(omit(['order'], savedFilter));
     });
   };
 
@@ -128,14 +145,19 @@ const SaveFilterMenu = (): JSX.Element => {
   };
 
   const isFilterDirty = (): boolean => {
-    if (!isCustom(filter)) {
-      return false;
-    }
+    const retrievedFilter = find(propEq('id', currentFilter.id), filters);
 
-    return !equals(filter, updatedFilter);
+    return !areValuesEqual(
+      currentFilter.criterias,
+      retrievedFilter?.criterias || [],
+    );
   };
 
-  const isNewFilter = filter.id === '';
+  React.useEffect(() => {
+    setSendingFilter(sending);
+  }, [sending]);
+
+  const isNewFilter = currentFilter.id === '';
   const canSaveFilter = and(isFilterDirty(), not(isNewFilter));
   const canSaveFilterAsNew = or(isFilterDirty(), isNewFilter);
 
@@ -145,14 +167,14 @@ const SaveFilterMenu = (): JSX.Element => {
         <SettingsIcon />
       </IconButton>
       <Menu
-        anchorEl={menuAnchor}
         keepMounted
+        anchorEl={menuAnchor}
         open={Boolean(menuAnchor)}
         onClose={closeSaveFilterMenu}
       >
         <MenuItem
-          onClick={openCreateFilterDialog}
           disabled={!canSaveFilterAsNew}
+          onClick={openCreateFilterDialog}
         >
           {t(labelSaveAsNew)}
         </MenuItem>
@@ -162,16 +184,16 @@ const SaveFilterMenu = (): JSX.Element => {
             {sendingUpdateFilterRequest && <CircularProgress size={15} />}
           </div>
         </MenuItem>
-        <MenuItem onClick={openEditPanel} disabled={isEmpty(customFilters)}>
+        <MenuItem disabled={isEmpty(customFilters)} onClick={openEditPanel}>
           {t(labelEditFilters)}
         </MenuItem>
       </Menu>
       {createFilterDialogOpen && (
         <CreateFilterDialog
           open
-          onCreate={confirmCreateFilter}
-          filter={updatedFilter}
+          filter={currentFilter}
           onCancel={closeCreateFilterDialog}
+          onCreate={confirmCreateFilter}
         />
       )}
     </>

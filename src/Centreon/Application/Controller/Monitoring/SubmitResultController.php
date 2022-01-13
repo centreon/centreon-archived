@@ -58,8 +58,8 @@ class SubmitResultController extends AbstractController
      *
      * @param Request $request
      * @param string $jsonValidatorFile
-     * @return array $results
-     * @throws InvalidArgumentException
+     * @return array<string,mixed> $results
+     * @throws \InvalidArgumentException
      */
     private function validateAndRetrievePostData(Request $request, string $jsonValidatorFile): array
     {
@@ -96,7 +96,7 @@ class SubmitResultController extends AbstractController
      * by the current user.
      *
      * @param Contact $contact
-     * @param array $resources
+     * @param array<string,mixed> $resources
      * @return bool
      */
     private function hasSubmitResultRightsForResources(Contact $contact, array $resources): bool
@@ -115,6 +115,7 @@ class SubmitResultController extends AbstractController
             if (
                 ($resource['type'] === ResourceEntity::TYPE_HOST && $hasHostRights)
                 || ($resource['type'] === ResourceEntity::TYPE_SERVICE && $hasServiceRights)
+                || ($resource['type'] === ResourceEntity::TYPE_META && $hasServiceRights)
             ) {
                 continue;
             }
@@ -169,11 +170,15 @@ class SubmitResultController extends AbstractController
 
             try {
                 if ($submitResource['type'] === ResourceEntity::TYPE_SERVICE) {
+                    $result->setParentResourceId($submitResource['parent']['id']);
                     $this->submitResultService
                         ->submitServiceResult($result);
                 } elseif ($submitResource['type'] === ResourceEntity::TYPE_HOST) {
                     $this->submitResultService
                         ->submitHostResult($result);
+                } elseif ($submitResource['type'] === ResourceEntity::TYPE_META) {
+                    $this->submitResultService
+                        ->submitMetaServiceResult($result);
                 }
             } catch (EntityNotFoundException $e) {
                 throw $e;

@@ -1,15 +1,11 @@
+/* eslint-disable hooks/sort */
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
+import { prop, isEmpty, path, isNil } from 'ramda';
+import { useAtomValue } from 'jotai/utils';
 
-import {
-  makeStyles,
-  Paper,
-  Typography,
-  CircularProgress,
-  Button,
-} from '@material-ui/core';
-import IconRefresh from '@material-ui/icons/Refresh';
+import { makeStyles, Paper } from '@material-ui/core';
 
 import {
   useRequest,
@@ -18,72 +14,54 @@ import {
   SearchParameter,
 } from '@centreon/ui';
 
-import { prop, isEmpty, cond, always, T, isNil, concat, path } from 'ramda';
+import { labelEvent } from '../../../translatedLabels';
+import { TabProps } from '..';
+import InfiniteScroll from '../../InfiniteScroll';
+import TimePeriodButtonGroup from '../../../Graph/Performance/TimePeriods';
+import {
+  customTimePeriodAtom,
+  getDatesDerivedAtom,
+  selectedTimePeriodAtom,
+} from '../../../Graph/Performance/TimePeriods/timePeriodAtoms';
 
 import { types } from './Event';
 import { TimelineEvent, Type } from './models';
 import { listTimelineEventsDecoder } from './api/decoders';
 import { listTimelineEvents } from './api';
-import {
-  labelEvent,
-  labelNoResultsFound,
-  labelRefresh,
-} from '../../../translatedLabels';
 import Events from './Events';
 import LoadingSkeleton from './LoadingSkeleton';
-import { TabProps } from '..';
 
 type TimelineListing = ListingModel<TimelineEvent>;
 
 const useStyles = makeStyles((theme) => ({
-  container: {
-    width: '100%',
-    height: '100%',
-    display: 'grid',
-    alignItems: 'center',
-    justifyItems: 'center',
-    alignContent: 'flex-start',
-    gridGap: theme.spacing(1),
-  },
-  filterContainer: {
-    width: '100%',
-  },
-  filterAutocomplete: {
-    margin: theme.spacing(2),
-  },
-  noResultContainer: {
-    padding: theme.spacing(1),
-  },
-  events: {
-    display: 'grid',
-    gridAutoFlow: 'row',
-    gridGap: theme.spacing(1),
-    width: '100%',
+  filter: {
+    padding: theme.spacing(2),
+    paddingTop: 0,
   },
 }));
 
 const TimelineTab = ({ details }: TabProps): JSX.Element => {
   const classes = useStyles();
-
   const { t } = useTranslation();
+
+  const getIntervalDates = useAtomValue(getDatesDerivedAtom);
+  const selectedTimePeriod = useAtomValue(selectedTimePeriodAtom);
+  const customTimePeriod = useAtomValue(customTimePeriodAtom);
+
+  const [start, end] = getIntervalDates(selectedTimePeriod);
 
   const translatedTypes = types.map((type) => ({
     ...type,
     name: t(type.name),
   })) as Array<Type>;
 
-  const [timeline, setTimeline] = React.useState<Array<TimelineEvent>>();
-  const [selectedTypes, setSelectedTypes] = React.useState<Array<Type>>(
-    translatedTypes,
-  );
-  const [page, setPage] = React.useState(1);
-  const [total, setTotal] = React.useState(0);
-  const [limit] = React.useState(30);
-  const [loadingMoreEvents, setLoadingMoreEvents] = React.useState(false);
+  const [selectedTypes, setSelectedTypes] =
+    React.useState<Array<Type>>(translatedTypes);
+  const limit = 30;
 
   const { sendRequest, sending } = useRequest<TimelineListing>({
-    request: listTimelineEvents,
     decoder: listTimelineEventsDecoder,
+    request: listTimelineEvents,
   });
 
   const getSearch = (): SearchParameter | undefined => {
@@ -92,6 +70,15 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
     }
 
     return {
+      conditions: [
+        {
+          field: 'date',
+          values: {
+            $gt: start,
+            $lt: end,
+          },
+        },
+      ],
       lists: [
         {
           field: 'type',
@@ -103,135 +90,60 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
 
   const timelineEndpoint = path(['links', 'endpoints', 'timeline'], details);
 
-  const listTimeline = (
-    { atPage } = {
-      atPage: page,
-    },
-  ): Promise<TimelineListing> => {
+  const listTimeline = ({
+    atPage,
+  }: {
+    atPage?: number;
+  }): Promise<TimelineListing> => {
     return sendRequest({
       endpoint: timelineEndpoint,
       parameters: {
-        page: atPage,
         limit,
+        page: atPage,
         search: getSearch(),
       },
-    })
-      .then((retrievedListing) => {
-        const { meta } = retrievedListing;
-        setTotal(meta.total);
-
-        return retrievedListing;
-      })
-      .finally(() => {
-        setLoadingMoreEvents(false);
-      });
-  };
-
-  const reload = (): void => {
-    setPage(1);
-    listTimeline({ atPage: 1 }).then(({ result }) => {
-      setTimeline(result);
     });
   };
-
-  React.useEffect(() => {
-    if (isNil(details)) {
-      setTimeline(undefined);
-    }
-
-    if (page !== 1 || isNil(details)) {
-      return;
-    }
-
-    reload();
-  }, [details]);
-
-  React.useEffect(() => {
-    if (isNil(timeline)) {
-      return;
-    }
-
-    listTimeline().then(({ result }) => {
-      setTimeline(concat(timeline, result));
-    });
-  }, [page]);
-
-  React.useEffect(() => {
-    if (isNil(details) || isNil(timeline)) {
-      return;
-    }
-
-    setTimeline(undefined);
-
-    reload();
-  }, [selectedTypes]);
 
   const changeSelectedTypes = (_, typeIds): void => {
     setSelectedTypes(typeIds);
   };
 
-  const loadMoreEvents = (): void => {
-    setLoadingMoreEvents(true);
-    setPage(page + 1);
-  };
-
   return (
-    <div className={classes.container}>
-      <Paper className={classes.filterContainer}>
-        <div className={classes.filterAutocomplete}>
+    <InfiniteScroll
+      details={details}
+      filter={
+        <Paper className={classes.filter}>
+          <TimePeriodButtonGroup disableGraphOptions disablePaper />
           <MultiAutocompleteField
-            label={t(labelEvent)}
-            onChange={changeSelectedTypes}
-            value={selectedTypes}
-            options={translatedTypes}
             fullWidth
+            label={t(labelEvent)}
             limitTags={3}
+            options={translatedTypes}
+            value={selectedTypes}
+            onChange={changeSelectedTypes}
           />
-        </div>
-      </Paper>
-      <div className={classes.events}>
-        {cond([
-          [always(isNil(timeline)), always(<LoadingSkeleton />)],
-          [
-            isEmpty,
-            always(
-              <Paper className={classes.noResultContainer}>
-                <Typography align="center" variant="body1">
-                  {t(labelNoResultsFound)}
-                </Typography>
-              </Paper>,
-            ),
-          ],
-          [
-            T,
-            always(
-              <>
-                {page > 1 && (
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    size="small"
-                    startIcon={<IconRefresh />}
-                    onClick={reload}
-                  >
-                    {labelRefresh}
-                  </Button>
-                )}
-                <Events
-                  timeline={timeline as Array<TimelineEvent>}
-                  total={total}
-                  limit={limit}
-                  page={page}
-                  loading={sending}
-                  onLoadMore={loadMoreEvents}
-                />
-              </>,
-            ),
-          ],
-        ])(timeline)}
-      </div>
-      {loadingMoreEvents && <CircularProgress />}
-    </div>
+        </Paper>
+      }
+      limit={limit}
+      loading={sending}
+      loadingSkeleton={<LoadingSkeleton />}
+      reloadDependencies={[
+        selectedTypes,
+        selectedTimePeriod?.id || customTimePeriod,
+        timelineEndpoint,
+      ]}
+      sendListingRequest={isNil(timelineEndpoint) ? undefined : listTimeline}
+    >
+      {({ infiniteScrollTriggerRef, entities }): JSX.Element => {
+        return (
+          <Events
+            infiniteScrollTriggerRef={infiniteScrollTriggerRef}
+            timeline={entities}
+          />
+        );
+      }}
+    </InfiniteScroll>
   );
 };
 

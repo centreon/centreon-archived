@@ -4,6 +4,11 @@
 @import "../helpers";
 
 .form {
+  &-container {
+    margin: 16px;
+    padding: 32px;
+  }
+
   input, select {
     padding: 4px;
     font-size: 11px !important;
@@ -23,11 +28,7 @@
     .invalid-feedback {
       text-align: right;
       padding-top: 7px;
-      .field__msg {
-        font-size: 10px;
-        font-family: $primary-font-light;
-        color: #d0021b;
-      }
+      color: #d0021b;
     }
     .css-1aya2g8,
     .css-2o5izw {
@@ -43,7 +44,6 @@
     }
   }
   &-status {
-    font-family: $primary-font-regular;
     &.valid {
       color: #acd174;
     }
@@ -56,14 +56,10 @@
     color: #d0021b;
     display: block;
     text-align: center;
-    font-family: $primary-font-regular;
   }
   &-group {
     margin-bottom: 15px;
     label {
-      font-size: 10px;
-      font-family: $primary-font-light;
-      color: rgb(36,47,58);
       display: block;
       margin-bottom: 5px;
     }
@@ -159,7 +155,6 @@
       height: 15px !important;
       content: "";
       top: -1px !important;
-      background: url("../../../img/radio-buttons-stripe.png") no-repeat;
       background-position: -8px -8px;
       border-radius: 50%;
       pointer-events: none;
@@ -189,7 +184,6 @@
   }
 }
 .custom-radio .form-check-input:checked~.custom-control-label:after {
-  background: url("../../../img/radio-buttons-stripe.png") no-repeat;
   background-position: -8px -56px;
 }
 .custom-radio .form-check-input:checked~.custom-control-label:before {
@@ -211,7 +205,6 @@
       height: 15px!important;
       border-radius: 0;
       content: "";
-      background: url("../../../img/checkbox-buttons-stripe.png") no-repeat;
       background-position: -8px -16px;
     }
     &:after {
@@ -237,7 +230,6 @@
     content: "";
     width: 23px;
     height: 23px;
-    background: url("../../../img/icons/icon-error-message.png") center no-repeat;
     position: absolute;
     top: -20px;
     left: 0;
@@ -249,7 +241,6 @@
 }
 
 input[type=checkbox]:checked ~.custom-control-label::after {
-  background: url("../../../img/checkbox-buttons-stripe.png") no-repeat;
   background-position: -8px -72px;
 }
 input[type=checkbox]:checked ~.custom-control-label::before {
@@ -258,6 +249,5 @@ input[type=checkbox]:checked ~.custom-control-label::before {
 .css-10odw4q,
 .css-1492t68,
 .css-10nd86i {
-  font-family: $primary-font-regular;
   font-size: 13px;
 }

@@ -27,6 +27,7 @@ use Centreon\Domain\Monitoring\Host;
 use Centreon\Domain\Downtime\Downtime;
 use Centreon\Domain\Monitoring\Service;
 use Centreon\Domain\Engine\EngineException;
+use Centreon\Domain\Monitoring\Comment\Comment;
 use Centreon\Domain\Acknowledgement\Acknowledgement;
 use JMS\Serializer\Exception\ValidationFailedException;
 use Centreon\Domain\Monitoring\SubmitResult\SubmitResult;
@@ -145,4 +146,22 @@ interface EngineServiceInterface extends ContactFilterInterface
      * @throws \Exception
      */
     public function submitServiceResult(SubmitResult $result, Service $service): void;
+
+    /**
+     * Add a comment to a monitored service
+     *
+     * @param Comment $comment
+     * @param Service $service
+     * @throws \Exception
+     */
+    public function addServiceComment(Comment $comment, Service $service): void;
+
+    /**
+     * Add a comment to a monitored host
+     *
+     * @param Comment $comment
+     * @param Host $host
+     * @throws \Exception
+     */
+    public function addHostComment(Comment $comment, Host $host): void;
 }

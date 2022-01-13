@@ -1,47 +1,80 @@
-import subHours from 'date-fns/subHours';
-import subDays from 'date-fns/subDays';
+import dayjs from 'dayjs';
 import { find, propEq } from 'ramda';
 
-import { timeFormat, dateTimeFormat, dateFormat } from '../../../Graph/format';
+import { timeFormat, dateFormat } from '@centreon/ui';
+
 import {
-  labelLast24h,
-  labelLast7Days,
+  label31Days,
   labelLast31Days,
+  label7Days,
+  labelLast7Days,
+  label1Day,
+  labelLastDay,
 } from '../../../translatedLabels';
 
 export type TimePeriodId = 'last_24_h' | 'last_7_days' | 'last_31_days';
 
 export interface TimePeriod {
-  id: TimePeriodId;
-  name: string;
+  dateTimeFormat: string;
   getStart: () => Date;
-  timeFormat: string;
+  id: TimePeriodId;
+  largeName: string;
+  name: string;
+  timelineEventsLimit: number;
 }
 
-const last24hPeriod: TimePeriod = {
-  name: labelLast24h,
+export interface CustomTimePeriod {
+  end: Date;
+  start: Date;
+  timelineLimit?: number;
+  xAxisTickFormat?: string;
+}
+
+export interface StoredCustomTimePeriod {
+  end: string;
+  start: string;
+}
+
+export enum CustomTimePeriodProperty {
+  end = 'end',
+  start = 'start',
+}
+
+export interface ChangeCustomTimePeriodProps {
+  date: Date;
+  property: CustomTimePeriodProperty;
+}
+
+const lastDayPeriod: TimePeriod = {
+  dateTimeFormat: timeFormat,
+  getStart: (): Date => dayjs(Date.now()).subtract(24, 'hour').toDate(),
   id: 'last_24_h',
-  getStart: (): Date => subHours(Date.now(), 24),
-  timeFormat,
+  largeName: labelLastDay,
+  name: label1Day,
+  timelineEventsLimit: 20,
 };
 
 const last7Days: TimePeriod = {
-  name: labelLast7Days,
+  dateTimeFormat: dateFormat,
+  getStart: (): Date => dayjs(Date.now()).subtract(7, 'day').toDate(),
   id: 'last_7_days',
-  getStart: (): Date => subDays(Date.now(), 7),
-  timeFormat: dateTimeFormat,
+  largeName: labelLast7Days,
+  name: label7Days,
+  timelineEventsLimit: 100,
 };
 
 const last31Days: TimePeriod = {
-  name: labelLast31Days,
+  dateTimeFormat: dateFormat,
+  getStart: (): Date => dayjs(Date.now()).subtract(31, 'day').toDate(),
   id: 'last_31_days',
-  getStart: (): Date => subDays(Date.now(), 31),
-  timeFormat: dateFormat,
+  largeName: labelLast31Days,
+  name: label31Days,
+  timelineEventsLimit: 500,
 };
 
-const timePeriods: Array<TimePeriod> = [last24hPeriod, last7Days, last31Days];
+const timePeriods: Array<TimePeriod> = [lastDayPeriod, last7Days, last31Days];
 
 const getTimePeriodById = (id: TimePeriodId): TimePeriod =>
   find<TimePeriod>(propEq('id', id))(timePeriods) as TimePeriod;
 
-export { timePeriods, getTimePeriodById, last24hPeriod };
+export { timePeriods, getTimePeriodById, lastDayPeriod, last7Days, last31Days };

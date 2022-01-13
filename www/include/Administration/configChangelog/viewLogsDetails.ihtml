@@ -8,7 +8,7 @@
 </table>
 <table class="ListTable">
     <tr class="ListHeader">
-        <td class="ListColHeaderCenter" style="white-space:nowrap;">Changes for ...</td>           
+        <td class="ListColHeaderCenter" style="white-space:nowrap;">Changes for {$action[0].object_name}</td>
     </tr>
     {assign var='classStyle' value='list_two'}
     {assign var='firstFlag' value=1}
@@ -34,7 +34,7 @@
                             <td class="ListColHeaderCenter" style="white-space:nowrap;">{$after}</td>
                         </tr>
                         {/if}
-                        {assign var='cpt' value=0}                      
+                        {assign var='cpt' value=0}
                         {foreach item=modif from=$modification}
                             {if $modif.action_log_id == $list.action_log_id}
                             <tr>

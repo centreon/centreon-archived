@@ -34,7 +34,7 @@ class CommandRepositoryTest extends TestCase
 {
 
     /**
-     * @var array
+     * @var array<int, array<string, array<int, array<string, int|string>>|string>>
      */
     protected $datasets = [];
 
@@ -46,7 +46,7 @@ class CommandRepositoryTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $db = new CentreonDB();
         $this->datasets = [
@@ -96,16 +96,21 @@ class CommandRepositoryTest extends TestCase
      *
      * @covers \CentreonCommand\Domain\Repository\CommandRepository::getPaginationList
      */
-    public function testGetPaginationList()
+    public function testGetPaginationList(): void
     {
         $result = $this->repository->getPaginationList();
+        $command = new Command();
+        if (array_key_exists('id', $result[0]) && array_key_exists('name', $result[0])) {
+            $command->setId($result[0]['id']);
+            $command->setName($result[0]['name']);
+        }
+
         $data = $this->datasets[0]['data'][0];
+        $expectedCommand = new Command();
+        $expectedCommand->setId($data['id']);
+        $expectedCommand->setName($data['name']);
 
-        $entity = new Command();
-        $entity->setId($data['id']);
-        $entity->setName($data['name']);
-
-        $this->assertEquals([$entity], $result);
+        $this->assertEquals($expectedCommand, $command);
     }
 
     /**
@@ -113,7 +118,7 @@ class CommandRepositoryTest extends TestCase
      *
      * @covers \CentreonCommand\Domain\Repository\CommandRepository::getPaginationList
      */
-    public function testGetPaginationListWithArguments()
+    public function testGetPaginationListWithArguments(): void
     {
         $filters = [
             'search' => 'name',
@@ -124,13 +129,18 @@ class CommandRepositoryTest extends TestCase
         $offset = 0;
 
         $result = $this->repository->getPaginationList($filters, $limit, $offset);
+        $command = new Command();
+        if (array_key_exists('id', $result[0]) && array_key_exists('name', $result[0])) {
+            $command->setId($result[0]['id']);
+            $command->setName($result[0]['name']);
+        }
+
         $data = $this->datasets[1]['data'][0];
+        $expectedCommand = new Command();
+        $expectedCommand->setId($data['id']);
+        $expectedCommand->setName($data['name']);
 
-        $entity = new Command();
-        $entity->setId($data['id']);
-        $entity->setName($data['name']);
-
-        $this->assertEquals([$entity], $result);
+        $this->assertEquals($expectedCommand, $command);
     }
 
     /**
@@ -138,7 +148,7 @@ class CommandRepositoryTest extends TestCase
      *
      * @covers \CentreonCommand\Domain\Repository\CommandRepository::getPaginationListTotal
      */
-    public function testGetPaginationListTotal()
+    public function testGetPaginationListTotal(): void
     {
         $total = $this->datasets[2]['data'][0]['number'];
         $result = $this->repository->getPaginationListTotal();

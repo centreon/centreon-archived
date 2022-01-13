@@ -51,7 +51,11 @@ class Broker extends AbstractObjectJSON
         command_file,
         cache_directory,
         stats_activate,
-        daemon
+        daemon,
+        log_directory,
+        log_filename,
+        log_max_size,
+        pool_size
     ';
     protected $attributes_select_parameters = '
         config_group,
@@ -82,6 +86,7 @@ class Broker extends AbstractObjectJSON
     protected $stmt_broker_parameters = null;
     protected $stmt_engine_parameters = null;
     protected $cacheExternalValue = null;
+    protected $cacheLogValue = null;
 
     private function getExternalValues()
     {
@@ -102,6 +107,26 @@ class Broker extends AbstractObjectJSON
         $stmt->execute();
         while (($row = $stmt->fetch(PDO::FETCH_ASSOC))) {
             $this->cacheExternalValue[$row['name']] = $row['external'];
+        }
+    }
+
+    private function getLogsValues(): void
+    {
+        if (!is_null($this->cacheLogValue)) {
+            return;
+        }
+        $this->cacheLogValue = array();
+        $stmt = $this->backend_instance->db->prepare("
+            SELECT relation.`id_centreonbroker`, log.`name`, lvl.`name` as level
+            FROM `cfg_centreonbroker_log` relation
+            INNER JOIN `cb_log` log
+                ON relation.`id_log` = log.`id`
+            INNER JOIN `cb_log_level` lvl
+                ON relation.`id_level` = lvl.`id`
+        ");
+        $stmt->execute();
+        while (($row = $stmt->fetch(PDO::FETCH_ASSOC))) {
+            $this->cacheLogValue[$row['id_centreonbroker']][$row['name']] = $row['level'];
         }
     }
 
@@ -127,6 +152,7 @@ class Broker extends AbstractObjectJSON
               $this->attributes_select_parameters
             FROM cfg_centreonbroker_info
             WHERE config_id = :config_id
+            AND config_group <> 'logger'
             ORDER BY config_group, config_group_id
             ");
         }
@@ -154,6 +180,9 @@ class Broker extends AbstractObjectJSON
             $object['event_queue_max_size'] = (int)$row['event_queue_max_size'];
             $object['command_file'] = (string) $row['command_file'];
             $object['cache_directory'] = (string) $cache_directory;
+            if (!empty($row['pool_size'])) {
+                $object['pool_size'] = (int)$row['pool_size'];
+            }
 
             if ($row['daemon'] == '1') {
                 $watchdog['cbd'][] = [
@@ -167,6 +196,14 @@ class Broker extends AbstractObjectJSON
             $this->stmt_broker_parameters->bindParam(':config_id', $row['config_id'], PDO::PARAM_INT);
             $this->stmt_broker_parameters->execute();
             $resultParameters = $this->stmt_broker_parameters->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_ASSOC);
+
+            //logger
+            $object['log']['directory'] = filter_var($row['log_directory'], FILTER_SANITIZE_STRING);
+            $object['log']['filename'] = filter_var($row['log_filename'], FILTER_SANITIZE_STRING);
+            $object['log']['max_size'] = filter_var($row['log_max_size'], FILTER_VALIDATE_INT);
+            $this->getLogsValues();
+            $logs = $this->cacheLogValue[$object['broker_id']];
+            $object['log']['loggers'] = $logs;
 
             // Flow parameters
             foreach ($resultParameters as $key => $value) {

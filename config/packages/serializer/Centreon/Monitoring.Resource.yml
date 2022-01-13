@@ -1,5 +1,13 @@
 Centreon\Domain\Monitoring\Resource:
     virtual_properties:
+        getUuid:
+            name: getUuid
+            serialized_name: uuid
+            type: string
+            groups:
+                - 'resource_main'
+                - 'resource_parent'
+                - 'resource_details'
         getDuration:
             name: getDuration
             serialized_name: duration
@@ -32,6 +40,18 @@ Centreon\Domain\Monitoring\Resource:
                 - 'resource_main'
                 - 'resource_parent'
         name:
+            type: string
+            groups:
+                - 'resource_main'
+                - 'resource_parent'
+                - 'resource_details'
+        alias:
+            type: string
+            groups:
+                - 'resource_main'
+                - 'resource_parent'
+                - 'resource_details'
+        fqdn:
             type: string
             groups:
                 - 'resource_main'
@@ -101,16 +121,8 @@ Centreon\Domain\Monitoring\Resource:
             groups:
                 - 'resource_main'
                 - 'resource_parent'
-        severity:
-            type: Centreon\Domain\Monitoring\ResourceSeverity
-            groups:
-                - 'resource_main'
-        impactedResourcesCount:
+        severityLevel:
             type: int
-            groups:
-                - 'resource_main'
-        actionUrl:
-            type: string
             groups:
                 - 'resource_main'
         chartUrl:
@@ -121,6 +133,10 @@ Centreon\Domain\Monitoring\Resource:
             type: DateTime<'Y-m-d\TH:i:sP'>
             groups:
                 - 'resource_main'
+        lastTimeWithNoIssue:
+            type: DateTime<'Y-m-d\TH:i:sP'>
+            groups:
+                - 'resource_details'  
         lastNotification:
             type: DateTime
             groups:
@@ -157,3 +173,20 @@ Centreon\Domain\Monitoring\Resource:
             type: Centreon\Domain\Acknowledgement\Acknowledgement
             groups:
                 - 'resource_details'
+        groups:
+            type: array<Centreon\Domain\Monitoring\ResourceGroup>
+            groups:
+                - 'resource_details'
+        monitoringServerName:
+            type: string
+            groups:
+                - 'resource_main'
+                - 'resource_details'
+        calculationType:
+            type: string
+            groups:
+                - 'resource_details'
+        notificationEnabled:
+            type: bool
+            groups:
+                - 'resource_main'

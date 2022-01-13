@@ -29,7 +29,7 @@ class UpgraderTest extends \PHPUnit\Framework\TestCase
     private $information;
     private $utils;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->container = new ServiceContainer();
 
@@ -98,7 +98,7 @@ class UpgraderTest extends \PHPUnit\Framework\TestCase
 
         $this->information = $this->getMockBuilder('CentreonLegacy\Core\Widget\Information')
             ->disableOriginalConstructor()
-            ->setMethods(
+            ->onlyMethods(
                 array(
                     'getConfiguration',
                     'getTypes',
@@ -179,7 +179,7 @@ class UpgraderTest extends \PHPUnit\Framework\TestCase
             ->getMock();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->container->terminate();
         $this->container = null;

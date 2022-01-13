@@ -24,6 +24,9 @@ namespace Centreon\Domain\RequestParameters;
 
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 
+/**
+ * @package Centreon\Domain\RequestParameters
+ */
 class RequestParameters implements RequestParametersInterface
 {
     public const NAME_FOR_LIMIT = 'limit';
@@ -164,16 +167,13 @@ class RequestParameters implements RequestParametersInterface
         foreach ($parameters as $key => $value) {
             if ($key === $keyToFind) {
                 return true;
-            } else {
-                if (is_array($value) || is_object($value)) {
-                    $value = (array) $value;
-                    if ($this->hasSearchParameter($keyToFind, $value)) {
-                        return true;
-                    }
+            } elseif (is_array($value) || is_object($value)) {
+                $value = (array) $value;
+                if ($this->hasSearchParameter($keyToFind, $value)) {
+                    return true;
                 }
             }
         }
-
         return false;
     }
 
@@ -200,7 +200,7 @@ class RequestParameters implements RequestParametersInterface
         $names = [];
         $searchIn = function ($data) use (&$searchIn, &$names, $notAllowedKeys) {
             foreach ($data as $key => $value) {
-                if (!in_array($key, $names) && !in_array($key, $notAllowedKeys)) {
+                if (!in_array($key, $names) && !in_array($key, $notAllowedKeys) && !is_int($key)) {
                     $names[] = $key;
                 }
                 if (is_object($value) || is_array($value)) {
@@ -326,6 +326,7 @@ class RequestParameters implements RequestParametersInterface
 
     /**
      * @inheritDoc
+     * @return array<mixed>
      */
     public function getSort(): array
     {
@@ -344,7 +345,7 @@ class RequestParameters implements RequestParametersInterface
             } else {
                 throw new \RestBadRequestException("Bad format for the sort request parameter");
             }
-        } elseif (is_array($sortRequestToAnalyze)) {
+        } else {
             foreach ($sortRequestToAnalyze as $name => $order) {
                 $isMatched = preg_match(
                     '/^([a-zA-Z0-9_.-]*)$/i',

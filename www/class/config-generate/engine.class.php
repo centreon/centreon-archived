@@ -90,6 +90,7 @@ class Engine extends AbstractObject
         service_perfdata_file_processing_interval,
         service_freshness_check_interval,
         host_freshness_check_interval,
+        instance_heartbeat_interval,
         date_format,
         illegal_object_name_chars,
         illegal_macro_output_chars,
@@ -132,7 +133,6 @@ class Engine extends AbstractObject
         log_external_commands,
         log_passive_checks,
         auto_reschedule_checks,
-        use_aggressive_host_checking,
         soft_state_dependencies,
         obsess_over_services,
         obsess_over_hosts,
@@ -229,6 +229,7 @@ class Engine extends AbstractObject
         'grpc_port'
     );
     protected $attributes_default = array(
+        'instance_heartbeat_interval',
         'enable_notifications',
         'execute_service_checks',
         'accept_passive_service_checks',
@@ -246,7 +247,6 @@ class Engine extends AbstractObject
         'log_external_commands',
         'log_passive_checks',
         'auto_reschedule_checks',
-        'use_aggressive_host_checking',
         'soft_state_dependencies',
         'obsess_over_services',
         'obsess_over_hosts',

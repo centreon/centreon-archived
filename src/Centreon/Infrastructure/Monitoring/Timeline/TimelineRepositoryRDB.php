@@ -22,20 +22,21 @@ declare(strict_types=1);
 
 namespace Centreon\Infrastructure\Monitoring\Timeline;
 
-use Centreon\Domain\Contact\Interfaces\ContactInterface;
-use Centreon\Domain\Monitoring\Timeline\Interfaces\TimelineRepositoryInterface;
-use Centreon\Domain\RequestParameters\RequestParameters;
-use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
-use Centreon\Domain\Security\AccessGroup;
-use Centreon\Domain\Entity\EntityCreator;
-use Centreon\Infrastructure\DatabaseConnection;
-use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
-use Centreon\Infrastructure\CentreonLegacyDB\StatementCollector;
 use Centreon\Domain\Monitoring\Host;
 use Centreon\Domain\Monitoring\Service;
-use Centreon\Domain\Monitoring\Timeline\TimelineContact;
+use Centreon\Domain\Entity\EntityCreator;
+use Centreon\Domain\Security\AccessGroup;
 use Centreon\Domain\Monitoring\ResourceStatus;
+use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Domain\Monitoring\Timeline\TimelineEvent;
+use Centreon\Domain\Contact\Interfaces\ContactInterface;
+use Centreon\Domain\Monitoring\Timeline\TimelineContact;
+use Centreon\Domain\RequestParameters\RequestParameters;
+use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
+use Centreon\Infrastructure\CentreonLegacyDB\StatementCollector;
+use Centreon\Infrastructure\RequestParameters\Interfaces\NormalizerInterface;
+use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
+use Centreon\Domain\Monitoring\Timeline\Interfaces\TimelineRepositoryInterface;
 
 /**
  * Database repository for timeline events.
@@ -171,6 +172,23 @@ final class TimelineRepositoryRDB extends AbstractRepositoryDRB implements Timel
         $request .= implode('UNION ALL ', $subRequests);
 
         $request .= ') AS `log` ';
+
+        /**
+         * Here the search filter provides a date in ISO8601.
+         * But the date on which we do filter (stored as ctime) is a timestamp.
+         * Therefore we need to normalize the data provided in the search parameter
+         * and translate it into a timestamp filtering search.
+         */
+        $this->sqlRequestTranslator->addNormalizer(
+            'date',
+            new class implements NormalizerInterface
+            {
+                public function normalize($valueToNormalize)
+                {
+                    return (new \Datetime($valueToNormalize))->getTimestamp();
+                }
+            }
+        );
 
         // Search
         $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
@@ -512,7 +530,7 @@ final class TimelineRepositoryRDB extends AbstractRepositoryDRB implements Timel
             LEFT JOIN `:db`.contact AS `ct` ON ct.contact_alias = c.author
             WHERE c.host_id = :host_id
             AND (c.service_id = " . ($serviceId !== null ? ':service_id)' : '0 OR c.service_id IS NULL)') . "
-            AND source = 1
+            AND source = 1 AND c.deletion_time IS NULL
         ");
 
         $collector->addValue(':host_id', $hostId, \PDO::PARAM_INT);

@@ -10,11 +10,15 @@
 /* eslint-disable import/no-extraneous-dependencies */
 
 import React, { Component } from 'react';
+
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+
+import { Typography } from '@material-ui/core';
+
 import styles from '../../styles/partials/form/_form.scss';
+
 import getErrorMsg from './getErrorMsg';
-import FieldMsg from './FieldMsg';
 
 let fid = 0;
 
@@ -30,16 +34,6 @@ const fieldHoc = (WrapComponent) => {
       ['getId', 'handleFocus', 'handleBlur', 'isInputValue', 'renderError'].map(
         (fName) => (this[fName] = this[fName].bind(this)),
       );
-    }
-
-    getId() {
-      const { name } = this.props.input;
-
-      if (!this.fieldId) {
-        this.fieldId = nextId();
-      }
-
-      return `field-${name}-${this.fieldId}`;
     }
 
     handleFocus(e) {
@@ -64,6 +58,16 @@ const fieldHoc = (WrapComponent) => {
       }
     }
 
+    getId() {
+      const { name } = this.props.input;
+
+      if (!this.fieldId) {
+        this.fieldId = nextId();
+      }
+
+      return `field-${name}-${this.fieldId}`;
+    }
+
     isInputValue(value) {
       return value !== undefined && value !== null && value !== '';
     }
@@ -74,7 +78,9 @@ const fieldHoc = (WrapComponent) => {
       } = this.props;
 
       return touched && error ? (
-        <FieldMsg>{getErrorMsg(error)}</FieldMsg>
+        <Typography style={{ color: '#d0021b' }} variant="body2">
+          {getErrorMsg(error)}
+        </Typography>
       ) : null;
     }
 
@@ -96,11 +102,11 @@ const fieldHoc = (WrapComponent) => {
           {...input}
           {...rest}
           {...extra}
-          label={label}
-          onFocus={this.handleFocus}
-          onBlur={this.handleBlur}
-          id={this.getId()}
           error={this.renderError()}
+          id={this.getId()}
+          label={label}
+          onBlur={this.handleBlur}
+          onFocus={this.handleFocus}
         />
       );
     }
@@ -109,11 +115,11 @@ const fieldHoc = (WrapComponent) => {
   FieldHoc.displayName = `FieldHoc(${WrapComponent.displayName})`;
 
   FieldHoc.propTypes = {
-    meta: PropTypes.object.isRequired,
     input: PropTypes.object.isRequired,
     label: PropTypes.string,
-    onFocus: PropTypes.func,
+    meta: PropTypes.object.isRequired,
     onBlur: PropTypes.func,
+    onFocus: PropTypes.func,
   };
 
   return FieldHoc;

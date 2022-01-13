@@ -28,7 +28,7 @@ class WidgetTest extends \PHPUnit\Framework\TestCase
     private $information;
     private $utils;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->container = new ServiceContainer();
 
@@ -96,7 +96,7 @@ class WidgetTest extends \PHPUnit\Framework\TestCase
 
         $this->information = $this->getMockBuilder('CentreonLegacy\Core\Widget\Information')
             ->disableOriginalConstructor()
-            ->setMethods(array('getConfiguration'))
+            ->onlyMethods(array('getConfiguration'))
             ->getMock();
 
         $this->information->expects($this->any())
@@ -105,7 +105,7 @@ class WidgetTest extends \PHPUnit\Framework\TestCase
 
         $this->utils = $this->getMockBuilder('CentreonLegacy\Core\Utils\Utils')
             ->disableOriginalConstructor()
-            ->setMethods(array('buildPath'))
+            ->onlyMethods(array('buildPath'))
             ->getMock();
 
         $this->utils->expects($this->any())
@@ -113,7 +113,7 @@ class WidgetTest extends \PHPUnit\Framework\TestCase
             ->willReturn('/');
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->container->terminate();
         $this->container = null;

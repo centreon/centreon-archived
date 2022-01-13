@@ -51,17 +51,17 @@ class ExportManifestTest extends TestCase
     protected $version = '18.10';
 
     /**
-     * @var array
+     * @var array<mixed>
      */
     protected $dumpData = [];
 
     /**
      * Set up datasets and mocks
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $parser = $this->getMockBuilder(ExportParserJson::class)
-            ->setMethods([
+            ->onlyMethods([
                 'parse',
                 'dump',
             ])
@@ -83,7 +83,7 @@ class ExportManifestTest extends TestCase
         $this->commitment = new ExportCommitment(1, [2, 3], null, $parser);
         $this->manifest = $this
             ->getMockBuilder(ExportManifest::class)
-            ->setMethods([
+            ->onlyMethods([
                 'getFile',
             ])
             ->setConstructorArgs([
@@ -99,38 +99,17 @@ class ExportManifestTest extends TestCase
     }
 
     /**
-     * @covers \CentreonRemote\Infrastructure\Export\ExportManifest::__construct
-     */
-    public function testConstruct()
-    {
-        $this->assertAttributeInstanceOf(ExportCommitment::class, 'commitment', $this->manifest);
-        $this->assertAttributeEquals($this->version, 'version', $this->manifest);
-    }
-
-    /**
      * @covers \CentreonRemote\Infrastructure\Export\ExportManifest::get
      */
-    public function testGet()
+    public function testGet(): void
     {
         $this->assertNull($this->manifest->get('missing-data'));
     }
 
     /**
-     * @covers \CentreonRemote\Infrastructure\Export\ExportManifest::validate
-     * @expectedException \Exception
+     * @covers \CentreonRemote\Infrastructure\Export\ExportManifest::dump
      */
-    public function testValidate()
-    {
-        $this->manifest->validate();
-
-        // chech $this->files
-        $this->assertAttributeEquals([], 'data', $this->manifest);
-    }
-
-    /**
-     * @ covers \CentreonRemote\Infrastructure\Export\ExportManifest::dump
-     */
-    public function testDump()
+    public function testDump(): void
     {
         $date = date('l jS \of F Y h:i:s A');
         $this->manifest->dump([

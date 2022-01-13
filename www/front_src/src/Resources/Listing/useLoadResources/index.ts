@@ -1,70 +1,175 @@
 import * as React from 'react';
 
-import { useSelector } from 'react-redux';
+import {
+  always,
+  equals,
+  ifElse,
+  isNil,
+  not,
+  pathEq,
+  pathOr,
+  prop,
+} from 'ramda';
+import { useAtomValue, useUpdateAtom } from 'jotai/utils';
+import { useAtom } from 'jotai';
+import { useTranslation } from 'react-i18next';
 
-import { isNil, equals, not } from 'ramda';
-import { useResourceContext } from '../../Context';
+import { getData, SelectEntry, useRequest } from '@centreon/ui';
+import { refreshIntervalAtom } from '@centreon/ui-context';
+
+import { ResourceListing, SortOrder } from '../../models';
+import { searchableFields } from '../../Filter/Criterias/searchQueryLanguage';
+import {
+  clearSelectedResourceDerivedAtom,
+  detailsAtom,
+  selectedResourceDetailsEndpointDerivedAtom,
+  selectedResourceIdAtom,
+  selectedResourceUuidAtom,
+  sendingDetailsAtom,
+} from '../../Details/detailsAtoms';
+import {
+  enabledAutorefreshAtom,
+  limitAtom,
+  listingAtom,
+  pageAtom,
+  sendingAtom,
+} from '../listingAtoms';
+import { listResources } from '../api';
+import {
+  labelNoResourceFound,
+  labelSomethingWentWrong,
+} from '../../translatedLabels';
+import ApiNotFoundMessage from '../ApiNotFoundMessage';
+import { ResourceDetails } from '../../Details/models';
+import {
+  appliedFilterAtom,
+  customFiltersAtom,
+  getCriteriaValueDerivedAtom,
+} from '../../Filter/filterAtoms';
 
 export interface LoadResources {
   initAutorefreshAndLoad: () => void;
 }
 
+const secondSortField = 'last_status_change';
+const defaultSecondSortCriteria = { [secondSortField]: SortOrder.desc };
+
 const useLoadResources = (): LoadResources => {
-  const {
-    sortf,
-    sorto,
-    states,
-    statuses,
-    resourceTypes,
-    hostGroups,
-    serviceGroups,
-    limit,
-    page,
-    setPage,
-    currentSearch,
-    nextSearch,
-    setListing,
-    sendRequest,
-    enabledAutorefresh,
-    customFilters,
-    loadDetails,
-    details,
-    selectedResourceId,
-  } = useResourceContext();
+  const { t } = useTranslation();
+
+  const { sendRequest, sending } = useRequest<ResourceListing>({
+    getErrorMessage: ifElse(
+      pathEq(['response', 'status'], 404),
+      always(ApiNotFoundMessage),
+      pathOr(t(labelSomethingWentWrong), ['response', 'data', 'message']),
+    ),
+    request: listResources,
+  });
+
+  const { sendRequest: sendLoadDetailsRequest, sending: sendingDetails } =
+    useRequest<ResourceDetails>({
+      getErrorMessage: ifElse(
+        pathEq(['response', 'status'], 404),
+        always(t(labelNoResourceFound)),
+        pathOr(t(labelSomethingWentWrong), ['response', 'data', 'message']),
+      ),
+      request: getData,
+    });
+
+  const [page, setPage] = useAtom(pageAtom);
+  const [details, setDetails] = useAtom(detailsAtom);
+  const refreshInterval = useAtomValue(refreshIntervalAtom);
+  const selectedResourceId = useAtomValue(selectedResourceIdAtom);
+  const selectedResourceUuid = useAtomValue(selectedResourceUuidAtom);
+  const limit = useAtomValue(limitAtom);
+  const enabledAutorefresh = useAtomValue(enabledAutorefreshAtom);
+  const selectedResourceDetailsEndpoint = useAtomValue(
+    selectedResourceDetailsEndpointDerivedAtom,
+  );
+  const customFilters = useAtomValue(customFiltersAtom);
+  const getCriteriaValue = useAtomValue(getCriteriaValueDerivedAtom);
+  const appliedFilter = useAtomValue(appliedFilterAtom);
+  const setListing = useUpdateAtom(listingAtom);
+  const setSending = useUpdateAtom(sendingAtom);
+  const setSendingDetails = useUpdateAtom(sendingDetailsAtom);
+  const clearSelectedResource = useUpdateAtom(clearSelectedResourceDerivedAtom);
 
   const refreshIntervalRef = React.useRef<number>();
 
-  const refreshIntervalMs = useSelector(
-    (state) => state.intervals.AjaxTimeReloadMonitoring * 1000,
-  );
+  const refreshIntervalMs = refreshInterval * 1000;
+
+  const getSort = (): { [sortField: string]: SortOrder } | undefined => {
+    const sort = getCriteriaValue('sort');
+
+    if (isNil(sort)) {
+      return undefined;
+    }
+
+    const [sortField, sortOrder] = sort as [string, SortOrder];
+
+    const secondSortCriteria =
+      not(equals(sortField, secondSortField)) && defaultSecondSortCriteria;
+
+    return {
+      [sortField]: sortOrder,
+      ...secondSortCriteria,
+    };
+  };
+
+  const loadDetails = (): void => {
+    if (isNil(selectedResourceId)) {
+      return;
+    }
+
+    sendLoadDetailsRequest({
+      endpoint: selectedResourceDetailsEndpoint,
+    })
+      .then(setDetails)
+      .catch(() => {
+        clearSelectedResource();
+      });
+  };
 
   const load = (): void => {
-    const sort = sortf ? { [sortf]: sorto } : undefined;
-    const search = currentSearch
+    const searchCriteria = getCriteriaValue('search');
+    const search = searchCriteria
       ? {
           regex: {
-            value: currentSearch,
-            fields: [
-              'h.name',
-              'h.alias',
-              'h.address',
-              's.description',
-              'information',
-            ],
+            fields: searchableFields,
+            value: searchCriteria,
           },
         }
       : undefined;
 
+    const getCriteriaIds = (
+      name: string,
+    ): Array<string | number> | undefined => {
+      const criteriaValue = getCriteriaValue(name) as
+        | Array<SelectEntry>
+        | undefined;
+
+      return criteriaValue?.map(prop('id'));
+    };
+
+    const getCriteriaNames = (name: string): Array<string> => {
+      const criteriaValue = getCriteriaValue(name) as
+        | Array<SelectEntry>
+        | undefined;
+
+      return criteriaValue?.map(prop('name')) as Array<string>;
+    };
+
     sendRequest({
-      states: states.map(({ id }) => id),
-      statuses: statuses.map(({ id }) => id),
-      resourceTypes: resourceTypes.map(({ id }) => id),
-      hostGroupIds: hostGroups?.map(({ id }) => id),
-      serviceGroupIds: serviceGroups?.map(({ id }) => id),
-      sort,
+      hostGroups: getCriteriaNames('host_groups'),
       limit,
+      monitoringServers: getCriteriaNames('monitoring_servers'),
       page,
+      resourceTypes: getCriteriaIds('resource_types'),
       search,
+      serviceGroups: getCriteriaNames('service_groups'),
+      sort: getSort(),
+      states: getCriteriaIds('states'),
+      statuses: getCriteriaIds('statuses'),
     }).then(setListing);
 
     if (isNil(details)) {
@@ -87,7 +192,7 @@ const useLoadResources = (): LoadResources => {
   };
 
   const initAutorefreshAndLoad = (): void => {
-    if (isNil(customFilters) || not(equals(currentSearch, nextSearch))) {
+    if (isNil(customFilters)) {
       return;
     }
 
@@ -106,6 +211,14 @@ const useLoadResources = (): LoadResources => {
   }, []);
 
   React.useEffect(() => {
+    if (isNil(details)) {
+      return;
+    }
+
+    initAutorefresh();
+  }, [isNil(details)]);
+
+  React.useEffect(() => {
     if (isNil(page)) {
       return;
     }
@@ -119,17 +232,20 @@ const useLoadResources = (): LoadResources => {
     }
 
     setPage(1);
-  }, [
-    sortf,
-    sorto,
-    limit,
-    currentSearch,
-    states,
-    statuses,
-    resourceTypes,
-    hostGroups,
-    serviceGroups,
-  ]);
+  }, [limit, appliedFilter]);
+
+  React.useEffect(() => {
+    setSending(sending);
+  }, [sending]);
+
+  React.useEffect(() => {
+    setSendingDetails(sending);
+  }, [sendingDetails]);
+
+  React.useEffect(() => {
+    setDetails(undefined);
+    loadDetails();
+  }, [selectedResourceUuid]);
 
   return { initAutorefreshAndLoad };
 };

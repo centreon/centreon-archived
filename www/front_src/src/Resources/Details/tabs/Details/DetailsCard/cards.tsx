@@ -1,190 +1,216 @@
 import * as React from 'react';
 
-import { useTranslation } from 'react-i18next';
+import { pick, isEmpty, isNil, equals, includes } from 'ramda';
 
-import { Typography, Grid, makeStyles, Box } from '@material-ui/core';
-import IconCheck from '@material-ui/icons/Check';
+import { SeverityCode } from '@centreon/ui';
 
+import ChecksIcon from '../../../../ChecksIcon';
 import {
-  labelCurrentStateDuration,
-  labelPoller,
+  labelCurrentStatusDuration,
+  labelMonitoringServer,
   labelTimezone,
-  labelLastStateChange,
+  labelLastStatusChange,
   labelLastCheck,
-  labelActive,
   labelNextCheck,
   labelCheckDuration,
   labelLatency,
-  labelResourceFlapping,
-  labelYes,
-  labelPercentStateChange,
   labelLastNotification,
   labelCurrentNotificationNumber,
-  labelNo,
+  labelFqdn,
+  labelAlias,
+  labelGroups,
+  labelCalculationType,
+  labelCheck,
+  labelStatusChangePercentage,
+  labelStatusInformation,
+  labelDowntimeDuration,
+  labelAcknowledgement,
+  labelPerformanceData,
+  labelCommand,
+  labelLastCheckWithOkStatus,
 } from '../../../../translatedLabels';
-import { getFormattedDate, getFormattedTime } from '../../../../dateTime';
 import { ResourceDetails } from '../../../models';
+import ExpandableCard from '../ExpandableCard';
+import { ChangeExpandedCardsProps } from '../SortableCards/models';
 
-type Lines = Array<{ key: string; line: JSX.Element | null }>;
+import DetailsLine from './DetailsLine';
+import PercentStateChangeCard from './PercentStateChangeCard';
+import Groups from './Groups';
+import DowntimesCard from './DowntimesCard';
+import AcknowledgementCard from './AcknowledegmentCard';
+import CommandLineCard from './CommandLineCard';
 
-interface DetailCardLines {
+export interface DetailCardLine {
+  active?: boolean;
+  isCustomCard?: boolean;
+  line: JSX.Element;
+  shouldBeDisplayed: boolean;
   title: string;
-  field?: string | number | boolean;
-  getLines: () => Lines;
+  xs?: 6 | 12;
 }
 
-const DetailsLine = ({ line }: { line?: string }): JSX.Element => {
-  return (
-    <Typography component="div">
-      <Box fontWeight={500} lineHeight={1}>
-        {line}
-      </Box>
-    </Typography>
-  );
-};
+interface DetailCardLineProps {
+  changeExpandedCards: (props: ChangeExpandedCardsProps) => void;
+  details: ResourceDetails;
+  expandedCards: Array<string>;
+  t: (label: string) => string;
+  toDateTime: (date: string | Date) => string;
+}
 
-const useStyles = makeStyles((theme) => ({
-  activeIcon: {
-    color: theme.palette.success.main,
-  },
-}));
+const getDetailCardLines = ({
+  details,
+  toDateTime,
+  t,
+  expandedCards,
+  changeExpandedCards,
+}: DetailCardLineProps): Array<DetailCardLine> => {
+  const checksDisabled =
+    details.active_checks === false && details.passive_checks === false;
+  const activeChecksDisabled = details.active_checks === false;
 
-const ActiveLine = (): JSX.Element => {
-  const { t } = useTranslation();
-  const classes = useStyles();
-
-  return (
-    <Grid container spacing={1} alignItems="center">
-      <Grid item>
-        <IconCheck className={classes.activeIcon} />
-      </Grid>
-      <Grid item>
-        <DetailsLine key="tries" line={t(labelActive)} />
-      </Grid>
-    </Grid>
-  );
-};
-
-const getDetailCardLines = (
-  details: ResourceDetails,
-): Array<DetailCardLines> => {
-  const getDateTimeLines = ({ label, field }): DetailCardLines => ({
-    title: label,
-    field,
-    getLines: (): Lines => [
-      {
-        key: `${label}_date`,
-        line: <DetailsLine line={getFormattedDate(field)} />,
-      },
-      {
-        key: `${label}_time`,
-        line: <DetailsLine key="tries" line={getFormattedTime(field)} />,
-      },
-    ],
-  });
-
-  const getCheckLines = ({ label, field }): DetailCardLines => ({
-    ...getDateTimeLines({ label, field }),
-    getLines: (): Lines => [
-      ...getDateTimeLines({ label, field }).getLines(),
-      {
-        key: `${label}_active`,
-        line: details.active_checks ? <ActiveLine /> : null,
-      },
-    ],
-  });
+  const displayChecksIcon = checksDisabled || activeChecksDisabled;
 
   return [
     {
-      title: labelPoller,
-      field: details.poller_name,
-      getLines: (): Lines => [
-        {
-          key: 'poller',
-          line: <DetailsLine line={details.poller_name} />,
-        },
-      ],
+      isCustomCard: true,
+      line: (
+        <ExpandableCard
+          changeExpandedCards={changeExpandedCards}
+          content={details.information}
+          expandedCard={includes(t(labelStatusInformation), expandedCards)}
+          severityCode={details.status.severity_code}
+          title={t(labelStatusInformation)}
+        />
+      ),
+      shouldBeDisplayed: !isNil(details.information),
+      title: labelStatusInformation,
+      xs: 12,
     },
     {
+      isCustomCard: true,
+      line: <DowntimesCard details={details} />,
+      shouldBeDisplayed: !isEmpty(details.downtimes),
+      title: labelDowntimeDuration,
+      xs: 12,
+    },
+    {
+      isCustomCard: true,
+      line: <AcknowledgementCard details={details} />,
+      shouldBeDisplayed: !isNil(details.acknowledgement),
+      title: labelAcknowledgement,
+      xs: 12,
+    },
+    {
+      line: <DetailsLine line={details.fqdn} />,
+      shouldBeDisplayed: !isNil(details.fqdn),
+      title: labelFqdn,
+      xs: 12,
+    },
+    {
+      line: <DetailsLine line={details.alias} />,
+      shouldBeDisplayed: !isNil(details.alias),
+      title: labelAlias,
+    },
+    {
+      line: <DetailsLine line={details.monitoring_server_name} />,
+      shouldBeDisplayed: !isNil(details.monitoring_server_name),
+      title: labelMonitoringServer,
+    },
+    {
+      line: <DetailsLine line={details.timezone} />,
+      shouldBeDisplayed: !isNil(details.timezone) && !isEmpty(details.timezone),
       title: labelTimezone,
-      field: details.timezone,
-      getLines: (): Lines => [
-        {
-          key: 'timezone',
-          line: <DetailsLine line={details.timezone} />,
-        },
-      ],
     },
     {
-      title: labelCurrentStateDuration,
-      field: details.duration,
-      getLines: (): Lines => [
-        { key: 'duration', line: <DetailsLine line={details.duration} /> },
-        {
-          key: 'tries',
-          line: <DetailsLine key="tries" line={details.tries} />,
-        },
-      ],
+      line: <DetailsLine line={`${details.duration} - ${details.tries}`} />,
+      shouldBeDisplayed: !isNil(details.duration),
+      title: labelCurrentStatusDuration,
     },
-    getDateTimeLines({
-      label: labelLastStateChange,
-      field: details.last_status_change,
-    }),
-    getCheckLines({ label: labelLastCheck, field: details.last_check }),
-    getCheckLines({ label: labelNextCheck, field: details.next_check }),
     {
+      line: <DetailsLine line={toDateTime(details.last_status_change)} />,
+      shouldBeDisplayed: !isNil(details.last_status_change),
+      title: labelLastStatusChange,
+    },
+    {
+      line: <DetailsLine line={toDateTime(details.last_check)} />,
+      shouldBeDisplayed: !isNil(details.last_check),
+      title: labelLastCheck,
+    },
+    {
+      line: <DetailsLine line={toDateTime(details.last_time_with_no_issue)} />,
+      shouldBeDisplayed:
+        !isNil(details.last_time_with_no_issue) &&
+        !equals(details.status.severity_code, SeverityCode.Ok),
+      title: labelLastCheckWithOkStatus,
+    },
+    {
+      line: (
+        <ChecksIcon {...pick(['active_checks', 'passive_checks'], details)} />
+      ),
+      shouldBeDisplayed: displayChecksIcon,
+      title: labelCheck,
+    },
+    {
+      line: <DetailsLine line={toDateTime(details.next_check)} />,
+      shouldBeDisplayed: !isNil(details.next_check),
+      title: labelNextCheck,
+    },
+    {
+      line: <DetailsLine line={`${details.execution_time} s`} />,
+      shouldBeDisplayed: !isNil(details.execution_time),
       title: labelCheckDuration,
-      field: details.execution_time,
-      getLines: (): Lines => [
-        {
-          key: 'check_duration',
-          line: <DetailsLine line={`${details.execution_time} s`} />,
-        },
-      ],
     },
     {
+      line: <DetailsLine line={`${details.latency} s`} />,
+      shouldBeDisplayed: !isNil(details.latency),
       title: labelLatency,
-      field: details.latency,
-      getLines: (): Lines => [
-        {
-          key: 'latency',
-          line: <DetailsLine line={`${details.latency} s`} />,
-        },
-      ],
     },
     {
-      title: labelResourceFlapping,
-      field: details.flapping,
-      getLines: (): Lines => [
-        {
-          key: 'flapping',
-          line: <DetailsLine line={details.flapping ? labelYes : labelNo} />,
-        },
-      ],
+      line: <PercentStateChangeCard details={details} />,
+      shouldBeDisplayed: !isNil(details.percent_state_change),
+      title: labelStatusChangePercentage,
     },
     {
-      title: labelPercentStateChange,
-      field: details.percent_state_change,
-      getLines: (): Lines => [
-        {
-          key: 'percent_state_change',
-          line: <DetailsLine line={`${details.percent_state_change}%`} />,
-        },
-      ],
+      line: <DetailsLine line={toDateTime(details.last_notification)} />,
+      shouldBeDisplayed: !isNil(details.last_notification),
+      title: labelLastNotification,
     },
-    getDateTimeLines({
-      label: labelLastNotification,
-      field: details.last_notification,
-    }),
     {
+      line: <DetailsLine line={details.notification_number.toString()} />,
+      shouldBeDisplayed: !isNil(details.notification_number),
       title: labelCurrentNotificationNumber,
-      field: details.notification_number,
-      getLines: (): Lines => [
-        {
-          key: 'notification_number',
-          line: <DetailsLine line={details.notification_number.toString()} />,
-        },
-      ],
+    },
+    {
+      line: <DetailsLine line={details.calculation_type} />,
+      shouldBeDisplayed: !isNil(details.calculation_type),
+      title: labelCalculationType,
+    },
+    {
+      line: <Groups details={details} />,
+      shouldBeDisplayed: !isEmpty(details.groups),
+      title: labelGroups,
+      xs: 12,
+    },
+    {
+      isCustomCard: true,
+      line: (
+        <ExpandableCard
+          changeExpandedCards={changeExpandedCards}
+          content={details.performance_data || ''}
+          expandedCard={includes(t(labelPerformanceData), expandedCards)}
+          title={t(labelPerformanceData)}
+        />
+      ),
+      shouldBeDisplayed: !isEmpty(details.performance_data),
+      title: labelPerformanceData,
+      xs: 12,
+    },
+    {
+      isCustomCard: true,
+      line: <CommandLineCard details={details} />,
+      shouldBeDisplayed: !isNil(details.command_line),
+      title: labelCommand,
+      xs: 12,
     },
   ];
 };

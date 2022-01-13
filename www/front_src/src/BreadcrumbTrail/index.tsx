@@ -10,18 +10,17 @@ import { Breadcrumb as BreadcrumbModel, BreadcrumbsByPath } from './models';
 import Breadcrumb from './Breadcrumb';
 
 const useStyles = makeStyles({
-  root: {
-    padding: '4px 16px',
-  },
   item: {
     display: 'flex',
+  },
+  root: {
+    padding: '4px 16px',
   },
 });
 
 interface Props {
   breadcrumbsByPath: BreadcrumbsByPath;
   path: string;
-  children: React.ReactNode;
 }
 
 const getBreadcrumbs = ({
@@ -51,15 +50,14 @@ const BreadcrumbTrail = ({ breadcrumbsByPath, path }: Props): JSX.Element => {
 
   return (
     <MuiBreadcrumbs
-      classes={{ root: classes.root, li: classes.item }}
-      separator={<NavigateNextIcon fontSize="small" />}
       aria-label="Breadcrumb"
+      classes={{ li: classes.item, root: classes.root }}
+      separator={<NavigateNextIcon fontSize="small" />}
     >
       {breadcrumbs.map((breadcrumb, index) => (
         <Breadcrumb
-          key={`${breadcrumb.label}-${breadcrumb.index}`}
           breadcrumb={breadcrumb}
-          index={index}
+          key={breadcrumb.label}
           last={index === breadcrumbs.length - 1}
         />
       ))}

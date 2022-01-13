@@ -315,11 +315,15 @@ class CentreonGMT
         try {
             $query = "SELECT `contact_location` FROM `contact`, `session` " .
                 "WHERE `session`.`user_id` = `contact`.`contact_id` " .
-                "AND `session_id` = '" . CentreonDB::escape($sid) . "' LIMIT 1";
-            $DBRESULT = CentreonDBInstance::getConfInstance()->query($query);
-            $info = $DBRESULT->fetchRow();
-            $DBRESULT->closeCursor();
-            $this->myGMT = $info["contact_location"];
+                "AND `session_id` = :session_id LIMIT 1";
+            $statement = CentreonDBInstance::getConfInstance()->prepare($query);
+            $statement->bindValue(':session_id', $sid, \PDO::PARAM_STR);
+            $statement->execute();
+            if ($info = $statement->fetch()) {
+                $this->myGMT = $info["contact_location"];
+            } else {
+                $this->myGMT = 0;
+            }
         } catch (\PDOException $e) {
             $this->myGMT = 0;
         }

@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -37,27 +38,30 @@ if (!isset($centreon)) {
     exit();
 }
 
-isset($_GET["sc_id"]) ? $cG = $_GET["sc_id"] : $cG = null;
-isset($_POST["sc_id"]) ? $cP = $_POST["sc_id"] : $cP = null;
-$cG ? $sc_id = $cG : $sc_id = $cP;
-
-isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = null;
-isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = null;
-$cG ? $select = $cG : $select = $cP;
-
-isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = null;
-isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = null;
-$cG ? $dupNbr = $cG : $dupNbr = $cP;
-
 #Path to the configuration dir
 $path = "./include/configuration/configObject/service_categories/";
 
 #PHP functions
-require_once $path."DB-Func.php";
+require_once $path . "DB-Func.php";
 require_once "./include/common/common-Func.php";
 
+$sc_id = filter_var(
+    $_GET['sc_id'] ?? $_POST['sc_id'] ?? null,
+    FILTER_VALIDATE_INT
+);
+
+$select = filter_var_array(
+    getSelectOption(),
+    FILTER_VALIDATE_INT
+);
+
+$dupNbr = filter_var_array(
+    getDuplicateNumberOption(),
+    FILTER_VALIDATE_INT
+);
+
 /* Set the real page */
-if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
+if (isset($ret) && is_array($ret) && $ret['topology_page'] != "" && $p != $ret['topology_page']) {
     $p = $ret['topology_page'];
 }
 
@@ -67,44 +71,74 @@ $aclDbName = $acl->getNameDBAcl();
 $scString = $acl->getServiceCategoriesString();
 
 switch ($o) {
-    case "mc":
+    case "a": # Add a service category
+    case "w": # Watch a service category
+    case "c": # Modify a service category
         require_once($path . "formServiceCategories.php");
-        break; # Massive Change
-    case "a":
-        require_once($path . "formServiceCategories.php");
-        break; #Add a service category
-    case "w":
-        require_once($path . "formServiceCategories.php");
-        break; #Watch a service category
-    case "c":
-        require_once($path . "formServiceCategories.php");
-        break; #Modify a service category
-    case "s":
-        enableServiceCategorieInDB($sc_id);
+        break;
+    case "s": # Activate a ServiceCategories
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            enableServiceCategorieInDB($sc_id);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listServiceCategories.php");
-        break; #Activate a ServiceCategories
+        break;
     case "ms":
-        enableServiceCategorieInDB(null, isset($select) ? $select : []);
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            enableServiceCategorieInDB(null, is_array($select) ? $select : []);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listServiceCategories.php");
         break;
-    case "u":
-        disableServiceCategorieInDB($sc_id);
+    case "u": # Desactivate a service category
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            disableServiceCategorieInDB($sc_id);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listServiceCategories.php");
-        break; #Desactivate a service category
+        break;
     case "mu":
-        disableServiceCategorieInDB(null, isset($select) ? $select : []);
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            disableServiceCategorieInDB(null, is_array($select) ? $select : []);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listServiceCategories.php");
         break;
-
-    case "m":
-        multipleServiceCategorieInDB(isset($select) ? $select : [], $dupNbr);
+    case "m": # Duplicate n service categories
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            multipleServiceCategorieInDB(
+                is_array($select) ? $select : [],
+                is_array($dupNbr) ? $dupNbr : []
+            );
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listServiceCategories.php");
-        break; #Duplicate n service categories
-
-    case "d":
-        deleteServiceCategorieInDB(isset($select) ? $select : []);
+        break;
+    case "d": # Delete n service categories
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            deleteServiceCategorieInDB(is_array($select) ? $select : []);
+        } else {
+            unvalidFormMessage();
+        }
         require_once($path . "listServiceCategories.php");
-        break; #Delete n service categories
+        break;
     default:
         require_once($path . "listServiceCategories.php");
         break;

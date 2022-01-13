@@ -363,55 +363,46 @@ msgid "Yes"
 msgstr "Sim"
 
 #: centreon-web/www/class/centreonGraphPoller.class.php:150
-#: centreon-web/www/include/Administration/corePerformance/getStats.php:129
 #: centreon-web/www/include/Administration/corePerformance/nagiosStats.php:164
 msgid "Host Check Execution Time"
 msgstr "Tempo máximo de checagem de Host"
 
 #: centreon-web/www/class/centreonGraphPoller.class.php:151
-#: centreon-web/www/include/Administration/corePerformance/getStats.php:130
 #: centreon-web/www/include/Administration/corePerformance/nagiosStats.php:165
 msgid "Hosts Actively Checked"
 msgstr "Hosts atualmente checados"
 
 #: centreon-web/www/class/centreonGraphPoller.class.php:152
-#: centreon-web/www/include/Administration/corePerformance/getStats.php:131
 #: centreon-web/www/include/Administration/corePerformance/nagiosStats.php:166
 msgid "Host check latency"
 msgstr "Latência de checagem de Host"
 
 #: centreon-web/www/class/centreonGraphPoller.class.php:153
-#: centreon-web/www/include/Administration/corePerformance/getStats.php:132
 #: centreon-web/www/include/Administration/corePerformance/nagiosStats.php:167
 msgid "Service Check Execution Time"
 msgstr "Duração da checagem de Serviço"
 
 #: centreon-web/www/class/centreonGraphPoller.class.php:154
-#: centreon-web/www/include/Administration/corePerformance/getStats.php:133
 #: centreon-web/www/include/Administration/corePerformance/nagiosStats.php:168
 msgid "Services Actively Checked"
 msgstr "Serviços atualmente checados"
 
 #: centreon-web/www/class/centreonGraphPoller.class.php:155
-#: centreon-web/www/include/Administration/corePerformance/getStats.php:134
 #: centreon-web/www/include/Administration/corePerformance/nagiosStats.php:169
 msgid "Service check latency"
 msgstr "Latência de checagem de Serviço"
 
 #: centreon-web/www/class/centreonGraphPoller.class.php:156
-#: centreon-web/www/include/Administration/corePerformance/getStats.php:135
 #: centreon-web/www/include/Administration/corePerformance/nagiosStats.php:170
 msgid "Commands in buffer"
 msgstr "Comandos em buffer"
 
 #: centreon-web/www/class/centreonGraphPoller.class.php:157
-#: centreon-web/www/include/Administration/corePerformance/getStats.php:136
 #: centreon-web/www/include/Administration/corePerformance/nagiosStats.php:171
 msgid "Host status"
 msgstr "Estado de Host"
 
 #: centreon-web/www/class/centreonGraphPoller.class.php:158
-#: centreon-web/www/include/Administration/corePerformance/getStats.php:137
 #: centreon-web/www/include/Administration/corePerformance/nagiosStats.php:172
 msgid "Service status"
 msgstr "Estado do Serviço"
@@ -7846,10 +7837,6 @@ msgstr "Informações Gorgone"
 msgid "Monitoring Engine Information"
 msgstr "Informação do Motor de Monitoramento"
 
-#: centreon-web/www/include/configuration/configServers/formServers.php:137
-msgid "Miscelleneous"
-msgstr "Diversos"
-
 #: centreon-web/www/include/configuration/configServers/formServers.php:138
 msgid "Centreon Trap Collector"
 msgstr "Coletor Centreon Trap"
@@ -8135,8 +8122,11 @@ msgstr "Serviços Utilizados"
 msgid "Check"
 msgstr "Checagem"
 
-#: centreon-web/www/include/configuration/configObject/command/listCommand.php:118
-#: centreon-web/www/install/menu_translation.php:109
+#: centreon/www/include/configuration/configObject/command/listCommand.php:127
+#: centreon/www/install/menu_translation.php:95
+#: centreon/www/include/options/oreon/generalOpt/colors/form.php:59
+#: centreon/www/include/configuration/configServers/formServers.php:122
+#: /www/include/configuration/configServers/formServers.php:104
 msgid "Miscellaneous"
 msgstr "Diversos"
 
@@ -10371,14 +10361,6 @@ msgstr "Campo obrigatório para fins de permissionamento (ACL)."
 #: centreon-web/www/include/configuration/configObject/host/formHost.php:1086
 msgid "Impossible to change server due to parentship with other hosts"
 msgstr "Impossível mudar de servidor devido ao parentesco com outros hosts"
-
-#: centreon-web/www/include/configuration/configObject/host/formHost.php:1089
-msgid "Some hosts parent has not the same instance"
-msgstr "Alguns hosts parente não tem a mesma instância"
-
-#: centreon-web/www/include/configuration/configObject/host/formHost.php:1090
-msgid "Some hosts child has not the same instance"
-msgstr "Alguns hosts filho não tem a mesma instância"
 
 #: centreon-web/www/include/configuration/configObject/host/formHost.php:1096
 msgid "_Module_ is not a legal expression"
@@ -14532,6 +14514,12 @@ msgstr "Host não encontrado"
 msgid "Service not found"
 msgstr "Serviço não encontrado"
 
+#:Centreon/Domain/Acknowledgement/AcknowledgementService.php:312
+#:Centreon/Domain/Check/CheckService.php:172
+#:Centreon/Domain/Downtime/DowntimeService.php:183
+msgid "Meta service not found"
+msgstr "Meta serviço não encontrado"
+
 #:Centreon/Domain/Acknowledgement/AcknowledgementService.php:250
 msgid "No acknowledgement found for this host"
 msgstr "Nenhum reconhecimento encontrado para este host"
@@ -14544,9 +14532,17 @@ msgstr "Reconhecimento já foi cancelado para este host"
 msgid "No acknowledgement found for this service"
 msgstr "Nenhum reconhecimento encontrado para este serviço"
 
+#:Centreon/Domain/Acknowledgement/AcknowledgementService.php:319
+msgid "No acknowledgement found for this meta service"
+msgstr "Nenhum reconhecimento encontrado para este meta serviço"
+
 #:Centreon/Domain/Acknowledgement/AcknowledgementService.php:278
 msgid "Acknowledgement already cancelled for this service"
 msgstr "Reconhecimento já foi cancelado para este serviço"
+
+#:Centreon/Domain/Acknowledgement/AcknowledgementService.php:322
+msgid "Acknowledgement already cancelled for this meta service"
+msgstr "Reconhecimento já foi cancelado para este meta serviço"
 
 #:Centreon/Domain/Acknowledgement/AcknowledgementService.php:315
 msgid "Incorrect Resource type: %s"
@@ -14786,7 +14782,7 @@ msgstr "Erro ao remover tokens de um contato"
 #  msgid "at"
 #  msgstr ""
 
-#  msgid "Clear all"
+#  msgid "Clear"
 #  msgstr ""
 
 #  msgid "Criterias"
@@ -14801,7 +14797,7 @@ msgstr "Erro ao remover tokens de um contato"
 #  msgid "Current notification number"
 #  msgstr ""
 
-#  msgid "Current state duration"
+#  msgid "Current status duration"
 #  msgstr ""
 
 #  msgid "Downtime duration"
@@ -14813,7 +14809,7 @@ msgstr "Erro ao remover tokens de um contato"
 #  msgid "End time"
 #  msgstr ""
 
-#  msgid "Is this resource flapping?"
+#  msgid "This Resource is flapping"
 #  msgstr ""
 
 #  msgid "Show criterias filters"
@@ -14834,14 +14830,23 @@ msgstr "Erro ao remover tokens de um contato"
 #  msgid "In downtime"
 #  msgstr ""
 
-#  msgid "Last 24 hours"
-#  msgstr ""
+# msgid "1 day"
+# msgstr ""
 
-#  msgid "Last 7 days"
-#  msgstr ""
+# msgid "7 days"
+# msgstr ""
 
-#  msgid "Last 31 days"
-#  msgstr ""
+# msgid "31 days"
+# msgstr ""
+
+# msgid "Last day"
+# msgstr ""
+
+# msgid "Last 7 days"
+# msgstr ""
+
+# msgid "Last 31 days"
+# msgstr ""
 
 #  msgid "Set downtime on"
 #  msgstr ""
@@ -14855,7 +14860,7 @@ msgstr "Erro ao remover tokens de um contato"
 #  msgid "Last notification"
 #  msgstr ""
 
-#  msgid "Last state change"
+#  msgid "Last status change"
 #  msgstr ""
 
 #  msgid "Next check"
@@ -14867,7 +14872,7 @@ msgstr "Erro ao remover tokens de um contato"
 #  msgid "Open"
 #  msgstr ""
 
-#  msgid "Percent state change"
+#  msgid "Status change percentage"
 #  msgstr ""
 
 #  msgid "Resource name"
@@ -15076,3 +15081,119 @@ msgstr "Erro ao remover tokens de um contato"
 
 #  msgid "No resource found"
 #  msgstr ""
+
+#  msgid "FQDN / Address"
+#  msgstr ""
+
+#  msgid "Groups"
+#  msgstr ""
+
+#  msgid "Comment added"
+#  msgstr ""
+
+#  msgid "Display events"
+#  msgstr ""
+
+#  msgid "Export to png"
+#  msgstr ""
+
+#  msgid "Go to performance page"
+#  msgstr ""
+
+#  msgid "Parent"
+#  msgstr ""
+
+#  msgid "Switch to graph mode"
+#  msgstr ""
+
+#  msgid "Switch to list mode"
+#  msgstr ""
+
+#  msgid "Select criterias"
+#  msgstr ""
+
+#  msgid "Monitoring server"
+#  msgstr ""
+
+#  msgid "The end date must be greater than the start date"
+#  msgstr ""
+
+#  msgid "Forward"
+#  msgstr ""
+
+#  msgid "Backward"
+#  msgstr ""
+
+# msgid "Graph options"
+# msgstr ""
+
+# msgid "Check duration"
+# msgstr ""
+
+# msgid "Avg"
+# msgstr ""
+
+# msgid "Compact time period"
+# msgstr ""
+
+#  msgid "Check duration"
+
+#  msgid "Check duration"
+#  msgstr ""
+
+#  msgid "Notifications disabled"
+#  msgstr ""
+
+#  msgid "All checks are disabled"
+#  msgstr ""
+
+#  msgid "Only passive checks are enabled"
+#  msgstr ""
+
+#  msgid "Calculation type"
+#  msgstr ""
+
+#  msgid "Mandatory data to create the entity '%s' is missing"
+#  msgstr ""
+
+#  msgid "At least one column must be selected"
+#  msgstr ""
+
+#  msgid "The duration must be lesser than a year"
+#  msgstr ""
+
+#  msgid "As Displayed"
+#  msgstr ""
+
+#  msgid "Medium size"
+#  msgstr ""
+
+#  msgid "Small size"
+#  msgstr ""
+
+# msgid "Display the complete graph"
+# msgstr ""
+
+# msgid "Action not permitted"
+# msgstr ""
+
+# msgid "Scroll to top"
+# msgstr ""
+
+# msgid "This week"
+# msgstr ""
+
+# msgid "Before last year"
+# msgstr ""
+
+# msgid "Filter options"
+# msgstr ""
+
+# msgid "Service graphs"
+# msgstr ""
+
+msgid "Clear filter"
+msgstr ""
+
+msgid "Last check with OK status"
+msgstr "" 

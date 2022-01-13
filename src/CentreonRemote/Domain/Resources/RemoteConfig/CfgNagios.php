@@ -13,7 +13,7 @@ class CfgNagios
      *
      * @param string $name the poller name
      * @param int $serverID the poller id
-     * @return array the configuration template
+     * @return array<string,string|int|null> the configuration template
      */
     public static function getConfiguration(string $name, int $serverID): array
     {
@@ -53,30 +53,29 @@ class CfgNagios
             'retained_process_service_attribute_mask'     => null,
             'retained_host_attribute_mask'                => null,
             'retained_service_attribute_mask'             => null,
-            'use_syslog'                                  => '1',
+            'use_syslog'                                  => '0',
             'log_notifications'                           => '1',
-            'log_service_retries'                         => '0',
-            'log_host_retries'                            => '0',
+            'log_service_retries'                         => '1',
+            'log_host_retries'                            => '1',
             'log_event_handlers'                          => '1',
             'log_initial_states'                          => '1',
             'log_external_commands'                       => '1',
             'log_passive_checks'                          => '1',
             'global_host_event_handler'                   => null,
             'global_service_event_handler'                => null,
-            'sleep_time'                                  => '0.5',
+            'sleep_time'                                  => '1',
             'service_inter_check_delay_method'            => 's',
             'Host_inter_check_delay_method'               => 's',
             'service_interleave_factor'                   => '2',
             'max_concurrent_checks'                       => '0',
-            'max_service_check_spread'                    => '5',
-            'max_host_check_spread'                       => '5',
+            'max_service_check_spread'                    => '15',
+            'max_host_check_spread'                       => '15',
             'check_result_reaper_frequency'               => '10',
             'max_check_result_reaper_time'                => '30',
             'interval_length'                             => '60',
             'auto_reschedule_checks'                      => '0',
             'auto_rescheduling_interval'                  => '30',
             'auto_rescheduling_window'                    => '180',
-            'use_aggressive_host_checking'                => '0',
             'enable_flap_detection'                       => '0',
             'low_service_flap_threshold'                  => '20.0',
             'high_service_flap_threshold'                 => '30.0',

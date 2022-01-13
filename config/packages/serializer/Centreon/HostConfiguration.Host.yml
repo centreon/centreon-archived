@@ -22,17 +22,27 @@ Centreon\Domain\HostConfiguration\Host:
         - 'host_conf_full'
         - 'host_group_1'
     monitoringServer:
-      since_version: 2.1
       type: "Centreon\\Domain\\MonitoringServer\\MonitoringServer"
       groups:
         - 'host_conf_full'
         - 'host_group_1'
     templates:
-      since_version: 2.1
       type: array<Centreon\Domain\HostConfiguration\Host>
       groups:
         - 'host_group_1'
         - 'host_conf_full'
+    categories:
+      type: array<Centreon\Domain\HostConfiguration\Model\HostCategory>
+      groups:
+        - 'host_categories'
+    groups:
+      type: array<Centreon\Domain\HostConfiguration\Model\HostGroup>
+      groups:
+        - 'host_groups'
+    severities:
+      type: array<Centreon\Domain\HostConfiguration\Model\HostSeverity>
+      groups:
+        - 'host_severities'
     comment:
       type: string
       groups:

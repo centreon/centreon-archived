@@ -50,7 +50,7 @@ class I18nTest extends TestCase
         'centreon-license-manager' => []
     ];
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $moduleInformationMock = $this->getMockBuilder(Information::class)
             ->disableOriginalConstructor()
@@ -80,7 +80,7 @@ class I18nTest extends TestCase
         $this->translation = new I18nService($moduleInformationMock, $finderMock, $filesystemMock);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
     }
 

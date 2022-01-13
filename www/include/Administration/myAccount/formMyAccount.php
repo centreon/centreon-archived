@@ -63,7 +63,8 @@ if (!isset($centreonFeature)) {
 $cct = array();
 if ($o == "c") {
     $query = "SELECT contact_id, contact_name, contact_alias, contact_lang, contact_email, contact_pager,
-        contact_js_effects, contact_autologin_key, default_page, show_deprecated_pages, contact_auth_type
+        contact_autologin_key, default_page, show_deprecated_pages, contact_auth_type,
+        enable_one_click_export
         FROM contact WHERE contact_id = :id";
     $DBRESULT = $pearDB->prepare($query);
     $DBRESULT->bindValue(':id', $centreon->user->get_id(), \PDO::PARAM_INT);
@@ -135,8 +136,16 @@ $form->addElement(
     array('onclick' => 'generatePassword("aKey");', 'class' => 'btc bt_info')
 );
 $form->addElement('select', 'contact_lang', _("Language"), $langs);
-$form->addElement('checkbox', 'show_deprecated_pages', _("Show deprecated pages"), null, $attrsText);
-$form->addElement('checkbox', 'contact_js_effects', _("Animation effects"), null, $attrsText);
+$form->addElement('checkbox', 'show_deprecated_pages', _("Use deprecated pages"), null, $attrsText);
+if (!$isRemote) {
+    $form->addElement(
+        'checkbox',
+        'enable_one_click_export',
+        _("Enable the one-click export button for poller configuration [BETA]"),
+        null,
+        $attrsText
+    );
+}
 
 
 /* ------------------------ Topoogy ---------------------------- */
@@ -346,7 +355,9 @@ $form->applyFilter('contact_name', 'myReplace');
 $form->addRule('contact_name', _("Compulsory name"), 'required');
 $form->addRule('contact_alias', _("Compulsory alias"), 'required');
 $form->addRule('contact_email', _("Valid Email"), 'required');
-$form->addRule(array('contact_passwd', 'contact_passwd2'), _("Passwords do not match"), 'compare');
+if ($cct["contact_auth_type"] !== 'ldap') {
+    $form->addRule(array('contact_passwd', 'contact_passwd2'), _("Passwords do not match"), 'compare');
+}
 $form->registerRule('exist', 'callback', 'testExistence');
 $form->addRule('contact_name', _("Name already in use"), 'exist');
 $form->registerRule('existAlias', 'callback', 'testAliasExistence');
@@ -404,6 +415,7 @@ if ($form->validate()) {
     if (
         $form->getSubmitValue("contact_lang") !== $cct['contact_lang']
         || $showDeprecatedPages !== $cct['show_deprecated_pages']
+        || $form->getSubmitValue('enable_one_click_export') !== $cct['enable_one_click_export']
     ) {
         $contactStatement = $pearDB->prepare(
             'SELECT * FROM contact WHERE contact_id = :contact_id'
@@ -440,6 +452,19 @@ $tpl->assign('form', $renderer->toArray());
 $tpl->assign('cct', $cct);
 $tpl->assign('o', $o);
 $tpl->assign('featuresFlipping', (count($features) > 0));
+$tpl->assign('contactIsAdmin', $centreon->user->get_admin());
+$tpl->assign('isRemote', $isRemote);
+
+/*
+ * prepare help texts
+ */
+$helptext = "";
+include_once("help.php");
+foreach ($help as $key => $text) {
+    $helptext .= '<span style="display:none" id="help:' . $key . '">' . $text . '</span>' . "\n";
+}
+$tpl->assign("helptext", $helptext);
+
 $tpl->display("formMyAccount.ihtml");
 ?>
 <script type='text/javascript' src='./include/common/javascript/keygen.js'></script>

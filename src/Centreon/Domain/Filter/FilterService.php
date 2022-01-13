@@ -22,7 +22,6 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Filter;
 
-use Centreon\Domain\Entity\EntityCreator;
 use Centreon\Domain\Service\AbstractCentreonService;
 use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Filter\Interfaces\FilterRepositoryInterface;
@@ -112,6 +111,16 @@ class FilterService extends AbstractCentreonService implements FilterServiceInte
      */
     public function updateFilter(Filter $filter): void
     {
+        $foundFilter = $this->filterRepository->findFilterByUserIdAndName(
+            $filter->getUserId(),
+            $filter->getPageName(),
+            $filter->getName()
+        );
+
+        if ($foundFilter !== null && $filter->getId() !== $foundFilter->getId()) {
+            throw new FilterException(_('Filter name already used'));
+        }
+
         try {
             $this->checkCriterias($filter->getCriterias());
 
@@ -134,10 +143,10 @@ class FilterService extends AbstractCentreonService implements FilterServiceInte
             if ($criteria->getType() === 'multi_select' && is_array($criteria->getValue())) {
                 switch ($criteria->getObjectType()) {
                     case 'host_groups':
-                        $hostGroupIds = array_column($criteria->getValue(), 'id');
+                        $hostGroupNames = array_column($criteria->getValue(), 'name');
                         $hostGroups = $this->hostGroupService
                             ->filterByContact($this->contact)
-                            ->findHostGroupsByIds($hostGroupIds);
+                            ->findHostGroupsByNames($hostGroupNames);
                         $criteria->setValue(array_map(
                             function ($hostGroup) {
                                 return [
@@ -149,10 +158,10 @@ class FilterService extends AbstractCentreonService implements FilterServiceInte
                         ));
                         break;
                     case 'service_groups':
-                        $serviceGroupIds = array_column($criteria->getValue(), 'id');
+                        $serviceGroupNames = array_column($criteria->getValue(), 'name');
                         $serviceGroups = $this->serviceGroupService
                             ->filterByContact($this->contact)
-                            ->findServiceGroupsByIds($serviceGroupIds);
+                            ->findServiceGroupsByNames($serviceGroupNames);
                         $criteria->setValue(array_map(
                             function ($serviceGroup) {
                                 return [

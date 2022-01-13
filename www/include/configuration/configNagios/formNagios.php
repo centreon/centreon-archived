@@ -33,8 +33,11 @@
  *
  */
 
-if (!$centreon->user->admin && isset($nagios_id)
-    && count($allowedMainConf) && !isset($allowedMainConf[$nagios_id])
+if (
+    !$centreon->user->admin
+    && isset($nagiosId)
+    && count($allowedMainConf)
+    && !isset($allowedMainConf[$nagiosId])
 ) {
     $msg = new CentreonMsg();
     $msg->setImage("./img/icons/warning.png");
@@ -54,11 +57,12 @@ $nagios_d = array();
 
 $defaultEventBrokerOptions['event_broker_options'][-1] = 1;
 
-if (($o == "c" || $o == "w") && $nagios_id) {
-    $dbResult = $pearDB->query("SELECT * FROM cfg_nagios WHERE nagios_id = '" . $nagios_id . "' LIMIT 1");
+if (($o === 'c' || $o === 'w') && $nagiosId) {
+    $statement = $pearDB->prepare("SELECT * FROM cfg_nagios WHERE nagios_id = :nagiosId LIMIT 1");
+    $statement->bindValue(':nagiosId', $nagiosId, \PDO::PARAM_INT);
+    $statement->execute();
     // Set base value
-    $nagios = array_map("myDecode", $dbResult->fetch());
-    $dbResult->closeCursor();
+    $nagios = array_map("myDecode", $statement->fetch());
 
     $tmp = explode(',', $nagios["debug_level_opt"]);
     foreach ($tmp as $key => $value) {
@@ -76,7 +80,7 @@ if (($o == "c" || $o == "w") && $nagios_id) {
 $mainCfg = new CentreonConfigEngine($pearDB);
 $cdata = CentreonData::getInstance();
 if ($o != "a") {
-    $dirArray = $mainCfg->getBrokerDirectives(isset($nagios_id) ? $nagios_id : null);
+    $dirArray = $mainCfg->getBrokerDirectives(isset($nagiosId) ? $nagiosId : null);
 } else {
     $dirArray[0]['in_broker_#index#'] = "/usr/lib64/centreon-engine/externalcmd.so";
     $dirArray[1]['in_broker_#index#'] = "/usr/lib64/nagios/cbmod.so /etc/centreon-broker/poller-module.json";
@@ -147,22 +151,6 @@ foreach ($result as $ns) {
     $nagios_server[$ns["id"]] = $ns["name"];
 }
 
-/*
- * Get all broker module for this nagios config
- */
-$nBk = 0;
-$aBk = array();
-$dbResult = $pearDB->query(
-    "SELECT bk_mod_id, broker_module FROM cfg_nagios_broker_module WHERE cfg_nagios_id = '"
-    . $nagios_id . "'"
-);
-while ($lineBk = $dbResult->fetch()) {
-    $aBk[$nBk] = $lineBk;
-    $nBk++;
-}
-$dbResult->closeCursor();
-unset($lineBk);
-
 $attrsText = array("size" => "30");
 $attrsText2 = array("size" => "50");
 $attrsText3 = array("size" => "10");
@@ -221,6 +209,7 @@ $form->addElement('text', 'nagios_group', _("Monitoring system Group"), $attrsTe
 /* *****************************************************
  * Enable / Disable functionalities
  */
+
 $nagTab = array();
 $nagTab[] = $form->createElement('radio', 'enable_notifications', null, _("Yes"), '1');
 $nagTab[] = $form->createElement('radio', 'enable_notifications', null, _("No"), '0');
@@ -451,13 +440,6 @@ $form->addElement('text', 'auto_rescheduling_interval', _("Auto-Rescheduling Int
 $form->addElement('text', 'auto_rescheduling_window', _("Auto-Rescheduling Window"), $attrsText3);
 
 /* *****************************************************
- * Aggressive host checking
- */
-$nagTab = array();
-$nagTab[] = $form->createElement('radio', 'use_aggressive_host_checking', null, _("No"), '0');
-$form->addGroup($nagTab, 'use_aggressive_host_checking', _("Aggressive Host Checks"), '&nbsp;');
-
-/* *****************************************************
  * Flapping management.
  */
 $nagTab = array();
@@ -616,6 +598,7 @@ $dateFormats = array(
     "strict-iso8601" => "strict-iso8601 (2002-06-30 03:15:00)"
 );
 $form->addElement('select', 'date_format', _("Date Format"), $dateFormats);
+$form->addElement('text', 'instance_heartbeat_interval', _("Heartbeat Interval"), $attrsText);
 $form->addElement('text', 'admin_email', _("Administrator Email Address"), $attrsText);
 $form->addElement('text', 'admin_pager', _("Administrator Pager"), $attrsText);
 $form->addElement('text', 'illegal_object_name_chars', _("Illegal Object Name Characters"), $attrsText2);
@@ -835,6 +818,19 @@ function isNum($value)
 $form->registerRule('exist', 'callback', 'testExistence');
 $form->registerRule('isNum', 'callback', 'isNum');
 
+/**
+ * @param $value
+ * @return bool
+ */
+function isValidHeartbeat($value): bool
+{
+    if (!is_numeric($value) || $value < 5 || $value > 600) {
+        return false;
+    }
+    return true;
+}
+$form->registerRule('isValidHeartbeat', 'callback', 'isValidHeartbeat');
+
 /* Add validator for macro name format */
 /**
  * Validate the macro name
@@ -861,13 +857,13 @@ $form->applyFilter('cfg_dir', 'slash');
 $form->applyFilter('log_archive_path', 'slash');
 $form->applyFilter('__ALL__', 'myTrim');
 
+$form->addRule('instance_heartbeat_interval', _("Number between 5 and 600"), 'isValidHeartbeat');
 $form->addRule('nagios_name', _("Compulsory Name"), 'required');
 $form->addRule('cfg_file', _("Required Field"), 'required');
 $form->addRule('nagios_comment', _("Required Field"), 'required');
 $form->addRule('nagios_name', _("Name is already in use"), 'exist');
 // Add rule to field for whitelist macro
 $form->addRule('macros_filter', _("A macro is malformated."), 'validMacroName');
-
 /*
  * Get Values
  */
@@ -879,7 +875,7 @@ $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;" . _("Required 
  * Smarty template Init
  */
 $tpl = new Smarty();
-$tpl = initSmartyTpl($path, $tpl);
+$tpl = initSmartyTpl(__DIR__, $tpl);
 
 if ($o == "w") {
     // Just watch a nagios information
@@ -888,7 +884,7 @@ if ($o == "w") {
             "button",
             "change",
             _("Modify"),
-            array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&nagios_id=" . $nagios_id . "'")
+            array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=c&nagios_id=" . $nagiosId . "'")
         );
     }
     $form->setDefaults($nagios);
@@ -957,7 +953,7 @@ if ($form->validate()) {
 }
 
 if ($valid) {
-    require_once($path . "listNagios.php");
+    require_once(__DIR__ . '/listNagios.php');
 } else {
     /*
      * Apply a template definition

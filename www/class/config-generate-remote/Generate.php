@@ -53,6 +53,7 @@ require_once __DIR__ . '/HostCategory.php';
 require_once __DIR__ . '/Curves.php';
 require_once __DIR__ . '/Trap.php';
 require_once __DIR__ . '/PlatformTopology.php';
+require_once __DIR__ . '/Relations/BrokerInfo.php';
 require_once __DIR__ . '/Relations/ViewImgDirRelation.php';
 require_once __DIR__ . '/Relations/ViewImageDir.php';
 require_once __DIR__ . '/Relations/ExtendedServiceInformation.php';
@@ -211,6 +212,7 @@ class Generate
             $this->backendInstance->setUserName($username);
             $this->backendInstance->initPath($remoteServerId);
             $this->backendInstance->setPollerId($remoteServerId);
+            Manifest::getInstance($this->dependencyInjector)->clean();
             Manifest::getInstance($this->dependencyInjector)->addRemoteServer($remoteServerId);
 
             $this->getPollerFromId($remoteServerId);
@@ -351,6 +353,7 @@ class Generate
         TimePeriod::getInstance($this->dependencyInjector)->reset();
         Trap::getInstance($this->dependencyInjector)->reset();
         PlatformTopology::getInstance($this->dependencyInjector)->reset();
+        Relations\BrokerInfo::getInstance($this->dependencyInjector)->reset();
         Relations\CfgResourceInstanceRelation::getInstance($this->dependencyInjector)->reset();
         Relations\ContactGroupHostRelation::getInstance($this->dependencyInjector)->reset();
         Relations\ContactGroupServiceRelation::getInstance($this->dependencyInjector)->reset();

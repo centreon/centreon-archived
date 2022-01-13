@@ -95,10 +95,11 @@ class ServiceConfigurationService extends AbstractCentreonService implements Ser
         if ($host->getId() == null) {
             throw new ServiceConfigurationException(_('The host id cannot be null'));
         }
-        $this->hostConfigurationService->findAndAddHostTemplates($host);
-        if (empty($host->getTemplates())) {
+        $hostTemplates = $this->hostConfigurationService->findHostTemplatesRecursively($host);
+        if (empty($hostTemplates)) {
             return;
         }
+        $host->setTemplates($hostTemplates);
         /**
          * To avoid defining a service description with illegal characters,
          * we retrieve the engine configuration to retrieve the list of these characters.
@@ -108,18 +109,17 @@ class ServiceConfigurationService extends AbstractCentreonService implements Ser
             throw new ServiceConfigurationException(_('Unable to find the Engine configuration'));
         }
 
-        $hostTemplateIds = [];
-
         /**
          * Find all host templates recursively and copy their id into the given list.
          *
          * **We only retrieve templates that are enabled.**
          *
          * @param Host $host Host for which we will find all host template.
-         * @param int[] $hostTemplateIds
+         * @return int[]
          */
         $extractHostTemplateIdsFromHost =
-            function (Host $host, &$hostTemplateIds) use (&$extractHostTemplateIdsFromHost): void {
+            function (Host $host) use (&$extractHostTemplateIdsFromHost): array {
+                $hostTemplateIds = [];
                 foreach ($host->getTemplates() as $hostTemplate) {
                     if ($hostTemplate->isActivated() === false) {
                         continue;
@@ -127,11 +127,16 @@ class ServiceConfigurationService extends AbstractCentreonService implements Ser
                     $hostTemplateIds[] = $hostTemplate->getId();
                     if (!empty($hostTemplate->getTemplates())) {
                         // The recursive call here allow you to keep the priority orders of the host templates
-                        $extractHostTemplateIdsFromHost($hostTemplate, $hostTemplateIds);
+                        $hostTemplateIds = array_merge(
+                            $hostTemplateIds,
+                            $extractHostTemplateIdsFromHost($hostTemplate)
+                        );
                     }
                 }
+                return $hostTemplateIds;
             };
-        $extractHostTemplateIdsFromHost($host, $hostTemplateIds);
+
+        $hostTemplateIds = $extractHostTemplateIdsFromHost($host);
 
         /**
          * First, we will search for services already associated with the host to avoid creating a new one with
@@ -190,15 +195,11 @@ class ServiceConfigurationService extends AbstractCentreonService implements Ser
                     continue;
                 }
 
-                $illegalObjectNameCharacters = $engineConfiguration->getIllegalObjectNameCharacters();
                 if (
                     $serviceTemplate->getAlias() !== null
                     && !in_array($serviceTemplate->getAlias(), $serviceAliasAlreadyUsed)
                 ) {
-                    $serviceDescription = EngineConfiguration::removeIllegalCharacters(
-                        $serviceTemplate->getAlias(),
-                        $illegalObjectNameCharacters
-                    );
+                    $serviceDescription = $engineConfiguration->removeIllegalCharacters($serviceTemplate->getAlias());
 
                     if (empty($serviceDescription)) {
                         continue;
@@ -294,19 +295,27 @@ class ServiceConfigurationService extends AbstractCentreonService implements Ser
     /**
      * @inheritDoc
      */
-    public function findServiceMacrosPassword(int $serviceId, string $command): array
+    public function findServiceMacrosFromCommandLine(int $serviceId, string $command): array
     {
-        $serviceMacrosPassword = [];
-        // If contains on-demand service macros
-        if (strpos($command, '$_SERVICE') !== false) {
-            $onDemandServiceMacros = $this->findOnDemandServiceMacros($serviceId, true);
-            foreach ($onDemandServiceMacros as $serviceMacro) {
-                if ($serviceMacro->isPassword()) {
-                    $serviceMacrosPassword[] = $serviceMacro;
+        $serviceMacros = [];
+        if (preg_match_all('/(\$_SERVICE\S+?\$)/', $command, $matches)) {
+            $matchedMacros = $matches[0];
+
+            foreach ($matchedMacros as $matchedMacroName) {
+                $hostMacros[$matchedMacroName] = (new ServiceMacro())
+                    ->setName($matchedMacroName)
+                    ->setValue('');
+            }
+
+            $linkedServiceMacros = $this->findOnDemandServiceMacros($serviceId, true);
+            foreach ($linkedServiceMacros as $linkedServiceMacro) {
+                if (in_array($linkedServiceMacro->getName(), $matchedMacros)) {
+                    $serviceMacros[$linkedServiceMacro->getName()] = $linkedServiceMacro;
                 }
             }
         }
-        return $serviceMacrosPassword;
+
+        return array_values($serviceMacros);
     }
 
     /**

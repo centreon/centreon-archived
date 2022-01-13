@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2019 Centreon
+ * Copyright 2005-2021 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -9,7 +10,7 @@
  * Foundation ; either version 2 of the License.
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even 7the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License along with
@@ -32,7 +33,6 @@
  * For more information : contact@centreon.com
  *
  */
-
 
 include "./include/common/autoNumLimit.php";
 require_once __DIR__ . "/listFunction.php";
@@ -77,7 +77,7 @@ $form = new HTML_QuickFormCustom('select_form', 'POST', "?o=ldap&p=" . $p);
 
 $attrBtnSuccess = array(
     "class" => "btc bt_success",
-    "onClick" => "window.history.replaceState('', '', '?p=" . $p . "');"
+    "onClick" => "window.history.replaceState('', '', '?p=" . $p . "&o=ldap');"
 );
 $form->addElement('submit', 'Search', _("Search"), $attrBtnSuccess);
 

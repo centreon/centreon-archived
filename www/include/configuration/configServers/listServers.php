@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2019 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
@@ -77,14 +78,14 @@ if ($is_admin == 0) {
 /*
  * nagios servers comes from DB
  */
-$nagios_servers = array();
-$nagios_restart = array();
-foreach ($serverResult as $nagios_server) {
-    $nagios_servers[$nagios_server["id"]] = $nagios_server["name"];
-    $nagios_restart[$nagios_server["id"]] = $nagios_server["last_restart"];
+$nagiosServers = array();
+$nagiosRestart = [];
+foreach ($serverResult as $nagiosServer) {
+    $nagiosServers[$nagiosServer["id"]] = $nagiosServer["name"];
+    $nagiosRestart[$nagiosServer["id"]] = $nagiosServer["last_restart"];
 }
 
-$pollerstring = implode(',', array_keys($nagios_servers));
+$pollerstring = implode(',', array_keys($nagiosServers));
 
 /*
  * Get information info RTM
@@ -153,29 +154,48 @@ $dbResult = $pearDB->query($query);
 
 $rows = $pearDB->query("SELECT FOUND_ROWS()")->fetchColumn();
 
+$servers = [];
+$changeStateServers = [];
+while (($config = $dbResult->fetch())) {
+    $servers[] = $config;
+    if ($config["ns_activate"] && isset($nagiosRestart[$config['id']])) {
+        $changeStateServers[$config['id']] = $nagiosRestart[$config['id']];
+    }
+}
+
 include "./include/common/checkPagination.php";
 
 $form = new HTML_QuickFormCustom('select_form', 'POST', "?p=" . $p);
 
+$changeStateServers = getChangeState($changeStateServers);
+
 // Fill a tab with a multidimensional Array we put in $tpl
-$elemArr = array();
-for ($i = 0; $config = $dbResult->fetch(); $i++) {
+$elemArr = [];
+$i = -1;
+$centreonToken = createCSRFToken();
+
+foreach ($servers as $config) {
+    $i++;
     $moptions = "";
     $selectedElements = $form->addElement(
         'checkbox',
         "select[" . $config['id'] . "]",
         null,
         '',
-        array('id' => 'poller_' . $config['id'])
+        array('id' => 'poller_' . $config['id'], 'onClick' => 'hasPollersSelected();')
     );
-    if ($config["ns_activate"]) {
-        $moptions .= "<a href='main.php?p=" . $p . "&server_id=" . $config['id'] . "&o=u&limit=" . $limit .
-            "&num=" . $num . "&search=" . $search . "'><img src='img/icons/disabled.png' class='ico-14 margin_right' "
-            . "border='0' alt='" . _("Disabled") . "'></a>";
-    } else {
-        $moptions .= "<a href='main.php?p=" . $p . "&server_id=" . $config['id'] . "&o=s&limit=" . $limit .
-            "&num=" . $num . "&search=" . $search . "'><img src='img/icons/enabled.png' class='ico-14 margin_right' "
-            . "border='0' alt='" . _("Enabled") . "'></a>";
+    if (!$isRemote) {
+        if ($config["ns_activate"]) {
+            $moptions .= "<a href='main.php?p=" . $p . "&server_id=" . $config['id'] . "&o=u&limit=" . $limit .
+                "&num=" . $num . "&search=" . $search . "&centreon_token=" . $centreonToken .
+                "'><img src='img/icons/disabled.png' class='ico-14 margin_right' "
+                . "border='0' alt='" . _("Disabled") . "'></a>";
+        } else {
+            $moptions .= "<a href='main.php?p=" . $p . "&server_id=" . $config['id'] . "&o=s&limit=" . $limit .
+                "&num=" . $num . "&search=" . $search . "&centreon_token=" . $centreonToken .
+                "'><img src='img/icons/enabled.png' class='ico-14 margin_right' "
+                . "border='0' alt='" . _("Enabled") . "'></a>";
+        }
     }
     $moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) " .
         "event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) " .
@@ -190,11 +210,8 @@ for ($i = 0; $config = $dbResult->fetch(); $i++) {
     // Manage flag for changes
     $confChangedMessage = _("N/A");
     $hasChanged = false;
-    if ($config["ns_activate"] && isset($nagios_restart[$config['id']])) {
-        $hasChanged = checkChangeState(
-            (int) $config['id'],
-            (int) $nagios_restart[$config['id']]
-        );
+    if ($config["ns_activate"] && isset($nagiosRestart[$config['id']])) {
+        $hasChanged = $changeStateServers[$config['id']];
         $confChangedMessage = $hasChanged ? _("Yes") : _("No");
     }
 
@@ -230,11 +247,12 @@ for ($i = 0; $config = $dbResult->fetch(); $i++) {
         ? _('Remote Server')
         : $serverType;
 
-    if (isset($nagiosInfo[$config['id']]['is_currently_running'])
+    if (
+        isset($nagiosInfo[$config['id']]['is_currently_running'])
         && $nagiosInfo[$config['id']]['is_currently_running'] == 1
     ) {
-        $now = new DateTime;
-        $startDate = (new DateTime)->setTimestamp($nagiosInfo[$config['id']]['program_start_time']);
+        $now = new DateTime();
+        $startDate = (new DateTime())->setTimestamp($nagiosInfo[$config['id']]['program_start_time']);
         $interval = date_diff($now, $startDate);
         if (intval($interval->format('%a')) >= 2) {
             $uptime = $interval->format('%a days');
@@ -256,6 +274,10 @@ for ($i = 0; $config = $dbResult->fetch(); $i++) {
     // Manage different styles between each line
     $style = ($i % 2) ? "two" : "one";
 
+    $serverLink = $isRemote
+        ? "main.php?p={$p}&o=w&server_id={$config['id']}"
+        : "main.php?p={$p}&o=c&server_id={$config['id']}";
+
     $elemArr[$i] = [
         'MenuClass' => "list_{$style}",
         'RowMenu_select' => $selectedElements->toHtml(),
@@ -263,7 +285,7 @@ for ($i = 0; $config = $dbResult->fetch(); $i++) {
         'RowMenu_ip_address' => $config['ns_ip_address'],
         'RowMenu_server_id' => $config['id'],
         'RowMenu_gorgone_protocol' => $config['gorgone_communication_type'],
-        'RowMenu_link' => "main.php?p={$p}&o=c&server_id={$config['id']}",
+        'RowMenu_link' => $serverLink,
         'RowMenu_type' => $serverType,
         'RowMenu_is_running' => $isRunning ? _('Yes') : _('No'),
         'RowMenu_is_runningFlag' => $nagiosInfo[$config['id']]['is_currently_running'],
@@ -291,67 +313,77 @@ $tpl->assign(
         "template, it won't tell you the configuration had changed.")
 );
 
-// Different messages we put in the template
-$tpl->assign(
-    'msg',
-    array(
-        "addL" => "main.php?p=" . $p . "&o=a",
-        "addT" => _("Add"),
-        "delConfirm" => _("Do you confirm the deletion ?")
-    )
-);
-
-// Toolbar select
-?>
-<script type="text/javascript">
-    function setO(_i) {
-        document.forms['form'].elements['o'].value = _i;
-    }
-</script>
-<?php
-
-foreach (array('o1', 'o2') as $option) {
-    $attrs = array(
-        'onchange' => "javascript: " .
-            " var bChecked = isChecked(); " .
-            " if (this.form.elements['" . $option . "'].selectedIndex != 0 && !bChecked) {" .
-            " alert('" . _("Please select one or more items") . "'); return false;} " .
-            " if (this.form.elements['" . $option . "'].selectedIndex == 1 && confirm('" .
-            _("Do you confirm the duplication ?") . "')) {" .
-            " 	setO(this.form.elements['" . $option . "'].value); submit();} " .
-            "else if (this.form.elements['" . $option . "'].selectedIndex == 2 && confirm('" .
-            _("Do you confirm the deletion ?") . "')) {" .
-            " 	setO(this.form.elements['" . $option . "'].value); submit();} " .
-            ""
-    );
-    $form->addElement(
-        'select',
-        $option,
-        null,
+// Action buttons
+if (!$isRemote) {
+    $tpl->assign(
+        'wizardAddBtn',
         array(
-            null => _("More actions..."),
-            "m" => _("Duplicate"),
-            "d" => _("Delete")
-        ),
-        $attrs
+            "link" => "./poller-wizard/1",
+            "text" => _("Add"),
+            "class" => "btc bt-poller-action bt_success",
+            "iconClass" => "ui-icon-plus"
+        )
     );
-    $form->setDefaults(array($option => null));
-    $o1 = $form->getElement($option);
-    $o1->setValue(null);
-}
 
-// Apply configuration button
-$form->addElement(
-    'button',
-    'apply_configuration',
-    _("Export configuration"),
-    array('onClick' => 'applyConfiguration();', 'class' => 'btc bt_info')
-);
+    $tpl->assign(
+        'addBtn',
+        array(
+            "link" => "main.php?p=" . $p . "&o=a",
+            "text" => _("Add (advanced)"),
+            "class" => "btc bt-poller-action bt_success",
+            "iconClass" => "ui-icon-plus"
+        )
+    );
+
+
+    $tpl->assign(
+        'duplicateBtn',
+        array(
+            "text" => _("Duplicate"),
+            "class" => "btc bt-poller-action bt_success",
+            "name" => "duplicate_action",
+            "iconClass" => "ui-icon-copy",
+            "onClickAction" => "javascript: " .
+                " var bChecked = isChecked(); " .
+                " if (!bChecked) { alert('" . _("Please select one or more items") . "'); return false;} " .
+                " if (confirm('" . _("Do you confirm the duplication ?") . "')) { setO('m'); submit();} "
+        )
+    );
+
+    $tpl->assign(
+        'deleteBtn',
+        array(
+            "text" => _("Delete"),
+            "class" => "btc bt-poller-action bt_danger",
+            "name" => "delete_action",
+            "iconClass" => "ui-icon-trash",
+            "onClickAction" => "javascript: " .
+                " var bChecked = isChecked(); " .
+                " if (!bChecked) { alert('" . _("Please select one or more items") . "'); return false;} " .
+                " if (confirm('" .
+                _("You are about to delete one or more pollers.\\nThis action is IRREVERSIBLE.\\n" .
+                "Do you confirm the deletion ?") .
+                "')) { setO('d'); submit();} "
+        )
+    );
+
+    $tpl->assign(
+        'exportBtn',
+        array(
+            "text" => _("Export configuration"),
+            "class" => "btc bt-poller-action bt_info",
+            "name" => "apply_configuration",
+            "iconClass" => "ui-icon-extlink",
+            "onClickAction" => "applyConfiguration();"
+        )
+    );
+}
 
 $tpl->assign('limit', $limit);
 $tpl->assign('searchP', $search);
 $tpl->assign("can_generate", $can_generate);
 $tpl->assign("is_admin", $is_admin);
+$tpl->assign("isRemote", $isRemote);
 
 // Apply a template definition
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);

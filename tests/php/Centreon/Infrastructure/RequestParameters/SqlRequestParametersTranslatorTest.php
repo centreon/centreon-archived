@@ -24,6 +24,7 @@ namespace Tests\Centreon\Infrastructure\RequestParameters;
 use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 use Centreon\Domain\RequestParameters\RequestParameters;
+use Centreon\Infrastructure\RequestParameters\Interfaces\NormalizerInterface;
 use Centreon\Infrastructure\RequestParameters\RequestParametersTranslatorException;
 use PHPUnit\Framework\TestCase;
 
@@ -31,7 +32,7 @@ class SqlRequestParametersTranslatorTest extends TestCase
 {
     protected $requestParameters;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->requestParameters = $this->createMock(RequestParametersInterface::class);
     }
@@ -164,6 +165,52 @@ class SqlRequestParametersTranslatorTest extends TestCase
         $this->assertEquals(
             ' WHERE (h.name REGEXP :value_1)',
             $search
+        );
+    }
+
+    /**
+     * test translateSearchParameterToSql with normalizers
+     */
+    public function testTranslateSearchParametersWithNormalizers()
+    {
+        $this->requestParameters->expects($this->once())
+            ->method('getSearch')
+            ->willReturn([
+                '$and' => [
+                    'event.type' => ['$eq' => 'comment'],
+                    'event.date' => ['$ge' => '2020-01-31T03:54:12+01:00'],
+                ]
+            ]);
+
+        $sqlRequestParametersTranslator = new SqlRequestParametersTranslator($this->requestParameters);
+        $sqlRequestParametersTranslator->setConcordanceArray([
+            'event.type' => 'e.type',
+            'event.date' => 'e.date',
+        ]);
+        $sqlRequestParametersTranslator->addNormalizer(
+            'event.date',
+            new class implements NormalizerInterface
+            {
+                public function normalize($valueToNormalize)
+                {
+                    return (new \Datetime($valueToNormalize))->getTimestamp();
+                }
+            }
+        );
+
+        $search = $sqlRequestParametersTranslator->translateSearchParameterToSql();
+
+        $this->assertEquals(
+            ' WHERE (e.type = :value_1 AND e.date >= :value_2)',
+            $search
+        );
+
+        $this->assertEquals(
+            [
+                ':value_1' => [ \PDO::PARAM_STR => 'comment' ],
+                ':value_2' => [ \PDO::PARAM_INT => 1580439252 ],
+            ],
+            $sqlRequestParametersTranslator->getSearchValues()
         );
     }
 

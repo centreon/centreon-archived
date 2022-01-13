@@ -34,10 +34,9 @@ use CentreonLegacy\Core\Module\Exception;
  */
 class HealthcheckTest extends TestCase
 {
-
     protected $isModuleFs;
 
-    public function setUp()
+    public function setUp(): void
     {
         // mount VFS
         $this->fs = FileSystem::factory('vfs://');
@@ -59,7 +58,7 @@ class HealthcheckTest extends TestCase
         $this->container[ServiceProvider::CONFIGURATION] = $this
             ->getMockBuilder(Configuration::class)
             ->disableOriginalConstructor()
-            ->setMethods([
+            ->onlyMethods([
                 'getModulePath',
             ])
             ->getMock();
@@ -74,7 +73,7 @@ class HealthcheckTest extends TestCase
             ->setConstructorArgs([
                 new Container($this->container),
             ])
-            ->setMethods([
+            ->onlyMethods([
                 'getRequirements',
             ])
             ->getMock();
@@ -82,7 +81,7 @@ class HealthcheckTest extends TestCase
         $this->setRequirementMockMethodValue();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         // unmount VFS
         $this->fs->unmount();

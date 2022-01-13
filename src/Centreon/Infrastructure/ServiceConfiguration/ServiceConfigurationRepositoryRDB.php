@@ -178,56 +178,73 @@ class ServiceConfigurationRepositoryRDB extends AbstractRepositoryDRB implements
      */
     public function findOnDemandServiceMacros(int $serviceId, bool $isUsingInheritance = false): array
     {
-        if ($isUsingInheritance) {
-            $request = $this->translateDbName(
-                'WITH RECURSIVE inherite AS (
-                    SELECT srv.service_id, srv.service_template_model_stm_id AS template_id,
-                        demand.svc_macro_id AS macro_id, demand.svc_macro_name AS name, 0 AS level
-                    FROM `:db`.service srv
-                    LEFT JOIN `:db`.on_demand_macro_service demand
-                        ON srv.service_id = demand.svc_svc_id
-                    WHERE service_id = :service_id
-                    UNION
-                    SELECT srv.service_id, srv.service_template_model_stm_id AS template_id,
-                        demand.svc_macro_id AS macro_id, demand.svc_macro_name AS name, inherite.level + 1
-                    FROM `:db`.service srv
-                    INNER JOIN inherite
-                        ON inherite.template_id = srv.service_id
-                    LEFT JOIN `:db`.on_demand_macro_service demand
-                        ON srv.service_id = demand.svc_svc_id
-                )
-                SELECT demand.svc_macro_id AS id, demand.svc_macro_name AS name, demand.svc_macro_value AS `value`,
-                  demand.macro_order AS `order`, demand.description, demand.svc_svc_id AS service_id,
-                    CASE
-                        WHEN demand.is_password IS NULL THEN \'0\'
-                        ELSE demand.is_password
-                    END is_password
-                FROM inherite
-                INNER JOIN `:db`.on_demand_macro_service demand
-                    ON demand.svc_macro_id = inherite.macro_id
-                WHERE inherite.name IS NOT NULL
-                GROUP BY inherite.name'
-            );
-        } else {
-            $request = $this->translateDbName(
-                'SELECT svc_macro_id AS id, svc_macro_name AS name, svc_macro_value AS `value`,
-                    macro_order AS `order`, is_password, description, svc_svc_id AS service_id
-                FROM `:db`.on_demand_macro_service
-                WHERE svc_svc_id = :service_id'
-            );
-        }
-
+        /* CTE recurse request next release:
+         *       WITH RECURSIVE inherite AS (
+         *           SELECT srv.service_id, srv.service_template_model_stm_id AS template_id,
+         *               demand.svc_macro_id AS macro_id, demand.svc_macro_name AS name, 0 AS level
+         *           FROM `:db`.service srv
+         *           LEFT JOIN `:db`.on_demand_macro_service demand
+         *               ON srv.service_id = demand.svc_svc_id
+         *           WHERE service_id = :service_id
+         *           UNION
+         *           SELECT srv.service_id, srv.service_template_model_stm_id AS template_id,
+         *               demand.svc_macro_id AS macro_id, demand.svc_macro_name AS name, inherite.level + 1
+         *           FROM `:db`.service srv
+         *           INNER JOIN inherite
+         *               ON inherite.template_id = srv.service_id
+         *           LEFT JOIN `:db`.on_demand_macro_service demand
+         *               ON srv.service_id = demand.svc_svc_id
+         *       )
+         *       SELECT demand.svc_macro_id AS id, demand.svc_macro_name AS name,
+         *         demand.svc_macro_value AS `value`,
+         *         demand.macro_order AS `order`, demand.description, demand.svc_svc_id AS service_id
+         *           CASE
+         *               WHEN demand.is_password IS NULL THEN \'0\'
+         *               ELSE demand.is_password
+         *          END is_password
+         *       FROM inherite
+         *       INNER JOIN `:db`.on_demand_macro_service demand
+         *          ON demand.svc_macro_id = inherite.macro_id
+         *       WHERE inherite.name IS NOT NULL
+         */
+        $request = $this->translateDbName(
+            'SELECT
+                srv.service_id AS service_id, demand.svc_macro_id AS id, 
+                svc_macro_name AS name, svc_macro_value AS `value`,
+                macro_order AS `order`, is_password, description, service_template_model_stm_id
+             FROM `:db`.service srv
+                LEFT JOIN `:db`.on_demand_macro_service demand ON srv.service_id = demand.svc_svc_id
+             WHERE srv.service_id = :service_id'
+        );
         $statement = $this->db->prepare($request);
-        $statement->bindValue(':service_id', $serviceId, \PDO::PARAM_INT);
-        $statement->execute();
 
         $serviceMacros = [];
-        while (($record = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
-            $serviceMacros[] = EntityCreator::createEntityByArray(
-                ServiceMacro::class,
-                $record
-            );
+        $loop = [];
+        $macrosAdded = [];
+        while (!is_null($serviceId)) {
+            if (isset($loop[$serviceId])) {
+                break;
+            }
+            $loop[$serviceId] = 1;
+            $statement->bindValue(':service_id', $serviceId, \PDO::PARAM_INT);
+            $statement->execute();
+            while (($record = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
+                $serviceId = $record['service_template_model_stm_id'];
+                if (is_null($record['name']) || isset($macrosAdded[$record['name']])) {
+                    continue;
+                }
+                $macrosAdded[$record['name']] = 1;
+                $record['is_password'] = is_null($record['is_password']) ? 0 : $record['is_password'];
+                $serviceMacros[] = EntityCreator::createEntityByArray(
+                    ServiceMacro::class,
+                    $record
+                );
+            }
+            if (!$isUsingInheritance) {
+                break;
+            }
         }
+
         return $serviceMacros;
     }
 
@@ -236,29 +253,48 @@ class ServiceConfigurationRepositoryRDB extends AbstractRepositoryDRB implements
      */
     public function findCommandLine(int $serviceId): ?string
     {
+        /*
+         * CTE recurse request next release:
+         *   WITH RECURSIVE inherite AS (
+         *     SELECT service_id, service_template_model_stm_id, command_command_id
+         *     FROM `:db`.service
+         *     WHERE service_id = :service_id
+         *     UNION
+         *     SELECT service.command_command_id, service.service_template_model_stm_id, service.command_command_id
+         *     FROM `:db`.service
+         *     INNER JOIN inherite
+         *         ON inherite.service_template_model_stm_id = service.service_id
+         *         AND inherite.command_command_id IS NULL
+         *   )
+         *   SELECT command.command_line
+         *   FROM inherite
+         *   INNER JOIN `:db`.command
+         *       ON command.command_id = inherite.command_command_id
+         */
         $request = $this->translateDbName(
-            'WITH RECURSIVE inherite AS (
-            SELECT service_id, service_template_model_stm_id, command_command_id
-            FROM `:db`.service
-            WHERE service_id = :service_id
-            UNION
-            SELECT service.command_command_id, service.service_template_model_stm_id, service.command_command_id
-            FROM `:db`.service
-            INNER JOIN inherite
-                ON inherite.service_template_model_stm_id = service.service_id
-                AND inherite.command_command_id IS NULL
-            )
-            SELECT command.command_line
-            FROM inherite
-            INNER JOIN `:db`.command
-                ON command.command_id = inherite.command_command_id'
+            'SELECT
+                srv.service_id AS service_id, service_template_model_stm_id,
+                command.command_line
+             FROM `:db`.service srv
+                LEFT JOIN `:db`.command ON srv.command_command_id = command.command_id
+             WHERE srv.service_id = :service_id LIMIT 1'
         );
         $statement = $this->db->prepare($request);
-        $statement->bindValue(':service_id', $serviceId, \PDO::PARAM_INT);
-        $statement->execute();
 
-        if (($record = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
-            return (string)$record['command_line'];
+        $serviceMacros = [];
+        $loop = [];
+        while (!is_null($serviceId)) {
+            if (isset($loop[$serviceId])) {
+                break;
+            }
+            $loop[$serviceId] = 1;
+            $statement->bindValue(':service_id', $serviceId, \PDO::PARAM_INT);
+            $statement->execute();
+            $record = $statement->fetch(\PDO::FETCH_ASSOC);
+            if (!is_null($record['command_line'])) {
+                return (string)$record['command_line'];
+            }
+            $serviceId = $record['service_template_model_stm_id'];
         }
 
         return null;

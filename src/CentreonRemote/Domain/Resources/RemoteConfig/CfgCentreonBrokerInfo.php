@@ -26,7 +26,7 @@ class CfgCentreonBrokerInfo
      * @param string $serverName the poller name
      * @param string|null $dbUser the database user
      * @param string|null $dbPassword the database password
-     * @return array the configuration template
+     * @return array<string, array<string, array<int, array<string>>>> the configuration template
      */
     public static function getConfiguration(string $serverName, $dbUser, $dbPassword): array
     {

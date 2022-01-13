@@ -56,7 +56,9 @@ class CentreonWidgetParamsCompare extends CentreonWidgetParams
                 "eq" => "=",
                 "ne" => "!=",
                 "like" => "LIKE",
-                "notlike" => "NOT LIKE"
+                "notlike" => "NOT LIKE",
+                "regex" => "REGEXP",
+                "notregex" => "NOT REGEXP"
             );
             $elems[] = $this->quickform->addElement('select', 'op_' . $params['parameter_id'], '', $operands);
             $elems[] = $this->quickform->addElement(
@@ -83,7 +85,7 @@ class CentreonWidgetParamsCompare extends CentreonWidgetParams
             $target = $params['default_value'];
         }
         if (isset($target)) {
-            if (preg_match("/(gt |lt |gte |lte |eq |ne |like |notlike )(.+)/", $target, $matches)) {
+            if (preg_match("/(gt |lt |gte |lte |eq |ne |like |notlike |regex |notregex )(.+)/", $target, $matches)) {
                 $op = trim($matches[1]);
                 $val = trim($matches[2]);
             }

@@ -5,6 +5,7 @@
 /* eslint-disable no-underscore-dangle */
 
 import React, { Component } from 'react';
+
 import { connect } from 'react-redux';
 import { SubmissionError } from 'redux-form';
 
@@ -23,15 +24,15 @@ class RemoteServerStepTwoRoute extends Component {
   links = [
     {
       active: true,
-      prevActive: true,
       number: 1,
       path: routeMap.serverConfigurationWizard,
+      prevActive: true,
     },
     {
       active: true,
-      prevActive: true,
       number: 2,
       path: routeMap.remoteServerStep1,
+      prevActive: true,
     },
     { active: true, number: 3 },
     { active: false, number: 4 },
@@ -49,6 +50,7 @@ class RemoteServerStepTwoRoute extends Component {
     for (let i = 0; i < itemArr.items.length; i++) {
       if (itemArr.items[i].id === '1') itemArr.items.splice(i, 1);
     }
+
     return itemArr;
   };
 
@@ -72,6 +74,7 @@ class RemoteServerStepTwoRoute extends Component {
     const { history, pollerData, setPollerWizard } = this.props;
     const postData = { ...data, ...pollerData };
     postData.server_type = 'remote';
+
     return this.wizardFormApi
       .post('', postData)
       .then((response) => {
@@ -93,6 +96,7 @@ class RemoteServerStepTwoRoute extends Component {
   render() {
     const { links } = this;
     const { pollers } = this.state;
+
     return (
       <BaseWizard>
         <ProgressBar links={links} />

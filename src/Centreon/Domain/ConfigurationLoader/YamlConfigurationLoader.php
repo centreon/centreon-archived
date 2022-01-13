@@ -53,7 +53,6 @@ class YamlConfigurationLoader
      * Loads the configuration file defined in the constructor and returns its equivalent in the form of an array.
      *
      * @return array Configuration data
-     * @throws \FileNotFoundException
      */
     public function load(): array
     {
@@ -74,7 +73,6 @@ class YamlConfigurationLoader
      * @param string $historyLoadedFile History of analyzed configuration files
      *
      * @return array Returns the configuration data including other configuration data from the include files
-     * @throws \FileNotFoundException
      */
     private function iterateConfiguration(
         array $configuration,
@@ -87,7 +85,7 @@ class YamlConfigurationLoader
             } elseif ($value instanceof TaggedValue && $value->getTag() === self::INCLUDE_TOKEN) {
                 $fileToLoad = $value->getValue();
                 if ($fileToLoad[0] !== DIRECTORY_SEPARATOR) {
-                    $fileToLoad = $currentDirectory . '/' . $fileToLoad;
+                    $fileToLoad = $currentDirectory . DIRECTORY_SEPARATOR . $fileToLoad;
                 }
                 $dataToIterate = $this->loadFile($fileToLoad);
 
@@ -95,10 +93,10 @@ class YamlConfigurationLoader
                     $configuration[$key] = $this->iterateConfiguration(
                         $dataToIterate,
                         realpath(dirname($fileToLoad)),
-                        $historyLoadedFile . ':' . realpath($fileToLoad)
+                        $historyLoadedFile . '::' . realpath($fileToLoad)
                     );
                 } else {
-                    $loadedFile = explode(':', $historyLoadedFile);
+                    $loadedFile = explode('::', $historyLoadedFile);
                     throw new \Exception('Loop detected in file ' . array_pop($loadedFile));
                 }
             }
@@ -118,7 +116,7 @@ class YamlConfigurationLoader
     private function isLoopDetected(string $fileToLoad, string $historyLoadedFile): bool
     {
         $fileToLoad = realpath($fileToLoad);
-        $loadedFile = explode(':', $historyLoadedFile);
+        $loadedFile = explode('::', $historyLoadedFile);
 
         return in_array($fileToLoad, $loadedFile);
     }
@@ -129,12 +127,11 @@ class YamlConfigurationLoader
      * @param string $yamlFile Yaml configuration file to load
      *
      * @return array Returns the configuration data in the form of an array
-     * @throws \FileNotFoundException
      */
     private function loadFile(string $yamlFile): array
     {
         if (!file_exists($yamlFile)) {
-            throw new \FileNotFoundException('The configuration file \'' . $yamlFile . '\' does not exists');
+            throw new \Exception('The configuration file \'' . $yamlFile . '\' does not exists');
         }
 
         return (array)Yaml::parseFile($yamlFile, Yaml::PARSE_CUSTOM_TAGS);

@@ -1129,7 +1129,8 @@ class CentreonCustomView
                     ],
                     'keys' => ['cg_id'],
                     'order' => ['cg_id']
-                ]
+                ],
+                false
             );
 
             $allowedGroupIds = '';

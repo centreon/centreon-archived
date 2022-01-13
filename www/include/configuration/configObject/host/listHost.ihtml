@@ -27,12 +27,11 @@
         <tr class="ToolbarTR">
             { if $mode_access == 'w' }
             <td>
-                {$msg.options} {$form.o1.html}<a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
+                 {$form.o1.html}<a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
             </td>
             { else }
             <td>&nbsp;</td>
             { /if }
-            <input name="p" value="{$p}" type="hidden">
             {php}
             include('./include/common/pagination.php');
             {/php}
@@ -55,21 +54,10 @@
             <td class="ListColHeaderCenter">{$headerMenu_status}</td>
             <td class="ListColHeaderCenter">{$headerMenu_options}</td>
         </tr>
-        {assign var=pattern_mode value=0}
         {section name=elem loop=$elemArr}
-        {if $elemArr[elem].pattern != $pattern_value}
-        {assign var=pattern_mode value=0}
-        {/if}
-        {if $elemArr[elem].pattern && $pattern_mode == 0}
-        <tr class="list_lvl_1">
-            <td class="ListColLeft" colspan="9"><b>{$elemArr[elem].pattern}</b></td>
-        </tr>
-        {assign var=pattern_mode value=1}
-        {assign var=pattern_value value=$elemArr[elem].pattern}
-        {/if}
         <tr class="{$elemArr[elem].MenuClass}">
             <td class="ListColPicker">{$elemArr[elem].RowMenu_select}</td>
-            <td class="ListColLeft">{if $elemArr[elem].pattern}{/if}
+            <td class="ListColLeft">
                 <a href="{$elemArr[elem].RowMenu_link}">
                     <img src="{$elemArr[elem].RowMenu_icone}" class="ico-18  margin_right"/>{$elemArr[elem].RowMenu_name}
                 </a>
@@ -98,12 +86,11 @@
         <tr class="ToolbarTR">
             { if $mode_access == 'w' }
             <td class="Toolbar_TDSelectAction_Bottom">
-                {$msg.options} {$form.o2.html}<a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
+                 {$form.o2.html}<a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
             </td>
             { else }
             <td>&nbsp;</td>
             { /if }
-            <input name="p" value="{$p}" type="hidden">
             {php}
             include('./include/common/pagination.php');
             {/php}

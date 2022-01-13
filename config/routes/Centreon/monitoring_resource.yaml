@@ -2,7 +2,7 @@ centreon_application_monitoring_resource_list:
     methods: GET
     path: /monitoring/resources
     controller: 'Centreon\Application\Controller\MonitoringResourceController::list'
-    condition: "request.attributes.get('version.is_beta') == true"
+    condition: "request.attributes.get('version') >= 21.10"
 
 centreon_application_monitoring_resource_details_host:
     methods: GET
@@ -10,7 +10,7 @@ centreon_application_monitoring_resource_details_host:
     controller: 'Centreon\Application\Controller\MonitoringResourceController::detailsHost'
     requirements:
         hostId: '\d+'
-    condition: "request.attributes.get('version.is_beta') == true"
+    condition: "request.attributes.get('version') >= 21.10"
 
 centreon_application_monitoring_resource_details_service:
     methods: GET
@@ -19,4 +19,12 @@ centreon_application_monitoring_resource_details_service:
     requirements:
         hostId: '\d+'
         serviceId: '\d+'
-    condition: "request.attributes.get('version.is_beta') == true"
+    condition: "request.attributes.get('version') >= 21.10"
+
+centreon_application_monitoring_resource_details_meta_service:
+    methods: GET
+    path: /monitoring/resources/metaservices/{metaId}
+    controller: 'Centreon\Application\Controller\MonitoringResourceController::detailsMetaService'
+    requirements:
+        metaId: '\d+'
+    condition: "request.attributes.get('version') >= 21.10"

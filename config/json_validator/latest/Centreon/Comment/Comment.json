@@ -1,0 +1,19 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "Add comment to a host or a service",
+    "type": "object",
+    "required": ["comment"],
+    "additionalProperties": false,
+    "properties": {
+        "comment": {
+            "type": "string"
+        },
+        "date": {
+            "type": [
+                "string",
+                "null"
+            ],
+            "format": "date-time"
+        }
+    }
+}

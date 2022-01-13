@@ -10,14 +10,13 @@ use Centreon\Infrastructure\CentreonLegacyDB\ServiceEntityRepository;
  */
 class CentreonDBManagerService
 {
-
     /**
      * @var string
      */
     private $defaultManager;
 
     /**
-     * @var \Centreon\Infrastructure\CentreonLegacyDB\CentreonDBAdapter
+     * @var array<string,mixed>
      */
     private $manager;
 
@@ -55,7 +54,10 @@ class CentreonDBManagerService
         return $this->manager[$this->defaultManager];
     }
 
-    public function getRepository($repository): ServiceEntityRepository
+    /**
+     * @param mixed $repository
+     */
+    public function getRepository($repository): mixed
     {
         $manager = $this->manager[$this->defaultManager]
             ->getRepository($repository);

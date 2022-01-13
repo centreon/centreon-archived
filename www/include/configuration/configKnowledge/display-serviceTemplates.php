@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2019 CENTREON
+ * Copyright 2005-2020 CENTREON
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -98,11 +99,8 @@ try {
     ];
     $line = [0 => "list_one", 1 => "list_two"];
 
-    $proc = new procedures(
-        $pearDB
-    );
-    $proc->setHostInformations();
-    $proc->setServiceInformations();
+    $proc = new procedures($pearDB);
+    $proc->fetchProcedures();
 
     // Get Services Template Informations
     $query = "
@@ -196,7 +194,6 @@ try {
     $tpl->assign("content", $diff);
     $tpl->assign("status", $status);
     $tpl->assign("selection", 3);
-    $tpl->assign("icone", $proc->getIconeList());
 
     /*
      * Send template in order to open

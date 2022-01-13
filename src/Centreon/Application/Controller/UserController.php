@@ -48,6 +48,7 @@ class UserController extends AbstractController
                 'disacknowledgement' => $this->getAuthorizationForRole(Contact::ROLE_HOST_DISACKNOWLEDGEMENT),
                 'downtime' => $this->getAuthorizationForRole(Contact::ROLE_ADD_HOST_DOWNTIME),
                 'submit_status' => $this->getAuthorizationForRole(Contact::ROLE_HOST_SUBMIT_RESULT),
+                'comment' => $this->getAuthorizationForRole(Contact::ROLE_HOST_ADD_COMMENT),
             ],
             'service' => [
                 'check' => $this->getAuthorizationForRole(Contact::ROLE_SERVICE_CHECK),
@@ -55,10 +56,45 @@ class UserController extends AbstractController
                 'disacknowledgement' => $this->getAuthorizationForRole(Contact::ROLE_SERVICE_DISACKNOWLEDGEMENT),
                 'downtime' => $this->getAuthorizationForRole(Contact::ROLE_ADD_SERVICE_DOWNTIME),
                 'submit_status' => $this->getAuthorizationForRole(Contact::ROLE_SERVICE_SUBMIT_RESULT),
+                'comment' => $this->getAuthorizationForRole(Contact::ROLE_SERVICE_ADD_COMMENT),
+            ],
+            'metaservice' => [
+                'check' => $this->getAuthorizationForRole(Contact::ROLE_SERVICE_CHECK),
+                'acknowledgement' => $this->getAuthorizationForRole(Contact::ROLE_SERVICE_ACKNOWLEDGEMENT),
+                'disacknowledgement' => $this->getAuthorizationForRole(Contact::ROLE_SERVICE_DISACKNOWLEDGEMENT),
+                'downtime' => $this->getAuthorizationForRole(Contact::ROLE_ADD_SERVICE_DOWNTIME),
+                'submit_status' => $this->getAuthorizationForRole(Contact::ROLE_SERVICE_SUBMIT_RESULT),
+                'comment' => $this->getAuthorizationForRole(Contact::ROLE_SERVICE_ADD_COMMENT),
             ],
         ];
 
         return $this->view($actions);
+    }
+    /**
+     * Entry point to get configured parameters for the current user
+     *
+     * @return View
+     */
+    public function getUserParameters(): View
+    {
+        $this->denyAccessUnlessGrantedForApiConfiguration();
+
+        /**
+         * @var Contact $user
+         */
+        $user = $this->getUser();
+
+        return $this->view([
+            'id' => $user->getId(),
+            'name' => $user->getName(),
+            'alias' => $user->getAlias(),
+            'email' => $user->getEmail(),
+            'timezone' => $user->getTimezone()->getName(),
+            'locale' => $user->getLocale(),
+            'is_admin' => $user->isAdmin(),
+            'use_deprecated_pages' => $user->isUsingDeprecatedPages(),
+            'is_export_button_enabled' => $user->isOneClickExportEnabled()
+        ]);
     }
 
     /**
@@ -70,7 +106,7 @@ class UserController extends AbstractController
     private function getAuthorizationForRole(string $role): bool
     {
         /**
-         * @var Contact $contact
+         * @var Contact|null $contact
          */
         $contact = $this->getUser();
 

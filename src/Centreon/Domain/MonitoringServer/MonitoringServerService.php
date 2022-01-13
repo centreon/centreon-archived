@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\MonitoringServer;
 
+use Centreon\Domain\MonitoringServer\Exception\MonitoringServerException;
 use Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerRepositoryInterface;
 use Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerServiceInterface;
 
@@ -128,6 +129,18 @@ class MonitoringServerService implements MonitoringServerServiceInterface
             $this->monitoringServerRepository->notifyConfigurationChanged($monitoringServer);
         } catch (\Exception $ex) {
             throw new MonitoringServerException('Error when notifying a configuration change', 0, $ex);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function deleteServer(int $monitoringServerId): void
+    {
+        try {
+            $this->monitoringServerRepository->deleteServer($monitoringServerId);
+        } catch (\Exception $ex) {
+            throw new MonitoringServerException('Error when deleting a monitoring server', 0, $ex);
         }
     }
 }

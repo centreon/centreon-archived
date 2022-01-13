@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,30 +18,64 @@
  * For more information : contact@centreon.com
  *
  */
+
 declare(strict_types=1);
 
 namespace Centreon\Domain\PlatformTopology\Interfaces;
 
 use Centreon\Domain\Engine\EngineException;
 use Centreon\Domain\Exception\EntityNotFoundException;
-use Centreon\Domain\MonitoringServer\MonitoringServerException;
-use Centreon\Domain\PlatformTopology\PlatformTopology;
-use Centreon\Domain\PlatformTopology\PlatformTopologyConflictException;
-use Centreon\Domain\PlatformTopology\PlatformTopologyException;
-use Centreon\Domain\PlatformInformation\PlatformInformationException;
+use Centreon\Domain\MonitoringServer\Exception\MonitoringServerException;
+use Centreon\Domain\PlatformTopology\Exception\PlatformTopologyException;
+use Centreon\Domain\PlatformInformation\Exception\PlatformInformationException;
 
 interface PlatformTopologyServiceInterface
 {
     /**
-     * Add new server
+     * Add new server as a pending platform
      *
-     * @param PlatformTopology $platformTopology
-     * @throws PlatformTopologyConflictException
+     * @param PlatformInterface $platformPending
      * @throws MonitoringServerException
      * @throws EngineException
      * @throws PlatformTopologyException
      * @throws EntityNotFoundException
      * @throws PlatformInformationException
+     * @throws PlatformTopologyRepositoryExceptionInterface
      */
-    public function addPlatformToTopology(PlatformTopology $platformTopology): void;
+    public function addPendingPlatformToTopology(PlatformInterface $platformPending): void;
+
+    /**
+     * Get a topology with detailed nodes
+     *
+     * @return PlatformInterface[]
+     * @throws PlatformTopologyException
+     * @throws EntityNotFoundException
+     */
+    public function getPlatformTopology(): array;
+
+    /**
+     * Delete a Platform and allocate its children to top level platform.
+     *
+     * @param int $serverId
+     * @throws PlatformTopologyException
+     * @throws EntityNotFoundException
+     */
+    public function deletePlatformAndReallocateChildren(int $serverId): void;
+
+    /**
+     * Update a platform with given parameters.
+     *
+     * @param PlatformInterface $platform
+     * @return void
+     * @throws PlatformTopologyException
+     */
+    public function updatePlatformParameters(PlatformInterface $platform): void;
+
+    /**
+     * Find the top level platform of the topology.
+     *
+     * @return PlatformInterface|null
+     * @throws PlatformTopologyException
+     */
+    public function findTopLevelPlatform(): ?PlatformInterface;
 }

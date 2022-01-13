@@ -10,8 +10,8 @@ const AcknowledgeChip = (): JSX.Element => {
 
   return (
     <Chip
-      icon={<IconAcknowledge fontSize="small" />}
       color={theme.palette.action.acknowledged}
+      icon={<IconAcknowledge fontSize="small" />}
     />
   );
 };

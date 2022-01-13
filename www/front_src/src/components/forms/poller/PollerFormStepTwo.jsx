@@ -6,10 +6,13 @@
 /* eslint-disable import/no-named-as-default */
 
 import React, { Component } from 'react';
+
 import { Field, reduxForm as connectForm } from 'redux-form';
 import { withTranslation } from 'react-i18next';
-
 import Select from 'react-select';
+
+import { Paper, Typography, Button } from '@material-ui/core';
+
 import styles from '../../../styles/partials/form/_form.scss';
 import SelectField from '../../form-fields/SelectField';
 import CheckboxField from '../../form-fields/CheckboxField';
@@ -17,8 +20,8 @@ import fieldHoc from '../../form-fields/hoc';
 
 class PollerFormStepTwo extends Component {
   state = {
-    selectedMaster: null,
     selectedAdditionals: [],
+    selectedMaster: null,
   };
 
   /**
@@ -58,8 +61,8 @@ class PollerFormStepTwo extends Component {
     change('linked_remote_slaves', filteredAdditionals);
 
     this.setState({
-      selectedMaster: value,
       selectedAdditionals: filteredAdditionals,
+      selectedMaster: value,
     });
   };
 
@@ -79,17 +82,17 @@ class PollerFormStepTwo extends Component {
     const availableAdditionals = this.getAvailableAdditionals();
 
     return (
-      <div className={styles['form-wrapper']}>
+      <Paper className={styles['form-container']}>
         <div className={styles['form-inner']}>
           <form autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
             {pollers.length ? (
               <>
-                <h2 className={styles['form-title']}>
+                <Typography variant="h6">
                   {t('Attach poller to a master remote server')}
-                </h2>
+                </Typography>
                 <Field
-                  name="linked_remote_master"
                   component={SelectField}
+                  name="linked_remote_master"
                   options={[
                     {
                       text: '',
@@ -97,9 +100,9 @@ class PollerFormStepTwo extends Component {
                     },
                   ].concat(
                     pollers.map((c) => ({
-                      value: c.id,
                       label: c.name,
                       text: c.name,
+                      value: c.id,
                     })),
                   )}
                   value={selectedMaster}
@@ -109,49 +112,56 @@ class PollerFormStepTwo extends Component {
             ) : null}
             {selectedMaster && pollers.length >= 2 ? (
               <>
-                <h2 className={styles['form-title']}>
+                <Typography variant="h6">
                   {t('Attach poller to additional remote servers')}
-                </h2>
+                </Typography>
                 <div className={styles['form-item']}>
                   <Field
-                    name="linked_remote_slaves"
-                    component={fieldHoc(Select)}
-                    options={availableAdditionals.map((remote) => ({
-                      value: remote.id,
-                      label: remote.name,
-                    }))}
                     isMulti
+                    component={fieldHoc(Select)}
+                    name="linked_remote_slaves"
+                    options={availableAdditionals.map((remote) => ({
+                      label: remote.name,
+                      value: remote.id,
+                    }))}
                     onChange={this.handleChangeAdditionals}
                   />
                 </div>
               </>
             ) : null}
             <Field
-              name="open_broker_flow"
               component={CheckboxField}
-              label={t('Advanced: reverse Centreon Broker communication flow')}
               defaultValue={false}
+              label={t('Advanced: reverse Centreon Broker communication flow')}
+              name="open_broker_flow"
             />
             <div className={styles['form-buttons']}>
-              <button className={styles.button} type="submit">
+              <Button
+                color="primary"
+                size="small"
+                type="submit"
+                variant="contained"
+              >
                 {t('Apply')}
-              </button>
+              </Button>
             </div>
             {error ? (
-              <div className={styles['error-block']}>{error.message}</div>
+              <Typography color="error" variant="body2">
+                {error.message}
+              </Typography>
             ) : null}
           </form>
         </div>
-      </div>
+      </Paper>
     );
   }
 }
 
 export default withTranslation()(
   connectForm({
-    form: 'PollerFormStepTwo',
-    enableReinitialize: true,
     destroyOnUnmount: false,
+    enableReinitialize: true,
+    form: 'PollerFormStepTwo',
     keepDirtyOnReinitialize: true,
   })(PollerFormStepTwo),
 );

@@ -2,10 +2,16 @@ centreon_application_monitoring_gettimelinebyhost:
     methods: GET
     path: /monitoring/hosts/{hostId}/timeline
     controller: 'Centreon\Application\Controller\Monitoring\TimelineController::getHostTimeline'
-    condition: "request.attributes.get('version.is_beta') == true"
+    condition: "request.attributes.get('version') >= 21.10"
 
 centreon_application_monitoring_gettimelinebyhostandservice:
     methods: GET
     path: /monitoring/hosts/{hostId}/services/{serviceId}/timeline
     controller: 'Centreon\Application\Controller\Monitoring\TimelineController::getServiceTimeline'
-    condition: "request.attributes.get('version.is_beta') == true"
+    condition: "request.attributes.get('version') >= 21.10"
+
+centreon_application_monitoring_gettimelinebymetaservices:
+    methods: GET
+    path: /monitoring/metaservice/{metaId}/timeline
+    controller: 'Centreon\Application\Controller\Monitoring\TimelineController::getMetaServiceTimeline'
+    condition: "request.attributes.get('version') >= 21.10"

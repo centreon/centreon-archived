@@ -42,8 +42,8 @@ use Pimple\Psr11\Container as ContainerWrap;
 use Centreon\Infrastructure\Service\CentreonPaginationService;
 use Centreon\Application\DataRepresenter;
 use Centreon\ServiceProvider;
-use Centreon\Tests\Resource\Mock;
-use Centreon\Tests\Resource\Dependency;
+use Centreon\Tests\Resources\Mock;
+use Centreon\Tests\Resources\Dependency;
 use Symfony\Component\Serializer\Serializer;
 
 class CentreonPaginationServiceTest extends TestCase
@@ -55,9 +55,14 @@ class CentreonPaginationServiceTest extends TestCase
      */
     protected $service;
 
-    public function setUp()
+    /**
+     * @var Container
+     */
+    protected $container;
+
+    public function setUp(): void
     {
-        $this->container = new Container;
+        $this->container = new Container();
         $this->setUpCentreonDbManager($this->container);
         $this->container[ServiceProvider::SERIALIZER] = $this->createMock(Serializer::class);
 
@@ -105,7 +110,7 @@ class CentreonPaginationServiceTest extends TestCase
         $extras = [
             'sub' => 'buf',
         ];
-        
+
         $response = $this->service
             ->setRepository(Mock\RepositoryPaginationMock::class)
             ->setDataRepresenter(DataRepresenter\Entity::class)
@@ -123,78 +128,54 @@ class CentreonPaginationServiceTest extends TestCase
             . '"entities":[{"id":"1","name":"first"}]}}',
             json_encode($response)
         );
-
-        // check properties
-        $this->assertAttributeEquals($filters, 'filters', $this->service);
-        $this->assertAttributeEquals($limit, 'limit', $this->service);
-        $this->assertAttributeEquals($offset, 'offset', $this->service);
-        $this->assertAttributeEquals([
-            'field' => $sortField,
-            'order' => strtoupper($sortOrder),
-        ], 'ordering', $this->service);
-        $this->assertAttributeEquals($extras, 'extras', $this->service);
     }
 
-    /**
-     * @expectedException \Exception
-     */
     public function testGetResponseWithIncorectRepository()
     {
-        $this->service
-            ->setRepository(Mock\RepositoryMock::class);
+        $this->expectException(\Exception::class);
+
+        $this->service->setRepository(Mock\RepositoryMock::class);
     }
 
-    /**
-     * @expectedException \Exception
-     */
     public function testGetResponseWithIncorectDataRepresenter()
     {
-        $this->service
-            ->setDataRepresenter(\stdClass::class);
+        $this->expectException(\Exception::class);
+
+        $this->service->setDataRepresenter(\stdClass::class);
     }
 
-    /**
-     * @expectedException \RuntimeException
-     */
     public function testGetResponseWithIncorectLimit()
     {
-        $this->service
-            ->setLimit($this->service::LIMIT_MAX + 1);
+        $this->expectException(\RuntimeException::class);
+
+        $this->service->setLimit($this->service::LIMIT_MAX + 1);
     }
 
-    /**
-     * @expectedException \RuntimeException
-     */
     public function testGetResponseWithIncorectLimit2()
     {
-        $this->service
-            ->setLimit(0);
+        $this->expectException(\RuntimeException::class);
+
+        $this->service->setLimit(0);
     }
 
-    /**
-     * @expectedException \RuntimeException
-     */
     public function testGetResponseWithIncorectLimit3()
     {
-        $this->service
-            ->setLimit(-1);
+        $this->expectException(\RuntimeException::class);
+
+        $this->service->setLimit(-1);
     }
 
-    /**
-     * @expectedException \RuntimeException
-     */
     public function testGetResponseWithIncorectOffset()
     {
-        $this->service
-            ->setOffset(0);
+        $this->expectException(\RuntimeException::class);
+
+        $this->service->setOffset(0);
     }
 
-    /**
-     * @expectedException \RuntimeException
-     */
     public function testGetResponseWithIncorectOffset2()
     {
-        $this->service
-            ->setOffset(-1);
+        $this->expectException(\RuntimeException::class);
+
+        $this->service->setOffset(-1);
     }
 }

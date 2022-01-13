@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2019 Centreon
+ * Copyright 2005-2021 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -69,18 +70,21 @@ $inputPost = filter_input_array(
     $inputArguments
 );
 
-$inputs = array();
+$inputs = [];
 foreach ($inputArguments as $argumentName => $argumentValue) {
-    if (!is_null($inputGet[$argumentName]) && trim($inputGet[$argumentName]) != '') {
+    if (!empty($inputGet[$argumentName]) && trim($inputGet[$argumentName]) !== '') {
         $inputs[$argumentName] = $inputGet[$argumentName];
-    } else {
+    } elseif (!empty($inputPost[$argumentName]) && trim($inputPost[$argumentName]) !== '') {
         $inputs[$argumentName] = $inputPost[$argumentName];
+    } else {
+        $inputs[$argumentName] = null;
     }
 }
 
-if (is_null($p)) {
+if (empty($p)) {
     $p = $inputs["p"];
 }
+
 $o = $inputs["o"];
 $min = $inputs["min"];
 $type = $inputs["type"];
@@ -109,15 +113,26 @@ $query = "SELECT topology_parent,topology_name,topology_id,topology_url,topology
 $DBRESULT = $pearDB->query($query);
 $redirect = $DBRESULT->fetch();
 
+/**
+ *  Is server a remote ?
+ */
+global $isRemote;
+$isRemote = false;
+
+$result = $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'isRemote'");
+if ($row = $result->fetch()) {
+    $isRemote = $row['value'] === 'yes';
+}
+
 /*
  * Init URL
  */
 $url = "";
 $acl_page = $centreon->user->access->page($p, true);
-if ($acl_page == 1 || $acl_page == 2) {
+if ($redirect !== false && ($acl_page == 1 || $acl_page == 2)) {
     if ($redirect["topology_page"] < 100) {
         $ret = get_child($redirect["topology_page"], $centreon->user->access->topologyStr);
-        if (!$ret['topology_page']) {
+        if ($ret === false || !$ret['topology_page']) {
             if (file_exists($redirect["topology_url"])) {
                 $url = $redirect["topology_url"];
                 reset_search_page($url);
@@ -126,7 +141,7 @@ if ($acl_page == 1 || $acl_page == 2) {
             }
         } else {
             $ret2 = get_child($ret['topology_page'], $centreon->user->access->topologyStr);
-            if ($ret2["topology_url_opt"]) {
+            if ($ret2 === false || $ret2["topology_url_opt"]) {
                 if (!$o) {
                     $tab = preg_split("/\=/", $ret2["topology_url_opt"]);
                     $o = $tab[1];
@@ -157,7 +172,7 @@ if ($acl_page == 1 || $acl_page == 2) {
         }
     } elseif ($redirect["topology_page"] >= 100 && $redirect["topology_page"] < 1000) {
         $ret = get_child($redirect["topology_page"], $centreon->user->access->topologyStr);
-        if (!$ret['topology_page']) {
+        if ($ret === false || !$ret['topology_page']) {
             if (file_exists($redirect["topology_url"])) {
                 $url = $redirect["topology_url"];
                 reset_search_page($url);
@@ -181,7 +196,7 @@ if ($acl_page == 1 || $acl_page == 2) {
         }
     } elseif ($redirect["topology_page"] >= 1000) {
         $ret = get_child($redirect["topology_page"], $centreon->user->access->topologyStr);
-        if (!$ret['topology_page']) {
+        if ($ret === false || !$ret['topology_page']) {
             if (file_exists($redirect["topology_url"])) {
                 $url = $redirect["topology_url"];
                 reset_search_page($url);
@@ -279,20 +294,14 @@ $inputPost = filter_input_array(
 
 if (isset($url) && $url) {
     foreach ($inputArguments as $argumentName => $argumentFlag) {
-        switch ($argumentName) {
-            case 'limit':
-                if (!is_null($inputGet[$argumentName])) {
-                    $centreon->historyLimit[$url] = $inputGet[$argumentName];
-                } elseif (!is_null($inputPost[$argumentName])) {
-                    $centreon->historyLimit[$url] = $inputPost[$argumentName];
-                } else {
-                    $centreon->historyLimit[$url] = 30;
-                }
-                break;
-
-            default:
-                continue;
-                break;
+        if ($argumentName === 'limit') {
+            if (!empty($inputGet[$argumentName])) {
+                $centreon->historyLimit[$url] = $inputGet[$argumentName];
+            } elseif (!empty($inputPost[$argumentName])) {
+                $centreon->historyLimit[$url] = $inputPost[$argumentName];
+            } else {
+                $centreon->historyLimit[$url] = 30;
+            }
         }
     }
 }

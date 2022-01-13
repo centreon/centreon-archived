@@ -2,20 +2,34 @@ import * as React from 'react';
 
 import axios from 'axios';
 import { useSelector } from 'react-redux';
+import { render, act, waitFor, RenderResult } from '@testing-library/react';
+import { Provider } from 'jotai';
 
-import { render, act, waitFor } from '@testing-library/react';
+import { refreshIntervalAtom, userAtom } from '@centreon/ui-context';
+
+import useFilter from '../../testUtils/useFilter';
+import useListing from '../useListing';
+import Context, { ResourceContext } from '../../testUtils/Context';
+import useLoadDetails from '../../testUtils/useLoadDetails';
 
 import useLoadResources from '.';
-import useFilter from '../../Filter/useFilter';
-import useListing from '../useListing';
-import Context, { ResourceContext } from '../../Context';
-import useDetails from '../../Details/useDetails';
+
+jest.mock('@centreon/ui-context', () =>
+  jest.requireActual('@centreon/centreon-frontend/packages/ui-context'),
+);
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 jest.mock('react-redux', () => ({
+  ...(jest.requireActual('react-redux') as jest.Mocked<unknown>),
   useSelector: jest.fn(),
 }));
+
+const mockUser = {
+  locale: 'en',
+  timezone: 'Europe/Paris',
+};
+const mockRefreshInterval = 60;
 
 let context: ResourceContext;
 
@@ -28,7 +42,7 @@ const LoadResourcesComponent = (): JSX.Element => {
 const TestComponent = (): JSX.Element => {
   const filterState = useFilter();
   const listingState = useListing();
-  const detailsState = useDetails();
+  const detailsState = useLoadDetails();
 
   context = {
     ...filterState,
@@ -43,26 +57,42 @@ const TestComponent = (): JSX.Element => {
   );
 };
 
+const TestComponentWithJotai = (): JSX.Element => (
+  <Provider
+    initialValues={[
+      [userAtom, mockUser],
+      [refreshIntervalAtom, mockRefreshInterval],
+    ]}
+  >
+    <TestComponent />
+  </Provider>
+);
+
+const renderLoadResources = (): RenderResult =>
+  render(<TestComponentWithJotai />);
+
 const appState = {
   intervals: {
     AjaxTimeReloadMonitoring: 60,
   },
 };
 
+const mockedSelector = useSelector as jest.Mock;
+
 describe(useLoadResources, () => {
   beforeEach(() => {
-    useSelector.mockImplementation((callback) => {
+    mockedSelector.mockImplementation((callback) => {
       return callback(appState);
     });
 
     mockedAxios.get.mockResolvedValue({
       data: {
-        result: [],
         meta: {
-          page: 1,
           limit: 30,
+          page: 1,
           total: 0,
         },
+        result: [],
       },
     });
   });
@@ -72,41 +102,68 @@ describe(useLoadResources, () => {
   });
 
   const testCases = [
-    ['sortf', (): void => context.setSortf('a')],
-    ['sorto', (): void => context.setSorto('desc')],
-    ['limit', (): void => context.setLimit(20), '20'],
-    ['currentSearch', (): void => context.setCurrentSearch('toto')],
+    [
+      'sort',
+      (): void => context.setCriteria?.({ name: 'sort', value: ['a', 'asc'] }),
+    ],
+    ['limit', (): void => context.setLimit?.(20), '20'],
+    [
+      'search',
+      (): void => context.setCriteria?.({ name: 'search', value: 'toto' }),
+    ],
     [
       'states',
       (): void =>
-        context.setStates([{ id: 'unhandled', name: 'Unhandled problems' }]),
+        context.setCriteria?.({
+          name: 'states',
+          value: [{ id: 'unhandled', name: 'Unhandled problems' }],
+        }),
     ],
-    ['statuses', (): void => context.setStatuses([{ id: 'OK', name: 'Ok' }])],
+    [
+      'statuses',
+      (): void =>
+        context.setCriteria?.({
+          name: 'statuses',
+          value: [{ id: 'OK', name: 'Ok' }],
+        }),
+    ],
     [
       'resourceTypes',
-      (): void => context.setResourceTypes([{ id: 'host', name: 'Host' }]),
+      (): void =>
+        context.setCriteria?.({
+          name: 'resource_types',
+          value: [{ id: 'host', name: 'Host' }],
+        }),
     ],
     [
       'hostGroups',
-      (): void => context.setHostGroups([{ id: 0, name: 'Linux-servers' }]),
+      (): void =>
+        context.setCriteria?.({
+          name: 'host_groups',
+          value: [{ id: 0, name: 'Linux-servers' }],
+        }),
     ],
     [
       'serviceGroups',
-      (): void => context.setServiceGroups([{ id: 1, name: 'Web-services' }]),
+      (): void =>
+        context.setCriteria?.({
+          name: 'service_groups',
+          value: [{ id: 1, name: 'Web-services' }],
+        }),
     ],
   ];
 
   it.each(testCases)(
-    'resets the page to 1 when %p is changed',
+    'resets the page to 1 when %p is changed and current filter is applied',
     async (_, setter) => {
-      render(<TestComponent />);
+      renderLoadResources();
 
       await waitFor(() => {
         expect(mockedAxios.get).toHaveBeenCalledTimes(2);
       });
 
       act(() => {
-        context.setPage(2);
+        context.setPage?.(2);
       });
 
       await waitFor(() => {
@@ -115,6 +172,7 @@ describe(useLoadResources, () => {
 
       act(() => {
         (setter as () => void)();
+        context.applyCurrentFilter?.();
       });
 
       await waitFor(() => {

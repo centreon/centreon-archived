@@ -116,12 +116,13 @@ class CentreonCentbrokerCfg extends CentreonObject
                 $params[1] = "ns_nagios_server";
                 $params[2] = $this->instanceObj->getInstanceId($params[2]);
             } elseif (!preg_match('/^config_/', $params[1])) {
-                $parametersWithoutPrefix = array(
+                $parametersWithoutPrefix = [
                     "event_queue_max_size",
                     "cache_directory",
                     "stats_activate",
-                    "daemon"
-                );
+                    "daemon",
+                    "pool_size",
+                ];
                 if (!in_array($params[1], $parametersWithoutPrefix)) {
                     $params[1] = 'config_' . $params[1];
                 }
@@ -743,6 +744,12 @@ class CentreonCentbrokerCfg extends CentreonObject
                 . $element['config_name'] . $this->delim
                 . "daemon" . $this->delim
                 . $element['daemon'] . "\n";
+            $poolSize = empty($element['pool_size']) ? '' : $element['pool_size'];
+            echo $this->action . $this->delim
+                . "SETPARAM" . $this->delim
+                . $element['config_name'] . $this->delim
+                . "pool_size" . $this->delim
+                . $poolSize . "\n";
             $sql = "SELECT config_key, config_value, config_group, config_group_id
             		FROM cfg_centreonbroker_info
             		WHERE config_id = ?
