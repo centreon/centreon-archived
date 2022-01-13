@@ -11,7 +11,7 @@ import {
 
 import { CustomTimePeriod, TimePeriodId } from './tabs/Graph/models';
 
-interface Group extends NamedEntity {
+export interface Group extends NamedEntity {
   configuration_uri: string | null;
 }
 
