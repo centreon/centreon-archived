@@ -46,6 +46,9 @@ jobs:
         path: vendor
         key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
 
+    - name: check style
+      run: composer run codestyle:ci
+
     - name: Run phpcs
       uses: chekalsky/phpcs-action@v1
       with:
