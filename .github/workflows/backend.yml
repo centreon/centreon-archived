@@ -66,6 +66,13 @@ jobs:
 
     - run: cat ./checkstyle-be.xml
 
+    - name: Test Report
+      uses: dorny/test-reporter@v1   # run this step even if previous step failed
+      with:
+        name: checkstyle            # Name of the check run which will be created
+        path: checkstyle-be.xml    # Path to test results
+        reporter: jest-junit
+
     # - name: Run phpcs
     #   uses: chekalsky/phpcs-action@v1
     #   with:
