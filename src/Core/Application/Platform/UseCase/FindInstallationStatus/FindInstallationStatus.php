@@ -44,7 +44,7 @@ class FindInstallationStatus
      */
     public function __invoke(FindInstallationStatusPresenterInterface $presenter): void
     {
-        $this->info('check installation status');
+        $this->info('check installation status of centreon web');
         $isCentreonWebInstalled = $this->repository->isCentreonWebInstalled();
         $isCentreonWebUpgradeAvailable = $this->repository->isCentreonWebUpgradeAvailable();
 
@@ -64,8 +64,8 @@ class FindInstallationStatus
     }
 
     /**
-     * @param boolean $isCentreonWebInstalled
-     * @param boolean $isCentreonWebUpgradeAvailable
+     * @param bool $isCentreonWebInstalled
+     * @param bool $isCentreonWebUpgradeAvailable
      * @return FindInstallationStatusResponse
      */
     private function createResponse(

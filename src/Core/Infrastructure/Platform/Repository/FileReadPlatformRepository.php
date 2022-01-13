@@ -36,11 +36,7 @@ class FileReadPlatformRepository implements ReadPlatformRepositoryInterface
      */
     public function isCentreonWebInstalled(): bool
     {
-        if (file_exists($this->etcDir . '/centreon.conf.php')) {
-            return true;
-        }
-
-        return false;
+        return file_exists($this->etcDir . '/centreon.conf.php');
     }
 
     /**
@@ -48,10 +44,6 @@ class FileReadPlatformRepository implements ReadPlatformRepositoryInterface
      */
     public function isCentreonWebUpgradeAvailable(): bool
     {
-        if (is_dir($this->installDir)) {
-            return true;
-        }
-
-        return false;
+        return is_dir($this->installDir);
     }
 }
