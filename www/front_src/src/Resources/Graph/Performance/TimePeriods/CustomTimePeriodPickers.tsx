@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import dayjs from 'dayjs';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
-import { and, cond, equals, or } from 'ramda';
+import { and, cond, equals } from 'ramda';
 import { useTranslation } from 'react-i18next';
 import { useAtomValue } from 'jotai/utils';
 

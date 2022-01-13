@@ -65,12 +65,6 @@ const useDateTimePickerAdapter = (): UseDateTimePickerAdapterProps => {
     };
 
     public getHours = (date): number => {
-      console.log(
-        timezone,
-        date.tz(timezone).get('hour'),
-        getLocalAndConfiguredTimezoneOffset(),
-      );
-
       return date.tz(timezone).get('hour');
     };
 
