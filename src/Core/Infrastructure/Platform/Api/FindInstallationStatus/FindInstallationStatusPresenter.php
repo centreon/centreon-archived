@@ -36,7 +36,7 @@ class FindInstallationStatusPresenter extends AbstractPresenter implements FindI
     {
         $presenterResponse = [
             'is_installed' => $response->isCentreonWebInstalled,
-            'upgrade_available' => $response->isCentreonWebUpgradeAvailable
+            'has_upgrade_available' => $response->isCentreonWebUpgradeAvailable
         ];
 
         $this->presenterFormatter->present($presenterResponse);
