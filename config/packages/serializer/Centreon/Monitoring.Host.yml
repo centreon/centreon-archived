@@ -221,7 +221,7 @@ Centreon\Domain\Monitoring\Host:
                 - 'host_main'
                 - 'host_full'
         criticality:
-            type: string
+            type: int
             groups:
                 - 'host_main'
                 - 'host_full'
