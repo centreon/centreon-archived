@@ -16353,3 +16353,6 @@ msgstr "Cacher le mot de passe"
 
 msgid "centreon is not properly installed"
 msgstr "centreon n'est pas correctement installé"
+
+msgid "You have been logged out"
+msgstr "Vous avez été déconnecté" 

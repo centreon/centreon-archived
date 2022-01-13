@@ -9,7 +9,7 @@
 import React, { Component } from 'react';
 
 import classnames from 'classnames';
-import { withTranslation } from 'react-i18next';
+import { withTranslation, useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
 import { useUpdateAtom } from 'jotai/utils';
 
@@ -20,7 +20,7 @@ import UserIcon from '@mui/icons-material/AccountCircle';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import CheckIcon from '@mui/icons-material/Check';
 
-import { postData, useRequest, getData } from '@centreon/ui';
+import { postData, useRequest, getData, useSnackbar } from '@centreon/ui';
 
 import styles from '../header.scss';
 import Clock from '../Clock';
@@ -31,6 +31,7 @@ import { logoutEndpoint } from '../../api/endpoint';
 import reactRoutes from '../../reactRoutes/routeMap';
 
 import { userEndpoint } from './api/endpoint';
+import { labelYouHaveBeenLoggedOut } from './translatedLabels';
 
 const EDIT_PROFILE_TOPOLOGY_PAGE = '50104';
 
@@ -241,6 +242,7 @@ class UserMenuContent extends Component {
 }
 
 const UserMenu = (props) => {
+  const { t } = useTranslation();
   const { allowedPages } = useNavigation();
   const { sendRequest: logoutRequest } = useRequest({
     request: postData,
@@ -249,6 +251,7 @@ const UserMenu = (props) => {
     request: getData,
   });
   const navigate = useNavigate();
+  const { showSuccessMessage } = useSnackbar();
 
   const setAreUserParametersLoaded = useUpdateAtom(areUserParametersLoadedAtom);
 
@@ -259,6 +262,7 @@ const UserMenu = (props) => {
     }).then(() => {
       setAreUserParametersLoaded(false);
       navigate(reactRoutes.login);
+      showSuccessMessage(t(labelYouHaveBeenLoggedOut));
     });
   };
 

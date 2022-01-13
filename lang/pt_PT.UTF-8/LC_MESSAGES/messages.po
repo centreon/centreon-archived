@@ -15221,3 +15221,6 @@ msgstr ""
 
 # msgid "Hide the password"
 # msgstr ""
+
+# msgid "You have been logged out"
+# msgstr "" 
