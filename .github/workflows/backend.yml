@@ -34,6 +34,11 @@ jobs:
 
     steps:
 
+    - name: Setup PHP 8.0
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.0'
+
     - name: Cache Composer
       uses: actions/cache@v2
       id: composer-cache
