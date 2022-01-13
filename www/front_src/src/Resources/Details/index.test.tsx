@@ -3,19 +3,16 @@ import * as React from 'react';
 import { equals, reject, path, isNil } from 'ramda';
 import axios from 'axios';
 import mockDate from 'mockdate';
+import userEvent from '@testing-library/user-event';
+import { Provider } from 'jotai';
+import { BrowserRouter } from 'react-router-dom';
+
 import {
   render,
   waitFor,
   fireEvent,
   RenderResult,
   act,
-} from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { Provider } from 'jotai';
-import { BrowserRouter } from 'react-router-dom';
-
-import {
-  ThemeProvider,
   setUrlQueryParameters,
   getUrlQueryParameters,
   copyToClipboard,
@@ -508,13 +505,11 @@ const DetailsTest = (): JSX.Element => {
   } as ResourceContext;
 
   return (
-    <ThemeProvider>
-      <BrowserRouter>
-        <Context.Provider value={context}>
-          <Details />
-        </Context.Provider>
-      </BrowserRouter>
-    </ThemeProvider>
+    <BrowserRouter>
+      <Context.Provider value={context}>
+        <Details />
+      </Context.Provider>
+    </BrowserRouter>
   );
 };
 
