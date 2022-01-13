@@ -6,7 +6,7 @@ import { Provider } from 'jotai';
 import { render, RenderResult, waitFor, screen } from '@centreon/ui';
 
 import { userEndpoint, webVersionsEndpoint } from '../api/endpoint';
-import { labelLogin } from '../Login/translatedLabels';
+import { labelConnect } from '../Login/translatedLabels';
 import {
   aclEndpoint,
   parametersEndpoint,
@@ -106,8 +106,8 @@ const mockDefaultGetRequests = (): void => {
   mockedAxios.get
     .mockResolvedValueOnce({
       data: {
+        has_upgrade_available: false,
         is_installed: true,
-        upgrade_available: false,
       },
     })
     .mockResolvedValueOnce({
@@ -137,8 +137,8 @@ const mockRedirectFromLoginPageGetRequests = (): void => {
   mockedAxios.get
     .mockResolvedValueOnce({
       data: {
+        has_upgrade_available: false,
         is_installed: true,
-        upgrade_available: false,
       },
     })
     .mockResolvedValueOnce({
@@ -171,8 +171,8 @@ const mockNotConnectedGetRequests = (): void => {
   mockedAxios.get
     .mockResolvedValueOnce({
       data: {
+        has_upgrade_available: false,
         is_installed: true,
-        upgrade_available: false,
       },
     })
     .mockResolvedValueOnce({
@@ -190,8 +190,8 @@ const mockInstallGetRequests = (): void => {
   mockedAxios.get
     .mockResolvedValueOnce({
       data: {
+        has_upgrade_available: false,
         is_installed: false,
-        upgrade_available: false,
       },
     })
     .mockResolvedValueOnce({
@@ -206,8 +206,8 @@ const mockUpgradeAndUserDisconnectedGetRequests = (): void => {
   mockedAxios.get
     .mockResolvedValueOnce({
       data: {
+        has_upgrade_available: true,
         is_installed: true,
-        upgrade_available: true,
       },
     })
     .mockResolvedValueOnce({
@@ -222,8 +222,8 @@ const mockUpgradeAndUserConnectedGetRequests = (): void => {
   mockedAxios.get
     .mockResolvedValueOnce({
       data: {
+        has_upgrade_available: true,
         is_installed: true,
-        upgrade_available: true,
       },
     })
     .mockResolvedValueOnce({
@@ -285,7 +285,7 @@ describe('Main', () => {
     });
 
     expect(window.location.href).toBe('http://localhost/login');
-    expect(screen.getByLabelText(labelLogin)).toBeInTheDocument();
+    expect(screen.getByLabelText(labelConnect)).toBeInTheDocument();
   });
 
   it('redirects the user to the install page when the retrieved web versions does not contain an installed version', async () => {

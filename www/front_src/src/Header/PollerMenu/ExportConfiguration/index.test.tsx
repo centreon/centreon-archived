@@ -40,7 +40,7 @@ const ExportConfigurationButton = (): JSX.Element => (
 
 const renderExportConfiguration = (): RenderResult =>
   render(
-    <SnackbarProvider>
+    <SnackbarProvider maxSnackbars={2}>
       <Provider
         initialValues={[
           [userAtom, mockUser],
