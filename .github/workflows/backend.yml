@@ -58,7 +58,7 @@ jobs:
     - id: files
       uses: jitterbit/get-changed-files@v1
     - run: |
-          ./vendor/bin/phpcs --extensions=php --standard=./ruleset.xml --report=checkstyle --report-file=./checkstyle-be.xml bootstrap.php
+          ./vendor/bin/phpcs --extensions=php --standard=./ruleset.xml --report=junit --report-file=./checkstyle-be.xml bootstrap.php
       continue-on-error: true
 #    - run: |
 #        ./vendor/bin/phpcs --extensions=php --standard=./ruleset.xml --report=checkstyle --report-file=./checkstyle-be.xml ${{ steps.files.outputs.added }} ${{ steps.files.outputs.modified }}
