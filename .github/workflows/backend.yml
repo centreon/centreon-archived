@@ -35,7 +35,7 @@ jobs:
     steps:
 
     - id: foo
-      uses: actions/composer_checkout.yml
+      uses: ${{ github.action_path }}/composer_checkout
 
     - name: Setup PHP 8.0
       uses: shivammathur/setup-php@v2
