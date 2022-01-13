@@ -21,17 +21,25 @@
 
 declare(strict_types=1);
 
-namespace Core\Application\Platform\UseCase\FindWebVersions;
+namespace Core\Infrastructure\Platform\Api\FindInstallationStatus;
 
-class FindWebVersionsResponse
+use Centreon\Application\Controller\AbstractController;
+use Core\Application\Platform\UseCase\FindInstallationStatus\FindInstallationStatus;
+use Core\Application\Platform\UseCase\FindInstallationStatus\FindInstallationStatusPresenterInterface;
+
+class FindInstallationStatusController extends AbstractController
 {
     /**
-     * @var bool
+     * @param FindInstallationStatus $useCase
+     * @param FindInstallationStatusPresenterInterface $presenter
+     * @return object
      */
-    public bool $isCentreonWebInstalled;
+    public function __invoke(
+        FindInstallationStatus $useCase,
+        FindInstallationStatusPresenterInterface $presenter
+    ): object {
+        $useCase($presenter);
 
-    /**
-     * @var string|null
-     */
-    public ?string $centreonUpgradeVersion;
+        return $presenter->show();
+    }
 }

@@ -33,5 +33,5 @@ centreon_application_platform_updateplatform:
 centreon_application_platform_get_installation_status:
   methods: GET
   path: /platform/installation/status
-  controller: 'Core\Infrastructure\Platform\Api\FindWebVersions\FindWebVersionsController'
+  controller: 'Core\Infrastructure\Platform\Api\FindInstallationStatus\FindInstallationStatusController'
   condition: "request.attributes.get('version') >= 22.04"

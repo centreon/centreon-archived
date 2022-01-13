@@ -21,31 +21,29 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\Application\Platform\UseCase\FindWebVersions;
+namespace Core\Infrastructure\Platform\Repository;
 
-use Core\Application\Platform\UseCase\FindWebVersions\FindWebVersionsPresenterInterface;
-use Core\Application\Platform\UseCase\FindWebVersions\FindWebVersionsResponse;
+use Core\Application\Platform\Repository\ReadPlatformRepositoryInterface;
 
-class FindWebVersionsPresenterFake implements FindWebVersionsPresenterInterface
+class FileReadPlatformRepository implements ReadPlatformRepositoryInterface
 {
-    /**
-     * @var FindWebVersionsResponse
-     */
-    public $response;
+    public function __construct(private string $etcDir, private string $installDir)
+    {
+    }
 
     /**
-     * @inheritDoc
+     * @inheritdoc
      */
-    public function present(FindWebVersionsResponse $response): void
+    public function isCentreonWebInstalled(): bool
     {
-        $this->response = $response;
+        return file_exists($this->etcDir . '/centreon.conf.php');
     }
 
     /**
      * @inheritDoc
      */
-    public function show(): object
+    public function isCentreonWebUpgradeAvailable(): bool
     {
-        return new \stdClass();
+        return is_dir($this->installDir);
     }
 }
