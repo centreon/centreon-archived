@@ -42,7 +42,7 @@ set_include_path(implode(PATH_SEPARATOR, array(
 // Centreon Autoload
 spl_autoload_register(function ($sClass) {
     $fileName = lcfirst($sClass);
-    $fileNameType1 = __DIR__ . "/www/class/" . $fileName . ".class.php";
+    $fileNameType1 = __DIR__ ."/www/class/" . $fileName . ".class.php";
     $fileNameType2 = __DIR__ . "/www/class/" . $fileName . ".php";
 
     if (file_exists($fileNameType1)) {

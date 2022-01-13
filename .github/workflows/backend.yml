@@ -51,8 +51,11 @@ jobs:
       with:
         php-version: '8.0'
 
-    - name: check style
-      run: composer run codestyle:ci
+    - id: files
+      uses: jitterbit/get-changed-files@v1
+    - run: |
+        ./vendor/bin/phpcs --extensions=php --standard=./ruleset.xml --report=checkstyle --report-file=./checkstyle-be.xml ${{ steps.files.outputs.added }} ${{ steps.files.outputs.modified }}
+      continue-on-error: true
 
     # - name: Run phpcs
     #   uses: chekalsky/phpcs-action@v1
