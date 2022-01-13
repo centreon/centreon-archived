@@ -525,12 +525,15 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             'SELECT h.*,
             i.name AS poller_name,
               IF (h.display_name LIKE \'_Module_Meta%\', \'Meta\', h.display_name) AS display_name,
-              IF (h.display_name LIKE \'_Module_Meta%\', \'0\', h.state) AS state
+              IF (h.display_name LIKE \'_Module_Meta%\', \'0\', h.state) AS state,
+            host_cvl.value AS `criticality`
             FROM `:dbstg`.`instances` i
             INNER JOIN `:dbstg`.`hosts` h
               ON h.instance_id = i.instance_id
               AND h.enabled = \'1\'
-              AND h.name NOT LIKE \'_Module_BAM%\''
+              AND h.name NOT LIKE \'_Module_BAM%\'
+            LEFT JOIN `:dbstg`.`customvariables` AS host_cvl ON host_cvl.host_id = h.host_id
+              AND host_cvl.service_id = 0 AND host_cvl.name = "CRITICALITY_LEVEL"'
             . $accessGroupFilter .
             ' WHERE h.host_id = :host_id';
 
@@ -788,10 +791,13 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
                 WHEN srv.state = 2 THEN ' . ResourceStatus::SEVERITY_HIGH . '
                 WHEN srv.state = 3 THEN ' . ResourceStatus::SEVERITY_LOW . '
                 WHEN srv.state = 4 THEN ' . ResourceStatus::SEVERITY_PENDING . '
-              END AS `status_severity_code`
+              END AS `status_severity_code`,
+              service_cvl.value AS `criticality`
             FROM `:dbstg`.services srv
             LEFT JOIN `:dbstg`.hosts h
-              ON h.host_id = srv.host_id'
+              ON h.host_id = srv.host_id
+            LEFT JOIN `:dbstg`.`customvariables` AS service_cvl ON service_cvl.host_id = srv.host_id
+              AND service_cvl.service_id = srv.service_id AND service_cvl.name = "CRITICALITY_LEVEL"'
             . $accessGroupFilter
             . ' WHERE srv.enabled = \'1\'
               AND h.enabled = \'1\'
