@@ -21,19 +21,17 @@
 
 declare(strict_types=1);
 
-namespace Core\Application\Platform\UseCase\FindWebVersions;
+namespace Core\Application\Platform\UseCase\FindInstallationStatus;
 
-use Core\Application\Platform\UseCase\FindWebVersions\FindWebVersionsResponse;
-
-interface FindWebVersionsPresenterInterface
+class FindInstallationStatusResponse
 {
     /**
-     * @param FindWebVersionsResponse $response
+     * @var bool
      */
-    public function present(FindWebVersionsResponse $response): void;
+    public bool $isCentreonWebInstalled;
 
     /**
-     * @return object
+     * @var bool
      */
-    public function show(): object;
+    public bool $isCentreonWebUpgradeAvailable;
 }

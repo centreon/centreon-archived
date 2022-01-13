@@ -21,23 +21,21 @@
 
 declare(strict_types=1);
 
-namespace Core\Infrastructure\Platform\Api\FindWebVersions;
+namespace Core\Application\Platform\Repository;
 
-use Centreon\Application\Controller\AbstractController;
-use Core\Application\Platform\UseCase\FindWebVersions\FindWebVersions;
-use Core\Application\Platform\UseCase\FindWebVersions\FindWebVersionsPresenterInterface;
-
-class FindWebVersionsController extends AbstractController
+interface ReadPlatformRepositoryInterface
 {
     /**
-     * @param FindWebVersions $useCase
-     * @param FindWebVersionsPresenterInterface $presenter
-     * @return object
+     * Check if an upgrade is available.
+     *
+     * @return bool
      */
-    public function __invoke(FindWebVersions $useCase, FindWebVersionsPresenterInterface $presenter): object
-    {
-        $useCase($presenter);
+    public function isCentreonWebUpgradeAvailable(): bool;
 
-        return $presenter->show();
-    }
+    /**
+     * Check if centreon is installed.
+     *
+     * @return bool
+     */
+    public function isCentreonWebInstalled(): bool;
 }

@@ -21,21 +21,15 @@
 
 declare(strict_types=1);
 
-namespace Core\Application\Platform\Service;
+namespace Core\Application\Platform\UseCase\FindInstallationStatus;
 
-interface PlatformVersionServiceInterface
+use Core\Application\Common\UseCase\PresenterInterface;
+use Core\Application\Platform\UseCase\FindInstallationStatus\FindInstallationStatusResponse;
+
+interface FindInstallationStatusPresenterInterface extends PresenterInterface
 {
     /**
-     * Get the upgrade version if an upgrade is available.
-     *
-     * @return string|null
+     * @param FindInstallationStatusResponse $response
      */
-    public function getWebUpgradeVersion(): ?string;
-
-    /**
-     * Check if centreon is installed.
-     *
-     * @return bool
-     */
-    public function isCentreonWebInstalled(): bool;
+    public function present(FindInstallationStatusResponse $response): void;
 }
