@@ -34,7 +34,7 @@
  */
 
 set_include_path(implode(PATH_SEPARATOR, array(
-    realpath(__DIR__ . '/www/class'),
+    realpath(__DIR__ .'/www/class'),
     realpath(__DIR__ . '/www/lib'),
     get_include_path()
 )));
