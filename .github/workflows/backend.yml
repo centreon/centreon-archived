@@ -58,7 +58,7 @@ jobs:
     - id: files
       uses: jitterbit/get-changed-files@v1
     - run: |
-          ./vendor/bin/phpcs --extensions=php --standard=./ruleset.xml --report=junit --report-file=./checkstyle-be.xml bootstrap.php
+          ./vendor/bin/phpcs --extensions=php --standard=./ruleset.xml --report=checkstyle --report-file=./checkstyle-be.xml bootstrap.php
       continue-on-error: true
 #    - run: |
 #        ./vendor/bin/phpcs --extensions=php --standard=./ruleset.xml --report=checkstyle --report-file=./checkstyle-be.xml ${{ steps.files.outputs.added }} ${{ steps.files.outputs.modified }}
@@ -66,12 +66,9 @@ jobs:
 
     - run: cat ./checkstyle-be.xml
 
-    - name: Test Report
-      uses: dorny/test-reporter@v1   # run this step even if previous step failed
+    - uses: jwgmeligmeyling/checkstyle-github-action@master
       with:
-        name: checkstyle            # Name of the check run which will be created
-        path: checkstyle-be.xml    # Path to test results
-        reporter: java-junit
+        path: '**/checkstyle-be.xml'
 
     # - name: Run phpcs
     #   uses: chekalsky/phpcs-action@v1
