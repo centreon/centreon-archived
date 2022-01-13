@@ -1,4 +1,4 @@
-export interface WebVersions {
+export interface PlatformInstallationStatus {
   hasUpgradeAvailable: boolean;
   isInstalled: boolean;
 }

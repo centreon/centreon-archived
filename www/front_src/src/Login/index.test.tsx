@@ -16,7 +16,7 @@ import {
 
 import { areUserParametersLoadedAtom } from '../Main/useUser';
 import { labelAlias } from '../Resources/translatedLabels';
-import { webVersionsAtom } from '../webVersionsAtom';
+import { platformInstallationStatusAtom } from '../platformInstallationStatusAtom';
 import { userEndpoint } from '../api/endpoint';
 
 import {
@@ -67,7 +67,7 @@ const TestComponent = (): JSX.Element => (
         initialValues={[
           [areUserParametersLoadedAtom, false],
           [
-            webVersionsAtom,
+            platformInstallationStatusAtom,
             { availableVersion: null, installedVersion: '21.10.1' },
           ],
         ]}

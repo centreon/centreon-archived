@@ -20,25 +20,26 @@ import { userAtom } from '@centreon/ui-context';
 
 import { webVersionsDecoder } from '../api/decoders';
 import { webVersionsEndpoint } from '../api/endpoint';
-import { WebVersions } from '../api/models';
+import { PlatformInstallationStatus } from '../api/models';
 import { translationEndpoint } from '../App/endpoint';
 import reactRoutes from '../reactRoutes/routeMap';
-import { webVersionsAtom } from '../webVersionsAtom';
+import { platformInstallationStatusAtom } from '../platformInstallationStatusAtom';
 
 import useUser, { areUserParametersLoadedAtom } from './useUser';
 
 const useMain = (): void => {
-  const { sendRequest: getWebVersions } = useRequest<WebVersions>({
-    decoder: webVersionsDecoder,
-    request: getData,
-  });
+  const { sendRequest: getWebVersions } =
+    useRequest<PlatformInstallationStatus>({
+      decoder: webVersionsDecoder,
+      request: getData,
+    });
   const { sendRequest: getTranslations } = useRequest<ResourceLanguage>({
     request: getData,
   });
 
   const user = useAtomValue(userAtom);
   const areUserParametersLoaded = useAtomValue(areUserParametersLoadedAtom);
-  const setWebVersions = useUpdateAtom(webVersionsAtom);
+  const setWebVersions = useUpdateAtom(platformInstallationStatusAtom);
 
   const loadUser = useUser(i18next.changeLanguage);
   const location = useLocation();

@@ -2,7 +2,7 @@ import { JsonDecoder } from 'ts.data.json';
 
 import { User } from '@centreon/ui-context';
 
-import { WebVersions } from './models';
+import { PlatformInstallationStatus } from './models';
 
 export const userDecoder = JsonDecoder.object<User>(
   {
@@ -20,14 +20,15 @@ export const userDecoder = JsonDecoder.object<User>(
   },
 );
 
-export const webVersionsDecoder = JsonDecoder.object<WebVersions>(
-  {
-    hasUpgradeAvailable: JsonDecoder.boolean,
-    isInstalled: JsonDecoder.boolean,
-  },
-  'Web versions',
-  {
-    hasUpgradeAvailable: 'has_upgrade_available',
-    isInstalled: 'is_installed',
-  },
-);
+export const webVersionsDecoder =
+  JsonDecoder.object<PlatformInstallationStatus>(
+    {
+      hasUpgradeAvailable: JsonDecoder.boolean,
+      isInstalled: JsonDecoder.boolean,
+    },
+    'Web versions',
+    {
+      hasUpgradeAvailable: 'has_upgrade_available',
+      isInstalled: 'is_installed',
+    },
+  );

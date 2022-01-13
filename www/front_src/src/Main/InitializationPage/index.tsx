@@ -7,7 +7,7 @@ import { useAtomValue } from 'jotai/utils';
 
 import { userAtom } from '@centreon/ui-context';
 
-import { webVersionsAtom } from '../../webVersionsAtom';
+import { platformInstallationStatusAtom } from '../../platformInstallationStatusAtom';
 import reactRoutes from '../../reactRoutes/routeMap';
 import PageLoader from '../../components/PageLoader';
 import MainLoader from '../MainLoader';
@@ -20,7 +20,9 @@ const InitializationPage = (): JSX.Element => {
 
   const [areUserParametersLoaded] = useAtom(areUserParametersLoadedAtom);
   const user = useAtomValue(userAtom);
-  const webVersions = useAtomValue(webVersionsAtom);
+  const platformInstallationStatus = useAtomValue(
+    platformInstallationStatusAtom,
+  );
 
   const navigateTo = (path: string): void => {
     navigate(path);
@@ -28,18 +30,18 @@ const InitializationPage = (): JSX.Element => {
   };
 
   React.useEffect(() => {
-    if (isNil(webVersions) || isNil(areUserParametersLoaded)) {
+    if (isNil(platformInstallationStatus) || isNil(areUserParametersLoaded)) {
       return;
     }
 
-    if (not(webVersions.isInstalled)) {
+    if (not(platformInstallationStatus.isInstalled)) {
       navigateTo(reactRoutes.install);
 
       return;
     }
 
     const canUpgrade = and(
-      webVersions.hasUpgradeAvailable,
+      platformInstallationStatus.hasUpgradeAvailable,
       not(areUserParametersLoaded),
     );
 
@@ -52,10 +54,12 @@ const InitializationPage = (): JSX.Element => {
     if (not(areUserParametersLoaded)) {
       navigate(reactRoutes.login);
     }
-  }, [webVersions, areUserParametersLoaded]);
+  }, [platformInstallationStatus, areUserParametersLoaded]);
 
   const canDisplayApp =
-    not(isNil(webVersions)) && not(isNil(user)) && areUserParametersLoaded;
+    not(isNil(platformInstallationStatus)) &&
+    not(isNil(user)) &&
+    areUserParametersLoaded;
 
   if (not(canDisplayApp)) {
     return <MainLoader />;

@@ -7,8 +7,8 @@ import { useTranslation } from 'react-i18next';
 
 import { useRequest, useSnackbar, getData } from '@centreon/ui';
 
-import { WebVersions } from '../api/models';
-import { webVersionsAtom } from '../webVersionsAtom';
+import { PlatformInstallationStatus } from '../api/models';
+import { platformInstallationStatusAtom } from '../platformInstallationStatusAtom';
 import useUser from '../Main/useUser';
 
 import postLogin from './api';
@@ -18,12 +18,12 @@ import { labelLoginSucceeded } from './translatedLabels';
 import { platformVersionsEndpoint } from './api/endpoint';
 
 interface UseLoginState {
+  platformInstallationStatus: PlatformInstallationStatus | null;
   platformVersions: PlatformVersions | null;
   submitLoginForm: (
     values: LoginFormValues,
     { setSubmitting }: Pick<FormikHelpers<FormikValues>, 'setSubmitting'>,
   ) => void;
-  webVersions: WebVersions | null;
 }
 
 const useLogin = (): UseLoginState => {
@@ -45,7 +45,7 @@ const useLogin = (): UseLoginState => {
   const navigate = useNavigate();
   const loadUser = useUser(i18n.changeLanguage);
 
-  const [webVersions] = useAtom(webVersionsAtom);
+  const [platformInstallationStatus] = useAtom(platformInstallationStatusAtom);
 
   const submitLoginForm = (
     values: LoginFormValues,
@@ -75,9 +75,9 @@ const useLogin = (): UseLoginState => {
   }, []);
 
   return {
+    platformInstallationStatus,
     platformVersions,
     submitLoginForm,
-    webVersions,
   };
 };
 

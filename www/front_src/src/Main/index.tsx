@@ -19,7 +19,7 @@ import { useAtomValue } from 'jotai/utils';
 
 import { SnackbarProvider } from '@centreon/ui';
 
-import { webVersionsAtom } from '../webVersionsAtom';
+import { platformInstallationStatusAtom } from '../platformInstallationStatusAtom';
 import reactRoutes from '../reactRoutes/routeMap';
 
 import Provider from './Provider';
@@ -42,9 +42,11 @@ const AppPage = React.lazy(() => import('./InitializationPage'));
 const Main = (): JSX.Element => {
   useMain();
 
-  const webVersions = useAtomValue(webVersionsAtom);
+  const platformInstallationStatus = useAtomValue(
+    platformInstallationStatusAtom,
+  );
 
-  if (isNil(webVersions)) {
+  if (isNil(platformInstallationStatus)) {
     return <MainLoader />;
   }
 
