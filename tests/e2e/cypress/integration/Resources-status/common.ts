@@ -4,12 +4,15 @@ import {
   applyConfigurationViaClapi,
   checkThatConfigurationIsExported,
   checkThatFixtureServicesExistInDatabase,
+  loginAsAdminViaApiV2,
   submitResultsViaClapi,
   versionApi,
+  logout,
 } from '../../commons';
 import {
   initializeResourceData,
-  loginAsAdminViaApiV2,
+  removeResourceData,
+  setUserTokenApiV1,
 } from '../../support/centreonData';
 
 interface Criteria {
@@ -71,6 +74,13 @@ const deleteUserFilter = (): Cypress.Chainable => {
     });
 };
 
+const tearDownResource = () => {
+  return setUserTokenApiV1()
+    .then(removeResourceData)
+    .then(applyConfigurationViaClapi)
+    .then(logout);
+};
+
 const actionBackgroundColors = {
   acknowledge: 'rgb(247, 244, 229)',
   inDowntime: 'rgb(249, 231, 255)',
@@ -92,4 +102,5 @@ export {
   insertResourceFixtures,
   setUserFilter,
   deleteUserFilter,
+  tearDownResource,
 };

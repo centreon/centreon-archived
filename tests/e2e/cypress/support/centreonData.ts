@@ -1,8 +1,6 @@
 /* eslint-disable import/no-mutable-exports */
-import { apiActionV1, executeActionViaClapi } from '../commons';
+import { apiActionV1, executeActionViaClapi, insertFixture } from '../commons';
 import { refreshButton } from '../integration/Resources-status/common';
-
-import { apiLoginV2, apiLogout } from './model';
 
 const refreshListing = (): Cypress.Chainable => {
   return cy.get(refreshButton).click();
@@ -26,30 +24,6 @@ const setUserTokenApiV1 = (): Cypress.Chainable => {
         window.localStorage.setItem('userTokenApiV1', body.authToken),
       );
   });
-};
-
-const loginAsAdminViaApiV2 = (): Cypress.Chainable => {
-  return cy
-    .fixture('users/admin.json')
-    .then((userAdmin) => {
-      return cy.request({
-        body: {
-          login: userAdmin.login,
-          password: userAdmin.password,
-        },
-        method: 'POST',
-        url: apiLoginV2,
-      });
-    })
-    .then(() => {
-      Cypress.Cookies.defaults({
-        preserve: 'PHPSESSID',
-      });
-    });
-};
-
-const insertFixture = (file: string): Cypress.Chainable => {
-  return cy.fixture(file).then(executeActionViaClapi);
 };
 
 const initializeResourceData = (): Cypress.Chainable => {
@@ -80,21 +54,10 @@ const removeResourceData = (): Cypress.Chainable => {
   });
 };
 
-const logout = () =>
-  cy.request({
-    body: {},
-    method: 'POST',
-    url: apiLogout,
-  });
-
-export const customFilterId = null;
-
 export {
   setUserTokenApiV1,
-  loginAsAdminViaApiV2,
   executeActionViaClapi,
   initializeResourceData,
   removeResourceData,
   refreshListing,
-  logout,
 };

@@ -31,7 +31,7 @@ import { logoutEndpoint } from '../../api/endpoint';
 import reactRoutes from '../../reactRoutes/routeMap';
 
 import { userEndpoint } from './api/endpoint';
-import { labelYouHaveBeenLoggedOut } from './translatedLabels';
+import { labelProfile, labelYouHaveBeenLoggedOut } from './translatedLabels';
 
 const EDIT_PROFILE_TOPOLOGY_PAGE = '50104';
 
@@ -149,6 +149,7 @@ class UserMenuContent extends Component {
         <Clock />
         <div ref={(profile) => (this.profile = profile)}>
           <UserIcon
+            aria-label={t(labelProfile)}
             fontSize="large"
             style={{ color: '#FFFFFF', cursor: 'pointer', marginLeft: 8 }}
             onClick={this.toggle}

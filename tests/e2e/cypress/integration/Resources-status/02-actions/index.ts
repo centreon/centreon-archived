@@ -6,6 +6,7 @@ import {
   actionBackgroundColors,
   actions,
   insertResourceFixtures,
+  tearDownResource,
 } from '../common';
 import { refreshListing } from '../../../support/centreonData';
 
@@ -83,4 +84,8 @@ Then('the problematic Resource is displayed as in downtime', () => {
         );
       });
   });
+});
+
+after(() => {
+  tearDownResource().then(() => cy.reload());
 });

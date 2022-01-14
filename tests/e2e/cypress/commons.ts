@@ -13,6 +13,8 @@ const maxSteps = pollingCheckTimeout / stepWaitingTime;
 const apiBase = `${Cypress.config().baseUrl}/centreon/api`;
 const apiActionV1 = `${apiBase}/index.php`;
 const versionApi = 'latest';
+const apiLoginV2 = '/centreon/authentication/providers/configurations/local';
+const apiLogout = '/centreon/api/latest/authentication/logout';
 
 const executeActionViaClapi = (
   bodyContent: ActionClapi,
@@ -141,6 +143,37 @@ const submitResultsViaClapi = (): Cypress.Chainable => {
   });
 };
 
+const loginAsAdminViaApiV2 = (): Cypress.Chainable => {
+  return cy
+    .fixture('users/admin.json')
+    .then((userAdmin) => {
+      return cy.request({
+        body: {
+          login: userAdmin.login,
+          password: userAdmin.password,
+        },
+        method: 'POST',
+        url: apiLoginV2,
+      });
+    })
+    .then(() => {
+      Cypress.Cookies.defaults({
+        preserve: 'PHPSESSID',
+      });
+    });
+};
+
+const insertFixture = (file: string): Cypress.Chainable => {
+  return cy.fixture(file).then(executeActionViaClapi);
+};
+
+const logout = () =>
+  cy.request({
+    body: {},
+    method: 'POST',
+    url: apiLogout,
+  });
+
 export {
   checkThatConfigurationIsExported,
   checkThatFixtureServicesExistInDatabase,
@@ -151,4 +184,7 @@ export {
   apiActionV1,
   applyConfigurationViaClapi,
   versionApi,
+  loginAsAdminViaApiV2,
+  insertFixture,
+  logout,
 };

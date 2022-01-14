@@ -6,6 +6,7 @@ import {
   stateFilterContainer,
   setUserFilter,
   deleteUserFilter,
+  tearDownResource,
 } from '../common';
 
 before(() => {
@@ -63,4 +64,8 @@ Then(
   },
 );
 
-after(() => deleteUserFilter());
+after(() => {
+  deleteUserFilter()
+    .then(tearDownResource)
+    .then(() => cy.reload());
+});
