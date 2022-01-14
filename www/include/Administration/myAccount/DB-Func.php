@@ -228,7 +228,7 @@ function checkAutologinValue(array $fields)
     global $pearDB, $centreon;
     $errors = [];
 
-    if (isset($fields['contact_autologin_key'])) {
+    if (!empty($fields['contact_autologin_key'])) {
         $contactId = $centreon->user->get_id();
         $statement = $pearDB->prepare(
             'SELECT * FROM `contact_password` WHERE contact_id = :contactId ORDER BY creation_date DESC LIMIT 1'
@@ -239,10 +239,11 @@ function checkAutologinValue(array $fields)
         if (
             ($result = $statement->fetch(\PDO::FETCH_ASSOC))
             && password_verify($fields['contact_autologin_key'], $result['password'])
+            && !empty($fields['contact_passwd'])
         ) {
             $errors['contact_autologin_key'] = _('Your autologin key should be different than your current password');
         } elseif (
-            isset($fields['contact_passwd'])
+            empty($fields['contact_passwd'])
             && $fields['contact_passwd'] === $fields['contact_autologin_key']
         ) {
             $errorMessage = 'Your new password and autologin key should be different';
