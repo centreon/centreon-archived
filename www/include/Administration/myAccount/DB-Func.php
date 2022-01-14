@@ -219,3 +219,37 @@ function validatePasswordModification(array $fields)
 
     return count($errors) > 0 ? $errors : true;
 }
+
+/**
+ * @param array $fields
+ */
+function checkAutologinValue(array $fields)
+{
+    global $pearDB, $centreon;
+    $errors = [];
+
+    if (isset($fields['contact_autologin_key'])) {
+        $contactId = $centreon->user->get_id();
+        $statement = $pearDB->prepare(
+            'SELECT * FROM `contact_password` WHERE contact_id = :contactId ORDER BY creation_date DESC LIMIT 1'
+        );
+        $statement->bindValue(':contactId', $contactId, \PDO::PARAM_INT);
+        $statement->execute();
+
+        if (
+            ($result = $statement->fetch(\PDO::FETCH_ASSOC))
+            && password_verify($fields['contact_autologin_key'], $result['password'])
+        ) {
+            $errors['contact_autologin_key'] = _('Your autologin key should be different than your current password');
+        } elseif (
+            isset($fields['contact_passwd'])
+            && $fields['contact_passwd'] === $fields['contact_autologin_key']
+        ) {
+            $errorMessage = 'Your new password and autologin key should be different';
+            $errors['contact_passwd'] = _($errorMessage);
+            $errors['contact_autologin_key'] = _($errorMessage);
+        }
+    }
+
+    return count($errors) > 0 ? $errors : true;
+}

@@ -390,6 +390,7 @@ $form->addRule('contact_name', _("Name already in use"), 'exist');
 $form->registerRule('existAlias', 'callback', 'testAliasExistence');
 $form->addRule('contact_alias', _("Name already in use"), 'existAlias');
 $form->setRequiredNote("<font style='color: red;'>*</font>" . _("Required fields"));
+$form->addFormRule('checkAutologinValue');
 
 // Smarty template Init
 $tpl = new Smarty();
