@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { equals, isNil } from 'ramda';
+import { equals } from 'ramda';
 import { useUpdateAtom } from 'jotai/utils';
 import { useTranslation } from 'react-i18next';
 
@@ -28,6 +28,12 @@ import { Group, ResourceDetails } from '../../../models';
 import { ResourceType } from '../../../../models';
 
 const useStyles = makeStyles((theme) => ({
+  chipIcon: {
+    backgroundColor: theme.palette.primary.main,
+    display: 'flex',
+    gap: theme.spacing(0.25),
+    gridArea: '1/1',
+  },
   chipsGroups: {
     alignSelf: 'center',
     display: 'flex',
@@ -37,7 +43,6 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(1, 1, 1, 1),
   },
   groupsChipAction: {
-    color: 'unset',
     gridArea: '1/1',
     maxWidth: theme.spacing(14),
     overflow: 'hidden',
@@ -49,60 +54,8 @@ const useStyles = makeStyles((theme) => ({
     minWidth: theme.spacing(7),
     overflow: 'hidden',
   },
-  test: {
-    backgroundColor: theme.palette.primary.main,
-    display: 'flex',
-    gap: theme.spacing(0.25),
-    gridArea: '1/1',
-  },
 }));
 
-interface Props {
-  details: ResourceDetails | undefined;
-}
-
-const Groups = ({ details }: Props): JSX.Element => {
-  const classes = useStyles();
-
-  const { t } = useTranslation();
-
-  const [hoverChip, setHoverChip] = React.useState<boolean>(false);
-
-  return (
-    <Grid container className={classes.groups} spacing={1}>
-      <Grid item xs={12}>
-        <Typography color="textSecondary" variant="body1">
-          {t(labelGroups)}
-        </Typography>
-      </Grid>
-      {details?.groups?.map((group) => {
-        return (
-          <Grid item className={classes.chipsGroups} key={group.id}>
-            <Chip
-              color="primary"
-              label={
-                hoverChip && (
-                  <div className={classes.groupsChipLabel}>
-                    <Tooltip title={group.name}>
-                      <Typography
-                        className={classes.groupsChipAction}
-                        variant="body2"
-                      >
-                        {group.name}
-                      </Typography>
-                    </Tooltip>
-                  </div>
-                )
-              }
-              onMouseEnter={(): void => setHoverChip(true)}
-              onMouseLeave={(): void => setHoverChip(false)}
-            />
-          </Grid>
-        );
-      })}
-    </Grid>
-  );
-};
 interface GroupsChipProps {
   group: Group;
   type: string;
@@ -129,17 +82,26 @@ const GroupChip = ({ group, type }: GroupsChipProps): JSX.Element => {
   };
 
   return (
-    <Grid item className={classes.chipsGroups}>
+    <Grid item className={classes.chipsGroups} key={group.id}>
       <Chip
         color="primary"
         label={
-          hoverChip !== true ? (
+          hoverChip === false && (
             <div className={classes.groupsChipLabel}>
-              <Grid className={classes.test} key={group.id}>
+              <Tooltip title={group.name}>
+                <Typography
+                  className={classes.groupsChipAction}
+                  variant="body2"
+                >
+                  {group.name}
+                </Typography>
+              </Tooltip>{' '}
+              ): (
+              <Grid className={classes.chipIcon}>
                 <IconButton
                   style={{ color: theme.palette.common.white }}
                   title={t(labelFilter)}
-                  onClick={(): void => filterByGroup()}
+                  onClick={(): void => filterByGroup(group)}
                 >
                   <IconFilterList fontSize="small" />
                 </IconButton>
@@ -154,8 +116,6 @@ const GroupChip = ({ group, type }: GroupsChipProps): JSX.Element => {
                 </IconButton>
               </Grid>
             </div>
-          ) : (
-            <Groups />
           )
         }
         onMouseEnter={(): void => setHoverChip(true)}
@@ -165,4 +125,27 @@ const GroupChip = ({ group, type }: GroupsChipProps): JSX.Element => {
   );
 };
 
-export default GroupChip;
+interface Props {
+  details: ResourceDetails | undefined;
+}
+
+const Groups = ({ details }: Props): JSX.Element => {
+  const classes = useStyles();
+
+  const { t } = useTranslation();
+
+  return (
+    <Grid container className={classes.groups} spacing={1}>
+      <Grid item xs={12}>
+        <Typography color="textSecondary" variant="body1">
+          {t(labelGroups)}
+        </Typography>
+      </Grid>
+      {details?.groups?.map((group) => {
+        return <GroupChip key={group.id} />;
+      })}
+    </Grid>
+  );
+};
+
+export default Groups;
