@@ -59,6 +59,12 @@
     "enshrined/svg-sanitize": {
         "version": "0.14.1"
     },
+    "friends-of-behat/mink": {
+        "version": "v1.9.0"
+    },
+    "friends-of-behat/mink-extension": {
+        "version": "v2.5.0"
+    },
     "friendsofsymfony/rest-bundle": {
         "version": "2.2",
         "recipe": {
@@ -227,6 +233,9 @@
     },
     "psr/container": {
         "version": "1.1.1"
+    },
+    "psr/event-dispatcher": {
+        "version": "1.0.0"
     },
     "psr/http-client": {
         "version": "1.0.1"
@@ -483,6 +492,9 @@
     },
     "symfony/options-resolver": {
         "version": "v4.4.30"
+    },
+    "symfony/password-hasher": {
+        "version": "v5.4.0"
     },
     "symfony/phpunit-bridge": {
         "version": "4.3",

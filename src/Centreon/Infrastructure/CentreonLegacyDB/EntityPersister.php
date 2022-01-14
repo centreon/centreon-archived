@@ -40,7 +40,6 @@ use Centreon\Infrastructure\CentreonLegacyDB\Mapping\ClassMetadata;
 
 class EntityPersister
 {
-
     /**
      * @var string
      */

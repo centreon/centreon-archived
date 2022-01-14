@@ -3,9 +3,9 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { equals } from 'ramda';
 
-import SyncDisabledIcon from '@material-ui/icons/SyncDisabled';
-import SyncProblemIcon from '@material-ui/icons/SyncProblem';
-import { Tooltip } from '@material-ui/core';
+import SyncDisabledIcon from '@mui/icons-material/SyncDisabled';
+import SyncProblemIcon from '@mui/icons-material/SyncProblem';
+import { Tooltip } from '@mui/material';
 
 import { Resource } from './models';
 import {

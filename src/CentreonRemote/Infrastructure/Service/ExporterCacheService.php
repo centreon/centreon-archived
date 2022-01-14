@@ -3,9 +3,8 @@ namespace CentreonRemote\Infrastructure\Service;
 
 class ExporterCacheService
 {
-
     /**
-     * @var array
+     * @var mixed
      */
     private $data;
 

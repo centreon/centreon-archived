@@ -14,10 +14,10 @@ import { fetchNavigationData } from '../redux/actions/navigationActions';
 import Sidebar from './Sidebar';
 
 class Navigation extends Component {
-  componentDidMount = () => {
+  componentDidMount() {
     const { fetchNavigationData } = this.props;
     fetchNavigationData();
-  };
+  }
 
   render() {
     const { navigationData, reactRoutes } = this.props;

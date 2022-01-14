@@ -8,7 +8,7 @@ import classnames from 'classnames';
 import { Field, reduxForm as connectForm } from 'redux-form';
 import { useTranslation } from 'react-i18next';
 
-import { Button, Typography, Paper } from '@material-ui/core';
+import { Button, Typography, Paper } from '@mui/material';
 
 import styles from '../../styles/partials/form/_form.scss';
 import RadioGroupFields from '../form-fields/RadioGroupFields';

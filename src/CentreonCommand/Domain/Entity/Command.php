@@ -94,16 +94,12 @@ class Command
         switch ($name) {
             case 'notification':
                 return static::TYPE_NOTIFICATION;
-                break;
             case 'check':
                 return static::TYPE_CHECK;
-                break;
             case 'misc':
                 return static::TYPE_MISC;
-                break;
             case 'discovery':
                 return static::TYPE_DISCOVERY;
-                break;
         }
 
         return null;

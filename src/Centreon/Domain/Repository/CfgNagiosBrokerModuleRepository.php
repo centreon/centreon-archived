@@ -5,7 +5,6 @@ use Centreon\Infrastructure\CentreonLegacyDB\ServiceEntityRepository;
 
 class CfgNagiosBrokerModuleRepository extends ServiceEntityRepository
 {
-
     /**
      * Export
      *

@@ -40,7 +40,6 @@ require_once __DIR__ . "/centreon_configuration_objects.class.php";
 
 class CentreonConfigurationTimeperiod extends CentreonConfigurationObjects
 {
-
     /**
      * CentreonConfigurationTimeperiod constructor.
      */

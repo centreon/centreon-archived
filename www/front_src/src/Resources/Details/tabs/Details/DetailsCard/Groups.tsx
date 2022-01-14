@@ -3,17 +3,16 @@ import * as React from 'react';
 import { equals } from 'ramda';
 import { useUpdateAtom } from 'jotai/utils';
 import { useTranslation } from 'react-i18next';
-
 import {
   Grid,
   Chip,
-  Typography,
-  useTheme,
   Tooltip,
-  makeStyles,
-} from '@material-ui/core';
-import SettingsIcon from '@material-ui/icons/Settings';
-import IconFilterList from '@material-ui/icons/FilterList';
+  Typography,
+  IconFilterList,
+  SettingsIcon,
+  useTheme,
+} from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 
 import { IconButton } from '@centreon/ui';
 

@@ -4,7 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { not } from 'ramda';
 import { useAtomValue } from 'jotai/utils';
 
-import { Button, makeStyles, Paper, Typography } from '@material-ui/core';
+import { Button, Paper, Typography } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 
 import { getData, useRequest, useSnackbar, Dialog } from '@centreon/ui';
 import { userAtom } from '@centreon/ui-context';
@@ -28,6 +29,7 @@ interface Props {
 
 const useStyles = makeStyles((theme) => ({
   exportButton: {
+    display: 'flex',
     marginTop: theme.spacing(1),
   },
   pollerText: {
@@ -87,7 +89,6 @@ const ExportConfiguration = ({
         <Button
           disabled={disableButton}
           size="small"
-          variant="contained"
           onClick={askBeforeExportConfiguration}
         >
           {t(labelExportConfiguration)}

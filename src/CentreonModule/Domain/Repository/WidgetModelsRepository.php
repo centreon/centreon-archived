@@ -43,6 +43,7 @@ class WidgetModelsRepository extends ServiceEntityRepository
 
     /**
      * Get an associative array of all widgets vs versions
+     * @return string[]
      */
     public function getAllWidgetVsVersion(): array
     {

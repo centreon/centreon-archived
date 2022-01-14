@@ -4,14 +4,9 @@ import { isNil, not, pluck, values } from 'ramda';
 import { useTranslation } from 'react-i18next';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 
-import {
-  FormControlLabel,
-  FormGroup,
-  makeStyles,
-  Popover,
-  Switch,
-} from '@material-ui/core';
-import SettingsIcon from '@material-ui/icons/Settings';
+import { FormControlLabel, FormGroup, Popover, Switch } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import SettingsIcon from '@mui/icons-material/Settings';
 
 import { IconButton, useMemoComponent } from '@centreon/ui';
 
@@ -110,7 +105,7 @@ const Options = (): JSX.Element => {
                   />
                 }
                 key={label}
-                label={t(label)}
+                label={t(label) as string}
                 labelPlacement="start"
               />
             ))}

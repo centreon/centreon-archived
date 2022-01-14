@@ -56,7 +56,6 @@ use Pimple\Psr11\Container as Psr11Container;
  */
 class UniqueEntityValidatorTest extends TestCase
 {
-
     use Dependency\CentreonDbManagerDependencyTrait;
 
     public function setUp(): void
