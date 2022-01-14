@@ -138,6 +138,7 @@ const useApp = (): UseAppState => {
       if (not(pathEq(['response', 'status'], 401, error))) {
         return;
       }
+      logout();
       showErrorMessage(t(labelYouAreDisconnected));
 
       clearInterval(keepAliveIntervalRef.current as NodeJS.Timer);
@@ -149,6 +150,10 @@ const useApp = (): UseAppState => {
     keepAlive();
 
     keepAliveIntervalRef.current = setInterval(keepAlive, 15000);
+
+    return (): void => {
+      clearInterval(keepAliveIntervalRef.current as NodeJS.Timer);
+    };
   }, []);
 
   return {
