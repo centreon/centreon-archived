@@ -244,6 +244,7 @@ class CentreonContact extends CentreonObject
             "AND"
         );
         foreach ($elements as $tab) {
+            unset($tab['contact_passwd']);
             echo implode($this->delim, $tab) . "\n";
         }
     }
