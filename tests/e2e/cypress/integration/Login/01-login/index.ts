@@ -25,7 +25,7 @@ Given('I am logged in', () => {
 });
 
 When('I click on the logout action', () => {
-  cy.contains('1-3 of 3');
+  cy.contains('Rows per page');
   cy.get('[aria-label="Profile"]').click();
   cy.get('button').contains('Logout').click();
 });
