@@ -15,7 +15,7 @@ import FilterListIcon from '@mui/icons-material/FilterList';
 
 import makeStyles from '@mui/styles/makeStyles';
 
-import { IconButton } from '@centreon/ui';
+import IconButton from '@mui/material/IconButton';
 
 import {
   labelConfigure,
