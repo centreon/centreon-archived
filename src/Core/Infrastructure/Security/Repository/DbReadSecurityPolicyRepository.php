@@ -96,7 +96,7 @@ class DbReadSecurityPolicyRepository extends AbstractRepositoryDRB implements Re
                 $message .= sprintf("[%s] %s\n", $error['property'], $error['message']);
             }
             $this->critical($message);
-            SecurityPolicyException::errorWhileReadingPasswordSecurityPolicy($message);
+            SecurityPolicyException::errorWhileReadingPasswordSecurityPolicy();
         }
     }
 }

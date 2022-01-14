@@ -27,7 +27,7 @@ use Core\Domain\Security\Model\SecurityPolicy;
 class DbSecurityPolicyFactory
 {
     /**
-     * @param array<string,mixed> securityPolicyConfiguration
+     * @param array<string,mixed> $securityPolicyConfiguration
      * @return SecurityPolicy
      */
     public static function createFromRecord(array $securityPolicyConfiguration): SecurityPolicy

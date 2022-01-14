@@ -16350,3 +16350,6 @@ msgstr "Votre mot de passe expirera dans %s jours."
 
 msgid "Security policy not found. Please verify that your installation is valid"
 msgstr "Politique de sécurité non trouvée. Veuillez vérifier que votre installation est valide"
+
+msgid "Error while reading password security policy"
+msgstr "Erreur lors de la lecture de la politique de sécurité du mot de passe"

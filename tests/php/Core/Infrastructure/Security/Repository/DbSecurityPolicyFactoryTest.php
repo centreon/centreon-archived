@@ -47,6 +47,7 @@ class DbSecurityPolicyFactoryTest extends TestCase
             'attempts' => SecurityPolicy::MIN_ATTEMPTS,
             'blocking_duration' => SecurityPolicy::MIN_BLOCKING_DURATION,
             'password_expiration' => SecurityPolicy::MIN_PASSWORD_EXPIRATION,
+            'delay_before_new_password' => SecurityPolicy::MIN_NEW_PASSWORD_DELAY,
         ];
     }
     /**
