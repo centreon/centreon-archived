@@ -1,4 +1,4 @@
-import { When, Then, Before } from 'cypress-cucumber-preprocessor/steps';
+import { When, Then } from 'cypress-cucumber-preprocessor/steps';
 
 import {
   stateFilterContainer,
