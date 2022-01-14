@@ -8,10 +8,11 @@ import {
   Chip,
   Tooltip,
   Typography,
-  IconFilterList,
-  SettingsIcon,
   useTheme,
 } from '@mui/material';
+import SettingsIcon from '@mui/icons-material/Settings';
+import FilterListIcon from '@mui/icons-material/FilterList';
+
 import makeStyles from '@mui/styles/makeStyles';
 
 import { IconButton } from '@centreon/ui';
@@ -100,7 +101,7 @@ const GroupChip = ({ group, type }: GroupsChipProps): JSX.Element => {
                   title={t(labelFilter)}
                   onClick={(): void => filterByGroup()}
                 >
-                  <IconFilterList fontSize="small" />
+                  <FilterListIcon fontSize="small" />
                 </IconButton>
                 <IconButton
                   style={{ color: theme.palette.common.white }}
