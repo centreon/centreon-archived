@@ -85,7 +85,7 @@ class DbReadSecurityPolicyRepository extends AbstractRepositoryDRB implements Re
         $validator->validate(
             $decodedConfiguration,
             (object) [
-                '$ref' => 'file://' . __DIR__ . '/SeurityPolicySchema.json',
+                '$ref' => 'file://' . __DIR__ . '/SecurityPolicySchema.json',
             ],
             Constraint::CHECK_MODE_VALIDATE_SCHEMA
         );
