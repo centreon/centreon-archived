@@ -1,7 +1,6 @@
-/* eslint-disable react/jsx-key */
 import * as React from 'react';
 
-import { equals } from 'ramda';
+import { equals, isNil } from 'ramda';
 import { useUpdateAtom } from 'jotai/utils';
 import { useTranslation } from 'react-i18next';
 
@@ -25,8 +24,8 @@ import {
 } from '../../../../translatedLabels';
 import { setCriteriaAndNewFilterDerivedAtom } from '../../../../Filter/filterAtoms';
 import { CriteriaNames } from '../../../../Filter/Criterias/models';
-import { ResourceDetails } from '../../../models';
-import { NamedEntity, ResourceType } from '../../../../models';
+import { Group, ResourceDetails } from '../../../models';
+import { ResourceType } from '../../../../models';
 
 const useStyles = makeStyles((theme) => ({
   chipsGroups: {
@@ -38,6 +37,7 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(1, 1, 1, 1),
   },
   groupsChipAction: {
+    color: 'unset',
     gridArea: '1/1',
     maxWidth: theme.spacing(14),
     overflow: 'hidden',
@@ -62,25 +62,11 @@ interface Props {
 }
 
 const Groups = ({ details }: Props): JSX.Element => {
-  const theme = useTheme();
   const classes = useStyles();
 
   const { t } = useTranslation();
 
-  const [hoveredGroupId, setHoveredGroupId] = React.useState<number>();
-
-  const setCriteriaAndNewFilter = useUpdateAtom(
-    setCriteriaAndNewFilterDerivedAtom,
-  );
-
-  const filterByGroup = (group: NamedEntity): void => {
-    setCriteriaAndNewFilter({
-      name: equals(details?.type, ResourceType.host)
-        ? CriteriaNames.hostGroups
-        : CriteriaNames.serviceGroups,
-      value: [group],
-    });
-  };
+  const [hoverChip, setHoverChip] = React.useState<boolean>(false);
 
   return (
     <Grid container className={classes.groups} spacing={1}>
@@ -91,55 +77,25 @@ const Groups = ({ details }: Props): JSX.Element => {
       </Grid>
       {details?.groups?.map((group) => {
         return (
-          <Grid
-            item
-            className={classes.chipsGroups}
-            key={group.id}
-            onMouseEnter={(): void => setHoveredGroupId(group.id)}
-            onMouseLeave={(): void => setHoveredGroupId(undefined)}
-          >
+          <Grid item className={classes.chipsGroups} key={group.id}>
             <Chip
               color="primary"
               label={
-                <div className={classes.groupsChipLabel}>
-                  <Tooltip title={group.name}>
-                    <Typography
-                      className={classes.groupsChipAction}
-                      style={{
-                        color:
-                          hoveredGroupId === group.id ? 'transparent' : 'unset',
-                      }}
-                      variant="body2"
-                    >
-                      {group.name}
-                    </Typography>
-                  </Tooltip>
-
-                  {hoveredGroupId === group.id && (
-                    <Grid className={classes.test}>
-                      <IconButton
-                        style={{ color: theme.palette.common.white }}
-                        title={t(labelFilter)}
-                        onClick={(): void => filterByGroup(group)}
+                hoverChip && (
+                  <div className={classes.groupsChipLabel}>
+                    <Tooltip title={group.name}>
+                      <Typography
+                        className={classes.groupsChipAction}
+                        variant="body2"
                       >
-                        <IconFilterList fontSize="small" />
-                      </IconButton>
-                      <IconButton
-                        style={{ color: theme.palette.common.white }}
-                        title={t(labelConfigure)}
-                        onClick={(): void => {
-                          window.location.href =
-                            group.configuration_uri as string;
-                        }}
-                      >
-                        <SettingsIcon fontSize="small" />
-                      </IconButton>
-                    </Grid>
-                  )}
-                </div>
+                        {group.name}
+                      </Typography>
+                    </Tooltip>
+                  </div>
+                )
               }
-              onMouseEnter={(): void => setHoveredGroupId(group.id)}
-              onMouseLeave={(): void => setHoveredGroupId(undefined)}
+              onMouseEnter={(): void => setHoverChip(true)}
+              onMouseLeave={(): void => setHoverChip(false)}
             />
           </Grid>
         );
@@ -147,5 +103,66 @@ const Groups = ({ details }: Props): JSX.Element => {
     </Grid>
   );
 };
+interface GroupsChipProps {
+  group: Group;
+  type: string;
+}
 
-export default Groups;
+const GroupChip = ({ group, type }: GroupsChipProps): JSX.Element => {
+  const theme = useTheme();
+  const classes = useStyles();
+  const { t } = useTranslation();
+
+  const [hoverChip, setHoverChip] = React.useState<boolean>(false);
+
+  const setCriteriaAndNewFilter = useUpdateAtom(
+    setCriteriaAndNewFilterDerivedAtom,
+  );
+
+  const filterByGroup = (): void => {
+    setCriteriaAndNewFilter({
+      name: equals(type, ResourceType.host)
+        ? CriteriaNames.hostGroups
+        : CriteriaNames.serviceGroups,
+      value: [group],
+    });
+  };
+
+  return (
+    <Grid item className={classes.chipsGroups}>
+      <Chip
+        color="primary"
+        label={
+          hoverChip !== true ? (
+            <div className={classes.groupsChipLabel}>
+              <Grid className={classes.test} key={group.id}>
+                <IconButton
+                  style={{ color: theme.palette.common.white }}
+                  title={t(labelFilter)}
+                  onClick={(): void => filterByGroup()}
+                >
+                  <IconFilterList fontSize="small" />
+                </IconButton>
+                <IconButton
+                  style={{ color: theme.palette.common.white }}
+                  title={t(labelConfigure)}
+                  onClick={(): void => {
+                    window.location.href = group.configuration_uri as string;
+                  }}
+                >
+                  <SettingsIcon fontSize="small" />
+                </IconButton>
+              </Grid>
+            </div>
+          ) : (
+            <Groups />
+          )
+        }
+        onMouseEnter={(): void => setHoverChip(true)}
+        onMouseLeave={(): void => setHoverChip(false)}
+      />
+    </Grid>
+  );
+};
+
+export default GroupChip;
