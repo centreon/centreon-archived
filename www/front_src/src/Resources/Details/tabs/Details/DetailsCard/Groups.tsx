@@ -28,12 +28,6 @@ import { Group, ResourceDetails } from '../../../models';
 import { ResourceType } from '../../../../models';
 
 const useStyles = makeStyles((theme) => ({
-  chipIcon: {
-    backgroundColor: theme.palette.primary.main,
-    display: 'flex',
-    gap: theme.spacing(0.25),
-    gridArea: '1/1',
-  },
   chipsGroups: {
     alignSelf: 'center',
     display: 'flex',
@@ -54,6 +48,12 @@ const useStyles = makeStyles((theme) => ({
     minWidth: theme.spacing(7),
     overflow: 'hidden',
   },
+  iconAction: {
+    backgroundColor: theme.palette.primary.main,
+    display: 'flex',
+    gap: theme.spacing(0.25),
+    gridArea: '1/1',
+  },
 }));
 
 interface GroupsChipProps {
@@ -66,7 +66,7 @@ const GroupChip = ({ group, type }: GroupsChipProps): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
 
-  const [hoverChip, setHoverChip] = React.useState<boolean>(false);
+  const [isHovered, setIsHovered] = React.useState<boolean>(false);
 
   const setCriteriaAndNewFilter = useUpdateAtom(
     setCriteriaAndNewFilterDerivedAtom,
@@ -74,9 +74,7 @@ const GroupChip = ({ group, type }: GroupsChipProps): JSX.Element => {
 
   const filterByGroup = (): void => {
     setCriteriaAndNewFilter({
-      name: equals(type, ResourceType.host)
-        ? CriteriaNames.hostGroups
-        : CriteriaNames.serviceGroups,
+      name: type,
       value: [group],
     });
   };
@@ -86,22 +84,22 @@ const GroupChip = ({ group, type }: GroupsChipProps): JSX.Element => {
       <Chip
         color="primary"
         label={
-          hoverChip === false && (
-            <div className={classes.groupsChipLabel}>
-              <Tooltip title={group.name}>
-                <Typography
-                  className={classes.groupsChipAction}
-                  variant="body2"
-                >
-                  {group.name}
-                </Typography>
-              </Tooltip>{' '}
-              ): (
-              <Grid className={classes.chipIcon}>
+          <div className={classes.groupsChipLabel}>
+            <Tooltip title={group.name}>
+              <Typography
+                className={classes.groupsChipAction}
+                style={{ color: isHovered ? 'transparent' : 'unset' }}
+                variant="body2"
+              >
+                {group.name}
+              </Typography>
+            </Tooltip>
+            {isHovered === true && (
+              <Grid className={classes.iconAction}>
                 <IconButton
                   style={{ color: theme.palette.common.white }}
                   title={t(labelFilter)}
-                  onClick={(): void => filterByGroup(group)}
+                  onClick={(): void => filterByGroup()}
                 >
                   <IconFilterList fontSize="small" />
                 </IconButton>
@@ -115,11 +113,11 @@ const GroupChip = ({ group, type }: GroupsChipProps): JSX.Element => {
                   <SettingsIcon fontSize="small" />
                 </IconButton>
               </Grid>
-            </div>
-          )
+            )}
+          </div>
         }
-        onMouseEnter={(): void => setHoverChip(true)}
-        onMouseLeave={(): void => setHoverChip(false)}
+        onMouseEnter={(): void => setIsHovered(true)}
+        onMouseLeave={(): void => setIsHovered(false)}
       />
     </Grid>
   );
@@ -134,6 +132,10 @@ const Groups = ({ details }: Props): JSX.Element => {
 
   const { t } = useTranslation();
 
+  const groupType = equals(details?.type, ResourceType.host)
+    ? CriteriaNames.hostGroups
+    : CriteriaNames.serviceGroups;
+
   return (
     <Grid container className={classes.groups} spacing={1}>
       <Grid item xs={12}>
@@ -142,7 +144,7 @@ const Groups = ({ details }: Props): JSX.Element => {
         </Typography>
       </Grid>
       {details?.groups?.map((group) => {
-        return <GroupChip key={group.id} />;
+        return <GroupChip group={group} key={group.id} type={groupType} />;
       })}
     </Grid>
   );
