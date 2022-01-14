@@ -12,11 +12,13 @@ import {
   downtimeAtom,
   refreshIntervalAtom,
 } from '@centreon/ui-context';
-import { getData, useRequest, useSnackbar } from '@centreon/ui';
+import { getData, useRequest, useSnackbar, postData } from '@centreon/ui';
 
 import useExternalComponents from '../externalComponents/useExternalComponents';
 import useNavigation from '../Navigation/useNavigation';
 import reactRoutes from '../reactRoutes/routeMap';
+import { logoutEndpoint } from '../api/endpoint';
+import { areUserParametersLoadedAtom } from '../Main/useUser';
 
 import { aclEndpoint, parametersEndpoint } from './endpoint';
 import { DefaultParameters } from './models';
@@ -56,13 +58,28 @@ const useApp = (): UseAppState => {
     request: getData,
   });
 
+  const { sendRequest: logoutRequest } = useRequest({
+    request: postData,
+  });
+
   const setDowntime = useUpdateAtom(downtimeAtom);
   const setRefreshInterval = useUpdateAtom(refreshIntervalAtom);
   const setAcl = useUpdateAtom(aclAtom);
   const setAcknowledgement = useUpdateAtom(acknowledgementAtom);
+  const setAreUserParametersLoaded = useUpdateAtom(areUserParametersLoadedAtom);
 
   const { getNavigation } = useNavigation();
   const { getExternalComponents } = useExternalComponents();
+
+  const logout = (): void => {
+    logoutRequest({
+      data: {},
+      endpoint: logoutEndpoint,
+    }).then(() => {
+      setAreUserParametersLoaded(false);
+      navigate(reactRoutes.login);
+    });
+  };
 
   React.useEffect(() => {
     getNavigation();
@@ -99,7 +116,7 @@ const useApp = (): UseAppState => {
       })
       .catch((error) => {
         if (pathEq(['response', 'status'], 401)(error)) {
-          navigate(reactRoutes.login);
+          logout();
         }
       });
   }, []);
