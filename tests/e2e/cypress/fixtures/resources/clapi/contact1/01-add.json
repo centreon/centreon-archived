@@ -1,0 +1,5 @@
+{
+  "action": "ADD",
+  "object": "CONTACT",
+  "values": "user;User;user@test.com;user;0;1;en_US;local"
+}

@@ -5,18 +5,21 @@ import {
   resourceMonitoringApi,
   actionBackgroundColors,
   actions,
+  insertResourceFixtures,
 } from '../common';
 import { refreshListing } from '../../../support/centreonData';
 
 const serviceName = 'service_test';
 const serviceInDowntimeName = 'service_test_dt';
 
-Before(() => {
-  cy.get(stateFilterContainer).click().get('[data-value="all"]').click();
+before(() => {
+  insertResourceFixtures().then(() => {
+    cy.get(stateFilterContainer).click().get('[data-value="all"]').click();
 
-  cy.intercept({
-    method: 'GET',
-    url: resourceMonitoringApi,
+    cy.intercept({
+      method: 'GET',
+      url: resourceMonitoringApi,
+    });
   });
 });
 

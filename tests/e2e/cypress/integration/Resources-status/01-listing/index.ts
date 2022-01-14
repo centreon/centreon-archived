@@ -1,23 +1,18 @@
-import {
-  Before,
-  After,
-  Given,
-  When,
-  Then,
-} from 'cypress-cucumber-preprocessor/steps';
+import { Given, When, Then } from 'cypress-cucumber-preprocessor/steps';
 
-import { searchInput, stateFilterContainer } from '../common';
 import {
+  insertResourceFixtures,
+  searchInput,
+  stateFilterContainer,
   setUserFilter,
   deleteUserFilter,
-  setUserTokenApiV2,
-} from '../../../support/centreonData';
+} from '../common';
 
-Before(() => {
-  setUserTokenApiV2();
-
-  cy.fixture('resources/filters.json').then((filters) =>
-    setUserFilter(filters),
+before(() => {
+  insertResourceFixtures().then(() =>
+    cy
+      .fixture('resources/filters.json')
+      .then((filters) => setUserFilter(filters)),
   );
 });
 
@@ -68,4 +63,4 @@ Then(
   },
 );
 
-After(() => deleteUserFilter());
+after(() => deleteUserFilter());

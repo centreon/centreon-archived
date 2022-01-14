@@ -1,13 +1,33 @@
 /* eslint-disable cypress/no-unnecessary-waiting */
 
-import {
-  applyConfigurationViaClapi,
-  submitResultsViaClapi,
-} from './centreonData';
+interface ActionClapi {
+  action: string;
+  object?: string;
+  values: string;
+}
 
 const stepWaitingTime = 250;
 const pollingCheckTimeout = 100000;
 const maxSteps = pollingCheckTimeout / stepWaitingTime;
+
+const apiBase = `${Cypress.config().baseUrl}/centreon/api`;
+const apiActionV1 = `${apiBase}/index.php`;
+const versionApi = 'latest';
+
+const executeActionViaClapi = (
+  bodyContent: ActionClapi,
+  method?: string,
+): Cypress.Chainable => {
+  return cy.request({
+    body: bodyContent,
+    headers: {
+      'Content-Type': 'application/json',
+      'centreon-auth-token': window.localStorage.getItem('userTokenApiV1'),
+    },
+    method: method || 'POST',
+    url: `${apiActionV1}?action=action&object=centreon_clapi`,
+  });
+};
 
 let servicesFoundStepCount = 0;
 
@@ -86,7 +106,49 @@ const checkThatConfigurationIsExported = (): void => {
   });
 };
 
+const applyConfigurationViaClapi = (): Cypress.Chainable => {
+  return executeActionViaClapi({
+    action: 'APPLYCFG',
+    values: '1',
+  });
+};
+
+const updateFixturesResult = (): Cypress.Chainable => {
+  return cy
+    .fixture('resources/clapi/submit-results.json')
+    .then(({ results }) => {
+      const timestampNow = Math.floor(Date.now() / 1000) - 15;
+
+      const submitResults = results.map((submittedResult) => {
+        return { ...submittedResult, updatetime: timestampNow.toString() };
+      });
+
+      return submitResults;
+    });
+};
+
+const submitResultsViaClapi = (): Cypress.Chainable => {
+  return updateFixturesResult().then((submitResults) => {
+    return cy.request({
+      body: { results: submitResults },
+      headers: {
+        'Content-Type': 'application/json',
+        'centreon-auth-token': window.localStorage.getItem('userTokenApiV1'),
+      },
+      method: 'POST',
+      url: `${apiActionV1}?action=submit&object=centreon_submit_results`,
+    });
+  });
+};
+
 export {
-  checkThatFixtureServicesExistInDatabase,
   checkThatConfigurationIsExported,
+  checkThatFixtureServicesExistInDatabase,
+  executeActionViaClapi,
+  submitResultsViaClapi,
+  updateFixturesResult,
+  apiBase,
+  apiActionV1,
+  applyConfigurationViaClapi,
+  versionApi,
 };

@@ -1,18 +1,8 @@
-const apiBase = `${Cypress.config().baseUrl}/centreon/api`;
+import { apiBase, versionApi } from '../commons';
 
-const apiActionV1 = `${apiBase}/index.php`;
-
-const versionApi = 'latest';
-const apiFilterResources = `${apiBase}/${versionApi}/users/filters/events-view`;
-
-const apiLoginV2 = `${apiBase}/${versionApi}/login`;
+const apiLoginV2 = '/centreon/authentication/providers/configurations/local';
 const apiMonitoringBeta = `${apiBase}/beta/monitoring`;
 const apiMonitoring = `${apiBase}/${versionApi}/monitoring`;
+const apiLogout = '/centreon/api/latest/authentication/logout';
 
-export {
-  apiActionV1,
-  apiFilterResources,
-  apiLoginV2,
-  apiMonitoringBeta,
-  apiMonitoring,
-};
+export { apiLoginV2, apiMonitoringBeta, apiMonitoring, apiLogout };
