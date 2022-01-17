@@ -3,38 +3,39 @@
   "title": "Read local provider configuration",
   "type": "object",
   "required": ["password_security_policy"],
-  "additionalProperties": true,
+  "additionalProperties": false,
   "properties": {
     "password_security_policy": {
       "type": "object",
       "required": [
-        "password_min_length",
-        "has_uppercase",
-        "has_lowercase",
-        "has_number",
-        "has_special_character",
+        "password_length",
+        "has_uppercase_characters",
+        "has_lowercase_characters",
+        "has_numbers",
+        "has_special_characters",
         "attempts",
         "blocking_duration",
         "password_expiration",
         "can_reuse_passwords",
         "delay_before_new_password"
       ],
+      "additionalProperties": false,
       "properties": {
-        "password_min_length": {
+        "password_length": {
           "type": "integer",
           "minimum": 8,
           "maximum": 128
         },
-        "has_uppercase": {
+        "has_uppercase_characters": {
           "type": "boolean"
         },
-        "has_lowercase": {
+        "has_lowercase_characters": {
           "type": "boolean"
         },
-        "has_number": {
+        "has_numbers": {
           "type": "boolean"
         },
-        "has_special_character": {
+        "has_special_characters": {
           "type": "boolean"
         },
         "attempts": {

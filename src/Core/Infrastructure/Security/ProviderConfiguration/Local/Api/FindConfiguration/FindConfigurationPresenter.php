@@ -34,16 +34,23 @@ class FindConfigurationPresenter extends AbstractPresenter implements FindConfig
     public function present(FindConfigurationResponse $response): void
     {
         $presenterResponse = [
-            'password_min_length' => $response->passwordMinimumLength,
-            'has_uppercase' => $response->hasUppercase,
-            'has_lowercase' => $response->hasLowercase,
-            'has_number' => $response->hasNumber,
-            'has_special_character' => $response->hasSpecialCharacter,
-            'attempts' => $response->attempts,
-            'blocking_duration' => $response->blockingDuration,
-            'password_expiration' => $response->passwordExpiration,
-            'can_reuse_passwords' => $response->canReusePasswords,
-            'delay_before_new_password' => $response->delayBeforeNewPassword,
+            'id' => $response->id,
+            'type' => $response->type,
+            'name' => $response->name,
+            'is_active' => $response->isActive,
+            'is_forced' => $response->isForced,
+            'password_security_policy' => [
+                'password_min_length' => $response->passwordMinimumLength,
+                'has_uppercase' => $response->hasUppercase,
+                'has_lowercase' => $response->hasLowercase,
+                'has_number' => $response->hasNumber,
+                'has_special_character' => $response->hasSpecialCharacter,
+                'attempts' => $response->attempts,
+                'blocking_duration' => $response->blockingDuration,
+                'password_expiration' => $response->passwordExpiration,
+                'can_reuse_passwords' => $response->canReusePasswords,
+                'delay_before_new_password' => $response->delayBeforeNewPassword,
+            ]
         ];
 
         $this->presenterFormatter->present($presenterResponse);

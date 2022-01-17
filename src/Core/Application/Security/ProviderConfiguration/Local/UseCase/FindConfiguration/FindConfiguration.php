@@ -45,7 +45,7 @@ class FindConfiguration
      */
     public function __invoke(FindConfigurationPresenterInterface $presenter): void
     {
-        $this->debug('Searching for security policy');
+        $this->debug('Searching for local provider configuration');
 
         try {
             $configuration = $this->repository->findConfiguration();
@@ -59,12 +59,12 @@ class FindConfiguration
 
         if ($configuration === null) {
             $this->critical(
-                'No security policy are present, check that your installation / upgrade went well. ' .
-                'A security Policy is necessary to create / update passwords'
+                'Local provider configuration not found : check that your installation / upgrade went well. ' .
+                'A local provider configuration is necessary to manage password security policy.'
             );
             $presenter->setResponseStatus(
                 new FindConfigurationErrorResponse(
-                    'Security policy not found. Please verify that your installation is valid'
+                    'Local provider configuration not found. Please verify that your installation is valid'
                 )
             );
             return;
@@ -80,6 +80,11 @@ class FindConfiguration
     public function createResponse(Configuration $configuration): FindConfigurationResponse
     {
         $response = new FindConfigurationResponse();
+        $response->id = $configuration->getId();
+        $response->type = $configuration->getType();
+        $response->name = $configuration->getName();
+        $response->isActive = $configuration->isActive();
+        $response->isForced = $configuration->isForced();
         $response->passwordMinimumLength = $configuration->getPasswordMinimumLength();
         $response->hasUppercase = $configuration->hasUppercase();
         $response->hasLowercase = $configuration->hasLowercase();

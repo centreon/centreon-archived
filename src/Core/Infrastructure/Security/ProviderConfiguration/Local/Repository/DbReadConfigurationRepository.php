@@ -51,32 +51,33 @@ class DbReadConfigurationRepository extends AbstractRepositoryDRB implements Rea
     public function findConfiguration(): ?Configuration
     {
         $statement = $this->db->query(
-            "SELECT `custom_configuration` FROM `provider_configuration` WHERE `name` = 'local'"
+            "SELECT `id`, `type`, `name`, `custom_configuration`, `is_active`, `is_forced`
+            FROM `provider_configuration`
+            WHERE `name` = 'local'"
         );
 
         $configuration = null;
         if ($statement !== false && $result = $statement->fetch(\PDO::FETCH_ASSOC)) {
-            $this->validateReadConfiguration($result['custom_configuration']);
-            $configuration = DbConfigurationFactory::createFromRecord(
-                json_decode($result['custom_configuration'], true)['password_security_policy']
-            );
+            $this->validateReadCustomConfiguration($result['custom_configuration']);
+            $result['custom_configuration'] = json_decode($result['custom_configuration'], true);
+            $configuration = DbConfigurationFactory::createFromRecord($result);
         }
 
         return $configuration;
     }
 
     /**
-     * Validate the password security policy format
+     * Validate the custom configuration format
      *
-     * @param string $configuration provider configuration
+     * @param string $configuration provider custom configuration
      * @throws ConfigurationException
      */
-    private function validateReadConfiguration(string $configuration): void
+    private function validateReadCustomConfiguration(string $configuration): void
     {
         $decodedConfiguration = json_decode($configuration, true);
 
         if (is_array($decodedConfiguration) === false) {
-            $this->critical('Provider configuration is not a valid json');
+            $this->critical('Provider custom configuration is not a valid json');
             ConfigurationException::errorWhileReadingConfiguration();
         }
 
@@ -85,7 +86,7 @@ class DbReadConfigurationRepository extends AbstractRepositoryDRB implements Rea
         $validator->validate(
             $decodedConfiguration,
             (object) [
-                '$ref' => 'file://' . __DIR__ . '/ConfigurationSchema.json',
+                '$ref' => 'file://' . __DIR__ . '/CustomConfigurationSchema.json',
             ],
             Constraint::CHECK_MODE_VALIDATE_SCHEMA
         );
@@ -96,7 +97,7 @@ class DbReadConfigurationRepository extends AbstractRepositoryDRB implements Rea
                 $message .= sprintf("[%s] %s\n", $error['property'], $error['message']);
             }
             $this->critical($message);
-            ConfigurationException::errorWhileReadingConfiguration();
+            throw ConfigurationException::errorWhileReadingConfiguration();
         }
     }
 }

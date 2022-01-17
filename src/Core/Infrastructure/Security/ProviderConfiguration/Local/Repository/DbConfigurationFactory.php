@@ -33,16 +33,21 @@ class DbConfigurationFactory
     public static function createFromRecord(array $configuration): Configuration
     {
         return new Configuration(
-            $configuration['password_length'],
-            $configuration['has_uppercase_characters'],
-            $configuration['has_lowercase_characters'],
-            $configuration['has_numbers'],
-            $configuration['has_special_characters'],
-            $configuration['can_reuse_passwords'],
-            $configuration['attempts'],
-            $configuration['blocking_duration'],
-            $configuration['password_expiration'],
-            $configuration['delay_before_new_password'],
+            (int) $configuration['id'],
+            $configuration['type'],
+            $configuration['name'],
+            (int) $configuration['is_active'] === 1,
+            (int) $configuration['is_forced'] === 1,
+            $configuration['custom_configuration']['password_security_policy']['password_length'],
+            $configuration['custom_configuration']['password_security_policy']['has_uppercase_characters'],
+            $configuration['custom_configuration']['password_security_policy']['has_lowercase_characters'],
+            $configuration['custom_configuration']['password_security_policy']['has_numbers'],
+            $configuration['custom_configuration']['password_security_policy']['has_special_characters'],
+            $configuration['custom_configuration']['password_security_policy']['can_reuse_passwords'],
+            $configuration['custom_configuration']['password_security_policy']['attempts'],
+            $configuration['custom_configuration']['password_security_policy']['blocking_duration'],
+            $configuration['custom_configuration']['password_security_policy']['password_expiration'],
+            $configuration['custom_configuration']['password_security_policy']['delay_before_new_password'],
         );
     }
 }

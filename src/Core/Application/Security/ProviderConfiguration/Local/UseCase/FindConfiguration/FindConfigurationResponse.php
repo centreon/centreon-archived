@@ -28,6 +28,31 @@ class FindConfigurationResponse
     /**
      * @var int
      */
+    public int $id;
+
+    /**
+     * @var string
+     */
+    public string $type;
+
+    /**
+     * @var string
+     */
+    public string $name;
+
+    /**
+     * @var bool
+     */
+    public bool $isActive;
+
+    /**
+     * @var bool
+     */
+    public bool $isForced;
+
+    /**
+     * @var int
+     */
     public int $passwordMinimumLength;
 
     /**

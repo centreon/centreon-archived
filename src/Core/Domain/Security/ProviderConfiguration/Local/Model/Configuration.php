@@ -54,6 +54,11 @@ class Configuration
      * @throws AssertionException
      */
     public function __construct(
+        private int $id,
+        private string $type,
+        private string $name,
+        private bool $isActive,
+        private bool $isForced,
         private int $passwordMinimumLength,
         private bool $hasUppercase,
         private bool $hasLowercase,
@@ -91,6 +96,101 @@ class Configuration
                 'Configuration::delayBeforeNewPassword'
             );
         }
+    }
+
+    /**
+     * @return int
+     */
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param int $id
+     * @return self
+     */
+    public function setId(int $id): self
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType(): string
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param string $type
+     * @return self
+     */
+    public function setType(string $type): self
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     * @return self
+     */
+    public function setName(string $name): self
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isActive(): bool
+    {
+        return $this->isActive;
+    }
+
+    /**
+     * @param bool $isActive
+     * @return self
+     */
+    public function setIsActive(bool $isActive): self
+    {
+        $this->isActive = $isActive;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isForced(): bool
+    {
+        return $this->isForced;
+    }
+
+    /**
+     * @param bool $isForced
+     * @return self
+     */
+    public function setIsForced(bool $isForced): self
+    {
+        $this->isForced = $isForced;
+
+        return $this;
     }
 
     /**
