@@ -222,6 +222,7 @@ function validatePasswordModification(array $fields)
 
 /**
  * @param array $fields
+ * @return array<string,string>|bool
  */
 function checkAutologinValue(array $fields)
 {
@@ -238,17 +239,17 @@ function checkAutologinValue(array $fields)
 
         if (
             ($result = $statement->fetch(\PDO::FETCH_ASSOC))
-            && password_verify($fields['contact_autologin_key'], $result['password'])
             && !empty($fields['contact_passwd'])
+            && password_verify($fields['contact_autologin_key'], $result['password'])
         ) {
             $errors['contact_autologin_key'] = _('Your autologin key should be different than your current password');
         } elseif (
-            empty($fields['contact_passwd'])
+            !empty($fields['contact_passwd'])
             && $fields['contact_passwd'] === $fields['contact_autologin_key']
         ) {
-            $errorMessage = 'Your new password and autologin key should be different';
-            $errors['contact_passwd'] = _($errorMessage);
-            $errors['contact_autologin_key'] = _($errorMessage);
+            $errorMessage = _('Your new password and autologin key should be different');
+            $errors['contact_passwd'] = $errorMessage;
+            $errors['contact_autologin_key'] = $errorMessage;
         }
     }
 

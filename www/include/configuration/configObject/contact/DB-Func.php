@@ -1327,7 +1327,7 @@ function validatePasswordModification(array $fields)
  * Validate autologin key is not equal to a password
  *
  * @param array $fields
- * @return mixed
+ * @return array<string,string>|bool
  */
 function validateAutologin(array $fields)
 {

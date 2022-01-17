@@ -189,7 +189,7 @@ class Centreon_Object_Contact extends \Centreon_Object
                 ($result = $statement->fetch(\PDO::FETCH_ASSOC))
                 && password_verify($params['contact_autologin_key'], $result['password'])
             ) {
-                throw new \Exception('Your autologin key should be different than your current password');
+                throw new \Exception(_('Your autologin key should be different than your current password'));
             }
         }
 
