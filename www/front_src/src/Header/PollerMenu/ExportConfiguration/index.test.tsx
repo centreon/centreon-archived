@@ -9,7 +9,7 @@ import {
   waitFor,
   RenderResult,
   screen,
-  withSnackbar,
+  SnackbarProvider,
 } from '@centreon/ui';
 import { refreshIntervalAtom, userAtom } from '@centreon/ui-context';
 

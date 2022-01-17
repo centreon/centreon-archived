@@ -4,8 +4,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin');
 const { merge } = require('webpack-merge');
 
-const baseConfig = require('/centreon-frontend/packages/frontend-config/webpack/base');
-const extractCssConfig = require('/centreon-frontend/packages/frontend-config/webpack/patch/extractCss');
+const baseConfig = require('centreon-frontend/packages/frontend-config/webpack/base');
+const extractCssConfig = require('centreon-frontend/packages/frontend-config/webpack/patch/extractCss');
 
 module.exports = merge(baseConfig, extractCssConfig, {
   entry: ['@babel/polyfill', './www/front_src/src/index.js'],

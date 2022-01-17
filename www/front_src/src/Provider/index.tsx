@@ -20,7 +20,8 @@ import { initReactI18next } from 'react-i18next';
 import { Provider as JotaiProvider } from 'jotai';
 import { useUpdateAtom } from 'jotai/utils';
 
-import { useRequest, getData, withSnackbar, ThemeProvider } from '@centreon/ui';
+import { useRequest, getData, ThemeProvider, SnackbarProvider } from '@centreon/ui';
+import { SnackbarProvider as NotistackSnackbarProvider } from 'notistack';
 import {
   userAtom,
   User,
@@ -124,6 +125,7 @@ const AppProvider = ({ children }: Props): JSX.Element => {
         ]) => {
           setUser({
             alias: retrievedUser.alias,
+            default_page: null,
             isExportButtonEnabled: retrievedUser.isExportButtonEnabled,
             locale: retrievedUser.locale || 'en',
             name: retrievedUser.name,
@@ -180,12 +182,11 @@ const AppProvider = ({ children }: Props): JSX.Element => {
   );
 };
 
-const AppProviderWithSnackbar = withSnackbar({ Component: AppProvider });
 
-const Provider = ({ children }: Props): JSX.Element => (
+const Provider = ({  }: Props): JSX.Element => (
   <ThemeProvider>
     <JotaiProvider scope="ui-context">
-      <AppProviderWithSnackbar>{children}</AppProviderWithSnackbar>
+      <SnackbarProvider>{AppProvider}</SnackbarProvider>
     </JotaiProvider>
   </ThemeProvider>
 );
