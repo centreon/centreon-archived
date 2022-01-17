@@ -23,7 +23,6 @@ declare(strict_types=1);
 namespace Centreon\Domain\Contact;
 
 use Centreon\Domain\Menu\Model\Page;
-use Symfony\Component\Security\Core\Role\Role;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 
