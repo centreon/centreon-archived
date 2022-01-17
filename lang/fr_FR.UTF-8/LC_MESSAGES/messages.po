@@ -16452,3 +16452,9 @@ msgstr "Votre mot de passe expirera dans %s jours."
 
 msgid "Security policy not found. Please verify that your installation is valid"
 msgstr "Politique de sécurité non trouvée. Veuillez vérifier que votre installation est valide"
+
+msgid "Your autologin key must be different than your current password"
+msgstr "Votre clé d'autologin doit être différente de votre mot de passe actuel"
+
+msgid "Your new password and autologin key must be different"
+msgstr "Votre nouveau mot de passe et votre clé d'autologin doivent être différents"

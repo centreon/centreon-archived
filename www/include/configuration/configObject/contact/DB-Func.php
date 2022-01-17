@@ -1300,7 +1300,7 @@ function validatePasswordCreation(array $fields)
 /**
  * Validate password creation using defined security policy.
  *
- * @param array $fields
+ * @param array<string,mixed> $fields
  * @return mixed
  */
 function validatePasswordModification(array $fields)
@@ -1318,6 +1318,51 @@ function validatePasswordModification(array $fields)
         $contact->respectPasswordPolicyOrFail($password, $contactId);
     } catch (\Throwable $e) {
         $errors['contact_passwd'] = $e->getMessage();
+    }
+
+    return count($errors) > 0 ? $errors : true;
+}
+
+/**
+ * Validate autologin key is not equal to a password
+ *
+ * @param array<string,mixed> $fields
+ * @return array<string,string>|bool
+ */
+function validateAutologin(array $fields)
+{
+    global $pearDB;
+    $errors = [];
+    if (!empty($fields['contact_autologin_key'])) {
+        /**
+         * If user update his autologin key and not his password,
+         * check that the autologin key is not the same as his current password.
+         */
+        if (!empty($fields['contact_id']) && empty($fields['contact_passwd'])) {
+            $contactId = $fields['contact_id'];
+            $statement = $pearDB->prepare(
+                'SELECT * FROM `contact_password` WHERE contact_id = :contactId ORDER BY creation_date DESC LIMIT 1'
+            );
+            $statement->bindValue(':contactId', $contactId, \PDO::PARAM_INT);
+            $statement->execute();
+
+            if (
+                ($result = $statement->fetch(\PDO::FETCH_ASSOC))
+                && password_verify($fields['contact_autologin_key'], $result['password'])
+            ) {
+                $errors['contact_autologin_key'] = _(
+                    'Your autologin key must be different than your current password'
+                );
+            }
+        }
+        if (
+            !empty($fields['contact_passwd'])
+            && $fields['contact_passwd'] === $fields['contact_autologin_key']
+        ) {
+            $errorMessage = 'Your password and autologin key should be different';
+            $errors['contact_passwd'] = _($errorMessage);
+            $errors['contact_autologin_key'] = _($errorMessage);
+        }
     }
 
     return count($errors) > 0 ? $errors : true;
