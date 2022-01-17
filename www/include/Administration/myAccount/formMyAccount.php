@@ -141,13 +141,13 @@ if ($cct["contact_auth_type"] != 'ldap') {
         'password',
         'contact_passwd',
         _("Password"),
-        array("size" => "30", "autocomplete" => "new-password", "id" => "passwd1", "onFocus" => "resetPwdType(this);")
+        ["size" => "30", "autocomplete" => "new-password", "id" => "passwd1", "onkeypress" => "resetPwdType(this);"]
     );
     $form->addElement(
         'password',
         'contact_passwd2',
         _("Confirm Password"),
-        array("size" => "30", "autocomplete" => "new-password", "id" => "passwd2", "onFocus" => "resetPwdType(this);")
+        ["size" => "30", "autocomplete" => "new-password", "id" => "passwd2", "onkeypress" => "resetPwdType(this);"]
     );
     $form->addElement(
         'button',
