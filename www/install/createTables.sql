@@ -2382,7 +2382,7 @@ CREATE TABLE `provider_configuration` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `type` varchar(255) NOT NULL,
   `name` varchar(255) NOT NULL,
-  `configuration` JSON NOT NULL,
+  `custom_configuration` JSON NOT NULL,
   `is_active` BOOLEAN NOT NULL DEFAULT 1,
   `is_forced` BOOLEAN NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),

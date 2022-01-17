@@ -258,13 +258,15 @@ class CentreonContact
      */
     public function getPasswordSecurityPolicy(): array
     {
-        $result = $this->db->query("SELECT `configuration` FROM `provider_configuration` WHERE `name` = 'local'");
+        $result = $this->db->query(
+            "SELECT `custom_configuration` FROM `provider_configuration` WHERE `name` = 'local'"
+        );
         $configuration = $result->fetch(\PDO::FETCH_ASSOC);
-        if ($configuration === false || empty($configuration['configuration'])) {
+        if ($configuration === false || empty($configuration['custom_configuration'])) {
             throw new \Exception('Password security policy not found');
         }
 
-        $securityPolicyData = json_decode($configuration['configuration'], true)['password_security_policy'];
+        $securityPolicyData = json_decode($configuration['custom_configuration'], true)['password_security_policy'];
 
         return $securityPolicyData;
     }

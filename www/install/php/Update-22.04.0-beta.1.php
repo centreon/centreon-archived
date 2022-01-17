@@ -30,9 +30,9 @@ try {
     $errorMessage = "Unable to drop table 'password_security_policy'";
     $pearDB->query("DROP TABLE IF EXISTS `password_security_policy`");
 
-    $errorMessage = "Unable to add column 'configuration' to table 'provider_configuration'";
+    $errorMessage = "Unable to add column 'custom_configuration' to table 'provider_configuration'";
     $pearDB->query(
-        "ALTER TABLE `provider_configuration` ADD COLUMN `configuration` JSON NOT NULL AFTER `name`"
+        "ALTER TABLE `provider_configuration` ADD COLUMN `custom_configuration` JSON NOT NULL AFTER `name`"
     );
 
     $errorMessage = "Unable to insert default local security policy configuration";
@@ -52,7 +52,7 @@ try {
     ]);
     $statement = $pearDB->prepare(
         "UPDATE `provider_configuration`
-        SET `configuration` = :localProviderConfiguration
+        SET `custom_configuration` = :localProviderConfiguration
         WHERE `name` = 'local'"
     );
     $statement->bindValue(':localProviderConfiguration', $localProviderConfiguration, \PDO::PARAM_STR);
