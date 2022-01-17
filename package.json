@@ -67,7 +67,7 @@
     "jest": "^27.4.5",
     "jest-environment-jsdom": "^27.4.4",
     "jest-junit": "^13.0.0",
-    "mini-css-extract-plugin": "^2.4.5",
+    "mini-css-extract-plugin": "2.4.5",
     "mockdate": "^3.0.5",
     "node-sass": "^7.0.0",
     "postcss-loader": "^6.2.1",
@@ -93,7 +93,6 @@
     "webpack-merge": "^5.8.0"
   },
   "dependencies": {
-    "centreon-frontend": "git+https://centreon@github.com/centreon/centreon-frontend.git#develop",
     "@date-io/dayjs": "^2.11.0",
     "@emotion/react": "^11.7.1",
     "@emotion/styled": "^11.6.0",
@@ -102,6 +101,7 @@
     "@mui/styles": "^5.2.3",
     "@visx/visx": "2.5.0",
     "axios": "^0.24.0",
+    "centreon-frontend": "git+https://centreon@github.com/centreon/centreon-frontend.git#develop",
     "classnames": "^2.3.1",
     "clsx": "^1.1.1",
     "connected-react-router": "^6.9.2",

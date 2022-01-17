@@ -21,7 +21,6 @@ import {
   StatusCounter,
 } from '@centreon/ui';
 import { userAtom } from '@centreon/ui-context';
-
 import styles from '../../header.scss';
 import {
   getServiceResourcesUrl,
