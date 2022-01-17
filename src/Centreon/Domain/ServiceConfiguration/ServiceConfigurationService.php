@@ -29,6 +29,7 @@ use Centreon\Domain\HostConfiguration\Interfaces\HostConfigurationServiceInterfa
 use Centreon\Domain\Log\LoggerTrait;
 use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
 use Centreon\Domain\Service\AbstractCentreonService;
+use Centreon\Domain\ServiceConfiguration\Exception\ServiceConfigurationServiceException;
 use Centreon\Domain\ServiceConfiguration\Interfaces\ServiceConfigurationRepositoryInterface;
 use Centreon\Domain\ServiceConfiguration\Interfaces\ServiceConfigurationServiceInterface;
 
@@ -337,8 +338,8 @@ class ServiceConfigurationService extends AbstractCentreonService implements Ser
 
     /**
      * @param Host $host
-     * @throws ServiceConfigurationException
      * @throws \Assert\AssertionFailedException
+     * @throws ServiceConfigurationServiceException
      */
     public function removeServices(Host $host): void
     {
@@ -354,11 +355,7 @@ class ServiceConfigurationService extends AbstractCentreonService implements Ser
                     $ex->getMessage()
                 )
             );
-            throw new ServiceConfigurationException(
-                sprintf(_('Error on removing services from the host #%d'), $host->getId()),
-                0,
-                $ex
-            );
+            throw ServiceConfigurationServiceException::errorOnRemovingServicesFromHost($host->getId());
         }
     }
 }

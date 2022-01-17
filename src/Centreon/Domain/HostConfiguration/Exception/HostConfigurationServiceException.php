@@ -52,6 +52,14 @@ class HostConfigurationServiceException extends \Exception
     }
 
     /**
+     * @return self
+     */
+    public static function engineConfigurationNotFound(): self
+    {
+        return new self(_('Unable to find the Engine configuration'));
+    }
+
+    /**
      * @param \Throwable $ex
      * @return self
      */

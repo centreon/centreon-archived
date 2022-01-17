@@ -78,6 +78,7 @@ class HostConfigurationService implements HostConfigurationServiceInterface
      * @var ContactInterface
      */
     private $contact;
+
     /**
      * @param HostConfigurationRepositoryInterface $hostConfigurationRepository
      * @param ActionLogServiceInterface $actionLogService
@@ -181,6 +182,7 @@ class HostConfigurationService implements HostConfigurationServiceInterface
      */
     public function updateHost(Host $host): void
     {
+        $this->info('Update host');
         if (empty($host->getName())) {
             throw HostConfigurationServiceException::hostNameCanNotBeEmpty();
         }
@@ -195,19 +197,23 @@ class HostConfigurationService implements HostConfigurationServiceInterface
             $this->checkIllegalCharactersInHostName($host);
 
             if ($transactionAlreadyStarted === false) {
+                $this->debug('Start transaction');
                 $this->dataStorageEngine->startTransaction();
             }
 
             /**
              * For the moment we are only changing the host properties.
              */
+            $this->debug('Updating host');
             $this->hostConfigurationRepository->updateHost($host);
 
             if ($transactionAlreadyStarted === false) {
+                $this->debug('Commit transaction');
                 $this->dataStorageEngine->commitTransaction();
             }
         } catch (\Throwable $ex) {
             if ($transactionAlreadyStarted === false) {
+                $this->debug('Rollback transaction');
                 $this->dataStorageEngine->rollbackTransaction();
             }
             throw HostConfigurationServiceException::errorOnUpdatingAHost($ex);
@@ -504,7 +510,7 @@ class HostConfigurationService implements HostConfigurationServiceInterface
             $host->getMonitoringServer()->getName()
         );
         if ($engineConfiguration === null) {
-            throw new HostConfigurationException(_('Unable to find the Engine configuration'));
+            throw HostConfigurationServiceException::engineConfigurationNotFound();
         }
         $this->debug(
             'Engine configuration',
@@ -512,7 +518,7 @@ class HostConfigurationService implements HostConfigurationServiceInterface
         );
         $safedHostName = $engineConfiguration->removeIllegalCharacters($host->getName());
         if (empty($safedHostName)) {
-            throw new HostConfigurationException(_('Host name can not be empty'));
+            throw HostConfigurationServiceException::hostNameCanNotBeEmpty();
         }
         $this->debug('Safed host name: ' . $safedHostName);
         $host->setName($safedHostName);
