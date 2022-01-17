@@ -27,9 +27,6 @@ $centreonLog = new CentreonLog();
 $versionOfTheUpgrade = 'UPGRADE - 22.04.0-beta.1: ';
 
 try {
-    $errorMessage = "Unable to drop table 'password_security_policy'";
-    $pearDB->query("DROP TABLE IF EXISTS `password_security_policy`");
-
     $errorMessage = "Unable to add column 'custom_configuration' to table 'provider_configuration'";
     $pearDB->query(
         "ALTER TABLE `provider_configuration` ADD COLUMN `custom_configuration` JSON NOT NULL AFTER `name`"
