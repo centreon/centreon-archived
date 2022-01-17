@@ -16318,11 +16318,11 @@ msgstr "Souple"
 msgid "User is not allowed to reach web application"
 msgstr "L'utilisateur n'est pas autorisé à joindre l'application web"
 
-msgid "Error when adding a host (Reason: %s)"
+msgid "Error on adding a host (Reason: %s)"
 msgstr "Erreur lors de l'ajout d'un hôte (Raison : %s)"
 
-msgid "Error when updating a host (Reason: %s)"
+msgid "Error on updating a host (Reason: %s)"
 msgstr "Erreur lors de la mise à jour d'un hôte (Raison : %s)"
 
-msgid "Error when removing services from the host #%d"
+msgid "Error on removing services from the host #%d"
 msgstr "Erreur lors de la suppression des services de l'hôte #%d"

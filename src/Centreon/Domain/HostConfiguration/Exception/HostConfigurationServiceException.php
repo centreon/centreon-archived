@@ -55,18 +55,18 @@ class HostConfigurationServiceException extends \Exception
      * @param \Throwable $ex
      * @return self
      */
-    public static function errorWhenAddingAHost(\Throwable $ex): self
+    public static function errorOnAddingAHost(\Throwable $ex): self
     {
-        return new self(sprintf(_('Error when adding a host (Reason: %s)'), $ex->getMessage()), 0, $ex);
+        return new self(sprintf(_('Error on adding a host (Reason: %s)'), $ex->getMessage()), 0, $ex);
     }
 
     /**
      * @param \Throwable $ex
      * @return self
      */
-    public static function errorWhenUpdatingAHost(\Throwable $ex): self
+    public static function errorOnUpdatingAHost(\Throwable $ex): self
     {
-        return new self(sprintf(_('Error when updating a host (Reason: %s)'), $ex->getMessage()), 0, $ex);
+        return new self(sprintf(_('Error on updating a host (Reason: %s)'), $ex->getMessage()), 0, $ex);
     }
 
     /**

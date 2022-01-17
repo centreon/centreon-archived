@@ -161,7 +161,7 @@ class HostConfigurationService implements HostConfigurationServiceInterface
                     $this->debug('Rollback transaction');
                     $this->dataStorageEngine->rollbackTransaction();
                 }
-                throw HostConfigurationServiceException::errorWhenAddingAHost($ex);
+                throw HostConfigurationServiceException::errorOnAddingAHost($ex);
             }
 
             if ($host->getId() !== null) {
@@ -170,7 +170,7 @@ class HostConfigurationService implements HostConfigurationServiceInterface
         } catch (HostConfigurationServiceException $ex) {
             throw $ex;
         } catch (\Exception $ex) {
-            throw HostConfigurationServiceException::errorWhenAddingAHost($ex);
+            throw HostConfigurationServiceException::errorOnAddingAHost($ex);
         }
     }
 
@@ -210,7 +210,7 @@ class HostConfigurationService implements HostConfigurationServiceInterface
             if ($transactionAlreadyStarted === false) {
                 $this->dataStorageEngine->rollbackTransaction();
             }
-            throw HostConfigurationServiceException::errorWhenUpdatingAHost($ex);
+            throw HostConfigurationServiceException::errorOnUpdatingAHost($ex);
         }
     }
 

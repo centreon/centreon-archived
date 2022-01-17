@@ -349,13 +349,13 @@ class ServiceConfigurationService extends AbstractCentreonService implements Ser
         } catch (\Throwable $ex) {
             $this->error(
                 sprintf(
-                    _('Error when removing services from the host #%d (Reason: %s)'),
+                    _('Error on removing services from the host #%d (Reason: %s)'),
                     $host->getId(),
                     $ex->getMessage()
                 )
             );
             throw new ServiceConfigurationException(
-                sprintf(_('Error when removing services from the host #%d'), $host->getId()),
+                sprintf(_('Error on removing services from the host #%d'), $host->getId()),
                 0,
                 $ex
             );
