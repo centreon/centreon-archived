@@ -78,7 +78,7 @@ class DbReadConfigurationRepository extends AbstractRepositoryDRB implements Rea
 
         if (is_array($decodedConfiguration) === false) {
             $this->critical('Provider custom configuration is not a valid json');
-            ConfigurationException::errorWhileReadingConfiguration();
+            throw ConfigurationException::errorWhileReadingConfiguration();
         }
 
         $decodedConfiguration = Validator::arrayToObjectRecursive($decodedConfiguration);
