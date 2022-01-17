@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import { makeStyles } from '@material-ui/core';
+import makeStyles from '@mui/styles/makeStyles';
 
 import { useLocaleDateTimeFormat } from '@centreon/ui';
 
@@ -22,7 +22,7 @@ interface Props {
 const useStyles = makeStyles((theme) => ({
   downtimes: {
     display: 'grid',
-    rowGap: `${theme.spacing(1)}px`,
+    rowGap: theme.spacing(1),
   },
 }));
 

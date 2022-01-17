@@ -66,7 +66,9 @@ const useLoadDetails = (): DetailsState => {
       return;
     }
 
-    sendRequest(selectedResourceDetailsEndpoint)
+    sendRequest({
+      endpoint: selectedResourceDetailsEndpoint,
+    })
       .then(setDetails)
       .catch(() => {
         clearSelectedResource();

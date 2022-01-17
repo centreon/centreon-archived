@@ -3,7 +3,8 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useUpdateAtom } from 'jotai/utils';
 
-import { makeStyles, Tooltip, Paper, Typography } from '@material-ui/core';
+import { Tooltip, Paper, Typography } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 
 import truncate from '../../../../../truncate';
 import { TimelineEvent } from '../../../../../Details/tabs/Timeline/models';

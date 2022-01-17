@@ -7,29 +7,31 @@ use CentreonRemote\Domain\Resources\DefaultConfig\CfgCentreonBrokerInfo;
 
 class PollerDefaultsOverwriteService
 {
-
+    /** @var int|null */
     private $pollerID = null;
 
+    /** @var int[] */
     private $brokerConfigIDs = [];
 
+    /** @var int[] */
     private $nagiosConfigIDs = [];
 
     /**
-     * @param null $pollerID
+     * @param int|null $pollerID
      */
-    public function setPollerID($pollerID)
+    public function setPollerID($pollerID): void
     {
         $this->pollerID = $pollerID;
     }
 
     /**
-     * @param array  $data - the table data for all pollers
+     * @param array<string|int, array<string,int>>  $data - the table data for all pollers
      * @param string $columnName - the name of the column which is FK to the poller
      * @param string $resourceName - the name of the table for which the data is
      *
-     * @return array
+     * @return array<string|int, array<string,int>>
      */
-    private function findPollerAndSetResourceData(array $data, $columnName, $resourceName)
+    private function findPollerAndSetResourceData(array $data, $columnName, $resourceName): array
     {
         // Remove remote poller resources in the array by the column name and pollerID
         $data = array_filter($data, function ($pollerData) use ($columnName) {
@@ -53,8 +55,8 @@ class PollerDefaultsOverwriteService
     /**
      * Get poller information
      *
-     * @param array $data the poller data
-     * @return array the complete poller data
+     * @param array<string|int, array<string,int>> $data the poller data
+     * @return array<string|int, array<string,int>> the complete poller data
      */
     public function getNagiosServer(array $data): array
     {
@@ -68,8 +70,8 @@ class PollerDefaultsOverwriteService
     /**
      * Get engine information
      *
-     * @param array $data the engine data
-     * @return array the complete engine data
+     * @param array<string|int, array<string,int>> $data the engine data
+     * @return array<string|int, array<string,int>> the complete engine data
      */
     public function getCfgNagios(array $data): array
     {
@@ -88,8 +90,8 @@ class PollerDefaultsOverwriteService
     /**
      * Get engine broker module information
      *
-     * @param array $data the engine broker module data
-     * @return array the complete engine broker module data
+     * @param array<string|int, array<string,int>> $data the engine broker module data
+     * @return array<string|int, array<string,int>> the complete engine broker module data
      */
     public function getCfgNagiosBroker(array $data): array
     {
@@ -106,8 +108,8 @@ class PollerDefaultsOverwriteService
     /**
      * Get broker information
      *
-     * @param array $data the broker data
-     * @return array the complete broker data
+     * @param array<string|int, array<string,int>> $data the broker data
+     * @return array<string|int, array<string,int>> the complete broker data
      */
     public function getCfgCentreonBroker(array $data): array
     {
@@ -126,8 +128,8 @@ class PollerDefaultsOverwriteService
     /**
      * Get broker detailed information
      *
-     * @param array $data the broker detailed data
-     * @return array the complete broker detailed data
+     * @param array<string|int, array<string,int>> $data the broker detailed data
+     * @return array<string|int, array<string,int>> the complete broker detailed data
      */
     public function getCfgCentreonBrokerInfo(array $data): array
     {
@@ -144,8 +146,8 @@ class PollerDefaultsOverwriteService
     /**
      * Get global macro information
      *
-     * @param array $data the global macro data
-     * @return array the complete global macro data
+     * @param array<string|int, array<string,int>> $data the global macro data
+     * @return array<string|int, array<string, int>> the complete global macro data
      */
     public function getCfgResource(array $data): array
     {

@@ -47,7 +47,6 @@ use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
  */
 class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements HostConfigurationRepositoryInterface
 {
-
     /**
      * @var SqlRequestParametersTranslator
      */
@@ -586,10 +585,6 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
         $names = [];
         foreach ($namesToCheck as $name) {
             $names[] = (string) $name;
-        }
-
-        if (empty($names)) {
-            return [];
         }
 
         $statement = $this->db->prepare(

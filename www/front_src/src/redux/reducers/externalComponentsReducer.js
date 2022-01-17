@@ -1,3 +1,5 @@
+/* eslint-disable default-param-last */
+
 import * as actions from '../actions/externalComponentsActions';
 
 const initialState = {

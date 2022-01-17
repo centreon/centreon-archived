@@ -14,9 +14,7 @@ import {
   prop,
   propEq,
   reduce,
-  reject,
   set as update,
-  sortBy,
   values,
 } from 'ramda';
 import { TFunction } from 'react-i18next';
@@ -26,12 +24,7 @@ import { getUrlQueryParameters } from '@centreon/ui';
 import { baseKey } from '../storage';
 import { labelNewFilter } from '../translatedLabels';
 
-import {
-  Criteria,
-  CriteriaDisplayProps,
-  CriteriaValue,
-  selectableCriterias,
-} from './Criterias/models';
+import { Criteria, CriteriaValue } from './Criterias/models';
 import {
   allFilter,
   Filter,
@@ -42,7 +35,6 @@ import {
 } from './models';
 import { build, parse } from './Criterias/searchQueryLanguage';
 import { getStoredOrDefaultFilter } from './storedFilter';
-import { criteriaNameSortOrder } from './Criterias/searchQueryLanguage/models';
 
 export const filterKey = `${baseKey}filter`;
 
@@ -51,7 +43,7 @@ export const storedFilterAtom = atomWithStorage<Filter>(
   unhandledProblemsFilter,
 );
 
-export const getDefaultFilterDerivedAtom = atom((): Filter => {
+export const getDefaultFilterDerivedAtom = atom(() => (): Filter => {
   const storedFilter = getStoredOrDefaultFilter(unhandledProblemsFilter);
   const urlQueryParameters = getUrlQueryParameters();
   const filterQueryParameter = urlQueryParameters.filter as Filter | undefined;
@@ -78,10 +70,10 @@ export const getDefaultFilterDerivedAtom = atom((): Filter => {
 
 export const customFiltersAtom = atom<Array<Filter>>([]);
 export const currentFilterAtom = atomWithDefault<Filter>((get) =>
-  get(getDefaultFilterDerivedAtom),
+  get(getDefaultFilterDerivedAtom)(),
 );
 export const appliedFilterAtom = atomWithDefault<Filter>((get) =>
-  get(getDefaultFilterDerivedAtom),
+  get(getDefaultFilterDerivedAtom)(),
 );
 export const editPanelOpenAtom = atom(false);
 export const searchAtom = atom('');
@@ -189,25 +181,6 @@ export const applyCurrentFilterDerivedAtom = atom(null, (get, set) => {
 
 export const clearFilterDerivedAtom = atom(null, (_, set) => {
   set(applyFilterDerivedAtom, allFilter);
-});
-
-export const multiSelectCriteriasDerivedAtom = atom((get) => {
-  const filterWithParsedSearch = get(filterWithParsedSearchDerivedAtom);
-
-  const getSelectableCriteriaByName = (name: string): CriteriaDisplayProps =>
-    selectableCriterias[name];
-
-  const isNonSelectableCriteria = (criteria: Criteria): boolean =>
-    pipe(({ name }) => name, getSelectableCriteriaByName, isNil)(criteria);
-
-  const criterias = sortBy(
-    ({ name }) => criteriaNameSortOrder[name],
-    filterWithParsedSearch.criterias,
-  );
-
-  return pipe(
-    reject(isNonSelectableCriteria) as (criterias) => Array<Criteria>,
-  )(criterias);
 });
 
 export const filtersDerivedAtom = atom((get) => [

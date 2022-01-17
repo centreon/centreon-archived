@@ -42,7 +42,6 @@ require_once __DIR__ . '/../trait/diAndUtilis.trait.php';
 
 class CentreonAdministrationWidget extends CentreonWebService implements CentreonWebServiceDiInterface
 {
-
     use CentreonWebServiceDiAndUtilisTrait;
 
     /**

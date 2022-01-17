@@ -5,7 +5,6 @@ use Centreon\Infrastructure\CentreonLegacyDB\ServiceEntityRepository;
 
 class TrapMatchingPropsRepository extends ServiceEntityRepository
 {
-
     /**
      * Export
      *

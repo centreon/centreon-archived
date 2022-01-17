@@ -24,9 +24,9 @@ const listMetaServiceMetrics =
     endpoint,
     parameters,
   }: ListMetaServiceMetricsProps): Promise<MetaServiceMetricListing> => {
-    return getData<MetaServiceMetricListing>(cancelToken)(
-      buildListMetaServiceMetricsEndpoint({ endpoint, parameters }),
-    );
+    return getData<MetaServiceMetricListing>(cancelToken)({
+      endpoint: buildListMetaServiceMetricsEndpoint({ endpoint, parameters }),
+    });
   };
 
 export { listMetaServiceMetrics, buildListMetaServiceMetricsEndpoint };
