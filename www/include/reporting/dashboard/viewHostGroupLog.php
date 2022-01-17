@@ -66,7 +66,6 @@ $hostsGroupRoute = array(
     'multiple' => false,
     'linkedObject' => 'centreonHostgroups',
     'availableDatasetRoute' =>
-
     './api/internal.php?object=centreon_configuration_hostgroup&action=list',
     'defaultDatasetRoute' =>
     './api/internal.php?object=centreon_configuration_hostgroup'
