@@ -1300,7 +1300,7 @@ function validatePasswordCreation(array $fields)
 /**
  * Validate password creation using defined security policy.
  *
- * @param array $fields
+ * @param array<string,mixed> $fields
  * @return mixed
  */
 function validatePasswordModification(array $fields)
@@ -1326,7 +1326,7 @@ function validatePasswordModification(array $fields)
 /**
  * Validate autologin key is not equal to a password
  *
- * @param array $fields
+ * @param array<string,mixed> $fields
  * @return array<string,string>|bool
  */
 function validateAutologin(array $fields)
@@ -1351,7 +1351,7 @@ function validateAutologin(array $fields)
                 && password_verify($fields['contact_autologin_key'], $result['password'])
             ) {
                 $errors['contact_autologin_key'] = _(
-                    'Your autologin key should be different than your current password'
+                    'Your autologin key must be different than your current password'
                 );
             }
         }

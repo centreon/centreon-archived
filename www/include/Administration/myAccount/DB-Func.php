@@ -221,7 +221,7 @@ function validatePasswordModification(array $fields)
 }
 
 /**
- * @param array $fields
+ * @param array<string,mixed> $fields
  * @return array<string,string>|bool
  */
 function checkAutologinValue(array $fields)
@@ -242,12 +242,12 @@ function checkAutologinValue(array $fields)
             && !empty($fields['contact_passwd'])
             && password_verify($fields['contact_autologin_key'], $result['password'])
         ) {
-            $errors['contact_autologin_key'] = _('Your autologin key should be different than your current password');
+            $errors['contact_autologin_key'] = _('Your autologin key must be different than your current password');
         } elseif (
             !empty($fields['contact_passwd'])
             && $fields['contact_passwd'] === $fields['contact_autologin_key']
         ) {
-            $errorMessage = _('Your new password and autologin key should be different');
+            $errorMessage = _('Your new password and autologin key must be different');
             $errors['contact_passwd'] = $errorMessage;
             $errors['contact_autologin_key'] = $errorMessage;
         }
