@@ -33,11 +33,6 @@ class DbConfigurationFactory
     public static function createFromRecord(array $configuration): Configuration
     {
         return new Configuration(
-            (int) $configuration['id'],
-            $configuration['type'],
-            $configuration['name'],
-            (int) $configuration['is_active'] === 1,
-            (int) $configuration['is_forced'] === 1,
             $configuration['custom_configuration']['password_security_policy']['password_length'],
             $configuration['custom_configuration']['password_security_policy']['has_uppercase_characters'],
             $configuration['custom_configuration']['password_security_policy']['has_lowercase_characters'],

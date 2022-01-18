@@ -51,7 +51,7 @@ class DbReadConfigurationRepository extends AbstractRepositoryDRB implements Rea
     public function findConfiguration(): ?Configuration
     {
         $statement = $this->db->query(
-            "SELECT `id`, `type`, `name`, `custom_configuration`, `is_active`, `is_forced`
+            "SELECT `custom_configuration`
             FROM `provider_configuration`
             WHERE `name` = 'local'"
         );
@@ -77,7 +77,7 @@ class DbReadConfigurationRepository extends AbstractRepositoryDRB implements Rea
         $decodedConfiguration = json_decode($configuration, true);
 
         if (is_array($decodedConfiguration) === false) {
-            $this->critical('Provider custom configuration is not a valid json');
+            $this->critical('Local provider custom configuration is not a valid json');
             throw ConfigurationException::errorWhileReadingConfiguration();
         }
 

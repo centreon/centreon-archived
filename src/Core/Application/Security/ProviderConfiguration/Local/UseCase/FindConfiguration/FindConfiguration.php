@@ -80,11 +80,6 @@ class FindConfiguration
     public function createResponse(Configuration $configuration): FindConfigurationResponse
     {
         $response = new FindConfigurationResponse();
-        $response->id = $configuration->getId();
-        $response->type = $configuration->getType();
-        $response->name = $configuration->getName();
-        $response->isActive = $configuration->isActive();
-        $response->isForced = $configuration->isForced();
         $response->passwordMinimumLength = $configuration->getPasswordMinimumLength();
         $response->hasUppercase = $configuration->hasUppercase();
         $response->hasLowercase = $configuration->hasLowercase();

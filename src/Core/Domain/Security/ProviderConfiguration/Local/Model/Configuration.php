@@ -54,11 +54,6 @@ class Configuration
      * @throws AssertionException
      */
     public function __construct(
-        private int $id,
-        private string $type,
-        private string $name,
-        private bool $isActive,
-        private bool $isForced,
         private int $passwordMinimumLength,
         private bool $hasUppercase,
         private bool $hasLowercase,
@@ -96,25 +91,6 @@ class Configuration
                 'Configuration::delayBeforeNewPassword'
             );
         }
-    }
-
-    /**
-     * @return int
-     */
-    public function getId(): int
-    {
-        return $this->id;
-    }
-
-    /**
-     * @param int $id
-     * @return self
-     */
-    public function setId(int $id): self
-    {
-        $this->id = $id;
-
-        return $this;
     }
 
     /**
