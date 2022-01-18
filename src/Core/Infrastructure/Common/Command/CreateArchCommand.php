@@ -1,9 +1,8 @@
 <?php
 
-namespace Centreon\Application\Command;
+namespace Core\Infrastructure\Common\Command;
 
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -38,9 +37,7 @@ class CreateArchCommand extends Command
         $this
             ->setName(self::$commandName)
             ->setDescription('Create classes for a given useCase and entity')
-            ->setHelp('This command allows you to create classes for a given useCase')
-            ->addArgument('useCaseName', InputArgument::REQUIRED, 'The name of the useCase')
-            ->addArgument('entityName', InputArgument::REQUIRED, 'The name of the entity');
+            ->setHelp('This command allows you to create classes for a given useCase');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): void

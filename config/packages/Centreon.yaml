@@ -57,6 +57,10 @@ services:
             - method: setFirstKey
               arguments: ['%env(APP_SECRET)%']
 
+    # Custom Command Service
+    Core\Infrastructure\Common\Command\Service\CreateCoreArchCommandService:
+        arguments: ['%env(_CENTREON_PATH_)%src']
+
     # JSON Validator
     Centreon\Domain\Service\JsonValidator\Interfaces\JsonValidatorInterface:
         class: Centreon\Domain\Service\JsonValidator\Validator
