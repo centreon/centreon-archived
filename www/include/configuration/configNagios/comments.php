@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
+ * Copyright 2005-2022 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -31,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 $nagios_comment = array();
@@ -60,14 +57,6 @@ $nagios_comment["status_file"] = "This is where the current status of all monito
     . "hosts is stored.  Its contents are read and processed by the CGIs. "
     . "The contentsof the status file are deleted every time Nagios "
     . "restarts. ";
-
-$nagios_comment["nagios_user"] = " NAGIOS USER "
-    . "This determines the effective user that Nagios should run as.   "
-    . "You can either supply a username or a UID. ";
-
-$nagios_comment["nagios_group"] = " NAGIOS GROUP "
-    . "This determines the effective group that Nagios should run as.  "
-    . "You can either supply a group name or a GID. ";
 
 $nagios_comment["check_external_commands"] = "This option allows you to specify whether or not Nagios should check "
     . "for external commands (in the command file defined below).  By default "
@@ -100,9 +89,6 @@ $nagios_comment["comment_file"] = "This is the file that Nagios will use for sto
 
 $nagios_comment["downtime_file"] = "This is the file that Nagios will use for storing host and service "
     . "downtime data. ";
-
-$nagios_comment["lock_file"] = "This is the lockfile that Nagios will use to store its PID number "
-    . "in when it is running in daemon mode. ";
 
 $nagios_comment["temp_file"] = "This is a temporary file< that is used as scratch space when Nagios "
     . "updates the status log, cleans the comment file, etc.  This file "

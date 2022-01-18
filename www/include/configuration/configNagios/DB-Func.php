@@ -253,26 +253,25 @@ function insertNagios($ret = array(), $brokerTab = array())
     }
     $rq = "INSERT INTO cfg_nagios ("
         . "`nagios_id`, `nagios_name`, `use_timezone`, `nagios_server_id`, `log_file`, `cfg_dir` , "
-        . "`temp_file` , "
-        . "`status_file`, `status_update_interval`, `nagios_user`, `nagios_group` , "
+        . "`temp_file`, `status_file`, `status_update_interval`, "
         . "`enable_notifications`, `execute_service_checks` , "
         . "`accept_passive_service_checks`, `execute_host_checks` , "
         . "`accept_passive_host_checks`, `enable_event_handlers`, `log_archive_path` , "
         . "`check_external_commands`, `command_check_interval`, `command_file` , "
-        . "`lock_file`, `retain_state_information`, `state_retention_file`, `retention_update_interval` , "
+        . "`retain_state_information`, `state_retention_file`, `retention_update_interval` , "
         . "`use_retained_program_state`, `use_retained_scheduling_info` , "
         . "`use_syslog`, `log_notifications` , "
         . "`log_service_retries`, `log_host_retries`, `log_event_handlers` , "
         . "`log_external_commands`, `log_passive_checks`, `global_host_event_handler` , "
         . "`global_service_event_handler`, `sleep_time`, `service_inter_check_delay_method` , "
         . "`host_inter_check_delay_method`, `service_interleave_factor` ,"
-        . " `max_concurrent_checks`, `max_service_check_spread` , "
+        . "`max_concurrent_checks`, `max_service_check_spread` , "
         . "`max_host_check_spread`, `check_result_reaper_frequency` , "
         . "`auto_reschedule_checks`, `auto_rescheduling_interval` , "
         . "`auto_rescheduling_window` , "
         . "`enable_predictive_host_dependency_checks`, `enable_flap_detection`, `low_service_flap_threshold` , "
         . "`high_service_flap_threshold`, `low_host_flap_threshold`, `high_host_flap_threshold` ,"
-        . " `soft_state_dependencies` ,`enable_predictive_service_dependency_checks` , "
+        . "`soft_state_dependencies` ,`enable_predictive_service_dependency_checks` , "
         . "`service_check_timeout`, `host_check_timeout`, `event_handler_timeout` , "
         . "`notification_timeout` , "
         . "`check_for_orphaned_services`, `check_service_freshness` , "
@@ -334,18 +333,6 @@ function insertNagios($ret = array(), $brokerTab = array())
 
     if (isset($ret["status_update_interval"]) && $ret["status_update_interval"] != null) {
         $rq .= "'" . htmlentities($ret["status_update_interval"], ENT_QUOTES, "UTF-8") . "', ";
-    } else {
-        $rq .= "NULL, ";
-    }
-
-    if (isset($ret["nagios_user"]) && $ret["nagios_user"] != null) {
-        $rq .= "'" . htmlentities($ret["nagios_user"], ENT_QUOTES, "UTF-8") . "', ";
-    } else {
-        $rq .= "NULL, ";
-    }
-
-    if (isset($ret["nagios_group"]) && $ret["nagios_group"] != null) {
-        $rq .= "'" . htmlentities($ret["nagios_group"], ENT_QUOTES, "UTF-8") . "', ";
     } else {
         $rq .= "NULL, ";
     }
@@ -427,12 +414,6 @@ function insertNagios($ret = array(), $brokerTab = array())
 
     if (isset($ret["command_file"]) && $ret["command_file"] != null) {
         $rq .= "'" . htmlentities($ret["command_file"], ENT_QUOTES, "UTF-8") . "',  ";
-    } else {
-        $rq .= "NULL, ";
-    }
-
-    if (isset($ret["lock_file"]) && $ret["lock_file"] != null) {
-        $rq .= "'" . htmlentities($ret["lock_file"], ENT_QUOTES, "UTF-8") . "',  ";
     } else {
         $rq .= "NULL, ";
     }
@@ -1045,18 +1026,6 @@ function updateNagios($nagios_id = null)
         $rq .= "status_update_interval = NULL, ";
     }
 
-    if (isset($ret["nagios_user"]) && $ret["nagios_user"] != null) {
-        $rq .= "nagios_user = '" . htmlentities($ret["nagios_user"], ENT_QUOTES, "UTF-8") . "',  ";
-    } else {
-        $rq .= "nagios_user = NULL, ";
-    }
-
-    if (isset($ret["nagios_group"]) && $ret["nagios_group"] != null) {
-        $rq .= "nagios_group = '" . htmlentities($ret["nagios_group"], ENT_QUOTES, "UTF-8") . "',  ";
-    } else {
-        $rq .= "nagios_group = NULL, ";
-    }
-
     if (
         isset($ret["enable_notifications"]["enable_notifications"])
         && $ret["enable_notifications"]["enable_notifications"] != 2
@@ -1154,12 +1123,6 @@ function updateNagios($nagios_id = null)
         $rq .= "comment_file = '" . htmlentities($ret["comment_file"], ENT_QUOTES, "UTF-8") . "',  ";
     } else {
         $rq .= "comment_file = NULL, ";
-    }
-
-    if (isset($ret["lock_file"]) && $ret["lock_file"] != null) {
-        $rq .= "lock_file = '" . htmlentities($ret["lock_file"], ENT_QUOTES, "UTF-8") . "',  ";
-    } else {
-        $rq .= "lock_file = NULL, ";
     }
 
     if (

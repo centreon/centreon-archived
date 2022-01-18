@@ -67,18 +67,6 @@ $help["temp_file"] = dgettext(
     . "uses when updating comment data, status data, etc. "
     . "The file is deleted when it is no longer needed."
 );
-$help["Monitoring Engine_user"] = dgettext(
-    "help",
-    "This is used to set the effective user that the Monitoring Engine process should run as. "
-    . "After initial program startup and before starting to monitor anything, Monitoring Engine "
-    . "will drop its effective privileges and run as this user. You may specify either a username or a UID."
-);
-$help["Monitoring Engine_group"] = dgettext(
-    "help",
-    "This is used to set the effective group that the Monitoring Engine process should run as. "
-    . "After initial program startup and before starting to monitor anything, Monitoring Engine "
-    . "will drop its effective privileges and run as this group. You may specify either a groupname or a GID."
-);
 $help["enable_notifications"] = dgettext(
     "help",
     "This option determines whether or not Monitoring Engine will send out notifications "
@@ -194,12 +182,6 @@ $help["external_command_buffer_slots"] = dgettext(
     . "where you process a large number of passive checks (e.g. distributed setups), you may need to "
     . "increase this number. You should consider using MRTG to graph Monitoring Engine' usage of "
     . "external command buffers."
-);
-$help["lock_file"] = dgettext(
-    "help",
-    "This option specifies the location of the lock file that Monitoring Engine should create when "
-    . "it runs as a daemon. This file contains the process id (PID) number of the running "
-    . "Monitoring Engine process."
 );
 $help["retain_state_information"] = dgettext(
     "help",
