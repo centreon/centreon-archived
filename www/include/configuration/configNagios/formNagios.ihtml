@@ -338,20 +338,18 @@
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="auto_rescheduling_window">&nbsp;{$form.auto_rescheduling_window.label}</td><td class="FormRowValue">{$form.auto_rescheduling_window.html}&nbsp;&nbsp;{$Seconds}</td></tr>
 
 			<tr class="list_lvl_1">
-              <td class="ListColLvl1_name" colspan="2">
-                <h4>{$Optimization}</h4>
-              </td>
-            </tr>
-			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="use_large_installation_tweaks">&nbsp;{$form.use_large_installation_tweaks.label}</td><td class="FormRowValue">{$form.use_large_installation_tweaks.html}</td></tr>
+        <td class="ListColLvl1_name" colspan="2">
+          <h4>{$Optimization}</h4>
+        </td>
+      </tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="enable_environment_macros">&nbsp;{$form.enable_environment_macros.label}</td><td class="FormRowValue">{$form.enable_environment_macros.html}</td></tr>
-            <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="use_setpgid">&nbsp;{$form.use_setpgid.label}</td><td class="FormRowValue">{$form.use_setpgid.html}</td></tr>
-            {if $o == "a" || $o == "c"}
-                <tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">
-                {if isset($form.required)}
-                    {$form.required._note}
-                {/if}
-                </td></tr>
-            {/if}
+      {if $o == "a" || $o == "c"}
+          <tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">
+          {if isset($form.required)}
+              {$form.required._note}
+          {/if}
+          </td></tr>
+      {/if}
 		</table>
 	</div>
 	<div id='tab6' class='tab'>
