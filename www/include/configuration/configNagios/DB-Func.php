@@ -73,8 +73,8 @@ function enableNagiosInDB($nagiosId = null)
     $data = $dbResult->fetch();
 
     $statement = $pearDB->prepare(
-        "UPDATE `cfg_nagios` 
-        SET `nagios_activate` = '0' 
+        "UPDATE `cfg_nagios`
+        SET `nagios_activate` = '0'
         WHERE `nagios_server_id` = :nagios_server_id"
     );
     $statement->bindValue(':nagios_server_id', (int) $data["nagios_server_id"], \PDO::PARAM_INT);
@@ -234,13 +234,13 @@ function multipleNagiosInDB($nagios = array(), $nbrDup = array())
 function duplicateLoggerV2Cfg(CentreonDB $pearDB, int $originalNagiosId, int $duplicatedNagiosId): void
 {
     $statement = $pearDB->prepare(
-        'INSERT INTO cfg_nagios_logger 
-        SELECT null, :duplicatedNagiosId, `log_v2_logger`, `log_level_functions`, 
-               `log_level_config`, `log_level_events`, `log_level_checks`, 
+        'INSERT INTO cfg_nagios_logger
+        SELECT null, :duplicatedNagiosId, `log_v2_logger`, `log_level_functions`,
+               `log_level_config`, `log_level_events`, `log_level_checks`,
                `log_level_notifications`, `log_level_eventbroker`, `log_level_external_command`,
-               `log_level_commands`, `log_level_downtimes`, `log_level_comments`, 
+               `log_level_commands`, `log_level_downtimes`, `log_level_comments`,
                `log_level_macros`, `log_level_process`, `log_level_runtime`
-               FROM cfg_nagios_logger 
+               FROM cfg_nagios_logger
                WHERE cfg_nagios_id = :originalNagiosId'
     );
     $statement->bindValue(':duplicatedNagiosId', $duplicatedNagiosId, \PDO::PARAM_INT);
@@ -606,8 +606,8 @@ function insertNagios($data = array(), $brokerTab = array())
     /* Manage the case where you have to main.cfg on the same poller */
     if (isset($data["nagios_activate"]["nagios_activate"]) && $data["nagios_activate"]["nagios_activate"]) {
         $statement = $pearDB->prepare(
-            "UPDATE cfg_nagios SET nagios_activate = '0' 
-             WHERE nagios_id != :nagios_id 
+            "UPDATE cfg_nagios SET nagios_activate = '0'
+             WHERE nagios_id != :nagios_id
              AND nagios_server_id = :nagios_server_id"
         );
         $statement->bindValue(':nagios_id', (int) $nagios_id["MAX(nagios_id)"], \PDO::PARAM_INT);
