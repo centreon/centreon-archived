@@ -16455,3 +16455,9 @@ msgstr "Politique de sécurité non trouvée. Veuillez vérifier que votre insta
 
 msgid "Error while reading password security policy"
 msgstr "Erreur lors de la lecture de la politique de sécurité du mot de passe"
+
+msgid "Your autologin key must be different than your current password"
+msgstr "Votre clé d'autologin doit être différente de votre mot de passe actuel"
+
+msgid "Your new password and autologin key must be different"
+msgstr "Votre nouveau mot de passe et votre clé d'autologin doivent être différents"

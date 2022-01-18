@@ -116,8 +116,7 @@ class Centreon_Object_Contact extends \Centreon_Object
         } else {
             $params = $parameterNames;
         }
-        $sql = "SELECT $params, cp.password AS contact_passwd FROM $this->table " .
-        "LEFT JOIN contact_password cp ON cp.contact_id = contact.contact_id";
+        $sql = "SELECT $params FROM $this->table";
         $filterTab = array();
         if (count($filters)) {
             foreach ($filters as $key => $rawvalue) {
@@ -145,7 +144,23 @@ class Centreon_Object_Contact extends \Centreon_Object
         if (isset($count) && $count != -1) {
             $sql = $this->db->limit($sql, $count, $offset);
         }
-        return $this->getResult($sql, $filterTab, "fetchAll");
+
+        $contacts = $this->getResult($sql, $filterTab, "fetchAll");
+        foreach ($contacts as &$contact) {
+            $statement = $this->db->prepare(
+                "SELECT password FROM contact_password WHERE contact_id = :contactId " .
+                "ORDER BY creation_date DESC LIMIT 1"
+            );
+            $statement->bindValue(':contactId', $contact['contact_id'], \PDO::PARAM_INT);
+            $statement->execute();
+            if ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
+                $contact['contact_passwd'] = $result['password'];
+            } else {
+                $contact['contact_passwd'] = null;
+            }
+        }
+
+        return $contacts;
     }
 
     /**
@@ -162,6 +177,20 @@ class Centreon_Object_Contact extends \Centreon_Object
         if (isset($params['contact_passwd'])) {
             $password = $params['contact_passwd'];
             unset($params['contact_passwd']);
+        }
+        if (isset($params['contact_autologin_key'])) {
+            $statement = $this->db->prepare(
+                "SELECT password FROM contact_password WHERE contact_id = :contactId " .
+                "ORDER BY creation_date DESC LIMIT 1"
+            );
+            $statement->bindValue(':contactId', $contactId, \PDO::PARAM_INT);
+            $statement->execute();
+            if (
+                ($result = $statement->fetch(\PDO::FETCH_ASSOC))
+                && password_verify($params['contact_autologin_key'], $result['password'])
+            ) {
+                throw new \Exception(_('Your autologin key must be different than your current password'));
+            }
         }
 
         if (array_search("", $params)) {
