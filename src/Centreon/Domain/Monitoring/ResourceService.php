@@ -23,8 +23,7 @@ declare(strict_types=1);
 namespace Centreon\Domain\Monitoring;
 
 use Centreon\Domain\Entity\EntityValidator;
-use Centreon\Domain\MetaServiceConfiguration\Exception\MetaServiceConfigurationException;
-use Centreon\Domain\MetaServiceConfiguration\Interfaces\MetaServiceConfigurationReadRepositoryInterface;
+use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Domain\Monitoring\ResourceGroup;
 use Centreon\Domain\Monitoring\ResourceFilter;
 use Centreon\Domain\Repository\RepositoryException;
@@ -36,6 +35,10 @@ use Centreon\Domain\Monitoring\Interfaces\ResourceServiceInterface;
 use Centreon\Domain\Monitoring\Interfaces\ResourceRepositoryInterface;
 use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
+use Centreon\Domain\MetaServiceConfiguration\Exception\MetaServiceConfigurationException;
+use Centreon\Domain\HostConfiguration\Interfaces\HostMacro\HostMacroReadRepositoryInterface;
+use Centreon\Domain\ServiceConfiguration\Interfaces\ServiceConfigurationRepositoryInterface;
+use Centreon\Domain\MetaServiceConfiguration\Interfaces\MetaServiceConfigurationReadRepositoryInterface;
 
 /**
  * Service manage the resources in real-time monitoring : hosts and services.
@@ -65,20 +68,37 @@ class ResourceService extends AbstractCentreonService implements ResourceService
     private $metaServiceConfigurationRepository;
 
     /**
+     * @var HostMacroReadRepositoryInterface
+     */
+    private $hostMacroConfigurationRepository;
+
+    /**
+     * @var ServiceConfigurationRepositoryInterface
+     */
+    private $serviceMacroConfigurationRepository;
+
+    /**
      * @param ResourceRepositoryInterface $resourceRepository
-     * @param MonitoringRepositoryInterface $monitoringRepository,
+     * @param MonitoringRepositoryInterface $monitoringRepository
      * @param AccessGroupRepositoryInterface $accessGroupRepository
+     * @param MetaServiceConfigurationReadRepositoryInterface $metaServiceConfigurationRepository
+     * @param HostMacroReadRepositoryInterface $hostMacroConfigurationRepository
+     * @param ServiceConfigurationRepositoryInterface $serviceMacroConfigurationRepository
      */
     public function __construct(
         ResourceRepositoryInterface $resourceRepository,
         MonitoringRepositoryInterface $monitoringRepository,
         AccessGroupRepositoryInterface $accessGroupRepository,
-        MetaServiceConfigurationReadRepositoryInterface $metaServiceConfigurationRepository
+        MetaServiceConfigurationReadRepositoryInterface $metaServiceConfigurationRepository,
+        HostMacroReadRepositoryInterface $hostMacroConfigurationRepository,
+        ServiceConfigurationRepositoryInterface $serviceMacroConfigurationRepository
     ) {
         $this->resourceRepository = $resourceRepository;
         $this->monitoringRepository = $monitoringRepository;
         $this->accessGroupRepository = $accessGroupRepository;
         $this->metaServiceConfigurationRepository = $metaServiceConfigurationRepository;
+        $this->hostMacroConfigurationRepository = $hostMacroConfigurationRepository;
+        $this->serviceMacroConfigurationRepository = $serviceMacroConfigurationRepository;
     }
 
     /**
@@ -117,10 +137,6 @@ class ResourceService extends AbstractCentreonService implements ResourceService
         // try to avoid exception from the regexp bad syntax in search criteria
         try {
             $list = $this->resourceRepository->findResources($filter);
-            // replace macros in external links
-            foreach ($list as $resource) {
-                $this->replaceMacrosInExternalLinks($resource);
-            }
         } catch (RepositoryException $ex) {
             throw new ResourceException($ex->getMessage(), 0, $ex);
         } catch (\Exception $ex) {
@@ -265,71 +281,191 @@ class ResourceService extends AbstractCentreonService implements ResourceService
     }
 
     /**
-     * Replaces macros in the URL for host resource type
+     * Replace macros in the provided URL
      *
-     * @param ResourceEntity $resource
      * @param string $url
+     * @param array<string, mixed> $macros
      * @return string
      */
-    private function replaceMacrosInUrlsForHostResource(ResourceEntity $resource, string $url): string
+    private function replaceMacrosByValues(string $url, array $macros): string
     {
-        $url = str_replace('$HOSTADDRESS$', $resource->getFqdn(), $url);
-        $url = str_replace('$HOSTNAME$', $resource->getName(), $url);
-        $url = str_replace('$HOSTSTATE$', $resource->getStatus()->getName(), $url);
-        $url = str_replace('$HOSTSTATEID$', (string) $resource->getStatus()->getCode(), $url);
-        $url = str_replace('$HOSTALIAS$', $resource->getAlias(), $url);
-
+        foreach ($macros as $name => $value) {
+            $url = str_replace($name, (string) $value, $url);
+        }
         return $url;
     }
 
     /**
-     * Replaces macros in the URL for service resource type
+     * Returns possible standard macros for Service
      *
-     * @param ResourceEntity $resource
-     * @param string $url
-     * @return string
+     * @param Service $service
+     * @return array<string, mixed>
      */
-    private function replaceMacrosInUrlsForServiceResource(ResourceEntity $resource, string $url): string
+    private function getStandardMacrosForService(Service $service): array
     {
-        $url = str_replace('$HOSTADDRESS$', $resource->getParent()->getFqdn(), $url);
-        $url = str_replace('$HOSTNAME$', $resource->getParent()->getName(), $url);
-        $url = str_replace('$HOSTSTATE$', $resource->getParent()->getStatus()->getName(), $url);
-        $url = str_replace('$HOSTSTATEID$', (string) $resource->getParent()->getStatus()->getCode(), $url);
-        $url = str_replace('$HOSTALIAS$', $resource->getParent()->getAlias(), $url);
-        $url = str_replace('$SERVICEDESC$', $resource->getName(), $url);
-        $url = str_replace('$SERVICESTATE$', $resource->getStatus()->getName(), $url);
-        $url = str_replace('$SERVICESTATEID$', (string) $resource->getStatus()->getCode(), $url);
+        $standardHostMacros = $this->getStandardMacrosForHost($service->getHost());
+        $standardServiceMacros = [
+            '$SERVICEDESC$' => $service->getDescription(),
+            '$SERVICESTATE$' => $service->getStatus()->getName(),
+            '$SERVICESTATEID$' => $service->getStatus()->getCode()
+        ];
 
-        return $url;
+        return array_merge($standardHostMacros, $standardServiceMacros);
     }
 
     /**
-     * {@inheritDoc}
+     * Returns possible standard macros for Host
+     *
+     * @param Host $host
+     * @return array<string, mixed>
      */
-    public function replaceMacrosInExternalLinks(ResourceEntity $resource): void
+    private function getStandardMacrosForHost(Host $host): array
     {
-        $actionUrl = $resource->getLinks()->getExternals()->getActionUrl();
-        $notesObject = $resource->getLinks()->getExternals()->getNotes();
-        $notesUrl = ($notesObject !== null) ? $notesObject->getUrl() : null;
-        $resourceType = $resource->getType();
+        return [
+            '$HOSTNAME$' => $host->getName(),
+            '$HOSTSTATE$' => $host->getStatus()->getName(),
+            '$HOSTSTATEID$' => $host->getStatus()->getCode(),
+            '$HOSTALIAS$' => $host->getAlias(),
+            '$INSTANCENAME$' => $host->getPollerName(),
+            '$HOSTADDRESS$' => $host->getAddressIp()
+        ];
+    }
 
-        if ($actionUrl !== null) {
-            if ($resourceType === ResourceEntity::TYPE_HOST) {
-                $actionUrl = $this->replaceMacrosInUrlsForHostResource($resource, $actionUrl);
-            } elseif ($resourceType === ResourceEntity::TYPE_SERVICE) {
-                $actionUrl = $this->replaceMacrosInUrlsForServiceResource($resource, $actionUrl);
-            }
-            $resource->getLinks()->getExternals()->setActionUrl($actionUrl);
+    /**
+     * @inheritDoc
+     */
+    public function replaceMacrosInHostUrl(int $hostId, string $urlType): string
+    {
+        try {
+            $host = $this->monitoringRepository->findOneHost($hostId);
+        } catch (\Exception $ex) {
+            throw new \Exception($ex->getMessage());
+        }
+        if ($host === null) {
+            throw new EntityNotFoundException(_('Host not found'));
+        }
+        $url = ($urlType === 'action-url') ? $host->getActionUrl() : $host->getNotesUrl();
+
+        $standardMacros = $this->getStandardMacrosForHost($host);
+        $customMacros = $this->getCustomMacrosOutOfUrl($hostId, 0, $url);
+        return $this->replaceMacrosByValues($url, array_merge($standardMacros, $customMacros));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function replaceMacrosInServiceUrl(int $hostId, int $serviceId, string $urlType): string
+    {
+        try {
+            $host = $this->monitoringRepository->findOneHost($hostId);
+        } catch (\Exception $ex) {
+            throw new \Exception($ex->getMessage());
+        }
+        if ($host === null) {
+            throw new EntityNotFoundException(_('Host not found'));
         }
 
-        if ($notesUrl !== null) {
-            if ($resourceType === ResourceEntity::TYPE_HOST) {
-                $notesUrl = $this->replaceMacrosInUrlsForHostResource($resource, $notesUrl);
-            } elseif ($resourceType === ResourceEntity::TYPE_SERVICE) {
-                $notesUrl = $this->replaceMacrosInUrlsForServiceResource($resource, $notesUrl);
-            }
-            $resource->getLinks()->getExternals()->getNotes()->setUrl($notesUrl);
+        try {
+            $service = $this->monitoringRepository->findOneService($hostId, $serviceId);
+        } catch (\Exception $ex) {
+            throw new \Exception($ex->getMessage());
         }
+        if ($service === null) {
+            throw new EntityNotFoundException(_('Service not found'));
+        }
+
+        $service->setHost($host);
+
+        $url = ($urlType === 'action-url') ? $service->getActionUrl() : $service->getNotesUrl();
+
+        $standardMacros = $this->getStandardMacrosForService($service);
+        $customMacros = $this->getCustomMacrosOutOfUrl($hostId, $serviceId, $url);
+
+        return $this->replaceMacrosByValues($url, array_merge($standardMacros, $customMacros));
+    }
+
+    /**
+     * Finds all custom macros in the URL provided and get their values.
+     *
+     * @param int $hostId
+     * @param int $serviceId
+     * @param string $url
+     * @return array<string, mixed>
+     */
+    private function getCustomMacrosOutOfUrl(int $hostId, int $serviceId, string $url): array
+    {
+        $foundMacros = [];
+        $hasServiceMacros = false;
+        $hasHostMacros = false;
+        $customMacros = [];
+
+        /**
+         * Searching for custom macros potentially used in the URL provided
+         */
+        if (empty($url) === false) {
+            /**
+             * preg_match_all default flag PREG_PATTERN_ORDER ensures that matches
+             * are in the same order regarding capturing groups
+             * ex: $matches[0] = full match = $_SERVICEARG1$
+             *     $matches[1] = suffix match = ARG1
+             *
+             * outcome $foundMacros = [
+             *  '$_SERVICEARG1$' => 'ARG1',
+             *  '$_HOSTARG1$' => 'ARG1'
+             *  ...
+             * ]
+             */
+            preg_match_all('/\$_SERVICE([0-9a-zA-Z\_\-]+)\$/', $url, $matches);
+            foreach ($matches[0] as $key => $fullMatch) {
+                $hasServiceMacros = true;
+                $foundMacros[$fullMatch] = $matches[1][$key];
+            }
+
+            preg_match_all('/\$_HOST([0-9a-zA-Z\_\-]+)\$/', $url, $matches);
+            foreach ($matches[0] as $key => $fullMatch) {
+                $hasHostMacros = true;
+                $foundMacros[$fullMatch] = $matches[1][$key];
+            }
+        }
+
+        $hostRealtimeMacros = [];
+        $hostConfigurationMacros = [];
+
+        // Finding all HOST macros from configuration and realtime linked to the Resource
+        if ($hasHostMacros) {
+            $hostRealtimeMacros = $this->monitoringRepository->findCustomMacrosValues($hostId, 0);
+            $hostConfigurationMacros = $this->hostMacroConfigurationRepository->findOnDemandHostMacros($hostId, true);
+        }
+
+        $serviceRealtimeMacros = [];
+        $serviceConfigurationMacros = [];
+
+        // Finding all SERVICE macros from configuration and realtime linked to the Resource
+        if ($hasServiceMacros) {
+            $serviceRealtimeMacros = $this->monitoringRepository->findCustomMacrosValues($hostId, $serviceId);
+            $serviceConfigurationMacros = $this->serviceMacroConfigurationRepository->findOnDemandServiceMacros(
+                $serviceId,
+                true
+            );
+        }
+
+        $realtimeMacros = array_merge($hostRealtimeMacros, $serviceRealtimeMacros);
+        $configurationMacros = array_merge($hostConfigurationMacros, $serviceConfigurationMacros);
+
+        foreach ($configurationMacros as $macro) {
+            $macroName = $macro->getName();
+            if (
+                array_key_exists($macroName, $foundMacros)
+                && array_key_exists($foundMacros[$macro->getName()], $realtimeMacros)
+            ) {
+                // hidding password type macros that should not be displayed in the realtime context
+                $customMacros[$macroName] = $macro->isPassword() === false
+                    ? $realtimeMacros[$foundMacros[$macroName]]
+                    : '';
+            }
+        }
+
+        return $customMacros;
     }
 
     /**

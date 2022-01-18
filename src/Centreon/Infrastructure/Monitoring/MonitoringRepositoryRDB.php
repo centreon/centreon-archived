@@ -155,7 +155,19 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
               cv.value AS criticality,
               i.name AS poller_name,
               IF (h.display_name LIKE \'_Module_Meta%\', \'Meta\', h.display_name) AS display_name,
-              IF (h.display_name LIKE \'_Module_Meta%\', \'0\', h.state) AS state
+              IF (h.display_name LIKE \'_Module_Meta%\', \'0\', h.state) AS `status_code`,
+            CASE
+                WHEN h.state = 0 THEN \'UP\'
+                WHEN h.state = 1 THEN \'DOWN\'
+                WHEN h.state = 2 THEN \'UNREACHABLE\'
+                WHEN h.state = 4 THEN \'PENDING\'
+            END AS `status_name`,
+            CASE
+                WHEN h.state = 0 THEN ' . ResourceStatus::SEVERITY_OK . '
+                WHEN h.state = 1 THEN ' . ResourceStatus::SEVERITY_HIGH . '
+                WHEN h.state = 2 THEN ' . ResourceStatus::SEVERITY_LOW . '
+                WHEN h.state = 4 THEN ' . ResourceStatus::SEVERITY_PENDING . '
+            END AS `status_severity_code`
             FROM `:dbstg`.`instances` i
             INNER JOIN `:dbstg`.`hosts` h
               ON h.instance_id = i.instance_id
@@ -209,10 +221,19 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
 
         while (false !== ($result = $statement->fetch(\PDO::FETCH_ASSOC))) {
             $hostIds[] = (int)$result['host_id'];
-            $hosts[] = EntityCreator::createEntityByArray(
+
+            $host = EntityCreator::createEntityByArray(
                 Host::class,
                 $result
             );
+
+            $host->setStatus(EntityCreator::createEntityByArray(
+                ResourceStatus::class,
+                $result,
+                'status_'
+            ));
+
+            $hosts[] = $host;
         }
 
         return $hosts;
@@ -247,7 +268,19 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             'SELECT SQL_CALC_FOUND_ROWS DISTINCT
               hg.hostgroup_id, h.*, i.name AS poller_name,
               IF (h.display_name LIKE \'_Module_Meta%\', \'Meta\', h.display_name) AS display_name,
-              IF (h.display_name LIKE \'_Module_Meta%\', \'0\', h.state) AS state
+              IF (h.display_name LIKE \'_Module_Meta%\', \'0\', h.state) AS `status_code`,
+            CASE
+                WHEN h.state = 0 THEN \'UP\'
+                WHEN h.state = 1 THEN \'DOWN\'
+                WHEN h.state = 2 THEN \'UNREACHABLE\'
+                WHEN h.state = 4 THEN \'PENDING\'
+            END AS `status_name`,
+            CASE
+                WHEN h.state = 0 THEN ' . ResourceStatus::SEVERITY_OK . '
+                WHEN h.state = 1 THEN ' . ResourceStatus::SEVERITY_HIGH . '
+                WHEN h.state = 2 THEN ' . ResourceStatus::SEVERITY_LOW . '
+                WHEN h.state = 4 THEN ' . ResourceStatus::SEVERITY_PENDING . '
+            END AS `status_severity_code`
             FROM `:dbstg`.`instances` i
             INNER JOIN `:dbstg`.`hosts` h
               ON h.instance_id = i.instance_id
@@ -270,11 +303,16 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
         $hostsByHostsGroupsId = [];
 
         while (false !== ($result = $statement->fetch(\PDO::FETCH_ASSOC))) {
-            $hostsByHostsGroupsId[(int) $result['hostgroup_id']][] =
-                EntityCreator::createEntityByArray(
-                    Host::class,
-                    $result
-                );
+            $host = EntityCreator::createEntityByArray(
+                Host::class,
+                $result
+            );
+            $host->setStatus(EntityCreator::createEntityByArray(
+                ResourceStatus::class,
+                $result,
+                'status_'
+            ));
+            $hostsByHostsGroupsId[(int) $result['hostgroup_id']][] = $host;
         }
 
         return $hostsByHostsGroupsId;
@@ -309,7 +347,19 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             'SELECT SQL_CALC_FOUND_ROWS DISTINCT
               ssg.servicegroup_id, h.*, i.name AS poller_name,
               IF (h.display_name LIKE \'_Module_Meta%\', \'Meta\', h.display_name) AS display_name,
-              IF (h.display_name LIKE \'_Module_Meta%\', \'0\', h.state) AS state
+              IF (h.display_name LIKE \'_Module_Meta%\', \'0\', h.state) AS `status_code`,
+            CASE
+                WHEN h.state = 0 THEN \'UP\'
+                WHEN h.state = 1 THEN \'DOWN\'
+                WHEN h.state = 2 THEN \'UNREACHABLE\'
+                WHEN h.state = 4 THEN \'PENDING\'
+            END AS `status_name`,
+            CASE
+                WHEN h.state = 0 THEN ' . ResourceStatus::SEVERITY_OK . '
+                WHEN h.state = 1 THEN ' . ResourceStatus::SEVERITY_HIGH . '
+                WHEN h.state = 2 THEN ' . ResourceStatus::SEVERITY_LOW . '
+                WHEN h.state = 4 THEN ' . ResourceStatus::SEVERITY_PENDING . '
+            END AS `status_severity_code`
             FROM `:dbstg`.`instances` i
             INNER JOIN `:dbstg`.`hosts` h
               ON h.instance_id = i.instance_id
@@ -332,11 +382,16 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
         $hostsByServicesGroupsId = [];
 
         while (false !== ($result = $statement->fetch(\PDO::FETCH_ASSOC))) {
-            $hostsByServicesGroupsId[(int) $result['servicegroup_id']][] =
-                EntityCreator::createEntityByArray(
-                    Host::class,
-                    $result
-                );
+            $host = EntityCreator::createEntityByArray(
+                Host::class,
+                $result
+            );
+            $host->setStatus(EntityCreator::createEntityByArray(
+                ResourceStatus::class,
+                $result,
+                'status_'
+            ));
+            $hostsByServicesGroupsId[(int) $result['servicegroup_id']][] = $host;
         }
 
         return $hostsByServicesGroupsId;
@@ -525,7 +580,19 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             'SELECT h.*,
             i.name AS poller_name,
               IF (h.display_name LIKE \'_Module_Meta%\', \'Meta\', h.display_name) AS display_name,
-              IF (h.display_name LIKE \'_Module_Meta%\', \'0\', h.state) AS state,
+              IF (h.display_name LIKE \'_Module_Meta%\', \'0\', h.state)AS `status_code`,
+            CASE
+                WHEN h.state = 0 THEN \'UP\'
+                WHEN h.state = 1 THEN \'DOWN\'
+                WHEN h.state = 2 THEN \'UNREACHABLE\'
+                WHEN h.state = 4 THEN \'PENDING\'
+            END AS `status_name`,
+            CASE
+                WHEN h.state = 0 THEN ' . ResourceStatus::SEVERITY_OK . '
+                WHEN h.state = 1 THEN ' . ResourceStatus::SEVERITY_HIGH . '
+                WHEN h.state = 2 THEN ' . ResourceStatus::SEVERITY_LOW . '
+                WHEN h.state = 4 THEN ' . ResourceStatus::SEVERITY_PENDING . '
+            END AS `status_severity_code`,
             host_cvl.value AS `criticality`
             FROM `:dbstg`.`instances` i
             INNER JOIN `:dbstg`.`hosts` h
@@ -548,6 +615,11 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
                     Host::class,
                     $row
                 );
+                $host->setStatus(EntityCreator::createEntityByArray(
+                    ResourceStatus::class,
+                    $row,
+                    'status_'
+                ));
 
                 //get services for host
                 $servicesByHost = $this->findServicesByHosts([$hostId]);
@@ -661,7 +733,19 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             'SELECT DISTINCT h.*,
             i.name AS poller_name,
               IF (h.display_name LIKE \'_Module_Meta%\', \'Meta\', h.display_name) AS display_name,
-              IF (h.display_name LIKE \'_Module_Meta%\', \'0\', h.state) AS state
+              IF (h.display_name LIKE \'_Module_Meta%\', \'0\', h.state) AS `status_code`,
+            CASE
+                WHEN h.state = 0 THEN \'UP\'
+                WHEN h.state = 1 THEN \'DOWN\'
+                WHEN h.state = 2 THEN \'UNREACHABLE\'
+                WHEN h.state = 4 THEN \'PENDING\'
+            END AS `status_name`,
+            CASE
+                WHEN h.state = 0 THEN ' . ResourceStatus::SEVERITY_OK . '
+                WHEN h.state = 1 THEN ' . ResourceStatus::SEVERITY_HIGH . '
+                WHEN h.state = 2 THEN ' . ResourceStatus::SEVERITY_LOW . '
+                WHEN h.state = 4 THEN ' . ResourceStatus::SEVERITY_PENDING . '
+            END AS `status_severity_code`
             FROM `:dbstg`.`instances` i
             INNER JOIN `:dbstg`.`hosts` h
               ON h.instance_id = i.instance_id
@@ -683,10 +767,16 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
         $statement->execute();
 
         while (false !== ($row = $statement->fetch(\PDO::FETCH_ASSOC))) {
-            $hosts[] = EntityCreator::createEntityByArray(
+            $host = EntityCreator::createEntityByArray(
                 Host::class,
                 $row
             );
+            $host->setStatus(EntityCreator::createEntityByArray(
+                ResourceStatus::class,
+                $row,
+                'status_'
+            ));
+            $hosts[] = $host;
         }
 
         return $hosts;
@@ -718,7 +808,19 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             'SELECT DISTINCT h.*,
             i.name AS poller_name,
               IF (h.display_name LIKE \'_Module_Meta%\', \'Meta\', h.display_name) AS display_name,
-              IF (h.display_name LIKE \'_Module_Meta%\', \'0\', h.state) AS state
+              IF (h.display_name LIKE \'_Module_Meta%\', \'0\', h.state) AS `status_code`,
+            CASE
+                WHEN h.state = 0 THEN \'UP\'
+                WHEN h.state = 1 THEN \'DOWN\'
+                WHEN h.state = 2 THEN \'UNREACHABLE\'
+                WHEN h.state = 4 THEN \'PENDING\'
+            END AS `status_name`,
+            CASE
+                WHEN h.state = 0 THEN ' . ResourceStatus::SEVERITY_OK . '
+                WHEN h.state = 1 THEN ' . ResourceStatus::SEVERITY_HIGH . '
+                WHEN h.state = 2 THEN ' . ResourceStatus::SEVERITY_LOW . '
+                WHEN h.state = 4 THEN ' . ResourceStatus::SEVERITY_PENDING . '
+            END AS `status_severity_code`
             FROM `:dbstg`.`instances` i
             INNER JOIN `:dbstg`.`hosts` h
               ON h.instance_id = i.instance_id
@@ -741,10 +843,16 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
         $statement->execute();
 
         while (false !== ($row = $statement->fetch(\PDO::FETCH_ASSOC))) {
-            $hosts[] = EntityCreator::createEntityByArray(
+            $host = EntityCreator::createEntityByArray(
                 Host::class,
                 $row
             );
+            $host->setStatus(EntityCreator::createEntityByArray(
+                ResourceStatus::class,
+                $row,
+                'status_'
+            ));
+            $hosts[] = $host;
         }
 
         return $hosts;
@@ -1818,5 +1926,30 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
         return ($this->contact !== null)
             ? !($this->contact->isAdmin() || count($this->accessGroups) > 0)
             : count($this->accessGroups) == 0;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findCustomMacrosValues(int $hostId, int $serviceId): array
+    {
+        $statement = $this->db->prepare(
+            $this->translateDbName(
+                'SELECT `name`, `value`
+                FROM `:dbstg`.`customvariables`
+                WHERE host_id = :hostId AND service_id = :serviceId'
+            )
+        );
+        $statement->bindValue(':hostId', $hostId, \PDO::PARAM_INT);
+        $statement->bindValue(':serviceId', $serviceId, \PDO::PARAM_INT);
+        $statement->execute();
+
+        $macroValues = [];
+
+        while ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            $macroValues[$result['name']] = $result['value'];
+        }
+
+        return $macroValues;
     }
 }

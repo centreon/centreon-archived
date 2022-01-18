@@ -139,12 +139,27 @@ interface ResourceServiceInterface
     public function enrichMetaServiceWithDetails(ResourceEntity $resource): void;
 
     /**
-     * Replace macros set in the external links by their actual values
+     * Replace macros in the URL provided by their actual values for a Service Resource
      *
-     * @param ResourceEntity $resource
-     * @return void
+     * @param int $hostId
+     * @param int $serviceId
+     * @param string $urlType
+     * @return string
+     * @throws \Exception
+     * @throws EntityNotFoundException
      */
-    public function replaceMacrosInExternalLinks(ResourceEntity $resource): void;
+    public function replaceMacrosInServiceUrl(int $hostId, int $serviceId, string $urlType): string;
+
+    /**
+     * Replace macros in the URL provided by their actual values for a Host Resource
+     *
+     * @param int $hostId
+     * @param string $urlType
+     * @return string
+     * @throws \Exception
+     * @throws EntityNotFoundException
+     */
+    public function replaceMacrosInHostUrl(int $hostId, string $urlType): string;
 
     /**
      * Used to filter requests according to a contact.

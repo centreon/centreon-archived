@@ -224,4 +224,13 @@ interface MonitoringRepositoryInterface
      * @return Acknowledgement[]
      */
     public function findAcknowledgements(int $hostId, int $serviceId): array;
+
+    /**
+     * Find all custom macros linked to a service or a host
+     *
+     * @param int $hostId
+     * @param int $serviceIds
+     * @return array<string, mixed>
+     */
+    public function findCustomMacrosValues(int $hostId, int $serviceId): array;
 }

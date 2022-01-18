@@ -22,8 +22,9 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Monitoring;
 
-use Centreon\Domain\Acknowledgement\Acknowledgement;
 use Centreon\Domain\Downtime\Downtime;
+use Centreon\Domain\Monitoring\ResourceStatus;
+use Centreon\Domain\Acknowledgement\Acknowledgement;
 use Centreon\Domain\Service\EntityDescriptorMetadataInterface;
 
 /**
@@ -40,9 +41,13 @@ class Host implements EntityDescriptorMetadataInterface
     public const SERIALIZER_GROUP_WITH_SERVICES = 'host_with_services';
 
     // Status options
-    public const STATUS_UP          = 0;
-    public const STATUS_DOWN        = 1;
-    public const STATUS_UNREACHABLE = 2;
+    public const STATUS_UP = 0,
+                 STATUS_DOWN = 1,
+                 STATUS_UNREACHABLE = 2;
+
+    public const STATUS_NAME_UP = 'UP',
+                 STATUS_NAME_DOWN = 'DOWN',
+                 STATUS_NALE_UNREACHABLE = 'UNREACHABLE';
 
     /**
      * @var int|null Id of host
@@ -308,6 +313,21 @@ class Host implements EntityDescriptorMetadataInterface
      * @var string|null
      */
     protected $pollerName;
+
+    /**
+     * @var string|null
+     */
+    private $actionUrl;
+
+    /**
+     * @var string|null
+     */
+    private $notesUrl;
+
+    /**
+     * @var ResourceStatus|null
+     */
+    private $status;
 
     /**
      * {@inheritdoc}
@@ -1292,6 +1312,60 @@ class Host implements EntityDescriptorMetadataInterface
     {
         $this->pollerName = $pollerName;
 
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getActionUrl(): ?string
+    {
+        return $this->actionUrl;
+    }
+
+    /**
+     * @param string|null $actionUrl
+     * @return self
+     */
+    public function setActionUrl(?string $actionUrl): self
+    {
+        $this->actionUrl = $actionUrl;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getNotesUrl(): ?string
+    {
+        return $this->notesUrl;
+    }
+
+    /**
+     * @param string|null $notesUrl
+     * @return self
+     */
+    public function setNotesUrl(?string $notesUrl): self
+    {
+        $this->notesUrl = $notesUrl;
+        return $this;
+    }
+
+    /**
+     * @return ResourceStatus|null
+     */
+    public function getStatus(): ?ResourceStatus
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param ResourceStatus|null $status
+     * @return self
+     */
+    public function setStatus(?ResourceStatus $status): self
+    {
+        $this->status = $status;
         return $this;
     }
 }

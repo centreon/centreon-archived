@@ -232,6 +232,16 @@ class Service implements EntityDescriptorMetadataInterface
     private $status;
 
     /**
+     * @var string|null
+     */
+    protected $actionUrl;
+
+    /**
+     * @var string|null
+     */
+    protected $notesUrl;
+
+    /**
      * {@inheritdoc}
      */
     public static function loadEntityDescriptorMetadata(): array
@@ -928,7 +938,7 @@ class Service implements EntityDescriptorMetadataInterface
 
     /**
      * @param \Centreon\Domain\Monitoring\ResourceStatus|null $status
-     * @return \Centreon\Domain\Monitoring\Resource
+     * @return self
      */
     public function setStatus(?ResourceStatus $status): self
     {
@@ -949,5 +959,41 @@ class Service implements EntityDescriptorMetadataInterface
         }
 
         return $duration;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getActionUrl(): ?string
+    {
+        return $this->actionUrl;
+    }
+
+    /**
+     * @param string|null $actionUrl
+     * @return self
+     */
+    public function setActionUrl(?string $actionUrl): self
+    {
+        $this->actionUrl = $actionUrl;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getNotesUrl(): ?string
+    {
+        return $this->notesUrl;
+    }
+
+    /**
+     * @param string|null $notesUrl
+     * @return self
+     */
+    public function setNotesUrl(?string $notesUrl): self
+    {
+        $this->notesUrl = $notesUrl;
+        return $this;
     }
 }

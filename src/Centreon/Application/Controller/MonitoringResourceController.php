@@ -37,6 +37,7 @@ use Centreon\Domain\Monitoring\ResourceStatus;
 use Symfony\Component\HttpFoundation\Response;
 use Centreon\Domain\Acknowledgement\Acknowledgement;
 use Centreon\Application\Normalizer\IconUrlNormalizer;
+use Centreon\Domain\Exception\EntityNotFoundException;
 use JMS\Serializer\Exception\ValidationFailedException;
 use Centreon\Domain\RequestParameters\RequestParameters;
 use Centreon\Domain\Monitoring\Resource as ResourceEntity;
@@ -46,6 +47,9 @@ use Centreon\Domain\Monitoring\Interfaces\ResourceServiceInterface;
 use Centreon\Domain\Monitoring\Serializer\ResourceExclusionStrategy;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
+use Symfony\Component\Validator\ConstraintViolationList;
+use JsonSchema\Validator;
+use JsonSchema\Constraints\Constraint;
 
 /**
  * Resource APIs for the Unified View page
@@ -90,6 +94,9 @@ class MonitoringResourceController extends AbstractController
     private const HOST_REPORTING_URI = '/main.php?p=307&host={resource_id}';
     private const SERVICE_REPORTING_URI =
         '/main.php?p=30702&period=yesterday&start=&end=&host_id={parent_resource_id}&item={resource_id}';
+
+    private const SERVICE_REDIRECT_URL_ENDPOINT = 'centreon_application_monitoring_resource_redirect_url_service';
+    private const HOST_REDIRECT_URL_ENDPOINT = 'centreon_application_monitoring_resource_redirect_url_host';
 
     private const RESOURCE_LISTING_URI = '/monitoring/resources';
 
@@ -581,6 +588,27 @@ class MonitoringResourceController extends AbstractController
                     $parameters
                 )
             );
+
+            if (empty($resource->getLinks()->getExternals()->getActionUrl()) === false) {
+                $resource->getLinks()->getExternals()->setActionUrl(
+                    $this->router->generate(
+                        self::SERVICE_REDIRECT_URL_ENDPOINT,
+                        array_merge($parameters, ['urlType' => 'action-url'])
+                    )
+                );
+            }
+
+            $notes = $resource->getLinks()->getExternals()->getNotes();
+            if ($notes !== null) {
+                if (empty($notes->getUrl()) === false) {
+                    $resource->getLinks()->getExternals()->getNotes()->setUrl(
+                        $this->router->generate(
+                            self::SERVICE_REDIRECT_URL_ENDPOINT,
+                            array_merge($parameters, ['urlType' => 'notes-url'])
+                        )
+                    );
+                }
+            }
         } elseif ($resource->getType() === ResourceEntity::TYPE_META) {
             $parameters = [
                 'metaId' => $resource->getId(),
@@ -661,6 +689,27 @@ class MonitoringResourceController extends AbstractController
                     array_merge($parameters, $downtimeFilter)
                 )
             );
+
+            if (empty($hostResource->getLinks()->getExternals()->getActionUrl()) === false) {
+                $hostResource->getLinks()->getExternals()->setActionUrl(
+                    $this->router->generate(
+                        self::HOST_REDIRECT_URL_ENDPOINT,
+                        array_merge($parameters, ['urlType' => 'action-url'])
+                    )
+                );
+            }
+
+            $notes = $hostResource->getLinks()->getExternals()->getNotes();
+            if ($notes !== null) {
+                if (empty($notes->getUrl()) === false) {
+                    $hostResource->getLinks()->getExternals()->getNotes()->setUrl(
+                        $this->router->generate(
+                            self::HOST_REDIRECT_URL_ENDPOINT,
+                            array_merge($parameters, ['urlType' => 'notes-url'])
+                        )
+                    );
+                }
+            }
         }
     }
 
@@ -903,5 +952,53 @@ class MonitoringResourceController extends AbstractController
         }
 
         return $baseListingUri;
+    }
+
+    /**
+     * Endpoint: Replaces macros in the URL provided and redirect to it.
+     *
+     * @param Request $request
+     * @param int $hostId
+     * @param int|null $serviceId
+     * @param string $urlType
+     * @return View
+     */
+    public function redirectResourceExternalLink(
+        Request $request,
+        int $hostId,
+        ?int $serviceId,
+        string $urlType
+    ): View {
+        /**
+         * Deny access if no access provided to RealTime API
+         */
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
+        $redirectUrl = '';
+
+        /**
+         * @var Contact $contact
+         */
+        $contact = $this->getUser();
+
+        if ($serviceId === null) {
+            try {
+                $redirectUrl = $this->resource
+                    ->filterByContact($contact)
+                    ->replaceMacrosInHostUrl($hostId, $urlType);
+            } catch (EntityNotFoundException $ex) {
+                return View::create(null, Response::HTTP_NOT_FOUND, []);
+            }
+        } else {
+            try {
+                $redirectUrl = $this->resource
+                    ->filterByContact($contact)
+                    ->replaceMacrosInServiceUrl($hostId, $serviceId, $urlType);
+            } catch (EntityNotFoundException $ex) {
+                return View::create(null, Response::HTTP_NOT_FOUND, []);
+            }
+        }
+
+        return View::createRedirect($redirectUrl);
     }
 }
