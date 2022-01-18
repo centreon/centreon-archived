@@ -258,7 +258,7 @@ function insertNagios($ret = array(), $brokerTab = array())
         . "`enable_notifications` , `execute_service_checks` , "
         . "`accept_passive_service_checks` , `execute_host_checks` , "
         . "`accept_passive_host_checks` , `enable_event_handlers` , `log_rotation_method` , `log_archive_path` , "
-        . "`check_external_commands` , `command_check_interval` , `command_file` , `downtime_file` , `comment_file` , "
+        . "`check_external_commands` , `command_check_interval` , `command_file` , "
         . "`lock_file` , `retain_state_information` , `state_retention_file` , `retention_update_interval` , "
         . "`use_retained_program_state` , `use_retained_scheduling_info` , "
         . "`retained_contact_host_attribute_mask`, `retained_contact_service_attribute_mask` , "
@@ -447,18 +447,6 @@ function insertNagios($ret = array(), $brokerTab = array())
 
     if (isset($ret["command_file"]) && $ret["command_file"] != null) {
         $rq .= "'" . htmlentities($ret["command_file"], ENT_QUOTES, "UTF-8") . "',  ";
-    } else {
-        $rq .= "NULL, ";
-    }
-
-    if (isset($ret["downtime_file"]) && $ret["downtime_file"] != null) {
-        $rq .= "'" . htmlentities($ret["downtime_file"], ENT_QUOTES, "UTF-8") . "',  ";
-    } else {
-        $rq .= "NULL, ";
-    }
-
-    if (isset($ret["comment_file"]) && $ret["comment_file"] != null) {
-        $rq .= "'" . htmlentities($ret["comment_file"], ENT_QUOTES, "UTF-8") . "',  ";
     } else {
         $rq .= "NULL, ";
     }
