@@ -222,7 +222,6 @@
                 <h4>{$Archives}</h4>
               </td>
             </tr>
-			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="log_rotation_method">&nbsp;{$form.log_rotation_method.label}</td><td class="FormRowValue">{$form.log_rotation_method.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="log_archive_path">&nbsp;{$form.log_archive_path.label}</td><td class="FormRowValue">{$form.log_archive_path.html}</td></tr>
 
 			<tr class="list_lvl_1">
