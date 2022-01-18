@@ -269,6 +269,7 @@ $nagTab = array();
 $nagTab[] = $form->createElement('radio', 'retain_state_information', null, _("Yes"), '1');
 $nagTab[] = $form->createElement('radio', 'retain_state_information', null, _("No"), '0');
 $form->addGroup($nagTab, 'retain_state_information', _("State Retention Option"), '&nbsp;');
+
 $form->addElement('text', 'state_retention_file', _("State Retention File"), $attrsText2);
 $form->addElement('text', 'retention_update_interval', _("Automatic State Retention Update Interval"), $attrsText3);
 
@@ -349,8 +350,6 @@ $form->addElement('text', 'host_inter_check_delay_method', _("Host Inter-Check D
 $form->addElement('text', 'service_inter_check_delay_method', _("Service Inter-Check Delay Method"), $attrsText3);
 
 $form->addElement('text', 'check_result_reaper_frequency', _("Check Result Reaper Frequency"), $attrsText3);
-$form->addElement('text', 'max_check_result_reaper_time', _("Maximum Check Result Reaper Time"), $attrsText3);
-
 $nagTab = array();
 $nagTab[] = $form->createElement('radio', 'translate_passive_host_checks', null, _("Yes"), '1');
 $nagTab[] = $form->createElement('radio', 'translate_passive_host_checks', null, _("No"), '0');
