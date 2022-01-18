@@ -124,6 +124,7 @@ const AppProvider = ({ children }: Props): JSX.Element => {
         ]) => {
           setUser({
             alias: retrievedUser.alias,
+            default_page: null,
             isExportButtonEnabled: retrievedUser.isExportButtonEnabled,
             locale: retrievedUser.locale || 'en',
             name: retrievedUser.name,
