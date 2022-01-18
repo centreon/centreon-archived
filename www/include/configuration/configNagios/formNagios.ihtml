@@ -59,7 +59,7 @@
         </td>
       </tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="status_file" />&nbsp;{$form.status_file.label}</td><td class="FormRowValue">{$form.status_file.html}</td></tr>
-			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="status_update_interval" />&nbsp;{$form.status_update_interval.label}</td><td class="FormRowValue">{$form.status_update_interval.html}</td></tr>
+			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="status_update_interval" />&nbsp;{$form.status_update_interval.label}</td><td class="FormRowValue">{$form.status_update_interval.html}&nbsp;&nbsp;{$Seconds}</td></tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="log_file" />&nbsp;{$form.log_file.label}</td><td class="FormRowValue">{$form.log_file.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="temp_file" />&nbsp;{$form.temp_file.label}</td><td class="FormRowValue">{$form.temp_file.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="lock_file" />&nbsp;{$form.lock_file.label}</td><td class="FormRowValue">{$form.lock_file.html}</td></tr>
