@@ -241,15 +241,8 @@ $nagTab[] = $form->createElement('radio', 'enable_event_handlers', null, _("No")
 $form->addGroup($nagTab, 'enable_event_handlers', _("Event Handler Option"), '&nbsp;');
 
 /* *****************************************************
- * Log Rotation Method
+ * Log archive directory 
  */
-$nagTab = array();
-$nagTab[] = $form->createElement('radio', 'log_rotation_method', null, _("None"), 'n');
-$nagTab[] = $form->createElement('radio', 'log_rotation_method', null, _("Hourly"), 'h');
-$nagTab[] = $form->createElement('radio', 'log_rotation_method', null, _("Daily"), 'd');
-$nagTab[] = $form->createElement('radio', 'log_rotation_method', null, _("Weekly"), 'w');
-$nagTab[] = $form->createElement('radio', 'log_rotation_method', null, _("Monthly"), 'm');
-$form->addGroup($nagTab, 'log_rotation_method', _("Log Rotation Method"), '&nbsp;&nbsp;');
 $form->addElement('text', 'log_archive_path', _("Log Archive Path"), $attrsText2);
 
 /* *****************************************************
