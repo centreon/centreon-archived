@@ -30,7 +30,9 @@ use Centreon\Application\Controller\AbstractController;
 use Core\Infrastructure\Security\ProviderConfiguration\Local\Api\Exception\ConfigurationException;
 use Core\Application\Security\ProviderConfiguration\Local\UseCase\UpdateConfiguration\UpdateConfiguration;
 use Core\Application\Security\ProviderConfiguration\Local\UseCase\UpdateConfiguration\UpdateConfigurationRequest;
-use Core\Application\Security\ProviderConfiguration\Local\UseCase\UpdateConfiguration\UpdateConfigurationPresenterInterface;
+use Core\Application\Security\ProviderConfiguration\Local\UseCase\UpdateConfiguration\{
+    UpdateConfigurationPresenterInterface
+};
 
 class UpdateConfigurationController extends AbstractController
 {

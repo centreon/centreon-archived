@@ -23,7 +23,9 @@ declare(strict_types=1);
 namespace Core\Infrastructure\Security\ProviderConfiguration\Local\Api\UpdateConfiguration;
 
 use Core\Application\Common\UseCase\AbstractPresenter;
-use Core\Application\Security\ProviderConfiguration\Local\UseCase\UpdateConfiguration\UpdateConfigurationPresenterInterface;
+use Core\Application\Security\ProviderConfiguration\Local\UseCase\UpdateConfiguration\{
+    UpdateConfigurationPresenterInterface
+};
 
 class UpdateConfigurationPresenter extends AbstractPresenter implements UpdateConfigurationPresenterInterface
 {
