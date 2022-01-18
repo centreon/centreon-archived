@@ -3,7 +3,7 @@ import * as React from 'react';
 import { useTheme, alpha } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 
-import { LoadingSkeleton } from '@centreon/centreon-frontend/packages/centreon-ui/src';
+import { LoadingSkeleton } from '@centreon/ui';
 
 const useStyles = makeStyles((theme) => ({
   skeleton: {
