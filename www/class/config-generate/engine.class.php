@@ -53,12 +53,6 @@ class Engine extends AbstractObject
         command_file,
         state_retention_file,
         retention_update_interval,
-        retained_contact_host_attribute_mask,
-        retained_contact_service_attribute_mask,
-        retained_process_host_attribute_mask,
-        retained_process_service_attribute_mask,
-        retained_host_attribute_mask,
-        retained_service_attribute_mask,
         sleep_time,
         service_inter_check_delay_method,
         host_inter_check_delay_method,
@@ -67,7 +61,6 @@ class Engine extends AbstractObject
         max_service_check_spread,
         max_host_check_spread,
         check_result_reaper_frequency,
-        max_check_result_reaper_time,
         auto_rescheduling_interval,
         auto_rescheduling_window,
         enable_flap_detection,
@@ -79,15 +72,6 @@ class Engine extends AbstractObject
         host_check_timeout,
         event_handler_timeout,
         notification_timeout,
-        ocsp_timeout,
-        ochp_timeout,
-        perfdata_timeout,
-        host_perfdata_file,
-        service_perfdata_file,
-        host_perfdata_file_template,
-        service_perfdata_file_template,
-        host_perfdata_file_processing_interval,
-        service_perfdata_file_processing_interval,
         service_freshness_check_interval,
         host_freshness_check_interval,
         instance_heartbeat_interval,
@@ -110,12 +94,6 @@ class Engine extends AbstractObject
         log_pid,
         global_host_event_handler as global_host_event_handler_id,
         global_service_event_handler as global_service_event_handler_id,
-        ocsp_command as ocsp_command_id,
-        ochp_command as ochp_command_id,
-        host_perfdata_command as host_perfdata_command_id,
-        service_perfdata_command as service_perfdata_command_id,
-        host_perfdata_file_processing_command as host_perfdata_file_processing_command_id,
-        service_perfdata_file_processing_command as service_perfdata_file_processing_command_id,
         enable_notifications,
         execute_service_checks,
         accept_passive_service_checks,
@@ -134,11 +112,6 @@ class Engine extends AbstractObject
         log_passive_checks,
         auto_reschedule_checks,
         soft_state_dependencies,
-        obsess_over_services,
-        obsess_over_hosts,
-        process_performance_data,
-        host_perfdata_file_mode,
-        service_perfdata_file_mode,
         check_for_orphaned_services,
         check_for_orphaned_hosts,
         check_service_freshness,
@@ -147,9 +120,7 @@ class Engine extends AbstractObject
         use_true_regexp_matching,
         enable_predictive_host_dependency_checks,
         enable_predictive_service_dependency_checks,
-        use_large_installation_tweaks,
         enable_environment_macros,
-        use_setpgid,
         enable_macros_filter,
         macros_filter
     ';
@@ -164,12 +135,6 @@ class Engine extends AbstractObject
         'command_file',
         'state_retention_file',
         'retention_update_interval',
-        'retained_contact_host_attribute_mask',
-        'retained_contact_service_attribute_mask',
-        'retained_process_host_attribute_mask',
-        'retained_process_service_attribute_mask',
-        'retained_host_attribute_mask',
-        'retained_service_attribute_mask',
         'sleep_time',
         'service_inter_check_delay_method',
         'host_inter_check_delay_method',
@@ -178,7 +143,6 @@ class Engine extends AbstractObject
         'max_service_check_spread',
         'max_host_check_spread',
         'check_result_reaper_frequency',
-        'max_check_result_reaper_time',
         'auto_rescheduling_interval',
         'auto_rescheduling_window',
         'low_service_flap_threshold',
@@ -189,15 +153,6 @@ class Engine extends AbstractObject
         'host_check_timeout',
         'event_handler_timeout',
         'notification_timeout',
-        'ocsp_timeout',
-        'ochp_timeout',
-        'perfdata_timeout',
-        'host_perfdata_file',
-        'service_perfdata_file',
-        'host_perfdata_file_template',
-        'service_perfdata_file_template',
-        'host_perfdata_file_processing_interval',
-        'service_perfdata_file_processing_interval',
         'service_freshness_check_interval',
         'host_freshness_check_interval',
         'date_format',
@@ -218,12 +173,6 @@ class Engine extends AbstractObject
         'log_pid', // centengine
         'global_host_event_handler',
         'global_service_event_handler',
-        'ocsp_command',
-        'ochp_command',
-        'host_perfdata_command',
-        'service_perfdata_command',
-        'host_perfdata_file_processing_command',
-        'service_perfdata_file_processing_command',
         'macros_filter',
         'enable_macros_filter',
         'grpc_port'
@@ -250,9 +199,6 @@ class Engine extends AbstractObject
         'soft_state_dependencies',
         'obsess_over_services',
         'obsess_over_hosts',
-        'process_performance_data',
-        'host_perfdata_file_mode',
-        'service_perfdata_file_mode',
         'check_for_orphaned_services',
         'check_for_orphaned_hosts',
         'check_service_freshness',
@@ -262,9 +208,7 @@ class Engine extends AbstractObject
         'use_true_regexp_matching',
         'enable_predictive_host_dependency_checks',
         'enable_predictive_service_dependency_checks',
-        'use_large_installation_tweaks',
         'enable_environment_macros',
-        'use_setpgid', // centengine
     );
     protected $attributes_array = array(
         'cfg_file',
@@ -390,17 +334,7 @@ class Engine extends AbstractObject
             = $command_instance->generateFromCommandId($object['global_host_event_handler_id']);
         $object['global_service_event_handler']
             = $command_instance->generateFromCommandId($object['global_service_event_handler_id']);
-        $object['ocsp_command'] = $command_instance->generateFromCommandId($object['ocsp_command_id']);
-        $object['ochp_command'] = $command_instance->generateFromCommandId($object['ochp_command_id']);
-        $object['host_perfdata_command']
-            = $command_instance->generateFromCommandId($object['host_perfdata_command_id']);
-        $object['service_perfdata_command']
-            = $command_instance->generateFromCommandId($object['service_perfdata_command_id']);
-        $object['host_perfdata_file_processing_command']
-            = $command_instance->generateFromCommandId($object['host_perfdata_file_processing_command_id']);
-        $object['service_perfdata_file_processing_command']
-            = $command_instance->generateFromCommandId($object['service_perfdata_file_processing_command_id']);
-
+        
         $object['grpc_port'] = 50000 + $poller_id;
         $this->generate_filename = 'centengine.DEBUG';
         $object['cfg_file'] = $this->cfg_file['debug']['cfg_file'];
