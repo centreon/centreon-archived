@@ -319,7 +319,7 @@
       <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="retained_host_attribute_mask">&nbsp;{$form.retained_host_attribute_mask.label}</td><td class="FormRowValue">{$form.retained_host_attribute_mask.html}</td></tr>
       <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="retained_service_attribute_mask">&nbsp;{$form.retained_service_attribute_mask.label}</td><td class="FormRowValue">{$form.retained_service_attribute_mask.html}</td></tr>
 
-     {if $o == "a" || $o == "c"}
+      {if $o == "a" || $o == "c"}
           <tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">
           {if isset($form.required)}
               {$form.required._note}
