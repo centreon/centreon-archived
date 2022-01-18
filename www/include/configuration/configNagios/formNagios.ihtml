@@ -145,19 +145,10 @@
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="high_host_flap_threshold">&nbsp;{$form.high_host_flap_threshold.label}</td><td class="FormRowValue">{$form.high_host_flap_threshold.html}&nbsp;&nbsp;%</td></tr>
 
 		 	<tr class="list_lvl_1">
-              <td class="ListColLvl1_name" colspan="2">
-                <h4>{$PostCheck}</h4>
-              </td>
-            </tr>
-			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="obsess_over_services">&nbsp;{$form.obsess_over_services.label}</td><td class="FormRowValue">{$form.obsess_over_services.html}</td></tr>
-			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="ocsp_command">&nbsp;{$form.ocsp_command.label}</td><td class="FormRowValue">{$form.ocsp_command.html}</td></tr>
-			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="obsess_over_hosts">&nbsp;{$form.obsess_over_hosts.label}</td><td class="FormRowValue">{$form.obsess_over_hosts.html}</td></tr>
-			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="ochp_command">&nbsp;{$form.ochp_command.label}</td><td class="FormRowValue">{$form.ochp_command.html}</td></tr>
-		 	<tr class="list_lvl_1">
-              <td class="ListColLvl1_name" colspan="2">
-                <h4>{$MiscOptions}</h4>
-              </td>
-            </tr>
+        <td class="ListColLvl1_name" colspan="2">
+          <h4>{$MiscOptions}</h4>
+        </td>
+      </tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="enable_notifications">&nbsp;{$form.enable_notifications.label}</td><td class="FormRowValue">{$form.enable_notifications.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="execute_service_checks">&nbsp;{$form.execute_service_checks.label}</td><td class="FormRowValue">{$form.execute_service_checks.html}</td></tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="accept_passive_service_checks">&nbsp;{$form.accept_passive_service_checks.label}</td><td class="FormRowValue">{$form.accept_passive_service_checks.html}</td></tr>
@@ -287,31 +278,13 @@
 					{$form.macros_filter.error}
 				</td>
 			</tr>
-			<tr class="list_lvl_1">
-              <td class="ListColLvl1_name" colspan="2">
-                <h4>{$Perfdata}</h4>
-              </td>
-            </tr>
-			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="process_performance_data">&nbsp;{$form.process_performance_data.label}</td><td class="FormRowValue">{$form.process_performance_data.html}</td></tr>
-			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="host_perfdata_command">&nbsp;{$form.host_perfdata_command.label}</td><td class="FormRowValue">{$form.host_perfdata_command.html}</td></tr>
-			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="service_perfdata_command">&nbsp;{$form.service_perfdata_command.label}</td><td class="FormRowValue">{$form.service_perfdata_command.html}</td></tr>
-			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="host_perfdata_file">&nbsp;{$form.host_perfdata_file.label}</td><td class="FormRowValue">{$form.host_perfdata_file.html}</td></tr>
-			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="service_perfdata_file">&nbsp;{$form.service_perfdata_file.label}</td><td class="FormRowValue">{$form.service_perfdata_file.html}</td></tr>
-			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="host_perfdata_file_template">&nbsp;{$form.host_perfdata_file_template.label}</td><td class="FormRowValue">{$form.host_perfdata_file_template.html}</td></tr>
-			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="service_perfdata_file_template">&nbsp;{$form.service_perfdata_file_template.label}</td><td class="FormRowValue">{$form.service_perfdata_file_template.html}</td></tr>
-			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="host_perfdata_file_mode">&nbsp;{$form.host_perfdata_file_mode.label}</td><td class="FormRowValue">{$form.host_perfdata_file_mode.html}</td></tr>
-			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="service_perfdata_file_mode">&nbsp;{$form.service_perfdata_file_mode.label}</td><td class="FormRowValue">{$form.service_perfdata_file_mode.html}</td></tr>
-			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="host_perfdata_file_processing_interval">&nbsp;{$form.host_perfdata_file_processing_interval.label}</td><td class="FormRowValue">{$form.host_perfdata_file_processing_interval.html}&nbsp;{$Seconds}</td></tr>
-			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="service_perfdata_file_processing_interval">&nbsp;{$form.service_perfdata_file_processing_interval.label}</td><td class="FormRowValue">{$form.service_perfdata_file_processing_interval.html}&nbsp;{$Seconds}</td></tr>
-			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="host_perfdata_file_processing_command">&nbsp;{$form.host_perfdata_file_processing_command.label}</td><td class="FormRowValue">{$form.host_perfdata_file_processing_command.html}</td></tr>
-			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="service_perfdata_file_processing_command">&nbsp;{$form.service_perfdata_file_processing_command.label}</td><td class="FormRowValue">{$form.service_perfdata_file_processing_command.html}</td></tr>
-            {if $o == "a" || $o == "c"}
-                <tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">
-                {if isset($form.required)}
-                    {$form.required._note}
-                {/if}
-                </td></tr>
-            {/if}
+      {if $o == "a" || $o == "c"}
+          <tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">
+          {if isset($form.required)}
+              {$form.required._note}
+          {/if}
+          </td></tr>
+      {/if}
 		</table>
 	</div>
 	<div id='tab5' class='tab'>

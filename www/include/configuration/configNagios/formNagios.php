@@ -287,46 +287,6 @@ $form->addGroup(
     '&nbsp;'
 );
 
-/**
- * Retention masks
- */
-$form->addElement(
-    'text',
-    'retained_contact_host_attribute_mask',
-    _("Retained Contact Host Attribute Mask"),
-    $attrsText3
-);
-$form->addElement(
-    'text',
-    'retained_contact_service_attribute_mask',
-    _("Retained Contact Service Attribute Mask"),
-    $attrsText3
-);
-$form->addElement(
-    'text',
-    'retained_process_host_attribute_mask',
-    _("Retained Process Host Attribute Mask"),
-    $attrsText3
-);
-$form->addElement(
-    'text',
-    'retained_process_service_attribute_mask',
-    _("Retained Process Service Attribute Mask"),
-    $attrsText3
-);
-$form->addElement(
-    'text',
-    'retained_host_attribute_mask',
-    _("Retained Host Attribute Mask"),
-    $attrsText3
-);
-$form->addElement(
-    'text',
-    'retained_service_attribute_mask',
-    _("Retained Service Attribute Mask"),
-    $attrsText3
-);
-
 /* *****************************************************
  * logging options
  */
@@ -440,87 +400,6 @@ $form->addElement('text', 'service_check_timeout', _("Service Check Timeout"), $
 $form->addElement('text', 'host_check_timeout', _("Host Check Timeout"), $attrsText3);
 $form->addElement('text', 'event_handler_timeout', _("Event Handler Timeout"), $attrsText3);
 $form->addElement('text', 'notification_timeout', _("Notification Timeout"), $attrsText3);
-$form->addElement('text', 'ocsp_timeout', _("Obsessive Compulsive Service Processor Timeout"), $attrsText3);
-$form->addElement('text', 'ochp_timeout', _("Obsessive Compulsive Host Processor Timeout"), $attrsText3);
-$form->addElement('text', 'perfdata_timeout', _("Performance Data Processor Command Timeout"), $attrsText3);
-
-/* *****************************************************
- * OCSP / OCHP
- */
-$nagTab = array();
-$nagTab[] = $form->createElement('radio', 'obsess_over_services', null, _("Yes"), '1');
-$nagTab[] = $form->createElement('radio', 'obsess_over_services', null, _("No"), '0');
-$form->addGroup($nagTab, 'obsess_over_services', _("Obsess Over Services Option"), '&nbsp;');
-$form->addElement('select', 'ocsp_command', _("Obsessive Compulsive Service Processor Command"), $checkCmds);
-
-$nagTab = array();
-$nagTab[] = $form->createElement('radio', 'obsess_over_hosts', null, _("Yes"), '1');
-$nagTab[] = $form->createElement('radio', 'obsess_over_hosts', null, _("No"), '0');
-$form->addGroup($nagTab, 'obsess_over_hosts', _("Obsess Over Hosts Option"), '&nbsp;');
-$form->addElement('select', 'ochp_command', _("Obsessive Compulsive Host Processor Command"), $checkCmds);
-
-/* *****************************************************
- * Perfdata configuration parameters
- */
-$nagTab = array();
-$nagTab[] = $form->createElement('radio', 'process_performance_data', null, _("Yes"), '1');
-$nagTab[] = $form->createElement('radio', 'process_performance_data', null, _("No"), '0');
-$form->addGroup($nagTab, 'process_performance_data', _("Performance Data Processing Option"), '&nbsp;');
-
-$form->addElement('select', 'host_perfdata_command', _("Host Performance Data Processing Command"), $checkCmds);
-$form->addElement('select', 'service_perfdata_command', _("Service Performance Data Processing Command"), $checkCmds);
-
-$form->addElement('text', 'host_perfdata_file', _("Host Performance Data File"), $attrsText2);
-$form->addElement('text', 'service_perfdata_file', _("Service Performance Data File"), $attrsText2);
-
-$form->addElement(
-    'textarea',
-    'host_perfdata_file_template',
-    _("Host Performance Data File Template"),
-    $attrsTextarea
-);
-$form->addElement(
-    'textarea',
-    'service_perfdata_file_template',
-    _("Service Performance Data File Template"),
-    $attrsTextarea
-);
-
-$nagTab = array();
-$nagTab[] = $form->createElement('radio', 'host_perfdata_file_mode', null, _("Append"), 'a');
-$nagTab[] = $form->createElement('radio', 'host_perfdata_file_mode', null, _("Write"), 'w');
-$form->addGroup($nagTab, 'host_perfdata_file_mode', _("Host Performance Data File Mode"), '&nbsp;');
-
-$nagTab = array();
-$nagTab[] = $form->createElement('radio', 'service_perfdata_file_mode', null, _("Append"), 'a');
-$nagTab[] = $form->createElement('radio', 'service_perfdata_file_mode', null, _("Write"), 'w');
-$form->addGroup($nagTab, 'service_perfdata_file_mode', _("Service Performance Data File Mode"), '&nbsp;');
-
-$form->addElement(
-    'text',
-    'host_perfdata_file_processing_interval',
-    _("Host Performance Data File Processing Interval"),
-    $attrsText3
-);
-$form->addElement(
-    'text',
-    'service_perfdata_file_processing_interval',
-    _("Service Performance Data File Processing Interval"),
-    $attrsText3
-);
-
-$form->addElement(
-    'select',
-    'host_perfdata_file_processing_command',
-    _("Host Performance Data File Processing Command"),
-    $checkCmds
-);
-$form->addElement(
-    'select',
-    'service_perfdata_file_processing_command',
-    _("Service Performance Data File Processing Command"),
-    $checkCmds
-);
 
 /* *****************************************************
  * Check orphaned
