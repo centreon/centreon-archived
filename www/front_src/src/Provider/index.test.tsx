@@ -18,7 +18,7 @@ import { cancelTokenRequestParam } from '../Resources/testUtils';
 import Provider from '.';
 
 jest.mock('@centreon/ui-context', () =>
-  jest.requireActual('@centreon/centreon-frontend/packages/ui-context'),
+  jest.requireActual('centreon-frontend/packages/ui-context'),
 );
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
