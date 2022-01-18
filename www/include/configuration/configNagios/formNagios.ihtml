@@ -62,8 +62,7 @@
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="status_update_interval" />&nbsp;{$form.status_update_interval.label}</td><td class="FormRowValue">{$form.status_update_interval.html}&nbsp;&nbsp;{$Seconds}</td></tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="log_file" />&nbsp;{$form.log_file.label}</td><td class="FormRowValue">{$form.log_file.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="temp_file" />&nbsp;{$form.temp_file.label}</td><td class="FormRowValue">{$form.temp_file.html}</td></tr>
-			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="lock_file" />&nbsp;{$form.lock_file.label}</td><td class="FormRowValue">{$form.lock_file.html}</td></tr>
-
+			
 			<tr class="list_lvl_1">
         <td class="ListColLvl1_name" colspan="2">
           <h4>{$ExternalCommandes}</h4>
@@ -361,8 +360,6 @@
       </tr>
 			<tr class="list_lvl_1">
       <td class="ListColLvl1_name" colspan="2"><h4>{$Advanced}</h4></td></tr>
-			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="nagios_user">&nbsp;{$form.nagios_user.label}</td><td class="FormRowValue">{$form.nagios_user.html}</td></tr>
-			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="nagios_group">&nbsp;{$form.nagios_group.label}</td><td class="FormRowValue">{$form.nagios_group.html}</td></tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="date_format">&nbsp;{$form.date_format.label}</td><td class="FormRowValue">{$form.date_format.html}</td></tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="instance_heartbeat_interval">&nbsp;{$form.instance_heartbeat_interval.label}</td><td class="FormRowValue">{$form.instance_heartbeat_interval.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="illegal_object_name_chars">&nbsp;{$form.illegal_object_name_chars.label}</td><td class="FormRowValue">{$form.illegal_object_name_chars.html}</td></tr>

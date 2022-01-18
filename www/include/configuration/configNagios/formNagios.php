@@ -198,13 +198,6 @@ $form->addElement('text', 'status_update_interval', _("Status File Update Interv
 $form->addElement('text', 'log_file', _("Log file"), $attrsText2);
 $form->addElement('text', 'cfg_dir', _("Object Configuration Directory"), $attrsText2);
 $form->addElement('text', 'cfg_file', _("Object Configuration File"), $attrsText2);
-$form->addElement('text', 'temp_file', _("Temp File"), $attrsText2);
-
-/* *****************************************************
- * User / Groups
- */
-$form->addElement('text', 'nagios_user', _("Monitoring system User"), $attrsText);
-$form->addElement('text', 'nagios_group', _("Monitoring system Group"), $attrsText);
 
 /* *****************************************************
  * Enable / Disable functionalities
@@ -256,11 +249,6 @@ $form->addGroup($nagTab, 'check_external_commands', _("External Command Check Op
 $form->addElement('text', 'command_check_interval', _("External Command Check Interval"), $attrsText3);
 $form->addElement('text', 'external_command_buffer_slots', _("External Command Buffer Slots"), $attrsText3);
 $form->addElement('text', 'command_file', _("External Command File"), $attrsText2);
-
-/* *****************************************************
- * Lock files
- */
-$form->addElement('text', 'lock_file', _("Lock File"), $attrsText2);
 
 /* *****************************************************
  * Retention
