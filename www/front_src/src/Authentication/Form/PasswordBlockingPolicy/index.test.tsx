@@ -5,7 +5,7 @@ import { Formik } from 'formik';
 
 import { render, RenderResult, screen, waitFor } from '@centreon/ui';
 
-import { SecurityPolicy } from '../../models';
+import { SecurityPolicy, SecurityPolicyFromAPI } from '../../models';
 import useValidationSchema from '../../useValidationSchema';
 import {
   defaultSecurityPolicy,
@@ -51,8 +51,11 @@ const TestComponent = ({ initialValues }: Props): JSX.Element => {
 };
 
 const renderPasswordBlockingPolicy = (
-  initialValues: SecurityPolicy = defaultSecurityPolicy,
-): RenderResult => render(<TestComponent initialValues={initialValues} />);
+  initialValues: SecurityPolicyFromAPI = defaultSecurityPolicy,
+): RenderResult =>
+  render(
+    <TestComponent initialValues={initialValues.password_security_policy} />,
+  );
 
 describe('Password Blocking Policy', () => {
   it('renders the password blocking policy fields with values', async () => {
@@ -139,7 +142,9 @@ describe('Password Blocking Policy', () => {
   });
 
   it('displays an error message when the time blocking duration is 7 days and 1 hour', async () => {
-    renderPasswordBlockingPolicy(securityPolicyWithInvalidBlockingDuration);
+    renderPasswordBlockingPolicy({
+      password_security_policy: securityPolicyWithInvalidBlockingDuration,
+    });
 
     await waitFor(() => {
       expect(screen.getByText(labelPasswordBlockingPolicy)).toBeInTheDocument();
