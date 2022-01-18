@@ -303,10 +303,10 @@
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="ochp_timeout">&nbsp;{$form.ochp_timeout.label}</td><td class="FormRowValue">{$form.ochp_timeout.html}&nbsp;{$Seconds}</td></tr>
 
 			<tr class="list_lvl_1">
-              <td class="ListColLvl1_name" colspan="2">
-                <h4>{$StatesRetention}</h4>
-              </td>
-            </tr>
+        <td class="ListColLvl1_name" colspan="2">
+          <h4>{$StatesRetention}</h4>
+        </td>
+      </tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="retain_state_information">&nbsp;{$form.retain_state_information.label}</td><td class="FormRowValue">{$form.retain_state_information.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="state_retention_file">&nbsp;{$form.state_retention_file.label}</td><td class="FormRowValue">{$form.state_retention_file.html}</td></tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="retention_update_interval">&nbsp;{$form.retention_update_interval.label}</td><td class="FormRowValue">{$form.retention_update_interval.html}&nbsp;{$Minutes}</td></tr>
