@@ -546,7 +546,6 @@ $form->addGroup(
     '&nbsp;'
 );
 
-
 /*
  * Cache check horizon.
  */
@@ -557,19 +556,9 @@ $form->addElement('text', 'cached_service_check_horizon', _("Cached Service Chec
  * Tunning
  */
 $nagTab = array();
-$nagTab[] = $form->createElement('radio', 'use_large_installation_tweaks', null, _("Yes"), '1');
-$nagTab[] = $form->createElement('radio', 'use_large_installation_tweaks', null, _("No"), '0');
-$form->addGroup($nagTab, 'use_large_installation_tweaks', _("Use large installation tweaks"), '&nbsp;');
-
-$nagTab = array();
 $nagTab[] = $form->createElement('radio', 'enable_environment_macros', null, _("Yes"), '1');
 $nagTab[] = $form->createElement('radio', 'enable_environment_macros', null, _("No"), '0');
 $form->addGroup($nagTab, 'enable_environment_macros', _("Enable environment macros"), '&nbsp;');
-
-$nagTab = array();
-$nagTab[] = $form->createElement('radio', 'use_setpgid', null, _("Yes"), '1');
-$nagTab[] = $form->createElement('radio', 'use_setpgid', null, _("No"), '0');
-$form->addGroup($nagTab, 'use_setpgid', _("Use setpgid"), '&nbsp;');
 
 /* ****************************************************
  * Debug
