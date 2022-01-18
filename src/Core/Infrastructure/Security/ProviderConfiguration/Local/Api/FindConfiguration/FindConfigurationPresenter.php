@@ -34,11 +34,6 @@ class FindConfigurationPresenter extends AbstractPresenter implements FindConfig
     public function present(FindConfigurationResponse $response): void
     {
         $presenterResponse = [
-            'id' => $response->id,
-            'type' => $response->type,
-            'name' => $response->name,
-            'is_active' => $response->isActive,
-            'is_forced' => $response->isForced,
             'password_security_policy' => [
                 'password_min_length' => $response->passwordMinimumLength,
                 'has_uppercase' => $response->hasUppercase,

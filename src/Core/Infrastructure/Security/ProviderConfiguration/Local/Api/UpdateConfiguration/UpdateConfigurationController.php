@@ -46,9 +46,9 @@ class UpdateConfigurationController extends AbstractController
         UpdateConfigurationPresenterInterface $presenter,
     ): object {
         $this->denyAccessUnlessGrantedForApiConfiguration();
-        $this->validateDataSent($request, __DIR__ . '/UpdateProviderConfigurationLocalSchema.json');
-        $updateProviderConfigurationLocalRequest = $this->createUpdateProviderConfigurationLocalRequest($request);
-        $useCase($presenter, $updateProviderConfigurationLocalRequest);
+        $this->validateDataSent($request, __DIR__ . '/UpdateConfigurationSchema.json');
+        $updateConfigurationRequest = $this->createUpdateConfigurationRequest($request);
+        $useCase($presenter, $updateConfigurationRequest);
 
         return $presenter->show();
     }
@@ -59,21 +59,22 @@ class UpdateConfigurationController extends AbstractController
      * @param Request $request
      * @return UpdateConfigurationRequest
      */
-    private function createUpdateProviderConfigurationLocalRequest(
+    private function createUpdateConfigurationRequest(
         Request $request,
     ): UpdateConfigurationRequest {
         $requestData = json_decode((string) $request->getContent(), true);
+        $passwordPolicy = $requestData['password_security_policy'];
         $updateRequest = new UpdateConfigurationRequest();
-        $updateRequest->passwordMinimumLength = $requestData['password_min_length'];
-        $updateRequest->hasUppercase = $requestData['has_uppercase'];
-        $updateRequest->hasLowercase = $requestData['has_lowercase'];
-        $updateRequest->hasNumber = $requestData['has_number'];
-        $updateRequest->hasSpecialCharacter = $requestData['has_special_character'];
-        $updateRequest->attempts = $requestData['attempts'];
-        $updateRequest->blockingDuration = $requestData['blocking_duration'];
-        $updateRequest->passwordExpiration = $requestData['password_expiration'];
-        $updateRequest->canReusePasswords = $requestData['can_reuse_passwords'];
-        $updateRequest->delayBeforeNewPassword = $requestData['delay_before_new_password'];
+        $updateRequest->passwordMinimumLength = $passwordPolicy['password_min_length'];
+        $updateRequest->hasUppercase = $passwordPolicy['has_uppercase'];
+        $updateRequest->hasLowercase = $passwordPolicy['has_lowercase'];
+        $updateRequest->hasNumber = $passwordPolicy['has_number'];
+        $updateRequest->hasSpecialCharacter = $passwordPolicy['has_special_character'];
+        $updateRequest->attempts = $passwordPolicy['attempts'];
+        $updateRequest->blockingDuration = $passwordPolicy['blocking_duration'];
+        $updateRequest->passwordExpiration = $passwordPolicy['password_expiration'];
+        $updateRequest->canReusePasswords = $passwordPolicy['can_reuse_passwords'];
+        $updateRequest->delayBeforeNewPassword = $passwordPolicy['delay_before_new_password'];
 
         return $updateRequest;
     }
