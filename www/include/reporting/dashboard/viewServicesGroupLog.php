@@ -152,7 +152,7 @@ if ($id !== false) {
     $tpl->assign('date_end', $endDate);
     $tpl->assign('period', $period);
     $formPeriod->setDefaults(array('period' => $period));
-    $tpl->assign('id', $id);
+    $tpl->assign('servicegroup_id', $id);
     $tpl->assign('Alert', _("Alert"));
 
     /*
