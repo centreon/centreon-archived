@@ -155,10 +155,6 @@ $help["enable_event_handlers"] = dgettext(
     . "use_retained_program_state is enabled), you'll have to use the appropriate external command "
     . "or change it via the web interface. Option is enabled by default."
 );
-$help["log_rotation_method"] = dgettext(
-    "help",
-    "This is the rotation method that you would like Monitoring Engine to use for your log file."
-);
 $help["log_archive_path"] = dgettext(
     "help",
     "This is the directory where Monitoring Engine should place log files that have been rotated. "
@@ -245,50 +241,6 @@ $help["use_retained_scheduling_info"] = dgettext(
     . "(or percentage) of hosts and services, I would recommend disabling this option "
     . "when you first restart Monitoring Engine, as it can adversely skew the spread of "
     . "initial checks. Otherwise you will probably want to leave it enabled."
-);
-
-
-$help["retained_service_attribute_mask"] = dgettext(
-    "help",
-    "This is an advanced feature. You'll need to read the Centreon Engine source code "
-    . "to use this option effectively. These options determine which service attributes "
-    . "are NOT retained across program restarts. By default, all host and service attributes "
-    . "are retained."
-);
-$help["retained_host_attribute_mask"] = dgettext(
-    "help",
-    "This is an advanced feature. You'll need to read the Centreon Engine source code "
-    . "to use this option effectively. These options determine which host attributes "
-    . "are NOT retained across program restarts. By default, all host and service "
-    . "attributes are retained."
-);
-$help["retained_process_service_attribute_mask"] = dgettext(
-    "help",
-    "This is an advanced feature. You'll need to read the Centreon Engine source code "
-    . "to use this option effectively.  These options determine which service process "
-    . "attributes are NOT retained across program restarts. By default, all host and "
-    . "service attributes are retained."
-);
-$help["retained_process_host_attribute_mask"] = dgettext(
-    "help",
-    "This is an advanced feature. You'll need to read the Centreon Engine source code "
-    . "to use this option effectively. These options determine which host process "
-    . "attributes are NOT retained across program restarts. By default, all host "
-    . "and service attributes are retained."
-);
-$help["retained_contact_service_attribute_mask"] = dgettext(
-    "help",
-    "This is an advanced feature. You'll need to read the Centreon Engine source code "
-    . "to use this option effectively. These options determine which service contact "
-    . "attributes are NOT retained across program restarts. By default, all host and "
-    . "service attributes are retained."
-);
-$help["retained_contact_host_attribute_mask"] = dgettext(
-    "help",
-    "This is an advanced feature. You'll need to read the Centreon Engine source code "
-    . "to use this option effectively. These options determine which host contact "
-    . "attributes are NOT retained across program restarts. By default, all host "
-    . "and service attributes are retained."
 );
 
 
@@ -542,132 +494,6 @@ $help["notification_timeout"] = dgettext(
     "each notification command finishes executing within this time limit. If a notification command runs " .
     "longer than this limit, Monitoring Engine will kill it off thinking it is a runaway processes."
 );
-$help["ocsp_timeout"] = dgettext(
-    "help",
-    "This is the maximum number of seconds that Monitoring Engine will allow an obsessive compulsive " .
-    "service processor command to be run. If a command exceeds this time limit it will be killed and a " .
-    "warning will be logged."
-);
-$help["ochp_timeout"] = dgettext(
-    "help",
-    "This is the maximum number of seconds that Monitoring Engine will allow an obsessive compulsive " .
-    "host processor command to be run. If a command exceeds this time limit it will be killed and a " .
-    "warning will be logged."
-);
-$help["perfdata_timeout"] = dgettext(
-    "help",
-    "This is the maximum number of seconds that Monitoring Engine will allow a host performance data " .
-    "processor command or service performance data processor command to be run. If a command exceeds " .
-    "this time limit it will be killed and a warning will be logged."
-);
-$help["obsess_over_services"] = dgettext(
-    "help",
-    "This value determines whether or not Monitoring Engine will \"obsess\" over service checks results " .
-    "and run the obsessive compulsive service processor command you define. This option is useful for " .
-    "performing distributed monitoring. This option is disabled by default. If you're not doing distributed " .
-    "monitoring, don't enable this option."
-);
-$help["ocsp_command"] = dgettext(
-    "help",
-    "This option allows you to specify a command to be run after every service check, which can be useful " .
-    "in distributed monitoring. This command is executed after any event handler or notification commands. " .
-    "The maximum amount of time that this command can run is controlled by the ocsp_timeout option. " .
-    "This command is only executed if the obsess_over_services option is enabled globally and if the " .
-    "obsess_over_service directive in the service definition is enabled."
-);
-$help["obsess_over_hosts"] = dgettext(
-    "help",
-    "This value determines whether or not Monitoring Engine will \"obsess\" over host checks results and " .
-    "run the obsessive compulsive host processor command you define. This option is useful for performing " .
-    "distributed monitoring. This option is disabled by default. If you're not doing distributed monitoring, " .
-    "don't enable this option."
-);
-$help["ochp_command"] = dgettext(
-    "help",
-    "This option allows you to specify a command to be run after every host check, which can be " .
-    "useful in distributed monitoring. This command is executed after any event handler or notification " .
-    "commands. The maximum amount of time that this command can run is controlled by the ochp_timeout option. " .
-    "This command is only executed if the obsess_over_hosts option is enabled globally and if the " .
-    "obsess_over_host directive in the host definition is enabled."
-);
-$help["process_performance_data"] = dgettext(
-    "help",
-    "This value determines whether or not Monitoring Engine will process host and service check " .
-    "performance data. This option is disabled by default."
-);
-$help["host_perfdata_command"] = dgettext(
-    "help",
-    "This option allows you to specify a command to be run after every host check to process host " .
-    "performance data that may be returned from the check. This command is only executed if the " .
-    "process_performance_data option is enabled globally and if the process_perf_data directive in " .
-    "the host definition is enabled."
-);
-$help["service_perfdata_command"] = dgettext(
-    "help",
-    "This option allows you to specify a command to be run after every service check to process " .
-    "service performance data that may be returned from the check. This command is only executed if the " .
-    "process_performance_data option is enabled globally and if the process_perf_data directive in the " .
-    "service definition is enabled."
-);
-$help["host_perfdata_file"] = dgettext(
-    "help",
-    "This option allows you to specify a file to which host performance data will be written after every " .
-    "host check. Data will be written to the performance file as specified by the " .
-    "host_perfdata_file_template option. Performance data is only written to this file if the " .
-    "process_performance_data option is enabled globally and if the process_perf_data directive in the " .
-    "host definition is enabled."
-);
-$help["service_perfdata_file"] = dgettext(
-    "help",
-    "This option allows you to specify a file to which service performance data will be written after " .
-    "every service check. Data will be written to the performance file as specified by the " .
-    "service_perfdata_file_template option. Performance data is only written to this file if the " .
-    "process_performance_data option is enabled globally and if the process_perf_data directive in the " .
-    "service definition is enabled."
-);
-$help["host_perfdata_file_template"] = dgettext(
-    "help",
-    "This option determines what (and how) data is written to the host performance data file. " .
-    "The template may contain macros, special characters (\\t for tab, \\r for carriage return, \\n for newline) " .
-    "and plain text. A newline is automatically added after each write to the performance data file."
-);
-$help["service_perfdata_file_template"] = dgettext(
-    "help",
-    "This option determines what (and how) data is written to the service performance data file. " .
-    "The template may contain macros, special characters (\\t for tab, \\r for carriage return, \\n for newline) " .
-    "and plain text. A newline is automatically added after each write to the performance data file."
-);
-$help["host_perfdata_file_mode"] = dgettext(
-    "help",
-    "This option determines how the host performance data file is opened. Unless the file is a " .
-    "named pipe you'll probably want to use the default mode of append."
-);
-$help["service_perfdata_file_mode"] = dgettext(
-    "help",
-    "This option determines how the service performance data file is opened. Unless the file is " .
-    "a named pipe you'll probably want to use the default mode of append."
-);
-$help["host_perfdata_file_processing_interval"] = dgettext(
-    "help",
-    "This option allows you to specify the interval (in seconds) at which the host performance data file " .
-    "is processed using the host performance data file processing command. A value of 0 indicates that " .
-    "the performance data file should not be processed at regular intervals."
-);
-$help["service_perfdata_file_processing_interval"] = dgettext(
-    "help",
-    "This option allows you to specify the interval (in seconds) at which the service performance " .
-    "data file is processed using the service performance data file processing command. A value of 0 " .
-    "indicates that the performance data file should not be processed at regular intervals."
-);
-$help["host_perfdata_file_processing_command"] = dgettext(
-    "help",
-    "This option allows you to specify the command that should be executed to process the host performance data file."
-);
-$help["service_perfdata_file_processing_command"] = dgettext(
-    "help",
-    "This option allows you to specify the command that should be executed to process " .
-    "the service performance data file."
-);
 $help["check_for_orphaned_services"] = dgettext(
     "help",
     "This option allows you to enable or disable checks for orphaned service checks. Orphaned service checks " .
@@ -823,26 +649,6 @@ $help["cached_service_check_horizon"] = dgettext(
     "service dependencies are used. Too high of a value for this option may result in inaccuracies in the " .
     "service dependency logic. Use a value of 0 if you want to disable service check caching."
 );
-$help["use_large_installation_tweaks"] = dgettext(
-    "help",
-    "This option determines whether or not the Monitoring Engine daemon will take several shortcuts to " .
-    "improve performance. These shortcuts result in the loss of a few features, but larger installations will " .
-    "likely see a lot of benefit from doing so. This option is disabled by default."
-);
-$help["free_child_process_memory"] = dgettext(
-    "help",
-    "This option determines whether or not Monitoring Engine will free memory in child processes when they " .
-    "are fork()ed off from the main process. By default, Monitoring Engine frees memory. However, " .
-    "if the use_large_installation_tweaks option is enabled, it will not. By defining this option in your " .
-    "configuration file, you are able to override things to get the behavior you want."
-);
-$help["child_processes_fork_twice"] = dgettext(
-    "help",
-    "This option determines whether or not Monitoring Engine will fork() child processes twice when it executes " .
-    "host and service checks. By default, Monitoring Engine fork()s twice. However, if the " .
-    "use_large_installation_tweaks option is enabled, it will only fork() once. By defining this option in " .
-    "your configuration file, you are able to override things to get the behavior you want."
-);
 $help["enable_environment_macros"] = dgettext(
     "help",
     "This option determines whether or not the Monitoring Engine daemon will make all standard macros available " .
@@ -850,11 +656,6 @@ $help["enable_environment_macros"] = dgettext(
     "Engine installations this can be problematic because it takes additional memory and (more importantly) " .
     "CPU to compute the values of all macros and make them available to the environment. " .
     "This option is enabled by default."
-);
-$help["use_setpgid"] = dgettext(
-    "help",
-    "Only works with Centreon Engine (>= 1.3). For better performance, set this to 'No'. But it is safer to leave " .
-    "it to 'Default' ('Yes'), for a few native plugins could trigger a monitoring crash."
 );
 $help["debug_file"] = dgettext(
     "help",
