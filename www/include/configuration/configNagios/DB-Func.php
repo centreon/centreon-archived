@@ -404,15 +404,6 @@ function insertNagios($ret = array(), $brokerTab = array())
         $rq .= "'2', ";
     }
 
-    if (
-        isset($ret["log_rotation_method"]["log_rotation_method"])
-        && $ret["log_rotation_method"]["log_rotation_method"] != 2
-    ) {
-        $rq .= "'" . $ret["log_rotation_method"]["log_rotation_method"] . "',  ";
-    } else {
-        $rq .= "'2', ";
-    }
-
     if (isset($ret["log_archive_path"]) && $ret["log_archive_path"] != null) {
         $rq .= "'" . htmlentities($ret["log_archive_path"], ENT_QUOTES, "UTF-8") . "',  ";
     } else {
