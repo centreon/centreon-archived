@@ -21,7 +21,7 @@
 
 declare(strict_types=1);
 
-namespace Core\Infrastructure\Security\ProviderConfiguration\local\Api\UpdateConfiguration;
+namespace Core\Infrastructure\Security\ProviderConfiguration\Local\Api\UpdateConfiguration;
 
 use JsonSchema\Validator;
 use JsonSchema\Constraints\Constraint;

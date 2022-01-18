@@ -21,17 +21,17 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\Application\Security\UseCase\FindSecurityPolicy;
+namespace Tests\Core\Application\Security\ProviderConfiguration\Local\UseCase\FindConfiguration;
 
 use Core\Application\Common\UseCase\ResponseStatusInterface;
-use Core\Application\Security\UseCase\FindSecurityPolicy\FindSecurityPolicyPresenterInterface;
-use Core\Application\Security\UseCase\FindSecurityPolicy\FindSecurityPolicyResponse;
+use Core\Application\Security\ProviderConfiguration\Local\UseCase\FindConfiguration\FindConfigurationPresenterInterface;
+use Core\Application\Security\ProviderConfiguration\Local\UseCase\FindConfiguration\FindConfigurationResponse;
 use Symfony\Component\HttpFoundation\Response;
 
-class FindSecurityPolicyPresenterFake implements FindSecurityPolicyPresenterInterface
+class FindConfigurationPresenterFake implements FindConfigurationPresenterInterface
 {
     /**
-     * @var FindSecurityPolicyResponse
+     * @var FindConfigurationResponse
      */
     public $response;
 
@@ -41,9 +41,9 @@ class FindSecurityPolicyPresenterFake implements FindSecurityPolicyPresenterInte
     private $responseStatus;
 
     /**
-     * @param FindSecurityPolicyResponse $response
+     * @param FindConfigurationResponse $response
      */
-    public function present(FindSecurityPolicyResponse $response): void
+    public function present(FindConfigurationResponse $response): void
     {
         $this->response = $response;
     }

@@ -21,34 +21,27 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\Infrastructure\Api\UpdateSecurityPolicy;
+namespace Tests\Core\Infrastructure\Security\ProviderConfiguration\Local\Api\FindConfiguration;
 
 use PHPUnit\Framework\TestCase;
-use Centreon\Domain\Contact\Contact;
 use Psr\Container\ContainerInterface;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Core\Application\Security\UseCase\UpdateSecurityPolicy\UpdateSecurityPolicy;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Core\Infrastructure\Security\Api\UpdateSecurityPolicy\UpdateSecurityPolicyController;
-use Core\Application\Security\UseCase\UpdateSecurityPolicy\UpdateSecurityPolicyPresenterInterface;
-use Core\Infrastructure\Security\Api\Exception\SecurityPolicyApiException;
+use Centreon\Domain\Contact\Contact;
+use Core\Application\Security\ProviderConfiguration\Local\UseCase\FindConfiguration\FindConfiguration;
+use Core\Infrastructure\Security\ProviderConfiguration\Local\Api\FindConfiguration\FindConfigurationController;
+use Core\Application\Security\ProviderConfiguration\Local\UseCase\FindConfiguration\FindConfigurationPresenterInterface;
 
-class UpdateSecurityPolicyControllerTest extends TestCase
+class FindConfigurationControllerTest extends TestCase
 {
     /**
-     * @var Request&\PHPUnit\Framework\MockObject\MockObject
-     */
-    private $request;
-
-    /**
-     * @var UpdateSecurityPolicyPresenterInterface&\PHPUnit\Framework\MockObject\MockObject
+     * @var FindConfigurationPresenterInterface&\PHPUnit\Framework\MockObject\MockObject
      */
     private $presenter;
 
     /**
-     * @var UpdateSecurityPolicy&\PHPUnit\Framework\MockObject\MockObject
+     * @var FindConfiguration&\PHPUnit\Framework\MockObject\MockObject
      */
     private $useCase;
 
@@ -59,8 +52,8 @@ class UpdateSecurityPolicyControllerTest extends TestCase
 
     public function setUp(): void
     {
-        $this->presenter = $this->createMock(UpdateSecurityPolicyPresenterInterface::class);
-        $this->useCase = $this->createMock(UpdateSecurityPolicy::class);
+        $this->presenter = $this->createMock(FindConfigurationPresenterInterface::class);
+        $this->useCase = $this->createMock(FindConfiguration::class);
 
         $timezone = new \DateTimeZone('Europe/Paris');
         $adminContact = (new Contact())
@@ -101,27 +94,23 @@ class UpdateSecurityPolicyControllerTest extends TestCase
                     }
                 }
             );
-
-        $this->request = $this->createMock(Request::class);
     }
 
     /**
-     * Test that a correct exception is thrown when body is invalid.
+     * Test that the controller calls properly the usecase
      */
-    public function testCreateUpdateSecurityPolicyRequestWithInvalidBody(): void
+    public function testFindControllerExecute(): void
     {
-        $controller = new UpdateSecurityPolicyController();
+        $controller = new FindConfigurationController();
         $controller->setContainer($this->container);
 
-        $invalidPayload = json_encode([
-            'has_uppercase' => true
-        ]);
-        $this->request
+        $this->useCase
             ->expects($this->once())
-            ->method('getContent')
-            ->willReturn($invalidPayload);
+            ->method('__invoke')
+            ->with(
+                $this->equalTo($this->presenter)
+            );
 
-        $this->expectException(SecurityPolicyApiException::class);
-        $controller($this->useCase, $this->request, $this->presenter);
+        $controller($this->useCase, $this->presenter);
     }
 }

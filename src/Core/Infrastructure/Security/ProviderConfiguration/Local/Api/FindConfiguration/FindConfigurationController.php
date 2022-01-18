@@ -38,6 +38,7 @@ class FindConfigurationController extends AbstractController
         FindConfigurationPresenterInterface $presenter,
     ): object {
         $this->denyAccessUnlessGrantedForApiConfiguration();
+
         $useCase($presenter);
 
         return $presenter->show();
