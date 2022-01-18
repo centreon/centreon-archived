@@ -1,4 +1,4 @@
-import { SecurityPolicy, SecurityPolicyAPI } from '../models';
+import { SecurityPolicy, SecurityPolicyToAPI } from '../models';
 
 export const adaptSecurityPolicyFromAPI = (
   securityPolicy: SecurityPolicy,
@@ -28,19 +28,23 @@ export const adaptSecurityPolicyToAPI = ({
   hasUpperCase,
   attempts,
   blockingDuration,
-}: SecurityPolicy): SecurityPolicyAPI => {
+}: SecurityPolicy): SecurityPolicyToAPI => {
   return {
-    attempts,
-    blocking_duration: blockingDuration ? blockingDuration / 1000 : null,
-    can_reuse_passwords: canReusePasswords,
-    delay_before_new_password: delayBeforeNewPassword
-      ? delayBeforeNewPassword / 1000
-      : null,
-    has_lowercase: hasLowerCase,
-    has_number: hasNumber,
-    has_special_character: hasSpecialCharacter,
-    has_uppercase: hasUpperCase,
-    password_expiration: passwordExpiration ? passwordExpiration / 1000 : null,
-    password_min_length: passwordMinLength,
+    password_security_policy: {
+      attempts,
+      blocking_duration: blockingDuration ? blockingDuration / 1000 : null,
+      can_reuse_passwords: canReusePasswords,
+      delay_before_new_password: delayBeforeNewPassword
+        ? delayBeforeNewPassword / 1000
+        : null,
+      has_lowercase: hasLowerCase,
+      has_number: hasNumber,
+      has_special_character: hasSpecialCharacter,
+      has_uppercase: hasUpperCase,
+      password_expiration: passwordExpiration
+        ? passwordExpiration / 1000
+        : null,
+      password_min_length: passwordMinLength,
+    },
   };
 };
