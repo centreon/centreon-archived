@@ -19,8 +19,9 @@ import i18n, { Resource, ResourceLanguage } from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import { Provider as JotaiProvider } from 'jotai';
 import { useUpdateAtom } from 'jotai/utils';
+import { SnackbarProvider as NotistackSnackbarProvider } from 'notistack';
 
-import { useRequest, getData, withSnackbar, ThemeProvider } from '@centreon/ui';
+import { useRequest, getData, ThemeProvider } from '@centreon/ui';
 import {
   userAtom,
   User,
@@ -58,7 +59,7 @@ interface Props {
   children: React.ReactNode;
 }
 
-const AppProvider = ({ children }: Props): JSX.Element => {
+const Provider = ({ children }: Props): JSX.Element => {
   const [dataLoaded, setDataLoaded] = React.useState(false);
 
   const { sendRequest: getUser } = useRequest<User>({
@@ -180,15 +181,5 @@ const AppProvider = ({ children }: Props): JSX.Element => {
     </ReduxProvider>
   );
 };
-
-const AppProviderWithSnackbar = withSnackbar({ Component: AppProvider });
-
-const Provider = ({ children }: Props): JSX.Element => (
-  <ThemeProvider>
-    <JotaiProvider scope="ui-context">
-      <AppProviderWithSnackbar>{children}</AppProviderWithSnackbar>
-    </JotaiProvider>
-  </ThemeProvider>
-);
 
 export default Provider;
