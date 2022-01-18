@@ -130,7 +130,7 @@ $cdata->addJsData(
  *
  */
 $checkCmds = array();
-$dbResult = $pearDB->query("SELECT command_id, command_name FROM command ORDER BY command_name");
+$dbResult = $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = 3 ORDER BY command_name");
 $checkCmds = array(null => null);
 while ($checkCmd = $dbResult->fetch()) {
     $checkCmds[$checkCmd["command_id"]] = $checkCmd["command_name"];
