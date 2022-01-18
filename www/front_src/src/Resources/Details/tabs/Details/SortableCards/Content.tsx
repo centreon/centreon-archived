@@ -4,9 +4,10 @@ import { isNil } from 'ramda';
 import { DraggableSyntheticListeners } from '@dnd-kit/core';
 import { useTranslation } from 'react-i18next';
 
-import { makeStyles, Theme, Grid, GridSize, Paper } from '@material-ui/core';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
-import { CreateCSSProperties } from '@material-ui/styles';
+import { Theme, Grid, GridSize, Paper } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { CreateCSSProperties } from '@mui/styles';
 
 import DetailsCard from '../DetailsCard';
 

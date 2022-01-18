@@ -213,7 +213,7 @@ export const labelMetaService = 'Meta service';
 export const labelCalculationType = 'Calculation type';
 export const labelSelectAtLeastOneColumn =
   'At least one column must be selected';
-export const labelMaxDuration1Year = 'The duration must be lesser than a year';
+export const labelMaxDuration1Year = 'The duration must be less than a year';
 export const labelAsDisplayed = 'As displayed';
 export const labelMediumSize = 'Medium size';
 export const labelSmallSize = 'Small size';
@@ -231,3 +231,7 @@ export const labelBeforeLastYear = 'Before last year';
 export const labelServiceGraphs = 'Service graphs';
 export const labelClearFilter = 'Clear filter';
 export const labelLastCheckWithOkStatus = 'Last check with OK status';
+export const labelStatusType = 'Status type';
+export const labelHard = 'Hard';
+export const labelSoft = 'Soft';
+export const labelInvalidFormat = 'Invalid format';

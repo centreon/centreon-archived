@@ -4,8 +4,7 @@
 
 import React from 'react';
 
-import { Typography } from '@material-ui/core';
-import { Alert } from '@material-ui/lab';
+import { Typography, Alert } from '@mui/material';
 
 import { Dialog } from '@centreon/ui';
 

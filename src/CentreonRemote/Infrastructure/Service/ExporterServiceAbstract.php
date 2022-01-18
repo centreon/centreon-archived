@@ -54,6 +54,11 @@ abstract class ExporterServiceAbstract implements ExporterServiceInterface
     protected $config;
 
     /**
+     * @var mixed
+     */
+    protected $manifest;
+
+    /**
      * Construct
      *
      * @param Container $services
@@ -65,21 +70,33 @@ abstract class ExporterServiceAbstract implements ExporterServiceInterface
         $this->config = $services['centreon.config'];
     }
 
+    /**
+     * @param ExporterCacheService $cache
+     */
     public function setCache(ExporterCacheService $cache): void
     {
         $this->cache = $cache;
     }
 
+    /**
+     * @param ExportCommitment $commitment
+     */
     public function setCommitment(ExportCommitment $commitment): void
     {
         $this->commitment = $commitment;
     }
 
+    /**
+     * @param ExportManifest $manifest
+     */
     public function setManifest(ExportManifest $manifest): void
     {
         $this->manifest = $manifest;
     }
 
+    /**
+     * @return string
+     */
     public static function getName(): string
     {
         return static::NAME;

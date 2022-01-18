@@ -67,6 +67,12 @@ class ResourceFilter
     public const STATUS_UNKNOWN = 'UNKNOWN';
     public const STATUS_PENDING = 'PENDING';
 
+    /**
+     * Available state types
+     */
+    public const HARD_STATUS_TYPE = 'hard';
+    public const SOFT_STATUS_TYPE = 'soft';
+
     public const MAP_STATUS_SERVICE = [
         self::STATUS_OK => 0,
         self::STATUS_WARNING => 1,
@@ -80,6 +86,11 @@ class ResourceFilter
         self::STATUS_DOWN => 1,
         self::STATUS_UNREACHABLE => 2,
         self::STATUS_PENDING => 4,
+    ];
+
+    public const MAP_STATUS_TYPES = [
+        self::HARD_STATUS_TYPE => 1,
+        self::SOFT_STATUS_TYPE => 0,
     ];
 
     /**
@@ -133,11 +144,16 @@ class ResourceFilter
     private $onlyWithPerformanceData = false;
 
     /**
+     * @var string[]
+     */
+    private $statusTypes = [];
+
+    /**
      * Transform result by map
      *
-     * @param array $list
-     * @param array $map
-     * @return array
+     * @param array<mixed, mixed> $list
+     * @param array<mixed, mixed> $map
+     * @return array<int, mixed>
      */
     public static function map(array $list, array $map): array
     {
@@ -386,5 +402,23 @@ class ResourceFilter
     public function getOnlyWithPerformanceData(): bool
     {
         return $this->onlyWithPerformanceData;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getStatusTypes(): array
+    {
+        return $this->statusTypes;
+    }
+
+    /**
+     * @param string[] $statusTypes
+     * @return self
+     */
+    public function setStatusTypes(array $statusTypes): self
+    {
+        $this->statusTypes = $statusTypes;
+        return $this;
     }
 }

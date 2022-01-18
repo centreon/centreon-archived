@@ -40,10 +40,10 @@ use Psr\Container\ContainerInterface;
 use CentreonLegacy\Core\Configuration\Configuration;
 use CentreonModule\Infrastructure\Entity\Module;
 use CentreonModule\Infrastructure\Source\SourceInterface;
+use CentreonLegacy\ServiceProvider as ServiceProviderLegacy;
 
 abstract class SourceAbstract implements SourceInterface
 {
-
     /**
      * @var \Centreon\Infrastructure\Service\CentreonDBManagerService
      */
@@ -58,6 +58,26 @@ abstract class SourceAbstract implements SourceInterface
      * @var string
      */
     protected $path;
+
+    /**
+     * @var \CentreonLegacy\Core\Widget\Upgrader|\CentreonLegacy\Core\Module\Upgrader
+     */
+    protected $upgrader;
+
+    /**
+     * @var \CentreonLegacy\Core\Module\License
+     */
+    protected $license;
+
+    /**
+     * @var \CentreonLegacy\Core\Widget\Remover|\CentreonLegacy\Core\Module\Remover
+     */
+    protected $remover;
+
+    /**
+     * @var \CentreonLegacy\Core\Widget\Installer|\CentreonLegacy\Core\Module\Installer
+     */
+    protected $installer;
 
     /**
      * Construct
@@ -91,7 +111,7 @@ abstract class SourceAbstract implements SourceInterface
         return $this->getDetail($id);
     }
 
-    public function remove(string $id)
+    public function remove(string $id): void
     {
         ($this->remover)($id)->remove();
     }
@@ -113,6 +133,11 @@ abstract class SourceAbstract implements SourceInterface
         return true;
     }
 
+    /**
+     * @param string $installedVersion
+     * @param string $codeVersion
+     * @return boolean
+     */
     public function isUpdated($installedVersion, $codeVersion): bool
     {
         $result = false;

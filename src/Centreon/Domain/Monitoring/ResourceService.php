@@ -336,7 +336,7 @@ class ResourceService extends AbstractCentreonService implements ResourceService
      * Validates input for resource based on groups
      * @param EntityValidator $validator
      * @param ResourceEntity $resource
-     * @param array<string, mixed> $contextGroups
+     * @param array<string> $contextGroups
      * @return ConstraintViolationListInterface<mixed>
      */
     public static function validateResource(

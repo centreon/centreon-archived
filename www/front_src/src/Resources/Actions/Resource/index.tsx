@@ -4,10 +4,10 @@ import { all, head, pathEq } from 'ramda';
 import { useTranslation } from 'react-i18next';
 import { useAtom } from 'jotai';
 
-import { makeStyles } from '@material-ui/core';
-import IconAcknowledge from '@material-ui/icons/Person';
-import IconCheck from '@material-ui/icons/Sync';
-import IconMore from '@material-ui/icons/MoreHoriz';
+import makeStyles from '@mui/styles/makeStyles';
+import IconAcknowledge from '@mui/icons-material/Person';
+import IconCheck from '@mui/icons-material/Sync';
+import IconMore from '@mui/icons-material/MoreHoriz';
 
 import {
   useCancelTokenSource,

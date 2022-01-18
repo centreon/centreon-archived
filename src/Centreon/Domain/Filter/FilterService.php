@@ -111,6 +111,16 @@ class FilterService extends AbstractCentreonService implements FilterServiceInte
      */
     public function updateFilter(Filter $filter): void
     {
+        $foundFilter = $this->filterRepository->findFilterByUserIdAndName(
+            $filter->getUserId(),
+            $filter->getPageName(),
+            $filter->getName()
+        );
+
+        if ($foundFilter !== null && $filter->getId() !== $foundFilter->getId()) {
+            throw new FilterException(_('Filter name already used'));
+        }
+
         try {
             $this->checkCriterias($filter->getCriterias());
 

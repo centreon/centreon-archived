@@ -15500,6 +15500,9 @@ msgstr "Filtre id %s non trouvé"
 msgid "Filter already exists"
 msgstr "Le filtre existe déjà"
 
+msgid "Filter name already used"
+msgstr "Le nom de filtre est déjà utilisé"
+
 msgid "Error when adding filter %s"
 msgstr "Erreur lors de l'ajout du filtre %s"
 
@@ -16302,6 +16305,15 @@ msgstr "L'export et le rechargement de la configuration a echoué"
 
 msgid "Enable the one-click export button for poller configuration"
 msgstr "Activer le bouton d’export de la configuration des collecteurs en un seul clic"
+
+msgid "Status type"
+msgstr "Type de status"
+
+msgid "Hard"
+msgstr "Dur"
+
+msgid "Soft"
+msgstr "Souple"
 
 msgid "User is not allowed to reach web application"
 msgstr "L'utilisateur n'est pas autorisé à joindre l'application web"

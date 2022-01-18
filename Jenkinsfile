@@ -36,7 +36,9 @@ def backendFiles = [
   'Jenkinsfile',
   'sonar-project.properties',
   '**/*.php',
-  'www/**/*.js',
+  'www/include/**/*.js',
+  'www/class/**/*.js',
+  'www/lib/**/*.js',
   '**/*.sh',
   'composer.*',
   'symfony.lock',
@@ -248,9 +250,11 @@ try {
           sh "./centreon-build/jobs/web/${serie}/mon-web-analysis.sh"
         }
         // sonarQube step to get qualityGate result
-        def qualityGate = waitForQualityGate()
-        if (qualityGate.status != 'OK') {
-          error "Pipeline aborted due to quality gate failure: ${qualityGate.status}"
+        timeout(time: 10, unit: 'MINUTES') {
+          def qualityGate = waitForQualityGate()
+          if (qualityGate.status != 'OK') {
+            error "Pipeline aborted due to quality gate failure: ${qualityGate.status}"
+          }
         }
         if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
           error("Quality gate failure: ${qualityGate.status}.");
@@ -415,7 +419,7 @@ try {
   }
   
   stage('Acceptance tests') {
-    if (hasBackendChanges || hasFrontendChanges) {
+    if (hasBackendChanges) {
       def atparallelSteps = [:]
       for (x in featureFiles) {
         def feature = x

@@ -52,12 +52,37 @@ use CentreonModule\Tests\Resources\Traits\SourceDependencyTrait;
 
 class ModuleSourceTest extends TestCase
 {
-
     use TestCaseExtensionTrait;
     use SourceDependencyTrait;
 
+    /**
+     * @var ModuleSource|\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $source;
+
+    /**
+     * @var ContainerWrap
+     */
+    private $containerWrap;
+
+    /**
+     * @var FileSystem
+     */
+    private $fs;
+
+    /**
+     * @var string
+     */
     public static $moduleName = 'test-module';
+
+    /**
+     * @var string
+     */
     public static $moduleNameMissing = 'missing-module';
+
+    /**
+     * @var string[]
+     */
     public static $moduleInfo = [
         'rname' => 'Curabitur congue porta neque',
         'name' => 'test-module',
@@ -70,6 +95,10 @@ class ModuleSourceTest extends TestCase
         'release_note' => 'http://localhost',
         'images' => 'images/image1.png',
     ];
+
+    /**
+     * @var string[][][]
+     */
     public static $sqlQueryVsData = [
         "SELECT `name` AS `id`, `mod_release` AS `version` FROM `modules_informations`" => [
             [
@@ -99,12 +128,12 @@ class ModuleSourceTest extends TestCase
         ;
 
         // provide services
-        $container = new Container;
-        $container['finder'] = new Finder;
+        $container = new Container();
+        $container['finder'] = new Finder();
         $container['configuration'] = $this->createMock(Configuration::class);
 
         // DB service
-        $container[\Centreon\ServiceProvider::CENTREON_DB_MANAGER] = new Mock\CentreonDBManagerService;
+        $container[\Centreon\ServiceProvider::CENTREON_DB_MANAGER] = new Mock\CentreonDBManagerService();
         foreach (static::$sqlQueryVsData as $query => $data) {
             $container[\Centreon\ServiceProvider::CENTREON_DB_MANAGER]->addResultSet($query, $data);
         }
@@ -133,11 +162,11 @@ class ModuleSourceTest extends TestCase
         $this->source
             ->method('getModuleConf')
             ->will($this->returnCallback(function () {
-                    $result = [
-                        ModuleSourceTest::$moduleName => ModuleSourceTest::$moduleInfo,
-                    ];
+                $result = [
+                    ModuleSourceTest::$moduleName => ModuleSourceTest::$moduleInfo,
+                ];
 
-                    return $result;
+                return $result;
             }))
         ;
     }
@@ -148,7 +177,7 @@ class ModuleSourceTest extends TestCase
         $this->fs->unmount();
     }
 
-    public function testGetList()
+    public function testGetList(): void
     {
         $result = $this->source->getList();
 
@@ -158,7 +187,7 @@ class ModuleSourceTest extends TestCase
         $this->assertEquals([], $result2);
     }
 
-    public function testGetDetail()
+    public function testGetDetail(): void
     {
         (function () {
             $result = $this->source->getDetail(static::$moduleNameMissing);
@@ -173,7 +202,10 @@ class ModuleSourceTest extends TestCase
         })();
     }
 
-    public function testRemove()
+    /**
+     * @throws \Exception
+     */
+    public function testRemove(): void
     {
         try {
             $this->source->remove(static::$moduleNameMissing);
@@ -185,7 +217,10 @@ class ModuleSourceTest extends TestCase
         $this->source->remove(static::$moduleName);
     }
 
-    public function testUpdate()
+    /**
+    * @throws \Exception
+    */
+    public function testUpdate(): void
     {
         try {
             $this->assertNull($this->source->update(static::$moduleNameMissing));
@@ -197,7 +232,7 @@ class ModuleSourceTest extends TestCase
         $this->source->update(static::$moduleName);
     }
 
-    public function testCreateEntityFromConfig()
+    public function testCreateEntityFromConfig(): void
     {
         $configFile = static::getConfFilePath();
         $result = $this->source->createEntityFromConfig($configFile);
@@ -226,23 +261,24 @@ class ModuleSourceTest extends TestCase
 //        //'php://filter/read=string.rot13/resource=' .
 //    }
 
+    /**
+     * @return string
+     */
     public static function getConfFilePath(): string
     {
         return 'vfs://modules/' . static::$moduleName . '/' . ModuleSource::CONFIG_FILE;
     }
 
+    /**
+     * @return string
+     */
     public static function buildConfContent(): string
     {
         $result = '<?php';
         $moduleName = static::$moduleName;
 
         foreach (static::$moduleInfo as $key => $data) {
-            if (is_string($data)) {
-                $result .= "\n\$module_conf['{$moduleName}']['{$key}'] = '{$data}'";
-            } elseif (is_array($data)) {
-                $data = implode("','", $data);
-                $result .= "\n\$module_conf['{$moduleName}']['{$key}'] = ['{$data}']";
-            }
+            $result .= "\n\$module_conf['{$moduleName}']['{$key}'] = '{$data}'";
         }
 
         return $result;

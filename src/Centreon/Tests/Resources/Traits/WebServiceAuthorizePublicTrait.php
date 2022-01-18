@@ -48,7 +48,6 @@ use Centreon\Infrastructure\Webservice\WebserviceAutorizePublicInterface;
  */
 trait WebServiceAuthorizePublicTrait
 {
-
     /**
      * Check is webservice implemented public authorization interface
      *

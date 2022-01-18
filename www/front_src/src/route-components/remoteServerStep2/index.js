@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this */
 /* eslint-disable react/jsx-filename-extension */
 /* eslint-disable no-shadow */
 /* eslint-disable react/prop-types */
@@ -46,6 +47,10 @@ class RemoteServerStepTwoRoute extends Component {
     'internal.php?object=centreon_configuration_remote&action=linkCentreonRemoteServer',
   );
 
+  componentDidMount() {
+    this.getPollers();
+  }
+
   _spliceOutDefaultPoller = (itemArr) => {
     for (let i = 0; i < itemArr.items.length; i++) {
       if (itemArr.items[i].id === '1') itemArr.items.splice(i, 1);
@@ -64,10 +69,6 @@ class RemoteServerStepTwoRoute extends Component {
         this.setState({ pollers });
       });
     });
-  };
-
-  componentDidMount = () => {
-    this.getPollers();
   };
 
   handleSubmit = (data) => {

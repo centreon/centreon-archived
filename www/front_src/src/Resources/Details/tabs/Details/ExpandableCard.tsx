@@ -3,15 +3,9 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { isEmpty, pipe, reject, slice } from 'ramda';
 
-import {
-  Typography,
-  Divider,
-  CardActions,
-  Button,
-  makeStyles,
-  Theme,
-} from '@material-ui/core';
-import { CreateCSSProperties } from '@material-ui/core/styles/withStyles';
+import { Typography, Divider, CardActions, Button, Theme } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import { CreateCSSProperties } from '@mui/styles';
 
 import { getStatusColors } from '@centreon/ui';
 
@@ -19,6 +13,12 @@ import { labelMore, labelLess } from '../../../translatedLabels';
 
 import Card from './Card';
 import { ChangeExpandedCardsProps, ExpandAction } from './SortableCards/models';
+
+const Line = (line, index): JSX.Element => (
+  <Typography component="p" key={`${line}-${index}`} variant="body2">
+    {line}
+  </Typography>
+);
 
 const useStyles = makeStyles<Theme, { severityCode?: number }>((theme) => {
   const getStatusBackgroundColor = (severityCode): string =>
@@ -72,12 +72,6 @@ const ExpandableCard = ({
 
     changeExpandedCards({ action: ExpandAction.add, card: title });
   };
-
-  const Line = (line, index): JSX.Element => (
-    <Typography component="p" key={`${line}-${index}`} variant="body2">
-      {line}
-    </Typography>
-  );
 
   return (
     <Card className={classes.card}>
