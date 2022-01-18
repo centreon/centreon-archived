@@ -24,7 +24,6 @@ declare(strict_types=1);
 namespace Core\Application\Security\ProviderConfiguration\Local\UseCase\FindConfiguration;
 
 use Centreon\Domain\Log\LoggerTrait;
-use Centreon\Domain\Repository\RepositoryException;
 use Core\Application\Security\ProviderConfiguration\Local\Repository\ReadConfigurationRepositoryInterface;
 use Core\Application\Security\ProviderConfiguration\Local\UseCase\FindConfiguration\FindConfigurationPresenterInterface;
 use Core\Domain\Security\ProviderConfiguration\Local\Model\Configuration;
@@ -49,7 +48,7 @@ class FindConfiguration
 
         try {
             $configuration = $this->repository->findConfiguration();
-        } catch (RepositoryException $e) {
+        } catch (\Throwable $e) {
             $this->critical($e->getMessage());
             $presenter->setResponseStatus(
                 new FindConfigurationErrorResponse($e->getMessage())
