@@ -10,33 +10,33 @@
 			<li class="b" id='c6'><a href="#" onclick="javascript:montre('6');">{$sort6}</a></li>
 			<li class="b" id='c7'><a href="#" onclick="javascript:montre('7');">{$sort7}</a></li>
 		</ul>
-        <div id="validFormTop">
-        {if $o == "a" || $o == "c"}
-            <p class="oreonbutton">
-                {if isset($form.submitC)}
-                    {$form.submitC.html}
-                {else}
-                    {$form.submitA.html}
-                {/if}
-                &nbsp;&nbsp;&nbsp;{$form.reset.html}
-            </p>
-        {else if $o == "w"}
-            <p class="oreonbutton">{if isset($form.change)}{$form.change.html}{/if}</p>
-        {/if}
-        </div>
+    <div id="validFormTop">
+    {if $o == "a" || $o == "c"}
+        <p class="oreonbutton">
+            {if isset($form.submitC)}
+                {$form.submitC.html}
+            {else}
+                {$form.submitA.html}
+            {/if}
+            &nbsp;&nbsp;&nbsp;{$form.reset.html}
+        </p>
+    {else if $o == "w"}
+        <p class="oreonbutton">{if isset($form.change)}{$form.change.html}{/if}</p>
+    {/if}
+    </div>
 	</div>
 	<div id='tab1' class='tab'>
 		<table class="formTable table">
 		 	<tr class="ListHeader">
-              <td class="FormHeader" colspan="2">
-                <h3>| {$form.header.title}</h3>
-              </td>
-            </tr>
+        <td class="FormHeader" colspan="2">
+          <h3>| {$form.header.title}</h3>
+        </td>
+      </tr>
 		 	<tr class="list_lvl_1">
-              <td class="ListColLvl1_name" colspan="2">
-                <h4>{$form.header.information}</h4>
-              </td>
-            </tr>
+        <td class="ListColLvl1_name" colspan="2">
+          <h4>{$form.header.information}</h4>
+        </td>
+      </tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="nagios_name" />&nbsp;{$form.nagios_name.label}</td><td class="FormRowValue">{$form.nagios_name.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="nagios_activate" />&nbsp;{$form.nagios_activate.label}</td><td class="FormRowValue">{$form.nagios_activate.html}</td></tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="nagios_server_id" />&nbsp;{$form.nagios_server_id.label}</td><td class="FormRowValue">{$form.nagios_server_id.html}</td></tr>
@@ -46,18 +46,18 @@
 			</tr>
 
 			<tr class="list_lvl_1">
-              <td class="ListColLvl1_name" colspan="2">
-                <h4>{$Folders}</h4>
-              </td>
-            </tr>
+        <td class="ListColLvl1_name" colspan="2">
+          <h4>{$Folders}</h4>
+        </td>
+      </tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="cfg_dir" />&nbsp;{$form.cfg_dir.label}</td><td class="FormRowValue">{$form.cfg_dir.html}</td></tr>
-                        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="cfg_file" />&nbsp;{$form.cfg_file.label}</td><td class="FormRowValue">{$form.cfg_file.html}</td></tr>
+      <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="cfg_file" />&nbsp;{$form.cfg_file.label}</td><td class="FormRowValue">{$form.cfg_file.html}</td></tr>
 
 			<tr class="list_lvl_1">
-              <td class="ListColLvl1_name" colspan="2">
-                <h4>{$Files}</h4>
-              </td>
-            </tr>
+        <td class="ListColLvl1_name" colspan="2">
+          <h4>{$Files}</h4>
+        </td>
+      </tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="status_file" />&nbsp;{$form.status_file.label}</td><td class="FormRowValue">{$form.status_file.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="status_update_interval" />&nbsp;{$form.status_update_interval.label}</td><td class="FormRowValue">{$form.status_update_interval.html}</td></tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="log_file" />&nbsp;{$form.log_file.label}</td><td class="FormRowValue">{$form.log_file.html}</td></tr>
@@ -65,67 +65,67 @@
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="lock_file" />&nbsp;{$form.lock_file.label}</td><td class="FormRowValue">{$form.lock_file.html}</td></tr>
 
 			<tr class="list_lvl_1">
-              <td class="ListColLvl1_name" colspan="2">
-                <h4>{$ExternalCommandes}</h4>
-              </td>
-            </tr>
+        <td class="ListColLvl1_name" colspan="2">
+          <h4>{$ExternalCommandes}</h4>
+        </td>
+      </tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="check_external_commands" />&nbsp;{$form.check_external_commands.label}</td><td class="FormRowValue">{$form.check_external_commands.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="command_check_interval" />&nbsp;{$form.command_check_interval.label}</td><td class="FormRowValue">{$form.command_check_interval.html}</td></tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="command_file" />&nbsp;{$form.command_file.label}</td><td class="FormRowValue">{$form.command_file.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="external_command_buffer_slots" />&nbsp;{$form.external_command_buffer_slots.label}</td><td class="FormRowValue">{$form.external_command_buffer_slots.html}</td></tr>
 
 		 	<tr class="list_lvl_1">
-              <td class="ListColLvl1_name" colspan="2">
-                <h4>{$form.header.information}</h4>
-              </td>
-            </tr>
+        <td class="ListColLvl1_name" colspan="2">
+          <h4>{$form.header.information}</h4>
+        </td>
+      </tr>
 			<tr class="list_one"><td class="FormRowField">&nbsp;{$form.nagios_comment.label}</td><td class="FormRowValue">{$form.nagios_comment.html}</td></tr>
-            {if $o == "a" || $o == "c"}
-                <tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">
-                {if isset($form.required)}
-                    {$form.required._note}
-                {/if}
-                </td></tr>
-            {/if}
+      {if $o == "a" || $o == "c"}
+          <tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">
+          {if isset($form.required)}
+              {$form.required._note}
+          {/if}
+          </td></tr>
+      {/if}
 		</table>
 	</div>
 	<div id='tab2' class='tab'>
 		<table class="formTable table">
 		 	<tr class="ListHeader">
-              <td class="FormHeader" colspan="2">
-                <h3>| {$form.header.title}</h3>
-              </td>
-            </tr>
+        <td class="FormHeader" colspan="2">
+          <h3>| {$form.header.title}</h3>
+        </td>
+      </tr>
 
 			<tr class="list_lvl_1">
-              <td class="ListColLvl1_name" colspan="2">
-                <h4>{$HostCheckOptions}</h4>
-              </td>
-            </tr>
+        <td class="ListColLvl1_name" colspan="2">
+          <h4>{$HostCheckOptions}</h4>
+        </td>
+      </tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="enable_predictive_host_dependency_checks" />&nbsp;{$form.enable_predictive_host_dependency_checks.label}</td><td class="FormRowValue">{$form.enable_predictive_host_dependency_checks.html}</td></tr>
 			<tr class="list_lvl_1">
-              <td class="ListColLvl1_name" colspan="2">
-                <h4>{$ServiceCheckOptions}</h4>
-              </td>
-            </tr>
+        <td class="ListColLvl1_name" colspan="2">
+          <h4>{$ServiceCheckOptions}</h4>
+        </td>
+      </tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="check_for_orphaned_services" />&nbsp;{$form.check_for_orphaned_services.label}</td><td class="FormRowValue">{$form.check_for_orphaned_services.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="check_for_orphaned_hosts" />&nbsp;{$form.check_for_orphaned_hosts.label}</td><td class="FormRowValue">{$form.check_for_orphaned_hosts.html}</td></tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="soft_state_dependencies" />&nbsp;{$form.soft_state_dependencies.label}</td><td class="FormRowValue">{$form.soft_state_dependencies.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="enable_predictive_service_dependency_checks" />&nbsp;{$form.enable_predictive_service_dependency_checks.label}</td><td class="FormRowValue">{$form.enable_predictive_service_dependency_checks.html}</td></tr>
 
 			<tr class="list_lvl_1">
-              <td class="ListColLvl1_name" colspan="2">
-                <h4>{$EventHandler}</h4>
-              </td>
-            </tr>
+        <td class="ListColLvl1_name" colspan="2">
+          <h4>{$EventHandler}</h4>
+        </td>
+      </tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="global_host_event_handler" />&nbsp;{$form.global_host_event_handler.label}</td><td class="FormRowValue">{$form.global_host_event_handler.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="global_service_event_handler">&nbsp;{$form.global_service_event_handler.label}</td><td class="FormRowValue">{$form.global_service_event_handler.html}</td></tr>
 
 		 	<tr class="list_lvl_1">
-              <td class="ListColLvl1_name" colspan="2">
-                <h4>{$Freshness}</h4>
-              </td>
-            </tr>
+        <td class="ListColLvl1_name" colspan="2">
+          <h4>{$Freshness}</h4>
+        </td>
+      </tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="check_service_freshness">&nbsp;{$form.check_service_freshness.label}</td><td class="FormRowValue">{$form.check_service_freshness.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="service_freshness_check_interval">&nbsp;{$form.service_freshness_check_interval.label}</td><td class="FormRowValue">{$form.service_freshness_check_interval.html}&nbsp;&nbsp;{$Seconds}</td></tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="check_host_freshness">&nbsp;{$form.check_host_freshness.label}</td><td class="FormRowValue">{$form.check_host_freshness.html}</td></tr>
@@ -134,10 +134,10 @@
 		 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="additional_freshness_latency">&nbsp;{$form.additional_freshness_latency.label}</td><td class="FormRowValue">{$form.additional_freshness_latency.html}&nbsp;&nbsp;{$Seconds}</td></tr>
 
 		 	<tr class="list_lvl_1">
-              <td class="ListColLvl1_name" colspan="2">
-                <h4>{$FlappingOptions}</h4>
-              </td>
-            </tr>
+        <td class="ListColLvl1_name" colspan="2">
+          <h4>{$FlappingOptions}</h4>
+        </td>
+      </tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="enable_flap_detection">&nbsp;{$form.enable_flap_detection.label}</td><td class="FormRowValue">{$form.enable_flap_detection.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="low_service_flap_threshold">&nbsp;{$form.low_service_flap_threshold.label}</td><td class="FormRowValue">{$form.low_service_flap_threshold.html}&nbsp;&nbsp;%</td></tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="high_service_flap_threshold">&nbsp;{$form.high_service_flap_threshold.label}</td><td class="FormRowValue">{$form.high_service_flap_threshold.html}&nbsp;&nbsp;%</td></tr>
@@ -157,35 +157,35 @@
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="accept_passive_host_checks">&nbsp;{$form.accept_passive_host_checks.label}</td><td class="FormRowValue">{$form.accept_passive_host_checks.html}</td></tr>
 
 			<tr class="list_lvl_1">
-              <td class="ListColLvl1_name" colspan="2">
-                <h4>{$PassivOptions}</h4>
-              </td>
-            </tr>
+        <td class="ListColLvl1_name" colspan="2">
+          <h4>{$PassivOptions}</h4>
+        </td>
+      </tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="translate_passive_host_checks">&nbsp;{$form.translate_passive_host_checks.label}</td><td class="FormRowValue">{$form.translate_passive_host_checks.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="passive_host_checks_are_soft">&nbsp;{$form.passive_host_checks_are_soft.label}</td><td class="FormRowValue">{$form.passive_host_checks_are_soft.html}</td></tr>
 
-            {if $o == "a" || $o == "c"}
-                <tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">
-                {if isset($form.required)}
-                    {$form.required._note}
-                {/if}
-                </td></tr>
-            {/if}
+      {if $o == "a" || $o == "c"}
+          <tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">
+          {if isset($form.required)}
+              {$form.required._note}
+          {/if}
+          </td></tr>
+      {/if}
 		</table>
 	</div>
 	<div id='tab3' class='tab'>
 		<table class="formTable table">
 		 	<tr class="ListHeader">
-              <td class="FormHeader" colspan="2">
-                <h3>| {$form.header.title}</h3>
-              </td>
-            </tr>
+        <td class="FormHeader" colspan="2">
+          <h3>| {$form.header.title}</h3>
+        </td>
+      </tr>
 
 			<tr class="list_lvl_1">
-              <td class="ListColLvl1_name" colspan="2">
-                <h4>{$LoggingOptions}</h4>
-              </td>
-            </tr>
+        <td class="ListColLvl1_name" colspan="2">
+          <h4>{$LoggingOptions}</h4>
+        </td>
+      </tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="use_syslog">&nbsp;{$form.use_syslog.label}</td><td class="FormRowValue">{$form.use_syslog.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="log_notifications">&nbsp;{$form.log_notifications.label}</td><td class="FormRowValue">{$form.log_notifications.html}</td></tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="log_service_retries">&nbsp;{$form.log_service_retries.label}</td><td class="FormRowValue">{$form.log_service_retries.html}</td></tr>
@@ -196,10 +196,10 @@
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="log_pid">&nbsp;{$form.log_pid.label}</td><td class="FormRowValue">{$form.log_pid.html}</td></tr>
 
 			<tr class="list_lvl_1">
-              <td class="ListColLvl1_name" colspan="2">
-                <h4>{$Timouts}</h4>
-              </td>
-            </tr>
+        <td class="ListColLvl1_name" colspan="2">
+          <h4>{$Timouts}</h4>
+        </td>
+      </tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="service_check_timeout">&nbsp;{$form.service_check_timeout.label}</td><td class="FormRowValue">{$form.service_check_timeout.html}&nbsp;{$Seconds}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="host_check_timeout">&nbsp;{$form.host_check_timeout.label}</td><td class="FormRowValue">{$form.host_check_timeout.html}&nbsp;{$Seconds}</td></tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="event_handler_timeout">&nbsp;{$form.event_handler_timeout.label}</td><td class="FormRowValue">{$form.event_handler_timeout.html}&nbsp;{$Seconds}</td></tr>
@@ -209,10 +209,10 @@
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="ochp_timeout">&nbsp;{$form.ochp_timeout.label}</td><td class="FormRowValue">{$form.ochp_timeout.html}&nbsp;{$Seconds}</td></tr>
 
 			<tr class="list_lvl_1">
-              <td class="ListColLvl1_name" colspan="2">
-                <h4>{$Archives}</h4>
-              </td>
-            </tr>
+        <td class="ListColLvl1_name" colspan="2">
+          <h4>{$Archives}</h4>
+        </td>
+      </tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="log_archive_path">&nbsp;{$form.log_archive_path.label}</td><td class="FormRowValue">{$form.log_archive_path.html}</td></tr>
 
 			<tr class="list_lvl_1">
@@ -238,33 +238,33 @@
 	<div id='tab4' class='tab'>
 		 <table class="formTable table">
 		 	<tr class="ListHeader">
-              <td class="FormHeader" colspan="2">
-                <h3>| {$form.header.title}</h3>
-              </td>
-            </tr>
+        <td class="FormHeader" colspan="2">
+          <h3>| {$form.header.title}</h3>
+        </td>
+      </tr>
 			<tr class="list_lvl_1">
-              <td class="ListColLvl1_name" colspan="2">
-                <h4>{$BrokerModule}</h4>
-              </td>
-            </tr>
+        <td class="ListColLvl1_name" colspan="2">
+          <h4>{$BrokerModule}</h4>
+        </td>
+      </tr>
 			<tr class="list_one">
 				<td class="FormRowField">
 				<div style="text-decoration: underline;">{$form.multiple_broker_module.label}</div>
 				{$form.bkTextMultiple.label}
 				</td>
 				<td class="FormRowValue" id="multipleBroker">
-                                    {include file="file:$centreon_path/www/include/common/templates/clone.ihtml" cloneId="broker" cloneSet=$cloneSet}
+          {include file="file:$centreon_path/www/include/common/templates/clone.ihtml" cloneId="broker" cloneSet=$cloneSet}
 				</td>
 			</tr>
-            <tr class="list_two">
-                <td class="FormRowField">
-                    <img class="helpTooltip" name="event_broker_options">
-                    &nbsp;{$form.event_broker_options.label}
-                </td>
-                <td class="FormRowValue flex-row-wrap">
-                    {$form.event_broker_options.html}
-                </td>
-            </tr>
+      <tr class="list_two">
+          <td class="FormRowField">
+              <img class="helpTooltip" name="event_broker_options">
+              &nbsp;{$form.event_broker_options.label}
+          </td>
+          <td class="FormRowValue flex-row-wrap">
+              {$form.event_broker_options.html}
+          </td>
+      </tr>
 			<tr class="list_one">
 				<td class="FormRowField"><img class="helpTooltip" name="enable_macros_filter">&nbsp;{$form.enable_macros_filter.label}</td>
 				<td class="FormRowValue">{$form.enable_macros_filter.html}</td>
@@ -290,30 +290,30 @@
 	<div id='tab5' class='tab'>
 		<table class="formTable table">
 		 	<tr class="ListHeader">
-              <td class="FormHeader" colspan="2">
-                <h3>| {$form.header.title}</h3>
-              </td>
-            </tr>
+        <td class="FormHeader" colspan="2">
+          <h3>| {$form.header.title}</h3>
+        </td>
+      </tr>
 			<tr class="list_lvl_1">
-              <td class="ListColLvl1_name" colspan="2">
-                <h4>{$TimeUnit}</h4>
-              </td>
-            </tr>
+        <td class="ListColLvl1_name" colspan="2">
+          <h4>{$TimeUnit}</h4>
+        </td>
+      </tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="sleep_time">&nbsp;{$form.sleep_time.label}</td><td class="FormRowValue">{$form.sleep_time.html}</td></tr>
 
 			<tr class="list_lvl_1">
-              <td class="ListColLvl1_name" colspan="2">
-                <h4>{$HostCheckSchedulingOptions}</h4>
-              </td>
-            </tr>
+        <td class="ListColLvl1_name" colspan="2">
+          <h4>{$HostCheckSchedulingOptions}</h4>
+        </td>
+      </tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="host_inter_check_delay_method">&nbsp;{$form.host_inter_check_delay_method.label}</td><td class="FormRowValue">{$form.host_inter_check_delay_method.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="max_host_check_spread">&nbsp;{$form.max_host_check_spread.label}</td><td class="FormRowValue">{$form.max_host_check_spread.html}&nbsp;{$Minutes}</td></tr>
 
 			<tr class="list_lvl_1">
-              <td class="ListColLvl1_name" colspan="2">
-                <h4>{$ServiceCheckSchedulingOptions}</h4>
-              </td>
-          </tr>
+          <td class="ListColLvl1_name" colspan="2">
+            <h4>{$ServiceCheckSchedulingOptions}</h4>
+          </td>
+      </tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="service_inter_check_delay_method">&nbsp;{$form.service_inter_check_delay_method.label}</td><td class="FormRowValue">{$form.service_inter_check_delay_method.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="max_service_check_spread">&nbsp;{$form.max_service_check_spread.label}</td><td class="FormRowValue">{$form.max_service_check_spread.html}&nbsp;{$Minutes}</td></tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="service_interleave_factor">&nbsp;{$form.service_interleave_factor.label}</td><td class="FormRowValue">{$form.service_interleave_factor.html}</td></tr>
@@ -321,18 +321,18 @@
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="check_result_reaper_frequency">&nbsp;{$form.check_result_reaper_frequency.label}</td><td class="FormRowValue">{$form.check_result_reaper_frequency.html}&nbsp;{$Seconds}</td></tr>
 
 			<tr class="list_lvl_1">
-              <td class="ListColLvl1_name" colspan="2">
-                <h4>{$CachedCheck}</h4>
-              </td>
-            </tr>
+        <td class="ListColLvl1_name" colspan="2">
+          <h4>{$CachedCheck}</h4>
+        </td>
+      </tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="cached_host_check_horizon">&nbsp;{$form.cached_host_check_horizon.label}</td><td class="FormRowValue">{$form.cached_host_check_horizon.html}&nbsp;{$Seconds}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="cached_service_check_horizon">&nbsp;{$form.cached_service_check_horizon.label}</td><td class="FormRowValue">{$form.cached_service_check_horizon.html}&nbsp;{$Seconds}</td></tr>
 
 			<tr class="list_lvl_1">
-              <td class="ListColLvl1_name" colspan="2">
-                <h4>{$AutoRescheduling}</h4>
-              </td>
-            </tr>
+        <td class="ListColLvl1_name" colspan="2">
+          <h4>{$AutoRescheduling}</h4>
+        </td>
+      </tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="auto_reschedule_checks">&nbsp;{$form.auto_reschedule_checks.label}</td><td class="FormRowValue">{$form.auto_reschedule_checks.html}</td></tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="auto_rescheduling_interval">&nbsp;{$form.auto_rescheduling_interval.label}</td><td class="FormRowValue">{$form.auto_rescheduling_interval.html}&nbsp;&nbsp;{$Seconds}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="auto_rescheduling_window">&nbsp;{$form.auto_rescheduling_window.label}</td><td class="FormRowValue">{$form.auto_rescheduling_window.html}&nbsp;&nbsp;{$Seconds}</td></tr>
@@ -355,12 +355,12 @@
 	<div id='tab6' class='tab'>
 		<table class="formTable table">
 		 	<tr class="ListHeader">
-              <td class="FormHeader" colspan="2">
-                <h3>| {$form.header.title}</h3>
-              </td>
-            </tr>
+        <td class="FormHeader" colspan="2">
+          <h3>| {$form.header.title}</h3>
+        </td>
+      </tr>
 			<tr class="list_lvl_1">
-              <td class="ListColLvl1_name" colspan="2"><h4>{$Advanced}</h4></td></tr>
+      <td class="ListColLvl1_name" colspan="2"><h4>{$Advanced}</h4></td></tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="nagios_user">&nbsp;{$form.nagios_user.label}</td><td class="FormRowValue">{$form.nagios_user.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="nagios_group">&nbsp;{$form.nagios_group.label}</td><td class="FormRowValue">{$form.nagios_group.html}</td></tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="date_format">&nbsp;{$form.date_format.label}</td><td class="FormRowValue">{$form.date_format.html}</td></tr>
@@ -372,39 +372,39 @@
 			<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><h4>{$AdminInfo}</h4></td></tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="admin_email">&nbsp;{$form.admin_email.label}</td><td class="FormRowValue">{$form.admin_email.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="admin_pager">&nbsp;{$form.admin_pager.label}</td><td class="FormRowValue">{$form.admin_pager.html}</td></tr>
-            {if $o == "a" || $o == "c"}
-                <tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">
-                {if isset($form.required)}
-                    {$form.required._note}
-                {/if}
-                </td></tr>
-            {/if}
+      {if $o == "a" || $o == "c"}
+          <tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">
+          {if isset($form.required)}
+              {$form.required._note}
+          {/if}
+          </td></tr>
+      {/if}
 		</table>
 	</div>
 	<div id='tab7' class='tab'>
 		<table class="formTable table">
 		 	<tr class="ListHeader">
-              <td class="FormHeader" colspan="2">
-                <h3>| {$Debug}</h3>
-              </td>
-            </tr>
+        <td class="FormHeader" colspan="2">
+          <h3>| {$Debug}</h3>
+        </td>
+      </tr>
 			<tr class="list_lvl_1">
-              <td class="ListColLvl1_name" colspan="2">
-                <h4>{$DebugConfiguration}</h4>
-              </td>
-            </tr>
+        <td class="ListColLvl1_name" colspan="2">
+          <h4>{$DebugConfiguration}</h4>
+        </td>
+      </tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="debug_file">&nbsp;{$form.debug_file.label}</td><td class="FormRowValue">{$form.debug_file.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="nagios_debug_level">&nbsp;{$form.nagios_debug_level.label}</td><td class="FormRowValue">{$form.nagios_debug_level.html}</td></tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="debug_verbosity">&nbsp;{$form.debug_verbosity.label}</td><td class="FormRowValue">{$form.debug_verbosity.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="max_debug_file_size">&nbsp;{$form.max_debug_file_size.label}</td><td class="FormRowValue">{$form.max_debug_file_size.html}&nbsp;{$Bytes}</td></tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="daemon_dumps_core">&nbsp;{$form.daemon_dumps_core.label}</td><td class="FormRowValue">{$form.daemon_dumps_core.html}&nbsp;</td></tr>
-            {if $o == "a" || $o == "c"}
-                <tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">
-                {if isset($form.required)}
-                    {$form.required._note}
-                {/if}
-                </td></tr>
-            {/if}
+      {if $o == "a" || $o == "c"}
+          <tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">
+          {if isset($form.required)}
+              {$form.required._note}
+          {/if}
+          </td></tr>
+      {/if}
 		</table>
 	</div>
 	<div id="validForm">
