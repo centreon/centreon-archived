@@ -1,0 +1,37 @@
+
+/* Remove old columns in engine parameters table */
+ALTER TABLE cfg_nagios DROP COLUMN `nagios_user`;
+ALTER TABLE cfg_nagios DROP COLUMN `nagios_group`;
+ALTER TABLE cfg_nagios DROP COLUMN `downtime_file`;
+ALTER TABLE cfg_nagios DROP COLUMN `comment_file`;
+ALTER TABLE cfg_nagios DROP COLUMN `lock_file`;
+ALTER TABLE cfg_nagios DROP COLUMN `retained_contact_host_attribute_mask`;
+ALTER TABLE cfg_nagios DROP COLUMN `retained_contact_service_attribute_mask`;
+ALTER TABLE cfg_nagios DROP COLUMN `retained_process_host_attribute_mask`;
+ALTER TABLE cfg_nagios DROP COLUMN `retained_process_service_attribute_mask`;
+ALTER TABLE cfg_nagios DROP COLUMN `retained_host_attribute_mask`;
+ALTER TABLE cfg_nagios DROP COLUMN `retained_service_attribute_mask`;
+ALTER TABLE cfg_nagios DROP COLUMN `max_check_result_reaper_time`;
+ALTER TABLE cfg_nagios DROP COLUMN `interval_length`;
+ALTER TABLE cfg_nagios DROP COLUMN `ocsp_timeout`;
+ALTER TABLE cfg_nagios DROP COLUMN `ochp_timeout`;
+ALTER TABLE cfg_nagios DROP COLUMN `perfdata_timeout`;
+ALTER TABLE cfg_nagios DROP COLUMN `obsess_over_services`;
+ALTER TABLE cfg_nagios DROP COLUMN `ocsp_command`;
+ALTER TABLE cfg_nagios DROP COLUMN `obsess_over_hosts`;
+ALTER TABLE cfg_nagios DROP COLUMN `ochp_command`;
+ALTER TABLE cfg_nagios DROP COLUMN `process_performance_data`;
+ALTER TABLE cfg_nagios DROP COLUMN `host_perfdata_command`;
+ALTER TABLE cfg_nagios DROP COLUMN `service_perfdata_command`;
+ALTER TABLE cfg_nagios DROP COLUMN `host_perfdata_file`;
+ALTER TABLE cfg_nagios DROP COLUMN `service_perfdata_file`;
+ALTER TABLE cfg_nagios DROP COLUMN `host_perfdata_file_template`;
+ALTER TABLE cfg_nagios DROP COLUMN `service_perfdata_file_template`;
+ALTER TABLE cfg_nagios DROP COLUMN `host_perfdata_file_mode`;
+ALTER TABLE cfg_nagios DROP COLUMN `service_perfdata_file_mode`;
+ALTER TABLE cfg_nagios DROP COLUMN `host_perfdata_file_processing_interval`;
+ALTER TABLE cfg_nagios DROP COLUMN `service_perfdata_file_processing_interval`;
+ALTER TABLE cfg_nagios DROP COLUMN `host_perfdata_file_processing_command`;
+ALTER TABLE cfg_nagios DROP COLUMN `service_perfdata_file_processing_command`;
+ALTER TABLE cfg_nagios DROP COLUMN `use_large_installation_tweaks`;
+ALTER TABLE cfg_nagios DROP COLUMN `use_setpgid`;
