@@ -61,6 +61,9 @@ services:
     Core\Infrastructure\Common\Command\Service\CreateCoreArchCommandService:
         arguments: ['%env(_CENTREON_PATH_)%src']
 
+    Core\Infrastructure\Common\Command\Service\CreateCoreQueryArchCommandService:
+        arguments: ['%env(_CENTREON_PATH_)%src', '%env(_CENTREON_PATH_)%src/Core/Infrastructure']
+
     # JSON Validator
     Centreon\Domain\Service\JsonValidator\Interfaces\JsonValidatorInterface:
         class: Centreon\Domain\Service\JsonValidator\Validator

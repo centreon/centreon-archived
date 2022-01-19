@@ -1,8 +1,10 @@
 <?php
 
-namespace Core\Infrastructure\Common\Command\Model;
+namespace Core\Infrastructure\Common\Command\Model\RepositoryTemplate;
 
-class DomainModel
+use Core\Infrastructure\Common\Command\Model\FileTemplate;
+
+class WriteRepositoryInterfaceTemplate extends FileTemplate
 {
     public function __construct(
         public string $filePath,
