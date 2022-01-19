@@ -25,26 +25,26 @@ namespace Centreon\Domain\Macro\Interfaces;
 interface MacroInterface
 {
     /**
-     * @return int|null
+     * @return int
      */
-    public function getId(): ?int;
+    public function getId(): int;
 
     /**
-     * @param int|null $id
+     * @param int $id
      * @return self
      */
-    public function setId(?int $id);
+    public function setId(int $id);
 
     /**
-     * @return string|null
+     * @return string
      */
-    public function getName(): ?string;
+    public function getName(): string;
 
     /**
-     * @param string|null $name
+     * @param string $name
      * @return self
      */
-    public function setName(?string $name);
+    public function setName(string $name);
 
     /**
      * @return string|null

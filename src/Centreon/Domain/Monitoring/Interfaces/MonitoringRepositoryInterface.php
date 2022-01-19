@@ -229,8 +229,8 @@ interface MonitoringRepositoryInterface
      * Find all custom macros linked to a service or a host
      *
      * @param int $hostId
-     * @param int $serviceIds
-     * @return array<string, mixed>
+     * @param int $serviceId
+     * @return array<string|int, mixed>
      */
     public function findCustomMacrosValues(int $hostId, int $serviceId): array;
 }

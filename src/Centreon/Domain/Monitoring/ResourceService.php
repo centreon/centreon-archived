@@ -136,14 +136,12 @@ class ResourceService extends AbstractCentreonService implements ResourceService
     {
         // try to avoid exception from the regexp bad syntax in search criteria
         try {
-            $list = $this->resourceRepository->findResources($filter);
+            return $this->resourceRepository->findResources($filter);
         } catch (RepositoryException $ex) {
             throw new ResourceException($ex->getMessage(), 0, $ex);
         } catch (\Exception $ex) {
             throw new ResourceException($ex->getMessage(), 0, $ex);
         }
-
-        return $list;
     }
 
     /**
@@ -168,7 +166,7 @@ class ResourceService extends AbstractCentreonService implements ResourceService
         }
 
         /**
-         * Get hostgroups on which the actual host belongs
+         * @var HostGroup[]
          */
         $hostGroups = $this->monitoringRepository
             ->findHostGroups($resource->getId());
@@ -303,7 +301,10 @@ class ResourceService extends AbstractCentreonService implements ResourceService
      */
     private function getStandardMacrosForService(Service $service): array
     {
-        $standardHostMacros = $this->getStandardMacrosForHost($service->getHost());
+        $standardHostMacros = [];
+        if ($service->getHost() !== null) {
+            $standardHostMacros = $this->getStandardMacrosForHost($service->getHost());
+        }
         $standardServiceMacros = [
             '$SERVICEDESC$' => $service->getDescription(),
             '$SERVICESTATE$' => $service->getStatus()->getName(),
@@ -346,6 +347,10 @@ class ResourceService extends AbstractCentreonService implements ResourceService
         }
         $url = ($urlType === 'action-url') ? $host->getActionUrl() : $host->getNotesUrl();
 
+        if ($url === null) {
+            return '';
+        }
+
         $standardMacros = $this->getStandardMacrosForHost($host);
         $customMacros = $this->getCustomMacrosOutOfUrl($hostId, 0, $url);
         return $this->replaceMacrosByValues($url, array_merge($standardMacros, $customMacros));
@@ -377,6 +382,10 @@ class ResourceService extends AbstractCentreonService implements ResourceService
         $service->setHost($host);
 
         $url = ($urlType === 'action-url') ? $service->getActionUrl() : $service->getNotesUrl();
+
+        if ($url === null) {
+            return '';
+        }
 
         $standardMacros = $this->getStandardMacrosForService($service);
         $customMacros = $this->getCustomMacrosOutOfUrl($hostId, $serviceId, $url);

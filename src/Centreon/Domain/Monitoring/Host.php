@@ -325,7 +325,7 @@ class Host implements EntityDescriptorMetadataInterface
     private $notesUrl;
 
     /**
-     * @var ResourceStatus|null
+     * @var ResourceStatus
      */
     private $status;
 
@@ -1118,10 +1118,12 @@ class Host implements EntityDescriptorMetadataInterface
 
     /**
      * @param Service $service
+     * @return self
      */
-    public function addService(Service $service)
+    public function addService(Service $service): self
     {
         $this->services[] = $service;
+        return $this;
     }
 
     /**
@@ -1352,18 +1354,18 @@ class Host implements EntityDescriptorMetadataInterface
     }
 
     /**
-     * @return ResourceStatus|null
+     * @return ResourceStatus
      */
-    public function getStatus(): ?ResourceStatus
+    public function getStatus(): ResourceStatus
     {
         return $this->status;
     }
 
     /**
-     * @param ResourceStatus|null $status
+     * @param ResourceStatus $status
      * @return self
      */
-    public function setStatus(?ResourceStatus $status): self
+    public function setStatus(ResourceStatus $status): self
     {
         $this->status = $status;
         return $this;

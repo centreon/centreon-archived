@@ -61,7 +61,7 @@ class MonitoringResourceController extends AbstractController
     /**
      * List of external parameters for list action
      *
-     * @var array
+     * @var string[]
      */
     public const EXTRA_PARAMETERS_LIST = [
         'types',
@@ -125,7 +125,9 @@ class MonitoringResourceController extends AbstractController
     private const SERVICE_STATUS_GRAPH_ROUTE = 'monitoring.metric.getServiceStatusMetrics';
     private const SERVICE_PERFORMANCE_GRAPH_ROUTE = 'monitoring.metric.getServicePerformanceMetrics';
 
-    // Groups for serialization
+    /**
+     * @var string[]
+     */
     public const SERIALIZER_GROUPS_LISTING = [
         ResourceEntity::SERIALIZER_GROUP_MAIN,
         ResourceEntity::SERIALIZER_GROUP_PARENT,
@@ -227,9 +229,15 @@ class MonitoringResourceController extends AbstractController
             throw new ValidationFailedException($errors);
         }
 
+        $content = json_encode($filterData);
+
+        if ($content === false) {
+            throw new \Exception('Error when encoding filter data');
+        }
+
         // Parse the filter data into filter object
         $filter = $serializer->deserialize(
-            json_encode($filterData),
+            $content,
             ResourceFilter::class,
             'json'
         );
@@ -372,12 +380,14 @@ class MonitoringResourceController extends AbstractController
             $contact->isAdmin()
         ) {
             try {
-                $service = (new Service())
-                    ->setId($resource->getId())
-                    ->setHost((new Host())->setId($resource->getParent()->getId()))
-                    ->setCommandLine($resource->getCommandLine());
-                $this->monitoring->hidePasswordInServiceCommandLine($service);
-                $resource->setCommandLine($service->getCommandLine());
+                if ($resource->getParent() !== null) {
+                    $service = (new Service())
+                        ->setId($resource->getId())
+                        ->setHost((new Host())->setId($resource->getParent()->getId()))
+                        ->setCommandLine($resource->getCommandLine());
+                    $this->monitoring->hidePasswordInServiceCommandLine($service);
+                    $resource->setCommandLine($service->getCommandLine());
+                }
             } catch (\Throwable $ex) {
                 $resource->setCommandLine(
                     sprintf(_('Unable to hide passwords in command (Reason: %s)'), $ex->getMessage())
@@ -466,6 +476,7 @@ class MonitoringResourceController extends AbstractController
                 if (
                     $resource->getType() === ResourceEntity::TYPE_SERVICE
                     && $resourceWithGraphData->getType() === ResourceEntity::TYPE_SERVICE
+                    && $resource->getParent() !== null && $resourceWithGraphData->getParent() !== null
                     && $resource->getParent()->getId() === $resourceWithGraphData->getParent()->getId()
                     && $resource->getId() === $resourceWithGraphData->getId()
                 ) {
@@ -546,9 +557,8 @@ class MonitoringResourceController extends AbstractController
 
         if ($resource->getType() === ResourceEntity::TYPE_HOST) {
             $hostResource = $resource;
-        } elseif ($resource->getType() === ResourceEntity::TYPE_SERVICE && $resource->getParent()) {
+        } elseif ($resource->getType() === ResourceEntity::TYPE_SERVICE && $resource->getParent() !== null) {
             $hostResource = $resource->getParent();
-
             $parameters = [
                 'hostId' => $resource->getParent()->getId(),
                 'serviceId' => $resource->getId(),
@@ -598,16 +608,16 @@ class MonitoringResourceController extends AbstractController
                 );
             }
 
-            $notes = $resource->getLinks()->getExternals()->getNotes();
-            if ($notes !== null) {
-                if (empty($notes->getUrl()) === false) {
-                    $resource->getLinks()->getExternals()->getNotes()->setUrl(
-                        $this->router->generate(
-                            self::SERVICE_REDIRECT_URL_ENDPOINT,
-                            array_merge($parameters, ['urlType' => 'notes-url'])
-                        )
-                    );
-                }
+            if (
+                $resource->getLinks()->getExternals()->getNotes() !== null
+                && empty($resource->getLinks()->getExternals()->getNotes()->getUrl()) === false
+            ) {
+                $resource->getLinks()->getExternals()->getNotes()->setUrl(
+                    $this->router->generate(
+                        self::SERVICE_REDIRECT_URL_ENDPOINT,
+                        array_merge($parameters, ['urlType' => 'notes-url'])
+                    )
+                );
             }
         } elseif ($resource->getType() === ResourceEntity::TYPE_META) {
             $parameters = [
@@ -700,15 +710,16 @@ class MonitoringResourceController extends AbstractController
             }
 
             $notes = $hostResource->getLinks()->getExternals()->getNotes();
-            if ($notes !== null) {
-                if (empty($notes->getUrl()) === false) {
-                    $hostResource->getLinks()->getExternals()->getNotes()->setUrl(
-                        $this->router->generate(
-                            self::HOST_REDIRECT_URL_ENDPOINT,
-                            array_merge($parameters, ['urlType' => 'notes-url'])
-                        )
-                    );
-                }
+            if (
+                $hostResource->getLinks()->getExternals()->getNotes() !== null
+                && empty($notes->getUrl()) === false
+            ) {
+                $hostResource->getLinks()->getExternals()->getNotes()->setUrl(
+                    $this->router->generate(
+                        self::HOST_REDIRECT_URL_ENDPOINT,
+                        array_merge($parameters, ['urlType' => 'notes-url'])
+                    )
+                );
             }
         }
     }
@@ -722,7 +733,7 @@ class MonitoringResourceController extends AbstractController
      */
     private function provideInternalUris(ResourceEntity $resource, Contact $contact): void
     {
-        if ($resource->getType() === ResourceEntity::TYPE_SERVICE && $resource->getParent()) {
+        if ($resource->getType() === ResourceEntity::TYPE_SERVICE && $resource->getParent() !== null) {
             $this->provideHostInternalUris($resource->getParent(), $contact);
             $this->provideServiceInternalUris($resource, $contact);
         } elseif ($resource->getType() === ResourceEntity::TYPE_META) {
@@ -940,7 +951,7 @@ class MonitoringResourceController extends AbstractController
     /**
      * Build uri to access listing page of resources with specific parameters
      *
-     * @param array $parameters
+     * @param array<string, mixed> $parameters
      * @return string
      */
     public function buildListingUri(array $parameters): string
