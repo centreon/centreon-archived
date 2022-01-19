@@ -330,7 +330,7 @@ class Engine extends AbstractObject
             = $command_instance->generateFromCommandId($object['global_host_event_handler_id']);
         $object['global_service_event_handler']
             = $command_instance->generateFromCommandId($object['global_service_event_handler_id']);
-        
+
         $object['grpc_port'] = 50000 + $poller_id;
         $this->generate_filename = 'centengine.DEBUG';
         $object['cfg_file'] = $this->cfg_file['debug']['cfg_file'];
