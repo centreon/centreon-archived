@@ -283,8 +283,7 @@ function insertNagios($ret = array(), $brokerTab = array())
         . "`debug_level_opt`, `debug_verbosity`, `max_debug_file_size`, `daemon_dumps_core`, "
         . "`enable_environment_macros`, `use_regexp_matching`, `use_true_regexp_matching` , "
         . "`admin_email`, `admin_pager`, `nagios_comment`, `nagios_activate`, "
-        . "`event_broker_options`, `translate_passive_host_checks`, "
-        . "`passive_host_checks_are_soft`, `check_for_orphaned_hosts`, `external_command_buffer_slots`, "
+        . "`event_broker_options`, `check_for_orphaned_hosts`, `external_command_buffer_slots`, "
         . "`cfg_file`, `log_pid`, `enable_macros_filter`, `macros_filter`) ";
     $rq .= "VALUES (";
     $rq .= "NULL, ";
@@ -857,24 +856,6 @@ function insertNagios($ret = array(), $brokerTab = array())
         $rq .= "'" . calculateBitwise($ret["event_broker_options"]) . "', ";
     } else {
         $rq .= "'-1', ";
-    }
-
-    if (
-        isset($ret["translate_passive_host_checks"]["translate_passive_host_checks"])
-        && $ret["translate_passive_host_checks"]["translate_passive_host_checks"] != 2
-    ) {
-        $rq .= "'" . $ret["translate_passive_host_checks"]["translate_passive_host_checks"] . "', ";
-    } else {
-        $rq .= "'2', ";
-    }
-
-    if (
-        isset($ret["passive_host_checks_are_soft"]["passive_host_checks_are_soft"])
-        && $ret["passive_host_checks_are_soft"]["passive_host_checks_are_soft"] != 2
-    ) {
-        $rq .= "'" . $ret["passive_host_checks_are_soft"]["passive_host_checks_are_soft"] . "', ";
-    } else {
-        $rq .= "'2', ";
     }
 
     if (
@@ -1602,28 +1583,6 @@ function updateNagios($nagios_id = null)
         $rq .= "daemon_dumps_core = '1',  ";
     } else {
         $rq .= "daemon_dumps_core = '0', ";
-    }
-
-    if (
-        isset($ret["translate_passive_host_checks"]["translate_passive_host_checks"])
-        && $ret["translate_passive_host_checks"]["translate_passive_host_checks"] != null
-    ) {
-        $rq .= "translate_passive_host_checks = '"
-            . htmlentities($ret["translate_passive_host_checks"]["translate_passive_host_checks"], ENT_QUOTES, "UTF-8")
-            . "',  ";
-    } else {
-        $rq .= "translate_passive_host_checks = NULL, ";
-    }
-
-    if (
-        isset($ret["passive_host_checks_are_soft"]["passive_host_checks_are_soft"])
-        && $ret["passive_host_checks_are_soft"]["passive_host_checks_are_soft"] != null
-    ) {
-        $rq .= "passive_host_checks_are_soft = '"
-            . htmlentities($ret["passive_host_checks_are_soft"]["passive_host_checks_are_soft"], ENT_QUOTES, "UTF-8")
-            . "',  ";
-    } else {
-        $rq .= "passive_host_checks_are_soft = NULL, ";
     }
 
     if (

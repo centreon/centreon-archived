@@ -155,14 +155,6 @@
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="execute_host_checks">&nbsp;{$form.execute_host_checks.label}</td><td class="FormRowValue">{$form.execute_host_checks.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="accept_passive_host_checks">&nbsp;{$form.accept_passive_host_checks.label}</td><td class="FormRowValue">{$form.accept_passive_host_checks.html}</td></tr>
 
-			<tr class="list_lvl_1">
-        <td class="ListColLvl1_name" colspan="2">
-          <h4>{$PassivOptions}</h4>
-        </td>
-      </tr>
-			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="translate_passive_host_checks">&nbsp;{$form.translate_passive_host_checks.label}</td><td class="FormRowValue">{$form.translate_passive_host_checks.html}</td></tr>
-			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="passive_host_checks_are_soft">&nbsp;{$form.passive_host_checks_are_soft.label}</td><td class="FormRowValue">{$form.passive_host_checks_are_soft.html}</td></tr>
-
       {if $o == "a" || $o == "c"}
           <tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">
           {if isset($form.required)}
