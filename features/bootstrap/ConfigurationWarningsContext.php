@@ -53,13 +53,14 @@ class ConfigurationWarningsContext extends CentreonContext
      */
     public function aWarningMessageIsPrinted()
     {
+        $expectedWarningCount = 2;
         $warningCount = count($this->getSession()->getPage()->findAll(
             'css',
             '#debug_1 font[color="orange"]'
         ));
-        if ($warningCount !== 1) {
+        if ($warningCount !== $expectedWarningCount) {
             throw new \Exception(
-                'Invalid warning count: got ' . $warningCount . ', expected 1.'
+                "Invalid warning count: got $warningCount , expected $expectedWarningCount."
             );
         }
     }

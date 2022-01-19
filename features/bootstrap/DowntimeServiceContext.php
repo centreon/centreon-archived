@@ -32,6 +32,9 @@ class DowntimeServiceContext extends CentreonContext
             'retry_check_interval' => 1
         ));
         $metaservicePage->save();
+
+        // apply configuration
+        $this->container->execute('service cbd restart', 'web');
         $this->restartAllPollers();
     }
 
