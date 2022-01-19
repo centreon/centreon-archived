@@ -131,7 +131,6 @@ try {
         recordIssues(
           referenceJobName: "centreon-web/${env.REF_BRANCH}",
           enabledForFailure: true,
-          failOnError: true,
           qualityGates: [[threshold: 1, type: 'NEW', unstable: false]],
           tool: esLint(id: 'eslint', name: 'eslint', pattern: 'codestyle-fe.xml'),
           trendChartType: 'NONE'
