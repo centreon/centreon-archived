@@ -1,5 +1,9 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
+import dayjs from 'dayjs';
+import timezonePlugin from 'dayjs/plugin/timezone';
+import utcPlugin from 'dayjs/plugin/utc';
+import localizedFormat from 'dayjs/plugin/localizedFormat';
 import { configure } from '@testing-library/dom';
 
 const timeout = 10000;
@@ -10,13 +14,17 @@ configure({
 
 jest.setTimeout(timeout);
 
+dayjs.extend(localizedFormat);
+dayjs.extend(utcPlugin);
+dayjs.extend(timezonePlugin);
+
 document.createRange = () => ({
-  setStart: () => {},
-  setEnd: () => {},
   commonAncestorContainer: {
     nodeName: 'BODY',
     ownerDocument: document,
   },
+  setEnd: () => {},
+  setStart: () => {},
 });
 
 class IntersectionObserver {
@@ -30,21 +38,21 @@ class IntersectionObserver {
 }
 
 Object.defineProperty(window, 'IntersectionObserver', {
-  writable: true,
   configurable: true,
   value: IntersectionObserver,
+  writable: true,
 });
 
 Object.defineProperty(global, 'IntersectionObserver', {
-  writable: true,
   configurable: true,
   value: IntersectionObserver,
+  writable: true,
 });
 
 i18n.use(initReactI18next).init({
-  nsSeparator: false,
-  keySeparator: false,
   fallbackLng: 'en',
+  keySeparator: false,
   lng: 'en',
+  nsSeparator: false,
   resources: {},
 });
