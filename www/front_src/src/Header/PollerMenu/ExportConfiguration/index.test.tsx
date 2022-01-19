@@ -38,9 +38,6 @@ const ExportConfigurationButton = (): JSX.Element => (
   <ExportConfiguration setIsExportingConfiguration={jest.fn} />
 );
 
-const ExportConfigurationWithSnackbar = withSnackbar({
-  Component: ExportConfigurationButton,
-});
 
 const renderExportConfiguration = (): RenderResult =>
   render(
@@ -50,7 +47,9 @@ const renderExportConfiguration = (): RenderResult =>
         [refreshIntervalAtom, mockRefreshInterval],
       ]}
     >
-      <ExportConfigurationWithSnackbar />
+      <SnackbarProvider>
+        <ExportConfigurationButton />
+      </SnackbarProvider>
     </Provider>,
   );
 
