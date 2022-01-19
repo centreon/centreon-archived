@@ -333,20 +333,9 @@ $form->addElement('text', 'max_concurrent_checks', _("Maximum Concurrent Service
 $form->addElement('text', 'max_host_check_spread', _("Maximum Host Check Spread"), $attrsText3);
 $form->addElement('text', 'max_service_check_spread', _("Maximum Service Check Spread"), $attrsText3);
 $form->addElement('text', 'service_interleave_factor', _("Service Interleave Factor"), $attrsText3);
-
 $form->addElement('text', 'host_inter_check_delay_method', _("Host Inter-Check Delay Method"), $attrsText3);
 $form->addElement('text', 'service_inter_check_delay_method', _("Service Inter-Check Delay Method"), $attrsText3);
-
 $form->addElement('text', 'check_result_reaper_frequency', _("Check Result Reaper Frequency"), $attrsText3);
-$nagTab = array();
-$nagTab[] = $form->createElement('radio', 'translate_passive_host_checks', null, _("Yes"), '1');
-$nagTab[] = $form->createElement('radio', 'translate_passive_host_checks', null, _("No"), '0');
-$form->addGroup($nagTab, 'translate_passive_host_checks', _("Translate Passive Host Checks Option"), '&nbsp;');
-
-$nagTab = array();
-$nagTab[] = $form->createElement('radio', 'passive_host_checks_are_soft', null, _("Yes"), '1');
-$nagTab[] = $form->createElement('radio', 'passive_host_checks_are_soft', null, _("No"), '0');
-$form->addGroup($nagTab, 'passive_host_checks_are_soft', _("Passive Host Checks Are SOFT Option"), '&nbsp;');
 
 /* *****************************************************
  * Auto Rescheduling Option
@@ -794,7 +783,6 @@ if ($valid) {
     $tpl->assign('PostCheck', _("Post Check"));
     $tpl->assign('CachedCheck', _("Cached Check"));
     $tpl->assign('MiscOptions', _("Misc Options"));
-    $tpl->assign('PassivOptions', _("Passive host checking Options"));
     $tpl->assign('LoggingOptions', _("Logging Options"));
     $tpl->assign('Timouts', _("Timeouts"));
     $tpl->assign('Archives', _("Archives"));
