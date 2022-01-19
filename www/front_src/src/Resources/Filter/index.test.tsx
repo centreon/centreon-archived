@@ -2,7 +2,6 @@
 import * as React from 'react';
 
 import axios from 'axios';
-import {} from '@testing-library/react';
 import { Simulate } from 'react-dom/test-utils';
 import userEvent from '@testing-library/user-event';
 import { Provider } from 'jotai';
