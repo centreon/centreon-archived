@@ -53,14 +53,17 @@ class ConfigurationWarningsContext extends CentreonContext
      */
     public function aWarningMessageIsPrinted()
     {
-        $expectedWarningCount = 2;
-        $warningCount = count($this->getSession()->getPage()->findAll(
+        $expectedWarningMessage = "Warning Notifier 'AcceptanceTestService' has no check time period defined!";
+        $warnings = $this->getSession()->getPage()->findAll(
             'css',
-            '#debug_1 font[color="orange"]'
-        ));
-        if ($warningCount !== $expectedWarningCount) {
+            '#debug_1'
+        );
+
+        $output = $this->assertFind('css', '#debug_1')->getText();
+
+        if (str_contains($output, $expectedWarningMessage) === false) {
             throw new \Exception(
-                "Invalid warning count: got $warningCount , expected $expectedWarningCount."
+                "Configuration export debug does not contain expected warning message : $expectedWarningMessage"
             );
         }
     }
