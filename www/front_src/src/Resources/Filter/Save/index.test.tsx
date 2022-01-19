@@ -93,6 +93,12 @@ const getFilter = ({ search = 'my search', name = 'MyFilter' }): Filter => ({
       ],
     },
     {
+      name: 'status_types',
+      object_type: null,
+      type: 'multi_select',
+      value: [],
+    },
+    {
       name: 'host_groups',
       object_type: 'host_groups',
       type: 'multi_select',
