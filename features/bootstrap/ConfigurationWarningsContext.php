@@ -54,10 +54,6 @@ class ConfigurationWarningsContext extends CentreonContext
     public function aWarningMessageIsPrinted()
     {
         $expectedWarningMessage = "Warning Notifier 'AcceptanceTestService' has no check time period defined!";
-        $warnings = $this->getSession()->getPage()->findAll(
-            'css',
-            '#debug_1'
-        );
 
         $output = $this->assertFind('css', '#debug_1')->getText();
 
