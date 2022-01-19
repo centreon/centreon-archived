@@ -6,6 +6,7 @@ use Centreon\Test\Behat\Configuration\DowntimeConfigurationPage;
 use Centreon\Test\Behat\Configuration\DowntimeConfigurationListingPage;
 use Centreon\Test\Behat\Configuration\MetaServiceConfigurationPage;
 use Centreon\Test\Behat\Monitoring\ServiceMonitoringDetailsPage;
+use Centreon\Test\Behat\Monitoring\MonitoringServicesPage;
 
 /**
  * Defines application features from the specific context.
@@ -36,6 +37,29 @@ class DowntimeServiceContext extends CentreonContext
         // apply configuration
         $this->container->execute('service cbd restart', 'web');
         $this->restartAllPollers();
+
+        $page = new MonitoringServicesPage($this);
+        $this->spin(
+            function ($context) use ($page) {
+                $page->scheduleImmediateCheckForcedOnService('_Module_Meta', $this->metaName);
+                return true;
+            },
+            'Could not schedule check.'
+        );
+
+        $this->spin(
+            function ($context) {
+                $page = new ServiceMonitoringDetailsPage(
+                    $context,
+                    '_Module_Meta',
+                    $this->metaName
+                );
+                $props = $page->getProperties();
+                return $props['last_check'] && $props['state'] != 'PENDING';
+            },
+            'Could not open meta-service monitoring details page.',
+            120
+        );
     }
 
     /**
