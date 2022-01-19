@@ -104,7 +104,6 @@ try {
         recordIssues(
           referenceJobName: "${env.PROJECT}/${env.REF_BRANCH}",
           enabledForFailure: true,
-          failOnError: true,
           tools: [esLint(pattern: 'codestyle-fe.xml')],
           trendChartType: 'NONE'
         )
