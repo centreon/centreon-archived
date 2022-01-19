@@ -6,7 +6,6 @@ use Centreon\Test\Behat\Configuration\DowntimeConfigurationPage;
 use Centreon\Test\Behat\Configuration\DowntimeConfigurationListingPage;
 use Centreon\Test\Behat\Configuration\MetaServiceConfigurationPage;
 use Centreon\Test\Behat\Monitoring\ServiceMonitoringDetailsPage;
-use Centreon\Test\Behat\Monitoring\MonitoringServicesPage;
 
 /**
  * Defines application features from the specific context.
