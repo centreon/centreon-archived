@@ -2,7 +2,6 @@ import * as React from 'react';
 
 import { makeStyles } from '@material-ui/core';
 
-import Copyright from './Copyright';
 import Links from './Links';
 
 const useStyles = makeStyles((theme) => ({
@@ -22,7 +21,6 @@ const Footer = (): JSX.Element => {
   return (
     <footer className={classes.footerContainer}>
       <Links />
-      <Copyright />
     </footer>
   );
 };
