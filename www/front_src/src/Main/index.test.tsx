@@ -342,7 +342,7 @@ describe('Main', () => {
     });
   });
 
-  it('does not the user to the upgrade page when the retrieved web versions contains an available version and the user is connected', async () => {
+  it('does not redirect the user to the upgrade page when the retrieved web versions contains an available version and the user is connected', async () => {
     window.history.pushState({}, '', '/');
     mockUpgradeAndUserConnectedGetRequests();
 

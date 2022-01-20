@@ -12,7 +12,5 @@ Cypress.on('uncaught:exception', (err) => {
   if (err.message.includes('Request failed with status code 401')) {
     return false;
   }
-  // returning false here prevents Cypress from
-  // failing the test
   return true;
 });

@@ -16,10 +16,10 @@ const Provider = ({ children }: Props): JSX.Element | null => {
       .getElementsByTagName('base')[0]
       ?.getAttribute('href') as string) || '';
 
-  const pathStartWithBasename = startsWith(basename, window.location.pathname);
+  const pathStartsWithBasename = startsWith(basename, window.location.pathname);
 
   React.useEffect(() => {
-    if (pathStartWithBasename) {
+    if (pathStartsWithBasename) {
       return;
     }
 
@@ -27,7 +27,7 @@ const Provider = ({ children }: Props): JSX.Element | null => {
     window.location.href = `${basename}${path}`;
   }, []);
 
-  if (not(pathStartWithBasename)) {
+  if (not(pathStartsWithBasename)) {
     return null;
   }
 

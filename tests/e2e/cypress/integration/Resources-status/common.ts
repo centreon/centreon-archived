@@ -1,4 +1,3 @@
-/* eslint-disable cypress/no-unnecessary-waiting */
 import {
   apiBase,
   applyConfigurationViaClapi,

@@ -104,6 +104,7 @@ describe('Login Page', () => {
     mockedAxios.post.mockReset();
     window.history.pushState({}, '', '/');
   });
+
   it('displays the login form', async () => {
     renderLoginPage();
 
@@ -122,7 +123,7 @@ describe('Login Page', () => {
     expect(screen.getByText('Copyright © 2005 - 2020')).toBeInTheDocument();
   });
 
-  it(`submits valid credentials when fields are filled and the "${labelConnect}" is clicked`, async () => {
+  it(`submits the credentials when they are valid and the "${labelConnect}" is clicked`, async () => {
     renderLoginPage();
 
     userEvent.type(screen.getByLabelText(labelAlias), 'admin');
@@ -147,7 +148,7 @@ describe('Login Page', () => {
     expect(window.location.href).toBe('http://localhost/monitoring/resources');
   });
 
-  it(`submits invalid credentials when fields are filled and the "${labelConnect}" button is clicked`, async () => {
+  it(`does not submit the credentials when they are invalid and the "${labelConnect}" button is clicked`, async () => {
     mockedAxios.post.mockReset();
     mockedAxios.post.mockRejectedValueOnce({
       response: {
@@ -179,7 +180,7 @@ describe('Login Page', () => {
     expect(window.location.href).toBe('http://localhost/');
   });
 
-  it('displays errors when fields are not emptied', async () => {
+  it('displays errors when fields are cleared', async () => {
     renderLoginPage();
 
     expect(screen.getByLabelText(labelConnect)).toBeDisabled();
@@ -204,7 +205,7 @@ describe('Login Page', () => {
     expect(screen.getAllByText(labelRequired)).toHaveLength(2);
   });
 
-  it('displays the password when the corresponding icon button is clicked', () => {
+  it('displays the password when the corresponding action is clicked', () => {
     renderLoginPage();
 
     userEvent.click(
