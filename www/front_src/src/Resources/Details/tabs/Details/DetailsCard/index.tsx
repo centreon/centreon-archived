@@ -15,6 +15,8 @@ const useStyles = makeStyles((theme) => ({
   title: {
     display: 'flex',
     gridGap: theme.spacing(1),
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
   },
 }));
 
