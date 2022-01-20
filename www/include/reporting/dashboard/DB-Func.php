@@ -601,9 +601,12 @@ function getLogInDbForServicesGroup($servicegroupId, $startDate, $endDate, $repo
             $serviceGroupStats[$hostServiceid]["SERVICE_ID"] = $serviceId;
             $serviceGroupStats[$hostServiceid]["HOST_NAME"] = $service['host_name'];
             $serviceGroupStats[$hostServiceid]["SERVICE_DESC"] = $service['service_description'];
-            return $serviceGroupStats;
         }
         $count++;
+    }
+
+    if (!isset($servicesStats[$hostId][$serviceId]) ) {
+        return $serviceGroupStats;
     }
 
     /*
