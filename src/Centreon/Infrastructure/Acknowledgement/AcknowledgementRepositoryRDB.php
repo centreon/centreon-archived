@@ -66,12 +66,12 @@ final class AcknowledgementRepositoryRDB extends AbstractRepositoryDRB implement
     private $contact;
 
     /**
-     * @var array
+     * @var array<string, string>
      */
     private $hostConcordanceArray;
 
     /**
-     * @var array
+     * @var array<string, string>
      */
     private $serviceConcordanceArray;
 
@@ -423,7 +423,7 @@ final class AcknowledgementRepositoryRDB extends AbstractRepositoryDRB implement
     /**
      * Find one acknowledgement taking into account or not the ACLs.
      *
-     * @param int $downtimeId Acknowledgement id
+     * @param int $acknowledgementId Acknowledgement id
      * @param bool $isAdmin Indicates whether user is an admin
      * @return Acknowledgement|null Return NULL if the acknowledgement has not been found
      * @throws \Exception
@@ -494,7 +494,7 @@ final class AcknowledgementRepositoryRDB extends AbstractRepositoryDRB implement
      * Find all acknowledgements.
      *
      * @param bool $isAdmin Indicates whether user is an admin
-     * @return array
+     * @return Acknowledgement[]
      * @throws \Exception
      */
     private function findAcknowledgements(bool $isAdmin): array
