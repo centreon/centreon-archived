@@ -5,10 +5,7 @@ import { useTranslation, withTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import { equals, not } from 'ramda';
 
-import {
-  postData,
-  useRequest,
-} from '@centreon/centreon-frontend/packages/centreon-ui/src';
+import { postData, useRequest } from '@centreon/ui';
 
 import WizardFormInstallingStatus from '../../components/wizardFormInstallingStatus';
 import routeMap from '../../reactRoutes/routeMap';
