@@ -436,13 +436,6 @@ CENTBROKERCFG;SETOUTPUT;central-broker-master;0;db_password;centreon
 CENTBROKERCFG;SETOUTPUT;central-broker-master;0;db_name;centreon_storage
 CENTBROKERCFG;SETOUTPUT;central-broker-master;0;retry_interval;60
 CENTBROKERCFG;SETOUTPUT;central-broker-master;0;buffering_timeout;0
-CENTBROKERCFG;ADDLOGGER;central-broker-master;/var/log/centreon-broker/central-broker-master.log;file
-CENTBROKERCFG;SETLOGGER;central-broker-master;0;type;file
-CENTBROKERCFG;SETLOGGER;central-broker-master;0;config;yes
-CENTBROKERCFG;SETLOGGER;central-broker-master;0;debug;no
-CENTBROKERCFG;SETLOGGER;central-broker-master;0;error;yes
-CENTBROKERCFG;SETLOGGER;central-broker-master;0;info;no
-CENTBROKERCFG;SETLOGGER;central-broker-master;0;level;low
 CENTBROKERCFG;ADDOUTPUT;central-broker-master;centreon-broker-master-rrd;ipv4
 CENTBROKERCFG;SETOUTPUT;central-broker-master;1;type;ipv4
 CENTBROKERCFG;SETOUTPUT;central-broker-master;1;one_peer_retention_mode;no
@@ -486,13 +479,6 @@ CENTBROKERCFG;SETOUTPUT;central-module-master;0;buffering_timeout;0
 CENTBROKERCFG;SETOUTPUT;central-module-master;0;protocol;bbdo
 CENTBROKERCFG;SETOUTPUT;central-module-master;0;tls;no
 CENTBROKERCFG;SETOUTPUT;central-module-master;0;compression;no
-CENTBROKERCFG;ADDLOGGER;central-module-master;/var/log/centreon-broker/central-module-master.log;file
-CENTBROKERCFG;SETLOGGER;central-module-master;0;type;file
-CENTBROKERCFG;SETLOGGER;central-module-master;0;config;yes
-CENTBROKERCFG;SETLOGGER;central-module-master;0;debug;no
-CENTBROKERCFG;SETLOGGER;central-module-master;0;error;yes
-CENTBROKERCFG;SETLOGGER;central-module-master;0;info;no
-CENTBROKERCFG;SETLOGGER;central-module-master;0;level;low
 CENTBROKERCFG;ADD;central-rrd-master;Central
 CENTBROKERCFG;SETPARAM;central-rrd-master;filename;central-rrd.json
 CENTBROKERCFG;SETPARAM;central-rrd-master;cache_directory;/var/lib/centreon-broker
