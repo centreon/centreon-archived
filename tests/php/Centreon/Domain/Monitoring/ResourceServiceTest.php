@@ -23,9 +23,12 @@ namespace Tests\Centreon\Domain\Monitoring;
 
 use PHPUnit\Framework\TestCase;
 use Centreon\Domain\Monitoring\Host;
+use Centreon\Domain\Monitoring\Service;
 use Centreon\Domain\Monitoring\Resource;
 use Centreon\Domain\Monitoring\ResourceFilter;
+use Centreon\Domain\Monitoring\ResourceStatus;
 use Centreon\Domain\Monitoring\ResourceService;
+use Centreon\Domain\HostConfiguration\HostMacro;
 use Centreon\Domain\Monitoring\Interfaces\ResourceRepositoryInterface;
 use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
@@ -33,6 +36,7 @@ use Centreon\Domain\HostConfiguration\Interfaces\HostMacro\HostMacroReadReposito
 use Centreon\Domain\ServiceConfiguration\Interfaces\ServiceConfigurationRepositoryInterface;
 use Centreon\Infrastructure\MetaServiceConfiguration\Repository\MetaServiceConfigurationRepositoryRDB;
 use Centreon\Domain\MetaServiceConfiguration\Interfaces\MetaServiceConfigurationReadRepositoryInterface;
+use Centreon\Domain\ServiceConfiguration\ServiceMacro;
 
 class ResourceServiceTest extends TestCase
 {
@@ -110,13 +114,28 @@ class ResourceServiceTest extends TestCase
         $this->assertEquals('h1-s1', $resourcesFound[1]->getUuid());
     }
 
+    /**
+     * test host macros replacement
+     */
     public function testReplaceMacrosInHost(): void
     {
         $host = (new Host())
             ->setId(10)
             ->setName('Centreon-Central')
             ->setPollerName('central')
-            ->setActionUrl('http://$HOSTADDRESS$/$HOSTNAME$/$_HOSTCUSTOMVAL$');
+            ->setAddressIp('127.0.0.1')
+            ->setActionUrl('http://$INSTANCENAME$/$HOSTADDRESS$/$HOSTNAME$/$_HOSTCUSTOMVAL$/$HOSTSTATE$')
+            ->setStatus((new ResourceStatus())->setName('UP')->setCode(0));
+
+        $customMacrosValues = [
+            '$_HOSTCUSTOMVAL$' => 'helloworld'
+        ];
+
+        $hostMacro = (new HostMacro())
+            ->setName('$_HOSTCUSTOMVAL$')
+            ->setValue('helloworld')
+            ->setPassword(false);
+
         $resourceService = new ResourceService(
             $this->resourceRepository,
             $this->monitoringRepository,
@@ -125,5 +144,115 @@ class ResourceServiceTest extends TestCase
             $this->hostMacroConfigurationRepository,
             $this->serviceConfigurationRepository
         );
+
+        $this->monitoringRepository->expects($this->once())
+            ->method('findOneHost')
+            ->willReturn($host);
+
+        $this->monitoringRepository->expects($this->once())
+            ->method('findCustomMacrosValues')
+            ->willReturn(['CUSTOMVAL' => 'helloworld']);
+
+        $this->hostMacroConfigurationRepository->expects($this->once())
+            ->method('findOnDemandHostMacros')
+            ->willReturn([$hostMacro]);
+
+        $actionUrl = $host->getActionUrl() !== null ? $host->getActionUrl() : '';
+        $expected = str_replace('$HOSTADDRESS$', (string) $host->getAddressIp(), $actionUrl);
+        $expected = str_replace('$HOSTNAME$', (string) $host->getName(), $expected);
+        $expected = str_replace('$INSTANCENAME$', (string) $host->getPollerName(), $expected);
+        $expected = str_replace('$HOSTSTATE$', (string) $host->getStatus()->getName(), $expected);
+        $expected = str_replace('$_HOSTCUSTOMVAL$', $customMacrosValues['$_HOSTCUSTOMVAL$'], $expected);
+        $this->assertEquals($resourceService->replaceMacrosInHostUrl(10, 'action-url'), $expected);
+    }
+
+
+    /**
+     * test host macros replacement
+     */
+    public function testReplaceMacroInService(): void
+    {
+        $host = (new Host())
+            ->setId(10)
+            ->setName('Centreon-Central')
+            ->setPollerName('central')
+            ->setAddressIp('127.0.0.1')
+            ->setActionUrl('http://$INSTANCENAME$/$HOSTADDRESS$/$HOSTNAME$/$_HOSTCUSTOMVAL$/$HOSTSTATE$')
+            ->setStatus((new ResourceStatus())->setName('UP')->setCode(0));
+
+        $service = (new Service())
+            ->setId(25)
+            ->setDescription('Ping')
+            ->setStatus((new ResourceStatus())->setName('OK')->setCode(0))
+            ->setActionUrl(
+                'http://$INSTANCENAME$/$_SERVICECUSTOMPASSWORD$/$_HOSTCUSTOMVAL$/$_SERVICECUSTOMARG1$/$SERVICEDESC$'
+            )
+            ->setHost($host);
+
+        $customMacrosValues = [
+            '$_HOSTCUSTOMVAL$' => 'helloworld',
+            '$_SERVICECUSTOMARG1$' => 'service-hello',
+            '$_SERVICECUSTOMPASSWORD$' => 'password'
+        ];
+
+        $hostMacro = (new HostMacro())
+            ->setName('$_HOSTCUSTOMVAL$')
+            ->setValue('helloworld')
+            ->setPassword(false);
+
+        $serviceMacroNotPassword = (new ServiceMacro())
+            ->setName('$_SERVICECUSTOMARG1$')
+            ->setValue('service-hello')
+            ->setPassword(false);
+
+        $serviceMacroPassword = (new ServiceMacro())
+            ->setName('$_SERVICECUSTOMPASSWORD$')
+            ->setValue('password')
+            ->setPassword(true);
+
+        $resourceService = new ResourceService(
+            $this->resourceRepository,
+            $this->monitoringRepository,
+            $this->accessGroupRepository,
+            $this->metaServiceConfigurationRepository,
+            $this->hostMacroConfigurationRepository,
+            $this->serviceConfigurationRepository
+        );
+
+        $this->monitoringRepository->expects($this->once())
+            ->method('findOneHost')
+            ->willReturn($host);
+
+        $this->monitoringRepository->expects($this->once())
+            ->method('findOneService')
+            ->willReturn($service);
+
+        $this->monitoringRepository->expects($this->any())
+            ->method('findCustomMacrosValues')
+            ->willReturn([
+                'CUSTOMVAL' => 'helloworld',
+                'CUSTOMARG1' => 'service-hello',
+                'CUSTOMPASSWORD' => 'password'
+            ]);
+
+        $this->hostMacroConfigurationRepository->expects($this->once())
+            ->method('findOnDemandHostMacros')
+            ->willReturn([$hostMacro]);
+
+        $this->serviceConfigurationRepository->expects($this->once())
+            ->method('findOnDemandServiceMacros')
+            ->willReturn([$serviceMacroNotPassword, $serviceMacroPassword]);
+
+        $actionUrl = $service->getActionUrl() !== null ? $service->getActionUrl() : '';
+        $expected = str_replace('$HOSTADDRESS$', (string) $host->getAddressIp(), $actionUrl);
+        $expected = str_replace('$HOSTNAME$', (string) $host->getName(), $expected);
+        $expected = str_replace('$INSTANCENAME$', (string) $host->getPollerName(), $expected);
+        $expected = str_replace('$HOSTSTATE$', (string) $host->getStatus()->getName(), $expected);
+        $expected = str_replace('$_HOSTCUSTOMVAL$', $customMacrosValues['$_HOSTCUSTOMVAL$'], $expected);
+        $expected = str_replace('$SERVICEDESC$', (string) $service->getDescription(), $expected);
+        $expected = str_replace('$_SERVICECUSTOMARG1$', $customMacrosValues['$_SERVICECUSTOMARG1$'], $expected);
+        $expected = str_replace('$_SERVICECUSTOMPASSWORD$', '', $expected);
+
+        $this->assertEquals($resourceService->replaceMacrosInServiceUrl(10, 25, 'action-url'), $expected);
     }
 }
