@@ -14,10 +14,10 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'hidden',
   },
   title: {
-    textOverflow: 'ellipsis',
-    overflow:'hidden',
     display: 'flex',
     gridGap: theme.spacing(1),
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
   },
 }));
 
