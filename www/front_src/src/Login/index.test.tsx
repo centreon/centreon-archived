@@ -39,7 +39,7 @@ const cancelTokenRequestParam = { cancelToken: {} };
 jest.mock('../Navigation/Sidebar/Logo/centreon.png');
 
 jest.mock('@centreon/ui-context', () =>
-  jest.requireActual('@centreon/centreon-frontend/packages/ui-context'),
+  jest.requireActual('centreon-frontend/packages/ui-context'),
 );
 
 const mockNow = '2020-01-01';
