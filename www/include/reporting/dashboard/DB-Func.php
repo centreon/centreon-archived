@@ -595,6 +595,13 @@ function getLogInDbForServicesGroup($servicegroupId, $startDate, $endDate, $repo
             foreach ($serviceStatsLabels as $name) {
                 $serviceGroupStats["average"][$name] += $servicesStats[$hostId][$serviceId][$name];
             }
+        } else {
+            $serviceGroupStats["average"]["UNDETERMINED_TP"] = 100;
+            $serviceGroupStats[$hostServiceid]["HOST_ID"] = $hostId;
+            $serviceGroupStats[$hostServiceid]["SERVICE_ID"] = $serviceId;
+            $serviceGroupStats[$hostServiceid]["HOST_NAME"] = $service['host_name'];
+            $serviceGroupStats[$hostServiceid]["SERVICE_DESC"] = $service['service_description'];
+            return $serviceGroupStats;
         }
         $count++;
     }
