@@ -36,16 +36,6 @@ use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
 final class AcknowledgementRepositoryRDB extends AbstractRepositoryDRB implements AcknowledgementRepositoryInterface
 {
     /**
-     * Define a host acknowledgement (0)
-     */
-    const TYPE_HOST_ACKNOWLEDGEMENT = 0;
-
-    /**
-     * Define a service acknowledgement (1)
-     */
-    const TYPE_SERVICE_ACKNOWLEDGEMENT = 1;
-
-    /**
      * @var SqlRequestParametersTranslator
      */
     private $sqlRequestTranslator;
@@ -145,7 +135,7 @@ final class AcknowledgementRepositoryRDB extends AbstractRepositoryDRB implement
      */
     public function findHostsAcknowledgements(): array
     {
-        return $this->findAcknowledgementsOf(self::TYPE_HOST_ACKNOWLEDGEMENT);
+        return $this->findAcknowledgementsOf(Acknowledgement::TYPE_HOST_ACKNOWLEDGEMENT);
     }
 
     /**
@@ -154,7 +144,7 @@ final class AcknowledgementRepositoryRDB extends AbstractRepositoryDRB implement
      */
     public function findServicesAcknowledgements(): array
     {
-        return $this->findAcknowledgementsOf(self::TYPE_SERVICE_ACKNOWLEDGEMENT);
+        return $this->findAcknowledgementsOf(Acknowledgement::TYPE_SERVICE_ACKNOWLEDGEMENT);
     }
 
     /**
@@ -364,7 +354,7 @@ final class AcknowledgementRepositoryRDB extends AbstractRepositoryDRB implement
      * @throws \PDOException
      * @throws RequestParametersTranslatorException
      */
-    private function findAcknowledgementsOf(int $type = self::TYPE_HOST_ACKNOWLEDGEMENT): array
+    private function findAcknowledgementsOf(int $type = Acknowledgement::TYPE_HOST_ACKNOWLEDGEMENT): array
     {
         $acknowledgements = [];
 
@@ -376,14 +366,17 @@ final class AcknowledgementRepositoryRDB extends AbstractRepositoryDRB implement
             ? ' '
             : ' INNER JOIN `:dbstg`.`centreon_acl` acl
                   ON acl.host_id = ack.host_id'
-                .  (($type === self::TYPE_SERVICE_ACKNOWLEDGEMENT) ? ' AND acl.service_id = ack.service_id ' : '')
+                .  (($type === Acknowledgement::TYPE_SERVICE_ACKNOWLEDGEMENT)
+                    ? ' AND acl.service_id = ack.service_id '
+                    : ''
+                )
                 . ' INNER JOIN `:db`.`acl_groups` acg
                   ON acg.acl_group_id = acl.group_id
                   AND acg.acl_group_activate = \'1\'
                   AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups) . ') ';
 
         $this->sqlRequestTranslator->setConcordanceArray(
-            $type === self::TYPE_SERVICE_ACKNOWLEDGEMENT
+            $type === Acknowledgement::TYPE_SERVICE_ACKNOWLEDGEMENT
             ? $this->serviceConcordanceArray
             : $this->hostConcordanceArray
         );
@@ -393,7 +386,7 @@ final class AcknowledgementRepositoryRDB extends AbstractRepositoryDRB implement
             LEFT JOIN `:db`.contact
                 ON contact.contact_alias = ack.author '
             . $accessGroupFilter
-            . 'WHERE ack.service_id ' . (($type === self::TYPE_HOST_ACKNOWLEDGEMENT) ? ' = 0' : ' != 0');
+            . 'WHERE ack.service_id ' . (($type === Acknowledgement::TYPE_HOST_ACKNOWLEDGEMENT) ? ' = 0' : ' != 0');
 
         return $this->processListingRequest($request);
     }
