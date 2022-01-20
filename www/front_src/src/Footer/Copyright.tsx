@@ -20,9 +20,11 @@ const Copyright = (): JSX.Element => {
     formatString: 'YYYY',
   });
 
+  const label = `Copyright © 2005 - ${year}`;
+
   return (
     <Typography className={classes.copyright} variant="body2">
-      Copyright © 2005 - {year}
+      {label}
     </Typography>
   );
 };
