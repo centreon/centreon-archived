@@ -605,7 +605,7 @@ function getLogInDbForServicesGroup($servicegroupId, $startDate, $endDate, $repo
         $count++;
     }
 
-    if (!isset($servicesStats[$hostId][$serviceId]) ) {
+    if (!isset($servicesStats[$hostId][$serviceId])) {
         return $serviceGroupStats;
     }
 
