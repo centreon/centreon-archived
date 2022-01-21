@@ -1,7 +1,7 @@
 const { mergeDeepRight } = require('ramda');
 
 module.exports = mergeDeepRight(
-  require('/centreon-frontend/packages/frontend-config/jest'),
+  require('centreon-frontend/packages/frontend-config/jest'),
   {
     roots: ['<rootDir>/www/front_src/src/'],
     setupFilesAfterEnv: [
