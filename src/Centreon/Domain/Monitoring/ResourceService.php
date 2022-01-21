@@ -37,6 +37,7 @@ use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
 use Centreon\Domain\MetaServiceConfiguration\Exception\MetaServiceConfigurationException;
 use Centreon\Domain\HostConfiguration\Interfaces\HostMacro\HostMacroReadRepositoryInterface;
+use Centreon\Domain\Log\LoggerTrait;
 use Centreon\Domain\ServiceConfiguration\Interfaces\ServiceConfigurationRepositoryInterface;
 use Centreon\Domain\MetaServiceConfiguration\Interfaces\MetaServiceConfigurationReadRepositoryInterface;
 
@@ -47,6 +48,7 @@ use Centreon\Domain\MetaServiceConfiguration\Interfaces\MetaServiceConfiguration
  */
 class ResourceService extends AbstractCentreonService implements ResourceServiceInterface
 {
+    use LoggerTrait;
     /**
      * @var ResourceRepositoryInterface
      */
@@ -353,7 +355,16 @@ class ResourceService extends AbstractCentreonService implements ResourceService
 
         $standardMacros = $this->getStandardMacrosForHost($host);
         $customMacros = $this->getCustomMacrosOutOfUrl($hostId, 0, $url);
-        return $this->replaceMacrosByValues($url, array_merge($standardMacros, $customMacros));
+        $macros = array_merge($standardMacros, $customMacros);
+        $this->info(
+            'Replacing macros found in URL',
+            [
+                'url_type' => $urlType,
+                'url' => $url,
+                'macros' => $macros
+            ]
+        );
+        return $this->replaceMacrosByValues($url, $macros);
     }
 
     /**
