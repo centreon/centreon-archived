@@ -53,7 +53,7 @@ trait LoggerTrait
      */
     public function setLoggerContact(ContactInterface $loggerContact): void
     {
-        $this->contaloggerContactct = $loggerContact;
+        $this->loggerContact = $loggerContact;
     }
 
     /**
