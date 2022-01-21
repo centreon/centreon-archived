@@ -29,12 +29,6 @@ centreon_application_monitoring_resource_details_meta_service:
         metaId: '\d+'
     condition: "request.attributes.get('version') >= 21.10"
 
-centreon_application_monitoring_resource_redirect_external_link:
-    methods: POST
-    path: /monitoring/resources/external-link/redirect
-    controller: 'Centreon\Application\Controller\MonitoringResourceController::redirectFromResourceExternalLink'
-    condition: "request.attributes.get('version') >= 21.10"
-
 centreon_application_monitoring_resource_redirect_url_service:
     methods: GET
     path: /monitoring/resources/hosts/{hostId}/services/{serviceId}/{urlType}/redirect
