@@ -1,6 +1,5 @@
 import * as React from 'react';
 
-import { equals } from 'ramda';
 import { useUpdateAtom } from 'jotai/utils';
 import { useTranslation } from 'react-i18next';
 
@@ -10,15 +9,9 @@ import FilterListIcon from '@mui/icons-material/FilterList';
 import makeStyles from '@mui/styles/makeStyles';
 import IconButton from '@mui/material/IconButton';
 
-import {
-  labelConfigure,
-  labelFilter,
-  labelGroups,
-} from '../../../../translatedLabels';
+import { labelConfigure, labelFilter } from '../../../../translatedLabels';
 import { setCriteriaAndNewFilterDerivedAtom } from '../../../../Filter/filterAtoms';
-import { CriteriaNames } from '../../../../Filter/Criterias/models';
-import { Group, ResourceDetails } from '../../../models';
-import { ResourceType } from '../../../../models';
+import { Group } from '../../../models';
 
 const useStyles = makeStyles((theme) => ({
   groupChip: {
