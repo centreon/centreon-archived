@@ -56,9 +56,9 @@ while ($opt = $DBRESULT->fetchRow()) {
 
 $tab_file_css = array();
 $i = 0;
-if ($handle  = @opendir("./Themes/Centreon-2/Color")) {
+if ($handle  = @opendir("./Themes/Centreon-Light/Color")) {
     while ($file = @readdir($handle)) {
-        if (is_file("./Themes/Centreon-2/Color"."/$file")) {
+        if (is_file("./Themes/Centreon-Light/Color" . "/$file")) {
             $tab_file_css[$i++] = $file;
         }
     }

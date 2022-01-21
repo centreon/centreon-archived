@@ -86,7 +86,6 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('maxViewConfiguration','30'),
 ('AjaxTimeReloadMonitoring','15'),
 ('AjaxTimeReloadStatistic','15'),
-('template','Centreon-2'),
 ('color_up','#88b917'),
 ('color_down','#e00b3d'),
 ('color_unreachable','#818285'),

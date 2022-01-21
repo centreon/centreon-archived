@@ -186,7 +186,7 @@ function updateContact($contact_id = null)
     );
     $stmt->bindValue(
         ':contactTheme',
-        !empty($ret['contact_theme']['contact_theme']) ? $ret['contact_theme']['contact_theme'] : "Centreon-2",
+        !empty($ret['contact_theme']['contact_theme']) ? $ret['contact_theme']['contact_theme'] : "light",
         \PDO::PARAM_STR
     );
     $stmt->bindValue(':defaultPage', !empty($ret['default_page']) ? $ret['default_page'] : null, \PDO::PARAM_INT);

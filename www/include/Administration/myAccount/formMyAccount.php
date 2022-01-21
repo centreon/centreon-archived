@@ -110,8 +110,8 @@ $form->addElement('text', 'contact_email', _("Email"), $attrsText);
 $form->addElement('text', 'contact_pager', _("Pager"), $attrsText);
 
 $tab = array();
-$tab[] = $form->createElement('radio', 'contact_theme', null, _("Clear"), 'Centreon-2');
-$tab[] = $form->createElement('radio', 'contact_theme', null, _("Dark"), 'Centreon-Dark');
+$tab[] = $form->createElement('radio', 'contact_theme', null, _("Light"), 'light');
+$tab[] = $form->createElement('radio', 'contact_theme', null, _("Dark"), 'dark');
 $form->addGroup($tab, 'contact_theme', _("Front-end Theme"), '&nbsp;');
 
 if ($cct["contact_auth_type"] != 'ldap') {
