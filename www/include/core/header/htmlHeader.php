@@ -172,7 +172,9 @@ if ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
     <script type='text/javascript' src='./include/common/javascript/changetab.js'></script>
     <script type='text/javascript' src='./include/common/javascript/linkify/linkify.min.js'></script>
     <script type='text/javascript' src='./include/common/javascript/linkify/linkify-jquery.min.js'></script>
-    <?php } ?>
+    <?php
+        }
+    ?>
     <script type="text/javascript" src="./class/centreonToolTip.js"></script>
 
     <!-- graph js -->
