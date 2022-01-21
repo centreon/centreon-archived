@@ -96,7 +96,7 @@ if ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
         type="text/css"
     />
     <link
-        href="./Themes/<?php echo $cssThemes; ?>/color_css.php<?php echo $versionParam; ?>"
+        href="./Themes/<?php echo $cssThemes; ?>/color.css<?php echo $versionParam; ?>"
         rel="stylesheet"
         type="text/css"
     />
