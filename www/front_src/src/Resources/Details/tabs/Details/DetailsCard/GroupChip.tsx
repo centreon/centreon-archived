@@ -80,7 +80,7 @@ const GroupChip = ({ group, type }: GroupsChipProps): JSX.Element => {
                 {group.name}
               </Typography>
             </Tooltip>
-            {isHovered === true && (
+            {isHovered && (
               <Grid className={classes.iconAction}>
                 <IconButton
                   style={{ color: theme.palette.common.white }}
