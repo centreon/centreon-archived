@@ -20,7 +20,7 @@ import { initReactI18next } from 'react-i18next';
 import { Provider as JotaiProvider } from 'jotai';
 import { useUpdateAtom } from 'jotai/utils';
 
-import { useRequest, getData} from '@centreon/ui';
+import { useRequest, getData } from '@centreon/ui';
 import {
   userAtom,
   User,

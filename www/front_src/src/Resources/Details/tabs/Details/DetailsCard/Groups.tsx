@@ -26,9 +26,11 @@ import { setCriteriaAndNewFilterDerivedAtom } from '../../../../Filter/filterAto
 import { CriteriaNames } from '../../../../Filter/Criterias/models';
 import { Group, ResourceDetails } from '../../../models';
 import { ResourceType } from '../../../../models';
+import GroupChip from './GroupChip';
+
 
 const useStyles = makeStyles((theme) => ({
-  chipsGroups: {
+  groupChip: {
     alignSelf: 'center',
     display: 'flex',
   },
@@ -36,13 +38,13 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     padding: theme.spacing(1, 1, 1, 1),
   },
-  groupsChipAction: {
+  groupChipAction: {
     gridArea: '1/1',
     maxWidth: theme.spacing(14),
     overflow: 'hidden',
     textOverflow: 'ellipsis',
   },
-  groupsChipLabel: {
+  groupChipLabel: {
     display: 'grid',
     justifyItems: 'center',
     minWidth: theme.spacing(7),
@@ -56,72 +58,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-interface GroupsChipProps {
-  group: Group;
-  type: string;
-}
-
-const GroupChip = ({ group, type }: GroupsChipProps): JSX.Element => {
-  const theme = useTheme();
-  const classes = useStyles();
-  const { t } = useTranslation();
-
-  const [isHovered, setIsHovered] = React.useState<boolean>(false);
-
-  const setCriteriaAndNewFilter = useUpdateAtom(
-    setCriteriaAndNewFilterDerivedAtom,
-  );
-
-  const filterByGroup = (): void => {
-    setCriteriaAndNewFilter({
-      name: type,
-      value: [group],
-    });
-  };
-
-  return (
-    <Grid item className={classes.chipsGroups} key={group.id}>
-      <Chip
-        color="primary"
-        label={
-          <div className={classes.groupsChipLabel}>
-            <Tooltip title={group.name}>
-              <Typography
-                className={classes.groupsChipAction}
-                style={{ color: isHovered ? 'transparent' : 'unset' }}
-                variant="body2"
-              >
-                {group.name}
-              </Typography>
-            </Tooltip>
-            {isHovered === true && (
-              <Grid className={classes.iconAction}>
-                <IconButton
-                  style={{ color: theme.palette.common.white }}
-                  title={t(labelFilter)}
-                  onClick={(): void => filterByGroup()}
-                >
-                  <FilterListIcon fontSize="small" />
-                </IconButton>
-                <IconButton
-                  style={{ color: theme.palette.common.white }}
-                  title={t(labelConfigure)}
-                  onClick={(): void => {
-                    window.location.href = group.configuration_uri as string;
-                  }}
-                >
-                  <SettingsIcon fontSize="small" />
-                </IconButton>
-              </Grid>
-            )}
-          </div>
-        }
-        onMouseEnter={(): void => setIsHovered(true)}
-        onMouseLeave={(): void => setIsHovered(false)}
-      />
-    </Grid>
-  );
-};
 
 interface Props {
   details: ResourceDetails | undefined;

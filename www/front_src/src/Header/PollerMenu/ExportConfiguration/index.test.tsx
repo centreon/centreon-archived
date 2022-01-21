@@ -38,7 +38,6 @@ const ExportConfigurationButton = (): JSX.Element => (
   <ExportConfiguration setIsExportingConfiguration={jest.fn} />
 );
 
-
 const renderExportConfiguration = (): RenderResult =>
   render(
     <Provider
