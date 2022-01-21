@@ -131,17 +131,17 @@ if ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
     <link href="./include/views/graphs/javascript/centreon-status-chart.css" type="text/css" rel="stylesheet" />
     <?php
 
-        // == Declare CSS for modules
-        foreach ($centreon->modules as $moduleName => $infos) {
-            if (file_exists(__DIR__ . "/../../../www/modules/" . $moduleName . "/static/css/styles.css")) {
-                print "<link "
-                    . "href='./modules/" . $moduleName . "/static/css/styles.css' "
-                    . "rel='stylesheet' type='text/css' "
-                    . "/>\n";
-            }
+    // == Declare CSS for modules
+    foreach ($centreon->modules as $moduleName => $infos) {
+        if (file_exists(__DIR__ . "/../../../www/modules/" . $moduleName . "/static/css/styles.css")) {
+            print "<link "
+                . "href='./modules/" . $moduleName . "/static/css/styles.css' "
+                . "rel='stylesheet' type='text/css' "
+                . "/>\n";
         }
+    }
 
-        if (!isset($_REQUEST['iframe']) || (isset($_REQUEST['iframe']) && $_REQUEST['iframe'] != 1)) {
+    if (!isset($_REQUEST['iframe']) || (isset($_REQUEST['iframe']) && $_REQUEST['iframe'] != 1)) {
     ?>
     <script type="text/javascript" src="./include/common/javascript/jquery/jquery.min.js"></script>
     <script type="text/javascript" src="./include/common/javascript/jquery/plugins/toggleClick/jquery.toggleClick.js">
@@ -173,7 +173,7 @@ if ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
     <script type='text/javascript' src='./include/common/javascript/linkify/linkify.min.js'></script>
     <script type='text/javascript' src='./include/common/javascript/linkify/linkify-jquery.min.js'></script>
     <?php
-        }
+    }
     ?>
     <script type="text/javascript" src="./class/centreonToolTip.js"></script>
 
