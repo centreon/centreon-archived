@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
   },
   groups: {
     display: 'flex',
-    padding: theme.spacing(1, 1, 1, 1),
+    padding: theme.spacing(1),
   },
   iconAction: {
     backgroundColor: theme.palette.primary.main,
