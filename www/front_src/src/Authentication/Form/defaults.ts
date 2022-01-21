@@ -5,7 +5,7 @@ import {
   SecurityPolicyToAPI,
 } from '../models';
 import {
-  fiveTeenMinutes,
+  fifteenMinutes,
   oneDay,
   oneHour,
   sevenDays,
@@ -15,7 +15,7 @@ import {
 export const defaultSecurityPolicy: SecurityPolicyFromAPI = {
   password_security_policy: {
     attempts: 5,
-    blockingDuration: fiveTeenMinutes,
+    blockingDuration: fifteenMinutes,
     canReusePasswords: false,
     delayBeforeNewPassword: oneHour,
     hasLowerCase: true,
@@ -48,7 +48,7 @@ export const defaultSecurityPolicyAPI: SecurityPolicyToAPI =
 export const retrievedSecurityPolicyAPI: SecurityPolicyToAPI =
   adaptSecurityPolicyToAPI({
     attempts: 8,
-    blockingDuration: fiveTeenMinutes,
+    blockingDuration: fifteenMinutes,
     canReusePasswords: false,
     delayBeforeNewPassword: oneHour,
     hasLowerCase: false,
@@ -61,7 +61,7 @@ export const retrievedSecurityPolicyAPI: SecurityPolicyToAPI =
 
 export const securityPolicyWithInvalidPasswordExpiration: SecurityPolicy = {
   attempts: 5,
-  blockingDuration: fiveTeenMinutes,
+  blockingDuration: fifteenMinutes,
   canReusePasswords: false,
   delayBeforeNewPassword: oneHour,
   hasLowerCase: true,
@@ -74,7 +74,7 @@ export const securityPolicyWithInvalidPasswordExpiration: SecurityPolicy = {
 
 export const securityPolicyWithInvalidDelayBeforeNewPassword: SecurityPolicy = {
   attempts: 5,
-  blockingDuration: fiveTeenMinutes,
+  blockingDuration: fifteenMinutes,
   canReusePasswords: false,
   delayBeforeNewPassword: sevenDays + oneDay,
   hasLowerCase: true,
