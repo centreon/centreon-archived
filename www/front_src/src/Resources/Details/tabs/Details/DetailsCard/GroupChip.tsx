@@ -66,12 +66,12 @@ const GroupChip = ({ group, type }: GroupsChipProps): JSX.Element => {
   };
 
   const onMouseEnter = (): void => {
-     setIsHovered(true)
+    setIsHovered(true);
   };
 
   const onMouseLeave = (): void => {
-    setIsHovered(false)
- };
+    setIsHovered(false);
+  };
 
   return (
     <Grid item className={classes.groupChip} key={group.id}>
