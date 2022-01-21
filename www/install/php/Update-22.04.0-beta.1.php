@@ -46,6 +46,9 @@ try {
         AFTER `contact_js_effects`"
     );
 
+    $errorMessage = 'Impossible to delete "template" value in "options" table';
+    $pearDB->query("DELETE FROM `options` WHERE `key` = 'template'");
+
     $errorMessage = 'Unable to update the description in cb_field';
     $statement = $pearDB->query("
         UPDATE cb_field
