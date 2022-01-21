@@ -107,9 +107,8 @@ jest.mock('@centreon/ui-context', () =>
 );
 
 jest.mock('../icons/Downtime');
-jest.mock(
-  'centreon-frontend/packages/centreon-ui/src/utils/copy',
-  () => jest.fn(),
+jest.mock('centreon-frontend/packages/centreon-ui/src/utils/copy', () =>
+  jest.fn(),
 );
 
 jest.mock('@visx/visx', () => {
