@@ -75,7 +75,9 @@ class ResourceServiceTest extends TestCase
         $this->resourceRepository = $this->createMock(ResourceRepositoryInterface::class);
         $this->monitoringRepository = $this->createMock(MonitoringRepositoryInterface::class);
         $this->accessGroupRepository = $this->createMock(AccessGroupRepositoryInterface::class);
-        $this->metaServiceConfigurationRepository = $this->createMock(MetaServiceConfigurationReadRepositoryInterface::class);
+        $this->metaServiceConfigurationRepository = $this->createMock(
+            MetaServiceConfigurationReadRepositoryInterface::class
+        );
         $this->hostMacroConfigurationRepository = $this->createMock(HostMacroReadRepositoryInterface::class);
         $this->serviceConfigurationRepository = $this->createMock(ServiceConfigurationRepositoryInterface::class);
     }

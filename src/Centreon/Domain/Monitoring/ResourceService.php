@@ -49,6 +49,7 @@ use Centreon\Domain\MetaServiceConfiguration\Interfaces\MetaServiceConfiguration
 class ResourceService extends AbstractCentreonService implements ResourceServiceInterface
 {
     use LoggerTrait;
+
     /**
      * @var ResourceRepositoryInterface
      */
