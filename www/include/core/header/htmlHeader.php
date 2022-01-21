@@ -45,7 +45,14 @@ $versionParam = isset($centreon->informations) && isset($centreon->informations[
 
 print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
 
-$cssThemes = "Centreon-2";
+$cssThemes = "Centreon-Light";
+$userId = (int) $centreon->user->user_id;
+$statement = $pearDB->prepare('SELECT contact_theme FROM contact WHERE contact_id = :contactId');
+$statement->bindValue(':contactId', $userId, \PDO::PARAM_INT);
+$statement->execute();
+if ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
+    $cssThemes = $result['contact_theme'];
+}
 
 ?>
 <!DOCTYPE html>
