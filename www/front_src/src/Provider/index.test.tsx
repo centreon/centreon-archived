@@ -5,8 +5,6 @@ import { Provider as JotaiProvider } from 'jotai';
 import { useAtomValue } from 'jotai/utils';
 
 import { render, RenderResult, waitFor } from '@centreon/ui';
-
-
 import {
   aclAtom,
   userAtom,
