@@ -32,7 +32,7 @@
  *
  */
 
- @media screen and (max-width: 1440px) {
+@media screen and (max-width: 1440px) {
     pre#command_line {
         max-width: 600px;
     }

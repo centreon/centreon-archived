@@ -54,10 +54,9 @@
 }
 
 .color {
-
   animation-duration: .3s;
   animation-direction: alternate;
-  //webkit-animation-direction: alternate;
+  /* webkit-animation-direction: alternate; */
   animation-timing-function: linear;
   animation-iteration-count: infinite;
 }
