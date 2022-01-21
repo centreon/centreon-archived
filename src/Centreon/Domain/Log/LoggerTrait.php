@@ -35,7 +35,7 @@ trait LoggerTrait
     /**
      * @var ContactInterface
      */
-    private $contact;
+    private $loggerContact;
 
     /**
      * @var LoggerInterface
@@ -45,24 +45,24 @@ trait LoggerTrait
     /**
      * @var ContactForDebug
      */
-    private $contactForDebug;
+    private $loggerContactForDebug;
 
     /**
-     * @param ContactInterface $contact
+     * @param ContactInterface $loggerContact
      * @required
      */
-    public function setContact(ContactInterface $contact): void
+    public function setLoggerContact(ContactInterface $loggerContact): void
     {
-        $this->contact = $contact;
+        $this->contaloggerContactct = $loggerContact;
     }
 
     /**
-     * @param ContactForDebug $contactForDebug
+     * @param ContactForDebug $loggerContactForDebug
      * @required
      */
-    public function setContactForDebug(ContactForDebug $contactForDebug): void
+    public function setLoggerContactForDebug(ContactForDebug $loggerContactForDebug): void
     {
-        $this->contactForDebug = $contactForDebug;
+        $this->loggerContactForDebug = $loggerContactForDebug;
     }
 
     /**
@@ -239,7 +239,7 @@ trait LoggerTrait
     private function canBeLogged(): bool
     {
         return $this->logger !== null
-            && $this->contactForDebug !== null
-            && $this->contactForDebug->isValidForContact($this->contact);
+            && $this->loggerContactForDebug !== null
+            && $this->loggerContactForDebug->isValidForContact($this->loggerContact);
     }
 }
