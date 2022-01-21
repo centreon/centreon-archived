@@ -14,7 +14,7 @@ if (isset($_SESSION['step'])) {
     <meta http-equiv="Content-Style-Type" content="text/css">
     <title><?php echo _('Centreon Installation'); ?></title>
     <link rel="shortcut icon" href="../img/favicon.ico">
-    <link rel="stylesheet" href="../Themes/Centreon-2/style.css" type="text/css">
+    <link rel="stylesheet" href="../Themes/Centreon-Light/style.css" type="text/css">
     <link rel="stylesheet" href="./install.css" type="text/css">
     <link rel="stylesheet" href="./pub_install.css" type="text/css">
     <script type="text/javascript" src="../include/common/javascript/jquery/jquery.min.js"></script>
