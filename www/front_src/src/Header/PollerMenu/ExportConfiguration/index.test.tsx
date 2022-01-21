@@ -46,7 +46,7 @@ const renderExportConfiguration = (): RenderResult =>
         [refreshIntervalAtom, mockRefreshInterval],
       ]}
     >
-      <SnackbarProvider>
+      <SnackbarProvider maxSnackbars={2}>
         <ExportConfigurationButton />
       </SnackbarProvider>
     </Provider>,
