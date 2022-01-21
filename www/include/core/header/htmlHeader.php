@@ -51,7 +51,16 @@ $statement = $pearDB->prepare('SELECT contact_theme FROM contact WHERE contact_i
 $statement->bindValue(':contactId', $userId, \PDO::PARAM_INT);
 $statement->execute();
 if ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
-    $cssThemes = $result['contact_theme'];
+    switch ($result['contact_theme']) {
+        case 'light':
+            $cssThemes = "Centreon-Light";
+            break;
+        case 'dark':
+            $cssThemes = "Centreon-Dark";
+            break;
+        default:
+            throw new \Exception('Unknown contact theme : ' . $result['contact_theme']);
+    }
 }
 
 ?>
