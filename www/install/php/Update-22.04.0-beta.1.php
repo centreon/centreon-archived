@@ -39,6 +39,13 @@ try {
         );
     }
 
+    $errorMessage = 'Impossible to add "contact_theme" column to "contact" table';
+    $pearDB->query(
+        "ALTER TABLE `contact`
+        ADD COLUMN `contact_theme` enum('light','dark') DEFAULT 'light'
+        AFTER `contact_js_effects`"
+    );
+
     $errorMessage = 'Unable to update the description in cb_field';
     $statement = $pearDB->query("
         UPDATE cb_field
