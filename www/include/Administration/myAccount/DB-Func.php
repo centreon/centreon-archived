@@ -239,7 +239,6 @@ function checkAutologinValue(array $fields)
 
         if (
             ($result = $statement->fetch(\PDO::FETCH_ASSOC))
-            && !empty($fields['contact_passwd'])
             && password_verify($fields['contact_autologin_key'], $result['password'])
         ) {
             $errors['contact_autologin_key'] = _('Your autologin key must be different than your current password');
