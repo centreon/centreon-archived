@@ -19,6 +19,7 @@ import {
   currentFilterAtom,
   customFiltersAtom,
   filterWithParsedSearchDerivedAtom,
+  getDefaultFilterDerivedAtom,
   searchAtom,
   sendingFilterAtom,
   storedFilterAtom,
@@ -47,7 +48,7 @@ const useFilter = (): void => {
   const filterWithParsedSearch = useAtomValue(
     filterWithParsedSearchDerivedAtom,
   );
-  const defaultFilter = useAtomValue(storedFilterAtom);
+  const getDefaultFilter = useAtomValue(getDefaultFilterDerivedAtom);
   const setCustomFilters = useUpdateAtom(customFiltersAtom);
   const setSearch = useUpdateAtom(searchAtom);
   const applyFilter = useUpdateAtom(applyFilterDerivedAtom);
@@ -99,7 +100,7 @@ const useFilter = (): void => {
       },
     ]);
 
-    applyFilter(defaultFilter);
+    applyFilter(getDefaultFilter());
   }, [getUrlQueryParameters().fromTopCounter]);
 
   React.useEffect(() => {
