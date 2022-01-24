@@ -32,7 +32,7 @@
  * For more information : contact@centreon.com
  *
  */
- 
+
 require_once "Centreon/Object/Object.php";
 
 /**
@@ -45,4 +45,59 @@ class Centreon_Object_Contact extends Centreon_Object
     protected $table = "contact";
     protected $primaryKey = "contact_id";
     protected $uniqueLabelField = "contact_alias";
+
+    /**
+     * @inheritDoc
+     */
+    public function update($contactId, $params = [])
+    {
+        $sql = "UPDATE $this->table SET ";
+        $sqlUpdate = "";
+        $sqlParams = [];
+        $not_null_attributes = [];
+
+        if (isset($params['contact_autologin_key'])) {
+            $statement = $this->db->prepare("SELECT contact_passwd FROM contact WHERE contact_id = :contactId ");
+            $statement->bindValue(':contactId', $contactId, \PDO::PARAM_INT);
+            $statement->execute();
+            if (
+                ($result = $statement->fetch(\PDO::FETCH_ASSOC))
+                && (md5($params['contact_autologin_key']) === $result['contact_passwd']
+                    || 'md5__' . md5($params['contact_autologin_key']) === $result['contact_passwd'])
+            ) {
+                throw new \Exception(_('Your autologin key must be different than your current password'));
+            }
+        }
+
+        if (array_search("", $params)) {
+            $sql_attr = "SHOW FIELDS FROM $this->table";
+            $res = $this->getResult($sql_attr, [], "fetchAll");
+            foreach ($res as $tab) {
+                if ($tab['Null'] == 'NO') {
+                    $not_null_attributes[$tab['Field']] = true;
+                }
+            }
+        }
+        foreach ($params as $key => $value) {
+            if ($key == $this->primaryKey) {
+                continue;
+            }
+            if ($sqlUpdate != "") {
+                $sqlUpdate .= ",";
+            }
+            $sqlUpdate .= $key . " = ? ";
+            if ($value === "" && !isset($not_null_attributes[$key])) {
+                $value = null;
+            }
+            if (!is_null($value)) {
+                $value = str_replace("<br/>", "\n", $value);
+            }
+            $sqlParams[] = $value;
+        }
+        if ($sqlUpdate) {
+            $sqlParams[] = $contactId;
+            $sql .= $sqlUpdate . " WHERE $this->primaryKey = ?";
+            $this->db->query($sql, $sqlParams);
+        }
+    }
 }
