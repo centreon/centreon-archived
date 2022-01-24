@@ -154,8 +154,8 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
               h.*,
               cv.value AS criticality,
               i.name AS poller_name,
-              IF (h.display_name LIKE \'_Module_Meta%\', \'Meta\', h.display_name) AS display_name,
-              IF (h.display_name LIKE \'_Module_Meta%\', \'0\', h.state) AS `status_code`,
+              IF (h.display_name LIKE \'\_Module\_Meta%\', \'Meta\', h.display_name) AS display_name,
+              IF (h.display_name LIKE \'\_Module\_Meta%\', \'0\', h.state) AS `status_code`,
             CASE
                 WHEN h.state = 0 THEN \'UP\'
                 WHEN h.state = 1 THEN \'DOWN\'
@@ -172,7 +172,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             INNER JOIN `:dbstg`.`hosts` h
               ON h.instance_id = i.instance_id
               AND h.enabled = \'1\'
-              AND h.name NOT LIKE \'_Module_BAM%\''
+              AND h.name NOT LIKE \'\_Module\_BAM%\''
             . $accessGroupFilter
             . ' LEFT JOIN `:dbstg`.`services` srv
               ON srv.host_id = h.host_id
@@ -267,8 +267,8 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
         $request =
             'SELECT SQL_CALC_FOUND_ROWS DISTINCT
               hg.hostgroup_id, h.*, i.name AS poller_name,
-              IF (h.display_name LIKE \'_Module_Meta%\', \'Meta\', h.display_name) AS display_name,
-              IF (h.display_name LIKE \'_Module_Meta%\', \'0\', h.state) AS `status_code`,
+              IF (h.display_name LIKE \'\_Module\_Meta%\', \'Meta\', h.display_name) AS display_name,
+              IF (h.display_name LIKE \'\_Module\_Meta%\', \'0\', h.state) AS `status_code`,
             CASE
                 WHEN h.state = 0 THEN \'UP\'
                 WHEN h.state = 1 THEN \'DOWN\'
@@ -285,7 +285,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             INNER JOIN `:dbstg`.`hosts` h
               ON h.instance_id = i.instance_id
               AND h.enabled = \'1\'
-              AND h.name NOT LIKE \'_Module_BAM%\''
+              AND h.name NOT LIKE \'\_Module\_BAM%\''
             . $accessGroupFilter
             . ' LEFT JOIN `:dbstg`.`services` srv
               ON srv.host_id = h.host_id
@@ -346,8 +346,8 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
         $request =
             'SELECT SQL_CALC_FOUND_ROWS DISTINCT
               ssg.servicegroup_id, h.*, i.name AS poller_name,
-              IF (h.display_name LIKE \'_Module_Meta%\', \'Meta\', h.display_name) AS display_name,
-              IF (h.display_name LIKE \'_Module_Meta%\', \'0\', h.state) AS `status_code`,
+              IF (h.display_name LIKE \'\_Module\_Meta%\', \'Meta\', h.display_name) AS display_name,
+              IF (h.display_name LIKE \'\_Module\_Meta%\', \'0\', h.state) AS `status_code`,
             CASE
                 WHEN h.state = 0 THEN \'UP\'
                 WHEN h.state = 1 THEN \'DOWN\'
@@ -364,7 +364,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             INNER JOIN `:dbstg`.`hosts` h
               ON h.instance_id = i.instance_id
               AND h.enabled = \'1\'
-              AND h.name NOT LIKE \'_Module_BAM%\'
+              AND h.name NOT LIKE \'\_Module\_BAM%\'
             INNER JOIN `:dbstg`.`services` srv
               ON srv.host_id = h.host_id
               AND srv.enabled = \'1\''
@@ -477,7 +477,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
                 INNER JOIN `:dbstg`.hosts h
                     ON h.host_id = hhg.host_id
                     AND h.enabled = \'1\'
-                    AND h.name NOT LIKE \'_Module_BAM%\'';
+                    AND h.name NOT LIKE \'\_Module\_BAM%\'';
 
             if (!$this->isAdmin()) {
                 $subRequest .=
@@ -579,8 +579,8 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
         $request =
             'SELECT h.*,
             i.name AS poller_name,
-              IF (h.display_name LIKE \'_Module_Meta%\', \'Meta\', h.display_name) AS display_name,
-              IF (h.display_name LIKE \'_Module_Meta%\', \'0\', h.state)AS `status_code`,
+              IF (h.display_name LIKE \'\_Module\_Meta%\', \'Meta\', h.display_name) AS display_name,
+              IF (h.display_name LIKE \'\_Module\_Meta%\', \'0\', h.state)AS `status_code`,
             CASE
                 WHEN h.state = 0 THEN \'UP\'
                 WHEN h.state = 1 THEN \'DOWN\'
@@ -598,7 +598,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             INNER JOIN `:dbstg`.`hosts` h
               ON h.instance_id = i.instance_id
               AND h.enabled = \'1\'
-              AND h.name NOT LIKE \'_Module_BAM%\'
+              AND h.name NOT LIKE \'\_Module\_BAM%\'
             LEFT JOIN `:dbstg`.`customvariables` AS host_cvl ON host_cvl.host_id = h.host_id
               AND host_cvl.service_id = 0 AND host_cvl.name = "CRITICALITY_LEVEL"'
             . $accessGroupFilter .
@@ -732,8 +732,8 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
         $request =
             'SELECT DISTINCT h.*,
             i.name AS poller_name,
-              IF (h.display_name LIKE \'_Module_Meta%\', \'Meta\', h.display_name) AS display_name,
-              IF (h.display_name LIKE \'_Module_Meta%\', \'0\', h.state) AS `status_code`,
+              IF (h.display_name LIKE \'\_Module\_Meta%\', \'Meta\', h.display_name) AS display_name,
+              IF (h.display_name LIKE \'\_Module\_Meta%\', \'0\', h.state) AS `status_code`,
             CASE
                 WHEN h.state = 0 THEN \'UP\'
                 WHEN h.state = 1 THEN \'DOWN\'
@@ -750,7 +750,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             INNER JOIN `:dbstg`.`hosts` h
               ON h.instance_id = i.instance_id
               AND h.enabled = \'1\'
-              AND h.name NOT LIKE \'_Module_BAM%\'';
+              AND h.name NOT LIKE \'\_Module\_BAM%\'';
 
         $idsListKey = [];
         foreach ($hostIds as $index => $id) {
@@ -807,8 +807,8 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
         $request =
             'SELECT DISTINCT h.*,
             i.name AS poller_name,
-              IF (h.display_name LIKE \'_Module_Meta%\', \'Meta\', h.display_name) AS display_name,
-              IF (h.display_name LIKE \'_Module_Meta%\', \'0\', h.state) AS `status_code`,
+              IF (h.display_name LIKE \'\_Module\_Meta%\', \'Meta\', h.display_name) AS display_name,
+              IF (h.display_name LIKE \'\_Module\_Meta%\', \'0\', h.state) AS `status_code`,
             CASE
                 WHEN h.state = 0 THEN \'UP\'
                 WHEN h.state = 1 THEN \'DOWN\'
@@ -825,7 +825,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             INNER JOIN `:dbstg`.`hosts` h
               ON h.instance_id = i.instance_id
               AND h.enabled = \'1\'
-              AND h.name NOT LIKE \'_Module_BAM%\''
+              AND h.name NOT LIKE \'\_Module\_BAM%\''
             . $accessGroupFilter;
 
         $idsListKey = [];
@@ -1182,8 +1182,8 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
               srv.*,
               h.host_id, h.alias AS host_alias, h.name AS host_name,
               cv.value as criticality,
-              IF (h.display_name LIKE \'_Module_Meta%\', \'Meta\', h.display_name) AS host_display_name,
-              IF (h.display_name LIKE \'_Module_Meta%\', \'0\', h.state) AS host_state,
+              IF (h.display_name LIKE \'\_Module\_Meta%\', \'Meta\', h.display_name) AS host_display_name,
+              IF (h.display_name LIKE \'\_Module\_Meta%\', \'0\', h.state) AS host_state,
               srv.state AS `status_code`,
               CASE
                 WHEN srv.state = 0 THEN "' . ResourceStatus::STATUS_NAME_OK . '"
@@ -1203,7 +1203,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             . $accessGroupFilter
             . ' INNER JOIN `:dbstg`.hosts h
               ON h.host_id = srv.host_id
-              AND h.name NOT LIKE \'_Module_BAM%\'
+              AND h.name NOT LIKE \'\_Module\_BAM%\'
               AND h.enabled = \'1\'
               AND srv.enabled = \'1\'
             INNER JOIN `:dbstg`.instances i
@@ -1375,7 +1375,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             . ' INNER JOIN `:dbstg`.hosts h
               ON h.host_id = srv.host_id
               AND h.host_id = :host_id
-              AND h.name NOT LIKE \'_Module_BAM%\'
+              AND h.name NOT LIKE \'\_Module\_BAM%\'
               AND h.enabled = \'1\'
               AND srv.enabled = \'1\'
             INNER JOIN `:dbstg`.instances i
@@ -1571,13 +1571,13 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
         }
 
         $request =
-            'SELECT DISTINCT 
+            'SELECT DISTINCT
               srv.service_id, srv.display_name, srv.description, srv.host_id, srv.state
             FROM :dbstg.services srv
             INNER JOIN :dbstg.hosts h
               ON h.host_id = srv.host_id
               AND h.enabled = \'1\'
-              AND h.name NOT LIKE \'_Module_BAM%\''
+              AND h.name NOT LIKE \'\_Module\_BAM%\''
             . $accessGroupFilter
             . ' WHERE srv.host_id = ?
               AND srv.enabled = 1
@@ -1640,7 +1640,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             INNER JOIN :dbstg.hosts h
               ON h.host_id = srv.host_id
               AND h.enabled = \'1\'
-              AND h.name NOT LIKE \'_Module_BAM%\''
+              AND h.name NOT LIKE \'\_Module\_BAM%\''
             . $accessGroupFilter
             . ' WHERE srv.host_id IN (' . str_repeat('?,', count($hostIds) - 1) . '?)
               AND srv.enabled = 1
@@ -1696,7 +1696,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             INNER JOIN :dbstg.`hosts` h
               ON h.host_id = srv.host_id
               AND h.enabled = \'1\'
-              AND h.name NOT LIKE \'_Module_BAM%\'
+              AND h.name NOT LIKE \'\_Module\_BAM%\'
             INNER JOIN `:dbstg`.`services_servicegroups` ssg
               ON ssg.service_id = srv.service_id
               AND ssg.host_id = srv.host_id'
