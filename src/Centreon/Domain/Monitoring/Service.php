@@ -182,7 +182,7 @@ class Service implements EntityDescriptorMetadataInterface
     protected $maxCheckAttempts;
 
     /**
-     * @var \DateTime
+     * @var \DateTime|null
      */
     protected $nextCheck;
 
@@ -227,9 +227,19 @@ class Service implements EntityDescriptorMetadataInterface
     protected $flapping;
 
     /**
-     * @var \Centreon\Domain\Monitoring\ResourceStatus|null
+     * @var \Centreon\Domain\Monitoring\ResourceStatus
      */
     private $status;
+
+    /**
+     * @var string|null
+     */
+    protected $actionUrl;
+
+    /**
+     * @var string|null
+     */
+    protected $notesUrl;
 
     /**
      * {@inheritdoc}
@@ -640,7 +650,7 @@ class Service implements EntityDescriptorMetadataInterface
 
     /**
      * @param \DateTime|null $nextCheck
-     * @return Service|null
+     * @return Service
      */
     public function setNextCheck(?\DateTime $nextCheck): Service
     {
@@ -919,18 +929,18 @@ class Service implements EntityDescriptorMetadataInterface
     }
 
     /**
-     * @return \Centreon\Domain\Monitoring\ResourceStatus|null
+     * @return \Centreon\Domain\Monitoring\ResourceStatus
      */
-    public function getStatus(): ?ResourceStatus
+    public function getStatus(): ResourceStatus
     {
         return $this->status;
     }
 
     /**
-     * @param \Centreon\Domain\Monitoring\ResourceStatus|null $status
-     * @return \Centreon\Domain\Monitoring\Resource
+     * @param \Centreon\Domain\Monitoring\ResourceStatus $status
+     * @return self
      */
-    public function setStatus(?ResourceStatus $status): self
+    public function setStatus(ResourceStatus $status): self
     {
         $this->status = $status;
 
@@ -944,10 +954,46 @@ class Service implements EntityDescriptorMetadataInterface
     {
         $duration = null;
 
-        if ($this->getLastStateChange()) {
+        if ($this->getLastStateChange() !== null) {
             $duration = CentreonDuration::toString(time() - $this->getLastStateChange()->getTimestamp());
         }
 
         return $duration;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getActionUrl(): ?string
+    {
+        return $this->actionUrl;
+    }
+
+    /**
+     * @param string|null $actionUrl
+     * @return self
+     */
+    public function setActionUrl(?string $actionUrl): self
+    {
+        $this->actionUrl = $actionUrl;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getNotesUrl(): ?string
+    {
+        return $this->notesUrl;
+    }
+
+    /**
+     * @param string|null $notesUrl
+     * @return self
+     */
+    public function setNotesUrl(?string $notesUrl): self
+    {
+        $this->notesUrl = $notesUrl;
+        return $this;
     }
 }

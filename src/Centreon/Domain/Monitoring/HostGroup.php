@@ -46,7 +46,7 @@ class HostGroup implements EntityDescriptorMetadataInterface
     private $hosts = [];
 
     /**
-     * @var string|null
+     * @var string
      */
     private $name;
 
@@ -79,18 +79,18 @@ class HostGroup implements EntityDescriptorMetadataInterface
     }
 
     /**
-     * @return string|null
+     * @return string
      */
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
 
     /**
-     * @param string|null $name
+     * @param string $name
      * @return HostGroup
      */
-    public function setName(?string $name): HostGroup
+    public function setName(string $name): HostGroup
     {
         $this->name = $name;
         return $this;

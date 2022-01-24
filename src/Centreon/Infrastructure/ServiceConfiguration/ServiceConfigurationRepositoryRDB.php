@@ -30,6 +30,7 @@ use Centreon\Domain\ServiceConfiguration\Interfaces\ServiceConfigurationReposito
 use Centreon\Domain\ServiceConfiguration\Service;
 use Centreon\Domain\ServiceConfiguration\ServiceMacro;
 use Centreon\Infrastructure\AccessControlList\AccessControlListRepositoryTrait;
+use Centreon\Infrastructure\CentreonLegacyDB\StatementCollector;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
@@ -176,7 +177,7 @@ class ServiceConfigurationRepositoryRDB extends AbstractRepositoryDRB implements
     /**
      * @inheritDoc
      */
-    public function findOnDemandServiceMacros(int $serviceId, bool $isUsingInheritance = false): array
+    public function findOnDemandServiceMacros(int $serviceId, bool $useInheritance = false): array
     {
         /* CTE recurse request next release:
          *       WITH RECURSIVE inherite AS (
@@ -209,7 +210,7 @@ class ServiceConfigurationRepositoryRDB extends AbstractRepositoryDRB implements
          */
         $request = $this->translateDbName(
             'SELECT
-                srv.service_id AS service_id, demand.svc_macro_id AS id, 
+                srv.service_id AS service_id, demand.svc_macro_id AS id,
                 svc_macro_name AS name, svc_macro_value AS `value`,
                 macro_order AS `order`, is_password, description, service_template_model_stm_id
              FROM `:db`.service srv
@@ -240,7 +241,7 @@ class ServiceConfigurationRepositoryRDB extends AbstractRepositoryDRB implements
                     $record
                 );
             }
-            if (!$isUsingInheritance) {
+            if (!$useInheritance) {
                 break;
             }
         }
