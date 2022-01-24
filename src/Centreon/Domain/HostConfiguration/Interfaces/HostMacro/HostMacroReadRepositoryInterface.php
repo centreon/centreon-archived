@@ -35,7 +35,7 @@ interface HostMacroReadRepositoryInterface
      * Find all service macros for the service.
      *
      * @param int $hostId Id of the Host
-     * @param bool $useInheritance Indicates whether to use inheritance to find service macros (FALSE by default)
+     * @param bool $useInheritance Indicates whether to use inheritance to find service macros
      * @return HostMacro[] List of host macros found
      * @throws \Throwable
      */
