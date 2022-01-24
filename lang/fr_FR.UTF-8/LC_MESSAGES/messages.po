@@ -16435,8 +16435,8 @@ msgstr "caractères majuscules"
 msgid "lowercase characters"
 msgstr "caractères minuscules"
 
-msgid "integer characters"
-msgstr "caractères numériques"
+msgid "numbers"
+msgstr "nombres"
 
 msgid "special characters among '%s'"
 msgstr "caractères spéciaux parmi '%s'"
@@ -16452,6 +16452,9 @@ msgstr "Votre mot de passe expirera dans %s jours."
 
 msgid "Security policy not found. Please verify that your installation is valid"
 msgstr "Politique de sécurité non trouvée. Veuillez vérifier que votre installation est valide"
+
+msgid "Error while reading local provider configuration"
+msgstr "Erreur lors de la lecture de la configuration du fournisseur local"
 
 msgid "Your autologin key must be different than your current password"
 msgstr "Votre clé d'autologin doit être différente de votre mot de passe actuel"

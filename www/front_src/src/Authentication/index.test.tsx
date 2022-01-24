@@ -22,7 +22,7 @@ import {
   retrievedSecurityPolicyAPI,
 } from './Form/defaults';
 import { securityPolicyEndpoint } from './api/endpoints';
-import { SecurityPolicyAPI } from './models';
+import { SecurityPolicyToAPI } from './models';
 
 import Authentication from '.';
 
@@ -39,7 +39,7 @@ const cancelTokenPutParams = {
 
 const renderAuthentication = (): RenderResult => render(<Authentication />);
 
-const mockGetSecurityPolicy = (securityPolicy: SecurityPolicyAPI): void => {
+const mockGetSecurityPolicy = (securityPolicy: SecurityPolicyToAPI): void => {
   mockedAxios.get.mockReset();
   mockedAxios.get.mockResolvedValue({
     data: securityPolicy,
@@ -74,7 +74,7 @@ describe('Authentication', () => {
     expect(screen.getByText(labelPasswordBlockingPolicy)).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(screen.getByText(labelSave)).not.toBeDisabled();
+      expect(screen.getByText(labelSave)).toBeDisabled();
     });
 
     userEvent.type(
@@ -92,8 +92,10 @@ describe('Authentication', () => {
       expect(mockedAxios.put).toHaveBeenCalledWith(
         securityPolicyEndpoint,
         {
-          ...defaultSecurityPolicyAPI,
-          password_min_length: 45,
+          password_security_policy: {
+            ...defaultSecurityPolicyAPI.password_security_policy,
+            password_min_length: 45,
+          },
         },
         cancelTokenPutParams,
       );
@@ -190,8 +192,10 @@ describe('Authentication', () => {
       expect(mockedAxios.put).toHaveBeenCalledWith(
         securityPolicyEndpoint,
         {
-          ...retrievedSecurityPolicyAPI,
-          attempts: 2,
+          password_security_policy: {
+            ...retrievedSecurityPolicyAPI.password_security_policy,
+            attempts: 2,
+          },
         },
         cancelTokenPutParams,
       );

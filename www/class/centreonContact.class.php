@@ -34,7 +34,7 @@
  *
  */
 
-use Core\Domain\Security\Model\SecurityPolicy;
+use Core\Domain\Security\ProviderConfiguration\Local\Model\Configuration;
 
 class CentreonContact
 {
@@ -252,6 +252,26 @@ class CentreonContact
     }
 
     /**
+     * Get password security policy
+     *
+     * @return array<string,mixed>
+     */
+    public function getPasswordSecurityPolicy(): array
+    {
+        $result = $this->db->query(
+            "SELECT `custom_configuration` FROM `provider_configuration` WHERE `name` = 'local'"
+        );
+        $configuration = $result->fetch(\PDO::FETCH_ASSOC);
+        if ($configuration === false || empty($configuration['custom_configuration'])) {
+            throw new \Exception('Password security policy not found');
+        }
+
+        $securityPolicyData = json_decode($configuration['custom_configuration'], true)['password_security_policy'];
+
+        return $securityPolicyData;
+    }
+
+    /**
      * Check if a password respects configured policy
      *
      * @param string $password
@@ -261,16 +281,16 @@ class CentreonContact
      */
     public function respectPasswordPolicyOrFail(string $password, ?int $contactId): void
     {
-        $result = $this->db->query("SELECT * from password_security_policy");
-        $passwordPolicy = $result->fetch(\PDO::FETCH_ASSOC);
-        if ($passwordPolicy === false) {
-            throw new \Exception('Password security policy not found');
-        }
+        $passwordSecurityPolicy = $this->getPasswordSecurityPolicy();
 
-        $this->respectPasswordCharactersOrFail($passwordPolicy, $password);
+        $this->respectPasswordCharactersOrFail($passwordSecurityPolicy, $password);
 
         if ($contactId !== null) {
-            $this->respectPasswordChangePolicyOrFail($passwordPolicy, $password, $contactId);
+            $this->respectPasswordChangePolicyOrFail(
+                $passwordSecurityPolicy,
+                $password,
+                $contactId,
+            );
         }
     }
 
@@ -295,21 +315,21 @@ class CentreonContact
         }
 
         $characterRules = [
-            'uppercase_characters' => [
+            'has_uppercase_characters' => [
                 'pattern' => '/[A-Z]/',
                 'error_message' =>  _("uppercase characters"),
             ],
-            'lowercase_characters' => [
+            'has_lowercase_characters' => [
                 'pattern' => '/[a-z]/',
                 'error_message' =>  _("lowercase characters"),
             ],
-            'integer_characters' => [
+            'has_numbers' => [
                 'pattern' => '/[0-9]/',
-                'error_message' =>  _("integer characters"),
+                'error_message' =>  _("numbers"),
             ],
-            'special_characters' => [
-                'pattern' => '/[' . SecurityPolicy::SPECIAL_CHARACTERS_LIST . ']/',
-                'error_message' => sprintf(_("special characters among '%s'"), SecurityPolicy::SPECIAL_CHARACTERS_LIST),
+            'has_special_characters' => [
+                'pattern' => '/[' . Configuration::SPECIAL_CHARACTERS_LIST . ']/',
+                'error_message' => sprintf(_("special characters among '%s'"), Configuration::SPECIAL_CHARACTERS_LIST),
             ],
         ];
         $characterPolicyErrorMessages = [];
@@ -360,7 +380,7 @@ class CentreonContact
             }
         };
 
-        if ((bool) $passwordPolicy['can_reuse_password'] === false) {
+        if ((bool) $passwordPolicy['can_reuse_passwords'] === false) {
             $statement = $this->db->prepare(
                 "SELECT id, password FROM `contact_password` WHERE `contact_id` = :contactId"
             );

@@ -27,28 +27,33 @@ $centreonLog = new CentreonLog();
 $versionOfTheUpgrade = 'UPGRADE - 22.04.0-beta.1: ';
 
 try {
-    $errorMessage = "Unable to create table 'password_security_policy'";
+    $errorMessage = "Unable to add column 'custom_configuration' to table 'provider_configuration'";
     $pearDB->query(
-        "CREATE TABLE `password_security_policy` (
-        `password_length` tinyint UNSIGNED NOT NULL DEFAULT 12,
-        `uppercase_characters` enum('0', '1') NOT NULL DEFAULT '1',
-        `lowercase_characters` enum('0', '1') NOT NULL DEFAULT '1',
-        `integer_characters` enum('0', '1') NOT NULL DEFAULT '1',
-        `special_characters` enum('0', '1') NOT NULL DEFAULT '1',
-        `attempts` int(11) UNSIGNED NOT NULL DEFAULT 5,
-        `blocking_duration` int(11) UNSIGNED NOT NULL DEFAULT 900,
-        `password_expiration` int(11) UNSIGNED NOT NULL DEFAULT 7776000,
-        `delay_before_new_password` int(11) UNSIGNED NOT NULL DEFAULT 3600,
-        `can_reuse_password` enum('0', '1') NOT NULL DEFAULT '0')"
+        "ALTER TABLE `provider_configuration` ADD COLUMN `custom_configuration` JSON NOT NULL AFTER `name`"
     );
 
-    $errorMessage = "Unable to insert default configuration in 'password_security_policy'";
-    $pearDB->query(
-        "INSERT INTO `password_security_policy`
-        (`password_length`, `uppercase_characters`, `lowercase_characters`, `integer_characters`,
-        `special_characters`, `attempts`, `blocking_duration`, `password_expiration`, `delay_before_new_password`)
-        VALUES (12, '1', '1', '1', '1', 5, 900, 7776000, 3600)"
+    $errorMessage = "Unable to insert default local security policy configuration";
+    $localProviderConfiguration = json_encode([
+        "password_security_policy" => [
+            "password_length" => 12,
+            "has_uppercase_characters" => true,
+            "has_lowercase_characters" => true,
+            "has_numbers" => true,
+            "has_special_characters" => true,
+            "attempts" => 5,
+            "blocking_duration" => 900,
+            "password_expiration" => 7776000,
+            "delay_before_new_password" => 3600,
+            "can_reuse_passwords" => false,
+        ],
+    ]);
+    $statement = $pearDB->prepare(
+        "UPDATE `provider_configuration`
+        SET `custom_configuration` = :localProviderConfiguration
+        WHERE `name` = 'local'"
     );
+    $statement->bindValue(':localProviderConfiguration', $localProviderConfiguration, \PDO::PARAM_STR);
+    $statement->execute();
 
     $errorMessage = "Unable to create table 'contact_password'";
     $pearDB->query(

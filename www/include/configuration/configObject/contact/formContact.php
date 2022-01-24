@@ -33,6 +33,7 @@
  * For more information : contact@centreon.com
  *
  */
+require_once __DIR__ . '/../../../../class/centreonContact.class.php';
 
 use Centreon\Infrastructure\Event\EventDispatcher;
 
@@ -88,12 +89,11 @@ $dbResult->closeCursor();
  * Get the Security Policy for automatic generation password.
  */
 try {
-    $statement = $pearDB->query("SELECT * from password_security_policy");
+    $passwordSecurityPolicy = (new CentreonContact($pearDB))->getPasswordSecurityPolicy();
+    $encodedPasswordPolicy = json_encode($passwordSecurityPolicy);
 } catch (\PDOException $e) {
     return false;
 }
-$passwordPolicy = $statement->fetch(\PDO::FETCH_ASSOC);
-$encodedPasswordPolicy = json_encode($passwordPolicy);
 
 $cct = array();
 if (($o == MODIFY_CONTACT || $o == WATCH_CONTACT) && $contactId) {

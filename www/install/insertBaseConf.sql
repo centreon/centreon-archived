@@ -1390,10 +1390,11 @@ VALUES
   ('partitioning_backup_directory', '/var/cache/centreon/backup');
 
 -- Insert local authentication provider configuration
-INSERT INTO `provider_configuration` (type, name, is_active, is_forced)
-VALUES ('local', 'local', true, true);
-
-INSERT INTO `password_security_policy`
-(`password_length`, `uppercase_characters`, `lowercase_characters`, `integer_characters`, `special_characters`,
-`attempts`, `blocking_duration`, `password_expiration`, `delay_before_new_password`, `can_reuse_password`)
-VALUES (12, '1', '1', '1', '1', 5, 900, 7776000, 3600, '0');
+INSERT INTO `provider_configuration` (type, name, custom_configuration, is_active, is_forced)
+VALUES (
+  'local',
+  'local',
+  '{"password_security_policy": {"password_length": 12, "has_uppercase_characters": true, "has_lowercase_characters": true, "has_numbers": true, "has_special_characters": true, "attempts": 5, "blocking_duration": 900, "password_expiration": 7776000, "delay_before_new_password": 3600, "can_reuse_passwords": false }}',
+  true,
+  true
+);

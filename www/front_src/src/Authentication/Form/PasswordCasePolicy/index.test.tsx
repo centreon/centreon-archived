@@ -5,7 +5,7 @@ import { Formik } from 'formik';
 
 import { render, RenderResult, screen, waitFor } from '@centreon/ui';
 
-import { SecurityPolicy } from '../../models';
+import { SecurityPolicy, SecurityPolicyFromAPI } from '../../models';
 import useValidationSchema from '../../useValidationSchema';
 import {
   labelForceToUseLowerCase,
@@ -52,8 +52,11 @@ const TestComponent = ({ initialValues }: Props): JSX.Element => {
 };
 
 const renderPasswordCasePolicy = (
-  initialValues: SecurityPolicy = defaultSecurityPolicy,
-): RenderResult => render(<TestComponent initialValues={initialValues} />);
+  initialValues: SecurityPolicyFromAPI = defaultSecurityPolicy,
+): RenderResult =>
+  render(
+    <TestComponent initialValues={initialValues.password_security_policy} />,
+  );
 
 describe('Password case policy', () => {
   it('renders the password case policy fields with values', async () => {

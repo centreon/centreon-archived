@@ -3372,28 +3372,28 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
-  /administration/authentication/local/security-policy:
+  /administration/authentication/providers/local:
     get:
       tags:
         - Administration
-      summary: get security policy configuration for local authentication
+      summary: get local provider configuration with password security policy
       responses:
         '200':
             description: "OK"
             content:
               application/json:
                 schema:
-                  $ref: '#/components/schemas/AuthenticationLocalSecurityPolicy'
+                  $ref: '#/components/schemas/AuthenticationLocalProvider'
     put:
       tags:
         - Administration
-      summary: update security policy configuration for local authentication
+      summary: update local provider configuration
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/AuthenticationLocalSecurityPolicy'
+              $ref: '#/components/schemas/AuthenticationLocalProvider'
       responses:
         '204':
             description: "OK"
@@ -3919,73 +3919,78 @@ components:
           type: integer
           description: "Number of items found"
           example: 1
-    AuthenticationLocalSecurityPolicy:
+    AuthenticationLocalProvider:
       type: object
       required:
-        - password_min_length
-        - has_uppercase
-        - has_lowercase
-        - has_number
-        - has_special_character
-        - attempts
-        - blocking_duration
-        - password_expiration
-        - can_reuse_passwords
-        - delay_before_new_password
+        - password_security_policy
       properties:
-        password_min_length:
-          description: minimum length of the password
-          type: integer
-          minimum: 8
-          maximum: 128
-          default: 12
-        has_uppercase:
-          description: if the password must contain uppercase character
-          type: boolean
-          default: true
-        has_lowercase:
-          description: if the password must contain lowercase character
-          type: boolean
-          default: true
-        has_number:
-          description: if the password must contain number
-          type: boolean
-          default: true
-        has_special_character:
-          description: if the password must contain special character
-          type: boolean
-          default: true
-        attempts:
-          description: login attempts before blocking
-          type: integer
-          nullable: true
-          minimum: 1
-          maximum: 10
-          default: 5
-        blocking_duration:
-          description: blocking duration in seconds before new login attempt
-          type: integer
-          nullable: true
-          maximum: 604800
-          default: 900
-        password_expiration:
-          description: password expiration time in seconds
-          type: integer
-          nullable: true
-          minimum: 604800
-          maximum: 31557600
-          default: 7776000
-        can_reuse_passwords:
-          description: is allowed or not to reuse a password among 3 last
-          type: boolean
-          default: false
-        delay_before_new_password:
-          description: delay in seconds before a new password can be set
-          type: integer
-          nullable: true
-          minimum: 3600
-          maximum: 604800
-          default: 3600
+        password_security_policy:
+          type: object
+          required:
+            - password_min_length
+            - has_uppercase
+            - has_lowercase
+            - has_number
+            - has_special_character
+            - attempts
+            - blocking_duration
+            - password_expiration
+            - can_reuse_passwords
+            - delay_before_new_password
+          properties:
+            password_min_length:
+              description: minimum length of the password
+              type: integer
+              minimum: 8
+              maximum: 128
+              default: 12
+            has_uppercase:
+              description: if the password must contain uppercase character
+              type: boolean
+              default: true
+            has_lowercase:
+              description: if the password must contain lowercase character
+              type: boolean
+              default: true
+            has_number:
+              description: if the password must contain number
+              type: boolean
+              default: true
+            has_special_character:
+              description: if the password must contain special character
+              type: boolean
+              default: true
+            attempts:
+              description: login attempts before blocking
+              type: integer
+              nullable: true
+              minimum: 1
+              maximum: 10
+              default: 5
+            blocking_duration:
+              description: blocking duration in seconds before new login attempt
+              type: integer
+              nullable: true
+              maximum: 604800
+              default: 900
+            password_expiration:
+              description: password expiration time in seconds
+              type: integer
+              nullable: true
+              minimum: 604800
+              maximum: 31557600
+              default: 7776000
+            can_reuse_passwords:
+              description: is allowed or not to reuse a password among 3 last
+              type: boolean
+              default: false
+            delay_before_new_password:
+              description: delay in seconds before a new password can be set
+              type: integer
+              nullable: true
+              minimum: 3600
+              maximum: 604800
+              default: 3600
     Comment.Resources:
       type: object
       required: [ resources ]

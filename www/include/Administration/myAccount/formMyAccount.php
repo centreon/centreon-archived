@@ -42,6 +42,7 @@ require_once __DIR__ . '/../../../class/centreon.class.php';
 require_once "./include/common/common-Func.php";
 
 require_once './class/centreonFeature.class.php';
+require_once __DIR__ . '/../../../class/centreonContact.class.php';
 
 $form = new HTML_QuickFormCustom('Form', 'post', "?p=" . $p);
 
@@ -60,9 +61,8 @@ if (!isset($centreonFeature)) {
 /**
  * Get the Security Policy for automatic generation password.
  */
-$statement = $pearDB->query("SELECT * from password_security_policy");
-$passwordPolicy = $statement->fetch(\PDO::FETCH_ASSOC);
-$encodedPasswordPolicy = json_encode($passwordPolicy);
+$passwordSecurityPolicy = (new CentreonContact($pearDB))->getPasswordSecurityPolicy();
+$encodedPasswordPolicy = json_encode($passwordSecurityPolicy);
 
 /*
  * Database retrieve information for the User
@@ -125,7 +125,8 @@ if ($cct["contact_auth_type"] != 'ldap') {
     $result = $statement->fetchColumn();
     if ($result) {
         $passwordCreationDate = (int) $result;
-        $passwordExpirationDate = $passwordCreationDate + $passwordPolicy['password_expiration'];
+        $passwordExpirationDate =
+            $passwordCreationDate + $passwordSecurityPolicy['password_expiration'];
         $isPasswordExpired = time() > $passwordExpirationDate;
         if ($isPasswordExpired) {
             $expirationMessage = _("Your password has expired. Please change it.");

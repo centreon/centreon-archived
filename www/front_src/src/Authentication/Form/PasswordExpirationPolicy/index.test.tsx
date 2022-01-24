@@ -5,7 +5,7 @@ import { Formik } from 'formik';
 
 import { render, RenderResult, screen, waitFor } from '@centreon/ui';
 
-import { SecurityPolicy } from '../../models';
+import { SecurityPolicy, SecurityPolicyFromAPI } from '../../models';
 import useValidationSchema from '../../useValidationSchema';
 import {
   defaultSecurityPolicy,
@@ -50,8 +50,11 @@ const TestComponent = ({ initialValues }: Props): JSX.Element => {
 };
 
 const renderPasswordExpirationPolicy = (
-  initialValues: SecurityPolicy = defaultSecurityPolicy,
-): RenderResult => render(<TestComponent initialValues={initialValues} />);
+  initialValues: SecurityPolicyFromAPI = defaultSecurityPolicy,
+): RenderResult =>
+  render(
+    <TestComponent initialValues={initialValues.password_security_policy} />,
+  );
 
 describe('Password expiration policy', () => {
   it('renders the password expiration policy fields with values', async () => {
@@ -89,7 +92,9 @@ describe('Password expiration policy', () => {
   });
 
   it('displays an error message when the password expiration time is 12 months and 1 day', async () => {
-    renderPasswordExpirationPolicy(securityPolicyWithInvalidPasswordExpiration);
+    renderPasswordExpirationPolicy({
+      password_security_policy: securityPolicyWithInvalidPasswordExpiration,
+    });
 
     await waitFor(() => {
       expect(
@@ -127,9 +132,9 @@ describe('Password expiration policy', () => {
   });
 
   it('displays an error message when the delay before new password time is 8 days', async () => {
-    renderPasswordExpirationPolicy(
-      securityPolicyWithInvalidDelayBeforeNewPassword,
-    );
+    renderPasswordExpirationPolicy({
+      password_security_policy: securityPolicyWithInvalidDelayBeforeNewPassword,
+    });
 
     await waitFor(() => {
       expect(
