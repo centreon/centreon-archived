@@ -3,26 +3,21 @@ import * as React from 'react';
 import { equals, reject, path, isNil } from 'ramda';
 import axios from 'axios';
 import mockDate from 'mockdate';
+import userEvent from '@testing-library/user-event';
+import { Provider } from 'jotai';
+
 import {
   render,
   waitFor,
   fireEvent,
   RenderResult,
   act,
-} from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { Provider } from 'jotai';
-
-import {
   ThemeProvider,
   setUrlQueryParameters,
   getUrlQueryParameters,
   copyToClipboard,
 } from '@centreon/ui';
-import {
-  refreshIntervalAtom,
-  userAtom,
-} from '@centreon/centreon-frontend/packages/ui-context/src';
+import { refreshIntervalAtom, userAtom } from '@centreon/ui-context';
 
 import {
   labelMore,
@@ -579,7 +574,7 @@ describe(Details, () => {
 
     expect(getByText('10')).toBeInTheDocument();
 
-    expect(getByText('CRITICAL')).toBeInTheDocument();
+    expect(getByText('Critical')).toBeInTheDocument();
     expect(getByText('Centreon')).toBeInTheDocument();
 
     const fqdnText = await findByText(labelFqdn);
@@ -795,11 +790,11 @@ describe(Details, () => {
       },
     ]);
 
-    const { getByTitle } = renderDetails();
+    const { getByLabelText } = renderDetails();
 
     await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
 
-    fireEvent.click(getByTitle(labelCopy));
+    fireEvent.click(getByLabelText(labelCopy));
 
     await waitFor(() =>
       expect(copyToClipboard).toHaveBeenCalledWith(
@@ -1175,13 +1170,13 @@ describe(Details, () => {
       expect.anything(),
     );
 
-    expect(getByText('OK')).toBeInTheDocument();
+    expect(getByText('Ok')).toBeInTheDocument();
     expect(getByText('Ping')).toBeInTheDocument();
     expect(getByText('OK - 127.0.0.1 rta 0ms lost 0%'));
     expect(getByText('22m')).toBeInTheDocument();
 
     expect(getByText('Disk')).toBeInTheDocument();
-    expect(getByText('UNKNOWN')).toBeInTheDocument();
+    expect(getByText('Unknown')).toBeInTheDocument();
     expect(getByText('No output'));
     expect(getByText('21m')).toBeInTheDocument();
 
@@ -1199,12 +1194,6 @@ describe(Details, () => {
     await waitFor(() => {
       expect(queryByText(labelServices)).toBeNull();
     });
-
-    // act(() => {
-    //   result.current.setServicesTabParameters({
-    //     options: defaultGraphOptions,
-    //   });
-    // });
   });
 
   it('displays the linked service graphs when the Graph tab of a host is clicked', async () => {
@@ -1240,7 +1229,7 @@ describe(Details, () => {
 
     await findByText(retrievedPerformanceGraphData.global.title);
 
-    userEvent.click(getByText(label7Days).parentElement as HTMLElement);
+    userEvent.click(getByText(label7Days) as HTMLElement);
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
@@ -1335,7 +1324,7 @@ describe(Details, () => {
     expect(getByText('01/20/2020 7:00 AM')).toBeInTheDocument();
     expect(getByText('01/21/2020 7:00 AM')).toBeInTheDocument();
 
-    userEvent.click(getByText(label7Days).parentElement as HTMLElement);
+    userEvent.click(getByText(label7Days) as HTMLElement);
 
     expect(getByText('01/14/2020 7:00 AM')).toBeInTheDocument();
     expect(getByText('01/21/2020 7:00 AM')).toBeInTheDocument();
@@ -1658,7 +1647,7 @@ describe(Details, () => {
       ),
     );
 
-    userEvent.click(getByText(label7Days).parentElement as HTMLElement);
+    userEvent.click(getByText(label7Days) as HTMLElement);
 
     await waitFor(() =>
       expect(mockedAxios.get).toHaveBeenCalledWith(

@@ -29,7 +29,7 @@ const EventAnnotations = ({
   color,
   resourceId,
 }: Props): JSX.Element => {
-  const events = filter<TimelineEvent>(propEq('type', type), timeline);
+  const events = filter(propEq('type', type), timeline);
 
   return (
     <>

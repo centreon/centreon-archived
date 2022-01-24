@@ -93,7 +93,7 @@ class CentreonTaskService extends CentreonWebServiceAbstract
      *
      * Get Status of task
      *
-     * @return array
+     * @return array<string,bool|string>
      * @throws \RestBadRequestException
      * @example ['success' => true, 'status' => 'status of the task']
      *
@@ -112,7 +112,7 @@ class CentreonTaskService extends CentreonWebServiceAbstract
     /**
      * Find task status by parent id (used on remote server)
      *
-     * @return array
+     * @return array<string,bool|string>
      * @throws \RestBadRequestException
      * @example ['success' => true, 'status' => 'status of the task']
      *

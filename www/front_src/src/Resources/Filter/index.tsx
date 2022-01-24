@@ -25,15 +25,15 @@ import { useTranslation } from 'react-i18next';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 import { useAtom } from 'jotai';
 
-import CloseIcon from '@material-ui/icons/Close';
+import CloseIcon from '@mui/icons-material/Close';
 import {
   CircularProgress,
   ClickAwayListener,
-  makeStyles,
   MenuItem,
   Paper,
   Popper,
-} from '@material-ui/core';
+} from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 
 import {
   MemoizedFilter,
@@ -41,6 +41,7 @@ import {
   IconButton,
   getData,
   useRequest,
+  LoadingSkeleton,
 } from '@centreon/ui';
 
 import {
@@ -51,16 +52,13 @@ import {
   labelClearFilter,
 } from '../translatedLabels';
 
-import SaveFilter from './Save';
 import FilterLoadingSkeleton from './FilterLoadingSkeleton';
-import Criterias from './Criterias';
 import {
   standardFilterById,
   unhandledProblemsFilter,
   resourceProblemsFilter,
   allFilter,
 } from './models';
-import SelectFilter from './Fields/SelectFilter';
 import {
   getAutocompleteSuggestions,
   getDynamicCriteriaParametersAndValue,
@@ -77,6 +75,20 @@ import {
   setNewFilterDerivedAtom,
 } from './filterAtoms';
 
+const renderClearFilter = (onClear) => (): JSX.Element => {
+  const { t } = useTranslation();
+
+  return (
+    <IconButton
+      ariaLabel={t(labelClearFilter)}
+      size="small"
+      title={t(labelClearFilter)}
+      onClick={onClear}
+    >
+      <CloseIcon color="action" fontSize="small" />
+    </IconButton>
+  );
+};
 interface DynamicCriteriaResult {
   result: Array<{ name: string }>;
 }
@@ -95,6 +107,10 @@ const useStyles = makeStyles((theme) => ({
   },
   loader: { display: 'flex', justifyContent: 'center' },
 }));
+
+const SaveFilter = React.lazy(() => import('./Save'));
+const SelectFilter = React.lazy(() => import('./Fields/SelectFilter'));
+const Criterias = React.lazy(() => import('./Criterias'));
 
 const debounceTimeInMs = 500;
 
@@ -152,8 +168,8 @@ const Filter = (): JSX.Element => {
 
     const selectedValues = remove(-1, 1, values);
 
-    sendDynamicCriteriaValueRequests(
-      buildAutocompleteEndpoint({
+    sendDynamicCriteriaValueRequests({
+      endpoint: buildAutocompleteEndpoint({
         limit: 5,
         page: 1,
         search: {
@@ -172,7 +188,7 @@ const Filter = (): JSX.Element => {
           },
         },
       }),
-    ).then(({ result }): void => {
+    }).then(({ result }): void => {
       const names = pluck('name', result);
 
       const lastValueEqualsToAResult = find(equals(lastValue), names);
@@ -501,34 +517,39 @@ const Filter = (): JSX.Element => {
     <MemoizedFilter
       content={
         <div className={classes.container}>
-          <SaveFilter />
+          <React.Suspense
+            fallback={
+              <LoadingSkeleton height={24} variant="circular" width={24} />
+            }
+          >
+            <SaveFilter />
+          </React.Suspense>
           {sendingFilter ? (
             <FilterLoadingSkeleton />
           ) : (
-            <SelectFilter
-              ariaLabel={t(labelStateFilter)}
-              options={options.map(pick(['id', 'name', 'type']))}
-              selectedOptionId={
-                canDisplaySelectedFilter ? currentFilter.id : ''
-              }
-              onChange={changeFilter}
-            />
+            <React.Suspense fallback={<FilterLoadingSkeleton />}>
+              <SelectFilter
+                ariaLabel={t(labelStateFilter)}
+                options={options.map(pick(['id', 'name', 'type']))}
+                selectedOptionId={
+                  canDisplaySelectedFilter ? currentFilter.id : ''
+                }
+                onChange={changeFilter}
+              />
+            </React.Suspense>
           )}
-          <Criterias />
+          <React.Suspense
+            fallback={
+              <LoadingSkeleton height={24} variant="circular" width={24} />
+            }
+          >
+            <Criterias />
+          </React.Suspense>
           <ClickAwayListener onClickAway={closeSuggestionPopover}>
             <div>
               <SearchField
                 fullWidth
-                EndAdornment={(): JSX.Element => (
-                  <IconButton
-                    ariaLabel={t(labelClearFilter)}
-                    size="small"
-                    title={t(labelClearFilter)}
-                    onClick={clearFilter}
-                  >
-                    <CloseIcon color="action" fontSize="small" />
-                  </IconButton>
-                )}
+                EndAdornment={renderClearFilter(clearFilter)}
                 inputRef={searchRef as React.RefObject<HTMLInputElement>}
                 placeholder={t(labelSearch)}
                 value={search}

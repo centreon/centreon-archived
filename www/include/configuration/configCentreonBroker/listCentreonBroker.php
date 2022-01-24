@@ -65,7 +65,6 @@ $tpl->assign("headerMenu_name", _("Name"));
 $tpl->assign("headerMenu_desc", _("Requester"));
 $tpl->assign("headerMenu_outputs", _("Outputs"));
 $tpl->assign("headerMenu_inputs", _("Inputs"));
-$tpl->assign("headerMenu_loggers", _("Loggers"));
 $tpl->assign("headerMenu_status", _("Status"));
 $tpl->assign("headerMenu_options", _("Options"));
 
@@ -167,16 +166,6 @@ for ($i = 0; $config = $dbResult->fetch(); $i++) {
     $row = $res->fetch();
     $inputNumber = $row["num"];
 
-    // Number of logger
-    $res = $pearDB->query(
-        "SELECT COUNT(DISTINCT(config_group_id)) as num " .
-        "FROM cfg_centreonbroker_info " .
-        "WHERE config_group = 'logger' " .
-        "AND config_id = " . $config['config_id']
-    );
-    $row = $res->fetch();
-    $loggerNumber = $row["num"];
-
     $elemArr[$i] = array(
         "MenuClass" => "list_" . $style,
         "RowMenu_select" => $selectedElements->toHtml(),
@@ -191,7 +180,6 @@ for ($i = 0; $config = $dbResult->fetch(); $i++) {
         ),
         "RowMenu_inputs" => $inputNumber,
         "RowMenu_outputs" => $outputNumber,
-        "RowMenu_loggers" => $loggerNumber,
         "RowMenu_status" => $config["config_activate"] ? _("Enabled") : _("Disabled"),
         "RowMenu_badge" => $config["config_activate"] ? "service_ok" : "service_critical",
         "RowMenu_options" => $moptions

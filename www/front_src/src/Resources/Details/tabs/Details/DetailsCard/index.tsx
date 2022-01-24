@@ -1,6 +1,7 @@
 import * as React from 'react';
 
-import { Typography, makeStyles } from '@material-ui/core';
+import { Typography } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 
 import Card from '../Card';
 
@@ -15,6 +16,8 @@ const useStyles = makeStyles((theme) => ({
   title: {
     display: 'flex',
     gridGap: theme.spacing(1),
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
   },
 }));
 

@@ -22,8 +22,8 @@ import {
 import { useTranslation } from 'react-i18next';
 import { useAtomValue } from 'jotai/utils';
 
-import { makeStyles, Typography, Theme } from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
+import { Typography, Theme, Skeleton } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 
 import {
   useRequest,
@@ -90,7 +90,7 @@ const useStyles = makeStyles<Theme, MakeStylesProps>((theme) => ({
     gridTemplateRows: ({ graphHeight, displayTitle }): string =>
       `${displayTitle ? 'min-content' : ''} ${theme.spacing(
         2,
-      )}px ${graphHeight}px min-content`,
+      )} ${graphHeight}px min-content`,
     height: '100%',
     width: 'auto',
   },
@@ -101,7 +101,7 @@ const useStyles = makeStyles<Theme, MakeStylesProps>((theme) => ({
     width: '100%',
   },
   graphTranslation: {
-    columnGap: `${theme.spacing(1)}px`,
+    columnGap: theme.spacing(1),
     display: 'grid',
     gridTemplateColumns: ({ canAdjustTimePeriod }): string =>
       canAdjustTimePeriod ? 'min-content auto min-content' : 'auto',
@@ -180,7 +180,9 @@ const PerformanceGraph = ({
       return;
     }
 
-    sendGetGraphDataRequest(endpoint)
+    sendGetGraphDataRequest({
+      endpoint,
+    })
       .then((graphData) => {
         setTimeSeries(getTimeSeries(graphData));
         setBase(graphData.global.base);
@@ -229,7 +231,7 @@ const PerformanceGraph = ({
     return (
       <Skeleton
         height={performanceGraphHeightRef.current}
-        variant="rect"
+        variant="rectangular"
         width="100%"
       />
     );

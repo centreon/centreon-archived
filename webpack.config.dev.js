@@ -15,7 +15,8 @@ const externalInterface = Object.keys(interfaces).find(
   (interfaceName) =>
     !interfaceName.includes('docker') &&
     interfaces[interfaceName][0].family === 'IPv4' &&
-    interfaces[interfaceName][0].internal === false,
+    interfaces[interfaceName][0].internal === false &&
+    process.env.IS_STATIC_PORT_FORWARDED,
 );
 
 const devServerAddress = externalInterface
@@ -59,7 +60,7 @@ module.exports = merge(baseConfig, devConfig, {
   plugins,
   resolve: {
     alias: {
-      '@material-ui/core': path.resolve('./node_modules/@material-ui/core'),
+      '@mui/material': path.resolve('./node_modules/@mui/material'),
       dayjs: path.resolve('./node_modules/dayjs'),
       'react-router-dom': path.resolve('./node_modules/react-router-dom'),
     },

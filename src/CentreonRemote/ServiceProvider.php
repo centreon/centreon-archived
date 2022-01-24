@@ -159,15 +159,15 @@ class ServiceProvider implements AutoloadServiceProviderInterface
             };
 
         $pimple[static::CENTREON_REMOTE_EXPORTER_CACHE] =
-            function (Container $container): Infrastructure\Service\ExporterCacheService {
-                $service = new Infrastructure\Service\ExporterCacheService($container);
+            function (): Infrastructure\Service\ExporterCacheService {
+                $service = new Infrastructure\Service\ExporterCacheService();
 
                 return $service;
             };
 
         $pimple[static::CENTREON_REMOTE_EXPORTER] =
-            function (Container $container): Infrastructure\Service\ExporterService {
-                $service = new Infrastructure\Service\ExporterService($container);
+            function (): Infrastructure\Service\ExporterService {
+                $service = new Infrastructure\Service\ExporterService();
 
                 return $service;
             };
