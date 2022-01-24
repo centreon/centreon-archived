@@ -2874,6 +2874,43 @@ paths:
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /monitoring/resources/hosts/{host_id}/services/{service_id}/{url_type}/redirect:
+    get:
+      tags:
+        - Redirect URL
+      summary: "Redirect to the provided URL for the resource type service"
+      description: |
+        This endpoint will redirect to the URL type provided (action_url / notes_url)
+        with standard and custom macros used in the URL replaced by their actual values
+      parameters:
+        - $ref: '#/components/parameters/HostId'
+        - $ref: '#/components/parameters/ServiceId'
+        - $ref: '#/components/parameters/UrlType'
+      responses:
+        '302':
+          $ref: '#/components/responses/Redirect'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /monitoring/resources/hosts/{host_id}/{url_type}/redirect:
+    get:
+      tags:
+        - Redirect URL
+      summary: "Redirect to the provided URL for the resource type host"
+      description: |
+        This endpoint will redirect to the URL type provided (action_url / notes_url)
+        with standard and custom macros used in the URL replaced by their actual values
+      parameters:
+        - $ref: '#/components/parameters/HostId'
+        - $ref: '#/components/parameters/UrlType'
+      responses:
+        '302':
+          $ref: '#/components/responses/Redirect'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /monitoring/resources/acknowledge:
     post:
       tags:
@@ -3351,6 +3388,15 @@ components:
         type: integer
         format: int64
         example: 5
+    UrlType:
+      in: path
+      name: url_type
+      description: "Type of URL provided"
+      required: true
+      schema:
+        type: string
+        enum: [ action-url, notes-url ]
+        example: action-url
     MetaId:
       in: path
       name: meta_id
@@ -3446,6 +3492,17 @@ components:
               message:
                 type: string
                 example: "You are not authorized to access this resource"
+    Redirect:
+      description: "Redirect"
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int64
+                example: 302
     NotFound:
       description: "Not Found"
     NotFoundHostOrService:

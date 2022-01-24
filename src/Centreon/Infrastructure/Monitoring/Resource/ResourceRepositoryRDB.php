@@ -330,14 +330,14 @@ final class ResourceRepositoryRDB extends AbstractRepositoryDRB implements Resou
             $resource->setIcon($icon);
         }
 
-        // parse parent Resource object
-        $parent = EntityCreator::createEntityByArray(
-            ResourceEntity::class,
-            $data,
-            'parent_'
-        );
+        if ($data['parent_id'] !== null) {
+            // parse parent Resource object
+            $parent = EntityCreator::createEntityByArray(
+                ResourceEntity::class,
+                $data,
+                'parent_'
+            );
 
-        if ($parent->getId()) {
             $parentIcon = EntityCreator::createEntityByArray(
                 Icon::class,
                 $data,
