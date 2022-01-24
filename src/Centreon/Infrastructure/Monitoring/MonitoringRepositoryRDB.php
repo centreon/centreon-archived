@@ -472,7 +472,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
         // This join will only be added if a search parameter corresponding to one of the host parameter
         if ($shouldJoinHost) {
             $subRequest .=
-                ' INNER JOIN `:dbstg`.hosts_hostgroups hhg 
+                ' INNER JOIN `:dbstg`.hosts_hostgroups hhg
                     ON hhg.hostgroup_id = hg.hostgroup_id
                 INNER JOIN `:dbstg`.hosts h
                     ON h.host_id = hhg.host_id
@@ -1687,9 +1687,9 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
         $request =
             'SELECT DISTINCT
 		        ssg.servicegroup_id,
-                srv.service_id, 
-                srv.display_name, 
-                srv.description, 
+                srv.service_id,
+                srv.display_name,
+                srv.description,
                 srv.host_id,
                 srv.state
             FROM `:dbstg`.`services` srv
