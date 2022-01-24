@@ -54,7 +54,7 @@ class Centreon_Object_Contact extends Centreon_Object
         $sql = "UPDATE $this->table SET ";
         $sqlUpdate = "";
         $sqlParams = [];
-        $not_null_attributes = [];
+        $notNullAttributes = [];
 
         if (isset($params['contact_autologin_key'])) {
             $statement = $this->db->prepare("SELECT contact_passwd FROM contact WHERE contact_id = :contactId ");
@@ -73,20 +73,20 @@ class Centreon_Object_Contact extends Centreon_Object
             $sql_attr = "SHOW FIELDS FROM $this->table";
             $res = $this->getResult($sql_attr, [], "fetchAll");
             foreach ($res as $tab) {
-                if ($tab['Null'] == 'NO') {
-                    $not_null_attributes[$tab['Field']] = true;
+                if ($tab['Null'] === 'NO') {
+                    $notNullAttributes[$tab['Field']] = true;
                 }
             }
         }
         foreach ($params as $key => $value) {
-            if ($key == $this->primaryKey) {
+            if ($key === $this->primaryKey) {
                 continue;
             }
-            if ($sqlUpdate != "") {
+            if ($sqlUpdate !== "") {
                 $sqlUpdate .= ",";
             }
             $sqlUpdate .= $key . " = ? ";
-            if ($value === "" && !isset($not_null_attributes[$key])) {
+            if ($value === "" && !isset($notNullAttributes[$key])) {
                 $value = null;
             }
             if (!is_null($value)) {
