@@ -230,7 +230,7 @@ interface MonitoringRepositoryInterface
      *
      * @param int $hostId
      * @param int $serviceId
-     * @return array<string|int, mixed>
+     * @return array<string, string>
      */
     public function findCustomMacrosValues(int $hostId, int $serviceId): array;
 }
