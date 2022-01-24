@@ -28,12 +28,12 @@ use Centreon\Domain\Annotation\EntityDescriptor;
 class HostMacro implements MacroInterface
 {
     /**
-     * @var int|null
+     * @var int
      */
     private $id;
 
     /**
-     * @var string|null Macro name
+     * @var string Macro name
      */
     private $name;
 
@@ -64,48 +64,44 @@ class HostMacro implements MacroInterface
     private $hostId;
 
     /**
-     * @return int|null
+     * @return int
      */
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
 
     /**
-     * @param int|null $id
+     * @param int $id
      * @return self
      */
-    public function setId(?int $id): self
+    public function setId(int $id): self
     {
         $this->id = $id;
         return $this;
     }
 
     /**
-     * @return string|null
+     * @return string
      */
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
 
     /**
-     * @param string|null $name
+     * @param string $name
      * @return self
      */
-    public function setName(?string $name): self
+    public function setName(string $name): self
     {
-        if ($name !== null) {
-            if (strpos($name, '$_HOST') !== 0) {
-                $name = '$_HOST' . $name;
-                if ($name[-1] !== '$') {
-                    $name .= '$';
-                }
+        if (strpos($name, '$_HOST') !== 0) {
+            $name = '$_HOST' . $name;
+            if ($name[-1] !== '$') {
+                $name .= '$';
             }
-            $this->name = strtoupper($name);
-        } else {
-            $this->name = null;
         }
+        $this->name = strtoupper($name);
         return $this;
     }
 

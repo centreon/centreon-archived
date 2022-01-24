@@ -27,4 +27,24 @@ centreon_application_monitoring_resource_details_meta_service:
     controller: 'Centreon\Application\Controller\MonitoringResourceController::detailsMetaService'
     requirements:
         metaId: '\d+'
-    condition: "request.attributes.get('version') >= 2.1"
+    condition: "request.attributes.get('version.is_beta') == true"
+
+centreon_application_monitoring_resource_redirect_url_service:
+    methods: GET
+    path: /monitoring/resources/hosts/{hostId}/services/{serviceId}/{urlType}/redirect
+    controller: 'Centreon\Application\Controller\MonitoringResourceController::redirectResourceExternalLink'
+    requirements:
+        hostId: '\d+'
+        serviceId: '\d+'
+        urlType: '(action-url|notes-url)'
+    condition: "request.attributes.get('version.is_beta') == true"
+
+centreon_application_monitoring_resource_redirect_url_host:
+    methods: GET
+    path: /monitoring/resources/hosts/{hostId}/{urlType}/redirect
+    controller: 'Centreon\Application\Controller\MonitoringResourceController::redirectResourceExternalLink'
+    requirements:
+        hostId: '\d+'
+        urlType: '(action-url|notes-url)'
+    condition: "request.attributes.get('version.is_beta') == true"
+

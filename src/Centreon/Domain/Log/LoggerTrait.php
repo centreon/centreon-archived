@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace Centreon\Domain\Log;
 
 use Psr\Log\LoggerInterface;
+use Centreon\Domain\Contact\Interfaces\ContactInterface;
 
 /**
  * This class is design to provide all the methods for recording events.
@@ -32,9 +33,22 @@ use Psr\Log\LoggerInterface;
 trait LoggerTrait
 {
     /**
+     * @var ContactInterface
+     */
+    private $loggerContact;
+
+    /**
      * @var LoggerInterface
      */
     private $logger;
+    /**
+     * @param ContactInterface $loggerContact
+     * @required
+     */
+    public function setLoggerContact(ContactInterface $loggerContact): void
+    {
+        $this->loggerContact = $loggerContact;
+    }
 
     /**
      * @param LoggerInterface $centreonLogger
