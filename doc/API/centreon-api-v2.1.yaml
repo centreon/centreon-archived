@@ -3399,6 +3399,15 @@ components:
         example: action-url
     MetaId:
       in: path
+      name: url_type
+      description: "Type of URL provided"
+      required: true
+      schema:
+        type: string
+        enum: [ action-url, notes-url ]
+        example: action-url
+    MetaId:
+      in: path
       name: meta_id
       description: "ID of the meta service"
       required: true
@@ -3502,7 +3511,10 @@ components:
               code:
                 type: integer
                 format: int64
-                example: 302
+                example: 403
+              message:
+                type: string
+                example: "You are not authorized to access this resource"
     NotFound:
       description: "Not Found"
     NotFoundHostOrService:

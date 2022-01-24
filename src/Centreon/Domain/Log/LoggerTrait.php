@@ -41,6 +41,12 @@ trait LoggerTrait
      * @var LoggerInterface
      */
     private $logger;
+
+    /**
+     * @var ContactForDebug
+     */
+    private $loggerContactForDebug;
+
     /**
      * @param ContactInterface $loggerContact
      * @required
@@ -48,6 +54,15 @@ trait LoggerTrait
     public function setLoggerContact(ContactInterface $loggerContact): void
     {
         $this->loggerContact = $loggerContact;
+    }
+
+    /**
+     * @param ContactForDebug $loggerContactForDebug
+     * @required
+     */
+    public function setLoggerContactForDebug(ContactForDebug $loggerContactForDebug): void
+    {
+        $this->loggerContactForDebug = $loggerContactForDebug;
     }
 
     /**
