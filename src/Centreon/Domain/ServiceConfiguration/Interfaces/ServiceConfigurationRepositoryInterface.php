@@ -43,11 +43,11 @@ interface ServiceConfigurationRepositoryInterface extends AccessControlListRepos
      * Find all service macros for the service.
      *
      * @param int $serviceId Id of the service
-     * @param bool $isUsingInheritance Indicates whether to use inheritance to find service macros (FALSE by default)
-     * @return array<ServiceMacro> List of service macros found
+     * @param bool $useInheritance Indicates whether to use inheritance to find service macros (FALSE by default)
+     * @return ServiceMacro[] List of service macros found
      * @throws \Throwable
      */
-    public function findOnDemandServiceMacros(int $serviceId, bool $isUsingInheritance = false): array;
+    public function findOnDemandServiceMacros(int $serviceId, bool $useInheritance = false): array;
 
     /**
      * Find the command of a service.

@@ -22,6 +22,8 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\HostConfiguration\Interfaces\HostMacro;
 
+use Centreon\Domain\HostConfiguration\HostMacro;
+
 /**
  * This interface gathers all the reading operations on the repository.
  *
@@ -29,4 +31,13 @@ namespace Centreon\Domain\HostConfiguration\Interfaces\HostMacro;
  */
 interface HostMacroReadRepositoryInterface
 {
+    /**
+     * Find all service macros for the service.
+     *
+     * @param int $hostId Id of the Host
+     * @param bool $useInheritance Indicates whether to use inheritance to find service macros
+     * @return HostMacro[] List of host macros found
+     * @throws \Throwable
+     */
+    public function findOnDemandHostMacros(int $hostId, bool $useInheritance): array;
 }
