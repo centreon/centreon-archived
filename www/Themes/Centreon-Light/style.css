@@ -1758,7 +1758,7 @@ span.show-disabled[disabled]::after {
     float: left;
 }
 
-checkbox,a.infobulle:hover table {
+input[type="checkbox"],a.infobulle:hover table {
     border:1px gray solid;
 }
 td, a.infobulle:hover td {
