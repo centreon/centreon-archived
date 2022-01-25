@@ -425,20 +425,18 @@
         ]
     },
     "symfony/framework-bundle": {
-        "version": "4.4",
+        "version": "5.4",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "master",
-            "version": "4.4",
-            "ref": "3b9c85f14cad439042f88f94a1fd15fb8ed923c9"
+            "version": "5.4",
+            "ref": "3cd216a4d007b78d8554d44a5b1c0a446dab24fb"
         },
         "files": [
-            "config/bootstrap.php",
             "config/packages/cache.yaml",
             "config/packages/framework.yaml",
-            "config/packages/test/framework.yaml",
             "config/preload.php",
-            "config/routes/dev/framework.yaml",
+            "config/routes/framework.yaml",
             "config/services.yaml",
             "public/index.php",
             "src/Controller/.gitignore",
