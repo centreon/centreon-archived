@@ -39,6 +39,8 @@ use Symfony\Component\Security\Http\Authenticator\AbstractAuthenticator;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
+use Symfony\Contracts\Cache\CacheInterface;
+use Symfony\Contracts\Cache\ItemInterface;
 
 /**
  * Class used to authenticate a request by using a session id.
@@ -68,11 +70,13 @@ class SessionAPIAuthenticator extends AbstractAuthenticator
      * @param AuthenticationServiceInterface $authenticationService
      * @param ContactRepositoryInterface $contactRepository
      * @param SessionRepositoryInterface $sessionRepository
+     * @param CacheInterface $cache
      */
     public function __construct(
         AuthenticationServiceInterface $authenticationService,
         ContactRepositoryInterface $contactRepository,
-        SessionRepositoryInterface $sessionRepository
+        SessionRepositoryInterface $sessionRepository,
+        private CacheInterface $cache,
     ) {
         $this->authenticationService = $authenticationService;
         $this->contactRepository = $contactRepository;
@@ -148,6 +152,34 @@ class SessionAPIAuthenticator extends AbstractAuthenticator
      */
     private function getUserAndUpdateSession(string $sessionId): UserInterface
     {
+        return $this->cache->get(
+            'security.authentication.session.' . $sessionId,
+            function (ItemInterface $item) use ($sessionId) {
+                $item->expiresAfter(30);
+
+                if (!$this->authenticationService->isValidToken($sessionId)) {
+                    throw new BadCredentialsException();
+                }
+
+                $this->sessionRepository->deleteExpiredSession();
+
+                $contact = $this->contactRepository->findBySession($sessionId);
+                if ($contact === null) {
+                    throw new SessionUnavailableException();
+                }
+                if ($contact->isActive() === false) {
+                    throw new ContactDisabledException();
+                }
+
+                // force api access to true cause it comes from session
+                $contact
+                    ->setAccessToApiRealTime(true)
+                    ->setAccessToApiConfiguration(true);
+
+                return $contact;
+            }
+        );
+
         if (!$this->authenticationService->isValidToken($sessionId)) {
             throw new BadCredentialsException();
         }

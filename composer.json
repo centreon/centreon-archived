@@ -71,7 +71,8 @@
         "symfony/translation": "5.4.*",
         "symfony/validator": "5.4.*",
         "symfony/yaml": "5.4.*",
-        "psr/container": "1.1.1"
+        "psr/container": "1.1.1",
+        "symfony/cache": "5.4.*"
     },
     "autoload": {
         "psr-4": {

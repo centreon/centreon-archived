@@ -29,6 +29,8 @@ use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
 use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
 use Security\Domain\Authentication\Interfaces\ProviderServiceInterface;
 use Security\Domain\Authentication\Interfaces\SessionRepositoryInterface;
+use Symfony\Contracts\Cache\CacheInterface;
+use Symfony\Contracts\Cache\ItemInterface;
 
 /**
  * @package Security\Authentication
@@ -55,11 +57,13 @@ class AuthenticationService implements AuthenticationServiceInterface
     /**
      * @param AuthenticationRepositoryInterface $authenticationRepository
      * @param ProviderServiceInterface $providerService
+     * @param CacheInterface $cache
      */
     public function __construct(
         AuthenticationRepositoryInterface $authenticationRepository,
         ProviderServiceInterface $providerService,
-        SessionRepositoryInterface $sessionRepository
+        SessionRepositoryInterface $sessionRepository,
+        private CacheInterface $cache,
     ) {
         $this->authenticationRepository = $authenticationRepository;
         $this->sessionRepository = $sessionRepository;
@@ -124,11 +128,15 @@ class AuthenticationService implements AuthenticationServiceInterface
      */
     public function deleteExpiredSecurityTokens(): void
     {
-        try {
-            $this->authenticationRepository->deleteExpiredSecurityTokens();
-        } catch (\Exception $ex) {
-            throw AuthenticationException::deleteExpireToken($ex);
-        }
+        $this->cache->get('security.authentication.delete_expired_tokens', function (ItemInterface $item) {
+            $item->expiresAfter(3600);
+
+            try {
+                $this->authenticationRepository->deleteExpiredSecurityTokens();
+            } catch (\Exception $ex) {
+                throw AuthenticationException::deleteExpireToken($ex);
+            }
+        });
     }
 
     /**
