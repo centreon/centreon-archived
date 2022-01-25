@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005-2020 Centreon
+ * Copyright 2005-2021 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -60,7 +60,7 @@ require_once $path . "DB-Func.php";
 require_once "./include/common/common-Func.php";
 
 /* Set the real page */
-if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
+if (isset($ret) && is_array($ret) && $ret['topology_page'] != "" && $p != $ret['topology_page']) {
     $p = $ret['topology_page'];
 }
 
@@ -92,6 +92,22 @@ if ($action !== false) {
     $o = $action;
 }
 
+/**
+ * Actions forbidden if server is a remote
+ */
+$forbiddenIfRemote = [
+    SERVER_ADD,
+    SERVER_MODIFY,
+    SERVER_ENABLE,
+    SERVER_DISABLE,
+    SERVER_DUPLICATE,
+    SERVER_DELETE
+];
+if ($isRemote && in_array($o, $forbiddenIfRemote)) {
+    require_once($path . "../../core/errors/alt_error.php");
+    exit();
+}
+
 switch ($o) {
     case SERVER_ADD:
     case SERVER_WATCH:
@@ -99,28 +115,52 @@ switch ($o) {
         require_once($path . "formServers.php");
         break;
     case SERVER_ENABLE:
-        if ($server_id !== false) {
-            enableServerInDB($server_id);
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            if ($server_id !== false) {
+                enableServerInDB($server_id);
+            }
+        } else {
+            unvalidFormMessage();
         }
         require_once($path . "listServers.php");
         break;
     case SERVER_DISABLE:
-        if ($server_id !== false) {
-            disableServerInDB($server_id);
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            if ($server_id !== false) {
+                disableServerInDB($server_id);
+            }
+        } else {
+            unvalidFormMessage();
         }
         require_once($path . "listServers.php");
         break;
     case SERVER_DUPLICATE:
-        if (!in_array(false, $select) && !in_array(false, $dupNbr)) {
-            duplicateServer($select, $dupNbr);
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            if (!in_array(false, $select) && !in_array(false, $dupNbr)) {
+                duplicateServer($select, $dupNbr);
+            }
+        } else {
+            unvalidFormMessage();
         }
         require_once($path . "listServers.php");
         break;
     case SERVER_DELETE:
-        if (!in_array(false, $select)) {
-            deleteServerInDB($select);
+        purgeOutdatedCSRFTokens();
+        if (isCSRFTokenValid()) {
+            purgeCSRFToken();
+            if (!in_array(false, $select)) {
+                deleteServerInDB($select);
+            }
+        } else {
+            unvalidFormMessage();
         }
-        //then require the same file than default
+    //then require the same file than default
     default:
         require_once($path . "listServers.php");
         break;

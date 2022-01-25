@@ -65,9 +65,9 @@ if (
     /*
      * Check first for Autologin or Get Authentication
      */
-    isset($_GET["autologin"]) ? $autologin = $_GET["autologin"] : $autologin = 0;
-    isset($_GET["useralias"]) ? $useraliasG = $_GET["useralias"] : $useraliasG = null;
-    isset($_GET["password"]) ? $passwordG = $_GET["password"] : $passwordG = null;
+    $autologin = isset($_GET["autologin"]) ? $_GET["autologin"] : CentreonAuthSSO::AUTOLOGIN_DISABLE;
+    $useraliasG = isset($_GET["useralias"]) ? $_GET["useralias"] : null;
+    $passwordG = isset($_GET["password"]) ? $_GET["password"] : null;
 
     $useraliasP = null;
     $passwordP = null;
@@ -76,8 +76,8 @@ if (
         $passwordP = $form->getSubmitValue('password');
     }
 
-    $useraliasG ? $useralias = $useraliasG : $useralias = $useraliasP;
-    $passwordG ? $password = $passwordG : $password = $passwordP;
+    $useralias = $useraliasG ?? $useraliasP;
+    $password = $passwordG ?? $passwordP;
 
     $token = "";
     if (isset($_REQUEST['token']) && $_REQUEST['token']) {
@@ -85,7 +85,7 @@ if (
     }
 
     if (!isset($encryptType)) {
-        $encryptType = 1;
+        $encryptType = CentreonAuthSSO::ENCRYPT_MD5;
     }
 
     $centreonAuth = new CentreonAuthSSO(
@@ -112,6 +112,46 @@ if (
             $dbResult,
             array(session_id(), $centreon->user->user_id, '1', time(), $_SERVER["REMOTE_ADDR"])
         );
+
+        // saving session token in security_token
+        $expirationSessionDelay = 120;
+        $delayStatement = $pearDB->prepare("SELECT value FROM options WHERE `key` = 'session_expire'");
+        $delayStatement->execute();
+        if (($result = $delayStatement->fetch(\PDO::FETCH_ASSOC)) !== false) {
+            $expirationSessionDelay = $result['value'];
+        }
+        $securityTokenStatement = $pearDB->prepare(
+            "INSERT INTO security_token (`token`, `creation_date`, `expiration_date`) " .
+            "VALUES (:token, :createdAt, :expireAt)"
+        );
+        $securityTokenStatement->bindValue(":token", session_id(), \PDO::PARAM_STR);
+        $securityTokenStatement->bindValue(':createdAt', (new \DateTime())->getTimestamp(), \PDO::PARAM_INT);
+        $securityTokenStatement->bindValue(
+            ':expireAt',
+            (new \DateTime())->add(new \DateInterval('PT' . $expirationSessionDelay . 'M'))->getTimestamp(),
+            \PDO::PARAM_INT
+        );
+        $securityTokenStatement->execute();
+
+        //saving session in security_authentication_tokens
+        $providerTokenId = (int) $pearDB->lastInsertId();
+
+        $configurationStatement = $pearDB->query("SELECT id from provider_configuration WHERE name='local'");
+        if (($result = $configurationStatement->fetch(\PDO::FETCH_ASSOC)) !== false) {
+            $configurationId = (int) $result['id'];
+        } else {
+            throw new \Exception('No local provider found');
+        }
+        $securityAuthenticationTokenStatement = $pearDB->prepare(
+            "INSERT INTO security_authentication_tokens " .
+            "(`token`, `provider_token_id`, `provider_configuration_id`, `user_id`) VALUES " .
+            "(:token, :providerTokenId, :providerConfigurationId, :userId)"
+        );
+        $securityAuthenticationTokenStatement->bindValue(':token', session_id(), \PDO::PARAM_STR);
+        $securityAuthenticationTokenStatement->bindValue(':providerTokenId', $providerTokenId, \PDO::PARAM_INT);
+        $securityAuthenticationTokenStatement->bindValue(':providerConfigurationId', $configurationId, \PDO::PARAM_INT);
+        $securityAuthenticationTokenStatement->bindValue(':userId', $centreon->user->user_id, \PDO::PARAM_INT);
+        $securityAuthenticationTokenStatement->execute();
 
         if (!isset($_POST["submit"])) {
             $headerRedirection = "./main.php";

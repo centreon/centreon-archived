@@ -7838,10 +7838,6 @@ msgstr "Informações Gorgone"
 msgid "Monitoring Engine Information"
 msgstr "Informação do Motor de Monitoramento"
 
-#: centreon-web/www/include/configuration/configServers/formServers.php:137
-msgid "Miscelleneous"
-msgstr "Diversos"
-
 #: centreon-web/www/include/configuration/configServers/formServers.php:138
 msgid "Centreon Trap Collector"
 msgstr "Coletor Centreon Trap"
@@ -8127,8 +8123,11 @@ msgstr "Serviços Utilizados"
 msgid "Check"
 msgstr "Checagem"
 
-#: centreon-web/www/include/configuration/configObject/command/listCommand.php:118
-#: centreon-web/www/install/menu_translation.php:109
+#: centreon/www/include/configuration/configObject/command/listCommand.php:127
+#: centreon/www/install/menu_translation.php:95
+#: centreon/www/include/options/oreon/generalOpt/colors/form.php:59
+#: centreon/www/include/configuration/configServers/formServers.php:122
+#: /www/include/configuration/configServers/formServers.php:104
 msgid "Miscellaneous"
 msgstr "Diversos"
 
@@ -14797,7 +14796,7 @@ msgstr "Erro ao remover tokens de um contato"
 #  msgid "Current notification number"
 #  msgstr ""
 
-#  msgid "Current state duration"
+#  msgid "Current status duration"
 #  msgstr ""
 
 #  msgid "Downtime duration"
@@ -14809,7 +14808,7 @@ msgstr "Erro ao remover tokens de um contato"
 #  msgid "End date must be greater than start date"
 #  msgstr ""
 
-#  msgid "Is this resource flapping?"
+#  msgid "This Resource is flapping"
 #  msgstr ""
 
 #  msgid "Show criterias filters"
@@ -14830,14 +14829,23 @@ msgstr "Erro ao remover tokens de um contato"
 #  msgid "In downtime"
 #  msgstr ""
 
-#  msgid "Last 24 hours"
-#  msgstr ""
+# msgid "1 day"
+# msgstr ""
 
-#  msgid "Last 7 days"
-#  msgstr ""
+# msgid "7 days"
+# msgstr ""
 
-#  msgid "Last 31 days"
-#  msgstr ""
+# msgid "31 days"
+# msgstr ""
+
+# msgid "Last day"
+# msgstr ""
+
+# msgid "Last 7 days"
+# msgstr ""
+
+# msgid "Last 31 days"
+# msgstr ""
 
 #  msgid "Set downtime on"
 #  msgstr ""
@@ -14851,7 +14859,7 @@ msgstr "Erro ao remover tokens de um contato"
 #  msgid "Last notification"
 #  msgstr ""
 
-#  msgid "Last state change"
+#  msgid "Last status change"
 #  msgstr ""
 
 #  msgid "Next check"
@@ -14863,7 +14871,7 @@ msgstr "Erro ao remover tokens de um contato"
 #  msgid "Open"
 #  msgstr ""
 
-#  msgid "Percent state change"
+#  msgid "Status change duration"
 #  msgstr ""
 
 #  msgid "Resource name"
@@ -15076,6 +15084,9 @@ msgstr "Erro ao remover tokens de um contato"
 #  msgid "Export to png"
 #  msgstr ""
 
+#  msgid "Go to performance page"
+#  msgstr ""
+
 #  msgid "Parent"
 #  msgstr ""
 
@@ -15087,3 +15098,99 @@ msgstr "Erro ao remover tokens de um contato"
 
 #  msgid "Select criterias"
 #  msgstr ""
+
+#  msgid "Monitoring server"
+#  msgstr ""
+
+#  msgid "The end date must be greater than the start date"
+#  msgstr ""
+
+#  msgid "Forward"
+#  msgstr ""
+
+#  msgid "Backward"
+#  msgstr ""
+
+# msgid "Graph options"
+# msgstr ""
+
+# msgid "Check duration"
+# msgstr ""
+
+# msgid "Avg"
+# msgstr ""
+
+# msgid "Compact time period"
+# msgstr ""
+
+#  msgid "Check duration"
+#  msgstr ""
+
+#  msgid "Check duration"
+#  msgstr ""
+
+#  msgid "Notifications disabled"
+#  msgstr ""
+
+#  msgid "All checks are disabled"
+#  msgstr ""
+
+#  msgid "Only passive checks are enabled"
+#  msgstr ""
+
+#  msgid "Mandatory data to create the entity '%s' is missing"
+#  msgstr ""
+
+#  msgid "At least one column must be selected"
+#  msgstr ""
+
+#  msgid "Calculation type"
+#  msgstr ""
+
+#  msgid "The duration must be lesser than a year"
+#  msgstr ""
+
+#  msgid "As displayed"
+#  msgstr ""
+
+#  msgid "Medium size"
+#  msgstr ""
+
+#  msgid "Small size"
+#  msgstr ""
+
+# msgid "Display the complete graph"
+# msgstr ""
+
+# msgid "Action not permitted"
+# msgstr ""
+
+# msgid "Scroll to top"
+# msgstr ""
+
+# msgid "This week"
+# msgstr ""
+
+# msgid "Before last year"
+# msgstr ""
+
+# msgid "Filter options"
+# msgstr ""
+
+# msgid "Service graphs"
+# msgstr ""
+
+msgid "Clear filter"
+msgstr ""
+
+msgid "Last check with OK status"
+msgstr ""
+
+# msgid "Status type"
+# msgstr ""
+
+# msgid "Hard"
+# msgstr ""
+
+# msgid "Soft"
+# msgstr ""

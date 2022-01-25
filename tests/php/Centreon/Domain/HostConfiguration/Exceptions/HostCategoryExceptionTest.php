@@ -66,16 +66,16 @@ class HostCategoryExceptionTest extends TestCase
         $errorMessage = 'Host category (%s) not found';
 
         $exception = HostCategoryException::notFoundException(
+            ['id' => 999],
             new \Exception($previousMessage1),
-            ['id' => 999]
         );
         self::assertEquals(sprintf($errorMessage, 999), $exception->getMessage());
         self::assertNotNull($exception->getPrevious());
         self::assertEquals($previousMessage1, $exception->getPrevious()->getMessage());
 
         $exception = HostCategoryException::notFoundException(
-            new \Exception($previousMessage2),
-            ['name' => 'test name']
+            ['name' => 'test name'],
+            new \Exception($previousMessage2)
         );
         self::assertEquals(sprintf($errorMessage, 'test name'), $exception->getMessage());
         self::assertNotNull($exception->getPrevious());

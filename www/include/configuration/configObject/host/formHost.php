@@ -1073,9 +1073,12 @@ if ($o !== HOST_MASSIVE_CHANGE) {
     $form->addRule('host_name', _("_Module_ is not a legal expression"), 'testModule');
     $form->registerRule('existTemplate', 'callback', 'hasHostTemplateNeverUsed');
     $form->registerRule('exist', 'callback', 'hasHostNameNeverUsed');
+    $form->registerRule('sanitize', 'callback', 'isNotEmptyAfterStringSanitize');
     $form->addRule('host_name', _("Template name is already in use"), 'existTemplate');
     $form->addRule('host_name', _("Host name is already in use"), 'exist');
+    $form->addRule('host_name', _("Unauthorized value"), 'sanitize');
     $form->addRule('host_address', _("Compulsory Address"), 'required');
+    $form->addRule('host_address', _("Unauthorized value"), 'sanitize');
     $form->registerRule('cg_group_exists', 'callback', 'testCg');
     $form->addRule(
         'host_cgs',
@@ -1191,18 +1194,20 @@ if ($form->validate() && $from_list_menu == false) {
          * Before saving, we check if a password macro has changed its name to be able to give it the right password
          * instead of wildcards (PASSWORD_REPLACEMENT_VALUE).
          */
-        foreach ($_REQUEST['macroInput'] as $index => $macroName) {
-            if (array_key_exists('macroOriginalName_' . $index, $_REQUEST)) {
-                $originalMacroName = $_REQUEST['macroOriginalName_' . $index];
-                if ($_REQUEST['macroValue'][$index] === PASSWORD_REPLACEMENT_VALUE) {
-                    /*
-                     * The password has not been changed along with the name, so its value is equal to the wildcard.
-                     * We will therefore recover the password stored for its original name.
-                     */
-                    foreach ($aMacros as $indexMacro => $macroDetails) {
-                        if ($macroDetails['macroInput_#index#'] === $originalMacroName) {
-                            $_REQUEST['macroValue'][$index] = $macroPasswords[$indexMacro]['password'];
-                            break;
+        if (isset($_REQUEST['macroInput'])) {
+            foreach ($_REQUEST['macroInput'] as $index => $macroName) {
+                if (array_key_exists('macroOriginalName_' . $index, $_REQUEST)) {
+                    $originalMacroName = $_REQUEST['macroOriginalName_' . $index];
+                    if ($_REQUEST['macroValue'][$index] === PASSWORD_REPLACEMENT_VALUE) {
+                        /*
+                         * The password has not been changed along with the name, so its value is equal to the wildcard.
+                         * We will therefore recover the password stored for its original name.
+                         */
+                        foreach ($aMacros as $indexMacro => $macroDetails) {
+                            if ($macroDetails['macroInput_#index#'] === $originalMacroName) {
+                                $_REQUEST['macroValue'][$index] = $macroPasswords[$indexMacro]['password'];
+                                break;
+                            }
                         }
                     }
                 }
@@ -1210,7 +1215,7 @@ if ($form->validate() && $from_list_menu == false) {
         }
         updateHostInDB($hostObj->getValue());
     } elseif ($form->getSubmitValue("submitMC")) {
-        foreach ($select as $hostIdToUpdate) {
+        foreach (array_keys($select) as $hostIdToUpdate) {
             updateHostInDB($hostIdToUpdate, true);
         }
     }
@@ -1250,7 +1255,6 @@ if ($valid) {
     $tpl->assign('cloneSetMacro', $cloneSetMacro);
     $tpl->assign('cloneSetTemplate', $cloneSetTemplate);
     $tpl->assign('centreon_path', $centreon->optGen['oreon_path']);
-    $tpl->assign("k", $k);
     $tpl->assign("tpl", 0);
     $tpl->display("formHost.ihtml");
     ?>

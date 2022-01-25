@@ -96,17 +96,17 @@ class Acknowledgement implements EntityDescriptorMetadataInterface
     /**
      * @var bool Indicates if the contacts must to be notify
      */
-    private $isNotifyContacts;
+    private $isNotifyContacts = true;
 
     /**
      * @var bool Indicates this acknowledgement will be maintained in the case of a restart of the scheduler
      */
-    private $isPersistentComment;
+    private $isPersistentComment = true;
 
     /**
      * @var bool
      */
-    private $isSticky;
+    private $isSticky = true;
 
     /**
      * @var int State of this acknowledgement

@@ -8,6 +8,7 @@
         <meta http-equiv="refresh" content="840">
         <link href="./Themes/Centreon-2/login.css" rel="stylesheet" type="text/css">
         <link rel="shortcut icon" href="./img/favicon.ico">
+        <script type="text/javascript" src="./include/common/javascript/jquery/jquery.min.js"></script>
     </head>
     <body OnLoad="document.login.useralias.focus();">
         <form action="./index.php" method="post" name="login" style="height:370px">
@@ -16,9 +17,9 @@
             {/if}
             <div class="login_wrapper">
                 <div class="LoginInvitLogo">
-                    {foreach from=$loginMessages item=message}
-                        <div class="error_msg"><span class='msg'>{$message}</span></div>
-                    {/foreach}
+                    <div class="error_msg" style="visibility: hidden">
+                        <span class='msg'></span>
+                    </div>
                    <img src="img/centreon.png" alt="Centreon Logo" title="Centreon Logo" />
                 </div>
                 <div class="logintab">
@@ -43,7 +44,7 @@
                 </div>
                 <div class="LoginInvitVersion">
                     <span id="LoginInvitcpy">
-                        &copy; <a href="mailto:contact@centreon.com">Centreon</a> 2005 - 2020
+                        &copy; <a href="mailto:contact@centreon.com">Centreon</a> 2005 - 2021
                     </span>
                     <br>
                     <span>
@@ -55,6 +56,41 @@
         </form>
         {literal}
         <script type="text/javascript">
+            jQuery(() => {
+                jQuery('form[name="login"]').submit(() => {
+                    jQuery('input[type="submit"]').prop('disabled', true)
+                    jQuery.ajax({
+                        url: './authentication/providers/configurations/local',
+                        data: JSON.stringify({
+                            login: jQuery('input[name="useralias"]').val(),
+                            password: jQuery('input[name="password"]').val()
+                        }),
+                        method: 'POST',
+                        contentType: 'application/json'
+                    }).done((res) => {
+                        window.location.href = res.redirect_uri
+                    }).fail((err) => {
+                        if (err.status === 401) {
+                            if (err?.responseJSON?.message) {
+                                jQuery('span.msg').text(err.responseJSON.message)
+                            } else {
+                                jQuery('span.msg').text('Your credentials are incorrect')
+                            }
+                        } else {
+                            jQuery('span.msg').text('Internal server error')
+                        }
+                        jQuery('div.error_msg').css('visibility', '')
+                    }).always(() => {
+                        jQuery('input[type="submit"]').prop('disabled', false)
+                    })
+                    return false;
+                });
+            });
+
+            if (window.location.href.match(/\/index.php\?disconnect=1/)) {
+                localStorage.removeItem('centreonPlatformData');
+            }
+
           // check :
           //  - if login page is in an iframe
           //  - if iframe url is login page with disconnect parameter

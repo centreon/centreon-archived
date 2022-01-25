@@ -50,6 +50,7 @@ $transcoKey = array(
     "display_autologin_shortcut" => "yes",
     "sso_enable" => "yes",
     "openid_connect_enable" => "yes",
+    "openid_connect_client_basic_auth" => "yes",
     "openid_connect_verify_peer" => "yes",
     "enable_gmt" => "yes",
     "strict_hostParent_poller_management" => "yes",
@@ -295,9 +296,23 @@ $form->addElement(
 $form->addElement('text', 'openid_connect_userinfo_endpoint', _('User Information Endpoint'), array('size' => 50));
 $form->addElement('text', 'openid_connect_end_session_endpoint', _('End Session Endpoint'), array('size' => 50));
 $form->addElement('text', 'openid_connect_scope', _('Scope'), array('size' => 50));
+$form->addElement('text', 'openid_connect_login_claim', _('Login claim value'), array('size' => 50));
 $form->addElement('text', 'openid_connect_redirect_url', _('Redirect Url'), array('size' => 50));
-$form->addElement('text', 'openid_connect_client_id', _('Client ID'), array('size' => 50));
-$form->addElement('text', 'openid_connect_client_secret', _('Client Secret'), array('size' => 50));
+$form->addElement('password', 'openid_connect_client_id', _('Client ID'), array('size' => 50, 'autocomplete' => 'off'));
+$form->addElement(
+    'password',
+    'openid_connect_client_secret',
+    _('Client Secret'),
+    array('size' => 50, 'autocomplete' => 'off')
+);
+
+$openIdConnectClientBasicAuth[] = $form->createElement('checkbox', 'yes', '&nbsp;', '');
+$form->addGroup(
+    $openIdConnectClientBasicAuth,
+    'openid_connect_client_basic_auth',
+    _("Use Basic Auth for Token Endpoint Authentication"),
+    '&nbsp;&nbsp;'
+);
 
 $openIdConnectVerifyPeer[] = $form->createElement(
     'checkbox',
@@ -359,6 +374,12 @@ $form->addRule(
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path . 'general/', $tpl);
 
+if (!empty($gopt['openid_connect_client_id'])) {
+    $gopt['openid_connect_client_id'] = CentreonAuth::PWS_OCCULTATION;
+}
+if (!empty($gopt['openid_connect_client_secret'])) {
+    $gopt['openid_connect_client_secret'] = CentreonAuth::PWS_OCCULTATION;
+}
 $form->setDefaults($gopt);
 
 $subC = $form->addElement('submit', 'submitC', _("Save"), array("class" => "btc bt_success"));
@@ -414,6 +435,7 @@ $tpl->assign("genOpt_time_zone", _("Time Zone"));
 $tpl->assign("genOpt_auth", _("Authentication properties"));
 $tpl->assign("genOpt_openid_connect", _("Authentication by OpenId Connect"));
 $tpl->assign("support", _("Support Information"));
+$tpl->assign('statistics', _("Statistics"));
 $tpl->assign('valid', $valid);
 
 /*

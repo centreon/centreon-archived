@@ -1,9 +1,12 @@
+/* eslint-disable hooks/sort */
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { prop, isEmpty, path } from 'ramda';
+import { prop, isEmpty, path, isNil } from 'ramda';
+import { useAtomValue } from 'jotai/utils';
 
-import { makeStyles, Paper } from '@material-ui/core';
+import { Paper } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 
 import {
   useRequest,
@@ -15,6 +18,12 @@ import {
 import { labelEvent } from '../../../translatedLabels';
 import { TabProps } from '..';
 import InfiniteScroll from '../../InfiniteScroll';
+import TimePeriodButtonGroup from '../../../Graph/Performance/TimePeriods';
+import {
+  customTimePeriodAtom,
+  getDatesDerivedAtom,
+  selectedTimePeriodAtom,
+} from '../../../Graph/Performance/TimePeriods/timePeriodAtoms';
 
 import { types } from './Event';
 import { TimelineEvent, Type } from './models';
@@ -28,6 +37,7 @@ type TimelineListing = ListingModel<TimelineEvent>;
 const useStyles = makeStyles((theme) => ({
   filter: {
     padding: theme.spacing(2),
+    paddingTop: 0,
   },
 }));
 
@@ -35,19 +45,24 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
 
+  const getIntervalDates = useAtomValue(getDatesDerivedAtom);
+  const selectedTimePeriod = useAtomValue(selectedTimePeriodAtom);
+  const customTimePeriod = useAtomValue(customTimePeriodAtom);
+
+  const [start, end] = getIntervalDates(selectedTimePeriod);
+
   const translatedTypes = types.map((type) => ({
     ...type,
     name: t(type.name),
   })) as Array<Type>;
 
-  const [selectedTypes, setSelectedTypes] = React.useState<Array<Type>>(
-    translatedTypes,
-  );
+  const [selectedTypes, setSelectedTypes] =
+    React.useState<Array<Type>>(translatedTypes);
   const limit = 30;
 
   const { sendRequest, sending } = useRequest<TimelineListing>({
-    request: listTimelineEvents,
     decoder: listTimelineEventsDecoder,
+    request: listTimelineEvents,
   });
 
   const getSearch = (): SearchParameter | undefined => {
@@ -56,6 +71,15 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
     }
 
     return {
+      conditions: [
+        {
+          field: 'date',
+          values: {
+            $gt: start,
+            $lt: end,
+          },
+        },
+      ],
       lists: [
         {
           field: 'type',
@@ -75,8 +99,8 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
     return sendRequest({
       endpoint: timelineEndpoint,
       parameters: {
-        page: atPage,
         limit,
+        page: atPage,
         search: getSearch(),
       },
     });
@@ -89,29 +113,34 @@ const TimelineTab = ({ details }: TabProps): JSX.Element => {
   return (
     <InfiniteScroll
       details={details}
-      sendListingRequest={listTimeline}
-      loading={sending}
-      limit={limit}
-      loadingSkeleton={<LoadingSkeleton />}
-      reloadDependencies={[selectedTypes]}
       filter={
         <Paper className={classes.filter}>
+          <TimePeriodButtonGroup disableGraphOptions disablePaper />
           <MultiAutocompleteField
-            label={t(labelEvent)}
-            onChange={changeSelectedTypes}
-            value={selectedTypes}
-            options={translatedTypes}
             fullWidth
+            label={t(labelEvent)}
             limitTags={3}
+            options={translatedTypes}
+            value={selectedTypes}
+            onChange={changeSelectedTypes}
           />
         </Paper>
       }
+      limit={limit}
+      loading={sending}
+      loadingSkeleton={<LoadingSkeleton />}
+      reloadDependencies={[
+        selectedTypes,
+        selectedTimePeriod?.id || customTimePeriod,
+        timelineEndpoint,
+      ]}
+      sendListingRequest={isNil(timelineEndpoint) ? undefined : listTimeline}
     >
       {({ infiniteScrollTriggerRef, entities }): JSX.Element => {
         return (
           <Events
-            timeline={entities}
             infiniteScrollTriggerRef={infiniteScrollTriggerRef}
+            timeline={entities}
           />
         );
       }}

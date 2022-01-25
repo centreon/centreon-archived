@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005-2020 Centreon
+ * Copyright 2005-2021 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -34,13 +34,13 @@
  *
  */
 
-use Centreon\Domain\PlatformTopology\Platform;
+use Centreon\Domain\PlatformTopology\Model\PlatformRegistered;
 
 if (!isset($centreon)) {
     exit();
 }
 
-require_once _CENTREON_PATH_ . "www/class/centreon-config/centreonMainCfg.class.php";
+require_once _CENTREON_PATH_ . "/www/class/centreon-config/centreonMainCfg.class.php";
 
 const ZMQ = 1;
 const SSH = 2;
@@ -48,20 +48,19 @@ const SSH = 2;
 /**
  * Retrieve the next available suffixes for this server name from database
  *
- * @param string      $serverName Server name to process
- * @param int         $numberOf   Number of suffix requested
- * @param string      $separator  Character used to separate the server name and suffix
+ * @param string $serverName Server name to process
+ * @param int $numberOf Number of suffix requested
+ * @param string $separator Character used to separate the server name and suffix
  *
  * @return array Return the next available suffixes
  * @throws Exception
- * @global CentreonDB $pearDB     DB connector
+ * @global CentreonDB $pearDB DB connector
  */
 function getAvailableSuffixIds(
     string $serverName,
     int $numberOf,
     string $separator = '_'
 ): array {
-
     if ($numberOf < 0) {
         return [];
     }
@@ -166,10 +165,13 @@ function testExistence($name = null): bool
  * @param string $ipAddress The IP address to test
  * @return bool
  */
-function isValidIpAddress($ipAddress): bool
+function isValidIpAddress(string $ipAddress): bool
 {
     // Check IPv6, IPv4 and FQDN format
-    if (!filter_var($ipAddress, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) && !filter_var($ipAddress, FILTER_VALIDATE_IP)) {
+    if (
+        !filter_var($ipAddress, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME)
+        && !filter_var($ipAddress, FILTER_VALIDATE_IP)
+    ) {
         return false;
     } else {
         return true;
@@ -179,11 +181,11 @@ function isValidIpAddress($ipAddress): bool
 /**
  * Enable a server
  *
- * @param int         $id     Id of the server
+ * @param int $id Id of the server
  *
  * @throws Exception
  * @global CentreonDB $pearDB DB connector
- * @global Centreon   $centreon
+ * @global Centreon $centreon
  */
 function enableServerInDB(int $id): void
 {
@@ -212,11 +214,11 @@ function enableServerInDB(int $id): void
 /**
  * Disable a server
  *
- * @param int         $id     Id of the server
+ * @param int $id Id of the server
  *
  * @throws Exception
  * @global CentreonDB $pearDB DB connector
- * @global Centreon   $centreon
+ * @global Centreon $centreon
  */
 function disableServerInDB(int $id): void
 {
@@ -242,10 +244,10 @@ function disableServerInDB(int $id): void
 /**
  * Delete a server
  *
- * @param array       $serverIds
+ * @param array $serverIds
  *
  * @global CentreonDB $pearDB DB connector
- * @global Centreon   $centreon
+ * @global Centreon $centreon
  */
 function deleteServerInDB(array $serverIds): void
 {
@@ -253,13 +255,13 @@ function deleteServerInDB(array $serverIds): void
 
     foreach (array_keys($serverIds) as $serverId) {
         $statement = $pearDB->prepare('SELECT `id`, `type` FROM `platform_topology` WHERE server_id = :serverId ');
-        $statement->bindValue(':serverId', (int) $serverId, \PDO::PARAM_INT);
+        $statement->bindValue(':serverId', (int)$serverId, \PDO::PARAM_INT);
         $statement->execute();
 
         //If the deleted platform is a remote, reassign the parent_id of its children to the top level platform
         if (
             ($platformInTopology = $statement->fetch(\PDO::FETCH_ASSOC))
-            && $platformInTopology['type'] === Platform::TYPE_REMOTE
+            && $platformInTopology['type'] === PlatformRegistered::TYPE_REMOTE
         ) {
             $statement = $pearDB->query('SELECT id FROM `platform_topology` WHERE parent_id IS NULL');
             if ($topPlatform = $statement->fetch(\PDO::FETCH_ASSOC)) {
@@ -268,8 +270,8 @@ function deleteServerInDB(array $serverIds): void
                     SET `parent_id` = :topPlatformId
                     WHERE `parent_id` = :remoteId
                 ');
-                $statement2->bindValue(':topPlatformId', (int) $topPlatform['id'], \PDO::PARAM_INT);
-                $statement2->bindValue(':remoteId', (int) $platformInTopology['id'], \PDO::PARAM_INT);
+                $statement2->bindValue(':topPlatformId', (int)$topPlatform['id'], \PDO::PARAM_INT);
+                $statement2->bindValue(':remoteId', (int)$platformInTopology['id'], \PDO::PARAM_INT);
                 $statement2->execute();
             }
         }
@@ -318,7 +320,7 @@ function deleteServerInDB(array $serverIds): void
 /**
  * Delete Centreon Broker configurations
  *
- * @param int         $id     The Id poller
+ * @param int $id The Id poller
  *
  * @global CentreonDB $pearDB DB connector
  */
@@ -334,8 +336,8 @@ function deleteCentreonBrokerByPollerId(int $id)
 /**
  * Duplicate server
  *
- * @param array       $server List of server id to duplicate
- * @param array       $nbrDup Number of duplications per server id
+ * @param array $server List of server id to duplicate
+ * @param array $nbrDup Number of duplications per server id
  *
  * @throws Exception
  * @global CentreonDB $pearDB DB connector
@@ -429,13 +431,13 @@ function duplicateServer(array $server, array $nbrDup): void
 /**
  * Insert additionnal Remote Servers relation
  *
- * @param int         $id      Id of the server
- * @param array       $remotes Id of the additionnal Remote Servers
+ * @param int $id Id of the server
+ * @param array $remotes Id of the additionnal Remote Servers
  *
  * @return void
  * @throws Exception
  *
- * @global CentreonDB $pearDB  DB connector
+ * @global CentreonDB $pearDB DB connector
  */
 function additionnalRemoteServersByPollerId(int $id, array $remotes = null): void
 {
@@ -487,10 +489,10 @@ function insertServerInDB(array $data): int
 /**
  * Create a server in database
  *
- * @param array       $data   Data of the new server
+ * @param array $data Data of the new server
  *
  * @return int Id of the new server
- * @global Centreon   $centreon
+ * @global Centreon $centreon
  * @global CentreonDB $pearDB DB connector
  */
 function insertServer(array $data): int
@@ -675,7 +677,7 @@ function insertServer(array $data): int
     $result->closeCursor();
 
     try {
-        insertServerIntoPlatformTopology($retValue, (int) $poller['last_id']);
+        insertServerIntoPlatformTopology($retValue, (int)$poller['last_id']);
     } catch (Exception $e) {
         // catch exception but don't return anything to avoid blank pages on form
     }
@@ -699,10 +701,10 @@ function insertServer(array $data): int
 }
 
 /**
- * @param int         $serverId Id of the server
+ * @param int $serverId Id of the server
  *
  * @return bool Return true if ok
- * @global CentreonDB $pearDB   DB connector
+ * @global CentreonDB $pearDB DB connector
  *                              global Centreon $centreon
  */
 function addUserRessource(int $serverId): bool
@@ -744,36 +746,41 @@ function addUserRessource(int $serverId): bool
 }
 
 /**
- * Update Remote Server informations
+ * Update Remote Server information
  *
  * @param array $data
- *
+ * @param string|null $oldIpAddress Old IP address of the server before the upgrade
  */
-function updateRemoteServerInformation(array $data)
+function updateRemoteServerInformation(array $data, string $oldIpAddress = null)
 {
-    global $pearDB, $centreon;
+    global $pearDB;
 
-    $res = $pearDB->query("SELECT * FROM `remote_servers` WHERE ip = '" . $data["ns_ip_address"] . "'");
-    $rows = $res->fetch(\PDO::FETCH_ASSOC);
+    $statement = $pearDB->prepare("SELECT COUNT(*) AS total FROM remote_servers WHERE ip = :ip");
+    $statement->bindValue(':ip', $oldIpAddress ?? $data["ns_ip_address"]);
+    $statement->execute();
+    $total = (int) $statement->fetch(\PDO::FETCH_ASSOC)['total'];
 
-    if ($rows > 1) {
-        $rq = "UPDATE `remote_servers` SET ";
-        $rq .= "http_method = '" . $data["http_method"] . "', ";
-        isset($data["http_port"]) && !empty($data["http_port"])
-            ? $rq .= "http_port = '" . $data["http_port"] . "', "
-            : $rq .= "http_port = NULL, ";
-        $rq .= "no_check_certificate = '" . $data["no_check_certificate"]["no_check_certificate"] . "', ";
-        $rq .= "no_proxy = '" . $data["no_proxy"]["no_proxy"] . "' ";
-        $rq .= "WHERE ip = '" . $data["ns_ip_address"] . "'";
-        $pearDB->query($rq);
+    if ($total === 1) {
+        $statement = $pearDB->prepare("
+            UPDATE remote_servers 
+            SET http_method = :http_method, http_port = :http_port,
+                no_check_certificate = :no_check_certificate, no_proxy = :no_proxy, ip = :new_ip
+            WHERE ip = :ip
+        ");
+        $statement->bindValue(':http_method', $data["http_method"]);
+        $statement->bindValue(':http_port', $data["http_port"] ?? null, \PDO::PARAM_INT);
+        $statement->bindValue(':no_proxy', $data["no_proxy"]["no_proxy"]);
+        $statement->bindValue(':no_check_certificate', $data["no_check_certificate"]["no_check_certificate"]);
+        $statement->bindValue(':new_ip', $data["ns_ip_address"]);
+        $statement->bindValue(':ip', $oldIpAddress ?? $data["ns_ip_address"]);
+        $statement->execute();
     }
-    $res->closeCursor();
 }
 
 /**
  * Update a server
  *
- * @param int   $id
+ * @param int $id
  * @param array $data
  *
  * @throws Exception
@@ -789,6 +796,14 @@ function updateServer(int $id, array $data): void
         $pearDB->query("UPDATE `nagios_server` SET `is_default` = '0'");
     }
     $retValue = [];
+
+    // We retrieve IP address that was defined before the update request
+    $statement = $pearDB->prepare('SELECT ns_ip_address FROM nagios_server WHERE id = :id');
+    $statement->bindValue(':id', $id, \PDO::PARAM_INT);
+    $statement->execute();
+    $ipAddressBeforeChanges = ($result = $statement->fetch(\PDO::FETCH_ASSOC))
+        ? $result['ns_ip_address']
+        : null;
 
     $rq = "UPDATE `nagios_server` SET ";
     $rq .= "`name` = ";
@@ -983,8 +998,11 @@ function updateServer(int $id, array $data): void
         // catch exception but don't return anything to avoid blank pages on form
     }
 
-    updateRemoteServerInformation($data);
-    additionnalRemoteServersByPollerId($id, $data["remote_additional_id"]);
+    updateRemoteServerInformation($data, $ipAddressBeforeChanges);
+    additionnalRemoteServersByPollerId(
+        $id,
+        $data["remote_additional_id"] ?? null
+    );
 
     if (isset($_REQUEST['pollercmd'])) {
         $instanceObj = new CentreonInstance($pearDB);
@@ -999,11 +1017,11 @@ function updateServer(int $id, array $data): void
 /**
  * Get poller state if a service or an host has changed.
  *
- * @param array         $pollers     Listing of pollers
+ * @param array $pollers Listing of pollers
  *
  * @return an array of id => boolean. True if the configuration has changed
- * @global array      $conf_centreon Database configuration
- * @global CentreonDB $pearDBO       DB connector for centreon_storage database
+ * @global array $conf_centreon Database configuration
+ * @global CentreonDB $pearDBO DB connector for centreon_storage database
  */
 function getChangeState(array $pollers): array
 {
@@ -1114,12 +1132,12 @@ REQUEST;
 /**
  * Check if a service or an host has been changed for a specific poller.
  *
- * @param int         $poller_id     Id of the poller
- * @param int         $last_restart  Timestamp of the last restart
+ * @param int $poller_id Id of the poller
+ * @param int $last_restart Timestamp of the last restart
  *
  * @return bool Return true if the configuration has changed
- * @global array      $conf_centreon Database configuration
- * @global CentreonDB $pearDBO       DB connector for centreon_storage database
+ * @global array $conf_centreon Database configuration
+ * @global CentreonDB $pearDBO DB connector for centreon_storage database
  */
 function checkChangeState(int $poller_id, int $last_restart): bool
 {
@@ -1238,7 +1256,7 @@ function defineLocalPollerToDefault()
     $statement = $pearDB->query($query);
     $result = $statement->fetch(\PDO::FETCH_ASSOC);
 
-    if ($result !== false && ((int) $result['nb_of_default_poller'] === 0)) {
+    if ($result !== false && ((int)$result['nb_of_default_poller'] === 0)) {
         $query = "UPDATE `nagios_server` SET `is_default` = '1' WHERE `localhost` = '1'";
         $pearDB->query($query);
     }
@@ -1256,14 +1274,14 @@ function insertServerIntoPlatformTopology(array $pollerInformations, int $poller
 
     $serverIp = $pollerInformations[':ns_ip_address'];
     $serverName = $pollerInformations[':name'];
-    $type = (int) $pollerInformations[':localhost'] == true ? 'central' : 'poller';
+    $type = (int)$pollerInformations[':localhost'] == true ? 'central' : 'poller';
 
     /**
      * Prepare statement to get the Parent depending on Remote attachment or not.
      */
     if (isset($pollerInformations[':remote_id'])) {
         $statement = $pearDB->prepare("SELECT id FROM `platform_topology` WHERE `server_id` = :remoteId");
-        $statement->bindValue(':remoteId', (int) $pollerInformations[':remote_id'], \PDO::PARAM_INT);
+        $statement->bindValue(':remoteId', (int)$pollerInformations[':remote_id'], \PDO::PARAM_INT);
         $statement->execute();
     } else {
         $statement = $pearDB->query("SELECT id FROM `platform_topology` WHERE `type` = 'central'");
@@ -1275,7 +1293,7 @@ function insertServerIntoPlatformTopology(array $pollerInformations, int $poller
      * If no Parent, Poller isn't attached to any remote server or Central
      */
     if (!empty($parent['id'])) {
-        $parentId = (int) $parent['id'];
+        $parentId = (int)$parent['id'];
     } else {
         throw new \Exception(
             'Missing parent platform topology. Please register the parent first using the endpoint
@@ -1283,8 +1301,10 @@ function insertServerIntoPlatformTopology(array $pollerInformations, int $poller
         );
     }
 
-    $statement = $pearDB->prepare("INSERT INTO `platform_topology` (`address`, `name`, `type`, `parent_id`, `server_id`)
-    VALUES (:address, :name, :type, :parent_id, :server_id)");
+    $statement = $pearDB->prepare("
+        INSERT INTO `platform_topology` (`address`, `name`, `type`, `parent_id`, `server_id`, `pending`)
+        VALUES (:address, :name, :type, :parent_id, :server_id, '0')
+    ");
     $statement->bindValue(':address', $serverIp, \PDO::PARAM_STR);
     $statement->bindValue(':name', $serverName, \PDO::PARAM_STR);
     $statement->bindValue(':type', $type, \PDO::PARAM_STR);
@@ -1294,7 +1314,7 @@ function insertServerIntoPlatformTopology(array $pollerInformations, int $poller
 }
 
 /**
- * Update Server informations into platform_topology table
+ * Update Server information into platform_topology table
  *
  * @param array $pollerInformations
  * @param integer $serverId
@@ -1319,7 +1339,7 @@ function updateServerIntoPlatformTopology(array $pollerInformations, int $server
         /**
          * Otherwise we define type with the localhost key
          */
-        $type = (int) $pollerInformations[':localhost'] == true ? 'central' : 'poller';
+        $type = (int)$pollerInformations[':localhost'] == true ? 'central' : 'poller';
     }
 
     if ($type === 'central') {
@@ -1330,7 +1350,7 @@ function updateServerIntoPlatformTopology(array $pollerInformations, int $server
          */
         if (!empty($pollerInformations[':remote_id'])) {
             $statement = $pearDB->prepare("SELECT id FROM `platform_topology` WHERE `server_id` = :remoteId");
-            $statement->bindValue(':remoteId', (int) $pollerInformations[':remote_id'], \PDO::PARAM_INT);
+            $statement->bindValue(':remoteId', (int)$pollerInformations[':remote_id'], \PDO::PARAM_INT);
             $statement->execute();
         } else {
             $statement = $pearDB->query("SELECT id FROM `platform_topology` WHERE `type` = 'central'");
@@ -1342,7 +1362,7 @@ function updateServerIntoPlatformTopology(array $pollerInformations, int $server
          * If no Parent, Poller isn't attached to any remote server or Central
          */
         if (!empty($parent['id'])) {
-            $parentId = (int) $parent['id'];
+            $parentId = (int)$parent['id'];
         } else {
             throw new \Exception(
                 'Missing parent platform topology. Please register the parent first using the endpoint
@@ -1356,10 +1376,7 @@ function updateServerIntoPlatformTopology(array $pollerInformations, int $server
     $statement->execute();
     $platform = $statement->fetch(\PDO::FETCH_ASSOC);
 
-    /**
-     * In the case of editing a poller freshly duplicated, it doesn't exist in platform_topology,
-     * so we need to create it instead of editing
-     */
+    // Updating platform
     if ($platform) {
         $statement = $pearDB->prepare("
             UPDATE platform_topology SET
@@ -1374,9 +1391,13 @@ function updateServerIntoPlatformTopology(array $pollerInformations, int $server
             $pollerIp = $platform['address'];
         }
     } else {
+        /**
+         * In the case of editing a poller freshly duplicated, it doesn't exist in platform_topology,
+         * so we need to create it instead of editing
+         */
         $statement = $pearDB->prepare("
-            INSERT INTO `platform_topology` (`address`, `name`, `type`, `parent_id`, `server_id`)
-            VALUES (:address, :name, :type, :parent, :serverId)
+            INSERT INTO `platform_topology` (`address`, `name`, `type`, `parent_id`, `server_id`, `pending`)
+            VALUES (:address, :name, :type, :parent, :serverId, '0')
         ");
     }
 
@@ -1420,7 +1441,7 @@ function ipCanBeUpdated(array $options): bool
     global $pearDB;
 
     $serverIp = $options[0];
-    $serverId = (int) $options[1];
+    $serverId = (int)$options[1];
 
     /**
      * Check if the IP address is already existing in Nagios Server
@@ -1437,22 +1458,22 @@ function ipCanBeUpdated(array $options): bool
      * check if previously found platform is the platform we're editing
      */
     if ($platform) {
-        if ((int) $platform['id'] === $serverId) {
+        if ((int)$platform['id'] === $serverId) {
             return true;
         }
         return false;
-    } else {
-        /**
-         * If nothing was found in nagios server check if it exists in platform topology
-         * e.g: a Central is 127.0.0.1 in NS but is displayed with its true IP in platform_topology
-         */
-        $statement = $pearDB->prepare("SELECT * FROM `platform_topology` WHERE `address` = :address");
-        $statement->bindValue(':address', $serverIp, \PDO::PARAM_STR);
-        $statement->execute();
-        $platformInTopology = $statement->fetch(\PDO::FETCH_ASSOC);
-        if ($platformInTopology) {
-            return false;
-        }
-        return true;
     }
+
+    /**
+     * If nothing was found in nagios server check if it exists in platform topology
+     * e.g: a Central is 127.0.0.1 in NS but is displayed with its true IP in platform_topology
+     */
+    $statement = $pearDB->prepare("SELECT * FROM `platform_topology` WHERE `address` = :address");
+    $statement->bindValue(':address', $serverIp, \PDO::PARAM_STR);
+    $statement->execute();
+    $platformInTopology = $statement->fetch(\PDO::FETCH_ASSOC);
+    if ($platformInTopology && (int)$platformInTopology['server_id'] !== $serverId) {
+        return false;
+    }
+    return true;
 }

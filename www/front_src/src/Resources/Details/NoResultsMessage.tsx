@@ -2,7 +2,8 @@ import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import { makeStyles, Paper, Typography } from '@material-ui/core';
+import { Paper, Typography } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 
 import { labelNoResultsFound } from '../translatedLabels';
 
@@ -13,8 +14,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const NoResultsMessage = (): JSX.Element => {
-  const { t } = useTranslation();
   const classes = useStyles();
+  const { t } = useTranslation();
 
   return (
     <Paper className={classes.container}>

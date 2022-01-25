@@ -1,28 +1,20 @@
-import { getStoredOrDefault, store } from '../storage';
+import { baseKey, getStoredOrDefault } from '../storage';
 
 import { Filter } from './models';
 
-const key = 'centreon-resource-status-filter-21.04';
+const filterKey = `${baseKey}filter`;
 
 let cachedFilter;
 
 const getStoredOrDefaultFilter = (defaultValue: Filter): Filter => {
   return getStoredOrDefault<Filter>({
-    defaultValue,
-    key,
     cachedItem: cachedFilter,
+    defaultValue,
+    key: filterKey,
     onCachedItemUpdate: (updatedItem) => {
       cachedFilter = updatedItem;
     },
   });
 };
 
-const storeFilter = (filter: Filter): void => {
-  store<Filter>({ value: filter, key });
-};
-
-const clearCachedFilter = (): void => {
-  cachedFilter = null;
-};
-
-export { getStoredOrDefaultFilter, storeFilter, clearCachedFilter, key };
+export { getStoredOrDefaultFilter };

@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this */
 /* eslint-disable react/jsx-filename-extension */
 /* eslint-disable no-shadow */
 /* eslint-disable react/prop-types */
@@ -24,15 +25,15 @@ class RemoteServerStepTwoRoute extends Component {
   links = [
     {
       active: true,
-      prevActive: true,
       number: 1,
       path: routeMap.serverConfigurationWizard,
+      prevActive: true,
     },
     {
       active: true,
-      prevActive: true,
       number: 2,
       path: routeMap.remoteServerStep1,
+      prevActive: true,
     },
     { active: true, number: 3 },
     { active: false, number: 4 },
@@ -46,10 +47,15 @@ class RemoteServerStepTwoRoute extends Component {
     'internal.php?object=centreon_configuration_remote&action=linkCentreonRemoteServer',
   );
 
+  componentDidMount() {
+    this.getPollers();
+  }
+
   _spliceOutDefaultPoller = (itemArr) => {
     for (let i = 0; i < itemArr.items.length; i++) {
       if (itemArr.items[i].id === '1') itemArr.items.splice(i, 1);
     }
+
     return itemArr;
   };
 
@@ -65,14 +71,11 @@ class RemoteServerStepTwoRoute extends Component {
     });
   };
 
-  componentDidMount = () => {
-    this.getPollers();
-  };
-
   handleSubmit = (data) => {
     const { history, pollerData, setPollerWizard } = this.props;
     const postData = { ...data, ...pollerData };
     postData.server_type = 'remote';
+
     return this.wizardFormApi
       .post('', postData)
       .then((response) => {
@@ -94,6 +97,7 @@ class RemoteServerStepTwoRoute extends Component {
   render() {
     const { links } = this;
     const { pollers } = this.state;
+
     return (
       <BaseWizard>
         <ProgressBar links={links} />

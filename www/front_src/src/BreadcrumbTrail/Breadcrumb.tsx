@@ -2,24 +2,25 @@ import React from 'react';
 
 import { Link as RouterLink } from 'react-router-dom';
 
-import { Link, makeStyles } from '@material-ui/core';
+import { Link } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 
 import { Breadcrumb as BreadcrumbModel } from './models';
 
 const useStyles = makeStyles(() => ({
   link: {
-    fontSize: 'small',
-    color: 'inherit',
-    textDecoration: 'none',
     '&:hover': {
       textDecoration: 'underline',
     },
+    color: 'inherit',
+    fontSize: 'small',
+    textDecoration: 'none',
   },
 }));
 
 interface Props {
-  last: boolean;
   breadcrumb: BreadcrumbModel;
+  last: boolean;
 }
 
 const Breadcrumb = ({ last, breadcrumb }: Props): JSX.Element => {

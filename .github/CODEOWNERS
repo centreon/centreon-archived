@@ -5,7 +5,8 @@
 /selinux/       @centreon/centreon-ci
 /project/       @centreon/centreon-ci
 *.sh            @centreon/centreon-ci
-*.md            @centreon/centreon-ci
+
+*.po            @ghost
 
 /src/                  @centreon/centreon-php
 /config/               @centreon/centreon-php

@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2015 Centreon
+ * Copyright 2005-2021 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -199,8 +199,8 @@ class CentreonPurgeEngine
         $dropPartitions = [];
         foreach ($this->tablesToPurge[$table]['partitions'] as $partName => $partTimestamp) {
             if ($partTimestamp < $this->tablesToPurge[$table]['retention']) {
-                $dropPartitions[] = 'DROP PARTITION `' . $partName . '`';
-                echo "[" . date(DATE_RFC822) . "] Partition delete " . $partName . "\n";
+                $dropPartitions[] = '`' . $partName . '`';
+                echo "[" . date(DATE_RFC822) . "] Partition will be delete " . $partName . "\n";
             }
         }
 
@@ -208,7 +208,7 @@ class CentreonPurgeEngine
             return 0;
         }
 
-        $request = 'ALTER TABLE `' . $table . '` ' . implode(', ', $dropPartitions);
+        $request = 'ALTER TABLE `' . $table . '` DROP PARTITION ' . implode(', ', $dropPartitions);
         try {
             $DBRESULT = $this->dbCentstorage->query($request);
         } catch (\PDOException $e) {
@@ -245,15 +245,7 @@ class CentreonPurgeEngine
     private function purgeIndexData()
     {
         $request = "UPDATE index_data SET to_delete = '1' WHERE ";
-
-        // Delete index_data entries for service by hostgroup
-        $request .= "ISNULL((SELECT 1 FROM " . db . ".hostgroup_relation hr, " . db . ".host_service_relation hsr ";
-        $request .= "WHERE hr.host_host_id = index_data.host_id AND hr.hostgroup_hg_id = hsr.hostgroup_hg_id ";
-        $request .= "AND hsr.service_service_id = index_data.service_id LIMIT 1)) ";
-
-        // Delete index_data entries for service by host
-        $request .= "AND ISNULL((SELECT 1 FROM " . db . ".host_service_relation hsr " .
-            "WHERE hsr.host_host_id = index_data.host_id AND hsr.service_service_id = index_data.service_id LIMIT 1)) ";
+        $request .= "NOT EXISTS(SELECT 1 FROM " . db . ".service WHERE service.service_id = index_data.service_id)";
 
         try {
             $DBRESULT = $this->dbCentstorage->query($request);

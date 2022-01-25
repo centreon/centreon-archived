@@ -6,14 +6,29 @@
 	<ul id="mainnav">
 		<li class="a" id='c1'><a href="#" onclick="javascript:montre('1'); changeTab('1');">{$sort1}</a></li>
 		{foreach from=$tabs item=tab name=tabForeach}
-		<li class="b" id='c{math equation="x + y" x=$smarty.foreach.tabForeach.index y=2}'><a href="#" onclick="javascript:montre('{math equation="x + y" x=$smarty.foreach.tabForeach.index y=2}');changeTab('tab{math equation="x + y" x=$smarty.foreach.tabForeach.index y=2}');">{$tab.id|capitalize}</a></li>
+		<li class="b" id='c{math equation="x + y" x=$smarty.foreach.tabForeach.index y=2}'>
+			<a href="#" onclick="javascript:montre('{math equation="x + y" x=$smarty.foreach.tabForeach.index y=2}');
+			changeTab('tab{math equation="x + y" x=$smarty.foreach.tabForeach.index y=2}');">
+			{$tab.id|capitalize}
+			{if $tab.id|capitalize eq 'Logger'}
+			(deprecated)
+			{/if}
+			</a>
+		</li>
 		{/foreach}
 	</ul>
     <div id="validFormTop">
 	{if $o == "a" || $o == "c"}
-		<p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+	    <p class="oreonbutton">
+            {if isset($form.submitC)}
+                {$form.submitC.html}
+            {else}
+                {$form.submitA.html}
+            {/if}
+            &nbsp;&nbsp;&nbsp;{$form.reset.html}
+        </p>
 	{else if $o == "w"}
-		<p class="oreonbutton">{$form.change.html}</p>
+		<p class="oreonbutton">{if isset($form.change)}{$form.change.html}{/if}</p>
 	{/if}
 	</div>
 	</div>
@@ -29,17 +44,30 @@
             <tr class="list_one"><td class="FormRowField">{$form.filename.label}</td><td class="FormRowValue">{$form.filename.html}</td></tr>
             <tr class="list_two"><td class="FormRowField">{$form.cache_directory.label}</td><td class="FormRowValue">{$form.cache_directory.html}</td></tr>
 			<tr class="list_one"><td class="FormRowField">{$form.activate_watchdog.label}</td><td class="FormRowValue">{$form.activate_watchdog.html}</td></tr>
-			<tr class="list_lvl_2">
-				<td class="ListColLvl1_name" colspan="2">
-					<h4>{$centreonbroker_watchdog_log}</h4>
-				</td>
-			</tr>
             <tr class="list_two"><td class="FormRowField">{$form.activate.label}</td><td class="FormRowValue">{$form.activate.html}</td></tr>
             <tr class="list_lvl_1">
                 <td class="ListColLvl1_name" colspan="2">
                     <h4>{$centreonbroker_log_options}</h4>
                 </td>
             </tr>
+			<tr class="list_one">
+				<td class="FormRowField">{$form.log_directory.label}</td>
+				<td class="FormRowValue">{$form.log_directory.html}</td>
+			</tr>
+			<tr class="list_two">
+				<td class="FormRowField">{$form.log_filename.label}</td>
+				<td class="FormRowValue">{$form.log_filename.html}</td>
+			</tr>
+			<tr class="list_one">
+				<td class="FormRowField">{$form.log_max_size.label}</td>
+				<td class="FormRowValue">{$form.log_max_size.html}</td>
+			</tr>
+			{foreach from=$smartyLogs item=log name=tabLog}
+			<tr class="list_one">
+				<td class="FormRowField">{$form.$log.label}</td>
+				<td class="FormRowValue">{$form.$log.html}</td>
+			</tr>
+			{/foreach}
             <tr class="list_one"><td class="FormRowField">{$form.write_timestamp.label}</td><td class="FormRowValue">{$form.write_timestamp.html}</td></tr>
             <tr class="list_two"><td class="FormRowField">{$form.write_thread_id.label}</td><td class="FormRowValue">{$form.write_thread_id.html}</td></tr>
             <tr class="list_lvl_1">
@@ -51,7 +79,11 @@
             <tr class="list_two"><td class="FormRowField">{$form.event_queue_max_size.label}</td><td class="FormRowValue">{$form.event_queue_max_size.html}</td></tr>
             <tr class="list_one"><td class="FormRowField">{$form.command_file.label}</td><td class="FormRowValue">{$form.command_file.html}</td></tr>
             <tr class="list_two"><td class="FormRowField">{$form.pool_size.label}</td><td class="FormRowValue">{$form.pool_size.html}</td></tr>
-            <tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
+            <tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">
+                {if isset($form.required)}
+                    {$form.required._note}
+                {/if}
+            </td></tr>
         </table>
     </div>
 	{foreach from=$tabs item=tab name=tabForeach2}
@@ -80,9 +112,16 @@
 	{/foreach}
 	<div id="validForm">
 	{if $o == "a" || $o == "c"}
-		<p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+		<p class="oreonbutton">
+            {if isset($form.submitC)}
+                {$form.submitC.html}
+            {else}
+                {$form.submitA.html}
+            {/if}
+            &nbsp;&nbsp;&nbsp;{$form.reset.html}
+        </p>
 	{else if $o == "w"}
-		<p class="oreonbutton">{$form.change.html}</p>
+		<p class="oreonbutton">{if isset($form.change)}{$form.change.html}{/if}</p>
 	{/if}
 	</div>
 	{$form.hidden}
@@ -97,63 +136,61 @@
 
 <script type="text/javascript">
 
+    var infos = new Infos();
+    var uniqueType = new Array();
+    {/literal}
+        {foreach from=$tabs item=tab}
+            infos.setPos("{$tab.id}", {$tab.nb});
+        {/foreach}
+        {foreach from=$tabs item=tab}
+            {foreach from=$tab.blocks item=block}
+                {if $block.unique == 1}
+                    uniqueType["{$block.id}"] = true;
+                {else}
+                    uniqueType["{$block.id}"] = false;
+                {/if}
+            {/foreach}
+        {/foreach}
+    {literal}
 
     jQuery('#Form').centreonValidate();
+    jQuery(document).ready(function() {
+        clonifyTableFields('parentGroup','displaynamegroup');
+    });
 
+    function mk_paginationFF(){};
+    function set_header_title(){};
 
-function mk_paginationFF(){};
-function set_header_title(){};
+    function Infos() {
+        this.tags = new Array();
 
-function Infos() {
-    this.tags = new Array();
+        this.getPos = function(type){
+            if (this.tags[type] == undefined) {
+                    this.tags[type] = 0;
+            }
+            return this.tags[type];
+        };
 
-    this.getPos = function(type){
-        if (this.tags[type] == undefined) {
-                this.tags[type] = 0;
-        }
-        return this.tags[type];
-    };
+        this.setPos = function(type, value){
+            this.tags[type] = value;
+        };
 
-    this.setPos = function(type, value){
-        this.tags[type] = value;
-    };
+        this.incrementPos = function(type){
+            this.tags[type]++;
+        };
 
-    this.incrementPos = function(type){
-        this.tags[type]++;
-    };
-
-}
-
-var infos = new Infos();
-{/literal}
-{foreach from=$tabs item=tab}
-infos.setPos("{$tab.id}", {$tab.nb});
-{/foreach}
-{literal}
-
-var uniqueType = new Array();{/literal}
-{foreach from=$tabs item=tab}
-{foreach from=$tab.blocks item=block}
-{if $block.unique == 1}
-uniqueType["{$block.id}"] = true;
-{else}
-uniqueType["{$block.id}"] = false;
-{/if}
-{/foreach}
-{/foreach}{literal}
+    }
 
     function addInfo(type) {
         var prev_id = infos.getPos(type);
         var id = prev_id + 1;
         var id_name = type + '_' + id;
         var blockId = jQuery('#block_' + type).val();
-        var params;
 
         var tbody = jQuery('<tbody>');
         tbody.attr('id', id_name);
         tbody.attr('class', 'collapse-wrapper');
         jQuery('#' + type).append(tbody);
-        params = '?p={/literal}{$p}{literal}&o=j&pos=' + id + '&min=1&blockId=' + blockId + '&tag=' + type;
         var url = './api/internal.php?object=centreon_configuration_broker&resultFormat=html&action=block' +
 		    '&page=' + {/literal}{$p}{literal} + '&position=' + id +
             '&blockId=' + blockId + '&tag=' + type;
@@ -180,8 +217,6 @@ uniqueType["{$block.id}"] = false;
         });
     }
 
-
-
     function deleteRow(type, id) {
         var row_name = type + '_' + id;
         var parent = document.getElementById(type);
@@ -205,14 +240,6 @@ uniqueType["{$block.id}"] = false;
             jQuery('add_' + tagName).show();
         }
 
-    }
-
-    function loadedConfiguration() {
-        jQuery('table.ListTable').each(function(el) {
-            if (el.id != undefined && el.id != '') {
-                checkTypeValidity("block_" + el.id);
-            }
-        });
     }
 
     function changeTab(tab) {

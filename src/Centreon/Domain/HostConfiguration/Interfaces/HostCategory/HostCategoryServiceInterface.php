@@ -31,6 +31,14 @@ use Centreon\Domain\HostConfiguration\Model\HostCategory;
 interface HostCategoryServiceInterface
 {
     /**
+     * Add a host category.
+     *
+     * @param HostCategory $category Host category to be added
+     * @throws HostCategoryException
+     */
+    public function addCategory(HostCategory $category): void;
+
+    /**
      * Find a host category (for non admin user).
      *
      * @param int $categoryId Id of the host category to be found
@@ -81,4 +89,13 @@ interface HostCategoryServiceInterface
      * @throws HostCategoryException
      */
     public function findByNameWithoutAcl(string $categoryName): ?HostCategory;
+
+    /**
+     * Find host categories by name (for admin user).
+     *
+     * @param string[] $categoriesName List of names of host categories to be found
+     * @return HostCategory[]
+     * @throws HostCategoryException
+     */
+    public function findByNamesWithoutAcl(array $categoriesName): array;
 }

@@ -3,14 +3,13 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { isEmpty, isNil, pipe, trim } from 'ramda';
 
-import { Grid, Typography } from '@material-ui/core';
+import { Grid, Typography } from '@mui/material';
 
 import {
   Dialog,
   TextField,
   useSnackbar,
   useRequest,
-  Severity,
   useLocaleDateTimeFormat,
 } from '@centreon/ui';
 
@@ -26,9 +25,9 @@ import { Resource } from '../../../../models';
 import { ResourceDetails } from '../../../../Details/models';
 
 interface Props {
+  date: Date;
   onClose: () => void;
   onSuccess: (comment) => void;
-  date: Date;
   resource: Resource | ResourceDetails;
 }
 
@@ -40,7 +39,7 @@ const AddCommentForm = ({
 }: Props): JSX.Element => {
   const { t } = useTranslation();
   const { toIsoString, toDateTime } = useLocaleDateTimeFormat();
-  const { showMessage } = useSnackbar();
+  const { showSuccessMessage } = useSnackbar();
   const [comment, setComment] = React.useState<string>();
 
   const { sendRequest, sending } = useRequest({
@@ -58,13 +57,10 @@ const AddCommentForm = ({
     };
 
     sendRequest({
-      resources: [resource],
       parameters,
+      resources: [resource],
     }).then(() => {
-      showMessage({
-        message: t(labelCommentAdded),
-        severity: Severity.success,
-      });
+      showSuccessMessage(t(labelCommentAdded));
       onSuccess(parameters);
     });
   };
@@ -86,30 +82,30 @@ const AddCommentForm = ({
   return (
     <Dialog
       open
-      onClose={onClose}
-      onCancel={onClose}
-      onConfirm={confirm}
+      confirmDisabled={!canConfirm}
       labelConfirm={t(labelAdd)}
       labelTitle={t(labelAddComment)}
-      confirmDisabled={!canConfirm}
       submitting={sending}
+      onCancel={onClose}
+      onClose={onClose}
+      onConfirm={confirm}
     >
-      <Grid direction="column" container spacing={2}>
+      <Grid container direction="column" spacing={2}>
         <Grid item>
           <Typography variant="h6">{toDateTime(date)}</Typography>
         </Grid>
         <Grid item>
           <TextField
             autoFocus
+            multiline
+            required
+            ariaLabel={t(labelComment)}
             error={getError()}
             label={t(labelComment)}
-            ariaLabel={t(labelComment)}
-            value={comment}
-            required
-            onChange={changeComment}
-            style={{ width: 300 }}
             rows={3}
-            multiline
+            style={{ width: 300 }}
+            value={comment}
+            onChange={changeComment}
           />
         </Grid>
       </Grid>

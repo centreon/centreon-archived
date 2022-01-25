@@ -79,6 +79,7 @@ $tpl->assign('mode_access', $lvl_access);
 
 // start header menu
 $tpl->assign("headerMenu_name", _("Group Name"));
+$tpl->assign("headerMenu_options", _("Options"));
 
 // List of elements - Depends on different criteria
 $form = new HTML_QuickFormCustom('form', 'POST', "?p=" . $p);

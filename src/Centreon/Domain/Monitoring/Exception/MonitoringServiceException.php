@@ -24,5 +24,43 @@ namespace Centreon\Domain\Monitoring\Exception;
 
 class MonitoringServiceException extends \Exception
 {
+    /**
+     * @return self
+     */
+    public static function hostIdNotNull(): self
+    {
+        return new self(_('Host id cannot be null'));
+    }
 
+    /**
+     * @return self
+     */
+    public static function serviceIdNotNull(): self
+    {
+        return new self(_('Service id cannot be null'));
+    }
+
+    /**
+     * @return self
+     */
+    public static function configurationHasChanged(): self
+    {
+        return new self(_('Configuration has changed'));
+    }
+
+    /**
+     * @return self
+     */
+    public static function macroPasswordNotDetected(): self
+    {
+        return new self(_('Macro passwords cannot be detected'));
+    }
+
+    /**
+     * @return self
+     */
+    public static function configurationCommandNotSplitted(): self
+    {
+        return new self(_('Configuration command cannot be splitted by macros'));
+    }
 }

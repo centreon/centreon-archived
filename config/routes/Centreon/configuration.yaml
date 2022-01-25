@@ -1,17 +1,11 @@
-configuration.monitoring-servers.findServer:
-    methods: GET
-    path: /configuration/monitoring-servers
-    controller: 'Centreon\Application\Controller\Configuration\MonitoringServerController::findServer'
-    condition: "request.attributes.get('version.is_beta') == true"
-
 configuration.proxy.getProxy:
     methods: GET
     path: /configuration/proxy
     controller: 'Centreon\Application\Controller\Configuration\ProxyController::getProxy'
-    condition: "request.attributes.get('version.is_beta') == true"
+    condition: "request.attributes.get('version') >= 21.10"
 
 configuration.proxy.updateProxy:
     methods: PUT
     path: /configuration/proxy
     controller: 'Centreon\Application\Controller\Configuration\ProxyController::updateProxy'
-    condition: "request.attributes.get('version.is_beta') == true"
+    condition: "request.attributes.get('version') >= 21.10"

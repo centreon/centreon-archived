@@ -17,7 +17,10 @@ parameters:
     centreon_path: "%env(_CENTREON_PATH_)%"
     centreon_etc_path: "%env(_CENTREON_ETC_)%"
     translation_path: "%centreon_path%/www/locale"
+    log_path: "%env(_CENTREON_LOG_)%"
     media_path: "img/media"
+    redirect_default_page: "/monitoring/resources"
+    session_expiration_delay: 120
 
 services:
     # Default configuration for services in *this* file
@@ -25,6 +28,10 @@ services:
         public: false
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, et
+
+    _instanceof:
+        Security\Domain\Authentication\Interfaces\ProviderInterface:
+            tags: ['authentication.providers']
 
     EventSubscriber\:
         resource: '../src/EventSubscriber/*'
@@ -52,5 +59,30 @@ services:
         factory: ['Centreon\LegacyContainer', 'getInstance']
 
     Centreon\Application\Controller\Router:
-        decorates: 'router'
-        arguments: ['@Centreon\Application\Controller\Router.inner']
+        decorates: router
+        arguments: ['@.inner']
+
+
+    # Security
+    Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface:
+        class: Security\Infrastructure\Repository\AuthenticationRepository
+
+    Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface:
+        class: Security\Domain\Authentication\AuthenticationService
+        public: true
+
+    Security\Domain\Authentication\Interfaces\ProviderRepositoryInterface:
+        class: Security\Infrastructure\Repository\ProviderRepository
+
+    Security\Domain\Authentication\Interfaces\SessionRepositoryInterface:
+        class: Security\Infrastructure\Repository\SessionRepository
+
+    Security\Domain\Authentication\Interfaces\ProviderServiceInterface:
+        class: Security\Domain\Authentication\ProviderService
+        public: true
+
+    Security\Domain\Authentication\Model\LocalProvider:
+        arguments: [ "%session_expiration_delay%" ]
+
+    Security\Domain\Authentication\Model\ProviderFactory:
+        arguments: [!tagged_iterator 'authentication.providers']

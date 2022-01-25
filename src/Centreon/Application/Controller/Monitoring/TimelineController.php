@@ -157,4 +157,59 @@ class TimelineController extends AbstractController
             ]
         )->setContext($context);
     }
+
+    /**
+     * Entry point to get timeline for a meta service
+     *
+     * @param int $metaId ID of the Meta
+     * @param RequestParametersInterface $requestParameters Request parameters used to filter the request
+     * @return View
+     * @throws EntityNotFoundException
+     */
+    public function getMetaServiceTimeline(
+        int $metaId,
+        RequestParametersInterface $requestParameters
+    ): View {
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
+        /**
+         * @var Contact $user
+         */
+        $user = $this->getUser();
+        $this->monitoringService->filterByContact($user);
+        $this->timelineService->filterByContact($user);
+
+        $service = $this->monitoringService->findOneServiceByDescription('meta_' . $metaId);
+
+        if (is_null($service)) {
+            throw new EntityNotFoundException(
+                sprintf(
+                    _('Meta service %d not found'),
+                    $metaId
+                )
+            );
+        }
+
+        $host = $this->monitoringService->findOneHost($service->getHost()->getId());
+        if (is_null($host)) {
+            throw new EntityNotFoundException(
+                sprintf(_('Host meta for meta service %d not found'), $metaId)
+            );
+        }
+
+        $service->setHost($host);
+
+        $timeline = $this->timelineService->findTimelineEventsByService($service);
+
+        $context = (new Context())
+            ->setGroups(static::SERIALIZER_GROUPS_MAIN)
+            ->enableMaxDepth();
+
+        return $this->view(
+            [
+                'result' => $timeline,
+                'meta' => $requestParameters->toArray()
+            ]
+        )->setContext($context);
+    }
 }

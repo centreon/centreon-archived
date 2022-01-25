@@ -437,7 +437,7 @@ if (!$getInputs['engine']) {
     var _host = <?php echo !empty($user_params["log_filter_host"]) ? $user_params["log_filter_host"] : 'false'; ?>;
     var _service = <?php echo !empty($user_params["log_filter_svc"]) ? $user_params["log_filter_svc"] : 'false'; ?>;
     // Casting engine variable so that it can be properly interpreted in JS
-    var _engine = <?php echo (int)$engine; ?>;
+    var _engine = <?php echo (int) $getInputs['engine']; ?>;
 
     var _down = <?php echo $user_params["log_filter_host_down"]; ?>;
     <?php echo !empty($user_params["log_filter_notif"]) ? $user_params["log_filter_notif"] : 'false'; ?>;
@@ -737,7 +737,7 @@ if (!$getInputs['engine']) {
 
     function getArgsForHost() {
         var host_value = jQuery("#host_filter").val();
-        var service_value = jQuery("#service_filter").val();
+        const serviceValues = jQuery("#service_filter").select2('data');
         var hg_value = jQuery("#host_group_filter").val();
         var sg_value = jQuery("#service_group_filter").val();
 
@@ -761,11 +761,11 @@ if (!$getInputs['engine']) {
                 }
             });
         }
-        if (service_value !== null) {
+        if (serviceValues.length > 0) {
             urlargs += "&svc=";
             var flagfirst = true;
-            service_value.forEach(function (val) {
-                if (val !== " " && val !== "") {
+            serviceValues.forEach(function (val) {
+                if (val.id !== " " && val.id !== "") {
                     if (args !== "") {
                         args += ",";
                     }
@@ -774,8 +774,12 @@ if (!$getInputs['engine']) {
                     } else {
                         flagfirst = false;
                     }
-                    urlargs += val.replace("-", "_");
-                    args += "HS_" + val.replace("-", "_");
+                    urlargs += val.id.replace("-", "_");
+                    if (val.text.substring(0, 5) === 'Meta ') {
+                        args += "MS_" + val.id.replace("-", "_");
+                    } else {
+                        args += "HS_" + val.id.replace("-", "_");
+                    }
                 }
             });
         }

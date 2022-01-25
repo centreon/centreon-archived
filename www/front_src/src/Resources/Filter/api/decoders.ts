@@ -8,8 +8,6 @@ import { SortOrder } from '../../models';
 
 const entityDecoder = JsonDecoder.object<Filter>(
   {
-    id: JsonDecoder.number,
-    name: JsonDecoder.string,
     criterias: JsonDecoder.array<Criteria>(
       JsonDecoder.object<Criteria>(
         {
@@ -40,11 +38,8 @@ const entityDecoder = JsonDecoder.object<Filter>(
                 JsonDecoder.tuple(
                   [
                     JsonDecoder.string,
-                    JsonDecoder.oneOf<'asc' | 'desc'>(
-                      [
-                        JsonDecoder.isExactly('asc'),
-                        JsonDecoder.isExactly('desc'),
-                      ],
+                    JsonDecoder.enumeration<SortOrder>(
+                      SortOrder,
                       'FilterCriteriaSortOrder',
                     ),
                   ],
@@ -59,6 +54,8 @@ const entityDecoder = JsonDecoder.object<Filter>(
       ),
       'FilterCriterias',
     ),
+    id: JsonDecoder.number,
+    name: JsonDecoder.string,
   },
   'CustomFilter',
 );

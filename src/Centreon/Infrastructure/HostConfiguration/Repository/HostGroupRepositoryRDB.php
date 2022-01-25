@@ -25,7 +25,8 @@ namespace Centreon\Infrastructure\HostConfiguration\Repository;
 use Assert\AssertionFailedException;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\HostConfiguration\Interfaces\HostGroup\HostGroupReadRepositoryInterface;
-use Centreon\Domain\HostConfiguration\Model\HostGroup as HostGroupAlias;
+use Centreon\Domain\HostConfiguration\Interfaces\HostGroup\HostGroupWriteRepositoryInterface;
+use Centreon\Domain\HostConfiguration\Model\HostGroup;
 use Centreon\Domain\Repository\RepositoryException;
 use Centreon\Domain\RequestParameters\RequestParameters;
 use Centreon\Infrastructure\DatabaseConnection;
@@ -40,7 +41,9 @@ use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
  *
  * @package Centreon\Infrastructure\HostConfiguration\Repository
  */
-class HostGroupRepositoryRDB extends AbstractRepositoryDRB implements HostGroupReadRepositoryInterface
+class HostGroupRepositoryRDB extends AbstractRepositoryDRB implements
+    HostGroupReadRepositoryInterface,
+    HostGroupWriteRepositoryInterface
 {
     /**
      * @var SqlRequestParametersTranslator
@@ -60,6 +63,44 @@ class HostGroupRepositoryRDB extends AbstractRepositoryDRB implements HostGroupR
             ->setConcordanceStrictMode(RequestParameters::CONCORDANCE_MODE_STRICT);
     }
 
+
+    /**
+     * @inheritDoc
+     */
+    public function addGroup(HostGroup $group): void
+    {
+        $statement = $this->db->prepare(
+            $this->translateDbName('
+                INSERT INTO `:db`.hostgroup
+                (hg_name, hg_alias, hg_notes, hg_notes_url, hg_action_url, hg_icon_image, hg_map_icon_image,
+                hg_rrd_retention, geo_coords, hg_comment, hg_activate)
+                VALUES (:group_name, :group_alias, :group_notes, :group_notes_url, :group_action_url, :group_icon_id,
+                :group_map_icon_id, :group_rrd, :group_geo, :group_comment, :is_activate)
+            ')
+        );
+        $statement->bindValue(':group_name', $group->getName(), \PDO::PARAM_STR);
+        $statement->bindValue(':group_alias', $group->getAlias(), \PDO::PARAM_STR);
+        $statement->bindValue(':group_notes', $group->getNotes(), \PDO::PARAM_STR);
+        $statement->bindValue(':group_notes_url', $group->getNotesUrl(), \PDO::PARAM_STR);
+        $statement->bindValue(':group_action_url', $group->getActionUrl(), \PDO::PARAM_STR);
+        $statement->bindValue(
+            ':group_icon_id',
+            ($group->getIcon() !== null) ? $group->getIcon()->getId() : null,
+            \PDO::PARAM_INT
+        );
+        $statement->bindValue(
+            ':group_map_icon_id',
+            ($group->getIconMap() !== null) ? $group->getIconMap()->getId() : null,
+            \PDO::PARAM_INT
+        );
+        $statement->bindValue(':group_rrd', $group->getRrd(), \PDO::PARAM_STR);
+        $statement->bindValue(':group_geo', $group->getGeoCoords(), \PDO::PARAM_STR);
+        $statement->bindValue(':group_comment', $group->getComment(), \PDO::PARAM_STR);
+        $statement->bindValue(':is_activate', $group->isActivated() ? '1' : '0', \PDO::PARAM_STR);
+        $statement->execute();
+        $group->setId((int)$this->db->lastInsertId());
+    }
+
     /**
      * @inheritDoc
      */
@@ -70,11 +111,9 @@ class HostGroupRepositoryRDB extends AbstractRepositoryDRB implements HostGroupR
         } catch (
             RequestParametersTranslatorException
             | \InvalidArgumentException
-            | \Assert\AssertionFailedException $ex
+            | AssertionFailedException $ex
         ) {
             throw new RepositoryException($ex->getMessage(), 0, $ex);
-        } catch (\Exception $ex) {
-            throw $ex;
         }
     }
 
@@ -88,7 +127,7 @@ class HostGroupRepositoryRDB extends AbstractRepositoryDRB implements HostGroupR
         } catch (
             RequestParametersTranslatorException
             | \InvalidArgumentException
-            | \Assert\AssertionFailedException $ex
+            | AssertionFailedException $ex
         ) {
             throw new RepositoryException($ex->getMessage(), 0, $ex);
         }
@@ -98,8 +137,8 @@ class HostGroupRepositoryRDB extends AbstractRepositoryDRB implements HostGroupR
      * Find all groups filtered by contact id.
      *
      * @param int|null $contactId Contact id related to host categories
-     * @return HostGroupAlias[]
-     * @throws \Assert\AssertionFailedException
+     * @return HostGroup[]
+     * @throws AssertionFailedException
      * @throws \InvalidArgumentException
      * @throws RequestParametersTranslatorException
      */
@@ -226,11 +265,11 @@ class HostGroupRepositoryRDB extends AbstractRepositoryDRB implements HostGroupR
     /**
      * @inheritDoc
      */
-    public function findById(int $hostGroupId): ?HostGroupAlias
+    public function findById(int $hostGroupId): ?HostGroup
     {
         try {
             return $this->findByIdRequest($hostGroupId, null);
-        } catch (AssertionFailedException | \InvalidArgumentException $ex) {
+        } catch (AssertionFailedException $ex) {
             throw new RepositoryException($ex->getMessage(), 0, $ex);
         }
     }
@@ -238,11 +277,11 @@ class HostGroupRepositoryRDB extends AbstractRepositoryDRB implements HostGroupR
     /**
      * @inheritDoc
      */
-    public function findByIdAndContact(int $hostGroupId, ContactInterface $contact): ?HostGroupAlias
+    public function findByIdAndContact(int $hostGroupId, ContactInterface $contact): ?HostGroup
     {
         try {
             return $this->findByIdRequest($hostGroupId, $contact->getId());
-        } catch (AssertionFailedException | \InvalidArgumentException $ex) {
+        } catch (AssertionFailedException $ex) {
             throw new RepositoryException($ex->getMessage(), 0, $ex);
         }
     }
@@ -252,11 +291,10 @@ class HostGroupRepositoryRDB extends AbstractRepositoryDRB implements HostGroupR
      *
      * @param int $hostGroupId Id of the host group to be found
      * @param int|null $contactId Contact id related to host groups
-     * @return HostGroupAlias|null
-     * @throws \Assert\AssertionFailedException
-     * @throws \InvalidArgumentException
+     * @return HostGroup|null
+     * @throws AssertionFailedException
      */
-    private function findByIdRequest(int $hostGroupId, ?int $contactId): ?HostGroupAlias
+    private function findByIdRequest(int $hostGroupId, ?int $contactId): ?HostGroup
     {
         if ($contactId === null) {
             $statement = $this->db->prepare(
@@ -331,10 +369,50 @@ class HostGroupRepositoryRDB extends AbstractRepositoryDRB implements HostGroupR
         return null;
     }
 
+    /**
+     * @inheritDoc
+     * @throws AssertionFailedException
+     */
+    public function findByNames(array $groupsName): array
+    {
+        $hostGroups = [];
+        if (empty($groupsName)) {
+            return $hostGroups;
+        }
+        $statement = $this->db->prepare(
+            $this->translateDbName(
+                'SELECT hg.*, icon.img_id AS icon_id, icon.img_name AS icon_name,
+                    CONCAT(iconD.dir_name,\'/\',icon.img_path) AS icon_path,
+                    icon.img_comment AS icon_comment, imap.img_id AS imap_id, imap.img_name AS imap_name,
+                    CONCAT(imapD.dir_name,\'/\',imap.img_path) AS imap_path, imap.img_comment AS imap_comment
+                FROM `:db`.hostgroup hg
+                LEFT JOIN `:db`.view_img icon
+                    ON icon.img_id = hg.hg_icon_image
+                LEFT JOIN `:db`.view_img_dir_relation iconR
+                    ON iconR.img_img_id = icon.img_id
+                LEFT JOIN `:db`.view_img_dir iconD
+                    ON iconD.dir_id = iconR.dir_dir_parent_id
+                LEFT JOIN `:db`.view_img imap
+                    ON imap.img_id = hg.hg_map_icon_image
+                LEFT JOIN `:db`.view_img_dir_relation imapR
+                    ON imapR.img_img_id = imap.img_id
+                LEFT JOIN `:db`.view_img_dir imapD
+                    ON imapD.dir_id = imapR.dir_dir_parent_id
+                WHERE hg.hg_name IN (?' . str_repeat(',?', count($groupsName) - 1) . ')'
+            )
+        );
+        $statement->execute($groupsName);
+
+        while (($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
+            $hostGroups[] = HostGroupFactoryRdb::create($result);
+        }
+        return $hostGroups;
+    }
 
     /**
      * @inheritDoc
-     * @throws \Assert\AssertionFailedException
+     * @throws AssertionFailedException
+     * @throws \InvalidArgumentException
      */
     public function findHostGroups(): array
     {

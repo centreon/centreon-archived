@@ -18,9 +18,9 @@ class RemoteServerStepOneRoute extends Component {
   links = [
     {
       active: true,
-      prevActive: true,
       number: 1,
       path: routeMap.serverConfigurationWizard,
+      prevActive: true,
     },
     { active: true, number: 2, path: routeMap.remoteServerStep1 },
     { active: false, number: 3 },
@@ -35,6 +35,10 @@ class RemoteServerStepOneRoute extends Component {
     'internal.php?object=centreon_configuration_remote&action=getWaitList',
   );
 
+  componentDidMount() {
+    this.getWaitList();
+  }
+
   getWaitList = () => {
     this.wizardFormWaitListApi
       .post()
@@ -44,10 +48,6 @@ class RemoteServerStepOneRoute extends Component {
       .catch(() => {
         this.setState({ waitList: [] });
       });
-  };
-
-  componentDidMount = () => {
-    this.getWaitList();
   };
 
   handleSubmit = (data) => {
@@ -60,12 +60,13 @@ class RemoteServerStepOneRoute extends Component {
     const { links } = this;
     const { pollerData } = this.props;
     const { waitList } = this.state;
+
     return (
       <BaseWizard>
         <ProgressBar links={links} />
         <Form
-          waitList={waitList}
           initialValues={{ ...pollerData, centreon_folder: '/centreon/' }}
+          waitList={waitList}
           onSubmit={this.handleSubmit.bind(this)}
         />
       </BaseWizard>

@@ -22,9 +22,7 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\HostConfiguration\Interfaces\HostCategory;
 
-use Centreon\Domain\HostConfiguration\Host;
 use Centreon\Domain\HostConfiguration\Model\HostCategory;
-use Centreon\Domain\Repository\RepositoryException;
 
 /**
  * This interface gathers all the writing operations on the host category repository.
@@ -33,4 +31,11 @@ use Centreon\Domain\Repository\RepositoryException;
  */
 interface HostCategoryWriteRepositoryInterface
 {
+    /**
+     * Add a host category.
+     *
+     * @param HostCategory $category Host category to be added
+     * @throws \Throwable
+     */
+    public function addCategory(HostCategory $category): void;
 }

@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -51,6 +52,12 @@ class CentreonConfigCentreonBroker
 
     /**
      *
+     * @var array
+     */
+    public $arrayMultiple = [];
+
+    /**
+     *
      * @var \CentreonDB
      */
     private $db;
@@ -75,19 +82,31 @@ class CentreonConfigCentreonBroker
 
     /**
      *
-     * @var type
+     * @var array<int|string,mixed>|null
      */
     private $tagsCache = null;
 
     /**
      *
-     * @var type
+     * @var array<int|string,mixed>|null
+     */
+    private $logsCache = null;
+
+    /**
+     *
+     * @var array<int|string,string>|null
+     */
+    private $logsLevelCache = null;
+
+    /**
+     *
+     * @var array<int,string>|null
      */
     private $typesCache = null;
 
     /**
      *
-     * @var type
+     * @var array<int,string>|null
      */
     private $typesNameCache = null;
 
@@ -172,7 +191,7 @@ class CentreonConfigCentreonBroker
      *
      * @param CentreonDB $db The connection to centreon database
      */
-    public function setDb($db)
+    public function setDb($db): void
     {
         $this->db = $db;
     }
@@ -189,6 +208,7 @@ class CentreonConfigCentreonBroker
         }
         $query = "SELECT cb_tag_id, tagname
             FROM cb_tag
+            WHERE tagname <> 'logger'
             ORDER BY tagname";
         try {
             $res = $this->db->query($query);
@@ -200,6 +220,52 @@ class CentreonConfigCentreonBroker
             $this->tagsCache[$row['cb_tag_id']] = $row['tagname'];
         }
         return $this->tagsCache;
+    }
+
+    /**
+     * Return the list of logs option
+     *
+     * @return array
+     */
+    public function getLogsOption()
+    {
+        if (!is_null($this->logsCache)) {
+            return $this->logsCache;
+        }
+        $query = "SELECT log.`id`, log.`name` FROM `cb_log` log";
+        try {
+            $res = $this->db->query($query);
+        } catch (\PDOException $e) {
+            return array();
+        }
+        $this->logsCache = array();
+        while ($row = $res->fetchRow()) {
+            $this->logsCache[$row['id']] = $row['name'];
+        }
+        return $this->logsCache;
+    }
+
+    /**
+     * Return the list of logs level
+     *
+     * @return array
+     */
+    public function getLogsLevel()
+    {
+        if (!is_null($this->logsLevelCache)) {
+            return $this->logsLevelCache;
+        }
+        $query = "SELECT `id`, `name` FROM `cb_log_level`";
+        try {
+            $res = $this->db->query($query);
+        } catch (\PDOException $e) {
+            return array();
+        }
+        $this->logsLevelCache = array();
+        while ($row = $res->fetchRow()) {
+            $this->logsLevelCache[$row['id']] = $row['name'];
+        }
+        return $this->logsLevelCache;
     }
 
     /**
@@ -307,12 +373,10 @@ class CentreonConfigCentreonBroker
         return $this->blockCache[$tagId];
     }
 
-    public $arrayMultiple;
-
     /**
      * Create the HTML_QuickForm object with element for a block
      *
-     * @param int $blockId The block id ('tag_id'_'type_id')
+     * @param string $blockId The block id ('tag_id'_'type_id')
      * @param int $page The centreon page id
      * @param int $formId The form post
      * @param int $config_id
@@ -522,7 +586,7 @@ class CentreonConfigCentreonBroker
     /**
      * Generate Cdata tag
      */
-    public function generateCdata()
+    public function generateCdata(): void
     {
         $cdata = CentreonData::getInstance();
         if (isset($this->arrayMultiple)) {
@@ -592,8 +656,8 @@ class CentreonConfigCentreonBroker
 
     /**
      * Return a cb type id for the shortname given
-     * @param type $typeName
-     * @return boolean
+     * @param string $typeName
+     * @return int|null
      */
     public function getTypeId($typeName)
     {
@@ -623,12 +687,11 @@ class CentreonConfigCentreonBroker
         // Insert the Centreon Broker configuration
         $query = "INSERT INTO cfg_centreonbroker "
             . "(config_name, config_filename, ns_nagios_server, config_activate, daemon, config_write_timestamp, "
-            . "config_write_thread_id, stats_activate, cache_directory, "
-            . "event_queue_max_size, command_file, pool_size) "
+            . "config_write_thread_id, stats_activate, cache_directory, event_queue_max_size, command_file, "
+            . "pool_size, log_directory, log_filename, log_max_size) "
             . "VALUES (:config_name, :config_filename, :ns_nagios_server, :config_activate, :daemon, "
             . ":config_write_timestamp, :config_write_thread_id, :stats_activate, :cache_directory, "
-            . ":event_queue_max_size, :command_file, :pool_size)";
-
+            . ":event_queue_max_size, :command_file, :pool_size, :log_directory, :log_filename, :log_max_size)";
         try {
             $stmt = $this->db->prepare($query);
             $stmt->bindValue(':config_name', $values['name'], \PDO::PARAM_STR);
@@ -640,6 +703,9 @@ class CentreonConfigCentreonBroker
             $stmt->bindValue(':config_write_thread_id', $values['write_thread_id']['write_thread_id'], \PDO::PARAM_STR);
             $stmt->bindValue(':stats_activate', $values['stats_activate']['stats_activate'], \PDO::PARAM_STR);
             $stmt->bindValue(':cache_directory', $values['cache_directory'], \PDO::PARAM_STR);
+            $stmt->bindValue(':log_directory', $values['log_directory'], \PDO::PARAM_STR);
+            $stmt->bindValue(':log_filename', $values['log_filename'], \PDO::PARAM_STR);
+            $stmt->bindValue(':log_max_size', $values['log_max_size'], \PDO::PARAM_INT);
             $stmt->bindValue(
                 ':event_queue_max_size',
                 (int)$this->checkEventMaxQueueSizeValue($values['event_queue_max_size']),
@@ -661,6 +727,7 @@ class CentreonConfigCentreonBroker
         if (!empty($iId)) {
             $objMain->insertBrokerDefaultDirectives($iId, 'wizard');
         }
+
         /*
          * Get the ID
          */
@@ -672,7 +739,29 @@ class CentreonConfigCentreonBroker
         }
         $row = $res->fetch();
         $id = $row['config_id'];
+
+        /*
+         * Log
+         */
+        $logs = $this->getLogsOption();
+        $queryLog = "INSERT INTO cfg_centreonbroker_log (id_centreonbroker, id_log, id_level) VALUES ";
+        foreach (array_keys($logs) as $logId) {
+            $queryLog .= '(:id_centreonbroker, :log_' . $logId . ', :level_' . $logId . '), ';
+        }
+        $queryLog = rtrim($queryLog, ', ');
+        try {
+            $stmt = $this->db->prepare($queryLog);
+            $stmt->bindValue(':id_centreonbroker', (int) $id, \PDO::PARAM_INT);
+            foreach ($logs as $logId => $logName) {
+                $stmt->bindValue(':log_' . $logId, (int) $logId, \PDO::PARAM_INT);
+                $stmt->bindValue(':level_' . $logId, (int) $values['log_' . $logName], \PDO::PARAM_INT);
+            }
+            $stmt->execute();
+        } catch (\PDOException $e) {
+            return false;
+        }
         $this->updateCentreonBrokerInfos($id, $values);
+        return true;
     }
 
     /**
@@ -690,6 +779,7 @@ class CentreonConfigCentreonBroker
             . "config_write_timestamp = :config_write_timestamp, config_write_thread_id = :config_write_thread_id, "
             . "stats_activate = :stats_activate, cache_directory = :cache_directory, "
             . "event_queue_max_size = :event_queue_max_size, command_file = :command_file , "
+            . "log_directory = :log_directory, log_filename = :log_filename , log_max_size = :log_max_size , "
             . "pool_size = :pool_size WHERE config_id = " . $id;
         try {
             $stmt = $this->db->prepare($query);
@@ -702,6 +792,9 @@ class CentreonConfigCentreonBroker
             $stmt->bindValue(':config_write_thread_id', $values['write_thread_id']['write_thread_id'], \PDO::PARAM_STR);
             $stmt->bindValue(':stats_activate', $values['stats_activate']['stats_activate'], \PDO::PARAM_STR);
             $stmt->bindValue(':cache_directory', $values['cache_directory'], \PDO::PARAM_STR);
+            $stmt->bindValue(':log_directory', $values['log_directory'], \PDO::PARAM_STR);
+            $stmt->bindValue(':log_filename', $values['log_filename'], \PDO::PARAM_STR);
+            $stmt->bindValue(':log_max_size', $values['log_max_size'], \PDO::PARAM_INT);
             $stmt->bindValue(
                 ':event_queue_max_size',
                 (int)$this->checkEventMaxQueueSizeValue($values['event_queue_max_size']),
@@ -715,7 +808,32 @@ class CentreonConfigCentreonBroker
         } catch (\PDOException $e) {
             return false;
         }
+
+        /*
+         * Log
+         */
+        $logs = $this->getLogsOption();
+        $query = "DELETE FROM cfg_centreonbroker_log WHERE id_centreonbroker = " . $id;
+        $this->db->query($query);
+
+        $queryLog = "INSERT INTO cfg_centreonbroker_log (id_centreonbroker, id_log, id_level) VALUES ";
+        foreach (array_keys($logs) as $logId) {
+            $queryLog .= '(:id_centreonbroker, :log_' . $logId . ', :level_' . $logId . '), ';
+        }
+        $queryLog = rtrim($queryLog, ', ');
+        try {
+            $stmt = $this->db->prepare($queryLog);
+            $stmt->bindValue(':id_centreonbroker', (int) $id, \PDO::PARAM_INT);
+            foreach ($logs as $logId => $logName) {
+                $stmt->bindValue(':log_' . $logId, (int) $logId, \PDO::PARAM_INT);
+                $stmt->bindValue(':level_' . $logId, (int) $values['log_' . $logName], \PDO::PARAM_INT);
+            }
+            $stmt->execute();
+        } catch (\PDOException $e) {
+            return false;
+        }
         $this->updateCentreonBrokerInfos($id, $values);
+        return true;
     }
 
     /**
@@ -727,20 +845,22 @@ class CentreonConfigCentreonBroker
      */
     public function updateCentreonBrokerInfos($id, $values)
     {
-
         // exclude multiple parameters load with broker js hook
-        $condition = '';
-        foreach ($values['output'] as $key => $output) {
-            if (array_key_exists('lua_parameter__value_#index#', $output)) {
-                $condition .= ' AND config_key NOT LIKE "lua_parameter_%"';
-                unset($values['output'][$key]['lua_parameter__value_#index#']);
-                unset($values['output'][$key]['lua_parameter__name_#index#']);
-                unset($values['output'][$key]['lua_parameter__type_#index#']);
+        $keepLuaParameters = false;
+        if (isset($values['output'])) {
+            foreach ($values['output'] as $key => $output) {
+                if ($output['type'] === 'lua') {
+                    if ($this->removeUnindexedLuaParameters($values, $key)) {
+                        $keepLuaParameters = true;
+                    }
+                    $this->removeEmptyLuaParameters($values, $key);
+                }
             }
         }
-
         // Clean the informations for this id
-        $query = 'DELETE FROM cfg_centreonbroker_info WHERE config_id = ' . (int)$id . $condition;
+        $query = 'DELETE FROM cfg_centreonbroker_info WHERE config_id = '
+            . (int) $id
+            . ($keepLuaParameters ? ' AND config_key NOT LIKE "lua\_parameter\_%"' : '');
         $this->db->query($query);
 
         $groups_infos = array();
@@ -777,11 +897,11 @@ class CentreonConfigCentreonBroker
             foreach ($groups as $gid => $infos) {
                 if (isset($infos['blockId'])) {
                     list($tagId, $typeId) = explode('_', $infos['blockId']);
-                    $fieldtype = $this->getFieldtypes($typeId);
+                    $fieldtype = $this->getFieldtypes((int) $typeId);
                     foreach ($infos as $fieldname => $fieldvalue) {
                         $lvl = 0;
-                        $grp_id = 'NULL';
-                        $parent_id = 'NULL';
+                        $grp_id = null;
+                        $parent_id = null;
 
                         if ($fieldname == 'multiple_fields' && is_array($fieldvalue)) {
                             foreach ($fieldvalue as $index => $value) {
@@ -794,18 +914,29 @@ class CentreonConfigCentreonBroker
                                 foreach ($value as $fieldname2 => $value2) {
                                     if (is_array($value2)) {
                                         $explodedFieldname2 = explode('__', $fieldname2);
-                                        if (isset($fieldtype[$explodedFieldname2[1]]) &&
-                                            $fieldtype[$explodedFieldname2[1]] == 'radio') {
+                                        if (
+                                            isset($fieldtype[$explodedFieldname2[1]]) &&
+                                            $fieldtype[$explodedFieldname2[1]] === 'radio'
+                                        ) {
                                             $value2 = $value2[$explodedFieldname2[1]];
                                         }
                                     }
                                     $query = "INSERT INTO cfg_centreonbroker_info "
                                         . "(config_id, config_key, config_value, config_group, config_group_id, "
                                         . "grp_level, subgrp_id, parent_grp_id, fieldIndex) "
-                                        . "VALUES (" . $id . ", '" . $fieldname2 . "', '" . $value2 . "', '"
-                                        . $group . "', " . $gid . ", " . $lvl . ", " . $grp_id . ", "
-                                        . $parent_id . ", " . $index . ") ";
-                                    $this->db->query($query);
+                                        . "VALUES (:config_id, :config_key, :config_value, :config_group, "
+                                        . ":config_group_id, :grp_level, :subgrp_id, :parent_grp_id, :fieldIndex) ";
+                                    $stmt = $this->db->prepare($query);
+                                    $stmt->bindValue(':config_id', $id, \PDO::PARAM_INT);
+                                    $stmt->bindValue(':config_key', $fieldname2, \PDO::PARAM_STR);
+                                    $stmt->bindValue(':config_value', $value2, \PDO::PARAM_STR);
+                                    $stmt->bindValue(':config_group', $group, \PDO::PARAM_STR);
+                                    $stmt->bindValue(':config_group_id', $gid, \PDO::PARAM_INT);
+                                    $stmt->bindValue(':grp_level', $lvl, \PDO::PARAM_INT);
+                                    $stmt->bindValue(':subgrp_id', $grp_id, \PDO::PARAM_INT);
+                                    $stmt->bindValue(':parent_grp_id', $parent_id, \PDO::PARAM_INT);
+                                    $stmt->bindValue(':fieldIndex', $index, \PDO::PARAM_INT);
+                                    $stmt->execute();
                                 }
                             }
                             continue;
@@ -824,20 +955,40 @@ class CentreonConfigCentreonBroker
                             $grp_id = $info[1];
                             $query = 'INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value,'
                                 . 'config_group, config_group_id, grp_level, subgrp_id, parent_grp_id)  VALUES ('
-                                . $id . ', "' . $grp_name . '", "", "' . $group . '", ' . $gid . ', ' . $lvl
-                                . ', ' . $grp_id . ', ' . $parent_id . ')';
-                            $this->db->query($query);
+                                . ':config_id, :config_key, :config_value, :config_group, :config_group_id, '
+                                . ':grp_level, :subgrp_id, :parent_grp_id)';
+
+                            $stmt = $this->db->prepare($query);
+                            $stmt->bindValue(':config_id', $id, \PDO::PARAM_INT);
+                            $stmt->bindValue(':config_key', $grp_name, \PDO::PARAM_STR);
+                            $stmt->bindValue(':config_value', "", \PDO::PARAM_STR);
+                            $stmt->bindValue(':config_group', $group, \PDO::PARAM_STR);
+                            $stmt->bindValue(':config_group_id', $gid, \PDO::PARAM_INT);
+                            $stmt->bindValue(':grp_level', $lvl, \PDO::PARAM_INT);
+                            $stmt->bindValue(':subgrp_id', $grp_id, \PDO::PARAM_INT);
+                            $stmt->bindValue(':parent_grp_id', $parent_id, \PDO::PARAM_INT);
+                            $stmt->execute();
+
                             $lvl++;
                             $parent_id = $grp_id;
                             $fieldname = $info[2];
                         }
-                        $grp_id = 'NULL';
+                        $grp_id = null;
                         foreach ($fieldvalue as $value) {
                             $query = 'INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, '
                                 . 'config_group, config_group_id, grp_level, subgrp_id, parent_grp_id) VALUES ('
-                                . $id . ', "' . $fieldname . '", "' . $value . '", "' . $group . '", '
-                                . $gid . ', ' . $lvl . ', ' . $grp_id . ', ' . $parent_id . ')';
-                            $this->db->query($query);
+                                . ':config_id, :config_key, :config_value, :config_group, '
+                                . ':config_group_id, :grp_level, :subgrp_id, :parent_grp_id) ';
+                            $stmt = $this->db->prepare($query);
+                            $stmt->bindValue(':config_id', $id, \PDO::PARAM_INT);
+                            $stmt->bindValue(':config_key', $fieldname, \PDO::PARAM_STR);
+                            $stmt->bindValue(':config_value', $value, \PDO::PARAM_STR);
+                            $stmt->bindValue(':config_group', $group, \PDO::PARAM_STR);
+                            $stmt->bindValue(':config_group_id', $gid, \PDO::PARAM_INT);
+                            $stmt->bindValue(':grp_level', $lvl, \PDO::PARAM_INT);
+                            $stmt->bindValue(':subgrp_id', $grp_id, \PDO::PARAM_INT);
+                            $stmt->bindValue(':parent_grp_id', $parent_id, \PDO::PARAM_INT);
+                            $stmt->execute();
                         }
                     }
                 }
@@ -848,12 +999,53 @@ class CentreonConfigCentreonBroker
     }
 
     /**
+     * unset lua parameters with undefined index
+     *
+     * @param array $values
+     * @param integer $key
+     * @return boolean (false if no undefined index found)
+     */
+    private function removeUnindexedLuaParameters(array &$values, int $key): bool
+    {
+        if (array_key_exists('lua_parameter__value_#index#', $values['output'][$key])) {
+            unset($values['output'][$key]['lua_parameter__value_#index#']);
+            unset($values['output'][$key]['lua_parameter__name_#index#']);
+            unset($values['output'][$key]['lua_parameter__type_#index#']);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * unset lua parameters with value and name empty
+     *
+     * @param array &$values modified parameter
+     * @param integer $key
+     */
+    private function removeEmptyLuaParameters(array &$values, int $key): void
+    {
+        $paramKeys = array_keys($values['output'][$key]);
+        $paramKeysIndexes = preg_filter('/lua_parameter__value_([0-9]*)/', '$1', $paramKeys ?? []);
+
+        foreach ($paramKeysIndexes as $index) {
+            if (
+                !$values['output'][$key]['lua_parameter__name_' . $index]
+                && !$values['output'][$key]['lua_parameter__value_' . $index]
+            ) {
+                unset($values['output'][$key]['lua_parameter__value_' . $index]);
+                unset($values['output'][$key]['lua_parameter__name_' . $index]);
+                unset($values['output'][$key]['lua_parameter__type_' . $index]);
+            }
+        }
+    }
+
+    /**
      * Get the list of forms for a config_id
      *
-     * @param $config_id int $config_id The id of config
-     * @param $tag string $tag The tag name
-     * @param $page int $page The page topology
-     * @param $tpl Smarty $tpl The template Smarty
+     * @param int $config_id The id of config
+     * @param string $tag The tag name
+     * @param int $page The page topology
+     * @param Smarty $tpl The template Smarty
      * @return array
      * @throws HTML_QuickForm_Error
      */
@@ -1014,7 +1206,7 @@ class CentreonConfigCentreonBroker
         while ($row = $res->fetchRow()) {
             list($tagId, $typeId) = explode('_', $row['config_value']);
             $pos = $row['config_group_id'];
-            $fields = $this->getBlockInfos($typeId);
+            $fields = $this->getBlockInfos((int) $typeId);
             $help = array();
             $help[] = array('name' => $tag . '[' . $pos . '][name]', 'desc' => _('The name of block configuration'));
             $help[] = array('name' => $tag . '[' . $pos . '][type]', 'desc' => _('The type of block configuration'));
@@ -1085,7 +1277,7 @@ class CentreonConfigCentreonBroker
         $row = $res->fetch();
 
         $this->defaults[$fieldId] = null;
-        if (!is_null($row)) {
+        if (!is_null($row) && $row !== false) {
             if (!is_null($row['default_value']) && $row['default_value'] != '') {
                 $this->defaults[$fieldId] = $row['default_value'];
             } elseif (!is_null($row['value_value']) && $row['value_value'] != '') {
@@ -1223,7 +1415,7 @@ class CentreonConfigCentreonBroker
      *
      * @param string $rpn The rpn operation
      * @param int $val The value for apply
-     * @return The value with rpn apply or the value is errors
+     * @return mixed The value with rpn apply or the value is errors
      */
     private function rpnCalc($rpn, $val)
     {
@@ -1383,10 +1575,10 @@ class CentreonConfigCentreonBroker
             }
             $row = $res->fetchRow();
             $elemStr = $this->getConfigFieldName(
-                    $configId,
-                    $configGroup,
-                    $row
-                ) . '__' . $info['parent_grp_id'] . '__' . $elemStr;
+                $configId,
+                $configGroup,
+                $row
+            ) . '__' . $info['parent_grp_id'] . '__' . $elemStr;
         }
         return $elemStr;
     }

@@ -23,7 +23,9 @@ declare(strict_types=1);
 namespace Centreon\Domain\HostConfiguration\Interfaces\HostSeverity;
 
 use Centreon\Domain\HostConfiguration\Exception\HostSeverityException;
+use Centreon\Domain\HostConfiguration\HostSeverityService;
 use Centreon\Domain\HostConfiguration\Model\HostSeverity;
+use Centreon\Domain\Repository\RepositoryException;
 
 /**
  * This interface gathers all the reading operations on the host severity repository.
@@ -32,7 +34,6 @@ use Centreon\Domain\HostConfiguration\Model\HostSeverity;
  */
 interface HostSeverityServiceInterface
 {
-
     /**
      * Find all host severities (for non admin user).
      *
@@ -48,4 +49,24 @@ interface HostSeverityServiceInterface
      * @throws HostSeverityException
      */
     public function findAllWithoutAcl(): array;
+
+    /**
+     * Find a host severity (for admin user).
+     *
+     * @param int $severityId Id of the host severity to be found
+     * @return HostSeverity|null
+     * @throws HostSeverityException
+     * @throws RepositoryException
+     */
+    public function findWithoutAcl(int $severityId): ?HostSeverity;
+
+    /**
+     * Find a host severity (for non admin user).
+     *
+     * @param int $severityId Id of the host severity to be found
+     * @return HostSeverity|null
+     * @throws HostSeverityException
+     * @throws RepositoryException
+     */
+    public function findWithAcl(int $severityId): ?HostSeverity;
 }

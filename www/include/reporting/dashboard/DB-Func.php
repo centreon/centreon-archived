@@ -34,18 +34,6 @@
  */
 
 /*
- * Get all hosts from DB
- */
-function getAllHostsForReporting($is_admin, $lcaHoststr, $search = null)
-{
-    global $centreon;
-
-    $hosts = array("NULL" => "");
-    $hosts += $centreon->user->access->getHostAclConf($search, 'broker');
-    return $hosts;
-}
-
-/*
  * returns days of week taken in account for reporting in a string
  */
 function getReportDaysStr($reportTimePeriod)
@@ -190,8 +178,12 @@ function getLogInDbForHostGroup($hostgroup_id, $start_date, $end_date, $reportTi
 
     /* the hostgroup availability is the average availability of all host from the the hostgroup */
     foreach ($hostStatsLabels as $name) {
-        if ($name == "UP_T" || $name == "DOWN_T" || $name == "UNREACHABLE_T"
-            || $name == "UNDETERMINED_T" || $name == "MAINTENANCE_T"
+        if (
+            $name == "UP_T"
+            || $name == "DOWN_T"
+            || $name == "UNREACHABLE_T"
+            || $name == "UNDETERMINED_T"
+            || $name == "MAINTENANCE_T"
         ) {
             $hostgroupStats["average"][$name] /= $count;
         }
@@ -251,6 +243,28 @@ function getLogInDbForHostSVC($host_id, $start_date, $end_date, $reportTimePerio
      */
     $services_ids = $centreon->user->access->getHostServiceAclConf($host_id, 'broker');
     $svcStr = "";
+    $status = ["OK", "WARNING", "CRITICAL", "UNKNOWN", "UNDETERMINED", "MAINTENANCE"];
+    /*
+    * $hostServiceStats["average"] will contain services stats average
+    */
+    foreach ($status as $name) {
+        switch ($name) {
+            case "UNDETERMINED":
+                $hostServiceStats["average"]["UNDETERMINED_TP"] = 0;
+                break;
+            case "MAINTENANCE":
+                $hostServiceStats["average"]["MAINTENANCE_TP"] = 0;
+                break;
+            default:
+                $hostServiceStats["average"][$name . "_MP"] = 0;
+                $hostServiceStats["average"][$name . "_TP"] = 0;
+                $hostServiceStats["average"][$name . "_A"] = 0;
+                break;
+        }
+    }
+    $hostServiceStats["average"]["DESCRIPTION"] = "";
+    $hostServiceStats["average"]["ID"] = 0;
+
     if (count($services_ids) > 0) {
         foreach ($services_ids as $id => $description) {
             if ($svcStr) {
@@ -259,26 +273,16 @@ function getLogInDbForHostSVC($host_id, $start_date, $end_date, $reportTimePerio
             $svcStr .= $id;
         }
     } else {
-        return ($hostServiceStats);
+        $hostServiceStats["average"]["UNDETERMINED_TP"] = 100;
+        return $hostServiceStats;
     }
-    $status = array("OK", "WARNING", "CRITICAL", "UNKNOWN", "UNDETERMINED", "MAINTENANCE");
-
     /* initialising all host services stats to 0 */
     foreach ($services_ids as $id => $description) {
         foreach (getServicesStatsValueName() as $name) {
             $hostServiceStats[$id][$name] = 0;
         }
     }
-    /*
-     * $hostServiceStats["average"] will contain services stats average
-     */
-    foreach ($status as $key => $value) {
-        $hostServiceStats["average"][$value . "_TP"] = 0;
-        $hostServiceStats["average"][$value . "_MP"] = 0;
-        if ($value != "UNDETERMINED" && $value != "MAINTENANCE") {
-            $hostServiceStats["average"][$value . "_A"] = 0;
-        }
-    }
+
     $days_of_week = getReportDaysStr($reportTimePeriod);
     $aclCondition = '';
     if (!$centreon->user->admin) {
@@ -593,8 +597,13 @@ function getLogInDbForServicesGroup($servicegroupId, $startDate, $endDate, $repo
      * Average time for all status (OK, Critical, Warning, Unknown)
      */
     foreach ($serviceStatsLabels as $name) {
-        if ($name == "OK_T" || $name == "WARNING_T" || $name == "CRITICAL_T"
-            || $name == "UNKNOWN_T" || $name == "UNDETERMINED_T" || $name == "MAINTENANCE_T"
+        if (
+            $name == "OK_T"
+            || $name == "WARNING_T"
+            || $name == "CRITICAL_T"
+            || $name == "UNKNOWN_T"
+            || $name == "UNDETERMINED_T"
+            || $name == "MAINTENANCE_T"
         ) {
             if ($count) {
                 $serviceGroupStats["average"][$name] /= $count;

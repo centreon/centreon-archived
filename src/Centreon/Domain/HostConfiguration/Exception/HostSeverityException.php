@@ -37,4 +37,32 @@ class HostSeverityException extends \Exception
     {
         return new self(_('Error when searching for host severities'), 0, $ex);
     }
+
+    /**
+     * @param array<string, mixed> $data
+     * @param \Throwable|null $ex
+     * @return self
+     */
+    public static function findHostSeverityException(array $data = [], \Throwable $ex = null): self
+    {
+        return new self(
+            sprintf(_('Error when searching for the host severity (%s)'), $data['id'] ?? $data['name'] ?? null),
+            0,
+            $ex
+        );
+    }
+
+    /**
+     * @param array<string, mixed> $data
+     * @param \Throwable|null $ex
+     * @return self
+     */
+    public static function notFoundException(array $data = [], \Throwable $ex = null): self
+    {
+        return new self(
+            sprintf(_('Host severity (%s) not found'), $data['id'] ?? $data['name'] ?? null),
+            0,
+            $ex
+        );
+    }
 }

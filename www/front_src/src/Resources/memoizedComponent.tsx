@@ -3,11 +3,11 @@ import * as React from 'react';
 import { equals, pick } from 'ramda';
 
 interface memoizeComponentParameters {
-  Component: (props) => JSX.Element;
+  Component: (props) => JSX.Element | null;
   memoProps: Array<string>;
 }
 
-const memoizeComponent = <T extends unknown>({
+const memoizeComponent = <T,>({
   memoProps,
   Component,
 }: memoizeComponentParameters): React.NamedExoticComponent<T> =>

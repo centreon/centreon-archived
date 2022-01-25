@@ -1,18 +1,15 @@
+/* eslint-disable react/jsx-no-constructed-context-values */
 import * as React from 'react';
 
 import axios from 'axios';
-import {
-  RenderResult,
-  render,
-  waitFor,
-  fireEvent,
-  act,
-} from '@testing-library/react';
 import { omit, head, prop } from 'ramda';
 import { makeDnd, DND_DIRECTION_DOWN } from 'react-beautiful-dnd-test-utils';
+import { Provider } from 'jotai';
 
-import Context, { ResourceContext } from '../../Context';
-import useFilter from '../useFilter';
+import { RenderResult, render, waitFor, fireEvent, act } from '@centreon/ui';
+
+import Context, { ResourceContext } from '../../testUtils/Context';
+import useFilter from '../../testUtils/useFilter';
 import { labelFilter, labelName, labelDelete } from '../../translatedLabels';
 import { filterEndpoint } from '../api';
 import { defaultSortField, defaultSortOrder } from '../Criterias/default';
@@ -39,64 +36,70 @@ const EditFilterPanelTest = (): JSX.Element => {
   );
 };
 
+const EditFilterPanelTestWithJotai = (): JSX.Element => (
+  <Provider>
+    <EditFilterPanelTest />
+  </Provider>
+);
+
 const retrievedCustomFilters = {
+  meta: {
+    limit: 30,
+    page: 1,
+    total: 1,
+  },
   result: [0, 1].map((index) => ({
-    id: index,
-    name: `My filter ${index}`,
     criterias: [
       {
         name: 'resource_types',
-        type: 'multi_select',
         object_type: null,
+        type: 'multi_select',
         value: [],
       },
       {
         name: 'states',
-        type: 'multi_select',
         object_type: null,
+        type: 'multi_select',
         value: [],
       },
       {
         name: 'statuses',
-        type: 'multi_select',
         object_type: null,
+        type: 'multi_select',
         value: [],
       },
       {
         name: 'host_groups',
+        object_type: 'host_groups',
         type: 'multi_select',
         value: [],
-        object_type: 'host_groups',
       },
       {
         name: 'service_groups',
+        object_type: 'service_groups',
         type: 'multi_select',
         value: [],
-        object_type: 'service_groups',
       },
       {
         name: 'search',
-        type: 'text',
         object_type: null,
+        type: 'text',
         value: '',
       },
       {
         name: 'sort',
+        object_type: null,
         type: 'array',
         value: [defaultSortField, defaultSortOrder],
-        object_type: null,
       },
     ],
+    id: index,
+    name: `My filter ${index}`,
   })),
-  meta: {
-    page: 1,
-    limit: 30,
-    total: 1,
-  },
 };
 
 const renderEditFilterPanel = (): RenderResult =>
-  render(<EditFilterPanelTest />);
+  render(<EditFilterPanelTestWithJotai />);
 
 describe(EditFilterPanel, () => {
   beforeEach(() => {
@@ -157,7 +160,7 @@ describe(EditFilterPanel, () => {
   });
 
   it('deletes a filter and sends a delete request when the corresponding delete button is clicked', async () => {
-    const { getAllByTitle, getByText } = renderEditFilterPanel();
+    const { getAllByLabelText, getByText } = renderEditFilterPanel();
 
     const [firstFilter] = retrievedCustomFilters.result;
 
@@ -171,9 +174,9 @@ describe(EditFilterPanel, () => {
     });
 
     fireEvent.click(
-      head(getAllByTitle(labelDelete))?.firstElementChild as HTMLElement,
+      head(getAllByLabelText(labelDelete))?.firstElementChild as HTMLElement,
     );
-    fireEvent.click(getByText(labelDelete).parentElement as HTMLElement);
+    fireEvent.click(getByText(labelDelete) as HTMLElement);
 
     await waitFor(() => {
       expect(filterState.customFilters.map(prop('id'))).not.toContain(
@@ -189,7 +192,7 @@ describe(EditFilterPanel, () => {
   it('reorders the filter and sends a reorder request when it is dragged to a different position', async () => {
     const [firstFilter] = retrievedCustomFilters.result;
 
-    const { getByText, container } = renderEditFilterPanel();
+    const { container } = renderEditFilterPanel();
 
     act(() => {
       filterState.loadCustomFilters();
@@ -205,9 +208,8 @@ describe(EditFilterPanel, () => {
     );
 
     await makeDnd({
-      getByText,
-      getDragEl: () => firstFilterDraggable,
       direction: DND_DIRECTION_DOWN,
+      getDragElement: () => firstFilterDraggable,
       positions: 1,
     });
 

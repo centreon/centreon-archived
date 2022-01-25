@@ -140,6 +140,21 @@ class Assertion
     }
 
     /**
+     * Assert that a date is smaller as a given limit.
+     *
+     * @param \DateTime $value
+     * @param \DateTime $maxDate
+     * @param string|null $propertyPath
+     * @throws AssertionException
+     */
+    public static function maxDate(\DateTime $value, \DateTime $maxDate, string $propertyPath = null): void
+    {
+        if ($value->getTimestamp() > $maxDate->getTimestamp()) {
+            throw AssertionException::maxDate($value, $maxDate, $propertyPath);
+        }
+    }
+
+    /**
      * Determines if the value is greater or equal than given limit.
      *
      * @param int $value Value to test
@@ -166,11 +181,11 @@ class Assertion
     /**
      * Assert that value is not empty.
      *
-     * @param string $value Value to test
+     * @param mixed $value Value to test
      * @param string|null $propertyPath Property's path (ex: Host::name)
      * @throws \Assert\AssertionFailedException
      */
-    public static function notEmpty(string $value, string $propertyPath = null): void
+    public static function notEmpty($value, string $propertyPath = null): void
     {
         Assert::notEmpty(
             $value,

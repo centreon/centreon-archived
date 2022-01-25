@@ -13,7 +13,7 @@ class OutputPerfdata
      *
      * @param string|null $dbUser the database user
      * @param string|null $dbPassword the database password
-     * @return array the configuration template
+     * @return array<int, string[]> the configuration template
      */
     public static function getConfiguration($dbUser, $dbPassword): array
     {
@@ -34,7 +34,7 @@ class OutputPerfdata
             ],
             [
                 'config_key'      => 'retry_interval',
-                'config_value'    => '60',
+                'config_value'    => '15',
                 'config_group'    => 'output',
                 'config_group_id' => '2',
                 'grp_level'       => '0',

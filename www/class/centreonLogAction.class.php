@@ -36,15 +36,14 @@ require_once(__DIR__ . '/centreonAuth.class.php');
 
 class CentreonLogAction
 {
-
     protected $logUser;
     protected $uselessKey;
 
     /**
      * Const use to keep the changelog mechanism with hidden password values
      */
-    const PASSWORD_BEFORE = '*******';
-    const PASSWORD_AFTER = CentreonAuth::PWS_OCCULTATION;
+    public const PASSWORD_BEFORE = '*******';
+    public const PASSWORD_AFTER = CentreonAuth::PWS_OCCULTATION;
     /*
      * Initializes variables
      */
@@ -274,9 +273,11 @@ class CentreonLogAction
                     WHERE action_log_id = " . (int) $row['action_log_id'] . "
                     AND field_name = 'refMacroPassword'"
             );
-            $result = $macroPasswordStatement->fetch();
-            $macroPasswordRef = explode(',', $result['field_value']);
-            while ($field = $DBRESULT2->fetchRow()) {
+            $macroPasswordRef = [];
+            if ($result = $macroPasswordStatement->fetch()) {
+                $macroPasswordRef = explode(',', $result['field_value']);
+            }
+            while ($field = $DBRESULT2->fetch()) {
                 switch ($field['field_name']) {
                     case 'macroValue':
                         /**

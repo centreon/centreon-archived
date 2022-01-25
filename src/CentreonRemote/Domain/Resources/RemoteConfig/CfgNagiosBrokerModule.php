@@ -13,9 +13,9 @@ class CfgNagiosBrokerModule
      *
      * @param int $configID the broker config id
      * @param string $pollerName the poller name
-     * @return array the configuration template
+     * @return array<int, array<string,string|int>> the configuration template
      */
-    public static function getConfiguration(int $configID, string $pollerName) : array
+    public static function getConfiguration(int $configID, string $pollerName): array
     {
         $pollerName = strtolower(str_replace(' ', '-', $pollerName));
 

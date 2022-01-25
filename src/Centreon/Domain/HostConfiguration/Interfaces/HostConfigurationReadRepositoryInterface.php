@@ -79,6 +79,17 @@ interface HostConfigurationReadRepositoryInterface
     public function getNumberOfHosts(): int;
 
     /**
+     * Find the command of a host.
+     *
+     * Recursively search in the inherited templates if no result found.
+     *
+     * @param int $hostId Host id
+     * @return string|null Return the command if found
+     * @throws \Throwable
+     */
+    public function findCommandLine(int $hostId): ?string;
+
+    /**
      * Find all host macros for the host.
      *
      * @param int $hostId Id of the host

@@ -28,5 +28,5 @@ const getNavigationItems = (state) => state.navigation.items;
 
 export const allowedPagesSelector = createSelector(
   getNavigationItems,
-  (items) => items.reduce(getAllowedPages, []),
+  (items) => (items ? items.reduce(getAllowedPages, []) : undefined),
 );

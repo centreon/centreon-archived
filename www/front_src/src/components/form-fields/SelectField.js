@@ -12,6 +12,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
+import { Typography } from '@mui/material';
+
 import styles from '../../styles/partials/form/_form.scss';
 
 import fieldHoc from './hoc';
@@ -74,7 +76,7 @@ const SelectField = ({
     >
       {label ? (
         <label>
-          <span>{label}</span>
+          <Typography>{label}</Typography>
           <span className={classnames(styles['label-option'], styles.optional)}>
             {topRightLabel || null}
           </span>
@@ -86,7 +88,7 @@ const SelectField = ({
         {...prepareInputProps(rest)}
       >
         {defaultOption !== false ? (
-          <option value={defaultKey} disabled={isDefaultDisabled}>
+          <option disabled={isDefaultDisabled} value={defaultKey}>
             {defaultVal}
           </option>
         ) : null}
@@ -102,16 +104,16 @@ const SelectField = ({
 
 SelectField.displayName = 'SelectField';
 SelectField.propTypes = {
-  options: PropTypes.array,
   defaultOption: PropTypes.oneOfType([PropTypes.array, PropTypes.bool]),
   error: PropTypes.element,
+  options: PropTypes.array,
 };
 SelectField.defaultProps = {
   className: styles.field,
-  styleOverride: {},
   defaultOption: false,
   modifiers: [],
   options: [],
+  styleOverride: {},
 };
 
 export { SelectField };

@@ -2,13 +2,13 @@ Centreon\Domain\Check\Check:
     properties:
         checkTime:
             type: DateTime
-            groups: [Default, check_host, check_service]
+            groups: [Default, check_host, check_service, check_meta_service]
         isForced:
             type: bool
-            groups: [Default, check_host, check_service]
+            groups: [Default, check_host, check_service, check_meta_service]
         resourceId:
             type: int
-            groups: [Default, check_host, check_service]
+            groups: [Default, check_host, check_service, check_meta_service]
         parentResourceId:
             type: int
             groups: [Default, check_service]

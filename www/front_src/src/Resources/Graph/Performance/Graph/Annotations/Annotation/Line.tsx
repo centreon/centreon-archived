@@ -1,27 +1,60 @@
 import * as React from 'react';
 
-import { Line } from '@visx/visx';
+import { Shape } from '@visx/visx';
 import { ScaleTime } from 'd3-scale';
+import { pick } from 'ramda';
+import { useAtomValue } from 'jotai/utils';
 
-import { useLocaleDateTimeFormat } from '@centreon/ui';
+import makeStyles from '@mui/styles/makeStyles';
+
+import { useLocaleDateTimeFormat, useMemoComponent } from '@centreon/ui';
+
+import {
+  annotationHoveredAtom,
+  getIconColorDerivedAtom,
+  getStrokeOpacityDerivedAtom,
+  getStrokeWidthDerivedAtom,
+} from '../../annotationsAtoms';
 
 import Annotation, { Props as AnnotationProps, yMargin, iconSize } from '.';
 
 type Props = {
+  Icon: (props) => JSX.Element;
+  ariaLabel: string;
   color: string;
+  date: string;
   graphHeight: number;
   xScale: ScaleTime<number, number>;
-  date: string;
-} & Omit<AnnotationProps, 'marker' | 'xIcon' | 'header'>;
+} & Omit<
+  AnnotationProps,
+  'marker' | 'xIcon' | 'header' | 'icon' | 'setAnnotationHovered'
+>;
+
+const useStyles = makeStyles((theme) => ({
+  icon: {
+    transition: theme.transitions.create('color', {
+      duration: theme.transitions.duration.shortest,
+    }),
+  },
+}));
 
 const LineAnnotation = ({
   color,
   graphHeight,
   xScale,
   date,
+  Icon,
+  ariaLabel,
   ...props
 }: Props): JSX.Element => {
   const { toDateTime } = useLocaleDateTimeFormat();
+
+  const classes = useStyles();
+
+  const annotationHovered = useAtomValue(annotationHoveredAtom);
+  const getStrokeWidth = useAtomValue(getStrokeWidthDerivedAtom);
+  const getStrokeOpacity = useAtomValue(getStrokeOpacityDerivedAtom);
+  const getIconColor = useAtomValue(getIconColorDerivedAtom);
 
   const xIconMargin = -iconSize / 2;
 
@@ -29,25 +62,45 @@ const LineAnnotation = ({
 
   const header = toDateTime(date);
 
+  const annotation = pick(['event', 'resourceId'], props);
+
   const line = (
-    <Line
+    <Shape.Line
       from={{ x: xIcon, y: yMargin + iconSize + 2 }}
-      to={{ x: xIcon, y: graphHeight }}
       stroke={color}
-      strokeWidth={1}
-      strokeOpacity={0.5}
-      pointerEvents="none"
+      strokeOpacity={getStrokeOpacity(annotation)}
+      strokeWidth={getStrokeWidth(annotation)}
+      to={{ x: xIcon, y: graphHeight }}
     />
   );
 
-  return (
-    <Annotation
-      xIcon={xIcon + xIconMargin}
-      marker={line}
-      header={header}
-      {...props}
+  const icon = (
+    <Icon
+      aria-label={ariaLabel}
+      className={classes.icon}
+      height={iconSize}
+      style={{
+        color: getIconColor({
+          annotation,
+          color,
+        }),
+      }}
+      width={iconSize}
     />
   );
+
+  return useMemoComponent({
+    Component: (
+      <Annotation
+        header={header}
+        icon={icon}
+        marker={line}
+        xIcon={xIcon + xIconMargin}
+        {...props}
+      />
+    ),
+    memoProps: [annotationHovered, xIcon],
+  });
 };
 
 export default LineAnnotation;

@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2015 Centreon
+ * Copyright 2005-2021 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -72,6 +73,7 @@ if (($o == "c" || $o == "w") && $meta_id) {
     $DBRESULT = $pearDB->query("SELECT * FROM meta_service WHERE meta_id = '" . $meta_id . "' LIMIT 1");
     // Set base value
     $ms = array_map("myDecode", $DBRESULT->fetchRow());
+    $ms['metric'] = [$ms['metric'] => $ms['metric']];
 
     // Set Service Notification Options
     $tmp = explode(',', $ms["notification_options"]);
@@ -79,16 +81,6 @@ if (($o == "c" || $o == "w") && $meta_id) {
         $ms["ms_notifOpts"][trim($value)] = 1;
     }
 }
-
-require_once("./class/centreonDB.class.php");
-$pearDBO = new CentreonDB("centstorage");
-
-$metrics = array( null => null);
-$DBRESULT = $pearDBO->query("select DISTINCT metric_name from metrics ORDER BY metric_name");
-while ($metric = $DBRESULT->fetchRow()) {
-    $metrics[$metric["metric_name"]] = $metric["metric_name"];
-}
-$DBRESULT->closeCursor();
 
 /*
  * Calc Type
@@ -126,6 +118,11 @@ $attrTimeperiods = array(
     'multiple' => false,
     'linkedObject' => 'centreonTimeperiod'
 );
+$attrMetric = [
+    'datasourceOrigin' => 'ajax',
+    'availableDatasetRoute' => './api/internal.php?object=centreon_monitoring_metric&action=list',
+    'multiple' => false
+];
 $contactAvRoute = './include/common/webServices/rest/internal.php?object=centreon_configuration_contact&action=list';
 $attrContacts = array(
     'datasourceOrigin' => 'ajax',
@@ -173,7 +170,7 @@ $form->addGroup($tab, 'meta_select_mode', _("Selection Mode"), '<br />');
 $form->setDefaults(array('meta_select_mode' => array('meta_select_mode' => '1')));
 
 $form->addElement('text', 'regexp_str', _("SQL LIKE-clause expression"), $attrsText);
-$form->addElement('select', 'metric', _("Metric"), $metrics);
+$form->addElement('select2', 'metric', _("Metric"), [], $attrMetric);
 
 /*
  * Check information

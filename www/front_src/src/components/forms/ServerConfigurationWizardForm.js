@@ -8,6 +8,8 @@ import classnames from 'classnames';
 import { Field, reduxForm as connectForm } from 'redux-form';
 import { useTranslation } from 'react-i18next';
 
+import { Button, Typography, Paper } from '@mui/material';
+
 import styles from '../../styles/partials/form/_form.scss';
 import RadioGroupFields from '../form-fields/RadioGroupFields';
 
@@ -26,31 +28,35 @@ const ServerConfigurationWizardForm = ({ error, handleSubmit, onSubmit }) => {
   const { t } = useTranslation();
 
   return (
-    <div className={classnames(styles['form-wrapper'], styles.small)}>
+    <Paper className={classnames(styles['form-container'])}>
       <div className={styles['form-inner']}>
         <div className={styles['form-heading']}>
-          <h2 className={styles['form-title']}>
-            {t('Server Configuration Wizard')}
-          </h2>
-          <p className={styles['form-text']}>{t('Choose a server type')}</p>
+          <Typography variant="h6">{t('Choose a server type')}</Typography>
         </div>
         <form autoComplete="off" onSubmit={handleSubmit(onSubmit)}>
           <Field
-            name="server_type"
             component={RadioGroupFields}
+            name="server_type"
             options={configurationTypes}
           />
           <div className={styles['form-buttons']}>
-            <button className={styles.button} type="submit">
+            <Button
+              color="primary"
+              size="small"
+              type="submit"
+              variant="contained"
+            >
               {t('Next')}
-            </button>
+            </Button>
           </div>
           {error ? (
-            <div className={styles['error-block']}>{error.message}</div>
+            <Typography style={{ color: '#d0021b' }} variant="body2">
+              {error}
+            </Typography>
           ) : null}
         </form>
       </div>
-    </div>
+    </Paper>
   );
 };
 

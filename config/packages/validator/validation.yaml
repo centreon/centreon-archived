@@ -108,15 +108,15 @@ Centreon\Domain\Check\Check:
         checkTime:
             - Type:
                 type: DateTime
-                groups: [Default, check_host, check_service]
+                groups: [Default, check_host, check_service, check_meta_service]
         isForced:
             - Type:
                 type: boolean
-                groups: [Default, check_host, check_service]
+                groups: [Default, check_host, check_service, check_meta_service]
         resourceId:
             - Type:
                 type: int
-                groups: [Default, check_host, check_service]
+                groups: [Default, check_host, check_service, check_meta_service]
             - GreaterThan: 0
             - NotNull: ~
         parentResourceId:
@@ -191,6 +191,7 @@ Centreon\Domain\Monitoring\ResourceFilter:
                 choices:
                     - service
                     - host
+                    - metaservice
                 multiple: true
                 groups: [Default]
         states:
@@ -222,21 +223,37 @@ Centreon\Domain\Monitoring\ResourceFilter:
                     - PENDING
                 multiple: true
                 groups: [Default]
-        hostgroupIds:
+        hostgroupNames:
             - Type:
                 type: array
                 groups: [Default]
             - All:
                 - Type:
-                    type: int
+                    type: string
                     groups: [Default]
-        servicegroupIds:
+        servicegroupNames:
             - Type:
                 type: array
                 groups: [Default]
             - All:
                 - Type:
-                    type: int
+                    type: string
+                    groups: [Default]
+        monitoringServerNames:
+            - Type:
+                type: array
+                groups: [Default]
+            - All:
+                - Type:
+                    type: string
+                    groups: [Default]
+        statusTypes:
+            - Type:
+                type: array
+                groups: [Default]
+            - All:
+                - Type:
+                    type: string
                     groups: [Default]
         onlyWithPerformanceData:
             - Type:
@@ -249,17 +266,18 @@ Centreon\Domain\Monitoring\Resource:
         id:
             - Type:
                 type: int
-                groups: [Default, ack_host, ack_service, disack_host, disack_service, downtime_host, downtime_service]
+                groups: [Default, ack_host, ack_service, ack_meta, disack_host, disack_service, disack_meta, downtime_host, downtime_service]
         type:
             - Type:
                 type: string
-                groups: [Default, ack_host, ack_service, disack_host, disack_service, downtime_host, downtime_service]
+                groups: [Default, ack_host, ack_service, ack_meta, disack_host, disack_service, disack_meta, downtime_host, downtime_service]
             - Choice:
                 choices:
                     - service
                     - host
+                    - metaservice
                 multiple: false
-                groups: [Default, ack_host, ack_service, disack_host, disack_service, downtime_host, downtime_service]
+                groups: [Default, ack_host, ack_service, ack_meta, disack_host, disack_service, disack_meta, downtime_host, downtime_service]
         parent:
             - NotNull:
                 groups: [ack_service, downtime_service]

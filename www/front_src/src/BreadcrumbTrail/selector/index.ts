@@ -43,6 +43,7 @@ const getFirstUrlInChildren = (item): string | undefined => {
   }
 
   const childrenWithUrl = item.children.find(findFirstUrl);
+
   return childrenWithUrl ? findFirstUrl(childrenWithUrl) : undefined;
 };
 
@@ -53,6 +54,7 @@ interface Breadcrumb {
 
 const getBreadcrumbStep = (item): Breadcrumb | null => {
   const availableUrl = item.url ? getUrl(item) : findFirstUrl(item);
+
   return availableUrl
     ? {
         label: item.label,

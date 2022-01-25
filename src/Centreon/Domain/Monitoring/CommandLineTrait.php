@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,75 +22,135 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Monitoring;
 
-use Centreon\Domain\HostConfiguration\HostMacro;
-use Centreon\Domain\ServiceConfiguration\ServiceMacro;
+use Centreon\Domain\Macro\Interfaces\MacroInterface;
+use Centreon\Domain\Monitoring\Exception\MonitoringServiceException;
 
 trait CommandLineTrait
 {
     /**
-     * The purpose is to analyze the command line completed by Engine and to detect the value of a macro
-     * that contains spaces to place the value only in one element of the array.
+     * Build command line by comparing monitoring & configuration commands
+     * and by replacing macros in configuration command
      *
-     * <i><b>This process works only with the on-demand macros.</b></i><br\><br\>
-     *
-     * example: \-\-a='$\_HOSTVALUE$' with $\_HOSTVALUE$ = ' my value '
-     *
-     * Actually with a simple explode(' ', ...):
-     * (array[0] => "\-\-a='", array[1] => "my", array[2] => "value", array[3] => "'")
-     *
-     * Transform into:
-     * (array[0] => "\-\-a=' my value '")
-     *
-     * @param string $configurationCommand Configuration command line
-     * @param string $monitoringCommand Monitoring command line
-     * @param ServiceMacro[] $onDemandServiceMacros List of on-demand service macros
-     * @param HostMacro[] $onDemandHostMacros List of on-demand host macros
-     * @return array<int, string>
+     * @param string $configurationCommand
+     * @param string $monitoringCommand
+     * @param MacroInterface[] $macros
+     * @param string $replacementValue
+     * @return string
      */
-    private function explodeSpacesButKeepValuesByMacro(
+    private function buildCommandLineFromConfiguration(
         string $configurationCommand,
         string $monitoringCommand,
-        array $onDemandServiceMacros,
-        array $onDemandHostMacros
-    ): array {
-        $allMacros = array_merge($onDemandServiceMacros, $onDemandHostMacros);
-        $configurationTokens = explode(' ', $configurationCommand);
-        $monitoringToken = explode(' ', $monitoringCommand);
-        $macrosByName = [];
-        foreach ($allMacros as $macro) {
-            $macrosByName[$macro->getName()] = $macro;
-        }
-
-        $indexMonitoring = 0;
-        foreach ($configurationTokens as $indexConfiguration => $token) {
-            if (preg_match_all('~\$_(HOST|SERVICE)[^$]*\$~', $token, $matches, PREG_SET_ORDER)) {
-                if (array_key_exists($matches[0][0], $macrosByName)) {
-                    $macroToAnalyse = $macrosByName[$matches[0][0]];
-                    if (!empty($macroToAnalyse->getValue())) {
-                        $numberSpacesInMacroValue = count(explode(' ', $macroToAnalyse->getValue())) - 1;
-                        if ($numberSpacesInMacroValue > 0) {
-                            $replacementValue = implode(
-                                ' ',
-                                array_slice(
-                                    $monitoringToken,
-                                    $indexMonitoring,
-                                    $numberSpacesInMacroValue + 1
-                                )
-                            );
-                            array_splice(
-                                $monitoringToken,
-                                $indexMonitoring,
-                                $numberSpacesInMacroValue + 1,
-                                $replacementValue
-                            );
-                            $indexMonitoring += $numberSpacesInMacroValue + 1;
-                        }
-                    }
-                }
-            } else {
-                $indexMonitoring++;
+        array $macros,
+        string $replacementValue
+    ): string {
+        $macroPasswordNames = [];
+        foreach ($macros as $macro) {
+            if ($macro->isPassword()) {
+                // if macro is a password, store its name and let macro in configuration command
+                $macroPasswordNames[] = $macro->getName();
+            } elseif ($macro->getName() !== null && $macro->getValue() !== null) {
+                // if macro is not a password, replace it by its configuration value
+                $configurationCommand = str_replace($macro->getName(), $macro->getValue(), $configurationCommand);
             }
         }
-        return $monitoringToken;
+
+        if (count($macroPasswordNames) === 0) {
+            return $monitoringCommand;
+        }
+
+        $foundMacroNames = $this->extractMacroNamesFromCommandLine($configurationCommand);
+
+        $macroPattern = $this->generateCommandMacroPattern($configurationCommand);
+        $macroLazyPattern = str_replace('(.*)', '(.*?)', $macroPattern);
+
+        if (preg_match('/' . $macroPattern . '/', $monitoringCommand, $foundMacroValues)) {
+            // lazy and greedy regex should return the same result
+            // otherwise, it is not possible to know which section is the password
+            if (
+                preg_match('/' . $macroLazyPattern . '/', $monitoringCommand, $foundMacroLazyValues)
+                && $foundMacroLazyValues !== $foundMacroValues
+            ) {
+                throw MonitoringServiceException::macroPasswordNotDetected();
+            }
+
+            array_shift($foundMacroValues); // remove global string matching
+
+            // replace macros found in configuration command by matched value from monitoring command
+            foreach ($foundMacroNames as $index => $foundMacroName) {
+                $foundMacroValue = $foundMacroValues[$index];
+
+                // if macro is a password, we replace it by replacement value (usually ****)
+                $macroValue = in_array($foundMacroName, $macroPasswordNames) ? $replacementValue : $foundMacroValue;
+                $configurationCommand = str_replace($foundMacroName, $macroValue, $configurationCommand);
+            }
+        } else {
+            // configuration and monitoring commands do not match
+            // so last configuration has not been applied
+            throw MonitoringServiceException::configurationHasChanged();
+        }
+
+        return $configurationCommand;
+    }
+
+    /**
+     * Extra macro names from configuration command line
+     * example : ['$HOSTADDRESS$', '$_SERVICEPASSWORD$']
+     *
+     * @param string $commandLine
+     * @return string[] The list of macro names
+     */
+    private function extractMacroNamesFromCommandLine(string $commandLine): array
+    {
+        $foundMacroNames = [];
+
+        if (preg_match_all('/(\$\S+?\$)/', $commandLine, $matches)) {
+            if (isset($matches[0])) {
+                $foundMacroNames = $matches[0];
+            }
+        }
+
+        return $foundMacroNames;
+    }
+
+    /**
+     * Build a regex to identify macro associated value
+     * example :
+     *   - configuration command : $USER1$/check_icmp -H $HOSTADDRESS$ $_HOSTPASSWORD$
+     *   - generated regex : ^(.*)\/check_icmp \-H (.*) (.*)$
+     *   - monitoring : /usr/lib64/nagios/plugins/check_icmp -H 127.0.0.1 hiddenPassword
+     *   ==> matched values : [/usr/lib64/nagios/plugins/check_icmp, hiddenPassword]
+     *
+     * @param string $configurationCommand
+     * @return string
+     * @throws MonitoringServiceException
+     */
+    private function generateCommandMacroPattern(string $configurationCommand): string
+    {
+        $countFoundMacros = 0;
+        if (preg_match_all('/(\$\S+?\$)/', $configurationCommand, $matches)) {
+            if (isset($matches[0])) {
+                $countFoundMacros = count($matches[0]);
+            }
+        }
+
+        $commandSplittedByMacros = preg_split('/(\$\S+?\$)/', $configurationCommand);
+        if ($commandSplittedByMacros === false) {
+            throw MonitoringServiceException::configurationCommandNotSplitted();
+        }
+
+        $macroPattern = '^';
+        foreach ($commandSplittedByMacros as $index => $commandSection) {
+            $macroMatcher = (($index + 1) <= $countFoundMacros) ? '(.*)' : '';
+
+            $macroPattern .= preg_quote($commandSection, '/') . $macroMatcher;
+        }
+        $macroPattern .= '$';
+
+        // if two macros are glued or separated by spaces, regex cannot detect properly password string
+        if (preg_match('/\(\.\*\)\s*\(\.\*\)/', $macroPattern)) {
+            throw MonitoringServiceException::macroPasswordNotDetected();
+        }
+
+        return $macroPattern;
     }
 }

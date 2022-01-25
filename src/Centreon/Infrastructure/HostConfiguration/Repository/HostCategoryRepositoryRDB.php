@@ -22,7 +22,9 @@ declare(strict_types=1);
 
 namespace Centreon\Infrastructure\HostConfiguration\Repository;
 
+use Assert\AssertionFailedException;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
+use Centreon\Domain\HostConfiguration\Exception\HostCategoryException;
 use Centreon\Domain\HostConfiguration\Interfaces\HostCategory\HostCategoryReadRepositoryInterface;
 use Centreon\Domain\HostConfiguration\Interfaces\HostCategory\HostCategoryWriteRepositoryInterface;
 use Centreon\Domain\HostConfiguration\Model\HostCategory;
@@ -63,6 +65,27 @@ class HostCategoryRepositoryRDB extends AbstractRepositoryDRB implements
     /**
      * @inheritDoc
      */
+    public function addCategory(HostCategory $category): void
+    {
+        $statement = $this->db->prepare(
+            $this->translateDbName('
+                INSERT INTO `:db`.hostcategories (hc_name, hc_alias, level, icon_id, hc_comment, hc_activate)
+                VALUES (:name, :alias, :level, :icon_id, :comment, :is_activated)
+            ')
+        );
+        $statement->bindValue(':name', $category->getName(), \PDO::PARAM_STR);
+        $statement->bindValue(':alias', $category->getAlias(), \PDO::PARAM_STR);
+        $statement->bindValue(':comment', $category->getComments(), \PDO::PARAM_STR);
+        $statement->bindValue(':level', null, \PDO::PARAM_INT);
+        $statement->bindValue(':icon_id', null, \PDO::PARAM_INT);
+        $statement->bindValue(':is_activated', $category->isActivated() ? '1' : '0', \PDO::PARAM_STR);
+        $statement->execute();
+        $category->setId((int)$this->db->lastInsertId());
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function findAll(): array
     {
         return $this->findAllRequest(null);
@@ -81,7 +104,8 @@ class HostCategoryRepositoryRDB extends AbstractRepositoryDRB implements
      *
      * @param int|null $contactId Contact id related to host categories
      * @return HostCategory[]
-     * @throws \Assert\AssertionFailedException
+     * @throws AssertionFailedException
+     * @throws \InvalidArgumentException
      */
     private function findAllRequest(?int $contactId): array
     {
@@ -108,7 +132,9 @@ class HostCategoryRepositoryRDB extends AbstractRepositoryDRB implements
             }
         );
         if ($contactId === null) {
-            $request = $this->translateDbName('SELECT SQL_CALC_FOUND_ROWS * FROM `:db`.hostcategories hc');
+            $request = $this->translateDbName(
+                'SELECT SQL_CALC_FOUND_ROWS * FROM `:db`.hostcategories hc'
+            );
         } else {
             $request = $this->translateDbName(
                 'SELECT SQL_CALC_FOUND_ROWS hc.*
@@ -174,7 +200,7 @@ class HostCategoryRepositoryRDB extends AbstractRepositoryDRB implements
 
     /**
      * @inheritDoc
-     * @throws \Assert\AssertionFailedException
+     * @throws AssertionFailedException
      */
     public function findById(int $categoryId): ?HostCategory
     {
@@ -183,7 +209,7 @@ class HostCategoryRepositoryRDB extends AbstractRepositoryDRB implements
 
     /**
      * @inheritDoc
-     * @throws \Assert\AssertionFailedException
+     * @throws AssertionFailedException
      */
     public function findByIdAndContact(int $categoryId, ContactInterface $contact): ?HostCategory
     {
@@ -196,13 +222,13 @@ class HostCategoryRepositoryRDB extends AbstractRepositoryDRB implements
      * @param int $categoryId Id of the host category to be found
      * @param int|null $contactId Contact id related to host categories
      * @return HostCategory|null
-     * @throws \Assert\AssertionFailedException
+     * @throws AssertionFailedException
      */
     private function findByIdRequest(int $categoryId, ?int $contactId): ?HostCategory
     {
         if ($contactId === null) {
             $statement = $this->db->prepare(
-                $this->translateDbName('SELECT * FROM `:db`.hostcategories WHERE hc_id = :id')
+                $this->translateDbName('SELECT * FROM `:db`.hostcategories WHERE level IS NULL AND hc_id = :id')
             );
         } else {
             $statement = $this->db->prepare(
@@ -223,7 +249,8 @@ class HostCategoryRepositoryRDB extends AbstractRepositoryDRB implements
                         ON ag.acl_group_id = agcgr.acl_group_id
                     LEFT JOIn `:db`.contactgroup_contact_relation cgcr
                         ON  cgcr.contactgroup_cg_id = agcgr.cg_cg_id
-                    WHERE hc.hc_id = :id
+                    WHERE hc.level IS NULL
+                        AND hc.hc_id = :id
                         AND (agcr.contact_contact_id = :contact_id OR cgcr.contact_contact_id = :contact_id)'
                 )
             );
@@ -241,7 +268,7 @@ class HostCategoryRepositoryRDB extends AbstractRepositoryDRB implements
 
     /**
      * @inheritDoc
-     * @throws \Assert\AssertionFailedException
+     * @throws AssertionFailedException
      */
     public function findByName(string $name): ?HostCategory
     {
@@ -250,7 +277,31 @@ class HostCategoryRepositoryRDB extends AbstractRepositoryDRB implements
 
     /**
      * @inheritDoc
-     * @throws \Assert\AssertionFailedException
+     * @throws AssertionFailedException
+     */
+    public function findByNames(array $categoriesName): array
+    {
+        $hostCategories = [];
+        if ((empty($categoriesName))) {
+            return $hostCategories;
+        }
+        $statement = $this->db->prepare(
+            $this->translateDbName('
+                SELECT * FROM `:db`.hostcategories
+                WHERE `hc_name` IN (?' . str_repeat(',?', count($categoriesName) - 1) . ')
+            ')
+        );
+        $statement->execute($categoriesName);
+
+        while (($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
+            $hostCategories[] = HostCategoryFactoryRdb::create($result);
+        }
+        return $hostCategories;
+    }
+
+    /**
+     * @inheritDoc
+     * @throws AssertionFailedException
      */
     public function findByNameAndContact(string $name, ContactInterface $contact): ?HostCategory
     {
@@ -263,7 +314,7 @@ class HostCategoryRepositoryRDB extends AbstractRepositoryDRB implements
      * @param string $hostCategoryName Name of the host category to be found
      * @param int|null $contactId Contact id related to host categories
      * @return HostCategory|null
-     * @throws \Assert\AssertionFailedException
+     * @throws AssertionFailedException
      */
     private function findByNameRequest(string $hostCategoryName, ?int $contactId): ?HostCategory
     {
@@ -273,7 +324,9 @@ class HostCategoryRepositoryRDB extends AbstractRepositoryDRB implements
 
         if ($contactId === null) {
             $statement = $this->db->prepare(
-                $this->translateDbName('SELECT * FROM `:db`.hostcategories WHERE hc_name = :name')
+                $this->translateDbName(
+                    'SELECT * FROM `:db`.hostcategories WHERE level IS NULL AND hc_name = :name'
+                )
             );
         } else {
             $statement = $this->db->prepare(
@@ -296,7 +349,8 @@ class HostCategoryRepositoryRDB extends AbstractRepositoryDRB implements
                     LEFT JOIn `:db`.contactgroup_contact_relation cgcr
                         ON  cgcr.contactgroup_cg_id = agcgr.cg_cg_id
                         AND cgcr.contact_contact_id = :contact_id
-                    WHERE hc.hc_name = :name
+                    WHERE hc.level IS NULL
+                        AND hc.hc_name = :name
                         AND (agcr.contact_contact_id = :contact_id OR cgcr.contact_contact_id = :contact_id)'
                 )
             );

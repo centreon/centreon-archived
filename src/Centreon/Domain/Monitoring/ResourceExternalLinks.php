@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,8 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Monitoring;
 
+use Centreon\Domain\Monitoring\Notes;
+
 /**
  * Resource external Links model for resource repository
  *
@@ -35,9 +37,9 @@ class ResourceExternalLinks
     private $actionUrl;
 
     /**
-     * @var string|null
+     * @var Notes|null
      */
-    private $notesUrl;
+    private $notes;
 
     /**
      * @return string|null
@@ -59,20 +61,20 @@ class ResourceExternalLinks
     }
 
     /**
-     * @return string|null
+     * @return Notes|null
      */
-    public function getNotesUrl(): ?string
+    public function getNotes(): ?Notes
     {
-        return $this->notesUrl;
+        return $this->notes;
     }
 
     /**
-     * @param string|null $notesUrl
+     * @param Notes|null $notes
      * @return self
      */
-    public function setNotesUrl(?string $notesUrl): self
+    public function setNotes(?Notes $notes): self
     {
-        $this->notesUrl = $notesUrl;
+        $this->notes = $notes;
 
         return $this;
     }

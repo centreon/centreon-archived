@@ -1,17 +1,21 @@
-import { SelectEntry } from '@centreon/ui/src';
+import { SelectEntry } from '@centreon/ui';
+
+import { SortOrder } from '../../models';
 
 import { Criteria } from './models';
 
 interface DefaultCriteriaValues {
-  resourceTypes?: Array<SelectEntry>;
-  states?: Array<SelectEntry>;
-  statuses?: Array<SelectEntry>;
   hostGroups?: Array<SelectEntry>;
+  monitoringServers?: Array<SelectEntry>;
+  resourceTypes?: Array<SelectEntry>;
   serviceGroups?: Array<SelectEntry>;
+  states?: Array<SelectEntry>;
+  statusTypes?: Array<SelectEntry>;
+  statuses?: Array<SelectEntry>;
 }
 
 const defaultSortField = 'status_severity_code';
-const defaultSortOrder = 'asc';
+const defaultSortOrder = SortOrder.asc;
 
 const getDefaultCriterias = (
   {
@@ -20,59 +24,85 @@ const getDefaultCriterias = (
     statuses = [],
     hostGroups = [],
     serviceGroups = [],
+    monitoringServers = [],
+    statusTypes = [],
   }: DefaultCriteriaValues = {
-    resourceTypes: [],
-    states: [],
-    statuses: [],
     hostGroups: [],
+    monitoringServers: [],
+    resourceTypes: [],
     serviceGroups: [],
+    states: [],
+    statusTypes: [],
+    statuses: [],
   },
 ): Array<Criteria> => {
   return [
     {
       name: 'resource_types',
-      value: resourceTypes,
-      type: 'multi_select',
       object_type: null,
+      type: 'multi_select',
+      value: resourceTypes,
     },
     {
       name: 'states',
-      value: states,
-      type: 'multi_select',
       object_type: null,
+      type: 'multi_select',
+      value: states,
     },
     {
       name: 'statuses',
-      value: statuses,
-      type: 'multi_select',
       object_type: null,
+      type: 'multi_select',
+      value: statuses,
+    },
+    {
+      name: 'status_types',
+      object_type: null,
+      type: 'multi_select',
+      value: statusTypes,
     },
     {
       name: 'host_groups',
-      value: hostGroups,
-      type: 'multi_select',
       object_type: 'host_groups',
+      type: 'multi_select',
+      value: hostGroups,
     },
     {
       name: 'service_groups',
-      value: serviceGroups,
-      type: 'multi_select',
       object_type: 'service_groups',
+      type: 'multi_select',
+      value: serviceGroups,
+    },
+    {
+      name: 'monitoring_servers',
+      object_type: 'monitoring_servers',
+      type: 'multi_select',
+      value: monitoringServers,
     },
     {
       name: 'search',
-      value: '',
-      type: 'text',
       object_type: null,
+      type: 'text',
+      value: '',
     },
     {
       name: 'sort',
-      value: [defaultSortField, defaultSortOrder],
-      type: 'array',
       object_type: null,
+      type: 'array',
+      value: [defaultSortField, defaultSortOrder],
     },
   ];
 };
 
+const getAllCriterias = (): Array<Criteria> => [
+  ...getDefaultCriterias(),
+  {
+    name: 'monitoring_servers',
+    object_type: 'monitoring_servers',
+    type: 'multi_select',
+    value: [],
+  },
+];
+
 export default getDefaultCriterias;
-export { defaultSortField, defaultSortOrder };
+export { defaultSortField, defaultSortOrder, getAllCriterias };

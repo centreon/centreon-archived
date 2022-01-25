@@ -2,15 +2,21 @@ import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
 
+import makeStyles from '@mui/styles/makeStyles';
+
 import { IconButton } from '@centreon/ui';
 
-import { useStyles } from '.';
-
+const useStyles = makeStyles((theme) => ({
+  list: {
+    display: 'grid',
+    gridGap: theme.spacing(1),
+  },
+}));
 interface Props {
   list: JSX.Element;
-  switchButtonLabel: string;
-  switchButtonIcon: JSX.Element;
   onSwitchButtonClick: () => void;
+  switchButtonIcon: JSX.Element;
+  switchButtonLabel: string;
 }
 
 const Listing = ({
@@ -19,19 +25,20 @@ const Listing = ({
   switchButtonIcon,
   onSwitchButtonClick,
 }: Props): JSX.Element => {
-  const { t } = useTranslation();
   const classes = useStyles();
+  const { t } = useTranslation();
 
   return (
     <>
       <IconButton
-        title={t(switchButtonLabel)}
         ariaLabel={t(switchButtonLabel)}
+        size="large"
+        title={t(switchButtonLabel)}
         onClick={onSwitchButtonClick}
       >
         {switchButtonIcon}
       </IconButton>
-      <div className={classes.services}>{list}</div>
+      <div className={classes.list}>{list}</div>
     </>
   );
 };

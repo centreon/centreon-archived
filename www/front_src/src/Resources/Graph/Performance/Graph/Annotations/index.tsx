@@ -9,16 +9,23 @@ import AcknowledgementAnnotations from './Line/Acknowledgement';
 import DowntimeAnnotations from './Area/Downtime';
 
 export interface Props {
-  xScale: ScaleTime<number, number>;
-  timeline: Array<TimelineEvent>;
   graphHeight: number;
+  resourceId: string;
+  timeline: Array<TimelineEvent>;
+  xScale: ScaleTime<number, number>;
 }
 
-const Annotations = ({ xScale, timeline, graphHeight }: Props): JSX.Element => {
+const Annotations = ({
+  xScale,
+  timeline,
+  graphHeight,
+  resourceId,
+}: Props): JSX.Element => {
   const props = {
-    xScale,
-    timeline,
     graphHeight,
+    resourceId,
+    timeline,
+    xScale,
   };
 
   return (

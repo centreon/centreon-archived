@@ -2,35 +2,42 @@ import * as React from 'react';
 
 import { isNil, isEmpty, pipe, not, defaultTo, propEq, findIndex } from 'ramda';
 import { useTranslation } from 'react-i18next';
+import { useAtom } from 'jotai';
+import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 
-import { Tab, useTheme, fade } from '@material-ui/core';
+import { useTheme, alpha, Skeleton } from '@mui/material';
 
-import { MemoizedPanel as Panel } from '@centreon/ui';
+import { MemoizedPanel as Panel, Tab } from '@centreon/ui';
 
-import { useResourceContext } from '../Context';
 import { rowColorConditions } from '../colors';
 
 import Header from './Header';
 import { ResourceDetails } from './models';
 import { TabById, detailsTabId, tabs } from './tabs';
 import { Tab as TabModel, TabId } from './tabs/models';
+import {
+  clearSelectedResourceDerivedAtom,
+  detailsAtom,
+  openDetailsTabIdAtom,
+  panelWidthStorageAtom,
+  selectResourceDerivedAtom,
+} from './detailsAtoms';
 
 export interface DetailsSectionProps {
   details?: ResourceDetails;
 }
 
-const Details = (): JSX.Element => {
+const Details = (): JSX.Element | null => {
   const { t } = useTranslation();
   const theme = useTheme();
 
-  const {
-    openDetailsTabId,
-    details,
-    panelWidth,
-    setOpenDetailsTabId,
-    clearSelectedResource,
-    setPanelWidth,
-  } = useResourceContext();
+  const panelRef = React.useRef<HTMLDivElement>();
+
+  const [panelWidth, setPanelWidth] = useAtom(panelWidthStorageAtom);
+  const [openDetailsTabId, setOpenDetailsTabId] = useAtom(openDetailsTabIdAtom);
+  const details = useAtomValue(detailsAtom);
+  const clearSelectedResource = useUpdateAtom(clearSelectedResourceDerivedAtom);
+  const selectResource = useUpdateAtom(selectResourceDerivedAtom);
 
   React.useEffect(() => {
     if (isNil(details)) {
@@ -70,8 +77,8 @@ const Details = (): JSX.Element => {
     const foundColorCondition = rowColorConditions(theme).find(
       ({ condition }) =>
         condition({
-          in_downtime: pipe(defaultTo([]), isEmpty, not)(downtimes),
           acknowledged: !isNil(acknowledgement),
+          in_downtime: pipe(defaultTo([]), isEmpty, not)(downtimes),
         }),
     );
 
@@ -79,28 +86,28 @@ const Details = (): JSX.Element => {
       return theme.palette.common.white;
     }
 
-    return fade(foundColorCondition.color, 0.8);
+    return alpha(foundColorCondition.color, 0.8);
   };
 
   return (
     <Panel
-      onClose={clearSelectedResource}
-      header={<Header details={details} />}
+      header={<Header details={details} onSelectParent={selectResource} />}
       headerBackgroundColor={getHeaderBackgroundColor()}
+      memoProps={[openDetailsTabId, details, panelWidth]}
+      ref={panelRef as React.RefObject<HTMLDivElement>}
+      selectedTab={<TabById details={details} id={openDetailsTabId} />}
+      selectedTabId={getTabIndex(openDetailsTabId)}
       tabs={getVisibleTabs().map(({ id, title }) => (
         <Tab
-          style={{ minWidth: 'unset' }}
-          key={id}
-          label={t(title)}
           disabled={isNil(details)}
+          key={id}
+          label={isNil(details) ? <Skeleton width={60} /> : t(title)}
           onClick={changeSelectedTabId(id)}
         />
       ))}
-      selectedTabId={getTabIndex(openDetailsTabId)}
-      selectedTab={<TabById id={openDetailsTabId} details={details} />}
       width={panelWidth}
+      onClose={clearSelectedResource}
       onResize={setPanelWidth}
-      memoProps={[openDetailsTabId, details, panelWidth]}
     />
   );
 };

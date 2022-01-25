@@ -22,7 +22,7 @@
             <td>
                 {$form.o1.html}
                 &nbsp;
-                {if $ldap == "1" }<a href="{$msg.ldap_importL}" class="btc bt_info">{$msg.ldap_importT}</a>{/if}
+                {if isset($ldap) && $ldap == "1" }<a href="{$msg.ldap_importL}" class="btc bt_info">{$msg.ldap_importT}</a>{/if}
                 <a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
                 <a href='#' class="btc bt_info"
                    onclick="window.open('main.php?p=60301&o=dn&min=1', '', 'toolbar=no, location=no, directories=no, status=no, scrollbars=yes, resizable=yes, copyhistory=no, width=500, height=700');">
@@ -32,7 +32,6 @@
             { else }
             <td>&nbsp;</td>
             { /if }
-            <input name="p" value="{$p}" type="hidden">
             {php}
             include('./include/common/pagination.php');
             {/php}
@@ -90,13 +89,12 @@
             <td>
                 {$form.o2.html}
                 &nbsp;
-                {if $ldap == "1" }<a href="{$msg.ldap_importL}" class="btc bt_info">{$msg.ldap_importT}</a>{/if}
+                {if isset($ldap) && $ldap == "1" }<a href="{$msg.ldap_importL}" class="btc bt_info">{$msg.ldap_importT}</a>{/if}
                 <a href="{$msg.addL}" class="btc bt_success">{$msg.addT}</a>
             </td>
             { else }
             <td>&nbsp;</td>
             { /if }
-            <input name="p" value="{$p}" type="hidden">
             {php}
             include('./include/common/pagination.php');
             {/php}

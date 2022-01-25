@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -37,56 +38,77 @@ if (!isset($centreon)) {
     exit();
 }
 
-isset($_GET["compo_id"]) ? $cG = $_GET["compo_id"] : $cG = null;
-isset($_POST["compo_id"]) ? $cP = $_POST["compo_id"] : $cP = null;
-$cG ? $compo_id = $cG : $compo_id = $cP;
+const ADD_COMPONENT_TEMPLATE = 'a';
+const WATCH_COMPONENT_TEMPLATE = 'w';
+const MODIFY_COMPONENT_TEMPLATE = 'c';
+const DUPLICATE_COMPONENT_TEMPLATE = 'm';
+const DELETE_COMPONENT_TEMPLATE = 'd';
 
-isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = null;
-isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = null;
-$cG ? $select = $cG : $select = $cP;
 
-isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = null;
-isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = null;
-$cG ? $dupNbr = $cG : $dupNbr = $cP;
+$duplicationNumbers = [];
+$selectedCurveTemplates = [];
+
+/*
+ * id of the curve template
+ */
+$compo_id = filter_var(
+    $_GET['compo_id'] ?? $_POST['compo_id'] ?? false,
+    FILTER_VALIDATE_INT
+);
+
+if (!empty($_POST['select'])) {
+    foreach ($_POST['select'] as $curveIdSelected => $dupFactor) {
+        if (filter_var($dupFactor, FILTER_VALIDATE_INT) !== false) {
+            $selectedCurveTemplates[$curveIdSelected] = (int) $dupFactor;
+        }
+    }
+}
+
+if (!empty($_POST['dupNbr'])) {
+    foreach ($_POST['dupNbr'] as $curveId => $dupFactor) {
+        if (filter_var($dupFactor, FILTER_VALIDATE_INT) !== false) {
+            $duplicationNumbers[$curveId] = (int) $dupFactor;
+        }
+    }
+}
 
 /*
  * Path to the configuration dir
  */
-$path = "./include/views/componentTemplates/";
+$path = './include/views/componentTemplates/';
 
 /*
  * PHP functions
  */
-require_once $path."DB-Func.php";
-require_once "./include/common/common-Func.php";
+require_once $path . 'DB-Func.php';
+require_once './include/common/common-Func.php';
 
 switch ($o) {
-    case "a":
-        require_once $path."formComponentTemplate.php";
-        break; //Add a Component Template
-    case "w":
-        require_once $path."formComponentTemplate.php";
-        break; //Watch a Component Template
-    case "c":
-        require_once $path."formComponentTemplate.php" ;
-        break; //Modify a Component Template
-    case "s":
-        enableComponentTemplateInDB($lca_id);
-        require_once $path."listComponentTemplates.php";
-        break; //Activate a Component Template
-    case "u":
-        disableComponentTemplateInDB($lca_id);
-        require_once $path."listComponentTemplates.php";
-        break; //Desactivate a Component Template
-    case "m":
-        multipleComponentTemplateInDB(isset($select) ? $select : array(), $dupNbr);
-        require_once $path."listComponentTemplates.php";
-        break; //Duplicate n Component Templates
-    case "d":
-        deleteComponentTemplateInDB(isset($select) ? $select : array());
-        require_once $path."listComponentTemplates.php";
-        break; //Delete n Component Templates
+    case ADD_COMPONENT_TEMPLATE:
+    case WATCH_COMPONENT_TEMPLATE:
+    case MODIFY_COMPONENT_TEMPLATE:
+        require_once $path . 'formComponentTemplate.php';
+        break;
+    case DUPLICATE_COMPONENT_TEMPLATE:
+        if (isCSRFTokenValid()) {
+            multipleComponentTemplateInDB(
+                isset($selectedCurveTemplates) ? $selectedCurveTemplates : [],
+                $duplicationNumbers
+            );
+        } else {
+            unvalidFormMessage();
+        }
+        require_once $path . 'listComponentTemplates.php';
+        break;
+    case DELETE_COMPONENT_TEMPLATE:
+        if (isCSRFTokenValid()) {
+            deleteComponentTemplateInDB(isset($selectedCurveTemplates) ? $selectedCurveTemplates : []);
+        } else {
+            unvalidFormMessage();
+        }
+        require_once $path . 'listComponentTemplates.php';
+        break;
     default:
-        require_once $path."listComponentTemplates.php";
+        require_once $path . 'listComponentTemplates.php';
         break;
 }

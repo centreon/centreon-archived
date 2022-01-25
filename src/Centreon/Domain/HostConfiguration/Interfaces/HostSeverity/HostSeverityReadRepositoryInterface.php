@@ -24,6 +24,7 @@ namespace Centreon\Domain\HostConfiguration\Interfaces\HostSeverity;
 
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\HostConfiguration\Model\HostSeverity;
+use Centreon\Domain\Repository\RepositoryException;
 
 /**
  * This interface gathers all the reading operations on the host severity repository.
@@ -48,4 +49,25 @@ interface HostSeverityReadRepositoryInterface
      * @throws \Throwable
      */
     public function findAllByContact(ContactInterface $contact): array;
+
+    /**
+     * Find a host severity by id.
+     *
+     * @param int $hostSeverityId Id of the host severity to be found
+     * @return HostSeverity|null
+     * @throws RepositoryException
+     * @throws \Exception
+     */
+    public function findById(int $hostSeverityId): ?HostSeverity;
+
+    /**
+     * Find a host severity by id and contact.
+     *
+     * @param int $hostSeverityId Id of the host severity to be found
+     * @param ContactInterface $contact Contact related to host severity
+     * @return HostSeverity|null
+     * @throws RepositoryException
+     * @throws \Exception
+     */
+    public function findByIdAndContact(int $hostSeverityId, ContactInterface $contact): ?HostSeverity;
 }

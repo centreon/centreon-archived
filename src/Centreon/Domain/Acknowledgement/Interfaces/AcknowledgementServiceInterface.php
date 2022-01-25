@@ -90,6 +90,16 @@ interface AcknowledgementServiceInterface extends ContactFilterInterface
     public function findAcknowledgementsByService(int $hostId, int $serviceId): array;
 
     /**
+     * Find all acknowledgements by metaservice id.
+     *
+     * @param int $metaId
+     * @return Acknowledgement[]
+     * @throws RequestParametersTranslatorException
+     * @throws \Exception
+     */
+    public function findAcknowledgementsByMetaService(int $metaId): array;
+
+    /**
      * Adds a host acknowledgement.
      *
      * @param Acknowledgement $acknowledgement Host acknowledgement to add
@@ -114,6 +124,18 @@ interface AcknowledgementServiceInterface extends ContactFilterInterface
     public function addServiceAcknowledgement(Acknowledgement $acknowledgement): void;
 
     /**
+     * Adds a Meta service acknowledgement.
+     *
+     * @param Acknowledgement $acknowledgement Meta service acknowledgement to add
+     * @throws AcknowledgementException
+     * @throws EngineException
+     * @throws EntityNotFoundException
+     * @throws \Exception
+     * @throws ValidationFailedException
+     */
+    public function addMetaServiceAcknowledgement(Acknowledgement $acknowledgement): void;
+
+    /**
      * Disacknowledge a host.
      *
      * @param int $hostId Host id of acknowledgement to be cancelled
@@ -133,6 +155,16 @@ interface AcknowledgementServiceInterface extends ContactFilterInterface
      * @throws \Exception
      */
     public function disacknowledgeService(int $hostId, int $serviceId): void;
+
+    /**
+     * Disacknowledge a metaservice.
+     *
+     * @param int $metaId ID of the metaservice
+     * @throws EngineException
+     * @throws EntityNotFoundException
+     * @throws \Exception
+     */
+    public function disacknowledgeMetaService(int $metaId): void;
 
     /**
      * Acknowledge resource and its services if needed.

@@ -36,12 +36,12 @@
 
         <td align='right'>
         {if ($step-1)}
-        <input class='btc bt_info' type='button' id='previous' value='Back' onClick='previousStep();'/>
+        <input class='btc bt_info' type='button' id='previous' value='Back' onClick='loadStep("previousStep");'/>
         {/if}
-        <input class='btc bt_default' type='button' id='refresh' value='Refresh' onClick='loadStep();'/>
+        <input class='btc bt_default' type='button' id='refresh' value='Refresh' onClick='loadStep("stepContent");'/>
         {if (!isset($validate) || $validate)}
             {if !$finish}
-            <input class='btc bt_info' type='button' id='next' value='Next' onClick='if (validation() == true) nextStep();'/>
+            <input class='btc bt_info' type='button' id='next' value='Next' onClick='if (validation() == true) loadStep("nextStep");'/>
             {else}
             <input class='btc bt_success' type='button' id='finish' value='Finish' onClick='validation();'/>
             {/if}

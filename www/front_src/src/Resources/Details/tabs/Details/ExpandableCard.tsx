@@ -1,36 +1,38 @@
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
+import { isEmpty, pipe, reject, slice } from 'ramda';
 
-import {
-  Typography,
-  Card,
-  CardContent,
-  Divider,
-  CardActions,
-  Button,
-  makeStyles,
-  Theme,
-} from '@material-ui/core';
-import { CreateCSSProperties } from '@material-ui/core/styles/withStyles';
+import { Typography, Divider, CardActions, Button, Theme } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import { CreateCSSProperties } from '@mui/styles';
 
 import { getStatusColors } from '@centreon/ui';
 
 import { labelMore, labelLess } from '../../../translatedLabels';
 
+import Card from './Card';
+import { ChangeExpandedCardsProps, ExpandAction } from './SortableCards/models';
+
+const Line = (line, index): JSX.Element => (
+  <Typography component="p" key={`${line}-${index}`} variant="body2">
+    {line}
+  </Typography>
+);
+
 const useStyles = makeStyles<Theme, { severityCode?: number }>((theme) => {
   const getStatusBackgroundColor = (severityCode): string =>
     getStatusColors({
-      theme,
       severityCode,
+      theme,
     }).backgroundColor;
 
   return {
     card: ({ severityCode }): CreateCSSProperties => ({
       ...(severityCode && {
-        borderWidth: 2,
-        borderStyle: 'solid',
         borderColor: getStatusBackgroundColor(severityCode),
+        borderStyle: 'solid',
+        borderWidth: 2,
       }),
     }),
     title: ({ severityCode }): CreateCSSProperties => ({
@@ -40,55 +42,55 @@ const useStyles = makeStyles<Theme, { severityCode?: number }>((theme) => {
 });
 
 interface Props {
-  title: string;
+  changeExpandedCards: (props: ChangeExpandedCardsProps) => void;
   content: string;
+  expandedCard: boolean;
   severityCode?: number;
+  title: string;
 }
 
 const ExpandableCard = ({
   title,
   content,
   severityCode,
+  expandedCard,
+  changeExpandedCards,
 }: Props): JSX.Element => {
-  const { t } = useTranslation();
   const classes = useStyles({ severityCode });
-
-  const [outputExpanded, setOutputExpanded] = React.useState(false);
+  const { t } = useTranslation();
 
   const lines = content.split(/\n|\\n/);
-  const threeFirstlines = lines.slice(0, 3);
-  const lastlines = lines.slice(2, lines.length);
+  const threeFirstLines = lines.slice(0, 3);
+  const lastLines = pipe(slice(3, lines.length), reject(isEmpty))(lines);
 
   const toggleOutputExpanded = (): void => {
-    setOutputExpanded(!outputExpanded);
-  };
+    if (expandedCard) {
+      changeExpandedCards({ action: ExpandAction.remove, card: title });
 
-  const Line = (line, index): JSX.Element => (
-    <Typography key={`${line}-${index}`} variant="body2" component="p">
-      {line}
-    </Typography>
-  );
+      return;
+    }
+
+    changeExpandedCards({ action: ExpandAction.add, card: title });
+  };
 
   return (
     <Card className={classes.card}>
-      <CardContent>
-        <Typography
-          className={classes.title}
-          variant="subtitle2"
-          color="textSecondary"
-          gutterBottom
-        >
-          {title}
-        </Typography>
-        {threeFirstlines.map(Line)}
-        {outputExpanded && lastlines.map(Line)}
-      </CardContent>
-      {lastlines.length > 0 && (
+      <Typography
+        gutterBottom
+        className={classes.title}
+        color="textSecondary"
+        variant="subtitle2"
+      >
+        {title}
+      </Typography>
+      {threeFirstLines.map(Line)}
+      {expandedCard && lastLines.map(Line)}
+      {lastLines.length > 0 && (
         <>
           <Divider />
           <CardActions>
             <Button color="primary" size="small" onClick={toggleOutputExpanded}>
-              {outputExpanded ? t(labelLess) : t(labelMore)}
+              {expandedCard ? t(labelLess) : t(labelMore)}
             </Button>
           </CardActions>
         </>

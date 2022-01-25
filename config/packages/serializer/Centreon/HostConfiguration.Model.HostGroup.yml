@@ -3,4 +3,8 @@ Centreon\Domain\HostConfiguration\Model\HostGroup:
     name:
       type: string
       groups:
-        - 'host_group_conf_name'
+        - 'host_group_conf_min'
+    id:
+      type: integer
+      groups:
+        - 'host_group_conf_min'

@@ -1,13 +1,13 @@
 import * as React from 'react';
 
-import { makeStyles } from '@material-ui/core';
+import makeStyles from '@mui/styles/makeStyles';
 
 import { PageSkeleton } from '@centreon/ui';
 
 const useStyles = makeStyles(() => ({
   skeletonContainer: {
-    width: '100%',
     height: '100vh',
+    width: '100%',
   },
 }));
 

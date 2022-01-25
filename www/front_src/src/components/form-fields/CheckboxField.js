@@ -10,10 +10,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
+import { FormControlLabel, Checkbox, Typography } from '@mui/material';
+
 import styles from '../../styles/partials/form/_form.scss';
 
 import fieldHoc from './hoc';
-import { prepareInputProps } from './utils';
 
 const callbackWithValue = (trueValue, falseValue, callback) => (e) =>
   callback(e.target.checked ? trueValue : falseValue);
@@ -43,49 +44,40 @@ const CheckboxField = ({
         styles['custom-checkbox orange'],
       )}
     >
-      <input
-        {...prepareInputProps(rest)}
+      <FormControlLabel
         aria-checked={checked}
         checked={value}
+        control={<Checkbox color="primary" size="small" />}
         defaultChecked={value === trueValue}
+        label={label}
+        name={rest.name}
         onChange={
           onChange && callbackWithValue(trueValue, falseValue, onChange)
         }
-        focusin={onBlur && callbackWithValue(trueValue, falseValue, onBlur)}
-        className={styles['custom-control-input']}
-        type="checkbox"
       />
-      <label htmlFor={rest.id} className={styles['custom-control-label']}>
-        {label}
-        {info}
-      </label>
     </div>
     {error ? (
-      <div className={styles['invalid-feedback']}>
-        <div
-          className={classnames(styles.field__msg, styles['field__msg--error'])}
-        >
-          {error}
-        </div>
-      </div>
+      <Typography color="error" variant="body2">
+        {error}
+      </Typography>
     ) : null}
   </div>
 );
 
 CheckboxField.displayName = 'CheckboxField';
 CheckboxField.propTypes = {
+  className: PropTypes.string,
+  error: PropTypes.element,
+  falseValue: PropTypes.any,
   id: PropTypes.string.isRequired,
   label: PropTypes.string,
-  className: PropTypes.string,
-  value: PropTypes.bool,
   trueValue: PropTypes.any,
-  falseValue: PropTypes.any,
-  error: PropTypes.element,
+  value: PropTypes.bool,
 };
 CheckboxField.defaultProps = {
   className: styles.field,
-  trueValue: true,
   falseValue: false,
+  trueValue: true,
 };
 
 export { CheckboxField };

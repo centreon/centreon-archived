@@ -47,7 +47,7 @@ class EncryptionTest extends TestCase
         $this->secondKey = '6iqKFqOUUD8mFncNtSqQPw7cgFypQ9O9H7qH17Z6Qd1zsGH0NmJdDwk2GI4/yqmOFnJqC5RKeUGKz55Xx/+mOg==';
     }
 
-    public function testCryptDecrypt()
+    public function testCryptDecrypt(): void
     {
         $messageToEncrypt = 'my secret message';
         $encryption = (new Encryption())
@@ -70,7 +70,7 @@ class EncryptionTest extends TestCase
         $this->assertNull($falseDecryptedMessage);
     }
 
-    public function testExceptionOnFirstKeyWhileEncryption()
+    public function testExceptionOnFirstKeyWhileEncryption(): void
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('First key not defined');
@@ -81,7 +81,7 @@ class EncryptionTest extends TestCase
         $encrypedMessage = $encryption->crypt($this->falseKey);
     }
 
-    public function testExceptionOnSecondKeyWhileEncryption()
+    public function testExceptionOnSecondKeyWhileEncryption(): void
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('Second key not defined');
@@ -92,11 +92,11 @@ class EncryptionTest extends TestCase
         $encrypedMessage = $encryption->crypt($this->falseKey);
     }
 
-    public function testWarningOnBadHashAlgorihtmWhileEncryption()
+    public function testWarningOnBadHashAlgorihtmWhileEncryption(): void
     {
-        $this->expectException(Warning::class);
-        $this->expectExceptionMessage('openssl_cipher_iv_length(): Unknown cipher algorithm');
-        $encryption = (new Encryption(''))
+        $this->expectWarning(Warning::class);
+        $this->expectWarningMessage('openssl_cipher_iv_length(): Unknown cipher algorithm');
+        $encryption = (new Encryption('bad-algorithm'))
             ->setFirstKey($this->secondKey)
             ->setSecondKey($this->secondKey);
 
@@ -104,11 +104,13 @@ class EncryptionTest extends TestCase
         $encryption->crypt($this->falseKey);
     }
 
-    public function testWarningOnBadHashMethodWhileEncryption()
+    public function testWarningOnBadHashMethodWhileEncryption(): void
     {
-        $this->expectException(Warning::class);
-        $this->expectExceptionMessage('hash_hmac(): Unknown hashing algorithm:');
-        $encryption = (new Encryption('aes-256-cbc', ''))
+        $this->expectException(\ValueError::class);
+        $this->expectExceptionMessage(
+            'hash_hmac(): Argument #1 ($algo) must be a valid cryptographic hashing algorithm'
+        );
+        $encryption = (new Encryption('aes-256-cbc', 'bad-hash'))
             ->setFirstKey($this->secondKey)
             ->setSecondKey($this->secondKey);
 
@@ -116,7 +118,7 @@ class EncryptionTest extends TestCase
         $encryption->crypt($this->falseKey);
     }
 
-    public function testExceptionOnFirstKeyWhileDecryption()
+    public function testExceptionOnFirstKeyWhileDecryption(): void
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('First key not defined');
@@ -127,7 +129,7 @@ class EncryptionTest extends TestCase
         $decryptedMessage = $encryption->decrypt($this->falseKey);
     }
 
-    public function testExceptionOnSecondKeyWhileDecryption()
+    public function testExceptionOnSecondKeyWhileDecryption(): void
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('Second key not defined');
@@ -138,11 +140,11 @@ class EncryptionTest extends TestCase
         $decryptedMessage = $encryption->decrypt($this->falseKey);
     }
 
-    public function testWarningOnBadHashAlgorihtmWhileDecryption()
+    public function testWarningOnBadHashAlgorihtmWhileDecryption(): void
     {
-        $this->expectException(Warning::class);
-        $this->expectExceptionMessage('openssl_cipher_iv_length(): Unknown cipher algorithm');
-        $encryption = (new Encryption(''))
+        $this->expectWarning();
+        $this->expectWarningMessage('openssl_cipher_iv_length(): Unknown cipher algorithm');
+        $encryption = (new Encryption('bad-algorithm'))
             ->setFirstKey($this->secondKey)
             ->setSecondKey($this->secondKey);
 

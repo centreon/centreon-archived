@@ -26,7 +26,6 @@ use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Downtime\Interfaces\DowntimeRepositoryInterface;
 use Centreon\Domain\Downtime\Interfaces\DowntimeServiceInterface;
 use Centreon\Domain\Engine\Interfaces\EngineServiceInterface;
-use Centreon\Domain\Entity\EntityValidator;
 use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Domain\Monitoring\Host;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
@@ -55,10 +54,7 @@ class DowntimeService extends AbstractCentreonService implements DowntimeService
      * @var EngineServiceInterface For all downtimes requests except reading
      */
     private $engineService;
-    /**
-     * @var EntityValidator
-     */
-    private $validator;
+
     /**
      * @var DowntimeRepositoryInterface
      */
@@ -78,20 +74,17 @@ class DowntimeService extends AbstractCentreonService implements DowntimeService
      *
      * @param AccessGroupRepositoryInterface $accessGroupRepository
      * @param EngineServiceInterface $engineService
-     * @param EntityValidator $validator
      * @param DowntimeRepositoryInterface $downtimeRepository
      * @param MonitoringRepositoryInterface $monitoringRepository
      */
     public function __construct(
         AccessGroupRepositoryInterface $accessGroupRepository,
         EngineServiceInterface $engineService,
-        EntityValidator $validator,
         DowntimeRepositoryInterface $downtimeRepository,
         MonitoringRepositoryInterface $monitoringRepository
     ) {
         $this->accessGroupRepository = $accessGroupRepository;
         $this->engineService = $engineService;
-        $this->validator = $validator;
         $this->downtimeRepository = $downtimeRepository;
         $this->monitoringRepository = $monitoringRepository;
     }
@@ -176,6 +169,30 @@ class DowntimeService extends AbstractCentreonService implements DowntimeService
     /**
      * @inheritDoc
      */
+    public function findDowntimesByMetaService(int $metaId): array
+    {
+        $service = $this->monitoringRepository->findOneServiceByDescription('meta_' . $metaId);
+        if (is_null($service)) {
+            throw new EntityNotFoundException(_('Meta service not found'));
+        }
+        if ($this->contact->isAdmin()) {
+            return $this->downtimeRepository->findDowntimesByServiceForAdminUser(
+                $service->getHost()->getId(),
+                $service->getId()
+            );
+        } else {
+            return $this->downtimeRepository
+                ->forAccessGroups($this->accessGroups)
+                ->findDowntimesByServiceForNonAdminUser(
+                    $service->getHost()->getId(),
+                    $service->getId()
+                );
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function findDowntimesByHost(int $hostId, bool $withServices): array
     {
         if ($this->contact->isAdmin()) {
@@ -233,7 +250,7 @@ class DowntimeService extends AbstractCentreonService implements DowntimeService
             throw new EntityNotFoundException(_('Downtime not found'));
         }
 
-        $downtimeType = ($downtime->getServiceId() === null) ? 'host' : 'service';
+        $downtimeType = (empty($downtime->getServiceId())) ? 'host' : 'service';
 
         if (!is_null($downtime->getDeletionTime())) {
             throw new DowntimeException(
@@ -249,24 +266,43 @@ class DowntimeService extends AbstractCentreonService implements DowntimeService
      */
     public function addResourceDowntime(ResourceEntity $resource, Downtime $downtime): void
     {
-        $host = $this->monitoringRepository->findOneHost(ResourceService::generateHostIdByResource($resource));
-        if (is_null($host)) {
-            throw new EntityNotFoundException(_('Host not found'));
-        }
-        if ($resource->getType() === ResourceEntity::TYPE_SERVICE) {
-            $service = $this->monitoringRepository->findOneService(
-                (int) $resource->getParent()->getId(),
-                (int) $resource->getId()
-            );
-            if (is_null($service)) {
-                throw new EntityNotFoundException(_('Service not found'));
-            }
-            $service->setHost($host);
-            $this->addServiceDowntime($downtime, $service);
-        } elseif ($resource->getType() === ResourceEntity::TYPE_HOST) {
-            $this->addHostDowntime($downtime, $host);
-        } else {
-            throw new \Exception(_('Incorrect Resource Type'));
+        switch ($resource->getType()) {
+            case ResourceEntity::TYPE_HOST:
+                $host = $this->monitoringRepository->findOneHost(ResourceService::generateHostIdByResource($resource));
+                if (is_null($host)) {
+                    throw new EntityNotFoundException(_('Host not found'));
+                }
+                $this->addHostDowntime($downtime, $host);
+                break;
+            case ResourceEntity::TYPE_SERVICE:
+                $host = $this->monitoringRepository->findOneHost(ResourceService::generateHostIdByResource($resource));
+                if (is_null($host)) {
+                    throw new EntityNotFoundException(_('Host not found'));
+                }
+                $service = $this->monitoringRepository->findOneService(
+                    (int) $resource->getParent()->getId(),
+                    (int) $resource->getId()
+                );
+                if (is_null($service)) {
+                    throw new EntityNotFoundException(_('Service not found'));
+                }
+                $service->setHost($host);
+                $this->addServiceDowntime($downtime, $service);
+                break;
+            case ResourceEntity::TYPE_META:
+                $service = $this->monitoringRepository->findOneServiceByDescription('meta_' . $resource->getId());
+                if (is_null($service)) {
+                    throw new EntityNotFoundException(_('Service not found'));
+                }
+                $host = $this->monitoringRepository->findOneHost($service->getHost()->getId());
+                if (is_null($host)) {
+                    throw new EntityNotFoundException(_('Host not found'));
+                }
+                $service->setHost($host);
+                $this->addServiceDowntime($downtime, $service);
+                break;
+            default:
+                throw new \Exception(_('Incorrect Resource Type'));
         }
     }
 }

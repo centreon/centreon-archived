@@ -307,9 +307,9 @@ function removeRelationLastHostDependency(int $hostId): void
     $res = $pearDB->query($query);
 
     while ($row = $res->fetch()) {
-        $query = 'SELECT count(dependency_dep_id) AS nb_dependency , dependency_dep_id AS id 
-              FROM dependency_serviceParent_relation 
-              WHERE dependency_dep_id = (SELECT dependency_dep_id FROM dependency_serviceParent_relation 
+        $query = 'SELECT count(dependency_dep_id) AS nb_dependency , dependency_dep_id AS id
+              FROM dependency_serviceParent_relation
+              WHERE dependency_dep_id = (SELECT dependency_dep_id FROM dependency_serviceParent_relation
                                          WHERE service_service_id =  ' . $row['service_service_id'] . ')';
         $dbResult = $pearDB->query($query);
         $result = $dbResult->fetch();
@@ -320,9 +320,9 @@ function removeRelationLastHostDependency(int $hostId): void
         }
     }
 
-    $query = 'SELECT count(dependency_dep_id) AS nb_dependency , dependency_dep_id AS id 
-              FROM dependency_hostParent_relation 
-              WHERE dependency_dep_id = (SELECT dependency_dep_id FROM dependency_hostParent_relation 
+    $query = 'SELECT count(dependency_dep_id) AS nb_dependency , dependency_dep_id AS id
+              FROM dependency_hostParent_relation
+              WHERE dependency_dep_id = (SELECT dependency_dep_id FROM dependency_hostParent_relation
                                          WHERE host_host_id =  ' . $hostId . ')';
     $dbResult = $pearDB->query($query);
     $result = $dbResult->fetch();
@@ -339,14 +339,14 @@ function deleteHostInDB($hosts = array())
 
     foreach ($hosts as $key => $value) {
         removeRelationLastHostDependency((int)$key);
-        $rq = "SELECT @nbr := (SELECT COUNT( * ) 
-                              FROM host_service_relation 
-                              WHERE service_service_id = hsr.service_service_id 
-                              GROUP BY service_service_id) 
-                              AS nbr, hsr.service_service_id 
-                              FROM host_service_relation hsr, host 
-                              WHERE hsr.host_host_id = '" . (int)$key . "' 
-                              AND host.host_id = hsr.host_host_id 
+        $rq = "SELECT @nbr := (SELECT COUNT( * )
+                              FROM host_service_relation
+                              WHERE service_service_id = hsr.service_service_id
+                              GROUP BY service_service_id)
+                              AS nbr, hsr.service_service_id
+                              FROM host_service_relation hsr, host
+                              WHERE hsr.host_host_id = '" . (int)$key . "'
+                              AND host.host_id = hsr.host_host_id
                               AND host.host_register = '1'";
         $dbResult = $pearDB->query($rq);
 
@@ -355,12 +355,12 @@ function deleteHostInDB($hosts = array())
 
         while ($row = $dbResult->fetch()) {
             if ($row["nbr"] == 1) {
-                $dbResult4 = $pearDB->query("SELECT service_description 
+                $dbResult4 = $pearDB->query("SELECT service_description
                                             FROM `service`
                                             WHERE `service_id` = '" . $row["service_service_id"] . "' LIMIT 1");
                 $svcname = $dbResult4->fetch();
 
-                $dbResult2 = $pearDB->query("DELETE FROM service 
+                $dbResult2 = $pearDB->query("DELETE FROM service
                                               WHERE service_id = '" . $row["service_service_id"] . "'");
                 $centreon->CentreonLogAction->insertLog(
                     "service",
@@ -414,23 +414,23 @@ function multipleHostInDB($hosts = array(), $nbrDup = array())
                 if (isset($maxId["MAX(host_id)"])) {
                     $hostAcl[$maxId['MAX(host_id)']] = $key;
 
-                    $dbResult = $pearDB->query("SELECT DISTINCT host_parent_hp_id 
+                    $dbResult = $pearDB->query("SELECT DISTINCT host_parent_hp_id
                                                 FROM host_hostparent_relation
                                                 WHERE host_host_id = '" . (int)$key . "'");
                     $fields["host_parents"] = "";
                     while ($host = $dbResult->fetch()) {
-                        $dbResult1 = $pearDB->query("INSERT INTO host_hostparent_relation 
+                        $dbResult1 = $pearDB->query("INSERT INTO host_hostparent_relation
                               VALUES ('" . $host["host_parent_hp_id"] . "', '" . $maxId["MAX(host_id)"] . "')");
                         $fields["host_parents"] .= $host["host_parent_hp_id"] . ",";
                     }
                     $fields["host_parents"] = trim($fields["host_parents"], ",");
 
-                    $res = $pearDB->query("SELECT DISTINCT host_host_id 
-                                          FROM host_hostparent_relation 
+                    $res = $pearDB->query("SELECT DISTINCT host_host_id
+                                          FROM host_hostparent_relation
                                           WHERE host_parent_hp_id = '" . (int)$key . "'");
                     $fields["host_childs"] = "";
                     while ($host = $res->fetch()) {
-                        $res1 = $pearDB->query("INSERT INTO host_hostparent_relation (host_parent_hp_id, host_host_id) 
+                        $res1 = $pearDB->query("INSERT INTO host_hostparent_relation (host_parent_hp_id, host_host_id)
                                         VALUES ('" . $maxId["MAX(host_id)"] . "', '" . $host['host_host_id'] . "')");
                         $fields["host_childs"] .= $host['host_host_id'] . ",";
                     }
@@ -447,18 +447,18 @@ function multipleHostInDB($hosts = array(), $nbrDup = array())
                     $serviceArr = array();
                     $serviceNbr = array();
                     // Get all Services link to the Host
-                    $dbResult = $pearDB->query("SELECT DISTINCT service_service_id 
-                                              FROM host_service_relation 
+                    $dbResult = $pearDB->query("SELECT DISTINCT service_service_id
+                                              FROM host_service_relation
                                               WHERE host_host_id = '" . (int)$key . "'");
                     while ($service = $dbResult->fetch()) {
                         // If the Service is link with several Host, we keep this property and don't duplicate it,
                         // just create a new relation with the new Host
-                        $dbResult2 = $pearDB->query("SELECT COUNT(*) 
-                                                FROM host_service_relation 
+                        $dbResult2 = $pearDB->query("SELECT COUNT(*)
+                                                FROM host_service_relation
                                                 WHERE service_service_id = '" . $service["service_service_id"] . "'");
-                        $mulHostSv = $dbResult2->fetchrow();
+                        $mulHostSv = $dbResult2->fetch();
                         if ($mulHostSv["COUNT(*)"] > 1) {
-                            $dbResult3 = $pearDB->query("INSERT INTO host_service_relation 
+                            $dbResult3 = $pearDB->query("INSERT INTO host_service_relation
                 VALUES (NULL, NULL, '" . $maxId["MAX(host_id)"] . "', NULL, '" . $service["service_service_id"] . "')");
                         } else {
                             $serviceArr[$service["service_service_id"]] = $service["service_service_id"];
@@ -470,11 +470,11 @@ function multipleHostInDB($hosts = array(), $nbrDup = array())
                         multipleServiceInDB($serviceArr, $serviceNbr, $hostInf, 0);
                     } else {
                         // Host Template -> Link to the existing Service Template List
-                        $dbResult = $pearDB->query("SELECT DISTINCT service_service_id 
+                        $dbResult = $pearDB->query("SELECT DISTINCT service_service_id
                                                     FROM host_service_relation
                                                     WHERE host_host_id = '" . (int)$key . "'");
                         while ($svs = $dbResult->fetch()) {
-                            $dbResult1 = $pearDB->query("INSERT INTO host_service_relation 
+                            $dbResult1 = $pearDB->query("INSERT INTO host_service_relation
                     VALUES (NULL, NULL, '" . $maxId["MAX(host_id)"] . "', NULL, '" . $svs["service_service_id"] . "')");
                         }
                     }
@@ -482,12 +482,12 @@ function multipleHostInDB($hosts = array(), $nbrDup = array())
                     /*
                      * ContactGroup duplication
                      */
-                    $dbResult = $pearDB->query("SELECT DISTINCT contactgroup_cg_id 
-                                                FROM contactgroup_host_relation 
+                    $dbResult = $pearDB->query("SELECT DISTINCT contactgroup_cg_id
+                                                FROM contactgroup_host_relation
                                                 WHERE host_host_id = '" . (int)$key . "'");
                     $fields["host_cgs"] = "";
                     while ($Cg = $dbResult->fetch()) {
-                        $dbResult1 = $pearDB->query("INSERT INTO contactgroup_host_relation 
+                        $dbResult1 = $pearDB->query("INSERT INTO contactgroup_host_relation
                                 VALUES ('" . $maxId["MAX(host_id)"] . "', '" . $Cg["contactgroup_cg_id"] . "')");
                         $fields["host_cgs"] .= $Cg["contactgroup_cg_id"] . ",";
                     }
@@ -496,12 +496,12 @@ function multipleHostInDB($hosts = array(), $nbrDup = array())
                     /*
                      * Contact duplication
                      */
-                    $dbResult = $pearDB->query("SELECT DISTINCT contact_id 
-                                                FROM contact_host_relation 
+                    $dbResult = $pearDB->query("SELECT DISTINCT contact_id
+                                                FROM contact_host_relation
                                                 WHERE host_host_id = '" . (int)$key . "'");
                     $fields["host_cs"] = "";
                     while ($C = $dbResult->fetch()) {
-                        $dbResult1 = $pearDB->query("INSERT INTO contact_host_relation 
+                        $dbResult1 = $pearDB->query("INSERT INTO contact_host_relation
                                         VALUES ('" . $maxId["MAX(host_id)"] . "', '" . $C["contact_id"] . "')");
                         $fields["host_cs"] .= $C["contact_id"] . ",";
                     }
@@ -510,19 +510,19 @@ function multipleHostInDB($hosts = array(), $nbrDup = array())
                     /*
                      * Hostgroup duplication
                      */
-                    $dbResult = $pearDB->query("SELECT DISTINCT hostgroup_hg_id 
-                                                FROM hostgroup_relation 
+                    $dbResult = $pearDB->query("SELECT DISTINCT hostgroup_hg_id
+                                                FROM hostgroup_relation
                                                 WHERE host_host_id = '" . (int)$key . "'");
                     while ($Hg = $dbResult->fetch()) {
-                        $dbResult1 = $pearDB->query("INSERT INTO hostgroup_relation 
+                        $dbResult1 = $pearDB->query("INSERT INTO hostgroup_relation
                                     VALUES (NULL, '" . $Hg["hostgroup_hg_id"] . "', '" . $maxId["MAX(host_id)"] . "')");
                     }
 
                     /*
                      * Host Extended Informations
                      */
-                    $dbResult = $pearDB->query("SELECT * 
-                                                FROM extended_host_information 
+                    $dbResult = $pearDB->query("SELECT *
+                                                FROM extended_host_information
                                                 WHERE host_host_id = '" . (int)$key . "'");
                     while ($ehi = $dbResult->fetch()) {
                         $val = null;
@@ -545,12 +545,12 @@ function multipleHostInDB($hosts = array(), $nbrDup = array())
                     /*
                      * Poller link ducplication
                      */
-                    $dbResult = $pearDB->query("SELECT DISTINCT nagios_server_id 
-                                                FROM ns_host_relation 
+                    $dbResult = $pearDB->query("SELECT DISTINCT nagios_server_id
+                                                FROM ns_host_relation
                                                 WHERE host_host_id = '" . (int)$key . "'");
                     $fields["nagios_server_id"] = "";
                     while ($Hg = $dbResult->fetch()) {
-                        $dbResult1 = $pearDB->query("INSERT INTO ns_host_relation 
+                        $dbResult1 = $pearDB->query("INSERT INTO ns_host_relation
                                       VALUES ('" . $Hg["nagios_server_id"] . "', '" . $maxId["MAX(host_id)"] . "')");
                         $fields["nagios_server_id"] .= $Hg["nagios_server_id"] . ",";
                     }
@@ -559,15 +559,15 @@ function multipleHostInDB($hosts = array(), $nbrDup = array())
                     /*
                      *  multiple templates & on demand macros
                      */
-                    $mTpRq1 = "SELECT * 
-                              FROM `host_template_relation` 
-                              WHERE `host_host_id` ='" . (int)$key . "' 
+                    $mTpRq1 = "SELECT *
+                              FROM `host_template_relation`
+                              WHERE `host_host_id` ='" . (int)$key . "'
                               ORDER BY `order`";
                     $dbResult3 = $pearDB->query($mTpRq1);
                     $multiTP_logStr = "";
                     while ($hst = $dbResult3->fetch()) {
                         if ($hst['host_tpl_id'] != $maxId["MAX(host_id)"]) {
-                            $mTpRq2 = "INSERT INTO `host_template_relation` (`host_host_id`, `host_tpl_id`, `order`) 
+                            $mTpRq2 = "INSERT INTO `host_template_relation` (`host_host_id`, `host_tpl_id`, `order`)
                                        VALUES ('" . $maxId["MAX(host_id)"] . "', '"
                                 . $pearDB->escape($hst['host_tpl_id']) . "', '" . $pearDB->escape($hst['order']) . "')";
                             $dbResult4 = $pearDB->query($mTpRq2);
@@ -701,10 +701,10 @@ function updateHostInDB($host_id = null, $from_MC = false, $cfg = null)
         updateHostNotifs($host_id);
     }
 
-# Function for updating notification interval options
-# 1 - MC with deletion of existing options (Replacement)
-# 2 - MC with addition of new options (incremental)
-# 3 - Normal update
+    # Function for updating notification interval options
+    # 1 - MC with deletion of existing options (Replacement)
+    # 2 - MC with addition of new options (incremental)
+    # 3 - Normal update
     if (
         isset($ret["mc_mod_notifopt_notification_interval"]["mc_mod_notifopt_notification_interval"])
         && $ret["mc_mod_notifopt_notification_interval"]["mc_mod_notifopt_notification_interval"]
@@ -719,10 +719,10 @@ function updateHostInDB($host_id = null, $from_MC = false, $cfg = null)
         updateHostNotifOptionInterval($host_id);
     }
 
-# Function for updating first notification delay options
-# 1 - MC with deletion of existing options (Replacement)
-# 2 - MC with addition of new options (incremental)
-# 3 - Normal update, default behavior
+    # Function for updating first notification delay options
+    # 1 - MC with deletion of existing options (Replacement)
+    # 2 - MC with addition of new options (incremental)
+    # 3 - Normal update, default behavior
     if (
         isset($ret["mc_mod_notifopt_first_notification_delay"]["mc_mod_notifopt_first_notification_delay"])
         && $ret["mc_mod_notifopt_first_notification_delay"]["mc_mod_notifopt_first_notification_delay"]
@@ -738,15 +738,15 @@ function updateHostInDB($host_id = null, $from_MC = false, $cfg = null)
     }
 
 
-# Function for updating first notification delay options
+    # Function for updating first notification delay options
     updateHostNotifOptionRecoveryNotificationDelay($host_id);
 
 
 
-# Function for updating notification timeperiod options
-# 1 - MC with deletion of existing options (Replacement)
-# 2 - MC with addition of new options (incremental)
-# 3 - Normal update
+    # Function for updating notification timeperiod options
+    # 1 - MC with deletion of existing options (Replacement)
+    # 2 - MC with addition of new options (incremental)
+    # 3 - Normal update
     if (
         isset($ret["mc_mod_notifopt_timeperiod"]["mc_mod_notifopt_timeperiod"])
         && $ret["mc_mod_notifopt_timeperiod"]["mc_mod_notifopt_timeperiod"]
@@ -761,10 +761,10 @@ function updateHostInDB($host_id = null, $from_MC = false, $cfg = null)
         updateHostNotifOptionTimeperiod($host_id);
     }
 
-# Function for updating host hg
-# 1 - MC with deletion of existing hg
-# 2 - MC with addition of new hg
-# 3 - Normal update
+    # Function for updating host hg
+    # 1 - MC with deletion of existing hg
+    # 2 - MC with addition of new hg
+    # 3 - Normal update
     if (isset($ret["mc_mod_hhg"]["mc_mod_hhg"]) && $ret["mc_mod_hhg"]["mc_mod_hhg"]) {
         updateHostHostGroup($host_id);
     } elseif (isset($ret["mc_mod_hhg"]["mc_mod_hhg"]) && !$ret["mc_mod_hhg"]["mc_mod_hhg"]) {
@@ -773,10 +773,10 @@ function updateHostInDB($host_id = null, $from_MC = false, $cfg = null)
         updateHostHostGroup($host_id);
     }
 
-# Function for updating host hc
-# 1 - MC with deletion of existing hc
-# 2 - MC with addition of new hc
-# 3 - Normal update
+    # Function for updating host hc
+    # 1 - MC with deletion of existing hc
+    # 2 - MC with addition of new hc
+    # 3 - Normal update
     if (isset($ret["mc_mod_hhc"]["mc_mod_hhc"]) && $ret["mc_mod_hhc"]["mc_mod_hhc"]) {
         updateHostHostCategory($host_id);
     } elseif (isset($ret["mc_mod_hhc"]["mc_mod_hhc"]) && !$ret["mc_mod_hhc"]["mc_mod_hhc"]) {
@@ -785,10 +785,10 @@ function updateHostInDB($host_id = null, $from_MC = false, $cfg = null)
         updateHostHostCategory($host_id, $ret);
     }
 
-# Function for updating host template
-# 1 - MC with deletion of existing template
-# 2 - MC with addition of new template
-# 3 - Normal update
+    # Function for updating host template
+    # 1 - MC with deletion of existing template
+    # 2 - MC with addition of new template
+    # 3 - Normal update
     if (isset($ret["mc_mod_htpl"]["mc_mod_htpl"]) && $ret["mc_mod_htpl"]["mc_mod_htpl"]) {
         updateHostTemplateService($host_id);
     } elseif (isset($ret["mc_mod_htpl"]["mc_mod_htpl"]) && !$ret["mc_mod_htpl"]["mc_mod_htpl"]) {
@@ -893,150 +893,22 @@ function insertHost($ret, $macro_on_demand = null, $server_id = null)
 
     $ret["host_name"] = $host->checkIllegalChar($ret["host_name"], $server_id);
 
-    $rq = "INSERT INTO host " .
-        "(host_template_model_htm_id, command_command_id, command_command_id_arg1, timeperiod_tp_id,"
-        . " timeperiod_tp_id2, command_command_id2, command_command_id_arg2, host_name, host_alias,"
-        . " host_address, host_max_check_attempts, host_check_interval, host_retry_check_interval,"
-        . " host_active_checks_enabled, host_passive_checks_enabled, host_checks_enabled, host_obsess_over_host,"
-        . " host_check_freshness, host_freshness_threshold, host_event_handler_enabled, host_low_flap_threshold,"
-        . " host_high_flap_threshold, host_flap_detection_enabled, host_retain_status_information,"
-        . " host_retain_nonstatus_information, host_notification_interval, host_first_notification_delay,"
-        . " host_recovery_notification_delay, host_notification_options, host_notifications_enabled,"
-        . " contact_additive_inheritance, cg_additive_inheritance, host_stalking_options, host_snmp_community,"
-        . " host_snmp_version, host_location, host_comment, geo_coords, host_register, host_activate,"
-        . " host_acknowledgement_timeout) "
-        . "VALUES ( ";
-    isset($ret["host_template_model_htm_id"]) && $ret["host_template_model_htm_id"] != null ?
-        $rq .= "'" . $ret["host_template_model_htm_id"] . "', "
-        : $rq .= "NULL, ";
-    isset($ret["command_command_id"]) && $ret["command_command_id"] != null
-        ? $rq .= "'" . $ret["command_command_id"] . "', "
-        : $rq .= "NULL, ";
-    isset($ret["command_command_id_arg1"]) && $ret["command_command_id_arg1"] != null
-        ? $rq .= "'" . $ret["command_command_id_arg1"] . "', "
-        : $rq .= "NULL, ";
-    isset($ret["timeperiod_tp_id"]) && $ret["timeperiod_tp_id"] != null
-        ? $rq .= "'" . $ret["timeperiod_tp_id"] . "', "
-        : $rq .= "NULL, ";
-    isset($ret["timeperiod_tp_id2"]) && $ret["timeperiod_tp_id2"] != null
-        ? $rq .= "'" . $ret["timeperiod_tp_id2"] . "', "
-        : $rq .= "NULL, ";
-    isset($ret["command_command_id2"]) && $ret["command_command_id2"] != null
-        ? $rq .= "'" . $ret["command_command_id2"] . "', "
-        : $rq .= "NULL, ";
-    isset($ret["command_command_id_arg2"]) && $ret["command_command_id_arg2"] != null
-        ? $rq .= "'" . $ret["command_command_id_arg2"] . "', "
-        : $rq .= "NULL, ";
-    isset($ret["host_name"]) && $ret["host_name"] != null
-        ? $rq .= "'" . CentreonDB::escape($ret["host_name"]) . "', "
-        : $rq .= "NULL, ";
-    isset($ret["host_alias"]) && $ret["host_alias"] != null
-        ? $rq .= "'" . CentreonDB::escape($ret["host_alias"]) . "', "
-        : $rq .= "NULL, ";
-    isset($ret["host_address"]) && $ret["host_address"] != null
-        ? $rq .= "'" . CentreonDB::escape($ret["host_address"]) . "', "
-        : $rq .= "NULL, ";
-    isset($ret["host_max_check_attempts"]) && $ret["host_max_check_attempts"] != null
-        ? $rq .= "'" . $ret["host_max_check_attempts"] . "', "
-        : $rq .= "NULL, ";
-    isset($ret["host_check_interval"]) && $ret["host_check_interval"] != null
-        ? $rq .= "'" . $ret["host_check_interval"] . "', "
-        : $rq .= "NULL, ";
-    isset($ret["host_retry_check_interval"]) && $ret["host_retry_check_interval"] != null
-        ? $rq .= "'" . $ret["host_retry_check_interval"] . "', "
-        : $rq .= "NULL, ";
-    isset($ret["host_active_checks_enabled"]["host_active_checks_enabled"])
-    && $ret["host_active_checks_enabled"]["host_active_checks_enabled"] != 2
-        ? $rq .= "'" . $ret["host_active_checks_enabled"]["host_active_checks_enabled"] . "', "
-        : $rq .= "'2', ";
-    isset($ret["host_passive_checks_enabled"]["host_passive_checks_enabled"])
-    && $ret["host_passive_checks_enabled"]["host_passive_checks_enabled"] != 2
-        ? $rq .= "'" . $ret["host_passive_checks_enabled"]["host_passive_checks_enabled"] . "', "
-        : $rq .= "'2', ";
-    isset($ret["host_checks_enabled"]["host_checks_enabled"])
-    && $ret["host_checks_enabled"]["host_checks_enabled"] != 2
-        ? $rq .= "'" . $ret["host_checks_enabled"]["host_checks_enabled"] . "', "
-        : $rq .= "'2', ";
-    isset($ret["host_obsess_over_host"]["host_obsess_over_host"])
-    && $ret["host_obsess_over_host"]["host_obsess_over_host"] != 2
-        ? $rq .= "'" . $ret["host_obsess_over_host"]["host_obsess_over_host"] . "', "
-        : $rq .= "'2', ";
-    isset($ret["host_check_freshness"]["host_check_freshness"])
-    && $ret["host_check_freshness"]["host_check_freshness"] != 2
-        ? $rq .= "'" . $ret["host_check_freshness"]["host_check_freshness"] . "', "
-        : $rq .= "'2', ";
-    isset($ret["host_freshness_threshold"]) && $ret["host_freshness_threshold"] != null
-        ? $rq .= "'" . $ret["host_freshness_threshold"] . "', "
-        : $rq .= "NULL, ";
-    isset($ret["host_event_handler_enabled"]["host_event_handler_enabled"])
-    && $ret["host_event_handler_enabled"]["host_event_handler_enabled"] != 2
-        ? $rq .= "'" . $ret["host_event_handler_enabled"]["host_event_handler_enabled"] . "', "
-        : $rq .= "'2', ";
-    isset($ret["host_low_flap_threshold"]) && $ret["host_low_flap_threshold"] != null
-        ? $rq .= "'" . $ret["host_low_flap_threshold"] . "', "
-        : $rq .= "NULL, ";
-    isset($ret["host_high_flap_threshold"]) && $ret["host_high_flap_threshold"] != null
-        ? $rq .= "'" . $ret["host_high_flap_threshold"] . "', "
-        : $rq .= "NULL, ";
-    isset($ret["host_flap_detection_enabled"]["host_flap_detection_enabled"])
-    && $ret["host_flap_detection_enabled"]["host_flap_detection_enabled"] != 2
-        ? $rq .= "'" . $ret["host_flap_detection_enabled"]["host_flap_detection_enabled"] . "', "
-        : $rq .= "'2', ";
-    isset($ret["host_retain_status_information"]["host_retain_status_information"])
-    && $ret["host_retain_status_information"]["host_retain_status_information"] != 2
-        ? $rq .= "'" . $ret["host_retain_status_information"]["host_retain_status_information"] . "', "
-        : $rq .= "'2', ";
-    isset($ret["host_retain_nonstatus_information"]["host_retain_nonstatus_information"])
-    && $ret["host_retain_nonstatus_information"]["host_retain_nonstatus_information"] != 2
-        ? $rq .= "'" . $ret["host_retain_nonstatus_information"]["host_retain_nonstatus_information"] . "', "
-        : $rq .= "'2', ";
-    isset($ret["host_notification_interval"]) && $ret["host_notification_interval"] != null
-        ? $rq .= "'" . $ret["host_notification_interval"] . "', "
-        : $rq .= "NULL, ";
-    isset($ret["host_first_notification_delay"]) && $ret["host_first_notification_delay"] != null
-        ? $rq .= "'" . $ret["host_first_notification_delay"] . "', "
-        : $rq .= "NULL, ";
-    isset($ret["host_recovery_notification_delay"]) && $ret["host_recovery_notification_delay"] != null
-        ? $rq .= "'" . $ret["host_recovery_notification_delay"] . "', "
-        : $rq .= "NULL, ";
-    isset($ret["host_notifOpts"]) && $ret["host_notifOpts"] != null
-        ? $rq .= "'" . implode(",", array_keys($ret["host_notifOpts"])) . "', "
-        : $rq .= "NULL, ";
-    isset($ret["host_notifications_enabled"]["host_notifications_enabled"])
-    && $ret["host_notifications_enabled"]["host_notifications_enabled"] != 2
-        ? $rq .= "'" . $ret["host_notifications_enabled"]["host_notifications_enabled"] . "', "
-        : $rq .= "'2', ";
-    $rq .= (isset($ret["contact_additive_inheritance"]) ? 1 : 0) . ', ';
-    $rq .= (isset($ret["cg_additive_inheritance"]) ? 1 : 0) . ', ';
-    isset($ret["host_stalOpts"]) && $ret["host_stalOpts"] != null
-        ? $rq .= "'" . implode(",", array_keys($ret["host_stalOpts"])) . "', "
-        : $rq .= "NULL, ";
-    isset($ret["host_snmp_community"]) && $ret["host_snmp_community"] != null
-        ? $rq .= "'" . CentreonDB::escape($ret["host_snmp_community"]) . "', "
-        : $rq .= "NULL, ";
-    isset($ret["host_snmp_version"]) && $ret["host_snmp_version"] != null
-        ? $rq .= "'" . CentreonDB::escape($ret["host_snmp_version"]) . "', "
-        : $rq .= "NULL, ";
-    isset($ret["host_location"]) && $ret["host_location"] != null
-        ? $rq .= "'" . CentreonDB::escape($ret["host_location"]) . "', "
-        : $rq .= "NULL, ";
-    isset($ret["host_comment"]) && $ret["host_comment"] != null
-        ? $rq .= "'" . CentreonDB::escape($ret["host_comment"]) . "', "
-        : $rq .= "NULL, ";
-    isset($ret["geo_coords"]) && $ret["geo_coords"] != null
-        ? $rq .= "'" . CentreonDB::escape($ret["geo_coords"]) . "', "
-        : $rq .= "NULL, ";
-    isset($ret["host_register"]) && $ret["host_register"] != null
-        ? $rq .= "'" . $ret["host_register"] . "', "
-        : $rq .= "NULL, ";
-    isset($ret["host_activate"]["host_activate"]) && $ret["host_activate"]["host_activate"] != null
-        ? $rq .= "'" . $ret["host_activate"]["host_activate"] . "',"
-        : $rq .= "NULL,";
-    isset($ret["host_acknowledgement_timeout"]) && $ret["host_acknowledgement_timeout"] != null
-        ? $rq .= "'" . $ret["host_acknowledgement_timeout"] . "'"
-        : $rq .= "NULL";
-    $rq .= ")";
-    $dbResult = $pearDB->query($rq);
+    $bindParams = sanitizeFormHostParameters($ret);
+    $params = [];
+    foreach (array_keys($bindParams) as $token) {
+        $params[] = ltrim($token, ':');
+    }
+
+    $rq = "INSERT INTO `host` ( " . implode(', ', $params) . ")
+           VALUES (" . implode(", ", array_keys($bindParams)) . " )";
+    $stmt = $pearDB->prepare($rq);
+    foreach ($bindParams as $token => $bindValues) {
+        foreach ($bindValues as $paramType => $value) {
+            $stmt->bindValue($token, $value, $paramType);
+        }
+    }
+
+    $stmt->execute();
     $dbResult = $pearDB->query("SELECT MAX(host_id) FROM host");
     $host_id = $dbResult->fetch();
 
@@ -1054,7 +926,7 @@ function insertHost($ret, $macro_on_demand = null, $server_id = null)
                 !isset($already_stored[$tplId])
                 && $tplId && hasNoInfiniteLoop($host_id['MAX(host_id)'], $tplId) === true
             ) {
-                $rq = "INSERT INTO host_template_relation (`host_host_id`, `host_tpl_id`, `order`) 
+                $rq = "INSERT INTO host_template_relation (`host_host_id`, `host_tpl_id`, `order`)
                         VALUES (" . $host_id['MAX(host_id)'] . ", " . $tplId . ", " . $j . ")";
                 $dbResult = $pearDB->query($rq);
                 $multiTP_logStr .= $tplId . ",";
@@ -1087,7 +959,7 @@ function insertHost($ret, $macro_on_demand = null, $server_id = null)
                     $macName = $my_tab[$macInput];
                     $macVal = $my_tab[$macValue];
                     $rq = "INSERT INTO on_demand_macro_host (`host_macro_name`, `host_macro_value`,
-                           `description`, `host_host_id`, `macro_order`) 
+                           `description`, `host_host_id`, `macro_order`)
                            VALUES ('\$_HOST" . strtoupper($macName) . "\$', '" . CentreonDB::escape($macVal) . "', "
                         . $host_id['MAX(host_id)'] . ", " . $i . ")";
                     $dbResult = $pearDB->query($rq);
@@ -1112,7 +984,7 @@ function insertHost($ret, $macro_on_demand = null, $server_id = null)
             $host_id['MAX(host_id)'],
             $_REQUEST['macroInput'],
             $_REQUEST['macroValue'],
-            $_REQUEST['macroPassword'],
+            $_REQUEST['macroPassword'] ?? [],
             $macroDescription,
             false,
             $ret["command_command_id"]
@@ -1374,170 +1246,22 @@ function updateHost($host_id = null, $from_MC = false, $cfg = null)
         $ret["command_command_id_arg2"] = str_replace("\t", "#T#", $ret["command_command_id_arg2"]);
         $ret["command_command_id_arg2"] = str_replace("\r", "#R#", $ret["command_command_id_arg2"]);
     }
-
-    $rq = "UPDATE host SET host_template_model_htm_id = ";
-    isset($ret["host_template_model_htm_id"]) && $ret["host_template_model_htm_id"] != null
-        ? $rq .= "'" . $ret["host_template_model_htm_id"] . "', "
-        : $rq .= "NULL, ";
-    $rq .= "command_command_id = ";
-    isset($ret["command_command_id"]) && $ret["command_command_id"] != null
-        ? $rq .= "'" . $ret["command_command_id"] . "', "
-        : $rq .= "NULL, ";
-    $rq .= "command_command_id_arg1 = ";
-    isset($ret["command_command_id_arg1"]) && $ret["command_command_id_arg1"] != null
-        ? $rq .= "'" . $ret["command_command_id_arg1"] . "', "
-        : $rq .= "NULL, ";
-    $rq .= "timeperiod_tp_id = ";
-    isset($ret["timeperiod_tp_id"]) && $ret["timeperiod_tp_id"] != null
-        ? $rq .= "'" . $ret["timeperiod_tp_id"] . "', "
-        : $rq .= "NULL, ";
-    /* $rq .= "timeperiod_tp_id2 = ";
-      isset($ret["timeperiod_tp_id2"]) && $ret["timeperiod_tp_id2"] != NULL
-    ? $rq .= "'".$ret["timeperiod_tp_id2"]."', ": $rq .= "NULL, "; */
-    $rq .= "command_command_id2 = ";
-    isset($ret["command_command_id2"]) && $ret["command_command_id2"] != null
-        ? $rq .= "'" . $ret["command_command_id2"] . "', "
-        : $rq .= "NULL, ";
-    $rq .= "command_command_id_arg2 = ";
-    isset($ret["command_command_id_arg2"]) && $ret["command_command_id_arg2"] != null
-        ? $rq .= "'" . $ret["command_command_id_arg2"] . "', "
-        : $rq .= "NULL, ";
-    // If we are doing a MC, we don't have to set name and alias field
-    if (!$from_MC) {
-        $rq .= "host_name = ";
-        $ret["host_name"] = $host->checkIllegalChar($ret["host_name"], $server_id);
-        isset($ret["host_name"]) && $ret["host_name"] != null
-            ? $rq .= "'" . CentreonDB::escape($ret["host_name"]) . "', "
-            : $rq .= "NULL, ";
-        $rq .= "host_alias = ";
-        isset($ret["host_alias"]) && $ret["host_alias"] != null
-            ? $rq .= "'" . CentreonDB::escape($ret["host_alias"]) . "', "
-            : $rq .= "NULL, ";
+    $ret["host_name"] = $host->checkIllegalChar($ret["host_name"], $server_id);
+    $bindParams = sanitizeFormHostParameters($ret);
+    $rq = "UPDATE host SET ";
+    foreach (array_keys($bindParams) as $token) {
+        $rq .= ltrim($token, ':') . " = " . $token . ", ";
     }
-    $rq .= "host_address = ";
-    isset($ret["host_address"]) && $ret["host_address"] != null
-        ? $rq .= "'" . CentreonDB::escape($ret["host_address"]) . "', "
-        : $rq .= "NULL, ";
-    $rq .= "host_max_check_attempts = ";
-    isset($ret["host_max_check_attempts"]) && $ret["host_max_check_attempts"] != null
-        ? $rq .= "'" . $ret["host_max_check_attempts"] . "', "
-        : $rq .= "NULL, ";
-    $rq .= "host_check_interval = ";
-    isset($ret["host_check_interval"]) && $ret["host_check_interval"] != null
-        ? $rq .= "'" . $ret["host_check_interval"] . "', "
-        : $rq .= "NULL, ";
-    $rq .= "host_acknowledgement_timeout = ";
-    isset($ret["host_acknowledgement_timeout"]) && $ret["host_acknowledgement_timeout"] != null
-        ? $rq .= "'" . $ret["host_acknowledgement_timeout"] . "', "
-        : $rq .= "NULL, ";
-    $rq .= "host_retry_check_interval = ";
-    isset($ret["host_retry_check_interval"]) && $ret["host_retry_check_interval"] != null
-        ? $rq .= "'" . $ret["host_retry_check_interval"] . "', "
-        : $rq .= "NULL, ";
-    $rq .= "host_active_checks_enabled = ";
-    isset($ret["host_active_checks_enabled"]["host_active_checks_enabled"])
-    && $ret["host_active_checks_enabled"]["host_active_checks_enabled"] != 2
-        ? $rq .= "'" . $ret["host_active_checks_enabled"]["host_active_checks_enabled"] . "', "
-        : $rq .= "'2', ";
-    $rq .= "host_passive_checks_enabled = ";
-    isset($ret["host_passive_checks_enabled"]["host_passive_checks_enabled"])
-    && $ret["host_passive_checks_enabled"]["host_passive_checks_enabled"] != 2
-        ? $rq .= "'" . $ret["host_passive_checks_enabled"]["host_passive_checks_enabled"] . "', "
-        : $rq .= "'2', ";
-    $rq .= "host_checks_enabled = ";
-    isset($ret["host_checks_enabled"]["host_checks_enabled"])
-    && $ret["host_checks_enabled"]["host_checks_enabled"] != 2
-        ? $rq .= "'" . $ret["host_checks_enabled"]["host_checks_enabled"] . "', "
-        : $rq .= "'2', ";
-    $rq .= "host_obsess_over_host = ";
-    isset($ret["host_obsess_over_host"]["host_obsess_over_host"])
-    && $ret["host_obsess_over_host"]["host_obsess_over_host"] != 2
-        ? $rq .= "'" . $ret["host_obsess_over_host"]["host_obsess_over_host"] . "', "
-        : $rq .= "'2', ";
-    $rq .= "host_check_freshness = ";
-    isset($ret["host_check_freshness"]["host_check_freshness"])
-    && $ret["host_check_freshness"]["host_check_freshness"] != 2
-        ? $rq .= "'" . $ret["host_check_freshness"]["host_check_freshness"] . "', "
-        : $rq .= "'2', ";
-    $rq .= "host_freshness_threshold = ";
-    isset($ret["host_freshness_threshold"]) && $ret["host_freshness_threshold"] != null
-        ? $rq .= "'" . $ret["host_freshness_threshold"] . "', "
-        : $rq .= "NULL, ";
-    $rq .= "host_event_handler_enabled = ";
-    isset($ret["host_event_handler_enabled"]["host_event_handler_enabled"])
-    && $ret["host_event_handler_enabled"]["host_event_handler_enabled"] != 2
-        ? $rq .= "'" . $ret["host_event_handler_enabled"]["host_event_handler_enabled"] . "', "
-        : $rq .= "'2', ";
-    $rq .= "host_low_flap_threshold = ";
-    isset($ret["host_low_flap_threshold"]) && $ret["host_low_flap_threshold"] != null
-        ? $rq .= "'" . $ret["host_low_flap_threshold"] . "', "
-        : $rq .= "NULL, ";
-    $rq .= "host_high_flap_threshold = ";
-    isset($ret["host_high_flap_threshold"]) && $ret["host_high_flap_threshold"] != null
-        ? $rq .= "'" . $ret["host_high_flap_threshold"] . "', "
-        : $rq .= "NULL, ";
-    $rq .= "host_flap_detection_enabled = ";
-    isset($ret["host_flap_detection_enabled"]["host_flap_detection_enabled"])
-    && $ret["host_flap_detection_enabled"]["host_flap_detection_enabled"] != 2
-        ? $rq .= "'" . $ret["host_flap_detection_enabled"]["host_flap_detection_enabled"] . "', "
-        : $rq .= "'2', ";
-    $rq .= "host_retain_status_information = ";
-    isset($ret["host_retain_status_information"]["host_retain_status_information"])
-    && $ret["host_retain_status_information"]["host_retain_status_information"] != 2
-        ? $rq .= "'" . $ret["host_retain_status_information"]["host_retain_status_information"] . "', "
-        : $rq .= "'2', ";
-    $rq .= "host_retain_nonstatus_information = ";
-    isset($ret["host_retain_nonstatus_information"]["host_retain_nonstatus_information"])
-    && $ret["host_retain_nonstatus_information"]["host_retain_nonstatus_information"] != 2
-        ? $rq .= "'" . $ret["host_retain_nonstatus_information"]["host_retain_nonstatus_information"] . "', "
-        : $rq .= "'2', ";
-    $rq .= "host_notifications_enabled = ";
-    isset($ret["host_notifications_enabled"]["host_notifications_enabled"])
-    && $ret["host_notifications_enabled"]["host_notifications_enabled"] != 2
-        ? $rq .= "'" . $ret["host_notifications_enabled"]["host_notifications_enabled"] . "', "
-        : $rq .= "'2', ";
-    $rq .= "host_recovery_notification_delay = ";
-    isset($ret['host_recovery_notification_delay']) && $ret['host_recovery_notification_delay'] != null
-        ? $rq .= $ret['host_recovery_notification_delay'] . ', '
-        : $rq .= 'NULL, ';
-    $rq .= "contact_additive_inheritance = ";
-    $rq .= (isset($ret['contact_additive_inheritance']) ? 1 : 0) . ', ';
-    $rq .= "cg_additive_inheritance = ";
-    $rq .= (isset($ret['cg_additive_inheritance']) ? 1 : 0) . ', ';
-    $rq .= "host_stalking_options = ";
-    isset($ret["host_stalOpts"]) && $ret["host_stalOpts"] != null
-        ? $rq .= "'" . implode(",", array_keys($ret["host_stalOpts"])) . "', "
-        : $rq .= "NULL, ";
-    $rq .= "host_snmp_community = ";
-    isset($ret["host_snmp_community"]) && $ret["host_snmp_community"] != null
-        ? $rq .= "'" . CentreonDB::escape($ret["host_snmp_community"]) . "', "
-        : $rq .= "NULL, ";
-    $rq .= "host_snmp_version = ";
-    isset($ret["host_snmp_version"]) && $ret["host_snmp_version"] != null
-        ? $rq .= "'" . CentreonDB::escape($ret["host_snmp_version"]) . "', "
-        : $rq .= "NULL, ";
-    $rq .= "host_location = ";
-    isset($ret["host_location"]) && $ret["host_location"] != null
-        ? $rq .= "'" . CentreonDB::escape($ret["host_location"]) . "', "
-        : $rq .= "NULL, ";
-    $rq .= "host_comment = ";
-    isset($ret["host_comment"]) && $ret["host_comment"] != null
-        ? $rq .= "'" . CentreonDB::escape($ret["host_comment"]) . "', "
-        : $rq .= "NULL, ";
-    $rq .= "geo_coords = ";
-    isset($ret["geo_coords"]) && $ret["geo_coords"] != null
-        ? $rq .= "'" . CentreonDB::escape($ret["geo_coords"]) . "', "
-        : $rq .= "NULL, ";
-    $rq .= "host_register = ";
-    isset($ret["host_register"]) && $ret["host_register"] != null
-        ? $rq .= "'" . $ret["host_register"] . "', "
-        : $rq .= "NULL, ";
-    $rq .= "host_activate = ";
-    isset($ret["host_activate"]["host_activate"]) && $ret["host_activate"]["host_activate"] != null
-        ? $rq .= "'" . $ret["host_activate"]["host_activate"] . "' "
-        : $rq .= "NULL ";
-    $rq .= "WHERE host_id = '" . $host_id . "'";
-    $dbResult = $pearDB->query($rq);
+    $rq = rtrim($rq, ', ');
+    $rq .= " WHERE host_id = :hostId";
+    $stmt = $pearDB->prepare($rq);
+    foreach ($bindParams as $token => $bindValues) {
+        foreach ($bindValues as $paramType => $value) {
+            $stmt->bindValue($token, $value, $paramType);
+        }
+    }
+    $stmt->bindValue(':hostId', $host_id, \PDO::PARAM_INT);
+    $stmt->execute();
 
     /*
      *  Update multiple templates
@@ -1549,7 +1273,7 @@ function updateHost($host_id = null, $from_MC = false, $cfg = null)
             $newTp[$tmpl] = $tmpl;
         }
 
-        $dbResult = $pearDB->query("SELECT `host_tpl_id` 
+        $dbResult = $pearDB->query("SELECT `host_tpl_id`
                                     FROM `host_template_relation`
                                     WHERE `host_host_id` = '" . $host_id . "'");
         while ($hst = $dbResult->fetch()) {
@@ -1568,7 +1292,7 @@ function updateHost($host_id = null, $from_MC = false, $cfg = null)
         foreach ($tplTab as $val) {
             $tplId = getMyHostID($val);
             if (!isset($already_stored[$tplId]) && $tplId) {
-                $rq = "INSERT INTO host_template_relation (`host_host_id`, `host_tpl_id`, `order`) 
+                $rq = "INSERT INTO host_template_relation (`host_host_id`, `host_tpl_id`, `order`)
                         VALUES (" . $host_id . ", " . $tplId . ", " . $j . ")";
                 $dbResult = $pearDB->query($rq);
                 $j++;
@@ -1579,8 +1303,8 @@ function updateHost($host_id = null, $from_MC = false, $cfg = null)
         /* Cleanup host service link to host template to be removed */
         $newTp = array();
 
-        $dbResult = $pearDB->query("SELECT `host_tpl_id` 
-                                    FROM `host_template_relation` 
+        $dbResult = $pearDB->query("SELECT `host_tpl_id`
+                                    FROM `host_template_relation`
                                     WHERE `host_host_id` = '" . $host_id . "'");
         while ($hst = $dbResult->fetch()) {
             if (!isset($newTp[$hst['host_tpl_id']])) {
@@ -1611,7 +1335,7 @@ function updateHost($host_id = null, $from_MC = false, $cfg = null)
             $host_id,
             $_REQUEST['macroInput'],
             $_REQUEST['macroValue'],
-            $_REQUEST['macroPassword'],
+            $_REQUEST['macroPassword'] ?? [],
             $macroDescription,
             false,
             $ret["command_command_id"]
@@ -1663,139 +1387,28 @@ function updateHost_MC($host_id = null)
         $ret["host_template_model_htm_id"] = $result["host_id"];
         $dbResult->closeCursor();
     }
+    // Remove all parameters that have an empty value in order to keep the host properties that have not been modified
+    foreach ($ret as $name => $value) {
+        if (is_string($value) && empty($value)) {
+            unset($ret[$name]);
+        }
+    }
 
+    $bindParams = sanitizeFormHostParameters($ret);
     $rq = "UPDATE host SET ";
-    if (isset($ret["host_template_model_htm_id"]) && $ret["host_template_model_htm_id"] != null) {
-        $rq .= "host_template_model_htm_id = '" . $ret["host_template_model_htm_id"] . "', ";
+    foreach (array_keys($bindParams) as $token) {
+        $rq .= ltrim($token, ':') . " = " . $token . ", ";
     }
-    if (isset($ret["command_command_id"]) && $ret["command_command_id"] != null) {
-        $rq .= "command_command_id = '" . $ret["command_command_id"] . "', ";
+    $rq = rtrim($rq, ', ');
+    $rq .= " WHERE host_id = :hostId";
+    $stmt = $pearDB->prepare($rq);
+    foreach ($bindParams as $token => $bindValues) {
+        foreach ($bindValues as $paramType => $value) {
+            $stmt->bindValue($token, $value, $paramType);
+        }
     }
-    if (isset($ret["command_command_id_arg1"]) && $ret["command_command_id_arg1"] != null) {
-        $rq .= "command_command_id_arg1 = '" . $ret["command_command_id_arg1"] . "', ";
-    }
-    if (isset($ret["timeperiod_tp_id"]) && $ret["timeperiod_tp_id"] != null) {
-        $rq .= "timeperiod_tp_id = '" . $ret["timeperiod_tp_id"] . "', ";
-    }
-    if (isset($ret["command_command_id2"]) && $ret["command_command_id2"] != null) {
-        $rq .= "command_command_id2 = '" . $ret["command_command_id2"] . "', ";
-    }
-    if (isset($ret["command_command_id_arg2"]) && $ret["command_command_id_arg2"] != null) {
-        $rq .= "command_command_id_arg2 = '" . $ret["command_command_id_arg2"] . "', ";
-    }
-    if (isset($ret["host_address"]) && $ret["host_address"] != null) {
-        $rq .= "host_address = '" . CentreonDB::escape($ret["host_address"]) . "', ";
-    }
-    if (isset($ret["host_max_check_attempts"]) && $ret["host_max_check_attempts"] != null) {
-        $rq .= "host_max_check_attempts = '" . $ret["host_max_check_attempts"] . "', ";
-    }
-    if (isset($ret["host_acknowledgement_timeout"]) && $ret["host_acknowledgement_timeout"] != null) {
-        $rq .= "host_acknowledgement_timeout = '" . $ret["host_acknowledgement_timeout"] . "', ";
-    }
-    if (isset($ret["host_check_interval"]) && $ret["host_check_interval"] != null) {
-        $rq .= "host_check_interval = '" . $ret["host_check_interval"] . "', ";
-    }
-    if (isset($ret["host_retry_check_interval"]) && $ret["host_retry_check_interval"] != null) {
-        $rq .= "host_retry_check_interval = '" . $ret["host_retry_check_interval"] . "', ";
-    }
-    if (isset($ret["host_active_checks_enabled"]["host_active_checks_enabled"])) {
-        $rq .= "host_active_checks_enabled = '"
-            . $ret["host_active_checks_enabled"]["host_active_checks_enabled"] . "', ";
-    }
-    if (isset($ret["host_passive_checks_enabled"]["host_passive_checks_enabled"])) {
-        $rq .= "host_passive_checks_enabled = '"
-            . $ret["host_passive_checks_enabled"]["host_passive_checks_enabled"] . "', ";
-    }
-    if (isset($ret["host_checks_enabled"]["host_checks_enabled"])) {
-        $rq .= "host_checks_enabled = '" . $ret["host_checks_enabled"]["host_checks_enabled"] . "', ";
-    }
-    if (isset($ret["host_obsess_over_host"]["host_obsess_over_host"])) {
-        $rq .= "host_obsess_over_host = '" . $ret["host_obsess_over_host"]["host_obsess_over_host"] . "', ";
-    }
-    if (isset($ret["host_check_freshness"]["host_check_freshness"])) {
-        $rq .= "host_check_freshness = '" . $ret["host_check_freshness"]["host_check_freshness"] . "', ";
-    }
-    if (isset($ret["host_freshness_threshold"]) && $ret["host_freshness_threshold"] != null) {
-        $rq .= "host_freshness_threshold = '" . $ret["host_freshness_threshold"] . "', ";
-    }
-    if (isset($ret["host_event_handler_enabled"]["host_event_handler_enabled"])) {
-        $rq .= "host_event_handler_enabled = '"
-            . $ret["host_event_handler_enabled"]["host_event_handler_enabled"] . "', ";
-    }
-    if (isset($ret["host_low_flap_threshold"]) && $ret["host_low_flap_threshold"] != null) {
-        $rq .= "host_low_flap_threshold = '" . $ret["host_low_flap_threshold"] . "', ";
-    }
-    if (isset($ret["host_high_flap_threshold"]) && $ret["host_high_flap_threshold"] != null) {
-        $rq .= "host_high_flap_threshold = '" . $ret["host_high_flap_threshold"] . "', ";
-    }
-    if (isset($ret["host_flap_detection_enabled"]["host_flap_detection_enabled"])) {
-        $rq .= "host_flap_detection_enabled = '"
-            . $ret["host_flap_detection_enabled"]["host_flap_detection_enabled"] . "', ";
-    }
-    if (isset($ret["host_retain_status_information"]["host_retain_status_information"])) {
-        $rq .= "host_retain_status_information = '"
-            . $ret["host_retain_status_information"]["host_retain_status_information"] . "', ";
-    }
-    if (isset($ret["host_retain_nonstatus_information"]["host_retain_nonstatus_information"])) {
-        $rq .= "host_retain_nonstatus_information = '"
-            . $ret["host_retain_nonstatus_information"]["host_retain_nonstatus_information"] . "', ";
-    }
-    if (isset($ret["host_notifications_enabled"]["host_notifications_enabled"])) {
-        $rq .= "host_notifications_enabled = '"
-            . $ret["host_notifications_enabled"]["host_notifications_enabled"] . "', ";
-    }
-    if (isset($ret["host_recovery_notification_delay "]) && $ret["host_recovery_notification_delay "] != null) {
-        $rq .= "host_recovery_notification_delay  = " . $ret["host_recovery_notification_delay "] . ", ";
-    }
-    if (
-        isset($ret["mc_contact_additive_inheritance"]["mc_contact_additive_inheritance"])
-        && in_array(
-            $ret["mc_contact_additive_inheritance"]["mc_contact_additive_inheritance"],
-            array('0', '1')
-        )
-    ) {
-        $rq .= "contact_additive_inheritance = '"
-            . $ret["mc_contact_additive_inheritance"]["mc_contact_additive_inheritance"] . "', ";
-    }
-    if (
-        isset($ret["mc_cg_additive_inheritance"]["mc_cg_additive_inheritance"])
-        && in_array(
-            $ret["mc_cg_additive_inheritance"]["mc_cg_additive_inheritance"],
-            array('0', '1')
-        )
-    ) {
-        $rq .= "cg_additive_inheritance = '" . $ret["mc_cg_additive_inheritance"]["mc_cg_additive_inheritance"] . "', ";
-    }
-    if (isset($ret["host_stalOpts"]) && $ret["host_stalOpts"] != null) {
-        $rq .= "host_stalking_options = '" . implode(",", array_keys($ret["host_stalOpts"])) . "', ";
-    }
-    if (isset($ret["host_snmp_community"]) && $ret["host_snmp_community"] != null) {
-        $rq .= "host_snmp_community = '" . CentreonDB::escape($ret["host_snmp_community"]) . "', ";
-    }
-    if (isset($ret["host_snmp_version"]) && $ret["host_snmp_version"] != null) {
-        $rq .= "host_snmp_version = '" . CentreonDB::escape($ret["host_snmp_version"]) . "', ";
-    }
-    if (isset($ret["host_location"]) && $ret["host_location"] != null) {
-        $rq .= "host_location = '" . CentreonDB::escape($ret["host_location"]) . "', ";
-    }
-    if (isset($ret["host_comment"]) && $ret["host_comment"] != null) {
-        $rq .= "host_comment = '" . CentreonDB::escape($ret["host_comment"]) . "', ";
-    }
-    if (isset($ret["geo_coords"]) && $ret["geo_coords"] != null) {
-        $rq .= "geo_coords = '" . CentreonDB::escape($ret["geo_coords"]) . "', ";
-    }
-    if (isset($ret["host_register"]) && $ret["host_register"] != null) {
-        $rq .= "host_register = '" . $ret["host_register"] . "', ";
-    }
-    if (isset($ret["host_activate"]["host_activate"]) && $ret["host_activate"]["host_activate"] != null) {
-        $rq .= "host_activate = '" . $ret["host_activate"]["host_activate"] . "', ";
-    }
-    if (strcmp("UPDATE host SET ", $rq)) {
-        # Delete last ',' in request
-        $rq[strlen($rq) - 2] = " ";
-        $rq .= "WHERE host_id = '" . $host_id . "'";
-        $dbResult = $pearDB->query($rq);
-    }
+    $stmt->bindValue(':hostId', $host_id, \PDO::PARAM_INT);
+    $stmt->execute();
 
     /*
      *  update multiple templates
@@ -1803,8 +1416,8 @@ function updateHost_MC($host_id = null)
     if (isset($_REQUEST['tpSelect'])) {
         $oldTp = array();
         if (isset($_POST['mc_mod_tplp']['mc_mod_tplp']) && $_POST['mc_mod_tplp']['mc_mod_tplp'] == 0) {
-            $dbResult = $pearDB->query("SELECT `host_tpl_id` 
-                                        FROM `host_template_relation` 
+            $dbResult = $pearDB->query("SELECT `host_tpl_id`
+                                        FROM `host_template_relation`
                                         WHERE `host_host_id`='" . $host_id . "'");
             while ($hst = $dbResult->fetch()) {
                 $oldTp[$hst["host_tpl_id"]] = $hst["host_tpl_id"];
@@ -1830,7 +1443,7 @@ function updateHost_MC($host_id = null)
             $host_id,
             $_REQUEST['macroInput'],
             $_REQUEST['macroValue'],
-            $_REQUEST['macroPassword'],
+            $_REQUEST['macroPassword'] ?? [],
             $macroDescription,
             true
         );
@@ -2546,8 +2159,8 @@ function updateHostHostCategory($host_id, $ret = array())
     $rq = "DELETE FROM hostcategories_relation ";
     $rq .= "WHERE host_host_id = '" . $host_id . "' ";
     $rq .= "AND NOT EXISTS(
-                            SELECT hc_id 
-                            FROM hostcategories hc 
+                            SELECT hc_id
+                            FROM hostcategories hc
                             WHERE hc.hc_id = hostcategories_relation.hostcategories_hc_id
                             AND hc.level IS NOT NULL) ";
     $dbResult = $pearDB->query($rq);
@@ -2611,22 +2224,22 @@ function generateHostServiceMultiTemplate($hID, $hID2 = null, $antiLoop = null)
 
     require_once $path . "../service/DB-Func.php";
 
-    $dbResult = $pearDB->query("SELECT host_tpl_id 
-                                FROM `host_template_relation` 
-                                WHERE host_host_id = " . $hID2 . " 
+    $dbResult = $pearDB->query("SELECT host_tpl_id
+                                FROM `host_template_relation`
+                                WHERE host_host_id = " . $hID2 . "
                                 ORDER BY `order`");
     while ($hTpl = $dbResult->fetch()) {
-        $rq2 = "SELECT service_service_id, service_register 
-                FROM `host_service_relation`, service 
-                WHERE service_service_id = service_id 
+        $rq2 = "SELECT service_service_id, service_register
+                FROM `host_service_relation`, service
+                WHERE service_service_id = service_id
                 AND host_host_id = '" . $hTpl['host_tpl_id'] . "'";
         $dbResult2 = $pearDB->query($rq2);
         while ($hTpl2 = $dbResult2->fetch()) {
             $alias = getMyServiceAlias($hTpl2["service_service_id"]);
 
             $service_sgs = array();
-            $dbResult3 = $pearDB->query("SELECT DISTINCT servicegroup_sg_id 
-                                        FROM servicegroup_relation 
+            $dbResult3 = $pearDB->query("SELECT DISTINCT servicegroup_sg_id
+                                        FROM servicegroup_relation
                                         WHERE service_service_id = '" . $hTpl2["service_service_id"] . "'");
             for ($i = 0; $sg = $dbResult3->fetch(); $i++) {
                 $service_sgs[$i] = $sg["servicegroup_sg_id"];
@@ -2709,12 +2322,11 @@ function updateHostTemplateService_MC($host_id = null)
     if (!$host_id) {
         return;
     }
-
     $dbResult = $pearDB->query("SELECT host_register FROM host WHERE host_id = '" . (int)$host_id . "'");
     $row = $dbResult->fetch();
     if ($row["host_register"] == 0) {
-        $dbResult2 = $pearDB->query("SELECT * 
-                                      FROM host_service_relation 
+        $dbResult2 = $pearDB->query("SELECT *
+                                      FROM host_service_relation
                                       WHERE host_host_id = '" . (int)$host_id . "'");
         $svtpls = array();
         while ($arr = $dbResult2->fetch()) {
@@ -2722,13 +2334,15 @@ function updateHostTemplateService_MC($host_id = null)
         }
 
         $ret = $form->getSubmitValue("host_svTpls");
-        for ($i = 0; $i < count($ret); $i++) {
-            if (!isset($svtpls[$ret[$i]])) {
-                $rq = "INSERT INTO host_service_relation ";
-                $rq .= "(hostgroup_hg_id, host_host_id, servicegroup_sg_id, service_service_id) ";
-                $rq .= "VALUES ";
-                $rq .= "(NULL, '" . (int)$host_id . "', NULL, '" . $ret[$i] . "')";
-                $dbResult2 = $pearDB->query($rq);
+        if (!empty($ret)) {
+            for ($i = 0; $i < count($ret); $i++) {
+                if (!isset($svtpls[$ret[$i]])) {
+                    $rq = "INSERT INTO host_service_relation ";
+                    $rq .= "(hostgroup_hg_id, host_host_id, servicegroup_sg_id, service_service_id) ";
+                    $rq .= "VALUES ";
+                    $rq .= "(NULL, '" . (int)$host_id . "', NULL, '" . $ret[$i] . "')";
+                    $dbResult2 = $pearDB->query($rq);
+                }
             }
         }
     } elseif ($centreon->user->get_version() >= 3) {
@@ -2749,8 +2363,8 @@ function updateHostTemplateUsed($useTpls = array())
     require_once "./include/common/common-Func.php";
 
     foreach ($useTpls as $key => $value) {
-        $dbResult = $pearDB->query("UPDATE host 
-                                    SET host_template_model_htm_id = '" . getMyHostID($value) . "' 
+        $dbResult = $pearDB->query("UPDATE host
+                                    SET host_template_model_htm_id = '" . getMyHostID($value) . "'
                                     WHERE host_id = '" . $key . "'");
     }
 }
@@ -2783,30 +2397,6 @@ function updateNagiosServerRelation($host_id, $ret = array())
 }
 
 /**
- * For massive change. We just add the new list if the elem doesn't exist yet
- */
-function updateNagiosServerRelation_MC($host_id, $ret = array())
-{
-    global $form, $pearDB;
-
-    if (!$host_id) {
-        return;
-    }
-
-    $cgs = array();
-    while ($arr = $dbResult->fetch()) {
-        $cgs[$arr["nagios_server_id"]] = $arr["nagios_server_id"];
-    }
-
-    $ret = $form->getSubmitValue("nagios_server_id");
-    if (isset($ret) && $ret != "" && $ret != 0) {
-        $dbResult = $pearDB->query("SELECT * FROM ns_host_relation WHERE host_host_id = '" . (int)$host_id . "'");
-        $dbResult = $pearDB->query("INSERT INTO `ns_host_relation` (`host_host_id`, `nagios_server_id`) 
-                                    VALUES ('" . (int)$host_id . "', '" . $ret . "')");
-    }
-}
-
-/**
  * Inserts criticality relations
  *
  * @param int $hostId
@@ -2817,11 +2407,11 @@ function setHostCriticality($hostId, $criticalityId)
 {
     global $pearDB;
 
-    $pearDB->query("DELETE FROM hostcategories_relation  
+    $pearDB->query("DELETE FROM hostcategories_relation
                 WHERE host_host_id = " . $pearDB->escape($hostId) . "
                 AND NOT EXISTS(
-                    SELECT hc_id 
-                    FROM hostcategories hc 
+                    SELECT hc_id
+                    FROM hostcategories hc
                     WHERE hc.hc_id = hostcategories_relation.hostcategories_hc_id
                     AND hc.level IS NULL)");
     if ($criticalityId) {
@@ -2857,4 +2447,129 @@ function applytpl($hosts)
     foreach ($hosts as $key => $value) {
         $hostObj->deployServices($key);
     }
+}
+
+/**
+ * Sanitize all the host parameters from the host form and return a ready to bind array.
+ *
+ * @param array $ret
+ * @return array
+ */
+function sanitizeFormHostParameters(array $ret): array
+{
+    $bindParams = [];
+    foreach ($ret as $inputName => $inputValue) {
+        switch ($inputName) {
+            case 'host_template_model_htm_id':
+            case 'command_command_id':
+            case 'timeperiod_tp_id':
+            case 'timeperiod_tp_id2':
+            case 'command_command_id2':
+            case 'host_max_check_attempts':
+            case 'host_check_interval':
+            case 'host_retry_check_interval':
+            case 'host_freshness_threshold':
+            case 'host_low_flap_threshold':
+            case 'host_high_flap_threshold':
+            case 'host_notification_interval':
+            case 'host_first_notification_delay':
+            case 'host_recovery_notification_delay':
+            case 'host_location':
+            case 'host_acknowledgement_timeout':
+                $bindParams[':' . $inputName] = [
+                    \PDO::PARAM_INT => (filter_var($inputValue, FILTER_VALIDATE_INT) === false)
+                        ? null
+                        : (int) $inputValue
+                ];
+                break;
+            case 'host_name':
+                if (!empty($inputValue)) {
+                    $inputValue = filter_var($inputValue, FILTER_SANITIZE_STRING);
+                    $bindParams[':' . $inputName] = [
+                        \PDO::PARAM_STR => ($inputValue === '' || $inputValue === false)
+                        ? null
+                        : $inputValue
+                    ];
+                }
+                break;
+            case 'host_address':
+            case 'command_command_id_arg1':
+            case 'command_command_id_arg2':
+            case 'host_alias':
+            case 'host_snmp_community':
+            case 'host_snmp_version':
+            case 'host_comment':
+            case 'geo_coords':
+                $inputValue = filter_var($inputValue, FILTER_SANITIZE_STRING);
+                $bindParams[':' . $inputName] = [
+                    \PDO::PARAM_STR => ($inputValue === '' || $inputValue === false)
+                        ? null
+                        : $inputValue
+                ];
+                break;
+            case 'host_active_checks_enabled':
+            case 'host_passive_checks_enabled':
+            case 'host_checks_enabled':
+            case 'host_obsess_over_host':
+            case 'host_check_freshness':
+            case 'host_event_handler_enabled':
+            case 'host_flap_detection_enabled':
+            case 'host_retain_status_information':
+            case 'host_retain_nonstatus_information':
+            case 'host_notifications_enabled':
+                $bindParams[':' . $inputName] = [
+                    \PDO::PARAM_STR => in_array($inputValue[$inputName], ['0', '1', '2'])
+                        ? $inputValue[$inputName]
+                        : '2'
+                ];
+                break;
+            case 'host_notifOpts':
+                if (!empty($inputValue)) {
+                    $inputValue = filter_var(implode(",", array_keys($inputValue)), FILTER_SANITIZE_STRING);
+                    $bindParams[':host_notification_options'] = [
+                        \PDO::PARAM_STR => ($inputValue === '' || $inputValue === false)
+                        ? null
+                        : $inputValue
+                    ];
+                }
+                break;
+            case 'contact_additive_inheritance':
+            case 'cg_additive_inheritance':
+                $bindParams[':' . $inputName] = [
+                    \PDO::PARAM_INT => (isset($ret[$inputName]) ? 1 : 0)
+                ];
+                break;
+            case 'mc_contact_additive_inheritance':
+            case 'mc_cg_additive_inheritance':
+                $bindParams[':' . ltrim($inputName, 'mc_')] = [
+                    \PDO::PARAM_INT => (isset($ret[$inputName]) ? 1 : 0)
+                ];
+                break;
+            case 'host_stalOpts':
+                if (!empty($inputValue)) {
+                    $inputValue = filter_var(implode(",", array_keys($inputValue)), FILTER_SANITIZE_STRING);
+                    $bindParams[':host_stalking_options'] = [
+                        \PDO::PARAM_STR => ($inputValue === '' || $inputValue === false)
+                        ? null
+                        : $inputValue
+                    ];
+                }
+                break;
+            case 'host_register':
+                $bindParams[':' . $inputName] = [
+                    \PDO::PARAM_STR => in_array($inputValue, ['0', '1', '2', '3'])
+                        ? $inputValue
+                        : null
+                ];
+                break;
+            case 'host_activate':
+                $bindParams[':' . $inputName] = [
+                    \PDO::PARAM_STR => in_array($inputValue[$inputName], ['0', '1', '2'])
+                        ? $inputValue[$inputName]
+                        : null
+                ];
+                break;
+        }
+    }
+    return $bindParams;
 }

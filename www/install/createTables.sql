@@ -409,12 +409,41 @@ CREATE TABLE `cb_type_field_relation` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `cb_log` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `cb_log_level` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `cfg_centreonbroker_log` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id_centreonbroker` int(11) NOT NULL,
+  `id_log` int(11) NOT NULL,
+  `id_level` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `cfg_centreonbroker` (
   `config_id` int(11) NOT NULL AUTO_INCREMENT,
   `config_name` varchar(100) NOT NULL,
   `config_filename` varchar(255) NOT NULL,
   `config_write_timestamp` enum('0','1') DEFAULT '1',
   `config_write_thread_id` enum('0','1') DEFAULT '1',
+  `log_directory` varchar(255),
+  `log_filename` varchar(255),
+  `log_max_size` int(11) NOT NULL DEFAULT 0,
   `config_activate` enum('0','1') DEFAULT '0',
   `ns_nagios_server` int(11) NOT NULL,
   `event_queue_max_size` int(11) DEFAULT '100000',
@@ -456,7 +485,6 @@ CREATE TABLE `cfg_nagios` (
   `status_update_interval` int(11) DEFAULT NULL,
   `nagios_user` varchar(255) DEFAULT NULL,
   `nagios_group` varchar(255) DEFAULT NULL,
-  `postpone_notification_to_timeperiod` boolean DEFAULT false,
   `enable_notifications` enum('0','1','2') DEFAULT NULL,
   `execute_service_checks` enum('0','1','2') DEFAULT NULL,
   `accept_passive_service_checks` enum('0','1','2') DEFAULT NULL,
@@ -506,7 +534,6 @@ CREATE TABLE `cfg_nagios` (
   `auto_reschedule_checks` enum('0','1','2') DEFAULT NULL,
   `auto_rescheduling_interval` int(11) DEFAULT NULL,
   `auto_rescheduling_window` int(11) DEFAULT NULL,
-  `use_aggressive_host_checking` enum('0','1','2') DEFAULT NULL,
   `enable_flap_detection` enum('0','1','2') DEFAULT NULL,
   `low_service_flap_threshold` varchar(255) DEFAULT NULL,
   `high_service_flap_threshold` varchar(255) DEFAULT NULL,
@@ -736,6 +763,7 @@ CREATE TABLE `contact` (
   `contact_register` tinyint(6) NOT NULL DEFAULT '1',
   `contact_ldap_last_sync` int(11) NOT NULL DEFAULT 0,
   `contact_ldap_required_sync` enum('0','1') NOT NULL DEFAULT '0',
+  `enable_one_click_export` enum('0','1') DEFAULT '0',
   PRIMARY KEY (`contact_id`),
   KEY `name_index` (`contact_name`),
   KEY `alias_index` (`contact_alias`),
@@ -1668,7 +1696,7 @@ CREATE TABLE `ns_host_relation` (
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `ods_view_details` (
   `dv_id` int(11) NOT NULL AUTO_INCREMENT,
-  `index_id` int(11) DEFAULT NULL,
+  `index_id` BIGINT UNSIGNED DEFAULT NULL,
   `metric_id` int(11) DEFAULT NULL,
   `rnd_color` varchar(7) DEFAULT NULL,
   `contact_id` int(11) DEFAULT NULL,
@@ -1853,7 +1881,7 @@ CREATE TABLE `session` (
   `session_id` varchar(256) DEFAULT NULL,
   `user_id` int(11) DEFAULT NULL,
   `current_page` int(11) DEFAULT NULL,
-  `last_reload` int(11) DEFAULT NULL,
+  `last_reload` bigint UNSIGNED DEFAULT NULL,
   `ip_address` varchar(45) DEFAULT NULL,
   `s_nbHostsUp` int(11) DEFAULT NULL,
   `s_nbHostsDown` int(11) DEFAULT NULL,
@@ -1867,7 +1895,8 @@ CREATE TABLE `session` (
   `update_acl` enum('0','1') DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `session_id` (`session_id`(255)),
-  KEY `user_id` (`user_id`)
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `session_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `contact` (`contact_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -2099,7 +2128,7 @@ CREATE TABLE `view_img_dir_relation` (
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `virtual_metrics` (
   `vmetric_id` int(11) NOT NULL AUTO_INCREMENT,
-  `index_id` int(11) DEFAULT NULL,
+  `index_id` BIGINT UNSIGNED DEFAULT NULL,
   `vmetric_name` varchar(255) DEFAULT NULL,
   `def_type` enum('0','1') DEFAULT '0',
   `rpn_function` varchar(255) DEFAULT NULL,
@@ -2217,15 +2246,6 @@ CREATE TABLE `widgets` (
   PRIMARY KEY (`widget_id`),
   KEY `fk_wdg_model_id` (`widget_model_id`),
   CONSTRAINT `fk_wdg_model_id` FOREIGN KEY (`widget_model_id`) REFERENCES `widget_models` (`widget_model_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE ws_token (
-  contact_id INT NOT NULL,
-  token VARCHAR(100) NOT NULL,
-  generate_date DATETIME NOT NULL,
-  UNIQUE (token),
-  KEY `index1` (`generate_date`),
-  FOREIGN KEY (contact_id) REFERENCES contact (contact_id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -2349,12 +2369,58 @@ CREATE TABLE `platform_topology` (
     `name` varchar(255) NOT NULL,
     `type` varchar(255) NOT NULL,
     `parent_id` int(11),
+    `pending` enum('0', '1') DEFAULT '1',
     `server_id` int(11),
     PRIMARY KEY (`id`),
     CONSTRAINT `platform_topology_ibfk_1` FOREIGN KEY (`server_id`) REFERENCES `nagios_server` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT `platform_topology_ibfk_2` FOREIGN KEY (`parent_id`) REFERENCES `platform_topology` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8
 COMMENT='Registration and parent relation Table used to set the platform topology';
+
+-- Create authentication tables
+
+CREATE TABLE `provider_configuration` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `type` varchar(255) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `is_active` BOOLEAN NOT NULL DEFAULT 1,
+  `is_forced` BOOLEAN NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_name` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `security_token` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `token` varchar(255) NOT NULL,
+  `creation_date` bigint UNSIGNED NOT NULL,
+  `expiration_date` bigint UNSIGNED DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `token_index` (`token`),
+  INDEX `expiration_index` (`expiration_date`),
+  UNIQUE KEY `unique_token` (`token`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `security_authentication_tokens` (
+  `token` varchar(255) NOT NULL,
+  `provider_token_id` int(11) DEFAULT NULL,
+  `provider_token_refresh_id` int(11) DEFAULT NULL,
+  `provider_configuration_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  PRIMARY KEY (`token`),
+  KEY `security_authentication_tokens_token_fk` (`token`),
+  KEY `security_authentication_tokens_provider_token_id_fk` (`provider_token_id`),
+  KEY `security_authentication_tokens_provider_token_refresh_id_fk` (`provider_token_refresh_id`),
+  KEY `security_authentication_tokens_configuration_id_fk` (`provider_configuration_id`),
+  KEY `security_authentication_tokens_user_id_fk` (`user_id`),
+  CONSTRAINT `security_authentication_tokens_configuration_id_fk` FOREIGN KEY (`provider_configuration_id`)
+  REFERENCES `provider_configuration` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `security_authentication_tokens_provider_token_id_fk` FOREIGN KEY (`provider_token_id`)
+  REFERENCES `security_token` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `security_authentication_tokens_provider_token_refresh_id_fk` FOREIGN KEY (`provider_token_refresh_id`)
+  REFERENCES `security_token` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `security_authentication_tokens_user_id_fk` FOREIGN KEY (`user_id`)
+  REFERENCES `contact` (`contact_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

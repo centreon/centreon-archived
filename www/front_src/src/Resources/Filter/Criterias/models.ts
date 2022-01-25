@@ -20,9 +20,15 @@ import {
   labelServiceGroup,
   labelState,
   labelStatus,
+  labelMonitoringServer,
+  labelMetaService,
+  labelStatusType,
+  labelHard,
+  labelSoft,
 } from '../../translatedLabels';
 import {
   buildHostGroupsEndpoint,
+  buildMonitoringServersEndpoint,
   buildServiceGroupsEndpoint,
 } from '../api/endpoint';
 
@@ -36,19 +42,22 @@ export interface Criteria {
 }
 
 const criteriaValueNameById = {
-  acknowledged: labelAcknowledged,
-  in_downtime: labelInDowntime,
-  unhandled_problems: labelUnhandled,
-  host: labelHost,
-  service: labelService,
+  CRITICAL: labelCritical,
+  DOWN: labelDown,
   OK: labelOk,
+  PENDING: labelPending,
+  UNKNOWN: labelUnknown,
+  UNREACHABLE: labelUnreachable,
   UP: labelUp,
   WARNING: labelWarning,
-  DOWN: labelDown,
-  CRITICAL: labelCritical,
-  UNREACHABLE: labelUnreachable,
-  UNKNOWN: labelUnknown,
-  PENDING: labelPending,
+  acknowledged: labelAcknowledged,
+  hard: labelHard,
+  host: labelHost,
+  in_downtime: labelInDowntime,
+  metaservice: labelMetaService,
+  service: labelService,
+  soft: labelSoft,
+  unhandled_problems: labelUnhandled,
 };
 
 const unhandledStateId = 'unhandled_problems';
@@ -83,7 +92,17 @@ const serviceResourceType = {
   name: criteriaValueNameById[serviceResourceTypeId],
 };
 
-const selectableResourceTypes = [hostResourceType, serviceResourceType];
+const metaServiceResourceTypeId = 'metaservice';
+const metaServiceResourceType = {
+  id: metaServiceResourceTypeId,
+  name: criteriaValueNameById[metaServiceResourceTypeId],
+};
+
+const selectableResourceTypes = [
+  hostResourceType,
+  serviceResourceType,
+  metaServiceResourceType,
+];
 
 const okStatusId = 'OK';
 const okStatus = { id: okStatusId, name: criteriaValueNameById[okStatusId] };
@@ -138,36 +157,70 @@ const selectableStatuses = [
   pendingStatus,
 ];
 
+const hardStateTypeId = 'hard';
+const hardStateType = {
+  id: hardStateTypeId,
+  name: criteriaValueNameById[hardStateTypeId],
+};
+
+const softStateTypeId = 'soft';
+const softStateType = {
+  id: softStateTypeId,
+  name: criteriaValueNameById[softStateTypeId],
+};
+
+const selectableStateTypes = [hardStateType, softStateType];
+
 export interface CriteriaDisplayProps {
+  autocompleteSearch?: { conditions: Array<Record<string, unknown>> };
+  buildAutocompleteEndpoint?;
   label: string;
   options?: Array<SelectEntry>;
-  buildAutocompleteEndpoint?;
 }
 
 export interface CriteriaById {
   [criteria: string]: CriteriaDisplayProps;
 }
 
+export enum CriteriaNames {
+  hostGroups = 'host_groups',
+  monitoringServers = 'monitoring_servers',
+  resourceTypes = 'resource_types',
+  serviceGroups = 'service_groups',
+  states = 'states',
+  statusTypes = 'status_types',
+  statuses = 'statuses',
+}
+
 const selectableCriterias: CriteriaById = {
-  resource_types: {
+  [CriteriaNames.resourceTypes]: {
     label: labelResource,
     options: selectableResourceTypes,
   },
-  states: {
+  [CriteriaNames.states]: {
     label: labelState,
     options: selectableStates,
   },
-  statuses: {
+  [CriteriaNames.statuses]: {
     label: labelStatus,
     options: selectableStatuses,
   },
-  host_groups: {
-    label: labelHostGroup,
-    buildAutocompleteEndpoint: buildHostGroupsEndpoint,
+  [CriteriaNames.statusTypes]: {
+    label: labelStatusType,
+    options: selectableStateTypes,
   },
-  service_groups: {
-    label: labelServiceGroup,
+  [CriteriaNames.hostGroups]: {
+    buildAutocompleteEndpoint: buildHostGroupsEndpoint,
+    label: labelHostGroup,
+  },
+  [CriteriaNames.serviceGroups]: {
     buildAutocompleteEndpoint: buildServiceGroupsEndpoint,
+    label: labelServiceGroup,
+  },
+  [CriteriaNames.monitoringServers]: {
+    autocompleteSearch: { conditions: [{ field: 'running', value: true }] },
+    buildAutocompleteEndpoint: buildMonitoringServersEndpoint,
+    label: labelMonitoringServer,
   },
 };
 
@@ -182,4 +235,6 @@ export {
   selectableStates,
   selectableStatuses,
   selectableCriterias,
+  selectableStateTypes,
+  hardStateType,
 };

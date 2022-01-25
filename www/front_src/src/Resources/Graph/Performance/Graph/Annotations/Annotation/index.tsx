@@ -1,12 +1,15 @@
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
+import { useUpdateAtom } from 'jotai/utils';
 
-import { makeStyles, Tooltip, Paper, Typography } from '@material-ui/core';
+import { Tooltip, Paper, Typography } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 
 import truncate from '../../../../../truncate';
 import { TimelineEvent } from '../../../../../Details/tabs/Timeline/models';
 import { labelBy } from '../../../../../translatedLabels';
+import { annotationHoveredAtom } from '../../annotationsAtoms';
 
 const yMargin = -32;
 const iconSize = 20;
@@ -21,11 +24,12 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export interface Props {
-  icon: JSX.Element;
-  xIcon: number;
-  header: string;
   event: TimelineEvent;
+  header: string;
+  icon: JSX.Element;
   marker: JSX.Element;
+  resourceId: string;
+  xIcon: number;
 }
 
 const Annotation = ({
@@ -34,9 +38,12 @@ const Annotation = ({
   event,
   xIcon,
   marker,
+  resourceId,
 }: Props): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
+
+  const setAnnotationHovered = useUpdateAtom(annotationHoveredAtom);
 
   const content = `${truncate(event.content)} (${t(labelBy)} ${
     event.contact?.name
@@ -53,8 +60,17 @@ const Annotation = ({
           </Paper>
         }
       >
-        <svg y={yMargin} x={xIcon} height={iconSize} width={iconSize}>
-          <rect width={iconSize} height={iconSize} fill="transparent" />
+        <svg
+          height={iconSize}
+          width={iconSize}
+          x={xIcon}
+          y={yMargin}
+          onMouseEnter={(): void =>
+            setAnnotationHovered(() => ({ event, resourceId }))
+          }
+          onMouseLeave={(): void => setAnnotationHovered(() => undefined)}
+        >
+          <rect fill="transparent" height={iconSize} width={iconSize} />
           {icon}
         </svg>
       </Tooltip>
