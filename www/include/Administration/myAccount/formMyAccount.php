@@ -113,13 +113,13 @@ if ($cct["contact_auth_type"] != 'ldap') {
         'password',
         'contact_passwd',
         _("Password"),
-        array("size" => "30", "autocomplete" => "new-password", "id" => "passwd1", "onFocus" => "resetPwdType(this);")
+        ["size" => "30", "autocomplete" => "new-password", "id" => "passwd1", "onkeypress" => "resetPwdType(this);"]
     );
     $form->addElement(
         'password',
         'contact_passwd2',
         _("Confirm Password"),
-        array("size" => "30", "autocomplete" => "new-password", "id" => "passwd2", "onFocus" => "resetPwdType(this);")
+        ["size" => "30", "autocomplete" => "new-password", "id" => "passwd2", "onkeypress" => "resetPwdType(this);"]
     );
     $form->addElement(
         'button',
@@ -363,6 +363,7 @@ $form->addRule('contact_name', _("Name already in use"), 'exist');
 $form->registerRule('existAlias', 'callback', 'testAliasExistence');
 $form->addRule('contact_alias', _("Name already in use"), 'existAlias');
 $form->setRequiredNote("<font style='color: red;'>*</font>" . _("Required fields"));
+$form->addFormRule('checkAutologinValue');
 
 // Smarty template Init
 $tpl = new Smarty();

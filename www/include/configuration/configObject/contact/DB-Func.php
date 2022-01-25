@@ -1262,3 +1262,47 @@ function sanitizeFormContactParameters(array $ret): array
     }
     return $bindParams;
 }
+
+/**
+ * Validate autologin key is not equal to a password
+ *
+ * @param array<string,mixed> $fields
+ * @return array<string,string>|bool
+ */
+function validateAutologin(array $fields)
+{
+    global $pearDB;
+    $errors = [];
+    if (!empty($fields['contact_autologin_key'])) {
+        /**
+         * If user update his autologin key and not his password,
+         * check that the autologin key is not the same as his current password.
+         */
+        if (!empty($fields['contact_id']) && empty($fields['contact_passwd'])) {
+            $contactId = $fields['contact_id'];
+            $statement = $pearDB->prepare('SELECT `contact_passwd` FROM `contact` WHERE contact_id = :contactId ');
+            $statement->bindValue(':contactId', $contactId, \PDO::PARAM_INT);
+            $statement->execute();
+
+            if (
+                ($result = $statement->fetch(\PDO::FETCH_ASSOC))
+                && (md5($fields['contact_autologin_key']) === $result['contact_passwd']
+                    || 'md5__' . md5($fields['contact_autologin_key']) === $result['contact_passwd'])
+            ) {
+                $errors['contact_autologin_key'] = _(
+                    'Your autologin key must be different than your current password'
+                );
+            }
+        }
+        if (
+            !empty($fields['contact_passwd'])
+            && $fields['contact_passwd'] === $fields['contact_autologin_key']
+        ) {
+            $errorMessage = 'Your password and autologin key should be different';
+            $errors['contact_passwd'] = _($errorMessage);
+            $errors['contact_autologin_key'] = _($errorMessage);
+        }
+    }
+
+    return count($errors) > 0 ? $errors : true;
+}
