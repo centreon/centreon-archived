@@ -46,7 +46,7 @@ require_once './include/reporting/dashboard/initReport.php';
 /*
  *  Getting service group to report
  */
-$id = filter_var($_GET['itemElement'] ?? $_POST['itemElement'] ?? false, FILTER_VALIDATE_INT);
+$id = filter_var($_GET['item'] ?? $_POST['itemElement'] ?? false, FILTER_VALIDATE_INT);
 /*
  * FORMS
  */
@@ -93,7 +93,7 @@ $serviceGroupForm->addElement(
 );
 
 if (isset($id)) {
-    $serviceGroupForm->setDefaults(array('item' => $id));
+    $formPeriod->setDefaults(['itemElement' => $id]);
 }
 
 /*
