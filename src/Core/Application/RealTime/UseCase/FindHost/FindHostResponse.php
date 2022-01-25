@@ -190,11 +190,11 @@ class FindHostResponse
         array $downtimes,
         ?Acknowledgement $acknowledgement
     ) {
-        $this->icon = self::iconToArray($icon);
-        $this->status = self::statusToArray($status);
-        $this->hostgroups = self::hostgroupsToArray($hostgroups);
-        $this->downtimes = self::downtimesToArray($downtimes);
-        $this->acknowledgement = self::acknowledgementToArray($acknowledgement);
+        $this->icon = $this->iconToArray($icon);
+        $this->status = $this->statusToArray($status);
+        $this->hostgroups = $this->hostgroupsToArray($hostgroups);
+        $this->downtimes = $this->downtimesToArray($downtimes);
+        $this->acknowledgement = $this->acknowledgementToArray($acknowledgement);
     }
 
     /**
@@ -203,7 +203,7 @@ class FindHostResponse
      * @param Hostgroup[] $hostgroups
      * @return array<int, array<string, mixed>>
      */
-    private static function hostgroupsToArray(array $hostgroups): array
+    private function hostgroupsToArray(array $hostgroups): array
     {
         return array_map(
             fn (Hostgroup $hostgroup) => [

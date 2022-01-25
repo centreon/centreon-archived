@@ -186,12 +186,12 @@ class FindServiceResponse
         ?Acknowledgement $acknowledgement,
         Host $host
     ) {
-        $this->servicegroups = self::servicegroupsToArray($servicegroups);
-        $this->status = self::statusToArray($status);
-        $this->icon = self::iconToArray($icon);
-        $this->downtimes = self::downtimesToArray($downtimes);
-        $this->acknowledgement = self::acknowledgementToArray($acknowledgement);
-        $this->host = self::hostToArray($host);
+        $this->servicegroups = $this->servicegroupsToArray($servicegroups);
+        $this->status = $this->statusToArray($status);
+        $this->icon = $this->iconToArray($icon);
+        $this->downtimes = $this->downtimesToArray($downtimes);
+        $this->acknowledgement = $this->acknowledgementToArray($acknowledgement);
+        $this->host = $this->hostToArray($host);
     }
 
     /**
@@ -200,7 +200,7 @@ class FindServiceResponse
      * @param Servicegroup[] $servicegroups
      * @return array<int, array<string, mixed>>
      */
-    private static function servicegroupsToArray(array $servicegroups): array
+    private function servicegroupsToArray(array $servicegroups): array
     {
         return array_map(
             fn (Servicegroup $servicegroup) => [
@@ -217,13 +217,13 @@ class FindServiceResponse
      * @param Host $host
      * @return array<string, mixed>
      */
-    private static function hostToArray(Host $host): array
+    private function hostToArray(Host $host): array
     {
         return [
             'type' => 'host',
             'id' => $host->getId(),
             'name' => $host->getName(),
-            'status' => self::statusToArray($host->getStatus()),
+            'status' => $this->statusToArray($host->getStatus()),
             'monitoring_server_name' => $host->getMonitoringServerName()
         ];
     }

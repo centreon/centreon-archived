@@ -35,7 +35,7 @@ trait RealTimeResponseTrait
      * @param Icon|null $icon
      * @return array<string, string|null>
      */
-    public static function iconToArray(?Icon $icon): array
+    public function iconToArray(?Icon $icon): array
     {
         return is_null($icon)
             ? []
@@ -51,7 +51,7 @@ trait RealTimeResponseTrait
      * @param Downtime[] $downtimes
      * @return array<int, array<string, mixed>>
      */
-    public static function downtimesToArray(array $downtimes): array
+    public function downtimesToArray(array $downtimes): array
     {
         return array_map(
             fn (Downtime $downtime) => [
@@ -83,7 +83,7 @@ trait RealTimeResponseTrait
      * @param Acknowledgement|null $acknowledgement
      * @return array<string, mixed>
      */
-    public static function acknowledgementToArray(?Acknowledgement $acknowledgement): array
+    public function acknowledgementToArray(?Acknowledgement $acknowledgement): array
     {
         return is_null($acknowledgement)
             ? []
@@ -112,7 +112,7 @@ trait RealTimeResponseTrait
      * @param Status $status
      * @return array<string, mixed>
      */
-    private static function statusToArray(Status $status): array
+    private function statusToArray(Status $status): array
     {
         return [
             'name' => $status->getName(),
