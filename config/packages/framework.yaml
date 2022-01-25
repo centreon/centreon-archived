@@ -1,5 +1,6 @@
 framework:
     secret: '%env(APP_SECRET)%'
+    enabled_locales: ~
 
     php_errors:
         log: true
