@@ -199,3 +199,38 @@ function updateContact($contact_id = null)
     $centreon->user->email = $ret['contact_email'];
     $centreon->user->setToken(isset($ret['contact_autologin_key']) ? $ret['contact_autologin_key'] : "''");
 }
+
+
+/**
+ * @param array<string,mixed> $fields
+ * @return array<string,string>|bool
+ */
+function checkAutologinValue(array $fields)
+{
+    global $pearDB, $centreon;
+    $errors = [];
+
+    if (!empty($fields['contact_autologin_key'])) {
+        $contactId = $centreon->user->get_id();
+        $statement = $pearDB->prepare('SELECT `contact_passwd` FROM `contact` WHERE contact_id = :contactId');
+        $statement->bindValue(':contactId', $contactId, \PDO::PARAM_INT);
+        $statement->execute();
+
+        if (
+            ($result = $statement->fetch(\PDO::FETCH_ASSOC))
+            && (md5($fields['contact_autologin_key']) === $result['contact_passwd']
+                || 'md5__' . md5($fields['contact_autologin_key']) === $result['contact_passwd'])
+        ) {
+            $errors['contact_autologin_key'] = _('Your autologin key must be different than your current password');
+        } elseif (
+            !empty($fields['contact_passwd'])
+            && $fields['contact_passwd'] === $fields['contact_autologin_key']
+        ) {
+            $errorMessage = _('Your new password and autologin key must be different');
+            $errors['contact_passwd'] = $errorMessage;
+            $errors['contact_autologin_key'] = $errorMessage;
+        }
+    }
+
+    return count($errors) > 0 ? $errors : true;
+}
