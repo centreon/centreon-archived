@@ -1101,6 +1101,7 @@ class CentreonHost
                         && (
                             (
                                 isset($macro['macroPassword_#index#'])
+                                && isset($macroPassword[$ind])
                                 && $macroPassword[$ind] == $macro['macroPassword_#index#']
                             )
                             || (
