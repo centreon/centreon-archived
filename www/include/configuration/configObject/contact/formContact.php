@@ -713,6 +713,9 @@ if ($o != "mc") {
     }
 
     $form->addRule(array('contact_passwd', 'contact_passwd2'), _("Passwords do not match"), 'compare');
+    if ($o === ADD_CONTACT || $o === MODIFY_CONTACT) {
+        $form->addFormRule('validateAutologin');
+    }
     $form->registerRule('exist', 'callback', 'testContactExistence');
     $form->addRule('contact_name', "<font style='color: red;'>*</font>&nbsp;" . _("Contact already exists"), 'exist');
     $form->registerRule('existAlias', 'callback', 'testAliasExistence');
