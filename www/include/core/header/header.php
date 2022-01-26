@@ -77,7 +77,7 @@ $centreonSession = new CentreonSession();
 CentreonSession::start();
 
 // Check session and drop all expired sessions
-if (!CentreonSession::checkSession(session_id(), $pearDB)) {
+if ($centreonSession->updateSession($pearDB) === false) {
     CentreonSession::stop();
 }
 
@@ -201,8 +201,6 @@ $sessionStatement = $pearDB->prepare(
 $sessionStatement->bindValue(':currentPage', $page, \PDO::PARAM_INT);
 $sessionStatement->bindValue(':sessionId', session_id(), \PDO::PARAM_STR);
 $sessionStatement->execute();
-
-$centreonSession->updateSession($pearDB);
 
 //Init Language
 $centreonLang = new CentreonLang(_CENTREON_PATH_, $centreon);
