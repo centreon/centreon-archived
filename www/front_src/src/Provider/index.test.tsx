@@ -18,13 +18,14 @@ import { cancelTokenRequestParam } from '../Resources/testUtils';
 import Provider from '.';
 
 jest.mock('@centreon/ui-context', () =>
-  jest.requireActual('/centreon-frontend/packages/ui-context'),
+  jest.requireActual('centreon-frontend/packages/ui-context'),
 );
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 const retrievedUser = {
   alias: 'Admin alias',
+  default_page: null,
   is_export_button_enabled: undefined,
   locale: 'fr_FR.UTF8',
   name: 'Admin',
@@ -34,6 +35,7 @@ const retrievedUser = {
 
 const contextUser = {
   alias: 'Admin alias',
+  default_page: null,
   isExportButtonEnabled: undefined,
   locale: 'fr_FR.UTF8',
   name: 'Admin',
