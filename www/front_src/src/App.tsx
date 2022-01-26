@@ -159,13 +159,51 @@ class App extends Component<Props, State> {
     return (
       <Suspense fallback={<PageLoader />}>
         <ConnectedRouter history={history}>
-        
+          <Wrapper>
+            {!min && (
+              <React.Suspense
+                fallback={<LoadingSkeleton height="100%" width={45} />}
+              >
+                <Navigation />
+              </React.Suspense>
+            )}
+            <Content id="content">
               {!min && (
                 <React.Suspense
-                  fallback={<LoadingSkeleton height="100%"  />}
+                  fallback={<LoadingSkeleton height={56} width="100%" />}
                 >
+                  <Header />
                 </React.Suspense>
               )}
+              <FullscreenWrapper id="fullscreen-wrapper">
+                <Fullscreen
+                  enabled={this.state.isFullscreenEnabled}
+                  onChange={(isFullscreenEnabled): void => {
+                    this.setState({ isFullscreenEnabled });
+                  }}
+                  onClose={this.removeFullscreenParams}
+                >
+                  <RouterWrapper>
+                    <MainRouter />
+                  </RouterWrapper>
+                </Fullscreen>
+              </FullscreenWrapper>
+              {!min && (
+                <React.Suspense
+                  fallback={<LoadingSkeleton height={30} width="100%" />}
+                >
+                  <Footer />
+                </React.Suspense>
+              )}
+            </Content>
+            <FullscreenButton
+              color="default"
+              size="small"
+              onClick={this.goFull}
+            >
+              <FullscreenIcon />
+            </FullscreenButton>
+          </Wrapper>
         </ConnectedRouter>
       </Suspense>
     );
@@ -188,8 +226,8 @@ const CentreonApp = connect(null, mapDispatchToProps)(App);
 
 export default (): JSX.Element => (
   <Module maxSnackbars={2} seedName="centreon">
-  <Provider>
-    <CentreonApp />
-  </Provider>
+    <Provider>
+      <CentreonApp />
+    </Provider>
   </Module>
 );

@@ -41,7 +41,7 @@ import {
 } from './endpoint';
 import { DefaultParameters } from './models';
 // TODO uncomment after https://github.com/centreon/centreon/pull/10507
-// import { userDecoder } from './decoder'; 
+// import { userDecoder } from './decoder';
 
 dayjs.extend(localizedFormat);
 dayjs.extend(utcPlugin);
