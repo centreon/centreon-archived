@@ -40,7 +40,7 @@ import {
   userEndpoint,
 } from './endpoint';
 import { DefaultParameters } from './models';
-import { userDecoder } from './decoder';
+// import { userDecoder } from './decoder'; //     // TODO uncomment after https://github.com/centreon/centreon/pull/10507
 
 dayjs.extend(localizedFormat);
 dayjs.extend(utcPlugin);
@@ -61,7 +61,8 @@ const Provider = ({ children }: Props): JSX.Element => {
   const [dataLoaded, setDataLoaded] = React.useState(false);
 
   const { sendRequest: getUser } = useRequest<User>({
-    decoder: userDecoder,
+    // TODO uncomment after https://github.com/centreon/centreon/pull/10507
+    // decoder: userDecoder, //
     request: getData,
   });
   const { sendRequest: getParameters } = useRequest<DefaultParameters>({
