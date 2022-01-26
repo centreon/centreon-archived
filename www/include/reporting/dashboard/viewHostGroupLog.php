@@ -49,7 +49,9 @@ require_once './include/reporting/dashboard/initReport.php';
 /*
  *  Getting hostgroup to report
  */
-$id = filter_var($_GET['item'] ?? $_POST['item'] ?? false, FILTER_VALIDATE_INT);
+
+$id = filter_var($_GET['item'] ?? $_POST['itemElement'] ?? false, FILTER_VALIDATE_INT);
+
 /*
  * Formulary
  *
@@ -99,7 +101,7 @@ $formHostGroup->addElement(
 );
 
 if (isset($id)) {
-    $formHostGroup->setDefaults(array('item' => $id));
+    $formPeriod->setDefaults(['itemElement' => $id]);
 }
 
 /*
@@ -154,7 +156,7 @@ if ($id !== false) {
     $tpl->assign('date_end', $end_date);
     $tpl->assign('period', $period);
     $formPeriod->setDefaults(array('period' => $period));
-    $tpl->assign('id', $id);
+    $tpl->assign('hostgroup_id', $id);
     $tpl->assign('Alert', _("Alert"));
 
     /*
