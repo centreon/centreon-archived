@@ -35,7 +35,7 @@
 	<tr class='list_lvl_3'>
 		<td style='width:300px; padding:5px'>
 			<!-- chart drawing -->
-			{if $id}
+			{if isset($hostgroup_id)}
 			<div id="chart" style="text-align: center; max-height: 180px; position: relative;" ></div>
 			{/if}
 		</td>
