@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -96,6 +96,34 @@ class HypermediaService
         foreach ($this->hypermediaProviders as $hypermediaProvider) {
             if ($hypermediaProvider->isValidFor($response)) {
                 return $hypermediaProvider->createForTimelineEndpoint($response);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @param mixed $response
+     * @return string|null
+     */
+    public function createForStatusGraphEndpoint(mixed $response): ?string
+    {
+        foreach ($this->hypermediaProviders as $hypermediaProvider) {
+            if ($hypermediaProvider->isValidFor($response)) {
+                return $hypermediaProvider->createForStatusGraphEndpoint($response);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @param mixed $response
+     * @return string|null
+     */
+    public function createForPerformanceDataEndpoint(mixed $response): ?string
+    {
+        foreach ($this->hypermediaProviders as $hypermediaProvider) {
+            if ($hypermediaProvider->isValidFor($response)) {
+                return $hypermediaProvider->createForPerformanceDataEndpoint($response);
             }
         }
         return null;

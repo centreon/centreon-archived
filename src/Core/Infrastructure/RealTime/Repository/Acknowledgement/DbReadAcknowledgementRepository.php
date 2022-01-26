@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ class DbReadAcknowledgementRepository extends AbstractRepositoryDRB implements R
      */
     public function findOnGoingAcknowledgementByHostId(int $hostId): ?Acknowledgement
     {
-        return $this->findOnGoingAcknowledegementRequest($hostId, 0);
+        return $this->findOnGoingAcknowledegement($hostId, 0);
     }
 
     /**
@@ -51,7 +51,7 @@ class DbReadAcknowledgementRepository extends AbstractRepositoryDRB implements R
      */
     public function findOnGoingAcknowledgementByHostIdAndServiceId(int $hostId, int $serviceId): ?Acknowledgement
     {
-        return null;
+        return $this->findOnGoingAcknowledegement($hostId, $serviceId);
     }
 
     /**
@@ -59,7 +59,7 @@ class DbReadAcknowledgementRepository extends AbstractRepositoryDRB implements R
      * @param int $serviceId
      * @return Acknowledgement|null
      */
-    private function findOnGoingAcknowledegementRequest(int $hostId, int $serviceId): ?Acknowledgement
+    private function findOnGoingAcknowledegement(int $hostId, int $serviceId): ?Acknowledgement
     {
         $acknowledgement = null;
         $sql = "SELECT ack.*, contact.contact_id AS author_id

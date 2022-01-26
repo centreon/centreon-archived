@@ -20,28 +20,18 @@
  */
 declare(strict_types=1);
 
-namespace Core\Infrastructure\RealTime\Api\Hypermedia;
+namespace Core\Infrastructure\RealTime\Repository\Servicegroup;
 
-trait HypermediaProviderTrait
+use Core\Domain\RealTime\Model\Servicegroup;
+
+class DbServicegroupFactory
 {
     /**
-     * Get base URI
-     *
-     * @return string
+     * @param array<string, mixed> $data
+     * @return Servicegroup
      */
-    protected function getBaseUri(): string
+    public static function createFromRecord(array $data): Servicegroup
     {
-        $baseUri = '';
-        if (
-            isset($_SERVER['REQUEST_URI'])
-            && preg_match(
-                '/^(.+)\/((api|widgets|modules|include)\/|main(\.get)?\.php).+/',
-                $_SERVER['REQUEST_URI'],
-                $matches
-            )
-        ) {
-            $baseUri = $matches[1];
-        }
-        return $baseUri;
+        return new Servicegroup((int) $data['servicegroup_id'], $data['servicegroup_name']);
     }
 }

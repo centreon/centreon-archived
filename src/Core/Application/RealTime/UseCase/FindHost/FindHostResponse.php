@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,14 +22,17 @@ declare(strict_types=1);
 
 namespace Core\Application\RealTime\UseCase\FindHost;
 
+use Core\Application\RealTime\Common\RealTimeResponseTrait;
 use Core\Domain\RealTime\Model\Acknowledgement;
 use Core\Domain\RealTime\Model\Icon;
-use Core\Domain\RealTime\Model\Status;
+use Core\Domain\RealTime\Model\HostStatus;
 use Core\Domain\RealTime\Model\Downtime;
 use Core\Domain\RealTime\Model\Hostgroup;
 
 class FindHostResponse
 {
+    use RealTimeResponseTrait;
+
     /**
      * @var string|null
      */
@@ -170,7 +173,7 @@ class FindHostResponse
      * @param string $name
      * @param string $address
      * @param string $monitoringServerName
-     * @param Status $status
+     * @param HostStatus $status
      * @param Icon|null $icon
      * @param Hostgroup[] $hostgroups
      * @param Downtime[] $downtimes
@@ -181,59 +184,26 @@ class FindHostResponse
         public string $name,
         public string $address,
         public string $monitoringServerName,
-        Status $status,
+        HostStatus $status,
         ?Icon $icon,
         array $hostgroups,
         array $downtimes,
         ?Acknowledgement $acknowledgement
     ) {
-        $this->icon = self::iconToArray($icon);
-        $this->status = self::statusToArray($status);
-        $this->hostgroups = self::hostgroupsToArray($hostgroups);
-        $this->downtimes = self::downtimeToArray($downtimes);
-        $this->acknowledgement = self::acknowledgementToArray($acknowledgement);
+        $this->icon = $this->iconToArray($icon);
+        $this->status = $this->statusToArray($status);
+        $this->hostgroups = $this->hostgroupsToArray($hostgroups);
+        $this->downtimes = $this->downtimesToArray($downtimes);
+        $this->acknowledgement = $this->acknowledgementToArray($acknowledgement);
     }
 
     /**
-     * Converts Status model into an array for DTO
+     * Converts an array of Hostgroups model into an array
      *
-     * @param Status $status
-     * @return array<string, mixed>
+     * @param Hostgroup[] $hostgroups
+     * @return array<int, array<string, mixed>>
      */
-    private static function statusToArray(Status $status): array
-    {
-        return [
-            'name' => $status->getName(),
-            'code' => $status->getCode(),
-            'severity_code' => $status->getOrder(),
-            'type' => $status->getType()
-        ];
-    }
-
-    /**
-     * Converts an Icon model into an array
-     *
-     * @param Icon|null $icon
-     * @return array<string, string|null>
-     */
-    private static function iconToArray(?Icon $icon): array
-    {
-        if ($icon !== null) {
-            return [
-                'name' => $icon->getName(),
-                'url' => $icon->getUrl()
-            ];
-        }
-        return [];
-    }
-
-    /**
-    * Converts an array of Hostgroups model into an array
-    *
-    * @param Hostgroup[] $hostgroups
-    * @return array<int, array<string, mixed>>
-    */
-    private static function hostgroupsToArray(array $hostgroups): array
+    private function hostgroupsToArray(array $hostgroups): array
     {
         return array_map(
             fn (Hostgroup $hostgroup) => [
@@ -241,69 +211,6 @@ class FindHostResponse
                 'name' => $hostgroup->getName()
             ],
             $hostgroups
-        );
-    }
-
-    /**
-    * Converts an Acknowledgement entity into an array
-    *
-    * @param Acknowledgement|null $acknowledgement
-    * @return array<string, mixed>
-    */
-    private static function acknowledgementToArray(?Acknowledgement $acknowledgement): array
-    {
-        if (is_null($acknowledgement)) {
-            return [];
-        }
-
-        return [
-            'id' => $acknowledgement->getId(),
-            'poller_id' => $acknowledgement->getInstanceId(),
-            'host_id' => $acknowledgement->getHostId(),
-            'service_id' => $acknowledgement->getServiceId(),
-            'author_id' => $acknowledgement->getAuthorId(),
-            'author_name' => $acknowledgement->getAuthorName(),
-            'comment' => $acknowledgement->getComment(),
-            'deletion_time' => $acknowledgement->getDeletionTime(),
-            'entry_time' => $acknowledgement->getEntryTime(),
-            'is_notify_contacts' => $acknowledgement->isNotifyContacts(),
-            'is_persistent_comment' => $acknowledgement->isPersistentComment(),
-            'is_sticky' => $acknowledgement->isSticky(),
-            'state' => $acknowledgement->getState(),
-            'type' => $acknowledgement->getType(),
-            'with_services' => $acknowledgement->isWithServices()
-        ];
-    }
-
-    /**
-    * Converts an array of Downtimes entities into an array
-    *
-    * @param Downtime[] $downtimes
-    * @return array<int, array<string, mixed>>
-    */
-    private static function downtimeToArray(array $downtimes): array
-    {
-        return array_map(
-            fn (Downtime $downtime) => [
-                'start_time' => $downtime->getStartTime(),
-                'end_time' => $downtime->getEndTime(),
-                'actual_start_time' => $downtime->getActualStartTime(),
-                'id' => $downtime->getId(),
-                'entry_time' => $downtime->getEntryTime(),
-                'author_id' => $downtime->getAuthorId(),
-                'author_name' => $downtime->getAuthorName(),
-                'host_id' => $downtime->getHostId(),
-                'service_id' => $downtime->getServiceId(),
-                'is_cancelled' => $downtime->isCancelled(),
-                'comment' => $downtime->getComment(),
-                'deletion_time' => $downtime->getDeletionTime(),
-                'duration' => $downtime->getDuration(),
-                'internal_id' => $downtime->getEngineDowntimeId(),
-                'is_fixed' => $downtime->isFixed(),
-                'poller_id' => $downtime->getInstanceId(),
-                'is_started' => $downtime->isStarted()
-            ],
-            $downtimes
         );
     }
 }

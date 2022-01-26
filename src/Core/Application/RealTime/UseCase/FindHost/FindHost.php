@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,9 +28,9 @@ use Core\Domain\RealTime\Model\Host;
 use Core\Domain\RealTime\Model\Downtime;
 use Core\Domain\RealTime\Model\Acknowledgement;
 use Centreon\Domain\Monitoring\Host as LegacyHost;
+use Core\Application\Common\UseCase\NotFoundResponse;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Core\Application\RealTime\UseCase\FindHost\FindHostResponse;
-use Core\Application\RealTime\UseCase\FindHost\HostNotFoundResponse;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
 use Core\Application\RealTime\Repository\ReadHostRepositoryInterface;
 use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
@@ -70,7 +70,7 @@ class FindHost
     {
         $hostgroups = [];
 
-        $this->debug(
+        $this->info(
             "Searching details for host",
             [
                 "id" => $hostId
@@ -80,14 +80,7 @@ class FindHost
         if ($this->contact->isAdmin()) {
             $host = $this->repository->findHostById($hostId);
             if ($host === null) {
-                $this->debug(
-                    "Host not found",
-                    [
-                        'id' => $hostId,
-                        'userId' => $this->contact->getId()
-                    ]
-                );
-                $presenter->setResponseStatus(new HostNotFoundResponse());
+                $this->handleHostNotFound($hostId, $presenter);
                 return;
             }
             $hostgroups = $this->hostgroupRepository->findAllByHostId($hostId);
@@ -99,14 +92,7 @@ class FindHost
             );
             $host = $this->repository->findHostByIdAndAccessGroupIds($hostId, $accessGroupIds);
             if ($host === null) {
-                $this->debug(
-                    "Host not found",
-                    [
-                        'id' => $hostId,
-                        'userId' => $this->contact->getId()
-                    ]
-                );
-                $presenter->setResponseStatus(new HostNotFoundResponse());
+                $this->handleHostNotFound($hostId, $presenter);
                 return;
             }
             $hostgroups = $this->hostgroupRepository->findAllByHostIdAndAccessGroupIds($hostId, $accessGroupIds);
@@ -117,7 +103,7 @@ class FindHost
         }
 
         /**
-         * Offuscate the passwords in Host commandLine
+         * Obfuscate the passwords in Host commandLine
          * @todo Re-write this code when monitoring repository will be migrated to new architecture
          */
         $host->setCommandLine($this->obfuscatePasswordInHostCommandLine($host));
@@ -129,6 +115,25 @@ class FindHost
                 $this->acknowledgementRepository->findOnGoingAcknowledgementByHostId($hostId)
             )
         );
+    }
+
+    /**
+     * Handle Host not found. This method will log the error and set the ResponseStatus
+     *
+     * @param int $hostId
+     * @param FindHostPresenterInterface $presenter
+     * @return void
+     */
+    private function handleHostNotFound(int $hostId, FindHostPresenterInterface $presenter): void
+    {
+        $this->error(
+            "Host not found",
+            [
+                'id' => $hostId,
+                'userId' => $this->contact->getId()
+            ]
+        );
+        $presenter->setResponseStatus(new NotFoundResponse('Host'));
     }
 
     /**

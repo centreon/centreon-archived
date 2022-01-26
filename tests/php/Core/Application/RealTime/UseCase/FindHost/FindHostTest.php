@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,11 +29,11 @@ use Core\Domain\RealTime\Model\Downtime;
 use Core\Domain\RealTime\Model\Hostgroup;
 use Tests\Core\Domain\RealTime\Model\HostTest;
 use Core\Domain\RealTime\Model\Acknowledgement;
+use Core\Application\Common\UseCase\NotFoundResponse;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Core\Application\RealTime\UseCase\FindHost\FindHost;
 use Core\Infrastructure\RealTime\Api\FindHost\FindHostPresenter;
 use Core\Infrastructure\RealTime\Api\Hypermedia\HypermediaService;
-use Core\Application\RealTime\UseCase\FindHost\HostNotFoundResponse;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
 use Core\Application\RealTime\Repository\ReadHostRepositoryInterface;
 use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
@@ -132,7 +132,7 @@ class FindHostTest extends TestCase
 
         $findHost(1, $findHostPresenter);
 
-        $this->assertEquals($findHostPresenter->getResponseStatus(), new HostNotFoundResponse());
+        $this->assertEquals($findHostPresenter->getResponseStatus(), new NotFoundResponse('Host'));
     }
 
     /**
@@ -172,7 +172,7 @@ class FindHostTest extends TestCase
 
         $findHost(1, $findHostPresenter);
 
-        $this->assertEquals($findHostPresenter->getResponseStatus(), new HostNotFoundResponse());
+        $this->assertEquals($findHostPresenter->getResponseStatus(), new NotFoundResponse('Host'));
     }
 
     /**

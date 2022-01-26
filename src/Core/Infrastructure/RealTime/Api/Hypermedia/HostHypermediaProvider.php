@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -101,6 +101,22 @@ class HostHypermediaProvider implements HypermediaProviderInterface
      */
     public function createForTimelineEndpoint(mixed $response): string
     {
-        return $this->router->generate(static::ENDPOINT_HOST_TIMELINE, ['hostId' => $response->id]);
+        return $this->router->generate(self::ENDPOINT_HOST_TIMELINE, ['hostId' => $response->id]);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function createForPerformanceDataEndpoint(mixed $data): string
+    {
+        return '';
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function createForStatusGraphEndpoint(mixed $data): string
+    {
+        return '';
     }
 }
