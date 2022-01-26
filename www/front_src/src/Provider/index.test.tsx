@@ -73,7 +73,6 @@ jest.mock('../App', () => {
   const ComponentWithUserContext = (): JSX.Element => {
     return <div />;
   };
-
   return {
     __esModule: true,
     default: ComponentWithUserContext,
