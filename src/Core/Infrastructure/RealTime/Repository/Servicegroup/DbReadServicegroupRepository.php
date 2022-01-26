@@ -18,16 +18,17 @@
  * For more information : contact@centreon.com
  *
  */
+
 declare(strict_types=1);
 
-namespace Core\Infrastructure\RealTime\Repository\Hostgroup;
+namespace Core\Infrastructure\RealTime\Repository\Servicegroup;
 
-use Core\Domain\RealTime\Model\Hostgroup;
+use Core\Domain\RealTime\Model\Servicegroup;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
-use Core\Application\RealTime\Repository\ReadHostgroupRepositoryInterface;
+use Core\Application\RealTime\Repository\ReadServicegroupRepositoryInterface;
 
-class DbReadHostgroupRepository extends AbstractRepositoryDRB implements ReadHostgroupRepositoryInterface
+class DbReadServicegroupRepository extends AbstractRepositoryDRB implements ReadServicegroupRepositoryInterface
 {
     /**
      * @param DatabaseConnection $db
@@ -40,59 +41,62 @@ class DbReadHostgroupRepository extends AbstractRepositoryDRB implements ReadHos
     /**
      * @inheritDoc
      */
-    public function findAllByHostId(int $hostId): array
+    public function findAllByHostIdAndServiceId(int $hostId, int $serviceId): array
     {
-        return $this->findAll($hostId, null);
+        return $this->findServicegroups($hostId, $serviceId);
     }
 
     /**
      * @inheritDoc
      */
-    public function findAllByHostIdAndAccessGroupIds(int $hostId, array $accessGroupIds): array
-    {
-        $hostgroups = [];
+    public function findAllByHostIdAndServiceIdAndAccessGroupIds(
+        int $hostId,
+        int $serviceId,
+        array $accessGroupIds
+    ): array {
+        $servicegroups = [];
 
         if (empty($accessGroupIds)) {
-            return $hostgroups;
+            return $servicegroups;
         }
 
         $aclRequest = ' INNER JOIN `:dbstg`.`centreon_acl` AS acl
-            ON acl.host_id = hhg.host_id
-            AND acl.service_id IS NULL
+            ON acl.host_id = ssg.host_id
+            AND acl.service_id = ssg.service_id
             AND acl.group_id IN (' . implode(',', $accessGroupIds) . ') ';
 
-        return $this->findAll($hostId, $aclRequest);
+        return $this->findServicegroups($hostId, $serviceId, $aclRequest);
     }
 
     /**
      * @param int $hostId
+     * @param int $serviceId
      * @param string|null $aclRequest
-     * @return Hostgroup[]
+     * @return Servicegroup[]
      */
-    private function findAll(int $hostId, ?string $aclRequest): array
+    private function findServicegroups(int $hostId, int $serviceId, ?string $aclRequest = null): array
     {
-        $request = "SELECT DISTINCT
-                hg.hostgroup_id,
-                hg.name AS `hostgroup_name`
-            FROM `:dbstg`.`hosts_hostgroups` AS hhg
-            INNER JOIN `:dbstg`.`hostgroups` AS hg ON hg.hostgroup_id = hhg.hostgroup_id";
+        $request = "SELECT DISTINCT sg.servicegroup_id, sg.name AS `servicegroup_name`
+            FROM `:dbstg`.`services_servicegroups` AS ssg
+            INNER JOIN `:dbstg`.`servicegroups` AS sg ON sg.servicegroup_id = ssg.servicegroup_id";
 
         if ($aclRequest !== null) {
             $request .= $aclRequest;
         }
 
-        $request .= ' WHERE hhg.host_id = :hostId ORDER BY hg.name ASC';
+        $request .= ' WHERE ssg.host_id = :hostId AND ssg.service_id = :serviceId ORDER BY sg.name ASC';
 
         $statement = $this->db->prepare($this->translateDbName($request));
         $statement->bindValue(':hostId', $hostId, \PDO::PARAM_INT);
+        $statement->bindValue(':serviceId', $serviceId, \PDO::PARAM_INT);
         $statement->execute();
 
-        $hostgroups = [];
+        $servicegroups = [];
 
         while (($row = $statement->fetch(\PDO::FETCH_ASSOC))) {
-            $hostgroups[] = DbHostgroupFactory::createFromRecord($row);
+            $servicegroups[] = DbServicegroupFactory::createFromRecord($row);
         }
 
-        return $hostgroups;
+        return $servicegroups;
     }
 }

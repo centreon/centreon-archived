@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,4 +53,16 @@ interface HypermediaProviderInterface
      * @return string
      */
     public function createForTimelineEndpoint(mixed $data): string;
+
+    /**
+     * @param mixed $data
+     * @return string
+     */
+    public function createForStatusGraphEndpoint(mixed $data): string;
+
+    /**
+     * @param mixed $data
+     * @return string
+     */
+    public function createForPerformanceDataEndpoint(mixed $data): string;
 }

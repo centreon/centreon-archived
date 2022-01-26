@@ -23,96 +23,61 @@ declare(strict_types=1);
 namespace Tests\Core\Domain\RealTime\Model;
 
 use PHPUnit\Framework\TestCase;
-use Core\Domain\RealTime\Model\Host;
 use Core\Domain\RealTime\Model\Icon;
-use Core\Domain\RealTime\Model\HostStatus;
 use Centreon\Domain\Common\Assertion\AssertionException;
+use Core\Domain\RealTime\Model\Service;
+use Core\Domain\RealTime\Model\ServiceStatus;
 
-class HostTest extends TestCase
+class ServiceTest extends TestCase
 {
     /**
-    * test Name too long exception
+    * test name too long exception
     */
     public function testNameTooLongException(): void
     {
-        $hostName = str_repeat('.', Host::MAX_NAME_LENGTH + 1);
+        $name = str_repeat('.', Service::MAX_NAME_LENGTH + 1);
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage(
             AssertionException::maxLength(
-                $hostName,
-                strlen($hostName),
-                Host::MAX_NAME_LENGTH,
-                'Host::name'
+                $name,
+                strlen($name),
+                Service::MAX_NAME_LENGTH,
+                'Service::name'
             )->getMessage()
         );
-        new Host(1, $hostName, 'localhost', 'central', new HostStatus('UP', 0, 0));
+        new Service(10, 1, $name, new ServiceStatus('OK', 0, 0));
     }
 
     /**
-     * test Name empty exception
+     * test name empty exception
      */
     public function testNameEmptyException(): void
     {
-        $hostName = '';
+        $name = '';
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage(
             AssertionException::notEmpty(
-                'Host::name'
+                'Service::name'
             )->getMessage()
         );
-        new Host(1, $hostName, 'localhost', 'central', new HostStatus('UP', 0, 0));
+        new Service(10, 1, $name, new ServiceStatus('OK', 0, 0));
     }
 
     /**
-    * test address too long exception
-    */
-    public function testAddressTooLongException(): void
-    {
-        $address = str_repeat('.', Host::MAX_ADDRESS_LENGTH + 1);
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage(
-            AssertionException::maxLength(
-                $address,
-                strlen($address),
-                Host::MAX_ADDRESS_LENGTH,
-                'Host::address'
-            )->getMessage()
-        );
-        new Host(1, 'Central-Server', $address, 'central', new HostStatus('UP', 0, 0));
-    }
-
-    /**
-    * test address empty exception
-    */
-    public function testAddressEmptyException(): void
-    {
-        $address = '';
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage(
-            AssertionException::notEmpty(
-                'Host::address'
-            )->getMessage()
-        );
-        new Host(1, 'Central-Server', $address, 'central', new HostStatus('UP', 0, 0));
-    }
-
-    /**
-     * @return Host
+     * @return Service
      */
-    public static function createHostModel(): Host
+    public static function createServiceModel(): Service
     {
-        $status = (new HostStatus('UP', 0, 1))
-            ->setOrder(HostStatus::STATUS_ORDER_OK);
+        $status = (new ServiceStatus('OK', 0, 0))
+            ->setOrder(ServiceStatus::STATUS_ORDER_OK);
 
         $icon = (new Icon())
             ->setName('dog')
             ->setUrl('/dog.png');
 
-        return (new Host(1, 'Centreon-Central', 'localhost', 'Central', $status))
-            ->setAlias('Central')
+        return (new Service(10, 1, 'Ping', $status))
             ->setIcon($icon)
             ->setCommandLine('/usr/lib64/nagios/plugins/check_icmp -H 127.0.0.1 -n 3 -w 200,20% -c 400,50%')
-            ->setTimeZone(':Europe/Paris')
             ->setIsFlapping(false)
             ->setIsInDowntime(false)
             ->setIsAcknowledged(false)
@@ -121,10 +86,10 @@ class HostTest extends TestCase
             ->setSeverityLevel(10)
             ->setLastStatusChange(new \DateTime('1991-09-10'))
             ->setLastNotification(new \DateTime('1991-09-10'))
-            ->setLastTimeUp(new \DateTime('1991-09-10'))
+            ->setLastTimeOk(new \DateTime('1991-09-10'))
             ->setLastCheck(new \DateTime('1991-09-10'))
             ->setNextCheck(new \DateTime('1991-09-10'))
-            ->setOutput('Host check output')
+            ->setOutput('Ping check output')
             ->setPerformanceData('rta=0.342ms;200.000;400.000;0; pl=0%;20;50;0;100 rtmax=0.439ms;;;; rtmin=0.260ms;;;;')
             ->setExecutionTime(0.1)
             ->setLatency(0.214)

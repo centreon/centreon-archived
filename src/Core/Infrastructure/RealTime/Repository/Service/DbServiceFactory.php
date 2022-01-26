@@ -20,33 +20,30 @@
  */
 declare(strict_types=1);
 
-namespace Core\Infrastructure\RealTime\Repository\Host;
+namespace Core\Infrastructure\RealTime\Repository\Service;
 
-use Core\Domain\RealTime\Model\Host;
+use Core\Domain\RealTime\Model\Service;
 use Core\Infrastructure\RealTime\Repository\Icon\DbIconFactory;
-use Core\Infrastructure\RealTime\Repository\Host\DbHostStatusFactory;
 use Core\Infrastructure\Common\Repository\DbFactoryUtilitiesTrait;
 
-class DbHostFactory
+class DbServiceFactory
 {
     use DbFactoryUtilitiesTrait;
 
     /**
      * @param array<string, mixed> $data
-     * @return Host
+     * @return Service
      */
-    public static function createFromRecord(array $data): Host
+    public static function createFromRecord(array $data): Service
     {
-        $host = new Host(
+        $service = new Service(
+            (int) $data['service_id'],
             (int) $data['host_id'],
-            $data['name'],
-            $data['address'],
-            $data['monitoring_server_name'],
-            DbHostStatusFactory::createFromRecord($data)
+            $data['description'],
+            DbServiceStatusFactory::createFromRecord($data)
         );
 
-        $host->setTimezone($data['timezone'])
-            ->setPerformanceData($data['performance_data'])
+        $service->setPerformanceData($data['performance_data'])
             ->setOutput($data['output'])
             ->setCommandLine($data['command_line'])
             ->setIsFlapping((int) $data['flapping'] === 1)
@@ -62,7 +59,7 @@ class DbHostFactory
             ->setLastStatusChange(self::createDateTimeFromTimestamp((int) $data['last_status_change']))
             ->setLastNotification(self::createDateTimeFromTimestamp((int) $data['last_notification']))
             ->setLastCheck(self::createDateTimeFromTimestamp((int) $data['last_check']))
-            ->setLastTimeUp(self::createDateTimeFromTimestamp((int) $data['last_time_up']))
+            ->setLastTimeOk(self::createDateTimeFromTimestamp((int) $data['last_time_ok']))
             ->setMaxCheckAttempts(self::getIntOrNull($data['max_check_attempts']))
             ->setCheckAttempts(self::getIntOrNull($data['check_attempt']));
 
@@ -70,9 +67,9 @@ class DbHostFactory
             (int) $data['active_checks'] === 1 ? (int) $data['next_check'] : null
         );
 
-        $host->setNextCheck($nextCheck);
-        $host->setIcon(DbIconFactory::createFromRecord($data));
+        $service->setNextCheck($nextCheck);
+        $service->setIcon(DbIconFactory::createFromRecord($data));
 
-        return $host;
+        return $service;
     }
 }

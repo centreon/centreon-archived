@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,17 +30,19 @@ interface ReadServiceRepositoryInterface
     /**
      * Find Service without ACL
      *
+     * @param int $hostId
      * @param int $serviceId
      * @return Service|null
      */
-    public function findServiceById(int $serviceId): ?Service;
+    public function findServiceById(int $hostId, int $serviceId): ?Service;
 
     /**
      * Find Service with ACL
      *
+     * @param int $hostId
      * @param int $serviceId
      * @param int[] $accessGroupIds
      * @return Service|null
      */
-    public function findServiceByIdAndAccessGroupIds(int $serviceId, array $accessGroupIds): ?Service;
+    public function findServiceByIdAndAccessGroupIds(int $hostId, int $serviceId, array $accessGroupIds): ?Service;
 }
