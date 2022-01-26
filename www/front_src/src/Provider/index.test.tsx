@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import axios from 'axios';
-import { render, RenderResult, waitFor } from '@testing-library/react';
+import { render, RenderResult, waitFor } from '@centreon/ui';
 import { Provider as JotaiProvider } from 'jotai';
 import { useAtomValue } from 'jotai/utils';
 
@@ -18,14 +18,14 @@ import { cancelTokenRequestParam } from '../Resources/testUtils';
 import Provider from '.';
 
 jest.mock('@centreon/ui-context', () =>
-  jest.requireActual('@centreon/centreon-frontend/packages/ui-context'),
+  jest.requireActual('/centreon-frontend/packages/ui-context'),
 );
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 const retrievedUser = {
   alias: 'Admin alias',
-  is_export_button_enabled: true,
+  is_export_button_enabled: undefined,
   locale: 'fr_FR.UTF8',
   name: 'Admin',
   timezone: 'Europe/Paris',
@@ -34,7 +34,7 @@ const retrievedUser = {
 
 const contextUser = {
   alias: 'Admin alias',
-  isExportButtonEnabled: true,
+  isExportButtonEnabled: undefined,
   locale: 'fr_FR.UTF8',
   name: 'Admin',
   timezone: 'Europe/Paris',
