@@ -63,7 +63,7 @@ const Provider = ({ children }: Props): JSX.Element => {
 
   const { sendRequest: getUser } = useRequest<User>({
     // TODO uncomment after https://github.com/centreon/centreon/pull/10507
-    decoder: userDecoder,
+    // decoder: userDecoder,
     request: getData,
   });
   const { sendRequest: getParameters } = useRequest<DefaultParameters>({
