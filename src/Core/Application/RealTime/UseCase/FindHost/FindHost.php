@@ -81,7 +81,6 @@ class FindHost
             $host = $this->repository->findHostById($hostId);
             if ($host === null) {
                 $this->handleHostNotFound($hostId, $presenter);
-                $presenter->setResponseStatus(new NotFoundResponse('Host'));
                 return;
             }
             $hostgroups = $this->hostgroupRepository->findAllByHostId($hostId);
