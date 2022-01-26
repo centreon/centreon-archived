@@ -25,7 +25,6 @@ const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 const retrievedUser = {
   alias: 'Admin alias',
-  default_page: null,
   is_export_button_enabled: true,
   locale: 'fr_FR.UTF8',
   name: 'Admin',
@@ -35,7 +34,6 @@ const retrievedUser = {
 
 const contextUser = {
   alias: 'Admin alias',
-  default_page: null,
   isExportButtonEnabled: true,
   locale: 'fr_FR.UTF8',
   name: 'Admin',
