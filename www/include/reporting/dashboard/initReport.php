@@ -244,13 +244,33 @@ $lcaSvcstr    = $centreon->user->access->getServicesString("ID", $pearDBO);
 /*
  * setting variables for link with services
  */
-$period_choice = (isset($_POST["period_choice"])) ? $_POST["period_choice"] : "preset";
-$period = (isset($_POST["period"])) ? $_POST["period"] : "";
-$period = (isset($_GET["period"])) ? $_GET["period"] : $period;
-$get_date_start = (isset($_POST["StartDate"])) ? $_POST["StartDate"] : "";
-$get_date_start = (isset($_GET["start"])) ? $_GET["start"] : $get_date_start;
-$get_date_end = (isset($_POST["EndDate"])) ? $_POST["EndDate"] : "";
-$get_date_end = (isset($_GET["end"])) ? $_GET["end"] : $get_date_end;
+$period_choice = (isset($_POST["period_choice"]))
+    ? filter_var($_POST["period_choice"], FILTER_SANITIZE_STRING)
+    : "preset";
+
+$period = '';
+if (isset($_POST['period'])) {
+    $period = filter_var($_POST['period'], FILTER_SANITIZE_STRING);
+} elseif (isset($_GET['period'])) {
+    $period = filter_var($_GET['period'], FILTER_SANITIZE_STRING);
+}
+
+$get_date_start = '';
+
+if (isset($_POST['StartDate'])) {
+    $get_date_start = filter_var($_POST['StartDate'], FILTER_SANITIZE_STRING);
+} elseif (isset($_GET['StartDate'])) {
+    $get_date_start = filter_var($_GET['StartDate'], FILTER_SANITIZE_STRING);
+}
+
+$get_date_end = '';
+
+if (isset($_POST['EndDate'])) {
+    $get_date_end = filter_var($_POST['EndDate'], FILTER_SANITIZE_STRING);
+} elseif (isset($_GET['EndDate'])) {
+    $get_date_end = filter_var($_GET['EndDate'], FILTER_SANITIZE_STRING);
+}
+
 if ($get_date_start == "" && $get_date_end == "" && $period == "") {
     $period = "yesterday";
 }
