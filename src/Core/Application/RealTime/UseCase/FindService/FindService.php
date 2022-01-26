@@ -90,27 +90,12 @@ class FindService
         if ($this->contact->isAdmin()) {
             $host = $this->hostRepository->findHostById($hostId);
             if ($host === null) {
-                $this->critical(
-                    "Host not found",
-                    [
-                        'id' => $hostId,
-                        'userId' => $this->contact->getId()
-                    ]
-                );
-                $presenter->setResponseStatus(new NotFoundResponse('Host'));
+                $this->handleHostNotFound($hostId, $presenter);
                 return;
             }
             $service = $this->repository->findServiceById($hostId, $serviceId);
             if ($service === null) {
-                $this->critical(
-                    "Service not found",
-                    [
-                        'id' => $serviceId,
-                        'hostId' => $hostId,
-                        'userId' => $this->contact->getId()
-                    ]
-                );
-                $presenter->setResponseStatus(new NotFoundResponse('Service'));
+                $this->handleServiceNotFound($hostId, $serviceId, $presenter);
                 return;
             }
 
@@ -128,29 +113,14 @@ class FindService
             $host = $this->hostRepository->findHostByIdAndAccessGroupIds($hostId, $accessGroupIds);
 
             if ($host === null) {
-                $this->critical(
-                    "Host not found",
-                    [
-                        'id' => $hostId,
-                        'userId' => $this->contact->getId()
-                    ]
-                );
-                $presenter->setResponseStatus(new NotFoundResponse('Host'));
+                $this->handleHostNotFound($hostId, $presenter);
                 return;
             }
 
             $service = $this->repository->findServiceByIdAndAccessGroupIds($hostId, $serviceId, $accessGroupIds);
 
             if ($service === null) {
-                $this->critical(
-                    "Service not found",
-                    [
-                        'id' => $serviceId,
-                        'hostId' => $hostId,
-                        'userId' => $this->contact->getId()
-                    ]
-                );
-                $presenter->setResponseStatus(new NotFoundResponse('Service'));
+                $this->handleServiceNotFound($hostId, $serviceId, $presenter);
                 return;
             }
 
@@ -178,6 +148,46 @@ class FindService
                 $host
             )
         );
+    }
+
+    /**
+     * Handle Host not found. This method will log the error and set the ResponseStatus
+     *
+     * @param int $hostId
+     * @param FindServicePresenterInterface $presenter
+     * @return void
+     */
+    private function handleHostNotFound(int $hostId, FindServicePresenterInterface $presenter): void
+    {
+        $this->error(
+            "Host not found",
+            [
+                'id' => $hostId,
+                'userId' => $this->contact->getId()
+            ]
+        );
+        $presenter->setResponseStatus(new NotFoundResponse('Host'));
+    }
+
+    /**
+     * Handle Service not found. This method will log the error and set the ResponseStatus
+     *
+     * @param int $hostId
+     * @param int $serviceId
+     * @param FindServicePresenterInterface $presenter
+     * @return void
+     */
+    private function handleServiceNotFound(int $hostId, int $serviceId, FindServicePresenterInterface $presenter): void
+    {
+        $this->error(
+            "Service not found",
+            [
+                'id' => $serviceId,
+                'hostId' => $hostId,
+                'userId' => $this->contact->getId()
+            ]
+        );
+        $presenter->setResponseStatus(new NotFoundResponse('Service'));
     }
 
     /**

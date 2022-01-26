@@ -31,7 +31,6 @@ use Centreon\Domain\Monitoring\Host as LegacyHost;
 use Core\Application\Common\UseCase\NotFoundResponse;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Core\Application\RealTime\UseCase\FindHost\FindHostResponse;
-use Core\Application\RealTime\UseCase\FindHost\HostNotFoundResponse;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
 use Core\Application\RealTime\Repository\ReadHostRepositoryInterface;
 use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
@@ -81,13 +80,7 @@ class FindHost
         if ($this->contact->isAdmin()) {
             $host = $this->repository->findHostById($hostId);
             if ($host === null) {
-                $this->critical(
-                    "Host not found",
-                    [
-                        'id' => $hostId,
-                        'userId' => $this->contact->getId()
-                    ]
-                );
+                $this->handleHostNotFound($hostId, $presenter);
                 $presenter->setResponseStatus(new NotFoundResponse('Host'));
                 return;
             }
@@ -100,14 +93,7 @@ class FindHost
             );
             $host = $this->repository->findHostByIdAndAccessGroupIds($hostId, $accessGroupIds);
             if ($host === null) {
-                $this->critical(
-                    "Host not found",
-                    [
-                        'id' => $hostId,
-                        'userId' => $this->contact->getId()
-                    ]
-                );
-                $presenter->setResponseStatus(new NotFoundResponse('Host'));
+                $this->handleHostNotFound($hostId, $presenter);
                 return;
             }
             $hostgroups = $this->hostgroupRepository->findAllByHostIdAndAccessGroupIds($hostId, $accessGroupIds);
@@ -130,6 +116,25 @@ class FindHost
                 $this->acknowledgementRepository->findOnGoingAcknowledgementByHostId($hostId)
             )
         );
+    }
+
+    /**
+     * Handle Host not found. This method will log the error and set the ResponseStatus
+     *
+     * @param int $hostId
+     * @param FindHostPresenterInterface $presenter
+     * @return void
+     */
+    private function handleHostNotFound(int $hostId, FindHostPresenterInterface $presenter): void
+    {
+        $this->error(
+            "Host not found",
+            [
+                'id' => $hostId,
+                'userId' => $this->contact->getId()
+            ]
+        );
+        $presenter->setResponseStatus(new NotFoundResponse('Host'));
     }
 
     /**
