@@ -20,37 +20,20 @@
  */
 declare(strict_types=1);
 
-namespace Core\Infrastructure\RealTime\Api\Hypermedia;
+namespace Core\Infrastructure\Configuration\Repository\MetaService;
 
-interface HypermediaProviderInterface
+use Core\Domain\Configuration\Model\MetaService;
+use Core\Infrastructure\Common\Repository\DbFactoryUtilitiesTrait;
+
+class DbMetaServiceFactory
 {
-    /**
-     * @var mixed $data
-     * @return bool
-     */
-    public function isValidFor(mixed $data): bool;
+    use DbFactoryUtilitiesTrait;
 
     /**
-     * @var mixed $data
-     * @return string|null
+     * @param array<string, mixed> $data
+     * @return MetaService
      */
-    public function createForConfiguration(mixed $data): ?string;
-
-    /**
-     * @var mixed $data
-     * @return string|null
-     */
-    public function createForReporting(mixed $data): ?string;
-
-    /**
-     * @var mixed $data
-     * @return string|null
-     */
-    public function createForEventLog(mixed $data): ?string;
-
-    /**
-     * @param mixed $data
-     * @return string
-     */
-    public function createForTimelineEndpoint(mixed $data): string;
+    public static function createFromRecord(array $data): MetaService
+    {
+    }
 }

@@ -20,37 +20,26 @@
  */
 declare(strict_types=1);
 
-namespace Core\Infrastructure\RealTime\Api\Hypermedia;
+namespace Core\Application\Configuration\Repository;
 
-interface HypermediaProviderInterface
+use Core\Domain\Configuration\Model\MetaService;
+
+interface ReadMetaServiceRepositoryInterface
 {
     /**
-     * @var mixed $data
-     * @return bool
+     * Find MetaService configuration without ACL
+     *
+     * @param integer $metaId
+     * @return MetaService|null
      */
-    public function isValidFor(mixed $data): bool;
+    public function findMetaServiceById(int $metaId): ?MetaService;
 
     /**
-     * @var mixed $data
-     * @return string|null
+     * Find MetaService configuration with ACL
+     *
+     * @param int $metaId
+     * @param int[] $accessGroupIds
+     * @return MetaService|null
      */
-    public function createForConfiguration(mixed $data): ?string;
-
-    /**
-     * @var mixed $data
-     * @return string|null
-     */
-    public function createForReporting(mixed $data): ?string;
-
-    /**
-     * @var mixed $data
-     * @return string|null
-     */
-    public function createForEventLog(mixed $data): ?string;
-
-    /**
-     * @param mixed $data
-     * @return string
-     */
-    public function createForTimelineEndpoint(mixed $data): string;
+    public function findMetaServiceByIdAndAccessGroupIds(int $metaId, array $accessGroupIds): ?MetaService;
 }

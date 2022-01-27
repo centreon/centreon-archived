@@ -20,37 +20,15 @@
  */
 declare(strict_types=1);
 
-namespace Core\Infrastructure\RealTime\Api\Hypermedia;
+namespace Core\Application\RealTime\UseCase\FindMetaService;
 
-interface HypermediaProviderInterface
+use Core\Application\Common\UseCase\PresenterInterface;
+use Core\Application\RealTime\UseCase\FindMetaService\FindMetaServiceResponse;
+
+interface FindMetaServicePresenterInterface extends PresenterInterface
 {
     /**
-     * @var mixed $data
-     * @return bool
+     * @param FindMetaServiceResponse $response
      */
-    public function isValidFor(mixed $data): bool;
-
-    /**
-     * @var mixed $data
-     * @return string|null
-     */
-    public function createForConfiguration(mixed $data): ?string;
-
-    /**
-     * @var mixed $data
-     * @return string|null
-     */
-    public function createForReporting(mixed $data): ?string;
-
-    /**
-     * @var mixed $data
-     * @return string|null
-     */
-    public function createForEventLog(mixed $data): ?string;
-
-    /**
-     * @param mixed $data
-     * @return string
-     */
-    public function createForTimelineEndpoint(mixed $data): string;
+    public function present(FindMetaServiceResponse $response): void;
 }

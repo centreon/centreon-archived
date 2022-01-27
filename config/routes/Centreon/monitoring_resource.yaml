@@ -24,7 +24,7 @@ centreon_application_monitoring_resource_details_service:
 centreon_application_monitoring_resource_details_meta_service:
     methods: GET
     path: /monitoring/resources/metaservices/{metaId}
-    controller: 'Centreon\Application\Controller\MonitoringResourceController::detailsMetaService'
+    controller: 'Core\Infrastructure\RealTime\Api\FindMetaService\FindMetaServiceController'
     requirements:
         metaId: '\d+'
-    condition: "request.attributes.get('version') >= 21.10"
+    condition: "request.attributes.get('version') >= 22.04"
