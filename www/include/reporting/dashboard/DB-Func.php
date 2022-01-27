@@ -244,6 +244,28 @@ function getLogInDbForHostSVC($host_id, $start_date, $end_date, $reportTimePerio
      */
     $services_ids = $centreon->user->access->getHostServiceAclConf($host_id, 'broker');
     $svcStr = "";
+    $status = ["OK", "WARNING", "CRITICAL", "UNKNOWN", "UNDETERMINED", "MAINTENANCE"];
+    /*
+    * $hostServiceStats["average"] will contain services stats average
+    */
+    foreach ($status as $name) {
+        switch ($name) {
+            case "UNDETERMINED":
+                $hostServiceStats["average"]["UNDETERMINED_TP"] = 0;
+                break;
+            case "MAINTENANCE":
+                $hostServiceStats["average"]["MAINTENANCE_TP"] = 0;
+                break;
+            default:
+                $hostServiceStats["average"][$name . "_MP"] = 0;
+                $hostServiceStats["average"][$name . "_TP"] = 0;
+                $hostServiceStats["average"][$name . "_A"] = 0;
+                break;
+        }
+    }
+    $hostServiceStats["average"]["DESCRIPTION"] = "";
+    $hostServiceStats["average"]["ID"] = 0;
+
     if (count($services_ids) > 0) {
         foreach ($services_ids as $id => $description) {
             if ($svcStr) {
@@ -252,26 +274,16 @@ function getLogInDbForHostSVC($host_id, $start_date, $end_date, $reportTimePerio
             $svcStr .= $id;
         }
     } else {
-        return ($hostServiceStats);
+        $hostServiceStats["average"]["UNDETERMINED_TP"] = 100;
+        return $hostServiceStats;
     }
-    $status = array("OK", "WARNING", "CRITICAL", "UNKNOWN", "UNDETERMINED", "MAINTENANCE");
-
     /* initialising all host services stats to 0 */
     foreach ($services_ids as $id => $description) {
         foreach (getServicesStatsValueName() as $name) {
             $hostServiceStats[$id][$name] = 0;
         }
     }
-    /*
-     * $hostServiceStats["average"] will contain services stats average
-     */
-    foreach ($status as $key => $value) {
-        $hostServiceStats["average"][$value . "_TP"] = 0;
-        $hostServiceStats["average"][$value . "_MP"] = 0;
-        if ($value != "UNDETERMINED" && $value != "MAINTENANCE") {
-            $hostServiceStats["average"][$value . "_A"] = 0;
-        }
-    }
+
     $days_of_week = getReportDaysStr($reportTimePeriod);
     $aclCondition = '';
     if (!$centreon->user->admin) {
@@ -574,17 +586,24 @@ function getLogInDbForServicesGroup($servicegroupId, $startDate, $endDate, $repo
             $serviceGroupStats[$hostServiceid][$name] = 0;
         }
 
+        $serviceGroupStats[$hostServiceid]["HOST_ID"] = $hostId;
+        $serviceGroupStats[$hostServiceid]["SERVICE_ID"] = $serviceId;
+        $serviceGroupStats[$hostServiceid]["HOST_NAME"] = $service['host_name'];
+        $serviceGroupStats[$hostServiceid]["SERVICE_DESC"] = $service['service_description'];
+
         if (isset($servicesStats[$hostId][$serviceId])) {
             $serviceGroupStats[$hostServiceid] = $servicesStats[$hostId][$serviceId];
-            $serviceGroupStats[$hostServiceid]["HOST_ID"] = $hostId;
-            $serviceGroupStats[$hostServiceid]["SERVICE_ID"] = $serviceId;
-            $serviceGroupStats[$hostServiceid]["HOST_NAME"] = $service['host_name'];
-            $serviceGroupStats[$hostServiceid]["SERVICE_DESC"] = $service['service_description'];
             foreach ($serviceStatsLabels as $name) {
                 $serviceGroupStats["average"][$name] += $servicesStats[$hostId][$serviceId][$name];
             }
+        } else {
+            $serviceGroupStats["average"]["UNDETERMINED_TP"] = 100;
         }
         $count++;
+    }
+
+    if (!isset($servicesStats[$hostId][$serviceId])) {
+        return $serviceGroupStats;
     }
 
     /*

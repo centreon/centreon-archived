@@ -15940,7 +15940,7 @@ msgstr "Commande de désacquittement envoyée"
 msgid "Unable to find the Engine configuration"
 msgstr "Impossible de trouver la configuration du moteur de supervision"
 
-msgid "Ip address can not be empty"
+msgid "Ip address cannot be empty"
 msgstr "L'adresse IP ne peut pas être vide"
 
 msgid "Monitoring server is not correctly defined"
@@ -16461,3 +16461,12 @@ msgstr "Votre clé d'autologin doit être différente de votre mot de passe actu
 
 msgid "Your new password and autologin key must be different"
 msgstr "Votre nouveau mot de passe et votre clé d'autologin doivent être différents"
+
+msgid "Error on adding a host (Reason: %s)"
+msgstr "Erreur lors de l'ajout d'un hôte (Raison : %s)"
+
+msgid "Error on updating a host (Reason: %s)"
+msgstr "Erreur lors de la mise à jour d'un hôte (Raison : %s)"
+
+msgid "Error on removing services from the host #%d"
+msgstr "Erreur lors de la suppression des services de l'hôte #%d"
