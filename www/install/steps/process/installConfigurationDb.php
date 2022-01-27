@@ -47,7 +47,7 @@ $step = new \CentreonLegacy\Core\Install\Step\Step6($dependencyInjector);
 $parameters = $step->getDatabaseConfiguration();
 
 try {
-    $link = new \PDO(
+    $db = new \PDO(
         'mysql:host=' . $parameters['address'] . ';port=' . $parameters['port'],
         $parameters['root_user'],
         $parameters['root_password']
@@ -59,7 +59,7 @@ try {
 }
 
 /* Check if MySQL innodb_file_perf_table is enabled */
-$innodb_file_per_table = getDatabaseVariable($link, 'innodb_file_per_table');
+$innodb_file_per_table = getDatabaseVariable($db, 'innodb_file_per_table');
 if (is_null($innodb_file_per_table) || strtolower($innodb_file_per_table) == 'off') {
     $return['msg'] =
         _('Add innodb_file_per_table=1 in my.cnf file under the [mysqld] section and restart MySQL Server.');
@@ -68,7 +68,7 @@ if (is_null($innodb_file_per_table) || strtolower($innodb_file_per_table) == 'of
 }
 
 /* Check if MySQL open_files_limit parameter is higher than 32000 */
-$open_files_limit = getDatabaseVariable($link, 'open_files_limit');
+$open_files_limit = getDatabaseVariable($db, 'open_files_limit');
 if (is_null($open_files_limit)) {
     $open_files_limit = 0;
 }
@@ -82,24 +82,53 @@ if ($open_files_limit < 32000) {
 }
 
 try {
-    $link->exec("CREATE DATABASE " . $parameters['db_configuration']);
-} catch (\PDOException $e) {
+    //Check if configuration database exists
+    $statementShowDatabase = $db->prepare("SHOW DATABASES LIKE :dbConfiguration");
+    $statementShowDatabase->bindValue(':dbConfiguration', $parameters['db_configuration'], \PDO::PARAM_STR);
+    $statementShowDatabase->execute();
+
+    //If it doesn't exist, create it
+    if ($result = $statementShowDatabase->fetch(\PDO::FETCH_ASSOC) === false) {
+        $db->exec("CREATE DATABASE " . $parameters['db_configuration']);
+
+        //Create table
+        $db->exec('use ' . $parameters['db_configuration']);
+        $result = splitQueries('../../createTables.sql', ';', $db, '../../tmp/createTables');
+        if ("0" != $result) {
+            $return['msg'] = $result;
+            echo json_encode($return);
+            exit;
+        }
+    } else {
+        //If it exist, check if database is empty (no tables)
+        $statement = $db->prepare(
+            "SELECT COUNT(*) as tables FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = :dbConfiguration"
+        );
+        $statement->bindValue(':dbConfiguration', $parameters['db_configuration'], \PDO::PARAM_STR);
+        $statement->execute();
+        //If it is not empty, throw an error
+        if (($resultCount = $statement->fetch(\PDO::FETCH_ASSOC)) && (int) $resultCount['tables'] > 0) {
+            throw new \Exception(
+                sprintf('Your \'%s\' database is not empty, please remove all your tables or drop your database ' .
+                    'then click on refresh to retry', $parameters['db_configuration'])
+            );
+        } else {
+            //If it is empty, create table
+            $db->exec('use ' . $parameters['db_configuration']);
+            $result = splitQueries('../../createTables.sql', ';', $db, '../../tmp/createTables');
+            if ("0" != $result) {
+                $return['msg'] = $result;
+                echo json_encode($return);
+                exit;
+            }
+        }
+    }
+} catch (\Exception $e) {
     if (!is_file('../../tmp/createTables')) {
         $return['msg'] = $e->getMessage();
         echo json_encode($return);
         exit;
     }
-}
-
-/**
- * Create tables
- */
-$link->exec('use ' . $parameters['db_configuration']);
-$result = splitQueries('../../createTables.sql', ';', $link, '../../tmp/createTables');
-if ("0" != $result) {
-    $return['msg'] = $result;
-    echo json_encode($return);
-    exit;
 }
 
 $return['result'] = 0;
