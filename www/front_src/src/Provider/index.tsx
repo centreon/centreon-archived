@@ -40,7 +40,8 @@ import {
   userEndpoint,
 } from './endpoint';
 import { DefaultParameters } from './models';
-// import { userDecoder } from './decoder'; //     // TODO uncomment after https://github.com/centreon/centreon/pull/10507
+// TODO uncomment after https://github.com/centreon/centreon/pull/10507
+// import { userDecoder } from './decoder';
 
 dayjs.extend(localizedFormat);
 dayjs.extend(utcPlugin);
@@ -124,7 +125,7 @@ const Provider = ({ children }: Props): JSX.Element => {
         ]) => {
           setUser({
             alias: retrievedUser.alias,
-            default_page: null,
+            default_page: retrievedUser.default_page,
             isExportButtonEnabled: retrievedUser.isExportButtonEnabled,
             locale: retrievedUser.locale || 'en',
             name: retrievedUser.name,
