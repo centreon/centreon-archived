@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
  *
@@ -55,9 +56,9 @@ interface ContactInterface
      * Allow user or not to reach web application.
      *
      * @param bool $isAllowed
-     * @return static
+     * @return self
      */
-    public function setAllowedToReachWeb(bool $isAllowed): static;
+    public function setAllowedToReachWeb(bool $isAllowed): self;
 
     /**
      * Contact name.
@@ -90,9 +91,9 @@ interface ContactInterface
     /**
      * Contact template id.
      *
-     * @return int
+     * @return int|null
      */
-    public function getTemplateId(): int;
+    public function getTemplateId(): ?int;
 
     /**
      * Contact token.
@@ -104,9 +105,9 @@ interface ContactInterface
     /**
      * Contact encoded password.
      *
-     * @return string
+     * @return string|null
      */
-    public function getEncodedPassword(): string;
+    public function getEncodedPassword(): ?string;
 
     /**
      * Returns the roles granted to the user.
@@ -147,7 +148,7 @@ interface ContactInterface
 
     /**
      * @param Page|null $defaultPage
-     * @return static
+     * @return self
      */
-    public function setDefaultPage(?Page $defaultPage): static;
+    public function setDefaultPage(?Page $defaultPage): self;
 }

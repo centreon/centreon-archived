@@ -15,7 +15,8 @@ const externalInterface = Object.keys(interfaces).find(
   (interfaceName) =>
     !interfaceName.includes('docker') &&
     interfaces[interfaceName][0].family === 'IPv4' &&
-    interfaces[interfaceName][0].internal === false,
+    interfaces[interfaceName][0].internal === false &&
+    process.env.IS_STATIC_PORT_FORWARDED,
 );
 
 const devServerAddress = externalInterface
