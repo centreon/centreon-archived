@@ -215,14 +215,14 @@ try {
           recordIssues(
             referenceJobName: "centreon-web/${env.REF_BRANCH}",
             enabledForFailure: true,
-            qualityGates: [[threshold: 1, type: 'DELTA', unstable: false]],
+            qualityGates: [[threshold: 100, type: 'DELTA', unstable: false]],
             tool: phpCodeSniffer(id: 'phpcs', name: 'phpcs', pattern: 'codestyle-be.xml'),
             trendChartType: 'NONE'
           )
           recordIssues(
             referenceJobName: "centreon-web/${env.REF_BRANCH}",
             enabledForFailure: true,
-            qualityGates: [[threshold: 1, type: 'DELTA', unstable: false]],
+            qualityGates: [[threshold: 100, type: 'DELTA', unstable: false]],
             tool: phpStan(id: 'phpstan', name: 'phpstan', pattern: 'phpstan.xml'),
             trendChartType: 'NONE'
           )
