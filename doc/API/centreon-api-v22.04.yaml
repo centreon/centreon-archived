@@ -3937,6 +3937,7 @@ components:
             - password_expiration
             - can_reuse_passwords
             - delay_before_new_password
+            - excluded_users
           properties:
             password_min_length:
               description: minimum length of the password
@@ -3974,12 +3975,36 @@ components:
               maximum: 604800
               default: 900
             password_expiration:
-              description: password expiration time in seconds
-              type: integer
-              nullable: true
-              minimum: 604800
-              maximum: 31557600
-              default: 7776000
+              description: password expiration policy
+              type: object
+              required:
+                - duration
+                - excluded_users
+              properties:
+                expiration:
+                  description: password expiration time in seconds
+                  type: integer
+                  nullable: true
+                  minimum: 604800
+                  maximum: 31557600
+                  default: 7776000
+                excluded_users:
+                  description: list of users without password expiration rule
+                  type: array
+                  items:
+                    type: object
+                    required:
+                      - id
+                      - name
+                    properties:
+                      id:
+                        type: integer
+                        nullable: false
+                        example: 1
+                      name:
+                        type: string
+                        nullable: false
+                        example: api-user
             can_reuse_passwords:
               description: is allowed or not to reuse a password among 3 last
               type: boolean

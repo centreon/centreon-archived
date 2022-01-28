@@ -32,6 +32,18 @@ try {
         "ALTER TABLE `provider_configuration` ADD COLUMN `custom_configuration` JSON NOT NULL AFTER `name`"
     );
 
+    $errorMessage = "Unable to create 'password_expiration_excluded_users' table";
+    $pearDB->query(
+        "CREATE TABLE `password_expiration_excluded_users` (
+        `provider_configuration_id` int(11) NOT NULL,
+        `user_id` int(11) NOT NULL,
+        CONSTRAINT `password_expiration_excluded_users_provider_configuration_id_fk` FOREIGN KEY (`provider_configuration_id`)
+        REFERENCES `provider_configuration` (`id`) ON DELETE CASCADE,
+        CONSTRAINT `password_expiration_excluded_users_provider_user_id_fk` FOREIGN KEY (`user_id`)
+        REFERENCES `contact` (`contact_id`) ON DELETE CASCADE,
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
+    );
+
     $errorMessage = "Unable to insert default local security policy configuration";
     $localProviderConfiguration = json_encode([
         "password_security_policy" => [
