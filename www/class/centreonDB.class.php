@@ -64,7 +64,6 @@ class CentreonDB extends \PDO
     protected $requestExecuted;
     protected $requestSuccessful;
     protected $lineRead;
-    protected $debug;
 
     /**
      * @var int
@@ -86,7 +85,7 @@ class CentreonDB extends \PDO
      *
      * @throws Exception
      */
-    public function __construct($db = self::LABEL_DB_CONFIGURATION, $retry = 3, $silent = false)
+    public function __construct($db = self::LABEL_DB_CONFIGURATION, $retry = 3)
     {
         try {
             $conf_centreon['hostCentreon'] = hostCentreon;
@@ -102,16 +101,11 @@ class CentreonDB extends \PDO
             $this->centreon_path = _CENTREON_PATH_;
             $this->retry = $retry;
 
-            $this->debug = 0;
-            if (false === $silent) {
-                $this->debug = 1;
-            }
-
             $this->options = [
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
                 PDO::ATTR_STATEMENT_CLASS => [
                     CentreonDBStatement::class,
-                    [$this, $this->log, $this->debug],
+                    [$this->log],
                 ],
                 PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8',
                 PDO::MYSQL_ATTR_LOCAL_INFILE => true,
@@ -134,15 +128,13 @@ class CentreonDB extends \PDO
                 'port' => $this->db_port
             ];
 
-            switch (strtolower($db)) {
-                case self::LABEL_DB_REALTIME:
-                    $this->dsn['hostspec'] = $conf_centreon["hostCentstorage"];
-                    $this->dsn['database'] = $conf_centreon["dbcstg"];
-                    break;
-                default:
-                    $this->dsn['hostspec'] = $conf_centreon["hostCentreon"];
-                    $this->dsn['database'] = $conf_centreon["db"];
-                    break;
+            if (strtolower($db) == self::LABEL_DB_REALTIME) {
+                $this->dsn['hostspec'] = $conf_centreon["hostCentstorage"];
+                $this->dsn['database'] = $conf_centreon["dbcstg"];
+            } else {
+                $this->dsn['hostspec'] = $conf_centreon["hostCentreon"];
+                $this->dsn['database'] = $conf_centreon["db"];
+                break;
             }
 
             /*
@@ -160,7 +152,7 @@ class CentreonDB extends \PDO
                 $this->options
             );
         } catch (Exception $e) {
-            if (false === $silent && php_sapi_name() != "cli") {
+            if (php_sapi_name() != "cli") {
                 $this->displayConnectionErrorPage($e->getMessage());
             } else {
                 throw new Exception($e->getMessage());
@@ -238,9 +230,7 @@ class CentreonDB extends \PDO
             $str = htmlspecialchars($str);
         }
 
-        $escapedStr = addslashes($str);
-
-        return $escapedStr;
+        return addslashes($str);
     }
 
     /**
@@ -267,10 +257,10 @@ class CentreonDB extends \PDO
             }
         } catch (\PDOException $e) {
             // skip if we use CentreonDBStatement::execute method
-            if ($this->debug && is_null($parameters)) {
+            if (is_null($parameters)) {
                 $string = str_replace("`", "", $queryString);
                 $string = str_replace('*', "\*", $string);
-                $this->log->insertLog(2, " QUERY : " . $string);
+                $this->logSqlError($string, $e->getMessage());
             }
 
             throw $e;
@@ -301,9 +291,7 @@ class CentreonDB extends \PDO
             $rows = $result->fetchAll();
             $this->requestSuccessful++;
         } catch (\PDOException $e) {
-            if ($this->debug) {
-                $this->log->insertLog(2, $e->getMessage() . " QUERY : " . $query_string);
-            }
+            $this->logSqlError($query_string, $e->getMessage());
             throw new \PDOException($e->getMessage(), hexdec($e->getCode()));
         }
 
@@ -378,7 +366,6 @@ class CentreonDB extends \PDO
          */
         if ($res = $this->query("SELECT VERSION() AS mysql_version")) {
             $row = $res->fetch();
-            $version = $row['mysql_version'];
             $info['version'] = $row['mysql_version'];
             if ($dbResult = $this->query("SHOW TABLE STATUS FROM `" . $this->dsn['database'] . "`")) {
                 while ($data = $dbResult->fetch()) {
@@ -441,10 +428,13 @@ class CentreonDB extends \PDO
             }
             return 0; // column to add
         } catch (\PDOException $e) {
-            if ($this->debug) {
-                $this->log->insertLog(2, $e->getMessage() . " QUERY : " . $query);
-            }
+            $this->logSqlError($query, $e->getMessage());
             return -1;
         }
+    }
+
+    private function logSqlError(string $query, string $message)
+    {
+        $this->log->insertLog(2, $message . " QUERY : " . $query);
     }
 }
