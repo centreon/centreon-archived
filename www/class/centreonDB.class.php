@@ -134,7 +134,6 @@ class CentreonDB extends \PDO
             } else {
                 $this->dsn['hostspec'] = $conf_centreon["hostCentreon"];
                 $this->dsn['database'] = $conf_centreon["db"];
-                break;
             }
 
             /*
