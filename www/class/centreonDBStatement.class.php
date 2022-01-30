@@ -44,36 +44,30 @@ require_once realpath(dirname(__FILE__) . "/centreonDB.class.php");
 
 class CentreonDBStatement extends \PDOStatement
 {
-    public $dbh;
-    public $fetchAll;
+    /**
+     * @var array
+     */
+    public $allFetched;
 
     /**
      * @var CentreonLog
      */
     private $log;
     
-    /**
-     *
-     * @var bool
-     */
-    private $debug;
-
-    protected function __construct($dbh, CentreonLog $log = null, $debug = null)
+    protected function __construct(CentreonLog $log = null)
     {
-        $this->dbh = $dbh;
         $this->log = $log;
-        $this->debug = $debug ? true : false;
-        $this->fetchAll = null;
+        $this->allFetched = null;
     }
 
     public function fetch($fetch_style = null, $cursor_orientation = PDO::FETCH_ORI_NEXT, $cursor_offset = 0)
     {
-        if (is_null($this->fetchAll)) {
+        if (is_null($this->allFetched)) {
             return parent::fetch();
-        } elseif (count($this->fetchAll) <= 0) {
+        } elseif (count($this->allFetched) <= 0) {
             return false;
         } else {
-            return array_shift($this->fetchAll);
+            return array_shift($this->allFetched);
         }
     }
 
@@ -89,15 +83,15 @@ class CentreonDBStatement extends \PDOStatement
 
     public function numRows()
     {
-        if (is_null($this->fetchAll)) {
-            $this->fetchAll = $this->fetchAll();
+        if (is_null($this->allFetched)) {
+            $this->allFetched = $this->fetchAll();
         }
-        return count($this->fetchAll);
+        return count($this->allFetched);
     }
 
     public function execute($parameters = null)
     {
-        $this->fetchAll = null;
+        $this->allFetched = null;
 
         try {
             $result = parent::execute($parameters);
@@ -105,7 +99,7 @@ class CentreonDBStatement extends \PDOStatement
             if ($this->debug) {
                 $string = str_replace("`", "", $this->queryString);
                 $string = str_replace('*', "\*", $string);
-                $this->log->insertLog(2, " QUERY : " . $string . ", " . json_encode($parameters));
+                $this->log->insertLog(2, $e->getMessage() . " QUERY : " . $string . ", " . json_encode($parameters));
             }
 
             throw new \PDOException($e->getMessage(), hexdec($e->getCode()));

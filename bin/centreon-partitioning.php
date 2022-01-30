@@ -51,7 +51,7 @@ if (is_null($table)) {
 
 /* Create partitioned tables */
 $centreonDb = new CentreonDB('centreon');
-$centstorageDb = new CentreonDB('centstorage', 3, false);
+$centstorageDb = new CentreonDB('centstorage', 3);
 $partEngine = new PartEngine();
 
 if (!$partEngine->isCompatible($centstorageDb)) {
