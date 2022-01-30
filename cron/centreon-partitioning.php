@@ -45,7 +45,7 @@ echo "[" . date(DATE_RFC822) . "] PARTITIONING STARTED\n";
 
 /* Create partitioned tables */
 $centreonDb = new CentreonDB('centreon');
-$centstorageDb = new CentreonDB('centstorage', 3, false);
+$centstorageDb = new CentreonDB('centstorage', 3);
 $partEngine = new PartEngine();
 
 if (!$partEngine->isCompatible($centstorageDb)) {
