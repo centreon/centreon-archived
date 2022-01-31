@@ -24,6 +24,7 @@ namespace Centreon\Infrastructure\HostConfiguration\Repository;
 
 use Assert\AssertionFailedException;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
+use Centreon\Domain\HostConfiguration\Host;
 use Centreon\Domain\HostConfiguration\Interfaces\HostGroup\HostGroupReadRepositoryInterface;
 use Centreon\Domain\HostConfiguration\Interfaces\HostGroup\HostGroupWriteRepositoryInterface;
 use Centreon\Domain\HostConfiguration\Model\HostGroup;
@@ -115,6 +116,48 @@ class HostGroupRepositoryRDB extends AbstractRepositoryDRB implements
         ) {
             throw new RepositoryException($ex->getMessage(), 0, $ex);
         }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findByHost(Host $host): array
+    {
+        if ($host->getId() === null) {
+            return [];
+        }
+        $statement = $this->db->prepare(
+            $this->translateDbName(
+                'SELECT hg.*, icon.img_id AS icon_id, icon.img_name AS icon_name,
+                    CONCAT(iconD.dir_name,\'/\',icon.img_path) AS icon_path,
+                    icon.img_comment AS icon_comment, imap.img_id AS imap_id, imap.img_name AS imap_name,
+                    CONCAT(imapD.dir_name,\'/\',imap.img_path) AS imap_path, imap.img_comment AS imap_comment
+                FROM `:db`.hostgroup hg
+                INNER JOIN `:db`.hostgroup_relation hgr
+                    ON hgr.hostgroup_hg_id = hg.hg_id
+                LEFT JOIN `:db`.view_img icon
+                    ON icon.img_id = hg.hg_icon_image
+                LEFT JOIN `:db`.view_img_dir_relation iconR
+                    ON iconR.img_img_id = icon.img_id
+                LEFT JOIN `:db`.view_img_dir iconD
+                    ON iconD.dir_id = iconR.dir_dir_parent_id
+                LEFT JOIN `:db`.view_img imap
+                    ON imap.img_id = hg.hg_map_icon_image
+                LEFT JOIN `:db`.view_img_dir_relation imapR
+                    ON imapR.img_img_id = imap.img_id
+                LEFT JOIN `:db`.view_img_dir imapD
+                    ON imapD.dir_id = imapR.dir_dir_parent_id
+                WHERE hgr.host_host_id = :host_id'
+            )
+        );
+        $statement->bindValue(':host_id', $host->getId(), \PDO::PARAM_INT);
+        $statement->execute();
+
+        $hostGroups = [];
+        while (($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
+            $hostGroups[] = HostGroupFactoryRdb::create($result);
+        }
+        return $hostGroups;
     }
 
     /**
