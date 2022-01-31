@@ -84,68 +84,97 @@ $checkMysqlVersion = "SHOW VARIABLES WHERE Variable_name LIKE 'version%'";
 $alterQuery = "ALTER USER :dbUser@:host IDENTIFIED WITH mysql_native_password BY :dbPass";
 $privileges = [
     'SELECT',
-    'INSERT',
     'UPDATE',
     'DELETE',
+    'INSERT',
     'CREATE',
     'DROP',
-    'RELOAD',
-    'PROCESS',
-    'REFERENCES',
     'INDEX',
     'ALTER',
-    'SHOW DATABASES',
-    'CREATE TEMPORARY TABLES',
     'LOCK TABLES',
-    'EXECUTE',
-    'REPLICATION SLAVE',
-    'REPLICATION CLIENT',
-    'CREATE VIEW',
-    'SHOW VIEW',
-    'CREATE ROUTINE',
-    'ALTER ROUTINE',
-    'CREATE USER',
+    'CREATE TEMPORARY TABLES',
     'EVENT',
-    'TRIGGER'
 ];
 $privilegesQuery = implode(', ', $privileges);
-$query = "GRANT " . $privileges . " ON `%s`.* TO " . $parameters['db_user'] . "@" . $host . " WITH GRANT OPTION";
+$query = "GRANT " . $privilegesQuery . " ON `%s`.* TO " . $parameters['db_user'] . "@" . $host . " WITH GRANT OPTION";
 $flushQuery = "FLUSH PRIVILEGES";
 
 try {
-    $prepareCreate = $link->prepare($createUser);
-    $prepareAlter = $link->prepare($alterQuery);
-    foreach ($queryValues as $key => $value) {
-        $prepareCreate->bindValue($key, $value, \PDO::PARAM_STR);
-        $prepareAlter->bindValue($key, $value, \PDO::PARAM_STR);
-    }
-    // creating the user
-    $prepareCreate->execute();
+    $findUserStatement = $link->prepare("SELECT * FROM mysql.user WHERE User = :dbUser AND Host = :host");
+    $findUserStatement->bindValue(':dbUser', $queryValues[':dbUser'], \PDO::PARAM_STR);
+    $findUserStatement->bindValue(':host', $queryValues[':host'], \PDO::PARAM_STR);
+    $findUserStatement->execute();
+    // If user doesn't exist, create it
+    if ($result = $findUserStatement->fetch(\PDO::FETCH_ASSOC) === false) {
+        $prepareCreate = $link->prepare($createUser);
+        $prepareAlter = $link->prepare($alterQuery);
+        foreach ($queryValues as $key => $value) {
+            $prepareCreate->bindValue($key, $value, \PDO::PARAM_STR);
+            $prepareAlter->bindValue($key, $value, \PDO::PARAM_STR);
+        }
+        // creating the user
+        $prepareCreate->execute();
 
-    // checking mysql version before trying to alter the password plugin
-    $prepareCheckVersion = $link->query($checkMysqlVersion);
-    $versionName = $versionNumber = "";
-    while ($row = $prepareCheckVersion->fetch()) {
-        if ($row['Variable_name'] === "version") {
-            $versionNumber = $row['Variable_name'];
-        } elseif ($row['Variable_name'] === "version_comment") {
-            $versionName = $row['Variable_name'];
+        // checking mysql version before trying to alter the password plugin
+        $prepareCheckVersion = $link->query($checkMysqlVersion);
+        $versionName = $versionNumber = "";
+        while ($row = $prepareCheckVersion->fetch()) {
+            if ($row['Variable_name'] === "version") {
+                $versionNumber = $row['Variable_name'];
+            } elseif ($row['Variable_name'] === "version_comment") {
+                $versionName = $row['Variable_name'];
+            }
+        }
+        if (
+            (strpos($versionName, "MariaDB") !== false && version_compare($versionNumber, '10.2.0') >= 0)
+            || (strpos($versionName, "MySQL") !== false && version_compare($versionNumber, '8.0.0') >= 0)
+        ) {
+            // altering the mysql's password plugin using the ALTER USER request
+            $prepareAlter->execute();
+        }
+
+        // granting privileges
+        $link->exec(sprintf($query, $parameters['db_configuration']));
+        $link->exec(sprintf($query, $parameters['db_storage']));
+
+        // enabling the new parameters
+        $link->exec($flushQuery);
+    } else {
+        //If he exists check the right
+        $privilegesStatement = $link->prepare("SHOW GRANTS FOR :dbUser@:host");
+        $privilegesStatement->bindValue(':dbUser', $queryValues[':dbUser'], \PDO::PARAM_STR);
+        $privilegesStatement->bindValue(':host', $queryValues[':host'], \PDO::PARAM_STR);
+        $privilegesStatement->execute();
+
+        // If rights are found
+        while ($result = $privilegesStatement->fetch(\PDO::FETCH_ASSOC)) {
+            foreach ($result as $grant) {
+                preg_match('/^GRANT\s(.+)\sON\s?(.+)\./', $grant, $matches);
+                if (
+                    str_contains($matches[2], $parameters['db_configuration']) !== false
+                    || str_contains($matches[2], $parameters['db_storage']) !== false
+                ) {
+                    $resultPrivileges = explode(', ', $matches[1]);
+                    $missingPrivileges = [];
+                    foreach ($privileges as $privilege) {
+                        if (!in_array($privilege, $resultPrivileges)) {
+                            $missingPrivileges[] = $privilege;
+                        }
+                    }
+                    if (!empty($missingPrivileges)) {
+                        throw new \Exception(
+                            sprintf(
+                                'Missing privileges %s on user %s',
+                                implode(', ', $missingPrivileges),
+                                $queryValues[':dbUser']
+                            )
+                        );
+                    }
+                }
+            }
         }
     }
-    if ((strpos($versionName, "MariaDB") !== false && version_compare($versionNumber, '10.2.0') >= 0)
-        || (strpos($versionName, "MySQL") !== false && version_compare($versionNumber, '8.0.0') >= 0)
-    ) {
-        // altering the mysql's password plugin using the ALTER USER request
-        $prepareAlter->execute();
-    }
-
-    // granting privileges
-    $link->exec(sprintf($query, $parameters['db_configuration']));
-    $link->exec(sprintf($query, $parameters['db_storage']));
-
-    // enabling the new parameters
-    $link->exec($flushQuery);
-} catch (\PDOException $e) {
+} catch (\Exception $e) {
     $return['msg'] = $e->getMessage();
     echo json_encode($return);
     exit;
