@@ -337,7 +337,7 @@ try {
   stage("$DOCKER_STAGE") {
     def parallelSteps = [:]
     // def osBuilds = isStableBuild() ? ['centos7', 'centos8'] : ['centos7']
-    def osBuilds = 'centos7'
+    def osBuilds = ['centos7']
     for (x in osBuilds) {
       def osBuild = x
       parallelSteps[osBuild] = {
