@@ -23,26 +23,34 @@ declare(strict_types=1);
 namespace Core\Infrastructure\Security\ProviderConfiguration\Local\Repository;
 
 use Core\Domain\Security\ProviderConfiguration\Local\Model\Configuration;
+use Core\Infrastructure\Configuration\User\Repository\DbUserFactory;
 
 class DbConfigurationFactory
 {
     /**
      * @param array<string,mixed> $configuration
+     * @param array<string,mixed> $excludedUsers
      * @return Configuration
      */
-    public static function createFromRecord(array $configuration): Configuration
+    public static function createFromRecord(array $configuration, array $excludedUsers): Configuration
     {
+        $users = [];
+        foreach ($excludedUsers as $user) {
+            $users[] = DbUserFactory::createFromRecord($user);
+        }
+
         return new Configuration(
-            $configuration['custom_configuration']['password_security_policy']['password_length'],
-            $configuration['custom_configuration']['password_security_policy']['has_uppercase_characters'],
-            $configuration['custom_configuration']['password_security_policy']['has_lowercase_characters'],
-            $configuration['custom_configuration']['password_security_policy']['has_numbers'],
-            $configuration['custom_configuration']['password_security_policy']['has_special_characters'],
-            $configuration['custom_configuration']['password_security_policy']['can_reuse_passwords'],
-            $configuration['custom_configuration']['password_security_policy']['attempts'],
-            $configuration['custom_configuration']['password_security_policy']['blocking_duration'],
-            $configuration['custom_configuration']['password_security_policy']['password_expiration'],
-            $configuration['custom_configuration']['password_security_policy']['delay_before_new_password'],
+            $configuration['password_security_policy']['password_length'],
+            $configuration['password_security_policy']['has_uppercase_characters'],
+            $configuration['password_security_policy']['has_lowercase_characters'],
+            $configuration['password_security_policy']['has_numbers'],
+            $configuration['password_security_policy']['has_special_characters'],
+            $configuration['password_security_policy']['can_reuse_passwords'],
+            $configuration['password_security_policy']['attempts'],
+            $configuration['password_security_policy']['blocking_duration'],
+            $configuration['password_security_policy']['password_expiration_delay'],
+            $users,
+            $configuration['password_security_policy']['delay_before_new_password'],
         );
     }
 }

@@ -46,7 +46,7 @@ class DbConfigurationFactoryTest extends TestCase
             'can_reuse_passwords' => true,
             'attempts' => Configuration::MIN_ATTEMPTS,
             'blocking_duration' => Configuration::MIN_BLOCKING_DURATION,
-            'password_expiration' => Configuration::MIN_PASSWORD_EXPIRATION,
+            'password_expiration_delay' => Configuration::MIN_PASSWORD_EXPIRATION_DELAY,
             'delay_before_new_password' => Configuration::MIN_NEW_PASSWORD_DELAY,
         ];
     }
@@ -64,11 +64,9 @@ class DbConfigurationFactoryTest extends TestCase
         )->getMessage());
 
         $configuration = [
-            'custom_configuration' => [
-                'password_security_policy' => $this->securityPolicyData,
-            ],
+            'password_security_policy' => $this->securityPolicyData,
         ];
-        DbConfigurationFactory::createFromRecord($configuration);
+        DbConfigurationFactory::createFromRecord($configuration, []);
     }
 
     /**
@@ -85,11 +83,9 @@ class DbConfigurationFactoryTest extends TestCase
         )->getMessage());
 
         $configuration = [
-            'custom_configuration' => [
-                'password_security_policy' => $this->securityPolicyData,
-            ],
+            'password_security_policy' => $this->securityPolicyData,
         ];
-        DbConfigurationFactory::createFromRecord($configuration);
+        DbConfigurationFactory::createFromRecord($configuration, []);
     }
 
     /**
@@ -106,11 +102,9 @@ class DbConfigurationFactoryTest extends TestCase
         )->getMessage());
 
         $configuration = [
-            'custom_configuration' => [
-                'password_security_policy' => $this->securityPolicyData,
-            ],
+            'password_security_policy' => $this->securityPolicyData,
         ];
-        DbConfigurationFactory::createFromRecord($configuration);
+        DbConfigurationFactory::createFromRecord($configuration, []);
     }
 
     /**
@@ -127,11 +121,9 @@ class DbConfigurationFactoryTest extends TestCase
         )->getMessage());
 
         $configuration = [
-            'custom_configuration' => [
-                'password_security_policy' => $this->securityPolicyData,
-            ],
+            'password_security_policy' => $this->securityPolicyData,
         ];
-        DbConfigurationFactory::createFromRecord($configuration);
+        DbConfigurationFactory::createFromRecord($configuration, []);
     }
 
     /**
@@ -148,11 +140,9 @@ class DbConfigurationFactoryTest extends TestCase
         )->getMessage());
 
         $configuration = [
-            'custom_configuration' => [
-                'password_security_policy' => $this->securityPolicyData,
-            ],
+            'password_security_policy' => $this->securityPolicyData,
         ];
-        DbConfigurationFactory::createFromRecord($configuration);
+        DbConfigurationFactory::createFromRecord($configuration, []);
     }
 
     /**
@@ -169,11 +159,9 @@ class DbConfigurationFactoryTest extends TestCase
         )->getMessage());
 
         $configuration = [
-            'custom_configuration' => [
-                'password_security_policy' => $this->securityPolicyData,
-            ],
+            'password_security_policy' => $this->securityPolicyData,
         ];
-        DbConfigurationFactory::createFromRecord($configuration);
+        DbConfigurationFactory::createFromRecord($configuration, []);
     }
 
     /**
@@ -181,20 +169,18 @@ class DbConfigurationFactoryTest extends TestCase
      */
     public function testPasswordExpirationTooSmallException(): void
     {
-        $this->securityPolicyData['password_expiration'] = Configuration::MIN_PASSWORD_EXPIRATION - 1;
+        $this->securityPolicyData['password_expiration_delay'] = Configuration::MIN_PASSWORD_EXPIRATION_DELAY - 1;
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage(AssertionException::min(
-            $this->securityPolicyData['password_expiration'],
-            Configuration::MIN_PASSWORD_EXPIRATION,
-            'Configuration::passwordExpiration'
+            $this->securityPolicyData['password_expiration_delay'],
+            Configuration::MIN_PASSWORD_EXPIRATION_DELAY,
+            'Configuration::passwordExpirationDelay'
         )->getMessage());
 
         $configuration = [
-            'custom_configuration' => [
-                'password_security_policy' => $this->securityPolicyData,
-            ],
+            'password_security_policy' => $this->securityPolicyData,
         ];
-        DbConfigurationFactory::createFromRecord($configuration);
+        DbConfigurationFactory::createFromRecord($configuration, []);
     }
 
     /**
@@ -202,20 +188,18 @@ class DbConfigurationFactoryTest extends TestCase
      */
     public function testPasswordExpirationTooHighException(): void
     {
-        $this->securityPolicyData['password_expiration'] = Configuration::MAX_PASSWORD_EXPIRATION + 1;
+        $this->securityPolicyData['password_expiration_delay'] = Configuration::MAX_PASSWORD_EXPIRATION_DELAY + 1;
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage(AssertionException::max(
-            $this->securityPolicyData['password_expiration'],
-            Configuration::MAX_PASSWORD_EXPIRATION,
-            'Configuration::passwordExpiration'
+            $this->securityPolicyData['password_expiration_delay'],
+            Configuration::MAX_PASSWORD_EXPIRATION_DELAY,
+            'Configuration::passwordExpirationDelay'
         )->getMessage());
 
         $configuration = [
-            'custom_configuration' => [
-                'password_security_policy' => $this->securityPolicyData,
-            ],
+            'password_security_policy' => $this->securityPolicyData,
         ];
-        DbConfigurationFactory::createFromRecord($configuration);
+        DbConfigurationFactory::createFromRecord($configuration, []);
     }
 
     /**
@@ -232,11 +216,9 @@ class DbConfigurationFactoryTest extends TestCase
         )->getMessage());
 
         $configuration = [
-            'custom_configuration' => [
-                'password_security_policy' => $this->securityPolicyData,
-            ],
+            'password_security_policy' => $this->securityPolicyData,
         ];
-        DbConfigurationFactory::createFromRecord($configuration);
+        DbConfigurationFactory::createFromRecord($configuration, []);
     }
 
     /**
@@ -253,11 +235,9 @@ class DbConfigurationFactoryTest extends TestCase
         )->getMessage());
 
         $configuration = [
-            'custom_configuration' => [
-                'password_security_policy' => $this->securityPolicyData,
-            ],
+            'password_security_policy' => $this->securityPolicyData,
         ];
-        DbConfigurationFactory::createFromRecord($configuration);
+        DbConfigurationFactory::createFromRecord($configuration, []);
     }
 
     /**
@@ -266,11 +246,9 @@ class DbConfigurationFactoryTest extends TestCase
     public function testConfigurationCorrectlyCreated(): void
     {
         $configuration = [
-            'custom_configuration' => [
-                'password_security_policy' => $this->securityPolicyData,
-            ],
+            'password_security_policy' => $this->securityPolicyData,
         ];
-        $createdSecurityPolicy = DbConfigurationFactory::createFromRecord($configuration);
+        $createdSecurityPolicy = DbConfigurationFactory::createFromRecord($configuration, []);
 
         $this->assertEquals(
             $this->securityPolicyData['password_length'],
@@ -305,8 +283,8 @@ class DbConfigurationFactoryTest extends TestCase
             $createdSecurityPolicy->getBlockingDuration()
         );
         $this->assertEquals(
-            $this->securityPolicyData['password_expiration'],
-            $createdSecurityPolicy->getPasswordExpiration()
+            $this->securityPolicyData['password_expiration_delay'],
+            $createdSecurityPolicy->getPasswordExpirationDelay()
         );
         $this->assertEquals(
             $this->securityPolicyData['delay_before_new_password'],

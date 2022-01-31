@@ -2395,7 +2395,7 @@ CREATE TABLE `password_expiration_excluded_users` (
   CONSTRAINT `password_expiration_excluded_users_provider_configuration_id_fk` FOREIGN KEY (`provider_configuration_id`)
   REFERENCES `provider_configuration` (`id`) ON DELETE CASCADE,
   CONSTRAINT `password_expiration_excluded_users_provider_user_id_fk` FOREIGN KEY (`user_id`)
-  REFERENCES `contact` (`contact_id`) ON DELETE CASCADE,
+  REFERENCES `contact` (`contact_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `security_token` (

@@ -50,20 +50,61 @@ class DbReadConfigurationRepository extends AbstractRepositoryDRB implements Rea
      */
     public function findConfiguration(): ?Configuration
     {
+        $configuration = null;
+
+        $customConfiguration = $this->findCustomConfiguration();
+        if ($customConfiguration !== null) {
+            $excludedUsers = $this->findExcludedUsers();
+            $configuration = DbConfigurationFactory::createFromRecord($customConfiguration, $excludedUsers);
+        }
+
+        return $configuration;
+    }
+
+    /**
+     * Find custom configuration and validate it
+     *
+     * @return array<string,mixed>|null
+     */
+    private function findCustomConfiguration(): ?array
+    {
         $statement = $this->db->query(
             "SELECT `custom_configuration`
             FROM `provider_configuration`
             WHERE `name` = 'local'"
         );
 
-        $configuration = null;
+        $customConfiguration = null;
         if ($statement !== false && $result = $statement->fetch(\PDO::FETCH_ASSOC)) {
             $this->validateReadCustomConfiguration($result['custom_configuration']);
-            $result['custom_configuration'] = json_decode($result['custom_configuration'], true);
-            $configuration = DbConfigurationFactory::createFromRecord($result);
+            $customConfiguration = json_decode($result['custom_configuration'], true);
         }
 
-        return $configuration;
+        return $customConfiguration;
+    }
+
+    /**
+     * Find excluded users from password expiration
+     *
+     * @return array<string,mixed>
+     */
+    private function findExcludedUsers(): array
+    {
+        $statement = $this->db->query(
+            "SELECT c.`contact_id`, c.`contact_alias`, c.`contact_name`, c.`contact_email`, c.`contact_admin`
+            FROM `password_expiration_excluded_users` peeu
+            INNER JOIN `provider_configuration` pc ON pc.`id` = peeu.`provider_configuration_id`
+              AND pc.`name` = 'local'
+            INNER JOIN `contact` c ON c.`contact_id` = peeu.`user_id`
+              AND c.`contact_register` = 1"
+        );
+
+        $excludedUsers = [];
+        if ($statement !== false && $result = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            $excludedUsers[] = $result;
+        }
+
+        return $excludedUsers;
     }
 
     /**

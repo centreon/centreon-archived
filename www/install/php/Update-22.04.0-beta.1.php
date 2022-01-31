@@ -40,8 +40,8 @@ try {
         CONSTRAINT `password_expiration_excluded_users_provider_configuration_id_fk` FOREIGN KEY (`provider_configuration_id`)
         REFERENCES `provider_configuration` (`id`) ON DELETE CASCADE,
         CONSTRAINT `password_expiration_excluded_users_provider_user_id_fk` FOREIGN KEY (`user_id`)
-        REFERENCES `contact` (`contact_id`) ON DELETE CASCADE,
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
+        REFERENCES `contact` (`contact_id`) ON DELETE CASCADE
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8"
     );
 
     $errorMessage = "Unable to insert default local security policy configuration";
@@ -54,7 +54,7 @@ try {
             "has_special_characters" => true,
             "attempts" => 5,
             "blocking_duration" => 900,
-            "password_expiration" => 7776000,
+            "password_expiration_delay" => 7776000,
             "delay_before_new_password" => 3600,
             "can_reuse_passwords" => false,
         ],
