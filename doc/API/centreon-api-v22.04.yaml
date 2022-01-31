@@ -705,6 +705,26 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /configuration/users:
+    get:
+      tags:
+      - User
+      summary: get configured users
+      description: get list of configured users
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Configuration.User'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
   /configuration/users/current/parameters:
     get:
       tags:
@@ -3978,11 +3998,11 @@ components:
               description: password expiration policy
               type: object
               required:
-                - duration
+                - expiration_delay
                 - excluded_users
               properties:
-                expiration:
-                  description: password expiration time in seconds
+                expiration_delay:
+                  description: password expiration delay in seconds
                   type: integer
                   nullable: true
                   minimum: 604800
@@ -3992,19 +4012,12 @@ components:
                   description: list of users without password expiration rule
                   type: array
                   items:
-                    type: object
-                    required:
-                      - id
-                      - name
-                    properties:
-                      id:
-                        type: integer
-                        nullable: false
-                        example: 1
-                      name:
-                        type: string
-                        nullable: false
-                        example: api-user
+                    type: string
+                    description: user login
+                    nullable: false
+                    example: admin
+                    minLength: 1
+                    maxLength: 255
             can_reuse_passwords:
               description: is allowed or not to reuse a password among 3 last
               type: boolean
@@ -4052,6 +4065,25 @@ components:
                 type: string
                 description: "Comment to add to the monitored resource"
                 example: "Resource is not-OK but it is expected"
+    Configuration.User:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: User id
+          example: 1
+        alias:
+          type: string
+          description: User alias / login
+          example: admin
+        email:
+          type: string
+          description: email address
+          example: root@localhost
+        is_admin:
+          type: boolean
+          description: is admin or not
+          example: true
     Configuration.Host.Category:
       type: object
       properties:
