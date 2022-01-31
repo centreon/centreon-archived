@@ -269,7 +269,7 @@ try {
         stash name: "rpms-centos7", includes: 'output/noarch/*.rpm'
         sh 'rm -rf output'
       }
-    },
+    }
 //    'rpm packaging centos8': {
 //      node {
 //        checkoutCentreonBuild()           
