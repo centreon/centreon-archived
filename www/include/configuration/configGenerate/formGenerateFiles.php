@@ -502,7 +502,8 @@ $tpl->display("formGenerateFiles.ihtml");
         divErrors.style.visibility = 'hidden';
         tdEl2.appendChild(divErrors);
         for (var i = 0; i < errors.length; i++) {
-            divErrors.innerHTML += errors.item(i).firstChild.data;
+            divErrors.innerHTML += errors.get(i).firstChild.data;
+            divErrors.innerHTML += "<br/>";
         }
     }
 

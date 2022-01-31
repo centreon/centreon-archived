@@ -55,7 +55,7 @@ import { getColumns, defaultSelectedColumnIds } from './columns';
 import Listing from '.';
 
 jest.mock('@centreon/ui-context', () =>
-  jest.requireActual('@centreon/centreon-frontend/packages/ui-context'),
+  jest.requireActual('centreon-frontend/packages/ui-context'),
 );
 
 const columns = getColumns({

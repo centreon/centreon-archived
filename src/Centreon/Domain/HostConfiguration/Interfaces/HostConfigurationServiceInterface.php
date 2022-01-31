@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\HostConfiguration\Interfaces;
 
+use Centreon\Domain\HostConfiguration\Exception\HostConfigurationServiceException;
 use Centreon\Domain\HostConfiguration\Host;
 use Centreon\Domain\HostConfiguration\HostConfigurationException;
 use Centreon\Domain\HostConfiguration\HostMacro;
@@ -32,7 +33,7 @@ interface HostConfigurationServiceInterface
      * Add a host.
      *
      * @param Host $host
-     * @throws HostConfigurationException
+     * @throws HostConfigurationServiceException
      */
     public function addHost(Host $host): void;
 
@@ -112,4 +113,12 @@ interface HostConfigurationServiceInterface
      * @throws HostConfigurationException
      */
     public function findHostNamesAlreadyUsed(array $namesToCheck): array;
+
+    /**
+     * Update a host.
+     *
+     * @param Host $host
+     * @throws HostConfigurationServiceException
+     */
+    public function updateHost(Host $host): void;
 }
