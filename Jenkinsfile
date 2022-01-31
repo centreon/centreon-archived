@@ -148,7 +148,7 @@ try {
             error "Pipeline aborted due to quality gate failure: ${qualityGate.status}"
           }
         }
-      }
+      },
     }
     //'unit tests centos8': {
     //  node {
