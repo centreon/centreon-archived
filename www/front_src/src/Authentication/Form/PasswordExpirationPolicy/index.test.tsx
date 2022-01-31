@@ -138,13 +138,6 @@ describe('Password expiration policy', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText(labelPasswordExpirationPolicy),
-      ).toBeInTheDocument();
-    });
-    expect(screen.getByText(labelPasswordExpiration)).toBeInTheDocument();
-
-    await waitFor(() => {
-      expect(
         screen.getByText(labelChooseADurationBetween7DaysAnd12Months),
       ).toBeInTheDocument();
     });
