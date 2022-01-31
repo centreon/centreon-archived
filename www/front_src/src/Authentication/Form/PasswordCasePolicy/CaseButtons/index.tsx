@@ -6,7 +6,7 @@ import { FormikValues, useFormikContext } from 'formik';
 import { Button, ButtonGroup, ButtonProps, useTheme } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 
-import { useMemoComponent } from '@centreon/centreon-frontend/packages/centreon-ui/src';
+import { useMemoComponent } from '@centreon/ui';
 
 import {
   labelForceToUseLowerCase,
