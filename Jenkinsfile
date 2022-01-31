@@ -221,7 +221,7 @@ try {
         checkoutCentreonBuild(buildBranch)
         sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh centos7"
       }
-    },
+    }
     //'Docker centos8': {
     //  node {
     //    checkoutCentreonBuild(buildBranch)
