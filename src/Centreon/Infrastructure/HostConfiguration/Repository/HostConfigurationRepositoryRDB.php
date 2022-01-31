@@ -111,7 +111,7 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
         if ($host->getExtendedHost() !== null) {
             $this->addExtendedHost($hostId, $host->getExtendedHost());
         }
-        $this->linkHostToTemplates($hostId, $host->getTemplates());
+        $this->linkHostTemplatesToHost($hostId, $host->getTemplates());
         $this->linkCategoryToHost($host);
         $this->linkSeveritiesToHost($host);
         $this->linkHostGroupsToHost($host);
@@ -193,7 +193,7 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
      * @throws RepositoryException
      * @throws \Exception
      */
-    private function linkHostToTemplates(int $hostId, array $hostTemplates): void
+    private function linkHostTemplatesToHost(int $hostId, array $hostTemplates): void
     {
         if (empty($hostTemplates)) {
             return;
@@ -202,38 +202,10 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
         foreach ($hostTemplates as $order => $template) {
             if ($template->getId() !== null) {
                 // Associate the host and host template using template id
-                // $request = $this->translateDbName(
-                //     'INSERT INTO `:db`.host_template_relation
-                //     (`host_host_id`, `host_tpl_id`, `order`)
-                //     VALUES (:host_id, :template_id, :order)'
-                // );
-                // $statement = $this->db->prepare($request);
-                // $statement->bindValue(':host_id', $hostId, \PDO::PARAM_INT);
-                // $statement->bindValue(':template_id', $template->getId(), \PDO::PARAM_INT);
-                // $statement->bindValue(':order', ((int) $order) + 1, \PDO::PARAM_INT);
-                // $statement->execute();
-                // if ($statement->rowCount() === 0) {
-                //     throw new RepositoryException(sprintf(_('Template with id %d not found'), $template->getId()));
-                // }
                 $this->addHostTemplateToHostById($hostId, $template->getId(), ((int) $order) + 1);
             } elseif (!empty($template->getName())) {
                 // Associate the host and host template using template name
                 $this->addHostTemplateToHostByName($hostId, $template->getName(), ((int) $order) + 1);
-                // $request = $this->translateDbName(
-                //     'INSERT INTO `:db`.host_template_relation
-                //     (`host_host_id`, `host_tpl_id`, `order`)
-                //     SELECT :host_id, host.host_id, :order
-                //     FROM `:db`.host
-                //     WHERE host.host_name = :template_name'
-                // );
-                // $statement = $this->db->prepare($request);
-                // $statement->bindValue(':host_id', $hostId, \PDO::PARAM_INT);
-                // $statement->bindValue(':template_name', $template->getName(), \PDO::PARAM_STR);
-                // $statement->bindValue(':order', ((int) $order), \PDO::PARAM_INT);
-                // $statement->execute();
-                // if ($statement->rowCount() === 0) {
-                //     throw new RepositoryException(sprintf(_('Template %s not found'), $template->getName()));
-                // }
             }
         }
     }
