@@ -215,10 +215,10 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
                 // if ($statement->rowCount() === 0) {
                 //     throw new RepositoryException(sprintf(_('Template with id %d not found'), $template->getId()));
                 // }
-                $this->associateHostToTemplateById($hostId, $template->getId(), ((int) $order) + 1);
+                $this->addHostTemplateToHostById($hostId, $template->getId(), ((int) $order) + 1);
             } elseif (!empty($template->getName())) {
                 // Associate the host and host template using template name
-                $this->associateHostToTemplateByName($hostId, $template->getName(), ((int) $order) + 1);
+                $this->addHostTemplateToHostByName($hostId, $template->getName(), ((int) $order) + 1);
                 // $request = $this->translateDbName(
                 //     'INSERT INTO `:db`.host_template_relation
                 //     (`host_host_id`, `host_tpl_id`, `order`)
@@ -816,7 +816,7 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
             // Update links between host groups and hosts
             $this->removeHostGroupsToHost($host);
             $this->linkHostGroupsToHost($host);
-            $this->updateHostLinkToTemplates($host->getId(), $host->getTemplates());
+            $this->updateHostTemplatesLinkToHost($host->getId(), $host->getTemplates());
 
             if (!$isAlreadyInTransaction) {
                 $this->db->commit();
@@ -850,7 +850,7 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
      * @param array $hostTemplates
      * @return void
      */
-    private function updateHostLinkToTemplates(int $hostId, array $hostTemplates): void
+    private function updateHostTemplatesLinkToHost(int $hostId, array $hostTemplates): void
     {
         if (empty($hostTemplates)) {
             return;
@@ -867,22 +867,17 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
 
         $existingTemplates = $statement->fetchAll(\PDO::FETCH_ASSOC);
 
-        // if (empty($existingTemplates)) {
-        //     $this->linkToTemplate($hostId, $hostTemplates);
-        //     return;
-        // }
-
         $existingTemplates = array_column($existingTemplates, 'host_name', 'host_tpl_id');
         $order = count($existingTemplates) + 1;
 
         foreach ($hostTemplates as $template) {
             if ($template->getId() !== null && array_key_exists($template->getId(), $existingTemplates) === false) {
                 // Associate the host and host template using template id
-                $this->associateHostToTemplateById($hostId, $template->getId(), $order);
+                $this->addHostTemplateToHostById($hostId, $template->getId(), $order);
                 $order++;
             } elseif (!empty($template->getName()) && in_array($template->getName(), $existingTemplates) === false ) {
                 // Associate the host and host template using template name
-                $this->associateHostToTemplateByName($hostId, $template->getName(), $order);
+                $this->addHostTemplateToHostByName($hostId, $template->getName(), $order);
                 $order++;
             }
         }
@@ -897,7 +892,7 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
      * @return void
      * @throws \Exception
      */
-    private function associateHostToTemplateById(int $hostId, int $templateId, int $order): void
+    private function addHostTemplateToHostById(int $hostId, int $templateId, int $order): void
     {
         $request = $this->translateDbName(
             'INSERT INTO `:db`.host_template_relation
@@ -923,7 +918,7 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
      * @return void
      * @throws \Exception
      */
-    private function associateHostToTemplateByName(int $hostId, string $templateName, int $order): void
+    private function addHostTemplateToHostByName(int $hostId, string $templateName, int $order): void
     {
         $request = $this->translateDbName(
             'INSERT INTO `:db`.host_template_relation
