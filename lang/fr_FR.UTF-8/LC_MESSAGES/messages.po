@@ -16318,11 +16318,44 @@ msgstr "Souple"
 msgid "User is not allowed to reach web application"
 msgstr "L'utilisateur n'est pas autorisé à joindre l'application web"
 
+msgid "You are disconnected"
+msgstr "Vous êtes déconnecté"
+
+msgid "Centreon is loading..."
+msgstr "Centreon est en cours de chargement..."
+
+msgid "Login succeeded"
+msgstr "Connexion réussie"
+
+msgid "Login"
+msgstr "Connexion"
+
+msgid "Centreon Logo"
+msgstr "Logo de Centreon"
+
+msgid "You are not allowed to see this page"
+msgstr "Vous n'êtes pas autorisé à voir cette page"
+
+msgid "This page could not be found"
+msgstr "Cette page n'a pas pu être trouvée"
+
 msgid "Successful logout"
 msgstr "Déconnexion réussie"
 
 msgid "No session token provided"
 msgstr "Aucun jeton de session fourni"
 
+msgid "Display the password"
+msgstr "Afficher le mot de passe"
+
+msgid "Hide the password"
+msgstr "Cacher le mot de passe"
+
 msgid "centreon is not properly installed"
 msgstr "centreon n'est pas correctement installé"
+
+msgid "You have been logged out"
+msgstr "Vous avez été déconnecté"
+
+msgid "Profile"
+msgstr "Profil"

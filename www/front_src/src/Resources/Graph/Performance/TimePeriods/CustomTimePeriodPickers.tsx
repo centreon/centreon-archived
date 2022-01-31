@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import dayjs from 'dayjs';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
-import { and, or } from 'ramda';
+import { and, cond, equals } from 'ramda';
 import { useTranslation } from 'react-i18next';
 import { useAtomValue } from 'jotai/utils';
 
@@ -116,24 +116,32 @@ const CustomTimePeriodPickers = ({
   const isInvalidDate = ({ startDate, endDate }): boolean =>
     dayjs(startDate).isSameOrAfter(dayjs(endDate), 'minute');
 
-  const changeDate =
-    ({ property, date }) =>
-    (): void => {
-      const currentDate = customTimePeriod[property];
+  const changeDate = ({ property, date }): void => {
+    const currentDate = customTimePeriod[property];
 
-      if (
-        or(
-          dayjs(date).isSame(dayjs(currentDate)),
-          isInvalidDate({ endDate: end, startDate: start }),
-        )
-      ) {
-        return;
-      }
-      acceptDate({
-        date,
-        property,
-      });
-    };
+    cond([
+      [
+        (): boolean => equals(CustomTimePeriodProperty.start, property),
+        (): void => setStart(date),
+      ],
+      [
+        (): boolean => equals(CustomTimePeriodProperty.end, property),
+        (): void => setEnd(date),
+      ],
+    ])();
+
+    if (
+      dayjs(date).isSame(dayjs(currentDate)) ||
+      isInvalidDate({ endDate: end, startDate: start }) ||
+      !dayjs(date).isValid()
+    ) {
+      return;
+    }
+    acceptDate({
+      date,
+      property,
+    });
+  };
 
   React.useEffect(() => {
     if (

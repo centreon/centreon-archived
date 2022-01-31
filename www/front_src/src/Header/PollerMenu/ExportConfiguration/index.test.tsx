@@ -9,7 +9,7 @@ import {
   waitFor,
   RenderResult,
   screen,
-  withSnackbar,
+  SnackbarProvider,
 } from '@centreon/ui';
 import { refreshIntervalAtom, userAtom } from '@centreon/ui-context';
 
@@ -38,20 +38,18 @@ const ExportConfigurationButton = (): JSX.Element => (
   <ExportConfiguration setIsExportingConfiguration={jest.fn} />
 );
 
-const ExportConfigurationWithSnackbar = withSnackbar({
-  Component: ExportConfigurationButton,
-});
-
 const renderExportConfiguration = (): RenderResult =>
   render(
-    <Provider
-      initialValues={[
-        [userAtom, mockUser],
-        [refreshIntervalAtom, mockRefreshInterval],
-      ]}
-    >
-      <ExportConfigurationWithSnackbar />
-    </Provider>,
+    <SnackbarProvider maxSnackbars={2}>
+      <Provider
+        initialValues={[
+          [userAtom, mockUser],
+          [refreshIntervalAtom, mockRefreshInterval],
+        ]}
+      >
+        <ExportConfigurationButton />
+      </Provider>
+    </SnackbarProvider>,
   );
 
 describe(ExportConfiguration, () => {

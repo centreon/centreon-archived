@@ -3,32 +3,9 @@ import axios from 'axios';
 import { waitFor } from '@testing-library/dom';
 
 import useExternalComponents from './useExternalComponents';
-import ExternalComponents from './models';
+import { retrievedExternalComponents } from './mocks';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
-
-const retrievedExternalComponents: ExternalComponents = {
-  hooks: {
-    '/bam/topcounter': {
-      css: [],
-      js: {
-        bundle: './bundle.js',
-        chunks: ['chunk.js'],
-        commons: ['vendors.js', 'common.js'],
-      },
-    },
-  },
-  pages: {
-    '/bam/page': {
-      css: [],
-      js: {
-        bundle: './bundle.js',
-        chunks: ['chunk.js'],
-        commons: ['vendors.js', 'common.js'],
-      },
-    },
-  },
-};
 
 describe('external components', () => {
   beforeEach(() => {

@@ -26,7 +26,7 @@ import { getData, useRequest } from '@centreon/ui';
 import Navigation, { Page } from './models';
 import navigationAtom from './navigationAtoms';
 
-const navigationEndpoint =
+export const navigationEndpoint =
   './api/internal.php?object=centreon_topology&action=navigationList';
 
 interface UseNavigationState {
