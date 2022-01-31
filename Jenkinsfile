@@ -145,14 +145,14 @@ try {
         }
       }
     },
-    'unit tests centos8': {
-      node {
-        checkoutCentreonBuild(buildBranch)
-        unstash 'tar-sources'
-        sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh centos8"
-        junit 'ut-be.xml,ut-fe.xml'
-      }
-    },
+    //'unit tests centos8': {
+    //  node {
+    //    checkoutCentreonBuild(buildBranch)
+    //    unstash 'tar-sources'
+    //    sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh centos8"
+    //    junit 'ut-be.xml,ut-fe.xml'
+    //  }
+    //},
     'packaging centos7': {
       node {
         checkoutCentreonBuild(buildBranch)
@@ -162,17 +162,17 @@ try {
         stash name: "rpms-centos7", includes: 'output/noarch/*.rpm'
         sh 'rm -rf output'      
       }
-    },
-    'packaging centos8': {
-      node {
-        checkoutCentreonBuild(buildBranch)
-        unstash 'tar-sources'
-        sh "./centreon-build/jobs/web/${serie}/mon-web-package.sh centos8"
-        archiveArtifacts artifacts: "rpms-centos8.tar.gz"
-        stash name: "rpms-centos8", includes: 'output/noarch/*.rpm'
-        sh 'rm -rf output'
-      }
-    }    
+    }
+    //'packaging centos8': {
+    //  node {
+    //    checkoutCentreonBuild(buildBranch)
+    //    unstash 'tar-sources'
+    //    sh "./centreon-build/jobs/web/${serie}/mon-web-package.sh centos8"
+    //    archiveArtifacts artifacts: "rpms-centos8.tar.gz"
+    //    stash name: "rpms-centos8", includes: 'output/noarch/*.rpm'
+    //    sh 'rm -rf output'
+    //  }
+    //}
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
       error("Quality gate failure: ${qualityGate.status}.");
     }
@@ -185,7 +185,7 @@ try {
         unstash 'tar-sources'
         unstash 'api-doc'
         unstash 'rpms-centos7'
-        unstash 'rpms-centos8'
+        //unstash 'rpms-centos8'
         sh "./centreon-build/jobs/web/${serie}/mon-web-delivery.sh"
       }
       if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
@@ -200,13 +200,13 @@ try {
         checkoutCentreonBuild(buildBranch)
         sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh centos7"
       }
-    },
-    'Docker centos8': {
-      node {
-        checkoutCentreonBuild(buildBranch)
-        sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh centos8"
-      }
     }
+    //'Docker centos8': {
+    //  node {
+    //    checkoutCentreonBuild(buildBranch)
+    //    sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh centos8"
+    //  }
+    //}
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
       error('Bundle stage failure.');
     }
@@ -265,7 +265,7 @@ try {
         unstash 'tar-sources'
         unstash 'api-doc'
         unstash 'rpms-centos7'
-        unstash 'rpms-centos8'
+        //unstash 'rpms-centos8'
         sh "./centreon-build/jobs/web/${serie}/mon-web-delivery.sh"
       }
       if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
