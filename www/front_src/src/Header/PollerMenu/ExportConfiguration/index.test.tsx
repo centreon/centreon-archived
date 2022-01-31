@@ -40,16 +40,16 @@ const ExportConfigurationButton = (): JSX.Element => (
 
 const renderExportConfiguration = (): RenderResult =>
   render(
+    <SnackbarProvider maxSnackbars={2}>
     <Provider
       initialValues={[
         [userAtom, mockUser],
         [refreshIntervalAtom, mockRefreshInterval],
       ]}
     >
-      <SnackbarProvider maxSnackbars={2}>
         <ExportConfigurationButton />
-      </SnackbarProvider>
-    </Provider>,
+    </Provider>
+      </SnackbarProvider>,
   );
 
 describe(ExportConfiguration, () => {

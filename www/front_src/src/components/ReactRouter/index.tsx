@@ -10,13 +10,15 @@ import { PageSkeleton, useMemoComponent } from '@centreon/ui';
 
 import internalPagesRoutes from '../../reactRoutes';
 import { dynamicImport } from '../../helpers/dynamicImport';
-import NotAllowedPage from '../../route-components/notAllowedPage';
 import BreadcrumbTrail from '../../BreadcrumbTrail';
 import useNavigation from '../../Navigation/useNavigation';
 import { externalComponentsAtom } from '../../externalComponents/atoms';
 import ExternalComponents, {
   ExternalComponent,
 } from '../../externalComponents/models';
+
+const NotAllowedPage = React.lazy(() => import('../../NotFoundPage'));
+const NotFoundPage = React.lazy(() => import('../../NotFoundPage'));
 
 const PageContainer = styled('div')(({ theme }) => ({
   background: theme.palette.background.default,
@@ -56,6 +58,7 @@ const getExternalPageRoutes = ({
 };
 
 interface Props {
+  allowedPages: Array<string | Array<string>>;
   externalPagesFetched: boolean;
   pages: Record<string, unknown>;
 }
@@ -63,44 +66,53 @@ interface Props {
 const ReactRouterContent = ({
   pages,
   externalPagesFetched,
+  allowedPages,
 }: Props): JSX.Element => {
-  const { allowedPages } = useNavigation();
   const basename = useHref('/');
-  if (!externalPagesFetched || !allowedPages) {
-    return <PageSkeleton />;
-  }
 
-  return (
-    <React.Suspense fallback={<PageSkeleton />}>
-      <Routes>
-        {internalPagesRoutes.map(({ path, comp: Comp, ...rest }) => (
-          <Route
-            element={
-              <PageContainer>
-                {allowedPages.includes(path) ? (
-                  <>
-                    <BreadcrumbTrail path={path} />
-                    <Comp />
-                  </>
-                ) : (
-                  <NotAllowedPage />
-                )}
-              </PageContainer>
-            }
-            key={path}
-            path={path}
-            {...rest}
-          />
-        ))}
-        {getExternalPageRoutes({ allowedPages, basename, pages })}
-        {externalPagesFetched && <Route element={<NotAllowedPage />} />}
-      </Routes>
-    </React.Suspense>
-  );
+  return useMemoComponent({
+    Component: (
+      <React.Suspense fallback={<PageSkeleton />}>
+        <Routes>
+          {internalPagesRoutes.map(({ path, comp: Comp, ...rest }) => (
+            <Route
+              element={
+                <PageContainer>
+                  {allowedPages.includes(path) ? (
+                    <>
+                      <BreadcrumbTrail path={path} />
+                      <Comp />
+                    </>
+                  ) : (
+                    <NotAllowedPage />
+                  )}
+                </PageContainer>
+              }
+              key={path}
+              path={path}
+              {...rest}
+            />
+          ))}
+          {getExternalPageRoutes({ allowedPages, basename, pages })}
+          {externalPagesFetched && (
+            <Route element={<NotFoundPage />} path="*" />
+          )}
+        </Routes>
+      </React.Suspense>
+    ),
+    memoProps: [externalPagesFetched, pages],
+  });
 };
 
 const ReactRouter = (): JSX.Element => {
   const externalComponents = useAtomValue(externalComponentsAtom);
+  const { allowedPages } = useNavigation();
+
+  const externalPagesFetched = not(isNil(externalComponents));
+
+  if (!externalPagesFetched || !allowedPages) {
+    return <PageSkeleton />;
+  }
 
   const pages = propOr<undefined, ExternalComponents | null, ExternalComponent>(
     undefined,
@@ -108,17 +120,13 @@ const ReactRouter = (): JSX.Element => {
     externalComponents,
   );
 
-  const externalPagesFetched = not(isNil(externalComponents));
-
-  return useMemoComponent({
-    Component: (
-      <ReactRouterContent
-        externalPagesFetched={externalPagesFetched}
-        pages={pages}
-      />
-    ),
-    memoProps: [externalPagesFetched, pages],
-  });
+  return (
+    <ReactRouterContent
+      allowedPages={allowedPages}
+      externalPagesFetched={externalPagesFetched}
+      pages={pages}
+    />
+  );
 };
 
 export default ReactRouter;

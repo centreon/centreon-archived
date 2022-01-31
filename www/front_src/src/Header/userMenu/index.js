@@ -9,8 +9,9 @@
 import React, { Component } from 'react';
 
 import classnames from 'classnames';
-import { withTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import { withTranslation, useTranslation } from 'react-i18next';
+import { Link, useNavigate } from 'react-router-dom';
+import { useUpdateAtom } from 'jotai/utils';
 
 import { Typography } from '@mui/material';
 import withStyles from '@mui/styles/withStyles';
@@ -19,11 +20,18 @@ import UserIcon from '@mui/icons-material/AccountCircle';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import CheckIcon from '@mui/icons-material/Check';
 
+import { postData, useRequest, getData, useSnackbar } from '@centreon/ui';
+
 import styles from '../header.scss';
 import Clock from '../Clock';
-import axios from '../../axios';
 import MenuLoader from '../../components/MenuLoader';
 import useNavigation from '../../Navigation/useNavigation';
+import { areUserParametersLoadedAtom } from '../../Main/useUser';
+import { logoutEndpoint } from '../../api/endpoint';
+import reactRoutes from '../../reactRoutes/routeMap';
+
+import { userEndpoint } from './api/endpoint';
+import { labelProfile, labelYouHaveBeenLoggedOut } from './translatedLabels';
 
 const EDIT_PROFILE_TOPOLOGY_PAGE = '50104';
 
@@ -41,8 +49,6 @@ const MuiStyles = createStyles({
 });
 
 class UserMenuContent extends Component {
-  userService = axios('internal.php?object=centreon_topcounter&action=user');
-
   refreshTimeout = null;
 
   state = {
@@ -63,9 +69,9 @@ class UserMenuContent extends Component {
 
   // fetch api to get user data
   getData = () => {
-    this.userService
-      .get()
-      .then(({ data }) => {
+    this.props
+      .getUser()
+      .then((data) => {
         this.setState(
           {
             data,
@@ -124,7 +130,7 @@ class UserMenuContent extends Component {
     }
 
     // check if edit profile page (My Account) is allowed
-    const { allowedPages, t, classes } = this.props;
+    const { allowedPages, t, classes, logout } = this.props;
     const allowEditProfile = allowedPages?.includes(EDIT_PROFILE_TOPOLOGY_PAGE);
 
     const { fullname, username, autologinkey } = data;
@@ -143,6 +149,7 @@ class UserMenuContent extends Component {
         <Clock />
         <div ref={(profile) => (this.profile = profile)}>
           <UserIcon
+            aria-label={t(labelProfile)}
             fontSize="large"
             style={{ color: '#FFFFFF', cursor: 'pointer', marginLeft: 8 }}
             onClick={this.toggle}
@@ -198,6 +205,7 @@ class UserMenuContent extends Component {
                       {copied ? <CheckIcon /> : <FileCopyIcon />}
                     </button>
                     <textarea
+                      readOnly
                       className={styles['hidden-input']}
                       id="autologin-input"
                       ref={(node) => (this.autologinNode = node)}
@@ -207,7 +215,14 @@ class UserMenuContent extends Component {
                 )}
               </ul>
               <div className={styles['submenu-content']}>
-                <a className={styles.logoutLink} href="index.php?disconnect=1">
+                <Link
+                  className={styles.logoutLink}
+                  to="/index.php"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    logout();
+                  }}
+                >
                   <button
                     className={classnames(
                       styles.btn,
@@ -217,7 +232,7 @@ class UserMenuContent extends Component {
                   >
                     {t('Logout')}
                   </button>
-                </a>
+                </Link>
               </div>
             </div>
           </div>
@@ -228,9 +243,40 @@ class UserMenuContent extends Component {
 }
 
 const UserMenu = (props) => {
+  const { t } = useTranslation();
   const { allowedPages } = useNavigation();
+  const { sendRequest: logoutRequest } = useRequest({
+    request: postData,
+  });
+  const { sendRequest: userRequest } = useRequest({
+    request: getData,
+  });
+  const navigate = useNavigate();
+  const { showSuccessMessage } = useSnackbar();
 
-  return <UserMenuContent {...props} allowedPages={allowedPages} />;
+  const setAreUserParametersLoaded = useUpdateAtom(areUserParametersLoadedAtom);
+
+  const logout = () => {
+    logoutRequest({
+      data: {},
+      endpoint: logoutEndpoint,
+    }).then(() => {
+      setAreUserParametersLoaded(false);
+      navigate(reactRoutes.login);
+      showSuccessMessage(t(labelYouHaveBeenLoggedOut));
+    });
+  };
+
+  const getUser = () => userRequest({ endpoint: userEndpoint });
+
+  return (
+    <UserMenuContent
+      {...props}
+      allowedPages={allowedPages}
+      getUser={getUser}
+      logout={logout}
+    />
+  );
 };
 
 export default withStyles(MuiStyles)(withTranslation()(UserMenu));

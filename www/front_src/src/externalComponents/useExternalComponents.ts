@@ -5,7 +5,7 @@ import { getData, useRequest } from '@centreon/ui';
 import { externalComponentsAtom } from './atoms';
 import ExternalComponents from './models';
 
-const externalComponentsEndpoint =
+export const externalComponentsEndpoint =
   './api/internal.php?object=centreon_frontend_component&action=components';
 
 interface UseExternalComponentsState {

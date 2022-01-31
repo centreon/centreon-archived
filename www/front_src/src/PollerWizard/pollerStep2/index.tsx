@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router';
 import { useRequest, postData } from '@centreon/ui';
 
 import Form from '../forms/poller/PollerFormStepTwo';
-import routeMap from '../../reactRoutes/route-map';
+import routeMap from '../../reactRoutes/routeMap';
 import { setPollerWizard } from '../../redux/actions/pollerWizardActions';
 import { WizardFormProps } from '../models';
 

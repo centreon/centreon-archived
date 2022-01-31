@@ -4,7 +4,7 @@
 /* eslint-disable no-multi-assign */
 /* eslint-disable func-names */
 
-import AppProvider from './App';
+import Main from './Main';
 
 // make an IIFE function to allow "await" usage
 // generate an "external" bundle to embed all needed libraries by external pages and hooks
@@ -27,5 +27,5 @@ import AppProvider from './App';
   );
   window.Jotai = await import(/* webpackChunkName: "external" */ 'jotai');
 
-  window.ReactDOM.render(<AppProvider />, document.getElementById('root'));
+  window.ReactDOM.render(<Main />, document.getElementById('root'));
 })();
