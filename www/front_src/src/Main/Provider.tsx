@@ -4,7 +4,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { Provider as JotaiProvider } from 'jotai';
 import { not, startsWith, tail } from 'ramda';
 
-import { ThemeProvider, SnackbarProvider } from '@centreon/ui';
+import { ThemeProvider, Module } from '@centreon/ui';
 
 interface Props {
   children: React.ReactNode;
@@ -34,9 +34,9 @@ const Provider = ({ children }: Props): JSX.Element | null => {
   return (
     <Router basename={basename}>
       <ThemeProvider>
-        <SnackbarProvider>
+        <Module maxSnackbars={2} seedName="centreon">
           <JotaiProvider scope="ui-context">{children}</JotaiProvider>
-        </SnackbarProvider>
+        </Module>
       </ThemeProvider>
     </Router>
   );
