@@ -112,7 +112,7 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
             $this->addExtendedHost($hostId, $host->getExtendedHost());
         }
         $this->linkHostTemplatesToHost($hostId, $host->getTemplates());
-        $this->linkCategoryToHost($host);
+        $this->linkHostCategoriesToHost($host);
         $this->linkSeveritiesToHost($host);
         $this->linkHostGroupsToHost($host);
     }
@@ -659,7 +659,7 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
      * @param Host $host
      * @throws HostCategoryException
      */
-    private function linkCategoryToHost(Host $host): void
+    private function linkHostCategoriesToHost(Host $host): void
     {
         foreach ($host->getCategories() as $category) {
             try {
@@ -951,5 +951,50 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
         );
         $statement->bindValue(':host_id', $host->getId(), \PDO::PARAM_INT);
         $statement->execute();
+    }
+
+    /**
+     * Add or update categories associated to a host
+     *
+     * @param integer $hostId
+     * @param array $hostCategories
+     * @return void
+     */
+    private function updateHostCategoriesLinkToHost(int $hostId, array $hostCategories): void
+    {
+        if (empty($hostCategories)) {
+            return;
+        }
+
+        $request = $this->translateDbName('
+            SELECT hostcategories_hc_id FROM `:db`.hostcategories_relation
+            WHERE host_host_id = :host_id
+        ');
+        $statement = $this->db->prepare($request);
+        $statement->bindValue(':host_id', $hostId, \PDO::PARAM_INT);
+        $statement->execute();
+
+        $categories = $statement->fetchAll();
+
+        foreach ($hostCategories as $category) {
+            try {
+                if ($category->getId() === null) {
+                    continue;
+                }
+                if (in_array($category->getId(), $categories) === false) {
+                    $statement = $this->db->prepare(
+                        $this->translateDbName('
+                            INSERT INTO `:db`.hostcategories_relation (host_host_id, hostcategories_hc_id)
+                            VALUES (:host_id, :category_id)
+                        ')
+                    );
+                    $statement->bindValue(':host_id', $hostId, \PDO::PARAM_INT);
+                    $statement->bindValue(':category_id', $category->getId(), \PDO::PARAM_INT);
+                    $statement->execute();
+                }
+            } catch (\Throwable $ex) {
+                throw HostCategoryException::notFoundException(['id' => $category->getId()], $ex);
+            }
+        }
     }
 }
