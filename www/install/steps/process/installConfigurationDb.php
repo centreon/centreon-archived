@@ -112,16 +112,15 @@ try {
                 sprintf('Your \'%s\' database is not empty, please remove all your tables or drop your database ' .
                     'then click on refresh to retry', $parameters['db_configuration'])
             );
-        } else {
-            //If it is empty, create table
-            $db->exec('use ' . $parameters['db_configuration']);
-            $result = splitQueries('../../createTables.sql', ';', $db, '../../tmp/createTables');
-            if ("0" != $result) {
-                $return['msg'] = $result;
-                echo json_encode($return);
-                exit;
-            }
         }
+    }
+    //Create table
+    $db->exec('use ' . $parameters['db_configuration']);
+    $result = splitQueries('../../createTables.sql', ';', $db, '../../tmp/createTables');
+    if ("0" != $result) {
+        $return['msg'] = $result;
+        echo json_encode($return);
+        exit;
     }
 } catch (\Exception $e) {
     if (!is_file('../../tmp/createTables')) {

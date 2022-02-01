@@ -68,51 +68,7 @@ try {
 
     //If it doesn't exist, create it
     if ($result = $statementShowDatabase->fetch(\PDO::FETCH_ASSOC) === false) {
-        $statementCreateDatabase = $db->prepare("CREATE DATABASE " . $parameters['db_storage']);
-        // $statementCreateDatabase->bindValue(':dbStorage', $parameters['db_storage'], \PDO::PARAM_STR);
-        $statementCreateDatabase->execute();
-
-        $macros = array_merge(
-            $step->getBaseConfiguration(),
-            $step->getDatabaseConfiguration(),
-            $step->getAdminConfiguration(),
-            $step->getEngineConfiguration(),
-            $step->getBrokerConfiguration()
-        );
-        try {
-            $result = $db->query('use ' . $parameters['db_storage']);
-            if (!$result) {
-                throw new \Exception('Cannot access to "' . $parameters['db_storage'] . '" database');
-            }
-            $result = splitQueries(
-                '../../createTablesCentstorage.sql',
-                ';',
-                $db,
-                '../../tmp/createTablesCentstorage',
-                $macros
-            );
-            if ("0" != $result) {
-                $return['msg'] = $result;
-                echo json_encode($return);
-                exit;
-            }
-            $result = splitQueries(
-                '../../installBroker.sql',
-                ';',
-                $db,
-                '../../tmp/installBroker',
-                $macros
-            );
-            if ("0" != $result) {
-                $return['msg'] = $result;
-                echo json_encode($return);
-                exit;
-            }
-        } catch (\Exception $e) {
-            $return['msg'] = $e->getMessage();
-            echo json_encode($return);
-            exit;
-        }
+        $db->exec("CREATE DATABASE " . $parameters['db_storage']);
     } else {
         //If it exist, check if database is empty (no tables)
         $statement = $db->prepare(
@@ -125,43 +81,42 @@ try {
                 sprintf('Your database \'%s\' is not empty, please remove all your tables or drop your database ' .
                     'then click on refresh to retry', $parameters['db_storage'])
             );
-        } else {
-            $macros = array_merge(
-                $step->getBaseConfiguration(),
-                $step->getDatabaseConfiguration(),
-                $step->getAdminConfiguration(),
-                $step->getEngineConfiguration(),
-                $step->getBrokerConfiguration()
-            );
-            $result = $db->query('use ' . $parameters['db_storage']);
-            if (!$result) {
-                throw new \Exception('Cannot access to "' . $parameters['db_storage'] . '" database');
-            }
-            $result = splitQueries(
-                '../../createTablesCentstorage.sql',
-                ';',
-                $db,
-                '../../tmp/createTablesCentstorage',
-                $macros
-            );
-            if ("0" != $result) {
-                $return['msg'] = $result;
-                echo json_encode($return);
-                exit;
-            }
-            $result = splitQueries(
-                '../../installBroker.sql',
-                ';',
-                $db,
-                '../../tmp/installBroker',
-                $macros
-            );
-            if ("0" != $result) {
-                $return['msg'] = $result;
-                echo json_encode($return);
-                exit;
-            }
         }
+    }
+    $macros = array_merge(
+        $step->getBaseConfiguration(),
+        $step->getDatabaseConfiguration(),
+        $step->getAdminConfiguration(),
+        $step->getEngineConfiguration(),
+        $step->getBrokerConfiguration()
+    );
+    $result = $db->query('use ' . $parameters['db_storage']);
+    if (!$result) {
+        throw new \Exception('Cannot access to "' . $parameters['db_storage'] . '" database');
+    }
+    $result = splitQueries(
+        '../../createTablesCentstorage.sql',
+        ';',
+        $db,
+        '../../tmp/createTablesCentstorage',
+        $macros
+    );
+    if ("0" != $result) {
+        $return['msg'] = $result;
+        echo json_encode($return);
+        exit;
+    }
+    $result = splitQueries(
+        '../../installBroker.sql',
+        ';',
+        $db,
+        '../../tmp/installBroker',
+        $macros
+    );
+    if ("0" != $result) {
+        $return['msg'] = $result;
+        echo json_encode($return);
+        exit;
     }
 } catch (\Exception $e) {
     if (!is_file('../../tmp/createTablesCentstorage')) {

@@ -154,39 +154,39 @@ try {
         while ($result = $privilegesStatement->fetch(\PDO::FETCH_ASSOC)) {
             foreach ($result as $grant) {
                 // Format Grant result to get privileges list, and concerned database.
-                preg_match('/^GRANT\s(.+)\sON\s?(.+)\./', $grant, $matches);
-
-                // Check if privileges has been found for global (*) or centreon databases.
-                switch ($matches[2]) {
-                    case '`' . $parameters['db_configuration'] . '`':
-                        $foundPrivilegesForCentreonDatabase = true;
-                        break;
-                    case '`' . $parameters['db_storage'] . '`':
-                        $foundPrivilegesForCentreonStorageDatabase = true;
-                        break;
-                    case '*':
-                        $foundPrivilegesForCentreonStorageDatabase = true;
-                        $foundPrivilegesForCentreonDatabase = true;
-                        break;
-                }
-                $resultPrivileges = explode(', ', $matches[1]);
-
-                //Check that user has sufficient privileges to perform all needed actions.
-                $missingPrivileges = [];
-                if ($resultPrivileges[0] !== 'ALL PRIVILEGES') {
-                    foreach ($mandatoryPrivileges as $mandatoryPrivilege) {
-                        if (!in_array($mandatoryPrivilege, $resultPrivileges)) {
-                            $missingPrivileges[] = $mandatoryPrivilege;
-                        }
+                if (preg_match('/^GRANT\s(.+)\sON\s?(.+)\./', $grant, $matches)) {
+                    // Check if privileges has been found for global (*) or centreon databases.
+                    switch ($matches[2]) {
+                        case '`' . $parameters['db_configuration'] . '`':
+                            $foundPrivilegesForCentreonDatabase = true;
+                            break;
+                        case '`' . $parameters['db_storage'] . '`':
+                            $foundPrivilegesForCentreonStorageDatabase = true;
+                            break;
+                        case '*':
+                            $foundPrivilegesForCentreonStorageDatabase = true;
+                            $foundPrivilegesForCentreonDatabase = true;
+                            break;
                     }
-                    if (!empty($missingPrivileges)) {
-                        throw new \Exception(
-                            sprintf(
-                                'Missing privileges %s on user %s',
-                                implode(', ', $missingPrivileges),
-                                $queryValues[':dbUser']
-                            )
-                        );
+                    $resultPrivileges = explode(', ', $matches[1]);
+
+                    //Check that user has sufficient privileges to perform all needed actions.
+                    $missingPrivileges = [];
+                    if ($resultPrivileges[0] !== 'ALL PRIVILEGES') {
+                        foreach ($mandatoryPrivileges as $mandatoryPrivilege) {
+                            if (!in_array($mandatoryPrivilege, $resultPrivileges)) {
+                                $missingPrivileges[] = $mandatoryPrivilege;
+                            }
+                        }
+                        if (!empty($missingPrivileges)) {
+                            throw new \Exception(
+                                sprintf(
+                                    'Missing privileges %s on user %s',
+                                    implode(', ', $missingPrivileges),
+                                    $queryValues[':dbUser']
+                                )
+                            );
+                        }
                     }
                 }
             }
