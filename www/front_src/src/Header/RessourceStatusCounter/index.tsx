@@ -19,7 +19,7 @@ export const useStyles = makeStyles(() => ({
     backgroundColor: '#232f39',
     boxSizing: 'border-box',
     display: 'none',
-    left: 0,
+    left: theme.spacing(0),
     padding: 10,
     position: 'absolute',
     textAlign: 'left',
