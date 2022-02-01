@@ -59,7 +59,8 @@ const UrlColumn = ({
       >
         <IconButton
           ariaLabel={title}
-          title={title || endpoint}
+          size="large"
+          title={title}
           onClick={(): null => {
             return null;
           }}
