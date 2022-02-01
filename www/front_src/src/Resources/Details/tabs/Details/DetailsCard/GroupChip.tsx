@@ -14,32 +14,27 @@ import { setCriteriaAndNewFilterDerivedAtom } from '../../../../Filter/filterAto
 import { Group } from '../../../models';
 
 const useStyles = makeStyles((theme) => ({
-  groupChip: {
+  chip: {
     alignSelf: 'center',
     display: 'flex',
   },
-  groupChipAction: {
+  chipAction: {
     gridArea: '1/1',
     maxWidth: theme.spacing(14),
     minWidth: theme.spacing(8),
     overflow: 'hidden',
   },
-  groupChipHover: {
+  chipHover: {
     backgroundColor: theme.palette.primary.main,
     display: 'flex',
     gap: theme.spacing(0.25),
     gridArea: '1/1',
   },
-  groupChipLabel: {
+  chipLabel: {
     display: 'grid',
     justifyItems: 'center',
     minWidth: theme.spacing(7),
     overflow: 'hidden',
-    textOverflow: 'ellipsis',
-  },
-  groups: {
-    display: 'flex',
-    padding: theme.spacing(1),
   },
 }));
 
@@ -74,15 +69,15 @@ const GroupChip = ({ group, type }: GroupsChipProps): JSX.Element => {
   };
 
   return (
-    <Grid item className={classes.groupChip} key={group.id}>
+    <Grid item className={classes.chip} key={group.id}>
       <Chip
         aria-label={`${group.name} Chip`}
         color="primary"
         label={
-          <div className={classes.groupChipLabel}>
+          <div className={classes.chipLabel}>
             <Tooltip title={group.name}>
               <Typography
-                className={classes.groupChipAction}
+                className={classes.chipAction}
                 style={{ color: isHovered ? 'transparent' : 'unset' }}
                 variant="body2"
               >
@@ -90,7 +85,7 @@ const GroupChip = ({ group, type }: GroupsChipProps): JSX.Element => {
               </Typography>
             </Tooltip>
             {isHovered && (
-              <Grid className={classes.groupChipHover}>
+              <Grid className={classes.chipHover}>
                 <IconButton
                   aria-label={`${group.name} Filter`}
                   size="small"
