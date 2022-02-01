@@ -199,7 +199,13 @@ const retrievedDetails = {
   execution_time: 0.070906,
   flapping: true,
   fqdn: 'central.centreon.com',
-  groups: [{ id: 0, name: 'Linux-servers', uuid: '' }],
+  groups: [
+    {
+      configuration_uri: '/centreon/main.php?p=60102&o=c&hg_id=53',
+      id: 0,
+      name: 'Linux-servers',
+    },
+  ],
   id: resourceServiceId,
   information:
     'OK - 127.0.0.1 rta 0.100ms lost 0%\n OK - 127.0.0.1 rta 0.99ms lost 0%\n OK - 127.0.0.1 rta 0.98ms lost 0%\n OK - 127.0.0.1 rta 0.97ms lost 0%',
@@ -1505,13 +1511,14 @@ describe(Details, () => {
       },
     ]);
 
-    const { getByText } = renderDetails();
+    const { getByLabelText } = renderDetails();
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalled();
     });
 
-    userEvent.click(getByText('Linux-servers').parentElement as HTMLElement);
+    userEvent.hover(getByLabelText('Linux-servers Chip'));
+    userEvent.click(getByLabelText('Linux-servers Filter'));
 
     await waitFor(() => {
       expect(context.getCriteriaValue?.(CriteriaNames.serviceGroups)).toEqual([

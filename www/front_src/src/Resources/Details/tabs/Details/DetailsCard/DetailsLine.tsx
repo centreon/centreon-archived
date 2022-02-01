@@ -8,6 +8,7 @@ import makeStyles from '@mui/styles/makeStyles';
 const useStyles = makeStyles((theme) => ({
   lineText: {
     fontSize: theme.typography.body2.fontSize,
+    overflow: 'hidden',
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
   },

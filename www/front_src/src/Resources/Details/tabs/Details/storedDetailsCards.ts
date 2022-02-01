@@ -1,4 +1,4 @@
-import { getStoredOrDefault, store } from '../../../storage';
+import { getStoredOrDefault } from '../../../storage';
 
 const key = 'centreon-resource-status-details-card-21.10';
 
@@ -17,9 +17,4 @@ const getStoredOrDefaultDetailsCards = (
   });
 };
 
-const storeDetailsCards = (detailsCards: Array<string>): void => {
-  cachedDetailsCards = detailsCards;
-  store({ key, value: detailsCards });
-};
-
-export { getStoredOrDefaultDetailsCards, storeDetailsCards, key };
+export { getStoredOrDefaultDetailsCards, key };

@@ -21,8 +21,8 @@ const useStyles = makeStyles((theme) => ({
   groupChipAction: {
     gridArea: '1/1',
     maxWidth: theme.spacing(14),
+    minWidth: theme.spacing(8),
     overflow: 'hidden',
-    textOverflow: 'ellipsis',
   },
   groupChipHover: {
     backgroundColor: theme.palette.primary.main,
@@ -35,6 +35,7 @@ const useStyles = makeStyles((theme) => ({
     justifyItems: 'center',
     minWidth: theme.spacing(7),
     overflow: 'hidden',
+    textOverflow: 'ellipsis',
   },
   groups: {
     display: 'flex',
@@ -64,7 +65,6 @@ const GroupChip = ({ group, type }: GroupsChipProps): JSX.Element => {
       value: [group],
     });
   };
-
   const onMouseEnter = (): void => {
     setIsHovered(true);
   };
@@ -76,6 +76,7 @@ const GroupChip = ({ group, type }: GroupsChipProps): JSX.Element => {
   return (
     <Grid item className={classes.groupChip} key={group.id}>
       <Chip
+        aria-label={`${group.name} Chip`}
         color="primary"
         label={
           <div className={classes.groupChipLabel}>
@@ -91,6 +92,8 @@ const GroupChip = ({ group, type }: GroupsChipProps): JSX.Element => {
             {isHovered && (
               <Grid className={classes.groupChipHover}>
                 <IconButton
+                  aria-label={`${group.name} Filter`}
+                  size="small"
                   style={{ color: theme.palette.common.white }}
                   title={t(labelFilter)}
                   onClick={(): void => filterByGroup()}
@@ -98,6 +101,8 @@ const GroupChip = ({ group, type }: GroupsChipProps): JSX.Element => {
                   <FilterListIcon fontSize="small" />
                 </IconButton>
                 <IconButton
+                  aria-label={`${group.name} Configure`}
+                  size="small"
                   style={{ color: theme.palette.common.white }}
                   title={t(labelConfigure)}
                   onClick={(): void => {
@@ -111,7 +116,7 @@ const GroupChip = ({ group, type }: GroupsChipProps): JSX.Element => {
           </div>
         }
         onMouseEnter={onMouseEnter}
-        onMouseLeave={onMouseLeave}
+          onMouseLeave={onMouseLeave}
       />
     </Grid>
   );
