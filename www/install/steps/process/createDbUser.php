@@ -174,9 +174,9 @@ try {
                 //Check that user has sufficient privileges to perform all needed actions.
                 $missingPrivileges = [];
                 if ($resultPrivileges[0] !== 'ALL PRIVILEGES') {
-                    foreach ($mandatoryPrivileges as $privilege) {
-                        if (!in_array($privilege, $resultPrivileges)) {
-                            $missingPrivileges[] = $privilege;
+                    foreach ($mandatoryPrivileges as $mandatoryPrivilege) {
+                        if (!in_array($mandatoryPrivilege, $resultPrivileges)) {
+                            $missingPrivileges[] = $mandatoryPrivilege;
                         }
                     }
                     if (!empty($missingPrivileges)) {
@@ -208,7 +208,6 @@ try {
     echo json_encode($return);
     exit;
 }
-die();
 $return['result'] = 0;
 echo json_encode($return);
 exit;
