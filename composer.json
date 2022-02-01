@@ -57,7 +57,7 @@
         "symfony/expression-language": "5.4.*",
         "symfony/filesystem": "5.4.*",
         "symfony/finder": "5.4.*",
-        "symfony/flex": "^1.17",
+        "symfony/flex": "^2.1",
         "symfony/framework-bundle": "5.4.*",
         "symfony/http-client": "5.4.*",
         "symfony/http-kernel": "5.4.*",
