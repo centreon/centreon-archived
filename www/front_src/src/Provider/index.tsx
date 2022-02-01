@@ -13,14 +13,14 @@ import isYesterday from 'dayjs/plugin/isYesterday';
 import weekday from 'dayjs/plugin/weekday';
 import isBetween from 'dayjs/plugin/isBetween';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
+import duration from 'dayjs/plugin/duration';
 import { Provider as ReduxProvider } from 'react-redux';
 import { pathEq, toPairs, pipe, reduce, mergeAll } from 'ramda';
 import i18n, { Resource, ResourceLanguage } from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import { Provider as JotaiProvider } from 'jotai';
 import { useUpdateAtom } from 'jotai/utils';
 
-import { useRequest, getData, withSnackbar, ThemeProvider } from '@centreon/ui';
+import { useRequest, getData } from '@centreon/ui';
 import {
   userAtom,
   User,
@@ -41,7 +41,8 @@ import {
   userEndpoint,
 } from './endpoint';
 import { DefaultParameters } from './models';
-import { userDecoder } from './decoder';
+// TODO uncomment after https://github.com/centreon/centreon/pull/10507
+// import { userDecoder } from './decoder';
 
 dayjs.extend(localizedFormat);
 dayjs.extend(utcPlugin);
@@ -51,6 +52,7 @@ dayjs.extend(isYesterday);
 dayjs.extend(weekday);
 dayjs.extend(isBetween);
 dayjs.extend(isSameOrBefore);
+dayjs.extend(duration);
 
 const store = createStore();
 
@@ -58,11 +60,12 @@ interface Props {
   children: React.ReactNode;
 }
 
-const AppProvider = ({ children }: Props): JSX.Element => {
+const Provider = ({ children }: Props): JSX.Element => {
   const [dataLoaded, setDataLoaded] = React.useState(false);
 
   const { sendRequest: getUser } = useRequest<User>({
-    decoder: userDecoder,
+    // TODO uncomment after https://github.com/centreon/centreon/pull/10507
+    // decoder: userDecoder,
     request: getData,
   });
   const { sendRequest: getParameters } = useRequest<DefaultParameters>({
@@ -124,6 +127,7 @@ const AppProvider = ({ children }: Props): JSX.Element => {
         ]) => {
           setUser({
             alias: retrievedUser.alias,
+            default_page: retrievedUser.default_page,
             isExportButtonEnabled: retrievedUser.isExportButtonEnabled,
             locale: retrievedUser.locale || 'en',
             name: retrievedUser.name,
@@ -179,15 +183,5 @@ const AppProvider = ({ children }: Props): JSX.Element => {
     </ReduxProvider>
   );
 };
-
-const AppProviderWithSnackbar = withSnackbar({ Component: AppProvider });
-
-const Provider = ({ children }: Props): JSX.Element => (
-  <ThemeProvider>
-    <JotaiProvider scope="ui-context">
-      <AppProviderWithSnackbar>{children}</AppProviderWithSnackbar>
-    </JotaiProvider>
-  </ThemeProvider>
-);
 
 export default Provider;

@@ -1,0 +1,11 @@
+centreon_security_find_provider_configuration_local:
+    methods: GET
+    path: /administration/authentication/providers/local
+    controller: 'Core\Infrastructure\Security\ProviderConfiguration\Local\Api\FindConfiguration\FindConfigurationController'
+    condition: "request.attributes.get('version') >= 22.04"
+
+centreon_security_update_provider_configuration_local:
+    methods: PUT
+    path: /administration/authentication/providers/local
+    controller: 'Core\Infrastructure\Security\ProviderConfiguration\Local\Api\UpdateConfiguration\UpdateConfigurationController'
+    condition: "request.attributes.get('version') >= 22.04"
