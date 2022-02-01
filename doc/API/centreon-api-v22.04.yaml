@@ -3957,7 +3957,6 @@ components:
             - password_expiration
             - can_reuse_passwords
             - delay_before_new_password
-            - excluded_users
           properties:
             password_min_length:
               description: minimum length of the password
