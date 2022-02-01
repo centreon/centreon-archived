@@ -1,32 +1,32 @@
 import * as React from 'react';
 
-import { useTranslation } from 'react-i18next';
-import { isEmpty, isNil } from 'ramda';
-import { withRouter } from 'react-router-dom';
-import { connect } from 'react-redux';
-import classnames from 'classnames';
 import clsx from 'clsx';
 import { useAtomValue } from 'jotai/utils';
+import { isEmpty, isNil } from 'ramda';
+import { useTranslation } from 'react-i18next';
+import { connect } from 'react-redux';
 import { useHistory } from 'react-router';
+import { withRouter } from 'react-router-dom';
 
-import PollerIcon from '@mui/icons-material/DeviceHub';
-import { Button, ClickAwayListener, Paper, Typography } from '@mui/material';
 import { makeStyles } from '@mui/styles';
+import { Button, ClickAwayListener, Paper, Typography } from '@mui/material';
+import PollerIcon from '@mui/icons-material/DeviceHub';
 
+import { refreshIntervalAtom } from '@centreon/ui-context';
 import {
   getData,
-  useRequest,
   IconHeader,
-  SubmenuHeader,
   IconToggleSubmenu,
+  SubmenuHeader,
+  useRequest,
 } from '@centreon/ui';
-import { refreshIntervalAtom } from '@centreon/ui-context';
 
-import styles from '../header.scss';
-import { allowedPagesSelector } from '../../redux/selectors/navigation/allowedPages';
 import MenuLoader from '../../components/MenuLoader';
+import { allowedPagesSelector } from '../../redux/selectors/navigation/allowedPages';
 
+import ExportConfiguration from './ExportConfiguration';
 import { Issues } from './models';
+import PollerStatusIcon from './PollerStatusIcon';
 import {
   labelAllPollers,
   labelConfigurePollers,
@@ -35,8 +35,6 @@ import {
   labelPoller,
   labelPollerNotRunning,
 } from './translatedLabels';
-import ExportConfiguration from './ExportConfiguration';
-import PollerStatusIcon from './PollerStatusIcon';
 
 export const pollerConfigurationPageNumber = '60901';
 
@@ -71,6 +69,21 @@ const useStyles = makeStyles((theme) => ({
   },
   pollerDetailTitle: {
     flexGrow: 1,
+  },
+  subMenuToggle: {
+    backgroundColor: '#232f39',
+    boxSizing: 'border-box',
+    display: 'none',
+    left: 0,
+    padding: 10,
+    position: 'absolute',
+    textAlign: 'left',
+    top: '100%',
+    width: '100%',
+    zIndex: 99,
+  },
+  subMenuToggleActive: {
+    display: 'block',
   },
 }));
 
@@ -169,8 +182,8 @@ const PollerMenu = (): JSX.Element => {
             onClick={toggleDetailedView}
           />
           <div
-            className={classnames(styles['submenu-toggle'], {
-              [styles['submenu-toggle-active'] as string]: toggled,
+            className={clsx(classes.subMenuToggle, {
+              [classes.subMenuToggleActive]: toggled,
             })}
           >
             {!isEmpty(issues) ? (
