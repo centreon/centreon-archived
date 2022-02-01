@@ -87,8 +87,17 @@ class FindConfiguration
         $response->canReusePasswords = $configuration->canReusePasswords();
         $response->attempts = $configuration->getAttempts();
         $response->blockingDuration = $configuration->getBlockingDuration();
-        $response->passwordExpiration = $configuration->getPasswordExpiration();
+        $response->passwordExpirationDelay = $configuration->getPasswordExpirationDelay();
         $response->delayBeforeNewPassword = $configuration->getDelayBeforeNewPassword();
+
+        $response->passwordExpirationExcludedUserAliases = array_reduce(
+            $configuration->getPasswordExpirationExcludedUsers(),
+            function ($acc, $excludedUser) {
+                $acc[] = $excludedUser->getAlias();
+                return $acc;
+            },
+            []
+        );
 
         return $response;
     }

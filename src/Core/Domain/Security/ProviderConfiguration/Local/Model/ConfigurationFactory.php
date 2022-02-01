@@ -46,7 +46,8 @@ class ConfigurationFactory
             $request->canReusePasswords,
             $request->attempts,
             $request->blockingDuration,
-            $request->passwordExpiration,
+            $request->passwordExpirationDelay,
+            [],
             $request->delayBeforeNewPassword
         );
     }

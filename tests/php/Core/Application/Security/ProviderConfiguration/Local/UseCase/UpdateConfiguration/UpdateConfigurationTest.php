@@ -64,7 +64,8 @@ class UpdateConfigurationTest extends TestCase
             true,
             Configuration::MIN_ATTEMPTS,
             Configuration::MIN_BLOCKING_DURATION,
-            Configuration::MIN_PASSWORD_EXPIRATION,
+            Configuration::MIN_PASSWORD_EXPIRATION_DELAY,
+            [],
             Configuration::MIN_NEW_PASSWORD_DELAY
         );
 
@@ -77,7 +78,7 @@ class UpdateConfigurationTest extends TestCase
         $request->canReusePasswords = true;
         $request->attempts = Configuration::MIN_ATTEMPTS;
         $request->blockingDuration = Configuration::MIN_BLOCKING_DURATION;
-        $request->passwordExpiration = Configuration::MIN_PASSWORD_EXPIRATION;
+        $request->passwordExpirationDelay = Configuration::MIN_PASSWORD_EXPIRATION_DELAY;
         $request->delayBeforeNewPassword = Configuration::MIN_NEW_PASSWORD_DELAY;
 
         $this->repository

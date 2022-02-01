@@ -74,7 +74,7 @@ class UpdateConfigurationController extends AbstractController
         $updateRequest->hasSpecialCharacter = $passwordPolicy['has_special_character'];
         $updateRequest->attempts = $passwordPolicy['attempts'];
         $updateRequest->blockingDuration = $passwordPolicy['blocking_duration'];
-        $updateRequest->passwordExpiration = $passwordPolicy['password_expiration'];
+        $updateRequest->passwordExpirationDelay = $passwordPolicy['password_expiration'];
         $updateRequest->canReusePasswords = $passwordPolicy['can_reuse_passwords'];
         $updateRequest->delayBeforeNewPassword = $passwordPolicy['delay_before_new_password'];
 

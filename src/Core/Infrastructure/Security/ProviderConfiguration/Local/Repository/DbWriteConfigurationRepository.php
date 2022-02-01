@@ -51,7 +51,7 @@ class DbWriteConfigurationRepository extends AbstractRepositoryDRB implements Wr
                 "has_special_characters" => $localConfiguration->hasSpecialCharacter(),
                 "attempts" => $localConfiguration->getAttempts(),
                 "blocking_duration" => $localConfiguration->getBlockingDuration(),
-                "password_expiration" => $localConfiguration->getPasswordExpiration(),
+                "password_expiration_delay" => $localConfiguration->getPasswordExpirationDelay(),
                 "delay_before_new_password" => $localConfiguration->getDelayBeforeNewPassword(),
                 "can_reuse_passwords" => $localConfiguration->canReusePasswords(),
             ],
