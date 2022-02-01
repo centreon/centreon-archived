@@ -208,7 +208,7 @@ try {
         Utils.markStageSkippedForConditional('backend')
       } else {
         node {
-          checkoutCentreonBuild()      
+          checkoutCentreonBuild()
           unstash 'tar-sources'
           unstash 'vendor'
           sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh backend"
@@ -321,7 +321,7 @@ try {
 
   stage("$DELIVERY_STAGE") {
     node {
-      checkoutCentreonBuild()    
+      checkoutCentreonBuild()
       sh 'rm -rf output'
       unstash 'tar-sources'
       unstash 'api-doc'
@@ -333,7 +333,7 @@ try {
       error('Delivery stage failure');
     }
   }
-  
+
   stage("$DOCKER_STAGE") {
     def parallelSteps = [:]
     // def osBuilds = isStableBuild() ? ['centos7', 'centos8'] : ['centos7']
@@ -369,9 +369,10 @@ try {
                 returnStatus: true
               )
               junit 'xunit-reports/**/*.xml'
-              if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0))
-                currentBuild.result = 'FAILURE'
               archiveArtifacts allowEmptyArchive: true, artifacts: 'api-integration-test-logs/*.txt'
+              if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0)) {
+                currentBuild.result = 'FAILURE'
+              }
             }
           }
         }
@@ -388,11 +389,15 @@ try {
             unstash 'tar-sources'
             unstash 'cypress-node-modules'
             timeout(time: 10, unit: 'MINUTES') {
-              def acceptanceStatus = sh(script: "./centreon-build/jobs/web/${serie}/mon-web-e2e-test.sh centos7 tests/e2e/cypress/integration/${feature}", returnStatus: true)
+              def acceptanceStatus = sh(
+                script: "./centreon-build/jobs/web/${serie}/mon-web-e2e-test.sh centos7 tests/e2e/cypress/integration/${feature}",
+                returnStatus: true
+              )
               junit 'centreon-web*/tests/e2e/cypress/results/reports/junit-report.xml'
-              if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0))
+              archiveArtifacts allowEmptyArchive: true, artifacts: 'centreon-web*/tests/e2e/cypress/results/**/*.mp4, centreon-web*/tests/e2e/cypress/results/**/*.png'
+              if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0)) {
                 currentBuild.result = 'FAILURE'
-                archiveArtifacts allowEmptyArchive: true, artifacts: 'centreon-web*/tests/e2e/cypress/results/**/*.mp4, centreon-web*/tests/e2e/cypress/results/**/*.png'
+              }
             }
           }
         }
@@ -413,11 +418,14 @@ try {
             reportName: 'Centreon Web Performances',
             reportTitles: ''
           ])
+          if (currentBuild.result == 'UNSTABLE') {
+            currentBuild.result = 'FAILURE'
+          }
         }
       }
     }
   }
-  
+
   stage('Acceptance tests') {
     if (hasBackendChanges) {
       def atparallelSteps = [:]
@@ -425,7 +433,7 @@ try {
         def feature = x
         atparallelSteps[feature] = {
           node {
-            checkoutCentreonBuild()     
+            checkoutCentreonBuild()
             unstash 'tar-sources'
             unstash 'vendor'
             def acceptanceStatus = sh(
@@ -433,9 +441,10 @@ try {
               returnStatus: true
             )
             junit 'xunit-reports/**/*.xml'
-            if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0))
-              currentBuild.result = 'FAILURE'
             archiveArtifacts allowEmptyArchive: true, artifacts: 'acceptance-logs/*.txt, acceptance-logs/*.png, acceptance-logs/*.flv'
+            if ((currentBuild.result == 'UNSTABLE') || (acceptanceStatus != 0)) {
+              currentBuild.result = 'FAILURE'
+            }
           }
         }
       }

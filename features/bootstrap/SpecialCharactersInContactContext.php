@@ -8,7 +8,7 @@ use Centreon\Test\Behat\External\LoginPage;
 class SpecialCharactersInContactContext extends CentreonContext
 {
     protected $nonAdminName = 'nonAdminName';
-    protected $nonAdminPassword = 'nonAdminPassword';
+    protected $nonAdminPassword = 'nonAdminPassword!1';
     protected $nonAdminAlias = 'nonAdminalias';
     protected $nonAdminEmail = 'test@localhost.com';
     protected $page;
