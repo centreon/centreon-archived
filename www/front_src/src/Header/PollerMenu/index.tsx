@@ -203,7 +203,11 @@ const PollerMenu = (): JSX.Element => {
             )}
             {allowPollerConfiguration && (
               <Paper className={classes.confButton}>
-                <Button size="small" onClick={redirectToPollerConfiguration}>
+                <Button
+                  fullWidth
+                  size="small"
+                  onClick={redirectToPollerConfiguration}
+                >
                   {t(labelConfigurePollers)}
                 </Button>
               </Paper>
