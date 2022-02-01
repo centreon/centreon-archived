@@ -15,6 +15,24 @@ export const useStyles = makeStyles(() => ({
   link: {
     textDecoration: 'none',
   },
+  subMenuToggle: {
+    backgroundColor: '#232f39',
+    boxSizing: 'border-box',
+    display: 'none',
+    left: 0,
+    padding: 10,
+    position: 'absolute',
+    textAlign: 'left',
+    top: '100%',
+    width: '100%',
+    zIndex: 99,
+  },
+  subMenuToggleActive: {
+    display: 'block',
+  },
+  wrapMiddleIcon: {
+    display: 'flex',
+  },
 }));
 
 interface Props {

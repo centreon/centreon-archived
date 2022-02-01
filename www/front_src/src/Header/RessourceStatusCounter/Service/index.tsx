@@ -22,7 +22,6 @@ import {
 } from '@centreon/ui';
 import { userAtom } from '@centreon/centreon-frontend/packages/ui-context/src';
 
-import styles from '../../header.scss';
 import {
   getServiceResourcesUrl,
   criticalCriterias,
@@ -107,7 +106,7 @@ const ServiceStatusCounter = (): JSX.Element => {
       schema={statusSchema}
     >
       {({ hasPending, data, toggled, toggleDetailedView }): JSX.Element => (
-        <div className={`${styles.wrapper} wrap-right-services`}>
+        <div>
           <SubmenuHeader active={toggled}>
             <IconHeader
               Icon={ServiceIcon}
@@ -116,7 +115,7 @@ const ServiceStatusCounter = (): JSX.Element => {
               onClick={toggleDetailedView}
             />
             <Link
-              className={classnames(classes.link, styles['wrap-middle-icon'])}
+              className={classnames(classes.link, classes.wrapMiddleIcon)}
               to={unhandledCriticalServicesLink}
             >
               <StatusCounter
@@ -125,7 +124,7 @@ const ServiceStatusCounter = (): JSX.Element => {
               />
             </Link>
             <Link
-              className={classnames(classes.link, styles['wrap-middle-icon'])}
+              className={classnames(classes.link, classes.wrapMiddleIcon)}
               to={unhandledWarningServicesLink}
             >
               <StatusCounter
@@ -134,7 +133,7 @@ const ServiceStatusCounter = (): JSX.Element => {
               />
             </Link>
             <Link
-              className={classnames(classes.link, styles['wrap-middle-icon'])}
+              className={classnames(classes.link, classes.wrapMiddleIcon)}
               to={unhandledUnknownServicesLink}
             >
               <StatusCounter
@@ -143,7 +142,7 @@ const ServiceStatusCounter = (): JSX.Element => {
               />
             </Link>
             <Link
-              className={classnames(classes.link, styles['wrap-middle-icon'])}
+              className={classnames(classes.link, classes.wrapMiddleIcon)}
               to={okServicesLink}
             >
               <StatusCounter count={data.ok} severityCode={SeverityCode.Ok} />
@@ -154,8 +153,8 @@ const ServiceStatusCounter = (): JSX.Element => {
               onClick={toggleDetailedView}
             />
             <div
-              className={classnames(styles['submenu-toggle'], {
-                [styles['submenu-toggle-active'] as string]: toggled,
+              className={classnames(classes.subMenuToggle, {
+                [classes.subMenuToggleActive]: toggled,
               })}
             >
               <SubmenuItems>
