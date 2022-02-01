@@ -88,16 +88,16 @@ class CentreonConfigPoller
     /**
      * Get the option pack_sync_plugins
      *
-     * @return int
+     * @return bool
      */
-    private function isSyncPlugins()
+    private function isSyncPlugins(): bool
     {
-        $DBRESULT = $this->DB->query("SELECT `value` FROM `options` WHERE `key` = 'pack_sync_plugins'");
-        if ($data = $DBRESULT->fetchRow()) {
-            return ($data['value'] == 1 ? 1 : 0);
+        $cbResult = $this->DB->query("SELECT `value` FROM `options` WHERE `key` = 'pack_sync_plugins'");
+        if ($data = $cbResult->fetch()) {
+            return $data['value'] === '1';
         }
 
-        return 0;
+        return false;
     }
 
     /**
