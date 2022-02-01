@@ -52,7 +52,7 @@ class Plugins extends AbstractObjectJSON
         $this->pluginsCache = $stmt->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_UNIQUE | PDO::FETCH_ASSOC);
     }
 
-    public function addCommand($commandLine)
+    public function addCommand(string $commandLine)
     {
         if (is_null($this->pluginsCache)) {
             $this->getPlugins();
