@@ -57,16 +57,15 @@ function getCentreonBrokerDirCfg($ns_id)
 /**
  * Get the option pack_sync_plugins
  *
- * @return int
+ * @param CentreonDB $pearDB
+ * @return bool
  */
-function isSyncPlugins()
+function isSyncPlugins($pearDB): bool
 {
-    global $pearDB;
-
     $res = $pearDB->query("SELECT `value` FROM `options` WHERE `key` = 'pack_sync_plugins'");
     if ($data = $res->fetch()) {
-        return ($data['value'] == 1 ? 1 : 0);
+        return $data['value'] === '1';
     }
 
-    return 0;
+    return false;
 }
