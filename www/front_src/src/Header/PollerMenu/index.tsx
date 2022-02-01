@@ -212,7 +212,10 @@ const PollerMenu = (): JSX.Element => {
                 </Button>
               </Paper>
             )}
-            <ExportConfiguration setIsExportingConfiguration={newExporting} />
+            <ExportConfiguration
+              setIsExportingConfiguration={newExporting}
+              toggleDetailedView={toggleDetailedView}
+            />
           </div>
         </SubmenuHeader>
       </div>
