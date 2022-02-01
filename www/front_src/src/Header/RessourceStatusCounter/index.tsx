@@ -11,7 +11,7 @@ import { refreshIntervalAtom } from '@centreon/ui-context';
 
 import MenuLoader from '../../components/MenuLoader';
 
-export const useStyles = makeStyles(() => ({
+export const useStyles = makeStyles((theme) => ({
   link: {
     textDecoration: 'none',
   },
