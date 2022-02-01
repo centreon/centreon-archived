@@ -1,3 +1,4 @@
+/* eslint-disable react/button-has-type */
 import * as React from 'react';
 
 import classnames from 'classnames';
@@ -11,12 +12,14 @@ import FileCopyIcon from '@mui/icons-material/FileCopy';
 import CheckIcon from '@mui/icons-material/Check';
 import { makeStyles } from '@mui/styles';
 
+import { getData, useRequest } from '@centreon/ui';
+
 import { allowedPagesSelector } from '../../redux/selectors/navigation/allowedPages';
 import styles from '../header.scss';
 import Clock from '../Clock';
-import axios from '../../axios';
 import MenuLoader from '../../components/MenuLoader';
 
+// eslint-disable-next-line @typescript-eslint/naming-convention
 const EDIT_PROFILE_TOPOLOGY_PAGE = '50104';
 
 const useStyles = makeStyles(() => ({
@@ -113,40 +116,39 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-// useRef
-let refreshTimeout;
-
 const UserMenu = ({ allowedPages }: StateToProps): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
+  const userMenuInfo = 'internal.php?object=centreon_topcounter&action=user';
 
   const [copied, setCopied] = React.useState(false);
   const [data, setData] = React.useState<any>(null);
   const [toggled, setToggled] = React.useState(false);
   const profile = React.useRef<any>();
   const autologinNode = React.useRef<any>();
+  const refreshTimeout = React.useRef<any>();
+  const { sendRequest } = useRequest<any>({
+    request: getData,
+  });
 
   React.useEffect(() => {
     window.addEventListener('mousedown', handleClick, false);
-    getData();
+    loaduserData();
+    loaduserData();
 
     return (): void => {
       window.removeEventListener('mousedown', handleClick, false);
-      clearTimeout(refreshTimeout);
+      clearTimeout(refreshTimeout.current);
     };
   }, []);
 
-  // fixer par useRequest pollerMenu
-  const userService = axios(
-    'internal.php?object=centreon_topcounter&action=user',
-  );
+  const endpoint = userMenuInfo;
 
   // fetch api to get user data
-  const getData = (): void => {
-    userService
-      .get()
-      .then((resp) => {
-        setData(resp?.data);
+  const loaduserData = (): void => {
+    sendRequest({ endpoint: `./api/${endpoint}` })
+      .then((retrievedUserData) => {
+        setData(retrievedUserData);
         refreshData();
       })
       .catch((error) => {
@@ -159,9 +161,9 @@ const UserMenu = ({ allowedPages }: StateToProps): JSX.Element => {
   // refresh user data every minutes
   // @todo get this interval from backend
   const refreshData = (): void => {
-    clearTimeout(refreshTimeout);
-    refreshTimeout = setTimeout(() => {
-      getData();
+    clearTimeout(refreshTimeout.current);
+    refreshTimeout.current = setTimeout(() => {
+      loaduserData();
     }, 60000);
   };
 
