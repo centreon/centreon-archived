@@ -793,6 +793,10 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
             $this->removeHostTemplatesFromHost($host);
             $this->linkHostTemplatesToHost($host->getId(), $host->getTemplates());
 
+            // Update Host Categories
+            $this->removeHostCategoriesFromHost($host);
+            $this->linkHostCategoriesToHost($host);
+
             if (!$isAlreadyInTransaction) {
                 $this->db->commit();
             }
@@ -954,47 +958,16 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
     }
 
     /**
-     * Add or update categories associated to a host
+     * Removes all links between host categories and hosts.
      *
-     * @param integer $hostId
-     * @param array $hostCategories
-     * @return void
+     * @param Host $host
      */
-    private function updateHostCategoriesLinkToHost(int $hostId, array $hostCategories): void
+    private function removeHostCategoriesFromHost(Host $host): void
     {
-        if (empty($hostCategories)) {
-            return;
-        }
-
-        $request = $this->translateDbName('
-            SELECT hostcategories_hc_id FROM `:db`.hostcategories_relation
-            WHERE host_host_id = :host_id
-        ');
-        $statement = $this->db->prepare($request);
-        $statement->bindValue(':host_id', $hostId, \PDO::PARAM_INT);
+        $statement = $this->db->prepare(
+            $this->translateDbName('DELETE FROM `:db`.hostcategories_relation WHERE host_host_id = :host_id')
+        );
+        $statement->bindValue(':host_id', $host->getId(), \PDO::PARAM_INT);
         $statement->execute();
-
-        $categories = $statement->fetchAll();
-
-        foreach ($hostCategories as $category) {
-            try {
-                if ($category->getId() === null) {
-                    continue;
-                }
-                if (in_array($category->getId(), $categories) === false) {
-                    $statement = $this->db->prepare(
-                        $this->translateDbName('
-                            INSERT INTO `:db`.hostcategories_relation (host_host_id, hostcategories_hc_id)
-                            VALUES (:host_id, :category_id)
-                        ')
-                    );
-                    $statement->bindValue(':host_id', $hostId, \PDO::PARAM_INT);
-                    $statement->bindValue(':category_id', $category->getId(), \PDO::PARAM_INT);
-                    $statement->execute();
-                }
-            } catch (\Throwable $ex) {
-                throw HostCategoryException::notFoundException(['id' => $category->getId()], $ex);
-            }
-        }
     }
 }

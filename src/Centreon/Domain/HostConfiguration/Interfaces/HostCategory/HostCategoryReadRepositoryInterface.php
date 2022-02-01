@@ -25,6 +25,7 @@ namespace Centreon\Domain\HostConfiguration\Interfaces\HostCategory;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\HostConfiguration\Exception\HostCategoryException;
 use Centreon\Domain\HostConfiguration\Model\HostCategory;
+use Centreon\Domain\HostConfiguration\Host;
 
 /**
  * This interface gathers all the reading operations on the host category repository.
@@ -96,4 +97,12 @@ interface HostCategoryReadRepositoryInterface
      * @throws \Throwable
      */
     public function findByNameAndContact(string $hostCategoryName, ContactInterface $contact): ?HostCategory;
+
+    /**
+     * Find host categories by host.
+     *
+     * @param Host $host
+     * @return HostCategory[]
+     */
+    public function findByHost(Host $host): array;
 }
