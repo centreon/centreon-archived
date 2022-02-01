@@ -231,7 +231,7 @@ try {
             );
         } elseif ($ret["restart_mode"] == 2) {
             if ($fh = @fopen($centcore_pipe, 'a+')) {
-                fwrite($fh, ($syncPlugins == 1 ? 'ENGINERESTART' : 'RESTART') . ":" . $host["id"] . "\n");
+                fwrite($fh, ($syncPlugins ? 'ENGINERESTART' : 'RESTART') . ":" . $host["id"] . "\n");
                 fclose($fh);
             } else {
                 throw new Exception(_("Could not write into centcore.cmd. Please check file permissions."));
