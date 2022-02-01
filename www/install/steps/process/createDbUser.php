@@ -98,7 +98,7 @@ $mandatoryPrivileges = [
     'EVENT',
 ];
 $privilegesQuery = implode(', ', $mandatoryPrivileges);
-$query = "GRANT " . $privilegesQuery . " ON `%s`.* TO " . $parameters['db_user'] . "@" . $host . " WITH GRANT OPTION";
+$query = "GRANT " . $privilegesQuery . " ON `%s`.* TO " . $parameters['db_user'] . "@" . $host;
 $flushQuery = "FLUSH PRIVILEGES";
 
 try {
@@ -149,38 +149,58 @@ try {
         $privilegesStatement->execute();
 
         // If rights are found
+        $foundPrivilegesForCentreonDatabase = false;
+        $foundPrivilegesForCentreonStorageDatabase = false;
         while ($result = $privilegesStatement->fetch(\PDO::FETCH_ASSOC)) {
             foreach ($result as $grant) {
                 // Format Grant result to get privileges list, and concerned database.
                 preg_match('/^GRANT\s(.+)\sON\s?(.+)\./', $grant, $matches);
 
-                // Check if privileges concerned centreon databases.
-                if (
-                    str_contains($matches[2], $parameters['db_configuration']) !== false
-                    || str_contains($matches[2], $parameters['db_storage']) !== false
-                ) {
-                    $resultPrivileges = explode(', ', $matches[1]);
+                // Check if privileges has been found for global (*) or centreon databases.
+                switch ($matches[2]) {
+                    case '`' . $parameters['db_configuration'] . '`':
+                        $foundPrivilegesForCentreonDatabase = true;
+                        break;
+                    case '`' . $parameters['db_storage'] . '`':
+                        $foundPrivilegesForCentreonStorageDatabase = true;
+                        break;
+                    case '*':
+                        $foundPrivilegesForCentreonStorageDatabase = true;
+                        $foundPrivilegesForCentreonDatabase = true;
+                        break;
+                }
+                $resultPrivileges = explode(', ', $matches[1]);
 
-                    //Check that user has sufficient privileges to perform all needed actions.
-                    $missingPrivileges = [];
-                    if ($resultPrivileges[0] !== 'ALL PRIVILEGES') {
-                        foreach ($mandatoryPrivileges as $privilege) {
-                            if (!in_array($privilege, $resultPrivileges)) {
-                                $missingPrivileges[] = $privilege;
-                            }
+                //Check that user has sufficient privileges to perform all needed actions.
+                $missingPrivileges = [];
+                if ($resultPrivileges[0] !== 'ALL PRIVILEGES') {
+                    foreach ($mandatoryPrivileges as $privilege) {
+                        if (!in_array($privilege, $resultPrivileges)) {
+                            $missingPrivileges[] = $privilege;
                         }
-                        if (!empty($missingPrivileges)) {
-                            throw new \Exception(
-                                sprintf(
-                                    'Missing privileges %s on user %s',
-                                    implode(', ', $missingPrivileges),
-                                    $queryValues[':dbUser']
-                                )
-                            );
-                        }
+                    }
+                    if (!empty($missingPrivileges)) {
+                        throw new \Exception(
+                            sprintf(
+                                'Missing privileges %s on user %s',
+                                implode(', ', $missingPrivileges),
+                                $queryValues[':dbUser']
+                            )
+                        );
                     }
                 }
             }
+        }
+        if ($foundPrivilegesForCentreonDatabase === false || $foundPrivilegesForCentreonStorageDatabase === false) {
+            throw new \Exception(
+                sprintf(
+                    'No privileges for \'%s\' or \'%s\' databases for \'%s\' user has been found, ' .
+                    'please check your MySQL configuration',
+                    $parameters['db_configuration'],
+                    $parameters['db_storage'],
+                    $queryValues[':dbUser']
+                )
+            );
         }
     }
 } catch (\Exception $e) {
@@ -188,7 +208,7 @@ try {
     echo json_encode($return);
     exit;
 }
-
+die();
 $return['result'] = 0;
 echo json_encode($return);
 exit;
