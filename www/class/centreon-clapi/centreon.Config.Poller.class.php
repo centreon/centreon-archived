@@ -197,7 +197,7 @@ class CentreonConfigPoller
         $result->closeCursor();
 
         $syncPlugins = $this->isSyncPlugins();
-        exec("echo '" . ($syncPlugins == 1 ? 'ENGINERELOAD' : 'RELOAD') . ":" . $host["id"] . "' >> " . $this->centcore_pipe, $stdout, $return_code);
+        exec("echo '" . ($syncPlugins ? 'ENGINERELOAD' : 'RELOAD') . ":" . $host["id"] . "' >> " . $this->centcore_pipe, $stdout, $return_code);
         exec("echo 'RELOADBROKER:" . $host["id"] . "' >> " . $this->centcore_pipe, $stdout, $return_code);
         $msg_restart = _("OK: A reload signal has been sent to '" . $host["name"] . "'");
         print $msg_restart . "\n";
