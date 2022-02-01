@@ -2,17 +2,16 @@ import React from 'react';
 
 import { makeStyles } from '@mui/styles';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   contentWrapper: {
-    '@media (min-width: 767px)': {
-      padding: '12px',
+    [theme.breakpoints.up(767)]: {
+      padding: theme.spacing(1.5),
     },
     boxSizing: 'border-box',
-    margin: '0 auto',
-
-    padding: '12px 20px 0 20px',
+    margin: theme.spacing(0, 'auto'),
+    padding: theme.spacing(1.5, 2.5, 0, 2.5),
   },
-});
+}));
 
 interface Props {
   children: React.ReactChildren;
