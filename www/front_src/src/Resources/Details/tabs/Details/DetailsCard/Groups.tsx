@@ -19,28 +19,6 @@ interface Props {
 }
 
 const useStyles = makeStyles((theme) => ({
-  groupChip: {
-    alignSelf: 'center',
-    display: 'flex',
-  },
-  groupChipAction: {
-    gridArea: '1/1',
-    maxWidth: theme.spacing(14),
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-  },
-  groupChipHover: {
-    backgroundColor: theme.palette.primary.main,
-    display: 'flex',
-    gap: theme.spacing(0.25),
-    gridArea: '1/1',
-  },
-  groupChipLabel: {
-    display: 'grid',
-    justifyItems: 'center',
-    minWidth: theme.spacing(7),
-    overflow: 'hidden',
-  },
   groups: {
     display: 'flex',
     padding: theme.spacing(1, 1, 1, 1),
