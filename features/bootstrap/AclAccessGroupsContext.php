@@ -32,8 +32,8 @@ class AclAccessGroupsContext extends CentreonContext
             'alias' => $this->firstContactAlias,
             'name' => $this->firstContactName,
             'email' => 'test@centreon.com',
-            'password' => 'firstContactPassword',
-            'password2' => 'firstContactPassword',
+            'password' => 'firstContactPassword!1',
+            'password2' => 'firstContactPassword!1',
             'admin' => 0
         ));
         $this->page->save();
@@ -42,8 +42,8 @@ class AclAccessGroupsContext extends CentreonContext
             'alias' => $this->secondContactAlias,
             'name' => $this->secondContactName,
             'email' => 'test2@centreon.com',
-            'password' => 'secondContactPassword',
-            'password2' => 'secondContactPassword',
+            'password' => 'secondContactPassword!2',
+            'password2' => 'secondContactPassword!2',
             'admin' => 0
         ));
         $this->page->save();

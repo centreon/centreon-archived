@@ -89,7 +89,7 @@ class CentreonUser
         $this->email = html_entity_decode($user["contact_email"], ENT_QUOTES, "UTF-8");
         $this->lang = $user["contact_lang"];
         $this->charset = "UTF-8";
-        $this->passwd = $user["contact_passwd"];
+        $this->passwd = $user["contact_passwd"] ?? null;
         $this->token = $user['contact_autologin_key'];
         $this->admin = $user["contact_admin"];
         $this->version = 3;

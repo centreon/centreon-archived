@@ -11,12 +11,6 @@
     "behat/gherkin": {
         "version": "v4.8.0"
     },
-    "behat/mink": {
-        "version": "1.8.x-dev"
-    },
-    "behat/mink-extension": {
-        "version": "2.3.1"
-    },
     "behat/mink-selenium2-driver": {
         "version": "v1.4.0"
     },
@@ -589,7 +583,7 @@
         "version": "v4.4.27"
     },
     "symfony/string": {
-        "version": "v5.3.7"
+        "version": "v5.4.2"
     },
     "symfony/translation": {
         "version": "3.3",

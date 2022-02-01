@@ -35,6 +35,7 @@
  */
 
 require_once _CENTREON_PATH_ . 'www/class/centreonLDAP.class.php';
+require_once _CENTREON_PATH_ . 'www/class/CentreonLDAPAdmin.class.php';
 $tpl = new Smarty();
 
 if (isset($_REQUEST['ar_id']) || isset($_REQUEST['new'])) {

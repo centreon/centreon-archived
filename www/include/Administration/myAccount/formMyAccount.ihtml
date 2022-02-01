@@ -45,7 +45,7 @@
                     <h4>{t}Password Management{/t}</h4>
                 </td>
             </tr>
-            <tr class="list_one"><td class="FormRowField">{$form.contact_passwd.label}</td><td class="FormRowValue">{$form.contact_passwd.html} {if $o}{$form.contact_gen_passwd.html}{/if}</td></tr>
+            <tr class="list_one"><td class="FormRowField">{$form.contact_passwd.label}</td><td class="FormRowValue">{$form.contact_passwd.html} {if $o}{$form.contact_gen_passwd.html}{if $expirationMessage}<span style="color:red;">{$expirationMessage}</span>{/if}{/if}</td></tr>
     		<tr class="list_two"><td class="FormRowField">{$form.contact_passwd2.label}</td><td class="FormRowValue">{$form.contact_passwd2.html}</td></tr>
             {/if}
     		<tr class="list_lvl_1">
