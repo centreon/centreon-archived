@@ -12,7 +12,6 @@ import {
   fireEvent,
   RenderResult,
   act,
-  ThemeProvider,
   setUrlQueryParameters,
   getUrlQueryParameters,
   copyToClipboard,
@@ -103,13 +102,12 @@ import Details from '.';
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 jest.mock('@centreon/ui-context', () =>
-  jest.requireActual('@centreon/centreon-frontend/packages/ui-context'),
+  jest.requireActual('centreon-frontend/packages/ui-context'),
 );
 
 jest.mock('../icons/Downtime');
-jest.mock(
-  '@centreon/centreon-frontend/packages/centreon-ui/src/utils/copy',
-  () => jest.fn(),
+jest.mock('centreon-frontend/packages/centreon-ui/src/utils/copy', () =>
+  jest.fn(),
 );
 
 jest.mock('@visx/visx', () => {
@@ -505,11 +503,9 @@ const DetailsTest = (): JSX.Element => {
   } as ResourceContext;
 
   return (
-    <ThemeProvider>
-      <Context.Provider value={context}>
-        <Details />
-      </Context.Provider>
-    </ThemeProvider>
+    <Context.Provider value={context}>
+      <Details />
+    </Context.Provider>
   );
 };
 

@@ -235,3 +235,4 @@ export const labelStatusType = 'Status type';
 export const labelHard = 'Hard';
 export const labelSoft = 'Soft';
 export const labelInvalidFormat = 'Invalid format';
+export const labelType = 'Type';
