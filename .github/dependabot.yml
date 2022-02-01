@@ -1,0 +1,75 @@
+version: 2
+updates:
+
+  # Maintain dependencies for GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/.github/workflows"
+    schedule:
+      interval: "daily"
+    versioning-strategy: increase-if-necessary
+    open-pull-requests-limit: 10
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-patch"]
+
+  # Maintain dependencies for npm
+  - package-ecosystem: "npm"
+    commit-message:
+      prefix: "npm prod."
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "sunday"
+    allow:
+      - dependency-type: "production"
+    versioning-strategy: increase-if-necessary
+    open-pull-requests-limit: 10
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-patch"]
+
+  # Maintain dependencies for Composer
+  - package-ecosystem: "composer"
+      prefix: "composer prod."
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "sunday"
+    allow:
+      - dependency-type: "production"
+    versioning-strategy: increase-if-necessary
+    open-pull-requests-limit: 10
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-patch"]
+
+  # Maintain dependencies for Python
+  - package-ecosystem: "pip"
+    commit-message:
+      prefix: "pip prod."
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "sunday"
+    allow:
+      - dependency-type: "production"
+    versioning-strategy: increase-if-necessary
+    open-pull-requests-limit: 10
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-patch"]
+
+  # Maintain dependencies for Java
+  - package-ecosystem: "maven"
+      - dependency-type: "production"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "sunday"
+    allow:
+      - dependency-type: "production"
+    versioning-strategy: increase-if-necessary
+    open-pull-requests-limit: 10
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-patch"]
