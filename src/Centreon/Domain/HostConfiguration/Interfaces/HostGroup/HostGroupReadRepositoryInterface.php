@@ -60,7 +60,7 @@ interface HostGroupReadRepositoryInterface
      * @return HostGroup[]
      * @throws \Throwable
      */
-    public function findByHost(Host $host): array;
+    public function findAllByHost(Host $host): array;
 
     /**
      * Find a host group by id.

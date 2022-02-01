@@ -121,7 +121,7 @@ class HostGroupRepositoryRDB extends AbstractRepositoryDRB implements
     /**
      * @inheritDoc
      */
-    public function findByHost(Host $host): array
+    public function findAllByHost(Host $host): array
     {
         if ($host->getId() === null) {
             return [];
