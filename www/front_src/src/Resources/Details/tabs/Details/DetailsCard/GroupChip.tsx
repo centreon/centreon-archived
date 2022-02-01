@@ -116,7 +116,7 @@ const GroupChip = ({ group, type }: GroupsChipProps): JSX.Element => {
           </div>
         }
         onMouseEnter={onMouseEnter}
-          onMouseLeave={onMouseLeave}
+        onMouseLeave={onMouseLeave}
       />
     </Grid>
   );
