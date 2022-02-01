@@ -1,6 +1,5 @@
 import * as React from 'react';
 
-
 import classnames from 'classnames';
 import { useTranslation, withTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
@@ -27,47 +26,6 @@ const useStyles = makeStyles(() => ({
     whiteSpace: 'nowrap',
     width: '115px',
   },
-  logoutLink: {
-    display: 'grid',
-    justifyContent: 'flex-end',
-  },
-  nameAliasContainer: {
-    display: 'grid',
-    gridTemplateColumns: '2fr 1fr',
-  },
-  submenuUserButton: {
-      '&:hover': {
-        backgroundColor: 'rgba(255, 161, 37, 1)',
-        color: 'rgb(0,9,22)',
-      },
-      '& span:first-child': {
-        display: 'block',
-        lineHeight: '17px',
-      },
-      alignItems: 'center',
-      backgroundColor: 'transparent',
-      border: '1px solid rgba(255, 161, 37, 1)',
-      borderRadius: '16px',
-      boxSizing: 'border-box',
-      color: '#ffa225',
-      display: 'flex',
-      fontSize: '.7rem',
-      justifyContent: 'space-between',
-      lineHeight: '31px',
-      margin: '0 auto',
-      outline: 'none',
-      padding: '2px 10px 2px 10px',
-      position: 'relative',
-      textAlign: 'left',
-      textDecoration: 'none',
-      width: '95%',
-    },
-  submenuUserEdit: {
-    color: 'white',
-    float: 'right',
-    marginLeft: 4,
-    textDecorationLine: 'underline',
-  },
   itemLink: {
     backgroundColor: '#232f39',
     color: 'white',
@@ -77,6 +35,14 @@ const useStyles = makeStyles(() => ({
     justifyContent: 'space-between',
     padding: 10,
     textDecoration: 'none',
+  },
+  logoutLink: {
+    display: 'grid',
+    justifyContent: 'flex-end',
+  },
+  nameAliasContainer: {
+    display: 'grid',
+    gridTemplateColumns: '2fr 1fr',
   },
   subMenu: {
     boxSizing: 'border-box',
@@ -97,6 +63,39 @@ const useStyles = makeStyles(() => ({
     backgroundColor: '#232f39',
     padding: 10,
   },
+  submenuUserButton: {
+    '& span:first-child': {
+      display: 'block',
+      lineHeight: '17px',
+    },
+    '&:hover': {
+      backgroundColor: 'rgba(255, 161, 37, 1)',
+      color: 'rgb(0,9,22)',
+    },
+    alignItems: 'center',
+    backgroundColor: 'transparent',
+    border: '1px solid rgba(255, 161, 37, 1)',
+    borderRadius: '16px',
+    boxSizing: 'border-box',
+    color: '#ffa225',
+    display: 'flex',
+    fontSize: '.7rem',
+    justifyContent: 'space-between',
+    lineHeight: '31px',
+    margin: '0 auto',
+    outline: 'none',
+    padding: '2px 10px 2px 10px',
+    position: 'relative',
+    textAlign: 'left',
+    textDecoration: 'none',
+    width: '95%',
+  },
+  submenuUserEdit: {
+    color: 'white',
+    float: 'right',
+    marginLeft: 4,
+    textDecorationLine: 'underline',
+  },
   wrapRightUser: {
     alignItems: 'center',
     display: 'flex',
@@ -112,19 +111,14 @@ const useStyles = makeStyles(() => ({
     flex: '1 0 76%',
     justifyContent: 'flex-end',
   },
+}));
 
-  }));
+// useRef
+let refreshTimeout;
 
 const UserMenu = ({ allowedPages }: StateToProps): JSX.Element => {
-  //fixer par useRequest pollerMenu
-  const userService = axios(
-    'internal.php?object=centreon_topcounter&action=user',
-  );
   const classes = useStyles();
   const { t } = useTranslation();
-
-  //useRef
-  let refreshTimeout ;
 
   const [copied, setCopied] = React.useState(false);
   const [data, setData] = React.useState<any>(null);
@@ -141,6 +135,11 @@ const UserMenu = ({ allowedPages }: StateToProps): JSX.Element => {
       clearTimeout(refreshTimeout);
     };
   }, []);
+
+  // fixer par useRequest pollerMenu
+  const userService = axios(
+    'internal.php?object=centreon_topcounter&action=user',
+  );
 
   // fetch api to get user data
   const getData = (): void => {
@@ -171,13 +170,12 @@ const UserMenu = ({ allowedPages }: StateToProps): JSX.Element => {
   };
 
   const onCopy = (): void => {
-    if(autologinNode && autologinNode.current){
+    if (autologinNode && autologinNode.current) {
       autologinNode.current.select();
       window.document.execCommand('copy');
       setCopied(true);
     }
   };
-
 
   const handleClick = (e): void => {
     if (!profile.current || profile.current.contains(e.target)) {
@@ -203,11 +201,7 @@ const UserMenu = ({ allowedPages }: StateToProps): JSX.Element => {
         [classes.wrapRightUserActive]: toggled,
       })}
     >
-      <div
-        className={classnames(
-          (classes.wrapRightUserItems)
-        )}
-      >
+      <div className={classnames(classes.wrapRightUserItems)}>
         <Clock />
         <div ref={profile}>
           <UserIcon
@@ -225,7 +219,7 @@ const UserMenu = ({ allowedPages }: StateToProps): JSX.Element => {
                 <li className={styles['submenu-item']}>
                   <div
                     className={classnames(
-                      (classes.itemLink),
+                      classes.itemLink,
                       classes.nameAliasContainer,
                     )}
                   >
@@ -256,15 +250,9 @@ const UserMenu = ({ allowedPages }: StateToProps): JSX.Element => {
                   </div>
                 </li>
                 {data && data.autoLoginKey && (
-                  <div
-                    className={classnames(
-                      classes.subMenuItemContent
-                    )}
-                  >
+                  <div className={classnames(classes.subMenuItemContent)}>
                     <button
-                      className={classnames(
-                        classes.submenuUserButton
-                      )}
+                      className={classnames(classes.submenuUserButton)}
                       onClick={onCopy}
                     >
                       {t('Copy autologin link')}
@@ -280,9 +268,7 @@ const UserMenu = ({ allowedPages }: StateToProps): JSX.Element => {
                   </div>
                 )}
               </ul>
-              <div
-                className={classnames(classes.subMenuItemContent)}
-              >
+              <div className={classnames(classes.subMenuItemContent)}>
                 <a
                   className={classnames(classes.logoutLink)}
                   href="index.php?disconnect=1"
