@@ -1,46 +1,70 @@
+/* eslint-disable react/jsx-key */
 import * as React from 'react';
 
 import { equals } from 'ramda';
-import { useUpdateAtom } from 'jotai/utils';
+import { useTranslation } from 'react-i18next';
 
-import { Grid, Chip } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 
-import { setCriteriaAndNewFilterDerivedAtom } from '../../../../Filter/filterAtoms';
+import { labelGroups } from '../../../../translatedLabels';
 import { CriteriaNames } from '../../../../Filter/Criterias/models';
 import { ResourceDetails } from '../../../models';
-import { NamedEntity, ResourceType } from '../../../../models';
+import { ResourceType } from '../../../../models';
+
+import GroupChip from './GroupChip';
 
 interface Props {
-  details: ResourceDetails;
+  details: ResourceDetails | undefined;
 }
 
-const Groups = ({ details }: Props): JSX.Element => {
-  const setCriteriaAndNewFilter = useUpdateAtom(
-    setCriteriaAndNewFilterDerivedAtom,
-  );
+const useStyles = makeStyles((theme) => ({
+  groupChip: {
+    alignSelf: 'center',
+    display: 'flex',
+  },
+  groupChipAction: {
+    gridArea: '1/1',
+    maxWidth: theme.spacing(14),
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+  },
+  groupChipHover: {
+    backgroundColor: theme.palette.primary.main,
+    display: 'flex',
+    gap: theme.spacing(0.25),
+    gridArea: '1/1',
+  },
+  groupChipLabel: {
+    display: 'grid',
+    justifyItems: 'center',
+    minWidth: theme.spacing(7),
+    overflow: 'hidden',
+  },
+  groups: {
+    display: 'flex',
+    padding: theme.spacing(1, 1, 1, 1),
+  },
+}));
 
-  const filterByGroup = (group: NamedEntity): void => {
-    setCriteriaAndNewFilter({
-      name: equals(details.type, ResourceType.host)
-        ? CriteriaNames.hostGroups
-        : CriteriaNames.serviceGroups,
-      value: [group],
-    });
-  };
+const Groups = ({ details }: Props): JSX.Element => {
+  const classes = useStyles();
+
+  const { t } = useTranslation();
+
+  const groupType = equals(details?.type, ResourceType.host)
+    ? CriteriaNames.hostGroups
+    : CriteriaNames.serviceGroups;
 
   return (
-    <Grid container spacing={1}>
-      {details.groups?.map((group) => {
-        return (
-          <Grid item key={group.name}>
-            <Chip
-              clickable
-              color="primary"
-              label={group.name}
-              onClick={(): void => filterByGroup(group)}
-            />
-          </Grid>
-        );
+    <Grid container className={classes.groups} spacing={1}>
+      <Grid item xs={12}>
+        <Typography color="textSecondary" variant="body1">
+          {t(labelGroups)}
+        </Typography>
+      </Grid>
+      {details?.groups?.map((group) => {
+        return <GroupChip group={group} key={group.id} type={groupType} />;
       })}
     </Grid>
   );

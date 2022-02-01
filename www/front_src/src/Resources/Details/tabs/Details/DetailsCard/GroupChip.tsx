@@ -24,6 +24,12 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'hidden',
     textOverflow: 'ellipsis',
   },
+  groupChipHover: {
+    backgroundColor: theme.palette.primary.main,
+    display: 'flex',
+    gap: theme.spacing(0.25),
+    gridArea: '1/1',
+  },
   groupChipLabel: {
     display: 'grid',
     justifyItems: 'center',
@@ -33,12 +39,6 @@ const useStyles = makeStyles((theme) => ({
   groups: {
     display: 'flex',
     padding: theme.spacing(1),
-  },
-  iconAction: {
-    backgroundColor: theme.palette.primary.main,
-    display: 'flex',
-    gap: theme.spacing(0.25),
-    gridArea: '1/1',
   },
 }));
 
@@ -89,7 +89,7 @@ const GroupChip = ({ group, type }: GroupsChipProps): JSX.Element => {
               </Typography>
             </Tooltip>
             {isHovered && (
-              <Grid className={classes.iconAction}>
+              <Grid className={classes.groupChipHover}>
                 <IconButton
                   style={{ color: theme.palette.common.white }}
                   title={t(labelFilter)}
