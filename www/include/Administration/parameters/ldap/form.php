@@ -39,6 +39,7 @@ if (!isset($oreon)) {
 }
 
 require_once _CENTREON_PATH_ . 'www/class/centreonLDAP.class.php';
+require_once _CENTREON_PATH_ . 'www/class/CentreonLDAPAdmin.class.php';
 require_once __DIR__ . '/DB-Func.php';
 
 $attrsText = array("size" => "40");

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3e630d6ca922bd1315cb02289acca773",
+    "content-hash": "72a081427cb7cc5b78d9a425006eba98",
     "packages": [
         {
             "name": "beberlei/assert",
@@ -6542,12 +6542,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/centreon/centreon-test-lib.git",
-                "reference": "dc77ceedfa000100b6f58b4234655d5b459d16f9"
+                "reference": "c0eade6610ec6146cf96e51e643508a9b79b6d11"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/dc77ceedfa000100b6f58b4234655d5b459d16f9",
-                "reference": "dc77ceedfa000100b6f58b4234655d5b459d16f9",
+                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/c0eade6610ec6146cf96e51e643508a9b79b6d11",
+                "reference": "c0eade6610ec6146cf96e51e643508a9b79b6d11",
                 "shasum": ""
             },
             "require": {
@@ -6591,7 +6591,7 @@
                 "issues": "https://github.com/centreon/centreon-test-lib/issues",
                 "source": "https://github.com/centreon/centreon-test-lib/tree/master"
             },
-            "time": "2022-01-03T12:56:39+00:00"
+            "time": "2022-01-27T14:58:59+00:00"
         },
         {
             "name": "friends-of-behat/mink",
@@ -10313,16 +10313,16 @@
         },
         {
             "name": "twig/twig",
-            "version": "v3.3.5",
+            "version": "v3.3.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "a0f614a192829a4e7c597491ab0c4d276621af8a"
+                "reference": "bb07a776206c245bc9cbde8e1cfcd47ffa298c23"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/a0f614a192829a4e7c597491ab0c4d276621af8a",
-                "reference": "a0f614a192829a4e7c597491ab0c4d276621af8a",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/bb07a776206c245bc9cbde8e1cfcd47ffa298c23",
+                "reference": "bb07a776206c245bc9cbde8e1cfcd47ffa298c23",
                 "shasum": ""
             },
             "require": {
@@ -10373,7 +10373,7 @@
             ],
             "support": {
                 "issues": "https://github.com/twigphp/Twig/issues",
-                "source": "https://github.com/twigphp/Twig/tree/v3.3.5"
+                "source": "https://github.com/twigphp/Twig/tree/v3.3.6"
             },
             "funding": [
                 {
@@ -10385,7 +10385,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-01-03T11:36:47+00:00"
+            "time": "2022-01-03T14:27:01+00:00"
         },
         {
             "name": "zircote/swagger-php",

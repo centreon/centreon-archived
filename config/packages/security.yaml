@@ -15,7 +15,7 @@ security:
             pattern: ^.*/api/(?:latest|beta|v[0-9]+|v[0-9]+\.[0-9]+)/platform/(?:versions|installation/status)$
             security: false
         authentication:
-            pattern: ^.*/authentication/(.*)$
+            pattern: ^.*(?<!administration)/authentication/providers/configurations(.*)$
             security: false
         api:
             stateless: true

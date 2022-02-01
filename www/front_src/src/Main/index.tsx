@@ -13,6 +13,7 @@ import isYesterday from 'dayjs/plugin/isYesterday';
 import weekday from 'dayjs/plugin/weekday';
 import isBetween from 'dayjs/plugin/isBetween';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
+import duration from 'dayjs/plugin/duration';
 import { isNil } from 'ramda';
 import { Route, Routes } from 'react-router-dom';
 import { useAtomValue } from 'jotai/utils';
@@ -34,6 +35,7 @@ dayjs.extend(isYesterday);
 dayjs.extend(weekday);
 dayjs.extend(isBetween);
 dayjs.extend(isSameOrBefore);
+dayjs.extend(duration);
 
 const LoginPage = React.lazy(() => import('../Login'));
 

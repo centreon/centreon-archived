@@ -7,7 +7,9 @@ import { PlatformInstallationStatus } from './models';
 export const userDecoder = JsonDecoder.object<User>(
   {
     alias: JsonDecoder.string,
-    default_page: JsonDecoder.nullable(JsonDecoder.string),
+    default_page: JsonDecoder.optional(
+      JsonDecoder.nullable(JsonDecoder.string),
+    ),
     isExportButtonEnabled: JsonDecoder.boolean,
     locale: JsonDecoder.string,
     name: JsonDecoder.string,
