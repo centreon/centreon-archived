@@ -7,7 +7,7 @@ import { lte } from 'ramda';
 
 import { FormHelperText, FormLabel } from '@mui/material';
 
-import { useMemoComponent } from '@centreon/centreon-frontend/packages/centreon-ui/src';
+import { useMemoComponent } from '@centreon/ui';
 
 import { labelTimeBeforeSettingNewPassword } from '../../translatedLabels';
 import { getField } from '../utils';

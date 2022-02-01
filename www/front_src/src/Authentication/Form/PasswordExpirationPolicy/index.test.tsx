@@ -91,26 +91,7 @@ describe('Password expiration policy', () => {
     ).toHaveTextContent('1');
   });
 
-  it('displays an error message when the password expiration time is 12 months and 1 day', async () => {
-    renderPasswordExpirationPolicy({
-      password_security_policy: securityPolicyWithInvalidPasswordExpiration,
-    });
-
-    await waitFor(() => {
-      expect(
-        screen.getByText(labelPasswordExpirationPolicy),
-      ).toBeInTheDocument();
-    });
-    expect(screen.getByText(labelPasswordExpiration)).toBeInTheDocument();
-
-    await waitFor(() => {
-      expect(
-        screen.getByText(labelChooseADurationBetween7DaysAnd12Months),
-      ).toBeInTheDocument();
-    });
-  });
-
-  it('does not display any error message when the password expiration time is emptied', async () => {
+  it('does not display any error message when the password expiration time is cleared', async () => {
     renderPasswordExpirationPolicy();
 
     await waitFor(() => {
@@ -131,7 +112,7 @@ describe('Password expiration policy', () => {
     });
   });
 
-  it('displays an error message when the delay before new password time is 8 days', async () => {
+  it('displays an error message when the delay before new password time is outside the bounds', async () => {
     renderPasswordExpirationPolicy({
       password_security_policy: securityPolicyWithInvalidDelayBeforeNewPassword,
     });
@@ -150,9 +131,19 @@ describe('Password expiration policy', () => {
         screen.getByText(labelChooseADurationBetween1HourAnd1Week),
       ).toBeInTheDocument();
     });
+
+    renderPasswordExpirationPolicy({
+      password_security_policy: securityPolicyWithInvalidPasswordExpiration,
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(labelChooseADurationBetween7DaysAnd12Months),
+      ).toBeInTheDocument();
+    });
   });
 
-  it('does not display any error message when the delay before new password time is emptied', async () => {
+  it('does not display any error message when the delay before new password time is cleared', async () => {
     renderPasswordExpirationPolicy();
 
     await waitFor(() => {

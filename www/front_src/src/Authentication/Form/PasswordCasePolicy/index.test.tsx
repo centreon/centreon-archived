@@ -94,7 +94,8 @@ describe('Password case policy', () => {
       expect(screen.getByLabelText(labelPasswordLength)).toHaveValue(45);
     });
   });
-  it('displays an error message when password minimum length input is emptied', async () => {
+
+  it('displays an error message when password minimum length input is outside the bounds', async () => {
     renderPasswordCasePolicy();
 
     userEvent.type(
@@ -105,23 +106,12 @@ describe('Password case policy', () => {
     await waitFor(() => {
       expect(screen.getByText(labelRequired)).toBeInTheDocument();
     });
-  });
 
-  it('displays an error message when "7" is typed in the password minimum length input', async () => {
-    renderPasswordCasePolicy();
-
-    userEvent.type(
-      screen.getByLabelText(labelPasswordLength),
-      '{selectall}{backspace}7',
-    );
+    userEvent.type(screen.getByLabelText(labelPasswordLength), '7');
 
     await waitFor(() => {
       expect(screen.getByText(labelMinimum8Characters)).toBeInTheDocument();
     });
-  });
-
-  it('displays an error message when "129" is typed in the password minimum length input', async () => {
-    renderPasswordCasePolicy();
 
     userEvent.type(
       screen.getByLabelText(labelPasswordLength),
@@ -133,7 +123,7 @@ describe('Password case policy', () => {
     });
   });
 
-  it('displays "Strong" when all cases buttons are selected', async () => {
+  it('displays the efficiency level according to the selected cases when cases button are clicked', async () => {
     renderPasswordCasePolicy(defaultSecurityPolicyWithNullValues);
 
     userEvent.click(screen.getAllByLabelText(labelForceToUseLowerCase)[0]);
@@ -146,13 +136,6 @@ describe('Password case policy', () => {
     await waitFor(() => {
       expect(screen.getByText(labelStrong)).toBeInTheDocument();
     });
-  });
-
-  it('displays "Good" when only 3 cases buttons are selected', async () => {
-    renderPasswordCasePolicy(defaultSecurityPolicyWithNullValues);
-
-    userEvent.click(screen.getAllByLabelText(labelForceToUseLowerCase)[0]);
-    userEvent.click(screen.getAllByLabelText(labelForceToUseUpperCase)[0]);
     userEvent.click(
       screen.getAllByLabelText(labelForceToUseSpecialCharacters)[0],
     );
@@ -160,15 +143,8 @@ describe('Password case policy', () => {
     await waitFor(() => {
       expect(screen.getByText(labelGood)).toBeInTheDocument();
     });
-  });
-
-  it('displays "Weak" when only 2 cases buttons are selected', async () => {
-    renderPasswordCasePolicy(defaultSecurityPolicyWithNullValues);
 
     userEvent.click(screen.getAllByLabelText(labelForceToUseNumbers)[0]);
-    userEvent.click(
-      screen.getAllByLabelText(labelForceToUseSpecialCharacters)[0],
-    );
 
     await waitFor(() => {
       expect(screen.getByText(labelWeak)).toBeInTheDocument();
