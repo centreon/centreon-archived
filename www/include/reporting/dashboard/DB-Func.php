@@ -594,7 +594,10 @@ function getLogInDbForServicesGroup($servicegroupId, $startDate, $endDate, $repo
         if (isset($servicesStats[$hostId][$serviceId])) {
             $serviceGroupStats[$hostServiceid] = $servicesStats[$hostId][$serviceId];
 
-            //Must be here to display link for redirection to a specific server if there is a link between host and server
+            /*
+            Must be here to display link for redirection
+            to a specific server if there is a link between host and server
+            */
             $serviceGroupStats[$hostServiceid]["HOST_ID"] = $hostId;
             $serviceGroupStats[$hostServiceid]["SERVICE_ID"] = $serviceId;
             $serviceGroupStats[$hostServiceid]["HOST_NAME"] = $service['host_name'];
