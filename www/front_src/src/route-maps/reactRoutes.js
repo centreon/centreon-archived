@@ -45,6 +45,10 @@ const reactRoutes = [
     comp: React.lazy(() => import('../Resources')),
     path: routeMap.resources,
   },
+  {
+    comp: React.lazy(() => import('../Authentication')),
+    path: routeMap.authentication,
+  },
 ];
 
 export default reactRoutes;

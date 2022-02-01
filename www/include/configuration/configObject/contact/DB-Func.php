@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2019 Centreon
+ * Copyright 2005-2021 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -37,7 +38,9 @@ if (!isset($centreon)) {
     exit();
 }
 
-require_once _CENTREON_PATH_ . 'bootstrap.php';
+require_once __DIR__ . '/../../../../../bootstrap.php';
+require_once __DIR__ . '/../../../../class/centreonAuth.class.php';
+require_once __DIR__ . '/../../../../class/centreonContact.class.php';
 
 /**
  * @param null $name
@@ -343,24 +346,37 @@ function multipleContactInDB($contacts = array(), $nbrDup = array())
     $newContactIds = [];
     foreach ($contacts as $key => $value) {
         $newContactIds[$key] = [];
-        $dbResult = $pearDB->query("SELECT * FROM contact WHERE contact_id = '" . (int)$key . "' LIMIT 1");
-        $row = $dbResult->fetch();
+        $statement = $pearDB->prepare(
+            "SELECT `contact`.*, cp.password, cp.creation_date
+            FROM contact
+            LEFT JOIN contact_password cp ON cp.contact_id = contact.contact_id
+            WHERE `contact`.contact_id = :contactId LIMIT 1"
+        );
+        $statement->bindValue(':contactId', (int)$key, \PDO::PARAM_INT);
+        $statement->execute();
+        $row = $statement->fetch();
+        if ($row === false) {
+            return;
+        }
+
         $row["contact_id"] = null;
         for ($i = 1; $i <= $nbrDup[$key]; $i++) {
             $val = null;
             foreach ($row as $key2 => $value2) {
-                $key2 == "contact_name" ? ($contact_name = $value2 = $value2 . "_" . $i) : null;
-                $key2 == "contact_alias" ? ($contact_alias = $value2 = $value2 . "_" . $i) : null;
-                $val ? $val .= ($value2 != null ? (", '" . $value2 . "'") : ", NULL") : $val .=
-                    ($value2 != null ? ("'" . $value2 . "'") : "NULL");
-                if ($key2 != "contact_id") {
-                    $fields[$key2] = $value2;
-                }
-                if (isset($contact_name)) {
-                    $fields["contact_name"] = $contact_name;
-                }
-                if (isset($contact_alias)) {
-                    $fields["contact_alias"] = $contact_alias;
+                if (in_array($key2, ['creation_date', 'password']) === false) {
+                    $key2 == "contact_name" ? ($contact_name = $value2 = $value2 . "_" . $i) : null;
+                    $key2 == "contact_alias" ? ($contact_alias = $value2 = $value2 . "_" . $i) : null;
+                    $val ? $val .= ($value2 != null ? (", '" . $value2 . "'") : ", NULL") : $val .=
+                        ($value2 != null ? ("'" . $value2 . "'") : "NULL");
+                    if ($key2 != "contact_id") {
+                        $fields[$key2] = $value2;
+                    }
+                    if (isset($contact_name)) {
+                        $fields["contact_name"] = $contact_name;
+                    }
+                    if (isset($contact_alias)) {
+                        $fields["contact_alias"] = $contact_alias;
+                    }
                 }
             }
 
@@ -373,6 +389,21 @@ function multipleContactInDB($contacts = array(), $nbrDup = array())
                 $pearDB->query($rq);
                 $lastId = $pearDB->lastInsertId();
                 if (isset($lastId)) {
+                    /**
+                     * Don't insert password for a contact_template.
+                     */
+                    if ($row['password'] !== null) {
+                        $contact = new \CentreonContact($pearDB);
+                        $contact->addPasswordByContactId((int) $lastId, $row['password']);
+                        $statement = $pearDB->prepare(
+                            "UPDATE contact_password
+                            SET creation_date = :creationDate
+                            WHERE contact_id = :contactId"
+                        );
+                        $statement->bindValue(':creationDate', $row['creation_date'], \PDO::PARAM_INT);
+                        $statement->bindValue(':contactId', (int) $lastId, \PDO::PARAM_INT);
+                        $statement->execute();
+                    }
                     $newContactIds[$key][] = $lastId;
                     /*
                      * ACL update
@@ -533,7 +564,7 @@ function insertContactInDB($ret = array())
  */
 function insertContact($ret = array())
 {
-    global $form, $pearDB, $centreon, $encryptType, $dependencyInjector;
+    global $form, $pearDB, $centreon, $dependencyInjector;
 
     if (!count($ret)) {
         $ret = $form->getSubmitValues();
@@ -558,41 +589,36 @@ function insertContact($ret = array())
 
     $stmt->execute();
     $dbResult = $pearDB->query("SELECT MAX(contact_id) FROM contact");
-    $contact_id = $dbResult->fetch();
+    $contactId = $dbResult->fetch();
 
-    if (isset($ret["contact_passwd"])) {
-        if ($encryptType == 1) {
-            $ret["contact_passwd"] = $ret["contact_passwd2"] =
-                $dependencyInjector['utils']->encodePass($ret["contact_passwd"], 'md5');
-        } elseif ($encryptType == 2) {
-            $ret["contact_passwd"] = $ret["contact_passwd2"] =
-                $dependencyInjector['utils']->encodePass($ret["contact_passwd"], 'sha1');
-        } else {
-            $ret["contact_passwd"] = $ret["contact_passwd2"] =
-                $dependencyInjector['utils']->encodePass($ret["contact_passwd"], 'md5');
-        }
+    if (isset($ret["contact_passwd"]) && !empty($ret["contact_passwd"])) {
+        $ret["contact_passwd"] = password_hash($ret["contact_passwd"], \CentreonAuth::PASSWORD_HASH_ALGORITHM);
+        $ret["contact_passwd2"] = $ret["contact_passwd"];
+
+        $contact = new \CentreonContact($pearDB);
+        $contact->addPasswordByContactId($contactId["MAX(contact_id)"], $ret["contact_passwd"]);
     }
 
     /* Prepare value for changelog */
     $fields = CentreonLogAction::prepareChanges($ret);
     $centreon->CentreonLogAction->insertLog(
         "contact",
-        $contact_id["MAX(contact_id)"],
+        $contactId["MAX(contact_id)"],
         $ret["contact_name"],
         "a",
         $fields
     );
 
-    return ($contact_id["MAX(contact_id)"]);
+    return $contactId["MAX(contact_id)"];
 }
 
 /**
- * @param null $contact_id
+ * @param int|null $contactId
  */
-function updateContact($contact_id = null)
+function updateContact($contactId = null)
 {
     global $form, $pearDB, $centreon, $encryptType, $dependencyInjector;
-    if (!$contact_id) {
+    if (!$contactId) {
         return;
     }
     $ret = array();
@@ -616,29 +642,24 @@ function updateContact($contact_id = null)
             $stmt->bindValue($token, $value, $paramType);
         }
     }
-    $stmt->bindValue(':contactId', $contact_id, \PDO::PARAM_INT);
+    $stmt->bindValue(':contactId', $contactId, \PDO::PARAM_INT);
     $stmt->execute();
 
-    if (isset($ret["contact_lang"]) && $ret["contact_lang"] != null && $contact_id == $centreon->user->get_id()) {
+    if (isset($ret["contact_lang"]) && $ret["contact_lang"] != null && $contactId == $centreon->user->get_id()) {
         $centreon->user->set_lang($ret["contact_lang"]);
     }
 
-    if (isset($ret["contact_passwd"])) {
-        if ($encryptType == 1) {
-            $ret["contact_passwd"] = $ret["contact_passwd2"] =
-                $dependencyInjector['utils']->encodePass($ret["contact_passwd"], 'md5');
-        } elseif ($encryptType == 2) {
-            $ret["contact_passwd"] = $ret["contact_passwd2"] =
-                $dependencyInjector['utils']->encodePass($ret["contact_passwd"], 'sha1');
-        } elseif (isset($ret['contact_passwd'])) {
-            $ret["contact_passwd"] = $ret["contact_passwd2"] =
-                $dependencyInjector['utils']->encodePass($ret["contact_passwd"], 'md5');
-        }
+    if (isset($ret["contact_passwd"]) && !empty($ret["contact_passwd"])) {
+        $ret["contact_passwd"] = password_hash($ret["contact_passwd"], \CentreonAuth::PASSWORD_HASH_ALGORITHM);
+        $ret["contact_passwd2"] = $ret["contact_passwd"];
+
+        $contact = new \CentreonContact($pearDB);
+        $contact->renewPasswordByContactId($contactId, $ret["contact_passwd"]);
     }
 
     /* Prepare value for changelog */
     $fields = CentreonLogAction::prepareChanges($ret);
-    $centreon->CentreonLogAction->insertLog("contact", $contact_id, $ret["contact_name"], "c", $fields);
+    $centreon->CentreonLogAction->insertLog("contact", $contactId, $ret["contact_name"], "c", $fields);
 }
 
 /**
@@ -648,7 +669,7 @@ function updateContact_MC($contact_id = null)
 {
     global $form, $pearDB, $centreon;
 
-    if (!$contact_id) {
+    if ($contact_id === null || $contact_id === false) {
         return;
     }
 
@@ -1187,18 +1208,6 @@ function sanitizeFormContactParameters(array $ret): array
                         : 'txt'
                 ];
                 break;
-            case 'contact_passwd':
-                if (!empty($inputValue)) {
-                    $password = $dependencyInjector['utils']->encodePass(
-                        $inputValue,
-                        $encryptType == 2 ?  'sha1' : 'md5'
-                    );
-
-                    $bindParams [':' . $inputName] = [
-                        \PDO::PARAM_STR => $password
-                    ];
-                }
-                break;
             case 'contact_lang':
                 if (!empty($inputValue)) {
                     $inputValue = filter_var($inputValue, FILTER_SANITIZE_STRING);
@@ -1261,4 +1270,100 @@ function sanitizeFormContactParameters(array $ret): array
         }
     }
     return $bindParams;
+}
+
+/**
+ * Validate password creation using defined security policy.
+ *
+ * @param array $fields
+ * @return mixed
+ */
+function validatePasswordCreation(array $fields)
+{
+    global $pearDB;
+    $errors = [];
+    $password = $fields['contact_passwd'];
+    if (empty($password)) {
+        return true;
+    }
+
+    try {
+        $contact = new \CentreonContact($pearDB);
+        $contact->respectPasswordPolicyOrFail($password, null);
+    } catch (\Throwable $e) {
+        $errors['contact_passwd'] = $e->getMessage();
+    }
+
+    return count($errors) > 0 ? $errors : true;
+}
+
+/**
+ * Validate password creation using defined security policy.
+ *
+ * @param array<string,mixed> $fields
+ * @return mixed
+ */
+function validatePasswordModification(array $fields)
+{
+    global $pearDB;
+    $errors = [];
+    $password = $fields['contact_passwd'];
+    $contactId = $fields['contact_id'];
+    if (empty($password)) {
+        return true;
+    }
+
+    try {
+        $contact = new \CentreonContact($pearDB);
+        $contact->respectPasswordPolicyOrFail($password, $contactId);
+    } catch (\Throwable $e) {
+        $errors['contact_passwd'] = $e->getMessage();
+    }
+
+    return count($errors) > 0 ? $errors : true;
+}
+
+/**
+ * Validate autologin key is not equal to a password
+ *
+ * @param array<string,mixed> $fields
+ * @return array<string,string>|bool
+ */
+function validateAutologin(array $fields)
+{
+    global $pearDB;
+    $errors = [];
+    if (!empty($fields['contact_autologin_key'])) {
+        /**
+         * If user update his autologin key and not his password,
+         * check that the autologin key is not the same as his current password.
+         */
+        if (!empty($fields['contact_id']) && empty($fields['contact_passwd'])) {
+            $contactId = $fields['contact_id'];
+            $statement = $pearDB->prepare(
+                'SELECT * FROM `contact_password` WHERE contact_id = :contactId ORDER BY creation_date DESC LIMIT 1'
+            );
+            $statement->bindValue(':contactId', $contactId, \PDO::PARAM_INT);
+            $statement->execute();
+
+            if (
+                ($result = $statement->fetch(\PDO::FETCH_ASSOC))
+                && password_verify($fields['contact_autologin_key'], $result['password'])
+            ) {
+                $errors['contact_autologin_key'] = _(
+                    'Your autologin key must be different than your current password'
+                );
+            }
+        }
+        if (
+            !empty($fields['contact_passwd'])
+            && $fields['contact_passwd'] === $fields['contact_autologin_key']
+        ) {
+            $errorMessage = 'Your password and autologin key should be different';
+            $errors['contact_passwd'] = _($errorMessage);
+            $errors['contact_autologin_key'] = _($errorMessage);
+        }
+    }
+
+    return count($errors) > 0 ? $errors : true;
 }

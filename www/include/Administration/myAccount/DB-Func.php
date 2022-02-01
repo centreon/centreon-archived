@@ -34,9 +34,12 @@
  *
  */
 
+require_once __DIR__ . '/../../../class/centreonContact.class.php';
+require_once __DIR__ . '/../../../class/centreonAuth.class.php';
+
 function testExistence($name = null)
 {
-    global $pearDB, $form, $centreon;
+    global $pearDB, $centreon;
 
     $query = "SELECT contact_name, contact_id FROM contact WHERE contact_name = '" .
         htmlentities($name, ENT_QUOTES, "UTF-8") . "'";
@@ -59,7 +62,7 @@ function testExistence($name = null)
 
 function testAliasExistence($alias = null)
 {
-    global $pearDB, $form, $centreon;
+    global $pearDB, $centreon;
 
     $query = "SELECT contact_alias, contact_id FROM contact " .
         "WHERE contact_alias = '" . htmlentities($alias, ENT_QUOTES, "UTF-8") . "'";
@@ -113,11 +116,11 @@ function updateContactInDB($contact_id = null)
     updateNotificationOptions($contact_id);
 }
 
-function updateContact($contact_id = null)
+function updateContact($contactId = null)
 {
-    global $form, $pearDB, $centreon, $encryptType;
+    global $form, $pearDB, $centreon;
 
-    if (!$contact_id) {
+    if (!$contactId) {
         return;
     }
 
@@ -146,17 +149,6 @@ function updateContact($contact_id = null)
           'show_deprecated_pages = :showDeprecatedPages, ' .
           'contact_autologin_key = :contactAutologinKey, ' .
           'enable_one_click_export = :enableOneClickExport';
-
-    $password_encrypted = null;
-    if (!empty($ret['contact_passwd'])) {
-        $rq .= ', contact_passwd = :contactPasswd';
-        if ($encryptType == 2) {
-            $password_encrypted = sha1($ret['contact_passwd']);
-        } else {
-            $password_encrypted = md5($ret['contact_passwd']);
-        }
-    }
-
     $rq .= ' WHERE contact_id = :contactId';
 
     $stmt = $pearDB->prepare($rq);
@@ -186,11 +178,14 @@ function updateContact($contact_id = null)
     $stmt->bindValue(':defaultPage', !empty($ret['default_page']) ? $ret['default_page'] : null, \PDO::PARAM_INT);
     $stmt->bindValue(':showDeprecatedPages', isset($ret['show_deprecated_pages']) ? 1 : 0, \PDO::PARAM_STR);
     $stmt->bindValue(':enableOneClickExport', isset($ret['enable_one_click_export']) ? '1' : '0', \PDO::PARAM_STR);
-    $stmt->bindValue(':contactId', $contact_id, \PDO::PARAM_INT);
-    if (!is_null($password_encrypted)) {
-        $stmt->bindValue(':contactPasswd', $password_encrypted, \PDO::PARAM_STR);
-    }
+    $stmt->bindValue(':contactId', $contactId, \PDO::PARAM_INT);
     $stmt->execute();
+
+    if (isset($ret["contact_passwd"]) && !empty($ret["contact_passwd"])) {
+        $hashedPassword = password_hash($ret["contact_passwd"], \CentreonAuth::PASSWORD_HASH_ALGORITHM);
+        $contact = new \CentreonContact($pearDB);
+        $contact->renewPasswordByContactId($contactId, $hashedPassword);
+    }
 
     /*
      * Update user object..
@@ -200,4 +195,62 @@ function updateContact($contact_id = null)
     $centreon->user->lang = $ret['contact_lang'];
     $centreon->user->email = $ret['contact_email'];
     $centreon->user->setToken(isset($ret['contact_autologin_key']) ? $ret['contact_autologin_key'] : "''");
+}
+
+/**
+ * @param array<string,mixed> $fields
+ */
+function validatePasswordModification(array $fields)
+{
+    global $pearDB, $centreon;
+    $errors = [];
+    $password = $fields['contact_passwd'];
+    $contactId = (int) $centreon->user->get_id();
+    if (empty($password)) {
+        return true;
+    }
+
+    try {
+        $contact = new \CentreonContact($pearDB);
+        $contact->respectPasswordPolicyOrFail($password, $contactId);
+    } catch (\Throwable $e) {
+        $errors['contact_passwd'] = $e->getMessage();
+    }
+
+    return count($errors) > 0 ? $errors : true;
+}
+
+/**
+ * @param array<string,mixed> $fields
+ * @return array<string,string>|bool
+ */
+function checkAutologinValue(array $fields)
+{
+    global $pearDB, $centreon;
+    $errors = [];
+
+    if (!empty($fields['contact_autologin_key'])) {
+        $contactId = $centreon->user->get_id();
+        $statement = $pearDB->prepare(
+            'SELECT * FROM `contact_password` WHERE contact_id = :contactId ORDER BY creation_date DESC LIMIT 1'
+        );
+        $statement->bindValue(':contactId', $contactId, \PDO::PARAM_INT);
+        $statement->execute();
+
+        if (
+            ($result = $statement->fetch(\PDO::FETCH_ASSOC))
+            && password_verify($fields['contact_autologin_key'], $result['password'])
+        ) {
+            $errors['contact_autologin_key'] = _('Your autologin key must be different than your current password');
+        } elseif (
+            !empty($fields['contact_passwd'])
+            && $fields['contact_passwd'] === $fields['contact_autologin_key']
+        ) {
+            $errorMessage = _('Your new password and autologin key must be different');
+            $errors['contact_passwd'] = $errorMessage;
+            $errors['contact_autologin_key'] = $errorMessage;
+        }
+    }
+
+    return count($errors) > 0 ? $errors : true;
 }
