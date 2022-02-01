@@ -28,6 +28,7 @@ import { exportAndReloadConfigurationEndpoint } from './api/endpoints';
 
 interface Props {
   setIsExportingConfiguration: (isExporting: boolean) => void;
+  toggleDetailedView: () => void;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -46,6 +47,7 @@ const useStyles = makeStyles((theme) => ({
 
 const ExportConfiguration = ({
   setIsExportingConfiguration,
+  toggleDetailedView,
 }: Props): JSX.Element | null => {
   const classes = useStyles();
   const { t } = useTranslation();
@@ -67,6 +69,7 @@ const ExportConfiguration = ({
     setAskingBeforeExportConfiguration(false);
 
   const confirmExportAndReload = (): void => {
+    toggleDetailedView();
     showInfoMessage(t(labelExportingAndReloadingTheConfiguration));
     sendRequest({
       endpoint: exportAndReloadConfigurationEndpoint,
