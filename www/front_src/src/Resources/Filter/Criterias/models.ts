@@ -16,7 +16,7 @@ import {
   labelUnknown,
   labelPending,
   labelHostGroup,
-  labelResource,
+  labelType,
   labelServiceGroup,
   labelState,
   labelStatus,
@@ -194,7 +194,7 @@ export enum CriteriaNames {
 
 const selectableCriterias: CriteriaById = {
   [CriteriaNames.resourceTypes]: {
-    label: labelResource,
+    label: labelType,
     options: selectableResourceTypes,
   },
   [CriteriaNames.states]: {
