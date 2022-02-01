@@ -82,7 +82,9 @@ $checkMysqlVersion = "SHOW VARIABLES WHERE Variable_name LIKE 'version%'";
 
 // creating the user - mandatory for MySQL DB
 $alterQuery = "ALTER USER :dbUser@:host IDENTIFIED WITH mysql_native_password BY :dbPass";
-$privileges = [
+
+// Set defined privileges for the user.
+$mandatoryPrivileges = [
     'SELECT',
     'UPDATE',
     'DELETE',
@@ -95,7 +97,7 @@ $privileges = [
     'CREATE TEMPORARY TABLES',
     'EVENT',
 ];
-$privilegesQuery = implode(', ', $privileges);
+$privilegesQuery = implode(', ', $mandatoryPrivileges);
 $query = "GRANT " . $privilegesQuery . " ON `%s`.* TO " . $parameters['db_user'] . "@" . $host . " WITH GRANT OPTION";
 $flushQuery = "FLUSH PRIVILEGES";
 
@@ -149,26 +151,33 @@ try {
         // If rights are found
         while ($result = $privilegesStatement->fetch(\PDO::FETCH_ASSOC)) {
             foreach ($result as $grant) {
+                // Format Grant result to get privileges list, and concerned database.
                 preg_match('/^GRANT\s(.+)\sON\s?(.+)\./', $grant, $matches);
+
+                // Check if privileges concerned centreon databases.
                 if (
                     str_contains($matches[2], $parameters['db_configuration']) !== false
                     || str_contains($matches[2], $parameters['db_storage']) !== false
                 ) {
                     $resultPrivileges = explode(', ', $matches[1]);
+
+                    //Check that user has sufficient privileges to perform all needed actions.
                     $missingPrivileges = [];
-                    foreach ($privileges as $privilege) {
-                        if (!in_array($privilege, $resultPrivileges)) {
-                            $missingPrivileges[] = $privilege;
+                    if ($resultPrivileges[0] !== 'ALL PRIVILEGES') {
+                        foreach ($mandatoryPrivileges as $privilege) {
+                            if (!in_array($privilege, $resultPrivileges)) {
+                                $missingPrivileges[] = $privilege;
+                            }
                         }
-                    }
-                    if (!empty($missingPrivileges)) {
-                        throw new \Exception(
-                            sprintf(
-                                'Missing privileges %s on user %s',
-                                implode(', ', $missingPrivileges),
-                                $queryValues[':dbUser']
-                            )
-                        );
+                        if (!empty($missingPrivileges)) {
+                            throw new \Exception(
+                                sprintf(
+                                    'Missing privileges %s on user %s',
+                                    implode(', ', $missingPrivileges),
+                                    $queryValues[':dbUser']
+                                )
+                            );
+                        }
                     }
                 }
             }
