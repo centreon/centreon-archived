@@ -20,7 +20,7 @@ export const useStyles = makeStyles(() => ({
     boxSizing: 'border-box',
     display: 'none',
     left: theme.spacing(0),
-    padding: 10,
+    padding: theme.spacing(1),
     position: 'absolute',
     textAlign: 'left',
     top: '100%',
