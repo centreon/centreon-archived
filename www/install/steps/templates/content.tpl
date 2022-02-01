@@ -23,7 +23,7 @@
 
     <tr style='height:40px;'>
         <td>
-            {if $finish}
+            {if isset($finish)}
                 <p class="link-group">
                     <a href="https://documentation.centreon.com" target="_blank">Documentation</a> |
                     <a href="https://github.com/centreon/centreon" target="_blank">Github </a> |
@@ -40,7 +40,7 @@
         {/if}
         <input class='btc bt_default' type='button' id='refresh' value='Refresh' onClick='loadStep("stepContent");'/>
         {if (!isset($validate) || $validate)}
-            {if !$finish}
+            {if !isset($finish)}
             <input class='btc bt_info' type='button' id='next' value='Next' onClick='if (validation() == true) loadStep("nextStep");'/>
             {else}
             <input class='btc bt_success' type='button' id='finish' value='Finish' onClick='validation();'/>
