@@ -6,7 +6,7 @@ import { useTranslation, withTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
-import { Typography } from '@mui/material';
+import { alpha, Typography } from '@mui/material';
 import UserIcon from '@mui/icons-material/AccountCircle';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import CheckIcon from '@mui/icons-material/Check';
@@ -22,7 +22,7 @@ import MenuLoader from '../../components/MenuLoader';
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const EDIT_PROFILE_TOPOLOGY_PAGE = '50104';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   fullname: {
     overflow: 'hidden',
     textOverflow: 'ellipsis',
@@ -30,6 +30,7 @@ const useStyles = makeStyles(() => ({
     width: '115px',
   },
   itemLink: {
+    // '#232f39'
     backgroundColor: '#232f39',
     color: 'white',
     display: 'flex',
@@ -124,9 +125,9 @@ const UserMenu = ({ allowedPages }: StateToProps): JSX.Element => {
   const [copied, setCopied] = React.useState(false);
   const [data, setData] = React.useState<any>(null);
   const [toggled, setToggled] = React.useState(false);
-  const profile = React.useRef<any>();
-  const autologinNode = React.useRef<any>();
-  const refreshTimeout = React.useRef<any>();
+  const profile = React.useRef<HTMLDivElement>();
+  const autologinNode = React.useRef<HTMLTextAreaElement>();
+  const refreshTimeout = React.useRef<NodeJS.Timeout>();
   const { sendRequest } = useRequest<any>({
     request: getData,
   });
@@ -138,13 +139,14 @@ const UserMenu = ({ allowedPages }: StateToProps): JSX.Element => {
 
     return (): void => {
       window.removeEventListener('mousedown', handleClick, false);
-      clearTimeout(refreshTimeout.current);
+      if (refreshTimeout.current) {
+        clearTimeout(refreshTimeout.current);
+      }
     };
   }, []);
 
   const endpoint = userMenuInfo;
 
-  // fetch api to get user data
   const loaduserData = (): void => {
     sendRequest({ endpoint: `./api/${endpoint}` })
       .then((retrievedUserData) => {
@@ -158,10 +160,10 @@ const UserMenu = ({ allowedPages }: StateToProps): JSX.Element => {
       });
   };
 
-  // refresh user data every minutes
-  // @todo get this interval from backend
   const refreshData = (): void => {
-    clearTimeout(refreshTimeout.current);
+    if (refreshTimeout.current) {
+      clearTimeout(refreshTimeout.current);
+    }
     refreshTimeout.current = setTimeout(() => {
       loaduserData();
     }, 60000);
@@ -192,7 +194,6 @@ const UserMenu = ({ allowedPages }: StateToProps): JSX.Element => {
 
   const allowEditProfile = allowedPages?.includes(EDIT_PROFILE_TOPOLOGY_PAGE);
 
-  // creating autologin link, getting href, testing if there is a parameter, then generating link : if '?' then &autologin(etc.)
   const gethref = window.location.href;
   const conditionnedhref = gethref + (window.location.search ? '&' : '?');
   const autolink = `${conditionnedhref}autologin=1&useralias=${data?.username}&token=${data?.autologinkey}`;
@@ -205,7 +206,7 @@ const UserMenu = ({ allowedPages }: StateToProps): JSX.Element => {
     >
       <div className={classnames(classes.wrapRightUserItems)}>
         <Clock />
-        <div ref={profile}>
+        <div ref={profile as React.RefObject<HTMLDivElement>}>
           <UserIcon
             fontSize="large"
             style={{ color: '#FFFFFF', cursor: 'pointer', marginLeft: 8 }}
@@ -264,7 +265,9 @@ const UserMenu = ({ allowedPages }: StateToProps): JSX.Element => {
                     <textarea
                       className={styles['hidden-input']}
                       id="autologin-input"
-                      ref={autologinNode}
+                      ref={
+                        autologinNode as React.RefObject<HTMLTextAreaElement>
+                      }
                       value={autolink}
                     />
                   </div>
