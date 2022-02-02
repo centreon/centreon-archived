@@ -370,28 +370,6 @@ class HostCategoryRepositoryRDB extends AbstractRepositoryDRB implements
 
     public function findByHost(Host $host): array
     {
-        // $this->sqlRequestTranslator->setConcordanceArray([
-        //     'id' => 'hc.hc_id',
-        //     'name' => 'hc.hc_name',
-        //     'alias' => 'hc.hc_alias',
-        //     'is_activated' => 'hc.hc_activate',
-        // ]);
-        // $this->sqlRequestTranslator->addNormalizer(
-        //     'is_activated',
-        //     new class () implements NormalizerInterface {
-        //         /**
-        //          * @inheritDoc
-        //          */
-        //         public function normalize($valueToNormalize)
-        //         {
-        //             if (is_bool($valueToNormalize)) {
-        //                 return ($valueToNormalize === true) ? '1' : '0';
-        //             }
-        //             return $valueToNormalize;
-        //         }
-        //     }
-        // );
-
         $request = $this->translateDbName(
             'SELECT SQL_CALC_FOUND_ROWS * FROM `:db`.hostcategories hc
             JOIN `:db`.hostcategories_relation hc_rel ON hc.hc_id = hc_rel.hostcategories_hc_id
