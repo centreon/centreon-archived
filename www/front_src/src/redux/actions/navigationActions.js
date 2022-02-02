@@ -1,6 +1,6 @@
 /* eslint-disable no-use-before-define */
 /* eslint-disable no-restricted-syntax */
-import axios from '../../axios';
+import axios from 'axios';
 
 export const FETCH_NAVIGATION_BEGIN = 'FETCH_NAVIGATION_BEGIN';
 export const FETCH_NAVIGATION_SUCCESS = 'FETCH_NAVIGATION_SUCCESS';
@@ -13,9 +13,9 @@ export const fetchNavigationData = () => {
 
     try {
       // Call the API
-      const { data } = await axios(
-        'internal.php?object=centreon_topology&action=navigationList',
-      ).get();
+      const { data } = await axios.get(
+        './api/internal.php?object=centreon_topology&action=navigationList',
+      );
 
       // Update payload in reducer on success
       dispatch(fetchNavigationSuccess(data.result));
