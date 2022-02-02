@@ -36,7 +36,7 @@ use Core\Domain\Configuration\Model\MetaService as MetaServiceConfiguration;
 use Core\Application\RealTime\UseCase\FindMetaService\FindMetaServiceResponse;
 use Core\Application\RealTime\Repository\ReadAcknowledgementRepositoryInterface;
 use Core\Application\RealTime\UseCase\FindMetaService\FindMetaServicePresenterInterface;
-use Core\Application\Configuration\Repository\ReadMetaServiceRepositoryInterface as
+use Core\Application\Configuration\MetaService\Repository\ReadMetaServiceRepositoryInterface as
     ReadMetaServiceConfigurationRepositoryInterface;
 
 class FindMetaService
@@ -78,6 +78,7 @@ class FindMetaService
         );
 
         if ($this->contact->isAdmin()) {
+            $this->debug('Find MetaService as an admin user');
             /**
              * @var MetaServiceConfiguration
              */
@@ -93,6 +94,7 @@ class FindMetaService
                 return;
             }
         } else {
+            $this->debug('Find MetaService as an non-admin user');
             $accessGroups = $this->accessGroupRepository->findByContact($this->contact);
             $accessGroupIds = array_map(
                 fn (AccessGroup $accessGroup) => $accessGroup->getId(),
@@ -148,7 +150,7 @@ class FindMetaService
                 'userId' => $this->contact->getId()
             ]
         );
-        $presenter->setResponseStatus(new NotFoundResponse('MetaService'));
+        $presenter->setResponseStatus(new NotFoundResponse('MetaService configuration'));
     }
 
     /**

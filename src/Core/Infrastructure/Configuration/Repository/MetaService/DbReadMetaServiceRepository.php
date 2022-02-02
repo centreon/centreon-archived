@@ -24,7 +24,7 @@ namespace Core\Infrastructure\RealTime\Repository\MetaService;
 
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
-use Core\Application\Configuration\Repository\ReadMetaServiceRepositoryInterface;
+use Core\Application\Configuration\MetaService\Repository\ReadMetaServiceRepositoryInterface;
 use Core\Domain\Configuration\Model\MetaService;
 
 class DbReadMetaServiceRepository extends AbstractRepositoryDRB implements ReadMetaServiceRepositoryInterface

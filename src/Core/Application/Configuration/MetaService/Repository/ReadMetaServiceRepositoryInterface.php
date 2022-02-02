@@ -20,7 +20,7 @@
  */
 declare(strict_types=1);
 
-namespace Core\Application\Configuration\Repository;
+namespace Core\Application\Configuration\MetaService\Repository;
 
 use Core\Domain\Configuration\Model\MetaService;
 

@@ -156,7 +156,7 @@ class MetaService
      * @param string|null $regexpSearchServices
      * @return self
      */
-    public function setregexpSearchServices(?string $regexpSearchServices): self
+    public function setRegexpSearchServices(?string $regexpSearchServices): self
     {
         $this->regexpSearchServices = $regexpSearchServices;
         return $this;
@@ -228,7 +228,7 @@ class MetaService
      * @param bool $isActivated
      * @return self
      */
-    public function setIsActivated(bool $isActivated): self
+    public function setActivated(bool $isActivated): self
     {
         $this->isActivated = $isActivated;
         return $this;
