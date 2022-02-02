@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-key */
 import * as React from 'react';
 
 import { equals } from 'ramda';
