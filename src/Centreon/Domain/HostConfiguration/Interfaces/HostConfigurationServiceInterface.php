@@ -125,6 +125,8 @@ interface HostConfigurationServiceInterface
     /**
      * Find host templates by host id (non recursive)
      *
+     * **The priority order of host templates is maintained!**
+     *
      * @param Host $host
      * @return Host[]
      */

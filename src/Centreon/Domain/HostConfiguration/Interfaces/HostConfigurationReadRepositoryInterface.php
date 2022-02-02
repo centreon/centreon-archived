@@ -108,7 +108,8 @@ interface HostConfigurationReadRepositoryInterface
     public function findHostNamesAlreadyUsed(array $namesToCheck): array;
 
     /**
-     * Find host templates linked to a host
+     * Find host templates linked to a host (non recursive)
+     *
      * **The priority order of host templates is maintained!**
      *
      * @param Host $host
