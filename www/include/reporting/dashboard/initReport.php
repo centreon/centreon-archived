@@ -249,21 +249,15 @@ $period_choice = filter_var(
     FILTER_SANITIZE_STRING
 );
 
-$period = '';
-
 $period = filter_var(
     $_POST['period'] ?? $_GET['period'],
     FILTER_SANITIZE_STRING
 );
 
-$get_date_start = '';
-
 $get_date_start = filter_var(
     $_GET['start'] ?? $_POST['StartDate'] ?? '',
     FILTER_SANITIZE_STRING
 );
-
-$get_date_end = '';
 
 $get_date_end = filter_var(
     $_GET['end'] ?? $_POST['EndDate'] ?? '',
