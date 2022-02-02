@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2021 Centreon
+ * Copyright 2005-2011 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -1758,7 +1758,7 @@ span.show-disabled[disabled]::after {
     float: left;
 }
 
-input[type="checkbox"],a.infobulle:hover table {
+checkbox,a.infobulle:hover table {
     border:1px gray solid;
 }
 td, a.infobulle:hover td {
