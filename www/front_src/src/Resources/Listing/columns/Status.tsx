@@ -82,6 +82,7 @@ const StatusColumnOnHover = ({
   return (
     <div className={classes.actions}>
       <IconButton
+        data-testid={`${t(labelAcknowledge)} ${row.name}`}
         ariaLabel={`${t(labelAcknowledge)} ${row.name}`}
         color="primary"
         disabled={disableAcknowledge}
@@ -95,6 +96,7 @@ const StatusColumnOnHover = ({
         <IconAcknowledge fontSize="small" />
       </IconButton>
       <IconButton
+        data-testid={`${t(labelSetDowntimeOn)} ${row.name}`}
         ariaLabel={`${t(labelSetDowntimeOn)} ${row.name}`}
         disabled={disableDowntime}
         size="large"
@@ -107,6 +109,7 @@ const StatusColumnOnHover = ({
         <IconDowntime fontSize="small" />
       </IconButton>
       <IconButton
+        data-testid={`${t(labelCheck)} ${row.name}`}
         ariaLabel={`${t(labelCheck)} ${row.name}`}
         disabled={disableCheck}
         size="large"

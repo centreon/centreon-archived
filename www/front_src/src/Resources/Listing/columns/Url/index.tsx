@@ -59,6 +59,7 @@ const UrlColumn = ({
         }}
       >
         <IconButton
+          data-testid={title || endpoint}
           ariaLabel={title}
           size="large"
           title={title || endpoint}

@@ -160,7 +160,7 @@ const SaveFilterMenu = (): JSX.Element => {
   return (
     <>
       <IconButton
-        data-testid={"Save Filter"}
+        data-testid={t(labelSaveFilter)}
         aria-label={t(labelSaveFilter)}
         size="large"
         title={t(labelSaveFilter)}

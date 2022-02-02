@@ -37,7 +37,9 @@ const ResourceActionButton = ({
         disabled={disabled}
         size="large"
         title={title}
-        onClick={onClick}
+        onClick={onClick} 
+        data-testid={label}
+
       >
         <div aria-label={label}>{icon}</div>
       </IconButton>
@@ -52,6 +54,8 @@ const ResourceActionButton = ({
           startIcon={icon}
           variant="contained"
           onClick={onClick}
+          data-testid={label}
+
         >
           {label}
         </ActionButton>
