@@ -186,7 +186,7 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
     }
 
     /**
-     * Add templates to a host.
+     * Link a host to a given list of host templates.
      *
      * @param int $hostId Host id for which this templates will be associated
      * @param Host[] $hostTemplates Host template to be added
