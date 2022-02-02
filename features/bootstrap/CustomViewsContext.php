@@ -40,8 +40,8 @@ class CustomViewsContext extends CentreonContext
             'alias' => $this->user,
             'name' => $this->user,
             'email' => 'user1@localhost',
-            'password' => 'centreon',
-            'password2' => 'centreon',
+            'password' => 'Centreon!2021',
+            'password2' => 'Centreon!2021',
             'admin' => '1'
         ));
         $page->save();

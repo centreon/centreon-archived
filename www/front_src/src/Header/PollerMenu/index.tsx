@@ -210,18 +210,25 @@ const PollerMenu = (): JSX.Element => {
                 className={clsx(classes.label, classes.pollerDetailRow)}
                 variant="body2"
               >
-                <li> {t(labelAllPollers)} </li>
+                <div>{t(labelAllPollers)}</div>
                 {pollerCount}
               </Typography>
             )}
             {allowPollerConfiguration && (
               <Paper className={classes.confButton}>
-                <Button size="small" onClick={redirectToPollerConfiguration}>
+                <Button
+                  fullWidth
+                  size="small"
+                  onClick={redirectToPollerConfiguration}
+                >
                   {t(labelConfigurePollers)}
                 </Button>
               </Paper>
             )}
-            <ExportConfiguration setIsExportingConfiguration={newExporting} />
+            <ExportConfiguration
+              setIsExportingConfiguration={newExporting}
+              toggleDetailedView={toggleDetailedView}
+            />
           </div>
         </SubmenuHeader>
       </div>

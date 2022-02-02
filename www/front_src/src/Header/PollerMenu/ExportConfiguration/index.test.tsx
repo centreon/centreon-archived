@@ -9,7 +9,7 @@ import {
   waitFor,
   RenderResult,
   screen,
-  withSnackbar,
+  SnackbarProvider,
 } from '@centreon/ui';
 import { refreshIntervalAtom, userAtom } from '@centreon/ui-context';
 
@@ -33,14 +33,14 @@ const mockUser = {
   timezone: 'Europe/Paris',
 };
 const mockRefreshInterval = 60;
+const toggleDetailedView = jest.fn();
 
 const ExportConfigurationButton = (): JSX.Element => (
-  <ExportConfiguration setIsExportingConfiguration={jest.fn} />
+  <ExportConfiguration
+    setIsExportingConfiguration={jest.fn}
+    toggleDetailedView={toggleDetailedView}
+  />
 );
-
-const ExportConfigurationWithSnackbar = withSnackbar({
-  Component: ExportConfigurationButton,
-});
 
 const renderExportConfiguration = (): RenderResult =>
   render(
@@ -50,7 +50,9 @@ const renderExportConfiguration = (): RenderResult =>
         [refreshIntervalAtom, mockRefreshInterval],
       ]}
     >
-      <ExportConfigurationWithSnackbar />
+      <SnackbarProvider maxSnackbars={2}>
+        <ExportConfigurationButton />
+      </SnackbarProvider>
     </Provider>,
   );
 
@@ -75,6 +77,8 @@ describe(ExportConfiguration, () => {
         cancelTokenRequestParam,
       );
     });
+
+    expect(toggleDetailedView).toHaveBeenCalled();
 
     expect(
       screen.getByText(labelExportingAndReloadingTheConfiguration),

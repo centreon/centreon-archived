@@ -78,7 +78,6 @@ ACLMENU;GRANTRW;test_access-group;0;Administration;Platform Status;Engine Statis
 ACLMENU;GRANTRW;test_access-group;0;Administration;
 ACLMENU;GRANTRW;test_access-group;0;Administration;Platform Status;
 ACLMENU;GRANTRW;test_access-group;0;Administration;Platform Status;Databases;
-ACLACTION;ADD;Simple User;Simple User;
 ACLACTION;SETPARAM;Simple User;activate;1;
 ACLACTION;GRANT;Simple User;poller_stats;
 ACLACTION;GRANT;Simple User;top_counter;
@@ -92,7 +91,6 @@ ACLACTION;GRANT;Simple User;host_schedule_check;
 ACLACTION;GRANT;Simple User;host_schedule_forced_check;
 ACLACTION;GRANT;Simple User;host_schedule_downtime;
 ACLACTION;GRANT;Simple User;host_comment;
-INSTANCE;ADD;Central;127.0.0.1;22;1;5556
 INSTANCE;setparam;Central;localhost;1
 INSTANCE;setparam;Central;is_default;0
 INSTANCE;setparam;Central;ns_activate;1
@@ -112,7 +110,6 @@ INSTANCE;setparam;Central;init_script_centreontrapd;centreontrapd
 INSTANCE;setparam;Central;snmp_trapd_path_conf;/etc/snmp/centreon_traps/
 INSTANCE;setparam;Central;remote_server_use_as_proxy;1
 INSTANCE;setparam;Central;updated;0
-TP;ADD;24x7;Always
 TP;setparam;24x7;tp_sunday;00:00-24:00
 TP;setparam;24x7;tp_monday;00:00-24:00
 TP;setparam;24x7;tp_tuesday;00:00-24:00
@@ -120,8 +117,6 @@ TP;setparam;24x7;tp_wednesday;00:00-24:00
 TP;setparam;24x7;tp_thursday;00:00-24:00
 TP;setparam;24x7;tp_friday;00:00-24:00
 TP;setparam;24x7;tp_saturday;00:00-24:00
-TP;ADD;none;Never
-TP;ADD;nonworkhours;Non-Work Hours
 TP;setparam;nonworkhours;tp_sunday;00:00-24:00
 TP;setparam;nonworkhours;tp_monday;00:00-09:00,17:00-24:00
 TP;setparam;nonworkhours;tp_tuesday;00:00-09:00,17:00-24:00
@@ -129,42 +124,33 @@ TP;setparam;nonworkhours;tp_wednesday;00:00-09:00,17:00-24:00
 TP;setparam;nonworkhours;tp_thursday;00:00-09:00,17:00-24:00
 TP;setparam;nonworkhours;tp_friday;00:00-09:00,17:00-24:00
 TP;setparam;nonworkhours;tp_saturday;00:00-24:00
-TP;ADD;workhours;Work hours
 TP;setparam;workhours;tp_monday;09:00-17:00
 TP;setparam;workhours;tp_tuesday;09:00-17:00
 TP;setparam;workhours;tp_wednesday;09:00-17:00
 TP;setparam;workhours;tp_thursday;09:00-17:00
 TP;setparam;workhours;tp_friday;09:00-17:00
-VENDOR;ADD;3com;3Com
 VENDOR;setparam;3com;id;3
 VENDOR;setparam;3com;name;3com
 VENDOR;setparam;3com;alias;3Com
-VENDOR;ADD;Cisco;Cisco Networks
 VENDOR;setparam;Cisco;id;1
 VENDOR;setparam;Cisco;name;Cisco
 VENDOR;setparam;Cisco;alias;Cisco Networks
-VENDOR;ADD;Dell;Dell
 VENDOR;setparam;Dell;id;6
 VENDOR;setparam;Dell;name;Dell
 VENDOR;setparam;Dell;alias;Dell
-VENDOR;ADD;Generic;Generic
 VENDOR;setparam;Generic;id;7
 VENDOR;setparam;Generic;name;Generic
 VENDOR;setparam;Generic;alias;Generic
 VENDOR;setparam;Generic;description;References Generic Traps
-VENDOR;ADD;HP;HP Networks
 VENDOR;setparam;HP;id;2
 VENDOR;setparam;HP;name;HP
 VENDOR;setparam;HP;alias;HP Networks
-VENDOR;ADD;HP-Compaq;HP and Compaq Systems
 VENDOR;setparam;HP-Compaq;id;11
 VENDOR;setparam;HP-Compaq;name;HP-Compaq
 VENDOR;setparam;HP-Compaq;alias;HP and Compaq Systems
-VENDOR;ADD;Linksys;Linksys
 VENDOR;setparam;Linksys;id;4
 VENDOR;setparam;Linksys;name;Linksys
 VENDOR;setparam;Linksys;alias;Linksys
-VENDOR;ADD;Zebra;Zebra
 VENDOR;setparam;Zebra;id;9
 VENDOR;setparam;Zebra;name;Zebra
 VENDOR;setparam;Zebra;alias;Zebra
@@ -370,15 +356,12 @@ CMD;ADD;check_udp;2;$USER1$/check_udp -H $HOSTADDRESS$ -p $ARG1$
 CMD;setparam;check_udp;enable_shell;0
 CMD;setparam;check_udp;command_activate;1
 CMD;setparam;check_udp;command_locked;0
-CMD;ADD;host-notify-by-email;1;/usr/bin/printf &quot;%b&quot; &quot;***** centreon Notification *****#BR##BR#Type:$NOTIFICATIONTYPE$#BR#Host: $HOSTNAME$#BR#State: $HOSTSTATE$#BR#Address: $HOSTADDRESS$#BR#Info: $HOSTOUTPUT$#BR#Date/Time: $DATE$&quot; | @MAILER@ -s &quot;Host $HOSTSTATE$ alert for $HOSTNAME$!&quot; $CONTACTEMAIL$
 CMD;setparam;host-notify-by-email;enable_shell;1
 CMD;setparam;host-notify-by-email;command_activate;1
 CMD;setparam;host-notify-by-email;command_locked;0
-CMD;ADD;host-notify-by-epager;1;/usr/bin/printf &quot;%b&quot; &quot;Host $HOSTALIAS$ is $HOSTSTATE$#BR#Info: $OUTPUT$#BR#Time: $DATETIME$\&quot; | @MAILER@ -s \&quot;$NOTIFICATIONTYPE$ alert - Host $HOSTNAME$ is $HOSTSTATE$\&quot; $CONTACTPAGER$
 CMD;setparam;host-notify-by-epager;enable_shell;1
 CMD;setparam;host-notify-by-epager;command_activate;1
 CMD;setparam;host-notify-by-epager;command_locked;0
-CMD;ADD;host-notify-by-jabber;1;$USER1$/notify_via_jabber  $CONTACTPAGER$ &quot;Host &#039;$HOSTALIAS$&#039; is $HOSTSTATE$ - Info: $HOSTOUTPUT$&quot;
 CMD;setparam;host-notify-by-jabber;enable_shell;0
 CMD;setparam;host-notify-by-jabber;command_activate;1
 CMD;setparam;host-notify-by-jabber;command_locked;0
@@ -386,15 +369,12 @@ CMD;ADD;process-service-perfdata;3;$USER1$/process-service-perfdata  "$LASTSERVI
 CMD;setparam;process-service-perfdata;enable_shell;0
 CMD;setparam;process-service-perfdata;command_activate;1
 CMD;setparam;process-service-perfdata;command_locked;0
-CMD;ADD;service-notify-by-email;1;/usr/bin/printf &quot;%b&quot; &quot;***** centreon Notification *****#BR##BR#Notification Type: $NOTIFICATIONTYPE$#BR##BR#Service: $SERVICEDESC$#BR#Host: $HOSTALIAS$#BR#Address: $HOSTADDRESS$#BR#State: $SERVICESTATE$#BR##BR#Date/Time: $DATE$ Additional Info : $SERVICEOUTPUT$&quot; | @MAILER@ -s &quot;** $NOTIFICATIONTYPE$ alert - $HOSTALIAS$/$SERVICEDESC$ is $SERVICESTATE$ **&quot; $CONTACTEMAIL$
 CMD;setparam;service-notify-by-email;enable_shell;1
 CMD;setparam;service-notify-by-email;command_activate;1
 CMD;setparam;service-notify-by-email;command_locked;0
-CMD;ADD;service-notify-by-epager;1;/usr/bin/printf &quot;%b&quot; &quot;Service: $SERVICEDESC$#BR#Host: $HOSTNAME$#BR#Address: $HOSTADDRESS$#BR#State: $SERVICESTATE$#BR#Info: $OUTPUT$#BR#Date: $DATETIME$&quot; | @MAILER@ -s &quot;$NOTIFICATIONTYPE$: $HOSTALIAS$/$SERVICEDESC$ is $SERVICESTATE$&quot; $CONTACTPAGER$
 CMD;setparam;service-notify-by-epager;enable_shell;1
 CMD;setparam;service-notify-by-epager;command_activate;1
 CMD;setparam;service-notify-by-epager;command_locked;0
-CMD;ADD;service-notify-by-jabber;1;$USER1$/notify_via_jabber $CONTACTPAGER$ &quot;$NOTIFICATIONTYPE$ $HOSTNAME$ $SERVICEDESC$ $SERVICESTATE$ $SERVICEOUTPUT$ $LONGDATETIME$&quot;
 CMD;setparam;service-notify-by-jabber;enable_shell;0
 CMD;setparam;service-notify-by-jabber;command_activate;1
 CMD;setparam;service-notify-by-jabber;command_locked;0
@@ -406,18 +386,13 @@ CMD;ADD;submit-service-check-result;3;$USER1$/submit_service_check_result $HOSTN
 CMD;setparam;submit-service-check-result;enable_shell;0
 CMD;setparam;submit-service-check-result;command_activate;1
 CMD;setparam;submit-service-check-result;command_locked;0
-RESOURCECFG;ADD;$CENTREONPLUGINS$;/usr/lib/centreon/plugins;Central;Centreon Plugins Path
 RESOURCECFG;setparam;2;activate;1
-RESOURCECFG;ADD;$USER1$;/usr/lib64/nagios/plugins;Central;Nagios Plugins Path
 RESOURCECFG;setparam;1;activate;1
-CENTBROKERCFG;ADD;central-broker-master;Central
 CENTBROKERCFG;SETPARAM;central-broker-master;filename;central-broker.json
 CENTBROKERCFG;SETPARAM;central-broker-master;cache_directory;/var/lib/centreon-broker
 CENTBROKERCFG;SETPARAM;central-broker-master;stats_activate;1
 CENTBROKERCFG;SETPARAM;central-broker-master;daemon;1
 CENTBROKERCFG;SETPARAM;central-broker-master;pool_size;
-CENTBROKERCFG;ADDINPUT;central-broker-master;central-broker-master-input;ipv4
-CENTBROKERCFG;SETINPUT;central-broker-master;0;type;ipv4
 CENTBROKERCFG;SETINPUT;central-broker-master;0;negotiation;yes
 CENTBROKERCFG;SETINPUT;central-broker-master;0;port;5669
 CENTBROKERCFG;SETINPUT;central-broker-master;0;retry_interval;60
@@ -426,8 +401,6 @@ CENTBROKERCFG;SETINPUT;central-broker-master;0;protocol;bbdo
 CENTBROKERCFG;SETINPUT;central-broker-master;0;tls;no
 CENTBROKERCFG;SETINPUT;central-broker-master;0;one_peer_retention_mode;no
 CENTBROKERCFG;SETINPUT;central-broker-master;0;compression;no
-CENTBROKERCFG;ADDOUTPUT;central-broker-master;central-broker-master-sql;sql
-CENTBROKERCFG;SETOUTPUT;central-broker-master;0;type;sql
 CENTBROKERCFG;SETOUTPUT;central-broker-master;0;db_type;mysql
 CENTBROKERCFG;SETOUTPUT;central-broker-master;0;db_host;localhost
 CENTBROKERCFG;SETOUTPUT;central-broker-master;0;db_port;3306
@@ -447,8 +420,6 @@ CENTBROKERCFG;SETOUTPUT;central-broker-master;1;tls;no
 CENTBROKERCFG;SETOUTPUT;central-broker-master;1;compression;no
 CENTBROKERCFG;SETOUTPUT;central-broker-master;1;retry_interval;60
 CENTBROKERCFG;SETOUTPUT;central-broker-master;1;buffering_timeout;0
-CENTBROKERCFG;ADDOUTPUT;central-broker-master;central-broker-master-perfdata;storage
-CENTBROKERCFG;SETOUTPUT;central-broker-master;2;type;storage
 CENTBROKERCFG;SETOUTPUT;central-broker-master;2;store_in_data_bin;yes
 CENTBROKERCFG;SETOUTPUT;central-broker-master;2;insert_in_index_data;1
 CENTBROKERCFG;SETOUTPUT;central-broker-master;2;interval;60
@@ -462,14 +433,11 @@ CENTBROKERCFG;SETOUTPUT;central-broker-master;2;db_user;centreon
 CENTBROKERCFG;SETOUTPUT;central-broker-master;2;db_password;centreon
 CENTBROKERCFG;SETOUTPUT;central-broker-master;2;db_name;centreon_storage
 CENTBROKERCFG;SETOUTPUT;central-broker-master;2;check_replication;no
-CENTBROKERCFG;ADD;central-module-master;Central
 CENTBROKERCFG;SETPARAM;central-module-master;filename;central-module.json
 CENTBROKERCFG;SETPARAM;central-module-master;cache_directory;/var/lib/centreon-engine
 CENTBROKERCFG;SETPARAM;central-module-master;stats_activate;1
 CENTBROKERCFG;SETPARAM;central-module-master;daemon;0
 CENTBROKERCFG;SETPARAM;central-module-master;pool_size;
-CENTBROKERCFG;ADDOUTPUT;central-module-master;central-module-master-output;ipv4
-CENTBROKERCFG;SETOUTPUT;central-module-master;0;type;ipv4
 CENTBROKERCFG;SETOUTPUT;central-module-master;0;negotiation;yes
 CENTBROKERCFG;SETOUTPUT;central-module-master;0;one_peer_retention_mode;no
 CENTBROKERCFG;SETOUTPUT;central-module-master;0;port;5669
@@ -485,8 +453,6 @@ CENTBROKERCFG;SETPARAM;central-rrd-master;cache_directory;/var/lib/centreon-brok
 CENTBROKERCFG;SETPARAM;central-rrd-master;stats_activate;1
 CENTBROKERCFG;SETPARAM;central-rrd-master;daemon;1
 CENTBROKERCFG;SETPARAM;central-rrd-master;pool_size;
-CENTBROKERCFG;ADDINPUT;central-rrd-master;central-rrd-master-input;ipv4
-CENTBROKERCFG;SETINPUT;central-rrd-master;0;type;ipv4
 CENTBROKERCFG;SETINPUT;central-rrd-master;0;one_peer_retention_mode;no
 CENTBROKERCFG;SETINPUT;central-rrd-master;0;negotiation;yes
 CENTBROKERCFG;SETINPUT;central-rrd-master;0;port;5670
@@ -495,8 +461,6 @@ CENTBROKERCFG;SETINPUT;central-rrd-master;0;retry_interval;60
 CENTBROKERCFG;SETINPUT;central-rrd-master;0;protocol;bbdo
 CENTBROKERCFG;SETINPUT;central-rrd-master;0;tls;auto
 CENTBROKERCFG;SETINPUT;central-rrd-master;0;compression;auto
-CENTBROKERCFG;ADDOUTPUT;central-rrd-master;central-rrd-master-output;rrd
-CENTBROKERCFG;SETOUTPUT;central-rrd-master;0;type;rrd
 CENTBROKERCFG;SETOUTPUT;central-rrd-master;0;metrics_path;/var/lib/centreon/metrics
 CENTBROKERCFG;SETOUTPUT;central-rrd-master;0;status_path;/var/lib/centreon/status
 CENTBROKERCFG;SETOUTPUT;central-rrd-master;0;retry_interval;60
@@ -504,7 +468,6 @@ CENTBROKERCFG;SETOUTPUT;central-rrd-master;0;buffering_timeout;0
 CENTBROKERCFG;SETOUTPUT;central-rrd-master;0;store_in_data_bin;yes
 CENTBROKERCFG;SETOUTPUT;central-rrd-master;0;write_metrics;yes
 CENTBROKERCFG;SETOUTPUT;central-rrd-master;0;write_status;yes
-ENGINECFG;ADD;Centreon Engine Central;Central;Centreon Engine
 ENGINECFG;setparam;Centreon Engine Central;log_file;/var/log/centreon-engine/centengine.log
 ENGINECFG;setparam;Centreon Engine Central;cfg_dir;/etc/centreon-engine
 ENGINECFG;setparam;Centreon Engine Central;temp_file;/var/log/centreon-engine/centengine.tmp
@@ -590,7 +553,7 @@ ENGINECFG;setparam;Centreon Engine Central;cfg_file;centengine.cfg
 ENGINECFG;setparam;Centreon Engine Central;log_pid;1
 ENGINECFG;setparam;Centreon Engine Central;enable_macros_filter;0
 ENGINECFG;setparam;Centreon Engine Central;broker_module;/usr/lib64/centreon-engine/externalcmd.so|/usr/lib64/nagios/cbmod.so /etc/centreon-broker/central-module.json
-CONTACTTPL;ADD;contact_template;contact_template;;md5__d41d8cd98f00b204e9800998ecf8427e;0;1;;local
+CONTACTTPL;ADD;contact_template;contact_template;;$2y$10$Yf78oIppk6wC7hMtDd0TKeXByb1kVD5IGvAEF/g.F4KtiMSbXvpT.;0;1;;local
 CONTACTTPL;setparam;contact_template;hostnotifopt;n
 CONTACTTPL;setparam;contact_template;servicenotifopt;n
 CONTACTTPL;setparam;contact_template;contact_js_effects;0
@@ -605,7 +568,7 @@ CONTACTTPL;setparam;contact_template;show_deprecated_pages;0
 CONTACTTPL;setparam;contact_template;contact_ldap_last_sync;0
 CONTACTTPL;setparam;contact_template;contact_ldap_required_sync;0
 CONTACTTPL;setparam;contact_template;enable_one_click_export;0
-CONTACTTPL;ADD;test_name;test_contact-template;;md5__b0e52a1510c9012ebae9e9dc1ae0c46e;0;1;;local
+CONTACTTPL;ADD;test_name;test_contact-template;;$2y$10$BqnZdxhI2wz1Ot/exXd73eOngqA2RPeBmjxSSyEzSygFXo3L9guAW;0;1;;local
 CONTACTTPL;setparam;test_contact-template;hostnotifopt;n
 CONTACTTPL;setparam;test_contact-template;servicenotifopt;n
 CONTACTTPL;setparam;test_contact-template;contact_js_effects;0
@@ -620,7 +583,7 @@ CONTACTTPL;setparam;test_contact-template;show_deprecated_pages;0
 CONTACTTPL;setparam;test_contact-template;contact_ldap_last_sync;0
 CONTACTTPL;setparam;test_contact-template;contact_ldap_required_sync;0
 CONTACTTPL;setparam;test_contact-template;enable_one_click_export;0
-CONTACT;ADD;admin admin;admin;admin@centreon.com;md5__2f0a912f1c89b4f4fc9edd324d9d1c89;1;1;en_US.UTF-8;local
+CONTACT;ADD;admin admin;admin;admin@centreon.com;$2y$10$kBoz3kL/8kIe8BGStjH67uW7xX060pbypSKcnLfGDYu.FPuShgsKS;1;1;en_US.UTF-8;local
 CONTACT;setparam;admin;hostnotifperiod;24x7
 CONTACT;setparam;admin;svcnotifperiod;24x7
 CONTACT;setparam;admin;hostnotifopt;n
@@ -639,7 +602,7 @@ CONTACT;setparam;admin;contact_ldap_required_sync;0
 CONTACT;setparam;admin;enable_one_click_export;0
 CONTACT;setparam;admin;hostnotifcmd;host-notify-by-email
 CONTACT;setparam;admin;svcnotifcmd;service-notify-by-email
-CONTACT;ADD;Guest;guest;guest@localhost;md5__d41d8cd98f00b204e9800998ecf8427e;0;0;en_US.UTF-8;local
+CONTACT;ADD;Guest;guest;guest@localhost;$2y$10$PktpVP.m4EWXkblTgNDqu.qNLwXrASiS8E0.d8E9giKzAhvSBH/5a;0;0;en_US.UTF-8;local
 CONTACT;setparam;guest;hostnotifperiod;24x7
 CONTACT;setparam;guest;svcnotifperiod;24x7
 CONTACT;setparam;guest;hostnotifopt;n
@@ -658,7 +621,7 @@ CONTACT;setparam;guest;contact_ldap_required_sync;0
 CONTACT;setparam;guest;enable_one_click_export;0
 CONTACT;setparam;guest;hostnotifcmd;host-notify-by-email
 CONTACT;setparam;guest;svcnotifcmd;service-notify-by-email
-CONTACT;ADD;Jean-Pierre;jeanpierre;Jean-Pierre@hotmail.fr;md5__d41d8cd98f00b204e9800998ecf8427e;0;1;browser;local
+CONTACT;ADD;Jean-Pierre;jeanpierre;Jean-Pierre@hotmail.fr;$2y$10$xRDrrYnB0.ZcN2cWq7idOeFKfzwTQXm3b0xh6TuYUxI8ctVE98ddy;0;1;browser;local
 CONTACT;setparam;jeanpierre;hostnotifopt;n
 CONTACT;setparam;jeanpierre;servicenotifopt;n
 CONTACT;setparam;jeanpierre;contact_js_effects;0
@@ -673,7 +636,7 @@ CONTACT;setparam;jeanpierre;show_deprecated_pages;0
 CONTACT;setparam;jeanpierre;contact_ldap_last_sync;0
 CONTACT;setparam;jeanpierre;contact_ldap_required_sync;0
 CONTACT;setparam;jeanpierre;enable_one_click_export;0
-CONTACT;ADD;test_contact;test_contact;test@localhost;md5__b0e52a1510c9012ebae9e9dc1ae0c46e;0;0;en_US.UTF-8;local
+CONTACT;ADD;test_contact;test_contact;test@localhost;$2y$10$HcwRGF.oU8k9sfm9Vpp7eOlrNHomq4RuNLqhTQcnqDNfAPBe44wGK;0;0;en_US.UTF-8;local
 CONTACT;setparam;test_contact;hostnotifopt;n
 CONTACT;setparam;test_contact;servicenotifopt;n
 CONTACT;setparam;test_contact;contact_js_effects;0
@@ -688,7 +651,7 @@ CONTACT;setparam;test_contact;show_deprecated_pages;0
 CONTACT;setparam;test_contact;contact_ldap_last_sync;0
 CONTACT;setparam;test_contact;contact_ldap_required_sync;0
 CONTACT;setparam;test_contact;enable_one_click_export;0
-CONTACT;ADD;User;user;user@localhost;md5__d41d8cd98f00b204e9800998ecf8427e;0;0;en_US.UTF-8;local
+CONTACT;ADD;User;user;user@localhost;$2y$10$Da/IX.qnrwXwu7JJe04JWOJOdTUmqicml7B56wZDyZd6ohZJfOKKm;0;0;en_US.UTF-8;local
 CONTACT;setparam;user;hostnotifperiod;24x7
 CONTACT;setparam;user;svcnotifperiod;24x7
 CONTACT;setparam;user;hostnotifopt;n
