@@ -121,4 +121,20 @@ interface HostConfigurationServiceInterface
      * @throws HostConfigurationServiceException
      */
     public function updateHost(Host $host): void;
+
+    /**
+     * Find host templates by host id (non recursive)
+     *
+     * @param Host $host
+     * @return Host[]
+     */
+    public function findHostTemplatesByHost(Host $host): array;
+
+    /**
+     * Find host templates by names
+     *
+     * @param string[] $names
+     * @return Host[]
+     */
+    public function findHostTemplatesByNames(array $names): array;
 }

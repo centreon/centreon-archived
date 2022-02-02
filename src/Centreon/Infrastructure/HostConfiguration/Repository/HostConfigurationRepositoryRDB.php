@@ -788,7 +788,10 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
             // Update links between host groups and hosts
             $this->removeHostGroupsToHost($host);
             $this->linkHostGroupsToHost($host);
-            $this->updateHostTemplatesLinkToHost($host->getId(), $host->getTemplates());
+
+            // Update host templates
+            $this->removeHostTemplatesFromHost($host);
+            $this->linkHostTemplatesToHost($host->getId(), $host->getTemplates());
 
             if (!$isAlreadyInTransaction) {
                 $this->db->commit();
@@ -813,46 +816,6 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
         );
         $statement->bindValue(':host_id', $host->getId(), \PDO::PARAM_INT);
         $statement->execute();
-    }
-
-    /**
-     * Add or update the links between a host and a list of templates
-     *
-     * @param integer $hostId
-     * @param array $hostTemplates
-     * @return void
-     */
-    private function updateHostTemplatesLinkToHost(int $hostId, array $hostTemplates): void
-    {
-        if (empty($hostTemplates)) {
-            return;
-        }
-
-        $request = $this->translateDbName(
-            'SELECT host_tpl_id, `order`, host.host_name FROM `:db`.host_template_relation
-            JOIN `:db`.host ON host_tpl_id = host.host_id
-            WHERE host_host_id = :host_id'
-        );
-        $statement = $this->db->prepare($request);
-        $statement->bindValue(':host_id', $hostId, \PDO::PARAM_INT);
-        $statement->execute();
-
-        $existingTemplates = $statement->fetchAll(\PDO::FETCH_ASSOC);
-
-        $existingTemplates = array_column($existingTemplates, 'host_name', 'host_tpl_id');
-        $order = count($existingTemplates) + 1;
-
-        foreach ($hostTemplates as $template) {
-            if ($template->getId() !== null && array_key_exists($template->getId(), $existingTemplates) === false) {
-                // Associate the host and host template using template id
-                $this->addHostTemplateToHostById($hostId, $template->getId(), $order);
-                $order++;
-            } elseif (!empty($template->getName()) && in_array($template->getName(), $existingTemplates) === false ) {
-                // Associate the host and host template using template name
-                $this->addHostTemplateToHostByName($hostId, $template->getName(), $order);
-                $order++;
-            }
-        }
     }
 
     /**
@@ -933,6 +896,89 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
         $statement = $this->db->prepare($request);
         $statement->bindValue(':monitoring_server_id', $monitoringServerId, \PDO::PARAM_INT);
         $statement->bindValue(':host_id', $hostId, \PDO::PARAM_INT);
+        $statement->execute();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findHostTemplatesByHost(Host $host): array
+    {
+        $request = $this->translateDbName(
+            'SELECT
+                host.host_id AS id,
+                htr.`order` AS template_order,
+                host.host_name AS name,
+                host.host_alias AS alias,
+                host.host_register AS type,
+                host.host_activate AS is_activated
+            FROM `:db`.host_template_relation htr, `:db`.host
+            WHERE
+                htr.host_host_id = :host_id AND
+                htr.host_tpl_id = host.host_id AND
+                host.host_register = 1
+            ORDER BY htr.`order` ASC'
+        );
+        $statement = $this->db->prepare($request);
+        $statement->bindValue(':host_id', $host->getId(), \PDO::PARAM_INT);
+        $statement->execute();
+
+        $hostTemplates = [];
+        if ($statement !== false) {
+            while (($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
+                $hostTemplates[] = EntityCreator::createEntityByArray(
+                    Host::class,
+                    $result
+                );
+            }
+        }
+        return $hostTemplates;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findHostTemplatesByNames(array $names): array
+    {
+        $hostTemplates = [];
+        if ((empty($names))) {
+            return $hostTemplates;
+        }
+        $statement = $this->db->prepare(
+            $this->translateDbName(
+                'SELECT
+                    host_id AS id,
+                    host_name AS name,
+                    host_alias AS alias,
+                    host_register AS type,
+                    host_activate AS is_activated
+                FROM `:db`.host
+                WHERE
+                    host_register = 1 AND
+                    `host_name` IN (?' . str_repeat(',?', count($names) - 1) . ')
+            ')
+        );
+        $statement->execute($names);
+
+        while (($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
+            $hostTemplates[] = EntityCreator::createEntityByArray(
+                Host::class,
+                $result
+            );
+        }
+        return $hostTemplates;
+    }
+
+    /**
+     * Removes all links between a given host and its host templates
+     *
+     * @param Host $host
+     */
+    private function removeHostTemplatesFromHost(Host $host) {
+        $statement = $this->db->prepare(
+            $this->translateDbName('DELETE FROM `:db`.host_template_relation WHERE host_host_id = :host_id')
+        );
+        $statement->bindValue(':host_id', $host->getId(), \PDO::PARAM_INT);
         $statement->execute();
     }
 }

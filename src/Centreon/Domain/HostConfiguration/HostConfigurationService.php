@@ -632,6 +632,18 @@ class HostConfigurationService implements HostConfigurationServiceInterface
     }
 
     /**
+     *  @inheritDoc
+     */
+    public function findHostTemplatesByHost(Host $host): array
+    {
+        try {
+            return $this->hostConfigurationRepository->findHostTemplatesByHost($host);
+        } catch (\Throwable $ex) {
+            throw new HostConfigurationException(_('Error when searching for host templates'), 0, $ex);
+        }
+    }
+
+    /**
      * Add the host macros that does not exist.
      * The host macros added will be those that are not present in the $existingHostMacros list.
      *
@@ -662,6 +674,18 @@ class HostConfigurationService implements HostConfigurationServiceInterface
                 );
                 $this->hostMacroService->addMacroToHost($host, $hostMacro);
             }
+        }
+    }
+
+    /**
+     *  @inheritDoc
+     */
+    public function findHostTemplatesByNames(array $names): array
+    {
+        try {
+            return $this->hostConfigurationRepository->findHostTemplatesByNames($names);
+        } catch (\Throwable $ex) {
+            throw new HostConfigurationException(_('Error when searching for host templates'), 0, $ex);
         }
     }
 }
