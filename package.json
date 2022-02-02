@@ -101,7 +101,7 @@
     "@mui/styles": "^5.2.3",
     "@visx/visx": "2.5.0",
     "axios": "^0.24.0",
-    "@centreon/centreon-frontend": "git+https://centreon@github.com/centreon/centreon-frontend.git#MON-11932-dark-mode",
+    "centreon-frontend": "git+https://centreon@github.com/centreon/centreon-frontend.git#MON-11932-dark-mode",
     "classnames": "^2.3.1",
     "clsx": "^1.1.1",
     "connected-react-router": "^6.9.2",
