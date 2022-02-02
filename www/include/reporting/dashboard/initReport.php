@@ -259,14 +259,14 @@ $period = filter_var(
 $get_date_start = '';
 
 $get_date_start = filter_var(
-    $_POST['StartDate'] ?? $_GET['StartDate'],
+    $_GET['start'] ?? $_POST['StartDate'] ?? '',
     FILTER_SANITIZE_STRING
 );
 
 $get_date_end = '';
 
-$get_date_start = filter_var(
-    $_POST['EndDate'] ?? $_GET['EndDate'],
+$get_date_end = filter_var(
+    $_GET['end'] ?? $_POST['EndDate'] ?? '',
     FILTER_SANITIZE_STRING
 );
 
