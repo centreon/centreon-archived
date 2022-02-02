@@ -60,11 +60,11 @@ const GroupChip = ({ group, type }: GroupsChipProps): JSX.Element => {
       value: [group],
     });
   };
-  const onMouseEnter = (): void => {
+  const mouseEnter = (): void => {
     setIsHovered(true);
   };
 
-  const onMouseLeave = (): void => {
+  const mouseLeave = (): void => {
     setIsHovered(false);
   };
 
