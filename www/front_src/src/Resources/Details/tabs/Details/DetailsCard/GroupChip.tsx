@@ -68,6 +68,10 @@ const GroupChip = ({ group, type }: GroupsChipProps): JSX.Element => {
     setIsHovered(false);
   };
 
+  const configureGroup = (): void => {
+    window.location.href = group.configuration_uri as string;
+  };
+
   return (
     <Grid item className={classes.chip} key={group.id}>
       <Chip
@@ -100,9 +104,7 @@ const GroupChip = ({ group, type }: GroupsChipProps): JSX.Element => {
                   size="small"
                   style={{ color: theme.palette.common.white }}
                   title={t(labelConfigure)}
-                  onClick={(): void => {
-                    window.location.href = group.configuration_uri as string;
-                  }}
+                  onClick={configureGroup}
                 >
                   <SettingsIcon fontSize="small" />
                 </IconButton>
@@ -110,8 +112,8 @@ const GroupChip = ({ group, type }: GroupsChipProps): JSX.Element => {
             )}
           </div>
         }
-        onMouseEnter={onMouseEnter}
-        onMouseLeave={onMouseLeave}
+        onMouseEnter={mouseEnter}
+        onMouseLeave={mouseLeave}
       />
     </Grid>
   );
