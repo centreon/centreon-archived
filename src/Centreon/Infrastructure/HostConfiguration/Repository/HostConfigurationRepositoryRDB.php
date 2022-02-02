@@ -815,6 +815,32 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
             $this->translateDbName('DELETE FROM `:db`.hostgroup_relation WHERE host_host_id = :host_id')
         );
         $statement->bindValue(':host_id', $host->getId(), \PDO::PARAM_INT);
+    }
+
+    /**
+     * Add or update the link between a host and a monitoring server to which it is linked.
+     *
+     * @param int $hostId
+     * @param int $monitoringServerId
+     */
+    private function updateMonitoringServerRelation(int $hostId, int $monitoringServerId): void
+    {
+        $request = $this->translateDbName(
+            "DELETE FROM `:db`.ns_host_relation
+            WHERE nagios_server_id = :monitoring_server_id AND host_host_id = :host_id"
+        );
+        $statement = $this->db->prepare($request);
+        $statement->bindValue(':monitoring_server_id', $monitoringServerId, \PDO::PARAM_INT);
+        $statement->bindValue(':host_id', $hostId, \PDO::PARAM_INT);
+        $statement->execute();
+
+        $request = $this->translateDbName(
+            "INSERT INTO `:db`.ns_host_relation
+            (nagios_server_id, host_host_id) VALUES (:monitoring_server_id, :host_id)"
+        );
+        $statement = $this->db->prepare($request);
+        $statement->bindValue(':monitoring_server_id', $monitoringServerId, \PDO::PARAM_INT);
+        $statement->bindValue(':host_id', $hostId, \PDO::PARAM_INT);
         $statement->execute();
     }
 
@@ -873,33 +899,6 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
     }
 
     /**
-     * Add or update the link between a host and a monitoring server to which it is linked.
-     *
-     * @param int $hostId
-     * @param int $monitoringServerId
-     */
-    private function updateMonitoringServerRelation(int $hostId, int $monitoringServerId): void
-    {
-        $request = $this->translateDbName(
-            "DELETE FROM `:db`.ns_host_relation
-            WHERE nagios_server_id = :monitoring_server_id AND host_host_id = :host_id"
-        );
-        $statement = $this->db->prepare($request);
-        $statement->bindValue(':monitoring_server_id', $monitoringServerId, \PDO::PARAM_INT);
-        $statement->bindValue(':host_id', $hostId, \PDO::PARAM_INT);
-        $statement->execute();
-
-        $request = $this->translateDbName(
-            "INSERT INTO `:db`.ns_host_relation
-            (nagios_server_id, host_host_id) VALUES (:monitoring_server_id, :host_id)"
-        );
-        $statement = $this->db->prepare($request);
-        $statement->bindValue(':monitoring_server_id', $monitoringServerId, \PDO::PARAM_INT);
-        $statement->bindValue(':host_id', $hostId, \PDO::PARAM_INT);
-        $statement->execute();
-    }
-
-    /**
      * @inheritDoc
      */
     public function findHostTemplatesByHost(Host $host): array
@@ -955,8 +954,8 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
                 FROM `:db`.host
                 WHERE
                     host_register = 1 AND
-                    `host_name` IN (?' . str_repeat(',?', count($names) - 1) . ')
-            ')
+                    `host_name` IN (?' . str_repeat(',?', count($names) - 1) . ')'
+            )
         );
         $statement->execute($names);
 
@@ -974,7 +973,8 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
      *
      * @param Host $host
      */
-    private function removeHostTemplatesFromHost(Host $host) {
+    private function removeHostTemplatesFromHost(Host $host): void
+    {
         $statement = $this->db->prepare(
             $this->translateDbName('DELETE FROM `:db`.host_template_relation WHERE host_host_id = :host_id')
         );
