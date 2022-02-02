@@ -36,9 +36,10 @@ const useStyles = makeStyles((theme) => ({
     minWidth: theme.spacing(7),
     overflow: 'hidden',
   },
-  iconLabelColor : {
+  chipIconColor : {
     color: theme.palette.common.white
   },
+  chipLabelColor: { color: true ? 'transparent' : 'unset' },
 }));
 
 interface GroupsChipProps {
@@ -94,7 +95,7 @@ const GroupChip = ({ group, type }: GroupsChipProps): JSX.Element => {
             {isHovered && (
               <Grid className={classes.chipHover}>
                 <IconButton
-                  className={classes.iconLabelColor}
+                  className={classes.chipIconColor}
                   aria-label={`${group.name} Filter`}
                   size="small"
                   title={t(labelFilter)}
@@ -105,7 +106,7 @@ const GroupChip = ({ group, type }: GroupsChipProps): JSX.Element => {
                 <IconButton
                   aria-label={`${group.name} Configure`}
                   size="small"
-                  className={classes.iconLabelColor}
+                  className={classes.chipIconColor}
                   title={t(labelConfigure)}
                   onClick={configureGroup}
                 >
