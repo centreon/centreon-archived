@@ -368,6 +368,12 @@ class HostCategoryRepositoryRDB extends AbstractRepositoryDRB implements
         return null;
     }
 
+    /**
+     * Find HostCategories by host id
+     *
+     * @param Host $host
+     * @return HostCategory[]
+     */
     public function findByHost(Host $host): array
     {
         $request = $this->translateDbName(
