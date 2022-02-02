@@ -208,7 +208,6 @@ const ResourceActions = (): JSX.Element => {
       <div className={classes.flex}>
         <div className={classes.action}>
           <ResourceActionButton
-     
             disabled={disableAcknowledge}
             icon={<IconAcknowledge />}
             label={t(labelAcknowledge)}
@@ -226,7 +225,7 @@ const ResourceActions = (): JSX.Element => {
           />
         </div>
         <div className={classes.action}>
-          <ResourceActionButton      
+          <ResourceActionButton
             disabled={disableCheck}
             icon={<IconCheck />}
             label={t(labelCheck)}

@@ -34,12 +34,11 @@ const ResourceActionButton = ({
   if (displayCondensed) {
     return (
       <IconButton
+        data-testid={label}
         disabled={disabled}
         size="large"
         title={title}
-        onClick={onClick} 
-        data-testid={label}
-
+        onClick={onClick}
       >
         <div aria-label={label}>{icon}</div>
       </IconButton>
@@ -50,12 +49,11 @@ const ResourceActionButton = ({
     <Tooltip title={permitted ? '' : labelActionNotPermitted}>
       <span>
         <ActionButton
+          data-testid={label}
           disabled={disabled}
           startIcon={icon}
           variant="contained"
           onClick={onClick}
-          data-testid={label}
-
         >
           {label}
         </ActionButton>

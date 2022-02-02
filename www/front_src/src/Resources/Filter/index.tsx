@@ -80,8 +80,8 @@ const renderClearFilter = (onClear) => (): JSX.Element => {
 
   return (
     <IconButton
-      data-testid={t(labelClearFilter)}
       ariaLabel={t(labelClearFilter)}
+      data-testid={t(labelClearFilter)}
       size="small"
       title={t(labelClearFilter)}
       onClick={onClear}

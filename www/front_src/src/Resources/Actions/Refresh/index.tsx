@@ -68,8 +68,8 @@ const RefreshActions = ({ onRefresh }: Props): JSX.Element => {
     <Grid container spacing={1}>
       <Grid item>
         <IconButton
-          data-testid={t("Refresh")}
           ariaLabel={t(labelRefresh)}
+          data-testid={t('Refresh')}
           disabled={sending}
           size="small"
           title={t(labelRefresh)}
