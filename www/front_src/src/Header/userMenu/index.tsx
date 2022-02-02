@@ -6,7 +6,7 @@ import { useTranslation, withTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
-import { alpha, Typography } from '@mui/material';
+import { Typography } from '@mui/material';
 import UserIcon from '@mui/icons-material/AccountCircle';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import CheckIcon from '@mui/icons-material/Check';
@@ -22,22 +22,31 @@ import MenuLoader from '../../components/MenuLoader';
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const EDIT_PROFILE_TOPOLOGY_PAGE = '50104';
 
+interface userData {
+  autologinkey: string | null;
+  fullname: string | null;
+  hasAccessToProfile: boolean;
+  locale: string | null;
+  soundNotificationsEnabled: boolean;
+  timezone: string | null;
+  userId: string | null;
+  username: string | null;
+}
+
 const useStyles = makeStyles((theme) => ({
   fullname: {
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
-    width: '115px',
+    width: theme.spacing(14),
   },
   itemLink: {
-    // '#232f39'
-    backgroundColor: '#232f39',
-    color: 'white',
+    backgroundColor: theme.palette.common.black,
+    color: theme.palette.common.white,
     display: 'flex',
     flexDirection: 'row',
-    fontSize: '0.8rem',
     justifyContent: 'space-between',
-    padding: 10,
+    padding: theme.spacing(1),
     textDecoration: 'none',
   },
   logoutLink: {
@@ -64,8 +73,8 @@ const useStyles = makeStyles((theme) => ({
     display: 'block',
   },
   subMenuItemContent: {
-    backgroundColor: '#232f39',
-    padding: 10,
+    backgroundColor: theme.palette.common.black,
+    padding: theme.spacing(1),
   },
   submenuUserButton: {
     '& span:first-child': {
@@ -73,17 +82,17 @@ const useStyles = makeStyles((theme) => ({
       lineHeight: '17px',
     },
     '&:hover': {
-      backgroundColor: 'rgba(255, 161, 37, 1)',
-      color: 'rgb(0,9,22)',
+      backgroundColor: theme.palette.warning.main,
+      color: theme.palette.common.black,
     },
     alignItems: 'center',
     backgroundColor: 'transparent',
     border: '1px solid rgba(255, 161, 37, 1)',
     borderRadius: '16px',
     boxSizing: 'border-box',
-    color: '#ffa225',
+    color: theme.palette.warning.main,
     display: 'flex',
-    fontSize: '.7rem',
+    fontSize: theme.typography.body2.fontSize,
     justifyContent: 'space-between',
     lineHeight: '31px',
     margin: '0 auto',
@@ -95,9 +104,9 @@ const useStyles = makeStyles((theme) => ({
     width: '95%',
   },
   submenuUserEdit: {
-    color: 'white',
+    color: theme.palette.common.white,
     float: 'right',
-    marginLeft: 4,
+    marginLeft: theme.spacing(0.5),
     textDecorationLine: 'underline',
   },
   wrapRightUser: {
@@ -106,9 +115,6 @@ const useStyles = makeStyles((theme) => ({
     flexWrap: 'wrap',
     padding: '6px 22px 6px 61px',
     position: 'relative',
-  },
-  wrapRightUserActive: {
-    backgroundColor: '#000915',
   },
   wrapRightUserItems: {
     display: 'flex',
@@ -123,12 +129,12 @@ const UserMenu = ({ allowedPages }: StateToProps): JSX.Element => {
   const userMenuInfo = 'internal.php?object=centreon_topcounter&action=user';
 
   const [copied, setCopied] = React.useState(false);
-  const [data, setData] = React.useState<any>(null);
+  const [data, setData] = React.useState<userData | null>(null);
   const [toggled, setToggled] = React.useState(false);
   const profile = React.useRef<HTMLDivElement>();
   const autologinNode = React.useRef<HTMLTextAreaElement>();
   const refreshTimeout = React.useRef<NodeJS.Timeout>();
-  const { sendRequest } = useRequest<any>({
+  const { sendRequest } = useRequest<userData>({
     request: getData,
   });
 
@@ -196,14 +202,10 @@ const UserMenu = ({ allowedPages }: StateToProps): JSX.Element => {
 
   const gethref = window.location.href;
   const conditionnedhref = gethref + (window.location.search ? '&' : '?');
-  const autolink = `${conditionnedhref}autologin=1&useralias=${data?.username}&token=${data?.autologinkey}`;
+  const autolink = `${conditionnedhref}autologin=1&useralias=${data.username}&token=${data.autologinkey}`;
 
   return (
-    <div
-      className={classnames(classes.wrapRightUser, {
-        [classes.wrapRightUserActive]: toggled,
-      })}
-    >
+    <div className={classnames(classes.wrapRightUser)}>
       <div className={classnames(classes.wrapRightUserItems)}>
         <Clock />
         <div ref={profile as React.RefObject<HTMLDivElement>}>
@@ -228,14 +230,14 @@ const UserMenu = ({ allowedPages }: StateToProps): JSX.Element => {
                   >
                     <div>
                       <Typography className={classes.fullname} variant="body2">
-                        {data?.fullname}
+                        {data.fullname}
                       </Typography>
                       <Typography
                         style={{ wordWrap: 'break-word' }}
                         variant="body2"
                       >
                         {t('as')}
-                        {` ${data?.username}`}
+                        {` ${data.username}`}
                       </Typography>
                     </div>
                     {allowEditProfile && (
@@ -252,7 +254,7 @@ const UserMenu = ({ allowedPages }: StateToProps): JSX.Element => {
                     )}
                   </div>
                 </li>
-                {data && data.autoLoginKey && (
+                {data.autologinkey && (
                   <div className={classnames(classes.subMenuItemContent)}>
                     <button
                       className={classnames(classes.submenuUserButton)}
