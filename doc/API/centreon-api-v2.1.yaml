@@ -3399,15 +3399,6 @@ components:
         example: action-url
     MetaId:
       in: path
-      name: url_type
-      description: "Type of URL provided"
-      required: true
-      schema:
-        type: string
-        enum: [ action-url, notes-url ]
-        example: action-url
-    MetaId:
-      in: path
       name: meta_id
       description: "ID of the meta service"
       required: true
