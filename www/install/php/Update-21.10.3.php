@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,42 +18,3 @@
  * For more information : contact@centreon.com
  *
  */
-
-
-include_once __DIR__ . "/../../class/centreonLog.class.php";
-$centreonLog = new CentreonLog();
-
-//error specific content
-$versionOfTheUpgrade = 'UPGRADE - 21.10.3: ';
-
-/**
- * Query with transaction
- */
-try {
-    $pearDB->beginTransaction();
-    $errorMessage = 'Unable to delete logger entry in cb_tag';
-    $statement = $pearDB->query("DELETE FROM cb_tag WHERE tagname = 'logger'");
-    $errorMessage = 'Unable to update the description in cb_field';
-    $statement = $pearDB->query("
-        UPDATE cb_field
-        SET `description` = 'Time in seconds to wait between each connection attempt. The default value is 30s.'
-        WHERE `cb_field_id` = 31
-    ");
-
-    $errorMessage  = 'Unable to delete logger entry in cb_tag';
-    $statement = $pearDB->query("DELETE FROM cb_tag WHERE tagname = 'logger'");
-
-    $pearDB->commit();
-} catch (\Exception $e) {
-    if ($pearDB->inTransaction()) {
-        $pearDB->rollBack();
-    }
-    $centreonLog->insertLog(
-        4,
-        $versionOfTheUpgrade . $errorMessage .
-        " - Code : " . (int)$e->getCode() .
-        " - Error : " . $e->getMessage() .
-        " - Trace : " . $e->getTraceAsString()
-    );
-    throw new \Exception($versionOfTheUpgrade . $errorMessage, (int)$e->getCode(), $e);
-}
