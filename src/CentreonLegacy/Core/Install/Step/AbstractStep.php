@@ -53,6 +53,9 @@ abstract class AbstractStep implements StepInterface
     {
         if ($this->dependencyInjector['filesystem']->exists($file)) {
             $configuration = json_decode(file_get_contents($file), true);
+            foreach ($configuration as $key => $configurationValue) {
+                $configuration[$key] = filter_var($configurationValue, FILTER_SANITIZE_STRING, ENT_QUOTES);
+            }
         }
 
         return $configuration;

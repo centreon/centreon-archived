@@ -49,7 +49,7 @@ $step = new \CentreonLegacy\Core\Install\Step\Step6($dependencyInjector);
 $parameters = $step->getDatabaseConfiguration();
 
 try {
-    $link = new \PDO(
+    $db = new \PDO(
         'mysql:host=' . $parameters['address'] . ';port=' . $parameters['port'],
         $parameters['root_user'],
         $parameters['root_password']
@@ -61,33 +61,43 @@ try {
 }
 
 try {
-    $link->exec("CREATE DATABASE " . $parameters['db_storage']);
-} catch (\PDOException $e) {
-    if (!is_file('../../tmp/createTablesCentstorage')) {
-        $return['msg'] = $e->getMessage();
-        echo json_encode($return);
-        exit;
+    //Check if realtime database exists
+    $statementShowDatabase = $db->prepare("SHOW DATABASES LIKE :dbStorage");
+    $statementShowDatabase->bindValue(':dbStorage', $parameters['db_storage'], \PDO::PARAM_STR);
+    $statementShowDatabase->execute();
+
+    //If it doesn't exist, create it
+    if ($result = $statementShowDatabase->fetch(\PDO::FETCH_ASSOC) === false) {
+        $db->exec("CREATE DATABASE " . $parameters['db_storage']);
+    } else {
+        //If it exist, check if database is empty (no tables)
+        $statement = $db->prepare(
+            "SELECT COUNT(*) as tables FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = :dbStorage"
+        );
+        $statement->bindValue(':dbStorage', $parameters['db_storage'], \PDO::PARAM_STR);
+        $statement->execute();
+        if (($resultCount = $statement->fetch(\PDO::FETCH_ASSOC)) && (int) $resultCount['tables'] > 0) {
+            throw new \Exception(
+                sprintf('Your database \'%s\' is not empty, please remove all your tables or drop your database ' .
+                    'then click on refresh to retry', $parameters['db_storage'])
+            );
+        }
     }
-}
-
-$macros = array_merge(
-    $step->getBaseConfiguration(),
-    $step->getDatabaseConfiguration(),
-    $step->getAdminConfiguration(),
-    $step->getEngineConfiguration(),
-    $step->getBrokerConfiguration()
-);
-
-try {
-    $result = $link->query('use ' . $parameters['db_storage']);
+    $macros = array_merge(
+        $step->getBaseConfiguration(),
+        $step->getDatabaseConfiguration(),
+        $step->getAdminConfiguration(),
+        $step->getEngineConfiguration(),
+        $step->getBrokerConfiguration()
+    );
+    $result = $db->query('use ' . $parameters['db_storage']);
     if (!$result) {
         throw new \Exception('Cannot access to "' . $parameters['db_storage'] . '" database');
     }
-
     $result = splitQueries(
         '../../createTablesCentstorage.sql',
         ';',
-        $link,
+        $db,
         '../../tmp/createTablesCentstorage',
         $macros
     );
@@ -96,11 +106,10 @@ try {
         echo json_encode($return);
         exit;
     }
-
     $result = splitQueries(
         '../../installBroker.sql',
         ';',
-        $link,
+        $db,
         '../../tmp/installBroker',
         $macros
     );
@@ -110,9 +119,11 @@ try {
         exit;
     }
 } catch (\Exception $e) {
-    $return['msg'] = $e->getMessage();
-    echo json_encode($return);
-    exit;
+    if (!is_file('../../tmp/createTablesCentstorage')) {
+        $return['msg'] = $e->getMessage();
+        echo json_encode($return);
+        exit;
+    }
 }
 
 $return['result'] = 0;
