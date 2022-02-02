@@ -11,19 +11,19 @@ import UserMenu from './userMenu';
 
 const HookComponent = Hook as unknown as (props) => JSX.Element;
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   container: {
     alignItems: 'center',
     display: 'flex',
     justifyContent: 'space-between',
   },
   header: {
-    background: '#232f39',
+    background: theme.palette.common.black,
   },
   rightContainer: {
     display: 'flex',
   },
-});
+}));
 
 const Header = (): JSX.Element => {
   const classes = useStyles();
