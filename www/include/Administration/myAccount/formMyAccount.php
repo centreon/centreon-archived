@@ -64,7 +64,7 @@ $cct = array();
 if ($o == "c") {
     $query = "SELECT contact_id, contact_name, contact_alias, contact_lang, contact_email, contact_pager,
         contact_autologin_key, default_page, show_deprecated_pages, contact_auth_type,
-        enable_one_click_export
+        contact_theme, enable_one_click_export
         FROM contact WHERE contact_id = :id";
     $DBRESULT = $pearDB->prepare($query);
     $DBRESULT->bindValue(':id', $centreon->user->get_id(), \PDO::PARAM_INT);
@@ -108,6 +108,12 @@ if ($cct["contact_auth_type"] != 'ldap') {
 }
 $form->addElement('text', 'contact_email', _("Email"), $attrsText);
 $form->addElement('text', 'contact_pager', _("Pager"), $attrsText);
+
+$tab = array();
+$tab[] = $form->createElement('radio', 'contact_theme', null, _("Light"), 'light');
+$tab[] = $form->createElement('radio', 'contact_theme', null, _("Dark"), 'dark');
+$form->addGroup($tab, 'contact_theme', _("Front-end Theme"), '&nbsp;');
+
 if ($cct["contact_auth_type"] != 'ldap') {
     $form->addElement(
         'password',

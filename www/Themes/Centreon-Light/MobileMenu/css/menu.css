@@ -120,7 +120,7 @@
 .nav-expand-content .nav-back-link::before {
 	content: "chevron_left";
 	margin-right: 0.5em;
-	font-family: "Material Icons";
+	font-family: "Material Icons", 'Open Sans', Arial, Tahoma, Helvetica, Sans-Serif;
 }
 
 .nav-expand-link {
@@ -131,7 +131,7 @@
 .nav-expand-link::after {
 	content: "chevron_right";
 	flex: 0 1 auto;
-	font-family: "Material Icons";
+	font-family: "Material Icons", 'Open Sans', Arial, Tahoma, Helvetica, Sans-Serif;
 }
 
 .nav-expand.active > .nav-expand-content {

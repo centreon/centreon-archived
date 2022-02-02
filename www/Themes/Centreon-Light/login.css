@@ -1,35 +1,35 @@
 /*
- * Copyright 2005-2011 Centreon
+ * Copyright 2005-2021 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give Centreon 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of Centreon choice, provided that 
- * Centreon also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give Centreon
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of Centreon choice, provided that
+ * Centreon also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  */
 
 .login_wrapper {
@@ -116,14 +116,14 @@ a:hover     {text-decoration:underline;}
 
 .LoginInvitVersion, .msg, #sublogin, #LoginInvitcpy a, #LoginInvitcpy {text-align:center;}
 
-table {empty-cells:show; border-spacing:0px; border-collapse:collapse;font-family:'Bitstream Vera Sans', 'arial', 'Tahoma', 'Sans serif';}
-body, input, textarea, checkbox, select, option, td, .msg, input[type="submit"], label, table {font-family:'Open Sans', 'arial', 'Tahoma', 'Sans serif';font-weight: normal;font-size:11px;}
+table {empty-cells:show; border-spacing:0px; border-collapse:collapse;font-family:'Bitstream Vera Sans', 'arial', 'Tahoma', Sans-Serif;}
+body, input, textarea, input[type="checkbox"], select, option, td, .msg, input[type="submit"], label, table {font-family:'Open Sans', 'arial', 'Tahoma', Sans-Serif;font-weight: normal;font-size:11px;}
 
 label {
     color: #007f77;
 }
 
-input, textarea, checkbox, select, option, input[type="submit"],body {font-size: 11px;}
+input, textarea, input[type="checkbox"], select, option, input[type="submit"],body {font-size: 11px;}
 .msg        {font-size:12px;}
 img         {border:0;}
 input, select {
@@ -133,7 +133,7 @@ input, select {
     line-height: 18px;
     width: 100%;
 }
-checkbox    {padding:2px;}
+input[type="checkbox"]    {padding:2px;}
 select      {border-style:none;}
 td          {padding:3px;color:#525252;white-space:nowrap;}
 form        {padding:0px;margin:0px;}
@@ -168,6 +168,6 @@ input[type="submit"].bt_info:hover:not(:disabled) {
 .LoginInvitDate     {text-align:right;}
 
 #LoginInvitcpy a,  #LoginInvitcpy {color:gray;}
- 
+
 .grayLine                   {padding-top:15px;}
 
