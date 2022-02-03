@@ -232,10 +232,10 @@ class ExtensionsManager extends React.Component {
   // install/remove extension
   runAction = (loadingKey, action, id, type, callback) => {
     this.setStatusesByIds([{ id }], loadingKey, () => {
-      axios(
-        `internal.php?object=centreon_module&action=${action}&id=${id}&type=${type}`,
-      )
-        .post()
+      axios
+        .post(
+          `./api/internal.php?object=centreon_module&action=${action}&id=${id}&type=${type}`,
+        )
         .then(() => {
           this.getData(() => {
             this.setStatusByKey(loadingKey, id, callback);
@@ -296,8 +296,8 @@ class ExtensionsManager extends React.Component {
         modalDetailsLoading: modalDetailsActive,
       },
       () => {
-        axios('internal.php?object=centreon_module&action=remove')
-          .delete('', {
+        axios
+          .delete('./api/internal.php?object=centreon_module&action=remove', {
             params: {
               id,
               type,
@@ -355,8 +355,8 @@ class ExtensionsManager extends React.Component {
         nothingShown,
       });
       if (!nothingShown) {
-        axios(`internal.php?object=centreon_module&action=list${params}`)
-          .get()
+        axios
+          .get(`./api/internal.php?object=centreon_module&action=list${params}`)
           .then(({ data }) => {
             this.setState(
               {
@@ -394,10 +394,10 @@ class ExtensionsManager extends React.Component {
   };
 
   getExtensionDetails = (id, type) => {
-    axios(
-      `internal.php?object=centreon_module&action=details&type=${type}&id=${id}`,
-    )
-      .get()
+    axios
+      .get(
+        `./api/internal.php?object=centreon_module&action=details&type=${type}&id=${id}`,
+      )
       .then(({ data }) => {
         const { result } = data;
         if (result.images) {
