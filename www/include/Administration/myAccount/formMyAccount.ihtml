@@ -38,8 +38,7 @@
     		<tr class="list_two"><td class="FormRowField">{$form.contact_pager.label}</td><td class="FormRowValue">{$form.contact_pager.html}</td></tr>
             <tr class="list_one"><td class="FormRowField">{$form.contact_lang.label}</td><td class="FormRowValue">{$form.contact_lang.html}</td></tr>
             <tr class="list_two"><td class="FormRowField">{$form.contact_location.label}</td><td class="FormRowValue">{$form.contact_location.html}</td></tr>
-    		<tr class="list_one"><td class="FormRowField">{$form.contact_theme.label}</td><td class="FormRowValue">{$form.contact_theme.html}</td></tr>
-            {if $cct.contact_auth_type != 'ldap'}
+    		{if $cct.contact_auth_type != 'ldap'}
             <tr class="list_lvl_1">
                 <td class="ListColLvl1_name" colspan="2">
                     <h4>{t}Password Management{/t}</h4>

@@ -279,6 +279,7 @@ try {
         }
         $templateHostArray[$key] = $tplStr;
         unset($tplStr);
+        $i++;
     }
 
     include "./include/common/checkPagination.php";

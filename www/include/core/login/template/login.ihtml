@@ -6,7 +6,7 @@
         <meta name="Generator" content="Centreon - Copyright (C) 2005 - 2021 Open Source Matters. All rights reserved." />
         <meta name="robots" content="index, nofollow" />
         <meta http-equiv="refresh" content="840">
-        <link href="./Themes/Centreon-Light/login.css" rel="stylesheet" type="text/css">
+        <link href="./Themes/Centreon-2/login.css" rel="stylesheet" type="text/css">
         <link rel="shortcut icon" href="./img/favicon.ico">
         <script type="text/javascript" src="./include/common/javascript/jquery/jquery.min.js"></script>
     </head>
