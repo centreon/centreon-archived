@@ -56,6 +56,7 @@ class User
         Assertion::minLength($name, self::MIN_ALIAS_LENGTH, 'User::name');
         Assertion::maxLength($name, self::MAX_ALIAS_LENGTH, 'User::name');
 
+        // Email format validation cannot be done here until legacy form does not check it
         Assertion::minLength($email, self::MIN_EMAIL_LENGTH, 'User::email');
         Assertion::maxLength($email, self::MAX_EMAIL_LENGTH, 'User::email');
     }

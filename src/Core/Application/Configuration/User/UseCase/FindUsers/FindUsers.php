@@ -1,7 +1,11 @@
 <?php
 
 /*
+<<<<<<< HEAD
  * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
+=======
+ * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
+>>>>>>> MON-12040-exclude-accounts-from-password-duration-policy
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +28,7 @@ declare(strict_types=1);
 namespace Core\Application\Configuration\User\UseCase\FindUsers;
 
 use Centreon\Domain\Log\LoggerTrait;
-use Core\Application\Configuration\User\Repository\ReadUsersRepositoryInterface;
+use Core\Application\Configuration\User\Repository\ReadUserRepositoryInterface;
 use Core\Application\Configuration\User\UseCase\FindUsers\FindUsersPresenterInterface;
 use Core\Domain\Configuration\User\Model\User;
 
@@ -33,9 +37,9 @@ class FindUsers
     use LoggerTrait;
 
     /**
-     * @param ReadUsersRepositoryInterface $usersRepository
+     * @param ReadUserRepositoryInterface $usersRepository
      */
-    public function __construct(private ReadUsersRepositoryInterface $usersRepository)
+    public function __construct(private ReadUserRepositoryInterface $usersRepository)
     {
     }
 

@@ -21,10 +21,16 @@
 
 declare(strict_types=1);
 
-namespace Core\Application\Configuration\User\UseCase\FindUsers;
+namespace Core\Application\Configuration\User\Repository;
 
-use Core\Application\Common\UseCase\ErrorResponse;
+use Core\Domain\Configuration\User\Model\User;
 
-class FindUsersErrorResponse extends ErrorResponse
+interface ReadUserRepositoryInterface
 {
+    /**
+     * Find configured users
+     *
+     * @return User[]
+     */
+    public function findAllUsers(): array;
 }
