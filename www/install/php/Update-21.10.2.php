@@ -30,7 +30,10 @@ function loadHosts($pearDB)
     $stmt->execute();
     $cache = $stmt->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_UNIQUE | PDO::FETCH_ASSOC);
 
-    $stmt = $pearDB->prepare('SELECT host_host_id, host_tpl_id FROM host_template_relation ORDER BY `host_host_id`, `order` ASC');
+    $stmt = $pearDB->prepare(
+        'SELECT host_host_id, host_tpl_id 
+         FROM host_template_relation ORDER BY `host_host_id`, `order` ASC'
+    );
     $stmt->execute();
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
         if (!isset($cache[$row['host_host_id']]['htpl'])) {
@@ -39,7 +42,10 @@ function loadHosts($pearDB)
         array_push($cache[$row['host_host_id']]['htpl'], $row['host_tpl_id']);
     }
 
-    $stmt = $pearDB->prepare('SELECT host_macro_id, host_host_id, host_macro_name, host_macro_value FROM on_demand_macro_host');
+    $stmt = $pearDB->prepare(
+        'SELECT host_macro_id, host_host_id, host_macro_name, host_macro_value
+        FROM on_demand_macro_host'
+    );
     $stmt->execute();
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
         if (!isset($cache[$row['host_host_id']]['macros'])) {
@@ -86,7 +92,7 @@ function cleanDuplicateHostMacros($pearDB, $centreonLog, $cache, $srcHostId)
                 }
             }
         }
-        
+
         if (isset($cache[$hostId]['htpl'])) {
             $stack = array_merge($cache[$hostId]['htpl'], $stack);
         }
