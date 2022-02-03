@@ -31,8 +31,8 @@
  * For more information : contact@centreon.com
  *
  */
-@import "./Variables-css/variables.css";
 
+ @import ();
 body {
     background-color:var(--body-background);
 }
@@ -413,8 +413,8 @@ p.description a, p.description a:visited {
     color: var(--select2-selection-multiple-color) !important;
     margin-left: 2px;
     padding: 2px 5px;
-    background-color: var(--select2-selection-choice-remove-background-color);
-    border: 1px solid var(--select2-selection-multiple-border-color);
+    background-color: var(--select2-selection-multiple-background-color);
+    border: 1px solid var(#4dcaff);
     border-top-left-radius: 4px;
     border-bottom-left-radius: 4px;
     margin-right: 0 !important;
@@ -429,7 +429,7 @@ p.description a, p.description a:visited {
     border-top-right-radius: 4px;
     border-bottom-right-radius: 4px;
     color: var(--select2-results-option-highlighted-background-color);
-    background-color: var(--select2-selection-multiple-content-background-color);
+    background-color: var(--select2-selection-multiple-background-color);
 }
 .select2-container--default .select2-results__option--highlighted[aria-selected] {
     background-color: var(--select2-results-option-highlighted-background-color);
@@ -717,8 +717,8 @@ a.btc {
 
 .bt_warning.ui-state-active,
 .bt_warning.ui-state-hover{
-    background: var(--bt-warning-ui-state-hover-background-color) !important;
-    color:var(--bt-warning-ui-state-hover-color) !important;
+    background: var(--bt-danger-ui-state-hover-background-color) !important;
+    color:var(--bt-danger-ui-state-hover-color) !important;
     outline: none !important;
 }
 

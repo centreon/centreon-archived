@@ -1,7 +1,47 @@
-@import "color-variables.css";
-
 :root {
         /* Style.css variables */
+
+        /** Main colors **/
+        --color-success : #88b917 ;
+        --color-warning : #ff9a13 ;
+        --color-danger : #e00b3d ;
+        --color-pending : #2AD1D4 ;
+        --color-info : #00bdb0 ;
+        --color-ack : #AA9C24;
+        --color-white : #fff ;
+        --color-black: #000000;
+        --color-very-light-grey: #CCC;
+        --color-silver:#BBB;
+        --color-aluminium : #818285;
+        --color-black-rgba : rgba(0, 0, 0, 0.54);
+        --color-curious-blue : #337ab7;
+        --color-navy-bleu : #0072CE;
+        --color-iris-blue : #00BFB3;
+        --color-persian-green : #00a499 ;
+        --color-surfie-green : #007f77;
+        --color-columbia-blue : #bfecff;
+        --color-ghost : #bcbdc0;
+        --color-charcoal : #444;
+        --color-martar : #555 ;
+        --color-grey-chateau : #a7a9ac;
+        --color-maya-blue : #4ccaff ;
+        --color-pasific-bleu : #009fdf;
+        --color-iron : #d1d2d4;
+        --color-periwinkle :#bfd0e2;
+        --color-white-smack : #f1f1f1;
+        --color-white-lilac : #e7e7e8;
+        --color-mauve :#cc99ff;
+        --color-dark-tangerine : #ff9a13;
+        --color-dark-goldenrod : #ae9500;
+        --color-turquoise : #2AD1D4;
+        --color-sapphire: #09225c;
+        --color-pale-turquoise: #cfedf9;
+        --color-sahara : #AA9C24;
+        --color-white-rgba-8 :rgba(240, 240, 240, 0.8);
+        --color-black-rgba-54 :rgba(0, 0, 0, 0.54);
+        --color-black-rgba-1 :rgba(0, 0, 0, 0.1);
+        --color-black-rgba-26: rgba(0, 0, 0, 0.26); 
+         /******************/
         --color-checkbox-disabled-border-rgba: rgba(0, 0, 0, 0.26); 
         --color-checkbox-checked-border-: var(--color-white); 
         --color-checkbox-disabled-checked: var(--color-checkbox-disabled-border-rgba);
@@ -12,7 +52,7 @@
         /*****************/
     
         /** Body color **/
-        --body-background: #EDEDED ;
+        --body-background: #ffffff ;
         --body-color:#555;
          /*****************/
     
@@ -29,9 +69,12 @@
         /** Input checkbox **/
         --input-border-color: var(--select-border-color);
         --input-color : var(--select-color);
-        --md-checkbox--checked-background : var(--color-checked-background-rgb) ;
+        --md-checkbox--checked-background : var(--color-checked-checkbox-background-rgba) ;
+        --md-checkbox--checked-background : var(--color-checked-checkbox-background-rgba) ;
         --md-checkbox-border-color : var(--color-black-rgba)  ;
         --md-checkbox-background : var(--color-white) ;
+        --md-checkbox-border-color : var(--color-black-rgba)  ;
+        --md-checkbox-border-color-after : #fff;
         --md-checkbox--disabled-border-color-before : var(--color-black-rgba);
         --md-checkbox--disabled-checked-background-color-before  : var(--color-black-rgba);
         --md-check-input-disabled-checked-before:  #88b917;
@@ -47,6 +90,7 @@
 
     /** select **/
     --select-background-color : #ffffff;
+    --select-color : #444;
     --option-color :  var(--select-color);
     /***********/
 
@@ -75,14 +119,14 @@
     /** Select 2 **/
     --select2-container-selection-background-color : #fff;
     --select2-container-selection-border-color : #bbb;
-    --select2-selection-choice-remove-background-color : #0072ce;
+    --select2-selection-multiple-background-color : #0072ce;
     --select2-selection-multiple-color : #fff;
     --select2-selection-multiple-border-color : #4dcaff;
     --select2-selection-multiple-content-border-color-top : var(--select2-selection-multiple-border-color);
     --select2-selection-multiple-content-border-color-bottom : var(--select2-selection-multiple-border-color);
     --select2-selection-multiple-content-border-color-right : var(--select2-selection-multiple-border-color);
     --select2-selection-multiple-content-color : #0072ce;
-    --select2-selection-multiple-content-background-color : #bfecff;
+    --select2-selection-multiple-background-color : #bfecff;
     --select2-results-option-highlighted-background-color : #0072ce;
     --select2-results-option-highlighted-color : #000000;
     --select2-results-option-highlighted-color-aria-selected : #bfecff;
@@ -131,8 +175,8 @@
     --btc-color: #fff;
     --a-btc-color : #fff;
     --bt-default-background-color : #a7a9ac;
-    --bt-success-background-color : #10069F;
-    --bt-danger-background-color :#f90026;
+    --bt-success-background-color : #88b917;
+    --bt-danger-background-color :#e00b3d;
     --bt-info-background-color : #00bfb3;
     --bt-warning-background-color :#ff9a13;
     --bt-action-color-background-color : #00ccbf ;
@@ -151,8 +195,8 @@
     --bt-info-ui-state-hover-background-color: #03a89e;
     --bt-info-ui-state-hover-color:#fff;
     
-    --bt-warning-ui-state-hover-background-color:#eb8e12;
-    --bt-warning-ui-state-hover-color:#fff;
+    --bt-danger-ui-state-hover-background-color:#eb8e12;
+    --bt-danger-ui-state-hover-color:#fff;
     --button-group-input-color:#fff;
     /***********************/
 
@@ -196,68 +240,6 @@
     --title-menu-bottom-border-color : #a7a9ac;
     --div-menu-left-background-color :  #FFF;
     /************/
-    --list-table-anchors-font-color: #666666;
-    --list-table-border-color: #BFD0E2;
-    --list-lvl-1-background-color:#D5DFEB;
-    --list-lvl-2-background-color:#CED3ED;
-    --list-header-background:#CFEDF9;
-    --list-sub-header-background-color:#A9C5F2;
-    --list-one-background-color: #F8FDFF;
-    --list-one-fix-background-color: var(--list-one-background-color);
-    --list-one-hover-background-color: var(--list-header-background);
-    --list-two-background-color: #F0FBFF;
-    --list-two-fix-background-color: var(--list-two-background-color);
-    --list-two-hover-background-color: var(--list-header-background);
-    --list-three-background-color: #fada83;
-    --list-three-hover-background-color: #bada83;
-    --list-four-background-color: #fdc11e;
-    --list-four-hover-background-color: #bdc11e;
-    --list-up-background-color: #88b917;
-    --list-up-hover-background-color: #B2A867;
-    --list-down-background-color: #ffaec1;
-    --list-down-hover-background-color: #e17790;
-    --list-unreachable-background-color: #818285;
-    --list-unreachable-hover-background-color: var(--list-unreachable-background-color);
-    --list-downtime-background-color: #f1dfff;
-    --list-downtime-hover-background-color: #e7c9ff;
-    --list-ack-background-color: #fefc8e;
-    --list-ack-hover-background-color: #fcf17f;
-    --list-lvls-td-top-border-color: #AAAAAA;
-    --list-lvls-td-left-border-color: var(--list-lvls-td-top-border-color);
-    --list-lvls-td-bottom-border-color: var(--list-lvls-td-top-border-color);
-    --list-lvls-td-right-border-color: var(--list-lvls-td-top-border-color);
-    --tab-list-lvls-td-top-border-color: var(--list-lvls-td-top-border-color);
-    --tab-list-lvls-td-left-border-color: var(--list-lvls-td-top-border-color);
-    --tab-list-lvls-td-bottom-border-color: var(--list-lvls-td-top-border-color);
-    --tab-list-lvls-td-right-border-color: var(--list-lvls-td-top-border-color);
-    --lists-td-top-border-color: #D1DCEB;
-    --lists-td-left-border-color: var(--lists-td-top-border-color);
-    --lists-td-bottom-border-color: var(--lists-td-top-border-color);
-    --lists-td-right-border-color: var(--lists-td-top-border-color);
-    --tab-lists-td-top-border-color: var(--lists-td-top-border-color);
-    --tab-lists-td-left-border-color: var(--lists-td-top-border-color);
-    --tab-lists-td-bottom-border-color: var(--lists-td-top-border-color);
-    --tab-lists-td-right-border-color: var(--lists-td-top-border-color);
-    --list-header-border-top-color: var(--body-background-color);
-    --list-header-border-left-color: var(--list-header-border-top-color);
-    --list-footer-border-color: #AAAAEE;
-    --input-button-hover-font-color: var(--body-background-color);
-    --input-button-hover-background-color: #009FDF;
-    --input-button-hover-border-color: var(--input-button-hover-background-color);
-    --pagination-font-color: var(--body-background-color);
-    --pagination-background-color: var(--list-table-border-color);
-    --message-loading-font-color: #0000FF;
-    --message-is-loading-font-color: #fff;
-    --message-is-loading-background-color: #ff0000;
-    --toolbar-td-selectaction-top-anchor-font-color: #5E5E5E;
-    --toolbar-td-selectaction-top-anchor-hover-font-color: #E8AB5C;
-    --toolbar-table-bottom-border-color: #009FDF;
-    --a-b-border-color: var(--list-footer-border-color);
-    --header-tab-container-bottom-border-color: #009FDF;
-    --main-nav-list-background-color: #009FDF;
-    --main-nav-list-border-color: var(--main-nav-list-background-color);
-    --main-nav-list-a-anchor-font-color: var(--main-nav-list-background-color);
-    --main-nav-list-b-anchor-font-color: #C1ECFF;
 
     --menu3-anchor-hover-font-color: #E8AB5C;
     --menu3-background-color: #FFF;
@@ -564,119 +546,4 @@
     /* ------ START : Configuration pollers action buttons variables -----*/
     --bt-poller-action-disabled-background-color: #cdcdcd;
     /* ------ END : Configuration pollers action buttons variables -----*/
-
-    /* ------ START : Loading containers variables -----*/
-    --loading-wrapper-background-color: rgba(255,255,255,0.5);
-    --keyframes-green1-from-fill-color: #83c249;
-    --keyframes-green1-to-fill-color: #ccf289;
-    --keyframes-green2-from-fill-color: #34b24f;
-    --keyframes-green2-to-fill-color: #93e888;
-    --keyframes-green3-from-fill-color: #00ac9f;
-    --keyframes-green3-to-fill-color: #4fd6ca;
-    --keyframes-blue1-from-fill-color: #00aeec;
-    --keyframes-blue1-to-fill-color: #7bd0fa;
-    --keyframes-blue2-from-fill-color: #0078bb;
-    --keyframes-blue2-to-fill-color: #60a6d7;
-    --keyframes-blue3-from-fill-color: #0078bb;
-    --keyframes-blue3-to-fill-color: #60a6d7;
-    --color-1-fill-color: #83c249;
-    --color-2-fill-color: #34b24f;
-    --color-3-fill-color: #00ac9f;
-    --color-4-fill-color: #00aeec;
-    --color-5-fill-color: #0078bb;
-    --color-6-fill-color: #29378e;
-    /* ------ END : Loading containers variables -----*/
-    /* ------ START : Login variables -----*/
-    --login-tab-background-color: #fff;
-    --login-tab-border-color: #d1d2d4;
-    --message-background-color: #ffe6ec;
-    --message-font-color: #e00b3d;
-    --message-border-color: var(--message-font-color);
-    --btc-font-color: #fff;
-    --bt-info-disabled-background-color: gray;
-    --bt-group-input-font-color: #fff;
-    --link-label-font-color: #007f77;
-    --input-select-border-color: #bcbdc0;
-    --link-td-font-color: #525252;
-    --bt-info-hover-not-disabled-background-color: #00a499;
-    --login-tab2-td-background-color: #eaeaee;
-    --login-invit-cpy-font-color: gray;
-    /* ------ END : Login variables -----*/
-    /* ------ START : Markdown css variables -----*/
-    --md-preview-table-th-border-bottom-color: #bbb;
-    --md-preview-table-td-border-bottom-color: #ddd;
-    --md-preview-pre-background-color: #eee;
-    --md-preview-pre-border-color: #ddd;
-    --md-preview-pre-font-color: #444;
-    --md-preview-pre-webkit-box-shadow-color: rgba(0, 0, 0, 0.07);
-    --md-preview-pre-code-background-color: var(--md-preview-pre-background-color);
-    --md-preview-pre-code-border-color: none;
-    --md-preview-code-background-color: #f8f8ff;
-    --md-preview-code-font-color: #444;
-    --md-preview-code-border-color: #dedede;
-    --md-preview-anchor-font-color: #4183c4;
-    --md-preview-code-anchor-link-visited: var(--md-preview-anchor-font-color);
-    --md-preview-h1-border-top-color: #aaa;
-    --md-preview-h2-border-top-color: #e0e0e0;
-    --md-preview-hr-border-color: #ddd;
-    --md-preview-blockquote-border-left-color: #ddd;
-    --md-preview-blockquote-font-color: #555;
-    /* ------ END : Markdown css variables -----*/
-    /* ------ START : JQuery UI variables -----*/
-    --ui-selectable-helper-border-color: var(--color-black);
-    --ui-icon-background-box-shadow-color: #ccc;
-    --ui-icon-background-border-color: none;
-    --ui-spinner-input-background-color: none;
-    --ui-spinner-input-border-color: none;
-    --ui-spinner-input-font-color: inherit;
-    --ui-tabs-panel-background-color: none;
-    --ui-widget-ui-widget-content-border-color: #c5c5c5;
-    --jquery-ui-widget-content-background-color: #ffffff;
-    --jquery-ui-widget-content-border-color: #dddddd;
-    --jquery-ui-widget-content-font-color: #333333;
-    --jquery-ui-widget-content-anchor-font-color: var(--jquery-ui-widget-content-font-color);
-    --jquery-ui-widget-header-border-color: var(--jquery-ui-widget-content-border-color);
-    --jquery-ui-widget-header-background-color: #e9e9e9;
-    --jquery-ui-widget-header-font-color: var(--jquery-ui-widget-content-font-color);
-    --jquery-ui-widget-header-anchor-font-color: var(--jquery-ui-widget-content-font-color);
-    /* Interaction states variables */
-    --ui-button-state-disabled-hovered-active-border-color: #c5c5c5;
-    --ui-button-state-disabled-hovered-active-background-color: #f6f6f6;
-    --ui-button-state-disabled-hovered-active-font-color: #454545;
-    --ui-button-anchor-visited-font-color: var(--ui-button-state-disabled-hovered-active-font-color);
-    --ui-button-state-hover-focus-border-color: #cccccc;
-    --ui-button-state-hover-focus-background-color: #ededed;
-    --ui-button-state-hover-focus-font-color: #2b2b2b;
-    --ui-button-anchor-state-hover-focus-font-color: var(--ui-button-state-hover-focus-font-color);
-    --ui-visual-focus-box-shadow-color: rgb(94, 158, 214);
-    --ui-button-anchor-state-active-hover-border-color: #003eff;
-    --ui-button-anchor-state-active-hover-background-color: #007fff;
-    --ui-button-anchor-state-active-hover-font-color: #ffffff;
-    --jquery-ui-icon-background-color: #ffffff;
-    --jquery-ui-icon-border-color: #003eff;
-    --ui-state-active-anchor-visited-font-color: #ffffff;
-    --ui-state-highlight-border-color: #dad55e;
-    --ui-state-highlight-background-color: #fffa90;
-    --ui-state-highlight-font-color: #777620;
-    --ui-state-checked-border-color: #dad55e;
-    --ui-state-checked-background-color: #fffa90;
-    --ui-state-highlight-anchor-font-color: #777620;
-    --ui-state-error-font-color: #5f3f3f;
-    --ui-state-error-background-color: #fddfdf;
-    --ui-state-error-border-color: #f1a899;
-    --ui-state-error-anchor-font-color: var(--ui-state-error-font-color);
-    --ui-state-error-text-font-color: var(--ui-state-error-font-color);
-    /* Overlays variables */
-    --ui-widget-overlay-background-color: #aaaaaa;
-    --ui-widget-shadow-webkit-box-shadow-color: #666666;
-    --ui-widget-shadow-box-shadow-color: var(--ui-widget-shadow-webkit-box-shadow-color);
-    /* Centreon jquery */
-    /* Portlet style variables */
-    --ui-sortable-placeholder-border-color: black;
-    --ui-button-focus-font-color: #ffffff;
-    --ui-tabs-nav-li-anchor-background-color: #009fdf;
-    --ui-tabs-nav-li-background-color: var(--ui-tabs-nav-li-anchor-background-color);
-    --ui-state-processing-anchor-background-color: none;
-    --ui-state-processing-background-color: none;
-    /* ------ END : JQuery UI variables -----*/
 }
