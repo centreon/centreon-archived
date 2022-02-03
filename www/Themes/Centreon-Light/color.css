@@ -1,108 +1,110 @@
-.ListTable a:link, #ListTable a:link, .ListTable a:visited, #ListTable a:visited {color:#666666;}
-.ListTable, .ListTableMedium, .ListTableSmall {border-color:#BFD0E2;}
+@import "./Variables-css/variables.css";
 
-.list_lvl_1 { background-color:#D5DFEB; }
-.list_lvl_2 { background-color:#CED3ED; }
+.ListTable a:link, #ListTable a:link, .ListTable a:visited, #ListTable a:visited {color: var(--list-table-anchors-font-color);}
+.ListTable, .ListTableMedium, .ListTableSmall {border-color: var(--list-table-border-color);}
 
-.ListHeader     { background:#CFEDF9; }
+.list_lvl_1 { background-color:var(--list-lvl-1-background-color); }
+.list_lvl_2 { background-color:var(--list-lvl-2-background-color); }
+
+.ListHeader     { background:var(--list-header-background); }
 .ListSubHeader  {
-    background-color:#A9C5F2;
+    background-color:var(--list-sub-header-background-color);
     font-weight:bold;
     background-position:top left;
 }
 
 .list_lvl_2 td, .list_lvl_1 td {
-    border-top-color: #AAAAAA;
-    border-left-color: #AAAAAA;
-    border-bottom-color: #AAAAAA;
-    border-right-color: #AAAAAA;
+    border-top-color: var(--list-lvls-td-top-border-color);
+    border-left-color: var(--list-lvls-td-left-border-color);
+    border-bottom-color: var(--list-lvls-td-bottom-border-color);
+    border-right-color: var(--list-lvls-td-right-border-color);
 }
 
 .list_one td, .list_two td, .list_three td, .list_four td, .list_up td, .list_down td, .line_ack td, 
 .line_downtime td, .list_unreachable td, .row_disabled td {
-    border-top-color: #D1DCEB;
-    border-left-color: #D1DCEB;
-    border-bottom-color: #D1DCEB;
-    border-right-color: #D1DCEB;
+    border-top-color: var(--lists-td-top-border-color);
+    border-left-color: var(--lists-td-left-border-color);
+    border-bottom-color: var(--lists-td-bottom-border-color);
+    border-right-color: var(--lists-td-right-border-color);
 }
 
 .tab .list_one td, .tab .list_two td, .tab .list_three td, .tab .list_four td, .tab .list_up td, 
 .tab .list_down td,.tab .line_ack td,.tab .line_downtime td,.tab .list_unreachable td, .tab .row_disabled td {
-    border-top-color: #D1DCEB;
-    border-left-color: #D1DCEB;
-    border-bottom-color: #D1DCEB;
-    border-right-color: #D1DCEB;
+    border-top-color: var(--tab-lists-td-top-border-color);
+    border-left-color: var(--tab-lists-td-left-border-color);
+    border-bottom-color: var(--tab-lists-td-bottom-border-color);
+    border-right-color: var(--tab-lists-td-right-border-color);
 }
 
 .tab .list_lvl_2 td, .tab .list_lvl_1 td{
-    border-top-color: #AAAAAA;
-    border-left-color: #AAAAAA;
-    border-bottom-color: #AAAAAA;
-    border-right-color: #AAAAAA;
+    border-top-color: var(--tab-list-lvls-td-top-border-color);
+    border-left-color: var(--tab-list-lvls-td-left-border-color);
+    border-bottom-color: var(--tab-list-lvls-td-bottom-border-color);
+    border-right-color: var(--tab-list-lvls-td-right-border-color);
 }
 
 .ListHeader td{
-    border-top-color: #FFFFFF;
-    border-left-color: #FFFFFF;
+    border-top-color: var(--list-header-border-top-color);
+    border-left-color: var(--list-header-border-left-color);
 }
 
 .ListColFooterRight, .ListColFooterLeft, .ListColFooterCenter {
-    border-top-color: #AAAAEE;
+    border-top-color: var(--list-footer-border-color);
 }
 
-.list_one_fixe      {   background-color: #F8FDFF;}
-.list_two_fixe      {   background-color: #F0FBFF;}
+.list_one_fixe      {   background-color: var(--list-one-fix-background-color);}
+.list_two_fixe      {   background-color: var(--list-two-fix-background-color);}
 
-.list_one           {   background-color: #F8FDFF;}
-.list_one:hover     {   background-color: #CFEDF9;}
+.list_one           {   background-color: var(--list-one-background-color);}
+.list_one:hover     {   background-color: var(--list-one-hover-background-color);}
 
-.list_two           {   background-color: #F0FBFF;}
-.list_two:hover     {   background-color: #CFEDF9;}
+.list_two           {   background-color: var(--list-two-background-color);}
+.list_two:hover     {   background-color: var(--list-two-hover-background-color);}
 
-.list_three         {   background-color: #fada83;}
-.list_three:hover   {   background-color: #bada83;}
+.list_three         {   background-color: var(--list-three-background-color);}
+.list_three:hover   {   background-color: var(--list-three-hover-background-color);}
 
-.list_four          {   background-color: #fdc11e;}
-.list_four:hover    {   background-color: #bdc11e;}
+.list_four          {   background-color: var(--list-four-background-color);}
+.list_four:hover    {   background-color: var(--list-four-hover-background-color);}
 
-.list_up            {   background-color: #88b917;}
-.list_up:hover      {   background-color: #B2A867;}
+.list_up            {   background-color: var(--list-up-background-color);}
+.list_up:hover      {   background-color: var(--list-up-hover-background-color);}
 
-.list_down          {   background-color: #ffaec1;}
-.list_down:hover    {   background-color: #e17790;}
+.list_down          {   background-color: var(--list-down-background-color);}
+.list_down:hover    {   background-color: var(--list-down-hover-background-color);}
 
-.list_unreachable           {   background-color:#818285;}
-.list_unreachable:hover     {   background-color:#818285;}
+.list_unreachable           {   background-color:var(--list-unreachable-background-color);}
+.list_unreachable:hover     {   background-color:var(--list-unreachable-hover-background-color);}
 
-.line_downtime      {   background-color: #f1dfff;}
-.line_downtime:hover{   background-color: #e7c9ff;}
+.line_downtime      {   background-color: var(--list-downtime-background-color);}
+.line_downtime:hover{   background-color: var(--list-downtime-hover-background-color);}
 
-.line_ack           {   background-color: #fefc8e;}
-.line_ack:hover     {   background-color: #fcf17f;}
+.line_ack           {   background-color: var(--list-ack-background-color);}
+.line_ack:hover     {   background-color: var(--list-ack-hover-background-color);}
 
 
 input[type="submit"]:hover, input[type="button"]:hover, input[type="reset"]:hover {
-    background: #009FDF;
-    color: #FFFFFF;
-    border-color: #009FDF;
+    background: var(--input-background-color);
+    color: var(--input-font-color);
+    border-color: var(--input-border-color);
 }
 
 .limitPage, .pageNumber {
-    color: #FFFFFF;
+    color: var(--pagination-font-color);
     background-position:top left;
     background-repeat:repeat-x;
-    background-color:#BFD0E2;
+    background-color:var(--pagination-background-color);
 }
 
 .a, .b {
-    border-color:#AAAAEE;
+    border-color:var(--a-b-border-color);
 }
 
 .msg_loading{
     position:absolute;
     top:20px;
     left:200px;
-    color:blue;
+    color:var(--message-loading-font-color);
     font-size:18px;
     width:100%;
     height:100%;
@@ -112,35 +114,35 @@ input[type="submit"]:hover, input[type="button"]:hover, input[type="reset"]:hove
     position:absolute;
     top:20px;
     left:200px;
-    background-color:red;
-    color:white;
+    background-color:var(--message-is-loading-background-color);
+    color:var(--message-is-loading-font-color);
     width:200px;
 }
 
 .Toolbar_TDSelectAction_Top a { 
     font-family:Arial, Helvetica, Sans-Serif;
     font-size:11px;
-    color:#5E5E5E;
+    color:var(--toolbar-td-selectaction-top-anchor-font-color);
 }
 .Toolbar_TDSelectAction_Top a:hover {
-    color: #E8AB5C;
+    color: var(--toolbar-td-selectaction-top-anchor-hover-font-color);
 }
 .Toolbar_TableBottom {
-    border-color: #009FDF;
+    border-color: var(--toolbar-table-bottom-border-color);
 }
 
 .headerTabContainer {
-    border-bottom: 1px solid #009FDF;
+    border-bottom: 1px solid var(--header-tab-container-bottom-border-color);
 }
 
 #mainnav li {
-    background-color: #009FDF;
-    border: 1px solid #009FDF;
+    background-color: var(--main-nav-list-background-color);
+    border: 1px solid var(--main-nav-list-border-color);
 }
 #mainnav li.a a {
-    color: #009FDF;
+    color: var(--main-nav-list-a-anchor-font-color);
 }
 #mainnav li.b a {
-    color: #C1ECFF;
+    color: var(--main-nav-list-b-anchor-font-color);
 }
 
