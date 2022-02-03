@@ -116,12 +116,4 @@ interface HostConfigurationReadRepositoryInterface
      * @return Host[]
      */
     public function findHostTemplatesByHost(Host $host): array;
-
-    /**
-     * Find host templates by names
-     *
-     * @param string[] $names
-     * @return Host[]
-     */
-    public function findHostTemplatesByNames(array $names): array;
 }

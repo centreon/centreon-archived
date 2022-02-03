@@ -16524,3 +16524,6 @@ msgstr "Erreur lors de la lecture des macros de l'hôte (Raison : %s)"
 
 msgid "Error on updating a host macro (Reason: %s)"
 msgstr "Erreur lors de la mise à jour d'une macro d'hôte (Raison : %s)"
+
+msgid "Error on reading host templates (Reason: %s)"
+msgstr "Erreur lors de la lecture des modèles d'hôtes (Raison : %s)"

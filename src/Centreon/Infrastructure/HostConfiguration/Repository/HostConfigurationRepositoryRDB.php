@@ -935,40 +935,6 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
     }
 
     /**
-     * @inheritDoc
-     */
-    public function findHostTemplatesByNames(array $names): array
-    {
-        $hostTemplates = [];
-        if ((empty($names))) {
-            return $hostTemplates;
-        }
-        $statement = $this->db->prepare(
-            $this->translateDbName(
-                'SELECT
-                    host_id AS id,
-                    host_name AS name,
-                    host_alias AS alias,
-                    host_register AS type,
-                    host_activate AS is_activated
-                FROM `:db`.host
-                WHERE
-                    host_register = 1 AND
-                    `host_name` IN (?' . str_repeat(',?', count($names) - 1) . ')'
-            )
-        );
-        $statement->execute($names);
-
-        while (($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
-            $hostTemplates[] = EntityCreator::createEntityByArray(
-                Host::class,
-                $result
-            );
-        }
-        return $hostTemplates;
-    }
-
-    /**
      * Removes all links between a given host and its host templates
      *
      * @param Host $host
