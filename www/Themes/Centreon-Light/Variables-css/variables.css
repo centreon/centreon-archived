@@ -1,5 +1,246 @@
 :root {
-    /* Style.css variables */
+        /* Style.css variables */
+
+        /** Main colors **/
+        --color-success : #88b917 ;
+        --color-warning : #ff9a13 ;
+        --color-danger : #e00b3d ;
+        --color-pending : #2AD1D4 ;
+        --color-info : #00bdb0 ;
+        --color-ack : #AA9C24;
+        --color-white : #fff ;
+        --color-black: #000000;
+        --color-very-light-grey: #CCC;
+        --color-silver:#BBB;
+        --color-aluminium : #818285;
+        --color-black-rgba : rgba(0, 0, 0, 0.54);
+        --color-curious-blue : #337ab7;
+        --color-navy-bleu : #0072CE;
+        --color-iris-blue : #00BFB3;
+        --color-persian-green : #00a499 ;
+        --color-surfie-green : #007f77;
+        --color-columbia-blue : #bfecff;
+        --color-ghost : #bcbdc0;
+        --color-charcoal : #444;
+        --color-martar : #555 ;
+        --color-grey-chateau : #a7a9ac;
+        --color-maya-blue : #4ccaff ;
+        --color-pasific-bleu : #009fdf;
+        --color-iron : #d1d2d4;
+        --color-periwinkle :#bfd0e2;
+        --color-white-smack : #f1f1f1;
+        --color-white-lilac : #e7e7e8;
+        --color-mauve :#cc99ff;
+        --color-dark-tangerine : #ff9a13;
+        --color-dark-goldenrod : #ae9500;
+        --color-turquoise : #2AD1D4;
+        --color-sapphire: #09225c;
+        --color-pale-turquoise: #cfedf9;
+        --color-sahara : #AA9C24;
+        --color-white-rgba-8 :rgba(240, 240, 240, 0.8);
+        --color-black-rgba-54 :rgba(0, 0, 0, 0.54);
+        --color-black-rgba-1 :rgba(0, 0, 0, 0.1);
+        --color-black-rgba-26: rgba(0, 0, 0, 0.26); 
+         /******************/
+        --color-checkbox-disabled-border-rgba: rgba(0, 0, 0, 0.26); 
+        --color-checkbox-checked-border-: var(--color-white); 
+        --color-checkbox-disabled-checked: var(--color-checkbox-disabled-border-rgba);
+        --color-checkbox-disabled-checked-label-green: var(--color-success); 
+        --color-radiobutton-cheked-border: var(--color-checked-background-rgb);
+        --color-checked-background-rgb : var(--color-navy-bleu);
+        
+        /*****************/
+    
+        /** Body color **/
+        --body-background: #ffffff ;
+        --body-color:#555;
+         /*****************/
+    
+        /** Text aria color **/
+        --textarea-border-color: #BBBBBB ;
+        /*********************/
+    
+        /** Select color **/
+        --select-border-color: #bcbdc0;
+        --select-background: var(--color-white);
+        --select-color : #444;
+        /******************/
+    
+        /** Input checkbox **/
+        --input-border-color: var(--select-border-color);
+        --input-color : var(--select-color);
+        --md-checkbox--checked-background : var(--color-checked-checkbox-background-rgba) ;
+        --md-checkbox--checked-background : var(--color-checked-checkbox-background-rgba) ;
+        --md-checkbox-border-color : var(--color-black-rgba)  ;
+        --md-checkbox-background : var(--color-white) ;
+        --md-checkbox-border-color : var(--color-black-rgba)  ;
+        --md-checkbox-border-color-after : #fff;
+        --md-checkbox--disabled-border-color-before : var(--color-black-rgba);
+        --md-checkbox--disabled-checked-background-color-before  : var(--color-black-rgba);
+        --md-check-input-disabled-checked-before:  #88b917;
+       /*********************/
+    
+    /** Radio button **/
+    --md-radio-checked-backgroud-color:  rgb(51, 122, 183);
+    --md-radio-kabel-color:  rgb(51, 122, 183);
+    --md-radio-input-checked-label-before-border-color : #337ab7 ;
+    --md-radio-label-before-border-color : rgba(0, 0, 0, 0.54);
+    --md-radio-label-after-background : #337ab7;
+    /******************/
+
+    /** select **/
+    --select-background-color : #ffffff;
+    --select-color : #444;
+    --option-color :  var(--select-color);
+    /***********/
+
+    /** HR **/
+    --hr-background-color : #CCC;
+    /*******/
+
+    /** P **/
+    --p-color-description-color : #a7a9ac ;
+    --p-description-a-visited-color : #4ccaff ;
+    /******/
+
+    /** Wrappers **/
+    --center-box-border-color : #d1d2d4; 
+    --border-radius-border-color : var(--center-box-border-color);
+    /*************/
+
+    /** Slider **/
+    --rotation-timer-background-color : #f1f1f1;
+    --rotation-timer-border-color : #bcbdc0;
+    --ui-silder-handle-background-color :#bcbdc0;
+    --ui-silder-handle-border-color : #a7a9ac;
+    --timer-value-color : #00bfb3;
+    /*************/
+
+    /** Select 2 **/
+    --select2-container-selection-background-color : #fff;
+    --select2-container-selection-border-color : #bbb;
+    --select2-selection-multiple-background-color : #0072ce;
+    --select2-selection-multiple-color : #fff;
+    --select2-selection-multiple-border-color : #4dcaff;
+    --select2-selection-multiple-content-border-color-top : var(--select2-selection-multiple-border-color);
+    --select2-selection-multiple-content-border-color-bottom : var(--select2-selection-multiple-border-color);
+    --select2-selection-multiple-content-border-color-right : var(--select2-selection-multiple-border-color);
+    --select2-selection-multiple-content-color : #0072ce;
+    --select2-selection-multiple-background-color : #bfecff;
+    --select2-results-option-highlighted-background-color : #0072ce;
+    --select2-results-option-highlighted-color : #000000;
+    --select2-results-option-highlighted-color-aria-selected : #bfecff;
+    --selected2-results-header-background-color : #f4f4f4;
+    --selected2-results-header-border-bottom-color :#e7e7e8;
+    --select2-results-header-color : #009fdf;
+    /**************/
+
+    /** Tooltip **/
+    --WzTtDi-border-color : #d1d2d4;
+    --WzTtDi-background-color : #fff;
+    --WzTiTl-background-color : #fff;
+    --WzClOsE-color : #e00b3d;
+    --WzClOsE-background-color : #fff;
+    --WzClOsE-border-color : #e00b3d;
+    --WzBodyI-border-color : #555;
+    /*************/
+
+    /** START : Colors  **/
+    --red-color: #e00b3d;
+    /********************/
+
+    /** Badge **/
+    --badge-color: #fff;
+    --badge-a-color : #fff;
+    /***********/
+
+    /** States **/
+    --default-badge-background-color: #00a499;
+    --host-down-danger-service-critical-background-color : #e00b3d;
+    --host-unreachable-unknown-background-color: #818285;
+    --host-downtime-background-color : #cc99ff;
+    --service-ok-host-up-success-background-color: #88b917;
+    --service-warning-background-color: #ff9a13;
+    --pending-background-color :#2AD1D4;
+    --service-unknown-background-color: #bcbdc0;
+    --info-background-color:#00bfb3;
+    --ack-background-color : #AA9C24;
+    --bdg-dtm-before-background-color: #CC99FF;
+    --bdg-dtm-before-color :#fff;
+    --badge-downtime-background-color : #CC99FF;
+    --badge-undetermined :#D1D2D4;
+    /***********/
+
+    /** START : Buttons **/
+    --btc-color: #fff;
+    --a-btc-color : #fff;
+    --bt-default-background-color : #a7a9ac;
+    --bt-success-background-color : #88b917;
+    --bt-danger-background-color :#e00b3d;
+    --bt-info-background-color : #00bfb3;
+    --bt-warning-background-color :#ff9a13;
+    --bt-action-color-background-color : #00ccbf ;
+    --bt-action-color :#fff;
+    --bt-action-border-color :#00a499;
+    --bt-action-hover-background-color: #00a499;
+    --bt-action-hover-border-color: #007f77;
+    --bt-default-ui-state-hover-background-color : #919294 ;
+    --bt-default-ui-state-hover-color : #fff;
+    --bt-success-ui-state-hover-background-color:#77a115;
+    --bt-success-ui-state-hover-color:#fff;
+
+    --bt-danger-ui-state-hover-background-color:#ca0a37;
+    --bt-danger-ui-state-hover-color:#fff;
+    
+    --bt-info-ui-state-hover-background-color: #03a89e;
+    --bt-info-ui-state-hover-color:#fff;
+    
+    --bt-danger-ui-state-hover-background-color:#eb8e12;
+    --bt-danger-ui-state-hover-color:#fff;
+    --button-group-input-color:#fff;
+    /***********************/
+
+    /** START : Form **/
+    --input-submit-color : #fff;
+    /******************/
+
+    /** START : Header **/
+    --header-background-color : #e7e7e8;
+    /********************/
+
+    /** START : Table **/
+    --list-table-small-border-color : #e7e7e8;
+    /*******************/
+
+    /** START : Indicators **/
+    --resume-light : #f6f6f7;
+    --resume-light-table-th-border-right : #e7e7e8;
+    --resume-light-table-td-span-color : #fff;
+    --resume-light-table-th-span-background-color : #00a499;
+    /************************/
+
+    /** START : Menu **/
+    --main-nav-li-a-border-bottom: #fff;
+    --a-background-color :#fff;
+
+    /** Menu 1 **/
+    --menu-1-background-color : #58585a ;
+    --menu-1-li-1-color : #e7e7e8;
+    --menu-1-li-a-hover-background-color : #818285;
+    /************/
+
+    /** Menu 2 **/
+    --menu-2-a-color : #e7e7e8;
+    --seperator-menu-2-color : #BBB;
+    /************/
+
+    /** Menu 3 **/
+    --t-menu-3-background-color : #fff;
+    --title-menu-h4-color : #009fdf;
+    --title-menu-bottom-border-color : #a7a9ac;
+    --div-menu-left-background-color :  #FFF;
+    /************/
+
     --menu3-anchor-hover-font-color: #E8AB5C;
     --menu3-background-color: #FFF;
     --date-font-color: #bcbdc0;
