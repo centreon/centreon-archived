@@ -176,7 +176,7 @@ class Contact implements UserInterface, ContactInterface
     private $isOneClickExportEnabled = false;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $theme;
 
@@ -679,9 +679,9 @@ class Contact implements UserInterface, ContactInterface
     /**
      * Get user current theme.
      *
-     * @return string
+     * @return string|null
      */
-    public function getTheme(): string
+    public function getTheme(): ?string
     {
         return $this->theme;
     }
