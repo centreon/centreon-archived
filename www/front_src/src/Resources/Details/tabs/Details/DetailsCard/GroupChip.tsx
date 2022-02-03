@@ -12,6 +12,7 @@ import IconButton from '@mui/material/IconButton';
 import { labelConfigure, labelFilter } from '../../../../translatedLabels';
 import { setCriteriaAndNewFilterDerivedAtom } from '../../../../Filter/filterAtoms';
 import { Group } from '../../../models';
+import clsx from 'clsx';
 
 const useStyles = makeStyles((theme) => ({
   chip: {
@@ -84,8 +85,7 @@ const GroupChip = ({ group, type }: GroupsChipProps): JSX.Element => {
           <div className={classes.chipLabel}>
             <Tooltip title={group.name}>
               <Typography
-                className={classes.chipAction}
-                style={{ color: isHovered ? 'transparent' : 'unset' }}
+                className={clsx(classes.chipAction,classes.chipLabelColor)}
                 variant="body2"
               >
                 {group.name}
