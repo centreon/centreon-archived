@@ -65,8 +65,6 @@ class FindUsers
      */
     public function createResponse(array $users): FindUsersResponse
     {
-        $response = new FindUsersResponse($users);
-
-        return $response;
+        return new FindUsersResponse($users);
     }
 }
