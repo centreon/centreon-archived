@@ -39,7 +39,7 @@ use Core\Infrastructure\RealTime\Api\FindMetaService\FindMetaServicePresenter;
 use Core\Application\RealTime\Repository\ReadAcknowledgementRepositoryInterface;
 use Tests\Core\Application\RealTime\UseCase\FindMetaService\FindMetaServicePresenterStub;
 use Tests\Core\Domain\Configuration\Model\MetaServiceTest as MetaServiceConfigurationTest;
-use Core\Application\Configuration\Repository\ReadMetaServiceRepositoryInterface as
+use Core\Application\Configuration\MetaService\Repository\ReadMetaServiceRepositoryInterface as
     ReadMetaServiceConfigurationRepositoryInterface;
 
 class FindMetaServiceTest extends TestCase
@@ -120,7 +120,7 @@ class FindMetaServiceTest extends TestCase
         $findMetaServicePresenter = new FindMetaServicePresenter($this->hypermediaService, $this->presenterFormatter);
         $findMetaService(1, $findMetaServicePresenter);
 
-        $this->assertEquals($findMetaServicePresenter->getResponseStatus(), new NotFoundResponse('MetaService'));
+        $this->assertEquals($findMetaServicePresenter->getResponseStatus(), new NotFoundResponse('MetaService configuration'));
     }
 
     /**
@@ -153,7 +153,7 @@ class FindMetaServiceTest extends TestCase
         $findMetaServicePresenter = new FindMetaServicePresenter($this->hypermediaService, $this->presenterFormatter);
         $findMetaService(1, $findMetaServicePresenter);
 
-        $this->assertEquals($findMetaServicePresenter->getResponseStatus(), new NotFoundResponse('MetaService'));
+        $this->assertEquals($findMetaServicePresenter->getResponseStatus(), new NotFoundResponse('MetaService configuration'));
     }
 
     /**

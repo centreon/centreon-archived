@@ -101,7 +101,7 @@ class MetaServiceTest extends TestCase
             ->setCritical('80')
             ->setWarning('70')
             ->setMetric('rta')
-            ->setIsActivated(true)
+            ->setActivated(true)
             ->setregexpSearchServices('Ping')
             ->setOutput('Meta output: %s');
     }
