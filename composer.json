@@ -32,7 +32,7 @@
     "require": {
         "beberlei/assert": "^3.3",
         "curl/curl" : "^2.3",
-        "dragonmantank/cron-expression": "3.1.0",
+        "dragonmantank/cron-expression": "3.3.1",
         "enshrined/svg-sanitize": "^0.14",
         "doctrine/annotations": "^1.0",
         "ext-ctype": "*",
