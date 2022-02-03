@@ -60,9 +60,12 @@ class ServiceHypermediaProvider implements HypermediaProviderInterface
     }
 
     /**
-     * @inheritDoc
+     * Create configuration redirection uri for Service resource
+     *
+     * @param array<string, int> $parameters
+     * @return string|null
      */
-    public function createForConfiguration(mixed $data): ?string
+    public function createForConfiguration(array $parameters): ?string
     {
         $configurationUri = null;
         if (
@@ -71,84 +74,113 @@ class ServiceHypermediaProvider implements HypermediaProviderInterface
             || $this->contact->isAdmin()
         ) {
             $configurationUri = $this->getBaseUri()
-                . str_replace('{serviceId}', (string) $data->id, self::URI_CONFIGURATION);
+                . str_replace('{serviceId}', (string) $parameters['serviceId'], self::URI_CONFIGURATION);
         }
         return $configurationUri;
     }
 
     /**
-     * @inheritDoc
+     * Create reporting redirection uri for Service resource
+     *
+     * @param array<string, int> $parameters
+     * @return string|null
      */
-    public function createForReporting(mixed $data): ?string
+    public function createForReporting(array $parameters): ?string
     {
         $reportingUri = null;
         if (
             $this->contact->hasTopologyRole(Contact::ROLE_REPORTING_DASHBOARD_SERVICES)
             || $this->contact->isAdmin()
         ) {
-            $reportingUri = str_replace('{hostId}', (string) $data->hostId, self::URI_REPORTING);
-            $reportingUri = str_replace('{serviceId}', (string) $data->id, (string) $reportingUri);
+            $reportingUri = str_replace('{hostId}', (string) $parameters['hostId'], self::URI_REPORTING);
+            $reportingUri = str_replace('{serviceId}', (string) $parameters['serviceId'], (string) $reportingUri);
             $reportingUri = $this->getBaseUri() . $reportingUri;
         }
         return $reportingUri;
     }
 
     /**
-     * @inheritDoc
+     * Create event logs redirection uri for Service resource
+     *
+     * @param array<string, int> $parameters
+     * @return string|null
      */
-    public function createForEventLog(mixed $data): ?string
+    public function createForEventLog(array $parameters): ?string
     {
         $eventLogsUri = null;
         if (
             $this->contact->hasTopologyRole(Contact::ROLE_MONITORING_EVENT_LOGS)
             || $this->contact->isAdmin()
         ) {
-            $eventLogsUri = str_replace('{hostId}', (string) $data->hostId, self::URI_EVENT_LOGS);
-            $eventLogsUri = str_replace('{serviceId}', (string) $data->id, (string) $eventLogsUri);
+            $eventLogsUri = str_replace('{hostId}', (string) $parameters['hostId'], self::URI_EVENT_LOGS);
+            $eventLogsUri = str_replace('{serviceId}', (string) $parameters['serviceId'], (string) $eventLogsUri);
             $eventLogsUri = $this->getBaseUri() . $eventLogsUri;
         }
         return $eventLogsUri;
     }
 
     /**
-     * @inheritDoc
+     * Create Timeline endpoint URI for the Service resource
+     *
+     * @param array<string, int> $parameters
+     * @return string
      */
-    public function createForTimelineEndpoint(mixed $data): string
+    public function createForTimelineEndpoint(array $parameters): string
     {
-        return $this->router->generate(
-            self::ENDPOINT_SERVICE_TIMELINE,
-            [
-                'serviceId' => $data->id,
-                'hostId' => $data->hostId
-             ]
-        );
+        return $this->router->generate(self::ENDPOINT_SERVICE_TIMELINE, $parameters);
+    }
+
+    /**
+     * Create Status Graph endpoint URI for the Service resource
+     *
+     * @param array<string, int> $parameters
+     * @return string
+     */
+    public function createForStatusGraphEndpoint(array $parameters): string
+    {
+        return $this->router->generate(self::ENDPOINT_STATUS_GRAPH, $parameters);
+    }
+
+    /**
+     * Create Performance Data endpoint URI for the Service resource
+     *
+     * @param array<string, int> $parameters
+     * @return string
+     */
+    public function createForPerformanceDataEndpoint(array $parameters): string
+    {
+        return $this->router->generate(self::ENDPOINT_PERFORMANCE_GRAPH, $parameters);
     }
 
     /**
      * @inheritDoc
      */
-    public function createForStatusGraphEndpoint(mixed $data): string
+    public function createEndpoints(mixed $response): array
     {
-        return $this->router->generate(
-            self::ENDPOINT_STATUS_GRAPH,
-            [
-                'hostId' => $data->hostId,
-                'serviceId' => $data->id
-            ]
-        );
+        $parameters = [
+            'hostId' => $response->hostId,
+            'serviceId' => $response->id,
+        ];
+        return [
+            'timeline' => $this->createForTimelineEndpoint($parameters),
+            'status_graph' => $this->createForStatusGraphEndpoint($parameters),
+            'performance_graph' => $this->createForPerformanceDataEndpoint($parameters)
+        ];
     }
 
     /**
      * @inheritDoc
      */
-    public function createForPerformanceDataEndpoint(mixed $response): string
+    public function createInternalUris(mixed $response): array
     {
-        return $this->router->generate(
-            self::ENDPOINT_PERFORMANCE_GRAPH,
-            [
-                'hostId' => $response->hostId,
-                'serviceId' => $response->id
-            ]
-        );
+        $parameters = [
+            'hostId' => $response->hostId,
+            'serviceId' => $response->id,
+        ];
+        return [
+            'configuration' => $this->createForConfiguration($parameters),
+            'logs' => $this->createForEventLog($parameters),
+            'reporting' => $this->createForReporting($parameters)
+        ];
     }
 }

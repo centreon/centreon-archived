@@ -139,16 +139,8 @@ class FindServicePresenter implements FindServicePresenterInterface
          * Creating Hypermedias
          */
         $presenterResponse['links'] = [
-            'uris' => [
-                'configuration' => $this->hypermediaService->createForConfiguration($response),
-                'logs' => $this->hypermediaService->createForEventLog($response),
-                'reporting' => $this->hypermediaService->createForReporting($response)
-            ],
-            'endpoints' => [
-                'timeline' => $this->hypermediaService->createForTimelineEndpoint($response),
-                'status_graph' => $this->hypermediaService->createForStatusGraphEndpoint($response),
-                'performance_graph' => $this->hypermediaService->createForPerformanceDataEndpoint($response)
-            ]
+            'uris' => $this->hypermediaService->createInternalUris($response),
+            'endpoints' => $this->hypermediaService->createEndpoints($response)
         ];
         $this->presenterFormatter->present($presenterResponse);
     }

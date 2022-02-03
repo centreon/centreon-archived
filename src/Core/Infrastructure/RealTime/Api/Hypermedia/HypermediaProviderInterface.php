@@ -31,26 +31,18 @@ interface HypermediaProviderInterface
     public function isValidFor(mixed $data): bool;
 
     /**
-     * @var mixed $data
-     * @return string|null
+     * Create endpoints for the Resource provided
+     *
+     * @param mixed $response
+     * @return array<string, string|null>
      */
-    public function createForConfiguration(mixed $data): ?string;
+    public function createEndpoints(mixed $response): array;
 
     /**
-     * @var mixed $data
-     * @return string|null
+     * Create internal redirection uris for the Resource provided
+     *
+     * @param mixed $response
+     * @return array<string, string|null>
      */
-    public function createForReporting(mixed $data): ?string;
-
-    /**
-     * @var mixed $data
-     * @return string|null
-     */
-    public function createForEventLog(mixed $data): ?string;
-
-    /**
-     * @param mixed $data
-     * @return string
-     */
-    public function createForTimelineEndpoint(mixed $data): string;
+    public function createInternalUris(mixed $response): array;
 }

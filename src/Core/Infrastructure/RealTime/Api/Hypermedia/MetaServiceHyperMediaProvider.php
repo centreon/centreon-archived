@@ -60,33 +60,78 @@ class MetaServiceHypermediaProvider implements HypermediaProviderInterface
     }
 
     /**
-     * @inheritDoc
+     * Create configuration redirection uri for Meta Service resource
+     *
+     * @param array<string, int> $parameters
+     * @return string|null
      */
-    public function createForConfiguration(mixed $data): ?string
+    public function createForConfiguration(array $parameters): ?string
     {
         return null;
     }
 
     /**
-     * @inheritDoc
+     * Create reporting redirection uri for Meta Service resource
+     *
+     * @param array<string, int> $parameters
+     * @return string|null
      */
-    public function createForReporting(mixed $data): ?string
+    public function createForReporting(array $parameters): ?string
     {
         return null;
     }
 
     /**
-     * @inheritDoc
+     * Create event logs redirection uri for Meta Service resource
+     *
+     * @param array<string, int> $parameters
+     * @return string|null
      */
-    public function createForEventLog(mixed $data): ?string
+    public function createForEventLog(array $parameters): ?string
     {
         return null;
     }
 
     /**
-     * @inheritDoc
+     * Create Timeline endpoint URI for the Meta Service resource
+     *
+     * @param array<string, int> $parameters
+     * @return string
      */
-    public function createForTimelineEndpoint(mixed $data): string
+    public function createForTimelineEndpoint(array $parameters): string
+    {
+        return '';
+    }
+
+    /**
+     * Create Status graph endpoint URI for the Meta Service resource
+     *
+     * @param array<string, int> $parameters
+     * @return string
+     */
+    public function createForStatusGraphEndpoint(array $parameters): string
+    {
+        return '';
+    }
+
+    /**
+     * Create Performance Data endpoint URI for the Meta Service resource
+     *
+     * @param array<string, int> $parameters
+     * @return string
+     */
+    public function createForPerformanceDataEndpoint(array $parameters): string
+    {
+        return '';
+    }
+
+    /**
+     * Create Metric List endpoint URI for the Meta Service resource
+     *
+     * @param array<string, int> $parameters
+     * @return string
+     */
+    public function createForMetricListEndpoint(array $parameters): string
     {
         return '';
     }
@@ -94,21 +139,31 @@ class MetaServiceHypermediaProvider implements HypermediaProviderInterface
     /**
      * @inheritDoc
      */
-    public function createForStatusGraphEndpoint(mixed $data): string
+    public function createEndpoints(mixed $response): array
     {
-        return '';
+        $parameters = ['metaId' => $response->id];
+        return [
+            'timeline' => $this->createForTimelineEndpoint($parameters),
+            'status_graph' => $this->createForStatusGraphEndpoint($parameters),
+            'performance_graph' => $this->createForPerformanceDataEndpoint($parameters),
+            'metrics' => $this->createForMetricListEndpoint($parameters),
+        ];
     }
 
     /**
      * @inheritDoc
      */
-    public function createForPerformanceDataEndpoint(mixed $response): string
+    public function createInternalUris(mixed $response): array
     {
-        return '';
-    }
-
-    public function createForMetricListEndpoint(mixed $response): string
-    {
-        return '';
+        $parameters = [
+            'metaId' => $response->id,
+            'hostId' => $response->hostId,
+            'serviceId' => $response->serviceId,
+        ];
+        return [
+            'configuration' => $this->createForConfiguration($parameters),
+            'logs' => $this->createForEventLog($parameters),
+            'reporting' => $this->createForReporting($parameters),
+        ];
     }
 }
