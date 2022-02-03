@@ -114,7 +114,7 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
         $this->linkToTemplate($hostId, $host->getTemplates());
         $this->linkCategoryToHost($host);
         $this->linkSeveritiesToHost($host);
-        $this->linkGroupToHost($host);
+        $this->linkHostGroupsToHost($host);
     }
 
     /**
@@ -713,7 +713,7 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
      * @param Host $host
      * @throws HostGroupException
      */
-    private function linkGroupToHost(Host $host): void
+    private function linkHostGroupsToHost(Host $host): void
     {
         foreach ($host->getGroups() as $group) {
             try {
@@ -722,10 +722,8 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
                 }
                 $statement = $this->db->prepare(
                     $this->translateDbName(
-                        '
-                    INSERT INTO `:db`.hostgroup_relation (host_host_id, hostgroup_hg_id)
-                    VALUES (:host_id, :group_id)
-                '
+                        'INSERT INTO `:db`.hostgroup_relation (host_host_id, hostgroup_hg_id)
+                        VALUES (:host_id, :group_id)'
                     )
                 );
                 $statement->bindValue(':host_id', $host->getId(), \PDO::PARAM_INT);
@@ -812,6 +810,11 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
             $statement->bindValue(':notifications_status', Host::OPTION_DEFAULT, \PDO::PARAM_STR);
             $statement->execute();
             $this->updateMonitoringServerRelation($host->getId(), $host->getMonitoringServer()->getId());
+
+            // Update links between host groups and hosts
+            $this->removeHostGroupsToHost($host);
+            $this->linkHostGroupsToHost($host);
+
             if (!$isAlreadyInTransaction) {
                 $this->db->commit();
             }
@@ -821,6 +824,20 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
             }
             throw $ex;
         }
+    }
+
+    /**
+     * Removes all links between host groups and hosts.
+     *
+     * @param Host $host
+     */
+    private function removeHostGroupsToHost(Host $host): void
+    {
+        $statement = $this->db->prepare(
+            $this->translateDbName('DELETE FROM `:db`.hostgroup_relation WHERE host_host_id = :host_id')
+        );
+        $statement->bindValue(':host_id', $host->getId(), \PDO::PARAM_INT);
+        $statement->execute();
     }
 
     /**
