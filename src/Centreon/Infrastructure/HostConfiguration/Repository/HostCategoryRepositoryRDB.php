@@ -374,7 +374,7 @@ class HostCategoryRepositoryRDB extends AbstractRepositoryDRB implements
      * @param Host $host
      * @return HostCategory[]
      */
-    public function findByHost(Host $host): array
+    public function findAllByHost(Host $host): array
     {
         $request = $this->translateDbName(
             'SELECT SQL_CALC_FOUND_ROWS * FROM `:db`.hostcategories hc
