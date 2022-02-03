@@ -1,7 +1,7 @@
 /*
  * Jquery portlet style
  */
- @import "../Variables-css/variables.css";
+ @import "../Variables-css/color-variables.css";
  .column_1 { width: 100%; float: left; padding-bottom: 0px; }
  .column_2 { width: 50%; float: left; padding-bottom: 0px; }
  .column_3 { width: 33%; float: left; padding-bottom: 0px; }
