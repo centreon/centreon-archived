@@ -23,7 +23,6 @@ declare(strict_types=1);
 
 namespace Core\Domain\Security\ProviderConfiguration\Local\Model;
 
-use Core\Domain\Configuration\User\Model\User;
 use Centreon\Domain\Common\Assertion\Assertion;
 use Centreon\Domain\Common\Assertion\AssertionException;
 
@@ -51,7 +50,7 @@ class Configuration
      * @param int|null $attempts
      * @param int|null $blockingDuration
      * @param int|null $passwordExpirationDelay
-     * @param User[] $passwordExpirationExcludedUsers
+     * @param string[] $passwordExpirationExcludedUserAliases
      * @param int|null $delayBeforeNewPassword
      * @throws AssertionException
      */
@@ -65,8 +64,8 @@ class Configuration
         private ?int $attempts,
         private ?int $blockingDuration,
         private ?int $passwordExpirationDelay,
-        private array $passwordExpirationExcludedUsers,
-        private ?int $delayBeforeNewPassword
+        private array $passwordExpirationExcludedUserAliases,
+        private ?int $delayBeforeNewPassword,
     ) {
         Assertion::min($passwordMinimumLength, self::MIN_PASSWORD_LENGTH, 'Configuration::passwordMinimumLength');
         Assertion::max($passwordMinimumLength, self::MAX_PASSWORD_LENGTH, 'Configuration::passwordMinimumLength');
@@ -268,20 +267,20 @@ class Configuration
     }
 
     /**
-     * @return User[]
+     * @return string[]
      */
-    public function getPasswordExpirationExcludedUsers(): array
+    public function getPasswordExpirationExcludedUserAliases(): array
     {
-        return $this->passwordExpirationExcludedUsers;
+        return $this->passwordExpirationExcludedUserAliases;
     }
 
     /**
-     * @param User[] $passwordExpirationExcludedUsers
+     * @param string[] $passwordExpirationExcludedUserAliases
      * @return self
      */
-    public function setPasswordExpirationExcludedUsers(array $passwordExpirationExcludedUsers): self
+    public function setPasswordExpirationExcludedUserAliases(array $passwordExpirationExcludedUserAliases): self
     {
-        $this->passwordExpirationExcludedUsers = $passwordExpirationExcludedUsers;
+        $this->passwordExpirationExcludedUserAliases = $passwordExpirationExcludedUserAliases;
         return $this;
     }
 

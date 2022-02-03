@@ -73,7 +73,7 @@ class UpdateConfigurationRequest
     /**
      * @var string[]
      */
-    public array $passwordExpirationExcludedUsers;
+    public array $passwordExpirationExcludedUserAliases;
 
     /**
      * @var int|null

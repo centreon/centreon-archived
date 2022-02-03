@@ -100,4 +100,43 @@ class DbReadUserRepository extends AbstractRepositoryDRB implements ReadUserRepo
 
         return $users;
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function findUserIdsByAliases(array $userAliases): array
+    {
+        $userIds = [];
+
+        if (empty($userAliases)) {
+            return $userIds;
+        }
+
+        $this->info('Fetching user ids from database');
+
+        $bindValues = [];
+        foreach ($userAliases as $key => $userAlias) {
+            $bindValues[':' . $key] = $userAlias;
+        }
+
+        $statement = $this->db->prepare(
+            $this->translateDbName(
+                "SELECT contact_id
+                FROM `:db`.contact
+                WHERE contact_alias IN (". implode(',', array_keys($bindValues)) . ")"
+            )
+        );
+
+        foreach ($bindValues as $key => $value) {
+            $statement->bindValue($key, $value, \PDO::PARAM_STR);
+        };
+
+        $statement->execute();
+
+        while ($statement !== false && $result = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            $userIds[] = $result['contact_id'];
+        }
+
+        return $userIds;
+    }
 }

@@ -33,4 +33,12 @@ interface ReadUserRepositoryInterface
      * @return User[]
      */
     public function findAllUsers(): array;
+
+    /**
+     * Find user ids from a list of alias
+     *
+     * @param string[] $userAliases
+     * @return int[]
+     */
+    public function findUserIdsByAliases(array $userAliases): array;
 }

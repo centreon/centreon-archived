@@ -69,9 +69,11 @@ class DbReadConfigurationRepository extends AbstractRepositoryDRB implements Rea
     private function findCustomConfiguration(): ?array
     {
         $statement = $this->db->query(
-            "SELECT `custom_configuration`
-            FROM `provider_configuration`
-            WHERE `name` = 'local'"
+            $this->translateDbName(
+                "SELECT `custom_configuration`
+                FROM `:db`.`provider_configuration`
+                WHERE `name` = 'local'"
+            )
         );
 
         $customConfiguration = null;
@@ -91,12 +93,14 @@ class DbReadConfigurationRepository extends AbstractRepositoryDRB implements Rea
     private function findExcludedUsers(): array
     {
         $statement = $this->db->query(
-            "SELECT c.`contact_id`, c.`contact_alias`, c.`contact_name`, c.`contact_email`, c.`contact_admin`
-            FROM `password_expiration_excluded_users` peeu
-            INNER JOIN `provider_configuration` pc ON pc.`id` = peeu.`provider_configuration_id`
-              AND pc.`name` = 'local'
-            INNER JOIN `contact` c ON c.`contact_id` = peeu.`user_id`
-              AND c.`contact_register` = 1"
+            $this->translateDbName(
+                "SELECT c.`contact_alias`
+                FROM `:db`.`password_expiration_excluded_users` peeu
+                INNER JOIN `:db`.`provider_configuration` pc ON pc.`id` = peeu.`provider_configuration_id`
+                AND pc.`name` = 'local'
+                INNER JOIN `:db`.`contact` c ON c.`contact_id` = peeu.`user_id`
+                AND c.`contact_register` = 1"
+            )
         );
 
         $excludedUsers = [];

@@ -23,21 +23,20 @@ declare(strict_types=1);
 namespace Core\Infrastructure\Security\ProviderConfiguration\Local\Repository;
 
 use Core\Domain\Security\ProviderConfiguration\Local\Model\Configuration;
-use Core\Infrastructure\Configuration\User\Repository\DbUserFactory;
 
 class DbConfigurationFactory
 {
     /**
      * @param array<string,mixed> $configuration
-     * @param array<string,mixed> $excludedUsers
+     * @param string[] $excludedUserAliases
      * @return Configuration
      */
-    public static function createFromRecord(array $configuration, array $excludedUsers): Configuration
+    public static function createFromRecord(array $configuration, array $excludedUserAliases): Configuration
     {
-        $users = [];
-        foreach ($excludedUsers as $user) {
-            $users[] = DbUserFactory::createFromRecord($user);
-        }
+        $excludedUserAliases = array_map(
+            fn ($user) => $user['contact_alias'],
+            $excludedUserAliases
+        );
 
         return new Configuration(
             $configuration['password_security_policy']['password_length'],
@@ -49,7 +48,7 @@ class DbConfigurationFactory
             $configuration['password_security_policy']['attempts'],
             $configuration['password_security_policy']['blocking_duration'],
             $configuration['password_security_policy']['password_expiration_delay'],
-            $users,
+            $excludedUserAliases,
             $configuration['password_security_policy']['delay_before_new_password'],
         );
     }
