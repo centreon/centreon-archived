@@ -710,7 +710,15 @@ paths:
       tags:
       - User
       summary: get configured users
-      description: get list of configured users
+      description: |
+        Get list of configured users
+
+        The available parameters to **search** / **sort_by** are:
+
+        * id
+        * alias
+        * name
+        * email
       responses:
         '200':
           description: OK
@@ -725,6 +733,8 @@ paths:
                       $ref: '#/components/schemas/Configuration.User'
                   meta:
                     $ref: '#/components/schemas/Meta'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /configuration/users/current/parameters:
     get:
       tags:
