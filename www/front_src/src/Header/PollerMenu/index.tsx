@@ -72,6 +72,21 @@ const useStyles = makeStyles((theme) => ({
   pollerDetailTitle: {
     flexGrow: 1,
   },
+  subMenuToggle: {
+    backgroundColor: '#232f39',
+    boxSizing: 'border-box',
+    display: 'none',
+    left: theme.spacing(0),
+    padding: theme.spacing(1),
+    position: 'absolute',
+    textAlign: 'left',
+    top: '100%',
+    width: '100%',
+    zIndex: 99,
+  },
+  subMenuToggleActive: {
+    display: 'block',
+  },
 }));
 
 const PollerMenu = (): JSX.Element => {
@@ -169,8 +184,8 @@ const PollerMenu = (): JSX.Element => {
             onClick={toggleDetailedView}
           />
           <div
-            className={classnames(styles['submenu-toggle'], {
-              [styles['submenu-toggle-active'] as string]: toggled,
+            className={clsx(classes.subMenuToggle, {
+              [classes.subMenuToggleActive]: toggled,
             })}
           >
             {!isEmpty(issues) ? (
