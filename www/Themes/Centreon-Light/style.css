@@ -717,8 +717,8 @@ a.btc {
 
 .bt_warning.ui-state-active,
 .bt_warning.ui-state-hover{
-    background: var(--bt-danger-ui-state-hover-background-color) !important;
-    color:var(--bt-danger-ui-state-hover-color) !important;
+    background: var(--bt-warning-ui-state-hover-background-color) !important;
+    color:var(--bt-warning-ui-state-hover-color) !important;
     outline: none !important;
 }
 

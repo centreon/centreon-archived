@@ -69,12 +69,9 @@
         /** Input checkbox **/
         --input-border-color: var(--select-border-color);
         --input-color : var(--select-color);
-        --md-checkbox--checked-background : var(--color-checked-checkbox-background-rgba) ;
-        --md-checkbox--checked-background : var(--color-checked-checkbox-background-rgba) ;
+        --md-checkbox--checked-background : var(--color-checked-background-rgb) ;
         --md-checkbox-border-color : var(--color-black-rgba)  ;
         --md-checkbox-background : var(--color-white) ;
-        --md-checkbox-border-color : var(--color-black-rgba)  ;
-        --md-checkbox-border-color-after : #fff;
         --md-checkbox--disabled-border-color-before : var(--color-black-rgba);
         --md-checkbox--disabled-checked-background-color-before  : var(--color-black-rgba);
         --md-check-input-disabled-checked-before:  #88b917;
@@ -195,8 +192,8 @@
     --bt-info-ui-state-hover-background-color: #03a89e;
     --bt-info-ui-state-hover-color:#fff;
     
-    --bt-danger-ui-state-hover-background-color:#eb8e12;
-    --bt-danger-ui-state-hover-color:#fff;
+    --bt-warning-ui-state-hover-background-color:#eb8e12;
+    --bt-warning-ui-state-hover-color:#fff;
     --button-group-input-color:#fff;
     /***********************/
 
