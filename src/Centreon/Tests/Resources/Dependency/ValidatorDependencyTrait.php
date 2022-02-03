@@ -51,7 +51,6 @@ use Symfony\Component\Validator\Validator\RecursiveValidator;
  */
 trait ValidatorDependencyTrait
 {
-
     /**
      * Set up DB manager service in container
      *

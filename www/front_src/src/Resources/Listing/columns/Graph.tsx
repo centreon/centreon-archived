@@ -3,8 +3,9 @@ import * as React from 'react';
 import { path, isNil, not } from 'ramda';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 
-import { makeStyles, Paper } from '@material-ui/core';
-import IconGraph from '@material-ui/icons/BarChart';
+import { Paper } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import IconGraph from '@mui/icons-material/BarChart';
 
 import { IconButton, ComponentColumnProps } from '@centreon/ui';
 
@@ -74,6 +75,20 @@ const Graph = ({
   );
 };
 
+const renderChip =
+  ({ onClick, label }) =>
+  (): JSX.Element =>
+    (
+      <IconButton
+        ariaLabel={label}
+        size="large"
+        title={label}
+        onClick={onClick}
+      >
+        <IconGraph fontSize="small" />
+      </IconButton>
+    );
+
 const GraphColumn = ({
   onClick,
 }: {
@@ -103,15 +118,7 @@ const GraphColumn = ({
     return (
       <IconColumn>
         <HoverChip
-          Chip={(): JSX.Element => (
-            <IconButton
-              ariaLabel={label}
-              title={label}
-              onClick={(): void => onClick(row)}
-            >
-              <IconGraph fontSize="small" />
-            </IconButton>
-          )}
+          Chip={renderChip({ label, onClick: () => onClick(row) })}
           isHovered={isHovered}
           label={label}
         >

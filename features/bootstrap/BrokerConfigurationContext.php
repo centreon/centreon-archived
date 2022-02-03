@@ -6,7 +6,6 @@ use Centreon\Test\Behat\Configuration\BrokerConfigurationPage;
 
 class BrokerConfigurationContext extends CentreonContext
 {
-
     private $currentPage;
 
     private $initialProperties = array(

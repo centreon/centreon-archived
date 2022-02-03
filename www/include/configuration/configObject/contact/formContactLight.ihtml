@@ -30,15 +30,15 @@
         {if $o != "mc"}
             <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="alias"> {$form.contact_alias.label}</td><td class="FormRowValue">{$form.contact_alias.html}</td></tr>
             <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="contact_name"> {$form.contact_name.label}</td><td class="FormRowValue">{$form.contact_name.html}</td></tr>
+            <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="email"> {$form.contact_email.label}</td><td class="FormRowValue">{$form.contact_email.html}</td></tr>
         {/if}
-        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="email"> {$form.contact_email.label}</td><td class="FormRowValue">{$form.contact_email.html}</td></tr>
         <tr class="list_lvl_1">
             <td class="ListColLvl1_name" colspan="2">
                 <h4>{$form.header.oreon}</h4>
             </td>
         </tr>
         <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="centreon_login"> {$form.contact_oreon.label}</td><td class="FormRowValue">{$form.contact_oreon.html}</td></tr>
-        {if $auth_type != 'ldap'}
+        {if $auth_type != 'ldap' && $o != "mc"}
         <tr class="list_two">
             <td class="FormRowField"><img class="helpTooltip" name="password"> {$form.contact_passwd.label}</td>
             <td class="FormRowValue">{$form.contact_passwd.html} {$form.contact_gen_passwd.html}</td>
@@ -47,10 +47,12 @@
         {/if}
         <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="language"> {$form.contact_lang.label}</td><td class="FormRowValue">{$form.contact_lang.html}</td></tr>
         <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="location"> {$form.contact_location.label}</td><td class="FormRowValue">{$form.contact_location.html}</td></tr>
+        {if $o != "mc"}
         <tr class="list_two">
             <td class="FormRowField"><img class="helpTooltip" name="autologin_key"> {$form.contact_autologin_key.label}</td>
             <td class="FormRowValue">{$form.contact_autologin_key.html} {$form.contact_gen_akey.html}</td>
         </tr>
+        {/if}
         <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="auth_type"> {$form.contact_auth_type.label}</td><td class="FormRowValue">{$form.contact_auth_type.html}</td></tr>
         {if $ldap == "1" }
             <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="ldap_dn"> {$form.contact_ldap_dn.label}</td><td class="FormRowValue">{$form.contact_ldap_dn.html}</td></tr>

@@ -1,60 +1,22 @@
 import dayjs from 'dayjs';
-import { FormikErrors } from 'formik';
+import { isNil } from 'ramda';
 import * as Yup from 'yup';
 
 import {
   labelEndDateGreaterThanStartDate,
+  labelInvalidFormat,
   labelMaxDuration1Year,
   labelRequired,
 } from '../../../../translatedLabels';
-import { DateParams } from '../models';
-import { formatDateInterval } from '../utils';
 
-interface Props {
-  t: (string) => string;
-  values: DateParams;
-}
+const getValidationSchema = (t: (string) => string): unknown => {
+  const dateSchema = Yup.date()
+    .typeError(t(labelInvalidFormat))
+    .required(t(labelRequired))
+    .nullable();
 
-const getDateEndError = ({ values, t }: Props): string | undefined => {
-  const [start, end] = formatDateInterval(values);
-
-  if (start >= end) {
-    return t(labelEndDateGreaterThanStartDate);
-  }
-
-  const dateEndStartDifference = dayjs(start).diff(dayjs(end), 'year');
-
-  if (dateEndStartDifference) {
-    return t(labelMaxDuration1Year);
-  }
-
-  return undefined;
-};
-
-const validate = ({ values, t }: Props): FormikErrors<DateParams> => {
-  if (
-    values.dateStart &&
-    values.timeStart &&
-    values.dateEnd &&
-    values.timeEnd
-  ) {
-    const dateEndError = getDateEndError({ t, values });
-
-    return dateEndError
-      ? {
-          dateEnd: dateEndError,
-        }
-      : {};
-  }
-
-  return {};
-};
-
-const getValidationSchema = (t: (string) => string): unknown =>
-  Yup.object().shape({
+  return Yup.object().shape({
     comment: Yup.string().required(t(labelRequired)),
-    dateEnd: Yup.string().required(t(labelRequired)).nullable(),
-    dateStart: Yup.string().required(t(labelRequired)).nullable(),
     duration: Yup.object().when('fixed', (fixed, schema) => {
       return !fixed
         ? schema.shape({
@@ -63,9 +25,27 @@ const getValidationSchema = (t: (string) => string): unknown =>
           })
         : schema;
     }),
-    fixed: Yup.boolean(),
-    timeEnd: Yup.string().required(t(labelRequired)).nullable(),
-    timeStart: Yup.string().required(t(labelRequired)).nullable(),
-  });
+    endTime: dateSchema.when(
+      'startTime',
+      (startTime: Date | null): Yup.AnySchema => {
+        if (isNil(startTime) || !dayjs(startTime).isValid()) {
+          return dateSchema;
+        }
 
-export { validate, getValidationSchema };
+        return dateSchema
+          .min(
+            dayjs(startTime).add(dayjs.duration({ minutes: 1 })),
+            t(labelEndDateGreaterThanStartDate),
+          )
+          .max(
+            dayjs(startTime).add(dayjs.duration({ years: 1 })),
+            t(labelMaxDuration1Year),
+          );
+      },
+    ),
+    fixed: Yup.boolean(),
+    startTime: dateSchema,
+  });
+};
+
+export { getValidationSchema };

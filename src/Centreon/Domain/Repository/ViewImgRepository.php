@@ -5,17 +5,20 @@ use Centreon\Infrastructure\CentreonLegacyDB\ServiceEntityRepository;
 
 class ViewImgRepository extends ServiceEntityRepository
 {
-
     /**
      * Export
      *
-     * @param array $imgList
-     * @return array
+     * @param array<mixed> $imgList
+     * @return array<mixed>
      */
     public function export(array $imgList = null): array
     {
-        $list = join(',', $imgList ?? []);
-        
+        if ($imgList === null) {
+            $list = join(',', []);
+        } else {
+            $list = join(',', $imgList);
+        }
+
         if (!$list) {
             return [];
         }
@@ -44,7 +47,7 @@ SQL;
         return $result;
     }
 
-    public function truncate()
+    public function truncate(): void
     {
         $sql = <<<SQL
 TRUNCATE TABLE `view_img_dir_relation`;
@@ -61,7 +64,7 @@ SQL;
      * @param int[] $pollerIds
      * @param int[] $hostTemplateChain
      * @param int[] $serviceTemplateChain
-     * @return array
+     * @return array<mixed>
      */
     public function getChainByPoller(
         array $pollerIds,

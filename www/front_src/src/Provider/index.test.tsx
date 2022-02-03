@@ -1,10 +1,10 @@
 import * as React from 'react';
 
 import axios from 'axios';
-import { render, RenderResult, waitFor } from '@testing-library/react';
 import { Provider as JotaiProvider } from 'jotai';
 import { useAtomValue } from 'jotai/utils';
 
+import { render, RenderResult, waitFor } from '@centreon/ui';
 import {
   aclAtom,
   userAtom,
@@ -18,13 +18,14 @@ import { cancelTokenRequestParam } from '../Resources/testUtils';
 import Provider from '.';
 
 jest.mock('@centreon/ui-context', () =>
-  jest.requireActual('@centreon/centreon-frontend/packages/ui-context'),
+  jest.requireActual('centreon-frontend/packages/ui-context'),
 );
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 const retrievedUser = {
   alias: 'Admin alias',
+  default_page: '/monitoring/resources',
   is_export_button_enabled: true,
   locale: 'fr_FR.UTF8',
   name: 'Admin',
@@ -34,6 +35,7 @@ const retrievedUser = {
 
 const contextUser = {
   alias: 'Admin alias',
+  default_page: '/monitoring/resources',
   isExportButtonEnabled: true,
   locale: 'fr_FR.UTF8',
   name: 'Admin',
@@ -45,6 +47,8 @@ const retrievedDefaultParameters = {
   monitoring_default_acknowledgement_persistent: true,
   monitoring_default_acknowledgement_sticky: false,
   monitoring_default_downtime_duration: 1458,
+  monitoring_default_downtime_fixed: true,
+  monitoring_default_downtime_with_services: false,
   monitoring_default_refresh_interval: 15,
 };
 
@@ -69,7 +73,7 @@ const retrievedTranslations = {
 
 jest.mock('../App', () => {
   const ComponentWithUserContext = (): JSX.Element => {
-    return <></>;
+    return <div />;
   };
 
   return {
@@ -159,8 +163,10 @@ describe(Provider, () => {
       expect(atomsValue.downtime).toEqual({
         default_duration:
           retrievedDefaultParameters.monitoring_default_downtime_duration,
-        default_fixed: false,
-        default_with_services: false,
+        default_fixed:
+          retrievedDefaultParameters.monitoring_default_downtime_fixed,
+        default_with_services:
+          retrievedDefaultParameters.monitoring_default_downtime_with_services,
       });
       expect(atomsValue.refreshInterval).toEqual(
         retrievedDefaultParameters.monitoring_default_refresh_interval,

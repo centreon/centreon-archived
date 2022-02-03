@@ -729,7 +729,6 @@ CREATE TABLE `contact` (
   `timeperiod_tp_id2` int(11) DEFAULT NULL,
   `contact_name` varchar(200) DEFAULT NULL,
   `contact_alias` varchar(200) DEFAULT NULL,
-  `contact_passwd` varchar(255) DEFAULT NULL,
   `contact_lang` varchar(255) DEFAULT 'browser',
   `contact_host_notification_options` varchar(200) DEFAULT NULL,
   `contact_service_notification_options` varchar(200) DEFAULT NULL,
@@ -742,6 +741,7 @@ CREATE TABLE `contact` (
   `contact_address5` varchar(200) DEFAULT NULL,
   `contact_address6` varchar(200) DEFAULT NULL,
   `contact_comment` text,
+  `contact_js_effects` enum('0','1') DEFAULT '0',
   `contact_location` int(11) DEFAULT '0',
   `contact_oreon` enum('0','1') DEFAULT NULL,
   `reach_api` int(11) DEFAULT '0',
@@ -2382,6 +2382,7 @@ CREATE TABLE `provider_configuration` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `type` varchar(255) NOT NULL,
   `name` varchar(255) NOT NULL,
+  `custom_configuration` JSON NOT NULL,
   `is_active` BOOLEAN NOT NULL DEFAULT 1,
   `is_forced` BOOLEAN NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
@@ -2418,6 +2419,18 @@ CREATE TABLE `security_authentication_tokens` (
   CONSTRAINT `security_authentication_tokens_provider_token_refresh_id_fk` FOREIGN KEY (`provider_token_refresh_id`)
   REFERENCES `security_token` (`id`) ON DELETE SET NULL,
   CONSTRAINT `security_authentication_tokens_user_id_fk` FOREIGN KEY (`user_id`)
+  REFERENCES `contact` (`contact_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `contact_password` (
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `password` varchar(255) NOT NULL,
+  `contact_id` int(11) NOT NULL,
+  `creation_date` BIGINT UNSIGNED NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `contact_password_contact_id_fk` (`contact_id`),
+  INDEX `creation_date_index` (`creation_date`),
+  CONSTRAINT `contact_password_contact_id_fk` FOREIGN KEY (`contact_id`)
   REFERENCES `contact` (`contact_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

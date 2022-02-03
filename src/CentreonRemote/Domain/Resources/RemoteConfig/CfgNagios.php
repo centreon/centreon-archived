@@ -13,7 +13,7 @@ class CfgNagios
      *
      * @param string $name the poller name
      * @param int $serverID the poller id
-     * @return array the configuration template
+     * @return array<string,string|int|null> the configuration template
      */
     public static function getConfiguration(string $name, int $serverID): array
     {

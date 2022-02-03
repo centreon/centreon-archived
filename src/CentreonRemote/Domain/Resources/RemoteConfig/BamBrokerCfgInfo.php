@@ -12,7 +12,7 @@ class BamBrokerCfgInfo
      * @todo move it as yml
      *
      * @param string $dbPassword the centreon database password
-     * @return array the configuration template
+     * @return array<string, array<int, string[]>> the configuration template
      */
     public static function getConfiguration(string $dbPassword): array
     {

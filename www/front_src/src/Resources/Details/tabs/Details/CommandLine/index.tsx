@@ -2,7 +2,8 @@ import * as React from 'react';
 
 import { isNil } from 'ramda';
 
-import { makeStyles, Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 
 import { getCommandsWithArguments } from './utils';
 
@@ -15,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: theme.spacing(1),
   },
   command: {
-    fontWeight: theme.typography.fontWeightBold,
+    fontWeight: 'bold',
   },
   pipe: {
     marginRight: theme.spacing(1),

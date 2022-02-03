@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Copyright 2005-2015 CENTREON
+ * Copyright 2005-2021 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -40,6 +41,7 @@ require_once realpath(dirname(__FILE__) . "/../centreonDB.class.php");
 require_once realpath(dirname(__FILE__) . "/../centreonXML.class.php");
 require_once _CENTREON_PATH_ . "www/include/configuration/configGenerate/DB-Func.php";
 require_once _CENTREON_PATH_ . 'www/class/config-generate/generate.class.php';
+require_once __DIR__ . '/../centreonAuth.class.php';
 require_once _CENTREON_PATH_ . "www/class/centreonAuth.LDAP.class.php";
 require_once _CENTREON_PATH_ . 'www/class/centreonLog.class.php';
 require_once realpath(dirname(__FILE__) . "/../centreonSession.class.php");
@@ -501,21 +503,15 @@ class CentreonAPI
         /**
          * Check Login / Password
          */
-        if ($useSha1) {
-            $pass = $this->dependencyInjector['utils']->encodePass($this->password, 'sha1');
-        } else {
-            $pass = $this->dependencyInjector['utils']->encodePass($this->password, 'md5');
-        }
-
-        if ($isWorker) {
-            $pass = 'md5__' . $this->password;
-        }
-
-        $DBRESULT = $this->DB->query("SELECT *
-                 FROM contact
-                 WHERE contact_alias = '" . $this->login . "'
-                 AND contact_activate = '1'");
-
+        $DBRESULT = $this->DB->prepare(
+            "SELECT `contact`.*, `contact_password`.`password` AS `contact_passwd` FROM `contact`
+            LEFT JOIN `contact_password` ON `contact_password`.`contact_id` = `contact`.`contact_id`
+            WHERE `contact_alias` = :contactAlias
+            AND `contact_activate` = '1' AND `contact_register` = '1' 
+            ORDER BY contact_password.creation_date DESC LIMIT 1"
+        );
+        $DBRESULT->bindParam(':contactAlias', $this->login, \PDO::PARAM_STR);
+        $DBRESULT->execute();
         if ($DBRESULT->rowCount()) {
             $row = $DBRESULT->fetchRow();
 
@@ -524,15 +520,26 @@ class CentreonAPI
                 exit(1);
             }
 
-            $algo = $this->dependencyInjector['utils']->detectPassPattern($row['contact_passwd']);
-            if (!$algo) {
-                if ($useSha1) {
-                    $row['contact_passwd'] = 'sha1__' . $row['contact_passwd'];
-                } else {
-                    $row['contact_passwd'] = 'md5__' . $row['contact_passwd'];
-                }
+            // Update password from md5 to bcrypt if old md5 password is valid.
+            if (
+                (str_starts_with($row["contact_passwd"], 'md5__')
+                && $row["contact_passwd"] === $this->dependencyInjector['utils']->encodePass($this->password, 'md5'))
+                || 'md5__' . $row["contact_passwd"] === $this->dependencyInjector['utils']->encodePass(
+                    $this->password,
+                    'md5'
+                )
+            ) {
+                $hashedPassword = password_hash($this->password, \CentreonAuth::PASSWORD_HASH_ALGORITHM);
+                $contact = new \CentreonContact($this->DB);
+                $contact->replacePasswordByContactId(
+                    (int) $row['contact_id'],
+                    $row["contact_passwd"],
+                    $hashedPassword
+                );
+                \CentreonClapi\CentreonUtils::setUserId($row['contact_id']);
+                return 1;
             }
-            if ($row['contact_passwd'] == $pass) {
+            if (password_verify($this->password, $row['contact_passwd'])) {
                 \CentreonClapi\CentreonUtils::setUserId($row['contact_id']);
                 return 1;
             } elseif ($row['contact_auth_type'] == 'ldap') {
@@ -759,7 +766,7 @@ class CentreonAPI
                         $this->launchActionForImport();
                     } catch (CentreonClapiException $e) {
                         echo "Line $i : " . $e->getMessage() . "\n";
-                    } catch (Exception $e) {
+                    } catch (\Exception $e) {
                         echo "Line $i : " . $e->getMessage() . "\n";
                     }
                     if ($this->return_code) {
@@ -847,8 +854,8 @@ class CentreonAPI
 
 
         if (isset($this->options['select'])) {
-            CentreonExported::getInstance()->set_filter(1);
-            CentreonExported::getInstance()->set_options($this->options);
+            CentreonExported::getInstance()->setFilter(1);
+            CentreonExported::getInstance()->setOptions($this->options);
             $selected = $this->options['select'];
 
             if (!is_array($this->options['select'])) {

@@ -47,16 +47,6 @@ use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
 final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements MonitoringRepositoryInterface
 {
     /**
-     * @var string Name of the configuration database
-     */
-    private $centreonDbName;
-
-    /**
-     * @var string Name of the storage database
-     */
-    private $storageDbName;
-
-    /**
      * @var AccessGroup[] List of access group used to filter the requests
      */
     private $accessGroups = [];
@@ -79,8 +69,6 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
     public function __construct(DatabaseConnection $pdo)
     {
         $this->db = $pdo;
-        $this->centreonDbName = $this->db->getCentreonDbName();
-        $this->storageDbName = $this->db->getStorageDbName();
     }
 
     /**
@@ -525,12 +513,15 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             'SELECT h.*,
             i.name AS poller_name,
               IF (h.display_name LIKE \'_Module_Meta%\', \'Meta\', h.display_name) AS display_name,
-              IF (h.display_name LIKE \'_Module_Meta%\', \'0\', h.state) AS state
+              IF (h.display_name LIKE \'_Module_Meta%\', \'0\', h.state) AS state,
+            host_cvl.value AS `criticality`
             FROM `:dbstg`.`instances` i
             INNER JOIN `:dbstg`.`hosts` h
               ON h.instance_id = i.instance_id
               AND h.enabled = \'1\'
-              AND h.name NOT LIKE \'_Module_BAM%\''
+              AND h.name NOT LIKE \'_Module_BAM%\'
+            LEFT JOIN `:dbstg`.`customvariables` AS host_cvl ON host_cvl.host_id = h.host_id
+              AND host_cvl.service_id = 0 AND host_cvl.name = "CRITICALITY_LEVEL"'
             . $accessGroupFilter .
             ' WHERE h.host_id = :host_id';
 
@@ -788,10 +779,13 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
                 WHEN srv.state = 2 THEN ' . ResourceStatus::SEVERITY_HIGH . '
                 WHEN srv.state = 3 THEN ' . ResourceStatus::SEVERITY_LOW . '
                 WHEN srv.state = 4 THEN ' . ResourceStatus::SEVERITY_PENDING . '
-              END AS `status_severity_code`
+              END AS `status_severity_code`,
+              service_cvl.value AS `criticality`
             FROM `:dbstg`.services srv
             LEFT JOIN `:dbstg`.hosts h
-              ON h.host_id = srv.host_id'
+              ON h.host_id = srv.host_id
+            LEFT JOIN `:dbstg`.`customvariables` AS service_cvl ON service_cvl.host_id = srv.host_id
+              AND service_cvl.service_id = srv.service_id AND service_cvl.name = "CRITICALITY_LEVEL"'
             . $accessGroupFilter
             . ' WHERE srv.enabled = \'1\'
               AND h.enabled = \'1\'
@@ -1732,13 +1726,37 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             return $downtimes;
         }
 
-        $sql = 'SELECT d.*, c.contact_id AS `author_id` FROM `:dbstg`.`downtimes`  AS `d` '
-            . 'LEFT JOIN `:db`.contact AS `c` ON c.contact_alias = d.author '
-            . 'WHERE d.host_id = :hostId AND d.service_id = :serviceId '
-            . 'AND d.deletion_time IS NULL AND ((NOW() BETWEEN FROM_UNIXTIME(d.actual_start_time) '
-            . 'AND FROM_UNIXTIME(d.actual_end_time)) OR ((NOW() > FROM_UNIXTIME(d.actual_start_time) '
-            . 'AND d.actual_end_time IS NULL))) '
-            . 'ORDER BY d.entry_time DESC';
+        $sql = 'SELECT
+            d.downtime_id,
+            d.entry_time,
+            d.host_id,
+            d.service_id,
+            d.author,
+            d.cancelled,
+            `cmts`.data AS `comment_data`,
+            d.deletion_time,
+            d.duration,
+            d.end_time,
+            d.fixed,
+            d.instance_id,
+            d.internal_id,
+            d.start_time,
+            d.actual_start_time,
+            d.actual_end_time,
+            d.started,
+            d.triggered_by,
+            d.type,
+            c.contact_id AS `author_id`
+        FROM `:dbstg`.`downtimes`  AS `d`
+        LEFT JOIN `:db`.contact AS `c` ON c.contact_alias = d.author
+        LEFT JOIN `:dbstg`.`comments` AS `cmts`
+            ON `cmts`.host_id = d.host_id AND `cmts`.service_id = d.service_id
+            AND `cmts`.deletion_time IS NULL
+        WHERE d.host_id = :hostId AND d.service_id = :serviceId
+            AND d.deletion_time IS NULL AND ((NOW() BETWEEN FROM_UNIXTIME(d.actual_start_time)
+            AND FROM_UNIXTIME(d.actual_end_time)) OR ((NOW() > FROM_UNIXTIME(d.actual_start_time)
+            AND d.actual_end_time IS NULL)))
+        ORDER BY d.entry_time DESC';
 
         $request = $this->translateDbName($sql);
         $statement = $this->db->prepare($request);
@@ -1767,10 +1785,28 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             return $acks;
         }
 
-        $sql = 'SELECT a.*, c.contact_id AS `author_id` FROM `:dbstg`.`acknowledgements` AS `a` '
-            . 'LEFT JOIN `:db`.contact AS `c` ON c.contact_alias = a.author '
-            . 'WHERE a.host_id = :hostId AND a.service_id = :serviceId AND a.deletion_time IS NULL '
-            . 'ORDER BY a.entry_time DESC';
+        $sql = 'SELECT
+            a.acknowledgement_id,
+            a.entry_time,
+            a.host_id,
+            a.service_id,
+            a.author,
+            `cmts`.data AS `comment_data`,
+            a.deletion_time,
+            a.instance_id,
+            a.notify_contacts,
+            a.persistent_comment,
+            a.state,
+            a.sticky,
+            a.type,
+            c.contact_id AS `author_id`
+            FROM `:dbstg`.`acknowledgements` AS `a`
+            LEFT JOIN `:db`.contact AS `c` ON c.contact_alias = a.author
+            LEFT JOIN `:dbstg`.`comments` AS `cmts`
+                ON `cmts`.host_id = a.host_id AND `cmts`.service_id = a.service_id
+                AND `cmts`.deletion_time IS NULL
+            WHERE a.host_id = :hostId AND a.service_id = :serviceId AND a.deletion_time IS NULL
+            ORDER BY a.entry_time DESC';
 
         $request = $this->translateDbName($sql);
         $statement = $this->db->prepare($request);

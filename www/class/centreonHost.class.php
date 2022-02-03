@@ -192,7 +192,7 @@ class CentreonHost
             return $ppList;
         }
         $dbResult = $this->db->query(
-            'SELECT ph.host_id 
+            'SELECT ph.host_id
             FROM mod_ppm_pluginpack_host ph, mod_ppm_pluginpack pp
             WHERE ph.pluginpack_id = pp.pluginpack_id
             AND pp.slug NOT IN ("' . implode('","', $freePp) . '")'
@@ -1094,11 +1094,21 @@ class CentreonHost
                 if (
                     isset($macro['macroInput_#index#'])
                     && isset($macro["macroValue_#index#"])
-                    && isset($macro['macroPassword_#index#'])
                 ) {
-                    if ($input == $macro['macroInput_#index#'] &&
-                        $macroValue[$ind] == $macro["macroValue_#index#"] &&
-                        $macroPassword[$ind] == $macro['macroPassword_#index#']
+                    if (
+                        $input == $macro['macroInput_#index#']
+                        && $macroValue[$ind] == $macro["macroValue_#index#"]
+                        && (
+                            (
+                                isset($macro['macroPassword_#index#'])
+                                && isset($macroPassword[$ind])
+                                && $macroPassword[$ind] == $macro['macroPassword_#index#']
+                            )
+                            || (
+                                isset($macro['macroPassword_#index#']) === false
+                                && isset($macroPassword[$ind]) === false
+                            )
+                        )
                     ) {
                         unset($macroInput[$ind]);
                         unset($macroValue[$ind]);
@@ -1422,8 +1432,8 @@ class CentreonHost
     ) {
         if (!in_array($hostId, $alreadyProcessed)) {
             $alreadyProcessed[$hostId] = $hostId;
-            $query = 'SELECT host_host_id FROM host_template_relation htr 
-                WHERE htr.host_tpl_id = :hostId 
+            $query = 'SELECT host_host_id FROM host_template_relation htr
+                WHERE htr.host_tpl_id = :hostId
                 ORDER BY `order` ASC';
             $stmt = $this->db->prepare($query);
             $stmt->bindParam(':hostId', $hostId, PDO::PARAM_INT);

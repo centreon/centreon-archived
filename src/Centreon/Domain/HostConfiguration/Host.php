@@ -35,6 +35,10 @@ use Centreon\Domain\Annotation\EntityDescriptor;
  */
 class Host
 {
+    public const OPTION_NO = 0,
+                 OPTION_YES = 1,
+                 OPTION_DEFAULT = 2;
+
     /**
      * Host template
      */

@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 import { useTranslation, withTranslation } from 'react-i18next';
 import { useAtomValue } from 'jotai/utils';
 
-import HostIcon from '@material-ui/icons/Dns';
+import HostIcon from '@mui/icons-material/Dns';
 
 import {
   IconHeader,
@@ -19,7 +19,7 @@ import {
   SeverityCode,
   StatusCounter,
 } from '@centreon/ui';
-import { userAtom } from '@centreon/centreon-frontend/packages/ui-context/src';
+import { userAtom } from '@centreon/ui-context';
 
 import styles from '../../header.scss';
 import {

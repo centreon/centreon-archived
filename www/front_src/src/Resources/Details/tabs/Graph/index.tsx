@@ -2,7 +2,8 @@ import * as React from 'react';
 
 import { equals, or } from 'ramda';
 
-import { Theme, makeStyles } from '@material-ui/core';
+import { Theme } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 
 import { TabProps } from '..';
 import TimePeriodButtonGroup from '../../../Graph/Performance/TimePeriods';

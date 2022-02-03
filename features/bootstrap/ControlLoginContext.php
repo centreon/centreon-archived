@@ -9,7 +9,7 @@ class ControlLoginContext extends CentreonContext
     protected $alias = 'usertest';
     protected $name = 'usertest';
     protected $email = 'test@localhost.com';
-    protected $password = 'userpassword';
+    protected $password = 'UserPassword!1';
     protected $page;
 
     /**

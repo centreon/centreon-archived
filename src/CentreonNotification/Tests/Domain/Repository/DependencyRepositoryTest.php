@@ -35,7 +35,7 @@ class DependencyRepositoryTest extends TestCase
     /**
      * @var \Centreon\Test\Mock\CentreonDB
      */
-    protected $db = [];
+    protected $db;
 
     /**
      * @var \CentreonNotification\Domain\Repository\DependencyRepository

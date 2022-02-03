@@ -12,16 +12,18 @@ import classnames from 'classnames';
 import { withTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 
-import { Typography, withStyles, createStyles } from '@material-ui/core';
-import UserIcon from '@material-ui/icons/AccountCircle';
-import FileCopyIcon from '@material-ui/icons/FileCopy';
-import CheckIcon from '@material-ui/icons/Check';
+import { Typography } from '@mui/material';
+import withStyles from '@mui/styles/withStyles';
+import createStyles from '@mui/styles/createStyles';
+import UserIcon from '@mui/icons-material/AccountCircle';
+import FileCopyIcon from '@mui/icons-material/FileCopy';
+import CheckIcon from '@mui/icons-material/Check';
 
 import { allowedPagesSelector } from '../../redux/selectors/navigation/allowedPages';
 import styles from '../header.scss';
 import Clock from '../Clock';
-import axios from '../../axios';
 import MenuLoader from '../../components/MenuLoader';
 
 const EDIT_PROFILE_TOPOLOGY_PAGE = '50104';
@@ -40,8 +42,6 @@ const MuiStyles = createStyles({
 });
 
 class UserMenu extends Component {
-  userService = axios('internal.php?object=centreon_topcounter&action=user');
-
   refreshTimeout = null;
 
   state = {
@@ -62,8 +62,8 @@ class UserMenu extends Component {
 
   // fetch api to get user data
   getData = () => {
-    this.userService
-      .get()
+    axios
+      .get('./api/internal.php?object=centreon_topcounter&action=user')
       .then(({ data }) => {
         this.setState(
           {

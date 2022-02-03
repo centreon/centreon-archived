@@ -1,18 +1,10 @@
 import * as React from 'react';
 
-import {
-  render,
-  RenderResult,
-  waitFor,
-  fireEvent,
-  Matcher,
-  act,
-} from '@testing-library/react';
 import axios from 'axios';
 import {
   partition,
   where,
-  contains,
+  includes,
   head,
   split,
   pipe,
@@ -20,7 +12,6 @@ import {
   prop,
   reject,
   map,
-  includes,
   __,
   propEq,
   find,
@@ -32,11 +23,16 @@ import {
 import userEvent from '@testing-library/user-event';
 import { Provider } from 'jotai';
 
-import { Column } from '@centreon/ui';
 import {
-  refreshIntervalAtom,
-  userAtom,
-} from '@centreon/centreon-frontend/packages/ui-context/src';
+  render,
+  RenderResult,
+  waitFor,
+  fireEvent,
+  Matcher,
+  act,
+  Column,
+} from '@centreon/ui';
+import { refreshIntervalAtom, userAtom } from '@centreon/ui-context';
 
 import { Resource, ResourceType } from '../models';
 import Context, { ResourceContext } from '../testUtils/Context';
@@ -58,7 +54,7 @@ import { getColumns, defaultSelectedColumnIds } from './columns';
 import Listing from '.';
 
 jest.mock('@centreon/ui-context', () =>
-  jest.requireActual('@centreon/centreon-frontend/packages/ui-context'),
+  jest.requireActual('centreon-frontend/packages/ui-context'),
 );
 
 const columns = getColumns({
@@ -201,7 +197,7 @@ describe(Listing, () => {
     });
 
     const [resourcesWithMultipleLines, resourcesWithSingleLines] = partition(
-      where({ information: contains('\n') }),
+      where({ information: includes('\n') }),
       retrievedListing.result,
     );
 
@@ -469,13 +465,13 @@ describe(Listing, () => {
   it.each(additionalIds)(
     'displays additional columns when selected from the corresponding menu',
     async (columnId) => {
-      const { getAllByText, getByTitle, getByText } = renderListing();
+      const { getAllByText, getByLabelText, getByText } = renderListing();
 
       await waitFor(() => {
         expect(mockedAxios.get).toHaveBeenCalled();
       });
 
-      fireEvent.click(getByTitle('Add columns').firstChild as HTMLElement);
+      fireEvent.click(getByLabelText('Add columns').firstChild as HTMLElement);
 
       const column = find(propEq('id', columnId), columns);
       const columnLabel = column?.label as string;

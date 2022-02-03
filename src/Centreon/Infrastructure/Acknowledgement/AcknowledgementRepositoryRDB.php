@@ -36,16 +36,6 @@ use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
 final class AcknowledgementRepositoryRDB extends AbstractRepositoryDRB implements AcknowledgementRepositoryInterface
 {
     /**
-     * Define a host acknowledgement (0)
-     */
-    const TYPE_HOST_ACKNOWLEDGEMENT = 0;
-
-    /**
-     * Define a service acknowledgement (1)
-     */
-    const TYPE_SERVICE_ACKNOWLEDGEMENT = 1;
-
-    /**
      * @var SqlRequestParametersTranslator
      */
     private $sqlRequestTranslator;
@@ -66,12 +56,12 @@ final class AcknowledgementRepositoryRDB extends AbstractRepositoryDRB implement
     private $contact;
 
     /**
-     * @var array
+     * @var array<string, string>
      */
     private $hostConcordanceArray;
 
     /**
-     * @var array
+     * @var array<string, string>
      */
     private $serviceConcordanceArray;
 
@@ -132,12 +122,20 @@ final class AcknowledgementRepositoryRDB extends AbstractRepositoryDRB implement
     }
 
     /**
+     * @inheritDoc
+     */
+    public function getAdmin(): bool
+    {
+        return $this->isAdmin;
+    }
+
+    /**
      * {@inheritDoc}
      * @throws \PDOException
      */
     public function findHostsAcknowledgements(): array
     {
-        return $this->findAcknowledgementsOf(self::TYPE_HOST_ACKNOWLEDGEMENT);
+        return $this->findAcknowledgementsOf(Acknowledgement::TYPE_HOST_ACKNOWLEDGEMENT);
     }
 
     /**
@@ -146,7 +144,7 @@ final class AcknowledgementRepositoryRDB extends AbstractRepositoryDRB implement
      */
     public function findServicesAcknowledgements(): array
     {
-        return $this->findAcknowledgementsOf(self::TYPE_SERVICE_ACKNOWLEDGEMENT);
+        return $this->findAcknowledgementsOf(Acknowledgement::TYPE_SERVICE_ACKNOWLEDGEMENT);
     }
 
     /**
@@ -169,11 +167,26 @@ final class AcknowledgementRepositoryRDB extends AbstractRepositoryDRB implement
                   AND acg.acl_group_activate = \'1\'
                   AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups) . ') ';
 
-        $request =
-            'SELECT ack.*, contact.contact_id AS author_id
+        $request = 'SELECT
+            ack.acknowledgement_id,
+            ack.entry_time,
+            ack.host_id,
+            ack.service_id,
+            ack.author,
+            `cmts`.data AS `comment_data`,
+            ack.deletion_time,
+            ack.instance_id,
+            ack.notify_contacts,
+            ack.persistent_comment,
+            ack.state,
+            ack.sticky,
+            ack.type,
+            contact.contact_id AS `author_id`
             FROM `:dbstg`.acknowledgements ack
             LEFT JOIN `:db`.contact
-              ON contact.contact_alias = ack.author'
+                ON contact.contact_alias = ack.author
+            LEFT JOIN `:dbstg`.`comments` AS `cmts`
+                ON `cmts`.host_id = ack.host_id AND `cmts`.deletion_time IS NULL'
             . $accessGroupFilter
             . 'WHERE ack.host_id = :host_id
               AND ack.service_id = 0';
@@ -205,11 +218,27 @@ final class AcknowledgementRepositoryRDB extends AbstractRepositoryDRB implement
                   AND acg.acl_group_activate = \'1\'
                   AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups) . ') ';
 
-        $request =
-            'SELECT ack.*, contact.contact_id AS author_id
+        $request = 'SELECT
+            ack.acknowledgement_id,
+            ack.entry_time,
+            ack.host_id,
+            ack.service_id,
+            ack.author,
+            `cmts`.data AS `comment_data`,
+            ack.deletion_time,
+            ack.instance_id,
+            ack.notify_contacts,
+            ack.persistent_comment,
+            ack.state,
+            ack.sticky,
+            ack.type,
+            contact.contact_id AS `author_id`
             FROM `:dbstg`.acknowledgements ack
             LEFT JOIN `:db`.contact
-              ON contact.contact_alias = ack.author'
+                ON contact.contact_alias = ack.author
+            LEFT JOIN `:dbstg`.`comments` AS `cmts`
+                ON `cmts`.host_id = ack.host_id AND `cmts`.service_id = ack.host_id
+                AND `cmts`.deletion_time IS NULL'
             . $accessGroupFilter
             . 'WHERE ack.host_id = :host_id
             AND ack.service_id = :service_id';
@@ -325,7 +354,7 @@ final class AcknowledgementRepositoryRDB extends AbstractRepositoryDRB implement
      * @throws \PDOException
      * @throws RequestParametersTranslatorException
      */
-    private function findAcknowledgementsOf(int $type = self::TYPE_HOST_ACKNOWLEDGEMENT): array
+    private function findAcknowledgementsOf(int $type = Acknowledgement::TYPE_HOST_ACKNOWLEDGEMENT): array
     {
         $acknowledgements = [];
 
@@ -337,14 +366,17 @@ final class AcknowledgementRepositoryRDB extends AbstractRepositoryDRB implement
             ? ' '
             : ' INNER JOIN `:dbstg`.`centreon_acl` acl
                   ON acl.host_id = ack.host_id'
-                .  (($type === self::TYPE_SERVICE_ACKNOWLEDGEMENT) ? ' AND acl.service_id = ack.service_id ' : '')
+                .  (($type === Acknowledgement::TYPE_SERVICE_ACKNOWLEDGEMENT)
+                    ? ' AND acl.service_id = ack.service_id '
+                    : ''
+                )
                 . ' INNER JOIN `:db`.`acl_groups` acg
                   ON acg.acl_group_id = acl.group_id
                   AND acg.acl_group_activate = \'1\'
                   AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups) . ') ';
 
         $this->sqlRequestTranslator->setConcordanceArray(
-            $type === self::TYPE_SERVICE_ACKNOWLEDGEMENT
+            $type === Acknowledgement::TYPE_SERVICE_ACKNOWLEDGEMENT
             ? $this->serviceConcordanceArray
             : $this->hostConcordanceArray
         );
@@ -354,7 +386,7 @@ final class AcknowledgementRepositoryRDB extends AbstractRepositoryDRB implement
             LEFT JOIN `:db`.contact
                 ON contact.contact_alias = ack.author '
             . $accessGroupFilter
-            . 'WHERE ack.service_id ' . (($type === self::TYPE_HOST_ACKNOWLEDGEMENT) ? ' = 0' : ' != 0');
+            . 'WHERE ack.service_id ' . (($type === Acknowledgement::TYPE_HOST_ACKNOWLEDGEMENT) ? ' = 0' : ' != 0');
 
         return $this->processListingRequest($request);
     }
@@ -384,7 +416,7 @@ final class AcknowledgementRepositoryRDB extends AbstractRepositoryDRB implement
     /**
      * Find one acknowledgement taking into account or not the ACLs.
      *
-     * @param int $downtimeId Acknowledgement id
+     * @param int $acknowledgementId Acknowledgement id
      * @param bool $isAdmin Indicates whether user is an admin
      * @return Acknowledgement|null Return NULL if the acknowledgement has not been found
      * @throws \Exception
@@ -455,7 +487,7 @@ final class AcknowledgementRepositoryRDB extends AbstractRepositoryDRB implement
      * Find all acknowledgements.
      *
      * @param bool $isAdmin Indicates whether user is an admin
-     * @return array
+     * @return Acknowledgement[]
      * @throws \Exception
      */
     private function findAcknowledgements(bool $isAdmin): array

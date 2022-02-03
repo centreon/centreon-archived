@@ -58,8 +58,8 @@ class SubmitResultController extends AbstractController
      *
      * @param Request $request
      * @param string $jsonValidatorFile
-     * @return array $results
-     * @throws InvalidArgumentException
+     * @return array<string,mixed> $results
+     * @throws \InvalidArgumentException
      */
     private function validateAndRetrievePostData(Request $request, string $jsonValidatorFile): array
     {
@@ -96,7 +96,7 @@ class SubmitResultController extends AbstractController
      * by the current user.
      *
      * @param Contact $contact
-     * @param array $resources
+     * @param array<string,mixed> $resources
      * @return bool
      */
     private function hasSubmitResultRightsForResources(Contact $contact, array $resources): bool

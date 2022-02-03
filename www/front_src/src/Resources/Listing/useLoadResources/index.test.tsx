@@ -15,7 +15,7 @@ import useLoadDetails from '../../testUtils/useLoadDetails';
 import useLoadResources from '.';
 
 jest.mock('@centreon/ui-context', () =>
-  jest.requireActual('@centreon/centreon-frontend/packages/ui-context'),
+  jest.requireActual('centreon-frontend/packages/ui-context'),
 );
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -36,7 +36,7 @@ let context: ResourceContext;
 const LoadResourcesComponent = (): JSX.Element => {
   useLoadResources();
 
-  return <></>;
+  return <div />;
 };
 
 const TestComponent = (): JSX.Element => {
