@@ -206,7 +206,7 @@ const retrievedDetails = {
   execution_time: 0.070906,
   flapping: true,
   fqdn: 'central.centreon.com',
-  groups: groups,
+  groups,
   id: resourceServiceId,
   information:
     'OK - 127.0.0.1 rta 0.100ms lost 0%\n OK - 127.0.0.1 rta 0.99ms lost 0%\n OK - 127.0.0.1 rta 0.98ms lost 0%\n OK - 127.0.0.1 rta 0.97ms lost 0%',

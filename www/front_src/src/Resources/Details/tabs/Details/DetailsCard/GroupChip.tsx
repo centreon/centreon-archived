@@ -3,7 +3,7 @@ import * as React from 'react';
 import { useUpdateAtom } from 'jotai/utils';
 import { useTranslation } from 'react-i18next';
 
-import { Grid, Chip, Tooltip, Typography, useTheme } from '@mui/material';
+import { Grid, Chip, Tooltip, Typography } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import makeStyles from '@mui/styles/makeStyles';
@@ -30,14 +30,14 @@ const useStyles = makeStyles((theme) => ({
     gap: theme.spacing(0.25),
     gridArea: '1/1',
   },
+  chipIconColor: {
+    color: theme.palette.common.white,
+  },
   chipLabel: {
     display: 'grid',
     justifyItems: 'center',
     minWidth: theme.spacing(7),
     overflow: 'hidden',
-  },
-  chipIconColor : {
-    color: theme.palette.common.white
   },
   chipLabelColor: { color: true ? 'transparent' : 'unset' },
 }));
@@ -48,7 +48,6 @@ interface GroupsChipProps {
 }
 
 const GroupChip = ({ group, type }: GroupsChipProps): JSX.Element => {
-  const theme = useTheme();
   const classes = useStyles();
   const { t } = useTranslation();
 
@@ -95,8 +94,8 @@ const GroupChip = ({ group, type }: GroupsChipProps): JSX.Element => {
             {isHovered && (
               <Grid className={classes.chipHover}>
                 <IconButton
-                  className={classes.chipIconColor}
                   aria-label={`${group.name} Filter`}
+                  className={classes.chipIconColor}
                   size="small"
                   title={t(labelFilter)}
                   onClick={(): void => filterByGroup()}
@@ -105,8 +104,8 @@ const GroupChip = ({ group, type }: GroupsChipProps): JSX.Element => {
                 </IconButton>
                 <IconButton
                   aria-label={`${group.name} Configure`}
-                  size="small"
                   className={classes.chipIconColor}
+                  size="small"
                   title={t(labelConfigure)}
                   onClick={configureGroup}
                 >
