@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import { useUpdateAtom } from 'jotai/utils';
 import { useTranslation } from 'react-i18next';
+import clsx from 'clsx';
 
 import { Grid, Chip, Tooltip, Typography } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -12,7 +13,6 @@ import IconButton from '@mui/material/IconButton';
 import { labelConfigure, labelFilter } from '../../../../translatedLabels';
 import { setCriteriaAndNewFilterDerivedAtom } from '../../../../Filter/filterAtoms';
 import { Group } from '../../../models';
-import clsx from 'clsx';
 
 const useStyles = makeStyles((theme) => ({
   chip: {
@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
     minWidth: theme.spacing(7),
     overflow: 'hidden',
   },
-  chipLabelColor: { color: true ? 'transparent' : 'unset' },
+  chipLabelColor: { color: 'transparent' || 'unset' },
 }));
 
 interface GroupsChipProps {
@@ -85,7 +85,7 @@ const GroupChip = ({ group, type }: GroupsChipProps): JSX.Element => {
           <div className={classes.chipLabel}>
             <Tooltip title={group.name}>
               <Typography
-                className={clsx(classes.chipAction,classes.chipLabelColor)}
+                className={clsx(classes.chipAction, classes.chipLabelColor)}
                 variant="body2"
               >
                 {group.name}
