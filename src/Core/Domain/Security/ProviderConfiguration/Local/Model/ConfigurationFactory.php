@@ -47,7 +47,7 @@ class ConfigurationFactory
             $request->attempts,
             $request->blockingDuration,
             $request->passwordExpirationDelay,
-            [],
+            $request->passwordExpirationExcludedUsers,
             $request->delayBeforeNewPassword
         );
     }
