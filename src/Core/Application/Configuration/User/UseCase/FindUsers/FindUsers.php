@@ -24,7 +24,7 @@ declare(strict_types=1);
 namespace Core\Application\Configuration\User\UseCase\FindUsers;
 
 use Centreon\Domain\Log\LoggerTrait;
-use Core\Application\Configuration\User\Repository\ReadUsersRepositoryInterface;
+use Core\Application\Configuration\User\Repository\ReadUserRepositoryInterface;
 use Core\Application\Configuration\User\UseCase\FindUsers\FindUsersPresenterInterface;
 use Core\Domain\Configuration\User\Model\User;
 
@@ -33,9 +33,9 @@ class FindUsers
     use LoggerTrait;
 
     /**
-     * @param ReadUsersRepositoryInterface $usersRepository
+     * @param ReadUserRepositoryInterface $usersRepository
      */
-    public function __construct(private ReadUsersRepositoryInterface $usersRepository)
+    public function __construct(private ReadUserRepositoryInterface $usersRepository)
     {
     }
 

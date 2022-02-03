@@ -28,9 +28,9 @@ use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
 use Core\Infrastructure\Configuration\User\Repository\DbUserFactory;
-use Core\Application\Configuration\User\Repository\ReadUsersRepositoryInterface;
+use Core\Application\Configuration\User\Repository\ReadUserRepositoryInterface;
 
-class DbReadUsersRepository extends AbstractRepositoryDRB implements ReadUsersRepositoryInterface
+class DbReadUserRepository extends AbstractRepositoryDRB implements ReadUserRepositoryInterface
 {
     use LoggerTrait;
 

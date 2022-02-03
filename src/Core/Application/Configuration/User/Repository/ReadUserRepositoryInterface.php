@@ -25,7 +25,7 @@ namespace Core\Application\Configuration\User\Repository;
 
 use Core\Domain\Configuration\User\Model\User;
 
-interface ReadUsersRepositoryInterface
+interface ReadUserRepositoryInterface
 {
     /**
      * Find configured users
