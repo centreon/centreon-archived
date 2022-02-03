@@ -471,7 +471,6 @@ function getServicesLogs(array $services, $startDate, $endDate, $reportTimePerio
     }
 
     $statement->execute();
-
     $servicesStats = [];
     $timeTab = getTotalTimeFromInterval($startDate, $endDate, $reportTimePeriod);
     while ($serviceStats = $statement->fetch()) {
@@ -582,11 +581,6 @@ function getLogInDbForServicesGroup($servicegroupId, $startDate, $endDate, $repo
             $serviceGroupStats[$hostServiceid][$name] = 0;
         }
 
-        $serviceGroupStats[$hostServiceid]["HOST_ID"] = $hostId;
-        $serviceGroupStats[$hostServiceid]["SERVICE_ID"] = $serviceId;
-        $serviceGroupStats[$hostServiceid]["HOST_NAME"] = $service['host_name'];
-        $serviceGroupStats[$hostServiceid]["SERVICE_DESC"] = $service['service_description'];
-
         if (isset($servicesStats[$hostId][$serviceId])) {
             $serviceGroupStats[$hostServiceid] = $servicesStats[$hostId][$serviceId];
             foreach ($serviceStatsLabels as $name) {
@@ -595,6 +589,12 @@ function getLogInDbForServicesGroup($servicegroupId, $startDate, $endDate, $repo
         } else {
             $serviceGroupStats["average"]["UNDETERMINED_TP"] = 100;
         }
+
+        $serviceGroupStats[$hostServiceid]["HOST_ID"] = $hostId;
+        $serviceGroupStats[$hostServiceid]["SERVICE_ID"] = $serviceId;
+        $serviceGroupStats[$hostServiceid]["HOST_NAME"] = $service['host_name'];
+        $serviceGroupStats[$hostServiceid]["SERVICE_DESC"] = $service['service_description'];
+
         $count++;
     }
 
