@@ -7,7 +7,6 @@ import {
   isNil,
   lensPath,
   map,
-  merge,
   mergeRight,
   mergeWith,
   pipe,
@@ -55,7 +54,7 @@ export const getDefaultFilterDerivedAtom = atom(() => (): Filter => {
 
     const mergedCriterias = pipe(
       map(indexBy<Criteria>(prop('name'))),
-      reduce(mergeWith(merge), {}),
+      reduce(mergeWith(mergeRight), {}),
       values,
     )([allFilter.criterias, filterFromUrl.criterias]);
 
