@@ -1,9 +1,8 @@
 /*
  * Inspired from https://github.com/jasonm23/markdown-css-themes/blob/gh-pages/markdown10.css
  */
-@import "./Variables-css/variables.css";
-
-.full-page {
+ @import "./Variables-css/variables.css";
+ .full-page {
     width: 90%;
     max-height: none;
     margin: 10px auto;
