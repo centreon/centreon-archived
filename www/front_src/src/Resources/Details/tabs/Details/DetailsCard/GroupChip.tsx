@@ -85,7 +85,7 @@ const GroupChip = ({ group, type }: GroupsChipProps): JSX.Element => {
           <div className={classes.chipLabel}>
             <Tooltip title={group.name}>
               <Typography
-                className={clsx(classes.chipAction, classes.chipLabelColor)}
+                className={clsx(classes.chipAction,isHovered ? classes.chipLabelColor: '')}
                 variant="body2"
               >
                 {group.name}
