@@ -9,11 +9,11 @@ import React, { Component } from 'react';
 
 import { connect } from 'react-redux';
 import { SubmissionError } from 'redux-form';
+import axios from 'axios';
 
 import Form from '../../components/forms/remoteServer/RemoteServerFormStepTwo';
 import routeMap from '../../route-maps/route-map';
 import ProgressBar from '../../components/progressBar';
-import axios from 'axios';
 import { setPollerWizard } from '../../redux/actions/pollerWizardActions';
 import BaseWizard from '../../components/forms/baseWizard';
 
@@ -56,11 +56,15 @@ class RemoteServerStepTwoRoute extends Component {
   };
 
   getPollers = () => {
-    axios.get('./api/internal.php?object=centreon_configuration_poller&action=list').then((response) => {
-      this._filterOutDefaultPoller(response.data, (pollers) => {
-        this.setState({ pollers });
+    axios
+      .get(
+        './api/internal.php?object=centreon_configuration_poller&action=list',
+      )
+      .then((response) => {
+        this._filterOutDefaultPoller(response.data, (pollers) => {
+          this.setState({ pollers });
+        });
       });
-    });
   };
 
   handleSubmit = (data) => {
@@ -69,7 +73,10 @@ class RemoteServerStepTwoRoute extends Component {
     postData.server_type = 'remote';
 
     return axios
-      .post('./api/internal.php?object=centreon_configuration_remote&action=linkCentreonRemoteServer', postData)
+      .post(
+        './api/internal.php?object=centreon_configuration_remote&action=linkCentreonRemoteServer',
+        postData,
+      )
       .then((response) => {
         if (response.data.success && response.data.task_id) {
           setPollerWizard({
