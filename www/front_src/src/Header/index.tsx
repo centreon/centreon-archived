@@ -1,40 +1,25 @@
 import * as React from 'react';
 
-import { makeStyles } from '@mui/styles';
+import classnames from 'classnames';
 
 import Hook from '../components/Hook';
 
+import styles from './header.scss';
 import PollerMenu from './PollerMenu';
-import HostStatusCounter from './RessourceStatusCounter/Host';
-import ServiceStatusCounter from './RessourceStatusCounter/Service';
 import UserMenu from './userMenu';
+import ServiceStatusCounter from './RessourceStatusCounter/Service';
+import HostStatusCounter from './RessourceStatusCounter/Host';
 
 const HookComponent = Hook as unknown as (props) => JSX.Element;
 
-const useStyles = makeStyles((theme) => ({
-  container: {
-    alignItems: 'center',
-    display: 'flex',
-    justifyContent: 'space-between',
-  },
-  header: {
-    background: theme.palette.common.black,
-  },
-  rightContainer: {
-    display: 'flex',
-  },
-}));
-
 const Header = (): JSX.Element => {
-  const classes = useStyles();
-
   return (
-    <header className={classes.header}>
-      <div className={classes.container}>
-        <div>
+    <header className={styles.header}>
+      <div className={styles['header-icons']}>
+        <div className={classnames(styles.wrap, styles['wrap-left'])}>
           <PollerMenu />
         </div>
-        <div className={classes.rightContainer}>
+        <div className={classnames(styles.wrap, styles['wrap-right'])}>
           <HookComponent path="/header/topCounter" />
           <HostStatusCounter />
           <ServiceStatusCounter />
