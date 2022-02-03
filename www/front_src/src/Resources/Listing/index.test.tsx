@@ -4,7 +4,7 @@ import axios from 'axios';
 import {
   partition,
   where,
-  contains,
+  includes,
   head,
   split,
   pipe,
@@ -12,7 +12,6 @@ import {
   prop,
   reject,
   map,
-  includes,
   __,
   propEq,
   find,
@@ -198,7 +197,7 @@ describe(Listing, () => {
     });
 
     const [resourcesWithMultipleLines, resourcesWithSingleLines] = partition(
-      where({ information: contains('\n') }),
+      where({ information: includes('\n') }),
       retrievedListing.result,
     );
 
