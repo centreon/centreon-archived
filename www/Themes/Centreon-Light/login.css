@@ -31,14 +31,14 @@
  * For more information : contact@centreon.com
  *
  */
-
-.login_wrapper {
+ @import "./Variables-css/variables.css";
+ .login_wrapper {
     top: 24%;
     position: relative;
 }
 .logintab{
-    background-color: #fff;
-    border: 1px solid #d1d2d4;
+    background-color: var(--login-tab-background-color);
+    border: 1px solid var(--login-tab-border-color);
     border-radius: 4px;
     width: 254px;
     margin: 0 auto;
@@ -60,9 +60,9 @@
 }
 
 .msg    {
-    background-color: #ffe6ec;
-    border: 1px solid #e00b3d;
-    color: #e00b3d;
+    background-color: var(--message-background-color);
+    border: 1px solid var(--message-border-color);
+    color: var(--message-font-color);
     font-weight: bold;
     margin: 5px auto;
     padding: 6px;
@@ -78,19 +78,19 @@
     padding: 4px 10px;
     border: none !important;
     outline: none !important;
-    color: #fff;
+    color: var(--btc-font-color);
 }
 
 .bt_success {
-    background: #88b917 !important;
+    background: var(--bt-success-background-color) !important;
 }
 
 .bt_info {
-    background: #00bfb3 !important;
+    background: var(--bt-info-background-color) !important;
 }
 
 .bt_info:disabled {
-    background: gray !important;
+    background: var(--bt-info-disabled-background-color) !important;
 }
 
 .button_group {
@@ -106,7 +106,7 @@
 .button_group input{
     padding: 0.4em .8em !important;
     text-decoration: none;
-    color: #fff !important;
+    color: var(--bt-group-input-font-color) !important;
 }
 
 
@@ -120,7 +120,7 @@ table {empty-cells:show; border-spacing:0px; border-collapse:collapse;font-famil
 body, input, textarea, input[type="checkbox"], select, option, td, .msg, input[type="submit"], label, table {font-family:'Open Sans', 'arial', 'Tahoma', Sans-Serif;font-weight: normal;font-size:11px;}
 
 label {
-    color: #007f77;
+    color: var(--link-label-font-color);
 }
 
 input, textarea, input[type="checkbox"], select, option, input[type="submit"],body {font-size: 11px;}
@@ -129,13 +129,13 @@ img         {border:0;}
 input, select {
     padding: 4px;
     font-size: 11px !important;
-    border: 1px solid #bcbdc0;
+    border: 1px solid var(--input-select-border-color);
     line-height: 18px;
     width: 100%;
 }
 input[type="checkbox"]    {padding:2px;}
 select      {border-style:none;}
-td          {padding:3px;color:#525252;white-space:nowrap;}
+td          {padding:3px;color:var(--link-td-font-color);white-space:nowrap;}
 form        {padding:0px;margin:0px;}
 
 input[type="submit"] {
@@ -143,7 +143,7 @@ input[type="submit"] {
 }
 
 input[type="submit"].bt_info:hover:not(:disabled) {
-    background-color: #00a499 !important;
+    background-color: var(--bt-info-hover-not-disabled-background-color) !important;
     transition: .7s all ease;
 }
 
@@ -162,12 +162,12 @@ input[type="submit"].bt_info:hover:not(:disabled) {
 }
 
 #logintab2      {width:290px;}
-#logintab2 td   {border:1px;padding:7px;background-color:#eaeaee;}
+#logintab2 td   {border:1px;padding:7px;background-color:var(--login-tab2-td-background-color);}
 #sublogin       {width:200px;}
 
 .LoginInvitDate     {text-align:right;}
 
-#LoginInvitcpy a,  #LoginInvitcpy {color:gray;}
+#LoginInvitcpy a,  #LoginInvitcpy {color:var(--login-invit-cpy-font-color);}
 
 .grayLine                   {padding-top:15px;}
 
