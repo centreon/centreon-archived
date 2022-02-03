@@ -123,7 +123,7 @@ class DbReadUserRepository extends AbstractRepositoryDRB implements ReadUserRepo
             $this->translateDbName(
                 "SELECT contact_id
                 FROM `:db`.contact
-                WHERE contact_alias IN (". implode(',', array_keys($bindValues)) . ")"
+                WHERE contact_alias IN (" . implode(',', array_keys($bindValues)) . ")"
             )
         );
 

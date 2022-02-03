@@ -43,7 +43,7 @@ class UpdateConfiguration
     public function __construct(
         private WriteConfigurationRepositoryInterface $writeConfigurationRepository,
         private ReadUserRepositoryInterface $readUserRepository,
-    ){
+    ) {
     }
 
     /**

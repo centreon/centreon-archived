@@ -28,7 +28,7 @@ class DbConfigurationFactory
 {
     /**
      * @param array<string,mixed> $configuration
-     * @param string[] $excludedUserAliases
+     * @param array<string,string> $excludedUserAliases
      * @return Configuration
      */
     public static function createFromRecord(array $configuration, array $excludedUserAliases): Configuration
