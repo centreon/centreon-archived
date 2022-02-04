@@ -12,6 +12,7 @@ import { connect } from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router';
 import Fullscreen from 'react-fullscreen-crossbrowser';
 import queryString from 'query-string';
+
 import { withStyles, createStyles } from '@material-ui/core';
 
 import { ThemeProvider } from '@centreon/ui';
