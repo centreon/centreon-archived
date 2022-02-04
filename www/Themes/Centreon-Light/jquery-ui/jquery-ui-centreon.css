@@ -1,7 +1,8 @@
 /*
  * Jquery portlet style
  */
- @import "./Variables-css/variables.css";
+ @import "../Variables-css/variables.css";
+
  .column_1 { width: 100%; float: left; padding-bottom: 0px; }
  .column_2 { width: 50%; float: left; padding-bottom: 0px; }
  .column_3 { width: 33%; float: left; padding-bottom: 0px; }
@@ -61,4 +62,3 @@
  .ui-tabs .ui-tabs-nav li.ui-state-active, .ui-tabs .ui-tabs-nav li.ui-state-disabled, .ui-tabs .ui-tabs-nav li.ui-state-processing { background: var(--ui-state-processing-background-color); }
  
  #globalView {padding-bottom:10px;}
- 
