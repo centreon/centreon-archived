@@ -31,8 +31,8 @@
  * For more information : contact@centreon.com
  *
  */
+@import "./Variables-css/variables.css";
 
- @import "./Variables-css/variables.css";
 body {
     background-color:var(--body-background);
 }
@@ -413,7 +413,7 @@ p.description a, p.description a:visited {
     color: var(--select2-selection-multiple-color) !important;
     margin-left: 2px;
     padding: 2px 5px;
-    background-color: var(--select2-selection-multiple-background-color);
+    background-color: var(--select2-selection-choice-remove-background-color);
     border: 1px solid var(--select2-selection-multiple-border-color);
     border-top-left-radius: 4px;
     border-bottom-left-radius: 4px;
@@ -429,7 +429,7 @@ p.description a, p.description a:visited {
     border-top-right-radius: 4px;
     border-bottom-right-radius: 4px;
     color: var(--select2-results-option-highlighted-background-color);
-    background-color: var(--select2-selection-multiple-background-color);
+    background-color: var(--select2-selection-multiple-content-background-color);
 }
 .select2-container--default .select2-results__option--highlighted[aria-selected] {
     background-color: var(--select2-results-option-highlighted-background-color);
