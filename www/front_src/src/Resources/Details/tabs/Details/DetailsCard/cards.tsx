@@ -186,6 +186,7 @@ const getDetailCardLines = ({
       title: labelCalculationType,
     },
     {
+      isCustomCard: true,
       line: <Groups details={details} />,
       shouldBeDisplayed: !isEmpty(details.groups),
       title: labelGroups,
