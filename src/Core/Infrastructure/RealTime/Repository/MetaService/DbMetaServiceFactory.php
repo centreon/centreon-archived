@@ -20,29 +20,20 @@
  */
 declare(strict_types=1);
 
-namespace Core\Infrastructure\RealTime\Api\Hypermedia;
+namespace Core\Infrastructure\RealTime\Repository\MetaService;
 
-interface HypermediaProviderInterface
+use Core\Domain\RealTime\Model\MetaService;
+use Core\Infrastructure\Common\Repository\DbFactoryUtilitiesTrait;
+
+class DbMetaServiceFactory
 {
-    /**
-     * @var mixed $data
-     * @return bool
-     */
-    public function isValidFor(mixed $data): bool;
+    use DbFactoryUtilitiesTrait;
 
     /**
-     * Create endpoints for the Resource provided
-     *
-     * @param mixed $response
-     * @return array<string, string|null>
+     * @param array<string, mixed> $data
+     * @return MetaService
      */
-    public function createEndpoints(mixed $response): array;
-
-    /**
-     * Create internal redirection uris for the Resource provided
-     *
-     * @param mixed $response
-     * @return array<string, string|null>
-     */
-    public function createInternalUris(mixed $response): array;
+    public static function createFromRecord(array $data): MetaService
+    {
+    }
 }

@@ -20,29 +20,15 @@
  */
 declare(strict_types=1);
 
-namespace Core\Infrastructure\RealTime\Api\Hypermedia;
+namespace Core\Application\RealTime\UseCase\FindMetaService;
 
-interface HypermediaProviderInterface
+use Core\Application\Common\UseCase\PresenterInterface;
+use Core\Application\RealTime\UseCase\FindMetaService\FindMetaServiceResponse;
+
+interface FindMetaServicePresenterInterface extends PresenterInterface
 {
     /**
-     * @var mixed $data
-     * @return bool
+     * @param FindMetaServiceResponse $response
      */
-    public function isValidFor(mixed $data): bool;
-
-    /**
-     * Create endpoints for the Resource provided
-     *
-     * @param mixed $response
-     * @return array<string, string|null>
-     */
-    public function createEndpoints(mixed $response): array;
-
-    /**
-     * Create internal redirection uris for the Resource provided
-     *
-     * @param mixed $response
-     * @return array<string, string|null>
-     */
-    public function createInternalUris(mixed $response): array;
+    public function present(FindMetaServiceResponse $response): void;
 }

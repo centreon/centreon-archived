@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,17 +18,22 @@
  * For more information : contact@centreon.com
  *
  */
-
 declare(strict_types=1);
 
-namespace Core\Application\RealTime\UseCase\FindService;
+namespace Core\Infrastructure\Configuration\MetaService\Repository;
 
-use Core\Application\Common\UseCase\NotFoundResponse;
+use Core\Domain\Configuration\Model\MetaService;
+use Core\Infrastructure\Common\Repository\DbFactoryUtilitiesTrait;
 
-class ServiceNotFoundResponse extends NotFoundResponse
+class DbMetaServiceFactory
 {
-    public function __construct()
+    use DbFactoryUtilitiesTrait;
+
+    /**
+     * @param array<string, mixed> $data
+     * @return MetaService
+     */
+    public static function createFromRecord(array $data): MetaService
     {
-        parent::__construct('Service');
     }
 }

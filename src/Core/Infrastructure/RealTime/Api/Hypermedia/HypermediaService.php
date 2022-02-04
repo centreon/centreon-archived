@@ -47,85 +47,29 @@ class HypermediaService
 
     /**
      * @param mixed $response
-     * @return string|null
+     * @return array<string, string|null>
      */
-    public function createForConfiguration(mixed $response): ?string
+    public function createEndpoints(mixed $response): array
     {
         foreach ($this->hypermediaProviders as $hypermediaProvider) {
             if ($hypermediaProvider->isValidFor($response)) {
-                return $hypermediaProvider->createForConfiguration($response);
+                return $hypermediaProvider->createEndpoints($response);
             }
         }
-        return null;
+        return [];
     }
 
     /**
      * @param mixed $response
-     * @return string|null
+     * @return array<string, string|null>
      */
-    public function createForReporting(mixed $response): ?string
+    public function createInternalUris(mixed $response): array
     {
         foreach ($this->hypermediaProviders as $hypermediaProvider) {
             if ($hypermediaProvider->isValidFor($response)) {
-                return $hypermediaProvider->createForReporting($response);
+                return $hypermediaProvider->createInternalUris($response);
             }
         }
-        return null;
-    }
-
-    /**
-     * @param mixed $response
-     * @return string|null
-     */
-    public function createForEventLog(mixed $response): ?string
-    {
-        foreach ($this->hypermediaProviders as $hypermediaProvider) {
-            if ($hypermediaProvider->isValidFor($response)) {
-                return $hypermediaProvider->createForEventLog($response);
-            }
-        }
-        return null;
-    }
-
-    /**
-     * @param mixed $response
-     * @return string|null
-     */
-    public function createForTimelineEndpoint(mixed $response): ?string
-    {
-        foreach ($this->hypermediaProviders as $hypermediaProvider) {
-            if ($hypermediaProvider->isValidFor($response)) {
-                return $hypermediaProvider->createForTimelineEndpoint($response);
-            }
-        }
-        return null;
-    }
-
-    /**
-     * @param mixed $response
-     * @return string|null
-     */
-    public function createForStatusGraphEndpoint(mixed $response): ?string
-    {
-        foreach ($this->hypermediaProviders as $hypermediaProvider) {
-            if ($hypermediaProvider->isValidFor($response)) {
-                return $hypermediaProvider->createForStatusGraphEndpoint($response);
-            }
-        }
-        return null;
-    }
-
-    /**
-     * @param mixed $response
-     * @return string|null
-     */
-    public function createForPerformanceDataEndpoint(mixed $response): ?string
-    {
-        foreach ($this->hypermediaProviders as $hypermediaProvider) {
-            if ($hypermediaProvider->isValidFor($response)) {
-                return $hypermediaProvider->createForPerformanceDataEndpoint($response);
-            }
-        }
-        return null;
+        return [];
     }
 }

@@ -20,29 +20,26 @@
  */
 declare(strict_types=1);
 
-namespace Core\Infrastructure\RealTime\Api\Hypermedia;
+namespace Core\Application\Configuration\MetaService\Repository;
 
-interface HypermediaProviderInterface
+use Core\Domain\Configuration\Model\MetaService;
+
+interface ReadMetaServiceRepositoryInterface
 {
     /**
-     * @var mixed $data
-     * @return bool
+     * Find MetaService configuration without ACL
+     *
+     * @param integer $metaId
+     * @return MetaService|null
      */
-    public function isValidFor(mixed $data): bool;
+    public function findMetaServiceById(int $metaId): ?MetaService;
 
     /**
-     * Create endpoints for the Resource provided
+     * Find MetaService configuration with ACL
      *
-     * @param mixed $response
-     * @return array<string, string|null>
+     * @param int $metaId
+     * @param int[] $accessGroupIds
+     * @return MetaService|null
      */
-    public function createEndpoints(mixed $response): array;
-
-    /**
-     * Create internal redirection uris for the Resource provided
-     *
-     * @param mixed $response
-     * @return array<string, string|null>
-     */
-    public function createInternalUris(mixed $response): array;
+    public function findMetaServiceByIdAndAccessGroupIds(int $metaId, array $accessGroupIds): ?MetaService;
 }

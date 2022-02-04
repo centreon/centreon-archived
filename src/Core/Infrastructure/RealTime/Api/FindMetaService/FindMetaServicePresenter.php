@@ -20,17 +20,17 @@
  */
 declare(strict_types=1);
 
-namespace Core\Infrastructure\RealTime\Api\FindService;
+namespace Core\Infrastructure\RealTime\Api\FindMetaService;
 
 use Core\Infrastructure\RealTime\Api\Hypermedia\HypermediaService;
 use Symfony\Component\HttpFoundation\Response;
 use Core\Application\Common\UseCase\ResponseStatusInterface;
-use Core\Application\RealTime\UseCase\FindService\FindServiceResponse;
-use Core\Application\RealTime\UseCase\FindService\FindServicePresenterInterface;
+use Core\Application\RealTime\UseCase\FindMetaService\FindMetaServiceResponse;
+use Core\Application\RealTime\UseCase\FindMetaService\FindMetaServicePresenterInterface;
 use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
 use Core\Infrastructure\Common\Presenter\PresenterTrait;
 
-class FindServicePresenter implements FindServicePresenterInterface
+class FindMetaServicePresenter implements FindMetaServicePresenterInterface
 {
     use PresenterTrait;
 
@@ -52,14 +52,14 @@ class FindServicePresenter implements FindServicePresenterInterface
     /**
      * @inheritDoc
      */
-    public function present(FindServiceResponse $response): void
+    public function present(FindMetaServiceResponse $response): void
     {
         $presenterResponse = [
-            'uuid' => 'h' . $response->hostId . '-s' . $response->id,
+            'uuid' => 'm' . $response->id,
             'id' => $response->id,
             'name' => $response->name,
-            'type' => 'service',
-            'short_type' => 's',
+            'type' => 'metaservice',
+            'short_type' => 'm',
             'status' => $response->status,
             'in_downtime' => $response->isInDowntime,
             'acknowledged' => $response->isAcknowledged,
@@ -73,11 +73,9 @@ class FindServicePresenter implements FindServicePresenterInterface
             'passive_checks' => $response->hasPassiveChecks,
             'execution_time' => $response->executionTime,
             'active_checks' => $response->hasActiveChecks,
-            'severity_level' => $response->severityLevel,
-            'icon' => $response->icon,
-            'groups' => $response->servicegroups,
-            'parent' => $response->host,
-            'monitoring_server_name' => $response->host['monitoring_server_name']
+            'groups' => [],
+            'parent' => null,
+            'monitoring_server_name' => null
         ];
 
         $acknowledgement = null;
@@ -140,7 +138,7 @@ class FindServicePresenter implements FindServicePresenterInterface
          */
         $presenterResponse['links'] = [
             'uris' => $this->hypermediaService->createInternalUris($response),
-            'endpoints' => $this->hypermediaService->createEndpoints($response)
+            'endpoints' => $this->hypermediaService->createEndpoints($response),
         ];
         $this->presenterFormatter->present($presenterResponse);
     }

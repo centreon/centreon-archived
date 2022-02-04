@@ -149,14 +149,8 @@ class FindHostPresenter implements FindHostPresenterInterface
          * Creating Hypermedias
          */
         $presenterResponse['links'] = [
-            'uris' => [
-                'configuration' => $this->hypermediaService->createForConfiguration($response),
-                'logs' => $this->hypermediaService->createForEventLog($response),
-                'reporting' => $this->hypermediaService->createForReporting($response)
-            ],
-            'endpoints' => [
-                'timeline' => $this->hypermediaService->createForTimelineEndpoint($response)
-            ]
+            'uris' => $this->hypermediaService->createInternalUris($response),
+            'endpoints' => $this->hypermediaService->createEndpoints($response),
         ];
         $this->presenterFormatter->present($presenterResponse);
     }
