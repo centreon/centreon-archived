@@ -83,9 +83,9 @@
 
 
 input[type="submit"]:hover, input[type="button"]:hover, input[type="reset"]:hover {
-    background: var(--input-background-color);
-    color: var(--input-font-color);
-    border-color: var(--input-border-color);
+    background: var(--input-button-hover-background-color);
+    color: var(--input-button-hover-font-color);
+    border-color: var(--input-button-hover-border-color);
 }
 
 .limitPage, .pageNumber {
