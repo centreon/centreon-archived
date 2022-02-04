@@ -101,7 +101,7 @@ const GroupChip = ({ group, type }: Props): JSX.Element => {
                   className={classes.chipIconColor}
                   size="small"
                   title={t(labelFilter)}
-                  onClick={(): void => filterByGroup()}
+                  onClick={filterByGroup}
                 >
                   <FilterListIcon fontSize="small" />
                 </IconButton>
