@@ -22,6 +22,9 @@ import { contactsEndpoint } from '../../../api/endpoints';
 const excludedUsersFieldName = 'passwordExpiration.excludedUsers';
 
 const useStyles = makeStyles((theme) => ({
+  excludedUsersAutocomplete: {
+    width: theme.spacing(32),
+  },
   option: {
     alignItems: 'center',
     display: 'flex',
@@ -88,6 +91,7 @@ const ExcludedUsers = (): JSX.Element => {
 
   return (
     <MultiConnectedAutocompleteField
+      className={classes.excludedUsersAutocomplete}
       disableClearable={false}
       field="alias"
       filterOptions={filterOptions}
