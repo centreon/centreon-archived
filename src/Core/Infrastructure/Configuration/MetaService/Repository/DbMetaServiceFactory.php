@@ -42,8 +42,8 @@ class DbMetaServiceFactory
             (int) $data['meta_selection_mode'],
             self::normalizeDataSourceType((int) $data['data_source_type'])
         ))
-        ->setWarning(self::getIntOrNull($data['warning']))
-        ->setCritical(self::getIntOrNull($data['critical']))
+        ->setWarningThreshold(self::getIntOrNull($data['warning']))
+        ->setCriticalThreshold(self::getIntOrNull($data['critical']))
         ->setOutput($data['output'])
         ->setMetric($data['metric'])
         ->setActivated((int) $data['is_activated'] === 1)
@@ -64,7 +64,7 @@ class DbMetaServiceFactory
             'MAX' => MetaService::CALCULTATION_TYPE_MAXIMUM,
             'SOM' => MetaService::CALCULTATION_TYPE_SUM,
             default => MetaService::CALCULTATION_TYPE_AVERAGE
-        }
+        };
     }
 
     /**
@@ -81,6 +81,6 @@ class DbMetaServiceFactory
             2 => MetaService::DATA_SOURCE_DERIVE,
             3 => MetaService::DATA_SOURCE_ABSOLUTE,
             default => MetaService::DATA_SOURCE_GAUGE
-        }
+        };
     }
 }

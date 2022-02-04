@@ -34,35 +34,37 @@ class DbHostStatusFactory
     {
         $statusType = (int) $data['state_type'];
 
-        switch ((int) $data['status_code']) {
-            case HostStatus::STATUS_CODE_UP:
-                return (new HostStatus(
-                    HostStatus::STATUS_NAME_UP,
-                    HostStatus::STATUS_CODE_UP,
-                    $statusType
-                ))
-                ->setOrder(HostStatus::STATUS_ORDER_UP);
-            case HostStatus::STATUS_CODE_DOWN:
-                return (new HostStatus(
-                    HostStatus::STATUS_NAME_DOWN,
-                    HostStatus::STATUS_CODE_DOWN,
-                    $statusType
-                ))
-                ->setOrder(HostStatus::STATUS_ORDER_DOWN);
-            case HostStatus::STATUS_CODE_UNREACHABLE:
-                return (new HostStatus(
-                    HostStatus::STATUS_NAME_UNREACHABLE,
-                    HostStatus::STATUS_CODE_UNREACHABLE,
-                    $statusType
-                ))
-                ->setOrder(HostStatus::STATUS_ORDER_UNREACHABLE);
-            default:
-                return (new HostStatus(
-                    HostStatus::STATUS_NAME_PENDING,
-                    HostStatus::STATUS_CODE_PENDING,
-                    $statusType
-                ))
-                ->setOrder(HostStatus::STATUS_ORDER_PENDING);
-        }
+        return match ((int) $data['status_code']) {
+            HostStatus::STATUS_CODE_UP => (new HostStatus(
+                HostStatus::STATUS_NAME_UP,
+                HostStatus::STATUS_CODE_UP,
+                $statusType
+            ))
+            ->setOrder(HostStatus::STATUS_ORDER_UP),
+            HostStatus::STATUS_CODE_DOWN => (new HostStatus(
+                HostStatus::STATUS_NAME_DOWN,
+                HostStatus::STATUS_CODE_DOWN,
+                $statusType
+            ))
+            ->setOrder(HostStatus::STATUS_ORDER_DOWN),
+            HostStatus::STATUS_CODE_UNREACHABLE => (new HostStatus(
+                HostStatus::STATUS_NAME_UNREACHABLE,
+                HostStatus::STATUS_CODE_UNREACHABLE,
+                $statusType
+            ))
+            ->setOrder(HostStatus::STATUS_ORDER_UNREACHABLE),
+            HostStatus::STATUS_CODE_PENDING => (new HostStatus(
+                HostStatus::STATUS_NAME_PENDING,
+                HostStatus::STATUS_CODE_PENDING,
+                $statusType
+            ))
+            ->setOrder(HostStatus::STATUS_ORDER_PENDING),
+            default => (new HostStatus(
+                HostStatus::STATUS_NAME_PENDING,
+                HostStatus::STATUS_CODE_PENDING,
+                $statusType
+            ))
+            ->setOrder(HostStatus::STATUS_ORDER_PENDING)
+        };
     }
 }

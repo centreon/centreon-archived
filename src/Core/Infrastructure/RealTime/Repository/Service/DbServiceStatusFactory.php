@@ -33,36 +33,43 @@ class DbServiceStatusFactory
     public static function createFromRecord(array $data): ServiceStatus
     {
         $statusType = (int) $data['state_type'];
-
-        switch ((int) $data['status_code']) {
-            case ServiceStatus::STATUS_CODE_OK:
-                return (new ServiceStatus(
-                    ServiceStatus::STATUS_NAME_OK,
-                    ServiceStatus::STATUS_CODE_OK,
-                    $statusType
-                ))
-                ->setOrder(ServiceStatus::STATUS_ORDER_OK);
-            case ServiceStatus::STATUS_CODE_CRITICAL:
-                return (new ServiceStatus(
-                    ServiceStatus::STATUS_NAME_CRITICAL,
-                    ServiceStatus::STATUS_CODE_CRITICAL,
-                    $statusType
-                ))
-                ->setOrder(ServiceStatus::STATUS_ORDER_CRITICAL);
-            case ServiceStatus::STATUS_CODE_UNKNOWN:
-                return (new ServiceStatus(
-                    ServiceStatus::STATUS_NAME_UNKNOWN,
-                    ServiceStatus::STATUS_CODE_UNKNOWN,
-                    $statusType
-                ))
-                ->setOrder(ServiceStatus::STATUS_ORDER_UNKNOWN);
-            default:
-                return (new ServiceStatus(
-                    ServiceStatus::STATUS_NAME_PENDING,
-                    ServiceStatus::STATUS_CODE_PENDING,
-                    $statusType
-                ))
-                ->setOrder(ServiceStatus::STATUS_ORDER_PENDING);
-        }
+        return match ((int) $data['status_code']) {
+            ServiceStatus::STATUS_CODE_OK => (new ServiceStatus(
+                ServiceStatus::STATUS_NAME_OK,
+                ServiceStatus::STATUS_CODE_OK,
+                $statusType
+            ))
+            ->setOrder(ServiceStatus::STATUS_ORDER_OK),
+            ServiceStatus::STATUS_CODE_WARNING => (new ServiceStatus(
+                ServiceStatus::STATUS_NAME_WARNING,
+                ServiceStatus::STATUS_CODE_WARNING,
+                $statusType
+            ))
+            ->setOrder(ServiceStatus::STATUS_ORDER_WARNING),
+            ServiceStatus::STATUS_CODE_CRITICAL => (new ServiceStatus(
+                ServiceStatus::STATUS_NAME_CRITICAL,
+                ServiceStatus::STATUS_CODE_CRITICAL,
+                $statusType
+            ))
+            ->setOrder(ServiceStatus::STATUS_ORDER_CRITICAL),
+            ServiceStatus::STATUS_CODE_UNKNOWN => (new ServiceStatus(
+                ServiceStatus::STATUS_NAME_UNKNOWN,
+                ServiceStatus::STATUS_CODE_UNKNOWN,
+                $statusType
+            ))
+            ->setOrder(ServiceStatus::STATUS_ORDER_UNKNOWN),
+            ServiceStatus::STATUS_CODE_PENDING => (new ServiceStatus(
+                ServiceStatus::STATUS_NAME_PENDING,
+                ServiceStatus::STATUS_CODE_PENDING,
+                $statusType
+            ))
+            ->setOrder(ServiceStatus::STATUS_ORDER_PENDING),
+            default => (new ServiceStatus(
+                ServiceStatus::STATUS_NAME_PENDING,
+                ServiceStatus::STATUS_CODE_PENDING,
+                $statusType
+            ))
+            ->setOrder(ServiceStatus::STATUS_ORDER_PENDING)
+        };
     }
 }
