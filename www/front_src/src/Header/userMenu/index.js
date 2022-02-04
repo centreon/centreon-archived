@@ -12,6 +12,7 @@ import classnames from 'classnames';
 import { withTranslation, useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
 import { useUpdateAtom } from 'jotai/utils';
+import axios from 'axios';
 
 import { Typography } from '@mui/material';
 import withStyles from '@mui/styles/withStyles';
@@ -69,9 +70,9 @@ class UserMenuContent extends Component {
 
   // fetch api to get user data
   getData = () => {
-    this.props
-      .getUser()
-      .then((data) => {
+    axios
+      .get('./api/internal.php?object=centreon_topcounter&action=user')
+      .then(({ data }) => {
         this.setState(
           {
             data,

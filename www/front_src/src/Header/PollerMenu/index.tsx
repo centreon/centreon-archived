@@ -195,7 +195,7 @@ const PollerMenu = (): JSX.Element => {
                 className={clsx(classes.label, classes.pollerDetailRow)}
                 variant="body2"
               >
-                <li> {t(labelAllPollers)} </li>
+                <div>{t(labelAllPollers)}</div>
                 {pollerCount}
               </Typography>
             )}

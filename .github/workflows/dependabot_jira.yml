@@ -5,9 +5,13 @@ on:
     types: [ opened, reopened ]
     branches: [ develop ]
 
+permissions:
+  pull-requests: read
+
 env:
   JIRA_PROJECT_KEY: "MON"
   JIRA_ISSUE_TYPE: "Technical"
+  COMPONENT_NAME: "${{ github.event.pull_request.base.repo.name }}"
 
 jobs:
   create_ticket:
@@ -19,10 +23,19 @@ jobs:
         id: date
         run: echo "CURRENT_DATE=$(date +'%Y-%m-%dT%H:%M:%S')" >> $GITHUB_ENV
 
+      - name: Check components name
+        id: name
+        if: ${{ env.COMPONENT_NAME == 'centreon'}}
+        run: echo "COMPONENT_NAME=centreon-web" >> $GITHUB_ENV
+
+      - name: debug
+        id: debug
+        run: echo "component is ${{ env.COMPONENT_NAME }}."
+
       - name: Login to Jira
         uses: atlassian/gajira-login@v2.0.0
         id: login
-        with:
+        env:
           JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
           JIRA_USER_EMAIL: ${{ secrets.JIRA_USER_EMAIL }}
           JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
@@ -30,10 +43,11 @@ jobs:
       - name: Create Jira Issue
         uses: atlassian/gajira-create@v2.0.1
         id: create
-        with:
+        env:
           JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
           JIRA_USER_EMAIL: ${{ secrets.JIRA_USER_EMAIL }}
           JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+        with:
           project: ${{ env.JIRA_PROJECT_KEY }}
           issuetype: ${{ env.JIRA_ISSUE_TYPE }}
           summary: |
@@ -61,5 +75,5 @@ jobs:
               "customfield_10866": "${{ env.CURRENT_DATE }}",
               "labels": ["Dependabot"],
               "priority": {"name": "Highest"},
-              "components":[{"name": "centreon-web"}]
+              "components":[{"name": "${{ env.COMPONENT_NAME }}"}]
             }'
