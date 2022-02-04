@@ -59,64 +59,83 @@ class HostHypermediaProvider implements HypermediaProviderInterface
     /**
      * @inheritDoc
      */
-    public function createForConfiguration(mixed $response): ?string
+    public function createEndpoints(mixed $response): array
+    {
+        return [
+            'timeline' => $this->createForTimelineEndpoint(['hostId' => $response->id]),
+        ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function createInternalUris(mixed $response): array
+    {
+        $parameters = ['hostId' => $response->id];
+        return [
+            'configuration' => $this->createForConfiguration($parameters),
+            'logs' => $this->createForEventLog($parameters),
+            'reporting' => $this->createForReporting($parameters),
+        ];
+    }
+
+    /**
+     * Create configuration redirection uri
+     *
+     * @param array<string, int> $parameters
+     * @return string|null
+     */
+    public function createForConfiguration(array $parameters): ?string
     {
         return (
             $this->contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_HOSTS_WRITE)
             || $this->contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_HOSTS_READ)
             || $this->contact->isAdmin()
         )
-        ? $this->getBaseUri() . str_replace('{hostId}', (string) $response->id, self::URI_CONFIGURATION)
+        ? $this->getBaseUri() . str_replace('{hostId}', (string) $parameters['hostId'], self::URI_CONFIGURATION)
         : null;
     }
 
     /**
-     * @inheritDoc
+     * Create reporting redirection uri
+     *
+     * @param array<string, int> $parameters
+     * @return string|null
      */
-    public function createForReporting(mixed $response): ?string
+    public function createForReporting(array $parameters): ?string
     {
         return (
             $this->contact->hasTopologyRole(Contact::ROLE_REPORTING_DASHBOARD_HOSTS)
             || $this->contact->isAdmin()
         )
-        ? $this->getBaseUri() . str_replace('{hostId}', (string) $response->id, self::URI_REPORTING)
+        ? $this->getBaseUri() . str_replace('{hostId}', (string) $parameters['hostId'], self::URI_REPORTING)
         : null;
     }
 
     /**
-     * @inheritDoc
+     * Create event logs redirection uri
+     *
+     * @param array<string, int> $parameters
+     * @return string|null
      */
-    public function createForEventLog(mixed $response): ?string
+    public function createForEventLog(array $parameters): ?string
     {
         return (
             $this->contact->hasTopologyRole(Contact::ROLE_MONITORING_EVENT_LOGS)
             || $this->contact->isAdmin()
         )
-        ? $this->getBaseUri() . str_replace('{hostId}', (string) $response->id, self::URI_EVENT_LOGS)
+        ? $this->getBaseUri() . str_replace('{hostId}', (string) $parameters['hostId'], self::URI_EVENT_LOGS)
         : null;
     }
 
     /**
-     * @inheritDoc
+     * Create Timeline endpoint URI for the Host Resource
+     *
+     * @param array<string, int> $parameters
+     * @return string
      */
-    public function createForTimelineEndpoint(mixed $response): string
+    public function createForTimelineEndpoint(array $parameters): string
     {
-        return $this->router->generate(self::ENDPOINT_HOST_TIMELINE, ['hostId' => $response->id]);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function createForPerformanceDataEndpoint(mixed $data): string
-    {
-        return '';
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function createForStatusGraphEndpoint(mixed $data): string
-    {
-        return '';
+        return $this->router->generate(self::ENDPOINT_HOST_TIMELINE, $parameters);
     }
 }
