@@ -38,7 +38,7 @@ use Core\Application\RealTime\Repository\ReadMetaServiceRepositoryInterface;
 use Core\Infrastructure\RealTime\Api\FindMetaService\FindMetaServicePresenter;
 use Core\Application\RealTime\Repository\ReadAcknowledgementRepositoryInterface;
 use Tests\Core\Application\RealTime\UseCase\FindMetaService\FindMetaServicePresenterStub;
-use Tests\Core\Domain\Configuration\Model\MetaServiceTest as MetaServiceConfigurationTest;
+use Tests\Core\Domain\Configuration\MetaServiceTest as MetaServiceConfigurationTest;
 use Core\Application\Configuration\MetaService\Repository\ReadMetaServiceRepositoryInterface as
     ReadMetaServiceConfigurationRepositoryInterface;
 

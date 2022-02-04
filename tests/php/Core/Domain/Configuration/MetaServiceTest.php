@@ -20,7 +20,7 @@
  */
 declare(strict_types=1);
 
-namespace Tests\Core\Domain\Configuration\Model;
+namespace Tests\Core\Domain\Configuration;
 
 use PHPUnit\Framework\TestCase;
 use Centreon\Domain\Common\Assertion\AssertionException;
