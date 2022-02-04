@@ -137,6 +137,7 @@ class MetaService
         private int $hostId,
         private int $serviceId,
         private string $name,
+        private string $monitoringServerName,
         private ServiceStatus $status
     ) {
         Assertion::maxLength($name, self::MAX_NAME_LENGTH, 'MetaService::name');
@@ -523,5 +524,13 @@ class MetaService
     public function getServiceId(): int
     {
         return $this->serviceId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMonitoringServerName(): string
+    {
+        return $this->monitoringServerName;
     }
 }

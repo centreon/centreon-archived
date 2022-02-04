@@ -35,5 +35,18 @@ class DbMetaServiceFactory
      */
     public static function createFromRecord(array $data): MetaService
     {
+        return (new MetaService(
+            (int) $data['id'],
+            $data['name'],
+            $data['calculation_type'],
+            (int) $data['meta_selection_mode'],
+            $data['data_source_type']
+        ))
+        ->setWarning(self::getIntOrNull($data['warning']))
+        ->setCritical(self::getIntOrNull($data['critical']))
+        ->setOutput($data['output'])
+        ->setMetric($data['metric'])
+        ->setActivated((int) $data['is_activated'] === 1)
+        ->setRegexpSearchServices($data['regexp_search_services']);
     }
 }

@@ -75,7 +75,8 @@ class FindMetaServicePresenter implements FindMetaServicePresenterInterface
             'active_checks' => $response->hasActiveChecks,
             'groups' => [],
             'parent' => null,
-            'monitoring_server_name' => null
+            'monitoring_server_name' => $response->monitoringServerName,
+            'calculation_type' => $response->calculationType,
         ];
 
         $acknowledgement = null;
