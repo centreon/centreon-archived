@@ -58,8 +58,9 @@ const ShortcutsTooltip = ({ resourceUris }: Props): JSX.Element => {
 
   return (
     <PopoverMenu
-      icon={<MoreHorizIcon fontSize="small" />}
+      icon={<MoreHorizIcon data-testid={t(labelShortcuts)} fontSize="small" />}
       title={t(labelShortcuts)}
+      
     >
       {(): JSX.Element => (
         <List dense>
@@ -68,8 +69,8 @@ const ShortcutsTooltip = ({ resourceUris }: Props): JSX.Element => {
               key={name}
               title={isNil(uri) ? (t(labelActionNotPermitted) as string) : ''}
             >
-              <div>
-                <Link
+              <div data-testid={t(name)}>
+                <Link               
                   aria-label={t(name)}
                   className={classes.link}
                   color="inherit"
