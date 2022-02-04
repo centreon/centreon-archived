@@ -58,17 +58,12 @@ class DbMetaServiceFactory
      */
     private static function normalizeCalculationType(?string $calculationType): string
     {
-        switch ($calculationType) {
-            case 'AVE':
-                return MetaService::CALCULTATION_TYPE_AVERAGE;
-            case 'MIN':
-                return MetaService::CALCULTATION_TYPE_MINIMUM;
-            case 'MAX':
-                return MetaService::CALCULTATION_TYPE_MAXIMUM;
-            case 'SOM':
-                return MetaService::CALCULTATION_TYPE_SUM;
-            default:
-                return MetaService::CALCULTATION_TYPE_AVERAGE;
+        return match ($calculationType) {
+            'AVE' => MetaService::CALCULTATION_TYPE_AVERAGE,
+            'MIN' => MetaService::CALCULTATION_TYPE_MINIMUM,
+            'MAX' => MetaService::CALCULTATION_TYPE_MAXIMUM,
+            'SOM' => MetaService::CALCULTATION_TYPE_SUM,
+            default => MetaService::CALCULTATION_TYPE_AVERAGE
         }
     }
 
