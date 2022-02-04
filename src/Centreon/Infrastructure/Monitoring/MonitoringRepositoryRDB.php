@@ -1873,7 +1873,7 @@ final class MonitoringRepositoryRDB extends AbstractRepositoryDRB implements Mon
             ON `cmts`.host_id = d.host_id AND `cmts`.service_id = d.service_id
             AND `cmts`.deletion_time IS NULL
         WHERE d.host_id = :hostId AND d.service_id = :serviceId
-            AND d.deletion_time IS NULL AND ((NOW() BETWEEN FROM_UNIXTIME(d.actual_start_time)
+            AND d.deletion_time IS NULL AND d.cancelled = 0 AND ((NOW() BETWEEN FROM_UNIXTIME(d.actual_start_time)
             AND FROM_UNIXTIME(d.actual_end_time)) OR ((NOW() > FROM_UNIXTIME(d.actual_start_time)
             AND d.actual_end_time IS NULL)))
         ORDER BY d.entry_time DESC';
