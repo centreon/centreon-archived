@@ -9,7 +9,7 @@ before(() => {
 
 When('I enter my credentials on the login page', () => {
   cy.get('input[aria-label="Alias"]').type('user1');
-  cy.get('input[aria-label="Password"]').type('user1');
+  cy.get('input[aria-label="Password"]').type('Centreon!2021User1');
   cy.get('button[aria-label="Connect"]').click();
 });
 
