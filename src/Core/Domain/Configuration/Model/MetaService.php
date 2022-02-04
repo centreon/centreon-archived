@@ -49,12 +49,12 @@ class MetaService
     private $metric;
 
     /**
-     * @var string|null Absolute value for warning level (low threshold).
+     * @var int|null Absolute value for warning level (low threshold).
      */
     private $warning;
 
     /**
-     * @var string|null Absolute value for critical level (high threshold).
+     * @var int|null Absolute value for critical level (high threshold).
      */
     private $critical;
 
@@ -181,36 +181,36 @@ class MetaService
     }
 
     /**
-     * @return string|null
+     * @return int|null
      */
-    public function getWarning(): ?string
+    public function getWarning(): ?int
     {
         return $this->warning;
     }
 
     /**
-     * @param string|null $warning
+     * @param int|null $warning
      * @return self
      */
-    public function setWarning(?string $warning): self
+    public function setWarning(?int $warning): self
     {
         $this->warning = $warning;
         return $this;
     }
 
     /**
-     * @return string|null
+     * @return int|null
      */
-    public function getCritical(): ?string
+    public function getCritical(): ?int
     {
         return $this->critical;
     }
 
     /**
-     * @param string|null $critical
+     * @param int|null $critical
      * @return self
      */
-    public function setCritical(?string $critical): self
+    public function setCritical(?int $critical): self
     {
         $this->critical = $critical;
         return $this;
