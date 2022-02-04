@@ -27,7 +27,7 @@ namespace Centreon\Domain\HostConfiguration\Exception;
  *
  * @package Centreon\Domain\HostConfiguration\Exception
  */
-class HostMacroException extends \Exception
+class HostMacroServiceException extends \Exception
 {
     /**
      * @param \Throwable $ex
@@ -36,5 +36,23 @@ class HostMacroException extends \Exception
     public static function addMacroException(\Throwable $ex): self
     {
         return new self(_('Error when adding a host macro'), 0, $ex);
+    }
+
+    /**
+     * @param \Throwable $ex
+     * @return self
+     */
+    public static function errorOnReadingHostMacros(\Throwable $ex): self
+    {
+        return new self(sprintf(_('Error on reading host macros (Reason: %s)'), $ex->getMessage()));
+    }
+
+    /**
+     * @param \Throwable $ex
+     * @return self
+     */
+    public static function errorOnUpdatingMacro(\Throwable $ex): self
+    {
+        return new self(sprintf(_('Error on updating a host macro (Reason: %s)'), $ex->getMessage()), 0, $ex);
     }
 }
