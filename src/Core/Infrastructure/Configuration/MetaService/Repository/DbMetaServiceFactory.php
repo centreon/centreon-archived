@@ -80,17 +80,12 @@ class DbMetaServiceFactory
      */
     private static function normalizeDataSourceType(?int $dataSourceType): string
     {
-        switch ($dataSourceType) {
-            case 0:
-                return MetaService::DATA_SOURCE_GAUGE;
-            case 1:
-                return MetaService::DATA_SOURCE_COUNTER;
-            case 2:
-                return MetaService::DATA_SOURCE_DERIVE;
-            case 3:
-                return MetaService::DATA_SOURCE_ABSOLUTE;
-            default:
-                return MetaService::DATA_SOURCE_GAUGE;
+        return match ($dataSourceType) {
+            0 => MetaService::DATA_SOURCE_GAUGE,
+            1 => MetaService::DATA_SOURCE_COUNTER,
+            2 => MetaService::DATA_SOURCE_DERIVE,
+            3 => MetaService::DATA_SOURCE_ABSOLUTE,
+            default => MetaService::DATA_SOURCE_GAUGE
         }
     }
 }
