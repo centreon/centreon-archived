@@ -46,6 +46,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Centreon\Domain\Monitoring\Interfaces\ResourceServiceInterface;
 use Centreon\Domain\Monitoring\Serializer\ResourceExclusionStrategy;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
+use Centreon\Domain\Monitoring\ResourceGroup;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 use Symfony\Component\Validator\ConstraintViolationList;
 use JsonSchema\Validator;
@@ -94,9 +95,10 @@ class MonitoringResourceController extends AbstractController
     private const HOST_REPORTING_URI = '/main.php?p=307&host={resource_id}';
     private const SERVICE_REPORTING_URI =
         '/main.php?p=30702&period=yesterday&start=&end=&host_id={parent_resource_id}&item={resource_id}';
-
     private const SERVICE_REDIRECT_URL_ENDPOINT = 'centreon_application_monitoring_resource_redirect_url_service';
     private const HOST_REDIRECT_URL_ENDPOINT = 'centreon_application_monitoring_resource_redirect_url_host';
+    private const HOSTGROUP_CONFIGURATION_URI = '/main.php?p=60102&o=c&hg_id={resource_group_id}';
+    private const SERVICEGROUP_CONFIGURATION_URI = '/main.php?p=60203&o=c&sg_id={resource_group_id}';
 
     private const RESOURCE_LISTING_URI = '/monitoring/resources';
 
@@ -306,6 +308,7 @@ class MonitoringResourceController extends AbstractController
         $this->provideLinks($resource, $contact);
 
         $this->resource->enrichHostWithDetails($resource);
+        $this->provideResourceGroupInternalUris($resource, $contact);
 
         if (
             $contact->hasRole(Contact::ROLE_DISPLAY_COMMAND) ||
@@ -374,6 +377,7 @@ class MonitoringResourceController extends AbstractController
         $this->provideLinks($resource, $contact);
 
         $this->resource->enrichServiceWithDetails($resource);
+        $this->provideResourceGroupInternalUris($resource, $contact);
 
         if (
             $contact->hasRole(Contact::ROLE_DISPLAY_COMMAND) ||
@@ -832,6 +836,48 @@ class MonitoringResourceController extends AbstractController
     }
 
     /**
+     * This function adds to the group the redirection URI to the configuration
+     *
+     * @param ResourceEntity $resource
+     * @param Contact $contact
+     * @return void
+     */
+    private function provideResourceGroupInternalUris(ResourceEntity $resource, Contact $contact): void
+    {
+        if ($resource->getType() === ResourceEntity::TYPE_HOST) {
+            if (
+                $contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_HOSTS_HOST_GROUPS_READ_WRITE)
+                || $contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_HOSTS_HOST_GROUPS_READ)
+                || $contact->isAdmin()
+            ) {
+                foreach ($resource->getGroups() as $group) {
+                    $group->setConfigurationUri(
+                        $this->generateResourceGroupConfigurationUri(
+                            $group,
+                            self::HOSTGROUP_CONFIGURATION_URI
+                        )
+                    );
+                }
+            }
+        } elseif ($resource->getType() === ResourceEntity::TYPE_SERVICE) {
+            if (
+                $contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_SERVICES_SERVICE_GROUPS_READ_WRITE)
+                || $contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_SERVICES_SERVICE_GROUPS_READ)
+                || $contact->isAdmin()
+            ) {
+                foreach ($resource->getGroups() as $group) {
+                    $group->setConfigurationUri(
+                        $this->generateResourceGroupConfigurationUri(
+                            $group,
+                            self::SERVICEGROUP_CONFIGURATION_URI
+                        )
+                    );
+                }
+            }
+        }
+    }
+
+    /**
      * Generate full uri from relative path
      *
      * @param ResourceEntity $resource
@@ -848,6 +894,19 @@ class MonitoringResourceController extends AbstractController
             $relativeUri = str_replace('{parent_resource_id}', (string) $resource->getParent()->getId(), $relativeUri);
         }
 
+        return $this->getBaseUri() . $relativeUri;
+    }
+
+    /**
+     * Generate full uri from relative path for ResourceGroup
+     *
+     * @param ResourceGroup $group
+     * @param string $relativeUri
+     * @return string
+     */
+    private function generateResourceGroupConfigurationUri(ResourceGroup $group, string $relativeUri): string
+    {
+        $relativeUri = str_replace('{resource_group_id}', (string) $group->getId(), $relativeUri);
         return $this->getBaseUri() . $relativeUri;
     }
 
