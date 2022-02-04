@@ -38,9 +38,9 @@ class DbMetaServiceFactory
         return (new MetaService(
             (int) $data['id'],
             $data['name'],
-            $data['calculation_type'],
+            self::normalizeCalculationType($data['calculation_type']),
             (int) $data['meta_selection_mode'],
-            $data['data_source_type']
+            self::normalizeDataSourceType((int) $data['data_source_type'])
         ))
         ->setWarning(self::getIntOrNull($data['warning']))
         ->setCritical(self::getIntOrNull($data['critical']))
@@ -48,5 +48,49 @@ class DbMetaServiceFactory
         ->setMetric($data['metric'])
         ->setActivated((int) $data['is_activated'] === 1)
         ->setRegexpSearchServices($data['regexp_search_services']);
+    }
+
+    /**
+     * This function will normalize the calculation type coming from the database
+     *
+     * @param string|null $calculationType
+     * @return string
+     */
+    private static function normalizeCalculationType(?string $calculationType): string
+    {
+        switch ($calculationType) {
+            case 'AVE':
+                return MetaService::CALCULTATION_TYPE_AVERAGE;
+            case 'MIN':
+                return MetaService::CALCULTATION_TYPE_MINIMUM;
+            case 'MAX':
+                return MetaService::CALCULTATION_TYPE_MAXIMUM;
+            case 'SOM':
+                return MetaService::CALCULTATION_TYPE_SUM;
+            default:
+                return MetaService::CALCULTATION_TYPE_AVERAGE;
+        }
+    }
+
+    /**
+     * This function will normalize the data source type coming from the database
+     *
+     * @param int|null $dataSourceType
+     * @return string
+     */
+    private static function normalizeDataSourceType(?int $dataSourceType): string
+    {
+        switch ($dataSourceType) {
+            case 0:
+                return MetaService::DATA_SOURCE_GAUGE;
+            case 1:
+                return MetaService::DATA_SOURCE_COUNTER;
+            case 2:
+                return MetaService::DATA_SOURCE_DERIVE;
+            case 3:
+                return MetaService::DATA_SOURCE_ABSOLUTE;
+            default:
+                return MetaService::DATA_SOURCE_GAUGE;
+        }
     }
 }

@@ -61,6 +61,11 @@ class DbReadMetaServiceRepository extends AbstractRepositoryDRB implements ReadM
         return $this->findMetaService($metaId, $accessGroupRequest);
     }
 
+    /**
+     * @param int $metaId
+     * @param string|null $accessGroupRequest
+     * @return MetaService|null
+     */
     private function findMetaService(int $metaId, ?string $accessGroupRequest = null): ?MetaService
     {
         $request = "SELECT
