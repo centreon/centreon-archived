@@ -20,7 +20,7 @@
  */
 declare(strict_types=1);
 
-namespace Core\Infrastructure\Configuration\Repository\MetaService;
+namespace Core\Infrastructure\Configuration\MetaService\Repository;
 
 use Core\Domain\Configuration\Model\MetaService;
 use Core\Infrastructure\Common\Repository\DbFactoryUtilitiesTrait;

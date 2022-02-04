@@ -20,7 +20,7 @@
  */
 declare(strict_types=1);
 
-namespace Core\Infrastructure\RealTime\Repository\MetaService;
+namespace Core\Infrastructure\Configuration\MetaService\Repository;
 
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;

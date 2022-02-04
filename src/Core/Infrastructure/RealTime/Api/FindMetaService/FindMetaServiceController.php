@@ -26,7 +26,7 @@ use Centreon\Application\Controller\AbstractController;
 use Core\Application\RealTime\UseCase\FindMetaService\FindMetaService;
 use Core\Application\RealTime\UseCase\FindMetaService\FindMetaServicePresenterInterface;
 
-class MetaServiceController extends AbstractController
+class FindMetaServiceController extends AbstractController
 {
     /**
      * @param int $metaId
