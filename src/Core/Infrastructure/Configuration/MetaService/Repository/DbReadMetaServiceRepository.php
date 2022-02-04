@@ -75,26 +75,14 @@ class DbReadMetaServiceRepository extends AbstractRepositoryDRB implements ReadM
         $request = "SELECT ms.meta_id AS `id`,
             ms.meta_name AS `name`,
             ms.meta_display AS `output`,
-            ms.data_source_type,
-            CASE
-                WHEN ms.data_source_type = 0 THEN 'gauge'
-                WHEN ms.data_source_type = 1 THEN 'counter'
-                WHEN ms.data_source_type = 2 THEN 'derive'
-                WHEN ms.data_source_type = 3 THEN 'absolute'
-            END AS `data_source_type`,
+            ms.data_source_type AS `data_source_type`,
             ms.meta_select_mode AS `meta_slection_mode`,
             ms.regexp_str,
             ms.metric,
             ms.warning,
             ms.critical,
             ms.meta_activate AS `is_activated`,
-            ms.calcul_type,
-            CASE
-                WHEN ms.calcul_type = 'AVE' THEN 'average'
-                WHEN ms.calcul_type = 'SOM' THEN 'sum'
-                WHEN ms.calcul_type = 'MIN' THEN 'minimum'
-                WHEN ms.calcul_type = 'MAX' THEN 'maximum'
-            END AS `calculation_type`
+            ms.calcul_type AS `calculation_type`
         FROM `:db`.meta_service ms";
 
         $request .= ' WHERE ms.meta_id = :meta_id';

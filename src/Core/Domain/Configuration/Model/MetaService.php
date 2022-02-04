@@ -73,12 +73,12 @@ class MetaService
     /**
      * @var int|null Absolute value for warning level (low threshold).
      */
-    private $warning;
+    private $warningThreshold;
 
     /**
      * @var int|null Absolute value for critical level (high threshold).
      */
-    private $critical;
+    private $criticalThreshold;
 
     /**
      * @var bool Indicates whether this Meta Service is enabled or not (TRUE by default)
@@ -205,36 +205,36 @@ class MetaService
     /**
      * @return int|null
      */
-    public function getWarning(): ?int
+    public function getWarningThreshold(): ?int
     {
-        return $this->warning;
+        return $this->warningThreshold;
     }
 
     /**
-     * @param int|null $warning
+     * @param int|null $warningThreshold
      * @return self
      */
-    public function setWarning(?int $warning): self
+    public function setWarningThreshold(?int $warningThreshold): self
     {
-        $this->warning = $warning;
+        $this->warningThreshold = $warningThreshold;
         return $this;
     }
 
     /**
      * @return int|null
      */
-    public function getCritical(): ?int
+    public function getCriticalThreshold(): ?int
     {
-        return $this->critical;
+        return $this->criticalThreshold;
     }
 
     /**
-     * @param int|null $critical
+     * @param int|null $criticalThreshold
      * @return self
      */
-    public function setCritical(?int $critical): self
+    public function setCriticalThreshold(?int $criticalThreshold): self
     {
-        $this->critical = $critical;
+        $this->criticalThreshold = $criticalThreshold;
         return $this;
     }
 
