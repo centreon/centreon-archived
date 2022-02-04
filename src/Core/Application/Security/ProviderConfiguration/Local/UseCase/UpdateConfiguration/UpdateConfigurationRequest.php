@@ -71,6 +71,11 @@ class UpdateConfigurationRequest
     public ?int $passwordExpirationDelay;
 
     /**
+     * @var string[]
+     */
+    public array $passwordExpirationExcludedUserAliases;
+
+    /**
      * @var int|null
      */
     public ?int $delayBeforeNewPassword;
