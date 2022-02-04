@@ -26,8 +26,30 @@ use Centreon\Domain\Common\Assertion\Assertion;
 
 class MetaService
 {
-    public const AVAILABLE_DATA_SOURCE_TYPES = ['gauge', 'counter', 'derive', 'absolute'];
-    public const AVAILABLE_CALCULATION_TYPES = ['average', 'minimum', 'maximum', 'sum'];
+    public const CALCULTATION_TYPE_AVERAGE = 'average',
+                 CALCULTATION_TYPE_MINIMUM = 'minimum',
+                 CALCULTATION_TYPE_MAXIMUM = 'maximum',
+                 CALCULTATION_TYPE_SUM = 'sum';
+
+    public const AVAILABLE_CALCULATION_TYPES = [
+        self::CALCULTATION_TYPE_AVERAGE,
+        self::CALCULTATION_TYPE_MAXIMUM,
+        self::CALCULTATION_TYPE_MINIMUM,
+        self::CALCULTATION_TYPE_SUM,
+    ];
+
+    public const DATA_SOURCE_GAUGE = 'gauge',
+                 DATA_SOURCE_COUNTER = 'counter',
+                 DATA_SOURCE_DERIVE = 'derive',
+                 DATA_SOURCE_ABSOLUTE = 'absolute';
+
+    public const AVAILABLE_DATA_SOURCE_TYPES = [
+        self::DATA_SOURCE_ABSOLUTE,
+        self::DATA_SOURCE_COUNTER,
+        self::DATA_SOURCE_DERIVE,
+        self::DATA_SOURCE_GAUGE,
+    ];
+
     public const META_SELECT_MODE_LIST = 1;
     public const META_SELECT_MODE_SQL_REGEXP = 2;
 
