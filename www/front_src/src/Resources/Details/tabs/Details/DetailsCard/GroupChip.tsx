@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
     minWidth: theme.spacing(7),
     overflow: 'hidden',
   },
-  chipLabelColor: { color: 'transparent' || 'unset' },
+  chipLabelColor: { color: 'transparent' },
 }));
 
 interface Props {
