@@ -126,7 +126,7 @@ class CentreonStatsModules
                     $oModuleObject = new $moduleObject();
                     $data[] = $oModuleObject->getStats();
                 } catch (\Throwable $e) {
-                    $this->logger->error($e->getMessage, ['context' => $e]);
+                    $this->logger->error($e->getMessage(), ['context' => $e]);
                 }
             }
         }
