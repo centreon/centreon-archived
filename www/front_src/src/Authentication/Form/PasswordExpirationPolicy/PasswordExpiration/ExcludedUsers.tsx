@@ -5,7 +5,12 @@ import { FormikValues, useFormikContext } from 'formik';
 import { equals, has, inc, map, pluck } from 'ramda';
 import { filter } from 'domutils';
 
-import { IconButton, ListItemText, Tooltip } from '@mui/material';
+import {
+  IconButton,
+  ListItemText,
+  Tooltip,
+  TypographyProps,
+} from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
 
@@ -35,6 +40,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const optionTypographyProps = { component: 'span' } as TypographyProps;
+
 const ExcludedUsers = (): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
@@ -51,7 +58,12 @@ const ExcludedUsers = (): JSX.Element => {
 
     return (
       <div className={classes.option}>
-        <ListItemText primary={alias} secondary={email} />
+        <ListItemText
+          primary={alias}
+          primaryTypographyProps={optionTypographyProps}
+          secondary={email}
+          secondaryTypographyProps={optionTypographyProps}
+        />
         {isAdmin ? (
           <Tooltip
             classes={{
@@ -79,6 +91,8 @@ const ExcludedUsers = (): JSX.Element => {
   const filterOptions = (options): Array<unknown> =>
     filter((option) => has('email', option), options);
 
+  const getOptionLabel = (option): string => option.alias;
+
   const excludedUsers = getField<Array<string>>({
     field: excludedUsersFieldName,
     object: values,
@@ -96,7 +110,7 @@ const ExcludedUsers = (): JSX.Element => {
       field="alias"
       filterOptions={filterOptions}
       getEndpoint={getEndpoint}
-      getOptionLabel={(option): string => option.alias}
+      getOptionLabel={getOptionLabel}
       getRenderedOptionText={getRenderedOptionText}
       isOptionEqualToValue={isOptionEqualToValue}
       label={t(labelExcludedUsers)}
