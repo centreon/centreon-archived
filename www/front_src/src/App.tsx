@@ -30,7 +30,6 @@ import Provider from './Provider';
 const MainRouter = React.lazy(() => import('./components/mainRouter'));
 const Header = React.lazy(() => import('./Header'));
 const Navigation = React.lazy(() => import('./Navigation'));
-const Footer = React.lazy(() => import('./Footer'));
 
 const Content = styled('div')({
   display: 'flex',
@@ -188,13 +187,6 @@ class App extends Component<Props, State> {
                   </RouterWrapper>
                 </Fullscreen>
               </FullscreenWrapper>
-              {!min && (
-                <React.Suspense
-                  fallback={<LoadingSkeleton height={30} width="100%" />}
-                >
-                  <Footer />
-                </React.Suspense>
-              )}
             </Content>
             <FullscreenButton
               color="default"
