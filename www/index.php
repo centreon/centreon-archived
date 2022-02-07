@@ -78,14 +78,19 @@ if (version_compare(phpversion(), '8.0') < 0) {
 } else {
     if (
         isset($_POST["centreon_token"])
-        || (isset($_GET["autologin"]) && $_GET["autologin"]
+        || (
+            isset($_GET["autologin"]) && $_GET["autologin"]
             && isset($generalOptions["enable_autologin"])
             && $generalOptions["enable_autologin"])
-        || (isset($_POST["autologin"]) && $_POST["autologin"]
+        || (
+            isset($_POST["autologin"]) && $_POST["autologin"]
             && isset($generalOptions["enable_autologin"])
             && $generalOptions["enable_autologin"])
-        || (!isset($generalOptions['sso_enable']) || $generalOptions['sso_enable'] == 1)
-        || (!isset($generalOptions['openid_connect_enable']) || $generalOptions['openid_connect_enable'] == 1)
+        || (
+            !isset($generalOptions['sso_enable'])
+            || $generalOptions['sso_enable'] == 1)
+        || (
+            !isset($generalOptions['openid_connect_enable']) || $generalOptions['openid_connect_enable'] == 1)
     ) {
         if (isset($_POST['p'])) {
             $_GET["p"] = $_POST["p"];
@@ -97,19 +102,14 @@ if (version_compare(phpversion(), '8.0') < 0) {
         /*
         * Init log class
         */
-        $CentreonLog = new CentreonUserLog(-1, $pearDB);
+        $centreonLog = new CentreonUserLog(-1, $pearDB);
 
         /*
         * Check first for Autologin or Get Authentication
         */
-        $autologin = isset($_GET["autologin"]) ? $_GET["autologin"] : CentreonAuthSSO::AUTOLOGIN_DISABLE;
-        $useraliasG = isset($_GET["useralias"]) ? $_GET["useralias"] : null;
-
-        $useraliasP = null;
-        $passwordP = null;
-
-        $useralias = $useraliasG ?? $useraliasP;
-        $password = $passwordG ?? $passwordP;
+        $autologin = $_GET["autologin"] ?? CentreonAuthSSO::AUTOLOGIN_DISABLE;
+        $useralias = $_GET["useralias"] ?? null;
+        $password = $passwordG ?? null;
 
         $token = "";
         if (isset($_REQUEST['token']) && $_REQUEST['token']) {
@@ -126,7 +126,7 @@ if (version_compare(phpversion(), '8.0') < 0) {
             $password,
             $autologin,
             $pearDB,
-            $CentreonLog,
+            $centreonLog,
             $encryptType,
             $token,
             $generalOptions
