@@ -42,20 +42,6 @@ define('SMARTY_DIR', realpath('../vendor/smarty/smarty/libs/') . '/');
 
 ini_set('display_errors', 'Off');
 
-clearstatcache(true, $etc . "/centreon.conf.php");
-if (!file_exists($etc . "/centreon.conf.php") && is_dir('./install')) {
-    header("Location: ./install/install.php");
-    return;
-} elseif (file_exists("$etc/centreon.conf.php") && is_dir('install')) {
-    require_once $etc . "/centreon.conf.php";
-    header("Location: ./install/upgrade.php");
-} else {
-    if (file_exists($etc . "/centreon.conf.php")) {
-        require_once $etc . "/centreon.conf.php";
-    }
-    $freeze = 0;
-}
-
 require_once $classdir . "/centreon.class.php";
 require_once $classdir . "/centreonSession.class.php";
 require_once $classdir . "/centreonAuth.SSO.class.php";
@@ -74,65 +60,7 @@ while ($generalOption = $dbResult->fetch()) {
 }
 $dbResult->closeCursor();
 
-/*
- * detect installation dir
- */
-$file_install_access = 0;
-if (file_exists("./install/setup.php")) {
-    $error_msg = "Installation Directory '" . __DIR__ .
-        "/install/' is accessible. Delete this directory to prevent security problem.";
-    $file_install_access = 1;
-}
-
-/**
- * Install frontend assets if needed
- */
-$requestUri = filter_var(
-    $_SERVER['REQUEST_URI'],
-    FILTER_SANITIZE_STRING,
-    [
-        'options' => [
-            'default' => '/centreon/'
-        ]
-    ]
-);
-$basePath = '/' . trim(explode('index.php', $requestUri)[0], "/") . '/';
-$basePath = str_replace('//', '/', $basePath);
-$indexHtmlPath = './index.html';
-$indexHtmlContent = file_get_contents($indexHtmlPath);
-
-// update base path only if it has changed
-if (!preg_match('/.*<base\shref="' . preg_quote($basePath, '/') . '">/', $indexHtmlContent)) {
-    $indexHtmlContent = preg_replace(
-        '/(^.*<base\shref=")\S+(">.*$)/s',
-        '${1}' . $basePath . '${2}',
-        $indexHtmlContent
-    );
-
-    file_put_contents($indexHtmlPath, $indexHtmlContent);
-}
-
 CentreonSession::start();
-
-if (isset($_GET["disconnect"])) {
-    $centreon = &$_SESSION["centreon"];
-
-    /*
-     * Init log class
-     */
-    if (is_object($centreon)) {
-        $CentreonLog = new CentreonUserLog($centreon->user->get_id(), $pearDB);
-        $CentreonLog->insertLog(1, "Contact '" . $centreon->user->get_alias() . "' logout");
-
-        $pearDB->query("DELETE FROM session WHERE session_id = '" . session_id() . "'");
-
-        $sessionStatement = $pearDB->prepare("DELETE FROM security_token WHERE token = :sessionId");
-        $sessionStatement->bindValue(':sessionId', session_id(), \PDO::PARAM_STR);
-        $sessionStatement->execute();
-
-        CentreonSession::restart();
-    }
-}
 
 /*
  * Already connected
