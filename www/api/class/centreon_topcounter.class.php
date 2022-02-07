@@ -580,7 +580,7 @@ class CentreonTopCounter extends CentreonWebService
         $query .= ' WHERE i.deleted = 0
             AND h.instance_id = i.instance_id
             AND h.enabled = 1
-            AND h.name NOT LIKE "_Module_%"';
+            AND h.name NOT LIKE "\_Module\_%"';
 
         if (!$this->centreon->user->admin) {
             $query .= ' AND EXISTS (
