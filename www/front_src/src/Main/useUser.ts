@@ -1,6 +1,6 @@
 import { useAtom, atom } from 'jotai';
 import { useUpdateAtom } from 'jotai/utils';
-import { isNil, or, pathEq } from 'ramda';
+import { isNil, not, or, pathEq } from 'ramda';
 
 import { User, userAtom } from '@centreon/ui-context';
 import { useRequest, getData } from '@centreon/ui';
@@ -60,14 +60,18 @@ const useUser = (
         setAreUserParametersLoaded(true);
       })
       .catch((error) => {
-        const isUserNotAllowed = or(
-          pathEq(['response', 'status'], 403)(error),
-          pathEq(['response', 'status'], 401)(error),
+        const isUserAllowed = not(
+          or(
+            pathEq(['response', 'status'], 403)(error),
+            pathEq(['response', 'status'], 401)(error),
+          ),
         );
 
-        if (isUserNotAllowed) {
-          setAreUserParametersLoaded(false);
+        if (isUserAllowed) {
+          return;
         }
+
+        setAreUserParametersLoaded(false);
       });
   };
 
