@@ -59,18 +59,20 @@ if (!isset($obj->session_id) || !CentreonSession::checkSession($sid, $obj->DB)) 
 
 if (!isset($_SESSION['centreon_notification_preferences'])) {
     $userId = $centreon->user->get_id();
-    $userId = filter_var($userId, FILTER_VALIDATE_INT);
-    $resPref = $obj->DB->prepare("SELECT cp_key, cp_value
-         FROM contact_param
-         WHERE cp_key LIKE 'monitoring%notification%'
-         AND cp_contact_id = :cp_contact_id");
-    $resPref->bindValue(":cp_contact_id", $obj->DB->escape($userId), PDO::PARAM_INT);
-    $resPref->execute();
-    $notificationPreferences = [];
-    while ($rowPref = $resPref->fetch()) {
-        $notificationPreferences[$rowPref['cp_key']] = $rowPref['cp_value'];
+    $userId = filter_var($userId ?? false, FILTER_VALIDATE_INT);
+    if (false !== $userId) {
+        $resPref = $obj->DB->prepare("SELECT cp_key, cp_value
+            FROM contact_param
+            WHERE cp_key LIKE 'monitoring%notification%'
+            AND cp_contact_id = :cp_contact_id");
+        $resPref->bindValue(":cp_contact_id", $obj->DB->escape($userId), PDO::PARAM_INT);
+        $resPref->execute();
+        $notificationPreferences = [];
+        while ($rowPref = $resPref->fetch()) {
+            $notificationPreferences[$rowPref['cp_key']] = $rowPref['cp_value'];
+        }
+        $_SESSION['centreon_notification_preferences'] = $notificationPreferences;
     }
-    $_SESSION['centreon_notification_preferences'] = $notificationPreferences;
 } else {
     $notificationPreferences = $_SESSION['centreon_notification_preferences'];
 }
