@@ -18,13 +18,11 @@ import { isNil } from 'ramda';
 import { Route, Routes } from 'react-router-dom';
 import { useAtomValue } from 'jotai/utils';
 
-import { SnackbarProvider } from '@centreon/ui';
-
 import { platformInstallationStatusAtom } from '../platformInstallationStatusAtom';
 import reactRoutes from '../reactRoutes/routeMap';
 
 import Provider from './Provider';
-import MainLoader from './MainLoader';
+import { MainLoader, MainLoaderWithoutTranslation } from './MainLoader';
 import useMain from './useMain';
 
 dayjs.extend(localizedFormat);
@@ -49,7 +47,7 @@ const Main = (): JSX.Element => {
   );
 
   if (isNil(platformInstallationStatus)) {
-    return <MainLoader />;
+    return <MainLoaderWithoutTranslation />;
   }
 
   return (
@@ -64,8 +62,6 @@ const Main = (): JSX.Element => {
 
 export default (): JSX.Element => (
   <Provider>
-    <SnackbarProvider>
-      <Main />
-    </SnackbarProvider>
+    <Main />
   </Provider>
 );
