@@ -250,7 +250,7 @@ $period_choice = filter_var(
 );
 
 $period = filter_var(
-    $_POST['period'] ?? $_GET['period'],
+    $_POST['period'] ?? $_GET['period'] ?? '',
     FILTER_SANITIZE_STRING
 );
 
