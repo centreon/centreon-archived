@@ -32,8 +32,6 @@ class CreateCoreArchCommand extends Command
 
     private ModelTemplate $modelTemplate;
 
-    private WriteRepositoryInterfaceTemplate $repositoryInterfaceTemplate;
-
     /**
      * @param CreateCoreArchCommandService $commandService
      * @param CreateCoreQueryArchCommandService $queryArchCommandService
@@ -73,16 +71,30 @@ class CreateCoreArchCommand extends Command
         $this->useCaseType = $this->commandService->askForUseCaseType($input, $output, $questionHelper);
         $this->modelTemplate = $this->commandService->askForModel($input, $output, $questionHelper);
         if ($this->isAQueryUseCase()) {
-            $this->repositoryInterfaceTemplate =
-                $this->queryArchCommandService->askForWriteRepositoryInterfaceInformations(
-                    $input,
+            $this->queryArchCommandService
+                ->createWriteRepositoryInterfaceTemplateIfNotExist(
                     $output,
-                    $questionHelper,
                     $this->modelTemplate->name
                 );
-            dump($this->repositoryInterfaceTemplate);
-            // $this->repositoryTemplate = $this->queryArchCommandService->askForWriteRepositoryInformations();
-            // $this->dto = $this->queryArchCommandService->askForRequestDtoInformations();
+            $this->queryArchCommandService->createWriteRepositoryTemplateIfNotExist(
+                $output,
+                $this->modelTemplate->name,
+            );
+            $this->queryArchCommandService->createRequestDtoTemplateIfNotExist(
+                $output,
+                $this->modelTemplate->name,
+                $this->useCaseType
+            );
+            $this->queryArchCommandService->createPresenterInterfaceIfNotExist(
+                $output,
+                $this->modelTemplate->name,
+                $this->useCaseType
+            );
+            $this->queryArchCommandService->createPresenterIfNotExist(
+                $output,
+                $this->modelTemplate->name,
+                $this->useCaseType
+            );
         } else {
             // $this->repositoryInterfaceTemplate =
             //     $this->commandArchCommandService->askForReadRepositoryInterfaceInformations();

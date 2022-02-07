@@ -2,106 +2,218 @@
 
 namespace Core\Infrastructure\Common\Command\Service;
 
-use Symfony\Component\Console\Question\Question;
-use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\ChoiceQuestion;
-use Symfony\Component\Console\Question\ConfirmationQuestion;
+use Core\Infrastructure\Common\Command\Model\DtoTemplate\RequestDtoTemplate;
+use Core\Infrastructure\Common\Command\Model\PresenterTemplate\QueryPresenterInterfaceTemplate;
+use Core\Infrastructure\Common\Command\Model\RepositoryTemplate\WriteRepositoryTemplate;
 use Core\Infrastructure\Common\Command\Model\RepositoryTemplate\WriteRepositoryInterfaceTemplate;
 
 class CreateCoreQueryArchCommandService
 {
-    public function __construct(private string $srcPath, private string $infrastructureDir)
+    private WriteRepositoryInterfaceTemplate $writeRepositoryInterfaceTemplate;
+    private WriteRepositoryTemplate $writeRepositoryTemplate;
+    private RequestDtoTemplate $requestDtoTemplate;
+    private QueryPresenterInterfaceTemplate $queryPresenterInterfaceTemplate;
+
+    public function __construct(private string $srcPath)
     {
-        $this->$infrastructureDir = $this->srcPath . DIRECTORY_SEPARATOR . 'Core' . DIRECTORY_SEPARATOR .
-            'Infrastructure';
     }
 
-    public function askForWriteRepositoryInterfaceInformations(
-        InputInterface $input,
+    /**
+     * Create the Write Repository Interface file if it doesn't exist.
+     *
+     * @param OutputInterface $output
+     * @param string $modelName
+     */
+    public function createWriteRepositoryInterfaceTemplateIfNotExist(
         OutputInterface $output,
-        $questionHelper,
         string $modelName
-    ): WriteRepositoryInterfaceTemplate {
-        $questionRepositoryInterfaceName = new Question(
-            'What is the name of the repository interface ? ',
-            'Write' . $modelName . 'RepositoryInterface'
-        );
-        $writeRepositoryInterfaceName = $questionHelper->ask($input, $output, $questionRepositoryInterfaceName);
-        $foundInterfaces = $this->searchExistingWriteRepositoryInterface($writeRepositoryInterfaceName);
-        if (!empty($foundInterfaces)) {
-            $output->writeln('');
-            $output->writeln('Some Interfaces for [' . $writeRepositoryInterfaceName . '] has been found:');
-
-            // Extract namespace from files
-            $existingNamespace = [];
-            foreach ($foundInterfaces as $foundInterface) {
-                $output->writeln('- ' . $foundInterface['namespace'] . '\\' . $writeRepositoryInterfaceName);
-                $existingNamespace[] = $foundInterface['namespace'] . '\\' . $writeRepositoryInterfaceName;
-            }
-            $output->writeln('');
-
-            $questionUseExistingInterface = new ConfirmationQuestion(
-                'would you like to use one of those models ? ',
+    ): void {
+        $filePath = $this->srcPath . '/Core/Application/' . $modelName . '/Repository/' . 'Write' .
+            $modelName . 'RepositoryInterface.php';
+        $namespace = 'Core\\Application\\' . $modelName . '\\Repository';
+        if (!file_exists($filePath)) {
+            $this->writeRepositoryInterfaceTemplate = new WriteRepositoryInterfaceTemplate(
+                $filePath,
+                $namespace,
+                'Write' . $modelName . 'RepositoryInterface',
                 false
             );
-            $useExistingInterface = $questionHelper->ask($input, $output, $questionUseExistingInterface, false);
-
-            // Use an existing model.
-            if ($useExistingInterface === true) {
-                $questionWhichExistingModelUsed = new ChoiceQuestion(
-                    'Which interfaces would you like to use ? ',
-                    $existingNamespace
-                );
-                $interfaceNamespace = $questionHelper->ask($input, $output, $questionWhichExistingModelUsed);
-                $namespaceValue = preg_replace('/\\\\' . $writeRepositoryInterfaceName . '$/', '', $interfaceNamespace);
-                foreach ($foundInterfaces as $key => $foundInterface) {
-                    if ($foundInterface['namespace'] === $namespaceValue) {
-                        $namespaceIndex = $key;
-                        break;
-                    }
-                }
-                return new WriteRepositoryInterfaceTemplate(
-                    $foundInterfaces[$namespaceIndex]['path'],
-                    $foundInterfaces[$namespaceIndex]['namespace'],
-                    $writeRepositoryInterfaceName,
-                    true
-                );
+            preg_match('/^(.+).Write' . $modelName . 'RepositoryInterface\.php$/', $filePath, $matches);
+            $dirLocation = $matches[1];
+            //Create dir if not exists,
+            if (!is_dir($dirLocation)) {
+                mkdir($dirLocation, 0777, true);
             }
+
+            file_put_contents(
+                $this->writeRepositoryInterfaceTemplate->filePath,
+                $this->writeRepositoryInterfaceTemplate->generateModelContent()
+            );
+            $output->writeln(
+                'Creating Interface : ' . $this->writeRepositoryInterfaceTemplate->namespace . '\\'
+                    . $this->writeRepositoryInterfaceTemplate->name
+            );
+        } else {
+            $this->writeRepositoryInterfaceTemplate = new WriteRepositoryInterfaceTemplate(
+                $filePath,
+                $namespace,
+                'Write' . $modelName . 'RepositoryInterface',
+                true
+            );
+            $output->writeln(
+                'Using Existing Interface : ' . $this->writeRepositoryInterfaceTemplate->namespace . '\\'
+                    . $this->writeRepositoryInterfaceTemplate->name
+            );
         }
-        $questionNewNamespace = new Question('In which namespace would you like to create your Model ? ');
-        $newNamespace = $questionHelper->ask($input, $output, $questionNewNamespace);
-        $filePath = $this->srcPath . DIRECTORY_SEPARATOR . preg_replace("/\\\\/", DIRECTORY_SEPARATOR, $newNamespace) .
-            DIRECTORY_SEPARATOR . $writeRepositoryInterfaceName . '.php';
-        return new WriteRepositoryInterfaceTemplate($filePath, $newNamespace, $writeRepositoryInterfaceName);
     }
 
-    public function searchExistingWriteRepositoryInterface(string $interfaceName): array
-    {
-        $interfacesInfos = iterator_to_array(
-            new \GlobIterator(
-                $this->srcPath . '/Core/Application/*/Repository/' . $interfaceName . '.php'
-            )
-        );
-
-        $foundInterfaces = [];
-        $index = 0;
-        foreach ($interfacesInfos as $interface) {
-            $foundInterfaces[$index]['path'] = $interface->getRealPath();
-            $fileContent = file($interface->getRealPath());
-
-            // extract namespace
-            foreach ($fileContent as $fileLine) {
-                if (strpos($fileLine, 'namespace') !== false) {
-                    $parts = explode(' ', $fileLine);
-                    $namespace = rtrim(trim($parts[1]), ';\n');
-                    $foundInterfaces[$index]['namespace'] = $namespace;
-                    break;
-                }
+    /**
+     * Create the Write Repository file if it doesn't exist.
+     *
+     * @param OutputInterface $output
+     * @param string $modelName
+     */
+    public function createWriteRepositoryTemplateIfNotExist(
+        OutputInterface $output,
+        string $modelName
+    ): void {
+        $filePath = $this->srcPath . '/Core/Infrastructure/' . $modelName . '/Repository/' . 'DbWrite'
+            . $modelName . 'Repository.php';
+        $namespace = 'Core\\Infrastructure\\' . $modelName . '\\Repository';
+        if (!file_exists($filePath)) {
+            $this->writeRepositoryTemplate = new WriteRepositoryTemplate(
+                $filePath,
+                $namespace,
+                'DbWrite' . $modelName . 'Repository',
+                $this->writeRepositoryInterfaceTemplate,
+                false
+            );
+            preg_match('/^(.+).DbWrite' . $modelName . 'Repository\.php$/', $filePath, $matches);
+            $dirLocation = $matches[1];
+            //Create dir if not exists,
+            if (!is_dir($dirLocation)) {
+                mkdir($dirLocation, 0777, true);
             }
-            $index++;
-        }
 
-        return $foundInterfaces;
+            file_put_contents(
+                $this->writeRepositoryTemplate->filePath,
+                $this->writeRepositoryTemplate->generateModelContent()
+            );
+            $output->writeln(
+                'Creating Repository : ' . $this->writeRepositoryTemplate->namespace . '\\'
+                    . $this->writeRepositoryTemplate->name
+            );
+        } else {
+            $this->writeRepositoryTemplate = new WriteRepositoryTemplate(
+                $filePath,
+                $namespace,
+                'DbWrite' . $modelName . 'Repository',
+                $this->writeRepositoryInterfaceTemplate,
+                true
+            );
+            $output->writeln(
+                'Using Existing Repository : ' . $this->writeRepositoryTemplate->namespace . '\\'
+                    . $this->writeRepositoryTemplate->name
+            );
+        }
+    }
+
+    /**
+     * Create the Request Dto file if it doesn't exist.
+     *
+     * @param OutputInterface $output
+     * @param string $modelName
+     * @return void
+     */
+    public function createRequestDtoTemplateIfNotExist(
+        OutputInterface $output,
+        string $modelName,
+        string $useCaseType
+    ): void {
+        $useCaseName = $useCaseType . $modelName;
+        $className = $useCaseName . 'Request';
+        $filePath = $this->srcPath . '/Core/Application/' . $modelName . '/UseCase/' . $useCaseName . '\\'
+            . $className . '.php';
+        $namespace = 'Core\\Application\\' . $modelName . '\\UseCase\\' . $useCaseName;
+        if (!file_exists($filePath)) {
+            $this->requestDtoTemplate = new RequestDtoTemplate(
+                $filePath,
+                $namespace,
+                $className,
+                false
+            );
+            preg_match('/^(.+).' . $className . '\.php$/', $filePath, $matches);
+            $dirLocation = $matches[1];
+            //Create dir if not exists,
+            if (!is_dir($dirLocation)) {
+                mkdir($dirLocation, 0777, true);
+            }
+
+            file_put_contents(
+                $this->requestDtoTemplate->filePath,
+                $this->requestDtoTemplate->generateModelContent()
+            );
+            $output->writeln(
+                'Creating Request : ' . $this->requestDtoTemplate->namespace . '\\'
+                    . $this->requestDtoTemplate->name
+            );
+        } else {
+            $this->requestDtoTemplate = new RequestDtoTemplate(
+                $filePath,
+                $namespace,
+                $className,
+                true
+            );
+            $output->writeln(
+                'Using Existing Request : ' . $this->requestDtoTemplate->namespace . '\\'
+                    . $this->requestDtoTemplate->name
+            );
+        }
+    }
+
+    public function createPresenterInterfaceIfNotExist(
+        OutputInterface $output,
+        string $modelName,
+        string $useCaseType
+    ): void {
+        $useCaseName = $useCaseType . $modelName;
+        $className = $useCaseName . 'PresenterInterface';
+        $filePath = $this->srcPath . '/Core/Application/' . $modelName . '/UseCase/' . $useCaseName . '\\'
+            . $className . '.php';
+        $namespace = 'Core\\Application\\' . $modelName . '\\UseCase\\' . $useCaseName;
+        if (!file_exists($filePath)) {
+            $this->queryPresenterInterfaceTemplate = new QueryPresenterInterfaceTemplate(
+                $filePath,
+                $namespace,
+                $className,
+                false
+            );
+            preg_match('/^(.+).' . $className . '\.php$/', $filePath, $matches);
+            $dirLocation = $matches[1];
+            //Create dir if not exists,
+            if (!is_dir($dirLocation)) {
+                mkdir($dirLocation, 0777, true);
+            }
+            file_put_contents(
+                $this->queryPresenterInterfaceTemplate->filePath,
+                $this->queryPresenterInterfaceTemplate->generateModelContent()
+            );
+            $output->writeln(
+                'Creating Presenter Interface : ' . $this->queryPresenterInterfaceTemplate->namespace . '\\'
+                    . $this->queryPresenterInterfaceTemplate->name
+            );
+        } else {
+            $this->queryPresenterInterfaceTemplate = new QueryPresenterInterfaceTemplate(
+                $filePath,
+                $namespace,
+                $className,
+                true
+            );
+            $output->writeln(
+                'Using Existing Presenter Interface : ' . $this->queryPresenterInterfaceTemplate->namespace . '\\'
+                    . $this->queryPresenterInterfaceTemplate->name
+            );
+        }
     }
 }

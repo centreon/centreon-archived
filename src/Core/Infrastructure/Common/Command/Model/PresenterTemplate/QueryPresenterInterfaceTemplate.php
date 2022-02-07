@@ -1,10 +1,10 @@
 <?php
 
-namespace Core\Infrastructure\Common\Command\Model\RepositoryTemplate;
+namespace Core\Infrastructure\Common\Command\Model\PresenterTemplate;
 
 use Core\Infrastructure\Common\Command\Model\FileTemplate;
 
-class WriteRepositoryInterfaceTemplate extends FileTemplate
+class QueryPresenterInterfaceTemplate extends FileTemplate
 {
     public function __construct(
         public string $filePath,
@@ -23,8 +23,14 @@ class WriteRepositoryInterfaceTemplate extends FileTemplate
 
         namespace $this->namespace;
 
-        interface $this->name
+        use Core\Application\Common\UseCase\PresenterInterface;
+
+        interface $this->name extends PresenterInterface
         {
+            /**
+             * Present no content.
+             */
+            public function present(): void;
         }
 
         EOF;

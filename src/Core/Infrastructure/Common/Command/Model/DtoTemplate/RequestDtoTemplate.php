@@ -1,10 +1,10 @@
 <?php
 
-namespace Core\Infrastructure\Common\Command\Model\RepositoryTemplate;
+namespace Core\Infrastructure\Common\Command\Model\DtoTemplate;
 
 use Core\Infrastructure\Common\Command\Model\FileTemplate;
 
-class WriteRepositoryInterfaceTemplate extends FileTemplate
+class RequestDtoTemplate extends FileTemplate
 {
     public function __construct(
         public string $filePath,
@@ -23,7 +23,7 @@ class WriteRepositoryInterfaceTemplate extends FileTemplate
 
         namespace $this->namespace;
 
-        interface $this->name
+        class $this->name
         {
         }
 
