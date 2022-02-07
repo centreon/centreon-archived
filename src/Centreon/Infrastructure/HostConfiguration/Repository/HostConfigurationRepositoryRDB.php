@@ -797,6 +797,8 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
             $this->removeHostCategoriesFromHost($host);
             $this->linkHostCategoriesToHost($host);
 
+            $this->updateHostSeverity($host);
+
             if (!$isAlreadyInTransaction) {
                 $this->db->commit();
             }
@@ -975,5 +977,30 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
         );
         $statement->bindValue(':host_id', $host->getId(), \PDO::PARAM_INT);
         $statement->execute();
+    }
+
+    /*
+     * Add or update the link between a host and a host severity
+     *
+     * @param Host $host
+     */
+    private function updateHostSeverity(Host $host): void
+    {
+        if (empty($host->getSeverities())) {
+            return;
+        }
+
+        $request = $this->translateDbName(
+            "DELETE `:db`.hostcategories_relation
+            FROM `:db`.hostcategories_relation
+            JOIN `:db`.hostcategories
+            ON hostcategories.hc_id = hostcategories_relation.hostcategories_hc_id
+            WHERE hostcategories.level IS NOT NULL
+            AND hostcategories_relation.host_host_id = :host_id"
+        );
+        $statement = $this->db->prepare($request);
+        $statement->bindValue(':host_id', $host->getId(), \PDO::PARAM_INT);
+        $statement->execute();
+        $this->linkSeveritiesToHost($host);
     }
 }
