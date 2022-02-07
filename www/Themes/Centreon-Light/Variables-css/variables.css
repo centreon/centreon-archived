@@ -12,7 +12,7 @@
         /*****************/
     
         /** Body color **/
-        --body-background: #ffffff ;
+        --body-background: #EDEDED ;
         --body-color:#555;
          /*****************/
     
@@ -196,9 +196,6 @@
     --title-menu-bottom-border-color : #a7a9ac;
     --div-menu-left-background-color :  #FFF;
     /************/
-
-    --body-background-color: #FFF;
-    --body-font-color: #555;
     --list-table-anchors-font-color: #666666;
     --list-table-border-color: #BFD0E2;
     --list-lvl-1-background-color:#D5DFEB;
