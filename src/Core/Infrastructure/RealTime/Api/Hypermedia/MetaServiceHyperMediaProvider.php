@@ -188,4 +188,12 @@ class MetaServiceHypermediaProvider implements HypermediaProviderInterface
             'reporting' => $this->createForReporting($parameters),
         ];
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function createInternalGroupsUri(mixed $response): array
+    {
+        return [];
+    }
 }

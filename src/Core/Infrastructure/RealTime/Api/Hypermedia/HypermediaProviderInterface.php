@@ -45,4 +45,12 @@ interface HypermediaProviderInterface
      * @return array<string, string|null>
      */
     public function createInternalUris(mixed $response): array;
+
+    /**
+     * Create internal redirection uris for the Resource group(s)
+     *
+     * @param mixed $response
+     * @return array<array<string, string|null>>
+     */
+    public function createInternalGroupsUri(mixed $response): array;
 }

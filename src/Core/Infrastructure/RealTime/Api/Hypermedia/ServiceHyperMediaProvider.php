@@ -35,7 +35,8 @@ class ServiceHypermediaProvider implements HypermediaProviderInterface
 
     public const URI_CONFIGURATION = '/main.php?p=60201&o=c&service_id={serviceId}',
                  URI_EVENT_LOGS = '/main.php?p=20301&svc={hostId}_{serviceId}',
-                 URI_REPORTING = '/main.php?p=30702&period=yesterday&start=&end=&host_id={hostId}&item={serviceId}';
+                 URI_REPORTING = '/main.php?p=30702&period=yesterday&start=&end=&host_id={hostId}&item={serviceId}',
+                 URI_SERVICEGROUP_CONFIGURATION = '/main.php?p=60203&o=c&sg_id={servicegroupId}';
 
     public const ENDPOINT_SERVICE_TIMELINE = 'centreon_application_monitoring_gettimelinebyhostandservice',
                  ENDPOINT_PERFORMANCE_GRAPH = 'monitoring.metric.getServicePerformanceMetrics',
@@ -182,5 +183,45 @@ class ServiceHypermediaProvider implements HypermediaProviderInterface
             'logs' => $this->createForEventLog($parameters),
             'reporting' => $this->createForReporting($parameters)
         ];
+    }
+
+    /**
+     * Create servicegroup configuration redirection uri
+     *
+     * @param array<string, int> $parameters
+     * @return string|null
+     */
+    public function createForGroup(array $parameters): ?string
+    {
+        return (
+            $this->contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_SERVICES_SERVICE_GROUPS_READ_WRITE)
+            || $this->contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_SERVICES_SERVICE_GROUPS_READ)
+            || $this->contact->isAdmin()
+        )
+        ? $this->getBaseUri() . str_replace(
+            '{servicegroupId}',
+            (string) $parameters['servicegroupId'],
+            self::URI_SERVICEGROUP_CONFIGURATION
+        )
+        : null;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function createInternalGroupsUri(mixed $response): array
+    {
+        if (empty($response->servicegroups)) {
+            return [];
+        }
+
+        return array_map(
+            fn (array $group) => [
+                'id' => $group['id'],
+                'name' => $group['name'],
+                'configuration_uri' => $this->createForGroup(['servicegroupId' => $group['id']])
+            ],
+            $response->servicegroups
+        );
     }
 }

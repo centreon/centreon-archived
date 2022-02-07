@@ -80,7 +80,7 @@ class FindHostPresenter implements FindHostPresenterInterface
             'severity_level' => $response->severityLevel,
             'parent' => null,
             'icon' => $response->icon,
-            'groups' => $response->hostgroups
+            'groups' => $this->hypermediaService->createInternalGroupsUri($response)
         ];
 
         $acknowledgement = null;

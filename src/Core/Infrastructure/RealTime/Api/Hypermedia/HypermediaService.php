@@ -72,4 +72,18 @@ class HypermediaService
         }
         return [];
     }
+
+    /**
+     * @param mixed $response
+     * @return array<array<string, string|null>>
+     */
+    public function createInternalGroupsUri(mixed $response): array
+    {
+        foreach ($this->hypermediaProviders as $hypermediaProvider) {
+            if ($hypermediaProvider->isValidFor($response)) {
+                return $hypermediaProvider->createInternalGroupsUri($response);
+            }
+        }
+        return [];
+    }
 }

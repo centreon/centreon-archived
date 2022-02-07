@@ -36,6 +36,7 @@ class HostHypermediaProvider implements HypermediaProviderInterface
     public const URI_CONFIGURATION = '/main.php?p=60101&o=c&host_id={hostId}',
                  URI_EVENT_LOGS = '/main.php?p=20301&h={hostId}',
                  URI_REPORTING = '/main.php?p=307&host={hostId}',
+                 URI_HOSTGROUP_CONFIGURATION = '/main.php?p=60102&o=c&hg_id={hostgroupId}',
                  ENDPOINT_HOST_TIMELINE = 'centreon_application_monitoring_gettimelinebyhost';
 
     /**
@@ -129,6 +130,27 @@ class HostHypermediaProvider implements HypermediaProviderInterface
     }
 
     /**
+     * Create hostgroup configuration redirection uri
+     *
+     * @param array<string, int> $parameters
+     * @return string|null
+     */
+    public function createForGroup(array $parameters): ?string
+    {
+        return (
+            $this->contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_HOSTS_HOST_GROUPS_READ_WRITE)
+            || $this->contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_HOSTS_HOST_GROUPS_READ)
+            || $this->contact->isAdmin()
+        )
+        ? $this->getBaseUri() . str_replace(
+            '{hostgroupId}',
+            (string) $parameters['hostgroupId'],
+            self::URI_HOSTGROUP_CONFIGURATION
+        )
+        : null;
+    }
+
+    /**
      * Create Timeline endpoint URI for the Host Resource
      *
      * @param array<string, int> $parameters
@@ -137,5 +159,24 @@ class HostHypermediaProvider implements HypermediaProviderInterface
     public function createForTimelineEndpoint(array $parameters): string
     {
         return $this->router->generate(self::ENDPOINT_HOST_TIMELINE, $parameters);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function createInternalGroupsUri(mixed $response): array
+    {
+        if (empty($response->hostgroups)) {
+            return [];
+        }
+
+        return array_map(
+            fn (array $group) => [
+                'id' => $group['id'],
+                'name' => $group['name'],
+                'configuration_uri' => $this->createForGroup(['hostgroupId' => $group['id']])
+            ],
+            $response->hostgroups
+        );
     }
 }
