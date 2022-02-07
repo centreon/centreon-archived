@@ -64,7 +64,7 @@ const ExcludedUsers = (): JSX.Element => {
           secondary={email}
           secondaryTypographyProps={optionTypographyProps}
         />
-        {isAdmin ? (
+        {isAdmin && (
           <Tooltip
             classes={{
               popper: classes.tooltip,
@@ -76,7 +76,7 @@ const ExcludedUsers = (): JSX.Element => {
               <SupervisorAccountIcon fontSize="small" />
             </IconButton>
           </Tooltip>
-        ) : undefined}
+        )}
       </div>
     );
   }, []);
