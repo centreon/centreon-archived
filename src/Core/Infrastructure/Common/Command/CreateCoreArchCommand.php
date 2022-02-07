@@ -6,7 +6,6 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Core\Infrastructure\Common\Command\Model\ModelTemplate\ModelTemplate;
-use Core\Infrastructure\Common\Command\Model\RepositoryTemplate\WriteRepositoryInterfaceTemplate;
 use Core\Infrastructure\Common\Command\Service\CreateCoreArchCommandService;
 use Core\Infrastructure\Common\Command\Service\CreateCoreCommandArchCommandService;
 use Core\Infrastructure\Common\Command\Service\CreateCoreQueryArchCommandService;
@@ -25,8 +24,8 @@ class CreateCoreArchCommand extends Command
         self::COMMAND_FIND
     ];
 
-    public const QUERY_USECASES = [self::COMMAND_CREATE, self::COMMAND_UPDATE, self::COMMAND_DELETE];
-    public const COMMAND_USECASES = [self::COMMAND_FIND];
+    public const COMMAND_USECASES = [self::COMMAND_CREATE, self::COMMAND_UPDATE, self::COMMAND_DELETE];
+    public const QUERY_USECASES = [self::COMMAND_FIND];
 
     private string $useCaseType;
 
@@ -70,39 +69,6 @@ class CreateCoreArchCommand extends Command
 
         $this->useCaseType = $this->commandService->askForUseCaseType($input, $output, $questionHelper);
         $this->modelTemplate = $this->commandService->askForModel($input, $output, $questionHelper);
-        if ($this->isAQueryUseCase()) {
-            $this->queryArchCommandService
-                ->createWriteRepositoryInterfaceTemplateIfNotExist(
-                    $output,
-                    $this->modelTemplate->name
-                );
-            $this->queryArchCommandService->createWriteRepositoryTemplateIfNotExist(
-                $output,
-                $this->modelTemplate->name,
-            );
-            $this->queryArchCommandService->createRequestDtoTemplateIfNotExist(
-                $output,
-                $this->modelTemplate->name,
-                $this->useCaseType
-            );
-            $this->queryArchCommandService->createPresenterInterfaceIfNotExist(
-                $output,
-                $this->modelTemplate->name,
-                $this->useCaseType
-            );
-            $this->queryArchCommandService->createPresenterIfNotExist(
-                $output,
-                $this->modelTemplate->name,
-                $this->useCaseType
-            );
-        } else {
-            // $this->repositoryInterfaceTemplate =
-            //     $this->commandArchCommandService->askForReadRepositoryInterfaceInformations();
-            // $this->repositoryTemplate =
-            //     $this->commandArchCommandService->askForReadRepositoryInformations();
-            // $this->dto =
-            //     $this->commandArchCommandService->askForResponseDtoInformations();
-        }
     }
 
     /**
@@ -112,17 +78,62 @@ class CreateCoreArchCommand extends Command
     {
         if ($this->modelTemplate->exists === false) {
             $this->commandService->createModel($this->modelTemplate);
+            $output->writeln('Creating Model : ' . $this->modelTemplate->namespace . '\\' . $this->modelTemplate->name);
+        } else {
+            $output->writeln('Using Existing Model : ' . $this->modelTemplate->namespace . '\\' . $this->modelTemplate->name);
+        }
+        if ($this->isACommandUseCase()) {
+            $this->commandArchCommandService->createWriteRepositoryInterfaceTemplateIfNotExist(
+                $output,
+                $this->modelTemplate->name
+            );
+            $this->commandArchCommandService->createWriteRepositoryTemplateIfNotExist(
+                $output,
+                $this->modelTemplate->name,
+            );
+            $this->commandArchCommandService->createRequestDtoTemplateIfNotExist(
+                $output,
+                $this->modelTemplate->name,
+                $this->useCaseType
+            );
+            $this->commandArchCommandService->createPresenterInterfaceIfNotExist(
+                $output,
+                $this->modelTemplate->name,
+                $this->useCaseType
+            );
+            $this->commandArchCommandService->createPresenterIfNotExist(
+                $output,
+                $this->modelTemplate->name,
+                $this->useCaseType
+            );
+            $this->commandArchCommandService->createUseCaseIfNotExist(
+                $output,
+                $this->modelTemplate->name,
+                $this->useCaseType,
+            );
+            $this->commandArchCommandService->createControllerIfNotExist(
+                $output,
+                $this->modelTemplate->name,
+                $this->useCaseType,
+            );
+        } else {
+            // $this->repositoryInterfaceTemplate =
+            //     $this->commandArchCommandService->askForReadRepositoryInterfaceInformations();
+            // $this->repositoryTemplate =
+            //     $this->commandArchCommandService->askForReadRepositoryInformations();
+            // $this->dto =
+            //     $this->commandArchCommandService->askForResponseDtoInformations();
         }
         return Command::SUCCESS;
     }
 
     /**
-     * Check if the use case is a type Query.
+     * Check if the use case is a type Command.
      *
      * @return bool
      */
-    public function isAQueryUseCase(): bool
+    public function isACommandUseCase(): bool
     {
-        return in_array($this->useCaseType, self::QUERY_USECASES);
+        return in_array($this->useCaseType, self::COMMAND_USECASES);
     }
 }
