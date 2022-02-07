@@ -2,8 +2,7 @@ import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { FormikValues, useFormikContext } from 'formik';
-import { equals, has, inc, map, pluck } from 'ramda';
-import { filter } from 'domutils';
+import { equals, has, inc, map, pluck, filter } from 'ramda';
 
 import {
   IconButton,
@@ -88,7 +87,7 @@ const ExcludedUsers = (): JSX.Element => {
   const isOptionEqualToValue = (option: Contact, value: Contact): boolean =>
     equals(option.alias, value.alias);
 
-  const filterOptions = (options): Array<unknown> =>
+  const filterOptions = (options): Array<Contact> =>
     filter((option) => has('email', option), options);
 
   const getOptionLabel = (option): string => option.alias;
