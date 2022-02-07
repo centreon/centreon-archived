@@ -131,7 +131,7 @@ const Provider = ({ children }: Props): JSX.Element => {
             isExportButtonEnabled: retrievedUser.isExportButtonEnabled,
             locale: retrievedUser.locale || 'en',
             name: retrievedUser.name,
-            themeMode: ThemeMode.light,
+            themeMode: 'light' as ThemeMode,
             timezone: retrievedUser.timezone,
             use_deprecated_pages: retrievedUser.use_deprecated_pages,
           });
