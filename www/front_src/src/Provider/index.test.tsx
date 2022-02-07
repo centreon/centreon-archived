@@ -35,6 +35,7 @@ const contextUser = {
   isExportButtonEnabled: true,
   locale: 'fr_FR.UTF8',
   name: 'Admin',
+  themeMode: 'light',
   timezone: 'Europe/Paris',
   use_deprecated_pages: false,
 };

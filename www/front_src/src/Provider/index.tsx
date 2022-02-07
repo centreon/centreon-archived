@@ -42,7 +42,7 @@ import {
   userEndpoint,
 } from './endpoint';
 import { DefaultParameters } from './models';
-// import { userDecoder } from './decoder';
+import { userDecoder } from './decoder';
 
 dayjs.extend(localizedFormat);
 dayjs.extend(utcPlugin);
@@ -64,8 +64,7 @@ const Provider = ({ children }: Props): JSX.Element => {
   const [dataLoaded, setDataLoaded] = React.useState(false);
 
   const { sendRequest: getUser } = useRequest<User>({
-    // TODO uncomment when the API implements 'theme'
-    // decoder: userDecoder,
+    decoder: userDecoder,
     request: getData,
   });
   const { sendRequest: getParameters } = useRequest<DefaultParameters>({

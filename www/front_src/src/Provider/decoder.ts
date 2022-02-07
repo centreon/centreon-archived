@@ -11,7 +11,9 @@ export const userDecoder = JsonDecoder.object<User>(
     isExportButtonEnabled: JsonDecoder.boolean,
     locale: JsonDecoder.string,
     name: JsonDecoder.string,
-    themeMode: JsonDecoder.enumeration<ThemeMode>(ThemeMode, 'ThemeMode'),
+    themeMode: JsonDecoder.optional(
+      JsonDecoder.enumeration<ThemeMode>(ThemeMode, 'ThemeMode'),
+    ),
     timezone: JsonDecoder.string,
     use_deprecated_pages: JsonDecoder.boolean,
   },
