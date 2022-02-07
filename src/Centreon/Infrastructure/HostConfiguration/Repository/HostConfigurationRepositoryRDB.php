@@ -965,7 +965,13 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
     private function removeHostCategoriesFromHost(Host $host): void
     {
         $statement = $this->db->prepare(
-            $this->translateDbName('DELETE FROM `:db`.hostcategories_relation WHERE host_host_id = :host_id')
+            $this->translateDbName(
+                'DELETE `:db`.hostcategories_relation
+                FROM `:db`.hostcategories_relation
+                JOIN `:db`.hostcategories ON hostcategories.hc_id = hostcategories_relation.hostcategories_hc_id
+                WHERE hostcategories_relation.host_host_id = :host_id
+                AND hostcategories.level IS NULL'
+            )
         );
         $statement->bindValue(':host_id', $host->getId(), \PDO::PARAM_INT);
         $statement->execute();

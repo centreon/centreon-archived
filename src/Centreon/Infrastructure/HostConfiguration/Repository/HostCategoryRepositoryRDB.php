@@ -377,9 +377,10 @@ class HostCategoryRepositoryRDB extends AbstractRepositoryDRB implements
     public function findAllByHost(Host $host): array
     {
         $request = $this->translateDbName(
-            'SELECT SQL_CALC_FOUND_ROWS * FROM `:db`.hostcategories hc
+            'SELECT * FROM `:db`.hostcategories hc
             JOIN `:db`.hostcategories_relation hc_rel ON hc.hc_id = hc_rel.hostcategories_hc_id
-            WHERE hc_rel.host_host_id = :host_id'
+            WHERE hc_rel.host_host_id = :host_id
+            AND hc.level IS NULL'
         );
         $statement = $this->db->prepare($request);
         $statement->bindValue(':host_id', $host->getId(), \PDO::PARAM_INT);
