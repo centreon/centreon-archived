@@ -268,7 +268,36 @@ class CentreonContact
 
         $securityPolicyData = json_decode($configuration['custom_configuration'], true)['password_security_policy'];
 
+        $securityPolicyData['password_expiration'] = [
+            'expiration_delay' => $securityPolicyData['password_expiration_delay'],
+            'excluded_users' => $this->getPasswordExpirationExcludedUsers(),
+        ];
+
         return $securityPolicyData;
+    }
+
+    /**
+     * Get excluded users from password expiration policy
+     *
+     * @return string[]
+     */
+    private function getPasswordExpirationExcludedUsers(): array
+    {
+        $statement = $this->db->query(
+            "SELECT c.`contact_alias`
+            FROM `password_expiration_excluded_users` peeu
+            INNER JOIN `provider_configuration` pc ON pc.`id` = peeu.`provider_configuration_id`
+            AND pc.`name` = 'local'
+            INNER JOIN `contact` c ON c.`contact_id` = peeu.`user_id`
+            AND c.`contact_register` = 1"
+        );
+
+        $excludedUsers = [];
+        while ($row = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            $excludedUsers[] = $row['contact_alias'];
+        }
+
+        return $excludedUsers;
     }
 
     /**
