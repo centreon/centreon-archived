@@ -26,8 +26,30 @@ use Centreon\Domain\Common\Assertion\Assertion;
 
 class MetaService
 {
-    public const AVAILABLE_DATA_SOURCE_TYPES = ['gauge', 'counter', 'derive', 'absolute'];
-    public const AVAILABLE_CALCULATION_TYPES = ['average', 'minimum', 'maximum', 'sum'];
+    public const CALCULTATION_TYPE_AVERAGE = 'average',
+                 CALCULTATION_TYPE_MINIMUM = 'minimum',
+                 CALCULTATION_TYPE_MAXIMUM = 'maximum',
+                 CALCULTATION_TYPE_SUM = 'sum';
+
+    public const AVAILABLE_CALCULATION_TYPES = [
+        self::CALCULTATION_TYPE_AVERAGE,
+        self::CALCULTATION_TYPE_MAXIMUM,
+        self::CALCULTATION_TYPE_MINIMUM,
+        self::CALCULTATION_TYPE_SUM,
+    ];
+
+    public const DATA_SOURCE_GAUGE = 'gauge',
+                 DATA_SOURCE_COUNTER = 'counter',
+                 DATA_SOURCE_DERIVE = 'derive',
+                 DATA_SOURCE_ABSOLUTE = 'absolute';
+
+    public const AVAILABLE_DATA_SOURCE_TYPES = [
+        self::DATA_SOURCE_ABSOLUTE,
+        self::DATA_SOURCE_COUNTER,
+        self::DATA_SOURCE_DERIVE,
+        self::DATA_SOURCE_GAUGE,
+    ];
+
     public const META_SELECT_MODE_LIST = 1;
     public const META_SELECT_MODE_SQL_REGEXP = 2;
 
@@ -49,14 +71,14 @@ class MetaService
     private $metric;
 
     /**
-     * @var string|null Absolute value for warning level (low threshold).
+     * @var int|null Absolute value for warning level (low threshold).
      */
-    private $warning;
+    private $warningThreshold;
 
     /**
-     * @var string|null Absolute value for critical level (high threshold).
+     * @var int|null Absolute value for critical level (high threshold).
      */
-    private $critical;
+    private $criticalThreshold;
 
     /**
      * @var bool Indicates whether this Meta Service is enabled or not (TRUE by default)
@@ -181,38 +203,38 @@ class MetaService
     }
 
     /**
-     * @return string|null
+     * @return int|null
      */
-    public function getWarning(): ?string
+    public function getWarningThreshold(): ?int
     {
-        return $this->warning;
+        return $this->warningThreshold;
     }
 
     /**
-     * @param string|null $warning
+     * @param int|null $warningThreshold
      * @return self
      */
-    public function setWarning(?string $warning): self
+    public function setWarningThreshold(?int $warningThreshold): self
     {
-        $this->warning = $warning;
+        $this->warningThreshold = $warningThreshold;
         return $this;
     }
 
     /**
-     * @return string|null
+     * @return int|null
      */
-    public function getCritical(): ?string
+    public function getCriticalThreshold(): ?int
     {
-        return $this->critical;
+        return $this->criticalThreshold;
     }
 
     /**
-     * @param string|null $critical
+     * @param int|null $criticalThreshold
      * @return self
      */
-    public function setCritical(?string $critical): self
+    public function setCriticalThreshold(?int $criticalThreshold): self
     {
-        $this->critical = $critical;
+        $this->criticalThreshold = $criticalThreshold;
         return $this;
     }
 

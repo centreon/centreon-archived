@@ -68,7 +68,7 @@ class DbReadDowntimeRepository extends AbstractRepositoryDRB implements ReadDown
         $sql = 'SELECT d.*, c.contact_id AS `author_id` FROM `:dbstg`.`downtimes`  AS `d` '
             . 'LEFT JOIN `:db`.contact AS `c` ON c.contact_alias = d.author '
             . 'WHERE d.host_id = :hostId AND d.service_id = :serviceId '
-            . 'AND d.deletion_time IS NULL AND ((NOW() BETWEEN FROM_UNIXTIME(d.actual_start_time) '
+            . 'AND d.deletion_time IS NULL AND d.cancelled = 0 AND ((NOW() BETWEEN FROM_UNIXTIME(d.actual_start_time) '
             . 'AND FROM_UNIXTIME(d.actual_end_time)) OR ((NOW() > FROM_UNIXTIME(d.actual_start_time) '
             . 'AND d.actual_end_time IS NULL))) '
             . 'ORDER BY d.entry_time DESC';

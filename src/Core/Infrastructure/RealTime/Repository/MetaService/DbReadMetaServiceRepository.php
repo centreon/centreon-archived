@@ -42,7 +42,7 @@ class DbReadMetaServiceRepository extends AbstractRepositoryDRB implements ReadM
      */
     public function findMetaServiceById(int $metaId): ?MetaService
     {
-        return null;
+        return $this->findMetaService($metaId);
     }
 
     /**
@@ -50,6 +50,65 @@ class DbReadMetaServiceRepository extends AbstractRepositoryDRB implements ReadM
      */
     public function findMetaServiceByIdAndAccessGroupIds(int $metaId, array $accessGroupIds): ?MetaService
     {
+        if (empty($accessGroupIds)) {
+            return null;
+        }
+
+        $accessGroupRequest = ' INNER JOIN `:dbstg`.`centreon_acl` AS service_acl
+            ON service_acl.service_id = s.service_id AND service_acl.host_id = s.host_id
+            AND service_acl.group_id IN (' . implode(',', $accessGroupIds) . ') ';
+
+        return $this->findMetaService($metaId, $accessGroupRequest);
+    }
+
+    /**
+     * @param int $metaId
+     * @param string|null $accessGroupRequest
+     * @return MetaService|null
+     */
+    private function findMetaService(int $metaId, ?string $accessGroupRequest = null): ?MetaService
+    {
+        $request = "SELECT
+            SUBSTRING(s.description, 6) AS `id`,
+            s.host_id,
+            s.service_id,
+            s.display_name AS `name`,
+            s.state AS `status_code`,
+            s.state_type,
+            s.output,
+            s.flapping,
+            s.scheduled_downtime_depth AS `in_downtime`,
+            s.acknowledged,
+            s.perfData AS `performance_data`,
+            s.output,
+            s.command_line,
+            s.notification_number,
+            s.last_state_change AS `last_status_change`,
+            s.last_notification,
+            s.latency,
+            s.execution_time,
+            s.percent_state_change AS `status_change_percentage`,
+            s.next_check,
+            s.last_check,
+            s.passive_checks,
+            s.active_checks,
+            s.last_time_ok,
+            s.check_attempt,
+            s.max_check_attempts,
+            i.name AS `monitoring_server_name`
+        FROM `:dbstg`.`services` AS s " . ($accessGroupRequest !== null ? $accessGroupRequest : '') .
+        " INNER JOIN `:dbstg`.`hosts` sh ON sh.host_id = s.host_id" .
+        " INNER JOIN `:dbstg`.`instances` AS i ON i.instance_id = sh.instance_id" .
+        " WHERE s.description = :meta_id AND s.enabled = '1'";
+
+        $statement = $this->db->prepare($this->translateDbName($request));
+        $statement->bindValue(':meta_id', 'meta_' . $metaId, \PDO::PARAM_STR);
+        $statement->execute();
+
+        if ($row = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            return DbMetaServiceFactory::createFromRecord($row);
+        }
+
         return null;
     }
 }

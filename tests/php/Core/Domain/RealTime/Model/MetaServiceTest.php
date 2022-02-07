@@ -44,7 +44,7 @@ class MetaServiceTest extends TestCase
                 'MetaService::name'
             )->getMessage()
         );
-        new MetaService(1, 10, 1, $name, new ServiceStatus('OK', 0, 0));
+        new MetaService(1, 10, 1, $name, 'Central', new ServiceStatus('OK', 0, 0));
     }
 
     /**
@@ -59,7 +59,7 @@ class MetaServiceTest extends TestCase
                 'MetaService::name'
             )->getMessage()
         );
-        new MetaService(1, 10, 1, $name, new ServiceStatus('OK', 0, 0));
+        new MetaService(1, 10, 1, $name, 'Central', new ServiceStatus('OK', 0, 0));
     }
 
     /**
@@ -70,7 +70,7 @@ class MetaServiceTest extends TestCase
         $status = (new ServiceStatus('OK', 0, 0))
             ->setOrder(ServiceStatus::STATUS_ORDER_OK);
 
-        return (new MetaService(1, 10, 20, 'Meta test', $status))
+        return (new MetaService(1, 10, 20, 'Meta test', 'Central', $status))
             ->setCommandLine('/usr/lib/centreon/plugins/centreon_centreon_central.pl --mode=metaservice --meta-id 1')
             ->setIsFlapping(false)
             ->setIsInDowntime(false)

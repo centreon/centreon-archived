@@ -98,8 +98,8 @@ class MetaServiceTest extends TestCase
     public static function createMetaServiceModel(): MetaService
     {
         return (new MetaService(1, 'Meta 1', 'average', 1, 'gauge'))
-            ->setCritical('80')
-            ->setWarning('70')
+            ->setCriticalThreshold(80)
+            ->setWarningThreshold(70)
             ->setMetric('rta')
             ->setActivated(true)
             ->setregexpSearchServices('Ping')

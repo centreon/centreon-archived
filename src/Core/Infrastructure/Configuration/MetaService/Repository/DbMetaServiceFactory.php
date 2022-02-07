@@ -35,5 +35,52 @@ class DbMetaServiceFactory
      */
     public static function createFromRecord(array $data): MetaService
     {
+        return (new MetaService(
+            (int) $data['id'],
+            $data['name'],
+            self::normalizeCalculationType($data['calculation_type']),
+            (int) $data['meta_selection_mode'],
+            self::normalizeDataSourceType((int) $data['data_source_type'])
+        ))
+        ->setWarningThreshold(self::getIntOrNull($data['warning']))
+        ->setCriticalThreshold(self::getIntOrNull($data['critical']))
+        ->setOutput($data['output'])
+        ->setMetric($data['metric'])
+        ->setActivated((int) $data['is_activated'] === 1)
+        ->setRegexpSearchServices($data['regexp_search_services']);
+    }
+
+    /**
+     * This function will normalize the calculation type coming from the database
+     *
+     * @param string|null $calculationType
+     * @return string
+     */
+    private static function normalizeCalculationType(?string $calculationType): string
+    {
+        return match ($calculationType) {
+            'AVE' => MetaService::CALCULTATION_TYPE_AVERAGE,
+            'MIN' => MetaService::CALCULTATION_TYPE_MINIMUM,
+            'MAX' => MetaService::CALCULTATION_TYPE_MAXIMUM,
+            'SOM' => MetaService::CALCULTATION_TYPE_SUM,
+            default => MetaService::CALCULTATION_TYPE_AVERAGE
+        };
+    }
+
+    /**
+     * This function will normalize the data source type coming from the database
+     *
+     * @param int|null $dataSourceType
+     * @return string
+     */
+    private static function normalizeDataSourceType(?int $dataSourceType): string
+    {
+        return match ($dataSourceType) {
+            0 => MetaService::DATA_SOURCE_GAUGE,
+            1 => MetaService::DATA_SOURCE_COUNTER,
+            2 => MetaService::DATA_SOURCE_DERIVE,
+            3 => MetaService::DATA_SOURCE_ABSOLUTE,
+            default => MetaService::DATA_SOURCE_GAUGE
+        };
     }
 }

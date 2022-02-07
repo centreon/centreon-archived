@@ -146,6 +146,7 @@ class FindMetaServiceResponse
      * @param int $hostId
      * @param int $serviceId
      * @param string $name
+     * @param string $monitoringServerName
      * @param ServiceStatus $status
      * @param Downtime[] $downtimes
      * @param Acknowledgement|null $acknowledgement
@@ -155,6 +156,7 @@ class FindMetaServiceResponse
         public int $hostId,
         public int $serviceId,
         public string $name,
+        public string $monitoringServerName,
         ServiceStatus $status,
         public string $calculationType,
         array $downtimes,

@@ -79,9 +79,7 @@ class FindMetaService
 
         if ($this->contact->isAdmin()) {
             $this->debug('Find MetaService as an admin user');
-            /**
-             * @var MetaServiceConfiguration
-             */
+
             $metaServiceConfiguration = $this->configurationRepository->findMetaServiceById($metaId);
             if ($metaServiceConfiguration === null) {
                 $this->handleMetaServiceConfigurationNotFound($metaId, $presenter);
@@ -192,6 +190,7 @@ class FindMetaService
             $metaService->getHostId(),
             $metaService->getServiceId(),
             $metaService->getName(),
+            $metaService->getMonitoringServerName(),
             $metaService->getStatus(),
             $metaServiceConfiguration->getCalculationType(),
             $downtimes,

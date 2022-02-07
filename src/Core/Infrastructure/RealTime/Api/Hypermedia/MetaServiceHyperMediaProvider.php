@@ -36,7 +36,7 @@ class MetaServiceHypermediaProvider implements HypermediaProviderInterface
     public const URI_CONFIGURATION = '/main.php?p=60204&o=c&meta_id={metaId}',
                  URI_EVENT_LOGS = '/main.php?p=20301&svc={hostId}_{serviceId}';
 
-    public const ENDPOINT_SERVICE_TIMELINE = 'centreon_application_monitoring_gettimelinebymetaservices',
+    public const ENDPOINT_TIMELINE = 'centreon_application_monitoring_gettimelinebymetaservices',
                  ENDPOINT_PERFORMANCE_GRAPH = 'monitoring.metric.getMetaServicePerformanceMetrics',
                  ENDPOINT_STATUS_GRAPH = 'monitoring.metric.getMetaServiceStatusMetrics',
                  ENDPOINT_METRIC_LIST = 'centreon_application_find_meta_service_metrics';
@@ -67,7 +67,20 @@ class MetaServiceHypermediaProvider implements HypermediaProviderInterface
      */
     public function createForConfiguration(array $parameters): ?string
     {
-        return null;
+        $configurationUri = null;
+        if (
+            $this->contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_SERVICES_WRITE)
+            || $this->contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_SERVICES_READ)
+            || $this->contact->isAdmin()
+        ) {
+            return $this->getBaseUri() .
+                str_replace(
+                    '{metaId}',
+                    (string) $parameters['metaId'],
+                    static::URI_CONFIGURATION
+                );
+        }
+        return $configurationUri;
     }
 
     /**
@@ -89,7 +102,16 @@ class MetaServiceHypermediaProvider implements HypermediaProviderInterface
      */
     public function createForEventLog(array $parameters): ?string
     {
-        return null;
+        $eventLogsUri = null;
+        if (
+            $this->contact->hasTopologyRole(Contact::ROLE_MONITORING_EVENT_LOGS)
+            || $this->contact->isAdmin()
+        ) {
+            $eventLogsUri = str_replace('{hostId}', (string) $parameters['hostId'], static::URI_EVENT_LOGS);
+            $eventLogsUri = str_replace('{serviceId}', (string) $parameters['serviceId'], (string) $eventLogsUri);
+            return $this->getBaseUri() . $eventLogsUri;
+        }
+        return $eventLogsUri;
     }
 
     /**
@@ -100,7 +122,7 @@ class MetaServiceHypermediaProvider implements HypermediaProviderInterface
      */
     public function createForTimelineEndpoint(array $parameters): string
     {
-        return '';
+        return $this->router->generate(self::ENDPOINT_TIMELINE, $parameters);
     }
 
     /**
@@ -111,7 +133,7 @@ class MetaServiceHypermediaProvider implements HypermediaProviderInterface
      */
     public function createForStatusGraphEndpoint(array $parameters): string
     {
-        return '';
+        return $this->router->generate(self::ENDPOINT_STATUS_GRAPH, $parameters);
     }
 
     /**
@@ -122,7 +144,7 @@ class MetaServiceHypermediaProvider implements HypermediaProviderInterface
      */
     public function createForPerformanceDataEndpoint(array $parameters): string
     {
-        return '';
+        return $this->router->generate(self::ENDPOINT_PERFORMANCE_GRAPH, $parameters);
     }
 
     /**
@@ -133,7 +155,7 @@ class MetaServiceHypermediaProvider implements HypermediaProviderInterface
      */
     public function createForMetricListEndpoint(array $parameters): string
     {
-        return '';
+        return $this->router->generate(self::ENDPOINT_METRIC_LIST, $parameters);
     }
 
     /**
