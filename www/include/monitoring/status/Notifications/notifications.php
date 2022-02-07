@@ -60,7 +60,7 @@ if (!isset($obj->session_id) || !CentreonSession::checkSession($sid, $obj->DB)) 
 if (!isset($_SESSION['centreon_notification_preferences'])) {
     $userId = $centreon->user->get_id();
     $resPref = $obj->DB->query("SELECT cp_key, cp_value
-         FROM contact_param 
+         FROM contact_param
          WHERE cp_key LIKE 'monitoring%notification%'
          AND cp_contact_id = '" . $obj->DB->escape($userId) . "'");
     $notificationPreferences = [];
