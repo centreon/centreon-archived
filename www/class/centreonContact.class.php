@@ -269,7 +269,7 @@ class CentreonContact
         $securityPolicyData = json_decode($configuration['custom_configuration'], true)['password_security_policy'];
 
         $securityPolicyData['password_expiration'] = [
-            'expiration_delay' => $securityPolicyData['password_expiration'],
+            'expiration_delay' => $securityPolicyData['password_expiration_delay'],
             'excluded_users' => $this->getPasswordExpirationExcludedUsers(),
         ];
 
