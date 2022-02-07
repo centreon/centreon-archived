@@ -116,7 +116,7 @@
     "eslint-plugin-jsx-a11y": "^6.5.1",
     "file-saver": "^2.0.5",
     "formik": "^2.2.9",
-    "html-react-parser": "^1.4.6",
+    "html-react-parser": "^1.4.8",
     "i18next": "^21.6.10",
     "install": "^0.13.0",
     "jotai": "^1.5.3",
