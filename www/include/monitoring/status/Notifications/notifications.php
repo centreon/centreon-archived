@@ -63,7 +63,7 @@ if (!isset($_SESSION['centreon_notification_preferences'])) {
         FROM contact_param
         WHERE cp_key LIKE 'monitoring%notification%'
         AND cp_contact_id = :cp_contact_id");
-    $resPref->bindValue(":cp_contact_id", (int)$userId, PDO::PARAM_INT);
+    $resPref->bindValue(":cp_contact_id", (int) $userId, \PDO::PARAM_INT);
     $resPref->execute();
     $notificationPreferences = [];
     while ($rowPref = $resPref->fetch()) {
