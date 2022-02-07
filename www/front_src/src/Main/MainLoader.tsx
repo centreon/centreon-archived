@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const MainLoader = (): JSX.Element => {
+export const MainLoader = (): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
 
@@ -35,4 +35,13 @@ const MainLoader = (): JSX.Element => {
   );
 };
 
-export default MainLoader;
+export const MainLoaderWithoutTranslation = (): JSX.Element => {
+  const classes = useStyles();
+
+  return (
+    <div className={classes.loader}>
+      <img alt={labelCentreonLogo} src={logoCentreon} />
+      <Typography>{labelCentreonIsLoading}</Typography>
+    </div>
+  );
+};
