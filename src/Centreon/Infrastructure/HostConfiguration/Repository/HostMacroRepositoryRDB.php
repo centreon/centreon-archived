@@ -103,7 +103,7 @@ class HostMacroRepositoryRDB extends AbstractRepositoryDRB implements
         );
         $statement->bindValue(':new_name', $hostMacro->getName());
         $statement->bindValue(':new_value', $hostMacro->getValue());
-        $statement->bindValue(':is_password', $hostMacro->isPassword() ? '1' : null);
+        $statement->bindValue(':is_password', $hostMacro->isPassword(), \PDO::PARAM_INT);
         $statement->bindValue(':new_description', $hostMacro->getDescription());
         $statement->bindValue(':new_order', $hostMacro->getOrder(), \PDO::PARAM_INT);
         $statement->bindValue(':id', $hostMacro->getId(), \PDO::PARAM_INT);

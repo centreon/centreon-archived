@@ -654,13 +654,11 @@ class HostConfigurationService implements HostConfigurationServiceInterface
                 $this->debug(
                     'Add new host macro',
                     [],
-                    function () use ($hostMacro) {
-                        return [
-                            'name' => $hostMacro->getName(),
-                            'is_password' => $hostMacro->isPassword(),
-                            'value' => (! $hostMacro->isPassword()) ? $hostMacro->getValue() : '*****'
-                        ];
-                    }
+                    fn () => [
+                        'name' => $hostMacro->getName(),
+                        'is_password' => $hostMacro->isPassword(),
+                        'value' => (! $hostMacro->isPassword()) ? $hostMacro->getValue() : '*****'
+                    ]
                 );
                 $this->hostMacroService->addMacroToHost($host, $hostMacro);
             }
