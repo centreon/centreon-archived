@@ -45,7 +45,10 @@ require_once realpath(dirname(__FILE__) . "/centreonDB.class.php");
 class CentreonDBStatement extends \PDOStatement
 {
     /**
-     * @var array
+     * When data is retrieved from `numRows()` method, it is stored in `allFetched`
+     * in order to be usable later without requesting one more time the database.
+     *
+     * @var mixed[]|null
      */
     public $allFetched;
 
@@ -53,13 +56,24 @@ class CentreonDBStatement extends \PDOStatement
      * @var CentreonLog
      */
     private $log;
-    
+
+    /**
+     * Constructor
+     *
+     * @param CentreonLog $log
+     */
     protected function __construct(CentreonLog $log = null)
     {
         $this->log = $log;
         $this->allFetched = null;
     }
 
+    /**
+     * This method overloads PDO `fetch` in order to use the possible already
+     * loaded data available in `allFetched`.
+     *
+     * @inheritDoc
+     */
     public function fetch($fetch_style = null, $cursor_orientation = PDO::FETCH_ORI_NEXT, $cursor_offset = 0)
     {
         if (is_null($this->allFetched)) {
@@ -71,16 +85,30 @@ class CentreonDBStatement extends \PDOStatement
         }
     }
 
+    /**
+     * This method wraps the Fetch method for legacy code compatibility
+     * @return mixed
+     */
     public function fetchRow()
     {
         return $this->fetch();
     }
 
+    /**
+     * Free resources.
+     */
     public function free()
     {
         $this->closeCursor();
     }
 
+    /**
+     * Counts the number of rows returned by the query.\
+     * This method fetches data if needed and store it in `allFetched`
+     * in order to be usable later without requesting database again.
+     *
+     * @return int
+     */
     public function numRows()
     {
         if (is_null($this->allFetched)) {
@@ -89,6 +117,10 @@ class CentreonDBStatement extends \PDOStatement
         return count($this->allFetched);
     }
 
+    /**
+     * This method wraps the PDO `execute` method and manages failures logging
+     * @inheritDoc
+     */
     public function execute($parameters = null)
     {
         $this->allFetched = null;

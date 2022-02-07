@@ -80,8 +80,6 @@ class CentreonDB extends \PDO
      *
      * @param string $db | centreon, centstorage
      * @param int $retry
-     * @param bool $silent | when silent is set to false, it will display an HTML error msg,
-     *                       otherwise it will throw an Exception
      *
      * @throws Exception
      */
@@ -432,6 +430,12 @@ class CentreonDB extends \PDO
         }
     }
 
+    /**
+     * Write SQL errors messages and queries
+     *
+     * @param string $query the query string to write to log
+     * @param string $message the message to write to log
+     */
     private function logSqlError(string $query, string $message)
     {
         $this->log->insertLog(2, $message . " QUERY : " . $query);
