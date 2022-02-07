@@ -192,7 +192,7 @@ if ($criticalityId) {
     // the variable bounded to criticalityValue must be an integer. But is inserted in a DB's varchar column
     $queryValues['criticalityValue'] = [\PDO::PARAM_STR => $criticalityId];
 }
-$request .= " AND h.name NOT LIKE '_Module_BAM%' "
+$request .= " AND h.name NOT LIKE '\_Module\_BAM%' "
     . $searchHost
     . $searchService
     . $searchOutput

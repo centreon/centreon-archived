@@ -143,7 +143,7 @@ class CentreonMonitoring
             $rq .= "WHERE h.host_id = s.host_id "
                 . "AND s.enabled = '1' "
                 . "AND h.enabled = '1' "
-                . "AND h.name NOT LIKE '_Module_%' ";
+                . "AND h.name NOT LIKE '\_Module\_%' ";
 
         if ($o == "svcgrid_pb" || $o == "svcOV_pb") {
             $rq .= "AND s.state != 0 ";
