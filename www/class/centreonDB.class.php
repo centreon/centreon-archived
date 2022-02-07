@@ -151,7 +151,7 @@ class CentreonDB extends \PDO
                 $this->options
             );
         } catch (Exception $e) {
-            if (php_sapi_name() != "cli") {
+            if (php_sapi_name() !== "cli") {
                 $this->displayConnectionErrorPage($e->getMessage());
             } else {
                 throw new Exception($e->getMessage());
