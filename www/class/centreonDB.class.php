@@ -128,7 +128,7 @@ class CentreonDB extends \PDO
                 'port' => $this->db_port
             ];
 
-            if (strtolower($db) == self::LABEL_DB_REALTIME) {
+            if (strtolower($db) === self::LABEL_DB_REALTIME) {
                 $this->dsn['hostspec'] = $conf_centreon["hostCentstorage"];
                 $this->dsn['database'] = $conf_centreon["dbcstg"];
             } else {
