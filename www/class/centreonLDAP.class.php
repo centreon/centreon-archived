@@ -553,7 +553,7 @@ class CentreonLDAP
      */
     public function search($filter, $basedn, $searchLimit, $searchTimeout)
     {
-        //$this->setErrorHandler();
+        $this->setErrorHandler();
         $attr = array(
             $this->userSearchInfo['alias'],
             $this->userSearchInfo['name'],
