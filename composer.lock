@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "72a081427cb7cc5b78d9a425006eba98",
+    "content-hash": "59be8a569fe800e56195f62b73e3093e",
     "packages": [
         {
             "name": "beberlei/assert",
@@ -6538,16 +6538,16 @@
         },
         {
             "name": "centreon/centreon-test-lib",
-            "version": "dev-master",
+            "version": "dev-update-login-page-selector",
             "source": {
                 "type": "git",
                 "url": "https://github.com/centreon/centreon-test-lib.git",
-                "reference": "0bed7dc8f8d6bb856384100c2fc2b5a48e06a9ee"
+                "reference": "2fcc8d639580a4ab8588a85bc1e23cb42b7996d5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/0bed7dc8f8d6bb856384100c2fc2b5a48e06a9ee",
-                "reference": "0bed7dc8f8d6bb856384100c2fc2b5a48e06a9ee",
+                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/2fcc8d639580a4ab8588a85bc1e23cb42b7996d5",
+                "reference": "2fcc8d639580a4ab8588a85bc1e23cb42b7996d5",
                 "shasum": ""
             },
             "require": {
@@ -6566,14 +6566,13 @@
                 "behat/mink-selenium2-driver": "Mink driver using Selenium",
                 "phpstan/phpstan": "PHP static analysis"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "Centreon\\Test\\Behat\\": "src/behat",
+                    "Centreon\\PHPStan\\": "src/PHPStan",
                     "Centreon\\Test\\Mock\\": "src/mock",
-                    "Centreon\\Test\\Traits\\": "src/traits",
-                    "Centreon\\PHPStan\\": "src/PHPStan"
+                    "Centreon\\Test\\Behat\\": "src/behat",
+                    "Centreon\\Test\\Traits\\": "src/traits"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -6589,9 +6588,9 @@
             ],
             "support": {
                 "issues": "https://github.com/centreon/centreon-test-lib/issues",
-                "source": "https://github.com/centreon/centreon-test-lib/tree/master"
+                "source": "https://github.com/centreon/centreon-test-lib/tree/update-login-page-selector"
             },
-            "time": "2022-01-27T14:58:59+00:00"
+            "time": "2022-02-07T16:06:27+00:00"
         },
         {
             "name": "friends-of-behat/mink",

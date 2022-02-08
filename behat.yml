@@ -218,10 +218,6 @@ default:
       paths: [ "%paths.base%/features/ModifyDefaultPageConnection.feature" ]
       contexts: [ ModifyDefaultPageConnectionContext ]
 
-    control_login:
-      paths: [ "%paths.base%/features/ControlLogin.feature" ]
-      contexts: [ ControlLoginContext ]
-
     acl_access_groups:
       paths: [ "%paths.base%/features/AclAccessGroups.feature" ]
       contexts: [ AclAccessGroupsContext ]
