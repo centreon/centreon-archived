@@ -46,7 +46,10 @@ class CentreonSession
     {
     }
 
-    public static function start($flag = 0)
+    /**
+     * @param int $flag
+     */
+    public static function start($flag = 0): void
     {
         session_start();
         if ($flag) {
@@ -54,14 +57,14 @@ class CentreonSession
         }
     }
 
-    public static function stop()
+    public static function stop(): void
     {
         // destroy the session
         session_unset();
         session_destroy();
     }
 
-    public static function restart()
+    public static function restart(): void
     {
         static::stop();
         self::start();
@@ -75,24 +78,30 @@ class CentreonSession
      * @param  string $key   session attribute
      * @param  mixed  $value session value to save
      */
-    public static function writeSessionClose($key, $value)
+    public static function writeSessionClose($key, $value): void
     {
         session_start();
         $_SESSION[$key] = $value;
         session_write_close();
     }
 
-    public function s_unset()
+    public function s_unset(): void
     {
         session_unset();
     }
 
-    public function unregisterVar($registerVar)
+    /**
+     * @param mixed $registerVar
+     */
+    public function unregisterVar($registerVar): void
     {
         unset($_SESSION[$registerVar]);
     }
 
-    public function registerVar($registerVar)
+    /**
+     * @param mixed $registerVar
+     */
+    public function registerVar($registerVar): void
     {
         if (!isset($_SESSION[$registerVar])) {
             $_SESSION[$registerVar] = $$registerVar;
@@ -201,6 +210,11 @@ class CentreonSession
         return $sessionUpdated;
     }
 
+    /**
+     * @param string $sessionId
+     * @param \CentreonDB $pearDB
+     * @return int|string
+     */
     public static function getUser($sessionId, $pearDB)
     {
         $sessionId = str_replace(array('_', '%'), array('', ''), $sessionId);
