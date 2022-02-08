@@ -16,7 +16,7 @@ export const useStyles = makeStyles((theme) => ({
     textDecoration: 'none',
   },
   subMenuToggle: {
-    backgroundColor: '#232f39',
+    backgroundColor: theme.palette.common.black,
     boxSizing: 'border-box',
     display: 'none',
     left: theme.spacing(0),
