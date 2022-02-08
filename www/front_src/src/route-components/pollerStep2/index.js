@@ -7,11 +7,11 @@ import React, { Component } from 'react';
 
 import { connect } from 'react-redux';
 import { SubmissionError } from 'redux-form';
+import axios from 'axios';
 
 import Form from '../../components/forms/poller/PollerFormStepTwo';
 import ProgressBar from '../../components/progressBar';
 import routeMap from '../../route-maps/route-map';
-import axios from '../../axios';
 import { setPollerWizard } from '../../redux/actions/pollerWizardActions';
 import BaseWizard from '../../components/forms/baseWizard';
 
@@ -32,22 +32,18 @@ class PollerStepTwoRoute extends Component {
     { active: false, number: 4 },
   ];
 
-  pollerListApi = axios(
-    'internal.php?object=centreon_configuration_remote&action=getRemotesList',
-  );
-
-  wizardFormApi = axios(
-    'internal.php?object=centreon_configuration_remote&action=linkCentreonRemoteServer',
-  );
-
   componentDidMount() {
     this.getPollers();
   }
 
   getPollers = () => {
-    this.pollerListApi.post().then((response) => {
-      this.setState({ pollers: response.data });
-    });
+    axios
+      .post(
+        './api/internal.php?object=centreon_configuration_remote&action=getRemotesList',
+      )
+      .then((response) => {
+        this.setState({ pollers: response.data });
+      });
   };
 
   handleSubmit = (data) => {
@@ -55,8 +51,11 @@ class PollerStepTwoRoute extends Component {
     const postData = { ...data, ...pollerData };
     postData.server_type = 'poller';
 
-    return this.wizardFormApi
-      .post('', postData)
+    return axios
+      .post(
+        './api/internal.php?object=centreon_configuration_remote&action=linkCentreonRemoteServer',
+        postData,
+      )
       .then((response) => {
         setPollerWizard({ submitStatus: response.data.success });
         if (pollerData.linked_remote_master) {
