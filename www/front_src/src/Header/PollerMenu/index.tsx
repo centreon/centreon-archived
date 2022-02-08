@@ -73,7 +73,7 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
   },
   subMenuToggle: {
-    backgroundColor: '#232f39',
+    backgroundColor: theme.palette.common.black,
     boxSizing: 'border-box',
     display: 'none',
     left: theme.spacing(0),
@@ -82,7 +82,7 @@ const useStyles = makeStyles((theme) => ({
     textAlign: 'left',
     top: '100%',
     width: '100%',
-    zIndex: 99,
+    zIndex: theme.zIndex.mobileStepper,
   },
   subMenuToggleActive: {
     display: 'block',
