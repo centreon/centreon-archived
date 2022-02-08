@@ -85,11 +85,6 @@ class CentreonSession
         session_write_close();
     }
 
-    public function s_unset(): void
-    {
-        session_unset();
-    }
-
     /**
      * @param mixed $registerVar
      */
