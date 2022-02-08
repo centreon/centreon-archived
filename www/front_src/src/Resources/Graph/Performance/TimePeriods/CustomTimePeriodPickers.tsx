@@ -163,10 +163,10 @@ const CustomTimePeriodPickers = ({
   return (
     <>
       <Button
-        data-testid={t(labelCompactTimePeriod)}
         aria-label={t(labelCompactTimePeriod)}
         className={classes.button}
         color="primary"
+        data-testid={t(labelCompactTimePeriod)}
         variant="outlined"
         onClick={openPopover}
       >

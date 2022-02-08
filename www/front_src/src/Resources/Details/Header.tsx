@@ -172,9 +172,9 @@ const Header = ({ details, onSelectParent }: Props): JSX.Element => {
           <Tooltip title={resourceConfigurationUriTitle}>
             <div className={classes.resourceNameConfigurationIcon}>
               <Link
-                data-testid={`${t(labelConfigure)}_${details.name}`}
                 aria-label={`${t(labelConfigure)}_${details.name}`}
                 className={classes.resourceNameConfigurationLink}
+                data-testid={`${t(labelConfigure)}_${details.name}`}
                 href={resourceConfigurationUri}
               >
                 <SettingsIcon
@@ -202,8 +202,8 @@ const Header = ({ details, onSelectParent }: Props): JSX.Element => {
       </div>
       <ShortcutsTooltip resourceUris={resourceUris} />
       <IconButton
-        data-testid={t(labelCopyLink)}
         ariaLabel={t(labelCopyLink)}
+        data-testid={t(labelCopyLink)}
         size="small"
         title={t(labelCopyLink)}
         onClick={copyResourceLink}

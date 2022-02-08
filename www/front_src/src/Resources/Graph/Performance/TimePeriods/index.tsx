@@ -107,9 +107,9 @@ const TimePeriodButtonGroup = ({
                   ({ id, name, largeName }) => (
                     <Tooltip key={name} placement="top" title={largeName}>
                       <Button
-                        data-testid={id}
                         className={classes.button}
                         component="span"
+                        data-testid={id}
                         variant={
                           selectedTimePeriod?.id === id
                             ? 'contained'
