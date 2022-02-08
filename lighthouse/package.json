@@ -1,0 +1,15 @@
+{
+  "name": "centreon-lighthouse-report",
+  "version": "22.4.0",
+  "description": "This is handle Lighthouse report",
+  "main": "puppeteer-script.js",
+  "type": "module",
+  "scripts": {
+    "start": "node ./lighthouseReport.js"
+  },
+  "devDependencies": {
+    "lighthouse": "^9.3.1",
+    "open": "^8.4.0",
+    "puppeteer": "^13.2.0"
+  }
+}
