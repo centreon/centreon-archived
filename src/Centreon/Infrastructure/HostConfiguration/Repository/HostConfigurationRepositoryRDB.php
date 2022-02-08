@@ -866,7 +866,9 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
         $statement->bindValue(':order', $order, \PDO::PARAM_INT);
         $statement->execute();
         if ($statement->rowCount() === 0) {
-            throw new RepositoryException(sprintf(_('Error while linking template (id: %d) to host (id: %d)'), $templateId, $hostId));
+            throw new RepositoryException(
+                sprintf( _('Error while linking template (id: %d) to host (id: %d)'), $templateId, $hostId)
+            );
         }
     }
 
@@ -894,7 +896,9 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
         $statement->bindValue(':order', $order, \PDO::PARAM_INT);
         $statement->execute();
         if ($statement->rowCount() === 0) {
-            throw new RepositoryException(sprintf(_('Error while linking template %s to host (id: %d)'), $templateName, $hostId));
+            throw new RepositoryException(
+                sprintf(_('Error while linking template %s to host (id: %d)'), $templateName, $hostId)
+            );
         }
     }
 
