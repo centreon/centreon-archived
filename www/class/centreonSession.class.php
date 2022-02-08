@@ -112,8 +112,7 @@ class CentreonSession
         $prepare = $db->prepare('SELECT `session_id` FROM session WHERE `session_id` = :session_id');
         $prepare->bindValue(':session_id', $sessionId, \PDO::PARAM_STR);
         $prepare->execute();
-        $session = (int) $prepare->fetch(\PDO::FETCH_ASSOC)['session_id'];
-        return !empty($session) ? true : false;
+        return $prepare->fetch(\PDO::FETCH_ASSOC) !== false;
     }
 
     /**
