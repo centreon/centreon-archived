@@ -272,7 +272,7 @@ try {
     }
 //    'rpm packaging centos8': {
 //      node {
-//        checkoutCentreonBuild()           
+//        checkoutCentreonBuild()
 //        unstash 'tar-sources'
 //        sh "./centreon-build/jobs/web/${serie}/mon-web-package.sh centos8"
 //        archiveArtifacts artifacts: "rpms-centos8.tar.gz"

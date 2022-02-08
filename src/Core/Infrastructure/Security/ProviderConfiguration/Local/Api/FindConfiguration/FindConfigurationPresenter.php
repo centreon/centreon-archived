@@ -42,7 +42,10 @@ class FindConfigurationPresenter extends AbstractPresenter implements FindConfig
                 'has_special_character' => $response->hasSpecialCharacter,
                 'attempts' => $response->attempts,
                 'blocking_duration' => $response->blockingDuration,
-                'password_expiration' => $response->passwordExpiration,
+                'password_expiration' => [
+                    'expiration_delay' => $response->passwordExpirationDelay,
+                    'excluded_users' => $response->passwordExpirationExcludedUserAliases,
+                ],
                 'can_reuse_passwords' => $response->canReusePasswords,
                 'delay_before_new_password' => $response->delayBeforeNewPassword,
             ]
