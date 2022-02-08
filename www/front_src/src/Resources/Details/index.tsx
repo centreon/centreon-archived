@@ -99,6 +99,8 @@ const Details = (): JSX.Element | null => {
       selectedTabId={getTabIndex(openDetailsTabId)}
       tabs={getVisibleTabs().map(({ id, title }) => (
         <Tab
+          aria-label={t(title)}
+          data-testid={t(title)}
           disabled={isNil(details)}
           key={id}
           label={isNil(details) ? <Skeleton width={60} /> : t(title)}

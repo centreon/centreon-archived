@@ -10,7 +10,7 @@ export type TabId = 0 | 1 | 2 | 3 | 4;
 
 export interface Tab {
   Component: React.LazyExoticComponent<(props: TabProps) => JSX.Element>;
-  ariaLabel: string;
+  ariaLabel?: string;
   getIsActive: (details) => boolean;
   id: TabId;
   title: string;

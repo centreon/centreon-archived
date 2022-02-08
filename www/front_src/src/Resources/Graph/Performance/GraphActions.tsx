@@ -141,13 +141,22 @@ const GraphActions = ({
             open={Boolean(menuAnchor)}
             onClose={closeSizeExportMenu}
           >
-            <MenuItem data-testid={t(labelAsDisplayed)} onClick={(): void => convertToPng(1)}>
+            <MenuItem
+              data-testid={t(labelAsDisplayed)}
+              onClick={(): void => convertToPng(1)}
+            >
               {t(labelAsDisplayed)}
             </MenuItem>
-            <MenuItem data-testid={t(labelMediumSize)} onClick={(): void => convertToPng(0.75)}>
+            <MenuItem
+              data-testid={t(labelMediumSize)}
+              onClick={(): void => convertToPng(0.75)}
+            >
               {t(labelMediumSize)}
             </MenuItem>
-            <MenuItem data-testid={t(labelSmallSize)} onClick={(): void => convertToPng(0.5)}>
+            <MenuItem
+              data-testid={t(labelSmallSize)}
+              onClick={(): void => convertToPng(0.5)}
+            >
               {t(labelSmallSize)}
             </MenuItem>
           </Menu>
