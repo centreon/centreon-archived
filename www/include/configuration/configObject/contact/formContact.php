@@ -387,7 +387,7 @@ if ($platformType === PLATFORM_CLOUD) {
  * Contact Centreon information
  */
 $form->addElement('header', 'oreon', _("Centreon"));
-$tab = array();
+$tab = [];
 $tab[] = $form->createElement('radio', 'contact_oreon', null, _("Yes"), '1');
 $tab[] = $form->createElement('radio', 'contact_oreon', null, _("No"), '0');
 $form->addGroup($tab, 'contact_oreon', _("Reach Centreon Front-end"), '&nbsp;');
@@ -503,10 +503,10 @@ if ($centreon->optGen['ldap_auth_enable'] == 1) {
 }
 if ($o != MASSIVE_CHANGE) {
     $form->setDefaults(array(
-        'contact_oreon' => '1',
-        'contact_admin' => '0',
-        'reach_api' => '0',
-        'reach_api_rt' => '0'
+        'contact_oreon' => ['contact_oreon' => '1'],
+        'contact_admin' => ['contact_admin' => '0'],
+        'reach_api' => ['reach_api' => '0'],
+        'reach_api_rt' => ['reach_api_rt' => '0']
     ));
 }
 $form->addElement('select', 'contact_auth_type', _("Authentication Source"), $auth_type);
@@ -528,7 +528,7 @@ if ($platformType === PLATFORM_CLOUD) {
 }
 
 $form->addGroup($tab, 'contact_enable_notifications', _("Enable Notifications"), '&nbsp;');
-if ($o != MASSIVE_CHANGE) {
+if ($o != MASSIVE_CHANGE && $platformType !== PLATFORM_CLOUD) {
     $form->setDefaults(array('contact_enable_notifications' => '2'));
 }
 
@@ -858,11 +858,6 @@ if ($centreon->optGen['ldap_auth_enable'] == 1 && $cct['contact_auth_type'] == '
 $valid = false;
 
 if ($form->validate() && $from_list_menu == false) {
-    if ($platformType === PLATFORM_CLOUD) {
-        $form->getElement('reach_api')->setValue('0');
-        $form->getElement('reach_api_rt')->setValue('0');
-        $form->getElement('contact_oreon')->setValue('1');
-    }
     $cctObj = $form->getElement('contact_id');
     if (!$centreon->user->admin && $contactId) {
         $form->removeElement('contact_admin');
