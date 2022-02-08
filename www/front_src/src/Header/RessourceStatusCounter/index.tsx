@@ -25,7 +25,7 @@ export const useStyles = makeStyles((theme) => ({
     textAlign: 'left',
     top: '100%',
     width: '100%',
-    zIndex: 99,
+    zIndex: theme.zIndex.mobileStepper,
   },
   subMenuToggleActive: {
     display: 'block',
