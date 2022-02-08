@@ -93,7 +93,10 @@ if (version_compare(phpversion(), '8.0') < 0) {
             !isset($generalOptions['openid_connect_enable'])
             || $generalOptions['openid_connect_enable'] == 1)
     ) {
-        $argP = $_POST['p'] ?? $_GET["p"] ?? null;
+        $argP = filter_var(
+            $_POST['p'] ?? $_GET["p"] ?? null,
+            FILTER_VALIDATE_INT
+        );
 
         $argMin = $_POST['min'] ?? $_GET["min"] ?? null;
         /*
@@ -179,11 +182,15 @@ if (version_compare(phpversion(), '8.0') < 0) {
             $securityAuthenticationTokenStatement->bindValue(':userId', $centreon->user->user_id, \PDO::PARAM_INT);
             $securityAuthenticationTokenStatement->execute();
             $headerRedirection = "./main.php";
-            if (!empty($argP)) {
+            if ($argP !== false) {
                 $headerRedirection .= "?p=" . $argP;
                 foreach ($_GET as $parameter => $value) {
                     if (!in_array($parameter, AUTOLOGIN_FIELDS)) {
-                        $headerRedirection .= '&' . $parameter . '=' . $value;
+                        $sanitizeParameter = filter_var($parameter, FILTER_SANITIZE_STRING);
+                        $sanitizeValue = filter_input(INPUT_GET, $parameter);
+                        if ($sanitizeParameter !== false && $sanitizeValue !== false) {
+                            $headerRedirection .= '&' . $parameter . '=' . $value;
+                        }
                     }
                 }
             } elseif (isset($centreon->user->default_page) && $centreon->user->default_page != '') {
@@ -199,7 +206,7 @@ if (version_compare(phpversion(), '8.0') < 0) {
                 } else {
                     $headerRedirection .= "?p=" . $centreon->user->default_page;
 
-                    if ($argMin == '1') {
+                    if ($argMin === '1') {
                         $headerRedirection .= '&min=1';
                     }
                 }
