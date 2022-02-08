@@ -46,6 +46,15 @@ class HypermediaCreator
     }
 
     /**
+     * This method will create the internal redirection endpoints for the given resource.
+     * Those links will be created regarding the Users rights and Resource type.
+     * ex: For a service resource type
+     * [
+     *  "timeline": "/centreon/api/v21.10/monitoring/hosts/14/services/26/timeline",
+     *  "status_graph": "/centreon/api/v21.10/monitoring/hosts/14/services/26/metrics/status",
+     *  "performance_graph": "/centreon/api/v21.10/monitoring/hosts/14/services/26/metrics/performance"
+     * ]
+     *
      * @param mixed $response
      * @return array<string, string|null>
      */
@@ -60,6 +69,15 @@ class HypermediaCreator
     }
 
     /**
+     * This method will create the internal redirection links for the given resource.
+     * Those links will be created regarding the Users rights and Resource type.
+     * ex: For a service resource type
+     * [
+     *   "configuration": "/centreon/main.php?p=60201&o=c&service_id=26",
+     *   "logs": "/centreon/main.php?p=20301&svc=14_26",
+     *   "reporting": "/centreon/main.php?p=30702&period=yesterday&start=&end=&host_id=14&item=26"
+     * ]
+     *
      * @param mixed $response
      * @return array<string, string|null>
      */
@@ -74,6 +92,18 @@ class HypermediaCreator
     }
 
     /**
+     * This method will add the redirection uri to the group configuration page.
+     * This will be done regarding the Users rights and the Resource Type.
+     * ex: For a Host resource type will add the redirection link to the hostgroup
+     * configuration page.
+     * [
+     *   [
+     *      'id' => 1,
+     *      'name' => ALL,
+     *      'configuration_uri' => 'http://localhost:8080/centreon/main.php?p=60102&o=c&hg_id=53'
+     *   ]
+     * ]
+     *
      * @param mixed $response
      * @return array<array<string, string|null>>
      */
