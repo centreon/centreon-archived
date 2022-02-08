@@ -15,7 +15,6 @@ import { makeStyles } from '@mui/styles';
 import { getData, useRequest } from '@centreon/ui';
 
 import { allowedPagesSelector } from '../../redux/selectors/navigation/allowedPages';
-import styles from '../header.scss';
 import Clock from '../Clock';
 import MenuLoader from '../../components/MenuLoader';
 
@@ -40,6 +39,13 @@ const useStyles = makeStyles((theme) => ({
     whiteSpace: 'nowrap',
     width: theme.spacing(14),
   },
+  hiddenInput: {
+    height: theme.spacing(0),
+    opacity: 0,
+    position: 'absolute',
+    top: theme.spacing(-13),
+    width: theme.spacing(0),
+  },
   itemLink: {
     backgroundColor: theme.palette.common.black,
     color: theme.palette.common.white,
@@ -48,6 +54,11 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'space-between',
     padding: theme.spacing(1),
     textDecoration: 'none',
+  },
+  listUnstyled: {
+    listStyle: 'none',
+    margin: theme.spacing(0),
+    paddingLeft: theme.spacing(0),
   },
   logOut: {
     '&:hover': {
@@ -58,7 +69,7 @@ const useStyles = makeStyles((theme) => ({
     borderColor: theme.palette.common.white,
     borderRadius: 20,
     color: theme.palette.common.white,
-    fontSize: theme.typography.caption.fontSize,
+    textTransform: 'capitalize',
   },
   logoutLink: {
     display: 'grid',
@@ -78,7 +89,7 @@ const useStyles = makeStyles((theme) => ({
     textAlign: 'left',
     top: '100%',
     width: '100%',
-    zIndex: 92,
+    zIndex: theme.zIndex.mobileStepper,
   },
   subMenuActive: {
     display: 'block',
@@ -97,8 +108,7 @@ const useStyles = makeStyles((theme) => ({
       color: theme.palette.common.black,
     },
     alignItems: 'center',
-    backgroundColor: 'transparent',
-    border: '1px solid rgba(255, 161, 37, 1)',
+    border: `1px solid ${theme.palette.warning.main}`,
     borderRadius: '16px',
     boxSizing: 'border-box',
     color: theme.palette.warning.main,
@@ -108,7 +118,7 @@ const useStyles = makeStyles((theme) => ({
     lineHeight: '31px',
     margin: '0 auto',
     outline: 'none',
-    padding: '2px 10px 2px 10px',
+    padding: theme.spacing(0.25, 1.25, 0.25, 1.25),
     position: 'relative',
     textAlign: 'left',
     textDecoration: 'none',
@@ -119,12 +129,18 @@ const useStyles = makeStyles((theme) => ({
     float: 'right',
     marginLeft: theme.spacing(0.5),
     textDecorationLine: 'underline',
+    textTransform: 'capitalize',
+  },
+  userIcon: {
+    color: theme.palette.common.white,
+    cursor: 'pointer',
+    marginLeft: theme.spacing(1),
   },
   wrapRightUser: {
     alignItems: 'center',
     display: 'flex',
     flexWrap: 'wrap',
-    padding: '6px 22px 6px 61px',
+    padding: theme.spacing(0.75, 2.75, 0.75, 7.6),
     position: 'relative',
   },
   wrapRightUserItems: {
@@ -221,8 +237,8 @@ const UserMenu = ({ allowedPages }: StateToProps): JSX.Element => {
         <Clock />
         <div ref={profile as React.RefObject<HTMLDivElement>}>
           <UserIcon
+            className={classnames(classes.userIcon)}
             fontSize="large"
-            style={{ color: '#FFFFFF', cursor: 'pointer', marginLeft: 8 }}
             onClick={toggle}
           />
           <div
@@ -231,8 +247,8 @@ const UserMenu = ({ allowedPages }: StateToProps): JSX.Element => {
             })}
           >
             <div>
-              <ul className={classnames(styles['list-unstyled'])}>
-                <li className={styles['submenu-item']}>
+              <ul className={classnames(classes.listUnstyled)}>
+                <li>
                   <div
                     className={classnames(
                       classes.itemLink,
@@ -265,7 +281,7 @@ const UserMenu = ({ allowedPages }: StateToProps): JSX.Element => {
                     )}
                   </div>
                 </li>
-                {data.autologinkey && (
+                {true && (
                   <div className={classnames(classes.subMenuItemContent)}>
                     <Button
                       className={classnames(classes.submenuUserButton)}
@@ -276,7 +292,7 @@ const UserMenu = ({ allowedPages }: StateToProps): JSX.Element => {
                       {copied ? <CheckIcon /> : <FileCopyIcon />}
                     </Button>
                     <textarea
-                      className={styles['hidden-input']}
+                      className={classnames(classes.hiddenInput)}
                       id="autologin-input"
                       ref={
                         autologinNode as React.RefObject<HTMLTextAreaElement>
