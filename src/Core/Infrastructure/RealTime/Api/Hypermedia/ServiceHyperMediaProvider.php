@@ -211,10 +211,6 @@ class ServiceHypermediaProvider implements HypermediaProviderInterface
      */
     public function createInternalGroupsUri(mixed $response): array
     {
-        if (empty($response->servicegroups)) {
-            return [];
-        }
-
         return array_map(
             fn (array $group) => [
                 'id' => $group['id'],
