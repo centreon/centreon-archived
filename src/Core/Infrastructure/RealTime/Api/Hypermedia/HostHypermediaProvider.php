@@ -166,10 +166,6 @@ class HostHypermediaProvider implements HypermediaProviderInterface
      */
     public function createInternalGroupsUri(mixed $response): array
     {
-        if (empty($response->hostgroups)) {
-            return [];
-        }
-
         return array_map(
             fn (array $group) => [
                 'id' => $group['id'],
