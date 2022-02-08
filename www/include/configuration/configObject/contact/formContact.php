@@ -517,13 +517,11 @@ $form->addElement('select', 'contact_auth_type', _("Authentication Source"), $au
 $form->addElement('header', 'notification', _("Notification"));
 
 $tab = [];
-
+$tab[] = $form->createElement('radio', 'contact_enable_notifications', null, _("Yes"), '1');
+$tab[] = $form->createElement('radio', 'contact_enable_notifications', null, _("No"), '0');
 if ($platformType === PLATFORM_CLOUD) {
-    $tab[] = $form->createElement('checkbox', 'contact_enable_notifications', '1', null, '1');
     $form->setDefaults(['contact_enable_notifications' => '1']);
 } else {
-    $tab[] = $form->createElement('radio', 'contact_enable_notifications', null, _("Yes"), '1');
-    $tab[] = $form->createElement('radio', 'contact_enable_notifications', null, _("No"), '0');
     $tab[] = $form->createElement('radio', 'contact_enable_notifications', null, _("Default"), '2');
 }
 
@@ -765,7 +763,7 @@ if ($o != MASSIVE_CHANGE) {
     if (
         (isset($ret["contact_enable_notifications"]["contact_enable_notifications"])
         && $ret["contact_enable_notifications"]["contact_enable_notifications"] == 1)
-        && ($platformType !== PLATFORM_REMOTE)
+        && ($platformType === PLATFORM_CENTRAL)
     ) {
         if (isset($ret["contact_template_id"]) && $ret["contact_template_id"] == '') {
             $form->addRule('timeperiod_tp_id', _("Compulsory Period"), 'required');
