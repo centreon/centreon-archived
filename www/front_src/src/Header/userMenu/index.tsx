@@ -281,7 +281,7 @@ const UserMenu = ({ allowedPages }: StateToProps): JSX.Element => {
                     )}
                   </div>
                 </li>
-                {true && (
+                {data.autologinkey && (
                   <div className={classnames(classes.subMenuItemContent)}>
                     <Button
                       className={classnames(classes.submenuUserButton)}
