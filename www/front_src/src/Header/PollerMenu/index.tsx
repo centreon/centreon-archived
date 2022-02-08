@@ -204,6 +204,7 @@ const PollerMenu = (): JSX.Element => {
             {allowPollerConfiguration && (
               <Paper className={classes.confButton}>
                 <Button
+                  data-testid={t(labelConfigurePollers)}
                   fullWidth
                   size="small"
                   onClick={redirectToPollerConfiguration}
