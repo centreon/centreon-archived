@@ -23,7 +23,7 @@ declare(strict_types=1);
 namespace Core\Infrastructure\RealTime\Api\FindHost;
 
 use CentreonDuration;
-use Core\Infrastructure\RealTime\Api\Hypermedia\HypermediaService;
+use Core\Infrastructure\RealTime\Api\Hypermedia\HypermediaCreator;
 use Symfony\Component\HttpFoundation\Response;
 use Core\Application\Common\UseCase\ResponseStatusInterface;
 use Core\Application\RealTime\UseCase\FindHost\FindHostResponse;
@@ -41,11 +41,11 @@ class FindHostPresenter implements FindHostPresenterInterface
     private $responseStatus;
 
     /**
-     * @param HypermediaService $hypermediaService
+     * @param HypermediaCreator $hypermediaCreator
      * @param PresenterFormatterInterface $presenterFormatter
      */
     public function __construct(
-        private HypermediaService $hypermediaService,
+        private HypermediaCreator $hypermediaCreator,
         private PresenterFormatterInterface $presenterFormatter
     ) {
     }
@@ -80,7 +80,7 @@ class FindHostPresenter implements FindHostPresenterInterface
             'severity_level' => $response->severityLevel,
             'parent' => null,
             'icon' => $response->icon,
-            'groups' => $this->hypermediaService->createInternalGroupsUri($response)
+            'groups' => $this->hypermediaCreator->createInternalGroupsUri($response)
         ];
 
         $acknowledgement = null;
@@ -149,8 +149,8 @@ class FindHostPresenter implements FindHostPresenterInterface
          * Creating Hypermedias
          */
         $presenterResponse['links'] = [
-            'uris' => $this->hypermediaService->createInternalUris($response),
-            'endpoints' => $this->hypermediaService->createEndpoints($response),
+            'uris' => $this->hypermediaCreator->createInternalUris($response),
+            'endpoints' => $this->hypermediaCreator->createEndpoints($response),
         ];
         $this->presenterFormatter->present($presenterResponse);
     }

@@ -33,7 +33,7 @@ use Core\Application\Common\UseCase\NotFoundResponse;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Core\Application\RealTime\UseCase\FindHost\FindHost;
 use Core\Infrastructure\RealTime\Api\FindHost\FindHostPresenter;
-use Core\Infrastructure\RealTime\Api\Hypermedia\HypermediaService;
+use Core\Infrastructure\RealTime\Api\Hypermedia\HypermediaCreator;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
 use Core\Application\RealTime\Repository\ReadHostRepositoryInterface;
 use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
@@ -74,9 +74,9 @@ class FindHostTest extends TestCase
     private $acknowledgementRepository;
 
     /**
-     * @var HypermediaService&\PHPUnit\Framework\MockObject\MockObject
+     * @var HypermediaCreator&\PHPUnit\Framework\MockObject\MockObject
      */
-    private $hypermediaService;
+    private $hypermediaCreator;
 
     /**
      * @var PresenterFormatterInterface&\PHPUnit\Framework\MockObject\MockObject
@@ -95,7 +95,7 @@ class FindHostTest extends TestCase
         $this->accessGroupRepository = $this->createMock(AccessGroupRepositoryInterface::class);
         $this->downtimeRepository = $this->createMock(ReadDowntimeRepositoryInterface::class);
         $this->acknowledgementRepository = $this->createMock(ReadAcknowledgementRepositoryInterface::class);
-        $this->hypermediaService = $this->createMock(HypermediaService::class);
+        $this->hypermediaCreator = $this->createMock(HypermediaCreator::class);
         $this->presenterFormatter = $this->createMock(PresenterFormatterInterface::class);
         $this->monitoringService = $this->createMock(MonitoringServiceInterface::class);
     }
@@ -128,7 +128,7 @@ class FindHostTest extends TestCase
             ->method('findHostById')
             ->willReturn(null);
 
-        $findHostPresenter = new FindHostPresenter($this->hypermediaService, $this->presenterFormatter);
+        $findHostPresenter = new FindHostPresenter($this->hypermediaCreator, $this->presenterFormatter);
 
         $findHost(1, $findHostPresenter);
 
@@ -168,7 +168,7 @@ class FindHostTest extends TestCase
             ->method('findHostByIdAndAccessGroupIds')
             ->willReturn(null);
 
-        $findHostPresenter = new FindHostPresenter($this->hypermediaService, $this->presenterFormatter);
+        $findHostPresenter = new FindHostPresenter($this->hypermediaCreator, $this->presenterFormatter);
 
         $findHost(1, $findHostPresenter);
 

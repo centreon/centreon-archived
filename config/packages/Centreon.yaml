@@ -229,8 +229,8 @@ services:
             - method: setProviders
               arguments: [!tagged_iterator 'monitoring.resource.providers']
 
-    Core\Infrastructure\RealTime\Api\Hypermedia\HypermediaService:
-        class: Core\Infrastructure\RealTime\Api\Hypermedia\HypermediaService
+    Core\Infrastructure\RealTime\Api\Hypermedia\HypermediaCreator:
+        class: Core\Infrastructure\RealTime\Api\Hypermedia\HypermediaCreator
         calls:
             - method: setHypermediaProviders
               arguments: [!tagged_iterator 'realtime.api.hypermedia']

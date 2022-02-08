@@ -29,7 +29,7 @@ use Core\Domain\RealTime\Model\Acknowledgement;
 use Core\Application\Common\UseCase\NotFoundResponse;
 use Tests\Core\Domain\RealTime\Model\MetaServiceTest;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
-use Core\Infrastructure\RealTime\Api\Hypermedia\HypermediaService;
+use Core\Infrastructure\RealTime\Api\Hypermedia\HypermediaCreator;
 use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
 use Core\Application\RealTime\UseCase\FindMetaService\FindMetaService;
 use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
@@ -70,9 +70,9 @@ class FindMetaServiceTest extends TestCase
     private $acknowledgementRepository;
 
     /**
-     * @var HypermediaService&\PHPUnit\Framework\MockObject\MockObject
+     * @var HypermediaCreator&\PHPUnit\Framework\MockObject\MockObject
      */
-    private $hypermediaService;
+    private $hypermediaCreator;
 
     /**
      * @var PresenterFormatterInterface&\PHPUnit\Framework\MockObject\MockObject
@@ -86,7 +86,7 @@ class FindMetaServiceTest extends TestCase
         $this->accessGroupRepository = $this->createMock(AccessGroupRepositoryInterface::class);
         $this->downtimeRepository = $this->createMock(ReadDowntimeRepositoryInterface::class);
         $this->acknowledgementRepository = $this->createMock(ReadAcknowledgementRepositoryInterface::class);
-        $this->hypermediaService = $this->createMock(HypermediaService::class);
+        $this->hypermediaCreator = $this->createMock(HypermediaCreator::class);
         $this->presenterFormatter = $this->createMock(PresenterFormatterInterface::class);
     }
 
@@ -117,7 +117,7 @@ class FindMetaServiceTest extends TestCase
             ->method('findMetaServiceById')
             ->willReturn(null);
 
-        $findMetaServicePresenter = new FindMetaServicePresenter($this->hypermediaService, $this->presenterFormatter);
+        $findMetaServicePresenter = new FindMetaServicePresenter($this->hypermediaCreator, $this->presenterFormatter);
         $findMetaService(1, $findMetaServicePresenter);
 
         $this->assertEquals($findMetaServicePresenter->getResponseStatus(), new NotFoundResponse('MetaService configuration'));
@@ -150,7 +150,7 @@ class FindMetaServiceTest extends TestCase
             ->method('findMetaServiceByIdAndAccessGroupIds')
             ->willReturn(null);
 
-        $findMetaServicePresenter = new FindMetaServicePresenter($this->hypermediaService, $this->presenterFormatter);
+        $findMetaServicePresenter = new FindMetaServicePresenter($this->hypermediaCreator, $this->presenterFormatter);
         $findMetaService(1, $findMetaServicePresenter);
 
         $this->assertEquals($findMetaServicePresenter->getResponseStatus(), new NotFoundResponse('MetaService configuration'));
@@ -193,7 +193,7 @@ class FindMetaServiceTest extends TestCase
             ->method('findMetaServiceById')
             ->willReturn(null);
 
-        $findMetaServicePresenter = new FindMetaServicePresenter($this->hypermediaService, $this->presenterFormatter);
+        $findMetaServicePresenter = new FindMetaServicePresenter($this->hypermediaCreator, $this->presenterFormatter);
         $findMetaService(1, $findMetaServicePresenter);
 
         $this->assertEquals($findMetaServicePresenter->getResponseStatus(), new NotFoundResponse('MetaService'));
@@ -231,7 +231,7 @@ class FindMetaServiceTest extends TestCase
             ->method('findMetaServiceByIdAndAccessGroupIds')
             ->willReturn(null);
 
-        $findMetaServicePresenter = new FindMetaServicePresenter($this->hypermediaService, $this->presenterFormatter);
+        $findMetaServicePresenter = new FindMetaServicePresenter($this->hypermediaCreator, $this->presenterFormatter);
         $findMetaService(1, $findMetaServicePresenter);
 
         $this->assertEquals($findMetaServicePresenter->getResponseStatus(), new NotFoundResponse('MetaService'));

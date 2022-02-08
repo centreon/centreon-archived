@@ -25,7 +25,7 @@ namespace Core\Infrastructure\RealTime\Api\Hypermedia;
 
 use Core\Infrastructure\RealTime\Api\Hypermedia\HypermediaProviderInterface;
 
-class HypermediaService
+class HypermediaCreator
 {
     /**
      * @var HypermediaProviderInterface[]

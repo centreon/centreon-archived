@@ -22,7 +22,7 @@ declare(strict_types=1);
 
 namespace Core\Infrastructure\RealTime\Api\FindService;
 
-use Core\Infrastructure\RealTime\Api\Hypermedia\HypermediaService;
+use Core\Infrastructure\RealTime\Api\Hypermedia\HypermediaCreator;
 use Symfony\Component\HttpFoundation\Response;
 use Core\Application\Common\UseCase\ResponseStatusInterface;
 use Core\Application\RealTime\UseCase\FindService\FindServiceResponse;
@@ -40,11 +40,11 @@ class FindServicePresenter implements FindServicePresenterInterface
     private $responseStatus;
 
     /**
-     * @param HypermediaService $hypermediaService
+     * @param HypermediaCreator $hypermediaCreator
      * @param PresenterFormatterInterface $presenterFormatter
      */
     public function __construct(
-        private HypermediaService $hypermediaService,
+        private HypermediaCreator $hypermediaCreator,
         private PresenterFormatterInterface $presenterFormatter
     ) {
     }
@@ -139,8 +139,8 @@ class FindServicePresenter implements FindServicePresenterInterface
          * Creating Hypermedias
          */
         $presenterResponse['links'] = [
-            'uris' => $this->hypermediaService->createInternalUris($response),
-            'endpoints' => $this->hypermediaService->createEndpoints($response)
+            'uris' => $this->hypermediaCreator->createInternalUris($response),
+            'endpoints' => $this->hypermediaCreator->createEndpoints($response)
         ];
         $this->presenterFormatter->present($presenterResponse);
     }
