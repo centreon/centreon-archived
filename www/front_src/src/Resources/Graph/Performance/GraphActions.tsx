@@ -114,8 +114,10 @@ const GraphActions = ({
         <>
           <IconButton
             disableTouchRipple
+            ariaLabel={t(labelPerformancePage)}
             className={classes.buttonLink}
             color="primary"
+            data-testid={t(labelPerformancePage)}
             size="small"
             title={t(labelPerformancePage)}
             onClick={goToPerformancePage}
@@ -124,6 +126,8 @@ const GraphActions = ({
           </IconButton>
           <IconButton
             disableTouchRipple
+            ariaLabel={t(labelExportToPng)}
+            data-testid={t(labelExportToPng)}
             disabled={isNil(timeline)}
             size="large"
             title={t(labelExportToPng)}
