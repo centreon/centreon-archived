@@ -36,16 +36,6 @@
 
 class CentreonSession
 {
-    /*
-     * Constructor class
-     *
-     * @access public
-     * @return 	object	object session
-     */
-    public function __construct()
-    {
-    }
-
     /**
      * @param int $flag
      */
@@ -117,13 +107,13 @@ class CentreonSession
         self::deleteExpiredSession($db);
 
         if (empty($sessionId)) {
-            return 0;
+            return false;
         }
-        $prepare = $db->prepare('SELECT COUNT(*) AS total FROM session WHERE `session_id` = :session_id');
+        $prepare = $db->prepare('SELECT `session_id` FROM session WHERE `session_id` = :session_id');
         $prepare->bindValue(':session_id', $sessionId, \PDO::PARAM_STR);
         $prepare->execute();
-        $total = (int) $prepare->fetch(\PDO::FETCH_ASSOC)['total'];
-        return ($total > 0) ? 1 : 0;
+        $session = (int) $prepare->fetch(\PDO::FETCH_ASSOC)['session_id'];
+        return !empty($session) ? true : false;
     }
 
     /**
@@ -160,7 +150,7 @@ class CentreonSession
         session_start();
         $sessionId = session_id();
 
-        if (self::checkSession($sessionId, $pearDB) === 1) {
+        if (self::checkSession($sessionId, $pearDB)) {
             try {
                 $sessionStatement = $pearDB->prepare(
                     "UPDATE `session`
