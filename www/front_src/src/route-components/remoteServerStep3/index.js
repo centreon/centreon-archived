@@ -10,11 +10,11 @@ import React, { Component } from 'react';
 
 import { connect } from 'react-redux';
 import { withTranslation } from 'react-i18next';
+import axios from 'axios';
 
 import WizardFormInstallingStatus from '../../components/wizardFormInstallingStatus';
 import ProgressBar from '../../components/progressBar';
 import routeMap from '../../route-maps/route-map';
-import axios from '../../axios';
 import BaseWizard from '../../components/forms/baseWizard';
 
 class RemoteServerStepThreeRoute extends Component {
@@ -43,12 +43,6 @@ class RemoteServerStepThreeRoute extends Component {
   }
 
   /**
-   * axios call to get task status on central server
-   */
-  getExportTask = () =>
-    axios('internal.php?object=centreon_task_service&action=getTaskStatus');
-
-  /**
    * check export files generation step each second (30 tries)
    */
   setGenerationTimeout = () => {
@@ -71,8 +65,11 @@ class RemoteServerStepThreeRoute extends Component {
     const { history } = this.props;
     const { taskId } = this.props.pollerData;
 
-    this.getExportTask()
-      .post('', { task_id: taskId })
+    axios
+      .post(
+        './api/internal.php?object=centreon_task_service&action=getTaskStatus',
+        { task_id: taskId },
+      )
       .then((response) => {
         if (response.data.success !== true) {
           this.setState({

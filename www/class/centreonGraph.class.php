@@ -312,32 +312,6 @@ class CentreonGraph
     }
 
     /**
-     * Get Maximum Size of metric from index_id
-     *
-     * @param int $metricId
-     * @return float
-     */
-    protected function getMaxLimit($metricId = null)
-    {
-        $query = "SELECT MAX(`max`) as maxlimit
-                  FROM metrics
-                  WHERE index_id = " . $this->DB->escape($this->index);
-        if (isset($metricId)) {
-            $query .= " AND metric_id = " . $this->DB->escape($metricId);
-        }
-        $res = $this->DBC->query($query);
-        if ($res->rowCount()) {
-            $row = $res->fetch();
-            $maxlimit = $row['maxlimit'];
-            if ($maxlimit != 0) {
-                $maxlimit = $maxlimit + ((self::OVER_MAX_LIMIT_PCT / $maxlimit) * 100);
-            }
-            return $maxlimit;
-        }
-        return 0;
-    }
-
-    /**
      *
      * Enter description here ...
      * @param unknown_type $metrics
@@ -388,15 +362,6 @@ class CentreonGraph
         }
         if (isset($this->templateInformations["upper_limit"]) && $this->templateInformations["upper_limit"] != "") {
             $this->setRRDOption("upper-limit", $this->templateInformations["upper_limit"]);
-        } elseif (isset($this->templateInformations["size_to_max"]) && $this->templateInformations["size_to_max"]) {
-            if ($this->onecurve === true) {
-                $upperLimit = $this->getMaxLimit($this->metricsEnabled[0]);
-            } else {
-                $upperLimit = $this->getMaxLimit();
-            }
-            if ($upperLimit != 0) {
-                $this->setRRDOption("upper-limit", $upperLimit);
-            }
         }
         if (
             (isset($this->templateInformations["lower_limit"]) &&

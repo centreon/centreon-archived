@@ -14,10 +14,6 @@ import useLoadDetails from '../../testUtils/useLoadDetails';
 
 import useLoadResources from '.';
 
-jest.mock('@centreon/ui-context', () =>
-  jest.requireActual('centreon-frontend/packages/ui-context'),
-);
-
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 jest.mock('react-redux', () => ({
