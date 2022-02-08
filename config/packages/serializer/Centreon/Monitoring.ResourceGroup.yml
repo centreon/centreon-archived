@@ -8,3 +8,7 @@ Centreon\Domain\Monitoring\ResourceGroup:
             type: string
             groups:
                 - 'Default'
+        configurationUri:
+            type: string
+            groups:
+                - 'Default'
