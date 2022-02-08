@@ -210,7 +210,7 @@ class CentreonContactgroup
      * @param int $ldapId
      * @param string $name
      * @param string $dn
-     * @return void
+     * @return int
      */
     public function insertLdapGroupByNameAndDn($ldapId, $name, $dn)
     {
@@ -394,7 +394,10 @@ class CentreonContactgroup
                     $registeredGroups[] = $registeredGroupFromDB['cg_name'];
                 }
 
+                $time = microtime(true);
                 $ldapGroups = $ldapConn->listOfGroups();
+                var_dump($ldapGroups);
+                var_dump(microtime(true) - $time);
 
                 foreach ($ldapGroups as $ldapGroup) {
                     if (!in_array($ldapGroup['name'], $registeredGroups)) {
