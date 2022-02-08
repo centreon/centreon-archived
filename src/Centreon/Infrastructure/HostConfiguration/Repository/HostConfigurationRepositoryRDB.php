@@ -867,7 +867,7 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
         $statement->execute();
         if ($statement->rowCount() === 0) {
             throw new RepositoryException(
-                sprintf( _('Error while linking template (id: %d) to host (id: %d)'), $templateId, $hostId)
+                sprintf(_('Error while linking template (id: %d) to host (id: %d)'), $templateId, $hostId)
             );
         }
     }
