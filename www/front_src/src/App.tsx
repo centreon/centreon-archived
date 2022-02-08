@@ -14,6 +14,7 @@ import { connect } from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router';
 import Fullscreen from 'react-fullscreen-crossbrowser';
 import queryString from 'query-string';
+import axios from 'axios';
 
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import { Fab } from '@mui/material';
@@ -22,7 +23,6 @@ import { styled } from '@mui/system';
 import { LoadingSkeleton, Module } from '@centreon/ui';
 
 import { history } from './store';
-import axios from './axios';
 import { fetchExternalComponents } from './redux/actions/externalComponentsActions';
 import PageLoader from './components/PageLoader';
 import Provider from './Provider';
@@ -131,8 +131,8 @@ class App extends Component<Props, State> {
   // keep alive (redirect to login page if session is expired)
   private keepAlive = (): void => {
     this.keepAliveTimeout = setTimeout(() => {
-      axios('internal.php?object=centreon_keepalive&action=keepAlive')
-        .get()
+      axios
+        .get('./api/internal.php?object=centreon_keepalive&action=keepAlive')
         .then(() => this.keepAlive())
         .catch((error) => {
           if (error.response && error.response.status === 401) {

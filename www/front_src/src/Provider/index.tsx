@@ -13,6 +13,7 @@ import isYesterday from 'dayjs/plugin/isYesterday';
 import weekday from 'dayjs/plugin/weekday';
 import isBetween from 'dayjs/plugin/isBetween';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
+import duration from 'dayjs/plugin/duration';
 import { Provider as ReduxProvider } from 'react-redux';
 import { pathEq, toPairs, pipe, reduce, mergeAll } from 'ramda';
 import i18n, { Resource, ResourceLanguage } from 'i18next';
@@ -40,8 +41,7 @@ import {
   userEndpoint,
 } from './endpoint';
 import { DefaultParameters } from './models';
-// TODO uncomment after https://github.com/centreon/centreon/pull/10507
-// import { userDecoder } from './decoder';
+import { userDecoder } from './decoder';
 
 dayjs.extend(localizedFormat);
 dayjs.extend(utcPlugin);
@@ -51,6 +51,7 @@ dayjs.extend(isYesterday);
 dayjs.extend(weekday);
 dayjs.extend(isBetween);
 dayjs.extend(isSameOrBefore);
+dayjs.extend(duration);
 
 const store = createStore();
 
@@ -62,8 +63,7 @@ const Provider = ({ children }: Props): JSX.Element => {
   const [dataLoaded, setDataLoaded] = React.useState(false);
 
   const { sendRequest: getUser } = useRequest<User>({
-    // TODO uncomment after https://github.com/centreon/centreon/pull/10507
-    // decoder: userDecoder,
+    decoder: userDecoder,
     request: getData,
   });
   const { sendRequest: getParameters } = useRequest<DefaultParameters>({

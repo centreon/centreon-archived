@@ -1,6 +1,6 @@
 /* eslint-disable no-use-before-define */
 
-import axios from '../../axios';
+import axios from 'axios';
 
 export const FETCH_EXTERNAL_COMPONENTS_BEGIN =
   'FETCH_EXTERNAL_COMPONENTS_BEGIN';
@@ -16,9 +16,9 @@ export const fetchExternalComponents = () => {
 
     try {
       // Call the API
-      const { data } = await axios(
-        'internal.php?object=centreon_frontend_component&action=components',
-      ).get();
+      const { data } = await axios.get(
+        './api/internal.php?object=centreon_frontend_component&action=components',
+      );
 
       // Update payload in reducer on success
       dispatch(fetchExternalComponentsSuccess(data));

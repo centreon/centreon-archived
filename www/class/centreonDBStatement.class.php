@@ -108,7 +108,7 @@ class CentreonDBStatement extends \PDOStatement
                 $this->log->insertLog(2, " QUERY : " . $string . ", " . json_encode($parameters));
             }
 
-            throw new \PDOException($e->getMessage(), hexdec($e->getCode()));
+            throw $e;
         }
 
         return $result;

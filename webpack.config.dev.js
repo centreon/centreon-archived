@@ -3,7 +3,6 @@ const os = require('os');
 
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 const { merge } = require('webpack-merge');
-
 const devConfig = require('centreon-frontend/packages/frontend-config/webpack/patch/dev');
 
 const baseConfig = require('./webpack.config');
@@ -16,7 +15,7 @@ const externalInterface = Object.keys(interfaces).find(
     !interfaceName.includes('docker') &&
     interfaces[interfaceName][0].family === 'IPv4' &&
     interfaces[interfaceName][0].internal === false &&
-    process.env.IS_STATIC_PORT_FORWARDED,
+    !process.env.IS_STATIC_PORT_FORWARDED,
 );
 
 const devServerAddress = externalInterface
