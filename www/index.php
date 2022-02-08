@@ -90,15 +90,12 @@ if (version_compare(phpversion(), '8.0') < 0) {
             !isset($generalOptions['sso_enable'])
             || $generalOptions['sso_enable'] == 1)
         || (
-            !isset($generalOptions['openid_connect_enable']) || $generalOptions['openid_connect_enable'] == 1)
+            !isset($generalOptions['openid_connect_enable'])
+            || $generalOptions['openid_connect_enable'] == 1)
     ) {
-        if (isset($_POST['p'])) {
-            $_GET["p"] = $_POST["p"];
-        }
+        $argP = $_POST['p'] ?? $_GET["p"] ?? null;
 
-        if (isset($_POST['min'])) {
-            $_GET["min"] = $_POST["min"];
-        }
+        $argMin = $_POST['min'] ?? $_GET["min"] ?? null;
         /*
         * Init log class
         */
@@ -111,14 +108,7 @@ if (version_compare(phpversion(), '8.0') < 0) {
         $useralias = $_GET["useralias"] ?? null;
         $password = $passwordG ?? null;
 
-        $token = "";
-        if (isset($_REQUEST['token']) && $_REQUEST['token']) {
-            $token = $_REQUEST['token'];
-        }
-
-        if (!isset($encryptType)) {
-            $encryptType = CentreonAuthSSO::ENCRYPT_MD5;
-        }
+        $token = $_REQUEST['token'] ?? '';
 
         $centreonAuth = new CentreonAuthSSO(
             $dependencyInjector,
@@ -127,7 +117,7 @@ if (version_compare(phpversion(), '8.0') < 0) {
             $autologin,
             $pearDB,
             $centreonLog,
-            $encryptType,
+            CentreonAuthSSO::ENCRYPT_MD5,
             $token,
             $generalOptions
         );
@@ -189,9 +179,8 @@ if (version_compare(phpversion(), '8.0') < 0) {
             $securityAuthenticationTokenStatement->bindValue(':userId', $centreon->user->user_id, \PDO::PARAM_INT);
             $securityAuthenticationTokenStatement->execute();
             $headerRedirection = "./main.php";
-            if (!empty($_GET["p"])) {
-                $headerRedirection .= "?p=" . $_GET["p"];
-                unset($_GET["p"]);
+            if (!empty($argP)) {
+                $headerRedirection .= "?p=" . $argP;
                 foreach ($_GET as $parameter => $value) {
                     if (!in_array($parameter, AUTOLOGIN_FIELDS)) {
                         $headerRedirection .= '&' . $parameter . '=' . $value;
@@ -210,7 +199,7 @@ if (version_compare(phpversion(), '8.0') < 0) {
                 } else {
                     $headerRedirection .= "?p=" . $centreon->user->default_page;
 
-                    if (isset($_GET["min"]) && $_GET["min"] == '1') {
+                    if ($argMin == '1') {
                         $headerRedirection .= '&min=1';
                     }
                 }
