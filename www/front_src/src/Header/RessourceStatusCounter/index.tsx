@@ -16,7 +16,7 @@ export const useStyles = makeStyles((theme) => ({
     textDecoration: 'none',
   },
   subMenuToggle: {
-    backgroundColor: '#232f39',
+    backgroundColor: theme.palette.common.black,
     boxSizing: 'border-box',
     display: 'none',
     left: theme.spacing(0),
@@ -25,7 +25,7 @@ export const useStyles = makeStyles((theme) => ({
     textAlign: 'left',
     top: '100%',
     width: '100%',
-    zIndex: 99,
+    zIndex: theme.spacing(0),
   },
   subMenuToggleActive: {
     display: 'block',
