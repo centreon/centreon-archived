@@ -1,0 +1,93 @@
+{$form.javascript}
+<form {$form.attributes}>
+<div class="headerTabContainer">
+<ul id="mainnav">
+    <li class="a" id='c1'><a href="#" onclick="javascript:montre('1');">{$form.header.information}</a></li>
+</ul>
+<div id="validFormTop">
+  {if $o == "a" || $o == "c" || $o == "mc"}
+      <p class="oreonbutton">
+        {if isset($form.submitC)}
+            {$form.submitC.html}
+        {elseif isset($form.submitMC)}
+            {$form.submitMC.html}
+        {else}
+            {$form.submitA.html}
+        {/if}
+        &nbsp;&nbsp;&nbsp;{$form.reset.html}
+      </p>
+  {else if $o == "w"}
+      <p class="oreonbutton">
+        {if isset($form.change)}
+            {$form.change.html}
+        {/if}
+      </p>
+  {/if}
+</div>
+</div>
+    <div id='tab1' class='tab'>
+        <table class="formTable table">
+        <tr class="ListHeader">
+            <td class="FormHeader" colspan="2">
+                <h3>| {$form.header.title}</h3>
+            </td>
+        </tr>
+        <tr class="list_lvl_1">
+            <td class="ListColLvl1_name" colspan="2">
+                <h4>{$form.header.information}</h4>
+            </td>
+        </tr>
+        {if $o != "mc"}
+            <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="alias"> {$form.contact_alias.label}</td><td class="FormRowValue">{$form.contact_alias.html}</td></tr>
+            <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="contact_name"> {$form.contact_name.label}</td><td class="FormRowValue">{$form.contact_name.html}</td></tr>
+            <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="email"> {$form.contact_email.label}</td><td class="FormRowValue">{$form.contact_email.html}</td></tr>
+            <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="pager"> {$form.contact_pager.label}</td><td class="FormRowValue">{$form.contact_pager.html}</td></tr>
+            {if $auth_type != 'ldap'}
+                <tr class="list_two">
+                    <td class="FormRowField"><img class="helpTooltip" name="password"> {$form.contact_passwd.label}</td>
+                    <td class="FormRowValue">{$form.contact_passwd.html} {$form.contact_gen_passwd.html}</td>
+                </tr>
+                <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="password2"> {$form.contact_passwd2.label}</td><td class="FormRowValue">{$form.contact_passwd2.html}</td></tr>
+            {/if}
+            <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="language"> {$form.contact_lang.label}</td><td class="FormRowValue">{$form.contact_lang.html}</td></tr>
+            <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="location"> {$form.contact_location.label}</td><td class="FormRowValue">{$form.contact_location.html}</td></tr>
+        {/if}
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="pager"> {$form.contact_template_id.label}</td><td class="FormRowValue">{$form.contact_template_id.html}</td></tr>
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="contact_enable_notifications"> {$form.contact_enable_notifications.label}</td><td class="FormRowValue">{$form.contact_enable_notifications.html}</td></tr>
+        <tr class="list_lvl_1">
+            <td class="ListColLvl1_name" colspan="2">
+                <h4>{$form.header.groupLinks}</h4>
+            </td>
+        </tr>
+        {if $o == "mc"}
+            <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_cg.label}</td><td class="FormRowValue">{$form.mc_mod_cg.html}</td></tr>
+        {/if}
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="contactgroups"> {$form.contact_cgNotif.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.contact_cgNotif.html}</p></td></tr>
+        {if $o != "mc" and isset($ldapGroups)}
+            <tr class="list_two">
+                <td class="FormRowField"><img class="helpTooltip" name="ldap_group"> {$ldap_group}</td>
+                <td class="FormRowValue">
+                {foreach item=group from=$ldapGroups}&nbsp;{$group}<br/>{/foreach}
+                </td>
+            </tr>
+        {/if}
+    </table>
+    </div>
+    <div id="validForm">
+    {if $o == "a" || $o == "c" || $o == "mc"}
+        <p class="oreonbutton">
+        {if isset($form.submitC)}
+            {$form.submitC.html}
+        {elseif isset($form.submitMC)}
+            {$form.submitMC.html}
+        {else}
+            {$form.submitA.html}
+        {/if}
+        &nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+    {else if $o == "w"}
+        <p class="oreonbutton">{if isset($form.change)}{$form.change.html}{/if}</p>
+    {/if}
+    </div>
+    {$form.hidden}
+</form>
+{$helptext}
