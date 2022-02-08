@@ -88,7 +88,9 @@ function cleanDuplicateHostMacros($pearDB, $centreonLog, $cache, $srcHostId)
                         4,
                         $versionOfTheUpgrade . "host " . $cache[$hostId]['host_name'] . " delete macro " . $name
                     );
-                    $pearDB->query("DELETE FROM on_demand_macro_host WHERE host_macro_id = '" . $value['host_macro_id'] . "'");
+                    $pearDB->query(
+                        "DELETE FROM on_demand_macro_host WHERE host_macro_id = '" . $value['host_macro_id'] . "'"
+                    );
                 }
             }
         }
