@@ -35,12 +35,14 @@ export interface TabProps {
 const tabs: Array<Tab> = [
   {
     Component: DetailsTab,
+    ariaLabel: labelDetails,
     getIsActive: (): boolean => true,
     id: detailsTabId,
     title: labelDetails,
   },
   {
     Component: ServicesTab,
+    ariaLabel: labelServices,
     getIsActive: (details: ResourceDetails): boolean => {
       return details.type === 'host';
     },
@@ -49,12 +51,14 @@ const tabs: Array<Tab> = [
   },
   {
     Component: TimelineTab,
+    ariaLabel: labelTimeline,
     getIsActive: (): boolean => true,
     id: timelineTabId,
     title: labelTimeline,
   },
   {
     Component: GraphTab,
+    ariaLabel: labelGraph,
     getIsActive: (details: ResourceDetails): boolean => {
       if (isNil(details)) {
         return false;
@@ -71,6 +75,7 @@ const tabs: Array<Tab> = [
   },
   {
     Component: MetricsTab,
+    ariaLabel: labelMetrics,
     getIsActive: (details: ResourceDetails): boolean => {
       if (isNil(details)) {
         return false;
