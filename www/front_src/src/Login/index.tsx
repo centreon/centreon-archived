@@ -13,7 +13,7 @@ import { LoadingSkeleton } from '@centreon/ui';
 import logoCentreon from '../Navigation/Sidebar/Logo/centreon.png';
 import Copyright from '../Footer/Copyright';
 import { areUserParametersLoadedAtom } from '../Main/useUser';
-import { MainLoader } from '../Main/MainLoader';
+import { MainLoaderWithoutTranslation } from '../Main/MainLoader';
 
 import useValidationSchema from './validationSchema';
 import { LoginFormValues } from './models';
@@ -68,7 +68,7 @@ const LoginPage = (): JSX.Element => {
   const areUserParametersLoaded = useAtomValue(areUserParametersLoadedAtom);
 
   if (areUserParametersLoaded || isNil(areUserParametersLoaded)) {
-    return <MainLoader />;
+    return <MainLoaderWithoutTranslation />;
   }
 
   return (
