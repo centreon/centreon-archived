@@ -47,30 +47,31 @@ require_once './include/reporting/dashboard/initReport.php';
  *  Getting service to report
  */
 $hostId = filter_var($_GET['host_id'] ?? $_POST['host_id'] ?? false, FILTER_VALIDATE_INT);
-$serviceId = filter_var($_GET['item'] ?? $_POST['item'] ?? false, FILTER_VALIDATE_INT);
+$serviceId = filter_var($_GET['item'] ?? $_POST['itemElement'] ?? false, FILTER_VALIDATE_INT);
 
 /*
  * FORMS
  */
 $form = new HTML_QuickFormCustom('formItem', 'post', "?p=" . $p);
+$redirect = $form->addElement('hidden', 'o');
+$redirect->setValue($o);
 
 $host_name = getMyHostName($hostId);
 $items = $centreon->user->access->getHostServices($pearDBO, $hostId);
-
 $itemsForUrl = array();
 foreach ($items as $key => $value) {
     $itemsForUrl[str_replace(":", "%3A", $key)] = str_replace(":", "%3A", $value);
 }
 $service_name = $itemsForUrl[$serviceId];
 
-$select = $form->addElement(
+$select = $formPeriod->addElement(
     'select',
-    'item',
+    'itemElement',
     _("Service"),
     $items,
-    array(
-        "onChange" =>"this.form.submit();"
-    )
+    [
+        "onChange" => "this.form.submit();"
+    ]
 );
 $form->addElement(
     'hidden',
@@ -88,8 +89,6 @@ $form->addElement(
     $get_date_end
 );
 $form->addElement('hidden', 'p', $p);
-$redirect = $form->addElement('hidden', 'o');
-$redirect->setValue($o);
 
 /*
  * Set service id with period selection form
@@ -110,7 +109,7 @@ if ($serviceId !== false && $hostId !== false) {
         'host_id',
         $hostId
     );
-    $form->setDefaults(array('item' => $serviceId));
+    $form->setDefaults(['itemElement' => $serviceId]);
 
     /*
      * Getting periods values
@@ -131,6 +130,7 @@ if ($serviceId !== false && $hostId !== false) {
         $endDate,
         $reportingTimePeriod
     );
+
     if (!empty($servicesStats)) {
         $serviceStats = $servicesStats[$hostId][$serviceId];
     } else {
@@ -151,7 +151,7 @@ if ($serviceId !== false && $hostId !== false) {
             "UNKNOWN_A" => null,
             "UNKNOWN_MP" => null,
             "UNKNOWN_TF" => null,
-            "UNDETERMINED_TP" => null,
+            "UNDETERMINED_TP" => 100,
             "UNDETERMINED_A" => null,
             "UNDETERMINED_TF" => null,
             "MAINTENANCE_TP" => null,
@@ -215,7 +215,6 @@ if ($serviceId !== false && $hostId !== false) {
     ?><script type="text/javascript"> function initTimeline() {;} </script> <?php
 }
 $tpl->assign('resumeTitle', _("Service state"));
-$tpl->assign('p', $p);
 
 /*
  * Rendering forms
