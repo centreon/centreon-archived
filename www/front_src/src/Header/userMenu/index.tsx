@@ -17,10 +17,9 @@ import { allowedPagesSelector } from '../../redux/selectors/navigation/allowedPa
 import Clock from '../Clock';
 import MenuLoader from '../../components/MenuLoader';
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
-const EDIT_PROFILE_TOPOLOGY_PAGE = '50104';
+const EditProfileTopologyPage = '50104';
 
-interface userData {
+interface UserData {
   autologinkey: string | null;
   fullname: string | null;
   hasAccessToProfile: boolean;
@@ -146,12 +145,12 @@ const UserMenu = ({ allowedPages }: StateToProps): JSX.Element => {
   const userMenuInfo = 'internal.php?object=centreon_topcounter&action=user';
 
   const [copied, setCopied] = React.useState(false);
-  const [data, setData] = React.useState<userData | null>(null);
+  const [data, setData] = React.useState<UserData | null>(null);
   const [toggled, setToggled] = React.useState(false);
   const profile = React.useRef<HTMLDivElement>();
   const autologinNode = React.useRef<HTMLTextAreaElement>();
   const refreshTimeout = React.useRef<NodeJS.Timeout>();
-  const { sendRequest } = useRequest<userData>({
+  const { sendRequest } = useRequest<UserData>({
     request: getData,
   });
 
@@ -215,7 +214,7 @@ const UserMenu = ({ allowedPages }: StateToProps): JSX.Element => {
     return <MenuLoader width={21} />;
   }
 
-  const allowEditProfile = allowedPages?.includes(EDIT_PROFILE_TOPOLOGY_PAGE);
+  const allowEditProfile = allowedPages?.includes(EditProfileTopologyPage);
 
   const gethref = window.location.href;
   const conditionnedhref = gethref + (window.location.search ? '&' : '?');
@@ -261,7 +260,7 @@ const UserMenu = ({ allowedPages }: StateToProps): JSX.Element => {
                       <Link
                         submenuUserEdit
                         className={classnames(classes.submenuUserEdit)}
-                        to={`/main.php?p=${EDIT_PROFILE_TOPOLOGY_PAGE}&o=c`}
+                        to={`/main.php?p=${EditProfileTopologyPage}&o=c`}
                         onClick={toggle}
                       >
                         <Typography variant="body2">
