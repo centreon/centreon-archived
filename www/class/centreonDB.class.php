@@ -48,21 +48,74 @@ require_once __DIR__ . '/centreonLog.class.php';
  */
 class CentreonDB extends \PDO
 {
+    /**
+     * @var string
+     */
     public const LABEL_DB_CONFIGURATION = 'centreon';
+
+    /**
+     * @var string
+     */
     public const LABEL_DB_REALTIME = 'centstorage';
+
+    /**
+     * @var array<mixed>
+     */
     private static $instance = [];
+
+    /**
+     * @var string
+     */
     protected $db_type = "mysql";
+
+    /**
+     * @var string
+     */
     protected $db_port = "3306";
+
+    /**
+     * @var int
+     */
     protected $retry;
+
+    /**
+     * @var array<mixed>
+     */
     protected $dsn;
+
+    /**
+     * @var (int|(string|\CentreonLog[])[]|string|true)[]
+     */
     protected $options;
+
+    /**
+     * @var mixed
+     */
     protected $centreon_path;
+
+    /**
+     * @var \CentreonLog
+     */
     protected $log;
+
+
     /*
      * Statistics
      */
+
+    /**
+     * @var int
+     */
     protected $requestExecuted;
+
+    /**
+     * @var int
+     */
     protected $requestSuccessful;
+
+    /**
+     * @var int
+     */
     protected $lineRead;
 
     /**
@@ -164,10 +217,10 @@ class CentreonDB extends \PDO
 
     /**
      *
-     * @param type $stmt
-     * @param type $arrayValues
+     * @param PDOStatement|false $stmt
+     * @param string[] $arrayValues
      *
-     * @return type
+     * @return bool
      */
     public function execute($stmt, $arrayValues)
     {
@@ -177,10 +230,9 @@ class CentreonDB extends \PDO
     /**
      * Display error page
      *
-     * @access protected
-     * @return  void
+     * @param mixed $msg
      */
-    protected function displayConnectionErrorPage($msg = null)
+    protected function displayConnectionErrorPage($msg = null): void
     {
         if (!$msg) {
             $msg = _("Connection failed, please contact your administrator");
@@ -221,7 +273,7 @@ class CentreonDB extends \PDO
      *
      * @return string
      */
-    public static function escape($str, $htmlSpecialChars = false)
+    public static function escape($str, $htmlSpecialChars = false): string
     {
         if ($htmlSpecialChars) {
             $str = htmlspecialchars($str);
@@ -234,6 +286,8 @@ class CentreonDB extends \PDO
      * Query
      *
      * @return CentreonDBStatement
+     * @param mixed $queryString
+     * @param mixed $parameters
      */
     public function query($queryString, $parameters = null, ...$parametersArgs)
     {
@@ -273,10 +327,11 @@ class CentreonDB extends \PDO
      * launch a getAll
      *
      * @access public
-     *
+     * @throws \PDOException
      * @param string $query_string query
+     * @param array<mixed> $placeHolders
      *
-     * @return  object  getAll result
+     * @return array<mixed>|false  getAll result
      */
     public function getAll($query_string = null, $placeHolders = [])
     {
@@ -344,7 +399,7 @@ class CentreonDB extends \PDO
      * $dataCentreon = getProperties();
      * </code>
      *
-     * @return array dbsize, numberOfRow, freeSize
+     * @return array<mixed> dbsize, numberOfRow, freeSize
      */
     public function getProperties()
     {
