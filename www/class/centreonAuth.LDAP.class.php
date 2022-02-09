@@ -57,7 +57,7 @@ class CentreonAuthLDAP
      * @param CentreonUserLog $CentreonLog Log event
      * @param string $login The username
      * @param string $password The user password
-     * @param string $contactInfos
+     * @param mixed[] $contactInfos
      * @param int $arId | Auth Ressource ID
      * @return void
      */
