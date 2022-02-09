@@ -97,7 +97,7 @@ class CentreonDBStatement extends \PDOStatement
     /**
      * Free resources.
      */
-    public function free()
+    public function free(): void
     {
         $this->closeCursor();
     }
@@ -121,7 +121,7 @@ class CentreonDBStatement extends \PDOStatement
      * This method wraps the PDO `execute` method and manages failures logging
      * @inheritDoc
      */
-    public function execute($parameters = null)
+    public function execute($parameters = null): bool
     {
         $this->allFetched = null;
 

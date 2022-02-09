@@ -210,7 +210,10 @@ class CentreonDB extends \PDO
         }
     }
 
-    public function autoCommit($val)
+    /**
+     * @param mixed $val
+     */
+    public function autoCommit($val): void
     {
         /* Deprecated */
     }
@@ -285,9 +288,10 @@ class CentreonDB extends \PDO
     /**
      * Query
      *
-     * @return CentreonDBStatement
+     * @return PDOStatement|null
      * @param mixed $queryString
      * @param mixed $parameters
+     * @param mixed $parametersArgs
      */
     public function query($queryString, $parameters = null, ...$parametersArgs)
     {
@@ -373,7 +377,7 @@ class CentreonDB extends \PDO
      * return number of rows
      *
      */
-    public function numberRows()
+    public function numberRows(): int
     {
         $number = 0;
         $dbResult = $this->query("SELECT FOUND_ROWS() AS number");
@@ -386,8 +390,9 @@ class CentreonDB extends \PDO
 
     /**
      * checks if there is malicious injection
+     * @param mixed $sString
      */
-    public static function checkInjection($sString)
+    public static function checkInjection($sString): int
     {
         return 0;
     }
@@ -491,7 +496,7 @@ class CentreonDB extends \PDO
      * @param string $query the query string to write to log
      * @param string $message the message to write to log
      */
-    private function logSqlError(string $query, string $message)
+    private function logSqlError(string $query, string $message): void
     {
         $this->log->insertLog(2, $message . " QUERY : " . $query);
     }
