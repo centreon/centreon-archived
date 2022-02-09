@@ -44,6 +44,16 @@ interface HostConfigurationReadRepositoryInterface
     public function findHost(int $hostId): ?Host;
 
     /**
+     * Find a host regarding user ACL
+     *
+     * @param integer $hostId
+     * @param int[] $accessGroupIds
+     * @return Host|null
+     * @throws \Throwable
+     */
+    public function findHostByAccessGroupIds(int $hostId, array $accessGroupIds): ?Host;
+
+    /**
      * Recursively find all host templates.
      *
      * **The priority order of host templates is maintained!**

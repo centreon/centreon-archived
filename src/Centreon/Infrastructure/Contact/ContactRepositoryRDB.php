@@ -286,8 +286,10 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
             foreach ($nameOfTopologiesRules as $page => $name) {
                 if ($name !== null) {
                     $name = preg_replace(['/\s/', '/\W/'], ['_', ''], $name);
-                    $name = strtoupper($name);
-                    $contact->addTopologyRule($name);
+                    if ($name !== null) {
+                        $name = strtoupper($name);
+                        $contact->addTopologyRule($name);
+                    }
                 }
             }
         }
@@ -471,5 +473,10 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
             array($this->db->getStorageDbName(), $this->db->getCentreonDbName()),
             $request
         );
+    }
+
+    public function findByHostId(int $hostId): array
+    {
+        return [];
     }
 }

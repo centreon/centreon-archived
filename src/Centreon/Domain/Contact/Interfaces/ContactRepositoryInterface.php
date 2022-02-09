@@ -72,4 +72,12 @@ interface ContactRepositoryInterface
      * @return Contact|null
      */
     public function findByAuthenticationToken(string $token): ?Contact;
+
+    /**
+     * Find all contacts linked to a Host
+     *
+     * @param int $hostId
+     * @return Contact[]
+     */
+    public function findByHostId(int $hostId): array;
 }

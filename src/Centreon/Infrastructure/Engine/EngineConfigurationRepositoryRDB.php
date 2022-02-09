@@ -85,7 +85,8 @@ class EngineConfigurationRepositoryRDB extends AbstractRepositoryDRB implements 
                 ->setId((int) $records['nagios_id'])
                 ->setName($records['nagios_name'])
                 ->setIllegalObjectNameCharacters($records['illegal_object_name_chars'])
-                ->setMonitoringServerId((int) $records['nagios_server_id']);
+                ->setMonitoringServerId((int) $records['nagios_server_id'])
+                ->setNotificationsEnabled((int) $records['enable_notifications']);
         }
         return null;
     }
