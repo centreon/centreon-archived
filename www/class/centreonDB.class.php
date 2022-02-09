@@ -211,9 +211,10 @@ class CentreonDB extends \PDO
     }
 
     /**
-     * @param mixed $val
+     * @param type $enable
+     * @return type
      */
-    public function autoCommit($val): void
+    public function autoCommit($val)
     {
         /* Deprecated */
     }
@@ -276,7 +277,7 @@ class CentreonDB extends \PDO
      *
      * @return string
      */
-    public static function escape($str, $htmlSpecialChars = false): string
+    public static function escape($str, $htmlSpecialChars = false)
     {
         if ($htmlSpecialChars) {
             $str = htmlspecialchars($str);
