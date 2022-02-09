@@ -156,7 +156,7 @@ class CentreonContactgroup
      *
      * @param int $ldapId
      * @param string $name
-     * @return int
+     * @return int|null
      */
     private function findLdapGroupIdByName($ldapId, $name)
     {
