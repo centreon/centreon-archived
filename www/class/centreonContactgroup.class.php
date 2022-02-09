@@ -156,7 +156,7 @@ class CentreonContactgroup
      *
      * @param int $ldapId
      * @param string $name
-     * @return int
+     * @return int|null
      */
     private function findLdapGroupIdByName($ldapId, $name)
     {
@@ -183,7 +183,7 @@ class CentreonContactgroup
      *
      * @param int $ldapId
      * @param string $dn
-     * @return int
+     * @return int|null
      */
     private function findLdapGroupIdByDn($ldapId, $dn)
     {
@@ -211,7 +211,7 @@ class CentreonContactgroup
      * @param int $ldapId
      * @param string $name
      * @param string $dn
-     * @return int
+     * @return int|null
      */
     public function insertLdapGroupByNameAndDn($ldapId, $name, $dn)
     {
