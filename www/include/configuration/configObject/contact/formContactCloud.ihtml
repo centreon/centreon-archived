@@ -1,9 +1,6 @@
 {$form.javascript}
 <form {$form.attributes}>
 <div class="headerTabContainer">
-<ul id="mainnav">
-    <li class="a" id='c1'><a href="#" onclick="javascript:montre('1');">{$form.header.information}</a></li>
-</ul>
 <div id="validFormTop">
   {if $o == "a" || $o == "c" || $o == "mc"}
       <p class="oreonbutton">

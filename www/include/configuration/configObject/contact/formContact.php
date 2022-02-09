@@ -355,7 +355,7 @@ $form->addElement('text', 'contact_address6', _("Address6"), $attrsText);
  * Contact Groups Field
  */
 if ($platformType === PLATFORM_CLOUD) {
-    $form->addElement('header', 'groupLinks', _("Roles Relation"));
+    $form->addElement('header', 'groupLinks', _("Role Relations"));
 } else {
     $form->addElement('header', 'groupLinks', _("Group Relations"));
 }
