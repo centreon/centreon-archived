@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import { isEmpty, isNil } from 'ramda';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import classnames from 'classnames';
 import clsx from 'clsx';
 import { useAtomValue } from 'jotai/utils';
 import { useHistory } from 'react-router';
@@ -22,7 +21,6 @@ import {
 } from '@centreon/ui';
 import { refreshIntervalAtom } from '@centreon/ui-context';
 
-import styles from '../header.scss';
 import { allowedPagesSelector } from '../../redux/selectors/navigation/allowedPages';
 import MenuLoader from '../../components/MenuLoader';
 
