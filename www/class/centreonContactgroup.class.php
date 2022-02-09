@@ -211,7 +211,7 @@ class CentreonContactgroup
      * @param int $ldapId
      * @param string $name
      * @param string $dn
-     * @return int
+     * @return int|null
      */
     public function insertLdapGroupByNameAndDn($ldapId, $name, $dn)
     {
