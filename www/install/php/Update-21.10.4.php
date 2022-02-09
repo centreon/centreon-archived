@@ -22,7 +22,7 @@
 include_once __DIR__ . "/../../class/centreonLog.class.php";
 $centreonLog = new CentreonLog();
 
-$versionOfTheUpgrade = 'UPGRADE - 21.10.2: ';
+$versionOfTheUpgrade = 'UPGRADE - 21.10.4: ';
 
 function loadHosts($pearDB)
 {
