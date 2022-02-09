@@ -16470,3 +16470,9 @@ msgstr "Erreur lors de la mise à jour d'un hôte (Raison : %s)"
 
 msgid "Error on removing services from the host #%d"
 msgstr "Erreur lors de la suppression des services de l'hôte #%d"
+
+msgid "Role Relations"
+msgstr "Relations de rôle"
+
+msgid "Linked to Roles"
+msgstr "Lié aux rôles"
