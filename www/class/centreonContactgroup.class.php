@@ -158,7 +158,7 @@ class CentreonContactgroup
      * @param string $name
      * @return int|null
      */
-    private function findLdapGroupIdByName($ldapId, $name)
+    private function findLdapGroupIdByName(int $ldapId, string $name): ?int
     {
         $ldapGroupId = null;
 
@@ -185,7 +185,7 @@ class CentreonContactgroup
      * @param string $dn
      * @return int|null
      */
-    private function findLdapGroupIdByDn($ldapId, $dn)
+    private function findLdapGroupIdByDn(int $ldapId, string $dn): ?int
     {
         $ldapGroupId = null;
 
@@ -213,7 +213,7 @@ class CentreonContactgroup
      * @param string $dn
      * @return int|null
      */
-    public function insertLdapGroupByNameAndDn($ldapId, $name, $dn)
+    public function insertLdapGroupByNameAndDn(int $ldapId, string $name, string $dn): ?int
     {
         // Check if contactgroup is not in the database
         $ldapGroupId = $this->findLdapGroupIdByName($ldapId, $name);
@@ -236,15 +236,15 @@ class CentreonContactgroup
      * Insert the ldap groups in table contactgroups
      *
      * @param string $cgName The ldap group name
-     * @return int The contactgroup id or null if not found
+     * @return int|null The contactgroup id or null if not found
      */
-    public function insertLdapGroup($cgName)
+    public function insertLdapGroup(string $cgName): ?int
     {
         // Parse contactgroup name
         if (false === preg_match('/\[(\d+)\](.*)/', $cgName, $matches)) {
             return 0;
         }
-        $arId = $matches[1];
+        $arId = (int) $matches[1];
         $cgName = $matches[2];
 
         // Check if contactgroup is not in the database
@@ -399,7 +399,11 @@ class CentreonContactgroup
 
                 foreach ($ldapGroups as $ldapGroup) {
                     if (!in_array($ldapGroup['name'], $registeredGroups)) {
-                        $this->insertLdapGroupByNameAndDn($ldapRow['ar_id'], $ldapGroup['name'], $ldapGroup['dn']);
+                        $this->insertLdapGroupByNameAndDn(
+                            (int) $ldapRow['ar_id'],
+                            $ldapGroup['name'],
+                            $ldapGroup['dn']
+                        );
                     }
                 }
 
