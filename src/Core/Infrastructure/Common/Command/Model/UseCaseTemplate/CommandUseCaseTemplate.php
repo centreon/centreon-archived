@@ -4,16 +4,16 @@ namespace Core\Infrastructure\Common\Command\Model\UseCaseTemplate;
 
 use Core\Infrastructure\Common\Command\Model\DtoTemplate\RequestDtoTemplate;
 use Core\Infrastructure\Common\Command\Model\FileTemplate;
-use Core\Infrastructure\Common\Command\Model\PresenterTemplate\QueryPresenterInterfaceTemplate;
+use Core\Infrastructure\Common\Command\Model\PresenterTemplate\CommandPresenterInterfaceTemplate;
 use Core\Infrastructure\Common\Command\Model\RepositoryTemplate\WriteRepositoryInterfaceTemplate;
 
-class QueryUseCaseTemplate extends FileTemplate
+class CommandUseCaseTemplate extends FileTemplate
 {
     public function __construct(
         public string $filePath,
         public string $namespace,
         public string $name,
-        public QueryPresenterInterfaceTemplate $presenter,
+        public CommandPresenterInterfaceTemplate $presenter,
         public RequestDtoTemplate $request,
         public WriteRepositoryInterfaceTemplate $repository,
         public bool $exists = false
@@ -67,5 +67,10 @@ class QueryUseCaseTemplate extends FileTemplate
         EOF;
 
         return $content;
+    }
+
+    public function __toString()
+    {
+        return $this->name;
     }
 }

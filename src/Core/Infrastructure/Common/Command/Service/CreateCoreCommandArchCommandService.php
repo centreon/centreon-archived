@@ -4,19 +4,20 @@ namespace Core\Infrastructure\Common\Command\Service;
 
 use Symfony\Component\Console\Output\OutputInterface;
 use Core\Infrastructure\Common\Command\Model\DtoTemplate\RequestDtoTemplate;
-use Core\Infrastructure\Common\Command\Model\PresenterTemplate\QueryPresenterTemplate;
+use Core\Infrastructure\Common\Command\Model\UseCaseTemplate\CommandUseCaseTemplate;
+use Core\Infrastructure\Common\Command\Model\PresenterTemplate\CommandPresenterTemplate;
 use Core\Infrastructure\Common\Command\Model\RepositoryTemplate\WriteRepositoryTemplate;
-use Core\Infrastructure\Common\Command\Model\PresenterTemplate\QueryPresenterInterfaceTemplate;
+use Core\Infrastructure\Common\Command\Model\ControllerTemplate\CommandControllerTemplate;
+use Core\Infrastructure\Common\Command\Model\PresenterTemplate\CommandPresenterInterfaceTemplate;
 use Core\Infrastructure\Common\Command\Model\RepositoryTemplate\WriteRepositoryInterfaceTemplate;
-use Core\Infrastructure\Common\Command\Model\UseCaseTemplate\QueryUseCaseTemplate;
 
 class CreateCoreCommandArchCommandService
 {
     private WriteRepositoryInterfaceTemplate $writeRepositoryInterfaceTemplate;
     private WriteRepositoryTemplate $writeRepositoryTemplate;
     private RequestDtoTemplate $requestDtoTemplate;
-    private QueryPresenterInterfaceTemplate $queryPresenterInterfaceTemplate;
-    private QueryUseCaseTemplate $queryUseCaseTemplate;
+    private CommandPresenterInterfaceTemplate $commandPresenterInterfaceTemplate;
+    private CommandUseCaseTemplate $commandUseCaseTemplate;
 
     public function __construct(private string $srcPath)
     {
@@ -54,7 +55,7 @@ class CreateCoreCommandArchCommandService
                 $this->writeRepositoryInterfaceTemplate->generateModelContent()
             );
             $output->writeln(
-                'Creating Interface : ' . $this->writeRepositoryInterfaceTemplate->namespace . '\\'
+                'Creating Repository Interface : ' . $this->writeRepositoryInterfaceTemplate->namespace . '\\'
                     . $this->writeRepositoryInterfaceTemplate->name
             );
         } else {
@@ -65,7 +66,7 @@ class CreateCoreCommandArchCommandService
                 true
             );
             $output->writeln(
-                'Using Existing Interface : ' . $this->writeRepositoryInterfaceTemplate->namespace . '\\'
+                'Using Existing Repository Interface : ' . $this->writeRepositoryInterfaceTemplate->namespace . '\\'
                     . $this->writeRepositoryInterfaceTemplate->name
             );
         }
@@ -186,7 +187,7 @@ class CreateCoreCommandArchCommandService
             . $className . '.php';
         $namespace = 'Core\\Application\\' . $modelName . '\\UseCase\\' . $useCaseName;
         if (!file_exists($filePath)) {
-            $this->queryPresenterInterfaceTemplate = new QueryPresenterInterfaceTemplate(
+            $this->commandPresenterInterfaceTemplate = new commandPresenterInterfaceTemplate(
                 $filePath,
                 $namespace,
                 $className,
@@ -199,23 +200,23 @@ class CreateCoreCommandArchCommandService
                 mkdir($dirLocation, 0777, true);
             }
             file_put_contents(
-                $this->queryPresenterInterfaceTemplate->filePath,
-                $this->queryPresenterInterfaceTemplate->generateModelContent()
+                $this->commandPresenterInterfaceTemplate->filePath,
+                $this->commandPresenterInterfaceTemplate->generateModelContent()
             );
             $output->writeln(
-                'Creating Presenter Interface : ' . $this->queryPresenterInterfaceTemplate->namespace . '\\'
-                    . $this->queryPresenterInterfaceTemplate->name
+                'Creating Presenter Interface : ' . $this->commandPresenterInterfaceTemplate->namespace . '\\'
+                    . $this->commandPresenterInterfaceTemplate->name
             );
         } else {
-            $this->queryPresenterInterfaceTemplate = new QueryPresenterInterfaceTemplate(
+            $this->commandPresenterInterfaceTemplate = new commandPresenterInterfaceTemplate(
                 $filePath,
                 $namespace,
                 $className,
                 true
             );
             $output->writeln(
-                'Using Existing Presenter Interface : ' . $this->queryPresenterInterfaceTemplate->namespace . '\\'
-                    . $this->queryPresenterInterfaceTemplate->name
+                'Using Existing Presenter Interface : ' . $this->commandPresenterInterfaceTemplate->namespace . '\\'
+                    . $this->commandPresenterInterfaceTemplate->name
             );
         }
     }
@@ -231,11 +232,11 @@ class CreateCoreCommandArchCommandService
             . $className . '.php';
         $namespace = 'Core\\Application\\' . $modelName . '\\UseCase\\' . $useCaseName;
         if (!file_exists($filePath)) {
-            $this->queryPresenterTemplate = new QueryPresenterTemplate(
+            $this->CommandPresenterTemplate = new CommandPresenterTemplate(
                 $filePath,
                 $namespace,
                 $className,
-                $this->queryPresenterInterfaceTemplate,
+                $this->commandPresenterInterfaceTemplate,
                 false
             );
             preg_match('/^(.+).' . $className . '\.php$/', $filePath, $matches);
@@ -245,24 +246,24 @@ class CreateCoreCommandArchCommandService
                 mkdir($dirLocation, 0777, true);
             }
             file_put_contents(
-                $this->queryPresenterTemplate->filePath,
-                $this->queryPresenterTemplate->generateModelContent()
+                $this->CommandPresenterTemplate->filePath,
+                $this->CommandPresenterTemplate->generateModelContent()
             );
             $output->writeln(
-                'Creating Presenter : ' . $this->queryPresenterTemplate->namespace . '\\'
-                    . $this->queryPresenterTemplate->name
+                'Creating Presenter : ' . $this->CommandPresenterTemplate->namespace . '\\'
+                    . $this->CommandPresenterTemplate->name
             );
         } else {
-            $this->queryPresenterTemplate = new QueryPresenterTemplate(
+            $this->CommandPresenterTemplate = new CommandPresenterTemplate(
                 $filePath,
                 $namespace,
                 $className,
-                $this->queryPresenterInterfaceTemplate,
+                $this->commandPresenterInterfaceTemplate,
                 true
             );
             $output->writeln(
-                'Using Existing Presenter : ' . $this->queryPresenterTemplate->namespace . '\\'
-                    . $this->queryPresenterTemplate->name
+                'Using Existing Presenter : ' . $this->CommandPresenterTemplate->namespace . '\\'
+                    . $this->CommandPresenterTemplate->name
             );
         }
     }
@@ -277,11 +278,11 @@ class CreateCoreCommandArchCommandService
             . $useCaseName . '.php';
         $namespace = 'Core\\Application\\' . $modelName . '\\UseCase\\' . $useCaseName;
         if (!file_exists($filePath)) {
-            $this->queryUseCaseTemplate = new QueryUseCaseTemplate(
+            $this->commandUseCaseTemplate = new CommandUseCaseTemplate(
                 $filePath,
                 $namespace,
                 $useCaseName,
-                $this->queryPresenterInterfaceTemplate,
+                $this->commandPresenterInterfaceTemplate,
                 $this->requestDtoTemplate,
                 $this->writeRepositoryInterfaceTemplate,
                 false
@@ -293,26 +294,26 @@ class CreateCoreCommandArchCommandService
                 mkdir($dirLocation, 0777, true);
             }
             file_put_contents(
-                $this->queryUseCaseTemplate->filePath,
-                $this->queryUseCaseTemplate->generateModelContent()
+                $this->commandUseCaseTemplate->filePath,
+                $this->commandUseCaseTemplate->generateModelContent()
             );
             $output->writeln(
-                'Creating Use Case : ' . $this->queryUseCaseTemplate->namespace . '\\'
-                    . $this->queryUseCaseTemplate->name
+                'Creating Use Case : ' . $this->commandUseCaseTemplate->namespace . '\\'
+                    . $this->commandUseCaseTemplate->name
             );
         } else {
-            $this->queryUseCaseTemplate = new QueryUseCaseTemplate(
+            $this->commandUseCaseTemplate = new CommandUseCaseTemplate(
                 $filePath,
                 $namespace,
                 $useCaseName,
-                $this->queryPresenterInterfaceTemplate,
+                $this->commandPresenterInterfaceTemplate,
                 $this->requestDtoTemplate,
                 $this->writeRepositoryInterfaceTemplate,
                 true
             );
             $output->writeln(
-                'Using Existing Use Case : ' . $this->queryUseCaseTemplate->namespace . '\\'
-                    . $this->queryUseCaseTemplate->name
+                'Using Existing Use Case : ' . $this->commandUseCaseTemplate->namespace . '\\'
+                    . $this->commandUseCaseTemplate->name
             );
         }
     }
@@ -328,42 +329,42 @@ class CreateCoreCommandArchCommandService
             . $className . '.php';
         $namespace = 'Core\\Infrastructure\\' . $modelName . '\\Api\\' . $useCaseName;
         if (!file_exists($filePath)) {
-            $this->queryControllerTemplate = new QueryControllerTemplate(
+            $this->commandControllerTemplate = new CommandControllerTemplate(
                 $filePath,
                 $namespace,
-                $useCaseName,
-                $this->queryPresenterInterfaceTemplate,
+                $className,
+                $this->commandUseCaseTemplate,
+                $this->commandPresenterInterfaceTemplate,
                 $this->requestDtoTemplate,
-                $this->writeRepositoryInterfaceTemplate,
                 false
             );
-            preg_match('/^(.+).' . $useCaseName . '\.php$/', $filePath, $matches);
+            preg_match('/^(.+).' . $className . '\.php$/', $filePath, $matches);
             $dirLocation = $matches[1];
             //Create dir if not exists,
             if (!is_dir($dirLocation)) {
                 mkdir($dirLocation, 0777, true);
             }
             file_put_contents(
-                $this->queryControllerTemplate->filePath,
-                $this->queryControllerTemplate->generateModelContent()
+                $this->commandControllerTemplate->filePath,
+                $this->commandControllerTemplate->generateModelContent()
             );
             $output->writeln(
-                'Creating Use Case : ' . $this->queryControllerTemplate->namespace . '\\'
-                    . $this->queryControllerTemplate->name
+                'Creating Controller : ' . $this->commandControllerTemplate->namespace . '\\'
+                    . $this->commandControllerTemplate->name
             );
         } else {
-            $this->queryControllerTemplate = new QueryControllerTemplate(
+            $this->commandControllerTemplate = new CommandControllerTemplate(
                 $filePath,
                 $namespace,
-                $useCaseName,
-                $this->queryPresenterInterfaceTemplate,
+                $className,
+                $this->commandUseCaseTemplate,
+                $this->commandPresenterInterfaceTemplate,
                 $this->requestDtoTemplate,
-                $this->writeRepositoryInterfaceTemplate,
                 true
             );
             $output->writeln(
-                'Using Existing Use Case : ' . $this->queryControllerTemplate->namespace . '\\'
-                    . $this->queryControllerTemplate->name
+                'Using Existing Controller : ' . $this->commandControllerTemplate->namespace . '\\'
+                    . $this->commandControllerTemplate->name
             );
         }
     }

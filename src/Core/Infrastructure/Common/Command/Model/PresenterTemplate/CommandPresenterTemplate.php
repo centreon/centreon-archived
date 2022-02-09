@@ -4,13 +4,13 @@ namespace Core\Infrastructure\Common\Command\Model\PresenterTemplate;
 
 use Core\Infrastructure\Common\Command\Model\FileTemplate;
 
-class QueryPresenterTemplate extends FileTemplate
+class CommandPresenterTemplate extends FileTemplate
 {
     public function __construct(
         public string $filePath,
         public string $namespace,
         public string $name,
-        public QueryPresenterInterfaceTemplate $presenterInterface,
+        public CommandPresenterInterfaceTemplate $presenterInterface,
         public bool $exists = false
     ) {
     }

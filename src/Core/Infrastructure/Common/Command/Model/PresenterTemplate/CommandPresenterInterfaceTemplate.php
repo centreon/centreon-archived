@@ -4,7 +4,7 @@ namespace Core\Infrastructure\Common\Command\Model\PresenterTemplate;
 
 use Core\Infrastructure\Common\Command\Model\FileTemplate;
 
-class QueryPresenterInterfaceTemplate extends FileTemplate
+class CommandPresenterInterfaceTemplate extends FileTemplate
 {
     public function __construct(
         public string $filePath,
@@ -36,5 +36,10 @@ class QueryPresenterInterfaceTemplate extends FileTemplate
         EOF;
 
         return $content;
+    }
+
+    public function __toString()
+    {
+        return $this->name;
     }
 }

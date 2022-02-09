@@ -80,49 +80,14 @@ class CreateCoreArchCommand extends Command
             $this->commandService->createModel($this->modelTemplate);
             $output->writeln('Creating Model : ' . $this->modelTemplate->namespace . '\\' . $this->modelTemplate->name);
         } else {
-            $output->writeln('Using Existing Model : ' . $this->modelTemplate->namespace . '\\' . $this->modelTemplate->name);
+            $output->writeln(
+                'Using Existing Model : ' . $this->modelTemplate->namespace . '\\' . $this->modelTemplate->name
+            );
         }
         if ($this->isACommandUseCase()) {
-            $this->commandArchCommandService->createWriteRepositoryInterfaceTemplateIfNotExist(
-                $output,
-                $this->modelTemplate->name
-            );
-            $this->commandArchCommandService->createWriteRepositoryTemplateIfNotExist(
-                $output,
-                $this->modelTemplate->name,
-            );
-            $this->commandArchCommandService->createRequestDtoTemplateIfNotExist(
-                $output,
-                $this->modelTemplate->name,
-                $this->useCaseType
-            );
-            $this->commandArchCommandService->createPresenterInterfaceIfNotExist(
-                $output,
-                $this->modelTemplate->name,
-                $this->useCaseType
-            );
-            $this->commandArchCommandService->createPresenterIfNotExist(
-                $output,
-                $this->modelTemplate->name,
-                $this->useCaseType
-            );
-            $this->commandArchCommandService->createUseCaseIfNotExist(
-                $output,
-                $this->modelTemplate->name,
-                $this->useCaseType,
-            );
-            $this->commandArchCommandService->createControllerIfNotExist(
-                $output,
-                $this->modelTemplate->name,
-                $this->useCaseType,
-            );
+            $this->createCommandArch($output);
         } else {
-            // $this->repositoryInterfaceTemplate =
-            //     $this->commandArchCommandService->askForReadRepositoryInterfaceInformations();
-            // $this->repositoryTemplate =
-            //     $this->commandArchCommandService->askForReadRepositoryInformations();
-            // $this->dto =
-            //     $this->commandArchCommandService->askForResponseDtoInformations();
+            $this->createQueryArch($output);
         }
         return Command::SUCCESS;
     }
@@ -135,5 +100,51 @@ class CreateCoreArchCommand extends Command
     public function isACommandUseCase(): bool
     {
         return in_array($this->useCaseType, self::COMMAND_USECASES);
+    }
+
+    /**
+     * Create all the file for a Command.
+     *
+     * @param OutputInterface $output
+     */
+    private function createCommandArch(OutputInterface $output): void
+    {
+        $this->commandArchCommandService->createWriteRepositoryInterfaceTemplateIfNotExist(
+            $output,
+            $this->modelTemplate->name
+        );
+        $this->commandArchCommandService->createWriteRepositoryTemplateIfNotExist(
+            $output,
+            $this->modelTemplate->name,
+        );
+        $this->commandArchCommandService->createRequestDtoTemplateIfNotExist(
+            $output,
+            $this->modelTemplate->name,
+            $this->useCaseType
+        );
+        $this->commandArchCommandService->createPresenterInterfaceIfNotExist(
+            $output,
+            $this->modelTemplate->name,
+            $this->useCaseType
+        );
+        $this->commandArchCommandService->createPresenterIfNotExist(
+            $output,
+            $this->modelTemplate->name,
+            $this->useCaseType
+        );
+        $this->commandArchCommandService->createUseCaseIfNotExist(
+            $output,
+            $this->modelTemplate->name,
+            $this->useCaseType,
+        );
+        $this->commandArchCommandService->createControllerIfNotExist(
+            $output,
+            $this->modelTemplate->name,
+            $this->useCaseType,
+        );
+    }
+
+    private function createQueryArch(OutputInterface $output): void
+    {
     }
 }

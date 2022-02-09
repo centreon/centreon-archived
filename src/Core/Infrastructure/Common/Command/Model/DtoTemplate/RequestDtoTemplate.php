@@ -31,4 +31,9 @@ class RequestDtoTemplate extends FileTemplate
 
         return $content;
     }
+
+    public function __toString()
+    {
+        return $this->name;
+    }
 }
