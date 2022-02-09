@@ -17,7 +17,7 @@ import { allowedPagesSelector } from '../../redux/selectors/navigation/allowedPa
 import Clock from '../Clock';
 import MenuLoader from '../../components/MenuLoader';
 
-const EditProfileTopologyPage = '50104';
+const editProfileTopologyPage = '50104';
 
 interface UserData {
   autologinkey: string | null;
@@ -214,7 +214,7 @@ const UserMenu = ({ allowedPages }: StateToProps): JSX.Element => {
     return <MenuLoader width={21} />;
   }
 
-  const allowEditProfile = allowedPages?.includes(EditProfileTopologyPage);
+  const allowEditProfile = allowedPages?.includes(editProfileTopologyPage);
 
   const gethref = window.location.href;
   const conditionnedhref = gethref + (window.location.search ? '&' : '?');
@@ -260,7 +260,7 @@ const UserMenu = ({ allowedPages }: StateToProps): JSX.Element => {
                       <Link
                         submenuUserEdit
                         className={classnames(classes.submenuUserEdit)}
-                        to={`/main.php?p=${EditProfileTopologyPage}&o=c`}
+                        to={`/main.php?p=${editProfileTopologyPage}&o=c`}
                         onClick={toggle}
                       >
                         <Typography variant="body2">
