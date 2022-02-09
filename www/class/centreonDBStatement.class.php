@@ -72,7 +72,7 @@ class CentreonDBStatement extends \PDOStatement
      * This method overloads PDO `fetch` in order to use the possible already
      * loaded data available in `allFetched`.
      *
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function fetch($fetch_style = null, $cursor_orientation = PDO::FETCH_ORI_NEXT, $cursor_offset = 0)
     {
@@ -119,7 +119,7 @@ class CentreonDBStatement extends \PDOStatement
 
     /**
      * This method wraps the PDO `execute` method and manages failures logging
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function execute($parameters = null): bool
     {

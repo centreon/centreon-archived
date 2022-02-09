@@ -59,7 +59,7 @@ class CentreonDB extends \PDO
     public const LABEL_DB_REALTIME = 'centstorage';
 
     /**
-     * @var array<mixed>
+     * @var array<string,\CentreonDB>
      */
     private static $instance = [];
 
@@ -79,7 +79,7 @@ class CentreonDB extends \PDO
     protected $retry;
 
     /**
-     * @var array<mixed>
+     * @var array<string,mixed>
      */
     protected $dsn;
 
@@ -89,7 +89,7 @@ class CentreonDB extends \PDO
     protected $options;
 
     /**
-     * @var mixed
+     * @var string
      */
     protected $centreon_path;
 
@@ -289,7 +289,7 @@ class CentreonDB extends \PDO
      * Query
      *
      * @return PDOStatement|null
-     * @param mixed $queryString
+     * @param string $queryString
      * @param mixed $parameters
      * @param mixed $parametersArgs
      */
@@ -335,7 +335,7 @@ class CentreonDB extends \PDO
      * @param string $query_string query
      * @param array<mixed> $placeHolders
      *
-     * @return array<mixed>|false  getAll result
+     * @return mixed[]|false  getAll result
      */
     public function getAll($query_string = null, $placeHolders = [])
     {
@@ -390,7 +390,7 @@ class CentreonDB extends \PDO
 
     /**
      * checks if there is malicious injection
-     * @param mixed $sString
+     * @param string $sString
      */
     public static function checkInjection($sString): int
     {
