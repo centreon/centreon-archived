@@ -16512,3 +16512,9 @@ msgstr "Vous avez été déconnecté"
 
 msgid "Profile"
 msgstr "Profil"
+
+msgid "Role Relations"
+msgstr "Relations de rôle"
+
+msgid "Linked to Roles"
+msgstr "Lié aux rôles"
