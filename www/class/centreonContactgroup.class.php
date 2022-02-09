@@ -395,10 +395,7 @@ class CentreonContactgroup
                     $registeredGroups[] = $registeredGroupFromDB['cg_name'];
                 }
 
-                $time = microtime(true);
                 $ldapGroups = $ldapConn->listOfGroups();
-                var_dump($ldapGroups);
-                var_dump(microtime(true) - $time);
 
                 foreach ($ldapGroups as $ldapGroup) {
                     if (!in_array($ldapGroup['name'], $registeredGroups)) {
