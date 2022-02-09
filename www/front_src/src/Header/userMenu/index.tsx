@@ -1,4 +1,3 @@
-/* eslint-disable react/button-has-type */
 import * as React from 'react';
 
 import classnames from 'classnames';
@@ -6,7 +5,7 @@ import { useTranslation, withTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
-import { Button, Typography } from '@mui/material';
+import { Button, Typography, Paper } from '@mui/material';
 import UserIcon from '@mui/icons-material/AccountCircle';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import CheckIcon from '@mui/icons-material/Check';
@@ -60,17 +59,6 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(0),
     paddingLeft: theme.spacing(0),
   },
-  logOut: {
-    '&:hover': {
-      backgroundColor: theme.palette.common.white,
-      borderColor: theme.palette.common.black,
-      color: theme.palette.common.black,
-    },
-    borderColor: theme.palette.common.white,
-    borderRadius: 20,
-    color: theme.palette.common.white,
-    textTransform: 'capitalize',
-  },
   logoutLink: {
     display: 'grid',
     justifyContent: 'flex-end',
@@ -86,7 +74,6 @@ const useStyles = makeStyles((theme) => ({
     left: 0,
     overflowY: 'auto',
     position: 'absolute',
-    textAlign: 'left',
     top: '100%',
     width: '100%',
     zIndex: theme.zIndex.mobileStepper,
@@ -127,9 +114,12 @@ const useStyles = makeStyles((theme) => ({
   submenuUserEdit: {
     color: theme.palette.common.white,
     float: 'right',
-    marginLeft: theme.spacing(0.5),
     textDecorationLine: 'underline',
     textTransform: 'capitalize',
+  },
+  userButton: {
+    display: 'flex',
+    marginTop: theme.spacing(1),
   },
   userIcon: {
     color: theme.palette.common.white,
@@ -246,7 +236,7 @@ const UserMenu = ({ allowedPages }: StateToProps): JSX.Element => {
               [classes.subMenuActive]: toggled,
             })}
           >
-            <div>
+            <div className={classes.subMenuItemContent}>
               <ul className={classnames(classes.listUnstyled)}>
                 <li>
                   <div
@@ -282,15 +272,16 @@ const UserMenu = ({ allowedPages }: StateToProps): JSX.Element => {
                   </div>
                 </li>
                 {data.autologinkey && (
-                  <div className={classnames(classes.subMenuItemContent)}>
+                  <Paper className={classes.userButton}>
                     <Button
-                      className={classnames(classes.submenuUserButton)}
+                      fullWidth
+                      endIcon={copied ? <CheckIcon /> : <FileCopyIcon />}
+                      size="small"
                       onClick={onCopy}
                     >
                       {t('Copy autologin link')}
-
-                      {copied ? <CheckIcon /> : <FileCopyIcon />}
                     </Button>
+
                     <textarea
                       className={classnames(classes.hiddenInput)}
                       id="autologin-input"
@@ -299,23 +290,15 @@ const UserMenu = ({ allowedPages }: StateToProps): JSX.Element => {
                       }
                       value={autolink}
                     />
-                  </div>
+                  </Paper>
                 )}
               </ul>
-              <div
-                className={classnames(
-                  classes.subMenuItemContent,
-                  classes.logoutLink,
-                )}
-              >
-                <Button
-                  className={classnames(classes.logOut)}
-                  href="index.php?disconnect=1"
-                  size="small"
-                  variant="outlined"
-                >
-                  {t('Logout')}
-                </Button>
+              <div className={classnames(classes.logoutLink)}>
+                <Paper className={classes.userButton}>
+                  <Button fullWidth href="index.php?disconnect=1" size="small">
+                    {t('Logout')}
+                  </Button>
+                </Paper>
               </div>
             </div>
           </div>
