@@ -172,7 +172,7 @@ class CentreonContactgroup
         $statement->execute();
 
         if ($row = $statement->fetch()) {
-            $ldapGroupId = $row['cg_id'];
+            $ldapGroupId = (int) $row['cg_id'];
         }
 
         return $ldapGroupId;
