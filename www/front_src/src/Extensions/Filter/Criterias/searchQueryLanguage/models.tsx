@@ -29,8 +29,6 @@ const statusNameToQueryLanguageName = selectableStatuses
 
 export const criteriaNameToQueryLanguageName = {
   ...statusNameToQueryLanguageName,
-  resource_type: 'type', // ????
-  unhandled_problems: 'unhandled', /// ????
 };
 
 const staticCriteriaValuesByName = {

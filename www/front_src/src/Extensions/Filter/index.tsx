@@ -111,7 +111,7 @@ const Filter = (): JSX.Element => {
             <Criterias />
           </React.Suspense>
           <SearchField
-            // fullWidth // ???
+            fullWidth
             EndAdornment={renderClearFilter(clearFilter)} // return a button to clear the searchField - read more about clearFilterDerivedAtom
             inputRef={searchRef as React.RefObject<HTMLInputElement>} // ref to searchField
             placeholder={t(labelSearch)} // normal label

@@ -23,9 +23,9 @@ const criteriaValueNameById = {
   INSTALLED: labelInstalled,
   MODULE: labelModule,
   OUTDATED: labelOutdated,
-  UPDETED: labelUpdated,
+  UPDATED: labelUpdated,
   WIDGET: labelWidget,
-  not_installed: labelNotInstalled,
+  not_installed: labelNotInstalled, // eslint doesn't accept NOT_INSTALLED
 };
 
 const installedId = 'INSTALLED';
@@ -40,7 +40,7 @@ const notInstalled = {
 const outdatedId = 'OUTDATED';
 const outdated = { id: outdatedId, name: criteriaValueNameById[outdatedId] };
 
-const updatedId = 'UPDETED';
+const updatedId = 'UPDATED';
 const updated = { id: updatedId, name: criteriaValueNameById[updatedId] };
 
 const widgetId = 'WIDGET';

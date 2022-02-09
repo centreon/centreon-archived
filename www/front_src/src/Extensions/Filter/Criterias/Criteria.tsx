@@ -1,12 +1,10 @@
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { equals, isNil } from 'ramda';
 import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 
 import {
   PopoverMultiAutocompleteField,
-  PopoverMultiConnectedAutocompleteField,
   SelectEntry,
   useMemoComponent,
 } from '@centreon/ui';
@@ -52,39 +50,13 @@ const CriteriaContent = ({ name, value }: Props): JSX.Element => {
     label: t(label),
   };
 
-  if (isNil(options)) {
-    const isOptionEqualToValue = (option, selectedValue): boolean =>
-      equals(option.name, selectedValue.name);
-
-    //   buildAutocompleteEndpoint({
-    //     limit: 10,
-    //     page,
-    //     search,
-    //   });
-
-    return (
-      <PopoverMultiConnectedAutocompleteField
-        {...commonProps}
-        disableSortedOptions
-        field="name"
-        // getEndpoint={getEndpoint}
-        isOptionEqualToValue={isOptionEqualToValue}
-        value={value}
-        onChange={(_, updatedValue): void => {
-          changeCriteria(updatedValue);
-        }}
-      />
-    );
-  }
-
   const translatedValues = getTranslated(value);
-  const translatedOptions = getTranslated(options);
 
   return (
     <PopoverMultiAutocompleteField
       {...commonProps}
       hideInput
-      options={translatedOptions}
+      options={options}
       value={translatedValues}
       onChange={(_, updatedValue): void => {
         changeCriteria(getUntranslated(updatedValue));
