@@ -172,7 +172,10 @@ $notifCgs = $cg->getListContactgroup(false);
 
 if (
     $centreon->optGen['ldap_auth_enable'] == 1
-    && $cct['contact_auth_type'] == 'ldap' && isset($cct['ar_id']) && $cct['ar_id']
+    && !empty($cct['contact_id'])
+    && $cct['contact_auth_type'] === 'ldap'
+    && !empty($cct['ar_id'])
+    && !empty($cct['contact_ldap_dn'])
 ) {
     $ldap = new CentreonLDAP($pearDB, null, $cct['ar_id']);
     if (false !== $ldap->connect()) {
@@ -818,7 +821,11 @@ if ($o == WATCH_CONTACT) {
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 }
 
-if ($centreon->optGen['ldap_auth_enable'] == 1 && $cct['contact_auth_type'] == 'ldap') {
+if (
+    !empty($cct['contact_id'])
+    && $centreon->optGen['ldap_auth_enable'] == 1
+    && $cct['contact_auth_type'] === 'ldap'
+) {
     $tpl->assign("ldap_group", _("Group Ldap"));
     if (isset($cgLdap)) {
         $tpl->assign("ldapGroups", $cgLdap);
