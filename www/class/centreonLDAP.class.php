@@ -261,7 +261,7 @@ class CentreonLDAP
     /**
      * Send back the ldap resource
      *
-     * @return ldap_ressource
+     * @return \LDAP\Connection|resource
      */
     public function getDs()
     {
@@ -333,7 +333,7 @@ class CentreonLDAP
      * Return the list of groups
      *
      * @param string $pattern The pattern for search
-     * @return array The list of groups
+     * @return array<array<string,string>> The list of groups
      */
     public function listOfGroups($pattern = '*')
     {
@@ -345,16 +345,22 @@ class CentreonLDAP
         $result = @ldap_search($this->ds, $this->groupSearchInfo['base_search'], $filter);
         if (false === $result) {
             restore_error_handler();
-            return array();
+            return [];
         }
+
         $entries = ldap_get_entries($this->ds, $result);
-        $nbEntries = $entries['count'];
-        $list = array();
-        for ($i = 0; $i < $nbEntries; $i++) {
-            $list[] = $entries[$i][$this->groupSearchInfo['group_name']][0];
+
+        $groups = [];
+        for ($i = 0; $i < $entries['count']; $i++) {
+            $groups[] = [
+                'name' => $entries[$i][$this->groupSearchInfo['group_name']][0],
+                'dn' => $entries[$i]['dn'],
+            ];
         }
+
         restore_error_handler();
-        return $list;
+
+        return $groups;
     }
 
     /**
