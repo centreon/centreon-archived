@@ -155,7 +155,7 @@ class TopologyRepository extends ServiceEntityRepository
      * @param CentreonUser $user
      * @return array<mixed>|false
      */
-    public function getTopologyList(CentreonUser $user): array
+    public function getTopologyList(CentreonUser $user)
     {
         $topologies = [];
 
@@ -187,7 +187,7 @@ class TopologyRepository extends ServiceEntityRepository
     /**
      * Find Topology entity by criteria
      *
-     * @param array $params
+     * @param array<mixed> $params
      * @return Topology|null
      */
     public function findOneBy($params = []): ?Topology
