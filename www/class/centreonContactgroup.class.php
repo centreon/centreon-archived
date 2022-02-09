@@ -122,8 +122,9 @@ class CentreonContactgroup
 
                 foreach ($ldapGroups as $ldapGroup) {
                     $ldapGroupName = $ldapGroup['name'];
-                    if (false === array_search($ldapGroupName . " (LDAP : " . $ldapRow['ar_name'] . ")", $cgs) &&
-                        preg_match('/' . $filter . '/i', $ldapGroupName)
+                    if (
+                        false === array_search($ldapGroupName . " (LDAP : " . $ldapRow['ar_name'] . ")", $cgs)
+                        && preg_match('/' . $filter . '/i', $ldapGroupName)
                     ) {
                         $cgs["[" . $ldapRow['ar_id'] . "]" . $ldapGroupName] = $this->formatLdapContactgroupName(
                             $ldapGroupName,
