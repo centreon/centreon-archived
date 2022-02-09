@@ -21,7 +21,6 @@ import {
 } from '@centreon/ui';
 import { userAtom } from '@centreon/ui-context';
 
-import styles from '../../header.scss';
 import {
   getHostResourcesUrl,
   downCriterias,
@@ -111,7 +110,7 @@ const HostStatusCounter = (): JSX.Element => {
       schema={statusSchema}
     >
       {({ hasPending, toggled, toggleDetailedView, data }): JSX.Element => (
-        <div className={`${styles.wrapper} wrap-right-hosts`}>
+        <div>
           <SubmenuHeader active={toggled}>
             <IconHeader
               Icon={HostIcon}
@@ -120,7 +119,7 @@ const HostStatusCounter = (): JSX.Element => {
               onClick={toggleDetailedView}
             />
             <Link
-              className={classnames(classes.link, styles['wrap-middle-icon'])}
+              className={classnames(classes.link, classes.wrapMiddleIcon)}
               to={unhandledDownHostsLink}
             >
               <StatusCounter
@@ -129,7 +128,7 @@ const HostStatusCounter = (): JSX.Element => {
               />
             </Link>
             <Link
-              className={classnames(classes.link, styles['wrap-middle-icon'])}
+              className={classnames(classes.link, classes.wrapMiddleIcon)}
               to={unhandledUnreachableHostsLink}
             >
               <StatusCounter
@@ -138,7 +137,7 @@ const HostStatusCounter = (): JSX.Element => {
               />
             </Link>
             <Link
-              className={classnames(classes.link, styles['wrap-middle-icon'])}
+              className={classnames(classes.link, classes.wrapMiddleIcon)}
               to={upHostsLink}
             >
               <StatusCounter count={data.ok} severityCode={SeverityCode.Ok} />
@@ -149,8 +148,8 @@ const HostStatusCounter = (): JSX.Element => {
               onClick={toggleDetailedView}
             />
             <div
-              className={classnames(styles['submenu-toggle'], {
-                [styles['submenu-toggle-active'] as string]: toggled,
+              className={classnames(classes.subMenuToggle, {
+                [classes.subMenuToggleActive]: toggled,
               })}
             >
               <SubmenuItems>
