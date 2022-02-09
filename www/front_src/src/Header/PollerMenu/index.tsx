@@ -155,21 +155,24 @@ const PollerMenu = (): JSX.Element => {
       }}
     >
       <div>
-        <SubmenuHeader active={toggled}>
+        <SubmenuHeader  active={toggled}>
           <IconHeader
             Icon={PollerIcon}
             iconName={t(labelPoller)}
             onClick={toggleDetailedView}
           />
           <PollerStatusIcon issues={issues} />
+          
           <IconToggleSubmenu
+            data-testid={'submenu-poller-active'}
+            ariaLabel={'submenu-poller-active'}
             cursor="pointer"
             iconType="arrow"
             rotate={toggled}
             onClick={toggleDetailedView}
           />
-          <div
-            className={classnames(styles['submenu-toggle'], {
+          <div 
+              className={classnames(styles['submenu-toggle'], {
               [styles['submenu-toggle-active'] as string]: toggled,
             })}
           >
