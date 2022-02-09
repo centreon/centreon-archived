@@ -144,6 +144,8 @@ const HostStatusCounter = (): JSX.Element => {
               <StatusCounter count={data.ok} severityCode={SeverityCode.Ok} />
             </Link>
             <IconToggleSubmenu
+              data-testid={'submenu-host-active'}
+              ariaLabel={'submenu-host-active'}
               iconType="arrow"
               rotate={toggled}
               onClick={toggleDetailedView}
