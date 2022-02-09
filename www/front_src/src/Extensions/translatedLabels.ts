@@ -1,0 +1,12 @@
+export const labelClear = 'Clear';
+export const labelSearch = 'Search';
+export const labelSearchOptions = 'Filter options';
+export const labelStatus = 'Status';
+export const labelType = 'Types';
+export const labelInstalled = 'Installed';
+export const labelNotInstalled = 'NotInstalled';
+export const labelOutdated = 'Outdated';
+export const labelUpdated = 'Updated';
+export const labelModule = 'Module';
+export const labelWidget = 'Widget';
+export const labelClearFilter = 'Clear filter';
