@@ -24,6 +24,9 @@ namespace Centreon\Domain\Engine;
 
 class EngineConfiguration
 {
+    public const NOTIFICATIONS_DISABLED = 0,
+                 NOTIFICATIONS_ENABLED = 1,
+                 NOTIFICATIONS_DEFAULT = 2;
     /**
      * @var int|null
      */
@@ -43,6 +46,11 @@ class EngineConfiguration
      * @var string|null Engine configuration name
      */
     private $name;
+
+    /**
+     * @var int
+     */
+    private $notificationsEnabled = self::NOTIFICATIONS_ENABLED;
 
     /**
      * @return int|null
@@ -140,5 +148,23 @@ class EngineConfiguration
     public function hasIllegalCharacters(string $stringToCheck): bool
     {
         return $stringToCheck !== $this->removeIllegalCharacters($stringToCheck);
+    }
+
+    /**
+     * @return int
+     */
+    public function getNotificationsEnabled(): int
+    {
+        return $this->notificationsEnabled;
+    }
+
+    /**
+     * @param int $notificationsEnabled
+     * @return self
+     */
+    public function setNotificationsEnabled(int $notificationsEnabled): self
+    {
+        $this->notificationsEnabled = $notificationsEnabled;
+        return $this;
     }
 }
