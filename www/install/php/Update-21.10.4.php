@@ -99,6 +99,19 @@ function cleanDuplicateHostMacros($pearDB, $centreonLog, $cache, $srcHostId)
             $stack = array_merge($cache[$hostId]['htpl'], $stack);
         }
     }
+
+    // clean empty macros with no macros inherited
+    foreach ($macros as $name => $value) {
+        if (!isset($macros[$name]['checked']) && (is_null($value['host_macro_value']) || $value['host_macro_value'] === '')) {
+            $centreonLog->insertLog(
+                4,
+                $versionOfTheUpgrade . "host " . $cache[$srcHostId]['host_name'] . " delete macro " . $name
+            );
+            $pearDB->query(
+                "DELETE FROM on_demand_macro_host WHERE host_macro_id = '" . $value['host_macro_id'] . "'"
+            );
+        }
+    }
 }
 
 /**
