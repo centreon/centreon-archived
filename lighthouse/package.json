@@ -2,14 +2,29 @@
   "name": "centreon-lighthouse-report",
   "version": "22.4.0",
   "description": "This is handle Lighthouse report",
-  "main": "puppeteer-script.js",
-  "type": "module",
+  "main": "index.js",
   "scripts": {
-    "start": "node ./lighthouseReport.js"
+    "start": "tsc && node ./build/lighthouseReport.js",
+    "eslint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "eslint:fix": "npm run eslint -- --fix"
   },
   "devDependencies": {
     "lighthouse": "^9.3.1",
     "open": "^8.4.0",
-    "puppeteer": "^13.2.0"
+    "puppeteer": "^13.2.0",
+    "eslint": "^8.8.0",
+    "eslint-config-airbnb": "19.0.4",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-import-resolver-alias": "1.1.2",
+    "eslint-plugin-babel": "^5.3.1",
+    "eslint-plugin-hooks": "^0.4.1",
+    "eslint-plugin-jest": "^26.0.0",
+    "eslint-plugin-prefer-arrow-functions": "^3.1.4",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-react": "7.28.0",
+    "eslint-plugin-react-hooks": "^4.3.0",
+    "eslint-plugin-sort-keys-fix": "^1.1.2",
+    "eslint-plugin-typescript-sort-keys": "^2.1.0",
+    "centreon-frontend": "git+https://centreon@github.com/centreon/centreon-frontend.git#develop"
   }
 }
