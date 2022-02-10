@@ -22,7 +22,7 @@ import { platformInstallationStatusAtom } from '../platformInstallationStatusAto
 import reactRoutes from '../reactRoutes/routeMap';
 
 import Provider from './Provider';
-import { MainLoader, MainLoaderWithoutTranslation } from './MainLoader';
+import { MainLoaderWithoutTranslation } from './MainLoader';
 import useMain from './useMain';
 
 dayjs.extend(localizedFormat);
@@ -51,7 +51,7 @@ const Main = (): JSX.Element => {
   }
 
   return (
-    <React.Suspense fallback={<MainLoader />}>
+    <React.Suspense fallback={<MainLoaderWithoutTranslation />}>
       <Routes>
         <Route element={<LoginPage />} path={reactRoutes.login} />
         <Route element={<AppPage />} path="*" />

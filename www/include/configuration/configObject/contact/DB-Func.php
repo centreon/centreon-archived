@@ -569,6 +569,9 @@ function insertContact($ret = array())
     if (!count($ret)) {
         $ret = $form->getSubmitValues();
     }
+    $ret['contact_oreon'] = $ret['contact_oreon'] ?? ['contact_oreon' => '1'];
+    $ret['reach_api'] = $ret['reach_api'] ?? ['reach_api' => '0'];
+    $ret['reach_api_rt'] = $ret['reach_api_rt'] ?? ['reach_api_rt' => '0'];
     $ret["contact_name"] = $centreon->checkIllegalChar($ret["contact_name"]);
 
     $bindParams = sanitizeFormContactParameters($ret);

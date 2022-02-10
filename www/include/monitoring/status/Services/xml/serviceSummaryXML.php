@@ -105,7 +105,7 @@ if (!$obj->is_admin) {
     $rq1 .= ", centreon_acl ";
 }
 
-$rq1 .= "WHERE hosts.name NOT LIKE '_Module_%' AND hosts.enabled = 1 "
+$rq1 .= "WHERE hosts.name NOT LIKE '\_Module\_%' AND hosts.enabled = 1 "
     . $obj->access->queryBuilder("AND", "hosts.host_id", "centreon_acl.host_id") . " "
     . $obj->access->queryBuilder("AND", "group_id", $obj->grouplistStr) . " ";
 

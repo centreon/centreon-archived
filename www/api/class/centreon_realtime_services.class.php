@@ -396,7 +396,7 @@ class CentreonRealtimeServices extends CentreonRealtimeBase
                 "AND cvs.value =  :criticality";
             $queryValues['criticality'] = (string)$this->criticality;
         }
-        $query .= " AND h.name NOT LIKE '_Module_BAM%' ";
+        $query .= " AND h.name NOT LIKE '\_Module\_BAM%' ";
 
         /* Search string to a host name, alias or address */
         if ($this->searchHost) {
