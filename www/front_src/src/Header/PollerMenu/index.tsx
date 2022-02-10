@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import { isEmpty, isNil } from 'ramda';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import classnames from 'classnames';
 import clsx from 'clsx';
 import { useAtomValue } from 'jotai/utils';
 import { useHistory } from 'react-router';
@@ -22,7 +21,6 @@ import {
 } from '@centreon/ui';
 import { refreshIntervalAtom } from '@centreon/ui-context';
 
-import styles from '../header.scss';
 import { allowedPagesSelector } from '../../redux/selectors/navigation/allowedPages';
 import MenuLoader from '../../components/MenuLoader';
 
@@ -71,6 +69,21 @@ const useStyles = makeStyles((theme) => ({
   },
   pollerDetailTitle: {
     flexGrow: 1,
+  },
+  subMenuToggle: {
+    backgroundColor: theme.palette.common.black,
+    boxSizing: 'border-box',
+    display: 'none',
+    left: theme.spacing(0),
+    padding: theme.spacing(1),
+    position: 'absolute',
+    textAlign: 'left',
+    top: '100%',
+    width: '100%',
+    zIndex: theme.zIndex.mobileStepper,
+  },
+  subMenuToggleActive: {
+    display: 'block',
   },
 }));
 
@@ -169,8 +182,8 @@ const PollerMenu = (): JSX.Element => {
             onClick={toggleDetailedView}
           />
           <div
-            className={classnames(styles['submenu-toggle'], {
-              [styles['submenu-toggle-active'] as string]: toggled,
+            className={clsx(classes.subMenuToggle, {
+              [classes.subMenuToggleActive]: toggled,
             })}
           >
             {!isEmpty(issues) ? (
