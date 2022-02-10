@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface Props {
-  children: React.ReactChildren;
+  children: Array<JSX.Element>;
 }
 
 const ExtensionsWrapper = ({ children }: Props): JSX.Element => {
