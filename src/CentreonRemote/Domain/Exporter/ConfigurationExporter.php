@@ -21,6 +21,7 @@
 namespace CentreonRemote\Domain\Exporter;
 
 use Pimple\Container;
+use PDO;
 use CentreonRemote\Infrastructure\Export\ExportManifest;
 use CentreonRemote\Infrastructure\Service\ExporterServiceAbstract;
 
@@ -71,6 +72,16 @@ class ConfigurationExporter extends ExporterServiceAbstract
 
         $db = $this->db->getAdapter('configuration_db');
 
+        // get tables
+        $stmt = $db->getCentreonDBInstance()->prepare('SHOW TABLES');
+        $stmt->execute();
+        $tables = [];
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            foreach ($row as $key => $name) {
+                $tables[$name] = 1;
+            }
+        }
+
         // start transaction
         $db->beginTransaction();
 
@@ -81,7 +92,16 @@ class ConfigurationExporter extends ExporterServiceAbstract
 
             $import = $manifest->get("import");
             foreach ($import['data'] as $data) {
-                if (!isset($truncated[$data['table']])) {
+                $exportPathFile = $this->getFile($data['filename']);
+                $size = filesize($exportPathFile);
+                echo date("Y-m-d H:i:s") . " - INFO - Loading '" . $exportPathFile . "' ($size).\n";
+
+                if ($size > 0 && !isset($tables[$data['table']])) {
+                    echo date("Y-m-d H:i:s") . " - ERROR - cannot import table '" . $data['table'] . "': not exist.\n";
+                    continue;
+                }
+
+                if (!isset($truncated[$data['table']]) && isset($tables[$data['table']])) {
                     // empty table
                     $db->query("DELETE FROM `" . $data['table'] . "`");
                     // optimize table
@@ -90,15 +110,15 @@ class ConfigurationExporter extends ExporterServiceAbstract
                 }
 
                 // insert data
-                $exportPathFile = $this->getFile($data['filename']);
-                echo date("Y-m-d H:i:s") . " - INFO - Loading '" . $exportPathFile . "'.\n";
-                $db->loadDataInfile(
-                    $exportPathFile,
-                    $data['table'],
-                    $import['infile_clauses']['fields_clause'],
-                    $import['infile_clauses']['lines_clause'],
-                    $data['columns']
-                );
+                if ($size > 0) {
+                    $db->loadDataInfile(
+                        $exportPathFile,
+                        $data['table'],
+                        $import['infile_clauses']['fields_clause'],
+                        $import['infile_clauses']['lines_clause'],
+                        $data['columns']
+                    );
+                }
             }
 
             // restore foreign key checks
