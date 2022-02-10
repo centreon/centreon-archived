@@ -108,7 +108,7 @@ class CentreonPerformanceService
             . 'i.host_id, i.service_id, m.index_id '
             . 'FROM index_data i, metrics m ' . (!$this->aclObj->admin ? ', centreon_acl acl ' : '')
             . 'WHERE i.id = m.index_id '
-            . 'AND i.host_name NOT LIKE "_Module_%" '
+            . 'AND i.host_name NOT LIKE "\_Module\_%" '
             . (!$this->aclObj->admin
                 ? ' AND acl.host_id = i.host_id AND acl.service_id = i.service_id AND acl.group_id IN (' .
                 $this->aclObj->getAccessGroupsString() . ') ' : '')

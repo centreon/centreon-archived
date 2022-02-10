@@ -29,6 +29,7 @@ use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
 use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
 use Security\Domain\Authentication\Interfaces\ProviderServiceInterface;
 use Security\Domain\Authentication\Interfaces\SessionRepositoryInterface;
+use Core\Application\Security\Repository\WriteTokenRepositoryInterface;
 
 /**
  * @package Security\Authentication
@@ -53,17 +54,26 @@ class AuthenticationService implements AuthenticationServiceInterface
     private $sessionRepository;
 
     /**
+     * @var WriteTokenRepositoryInterface
+     */
+    private $writeTokenRepository;
+
+    /**
      * @param AuthenticationRepositoryInterface $authenticationRepository
      * @param ProviderServiceInterface $providerService
+     * @param SessionRepositoryInterface $sessionRepository
+     * @param WriteTokenRepositoryInterface $writeTokenRepository
      */
     public function __construct(
         AuthenticationRepositoryInterface $authenticationRepository,
         ProviderServiceInterface $providerService,
-        SessionRepositoryInterface $sessionRepository
+        SessionRepositoryInterface $sessionRepository,
+        WriteTokenRepositoryInterface $writeTokenRepository,
     ) {
         $this->authenticationRepository = $authenticationRepository;
         $this->sessionRepository = $sessionRepository;
         $this->providerService = $providerService;
+        $this->writeTokenRepository = $writeTokenRepository;
     }
 
     /**
@@ -125,7 +135,7 @@ class AuthenticationService implements AuthenticationServiceInterface
     public function deleteExpiredSecurityTokens(): void
     {
         try {
-            $this->authenticationRepository->deleteExpiredSecurityTokens();
+            $this->writeTokenRepository->deleteExpiredSecurityTokens();
         } catch (\Exception $ex) {
             throw AuthenticationException::deleteExpireToken($ex);
         }

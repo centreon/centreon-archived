@@ -108,7 +108,7 @@ if (!$obj->is_admin) {
 $rq1 .= "WHERE h.host_id = hgm.host_id " .
     "AND hgm.hostgroup_id = hg.hostgroup_id " .
     "AND h.enabled = '1' " .
-    "AND h.name NOT LIKE '_Module_%' ";
+    "AND h.name NOT LIKE '\_Module\_%' ";
 
 if (!$obj->is_admin) {
     $rq1 .= $obj->access->queryBuilder("AND", "h.host_id", "centreon_acl.host_id") .
@@ -196,7 +196,7 @@ if (!$obj->is_admin) {
     $rq2 .= ", centreon_acl ";
 }
 $rq2 .= "WHERE h.host_id = s.host_id " .
-    "AND h.name NOT LIKE '_Module_%' " .
+    "AND h.name NOT LIKE '\_Module\_%' " .
     "AND h.enabled = '1' " .
     "AND s.enabled = '1' ";
 $rq2 .= $obj->access->queryBuilder("AND", "h.host_id", "centreon_acl.host_id") .
