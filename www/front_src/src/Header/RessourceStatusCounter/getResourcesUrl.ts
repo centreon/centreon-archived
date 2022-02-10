@@ -85,6 +85,8 @@ const getServiceResourcesUrl = ({
 };
 
 export {
+  hostCriterias,
+  serviceCriteria,
   downCriterias,
   unreachableCriterias,
   upCriterias,

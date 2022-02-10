@@ -207,6 +207,10 @@ services:
         calls:
             - [setEncryptionFirstKey, ['%env(APP_SECRET)%']]
 
+    Core\Infrastructure\Platform\Repository\FileReadPlatformRepository:
+        class: Core\Infrastructure\Platform\Repository\FileReadPlatformRepository
+        arguments: ['%centreon_etc_path%', '%centreon_install_path%']
+
     # Monitoring resources
     _instanceof:
         Centreon\Infrastructure\Monitoring\Resource\Provider\ProviderInterface:
