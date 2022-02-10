@@ -15296,3 +15296,36 @@ msgstr ""
 
 # msgid "Soft"
 # msgstr ""
+
+# msgid "You are disconnected"
+# msgstr ""
+
+# msgid "Centreon is loading..."
+# msgstr ""
+
+# msgid "Login succeeded"
+# msgstr ""
+
+# msgid "Login"
+# msgstr ""
+
+# msgid "Centreon Logo"
+# msgstr ""
+
+# msgid "You are not allowed to see this page"
+# msgstr ""
+
+# msgid "This page could not be found"
+# msgstr ""
+
+# msgid "Display the password"
+# msgstr ""
+
+# msgid "Hide the password"
+# msgstr ""
+
+# msgid "You have been logged out"
+# msgstr "" 
+
+# msgid "Profile"
+# msgstr ""
