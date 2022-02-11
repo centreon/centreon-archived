@@ -52,7 +52,7 @@ class AclGroupWebservice extends Webservice\WebServiceAbstract implements
      * {@inheritdoc}
      * @return array<int,string>
      */
-    public static function dependencies()
+    public static function dependencies(): array
     {
         return [
             ServiceProvider::CENTREON_PAGINATION,
