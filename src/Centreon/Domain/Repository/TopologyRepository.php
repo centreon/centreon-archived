@@ -187,7 +187,7 @@ class TopologyRepository extends ServiceEntityRepository
     /**
      * Find Topology entity by criteria
      *
-     * @param array<mixed> $params
+     * @param mixed[] $params
      * @return Topology|null
      */
     public function findOneBy($params = []): ?Topology
