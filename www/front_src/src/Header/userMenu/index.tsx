@@ -148,7 +148,7 @@ const UserMenu = ({ allowedPages }: StateToProps): JSX.Element => {
       clearTimeout(refreshTimeout.current);
     }
     refreshTimeout.current = setTimeout(() => {
-      loaduserData();
+      loadUserData();
     }, 60000);
   };
 
