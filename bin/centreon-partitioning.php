@@ -58,9 +58,8 @@ if (!$partEngine->isCompatible($centstorageDb)) {
     exitProcess(
         PROCESS_ID,
         1,
-        "[" .
-        date(DATE_RFC822) .
-         "] CRITICAL: MySQL server is not compatible with partitioning. MySQL version must be greater or equal to 5.1\n"
+        "[" . date(DATE_RFC822) . "] "
+        . "CRITICAL: MySQL server is not compatible with partitioning. MySQL version must be greater or equal to 5.1\n"
     );
 }
 
