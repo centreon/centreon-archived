@@ -128,19 +128,6 @@ const UserMenu = ({ allowedPages }: StateToProps): JSX.Element => {
     request: getData,
   });
 
-  React.useEffect(() => {
-    window.addEventListener('mousedown', handleClick, false);
-    loaduserData();
-    loaduserData();
-
-    return (): void => {
-      window.removeEventListener('mousedown', handleClick, false);
-      if (refreshTimeout.current) {
-        clearTimeout(refreshTimeout.current);
-      }
-    };
-  }, []);
-
   const endpoint = userMenuInfo;
 
   const loaduserData = (): void => {
@@ -174,6 +161,9 @@ const UserMenu = ({ allowedPages }: StateToProps): JSX.Element => {
       autologinNode.current.select();
       window.document.execCommand('copy');
       setCopied(true);
+      setTimeout(() => {
+        setCopied(false);
+      }, 7000);
     }
   };
 
@@ -183,6 +173,18 @@ const UserMenu = ({ allowedPages }: StateToProps): JSX.Element => {
     }
     setToggled(false);
   };
+
+  React.useEffect(() => {
+    window.addEventListener('mousedown', handleClick, false);
+    loaduserData();
+
+    return (): void => {
+      window.removeEventListener('mousedown', handleClick, false);
+      if (refreshTimeout.current) {
+        clearTimeout(refreshTimeout.current);
+      }
+    };
+  }, []);
 
   if (!data) {
     return <MenuLoader width={21} />;
