@@ -130,7 +130,7 @@ const UserMenu = ({ allowedPages }: StateToProps): JSX.Element => {
 
   const endpoint = userMenuInfo;
 
-  const loaduserData = (): void => {
+  const loadUserData = (): void => {
     sendRequest({ endpoint: `./api/${endpoint}` })
       .then((retrievedUserData) => {
         setData(retrievedUserData);
