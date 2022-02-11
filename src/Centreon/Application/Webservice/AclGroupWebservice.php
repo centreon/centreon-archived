@@ -142,6 +142,7 @@ class AclGroupWebservice extends Webservice\WebServiceAbstract implements
      *
      * Get a list of ACL groups
      *
+     * @return DataRepresenter\Response
      * @throws \RestBadRequestException
      */
     public function getList(): DataRepresenter\Response
