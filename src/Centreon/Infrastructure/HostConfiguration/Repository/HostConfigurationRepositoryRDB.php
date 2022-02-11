@@ -815,6 +815,7 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
             $this->translateDbName('DELETE FROM `:db`.hostgroup_relation WHERE host_host_id = :host_id')
         );
         $statement->bindValue(':host_id', $host->getId(), \PDO::PARAM_INT);
+        $statement->execute();
     }
 
     /**
