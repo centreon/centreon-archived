@@ -100,9 +100,9 @@ input[type="checkbox"]  {
 }
 
 .md-checkbox {
-  position: relative;
-  text-align: left;
-  vertical-align: middle;
+    position: relative;
+    text-align: left;
+    vertical-align: middle;
 }
 .md-checkbox.md-checkbox-inline {
     display: inline-block;
@@ -132,7 +132,7 @@ input[type="checkbox"]  {
 .md-checkbox label:before {
     width: 1.25em;
     height: 1.25em;
-    background: var(--md-checkbox-background );
+    background: var(--md-checkbox-background);
     border: 2px solid var(--md-checkbox-border-color);
     border-radius: 0.125em;
     cursor: pointer;
@@ -149,7 +149,7 @@ input[type="checkbox"]  {
     font-size: inherit;
 }
 .md-checkbox input[type="checkbox"]:checked + label:before {
-    background:var(--md-checkbox--checked-background);
+    background: var(--md-checkbox-checked-label-before-background-color);
     border: none;
 }
 .md-checkbox input[type="checkbox"]:checked + label:after {
@@ -173,15 +173,15 @@ input[type="checkbox"]  {
 
 
 @keyframes ripple {
-  0% {
-    box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.0);
-  }
-  50% {
-    box-shadow: 0px 0px 0px 15px rgba(0, 0, 0, 0.1);
-  }
-  100% {
-    box-shadow: 0px 0px 0px 15px rgba(0, 0, 0, 0);
-  }
+    0% {
+        box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.0);
+    }
+    50% {
+        box-shadow: 0px 0px 0px 15px rgba(0, 0, 0, 0.1);
+    }
+    100% {
+        box-shadow: 0px 0px 0px 15px rgba(0, 0, 0, 0);
+    }
 }
 .md-radio {
     vertical-align: bottom;
@@ -284,11 +284,11 @@ label {
     padding: 10px 0;
 }
 pre.wrap {
-  white-space: -moz-pre-wrap;
-  white-space: -pre-wrap;
-  white-space: -o-pre-wrap;
-  white-space: pre-wrap;
-  word-wrap: break-word;
+    white-space: -moz-pre-wrap;
+    white-space: -pre-wrap;
+    white-space: -o-pre-wrap;
+    white-space: pre-wrap;
+    word-wrap: break-word;
 }
 
 .margin_right {
@@ -377,7 +377,7 @@ p.description a, p.description a:visited {
 /* ------ Select 2 ---------*/
 
 .select2-container {
-   width: 213px !important;
+    width: 213px !important;
 }
 
 .select2-selection {
@@ -486,8 +486,8 @@ p.description a, p.description a:visited {
 }
 
 .clearAllSelect2 {
-     margin-left: 4px;
- }
+    margin-left: 4px;
+}
 
 .clearAllSelect2 img {
     vertical-align: middle;
@@ -553,10 +553,10 @@ p.description a, p.description a:visited {
 }
 
 .badge a            {
-                        display: inline-block;
-                        padding: 4px 8px;
-                        color: var(--badge-a-color);
-                    }
+    display: inline-block;
+    padding: 4px 8px;
+    color: var(--badge-a-color);
+}
 
 /* ----------- States --------------- */
 
@@ -806,7 +806,7 @@ form#AjaxBankBasic {
 
 
 .ListTable tr{
-vertical-align: middle;
+    vertical-align: middle;
 }
 
 .ListTableSmall {
@@ -849,7 +849,7 @@ vertical-align: middle;
 .Resume_light_table th {
     border-right: 1px solid var(--resume-light-table-th-border-right);
     text-align: right;
- }
+}
 
 .Resume_light_table th span,
 .Resume_light_table td span{
@@ -863,7 +863,7 @@ vertical-align: middle;
     display: inline-block;
     padding: 2px 8px;
     color: var(--resume-light-table-th-span-background-color);
- }
+}
 
 .Resume_light_table th span {
     background-color:var(--resume-light-table-th-span-background-color);
@@ -1527,12 +1527,12 @@ div.update_readme,div.update_output {background-color:var(--update-read-me-outpu
 }
 
 .ajaxOption .divider hr {
-  margin: 10px 0;
+    margin: 10px 0;
 }
 
 .ajaxOption .checkbox h4 {
-  display: inline-block;
-  margin-left: 5px;
+    display: inline-block;
+    margin-left: 5px;
 }
 
 /* Taktical Overview */
@@ -1727,7 +1727,7 @@ span.show-disabled[disabled]::after {
     text-align:center;
 }
 #validFormTop {
-   float: right;
+    float: right;
 }
 
 
@@ -2220,7 +2220,7 @@ input.excluded[type=checkbox]:checked + label:before {
 }
 
 .advancedForm, .advancedFormService {
-   display: none;
+    display: none;
 }
 
 .checkbox-tpl, .checkbox-servicetpl {
@@ -2255,7 +2255,7 @@ input.excluded[type=checkbox]:checked + label:before {
 }
 
 #htTplExcluded .editBt, #stTplExcluded .editBt{
-   display: none;
+    display: none;
 }
 
 .preview_icon {
@@ -2395,11 +2395,11 @@ textarea.default-textarea {
 }
 
 .graphZone.col2 .graph {
-  width: 49%;
+    width: 49%;
 }
 
 .graphZone.col3 .graph {
-  width: 32%;
+    width: 32%;
 }
 
 .graph {
@@ -2424,69 +2424,69 @@ textarea.default-textarea {
 }
 
 .graph .title .actions {
-  float: right;
-  margin-top: 6px;
+    float: right;
+    margin-top: 6px;
 }
 
 .graph .title .remove {
-  margin-top: 6px;
-  cursor: pointer;
+    margin-top: 6px;
+    cursor: pointer;
 }
 
 .graph .title > span {
-  vertical-align: top;
-  margin-top: 2px;
+    vertical-align: top;
+    margin-top: 2px;
 }
 
 .graph .content {
-  margin: 5px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
+    margin: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
 }
 
 .graph .action {
-  position: absolute;
-  padding: 0 3px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  height: 240px;
-  top: 20px;
+    position: absolute;
+    padding: 0 3px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 240px;
+    top: 20px;
 }
 
 .graph .action.left {
-  left: 0;
+    left: 0;
 }
 
 .graph .action.right {
-  right: 0;
+    right: 0;
 }
 
 .graph .action .bt_action {
-  z-index: 50;
-  padding: 4px;
-  opacity: 0.2;
-  transition: opacity .25s ease-in-out;
-  cursor: pointer;
+    z-index: 50;
+    padding: 4px;
+    opacity: 0.2;
+    transition: opacity .25s ease-in-out;
+    cursor: pointer;
 }
 
 .graph .action .bt_action:disabled {
-  cursor: not-allowed;
+    cursor: not-allowed;
 }
 
 .graph .action .bt_action:hover {
-  opacity: 1;
+    opacity: 1;
 }
 
 .graph .chart {
-  overflow: hidden;
+    overflow: hidden;
 }
 
 .graph .chart-status {
-  margin-top: 10px;
-  margin-left: 40px;
-  overflow: visible;
+    margin-top: 10px;
+    margin-left: 40px;
+    overflow: visible;
 }
 
 .graph .c3-region.region-downtime {
@@ -2498,25 +2498,25 @@ textarea.default-textarea {
 }
 
 .chart-legends {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-content: flex-start;
-  flex-wrap: wrap;
-  position: relative;
-  padding: 0 32px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-content: flex-start;
+    flex-wrap: wrap;
+    position: relative;
+    padding: 0 32px;
 }
 
 .chart-legends .chart-legend-action {
-  display: block;
-  position: absolute;
-  top: 1px;
-  right: 1px;
+    display: block;
+    position: absolute;
+    top: 1px;
+    right: 1px;
 }
 
 .chart-legends .chart-legend-action > img {
-  height: 14px;
-  cursor: pointer;
+    height: 14px;
+    cursor: pointer;
 }
 
 .chart-legends .chart-legend {
@@ -2531,38 +2531,38 @@ textarea.default-textarea {
 }
 
 .chart-legends .chart-legend > div {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-content: flex-start;
-  cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-content: flex-start;
+    cursor: pointer;
 }
 
 .chart-legends .chart-legend .chart-legend-color {
-  width: 12px;
-  height: 12px;
-  margin: 2px;
+    width: 12px;
+    height: 12px;
+    margin: 2px;
 }
 
 .chart-legends .chart-legend.hidden .chart-legend-color {
-  opacity: 0.3;
+    opacity: 0.3;
 }
 
 .chart-legends .chart-legend span {
-  line-height: 16px;
+    line-height: 16px;
 }
 
 .chart-legends .chart-legend .extra {
-  display: none;
-  margin-left: 6px;
+    display: none;
+    margin-left: 6px;
 }
 
 .chart-legends .chart-legend .extra span {
-  margin-left: 4px;
+    margin-left: 4px;
 }
 
 .chart-legends.extend {
-  flex-direction: column;
+    flex-direction: column;
 }
 
 .chart-legends.extend .chart-legend .extra {
@@ -2583,33 +2583,33 @@ textarea.default-textarea {
 }
 
 .ico-col.ico-col-1 {
-  background-image: url('../../img/icons/1-col-gray.png');
-  background-size: cover;
+    background-image: url('../../img/icons/1-col-gray.png');
+    background-size: cover;
 }
 
 .ico-col.ico-col-1.active {
-  background-image: url('../../img/icons/1-col-blue.png');
-  background-size: cover;
+    background-image: url('../../img/icons/1-col-blue.png');
+    background-size: cover;
 }
 
 .ico-col.ico-col-2 {
-  background-image: url('../../img/icons/2-col-gray.png');
-  background-size: cover;
+    background-image: url('../../img/icons/2-col-gray.png');
+    background-size: cover;
 }
 
 .ico-col.ico-col-2.active {
-  background-image: url('../../img/icons/2-col-blue.png');
-  background-size: cover;
+    background-image: url('../../img/icons/2-col-blue.png');
+    background-size: cover;
 }
 
 .ico-col.ico-col-3 {
-  background-image: url('../../img/icons/3-col-gray.png');
-  background-size: cover;
+    background-image: url('../../img/icons/3-col-gray.png');
+    background-size: cover;
 }
 
 .ico-col.ico-col-3.active {
-  background-image: url('../../img/icons/3-col-blue.png');
-  background-size: cover;
+    background-image: url('../../img/icons/3-col-blue.png');
+    background-size: cover;
 }
 
 /* Refresh component for chart */
@@ -2625,19 +2625,19 @@ textarea.default-textarea {
 }
 
 .refresh .icon {
-  display: inline-block;
-  vertical-align: middle;
+    display: inline-block;
+    vertical-align: middle;
 }
 
 .refresh .icon img {
-  margin: 1px;
+    margin: 1px;
 }
 
 .refresh .time {
-  line-height: 14px;
-  font-size: 12px;
-  display: inline-block;
-  vertical-align: middle;
+    line-height: 14px;
+    font-size: 12px;
+    display: inline-block;
+    vertical-align: middle;
 }
 
 .refresh-list {
@@ -2655,8 +2655,8 @@ textarea.default-textarea {
 }
 
 .refresh-list li {
-  padding: 2px 3px;
-  white-space: nowrap;
+    padding: 2px 3px;
+    white-space: nowrap;
 }
 
 .refresh-list li:hover {
@@ -2664,7 +2664,7 @@ textarea.default-textarea {
 }
 
 .refresh-list.show {
-  display: block;
+    display: block;
 }
 
 /* broker_stat */
@@ -2778,12 +2778,12 @@ ul.module_list {
 
 /* Generation page */
 .consoleSteps {
-  width: 15%;
+    width: 15%;
 }
 
 #progress_bar {
-  width: 120px;
-  height: 12px;
+    width: 120px;
+    height: 12px;
 }
 
 .ui-progressbar-value {
@@ -2791,15 +2791,15 @@ ul.module_list {
 }
 
 .section-expand {
-  height: 95%;
-  margin-bottom: 20px;
+    height: 95%;
+    margin-bottom: 20px;
 }
 
 /* Inline checkbox */
 .checkbox-inline {
-  display: inline-block;
-  white-space: nowrap;
-  margin-right: 10px;
+    display: inline-block;
+    white-space: nowrap;
+    margin-right: 10px;
 }
 
 #installationContent .accordion {
@@ -2814,7 +2814,7 @@ ul.module_list {
 }
 
 #contentwrapper div.section {
-  padding: 0 10px;
+    padding: 0 10px;
 }
 
 #contentwrapper > div:not(:nth-child(2)) div.section {
@@ -2850,7 +2850,7 @@ ul.module_list {
 
 /* configuration pollers action buttons */
 .ui-icon-white {
-  background-image: url("./jquery-ui/images/ui-icons_ffffff_256x240.png") !important;
+    background-image: url("./jquery-ui/images/ui-icons_ffffff_256x240.png") !important;
 }
 
 .bt-poller-action{
