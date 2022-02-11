@@ -1037,7 +1037,6 @@ if ($form->validate() && $from_list_menu == false) {
         }
     }
     $action = $form->getSubmitValue("action");
-    var_dump($action);
     if ($action !== null && !$action["action"]["action"]) {
         $o = SERVICE_TEMPLATE_WATCH;
     } else {
