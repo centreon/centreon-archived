@@ -212,7 +212,7 @@ const ServiceStatusCounter = (): JSX.Element => {
                 link: okServicesLink,
               })}
             >
-              <StatusCounter count={data.ok} severityCode={SeverityCode.Ok} />
+              <StatusCounter  count={data.ok} severityCode={SeverityCode.Ok} />
             </Link>
             <IconToggleSubmenu
               iconType="arrow"
