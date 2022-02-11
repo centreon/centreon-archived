@@ -176,7 +176,7 @@ const UserMenu = ({ allowedPages }: StateToProps): JSX.Element => {
 
   React.useEffect(() => {
     window.addEventListener('mousedown', handleClick, false);
-    loaduserData();
+    loadUserData();
 
     return (): void => {
       window.removeEventListener('mousedown', handleClick, false);
