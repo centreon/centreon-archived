@@ -9,6 +9,8 @@ export interface LoginFormValues {
 }
 
 export interface Redirect {
+  passwordIsExpired: boolean;
+  passwordRemainingTime: number;
   redirectUri: string;
 }
 

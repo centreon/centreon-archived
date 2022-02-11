@@ -4,10 +4,14 @@ import { PlatformVersions, Redirect } from '../models';
 
 export const redirectDecoder = JsonDecoder.object<Redirect>(
   {
+    passwordIsExpired: JsonDecoder.boolean,
+    passwordRemainingTime: JsonDecoder.number,
     redirectUri: JsonDecoder.string,
   },
   'Redirect Decoder',
   {
+    passwordIsExpired: 'password_is_expired',
+    passwordRemainingTime: 'password_remaining_time',
     redirectUri: 'redirect_uri',
   },
 );
