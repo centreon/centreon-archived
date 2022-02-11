@@ -26,7 +26,7 @@ namespace Core\Application\Security\UseCase\LoginSession;
 class LoginSessionResponse
 {
     /**
-     * @var int
+     * @var string
      */
     public string $redirectionUri;
 

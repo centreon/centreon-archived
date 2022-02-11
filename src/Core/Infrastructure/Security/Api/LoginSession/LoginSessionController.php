@@ -45,7 +45,7 @@ class LoginSessionController extends AbstractController
      * @param LoginSession $loginSession
      * @param string $providerConfigurationName
      * @param AuthenticateResponse $response
-     * @return View
+     * @return Response
      */
     public function __invoke(
         Request $request,
@@ -62,6 +62,7 @@ class LoginSessionController extends AbstractController
         try {
             $loginSession($presenter, $loginSessionRequest);
         } catch (AuthenticationException $e) {
+            /*
             return $this->view(
                 [
                     "code" => Response::HTTP_UNAUTHORIZED,
@@ -70,6 +71,7 @@ class LoginSessionController extends AbstractController
                 ],
                 Response::HTTP_UNAUTHORIZED
             );
+            */
         }
 
         $presenter->setResponseHeaders(

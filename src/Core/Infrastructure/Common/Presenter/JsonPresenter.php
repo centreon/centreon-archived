@@ -42,7 +42,7 @@ class JsonPresenter implements PresenterFormatterInterface
     private mixed $data;
 
     /**
-     * @var array<string,mixed> $headers
+     * @var mixed[] $responseHeaders
      */
     private array $responseHeaders = [];
 
