@@ -12,7 +12,7 @@ security:
     firewalls:
         free:
             stateless: true
-            pattern: ^.*/api/(?:latest|beta|v[0-9]+|v[0-9]+\.[0-9]+)/platform/versions$
+            pattern: ^.*/api/(?:latest|beta|v[0-9]+|v[0-9]+\.[0-9]+)/platform/(?:versions|installation/status)$
             security: false
         authentication:
             pattern: ^.*(?<!administration)/authentication/providers/configurations(.*)$

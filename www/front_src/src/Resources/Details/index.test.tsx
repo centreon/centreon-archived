@@ -5,6 +5,7 @@ import axios from 'axios';
 import mockDate from 'mockdate';
 import userEvent from '@testing-library/user-event';
 import { Provider } from 'jotai';
+import { BrowserRouter } from 'react-router-dom';
 
 import {
   render,
@@ -124,6 +125,13 @@ const resourceServiceId = 1;
 const resourceServiceType = ResourceType.service;
 const resourceHostId = 1;
 const resourceHostType = 'host';
+const groups = [
+  {
+    configuration_uri: '/centreon/main.php?p=60102&o=c&hg_id=53',
+    id: 0,
+    name: 'Linux-servers',
+  },
+];
 
 const serviceDetailsUrlParameters = {
   id: 1,
@@ -199,7 +207,7 @@ const retrievedDetails = {
   execution_time: 0.070906,
   flapping: true,
   fqdn: 'central.centreon.com',
-  groups: [{ id: 0, name: 'Linux-servers', uuid: '' }],
+  groups,
   id: resourceServiceId,
   information:
     'OK - 127.0.0.1 rta 0.100ms lost 0%\n OK - 127.0.0.1 rta 0.99ms lost 0%\n OK - 127.0.0.1 rta 0.98ms lost 0%\n OK - 127.0.0.1 rta 0.97ms lost 0%',
@@ -503,9 +511,11 @@ const DetailsTest = (): JSX.Element => {
   } as ResourceContext;
 
   return (
-    <Context.Provider value={context}>
-      <Details />
-    </Context.Provider>
+    <BrowserRouter>
+      <Context.Provider value={context}>
+        <Details />
+      </Context.Provider>
+    </BrowserRouter>
   );
 };
 
@@ -1505,13 +1515,14 @@ describe(Details, () => {
       },
     ]);
 
-    const { getByText } = renderDetails();
+    const { getByLabelText } = renderDetails();
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalled();
     });
 
-    userEvent.click(getByText('Linux-servers').parentElement as HTMLElement);
+    userEvent.hover(getByLabelText('Linux-servers Chip'));
+    userEvent.click(getByLabelText('Linux-servers Filter'));
 
     await waitFor(() => {
       expect(context.getCriteriaValue?.(CriteriaNames.serviceGroups)).toEqual([
