@@ -29,15 +29,18 @@
     --color-white-smack : #f1f1f1;
     --color-white-lilac : #e7e7e8;
     --color-mauve :#cc99ff;
-    --color-dark-tangerine : #ff9a13;
     --color-dark-goldenrod : #ae9500;
-    --color-turquoise : #2AD1D4;
     --color-sapphire: #09225c;
     --color-pale-turquoise: #cfedf9;
-    --color-sahara : #AA9C24;
+    --color-malibu: #4dcaff;
+    --color-wild-sand: #f4f4f4;
+    --color-ultramarine: #10069F;
+    --color-torch-red: #f90026;
+    --color-robins-egg-blue: #00ccbf;
     --color-white-rgba-8 :rgba(240, 240, 240, 0.8);
     --color-black-rgba-54 :rgba(0, 0, 0, 0.54);
     --color-black-rgba-1 :rgba(0, 0, 0, 0.1);
     --color-black-rgba-26: rgba(0, 0, 0, 0.26);
+    --color-astral-rgb: rgb(51, 122, 183);
     /******************/
 }
