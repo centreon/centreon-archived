@@ -163,7 +163,7 @@ const UserMenu = ({ allowedPages }: StateToProps): JSX.Element => {
       setCopied(true);
       setTimeout(() => {
         setCopied(false);
-      }, 7000);
+      }, 700);
     }
   };
 
