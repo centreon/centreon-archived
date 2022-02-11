@@ -752,6 +752,10 @@ paths:
                     type: boolean
                     description: Indicates if user wants to use deprecated monitoring pages
                     example: false
+                  theme:
+                    type: string
+                    description: Selected theme of the current user
+                    example: light
         '403':
           $ref: '#/components/responses/Forbidden'
         '500':
