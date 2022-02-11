@@ -75,8 +75,8 @@ class TopologyRepository extends ServiceEntityRepository
     /**
      * Get Topologies according to ACL for user
      * @todo refactor this into function below it
-     * @return array<mixed>
      * @param mixed $user
+     * @return mixed[]
      */
     public function getReactTopologiesPerUserWithAcl($user)
     {
