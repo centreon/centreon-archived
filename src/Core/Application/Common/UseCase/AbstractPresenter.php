@@ -50,6 +50,7 @@ abstract class AbstractPresenter implements PresenterInterface
         if ($this->getResponseStatus() !== null) {
             $this->presenterFormatter->present($this->getResponseStatus());
         }
+
         return $this->presenterFormatter->show();
     }
 
@@ -67,5 +68,21 @@ abstract class AbstractPresenter implements PresenterInterface
     public function getResponseStatus(): ?ResponseStatusInterface
     {
         return $this->responseStatus;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setResponseHeaders(array $responseHeaders): void
+    {
+        $this->presenterFormatter->setResponseHeaders($responseHeaders);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getResponseHeaders(): array
+    {
+        return $this->presenterFormatter->getResponseHeaders();
     }
 }

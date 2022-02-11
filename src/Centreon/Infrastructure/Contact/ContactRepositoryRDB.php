@@ -54,8 +54,8 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
     public function findById(int $contactId): ?Contact
     {
         $request = $this->translateDbName(
-            'SELECT contact.*, cp.password AS contact_passwd, t.topology_url,
-            t.topology_url_opt, t.is_react, t.topology_id, tz.timezone_name
+            'SELECT contact.*, cp.password AS contact_passwd, cp.creation_date AS password_creation_date,
+            t.topology_url, t.topology_url_opt, t.is_react, t.topology_id, tz.timezone_name
             FROM `:db`.contact
             LEFT JOIN `:db`.contact_password cp
                 ON cp.contact_id = contact.contact_id

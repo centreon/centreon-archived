@@ -39,6 +39,16 @@ interface PresenterInterface
     public function getResponseStatus(): ?ResponseStatusInterface;
 
     /**
+     * @param array<string,mixed> $responseHeaders
+     */
+    public function setResponseHeaders(array $responseHeaders): void;
+
+    /**
+     * @return array<string,mixed>
+     */
+    public function getResponseHeaders(): array;
+
+    /**
      * @return Response
      */
     public function show(): Response;

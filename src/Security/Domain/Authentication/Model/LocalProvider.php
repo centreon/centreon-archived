@@ -22,6 +22,8 @@ declare(strict_types=1);
 
 namespace Security\Domain\Authentication\Model;
 
+use Core\Domain\Security\Authentication\AuthenticationException;
+use Core\Domain\Security\Authentication\PasswordExpiredException;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
 use Centreon\Domain\Log\LoggerTrait;
@@ -38,11 +40,6 @@ class LocalProvider implements ProviderInterface
     use LoggerTrait;
 
     public const NAME = 'local';
-
-    /**
-     * @var boolean
-     */
-    private $isAuthenticated;
 
     /**
      * @var int
@@ -101,7 +98,7 @@ class LocalProvider implements ProviderInterface
     /**
      * @inheritDoc
      */
-    public function authenticate(array $credentials): void
+    public function authenticateOrFail(array $credentials): void
     {
         global $pearDB;
         $pearDB = $this->dependencyInjector['configuration_db'];
@@ -117,6 +114,7 @@ class LocalProvider implements ProviderInterface
             \CentreonAuth::ENCRYPT_MD5,
             ""
         );
+
         $this->debug(
             '[LOCAL PROVIDER] local provider trying to authenticate using legacy Authentication',
             [
@@ -132,16 +130,36 @@ class LocalProvider implements ProviderInterface
                 ];
             }
         );
+
+        if (
+            $auth->userInfos["contact_auth_type"] === \CentreonAuth::AUTH_TYPE_LOCAL
+            && $auth->userInfos !== null
+            && $this->contactService->isPasswordExpired((int) $auth->userInfos['contact_id'])
+        ) {
+            $this->info(
+                '[LOCAL PROVIDER] password expired',
+                [
+                    'contact_id' => $auth->userInfos['contact_id'],
+                ],
+            );
+            throw PasswordExpiredException::passwordIsExpired();
+        }
+
         if ($auth->passwdOk === 1) {
             if ($auth->userInfos !== null) {
                 $this->contactId = (int) $auth->userInfos['contact_id'];
                 $this->setLegacySession(new \Centreon($auth->userInfos));
             }
-            $this->isAuthenticated = true;
             $this->info('[LOCAL PROVIDER] authentication succeed');
         } else {
-            $this->isAuthenticated = false;
-            $this->info('[LOCAL PROVIDER] authentication failed');
+            $this->critical(
+                "Local provider cannot authenticate successfully user",
+                [
+                    "provider_name" => $this->getName(),
+                    "user" => $credentials['login']
+                ]
+            );
+            throw AuthenticationException::notAuthenticated();
         }
     }
 
@@ -212,14 +230,6 @@ class LocalProvider implements ProviderInterface
     public function canRefreshToken(): bool
     {
         return false;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function isAuthenticated(): bool
-    {
-        return $this->isAuthenticated;
     }
 
     /**

@@ -18,31 +18,27 @@
  * For more information : contact@centreon.com
  *
  */
+
 declare(strict_types=1);
 
-namespace Core\Infrastructure\Common\Presenter;
+namespace Core\Application\Common\UseCase;
 
-use Symfony\Component\HttpFoundation\Response;
+use Core\Application\Common\UseCase\ResponseStatusInterface;
 
-interface PresenterFormatterInterface
+class UnauthorizedResponse implements ResponseStatusInterface
 {
     /**
-     * @param array<string,mixed> $responseHeaders
+     * @param string $message
      */
-    public function setResponseHeaders(array $responseHeaders): void;
+    public function __construct(private string $message)
+    {
+    }
 
     /**
-     * @return array<string,mixed>
+     * @inheritDoc
      */
-    public function getResponseHeaders(): array;
-
-    /**
-     * @param mixed $data
-     */
-    public function present(mixed $data): void;
-
-    /**
-     * @return Response
-     */
-    public function show(): Response;
+    public function getMessage(): string
+    {
+        return _($this->message);
+    }
 }

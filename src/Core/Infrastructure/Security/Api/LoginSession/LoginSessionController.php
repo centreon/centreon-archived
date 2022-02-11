@@ -33,7 +33,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Centreon\Domain\Authentication\UseCase\Authenticate;
-use Centreon\Domain\Authentication\UseCase\AuthenticateRequest;
 use Centreon\Domain\Authentication\UseCase\AuthenticateResponse;
 use Centreon\Domain\Authentication\Exception\AuthenticationException;
 use JsonSchema\Validator;
@@ -41,20 +40,6 @@ use JsonSchema\Constraints\Constraint;
 
 class LoginSessionController extends AbstractController
 {
-    private const INVALID_CREDENTIALS_MESSAGE = 'Invalid credentials';
-
-    /*
-    public function __invoke(
-        LogoutSession $useCase,
-        Request $request,
-        LogoutSessionPresenterInterface $presenter,
-    ): object {
-        $useCase($request->cookies->get('PHPSESSID'), $presenter);
-
-        return $presenter->show();
-    }
-    */
-
     /**
      * @param Request $request
      * @param LoginSession $loginSession
@@ -80,22 +65,20 @@ class LoginSessionController extends AbstractController
             return $this->view(
                 [
                     "code" => Response::HTTP_UNAUTHORIZED,
-                    "message" => _(self::INVALID_CREDENTIALS_MESSAGE),
+                    "message" => $e->getMessage(),
                     "password_is_expired" => true,
                 ],
                 Response::HTTP_UNAUTHORIZED
             );
         }
 
-        return $presenter->show();
-
-        return $this->view(
-            $response->getRedirectionUriApi(),
-            Response::HTTP_OK,
+        $presenter->setResponseHeaders(
             [
-                Cookie::create('PHPSESSID', $session->getId())
-            ]
+                Cookie::create('PHPSESSID', $session->getId()),
+            ],
         );
+
+        return $presenter->show();
     }
 
     /**

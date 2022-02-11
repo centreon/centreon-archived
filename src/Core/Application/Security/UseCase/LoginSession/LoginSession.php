@@ -23,8 +23,11 @@ declare(strict_types=1);
 namespace Core\Application\Security\UseCase\LoginSession;
 
 use Core\Application\Common\UseCase\ErrorResponse;
+use Core\Application\Common\UseCase\UnauthorizedResponse;
 use Core\Application\Common\UseCase\NoContentResponse;
-use Centreon\Domain\Authentication\Exception\AuthenticationException;
+use Centreon\Domain\Authentication\Exception\AuthenticationException as LegacyAuthenticationException;
+use Core\Domain\Security\Authentication\AuthenticationException;
+use Core\Domain\Security\Authentication\PasswordExpiredException;
 use Centreon\Domain\Log\LoggerTrait;
 
 use Centreon;
@@ -67,13 +70,13 @@ class LoginSession
         private MenuServiceInterface $menuService,
         private AuthenticationRepositoryInterface $authenticationRepository,
         private SessionRepositoryInterface $sessionRepository,
-        private DataStorageEngineInterface $dataStorageEngine
+        private DataStorageEngineInterface $dataStorageEngine,
     ) {
     }
 
     /**
-     * @param mixed $token
      * @param LoginSessionPresenterInterface $presenter
+     * @param LoginSessionRequest $request
      */
     public function __invoke(
         LoginSessionPresenterInterface $presenter,
@@ -81,39 +84,49 @@ class LoginSession
     ): void {
         $this->info('Processing session login...');
 
-        $this->authorizeUserToAuthenticateOrFail($request->login);
+        try {
+            $this->authorizeUserToAuthenticateOrFail($request->login);
 
-        $authenticationProvider = $this->findProviderOrFail($request->providerConfigurationName);
-        $this->authenticateOrFail($authenticationProvider, $request);
-        $providerUser = $this->getUserFromProviderOrFail($authenticationProvider);
+            $authenticationProvider = $this->findProviderOrFail($request->providerConfigurationName);
+            $this->authenticateOrFail($authenticationProvider, $request);
 
-        if (!$this->contactService->exists($providerUser)) {
-            $this->createUserOrFail($authenticationProvider, $providerUser);
-        } else {
-            $this->contactService->updateUser($providerUser);
-        }
-        $this->startLegacySession($authenticationProvider->getLegacySession());
+            $providerUser = $this->getUserFromProviderOrFail($authenticationProvider);
 
-        /**
-         * Search for an already existing and available authentications token.
-         * Create a new one if no one are found.
-         */
-        $authenticationTokens = $this->authenticationService->findAuthenticationTokensByToken(
-            $this->requestStack->getCurrentRequest()->getSession()->getId()
-        );
-        if ($authenticationTokens === null) {
-            $this->createAuthenticationTokens(
-                $this->requestStack->getCurrentRequest()->getSession()->getId(),
-                $authenticationProvider->getConfiguration()->getName(),
-                $providerUser,
-                $authenticationProvider->getProviderToken(
-                    $this->requestStack->getCurrentRequest()->getSession()->getId()
-                ),
-                $authenticationProvider->getProviderRefreshToken(
-                    $this->requestStack->getCurrentRequest()->getSession()->getId()
-                ),
-                $request->clientIp
+            if (!$this->contactService->exists($providerUser)) {
+                $this->createUserOrFail($authenticationProvider, $providerUser);
+            } else {
+                $this->contactService->updateUser($providerUser);
+            }
+
+            $this->startLegacySession($authenticationProvider->getLegacySession());
+
+            /**
+             * Search for an already existing and available authentications token.
+             * Create a new one if no one are found.
+             */
+            $authenticationTokens = $this->authenticationService->findAuthenticationTokensByToken(
+                $this->requestStack->getCurrentRequest()->getSession()->getId()
             );
+            if ($authenticationTokens === null) {
+                $this->createAuthenticationTokens(
+                    $this->requestStack->getCurrentRequest()->getSession()->getId(),
+                    $authenticationProvider->getConfiguration()->getName(),
+                    $providerUser,
+                    $authenticationProvider->getProviderToken(
+                        $this->requestStack->getCurrentRequest()->getSession()->getId()
+                    ),
+                    $authenticationProvider->getProviderRefreshToken(
+                        $this->requestStack->getCurrentRequest()->getSession()->getId()
+                    ),
+                    $request->clientIp
+                );
+            }
+        } catch (PasswordExpiredException $e) {
+            $presenter->setResponseStatus(new UnauthorizedResponse($e->getMessage()));
+            return;
+        } catch (AuthenticationException $e) {
+            $presenter->setResponseStatus(new UnauthorizedResponse($e->getMessage()));
+            return;
         }
 
         $this->debug(
@@ -150,7 +163,7 @@ class LoginSession
      * Check if user is allowed to authenticate or throw an Exception.
      *
      * @param string $userName
-     * @throws AuthenticationException
+     * @throws LegacyAuthenticationException
      */
     private function authorizeUserToAuthenticateOrFail(string $userName): void
     {
@@ -175,7 +188,7 @@ class LoginSession
                     'user' => $userName
                 ]
             );
-            throw AuthenticationException::notAllowedToReachWebApplication();
+            throw LegacyAuthenticationException::notAllowedToReachWebApplication();
         }
     }
 
@@ -210,7 +223,7 @@ class LoginSession
      *
      * @param ProviderInterface $authenticationProvider
      * @param LoginSessionRequest $request
-     * @throws AuthenticationException
+     * @throws LegacyAuthenticationException
      */
     private function authenticateOrFail(ProviderInterface $authenticationProvider, LoginSessionRequest $request): void
     {
@@ -221,21 +234,11 @@ class LoginSession
             '[AUTHENTICATE] Authentication using provider',
             ['provider_name' => $request->providerConfigurationName]
         );
-        $authenticationProvider->authenticate([
+
+        $authenticationProvider->authenticateOrFail([
             'login' => $request->login,
             'password' => $request->password
         ]);
-
-        if (!$authenticationProvider->isAuthenticated()) {
-            $this->critical(
-                "[AUTHENTICATE] Provider can't authenticate successfully user",
-                [
-                    "provider_name" => $authenticationProvider->getName(),
-                    "user" => $request->login
-                ]
-            );
-            throw AuthenticationException::notAuthenticated();
-        }
     }
 
     /**
@@ -243,7 +246,7 @@ class LoginSession
      *
      * @param ProviderInterface $authenticationProvider
      * @return ContactInterface
-     * @throws AuthenticationException
+     * @throws LegacyAuthenticationException
      */
     private function getUserFromProviderOrFail(ProviderInterface $authenticationProvider): ContactInterface
     {
@@ -254,7 +257,7 @@ class LoginSession
                 '[AUTHENTICATE] No contact could be found from provider',
                 ['provider_name' => $authenticationProvider->getConfiguration()->getName()]
             );
-            throw AuthenticationException::userNotFound();
+            throw LegacyAuthenticationException::userNotFound();
         }
 
         return $providerUser;
@@ -265,7 +268,7 @@ class LoginSession
      *
      * @param ProviderInterface $authenticationProvider
      * @param ContactInterface $providerUser
-     * @throws AuthenticationException
+     * @throws LegacyAuthenticationException
      */
     private function createUserOrFail(ProviderInterface $authenticationProvider, ContactInterface $providerUser): void
     {
@@ -276,7 +279,7 @@ class LoginSession
             );
             $this->contactService->addUser($providerUser);
         } else {
-            throw AuthenticationException::userNotFoundAndCannotBeCreated();
+            throw LegacyAuthenticationException::userNotFoundAndCannotBeCreated();
         }
     }
 
@@ -284,7 +287,7 @@ class LoginSession
      * Start the Centreon session.
      *
      * @param Centreon $legacySession
-     * @throws AuthenticationException
+     * @throws LegacyAuthenticationException
      */
     private function startLegacySession(Centreon $legacySession): void
     {
@@ -421,7 +424,7 @@ class LoginSession
             if (!$isAlreadyInTransaction) {
                 $this->dataStorageEngine->rollbackTransaction();
             }
-            throw AuthenticationException::addAuthenticationToken($ex);
+            throw LegacyAuthenticationException::addAuthenticationToken($ex);
         }
     }
 }

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,29 +20,15 @@
  */
 declare(strict_types=1);
 
-namespace Core\Infrastructure\Common\Presenter;
+namespace Core\Domain\Security\Authentication;
 
-use Symfony\Component\HttpFoundation\Response;
-
-interface PresenterFormatterInterface
+class PasswordExpiredException extends AuthenticationException
 {
     /**
-     * @param array<string,mixed> $responseHeaders
+     * @return self
      */
-    public function setResponseHeaders(array $responseHeaders): void;
-
-    /**
-     * @return array<string,mixed>
-     */
-    public function getResponseHeaders(): array;
-
-    /**
-     * @param mixed $data
-     */
-    public function present(mixed $data): void;
-
-    /**
-     * @return Response
-     */
-    public function show(): Response;
+    public static function passwordIsExpired(): self
+    {
+        return new self(_('Password is expired'));
+    }
 }

@@ -56,9 +56,9 @@ interface ContactInterface
      * Allow user or not to reach web application.
      *
      * @param bool $isAllowed
-     * @return self
+     * @return static
      */
-    public function setAllowedToReachWeb(bool $isAllowed): self;
+    public function setAllowedToReachWeb(bool $isAllowed): static;
 
     /**
      * Contact name.
@@ -150,5 +150,5 @@ interface ContactInterface
      * @param Page|null $defaultPage
      * @return self
      */
-    public function setDefaultPage(?Page $defaultPage): self;
+    public function setDefaultPage(?Page $defaultPage): static;
 }
