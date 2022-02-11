@@ -162,9 +162,8 @@ const PollerMenu = (): JSX.Element => {
           <PollerStatusIcon issues={issues} />
 
           <IconToggleSubmenu
-            ariaLabel="submenu-poller-active"
             cursor="pointer"
-            data-testid="submenu-poller-active"
+            data-testid="submenu-poller"
             iconType="arrow"
             rotate={toggled}
             onClick={toggleDetailedView}
@@ -206,7 +205,7 @@ const PollerMenu = (): JSX.Element => {
               <Paper className={classes.confButton}>
                 <Button
                   fullWidth
-                  data-testid={t(labelConfigurePollers)}
+                  data-testid={labelConfigurePollers}
                   size="small"
                   onClick={redirectToPollerConfiguration}
                 >

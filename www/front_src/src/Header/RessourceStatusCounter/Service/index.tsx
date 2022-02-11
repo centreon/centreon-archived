@@ -215,8 +215,7 @@ const ServiceStatusCounter = (): JSX.Element => {
               <StatusCounter count={data.ok} severityCode={SeverityCode.Ok} />
             </Link>
             <IconToggleSubmenu
-              ariaLabel="submenu-service-active"
-              data-testid="submenu-service-active"
+              data-testid="submenu-service"
               iconType="arrow"
               rotate={toggled}
               onClick={toggleDetailedView}
