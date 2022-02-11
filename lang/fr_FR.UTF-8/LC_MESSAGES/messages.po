@@ -16518,3 +16518,9 @@ msgstr "Relations de rôle"
 
 msgid "Linked to Roles"
 msgstr "Lié aux rôles"
+
+msgid "Error on reading host macros (Reason: %s)"
+msgstr "Erreur lors de la lecture des macros de l'hôte (Raison : %s)"
+
+msgid "Error on updating a host macro (Reason: %s)"
+msgstr "Erreur lors de la mise à jour d'une macro d'hôte (Raison : %s)"
