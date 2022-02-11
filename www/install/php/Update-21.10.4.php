@@ -85,7 +85,7 @@ function cleanDuplicateHostMacros(
         $loop[$hostId] = 1;
 
         foreach ($macros as $macroName => $macro) {
-            if (isset($macro['checked']) && $macro['checked'] == 1) {
+            if (isset($macro['checked']) && $macro['checked'] === 1) {
                 continue;
             }
 
