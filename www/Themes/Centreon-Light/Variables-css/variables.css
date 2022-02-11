@@ -623,7 +623,7 @@
     --md-preview-blockquote-font-color: #555;
     /* ------ END : Markdown css variables -----*/
     /* ------ START : JQuery UI variables -----*/
-    --ui-selectable-helper-border-color: #black;
+    --ui-selectable-helper-border-color: var(--color-black);
     --ui-icon-background-box-shadow-color: #ccc;
     --ui-icon-background-border-color: none;
     --ui-spinner-input-background-color: none;
