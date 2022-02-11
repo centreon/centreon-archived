@@ -2,7 +2,7 @@
 
 :root {
     /* Style.css variables */
-    --color-checkbox-disabled-border-rgba: rgba(0, 0, 0, 0.26);
+    --color-checkbox-disabled-border-rgba: var(--color-black-rgba-26);
     --color-checkbox-checked-border-: var(--color-white);
     --color-checkbox-disabled-checked: var(--color-checkbox-disabled-border-rgba);
     --color-checkbox-disabled-checked-label-green: var(--color-success);
@@ -13,17 +13,17 @@
 
     /** Body color **/
     --body-background: var(--color-white);
-    --body-color:#555;
+    --body-color:var(--color-martar);
     /*****************/
 
     /** Text aria color **/
-    --textarea-border-color: #BBBBBB ;
+    --textarea-border-color: var(--color-silver);
     /*********************/
 
     /** Select color **/
-    --select-border-color: #bcbdc0;
+    --select-border-color: var(--color-ghost);
     --select-background: var(--color-white);
-    --select-color : #444;
+    --select-color : var(--color-charcoal);
     /******************/
 
     /** Input checkbox **/
@@ -34,169 +34,169 @@
     --md-checkbox-background : var(--color-white) ;
     --md-checkbox--disabled-border-color-before : var(--color-black-rgba);
     --md-checkbox--disabled-checked-background-color-before  : var(--color-black-rgba);
-    --md-check-input-disabled-checked-before:  #88b917;
-    --md-checkbox-checked-label-before-background-color: rgb(51, 122, 183);
+    --md-check-input-disabled-checked-before:  var(--color-success);
+    --md-checkbox-checked-label-before-background-color: var(--color-astral-rgb);
     --md-checkbox-border-color-after: var(--color-white);
     /*********************/
 
     /** Radio button **/
-    --md-radio-checked-backgroud-color:  rgb(51, 122, 183);
-    --md-radio-kabel-color:  rgb(51, 122, 183);
-    --md-radio-input-checked-label-before-border-color : #337ab7 ;
-    --md-radio-label-before-border-color : rgba(0, 0, 0, 0.54);
-    --md-radio-label-after-background : #337ab7;
+    --md-radio-checked-backgroud-color:  var(--color-astral-rgb);
+    --md-radio-kabel-color:  var(--color-astral-rgb);
+    --md-radio-input-checked-label-before-border-color: var(--color-curious-blue);
+    --md-radio-label-before-border-color : var(--color-black-rgba-54);
+    --md-radio-label-after-background : var(--color-curious-blue);
     /******************/
 
     /** select **/
-    --select-background-color : #ffffff;
+    --select-background-color : var(--color-white);
     --option-color :  var(--select-color);
     /***********/
 
     /** HR **/
-    --hr-background-color : #CCC;
+    --hr-background-color : var(--color-very-light-grey);
     /*******/
 
     /** P **/
-    --p-color-description-color : #a7a9ac ;
-    --p-description-a-visited-color : #4ccaff ;
+    --p-color-description-color : var(--color-grey-chateau);
+    --p-description-a-visited-color : var(--color-maya-blue);
     /******/
 
     /** Wrappers **/
-    --center-box-border-color : #d1d2d4;
+    --center-box-border-color : var(--color-iron);
     --border-radius-border-color : var(--center-box-border-color);
     /*************/
 
     /** Slider **/
-    --rotation-timer-background-color : #f1f1f1;
-    --rotation-timer-border-color : #bcbdc0;
-    --ui-silder-handle-background-color :#bcbdc0;
-    --ui-silder-handle-border-color : #a7a9ac;
-    --timer-value-color : #00bfb3;
+    --rotation-timer-background-color : var(--color-white-smack);
+    --rotation-timer-border-color : var(--color-ghost);
+    --ui-silder-handle-background-color :var(--color-ghost);
+    --ui-silder-handle-border-color : var(--color-grey-chateau);
+    --timer-value-color : var(--color-iris-blue);
     /*************/
 
     /** Select 2 **/
-    --select2-container-selection-background-color : #fff;
-    --select2-container-selection-border-color : #bbb;
-    --select2-selection-choice-remove-background-color : #0072ce;
-    --select2-selection-multiple-color : #fff;
-    --select2-selection-multiple-border-color : #4dcaff;
+    --select2-container-selection-background-color : var(--color-white);
+    --select2-container-selection-border-color : var(--color-silver);
+    --select2-selection-choice-remove-background-color : var(--color-navy-bleu);
+    --select2-selection-multiple-color : var(--color-white);
+    --select2-selection-multiple-border-color : var(--color-malibu);
     --select2-selection-multiple-content-border-color-top : var(--select2-selection-multiple-border-color);
     --select2-selection-multiple-content-border-color-bottom : var(--select2-selection-multiple-border-color);
     --select2-selection-multiple-content-border-color-right : var(--select2-selection-multiple-border-color);
-    --select2-selection-multiple-content-color : #0072ce;
-    --select2-selection-multiple-content-background-color : #bfecff;
-    --select2-results-option-highlighted-background-color : #0072ce;
-    --select2-results-option-highlighted-color : #000000;
-    --select2-results-option-highlighted-color-aria-selected : #bfecff;
-    --selected2-results-header-background-color : #f4f4f4;
-    --selected2-results-header-border-bottom-color :#e7e7e8;
-    --select2-results-header-color : #009fdf;
+    --select2-selection-multiple-content-color : var(--color-navy-bleu);
+    --select2-selection-multiple-content-background-color : var(--color-columbia-blue);
+    --select2-results-option-highlighted-background-color : var(--color-navy-bleu);
+    --select2-results-option-highlighted-color : var(--color-black);
+    --select2-results-option-highlighted-color-aria-selected : var(--color-columbia-blue);
+    --selected2-results-header-background-color : var(--color-wild-sand);
+    --selected2-results-header-border-bottom-color :var(--color-white-lilac);
+    --select2-results-header-color : var(--color-pasific-bleu);
     /**************/
 
     /** Tooltip **/
-    --WzTtDi-border-color : #d1d2d4;
-    --WzTtDi-background-color : #fff;
-    --WzTiTl-background-color : #fff;
-    --WzClOsE-color : #e00b3d;
-    --WzClOsE-background-color : #fff;
-    --WzClOsE-border-color : #e00b3d;
-    --WzBodyI-border-color : #555;
+    --WzTtDi-border-color : var(--color-iron);
+    --WzTtDi-background-color : var(--color-white);
+    --WzTiTl-background-color : var(--color-white);
+    --WzClOsE-color : var(--color-danger);
+    --WzClOsE-background-color : var(--color-white);
+    --WzClOsE-border-color : var(--color-danger);
+    --WzBodyI-border-color : var(--color-martar);
     /*************/
 
     /** START : Colors  **/
-    --red-color: #e00b3d;
+    --red-color: var(--color-danger);
     /********************/
 
     /** Badge **/
-    --badge-color: #fff;
-    --badge-a-color : #fff;
+    --badge-color: var(--color-white);
+    --badge-a-color : var(--color-white);
     /***********/
 
     /** States **/
-    --default-badge-background-color: #00a499;
-    --host-down-danger-service-critical-background-color : #e00b3d;
-    --host-unreachable-unknown-background-color: #818285;
-    --host-downtime-background-color : #cc99ff;
-    --service-ok-host-up-success-background-color: #88b917;
-    --service-warning-background-color: #ff9a13;
-    --pending-background-color :#2AD1D4;
-    --service-unknown-background-color: #bcbdc0;
-    --info-background-color:#00bfb3;
-    --ack-background-color : #AA9C24;
-    --bdg-dtm-before-background-color: #CC99FF;
-    --bdg-dtm-before-color :#fff;
-    --badge-downtime-background-color : #CC99FF;
-    --badge-undetermined :#D1D2D4;
+    --default-badge-background-color: var(--color-persian-green);
+    --host-down-danger-service-critical-background-color : var(--color-danger);
+    --host-unreachable-unknown-background-color: var(--color-aluminium);
+    --host-downtime-background-color : var(--color-mauve);
+    --service-ok-host-up-success-background-color: var(--color-success);
+    --service-warning-background-color: var(--color-warning);
+    --pending-background-color :var(--color-pending);
+    --service-unknown-background-color: var(--color-ghost);
+    --info-background-color:var(--color-iris-blue);
+    --ack-background-color : var(--color-ack);
+    --bdg-dtm-before-background-color: var(--color-mauve);
+    --bdg-dtm-before-color :var(--color-white);
+    --badge-downtime-background-color : var(--color-mauve);
+    --badge-undetermined :var(--color-iron);
     /***********/
 
     /** START : Buttons **/
-    --btc-color: #fff;
-    --a-btc-color : #fff;
-    --bt-default-background-color : #a7a9ac;
-    --bt-success-background-color : #10069F;
-    --bt-danger-background-color :#f90026;
-    --bt-info-background-color : #00bfb3;
-    --bt-warning-background-color :#ff9a13;
-    --bt-action-color-background-color : #00ccbf ;
-    --bt-action-color :#fff;
-    --bt-action-border-color :#00a499;
-    --bt-action-hover-background-color: #00a499;
-    --bt-action-hover-border-color: #007f77;
+    --btc-color: var(--color-white);
+    --a-btc-color : var(--color-white);
+    --bt-default-background-color : var(--color-grey-chateau);
+    --bt-success-background-color : var(--color-ultramarine);
+    --bt-danger-background-color: var(--color-torch-red);
+    --bt-info-background-color : var(--color-iris-blue);
+    --bt-warning-background-color :var(--color-warning);
+    --bt-action-color-background-color : var(--color-robins-egg-blue);
+    --bt-action-color :var(--color-white);
+    --bt-action-border-color :var(--color-persian-green);
+    --bt-action-hover-background-color: var(--color-persian-green);
+    --bt-action-hover-border-color: var(--color-surfie-green);
     --bt-default-ui-state-hover-background-color : #919294 ;
-    --bt-default-ui-state-hover-color : #fff;
+    --bt-default-ui-state-hover-color : var(--color-white);
     --bt-success-ui-state-hover-background-color:#77a115;
-    --bt-success-ui-state-hover-color:#fff;
+    --bt-success-ui-state-hover-color:var(--color-white);
 
     --bt-danger-ui-state-hover-background-color:#ca0a37;
-    --bt-danger-ui-state-hover-color:#fff;
+    --bt-danger-ui-state-hover-color:var(--color-white);
 
     --bt-info-ui-state-hover-background-color: #03a89e;
-    --bt-info-ui-state-hover-color:#fff;
+    --bt-info-ui-state-hover-color:var(--color-white);
 
     --bt-warning-ui-state-hover-background-color:#eb8e12;
-    --bt-warning-ui-state-hover-color:#fff;
-    --button-group-input-color:#fff;
+    --bt-warning-ui-state-hover-color:var(--color-white);
+    --button-group-input-color:var(--color-white);
     /***********************/
 
     /** START : Form **/
-    --input-submit-color : #fff;
+    --input-submit-color : var(--color-white);
     /******************/
 
     /** START : Header **/
-    --header-background-color : #e7e7e8;
+    --header-background-color : var(--color-white-lilac);
     /********************/
 
     /** START : Table **/
-    --list-table-small-border-color : #e7e7e8;
+    --list-table-small-border-color : var(--color-white-lilac);
     /*******************/
 
     /** START : Indicators **/
     --resume-light : #f6f6f7;
-    --resume-light-table-th-border-right : #e7e7e8;
-    --resume-light-table-td-span-color : #fff;
-    --resume-light-table-th-span-background-color : #00a499;
+    --resume-light-table-th-border-right : var(--color-white-lilac);
+    --resume-light-table-td-span-color : var(--color-white);
+    --resume-light-table-th-span-background-color : var(--color-persian-green);
     /************************/
 
     /** START : Menu **/
-    --main-nav-li-a-border-bottom: #fff;
-    --a-background-color :#fff;
+    --main-nav-li-a-border-bottom: var(--color-white);
+    --a-background-color :var(--color-white);
 
     /** Menu 1 **/
     --menu-1-background-color : #58585a ;
-    --menu-1-li-1-color : #e7e7e8;
-    --menu-1-li-a-hover-background-color : #818285;
+    --menu-1-li-1-color : var(--color-white-lilac);
+    --menu-1-li-a-hover-background-color : var(--color-aluminium);
     /************/
 
     /** Menu 2 **/
-    --menu-2-a-color : #e7e7e8;
-    --seperator-menu-2-color : #BBB;
+    --menu-2-a-color : var(--color-white-lilac);
+    --seperator-menu-2-color : var(--color-silver);
     /************/
 
     /** Menu 3 **/
-    --t-menu-3-background-color : #fff;
-    --title-menu-h4-color : #009fdf;
-    --title-menu-bottom-border-color : #a7a9ac;
-    --div-menu-left-background-color :  #FFF;
+    --t-menu-3-background-color : var(--color-white);
+    --title-menu-h4-color : var(--color-pasific-bleu);
+    --title-menu-bottom-border-color : var(--color-grey-chateau);
+    --div-menu-left-background-color :  var(--color-white);
     /************/
     --list-table-anchors-font-color: #666666;
     --list-table-border-color: #BFD0E2;
@@ -214,11 +214,11 @@
     --list-three-hover-background-color: #bada83;
     --list-four-background-color: #fdc11e;
     --list-four-hover-background-color: #bdc11e;
-    --list-up-background-color: #88b917;
+    --list-up-background-color: var(--color-success);
     --list-up-hover-background-color: #B2A867;
     --list-down-background-color: #ffaec1;
     --list-down-hover-background-color: #e17790;
-    --list-unreachable-background-color: #818285;
+    --list-unreachable-background-color: var(--color-aluminium);
     --list-unreachable-hover-background-color: var(--list-unreachable-background-color);
     --list-downtime-background-color: #f1dfff;
     --list-downtime-hover-background-color: #e7c9ff;
@@ -244,103 +244,103 @@
     --list-header-border-left-color: var(--list-header-border-top-color);
     --list-footer-border-color: #AAAAEE;
     --input-button-hover-font-color: var(--body-background);
-    --input-button-hover-background-color: #009FDF;
+    --input-button-hover-background-color: var(--color-pasific-bleu);
     --input-button-hover-border-color: var(--input-button-hover-background-color);
     --pagination-font-color: var(--body-background);
     --pagination-background-color: var(--list-table-border-color);
     --message-loading-font-color: #0000FF;
-    --message-is-loading-font-color: #fff;
+    --message-is-loading-font-color: var(--color-white);
     --message-is-loading-background-color: #ff0000;
     --toolbar-td-selectaction-top-anchor-font-color: #5E5E5E;
     --toolbar-td-selectaction-top-anchor-hover-font-color: #E8AB5C;
-    --toolbar-table-bottom-border-color: #009FDF;
+    --toolbar-table-bottom-border-color: var(--color-pasific-bleu);
     --a-b-border-color: var(--list-footer-border-color);
-    --header-tab-container-bottom-border-color: #009FDF;
-    --main-nav-list-background-color: #009FDF;
+    --header-tab-container-bottom-border-color: var(--color-pasific-bleu);
+    --main-nav-list-background-color: var(--color-pasific-bleu);
     --main-nav-list-border-color: var(--main-nav-list-background-color);
     --main-nav-list-a-anchor-font-color: var(--main-nav-list-background-color);
     --main-nav-list-b-anchor-font-color: #C1ECFF;
     --menu3-anchor-hover-font-color: #E8AB5C;
-    --menu3-background-color: #FFF;
-    --date-font-color: #bcbdc0;
+    --menu3-background-color: var(--color-white);
+    --date-font-color: var(--color-ghost);
     --detail-chart-title-background-color:#cfedf9;
 
     /* ------ START : info box variables -----*/
-    --info-box-border-color: #d1d2d4;
+    --info-box-border-color: var(--color-iron);
     --info-box-background-color: #f6f6f6;
-    --info-box-h4-font-color: #818285;
+    --info-box-h4-font-color: var(--color-aluminium);
     /* ------ END : info box variables -----*/
 
     /* ------ START : toggle wrapper variables -----*/
-    --toggle-wrapper-background-color: #fff;
-    --toggle-wrapper-border-color: #d1d2d4;
+    --toggle-wrapper-background-color: var(--color-white);
+    --toggle-wrapper-border-color: var(--color-iron);
     /* ------ END : toggle wrapper variables -----*/
 
     /* ------ START : form header variables -----*/
-    --table-form-header-font-color: #818285;
-    --table-form-header-bottom-border-color: #d1d2d4;
+    --table-form-header-font-color: var(--color-aluminium);
+    --table-form-header-bottom-border-color: var(--color-iron);
     /* ------ END : form header variables -----*/
 
     /* ------ START : Tabs variables -----*/
-    --tabs-header-top-border-color: #fff;
+    --tabs-header-top-border-color: var(--color-white);
     --tabs-header-right-border-color: var(--tabs-header-top-border-color);
     --tabs-header-left-border-color: var(--tabs-header-top-border-color);
     --global-view-ui-widget-content-border-color: none;
     --global-view-ui-widget-content-background-color: none;
     --global-view-ui-border-color: none;
-    --ui-background-color: #fff;
-    --ui-anchor-state-default-font-color: #ffffff;
-    --ui-anchor-state-active-visited-font-color: #00a499;
-    --global-view-ui-active-tabs-border-color: #00ccbf;
-    --view-body-portlet-border-color: #e7e7e8;
+    --ui-background-color: var(--color-white);
+    --ui-anchor-state-default-font-color: var(--color-white);
+    --ui-anchor-state-active-visited-font-color: var(--color-persian-green);
+    --global-view-ui-active-tabs-border-color: var(--color-robins-egg-blue);
+    --view-body-portlet-border-color: var(--color-white-lilac);
     --view-body-ui-widget-header-font-color: #433f38;
-    --view-body-ui-widget-header-background-color: #e7e7e8;
+    --view-body-ui-widget-header-background-color: var(--color-white-lilac);
     /* ------ END : Tabs variables -----*/
 
     /* ------ START : Forms variables ------ */
-    --form-table-list-header-background-color: #fff;
+    --form-table-list-header-background-color: var(--color-white);
     --form-table-list-header-border-bottom-color: none;
     --form-table-list-header-h3-font-color: #597f00;
-    --form-table-list-header-h4-font-color: #009fdf;
-    --form-table-list-lvl-1-background-color: #fff;
-    --form-table-list-lvl-1-col-name-background-color: #f4f4f4;
-    --form-table-list-lvl-1-col-name-border-bottom-color: #e7e7e8;
+    --form-table-list-header-h4-font-color: var(--color-pasific-bleu);
+    --form-table-list-lvl-1-background-color: var(--color-white);
+    --form-table-list-lvl-1-col-name-background-color: var(--color-wild-sand);
+    --form-table-list-lvl-1-col-name-border-bottom-color: var(--color-white-lilac);
     --form-table-list-lvl-1-col-name-border-top-color: var(--form-table-list-lvl-1-col-name-border-bottom-color);
     /* ------ END : Forms variables -----*/
 
     /* ------ START : Footer variables -----*/
-    --footer-background-color: #e7e7e8;
+    --footer-background-color: var(--color-white-lilac);
     --tactical-light-table-font-color: #454545;
     --log-out-font-color: #525252;
     --path-way-font-color: #5a5a5a;
-    --separator-font-color: #000000;
+    --separator-font-color: var(--color-black);
     --list-separator-background-color: #99CC55;
     /* ------ END : Footer variables -----*/
 
     /* ------ START : Pagination variables -----*/
-    --other-page-numbers-font-color: #4ccaff;
+    --other-page-numbers-font-color: var(--color-maya-blue);
     --current-page-number-font-color: #005a7f;
     --page-limit-font-backgound-color: #BFD0E2;
     --page-limit-border-color: #eff1f6;
-    --page-limit-font-color: #fff;
+    --page-limit-font-color: var(--color-white);
     /* ------ END : Pagination variables -----*/
 
     /* ------ START : Widget css variables -----*/
-    --manage-more-views-border-color: #009fdf;
+    --manage-more-views-border-color: var(--color-pasific-bleu);
     --manage-more-views-hover-border-color: #005a7f;
     /* ------ END : Widget css variables -----*/
 
     /* ------ START : Widget pagination variables -----*/
-    --widget-pagination-current-background-color: #009fdf;
-    --widget-pagination-current-font-color: #fff;
+    --widget-pagination-current-background-color: var(--color-pasific-bleu);
+    --widget-pagination-current-font-color: var(--color-white);
     --widget-pagination-current-border-color: var(--widget-pagination-current-background-color);
-    --widget-pagination-anchor-border-color: #009fdf;
+    --widget-pagination-anchor-border-color: var(--color-pasific-bleu);
     --widget-pagination-anchor-font-color: var(--widget-pagination-anchor-border-color);
     /* ------ END : Widget pagination variables -----*/
 
     /* ------ START : Warning variables -----*/
     --error-message-background-color: #ffe6ec;
-    --error-message-font-color: #e00b3d;
+    --error-message-font-color: var(--color-danger);
     --error-message-border-color: var(--error-message-font-color);
     --success-message-background-color: rgba(158, 199, 0, 0.49);
     --success-message-font-color: #597f00;
@@ -355,7 +355,7 @@
     --update-border-color: #FDC11E;
     --update-error-background-color: #fa6f6c;
     --update-error-border-color: #AEAEAE;
-    --update-read-me-output-background-color: #FFF;
+    --update-read-me-output-background-color: var(--color-white);
     --update-read-me-output-border-color: #AEAEAE;
     /* ------ END : Warning variables -----*/
 
@@ -367,7 +367,7 @@
     /* ------ END : Arbo ACL variables -----*/
 
     /* ------ START : Search options variables -----*/
-    --search-input-host-background-color: #FFFFFF;
+    --search-input-host-background-color: var(--color-white);
     --search-input-active-host-background-color: #F778A1;
     --search-input-service-background-color: var(--search-input-host-background-color);
     --search-input-active-service-background-color: var(--search-input-active-host-background-color);
@@ -378,36 +378,36 @@
     /* ------ START : Log options variables -----*/
     --ajax-option-background-color: #f9f9f9;
     --ajax-option-font-color: #666;
-    --ajax-option-border-bottom-color: #e7e7e8;
+    --ajax-option-border-bottom-color: var(--color-white-lilac);
     --ajax-option-border-top-color: var(--ajax-option-border-bottom-color);
-    --ajax-option-tr-first-child-background-color: #fff;
-    --ajax-option-tr-first-child-font-color: #a7a9ac;
-    --ajax-option-h4-font-color: #007f77;
+    --ajax-option-tr-first-child-background-color: var(--color-white);
+    --ajax-option-tr-first-child-font-color: var(--color-grey-chateau);
+    --ajax-option-h4-font-color: var(--color-surfie-green);
     /* ------ END : Log options variables -----*/
 
     /* ------ START : Tactical overview variables -----*/
     --sub-table-tactical-td-background-color: #E6E6E6;
     --sub-tactical-DT-background-color: #D9D9D9;
-    --sub-tactical-DT-border-color: #FFF;
+    --sub-tactical-DT-border-color: var(--color-white);
     --tactical-light-table-td-border-color: #AEAEAE;
     --tactical-light-header-background-color: #eaeaee;
     --tactical-light-header-font-color: #666;
     --tac-warn-background-color: #F8C706;
-    --tac-pb-background-color: #2AD1D4;
-    --host-service-stats-unhandeled-problems-border-color: #CCC;
+    --tac-pb-background-color: var(--color-pending);
+    --host-service-stats-unhandeled-problems-border-color: var(--color-very-light-grey);
     --tactikal-div-border-color: var(--host-service-stats-unhandeled-problems-border-color);
     /* ------ END : Tactical overview variables -----*/
 
     /* ------ START : Line alternate variables -----*/
     --row-disabled-background-color: #f0f0f1;
     --list-table-small-arg-anchor-font-color: #666;
-    --list-lvl-3-border-bottom-color: #fff;
-    --list-lvl-3-th-font-color: #818285;
+    --list-lvl-3-border-bottom-color: var(--color-white);
+    --list-lvl-3-th-font-color: var(--color-aluminium);
     /* ------ END : Line alternate variables -----*/
 
     /* ------ START : Info Bulles variables -----*/
     --warn-background-color: orange;
-    --warn-font-color: #FFF;
+    --warn-font-color: var(--color-white);
     --bulle-dash-tab-td-background-color: #e0e0ea;
     --warn-border-color: var(--warn-font-color);
     --bulle-dash-tab-td-border-color: var(--warn-font-color);
@@ -417,11 +417,11 @@
     /* ------ END : Info Bulles variables -----*/
 
     /* ------ START : Toolbar variables -----*/
-    --toolbar-td-select-top-action-border-color: #bcbdc0;
+    --toolbar-td-select-top-action-border-color: var(--color-ghost);
     --checkbox-anchor-info-bulle-hover-table-border-color: gray;
     --menu-3-logout-anchor-font-color: #666;
-    --image-volante-background-color: #ffffff;
-    --image-volante-border-color: #d1d2d4;
+    --image-volante-background-color: var(--color-white);
+    --image-volante-border-color: var(--color-iron);
     --popup-volante-background-color: var(--image-volante-background-color);
     --popup-volante-border-color: #a7a8ac;
     /* ------ END : Toolbar variables -----*/
@@ -436,9 +436,9 @@
     --form-period-submit-border-color: #40a52b;
     --form-period-select-border-color: #BBBBBB;
     --td-list-col-header-left-select-border-color: #BBBBBB;
-    --info-message-background-color: #00bfb3;
+    --info-message-background-color: var(--color-iris-blue);
     --info-message-font-color: white;
-    --info-message-border-color: #fff;
+    --info-message-border-color: var(--color-white);
     --info-message-before-border-left-color: transparent;
     --info-message-before-border-right-color: var(--info-message-before-border-left-color);
     --info-message-before-border-bottom-color: var(--info-message-background-color);
@@ -448,7 +448,7 @@
     --centreon-popin-background-color: white;
     --centreon-popin-border-color: #a7a8ac;
     --centreon-popin-overlay-background-color: black;
-    --popin-wrapper-font-color: #555;
+    --popin-wrapper-font-color: var(--color-martar);
     --cbox-content-border-color: #a7a8ac;
     /* ------ END : popin variables -----*/
 
@@ -461,101 +461,101 @@
     /* ------ END : Fullscreen icon variables -----*/
 
     /* ------ START : List links variables -----*/
-    --list-link-td-border-bottom-color: #d1d2d4;
+    --list-link-td-border-bottom-color: var(--color-iron);
     --list-link-td-anchor-font-color: #005a7f;
-    --list-link-td-anchor-hover-font-color: #4ccaff;
+    --list-link-td-anchor-hover-font-color: var(--color-maya-blue);
     /* ------ END : List links variables -----*/
 
     /* ------ START : Dividers variables -----*/
-    --horizontal-divider-background-color: #e7e7e8;
+    --horizontal-divider-background-color: var(--color-white-lilac);
     /* ------ END : Dividers variables -----*/
 
     /* ------ START : Graph pagination variables -----*/
     --paginator-p-font-color: #58585a;
-    --paginator-p-background-color: #e7e7e8;
+    --paginator-p-background-color: var(--color-white-lilac);
     --paginator-p-over-background-color: #597f00;
     --paginator-p-selected-background-color: #8ecc00;
-    --macro-legend-background-color: #fff;
-    --macro-legend-font-color: #818285;
+    --macro-legend-background-color: var(--color-white);
+    --macro-legend-font-color: var(--color-aluminium);
     /* ------ END : Graph pagination variables -----*/
 
     /* ------ START : JQuery tabs variables -----*/
-    --tabs-periods-background-color: #fff;
-    --tabs-periods-border-color: #e7e7e8;
+    --tabs-periods-background-color: var(--color-white);
+    --tabs-periods-border-color: var(--color-white-lilac);
     --ui-widget-content-background-color: transparent;
-    --ui-widget-header-background-color: #fff;
-    --ui-widget-header-border-bottom-color: #e7e7e8;
+    --ui-widget-header-background-color: var(--color-white);
+    --ui-widget-header-border-bottom-color: var(--color-white-lilac);
     /* ------ END : JQuery tabs variables -----*/
 
     /* ------ START : JQuery datepicker variables -----*/
-    --ui-date-time-picker-background-color: #fff;
+    --ui-date-time-picker-background-color: var(--color-white);
     --ui-datepicker-title-font-color: #005a7f;
-    --ui-td-date-time-picker-anchor-span-border-color: #d1d2d4;
+    --ui-td-date-time-picker-anchor-span-border-color: var(--color-iron);
     --ui-td-date-time-picker-anchor-span-background-color: #f3f3f4;
-    --ui-td-date-time-picker-anchor-span-font-color: #009fdf;
+    --ui-td-date-time-picker-anchor-span-font-color: var(--color-pasific-bleu);
     --ui-timepicker-minute-cell-border-color: #bdbdc2;
     --ui-timepicker-minute-cell-background-color: #cacace;
-    --ui-timepicker-minute-cell-font-color: #009fdf;
-    --ui-datepicker-time-next-prev-state-disabled-hover-background-color: #818285;
-    --ui-datepicker-time-next-prev-state-hover-background-color: #4ccaff;
+    --ui-timepicker-minute-cell-font-color: var(--color-pasific-bleu);
+    --ui-datepicker-time-next-prev-state-disabled-hover-background-color: var(--color-aluminium);
+    --ui-datepicker-time-next-prev-state-hover-background-color: var(--color-maya-blue);
     /* ------ END : JQuery datepicker variables -----*/
 
     /* ------ START : Bloc element variables -----*/
-    --elem-bloc-border-color: #D1D2D4;
-    --elem-bloc-not-advanced-form-service-label-before-background-color: #fff;
-    --elem-bloc-not-advanced-form-service-label-before-border-color: #bcbdc0;
-    --included-checkbox-checked-before-font-color: #fff;
-    --included-checkbox-checked-before-background-color: #88b917;
+    --elem-bloc-border-color: var(--color-iron);
+    --elem-bloc-not-advanced-form-service-label-before-background-color: var(--color-white);
+    --elem-bloc-not-advanced-form-service-label-before-border-color: var(--color-ghost);
+    --included-checkbox-checked-before-font-color: var(--color-white);
+    --included-checkbox-checked-before-background-color: var(--color-success);
     --included-checkbox-checked-before-border-color: var(--included-checkbox-checked-before-background-color);
-    --excluded-checkbox-checked-before-font-color: #fff;
-    --excluded-checkbox-checked-before-background-color: #e00b3d;
+    --excluded-checkbox-checked-before-font-color: var(--color-white);
+    --excluded-checkbox-checked-before-background-color: var(--color-danger);
     --excluded-checkbox-checked-before-border-color: var(--excluded-checkbox-checked-before-background-color);
-    --checkbox-tpl-service-hover-background-color: #e7e7e8;
-    --edit-bt-background-color: #009fdf;
-    --edit-bt-disabled-background-color: #d1d2d4;
-    --preview-icon-border-color: #00ccbf;
+    --checkbox-tpl-service-hover-background-color: var(--color-white-lilac);
+    --edit-bt-background-color: var(--color-pasific-bleu);
+    --edit-bt-disabled-background-color: var(--color-iron);
+    --preview-icon-border-color: var(--color-robins-egg-blue);
     --md-preview-border-color: rgb(187, 187, 187);
-    --md-preview-background-color: #fff;
+    --md-preview-background-color: var(--color-white);
     /* ------ END : Bloc element variables -----*/
 
     /* ------ START : Vertical tabs variables -----*/
     --vertical-tabs-widget-content-background-color: none;
     --vertical-tabs-widget-content-border-color: none;
     --ui-vertical-tabs-nav-background-color: transparent;
-    --ui-vertical-tabs-state-default-background-color: #fff;
-    --vertical-tabs-lang-wrapper-before-background-color: #e7e7e8;
-    --vertical-tabs-lang-abr-font-color: #00a499;
+    --ui-vertical-tabs-state-default-background-color: var(--color-white);
+    --vertical-tabs-lang-wrapper-before-background-color: var(--color-white-lilac);
+    --vertical-tabs-lang-abr-font-color: var(--color-persian-green);
     /* ------ END : Vertical tabs variables -----*/
 
     /* ------ START : Views performance variables -----*/
     --graph-border-color: #bfd0e2;
     --graph-title-background-color: #cfedf9;
-    --graph-region-downtime-fill-color: #cc99ff;
+    --graph-region-downtime-fill-color: var(--color-mauve);
     --graph-region-ack-fill-color: #ae9500;
-    --chart-legend-font-color: #555;
-    --ico-col-active-border-color: #4ccaff;
+    --chart-legend-font-color: var(--color-martar);
+    --ico-col-active-border-color: var(--color-maya-blue);
     /* ------ END : Views performance variables -----*/
 
     /* ------ START : Refresh component for chart variables -----*/
-    --refresh-border-color: #818285;
+    --refresh-border-color: var(--color-aluminium);
     --refresh-list-border-color: var(--refresh-border-color);
     --refresh-list-background-color: var(--refresh-border-color);
     --refresh-list-li-hover-background-color: #5897fb;
-    --broker-stats-lv2-title-background-color: #e7e7e8;
-    --broker-stats-lv2-title-hover-background-color: #d1d2d4;
-    --broker-stats-title-background-color: #f4f4f4;
-    --broker-stats-title-hover-background-color: #e7e7e8;
-    --broker-stats-title-border-bottom-color: #e7e7e8;
+    --broker-stats-lv2-title-background-color: var(--color-white-lilac);
+    --broker-stats-lv2-title-hover-background-color: var(--color-iron);
+    --broker-stats-title-background-color: var(--color-wild-sand);
+    --broker-stats-title-hover-background-color: var(--color-white-lilac);
+    --broker-stats-title-border-bottom-color: var(--color-white-lilac);
     --broker-stats-title-border-top-color: var(--broker-stats-title-border-bottom-color);
-    --expand-border-color: #a7a9ac;
+    --expand-border-color: var(--color-grey-chateau);
     --broker-stats-info-name-font-color: #09225c;
-    --broker-stats-loaded-font-color: #88b917;
+    --broker-stats-loaded-font-color: var(--color-success);
     /* ------ END : Refresh component for chart variables -----*/
 
     /* ------ START : Generation page variables -----*/
-    --ui-progress-bar-value-background-color: #88b917;
+    --ui-progress-bar-value-background-color: var(--color-success);
     --installation-content-accordion-background-color: #d6d5d5;
-    --installation-content-accordion-font-color: #444;
+    --installation-content-accordion-font-color: var(--color-charcoal);
     --installation-content-accordion-border-color: none;
     --content-wrapper-not-2nth-child-section-background-color: #d6d5d5;
     --accordion-hover-background-color: #c3c3c3;
@@ -588,32 +588,32 @@
     --color-6-fill-color: #29378e;
     /* ------ END : Loading containers variables -----*/
     /* ------ START : Login variables -----*/
-    --login-tab-background-color: #fff;
-    --login-tab-border-color: #d1d2d4;
+    --login-tab-background-color: var(--color-white);
+    --login-tab-border-color: var(--color-iron);
     --message-background-color: #ffe6ec;
-    --message-font-color: #e00b3d;
+    --message-font-color: var(--color-danger);
     --message-border-color: var(--message-font-color);
-    --btc-font-color: #fff;
+    --btc-font-color: var(--color-white);
     --bt-info-disabled-background-color: gray;
-    --bt-group-input-font-color: #fff;
-    --link-label-font-color: #007f77;
-    --input-select-border-color: #bcbdc0;
+    --bt-group-input-font-color: var(--color-white);
+    --link-label-font-color: var(--color-surfie-green);
+    --input-select-border-color: var(--color-ghost);
     --link-td-font-color: #525252;
-    --bt-info-hover-not-disabled-background-color: #00a499;
+    --bt-info-hover-not-disabled-background-color: var(--color-persian-green);
     --login-tab2-td-background-color: #eaeaee;
     --login-invit-cpy-font-color: gray;
     /* ------ END : Login variables -----*/
     /* ------ START : Markdown css variables -----*/
-    --md-preview-table-th-border-bottom-color: #bbb;
+    --md-preview-table-th-border-bottom-color: var(--color-silver);
     --md-preview-table-td-border-bottom-color: #ddd;
     --md-preview-pre-background-color: #eee;
     --md-preview-pre-border-color: #ddd;
-    --md-preview-pre-font-color: #444;
+    --md-preview-pre-font-color: var(--color-charcoal);
     --md-preview-pre-webkit-box-shadow-color: rgba(0, 0, 0, 0.07);
     --md-preview-pre-code-background-color: var(--md-preview-pre-background-color);
     --md-preview-pre-code-border-color: none;
     --md-preview-code-background-color: #f8f8ff;
-    --md-preview-code-font-color: #444;
+    --md-preview-code-font-color: var(--color-charcoal);
     --md-preview-code-border-color: #dedede;
     --md-preview-anchor-font-color: #4183c4;
     --md-preview-code-anchor-link-visited: var(--md-preview-anchor-font-color);
@@ -621,18 +621,18 @@
     --md-preview-h2-border-top-color: #e0e0e0;
     --md-preview-hr-border-color: #ddd;
     --md-preview-blockquote-border-left-color: #ddd;
-    --md-preview-blockquote-font-color: #555;
+    --md-preview-blockquote-font-color: var(--color-martar);
     /* ------ END : Markdown css variables -----*/
     /* ------ START : JQuery UI variables -----*/
     --ui-selectable-helper-border-color: var(--color-black);
-    --ui-icon-background-box-shadow-color: #ccc;
+    --ui-icon-background-box-shadow-color: var(--color-very-light-grey);
     --ui-icon-background-border-color: none;
     --ui-spinner-input-background-color: none;
     --ui-spinner-input-border-color: none;
     --ui-spinner-input-font-color: inherit;
     --ui-tabs-panel-background-color: none;
     --ui-widget-ui-widget-content-border-color: #c5c5c5;
-    --jquery-ui-widget-content-background-color: #ffffff;
+    --jquery-ui-widget-content-background-color: var(--color-white);
     --jquery-ui-widget-content-border-color: #dddddd;
     --jquery-ui-widget-content-font-color: #333333;
     --jquery-ui-widget-content-anchor-font-color: var(--jquery-ui-widget-content-font-color);
@@ -652,10 +652,10 @@
     --ui-visual-focus-box-shadow-color: rgb(94, 158, 214);
     --ui-button-anchor-state-active-hover-border-color: #003eff;
     --ui-button-anchor-state-active-hover-background-color: #007fff;
-    --ui-button-anchor-state-active-hover-font-color: #ffffff;
-    --jquery-ui-icon-background-color: #ffffff;
+    --ui-button-anchor-state-active-hover-font-color: var(--color-white);
+    --jquery-ui-icon-background-color: var(--color-white);
     --jquery-ui-icon-border-color: #003eff;
-    --ui-state-active-anchor-visited-font-color: #ffffff;
+    --ui-state-active-anchor-visited-font-color: var(--color-white);
     --ui-state-highlight-border-color: #dad55e;
     --ui-state-highlight-background-color: #fffa90;
     --ui-state-highlight-font-color: #777620;
@@ -674,8 +674,8 @@
     /* Centreon jquery */
     /* Portlet style variables */
     --ui-sortable-placeholder-border-color: black;
-    --ui-button-focus-font-color: #ffffff;
-    --ui-tabs-nav-li-anchor-background-color: #009fdf;
+    --ui-button-focus-font-color: var(--color-white);
+    --ui-tabs-nav-li-anchor-background-color: var(--color-pasific-bleu);
     --ui-tabs-nav-li-background-color: var(--ui-tabs-nav-li-anchor-background-color);
     --ui-state-processing-anchor-background-color: none;
     --ui-state-processing-background-color: none;
