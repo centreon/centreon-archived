@@ -1,41 +1,43 @@
 @import "color-variables.css";
 
 :root {
-        /* Style.css variables */
-        --color-checkbox-disabled-border-rgba: rgba(0, 0, 0, 0.26); 
-        --color-checkbox-checked-border-: var(--color-white); 
-        --color-checkbox-disabled-checked: var(--color-checkbox-disabled-border-rgba);
-        --color-checkbox-disabled-checked-label-green: var(--color-success); 
-        --color-radiobutton-cheked-border: var(--color-checked-background-rgb);
-        --color-checked-background-rgb : var(--color-navy-bleu);
-        
-        /*****************/
-    
-        /** Body color **/
-        --body-background: #EDEDED ;
-        --body-color:#555;
-         /*****************/
+    /* Style.css variables */
+    --color-checkbox-disabled-border-rgba: rgba(0, 0, 0, 0.26);
+    --color-checkbox-checked-border-: var(--color-white);
+    --color-checkbox-disabled-checked: var(--color-checkbox-disabled-border-rgba);
+    --color-checkbox-disabled-checked-label-green: var(--color-success);
+    --color-radiobutton-cheked-border: var(--color-checked-background-rgb);
+    --color-checked-background-rgb : var(--color-navy-bleu);
 
-        /** Text aria color **/
-        --textarea-border-color: #BBBBBB ;
-        /*********************/
+    /*****************/
 
-        /** Select color **/
-        --select-border-color: #bcbdc0;
-        --select-background: var(--color-white);
-        --select-color : #444;
-        /******************/
+    /** Body color **/
+    --body-background: var(--color-white);
+    --body-color:#555;
+    /*****************/
 
-        /** Input checkbox **/
-        --input-border-color: var(--select-border-color);
-        --input-color : var(--select-color);
-        --md-checkbox--checked-background : var(--color-checked-background-rgb) ;
-        --md-checkbox-border-color : var(--color-black-rgba)  ;
-        --md-checkbox-background : var(--color-white) ;
-        --md-checkbox--disabled-border-color-before : var(--color-black-rgba);
-        --md-checkbox--disabled-checked-background-color-before  : var(--color-black-rgba);
-        --md-check-input-disabled-checked-before:  #88b917;
-       /*********************/
+    /** Text aria color **/
+    --textarea-border-color: #BBBBBB ;
+    /*********************/
+
+    /** Select color **/
+    --select-border-color: #bcbdc0;
+    --select-background: var(--color-white);
+    --select-color : #444;
+    /******************/
+
+    /** Input checkbox **/
+    --input-border-color: var(--select-border-color);
+    --input-color : var(--select-color);
+    --md-checkbox--checked-background : var(--color-checked-background-rgb) ;
+    --md-checkbox-border-color : var(--color-black-rgba)  ;
+    --md-checkbox-background : var(--color-white) ;
+    --md-checkbox--disabled-border-color-before : var(--color-black-rgba);
+    --md-checkbox--disabled-checked-background-color-before  : var(--color-black-rgba);
+    --md-check-input-disabled-checked-before:  #88b917;
+    --md-checkbox-checked-label-before-background-color: rgb(51, 122, 183);
+    --md-checkbox-border-color-after: var(--color-white);
+    /*********************/
 
     /** Radio button **/
     --md-radio-checked-backgroud-color:  rgb(51, 122, 183);
@@ -238,13 +240,13 @@
     --tab-lists-td-left-border-color: var(--lists-td-top-border-color);
     --tab-lists-td-bottom-border-color: var(--lists-td-top-border-color);
     --tab-lists-td-right-border-color: var(--lists-td-top-border-color);
-    --list-header-border-top-color: var(--body-background-color);
+    --list-header-border-top-color: var(--body-background);
     --list-header-border-left-color: var(--list-header-border-top-color);
     --list-footer-border-color: #AAAAEE;
-    --input-button-hover-font-color: var(--body-background-color);
+    --input-button-hover-font-color: var(--body-background);
     --input-button-hover-background-color: #009FDF;
     --input-button-hover-border-color: var(--input-button-hover-background-color);
-    --pagination-font-color: var(--body-background-color);
+    --pagination-font-color: var(--body-background);
     --pagination-background-color: var(--list-table-border-color);
     --message-loading-font-color: #0000FF;
     --message-is-loading-font-color: #fff;
@@ -258,7 +260,6 @@
     --main-nav-list-border-color: var(--main-nav-list-background-color);
     --main-nav-list-a-anchor-font-color: var(--main-nav-list-background-color);
     --main-nav-list-b-anchor-font-color: #C1ECFF;
-
     --menu3-anchor-hover-font-color: #E8AB5C;
     --menu3-background-color: #FFF;
     --date-font-color: #bcbdc0;
