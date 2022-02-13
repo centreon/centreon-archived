@@ -116,6 +116,35 @@ const useStyles = makeStyles<Theme, Pick<Props, 'onAddComment'>>((theme) => ({
     position: 'absolute',
   },
   container: {
+    '& .visx-axis-bottom': {
+      '& .visx-axis-tick': {
+        '& .visx-line': {
+          stroke: theme.palette.text.primary,
+        },
+      },
+    },
+    '& .visx-axis-line': {
+      stroke: theme.palette.text.primary,
+    },
+    '& .visx-axis-right': {
+      '& .visx-axis-tick': {
+        '& .visx-line': {
+          stroke: theme.palette.text.primary,
+        },
+      },
+      stroke: theme.palette.text.primary,
+    },
+    '& .visx-columns': {
+      '& .visx-line': {
+        stroke: theme.palette.divider,
+      },
+    },
+    '& .visx-rows': {
+      '& .visx-line': {
+        stroke: theme.palette.divider,
+      },
+    },
+    fill: theme.palette.text.primary,
     position: 'relative',
   },
   graphLoader: {
@@ -477,13 +506,11 @@ const GraphContent = ({
             <MemoizedGridRows
               height={graphHeight}
               scale={rightScale || leftScale}
-              stroke={grey[100]}
               width={graphWidth}
             />
             <MemoizedGridColumns
               height={graphHeight}
               scale={xScale}
-              stroke={grey[100]}
               width={graphWidth}
             />
             <MemoizedAxes
