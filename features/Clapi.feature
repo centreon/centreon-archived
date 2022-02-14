@@ -7,7 +7,7 @@ Feature: Clapi
     Given a Centreon server
     When the user uses the clapi export command
     Then a valid clapi configuration file should be generated
-    Then it should contain the supported configuration objects
+    And it should contain the supported configuration objects
 
   Scenario: import from clapi command file
     Given a freshly installed Centreon server
