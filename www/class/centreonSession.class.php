@@ -98,10 +98,10 @@ class CentreonSession
      *
      * @param  string        $sessionId Session id to check
      * @param  CentreonDB    $db
-     * @return int
+     * @return bool
      * @throws PDOException
      */
-    public static function checkSession($sessionId, CentreonDB $db)
+    public static function checkSession($sessionId, CentreonDB $db): bool
     {
         // First, Drop expired sessions
         self::deleteExpiredSession($db);
