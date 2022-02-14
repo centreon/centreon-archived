@@ -417,7 +417,7 @@ describe('Main', () => {
     );
   });
 
-  it.only('redirects the user to his default page when the current location is the login page and the user is connected', async () => {
+  it('redirects the user to his default page when the current location is the login page and the user is connected', async () => {
     window.history.pushState({}, '', '/login');
     mockRedirectFromLoginPageGetRequests();
 
