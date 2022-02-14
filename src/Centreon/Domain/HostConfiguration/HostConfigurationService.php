@@ -676,16 +676,4 @@ class HostConfigurationService implements HostConfigurationServiceInterface
             }
         }
     }
-
-    /**
-     *  @inheritDoc
-     */
-    public function findHostTemplatesByNames(array $names): array
-    {
-        try {
-            return $this->hostConfigurationRepository->findHostTemplatesByNames($names);
-        } catch (\Throwable $ex) {
-            throw new HostConfigurationException(_('Error when searching for host templates'), 0, $ex);
-        }
-    }
 }
