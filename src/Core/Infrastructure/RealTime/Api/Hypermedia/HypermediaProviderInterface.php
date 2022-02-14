@@ -25,7 +25,7 @@ namespace Core\Infrastructure\RealTime\Api\Hypermedia;
 interface HypermediaProviderInterface
 {
     /**
-     * @var mixed $data
+     * @param mixed $data
      * @return bool
      */
     public function isValidFor(mixed $data): bool;
