@@ -32,7 +32,7 @@ interface PresenterFormatterInterface
     public function setResponseHeaders(array $responseHeaders): void;
 
     /**
-     * @return array<string,mixed>
+     * @return mixed[]
      */
     public function getResponseHeaders(): array;
 

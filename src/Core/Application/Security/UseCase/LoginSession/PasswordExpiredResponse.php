@@ -24,11 +24,29 @@ declare(strict_types=1);
 namespace Core\Application\Security\UseCase\LoginSession;
 
 use Core\Application\Common\UseCase\UnauthorizedResponse;
+use Core\Application\Common\UseCase\ResponseStatusInterface;
+use Core\Application\Common\UseCase\BodyResponseInterface;
 
-class PasswordExpiredResponse extends UnauthorizedResponse
+class PasswordExpiredResponse extends UnauthorizedResponse implements ResponseStatusInterface, BodyResponseInterface
 {
     /**
-     * @var bool
+     * @var mixed
      */
-    public bool $passwordIsExpired = true;
+    private $body;
+
+    /**
+     * @inheritDoc
+     */
+    public function setBody(mixed $body): void
+    {
+        $this->body = $body;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getBody(): mixed
+    {
+        return $this->body;
+    }
 }

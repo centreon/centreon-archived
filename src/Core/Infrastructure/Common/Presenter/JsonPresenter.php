@@ -125,7 +125,7 @@ class JsonPresenter implements PresenterFormatterInterface
      *
      * @param mixed $data
      * @param integer $code
-     * @return k[]|null
+     * @return mixed[]|null
      */
     private function formatErrorContent(mixed $data, int $code): ?array
     {

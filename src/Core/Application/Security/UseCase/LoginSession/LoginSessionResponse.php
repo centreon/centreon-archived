@@ -29,14 +29,4 @@ class LoginSessionResponse
      * @var string
      */
     public string $redirectionUri;
-
-    /**
-     * @var bool
-     */
-    public bool $passwordIsExpired;
-
-    /**
-     * @var int
-     */
-    public int $passwordRemainingTime;
 }

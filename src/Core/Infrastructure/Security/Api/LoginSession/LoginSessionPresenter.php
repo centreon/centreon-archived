@@ -41,9 +41,7 @@ class LoginSessionPresenter extends AbstractPresenter implements LoginSessionPre
     public function present(mixed $response): void
     {
         $presenterResponse = [
-            'redirect_uri' => $response->redirectionUri,
-            'password_is_expired' => false,
-            'password_remaining_time' => 3600,
+            'redirect_uri' => $response->redirectionUri
         ];
 
         parent::present($presenterResponse);

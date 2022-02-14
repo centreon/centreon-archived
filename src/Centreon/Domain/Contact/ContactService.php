@@ -67,7 +67,7 @@ class ContactService implements ContactServiceInterface
     public function isPasswordExpired(int $contactId): bool
     {
         // @todo get last password creation and compare it to password duration from security policy
-        return true;
+        return false;
     }
 
     /**

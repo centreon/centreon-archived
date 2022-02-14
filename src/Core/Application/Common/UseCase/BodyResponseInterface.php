@@ -9,5 +9,8 @@ interface BodyResponseInterface
      */
     public function setBody(mixed $body): void;
 
+    /**
+     * @return mixed
+     */
     public function getBody(): mixed;
 }

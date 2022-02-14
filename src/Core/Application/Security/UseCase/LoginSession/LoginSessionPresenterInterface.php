@@ -24,13 +24,7 @@ declare(strict_types=1);
 namespace Core\Application\Security\UseCase\LoginSession;
 
 use Core\Application\Common\UseCase\PresenterInterface;
-use Core\Application\Security\UseCase\LoginSession\LoginSessionResponse;
 
 interface LoginSessionPresenterInterface extends PresenterInterface
 {
-    /**
-     * Present authentication information
-     * @param mixed $data
-     */
-    public function present(mixed $data): void;
 }

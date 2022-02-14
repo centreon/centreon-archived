@@ -44,9 +44,14 @@ interface PresenterInterface
     public function setResponseHeaders(array $responseHeaders): void;
 
     /**
-     * @return array<string,mixed>
+     * @return mixed[]
      */
     public function getResponseHeaders(): array;
+
+    /**
+     * @param mixed $data
+     */
+    public function present(mixed $data): void;
 
     /**
      * @return Response

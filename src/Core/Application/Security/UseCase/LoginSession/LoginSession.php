@@ -123,12 +123,14 @@ class LoginSession
                 );
             }
         } catch (PasswordExpiredException $e) {
-            $presenter->setResponseStatus(new PasswordExpiredResponse($e->getMessage()));
+            $response = new PasswordExpiredResponse($e->getMessage());
+            $response->setBody([
+                'password_is_expired' => true,
+            ]);
+            $presenter->setResponseStatus($response);
             return;
         } catch (AuthenticationException $e) {
-            $response = new UnauthorizedLoginResponse($e->getMessage());
-            $response->setBody([]);
-            $presenter->setResponseStatus($response);
+            $presenter->setResponseStatus(new UnauthorizedResponse($e->getMessage()));
             return;
         }
 

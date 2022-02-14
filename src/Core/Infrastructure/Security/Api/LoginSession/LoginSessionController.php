@@ -27,15 +27,9 @@ use Centreon\Application\Controller\AbstractController;
 use Core\Application\Security\UseCase\LoginSession\LoginSession;
 use Core\Application\Security\UseCase\LoginSession\LoginSessionPresenterInterface;
 use Core\Application\Security\UseCase\LoginSession\LoginSessionRequest;
-use Centreon\Domain\Authentication\Model\Credentials;
-use FOS\RestBundle\View\View;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Centreon\Domain\Authentication\UseCase\Authenticate;
-use Centreon\Domain\Authentication\UseCase\AuthenticateResponse;
 use Centreon\Domain\Authentication\Exception\AuthenticationException;
-use Core\Application\Common\UseCase\UnauthorizedResponse;
 use JsonSchema\Validator;
 use JsonSchema\Constraints\Constraint;
 
@@ -45,16 +39,16 @@ class LoginSessionController extends AbstractController
      * @param Request $request
      * @param string $providerConfigurationName
      * @param LoginSession $loginSession
-     * @param AuthenticateResponse $response
-     * @return Response
+     * @param LoginSessionPresenterInterface $presenter
+     * @param SessionInterface $session
+     * @return object
      */
     public function __invoke(
         Request $request,
         string $providerConfigurationName,
         LoginSession $loginSession,
         LoginSessionPresenterInterface $presenter,
-        AuthenticateResponse $response,
-        SessionInterface $session
+        SessionInterface $session,
     ): object {
         $this->validateDataSent($request, __DIR__ . '/LoginSessionSchema.json');
 
@@ -64,18 +58,6 @@ class LoginSessionController extends AbstractController
             $loginSession($presenter, $loginSessionRequest);
         } catch (AuthenticationException $e) {
             return $presenter->show();
-            //$presenter->setResponseStatus(new UnauthorizedResponse());
-
-            /*
-            return $this->view(
-                [
-                    "code" => Response::HTTP_UNAUTHORIZED,
-                    "message" => $e->getMessage(),
-                    "password_is_expired" => true,
-                ],
-                Response::HTTP_UNAUTHORIZED
-            );
-            */
         }
 
         $presenter->setResponseHeaders(
