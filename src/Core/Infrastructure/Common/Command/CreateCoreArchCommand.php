@@ -51,8 +51,8 @@ class CreateCoreArchCommand extends Command
     {
         $this
             ->setName(self::COMMAND_NAME)
-            ->setDescription('Create architecture for a command useCase')
-            ->setHelp('This command allows you to create classes for a command useCase');
+            ->setDescription('Create architecture for a useCase')
+            ->setHelp('This command allows you to create classes for a useCase');
     }
 
     /**
