@@ -165,7 +165,7 @@ class ClapiContext extends CentreonContext
     }
 
     /**
-     * @Then it should contain the supported configuration objects
+     * @And it should contain the supported configuration objects
      */
     public function itShouldContainTheSupportedConfigurationObjects()
     {
