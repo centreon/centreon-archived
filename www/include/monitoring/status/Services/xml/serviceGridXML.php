@@ -97,7 +97,7 @@ if ($hostgroups) {
 if (!$obj->is_admin) {
     $rq1 .= ", centreon_acl ";
 }
-$rq1 .= " WHERE hosts.name NOT LIKE '_Module_%' ";
+$rq1 .= " WHERE hosts.name NOT LIKE '\_Module\_%' ";
 if (!$obj->is_admin) {
     $rq1 .= " AND hosts.host_id = centreon_acl.host_id " .
         $obj->access->queryBuilder("AND", "group_id", $obj->grouplistStr);

@@ -1,12 +1,9 @@
 import * as React from 'react';
 
 import axios from 'axios';
-import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 
 import { render, waitFor, fireEvent } from '@centreon/ui';
-
-import createStore from '../../../store';
 
 import HostStatusCounter from '.';
 
@@ -18,8 +15,6 @@ describe(HostStatusCounter, () => {
   });
 
   it('redirects to the Resource status page with the resource type filter set to host and the corresponding status when a status chip is clicked', async () => {
-    const store = createStore();
-
     mockedAxios.get.mockResolvedValue({
       data: {
         down: {
@@ -39,9 +34,7 @@ describe(HostStatusCounter, () => {
 
     const { getByText, getAllByText } = render(
       <BrowserRouter>
-        <Provider store={store}>
-          <HostStatusCounter />
-        </Provider>
+        <HostStatusCounter />
       </BrowserRouter>,
     );
 
