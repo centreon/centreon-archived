@@ -30,6 +30,7 @@ use Security\Domain\Authentication\Interfaces\SessionRepositoryInterface;
 use Security\Domain\Authentication\Interfaces\ProviderInterface;
 use Security\Domain\Authentication\Model\AuthenticationTokens;
 use Security\Domain\Authentication\Model\ProviderToken;
+use Core\Application\Security\Repository\WriteTokenRepositoryInterface;
 use Centreon\Domain\Authentication\Exception\AuthenticationException;
 
 /**
@@ -53,6 +54,11 @@ class AuthenticationServiceTest extends TestCase
     private $sessionRepository;
 
     /**
+     * @var WriteTokenRepositoryInterface|\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $writeTokenRepository;
+
+    /**
      * @var ProviderInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $provider;
@@ -72,6 +78,7 @@ class AuthenticationServiceTest extends TestCase
         $this->authenticationRepository = $this->createMock(AuthenticationRepositoryInterface::class);
         $this->providerService = $this->createMock(ProviderServiceInterface::class);
         $this->sessionRepository = $this->createMock(SessionRepositoryInterface::class);
+        $this->writeTokenRepository = $this->createMock(WriteTokenRepositoryInterface::class);
         $this->provider = $this->createMock(ProviderInterface::class);
         $this->authenticationTokens = $this->createMock(AuthenticationTokens::class);
         $this->providerToken = $this->createMock(ProviderToken::class);
@@ -85,7 +92,8 @@ class AuthenticationServiceTest extends TestCase
         $providerService = new AuthenticationService(
             $this->authenticationRepository,
             $this->providerService,
-            $this->sessionRepository
+            $this->sessionRepository,
+            $this->writeTokenRepository,
         );
 
         $this->authenticationRepository
@@ -107,7 +115,8 @@ class AuthenticationServiceTest extends TestCase
         $providerService = new AuthenticationService(
             $this->authenticationRepository,
             $this->providerService,
-            $this->sessionRepository
+            $this->sessionRepository,
+            $this->writeTokenRepository,
         );
 
         $this->authenticationRepository
@@ -134,7 +143,8 @@ class AuthenticationServiceTest extends TestCase
         $providerService = new AuthenticationService(
             $this->authenticationRepository,
             $this->providerService,
-            $this->sessionRepository
+            $this->sessionRepository,
+            $this->writeTokenRepository,
         );
 
         $this->authenticationRepository
@@ -176,7 +186,8 @@ class AuthenticationServiceTest extends TestCase
         $providerService = new AuthenticationService(
             $this->authenticationRepository,
             $this->providerService,
-            $this->sessionRepository
+            $this->sessionRepository,
+            $this->writeTokenRepository,
         );
 
         $this->authenticationRepository
@@ -223,7 +234,8 @@ class AuthenticationServiceTest extends TestCase
         $providerService = new AuthenticationService(
             $this->authenticationRepository,
             $this->providerService,
-            $this->sessionRepository
+            $this->sessionRepository,
+            $this->writeTokenRepository,
         );
 
         $this->authenticationRepository
@@ -270,7 +282,8 @@ class AuthenticationServiceTest extends TestCase
         $providerService = new AuthenticationService(
             $this->authenticationRepository,
             $this->providerService,
-            $this->sessionRepository
+            $this->sessionRepository,
+            $this->writeTokenRepository,
         );
 
         $this->authenticationRepository
@@ -297,7 +310,8 @@ class AuthenticationServiceTest extends TestCase
         $providerService = new AuthenticationService(
             $this->authenticationRepository,
             $this->providerService,
-            $this->sessionRepository
+            $this->sessionRepository,
+            $this->writeTokenRepository,
         );
 
         $this->authenticationRepository
@@ -321,10 +335,11 @@ class AuthenticationServiceTest extends TestCase
         $providerService = new AuthenticationService(
             $this->authenticationRepository,
             $this->providerService,
-            $this->sessionRepository
+            $this->sessionRepository,
+            $this->writeTokenRepository,
         );
 
-        $this->authenticationRepository
+        $this->writeTokenRepository
             ->expects($this->once())
             ->method('deleteExpiredSecurityTokens')
             ->willThrowException(new \Exception());
@@ -343,10 +358,11 @@ class AuthenticationServiceTest extends TestCase
         $providerService = new AuthenticationService(
             $this->authenticationRepository,
             $this->providerService,
-            $this->sessionRepository
+            $this->sessionRepository,
+            $this->writeTokenRepository,
         );
 
-        $this->authenticationRepository
+        $this->writeTokenRepository
             ->expects($this->once())
             ->method('deleteExpiredSecurityTokens');
 
@@ -361,7 +377,8 @@ class AuthenticationServiceTest extends TestCase
         $providerService = new AuthenticationService(
             $this->authenticationRepository,
             $this->providerService,
-            $this->sessionRepository
+            $this->sessionRepository,
+            $this->writeTokenRepository,
         );
 
         $this->authenticationRepository
@@ -384,7 +401,8 @@ class AuthenticationServiceTest extends TestCase
         $providerService = new AuthenticationService(
             $this->authenticationRepository,
             $this->providerService,
-            $this->sessionRepository
+            $this->sessionRepository,
+            $this->writeTokenRepository,
         );
 
         $this->authenticationRepository
@@ -403,7 +421,8 @@ class AuthenticationServiceTest extends TestCase
         $providerService = new AuthenticationService(
             $this->authenticationRepository,
             $this->providerService,
-            $this->sessionRepository
+            $this->sessionRepository,
+            $this->writeTokenRepository,
         );
 
         $this->authenticationRepository
@@ -426,7 +445,8 @@ class AuthenticationServiceTest extends TestCase
         $providerService = new AuthenticationService(
             $this->authenticationRepository,
             $this->providerService,
-            $this->sessionRepository
+            $this->sessionRepository,
+            $this->writeTokenRepository,
         );
 
         $this->authenticationRepository

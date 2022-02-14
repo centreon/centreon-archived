@@ -569,6 +569,9 @@ function insertContact($ret = array())
     if (!count($ret)) {
         $ret = $form->getSubmitValues();
     }
+    $ret['contact_oreon'] = $ret['contact_oreon'] ?? ['contact_oreon' => '1'];
+    $ret['reach_api'] = $ret['reach_api'] ?? ['reach_api' => '0'];
+    $ret['reach_api_rt'] = $ret['reach_api_rt'] ?? ['reach_api_rt' => '0'];
     $ret["contact_name"] = $centreon->checkIllegalChar($ret["contact_name"]);
 
     $bindParams = sanitizeFormContactParameters($ret);
@@ -973,7 +976,7 @@ function insertLdapContactInDB($tmpContacts = array())
 
         if (!isset($ldapInstances[$arId])) {
             $ldap = new CentreonLDAP($pearDB, null, $arId);
-            $ldapAdmin = new CentreonLDAPAdmin($pearDB);
+            $ldapAdmin = new CentreonLdapAdmin($pearDB);
             $opt = $ldapAdmin->getGeneralOptions($arId);
             if (isset($opt['ldap_contact_tmpl']) && $opt['ldap_contact_tmpl']) {
                 $contactTemplates[$arId] = $opt['ldap_contact_tmpl'];
@@ -1282,10 +1285,12 @@ function validatePasswordCreation(array $fields)
 {
     global $pearDB;
     $errors = [];
-    $password = $fields['contact_passwd'];
-    if (empty($password)) {
+
+    if (empty($fields['contact_passwd'])) {
         return true;
     }
+
+    $password = $fields['contact_passwd'];
 
     try {
         $contact = new \CentreonContact($pearDB);
@@ -1307,11 +1312,13 @@ function validatePasswordModification(array $fields)
 {
     global $pearDB;
     $errors = [];
-    $password = $fields['contact_passwd'];
-    $contactId = $fields['contact_id'];
-    if (empty($password)) {
+
+    if (empty($fields['contact_passwd'])) {
         return true;
     }
+
+    $password = $fields['contact_passwd'];
+    $contactId = $fields['contact_id'];
 
     try {
         $contact = new \CentreonContact($pearDB);

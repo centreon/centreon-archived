@@ -10,7 +10,7 @@ import {
   patchData,
 } from '@centreon/ui';
 
-import { baseEndpoint } from '../../api/endpoint';
+import { baseEndpoint } from '../../../api/endpoint';
 import { Filter } from '../models';
 
 const filterEndpoint = `${baseEndpoint}/users/filters/events-view`;

@@ -331,16 +331,4 @@ class AuthenticationRepository extends AbstractRepositoryDRB implements
         $deleteSecurityTokenStatement->bindValue(':token', $token, \PDO::PARAM_STR);
         $deleteSecurityTokenStatement->execute();
     }
-
-    /**
-     * @inheritDoc
-     */
-    public function deleteExpiredSecurityTokens(): void
-    {
-        $this->db->query(
-            $this->translateDbName(
-                "DELETE FROM `:db`.security_token WHERE expiration_date < UNIX_TIMESTAMP(NOW())"
-            )
-        );
-    }
 }
