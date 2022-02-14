@@ -134,11 +134,6 @@ class MonitoringResourceController extends AbstractController
     public const VALIDATION_GROUP_MAIN = 'resource_id_main';
 
     /**
-     * @var MonitoringServiceInterface
-     */
-    private $monitoring;
-
-    /**
      * @var ResourceServiceInterface
      */
     protected $resource;
@@ -154,18 +149,15 @@ class MonitoringResourceController extends AbstractController
     protected $iconUrlNormalizer;
 
     /**
-     * @param MonitoringServiceInterface $monitoringService
      * @param ResourceServiceInterface $resource
      * @param UrlGeneratorInterface $router
      * @param IconUrlNormalizer $iconUrlNormalizer
      */
     public function __construct(
-        MonitoringServiceInterface $monitoringService,
         ResourceServiceInterface $resource,
         UrlGeneratorInterface $router,
         IconUrlNormalizer $iconUrlNormalizer
     ) {
-        $this->monitoring = $monitoringService;
         $this->resource = $resource;
         $this->router = $router;
         $this->iconUrlNormalizer = $iconUrlNormalizer;
@@ -586,48 +578,6 @@ class MonitoringResourceController extends AbstractController
             $resource->getLinks()->getUris()->setLogs(
                 $this->generateResourceUri($resource, self::META_SERVICE_LOGS_URI)
             );
-        }
-    }
-
-    /**
-     * This function adds to the group the redirection URI to the configuration
-     *
-     * @param ResourceEntity $resource
-     * @param Contact $contact
-     * @return void
-     */
-    private function provideResourceGroupInternalUris(ResourceEntity $resource, Contact $contact): void
-    {
-        if ($resource->getType() === ResourceEntity::TYPE_HOST) {
-            if (
-                $contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_HOSTS_HOST_GROUPS_READ_WRITE)
-                || $contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_HOSTS_HOST_GROUPS_READ)
-                || $contact->isAdmin()
-            ) {
-                foreach ($resource->getGroups() as $group) {
-                    $group->setConfigurationUri(
-                        $this->generateResourceGroupConfigurationUri(
-                            $group,
-                            self::HOSTGROUP_CONFIGURATION_URI
-                        )
-                    );
-                }
-            }
-        } elseif ($resource->getType() === ResourceEntity::TYPE_SERVICE) {
-            if (
-                $contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_SERVICES_SERVICE_GROUPS_READ_WRITE)
-                || $contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_SERVICES_SERVICE_GROUPS_READ)
-                || $contact->isAdmin()
-            ) {
-                foreach ($resource->getGroups() as $group) {
-                    $group->setConfigurationUri(
-                        $this->generateResourceGroupConfigurationUri(
-                            $group,
-                            self::SERVICEGROUP_CONFIGURATION_URI
-                        )
-                    );
-                }
-            }
         }
     }
 
