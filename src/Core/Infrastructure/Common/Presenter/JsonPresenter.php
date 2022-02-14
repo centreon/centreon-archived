@@ -24,6 +24,7 @@ declare(strict_types=1);
 namespace Core\Infrastructure\Common\Presenter;
 
 use Centreon\Domain\Log\LoggerTrait;
+use Core\Application\Common\UseCase\ResponseStatusInterface;
 use Core\Application\Common\UseCase\CreatedResponse;
 use Core\Application\Common\UseCase\ErrorResponse;
 use Core\Application\Common\UseCase\UnauthorizedResponse;
@@ -79,30 +80,21 @@ class JsonPresenter implements PresenterFormatterInterface
             case is_a($this->data, NotFoundResponse::class, false):
                 $this->debug('Data not found. Generating a not found response');
                 return new JsonResponse(
-                    [
-                        'code' => JsonResponse::HTTP_NOT_FOUND,
-                        'message' => $this->data->getMessage()
-                    ],
+                    $this->formatErrorContent($this->data, JsonResponse::HTTP_UNAUTHORIZED),
                     JsonResponse::HTTP_NOT_FOUND,
                     $this->responseHeaders,
                 );
             case is_a($this->data, ErrorResponse::class, false):
                 $this->debug('Data error. Generating an error response');
                 return new JsonResponse(
-                    [
-                        'code' => JsonResponse::HTTP_INTERNAL_SERVER_ERROR,
-                        'message' => $this->data->getMessage()
-                    ],
+                    $this->formatErrorContent($this->data, JsonResponse::HTTP_UNAUTHORIZED),
                     JsonResponse::HTTP_INTERNAL_SERVER_ERROR,
                     $this->responseHeaders,
                 );
             case is_a($this->data, UnauthorizedResponse::class, false):
                 $this->debug('Unauthorized. Generating an error response');
                 return new JsonResponse(
-                    [
-                        'code' => JsonResponse::HTTP_UNAUTHORIZED,
-                        'message' => $this->data->getMessage()
-                    ],
+                    $this->formatErrorContent($this->data, JsonResponse::HTTP_UNAUTHORIZED),
                     JsonResponse::HTTP_UNAUTHORIZED,
                     $this->responseHeaders,
                 );
@@ -125,5 +117,28 @@ class JsonPresenter implements PresenterFormatterInterface
                     $this->responseHeaders,
                 );
         }
+    }
+
+    /**
+     * Format content on error
+     *
+     * @param mixed $data
+     * @param integer $code
+     * @return mixed[]|null
+     */
+    private function formatErrorContent(mixed $data, int $code): ?array
+    {
+        $content = null;
+
+        if (is_array($data)) {
+            $content = $this->data;
+        } elseif (is_a($data, ResponseStatusInterface::class)) {
+            $content = [
+                'code' => $code,
+                'message' => $data->getMessage(),
+            ];
+        }
+
+        return $content;
     }
 }

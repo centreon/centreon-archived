@@ -122,7 +122,7 @@ class LoginSession
                 );
             }
         } catch (PasswordExpiredException $e) {
-            $presenter->setResponseStatus(new UnauthorizedResponse($e->getMessage()));
+            $presenter->setResponseStatus(new PasswordExpiredResponse($e->getMessage()));
             return;
         } catch (AuthenticationException $e) {
             $presenter->setResponseStatus(new UnauthorizedResponse($e->getMessage()));
@@ -151,7 +151,7 @@ class LoginSession
      * @param string $redirectionUri
      * @return LoginSessionResponse
      */
-    public function createResponse(string $redirectionUri): LoginSessionResponse
+    private function createResponse(string $redirectionUri): LoginSessionResponse
     {
         $response = new LoginSessionResponse();
         $response->redirectionUri = $redirectionUri;

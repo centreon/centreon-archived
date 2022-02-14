@@ -18,18 +18,22 @@
  * For more information : contact@centreon.com
  *
  */
-
 declare(strict_types=1);
 
-namespace Core\Application\Security\UseCase\LoginSession;
+namespace Core\Infrastructure\Security\Api\LoginSession;
 
-use Core\Application\Common\UseCase\PresenterInterface;
-use Core\Application\Security\UseCase\LoginSession\LoginSessionResponse;
+use Core\Application\Common\UseCase\AbstractPresenter;
+use Core\Application\Security\UseCase\LoginSession\PasswordExpiredPresenterInterface;
 
-interface LoginSessionPresenterInterface extends PresenterInterface
+class LoginSessionPresenter extends AbstractPresenter implements PasswordExpiredPresenterInterface
 {
     /**
-     * Present authentication information
+     * @inheritDoc
      */
-    public function present(LoginSessionResponse $response): void;
+    public function present(): void
+    {
+        $this->presenterFormatter->present([
+            'is_password_expired' => true,
+        ]);
+    }
 }

@@ -24,12 +24,11 @@ declare(strict_types=1);
 namespace Core\Application\Security\UseCase\LoginSession;
 
 use Core\Application\Common\UseCase\PresenterInterface;
-use Core\Application\Security\UseCase\LoginSession\LoginSessionResponse;
 
-interface LoginSessionPresenterInterface extends PresenterInterface
+interface PasswordExpiredPresenterInterface extends PresenterInterface
 {
     /**
-     * Present authentication information
+     * Present password expired information
      */
-    public function present(LoginSessionResponse $response): void;
+    public function present(): void;
 }

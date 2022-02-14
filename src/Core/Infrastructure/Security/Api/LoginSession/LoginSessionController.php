@@ -35,6 +35,7 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Centreon\Domain\Authentication\UseCase\Authenticate;
 use Centreon\Domain\Authentication\UseCase\AuthenticateResponse;
 use Centreon\Domain\Authentication\Exception\AuthenticationException;
+use Core\Application\Common\UseCase\UnauthorizedResponse;
 use JsonSchema\Validator;
 use JsonSchema\Constraints\Constraint;
 
@@ -42,8 +43,8 @@ class LoginSessionController extends AbstractController
 {
     /**
      * @param Request $request
-     * @param LoginSession $loginSession
      * @param string $providerConfigurationName
+     * @param LoginSession $loginSession
      * @param AuthenticateResponse $response
      * @return Response
      */
@@ -62,6 +63,9 @@ class LoginSessionController extends AbstractController
         try {
             $loginSession($presenter, $loginSessionRequest);
         } catch (AuthenticationException $e) {
+            return $presenter->show();
+            //$presenter->setResponseStatus(new UnauthorizedResponse());
+
             /*
             return $this->view(
                 [
