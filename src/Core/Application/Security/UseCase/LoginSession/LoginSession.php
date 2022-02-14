@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace Core\Application\Security\UseCase\LoginSession;
 
 use Core\Application\Common\UseCase\ErrorResponse;
+use Core\Application\Common\UseCase\UnauthorizedLoginResponse;
 use Core\Application\Common\UseCase\UnauthorizedResponse;
 use Core\Application\Common\UseCase\NoContentResponse;
 use Centreon\Domain\Authentication\Exception\AuthenticationException as LegacyAuthenticationException;
@@ -125,7 +126,9 @@ class LoginSession
             $presenter->setResponseStatus(new PasswordExpiredResponse($e->getMessage()));
             return;
         } catch (AuthenticationException $e) {
-            $presenter->setResponseStatus(new UnauthorizedResponse($e->getMessage()));
+            $response = new UnauthorizedLoginResponse($e->getMessage());
+            $response->setBody([]);
+            $presenter->setResponseStatus($response);
             return;
         }
 

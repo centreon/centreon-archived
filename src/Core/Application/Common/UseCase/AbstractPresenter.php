@@ -43,14 +43,22 @@ abstract class AbstractPresenter implements PresenterInterface
     }
 
     /**
+     * @param mixed $data
+     */
+    public function present(mixed $data): void
+    {
+        if ($this->getResponseStatus() !== null) {
+            $this->presenterFormatter->present($this->getResponseStatus());
+        } else {
+            $this->presenterFormatter->present($data);
+        }
+    }
+
+    /**
      * @inheritDoc
      */
     public function show(): Response
     {
-        if ($this->getResponseStatus() !== null) {
-            $this->presenterFormatter->present($this->getResponseStatus());
-        }
-
         return $this->presenterFormatter->show();
     }
 

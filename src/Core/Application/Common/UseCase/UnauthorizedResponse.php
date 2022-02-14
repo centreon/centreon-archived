@@ -23,8 +23,6 @@ declare(strict_types=1);
 
 namespace Core\Application\Common\UseCase;
 
-use Core\Application\Common\UseCase\ResponseStatusInterface;
-
 class UnauthorizedResponse implements ResponseStatusInterface
 {
     /**

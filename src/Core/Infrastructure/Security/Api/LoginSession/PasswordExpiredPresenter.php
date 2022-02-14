@@ -25,7 +25,7 @@ namespace Core\Infrastructure\Security\Api\LoginSession;
 use Core\Application\Common\UseCase\AbstractPresenter;
 use Core\Application\Security\UseCase\LoginSession\PasswordExpiredPresenterInterface;
 
-class LoginSessionPresenter extends AbstractPresenter implements PasswordExpiredPresenterInterface
+class PasswordExpiredPresenter extends AbstractPresenter implements PasswordExpiredPresenterInterface
 {
     /**
      * @inheritDoc

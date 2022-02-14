@@ -23,20 +23,20 @@ declare(strict_types=1);
 
 namespace Core\Application\Common\UseCase;
 
-class ErrorResponse implements ResponseStatusInterface
+class UnauthorizedLoginResponse extends UnauthorizedResponse implements ResponseStatusInterface, BodyResponseInterface
 {
     /**
-     * @param string $message
+     * @var mixed
      */
-    public function __construct(private string $message)
+    private $body;
+
+    public function setBody(mixed $body): void
     {
+        $this->body = $body;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getMessage(): string
+    public function getBody(): mixed
     {
-        return _($this->message);
+        return $this->body;
     }
 }

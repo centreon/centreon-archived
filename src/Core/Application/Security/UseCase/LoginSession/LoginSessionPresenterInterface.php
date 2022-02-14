@@ -30,6 +30,7 @@ interface LoginSessionPresenterInterface extends PresenterInterface
 {
     /**
      * Present authentication information
+     * @param mixed $data
      */
-    public function present(LoginSessionResponse $response): void;
+    public function present(mixed $data): void;
 }

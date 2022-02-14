@@ -24,6 +24,7 @@ declare(strict_types=1);
 namespace Core\Infrastructure\Common\Presenter;
 
 use Centreon\Domain\Log\LoggerTrait;
+use Core\Application\Common\UseCase\BodyResponseInterface;
 use Core\Application\Common\UseCase\ResponseStatusInterface;
 use Core\Application\Common\UseCase\CreatedResponse;
 use Core\Application\Common\UseCase\ErrorResponse;
@@ -124,19 +125,20 @@ class JsonPresenter implements PresenterFormatterInterface
      *
      * @param mixed $data
      * @param integer $code
-     * @return mixed[]|null
+     * @return k[]|null
      */
     private function formatErrorContent(mixed $data, int $code): ?array
     {
         $content = null;
 
-        if (is_array($data)) {
-            $content = $this->data;
-        } elseif (is_a($data, ResponseStatusInterface::class)) {
+        if (is_a($data, ResponseStatusInterface::class)) {
             $content = [
                 'code' => $code,
                 'message' => $data->getMessage(),
             ];
+            if (is_a($data, BodyResponseInterface::class)) {
+                $content = array_merge($content, $data->getBody());
+            }
         }
 
         return $content;
