@@ -27,6 +27,7 @@ import Clock from '../Clock';
 import MenuLoader from '../../components/MenuLoader';
 import useNavigation from '../../Navigation/useNavigation';
 import { areUserParametersLoadedAtom } from '../../Main/useUser';
+import { passwordResetInformationsAtom } from '../../ResetPassword/passwordResetInformationsAtom';
 import { logoutEndpoint } from '../../api/endpoint';
 import reactRoutes from '../../reactRoutes/routeMap';
 
@@ -255,6 +256,9 @@ const UserMenu = (props) => {
   const { showSuccessMessage } = useSnackbar();
 
   const setAreUserParametersLoaded = useUpdateAtom(areUserParametersLoadedAtom);
+  const setPasswordResetInformationsAtom = useUpdateAtom(
+    passwordResetInformationsAtom,
+  );
 
   const logout = () => {
     logoutRequest({
@@ -262,6 +266,7 @@ const UserMenu = (props) => {
       endpoint: logoutEndpoint,
     }).then(() => {
       setAreUserParametersLoaded(false);
+      setPasswordResetInformationsAtom(null);
       navigate(reactRoutes.login);
       showSuccessMessage(t(labelYouHaveBeenLoggedOut));
     });

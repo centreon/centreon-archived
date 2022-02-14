@@ -4,31 +4,27 @@ import { useNavigate } from 'react-router-dom';
 import { FormikHelpers, FormikValues } from 'formik';
 import { useAtom } from 'jotai';
 import { useTranslation } from 'react-i18next';
-import { lte, not, __ } from 'ramda';
+import { not, path, pathEq } from 'ramda';
 import { useUpdateAtom } from 'jotai/utils';
 
-import {
-  useRequest,
-  useSnackbar,
-  getData,
-  useLocaleDateTimeFormat,
-} from '@centreon/ui';
+import { useRequest, useSnackbar, getData } from '@centreon/ui';
 
 import { PlatformInstallationStatus } from '../api/models';
 import { platformInstallationStatusAtom } from '../platformInstallationStatusAtom';
 import useUser from '../Main/useUser';
-import {
-  minPasswordRemainingTime,
-  passwordStatusAtom,
-} from '../passwordStatusAtom';
+import { passwordResetInformationsAtom } from '../ResetPassword/passwordResetInformationsAtom';
+import routeMap from '../reactRoutes/routeMap';
 
 import postLogin from './api';
 import { platformVersionsDecoder, redirectDecoder } from './api/decoder';
-import { LoginFormValues, PlatformVersions, Redirect } from './models';
-import { labelLoginSucceeded } from './translatedLabels';
+import {
+  LoginFormValues,
+  PlatformVersions,
+  Redirect,
+  RedirectAPI,
+} from './models';
+import { labelLoginSucceeded, labelPasswordExpired } from './translatedLabels';
 import { platformVersionsEndpoint } from './api/endpoint';
-
-const checkIsPasswordAboutToBeExpired = lte(__, minPasswordRemainingTime);
 
 interface UseLoginState {
   platformInstallationStatus: PlatformInstallationStatus | null;
@@ -46,6 +42,7 @@ const useLogin = (): UseLoginState => {
 
   const { sendRequest: sendLogin } = useRequest<Redirect>({
     decoder: redirectDecoder,
+    httpCodesBypassErrorSnackbar: [401],
     request: postLogin,
   });
 
@@ -53,34 +50,41 @@ const useLogin = (): UseLoginState => {
     decoder: platformVersionsDecoder,
     request: getData,
   });
-  const { toHumanizedDuration } = useLocaleDateTimeFormat();
 
-  const { showSuccessMessage, showWarningMessage } = useSnackbar();
+  const { showSuccessMessage, showWarningMessage, showErrorMessage } =
+    useSnackbar();
   const navigate = useNavigate();
   const loadUser = useUser(i18n.changeLanguage);
 
   const [platformInstallationStatus] = useAtom(platformInstallationStatusAtom);
-  const setPasswordStatus = useUpdateAtom(passwordStatusAtom);
+  const setPasswordResetInformations = useUpdateAtom(
+    passwordResetInformationsAtom,
+  );
 
   const checkPasswordExpiration = React.useCallback(
-    ({ passwordIsExpired, passwordRemainingTime }) => {
-      const isPasswordAboutToBeExpired = checkIsPasswordAboutToBeExpired(
-        passwordRemainingTime,
-      );
+    ({ error, alias, setSubmitting }) => {
+      const isUserNotAllowed = pathEq(['response', 'status'], 401, error);
 
-      if (not(isPasswordAboutToBeExpired)) {
+      const {
+        password_is_expired: passwordIsExpired,
+        redirect_uri: redirectUri,
+      } = path(['response', 'data'], error) as RedirectAPI;
+
+      if (isUserNotAllowed && not(passwordIsExpired)) {
+        setSubmitting(false);
+        showErrorMessage(
+          path(['response', 'data', 'message'], error) as string,
+        );
+
         return;
       }
 
-      setPasswordStatus({
-        isPasswordAboutToBeExpired,
-        passwordRemainingTime,
+      setPasswordResetInformations({
+        alias,
+        redirectUri: redirectUri as string,
       });
-      showWarningMessage(
-        `${t('labelPasswordWillExpireIn')} ${toHumanizedDuration(
-          passwordRemainingTime,
-        )}`,
-      );
+      navigate(routeMap.resetPassword);
+      showWarningMessage(t(labelPasswordExpired));
     },
     [],
   );
@@ -93,15 +97,13 @@ const useLogin = (): UseLoginState => {
       login: values.alias,
       password: values.password,
     })
-      .then(({ redirectUri, passwordIsExpired, passwordRemainingTime }) => {
+      .then(({ redirectUri }) => {
         showSuccessMessage(t(labelLoginSucceeded));
         loadUser()?.then(() => navigate(redirectUri));
-        checkPasswordExpiration({ passwordIsExpired, passwordRemainingTime });
       })
-      .catch(() => undefined)
-      .finally(() => {
-        setSubmitting(false);
-      });
+      .catch((error) =>
+        checkPasswordExpiration({ alias: values.alias, error, setSubmitting }),
+      );
   };
 
   const getBrowserLocale = (): string => navigator.language.slice(0, 2);
