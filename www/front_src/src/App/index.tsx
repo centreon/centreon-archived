@@ -55,7 +55,6 @@ const useStyles = makeStyles({
 const MainRouter = React.lazy(() => import('../components/mainRouter'));
 const Header = React.lazy(() => import('../Header'));
 const Navigation = React.lazy(() => import('../Navigation'));
-const Footer = React.lazy(() => import('../Footer'));
 
 const App = (): JSX.Element => {
   const classes = useStyles();
@@ -102,13 +101,6 @@ const App = (): JSX.Element => {
                 </div>
               </Fullscreen>
             </div>
-            {not(min) && (
-              <React.Suspense
-                fallback={<LoadingSkeleton height={30} width="100%" />}
-              >
-                <Footer />
-              </React.Suspense>
-            )}
           </div>
           <Fab
             className={classes.fullscreenButton}

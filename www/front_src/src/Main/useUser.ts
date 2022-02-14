@@ -2,7 +2,7 @@ import { useAtom, atom } from 'jotai';
 import { useUpdateAtom } from 'jotai/utils';
 import { isNil, not, or, pathEq } from 'ramda';
 
-import { User, userAtom } from '@centreon/ui-context';
+import { ThemeMode, User, userAtom } from '@centreon/ui-context';
 import { useRequest, getData } from '@centreon/ui';
 
 import { userDecoder } from '../api/decoders';
@@ -53,6 +53,7 @@ const useUser = (
           isExportButtonEnabled,
           locale: locale || 'en',
           name,
+          themeMode: 'light' as ThemeMode,
           timezone,
           use_deprecated_pages: useDeprecatedPages,
         });
