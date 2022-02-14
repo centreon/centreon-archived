@@ -145,10 +145,10 @@ const mockRedirectFromLoginPageGetRequests = (): void => {
       data: retrievedTranslations,
     })
     .mockResolvedValueOnce({
-      data: retrievedWeb,
+      data: retrievedUser,
     })
     .mockResolvedValueOnce({
-      data: retrievedUser,
+      data: retrievedWeb,
     })
     .mockResolvedValueOnce({
       data: retrievedNavigation,
@@ -417,7 +417,7 @@ describe('Main', () => {
     );
   });
 
-  it('redirects the user to his default page when the current location is the login page and the user is connected', async () => {
+  it.only('redirects the user to his default page when the current location is the login page and the user is connected', async () => {
     window.history.pushState({}, '', '/login');
     mockRedirectFromLoginPageGetRequests();
 
