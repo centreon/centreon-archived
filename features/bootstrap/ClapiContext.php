@@ -54,7 +54,7 @@ class ClapiContext extends CentreonContext
         "ACLGROUP",
     ];
 
-    private const CONFIGURATION_EXPORT_FILENAME = 'clapi-export.txt';
+    private const CONFIGURATION_EXPORT_FILENAME = 'clapi-configuration.txt';
     protected $test;
     protected $object;
     protected $parameter;
@@ -150,7 +150,7 @@ class ClapiContext extends CentreonContext
     }
 
     /**
-     * @Then a valid clapi configuration file should be generated
+     * @And a valid clapi configuration file should be generated
      */
     public function aValidClapiConfigurationFileShouldBeGenerated()
     {
