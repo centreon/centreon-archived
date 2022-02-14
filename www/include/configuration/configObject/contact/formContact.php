@@ -155,7 +155,7 @@ if (($o == MODIFY_CONTACT || $o == WATCH_CONTACT) && $contactId) {
                                 WHERE `contact_contact_id` = '" . intval($contactId) . "'");
     for ($i = 0; $data = $DBRESULT->fetchRow(); $i++) {
         if (!$centreon->user->admin && !isset($allowedAclGroups[$data['acl_group_id']])) {
-            $initialValues['contact_acl_groups'] = $data['acl_group_id'];
+            $initialValues['contact_acl_groups'][] = $data['acl_group_id'];
         } else {
             $cct["contact_acl_groups"][$i] = $data["acl_group_id"];
         }
