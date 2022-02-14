@@ -5,30 +5,6 @@ use Centreon\Test\Behat\CentreonContext;
 class ClapiContext extends CentreonContext
 {
     private const CLAPI_ACTIONS_ORDER = [
-        "ACLACTION",
-        "INSTANCE",
-        "TP",
-        "VENDOR",
-        "CMD",
-        "RESOURCECFG",
-        "CENTBROKERCFG",
-        "ENGINECFG",
-        "CONTACTTPL",
-        "CONTACT",
-        "TRAP",
-        "HTPL",
-        "CG",
-        "LDAP",
-        "HOST",
-        "STPL",
-        "HG",
-        "SERVICE",
-        "SC",
-        "ACLRESOURCE",
-        "ACLGROUP"
-    ];
-
-    private const CLAPI_ADD_OBJECTS = [
         "ACLMENU",
         "ACLACTION",
         "INSTANCE",
@@ -165,7 +141,7 @@ class ClapiContext extends CentreonContext
     }
 
     /**
-     * @And it should contain the supported configuration objects
+     * @Then it should contain the supported configuration objects
      */
     public function itShouldContainTheSupportedConfigurationObjects()
     {
@@ -215,7 +191,7 @@ class ClapiContext extends CentreonContext
         }
         $clapiAddedActions = array_merge(array_unique($clapiAddedActions));
 
-        if ($clapiAddedActions !== self::CLAPI_ADD_OBJECTS) {
+        if ($clapiAddedActions !== self::CLAPI_ACTIONS_ORDER) {
             throw new \Exception(
                 'Clapi actions order is not the same as the one in the file : ' .
                 implode(', ', array_diff($clapiAddedActions))
