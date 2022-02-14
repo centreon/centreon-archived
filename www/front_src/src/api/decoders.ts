@@ -7,18 +7,20 @@ import { PlatformInstallationStatus } from './models';
 export const userDecoder = JsonDecoder.object<User>(
   {
     alias: JsonDecoder.string,
-    default_page: JsonDecoder.optional(
-      JsonDecoder.nullable(JsonDecoder.string),
-    ),
+    defaultPage: JsonDecoder.optional(JsonDecoder.nullable(JsonDecoder.string)),
     isExportButtonEnabled: JsonDecoder.boolean,
     locale: JsonDecoder.string,
     name: JsonDecoder.string,
+    passwordRemainingTime: JsonDecoder.nullable(JsonDecoder.number),
     timezone: JsonDecoder.string,
-    use_deprecated_pages: JsonDecoder.boolean,
+    useDeprecatedPages: JsonDecoder.boolean,
   },
   'User parameters',
   {
+    defaultPage: 'default_page',
     isExportButtonEnabled: 'is_export_button_enabled',
+    passwordRemainingTime: 'password_remaining_time',
+    useDeprecatedPages: 'use_deprecated_pages',
   },
 );
 

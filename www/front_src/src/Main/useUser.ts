@@ -43,20 +43,22 @@ const useUser = (
           locale,
           name,
           timezone,
-          use_deprecated_pages: useDeprecatedPages,
-          default_page: defaultPage,
+          useDeprecatedPages,
+          defaultPage,
+          passwordRemainingTime,
         } = retrievedUser as User;
 
         setUser({
           alias,
-          default_page: defaultPage || '/monitoring/resources',
+          defaultPage: defaultPage || '/monitoring/resources',
           isExportButtonEnabled,
           locale: locale || 'en',
           name,
+          passwordRemainingTime,
           timezone,
-          use_deprecated_pages: useDeprecatedPages,
+          useDeprecatedPages,
         });
-        changeLanguage((retrievedUser as User).locale.substr(0, 2));
+        changeLanguage((retrievedUser as User).locale.substring(0, 2));
         setAreUserParametersLoaded(true);
       })
       .catch((error) => {
