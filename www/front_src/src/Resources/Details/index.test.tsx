@@ -5,6 +5,7 @@ import axios from 'axios';
 import mockDate from 'mockdate';
 import userEvent from '@testing-library/user-event';
 import { Provider } from 'jotai';
+import { BrowserRouter } from 'react-router-dom';
 
 import {
   render,
@@ -506,9 +507,11 @@ const DetailsTest = (): JSX.Element => {
   } as ResourceContext;
 
   return (
-    <Context.Provider value={context}>
-      <Details />
-    </Context.Provider>
+    <BrowserRouter>
+      <Context.Provider value={context}>
+        <Details />
+      </Context.Provider>
+    </BrowserRouter>
   );
 };
 

@@ -23,7 +23,7 @@ const MenuLoader = ({ width = 15 }: Props): JSX.Element => {
   return (
     <LoadingSkeleton
       className={classes.skeleton}
-      height={theme.spacing(5.5)}
+      height={theme.spacing(5)}
       variant="text"
       width={theme.spacing(width)}
     />
