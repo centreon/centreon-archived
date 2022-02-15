@@ -1,1 +1,10 @@
 @import "../Generic-theme/Variables-css/variables.css";
+
+:root {
+    --ui-tabs-nav-li-anchor-background-color: #fff;
+    --ui-anchor-state-default-font-color: #00a499;
+    --global-view-ui-active-tabs-border-color: #fff;
+    --ui-anchor-state-active-visited-font-color: #fff;
+    --ui-state-processing-anchor-background-color: #009fdf;
+    --global-view-ui-border-color: #00a499;
+}
