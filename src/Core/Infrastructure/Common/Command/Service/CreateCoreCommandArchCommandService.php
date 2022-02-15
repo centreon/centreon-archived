@@ -9,11 +9,9 @@ use Core\Infrastructure\Common\Command\Model\PresenterTemplate\CommandPresenterT
 use Core\Infrastructure\Common\Command\Model\RepositoryTemplate\WriteRepositoryTemplate;
 use Core\Infrastructure\Common\Command\Model\ControllerTemplate\CommandControllerTemplate;
 use Core\Infrastructure\Common\Command\Model\PresenterTemplate\CommandPresenterInterfaceTemplate;
-use Core\Infrastructure\Common\Command\Model\RepositoryTemplate\WriteRepositoryInterfaceTemplate;
 
-class CreateCoreCommandArchCommandService
+class CreateCoreCommandArchCommandService extends CreateCoreArchCommandService
 {
-    private WriteRepositoryInterfaceTemplate $writeRepositoryInterfaceTemplate;
     private WriteRepositoryTemplate $writeRepositoryTemplate;
     private RequestDtoTemplate $requestDtoTemplate;
     private CommandPresenterInterfaceTemplate $commandPresenterInterfaceTemplate;
@@ -21,55 +19,6 @@ class CreateCoreCommandArchCommandService
 
     public function __construct(private string $srcPath)
     {
-    }
-
-    /**
-     * Create the Write Repository Interface file if it doesn't exist.
-     *
-     * @param OutputInterface $output
-     * @param string $modelName
-     */
-    public function createWriteRepositoryInterfaceTemplateIfNotExist(
-        OutputInterface $output,
-        string $modelName
-    ): void {
-        $filePath = $this->srcPath . '/Core/Application/' . $modelName . '/Repository/' . 'Write' .
-            $modelName . 'RepositoryInterface.php';
-        $namespace = 'Core\\Application\\' . $modelName . '\\Repository';
-        if (!file_exists($filePath)) {
-            $this->writeRepositoryInterfaceTemplate = new WriteRepositoryInterfaceTemplate(
-                $filePath,
-                $namespace,
-                'Write' . $modelName . 'RepositoryInterface',
-                false
-            );
-            preg_match('/^(.+).Write' . $modelName . 'RepositoryInterface\.php$/', $filePath, $matches);
-            $dirLocation = $matches[1];
-            //Create dir if not exists,
-            if (!is_dir($dirLocation)) {
-                mkdir($dirLocation, 0777, true);
-            }
-
-            file_put_contents(
-                $this->writeRepositoryInterfaceTemplate->filePath,
-                $this->writeRepositoryInterfaceTemplate->generateModelContent()
-            );
-            $output->writeln(
-                'Creating Repository Interface : ' . $this->writeRepositoryInterfaceTemplate->namespace . '\\'
-                    . $this->writeRepositoryInterfaceTemplate->name
-            );
-        } else {
-            $this->writeRepositoryInterfaceTemplate = new WriteRepositoryInterfaceTemplate(
-                $filePath,
-                $namespace,
-                'Write' . $modelName . 'RepositoryInterface',
-                true
-            );
-            $output->writeln(
-                'Using Existing Repository Interface : ' . $this->writeRepositoryInterfaceTemplate->namespace . '\\'
-                    . $this->writeRepositoryInterfaceTemplate->name
-            );
-        }
     }
 
     /**
@@ -90,7 +39,7 @@ class CreateCoreCommandArchCommandService
                 $filePath,
                 $namespace,
                 'DbWrite' . $modelName . 'Repository',
-                $this->writeRepositoryInterfaceTemplate,
+                $this->repositoryInterfaceTemplate,
                 false
             );
             preg_match('/^(.+).DbWrite' . $modelName . 'Repository\.php$/', $filePath, $matches);
@@ -113,12 +62,12 @@ class CreateCoreCommandArchCommandService
                 $filePath,
                 $namespace,
                 'DbWrite' . $modelName . 'Repository',
-                $this->writeRepositoryInterfaceTemplate,
+                $this->repositoryInterfaceTemplate,
                 true
             );
             $output->writeln(
                 'Using Existing Repository : ' . $this->writeRepositoryTemplate->namespace . '\\'
-                    . $this->writeRepositoryTemplate->name
+                    . $this->repositoryInterfaceTemplate->name
             );
         }
     }
@@ -284,7 +233,7 @@ class CreateCoreCommandArchCommandService
                 $useCaseName,
                 $this->commandPresenterInterfaceTemplate,
                 $this->requestDtoTemplate,
-                $this->writeRepositoryInterfaceTemplate,
+                $this->repositoryInterfaceTemplate,
                 false
             );
             preg_match('/^(.+).' . $useCaseName . '\.php$/', $filePath, $matches);
@@ -308,7 +257,7 @@ class CreateCoreCommandArchCommandService
                 $useCaseName,
                 $this->commandPresenterInterfaceTemplate,
                 $this->requestDtoTemplate,
-                $this->writeRepositoryInterfaceTemplate,
+                $this->repositoryInterfaceTemplate,
                 true
             );
             $output->writeln(

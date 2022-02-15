@@ -23,6 +23,8 @@ class CreateCoreArchCommand extends Command
         self::COMMAND_DELETE,
         self::COMMAND_FIND
     ];
+    public const READ_REPOSITORY_TYPE = 'Read';
+    public const WRITE_REPOSITORY_TYPE = 'Write';
 
     public const COMMAND_USECASES = [self::COMMAND_CREATE, self::COMMAND_UPDATE, self::COMMAND_DELETE];
     public const QUERY_USECASES = [self::COMMAND_FIND];
@@ -109,9 +111,10 @@ class CreateCoreArchCommand extends Command
      */
     private function createCommandArch(OutputInterface $output): void
     {
-        $this->commandArchCommandService->createWriteRepositoryInterfaceTemplateIfNotExist(
+        $this->commandService->createRepositoryInterfaceTemplateIfNotExist(
             $output,
-            $this->modelTemplate->name
+            $this->modelTemplate->name,
+            self::WRITE_REPOSITORY_TYPE
         );
         $this->commandArchCommandService->createWriteRepositoryTemplateIfNotExist(
             $output,
