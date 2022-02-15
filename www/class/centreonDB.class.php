@@ -84,7 +84,7 @@ class CentreonDB extends \PDO
     protected $dsn;
 
     /**
-     * @var (int|(string|\CentreonLog[])[]|string|true)[]
+     * @var array<int, array<int, mixed>|int|bool|string>
      */
     protected $options;
 
