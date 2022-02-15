@@ -546,7 +546,7 @@ const Filter = (): JSX.Element => {
             <Criterias />
           </React.Suspense>
           <ClickAwayListener onClickAway={closeSuggestionPopover}>
-            <div data-testid={t(labelClearFilter)}>
+            <div data-testid={labelClearFilter}>
               <SearchField
                 fullWidth
                 EndAdornment={renderClearFilter(clearFilter)}

@@ -165,6 +165,7 @@ const HostStatusCounter = (): JSX.Element => {
               onClick={toggleDetailedView}
             />
             <Link
+              data-testid="Host Down"
               className={classnames(classes.link, styles['wrap-middle-icon'])}
               to={unhandledDownHostsLink}
               onClick={changeFilterAndNavigate({
@@ -178,6 +179,7 @@ const HostStatusCounter = (): JSX.Element => {
               />
             </Link>
             <Link
+              data-testid="Host Unreachable"
               className={classnames(classes.link, styles['wrap-middle-icon'])}
               to={unhandledUnreachableHostsLink}
               onClick={changeFilterAndNavigate({
@@ -191,6 +193,7 @@ const HostStatusCounter = (): JSX.Element => {
               />
             </Link>
             <Link
+              data-testid="Host Up"
               className={classnames(classes.link, styles['wrap-middle-icon'])}
               to={upHostsLink}
               onClick={changeFilterAndNavigate({
@@ -222,6 +225,7 @@ const HostStatusCounter = (): JSX.Element => {
                   })}
                 >
                   <SubmenuItem
+
                     submenuCount={numeral(data.total).format()}
                     submenuTitle={t('All')}
                   />
@@ -236,6 +240,7 @@ const HostStatusCounter = (): JSX.Element => {
                   })}
                 >
                   <SubmenuItem
+                    data-testid={"Host Down Submenu Item"}
                     dotColored="red"
                     submenuCount={`${numeral(data.down.unhandled).format(
                       '0a',
@@ -253,6 +258,7 @@ const HostStatusCounter = (): JSX.Element => {
                   })}
                 >
                   <SubmenuItem
+                    data-testid={"Host Unreachable Submenu Item"}
                     dotColored="gray"
                     submenuCount={`${numeral(data.unreachable.unhandled).format(
                       '0a',
@@ -270,6 +276,7 @@ const HostStatusCounter = (): JSX.Element => {
                   })}
                 >
                   <SubmenuItem
+                    data-testid={"Host Up Submenu Item"}
                     dotColored="green"
                     submenuCount={numeral(data.ok).format()}
                     submenuTitle={t('Up')}
@@ -285,6 +292,7 @@ const HostStatusCounter = (): JSX.Element => {
                   })}
                 >
                   <SubmenuItem
+                    data-testid={"Host Pending Submenu Item"}
                     dotColored="blue"
                     submenuCount={numeral(data.pending).format()}
                     submenuTitle={t('Pending')}

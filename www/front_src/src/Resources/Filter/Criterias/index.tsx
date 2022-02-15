@@ -88,12 +88,12 @@ const CriteriasContent = (): JSX.Element => {
             );
           })}
           <Grid container item className={classes.searchButton} spacing={1}>
-            <Grid item data-testid={t(labelClear)}>
+            <Grid item data-testid={labelClear}>
               <Button color="primary" size="small" onClick={clearFilter}>
                 {t(labelClear)}
               </Button>
             </Grid>
-            <Grid item>
+            <Grid data-testid={labelSearch} item>
               <Button
                 color="primary"
                 size="small"

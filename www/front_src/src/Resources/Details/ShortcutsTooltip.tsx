@@ -68,7 +68,7 @@ const ShortcutsTooltip = ({ resourceUris }: Props): JSX.Element => {
               key={name}
               title={isNil(uri) ? (t(labelActionNotPermitted) as string) : ''}
             >
-              <div data-testid={t(name)}>
+              <div data-testid={name}>
                 <Link
                   aria-label={t(name)}
                   className={classes.link}

@@ -175,7 +175,7 @@ const Header = ({ details, onSelectParent }: Props): JSX.Element => {
               <Link
                 aria-label={`${t(labelConfigure)}_${details.name}`}
                 className={classes.resourceNameConfigurationLink}
-                data-testid={`${labelConfigure}_${details.name}`}
+                data-testid={labelConfigure}
                 href={resourceConfigurationUri}
               >
                 <SettingsIcon

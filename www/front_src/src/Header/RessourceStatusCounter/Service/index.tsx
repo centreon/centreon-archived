@@ -166,6 +166,7 @@ const ServiceStatusCounter = (): JSX.Element => {
               onClick={toggleDetailedView}
             />
             <Link
+              data-testid="Services Critical"
               className={classnames(classes.link, styles['wrap-middle-icon'])}
               to={unhandledCriticalServicesLink}
               onClick={changeFilterAndNavigate({
@@ -179,6 +180,7 @@ const ServiceStatusCounter = (): JSX.Element => {
               />
             </Link>
             <Link
+              data-testid="Services Warning"
               className={classnames(classes.link, styles['wrap-middle-icon'])}
               to={unhandledWarningServicesLink}
               onClick={changeFilterAndNavigate({
@@ -192,6 +194,7 @@ const ServiceStatusCounter = (): JSX.Element => {
               />
             </Link>
             <Link
+              data-testid="Services Unknown"
               className={classnames(classes.link, styles['wrap-middle-icon'])}
               to={unhandledUnknownServicesLink}
               onClick={changeFilterAndNavigate({
@@ -205,6 +208,7 @@ const ServiceStatusCounter = (): JSX.Element => {
               />
             </Link>
             <Link
+              data-testid="Services Ok"
               className={classnames(classes.link, styles['wrap-middle-icon'])}
               to={okServicesLink}
               onClick={changeFilterAndNavigate({
@@ -227,6 +231,7 @@ const ServiceStatusCounter = (): JSX.Element => {
             >
               <SubmenuItems>
                 <Link
+                  data-testid="Services Warning"
                   className={classes.link}
                   to={servicesLink}
                   onClick={changeFilterAndNavigate({
