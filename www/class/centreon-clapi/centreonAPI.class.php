@@ -542,7 +542,7 @@ class CentreonAPI
                     $row['login_attempts'] = null;
                     $row['blocking_time'] = null;
                 } else {
-                    $now = (new \DateTime())->setTimestamp(time());
+                    $now = new \DateTime();
                     $expirationDate = (new \DateTime())->setTimestamp(
                         $row['blocking_time'] + $securityPolicy['blocking_duration']
                     );
@@ -570,7 +570,6 @@ class CentreonAPI
                 )
             ) {
                 $hashedPassword = password_hash($this->password, \CentreonAuth::PASSWORD_HASH_ALGORITHM);
-                $contact = new \CentreonContact($this->DB);
                 $contact->replacePasswordByContactId(
                     (int) $row['contact_id'],
                     $row["contact_passwd"],
