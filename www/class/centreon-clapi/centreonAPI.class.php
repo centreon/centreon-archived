@@ -523,21 +523,9 @@ class CentreonAPI
                 print "You don't have permissions for CLAPI.\n";
                 exit(1);
             }
-
+            $contact = new \CentreonContact($this->DB);
             // Get Security Policy
-            $statement = $this->DB->prepare(
-                'SELECT `custom_configuration` FROM provider_configuration WHERE name = :name'
-            );
-            $statement->bindValue(':name', LocalProvider::NAME, \PDO::PARAM_STR);
-            $statement->execute();
-            if (($result = $statement->fetch(\PDO::FETCH_ASSOC)) === false) {
-                throw new ProviderException('Error while searching custom configuration');
-            }
-            $customConfiguration = json_decode($result['custom_configuration'], true);
-            if (!array_key_exists('password_security_policy', $customConfiguration)) {
-                throw new ProviderException('Security Policy not found in custom configuration');
-            }
-            $securityPolicy = $customConfiguration['password_security_policy'];
+            $securityPolicy = $contact->getPasswordSecurityPolicy();
 
             // Remove any blocking if it's not in the policy
             if ($securityPolicy['blocking_duration'] === null) {
