@@ -1243,6 +1243,13 @@ class CentreonAPI
         $blockLoginStatement->execute();
     }
 
+    /**
+     * Exit with invalid credentials message.
+     *
+     * @param integer $contactLoginAttempts
+     * @param integer $securityPolicyAttempts
+     * @param integer $blockingDuration
+     */
     private function exitOnInvalidCredentials(
         int $contactLoginAttempts,
         int $securityPolicyAttempts,
@@ -1260,6 +1267,9 @@ class CentreonAPI
         exit(1);
     }
 
+    /**
+     * Remove the blocking time and login attemps.
+     */
     private function removeBlockingTimeOnUser(): void
     {
         $unblockStatement = $this->DB->prepare(
