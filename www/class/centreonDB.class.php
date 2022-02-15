@@ -211,7 +211,7 @@ class CentreonDB extends \PDO
     }
 
     /**
-     * @param mixed $enable
+     * @param mixed $val
      * @return void
      */
     public function autoCommit($val)
