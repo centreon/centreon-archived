@@ -115,13 +115,13 @@ const Form = (): JSX.Element => {
         );
 
         return (
-          <>
+          <React.Fragment key={name}>
             <TextField
               fullWidth
               required
               EndAdornment={passwordEndAdornment}
+              ariaLabel={t(label)}
               error={getError({ errors, touched })}
-              key={name}
               label={t(label)}
               name={name}
               type={passwordVisibility[name] ? 'text' : 'password'}
@@ -130,7 +130,7 @@ const Form = (): JSX.Element => {
               onChange={handleChange(name)}
             />
             {equals(name, oldPasswordFieldName) && <Divider />}
-          </>
+          </React.Fragment>
         );
       })}
 

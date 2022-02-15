@@ -10,11 +10,11 @@ import { putData, useRequest, useSnackbar } from '@centreon/ui';
 import { ResetPasswordValues } from './models';
 import {
   labelNewPasswordsMustMatch,
-  labelPasswordChanged,
+  labelPasswordRenewed,
   labelRequired,
   labelTheNewPasswordIstheSameAsTheOldPassword,
 } from './translatedLabels';
-import { resetPasswordEndpoint } from './api/endpoint';
+import { getResetPasswordEndpoint } from './api/endpoint';
 import { passwordResetInformationsAtom } from './passwordResetInformationsAtom';
 
 interface UseResetPasswordState {
@@ -53,12 +53,12 @@ const useResetPassword = (): UseResetPasswordState => {
         new_password: values.newPassword,
         old_password: values.oldPassword,
       },
-      endpoint: resetPasswordEndpoint(
+      endpoint: getResetPasswordEndpoint(
         passwordResetInformations?.alias as string,
       ),
     })
       .then(() => {
-        showSuccessMessage(t(labelPasswordChanged));
+        showSuccessMessage(t(labelPasswordRenewed));
         navigate(passwordResetInformations?.redirectUri as string);
       })
       .catch(() => {
