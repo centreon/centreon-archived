@@ -100,7 +100,7 @@ const Details = (): JSX.Element | null => {
       tabs={getVisibleTabs().map(({ id, title }) => (
         <Tab
           aria-label={t(title)}
-          data-testid={t(title)}
+          data-testid={id}
           disabled={isNil(details)}
           key={id}
           label={isNil(details) ? <Skeleton width={60} /> : t(title)}

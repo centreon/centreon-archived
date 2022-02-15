@@ -117,7 +117,7 @@ const GraphActions = ({
             ariaLabel={t(labelPerformancePage)}
             className={classes.buttonLink}
             color="primary"
-            data-testid={t(labelPerformancePage)}
+            data-testid={labelPerformancePage}
             size="small"
             title={t(labelPerformancePage)}
             onClick={goToPerformancePage}
@@ -127,7 +127,7 @@ const GraphActions = ({
           <IconButton
             disableTouchRipple
             ariaLabel={t(labelExportToPng)}
-            data-testid={t(labelExportToPng)}
+            data-testid={labelExportToPng}
             disabled={isNil(timeline)}
             size="large"
             title={t(labelExportToPng)}
@@ -142,19 +142,19 @@ const GraphActions = ({
             onClose={closeSizeExportMenu}
           >
             <MenuItem
-              data-testid={t(labelAsDisplayed)}
+              data-testid={labelAsDisplayed}
               onClick={(): void => convertToPng(1)}
             >
               {t(labelAsDisplayed)}
             </MenuItem>
             <MenuItem
-              data-testid={t(labelMediumSize)}
+              data-testid={labelMediumSize}
               onClick={(): void => convertToPng(0.75)}
             >
               {t(labelMediumSize)}
             </MenuItem>
             <MenuItem
-              data-testid={t(labelSmallSize)}
+              data-testid={labelSmallSize}
               onClick={(): void => convertToPng(0.5)}
             >
               {t(labelSmallSize)}

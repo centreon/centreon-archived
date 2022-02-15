@@ -90,7 +90,7 @@ const ExportConfiguration = ({
     <>
       <Paper className={classes.exportButton}>
         <Button
-          data-testid={labelExportConfiguration}
+          data-testid={classes.exportButton}
           disabled={disableButton}
           size="small"
           onClick={askBeforeExportConfiguration}

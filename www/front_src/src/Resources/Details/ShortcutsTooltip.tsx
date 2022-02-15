@@ -58,7 +58,7 @@ const ShortcutsTooltip = ({ resourceUris }: Props): JSX.Element => {
 
   return (
     <PopoverMenu
-      icon={<MoreHorizIcon data-testid={t(labelShortcuts)} fontSize="small" />}
+      icon={<MoreHorizIcon  fontSize="small" />}
       title={t(labelShortcuts)}
     >
       {(): JSX.Element => (
