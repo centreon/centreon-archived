@@ -12,3 +12,8 @@ centreon_application_authentication_logout:
     methods: POST
     path: /authentication/logout
     controller: 'Core\Infrastructure\Security\Api\LogoutSession\LogoutSessionController'
+
+centreon_security__renew_user_password:
+    methods: PUT
+    path: /authentication/users/{alias}/password
+    controller: 'Core\Infrastructure\Security\Api\RenewPasswordController'
