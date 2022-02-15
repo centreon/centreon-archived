@@ -1177,7 +1177,9 @@ div.menuLeft {
 }
 
 #globalView .ui-state-default,#globalView .ui-widget-content .ui-state-default,#globalView .ui-widget-header .ui-state-default {
-    border: var(--global-view-ui-border-color);
+    border-top: 1px solid var(--global-view-ui-border-color);
+    border-left: 1px solid var(--global-view-ui-border-color);
+    border-right: 1px solid var(--global-view-ui-border-color);
     margin: 1px .2em 0 0;
     white-space: normal;
 }
