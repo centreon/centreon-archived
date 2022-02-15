@@ -53,7 +53,7 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 class LoginSessionTest extends TestCase
 {
     /**
-     * @var PresenterFormatterInterface
+     * @var PresenterFormatterInterface&\PHPUnit\Framework\MockObject\MockObject
      */
     private $presenterFormatter;
 
@@ -63,67 +63,67 @@ class LoginSessionTest extends TestCase
     private $loginSessionPresenter;
 
     /**
-     * @var AuthenticationServiceInterface|\PHPUnit\Framework\MockObject\MockObject
+     * @var AuthenticationServiceInterface&\PHPUnit\Framework\MockObject\MockObject
      */
     private $authenticationService;
 
     /**
-     * @var ProviderServiceInterface|\PHPUnit\Framework\MockObject\MockObject
+     * @var ProviderServiceInterface&\PHPUnit\Framework\MockObject\MockObject
      */
     private $providerService;
 
     /**
-     * @var ContactServiceInterface|\PHPUnit\Framework\MockObject\MockObject
+     * @var ContactServiceInterface&\PHPUnit\Framework\MockObject\MockObject
      */
     private $contactService;
 
     /**
-     * @var RequestStack|\PHPUnit\Framework\MockObject\MockObject
+     * @var RequestStack&\PHPUnit\Framework\MockObject\MockObject
      */
     private $requestStack;
 
     /**
-     * @var Request|\PHPUnit\Framework\MockObject\MockObject
+     * @var Request&\PHPUnit\Framework\MockObject\MockObject
      */
     private $request;
 
     /**
-     * @var SessionInterface|\PHPUnit\Framework\MockObject\MockObject
+     * @var SessionInterface&\PHPUnit\Framework\MockObject\MockObject
      */
     private $session;
 
     /**
-     * @var ProviderInterface|\PHPUnit\Framework\MockObject\MockObject
+     * @var ProviderInterface&\PHPUnit\Framework\MockObject\MockObject
      */
     private $provider;
 
     /**
-     * @var ContactInterface|\PHPUnit\Framework\MockObject\MockObject
+     * @var ContactInterface&\PHPUnit\Framework\MockObject\MockObject
      */
     private $contact;
 
     /**
-     * @var AuthenticationTokens|\PHPUnit\Framework\MockObject\MockObject
+     * @var AuthenticationTokens&\PHPUnit\Framework\MockObject\MockObject
      */
     private $authenticationTokens;
 
     /**
-     * @var MenuServiceInterface|\PHPUnit\Framework\MockObject\MockObject
+     * @var MenuServiceInterface&\PHPUnit\Framework\MockObject\MockObject
      */
     private $menuService;
 
     /**
-     * @var AuthenticationRepositoryInterface|\PHPUnit\Framework\MockObject\MockObject
+     * @var AuthenticationRepositoryInterface&\PHPUnit\Framework\MockObject\MockObject
      */
     private $authenticationRepository;
 
     /**
-     * @var SessionRepositoryInterface|\PHPUnit\Framework\MockObject\MockObject
+     * @var SessionRepositoryInterface&\PHPUnit\Framework\MockObject\MockObject
      */
     private $sessionRepository;
 
     /**
-     * @var DataStorageEngineInterface|\PHPUnit\Framework\MockObject\MockObject
+     * @var DataStorageEngineInterface&\PHPUnit\Framework\MockObject\MockObject
      */
     private $dataStorageEngine;
 
