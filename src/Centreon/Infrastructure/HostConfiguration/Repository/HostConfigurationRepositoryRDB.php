@@ -968,7 +968,7 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
             $this->translateDbName(
                 'DELETE `:db`.hostcategories_relation
                 FROM `:db`.hostcategories_relation
-                JOIN `:db`.hostcategories ON hostcategories.hc_id = hostcategories_relation.hostcategories_hc_id
+                INNER JOIN `:db`.hostcategories ON hostcategories.hc_id = hostcategories_relation.hostcategories_hc_id
                 WHERE hostcategories_relation.host_host_id = :host_id
                 AND hostcategories.level IS NULL'
             )
