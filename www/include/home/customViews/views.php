@@ -57,7 +57,7 @@ try {
     bind_textdomain_codeset("messages", "UTF-8");
     textdomain("messages");
 
-    if (CentreonSession::checkSession(session_id(), $db) == 0) {
+    if (CentreonSession::checkSession(session_id(), $db) === false) {
         throw new Exception('Invalid session');
     }
     $viewObj = new CentreonCustomView($centreon, $db);
