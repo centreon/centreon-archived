@@ -166,8 +166,8 @@ const ServiceStatusCounter = (): JSX.Element => {
               onClick={toggleDetailedView}
             />
             <Link
-              data-testid="Services Critical"
               className={classnames(classes.link, styles['wrap-middle-icon'])}
+              data-testid="Services Critical"
               to={unhandledCriticalServicesLink}
               onClick={changeFilterAndNavigate({
                 criterias: unhandledCriticalServicesCriterias,
@@ -180,8 +180,8 @@ const ServiceStatusCounter = (): JSX.Element => {
               />
             </Link>
             <Link
-              data-testid="Services Warning"
               className={classnames(classes.link, styles['wrap-middle-icon'])}
+              data-testid="Services Warning"
               to={unhandledWarningServicesLink}
               onClick={changeFilterAndNavigate({
                 criterias: unhandledWarningServicesCriterias,
@@ -194,8 +194,8 @@ const ServiceStatusCounter = (): JSX.Element => {
               />
             </Link>
             <Link
-              data-testid="Services Unknown"
               className={classnames(classes.link, styles['wrap-middle-icon'])}
+              data-testid="Services Unknown"
               to={unhandledUnknownServicesLink}
               onClick={changeFilterAndNavigate({
                 criterias: unhandledUnknownServicesCriterias,
@@ -208,8 +208,8 @@ const ServiceStatusCounter = (): JSX.Element => {
               />
             </Link>
             <Link
-              data-testid="Services Ok"
               className={classnames(classes.link, styles['wrap-middle-icon'])}
+              data-testid="Services Ok"
               to={okServicesLink}
               onClick={changeFilterAndNavigate({
                 criterias: okServicesCriterias,
@@ -231,8 +231,8 @@ const ServiceStatusCounter = (): JSX.Element => {
             >
               <SubmenuItems>
                 <Link
-                  data-testid="Services Warning"
                   className={classes.link}
+                  data-testid="Services Warning"
                   to={servicesLink}
                   onClick={changeFilterAndNavigate({
                     criterias: servicesCriterias,

@@ -93,7 +93,7 @@ const CriteriasContent = (): JSX.Element => {
                 {t(labelClear)}
               </Button>
             </Grid>
-            <Grid data-testid={labelSearch} item>
+            <Grid item data-testid={labelSearch}>
               <Button
                 color="primary"
                 size="small"
