@@ -150,12 +150,12 @@ if (($o == MODIFY_CONTACT || $o == WATCH_CONTACT) && $contactId) {
     /**
      * Get ACL informations for this user
      */
-    $DBRESULT = $pearDB->query("SELECT acl_group_id 
-                                FROM `acl_group_contacts_relations` 
+    $DBRESULT = $pearDB->query("SELECT acl_group_id
+                                FROM `acl_group_contacts_relations`
                                 WHERE `contact_contact_id` = '" . intval($contactId) . "'");
     for ($i = 0; $data = $DBRESULT->fetchRow(); $i++) {
         if (!$centreon->user->admin && !isset($allowedAclGroups[$data['acl_group_id']])) {
-            $initialValues['contact_acl_groups'] = $data['acl_group_id'];
+            $initialValues['contact_acl_groups'][] = $data['acl_group_id'];
         } else {
             $cct["contact_acl_groups"][$i] = $data["acl_group_id"];
         }
@@ -182,7 +182,10 @@ $notifCgs = $cg->getListContactgroup(false);
 
 if (
     $centreon->optGen['ldap_auth_enable'] == 1
-    && $cct['contact_auth_type'] == 'ldap' && isset($cct['ar_id']) && $cct['ar_id']
+    && !empty($cct['contact_id'])
+    && $cct['contact_auth_type'] === 'ldap'
+    && !empty($cct['ar_id'])
+    && !empty($cct['contact_ldap_dn'])
 ) {
     $ldap = new CentreonLDAP($pearDB, null, $cct['ar_id']);
     if (false !== $ldap->connect()) {
@@ -202,7 +205,7 @@ if (isset($contactId)) {
 $contactTpl = array(null => "           ");
 $DBRESULT = $pearDB->query("SELECT contact_id, contact_name
                             FROM contact
-                            WHERE contact_register = '0' $strRestrinction 
+                            WHERE contact_register = '0' $strRestrinction
                             ORDER BY contact_name");
 while ($contacts = $DBRESULT->fetchRow()) {
     $contactTpl[$contacts["contact_id"]] = $contacts["contact_name"];
@@ -847,7 +850,11 @@ if ($o == WATCH_CONTACT) {
     $res = $form->addElement('reset', 'reset', _("Reset"), array("class" => "btc bt_default"));
 }
 
-if ($centreon->optGen['ldap_auth_enable'] == 1 && $cct['contact_auth_type'] == 'ldap') {
+if (
+    !empty($cct['contact_id'])
+    && $centreon->optGen['ldap_auth_enable'] == 1
+    && $cct['contact_auth_type'] === 'ldap'
+) {
     $tpl->assign("ldap_group", _("Group Ldap"));
     if (isset($cgLdap)) {
         $tpl->assign("ldapGroups", $cgLdap);
@@ -857,11 +864,6 @@ $valid = false;
 
 if ($form->validate() && $from_list_menu == false) {
     $cctObj = $form->getElement('contact_id');
-    if (!$centreon->user->admin && $contactId) {
-        $form->removeElement('contact_admin');
-        $form->removeElement('reach_api');
-        $form->removeElement('reach_api_rt');
-    }
     if ($form->getSubmitValue("submitA")) {
         $newContactId = insertContactInDB();
         $cctObj->setValue($contactId);
