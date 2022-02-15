@@ -1,14 +1,25 @@
 import { useAtom, atom } from 'jotai';
 import { useUpdateAtom } from 'jotai/utils';
-import { isNil, not, or, pathEq } from 'ramda';
+import { gt, isNil, not, or, pathEq, __ } from 'ramda';
 
 import { User, userAtom } from '@centreon/ui-context';
-import { useRequest, getData } from '@centreon/ui';
+import {
+  useRequest,
+  getData,
+  useSnackbar,
+  useLocaleDateTimeFormat,
+} from '@centreon/ui';
 
 import { userDecoder } from '../api/decoders';
 import { userEndpoint } from '../api/endpoint';
 
+import { labelYourPasswordWillExpireIn } from './translatedLabels';
+
 export const areUserParametersLoadedAtom = atom<boolean | null>(null);
+
+const sevenDays = 60 * 60 * 24 * 7;
+
+const isGreaterThanSevenDays = gt(__, sevenDays);
 
 const useUser = (
   changeLanguage: (locale: string) => void,
@@ -18,6 +29,9 @@ const useUser = (
     httpCodesBypassErrorSnackbar: [403, 401],
     request: getData,
   });
+
+  const { showWarningMessage } = useSnackbar();
+  const { toHumanizedDuration } = useLocaleDateTimeFormat();
 
   const [areUserParametersLoaded, setAreUserParametersLoaded] = useAtom(
     areUserParametersLoadedAtom,
@@ -60,6 +74,19 @@ const useUser = (
         });
         changeLanguage((retrievedUser as User).locale.substring(0, 2));
         setAreUserParametersLoaded(true);
+
+        if (
+          isNil(passwordRemainingTime) ||
+          isGreaterThanSevenDays(passwordRemainingTime)
+        ) {
+          return;
+        }
+
+        showWarningMessage(
+          `${labelYourPasswordWillExpireIn} ${toHumanizedDuration(
+            passwordRemainingTime,
+          )}`,
+        );
       })
       .catch((error) => {
         const isUserAllowed = not(

@@ -17,7 +17,10 @@ import { retrievedExternalComponents } from '../externalComponents/mocks';
 import { navigationEndpoint } from '../Navigation/useNavigation';
 import { externalComponentsEndpoint } from '../externalComponents/useExternalComponents';
 
-import { labelCentreonIsLoading } from './translatedLabels';
+import {
+  labelCentreonIsLoading,
+  labelYourPasswordWillExpireIn,
+} from './translatedLabels';
 
 import Main from '.';
 
@@ -37,6 +40,7 @@ const retrievedUser = {
   is_export_button_enabled: true,
   locale: 'fr_FR.UTF8',
   name: 'Admin',
+  password_remaining_time: 345,
   timezone: 'Europe/Paris',
   use_deprecated_pages: false,
 };
@@ -444,5 +448,9 @@ describe('Main', () => {
         'http://localhost/monitoring/resources',
       );
     });
+
+    expect(
+      screen.getByText(`${labelYourPasswordWillExpireIn} 5m 45s`),
+    ).toBeInTheDocument();
   });
 });

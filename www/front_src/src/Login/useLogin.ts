@@ -23,7 +23,10 @@ import {
   Redirect,
   RedirectAPI,
 } from './models';
-import { labelLoginSucceeded, labelPasswordExpired } from './translatedLabels';
+import {
+  labelLoginSucceeded,
+  labelPasswordHasExpired,
+} from './translatedLabels';
 import { platformVersionsEndpoint } from './api/endpoint';
 
 interface UseLoginState {
@@ -84,7 +87,7 @@ const useLogin = (): UseLoginState => {
         redirectUri: redirectUri as string,
       });
       navigate(routeMap.resetPassword);
-      showWarningMessage(t(labelPasswordExpired));
+      showWarningMessage(t(labelPasswordHasExpired));
     },
     [],
   );

@@ -27,7 +27,7 @@ import {
   labelPassword,
   labelRequired,
   labelHideThePassword,
-  labelPasswordExpired,
+  labelPasswordHasExpired,
 } from './translatedLabels';
 import { loginEndpoint, platformVersionsEndpoint } from './api/endpoint';
 
@@ -51,6 +51,7 @@ const retrievedUser = {
   is_export_button_enabled: true,
   locale: 'fr_FR.UTF8',
   name: 'Admin',
+  password_remaining_time: 345,
   timezone: 'Europe/Paris',
   use_deprecated_pages: false,
 };
@@ -250,7 +251,7 @@ describe('Login Page', () => {
     userEvent.click(screen.getByLabelText(labelConnect));
 
     await waitFor(() => {
-      expect(screen.getByText(labelPasswordExpired)).toBeInTheDocument();
+      expect(screen.getByText(labelPasswordHasExpired)).toBeInTheDocument();
     });
 
     expect(window.location.href).toBe('http://localhost/reset-password');
