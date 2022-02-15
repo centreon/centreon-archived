@@ -6,11 +6,11 @@ import {
   FormikValues,
   useFormikContext,
 } from 'formik';
-import { isEmpty, not, prop } from 'ramda';
+import { equals, isEmpty, not, prop } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
 import { makeStyles } from '@mui/styles';
-import { Button, CircularProgress } from '@mui/material';
+import { Button, CircularProgress, Divider } from '@mui/material';
 
 import { TextField } from '@centreon/ui';
 
@@ -32,7 +32,7 @@ interface GetErrorProps {
   touched: FormikTouched<FormikValues>;
 }
 
-const inputs = [
+const contentLayout = [
   {
     getError: ({ errors, touched }: GetErrorProps): string | undefined =>
       prop(oldPasswordFieldName, touched)
@@ -106,7 +106,7 @@ const Form = (): JSX.Element => {
 
   return (
     <form className={classes.form} onSubmit={handleSubmit}>
-      {inputs.map(({ name, label, getValue, getError }) => {
+      {contentLayout.map(({ name, label, getValue, getError }): JSX.Element => {
         const passwordEndAdornment = (): JSX.Element => (
           <PasswordEndAdornment
             changeVisibility={(): void => changeVisibility(name)}
@@ -115,19 +115,22 @@ const Form = (): JSX.Element => {
         );
 
         return (
-          <TextField
-            fullWidth
-            required
-            EndAdornment={passwordEndAdornment}
-            error={getError({ errors, touched })}
-            key={name}
-            label={t(label)}
-            name={name}
-            type={passwordVisibility[name] ? 'text' : 'password'}
-            value={getValue(values)}
-            onBlur={handleBlur(name)}
-            onChange={handleChange(name)}
-          />
+          <>
+            <TextField
+              fullWidth
+              required
+              EndAdornment={passwordEndAdornment}
+              error={getError({ errors, touched })}
+              key={name}
+              label={t(label)}
+              name={name}
+              type={passwordVisibility[name] ? 'text' : 'password'}
+              value={getValue(values)}
+              onBlur={handleBlur(name)}
+              onChange={handleChange(name)}
+            />
+            {equals(name, oldPasswordFieldName) && <Divider />}
+          </>
         );
       })}
 
