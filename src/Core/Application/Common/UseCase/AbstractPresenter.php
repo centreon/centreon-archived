@@ -68,6 +68,7 @@ abstract class AbstractPresenter implements PresenterInterface
     public function setResponseStatus(?ResponseStatusInterface $responseStatus): void
     {
         $this->responseStatus = $responseStatus;
+        $this->presenterFormatter->present($responseStatus);
     }
 
     /**

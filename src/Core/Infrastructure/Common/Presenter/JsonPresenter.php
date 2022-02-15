@@ -41,7 +41,7 @@ class JsonPresenter implements PresenterFormatterInterface
     /**
      * @var mixed $data
      */
-    private mixed $data;
+    private mixed $data = null;
 
     /**
      * @var mixed[] $responseHeaders
@@ -81,14 +81,14 @@ class JsonPresenter implements PresenterFormatterInterface
             case is_a($this->data, NotFoundResponse::class, false):
                 $this->debug('Data not found. Generating a not found response');
                 return new JsonResponse(
-                    $this->formatErrorContent($this->data, JsonResponse::HTTP_UNAUTHORIZED),
+                    $this->formatErrorContent($this->data, JsonResponse::HTTP_NOT_FOUND),
                     JsonResponse::HTTP_NOT_FOUND,
                     $this->responseHeaders,
                 );
             case is_a($this->data, ErrorResponse::class, false):
                 $this->debug('Data error. Generating an error response');
                 return new JsonResponse(
-                    $this->formatErrorContent($this->data, JsonResponse::HTTP_UNAUTHORIZED),
+                    $this->formatErrorContent($this->data, JsonResponse::HTTP_INTERNAL_SERVER_ERROR),
                     JsonResponse::HTTP_INTERNAL_SERVER_ERROR,
                     $this->responseHeaders,
                 );

@@ -29,6 +29,7 @@ use Core\Application\Security\UseCase\LoginSession\LoginSessionResponse;
 
 class LoginSessionPresenter extends AbstractPresenter implements LoginSessionPresenterInterface
 {
+    
     public function setResponseStatus(?\Core\Application\Common\UseCase\ResponseStatusInterface $responseStatus): void
     {
         $this->presenterFormatter->present($responseStatus);
