@@ -46,6 +46,17 @@ interface Props {
   initialValues: PasswordResetInformations | null;
 }
 
+const retrievedUser = {
+  alias: 'Admin alias',
+  default_page: '/monitoring/resources',
+  is_export_button_enabled: true,
+  locale: 'fr_FR.UTF8',
+  name: 'Admin',
+  password_remaining_time: 345,
+  timezone: 'Europe/Paris',
+  use_deprecated_pages: false,
+};
+
 const TestComponent = ({ initialValues }: Props): JSX.Element => (
   <BrowserRouter>
     <SnackbarProvider>
@@ -72,9 +83,13 @@ describe('Reset password Page', () => {
     mockedAxios.put.mockResolvedValue({
       data: null,
     });
+    mockedAxios.get.mockResolvedValue({
+      data: retrievedUser,
+    });
   });
 
   afterEach(() => {
+    mockedAxios.get.mockReset();
     mockedAxios.put.mockReset();
     window.history.pushState({}, '', '/');
   });

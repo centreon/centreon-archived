@@ -7,6 +7,8 @@ import { useNavigate } from 'react-router';
 
 import { putData, useRequest, useSnackbar } from '@centreon/ui';
 
+import useUser from '../Main/useUser';
+
 import { ResetPasswordValues } from './models';
 import {
   labelNewPasswordsMustMatch,
@@ -34,7 +36,7 @@ function differentPasswords(this, newPassword?: string): boolean {
 }
 
 const useResetPassword = (): UseResetPasswordState => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
 
   const { showSuccessMessage } = useSnackbar();
@@ -43,6 +45,8 @@ const useResetPassword = (): UseResetPasswordState => {
   });
 
   const passwordResetInformations = useAtomValue(passwordResetInformationsAtom);
+
+  const loadUser = useUser(i18n.changeLanguage);
 
   const submitResetPassword = (
     values: ResetPasswordValues,
@@ -59,7 +63,9 @@ const useResetPassword = (): UseResetPasswordState => {
     })
       .then(() => {
         showSuccessMessage(t(labelPasswordRenewed));
-        navigate(passwordResetInformations?.redirectUri as string);
+        loadUser()?.then(() =>
+          navigate(passwordResetInformations?.redirectUri as string),
+        );
       })
       .catch(() => {
         setSubmitting(false);
