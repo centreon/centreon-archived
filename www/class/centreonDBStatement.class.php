@@ -128,11 +128,9 @@ class CentreonDBStatement extends \PDOStatement
         try {
             $result = parent::execute($parameters);
         } catch (\PDOException $e) {
-            if ($this->debug) {
-                $string = str_replace("`", "", $this->queryString);
-                $string = str_replace('*', "\*", $string);
-                $this->log->insertLog(2, $e->getMessage() . " QUERY : " . $string . ", " . json_encode($parameters));
-            }
+            $string = str_replace("`", "", $this->queryString);
+            $string = str_replace('*', "\*", $string);
+            $this->log->insertLog(2, $e->getMessage() . " QUERY : " . $string . ", " . json_encode($parameters));
 
             throw $e;
         }
