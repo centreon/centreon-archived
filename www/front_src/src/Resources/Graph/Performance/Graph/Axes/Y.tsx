@@ -84,6 +84,12 @@ const YAxes = ({
             orientation="right"
             scale={rightScale}
             tickFormat={formatTick({ unit: secondUnit })}
+            tickLabelProps={(): Record<string, unknown> => ({
+              ...commonTickLabelProps,
+              dx: '0.25em',
+              dy: '0.25em',
+              textAnchor: 'start',
+            })}
             tickLength={2}
           />
           <UnitLabel unit={secondUnit} x={graphWidth} />

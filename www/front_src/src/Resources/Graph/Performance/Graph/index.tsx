@@ -132,7 +132,6 @@ const useStyles = makeStyles<Theme, Pick<Props, 'onAddComment'>>((theme) => ({
           stroke: theme.palette.text.primary,
         },
       },
-      stroke: theme.palette.text.primary,
     },
     '& .visx-columns': {
       '& .visx-line': {
