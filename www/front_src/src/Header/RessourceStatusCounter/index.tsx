@@ -33,7 +33,7 @@ const RessourceStatusCounter = <
   schema,
   children,
   loaderWidth,
-}: Props): JSX.Element => {
+}: Props): JSX.Element  | null  => {
   const [data, setData] = React.useState<StatusCount>();
   const [toggled, setToggled] = React.useState<boolean>();
   const [isAllowed, setIsAllowed] = React.useState<boolean>(true);
@@ -76,7 +76,7 @@ const RessourceStatusCounter = <
   };
 
   if (!isAllowed) {
-    return <div />;
+    return null;
   }
 
   if (!data) {
