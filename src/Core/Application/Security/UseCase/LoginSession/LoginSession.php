@@ -105,22 +105,26 @@ class LoginSession
              * Search for an already existing and available authentications token.
              * Create a new one if no one are found.
              */
-            $authenticationTokens = $this->authenticationService->findAuthenticationTokensByToken(
-                $this->requestStack->getCurrentRequest()->getSession()->getId()
-            );
-            if ($authenticationTokens === null) {
-                $this->createAuthenticationTokens(
-                    $this->requestStack->getCurrentRequest()->getSession()->getId(),
-                    $authenticationProvider->getConfiguration()->getName(),
-                    $providerUser,
-                    $authenticationProvider->getProviderToken(
-                        $this->requestStack->getCurrentRequest()->getSession()->getId()
-                    ),
-                    $authenticationProvider->getProviderRefreshToken(
-                        $this->requestStack->getCurrentRequest()->getSession()->getId()
-                    ),
-                    $request->clientIp
+            $currentRequest = $this->requestStack->getCurrentRequest();
+            if ($currentRequest !== null) {
+                $authenticationTokens = $this->authenticationService->findAuthenticationTokensByToken(
+                    $currentRequest->getSession()->getId()
                 );
+
+                if ($authenticationTokens === null) {
+                    $this->createAuthenticationTokens(
+                        $currentRequest->getSession()->getId(),
+                        $authenticationProvider->getConfiguration()->getName(),
+                        $providerUser,
+                        $authenticationProvider->getProviderToken(
+                            $currentRequest->getSession()->getId()
+                        ),
+                        $authenticationProvider->getProviderRefreshToken(
+                            $currentRequest->getSession()->getId()
+                        ),
+                        $request->clientIp,
+                    );
+                }
             }
         } catch (PasswordExpiredException $e) {
             $response = new PasswordExpiredResponse($e->getMessage());
@@ -296,10 +300,13 @@ class LoginSession
      */
     private function startLegacySession(Centreon $legacySession): void
     {
-        $this->info('[AUTHENTICATE] Starting Centreon Session');
-        $this->requestStack->getCurrentRequest()->getSession()->start();
-        $this->requestStack->getCurrentRequest()->getSession()->set('centreon', $legacySession);
-        $_SESSION['centreon'] = $legacySession;
+        $currentRequest = $this->requestStack->getCurrentRequest();
+        if ($currentRequest !== null) {
+            $this->info('[AUTHENTICATE] Starting Centreon Session');
+            $currentRequest->getSession()->start();
+            $currentRequest->getSession()->set('centreon', $legacySession);
+            $_SESSION['centreon'] = $legacySession;
+        }
     }
 
     /**
@@ -386,7 +393,7 @@ class LoginSession
      * @param ContactInterface $contact
      * @param ProviderToken $providerToken
      * @param ProviderToken|null $providerRefreshToken
-     * @return void
+     * @param string|null $clientIp
      */
     private function createAuthenticationTokens(
         string $sessionToken,
@@ -394,7 +401,7 @@ class LoginSession
         ContactInterface $contact,
         ProviderToken $providerToken,
         ?ProviderToken $providerRefreshToken,
-        string $clientIp
+        ?string $clientIp
     ): void {
         $providerConfiguration = $this->providerService->findProviderConfigurationByConfigurationName(
             $providerConfigurationName

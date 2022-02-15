@@ -51,7 +51,7 @@ class LoginSessionRequest
     public ?string $refererQueryParameters;
 
     /**
-     * @var string
+     * @var string|null
      */
-    public string $clientIp;
+    public ?string $clientIp;
 }
