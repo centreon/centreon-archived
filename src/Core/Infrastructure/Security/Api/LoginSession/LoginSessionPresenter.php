@@ -23,18 +23,11 @@ declare(strict_types=1);
 namespace Core\Infrastructure\Security\Api\LoginSession;
 
 use Core\Application\Common\UseCase\AbstractPresenter;
-use Core\Application\Common\UseCase\ResponseStatusInterface;
 use Core\Application\Security\UseCase\LoginSession\LoginSessionPresenterInterface;
 use Core\Application\Security\UseCase\LoginSession\LoginSessionResponse;
 
 class LoginSessionPresenter extends AbstractPresenter implements LoginSessionPresenterInterface
 {
-    
-    public function setResponseStatus(?\Core\Application\Common\UseCase\ResponseStatusInterface $responseStatus): void
-    {
-        $this->presenterFormatter->present($responseStatus);
-    }
-
     /**
      * {@inheritDoc}
      * @param LoginSessionResponse $response

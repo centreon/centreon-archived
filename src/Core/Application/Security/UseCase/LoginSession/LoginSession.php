@@ -22,15 +22,11 @@ declare(strict_types=1);
 
 namespace Core\Application\Security\UseCase\LoginSession;
 
-use Core\Application\Common\UseCase\ErrorResponse;
-use Core\Application\Common\UseCase\UnauthorizedLoginResponse;
 use Core\Application\Common\UseCase\UnauthorizedResponse;
-use Core\Application\Common\UseCase\NoContentResponse;
 use Centreon\Domain\Authentication\Exception\AuthenticationException as LegacyAuthenticationException;
 use Core\Domain\Security\Authentication\AuthenticationException;
 use Core\Domain\Security\Authentication\PasswordExpiredException;
 use Centreon\Domain\Log\LoggerTrait;
-
 use Centreon;
 use Centreon\Domain\Menu\Model\Page;
 use Security\Domain\Authentication\Model\Session;
@@ -152,7 +148,6 @@ class LoginSession
          */
         $redirectionUri = $this->getRedirectionUri($request, $providerUser);
 
-        //$presenter->setResponseStatus(new NoContentResponse());
         $presenter->present($this->createResponse($redirectionUri));
     }
 
@@ -352,6 +347,7 @@ class LoginSession
                 $redirectUri .= $defaultPage->getUrlOptions();
             }
         }
+
         return $redirectUri;
     }
 
@@ -401,7 +397,7 @@ class LoginSession
         ContactInterface $contact,
         ProviderToken $providerToken,
         ?ProviderToken $providerRefreshToken,
-        ?string $clientIp
+        ?string $clientIp,
     ): void {
         $providerConfiguration = $this->providerService->findProviderConfigurationByConfigurationName(
             $providerConfigurationName
