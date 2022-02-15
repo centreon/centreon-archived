@@ -28,14 +28,13 @@ use Centreon\Domain\Monitoring\ResourceService;
 use Centreon\Domain\Monitoring\Interfaces\ResourceRepositoryInterface;
 use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringRepositoryInterface;
-use Centreon\Domain\MetaServiceConfiguration\Interfaces\MetaServiceConfigurationReadRepositoryInterface;
 
 class ResourceServiceTest extends TestCase
 {
     /**
      * @throws \Exception
      */
-    public function testFindResources()
+    public function testFindResources(): void
     {
         $hostResource = (new Resource())
             ->setType('host')
@@ -56,13 +55,10 @@ class ResourceServiceTest extends TestCase
 
         $accessGroup = $this->createMock(AccessGroupRepositoryInterface::class);
 
-        $metaServiceConfigurationRepository = $this->createMock(MetaServiceConfigurationReadRepositoryInterface::class);
-
         $resourceService = new ResourceService(
             $resourceRepository,
             $monitoringRepository,
-            $accessGroup,
-            $metaServiceConfigurationRepository
+            $accessGroup
         );
 
         $resourcesFound = $resourceService->findResources(new ResourceFilter());

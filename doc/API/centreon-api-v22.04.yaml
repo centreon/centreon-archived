@@ -1042,6 +1042,49 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /monitoring/resources/hosts/{host_id}:
+    get:
+      tags:
+        - Resource
+      summary: "Get a Host resource type detail"
+      description: "Return the full detail of a resource typed Host."
+      parameters:
+        - $ref: '#/components/parameters/HostId'
+      responses:
+        '200':
+          description: "Successful request"
+          content:
+            application/json:
+              schema:
+                $ref: './ResourceHostDetail.yaml'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/HostNotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /monitoring/resources/hosts/{host_id}/services/{service_id}:
+    get:
+      tags:
+        - Resource
+      summary: "Get a Service resource type detail"
+      description: "Return the full detail of a resource typed Service."
+      parameters:
+        - $ref: '#/components/parameters/HostId'
+        - $ref: '#/components/parameters/ServiceId'
+      responses:
+        '200':
+          description: "Successful request"
+          content:
+            application/json:
+              schema:
+                $ref: './ResourceServiceDetail.yaml'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFoundHostOrService'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /monitoring/hosts:
     get:
       tags:
@@ -3892,6 +3935,20 @@ components:
                 example: "You are not authorized to access this resource"
     NotFound:
       description: "Not Found"
+    HostNotFound:
+      description: "Not Found"
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int64
+                example: 404
+              message:
+                type: string
+                example: "Host not found"
     NotFoundHostOrService:
       description: "Host or service not found"
       content:
