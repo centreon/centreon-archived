@@ -174,8 +174,8 @@ const ServiceStatusCounter = (): JSX.Element => {
               })}
             >
               <StatusCounter
-                data-testid="ServicesCritical"
                 count={data.critical.unhandled}
+                data-testid="ServicesCritical"
                 severityCode={SeverityCode.High}
               />
             </Link>
@@ -213,7 +213,7 @@ const ServiceStatusCounter = (): JSX.Element => {
                 link: okServicesLink,
               })}
             >
-              <StatusCounter  count={data.ok} severityCode={SeverityCode.Ok} />
+              <StatusCounter count={data.ok} severityCode={SeverityCode.Ok} />
             </Link>
             <IconToggleSubmenu
               iconType="arrow"
