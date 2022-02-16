@@ -14,9 +14,15 @@ export const generateReportForLoginPage = async ({
 
   await page.waitForSelector('input[aria-label="Alias"]');
 
-  await flow.startTimespan({ stepName: 'Type login credentials' });
+  await flow.startTimespan({ stepName: 'Type alias' });
   await page.type('input[aria-label="Alias"]', 'admin');
+  await flow.endTimespan();
+
+  await flow.startTimespan({ stepName: 'Type password' });
   await page.type('input[aria-label="Password"]', 'Centreon!2021');
+  await flow.endTimespan();
+
+  await flow.startTimespan({ stepName: 'Click submit button' });
   await page.click('button[aria-label="Connect"]');
   await flow.endTimespan();
 };
