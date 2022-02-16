@@ -176,7 +176,6 @@ const ServiceStatusCounter = (): JSX.Element => {
             >
               <StatusCounter
                 count={data.critical.unhandled}
-                data-testid="ServicesCritical"
                 severityCode={SeverityCode.High}
               />
             </Link>

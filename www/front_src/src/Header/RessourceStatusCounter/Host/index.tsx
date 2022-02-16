@@ -166,7 +166,7 @@ const HostStatusCounter = (): JSX.Element => {
             />
             <Link
               className={classnames(classes.link, styles['wrap-middle-icon'])}
-              data-testid="Host Down"
+              data-testid="Hosts Down"
               to={unhandledDownHostsLink}
               onClick={changeFilterAndNavigate({
                 criterias: unhandledDownHostsCriterias,
@@ -180,7 +180,7 @@ const HostStatusCounter = (): JSX.Element => {
             </Link>
             <Link
               className={classnames(classes.link, styles['wrap-middle-icon'])}
-              data-testid="Host Unreachable"
+              data-testid="Hosts Unreachable"
               to={unhandledUnreachableHostsLink}
               onClick={changeFilterAndNavigate({
                 criterias: unhandledUnreachableHostsCriterias,
@@ -194,7 +194,7 @@ const HostStatusCounter = (): JSX.Element => {
             </Link>
             <Link
               className={classnames(classes.link, styles['wrap-middle-icon'])}
-              data-testid="Host Up"
+              data-testid="Hosts Up"
               to={upHostsLink}
               onClick={changeFilterAndNavigate({
                 criterias: upHostsCriterias,
@@ -204,7 +204,7 @@ const HostStatusCounter = (): JSX.Element => {
               <StatusCounter count={data.ok} severityCode={SeverityCode.Ok} />
             </Link>
             <IconToggleSubmenu
-              data-testid="submenu-host"
+              data-testid="submenu-hosts"
               iconType="arrow"
               rotate={toggled}
               onClick={toggleDetailedView}
