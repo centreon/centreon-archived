@@ -11,7 +11,7 @@ import { userEndpoint } from '../api/endpoint';
 export const areUserParametersLoadedAtom = atom<boolean | null>(null);
 
 const useUser = (
-  changeLanguage: (locale: string) => void,
+  changeLanguage?: (locale: string) => void,
 ): (() => null | Promise<void>) => {
   const { sendRequest: getUser } = useRequest<User>({
     decoder: userDecoder,
