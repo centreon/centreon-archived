@@ -1206,7 +1206,7 @@ div.menuLeft {
     margin-bottom: -1px;
     padding-bottom: 0;
     border: 1px solid var(--global-view-ui-active-tabs-border-color);
-    border-bottom: none;
+    border-bottom: 2px solid var(--global-view-ui-active-tabs-border-bottom-color);
     border-top-left-radius: 0px;
     border-top-right-radius: 0px;
 }

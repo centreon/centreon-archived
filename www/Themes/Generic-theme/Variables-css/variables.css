@@ -292,6 +292,7 @@
     --ui-anchor-state-default-font-color: var(--color-white);
     --ui-anchor-state-active-visited-font-color: var(--color-persian-green);
     --global-view-ui-active-tabs-border-color: var(--color-robins-egg-blue);
+    --global-view-ui-active-tabs-border-bottom-color: none;
     --view-body-portlet-border-color: var(--color-white-lilac);
     --view-body-ui-widget-header-font-color: var(--color-armadillo);
     --view-body-ui-widget-header-background-color: var(--color-white-lilac);
