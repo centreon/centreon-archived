@@ -717,7 +717,7 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
      */
     private function linkSeverityToHost(Host $host): void
     {
-        if ($host->getSeverity() === null || $host->getSeverity()->getId() === null) {
+        if ($host->getSeverity()?->getId() === null) {
             return;
         }
 
@@ -978,14 +978,14 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
         $statement->execute();
     }
 
-    /*
+    /**
      * Add or update the link between a host and a host severity
      *
      * @param Host $host
      */
     private function updateHostSeverity(Host $host): void
     {
-        if ($host->getSeverity() === null || $host->getSeverity()->getId() === null) {
+        if ($host->getSeverity()?->getId() === null) {
             return;
         }
 
