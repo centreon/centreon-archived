@@ -18,17 +18,13 @@
  * For more information : contact@centreon.com
  *
  */
+
 declare(strict_types=1);
 
-namespace Core\Application\RealTime\UseCase\FindHost;
+namespace Core\Application\Security\UseCase\LoginSession;
 
 use Core\Application\Common\UseCase\PresenterInterface;
 
-interface FindHostPresenterInterface extends PresenterInterface
+interface LoginSessionPresenterInterface extends PresenterInterface
 {
-    /**
-     * {@inheritDoc}
-     * @param FindHostResponse $response
-     */
-    public function present(mixed $response): void;
 }

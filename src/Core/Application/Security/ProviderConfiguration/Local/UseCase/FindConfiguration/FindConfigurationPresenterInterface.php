@@ -27,8 +27,4 @@ use Core\Application\Common\UseCase\PresenterInterface;
 
 interface FindConfigurationPresenterInterface extends PresenterInterface
 {
-    /**
-     * @param FindConfigurationResponse $response
-     */
-    public function present(FindConfigurationResponse $response): void;
 }
