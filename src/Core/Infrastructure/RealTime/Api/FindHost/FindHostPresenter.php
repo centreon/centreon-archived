@@ -26,12 +26,12 @@ use CentreonDuration;
 use Core\Infrastructure\RealTime\Api\Hypermedia\HypermediaCreator;
 use Symfony\Component\HttpFoundation\Response;
 use Core\Application\Common\UseCase\ResponseStatusInterface;
-use Core\Application\RealTime\UseCase\FindHost\FindHostResponse;
+use Core\Application\Common\UseCase\AbstractPresenter;
 use Core\Application\RealTime\UseCase\FindHost\FindHostPresenterInterface;
 use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
 use Core\Infrastructure\Common\Presenter\PresenterTrait;
 
-class FindHostPresenter implements FindHostPresenterInterface
+class FindHostPresenter extends AbstractPresenter implements FindHostPresenterInterface
 {
     use PresenterTrait;
 
@@ -53,7 +53,7 @@ class FindHostPresenter implements FindHostPresenterInterface
     /**
      * @inheritDoc
      */
-    public function present(FindHostResponse $response): void
+    public function present(mixed $response): void
     {
         $presenterResponse = [
             'uuid' => 'h' . $response->id,

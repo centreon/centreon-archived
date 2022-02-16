@@ -25,12 +25,12 @@ namespace Core\Infrastructure\RealTime\Api\FindMetaService;
 use Core\Infrastructure\RealTime\Api\Hypermedia\HypermediaCreator;
 use Symfony\Component\HttpFoundation\Response;
 use Core\Application\Common\UseCase\ResponseStatusInterface;
-use Core\Application\RealTime\UseCase\FindMetaService\FindMetaServiceResponse;
+use Core\Application\Common\UseCase\AbstractPresenter;
 use Core\Application\RealTime\UseCase\FindMetaService\FindMetaServicePresenterInterface;
 use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
 use Core\Infrastructure\Common\Presenter\PresenterTrait;
 
-class FindMetaServicePresenter implements FindMetaServicePresenterInterface
+class FindMetaServicePresenter extends AbstractPresenter implements FindMetaServicePresenterInterface
 {
     use PresenterTrait;
 
@@ -52,7 +52,7 @@ class FindMetaServicePresenter implements FindMetaServicePresenterInterface
     /**
      * @inheritDoc
      */
-    public function present(FindMetaServiceResponse $response): void
+    public function present(mixed $response): void
     {
         $presenterResponse = [
             'uuid' => 'm' . $response->id,

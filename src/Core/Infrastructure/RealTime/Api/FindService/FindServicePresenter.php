@@ -25,12 +25,12 @@ namespace Core\Infrastructure\RealTime\Api\FindService;
 use Core\Infrastructure\RealTime\Api\Hypermedia\HypermediaCreator;
 use Symfony\Component\HttpFoundation\Response;
 use Core\Application\Common\UseCase\ResponseStatusInterface;
-use Core\Application\RealTime\UseCase\FindService\FindServiceResponse;
+use Core\Application\Common\UseCase\AbstractPresenter;
 use Core\Application\RealTime\UseCase\FindService\FindServicePresenterInterface;
 use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
 use Core\Infrastructure\Common\Presenter\PresenterTrait;
 
-class FindServicePresenter implements FindServicePresenterInterface
+class FindServicePresenter extends AbstractPresenter implements FindServicePresenterInterface
 {
     use PresenterTrait;
 
@@ -52,7 +52,7 @@ class FindServicePresenter implements FindServicePresenterInterface
     /**
      * @inheritDoc
      */
-    public function present(FindServiceResponse $response): void
+    public function present(mixed $response): void
     {
         $presenterResponse = [
             'uuid' => 'h' . $response->hostId . '-s' . $response->id,
