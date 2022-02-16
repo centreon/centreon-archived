@@ -58,6 +58,11 @@ class RenewPasswordTest extends TestCase
         $this->presenter = $this->createMock(RenewPasswordPresenterInterface::class);
     }
 
+    /**
+     * Test that a NotFoundResponse is set when the user is not found.
+     *
+     * @return void
+     */
     public function testUseCaseWithNotFoundUser()
     {
         $request = new RenewPasswordRequest();
@@ -80,6 +85,11 @@ class RenewPasswordTest extends TestCase
         $useCase($this->presenter, $request);
     }
 
+    /**
+     * Test that an ErrorResponse is set when the password is invalid.
+     *
+     * @return void
+     */
     public function testUseCaseWithInvalidPassword()
     {
         $request = new RenewPasswordRequest();
@@ -105,6 +115,11 @@ class RenewPasswordTest extends TestCase
         $useCase($this->presenter, $request);
     }
 
+    /**
+     * Test that a no content response is set if everything goes well.
+     *
+     * @return void
+     */
     public function testUseCaseWithValidParameters()
     {
         $request = new RenewPasswordRequest();

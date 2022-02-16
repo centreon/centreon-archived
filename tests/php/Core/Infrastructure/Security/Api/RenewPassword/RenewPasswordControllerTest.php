@@ -33,6 +33,9 @@ class RenewPasswordControllerTest extends TestCase
         $this->presenter = $this->createMock(RenewPasswordPresenterInterface::class);
     }
 
+    /**
+     * Test that an exception is thrown is the received payload is invalid.
+     */
     public function testExceptionIsThrownWithInvalidPayload()
     {
         $controller = new RenewPasswordController();
