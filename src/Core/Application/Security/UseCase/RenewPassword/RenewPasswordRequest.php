@@ -28,6 +28,11 @@ class RenewPasswordRequest
     /**
      * @var string
      */
+    public string $userAlias;
+
+    /**
+     * @var string
+     */
     public string $oldPassword;
 
     /**

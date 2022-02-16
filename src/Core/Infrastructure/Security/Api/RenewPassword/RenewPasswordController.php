@@ -43,10 +43,11 @@ class RenewPasswordController extends AbstractController
     public function __invoke(
         RenewPassword $useCase,
         Request $request,
-        RenewPasswordPresenterInterface $presenter
+        RenewPasswordPresenterInterface $presenter,
+        string $alias
     ): object {
         $this->validateDataSent($request, __DIR__ . '/RenewPasswordSchema.json');
-        $renewPasswordRequest = $this->createRenewPasswordRequest($request);
+        $renewPasswordRequest = $this->createRenewPasswordRequest($request, $alias);
         $useCase($presenter, $renewPasswordRequest);
         return $presenter->show();
     }
@@ -56,7 +57,7 @@ class RenewPasswordController extends AbstractController
      *
      * @param Request $request Request sent by client
      * @param string $jsonValidationFile Json validation file
-     * @throws \Exception
+     * @throws RenewPasswordApiException
      */
     private function validateDataSent(Request $request, string $jsonValidationFile): void
     {
@@ -89,10 +90,11 @@ class RenewPasswordController extends AbstractController
      * @param Request $request
      * @return RenewPasswordRequest
      */
-    private function createRenewPasswordRequest(Request $request): RenewPasswordRequest
+    private function createRenewPasswordRequest(Request $request, string $userAlias): RenewPasswordRequest
     {
         $requestData = json_decode((string) $request->getContent(), true);
         $renewPasswordRequest = new RenewPasswordRequest();
+        $renewPasswordRequest->userAlias = $userAlias;
         $renewPasswordRequest->oldPassword = $requestData['old_password'];
         $renewPasswordRequest->newPassword = $requestData['new_password'];
 

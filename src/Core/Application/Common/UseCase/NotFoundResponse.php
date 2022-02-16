@@ -25,7 +25,7 @@ namespace Core\Application\Common\UseCase;
 
 use Core\Application\Common\UseCase\ResponseStatusInterface;
 
-abstract class NotFoundResponse implements ResponseStatusInterface
+class NotFoundResponse implements ResponseStatusInterface
 {
     /**
      * @param string $objectNotFound

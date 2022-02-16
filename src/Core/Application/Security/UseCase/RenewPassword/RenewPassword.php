@@ -23,17 +23,45 @@ declare(strict_types=1);
 
 namespace Core\Application\Security\UseCase\RenewPassword;
 
+use Core\Application\Common\UseCase\ErrorResponse;
+use Core\Application\Common\UseCase\NotFoundResponse;
+use Core\Application\Common\UseCase\NoContentResponse;
+use Core\Application\User\Repository\ReadUserRepositoryInterface;
+use Core\Application\User\Repository\WriteUserRepositoryInterface;
+
 class RenewPassword
 {
+    /**
+     * @param ReadUserRepositoryInterface $readRepository
+     * @param WriteUserRepositoryInterface $writeRepository
+     */
     public function __construct(
-        ReadContactRepositoryInterface $readRepository,
-        WriteContactRepositoryInterface $writeRepository
+        private ReadUserRepositoryInterface $readRepository,
+        private WriteUserRepositoryInterface $writeRepository
     ) {
-
     }
 
-    public function __invoke(RenewPasswordPresenterInterface $presenter, RenewPasswordRequest $renewPasswordRequest)
-    {
+    /**
+     * @param RenewPasswordPresenterInterface $presenter
+     * @param RenewPasswordRequest $renewPasswordRequest
+     */
+    public function __invoke(
+        RenewPasswordPresenterInterface $presenter,
+        RenewPasswordRequest $renewPasswordRequest
+    ): void {
+        $user = $this->readRepository->findUserByAlias($renewPasswordRequest->userAlias);
+        if ($user === null) {
+            $presenter->setResponseStatus(new NotFoundResponse('User'));
+            return;
+        }
+        if (password_verify($renewPasswordRequest->oldPassword, $user->getPassword()) === false) {
+            $presenter->setResponseStatus(new ErrorResponse('Invalid credentials'));
+            return;
+        }
 
+        $newPassword = password_hash($renewPasswordRequest->newPassword, \CentreonAuth::PASSWORD_HASH_ALGORITHM);
+        $user->setPassword($newPassword);
+        $this->writeRepository->renewPassword($user);
+        $presenter->setResponseStatus(new NoContentResponse());
     }
 }
