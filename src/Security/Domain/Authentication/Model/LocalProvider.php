@@ -152,7 +152,7 @@ class LocalProvider implements ProviderInterface
             }
             $this->info('[LOCAL PROVIDER] authentication succeed');
         } else {
-            $this->critical(
+            $this->info(
                 "Local provider cannot authenticate successfully user",
                 [
                     "provider_name" => $this->getName(),
