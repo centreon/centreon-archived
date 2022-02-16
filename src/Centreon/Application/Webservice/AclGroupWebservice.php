@@ -36,6 +36,11 @@ class AclGroupWebservice extends Webservice\WebServiceAbstract implements
     use Webservice\DependenciesTrait;
 
     /**
+     * @var mixed
+     */
+    private $services;
+
+    /**
      * {@inheritdoc}
      */
     public static function getName(): string
@@ -45,6 +50,7 @@ class AclGroupWebservice extends Webservice\WebServiceAbstract implements
 
     /**
      * {@inheritdoc}
+     * @return array<int,string>
      */
     public static function dependencies(): array
     {
@@ -136,8 +142,8 @@ class AclGroupWebservice extends Webservice\WebServiceAbstract implements
      *
      * Get a list of ACL groups
      *
+     * @return DataRepresenter\Response
      * @throws \RestBadRequestException
-     * @return array
      */
     public function getList(): DataRepresenter\Response
     {
