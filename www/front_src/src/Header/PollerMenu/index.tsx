@@ -72,7 +72,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const PollerMenu = (): JSX.Element => {
+const PollerMenu = (): JSX.Element | null => {
   const classes = useStyles();
 
   const { t } = useTranslation();
@@ -139,7 +139,7 @@ const PollerMenu = (): JSX.Element => {
   };
 
   if (!isAllowed) {
-    return <div />;
+    return null;
   }
 
   if (isNil(issues)) {
