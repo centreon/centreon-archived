@@ -237,4 +237,29 @@ class Assertion
         }
         return $length;
     }
+
+    /**
+     * Assert that value is in array
+     *
+     * @param mixed $value
+     * @param string[] $choices
+     * @param string|null $propertyPath
+     * @throws \Assert\AssertionFailedException
+     * @return void
+     */
+    public static function inArray($value, array $choices, string $propertyPath = null): void
+    {
+        Assert::inArray(
+            $value,
+            $choices,
+            function (array $parameters) {
+                return AssertionException::inArray(
+                    $parameters['value'],
+                    $parameters['choices'],
+                    $parameters['propertyPath']
+                );
+            },
+            $propertyPath
+        );
+    }
 }

@@ -266,9 +266,13 @@ class CentreonContact
             throw new \Exception('Password security policy not found');
         }
 
-        $securityPolicyData = json_decode($configuration['custom_configuration'], true)['password_security_policy'];
+        $customConfiguration = json_decode($configuration['custom_configuration'], true);
 
-        return $securityPolicyData;
+        if (!array_key_exists('password_security_policy', $customConfiguration)) {
+            throw new \Exception('Security Policy not found in custom configuration');
+        }
+
+        return $customConfiguration['password_security_policy'];
     }
 
     /**

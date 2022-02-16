@@ -116,29 +116,6 @@ interface ResourceServiceInterface
     public function extractResourcesWithGraphData(array $resources): array;
 
     /**
-     * Enrich resource object with specific host data
-     *
-     * @param ResourceEntity $resource
-     */
-    public function enrichHostWithDetails(ResourceEntity $resource): void;
-
-    /**
-     * Enrich resource object with specific service data
-     *
-     * @param ResourceEntity $resource
-     * @throws ResourceException
-     */
-    public function enrichServiceWithDetails(ResourceEntity $resource): void;
-
-    /**
-     * Enrich resource object with specific meta service data
-     *
-     * @param ResourceEntity $resource
-     * @throws ResourceException
-     */
-    public function enrichMetaServiceWithDetails(ResourceEntity $resource): void;
-
-    /**
      * Replace macros set in the external links by their actual values
      *
      * @param ResourceEntity $resource
