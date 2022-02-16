@@ -60,8 +60,6 @@ class RenewPasswordTest extends TestCase
 
     /**
      * Test that a NotFoundResponse is set when the user is not found.
-     *
-     * @return void
      */
     public function testUseCaseWithNotFoundUser()
     {
@@ -87,8 +85,6 @@ class RenewPasswordTest extends TestCase
 
     /**
      * Test that an ErrorResponse is set when the password is invalid.
-     *
-     * @return void
      */
     public function testUseCaseWithInvalidPassword()
     {
@@ -117,8 +113,6 @@ class RenewPasswordTest extends TestCase
 
     /**
      * Test that a no content response is set if everything goes well.
-     *
-     * @return void
      */
     public function testUseCaseWithValidParameters()
     {
