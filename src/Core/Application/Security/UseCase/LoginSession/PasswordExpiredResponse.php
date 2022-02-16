@@ -21,11 +21,32 @@
 
 declare(strict_types=1);
 
-namespace Core\Application\Platform\UseCase\FindInstallationStatus;
+namespace Core\Application\Security\UseCase\LoginSession;
 
-use Core\Application\Common\UseCase\PresenterInterface;
-use Core\Application\Platform\UseCase\FindInstallationStatus\FindInstallationStatusResponse;
+use Core\Application\Common\UseCase\UnauthorizedResponse;
+use Core\Application\Common\UseCase\ResponseStatusInterface;
+use Core\Application\Common\UseCase\BodyResponseInterface;
 
-interface FindInstallationStatusPresenterInterface extends PresenterInterface
+class PasswordExpiredResponse extends UnauthorizedResponse implements ResponseStatusInterface, BodyResponseInterface
 {
+    /**
+     * @var mixed
+     */
+    private $body;
+
+    /**
+     * @inheritDoc
+     */
+    public function setBody(mixed $body): void
+    {
+        $this->body = $body;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getBody(): mixed
+    {
+        return $this->body;
+    }
 }

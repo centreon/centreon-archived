@@ -330,7 +330,7 @@ services:
     Centreon\Domain\Menu\Interfaces\MenuRepositoryInterface:
         class: Centreon\Infrastructure\Menu\MenuRepositoryRDB
 
-    Centreon\Domain\Authentication\UseCase\Authenticate:
+    Core\Application\Security\UseCase\LoginSession\LoginSession:
         arguments: [ "%redirect_default_page%" ]
         public: true
 

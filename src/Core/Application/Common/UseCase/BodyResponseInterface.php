@@ -20,15 +20,17 @@
  */
 declare(strict_types=1);
 
-namespace Core\Application\RealTime\UseCase\FindHost;
+namespace Core\Application\Common\UseCase;
 
-use Core\Application\Common\UseCase\PresenterInterface;
-
-interface FindHostPresenterInterface extends PresenterInterface
+interface BodyResponseInterface
 {
     /**
-     * {@inheritDoc}
-     * @param FindHostResponse $response
+     * @param mixed $body
      */
-    public function present(mixed $response): void;
+    public function setBody(mixed $body): void;
+
+    /**
+     * @return mixed
+     */
+    public function getBody(): mixed;
 }
