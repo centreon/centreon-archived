@@ -126,6 +126,22 @@ interface ContactInterface
     public function getRoles(): array;
 
     /**
+     * Indicates if this user has a role.
+     *
+     * @param string $role Role name to find
+     * @return bool
+     */
+    public function hasRole(string $role): bool;
+
+    /**
+     * Indicates if this user has a topology access.
+     *
+     * @param string $role Role name to find
+     * @return bool
+     */
+    public function hasTopologyRole(string $role): bool;
+
+    /**
      * Contact timezone.
      *
      * @return \DateTimeZone
