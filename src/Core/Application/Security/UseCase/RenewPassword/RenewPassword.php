@@ -58,6 +58,7 @@ class RenewPassword
             $presenter->setResponseStatus(new ErrorResponse('Invalid credentials'));
             return;
         }
+        //@Todo: Check that new password follow the security policy.
 
         $newPassword = password_hash($renewPasswordRequest->newPassword, \CentreonAuth::PASSWORD_HASH_ALGORITHM);
         $user->setPassword($newPassword);
