@@ -155,7 +155,9 @@ class ExtensionsHolder extends React.Component {
                             : '#84BD00',
                           color: '#FFFFFF',
                         }}
-                        onDelete={() => onDelete(entity, type)}
+                        onDelete={() =>
+                          onDelete(entity.id, type, entity.description)
+                        }
                       />
                     ) : (
                       <Button
