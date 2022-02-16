@@ -180,6 +180,11 @@ class Contact implements UserInterface, ContactInterface
     private $isOneClickExportEnabled = false;
 
     /**
+     * @var string|null
+     */
+    private $theme;
+
+    /**
      * @return int
      */
     public function getId(): int
@@ -497,10 +502,7 @@ class Contact implements UserInterface, ContactInterface
     }
 
     /**
-     * Indicates if this user has a role.
-     *
-     * @param string $role Role name to find
-     * @return bool
+     * @inheritDoc
      */
     public function hasRole(string $role): bool
     {
@@ -508,10 +510,7 @@ class Contact implements UserInterface, ContactInterface
     }
 
     /**
-     * Indicates if this user has a topology access.
-     *
-     * @param string $role Role name to find
-     * @return bool
+     * @inheritDoc
      */
     public function hasTopologyRole(string $role): bool
     {
@@ -661,5 +660,27 @@ class Contact implements UserInterface, ContactInterface
     public function getUserIdentifier(): string
     {
         return $this->alias;
+    }
+
+    /**
+     * Set user current theme.
+     *
+     * @param string $theme user's new theme.
+     * @return self
+     */
+    public function setTheme(string $theme): self
+    {
+        $this->theme = $theme;
+        return $this;
+    }
+
+    /**
+     * Get user current theme.
+     *
+     * @return string|null
+     */
+    public function getTheme(): ?string
+    {
+        return $this->theme;
     }
 }

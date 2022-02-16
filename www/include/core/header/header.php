@@ -41,7 +41,7 @@ if (!defined('SMARTY_DIR')) {
 /*
  * Bench
  */
-function microtime_float()
+function microtime_float(): bool
 {
     list($usec, $sec) = explode(" ", microtime());
     return ((float)$usec + (float)$sec);
@@ -77,7 +77,7 @@ $centreonSession = new CentreonSession();
 CentreonSession::start();
 
 // Check session and drop all expired sessions
-if (!CentreonSession::checkSession(session_id(), $pearDB)) {
+if (!$centreonSession->updateSession($pearDB)) {
     CentreonSession::stop();
 }
 
@@ -165,9 +165,32 @@ switch (strlen($p)) {
         break;
 }
 
+/*
+ * Define Skin path
+ */
+
+$tab_file_css = array();
+$i = 0;
+if ($handle = @opendir("./Themes/Centreon-2/Color")) {
+    while ($file = @readdir($handle)) {
+        if (is_file("./Themes/Centreon-2/Color" . "/" . $file)) {
+            $tab_file_css[$i++] = $file;
+        }
+    }
+    @closedir($handle);
+}
+
+$colorfile = "Color/" . $tab_file_css[0];
+
+//Get CSS Order and color
+$DBRESULT = $pearDB->query("SELECT `css_name` FROM `css_color_menu` WHERE `menu_nb` = '" . $level1 . "'");
+if ($DBRESULT->rowCount() && ($elem = $DBRESULT->fetch())) {
+    $colorfile = "Color/" . $elem["css_name"];
+}
+
 //Update Session Table For last_reload and current_page row
 $page = '' . $level1 . $level2 . $level3 . $level4;
-if ($page == '') {
+if (empty($page)) {
     $page = null;
 }
 $sessionStatement = $pearDB->prepare(
@@ -178,8 +201,6 @@ $sessionStatement = $pearDB->prepare(
 $sessionStatement->bindValue(':currentPage', $page, \PDO::PARAM_INT);
 $sessionStatement->bindValue(':sessionId', session_id(), \PDO::PARAM_STR);
 $sessionStatement->execute();
-
-$centreonSession->updateSession($pearDB);
 
 //Init Language
 $centreonLang = new CentreonLang(_CENTREON_PATH_, $centreon);

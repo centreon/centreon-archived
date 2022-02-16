@@ -393,7 +393,8 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
             ->setLocale($contactLocale)
             ->setDefaultPage($page)
             ->setUseDeprecatedPages($contact['show_deprecated_pages'] === '1')
-            ->setOneClickExportEnabled($contact['enable_one_click_export'] === '1');
+            ->setOneClickExportEnabled($contact['enable_one_click_export'] === '1')
+            ->setTheme($contact['contact_theme']);
 
         $this->addActionRules($contact);
         $this->addTopologyRules($contact);
