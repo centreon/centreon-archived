@@ -54,7 +54,7 @@ if (empty($_POST['action']) || !isset($_SESSION['centreon'])) {
 $centreon = $_SESSION['centreon'];
 
 $db = new CentreonDB();
-if (CentreonSession::checkSession(session_id(), $db) == 0) {
+if (CentreonSession::checkSession(session_id(), $db) === false) {
     exit();
 }
 
