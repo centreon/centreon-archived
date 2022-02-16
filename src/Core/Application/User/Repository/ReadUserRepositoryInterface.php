@@ -7,9 +7,10 @@ use Core\Domain\User\Model\User;
 interface ReadUserRepositoryInterface
 {
     /**
-     * Find a user with his alias.
+     * Find a user by his alias.
      *
+     * @param string $alias
      * @return User|null
      */
-    public function findUserByAlias(): ?User;
+    public function findUserByAlias(string $alias): ?User;
 }
