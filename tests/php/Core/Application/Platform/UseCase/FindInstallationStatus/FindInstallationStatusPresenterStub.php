@@ -41,9 +41,14 @@ class FindInstallationStatusPresenterStub implements FindInstallationStatusPrese
     private $responseStatus;
 
     /**
+     * @var mixed[]
+     */
+    public $responseHeaders;
+
+    /**
      * @inheritDoc
      */
-    public function present(FindInstallationStatusResponse $response): void
+    public function present(mixed $response): void
     {
         $this->response = $response;
     }
@@ -70,5 +75,21 @@ class FindInstallationStatusPresenterStub implements FindInstallationStatusPrese
     public function getResponseStatus(): ?ResponseStatusInterface
     {
         return $this->responseStatus;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setResponseHeaders(array $responseHeaders): void
+    {
+        $this->responseHeaders = $responseHeaders;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getResponseHeaders(): array
+    {
+        return $this->responseHeaders;
     }
 }

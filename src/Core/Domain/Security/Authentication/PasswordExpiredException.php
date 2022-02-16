@@ -20,15 +20,15 @@
  */
 declare(strict_types=1);
 
-namespace Core\Application\RealTime\UseCase\FindHost;
+namespace Core\Domain\Security\Authentication;
 
-use Core\Application\Common\UseCase\PresenterInterface;
-
-interface FindHostPresenterInterface extends PresenterInterface
+class PasswordExpiredException extends AuthenticationException
 {
     /**
-     * {@inheritDoc}
-     * @param FindHostResponse $response
+     * @return self
      */
-    public function present(mixed $response): void;
+    public static function passwordIsExpired(): self
+    {
+        return new self(_('Password is expired'));
+    }
 }
