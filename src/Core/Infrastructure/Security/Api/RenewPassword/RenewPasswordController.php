@@ -89,6 +89,7 @@ class RenewPasswordController extends AbstractController
 
     /**
      * @param Request $request
+     * @param string $userAlias
      * @return RenewPasswordRequest
      */
     private function createRenewPasswordRequest(Request $request, string $userAlias): RenewPasswordRequest
