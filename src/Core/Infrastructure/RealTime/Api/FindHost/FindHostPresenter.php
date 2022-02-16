@@ -38,7 +38,7 @@ class FindHostPresenter extends AbstractPresenter implements FindHostPresenterIn
     /**
      * @var ResponseStatusInterface|null
      */
-    private $responseStatus;
+    protected $responseStatus;
 
     /**
      * @param HypermediaCreator $hypermediaCreator
@@ -46,7 +46,7 @@ class FindHostPresenter extends AbstractPresenter implements FindHostPresenterIn
      */
     public function __construct(
         private HypermediaCreator $hypermediaCreator,
-        private PresenterFormatterInterface $presenterFormatter
+        protected PresenterFormatterInterface $presenterFormatter
     ) {
     }
 

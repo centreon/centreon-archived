@@ -37,7 +37,7 @@ class FindServicePresenter extends AbstractPresenter implements FindServicePrese
     /**
      * @var ResponseStatusInterface|null
      */
-    private $responseStatus;
+    protected $responseStatus;
 
     /**
      * @param HypermediaCreator $hypermediaCreator
@@ -45,7 +45,7 @@ class FindServicePresenter extends AbstractPresenter implements FindServicePrese
      */
     public function __construct(
         private HypermediaCreator $hypermediaCreator,
-        private PresenterFormatterInterface $presenterFormatter
+        protected PresenterFormatterInterface $presenterFormatter
     ) {
     }
 
