@@ -1,35 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import {
-  allPass,
-  concat,
-  endsWith,
-  filter,
-  find,
-  flip,
-  head,
-  includes,
-  invertObj,
-  isEmpty,
-  isNil,
-  keys,
-  last,
-  map,
-  not,
-  partition,
-  pipe,
-  prop,
-  propEq,
-  propSatisfies,
-  reject,
-  slice,
-  sortBy,
-  split,
-  startsWith,
-  trim,
-  without,
-  __,
-} from 'ramda';
+import { find, propEq } from 'ramda';
 import { compose } from 'redux';
 import axios from 'axios';
 import { useAtomValue } from 'jotai/utils';
@@ -203,10 +174,7 @@ const ExtensionsManager = ({ reloadNavigation }): JSX.Element => {
     const nameEqualsSearch = propEq('name', 'search');
     const nameEqualsStatuses = propEq('name', 'statuses');
 
-    const hasEmptyValue = propSatisfies(isEmpty, 'value');
-    const rejectEmpty = reject(hasEmptyValue);
-
-    const searchValue = find(nameEqualsSearch, getAppliedFilterCriteriasAtom);
+    // const searchValue = find(nameEqualsSearch, getAppliedFilterCriteriasAtom);
     const statuses = find(nameEqualsStatuses, getAppliedFilterCriteriasAtom);
 
     if (!statuses || !statuses.value) {
@@ -220,9 +188,6 @@ const ExtensionsManager = ({ reloadNavigation }): JSX.Element => {
     const updated = find(propEq('id', 'UPDATED'), values);
     const outdated = find(propEq('id', 'OUTDATED'), values);
 
-    if (updated) {
-      params += '&updated=true';
-    }
     if (!updated && outdated) {
       params += '&updated=false';
     } else if (updated && !outdated) {
@@ -234,6 +199,8 @@ const ExtensionsManager = ({ reloadNavigation }): JSX.Element => {
     } else if (installed && !notInstalled) {
       params += '&installed=true';
     }
+
+    console.log(`----------------${params}`);
 
     return params;
   };
