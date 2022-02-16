@@ -2,8 +2,8 @@ import * as React from 'react';
 
 import classnames from 'classnames';
 import { useTranslation, withTranslation } from 'react-i18next';
-import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useUpdateAtom } from 'jotai/utils';
 
 import { Button, Typography, Paper } from '@mui/material';
 import UserIcon from '@mui/icons-material/AccountCircle';
@@ -11,11 +11,17 @@ import FileCopyIcon from '@mui/icons-material/FileCopy';
 import CheckIcon from '@mui/icons-material/Check';
 import { makeStyles } from '@mui/styles';
 
-import { getData, useRequest } from '@centreon/ui';
+import { postData, getData, useRequest, useSnackbar } from '@centreon/ui';
 
-import { allowedPagesSelector } from '../../redux/selectors/navigation/allowedPages';
 import Clock from '../Clock';
 import MenuLoader from '../../components/MenuLoader';
+import useNavigation from '../../Navigation/useNavigation';
+import { areUserParametersLoadedAtom } from '../../Main/useUser';
+import { logoutEndpoint } from '../../api/endpoint';
+import reactRoutes from '../../reactRoutes/routeMap';
+
+import { userEndpoint } from './api/endpoint';
+import { labelProfile, labelYouHaveBeenLoggedOut } from './translatedLabels';
 
 const editProfileTopologyPage = '50104';
 
@@ -113,10 +119,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const UserMenu = ({ allowedPages }: StateToProps): JSX.Element => {
+const UserMenu = (): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
-  const userMenuInfo = 'internal.php?object=centreon_topcounter&action=user';
+  const { allowedPages } = useNavigation();
 
   const [copied, setCopied] = React.useState(false);
   const [data, setData] = React.useState<UserData | null>(null);
@@ -124,14 +130,20 @@ const UserMenu = ({ allowedPages }: StateToProps): JSX.Element => {
   const profile = React.useRef<HTMLDivElement>();
   const autologinNode = React.useRef<HTMLTextAreaElement>();
   const refreshTimeout = React.useRef<NodeJS.Timeout>();
+  const { sendRequest: logoutRequest } = useRequest({
+    request: postData,
+  });
   const { sendRequest } = useRequest<UserData>({
     request: getData,
   });
 
-  const endpoint = userMenuInfo;
+  const navigate = useNavigate();
+  const { showSuccessMessage } = useSnackbar();
 
-  const loaduserData = (): void => {
-    sendRequest({ endpoint: `./api/${endpoint}` })
+  const setAreUserParametersLoaded = useUpdateAtom(areUserParametersLoadedAtom);
+
+  const loadUserData = (): void => {
+    sendRequest({ endpoint: userEndpoint })
       .then((retrievedUserData) => {
         setData(retrievedUserData);
         refreshData();
@@ -143,12 +155,23 @@ const UserMenu = ({ allowedPages }: StateToProps): JSX.Element => {
       });
   };
 
+  const logout = (): void => {
+    logoutRequest({
+      data: {},
+      endpoint: logoutEndpoint,
+    }).then(() => {
+      setAreUserParametersLoaded(false);
+      navigate(reactRoutes.login);
+      showSuccessMessage(t(labelYouHaveBeenLoggedOut));
+    });
+  };
+
   const refreshData = (): void => {
     if (refreshTimeout.current) {
       clearTimeout(refreshTimeout.current);
     }
     refreshTimeout.current = setTimeout(() => {
-      loaduserData();
+      loadUserData();
     }, 60000);
   };
 
@@ -163,7 +186,7 @@ const UserMenu = ({ allowedPages }: StateToProps): JSX.Element => {
       setCopied(true);
       setTimeout(() => {
         setCopied(false);
-      }, 7000);
+      }, 700);
     }
   };
 
@@ -176,7 +199,7 @@ const UserMenu = ({ allowedPages }: StateToProps): JSX.Element => {
 
   React.useEffect(() => {
     window.addEventListener('mousedown', handleClick, false);
-    loaduserData();
+    loadUserData();
 
     return (): void => {
       window.removeEventListener('mousedown', handleClick, false);
@@ -202,6 +225,7 @@ const UserMenu = ({ allowedPages }: StateToProps): JSX.Element => {
         <Clock />
         <div ref={profile as React.RefObject<HTMLDivElement>}>
           <UserIcon
+            aria-label={t(labelProfile)}
             className={classnames(classes.userIcon)}
             fontSize="large"
             onClick={toggle}
@@ -234,7 +258,6 @@ const UserMenu = ({ allowedPages }: StateToProps): JSX.Element => {
                     </div>
                     {allowEditProfile && (
                       <Link
-                        submenuUserEdit
                         className={classnames(classes.submenuUserEdit)}
                         to={`/main.php?p=${editProfileTopologyPage}&o=c`}
                         onClick={toggle}
@@ -258,6 +281,7 @@ const UserMenu = ({ allowedPages }: StateToProps): JSX.Element => {
                     </Button>
 
                     <textarea
+                      readOnly
                       className={classnames(classes.hiddenInput)}
                       id="autologin-input"
                       ref={
@@ -270,7 +294,15 @@ const UserMenu = ({ allowedPages }: StateToProps): JSX.Element => {
               </ul>
               <div className={classnames(classes.logoutLink)}>
                 <Paper className={classes.userButton}>
-                  <Button fullWidth href="index.php?disconnect=1" size="small">
+                  <Button
+                    fullWidth
+                    href="index.php"
+                    size="small"
+                    onClick={(e: React.MouseEvent): void => {
+                      e.preventDefault();
+                      logout();
+                    }}
+                  >
                     {t('Logout')}
                   </Button>
                 </Paper>
@@ -283,16 +315,4 @@ const UserMenu = ({ allowedPages }: StateToProps): JSX.Element => {
   );
 };
 
-interface StateToProps {
-  allowedPages: Array<string>;
-}
-
-const mapStateToProps = (state): StateToProps => ({
-  allowedPages: allowedPagesSelector(state),
-});
-
-const mapDispatchToProps = {};
-
-export default withTranslation()(
-  connect(mapStateToProps, mapDispatchToProps)(UserMenu),
-);
+export default withTranslation()(UserMenu);
