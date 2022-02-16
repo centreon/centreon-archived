@@ -21,42 +21,22 @@
 
 declare(strict_types=1);
 
-namespace Centreon\Domain\Authentication\Model;
+namespace Core\Application\Common\UseCase;
 
-use Centreon\Domain\Common\Assertion\Assertion;
-
-class Credentials
+class UnauthorizedResponse implements ResponseStatusInterface
 {
     /**
-     * @var string
+     * @param string $message
      */
-    private $login;
-
-    /**
-     * @var string
-     */
-    private $password;
-
-    public function __construct(string $login, string $password)
+    public function __construct(private string $message)
     {
-        Assertion::notEmpty($login, 'Credentials::login');
-        $this->login = $login;
-        $this->password = $password;
     }
 
     /**
-     * @return string
+     * @inheritDoc
      */
-    public function getLogin(): string
+    public function getMessage(): string
     {
-        return $this->login;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPassword(): string
-    {
-        return $this->password;
+        return _($this->message);
     }
 }

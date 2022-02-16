@@ -27,7 +27,8 @@ use Core\Application\Common\UseCase\PresenterInterface;
 interface FindServicePresenterInterface extends PresenterInterface
 {
     /**
+     * {@inheritDoc}
      * @param FindServiceResponse $response
      */
-    public function present(FindServiceResponse $response): void;
+    public function present(mixed $response): void;
 }
