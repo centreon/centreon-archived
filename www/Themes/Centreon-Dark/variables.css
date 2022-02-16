@@ -29,5 +29,17 @@
     --table-form-header-font-color: var(--body-color);
     --popin-wrapper-font-color: var(--body-color);
     --table-form-header-h3-font-color: var(--body-color);
+    --body-background: #181a1b;
+    --body-color: #b2aca2;
+    --info-box-background-color: #1d2021;
+    --info-box-border-color: #776e62;
+    --path-way-font-color: var(--body-color);
+    --ui-widget-header-background-color: var(--body-background);
+    --ui-widget-header-border-bottom-color: #373b3d;
+    --ui-tabs-nav-li-anchor-background-color: #007fb2;
+    --ui-anchor-state-default-font-color: #58fff4;
+    --global-view-ui-active-tabs-border-color: var(--ui-anchor-state-default-font-color);
+    --ui-anchor-state-active-visited-font-color: var(--ui-anchor-state-default-font-color);
+    --global-view-ui-border-color: var(--ui-anchor-state-default-font-color);
+    --ui-background-color: none;
 }
-
