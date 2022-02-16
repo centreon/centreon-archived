@@ -129,7 +129,7 @@ if ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
     <link href="./include/common/javascript/charts/c3.min.css" type="text/css" rel="stylesheet" />
     <link href="./include/views/graphs/javascript/centreon-status-chart.css" type="text/css" rel="stylesheet" />
     <link
-            href="./Themes/Generic-theme/<?php echo $variablesThemeCSS; ?>/variables.css<?php echo $versionParam; ?>"
+            href="./Themes/Generic-theme/<?php echo $variablesThemeCSS; ?>/variables.css"
             rel="stylesheet"
             type="text/css"
     />
