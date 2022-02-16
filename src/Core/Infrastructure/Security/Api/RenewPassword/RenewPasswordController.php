@@ -38,6 +38,7 @@ class RenewPasswordController extends AbstractController
      * @param RenewPassword $useCase
      * @param Request $request
      * @param RenewPasswordPresenterInterface $presenter
+     * @param string $alias
      * @return object
      */
     public function __invoke(
