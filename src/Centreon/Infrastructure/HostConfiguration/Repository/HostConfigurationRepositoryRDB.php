@@ -112,7 +112,7 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
             $this->addExtendedHost($hostId, $host->getExtendedHost());
         }
         $this->linkHostTemplatesToHost($hostId, $host->getTemplates());
-        $this->linkCategoryToHost($host);
+        $this->linkHostCategoriesToHost($host);
         $this->linkSeveritiesToHost($host);
         $this->linkHostGroupsToHost($host);
     }
@@ -659,7 +659,7 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
      * @param Host $host
      * @throws HostCategoryException
      */
-    private function linkCategoryToHost(Host $host): void
+    private function linkHostCategoriesToHost(Host $host): void
     {
         foreach ($host->getCategories() as $category) {
             try {
@@ -792,6 +792,10 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
             // Update host templates
             $this->removeHostTemplatesFromHost($host);
             $this->linkHostTemplatesToHost($host->getId(), $host->getTemplates());
+
+            // Update Host Categories
+            $this->removeHostCategoriesFromHost($host);
+            $this->linkHostCategoriesToHost($host);
 
             if (!$isAlreadyInTransaction) {
                 $this->db->commit();
@@ -948,6 +952,26 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
     {
         $statement = $this->db->prepare(
             $this->translateDbName('DELETE FROM `:db`.host_template_relation WHERE host_host_id = :host_id')
+        );
+        $statement->bindValue(':host_id', $host->getId(), \PDO::PARAM_INT);
+        $statement->execute();
+    }
+
+    /**
+     * Removes all links between host categories and hosts.
+     *
+     * @param Host $host
+     */
+    private function removeHostCategoriesFromHost(Host $host): void
+    {
+        $statement = $this->db->prepare(
+            $this->translateDbName(
+                'DELETE `:db`.hostcategories_relation
+                FROM `:db`.hostcategories_relation
+                INNER JOIN `:db`.hostcategories ON hostcategories.hc_id = hostcategories_relation.hostcategories_hc_id
+                WHERE hostcategories_relation.host_host_id = :host_id
+                AND hostcategories.level IS NULL'
+            )
         );
         $statement->bindValue(':host_id', $host->getId(), \PDO::PARAM_INT);
         $statement->execute();
