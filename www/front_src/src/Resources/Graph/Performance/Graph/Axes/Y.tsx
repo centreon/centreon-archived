@@ -86,8 +86,8 @@ const YAxes = ({
             tickFormat={formatTick({ unit: secondUnit })}
             tickLabelProps={(): Record<string, unknown> => ({
               ...commonTickLabelProps,
-              dx: '0.25em',
-              dy: '0.25em',
+              dx: 4,
+              dy: 4,
               textAnchor: 'start',
             })}
             tickLength={2}
