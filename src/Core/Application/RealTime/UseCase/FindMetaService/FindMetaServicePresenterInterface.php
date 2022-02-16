@@ -28,7 +28,8 @@ use Core\Application\RealTime\UseCase\FindMetaService\FindMetaServiceResponse;
 interface FindMetaServicePresenterInterface extends PresenterInterface
 {
     /**
+     * {@inheritDoc}
      * @param FindMetaServiceResponse $response
      */
-    public function present(FindMetaServiceResponse $response): void;
+    public function present(mixed $response): void;
 }

@@ -20,15 +20,15 @@
  */
 declare(strict_types=1);
 
-namespace Core\Application\RealTime\UseCase\FindHost;
+namespace Core\Domain\Security\Authentication;
 
-use Core\Application\Common\UseCase\PresenterInterface;
-
-interface FindHostPresenterInterface extends PresenterInterface
+class AuthenticationException extends \Exception
 {
     /**
-     * {@inheritDoc}
-     * @param FindHostResponse $response
+     * @return self
      */
-    public function present(mixed $response): void;
+    public static function notAuthenticated(): self
+    {
+        return new self(_('Authentication failed'));
+    }
 }

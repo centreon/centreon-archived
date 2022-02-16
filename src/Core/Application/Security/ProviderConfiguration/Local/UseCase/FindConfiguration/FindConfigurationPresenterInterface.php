@@ -28,8 +28,4 @@ use Core\Application\Security\ProviderConfiguration\Local\UseCase\FindConfigurat
 
 interface FindConfigurationPresenterInterface extends PresenterInterface
 {
-    /**
-     * @param FindConfigurationResponse $response
-     */
-    public function present(FindConfigurationResponse $response): void;
 }
