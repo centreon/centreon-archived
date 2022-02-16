@@ -154,7 +154,7 @@ paths:
                     type: boolean
                     description: "Provider forced or not"
                     example: false
-  /authentication/providers/{provider_configuration_name}:
+  /authentication/providers/configurations/{provider_configuration_name}:
     post:
       tags:
        - Authentication
@@ -185,6 +185,25 @@ paths:
                     example: "/centreon/main.php?p=50113&o=ldap"
         '302':
           description: "Found"
+  /authentication/logout:
+    post:
+      tags:
+        - Authentication
+      summary: "Logout Session"
+      description: "Entry point to delete an existing session token."
+      security:
+        - Token: []
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogoutAuthenticationResponse'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /configuration/hosts/templates:
     get:
       tags:
@@ -748,10 +767,19 @@ paths:
                     type: boolean
                     description: If the current user is an administrator
                     example: true
-                  useDeprecatedPages:
+                  use_deprecated_pages:
                     type: boolean
                     description: Indicates if user wants to use deprecated monitoring pages
                     example: false
+                  theme:
+                    type: string
+                    description: Selected theme of the current user
+                    example: light
+                  default_page:
+                    type: string
+                    nullable: true
+                    description: Default page for the current user
+                    example: '/main.php?p=60901'
         '403':
           $ref: '#/components/responses/Forbidden'
         '500':
@@ -1012,6 +1040,49 @@ paths:
                     $ref: '#/components/schemas/Meta'
         '403':
           $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /monitoring/resources/hosts/{host_id}:
+    get:
+      tags:
+        - Resource
+      summary: "Get a Host resource type detail"
+      description: "Return the full detail of a resource typed Host."
+      parameters:
+        - $ref: '#/components/parameters/HostId'
+      responses:
+        '200':
+          description: "Successful request"
+          content:
+            application/json:
+              schema:
+                $ref: './ResourceHostDetail.yaml'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/HostNotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /monitoring/resources/hosts/{host_id}/services/{service_id}:
+    get:
+      tags:
+        - Resource
+      summary: "Get a Service resource type detail"
+      description: "Return the full detail of a resource typed Service."
+      parameters:
+        - $ref: '#/components/parameters/HostId'
+        - $ref: '#/components/parameters/ServiceId'
+      responses:
+        '200':
+          description: "Successful request"
+          content:
+            application/json:
+              schema:
+                $ref: './ResourceServiceDetail.yaml'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFoundHostOrService'
         '500':
           $ref: '#/components/responses/InternalServerError'
   /monitoring/hosts:
@@ -3194,6 +3265,58 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /platform/versions:
+    get:
+      tags:
+        - Platform
+      summary: "List versions of web, widgets and modules"
+      description: "List versions of web, widgets and modules"
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  web:
+                      $ref: '#/components/schemas/Platform.Versions'
+                  widgets:
+                    type: object
+                    properties:
+                      widgetName:
+                        type: object
+                        $ref: '#/components/schemas/Platform.Versions'
+                  modules:
+                    type: object
+                    properties:
+                      moduleName:
+                        type: object
+                        $ref: '#/components/schemas/Platform.Versions'
+  /platform/installation/status:
+    get:
+      tags:
+        - Platform
+      summary: "Get centreon web versions"
+      description: "Get installation status and available versions of centreon web"
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                required: ["installed_version", "has_upgrade_available"]
+                properties:
+                  is_installed:
+                    type: boolean
+                    description: Installation status of centreon web
+                    example: true
+                  has_upgrade_available:
+                    type: boolean
+                    description: |
+                      upgrade available or not
+                    example: true
   /platform/topology:
     post:
       tags:
@@ -3812,6 +3935,20 @@ components:
                 example: "You are not authorized to access this resource"
     NotFound:
       description: "Not Found"
+    HostNotFound:
+      description: "Not Found"
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int64
+                example: 404
+              message:
+                type: string
+                example: "Host not found"
     NotFoundHostOrService:
       description: "Host or service not found"
       content:
@@ -6114,3 +6251,23 @@ components:
                 type: string
                 description: "Data on JSON Format"
                 example: "{\"action\":\"getthumbprint\",\"data\":{\"thumbprint\":\"xxxx_xxxxxxxxx\"},\"message\":\"ok\"}"
+    Platform.Versions:
+      type: object
+      description: "version"
+      properties:
+        version:
+          type: string
+          description: "Full Version"
+          example: 22.04.0
+        major:
+          type: string
+          description: "Major version"
+          example: "22"
+        minor:
+          type: string
+          description: "Minor version"
+          example: "04"
+        fix:
+          type: string
+          description: "Fix version"
+          example: "0"

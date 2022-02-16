@@ -92,9 +92,6 @@ class MonitoringResourceController extends AbstractController
     private const SERVICE_REPORTING_URI =
         '/main.php?p=30702&period=yesterday&start=&end=&host_id={parent_resource_id}&item={resource_id}';
 
-    private const HOSTGROUP_CONFIGURATION_URI = '/main.php?p=60102&o=c&hg_id={resource_group_id}';
-    private const SERVICEGROUP_CONFIGURATION_URI = '/main.php?p=60203&o=c&sg_id={resource_group_id}';
-
     private const RESOURCE_LISTING_URI = '/monitoring/resources';
 
     public const TAB_DETAILS_NAME = 'details';
@@ -134,11 +131,6 @@ class MonitoringResourceController extends AbstractController
     public const VALIDATION_GROUP_MAIN = 'resource_id_main';
 
     /**
-     * @var MonitoringServiceInterface
-     */
-    private $monitoring;
-
-    /**
      * @var ResourceServiceInterface
      */
     protected $resource;
@@ -154,18 +146,15 @@ class MonitoringResourceController extends AbstractController
     protected $iconUrlNormalizer;
 
     /**
-     * @param MonitoringServiceInterface $monitoringService
      * @param ResourceServiceInterface $resource
      * @param UrlGeneratorInterface $router
      * @param IconUrlNormalizer $iconUrlNormalizer
      */
     public function __construct(
-        MonitoringServiceInterface $monitoringService,
         ResourceServiceInterface $resource,
         UrlGeneratorInterface $router,
         IconUrlNormalizer $iconUrlNormalizer
     ) {
-        $this->monitoring = $monitoringService;
         $this->resource = $resource;
         $this->router = $router;
         $this->iconUrlNormalizer = $iconUrlNormalizer;
@@ -260,194 +249,6 @@ class MonitoringResourceController extends AbstractController
             'result' => $resources,
             'meta' => $requestParameters->toArray(),
         ])->setContext($context);
-    }
-
-    /**
-     * Get resource details related to the host
-     *
-     * @return View
-     */
-    public function detailsHost(int $hostId): View
-    {
-        // ACL check
-        $this->denyAccessUnlessGrantedForApiRealtime();
-
-        /**
-         * @var Contact $contact
-         */
-        $contact = $this->getUser();
-
-        $filter = (new ResourceFilter())
-            ->setTypes([ResourceFilter::TYPE_HOST])
-            ->setHostIds([$hostId]);
-
-        $resources = $this->resource
-            ->filterByContact($contact)
-            ->findResources($filter);
-
-        if (empty($resources)) {
-            return View::create(null, Response::HTTP_NOT_FOUND, []);
-        }
-
-        $resource = $resources[0];
-
-        $this->providePerformanceGraphEndpoint([$resource]);
-        $this->provideLinks($resource, $contact);
-
-        $this->resource->enrichHostWithDetails($resource);
-        $this->provideResourceGroupInternalUris($resource, $contact);
-
-        if (
-            $contact->hasRole(Contact::ROLE_DISPLAY_COMMAND) ||
-            $contact->isAdmin()
-        ) {
-            try {
-                $host = (new Host())->setId($resource->getId())
-                    ->setCheckCommand($resource->getCommandLine());
-                $this->monitoring->hidePasswordInHostCommandLine($host);
-                $resource->setCommandLine($host->getCheckCommand());
-            } catch (\Throwable $ex) {
-                $resource->setCommandLine(
-                    sprintf(_('Unable to hide passwords in command (Reason: %s)'), $ex->getMessage())
-                );
-            }
-        } else {
-            $resource->setCommandLine(null);
-        }
-
-        $context = (new Context())
-            ->setGroups(array_merge(
-                self::SERIALIZER_GROUPS_LISTING,
-                [ResourceEntity::SERIALIZER_GROUP_DETAILS, Acknowledgement::SERIALIZER_GROUP_FULL],
-                Downtime::SERIALIZER_GROUPS_SERVICE
-            ))
-            ->enableMaxDepth();
-
-        $context->addExclusionStrategy(new ResourceExclusionStrategy());
-
-        return $this
-            ->view($resource)
-            ->setContext($context);
-    }
-
-    /**
-     * Get resource details related to the service
-     *
-     * @return View
-     */
-    public function detailsService(int $hostId, int $serviceId): View
-    {
-        // ACL check
-        $this->denyAccessUnlessGrantedForApiRealtime();
-
-        /**
-         * @var Contact $contact
-         */
-        $contact = $this->getUser();
-
-        $filter = (new ResourceFilter())
-            ->setTypes([ResourceFilter::TYPE_SERVICE])
-            ->setHostIds([$hostId])
-            ->setServiceIds([$serviceId]);
-
-        $resources = $this->resource
-            ->filterByContact($contact)
-            ->findResources($filter);
-
-        if (empty($resources)) {
-            return View::create(null, Response::HTTP_NOT_FOUND, []);
-        }
-
-        $resource = $resources[0];
-
-        $this->providePerformanceGraphEndpoint([$resource]);
-        $this->provideLinks($resource, $contact);
-
-        $this->resource->enrichServiceWithDetails($resource);
-        $this->provideResourceGroupInternalUris($resource, $contact);
-
-        if (
-            $contact->hasRole(Contact::ROLE_DISPLAY_COMMAND) ||
-            $contact->isAdmin()
-        ) {
-            try {
-                $service = (new Service())
-                    ->setId($resource->getId())
-                    ->setHost((new Host())->setId($resource->getParent()->getId()))
-                    ->setCommandLine($resource->getCommandLine());
-                $this->monitoring->hidePasswordInServiceCommandLine($service);
-                $resource->setCommandLine($service->getCommandLine());
-            } catch (\Throwable $ex) {
-                $resource->setCommandLine(
-                    sprintf(_('Unable to hide passwords in command (Reason: %s)'), $ex->getMessage())
-                );
-            }
-        } else {
-            $resource->setCommandLine(null);
-        }
-
-        $context = (new Context())
-            ->setGroups(array_merge(
-                self::SERIALIZER_GROUPS_LISTING,
-                [ResourceEntity::SERIALIZER_GROUP_DETAILS, Acknowledgement::SERIALIZER_GROUP_FULL],
-                Downtime::SERIALIZER_GROUPS_SERVICE
-            ))
-            ->enableMaxDepth();
-
-        $context->addExclusionStrategy(new ResourceExclusionStrategy());
-
-        return $this
-            ->view($resource)
-            ->setContext($context);
-    }
-
-    /**
-     * Get resource details related to the service
-     *
-     * @return View
-     */
-    public function detailsMetaService(int $metaId): View
-    {
-        // ACL check
-        $this->denyAccessUnlessGrantedForApiRealtime();
-
-        /**
-         * @var Contact $contact
-         */
-        $contact = $this->getUser();
-
-        $filter = (new ResourceFilter())
-            ->setTypes([ResourceFilter::TYPE_META])
-            ->setMetaServiceIds([$metaId]);
-
-        $resources = $this->resource
-            ->filterByContact($contact)
-            ->findResources($filter);
-
-        if (empty($resources)) {
-            return View::create(null, Response::HTTP_NOT_FOUND, []);
-        }
-
-        $resource = $resources[0];
-
-        $this->providePerformanceGraphEndpoint([$resource]);
-        $this->provideLinks($resource, $contact);
-
-        $this->resource->enrichMetaServiceWithDetails($resource);
-
-        $context = (new Context())
-            ->setGroups(array_merge(
-                self::SERIALIZER_GROUPS_LISTING,
-                [ResourceEntity::SERIALIZER_GROUP_DETAILS, Acknowledgement::SERIALIZER_GROUP_FULL],
-                Downtime::SERIALIZER_GROUPS_SERVICE
-            ))
-            ->enableMaxDepth();
-
-        $context->addExclusionStrategy(new ResourceExclusionStrategy());
-
-        return $this
-            ->view($resource)
-            ->setContext($context);
     }
 
     /**
@@ -778,48 +579,6 @@ class MonitoringResourceController extends AbstractController
     }
 
     /**
-     * This function adds to the group the redirection URI to the configuration
-     *
-     * @param ResourceEntity $resource
-     * @param Contact $contact
-     * @return void
-     */
-    private function provideResourceGroupInternalUris(ResourceEntity $resource, Contact $contact): void
-    {
-        if ($resource->getType() === ResourceEntity::TYPE_HOST) {
-            if (
-                $contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_HOSTS_HOST_GROUPS_READ_WRITE)
-                || $contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_HOSTS_HOST_GROUPS_READ)
-                || $contact->isAdmin()
-            ) {
-                foreach ($resource->getGroups() as $group) {
-                    $group->setConfigurationUri(
-                        $this->generateResourceGroupConfigurationUri(
-                            $group,
-                            self::HOSTGROUP_CONFIGURATION_URI
-                        )
-                    );
-                }
-            }
-        } elseif ($resource->getType() === ResourceEntity::TYPE_SERVICE) {
-            if (
-                $contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_SERVICES_SERVICE_GROUPS_READ_WRITE)
-                || $contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_SERVICES_SERVICE_GROUPS_READ)
-                || $contact->isAdmin()
-            ) {
-                foreach ($resource->getGroups() as $group) {
-                    $group->setConfigurationUri(
-                        $this->generateResourceGroupConfigurationUri(
-                            $group,
-                            self::SERVICEGROUP_CONFIGURATION_URI
-                        )
-                    );
-                }
-            }
-        }
-    }
-
-    /**
      * Generate full uri from relative path
      *
      * @param ResourceEntity $resource
@@ -836,19 +595,6 @@ class MonitoringResourceController extends AbstractController
             $relativeUri = str_replace('{parent_resource_id}', (string) $resource->getParent()->getId(), $relativeUri);
         }
 
-        return $this->getBaseUri() . $relativeUri;
-    }
-
-    /**
-     * Generate full uri from relative path for ResourceGroup
-     *
-     * @param ResourceGroup $group
-     * @param string $relativeUri
-     * @return string
-     */
-    private function generateResourceGroupConfigurationUri(ResourceGroup $group, string $relativeUri): string
-    {
-        $relativeUri = str_replace('{resource_group_id}', (string) $group->getId(), $relativeUri);
         return $this->getBaseUri() . $relativeUri;
     }
 

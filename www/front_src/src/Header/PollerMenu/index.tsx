@@ -2,12 +2,9 @@ import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { isEmpty, isNil } from 'ramda';
-import { withRouter } from 'react-router-dom';
-import { connect } from 'react-redux';
-import classnames from 'classnames';
 import clsx from 'clsx';
 import { useAtomValue } from 'jotai/utils';
-import { useHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import PollerIcon from '@mui/icons-material/DeviceHub';
 import { Button, ClickAwayListener, Paper, Typography } from '@mui/material';
@@ -22,9 +19,8 @@ import {
 } from '@centreon/ui';
 import { refreshIntervalAtom } from '@centreon/ui-context';
 
-import styles from '../header.scss';
-import { allowedPagesSelector } from '../../redux/selectors/navigation/allowedPages';
 import MenuLoader from '../../components/MenuLoader';
+import useNavigation from '../../Navigation/useNavigation';
 
 import { Issues } from './models';
 import {
@@ -72,13 +68,28 @@ const useStyles = makeStyles((theme) => ({
   pollerDetailTitle: {
     flexGrow: 1,
   },
+  subMenuToggle: {
+    backgroundColor: theme.palette.common.black,
+    boxSizing: 'border-box',
+    display: 'none',
+    left: theme.spacing(0),
+    padding: theme.spacing(1),
+    position: 'absolute',
+    textAlign: 'left',
+    top: '100%',
+    width: '100%',
+    zIndex: theme.zIndex.mobileStepper,
+  },
+  subMenuToggleActive: {
+    display: 'block',
+  },
 }));
 
 const PollerMenu = (): JSX.Element => {
   const classes = useStyles();
 
   const { t } = useTranslation();
-  const allowedPages = pollerConfigurationPageNumber;
+  const { allowedPages } = useNavigation();
   const allowPollerConfiguration = allowedPages?.includes(
     pollerConfigurationPageNumber,
   );
@@ -88,7 +99,7 @@ const PollerMenu = (): JSX.Element => {
   const [isExporting, setIsExportingConfiguration] = React.useState<boolean>();
   const [toggled, setToggled] = React.useState<boolean>(false);
   const interval = React.useRef<number>();
-  const history = useHistory();
+  const navigate = useNavigate();
   const { sendRequest } = useRequest<PollerData>({
     request: getData,
   });
@@ -142,7 +153,7 @@ const PollerMenu = (): JSX.Element => {
 
   const redirectToPollerConfiguration = (): void => {
     closeSubmenu();
-    history.push(`/main.php?p=${pollerConfigurationPageNumber}`);
+    navigate(`/main.php?p=${pollerConfigurationPageNumber}`);
   };
 
   return (
@@ -169,8 +180,8 @@ const PollerMenu = (): JSX.Element => {
             onClick={toggleDetailedView}
           />
           <div
-            className={classnames(styles['submenu-toggle'], {
-              [styles['submenu-toggle-active'] as string]: toggled,
+            className={clsx(classes.subMenuToggle, {
+              [classes.subMenuToggleActive]: toggled,
             })}
           >
             {!isEmpty(issues) ? (
@@ -223,12 +234,4 @@ const PollerMenu = (): JSX.Element => {
   );
 };
 
-interface StateToProps {
-  allowedPages: Array<string>;
-}
-
-const mapStateToProps = (state): StateToProps => ({
-  allowedPages: allowedPagesSelector(state),
-});
-
-export default connect(mapStateToProps)(withRouter(PollerMenu));
+export default PollerMenu;
