@@ -89,6 +89,7 @@ input, select {
     font-size: 11px !important;
     border: 1px solid var(--select-border-color);
     line-height: 18px;
+    background-color: var(--input-select-background-color);
     color: var(--select-color);
 }
 
@@ -237,7 +238,7 @@ input[type="radio"] {
 }
 
 select {
-    background-color: #ffffff;
+    background-color: var(--select-background);
     background-image: url('../../img/icones/7x7/sort_desc.gif');
     background-repeat: no-repeat, repeat;
     background-position: right 5px top 50%, 0 0;
@@ -249,7 +250,7 @@ select {
     -webkit-appearance: none;
     appearance: none;
     padding: 4px 20px 4px 6px;
-    color: #444;
+    color: var(--select-color);
 }
 select::-ms-expand {
     display: none;
