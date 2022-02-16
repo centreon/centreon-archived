@@ -1,23 +1,7 @@
-<!--
+The Watch is evolving! We just launched the IDEAS module! 
 
-Centreon's Code of Conduct must be respected when opening any issue. (https://github.com/centreon/centreon/blob/master/CODE_OF_CONDUCT.md)
+The aim of this new feature is to involve you in the evolution of the Centreon product. You can now submit, vote and share product improvement [ideas](https://thewatch.centreon.com/ideas) inside the Centreon Community.
 
-If you want to ask a question feel free to use on of those ressources
-slack: https://centreon.github.io/register-slack
+We are thrilled to partner with this community to learn more about your ideas on the Centreon product and we are to reviewing and investigating them to feed our product roadmap.
 
-Be aware that your feature request might not be taken into account for future developments. Product Managers will make the call and get back to you for more information if needed.
-
-Please describe your feature request in English.
--->
-
-### Feature explanation
-
-A short explanation of the wanted feature
-
-### What is the value of the wanted feature ?
-
-A short explanation of what could be the value of the wanted feature.
-
-### Additional information
-
-Dedicated section to add any information to make your case(*screenshots*, ...)
+So, what are you waiting for?
