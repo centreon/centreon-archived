@@ -11,7 +11,7 @@ import { userEndpoint } from '../api/endpoint';
 export const areUserParametersLoadedAtom = atom<boolean | null>(null);
 
 const useUser = (
-  changeLanguage: (locale: string) => void,
+  changeLanguage?: (locale: string) => void,
 ): (() => null | Promise<void>) => {
   const { sendRequest: getUser } = useRequest<User>({
     decoder: userDecoder,
@@ -56,7 +56,7 @@ const useUser = (
           timezone,
           use_deprecated_pages: useDeprecatedPages,
         });
-        changeLanguage((retrievedUser as User).locale.substr(0, 2));
+        changeLanguage?.((retrievedUser as User).locale.substr(0, 2));
         setAreUserParametersLoaded(true);
       })
       .catch((error) => {
