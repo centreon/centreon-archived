@@ -18,7 +18,6 @@
  * For more information : contact@centreon.com
  *
  */
-
 declare(strict_types=1);
 
 namespace Core\Application\Common\UseCase;
@@ -45,11 +44,16 @@ abstract class AbstractPresenter implements PresenterInterface
     /**
      * @inheritDoc
      */
+    public function present(mixed $data): void
+    {
+        $this->presenterFormatter->present($data);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function show(): Response
     {
-        if ($this->getResponseStatus() !== null) {
-            $this->presenterFormatter->present($this->getResponseStatus());
-        }
         return $this->presenterFormatter->show();
     }
 
@@ -59,6 +63,7 @@ abstract class AbstractPresenter implements PresenterInterface
     public function setResponseStatus(?ResponseStatusInterface $responseStatus): void
     {
         $this->responseStatus = $responseStatus;
+        $this->presenterFormatter->present($responseStatus);
     }
 
     /**
@@ -67,5 +72,21 @@ abstract class AbstractPresenter implements PresenterInterface
     public function getResponseStatus(): ?ResponseStatusInterface
     {
         return $this->responseStatus;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setResponseHeaders(array $responseHeaders): void
+    {
+        $this->presenterFormatter->setResponseHeaders($responseHeaders);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getResponseHeaders(): array
+    {
+        return $this->presenterFormatter->getResponseHeaders();
     }
 }

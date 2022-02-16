@@ -18,17 +18,40 @@
  * For more information : contact@centreon.com
  *
  */
+
 declare(strict_types=1);
 
-namespace Core\Application\RealTime\UseCase\FindHost;
+namespace Core\Application\Security\UseCase\LoginSession;
 
-use Core\Application\Common\UseCase\PresenterInterface;
-
-interface FindHostPresenterInterface extends PresenterInterface
+class LoginSessionRequest
 {
     /**
-     * {@inheritDoc}
-     * @param FindHostResponse $response
+     * @var string
      */
-    public function present(mixed $response): void;
+    public string $providerConfigurationName;
+
+    /**
+     * @var string
+     */
+    public string $login;
+
+    /**
+     * @var string
+     */
+    public string $password;
+
+    /**
+     * @var string
+     */
+    public string $baseUri;
+
+    /**
+     * @var string|null
+     */
+    public ?string $refererQueryParameters;
+
+    /**
+     * @var string|null
+     */
+    public ?string $clientIp;
 }

@@ -20,15 +20,24 @@
  */
 declare(strict_types=1);
 
-namespace Core\Application\RealTime\UseCase\FindHost;
+namespace Core\Infrastructure\Security\Api\LoginSession;
 
-use Core\Application\Common\UseCase\PresenterInterface;
+use Core\Application\Common\UseCase\AbstractPresenter;
+use Core\Application\Security\UseCase\LoginSession\LoginSessionPresenterInterface;
+use Core\Application\Security\UseCase\LoginSession\LoginSessionResponse;
 
-interface FindHostPresenterInterface extends PresenterInterface
+class LoginSessionPresenter extends AbstractPresenter implements LoginSessionPresenterInterface
 {
     /**
      * {@inheritDoc}
-     * @param FindHostResponse $response
+     * @param LoginSessionResponse $response
      */
-    public function present(mixed $response): void;
+    public function present(mixed $response): void
+    {
+        $presenterResponse = [
+            'redirect_uri' => $response->redirectionUri
+        ];
+
+        parent::present($presenterResponse);
+    }
 }

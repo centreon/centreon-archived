@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,21 +20,25 @@
  */
 declare(strict_types=1);
 
-namespace Tests\Centreon\Domain\Authentication\UseCase;
+namespace Tests\Core\Application\Security\UseCase\LoginSession;
 
 use PHPUnit\Framework\TestCase;
 use Centreon\Domain\Menu\Model\Page;
-use Centreon\Domain\Authentication\Model\Credentials;
 use Security\Domain\Authentication\Model\ProviderToken;
 use Security\Domain\Authentication\Model\ProviderConfiguration;
-use Centreon\Domain\Authentication\UseCase\Authenticate;
+use Core\Application\Security\UseCase\LoginSession\LoginSession;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Security\Domain\Authentication\Model\AuthenticationTokens;
-use Centreon\Domain\Authentication\UseCase\AuthenticateRequest;
+use Core\Infrastructure\Security\Api\LoginSession\LoginSessionPresenter;
+use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
+use Core\Application\Security\UseCase\LoginSession\LoginSessionRequest;
 use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
-use Centreon\Domain\Authentication\UseCase\AuthenticateResponse;
 use Security\Domain\Authentication\Interfaces\ProviderInterface;
-use Centreon\Domain\Authentication\Exception\AuthenticationException;
+use Centreon\Domain\Authentication\Exception\AuthenticationException as LegacyAuthenticationException;
+use Core\Domain\Security\Authentication\AuthenticationException;
+use Core\Domain\Security\Authentication\PasswordExpiredException;
+use Core\Application\Common\UseCase\UnauthorizedResponse;
+use Core\Application\Security\UseCase\LoginSession\PasswordExpiredResponse;
 use Centreon\Domain\Menu\Interfaces\MenuServiceInterface;
 use Security\Domain\Authentication\Exceptions\ProviderException;
 use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
@@ -46,90 +50,93 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
-/**
- * @package Tests\Centreon\Domain\Authentication\UseCase
- */
-class AuthenticateTest extends TestCase
+class LoginSessionTest extends TestCase
 {
     /**
-     * @var AuthenticationServiceInterface|\PHPUnit\Framework\MockObject\MockObject
+     * @var PresenterFormatterInterface&\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $presenterFormatter;
+
+    /**
+     * @var LoginSessionPresenter
+     */
+    private $loginSessionPresenter;
+
+    /**
+     * @var AuthenticationServiceInterface&\PHPUnit\Framework\MockObject\MockObject
      */
     private $authenticationService;
 
     /**
-     * @var ProviderServiceInterface|\PHPUnit\Framework\MockObject\MockObject
+     * @var ProviderServiceInterface&\PHPUnit\Framework\MockObject\MockObject
      */
     private $providerService;
 
     /**
-     * @var ContactServiceInterface|\PHPUnit\Framework\MockObject\MockObject
+     * @var ContactServiceInterface&\PHPUnit\Framework\MockObject\MockObject
      */
     private $contactService;
 
     /**
-     * @var RequestStack|\PHPUnit\Framework\MockObject\MockObject
+     * @var RequestStack&\PHPUnit\Framework\MockObject\MockObject
      */
     private $requestStack;
 
     /**
-     * @var Request|\PHPUnit\Framework\MockObject\MockObject
+     * @var Request&\PHPUnit\Framework\MockObject\MockObject
      */
     private $request;
 
     /**
-     * @var SessionInterface|\PHPUnit\Framework\MockObject\MockObject
+     * @var SessionInterface&\PHPUnit\Framework\MockObject\MockObject
      */
     private $session;
 
     /**
-     * @var ProviderInterface|\PHPUnit\Framework\MockObject\MockObject
+     * @var ProviderInterface&\PHPUnit\Framework\MockObject\MockObject
      */
     private $provider;
 
     /**
-     * @var ContactInterface|\PHPUnit\Framework\MockObject\MockObject
+     * @var ContactInterface&\PHPUnit\Framework\MockObject\MockObject
      */
     private $contact;
 
     /**
-     * @var AuthenticationTokens|\PHPUnit\Framework\MockObject\MockObject
+     * @var AuthenticationTokens&\PHPUnit\Framework\MockObject\MockObject
      */
     private $authenticationTokens;
 
     /**
-     * @var AuthenticateResponse|\PHPUnit\Framework\MockObject\MockObject
-     */
-    private $response;
-
-    /**
-     * @var MenuServiceInterface|\PHPUnit\Framework\MockObject\MockObject
+     * @var MenuServiceInterface&\PHPUnit\Framework\MockObject\MockObject
      */
     private $menuService;
 
     /**
-     * @var AuthenticationRepositoryInterface|\PHPUnit\Framework\MockObject\MockObject
+     * @var AuthenticationRepositoryInterface&\PHPUnit\Framework\MockObject\MockObject
      */
     private $authenticationRepository;
 
     /**
-     * @var SessionRepositoryInterface|\PHPUnit\Framework\MockObject\MockObject
+     * @var SessionRepositoryInterface&\PHPUnit\Framework\MockObject\MockObject
      */
     private $sessionRepository;
 
     /**
-     * @var DataStorageEngineInterface|\PHPUnit\Framework\MockObject\MockObject
+     * @var DataStorageEngineInterface&\PHPUnit\Framework\MockObject\MockObject
      */
     private $dataStorageEngine;
 
     protected function setUp(): void
     {
+        $this->presenterFormatter = $this->createMock(PresenterFormatterInterface::class);
+        $this->loginSessionPresenter = new LoginSessionPresenter($this->presenterFormatter);
         $this->authenticationService = $this->createMock(AuthenticationServiceInterface::class);
         $this->providerService = $this->createMock(ProviderServiceInterface::class);
         $this->contactService = $this->createMock(ContactServiceInterface::class);
         $this->provider = $this->createMock(ProviderInterface::class);
         $this->contact = $this->createMock(ContactInterface::class);
         $this->authenticationTokens = $this->createMock(AuthenticationTokens::class);
-        $this->response = $this->createMock(AuthenticateResponse::class);
         $this->menuService = $this->createMock(MenuServiceInterface::class);
         $this->authenticationRepository = $this->createMock(AuthenticationRepositoryInterface::class);
         $this->sessionRepository = $this->createMock(SessionRepositoryInterface::class);
@@ -156,7 +163,7 @@ class AuthenticateTest extends TestCase
      */
     public function testExecuteProviderConfigurationNotFound(): void
     {
-        $authenticate = new Authenticate(
+        $authenticate = new LoginSession(
             '/monitoring/resources',
             $this->authenticationService,
             $this->providerService,
@@ -168,19 +175,17 @@ class AuthenticateTest extends TestCase
             $this->dataStorageEngine
         );
 
-        $credentials = new Credentials('admin', 'centreon');
-        $authenticateRequest = new AuthenticateRequest(
-            $credentials,
-            'provider_configuration_1',
-            '/',
-            null,
-            '127.0.0.1'
-        );
+        $authenticateRequest = $this->createLoginSessionRequest();
+
+        $this->providerService
+            ->expects($this->once())
+            ->method('findProviderByConfigurationName')
+            ->willReturn(null);
 
         $this->expectException(ProviderException::class);
         $this->expectExceptionMessage('Provider configuration (provider_configuration_1) not found');
 
-        $authenticate->execute($authenticateRequest, $this->response);
+        $authenticate($this->loginSessionPresenter, $authenticateRequest);
     }
 
     /**
@@ -190,15 +195,15 @@ class AuthenticateTest extends TestCase
     {
         $this->provider
             ->expects($this->once())
-            ->method('isAuthenticated')
-            ->willReturn(false);
+            ->method('authenticateOrFail')
+            ->willThrowException(AuthenticationException::notAuthenticated());
 
         $this->providerService
             ->expects($this->once())
             ->method('findProviderByConfigurationName')
             ->willReturn($this->provider);
 
-        $authenticate = new Authenticate(
+        $authenticate = new LoginSession(
             '/monitoring/resources',
             $this->authenticationService,
             $this->providerService,
@@ -210,19 +215,45 @@ class AuthenticateTest extends TestCase
             $this->dataStorageEngine
         );
 
-        $credentials = new Credentials('admin', 'centreon');
-        $authenticateRequest = new AuthenticateRequest(
-            $credentials,
-            'provider_configuration_1',
-            '/',
-            null,
-            '127.0.0.1'
+        $authenticateRequest = $this->createLoginSessionRequest();
+
+        $authenticate($this->loginSessionPresenter, $authenticateRequest);
+
+        $this->assertInstanceOf(UnauthorizedResponse::class, $this->loginSessionPresenter->getResponseStatus());
+    }
+
+    /**
+     * test execute when password is expired
+     */
+    public function testExecutePasswordExpired(): void
+    {
+        $this->provider
+            ->expects($this->once())
+            ->method('authenticateOrFail')
+            ->willThrowException(PasswordExpiredException::passwordIsExpired());
+
+        $this->providerService
+            ->expects($this->once())
+            ->method('findProviderByConfigurationName')
+            ->willReturn($this->provider);
+
+        $authenticate = new LoginSession(
+            '/monitoring/resources',
+            $this->authenticationService,
+            $this->providerService,
+            $this->contactService,
+            $this->requestStack,
+            $this->menuService,
+            $this->authenticationRepository,
+            $this->sessionRepository,
+            $this->dataStorageEngine
         );
 
-        $this->expectException(AuthenticationException::class);
-        $this->expectExceptionMessage('Authentication failed');
+        $authenticateRequest = $this->createLoginSessionRequest();
 
-        $authenticate->execute($authenticateRequest, $this->response);
+        $authenticate($this->loginSessionPresenter, $authenticateRequest);
+
+        $this->assertInstanceOf(PasswordExpiredResponse::class, $this->loginSessionPresenter->getResponseStatus());
     }
 
     /**
@@ -240,7 +271,7 @@ class AuthenticateTest extends TestCase
             ->method('findByName')
             ->willReturn($this->contact);
 
-        $authenticate = new Authenticate(
+        $authenticate = new LoginSession(
             '/monitoring/resources',
             $this->authenticationService,
             $this->providerService,
@@ -252,19 +283,12 @@ class AuthenticateTest extends TestCase
             $this->dataStorageEngine
         );
 
-        $credentials = new Credentials('admin', 'centreon');
-        $authenticateRequest = new AuthenticateRequest(
-            $credentials,
-            'provider_configuration_1',
-            '/',
-            null,
-            '127.0.0.1'
-        );
+        $authenticateRequest = $this->createLoginSessionRequest();
 
-        $this->expectException(AuthenticationException::class);
+        $this->expectException(LegacyAuthenticationException::class);
         $this->expectExceptionMessage('User is not allowed to reach web application');
 
-        $authenticate->execute($authenticateRequest, $this->response);
+        $authenticate($this->loginSessionPresenter, $authenticateRequest);
     }
 
     /**
@@ -274,8 +298,7 @@ class AuthenticateTest extends TestCase
     {
         $this->provider
             ->expects($this->once())
-            ->method('isAuthenticated')
-            ->willReturn(true);
+            ->method('authenticateOrFail');
 
         $this->providerService
             ->expects($this->once())
@@ -287,7 +310,7 @@ class AuthenticateTest extends TestCase
             ->method('getUser')
             ->willReturn(null);
 
-        $authenticate = new Authenticate(
+        $authenticate = new LoginSession(
             '/monitoring/resources',
             $this->authenticationService,
             $this->providerService,
@@ -299,19 +322,12 @@ class AuthenticateTest extends TestCase
             $this->dataStorageEngine
         );
 
-        $credentials = new Credentials('admin', 'centreon');
-        $authenticateRequest = new AuthenticateRequest(
-            $credentials,
-            'provider_configuration_1',
-            '/',
-            null,
-            '127.0.0.1'
-        );
+        $authenticateRequest = $this->createLoginSessionRequest();
 
-        $this->expectException(AuthenticationException::class);
+        $this->expectException(LegacyAuthenticationException::class);
         $this->expectExceptionMessage('User cannot be retrieved from the provider');
 
-        $authenticate->execute($authenticateRequest, $this->response);
+        $authenticate($this->loginSessionPresenter, $authenticateRequest);
     }
 
     /**
@@ -321,8 +337,7 @@ class AuthenticateTest extends TestCase
     {
         $this->provider
             ->expects($this->once())
-            ->method('isAuthenticated')
-            ->willReturn(true);
+            ->method('authenticateOrFail');
 
         $this->providerService
             ->expects($this->once())
@@ -354,7 +369,7 @@ class AuthenticateTest extends TestCase
             ->method('findAuthenticationTokensByToken')
             ->willReturn($this->authenticationTokens);
 
-        $authenticate = new Authenticate(
+        $authenticate = new LoginSession(
             '/monitoring/resources',
             $this->authenticationService,
             $this->providerService,
@@ -366,16 +381,9 @@ class AuthenticateTest extends TestCase
             $this->dataStorageEngine
         );
 
-        $credentials = new Credentials('admin', 'centreon');
-        $authenticateRequest = new AuthenticateRequest(
-            $credentials,
-            'provider_configuration_1',
-            '/',
-            null,
-            '127.0.0.1'
-        );
+        $authenticateRequest = $this->createLoginSessionRequest();
 
-        $authenticate->execute($authenticateRequest, $this->response);
+        $authenticate($this->loginSessionPresenter, $authenticateRequest);
     }
 
     /**
@@ -385,8 +393,7 @@ class AuthenticateTest extends TestCase
     {
         $this->provider
             ->expects($this->once())
-            ->method('isAuthenticated')
-            ->willReturn(true);
+            ->method('authenticateOrFail');
 
         $this->providerService
             ->expects($this->once())
@@ -408,7 +415,7 @@ class AuthenticateTest extends TestCase
             ->method('canCreateUser')
             ->willReturn(false);
 
-        $authenticate = new Authenticate(
+        $authenticate = new LoginSession(
             '/monitoring/resources',
             $this->authenticationService,
             $this->providerService,
@@ -420,19 +427,12 @@ class AuthenticateTest extends TestCase
             $this->dataStorageEngine
         );
 
-        $credentials = new Credentials('admin', 'centreon');
-        $authenticateRequest = new AuthenticateRequest(
-            $credentials,
-            'provider_configuration_1',
-            '/',
-            null,
-            '127.0.0.1'
-        );
+        $authenticateRequest = $this->createLoginSessionRequest();
 
-        $this->expectException(AuthenticationException::class);
+        $this->expectException(LegacyAuthenticationException::class);
         $this->expectExceptionMessage('User not found and cannot be created');
 
-        $authenticate->execute($authenticateRequest, $this->response);
+        $authenticate($this->loginSessionPresenter, $authenticateRequest);
     }
 
     /**
@@ -442,8 +442,7 @@ class AuthenticateTest extends TestCase
     {
         $this->provider
             ->expects($this->once())
-            ->method('isAuthenticated')
-            ->willReturn(true);
+            ->method('authenticateOrFail');
 
         $this->providerService
             ->expects($this->once())
@@ -470,7 +469,7 @@ class AuthenticateTest extends TestCase
             ->method('findAuthenticationTokensByToken')
             ->willReturn($this->authenticationTokens);
 
-        $authenticate = new Authenticate(
+        $authenticate = new LoginSession(
             '/monitoring/resources',
             $this->authenticationService,
             $this->providerService,
@@ -482,16 +481,9 @@ class AuthenticateTest extends TestCase
             $this->dataStorageEngine
         );
 
-        $credentials = new Credentials('admin', 'centreon');
-        $authenticateRequest = new AuthenticateRequest(
-            $credentials,
-            'provider_configuration_1',
-            '/',
-            null,
-            '127.0.0.1'
-        );
+        $authenticateRequest = $this->createLoginSessionRequest();
 
-        $authenticate->execute($authenticateRequest, $this->response);
+        $authenticate($this->loginSessionPresenter, $authenticateRequest);
     }
 
     /**
@@ -501,8 +493,7 @@ class AuthenticateTest extends TestCase
     {
         $this->provider
             ->expects($this->once())
-            ->method('isAuthenticated')
-            ->willReturn(true);
+            ->method('authenticateOrFail');
 
         $this->providerService
             ->expects($this->once())
@@ -548,7 +539,7 @@ class AuthenticateTest extends TestCase
             ->method('findProviderConfigurationByConfigurationName')
             ->willReturn($providerConfiguration);
 
-        $authenticate = new Authenticate(
+        $authenticate = new LoginSession(
             '/monitoring/resources',
             $this->authenticationService,
             $this->providerService,
@@ -560,16 +551,9 @@ class AuthenticateTest extends TestCase
             $this->dataStorageEngine
         );
 
-        $credentials = new Credentials('admin', 'centreon');
-        $authenticateRequest = new AuthenticateRequest(
-            $credentials,
-            'provider_configuration_1',
-            '/',
-            null,
-            '127.0.0.1'
-        );
+        $authenticateRequest = $this->createLoginSessionRequest();
 
-        $authenticate->execute($authenticateRequest, $this->response);
+        $authenticate($this->loginSessionPresenter, $authenticateRequest);
     }
 
     /**
@@ -579,8 +563,7 @@ class AuthenticateTest extends TestCase
     {
         $this->provider
             ->expects($this->once())
-            ->method('isAuthenticated')
-            ->willReturn(true);
+            ->method('authenticateOrFail');
 
         $this->providerService
             ->expects($this->once())
@@ -607,13 +590,15 @@ class AuthenticateTest extends TestCase
             ->method('getDefaultPage')
             ->willReturn(null);
 
-        $this->response
+        $this->presenterFormatter
             ->expects($this->once())
-            ->method('getRedirectionUri')
-            ->willReturn('//monitoring/resources');
+            ->method('present')
+            ->with([
+                'redirect_uri' => '//monitoring/resources'
+            ]);
 
-        $authenticate = new Authenticate(
-            '/monitoring/resources',
+        $authenticate = new LoginSession(
+            '//monitoring/resources',
             $this->authenticationService,
             $this->providerService,
             $this->contactService,
@@ -624,17 +609,9 @@ class AuthenticateTest extends TestCase
             $this->dataStorageEngine
         );
 
-        $credentials = new Credentials('admin', 'centreon');
-        $authenticateRequest = new AuthenticateRequest(
-            $credentials,
-            'provider_configuration_1',
-            '/',
-            null,
-            '127.0.0.1'
-        );
+        $authenticateRequest = $this->createLoginSessionRequest();
 
-        $authenticate->execute($authenticateRequest, $this->response);
-        $this->assertEquals('//monitoring/resources', $this->response->getRedirectionUri());
+        $authenticate($this->loginSessionPresenter, $authenticateRequest);
     }
 
     /**
@@ -642,12 +619,11 @@ class AuthenticateTest extends TestCase
      */
     public function testExecuteCustomDefaultPage(): void
     {
-        $page = new Page(1, '/my_custom_page', 60101, false);
+        $page = new Page(1, '/my_custom_page', 60101, true);
 
         $this->provider
             ->expects($this->once())
-            ->method('isAuthenticated')
-            ->willReturn(true);
+            ->method('authenticateOrFail');
 
         $this->providerService
             ->expects($this->once())
@@ -674,12 +650,14 @@ class AuthenticateTest extends TestCase
             ->method('getDefaultPage')
             ->willReturn($page);
 
-        $this->response
+        $this->presenterFormatter
             ->expects($this->once())
-            ->method('getRedirectionUri')
-            ->willReturn('//my_custom_page');
+            ->method('present')
+            ->with([
+                'redirect_uri' => '/my_custom_page'
+            ]);
 
-        $authenticate = new Authenticate(
+        $authenticate = new LoginSession(
             '/monitoring/resources',
             $this->authenticationService,
             $this->providerService,
@@ -691,16 +669,26 @@ class AuthenticateTest extends TestCase
             $this->dataStorageEngine
         );
 
-        $credentials = new Credentials('admin', 'centreon');
-        $authenticateRequest = new AuthenticateRequest(
-            $credentials,
-            'provider_configuration_1',
-            '/',
-            null,
-            '127.0.0.1'
-        );
+        $authenticateRequest = $this->createLoginSessionRequest();
 
-        $authenticate->execute($authenticateRequest, $this->response);
-        $this->assertEquals('//my_custom_page', $this->response->getRedirectionUri());
+        $authenticate($this->loginSessionPresenter, $authenticateRequest);
+    }
+
+    /**
+     * Create LoginSessionRequest
+     *
+     * @return LoginSessionRequest
+     */
+    private function createLoginSessionRequest(): LoginSessionRequest
+    {
+        $request = new LoginSessionRequest();
+        $request->providerConfigurationName = 'provider_configuration_1';
+        $request->login = 'admin';
+        $request->password = 'centreon';
+        $request->baseUri = '/';
+        $request->refererQueryParameters = null;
+        $request->clientIp = '127.0.0.1';
+
+        return $request;
     }
 }

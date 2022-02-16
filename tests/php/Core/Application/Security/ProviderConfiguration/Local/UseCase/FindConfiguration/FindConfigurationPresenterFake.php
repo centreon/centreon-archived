@@ -41,9 +41,14 @@ class FindConfigurationPresenterFake implements FindConfigurationPresenterInterf
     private $responseStatus;
 
     /**
+     * @var mixed[]
+     */
+    private $responseHeaders;
+
+    /**
      * @param FindConfigurationResponse $response
      */
-    public function present(FindConfigurationResponse $response): void
+    public function present(mixed $response): void
     {
         $this->response = $response;
     }
@@ -70,5 +75,21 @@ class FindConfigurationPresenterFake implements FindConfigurationPresenterInterf
     public function getResponseStatus(): ?ResponseStatusInterface
     {
         return $this->responseStatus;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setResponseHeaders(array $responseHeaders): void
+    {
+        $this->responseHeaders = $responseHeaders;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getResponseHeaders(): array
+    {
+        return $this->responseHeaders;
     }
 }
