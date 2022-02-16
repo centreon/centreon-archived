@@ -1,7 +1,8 @@
 import * as React from 'react';
 
 import i18next, { Resource, ResourceLanguage } from 'i18next';
-import { useAtomValue, useUpdateAtom } from 'jotai/utils';
+import { useAtom } from 'jotai';
+import { useAtomValue } from 'jotai/utils';
 import {
   and,
   includes,
@@ -37,9 +38,9 @@ const useMain = (): void => {
     request: getData,
   });
 
+  const [webVersions, setWebVersions] = useAtom(platformInstallationStatusAtom);
   const user = useAtomValue(userAtom);
   const areUserParametersLoaded = useAtomValue(areUserParametersLoadedAtom);
-  const setWebVersions = useUpdateAtom(platformInstallationStatusAtom);
 
   const loadUser = useUser(i18next.changeLanguage);
   const location = useLocation();
@@ -73,15 +74,18 @@ const useMain = (): void => {
 
     getTranslations({
       endpoint: translationEndpoint,
-    })
-      .then((retrievedTranslations) => {
-        loadUser();
-        initializeI18n(retrievedTranslations);
-      })
-      .catch((): void => {
-        loadUser();
-      });
+    }).then((retrievedTranslations) => {
+      initializeI18n(retrievedTranslations);
+    });
   }, []);
+
+  React.useEffect((): void => {
+    if (isNil(webVersions)) {
+      return;
+    }
+
+    loadUser(webVersions);
+  }, [webVersions]);
 
   React.useEffect(() => {
     const canChangeToBrowserLanguage = and(
