@@ -151,16 +151,12 @@ class AuthenticateApiTest extends TestCase
 
         $this->provider
             ->expects($this->once())
-            ->method('authenticate')
+            ->method('authenticateOrFail')
             ->with([
                 'login' => 'admin',
                 'password' => 'centreon',
-            ]);
-
-        $this->provider
-            ->expects($this->once())
-            ->method('isAuthenticated')
-            ->willReturn(false);
+            ])
+            ->willThrowException(AuthenticationException::invalidCredentials());
 
         $this->expectException(AuthenticationException::class);
         $this->expectExceptionMessage('Invalid Credentials');
@@ -195,16 +191,11 @@ class AuthenticateApiTest extends TestCase
 
         $this->provider
             ->expects($this->once())
-            ->method('authenticate')
+            ->method('authenticateOrFail')
             ->with([
                 'login' => 'admin',
                 'password' => 'centreon',
             ]);
-
-        $this->provider
-            ->expects($this->once())
-            ->method('isAuthenticated')
-            ->willReturn(true);
 
         $this->provider
             ->expects($this->once())
@@ -244,16 +235,11 @@ class AuthenticateApiTest extends TestCase
 
         $this->provider
             ->expects($this->once())
-            ->method('authenticate')
+            ->method('authenticateOrFail')
             ->with([
                 'login' => 'admin',
                 'password' => 'centreon',
             ]);
-
-        $this->provider
-            ->expects($this->once())
-            ->method('isAuthenticated')
-            ->willReturn(true);
 
         $this->provider
             ->expects($this->once())
@@ -308,16 +294,11 @@ class AuthenticateApiTest extends TestCase
 
         $this->provider
             ->expects($this->once())
-            ->method('authenticate')
+            ->method('authenticateOrFail')
             ->with([
                 'login' => 'admin',
                 'password' => 'centreon',
             ]);
-
-        $this->provider
-            ->expects($this->once())
-            ->method('isAuthenticated')
-            ->willReturn(true);
 
         $this->provider
             ->expects($this->once())

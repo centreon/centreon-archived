@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,10 +20,14 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Domain\Authentication\UseCase;
+namespace Core\Application\Security\UseCase\LoginSession;
 
-use Centreon;
+use Core\Application\Common\UseCase\UnauthorizedResponse;
+use Centreon\Domain\Authentication\Exception\AuthenticationException as LegacyAuthenticationException;
+use Core\Domain\Security\Authentication\AuthenticationException;
+use Core\Domain\Security\Authentication\PasswordExpiredException;
 use Centreon\Domain\Log\LoggerTrait;
+use Centreon;
 use Centreon\Domain\Menu\Model\Page;
 use Security\Domain\Authentication\Model\Session;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -31,64 +35,17 @@ use Security\Domain\Authentication\Model\ProviderToken;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Menu\Interfaces\MenuServiceInterface;
 use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
-use Centreon\Domain\Authentication\UseCase\AuthenticateResponse;
 use Security\Domain\Authentication\Exceptions\ProviderException;
 use Security\Domain\Authentication\Interfaces\ProviderInterface;
-use Centreon\Domain\Authentication\Exception\AuthenticationException;
 use Centreon\Domain\Repository\Interfaces\DataStorageEngineInterface;
 use Security\Domain\Authentication\Interfaces\ProviderServiceInterface;
 use Security\Domain\Authentication\Interfaces\SessionRepositoryInterface;
 use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
 use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
 
-class Authenticate
+class LoginSession
 {
     use LoggerTrait;
-
-    /**
-     * @var AuthenticationServiceInterface
-     */
-    private $authenticationService;
-
-    /**
-     * @var ContactServiceInterface
-     */
-    private $contactService;
-
-    /**
-     * @var ProviderServiceInterface
-     */
-    private $providerService;
-
-    /**
-     * @var string
-     */
-    private $redirectDefaultPage;
-
-    /**
-     * @var RequestStack
-     */
-    private $requestStack;
-
-    /**
-     * @var MenuServiceInterface
-     */
-    private $menuService;
-
-    /**
-     * @var AuthenticationRepositoryInterface
-     */
-    private $authenticationRepository;
-
-    /**
-     * @var SessionRepositoryInterface
-     */
-    private $sessionRepository;
-
-    /**
-     * @var DataStorageEngineInterface
-     */
-    private $dataStorageEngine;
 
     /**
      * @param string $redirectDefaultPage
@@ -102,76 +59,85 @@ class Authenticate
      * @param DataStorageEngineInterface $dataStorageEngine
      */
     public function __construct(
-        string $redirectDefaultPage,
-        AuthenticationServiceInterface $authenticationService,
-        ProviderServiceInterface $providerService,
-        ContactServiceInterface $contactService,
-        RequestStack $requestStack,
-        MenuServiceInterface $menuService,
-        AuthenticationRepositoryInterface $authenticationRepository,
-        SessionRepositoryInterface $sessionRepository,
-        DataStorageEngineInterface $dataStorageEngine
+        private string $redirectDefaultPage,
+        private AuthenticationServiceInterface $authenticationService,
+        private ProviderServiceInterface $providerService,
+        private ContactServiceInterface $contactService,
+        private RequestStack $requestStack,
+        private MenuServiceInterface $menuService,
+        private AuthenticationRepositoryInterface $authenticationRepository,
+        private SessionRepositoryInterface $sessionRepository,
+        private DataStorageEngineInterface $dataStorageEngine,
     ) {
-        $this->redirectDefaultPage = $redirectDefaultPage;
-        $this->authenticationService = $authenticationService;
-        $this->providerService = $providerService;
-        $this->contactService = $contactService;
-        $this->requestStack = $requestStack;
-        $this->menuService = $menuService;
-        $this->authenticationRepository = $authenticationRepository;
-        $this->sessionRepository = $sessionRepository;
-        $this->dataStorageEngine = $dataStorageEngine;
     }
 
     /**
-     * Execute authentication scenario and return the redirection URI.
-     *
-     * @param AuthenticateRequest $request
-     * @param AuthenticateResponse $response
-     * @throws ProviderException
-     * @throws AuthenticationException
+     * @param LoginSessionPresenterInterface $presenter
+     * @param LoginSessionRequest $request
      */
-    public function execute(AuthenticateRequest $request, AuthenticateResponse $response): void
-    {
-        $this->authorizeUserToAuthenticateOrFail($request->getLogin());
+    public function __invoke(
+        LoginSessionPresenterInterface $presenter,
+        LoginSessionRequest $request,
+    ): void {
+        $this->info('Processing session login...');
 
-        $authenticationProvider = $this->findProviderOrFail($request->getProviderConfigurationName());
-        $this->authenticateOrFail($authenticationProvider, $request);
-        $providerUser = $this->getUserFromProviderOrFail($authenticationProvider);
+        try {
+            $this->authorizeUserToAuthenticateOrFail($request->login);
 
-        if (!$this->contactService->exists($providerUser)) {
-            $this->createUserOrFail($authenticationProvider, $providerUser);
-        } else {
-            $this->contactService->updateUser($providerUser);
-        }
-        $this->startLegacySession($authenticationProvider->getLegacySession());
+            $authenticationProvider = $this->findProviderOrFail($request->providerConfigurationName);
+            $this->authenticateOrFail($authenticationProvider, $request);
 
-        /**
-         * Search for an already existing and available authentications token.
-         * Create a new one if no one are found.
-         */
-        $authenticationTokens = $this->authenticationService->findAuthenticationTokensByToken(
-            $this->requestStack->getCurrentRequest()->getSession()->getId()
-        );
-        if ($authenticationTokens === null) {
-            $this->createAuthenticationTokens(
-                $this->requestStack->getCurrentRequest()->getSession()->getId(),
-                $authenticationProvider->getConfiguration()->getName(),
-                $providerUser,
-                $authenticationProvider->getProviderToken(
-                    $this->requestStack->getCurrentRequest()->getSession()->getId()
-                ),
-                $authenticationProvider->getProviderRefreshToken(
-                    $this->requestStack->getCurrentRequest()->getSession()->getId()
-                ),
-                $request->getClientIp()
-            );
+            $providerUser = $this->getUserFromProviderOrFail($authenticationProvider);
+
+            if (!$this->contactService->exists($providerUser)) {
+                $this->createUserOrFail($authenticationProvider, $providerUser);
+            } else {
+                $this->contactService->updateUser($providerUser);
+            }
+
+            $this->startLegacySession($authenticationProvider->getLegacySession());
+
+            /**
+             * Search for an already existing and available authentications token.
+             * Create a new one if no one are found.
+             */
+            $currentRequest = $this->requestStack->getCurrentRequest();
+            if ($currentRequest !== null) {
+                $authenticationTokens = $this->authenticationService->findAuthenticationTokensByToken(
+                    $currentRequest->getSession()->getId()
+                );
+
+                if ($authenticationTokens === null) {
+                    $this->createAuthenticationTokens(
+                        $currentRequest->getSession()->getId(),
+                        $authenticationProvider->getConfiguration()->getName(),
+                        $providerUser,
+                        $authenticationProvider->getProviderToken(
+                            $currentRequest->getSession()->getId()
+                        ),
+                        $authenticationProvider->getProviderRefreshToken(
+                            $currentRequest->getSession()->getId()
+                        ),
+                        $request->clientIp,
+                    );
+                }
+            }
+        } catch (PasswordExpiredException $e) {
+            $response = new PasswordExpiredResponse($e->getMessage());
+            $response->setBody([
+                'password_is_expired' => true,
+            ]);
+            $presenter->setResponseStatus($response);
+            return;
+        } catch (AuthenticationException $e) {
+            $presenter->setResponseStatus(new UnauthorizedResponse($e->getMessage()));
+            return;
         }
 
         $this->debug(
             "[AUTHENTICATE] Authentication success",
             [
-                "provider_name" => $request->getProviderConfigurationName(),
+                "provider_name" => $request->providerConfigurationName,
                 "contact_id" => $providerUser->getId(),
                 "contact_alias" => $providerUser->getAlias()
             ]
@@ -180,7 +146,54 @@ class Authenticate
         /**
          * Define the redirection uri where user will be redirect once logged.
          */
-        $this->setResponseRedirectionUri($request, $response, $providerUser);
+        $redirectionUri = $this->getRedirectionUri($request, $providerUser);
+
+        $presenter->present($this->createResponse($redirectionUri));
+    }
+
+    /**
+     * @param string $redirectionUri
+     * @return LoginSessionResponse
+     */
+    private function createResponse(string $redirectionUri): LoginSessionResponse
+    {
+        $response = new LoginSessionResponse();
+        $response->redirectionUri = $redirectionUri;
+
+        return $response;
+    }
+
+    /**
+     * Check if user is allowed to authenticate or throw an Exception.
+     *
+     * @param string $userName
+     * @throws LegacyAuthenticationException
+     */
+    private function authorizeUserToAuthenticateOrFail(string $userName): void
+    {
+        $this->debug(
+            '[AUTHENTICATE] Check user authorization to log in web application',
+            ['user' => $userName]
+        );
+
+        $contact = $this->contactService->findByName($userName);
+
+        if ($contact === null) {
+            $this->debug(
+                '[AUTHENTICATE] User is not found locally so authorization is delegated to the provider',
+                ['user' => $userName]
+            );
+        }
+
+        if ($contact !== null && !$contact->isAllowedToReachWeb()) {
+            $this->critical(
+                '[AUTHENTICATE] User is not allowed to reach web application',
+                [
+                    'user' => $userName
+                ]
+            );
+            throw LegacyAuthenticationException::notAllowedToReachWebApplication();
+        }
     }
 
     /**
@@ -210,69 +223,26 @@ class Authenticate
     }
 
     /**
-     * Check if user is allowed to authenticate or throw an Exception.
-     *
-     * @param string $userName
-     * @throws AuthenticationException
-     */
-    private function authorizeUserToAuthenticateOrFail(string $userName): void
-    {
-        $this->debug(
-            '[AUTHENTICATE] Check user authorization to log in web application',
-            ['user' => $userName]
-        );
-
-        $contact = $this->contactService->findByName($userName);
-
-        if ($contact === null) {
-            $this->debug(
-                '[AUTHENTICATE] User is not found locally so authorization is delegated to the provider',
-                ['user' => $userName]
-            );
-        }
-
-        if ($contact !== null && !$contact->isAllowedToReachWeb()) {
-            $this->critical(
-                '[AUTHENTICATE] User is not allowed to reach web application',
-                [
-                    'user' => $userName
-                ]
-            );
-            throw AuthenticationException::notAllowedToReachWebApplication();
-        }
-    }
-
-    /**
      * Authenticate the user or throw an Exception.
      *
      * @param ProviderInterface $authenticationProvider
-     * @param AuthenticateRequest $request
-     * @throws AuthenticationException
+     * @param LoginSessionRequest $request
+     * @throws LegacyAuthenticationException
      */
-    private function authenticateOrFail(ProviderInterface $authenticationProvider, AuthenticateRequest $request): void
+    private function authenticateOrFail(ProviderInterface $authenticationProvider, LoginSessionRequest $request): void
     {
         /**
          * Authenticate using the provider chosen in the request.
          */
         $this->debug(
             '[AUTHENTICATE] Authentication using provider',
-            ['provider_name' => $request->getProviderConfigurationName()]
+            ['provider_name' => $request->providerConfigurationName]
         );
-        $authenticationProvider->authenticate([
-            'login' => $request->getLogin(),
-            'password' => $request->getPassword()
-        ]);
 
-        if (!$authenticationProvider->isAuthenticated()) {
-            $this->critical(
-                "[AUTHENTICATE] Provider can't authenticate successfully user",
-                [
-                    "provider_name" => $authenticationProvider->getName(),
-                    "user" => $request->getLogin()
-                ]
-            );
-            throw AuthenticationException::notAuthenticated();
-        }
+        $authenticationProvider->authenticateOrFail([
+            'login' => $request->login,
+            'password' => $request->password
+        ]);
     }
 
     /**
@@ -280,7 +250,7 @@ class Authenticate
      *
      * @param ProviderInterface $authenticationProvider
      * @return ContactInterface
-     * @throws AuthenticationException
+     * @throws LegacyAuthenticationException
      */
     private function getUserFromProviderOrFail(ProviderInterface $authenticationProvider): ContactInterface
     {
@@ -291,7 +261,7 @@ class Authenticate
                 '[AUTHENTICATE] No contact could be found from provider',
                 ['provider_name' => $authenticationProvider->getConfiguration()->getName()]
             );
-            throw AuthenticationException::userNotFound();
+            throw LegacyAuthenticationException::userNotFound();
         }
 
         return $providerUser;
@@ -302,7 +272,7 @@ class Authenticate
      *
      * @param ProviderInterface $authenticationProvider
      * @param ContactInterface $providerUser
-     * @throws AuthenticationException
+     * @throws LegacyAuthenticationException
      */
     private function createUserOrFail(ProviderInterface $authenticationProvider, ContactInterface $providerUser): void
     {
@@ -313,7 +283,7 @@ class Authenticate
             );
             $this->contactService->addUser($providerUser);
         } else {
-            throw AuthenticationException::userNotFoundAndCannotBeCreated();
+            throw LegacyAuthenticationException::userNotFoundAndCannotBeCreated();
         }
     }
 
@@ -321,43 +291,43 @@ class Authenticate
      * Start the Centreon session.
      *
      * @param Centreon $legacySession
-     * @throws AuthenticationException
+     * @throws LegacyAuthenticationException
      */
     private function startLegacySession(Centreon $legacySession): void
     {
-        $this->info('[AUTHENTICATE] Starting Centreon Session');
-        $this->requestStack->getCurrentRequest()->getSession()->start();
-        $this->requestStack->getCurrentRequest()->getSession()->set('centreon', $legacySession);
-        $_SESSION['centreon'] = $legacySession;
+        $currentRequest = $this->requestStack->getCurrentRequest();
+        if ($currentRequest !== null) {
+            $this->info('[AUTHENTICATE] Starting Centreon Session');
+            $currentRequest->getSession()->start();
+            $currentRequest->getSession()->set('centreon', $legacySession);
+            $_SESSION['centreon'] = $legacySession;
+        }
     }
 
     /**
-     * Define the redirection uri where user will be redirect once logged.
+     * Get the redirection uri where user will be redirect once logged.
      *
-     * @param AuthenticateRequest $request
-     * @param AuthenticateResponse $response
+     * @param LoginSessionRequest $request
      * @param ContactInterface $providerUser
+     * @return string
      */
-    private function setResponseRedirectionUri(
-        AuthenticateRequest $request,
-        AuthenticateResponse $response,
-        ContactInterface $providerUser
-    ): void {
+    private function getRedirectionUri(
+        LoginSessionRequest $request,
+        ContactInterface $providerUser,
+    ): string {
         /**
          * Check if a legacy page could be get from the request referer.
          */
         $refererRedirectionPage = $this->getRedirectionPageFromReferer($request);
         if ($refererRedirectionPage !== null) {
-            $response->setRedirectionUri(
-                $this->buildDefaultRedirectionUri($refererRedirectionPage)
-            );
+            $redirectionUri = $this->buildDefaultRedirectionUri($refererRedirectionPage);
         } elseif ($providerUser->getDefaultPage() !== null && $providerUser->getDefaultPage()->getUrl() !== null) {
-            $response->setRedirectionUri(
-                $this->buildDefaultRedirectionUri($providerUser->getDefaultPage())
-            );
+            $redirectionUri = $this->buildDefaultRedirectionUri($providerUser->getDefaultPage());
         } else {
-            $response->setRedirectionUri($this->redirectDefaultPage);
+            $redirectionUri = $this->redirectDefaultPage;
         }
+
+        return $redirectionUri;
     }
 
     /**
@@ -377,21 +347,22 @@ class Authenticate
                 $redirectUri .= $defaultPage->getUrlOptions();
             }
         }
+
         return $redirectUri;
     }
 
     /**
      * Get a Page from referer page number.
      *
-     * @param AuthenticateRequest $request
+     * @param LoginSessionRequest $request
      * @return Page|null
      */
-    private function getRedirectionPageFromReferer(AuthenticateRequest $request): ?Page
+    private function getRedirectionPageFromReferer(LoginSessionRequest $request): ?Page
     {
         $refererRedirectionPage = null;
-        if ($request->getRefererQueryParameters() !== null) {
+        if ($request->refererQueryParameters !== null) {
             $queryParameters = [];
-            parse_str($request->getRefererQueryParameters(), $queryParameters);
+            parse_str($request->refererQueryParameters, $queryParameters);
             if (array_key_exists('redirect', $queryParameters)) {
                 $redirectionPageParameters = [];
                 parse_str($queryParameters['redirect'], $redirectionPageParameters);
@@ -418,7 +389,7 @@ class Authenticate
      * @param ContactInterface $contact
      * @param ProviderToken $providerToken
      * @param ProviderToken|null $providerRefreshToken
-     * @return void
+     * @param string|null $clientIp
      */
     private function createAuthenticationTokens(
         string $sessionToken,
@@ -426,7 +397,7 @@ class Authenticate
         ContactInterface $contact,
         ProviderToken $providerToken,
         ?ProviderToken $providerRefreshToken,
-        string $clientIp
+        ?string $clientIp,
     ): void {
         $providerConfiguration = $this->providerService->findProviderConfigurationByConfigurationName(
             $providerConfigurationName
@@ -461,7 +432,7 @@ class Authenticate
             if (!$isAlreadyInTransaction) {
                 $this->dataStorageEngine->rollbackTransaction();
             }
-            throw AuthenticationException::addAuthenticationToken($ex);
+            throw LegacyAuthenticationException::addAuthenticationToken($ex);
         }
     }
 }

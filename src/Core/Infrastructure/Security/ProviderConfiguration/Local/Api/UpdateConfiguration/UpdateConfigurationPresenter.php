@@ -29,10 +29,4 @@ use Core\Application\Security\ProviderConfiguration\Local\UseCase\UpdateConfigur
 
 class UpdateConfigurationPresenter extends AbstractPresenter implements UpdateConfigurationPresenterInterface
 {
-    /**
-     * @inheritDoc
-     */
-    public function present(): void
-    {
-    }
 }

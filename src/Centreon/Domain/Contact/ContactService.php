@@ -64,6 +64,15 @@ class ContactService implements ContactServiceInterface
     /**
      * @inheritDoc
      */
+    public function isPasswordExpired(int $contactId): bool
+    {
+        // @todo get last password creation and compare it to password duration from security policy
+        return false;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function exists(ContactInterface $contact): bool
     {
         $contact = $this->contactRepository->findById($contact->getId());

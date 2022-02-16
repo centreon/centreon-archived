@@ -23,11 +23,12 @@ declare(strict_types=1);
 namespace Tests\Core\Application\RealTime\UseCase\FindHost;
 
 use Core\Application\Common\UseCase\ResponseStatusInterface;
+use Core\Application\Common\UseCase\AbstractPresenter;
 use Core\Application\RealTime\UseCase\FindHost\FindHostPresenterInterface;
 use Core\Application\RealTime\UseCase\FindHost\FindHostResponse;
 use Symfony\Component\HttpFoundation\Response;
 
-class FindHostPresenterStub implements FindHostPresenterInterface
+class FindHostPresenterStub extends AbstractPresenter implements FindHostPresenterInterface
 {
     /**
      * @var FindHostResponse
@@ -37,7 +38,14 @@ class FindHostPresenterStub implements FindHostPresenterInterface
     /**
      * @var ResponseStatusInterface|null
      */
-    private $responseStatus;
+    protected $responseStatus;
+
+    /**
+     * constructor
+     */
+    public function __construct()
+    {
+    }
 
     /**
      * @return Response
@@ -51,7 +59,7 @@ class FindHostPresenterStub implements FindHostPresenterInterface
      * @param FindHostResponse $response
      * @return void
      */
-    public function present(FindHostResponse $response): void
+    public function present(mixed $response): void
     {
         $this->response = $response;
     }
