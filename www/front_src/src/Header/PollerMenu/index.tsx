@@ -128,9 +128,10 @@ const PollerMenu = (): JSX.Element | null => {
       .catch((error) => {
         if (error.response && error.response.status === 401) {
           setIsAllowed(false);
-        } else {
-          setIssues(null);
+
+          return;
         }
+        setIssues(null);
       });
   };
 
