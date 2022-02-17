@@ -26,7 +26,6 @@ namespace Core\Domain\User\Model;
 class User
 {
     /**
-     *
      * @param integer $id
      * @param string $alias
      * @param UserPassword[] $oldpasswords
