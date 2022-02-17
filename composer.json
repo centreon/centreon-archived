@@ -29,9 +29,10 @@
         "centreon/centreon-test-lib": "20.10.x-dev",
         "sensiolabs/security-checker": "^6.0",
         "symfony/var-dumper": "4.4.*",
-        "symfony/profiler-pack": "^1.0",
         "phpstan/phpstan": "^0.12.38",
-        "webmozart/assert": "^1.8"
+        "webmozart/assert": "^1.8",
+        "symfony/stopwatch": "4.4.*",
+        "symfony/web-profiler-bundle": "4.4.*"
     },
     "require": {
         "php": ">=7.2",
@@ -55,7 +56,6 @@
         "symfony/security-bundle": "4.4.*",
         "symfony/yaml": "4.4.*",
         "symfony/options-resolver": "4.4.*",
-        "symfony/serializer-pack": "^1.0",
         "symfony/maker-bundle": "^1.11",
         "nelmio/cors-bundle": "^2.1",
         "symfony/validator": "4.4.*",
@@ -67,7 +67,12 @@
         "symfony/http-client": "4.4.*",
         "dragonmantank/cron-expression": "3.0.1",
         "ext-pdo": "*",
-        "enshrined/svg-sanitize": "^0.14.0"
+        "enshrined/svg-sanitize": "^0.14.0",
+        "doctrine/annotations": "^1.0",
+        "phpdocumentor/reflection-docblock": "^5.3",
+        "symfony/property-access": "4.4.*",
+        "symfony/property-info": "4.4.*",
+        "symfony/serializer": "4.4.*"
     },
     "autoload": {
         "psr-4": {

@@ -481,9 +481,6 @@
     "symfony/polyfill-php81": {
         "version": "v1.23.0"
     },
-    "symfony/profiler-pack": {
-        "version": "v1.0.5"
-    },
     "symfony/property-access": {
         "version": "v4.4.25"
     },
@@ -530,9 +527,6 @@
     },
     "symfony/serializer": {
         "version": "v4.4.26"
-    },
-    "symfony/serializer-pack": {
-        "version": "v1.0.4"
     },
     "symfony/service-contracts": {
         "version": "v1.1.9"
