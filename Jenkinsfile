@@ -79,12 +79,6 @@ def apiFeatureFiles = []
 def featureFiles = []
 def acceptanceTag = ""
 
-// Skip sonarQ analysis on branch without PR  - Unable to merge
-def securityAnalysisRequired = 'yes'
-if (!env.CHANGE_ID && env.BUILD == 'CI') {
-    securityAnalysisRequired = 'no'
-}
-
 /*
 ** Functions
 */
@@ -244,10 +238,10 @@ try {
     },
     'sonar': {
       node {
-        if (securityAnalysisRequired == 'no') {
-          Utils.markStageSkippedForConditional('sonar')
-        } else {
-          // Run sonarQube analysis
+      if (env.BUILD == 'CI') {
+        Utils.markStageSkippedForConditional('sonar')
+      } else {
+        // Run sonarQube analysis
           checkoutCentreonBuild()
           unstash 'git-sources'
           unstash 'vendor'
