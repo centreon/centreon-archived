@@ -30,5 +30,5 @@ interface RenewPasswordPresenterInterface extends PresenterInterface
     /**
      * Present no content.
      */
-    public function present(): void;
+    public function present(mixed $data): void;
 }

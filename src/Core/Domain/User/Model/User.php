@@ -26,12 +26,19 @@ namespace Core\Domain\User\Model;
 class User
 {
     /**
+     * Undocumented function
+     *
      * @param integer $id
      * @param string $alias
-     * @param string $password
+     * @param UserPassword[] $oldpasswords
+     * @param UserPassword $password
      */
-    public function __construct(private int $id, private string $alias, private string $password)
-    {
+    public function __construct(
+        private int $id,
+        private string $alias,
+        private array $oldpasswords,
+        private UserPassword $password
+    ) {
     }
 
     /**
@@ -51,18 +58,26 @@ class User
     }
 
     /**
-     * @return string
+     * @return UserPassword[]
      */
-    public function getPassword(): string
+    public function getOldPasswords(): array
+    {
+        return $this->oldpasswords;
+    }
+
+    /**
+     * @return UserPassword
+     */
+    public function getPassword(): UserPassword
     {
         return $this->password;
     }
 
     /**
-     * @param string $password
+     * @param UserPassword $password
      * @return self
      */
-    public function setPassword(string $password): self
+    public function setPassword(UserPassword $password): self
     {
         $this->password = $password;
         return $this;

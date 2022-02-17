@@ -16518,3 +16518,6 @@ msgstr "Relations de rôle"
 
 msgid "Linked to Roles"
 msgstr "Lié aux rôles"
+
+msgid "User information not found"
+msgstr "Informations utilisateur non trouvées"
