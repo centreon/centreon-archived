@@ -79,41 +79,17 @@ def apiFeatureFiles = []
 def featureFiles = []
 def acceptanceTag = ""
 
-
-echo ("DEBUG status")
-echo ("changeID: ${env.CHANGE_ID}")
-echo ("BUILD: ${env.BUILD}")
-
-echo ("DEBUG method 1")
+// Skip sonarQ analysis on branch without PR  - Unable to merge
 def securityAnalysisRequired = 'yes'
 if (!env.CHANGE_ID && env.BUILD == 'CI') {
     securityAnalysisRequired = 'no'
 }
-if (env.CHANGE_ID) {
-    echo("PR detected, change id is ${env.CHANGE_ID}")
-} else {
-    echo("not a PR")
-}
-echo ("status : ${securityAnalysisRequired}")
-
-echo ("DEBUG method 2")
-def shouldSkipSecurityAnalysis() {
-  return (!env.CHANGE_ID && env.BUILD == 'CI')
-}
-echo ("status : ${shouldSkipSecurityAnalysis()}")
-
 
 /*
 ** Functions
 */
 def isStableBuild() {
   return ((env.BUILD == 'REFERENCE') || (env.BUILD == 'QA'))
-}
-
-// Skip sonarQ analysis on branch without PR  - Unable to merge
-def skipSecurityAnalysis() {
-  echo("DEBUG change_id : ${env.CHANGE_ID} and buildType : ${env.BUILD}")
-  return (!env.CHANGE_ID && env.BUILD == 'CI')
 }
 
 def hasChanges(patterns) {
