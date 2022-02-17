@@ -98,7 +98,7 @@ $mandatoryPrivileges = [
     'EVENT',
 ];
 $privilegesQuery = implode(', ', $mandatoryPrivileges);
-$query = "GRANT " . $privilegesQuery . " ON `%s`.* TO " . $parameters['db_user'] . "@" . $host;
+$query = "GRANT " . $privilegesQuery . " ON `%s`.* TO " . $parameters['db_user'] . "@'" . $host . "'";
 $flushQuery = "FLUSH PRIVILEGES";
 
 try {
