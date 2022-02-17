@@ -1,6 +1,18 @@
 import { JsonDecoder } from 'ts.data.json';
 
-import { SecurityPolicy } from '../models';
+import { PasswordExpiration, SecurityPolicy } from '../models';
+
+const passwordExpirationDecoder = JsonDecoder.object<PasswordExpiration>(
+  {
+    excludedUsers: JsonDecoder.array(JsonDecoder.string, 'excludedUsers'),
+    expirationDelay: JsonDecoder.nullable(JsonDecoder.number),
+  },
+  'PasswordExpiration',
+  {
+    excludedUsers: 'excluded_users',
+    expirationDelay: 'expiration_delay',
+  },
+);
 
 export const securityPolicyDecoder = JsonDecoder.object<SecurityPolicy>(
   {
@@ -12,7 +24,7 @@ export const securityPolicyDecoder = JsonDecoder.object<SecurityPolicy>(
     hasNumber: JsonDecoder.boolean,
     hasSpecialCharacter: JsonDecoder.boolean,
     hasUpperCase: JsonDecoder.boolean,
-    passwordExpiration: JsonDecoder.nullable(JsonDecoder.number),
+    passwordExpiration: passwordExpirationDecoder,
     passwordMinLength: JsonDecoder.number,
   },
   'SecurityPolicy',
