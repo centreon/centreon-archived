@@ -244,10 +244,10 @@ try {
     },
     'sonar': {
       node {
-      if (!skipSecurityAnalysis()) {
-        Utils.markStageSkippedForConditional('sonar')
-      } else {
-        // Run sonarQube analysis
+        if (!skipSecurityAnalysis()) {
+          Utils.markStageSkippedForConditional('sonar')
+        } else {
+          // Run sonarQube analysis
           checkoutCentreonBuild()
           unstash 'git-sources'
           unstash 'vendor'
