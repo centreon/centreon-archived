@@ -43,7 +43,7 @@ class FindUsersPresenter extends AbstractPresenter implements FindUsersPresenter
     /**
      * @inheritDoc
      */
-    public function present(FindUsersResponse $response): void
+    public function present(mixed $response): void
     {
         $presenterResponse = $response->users;
 
