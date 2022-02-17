@@ -1130,6 +1130,10 @@ div.menuLeft {
     border-bottom: 1px solid var(--table-form-header-bottom-border-color);
 }
 
+table-form-header-h3 {
+    color: var(--table-form-header-h3-font-color);
+}
+
 .FormHeader .td {padding-left:2px;}
 
 .FormRowValue {
