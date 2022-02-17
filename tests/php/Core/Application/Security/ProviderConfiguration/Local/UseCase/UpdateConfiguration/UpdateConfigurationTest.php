@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ namespace Tests\Core\Application\Security\ProviderConfiguration\Local\UseCase\Up
 use PHPUnit\Framework\TestCase;
 use Core\Domain\Security\ProviderConfiguration\Local\Model\Configuration;
 use Core\Application\Security\ProviderConfiguration\Local\Repository\WriteConfigurationRepositoryInterface;
+use Core\Application\Configuration\User\Repository\ReadUserRepositoryInterface;
 use Core\Application\Security\ProviderConfiguration\Local\UseCase\UpdateConfiguration\UpdateConfiguration;
 use Core\Application\Security\ProviderConfiguration\Local\UseCase\UpdateConfiguration\UpdateConfigurationRequest;
 use Core\Application\Security\ProviderConfiguration\Local\UseCase\UpdateConfiguration\{
@@ -37,7 +38,12 @@ class UpdateConfigurationTest extends TestCase
     /**
      * @var WriteConfigurationRepositoryInterface&\PHPUnit\Framework\MockObject\MockObject
      */
-    private $repository;
+    private $writeConfigurationRepository;
+
+    /**
+     * @var ReadUserRepositoryInterface&\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $readUserRepository;
 
     /**
      * @var UpdateConfigurationPresenterInterface&\PHPUnit\Framework\MockObject\MockObject
@@ -46,7 +52,8 @@ class UpdateConfigurationTest extends TestCase
 
     public function setUp(): void
     {
-        $this->repository = $this->createMock(WriteConfigurationRepositoryInterface::class);
+        $this->writeConfigurationRepository = $this->createMock(WriteConfigurationRepositoryInterface::class);
+        $this->readUserRepository = $this->createMock(ReadUserRepositoryInterface::class);
         $this->presenter = $this->createMock(UpdateConfigurationPresenterInterface::class);
     }
 
@@ -55,6 +62,7 @@ class UpdateConfigurationTest extends TestCase
      */
     public function testUpdateConfiguration(): void
     {
+        $excludedUserAliases = ['admin'];
         $configuration = new Configuration(
             Configuration::MIN_PASSWORD_LENGTH,
             true,
@@ -64,7 +72,8 @@ class UpdateConfigurationTest extends TestCase
             true,
             Configuration::MIN_ATTEMPTS,
             Configuration::MIN_BLOCKING_DURATION,
-            Configuration::MIN_PASSWORD_EXPIRATION,
+            Configuration::MIN_PASSWORD_EXPIRATION_DELAY,
+            $excludedUserAliases,
             Configuration::MIN_NEW_PASSWORD_DELAY
         );
 
@@ -77,19 +86,27 @@ class UpdateConfigurationTest extends TestCase
         $request->canReusePasswords = true;
         $request->attempts = Configuration::MIN_ATTEMPTS;
         $request->blockingDuration = Configuration::MIN_BLOCKING_DURATION;
-        $request->passwordExpiration = Configuration::MIN_PASSWORD_EXPIRATION;
+        $request->passwordExpirationDelay = Configuration::MIN_PASSWORD_EXPIRATION_DELAY;
+        $request->passwordExpirationExcludedUserAliases = $excludedUserAliases;
         $request->delayBeforeNewPassword = Configuration::MIN_NEW_PASSWORD_DELAY;
 
-        $this->repository
+
+        $this->readUserRepository
+            ->expects($this->once())
+            ->method('findUserIdsByAliases')
+            ->with($excludedUserAliases)
+            ->willReturn([1]);
+
+        $this->writeConfigurationRepository
             ->expects($this->once())
             ->method('updateConfiguration')
-            ->with($configuration);
+            ->with($configuration, [1]);
 
         $this->presenter
             ->expects($this->once())
             ->method('setResponseStatus');
 
-        $useCase = new UpdateConfiguration($this->repository);
+        $useCase = new UpdateConfiguration($this->writeConfigurationRepository, $this->readUserRepository);
         $useCase($this->presenter, $request);
     }
 }
