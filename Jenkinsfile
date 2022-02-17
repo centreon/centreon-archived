@@ -86,6 +86,11 @@ def isStableBuild() {
   return ((env.BUILD == 'REFERENCE') || (env.BUILD == 'QA'))
 }
 
+// Skip sonarQ analysis on branch without PR  - Unable to merge
+def skipSecurityAnalysis() {
+  return (!env.CHANGE_ID && env.BUILD == 'CI')
+}
+
 def hasChanges(patterns) {
   if (isStableBuild()) {
     return true
@@ -238,7 +243,7 @@ try {
     },
     'sonar': {
       node {
-      if (env.BUILD == 'CI') {
+      if (!skipSecurityAnalysis()) {
         Utils.markStageSkippedForConditional('sonar')
       } else {
         // Run sonarQube analysis
