@@ -29,16 +29,16 @@ use Centreon\Domain\Common\Assertion\AssertionException;
 class Configuration
 {
     public const SPECIAL_CHARACTERS_LIST = '@$!%*?&',
-         MIN_PASSWORD_LENGTH = 8,
-         MAX_PASSWORD_LENGTH = 128,
-         MIN_ATTEMPTS = 1,
-         MAX_ATTEMPTS = 10,
-         MIN_BLOCKING_DURATION = 1,
-         MAX_BLOCKING_DURATION = 604800, // 7 days in seconds.
-         MIN_PASSWORD_EXPIRATION = 604800, // 7 days in seconds.
-         MAX_PASSWORD_EXPIRATION = 31536000, // 12 months in seconds.
-         MIN_NEW_PASSWORD_DELAY = 3600, // 1 hour in seconds.
-         MAX_NEW_PASSWORD_DELAY = 604800; // 7 days in seconds.
+                 MIN_PASSWORD_LENGTH = 8,
+                 MAX_PASSWORD_LENGTH = 128,
+                 MIN_ATTEMPTS = 1,
+                 MAX_ATTEMPTS = 10,
+                 MIN_BLOCKING_DURATION = 1,
+                 MAX_BLOCKING_DURATION = 604800, // 7 days in seconds.
+                 MIN_PASSWORD_EXPIRATION_DELAY = 604800, // 7 days in seconds.
+                 MAX_PASSWORD_EXPIRATION_DELAY = 31536000, // 12 months in seconds.
+                 MIN_NEW_PASSWORD_DELAY = 3600, // 1 hour in seconds.
+                 MAX_NEW_PASSWORD_DELAY = 604800; // 7 days in seconds.
 
     /**
      * @param int $passwordMinimumLength
@@ -49,7 +49,8 @@ class Configuration
      * @param bool $canReusePasswords
      * @param int|null $attempts
      * @param int|null $blockingDuration
-     * @param int|null $passwordExpiration
+     * @param int|null $passwordExpirationDelay
+     * @param string[] $passwordExpirationExcludedUserAliases
      * @param int|null $delayBeforeNewPassword
      * @throws AssertionException
      */
@@ -62,8 +63,9 @@ class Configuration
         private bool $canReusePasswords,
         private ?int $attempts,
         private ?int $blockingDuration,
-        private ?int $passwordExpiration,
-        private ?int $delayBeforeNewPassword
+        private ?int $passwordExpirationDelay,
+        private array $passwordExpirationExcludedUserAliases,
+        private ?int $delayBeforeNewPassword,
     ) {
         Assertion::min($passwordMinimumLength, self::MIN_PASSWORD_LENGTH, 'Configuration::passwordMinimumLength');
         Assertion::max($passwordMinimumLength, self::MAX_PASSWORD_LENGTH, 'Configuration::passwordMinimumLength');
@@ -75,9 +77,17 @@ class Configuration
             Assertion::min($blockingDuration, self::MIN_BLOCKING_DURATION, 'Configuration::blockingDuration');
             Assertion::max($blockingDuration, self::MAX_BLOCKING_DURATION, 'Configuration::blockingDuration');
         }
-        if ($passwordExpiration !== null) {
-            Assertion::min($passwordExpiration, self::MIN_PASSWORD_EXPIRATION, 'Configuration::passwordExpiration');
-            Assertion::max($passwordExpiration, self::MAX_PASSWORD_EXPIRATION, 'Configuration::passwordExpiration');
+        if ($passwordExpirationDelay !== null) {
+            Assertion::min(
+                $passwordExpirationDelay,
+                self::MIN_PASSWORD_EXPIRATION_DELAY,
+                'Configuration::passwordExpirationDelay'
+            );
+            Assertion::max(
+                $passwordExpirationDelay,
+                self::MAX_PASSWORD_EXPIRATION_DELAY,
+                'Configuration::passwordExpirationDelay'
+            );
         }
         if ($delayBeforeNewPassword !== null) {
             Assertion::min(
@@ -241,18 +251,36 @@ class Configuration
     /**
      * @return int|null
      */
-    public function getPasswordExpiration(): ?int
+    public function getPasswordExpirationDelay(): ?int
     {
-        return $this->passwordExpiration;
+        return $this->passwordExpirationDelay;
     }
 
     /**
-     * @param int|null $passwordExpiration
+     * @param int|null $passwordExpirationDelay
      * @return self
      */
-    public function setPasswordExpiration(?int $passwordExpiration): self
+    public function setPasswordExpirationDelay(?int $passwordExpirationDelay): self
     {
-        $this->passwordExpiration = $passwordExpiration;
+        $this->passwordExpirationDelay = $passwordExpirationDelay;
+        return $this;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getPasswordExpirationExcludedUserAliases(): array
+    {
+        return $this->passwordExpirationExcludedUserAliases;
+    }
+
+    /**
+     * @param string[] $passwordExpirationExcludedUserAliases
+     * @return self
+     */
+    public function setPasswordExpirationExcludedUserAliases(array $passwordExpirationExcludedUserAliases): self
+    {
+        $this->passwordExpirationExcludedUserAliases = $passwordExpirationExcludedUserAliases;
         return $this;
     }
 
