@@ -14,8 +14,8 @@
     --global-view-ui-border-color: none;
     --ui-background-color: none;
     --global-view-ui-active-tabs-border-color: none;
-    --global-view-ui-active-tabs-border-bottom-color: #10069f;
-    --bt-success-background-color: #10069F;
+    --global-view-ui-active-tabs-border-bottom-color: #2196F3;
+    --bt-success-background-color: #2196F3;
     --bt-default-background-color: var(--bt-success-background-color);
     --bt-danger-background-color: var(--bt-success-background-color);
     --bt-info-background-color: var(--bt-success-background-color);
