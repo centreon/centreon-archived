@@ -1,5 +1,22 @@
 import { DurationUnitType } from 'dayjs/plugin/duration';
 
+export interface Contact {
+  alias: string;
+  email: string;
+  id: number;
+  is_admin: boolean;
+}
+
+export interface PasswordExpiration {
+  excludedUsers: Array<string>;
+  expirationDelay: number | null;
+}
+
+interface PasswordExpirationToAPI {
+  excluded_users: Array<string>;
+  expiration_delay: number | null;
+}
+
 export interface SecurityPolicy {
   attempts: number | null;
   blockingDuration: number | null;
@@ -9,7 +26,7 @@ export interface SecurityPolicy {
   hasNumber: boolean;
   hasSpecialCharacter: boolean;
   hasUpperCase: boolean;
-  passwordExpiration: number | null;
+  passwordExpiration: PasswordExpiration;
   passwordMinLength: number;
 }
 
@@ -23,7 +40,7 @@ export interface SecurityPolicyFromAPI {
     hasNumber: boolean;
     hasSpecialCharacter: boolean;
     hasUpperCase: boolean;
-    passwordExpiration: number | null;
+    passwordExpiration: PasswordExpiration;
     passwordMinLength: number;
   };
 }
@@ -38,7 +55,7 @@ export interface SecurityPolicyToAPI {
     has_number: boolean;
     has_special_character: boolean;
     has_uppercase: boolean;
-    password_expiration: number | null;
+    password_expiration: PasswordExpirationToAPI;
     password_min_length: number;
   };
 }
