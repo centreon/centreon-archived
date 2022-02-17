@@ -66,7 +66,8 @@ class FindConfigurationTest extends TestCase
             true,
             Configuration::MIN_ATTEMPTS,
             Configuration::MIN_BLOCKING_DURATION,
-            Configuration::MIN_PASSWORD_EXPIRATION,
+            Configuration::MIN_PASSWORD_EXPIRATION_DELAY,
+            [],
             Configuration::MIN_NEW_PASSWORD_DELAY
         );
 
@@ -89,7 +90,10 @@ class FindConfigurationTest extends TestCase
         $this->assertEquals($presenter->response->canReusePasswords, $configuration->canReusePasswords());
         $this->assertEquals($presenter->response->attempts, $configuration->getAttempts());
         $this->assertEquals($presenter->response->blockingDuration, $configuration->getBlockingDuration());
-        $this->assertEquals($presenter->response->passwordExpiration, $configuration->getPasswordExpiration());
+        $this->assertEquals(
+            $presenter->response->passwordExpirationDelay,
+            $configuration->getPasswordExpirationDelay()
+        );
         $this->assertEquals($presenter->response->delayBeforeNewPassword, $configuration->getDelayBeforeNewPassword());
     }
 

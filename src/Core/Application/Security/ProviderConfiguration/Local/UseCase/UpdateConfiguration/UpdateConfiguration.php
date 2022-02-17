@@ -29,6 +29,7 @@ use Core\Application\Common\UseCase\ErrorResponse;
 use Core\Application\Common\UseCase\NoContentResponse;
 use Core\Domain\Security\ProviderConfiguration\Local\Model\ConfigurationFactory;
 use Core\Application\Security\ProviderConfiguration\Local\Repository\WriteConfigurationRepositoryInterface;
+use Core\Application\Configuration\User\Repository\ReadUserRepositoryInterface;
 use Core\Application\Security\ProviderConfiguration\Local\UseCase\UpdateConfiguration\UpdateConfigurationRequest;
 
 class UpdateConfiguration
@@ -36,10 +37,13 @@ class UpdateConfiguration
     use LoggerTrait;
 
     /**
-     * @param WriteConfigurationRepositoryInterface $repository
+     * @param WriteConfigurationRepositoryInterface $writeConfigurationRepository
+     * @param ReadUserRepositoryInterface $readUserRepository
      */
-    public function __construct(private WriteConfigurationRepositoryInterface $repository)
-    {
+    public function __construct(
+        private WriteConfigurationRepositoryInterface $writeConfigurationRepository,
+        private ReadUserRepositoryInterface $readUserRepository,
+    ) {
     }
 
     /**
@@ -51,6 +55,7 @@ class UpdateConfiguration
         UpdateConfigurationRequest $request
     ): void {
         $this->info('Updating Security Policy');
+
         try {
             $configuration = ConfigurationFactory::createFromRequest($request);
         } catch (AssertionException $ex) {
@@ -59,7 +64,12 @@ class UpdateConfiguration
             return;
         }
 
-        $this->repository->updateConfiguration($configuration);
+        $excludedUserIds = $this->readUserRepository->findUserIdsByAliases(
+            $request->passwordExpirationExcludedUserAliases
+        );
+
+        $this->writeConfigurationRepository->updateConfiguration($configuration, $excludedUserIds);
+
         $presenter->setResponseStatus(new NoContentResponse());
     }
 }
