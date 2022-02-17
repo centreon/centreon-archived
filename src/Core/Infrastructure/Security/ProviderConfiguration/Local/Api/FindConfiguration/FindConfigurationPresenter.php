@@ -29,9 +29,10 @@ use Core\Application\Security\ProviderConfiguration\Local\UseCase\FindConfigurat
 class FindConfigurationPresenter extends AbstractPresenter implements FindConfigurationPresenterInterface
 {
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     * @param FindConfigurationResponse $response
      */
-    public function present(FindConfigurationResponse $response): void
+    public function present(mixed $response): void
     {
         $presenterResponse = [
             'password_security_policy' => [

@@ -52,7 +52,7 @@ class CentreonAuth
     public const ENCRYPT_MD5 = 1;
     public const ENCRYPT_SHA1 = 2;
 
-    protected const SOURCE_LOCAL = 'local';
+    public const AUTH_TYPE_LOCAL = 'local';
 
     // Declare Values
     public $userInfos;
@@ -234,7 +234,7 @@ class CentreonAuth
             }
         } elseif (
             $this->userInfos["contact_auth_type"] == ""
-            || $this->userInfos["contact_auth_type"] == "local"
+            || $this->userInfos["contact_auth_type"] === self::AUTH_TYPE_LOCAL
             || $this->autologin
         ) {
             if (
@@ -355,14 +355,14 @@ class CentreonAuth
                 $this->CentreonLog->setUID($this->userInfos["contact_id"]);
                 $this->CentreonLog->insertLog(
                     CentreonUserLog::TYPE_LOGIN,
-                    "[" . self::SOURCE_LOCAL . "] [" . $_SERVER["REMOTE_ADDR"] . "] "
+                    "[" . self::AUTH_TYPE_LOCAL . "] [" . $_SERVER["REMOTE_ADDR"] . "] "
                         . "Authentication succeeded for '" . $username . "'"
                 );
             } else {
                 //  Take care before modifying this message pattern as it may break tools such as fail2ban
                 $this->CentreonLog->insertLog(
                     CentreonUserLog::TYPE_LOGIN,
-                    "[" . self::SOURCE_LOCAL . "] [" . $_SERVER["REMOTE_ADDR"] . "] "
+                    "[" . self::AUTH_TYPE_LOCAL . "] [" . $_SERVER["REMOTE_ADDR"] . "] "
                         . "Authentication failed for '" . $username . "'"
                 );
                 $this->error = _('Your credentials are incorrect.');
@@ -402,7 +402,7 @@ class CentreonAuth
                 //  Take care before modifying this message pattern as it may break tools such as fail2ban
                 $this->CentreonLog->insertLog(
                     CentreonUserLog::TYPE_LOGIN,
-                    "[" . self::SOURCE_LOCAL . "] [" . $_SERVER["REMOTE_ADDR"] . "] "
+                    "[" . self::AUTH_TYPE_LOCAL . "] [" . $_SERVER["REMOTE_ADDR"] . "] "
                         . "Authentication failed for '" . $username . "' : not found"
                 );
             }

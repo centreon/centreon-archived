@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Login with session",
+  "type": "object",
+  "required": ["login", "password"],
+  "additionalProperties": false,
+  "properties": {
+    "login": {
+      "type": "string"
+    },
+    "password": {
+      "type": "string"
+    }
+  }
+}
