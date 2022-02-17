@@ -31,7 +31,6 @@ use Core\Application\User\Repository\WriteUserRepositoryInterface;
 
 class DbWriteUserRepository extends AbstractRepositoryDRB implements WriteUserRepositoryInterface
 {
-
     /**
      * @param DatabaseConnection $db
      */

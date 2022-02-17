@@ -39,6 +39,9 @@ class DbReadUserRepository extends AbstractRepositoryDRB implements ReadUserRepo
         $this->db = $db;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function findUserByAlias(string $alias): ?User
     {
         $statement = $this->db->prepare(

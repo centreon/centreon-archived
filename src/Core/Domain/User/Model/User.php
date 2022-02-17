@@ -28,13 +28,13 @@ class User
     /**
      * @param integer $id
      * @param string $alias
-     * @param UserPassword[] $oldpasswords
+     * @param UserPassword[] $oldPasswords
      * @param UserPassword $password
      */
     public function __construct(
         private int $id,
         private string $alias,
-        private array $oldpasswords,
+        private array $oldPasswords,
         private UserPassword $password
     ) {
     }
@@ -60,7 +60,7 @@ class User
      */
     public function getOldPasswords(): array
     {
-        return $this->oldpasswords;
+        return $this->oldPasswords;
     }
 
     /**
