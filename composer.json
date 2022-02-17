@@ -27,7 +27,8 @@
         "symfony/web-profiler-bundle": "^5.4",
         "twig/twig": "^3.3",
         "webmozart/assert": "^1.8",
-        "zircote/swagger-php": "^4.0"
+        "zircote/swagger-php": "^4.0",
+        "pestphp/pest": "^1.21"
     },
     "require": {
         "beberlei/assert": "^3.3",
@@ -124,6 +125,7 @@
         "codestyle": "phpcs --extensions=php --standard=./ruleset.xml ./",
         "codestyle:ci": "@codestyle --report=checkstyle --report-file=./build/checkstyle-be.xml --no-cache",
         "phpstan": "phpstan analyse -c phpstan.neon --level 6 --memory-limit=512M",
-        "phpstan:ci": "@phpstan --error-format=absolute --no-interaction --no-progress"
+        "phpstan:ci": "@phpstan --error-format=absolute --no-interaction --no-progress",
+        "pest": "./vendor/bin/pest"
     }
 }

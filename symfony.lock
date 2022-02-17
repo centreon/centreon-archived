@@ -53,6 +53,12 @@
     "enshrined/svg-sanitize": {
         "version": "0.14.1"
     },
+    "facade/ignition-contracts": {
+        "version": "1.0.2"
+    },
+    "filp/whoops": {
+        "version": "2.14.5"
+    },
     "friends-of-behat/mink": {
         "version": "v1.9.0"
     },
@@ -136,6 +142,9 @@
     "nikic/php-parser": {
         "version": "v4.13.0"
     },
+    "nunomaduro/collision": {
+        "version": "v5.11.0"
+    },
     "nyholm/psr7": {
         "version": "1.0",
         "recipe": {
@@ -159,6 +168,12 @@
     },
     "pear/pear_exception": {
         "version": "v1.0.2"
+    },
+    "pestphp/pest": {
+        "version": "v1.21.1"
+    },
+    "pestphp/pest-plugin": {
+        "version": "v1.0.0"
     },
     "phar-io/manifest": {
         "version": "2.0.3"
