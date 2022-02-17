@@ -985,10 +985,6 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
      */
     private function updateHostSeverity(Host $host): void
     {
-        if ($host->getSeverity()?->getId() === null) {
-            return;
-        }
-
         $request = $this->translateDbName(
             "DELETE `:db`.hostcategories_relation
             FROM `:db`.hostcategories_relation
