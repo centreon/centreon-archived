@@ -71,7 +71,7 @@
     --rotation-timer-border-color : var(--color-ghost);
     --ui-silder-handle-background-color :var(--color-ghost);
     --ui-silder-handle-border-color : var(--color-grey-chateau);
-    --timer-value-color : var(--color-iris-blue);
+    --timer-value-color : var(--color-scorpion-2);
     /*************/
 
     /** Select 2 **/
@@ -272,13 +272,14 @@
     /* ------ END : info box variables -----*/
 
     /* ------ START : toggle wrapper variables -----*/
-    --toggle-wrapper-background-color: var(--color-white);
+    --toggle-wrapper-background-color: var(--color-gallery-2);
     --toggle-wrapper-border-color: var(--color-iron);
     /* ------ END : toggle wrapper variables -----*/
 
     /* ------ START : form header variables -----*/
     --table-form-header-font-color: var(--color-aluminium);
     --table-form-header-bottom-border-color: var(--color-iron);
+    --table-form-header-h3-font-color: var(--color-aluminium);
     /* ------ END : form header variables -----*/
 
     /* ------ START : Tabs variables -----*/
@@ -446,7 +447,7 @@
     /* ------ END : Reporting 2015 variables -----*/
 
     /* ------ START : popin variables -----*/
-    --centreon-popin-background-color: var(--color-white);
+    --centreon-popin-background-color: var(--color-gallery-2);
     --centreon-popin-border-color: var(--color-aluminium-2);
     --centreon-popin-overlay-background-color: var(--color-black);
     --popin-wrapper-font-color: var(--color-martar);

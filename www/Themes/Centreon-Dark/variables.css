@@ -7,6 +7,7 @@
     --info-box-border-color: #776e62;
     --path-way-font-color: var(--body-color);
     --ui-widget-header-background-color: var(--body-background);
+    --ui-widget-header-border-bottom-color: #776e62;
     --ui-tabs-nav-li-anchor-background-color: none;
     --ui-anchor-state-default-font-color: #e8e6e38a;
     --ui-anchor-state-active-visited-font-color: #6793e6;
@@ -27,7 +28,6 @@
     --table-form-header-font-color: var(--body-color);
     --popin-wrapper-font-color: var(--body-color);
     --table-form-header-h3-font-color: var(--body-color);
-    --ui-widget-header-border-bottom-color: #373b3d;
     --global-view-ui-active-tabs-border-bottom-color: #10069f;
 }
 
