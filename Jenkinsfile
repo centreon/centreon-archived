@@ -72,6 +72,7 @@ stage('Deliver sources') {
     stash name: 'tar-sources', includes: "centreon-web-${env.VERSION}.tar.gz"
     stash name: 'vendor', includes: 'vendor.tar.gz'
     stash name: 'api-doc', includes: 'centreon-api-v2.1.html'
+    stash name: 'centreon-injector', includes: 'centreon-injector.tar.gz'
     publishHTML([
       allowMissing: false,
       keepAll: true,
@@ -260,11 +261,12 @@ try {
       node {
         checkoutCentreonBuild(buildBranch);
         unstash 'tar-sources'
+        unstash 'centreon-injector'
         sh "./centreon-build/jobs/web/${serie}/mon-web-lighthouse-ci.sh centos7"
         publishHTML([
           allowMissing: false,
           keepAll: true,
-          reportDir: "$PROJECT-$VERSION/.lighthouseci",
+          reportDir: "$PROJECT-$VERSION/lighthouse/report",
           reportFiles: 'lighthouseci-index.html',
           reportName: 'Centreon Web Performances',
           reportTitles: ''
