@@ -120,12 +120,12 @@
             "cache:clear": "symfony-cmd",
             "assets:install %PUBLIC_DIR%": "symfony-cmd"
         },
-        "test:ci": "@test --log-junit ./build/phpunit.xml --coverage-clover ./build/coverage-be.xml --no-interaction --do-not-cache-result",
+        "pest": "./vendor/bin/pest",
+        "pest:coverage": "./vendor/bin/pest --coverage",
+        "test:ci": "@pest --log-junit ./build/phpunit.xml --coverage-clover ./build/coverage-be.xml --no-interaction --do-not-cache-result",
         "codestyle": "phpcs --extensions=php --standard=./ruleset.xml ./",
         "codestyle:ci": "@codestyle --report=checkstyle --report-file=./build/checkstyle-be.xml --no-cache",
         "phpstan": "phpstan analyse -c phpstan.neon --level 6 --memory-limit=512M",
-        "phpstan:ci": "@phpstan --error-format=absolute --no-interaction --no-progress",
-        "pest": "./vendor/bin/pest",
-        "pest:coverage": "./vendor/bin/pest --coverage"
+        "phpstan:ci": "@phpstan --error-format=absolute --no-interaction --no-progress"
     }
 }
