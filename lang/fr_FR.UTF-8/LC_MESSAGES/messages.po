@@ -16518,3 +16518,6 @@ msgstr "Relations de rôle"
 
 msgid "Linked to Roles"
 msgstr "Lié aux rôles"
+
+msgid "Local provider configuration not found"
+msgstr "Configuration du fournisseur d'accès local non trouvée"
