@@ -30,13 +30,29 @@ export interface Entity {
 }
 
 export interface Extensions {
+  module: {
+    entities: Array<Entity>;
+  };
+  widget: {
+    entities: Array<Entity>;
+  };
+}
+
+export interface sendExtensionsRequestsType {
+  result: Extensions | string;
+  status: boolean;
+}
+
+export interface sendDeleteExtensionRequestsType {
+  result: string | null;
+  status: boolean;
+}
+
+
+export interface sendUpdateOrInstallExtensionRequestsTypes {
   result: {
-    module: {
-      entities: Array<Entity>;
-    };
-    widget: {
-      entities: Array<Entity>;
-    };
+    entity: Entity | null;
+    message: string;
   };
   status: boolean;
 }

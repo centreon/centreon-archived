@@ -1,34 +1,41 @@
-import React, { useState, useEffect } from 'react';
+import * as React from 'react';
 
 import { find, propEq } from 'ramda';
-import { compose } from 'redux';
-import axios from 'axios';
 import { useAtomValue } from 'jotai/utils';
 
 import UpdateIcon from '@mui/icons-material/SystemUpdateAlt';
 import InstallIcon from '@mui/icons-material/Add';
+import Stack from '@mui/material/Stack';
 import { Button } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 
 import {
   useRequest,
   getData,
   postData,
-  deleteData,
   SelectEntry,
+  useSnackbar,
 } from '@centreon/ui';
 
 import Hook from '../components/Hook';
 import useNavigation from '../Navigation/useNavigation';
 import useExternalComponents from '../externalComponents/useExternalComponents';
 
+import { deleteExtension } from './api';
 import ExtensionsHolder from './ExtensionsHolder';
 import ExtensionDetailsPopup from './ExtensionDetailsDialog';
 import ExtensionDeletePopup from './ExtensionDeleteDialog';
-import Wrapper from './Wrapper';
 import Filter from './Filter';
-import { Extensions, EntityType, ExtensionsStatus } from './models';
-import buildEndPoint from './api/endpoint';
-import { appliedFilterCriteriasAtom, searchAtom } from './Filter/filterAtoms';
+import {
+  Extensions,
+  EntityType,
+  ExtensionsStatus,
+  sendExtensionsRequestsType,
+  sendUpdateOrInstallExtensionRequestsTypes,
+  sendDeleteExtensionRequestsType,
+} from './models';
+import { buildEndPoint, buildExtensionEndPoint } from './api/endpoint';
+import { appliedFilterCriteriasAtom } from './Filter/filterAtoms';
 
 interface EntityDetails {
   id: string;
@@ -41,64 +48,78 @@ interface EntityDeleting {
   type: string;
 }
 
+const useStyles = makeStyles((theme) => ({
+  contentWrapper: {
+    [theme.breakpoints.up(767)]: {
+      padding: theme.spacing(1.5),
+    },
+    boxSizing: 'border-box',
+    margin: theme.spacing(0, 'auto'),
+    padding: theme.spacing(1.5, 2.5, 0, 2.5),
+  },
+}));
+
 // eslint-disable-next-line react/prop-types
 const ExtensionsManager = ({ reloadNavigation }): JSX.Element => {
-  const [extensions, setExtension] = useState<Extensions>({
-    result: {
-      module: {
-        entities: [],
-      },
-      widget: {
-        entities: [],
-      },
+  const classes = useStyles();
+  const { showErrorMessage, showSuccessMessage } = useSnackbar();
+
+  const [extensions, setExtension] = React.useState<Extensions>({
+    module: {
+      entities: [],
     },
-    status: false,
+    widget: {
+      entities: [],
+    },
   });
 
-  const [modulesActive, setModulesActive] = useState(false);
-  const [widgetsActive, setWidgetsActive] = useState(false);
+  const [modulesActive, setModulesActive] = React.useState(false);
+  const [widgetsActive, setWidgetsActive] = React.useState(false);
 
-  const [entityDetails, setEntityDetails] = useState<EntityDetails | null>(
-    null,
-  );
+  const [entityDetails, setEntityDetails] =
+    React.useState<EntityDetails | null>(null);
 
-  const [entityDeleting, setEntityDeleting] = useState<EntityDeleting | null>(
-    null,
-  );
+  const [entityDeleting, setEntityDeleting] =
+    React.useState<EntityDeleting | null>(null);
 
   const [extensionsInstallingStatus, setExtensionsInstallingStatus] =
-    useState<ExtensionsStatus>({});
+    React.useState<ExtensionsStatus>({});
 
   const [extensionsUpdatingStatus, setExtensionsUpdatingStatus] =
-    useState<ExtensionsStatus>({});
+    React.useState<ExtensionsStatus>({});
 
-  // const [installed, setInstalled] = useState(false);
-  // const [notInstalled, setNotInstalled] = useState(false);
-  // const [updated, setUpdated] = useState(false);
-  // const [outdated, setOutdated] = useState(false);
+  // const [installed, setInstalled] = React.useState(false);
+  // const [notInstalled, setNotInstalled] = React.useState(false);
+  // const [updated, setUpdated] = React.useState(false);
+  // const [outdated, setOutdated] = React.useState(false);
 
-  const [confirmedDeletingEntityId, setConfirmedDeletingEntityId] = useState<
-    string | boolean | null
-  >(false);
+  const [confirmedDeletingEntityId, setConfirmedDeletingEntityId] =
+    React.useState<string | null>(null);
 
-  const { sendRequest: sendExtensionsValueRequests } = useRequest<Extensions>({
-    request: getData,
-  });
+  const { sendRequest: sendExtensionsRequests } =
+    useRequest<sendExtensionsRequestsType>({
+      request: getData,
+    });
 
-  const { sendRequest: sendUpdateOrInstallExtensionValueRequests } = useRequest(
-    {
+  const { sendRequest: sendUpdateOrInstallExtensionRequests } =
+    useRequest<sendUpdateOrInstallExtensionRequestsTypes>({
       request: postData,
-    },
-  );
+    });
+
+  const { sendRequest: sendDeleteExtensionRequests } = useRequest({
+    request: deleteExtension,
+  });
 
   const getAppliedFilterCriteriasAtom = useAtomValue(
     appliedFilterCriteriasAtom,
   );
 
-  const getSearchAtom = useAtomValue(searchAtom);
-
-  useEffect(() => {
+  React.useEffect(() => {
     const types = find(propEq('name', 'types'), getAppliedFilterCriteriasAtom);
+    const statuses = find(
+      propEq('name', 'statuses'),
+      getAppliedFilterCriteriasAtom,
+    );
 
     if (types && types.value) {
       const typesValues = types.value as Array<SelectEntry>;
@@ -106,24 +127,18 @@ const ExtensionsManager = ({ reloadNavigation }): JSX.Element => {
       setWidgetsActive(!!find(propEq('id', 'WIDGET'), typesValues));
     }
 
-    const statuses = find(
-      propEq('name', 'statuses'),
-      getAppliedFilterCriteriasAtom,
-    );
-
-    if (statuses && statuses.value) {
-      const statusesValues = statuses.value as Array<SelectEntry>;
-
-      // setInstalled(!!find(propEq('id', 'INSTALLED'), statusesValues));
-      // setNotInstalled(!!find(propEq('id', 'NOTINSTALLED'), statusesValues));
-      // setUpdated(!!find(propEq('id', 'UPDATED'), statusesValues));
-      // setOutdated(!!find(propEq('id', 'OUTDATED'), statusesValues));
-    }
-
-    const extensionsValue = sendExtensionsValueRequests({
-      endpoint: `./api/internal.php?object=centreon_module&action=list${getParsedGETParamsForExtensions()}`,
-    }).then((values) => {
-      setExtension(values);
+    sendExtensionsRequests({
+      endpoint: buildExtensionEndPoint({
+        action: 'list',
+        criteriaStatus: statuses,
+      }),
+    }).then(({ status, result }) => {
+      if (status) {
+        setExtension(result as Extensions);
+        showSuccessMessage('Success !!!');
+      } else {
+        showErrorMessage(result as string);
+      }
     });
   }, [getAppliedFilterCriteriasAtom]);
 
@@ -134,16 +149,13 @@ const ExtensionsManager = ({ reloadNavigation }): JSX.Element => {
   ): Array<EntityType> => {
     const resArray: Array<EntityType> = [];
     if (extensions) {
-      const { status, result } = extensions;
-      if (status) {
-        for (let i = 0; i < result[key].entities.length; i += 1) {
-          const entity = result[key].entities[i];
-          if (entity.version[param] === equals) {
-            resArray.push({
-              id: entity.id,
-              type: key,
-            });
-          }
+      for (let i = 0; i < extensions[key].entities.length; i += 1) {
+        const entity = extensions[key].entities[i];
+        if (entity.version[param] === equals) {
+          resArray.push({
+            id: entity.id,
+            type: key,
+          });
         }
       }
     }
@@ -169,42 +181,6 @@ const ExtensionsManager = ({ reloadNavigation }): JSX.Element => {
     return [...getEntitiesByKeyAndVersionParam(param, equals, 'widget')];
   };
 
-  const getParsedGETParamsForExtensions = (): string => {
-    let params = '';
-    const nameEqualsSearch = propEq('name', 'search');
-    const nameEqualsStatuses = propEq('name', 'statuses');
-
-    // const searchValue = find(nameEqualsSearch, getAppliedFilterCriteriasAtom);
-    const statuses = find(nameEqualsStatuses, getAppliedFilterCriteriasAtom);
-
-    if (!statuses || !statuses.value) {
-      return '';
-    }
-
-    const values = statuses.value as Array<SelectEntry>;
-
-    const installed = find(propEq('id', 'INSTALLED'), values);
-    const notInstalled = find(propEq('id', 'NOTINSTALLED'), values);
-    const updated = find(propEq('id', 'UPDATED'), values);
-    const outdated = find(propEq('id', 'OUTDATED'), values);
-
-    if (!updated && outdated) {
-      params += '&updated=false';
-    } else if (updated && !outdated) {
-      params += '&updated=true';
-    }
-
-    if (!installed && notInstalled) {
-      params += '&installed=false';
-    } else if (installed && !notInstalled) {
-      params += '&installed=true';
-    }
-
-    console.log(`----------------${params}`);
-
-    return params;
-  };
-
   const updateAllEntities = (): void => {
     const entities = getAllEntitiesByVersionParam('outdated', true);
     if (entities.length <= 0 || !entities) {
@@ -217,22 +193,37 @@ const ExtensionsManager = ({ reloadNavigation }): JSX.Element => {
 
   const updateById = (id: string, type: string): void => {
     setExtensionsUpdatingStatusByIds(id, true);
-    const updateExtensionValue = sendUpdateOrInstallExtensionValueRequests({
+    sendUpdateOrInstallExtensionRequests({
       endpoint: buildEndPoint({
         action: 'update',
         id,
         type,
       }),
-    });
-    const extensionsValue = sendExtensionsValueRequests({
-      endpoint: `./api/internal.php?object=centreon_module&action=list${getParsedGETParamsForExtensions()}`,
-    });
+    })
+      .then(({ status, result }) => {
+        if (!status) {
+          showErrorMessage(result.message as string);
+        } else {
+          showSuccessMessage('Success !!!');
+        }
 
-    Promise.all([updateExtensionValue, extensionsValue]).then((values) => {
-      setExtension(values[1]);
-      setExtensionsUpdatingStatusByIds(id, false);
-      reloadNavigation();
-    });
+        return sendExtensionsRequests({
+          endpoint: buildExtensionEndPoint({
+            action: 'list',
+            criteriaStatus: find(
+              propEq('name', 'statuses'),
+              getAppliedFilterCriteriasAtom,
+            ),
+          }),
+        });
+      })
+      .then(({ status, result }) => {
+        if (status) {
+          setExtension(result as Extensions);
+        }
+        setExtensionsUpdatingStatusByIds(id, false);
+        reloadNavigation();
+      });
   };
 
   const installAllEntities = (): void => {
@@ -247,24 +238,37 @@ const ExtensionsManager = ({ reloadNavigation }): JSX.Element => {
 
   const installById = (id: string, type: string): void => {
     setExtensionsInstallingStatusByIds(id, true);
-
-    const installingExtensionValue = sendUpdateOrInstallExtensionValueRequests({
+    sendUpdateOrInstallExtensionRequests({
       endpoint: buildEndPoint({
         action: 'install',
         id,
         type,
       }),
-    });
+    })
+      .then(({ status, result }) => {
+        if (!status) {
+          showErrorMessage(result.message as string);
+        } else {
+          showSuccessMessage('Success !!!');
+        }
 
-    const extensionsValue = sendExtensionsValueRequests({
-      endpoint: `./api/internal.php?object=centreon_module&action=list${getParsedGETParamsForExtensions()}`,
-    });
-
-    Promise.all([installingExtensionValue, extensionsValue]).then((values) => {
-      setExtension(values[1]);
-      setExtensionsInstallingStatusByIds(id, false);
-      reloadNavigation();
-    });
+        return sendExtensionsRequests({
+          endpoint: buildExtensionEndPoint({
+            action: 'list',
+            criteriaStatus: find(
+              propEq('name', 'statuses'),
+              getAppliedFilterCriteriasAtom,
+            ),
+          }),
+        });
+      })
+      .then(({ status, result }) => {
+        if (status) {
+          setExtension(result as Extensions);
+        }
+        setExtensionsInstallingStatusByIds(id, false);
+        reloadNavigation();
+      });
   };
 
   const setExtensionsUpdatingStatusByIds = (
@@ -321,79 +325,91 @@ const ExtensionsManager = ({ reloadNavigation }): JSX.Element => {
 
   const deleteById = (id, type): void => {
     setConfirmedDeletingEntityId(id);
+    setEntityDeleting(null);
+    sendDeleteExtensionRequests({
+      id,
+      type,
+    })
+      .then(({ status, result }) => {
+        setConfirmedDeletingEntityId(null);
+        if (!status) {
+          showErrorMessage(result as string);
+        } else {
+          showSuccessMessage('Success !!!');
+        }
 
-    axios
-      .delete('./api/internal.php?object=centreon_module&action=remove', {
-        params: {
-          id,
-          type,
-        },
-      })
-      .then(() => {
-        sendExtensionsValueRequests({
-          endpoint: `./api/internal.php?object=centreon_module&action=list${getParsedGETParamsForExtensions()}`,
-        }).then((values) => {
-          setConfirmedDeletingEntityId(null);
-          setExtension(values);
-          setEntityDeleting(null);
-          reloadNavigation();
+        return sendExtensionsRequests({
+          endpoint: buildExtensionEndPoint({
+            action: 'list',
+            criteriaStatus: find(
+              propEq('name', 'statuses'),
+              getAppliedFilterCriteriasAtom,
+            ),
+          }),
         });
+      })
+      .then(({ status, result }) => {
+        if (status) {
+          setExtension(result as Extensions);
+        }
+        reloadNavigation();
       });
   };
 
   return (
     <div>
       <Filter />
-      <Wrapper>
-        <Button
-          color="primary"
-          size="small"
-          startIcon={<UpdateIcon />}
-          variant="contained"
-          onClick={updateAllEntities}
-        >
-          update all
-        </Button>
-        <Button
-          color="primary"
-          size="small"
-          startIcon={<InstallIcon />}
-          style={{ marginLeft: 8, marginRight: 8 }}
-          variant="contained"
-          onClick={installAllEntities}
-        >
-          install all
-        </Button>
-        <Hook path="/administration/extensions/manager" />
-      </Wrapper>
-
-      {extensions.result ? (
+      <div className={classes.contentWrapper}>
+        <Stack direction="row" spacing={2}>
+          <Button
+            color="primary"
+            size="small"
+            startIcon={<UpdateIcon />}
+            variant="contained"
+            onClick={updateAllEntities}
+          >
+            update all
+          </Button>
+          <Button
+            color="primary"
+            size="small"
+            startIcon={<InstallIcon />}
+            // style={{ marginLeft: 8, marginRight: 8 }}
+            variant="contained"
+            onClick={installAllEntities}
+          >
+            install all
+          </Button>
+          <Hook path="/administration/extensions/manager" />
+        </Stack>
+      </div>
+      {extensions ? (
         <>
-          {extensions.result.module &&
+          {extensions.module &&
           (modulesActive || (!modulesActive && !widgetsActive)) ? (
             <ExtensionsHolder
               deletingEntityId={confirmedDeletingEntityId}
-              entities={extensions.result.module.entities}
+              entities={extensions.module.entities}
               installing={extensionsInstallingStatus}
               title="Modules"
               type="module"
               updating={extensionsUpdatingStatus}
-              onCardClicked={activateExtensionsDetails}
+              onCard={activateExtensionsDetails}
               onDelete={toggleDeleteModal}
               onInstall={installById}
               onUpdate={updateById}
             />
           ) : null}
-          {extensions.result.widget &&
+          {extensions.widget &&
           (widgetsActive || (!modulesActive && !widgetsActive)) ? (
             <ExtensionsHolder
               deletingEntityId={confirmedDeletingEntityId}
-              entities={extensions.result.widget.entities}
+              entities={extensions.widget.entities}
               installing={extensionsInstallingStatus}
               title="Widgets"
               type="widget"
               updating={extensionsUpdatingStatus}
-              onCardClicked={activateExtensionsDetails}
+              onCard={activateExtensionsDetails}
               onDelete={toggleDeleteModal}
               onInstall={installById}
               onUpdate={updateById}
@@ -405,11 +421,16 @@ const ExtensionsManager = ({ reloadNavigation }): JSX.Element => {
       {entityDetails ? (
         <ExtensionDetailsPopup
           id={entityDetails.id}
+          isLoading={
+            extensionsInstallingStatus[entityDetails.id] ||
+            extensionsUpdatingStatus[entityDetails.id] ||
+            confirmedDeletingEntityId === entityDetails.id
+          }
           type={entityDetails.type}
-          onCloseClicked={hideExtensionDetails}
-          onDeleteClicked={toggleDeleteModal}
-          onInstallClicked={installById}
-          onUpdateClicked={updateById}
+          onClose={hideExtensionDetails}
+          onDelete={toggleDeleteModal}
+          onInstall={installById}
+          onUpdate={updateById}
         />
       ) : null}
 

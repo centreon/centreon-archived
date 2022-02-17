@@ -25,7 +25,7 @@ const ExtensionDeletePopup = ({
 
       <Alert severity="warning">
         Do you want to delete this extension? This action will remove all
-        associated data. 0015
+        associated data.
       </Alert>
     </Dialog>
   );
