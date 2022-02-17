@@ -120,7 +120,6 @@
             "cache:clear": "symfony-cmd",
             "assets:install %PUBLIC_DIR%": "symfony-cmd"
         },
-        "test": "phpunit --bootstrap ./tests/php/bootstrap.php",
         "test:ci": "@test --log-junit ./build/phpunit.xml --coverage-clover ./build/coverage-be.xml --no-interaction --do-not-cache-result",
         "codestyle": "phpcs --extensions=php --standard=./ruleset.xml ./",
         "codestyle:ci": "@codestyle --report=checkstyle --report-file=./build/checkstyle-be.xml --no-cache",
