@@ -18,6 +18,7 @@ class ClapiContext extends CentreonContext
         "TRAP",
         "HTPL",
         "CG",
+        "LDAP",
         "HOST",
         "STPL",
         "HG",

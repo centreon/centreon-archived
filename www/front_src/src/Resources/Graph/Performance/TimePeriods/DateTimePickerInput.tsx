@@ -8,9 +8,10 @@ import { TextFieldProps } from '@mui/material';
 import { TextField } from '@centreon/ui';
 
 import { CustomTimePeriodProperty } from '../../../Details/tabs/Graph/models';
+import useDateTimePickerAdapter from '../../../useDateTimePickerAdapter';
 
 interface Props {
-  changeDate: (props) => () => void;
+  changeDate: (props) => void;
   date: Date;
   maxDate?: Date;
   minDate?: Date;
@@ -19,11 +20,10 @@ interface Props {
 }
 
 const renderDateTimePickerTextField =
-  (onClick) =>
+  (blur: () => void) =>
   ({ inputRef, inputProps, InputProps }: TextFieldProps): JSX.Element => {
     return (
       <TextField
-        disabled
         // eslint-disable-next-line react/no-unstable-nested-components
         EndAdornment={(): JSX.Element => <div>{InputProps?.endAdornment}</div>}
         inputProps={{
@@ -31,7 +31,7 @@ const renderDateTimePickerTextField =
           ref: inputRef,
           style: { padding: 8 },
         }}
-        onClick={onClick}
+        onBlur={blur}
       />
     );
   };
@@ -41,13 +41,31 @@ const DateTimePickerInput = ({
   maxDate,
   minDate,
   property,
-  setDate,
   changeDate,
+  setDate,
 }: Props): JSX.Element => {
   const [isOpen, setIsOpen] = React.useState(false);
+  const { getLocalAndConfiguredTimezoneOffset, formatKeyboardValue } =
+    useDateTimePickerAdapter();
 
-  const toggleIsOpen = (): void => {
-    setIsOpen(!isOpen);
+  const changeTime = (
+    newValue: dayjs.Dayjs | null,
+    keyBoardValue: string | undefined,
+  ): void => {
+    if (isOpen) {
+      changeDate({ date: dayjs(newValue).toDate(), property });
+
+      return;
+    }
+    const value = dayjs(formatKeyboardValue(keyBoardValue))
+      .add(dayjs.duration({ hours: getLocalAndConfiguredTimezoneOffset() }))
+      .toDate();
+
+    setDate(value);
+  };
+
+  const blur = (): void => {
+    changeDate({ date, property });
   };
 
   return (
@@ -56,18 +74,14 @@ const DateTimePickerInput = ({
       PopperProps={{
         open: isOpen,
       }}
-      maxDate={dayjs(maxDate)}
-      minDate={dayjs(minDate)}
+      maxDate={maxDate && dayjs(maxDate)}
+      minDate={minDate && dayjs(minDate)}
       open={isOpen}
-      renderInput={renderDateTimePickerTextField(toggleIsOpen)}
+      renderInput={renderDateTimePickerTextField(blur)}
       value={date}
-      onChange={(value): void => {
-        setDate(new Date(value?.toDate() || 0));
-      }}
-      onClose={changeDate({
-        date,
-        property,
-      })}
+      onChange={changeTime}
+      onClose={(): void => setIsOpen(false)}
+      onOpen={(): void => setIsOpen(true)}
     />
   );
 };

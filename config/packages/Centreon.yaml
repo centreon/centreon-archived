@@ -208,6 +208,10 @@ services:
         calls:
             - [setEncryptionFirstKey, ['%env(APP_SECRET)%']]
 
+    Core\Infrastructure\Platform\Repository\FileReadPlatformRepository:
+        class: Core\Infrastructure\Platform\Repository\FileReadPlatformRepository
+        arguments: ['%centreon_etc_path%', '%centreon_install_path%']
+
     # Monitoring resources
     _instanceof:
         Centreon\Infrastructure\Monitoring\Resource\Provider\ProviderInterface:
@@ -215,6 +219,8 @@ services:
             calls:
                 - method: setSqlRequestTranslator
                   arguments: ['@sqlRequestTranslator']
+        Core\Infrastructure\RealTime\Api\Hypermedia\HypermediaProviderInterface:
+            tags: ['realtime.api.hypermedia']
 
     Centreon\Domain\Monitoring\Interfaces\ResourceServiceInterface:
         class: Centreon\Domain\Monitoring\ResourceService
@@ -226,6 +232,12 @@ services:
               arguments: ['@sqlRequestTranslator']
             - method: setProviders
               arguments: [!tagged_iterator 'monitoring.resource.providers']
+
+    Core\Infrastructure\RealTime\Api\Hypermedia\HypermediaCreator:
+        class: Core\Infrastructure\RealTime\Api\Hypermedia\HypermediaCreator
+        calls:
+            - method: setHypermediaProviders
+              arguments: [!tagged_iterator 'realtime.api.hypermedia']
 
     # Filters
     Centreon\Domain\Filter\Interfaces\FilterServiceInterface:
@@ -318,7 +330,7 @@ services:
     Centreon\Domain\Menu\Interfaces\MenuRepositoryInterface:
         class: Centreon\Infrastructure\Menu\MenuRepositoryRDB
 
-    Centreon\Domain\Authentication\UseCase\Authenticate:
+    Core\Application\Security\UseCase\LoginSession\LoginSession:
         arguments: [ "%redirect_default_page%" ]
         public: true
 

@@ -36,6 +36,9 @@
 
 namespace CentreonClapi;
 
+use Security\Domain\Authentication\Exceptions\ProviderException;
+use Security\Domain\Authentication\Model\LocalProvider;
+
 require_once _CENTREON_PATH_ . "www/class/centreon-clapi/centreonExported.class.php";
 require_once realpath(dirname(__FILE__) . "/../centreonDB.class.php");
 require_once realpath(dirname(__FILE__) . "/../centreonXML.class.php");
@@ -504,10 +507,11 @@ class CentreonAPI
          * Check Login / Password
          */
         $DBRESULT = $this->DB->prepare(
-            "SELECT `contact`.*, `contact_password`.`password` AS `contact_passwd` FROM `contact`
+            "SELECT `contact`.*, `contact_password`.`password` AS `contact_passwd`,
+            `contact_password`.`creation_date` AS `password_creation` FROM `contact`
             LEFT JOIN `contact_password` ON `contact_password`.`contact_id` = `contact`.`contact_id`
             WHERE `contact_alias` = :contactAlias
-            AND `contact_activate` = '1' AND `contact_register` = '1' 
+            AND `contact_activate` = '1' AND `contact_register` = '1'
             ORDER BY contact_password.creation_date DESC LIMIT 1"
         );
         $DBRESULT->bindParam(':contactAlias', $this->login, \PDO::PARAM_STR);
@@ -517,6 +521,42 @@ class CentreonAPI
 
             if ($row['contact_admin'] == 0) {
                 print "You don't have permissions for CLAPI.\n";
+                exit(1);
+            }
+            $contact = new \CentreonContact($this->DB);
+            // Get Security Policy
+            $securityPolicy = $contact->getPasswordSecurityPolicy();
+
+            // Remove any blocking if it's not in the policy
+            if ($securityPolicy['blocking_duration'] === null) {
+                $this->removeBlockingTimeOnUser();
+                $row['login_attempts'] = null;
+                $row['blocking_time'] = null;
+            }
+
+            // Check if user is blocked
+            if ($row['blocking_time'] !== null) {
+                // If he is block and blocking duration is expired, unblock him
+                if ((int) $row['blocking_time'] + (int) $securityPolicy['blocking_duration'] < time()) {
+                    $this->removeBlockingTimeOnUser();
+                    $row['login_attempts'] = null;
+                    $row['blocking_time'] = null;
+                } else {
+                    $now = new \DateTime();
+                    $expirationDate = (new \DateTime())->setTimestamp(
+                        $row['blocking_time'] + $securityPolicy['blocking_duration']
+                    );
+                    $interval = (date_diff($now, $expirationDate))->format('%Dd %Hh %Im %Ss');
+                    print "Unable to login, max login attempts has been reached. $interval left\n";
+                    exit(1);
+                }
+            }
+
+            if (
+                $securityPolicy['password_expiration'] !== null
+                && (int) $row['password_creation'] + (int) $securityPolicy['password_expiration'] < time()
+            ) {
+                print "Unable to login, your password has expired.\n";
                 exit(1);
             }
 
@@ -530,7 +570,6 @@ class CentreonAPI
                 )
             ) {
                 $hashedPassword = password_hash($this->password, \CentreonAuth::PASSWORD_HASH_ALGORITHM);
-                $contact = new \CentreonContact($this->DB);
                 $contact->replacePasswordByContactId(
                     (int) $row['contact_id'],
                     $row["contact_passwd"],
@@ -556,6 +595,13 @@ class CentreonAPI
                     \CentreonClapi\CentreonUtils::setUserId($row['contact_id']);
                     return 1;
                 }
+            }
+            if ($securityPolicy['attempts'] !== null && $securityPolicy['blocking_duration'] !== null) {
+                $this->exitOnInvalidCredentials(
+                    (int) $row['login_attempts'],
+                    (int) $securityPolicy['attempts'],
+                    (int) $securityPolicy['blocking_duration']
+                );
             }
         }
         print "Invalid credentials.\n";
@@ -1147,5 +1193,77 @@ class CentreonAPI
                 }
             }
         }
+    }
+
+    /**
+     * Increment login attempts for user.
+     *
+     * @param integer $contactLoginAttempts
+     * @return integer
+     */
+    private function incrementLoginAttempts(int $contactLoginAttempts): int
+    {
+        //Increments login attempts for user
+        $contactLoginAttempts++;
+
+        //update User attempts
+        $attemptStatement = $this->DB->prepare(
+            'UPDATE contact SET login_attempts = :loginAttempts WHERE contact_alias = :contactAlias'
+        );
+        $attemptStatement->bindValue(':loginAttempts', $contactLoginAttempts, \PDO::PARAM_INT);
+        $attemptStatement->bindValue(':contactAlias', $this->login, \PDO::PARAM_STR);
+        $attemptStatement->execute();
+
+        return $contactLoginAttempts;
+    }
+
+    /**
+     * Block login for user.
+     */
+    private function blockLoginForUser(): void
+    {
+        $blockLoginStatement = $this->DB->prepare(
+            'UPDATE contact SET blocking_time = :blockingTime WHERE contact_alias = :contactAlias'
+        );
+        $blockLoginStatement->bindValue(':blockingTime', time(), \PDO::PARAM_INT);
+        $blockLoginStatement->bindValue(':contactAlias', $this->login, \PDO::PARAM_STR);
+        $blockLoginStatement->execute();
+    }
+
+    /**
+     * Exit with invalid credentials message.
+     *
+     * @param integer $contactLoginAttempts
+     * @param integer $securityPolicyAttempts
+     * @param integer $blockingDuration
+     */
+    private function exitOnInvalidCredentials(
+        int $contactLoginAttempts,
+        int $securityPolicyAttempts,
+        int $blockingDuration
+    ): void {
+        $loginAttempts = $this->incrementLoginAttempts($contactLoginAttempts);
+        if ($loginAttempts === $securityPolicyAttempts) {
+            $this->blockLoginForUser();
+            print "Invalid credentials. Max attempts has been reached, you can't login for "
+                . "$blockingDuration seconds. \n";
+            exit(1);
+        }
+        $attemptRemaining = $securityPolicyAttempts - $loginAttempts;
+        print "Invalid credentials. $attemptRemaining attempt(s) remaining \n";
+        exit(1);
+    }
+
+    /**
+     * Remove the blocking time and login attemps.
+     */
+    private function removeBlockingTimeOnUser(): void
+    {
+        $unblockStatement = $this->DB->prepare(
+            "UPDATE contact SET blocking_time = NULL, login_attempts = NULL "
+                . "WHERE contact_alias = :contactAlias"
+        );
+        $unblockStatement->bindValue(':contactAlias', $this->login, \PDO::PARAM_STR);
+        $unblockStatement->execute();
     }
 }

@@ -208,4 +208,24 @@ class AssertionException extends \InvalidArgumentException
             )
         );
     }
+
+    /**
+     * Exception when the value is not expected.
+     *
+     * @param string|null $propertyPath Property's path (ex: Host::name)
+     * @param string $value
+     * @param string[] $expectedValues
+     * @return self
+     */
+    public static function inArray(string $value, array $expectedValues, string $propertyPath = null): self
+    {
+        return new self(
+            sprintf(
+                _('[%s] The value provided (%s) was not expected. Possible values %s'),
+                $propertyPath,
+                $value,
+                implode('|', $expectedValues)
+            )
+        );
+    }
 }

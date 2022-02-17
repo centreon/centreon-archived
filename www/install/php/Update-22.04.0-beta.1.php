@@ -128,6 +128,13 @@ try {
 
     $errorMessage = 'Unable to delete old logger configuration';
     $statement = $pearDB->query("DELETE FROM cfg_centreonbroker_info WHERE config_group = 'logger'");
+
+    $errorMessage = 'Impossible to add "login_attempts" and "blocking_time" columns to "contact" table';
+    $pearDB->query(
+        "ALTER TABLE `contact`
+        ADD `login_attempts` INT(11) UNSIGNED DEFAULT NULL,
+        ADD `blocking_time` BIGINT(20) UNSIGNED DEFAULT NULL"
+    );
 } catch (\Exception $e) {
     if ($pearDB->inTransaction()) {
         $pearDB->rollBack();

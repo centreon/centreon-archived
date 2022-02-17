@@ -6542,12 +6542,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/centreon/centreon-test-lib.git",
-                "reference": "c0eade6610ec6146cf96e51e643508a9b79b6d11"
+                "reference": "2e66c0d3cf3a57a5329bc174f8d3f63c33fe95c3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/c0eade6610ec6146cf96e51e643508a9b79b6d11",
-                "reference": "c0eade6610ec6146cf96e51e643508a9b79b6d11",
+                "url": "https://api.github.com/repos/centreon/centreon-test-lib/zipball/2e66c0d3cf3a57a5329bc174f8d3f63c33fe95c3",
+                "reference": "2e66c0d3cf3a57a5329bc174f8d3f63c33fe95c3",
                 "shasum": ""
             },
             "require": {
@@ -6570,10 +6570,10 @@
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "Centreon\\Test\\Behat\\": "src/behat",
+                    "Centreon\\PHPStan\\": "src/PHPStan",
                     "Centreon\\Test\\Mock\\": "src/mock",
-                    "Centreon\\Test\\Traits\\": "src/traits",
-                    "Centreon\\PHPStan\\": "src/PHPStan"
+                    "Centreon\\Test\\Behat\\": "src/behat",
+                    "Centreon\\Test\\Traits\\": "src/traits"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -6591,7 +6591,7 @@
                 "issues": "https://github.com/centreon/centreon-test-lib/issues",
                 "source": "https://github.com/centreon/centreon-test-lib/tree/master"
             },
-            "time": "2022-01-27T14:58:59+00:00"
+            "time": "2022-02-08T09:28:20+00:00"
         },
         {
             "name": "friends-of-behat/mink",

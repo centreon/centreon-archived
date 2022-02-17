@@ -34,9 +34,9 @@ interface ProviderInterface
 {
     /**
      * @param array<string, mixed> $data
-     * @throw \Exception
+     * @throws \Throwable
      */
-    public function authenticate(array $data): void;
+    public function authenticateOrFail(array $data): void;
 
     /**
      * Get legacy Centreon session
@@ -109,13 +109,6 @@ interface ProviderInterface
      * @param ProviderConfiguration $configuration
      */
     public function setConfiguration(ProviderConfiguration $configuration): void;
-
-    /**
-     * Indicates whether the authentication process is complete and the user is properly authenticated.
-     *
-     * @return bool
-     */
-    public function isAuthenticated(): bool;
 
     /**
      * Refresh the provider token.

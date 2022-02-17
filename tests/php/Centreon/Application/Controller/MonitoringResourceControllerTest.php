@@ -21,45 +21,77 @@
 
 namespace Tests\Centreon\Application\Controller;
 
+use FOS\RestBundle\View\View;
+use PHPUnit\Framework\TestCase;
+use FOS\RestBundle\Context\Context;
 use Centreon\Domain\Contact\Contact;
-use Centreon\Domain\Monitoring\Resource as ResourceEntity;
-use Centreon\Domain\Monitoring\ResourceStatus;
-use Centreon\Domain\Monitoring\ResourceFilter;
-use Centreon\Domain\Monitoring\Serializer\ResourceExclusionStrategy;
-use Centreon\Application\Controller\MonitoringResourceController;
-use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
-use Centreon\Domain\Monitoring\Interfaces\ResourceServiceInterface;
-use Centreon\Application\Normalizer\IconUrlNormalizer;
-use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
-use Symfony\Component\HttpFoundation\Request;
+use Psr\Container\ContainerInterface;
 use JMS\Serializer\SerializerInterface;
 use Centreon\Domain\Entity\EntityValidator;
-use FOS\RestBundle\Context\Context;
-use FOS\RestBundle\View\View;
-use Psr\Container\ContainerInterface;
-use PHPUnit\Framework\TestCase;
+use Symfony\Component\HttpFoundation\Request;
+use Centreon\Domain\Monitoring\ResourceFilter;
+use Centreon\Domain\Monitoring\ResourceStatus;
+use Centreon\Application\Normalizer\IconUrlNormalizer;
+use Centreon\Domain\Monitoring\Resource as ResourceEntity;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Centreon\Application\Controller\MonitoringResourceController;
+use Centreon\Domain\Monitoring\Interfaces\ResourceServiceInterface;
+use Centreon\Domain\Monitoring\Serializer\ResourceExclusionStrategy;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class MonitoringResourceControllerTest extends TestCase
 {
+    /**
+     * @var Contact
+     */
     protected $adminContact;
 
+    /**
+     * @var ResourceEntity
+     */
     protected $resource;
 
-    protected $timelineEvent;
-
-    protected $monitoringService;
+    /**
+     * @var ResourceServiceInterface&\PHPUnit\Framework\MockObject\MockObject
+     */
     protected $resourceService;
+
+    /**
+     * @var UrlGeneratorInterface&\PHPUnit\Framework\MockObject\MockObject
+     */
     protected $urlGenerator;
+
+    /**
+     * @var IconUrlNormalizer&\PHPUnit\Framework\MockObject\MockObject
+     */
     protected $iconUrlNormalizer;
 
+    /**
+     * @var ContainerInterface&\PHPUnit\Framework\MockObject\MockObject
+     */
     protected $container;
 
+    /**
+     * @var RequestParametersInterface&\PHPUnit\Framework\MockObject\MockObject
+     */
     protected $requestParameters;
+
+    /**
+     * @var Request&\PHPUnit\Framework\MockObject\MockObject
+     */
     protected $request;
+
+    /**
+     * @var SerializerInterface&\PHPUnit\Framework\MockObject\MockObject
+     */
     protected $serializer;
+
+    /**
+     * @var EntityValidator&\PHPUnit\Framework\MockObject\MockObject
+     */
     protected $entityValidator;
 
     protected function setUp(): void
@@ -91,8 +123,8 @@ class MonitoringResourceControllerTest extends TestCase
             ->setParent(null)
             ->setStatus($resourceStatus);
 
-        $this->monitoringService = $this->createMock(MonitoringServiceInterface::class);
         $this->resourceService = $this->createMock(ResourceServiceInterface::class);
+        $router = $kernel->getContainer()->get('router');
         $this->urlGenerator = $kernel->getContainer()->get('router')->getRouter()->getGenerator();
         $this->iconUrlNormalizer = $this->createMock(IconUrlNormalizer::class);
 
@@ -133,7 +165,7 @@ class MonitoringResourceControllerTest extends TestCase
     /**
      * test getHostTimeline
      */
-    public function testList()
+    public function testList(): void
     {
         $this->resourceService->expects($this->once())
             ->method('filterByContact')
@@ -144,7 +176,6 @@ class MonitoringResourceControllerTest extends TestCase
             ->willReturn([$this->resource]);
 
         $resourceController = new MonitoringResourceController(
-            $this->monitoringService,
             $this->resourceService,
             $this->urlGenerator,
             $this->iconUrlNormalizer
@@ -207,7 +238,7 @@ class MonitoringResourceControllerTest extends TestCase
             '#/centreon/api/v21.10/monitoring/hosts/1/downtimes\?'
                 . 'search=\{"\$and":\[\{"start_time":\{"\$lt":\d+\},"end_time":\{"\$gt":\d+\},'
                 . '"0":\{"\$or":\{"is_cancelled":\{"\$neq":1\},"deletion_time":\{"\$gt":\d+\}\}\}\}\]\}#',
-            urldecode($resource->getLinks()->getEndpoints()->getDowntime())
+            urldecode($resource->getLinks()->getEndpoints()->getDowntime() ?? '')
         );
         $this->assertNull($resource->getLinks()->getEndpoints()->getStatusGraph());
         $this->assertNull($resource->getLinks()->getEndpoints()->getPerformanceGraph());
@@ -216,10 +247,9 @@ class MonitoringResourceControllerTest extends TestCase
     /**
      * test buildHostDetailsUri
      */
-    public function testBuildHostDetailsUri()
+    public function testBuildHostDetailsUri(): void
     {
         $resourceController = new MonitoringResourceController(
-            $this->monitoringService,
             $this->resourceService,
             $this->urlGenerator,
             $this->iconUrlNormalizer
@@ -234,10 +264,9 @@ class MonitoringResourceControllerTest extends TestCase
     /**
      * test buildHostUri
      */
-    public function testBuildHostUri()
+    public function testBuildHostUri(): void
     {
         $resourceController = new MonitoringResourceController(
-            $this->monitoringService,
             $this->resourceService,
             $this->urlGenerator,
             $this->iconUrlNormalizer
@@ -252,10 +281,9 @@ class MonitoringResourceControllerTest extends TestCase
     /**
      * test buildServiceDetailsUri
      */
-    public function testBuildServiceDetailsUri()
+    public function testBuildServiceDetailsUri(): void
     {
         $resourceController = new MonitoringResourceController(
-            $this->monitoringService,
             $this->resourceService,
             $this->urlGenerator,
             $this->iconUrlNormalizer
@@ -271,10 +299,9 @@ class MonitoringResourceControllerTest extends TestCase
     /**
      * test buildServiceUri
      */
-    public function testBuildServiceUri()
+    public function testBuildServiceUri(): void
     {
         $resourceController = new MonitoringResourceController(
-            $this->monitoringService,
             $this->resourceService,
             $this->urlGenerator,
             $this->iconUrlNormalizer
