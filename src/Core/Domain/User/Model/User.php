@@ -26,7 +26,6 @@ namespace Core\Domain\User\Model;
 class User
 {
     /**
-     * Undocumented function
      *
      * @param integer $id
      * @param string $alias
