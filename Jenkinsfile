@@ -88,6 +88,7 @@ def isStableBuild() {
 
 // Skip sonarQ analysis on branch without PR  - Unable to merge
 def skipSecurityAnalysis() {
+  echo("DEBUG change_id : ${env.CHANGE_ID} and buildType : ${env.BUILD}")
   return (!env.CHANGE_ID && env.BUILD == 'CI')
 }
 
