@@ -23,12 +23,7 @@ declare(strict_types=1);
 namespace Core\Application\Configuration\User\UseCase\FindUsers;
 
 use Core\Application\Common\UseCase\PresenterInterface;
-use Core\Application\Configuration\User\UseCase\FindUsers\FindUsersResponse;
 
 interface FindUsersPresenterInterface extends PresenterInterface
 {
-    /**
-     * @param FindUsersResponse $response
-     */
-    public function present(FindUsersResponse $response): void;
 }
