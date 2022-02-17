@@ -53,7 +53,6 @@ class DbWriteUserRepository extends AbstractRepositoryDRB implements WriteUserRe
      * Add new password to the user.
      *
      * @param UserPassword $password
-     * @return void
      */
     private function addPassword(UserPassword $password): void
     {
@@ -71,7 +70,6 @@ class DbWriteUserRepository extends AbstractRepositoryDRB implements WriteUserRe
      * Delete old passwords to store only 3 last passwords
      *
      * @param integer $userId
-     * @return void
      */
     private function deleteOldPasswords(int $userId): void
     {
