@@ -140,6 +140,27 @@ class Assertion
     }
 
     /**
+     * Assert that a string respects email format.
+     *
+     * @param string $value Value to test
+     * @param string|null $propertyPath Property's path (ex: User::email)
+     * @throws \Assert\AssertionFailedException
+     */
+    public static function email(string $value, string $propertyPath = null): void
+    {
+        Assert::email(
+            $value,
+            function (array $parameters) {
+                return AssertionException::email(
+                    $parameters['value'],
+                    $parameters['propertyPath']
+                )->getMessage();
+            },
+            $propertyPath
+        );
+    }
+
+    /**
      * Assert that a date is smaller as a given limit.
      *
      * @param \DateTime $value

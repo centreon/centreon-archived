@@ -40,6 +40,10 @@ default:
       paths: [ "%paths.base%/features/UserParameters.feature" ]
       contexts:
         - Centreon\Test\Api\Context\UserParametersContext
+    user_configuration:
+      paths: [ "%paths.base%/features/ConfigurationUsers.feature" ]
+      contexts:
+        - Centreon\Test\Behat\Api\Context\ApiContext
     check:
       paths: [ "%paths.base%/features/Check.feature" ]
       contexts:
