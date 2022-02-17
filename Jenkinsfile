@@ -22,6 +22,12 @@ if (env.CHANGE_BRANCH) {
   buildBranch = env.CHANGE_BRANCH
 }
 
+// Skip sonarQ analysis on branch without PR  - Unable to merge
+def securityAnalysisRequired = 'yes'
+if (!env.CHANGE_ID && env.BUILD == 'CI') {
+    securityAnalysisRequired = 'no'
+}
+
 /*
 ** Functions
 */
@@ -128,20 +134,25 @@ try {
           ])
         }
 
-        unstash 'git-sources'
-        sh 'rm -rf centreon-web && tar xzf centreon-web-git.tar.gz'
-        withSonarQubeEnv('SonarQubeDev') {
-          sh "./centreon-build/jobs/web/${serie}/mon-web-analysis.sh"
-        }
-        // sonarQube step to get qualityGate result
-        timeout(time: 10, unit: 'MINUTES') {
-          def qualityGate = waitForQualityGate()
-          if (qualityGate.status != 'OK') {
-            error "Pipeline aborted due to quality gate failure: ${qualityGate.status}"
+        if (securityAnalysisRequired == 'no') {
+          Utils.markStageSkippedForConditional('sonar')
+        } else {
+          // Run sonarQube analysis
+          unstash 'git-sources'
+          sh 'rm -rf centreon-web && tar xzf centreon-web-git.tar.gz'
+          withSonarQubeEnv('SonarQubeDev') {
+            sh "./centreon-build/jobs/web/${serie}/mon-web-analysis.sh"
+          }
+          // sonarQube step to get qualityGate result
+          timeout(time: 10, unit: 'MINUTES') {
+            def qualityGate = waitForQualityGate()
+            if (qualityGate.status != 'OK') {
+              error "Pipeline aborted due to quality gate failure: ${qualityGate.status}"
+            }
           }
         }
         if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-          error("Quality gate failure: ${qualityGate.status}.");
+          error("Unit test failure.");
         }
       }
     },
@@ -160,7 +171,7 @@ try {
         sh "./centreon-build/jobs/web/${serie}/mon-web-package.sh centos7"
         archiveArtifacts artifacts: "rpms-centos7.tar.gz"
         stash name: "rpms-centos7", includes: 'output/noarch/*.rpm'
-        sh 'rm -rf output'      
+        sh 'rm -rf output'
       }
     }
     //'packaging centos8': {
@@ -174,7 +185,7 @@ try {
     //  }
     //}
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-      error("Quality gate failure: ${qualityGate.status}.");
+      error("Unit test // packaging stage failure.");
     }
   }
 
