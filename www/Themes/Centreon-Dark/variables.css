@@ -29,10 +29,5 @@
     --table-form-header-h3-font-color: var(--body-color);
     --ui-widget-header-border-bottom-color: #373b3d;
     --global-view-ui-active-tabs-border-bottom-color: #10069f;
-    --bt-success-background-color: #10069F;
-    --bt-default-background-color: var(--bt-success-background-color);
-    --bt-danger-background-color: var(--bt-success-background-color);
-    --bt-info-background-color: var(--bt-success-background-color);
-    --bt-warning-background-color: var(--bt-success-background-color);
 }
 

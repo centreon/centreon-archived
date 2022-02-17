@@ -132,11 +132,11 @@
     /** START : Buttons **/
     --btc-color: var(--color-white);
     --a-btc-color : var(--color-white);
-    --bt-default-background-color : var(--color-primary-light);
-    --bt-success-background-color : var(--color-primary-light);
-    --bt-danger-background-color: var(--color-primary-light);
-    --bt-info-background-color : var(--color-primary-light);
-    --bt-warning-background-color :var(--color-primary-light);
+    --bt-default-background-color : var(--color-primary-dark);
+    --bt-success-background-color : var(--color-primary-dark);
+    --bt-danger-background-color: var(--color-primary-dark);
+    --bt-info-background-color : var(--color-primary-dark);
+    --bt-warning-background-color :var(--color-primary-dark);
     --bt-action-color-background-color : var(--color-robins-egg-blue);
     --bt-action-color :var(--color-white);
     --bt-action-border-color :var(--color-persian-green);
@@ -244,7 +244,7 @@
     --list-header-border-left-color: var(--list-header-border-top-color);
     --list-footer-border-color: var(--color-biloba-flower);
     --input-button-hover-font-color: #fff;
-    --input-button-hover-background-color: var(--color-primary-light);
+    --input-button-hover-background-color: var(--color-primary-dark);
     --input-button-hover-border-color: var(--input-button-hover-background-color);
     --pagination-font-color: var(--body-background);
     --pagination-background-color: var(--list-table-border-color);
