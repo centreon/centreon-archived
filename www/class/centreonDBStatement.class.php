@@ -44,69 +44,93 @@ require_once realpath(dirname(__FILE__) . "/centreonDB.class.php");
 
 class CentreonDBStatement extends \PDOStatement
 {
-    public $dbh;
-    public $fetchAll;
+    /**
+     * When data is retrieved from `numRows()` method, it is stored in `allFetched`
+     * in order to be usable later without requesting one more time the database.
+     *
+     * @var mixed[]|null
+     */
+    public $allFetched;
 
     /**
      * @var CentreonLog
      */
     private $log;
-    
-    /**
-     *
-     * @var bool
-     */
-    private $debug;
 
-    protected function __construct($dbh, CentreonLog $log = null, $debug = null)
+    /**
+     * Constructor
+     *
+     * @param CentreonLog $log
+     */
+    protected function __construct(CentreonLog $log = null)
     {
-        $this->dbh = $dbh;
         $this->log = $log;
-        $this->debug = $debug ? true : false;
-        $this->fetchAll = null;
+        $this->allFetched = null;
     }
 
+    /**
+     * This method overloads PDO `fetch` in order to use the possible already
+     * loaded data available in `allFetched`.
+     *
+     * {@inheritDoc}
+     */
     public function fetch($fetch_style = null, $cursor_orientation = PDO::FETCH_ORI_NEXT, $cursor_offset = 0)
     {
-        if (is_null($this->fetchAll)) {
+        if (is_null($this->allFetched)) {
             return parent::fetch();
-        } elseif (count($this->fetchAll) <= 0) {
+        } elseif (count($this->allFetched) <= 0) {
             return false;
         } else {
-            return array_shift($this->fetchAll);
+            return array_shift($this->allFetched);
         }
     }
 
+    /**
+     * This method wraps the Fetch method for legacy code compatibility
+     * @return mixed
+     */
     public function fetchRow()
     {
         return $this->fetch();
     }
 
-    public function free()
+    /**
+     * Free resources.
+     */
+    public function free(): void
     {
         $this->closeCursor();
     }
 
+    /**
+     * Counts the number of rows returned by the query.\
+     * This method fetches data if needed and store it in `allFetched`
+     * in order to be usable later without requesting database again.
+     *
+     * @return int
+     */
     public function numRows()
     {
-        if (is_null($this->fetchAll)) {
-            $this->fetchAll = $this->fetchAll();
+        if (is_null($this->allFetched)) {
+            $this->allFetched = $this->fetchAll();
         }
-        return count($this->fetchAll);
+        return count($this->allFetched);
     }
 
-    public function execute($parameters = null)
+    /**
+     * This method wraps the PDO `execute` method and manages failures logging
+     * {@inheritDoc}
+     */
+    public function execute($parameters = null): bool
     {
-        $this->fetchAll = null;
+        $this->allFetched = null;
 
         try {
             $result = parent::execute($parameters);
         } catch (\PDOException $e) {
-            if ($this->debug) {
-                $string = str_replace("`", "", $this->queryString);
-                $string = str_replace('*', "\*", $string);
-                $this->log->insertLog(2, " QUERY : " . $string . ", " . json_encode($parameters));
-            }
+            $string = str_replace("`", "", $this->queryString);
+            $string = str_replace('*', "\*", $string);
+            $this->log->insertLog(2, $e->getMessage() . " QUERY : " . $string . ", " . json_encode($parameters));
 
             throw $e;
         }

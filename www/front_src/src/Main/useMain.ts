@@ -65,18 +65,22 @@ const useMain = (): void => {
   };
 
   React.useEffect(() => {
-    Promise.all([
-      getWebVersions({
-        endpoint: webVersionsEndpoint,
-      }),
-      getTranslations({
-        endpoint: translationEndpoint,
-      }),
-    ]).then(([retrievedWebVersions, retrievedTranslations]) => {
+    getWebVersions({
+      endpoint: webVersionsEndpoint,
+    }).then((retrievedWebVersions) => {
       setWebVersions(retrievedWebVersions);
-      loadUser();
-      initializeI18n(retrievedTranslations);
     });
+
+    getTranslations({
+      endpoint: translationEndpoint,
+    })
+      .then((retrievedTranslations) => {
+        loadUser();
+        initializeI18n(retrievedTranslations);
+      })
+      .catch((): void => {
+        loadUser();
+      });
   }, []);
 
   React.useEffect(() => {

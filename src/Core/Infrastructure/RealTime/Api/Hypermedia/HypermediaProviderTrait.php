@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,45 +18,30 @@
  * For more information : contact@centreon.com
  *
  */
-
 declare(strict_types=1);
 
-namespace Centreon\Domain\Authentication\Model;
+namespace Core\Infrastructure\RealTime\Api\Hypermedia;
 
-use Centreon\Domain\Common\Assertion\Assertion;
-
-class Credentials
+trait HypermediaProviderTrait
 {
     /**
-     * @var string
-     */
-    private $login;
-
-    /**
-     * @var string
-     */
-    private $password;
-
-    public function __construct(string $login, string $password)
-    {
-        Assertion::notEmpty($login, 'Credentials::login');
-        $this->login = $login;
-        $this->password = $password;
-    }
-
-    /**
+     * Get base URI
+     *
      * @return string
      */
-    public function getLogin(): string
+    protected function getBaseUri(): string
     {
-        return $this->login;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPassword(): string
-    {
-        return $this->password;
+        $baseUri = '';
+        if (
+            isset($_SERVER['REQUEST_URI'])
+            && preg_match(
+                '/^(.+)\/((api|widgets|modules|include)\/|main(\.get)?\.php).+/',
+                $_SERVER['REQUEST_URI'],
+                $matches
+            )
+        ) {
+            $baseUri = $matches[1];
+        }
+        return $baseUri;
     }
 }

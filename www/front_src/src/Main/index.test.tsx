@@ -149,10 +149,10 @@ const mockRedirectFromLoginPageGetRequests = (): void => {
       data: retrievedTranslations,
     })
     .mockResolvedValueOnce({
-      data: retrievedWeb,
+      data: retrievedUser,
     })
     .mockResolvedValueOnce({
-      data: retrievedUser,
+      data: retrievedWeb,
     })
     .mockResolvedValueOnce({
       data: retrievedNavigation,

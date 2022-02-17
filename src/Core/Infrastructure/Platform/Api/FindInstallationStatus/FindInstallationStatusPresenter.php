@@ -30,15 +30,16 @@ use Core\Application\Platform\UseCase\FindInstallationStatus\FindInstallationSta
 class FindInstallationStatusPresenter extends AbstractPresenter implements FindInstallationStatusPresenterInterface
 {
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     * @param FindInstallationStatusResponse $data
      */
-    public function present(FindInstallationStatusResponse $response): void
+    public function present(mixed $data): void
     {
         $presenterResponse = [
-            'is_installed' => $response->isCentreonWebInstalled,
-            'has_upgrade_available' => $response->isCentreonWebUpgradeAvailable
+            'is_installed' => $data->isCentreonWebInstalled,
+            'has_upgrade_available' => $data->isCentreonWebUpgradeAvailable
         ];
 
-        $this->presenterFormatter->present($presenterResponse);
+        parent::present($presenterResponse);
     }
 }

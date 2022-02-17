@@ -40,7 +40,6 @@ class Resource
     // Groups for serialization
     public const SERIALIZER_GROUP_MAIN = 'resource_main';
     public const SERIALIZER_GROUP_PARENT = 'resource_parent';
-    public const SERIALIZER_GROUP_DETAILS = 'resource_details';
 
     // Groups for validation
     public const VALIDATION_GROUP_ACK_HOST = ['ack_host'];

@@ -22,7 +22,7 @@ const sevenDays = 60 * 60 * 24 * 7;
 const isGreaterThanSevenDays = gt(__, sevenDays);
 
 const useUser = (
-  changeLanguage: (locale: string) => void,
+  changeLanguage?: (locale: string) => void,
 ): (() => null | Promise<void>) => {
   const { sendRequest: getUser } = useRequest<User>({
     decoder: userDecoder,
