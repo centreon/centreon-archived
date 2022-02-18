@@ -37,9 +37,10 @@
     --select-background: #424242;
     --select-color: #fff;
     --input-select-background-color: #424242;
-    --select-border-color : var(--input-select-background-color);
+    --select-border-color : var(--body-color);
     --included-checkbox-checked-before-font-color: var(--input-select-background-color);
     --md-checkbox-checked-label-before-background-color:var(--input-select-background-color) ;
     --md-checkbox-background : var(--input-select-background-color);
-    --md-checkbox-border-color: var(--input-select-background-color) ;
+    --md-checkbox-border-color: var(--input-select-background-color);
+    --option-color:  #fff;
 }
