@@ -68,7 +68,12 @@ class UpdateConfigurationRequest
     /**
      * @var int|null
      */
-    public ?int $passwordExpiration;
+    public ?int $passwordExpirationDelay;
+
+    /**
+     * @var string[]
+     */
+    public array $passwordExpirationExcludedUserAliases;
 
     /**
      * @var int|null

@@ -22,7 +22,10 @@ export const defaultSecurityPolicy: SecurityPolicyFromAPI = {
     hasNumber: true,
     hasSpecialCharacter: true,
     hasUpperCase: true,
-    passwordExpiration: sevenDays,
+    passwordExpiration: {
+      excludedUsers: [],
+      expirationDelay: sevenDays,
+    },
     passwordMinLength: 12,
   },
 };
@@ -37,7 +40,10 @@ export const defaultSecurityPolicyWithNullValues: SecurityPolicyFromAPI = {
     hasNumber: false,
     hasSpecialCharacter: false,
     hasUpperCase: false,
-    passwordExpiration: null,
+    passwordExpiration: {
+      excludedUsers: [],
+      expirationDelay: null,
+    },
     passwordMinLength: 12,
   },
 };
@@ -55,7 +61,10 @@ export const retrievedSecurityPolicyAPI: SecurityPolicyToAPI =
     hasNumber: true,
     hasSpecialCharacter: true,
     hasUpperCase: false,
-    passwordExpiration: sevenDays,
+    passwordExpiration: {
+      excludedUsers: [],
+      expirationDelay: sevenDays,
+    },
     passwordMinLength: 42,
   });
 
@@ -68,7 +77,10 @@ export const securityPolicyWithInvalidPasswordExpiration: SecurityPolicy = {
   hasNumber: true,
   hasSpecialCharacter: true,
   hasUpperCase: true,
-  passwordExpiration: twelveMonths + oneDay,
+  passwordExpiration: {
+    excludedUsers: [],
+    expirationDelay: twelveMonths + oneDay,
+  },
   passwordMinLength: 12,
 };
 
@@ -81,7 +93,10 @@ export const securityPolicyWithInvalidDelayBeforeNewPassword: SecurityPolicy = {
   hasNumber: true,
   hasSpecialCharacter: true,
   hasUpperCase: true,
-  passwordExpiration: sevenDays,
+  passwordExpiration: {
+    excludedUsers: [],
+    expirationDelay: sevenDays,
+  },
   passwordMinLength: 12,
 };
 
@@ -94,6 +109,9 @@ export const securityPolicyWithInvalidBlockingDuration: SecurityPolicy = {
   hasNumber: true,
   hasSpecialCharacter: true,
   hasUpperCase: true,
-  passwordExpiration: sevenDays,
+  passwordExpiration: {
+    excludedUsers: [],
+    expirationDelay: sevenDays,
+  },
   passwordMinLength: 12,
 };

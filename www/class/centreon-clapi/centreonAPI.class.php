@@ -552,9 +552,10 @@ class CentreonAPI
                 }
             }
 
+            $passwordExpirationDelay = $securityPolicy['password_expiration']['expiration_delay'];
             if (
-                $securityPolicy['password_expiration'] !== null
-                && (int) $row['password_creation'] + (int) $securityPolicy['password_expiration'] < time()
+                $passwordExpirationDelay !== null
+                && (int) $row['password_creation'] + (int) $passwordExpirationDelay < time()
             ) {
                 print "Unable to login, your password has expired.\n";
                 exit(1);
