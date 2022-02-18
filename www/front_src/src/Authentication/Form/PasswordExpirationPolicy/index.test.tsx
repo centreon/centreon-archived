@@ -249,11 +249,16 @@ describe('Password expiration policy', () => {
           parameters: {
             page: 1,
             search: {
-              regex: {
-                fields: ['provider_name'],
-                value: '^local$',
-              },
+              conditions: [
+                {
+                  field: 'provider_name',
+                  values: {
+                    $eq: 'local',
+                  },
+                },
+              ].filter(Boolean),
             },
+            sort: { alias: 'ASC' },
           },
         }),
         cancelTokenRequestParam,
