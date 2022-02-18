@@ -72,7 +72,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const PollerMenu = (): JSX.Element => {
+const PollerMenu = (): JSX.Element | null => {
   const classes = useStyles();
 
   const { t } = useTranslation();
@@ -84,10 +84,12 @@ const PollerMenu = (): JSX.Element => {
   const [issues, setIssues] = React.useState<Issues | null>(null);
   const [pollerCount, setPollerCount] = React.useState<PollerData | number>(0);
   const [isExporting, setIsExportingConfiguration] = React.useState<boolean>();
+  const [isAllowed, setIsAllowed] = React.useState<boolean>(true);
   const [toggled, setToggled] = React.useState<boolean>(false);
   const interval = React.useRef<number>();
   const navigate = useNavigate();
   const { sendRequest } = useRequest<PollerData>({
+    httpCodesBypassErrorSnackbar: [401],
     request: getData,
   });
   const refreshInterval = useAtomValue(refreshIntervalAtom);
@@ -125,14 +127,21 @@ const PollerMenu = (): JSX.Element => {
       })
       .catch((error) => {
         if (error.response && error.response.status === 401) {
-          setIssues(null);
+          setIsAllowed(false);
+
+          return;
         }
+        setIssues(null);
       });
   };
 
   const toggleDetailedView = (): void => {
     setToggled(!toggled);
   };
+
+  if (!isAllowed) {
+    return null;
+  }
 
   if (isNil(issues)) {
     return <MenuLoader width={loaderWidth} />;

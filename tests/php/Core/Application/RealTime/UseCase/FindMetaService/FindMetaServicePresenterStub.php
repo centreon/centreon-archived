@@ -25,9 +25,10 @@ namespace Tests\Core\Application\RealTime\UseCase\FindMetaService;
 use Symfony\Component\HttpFoundation\Response;
 use Core\Application\Common\UseCase\ResponseStatusInterface;
 use Core\Application\RealTime\UseCase\FindMetaService\FindMetaServiceResponse;
+use Core\Application\Common\UseCase\AbstractPresenter;
 use Core\Application\RealTime\UseCase\FindMetaService\FindMetaServicePresenterInterface;
 
-class FindMetaServicePresenterStub implements FindMetaServicePresenterInterface
+class FindMetaServicePresenterStub extends AbstractPresenter implements FindMetaServicePresenterInterface
 {
     /**
      * @var FindMetaServiceResponse
@@ -37,7 +38,14 @@ class FindMetaServicePresenterStub implements FindMetaServicePresenterInterface
     /**
      * @var ResponseStatusInterface|null
      */
-    private $responseStatus;
+    protected $responseStatus;
+
+    /**
+     * constructor
+     */
+    public function __construct()
+    {
+    }
 
     /**
      * @return Response
@@ -50,7 +58,7 @@ class FindMetaServicePresenterStub implements FindMetaServicePresenterInterface
     /**
      * @param FindMetaServiceResponse $response
      */
-    public function present(FindMetaServiceResponse $response): void
+    public function present(mixed $response): void
     {
         $this->response = $response;
     }
