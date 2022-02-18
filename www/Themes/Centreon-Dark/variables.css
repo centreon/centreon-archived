@@ -30,6 +30,9 @@
     --centreon-popin-background-color: #424242;
     --centreon-popin-border-color: #424242;
     --form-table-list-lvl-1-background-color: var(--centreon-popin-background-color);
+    --form-table-list-lvl-1-col-name-background-color: var(--centreon-popin-background-color);
+    --form-table-list-lvl-1-col-name-border-bottom-color: var(--body-color);
+    --form-table-list-lvl-1-col-name-border-top-color: var(--form-table-list-lvl-1-col-name-border-bottom-color);
     --list-one-background-color: #002737;
     --list-one-hover-background-color: #2b2e30;
     --list-two-background-color: #002c3c;
@@ -43,4 +46,6 @@
     --md-checkbox-background : var(--input-select-background-color);
     --md-checkbox-border-color: var(--input-select-background-color);
     --option-color:  #fff;
+    --form-table-list-header-h3-font-color: #00bfb3;
+    --info-box-h4-font-color: #fff;
 }
