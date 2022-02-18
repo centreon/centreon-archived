@@ -241,8 +241,10 @@ const ServiceStatusCounter = (): JSX.Element => {
                   })}
                 >
                   <SubmenuItem
+                    countTestId="submenu services count all"
                     submenuCount={numeral(data.total).format()}
                     submenuTitle={t('All')}
+                    titleTestId="submenu services title all"
                   />
                 </Link>
                 <Link
@@ -255,11 +257,13 @@ const ServiceStatusCounter = (): JSX.Element => {
                   })}
                 >
                   <SubmenuItem
+                    countTestId="submenu services count critical"
                     dotColored="red"
                     submenuCount={`${numeral(
                       data.critical.unhandled,
                     ).format()}/${numeral(data.critical.total).format()}`}
                     submenuTitle={t('Critical')}
+                    titleTestId="submenu services title critical"
                   />
                 </Link>
                 <Link
@@ -272,11 +276,13 @@ const ServiceStatusCounter = (): JSX.Element => {
                   })}
                 >
                   <SubmenuItem
+                    countTestId="submenu services count warning"
                     dotColored="orange"
                     submenuCount={`${numeral(
                       data.warning.unhandled,
                     ).format()}/${numeral(data.warning.total).format()}`}
                     submenuTitle={t('Warning')}
+                    titleTestId="submenu services title warning"
                   />
                 </Link>
                 <Link
@@ -289,11 +295,13 @@ const ServiceStatusCounter = (): JSX.Element => {
                   })}
                 >
                   <SubmenuItem
+                    countTestId="submenu services count unknown"
                     dotColored="gray"
                     submenuCount={`${numeral(
                       data.unknown.unhandled,
                     ).format()}/${numeral(data.unknown.total).format()}`}
                     submenuTitle={t('Unknown')}
+                    titleTestId="submenu services title unknown"
                   />
                 </Link>
                 <Link
@@ -306,9 +314,11 @@ const ServiceStatusCounter = (): JSX.Element => {
                   })}
                 >
                   <SubmenuItem
+                    countTestId="submenu services count ok"
                     dotColored="green"
                     submenuCount={numeral(data.ok).format()}
                     submenuTitle={t('Ok')}
+                    titleTestId="submenu services title ok"
                   />
                 </Link>
                 <Link
