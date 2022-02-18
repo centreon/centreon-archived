@@ -246,7 +246,15 @@ describe('Password expiration policy', () => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
         buildListingEndpoint({
           baseEndpoint: contactsEndpoint,
-          parameters: { page: 1 },
+          parameters: {
+            page: 1,
+            search: {
+              regex: {
+                fields: ['provider_name'],
+                value: '^local$',
+              },
+            },
+          },
         }),
         cancelTokenRequestParam,
       );

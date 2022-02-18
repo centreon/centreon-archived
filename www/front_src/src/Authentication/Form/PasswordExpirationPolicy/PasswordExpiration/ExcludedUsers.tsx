@@ -49,7 +49,15 @@ const ExcludedUsers = (): JSX.Element => {
   const getEndpoint = (parameters): string =>
     buildListingEndpoint({
       baseEndpoint: contactsEndpoint,
-      parameters,
+      parameters: {
+        ...parameters,
+        search: {
+          regex: {
+            fields: ['provider_name'],
+            value: '^local$',
+          },
+        },
+      },
     });
 
   const getRenderedOptionText = React.useCallback((option): JSX.Element => {
