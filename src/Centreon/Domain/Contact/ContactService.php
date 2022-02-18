@@ -66,6 +66,16 @@ class ContactService implements ContactServiceInterface
     /**
      * @inheritDoc
      */
+    public function isBlocked(int $contactId): bool
+    {
+        // @todo check if the user is blocked
+
+        return false;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function isPasswordExpired(int $contactId): bool
     {
         $providerConfiguration = $this->readProviderConfigurationRepository->findConfiguration();

@@ -131,18 +131,25 @@ class LocalProvider implements ProviderInterface
             }
         );
 
-        if (
-            $auth->userInfos["contact_auth_type"] === \CentreonAuth::AUTH_TYPE_LOCAL
-            && $auth->userInfos !== null
-            && $this->contactService->isPasswordExpired((int) $auth->userInfos['contact_id'])
-        ) {
-            $this->info(
-                '[LOCAL PROVIDER] password expired',
-                [
-                    'contact_id' => $auth->userInfos['contact_id'],
-                ],
-            );
-            throw PasswordExpiredException::passwordIsExpired();
+        if ($auth->userInfos["contact_auth_type"] === \CentreonAuth::AUTH_TYPE_LOCAL) {
+            if ($this->contactService->isBlocked((int) $auth->userInfos['contact_id'])) {
+                $this->info(
+                    '[LOCAL PROVIDER] authentication failed because user is blocked',
+                    [
+                        'contact_id' => $auth->userInfos['contact_id'],
+                    ],
+                );
+            }
+
+            if ($this->contactService->isPasswordExpired((int) $auth->userInfos['contact_id'])) {
+                $this->info(
+                    '[LOCAL PROVIDER] authentication failed because password is expired',
+                    [
+                        'contact_id' => $auth->userInfos['contact_id'],
+                    ],
+                );
+                throw PasswordExpiredException::passwordIsExpired();
+            }
         }
 
         if ($auth->passwdOk === 1) {
