@@ -38,17 +38,17 @@ export interface Extensions {
   };
 }
 
-export interface sendExtensionsRequestsType {
+export interface ExtensionResult {
   result: Extensions | string;
   status: boolean;
 }
 
-export interface sendDeleteExtensionRequestsType {
+export interface DeleteExtensionResult {
   result: string | null;
   status: boolean;
 }
 
-export interface sendUpdateOrInstallExtensionRequestsTypes {
+export interface InstallOrUpdateExtensionResult {
   result: {
     entity: Entity | null;
     message: string;

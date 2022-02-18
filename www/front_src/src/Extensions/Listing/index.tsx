@@ -30,8 +30,8 @@ import {
   Extensions,
   EntityType,
   ExtensionsStatus,
-  sendExtensionsRequestsType,
-  sendUpdateOrInstallExtensionRequestsTypes,
+  ExtensionResult,
+  InstallOrUpdateExtensionResult,
 } from './models';
 import { buildEndPoint, buildExtensionEndPoint } from './api/endpoint';
 
@@ -89,13 +89,12 @@ const ExtensionsManager = ({ reloadNavigation }): JSX.Element => {
   const [confirmedDeletingEntityId, setConfirmedDeletingEntityId] =
     React.useState<string | null>(null);
 
-  const { sendRequest: sendExtensionsRequests } =
-    useRequest<sendExtensionsRequestsType>({
-      request: getData,
-    });
+  const { sendRequest: sendExtensionsRequests } = useRequest<ExtensionResult>({
+    request: getData,
+  });
 
   const { sendRequest: sendUpdateOrInstallExtensionRequests } =
-    useRequest<sendUpdateOrInstallExtensionRequestsTypes>({
+    useRequest<InstallOrUpdateExtensionResult>({
       request: postData,
     });
 
