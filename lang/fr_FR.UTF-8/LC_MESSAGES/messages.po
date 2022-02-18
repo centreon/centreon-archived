@@ -16521,3 +16521,6 @@ msgstr "Lié aux rôles"
 
 msgid "Local provider configuration not found"
 msgstr "Configuration du fournisseur d'accès local non trouvée"
+
+msgid "User information not found"
+msgstr "Informations utilisateur non trouvées"

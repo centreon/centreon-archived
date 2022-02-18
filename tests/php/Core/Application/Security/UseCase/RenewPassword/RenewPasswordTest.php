@@ -24,15 +24,16 @@ declare(strict_types=1);
 namespace Tests\Application\Security\UseCase\RenewPassword;
 
 use PHPUnit\Framework\TestCase;
-use Core\Domain\User\Model\User;
+use Core\Domain\Security\User\Model\User;
 use Core\Application\Common\UseCase\ErrorResponse;
 use Core\Application\Common\UseCase\NotFoundResponse;
 use Core\Application\Common\UseCase\NoContentResponse;
-use Core\Application\User\Repository\ReadUserRepositoryInterface;
+use Core\Application\Security\User\Repository\ReadUserRepositoryInterface;
 use Core\Application\Security\UseCase\RenewPassword\RenewPassword;
-use Core\Application\User\Repository\WriteUserRepositoryInterface;
+use Core\Application\Security\User\Repository\WriteUserRepositoryInterface;
 use Core\Application\Security\UseCase\RenewPassword\RenewPasswordRequest;
 use Core\Application\Security\UseCase\RenewPassword\RenewPasswordPresenterInterface;
+use Core\Domain\Security\User\Model\UserPassword;
 
 class RenewPasswordTest extends TestCase
 {
@@ -61,7 +62,7 @@ class RenewPasswordTest extends TestCase
     /**
      * Test that a NotFoundResponse is set when the user is not found.
      */
-    public function testUseCaseWithNotFoundUser()
+    public function testUseCaseWithNotFoundUser(): void
     {
         $request = new RenewPasswordRequest();
         $request->userAlias = 'invalidUser';
@@ -86,15 +87,17 @@ class RenewPasswordTest extends TestCase
     /**
      * Test that an ErrorResponse is set when the password is invalid.
      */
-    public function testUseCaseWithInvalidPassword()
+    public function testUseCaseWithInvalidPassword(): void
     {
         $request = new RenewPasswordRequest();
         $request->userAlias = 'admin';
         $request->oldPassword = 'toto';
         $request->newPassword = 'tata';
 
-        $password = password_hash('titi', \CentreonAuth::PASSWORD_HASH_ALGORITHM);
-        $user = new User(1, 'admin', $password);
+        $oldPasswords = [];
+        $passwordValue = password_hash('titi', \CentreonAuth::PASSWORD_HASH_ALGORITHM);
+        $password = new UserPassword(1, $passwordValue, time());
+        $user = new User(1, 'admin', $oldPasswords, $password);
 
         $this->readRepository
             ->expects($this->once())
@@ -114,15 +117,17 @@ class RenewPasswordTest extends TestCase
     /**
      * Test that a no content response is set if everything goes well.
      */
-    public function testUseCaseWithValidParameters()
+    public function testUseCaseWithValidParameters(): void
     {
         $request = new RenewPasswordRequest();
         $request->userAlias = 'admin';
         $request->oldPassword = 'toto';
         $request->newPassword = 'tata';
 
-        $password = password_hash('toto', \CentreonAuth::PASSWORD_HASH_ALGORITHM);
-        $user = new User(1, 'admin', $password);
+        $oldPasswords = [];
+        $passwordValue = password_hash('toto', \CentreonAuth::PASSWORD_HASH_ALGORITHM);
+        $password = new UserPassword(1, $passwordValue, time());
+        $user = new User(1, 'admin', $oldPasswords, $password);
 
         $this->readRepository
             ->expects($this->once())

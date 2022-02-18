@@ -57,7 +57,7 @@ class RenewPasswordControllerTest extends TestCase
     /**
      * Test that an exception is thrown is the received payload is invalid.
      */
-    public function testExceptionIsThrownWithInvalidPayload()
+    public function testExceptionIsThrownWithInvalidPayload(): void
     {
         $controller = new RenewPasswordController();
 
