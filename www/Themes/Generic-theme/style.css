@@ -1130,6 +1130,10 @@ div.menuLeft {
     border-bottom: 1px solid var(--table-form-header-bottom-border-color);
 }
 
+table-form-header-h3 {
+    color: var(--table-form-header-h3-font-color);
+}
+
 .FormHeader .td {padding-left:2px;}
 
 .FormRowValue {
@@ -1177,7 +1181,9 @@ div.menuLeft {
 }
 
 #globalView .ui-state-default,#globalView .ui-widget-content .ui-state-default,#globalView .ui-widget-header .ui-state-default {
-    border: var(--global-view-ui-border-color);
+    border-top: 1px solid var(--global-view-ui-border-color);
+    border-left: 1px solid var(--global-view-ui-border-color);
+    border-right: 1px solid var(--global-view-ui-border-color);
     margin: 1px .2em 0 0;
     white-space: normal;
 }
@@ -1204,7 +1210,7 @@ div.menuLeft {
     margin-bottom: -1px;
     padding-bottom: 0;
     border: 1px solid var(--global-view-ui-active-tabs-border-color);
-    border-bottom: none;
+    border-bottom: 2px solid var(--global-view-ui-active-tabs-border-bottom-color);
     border-top-left-radius: 0px;
     border-top-right-radius: 0px;
 }
