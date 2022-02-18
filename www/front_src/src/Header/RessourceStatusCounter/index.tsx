@@ -51,9 +51,10 @@ const RessourceStatusCounter = <
   schema,
   children,
   loaderWidth,
-}: Props): JSX.Element => {
+}: Props): JSX.Element | null => {
   const [data, setData] = React.useState<StatusCount>();
   const [toggled, setToggled] = React.useState<boolean>();
+  const [isAllowed, setIsAllowed] = React.useState<boolean>(true);
 
   const interval = React.useRef<number>();
 
@@ -69,7 +70,7 @@ const RessourceStatusCounter = <
       })
       .catch((error) => {
         if (error.response && error.response.status === 401) {
-          setData(undefined);
+          setIsAllowed(false);
         }
       });
   };
@@ -89,6 +90,10 @@ const RessourceStatusCounter = <
   const toggleDetailedView = (): void => {
     setToggled(!toggled);
   };
+
+  if (!isAllowed) {
+    return null;
+  }
 
   if (!data) {
     return <MenuLoader width={loaderWidth} />;
