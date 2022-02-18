@@ -36,11 +36,14 @@ const useValidationSchema = (): Yup.SchemaOf<SecurityPolicy> => {
     hasNumber: Yup.boolean().defined(),
     hasSpecialCharacter: Yup.boolean().defined(),
     hasUpperCase: Yup.boolean().defined(),
-    passwordExpiration: Yup.number()
-      .min(sevenDays, t(labelChooseADurationBetween7DaysAnd12Months))
-      .max(twelveMonths, t(labelChooseADurationBetween7DaysAnd12Months))
-      .nullable()
-      .defined(),
+    passwordExpiration: Yup.object().shape({
+      excludedUsers: Yup.array().of(Yup.string().required()),
+      expirationDelay: Yup.number()
+        .min(sevenDays, t(labelChooseADurationBetween7DaysAnd12Months))
+        .max(twelveMonths, t(labelChooseADurationBetween7DaysAnd12Months))
+        .nullable()
+        .defined(),
+    }),
     passwordMinLength: Yup.number()
       .min(8, t(labelMinimum8Characters))
       .max(128, t(labelMaximum128Characters))

@@ -1393,7 +1393,7 @@ INSERT INTO `provider_configuration` (type, name, custom_configuration, is_activ
 VALUES (
   'local',
   'local',
-  '{"password_security_policy": {"password_length": 12, "has_uppercase_characters": true, "has_lowercase_characters": true, "has_numbers": true, "has_special_characters": true, "attempts": 5, "blocking_duration": 900, "password_expiration": 7776000, "delay_before_new_password": 3600, "can_reuse_passwords": false }}',
+  '{"password_security_policy": {"password_length": 12, "has_uppercase_characters": true, "has_lowercase_characters": true, "has_numbers": true, "has_special_characters": true, "attempts": 5, "blocking_duration": 900, "password_expiration_delay": 7776000, "delay_before_new_password": 3600, "can_reuse_passwords": false }}',
   true,
   true
 );

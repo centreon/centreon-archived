@@ -50,20 +50,65 @@ class DbReadConfigurationRepository extends AbstractRepositoryDRB implements Rea
      */
     public function findConfiguration(): ?Configuration
     {
-        $statement = $this->db->query(
-            "SELECT `custom_configuration`
-            FROM `provider_configuration`
-            WHERE `name` = 'local'"
-        );
-
         $configuration = null;
-        if ($statement !== false && $result = $statement->fetch(\PDO::FETCH_ASSOC)) {
-            $this->validateReadCustomConfiguration($result['custom_configuration']);
-            $result['custom_configuration'] = json_decode($result['custom_configuration'], true);
-            $configuration = DbConfigurationFactory::createFromRecord($result);
+
+        $customConfiguration = $this->findCustomConfiguration();
+        if ($customConfiguration !== null) {
+            $excludedUsers = $this->findExcludedUsers();
+            $configuration = DbConfigurationFactory::createFromRecord($customConfiguration, $excludedUsers);
         }
 
         return $configuration;
+    }
+
+    /**
+     * Find custom configuration and validate it
+     *
+     * @return array<string,mixed>|null
+     */
+    private function findCustomConfiguration(): ?array
+    {
+        $statement = $this->db->query(
+            $this->translateDbName(
+                "SELECT `custom_configuration`
+                FROM `:db`.`provider_configuration`
+                WHERE `name` = 'local'"
+            )
+        );
+
+        $customConfiguration = null;
+        if ($statement !== false && $result = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            $this->validateReadCustomConfiguration($result['custom_configuration']);
+            $customConfiguration = json_decode($result['custom_configuration'], true);
+        }
+
+        return $customConfiguration;
+    }
+
+    /**
+     * Find excluded users from password expiration
+     *
+     * @return array<string,mixed>
+     */
+    private function findExcludedUsers(): array
+    {
+        $statement = $this->db->query(
+            $this->translateDbName(
+                "SELECT c.`contact_alias`
+                FROM `:db`.`password_expiration_excluded_users` peeu
+                INNER JOIN `:db`.`provider_configuration` pc ON pc.`id` = peeu.`provider_configuration_id`
+                AND pc.`name` = 'local'
+                INNER JOIN `:db`.`contact` c ON c.`contact_id` = peeu.`user_id`
+                AND c.`contact_register` = 1"
+            )
+        );
+
+        $excludedUsers = [];
+        if ($statement !== false) {
+            $excludedUsers = $statement->fetchAll(\PDO::FETCH_ASSOC);
+        }
+
+        return $excludedUsers;
     }
 
     /**
