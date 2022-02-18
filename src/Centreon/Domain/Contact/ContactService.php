@@ -86,8 +86,9 @@ class ContactService implements ContactServiceInterface
             return false;
         }
 
-        //var_dump($providerConfiguration);
+
         // @todo get last password creation and compare it to password duration from security policy
+
         return false;
     }
 
