@@ -66,6 +66,7 @@ class HostMenu extends Component {
   refreshInterval = null;
 
   state = {
+    allowed: true,
     data: null,
     intervalApplied: false,
     toggled: false,
@@ -92,7 +93,7 @@ class HostMenu extends Component {
       .catch((error) => {
         if (error.response && error.response.status === 401) {
           this.setState({
-            data: null,
+            allowed: false,
           });
         }
       });
@@ -131,7 +132,7 @@ class HostMenu extends Component {
   };
 
   render() {
-    const { data, toggled } = this.state;
+    const { data, toggled, allowed } = this.state;
     const { t } = this.props;
 
     const { useDeprecatedPages } = this.props;
@@ -166,6 +167,10 @@ class HostMenu extends Component {
           statusCriterias: pendingCriterias,
         });
 
+    // do not display skeleton if user is not allowed to display top counter
+    if (!allowed) {
+      return null;
+    }
     // do not display host information until having data
     if (!data) {
       return <MenuLoader width={27} />;

@@ -71,6 +71,7 @@ class ServiceStatusMenu extends Component {
   refreshInterval = null;
 
   state = {
+    allowed: true,
     data: null,
     intervalApplied: false,
     toggled: false,
@@ -97,7 +98,7 @@ class ServiceStatusMenu extends Component {
       .catch((error) => {
         if (error.response && error.response.status === 401) {
           this.setState({
-            data: null,
+            allowed: false,
           });
         }
       });
@@ -136,7 +137,7 @@ class ServiceStatusMenu extends Component {
   };
 
   render() {
-    const { data, toggled } = this.state;
+    const { data, toggled, allowed } = this.state;
     const { t, useDeprecatedPages } = this.props;
 
     const unhandledCriticalServicesLink = useDeprecatedPages
@@ -173,6 +174,11 @@ class ServiceStatusMenu extends Component {
       : getServiceResourcesUrl({
           statusCriterias: pendingCriterias,
         });
+
+    // do not display skeleton if user is not allowed to display top counter
+    if (!allowed) {
+      return null;
+    }
 
     // do not display service information until having data
     if (!data) {

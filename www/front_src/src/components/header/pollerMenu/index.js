@@ -95,6 +95,7 @@ class PollerMenu extends Component {
   refreshInterval = null;
 
   state = {
+    allowed: true,
     data: null,
     intervalApplied: false,
     toggled: false,
@@ -121,7 +122,7 @@ class PollerMenu extends Component {
       .catch((error) => {
         if (error.response && error.response.status === 401) {
           this.setState({
-            data: null,
+            allowed: false,
           });
         }
       });
@@ -170,7 +171,12 @@ class PollerMenu extends Component {
   };
 
   render() {
-    const { data, toggled } = this.state;
+    const { data, toggled, allowed } = this.state;
+    // do not display skeleton if user is not allowed to display top counter
+
+    if (!allowed) {
+      return null;
+    }
 
     if (!data) {
       return <MenuLoader />;
