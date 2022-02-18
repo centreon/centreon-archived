@@ -21,11 +21,11 @@
 
 declare(strict_types=1);
 
-namespace Core\Infrastructure\User\Repository;
+namespace Core\Infrastructure\Security\User\Repository;
 
 use Centreon\Domain\Repository\RepositoryException;
-use Core\Domain\User\Model\User;
-use Core\Domain\User\Model\UserPassword;
+use Core\Domain\Security\User\Model\User;
+use Core\Domain\Security\User\Model\UserPassword;
 
 class DbUserFactory
 {

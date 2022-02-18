@@ -21,63 +21,60 @@
 
 declare(strict_types=1);
 
-namespace Core\Domain\User\Model;
+namespace Core\Domain\Security\User\Model;
 
-class User
+class UserPassword
 {
     /**
-     * @param integer $id
-     * @param string $alias
-     * @param UserPassword[] $oldPasswords
-     * @param UserPassword $password
+     * @param integer $userId
+     * @param string $passwordValue
+     * @param integer $creationDate
      */
-    public function __construct(
-        private int $id,
-        private string $alias,
-        private array $oldPasswords,
-        private UserPassword $password
-    ) {
+    public function __construct(private int $userId, private string $passwordValue, private int $creationDate)
+    {
     }
 
     /**
      * @return integer
      */
-    public function getId(): int
+    public function getUserId(): int
     {
-        return $this->id;
+        return $this->userId;
     }
 
     /**
      * @return string
      */
-    public function getAlias(): string
+    public function getPasswordValue(): string
     {
-        return $this->alias;
+        return $this->passwordValue;
     }
 
     /**
-     * @return UserPassword[]
+     * @return integer
      */
-    public function getOldPasswords(): array
+    public function getCreationDate(): int
     {
-        return $this->oldPasswords;
+        return $this->creationDate;
     }
 
     /**
-     * @return UserPassword
-     */
-    public function getPassword(): UserPassword
-    {
-        return $this->password;
-    }
-
-    /**
-     * @param UserPassword $password
+     * @param string $passwordValue
      * @return self
      */
-    public function setPassword(UserPassword $password): self
+    public function setPasswordValue(string $passwordValue): self
     {
-        $this->password = $password;
+        $this->passwordValue = $passwordValue;
+        return $this;
+    }
+
+    /**
+     * @param integer $creationDate
+     * @return self
+     */
+    public function setCreationDate(int $creationDate): self
+    {
+        $this->creationDate = $creationDate;
         return $this;
     }
 }

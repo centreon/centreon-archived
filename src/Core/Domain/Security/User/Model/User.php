@@ -21,60 +21,63 @@
 
 declare(strict_types=1);
 
-namespace Core\Domain\User\Model;
+namespace Core\Domain\Security\User\Model;
 
-class UserPassword
+class User
 {
     /**
-     * @param integer $userId
-     * @param string $passwordValue
-     * @param integer $creationDate
+     * @param integer $id
+     * @param string $alias
+     * @param UserPassword[] $oldPasswords
+     * @param UserPassword $password
      */
-    public function __construct(private int $userId, private string $passwordValue, private int $creationDate)
-    {
+    public function __construct(
+        private int $id,
+        private string $alias,
+        private array $oldPasswords,
+        private UserPassword $password
+    ) {
     }
 
     /**
      * @return integer
      */
-    public function getUserId(): int
+    public function getId(): int
     {
-        return $this->userId;
+        return $this->id;
     }
 
     /**
      * @return string
      */
-    public function getPasswordValue(): string
+    public function getAlias(): string
     {
-        return $this->passwordValue;
+        return $this->alias;
     }
 
     /**
-     * @return integer
+     * @return UserPassword[]
      */
-    public function getCreationDate(): int
+    public function getOldPasswords(): array
     {
-        return $this->creationDate;
+        return $this->oldPasswords;
     }
 
     /**
-     * @param string $passwordValue
+     * @return UserPassword
+     */
+    public function getPassword(): UserPassword
+    {
+        return $this->password;
+    }
+
+    /**
+     * @param UserPassword $password
      * @return self
      */
-    public function setPasswordValue(string $passwordValue): self
+    public function setPassword(UserPassword $password): self
     {
-        $this->passwordValue = $passwordValue;
-        return $this;
-    }
-
-    /**
-     * @param integer $creationDate
-     * @return self
-     */
-    public function setCreationDate(int $creationDate): self
-    {
-        $this->creationDate = $creationDate;
+        $this->password = $password;
         return $this;
     }
 }

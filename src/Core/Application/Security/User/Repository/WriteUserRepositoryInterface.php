@@ -21,9 +21,9 @@
 
 declare(strict_types=1);
 
-namespace Core\Application\User\Repository;
+namespace Core\Application\Security\User\Repository;
 
-use Core\Domain\User\Model\User;
+use Core\Domain\Security\User\Model\User;
 
 interface WriteUserRepositoryInterface
 {

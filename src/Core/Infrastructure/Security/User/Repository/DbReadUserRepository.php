@@ -21,13 +21,13 @@
 
 declare(strict_types=1);
 
-namespace Core\Infrastructure\User\Repository;
+namespace Core\Infrastructure\Security\User\Repository;
 
-use Core\Domain\User\Model\User;
+use Core\Domain\Security\User\Model\User;
 use Centreon\Infrastructure\DatabaseConnection;
-use Core\Infrastructure\User\Repository\DbUserFactory;
+use Core\Infrastructure\Security\User\Repository\DbUserFactory;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
-use Core\Application\User\Repository\ReadUserRepositoryInterface;
+use Core\Application\Security\User\Repository\ReadUserRepositoryInterface;
 
 class DbReadUserRepository extends AbstractRepositoryDRB implements ReadUserRepositoryInterface
 {

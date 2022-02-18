@@ -21,10 +21,10 @@
 
 declare(strict_types=1);
 
-namespace Core\Infrastructure\User\Repository;
+namespace Core\Infrastructure\Security\User\Repository;
 
-use Core\Domain\User\Model\User;
-use Core\Domain\User\Model\UserPassword;
+use Core\Domain\Security\User\Model\User;
+use Core\Domain\Security\User\Model\UserPassword;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Core\Application\User\Repository\WriteUserRepositoryInterface;

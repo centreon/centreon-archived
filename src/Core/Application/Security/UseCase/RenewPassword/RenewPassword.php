@@ -23,12 +23,12 @@ declare(strict_types=1);
 
 namespace Core\Application\Security\UseCase\RenewPassword;
 
-use Core\Domain\User\Model\UserPassword;
+use Core\Domain\Security\User\Model\UserPassword;
 use Core\Application\Common\UseCase\ErrorResponse;
 use Core\Application\Common\UseCase\NotFoundResponse;
 use Core\Application\Common\UseCase\NoContentResponse;
-use Core\Application\User\Repository\ReadUserRepositoryInterface;
-use Core\Application\User\Repository\WriteUserRepositoryInterface;
+use Core\Application\Security\User\Repository\ReadUserRepositoryInterface;
+use Core\Application\Security\User\Repository\WriteUserRepositoryInterface;
 
 class RenewPassword
 {

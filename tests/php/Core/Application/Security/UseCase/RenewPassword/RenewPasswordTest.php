@@ -24,16 +24,16 @@ declare(strict_types=1);
 namespace Tests\Application\Security\UseCase\RenewPassword;
 
 use PHPUnit\Framework\TestCase;
-use Core\Domain\User\Model\User;
+use Core\Domain\Security\User\Model\User;
 use Core\Application\Common\UseCase\ErrorResponse;
 use Core\Application\Common\UseCase\NotFoundResponse;
 use Core\Application\Common\UseCase\NoContentResponse;
-use Core\Application\User\Repository\ReadUserRepositoryInterface;
+use Core\Application\Security\User\Repository\ReadUserRepositoryInterface;
 use Core\Application\Security\UseCase\RenewPassword\RenewPassword;
-use Core\Application\User\Repository\WriteUserRepositoryInterface;
+use Core\Application\Security\User\Repository\WriteUserRepositoryInterface;
 use Core\Application\Security\UseCase\RenewPassword\RenewPasswordRequest;
 use Core\Application\Security\UseCase\RenewPassword\RenewPasswordPresenterInterface;
-use Core\Domain\User\Model\UserPassword;
+use Core\Domain\Security\User\Model\UserPassword;
 
 class RenewPasswordTest extends TestCase
 {
