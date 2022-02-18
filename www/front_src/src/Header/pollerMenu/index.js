@@ -114,6 +114,7 @@ class PollerMenu extends Component {
   refreshIntervalRef = null;
 
   state = {
+    allowed: true,
     data: null,
     intervalApplied: false,
     isExporting: false,
@@ -141,7 +142,7 @@ class PollerMenu extends Component {
       .catch((error) => {
         if (error.response && error.response.status === 401) {
           this.setState({
-            data: null,
+            allowed: false,
           });
         }
       });
@@ -204,7 +205,9 @@ class PollerMenu extends Component {
   };
 
   render() {
-    const { data, toggled } = this.state;
+    const { data, toggled, allowed } = this.state;
+
+    if (!allowed) return null;
 
     if (!data) {
       return <MenuLoader />;
