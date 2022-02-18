@@ -576,10 +576,12 @@ class CentreonAPI
                     $hashedPassword
                 );
                 \CentreonClapi\CentreonUtils::setUserId($row['contact_id']);
+                $this->removeBlockingTimeOnUser();
                 return 1;
             }
             if (password_verify($this->password, $row['contact_passwd'])) {
                 \CentreonClapi\CentreonUtils::setUserId($row['contact_id']);
+                $this->removeBlockingTimeOnUser();
                 return 1;
             } elseif ($row['contact_auth_type'] == 'ldap') {
                 $CentreonLog = new \CentreonUserLog(-1, $this->DB);
@@ -593,6 +595,7 @@ class CentreonAPI
                 );
                 if ($centreonAuth->checkPassword() == 1) {
                     \CentreonClapi\CentreonUtils::setUserId($row['contact_id']);
+                    $this->removeBlockingTimeOnUser();
                     return 1;
                 }
             }
