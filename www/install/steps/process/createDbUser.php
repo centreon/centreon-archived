@@ -155,7 +155,7 @@ try {
         while ($result = $privilegesStatement->fetch(\PDO::FETCH_ASSOC)) {
             foreach ($result as $grant) {
                 // Format Grant result to get privileges list, and concerned database.
-                if (preg_match('/^GRANT\s(.+)\sON\s?(.+)\./', $grant, $matches)) {
+                if (preg_match('/^GRANT\s(?!USAGE)(.+)\sON\s?(.+)\./', $grant, $matches)) {
                     // Check if privileges has been found for global (*) or centreon databases.
                     switch ($matches[2]) {
                         case '`' . $parameters['db_configuration'] . '`':
