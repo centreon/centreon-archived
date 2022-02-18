@@ -260,13 +260,13 @@ select[multiple="multiple"] {
     overflow: auto;
 }
 option {
-    color: #444;
+    color: var(--option-color);
     padding-left: 1px;
     padding-right: 1px;
 }
 
 hr {
-    background-color: #CCC;
+    background-color: var(--hr-background-color);
     height: 1px;
     margin: 3px 0;
 }
