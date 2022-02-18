@@ -133,10 +133,9 @@ if ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
             rel="stylesheet"
             type="text/css"
     />
-        <?php
+<?php
     // Override variables CSS
-        if($variablesThemeCSS !==null)
-        {
+        if ($variablesThemeCSS !== null) {
             print "<link "
                 . "href='./Themes/" . $variablesThemeCSS . "/variables.css' "
                 . "rel='stylesheet' type='text/css' "
@@ -153,7 +152,7 @@ if ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
         }
 
         if (!isset($_REQUEST['iframe']) || (isset($_REQUEST['iframe']) && $_REQUEST['iframe'] != 1)) {
-            ?>
+?>
     <script type="text/javascript" src="./include/common/javascript/jquery/jquery.min.js"></script>
     <script type="text/javascript" src="./include/common/javascript/jquery/plugins/toggleClick/jquery.toggleClick.js">
     </script>
