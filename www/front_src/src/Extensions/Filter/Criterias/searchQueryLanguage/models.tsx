@@ -27,13 +27,20 @@ const statusNameToQueryLanguageName = selectableStatuses
     return { ...previous, [current]: toLower(current) };
   }, {});
 
+const typeNameToQueryLanguageName = selectableTypes
+  .map(prop('id'))
+  .reduce((previous, current) => {
+    return { ...previous, [current]: toLower(current) };
+  }, {});
+
 export const criteriaNameToQueryLanguageName = {
   ...statusNameToQueryLanguageName,
+  ...typeNameToQueryLanguageName,
 };
 
 const staticCriteriaValuesByName = {
   status: selectableStatuses,
-  types: selectableTypes,
+  type: selectableTypes,
 };
 
 export const getSelectableCriteriasByName = (
