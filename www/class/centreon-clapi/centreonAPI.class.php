@@ -595,7 +595,6 @@ class CentreonAPI
                 );
                 if ($centreonAuth->checkPassword() == 1) {
                     \CentreonClapi\CentreonUtils::setUserId($row['contact_id']);
-                    $this->removeBlockingTimeOnUser();
                     return 1;
                 }
             }
