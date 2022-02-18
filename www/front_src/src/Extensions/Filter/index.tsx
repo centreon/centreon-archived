@@ -16,7 +16,7 @@ import {
 
 import { labelSearch, labelClearFilter } from '../translatedLabels';
 
-import { clearFilterDerivedAtom, searchAtom } from './filterAtoms'; 
+import { clearFilterDerivedAtom, searchAtom } from './filterAtoms';
 
 const useStyles = makeStyles((theme) => ({
   autocompletePopper: {
@@ -56,7 +56,7 @@ const Filter = (): JSX.Element => {
 
   const searchRef = React.useRef<HTMLInputElement>();
 
-  const [cursorPosition, setCursorPosition] = React.useState(0); 
+  const [cursorPosition, setCursorPosition] = React.useState(0);
 
   const [search, setSearch] = useAtom(searchAtom);
 

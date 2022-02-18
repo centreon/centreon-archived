@@ -48,7 +48,6 @@ export interface sendDeleteExtensionRequestsType {
   status: boolean;
 }
 
-
 export interface sendUpdateOrInstallExtensionRequestsTypes {
   result: {
     entity: Entity | null;

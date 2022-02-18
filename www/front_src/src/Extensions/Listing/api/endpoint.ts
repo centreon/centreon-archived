@@ -2,7 +2,7 @@ import { find, propEq } from 'ramda';
 
 import { SelectEntry } from '@centreon/ui';
 
-import { Criteria } from '../Filter/Criterias/models';
+import { Criteria } from '../../Filter/Criterias/models';
 
 interface Parameter {
   action: string;

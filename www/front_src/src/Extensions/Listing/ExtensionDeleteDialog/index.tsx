@@ -13,13 +13,17 @@ const ExtensionDeletePopup = ({
   onConfirm,
   onCancel,
 }): JSX.Element => {
+  const confirmDelete = (): void => {
+    onConfirm(deletingEntity.id, deletingEntity.type);
+  };
+
   return (
     <Dialog
       open
       labelConfirm="Delete"
       onCancel={onCancel}
       onClose={onCancel}
-      onConfirm={(): void => onConfirm(deletingEntity.id, deletingEntity.type)}
+      onConfirm={confirmDelete}
     >
       <Typography variant="h6">{deletingEntity.description}</Typography>
 
