@@ -21,7 +21,7 @@
                         <table class="table">
                             <tr>
                                 <td class="FormHeader" colspan="2">
-                                    <h3 style="color:#88b917;">{t}Create a view{/t}</h3>
+                                    <h3 class="table-form-header-h3">{t}Create a view{/t}</h3>
                                 </td>
                             </tr>
                             <tr class="list_two">
@@ -71,7 +71,7 @@
                         <table class="table">
                             <tr>
                                 <td class="FormHeader" colspan="2">
-                                    <h3 style="color:#00bfb3;">{t}Edit a view{/t}</h3>
+                                    <h3 class="table-form-header-h3">{t}Edit a view{/t}</h3>
                                 </td>
                             </tr>
                             <tr>
@@ -124,7 +124,7 @@
                     <table class="table">
                         <tr>
                             <td class="FormHeader" colspan="2">
-                                <h3 style="color: #00bfb3;">{t}Share view{/t}</h3>
+                                <h3 class="table-form-header-h3">{t}Share view{/t}</h3>
                             </td>
                         </tr>
                         <tr>
@@ -173,7 +173,7 @@
                     <table class="table">
                         <tr>
                             <td class="FormHeader" colspan="2">
-                                <h3 style="color:#88b917;">{t}Add a widget{/t}</h3>
+                                <h3 class="table-form-header-h3">{t}Add a widget{/t}</h3>
                             </td>
                         </tr>
                         <tr>
