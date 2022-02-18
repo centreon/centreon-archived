@@ -53,6 +53,9 @@ class DbReadUserRepository extends AbstractRepositoryDRB implements ReadUserRepo
         $statement->execute();
         $user = null;
         if (($result = $statement->fetchAll(\PDO::FETCH_ASSOC)) !== false) {
+            if (empty($result)) {
+                return null;
+            }
             $user = DbUserFactory::createFromRecord($result);
         }
 

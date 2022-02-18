@@ -35,9 +35,6 @@ class DbUserFactory
      */
     public static function createFromRecord(array $recordData): ?User
     {
-        if (empty($recordData)) {
-            return null;
-        }
         $userInfos = [
             'passwords' => []
         ];
