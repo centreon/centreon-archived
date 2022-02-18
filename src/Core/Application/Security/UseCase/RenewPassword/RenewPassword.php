@@ -23,11 +23,12 @@ declare(strict_types=1);
 
 namespace Core\Application\Security\UseCase\RenewPassword;
 
+use Core\Domain\Security\User\Model\UserPassword;
 use Core\Application\Common\UseCase\ErrorResponse;
 use Core\Application\Common\UseCase\NotFoundResponse;
 use Core\Application\Common\UseCase\NoContentResponse;
-use Core\Application\User\Repository\ReadUserRepositoryInterface;
-use Core\Application\User\Repository\WriteUserRepositoryInterface;
+use Core\Application\Security\User\Repository\ReadUserRepositoryInterface;
+use Core\Application\Security\User\Repository\WriteUserRepositoryInterface;
 
 class RenewPassword
 {
@@ -37,7 +38,7 @@ class RenewPassword
      */
     public function __construct(
         private ReadUserRepositoryInterface $readRepository,
-        private WriteUserRepositoryInterface $writeRepository
+        private WriteUserRepositoryInterface $writeRepository,
     ) {
     }
 
@@ -49,18 +50,26 @@ class RenewPassword
         RenewPasswordPresenterInterface $presenter,
         RenewPasswordRequest $renewPasswordRequest
     ): void {
+        //Get User informations
         $user = $this->readRepository->findUserByAlias($renewPasswordRequest->userAlias);
         if ($user === null) {
             $presenter->setResponseStatus(new NotFoundResponse('User'));
             return;
         }
-        if (password_verify($renewPasswordRequest->oldPassword, $user->getPassword()) === false) {
+
+        //Validate that old password matches the current user password
+        if (password_verify($renewPasswordRequest->oldPassword, $user->getPassword()->getPasswordValue()) === false) {
             $presenter->setResponseStatus(new ErrorResponse('Invalid credentials'));
             return;
         }
-        //@Todo: Check that new password follow the security policy.
 
-        $newPassword = password_hash($renewPasswordRequest->newPassword, \CentreonAuth::PASSWORD_HASH_ALGORITHM);
+        //@todo: Check that new password follow the security policy.
+
+        //@todo: If use ancient password is not allowed, check that new password wasn't already used.
+
+        //Create the new password and set it to the user.
+        $newPasswordValue = password_hash($renewPasswordRequest->newPassword, \CentreonAuth::PASSWORD_HASH_ALGORITHM);
+        $newPassword = new UserPassword($user->getId(), $newPasswordValue, time());
         $user->setPassword($newPassword);
         $this->writeRepository->renewPassword($user);
         $presenter->setResponseStatus(new NoContentResponse());
