@@ -67,7 +67,7 @@ class DbReadUserRepository extends AbstractRepositoryDRB implements ReadUserRepo
         // Search
         $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
         $request .= $searchRequest !== null ? $searchRequest . ' AND ' : ' WHERE ';
-        $request .= "contact_register = 1";
+        $request .= 'contact_register = 1';
 
         // Sort
         $sortRequest = $this->sqlRequestTranslator->translateSortParameterToSql();
