@@ -45,7 +45,7 @@ $versionParam = isset($centreon->informations) && isset($centreon->informations[
 
 print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
 
-$variablesThemeCSS  = "Centreon-Light";
+$variablesThemeCSS  = null;
 $userId = (int) $centreon->user->user_id;
 $statement = $pearDB->prepare('SELECT contact_theme FROM contact WHERE contact_id = :contactId');
 $statement->bindValue(':contactId', $userId, \PDO::PARAM_INT);
@@ -53,7 +53,7 @@ $statement->execute();
 if ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
     switch ($result['contact_theme']) {
         case 'light':
-            $variablesThemeCSS = "Centreon-Light";
+            $variablesThemeCSS = null;
             break;
         case 'dark':
             $variablesThemeCSS = "Centreon-Dark";
@@ -129,12 +129,19 @@ if ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
     <link href="./include/common/javascript/charts/c3.min.css" type="text/css" rel="stylesheet" />
     <link href="./include/views/graphs/javascript/centreon-status-chart.css" type="text/css" rel="stylesheet" />
     <link
-            href="./Themes/<?php echo $variablesThemeCSS; ?>/variables.css"
+            href="./Themes/Generic-theme/variables.css"
             rel="stylesheet"
             type="text/css"
     />
         <?php
-
+    // Override variables CSS
+        if($variablesThemeCSS !==null)
+        {
+            print "<link "
+                . "href='./Themes/" . $variablesThemeCSS . "/variables.css' "
+                . "rel='stylesheet' type='text/css' "
+                . "/>\n";
+        }
         // == Declare CSS for modules
         foreach ($centreon->modules as $moduleName => $infos) {
             if (file_exists(__DIR__ . "/../../../www/modules/" . $moduleName . "/static/css/styles.css")) {
