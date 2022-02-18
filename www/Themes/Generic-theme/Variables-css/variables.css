@@ -133,11 +133,11 @@
     /** START : Buttons **/
     --btc-color: var(--color-white);
     --a-btc-color : var(--color-white);
-    --bt-default-background-color : var(--color-primary-light);
-    --bt-success-background-color : var(--color-primary-light);
-    --bt-danger-background-color: var(--color-primary-light);
-    --bt-info-background-color : var(--color-primary-light);
-    --bt-warning-background-color :var(--color-primary-light);
+    --bt-default-background-color : var(--color-primary-dark);
+    --bt-success-background-color : var(--color-primary-dark);
+    --bt-danger-background-color: var(--color-primary-dark);
+    --bt-info-background-color : var(--color-primary-dark);
+    --bt-warning-background-color :var(--color-primary-dark);
     --bt-action-color-background-color : var(--color-robins-egg-blue);
     --bt-action-color :var(--color-white);
     --bt-action-border-color :var(--color-persian-green);
@@ -295,13 +295,13 @@
     --ui-anchor-state-active-visited-font-color: var(--color-persian-green);
     --global-view-ui-active-tabs-border-color: var(--color-robins-egg-blue);
     --global-view-ui-active-tabs-border-bottom-color: none;
-    --view-body-portlet-border-color: var(--color-white-lilac);
+    --view-body-portlet-border-color: var(--color-iron);
     --view-body-ui-widget-header-font-color: var(--color-armadillo);
     --view-body-ui-widget-header-background-color: var(--color-white-lilac);
     /* ------ END : Tabs variables -----*/
 
     /* ------ START : Forms variables ------ */
-    --form-table-list-header-background-color: var(--color-white);
+    --form-table-list-header-background-color: var(--body-background);
     --form-table-list-header-border-bottom-color: none;
     --form-table-list-header-h3-font-color: var(--color-olive);
     --form-table-list-header-h4-font-color: var(--color-pasific-bleu);
