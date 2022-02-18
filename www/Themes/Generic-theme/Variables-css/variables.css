@@ -24,7 +24,8 @@
     --select-border-color: var(--color-ghost);
     --select-background: var(--color-white);
     --select-color : var(--color-charcoal);
-    --option-color: var(--color-white);
+    --option-color: var(--color-charcoal);
+    --input-select-background-color: #fff;
     /******************/
 
     /** Input checkbox **/
@@ -50,7 +51,6 @@
 
     /** select **/
     --select-background-color : var(--color-white);
-    --option-color :  var(--select-color);
     /***********/
 
     /** HR **/
@@ -133,11 +133,11 @@
     /** START : Buttons **/
     --btc-color: var(--color-white);
     --a-btc-color : var(--color-white);
-    --bt-default-background-color : var(--color-primary-bleu-light);
-    --bt-success-background-color : var(--color-primary-bleu-light);
-    --bt-danger-background-color: var(--color-primary-bleu-light);
-    --bt-info-background-color : var(--color-primary-bleu-light);
-    --bt-warning-background-color :var(--color-primary-bleu-light);
+    --bt-default-background-color : var(--color-primary-light);
+    --bt-success-background-color : var(--color-primary-light);
+    --bt-danger-background-color: var(--color-primary-light);
+    --bt-info-background-color : var(--color-primary-light);
+    --bt-warning-background-color :var(--color-primary-light);
     --bt-action-color-background-color : var(--color-robins-egg-blue);
     --bt-action-color :var(--color-white);
     --bt-action-border-color :var(--color-persian-green);
