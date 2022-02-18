@@ -1,5 +1,7 @@
 :root {
     /** Main colors **/
+    --color-primary-light: #2196F3;
+    --color-primary-dark: #10069F;
     --color-success : #88b917 ;
     --color-warning : #ff9a13 ;
     --color-danger : #e00b3d ;
@@ -54,7 +56,6 @@
     --color-malibu-2: #7bd0fa;
     --color-wild-sand: #f4f4f4;
     --color-wild-sand-2: #f6f6f6;
-    --color-ultramarine: #10069F;
     --color-torch-red: #f90026;
     --color-robins-egg-blue: #00ccbf;
     --color-oslo-gray: #919294;
