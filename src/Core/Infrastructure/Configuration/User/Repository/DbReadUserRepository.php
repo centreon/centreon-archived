@@ -48,6 +48,7 @@ class DbReadUserRepository extends AbstractRepositoryDRB implements ReadUserRepo
             'alias' => 'contact_alias',
             'name' => 'contact_name',
             'email' => 'contact_email',
+            'provider_name' => 'contact_auth_type',
         ]);
     }
 
@@ -66,7 +67,7 @@ class DbReadUserRepository extends AbstractRepositoryDRB implements ReadUserRepo
         // Search
         $searchRequest = $this->sqlRequestTranslator->translateSearchParameterToSql();
         $request .= $searchRequest !== null ? $searchRequest . ' AND ' : ' WHERE ';
-        $request .= 'contact_register = 1';
+        $request .= "contact_register = 1";
 
         // Sort
         $sortRequest = $this->sqlRequestTranslator->translateSortParameterToSql();
