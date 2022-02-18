@@ -87,6 +87,22 @@ const ExtensionDetailPopup = ({
     return null;
   }
 
+  const updateExtension = (): void => {
+    onUpdate(extensionDetails.id, extensionDetails.type);
+  };
+
+  const installExtension = (): void => {
+    onInstall(extensionDetails.id, extensionDetails.type);
+  };
+
+  const deleteExtension = (): void => {
+    onDelete(
+      extensionDetails.id,
+      extensionDetails.type,
+      extensionDetails.title,
+    );
+  };
+
   return (
     <Dialog open labelConfirm="Close" onClose={onClose} onConfirm={onClose}>
       <Grid container direction="column" spacing={2} style={{ width: 520 }}>
@@ -114,12 +130,7 @@ const ExtensionDetailPopup = ({
         <Grid item>
           {extensionDetails.version.installed &&
           extensionDetails.version.outdated ? (
-            <IconButton
-              size="large"
-              onClick={(): void => {
-                onUpdate(extensionDetails.id, extensionDetails.type);
-              }}
-            >
+            <IconButton size="large" onClick={updateExtension}>
               <UpdateIcon />
             </IconButton>
           ) : null}
@@ -131,13 +142,7 @@ const ExtensionDetailPopup = ({
               size="small"
               startIcon={<DeleteIcon />}
               variant="contained"
-              onClick={(): void => {
-                onDelete(
-                  extensionDetails.id,
-                  extensionDetails.type,
-                  extensionDetails.title,
-                );
-              }}
+              onClick={deleteExtension}
             >
               Delete
             </Button>
@@ -149,9 +154,7 @@ const ExtensionDetailPopup = ({
               size="small"
               startIcon={<InstallIcon />}
               variant="contained"
-              onClick={(): void => {
-                onInstall(extensionDetails.id, extensionDetails.type);
-              }}
+              onClick={installExtension}
             >
               Install
             </Button>
