@@ -31,12 +31,12 @@ class DbUserFactory
 {
     /**
      * @param array<string, mixed> $recordData
-     * @return User
+     * @return User|null
      */
-    public static function createFromRecord(array $recordData): User
+    public static function createFromRecord(array $recordData): ?User
     {
         if (empty($recordData)) {
-            throw new RepositoryException(_('User information not found'));
+            return null;
         }
         $userInfos = [
             'passwords' => []
