@@ -50,6 +50,7 @@ class UserPasswordFactory
             throw UserPasswordException::passwordDoesntMatchSecurityPolicy();
         }
 
+        //Verify that an old passwords is not reused
         if ($securityPolicy->canReusePasswords() === false) {
             foreach ($user->getOldPasswords() as $oldPassword) {
                 if (password_verify($password, $oldPassword->getPasswordValue())) {
