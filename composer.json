@@ -28,7 +28,8 @@
         "twig/twig": "^3.3",
         "webmozart/assert": "^1.8",
         "zircote/swagger-php": "^4.0",
-        "pestphp/pest": "^1.21"
+        "pestphp/pest": "^1.21",
+        "pestphp/pest-plugin-mock": "^1.0"
     },
     "require": {
         "beberlei/assert": "^3.3",
@@ -120,9 +121,8 @@
             "cache:clear": "symfony-cmd",
             "assets:install %PUBLIC_DIR%": "symfony-cmd"
         },
-        "pest": "./vendor/bin/pest",
-        "pest:coverage": "./vendor/bin/pest --coverage",
-        "test:ci": "@pest --log-junit ./build/phpunit.xml --coverage-clover ./build/coverage-be.xml --no-interaction --do-not-cache-result",
+        "test": "./vendor/bin/pest",
+        "test:ci": "@test --coverage --log-junit ./build/phpunit.xml --coverage-clover ./build/coverage-be.xml --no-interaction --do-not-cache-result",
         "codestyle": "phpcs --extensions=php --standard=./ruleset.xml ./",
         "codestyle:ci": "@codestyle --report=checkstyle --report-file=./build/checkstyle-be.xml --no-cache",
         "phpstan": "phpstan analyse -c phpstan.neon --level 6 --memory-limit=512M",
