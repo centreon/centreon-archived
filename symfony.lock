@@ -86,9 +86,6 @@
     "guzzlehttp/psr7": {
         "version": "2.0.0"
     },
-    "hamcrest/hamcrest-php": {
-        "version": "v2.0.1"
-    },
     "instaclick/php-webdriver": {
         "version": "1.4.9"
     },
@@ -123,9 +120,6 @@
     },
     "league/uri-interfaces": {
         "version": "2.3.0"
-    },
-    "mockery/mockery": {
-        "version": "1.5.0"
     },
     "monolog/monolog": {
         "version": "2.3.4"
@@ -180,9 +174,6 @@
     },
     "pestphp/pest-plugin": {
         "version": "v1.0.0"
-    },
-    "pestphp/pest-plugin-mock": {
-        "version": "v1.0.3"
     },
     "phar-io/manifest": {
         "version": "2.0.3"
