@@ -25,16 +25,17 @@ namespace Tests\Application\Security\UseCase\RenewPassword;
 
 use PHPUnit\Framework\TestCase;
 use Core\Domain\Security\User\Model\User;
-use Core\Application\Common\UseCase\ErrorResponse;
+use Core\Domain\Security\User\Model\UserPassword;
 use Core\Application\Common\UseCase\NotFoundResponse;
 use Core\Application\Common\UseCase\NoContentResponse;
-use Core\Application\Security\ProviderConfiguration\Local\Repository\ReadConfigurationRepositoryInterface;
-use Core\Application\Security\User\Repository\ReadUserRepositoryInterface;
+use Core\Application\Common\UseCase\UnauthorizedResponse;
 use Core\Application\Security\UseCase\RenewPassword\RenewPassword;
-use Core\Application\Security\User\Repository\WriteUserRepositoryInterface;
 use Core\Application\Security\UseCase\RenewPassword\RenewPasswordRequest;
+use Core\Domain\Security\ProviderConfiguration\Local\Model\Configuration;
+use Core\Application\Security\User\Repository\ReadUserRepositoryInterface;
+use Core\Application\Security\User\Repository\WriteUserRepositoryInterface;
 use Core\Application\Security\UseCase\RenewPassword\RenewPasswordPresenterInterface;
-use Core\Domain\Security\User\Model\UserPassword;
+use Core\Application\Security\ProviderConfiguration\Local\Repository\ReadConfigurationRepositoryInterface;
 
 class RenewPasswordTest extends TestCase
 {
@@ -114,7 +115,7 @@ class RenewPasswordTest extends TestCase
         $this->presenter
             ->expects($this->once())
             ->method('setResponseStatus')
-            ->with(new ErrorResponse('Invalid credentials'));
+            ->with(new UnauthorizedResponse('Invalid credentials'));
 
         $useCase = new RenewPassword($this->readRepository, $this->writeRepository, $this->readConfigurationRepository);
 
@@ -129,12 +130,25 @@ class RenewPasswordTest extends TestCase
         $request = new RenewPasswordRequest();
         $request->userAlias = 'admin';
         $request->oldPassword = 'toto';
-        $request->newPassword = 'tata';
+        $request->newPassword = 'Centreon!2022';
 
         $oldPasswords = [];
         $passwordValue = password_hash('toto', \CentreonAuth::PASSWORD_HASH_ALGORITHM);
         $password = new UserPassword(1, $passwordValue, time());
         $user = new User(1, 'admin', $oldPasswords, $password);
+        $securityPolicy = new Configuration(
+            Configuration::MIN_PASSWORD_LENGTH,
+            true,
+            true,
+            true,
+            true,
+            true,
+            Configuration::MIN_ATTEMPTS,
+            Configuration::MIN_BLOCKING_DURATION,
+            Configuration::MIN_PASSWORD_EXPIRATION_DELAY,
+            [],
+            Configuration::MIN_NEW_PASSWORD_DELAY
+        );
 
         $this->readRepository
             ->expects($this->once())
@@ -144,6 +158,11 @@ class RenewPasswordTest extends TestCase
         $this->writeRepository
             ->expects($this->once())
             ->method('renewPassword');
+
+        $this->readConfigurationRepository
+            ->expects($this->once())
+            ->method('findConfiguration')
+            ->willReturn($securityPolicy);
 
         $this->presenter
             ->expects($this->once())
