@@ -284,7 +284,15 @@ class Assertion
         );
     }
 
-    public static function regex($value, $pattern, string $propertyPath = null): void
+    /**
+     * Undocumented function
+     *
+     * @param mixed $value
+     * @param string $pattern
+     * @param string|null $propertyPath
+     * @return void
+     */
+    public static function regex(mixed $value, string $pattern, string $propertyPath = null): void
     {
         Assert::regex(
             $value,
