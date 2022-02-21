@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,12 @@ namespace Security\Domain\Authentication\Model;
 
 use Core\Domain\Security\Authentication\AuthenticationException;
 use Core\Domain\Security\Authentication\PasswordExpiredException;
+use Core\Domain\Security\ProviderConfiguration\Local\ConfigurationException;
+use Core\Application\Security\User\Repository\ReadUserRepositoryInterface;
+use Core\Application\Security\User\Repository\WriteUserRepositoryInterface;
+use Core\Application\Security\ProviderConfiguration\Local\Repository\ReadConfigurationRepositoryInterface;
+use Core\Domain\Security\User\Model\User;
+use Core\Domain\Security\ProviderConfiguration\Local\Model\Configuration;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
 use Centreon\Domain\Log\LoggerTrait;
@@ -47,24 +53,9 @@ class LocalProvider implements ProviderInterface
     private $contactId;
 
     /**
-     * @var ContactServiceInterface
-     */
-    private $contactService;
-
-    /**
-     * @var Container
-     */
-    private $dependencyInjector;
-
-    /**
      * @var ProviderConfiguration
      */
     private $configuration;
-
-    /**
-     * @var OptionServiceInterface
-     */
-    private $optionService;
 
     /**
      * @var \Centreon
@@ -72,27 +63,25 @@ class LocalProvider implements ProviderInterface
     private $legacySession;
 
     /**
-     * @var int
-     */
-    private $sessionExpirationDelay;
-
-    /**
      * LocalProvider constructor.
      *
+     * @param int $sessionExpirationDelay
      * @param ContactServiceInterface $contactService
      * @param Container $dependencyInjector
      * @param OptionServiceInterface $optionService
+     * @param ReadConfigurationRepositoryInterface $readProviderConfigurationRepository
+     * @param ReadUserRepositoryInterface $readUserRepository
+     * @param WriteUserRepositoryInterface $writeUserRepository
      */
     public function __construct(
-        int $sessionExpirationDelay,
-        ContactServiceInterface $contactService,
-        Container $dependencyInjector,
-        OptionServiceInterface $optionService
+        private int $sessionExpirationDelay,
+        private ContactServiceInterface $contactService,
+        private Container $dependencyInjector,
+        private OptionServiceInterface $optionService,
+        private ReadConfigurationRepositoryInterface $readProviderConfigurationRepository,
+        private ReadUserRepositoryInterface $readUserRepository,
+        private WriteUserRepositoryInterface $writeUserRepository,
     ) {
-        $this->sessionExpirationDelay = $sessionExpirationDelay;
-        $this->contactService = $contactService;
-        $this->dependencyInjector = $dependencyInjector;
-        $this->optionService = $optionService;
     }
 
     /**
@@ -131,34 +120,23 @@ class LocalProvider implements ProviderInterface
             }
         );
 
+        $doesPasswordMatch = $auth->passwdOk === 1;
+
         if ($auth->userInfos["contact_auth_type"] === \CentreonAuth::AUTH_TYPE_LOCAL) {
-            if ($this->contactService->isBlocked((int) $auth->userInfos['contact_id'])) {
-                $this->info(
-                    '[LOCAL PROVIDER] authentication failed because user is blocked',
-                    [
-                        'contact_id' => $auth->userInfos['contact_id'],
-                    ],
-                );
+            $user = $this->readUserRepository->findUserByAlias($auth->userInfos['contact_alias']);
+            if ($user === null) {
+                throw new \Exception('user not found');
             }
 
-            if ($this->contactService->isPasswordExpired((int) $auth->userInfos['contact_id'])) {
-                $this->info(
-                    '[LOCAL PROVIDER] authentication failed because password is expired',
-                    [
-                        'contact_id' => $auth->userInfos['contact_id'],
-                    ],
-                );
-                throw PasswordExpiredException::passwordIsExpired();
+            $providerConfiguration = $this->readProviderConfigurationRepository->findConfiguration();
+            if ($providerConfiguration === null) {
+                throw ConfigurationException::notFound();
             }
+
+            $this->respectLocalSecurityPolicyOrFail($user, $providerConfiguration, $doesPasswordMatch);
         }
 
-        if ($auth->passwdOk === 1) {
-            if ($auth->userInfos !== null) {
-                $this->contactId = (int) $auth->userInfos['contact_id'];
-                $this->setLegacySession(new \Centreon($auth->userInfos));
-            }
-            $this->info('[LOCAL PROVIDER] authentication succeed');
-        } else {
+        if (! $doesPasswordMatch) {
             $this->info(
                 "Local provider cannot authenticate successfully user",
                 [
@@ -168,6 +146,12 @@ class LocalProvider implements ProviderInterface
             );
             throw AuthenticationException::notAuthenticated();
         }
+
+        if ($auth->userInfos !== null) {
+            $this->contactId = (int) $auth->userInfos['contact_id'];
+            $this->setLegacySession(new \Centreon($auth->userInfos));
+        }
+        $this->info('[LOCAL PROVIDER] authentication succeed');
     }
 
     /**
@@ -262,5 +246,143 @@ class LocalProvider implements ProviderInterface
     public function getProviderRefreshToken(string $token): ?ProviderToken
     {
         return null;
+    }
+
+    /**
+     * Check if local security policy is respected
+     *
+     * @param User $user
+     * @param Configuration $providerConfiguration
+     * @param bool $doesPasswordMatch
+     */
+    private function respectLocalSecurityPolicyOrFail(
+        User $user,
+        Configuration $providerConfiguration,
+        bool $doesPasswordMatch,
+    ): void {
+        $isUserBlocked = $this->isUserBlocked($user, $providerConfiguration, $doesPasswordMatch);
+
+        $this->writeUserRepository->updateBlockingInformation($user);
+
+        if ($isUserBlocked) {
+            $this->info(
+                '[LOCAL PROVIDER] authentication failed because user is blocked',
+                [
+                    'contact_alias' => $user->getAlias(),
+                ],
+            );
+            throw AuthenticationException::userBlocked(
+                (new \DateTime())
+                    ->diff(
+                        $user->getBlockingTime()->add(
+                            new \DateInterval('PT' . $providerConfiguration->getBlockingDuration() . 'M')
+                        )
+                    )->format('%Hh %Im %Ss')
+            );
+        }
+
+        if ($doesPasswordMatch && $this->isPasswordExpired($user, $providerConfiguration)) {
+            $this->info(
+                '[LOCAL PROVIDER] authentication failed because password is expired',
+                [
+                    'contact_alias' => $user->getAlias(),
+                ],
+            );
+            throw PasswordExpiredException::passwordIsExpired();
+        }
+    }
+
+    /**
+     * Check if the user is blocked
+     *
+     * @param User $user
+     * @param Configuration $providerConfiguration
+     * @param bool $doesPasswordMatch
+     * @return bool
+     */
+    private function isUserBlocked(User $user, Configuration $providerConfiguration, bool $doesPasswordMatch): bool
+    {
+        if ($providerConfiguration->getBlockingDuration() === null) {
+            return false;
+        }
+
+        if (
+            $user->getBlockingTime() !== null
+            && (time() - $user->getBlockingTime()->getTimestamp()) < $providerConfiguration->getBlockingDuration()
+        ) {
+            $this->info(
+                'user is blocked',
+                [
+                    'contact_alias' => $user->getAlias(),
+                ],
+            );
+            return true;
+        }
+
+        if ($doesPasswordMatch) {
+            $this->info(
+                'reset blocking duration values',
+                [
+                    'contact_alias' => $user->getAlias(),
+                ],
+            );
+            $user->setLoginAttempts(null);
+            $user->setBlockingTime(null);
+        } else {
+            $this->info(
+                'increment login attempts',
+                [
+                    'contact_alias' => $user->getAlias(),
+                ],
+            );
+            $user->setLoginAttempts($user->getLoginAttempts() + 1);
+
+            if ($user->getLoginAttempts() >= $providerConfiguration->getAttempts()) {
+                $user->setBlockingTime(new \DateTimeImmutable());
+            }
+        }
+
+        return $user->getBlockingTime() !== null;
+    }
+
+    /**
+     * Check if the password is expired
+     *
+     * @param User $user
+     * @param Configuration $providerConfiguration
+     * @return bool
+     */
+    private function isPasswordExpired(User $user, Configuration $providerConfiguration): bool
+    {
+        if ($providerConfiguration->getPasswordExpirationDelay() === null) {
+            return false;
+        }
+
+        if (in_array($user->getAlias(), $providerConfiguration->getPasswordExpirationExcludedUserAliases())) {
+            $this->info(
+                'skip password expiration policy because user is excluded',
+                [
+                    'contact_alias' => $user->getAlias(),
+                ],
+            );
+            return false;
+        }
+
+        $expirationDelay = $providerConfiguration->getPasswordExpirationDelay();
+        $passwordCreationDate = $user->getPassword()->getCreationDate();
+
+        if ((time() - $passwordCreationDate->getTimestamp()) > $expirationDelay) {
+            $this->info(
+                'password is expired',
+                [
+                    'contact_alias' => $user->getAlias(),
+                    'creation_date' => $passwordCreationDate->format(\DateTime::ISO8601),
+                    'expiration_delay' => $expirationDelay,
+                ],
+            );
+            return true;
+        }
+
+        return false;
     }
 }

@@ -31,4 +31,13 @@ class AuthenticationException extends \Exception
     {
         return new self(_('Authentication failed'));
     }
+
+    /**
+     * @param string blocking remaining time
+     * @return self
+     */
+    public static function userBlocked(string $duration): self
+    {
+        return new self(sprintf(_('User is blocked (remaining time : %s)'), $duration));
+    }
 }

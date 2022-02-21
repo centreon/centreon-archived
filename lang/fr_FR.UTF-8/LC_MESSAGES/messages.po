@@ -16160,7 +16160,7 @@ msgid "The duration must be lesser than a year"
 msgstr "La durée doit être inférieure à une année"
 
 msgid "Authentication failed"
-msgstr "Authentification échouée"
+msgstr "Echec de l'authentification"
 
 msgid "User cannot be logout"
 msgstr "L'utilisateur ne peut pas être déconnecté"
@@ -16524,3 +16524,6 @@ msgstr "Configuration du fournisseur d'accès local non trouvée"
 
 msgid "User information not found"
 msgstr "Informations utilisateur non trouvées"
+
+msgid "User is blocked (remaining time : %s)"
+msgstr "L'utilisateur est bloqué (temps restant : %s)"

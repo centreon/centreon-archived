@@ -18,17 +18,18 @@
  * For more information : contact@centreon.com
  *
  */
-
 declare(strict_types=1);
 
 namespace Core\Infrastructure\Security\User\Repository;
 
-use Centreon\Domain\Repository\RepositoryException;
 use Core\Domain\Security\User\Model\User;
 use Core\Domain\Security\User\Model\UserPassword;
+use Core\Infrastructure\Common\Repository\DbFactoryUtilitiesTrait;
 
 class DbUserFactory
 {
+    use DbFactoryUtilitiesTrait;
+
     /**
      * @param array<string, mixed> $recordData
      * @return User|null
@@ -41,10 +42,12 @@ class DbUserFactory
         foreach ($recordData as $record) {
             $userInfos['contact_id'] = (int) $record['contact_id'];
             $userInfos['contact_alias'] = $record['contact_alias'];
+            $userInfos['login_attempts'] = self::getIntOrNull($record['login_attempts']);
+            $userInfos['blocking_time'] = self::createDateTimeImmutableFromTimestamp($record['blocking_time']);
             $userInfos['passwords'][] = new UserPassword(
                 (int) $record['contact_id'],
                 $record['password'],
-                (int) $record['creation_date']
+                self::createDateTimeImmutableFromTimestamp($record['creation_date']),
             );
         }
 
@@ -52,7 +55,9 @@ class DbUserFactory
             $userInfos['contact_id'],
             $userInfos['contact_alias'],
             $userInfos['passwords'],
-            end($userInfos['passwords'])
+            end($userInfos['passwords']),
+            $userInfos['login_attempts'],
+            $userInfos['blocking_time'],
         );
     }
 }

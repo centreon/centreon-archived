@@ -69,7 +69,7 @@ class RenewPassword
 
         //Create the new password and set it to the user.
         $newPasswordValue = password_hash($renewPasswordRequest->newPassword, \CentreonAuth::PASSWORD_HASH_ALGORITHM);
-        $newPassword = new UserPassword($user->getId(), $newPasswordValue, time());
+        $newPassword = new UserPassword($user->getId(), $newPasswordValue, new \DateTimeImmutable());
         $user->setPassword($newPassword);
         $this->writeRepository->renewPassword($user);
         $presenter->setResponseStatus(new NoContentResponse());

@@ -28,6 +28,13 @@ use Core\Domain\Security\User\Model\User;
 interface WriteUserRepositoryInterface
 {
     /**
+     * Update user blocking information (login attempts and blocking time)
+     *
+     * @param User $user
+     */
+    public function updateBlockingInformation(User $user): void;
+
+    /**
      * Renew password of user.
      *
      * @param User $user

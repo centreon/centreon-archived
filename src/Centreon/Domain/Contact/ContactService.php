@@ -26,18 +26,13 @@ use Centreon\Domain\Contact\Exception\ContactServiceException;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Contact\Interfaces\ContactRepositoryInterface;
 use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
-use Core\Application\Security\ProviderConfiguration\Local\Repository\ReadConfigurationRepositoryInterface;
-use Core\Domain\Security\ProviderConfiguration\Local\ConfigurationException;
 
 class ContactService implements ContactServiceInterface
 {
     /**
      * @param ContactRepositoryInterface $contactRepository
-     * @param ReadConfigurationRepositoryInterface $readProviderConfiguration
      */
-    public function __construct(
-        private ContactRepositoryInterface $contactRepository,
-        private ReadConfigurationRepositoryInterface $readProviderConfigurationRepository,
+    public function __construct(private ContactRepositoryInterface $contactRepository
     ) {
     }
 
@@ -61,45 +56,6 @@ class ContactService implements ContactServiceInterface
     public function findContact(int $id): ?ContactInterface
     {
         return $this->contactRepository->findById($id);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function isBlocked(int $contactId): bool
-    {
-        // @todo check if the user is blocked
-
-        return false;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function isPasswordExpired(int $contactId): bool
-    {
-        $providerConfiguration = $this->readProviderConfigurationRepository->findConfiguration();
-        if ($providerConfiguration === null) {
-            throw ConfigurationException::notFound();
-        }
-
-        if ($providerConfiguration->getPasswordExpirationDelay() === null) {
-            return false;
-        }
-
-        $contact = $this->findContact($contactId);
-        if ($contact === null) {
-            throw new ContactServiceException();
-        }
-
-        if (in_array($contact->getAlias(), $providerConfiguration->getPasswordExpirationExcludedUserAliases())) {
-            return false;
-        }
-
-
-        // @todo get last password creation and compare it to password duration from security policy
-
-        return false;
     }
 
     /**

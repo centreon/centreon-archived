@@ -27,7 +27,7 @@ use Core\Domain\Security\User\Model\User;
 use Core\Domain\Security\User\Model\UserPassword;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
-use Core\Application\User\Repository\WriteUserRepositoryInterface;
+use Core\Application\Security\User\Repository\WriteUserRepositoryInterface;
 
 class DbWriteUserRepository extends AbstractRepositoryDRB implements WriteUserRepositoryInterface
 {
@@ -37,6 +37,22 @@ class DbWriteUserRepository extends AbstractRepositoryDRB implements WriteUserRe
     public function __construct(DatabaseConnection $db)
     {
         $this->db = $db;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function updateBlockingInformation(User $user): void
+    {
+        $statement = $this->db->prepare(
+            'UPDATE contact
+            SET login_attempts = :loginAttempts, blocking_time = :blockingTime
+            WHERE contact_id = :contactId'
+        );
+        $statement->bindValue(':loginAttempts', $user->getLoginAttempts(), \PDO::PARAM_INT);
+        $statement->bindValue(':blockingTime', $user->getBlockingTime()?->getTimestamp(), \PDO::PARAM_INT);
+        $statement->bindValue(':contactId', $user->getId(), \PDO::PARAM_INT);
+        $statement->execute();
     }
 
     /**
@@ -61,7 +77,7 @@ class DbWriteUserRepository extends AbstractRepositoryDRB implements WriteUserRe
         );
         $statement->bindValue(':password', $password->getPasswordValue(), \PDO::PARAM_STR);
         $statement->bindValue(':contactId', $password->getUserId(), \PDO::PARAM_INT);
-        $statement->bindValue(':creationDate', $password->getCreationDate(), \PDO::PARAM_INT);
+        $statement->bindValue(':creationDate', $password->getCreationDate()->getTimestamp(), \PDO::PARAM_INT);
         $statement->execute();
     }
 

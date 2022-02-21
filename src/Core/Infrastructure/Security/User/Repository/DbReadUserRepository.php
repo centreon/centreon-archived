@@ -45,7 +45,8 @@ class DbReadUserRepository extends AbstractRepositoryDRB implements ReadUserRepo
     public function findUserByAlias(string $alias): ?User
     {
         $statement = $this->db->prepare(
-            "SELECT c.contact_alias, c.contact_id,  cp.password, cp.creation_date FROM contact c
+            "SELECT c.contact_alias, c.contact_id, c.login_attempts, c.blocking_time, cp.password, cp.creation_date
+            FROM contact c
             INNER JOIN contact_password cp ON c.contact_id = cp.contact_id
             WHERE c.contact_alias = :alias ORDER BY cp.creation_date ASC"
         );
