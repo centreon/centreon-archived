@@ -71,6 +71,12 @@ const ExtensionsManager = ({ reloadNavigation }): JSX.Element => {
     },
   });
 
+<<<<<<< HEAD
+=======
+  const [updatable, setUpdatable] = React.useState(false);
+  const [installable, setInstallable] = React.useState(false);
+
+>>>>>>> 68f1f3f15e29911632c33eff34f1b4c2d9022359
   const [modulesActive, setModulesActive] = React.useState(false);
   const [widgetsActive, setWidgetsActive] = React.useState(false);
 
@@ -134,9 +140,44 @@ const ExtensionsManager = ({ reloadNavigation }): JSX.Element => {
     });
   }, [getAppliedFilterCriteriasAtom]);
 
+<<<<<<< HEAD
   // React.useEffect(() => {
 
   // }, [extensions]);
+=======
+  React.useEffect(() => {
+    const notInstallableExtensionModuleExiste = !isEmpty(
+      filter(
+        pathEq(['version', 'installed'], false),
+        extensions.module.entities,
+      ),
+    );
+
+    const notInstallableExtensionWidgetExiste = !isEmpty(
+      filter(
+        pathEq(['version', 'installed'], false),
+        extensions.widget.entities,
+      ),
+    );
+
+    setInstallable(
+      notInstallableExtensionModuleExiste ||
+        notInstallableExtensionWidgetExiste,
+    );
+
+    const notUpdatableExtensionModuleExiste = !isEmpty(
+      filter(pathEq(['version', 'outdated'], true), extensions.module.entities),
+    );
+
+    const notUpdatableExtensionWidgetExiste = !isEmpty(
+      filter(pathEq(['version', 'outdated'], true), extensions.widget.entities),
+    );
+
+    setUpdatable(
+      notUpdatableExtensionModuleExiste || notUpdatableExtensionWidgetExiste,
+    );
+  }, [extensions]);
+>>>>>>> 68f1f3f15e29911632c33eff34f1b4c2d9022359
 
   const getEntitiesByKeyAndVersionParam = (
     param,
@@ -352,6 +393,7 @@ const ExtensionsManager = ({ reloadNavigation }): JSX.Element => {
       });
   };
 
+<<<<<<< HEAD
   const notInstallableExtensionModuleExiste = !isEmpty(
     filter(pathEq(['version', 'installed'], false), extensions.module.entities),
   );
@@ -374,6 +416,8 @@ const ExtensionsManager = ({ reloadNavigation }): JSX.Element => {
   const installable =
     notInstallableExtensionModuleExiste || notInstallableExtensionWidgetExiste;
 
+=======
+>>>>>>> 68f1f3f15e29911632c33eff34f1b4c2d9022359
   return (
     <div>
       <div className={classes.contentWrapper}>
