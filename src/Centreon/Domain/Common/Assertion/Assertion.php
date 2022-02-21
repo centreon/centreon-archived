@@ -285,7 +285,7 @@ class Assertion
     }
 
     /**
-     * Undocumented function
+     * Assert that a value match a regex
      *
      * @param mixed $value
      * @param string $pattern
