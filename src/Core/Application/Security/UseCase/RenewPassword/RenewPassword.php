@@ -23,22 +23,28 @@ declare(strict_types=1);
 
 namespace Core\Application\Security\UseCase\RenewPassword;
 
-use Core\Domain\Security\User\Model\UserPassword;
-use Core\Application\Common\UseCase\ErrorResponse;
+use Centreon\Domain\Log\LoggerTrait;
 use Core\Application\Common\UseCase\NotFoundResponse;
 use Core\Application\Common\UseCase\NoContentResponse;
+use Core\Domain\Security\User\Model\UserPasswordFactory;
+use Core\Application\Common\UseCase\UnauthorizedResponse;
 use Core\Application\Security\User\Repository\ReadUserRepositoryInterface;
 use Core\Application\Security\User\Repository\WriteUserRepositoryInterface;
+use Core\Application\Security\ProviderConfiguration\Local\Repository\ReadConfigurationRepositoryInterface;
 
 class RenewPassword
 {
+    use LoggerTrait;
+
     /**
      * @param ReadUserRepositoryInterface $readRepository
      * @param WriteUserRepositoryInterface $writeRepository
+     * @param ReadConfigurationRepositoryInterface $readConfigurationRepository
      */
     public function __construct(
         private ReadUserRepositoryInterface $readRepository,
         private WriteUserRepositoryInterface $writeRepository,
+        private ReadConfigurationRepositoryInterface $readConfigurationRepository
     ) {
     }
 
@@ -50,27 +56,38 @@ class RenewPassword
         RenewPasswordPresenterInterface $presenter,
         RenewPasswordRequest $renewPasswordRequest
     ): void {
+        $this->info('Processing password renewal...');
         //Get User informations
         $user = $this->readRepository->findUserByAlias($renewPasswordRequest->userAlias);
         if ($user === null) {
+            $this->error('No user could be found', [
+                'user_alias' => $renewPasswordRequest->userAlias
+            ]);
             $presenter->setResponseStatus(new NotFoundResponse('User'));
             return;
         }
 
         //Validate that old password matches the current user password
         if (password_verify($renewPasswordRequest->oldPassword, $user->getPassword()->getPasswordValue()) === false) {
-            $presenter->setResponseStatus(new ErrorResponse('Invalid credentials'));
+            $this->notice('Credentials are invalid');
+            $presenter->setResponseStatus(new UnauthorizedResponse('Invalid credentials'));
             return;
         }
 
-        //@todo: Check that new password follow the security policy.
+        $securityPolicy = $this->readConfigurationRepository->findConfiguration();
+        if ($securityPolicy === null) {
+            $this->error('No local configuration could be found');
+            $presenter->setResponseStatus(new NotFoundResponse('Configuration'));
+            return;
+        }
 
-        //@todo: If use ancient password is not allowed, check that new password wasn't already used.
-
-        //Create the new password and set it to the user.
-        $newPasswordValue = password_hash($renewPasswordRequest->newPassword, \CentreonAuth::PASSWORD_HASH_ALGORITHM);
-        $newPassword = new UserPassword($user->getId(), $newPasswordValue, time());
+        $this->info('Validate password against security policy');
+        $newPassword = UserPasswordFactory::create($renewPasswordRequest->newPassword, $user, $securityPolicy);
         $user->setPassword($newPassword);
+
+        $this->info('Updating user password', [
+            'user_alias' => $user->getAlias()
+        ]);
         $this->writeRepository->renewPassword($user);
         $presenter->setResponseStatus(new NoContentResponse());
     }
