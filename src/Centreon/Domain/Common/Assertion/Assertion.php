@@ -292,7 +292,7 @@ class Assertion
      * @param string|null $propertyPath
      * @return void
      */
-    public static function regex($value, string $pattern, string $propertyPath = null): void
+    public static function regex(mixed $value, string $pattern, string $propertyPath = null): void
     {
         Assert::regex(
             $value,
