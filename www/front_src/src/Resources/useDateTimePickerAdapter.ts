@@ -61,8 +61,8 @@ const useDateTimePickerAdapter = (): UseDateTimePickerAdapterProps => {
       }
 
       return equals(
-        format({ date: value.tz(timezone), formatString: 'LT' }),
-        format({ date: comparing.tz(timezone), formatString: 'LT' }),
+        format({ date: value, formatString: 'LT' }),
+        format({ date: comparing, formatString: 'LT' }),
       );
     };
 
