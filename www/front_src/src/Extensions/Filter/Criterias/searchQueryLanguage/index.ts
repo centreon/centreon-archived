@@ -38,6 +38,7 @@ import {
   criteriaValueNameById,
   selectableCriterias,
 } from '../models';
+import getDefaultCriterias from '../default';
 
 import {
   CriteriaId,
@@ -71,10 +72,7 @@ const isCriteriaPart = pipe(
 );
 const isFilledCriteria = pipe(endsWith(':'), not);
 
-const parse = (
-  search: string,
-  currentFilterCriterias: Array<Criteria>,
-): Array<Criteria> => {
+const parse = (search: string): Array<Criteria> => {
   const [criteriaParts, rawSearchParts] = partition(
     allPass([includes(':'), isCriteriaPart, isFilledCriteria]),
     search.split(' '),
@@ -111,7 +109,7 @@ const parse = (
 
   const defaultCriterias = reject(
     compose(isIn(criteriaNames), prop('name')),
-    currentFilterCriterias,
+    getDefaultCriterias(),
   );
 
   return sortBy(

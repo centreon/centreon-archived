@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { find, propEq } from 'ramda';
+import { find, propEq, pathEq, pipe, filter, isEmpty } from 'ramda';
 import { useAtomValue } from 'jotai/utils';
 
 import UpdateIcon from '@mui/icons-material/SystemUpdateAlt';
@@ -71,6 +71,9 @@ const ExtensionsManager = ({ reloadNavigation }): JSX.Element => {
     },
   });
 
+  const [updatable, setUpdatable] = React.useState(false);
+  const [installable, setInstallable] = React.useState(false);
+
   const [modulesActive, setModulesActive] = React.useState(false);
   const [widgetsActive, setWidgetsActive] = React.useState(false);
 
@@ -127,11 +130,45 @@ const ExtensionsManager = ({ reloadNavigation }): JSX.Element => {
     }).then(({ status, result }) => {
       if (status) {
         setExtension(result as Extensions);
+        console.log(result);
       } else {
         showErrorMessage(result as string);
       }
     });
   }, [getAppliedFilterCriteriasAtom]);
+
+  React.useEffect(() => {
+    const notInstallableExtensionModuleExiste = !isEmpty(
+      filter(
+        pathEq(['version', 'installed'], false),
+        extensions.module.entities,
+      ),
+    );
+
+    const notInstallableExtensionWidgetExiste = !isEmpty(
+      filter(
+        pathEq(['version', 'installed'], false),
+        extensions.widget.entities,
+      ),
+    );
+
+    setInstallable(
+      notInstallableExtensionModuleExiste ||
+        notInstallableExtensionWidgetExiste,
+    );
+
+    const notUpdatableExtensionModuleExiste = !isEmpty(
+      filter(pathEq(['version', 'outdated'], true), extensions.module.entities),
+    );
+
+    const notUpdatableExtensionWidgetExiste = !isEmpty(
+      filter(pathEq(['version', 'outdated'], true), extensions.widget.entities),
+    );
+
+    setUpdatable(
+      notUpdatableExtensionModuleExiste || notUpdatableExtensionWidgetExiste,
+    );
+  }, [extensions]);
 
   const getEntitiesByKeyAndVersionParam = (
     param,
@@ -351,25 +388,29 @@ const ExtensionsManager = ({ reloadNavigation }): JSX.Element => {
     <div>
       <div className={classes.contentWrapper}>
         <Stack direction="row" spacing={2}>
-          <Button
-            color="primary"
-            size="small"
-            startIcon={<UpdateIcon />}
-            variant="contained"
-            onClick={updateAllEntities}
-          >
-            update all
-          </Button>
-          <Button
-            color="primary"
-            size="small"
-            startIcon={<InstallIcon />}
-            // style={{ marginLeft: 8, marginRight: 8 }}
-            variant="contained"
-            onClick={installAllEntities}
-          >
-            install all
-          </Button>
+          {updatable ? (
+            <Button
+              color="primary"
+              size="small"
+              startIcon={<UpdateIcon />}
+              variant="contained"
+              onClick={updateAllEntities}
+            >
+              update all
+            </Button>
+          ) : null}
+          {installable ? (
+            <Button
+              color="primary"
+              size="small"
+              startIcon={<InstallIcon />}
+              // style={{ marginLeft: 8, marginRight: 8 }}
+              variant="contained"
+              onClick={installAllEntities}
+            >
+              install all
+            </Button>
+          ) : null}
           <Hook path="/administration/extensions/manager" />
         </Stack>
       </div>

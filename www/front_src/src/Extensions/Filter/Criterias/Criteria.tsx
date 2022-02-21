@@ -10,7 +10,7 @@ import {
 } from '@centreon/ui';
 
 import {
-  currentFilterCriteriasAtom,
+  filterWithParsedSearchDerivedAtom,
   setFilterCriteriaDerivedAtom,
 } from '../filterAtoms';
 
@@ -66,11 +66,13 @@ const CriteriaContent = ({ name, value }: Props): JSX.Element => {
 };
 
 const Criteria = ({ value, name }: Props): JSX.Element => {
-  const getCurrentFilterCriterias = useAtomValue(currentFilterCriteriasAtom);
+  const filterWithParsedSearch = useAtomValue(
+    filterWithParsedSearchDerivedAtom,
+  );
 
   return useMemoComponent({
     Component: <CriteriaContent name={name} value={value} />,
-    memoProps: [value, name, getCurrentFilterCriterias],
+    memoProps: [value, name, filterWithParsedSearch],
   });
 };
 
