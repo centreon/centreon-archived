@@ -21,32 +21,15 @@
 
 declare(strict_types=1);
 
-namespace Core\Application\Configuration\User\Repository;
+namespace Core\Application\Configuration\UserGroup\Repository;
 
-use Core\Domain\Configuration\User\Model\User;
+use Core\Domain\Configuration\UserGroup\Model\UserGroup;
 
-interface ReadUserRepositoryInterface
+interface ReadUserGroupRepositoryInterface
 {
     /**
-     * Find configured users
-     *
-     * @return User[]
+     * @param int[] $userGroupIds
+     * @return UserGroup[]
      */
-    public function findAllUsers(): array;
-
-    /**
-     * Find user ids from a list of alias
-     *
-     * @param string[] $userAliases
-     * @return int[]
-     */
-    public function findUserIdsByAliases(array $userAliases): array;
-
-    /**
-     * Find users by their ids
-     *
-     * @param int[] $userIds
-     * @return User[]
-     */
-    public function findUsersByIds(array $userIds): array;
+    public function findByIds(array $userGroupIds): array;
 }

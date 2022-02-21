@@ -37,7 +37,8 @@ class HostHypermediaProvider implements HypermediaProviderInterface
                  URI_EVENT_LOGS = '/main.php?p=20301&h={hostId}',
                  URI_REPORTING = '/main.php?p=307&host={hostId}',
                  URI_HOSTGROUP_CONFIGURATION = '/main.php?p=60102&o=c&hg_id={hostgroupId}',
-                 ENDPOINT_HOST_TIMELINE = 'centreon_application_monitoring_gettimelinebyhost';
+                 ENDPOINT_HOST_TIMELINE = 'centreon_application_monitoring_gettimelinebyhost',
+                 ENDPOINT_HOST_NOTIFICATION_POLICY = 'configuration.host.notification-policy';
 
     /**
      * @param ContactInterface $contact
@@ -64,6 +65,7 @@ class HostHypermediaProvider implements HypermediaProviderInterface
     {
         return [
             'timeline' => $this->createForTimelineEndpoint(['hostId' => $response->id]),
+            'notification_policy' => $this->createNotificationPolicyEndpoint(['hostId' => $response->id]),
         ];
     }
 
@@ -159,6 +161,17 @@ class HostHypermediaProvider implements HypermediaProviderInterface
     public function createForTimelineEndpoint(array $parameters): string
     {
         return $this->router->generate(self::ENDPOINT_HOST_TIMELINE, $parameters);
+    }
+
+    /**
+     * Create Notification policy endpoint URI for the Host Resource
+     *
+     * @param array<string, int> $parameters
+     * @return string
+     */
+    public function createNotificationPolicyEndpoint(array $parameters): string
+    {
+        return $this->router->generate(self::ENDPOINT_HOST_NOTIFICATION_POLICY, $parameters);
     }
 
     /**

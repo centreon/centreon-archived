@@ -52,6 +52,10 @@ class Host
      */
     public const TYPE_META = 2;
 
+    public const NOTIFICATIONS_OPTION_DISABLED = 0,
+                 NOTIFICATIONS_OPTION_ENABLED = 1,
+                 NOTIFICATIONS_OPTION_DEFAULT_ENGINE_VALUE = 2;
+
     /**
      * @var int|null
      */
@@ -135,6 +139,11 @@ class Host
      * @var HostSeverity[]
      */
     private $severities = [];
+
+    /**
+     * @var int
+     */
+    private $notificationsEnabledOption = self::NOTIFICATIONS_OPTION_DEFAULT_ENGINE_VALUE;
 
     /**
      * @return int|null
@@ -497,6 +506,24 @@ class Host
     public function clearSeverities(): self
     {
         $this->severities = [];
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getNotificationsEnabledOption(): int
+    {
+        return $this->notificationsEnabledOption;
+    }
+
+    /**
+     * @param int $notificationsEnabledOption
+     * @return self
+     */
+    public function setNotificationsEnabledOption(int $notificationsEnabledOption): self
+    {
+        $this->notificationsEnabledOption = $notificationsEnabledOption;
         return $this;
     }
 }

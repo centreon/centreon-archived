@@ -106,4 +106,14 @@ interface HostConfigurationReadRepositoryInterface
      * @return string[] Return the host names found
      */
     public function findHostNamesAlreadyUsed(array $namesToCheck): array;
+
+    /**
+     * Find a host regarding user ACL
+     *
+     * @param integer $hostId
+     * @param int[] $accessGroupIds
+     * @return Host|null
+     * @throws \Throwable
+     */
+    public function findHostByAccessGroupIds(int $hostId, array $accessGroupIds): ?Host;
 }

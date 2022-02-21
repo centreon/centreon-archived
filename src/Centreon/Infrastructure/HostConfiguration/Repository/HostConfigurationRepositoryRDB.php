@@ -239,12 +239,41 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
     /**
      * @inheritDoc
      */
+    public function findHostByAccessGroupIds(int $hostId, array $accessGroupIds): ?Host
+    {
+        if (empty($accessGroupIds)) {
+            return null;
+        }
+
+        $accessGroupRequest = ' INNER JOIN `:db`.acl_resources_host_relations arhr
+            ON host.host_id = arhr.host_host_id
+            INNER JOIN `:db`.acl_resources res
+                ON arhr.acl_res_id = res.acl_res_id
+            INNER JOIN `:db`.acl_res_group_relations argr
+                ON res.acl_res_id = argr.acl_res_id
+            INNER JOIN `:db`.acl_groups ag
+                ON ag.acl_group_id IN (' . implode(',', $accessGroupIds) . ') ';
+
+        return $this->findHostRequest($hostId, $accessGroupRequest);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function findHost(int $hostId): ?Host
+    {
+        return $this->findHostRequest($hostId);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findHostRequest(int $hostId, ?string $accessGroupRequest = null): ?Host
     {
         $request = $this->translateDbName(
             'SELECT host.host_id, host.host_name, host.host_alias, host.display_name AS host_display_name,
             host.host_address AS host_ip_address, host.host_comment, host.geo_coords AS host_geo_coords,
-            host.host_activate AS host_is_activated, nagios.id AS monitoring_server_id,
+            host.host_activate AS host_is_activated, host.host_notifications_enabled, nagios.id AS monitoring_server_id,
             nagios.name AS monitoring_server_name, ext.*
             FROM `:db`.host host
             LEFT JOIN `:db`.extended_host_information ext
@@ -252,8 +281,9 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
             INNER JOIN `:db`.ns_host_relation host_server
                 ON host_server.host_host_id = host.host_id
             INNER JOIN `:db`.nagios_server nagios
-                ON nagios.id = host_server.nagios_server_id
-            WHERE host.host_id = :host_id
+                ON nagios.id = host_server.nagios_server_id '  .
+            ($accessGroupRequest !== null ? $accessGroupRequest : '') .
+            'WHERE host.host_id = :host_id
             AND host.host_register = \'1\''
         );
         $statement = $this->db->prepare($request);

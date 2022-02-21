@@ -21,32 +21,19 @@
 
 declare(strict_types=1);
 
-namespace Core\Application\Configuration\User\Repository;
+namespace Core\Domain\Configuration\Notification\Model;
 
-use Core\Domain\Configuration\User\Model\User;
+use Core\Domain\Configuration\TimePeriod\Model\TimePeriod;
 
-interface ReadUserRepositoryInterface
+interface NotificationInterface
 {
     /**
-     * Find configured users
-     *
-     * @return User[]
+     * @return string[]
      */
-    public function findAllUsers(): array;
+    public function getEvents(): array;
 
     /**
-     * Find user ids from a list of alias
-     *
-     * @param string[] $userAliases
-     * @return int[]
+     * @return TimePeriod
      */
-    public function findUserIdsByAliases(array $userAliases): array;
-
-    /**
-     * Find users by their ids
-     *
-     * @param int[] $userIds
-     * @return User[]
-     */
-    public function findUsersByIds(array $userIds): array;
+    public function getTimePeriod(): TimePeriod;
 }

@@ -18,35 +18,15 @@
  * For more information : contact@centreon.com
  *
  */
-
 declare(strict_types=1);
 
-namespace Core\Application\Configuration\User\Repository;
+namespace Core\Application\Configuration\NotificationPolicy\Repository;
 
-use Core\Domain\Configuration\User\Model\User;
-
-interface ReadUserRepositoryInterface
+interface LegacyNotificationPolicyRepositoryInterface
 {
     /**
-     * Find configured users
-     *
-     * @return User[]
+     * @param integer $hostId
+     * @return array<string, int[]>
      */
-    public function findAllUsers(): array;
-
-    /**
-     * Find user ids from a list of alias
-     *
-     * @param string[] $userAliases
-     * @return int[]
-     */
-    public function findUserIdsByAliases(array $userAliases): array;
-
-    /**
-     * Find users by their ids
-     *
-     * @param int[] $userIds
-     * @return User[]
-     */
-    public function findUsersByIds(array $userIds): array;
+    public function findHostNotificationPolicy(int $hostId): array;
 }
