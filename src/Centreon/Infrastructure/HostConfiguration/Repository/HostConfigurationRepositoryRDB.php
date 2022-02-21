@@ -113,7 +113,7 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
         }
         $this->linkHostTemplatesToHost($hostId, $host->getTemplates());
         $this->linkHostCategoriesToHost($host);
-        $this->linkSeveritiesToHost($host);
+        $this->linkSeverityToHost($host);
         $this->linkHostGroupsToHost($host);
     }
 
@@ -710,30 +710,29 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
     }
 
     /**
-     * Link the severities to host only if their id is not null.
+     * Link the severity to host only if id is not null.
      *
      * @param Host $host
      * @throws HostSeverityException
      */
-    private function linkSeveritiesToHost(Host $host): void
+    private function linkSeverityToHost(Host $host): void
     {
-        foreach ($host->getSeverities() as $severity) {
-            try {
-                if ($severity->getId() === null) {
-                    continue;
-                }
-                $statement = $this->db->prepare(
-                    $this->translateDbName('
-                    INSERT INTO `:db`.hostcategories_relation (host_host_id, hostcategories_hc_id)
-                    VALUES (:host_id, :severity_id)
-                ')
-                );
-                $statement->bindValue(':host_id', $host->getId(), \PDO::PARAM_INT);
-                $statement->bindValue(':severity_id', $severity->getId(), \PDO::PARAM_INT);
-                $statement->execute();
-            } catch (\Throwable $ex) {
-                throw HostSeverityException::notFoundException(['id' => $severity->getId()], $ex);
-            }
+        if ($host->getSeverity()?->getId() === null) {
+            return;
+        }
+
+        try {
+            $statement = $this->db->prepare(
+                $this->translateDbName(
+                    'INSERT INTO `:db`.hostcategories_relation (host_host_id, hostcategories_hc_id)
+                    VALUES (:host_id, :severity_id)'
+                )
+            );
+            $statement->bindValue(':host_id', $host->getId(), \PDO::PARAM_INT);
+            $statement->bindValue(':severity_id', $host->getSeverity()->getId(), \PDO::PARAM_INT);
+            $statement->execute();
+        } catch (\Throwable $ex) {
+            throw HostSeverityException::notFoundException(['id' => $host->getSeverity()->getId()], $ex);
         }
     }
 
@@ -796,6 +795,8 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
             // Update Host Categories
             $this->removeHostCategoriesFromHost($host);
             $this->linkHostCategoriesToHost($host);
+
+            $this->updateHostSeverity($host);
 
             if (!$isAlreadyInTransaction) {
                 $this->db->commit();
@@ -975,5 +976,27 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
         );
         $statement->bindValue(':host_id', $host->getId(), \PDO::PARAM_INT);
         $statement->execute();
+    }
+
+    /**
+     * Add or update the link between a host and a host severity
+     *
+     * @param Host $host
+     */
+    private function updateHostSeverity(Host $host): void
+    {
+        $request = $this->translateDbName(
+            "DELETE `:db`.hostcategories_relation
+            FROM `:db`.hostcategories_relation
+            JOIN `:db`.hostcategories
+            ON hostcategories.hc_id = hostcategories_relation.hostcategories_hc_id
+            WHERE hostcategories.level IS NOT NULL
+            AND hostcategories_relation.host_host_id = :host_id"
+        );
+        $statement = $this->db->prepare($request);
+        $statement->bindValue(':host_id', $host->getId(), \PDO::PARAM_INT);
+        $statement->execute();
+
+        $this->linkSeverityToHost($host);
     }
 }
