@@ -97,8 +97,35 @@ const useDateTimePickerAdapter = (): UseDateTimePickerAdapterProps => {
       return date.tz(timezone).startOf('day') as dayjs.Dayjs;
     };
 
+    public startOfMonth = (date: dayjs.Dayjs): dayjs.Dayjs => {
+      return date.tz(timezone).endOf('month') as dayjs.Dayjs;
+    };
+
+    public endOfMonth = (date: dayjs.Dayjs): dayjs.Dayjs => {
+      return date.tz(timezone).endOf('month') as dayjs.Dayjs;
+    };
+
+    public isSameMonth = (
+      date: dayjs.Dayjs,
+      comparing: dayjs.Dayjs,
+    ): boolean => {
+      return date.tz(timezone).isSame(comparing.tz(timezone), 'month');
+    };
+
+    public getMonth = (date: dayjs.Dayjs): number => {
+      return date.tz(timezone).month();
+    };
+
     public getDaysInMonth = (date: dayjs.Dayjs): number => {
       return date.tz(timezone).daysInMonth();
+    };
+
+    public getWeekdays = (): Array<string> => {
+      const start = dayjs().locale(locale).tz(timezone).startOf('week');
+
+      return [0, 1, 2, 3, 4, 5, 6].map((diff) =>
+        this.formatByString(start.add(diff, 'day'), 'dd'),
+      );
     };
 
     public mergeDateAndTime = (
@@ -110,9 +137,9 @@ const useDateTimePickerAdapter = (): UseDateTimePickerAdapterProps => {
 
       if (equals(timezone, 'UTC')) {
         return dateWithTimezone
-          .hour(timeWithTimezone.hour() - getLocalAndConfiguredTimezoneOffset())
-          .minute(timeWithTimezone.minute())
-          .second(timeWithTimezone.second());
+          .add(timeWithTimezone.hour(), 'hour')
+          .add(timeWithTimezone.minute(), 'minute')
+          .add(timeWithTimezone.second(), 'second');
       }
 
       return dateWithTimezone
