@@ -23,7 +23,7 @@ export const searchAtom = atom('');
 export const sendingFilterAtom = atom(false);
 
 export const filterWithParsedSearchDerivedAtom = atom((get) => {
-  return parse(get(searchAtom), get(currentFilterCriteriasAtom));
+  return parse(get(searchAtom));
 });
 
 export const getUpdatedFilterCriteriaDerivedAtom = atom(
