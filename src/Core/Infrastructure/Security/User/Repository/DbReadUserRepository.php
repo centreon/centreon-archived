@@ -49,7 +49,7 @@ class DbReadUserRepository extends AbstractRepositoryDRB implements ReadUserRepo
     {
         $this->info('Searching for user in DBMS', [
             'user_alias' => $alias
-        ])
+        ]);
         $statement = $this->db->prepare(
             "SELECT c.contact_alias, c.contact_id,  cp.password, cp.creation_date FROM contact c
             INNER JOIN contact_password cp ON c.contact_id = cp.contact_id
