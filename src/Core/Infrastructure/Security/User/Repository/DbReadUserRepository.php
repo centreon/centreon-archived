@@ -23,6 +23,7 @@ declare(strict_types=1);
 
 namespace Core\Infrastructure\Security\User\Repository;
 
+use Centreon\Domain\Log\LoggerTrait;
 use Core\Domain\Security\User\Model\User;
 use Centreon\Infrastructure\DatabaseConnection;
 use Core\Infrastructure\Security\User\Repository\DbUserFactory;
@@ -31,6 +32,8 @@ use Core\Application\Security\User\Repository\ReadUserRepositoryInterface;
 
 class DbReadUserRepository extends AbstractRepositoryDRB implements ReadUserRepositoryInterface
 {
+    use LoggerTrait;
+
     /**
      * @param DatabaseConnection $db
      */
@@ -44,6 +47,9 @@ class DbReadUserRepository extends AbstractRepositoryDRB implements ReadUserRepo
      */
     public function findUserByAlias(string $alias): ?User
     {
+        $this->info('Searching for user in DBMS', [
+            'user_alias' => $alias
+        ])
         $statement = $this->db->prepare(
             "SELECT c.contact_alias, c.contact_id,  cp.password, cp.creation_date FROM contact c
             INNER JOIN contact_password cp ON c.contact_id = cp.contact_id
