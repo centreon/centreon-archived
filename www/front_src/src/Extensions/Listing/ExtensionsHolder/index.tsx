@@ -51,6 +51,9 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(0, 'auto'),
     padding: theme.spacing(1.5, 2.5, 0, 2.5),
   },
+  extensionsTypes: {
+    color: theme.palette.text.primary,
+  },
 }));
 
 const ExtensionsHolder = ({
@@ -108,7 +111,9 @@ const ExtensionsHolder = ({
           style={{ marginBottom: 8, width: '100%' }}
         >
           <Grid item>
-            <Typography variant="body1">{title}</Typography>
+            <Typography className={classes.extensionsTypes} variant="body1">
+              {title}
+            </Typography>
           </Grid>
           <Grid item style={{ flexGrow: 1 }}>
             <Divider style={{ backgroundColor: 'rgba(0, 0, 0, 0.12)' }} />
@@ -216,7 +221,9 @@ const ExtensionsHolder = ({
                     elevation={0}
                     style={{
                       alignItems: 'center',
-                      backgroundColor: licenseInfo?.color || '#FFFFFF',
+                      ...(licenseInfo?.color && {
+                        backgroundColor: licenseInfo.color,
+                      }),
                       cursor: 'pointer',
                       display: 'flex',
                       justifyContent: 'center',

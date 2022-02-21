@@ -71,9 +71,6 @@ const ExtensionsManager = ({ reloadNavigation }): JSX.Element => {
     },
   });
 
-  const [updatable, setUpdatable] = React.useState(false);
-  const [installable, setInstallable] = React.useState(false);
-
   const [modulesActive, setModulesActive] = React.useState(false);
   const [widgetsActive, setWidgetsActive] = React.useState(false);
 
@@ -137,38 +134,9 @@ const ExtensionsManager = ({ reloadNavigation }): JSX.Element => {
     });
   }, [getAppliedFilterCriteriasAtom]);
 
-  React.useEffect(() => {
-    const notInstallableExtensionModuleExiste = !isEmpty(
-      filter(
-        pathEq(['version', 'installed'], false),
-        extensions.module.entities,
-      ),
-    );
+  // React.useEffect(() => {
 
-    const notInstallableExtensionWidgetExiste = !isEmpty(
-      filter(
-        pathEq(['version', 'installed'], false),
-        extensions.widget.entities,
-      ),
-    );
-
-    setInstallable(
-      notInstallableExtensionModuleExiste ||
-        notInstallableExtensionWidgetExiste,
-    );
-
-    const notUpdatableExtensionModuleExiste = !isEmpty(
-      filter(pathEq(['version', 'outdated'], true), extensions.module.entities),
-    );
-
-    const notUpdatableExtensionWidgetExiste = !isEmpty(
-      filter(pathEq(['version', 'outdated'], true), extensions.widget.entities),
-    );
-
-    setUpdatable(
-      notUpdatableExtensionModuleExiste || notUpdatableExtensionWidgetExiste,
-    );
-  }, [extensions]);
+  // }, [extensions]);
 
   const getEntitiesByKeyAndVersionParam = (
     param,
@@ -383,6 +351,28 @@ const ExtensionsManager = ({ reloadNavigation }): JSX.Element => {
         reloadNavigation();
       });
   };
+
+  const notInstallableExtensionModuleExiste = !isEmpty(
+    filter(pathEq(['version', 'installed'], false), extensions.module.entities),
+  );
+
+  const notInstallableExtensionWidgetExiste = !isEmpty(
+    filter(pathEq(['version', 'installed'], false), extensions.widget.entities),
+  );
+
+  const notUpdatableExtensionModuleExiste = !isEmpty(
+    filter(pathEq(['version', 'outdated'], true), extensions.module.entities),
+  );
+
+  const notUpdatableExtensionWidgetExiste = !isEmpty(
+    filter(pathEq(['version', 'outdated'], true), extensions.widget.entities),
+  );
+
+  const updatable =
+    notUpdatableExtensionModuleExiste || notUpdatableExtensionWidgetExiste;
+
+  const installable =
+    notInstallableExtensionModuleExiste || notInstallableExtensionWidgetExiste;
 
   return (
     <div>
