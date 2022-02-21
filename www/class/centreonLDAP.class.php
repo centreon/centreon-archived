@@ -585,8 +585,13 @@ class CentreonLDAP
         $sr = ldap_search($this->ds, $basedn, $filter, $attr, 0, $searchLimit, $searchTimeout);
 
         /* Sort */
-        $number_returned = ldap_count_entries($this->ds, $sr);
-        $this->debug("LDAP Search : " . (isset($number_returned) ? $number_returned : "0") . " entries found");
+        if ($sr !== false) {
+            $number_returned = ldap_count_entries($this->ds, $sr);
+            $this->debug("LDAP Search : " . (isset($number_returned) ? $number_returned : "0") . " entries found");
+        } else {
+            $this->debug("LDAP Search : no entries found");
+        }
+
 
         $info = ldap_get_entries($this->ds, $sr);
         $this->debug("LDAP Search : " . $info["count"]);

@@ -213,6 +213,16 @@ class CentreonAuth
                 } elseif ($this->passwdOk == 1) {
                     if (isset($this->ldap_store_password[$arId]) && $this->ldap_store_password[$arId]) {
                         if (!isset($this->userInfos["contact_passwd"])) {
+                            // Retrieving the created contact_id
+                            $res = $this->pearDB->prepare(
+                                "SELECT contact_id FROM contact
+                                WHERE ar_id = :arId"
+                            );
+                            $res->bindValue(':arId', $arId, \PDO::PARAM_STR);
+                            $res->execute();
+                            $row = $res->fetch();
+                            $this->userInfos['contact_id'] = $row['contact_id'];
+
                             $hashedPassword = password_hash($this->password, self::PASSWORD_HASH_ALGORITHM);
                             $contact = new \CentreonContact($this->pearDB);
                             $contact->addPasswordByContactId(
