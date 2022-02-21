@@ -25,15 +25,17 @@ namespace Tests\Application\Security\UseCase\RenewPassword;
 
 use PHPUnit\Framework\TestCase;
 use Core\Domain\Security\User\Model\User;
-use Core\Application\Common\UseCase\ErrorResponse;
+use Core\Domain\Security\User\Model\UserPassword;
 use Core\Application\Common\UseCase\NotFoundResponse;
 use Core\Application\Common\UseCase\NoContentResponse;
-use Core\Application\Security\User\Repository\ReadUserRepositoryInterface;
+use Core\Application\Common\UseCase\UnauthorizedResponse;
 use Core\Application\Security\UseCase\RenewPassword\RenewPassword;
-use Core\Application\Security\User\Repository\WriteUserRepositoryInterface;
 use Core\Application\Security\UseCase\RenewPassword\RenewPasswordRequest;
+use Core\Domain\Security\ProviderConfiguration\Local\Model\Configuration;
+use Core\Application\Security\User\Repository\ReadUserRepositoryInterface;
+use Core\Application\Security\User\Repository\WriteUserRepositoryInterface;
 use Core\Application\Security\UseCase\RenewPassword\RenewPasswordPresenterInterface;
-use Core\Domain\Security\User\Model\UserPassword;
+use Core\Application\Security\ProviderConfiguration\Local\Repository\ReadConfigurationRepositoryInterface;
 
 class RenewPasswordTest extends TestCase
 {
@@ -52,11 +54,17 @@ class RenewPasswordTest extends TestCase
      */
     private $presenter;
 
+    /**
+     * @var ReadConfigurationRepositoryInterface&\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $readConfigurationRepository;
+
     public function setUp(): void
     {
         $this->readRepository = $this->createMock(ReadUserRepositoryInterface::class);
         $this->writeRepository = $this->createMock(WriteUserRepositoryInterface::class);
         $this->presenter = $this->createMock(RenewPasswordPresenterInterface::class);
+        $this->readConfigurationRepository = $this->createMock(ReadConfigurationRepositoryInterface::class);
     }
 
     /**
@@ -79,7 +87,7 @@ class RenewPasswordTest extends TestCase
             ->method('setResponseStatus')
             ->with(new NotFoundResponse('User'));
 
-        $useCase = new RenewPassword($this->readRepository, $this->writeRepository);
+        $useCase = new RenewPassword($this->readRepository, $this->writeRepository, $this->readConfigurationRepository);
 
         $useCase($this->presenter, $request);
     }
@@ -107,9 +115,9 @@ class RenewPasswordTest extends TestCase
         $this->presenter
             ->expects($this->once())
             ->method('setResponseStatus')
-            ->with(new ErrorResponse('Invalid credentials'));
+            ->with(new UnauthorizedResponse('Invalid credentials'));
 
-        $useCase = new RenewPassword($this->readRepository, $this->writeRepository);
+        $useCase = new RenewPassword($this->readRepository, $this->writeRepository, $this->readConfigurationRepository);
 
         $useCase($this->presenter, $request);
     }
@@ -122,12 +130,25 @@ class RenewPasswordTest extends TestCase
         $request = new RenewPasswordRequest();
         $request->userAlias = 'admin';
         $request->oldPassword = 'toto';
-        $request->newPassword = 'tata';
+        $request->newPassword = 'Centreon!2022';
 
         $oldPasswords = [];
         $passwordValue = password_hash('toto', \CentreonAuth::PASSWORD_HASH_ALGORITHM);
         $password = new UserPassword(1, $passwordValue, time());
         $user = new User(1, 'admin', $oldPasswords, $password);
+        $securityPolicy = new Configuration(
+            Configuration::MIN_PASSWORD_LENGTH,
+            true,
+            true,
+            true,
+            true,
+            true,
+            Configuration::MIN_ATTEMPTS,
+            Configuration::MIN_BLOCKING_DURATION,
+            Configuration::MIN_PASSWORD_EXPIRATION_DELAY,
+            [],
+            Configuration::MIN_NEW_PASSWORD_DELAY
+        );
 
         $this->readRepository
             ->expects($this->once())
@@ -138,12 +159,17 @@ class RenewPasswordTest extends TestCase
             ->expects($this->once())
             ->method('renewPassword');
 
+        $this->readConfigurationRepository
+            ->expects($this->once())
+            ->method('findConfiguration')
+            ->willReturn($securityPolicy);
+
         $this->presenter
             ->expects($this->once())
             ->method('setResponseStatus')
             ->with(new NoContentResponse());
 
-        $useCase = new RenewPassword($this->readRepository, $this->writeRepository);
+        $useCase = new RenewPassword($this->readRepository, $this->writeRepository, $this->readConfigurationRepository);
 
         $useCase($this->presenter, $request);
     }

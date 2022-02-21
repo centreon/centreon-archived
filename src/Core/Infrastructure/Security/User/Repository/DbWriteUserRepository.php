@@ -23,6 +23,7 @@ declare(strict_types=1);
 
 namespace Core\Infrastructure\Security\User\Repository;
 
+use Centreon\Domain\Log\LoggerTrait;
 use Core\Domain\Security\User\Model\User;
 use Core\Domain\Security\User\Model\UserPassword;
 use Centreon\Infrastructure\DatabaseConnection;
@@ -31,6 +32,8 @@ use Core\Application\Security\User\Repository\WriteUserRepositoryInterface;
 
 class DbWriteUserRepository extends AbstractRepositoryDRB implements WriteUserRepositoryInterface
 {
+    use LoggerTrait;
+
     /**
      * @param DatabaseConnection $db
      */
@@ -71,6 +74,9 @@ class DbWriteUserRepository extends AbstractRepositoryDRB implements WriteUserRe
      */
     private function addPassword(UserPassword $password): void
     {
+        $this->info('add new password for user in DBMS', [
+            'user_id' => $password->getUserId()
+        ]);
         $statement = $this->db->prepare(
             'INSERT INTO `contact_password` (`password`, `contact_id`, `creation_date`)
             VALUES (:password, :contactId, :creationDate)'
@@ -88,6 +94,9 @@ class DbWriteUserRepository extends AbstractRepositoryDRB implements WriteUserRe
      */
     private function deleteOldPasswords(int $userId): void
     {
+        $this->info('removing old passwords for user from DBMS', [
+            'user_id' => $userId
+        ]);
         $statement = $this->db->prepare(
             'SELECT creation_date
             FROM `contact_password`

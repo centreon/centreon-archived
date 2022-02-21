@@ -16527,3 +16527,6 @@ msgstr "Informations utilisateur non trouvées"
 
 msgid "User is blocked (remaining time : %s)"
 msgstr "L'utilisateur est bloqué (temps restant : %s)"
+
+msgid "Your password doesn't match the security policy"
+msgstr "Votre mot de passe ne correspond pas à la politique de sécurité"
