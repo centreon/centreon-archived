@@ -283,4 +283,20 @@ class Assertion
             $propertyPath
         );
     }
+
+    public static function regex($value, $pattern, string $propertyPath = null): void
+    {
+        Assert::regex(
+            $value,
+            $pattern,
+            function (array $parameters) {
+                return AssertionException::matchRegex(
+                    $parameters['value'],
+                    $parameters['pattern'],
+                    $parameters['propertyPath']
+                )->getMessage();
+            },
+            $propertyPath
+        );
+    }
 }

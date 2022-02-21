@@ -28,6 +28,7 @@ use Core\Domain\Security\User\Model\User;
 use Core\Application\Common\UseCase\ErrorResponse;
 use Core\Application\Common\UseCase\NotFoundResponse;
 use Core\Application\Common\UseCase\NoContentResponse;
+use Core\Application\Security\ProviderConfiguration\Local\Repository\ReadConfigurationRepositoryInterface;
 use Core\Application\Security\User\Repository\ReadUserRepositoryInterface;
 use Core\Application\Security\UseCase\RenewPassword\RenewPassword;
 use Core\Application\Security\User\Repository\WriteUserRepositoryInterface;
@@ -52,11 +53,17 @@ class RenewPasswordTest extends TestCase
      */
     private $presenter;
 
+    /**
+     * @var ReadConfigurationRepositoryInterface&\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $readConfigurationRepository;
+
     public function setUp(): void
     {
         $this->readRepository = $this->createMock(ReadUserRepositoryInterface::class);
         $this->writeRepository = $this->createMock(WriteUserRepositoryInterface::class);
         $this->presenter = $this->createMock(RenewPasswordPresenterInterface::class);
+        $this->readConfigurationRepository = $this->createMock(ReadConfigurationRepositoryInterface::class);
     }
 
     /**
@@ -79,7 +86,7 @@ class RenewPasswordTest extends TestCase
             ->method('setResponseStatus')
             ->with(new NotFoundResponse('User'));
 
-        $useCase = new RenewPassword($this->readRepository, $this->writeRepository);
+        $useCase = new RenewPassword($this->readRepository, $this->writeRepository, $this->readConfigurationRepository);
 
         $useCase($this->presenter, $request);
     }
@@ -109,7 +116,7 @@ class RenewPasswordTest extends TestCase
             ->method('setResponseStatus')
             ->with(new ErrorResponse('Invalid credentials'));
 
-        $useCase = new RenewPassword($this->readRepository, $this->writeRepository);
+        $useCase = new RenewPassword($this->readRepository, $this->writeRepository, $this->readConfigurationRepository);
 
         $useCase($this->presenter, $request);
     }
@@ -143,7 +150,7 @@ class RenewPasswordTest extends TestCase
             ->method('setResponseStatus')
             ->with(new NoContentResponse());
 
-        $useCase = new RenewPassword($this->readRepository, $this->writeRepository);
+        $useCase = new RenewPassword($this->readRepository, $this->writeRepository, $this->readConfigurationRepository);
 
         $useCase($this->presenter, $request);
     }
