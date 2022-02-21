@@ -51,12 +51,9 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(0, 'auto'),
     padding: theme.spacing(1.5, 2.5, 0, 2.5),
   },
-<<<<<<< HEAD:www/front_src/src/Extensions/Listing/ExtensionsHolder/index.tsx
   extensionsTypes: {
     color: theme.palette.text.primary,
   },
-=======
->>>>>>> 68f1f3f15e29911632c33eff34f1b4c2d9022359:www/front_src/src/Extensions/Listing/ExtensionsHolder/index.tsx
 }));
 
 const ExtensionsHolder = ({
