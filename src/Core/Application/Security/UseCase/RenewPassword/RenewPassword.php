@@ -66,13 +66,17 @@ class RenewPassword
             return;
         }
 
-        $securityPolicy = $this->readConfigurationRepository->findConfiguration();
-        if ($securityPolicy === null) {
+        $providerConfiguration = $this->readConfigurationRepository->findConfiguration();
+        if ($providerConfiguration === null) {
             $presenter->setResponseStatus(new NotFoundResponse('Configuration'));
             return;
         }
 
-        $newPassword = UserPasswordFactory::create($renewPasswordRequest->newPassword, $user, $securityPolicy);
+        $newPassword = UserPasswordFactory::create(
+            $renewPasswordRequest->newPassword,
+            $user,
+            $providerConfiguration->getSecurityPolicy()
+        );
         $user->setPassword($newPassword);
 
         $this->writeRepository->renewPassword($user);

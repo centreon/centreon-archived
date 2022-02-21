@@ -28,7 +28,7 @@ use Centreon\Domain\Common\Assertion\Assertion;
 use Core\Domain\Security\User\Model\UserPassword;
 use Centreon\Domain\Common\Assertion\AssertionException;
 use Core\Application\Security\Exception\UserPasswordException;
-use Core\Domain\Security\ProviderConfiguration\Local\Model\Configuration;
+use Core\Domain\Security\ProviderConfiguration\Local\Model\SecurityPolicy;
 use Core\Infrastructure\Security\ProviderConfiguration\Local\Api\Exception\ConfigurationException;
 
 class UserPasswordFactory
@@ -42,7 +42,7 @@ class UserPasswordFactory
      * @return UserPassword
      * @throws AssertionException|ConfigurationException
      */
-    public static function create(string $password, User $user, Configuration $securityPolicy): UserPassword
+    public static function create(string $password, User $user, SecurityPolicy $securityPolicy): UserPassword
     {
         try {
             Assertion::minLength(
@@ -62,7 +62,7 @@ class UserPasswordFactory
             if ($securityPolicy->hasSpecialCharacter()) {
                 Assertion::regex(
                     $password,
-                    '/[' . Configuration::SPECIAL_CHARACTERS_LIST . ']/',
+                    '/[' . SecurityPolicy::SPECIAL_CHARACTERS_LIST . ']/',
                     'UserPassword::passwordValue'
                 );
             }
