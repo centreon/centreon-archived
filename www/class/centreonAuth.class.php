@@ -213,22 +213,8 @@ class CentreonAuth
                 } elseif ($this->passwdOk == 1) {
                     if (isset($this->ldap_store_password[$arId]) && $this->ldap_store_password[$arId]) {
                         if (!isset($this->userInfos["contact_passwd"])) {
-                            // Retrieving the created contact_id
-                            $res = $this->pearDB->prepare(
-                                "SELECT contact_id FROM contact
-                                WHERE ar_id = :arId"
-                            );
-                            $res->bindValue(':arId', $arId, \PDO::PARAM_STR);
-                            $res->execute();
-                            $row = $res->fetch();
-                            $this->userInfos['contact_id'] = $row['contact_id'];
-
                             $hashedPassword = password_hash($this->password, self::PASSWORD_HASH_ALGORITHM);
-                            $contact = new \CentreonContact($this->pearDB);
-                            $contact->addPasswordByContactId(
-                                (int) $this->userInfos['contact_id'],
-                                $hashedPassword
-                            );
+                            $this->updatePasswordByAlias($this->login, $hashedPassword);
                         // Update password if LDAP authentication is valid but password not up to date in Centreon.
                         } elseif (!password_verify($this->password, $this->userInfos["contact_passwd"])) {
                             $hashedPassword = password_hash($this->password, self::PASSWORD_HASH_ALGORITHM);
@@ -314,6 +300,28 @@ class CentreonAuth
                 $this->passwdOk = 0;
             }
         }
+    }
+
+    /**
+     * @param string $login
+     * @param string $hashedPassword
+     * @return void
+     */
+    protected function updatePasswordByAlias($login, $hashedPassword)
+    {
+        $res = $this->pearDB->prepare(
+            "SELECT contact_id FROM contact
+            WHERE contact_alias = :contactAlias"
+        );
+        $res->bindValue(':contactAlias', $login, \PDO::PARAM_STR);
+        $res->execute();
+        $row = $res->fetch();
+
+        $contact = new \CentreonContact($this->pearDB);
+        $contact->addPasswordByContactId(
+            (int) $row['contact_id'],
+            $hashedPassword
+        );
     }
 
     /**
