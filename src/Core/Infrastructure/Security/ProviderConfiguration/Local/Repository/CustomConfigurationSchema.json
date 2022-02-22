@@ -15,7 +15,7 @@
         "has_special_characters",
         "attempts",
         "blocking_duration",
-        "password_expiration",
+        "password_expiration_delay",
         "can_reuse_passwords",
         "delay_before_new_password"
       ],
@@ -48,7 +48,7 @@
           "minimum": 1,
           "maximum": 604800
         },
-        "password_expiration": {
+        "password_expiration_delay": {
             "type": ["integer", "null"],
             "minimum": 604800,
             "maximum": 31536000

@@ -10,16 +10,23 @@ import makeStyles from '@mui/styles/makeStyles';
 
 import { useMemoComponent } from '@centreon/ui';
 
-import { labelPasswordExpiration } from '../../translatedLabels';
-import { getField } from '../utils';
-import TimeInputs from '../../TimeInputs';
-import { TimeInputConfiguration } from '../../models';
-import { twelveMonths } from '../../timestamps';
+import { labelPasswordExpiration } from '../../../translatedLabels';
+import { getField } from '../../utils';
+import TimeInputs from '../../../TimeInputs';
+import { TimeInputConfiguration } from '../../../models';
+import { twelveMonths } from '../../../timestamps';
 
-const passwordExpirationFieldName = 'passwordExpiration';
+import ExcludedUsers from './ExcludedUsers';
+
+const passwordExpirationFieldName = 'passwordExpiration.expirationDelay';
 
 const useStyles = makeStyles((theme) => ({
-  passwordExpirationContainer: {
+  container: {
+    alignItems: 'flex-end',
+    display: 'grid',
+    gridTemplateColumns: 'repeat(2, 1fr)',
+  },
+  passwordExpiration: {
     marginTop: theme.spacing(1),
   },
 }));
@@ -73,19 +80,24 @@ const PasswordExpiration = (): JSX.Element => {
 
   return useMemoComponent({
     Component: (
-      <div className={classes.passwordExpirationContainer}>
-        <FormLabel>{t(labelPasswordExpiration)}</FormLabel>
-        <TimeInputs
-          baseName={passwordExpirationFieldName}
-          inputLabel={labelPasswordExpiration}
-          maxDuration={twelveMonths}
-          timeInputConfigurations={timeInputConfiguration}
-          timeValue={passwordExpirationValue}
-          onChange={change}
-        />
-        {passwordExpirationError && (
-          <FormHelperText error>{passwordExpirationError}</FormHelperText>
-        )}
+      <div className={classes.container}>
+        <div className={classes.passwordExpiration}>
+          <FormLabel>{t(labelPasswordExpiration)}</FormLabel>
+          <TimeInputs
+            baseName={passwordExpirationFieldName}
+            inputLabel={labelPasswordExpiration}
+            maxDuration={twelveMonths}
+            timeInputConfigurations={timeInputConfiguration}
+            timeValue={passwordExpirationValue}
+            onChange={change}
+          />
+          {passwordExpirationError && (
+            <FormHelperText error>{passwordExpirationError}</FormHelperText>
+          )}
+        </div>
+        <div>
+          <ExcludedUsers />
+        </div>
       </div>
     ),
     memoProps: [passwordExpirationValue, passwordExpirationError],

@@ -28,8 +28,4 @@ use Core\Application\Platform\UseCase\FindInstallationStatus\FindInstallationSta
 
 interface FindInstallationStatusPresenterInterface extends PresenterInterface
 {
-    /**
-     * @param FindInstallationStatusResponse $response
-     */
-    public function present(FindInstallationStatusResponse $response): void;
 }

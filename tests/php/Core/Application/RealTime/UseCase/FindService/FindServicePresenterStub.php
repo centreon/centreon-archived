@@ -23,11 +23,12 @@ declare(strict_types=1);
 namespace Tests\Core\Application\RealTime\UseCase\FindService;
 
 use Core\Application\Common\UseCase\ResponseStatusInterface;
+use Core\Application\Common\UseCase\AbstractPresenter;
 use Core\Application\RealTime\UseCase\FindService\FindServicePresenterInterface;
 use Core\Application\RealTime\UseCase\FindService\FindServiceResponse;
 use Symfony\Component\HttpFoundation\Response;
 
-class FindServicePresenterStub implements FindServicePresenterInterface
+class FindServicePresenterStub extends AbstractPresenter implements FindServicePresenterInterface
 {
     /**
      * @var FindServiceResponse
@@ -37,7 +38,14 @@ class FindServicePresenterStub implements FindServicePresenterInterface
     /**
      * @var ResponseStatusInterface|null
      */
-    private $responseStatus;
+    protected $responseStatus;
+
+    /**
+     * constructor
+     */
+    public function __construct()
+    {
+    }
 
     /**
      * @return Response
@@ -50,7 +58,7 @@ class FindServicePresenterStub implements FindServicePresenterInterface
     /**
      * @param FindServiceResponse $response
      */
-    public function present(FindServiceResponse $response): void
+    public function present(mixed $response): void
     {
         $this->response = $response;
     }

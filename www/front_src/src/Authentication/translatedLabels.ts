@@ -59,3 +59,5 @@ export const labelThisWillNotBeUsedBecauseNumberOfAttemptsIsNotDefined =
 export const labelCancel = 'Cancel';
 export const labelResetTheForm = 'Reset the form';
 export const labelDoYouWantToResetTheForm = 'Do you want to reset the form?';
+export const labelExcludedUsers = 'Excluded users';
+export const labelAdmin = 'Admin';

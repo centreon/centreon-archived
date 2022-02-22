@@ -27,8 +27,4 @@ use Core\Application\Common\UseCase\PresenterInterface;
 
 interface LogoutSessionPresenterInterface extends PresenterInterface
 {
-    /**
-     * Present no content.
-     */
-    public function present(): void;
 }

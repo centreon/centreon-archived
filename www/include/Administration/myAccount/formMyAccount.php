@@ -126,15 +126,17 @@ if ($cct["contact_auth_type"] != 'ldap') {
     if ($result) {
         $passwordCreationDate = (int) $result;
         $passwordExpirationDate =
-            $passwordCreationDate + $passwordSecurityPolicy['password_expiration'];
+            $passwordCreationDate + $passwordSecurityPolicy['password_expiration']['expiration_delay'];
         $isPasswordExpired = time() > $passwordExpirationDate;
-        if ($isPasswordExpired) {
-            $expirationMessage = _("Your password has expired. Please change it.");
-        } else {
-            $expirationMessage = sprintf(
-                _("Your password will expire in %s days."),
-                ceil(($passwordExpirationDate - time()) / 86400)
-            );
+        if (!in_array($centreon->user->get_alias(), $passwordSecurityPolicy['password_expiration']['excluded_users'])) {
+            if ($isPasswordExpired) {
+                $expirationMessage = _("Your password has expired. Please change it.");
+            } else {
+                $expirationMessage = sprintf(
+                    _("Your password will expire in %s days."),
+                    ceil(($passwordExpirationDate - time()) / 86400)
+                );
+            }
         }
     }
     $form->addElement(
