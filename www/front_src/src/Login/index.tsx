@@ -10,10 +10,11 @@ import makeStyles from '@mui/styles/makeStyles';
 
 import { LoadingSkeleton } from '@centreon/ui';
 
-import logoCentreon from '../Navigation/Sidebar/Logo/centreon.png';
+import logoCentreon from '../assets/centreon.png';
 import Copyright from '../Footer/Copyright';
 import { areUserParametersLoadedAtom } from '../Main/useUser';
 import { MainLoaderWithoutTranslation } from '../Main/MainLoader';
+import Wallpaper from '../components/Wallpaper';
 
 import useValidationSchema from './validationSchema';
 import { LoginFormValues } from './models';
@@ -34,7 +35,8 @@ const useStyles = makeStyles((theme) => ({
   },
   loginBackground: {
     alignItems: 'center',
-    backgroundColor: theme.palette.background.default,
+    backdropFilter: 'brightness(1)',
+    backgroundColor: 'transparent',
     display: 'flex',
     flexDirection: 'column',
     height: '100vh',
@@ -72,32 +74,35 @@ const LoginPage = (): JSX.Element => {
   }
 
   return (
-    <div className={classes.loginBackground}>
-      <img
-        alt={t(labelCentreonLogo)}
-        aria-label={t(labelCentreonLogo)}
-        className={classes.centreonLogo}
-        src={logoCentreon}
-      />
-      <Paper className={classes.loginPaper}>
-        <Typography variant="h5">{t(labelLogin)}</Typography>
-        <Formik<LoginFormValues>
-          initialValues={initialValues}
-          validationSchema={validationSchema}
-          onSubmit={submitLoginForm}
-        >
-          <LoginForm />
-        </Formik>
-      </Paper>
-      <div className={classes.copyrightAndVersion}>
-        <Copyright />
-        {isNil(platformVersions) ? (
-          <LoadingSkeleton variant="text" width="40%" />
-        ) : (
-          <Typography variant="body2">
-            v. {platformVersions?.web.version}
-          </Typography>
-        )}
+    <div>
+      <Wallpaper />
+      <div className={classes.loginBackground}>
+        <Paper className={classes.loginPaper}>
+          <img
+            alt={t(labelCentreonLogo)}
+            aria-label={t(labelCentreonLogo)}
+            className={classes.centreonLogo}
+            src={logoCentreon}
+          />
+          <Typography variant="h5">{t(labelLogin)}</Typography>
+          <Formik<LoginFormValues>
+            initialValues={initialValues}
+            validationSchema={validationSchema}
+            onSubmit={submitLoginForm}
+          >
+            <LoginForm />
+          </Formik>
+          <div className={classes.copyrightAndVersion}>
+            <Copyright />
+            {isNil(platformVersions) ? (
+              <LoadingSkeleton variant="text" width="40%" />
+            ) : (
+              <Typography variant="body2">
+                v. {platformVersions?.web.version}
+              </Typography>
+            )}
+          </div>
+        </Paper>
       </div>
     </div>
   );
