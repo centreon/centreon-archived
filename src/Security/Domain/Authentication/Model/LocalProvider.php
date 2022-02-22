@@ -271,14 +271,7 @@ class LocalProvider implements ProviderInterface
                     'contact_alias' => $user->getAlias(),
                 ],
             );
-            throw AuthenticationException::userBlocked(
-                (new \DateTime())
-                    ->diff(
-                        $user->getBlockingTime()->add(
-                            new \DateInterval('PT' . $providerConfiguration->getBlockingDuration() . 'M')
-                        )
-                    )->format('%Hh %Im %Ss')
-            );
+            throw AuthenticationException::userBlocked();
         }
 
         if ($doesPasswordMatch && $this->isPasswordExpired($user, $providerConfiguration)) {
