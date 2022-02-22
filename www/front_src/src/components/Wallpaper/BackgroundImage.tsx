@@ -1,7 +1,6 @@
 import * as React from 'react';
 
 import { isNil, not } from 'ramda';
-import { useTranslation } from 'react-i18next';
 
 import { CreateCSSProperties, makeStyles } from '@mui/styles';
 import { Fade, Theme } from '@mui/material';
@@ -35,14 +34,9 @@ const useStyles = makeStyles<Theme, Props>(() => ({
 const BackgroundImage = ({ image }: Props): JSX.Element => {
   const classes = useStyles({ image });
 
-  const { t } = useTranslation();
-
   return (
     <Fade in={not(isNil(image))}>
-      <div
-        aria-label={t(labelCentreonWallpaper)}
-        className={classes.wallpaper}
-      />
+      <div aria-label={labelCentreonWallpaper} className={classes.wallpaper} />
     </Fade>
   );
 };
