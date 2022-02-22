@@ -80,19 +80,13 @@ function getWikiVersion($apiWikiURL)
 
     $data = http_build_query($post);
 
-    $httpOpts = array(
-        'http' => array(
-            'method' => 'POST',
-            'header' => "Content-type: application/x-www-form-urlencoded",
-            'content' => $data,
-        )
-    );
-
     /* Get contents */
     $curl = curl_init();
     curl_setopt($curl, CURLOPT_URL, $apiWikiURL);
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($curl, CURLOPT_HTTPHEADER, json_encode($httpOpts));
+    curl_setopt($curl, CURLOPT_POST, true);
+    curl_setopt($curl, CURLOPT_HTTPHEADER, 'Content-type: application/x-www-form-urlencoded');
+    curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
     $content = curl_exec($curl);
     curl_close($curl);
     $content = json_decode($content);
