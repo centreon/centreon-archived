@@ -296,6 +296,7 @@ const UserMenu = (): JSX.Element => {
                 <Paper className={classes.userButton}>
                   <Button
                     fullWidth
+                    aria-label={t('Logout')}
                     href="index.php"
                     size="small"
                     onClick={(e: React.MouseEvent): void => {
