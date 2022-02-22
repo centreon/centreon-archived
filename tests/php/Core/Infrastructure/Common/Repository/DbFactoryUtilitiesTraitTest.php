@@ -48,7 +48,7 @@ class DbFactoryUtilitiesTraitTest extends TestCase
         $datetime = self::createDateTimeImmutableFromTimestamp($timestamp);
 
         $this->assertInstanceOf(\DateTimeImmutable::class, $datetime);
-        $this->assertSame($timestamp, (string) $datetime->getTimestamp());
+        $this->assertSame($timestamp, (string) $datetime?->getTimestamp());
     }
 
     /**
@@ -60,6 +60,6 @@ class DbFactoryUtilitiesTraitTest extends TestCase
         $datetime = self::createDateTimeImmutableFromTimestamp($timestamp);
 
         $this->assertInstanceOf(\DateTimeImmutable::class, $datetime);
-        $this->assertSame($timestamp, $datetime->getTimestamp());
+        $this->assertSame($timestamp, $datetime?->getTimestamp());
     }
 }
