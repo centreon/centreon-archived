@@ -32,19 +32,9 @@ import {
   ExtensionsStatus,
   ExtensionResult,
   InstallOrUpdateExtensionResult,
+  EntityDeleting,
 } from './models';
 import { buildEndPoint, buildExtensionEndPoint } from './api/endpoint';
-
-interface EntityDetails {
-  id: string;
-  type: string;
-}
-
-interface EntityDeleting {
-  description: string;
-  id: string;
-  type: string;
-}
 
 const useStyles = makeStyles((theme) => ({
   contentWrapper: {
@@ -57,8 +47,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-// eslint-disable-next-line react/prop-types
-const ExtensionsManager = ({ reloadNavigation }): JSX.Element => {
+interface Props {
+  reloadNavigation: () => void;
+}
+
+const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
   const classes = useStyles();
   const { showErrorMessage, showSuccessMessage } = useSnackbar();
 
@@ -74,8 +67,9 @@ const ExtensionsManager = ({ reloadNavigation }): JSX.Element => {
   const [modulesActive, setModulesActive] = React.useState(false);
   const [widgetsActive, setWidgetsActive] = React.useState(false);
 
-  const [entityDetails, setEntityDetails] =
-    React.useState<EntityDetails | null>(null);
+  const [entityDetails, setEntityDetails] = React.useState<EntityType | null>(
+    null,
+  );
 
   const [entityDeleting, setEntityDeleting] =
     React.useState<EntityDeleting | null>(null);
@@ -205,7 +199,7 @@ const ExtensionsManager = ({ reloadNavigation }): JSX.Element => {
         if (!status) {
           showErrorMessage(result.message as string);
         } else {
-          showSuccessMessage('Success !!!');
+          showSuccessMessage('successful Update');
         }
 
         return sendExtensionsRequests({
@@ -240,7 +234,7 @@ const ExtensionsManager = ({ reloadNavigation }): JSX.Element => {
         if (!status) {
           showErrorMessage(result.message as string);
         } else {
-          showSuccessMessage('Success !!!');
+          showSuccessMessage('Successful Installation');
         }
 
         return sendExtensionsRequests({
@@ -326,7 +320,7 @@ const ExtensionsManager = ({ reloadNavigation }): JSX.Element => {
         if (!status) {
           showErrorMessage(result as string);
         } else {
-          showSuccessMessage('Success !!!');
+          showSuccessMessage('Successful Deletion');
         }
 
         return sendExtensionsRequests({

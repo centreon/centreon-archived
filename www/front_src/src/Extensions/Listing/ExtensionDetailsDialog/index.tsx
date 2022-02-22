@@ -20,7 +20,7 @@ import InstallIcon from '@mui/icons-material/Add';
 
 import { Dialog, IconButton, useRequest, getData } from '@centreon/ui';
 
-import { Entity } from '../models';
+import { Entity, ExtensionDetails } from '../models';
 import { buildEndPoint } from '../api/endpoint';
 
 import {
@@ -38,11 +38,6 @@ interface Props {
   onInstall: (id: string, type: string) => void;
   onUpdate: (id: string, type: string) => void;
   type: string;
-}
-
-interface ExtensionDetails {
-  result: Entity;
-  status: boolean;
 }
 
 const ExtensionDetailPopup = ({

@@ -21,19 +21,6 @@ import {
 
 import { Entity, ExtensionsStatus, LicenseProps } from '../models';
 
-interface Props {
-  deletingEntityId: string | null;
-  entities: Array<Entity>;
-  installing: ExtensionsStatus;
-  onCard: (id: string, type: string) => void;
-  onDelete: (id: string, type: string, description: string) => void;
-  onInstall: (id: string, type: string) => void;
-  onUpdate: (id: string, type: string) => void;
-  title: string;
-  type: string;
-  updating: ExtensionsStatus;
-}
-
 const useStyles = makeStyles((theme) => ({
   contentWrapper: {
     [theme.breakpoints.up(767)]: {
@@ -47,6 +34,19 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.text.primary,
   },
 }));
+
+interface Props {
+  deletingEntityId: string | null;
+  entities: Array<Entity>;
+  installing: ExtensionsStatus;
+  onCard: (id: string, type: string) => void;
+  onDelete: (id: string, type: string, description: string) => void;
+  onInstall: (id: string, type: string) => void;
+  onUpdate: (id: string, type: string) => void;
+  title: string;
+  type: string;
+  updating: ExtensionsStatus;
+}
 
 const ExtensionsHolder = ({
   title,

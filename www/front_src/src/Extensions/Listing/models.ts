@@ -59,3 +59,14 @@ export interface EntityType {
   id: string;
   type: string;
 }
+
+export interface EntityDeleting {
+  description: string;
+  id: string;
+  type: string;
+}
+
+export interface ExtensionDetails {
+  result: Entity;
+  status: boolean;
+}
