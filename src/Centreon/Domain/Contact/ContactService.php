@@ -32,8 +32,8 @@ class ContactService implements ContactServiceInterface
     /**
      * @param ContactRepositoryInterface $contactRepository
      */
-    public function __construct(private ContactRepositoryInterface $contactRepository
-    ) {
+    public function __construct(private ContactRepositoryInterface $contactRepository)
+    {
     }
 
     /**

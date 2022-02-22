@@ -262,7 +262,10 @@ class LocalProvider implements ProviderInterface
         SecurityPolicy $securityPolicy,
         bool $doesPasswordMatch,
     ): void {
-        $isUserBlocked = $this->isUserBlocked($user, $securityPolicy, $doesPasswordMatch);
+        $isUserBlocked = false;
+        if ($securityPolicy->getBlockingDuration() !== null) {
+            $isUserBlocked = $this->isUserBlocked($user, $securityPolicy, $doesPasswordMatch);
+        }
 
         $this->writeUserRepository->updateBlockingInformation($user);
 
@@ -276,7 +279,11 @@ class LocalProvider implements ProviderInterface
             throw AuthenticationException::userBlocked();
         }
 
-        if ($doesPasswordMatch && $this->isPasswordExpired($user, $securityPolicy)) {
+        if (
+            $securityPolicy->getPasswordExpirationDelay() !== null
+            && $doesPasswordMatch
+            && $this->isPasswordExpired($user, $securityPolicy)
+        ) {
             $this->info(
                 '[LOCAL PROVIDER] authentication failed because password is expired',
                 [
@@ -297,10 +304,6 @@ class LocalProvider implements ProviderInterface
      */
     private function isUserBlocked(User $user, SecurityPolicy $securityPolicy, bool $doesPasswordMatch): bool
     {
-        if ($securityPolicy->getBlockingDuration() === null) {
-            return false;
-        }
-
         if (
             $user->getBlockingTime() !== null
             && (time() - $user->getBlockingTime()->getTimestamp()) < $securityPolicy->getBlockingDuration()
@@ -349,10 +352,6 @@ class LocalProvider implements ProviderInterface
      */
     private function isPasswordExpired(User $user, SecurityPolicy $securityPolicy): bool
     {
-        if ($securityPolicy->getPasswordExpirationDelay() === null) {
-            return false;
-        }
-
         if (in_array($user->getAlias(), $securityPolicy->getPasswordExpirationExcludedUserAliases())) {
             $this->info(
                 'skip password expiration policy because user is excluded',

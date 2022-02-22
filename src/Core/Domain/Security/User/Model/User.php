@@ -99,9 +99,9 @@ class User
      */
     public function setLoginAttempts(?int $loginAttempts): static
     {
-       $this->loginAttempts = $loginAttempts;
+        $this->loginAttempts = $loginAttempts;
 
-       return $this;
+        return $this;
     }
 
     /**
@@ -118,8 +118,8 @@ class User
      */
     public function setBlockingTime(?\DateTimeImmutable $blockingTime): static
     {
-       $this->blockingTime = $blockingTime;
+        $this->blockingTime = $blockingTime;
 
-       return $this;
+        return $this;
     }
 }
