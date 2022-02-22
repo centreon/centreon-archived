@@ -48,9 +48,11 @@ const useDateTimePickerAdapter = (): UseDateTimePickerAdapterProps => {
     return newValue;
   };
 
+  const isUTCTimezone = equals('UTC');
+
   class Adapter extends DayjsAdapter {
     public formatByString = (value, formatKey: string): string => {
-      return format({ date: value, formatString: formatKey });
+      return format({ date: value.tz(timezone), formatString: formatKey });
     };
 
     public isEqual = (value, comparing): boolean => {
@@ -65,7 +67,11 @@ const useDateTimePickerAdapter = (): UseDateTimePickerAdapterProps => {
     };
 
     public getHours = (date): number => {
-      return date.tz(timezone).get('hour');
+      if (isUTCTimezone(timezone)) {
+        return date.tz(timezone).get('hour');
+      }
+
+      return date.tz(timezone).clone().get('hour');
     };
 
     public setHours = (date: dayjs.Dayjs, count: number): dayjs.Dayjs => {
@@ -86,15 +92,26 @@ const useDateTimePickerAdapter = (): UseDateTimePickerAdapterProps => {
     };
 
     public isSameDay = (date: dayjs.Dayjs, comparing: dayjs.Dayjs): boolean => {
-      return date.tz(timezone).isSame(comparing.tz(timezone), 'day');
+      return equals(
+        this.startOfDay(date).get('date'),
+        this.startOfDay(comparing).get('date'),
+      );
     };
 
     public startOfDay = (date: dayjs.Dayjs): dayjs.Dayjs => {
-      return date.tz(timezone).startOf('day') as dayjs.Dayjs;
+      if (isUTCTimezone(timezone)) {
+        return date.tz(timezone).endOf('day');
+      }
+
+      return date.tz(timezone).clone().endOf('day') as dayjs.Dayjs;
     };
 
     public endOfDay = (date: dayjs.Dayjs): dayjs.Dayjs => {
-      return date.tz(timezone).startOf('day') as dayjs.Dayjs;
+      if (isUTCTimezone(timezone)) {
+        return date.tz(timezone).endOf('day');
+      }
+
+      return date.tz(timezone).clone().endOf('day') as dayjs.Dayjs;
     };
 
     public startOfMonth = (date: dayjs.Dayjs): dayjs.Dayjs => {
@@ -132,15 +149,18 @@ const useDateTimePickerAdapter = (): UseDateTimePickerAdapterProps => {
       date: dayjs.Dayjs,
       time: dayjs.Dayjs,
     ): dayjs.Dayjs => {
-      const dateWithTimezone = date.tz(timezone);
-      const timeWithTimezone = time.tz(timezone);
+      if (isUTCTimezone(timezone)) {
+        const dateWithTimezone = date.tz(timezone);
+        const timeWithTimezone = time.tz(timezone);
 
-      if (equals(timezone, 'UTC')) {
         return dateWithTimezone
           .add(timeWithTimezone.hour(), 'hour')
           .add(timeWithTimezone.minute(), 'minute')
           .add(timeWithTimezone.second(), 'second');
       }
+
+      const dateWithTimezone = date.tz(timezone).clone();
+      const timeWithTimezone = time.tz(timezone).clone();
 
       return dateWithTimezone
         .hour(timeWithTimezone.hour())
