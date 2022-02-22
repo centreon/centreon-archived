@@ -91,7 +91,6 @@ function getWikiVersion($apiWikiURL)
     /* Get contents */
     $curl = curl_init();
     curl_setopt($curl, CURLOPT_URL, $apiWikiURL);
-    curl_setopt($curl, CURLOPT_POST, true);
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($curl, CURLOPT_HTTPHEADER, json_encode($httpOpts));
     $content = curl_exec($curl);
