@@ -38,7 +38,7 @@ class UserPasswordFactory
      *
      * @param string $password
      * @param User $user
-     * @param Configuration $securityPolicy
+     * @param SecurityPolicy $securityPolicy
      * @return UserPassword
      * @throws AssertionException|ConfigurationException
      */

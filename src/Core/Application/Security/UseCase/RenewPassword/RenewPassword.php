@@ -23,6 +23,7 @@ declare(strict_types=1);
 
 namespace Core\Application\Security\UseCase\RenewPassword;
 
+use Centreon\Domain\Log\LoggerTrait;
 use Core\Application\Common\UseCase\NotFoundResponse;
 use Core\Application\Common\UseCase\NoContentResponse;
 use Core\Domain\Security\User\Model\UserPasswordFactory;
@@ -33,6 +34,8 @@ use Core\Application\Security\ProviderConfiguration\Local\Repository\ReadConfigu
 
 class RenewPassword
 {
+    use LoggerTrait;
+
     /**
      * @param ReadUserRepositoryInterface $readRepository
      * @param WriteUserRepositoryInterface $writeRepository
@@ -53,25 +56,33 @@ class RenewPassword
         RenewPasswordPresenterInterface $presenter,
         RenewPasswordRequest $renewPasswordRequest
     ): void {
+        $this->info('Processing password renewal...');
         //Get User informations
         $user = $this->readRepository->findUserByAlias($renewPasswordRequest->userAlias);
         if ($user === null) {
+            $this->error('No user could be found', [
+                'user_alias' => $renewPasswordRequest->userAlias
+            ]);
             $presenter->setResponseStatus(new NotFoundResponse('User'));
             return;
         }
 
         //Validate that old password matches the current user password
         if (password_verify($renewPasswordRequest->oldPassword, $user->getPassword()->getPasswordValue()) === false) {
+            $this->notice('Credentials are invalid');
             $presenter->setResponseStatus(new UnauthorizedResponse('Invalid credentials'));
             return;
         }
 
+
         $providerConfiguration = $this->readConfigurationRepository->findConfiguration();
         if ($providerConfiguration === null) {
+            $this->error('No local configuration could be found');
             $presenter->setResponseStatus(new NotFoundResponse('Configuration'));
             return;
         }
 
+        $this->info('Validate password against security policy');
         $newPassword = UserPasswordFactory::create(
             $renewPasswordRequest->newPassword,
             $user,
@@ -79,6 +90,9 @@ class RenewPassword
         );
         $user->setPassword($newPassword);
 
+        $this->info('Updating user password', [
+            'user_alias' => $user->getAlias()
+        ]);
         $this->writeRepository->renewPassword($user);
         $presenter->setResponseStatus(new NoContentResponse());
     }
