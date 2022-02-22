@@ -280,7 +280,6 @@ const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
     setExtensionsInstallingStatus(statuses);
   };
 
-  // Extension Listing ...
   const activateExtensionsDetails = (id, type): void => {
     setEntityDetails({
       id,
@@ -301,8 +300,6 @@ const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
       type,
     });
   };
-
-  // Extension popup
 
   const hideExtensionDetails = (): void => {
     setEntityDetails(null);
@@ -384,7 +381,6 @@ const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
               color="primary"
               size="small"
               startIcon={<InstallIcon />}
-              // style={{ marginLeft: 8, marginRight: 8 }}
               variant="contained"
               onClick={installAllEntities}
             >
