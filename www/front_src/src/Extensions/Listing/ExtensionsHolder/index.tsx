@@ -1,11 +1,3 @@
-/* eslint-disable class-methods-use-this */
-/* eslint-disable no-nested-ternary */
-/* eslint-disable jsx-a11y/no-static-element-interactions */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable react/jsx-filename-extension */
-/* eslint-disable react/prop-types */
-/* eslint-disable no-restricted-globals */
-
 import React from 'react';
 
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -82,7 +74,7 @@ const ExtensionsHolder = ({
           label: 'License required',
         };
       }
-      if (!isNaN(Date.parse(licenseInfo.expiration_date))) {
+      if (!Number.isNaN(Date.parse(licenseInfo.expiration_date))) {
         const expirationDate = new Date(licenseInfo.expiration_date);
 
         return {

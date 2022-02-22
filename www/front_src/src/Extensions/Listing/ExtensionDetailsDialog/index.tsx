@@ -129,11 +129,11 @@ const ExtensionDetailPopup = ({
         </Grid>
         <Grid item>
           {extensionDetails.version.installed &&
-          extensionDetails.version.outdated ? (
-            <IconButton size="large" onClick={updateExtension}>
-              <UpdateIcon />
-            </IconButton>
-          ) : null}
+            extensionDetails.version.outdated && (
+              <IconButton size="large" onClick={updateExtension}>
+                <UpdateIcon />
+              </IconButton>
+            )}
           {extensionDetails.version.installed ? (
             <Button
               color="primary"
@@ -188,9 +188,9 @@ const ExtensionDetailPopup = ({
             <ContentSkeleton />
           ) : (
             <>
-              {extensionDetails.last_update ? (
+              {extensionDetails.last_update && (
                 <Typography variant="body1">{`Last update ${extensionDetails.last_update}`}</Typography>
-              ) : null}
+              )}
               <Typography variant="h6">Description</Typography>
               <Typography variant="body2">
                 {extensionDetails.description}
