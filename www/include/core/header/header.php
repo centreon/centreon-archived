@@ -165,29 +165,6 @@ switch (strlen($p)) {
         break;
 }
 
-/*
- * Define Skin path
- */
-
-$tab_file_css = array();
-$i = 0;
-if ($handle = @opendir("./Themes/Centreon-Light/Color")) {
-    while ($file = @readdir($handle)) {
-        if (is_file("./Themes/Centreon-Light/Color" . "/" . $file)) {
-            $tab_file_css[$i++] = $file;
-        }
-    }
-    @closedir($handle);
-}
-
-$colorfile = "Color/" . $tab_file_css[0];
-
-//Get CSS Order and color
-$DBRESULT = $pearDB->query("SELECT `css_name` FROM `css_color_menu` WHERE `menu_nb` = '" . $level1 . "'");
-if ($DBRESULT->rowCount() && ($elem = $DBRESULT->fetch())) {
-    $colorfile = "Color/" . $elem["css_name"];
-}
-
 //Update Session Table For last_reload and current_page row
 $page = '' . $level1 . $level2 . $level3 . $level4;
 if (empty($page)) {
