@@ -34,7 +34,7 @@
  *
  */
 
-use Core\Domain\Security\ProviderConfiguration\Local\Model\Configuration;
+use Core\Domain\Security\ProviderConfiguration\Local\Model\SecurityPolicy;
 
 class CentreonContact
 {
@@ -363,8 +363,8 @@ class CentreonContact
                 'error_message' =>  _("numbers"),
             ],
             'has_special_characters' => [
-                'pattern' => '/[' . Configuration::SPECIAL_CHARACTERS_LIST . ']/',
-                'error_message' => sprintf(_("special characters among '%s'"), Configuration::SPECIAL_CHARACTERS_LIST),
+                'pattern' => '/[' . SecurityPolicy::SPECIAL_CHARACTERS_LIST . ']/',
+                'error_message' => sprintf(_("special characters among '%s'"), SecurityPolicy::SPECIAL_CHARACTERS_LIST),
             ],
         ];
         $characterPolicyErrorMessages = [];
