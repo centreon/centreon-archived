@@ -36,6 +36,10 @@ class DbUserFactory
      */
     public static function createFromRecord(array $recordData): ?User
     {
+        if (empty($recordData)) {
+            return null;
+        }
+
         $userInfos = [
             'passwords' => []
         ];
@@ -47,7 +51,7 @@ class DbUserFactory
             $userInfos['passwords'][] = new UserPassword(
                 (int) $record['contact_id'],
                 $record['password'],
-                self::createDateTimeImmutableFromTimestamp($record['creation_date']),
+                (new \DateTimeImmutable())->setTimestamp((int) $record['creation_date']),
             );
         }
 

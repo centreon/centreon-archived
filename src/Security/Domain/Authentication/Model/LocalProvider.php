@@ -29,7 +29,7 @@ use Core\Application\Security\User\Repository\ReadUserRepositoryInterface;
 use Core\Application\Security\User\Repository\WriteUserRepositoryInterface;
 use Core\Application\Security\ProviderConfiguration\Local\Repository\ReadConfigurationRepositoryInterface;
 use Core\Domain\Security\User\Model\User;
-use Core\Domain\Security\ProviderConfiguration\Local\Model\Configuration;
+use Core\Domain\Security\ProviderConfiguration\Local\Model\SecurityPolicy;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
 use Centreon\Domain\Log\LoggerTrait;
@@ -133,7 +133,9 @@ class LocalProvider implements ProviderInterface
                 throw ConfigurationException::notFound();
             }
 
-            $this->respectLocalSecurityPolicyOrFail($user, $providerConfiguration, $doesPasswordMatch);
+            $securityPolicy = $providerConfiguration->getSecurityPolicy();
+
+            $this->respectLocalSecurityPolicyOrFail($user, $securityPolicy, $doesPasswordMatch);
         }
 
         if (! $doesPasswordMatch) {
@@ -252,15 +254,15 @@ class LocalProvider implements ProviderInterface
      * Check if local security policy is respected
      *
      * @param User $user
-     * @param Configuration $providerConfiguration
+     * @param SecurityPolicy $securityPolicy
      * @param bool $doesPasswordMatch
      */
     private function respectLocalSecurityPolicyOrFail(
         User $user,
-        Configuration $providerConfiguration,
+        SecurityPolicy $securityPolicy,
         bool $doesPasswordMatch,
     ): void {
-        $isUserBlocked = $this->isUserBlocked($user, $providerConfiguration, $doesPasswordMatch);
+        $isUserBlocked = $this->isUserBlocked($user, $securityPolicy, $doesPasswordMatch);
 
         $this->writeUserRepository->updateBlockingInformation($user);
 
@@ -274,7 +276,7 @@ class LocalProvider implements ProviderInterface
             throw AuthenticationException::userBlocked();
         }
 
-        if ($doesPasswordMatch && $this->isPasswordExpired($user, $providerConfiguration)) {
+        if ($doesPasswordMatch && $this->isPasswordExpired($user, $securityPolicy)) {
             $this->info(
                 '[LOCAL PROVIDER] authentication failed because password is expired',
                 [
@@ -289,19 +291,19 @@ class LocalProvider implements ProviderInterface
      * Check if the user is blocked
      *
      * @param User $user
-     * @param Configuration $providerConfiguration
+     * @param SecurityPolicy $securityPolicy
      * @param bool $doesPasswordMatch
      * @return bool
      */
-    private function isUserBlocked(User $user, Configuration $providerConfiguration, bool $doesPasswordMatch): bool
+    private function isUserBlocked(User $user, SecurityPolicy $securityPolicy, bool $doesPasswordMatch): bool
     {
-        if ($providerConfiguration->getBlockingDuration() === null) {
+        if ($securityPolicy->getBlockingDuration() === null) {
             return false;
         }
 
         if (
             $user->getBlockingTime() !== null
-            && (time() - $user->getBlockingTime()->getTimestamp()) < $providerConfiguration->getBlockingDuration()
+            && (time() - $user->getBlockingTime()->getTimestamp()) < $securityPolicy->getBlockingDuration()
         ) {
             $this->info(
                 'user is blocked',
@@ -330,7 +332,7 @@ class LocalProvider implements ProviderInterface
             );
             $user->setLoginAttempts($user->getLoginAttempts() + 1);
 
-            if ($user->getLoginAttempts() >= $providerConfiguration->getAttempts()) {
+            if ($user->getLoginAttempts() >= $securityPolicy->getAttempts()) {
                 $user->setBlockingTime(new \DateTimeImmutable());
             }
         }
@@ -342,16 +344,16 @@ class LocalProvider implements ProviderInterface
      * Check if the password is expired
      *
      * @param User $user
-     * @param Configuration $providerConfiguration
+     * @param SecurityPolicy $securityPolicy
      * @return bool
      */
-    private function isPasswordExpired(User $user, Configuration $providerConfiguration): bool
+    private function isPasswordExpired(User $user, SecurityPolicy $securityPolicy): bool
     {
-        if ($providerConfiguration->getPasswordExpirationDelay() === null) {
+        if ($securityPolicy->getPasswordExpirationDelay() === null) {
             return false;
         }
 
-        if (in_array($user->getAlias(), $providerConfiguration->getPasswordExpirationExcludedUserAliases())) {
+        if (in_array($user->getAlias(), $securityPolicy->getPasswordExpirationExcludedUserAliases())) {
             $this->info(
                 'skip password expiration policy because user is excluded',
                 [
@@ -361,7 +363,7 @@ class LocalProvider implements ProviderInterface
             return false;
         }
 
-        $expirationDelay = $providerConfiguration->getPasswordExpirationDelay();
+        $expirationDelay = $securityPolicy->getPasswordExpirationDelay();
         $passwordCreationDate = $user->getPassword()->getCreationDate();
 
         if ((time() - $passwordCreationDate->getTimestamp()) > $expirationDelay) {
