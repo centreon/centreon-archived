@@ -10,6 +10,7 @@ import React, { Component } from 'react';
 import clsx from 'clsx';
 
 import logo from '../../../assets/centreon.png';
+
 import styles from './logo.scss';
 
 class Logo extends Component {
