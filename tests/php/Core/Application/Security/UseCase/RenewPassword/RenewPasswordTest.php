@@ -33,6 +33,7 @@ use Core\Application\Security\UseCase\RenewPassword\RenewPassword;
 use Core\Application\Security\UseCase\RenewPassword\RenewPasswordRequest;
 use Core\Domain\Security\ProviderConfiguration\Local\Model\Configuration;
 use Core\Application\Security\User\Repository\ReadUserRepositoryInterface;
+use Core\Domain\Security\ProviderConfiguration\Local\Model\SecurityPolicy;
 use Core\Application\Security\User\Repository\WriteUserRepositoryInterface;
 use Core\Application\Security\UseCase\RenewPassword\RenewPasswordPresenterInterface;
 use Core\Application\Security\ProviderConfiguration\Local\Repository\ReadConfigurationRepositoryInterface;
@@ -136,19 +137,21 @@ class RenewPasswordTest extends TestCase
         $passwordValue = password_hash('toto', \CentreonAuth::PASSWORD_HASH_ALGORITHM);
         $password = new UserPassword(1, $passwordValue, time());
         $user = new User(1, 'admin', $oldPasswords, $password);
-        $securityPolicy = new Configuration(
-            Configuration::MIN_PASSWORD_LENGTH,
+        $securityPolicy = new SecurityPolicy(
+            SecurityPolicy::MIN_PASSWORD_LENGTH,
             true,
             true,
             true,
             true,
             true,
-            Configuration::MIN_ATTEMPTS,
-            Configuration::MIN_BLOCKING_DURATION,
-            Configuration::MIN_PASSWORD_EXPIRATION_DELAY,
+            SecurityPolicy::MIN_ATTEMPTS,
+            SecurityPolicy::MIN_BLOCKING_DURATION,
+            SecurityPolicy::MIN_PASSWORD_EXPIRATION_DELAY,
             [],
-            Configuration::MIN_NEW_PASSWORD_DELAY
+            SecurityPolicy::MIN_NEW_PASSWORD_DELAY
         );
+
+        $configuration = new Configuration($securityPolicy);
 
         $this->readRepository
             ->expects($this->once())
@@ -162,7 +165,7 @@ class RenewPasswordTest extends TestCase
         $this->readConfigurationRepository
             ->expects($this->once())
             ->method('findConfiguration')
-            ->willReturn($securityPolicy);
+            ->willReturn($configuration);
 
         $this->presenter
             ->expects($this->once())
