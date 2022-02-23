@@ -85,7 +85,7 @@ function getWikiVersion($apiWikiURL)
     curl_setopt($curl, CURLOPT_URL, $apiWikiURL);
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($curl, CURLOPT_POST, true);
-    curl_setopt($curl, CURLOPT_HTTPHEADER, 'Content-type: application/x-www-form-urlencoded');
+    curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-type: application/x-www-form-urlencoded'));
     curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
     $content = curl_exec($curl);
     curl_close($curl);
