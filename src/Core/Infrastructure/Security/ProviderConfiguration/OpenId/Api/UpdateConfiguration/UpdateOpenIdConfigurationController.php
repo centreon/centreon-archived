@@ -33,6 +33,12 @@ use Core\Application\Security\ProviderConfiguration\OpenId\UseCase\UpdateOpenIdC
 
 class UpdateOpenIdConfigurationController extends AbstractController
 {
+    /**
+     * @param UpdateOpenIdConfiguration $useCase
+     * @param Request $request
+     * @param UpdateOpenIdConfigurationPresenterInterface $presenter
+     * @return object
+     */
     public function __invoke(
         UpdateOpenIdConfiguration $useCase,
         Request $request,
@@ -46,6 +52,10 @@ class UpdateOpenIdConfigurationController extends AbstractController
         return $presenter->show();
     }
 
+    /**
+     * @param Request $request
+     * @return UpdateOpenIdConfigurationRequest
+     */
     private function createUpdateOpenIdConfigurationRequest(Request $request): UpdateOpenIdConfigurationRequest
     {
         $requestData  = json_decode((string) $request->getContent(), true);

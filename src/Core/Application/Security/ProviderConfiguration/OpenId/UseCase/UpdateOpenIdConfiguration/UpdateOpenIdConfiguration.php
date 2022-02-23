@@ -23,19 +23,37 @@ declare(strict_types=1);
 
 namespace Core\Application\Security\ProviderConfiguration\OpenId\UseCase\UpdateOpenIdConfiguration;
 
+use Core\Application\Common\UseCase\ErrorResponse;
 use Core\Application\Common\UseCase\NoContentResponse;
+use Centreon\Domain\Common\Assertion\AssertionException;
+use Core\Domain\Security\ProviderConfiguration\OpenId\Model\OpenIdConfigurationFactory;
+use Core\Application\Security\ProviderConfiguration\OpenId\Repository\WriteOpenIdConfigurationRepositoryInterface;
 
 class UpdateOpenIdConfiguration
 {
+    /**
+     * @param WriteOpenIdConfigurationRepositoryInterface $repository
+     */
     public function __construct(private WriteOpenIdConfigurationRepositoryInterface $repository)
     {
     }
 
+    /**
+     * @param UpdateOpenIdConfigurationPresenterInterface $presenter
+     * @param UpdateOpenIdConfigurationRequest $request
+     * @return void
+     */
     public function __invoke(
         UpdateOpenIdConfigurationPresenterInterface $presenter,
         UpdateOpenIdConfigurationRequest $request
     ): void {
-        $this->repository->updateSecurityPolicy(OpenIdConfigurationFactory::createFromRequest($request));
+        try {
+            $configuration = OpenIdConfigurationFactory::createFromRequest($request);
+        } catch (AssertionException $ex) {
+            $presenter->setResponseStatus(new ErrorResponse($ex->getMessage()));
+        }
+        $this->repository->updateConfiguration($configuration);
+
         $presenter->setResponseStatus(new NoContentResponse());
     }
 }
