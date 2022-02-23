@@ -26,6 +26,7 @@ namespace Core\Domain\Security\ProviderConfiguration\OpenId\Model;
 class OpenIdConfiguration
 {
     public const DEFAULT_LOGIN_GLAIM = 'preferred_username';
+
     /**
      * @param boolean $isActive
      * @param boolean $isForced
