@@ -263,7 +263,7 @@ class LocalProvider implements ProviderInterface
         bool $doesPasswordMatch,
     ): void {
         $isUserBlocked = false;
-        if ($securityPolicy->getBlockingDuration() !== null) {
+        if ($securityPolicy->getAttempts() !== null && $securityPolicy->getBlockingDuration() !== null) {
             $isUserBlocked = $this->isUserBlocked($user, $securityPolicy, $doesPasswordMatch);
         }
 
