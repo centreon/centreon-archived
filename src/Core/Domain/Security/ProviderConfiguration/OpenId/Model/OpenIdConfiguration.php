@@ -23,6 +23,8 @@ declare(strict_types=1);
 
 namespace Core\Domain\Security\ProviderConfiguration\OpenId\Model;
 
+use Centreon\Domain\Common\Assertion\AssertionException;
+
 class OpenIdConfiguration
 {
     public const DEFAULT_LOGIN_GLAIM = 'preferred_username';
@@ -63,7 +65,28 @@ class OpenIdConfiguration
         private ?string $authenticationType,
         private bool $verifyPeer
     ) {
-        // @todo: Add validation rules.
+        foreach ($trustedClientAddresses as $trustedClientAddress) {
+            if (
+                filter_var($trustedClientAddress, FILTER_VALIDATE_IP) === false
+                && filter_var($trustedClientAddress, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) === false
+            ) {
+                throw AssertionException::ipOrDomain(
+                    $trustedClientAddress,
+                    'OpenIdConfiguration::trustedClientAddresses'
+                );
+            }
+        }
+        foreach ($blacklistClientAddresses as $blacklistClientAddress) {
+            if (
+                filter_var($blacklistClientAddress, FILTER_VALIDATE_IP) === false
+                && filter_var($blacklistClientAddress, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) === false
+            ) {
+                throw AssertionException::ipOrDomain(
+                    $blacklistClientAddress,
+                    'OpenIdConfiguration::blacklistClientAddresses'
+                );
+            }
+        }
     }
 
     /**
@@ -189,7 +212,7 @@ class OpenIdConfiguration
     /**
      * @return boolean
      */
-    public function isVerifyPeer(): bool
+    public function verifyPeer(): bool
     {
         return $this->verifyPeer;
     }
