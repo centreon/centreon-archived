@@ -85,7 +85,7 @@ const LoginPage = (): JSX.Element => {
             alt={t(labelCentreonLogo)}
             aria-label={t(labelCentreonLogo)}
             className={classes.centreonLogo}
-            src={logoCentreon}
+            src={centreonLogo}
           />
           <Typography variant="h5">{t(labelLogin)}</Typography>
           <Formik<LoginFormValues>
