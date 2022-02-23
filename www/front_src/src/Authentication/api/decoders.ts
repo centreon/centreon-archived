@@ -1,6 +1,6 @@
 import { JsonDecoder } from 'ts.data.json';
 
-import { PasswordExpiration, PasswordSecurityPolicy } from '../models';
+import { PasswordExpiration, PasswordSecurityPolicy } from '../Local/models';
 
 const passwordExpirationDecoder = JsonDecoder.object<PasswordExpiration>(
   {
