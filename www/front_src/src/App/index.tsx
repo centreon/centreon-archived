@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { Provider as ReduxProvider } from 'react-redux';
 import Fullscreen from 'react-fullscreen-crossbrowser';
-import { not } from 'ramda';
+import { isNil, not } from 'ramda';
 
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import { Fab } from '@mui/material';
@@ -65,6 +65,21 @@ const App = (): JSX.Element => {
     displayInFullScreen,
     removeFullscreen,
   } = useApp();
+
+  React.useEffect(() => {
+    const bodyElement = document.querySelector('body');
+    if (isNil(bodyElement)) {
+      return;
+    }
+
+    const pendoScriptElement = document.createElement('script');
+
+    pendoScriptElement.type = 'text/javascript';
+    pendoScriptElement.async = true;
+    pendoScriptElement.src = './include/common/javascript/pendo.js';
+
+    bodyElement.append(pendoScriptElement);
+  }, []);
 
   if (!dataLoaded) {
     return <PageLoader />;

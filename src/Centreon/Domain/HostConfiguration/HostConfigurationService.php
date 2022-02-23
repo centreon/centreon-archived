@@ -201,11 +201,10 @@ class HostConfigurationService implements HostConfigurationServiceInterface
                 $this->dataStorageEngine->startTransaction();
             }
 
-            /**
-             * For the moment we are only changing the host properties.
-             */
             $this->debug('Updating host');
             $this->hostConfigurationRepository->updateHost($host);
+
+            $this->addAndUpdateHostMacros($host);
 
             if ($transactionAlreadyStarted === false) {
                 $this->debug('Commit transaction');
@@ -594,5 +593,87 @@ class HostConfigurationService implements HostConfigurationServiceInterface
             new ActionLog('host', $host->getId(), $host->getName(), $action, $this->contact->getId()),
             $actionsDetails
         );
+    }
+
+    /**
+     * Add and update all host macros.
+     *
+     * @param Host $host
+     * @throws Exception\HostMacroServiceException
+     */
+    private function addAndUpdateHostMacros(Host $host): void
+    {
+        $this->debug('Add and update host macros');
+        $existingHostMacros = $this->hostMacroService->findHostMacros($host);
+        $this->updateHostMacros($host, $existingHostMacros);
+        $this->addNewHostMacros($host, $existingHostMacros);
+    }
+
+    /**
+     * Update all macros on the host that already exist.
+     * We use the existing macros to identify which ones need to be updated in the host.
+     *
+     * @param Host $host
+     * @param HostMacro[] $existingHostMacros
+     * @throws Exception\HostMacroServiceException
+     */
+    private function updateHostMacros(Host $host, array $existingHostMacros): void
+    {
+        $this->debug('Update existing host macros');
+        foreach ($host->getMacros() as $macroToUpdate) {
+            foreach ($existingHostMacros as $existingHostMacro) {
+                if ($macroToUpdate->getName() === $existingHostMacro->getName()) {
+                    $this->debug('Update macro ' . $macroToUpdate->getName());
+                    $this->hostMacroService->updateMacro($macroToUpdate);
+                    break;
+                }
+            }
+        }
+    }
+
+    /**
+     *  @inheritDoc
+     */
+    public function findHostTemplatesByHost(Host $host): array
+    {
+        try {
+            return $this->hostConfigurationRepository->findHostTemplatesByHost($host);
+        } catch (\Throwable $ex) {
+            throw new HostConfigurationException(_('Error when searching for host templates'), 0, $ex);
+        }
+    }
+
+    /**
+     * Add the host macros that does not exist.
+     * The host macros added will be those that are not present in the $existingHostMacros list.
+     *
+     * @param Host $host
+     * @param HostMacro[] $existingHostMacros
+     * @throws Exception\HostMacroServiceException
+     */
+    private function addNewHostMacros(Host $host, array $existingHostMacros): void
+    {
+        $this->debug('Add new host macros');
+        foreach ($host->getMacros() as $hostMacro) {
+            $isHostMacroFound = false;
+            foreach ($existingHostMacros as $existingHostMacro) {
+                if ($hostMacro->getName() === $existingHostMacro->getName()) {
+                    $isHostMacroFound = true;
+                    break;
+                }
+            }
+            if (! $isHostMacroFound) {
+                $this->debug(
+                    'Add new host macro',
+                    [],
+                    fn () => [
+                        'name' => $hostMacro->getName(),
+                        'is_password' => $hostMacro->isPassword(),
+                        'value' => (! $hostMacro->isPassword()) ? $hostMacro->getValue() : '*****'
+                    ]
+                );
+                $this->hostMacroService->addMacroToHost($host, $hostMacro);
+            }
+        }
     }
 }
