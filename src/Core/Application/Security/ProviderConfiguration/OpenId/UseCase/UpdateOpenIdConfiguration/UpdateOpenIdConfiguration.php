@@ -51,6 +51,7 @@ class UpdateOpenIdConfiguration
             $configuration = OpenIdConfigurationFactory::createFromRequest($request);
         } catch (AssertionException $ex) {
             $presenter->setResponseStatus(new ErrorResponse($ex->getMessage()));
+            return;
         }
         $this->repository->updateConfiguration($configuration);
 
