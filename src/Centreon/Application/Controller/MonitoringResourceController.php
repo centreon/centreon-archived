@@ -1028,14 +1028,12 @@ class MonitoringResourceController extends AbstractController
     /**
      * Endpoint: Replaces macros in the URL provided and redirect to it.
      *
-     * @param Request $request
      * @param int $hostId
      * @param int|null $serviceId
      * @param string $urlType
      * @return View
      */
     public function redirectResourceExternalLink(
-        Request $request,
         int $hostId,
         ?int $serviceId,
         string $urlType
@@ -1069,6 +1067,9 @@ class MonitoringResourceController extends AbstractController
                 return View::create(null, Response::HTTP_NOT_FOUND, []);
             }
         }
+
+        // replace relative url by absolute url
+        $redirectUrl = preg_replace('/^(\.\/)/', $this->getBaseUri() . '/', $redirectUrl);
 
         return View::createRedirect($redirectUrl);
     }
