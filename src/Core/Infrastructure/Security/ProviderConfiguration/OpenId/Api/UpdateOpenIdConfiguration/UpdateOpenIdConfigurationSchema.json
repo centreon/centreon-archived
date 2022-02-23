@@ -41,22 +41,22 @@
         }
       },
       "base_url": {
-        "type": "string"
+        "type": ["string", "null"]
       },
       "authorization_endpoint": {
-        "type": "string"
+        "type": ["string", "null"]
       },
       "token_endpoint": {
-        "type": "string"
+        "type": ["string", "null"]
       },
       "introspection_token_endpoint": {
-        "type": "string"
+        "type": ["string", "null"]
       },
       "userinfo_endpoint": {
-        "type": "string"
+        "type": ["string", "null"]
       },
       "endsession_endpoint": {
-        "type": "string"
+        "type": ["string", "null"]
       },
       "connection_scopes": {
         "type": "array",
@@ -65,13 +65,13 @@
         }
       },
       "login_claim": {
-        "type": "string"
+        "type": ["string", "null"]
       },
       "client_id": {
-        "type": "string"
+        "type": ["string", "null"]
       },
       "client_secret": {
-        "type": "string"
+        "type": ["string", "null"]
       },
       "authentication_type": {
         "enum": ["client_secret_post", "client_secret_basic"]
