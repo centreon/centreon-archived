@@ -7,7 +7,7 @@ Feature:
     Given a running instance of Centreon Web API
     #And the endpoints are described in Centreon Web API documentation
 
-  Scenario: Get user parameters
+  Scenario: Check blocking policy
 
     When I log in with "admin" / "bad_password"
     Then the response code should be "401"
