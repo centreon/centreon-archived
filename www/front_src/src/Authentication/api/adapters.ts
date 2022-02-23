@@ -1,4 +1,7 @@
-import { PasswordSecurityPolicy, PasswordSecurityPolicyToAPI } from '../models';
+import {
+  PasswordSecurityPolicy,
+  PasswordSecurityPolicyToAPI,
+} from '../Local/models';
 
 export const adaptPasswordSecurityPolicyFromAPI = (
   securityPolicy: PasswordSecurityPolicy,
