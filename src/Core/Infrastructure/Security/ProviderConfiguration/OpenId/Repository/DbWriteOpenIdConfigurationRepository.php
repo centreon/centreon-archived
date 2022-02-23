@@ -83,7 +83,7 @@ class DbWriteOpenIdConfigurationRepository extends AbstractRepositoryDRB impleme
             'client_id' => $configuration->getClientId(),
             'client_secret' => $configuration->getClientSecret(),
             'authentication_type' => $configuration->getAuthenticationType(),
-            'verify_peer' => $configuration->isVerifyPeer()
+            'verify_peer' => $configuration->verifyPeer()
         ];
     }
 }

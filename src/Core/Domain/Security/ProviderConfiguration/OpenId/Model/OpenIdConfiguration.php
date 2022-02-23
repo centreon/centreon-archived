@@ -209,7 +209,7 @@ class OpenIdConfiguration
     /**
      * @return boolean
      */
-    public function isVerifyPeer(): bool
+    public function verifyPeer(): bool
     {
         return $this->verifyPeer;
     }

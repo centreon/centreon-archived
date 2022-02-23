@@ -123,7 +123,7 @@ class UpdateOpenIdConfigurationTest extends TestCase
             ->method('setResponseStatus')
             ->with(new ErrorResponse(
                 '[OpenIdConfiguration::trustedClientAddresses] The value "abcd_.@" '
-                . 'was expected to be a valid ip/dns address'
+                . 'was expected to be a valid ip address or domain name'
             ));
 
         $useCase = new UpdateOpenIdConfiguration($this->repository);
