@@ -229,7 +229,7 @@ input[type="checkbox"]  {
     width: 7px;
     height: 7px;
     transform: scale(0);
-    background: rgb(51, 122, 183);
+    background: var(--md-radio-after-background-color);
 }
 
 

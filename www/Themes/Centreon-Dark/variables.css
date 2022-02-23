@@ -48,4 +48,6 @@
     --option-color:  #fff;
     --form-table-list-header-h3-font-color: #00bfb3;
     --info-box-h4-font-color: #fff;
+    --md-radio-checked-backgroud-color: var(--color-primary-light);
+    --md-radio-after-background-color: var(--md-radio-checked-backgroud-color);
 }

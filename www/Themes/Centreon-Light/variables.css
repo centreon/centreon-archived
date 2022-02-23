@@ -11,4 +11,6 @@
     --ui-background-color: none;
     --global-view-ui-active-tabs-border-color: none;
     --global-view-ui-active-tabs-border-bottom-color: var(--ui-anchor-state-active-visited-font-color);
+    --md-radio-checked-backgroud-color: #10069F;
+    --md-radio-after-background-color: var(--md-radio-checked-backgroud-color);
 }
