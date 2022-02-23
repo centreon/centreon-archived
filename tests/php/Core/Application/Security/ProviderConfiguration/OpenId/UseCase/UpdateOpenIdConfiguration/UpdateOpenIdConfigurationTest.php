@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ namespace Tests\Core\Application\Security\ProviderConfiguration\OpenId\UseCase\U
 
 use PHPUnit\Framework\TestCase;
 use Core\Application\Common\UseCase\NoContentResponse;
+use Core\Application\Common\UseCase\ErrorResponse;
 use Core\Application\Security\ProviderConfiguration\OpenId\Repository\WriteOpenIdConfigurationRepositoryInterface;
 use Core\Application\Security\ProviderConfiguration\OpenId\UseCase\UpdateOpenIdConfiguration\{
     UpdateOpenIdConfiguration,
@@ -92,5 +93,41 @@ class UpdateOpenIdConfigurationTest extends TestCase
         $useCase($this->presenter, $request);
     }
 
-    //@todo: Tests useCase with Invalid Parameters
+    /**
+     * Test that the useCase is correctly executed with correct parameters
+     *
+     * @return void
+     */
+    public function testUseCaseWithInvalidParameters(): void
+    {
+        $request = new UpdateOpenIdConfigurationRequest();
+        $request->isActive = true;
+        $request->isForced = true;
+        $request->trustedClientAddresses = ["abcd_.@"];
+        $request->blacklistClientAddresses = [];
+        $request->baseUrl = 'http://127.0.0.1/auth/openid-connect';
+        $request->authorizationEndpoint = '/authorization';
+        $request->tokenEndpoint = '/token';
+        $request->introspectionTokenEndpoint = '/introspect';
+        $request->userInformationsEndpoint = '/userinfo';
+        $request->endSessionEndpoint = '/logout';
+        $request->connectionScopes = [];
+        $request->loginClaim = 'preferred_username';
+        $request->clientId = 'MyCl1ientId';
+        $request->clientSecret = 'MyCl1ientSuperSecr3tKey';
+        $request->authenticationType = 'client_secret_post';
+        $request->verifyPeer = false;
+
+        $this->presenter
+            ->expects($this->once())
+            ->method('setResponseStatus')
+            ->with(new ErrorResponse(
+                '[OpenIdConfiguration::trustedClientAddresses] The value "abcd_.@" '
+                . 'was expected to be a valid ip/dns address'
+            ));
+
+        $useCase = new UpdateOpenIdConfiguration($this->repository);
+
+        $useCase($this->presenter, $request);
+    }
 }
