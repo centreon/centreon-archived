@@ -45,6 +45,22 @@ class DbWriteUserRepository extends AbstractRepositoryDRB implements WriteUserRe
     /**
      * @inheritDoc
      */
+    public function updateBlockingInformation(User $user): void
+    {
+        $statement = $this->db->prepare(
+            'UPDATE contact
+            SET login_attempts = :loginAttempts, blocking_time = :blockingTime
+            WHERE contact_id = :contactId'
+        );
+        $statement->bindValue(':loginAttempts', $user->getLoginAttempts(), \PDO::PARAM_INT);
+        $statement->bindValue(':blockingTime', $user->getBlockingTime()?->getTimestamp(), \PDO::PARAM_INT);
+        $statement->bindValue(':contactId', $user->getId(), \PDO::PARAM_INT);
+        $statement->execute();
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function renewPassword(User $user): void
     {
         $this->addPassword($user->getPassword());
@@ -67,7 +83,7 @@ class DbWriteUserRepository extends AbstractRepositoryDRB implements WriteUserRe
         );
         $statement->bindValue(':password', $password->getPasswordValue(), \PDO::PARAM_STR);
         $statement->bindValue(':contactId', $password->getUserId(), \PDO::PARAM_INT);
-        $statement->bindValue(':creationDate', $password->getCreationDate(), \PDO::PARAM_INT);
+        $statement->bindValue(':creationDate', $password->getCreationDate()->getTimestamp(), \PDO::PARAM_INT);
         $statement->execute();
     }
 

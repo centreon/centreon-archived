@@ -81,6 +81,6 @@ class UserPasswordFactory
         }
         $newPasswordValue = password_hash($password, \CentreonAuth::PASSWORD_HASH_ALGORITHM);
 
-        return new UserPassword($user->getId(), $newPasswordValue, time());
+        return new UserPassword($user->getId(), $newPasswordValue, new \DateTimeImmutable());
     }
 }

@@ -85,9 +85,6 @@ class FindUsersControllerTest extends TestCase
             ->method('getToken')
             ->willReturn($token);
 
-        /**
-         * @var ContainerInterface&\PHPUnit\Framework\MockObject\MockObject
-         */
         $this->container = $this->createMock(ContainerInterface::class);
         $this->container->expects($this->any())
             ->method('has')

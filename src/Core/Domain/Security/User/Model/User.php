@@ -26,21 +26,25 @@ namespace Core\Domain\Security\User\Model;
 class User
 {
     /**
-     * @param integer $id
+     * @param int $id
      * @param string $alias
      * @param UserPassword[] $oldPasswords
      * @param UserPassword $password
+     * @param int|null $loginAttempts
+     * @param \DateTimeImmutable|null $blockingTime
      */
     public function __construct(
         private int $id,
         private string $alias,
         private array $oldPasswords,
-        private UserPassword $password
+        private UserPassword $password,
+        private ?int $loginAttempts,
+        private ?\DateTimeImmutable $blockingTime,
     ) {
     }
 
     /**
-     * @return integer
+     * @return int
      */
     public function getId(): int
     {
@@ -73,11 +77,49 @@ class User
 
     /**
      * @param UserPassword $password
-     * @return self
+     * @return static
      */
-    public function setPassword(UserPassword $password): self
+    public function setPassword(UserPassword $password): static
     {
         $this->password = $password;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getLoginAttempts(): ?int
+    {
+        return $this->loginAttempts;
+    }
+
+    /**
+     * @param int|null $loginAttempts
+     * @return static
+     */
+    public function setLoginAttempts(?int $loginAttempts): static
+    {
+        $this->loginAttempts = $loginAttempts;
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTimeImmutable|null
+     */
+    public function getBlockingTime(): ?\DateTimeImmutable
+    {
+        return $this->blockingTime;
+    }
+
+    /**
+     * @param \DateTimeImmutable|null $blockingTime
+     * @return static
+     */
+    public function setBlockingTime(?\DateTimeImmutable $blockingTime): static
+    {
+        $this->blockingTime = $blockingTime;
+
         return $this;
     }
 }
