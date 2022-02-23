@@ -1,11 +1,11 @@
 import * as React from 'react';
 
 import { Formik } from 'formik';
-import { always, cond, isNil, lte } from 'ramda';
+import { isNil } from 'ramda';
 import { useTranslation } from 'react-i18next';
-import { useAtomValue, useUpdateAtom } from 'jotai/utils';
+import { useAtomValue } from 'jotai/utils';
 
-import { Paper, Typography, useTheme } from '@mui/material';
+import { Paper, Typography } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 
 import { LoadingSkeleton } from '@centreon/ui';
@@ -15,10 +15,7 @@ import Copyright from '../Footer/Copyright';
 import { areUserParametersLoadedAtom } from '../Main/useUser';
 import { MainLoaderWithoutTranslation } from '../Main/MainLoader';
 import Wallpaper from '../components/Wallpaper';
-import centreonWallpaperXl from '../assets/centreon-wallpaper-xl.jpg';
-import centreonWallpaperLg from '../assets/centreon-wallpaper-lg.jpg';
-import centreonWallpaperSm from '../assets/centreon-wallpaper-sm.jpg';
-import { loadImageDerivedAtom } from '../components/Wallpaper/loadImageAtom';
+import useLoadWallpaper from '../components/Wallpaper/useLoadWallpaper';
 
 import useValidationSchema from './validationSchema';
 import { LoginFormValues } from './models';
@@ -71,25 +68,9 @@ const LoginPage = (): JSX.Element => {
   const validationSchema = useValidationSchema();
 
   const { submitLoginForm, platformVersions } = useLogin();
+  useLoadWallpaper();
+
   const areUserParametersLoaded = useAtomValue(areUserParametersLoadedAtom);
-
-  const loadImage = useUpdateAtom(loadImageDerivedAtom);
-
-  const theme = useTheme();
-
-  const imagePath = React.useMemo(
-    (): string =>
-      cond<number, string>([
-        [lte(theme.breakpoints.values.xl), always(centreonWallpaperXl)],
-        [lte(theme.breakpoints.values.lg), always(centreonWallpaperLg)],
-        [lte(theme.breakpoints.values.sm), always(centreonWallpaperSm)],
-      ])(window.screen.width),
-    [],
-  );
-
-  React.useEffect((): void => {
-    loadImage(imagePath);
-  }, []);
 
   if (areUserParametersLoaded || isNil(areUserParametersLoaded)) {
     return <MainLoaderWithoutTranslation />;
