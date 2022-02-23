@@ -21,23 +21,24 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\Infrastructure\Security\ProviderConfiguration\Local\Api\UpdateConfiguration;
+namespace Tests\Core\Infrastructure\Security\ProviderConfiguration\OpenId\Api\UpdateOpenIdConfiguration;
 
 use PHPUnit\Framework\TestCase;
+use Centreon\Domain\Contact\Contact;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Centreon\Domain\Contact\Contact;
-use Core\Application\Security\ProviderConfiguration\Local\UseCase\UpdateConfiguration\UpdateConfiguration;
-use Core\Infrastructure\Security\ProviderConfiguration\Local\Api\UpdateConfiguration\UpdateConfigurationController;
-use Core\Infrastructure\Security\ProviderConfiguration\Local\Api\Exception\ConfigurationException;
-use Core\Application\Security\ProviderConfiguration\Local\UseCase\UpdateConfiguration\{
-    UpdateConfigurationPresenterInterface
+use Core\Infrastructure\Security\ProviderConfiguration\OpenId\Api\UpdateOpenIdConfiguration\{
+    UpdateOpenIdConfigurationController
+};
+use Core\Application\Security\ProviderConfiguration\OpenId\UseCase\UpdateOpenIdConfiguration\{
+    UpdateOpenIdConfiguration,
+    UpdateOpenIdConfigurationPresenterInterface
 };
 
-class UpdateConfigurationControllerTest extends TestCase
+class UpdateOpenIdConfigurationControllerTest extends TestCase
 {
     /**
      * @var Request&\PHPUnit\Framework\MockObject\MockObject
@@ -45,12 +46,12 @@ class UpdateConfigurationControllerTest extends TestCase
     private $request;
 
     /**
-     * @var UpdateConfigurationPresenterInterface&\PHPUnit\Framework\MockObject\MockObject
+     * @var UpdateOpenIdConfigurationPresenterInterface&\PHPUnit\Framework\MockObject\MockObject
      */
     private $presenter;
 
     /**
-     * @var UpdateConfiguration&\PHPUnit\Framework\MockObject\MockObject
+     * @var UpdateOpenIdConfiguration&\PHPUnit\Framework\MockObject\MockObject
      */
     private $useCase;
 
@@ -61,8 +62,8 @@ class UpdateConfigurationControllerTest extends TestCase
 
     public function setUp(): void
     {
-        $this->presenter = $this->createMock(UpdateConfigurationPresenterInterface::class);
-        $this->useCase = $this->createMock(UpdateConfiguration::class);
+        $this->presenter = $this->createMock(UpdateOpenIdConfigurationPresenterInterface::class);
+        $this->useCase = $this->createMock(UpdateOpenIdConfiguration::class);
 
         $timezone = new \DateTimeZone('Europe/Paris');
         $adminContact = (new Contact())
@@ -110,16 +111,12 @@ class UpdateConfigurationControllerTest extends TestCase
     /**
      * Test that a correct exception is thrown when body is invalid.
      */
-    public function testCreateUpdateConfigurationRequestWithInvalidBody(): void
+    public function testCreateUpdateOpenIdConfigurationRequestWithInvalidBody(): void
     {
-        $controller = new UpdateConfigurationController();
+        $controller = new UpdateOpenIdConfigurationController();
         $controller->setContainer($this->container);
 
-        $invalidPayload = json_encode([
-            'password_security_policy' => [
-                'has_uppercase' => true,
-            ],
-        ]);
+        $invalidPayload = json_encode([]);
         $this->request
             ->expects($this->once())
             ->method('getContent')
@@ -130,31 +127,30 @@ class UpdateConfigurationControllerTest extends TestCase
     }
 
     /**
-     * Test that use is called when body is valid.
+     * Test that the controller correctly send the request to the useCase with valid body.
      */
-    public function testCreateUpdateConfigurationRequestWithValidBody(): void
+    public function testCreateUpdateOpenIdConfigurationRequestWithValidBody(): void
     {
-        $controller = new UpdateConfigurationController();
+        $controller = new UpdateOpenIdConfigurationController();
         $controller->setContainer($this->container);
 
         $validPayload = json_encode([
-            'password_security_policy' => [
-                "password_min_length" => 12,
-                "has_uppercase" => true,
-                "has_lowercase" => true,
-                "has_number" => true,
-                "has_special_character" => true,
-                "attempts" => 6,
-                "blocking_duration" => 900,
-                "password_expiration" => [
-                    'expiration_delay' => 7776000,
-                    'excluded_users' => [
-                        'admin',
-                    ],
-                ],
-                "can_reuse_passwords" => true,
-                "delay_before_new_password" => 3600,
-            ],
+            'is_active' => true,
+            'is_forced' => true,
+            'trusted_client_addresses' => [],
+            'blacklist_client_addresses' => [],
+            'base_url' => 'http://127.0.0.1/auth/openid-connect',
+            'authorization_endpoint' => '/authorization',
+            'token_endpoint' => '/token',
+            'introspection_token_endpoint' => '/introspect',
+            'userinfo_endpoint' => '/userinfo',
+            'endsession_endpoint' => '/logout',
+            'connection_scopes' => [],
+            'login_claim' => 'preferred_username',
+            'client_id' => 'MyCl1ientId',
+            'client_secret' => 'MyCl1ientSuperSecr3tKey',
+            'authentication_type' => 'client_secret_post',
+            'verify_peer' => false
         ]);
 
         $this->request

@@ -30,8 +30,6 @@ use Core\Application\Security\UseCase\LoginSession\LoginSessionRequest;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Centreon\Domain\Authentication\Exception\AuthenticationException;
-use JsonSchema\Validator;
-use JsonSchema\Constraints\Constraint;
 
 class LoginSessionController extends AbstractController
 {
@@ -95,43 +93,5 @@ class LoginSessionController extends AbstractController
         $loginSessionRequest->clientIp = $request->getClientIp();
 
         return $loginSessionRequest;
-    }
-
-    /**
-     * Validate the data sent.
-     *
-     * @param Request $request Request sent by client
-     * @param string $jsonValidationFile Json validation file
-     * @throws \InvalidArgumentException
-     */
-    private function validateDataSent(Request $request, string $jsonValidationFile): void
-    {
-        $receivedData = json_decode((string) $request->getContent(), true);
-        if (!is_array($receivedData)) {
-            throw new \InvalidArgumentException('Error when decoding your sent data');
-        }
-        $receivedData = Validator::arrayToObjectRecursive($receivedData);
-        $validator = new Validator();
-        $validator->validate(
-            $receivedData,
-            (object) [
-                '$ref' => 'file://' . realpath(
-                    $jsonValidationFile
-                )
-            ],
-            Constraint::CHECK_MODE_VALIDATE_SCHEMA
-        );
-
-        if (!$validator->isValid()) {
-            $message = '';
-            foreach ($validator->getErrors() as $error) {
-                $message .= sprintf("[%s] %s\n", $error['property'], $error['message']);
-            }
-            throw new \InvalidArgumentException($message);
-        }
-
-        if ($request->getClientIp() === null) {
-            throw new \InvalidArgumentException('Invalid address');
-        }
     }
 }
