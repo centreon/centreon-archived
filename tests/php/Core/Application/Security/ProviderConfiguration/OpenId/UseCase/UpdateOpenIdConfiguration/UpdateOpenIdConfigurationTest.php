@@ -69,7 +69,7 @@ class UpdateOpenIdConfigurationTest extends TestCase
         $request->introspectionTokenEndpoint = '/introspect';
         $request->userInformationsEndpoint = '/userinfo';
         $request->endSessionEndpoint = '/logout';
-        $request->connectionScope = [];
+        $request->connectionScopes = [];
         $request->loginClaim = 'preferred_username';
         $request->clientId = 'MyCl1ientId';
         $request->clientSecret = 'MyCl1ientSuperSecr3tKey';

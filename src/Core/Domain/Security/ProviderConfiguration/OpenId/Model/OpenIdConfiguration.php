@@ -38,7 +38,7 @@ class OpenIdConfiguration
      * @param string|null $introspectionTokenEndpoint
      * @param string|null $userInformationsEndpoint
      * @param string|null $endSessionEndpoint
-     * @param string[] $connectionScope
+     * @param string[] $connectionScopes
      * @param string|null $loginClaim
      * @param string|null $clientId
      * @param string|null $clientSecret
@@ -149,9 +149,9 @@ class OpenIdConfiguration
     /**
      * @return string[]
      */
-    public function getConnectionScope(): array
+    public function getConnectionScopes(): array
     {
-        return $this->connectionScope;
+        return $this->connectionScopes;
     }
 
     /**
