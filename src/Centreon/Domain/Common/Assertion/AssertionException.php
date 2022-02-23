@@ -236,7 +236,7 @@ class AssertionException extends \InvalidArgumentException
      * @param string|null $propertyPath Property's path (ex: Host::maxCheckAttempts)
      * @return self
      */
-    public static function ipOrDns(string $value, string $propertyPath = null): self
+    public static function ipOrDomain(string $value, string $propertyPath = null): self
     {
         return new self(
             sprintf(
