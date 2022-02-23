@@ -10,7 +10,7 @@ import makeStyles from '@mui/styles/makeStyles';
 
 import { LoadingSkeleton } from '@centreon/ui';
 
-import logoCentreon from '../assets/centreon.png';
+import centreonLogo from '../assets/centreon.png';
 import Copyright from '../Footer/Copyright';
 import { areUserParametersLoadedAtom } from '../Main/useUser';
 import { MainLoaderWithoutTranslation } from '../Main/MainLoader';
