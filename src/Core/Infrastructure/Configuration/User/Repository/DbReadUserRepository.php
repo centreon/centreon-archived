@@ -48,6 +48,7 @@ class DbReadUserRepository extends AbstractRepositoryDRB implements ReadUserRepo
             'alias' => 'contact_alias',
             'name' => 'contact_name',
             'email' => 'contact_email',
+            'provider_name' => 'contact_auth_type',
         ]);
     }
 

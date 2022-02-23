@@ -22,6 +22,9 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\HostConfiguration\Interfaces\HostMacro;
 
+use Centreon\Domain\HostConfiguration\Host;
+use Centreon\Domain\HostConfiguration\HostMacro;
+
 /**
  * This interface gathers all the reading operations on the repository.
  *
@@ -29,4 +32,11 @@ namespace Centreon\Domain\HostConfiguration\Interfaces\HostMacro;
  */
 interface HostMacroReadRepositoryInterface
 {
+    /**
+     * Find all macros linked to a host.
+     *
+     * @param Host $host
+     * @return HostMacro[]
+     */
+    public function findAllByHost(Host $host): array;
 }

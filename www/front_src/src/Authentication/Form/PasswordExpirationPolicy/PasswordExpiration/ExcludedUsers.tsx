@@ -46,10 +46,24 @@ const ExcludedUsers = (): JSX.Element => {
   const { t } = useTranslation();
   const { values, setFieldValue } = useFormikContext<FormikValues>();
 
-  const getEndpoint = (parameters): string =>
+  const getEndpoint = ({ search, ...parameters }): string =>
     buildListingEndpoint({
       baseEndpoint: contactsEndpoint,
-      parameters,
+      parameters: {
+        ...parameters,
+        search: {
+          conditions: [
+            {
+              field: 'provider_name',
+              values: {
+                $eq: 'local',
+              },
+            },
+            ...(search?.conditions || []),
+          ].filter(Boolean),
+        },
+        sort: { alias: 'ASC' },
+      },
     });
 
   const getRenderedOptionText = React.useCallback((option): JSX.Element => {
