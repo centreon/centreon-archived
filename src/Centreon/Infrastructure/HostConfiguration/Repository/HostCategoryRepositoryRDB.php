@@ -28,6 +28,7 @@ use Centreon\Domain\HostConfiguration\Exception\HostCategoryException;
 use Centreon\Domain\HostConfiguration\Interfaces\HostCategory\HostCategoryReadRepositoryInterface;
 use Centreon\Domain\HostConfiguration\Interfaces\HostCategory\HostCategoryWriteRepositoryInterface;
 use Centreon\Domain\HostConfiguration\Model\HostCategory;
+use Centreon\Domain\HostConfiguration\Host;
 use Centreon\Domain\RequestParameters\RequestParameters;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\HostConfiguration\Repository\Model\HostCategoryFactoryRdb;
@@ -365,5 +366,30 @@ class HostCategoryRepositoryRDB extends AbstractRepositoryDRB implements
             return HostCategoryFactoryRdb::create($result);
         }
         return null;
+    }
+
+    /**
+     * Find HostCategories by host id
+     *
+     * @param Host $host
+     * @return HostCategory[]
+     */
+    public function findAllByHost(Host $host): array
+    {
+        $request = $this->translateDbName(
+            'SELECT * FROM `:db`.hostcategories hc
+            JOIN `:db`.hostcategories_relation hc_rel ON hc.hc_id = hc_rel.hostcategories_hc_id
+            WHERE hc_rel.host_host_id = :host_id
+            AND hc.level IS NULL'
+        );
+        $statement = $this->db->prepare($request);
+        $statement->bindValue(':host_id', $host->getId(), \PDO::PARAM_INT);
+        $statement->execute();
+
+        $hostCategories = [];
+        while (($record = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
+            $hostCategories[] = HostCategoryFactoryRdb::create($record);
+        }
+        return $hostCategories;
     }
 }
