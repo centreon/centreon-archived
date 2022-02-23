@@ -135,13 +135,13 @@ if ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
     />
 <?php
     // Override variables CSS
-        if ($variablesThemeCSS !== null) {
-            print "<link "
-                . "href='./Themes/" . $variablesThemeCSS . "/variables.css' "
-                . "rel='stylesheet' type='text/css' "
-                . "/>\n";
-        }
-        // == Declare CSS for modules
+    if ($variablesThemeCSS !== null) {
+        print "<link "
+            . "href='./Themes/" . $variablesThemeCSS . "/variables.css' "
+            . "rel='stylesheet' type='text/css' "
+            . "/>\n";
+    }
+    // == Declare CSS for modules
         foreach ($centreon->modules as $moduleName => $infos) {
             if (file_exists(__DIR__ . "/../../../www/modules/" . $moduleName . "/static/css/styles.css")) {
                 print "<link "
