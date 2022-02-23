@@ -70,7 +70,10 @@ class OpenIdConfiguration
                 filter_var($trustedClientAddress, FILTER_VALIDATE_IP) === false
                 && filter_var($trustedClientAddress, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) === false
             ) {
-                throw AssertionException::ipOrDomain($trustedClientAddress, 'OpenIdConfiguration::trustedClientAddresses');
+                throw AssertionException::ipOrDomain(
+                    $trustedClientAddress,
+                    'OpenIdConfiguration::trustedClientAddresses'
+                );
             }
         }
         foreach ($blacklistClientAddresses as $blacklistClientAddress) {
