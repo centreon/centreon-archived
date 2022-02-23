@@ -88,12 +88,12 @@ $replacements = [
     $configuration['centreon_varlib'],
 ];
 
-$centreonEtcPath = rtrim($configuration['centreon_etc'], '/');
+$centreonPath = '/usr/share/centreon';
 
 /**
  * centreon.conf.php
  */
-$centreonConfFile = $centreonEtcPath . '/centreon.conf.php';
+$centreonConfFile = $centreonPath . '/../../../etc/centreon/centreon.conf.php';
 $contents = file_get_contents('../../var/configFileTemplate');
 $contents = preg_replace($patterns, $replacements, $contents);
 file_put_contents($centreonConfFile, $contents);
@@ -104,7 +104,7 @@ chgrp($centreonConfFile, 'apache');
 /**
  * conf.pm
  */
-$centreonConfPmFile = $centreonEtcPath . '/conf.pm';
+$centreonConfPmFile = $centreonPath . '/../../../etc/centreon/conf.pm';
 $contents = file_get_contents('../../var/configFilePmTemplate');
 $contents = preg_replace($patterns, $replacements, $contents);
 file_put_contents($centreonConfPmFile, $contents);
