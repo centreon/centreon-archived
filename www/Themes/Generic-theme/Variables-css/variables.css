@@ -47,6 +47,7 @@
     --md-radio-input-checked-label-before-border-color: var(--color-curious-blue);
     --md-radio-label-before-border-color : var(--color-black-rgba-54);
     --md-radio-label-after-background : var(--color-curious-blue);
+    --md-radio-after-background-color: var(--color-curious-blue);
     /******************/
 
     /** select **/
