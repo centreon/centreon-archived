@@ -53,9 +53,15 @@
     --select2-results-header-color: #2196F3;
     --placeholder-font-color: var(--body-color);
     --select2-dropdown-border-color: var(--body-background);
-    --select2-result-option-highlighted-aria-selected-true-background-color: #2196F3;
+    --select2-result-option-highlighted-aria-selected-true-background-color: #10069f;
     --select2-results-background-color: var(--body-background);
     --select2-results-option-font-color: #fff;
     --select2-results-option-highlighted-color: #fff;
     --selected2-results-header-border-bottom-color: var(--body-color);
+    --select2-selection-multiple-color: var(--body-color);
+    --select2-selection-multiple-border-color: #181a1b;
+    --select2-results-option-highlighted-background-color: var(--body-color);
+    --select2-selection-multiple-content-background-color: var(--select2-selection-multiple-border-color);
+    --select2-selection-choice-remove-background-color: var(--select2-selection-multiple-border-color);
+    --select2-results-option-highlighted-color-aria-selected: #2196f3;
 }
