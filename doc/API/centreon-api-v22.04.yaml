@@ -3561,7 +3561,7 @@ paths:
     put:
       tags:
         - Administration
-      summary: update local provider configuration
+      summary: update openid provider configuration
       requestBody:
         required: true
         content:
