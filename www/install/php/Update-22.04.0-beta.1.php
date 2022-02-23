@@ -135,6 +135,50 @@ try {
         ADD `login_attempts` INT(11) UNSIGNED DEFAULT NULL,
         ADD `blocking_time` BIGINT(20) UNSIGNED DEFAULT NULL"
     );
+
+    /**
+     * Add new UnifiedSQl broker output
+     */
+    $errorMessage = 'Unable to update cb_type';
+    $statement = $pearDB->query(
+        "SELECT cb_module_id FROM cb_module
+            WHERE name = 'Storage'"
+    );
+    $moduleId = $statement->fetch();
+    $statement = $pearDB->query(
+    "INSERT INTO `cb_type` (`type_name`, `type_shortname`, `cb_module_id`)
+        VALUES ('Unified SQL', 'unified_sql', $moduleId)"
+    );
+    $typeId = $pearDB->lastInsertId();
+
+    $errorMessage = 'Unable to update cb_tag_type_relation';
+    $statement = $pearDB->query(
+        "SELECT cb_module_id FROM cb_module
+            WHERE name = 'Storage'"
+    );
+    $tagId = $statement->fetch();
+    $statement = $pearDB->query(
+        "INSERT INTO `cb_tag_type_relation` (`cb_tag_id`, `cb_type_id`, `cb_type_uniq`)
+            VALUES ($tagId, $typeId, 0)"
+    );
+
+    $errorMessage = 'Unable to update cb_type_field_relation';
+    $inputs= [];
+    $statement = $pearDB->query(
+        "SELECT DISTINCT(tfr.cb_field_id), tfr.is_required FROM cb_type_field_relation tfr, cb_type t
+            WHERE tfr.cb_type_id = t.cb_type_id
+            AND t.type_shortname in ('sql', 'storage')
+            ORDER BY tfr.order_display"
+    );
+    $inputs = $statement->fetchAll();
+    $query = "INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`, `order_display`)";
+    foreach ($inputs as $key => $input) {
+        $order = $key + 1;
+        $query .= $key === 0 ? " VALUES " : ", ";
+        $query .= "($typeId, " . $input['cb_field_id'] . ", " . $input['is_required'] .", $order)";
+    }
+    $statement = $pearDB->query($query);
+
 } catch (\Exception $e) {
     if ($pearDB->inTransaction()) {
         $pearDB->rollBack();

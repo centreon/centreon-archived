@@ -553,7 +553,8 @@ INSERT INTO `cb_type` (`cb_type_id`, `type_name`, `type_shortname`, `cb_module_i
 (29, 'Database configuration writer', 'db_cfg_writer', 17),
 (30, 'Storage - Graphite', 'graphite', 18),
 (31, 'Storage - InfluxDB', 'influxdb', 19),
-(33, 'Stream connector', 'lua', 21);
+(33, 'Stream connector', 'lua', 21),
+(34, 'Unified SQL', 'unified_sql', 8);
 
 --
 -- Contenu de la table `cb_field`
@@ -748,7 +749,8 @@ INSERT INTO `cb_tag_type_relation` (`cb_tag_id`, `cb_type_id`, `cb_type_uniq`) V
 (1, 29, 1),
 (1, 30, 0),
 (1, 31, 0),
-(1, 33, 0);
+(1, 33, 0),
+(1, 34, 0);
 
 --
 -- Contenu de la table `cb_type_field_relation`
@@ -883,7 +885,25 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 (33, 47, 0, 2),
 (33, 72, 0, 3),
 (33, 71, 0, 4),
-(3, 76, 0, 5);
+(3, 76, 0, 5),
+(34, 16, 1, 1),
+(34, 17, 1, 2),
+(34, 15, 1, 3),
+(34, 7, 1, 4),
+(34, 18, 1, 5),
+(34, 8, 1, 6),
+(34, 75, 0, 7),
+(34, 9, 0, 8),
+(34, 10, 1, 9),
+(34, 34, 0, 10),
+(34, 35, 0, 11),
+(34, 39, 0, 12),
+(34, 40, 0, 13),
+(34, 42, 1, 14),
+(34, 43, 1, 15),
+(34, 47, 0, 16),
+(34, 49, 0, 17),
+(34, 50, 0, 18);
 
 --
 -- Contenu de la table `cb_type_field_relation`
