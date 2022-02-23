@@ -30,8 +30,6 @@ use Core\Application\Security\UseCase\LoginSession\LoginSessionRequest;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Centreon\Domain\Authentication\Exception\AuthenticationException;
-use JsonSchema\Validator;
-use JsonSchema\Constraints\Constraint;
 
 class LoginSessionController extends AbstractController
 {
