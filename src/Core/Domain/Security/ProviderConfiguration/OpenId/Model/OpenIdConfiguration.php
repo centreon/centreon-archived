@@ -25,6 +25,24 @@ namespace Core\Domain\Security\ProviderConfiguration\OpenId\Model;
 
 class OpenIdConfiguration
 {
+    /**
+     * @param boolean $isActive
+     * @param boolean $isForced
+     * @param array<string> $trustedClientAddresses
+     * @param array<string> $blacklistClientAddresses
+     * @param string|null $baseUrl
+     * @param string|null $authorizationEndpoint
+     * @param string|null $tokenEndpoint
+     * @param string|null $introspectionTokenEndpoint
+     * @param string|null $userInformationsEndpoint
+     * @param string|null $endSessionEndpoint
+     * @param array<string> $connectionScope
+     * @param string|null $loginClaim
+     * @param string|null $clientId
+     * @param string|null $clientSecret
+     * @param string|null $authenticationType
+     * @param boolean $verifyPeer
+     */
     public function __construct(
         private bool $isActive,
         private bool $isForced,
@@ -63,7 +81,7 @@ class OpenIdConfiguration
     }
 
     /**
-     * @return array
+     * @return array<string>
      */
     public function getTrustedClientAddresses(): array
     {
@@ -71,7 +89,7 @@ class OpenIdConfiguration
     }
 
     /**
-     * @return array
+     * @return array<string>
      */
     public function getBlacklistClientAddresses(): array
     {
@@ -127,7 +145,7 @@ class OpenIdConfiguration
     }
 
     /**
-     * @return array
+     * @return array<string>
      */
     public function getConnectionScope(): array
     {

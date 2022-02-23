@@ -29,7 +29,11 @@ use Core\Application\Security\ProviderConfiguration\OpenId\UseCase\UpdateOpenIdC
 
 class OpenIdConfigurationFactory
 {
-    public static function createFromRequest(UpdateOpenIdConfigurationRequest $request): ?OpenIdConfiguration
+    /**
+     * @param UpdateOpenIdConfigurationRequest $request
+     * @return OpenIdConfiguration
+     */
+    public static function createFromRequest(UpdateOpenIdConfigurationRequest $request): OpenIdConfiguration
     {
         return new OpenIdConfiguration(
             $request->isActive,

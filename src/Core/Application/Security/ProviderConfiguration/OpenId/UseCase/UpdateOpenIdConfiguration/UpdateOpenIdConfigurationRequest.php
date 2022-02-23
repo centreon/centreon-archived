@@ -34,12 +34,12 @@ class UpdateOpenIdConfigurationRequest
     public bool $isForced;
 
     /**
-     * @var array
+     * @var array<string>
      */
     public array $trustedClientAddresses;
 
     /**
-     * @var array
+     * @var array<string>
      */
     public array $blacklistClientAddresses;
 
@@ -74,7 +74,7 @@ class UpdateOpenIdConfigurationRequest
     public ?string $endSessionEndpoint;
 
     /**
-     * @var array
+     * @var array<string>
      */
     public array $connectionScope;
 
