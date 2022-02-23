@@ -30,6 +30,7 @@ use Core\Application\Security\ProviderConfiguration\OpenId\UseCase\UpdateOpenIdC
     UpdateOpenIdConfigurationPresenterInterface,
     UpdateOpenIdConfigurationRequest
 };
+use Core\Domain\Security\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
 
 class UpdateOpenIdConfigurationController extends AbstractController
 {
@@ -71,7 +72,8 @@ class UpdateOpenIdConfigurationController extends AbstractController
         $updateOpenIdConfigurationRequest->userInformationsEndpoint = $requestData['userinfo_endpoint'];
         $updateOpenIdConfigurationRequest->endSessionEndpoint = $requestData['endsession_endpoint'];
         $updateOpenIdConfigurationRequest->connectionScope = $requestData['connection_scope'];
-        $updateOpenIdConfigurationRequest->loginClaim = $requestData['login_claim'];
+        $updateOpenIdConfigurationRequest->loginClaim =
+            $requestData['login_claim'] ?? OpenIdConfiguration::DEFAULT_LOGIN_GLAIM;
         $updateOpenIdConfigurationRequest->clientId = $requestData['client_id'];
         $updateOpenIdConfigurationRequest->clientSecret = $requestData['client_secret'];
         $updateOpenIdConfigurationRequest->authenticationType = $requestData['authentication_type'];

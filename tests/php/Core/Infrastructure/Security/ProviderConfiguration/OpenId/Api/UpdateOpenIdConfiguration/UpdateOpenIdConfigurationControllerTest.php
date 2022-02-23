@@ -30,9 +30,13 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Core\Application\Security\ProviderConfiguration\OpenId\UseCase\UpdateOpenIdConfiguration\UpdateOpenIdConfiguration;
-use Core\Infrastructure\Security\ProviderConfiguration\OpenId\Api\UpdateOpenIdConfiguration\UpdateOpenIdConfigurationController;
-use Core\Application\Security\ProviderConfiguration\OpenId\UseCase\UpdateOpenIdConfiguration\UpdateOpenIdConfigurationPresenterInterface;
+use Core\Infrastructure\Security\ProviderConfiguration\OpenId\Api\UpdateOpenIdConfiguration\{
+    UpdateOpenIdConfigurationController
+};
+use Core\Application\Security\ProviderConfiguration\OpenId\UseCase\UpdateOpenIdConfiguration\{
+    UpdateOpenIdConfiguration,
+    UpdateOpenIdConfigurationPresenterInterface
+};
 
 class UpdateOpenIdConfigurationControllerTest extends TestCase
 {
