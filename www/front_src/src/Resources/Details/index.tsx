@@ -83,7 +83,7 @@ const Details = (): JSX.Element | null => {
     );
 
     if (isNil(foundColorCondition)) {
-      return theme.palette.common.white;
+      return theme.palette.background.paper;
     }
 
     return alpha(foundColorCondition.color, 0.8);

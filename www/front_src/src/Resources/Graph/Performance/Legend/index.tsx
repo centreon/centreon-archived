@@ -110,7 +110,7 @@ const useStyles = makeStyles<Theme, MakeStylesProps, string>((theme) => ({
   },
   minMaxAvgValue: { fontWeight: 600 },
   normal: {
-    color: alpha(theme.palette.common.black, 0.6),
+    color: theme.palette.text.primary,
   },
   toggable: {
     cursor: 'pointer',
