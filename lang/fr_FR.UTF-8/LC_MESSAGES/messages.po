@@ -16530,3 +16530,18 @@ msgstr "L'utilisateur est bloqué"
 
 msgid "Your password doesn't match the security policy"
 msgstr "Votre mot de passe ne correspond pas à la politique de sécurité"
+
+msgid "Error on reading host macros (Reason: %s)"
+msgstr "Erreur lors de la lecture des macros de l'hôte (Raison : %s)"
+
+msgid "Error on updating a host macro (Reason: %s)"
+msgstr "Erreur lors de la mise à jour d'une macro d'hôte (Raison : %s)"
+
+msgid "Error on reading host templates (Reason: %s)"
+msgstr "Erreur lors de la lecture des modèles d'hôtes (Raison : %s)"
+
+msgid "Error while linking template (id: %d) to host (id: %d)"
+msgstr "Erreur lors de la liaison du modèle (id: %d) à l'hôte (id: %d)"
+
+msgid "Error while linking template %s to host (id: %d)"
+msgstr "Erreur lors de la liaison du modèle %s à l'hôte (id: %d)"
