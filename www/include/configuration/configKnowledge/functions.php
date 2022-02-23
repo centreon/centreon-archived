@@ -43,7 +43,7 @@ function getWikiConfig($pearDB)
         throw new \Exception($errorMsg);
     }
 
-    $gopt = array();
+    $gopt = [];
     $opt = $res->fetchRow();
 
 
