@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const Authentication = (): JSX.Element => {
+const LocalAuthentication = (): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
 
@@ -72,4 +72,4 @@ const Authentication = (): JSX.Element => {
   );
 };
 
-export default Authentication;
+export default LocalAuthentication;

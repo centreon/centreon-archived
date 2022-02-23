@@ -26,7 +26,7 @@ import {
 } from './Form/defaults';
 import { PasswordSecurityPolicyToAPI } from './models';
 
-import Authentication from '.';
+import LocalAuthentication from '.';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
@@ -39,7 +39,8 @@ const cancelTokenPutParams = {
   },
 };
 
-const renderAuthentication = (): RenderResult => render(<Authentication />);
+const renderAuthentication = (): RenderResult =>
+  render(<LocalAuthentication />);
 
 const mockGetPasswordSecurityPolicy = (
   securityPolicy: PasswordSecurityPolicyToAPI,
