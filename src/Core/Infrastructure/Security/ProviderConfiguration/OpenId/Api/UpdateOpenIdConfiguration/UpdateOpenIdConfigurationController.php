@@ -21,7 +21,7 @@
 
 declare(strict_types=1);
 
-namespace Core\Infrastructure\Security\ProviderConfiguration\OpenId\Api\UpdateConfiguration;
+namespace Core\Infrastructure\Security\ProviderConfiguration\OpenId\Api\UpdateOpenIdConfiguration;
 
 use Symfony\Component\HttpFoundation\Request;
 use Centreon\Application\Controller\AbstractController;
@@ -62,15 +62,15 @@ class UpdateOpenIdConfigurationController extends AbstractController
         $updateOpenIdConfigurationRequest = new UpdateOpenIdConfigurationRequest();
         $updateOpenIdConfigurationRequest->isActive = $requestData['is_active'];
         $updateOpenIdConfigurationRequest->isForced = $requestData['is_forced'];
-        $updateOpenIdConfigurationRequest->trustedClientAddresses = $requestData['trusted_client_addresses'] ?? [];
-        $updateOpenIdConfigurationRequest->blacklistClientAddresses = $requestData['blacklist_client_addresses'] ?? [];
+        $updateOpenIdConfigurationRequest->trustedClientAddresses = $requestData['trusted_client_addresses'];
+        $updateOpenIdConfigurationRequest->blacklistClientAddresses = $requestData['blacklist_client_addresses'];
         $updateOpenIdConfigurationRequest->baseUrl = $requestData['base_url'];
         $updateOpenIdConfigurationRequest->authorizationEndpoint = $requestData['authorization_endpoint'];
         $updateOpenIdConfigurationRequest->tokenEndpoint = $requestData['token_endpoint'];
         $updateOpenIdConfigurationRequest->introspectionTokenEndpoint = $requestData['introspection_token_endpoint'];
         $updateOpenIdConfigurationRequest->userInformationsEndpoint = $requestData['userinfo_endpoint'];
         $updateOpenIdConfigurationRequest->endSessionEndpoint = $requestData['endsession_endpoint'];
-        $updateOpenIdConfigurationRequest->connectionScope = $requestData['connection_scope'] ?? [];
+        $updateOpenIdConfigurationRequest->connectionScope = $requestData['connection_scope'];
         $updateOpenIdConfigurationRequest->loginClaim = $requestData['login_claim'];
         $updateOpenIdConfigurationRequest->clientId = $requestData['client_id'];
         $updateOpenIdConfigurationRequest->clientSecret = $requestData['client_secret'];
