@@ -48,4 +48,14 @@
     --option-color:  #fff;
     --form-table-list-header-h3-font-color: #00bfb3;
     --info-box-h4-font-color: #fff;
+    --select2-container-selection-multiple-background-color: var(--body-background);
+    --selected2-results-header-background-color: var(--body-background);
+    --select2-results-header-color: #2196F3;
+    --placeholder-font-color: var(--body-color);
+    --select2-dropdown-border-color: var(--body-background);
+    --select2-result-option-highlighted-aria-selected-true-background-color: #2196F3;
+    --select2-results-background-color: var(--body-background);
+    --select2-results-option-font-color: #fff;
+    --select2-results-option-highlighted-color: #fff;
+    --selected2-results-header-border-bottom-color: var(--body-color);
 }

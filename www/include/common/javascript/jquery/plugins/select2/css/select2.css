@@ -65,7 +65,8 @@
   z-index: 1065; }
 
 .select2-results {
-  display: block; }
+  display: block;
+  background-color: var(--select2-results-background-color);}
 
 .select2-results__options {
   list-style: none;
@@ -136,7 +137,7 @@
   border: 1px solid var(--select2-selection-single-border-color);
   border-radius: 4px; }
   .select2-container--default .select2-selection--single .select2-selection__rendered {
-    color: var(--select2-selection-rendered-border-color);
+    color: var(--select2-selection-rendered-font-color);
     line-height: 28px; }
   .select2-container--default .select2-selection--single .select2-selection__clear {
     cursor: pointer;
@@ -193,7 +194,7 @@
     .select2-container--default .select2-selection--multiple .select2-selection__rendered li {
       list-style: none; }
   .select2-container--default .select2-selection--multiple .select2-selection__placeholder {
-    color: var(--select2-container-selection-multiple-placeholder-font-color);;
+    color: var(--select2-container-selection-multiple-placeholder-font-color);
     margin-top: 5px;
     float: left; }
   .select2-container--default .select2-selection--multiple .select2-selection__clear {
@@ -218,7 +219,7 @@
     font-weight: bold;
     margin-right: 2px; }
     .select2-container--default .select2-selection--multiple .select2-selection__choice__remove:hover {
-      color: #333; }
+      color: var(--select2-multiple-choice-remove-hover-font-color); }
 
 .select2-container--default[dir="rtl"] .select2-selection--multiple .select2-selection__choice, .select2-container--default[dir="rtl"] .select2-selection--multiple .select2-selection__placeholder, .select2-container--default[dir="rtl"] .select2-selection--multiple .select2-search--inline {
   float: right; }
@@ -262,7 +263,8 @@
 
 .select2-container--default .select2-results > .select2-results__options {
   max-height: 200px;
-  overflow-y: auto; }
+  overflow-y: auto;
+  color: var(--select2-results-option-font-color)}
 
 .select2-container--default .select2-results__option[role=group] {
   padding: 0; }

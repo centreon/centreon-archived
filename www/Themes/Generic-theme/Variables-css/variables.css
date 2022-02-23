@@ -59,7 +59,7 @@
     --select2-close-mask-background-color: var(--color-white);
     --select2-selection-single-background-color: var(--color-white);
     --select2-selection-single-border-color: var(--color-silver-chalice);
-    --select2-selection-rendered-border-color: var(--color-charcoal);
+    --select2-selection-rendered-font-color: var(--color-charcoal);
     --select2-selection-placeholder-border-color: var(--color-charcoal);
     --select2-selection-placeholder-font-color: var(--color-dusty-gray);
     --select2-selection-arrow-border-color: var(--color-gray-2);
@@ -103,6 +103,9 @@
     --select2-classic-result-option-highlighted-aria-selected-background-color: var(--color-mariner);
     --select2-classic-result-option-highlighted-aria-selected-font-color: var(--color-white);
     --select2-classic-open-dropdown-border-color: var(--color-cornflower-blue);
+    --select2-results-background-color: var(--color-white);
+    --select2-results-option-font-color: var(--color-charcoal);
+    --select2-multiple-choice-remove-hover-font-color: var(--color-mine-shaft);
     /*************/
 
     /** HR **/
@@ -113,6 +116,10 @@
     --p-color-description-color : var(--color-grey-chateau);
     --p-description-a-visited-color : var(--color-maya-blue);
     /******/
+
+    /** Placeholder **/
+    --placeholder-font-color: var(--body-color);
+    /****************/
 
     /** Wrappers **/
     --center-box-border-color : var(--color-iron);
@@ -130,20 +137,21 @@
     /** Select 2 **/
     --select2-container-selection-background-color : var(--color-white);
     --select2-container-selection-border-color : var(--color-silver);
-    --select2-selection-choice-remove-background-color : var(--color-navy-bleu);
-    --select2-selection-multiple-color : var(--color-white);
-    --select2-selection-multiple-border-color : var(--color-malibu);
+    --select2-selection-choice-remove-background-color : var(--color-alto-5);
+    --select2-selection-multiple-color : var(--color-tundora);
+    --select2-selection-multiple-border-color : var(--color-alto-5);
     --select2-selection-multiple-content-border-color-top : var(--select2-selection-multiple-border-color);
     --select2-selection-multiple-content-border-color-bottom : var(--select2-selection-multiple-border-color);
-    --select2-selection-multiple-content-border-color-right : var(--select2-selection-multiple-border-color);
+    --select2-selection-multiple-content-border-color-right : none;
     --select2-selection-multiple-content-color : var(--color-navy-bleu);
-    --select2-selection-multiple-content-background-color : var(--color-columbia-blue);
-    --select2-results-option-highlighted-background-color : var(--color-navy-bleu);
-    --select2-results-option-highlighted-color : var(--color-black);
-    --select2-results-option-highlighted-color-aria-selected : var(--color-columbia-blue);
+    --select2-selection-multiple-content-background-color : var(--color-alto-5);
+    --select2-results-option-highlighted-background-color : var(--color-tundora);
+    --select2-results-option-highlighted-color : var(--color-white);
+    --select2-results-option-highlighted-color-aria-selected : var(--color-primary-dark);
+    --select2-results-option-highlighted-color-aria-selected-font-color: var(--color-white);
     --selected2-results-header-background-color : var(--color-wild-sand);
     --selected2-results-header-border-bottom-color :var(--color-white-lilac);
-    --select2-results-header-color : var(--color-pasific-bleu);
+    --select2-results-header-color : var(--color-primary-dark);
     /**************/
 
     /** Tooltip **/
