@@ -16,7 +16,7 @@ interface Props {
   image: string | null;
 }
 
-const useStyles = makeStyles<Theme, Props>(() => ({
+const useStyles = makeStyles<Theme, Props>({
   wallpaper: ({ image }): CreateCSSProperties => ({
     background: defaultBackground,
     backgroundImage: `url(${image})`,
@@ -29,7 +29,7 @@ const useStyles = makeStyles<Theme, Props>(() => ({
     right: 0,
     top: 0,
   }),
-}));
+});
 
 const BackgroundImage = ({ image }: Props): JSX.Element => {
   const classes = useStyles({ image });
