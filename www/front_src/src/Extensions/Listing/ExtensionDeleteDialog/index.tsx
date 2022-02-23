@@ -1,18 +1,21 @@
-/* eslint-disable react/jsx-filename-extension */
-/* eslint-disable react/prop-types */
-/* eslint-disable react/prefer-stateless-function */
-
 import React from 'react';
 
 import { Typography, Alert } from '@mui/material';
 
 import { Dialog } from '@centreon/ui';
 
+import { EntityDeleting } from '../models';
+
+interface Props {
+  deletingEntity: EntityDeleting;
+  onCancel: () => void;
+  onConfirm: (id: string, type: string) => void;
+}
 const ExtensionDeletePopup = ({
   deletingEntity,
   onConfirm,
   onCancel,
-}): JSX.Element => {
+}: Props): JSX.Element => {
   const confirmDelete = (): void => {
     onConfirm(deletingEntity.id, deletingEntity.type);
   };

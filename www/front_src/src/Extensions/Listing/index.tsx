@@ -161,7 +161,6 @@ const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
     if (modulesActive) {
       return [...getEntitiesByKeyAndVersionParam(param, equals, 'module')];
     }
-    // inverted because of inverse logic for switches on/off false/true
 
     return [...getEntitiesByKeyAndVersionParam(param, equals, 'widget')];
   };
@@ -199,7 +198,7 @@ const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
         if (!status) {
           showErrorMessage(result.message as string);
         } else {
-          showSuccessMessage('successful Update');
+          showSuccessMessage('update succeeded');
         }
 
         return sendExtensionsRequests({
@@ -280,20 +279,22 @@ const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
     setExtensionsInstallingStatus(statuses);
   };
 
-  const activateExtensionsDetails = (id, type): void => {
+  const activateExtensionsDetails = (id: string, type: string): void => {
     setEntityDetails({
       id,
       type,
     });
   };
 
-  const toggleDeleteModal = (id, type, description): void => {
-    if (entityDeleting) {
-      setEntityDeleting(null);
+  const onCancelToggleDeleteModal = (): void => {
+    setEntityDeleting(null);
+  };
 
-      return;
-    }
-
+  const toggleDeleteModal = (
+    id: string,
+    type: string,
+    description: string,
+  ): void => {
     setEntityDeleting({
       description,
       id,
@@ -305,7 +306,7 @@ const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
     setEntityDetails(null);
   };
 
-  const deleteById = (id, type): void => {
+  const deleteById = (id: string, type: string): void => {
     setConfirmedDeletingEntityId(id);
     setEntityDeleting(null);
     sendDeleteExtensionRequests({
@@ -338,27 +339,25 @@ const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
       });
   };
 
-  const notInstallableExtensionModuleExiste = !isEmpty(
+  const canInstallAllModules = !isEmpty(
     filter(pathEq(['version', 'installed'], false), extensions.module.entities),
   );
 
-  const notInstallableExtensionWidgetExiste = !isEmpty(
+  const canInstallAllWidgets = !isEmpty(
     filter(pathEq(['version', 'installed'], false), extensions.widget.entities),
   );
 
-  const notUpdatableExtensionModuleExiste = !isEmpty(
+  const canUpdateAllWidgets = !isEmpty(
     filter(pathEq(['version', 'outdated'], true), extensions.module.entities),
   );
 
-  const notUpdatableExtensionWidgetExiste = !isEmpty(
+  const canUpdateAllModules = !isEmpty(
     filter(pathEq(['version', 'outdated'], true), extensions.widget.entities),
   );
 
-  const updatable =
-    notUpdatableExtensionModuleExiste || notUpdatableExtensionWidgetExiste;
+  const updatable = canUpdateAllWidgets || canUpdateAllModules;
 
-  const installable =
-    notInstallableExtensionModuleExiste || notInstallableExtensionWidgetExiste;
+  const installable = canInstallAllModules || canInstallAllWidgets;
 
   return (
     <div>
@@ -445,7 +444,7 @@ const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
       {entityDeleting && (
         <ExtensionDeletePopup
           deletingEntity={entityDeleting}
-          onCancel={toggleDeleteModal}
+          onCancel={onCancelToggleDeleteModal}
           onConfirm={deleteById}
         />
       )}
