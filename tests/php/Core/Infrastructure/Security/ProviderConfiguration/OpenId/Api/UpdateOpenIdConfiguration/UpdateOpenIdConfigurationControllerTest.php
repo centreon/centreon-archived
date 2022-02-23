@@ -40,7 +40,6 @@ use Core\Application\Security\ProviderConfiguration\OpenId\UseCase\UpdateOpenIdC
 
 class UpdateOpenIdConfigurationControllerTest extends TestCase
 {
-
     /**
      * @var Request&\PHPUnit\Framework\MockObject\MockObject
      */
@@ -146,7 +145,7 @@ class UpdateOpenIdConfigurationControllerTest extends TestCase
             'introspection_token_endpoint' => '/introspect',
             'userinfo_endpoint' => '/userinfo',
             'endsession_endpoint' => '/logout',
-            'connection_scope' => [],
+            'connection_scopes' => [],
             'login_claim' => 'preferred_username',
             'client_id' => 'MyCl1ientId',
             'client_secret' => 'MyCl1ientSuperSecr3tKey',

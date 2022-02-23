@@ -76,7 +76,7 @@ class UpdateOpenIdConfigurationRequest
     /**
      * @var array<string>
      */
-    public array $connectionScope;
+    public array $connectionScopes;
 
     /**
      * @var string|null

@@ -85,7 +85,7 @@ abstract class AbstractController extends AbstractFOSRestController
      *
      * @param Request $request Request sent by client
      * @param string $jsonValidationFile Json validation file
-     * @throws \Exception
+     * @throws \InvalidArgumentException
      */
     protected function validateDataSent(Request $request, string $jsonValidationFile): void
     {

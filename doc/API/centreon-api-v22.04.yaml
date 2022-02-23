@@ -4209,7 +4209,7 @@ components:
         - introspection_token_endpoint
         - userinfo_endpoint
         - endsession_endpoint
-        - connection_scope
+        - connection_scopes
         - login_claim
         - client_id
         - client_secret
@@ -4262,7 +4262,7 @@ components:
           type: string
           description: "Endsession endpoint of the provider"
           example: "/logout"
-        connection_scope:
+        connection_scopes:
           type: array
           description: "List of scopes to request"
           items:

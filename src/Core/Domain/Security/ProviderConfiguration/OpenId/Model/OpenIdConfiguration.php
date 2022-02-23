@@ -30,15 +30,15 @@ class OpenIdConfiguration
     /**
      * @param boolean $isActive
      * @param boolean $isForced
-     * @param array<string> $trustedClientAddresses
-     * @param array<string> $blacklistClientAddresses
+     * @param string[] $trustedClientAddresses
+     * @param string[] $blacklistClientAddresses
      * @param string|null $baseUrl
      * @param string|null $authorizationEndpoint
      * @param string|null $tokenEndpoint
      * @param string|null $introspectionTokenEndpoint
      * @param string|null $userInformationsEndpoint
      * @param string|null $endSessionEndpoint
-     * @param array<string> $connectionScope
+     * @param string[] $connectionScope
      * @param string|null $loginClaim
      * @param string|null $clientId
      * @param string|null $clientSecret
@@ -56,7 +56,7 @@ class OpenIdConfiguration
         private ?string $introspectionTokenEndpoint,
         private ?string $userInformationsEndpoint,
         private ?string $endSessionEndpoint,
-        private array $connectionScope,
+        private array $connectionScopes,
         private ?string $loginClaim,
         private ?string $clientId,
         private ?string $clientSecret,
@@ -83,7 +83,7 @@ class OpenIdConfiguration
     }
 
     /**
-     * @return array<string>
+     * @return string[]
      */
     public function getTrustedClientAddresses(): array
     {
@@ -91,7 +91,7 @@ class OpenIdConfiguration
     }
 
     /**
-     * @return array<string>
+     * @return string[]
      */
     public function getBlacklistClientAddresses(): array
     {
@@ -147,7 +147,7 @@ class OpenIdConfiguration
     }
 
     /**
-     * @return array<string>
+     * @return string[]
      */
     public function getConnectionScope(): array
     {

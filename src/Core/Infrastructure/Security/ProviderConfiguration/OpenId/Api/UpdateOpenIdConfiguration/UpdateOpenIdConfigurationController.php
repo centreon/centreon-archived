@@ -71,7 +71,7 @@ class UpdateOpenIdConfigurationController extends AbstractController
         $updateOpenIdConfigurationRequest->introspectionTokenEndpoint = $requestData['introspection_token_endpoint'];
         $updateOpenIdConfigurationRequest->userInformationsEndpoint = $requestData['userinfo_endpoint'];
         $updateOpenIdConfigurationRequest->endSessionEndpoint = $requestData['endsession_endpoint'];
-        $updateOpenIdConfigurationRequest->connectionScope = $requestData['connection_scope'];
+        $updateOpenIdConfigurationRequest->connectionScopes = $requestData['connection_scopes'];
         $updateOpenIdConfigurationRequest->loginClaim =
             $requestData['login_claim'] ?? OpenIdConfiguration::DEFAULT_LOGIN_GLAIM;
         $updateOpenIdConfigurationRequest->clientId = $requestData['client_id'];
