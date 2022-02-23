@@ -1,8 +1,8 @@
-import { SecurityPolicy, SecurityPolicyToAPI } from '../models';
+import { PasswordSecurityPolicy, PasswordSecurityPolicyToAPI } from '../models';
 
-export const adaptSecurityPolicyFromAPI = (
-  securityPolicy: SecurityPolicy,
-): SecurityPolicy => {
+export const adaptPasswordSecurityPolicyFromAPI = (
+  securityPolicy: PasswordSecurityPolicy,
+): PasswordSecurityPolicy => {
   return {
     ...securityPolicy,
     blockingDuration: securityPolicy.blockingDuration
@@ -20,7 +20,7 @@ export const adaptSecurityPolicyFromAPI = (
   };
 };
 
-export const adaptSecurityPolicyToAPI = ({
+export const adaptPasswordSecurityPolicyToAPI = ({
   passwordMinLength,
   delayBeforeNewPassword,
   canReusePasswords,
@@ -31,7 +31,7 @@ export const adaptSecurityPolicyToAPI = ({
   hasUpperCase,
   attempts,
   blockingDuration,
-}: SecurityPolicy): SecurityPolicyToAPI => {
+}: PasswordSecurityPolicy): PasswordSecurityPolicyToAPI => {
   return {
     password_security_policy: {
       attempts,

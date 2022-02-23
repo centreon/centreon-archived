@@ -3,27 +3,28 @@ import { CancelToken } from 'axios';
 import { getData, putData } from '@centreon/ui';
 
 import {
-  SecurityPolicy,
-  SecurityPolicyFromAPI,
-  SecurityPolicyToAPI,
-} from '../models';
+  PasswordSecurityPolicy,
+  PasswordSecurityPolicyFromAPI,
+  PasswordSecurityPolicyToAPI,
+} from '../Local/models';
+import { Provider } from '../models';
 
-import { securityPolicyEndpoint } from './endpoints';
-import { adaptSecurityPolicyToAPI } from './adapters';
+import { authenticationProvidersEndpoint } from './endpoints';
+import { adaptPasswordSecurityPolicyToAPI } from './adapters';
 
-export const getSecurityPolicy =
-  (cancelToken: CancelToken) => (): Promise<SecurityPolicy> =>
-    getData<SecurityPolicyFromAPI>(cancelToken)({
-      endpoint: securityPolicyEndpoint,
+export const getPasswordPasswordSecurityPolicy =
+  (cancelToken: CancelToken) => (): Promise<PasswordSecurityPolicy> =>
+    getData<PasswordSecurityPolicyFromAPI>(cancelToken)({
+      endpoint: authenticationProvidersEndpoint(Provider.Local),
     }).then(
-      (securityPolicy): SecurityPolicy =>
+      (securityPolicy): PasswordSecurityPolicy =>
         securityPolicy.password_security_policy,
     );
 
-export const putSecurityPolicy =
+export const putPasswordPasswordSecurityPolicy =
   (cancelToken: CancelToken) =>
-  (securityPolicy: SecurityPolicy): Promise<unknown> =>
-    putData<SecurityPolicyToAPI, unknown>(cancelToken)({
-      data: adaptSecurityPolicyToAPI(securityPolicy),
-      endpoint: securityPolicyEndpoint,
+  (securityPolicy: PasswordSecurityPolicy): Promise<unknown> =>
+    putData<PasswordSecurityPolicyToAPI, unknown>(cancelToken)({
+      data: adaptPasswordSecurityPolicyToAPI(securityPolicy),
+      endpoint: authenticationProvidersEndpoint(Provider.Local),
     });
