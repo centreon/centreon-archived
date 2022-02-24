@@ -763,6 +763,8 @@ CREATE TABLE `contact` (
   `contact_ldap_last_sync` int(11) NOT NULL DEFAULT 0,
   `contact_ldap_required_sync` enum('0','1') NOT NULL DEFAULT '0',
   `enable_one_click_export` enum('0','1') DEFAULT '0',
+  `login_attempts` INT(11) UNSIGNED DEFAULT NULL,
+  `blocking_time` BIGINT(20) UNSIGNED DEFAULT NULL,
   PRIMARY KEY (`contact_id`),
   KEY `name_index` (`contact_name`),
   KEY `alias_index` (`contact_alias`),
@@ -2387,6 +2389,15 @@ CREATE TABLE `provider_configuration` (
   `is_forced` BOOLEAN NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_name` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `password_expiration_excluded_users` (
+  `provider_configuration_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  CONSTRAINT `password_expiration_excluded_users_provider_configuration_id_fk` FOREIGN KEY (`provider_configuration_id`)
+  REFERENCES `provider_configuration` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `password_expiration_excluded_users_provider_user_id_fk` FOREIGN KEY (`user_id`)
+  REFERENCES `contact` (`contact_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `security_token` (

@@ -140,6 +140,27 @@ class Assertion
     }
 
     /**
+     * Assert that a string respects email format.
+     *
+     * @param string $value Value to test
+     * @param string|null $propertyPath Property's path (ex: User::email)
+     * @throws \Assert\AssertionFailedException
+     */
+    public static function email(string $value, string $propertyPath = null): void
+    {
+        Assert::email(
+            $value,
+            function (array $parameters) {
+                return AssertionException::email(
+                    $parameters['value'],
+                    $parameters['propertyPath']
+                )->getMessage();
+            },
+            $propertyPath
+        );
+    }
+
+    /**
      * Assert that a date is smaller as a given limit.
      *
      * @param \DateTime $value
@@ -236,5 +257,30 @@ class Assertion
             );
         }
         return $length;
+    }
+
+    /**
+     * Assert that value is in array
+     *
+     * @param mixed $value
+     * @param string[] $choices
+     * @param string|null $propertyPath
+     * @throws \Assert\AssertionFailedException
+     * @return void
+     */
+    public static function inArray($value, array $choices, string $propertyPath = null): void
+    {
+        Assert::inArray(
+            $value,
+            $choices,
+            function (array $parameters) {
+                return AssertionException::inArray(
+                    $parameters['value'],
+                    $parameters['choices'],
+                    $parameters['propertyPath']
+                );
+            },
+            $propertyPath
+        );
     }
 }

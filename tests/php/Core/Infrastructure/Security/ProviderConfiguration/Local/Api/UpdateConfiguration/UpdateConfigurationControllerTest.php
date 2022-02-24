@@ -146,7 +146,12 @@ class UpdateConfigurationControllerTest extends TestCase
                 "has_special_character" => true,
                 "attempts" => 6,
                 "blocking_duration" => 900,
-                "password_expiration" => 7776000,
+                "password_expiration" => [
+                    'expiration_delay' => 7776000,
+                    'excluded_users' => [
+                        'admin',
+                    ],
+                ],
                 "can_reuse_passwords" => true,
                 "delay_before_new_password" => 3600,
             ],

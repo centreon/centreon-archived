@@ -75,6 +75,8 @@ class TopologyRepository extends ServiceEntityRepository
     /**
      * Get Topologies according to ACL for user
      * @todo refactor this into function below it
+     * @param mixed $user
+     * @return mixed[]
      */
     public function getReactTopologiesPerUserWithAcl($user)
     {
@@ -151,9 +153,9 @@ class TopologyRepository extends ServiceEntityRepository
     /**
      * Get list of topologies per user and filter by react pages if specified
      * @param CentreonUser $user
-     * @return array
+     * @return array<mixed>|false
      */
-    public function getTopologyList(CentreonUser $user): array
+    public function getTopologyList(CentreonUser $user)
     {
         $topologies = [];
 
@@ -185,13 +187,13 @@ class TopologyRepository extends ServiceEntityRepository
     /**
      * Find Topology entity by criteria
      *
-     * @param array $params
+     * @param mixed[] $params
      * @return Topology|null
      */
     public function findOneBy($params = []): ?Topology
     {
         $sql = static::baseSqlQueryForEntity();
-        $collector = new StatementCollector;
+        $collector = new StatementCollector();
         $isWhere = false;
         foreach ($params as $column => $value) {
             $key = ":{$column}Val";

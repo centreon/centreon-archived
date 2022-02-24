@@ -49,9 +49,25 @@
           "maximum": 604800
         },
         "password_expiration": {
-            "type": ["integer", "null"],
-            "minimum": 604800,
-            "maximum": 31536000
+            "type": "object",
+            "required": [
+              "expiration_delay",
+              "excluded_users"
+            ],
+            "additionalProperties": false,
+            "properties": {
+                "expiration_delay": {
+                    "type": ["integer", "null"],
+                    "minimum": 604800,
+                    "maximum": 31536000
+                },
+                "excluded_users": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
         },
         "can_reuse_passwords": {
             "type": "boolean"
