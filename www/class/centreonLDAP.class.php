@@ -590,6 +590,7 @@ class CentreonLDAP
             $this->debug("LDAP Search : " . (isset($numberReturned) ? $numberReturned : "0") . " entries found");
         } else {
             $this->debug("LDAP Search : cannot retrieve entries");
+            return [];
         }
 
 
