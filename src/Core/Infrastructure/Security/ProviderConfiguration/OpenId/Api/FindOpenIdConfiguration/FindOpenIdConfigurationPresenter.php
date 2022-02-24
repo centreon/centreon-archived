@@ -31,7 +31,7 @@ use Core\Application\Security\ProviderConfiguration\OpenId\UseCase\FindOpenIdCon
 
 class FindOpenIdConfigurationPresenter extends AbstractPresenter implements FindOpenIdConfigurationPresenterInterface
 {
-        /**
+    /**
      * {@inheritDoc}
      * @param FindOpenIdConfigurationResponse $response
      */
