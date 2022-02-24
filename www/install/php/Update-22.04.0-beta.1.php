@@ -142,8 +142,8 @@ try {
     $errorMessage = 'Unable to update cb_type';
 
     $statement = $pearDB->query(
-    "UPDATE `cb_type` set type_name = 'Perfdata Generator (Centreon Storage) - DEPRECATED'
-        WHERE type_shortname = 'storage'"
+        "UPDATE `cb_type` set type_name = 'Perfdata Generator (Centreon Storage) - DEPRECATED'
+            WHERE type_shortname = 'storage'"
     );
     $statement = $pearDB->query(
         "UPDATE `cb_type` set type_name = 'Broker SQL database - DEPRECATED'
@@ -156,8 +156,8 @@ try {
     );
     $moduleId = $statement->fetch();
     $statement = $pearDB->query(
-    "INSERT INTO `cb_type` (`type_name`, `type_shortname`, `cb_module_id`)
-        VALUES ('Unified SQL', 'unified_sql', $moduleId)"
+        "INSERT INTO `cb_type` (`type_name`, `type_shortname`, `cb_module_id`)
+            VALUES ('Unified SQL', 'unified_sql', $moduleId)"
     );
     $typeId = $pearDB->lastInsertId();
 
@@ -173,7 +173,7 @@ try {
     );
 
     $errorMessage = 'Unable to update cb_type_field_relation';
-    $inputs= [];
+    $inputs = [];
     $statement = $pearDB->query(
         "SELECT DISTINCT(tfr.cb_field_id), tfr.is_required FROM cb_type_field_relation tfr, cb_type t, cb_field f
             WHERE tfr.cb_type_id = t.cb_type_id
@@ -187,10 +187,9 @@ try {
     foreach ($inputs as $key => $input) {
         $order = $key + 1;
         $query .= $key === 0 ? " VALUES " : ", ";
-        $query .= "($typeId, " . $input['cb_field_id'] . ", " . $input['is_required'] .", $order)";
+        $query .= "($typeId, " . $input['cb_field_id'] . ", " . $input['is_required'] . ", $order)";
     }
     $statement = $pearDB->query($query);
-
 } catch (\Exception $e) {
     if ($pearDB->inTransaction()) {
         $pearDB->rollBack();
