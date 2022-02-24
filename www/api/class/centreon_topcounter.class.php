@@ -35,8 +35,8 @@
  */
 
 require_once __DIR__ . '/webService.class.php';
-require_once  __DIR__ . '/../../class/centreonDB.class.php';
-require_once  __DIR__ . '/../../class/centreonContact.class.php';
+require_once __DIR__ . '/../../class/centreonDB.class.php';
+require_once __DIR__ . '/../../class/centreonContact.class.php';
 
 class CentreonTopCounter extends CentreonWebService
 {
