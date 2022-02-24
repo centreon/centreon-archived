@@ -159,11 +159,16 @@ function deleteGroupInDB($groups = array())
     global $pearDB, $centreon;
 
     foreach ($groups as $key => $value) {
-        $query = "SELECT acl_group_name FROM `acl_groups` WHERE acl_group_id = '" . (int)$key . "' LIMIT 1";
-        $dbResult = $pearDB->query($query);
+        $dbResult = $pearDB->prepare(
+            "SELECT acl_group_name FROM `acl_groups` WHERE acl_group_id = :aclGroupId LIMIT 1"
+        );
+        $dbResult->bindValue('aclGroupId', $key, PDO::PARAM_INT);
+        $dbResult->execute();
         $row = $dbResult->fetch();
-        $pearDB->query("DELETE FROM acl_groups WHERE acl_group_id = '" . $key . "'");
-        $centreon->CentreonLogAction->insertLog("access group", $key, $row['acl_group_name'], "d");
+        $dbResult = $pearDB->prepare("DELETE FROM acl_groups WHERE acl_group_id = :aclGroupId");
+        $dbResult->bindValue('aclGroupId', $key, PDO::PARAM_INT);
+        $dbResult->execute();
+        $centreon->CentreonLogAction->insertLog("access group", (int) $key, $row['acl_group_name'], "d");
     }
 }
 
