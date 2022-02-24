@@ -23,29 +23,19 @@ declare(strict_types=1);
 
 namespace Tests\Core\Application\Security\ProviderConfiguration\OpenId\UseCase\FindOpenIdConfiguration;
 
+use Core\Application\Common\UseCase\AbstractPresenter;
 use Symfony\Component\HttpFoundation\Response;
-use Core\Application\Common\UseCase\ResponseStatusInterface;
 use Core\Application\Security\ProviderConfiguration\OpenId\UseCase\FindOpenIdConfiguration\{
     FindOpenIdConfigurationPresenterInterface,
     FindOpenIdConfigurationResponse
 };
 
-class FindOpenIdConfigurationPresenterStub implements FindOpenIdConfigurationPresenterInterface
+class FindOpenIdConfigurationPresenterStub extends AbstractPresenter implements FindOpenIdConfigurationPresenterInterface
 {
-        /**
+    /**
      * @var FindOpenIdConfigurationResponse
      */
     public $response;
-
-    /**
-     * @var ResponseStatusInterface|null
-     */
-    private $responseStatus;
-
-    /**
-     * @var mixed[]
-     */
-    private $responseHeaders;
 
     /**
      * @param FindOpenIdConfigurationResponse $response
@@ -61,37 +51,5 @@ class FindOpenIdConfigurationPresenterStub implements FindOpenIdConfigurationPre
     public function show(): Response
     {
         return new Response();
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function setResponseStatus(?ResponseStatusInterface $responseStatus): void
-    {
-        $this->responseStatus = $responseStatus;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getResponseStatus(): ?ResponseStatusInterface
-    {
-        return $this->responseStatus;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function setResponseHeaders(array $responseHeaders): void
-    {
-        $this->responseHeaders = $responseHeaders;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getResponseHeaders(): array
-    {
-        return $this->responseHeaders;
     }
 }

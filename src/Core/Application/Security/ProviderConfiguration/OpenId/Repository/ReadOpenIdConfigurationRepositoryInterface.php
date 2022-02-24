@@ -28,7 +28,7 @@ use Core\Domain\Security\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
 interface ReadOpenIdConfigurationRepositoryInterface
 {
     /**
-     * Find the OpenId Configuration.
+     * Find the OpenId Configuration
      *
      * @return OpenIdConfiguration|null
      */

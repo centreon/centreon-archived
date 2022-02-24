@@ -31,6 +31,7 @@ use Core\Application\Security\ProviderConfiguration\OpenId\UseCase\FindOpenIdCon
     FindOpenIdConfigurationResponse
 };
 use Core\Domain\Security\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
+use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
 use PHPUnit\Framework\TestCase;
 
 class FindOpenIdConfigurationTest extends TestCase
@@ -40,9 +41,15 @@ class FindOpenIdConfigurationTest extends TestCase
      */
     private $repository;
 
+    /**
+     * @var PresenterFormatterInterface&\PHPUnit\Framework\MockObject\MockObject
+     */
+    private $presenterFormatter;
+
     public function setUp(): void
     {
         $this->repository = $this->createMock(ReadOpenIdConfigurationRepositoryInterface::class);
+        $this->presenterFormatter = $this->createMock(PresenterFormatterInterface::class);
     }
 
     /**
@@ -70,7 +77,7 @@ class FindOpenIdConfigurationTest extends TestCase
         );
 
         $useCase = new FindOpenIdConfiguration($this->repository);
-        $presenter = new FindOpenIdConfigurationPresenterStub();
+        $presenter = new FindOpenIdConfigurationPresenterStub($this->presenterFormatter);
 
         $this->repository
             ->expects($this->once())
@@ -89,7 +96,7 @@ class FindOpenIdConfigurationTest extends TestCase
     public function testFindConfigurationNotFound(): void
     {
         $useCase = new FindOpenIdConfiguration($this->repository);
-        $presenter = new FindOpenIdConfigurationPresenterStub();
+        $presenter = new FindOpenIdConfigurationPresenterStub($this->presenterFormatter);
 
         $this->repository
             ->expects($this->once())
@@ -108,7 +115,7 @@ class FindOpenIdConfigurationTest extends TestCase
     public function testFindConfigurationError(): void
     {
         $useCase = new FindOpenIdConfiguration($this->repository);
-        $presenter = new FindOpenIdConfigurationPresenterStub();
+        $presenter = new FindOpenIdConfigurationPresenterStub($this->presenterFormatter);
 
         $this->repository
             ->expects($this->once())
