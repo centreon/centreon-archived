@@ -44,7 +44,7 @@ class OpenIdConfigurationFactory
             $request->authorizationEndpoint,
             $request->tokenEndpoint,
             $request->introspectionTokenEndpoint,
-            $request->userInformationsEndpoint,
+            $request->userInformationEndpoint,
             $request->endSessionEndpoint,
             $request->connectionScopes,
             $request->loginClaim,

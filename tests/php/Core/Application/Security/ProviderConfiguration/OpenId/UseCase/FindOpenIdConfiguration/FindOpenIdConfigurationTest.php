@@ -96,7 +96,7 @@ class FindOpenIdConfigurationTest extends TestCase
         $this->assertEquals('/authorization', $presenter->response->authorizationEndpoint);
         $this->assertEquals('/token', $presenter->response->tokenEndpoint);
         $this->assertEquals('/introspect', $presenter->response->introspectionTokenEndpoint);
-        $this->assertEquals('/userinfo', $presenter->response->userInformationsEndpoint);
+        $this->assertEquals('/userinfo', $presenter->response->userInformationEndpoint);
         $this->assertEquals('/logout', $presenter->response->endSessionEndpoint);
         $this->assertEquals([], $presenter->response->connectionScopes);
         $this->assertEquals('preferred_username', $presenter->response->loginClaim);

@@ -46,7 +46,7 @@ class FindOpenIdConfigurationPresenter extends AbstractPresenter implements Find
             'authorization_endpoint' => $response->authorizationEndpoint,
             'token_endpoint' => $response->tokenEndpoint,
             'introspection_token_endpoint' => $response->introspectionTokenEndpoint,
-            'userinfo_endpoint' => $response->userInformationsEndpoint,
+            'userinfo_endpoint' => $response->userInformationEndpoint,
             'endsession_endpoint' => $response->endSessionEndpoint,
             'connection_scopes' => $response->connectionScopes,
             'login_claim' => $response->loginClaim,

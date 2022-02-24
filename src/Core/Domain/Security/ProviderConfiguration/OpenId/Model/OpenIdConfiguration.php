@@ -38,7 +38,7 @@ class OpenIdConfiguration
      * @param string|null $authorizationEndpoint
      * @param string|null $tokenEndpoint
      * @param string|null $introspectionTokenEndpoint
-     * @param string|null $userInformationsEndpoint
+     * @param string|null $userInformationEndpoint
      * @param string|null $endSessionEndpoint
      * @param string[] $connectionScopes
      * @param string|null $loginClaim
@@ -56,7 +56,7 @@ class OpenIdConfiguration
         private ?string $authorizationEndpoint,
         private ?string $tokenEndpoint,
         private ?string $introspectionTokenEndpoint,
-        private ?string $userInformationsEndpoint,
+        private ?string $userInformationEndpoint,
         private ?string $endSessionEndpoint,
         private array $connectionScopes,
         private ?string $loginClaim,
@@ -156,9 +156,9 @@ class OpenIdConfiguration
     /**
      * @return string|null
      */
-    public function getUserInformationsEndpoint(): ?string
+    public function getUserInformationEndpoint(): ?string
     {
-        return $this->userInformationsEndpoint;
+        return $this->userInformationEndpoint;
     }
 
     /**

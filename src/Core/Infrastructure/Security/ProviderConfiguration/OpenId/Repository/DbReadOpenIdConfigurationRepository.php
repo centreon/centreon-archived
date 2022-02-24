@@ -31,6 +31,10 @@ use Core\Domain\Security\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
 
 class DbReadOpenIdConfigurationRepository extends AbstractRepositoryDRB implements ReadRepositoryInterface
 {
+    /**
+
+     * @param DatabaseConnection $db
+     */
     public function __construct(DatabaseConnection $db)
     {
         $this->db = $db;

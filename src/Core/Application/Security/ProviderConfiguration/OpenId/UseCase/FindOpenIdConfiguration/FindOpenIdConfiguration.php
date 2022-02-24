@@ -72,7 +72,7 @@ class FindOpenIdConfiguration
         $findOpenIdConfigurationResponse->authorizationEndpoint = $configuration->getAuthorizationEndpoint();
         $findOpenIdConfigurationResponse->tokenEndpoint = $configuration->getTokenEndpoint();
         $findOpenIdConfigurationResponse->introspectionTokenEndpoint = $configuration->getIntrospectionTokenEndpoint();
-        $findOpenIdConfigurationResponse->userInformationsEndpoint = $configuration->getUserInformationsEndpoint();
+        $findOpenIdConfigurationResponse->userInformationEndpoint = $configuration->getUserInformationEndpoint();
         $findOpenIdConfigurationResponse->endSessionEndpoint = $configuration->getEndSessionEndpoint();
         $findOpenIdConfigurationResponse->connectionScopes = $configuration->getConnectionScopes();
         $findOpenIdConfigurationResponse->loginClaim = $configuration->getLoginClaim();

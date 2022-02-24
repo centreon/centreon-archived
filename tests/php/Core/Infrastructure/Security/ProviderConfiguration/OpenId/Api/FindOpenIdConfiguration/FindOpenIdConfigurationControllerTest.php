@@ -21,10 +21,6 @@
 
 declare(strict_types=1);
 
-
-
-declare(strict_types=1);
-
 namespace Tests\Core\Infrastructure\Security\ProviderConfiguration\OpenId\Api\FindOpenIdConfiguration;
 
 use PHPUnit\Framework\TestCase;
