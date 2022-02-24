@@ -1,38 +1,38 @@
 export interface OpenidConfiguration {
-  authenticationType: string;
-  authorizationEndpoint: string;
-  baseUrl: string;
+  authenticationType: string | null;
+  authorizationEndpoint: string | null;
+  baseUrl: string | null;
   blacklistClientAddresses: Array<string>;
-  clientId: string;
-  clientSecret: string;
+  clientId: string | null;
+  clientSecret: string | null;
   connectionScopes: Array<string>;
-  endSessionEndpoint: string;
-  introspectionTokenEndpoint: string;
+  endSessionEndpoint: string | null;
+  introspectionTokenEndpoint: string | null;
   isActive: boolean;
   isForced: boolean;
-  loginClaim: string;
-  tokenEndpoint: string;
+  loginClaim: string | null;
+  tokenEndpoint: string | null;
   trustedClientAddresses: Array<string>;
-  userinfoEndpoint: string;
+  userinfoEndpoint: string | null;
   verifyPeer: boolean;
 }
 
 export interface OpenidConfigurationToAPI {
-  authentication_type: string;
-  authorization_endpoint: string;
-  base_url: string;
+  authentication_type: string | null;
+  authorization_endpoint: string | null;
+  base_url: string | null;
   blacklist_client_addresses: Array<string>;
-  client_id: string;
-  client_secret: string;
+  client_id: string | null;
+  client_secret: string | null;
   connection_scopes: Array<string>;
-  endsession_endpoint: string;
-  introspection_token_endpoint: string;
+  endsession_endpoint: string | null;
+  introspection_token_endpoint: string | null;
   is_active: boolean;
   is_forced: boolean;
-  login_claim: string;
-  token_endpoint: string;
+  login_claim: string | null;
+  token_endpoint: string | null;
   trusted_client_addresses: Array<string>;
-  userinfo_endpoint: string;
+  userinfo_endpoint: string | null;
   verify_peer: boolean;
 }
 
