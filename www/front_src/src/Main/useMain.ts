@@ -35,6 +35,7 @@ const useMain = (): void => {
       request: getData,
     });
   const { sendRequest: getTranslations } = useRequest<ResourceLanguage>({
+    httpCodesBypassErrorSnackbar: [500],
     request: getData,
   });
 
