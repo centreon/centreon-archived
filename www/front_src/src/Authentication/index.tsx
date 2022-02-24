@@ -11,6 +11,7 @@ import { Provider } from './models';
 import LocalAuthentication from './Local';
 import { labelPasswordSecurityPolicy } from './Local/translatedLabels';
 import { labelOpenIDConnectConfiguration } from './Openid/translatedLabels';
+import OpenidConfiguration from './Openid';
 
 const Authentication = (): JSX.Element => {
   const { t } = useTranslation();
@@ -41,7 +42,12 @@ const Authentication = (): JSX.Element => {
             memoProps: [],
           })}
         </TabPanel>
-        <TabPanel value={Provider.Openid}>OpenID Connect</TabPanel>
+        <TabPanel value={Provider.Openid}>
+          {useMemoComponent({
+            Component: <OpenidConfiguration />,
+            memoProps: [],
+          })}
+        </TabPanel>
       </TabContext>
     </Box>
   );

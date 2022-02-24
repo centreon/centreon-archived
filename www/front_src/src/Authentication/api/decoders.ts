@@ -1,6 +1,7 @@
 import { JsonDecoder } from 'ts.data.json';
 
 import { PasswordExpiration, PasswordSecurityPolicy } from '../Local/models';
+import { OpenidConfiguration } from '../Openid/models';
 
 const passwordExpirationDecoder = JsonDecoder.object<PasswordExpiration>(
   {
@@ -40,3 +41,53 @@ export const securityPolicyDecoder = JsonDecoder.object<PasswordSecurityPolicy>(
     passwordMinLength: 'password_min_length',
   },
 );
+
+export const openidConfigurationDecoder =
+  JsonDecoder.object<OpenidConfiguration>(
+    {
+      authenticationType: JsonDecoder.string,
+      authorizationEndpoint: JsonDecoder.string,
+      baseUrl: JsonDecoder.string,
+      blacklistClientAddresses: JsonDecoder.array(
+        JsonDecoder.string,
+        'blacklist client addresses',
+      ),
+      clientId: JsonDecoder.string,
+      clientSecret: JsonDecoder.string,
+      connectionScopes: JsonDecoder.array(
+        JsonDecoder.string,
+        'connectionScopes',
+      ),
+      endSessionEndpoint: JsonDecoder.string,
+      introspectionTokenEndpoint: JsonDecoder.string,
+      isActive: JsonDecoder.boolean,
+      isForced: JsonDecoder.boolean,
+      loginClaim: JsonDecoder.string,
+      tokenEndpoint: JsonDecoder.string,
+      trustedClientAddresses: JsonDecoder.array(
+        JsonDecoder.string,
+        'trusted client addresses',
+      ),
+      userinfoEndpoint: JsonDecoder.string,
+      verifyPeer: JsonDecoder.boolean,
+    },
+    'Open ID Configuration',
+    {
+      authenticationType: 'authentication_type',
+      authorizationEndpoint: 'authorization_endpoint',
+      baseUrl: 'base_url',
+      blacklistClientAddresses: 'blacklist_client_addresses',
+      clientId: 'client_id',
+      clientSecret: 'client_secret',
+      connectionScopes: 'connection_scopes',
+      endSessionEndpoint: 'endsession_endpoint',
+      introspectionTokenEndpoint: 'introspection_token_endpoint',
+      isActive: 'is_active',
+      isForced: 'is_forced',
+      loginClaim: 'login_claim',
+      tokenEndpoint: 'token_endpoint',
+      trustedClientAddresses: 'trusted_client_addresses',
+      userinfoEndpoint: 'userinfo_endpoint',
+      verifyPeer: 'verify_peer',
+    },
+  );

@@ -15,11 +15,11 @@ import {
   labelFailedToSavePasswordPasswordSecurityPolicy,
   labelPasswordPasswordSecurityPolicySaved,
 } from '../translatedLabels';
+import FormButtons from '../../FormButtons';
 
 import PasswordCasePolicy from './PasswordCasePolicy';
 import PasswordExpirationPolicy from './PasswordExpirationPolicy';
 import PasswordBlockingPolicy from './PasswordBlockingPolicy';
-import FormButtons from './FormButtons';
 
 interface Props {
   initialValues: PasswordSecurityPolicy;
