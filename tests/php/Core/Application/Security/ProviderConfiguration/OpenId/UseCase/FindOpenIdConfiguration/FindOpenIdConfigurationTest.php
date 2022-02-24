@@ -87,7 +87,22 @@ class FindOpenIdConfigurationTest extends TestCase
         $useCase($presenter);
 
         $this->assertInstanceOf(FindOpenIdConfigurationResponse::class, $presenter->response);
-        //@todo: Adapt tests with implementation of FindOpenIdConfigurationResponse
+        $this->assertTrue($presenter->response->isActive);
+        $this->assertTrue($presenter->response->isForced);
+        $this->assertFalse($presenter->response->verifyPeer);
+        $this->assertEquals([], $presenter->response->trustedClientAddresses);
+        $this->assertEquals([], $presenter->response->blacklistClientAddresses);
+        $this->assertEquals('http://127.0.0.1/auth/openid-connect', $presenter->response->baseUrl);
+        $this->assertEquals('/authorization', $presenter->response->authorizationEndpoint);
+        $this->assertEquals('/token', $presenter->response->tokenEndpoint);
+        $this->assertEquals('/introspect', $presenter->response->introspectionTokenEndpoint);
+        $this->assertEquals('/userinfo', $presenter->response->userInformationsEndpoint);
+        $this->assertEquals('/logout', $presenter->response->endSessionEndpoint);
+        $this->assertEquals([], $presenter->response->connectionScopes);
+        $this->assertEquals('preferred_username', $presenter->response->loginClaim);
+        $this->assertEquals('MyCl1ientId', $presenter->response->clientId);
+        $this->assertEquals('MyCl1ientSuperSecr3tKey', $presenter->response->clientSecret);
+        $this->assertEquals('client_secret_post', $presenter->response->authenticationType);
     }
 
     /**

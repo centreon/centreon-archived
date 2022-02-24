@@ -63,6 +63,24 @@ class FindOpenIdConfiguration
      */
     private function createResponse(OpenIdConfiguration $configuration): FindOpenIdConfigurationResponse
     {
-        return new FindOpenIdConfigurationResponse();
+        $findOpenIdConfigurationResponse = new FindOpenIdConfigurationResponse();
+        $findOpenIdConfigurationResponse->isActive = $configuration->isActive();
+        $findOpenIdConfigurationResponse->isForced = $configuration->isForced();
+        $findOpenIdConfigurationResponse->trustedClientAddresses = $configuration->getTrustedClientAddresses();
+        $findOpenIdConfigurationResponse->blacklistClientAddresses = $configuration->getBlacklistClientAddresses();
+        $findOpenIdConfigurationResponse->baseUrl = $configuration->getBaseUrl();
+        $findOpenIdConfigurationResponse->authorizationEndpoint = $configuration->getAuthorizationEndpoint();
+        $findOpenIdConfigurationResponse->tokenEndpoint = $configuration->getTokenEndpoint();
+        $findOpenIdConfigurationResponse->introspectionTokenEndpoint = $configuration->getIntrospectionTokenEndpoint();
+        $findOpenIdConfigurationResponse->userInformationsEndpoint = $configuration->getUserInformationsEndpoint();
+        $findOpenIdConfigurationResponse->endSessionEndpoint = $configuration->getEndSessionEndpoint();
+        $findOpenIdConfigurationResponse->connectionScopes = $configuration->getConnectionScopes();
+        $findOpenIdConfigurationResponse->loginClaim = $configuration->getLoginClaim();
+        $findOpenIdConfigurationResponse->clientId = $configuration->getClientId();
+        $findOpenIdConfigurationResponse->clientSecret = $configuration->getClientSecret();
+        $findOpenIdConfigurationResponse->authenticationType = $configuration->getAuthenticationType();
+        $findOpenIdConfigurationResponse->verifyPeer = $configuration->verifyPeer();
+
+        return $findOpenIdConfigurationResponse;
     }
 }

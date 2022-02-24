@@ -81,7 +81,7 @@ class DbWriteOpenIdConfigurationRepository extends AbstractRepositoryDRB impleme
             'token_endpoint' => $configuration->getTokenEndpoint(),
             'introspection_token_endpoint' => $configuration->getIntrospectionTokenEndpoint(),
             'userinfo_endpoint' => $configuration->getUserInformationsEndpoint(),
-            'endession_endpoint' => $configuration->getEndSessionEndpoint(),
+            'endsession_endpoint' => $configuration->getEndSessionEndpoint(),
             'connection_scopes' => $configuration->getConnectionScopes(),
             'login_claim' => $configuration->getLoginClaim(),
             'client_id' => $configuration->getClientId(),

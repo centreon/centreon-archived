@@ -1,11 +1,9 @@
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "title": "Update OpenID configuration",
+    "title": "Read OpenID configuration",
     "type": "object",
     "additionalProperties": false,
     "required": [
-        "is_active",
-        "is_forced",
         "trusted_client_addresses",
         "blacklist_client_addresses",
         "base_url",
