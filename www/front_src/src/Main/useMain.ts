@@ -48,7 +48,7 @@ const useMain = (): void => {
 
   const getBrowserLocale = (): string => navigator.language.slice(0, 2);
 
-  const initializeI18n = (retrievedTranslations): void => {
+  const initializeI18n = (retrievedTranslations?: ResourceLanguage): void => {
     i18next.use(initReactI18next).init({
       fallbackLng: 'en',
       keySeparator: false,
@@ -66,17 +66,22 @@ const useMain = (): void => {
   };
 
   React.useEffect(() => {
-    getWebVersions({
-      endpoint: webVersionsEndpoint,
-    }).then((retrievedWebVersions) => {
-      setWebVersions(retrievedWebVersions);
-    });
-
     getTranslations({
       endpoint: translationEndpoint,
-    }).then((retrievedTranslations) => {
-      initializeI18n(retrievedTranslations);
-    });
+    })
+      .then((retrievedTranslations) => {
+        initializeI18n(retrievedTranslations);
+      })
+      .catch(() => {
+        initializeI18n();
+      })
+      .finally(() => {
+        getWebVersions({
+          endpoint: webVersionsEndpoint,
+        }).then((retrievedWebVersions) => {
+          setWebVersions(retrievedWebVersions);
+        });
+      });
   }, []);
 
   React.useEffect((): void => {
