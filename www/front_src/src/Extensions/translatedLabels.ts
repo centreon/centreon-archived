@@ -20,4 +20,4 @@ export const labelUpdate = 'Update';
 export const labelDelete = 'Delete';
 export const labelLicenseRequired = 'License required';
 export const labelLicenseExpires = 'License expires';
-export const labelLicenseNotValide = 'License not valid';
+export const labelLicenseNotValid = 'License not valid';

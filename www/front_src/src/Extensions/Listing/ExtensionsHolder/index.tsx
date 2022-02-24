@@ -25,7 +25,7 @@ import { Entity, ExtensionsStatus, LicenseProps } from '../models';
 import {
   labelLicenseRequired,
   labelLicenseExpires,
-  labelLicenseNotValide,
+  labelLicenseNotValid,
 } from '../../translatedLabels';
 
 const useStyles = makeStyles((theme) => ({
@@ -95,7 +95,7 @@ const ExtensionsHolder = ({
 
       return {
         color: '#f90026',
-        label: t(labelLicenseNotValide),
+        label: t(labelLicenseNotValid),
       };
     }
 
