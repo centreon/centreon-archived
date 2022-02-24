@@ -107,7 +107,7 @@ function enableGroupInDB($acl_group_id = null, $groups = array())
         $dbResult->bindValue('aclGroupId', $key, PDO::PARAM_INT);
         $dbResult->execute();
 
-        $dbResult = $pearDB->query("SELECT acl_group_name FROM `acl_groups` WHERE acl_group_id = :aclGroupId LIMIT 1");
+        $dbResult = $pearDB->prepare("SELECT acl_group_name FROM `acl_groups` WHERE acl_group_id = :aclGroupId LIMIT 1");
         $dbResult->bindValue('aclGroupId', $key, PDO::PARAM_INT);
         $dbResult->execute();
         $row = $dbResult->fetch();
