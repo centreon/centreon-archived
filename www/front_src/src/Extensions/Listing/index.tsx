@@ -351,15 +351,15 @@ const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
     filter(pathEq(['version', 'installed'], false), extensions.widget.entities),
   );
 
-  const allWidgetsUpdated = isEmpty(
+  const allWidgetsUpToDate = isEmpty(
     filter(pathEq(['version', 'outdated'], true), extensions.module.entities),
   );
 
-  const allModulesUpdated = isEmpty(
+  const allModulesUpToDate = isEmpty(
     filter(pathEq(['version', 'outdated'], true), extensions.widget.entities),
   );
 
-  const disableUpdate = allWidgetsUpdated && allModulesUpdated;
+  const disableUpdate = allWidgetsUpToDate && allModulesUpToDate;
 
   const disableInstall = allModulesInstalled && allWidgetsInstalled;
 

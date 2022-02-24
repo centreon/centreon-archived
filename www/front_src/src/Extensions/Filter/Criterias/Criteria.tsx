@@ -33,8 +33,8 @@ const CriteriaContent = ({ name, value }: Props): JSX.Element => {
     }));
   };
 
-  const changeCriteria = (updatedValue): void => {
-    setFilterCriteria({ name, value: updatedValue });
+  const changeCriteria = (upToDateValue): void => {
+    setFilterCriteria({ name, value: upToDateValue });
   };
 
   const getUntranslated = (values): Array<SelectEntry> => {
@@ -59,8 +59,8 @@ const CriteriaContent = ({ name, value }: Props): JSX.Element => {
       hideInput
       options={translatedOptions}
       value={translatedValues}
-      onChange={(_, updatedValue): void => {
-        changeCriteria(getUntranslated(updatedValue));
+      onChange={(_, upToDateValue): void => {
+        changeCriteria(getUntranslated(upToDateValue));
       }}
     />
   );

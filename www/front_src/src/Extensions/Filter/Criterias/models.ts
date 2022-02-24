@@ -5,7 +5,7 @@ import {
   labelModule,
   labelUninstalled,
   labelOutdated,
-  labelUpdated,
+  labelUpToDate,
   labelType,
   labelStatus,
   labelWidget,
@@ -23,7 +23,7 @@ const criteriaValueNameById = {
   MODULE: labelModule,
   OUTDATED: labelOutdated,
   UNINSTALLED: labelUninstalled,
-  UPDATED: labelUpdated,
+  UPTODATE: labelUpToDate,
   WIDGET: labelWidget,
 };
 
@@ -39,8 +39,8 @@ const uninstalled = {
 const outdatedId = 'OUTDATED';
 const outdated = { id: outdatedId, name: criteriaValueNameById[outdatedId] };
 
-const updatedId = 'UPDATED';
-const updated = { id: updatedId, name: criteriaValueNameById[updatedId] };
+const upToDateId = 'UPTODATE';
+const upToDate = { id: upToDateId, name: criteriaValueNameById[upToDateId] };
 
 const widgetId = 'WIDGET';
 const widget = { id: widgetId, name: criteriaValueNameById[widgetId] };
@@ -48,7 +48,7 @@ const widget = { id: widgetId, name: criteriaValueNameById[widgetId] };
 const moduleId = 'MODULE';
 const module = { id: moduleId, name: criteriaValueNameById[moduleId] };
 
-const selectableStatuses = [installed, uninstalled, updated, outdated];
+const selectableStatuses = [installed, uninstalled, upToDate, outdated];
 const selectableTypes = [widget, module];
 
 export interface CriteriaDisplayProps {

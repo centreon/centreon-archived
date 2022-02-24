@@ -35,12 +35,12 @@ const buildExtensionEndPoint = ({
 
   const installed = !!find(propEq('id', 'INSTALLED'), values);
   const uninstalled = !!find(propEq('id', 'UNINSTALLED'), values);
-  const updated = !!find(propEq('id', 'UPDATED'), values);
+  const upToDate = !!find(propEq('id', 'UPTODATE'), values);
   const outdated = !!find(propEq('id', 'OUTDATED'), values);
 
-  if (!updated && outdated) {
+  if (!upToDate && outdated) {
     params += '&updated=false';
-  } else if (updated && !outdated) {
+  } else if (upToDate && !outdated) {
     params += '&updated=true';
   }
 

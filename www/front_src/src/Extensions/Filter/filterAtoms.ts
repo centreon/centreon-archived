@@ -26,7 +26,7 @@ export const filterWithParsedSearchDerivedAtom = atom((get) => {
   return parse(get(searchAtom));
 });
 
-export const getUpdatedFilterCriteriaDerivedAtom = atom(
+export const getUpToDateFilterCriteriaDerivedAtom = atom(
   (get) =>
     ({ name, value }): Array<Criteria> => {
       const index = findIndex(propEq('name', name))(
@@ -51,19 +51,19 @@ export const applyFilterDerivedAtom = atom(
 export const setFilterCriteriaDerivedAtom = atom(
   null,
   (get, set, { name, value, apply = false }) => {
-    const getUpdatedFilterCriteria = get(getUpdatedFilterCriteriaDerivedAtom);
+    const getUpToDateFilterCriteria = get(getUpToDateFilterCriteriaDerivedAtom);
 
-    const updatedFilter = getUpdatedFilterCriteria({ name, value });
+    const upToDateFilter = getUpToDateFilterCriteria({ name, value });
 
-    set(searchAtom, build(updatedFilter));
+    set(searchAtom, build(upToDateFilter));
 
     if (apply) {
-      set(applyFilterDerivedAtom, updatedFilter);
+      set(applyFilterDerivedAtom, upToDateFilter);
 
       return;
     }
 
-    set(currentFilterCriteriasAtom, updatedFilter);
+    set(currentFilterCriteriasAtom, upToDateFilter);
   },
 );
 
