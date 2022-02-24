@@ -185,9 +185,8 @@ function multipleGroupInDB($groups = array(), $nbrDup = array())
             }
 
             if (testGroupExistence($acl_group_name) && $val) {
-                $groupExist = $pearDB->prepare("INSERT INTO acl_groups VALUES (:aclGroups)");
-                $groupExist->bindValue('aclGroups', $val, PDO::PARAM_STR);
-                $groupExist->execute();
+                $val ? $rq = "INSERT INTO acl_groups VALUES (" . $val . ")" : $rq = null;
+                $pearDB->query($rq);
                 $dbResult = $pearDB->query("SELECT MAX(acl_group_id) FROM acl_groups");
                 $maxId = $dbResult->fetch();
                 $dbResult->closeCursor();
