@@ -49,7 +49,8 @@ $path = "./include/options/accessLists/groupsACL/";
 require_once $path . "DB-Func.php";
 require_once "./include/common/common-Func.php";
 
-function sanitize_input_array(array $inputArray): array {
+function sanitize_input_array(array $inputArray): array
+{
     $sanitizedArray = [];
     foreach ($inputArray as $key => $value) {
         $key = filter_var($key, FILTER_VALIDATE_INT);
