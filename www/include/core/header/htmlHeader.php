@@ -45,7 +45,7 @@ $versionParam = isset($centreon->informations) && isset($centreon->informations[
 
 print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
 
-$cssThemes = "Centreon-Light";
+$variablesThemeCSS  = null;
 $userId = (int) $centreon->user->user_id;
 $statement = $pearDB->prepare('SELECT contact_theme FROM contact WHERE contact_id = :contactId');
 $statement->bindValue(':contactId', $userId, \PDO::PARAM_INT);
@@ -53,16 +53,15 @@ $statement->execute();
 if ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
     switch ($result['contact_theme']) {
         case 'light':
-            $cssThemes = "Centreon-Light";
+            $variablesThemeCSS = null;
             break;
         case 'dark':
-            $cssThemes = "Centreon-Dark";
+            $variablesThemeCSS = "Centreon-Dark";
             break;
         default:
             throw new \Exception('Unknown contact theme : ' . $result['contact_theme']);
     }
 }
-
 ?>
 <!DOCTYPE html>
 <html lang="<?php echo $centreon->user->lang; ?>">
@@ -73,40 +72,40 @@ if ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
     <meta name="robots" content="index, nofollow"/>
 
     <?php if (isset($isMobile) && $isMobile) : ?>
-    <link href="./Themes/<?php echo $cssThemes; ?>/MobileMenu/css/material_icons.css" rel="stylesheet" type="text/css"/>
-    <link href="./Themes/<?php echo $cssThemes; ?>/MobileMenu/css/menu.css" rel="stylesheet" type="text/css"/>
+    <link href="./Themes/Generic-theme/MobileMenu/css/material_icons.css" rel="stylesheet" type="text/css"/>
+    <link href="./Themes/Generic-theme/MobileMenu/css/menu.css" rel="stylesheet" type="text/css"/>
     <?php endif; ?>
 
     <link href="./include/common/javascript/jquery/plugins/jpaginator/jPaginator.css" rel="stylesheet" type="text/css"/>
 
     <!-- Theme selection -->
     <link
-        href="./Themes/<?php echo $cssThemes; ?>/style.css<?php echo $versionParam; ?>"
+        href="./Themes/Generic-theme/style.css<?php echo $versionParam; ?>"
         rel="stylesheet"
         type="text/css"
     />
     <link
-        href="./Themes/<?php echo $cssThemes; ?>/centreon-loading.css<?php echo $versionParam; ?>"
+        href="./Themes/Generic-theme/centreon-loading.css<?php echo $versionParam; ?>"
         rel="stylesheet"
         type="text/css"
     />
     <link
-        href="./Themes/<?php echo $cssThemes; ?>/responsive-style.css<?php echo $versionParam; ?>"
+        href="./Themes/Generic-theme/responsive-style.css<?php echo $versionParam; ?>"
         rel="stylesheet"
         type="text/css"
     />
     <link
-        href="./Themes/<?php echo $cssThemes; ?>/color.css<?php echo $versionParam; ?>"
+        href="./Themes/Generic-theme/color.css<?php echo $versionParam; ?>"
         rel="stylesheet"
         type="text/css"
     />
     <link
-        href="./Themes/<?php echo $cssThemes; ?>/jquery-ui/jquery-ui.css<?php echo $versionParam; ?>"
+        href="./Themes/Generic-theme/jquery-ui/jquery-ui.css<?php echo $versionParam; ?>"
         rel="stylesheet"
         type="text/css"
     />
     <link
-        href="./Themes/<?php echo $cssThemes; ?>/jquery-ui/jquery-ui-centreon.css<?php echo $versionParam; ?>"
+        href="./Themes/Generic-theme/jquery-ui/jquery-ui-centreon.css<?php echo $versionParam; ?>"
         rel="stylesheet"
         type="text/css"
     />
@@ -129,9 +128,20 @@ if ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
     <!-- graph css -->
     <link href="./include/common/javascript/charts/c3.min.css" type="text/css" rel="stylesheet" />
     <link href="./include/views/graphs/javascript/centreon-status-chart.css" type="text/css" rel="stylesheet" />
-        <?php
-
-        // == Declare CSS for modules
+    <link
+            href="./Themes/Generic-theme/variables.css"
+            rel="stylesheet"
+            type="text/css"
+    />
+<?php
+    // Override variables CSS
+    if ($variablesThemeCSS !== null) {
+        print "<link "
+            . "href='./Themes/" . $variablesThemeCSS . "/variables.css' "
+            . "rel='stylesheet' type='text/css' "
+            . "/>\n";
+    }
+    // == Declare CSS for modules
         foreach ($centreon->modules as $moduleName => $infos) {
             if (file_exists(__DIR__ . "/../../../www/modules/" . $moduleName . "/static/css/styles.css")) {
                 print "<link "
@@ -142,7 +152,7 @@ if ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
         }
 
         if (!isset($_REQUEST['iframe']) || (isset($_REQUEST['iframe']) && $_REQUEST['iframe'] != 1)) {
-            ?>
+?>
     <script type="text/javascript" src="./include/common/javascript/jquery/jquery.min.js"></script>
     <script type="text/javascript" src="./include/common/javascript/jquery/plugins/toggleClick/jquery.toggleClick.js">
     </script>
@@ -194,7 +204,7 @@ if ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
     <script type="text/javascript">
       var text_back = '<?= gettext('Back') ?>'
     </script>
-    <script src="./Themes/<?php echo $cssThemes; ?>/MobileMenu/js/menu.js"></script>
+    <script src="./Themes/Generic-theme/MobileMenu/js/menu.js"></script>
     <?php endif; ?>
     <?php
 
