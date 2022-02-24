@@ -27,8 +27,6 @@
     --table-form-header-font-color: var(--body-color);
     --popin-wrapper-font-color: var(--body-color);
     --table-form-header-h3-font-color: var(--body-color);
-    --centreon-popin-background-color: #424242;
-    --centreon-popin-border-color: #424242;
     --form-table-list-lvl-1-background-color: var(--centreon-popin-background-color);
     --form-table-list-lvl-1-col-name-background-color: var(--centreon-popin-background-color);
     --form-table-list-lvl-1-col-name-border-bottom-color: var(--body-color);
@@ -48,6 +46,9 @@
     --form-table-list-header-h3-font-color: #00bfb3;
     --info-box-h4-font-color: #fff;
     --md-checkbox-border-color-after: #10069f;
+    --md-checkbox-border-color: var(--body-color);
+    --centreon-popin-background-color: #424242;
+    --centreon-popin-border-color: #424242;
     --select2-container-selection-multiple-background-color: var(--body-background);
     --selected2-results-header-background-color: var(--body-background);
     --select2-results-header-color: #2196F3;
