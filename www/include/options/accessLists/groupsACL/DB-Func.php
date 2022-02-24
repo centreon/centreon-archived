@@ -99,13 +99,17 @@ function enableGroupInDB($acl_group_id = null, $groups = array())
     }
 
     if ($acl_group_id) {
-        $groups = array($acl_group_id => "1");
+        $groups = [$acl_group_id => "1"];
     }
 
     foreach ($groups as $key => $value) {
-        $pearDB->query("UPDATE acl_groups SET acl_group_activate = '1' WHERE acl_group_id = '" . $key . "'");
-        $query = "SELECT acl_group_name FROM `acl_groups` WHERE acl_group_id = '" . (int)$key . "' LIMIT 1";
-        $dbResult = $pearDB->query($query);
+        $dbResult = $pearDB->prepare("UPDATE acl_groups SET acl_group_activate = '1' WHERE acl_group_id = :aclGroupId");
+        $dbResult->bindValue('aclGroupId', $key, PDO::PARAM_INT);
+        $dbResult->execute();
+
+        $dbResult = $pearDB->query("SELECT acl_group_name FROM `acl_groups` WHERE acl_group_id = :aclGroupId LIMIT 1");
+        $dbResult->bindValue('aclGroupId', $key, PDO::PARAM_INT);
+        $dbResult->execute();
         $row = $dbResult->fetch();
         $centreon->CentreonLogAction->insertLog("access group", $key, $row['acl_group_name'], "enable");
     }
