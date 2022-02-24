@@ -41,7 +41,7 @@ class Host extends AbstractHost
     const VERTICAL_NOTIFICATION = 1;
     const CLOSE_NOTIFICATION = 2;
     const CUMULATIVE_NOTIFICATION = 3;
-    
+
     protected $hosts_by_name = array();
     protected $hosts = null;
     protected $generate_filename = 'hosts.cfg';
@@ -249,7 +249,7 @@ class Host extends AbstractHost
             && (is_null($host[$attributeAdditive]) || $host[$attributeAdditive] != 1)) {
             return $results;
         }
-        
+
         $hostsTpl = HostTemplate::getInstance($this->dependencyInjector)->hosts;
         $hostIdCache = null;
         foreach ($host['htpl'] as $hostIdTopLevel) {
@@ -426,7 +426,7 @@ class Host extends AbstractHost
                     $severity_id = $hosts_tpl[$host_id2]['severity_id'];
                     break;
                 }
-                $stack2 = array_merge($hosts_tpl[$host_id2]['htpl'], $stack2);
+                $stack2 = array_merge($hosts_tpl[$host_id2]['htpl'] ?? [], $stack2);
             }
 
             if ($severity_id) {
@@ -473,9 +473,9 @@ class Host extends AbstractHost
         $this->getHostGroups($host);
         $this->getParents($host);
         $this->getSeverity($host['host_id']);
-        
+
         $this->manageNotificationInheritance($host);
-        
+
         $this->getServices($host);
         $this->getServicesByHg($host);
 
@@ -538,7 +538,7 @@ class Host extends AbstractHost
     {
         // we pass null because it can be a meta_host with host_register = '2'
         $host = $this->getHostById($hostId, null);
-    
+
         $this->getContacts($host);
         $this->getContactGroups($host);
         $this->getHostTemplates($host, false);
