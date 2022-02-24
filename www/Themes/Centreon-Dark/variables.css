@@ -53,7 +53,7 @@
     --selected2-results-header-background-color: var(--body-background);
     --select2-results-header-color: #2196F3;
     --placeholder-font-color: var(--body-color);
-    --select2-dropdown-border-color: var(--body-background);
+    --select2-dropdown-border-color: var(--body-color);
     --select2-result-option-highlighted-aria-selected-true-background-color: #10069f;
     --select2-results-background-color: var(--body-background);
     --select2-results-option-font-color: #fff;
@@ -68,4 +68,7 @@
     --md-radio-checked-backgroud-color: var(--color-primary-light);
     --md-radio-after-background-color: var(--md-radio-checked-backgroud-color);
     --md-radio-label-before-border-color: var(--body-color);
+    --select2-selection-single-background-color: var(--body-background);
+    --select2-dropdown-background-color: var(--select2-selection-single-background-color);
+    --select2-selection-rendered-font-color: #fff;
 }
