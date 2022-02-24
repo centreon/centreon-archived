@@ -66,7 +66,7 @@ $dupNbr = $_GET['dupNbr'] ?? $_POST['dupNbr'] ?? null;
 $dupNbr = is_array($dupNbr) ? sanitize_input_array($dupNbr) : [];
 
 $select = $_GET['select'] ?? $_POST['select'] ?? null;
-is_array($select) ? $select = sanitize_input_array($select) : $select = [];
+$select = is_array($select) ? sanitize_input_array($select) : [];
 
 $acl_group_id = filter_var($_GET['acl_group_id'] ?? $_POST['acl_group_id'] ?? null, FILTER_VALIDATE_INT) ?? null;
 
