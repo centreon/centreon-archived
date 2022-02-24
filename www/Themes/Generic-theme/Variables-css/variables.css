@@ -24,6 +24,8 @@
     --select-border-color: var(--color-ghost);
     --select-background: var(--color-white);
     --select-color : var(--color-charcoal);
+    --option-color: var(--color-charcoal);
+    --input-select-background-color: #fff;
     /******************/
 
     /** Input checkbox **/
@@ -35,7 +37,7 @@
     --md-checkbox--disabled-border-color-before : var(--color-black-rgba);
     --md-checkbox--disabled-checked-background-color-before  : var(--color-black-rgba);
     --md-check-input-disabled-checked-before:  var(--color-success);
-    --md-checkbox-checked-label-before-background-color: var(--color-astral-rgb);
+    --md-checkbox-checked-label-before-background-color: var(--color-primary-dark);
     --md-checkbox-border-color-after: var(--color-white);
     /*********************/
 
@@ -49,7 +51,6 @@
 
     /** select **/
     --select-background-color : var(--color-white);
-    --option-color :  var(--select-color);
     /***********/
 
     /** HR **/
@@ -294,13 +295,13 @@
     --ui-anchor-state-active-visited-font-color: var(--color-persian-green);
     --global-view-ui-active-tabs-border-color: var(--color-robins-egg-blue);
     --global-view-ui-active-tabs-border-bottom-color: none;
-    --view-body-portlet-border-color: var(--color-white-lilac);
+    --view-body-portlet-border-color: var(--color-iron);
     --view-body-ui-widget-header-font-color: var(--color-armadillo);
     --view-body-ui-widget-header-background-color: var(--color-white-lilac);
     /* ------ END : Tabs variables -----*/
 
     /* ------ START : Forms variables ------ */
-    --form-table-list-header-background-color: var(--color-white);
+    --form-table-list-header-background-color: var(--body-background);
     --form-table-list-header-border-bottom-color: none;
     --form-table-list-header-h3-font-color: var(--color-olive);
     --form-table-list-header-h4-font-color: var(--color-pasific-bleu);
