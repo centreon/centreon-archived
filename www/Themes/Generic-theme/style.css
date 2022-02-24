@@ -89,6 +89,7 @@ input, select {
     font-size: 11px !important;
     border: 1px solid var(--select-border-color);
     line-height: 18px;
+    background-color: var(--input-select-background-color);
     color: var(--select-color);
 }
 
@@ -237,7 +238,7 @@ input[type="radio"] {
 }
 
 select {
-    background-color: #ffffff;
+    background-color: var(--select-background);
     background-image: url('../../img/icones/7x7/sort_desc.gif');
     background-repeat: no-repeat, repeat;
     background-position: right 5px top 50%, 0 0;
@@ -249,7 +250,7 @@ select {
     -webkit-appearance: none;
     appearance: none;
     padding: 4px 20px 4px 6px;
-    color: #444;
+    color: var(--select-color);
 }
 select::-ms-expand {
     display: none;
@@ -259,13 +260,13 @@ select[multiple="multiple"] {
     overflow: auto;
 }
 option {
-    color: #444;
+    color: var(--option-color);
     padding-left: 1px;
     padding-right: 1px;
 }
 
 hr {
-    background-color: #CCC;
+    background-color: var(--hr-background-color);
     height: 1px;
     margin: 3px 0;
 }
@@ -1130,6 +1131,10 @@ div.menuLeft {
     border-bottom: 1px solid var(--table-form-header-bottom-border-color);
 }
 
+table-form-header-h3 {
+    color: var(--table-form-header-h3-font-color);
+}
+
 .FormHeader .td {padding-left:2px;}
 
 .FormRowValue {
@@ -1177,7 +1182,9 @@ div.menuLeft {
 }
 
 #globalView .ui-state-default,#globalView .ui-widget-content .ui-state-default,#globalView .ui-widget-header .ui-state-default {
-    border: var(--global-view-ui-border-color);
+    border-top: 1px solid var(--global-view-ui-border-color);
+    border-left: 1px solid var(--global-view-ui-border-color);
+    border-right: 1px solid var(--global-view-ui-border-color);
     margin: 1px .2em 0 0;
     white-space: normal;
 }
@@ -1204,7 +1211,7 @@ div.menuLeft {
     margin-bottom: -1px;
     padding-bottom: 0;
     border: 1px solid var(--global-view-ui-active-tabs-border-color);
-    border-bottom: none;
+    border-bottom: 2px solid var(--global-view-ui-active-tabs-border-bottom-color);
     border-top-left-radius: 0px;
     border-top-right-radius: 0px;
 }

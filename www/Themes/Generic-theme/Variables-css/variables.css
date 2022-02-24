@@ -24,6 +24,8 @@
     --select-border-color: var(--color-ghost);
     --select-background: var(--color-white);
     --select-color : var(--color-charcoal);
+    --option-color: var(--color-charcoal);
+    --input-select-background-color: #fff;
     /******************/
 
     /** Input checkbox **/
@@ -35,7 +37,7 @@
     --md-checkbox--disabled-border-color-before : var(--color-black-rgba);
     --md-checkbox--disabled-checked-background-color-before  : var(--color-black-rgba);
     --md-check-input-disabled-checked-before:  var(--color-success);
-    --md-checkbox-checked-label-before-background-color: var(--color-astral-rgb);
+    --md-checkbox-checked-label-before-background-color: var(--color-primary-dark);
     --md-checkbox-border-color-after: var(--color-white);
     /*********************/
 
@@ -49,7 +51,6 @@
 
     /** select **/
     --select-background-color : var(--color-white);
-    --option-color :  var(--select-color);
     /***********/
 
     /** HR **/
@@ -71,7 +72,7 @@
     --rotation-timer-border-color : var(--color-ghost);
     --ui-silder-handle-background-color :var(--color-ghost);
     --ui-silder-handle-border-color : var(--color-grey-chateau);
-    --timer-value-color : var(--color-iris-blue);
+    --timer-value-color : var(--color-scorpion-2);
     /*************/
 
     /** Select 2 **/
@@ -132,11 +133,11 @@
     /** START : Buttons **/
     --btc-color: var(--color-white);
     --a-btc-color : var(--color-white);
-    --bt-default-background-color : var(--color-grey-chateau);
-    --bt-success-background-color : var(--color-ultramarine);
-    --bt-danger-background-color: var(--color-torch-red);
-    --bt-info-background-color : var(--color-iris-blue);
-    --bt-warning-background-color :var(--color-warning);
+    --bt-default-background-color : var(--color-primary-dark);
+    --bt-success-background-color : var(--color-primary-dark);
+    --bt-danger-background-color: var(--color-primary-dark);
+    --bt-info-background-color : var(--color-primary-dark);
+    --bt-warning-background-color :var(--color-primary-dark);
     --bt-action-color-background-color : var(--color-robins-egg-blue);
     --bt-action-color :var(--color-white);
     --bt-action-border-color :var(--color-persian-green);
@@ -243,8 +244,8 @@
     --list-header-border-top-color: var(--body-background);
     --list-header-border-left-color: var(--list-header-border-top-color);
     --list-footer-border-color: var(--color-biloba-flower);
-    --input-button-hover-font-color: var(--body-background);
-    --input-button-hover-background-color: var(--color-pasific-bleu);
+    --input-button-hover-font-color: #fff;
+    --input-button-hover-background-color: var(--color-primary-dark);
     --input-button-hover-border-color: var(--input-button-hover-background-color);
     --pagination-font-color: var(--body-background);
     --pagination-background-color: var(--list-table-border-color);
@@ -272,13 +273,14 @@
     /* ------ END : info box variables -----*/
 
     /* ------ START : toggle wrapper variables -----*/
-    --toggle-wrapper-background-color: var(--color-white);
+    --toggle-wrapper-background-color: var(--color-gallery-2);
     --toggle-wrapper-border-color: var(--color-iron);
     /* ------ END : toggle wrapper variables -----*/
 
     /* ------ START : form header variables -----*/
     --table-form-header-font-color: var(--color-aluminium);
     --table-form-header-bottom-border-color: var(--color-iron);
+    --table-form-header-h3-font-color: var(--color-aluminium);
     /* ------ END : form header variables -----*/
 
     /* ------ START : Tabs variables -----*/
@@ -292,13 +294,14 @@
     --ui-anchor-state-default-font-color: var(--color-white);
     --ui-anchor-state-active-visited-font-color: var(--color-persian-green);
     --global-view-ui-active-tabs-border-color: var(--color-robins-egg-blue);
-    --view-body-portlet-border-color: var(--color-white-lilac);
+    --global-view-ui-active-tabs-border-bottom-color: none;
+    --view-body-portlet-border-color: var(--color-iron);
     --view-body-ui-widget-header-font-color: var(--color-armadillo);
     --view-body-ui-widget-header-background-color: var(--color-white-lilac);
     /* ------ END : Tabs variables -----*/
 
     /* ------ START : Forms variables ------ */
-    --form-table-list-header-background-color: var(--color-white);
+    --form-table-list-header-background-color: var(--body-background);
     --form-table-list-header-border-bottom-color: none;
     --form-table-list-header-h3-font-color: var(--color-olive);
     --form-table-list-header-h4-font-color: var(--color-pasific-bleu);
@@ -445,7 +448,7 @@
     /* ------ END : Reporting 2015 variables -----*/
 
     /* ------ START : popin variables -----*/
-    --centreon-popin-background-color: var(--color-white);
+    --centreon-popin-background-color: var(--color-gallery-2);
     --centreon-popin-border-color: var(--color-aluminium-2);
     --centreon-popin-overlay-background-color: var(--color-black);
     --popin-wrapper-font-color: var(--color-martar);

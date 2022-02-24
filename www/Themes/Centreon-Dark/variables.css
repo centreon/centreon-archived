@@ -1,2 +1,52 @@
-/* Override variables CSS*/
-:root {}
+@import "../Generic-theme/Variables-css/variables.css";
+
+:root{
+    --body-background: #424242;
+    --body-color: #b2aca2;
+    --info-box-background-color: #1d2021;
+    --info-box-border-color: #776e62;
+    --path-way-font-color: var(--body-color);
+    --ui-widget-header-background-color: var(--body-background);
+    --ui-widget-header-border-bottom-color: #776e62;
+    --ui-tabs-nav-li-anchor-background-color: none;
+    --ui-anchor-state-default-font-color: #e8e6e38a;
+    --ui-anchor-state-active-visited-font-color: #6793e6;
+    --global-view-ui-border-color: none;
+    --ui-background-color: none;
+    --global-view-ui-active-tabs-border-color: none;
+    --global-view-ui-active-tabs-border-bottom-color: #2196F3;
+    --bt-success-background-color: #2196F3;
+    --bt-default-background-color: var(--bt-success-background-color);
+    --bt-danger-background-color: var(--bt-success-background-color);
+    --bt-info-background-color: var(--bt-success-background-color);
+    --bt-warning-background-color: var(--bt-success-background-color);
+    --toggle-wrapper-background-color: var(--body-background);
+    --toggle-wrapper-border-color: #776e62;
+    --timer-value-color: var(--body-color);
+    --table-form-header-bottom-border-color: var(--body-color);
+    --table-form-header-font-color: var(--body-color);
+    --popin-wrapper-font-color: var(--body-color);
+    --table-form-header-h3-font-color: var(--body-color);
+    --centreon-popin-background-color: #424242;
+    --centreon-popin-border-color: #424242;
+    --form-table-list-lvl-1-background-color: var(--centreon-popin-background-color);
+    --form-table-list-lvl-1-col-name-background-color: var(--centreon-popin-background-color);
+    --form-table-list-lvl-1-col-name-border-bottom-color: var(--body-color);
+    --form-table-list-lvl-1-col-name-border-top-color: var(--form-table-list-lvl-1-col-name-border-bottom-color);
+    --list-one-background-color: #002737;
+    --list-one-hover-background-color: #2b2e30;
+    --list-two-background-color: #002c3c;
+    --list-two-hover-background-color: #2b2e30;
+    --select-background: #424242;
+    --select-color: #fff;
+    --input-select-background-color: #424242;
+    --select-border-color : var(--body-color);
+    --included-checkbox-checked-before-font-color: var(--input-select-background-color);
+    --md-checkbox-checked-label-before-background-color: #2196F3;
+    --md-checkbox-background : var(--input-select-background-color);
+    --option-color:  #fff;
+    --form-table-list-header-h3-font-color: #00bfb3;
+    --info-box-h4-font-color: #fff;
+    --md-checkbox-border-color-after: #10069f;
+    --md-checkbox-border-color: var(--body-color);
+}
