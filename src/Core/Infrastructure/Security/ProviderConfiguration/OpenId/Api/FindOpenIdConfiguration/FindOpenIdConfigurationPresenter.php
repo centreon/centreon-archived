@@ -25,14 +25,15 @@ namespace Core\Infrastructure\Security\ProviderConfiguration\OpenId\Api\FindOpen
 
 use Core\Application\Common\UseCase\AbstractPresenter;
 use Core\Application\Security\ProviderConfiguration\OpenId\UseCase\FindOpenIdConfiguration\{
-    FindOpenIdConfigurationPresenterInterface
+    FindOpenIdConfigurationPresenterInterface,
+    FindOpenIdConfigurationResponse
 };
 
 class FindOpenIdConfigurationPresenter extends AbstractPresenter implements FindOpenIdConfigurationPresenterInterface
 {
         /**
      * {@inheritDoc}
-     * @param FindConfigurationResponse $response
+     * @param FindOpenIdConfigurationResponse $response
      */
     public function present(mixed $response): void
     {

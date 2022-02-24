@@ -27,6 +27,11 @@ use Core\Domain\Security\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
 
 class DbOpenIdConfigurationFactory
 {
+    /**
+     * @param array<string,mixed> $record
+     * @param array<string,mixed> $customConfiguration
+     * @return OpenIdConfiguration
+     */
     public static function createFromRecord(array $record, array $customConfiguration): OpenIdConfiguration
     {
         return new OpenIdConfiguration(
