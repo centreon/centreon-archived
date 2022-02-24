@@ -221,7 +221,7 @@ input[type="checkbox"]  {
     top: 0;
     width: 15px;
     height: 15px;
-    border: 2px solid rgba(0, 0, 0, 0.54);
+    border: 2px solid var(--md-radio-label-before-border-color);
 }
 .md-radio label:after {
     top: 4px;
@@ -229,7 +229,7 @@ input[type="checkbox"]  {
     width: 7px;
     height: 7px;
     transform: scale(0);
-    background: rgb(51, 122, 183);
+    background: var(--md-radio-label-after-background);
 }
 
 
@@ -393,6 +393,10 @@ p.description a, p.description a:visited {
     margin-top: 0 !important;
 }
 
+::placeholder {
+    color: var(--placeholder-font-color);
+}
+
 .select2-container--default .select2-selection--single {
     background-color: var(--select2-container-selection-background-color);
     border: 1px solid var(--select2-container-selection-border-color) !important;
@@ -412,25 +416,28 @@ p.description a, p.description a:visited {
 /* Remove button on element in multiple select select2 */
 .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
     color: var(--select2-selection-multiple-color) !important;
-    margin-left: 2px;
     padding: 2px 5px;
     background-color: var(--select2-selection-choice-remove-background-color);
-    border: 1px solid var(--select2-selection-multiple-border-color);
-    border-top-left-radius: 4px;
-    border-bottom-left-radius: 4px;
+    border-bottom: 1px solid var(--select2-selection-multiple-border-color);
+    border-right: 1px solid var(--select2-selection-multiple-border-color);
+    border-top: 1px solid var(--select2-selection-multiple-border-color);
+    border-top-right-radius: 16px;
+    border-bottom-right-radius: 16px;
     margin-right: 0 !important;
+    float: right;
 }
 
 /* Content for display text in selected element on select 2 fields */
 .select2-container--default .select2-selection--multiple .select2-selection__choice .select2-content {
-    padding: 2px 5px;
+    padding: 2px 0px 2px 8px;
     border-top: 1px solid var(--select2-selection-multiple-content-border-color-top);
     border-bottom: 1px solid var(--select2-selection-multiple-content-border-color-bottom);
     border-right: 1px solid var(--select2-selection-multiple-content-border-color-right);
-    border-top-right-radius: 4px;
-    border-bottom-right-radius: 4px;
+    border-top-left-radius: 16px;
+    border-bottom-left-radius: 16px;
     color: var(--select2-results-option-highlighted-background-color);
     background-color: var(--select2-selection-multiple-content-background-color);
+    float: left;
 }
 .select2-container--default .select2-results__option--highlighted[aria-selected] {
     background-color: var(--select2-results-option-highlighted-background-color);
@@ -442,6 +449,7 @@ p.description a, p.description a:visited {
 
 .select2-container--default .select2-results__option[aria-selected=true] {
     background-color: var(--select2-results-option-highlighted-color-aria-selected) !important;
+    color: var(--select2-results-option-highlighted-color-aria-selected-font-color);
 }
 
 .formTable .select2-container--default .select2-selection--multiple .select2-selection__rendered {
