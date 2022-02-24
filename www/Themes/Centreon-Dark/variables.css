@@ -64,4 +64,7 @@
     --select2-selection-multiple-content-background-color: var(--select2-selection-multiple-border-color);
     --select2-selection-choice-remove-background-color: var(--select2-selection-multiple-border-color);
     --select2-results-option-highlighted-color-aria-selected: #2196f3;
+    --md-radio-checked-backgroud-color: var(--color-primary-light);
+    --md-radio-after-background-color: var(--md-radio-checked-backgroud-color);
+    --md-radio-label-before-border-color: var(--body-color);
 }
