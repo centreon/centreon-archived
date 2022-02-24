@@ -26,11 +26,11 @@ namespace Tests\Core\Application\Security\ProviderConfiguration\OpenId\UseCase\F
 use Core\Application\Common\UseCase\AbstractPresenter;
 use Symfony\Component\HttpFoundation\Response;
 use Core\Application\Security\ProviderConfiguration\OpenId\UseCase\FindOpenIdConfiguration\{
-    FindOpenIdConfigurationPresenterInterface,
+    FindOpenIdConfigurationPresenterInterface as PresenterInterface,
     FindOpenIdConfigurationResponse
 };
 
-class FindOpenIdConfigurationPresenterStub extends AbstractPresenter implements FindOpenIdConfigurationPresenterInterface
+class FindOpenIdConfigurationPresenterStub extends AbstractPresenter implements PresenterInterface
 {
     /**
      * @var FindOpenIdConfigurationResponse
