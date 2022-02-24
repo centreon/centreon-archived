@@ -18,26 +18,17 @@
  * For more information : contact@centreon.com
  *
  */
-
 declare(strict_types=1);
 
-namespace Core\Application\Security\User\Repository;
+namespace Core\Domain\Security\ProviderConfiguration\Local;
 
-use Core\Domain\Security\User\Model\User;
-
-interface WriteUserRepositoryInterface
+class ConfigurationException extends \Exception
 {
     /**
-     * Update user blocking information (login attempts and blocking time)
-     *
-     * @param User $user
+     * @return self
      */
-    public function updateBlockingInformation(User $user): void;
-
-    /**
-     * Renew password of user.
-     *
-     * @param User $user
-     */
-    public function renewPassword(User $user): void;
+    public static function notFound(): self
+    {
+        return new self(_('Local provider configuration not found'));
+    }
 }

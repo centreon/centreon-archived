@@ -50,7 +50,7 @@ trait CommandLineTrait
                 $macroPasswordNames[] = $macro->getName();
             } elseif ($macro->getName() !== null && $macro->getValue() !== null) {
                 // if macro is not a password, replace it by its configuration value
-                $configurationCommand = str_replace($macro->getName(), $macro->getValue(), $configurationCommand);
+                $configurationCommand = str_replace($macro->getName(), trim($macro->getValue()), $configurationCommand);
             }
         }
 

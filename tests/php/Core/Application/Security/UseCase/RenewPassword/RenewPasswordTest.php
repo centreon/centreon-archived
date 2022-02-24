@@ -105,8 +105,8 @@ class RenewPasswordTest extends TestCase
 
         $oldPasswords = [];
         $passwordValue = password_hash('titi', \CentreonAuth::PASSWORD_HASH_ALGORITHM);
-        $password = new UserPassword(1, $passwordValue, time());
-        $user = new User(1, 'admin', $oldPasswords, $password);
+        $password = new UserPassword(1, $passwordValue, new \DateTimeImmutable());
+        $user = new User(1, 'admin', $oldPasswords, $password, null, null);
 
         $this->readRepository
             ->expects($this->once())
@@ -135,8 +135,8 @@ class RenewPasswordTest extends TestCase
 
         $oldPasswords = [];
         $passwordValue = password_hash('toto', \CentreonAuth::PASSWORD_HASH_ALGORITHM);
-        $password = new UserPassword(1, $passwordValue, time());
-        $user = new User(1, 'admin', $oldPasswords, $password);
+        $password = new UserPassword(1, $passwordValue, new \DateTimeImmutable());
+        $user = new User(1, 'admin', $oldPasswords, $password, null, null);
         $securityPolicy = new SecurityPolicy(
             SecurityPolicy::MIN_PASSWORD_LENGTH,
             true,

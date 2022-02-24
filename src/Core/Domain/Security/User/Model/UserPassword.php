@@ -28,10 +28,13 @@ class UserPassword
     /**
      * @param integer $userId
      * @param string $passwordValue
-     * @param integer $creationDate
+     * @param \DateTimeImmutable $creationDate
      */
-    public function __construct(private int $userId, private string $passwordValue, private int $creationDate)
-    {
+    public function __construct(
+        private int $userId,
+        private string $passwordValue,
+        private \DateTimeImmutable $creationDate,
+    ) {
     }
 
     /**
@@ -51,9 +54,9 @@ class UserPassword
     }
 
     /**
-     * @return integer
+     * @return \DateTimeImmutable
      */
-    public function getCreationDate(): int
+    public function getCreationDate(): \DateTimeImmutable
     {
         return $this->creationDate;
     }
@@ -69,10 +72,10 @@ class UserPassword
     }
 
     /**
-     * @param integer $creationDate
+     * @param \DateTimeImmutable $creationDate
      * @return self
      */
-    public function setCreationDate(int $creationDate): self
+    public function setCreationDate(\DateTimeImmutable $creationDate): self
     {
         $this->creationDate = $creationDate;
         return $this;
