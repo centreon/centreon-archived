@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import Carousel from 'react-material-ui-carousel';
 import { Responsive } from '@visx/visx';
+import { useTranslation } from 'react-i18next';
 
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
@@ -20,6 +21,13 @@ import InstallIcon from '@mui/icons-material/Add';
 
 import { Dialog, IconButton, useRequest, getData } from '@centreon/ui';
 
+import {
+  labelAvailable,
+  labelDescription,
+  labelLastUpdate,
+  labelInstall,
+  labelDelete,
+} from '../../translatedLabels';
 import { Entity, ExtensionDetails } from '../models';
 import { buildEndPoint } from '../api/endpoint';
 
@@ -49,6 +57,7 @@ const ExtensionDetailPopup = ({
   onUpdate,
   isLoading,
 }: Props): JSX.Element | null => {
+  const { t } = useTranslation();
   const [extensionDetails, setExtensionDetails] = React.useState<Entity | null>(
     null,
   );
@@ -139,7 +148,7 @@ const ExtensionDetailPopup = ({
               variant="contained"
               onClick={deleteExtension}
             >
-              Delete
+              {t(labelDelete)}
             </Button>
           ) : (
             <Button
@@ -151,7 +160,7 @@ const ExtensionDetailPopup = ({
               variant="contained"
               onClick={installExtension}
             >
-              Install
+              {t(labelInstall)}
             </Button>
           )}
         </Grid>
@@ -166,7 +175,7 @@ const ExtensionDetailPopup = ({
                   <Chip
                     label={
                       (!extensionDetails.version.installed
-                        ? 'Available '
+                        ? `${t(labelAvailable)} `
                         : '') + extensionDetails.version.available
                     }
                   />
@@ -184,9 +193,11 @@ const ExtensionDetailPopup = ({
           ) : (
             <>
               {extensionDetails.last_update && (
-                <Typography variant="body1">{`Last update ${extensionDetails.last_update}`}</Typography>
+                <Typography variant="body1">
+                  {`${t(labelLastUpdate)} ${extensionDetails.last_update}`}
+                </Typography>
               )}
-              <Typography variant="h6">Description</Typography>
+              <Typography variant="h6">{t(labelDescription)}</Typography>
               <Typography variant="body2">
                 {extensionDetails.description}
               </Typography>

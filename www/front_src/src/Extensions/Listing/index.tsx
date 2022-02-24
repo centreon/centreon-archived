@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import { find, propEq, pathEq, filter, isEmpty } from 'ramda';
 import { useAtomValue } from 'jotai/utils';
+import { useTranslation } from 'react-i18next';
 
 import UpdateIcon from '@mui/icons-material/SystemUpdateAlt';
 import InstallIcon from '@mui/icons-material/Add';
@@ -21,6 +22,7 @@ import Hook from '../../components/Hook';
 import useNavigation from '../../Navigation/useNavigation';
 import useExternalComponents from '../../externalComponents/useExternalComponents';
 import { appliedFilterCriteriasAtom } from '../Filter/filterAtoms';
+import { labelInstallAll, labelUpdateAll } from '../translatedLabels';
 
 import { deleteExtension } from './api';
 import ExtensionsHolder from './ExtensionsHolder';
@@ -53,6 +55,8 @@ interface Props {
 
 const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
   const classes = useStyles();
+  const { t } = useTranslation();
+
   const { showErrorMessage, showSuccessMessage } = useSnackbar();
 
   const [extensions, setExtension] = React.useState<Extensions>({
@@ -339,53 +343,50 @@ const ExtensionsManager = ({ reloadNavigation }: Props): JSX.Element => {
       });
   };
 
-  const canInstallAllModules = !isEmpty(
+  const allModulesInstalled = isEmpty(
     filter(pathEq(['version', 'installed'], false), extensions.module.entities),
   );
 
-  const canInstallAllWidgets = !isEmpty(
+  const allWidgetsInstalled = isEmpty(
     filter(pathEq(['version', 'installed'], false), extensions.widget.entities),
   );
 
-  const canUpdateAllWidgets = !isEmpty(
+  const allWidgetsUpdated = isEmpty(
     filter(pathEq(['version', 'outdated'], true), extensions.module.entities),
   );
 
-  const canUpdateAllModules = !isEmpty(
+  const allModulesUpdated = isEmpty(
     filter(pathEq(['version', 'outdated'], true), extensions.widget.entities),
   );
 
-  const updatable = canUpdateAllWidgets || canUpdateAllModules;
+  const disableUpdate = allWidgetsUpdated && allModulesUpdated;
 
-  const installable = canInstallAllModules || canInstallAllWidgets;
+  const disableInstall = allModulesInstalled && allWidgetsInstalled;
 
   return (
     <div>
       <div className={classes.contentWrapper}>
         <Stack direction="row" spacing={2}>
-          {updatable && (
-            <Button
-              color="primary"
-              size="small"
-              startIcon={<UpdateIcon />}
-              variant="contained"
-              onClick={updateAllEntities}
-            >
-              update all
-            </Button>
-          )}
-
-          {installable && (
-            <Button
-              color="primary"
-              size="small"
-              startIcon={<InstallIcon />}
-              variant="contained"
-              onClick={installAllEntities}
-            >
-              install all
-            </Button>
-          )}
+          <Button
+            color="primary"
+            disabled={disableUpdate}
+            size="small"
+            startIcon={<UpdateIcon />}
+            variant="contained"
+            onClick={updateAllEntities}
+          >
+            {t(labelUpdateAll)}
+          </Button>
+          <Button
+            color="primary"
+            disabled={disableInstall}
+            size="small"
+            startIcon={<InstallIcon />}
+            variant="contained"
+            onClick={installAllEntities}
+          >
+            {t(labelInstallAll)}
+          </Button>
           <Hook path="/administration/extensions/manager" />
         </Stack>
       </div>

@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { useTranslation } from 'react-i18next';
+
 import DeleteIcon from '@mui/icons-material/Delete';
 import UpdateIcon from '@mui/icons-material/SystemUpdateAlt';
 import CheckIcon from '@mui/icons-material/Check';
@@ -20,6 +22,11 @@ import {
 } from '@mui/material';
 
 import { Entity, ExtensionsStatus, LicenseProps } from '../models';
+import {
+  labelLicenseRequired,
+  labelLicenseExpires,
+  labelLicenseNotValide,
+} from '../../translatedLabels';
 
 const useStyles = makeStyles((theme) => ({
   contentWrapper: {
@@ -61,6 +68,7 @@ const ExtensionsHolder = ({
   type,
 }: Props): JSX.Element => {
   const classes = useStyles();
+  const { t } = useTranslation();
 
   const parseDescription = (description): string => {
     return description.replace(/^centreon\s+(\w+)/i, (_, $1) => $1);
@@ -71,7 +79,7 @@ const ExtensionsHolder = ({
       if (!licenseInfo.expiration_date) {
         return {
           color: '#f90026',
-          label: 'License required',
+          label: t(labelLicenseRequired),
         };
       }
       if (!Number.isNaN(Date.parse(licenseInfo.expiration_date))) {
@@ -79,13 +87,15 @@ const ExtensionsHolder = ({
 
         return {
           color: '#84BD00',
-          label: `License expires ${expirationDate.toISOString().slice(0, 10)}`,
+          label: `${t(labelLicenseExpires)} ${expirationDate
+            .toISOString()
+            .slice(0, 10)}`,
         };
       }
 
       return {
         color: '#f90026',
-        label: 'License not valid',
+        label: t(labelLicenseNotValide),
       };
     }
 

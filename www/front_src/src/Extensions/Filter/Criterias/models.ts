@@ -3,7 +3,7 @@ import { SelectEntry } from '@centreon/ui';
 import {
   labelInstalled,
   labelModule,
-  labelNotInstalled,
+  labelUninstalled,
   labelOutdated,
   labelUpdated,
   labelType,
@@ -21,8 +21,8 @@ export interface Criteria {
 const criteriaValueNameById = {
   INSTALLED: labelInstalled,
   MODULE: labelModule,
-  NOTINSTALLED: labelNotInstalled,
   OUTDATED: labelOutdated,
+  UNINSTALLED: labelUninstalled,
   UPDATED: labelUpdated,
   WIDGET: labelWidget,
 };
@@ -30,10 +30,10 @@ const criteriaValueNameById = {
 const installedId = 'INSTALLED';
 const installed = { id: installedId, name: criteriaValueNameById[installedId] };
 
-const notInstalledId = 'NOTINSTALLED';
-const notInstalled = {
-  id: notInstalledId,
-  name: criteriaValueNameById[notInstalledId],
+const uninstalledId = 'UNINSTALLED';
+const uninstalled = {
+  id: uninstalledId,
+  name: criteriaValueNameById[uninstalledId],
 };
 
 const outdatedId = 'OUTDATED';
@@ -48,7 +48,7 @@ const widget = { id: widgetId, name: criteriaValueNameById[widgetId] };
 const moduleId = 'MODULE';
 const module = { id: moduleId, name: criteriaValueNameById[moduleId] };
 
-const selectableStatuses = [installed, notInstalled, updated, outdated];
+const selectableStatuses = [installed, uninstalled, updated, outdated];
 const selectableTypes = [widget, module];
 
 export interface CriteriaDisplayProps {

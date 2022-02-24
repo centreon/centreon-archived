@@ -34,7 +34,7 @@ const buildExtensionEndPoint = ({
   const values = criteriaStatus.value as Array<SelectEntry>;
 
   const installed = !!find(propEq('id', 'INSTALLED'), values);
-  const notInstalled = !!find(propEq('id', 'NOTINSTALLED'), values);
+  const uninstalled = !!find(propEq('id', 'UNINSTALLED'), values);
   const updated = !!find(propEq('id', 'UPDATED'), values);
   const outdated = !!find(propEq('id', 'OUTDATED'), values);
 
@@ -44,9 +44,9 @@ const buildExtensionEndPoint = ({
     params += '&updated=true';
   }
 
-  if (!installed && notInstalled) {
+  if (!installed && uninstalled) {
     params += '&installed=false';
-  } else if (installed && !notInstalled) {
+  } else if (installed && !uninstalled) {
     params += '&installed=true';
   }
 
