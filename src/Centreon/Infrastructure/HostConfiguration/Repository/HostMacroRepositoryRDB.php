@@ -9,6 +9,7 @@ use Centreon\Domain\HostConfiguration\Interfaces\HostMacro\HostMacroReadReposito
 use Centreon\Domain\HostConfiguration\Interfaces\HostMacro\HostMacroWriteRepositoryInterface;
 use Centreon\Domain\RequestParameters\RequestParameters;
 use Centreon\Infrastructure\DatabaseConnection;
+use Centreon\Infrastructure\HostConfiguration\Repository\Model\HostMacroFactoryRdb;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
 
@@ -62,5 +63,50 @@ class HostMacroRepositoryRDB extends AbstractRepositoryDRB implements
 
         $hostMacroId = (int)$this->db->lastInsertId();
         $hostMacro->setId($hostMacroId);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findAllByHost(Host $host): array
+    {
+        Assertion::notNull($host->getId(), 'Host::id');
+        $statement = $this->db->prepare(
+            $this->translateDbName('SELECT * FROM `:db`.on_demand_macro_host WHERE host_host_id = :host_id')
+        );
+        $statement->bindValue(':host_id', $host->getId(), \PDO::PARAM_INT);
+        $statement->execute();
+        $hostMacros = [];
+        while ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            $hostMacros[] = HostMacroFactoryRdb::create($result);
+        }
+        return $hostMacros;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function updateMacro(HostMacro $hostMacro): void
+    {
+        Assertion::notNull($hostMacro->getId(), 'HostMacro::id');
+        Assertion::notNull($hostMacro->getHostId(), 'HostMacro::host_id');
+        $statement = $this->db->prepare(
+            $this->translateDbName(
+                'UPDATE `:db`.on_demand_macro_host
+                    SET host_macro_name = :new_name,
+                        host_macro_value = :new_value,
+                        is_password = :is_password,
+                        description = :new_description,
+                        macro_order = :new_order
+                WHERE host_macro_id = :id'
+            )
+        );
+        $statement->bindValue(':new_name', $hostMacro->getName());
+        $statement->bindValue(':new_value', $hostMacro->getValue());
+        $statement->bindValue(':is_password', $hostMacro->isPassword(), \PDO::PARAM_INT);
+        $statement->bindValue(':new_description', $hostMacro->getDescription());
+        $statement->bindValue(':new_order', $hostMacro->getOrder(), \PDO::PARAM_INT);
+        $statement->bindValue(':id', $hostMacro->getId(), \PDO::PARAM_INT);
+        $statement->execute();
     }
 }
