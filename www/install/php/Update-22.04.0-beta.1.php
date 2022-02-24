@@ -140,6 +140,16 @@ try {
      * Add new UnifiedSQl broker output
      */
     $errorMessage = 'Unable to update cb_type';
+
+    $statement = $pearDB->query(
+    "UPDATE `cb_type` set type_name = 'Perfdata Generator (Centreon Storage) - DEPRECATED'
+        WHERE type_shortname = 'storage'"
+    );
+    $statement = $pearDB->query(
+        "UPDATE `cb_type` set type_name = 'Broker SQL database - DEPRECATED'
+            WHERE type_shortname = 'sql'"
+    );
+
     $statement = $pearDB->query(
         "SELECT cb_module_id FROM cb_module
             WHERE name = 'Storage'"
@@ -165,9 +175,11 @@ try {
     $errorMessage = 'Unable to update cb_type_field_relation';
     $inputs= [];
     $statement = $pearDB->query(
-        "SELECT DISTINCT(tfr.cb_field_id), tfr.is_required FROM cb_type_field_relation tfr, cb_type t
+        "SELECT DISTINCT(tfr.cb_field_id), tfr.is_required FROM cb_type_field_relation tfr, cb_type t, cb_field f
             WHERE tfr.cb_type_id = t.cb_type_id
             AND t.type_shortname in ('sql', 'storage')
+            AND tfr.cb_field_id = f.cb_field_id
+            AND f.fieldname NOT LIKE 'db_type'
             ORDER BY tfr.order_display"
     );
     $inputs = $statement->fetchAll();
