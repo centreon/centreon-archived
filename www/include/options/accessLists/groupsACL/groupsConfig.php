@@ -71,7 +71,7 @@ $select = is_array($select) ? sanitize_input_array($select) : [];
 $acl_group_id = filter_var($_GET['acl_group_id'] ?? $_POST['acl_group_id'] ?? null, FILTER_VALIDATE_INT) ?? null;
 
 $postO = filter_var($_POST['o1'] ?? $_POST['o2'] ?? null, FILTER_SANITIZE_STRING);
-("" !== $postO) ? $o = $postO : $o = null;
+$o = ("" !== $postO) ? $postO : null;
 
 switch ($o) {
     case "a":
