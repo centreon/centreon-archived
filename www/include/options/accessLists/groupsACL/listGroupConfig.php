@@ -137,6 +137,7 @@ for ($i = 0; $group = $statement->fetchRow(); $i++) {
     $rq3 = "SELECT COUNT(*) AS nbr FROM acl_group_contactgroups_relations WHERE acl_group_id = :aclGroupId ";
     $dbResult3 = $pearDB->prepare($rq3);
     $dbResult3->bindValue('aclGroupId', $group['acl_group_id'], PDO::PARAM_INT);
+    $dbResult3->execute();
     $cgNbr = $dbResult3->fetchRow();
     $dbResult3->closeCursor();
 
