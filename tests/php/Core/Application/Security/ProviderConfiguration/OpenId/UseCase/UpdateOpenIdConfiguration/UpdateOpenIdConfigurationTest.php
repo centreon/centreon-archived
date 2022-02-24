@@ -21,7 +21,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Core\Application\Security\ProviderConfiguration\OpenId\UseCase\UpdateConfiguration;
+namespace Tests\Core\Application\Security\ProviderConfiguration\OpenId\UseCase\UpdateOpenIdConfiguration;
 
 use PHPUnit\Framework\TestCase;
 use Core\Application\Common\UseCase\NoContentResponse;

@@ -26,11 +26,14 @@ namespace Core\Application\Security\ProviderConfiguration\OpenId\UseCase\UpdateO
 use Core\Application\Common\UseCase\ErrorResponse;
 use Core\Application\Common\UseCase\NoContentResponse;
 use Centreon\Domain\Common\Assertion\AssertionException;
+use Centreon\Domain\Log\LoggerTrait;
 use Core\Domain\Security\ProviderConfiguration\OpenId\Model\OpenIdConfigurationFactory;
 use Core\Application\Security\ProviderConfiguration\OpenId\Repository\WriteOpenIdConfigurationRepositoryInterface;
 
 class UpdateOpenIdConfiguration
 {
+    use LoggerTrait;
+
     /**
      * @param WriteOpenIdConfigurationRepositoryInterface $repository
      */
@@ -47,9 +50,11 @@ class UpdateOpenIdConfiguration
         UpdateOpenIdConfigurationPresenterInterface $presenter,
         UpdateOpenIdConfigurationRequest $request
     ): void {
+        $this->info('Updating OpenID Configuration');
         try {
             $configuration = OpenIdConfigurationFactory::createFromRequest($request);
         } catch (AssertionException $ex) {
+            $this->error('Unable to create OpenID Configuration because one or many parameters are invalid');
             $presenter->setResponseStatus(new ErrorResponse($ex->getMessage()));
             return;
         }

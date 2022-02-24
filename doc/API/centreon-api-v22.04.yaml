@@ -4242,26 +4242,32 @@ components:
           type: string
           description: "Base URL of the provider"
           example: "https://localhost:8080"
+          nullable: true
         authorization_endpoint:
           type: string
           description: "Authorization endpoint of the provider"
           example: "/authorize"
+          nullable: true
         token_endpoint:
           type: string
           description: "Token endpoint of the provider"
           example: "/token"
+          nullable: true
         introspection_token_endpoint:
           type: string
           description: "Introspection token endpoint of the provider"
           example: "/introspect"
+          nullable: true
         userinfo_endpoint:
           type: string
           description: "Userinfo endpoint of the provider"
           example: "/userinfo"
+          nullable: true
         endsession_endpoint:
           type: string
           description: "Endsession endpoint of the provider"
           example: "/logout"
+          nullable: true
         connection_scopes:
           type: array
           description: "List of scopes to request"
@@ -4273,18 +4279,22 @@ components:
           type: string
           description: "Claim used to login"
           example: "sub"
+          nullable: true
         client_id:
           type: string
           description: "Client ID"
           example: "client_id"
+          nullable: true
         client_secret:
           type: string
           description: "Client secret"
           example: "client_secret"
+          nullable: true
         authentication_type:
           type: string
           description: "Authentication type"
           example: "client_secret_post"
+          nullable: true
           enum:
             - client_secret_post
             - client_secret_basic
