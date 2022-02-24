@@ -63,7 +63,7 @@ function sanitize_input_array(array $inputArray): array
 }
 
 $dupNbr = $_GET['dupNbr'] ?? $_POST['dupNbr'] ?? null;
-is_array($dupNbr) ? $dupNbr = sanitize_input_array($dupNbr) : $dupNbr = [];
+$dupNbr = is_array($dupNbr) ? sanitize_input_array($dupNbr) : [];
 
 $select = $_GET['select'] ?? $_POST['select'] ?? null;
 is_array($select) ? $select = sanitize_input_array($select) : $select = [];
