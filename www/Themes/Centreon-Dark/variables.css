@@ -38,11 +38,11 @@
     --select-background: #424242;
     --select-color: #fff;
     --input-select-background-color: #424242;
-    --select-border-color : var(--body-color);
+    --select-border-color: var(--body-color);
     --included-checkbox-checked-before-font-color: var(--input-select-background-color);
     --md-checkbox-checked-label-before-background-color: #2196F3;
-    --md-checkbox-background : var(--input-select-background-color);
-    --option-color:  #fff;
+    --md-checkbox-background: var(--input-select-background-color);
+    --option-color: #fff;
     --form-table-list-header-h3-font-color: #00bfb3;
     --info-box-h4-font-color: #fff;
     --md-checkbox-border-color-after: #10069f;
