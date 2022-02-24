@@ -19,5 +19,5 @@ centreon_security_update_provider_configuration_openid:
 centreon_security_find_provider_configuration_openid:
     methods: GET
     path: /administration/authentication/providers/openid
-    controller: 'Core\Infrastructure\Security\ProviderConfiguration\OpenId\Api\UpdateOpenIdConfiguration\FindOpenIdConfigurationController'
+    controller: 'Core\Infrastructure\Security\ProviderConfiguration\OpenId\Api\FindOpenIdConfiguration\FindOpenIdConfigurationController'
     condition: "request.attributes.get('version') >= 22.04"
