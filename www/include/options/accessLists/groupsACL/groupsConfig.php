@@ -1,8 +1,8 @@
 <?php
 
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2022 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -38,18 +38,6 @@ if (!isset($centreon)) {
     exit();
 }
 
-isset($_GET["acl_group_id"]) ? $cG = $_GET["acl_group_id"] : $cG = null;
-isset($_POST["acl_group_id"]) ? $cP = $_POST["acl_group_id"] : $cP = null;
-$cG ? $acl_group_id = $cG : $acl_group_id = $cP;
-
-isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = null;
-isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = null;
-$cG ? $select = $cG : $select = $cP;
-
-isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = null;
-isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = null;
-$cG ? $dupNbr = $cG : $dupNbr = $cP;
-
 /*
  *  Path to the configuration dir
  */
@@ -61,25 +49,38 @@ $path = "./include/options/accessLists/groupsACL/";
 require_once $path . "DB-Func.php";
 require_once "./include/common/common-Func.php";
 
-if (isset($_POST["o1"]) && isset($_POST["o2"])) {
-    if ($_POST["o1"] != "") {
-        $o = $_POST["o1"];
+function sanitize_input_array(array $inputArray): array {
+    $sanitizedArray = [];
+    foreach ($inputArray as $key => $value) {
+        $key = filter_var($key, FILTER_VALIDATE_INT);
+        $value = filter_var($value, FILTER_VALIDATE_INT);
+        if (false !== $key && false !== $value) {
+            $sanitizedArray[$key] = $value;
+        }
     }
-    if ($_POST["o2"] != "") {
-        $o = $_POST["o2"];
-    }
+    return $sanitizedArray;
 }
+
+$dupNbr = $_GET['dupNbr'] ?? $_POST['dupNbr'] ?? null;
+is_array($dupNbr) ? $dupNbr = sanitize_input_array($dupNbr) : $dupNbr = [];
+
+$select = $_GET['select'] ?? $_POST['select'] ?? null;
+is_array($select) ? $select = sanitize_input_array($select) : $select = [];
+
+$acl_group_id = filter_var($_GET['acl_group_id'] ?? $_POST['acl_group_id'] ?? null, FILTER_VALIDATE_INT) ?? null;
+
+$postO = filter_var($_POST['o1'] ?? $_POST['o2'] ?? null, FILTER_SANITIZE_STRING);
+("" !== $postO) ? $o = $postO : $o = null;
 
 switch ($o) {
     case "a":
-        require_once($path . "formGroupConfig.php");
-        break; #Add a  an access group
+        #Add an access group
     case "w":
-        require_once($path . "formGroupConfig.php");
-        break; #Watch a  an access group
+        #Watch an access group
     case "c":
+        #Modify an access group
         require_once($path . "formGroupConfig.php");
-        break; #Modify a  an access group
+        break;
     case "s":
         purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
@@ -94,7 +95,7 @@ switch ($o) {
         purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
             purgeCSRFToken();
-            enableGroupInDB(null, isset($select) ? $select : array());
+            enableGroupInDB(null, $select);
         } else {
             unvalidFormMessage();
         }
@@ -114,7 +115,7 @@ switch ($o) {
         purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
             purgeCSRFToken();
-            disableGroupInDB(null, isset($select) ? $select : array());
+            disableGroupInDB(null, $select);
         } else {
             unvalidFormMessage();
         }
@@ -124,7 +125,7 @@ switch ($o) {
         purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
             purgeCSRFToken();
-            multipleGroupInDB(isset($select) ? $select : array(), $dupNbr);
+            multipleGroupInDB($select, $dupNbr);
         } else {
             unvalidFormMessage();
         }
@@ -134,7 +135,7 @@ switch ($o) {
         purgeOutdatedCSRFTokens();
         if (isCSRFTokenValid()) {
             purgeCSRFToken();
-            deleteGroupInDB(isset($select) ? $select : array());
+            deleteGroupInDB($select);
         } else {
             unvalidFormMessage();
         }

@@ -1,7 +1,8 @@
 <?php
+
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2022 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -163,7 +164,9 @@ function multipleGroupInDB($groups = array(), $nbrDup = array())
     global $pearDB, $centreon;
 
     foreach ($groups as $key => $value) {
-        $dbResult = $pearDB->query("SELECT * FROM acl_groups WHERE acl_group_id = '" . $key . "' LIMIT 1");
+        $dbResult = $pearDB->prepare("SELECT * FROM acl_groups WHERE acl_group_id = :aclGroupId LIMIT 1");
+        $dbResult->bindValue('aclGroupId', $key, PDO::PARAM_INT);
+        $dbResult->execute();
         $row = $dbResult->fetch();
         $row["acl_group_id"] = '';
 
@@ -181,9 +184,10 @@ function multipleGroupInDB($groups = array(), $nbrDup = array())
                 }
             }
 
-            if (testGroupExistence($acl_group_name)) {
-                $val ? $rq = "INSERT INTO acl_groups VALUES (" . $val . ")" : $rq = null;
-                $pearDB->query($rq);
+            if (testGroupExistence($acl_group_name) && $val) {
+                $groupExist = $pearDB->prepare("INSERT INTO acl_groups VALUES (:aclGroups)");
+                $groupExist->bindValue('aclGroups', $val, PDO::PARAM_STR);
+                $groupExist->execute();
                 $dbResult = $pearDB->query("SELECT MAX(acl_group_id) FROM acl_groups");
                 $maxId = $dbResult->fetch();
                 $dbResult->closeCursor();
