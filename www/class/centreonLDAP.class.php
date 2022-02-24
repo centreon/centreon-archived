@@ -599,9 +599,9 @@ class CentreonLDAP
         ldap_free_result($sr);
 
         /* Format the result */
-        $results = array();
+        $results = [];
         for ($i = 0; $i < $info['count']; $i++) {
-            $result = array();
+            $result = [];
             $result['dn'] = $info[$i]['dn'] ?? "";
             $result['alias'] = $info[$i][$this->userSearchInfo['alias']][0] ?? "";
             $result['name'] = $info[$i][$this->userSearchInfo['name']][0] ?? "";
