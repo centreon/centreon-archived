@@ -42,11 +42,12 @@
     /*********************/
 
     /** Radio button **/
-    --md-radio-checked-backgroud-color:  var(--color-astral-rgb);
+    --md-radio-checked-backgroud-color:  var(--color-primary-dark);
     --md-radio-kabel-color:  var(--color-astral-rgb);
     --md-radio-input-checked-label-before-border-color: var(--color-curious-blue);
     --md-radio-label-before-border-color : var(--color-black-rgba-54);
-    --md-radio-label-after-background : var(--color-curious-blue);
+    --md-radio-label-after-background : var(--md-radio-checked-backgroud-color);
+    --md-radio-after-background-color: var(--md-radio-checked-backgroud-color);
     /******************/
 
     /** select **/

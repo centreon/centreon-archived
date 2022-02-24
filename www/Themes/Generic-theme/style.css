@@ -221,7 +221,7 @@ input[type="checkbox"]  {
     top: 0;
     width: 15px;
     height: 15px;
-    border: 2px solid rgba(0, 0, 0, 0.54);
+    border: 2px solid var(--md-radio-label-before-border-color);
 }
 .md-radio label:after {
     top: 4px;
@@ -229,7 +229,7 @@ input[type="checkbox"]  {
     width: 7px;
     height: 7px;
     transform: scale(0);
-    background: rgb(51, 122, 183);
+    background: var(--md-radio-label-after-background);
 }
 
 
