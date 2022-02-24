@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,23 +18,13 @@
  * For more information : contact@centreon.com
  *
  */
+
 declare(strict_types=1);
 
-namespace Centreon\Domain\HostConfiguration\Exception;
+namespace Core\Application\Security\ProviderConfiguration\OpenId\UseCase\FindOpenIdConfiguration;
 
-/**
- * This class is designed to contain all exceptions for the context of the host macro.
- *
- * @package Centreon\Domain\HostConfiguration\Exception
- */
-class HostMacroException extends \Exception
+use Core\Application\Common\UseCase\PresenterInterface;
+
+interface FindOpenIdConfigurationPresenterInterface extends PresenterInterface
 {
-    /**
-     * @param \Throwable $ex
-     * @return self
-     */
-    public static function addMacroException(\Throwable $ex): self
-    {
-        return new self(_('Error when adding a host macro'), 0, $ex);
-    }
 }

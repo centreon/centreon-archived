@@ -22,8 +22,10 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\HostConfiguration\Interfaces\HostMacro;
 
+use Centreon\Domain\Common\Assertion\Assertion;
 use Centreon\Domain\HostConfiguration\Host;
 use Centreon\Domain\HostConfiguration\HostMacro;
+use Centreon\Infrastructure\HostConfiguration\Repository\HostMacroRepositoryRDB;
 
 /**
  * This interface gathers all the writing operations on the repository.
@@ -40,4 +42,12 @@ interface HostMacroWriteRepositoryInterface
      * @throws \Throwable
      */
     public function addMacroToHost(Host $host, HostMacro $hostMacro): void;
+
+    /**
+     * Update a host macro.
+     *
+     * @param HostMacro $hostMacro
+     * @throws \Throwable
+     */
+    public function updateMacro(HostMacro $hostMacro): void;
 }

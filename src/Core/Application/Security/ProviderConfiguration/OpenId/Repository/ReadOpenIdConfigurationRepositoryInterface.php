@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,25 +18,19 @@
  * For more information : contact@centreon.com
  *
  */
+
 declare(strict_types=1);
 
-namespace Centreon\Domain\HostConfiguration\Interfaces\HostMacro;
+namespace Core\Application\Security\ProviderConfiguration\OpenId\Repository;
 
-use Centreon\Domain\HostConfiguration\Host;
-use Centreon\Domain\HostConfiguration\HostMacro;
+use Core\Domain\Security\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
 
-/**
- * This interface gathers all the reading operations on the repository.
- *
- * @package Centreon\Domain\HostConfiguration\Interfaces\HostMacro
- */
-interface HostMacroReadRepositoryInterface
+interface ReadOpenIdConfigurationRepositoryInterface
 {
     /**
-     * Find all macros linked to a host.
+     * Find the OpenId Configuration
      *
-     * @param Host $host
-     * @return HostMacro[]
+     * @return OpenIdConfiguration|null
      */
-    public function findAllByHost(Host $host): array;
+    public function findConfiguration(): ?OpenIdConfiguration;
 }
