@@ -78,4 +78,7 @@
     --add-new-entry-font-color: var(--color-primary-light);
     --macro-legend-background-color: var(--body-background);
     --macro-legend-font-color: var(--body-color);
+    --textarea-background-color: var(--body-background);
+    --textarea-font-color: var(--color-white);
+    --select2-selection-single-disabled-background-color: var(--body-background);
 }

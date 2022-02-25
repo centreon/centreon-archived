@@ -80,7 +80,9 @@ img {
 }
 
 input, textarea {
-    border:1px solid var(--textarea-border-color);
+    border: 1px solid var(--textarea-border-color);
+    background-color: var(--textarea-background-color);
+    color: var(--textarea-font-color);
 }
 
 input, select {

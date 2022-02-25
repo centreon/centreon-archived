@@ -18,6 +18,8 @@
 
     /** Text aria color **/
     --textarea-border-color: var(--color-silver);
+    --textarea-background-color: var(--color-white);
+    --textarea-font-color: var(--color-black);
     /*********************/
 
     /** Select color **/
