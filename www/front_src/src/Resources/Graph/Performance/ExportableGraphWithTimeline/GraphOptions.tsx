@@ -72,6 +72,7 @@ const Options = (): JSX.Element => {
       <>
         <IconButton
           ariaLabel={t(labelGraphOptions)}
+          data-testid={labelGraphOptions}
           size="small"
           title={t(labelGraphOptions)}
           onClick={openGraphOptions}
