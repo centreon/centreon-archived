@@ -51,7 +51,6 @@ const retrievedUser = {
   is_export_button_enabled: true,
   locale: 'fr_FR.UTF8',
   name: 'Admin',
-  password_remaining_time: 345,
   timezone: 'Europe/Paris',
   use_deprecated_pages: false,
 };
