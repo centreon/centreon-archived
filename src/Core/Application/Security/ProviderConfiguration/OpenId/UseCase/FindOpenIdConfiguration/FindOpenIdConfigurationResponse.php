@@ -68,7 +68,7 @@ class FindOpenIdConfigurationResponse
     /**
      * @var string|null
      */
-    public ?string $userInformationsEndpoint;
+    public ?string $userInformationEndpoint;
 
     /**
      * @var string|null

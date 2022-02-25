@@ -68,7 +68,7 @@ class UpdateOpenIdConfigurationTest extends TestCase
         $request->authorizationEndpoint = '/authorization';
         $request->tokenEndpoint = '/token';
         $request->introspectionTokenEndpoint = '/introspect';
-        $request->userInformationsEndpoint = '/userinfo';
+        $request->userInformationEndpoint = '/userinfo';
         $request->endSessionEndpoint = '/logout';
         $request->connectionScopes = [];
         $request->loginClaim = 'preferred_username';
@@ -109,7 +109,7 @@ class UpdateOpenIdConfigurationTest extends TestCase
         $request->authorizationEndpoint = '/authorization';
         $request->tokenEndpoint = '/token';
         $request->introspectionTokenEndpoint = '/introspect';
-        $request->userInformationsEndpoint = '/userinfo';
+        $request->userInformationEndpoint = '/userinfo';
         $request->endSessionEndpoint = '/logout';
         $request->connectionScopes = [];
         $request->loginClaim = 'preferred_username';
