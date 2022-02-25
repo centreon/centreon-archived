@@ -1,6 +1,6 @@
 import { useAtom, atom } from 'jotai';
 import { useUpdateAtom } from 'jotai/utils';
-import { isNil, not, or, pathEq, __ } from 'ramda';
+import { isNil, not, or, pathEq } from 'ramda';
 
 import { User, userAtom } from '@centreon/ui-context';
 import { useRequest, getData } from '@centreon/ui';
