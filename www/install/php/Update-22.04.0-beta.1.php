@@ -201,7 +201,7 @@ try {
         $query .= $key === 0 ? " VALUES " : ", ";
         $query .= "($typeId, " . $input['cb_field_id'] . ", " . $input['is_required'] . ", $order)";
     }
-    $statement = $pearDB->query($query);
+    $pearDB->query($query);
 
     $pearDB->commit();
 } catch (\Exception $e) {
