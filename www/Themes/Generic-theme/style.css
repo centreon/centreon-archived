@@ -80,7 +80,9 @@ img {
 }
 
 input, textarea {
-    border:1px solid var(--textarea-border-color);
+    border: 1px solid var(--textarea-border-color);
+    background-color: var(--textarea-background-color);
+    color: var(--textarea-font-color);
 }
 
 input, select {
@@ -908,7 +910,7 @@ form#AjaxBankBasic {
 }
 
 #mainnav li.a {
-    border-bottom: 1px solid var(--main-nav-li-a-border-bottom);
+    border-bottom: 2px solid var(--main-nav-li-a-border-bottom);
 }
 
 #mainnav li a {
@@ -2877,4 +2879,8 @@ ul.module_list {
 .bt-poller-action:disabled {
     background: var(--bt-poller-action-disabled-background-color) !important;
     cursor: not-allowed;
+}
+.add-new-entry {
+    cursor: pointer;
+    color: var(--add-new-entry-font-color);
 }
