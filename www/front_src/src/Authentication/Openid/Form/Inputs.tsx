@@ -44,7 +44,7 @@ const getInput = cond<InputType, (props: InputProps) => JSX.Element>([
   [equals(InputType.Password) as (b: InputType) => boolean, always(TextInput)],
 ]);
 
-const inputs: Array<InputProps> = [
+export const inputs: Array<InputProps> = [
   {
     fieldName: 'isActive',
     label: labelEnableOpenIDConnectAuthentication,

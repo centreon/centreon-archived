@@ -10,6 +10,7 @@ import { labelDefineOpenIDConnectConfiguration } from './translatedLabels';
 import useOpenid from './useOpenid';
 import Form from './Form';
 import { OpenidConfiguration } from './models';
+import LoadingSkeletonForm from './Form/LoadingSkeleton';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -54,7 +55,7 @@ const OpenidConfiguration = (): JSX.Element => {
           )}
         </div>
         {isOpenidConfigurationEmpty ? (
-          <p>Loading...</p>
+          <LoadingSkeletonForm />
         ) : (
           <Form
             initialValues={initialOpenidConfiguration as OpenidConfiguration}
