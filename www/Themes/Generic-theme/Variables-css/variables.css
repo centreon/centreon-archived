@@ -115,7 +115,7 @@
 
     /** P **/
     --p-color-description-color : var(--color-grey-chateau);
-    --p-description-a-visited-color : var(--color-maya-blue);
+    --p-description-a-visited-color : var(--color-primary-dark);
     /******/
 
     /** Placeholder **/
@@ -222,6 +222,7 @@
 
     /** START : Form **/
     --input-submit-color : var(--color-white);
+    --add-new-entry-font-color: var(--color-primary-dark);
     /******************/
 
     /** START : Header **/
@@ -240,8 +241,8 @@
     /************************/
 
     /** START : Menu **/
-    --main-nav-li-a-border-bottom: var(--color-white);
-    --a-background-color :var(--color-white);
+    --main-nav-li-a-border-bottom: var(--color-primary-dark);
+    --a-background-color: transparent;
 
     /** Menu 1 **/
     --menu-1-background-color : var(--color-scarpa-flow);
@@ -317,11 +318,11 @@
     --toolbar-td-selectaction-top-anchor-hover-font-color: var(--color-porsche);
     --toolbar-table-bottom-border-color: var(--color-pasific-bleu);
     --a-b-border-color: var(--list-footer-border-color);
-    --header-tab-container-bottom-border-color: var(--color-pasific-bleu);
-    --main-nav-list-background-color: var(--color-pasific-bleu);
+    --header-tab-container-bottom-border-color: var(--color-iron);
+    --main-nav-list-background-color: transparent;
     --main-nav-list-border-color: var(--main-nav-list-background-color);
-    --main-nav-list-a-anchor-font-color: var(--main-nav-list-background-color);
-    --main-nav-list-b-anchor-font-color: var(--color-onahau);
+    --main-nav-list-a-anchor-font-color: var(--color-primary-dark);
+    --main-nav-list-b-anchor-font-color: var(--body-color);
     --menu3-anchor-hover-font-color: var(--color-porsche);
     --menu3-background-color: var(--color-white);
     --date-font-color: var(--color-ghost);
@@ -364,7 +365,7 @@
     /* ------ START : Forms variables ------ */
     --form-table-list-header-background-color: var(--body-background);
     --form-table-list-header-border-bottom-color: none;
-    --form-table-list-header-h3-font-color: var(--color-olive);
+    --form-table-list-header-h3-font-color: var(--body-color);
     --form-table-list-header-h4-font-color: var(--color-pasific-bleu);
     --form-table-list-lvl-1-background-color: var(--color-white);
     --form-table-list-lvl-1-col-name-background-color: var(--color-wild-sand);

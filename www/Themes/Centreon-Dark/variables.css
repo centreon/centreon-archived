@@ -29,7 +29,7 @@
     --table-form-header-h3-font-color: var(--body-color);
     --form-table-list-lvl-1-background-color: var(--centreon-popin-background-color);
     --form-table-list-lvl-1-col-name-background-color: var(--centreon-popin-background-color);
-    --form-table-list-lvl-1-col-name-border-bottom-color: var(--body-color);
+    --form-table-list-lvl-1-col-name-border-bottom-color: #776e62;
     --form-table-list-lvl-1-col-name-border-top-color: var(--form-table-list-lvl-1-col-name-border-bottom-color);
     --list-one-background-color: #002737;
     --list-one-hover-background-color: #2b2e30;
@@ -43,8 +43,8 @@
     --md-checkbox-checked-label-before-background-color: #2196F3;
     --md-checkbox-background: var(--input-select-background-color);
     --option-color: #fff;
-    --form-table-list-header-h3-font-color: #00bfb3;
-    --info-box-h4-font-color: #fff;
+    --form-table-list-header-h3-font-color: #ffffffb3;
+    --info-box-h4-font-color: var(--form-table-list-header-h3-font-color);
     --md-checkbox-border-color-after: #10069f;
     --md-checkbox-border-color: var(--body-color);
     --centreon-popin-background-color: #424242;
@@ -71,4 +71,11 @@
     --select2-selection-single-background-color: var(--body-background);
     --select2-dropdown-background-color: var(--select2-selection-single-background-color);
     --select2-selection-rendered-font-color: #fff;
+    --main-nav-list-a-anchor-font-color: var(--color-primary-light);
+    --main-nav-li-a-border-bottom: var(--main-nav-list-a-anchor-font-color);
+    --header-tab-container-bottom-border-color: var(--ui-widget-header-border-bottom-color);
+    --p-description-a-visited-color: var(--color-primary-light);
+    --add-new-entry-font-color: var(--color-primary-light);
+    --macro-legend-background-color: var(--body-background);
+    --macro-legend-font-color: var(--body-color);
 }
