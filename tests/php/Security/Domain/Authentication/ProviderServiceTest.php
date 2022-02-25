@@ -86,49 +86,6 @@ class ProviderServiceTest extends TestCase
     }
 
     /**
-     * test findProvidersConfigurations on failure
-     */
-    public function testFindProvidersConfigurationsFailed(): void
-    {
-        $providerService = new ProviderService(
-            $this->authenticationRepository,
-            $this->providerRepository,
-            $this->providerFactory
-        );
-
-        $this->providerRepository
-            ->expects($this->once())
-            ->method('findProvidersConfigurations')
-            ->willThrowException(new \Exception());
-
-        $this->expectException(ProviderException::class);
-        $this->expectExceptionMessage('Error while searching providers configurations');
-
-        $providerService->findProvidersConfigurations();
-    }
-
-    /**
-     * test findProvidersConfigurations on success
-     */
-    public function testFindProvidersConfigurationsSucceed(): void
-    {
-        $providerService = new ProviderService(
-            $this->authenticationRepository,
-            $this->providerRepository,
-            $this->providerFactory
-        );
-
-        $this->providerRepository
-            ->expects($this->once())
-            ->method('findProvidersConfigurations')
-            ->willReturn([$this->providerConfiguration]);
-
-        $providersConfigurations = $providerService->findProvidersConfigurations();
-
-        $this->assertEquals($this->providerConfiguration, $providersConfigurations[0]);
-    }
-
-    /**
      * test findProviderByConfigurationId on failure
      */
     public function testFindProviderByConfigurationIdFailed(): void
@@ -310,7 +267,7 @@ class ProviderServiceTest extends TestCase
             ->willThrowException(new \Exception());
 
         $this->expectException(ProviderException::class);
-        $this->expectExceptionMessage('Error while searching providers configurations');
+        $this->expectExceptionMessage("Error while searching provider configuration: 'local'");
 
         $providerService->findProviderConfigurationByConfigurationName('local');
     }
