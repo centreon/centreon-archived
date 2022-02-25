@@ -51,7 +51,10 @@ $compo_id = filter_var(
 
 if (!empty($_POST['select'])) {
     foreach ($_POST['select'] as $curveIdSelected => $dupFactor) {
-        if (filter_var($dupFactor, FILTER_VALIDATE_INT) !== false) {
+        if (
+            filter_var($dupFactor, FILTER_VALIDATE_INT) !== false
+            && filter_var($curveIdSelected, FILTER_VALIDATE_INT) !== false
+        ) {
             $selectedCurveTemplates[$curveIdSelected] = (int) $dupFactor;
         }
     }
@@ -59,7 +62,10 @@ if (!empty($_POST['select'])) {
 
 if (!empty($_POST['dupNbr'])) {
     foreach ($_POST['dupNbr'] as $curveId => $dupFactor) {
-        if (filter_var($dupFactor, FILTER_VALIDATE_INT) !== false) {
+        if (
+            filter_var($dupFactor, FILTER_VALIDATE_INT) !== false
+            && filter_var($curveId, FILTER_VALIDATE_INT) !== false
+        ) {
             $duplicationNumbers[$curveId] = (int) $dupFactor;
         }
     }
