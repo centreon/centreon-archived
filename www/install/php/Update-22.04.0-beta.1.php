@@ -142,6 +142,7 @@ try {
         ADD `blocking_time` BIGINT(20) UNSIGNED DEFAULT NULL"
     );
 
+    $pearDB->beginTransaction();
     // Move OpenID Connect information to openid provider configuration.
     $errorMessage = "Impossible to get openid configuration from option table";
     $statement = $pearDB->query("SELECT * FROM options WHERE `key` LIKE 'openid_%'");
@@ -195,6 +196,7 @@ try {
         $errorMessage = "Impossible to remove open_id options form options table";
         $pearDB->query("DELETE FROM options WHERE `key` LIKE 'open_id%'");
     }
+    $pearDB->commit();
 } catch (\Exception $e) {
     if ($pearDB->inTransaction()) {
         $pearDB->rollBack();
