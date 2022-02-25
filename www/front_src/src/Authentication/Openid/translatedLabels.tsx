@@ -4,13 +4,13 @@ export const labelDefineOpenIDConnectConfiguration =
 export const labelRequired = 'Required';
 export const labelInvalidURL = 'Invalid URL';
 export const labelInvalidIPAddressOrDomainName =
-  'Invalid IP Address or Domain Name';
+  'Invalid IP Address or Domain name';
 export const labelFailedToSaveOpenidConfiguration =
-  'Failed to save OpenID Connect Configuration';
+  'Failed to save OpenID Connect configuration';
 export const labelOpenIDConnectConfigurationSaved =
-  'OpenID Connect Configuration saved';
+  'OpenID Connect configuration saved';
 export const labelEnableOpenIDConnectAuthentication =
-  'Enable OpenID Connect Authentication';
+  'Enable OpenID Connect authentication';
 export const labelAuthenticationMode = 'Authentication mode';
 export const labelTrustedClientAddresses = 'Trusted client addresses';
 export const labelBlacklistClientAddresses = 'Blacklist client addresses';
