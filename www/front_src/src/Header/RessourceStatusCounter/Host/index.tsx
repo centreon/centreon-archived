@@ -84,7 +84,7 @@ const HostStatusCounter = (): JSX.Element => {
 
   const { t } = useTranslation();
 
-  const { useDeprecatedPages } = useAtomValue(userAtom);
+  const { use_deprecated_pages } = useAtomValue(userAtom);
   const applyFilter = useUpdateAtom(applyFilterDerivedAtom);
 
   const unhandledDownHostsCriterias = getDefaultCriterias({
@@ -92,7 +92,7 @@ const HostStatusCounter = (): JSX.Element => {
     states: unhandledStateCriterias.value,
     statuses: downCriterias.value as Array<SelectEntry>,
   });
-  const unhandledDownHostsLink = useDeprecatedPages
+  const unhandledDownHostsLink = use_deprecated_pages
     ? '/main.php?p=20202&o=h_down&search='
     : getHostResourcesUrl({
         stateCriterias: unhandledStateCriterias,
@@ -104,7 +104,7 @@ const HostStatusCounter = (): JSX.Element => {
     states: unhandledStateCriterias.value,
     statuses: unreachableCriterias.value as Array<SelectEntry>,
   });
-  const unhandledUnreachableHostsLink = useDeprecatedPages
+  const unhandledUnreachableHostsLink = use_deprecated_pages
     ? '/main.php?p=20202&o=h_unreachable&search='
     : getHostResourcesUrl({
         stateCriterias: unhandledStateCriterias,
@@ -115,7 +115,7 @@ const HostStatusCounter = (): JSX.Element => {
     resourceTypes: hostCriterias.value,
     statuses: upCriterias.value as Array<SelectEntry>,
   });
-  const upHostsLink = useDeprecatedPages
+  const upHostsLink = use_deprecated_pages
     ? '/main.php?p=20202&o=h_up&search='
     : getHostResourcesUrl({
         statusCriterias: upCriterias,
@@ -124,7 +124,7 @@ const HostStatusCounter = (): JSX.Element => {
   const hostsCriterias = getDefaultCriterias({
     resourceTypes: hostCriterias.value,
   });
-  const hostsLink = useDeprecatedPages
+  const hostsLink = use_deprecated_pages
     ? '/main.php?p=20202&o=h&search='
     : getHostResourcesUrl();
 
@@ -132,7 +132,7 @@ const HostStatusCounter = (): JSX.Element => {
     resourceTypes: hostCriterias.value,
     statuses: pendingCriterias.value as Array<SelectEntry>,
   });
-  const pendingHostsLink = useDeprecatedPages
+  const pendingHostsLink = use_deprecated_pages
     ? '/main.php?p=20202&o=h_pending&search='
     : getHostResourcesUrl({
         statusCriterias: pendingCriterias,
@@ -143,7 +143,7 @@ const HostStatusCounter = (): JSX.Element => {
     (e): void => {
       e.preventDefault();
       toggle?.();
-      if (!useDeprecatedPages) {
+      if (!use_deprecated_pages) {
         applyFilter({ criterias, id: '', name: 'New Filter' });
       }
       navigate(link);

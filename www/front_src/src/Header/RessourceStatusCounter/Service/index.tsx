@@ -75,7 +75,7 @@ const ServiceStatusCounter = (): JSX.Element => {
 
   const { t } = useTranslation();
 
-  const { useDeprecatedPages } = useAtomValue(userAtom);
+  const { use_deprecated_pages } = useAtomValue(userAtom);
   const applyFilter = useUpdateAtom(applyFilterDerivedAtom);
 
   const unhandledCriticalServicesCriterias = getDefaultCriterias({
@@ -83,7 +83,7 @@ const ServiceStatusCounter = (): JSX.Element => {
     states: unhandledStateCriterias.value,
     statuses: criticalCriterias.value as Array<SelectEntry>,
   });
-  const unhandledCriticalServicesLink = useDeprecatedPages
+  const unhandledCriticalServicesLink = use_deprecated_pages
     ? '/main.php?p=20201&o=svc_unhandled&statusFilter=critical&search='
     : getServiceResourcesUrl({
         stateCriterias: unhandledStateCriterias,
@@ -95,7 +95,7 @@ const ServiceStatusCounter = (): JSX.Element => {
     states: unhandledStateCriterias.value,
     statuses: warningCriterias.value as Array<SelectEntry>,
   });
-  const unhandledWarningServicesLink = useDeprecatedPages
+  const unhandledWarningServicesLink = use_deprecated_pages
     ? '/main.php?p=20201&o=svc_unhandled&statusFilter=warning&search='
     : getServiceResourcesUrl({
         stateCriterias: unhandledStateCriterias,
@@ -107,7 +107,7 @@ const ServiceStatusCounter = (): JSX.Element => {
     states: unhandledStateCriterias.value,
     statuses: unknownCriterias.value as Array<SelectEntry>,
   });
-  const unhandledUnknownServicesLink = useDeprecatedPages
+  const unhandledUnknownServicesLink = use_deprecated_pages
     ? '/main.php?p=20201&o=svc_unhandled&statusFilter=unknown&search='
     : getServiceResourcesUrl({
         stateCriterias: unhandledStateCriterias,
@@ -118,14 +118,14 @@ const ServiceStatusCounter = (): JSX.Element => {
     resourceTypes: serviceCriteria.value,
     statuses: okCriterias.value as Array<SelectEntry>,
   });
-  const okServicesLink = useDeprecatedPages
+  const okServicesLink = use_deprecated_pages
     ? '/main.php?p=20201&o=svc&statusFilter=ok&search='
     : getServiceResourcesUrl({ statusCriterias: okCriterias });
 
   const servicesCriterias = getDefaultCriterias({
     resourceTypes: serviceCriteria.value,
   });
-  const servicesLink = useDeprecatedPages
+  const servicesLink = use_deprecated_pages
     ? '/main.php?p=20201&o=svc&statusFilter=&search='
     : getServiceResourcesUrl();
 
@@ -133,7 +133,7 @@ const ServiceStatusCounter = (): JSX.Element => {
     resourceTypes: serviceCriteria.value,
     statuses: pendingCriterias.value as Array<SelectEntry>,
   });
-  const pendingServicesLink = useDeprecatedPages
+  const pendingServicesLink = use_deprecated_pages
     ? '/main.php?p=20201&o=svc&statusFilter=&search='
     : getServiceResourcesUrl({
         statusCriterias: pendingCriterias,
@@ -144,7 +144,7 @@ const ServiceStatusCounter = (): JSX.Element => {
     (e): void => {
       e.preventDefault();
       toggle?.();
-      if (!useDeprecatedPages) {
+      if (!use_deprecated_pages) {
         applyFilter({ criterias, id: '', name: 'New Filter' });
       }
       navigate(link);

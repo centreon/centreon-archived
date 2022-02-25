@@ -7,5 +7,4 @@ export const labelCentreonLogo = 'Centreon Logo';
 export const labelConnect = 'Connect';
 export const labelDisplayThePassword = 'Display the password';
 export const labelHideThePassword = 'Hide the password';
-export const labelPasswordWillExpireIn = 'Password will expire in';
 export const labelPasswordHasExpired = 'Password has expired';
