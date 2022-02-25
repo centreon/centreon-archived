@@ -135,6 +135,75 @@ try {
         ADD `login_attempts` INT(11) UNSIGNED DEFAULT NULL,
         ADD `blocking_time` BIGINT(20) UNSIGNED DEFAULT NULL"
     );
+
+    /**
+     * Add new UnifiedSQl broker output
+     */
+    $pearDB->beginTransaction();
+
+    $errorMessage = 'Unable to update cb_type table ';
+
+    $statement = $pearDB->query(
+        "UPDATE `cb_type` set type_name = 'Perfdata Generator (Centreon Storage) - DEPRECATED'
+            WHERE type_shortname = 'storage'"
+    );
+    $statement = $pearDB->query(
+        "UPDATE `cb_type` set type_name = 'Broker SQL database - DEPRECATED'
+            WHERE type_shortname = 'sql'"
+    );
+
+    $statement = $pearDB->query("SELECT cb_module_id FROM cb_module WHERE name = 'Storage'");
+    $module = $statement->fetch();
+
+    if ($module === false) {
+        throw new Exception("Cannot find 'Storage' module in cb_module table");
+    }
+    $moduleId = $module['cb_module_id'];
+
+    $statement = $pearDB->query(
+        "INSERT INTO `cb_type` (`type_name`, `type_shortname`, `cb_module_id`)
+            VALUES ('Unified SQL', 'unified_sql', $moduleId)"
+    );
+    $typeId = $pearDB->lastInsertId();
+
+    $errorMessage = 'Unable to update cb_tag_type_relation table';
+    $statement = $pearDB->query("SELECT cb_tag_id FROM cb_tag WHERE tagname = 'Output'");
+    $tag = $statement->fetch();
+
+    if ($tag === false) {
+        throw new Exception("Cannot find 'Output' tag in cb_tag table");
+    }
+    $tagId = $tag['cb_tag_id'];
+
+    $statement = $pearDB->query(
+        "INSERT INTO `cb_tag_type_relation` (`cb_tag_id`, `cb_type_id`, `cb_type_uniq`)
+            VALUES ($tagId, $typeId, 0)"
+    );
+
+    $errorMessage = 'Unable to update cb_type_field_relation table';
+    $inputs = [];
+    $statement = $pearDB->query(
+        "SELECT DISTINCT(tfr.cb_field_id), tfr.is_required FROM cb_type_field_relation tfr, cb_type t, cb_field f
+            WHERE tfr.cb_type_id = t.cb_type_id
+            AND t.type_shortname in ('sql', 'storage')
+            AND tfr.cb_field_id = f.cb_field_id
+            AND f.fieldname NOT LIKE 'db_type'
+            ORDER BY tfr.order_display"
+    );
+    $inputs = $statement->fetchAll();
+    if (empty($inputs)) {
+        throw new Exception("Cannot find fields in cb_type_field_relation table");
+    }
+
+    $query = "INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`, `order_display`)";
+    foreach ($inputs as $key => $input) {
+        $order = $key + 1;
+        $query .= $key === 0 ? " VALUES " : ", ";
+        $query .= "($typeId, " . $input['cb_field_id'] . ", " . $input['is_required'] . ", $order)";
+    }
+    $pearDB->query($query);
+
+    $pearDB->commit();
 } catch (\Exception $e) {
     if ($pearDB->inTransaction()) {
         $pearDB->rollBack();
