@@ -1,8 +1,7 @@
 <?php
-
 /*
- * Copyright 2005-2022 Centreon
- * Centreon is developed by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2015 Centreon
+ * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -99,22 +98,15 @@ function enableGroupInDB($acl_group_id = null, $groups = array())
     }
 
     if ($acl_group_id) {
-        $groups = [$acl_group_id => "1"];
+        $groups = array($acl_group_id => "1");
     }
 
     foreach ($groups as $key => $value) {
-        $dbResult = $pearDB->prepare("UPDATE acl_groups SET acl_group_activate = '1' WHERE acl_group_id = :aclGroupId");
-        $dbResult->bindValue('aclGroupId', $key, PDO::PARAM_INT);
-        $dbResult->execute();
-
-        $dbResult = $pearDB->prepare(
-            "SELECT acl_group_name FROM `acl_groups`
-            WHERE acl_group_id = :aclGroupId LIMIT 1"
-        );
-        $dbResult->bindValue('aclGroupId', $key, PDO::PARAM_INT);
-        $dbResult->execute();
+        $pearDB->query("UPDATE acl_groups SET acl_group_activate = '1' WHERE acl_group_id = '" . $key . "'");
+        $query = "SELECT acl_group_name FROM `acl_groups` WHERE acl_group_id = '" . (int)$key . "' LIMIT 1";
+        $dbResult = $pearDB->query($query);
         $row = $dbResult->fetch();
-        $centreon->CentreonLogAction->insertLog("access group", (int) $key, $row['acl_group_name'], "enable");
+        $centreon->CentreonLogAction->insertLog("access group", $key, $row['acl_group_name'], "enable");
     }
 }
 
@@ -134,18 +126,11 @@ function disableGroupInDB($acl_group_id = null, $groups = array())
     }
 
     foreach ($groups as $key => $value) {
-        $dbResult = $pearDB->prepare(
-            "UPDATE acl_groups SET acl_group_activate = '0' WHERE acl_group_id = :aclGroupId"
-        );
-        $dbResult->bindValue('aclGroupId', $key, PDO::PARAM_INT);
-        $dbResult->execute();
-        $dbResult = $pearDB->prepare(
-            "SELECT acl_group_name FROM `acl_groups` WHERE acl_group_id = :aclGroupId LIMIT 1"
-        );
-        $dbResult->bindValue('aclGroupId', $key, PDO::PARAM_INT);
-        $dbResult->execute();
+        $pearDB->query("UPDATE acl_groups SET acl_group_activate = '0' WHERE acl_group_id = '" . $key . "'");
+        $query = "SELECT acl_group_name FROM `acl_groups` WHERE acl_group_id = '" . (int)$key . "' LIMIT 1";
+        $dbResult = $pearDB->query($query);
         $row = $dbResult->fetch();
-        $centreon->CentreonLogAction->insertLog("access group", (int) $key, $row['acl_group_name'], "disable");
+        $centreon->CentreonLogAction->insertLog("access group", $key, $row['acl_group_name'], "disable");
     }
 }
 
@@ -159,16 +144,11 @@ function deleteGroupInDB($groups = array())
     global $pearDB, $centreon;
 
     foreach ($groups as $key => $value) {
-        $dbResult = $pearDB->prepare(
-            "SELECT acl_group_name FROM `acl_groups` WHERE acl_group_id = :aclGroupId LIMIT 1"
-        );
-        $dbResult->bindValue('aclGroupId', $key, PDO::PARAM_INT);
-        $dbResult->execute();
+        $query = "SELECT acl_group_name FROM `acl_groups` WHERE acl_group_id = '" . (int)$key . "' LIMIT 1";
+        $dbResult = $pearDB->query($query);
         $row = $dbResult->fetch();
-        $dbResult = $pearDB->prepare("DELETE FROM acl_groups WHERE acl_group_id = :aclGroupId");
-        $dbResult->bindValue('aclGroupId', $key, PDO::PARAM_INT);
-        $dbResult->execute();
-        $centreon->CentreonLogAction->insertLog("access group", (int) $key, $row['acl_group_name'], "d");
+        $pearDB->query("DELETE FROM acl_groups WHERE acl_group_id = '" . $key . "'");
+        $centreon->CentreonLogAction->insertLog("access group", $key, $row['acl_group_name'], "d");
     }
 }
 
@@ -183,9 +163,7 @@ function multipleGroupInDB($groups = array(), $nbrDup = array())
     global $pearDB, $centreon;
 
     foreach ($groups as $key => $value) {
-        $dbResult = $pearDB->prepare("SELECT * FROM acl_groups WHERE acl_group_id = :aclGroupId LIMIT 1");
-        $dbResult->bindValue('aclGroupId', $key, PDO::PARAM_INT);
-        $dbResult->execute();
+        $dbResult = $pearDB->query("SELECT * FROM acl_groups WHERE acl_group_id = '" . $key . "' LIMIT 1");
         $row = $dbResult->fetch();
         $row["acl_group_id"] = '';
 
