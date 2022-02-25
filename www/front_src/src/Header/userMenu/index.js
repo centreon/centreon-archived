@@ -157,7 +157,7 @@ class UserMenuContent extends Component {
     const conditionnedhref = gethref + (window.location.search ? '&' : '?');
     const autolink = `${conditionnedhref}autologin=1&useralias=${username}&token=${autologinkey}`;
 
-    const passwordWillNotExpireYet =
+    const passwordIsNotYetAboutToExpire =
       isNil(password_remaining_time) ||
       isGreaterThanSevenDays(password_remaining_time);
 
@@ -178,7 +178,7 @@ class UserMenuContent extends Component {
           >
             <Badge
               color="warning"
-              invisible={passwordWillNotExpireYet}
+              invisible={passwordIsNotYetAboutToExpire}
               variant="dot"
             >
               <UserIcon
