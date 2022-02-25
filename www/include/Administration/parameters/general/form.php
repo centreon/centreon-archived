@@ -257,7 +257,6 @@ $form->setDefaults(array('sso_header_username' => 'HTTP_AUTH_USER'));
 $options3[] = $form->createElement('checkbox', 'yes', '&nbsp;', '');
 $form->addGroup($options3, 'enable_gmt', _("Enable Timezone management"), '&nbsp;&nbsp;');
 
-
 /*
  * Support Email
  */
