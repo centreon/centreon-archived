@@ -204,7 +204,6 @@ try {
     $statement = $pearDB->query($query);
 
     $pearDB->commit();
-
 } catch (\Exception $e) {
     if ($pearDB->inTransaction()) {
         $pearDB->rollBack();
