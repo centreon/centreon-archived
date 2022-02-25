@@ -79,6 +79,12 @@ def apiFeatureFiles = []
 def featureFiles = []
 def acceptanceTag = ""
 
+// Skip sonarQ analysis on branch without PR  - Unable to merge
+def securityAnalysisRequired = 'yes'
+if (!env.CHANGE_ID && env.BUILD == 'CI') {
+    securityAnalysisRequired = 'no'
+}
+
 /*
 ** Functions
 */
@@ -150,6 +156,7 @@ stage('Deliver sources') {
     stash name: 'vendor', includes: 'vendor.tar.gz'
     stash name: 'node_modules', includes: 'node_modules.tar.gz'
     stash name: 'api-doc', includes: 'centreon-api-v22.04.html'
+    stash name: 'centreon-injector', includes: 'centreon-injector.tar.gz'
     publishHTML([
       allowMissing: false,
       keepAll: true,
@@ -237,10 +244,10 @@ try {
     },
     'sonar': {
       node {
-      if (env.BUILD == 'CI') {
-        Utils.markStageSkippedForConditional('sonar')
-      } else {
-        // Run sonarQube analysis
+        if (securityAnalysisRequired == 'no') {
+          Utils.markStageSkippedForConditional('sonar')
+        } else {
+          // Run sonarQube analysis
           checkoutCentreonBuild()
           unstash 'git-sources'
           unstash 'vendor'
@@ -276,7 +283,7 @@ try {
     }
 //    'rpm packaging centos8': {
 //      node {
-//        checkoutCentreonBuild()           
+//        checkoutCentreonBuild()
 //        unstash 'tar-sources'
 //        sh "./centreon-build/jobs/web/${serie}/mon-web-package.sh centos8"
 //        archiveArtifacts artifacts: "rpms-centos8.tar.gz"
@@ -413,11 +420,12 @@ try {
         node {
           checkoutCentreonBuild();
           unstash 'tar-sources'
+          unstash 'centreon-injector'
           sh "./centreon-build/jobs/web/${serie}/mon-web-lighthouse-ci.sh centos7"
           publishHTML([
             allowMissing: false,
             keepAll: true,
-            reportDir: "$PROJECT-$VERSION/.lighthouseci",
+            reportDir: "$PROJECT-$VERSION/lighthouse/report",
             reportFiles: 'lighthouseci-index.html',
             reportName: 'Centreon Web Performances',
             reportTitles: ''

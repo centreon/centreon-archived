@@ -463,8 +463,13 @@ describe(Actions, () => {
   });
 
   it('cannot send a downtime request when the Downtime action is clicked and the input dates have an invalid format', async () => {
-    const { getByLabelText, getAllByText, findByText, getByText } =
-      renderActions();
+    const {
+      getByLabelText,
+      getAllByText,
+      findByText,
+      getByText,
+      findAllByText,
+    } = renderActions();
 
     const selectedResources = [host];
 
@@ -472,21 +477,23 @@ describe(Actions, () => {
       context.setSelectedResources?.(selectedResources);
     });
 
+    await findAllByText(labelSetDowntime);
+
     fireEvent.click(head(getAllByText(labelSetDowntime)) as HTMLElement);
 
     await findByText(labelDowntimeByAdmin);
 
-    userEvent.type(getByLabelText(labelStartTime), 'l');
+    userEvent.type(getByLabelText(labelStartTime), '{backspace}l');
 
-    await waitFor(() =>
+    await waitFor(() => {
       expect(
         last(getAllByText(labelSetDowntime)) as HTMLElement,
-      ).toBeDisabled(),
-    );
+      ).toBeDisabled();
+    });
 
     expect(getByText(labelInvalidFormat)).toBeInTheDocument();
 
-    userEvent.type(getByLabelText(labelStartTime), '{backspace}');
+    userEvent.type(getByLabelText(labelStartTime), '{backspace}M');
 
     await waitFor(() =>
       expect(last(getAllByText(labelSetDowntime)) as HTMLElement).toBeEnabled(),

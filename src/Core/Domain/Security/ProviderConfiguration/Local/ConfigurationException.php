@@ -18,53 +18,17 @@
  * For more information : contact@centreon.com
  *
  */
-
 declare(strict_types=1);
 
-namespace Core\Domain\User\Model;
+namespace Core\Domain\Security\ProviderConfiguration\Local;
 
-class User
+class ConfigurationException extends \Exception
 {
     /**
-     * @param integer $id
-     * @param string $alias
-     * @param string $password
-     */
-    public function __construct(private int $id, private string $alias, private string $password)
-    {
-    }
-
-    /**
-     * @return integer
-     */
-    public function getId(): int
-    {
-        return $this->id;
-    }
-
-    /**
-     * @return string
-     */
-    public function getAlias(): string
-    {
-        return $this->alias;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPassword(): string
-    {
-        return $this->password;
-    }
-
-    /**
-     * @param string $password
      * @return self
      */
-    public function setPassword(string $password): self
+    public static function notFound(): self
     {
-        $this->password = $password;
-        return $this;
+        return new self(_('Local provider configuration not found'));
     }
 }

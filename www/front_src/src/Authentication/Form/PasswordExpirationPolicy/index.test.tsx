@@ -2,8 +2,15 @@ import * as React from 'react';
 
 import userEvent from '@testing-library/user-event';
 import { Formik } from 'formik';
+import axios from 'axios';
 
-import { render, RenderResult, screen, waitFor } from '@centreon/ui';
+import {
+  render,
+  RenderResult,
+  screen,
+  waitFor,
+  buildListingEndpoint,
+} from '@centreon/ui';
 
 import { SecurityPolicy, SecurityPolicyFromAPI } from '../../models';
 import useValidationSchema from '../../useValidationSchema';
@@ -22,11 +29,17 @@ import {
   labelPasswordExpiration,
   labelPasswordExpirationPolicy,
   labelTimeBeforeSettingNewPassword,
+  labelExcludedUsers,
 } from '../../translatedLabels';
+import { contactsEndpoint } from '../../api/endpoints';
 
 import PasswordExpirationPolicy from '.';
 
 const noOp = jest.fn();
+
+const mockedAxios = axios as jest.Mocked<typeof axios>;
+
+const cancelTokenRequestParam = { cancelToken: {} };
 
 interface Props {
   initialValues: SecurityPolicy;
@@ -56,7 +69,38 @@ const renderPasswordExpirationPolicy = (
     <TestComponent initialValues={initialValues.password_security_policy} />,
   );
 
+const retrievedContacts = {
+  meta: {
+    limit: 10,
+    page: 1,
+    search: {},
+    sort_by: {},
+    total: 2,
+  },
+  result: [
+    {
+      alias: 'admin',
+      email: 'admin@admin.com',
+      id: 1,
+      is_admin: true,
+    },
+    {
+      alias: 'user',
+      email: 'user@admin.com',
+      id: 2,
+      is_admin: false,
+    },
+  ],
+};
+
 describe('Password expiration policy', () => {
+  beforeEach(() => {
+    mockedAxios.get.mockReset();
+    mockedAxios.get.mockResolvedValue({
+      data: retrievedContacts,
+    });
+  });
+
   it('renders the password expiration policy fields with values', async () => {
     renderPasswordExpirationPolicy();
 
@@ -89,6 +133,8 @@ describe('Password expiration policy', () => {
         `${labelTimeBeforeSettingNewPassword} ${labelHour}`,
       ),
     ).toHaveTextContent('1');
+
+    expect(screen.getByText(labelExcludedUsers)).toBeInTheDocument();
   });
 
   it('does not display any error message when the password expiration time is cleared', async () => {
@@ -184,5 +230,45 @@ describe('Password expiration policy', () => {
     await waitFor(() => {
       expect(screen.getByLabelText(labelCanReuseLast3Passwords)).toBeChecked();
     });
+  });
+
+  it('updates the excluded users field when an user is selected from the retrieved options', async () => {
+    renderPasswordExpirationPolicy();
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(labelPasswordExpirationPolicy),
+      ).toBeInTheDocument();
+    });
+    userEvent.click(screen.getByLabelText(labelExcludedUsers));
+
+    await waitFor(() => {
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        buildListingEndpoint({
+          baseEndpoint: contactsEndpoint,
+          parameters: {
+            page: 1,
+            search: {
+              conditions: [
+                {
+                  field: 'provider_name',
+                  values: {
+                    $eq: 'local',
+                  },
+                },
+              ].filter(Boolean),
+            },
+            sort: { alias: 'ASC' },
+          },
+        }),
+        cancelTokenRequestParam,
+      );
+    });
+
+    userEvent.click(screen.getByText('admin'));
+
+    userEvent.keyboard('{Escape}');
+
+    expect(screen.getAllByText('admin')).toHaveLength(1);
   });
 });

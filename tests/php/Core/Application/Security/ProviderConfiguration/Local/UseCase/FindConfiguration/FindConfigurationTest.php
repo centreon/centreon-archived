@@ -25,6 +25,7 @@ namespace Tests\Core\Application\Security\ProviderConfiguration\Local\UseCase\Fi
 
 use PHPUnit\Framework\TestCase;
 use Core\Domain\Security\ProviderConfiguration\Local\Model\Configuration;
+use Core\Domain\Security\ProviderConfiguration\Local\Model\SecurityPolicy;
 use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
 use Core\Application\Security\ProviderConfiguration\Local\UseCase\FindConfiguration\FindConfiguration;
 use Core\Application\Security\ProviderConfiguration\Local\Repository\ReadConfigurationRepositoryInterface;
@@ -57,18 +58,20 @@ class FindConfigurationTest extends TestCase
      */
     public function testFindConfiguration(): void
     {
-        $configuration = new Configuration(
-            Configuration::MIN_PASSWORD_LENGTH,
+        $securityPolicy = new SecurityPolicy(
+            SecurityPolicy::MIN_PASSWORD_LENGTH,
             true,
             true,
             true,
             true,
             true,
-            Configuration::MIN_ATTEMPTS,
-            Configuration::MIN_BLOCKING_DURATION,
-            Configuration::MIN_PASSWORD_EXPIRATION,
-            Configuration::MIN_NEW_PASSWORD_DELAY
+            SecurityPolicy::MIN_ATTEMPTS,
+            SecurityPolicy::MIN_BLOCKING_DURATION,
+            SecurityPolicy::MIN_PASSWORD_EXPIRATION_DELAY,
+            [],
+            SecurityPolicy::MIN_NEW_PASSWORD_DELAY
         );
+        $configuration = new Configuration($securityPolicy);
 
         $useCase = new FindConfiguration($this->repository);
 
@@ -81,16 +84,34 @@ class FindConfigurationTest extends TestCase
 
         $useCase($presenter);
 
-        $this->assertEquals($presenter->response->passwordMinimumLength, $configuration->getPasswordMinimumLength());
-        $this->assertEquals($presenter->response->hasUppercase, $configuration->hasUppercase());
-        $this->assertEquals($presenter->response->hasLowercase, $configuration->hasLowercase());
-        $this->assertEquals($presenter->response->hasNumber, $configuration->hasNumber());
-        $this->assertEquals($presenter->response->hasSpecialCharacter, $configuration->hasSpecialCharacter());
-        $this->assertEquals($presenter->response->canReusePasswords, $configuration->canReusePasswords());
-        $this->assertEquals($presenter->response->attempts, $configuration->getAttempts());
-        $this->assertEquals($presenter->response->blockingDuration, $configuration->getBlockingDuration());
-        $this->assertEquals($presenter->response->passwordExpiration, $configuration->getPasswordExpiration());
-        $this->assertEquals($presenter->response->delayBeforeNewPassword, $configuration->getDelayBeforeNewPassword());
+        $this->assertEquals(
+            $presenter->response->passwordMinimumLength,
+            $configuration->getSecurityPolicy()->getPasswordMinimumLength()
+        );
+        $this->assertEquals($presenter->response->hasUppercase, $configuration->getSecurityPolicy()->hasUppercase());
+        $this->assertEquals($presenter->response->hasLowercase, $configuration->getSecurityPolicy()->hasLowercase());
+        $this->assertEquals($presenter->response->hasNumber, $configuration->getSecurityPolicy()->hasNumber());
+        $this->assertEquals(
+            $presenter->response->hasSpecialCharacter,
+            $configuration->getSecurityPolicy()->hasSpecialCharacter()
+        );
+        $this->assertEquals(
+            $presenter->response->canReusePasswords,
+            $configuration->getSecurityPolicy()->canReusePasswords()
+        );
+        $this->assertEquals($presenter->response->attempts, $configuration->getSecurityPolicy()->getAttempts());
+        $this->assertEquals(
+            $presenter->response->blockingDuration,
+            $configuration->getSecurityPolicy()->getBlockingDuration()
+        );
+        $this->assertEquals(
+            $presenter->response->passwordExpirationDelay,
+            $configuration->getSecurityPolicy()->getPasswordExpirationDelay()
+        );
+        $this->assertEquals(
+            $presenter->response->delayBeforeNewPassword,
+            $configuration->getSecurityPolicy()->getDelayBeforeNewPassword()
+        );
     }
 
     /**

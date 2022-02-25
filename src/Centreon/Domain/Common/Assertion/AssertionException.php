@@ -120,6 +120,24 @@ class AssertionException extends \InvalidArgumentException
     }
 
     /**
+     * Exception when the value does not respect email format.
+     *
+     * @param string $value Tested value
+     * @param string|null $propertyPath Property's path (ex: Host::maxCheckAttempts)
+     * @return self
+     */
+    public static function email(string $value, string $propertyPath = null): self
+    {
+        return new self(
+            sprintf(
+                _('[%s] The value "%s" was expected to be a valid e-mail address'),
+                $propertyPath,
+                $value
+            )
+        );
+    }
+
+    /**
      * Exception when the value of the date is higher than the expected date.
      *
      * @param \DateTime $date Tested date
@@ -207,6 +225,26 @@ class AssertionException extends \InvalidArgumentException
                 $propertyPath,
                 $value,
                 implode('|', $expectedValues)
+            )
+        );
+    }
+
+    /**
+     * Exception when the value doesn't match a regex.
+     *
+     * @param string $value
+     * @param string $pattern
+     * @param string|null $propertyPath
+     * @return self
+     */
+    public static function matchRegex(string $value, string $pattern, string $propertyPath = null): self
+    {
+        return new self(
+            sprintf(
+                _('[%s] The value (%s) doesn\'t match the regex \'%s\''),
+                $propertyPath,
+                $value,
+                $pattern
             )
         );
     }

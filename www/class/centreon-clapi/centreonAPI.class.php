@@ -552,9 +552,10 @@ class CentreonAPI
                 }
             }
 
+            $passwordExpirationDelay = $securityPolicy['password_expiration']['expiration_delay'];
             if (
-                $securityPolicy['password_expiration'] !== null
-                && (int) $row['password_creation'] + (int) $securityPolicy['password_expiration'] < time()
+                $passwordExpirationDelay !== null
+                && (int) $row['password_creation'] + (int) $passwordExpirationDelay < time()
             ) {
                 print "Unable to login, your password has expired.\n";
                 exit(1);
@@ -576,10 +577,12 @@ class CentreonAPI
                     $hashedPassword
                 );
                 \CentreonClapi\CentreonUtils::setUserId($row['contact_id']);
+                $this->removeBlockingTimeOnUser();
                 return 1;
             }
             if (password_verify($this->password, $row['contact_passwd'])) {
                 \CentreonClapi\CentreonUtils::setUserId($row['contact_id']);
+                $this->removeBlockingTimeOnUser();
                 return 1;
             } elseif ($row['contact_auth_type'] == 'ldap') {
                 $CentreonLog = new \CentreonUserLog(-1, $this->DB);

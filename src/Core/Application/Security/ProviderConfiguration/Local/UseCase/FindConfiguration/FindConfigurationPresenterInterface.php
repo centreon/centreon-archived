@@ -24,7 +24,6 @@ declare(strict_types=1);
 namespace Core\Application\Security\ProviderConfiguration\Local\UseCase\FindConfiguration;
 
 use Core\Application\Common\UseCase\PresenterInterface;
-use Core\Application\Security\ProviderConfiguration\Local\UseCase\FindConfiguration\FindConfigurationResponse;
 
 interface FindConfigurationPresenterInterface extends PresenterInterface
 {

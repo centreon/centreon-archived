@@ -1401,7 +1401,7 @@ ServerTokens Prod
 
 <VirtualHost *:80>
     Header set X-Frame-Options: "sameorigin"
-    Header always edit Set-Cookie ^(.*)$ $1;HttpOnly
+    Header always edit Set-Cookie ^(.*)$ $1;HttpOnly;SameSite=Strict
     ServerSignature Off
     TraceEnable Off
 

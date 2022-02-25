@@ -1,3 +1,4 @@
-const baseEndpoint = './api/v22.04';
+const baseEndpoint = './api/latest';
 
 export const securityPolicyEndpoint = `${baseEndpoint}/administration/authentication/providers/local`;
+export const contactsEndpoint = `${baseEndpoint}/configuration/users`;

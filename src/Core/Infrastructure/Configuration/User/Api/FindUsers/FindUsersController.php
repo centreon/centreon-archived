@@ -18,19 +18,29 @@
  * For more information : contact@centreon.com
  *
  */
-
 declare(strict_types=1);
 
-namespace Core\Application\User\Repository;
+namespace Core\Infrastructure\Configuration\User\Api\FindUsers;
 
-use Core\Domain\User\Model\User;
+use Centreon\Application\Controller\AbstractController;
+use Core\Application\Configuration\User\UseCase\FindUsers\FindUsers;
+use Core\Application\Configuration\User\UseCase\FindUsers\FindUsersPresenterInterface;
 
-interface WriteUserRepositoryInterface
+class FindUsersController extends AbstractController
 {
     /**
-     * Renew password of user.
-     *
-     * @param User $user
+     * @param FindUsers $findUsers
+     * @param FindUsersPresenterInterface $presenter
+     * @return object
      */
-    public function renewPassword(User $user): void;
+    public function __invoke(
+        FindUsers $findUsers,
+        FindUsersPresenterInterface $presenter
+    ): object {
+        $this->denyAccessUnlessGrantedForApiConfiguration();
+
+        $findUsers($presenter);
+
+        return $presenter->show();
+    }
 }

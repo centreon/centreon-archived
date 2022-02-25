@@ -40,30 +40,123 @@ class DbWriteConfigurationRepository extends AbstractRepositoryDRB implements Wr
     /**
      * @inheritDoc
      */
-    public function updateConfiguration(LocalProviderConfiguration $localConfiguration): void
+    public function updateConfiguration(
+        LocalProviderConfiguration $localConfiguration,
+        array $excludedUserIds
+    ): void {
+        $beginInTransaction = $this->db->inTransaction();
+
+        try {
+            if ($beginInTransaction === false) {
+                $this->db->beginTransaction();
+            }
+
+            $this->updateCustomConfiguration($localConfiguration);
+
+            $this->updateExcludedUsers($excludedUserIds);
+
+            if ($beginInTransaction === false && $this->db->inTransaction()) {
+                $this->db->commit();
+            }
+        } catch (\Exception $e) {
+            if ($beginInTransaction === false && $this->db->inTransaction()) {
+                $this->db->rollBack();
+            }
+            throw $e;
+        }
+    }
+
+    /**
+     * Update custom configuration
+     *
+     * @param LocalProviderConfiguration $localConfiguration
+     */
+    private function updateCustomConfiguration(LocalProviderConfiguration $localConfiguration): void
     {
         $configuration = json_encode([
             "password_security_policy" => [
-                "password_length" => $localConfiguration->getPasswordMinimumLength(),
-                "has_uppercase_characters" => $localConfiguration->hasUppercase(),
-                "has_lowercase_characters" => $localConfiguration->hasLowercase(),
-                "has_numbers" => $localConfiguration->hasNumber(),
-                "has_special_characters" => $localConfiguration->hasSpecialCharacter(),
-                "attempts" => $localConfiguration->getAttempts(),
-                "blocking_duration" => $localConfiguration->getBlockingDuration(),
-                "password_expiration" => $localConfiguration->getPasswordExpiration(),
-                "delay_before_new_password" => $localConfiguration->getDelayBeforeNewPassword(),
-                "can_reuse_passwords" => $localConfiguration->canReusePasswords(),
+                "password_length" => $localConfiguration->getSecurityPolicy()->getPasswordMinimumLength(),
+                "has_uppercase_characters" => $localConfiguration->getSecurityPolicy()->hasUppercase(),
+                "has_lowercase_characters" => $localConfiguration->getSecurityPolicy()->hasLowercase(),
+                "has_numbers" => $localConfiguration->getSecurityPolicy()->hasNumber(),
+                "has_special_characters" => $localConfiguration->getSecurityPolicy()->hasSpecialCharacter(),
+                "attempts" => $localConfiguration->getSecurityPolicy()->getAttempts(),
+                "blocking_duration" => $localConfiguration->getSecurityPolicy()->getBlockingDuration(),
+                "password_expiration_delay" => $localConfiguration->getSecurityPolicy()->getPasswordExpirationDelay(),
+                "delay_before_new_password" => $localConfiguration->getSecurityPolicy()->getDelayBeforeNewPassword(),
+                "can_reuse_passwords" => $localConfiguration->getSecurityPolicy()->canReusePasswords(),
             ],
         ]);
+
         $statement = $this->db->prepare(
             $this->translateDbName(
-                "UPDATE `provider_configuration`
+                "UPDATE `:db`.`provider_configuration`
                 SET `custom_configuration` = :localProviderConfiguration
                 WHERE `name` = 'local'"
             )
         );
         $statement->bindValue(':localProviderConfiguration', $configuration, \PDO::PARAM_STR);
+        $statement->execute();
+    }
+
+    /**
+     * Update excluded users
+     *
+     * @param int[] $excludedUserIds
+     */
+    private function updateExcludedUsers(array $excludedUserIds): void
+    {
+        $this->deleteExcludedUsers();
+
+        $this->addExcludedUsers($excludedUserIds);
+    }
+
+    /**
+     * Delete excluded users
+     */
+    private function deleteExcludedUsers(): void
+    {
+        $statement = $this->db->prepare(
+            $this->translateDbName(
+                "DELETE pceu FROM `:db`.`password_expiration_excluded_users` pceu
+                INNER JOIN `:db`.`provider_configuration` pc ON pc.`id` = pceu.`provider_configuration_id`
+                  AND pc.`name` = 'local'"
+            )
+        );
+
+        $statement->execute();
+    }
+
+    /**
+     * Add excluded users
+     *
+     * @param int[] $excludedUserIds
+     */
+    private function addExcludedUsers(array $excludedUserIds): void
+    {
+        if (empty($excludedUserIds)) {
+            return;
+        }
+
+        $query = "INSERT INTO `:db`.`password_expiration_excluded_users`
+            (`provider_configuration_id`, `user_id`) ";
+
+        $subQueries = [];
+        foreach ($excludedUserIds as $userId) {
+            $subQueries[] = "(SELECT pc.`id`, :user_{$userId} FROM `:db`.`provider_configuration` pc
+                WHERE pc.`name` = 'local')";
+        }
+
+        $query .= implode(' UNION ', $subQueries);
+
+        $statement = $this->db->prepare(
+            $this->translateDbName($query)
+        );
+
+        foreach ($excludedUserIds as $userId) {
+            $statement->bindValue(":user_{$userId}", $userId, \PDO::PARAM_INT);
+        }
+
         $statement->execute();
     }
 }

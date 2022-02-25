@@ -21,17 +21,24 @@
 
 declare(strict_types=1);
 
-namespace Core\Application\User\Repository;
+namespace Core\Application\Configuration\User\Repository;
 
-use Core\Domain\User\Model\User;
+use Core\Domain\Configuration\User\Model\User;
 
 interface ReadUserRepositoryInterface
 {
     /**
-     * Find a user by his alias.
+     * Find configured users
      *
-     * @param string $alias
-     * @return User|null
+     * @return User[]
      */
-    public function findUserByAlias(string $alias): ?User;
+    public function findAllUsers(): array;
+
+    /**
+     * Find user ids from a list of alias
+     *
+     * @param string[] $userAliases
+     * @return int[]
+     */
+    public function findUserIdsByAliases(array $userAliases): array;
 }
