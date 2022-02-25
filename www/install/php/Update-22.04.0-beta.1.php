@@ -142,7 +142,7 @@ try {
         ADD `blocking_time` BIGINT(20) UNSIGNED DEFAULT NULL"
     );
 
-    // Move OpenID Connect informations to openid provider configuration.
+    // Move OpenID Connect information to openid provider configuration.
     $errorMessage = "Impossible to get openid configuration from option table";
     $statement = $pearDB->query("SELECT * FROM options WHERE `key` LIKE 'openid_%'");
     if (($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
