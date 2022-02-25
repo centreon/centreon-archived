@@ -124,36 +124,38 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                    description: "Id of configuration"
-                    example: 1
-                  type:
-                    type: "string"
-                    description: "Type of provider"
-                    example: "local"
-                  name:
-                    type: "string"
-                    description: "Name of provider"
-                    example: "local"
-                  authentication_uri:
-                    type: "string"
-                    description: "Provider Uri used to proceed authentication"
-                    example: "/centreon/authentication/providers/configurations/local"
-                  centreon_base_uri:
-                    type: "string"
-                    description: "Centreon Base Uri used by the provider to redirect"
-                    example: "/centreon"
-                  is_active:
-                    type: boolean
-                    description: "Provider active or not"
-                    example: true
-                  is_forced:
-                    type: boolean
-                    description: "Provider forced or not"
-                    example: false
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      description: "Id of configuration"
+                      example: 1
+                    type:
+                      type: "string"
+                      description: "Type of provider"
+                      example: "local"
+                    name:
+                      type: "string"
+                      description: "Name of provider"
+                      example: "local"
+                    authentication_uri:
+                      type: "string"
+                      description: "Provider Uri used to proceed authentication"
+                      example: "/centreon/authentication/providers/configurations/local"
+                    centreon_base_uri:
+                      type: "string"
+                      description: "Centreon Base Uri used by the provider to redirect"
+                      example: "/centreon"
+                    is_active:
+                      type: boolean
+                      description: "Provider active or not"
+                      example: true
+                    is_forced:
+                      type: boolean
+                      description: "Provider forced or not"
+                      example: false
   /authentication/providers/configurations/{provider_configuration_name}:
     post:
       tags:
