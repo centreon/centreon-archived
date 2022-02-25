@@ -4,10 +4,10 @@
     --body-background: #424242;
     --body-color: #b2aca2;
     --info-box-background-color: #1d2021;
-    --info-box-border-color: #776e62;
+    --info-box-border-color: var(--color-pablo);
     --path-way-font-color: var(--body-color);
     --ui-widget-header-background-color: var(--body-background);
-    --ui-widget-header-border-bottom-color: #776e62;
+    --ui-widget-header-border-bottom-color: var(--color-pablo);
     --ui-tabs-nav-li-anchor-background-color: none;
     --ui-anchor-state-default-font-color: #e8e6e38a;
     --ui-anchor-state-active-visited-font-color: #6793e6;
@@ -21,7 +21,7 @@
     --bt-info-background-color: var(--bt-success-background-color);
     --bt-warning-background-color: var(--bt-success-background-color);
     --toggle-wrapper-background-color: var(--body-background);
-    --toggle-wrapper-border-color: #776e62;
+    --toggle-wrapper-border-color: var(--color-pablo);
     --timer-value-color: var(--body-color);
     --table-form-header-bottom-border-color: var(--body-color);
     --table-form-header-font-color: var(--body-color);
@@ -29,7 +29,7 @@
     --table-form-header-h3-font-color: var(--body-color);
     --form-table-list-lvl-1-background-color: var(--centreon-popin-background-color);
     --form-table-list-lvl-1-col-name-background-color: var(--centreon-popin-background-color);
-    --form-table-list-lvl-1-col-name-border-bottom-color: var(--body-color);
+    --form-table-list-lvl-1-col-name-border-bottom-color: var(--color-pablo);
     --form-table-list-lvl-1-col-name-border-top-color: var(--form-table-list-lvl-1-col-name-border-bottom-color);
     --list-one-background-color: #002737;
     --list-one-hover-background-color: #2b2e30;
@@ -43,8 +43,8 @@
     --md-checkbox-checked-label-before-background-color: #2196F3;
     --md-checkbox-background: var(--input-select-background-color);
     --option-color: #fff;
-    --form-table-list-header-h3-font-color: #00bfb3;
-    --info-box-h4-font-color: #fff;
+    --form-table-list-header-h3-font-color: #ffffffb3;
+    --info-box-h4-font-color: var(--form-table-list-header-h3-font-color);
     --md-checkbox-border-color-after: #10069f;
     --md-checkbox-border-color: var(--body-color);
     --centreon-popin-background-color: #424242;
@@ -71,4 +71,14 @@
     --select2-selection-single-background-color: var(--body-background);
     --select2-dropdown-background-color: var(--select2-selection-single-background-color);
     --select2-selection-rendered-font-color: #fff;
+    --main-nav-list-a-anchor-font-color: var(--color-primary-light);
+    --main-nav-li-a-border-bottom: var(--main-nav-list-a-anchor-font-color);
+    --header-tab-container-bottom-border-color: var(--ui-widget-header-border-bottom-color);
+    --p-description-a-visited-color: var(--color-primary-light);
+    --add-new-entry-font-color: var(--color-primary-light);
+    --macro-legend-background-color: var(--body-background);
+    --macro-legend-font-color: var(--body-color);
+    --textarea-background-color: var(--body-background);
+    --textarea-font-color: var(--color-white);
+    --select2-selection-single-disabled-background-color: var(--body-background);
 }
