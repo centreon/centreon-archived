@@ -39,7 +39,9 @@ const Radio = ({
         <RadioGroup value={value} onChange={change}>
           {options?.map(({ value: optionValue, label: optionLabel }) => (
             <FormControlLabel
-              control={<MUIRadio />}
+              control={
+                <MUIRadio inputProps={{ 'aria-label': t(optionLabel) }} />
+              }
               disabled={getDisabled?.(values)}
               key={optionLabel}
               label={t(optionLabel) as string}

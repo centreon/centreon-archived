@@ -51,7 +51,9 @@ const LoadingSkeletonForm = (): JSX.Element => {
 
   return (
     <div className={classes.skeletonInputs}>
-      {inputs.map(({ type }) => getSkeleton(type))}
+      {inputs.map(({ type, label }) => (
+        <div key={label}>{getSkeleton(type)}</div>
+      ))}
       <div className={classes.buttons}>
         <LoadingSkeleton height={32} width="18%" />
         <LoadingSkeleton height={32} width="14%" />

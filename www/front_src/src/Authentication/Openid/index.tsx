@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const OpenidConfiguration = (): JSX.Element => {
+const OpenidConfigurationForm = (): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
 
@@ -67,4 +67,4 @@ const OpenidConfiguration = (): JSX.Element => {
   );
 };
 
-export default OpenidConfiguration;
+export default OpenidConfigurationForm;

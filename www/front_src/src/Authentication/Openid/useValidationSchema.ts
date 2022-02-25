@@ -9,7 +9,7 @@ import {
 } from './translatedLabels';
 
 const IPAddressAndDomainRegexp =
-  /^(\S)+\.{1,}\S+[^.]$|^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(\/\d{1,3})?$/;
+  /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(\/\d{1,3})?$|^(\S)+\.{1,}\D+[^.]$/;
 
 const urlRegexp = /https?:\/\/(\S+)/;
 
