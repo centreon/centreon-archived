@@ -16533,3 +16533,78 @@ msgstr "Erreur lors de la liaison du modèle (id: %d) à l'hôte (id: %d)"
 
 msgid "Error while linking template %s to host (id: %d)"
 msgstr "Erreur lors de la liaison du modèle %s à l'hôte (id: %d)"
+
+msgid "Password security policy"
+msgstr "Politique de sécurité de mot de passe"
+
+msgid "OpenID Connect Configuration"
+msgstr "Configuration OpenID Connect"
+
+msgid "Define OpenID Connect Configuration"
+msgstr "Définir la configuration OpenID Connect"
+
+msgid "Invalid URL"
+msgstr "URL invalide"
+
+msgid "Invalid IP Address or Domain name"
+msgstr "Adresse IP ou nom de domaine invalide"
+
+msgid "Failed to save OpenID Connect configuration"
+msgstr "La sauvegarde de la configuration OpenID Connect a échoué"
+
+msgid "OpenID Connect configuration saved"
+msgstr "Configuration OpenID Connect sauvegardée"
+
+msgid "Enable OpenID Connect Authentication"
+msgstr "Activer l'authentification OpenID Connect"
+
+msgid "Authentication mode"
+msgstr "Mode d'authentification"
+
+msgid "Trusted client addresses"
+msgstr "Adresses de clients de confiance"
+
+msgid "Blacklist client addresses"
+msgstr "Adresses de clients blacklistés"
+
+msgid "Base URL"
+msgstr "URL de base"
+
+msgid "Authorization endpoint"
+msgstr "Point d'entrée d'autorisation"
+
+msgid "Token endpoint"
+msgstr "Point d'entrée de jeton"
+
+msgid "Introspection token endpoint"
+msgstr "Point d'entrée de jeton d'introspection"
+
+msgid "User information endpoint"
+msgstr "Point d'entrée d'information utilisateur"
+
+msgid "End session endpoint"
+msgstr "Point d'entrée de fin de session"
+
+msgid "Scopes"
+msgstr "Portées"
+
+msgid "Login claim value"
+msgstr "Valeur de la déclaration de connexion"
+
+msgid "Client ID"
+msgstr "ID de client"
+
+msgid "Client secret"
+msgstr "Secret de client"
+
+msgid "Use basic authentication for token endpoint authentication"
+msgstr "Utiliser l'authentification basique pour l'authentification du point d'entrée de jeton"
+
+msgid "Disable verify peer"
+msgstr "Désactiver la vérification du pair"
+
+msgid "OpenID Connect only"
+msgstr "OpenID Connect seulement"
+
+msgid "Mixed"
+msgstr "Mélangé"
