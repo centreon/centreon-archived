@@ -1,17 +1,13 @@
-/* eslint-disable class-methods-use-this */
-/* eslint-disable no-nested-ternary */
-/* eslint-disable jsx-a11y/no-static-element-interactions */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable react/jsx-filename-extension */
-/* eslint-disable react/prop-types */
-/* eslint-disable no-restricted-globals */
-
 import React from 'react';
+
+import { useTranslation } from 'react-i18next';
 
 import DeleteIcon from '@mui/icons-material/Delete';
 import UpdateIcon from '@mui/icons-material/SystemUpdateAlt';
 import CheckIcon from '@mui/icons-material/Check';
 import InstallIcon from '@mui/icons-material/Add';
+import Stack from '@mui/material/Stack';
+import { makeStyles } from '@mui/styles';
 import {
   Card,
   CardActions,
@@ -25,55 +21,90 @@ import {
   Divider,
 } from '@mui/material';
 
-import Wrapper from '../Wrapper';
+import { Entity, ExtensionsStatus, LicenseProps } from '../models';
+import {
+  labelLicenseRequired,
+  labelLicenseExpires,
+  labelLicenseNotValid,
+} from '../../translatedLabels';
 
-class ExtensionsHolder extends React.Component {
-  parseDescription = (description) => {
+const useStyles = makeStyles((theme) => ({
+  contentWrapper: {
+    [theme.breakpoints.up(767)]: {
+      padding: theme.spacing(1.5),
+    },
+    boxSizing: 'border-box',
+    margin: theme.spacing(0, 'auto'),
+    padding: theme.spacing(1.5, 2.5, 0, 2.5),
+  },
+  extensionsTypes: {
+    color: theme.palette.text.primary,
+  },
+}));
+
+interface Props {
+  deletingEntityId: string | null;
+  entities: Array<Entity>;
+  installing: ExtensionsStatus;
+  onCard: (id: string, type: string) => void;
+  onDelete: (id: string, type: string, description: string) => void;
+  onInstall: (id: string, type: string) => void;
+  onUpdate: (id: string, type: string) => void;
+  title: string;
+  type: string;
+  updating: ExtensionsStatus;
+}
+
+const ExtensionsHolder = ({
+  title,
+  entities,
+  onInstall,
+  onUpdate,
+  onDelete,
+  onCard,
+  updating,
+  installing,
+  deletingEntityId,
+  type,
+}: Props): JSX.Element => {
+  const classes = useStyles();
+  const { t } = useTranslation();
+
+  const parseDescription = (description): string => {
     return description.replace(/^centreon\s+(\w+)/i, (_, $1) => $1);
   };
 
-  getPropsFromLicense = (licenseInfo) => {
+  const getPropsFromLicense = (licenseInfo): LicenseProps | undefined => {
     if (licenseInfo && licenseInfo.required) {
       if (!licenseInfo.expiration_date) {
         return {
           color: '#f90026',
-          label: 'License required',
+          label: t(labelLicenseRequired),
         };
       }
-      if (!isNaN(Date.parse(licenseInfo.expiration_date))) {
+      if (!Number.isNaN(Date.parse(licenseInfo.expiration_date))) {
         const expirationDate = new Date(licenseInfo.expiration_date);
 
         return {
           color: '#84BD00',
-          label: `License expires ${expirationDate.toISOString().slice(0, 10)}`,
+          label: `${t(labelLicenseExpires)} ${expirationDate
+            .toISOString()
+            .slice(0, 10)}`,
         };
       }
 
       return {
         color: '#f90026',
-        label: 'License not valid',
+        label: t(labelLicenseNotValid),
       };
     }
 
     return undefined;
   };
 
-  render() {
-    const {
-      title,
-      entities,
-      onCardClicked,
-      onDelete,
-      onInstall,
-      onUpdate,
-      updating,
-      installing,
-      deletingEntityId,
-      type,
-    } = this.props;
-
-    return (
-      <Wrapper>
+  return (
+    <div className={classes.contentWrapper}>
+      <Stack>
         <Grid
           container
           alignItems="center"
@@ -82,7 +113,9 @@ class ExtensionsHolder extends React.Component {
           style={{ marginBottom: 8, width: '100%' }}
         >
           <Grid item>
-            <Typography variant="body1">{title}</Typography>
+            <Typography className={classes.extensionsTypes} variant="body1">
+              {title}
+            </Typography>
           </Grid>
           <Grid item style={{ flexGrow: 1 }}>
             <Divider style={{ backgroundColor: 'rgba(0, 0, 0, 0.12)' }} />
@@ -100,7 +133,7 @@ class ExtensionsHolder extends React.Component {
               updating[entity.id] ||
               deletingEntityId === entity.id;
 
-            const licenseInfo = this.getPropsFromLicense(entity.license);
+            const licenseInfo = getPropsFromLicense(entity.license);
 
             return (
               <Grid
@@ -108,8 +141,8 @@ class ExtensionsHolder extends React.Component {
                 id={`${type}-${entity.id}`}
                 key={entity.id}
                 style={{ width: 200 }}
-                onClick={() => {
-                  onCardClicked(entity.id, type);
+                onClick={(): void => {
+                  onCard(entity.id, type);
                 }}
               >
                 <Card
@@ -119,7 +152,7 @@ class ExtensionsHolder extends React.Component {
                   {isLoading && <LinearProgress />}
                   <CardContent style={{ padding: '10px' }}>
                     <Typography style={{ fontWeight: 'bold' }} variant="body1">
-                      {this.parseDescription(entity.description)}
+                      {parseDescription(entity.description)}
                     </Typography>
                     <Typography variant="body2">
                       {`by ${entity.label}`}
@@ -135,7 +168,7 @@ class ExtensionsHolder extends React.Component {
                                 color: '#FFFFFF',
                                 cursor: 'pointer',
                               }}
-                              onClick={(e) => {
+                              onClick={(e): void => {
                                 e.preventDefault();
                                 e.stopPropagation();
 
@@ -155,7 +188,9 @@ class ExtensionsHolder extends React.Component {
                             : '#84BD00',
                           color: '#FFFFFF',
                         }}
-                        onDelete={() => onDelete(entity, type)}
+                        onDelete={(): void =>
+                          onDelete(entity.id, type, entity.description)
+                        }
                       />
                     ) : (
                       <Button
@@ -164,7 +199,7 @@ class ExtensionsHolder extends React.Component {
                         size="small"
                         startIcon={!entity.version.installed && <InstallIcon />}
                         variant="contained"
-                        onClick={(e) => {
+                        onClick={(e): void => {
                           e.preventDefault();
                           e.stopPropagation();
                           const { id } = entity;
@@ -183,13 +218,14 @@ class ExtensionsHolder extends React.Component {
                       </Button>
                     )}
                   </CardActions>
-
                   <Paper
                     square
                     elevation={0}
                     style={{
                       alignItems: 'center',
-                      backgroundColor: licenseInfo?.color || '#FFFFFF',
+                      ...(licenseInfo?.color && {
+                        backgroundColor: licenseInfo.color,
+                      }),
                       cursor: 'pointer',
                       display: 'flex',
                       justifyContent: 'center',
@@ -207,9 +243,9 @@ class ExtensionsHolder extends React.Component {
             );
           })}
         </Grid>
-      </Wrapper>
-    );
-  }
-}
+      </Stack>
+    </div>
+  );
+};
 
 export default ExtensionsHolder;
