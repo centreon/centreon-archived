@@ -207,7 +207,7 @@ describe('Openid configuration form', () => {
       screen.getByLabelText(labelTrustedClientAddresses),
       'invalid domain',
     );
-    userEvent.tab();
+    userEvent.keyboard('{Enter}');
 
     await waitFor(() => {
       expect(
@@ -221,7 +221,7 @@ describe('Openid configuration form', () => {
       screen.getByLabelText(labelBlacklistClientAddresses),
       '127.0.0.1111',
     );
-    userEvent.tab();
+    userEvent.keyboard('{Enter}');
 
     await waitFor(() => {
       expect(

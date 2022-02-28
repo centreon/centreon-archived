@@ -1,13 +1,14 @@
 import * as React from 'react';
 
 import { FormikValues, useFormikContext } from 'formik';
-import { isNil, pluck, prop } from 'ramda';
+import { equals, isNil, map, pluck, prop, type } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
 import { makeStyles } from '@mui/styles';
+import { FormHelperText, Stack } from '@mui/material';
 
 import {
-  DraggableAutocompleteField,
+  MultiAutocompleteField,
   SelectEntry,
   useMemoComponent,
 } from '@centreon/ui';
@@ -31,54 +32,71 @@ const MultiText = ({
 
   const { values, setFieldValue, errors } = useFormikContext<FormikValues>();
 
-  const change = (selectedValues: Array<SelectEntry>): void => {
-    setFieldValue(fieldName, pluck('name', selectedValues));
+  const change = (_, newValues): void => {
+    const normalizedNewValues = map((newValue: SelectEntry | string) => {
+      if (equals(type(newValue), 'String')) {
+        return newValue;
+      }
+
+      return prop('name', newValue as SelectEntry);
+    }, newValues);
+    setFieldValue(fieldName, normalizedNewValues);
   };
 
-  const initialValue = React.useMemo(() => {
-    return prop(fieldName, values).map((value) => ({
-      createOption: value,
-      id: value,
-      name: value,
-    }));
-  }, []);
+  const selectedValues = prop(fieldName, values);
 
-  const getError = (): JSX.Element | undefined => {
-    const error =
-      (prop(fieldName, errors) as Array<string> | undefined)
-        ?.map((errorText, index) => {
-          if (isNil(errorText)) {
-            return undefined;
-          }
+  const getError = (): Array<string> | undefined => {
+    const error = (prop(fieldName, errors) as Array<string> | undefined)
+      ?.map((errorText, index) => {
+        if (isNil(errorText)) {
+          return undefined;
+        }
 
-          return (
-            <span key={errorText}>{`${value.at(index)}: ${errorText}`}</span>
-          );
-        })
-        .filter(Boolean) || undefined;
+        return `${selectedValues.at(index)}: ${errorText}`;
+      })
+      .filter(Boolean) as Array<string>;
 
-    return error ? (
-      <span className={classes.errorStack}>{error}</span>
-    ) : undefined;
+    return error || undefined;
   };
 
-  const value = prop(fieldName, values);
+  const normalizedValues = selectedValues.map((value) => ({
+    id: value,
+    name: value,
+  }));
+
+  const inputErrors = getError();
   const disabled = getDisabled?.(values);
 
   return useMemoComponent({
     Component: (
-      <DraggableAutocompleteField
-        disabled={getDisabled?.(values)}
-        error={getError()}
-        initialValues={initialValue}
-        label={t(label)}
-        name={fieldName}
-        options={[]}
-        popupIcon={null}
-        onSelectedValuesChange={change}
-      />
+      <div>
+        <MultiAutocompleteField
+          clearOnBlur
+          freeSolo
+          handleHomeEndKeys
+          disabled={getDisabled?.(values)}
+          isOptionEqualToValue={(option, selectedValue): boolean =>
+            equals(option, selectedValue)
+          }
+          label={t(label)}
+          open={false}
+          options={[]}
+          popupIcon={null}
+          value={normalizedValues}
+          onChange={change}
+        />
+        {inputErrors && (
+          <Stack>
+            {inputErrors.map((error) => (
+              <FormHelperText error key={error}>
+                {error}
+              </FormHelperText>
+            ))}
+          </Stack>
+        )}
+      </div>
     ),
-    memoProps: [value, getError(), disabled],
+    memoProps: [normalizedValues, inputErrors, disabled],
   });
 };
 
