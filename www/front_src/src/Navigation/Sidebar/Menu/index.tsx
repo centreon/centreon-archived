@@ -17,7 +17,6 @@ import MinCollaps from './MinCollaps';
 interface Props {
   isDrawerOpen: boolean;
   navigationData?: Array<Page>;
-  reactRoutes?: Record<string, string>;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -129,11 +128,11 @@ const NavigationMenu = ({
             <ListButton
               isRoot
               data={item}
-              handlClickItem={(): void => handlClickItem(item)}
               hover={hover}
               icon={<MenuIcon className={classes.icon} sx={{ fontSize: 30 }} />}
               isDrawerOpen={isDrawerOpen}
               isOpen={index === selectedIndex}
+              onClick={(): void => handlClickItem(item)}
               onMouseEnter={(e: React.MouseEvent<HTMLElement>): void =>
                 handleHover(e, index, item)
               }
@@ -142,8 +141,8 @@ const NavigationMenu = ({
               <MinCollaps
                 {...props}
                 data={item.children}
-                handlClickItem={handlClickItem}
                 isCollaps={index === selectedIndex}
+                onClick={handlClickItem}
               />
             )}
           </List>

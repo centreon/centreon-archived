@@ -18,10 +18,10 @@ interface CollapsProps {
   currentTop?: number;
   currentWidth: number;
   data?: Array<Page>;
-  handlClickItem: (item: Page) => void;
   isCollaps: boolean;
   isSubHeader?: boolean;
   level: number;
+  onClick: (item: Page) => void;
 }
 
 interface StyleProps {
@@ -110,7 +110,7 @@ const MinCollaps = ({
   isSubHeader,
   currentTop,
   currentWidth,
-  handlClickItem,
+  onClick,
   level,
 }: CollapsProps): JSX.Element => {
   const classes = useStyles({ currentTop, currentWidth });
@@ -230,14 +230,14 @@ const MinCollaps = ({
                 return (
                   <ListButton
                     data={content}
-                    handlClickItem={
-                      !checkArray(item?.groups)
-                        ? (): void => handlClickItem(content)
-                        : undefined
-                    }
                     hover={nestedHover}
                     isOpen={nestedIndex === selectedIndex}
                     key=""
+                    onClick={
+                      !checkArray(item?.groups)
+                        ? (): void => onClick(content)
+                        : undefined
+                    }
                     onMouseEnter={(e: React.MouseEvent<HTMLElement>): void =>
                       handleHover(e, nestedIndex, content)
                     }
@@ -247,13 +247,13 @@ const MinCollaps = ({
             ) : (
               <ListButton
                 data={item}
-                handlClickItem={
-                  !checkArray(item?.groups)
-                    ? (): void => handlClickItem(item)
-                    : undefined
-                }
                 hover={hover}
                 isOpen={index === selectedIndex}
+                onClick={
+                  !checkArray(item?.groups)
+                    ? (): void => onClick(item)
+                    : undefined
+                }
                 onMouseEnter={(e: React.MouseEvent<HTMLElement>): void =>
                   handleHover(e, index, item)
                 }
@@ -266,9 +266,9 @@ const MinCollaps = ({
                 currentTop={topItem}
                 currentWidth={widthItem + 2}
                 data={item.groups}
-                handlClickItem={handlClickItem}
                 isCollaps={index === selectedIndex}
                 level={level + 1}
+                onClick={onClick}
               />
             ) : (
               checkArray(item?.groups) &&
@@ -280,9 +280,9 @@ const MinCollaps = ({
                         currentTop={topItem}
                         currentWidth={widthItem + 2}
                         data={itemGroup.children}
-                        handlClickItem={handlClickItem}
                         isCollaps={index === selectedIndex}
                         level={level + 1}
+                        onClick={onClick}
                       />
                     </div>
                   ),

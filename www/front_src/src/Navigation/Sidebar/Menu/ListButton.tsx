@@ -13,12 +13,12 @@ import Expand from './Expand';
 
 interface Props {
   data: Page;
-  handlClickItem?: React.MouseEventHandler<HTMLDivElement>;
   hover: boolean;
   icon?: React.ReactNode;
   isDrawerOpen?: boolean;
   isOpen: boolean;
   isRoot?: boolean;
+  onClick?: React.MouseEventHandler<HTMLDivElement>;
   onMouseEnter: (e: React.MouseEvent<HTMLElement>) => void;
 }
 const useStyles = makeStyles((theme) => ({
@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
 
 const ListButton = ({
   onMouseEnter,
-  handlClickItem,
+  onClick,
   isOpen,
   icon,
   hover,
@@ -64,8 +64,8 @@ const ListButton = ({
       })}
       component="div"
       sx={{ pl: 2 }}
-      onClick={!isRoot ? handlClickItem : undefined}
-      onDoubleClick={isRoot ? handlClickItem : undefined}
+      onClick={!isRoot ? onClick : undefined}
+      onDoubleClick={isRoot ? onClick : undefined}
       onMouseEnter={onMouseEnter}
     >
       {isRoot ? (
