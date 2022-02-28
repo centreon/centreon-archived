@@ -12,7 +12,6 @@ import NavigationMenu from './Menu/index';
 
 const drawerWidth = 230;
 
-
 const openedMixin = (theme: Theme): CSSObject => ({
   overflowX: 'hidden',
   transition: theme.transitions.create('width', {
@@ -75,10 +74,7 @@ export default ({ navigationData }: Props): JSX.Element => {
     <Box sx={{ display: 'flex' }}>
       <Drawer open={open} variant="permanent">
         <DrawerHeader>
-          <Logo
-            isDrawerOpen={open}
-            onClick={toggleNavigation}
-          />
+          <Logo isDrawerOpen={open} onClick={toggleNavigation} />
         </DrawerHeader>
         <Divider />
         <NavigationMenu isDrawerOpen={open} navigationData={navigationData} />
