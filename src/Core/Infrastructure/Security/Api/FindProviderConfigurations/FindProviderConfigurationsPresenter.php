@@ -95,7 +95,7 @@ class FindProviderConfigurationsPresenter extends AbstractPresenter implements
                     [
                         'client_id' => $configuration->clientId,
                         'response_type' => 'code',
-                        'redirect_uri' => $this->getBaseUri(), // @todo create full authentication endpoint
+                        'redirect_uri' => $this->getBaseUrl(), // @todo create full authentication endpoint
                         'state' => uniqid(),
                     ],
                 ),
