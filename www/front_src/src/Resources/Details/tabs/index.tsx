@@ -35,6 +35,7 @@ export interface TabProps {
 const tabs: Array<Tab> = [
   {
     Component: DetailsTab,
+    ariaLabel: labelDetails,
     getIsActive: (): boolean => true,
     id: detailsTabId,
     title: labelDetails,

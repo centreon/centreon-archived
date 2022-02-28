@@ -357,7 +357,7 @@ describe(Listing, () => {
 
     await waitFor(() =>
       expect(mockedAxios.get).toHaveBeenCalledWith(
-        getListingEndpoint({ limit: 20 }),
+        getListingEndpoint({ limit: 30 }),
         cancelTokenRequestParam,
       ),
     );
