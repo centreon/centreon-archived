@@ -327,25 +327,31 @@ function insertResource($ret = array())
 
 function insertInstanceRelations($resourceId, $instanceId = null)
 {
-    global $form, $pearDB;
+    if (is_numeric($resourceId)) {
+        global $pearDB;
+        $pearDB->query('DELETE FROM cfg_resource_instance_relations WHERE resource_id = ' . (int) $resourceId);
 
-    $pearDB->query("DELETE FROM cfg_resource_instance_relations WHERE resource_id = " . $pearDB->escape($resourceId));
-    $query = "INSERT INTO cfg_resource_instance_relations (resource_id, instance_id) VALUES ";
-
-    if (!is_null($instanceId)) {
-        $instances = array($instanceId);
-    } else {
-        $instances = CentreonUtils::mergeWithInitialValues($form, 'instance_id');
-    }
-    $query2 = "";
-    foreach ($instances as $instanceId) {
-        if ($query2 != "") {
-            $query2 .= ", ";
+        if (! is_null($instanceId)) {
+            $instances = array($instanceId);
+        } else {
+            global $form;
+            $instances = CentreonUtils::mergeWithInitialValues($form, 'instance_id');
         }
-        $query2 .= "(" . $pearDB->escape($resourceId) . ", " . $pearDB->escape($instanceId) . ")";
-    }
-    if ($query2) {
-        $pearDB->query($query . $query2);
+
+        $subQuery = '';
+        foreach ($instances as $instanceId) {
+            if (is_numeric($instanceId)) {
+                if (!empty($subQuery)) {
+                    $subQuery .= ', ';
+                }
+                $subQuery .= '(' . (int)$resourceId . ', ' . (int)$instanceId . ')';
+            }
+        }
+        if (!empty($subQuery)) {
+            $pearDB->query(
+                'INSERT INTO cfg_resource_instance_relations (resource_id, instance_id) VALUES ' . $subQuery
+            );
+        }
     }
 }
 
