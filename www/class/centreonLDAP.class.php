@@ -585,17 +585,23 @@ class CentreonLDAP
         $sr = ldap_search($this->ds, $basedn, $filter, $attr, 0, $searchLimit, $searchTimeout);
 
         /* Sort */
-        $number_returned = ldap_count_entries($this->ds, $sr);
-        $this->debug("LDAP Search : " . (isset($number_returned) ? $number_returned : "0") . " entries found");
+        if ($sr !== false) {
+            $numberReturned = ldap_count_entries($this->ds, $sr);
+            $this->debug("LDAP Search : " . (isset($numberReturned) ? $numberReturned : "0") . " entries found");
+        } else {
+            $this->debug("LDAP Search : cannot retrieve entries");
+            return [];
+        }
+
 
         $info = ldap_get_entries($this->ds, $sr);
         $this->debug("LDAP Search : " . $info["count"]);
         ldap_free_result($sr);
 
         /* Format the result */
-        $results = array();
+        $results = [];
         for ($i = 0; $i < $info['count']; $i++) {
-            $result = array();
+            $result = [];
             $result['dn'] = $info[$i]['dn'] ?? "";
             $result['alias'] = $info[$i][$this->userSearchInfo['alias']][0] ?? "";
             $result['name'] = $info[$i][$this->userSearchInfo['name']][0] ?? "";

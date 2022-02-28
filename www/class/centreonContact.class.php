@@ -252,6 +252,31 @@ class CentreonContact
     }
 
     /**
+     * Find contact id from alias
+     *
+     * @param string $alias
+     * @return int|null
+     */
+    public function findContactIdByAlias(string $alias): ?int
+    {
+        $contactId = null;
+
+        $statement = $this->db->prepare(
+            "SELECT contact_id
+            FROM contact
+            WHERE contact_alias = :contactAlias"
+        );
+        $statement->bindValue(':contactAlias', $alias, \PDO::PARAM_STR);
+        $statement->execute();
+
+        if ($row = $statement->fetch()) {
+            $contactId = (int) $row['contact_id'];
+        }
+
+        return $contactId;
+    }
+
+    /**
      * Get password security policy
      *
      * @return array<string,mixed>
