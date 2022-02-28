@@ -116,4 +116,14 @@ interface HostConfigurationReadRepositoryInterface
      * @throws \Throwable
      */
     public function findHostByAccessGroupIds(int $hostId, array $accessGroupIds): ?Host;
+
+    /**
+     * Find host templates linked to a host (non recursive)
+     *
+     * **The priority order of host templates is maintained!**
+     *
+     * @param Host $host
+     * @return Host[]
+     */
+    public function findHostTemplatesByHost(Host $host): array;
 }

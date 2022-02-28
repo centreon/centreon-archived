@@ -136,9 +136,9 @@ class Host
     private $groups = [];
 
     /**
-     * @var HostSeverity[]
+     * @var HostSeverity|null
      */
-    private $severities = [];
+    private $severity;
 
     /**
      * @var int
@@ -483,30 +483,21 @@ class Host
     }
 
     /**
-     * @param HostSeverity $hostSeverity
+     * @param HostSeverity|null $hostSeverity
      * @return self
      */
-    public function addSeverity(HostSeverity $hostSeverity): self
+    public function setSeverity(?HostSeverity $hostSeverity): self
     {
-        $this->severities[] = $hostSeverity;
+        $this->severity = $hostSeverity;
         return $this;
     }
 
     /**
-     * @return HostSeverity[]
+     * @return HostSeverity|null
      */
-    public function getSeverities(): array
+    public function getSeverity(): ?HostSeverity
     {
-        return $this->severities;
-    }
-
-    /**
-     * @return self
-     */
-    public function clearSeverities(): self
-    {
-        $this->severities = [];
-        return $this;
+        return $this->severity;
     }
 
     /**
