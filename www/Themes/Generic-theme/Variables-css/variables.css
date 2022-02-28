@@ -191,6 +191,7 @@
     --bdg-dtm-before-color :var(--color-white);
     --badge-downtime-background-color : var(--color-mauve);
     --badge-undetermined :var(--color-iron);
+    --status-success-color:#fff;
     /***********/
 
     /** START : Buttons **/
