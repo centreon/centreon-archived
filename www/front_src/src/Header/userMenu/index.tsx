@@ -142,7 +142,7 @@ const UserMenu = (): JSX.Element => {
   const { showSuccessMessage } = useSnackbar();
 
   const setAreUserParametersLoaded = useUpdateAtom(areUserParametersLoadedAtom);
-  const setItemSelectedNav = useUpdateAtom(itemSelectedAtom);
+  const setIsNavigationItemSelected = useUpdateAtom(itemSelectedAtom);
 
   const loadUserData = (): void => {
     sendRequest({ endpoint: userEndpoint })
@@ -163,7 +163,7 @@ const UserMenu = (): JSX.Element => {
       endpoint: logoutEndpoint,
     }).then(() => {
       setAreUserParametersLoaded(false);
-      setItemSelectedNav(null);
+      setIsNavigationItemSelected(null);
       navigate(reactRoutes.login);
       showSuccessMessage(t(labelYouHaveBeenLoggedOut));
     });

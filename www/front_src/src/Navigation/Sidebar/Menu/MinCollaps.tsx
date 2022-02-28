@@ -111,7 +111,7 @@ const MinCollaps = ({
   const classes = useStyles({ currentTop, currentWidth });
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [topItem, setTopItem] = useState<number>();
-  const [itemSelectedNav, setitemSelectedNav] = useAtom(itemSelectedAtom);
+  const [itemSelectedNav, setItemSelectedNav] = useAtom(itemSelectedAtom);
   const levelName = `level_${level}_Navigated`;
   const widthItem = currentWidth + collapsWidth / 8 + 0.5;
 
@@ -126,7 +126,7 @@ const MinCollaps = ({
     setSelectedIndex(index);
     const levelLabel = `level_${level}`;
 
-    setitemSelectedNav({
+    setItemSelectedNav({
       ...itemSelectedNav,
       [levelLabel]: { index, label: item.label, url: item?.url },
     });
