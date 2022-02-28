@@ -42,8 +42,13 @@ jQuery(function () {
                     event: 'dblclick'
                 }
             );
-            wrenchSpan = '<span class="ui-icon ui-icon-wrench"></span>';
-            trashSpan = '<span class="ui-icon ui-icon-trash"></span>';
+            wrenchSpan = '<svg xmlns="http://www.w3.org/2000/svg" class="ui-icon ui-icon-wrench" viewBox="0 0 24 24">' +
+                '<path clip-rule="evenodd" d="M0 0h24v24H0z" fill="none"/>' +
+                '<path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 ' +
+                '12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4z"/></svg>';
+            trashSpan = '<svg xmlns="http://www.w3.org/2000/svg" class="ui-icon ui-icon-trash" viewBox="0 0 24 24">' +
+                '<path d="M0 0h24v24H0z" fill="none"/><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 ' +
+                '4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>';
         }
 
         if (!ownership) {
@@ -56,10 +61,16 @@ jQuery(function () {
         jQuery(".portlet").addClass("ui-widget ui-widget-content ui-helper-clearfix ui-corner-all")
             .find(".portlet-header")
             .addClass("ui-widget-header ui-corner-all")
-            .prepend('<span class="ui-icon ui-icon-refresh"></span>')
+            .prepend('\n' +
+                '<svg xmlns="http://www.w3.org/2000/svg" class="ui-icon ui-icon-refresh" height="18px" ' +
+                'viewBox="0 0 24 24" width="18px" fill="#000000"><path d="M0 0h24v24H0z" fill="none"/>' +
+                '<path d="M12 6v3l4-4-4-4v3c-4.42 0-8 3.58-8 8 0 1.57.46 3.03 1.24 4.26L6.7 14.8c-.45-.83-.7-1.79' +
+                '-.7-2.8 0-3.31 2.69-6 6-6zm6.76 1.74L17.3 9.2c.44.84.7 1.79.7 2.8 0 3.31-2.69 6-6 6v-3l-4 4 4 ' +
+                '4v-3c4.42 0 8-3.58 8-8 0-1.57-.46-3.03-1.24-4.26z"/></svg>')
             .prepend(wrenchSpan)
             .prepend(trashSpan)
-            .prepend('<span class="show-hide ui-icon ui-icon-minusthick"></span>')
+            .prepend('<svg xmlns="http://www.w3.org/2000/svg" class="show-hide ui-icon ui-icon-minusthick" ' +
+                'viewBox="0 0 24 24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M6 19h12v2H6z"/></svg>')
             .end()
             .find(".portlet-content");
 
@@ -104,7 +115,7 @@ jQuery(function () {
         });
     });
 
-    jQuery("span[class='ui-icon ui-icon-trash']").each(function (index, element) {
+    jQuery("svg[class='ui-icon ui-icon-trash']").each(function (index, element) {
         var tmp = jQuery(element).parents('.portlet').attr('name')
         var widgetIndex = tmp.split("portlet_");
         var widgetId = widgetIndex[1];
