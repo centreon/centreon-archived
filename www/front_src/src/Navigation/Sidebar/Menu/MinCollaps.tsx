@@ -61,10 +61,8 @@ const useStyles = makeStyles((theme) => ({
       color: theme.palette.text.primary,
       fontSize: theme.typography.caption,
     },
-    borderColor: theme.palette.primary.main,
-    borderLeft: 'solid',
-    borderWidth: theme.spacing(0.5),
-    boxShadow: `${theme.spacing(1, 1, 1, 0)} ${theme.palette.divider}`,
+    border: `solid ${theme.palette.divider} 0.1px`,
+    borderLeft: `solid ${theme.palette.primary.main} ${theme.spacing(0.5)}`,
   },
   scroll: {
     '&::-webkit-scrollbar': {
@@ -72,13 +70,9 @@ const useStyles = makeStyles((theme) => ({
     },
     '&::-webkit-scrollbar-thumb': {
       backgroundColor: theme.palette.action.disabled,
-      borderRadius: 5,
     },
     '&::-webkit-scrollbar-track': {
-      borderRadius: 5,
-      boxShadow: `inset ${theme.spacing(0.5, 0.5, 0.5, 0.5)} ${
-        theme.palette.action.disabledBackground
-      }`,
+      border: `solid ${theme.palette.action.hover} 0.5px`,
     },
     maxHeight: theme.spacing(44),
     overflow: 'auto',
