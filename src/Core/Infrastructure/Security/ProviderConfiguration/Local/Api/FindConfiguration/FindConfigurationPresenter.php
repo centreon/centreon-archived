@@ -29,9 +29,10 @@ use Core\Application\Security\ProviderConfiguration\Local\UseCase\FindConfigurat
 class FindConfigurationPresenter extends AbstractPresenter implements FindConfigurationPresenterInterface
 {
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     * @param FindConfigurationResponse $response
      */
-    public function present(FindConfigurationResponse $response): void
+    public function present(mixed $response): void
     {
         $presenterResponse = [
             'password_security_policy' => [
@@ -42,7 +43,10 @@ class FindConfigurationPresenter extends AbstractPresenter implements FindConfig
                 'has_special_character' => $response->hasSpecialCharacter,
                 'attempts' => $response->attempts,
                 'blocking_duration' => $response->blockingDuration,
-                'password_expiration' => $response->passwordExpiration,
+                'password_expiration' => [
+                    'expiration_delay' => $response->passwordExpirationDelay,
+                    'excluded_users' => $response->passwordExpirationExcludedUserAliases,
+                ],
                 'can_reuse_passwords' => $response->canReusePasswords,
                 'delay_before_new_password' => $response->delayBeforeNewPassword,
             ]

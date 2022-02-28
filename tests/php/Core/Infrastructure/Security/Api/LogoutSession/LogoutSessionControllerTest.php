@@ -21,7 +21,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Infrastructure\Security\Api\LogoutSession;
+namespace Tests\Core\Infrastructure\Security\Api\LogoutSession;
 
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;

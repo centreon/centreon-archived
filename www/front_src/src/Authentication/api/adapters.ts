@@ -11,9 +11,12 @@ export const adaptSecurityPolicyFromAPI = (
     delayBeforeNewPassword: securityPolicy.delayBeforeNewPassword
       ? securityPolicy.delayBeforeNewPassword * 1000
       : null,
-    passwordExpiration: securityPolicy.passwordExpiration
-      ? securityPolicy.passwordExpiration * 1000
-      : null,
+    passwordExpiration: {
+      ...securityPolicy.passwordExpiration,
+      expirationDelay: securityPolicy.passwordExpiration.expirationDelay
+        ? securityPolicy.passwordExpiration.expirationDelay * 1000
+        : null,
+    },
   };
 };
 
@@ -41,9 +44,12 @@ export const adaptSecurityPolicyToAPI = ({
       has_number: hasNumber,
       has_special_character: hasSpecialCharacter,
       has_uppercase: hasUpperCase,
-      password_expiration: passwordExpiration
-        ? passwordExpiration / 1000
-        : null,
+      password_expiration: {
+        excluded_users: passwordExpiration.excludedUsers,
+        expiration_delay: passwordExpiration.expirationDelay
+          ? passwordExpiration.expirationDelay / 1000
+          : null,
+      },
       password_min_length: passwordMinLength,
     },
   };

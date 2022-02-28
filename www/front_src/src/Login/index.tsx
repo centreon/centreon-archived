@@ -10,7 +10,6 @@ import makeStyles from '@mui/styles/makeStyles';
 
 import { LoadingSkeleton } from '@centreon/ui';
 
-import logoCentreon from '../Navigation/Sidebar/Logo/centreon.png';
 import Copyright from '../Footer/Copyright';
 import { areUserParametersLoadedAtom } from '../Main/useUser';
 import { MainLoaderWithoutTranslation } from '../Main/MainLoader';
@@ -19,13 +18,10 @@ import useValidationSchema from './validationSchema';
 import { LoginFormValues } from './models';
 import useLogin from './useLogin';
 import LoginForm from './Form';
-import { labelCentreonLogo, labelLogin } from './translatedLabels';
+import { labelLogin } from './translatedLabels';
+import Logo from './Logo';
 
 const useStyles = makeStyles((theme) => ({
-  centreonLogo: {
-    height: 'auto',
-    width: 'auto',
-  },
   copyrightAndVersion: {
     alignItems: 'center',
     display: 'flex',
@@ -73,12 +69,7 @@ const LoginPage = (): JSX.Element => {
 
   return (
     <div className={classes.loginBackground}>
-      <img
-        alt={t(labelCentreonLogo)}
-        aria-label={t(labelCentreonLogo)}
-        className={classes.centreonLogo}
-        src={logoCentreon}
-      />
+      <Logo />
       <Paper className={classes.loginPaper}>
         <Typography variant="h5">{t(labelLogin)}</Typography>
         <Formik<LoginFormValues>

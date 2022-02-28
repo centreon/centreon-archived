@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,6 +41,19 @@ trait DbFactoryUtilitiesTrait
             ? (new \DateTime())->setTimestamp($timestamp)
             : null
         );
+    }
+
+    /**
+     * Creates DateTimeImmutable from timestamp
+     *
+     * @param int|string|null $timestamp
+     * @return \DateTimeImmutable|null
+     */
+    public static function createDateTimeImmutableFromTimestamp(int|string|null $timestamp): ?\DateTimeImmutable
+    {
+        return $timestamp !== null
+            ? (new \DateTimeImmutable())->setTimestamp((int) $timestamp)
+            : null;
     }
 
     /**

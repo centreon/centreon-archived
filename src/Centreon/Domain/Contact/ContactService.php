@@ -30,13 +30,10 @@ use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
 class ContactService implements ContactServiceInterface
 {
     /**
-     * @var ContactRepositoryInterface
+     * @param ContactRepositoryInterface $contactRepository
      */
-    private $contactRepository;
-
-    public function __construct(ContactRepositoryInterface $contactRepository)
+    public function __construct(private ContactRepositoryInterface $contactRepository)
     {
-        $this->contactRepository = $contactRepository;
     }
 
     /**

@@ -1,4 +1,4 @@
-import { prop, props } from 'ramda';
+import { path, props, split } from 'ramda';
 
 interface GetFieldProps {
   field: string;
@@ -6,7 +6,7 @@ interface GetFieldProps {
 }
 
 export const getField = <T>({ field, object }: GetFieldProps): T =>
-  prop(field, object);
+  path(split('.', field), object) as T;
 
 interface GetFieldsProps {
   fields: Array<string>;

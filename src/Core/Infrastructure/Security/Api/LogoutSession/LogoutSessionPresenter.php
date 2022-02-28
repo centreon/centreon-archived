@@ -27,10 +27,4 @@ use Core\Application\Security\UseCase\LogoutSession\LogoutSessionPresenterInterf
 
 class LogoutSessionPresenter extends AbstractPresenter implements LogoutSessionPresenterInterface
 {
-    /**
-     * @inheritDoc
-     */
-    public function present(): void
-    {
-    }
 }

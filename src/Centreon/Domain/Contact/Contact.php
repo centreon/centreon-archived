@@ -497,10 +497,7 @@ class Contact implements UserInterface, ContactInterface
     }
 
     /**
-     * Indicates if this user has a role.
-     *
-     * @param string $role Role name to find
-     * @return bool
+     * @inheritDoc
      */
     public function hasRole(string $role): bool
     {
@@ -508,10 +505,7 @@ class Contact implements UserInterface, ContactInterface
     }
 
     /**
-     * Indicates if this user has a topology access.
-     *
-     * @param string $role Role name to find
-     * @return bool
+     * @inheritDoc
      */
     public function hasTopologyRole(string $role): bool
     {

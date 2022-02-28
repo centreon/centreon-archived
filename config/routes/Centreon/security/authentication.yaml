@@ -4,11 +4,16 @@ centreon_security_authentication_find_providers_configurations:
     controller: 'Centreon\Application\Controller\AuthenticationController::findProvidersConfigurations'
 
 centreon_security_authentication_login:
-    methods: GET|POST
+    methods: POST
     path: /authentication/providers/configurations/{providerConfigurationName}
-    controller: 'Centreon\Application\Controller\AuthenticationController::authentication'
+    controller: 'Core\Infrastructure\Security\Api\LoginSession\LoginSessionController'
 
 centreon_application_authentication_logout:
     methods: POST
     path: /authentication/logout
     controller: 'Core\Infrastructure\Security\Api\LogoutSession\LogoutSessionController'
+
+centreon_security__renew_user_password:
+    methods: PUT
+    path: /authentication/users/{alias}/password
+    controller: 'Core\Infrastructure\Security\Api\RenewPassword\RenewPasswordController'
