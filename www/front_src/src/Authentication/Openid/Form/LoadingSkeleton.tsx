@@ -24,7 +24,7 @@ const getSkeleton = cond<InputType, JSX.Element>([
     always(<LoadingSkeleton height={52} />),
   ],
   [
-    equals(InputType.MultiText) as (b: InputType) => boolean,
+    equals(InputType.Multiple) as (b: InputType) => boolean,
     always(<LoadingSkeleton height={52} />),
   ],
   [

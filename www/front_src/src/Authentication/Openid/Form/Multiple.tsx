@@ -14,7 +14,7 @@ import {
 
 import { InputProps } from '../models';
 
-const MultiText = ({
+const Multiple = ({
   fieldName,
   label,
   getDisabled,
@@ -91,4 +91,4 @@ const MultiText = ({
   });
 };
 
-export default MultiText;
+export default Multiple;

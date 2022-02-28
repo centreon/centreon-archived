@@ -29,7 +29,7 @@ import { AuthenticationType, InputProps, InputType } from '../models';
 import SwitchInput from './Switch';
 import RadioInput from './Radio';
 import TextInput from './Text';
-import MultiTextInput from './MultiText';
+import MultipleInput from '../Multiple
 
 const isAuthenticationNotActive = propEq('isActive', false);
 
@@ -38,8 +38,8 @@ const getInput = cond<InputType, (props: InputProps) => JSX.Element>([
   [equals(InputType.Radio) as (b: InputType) => boolean, always(RadioInput)],
   [equals(InputType.Text) as (b: InputType) => boolean, always(TextInput)],
   [
-    equals(InputType.MultiText) as (b: InputType) => boolean,
-    always(MultiTextInput),
+    equals(InputType.Multiple) as (b: InputType) => boolean,
+    always(MultipleInput),
   ],
   [equals(InputType.Password) as (b: InputType) => boolean, always(TextInput)],
 ]);
@@ -72,13 +72,13 @@ export const inputs: Array<InputProps> = [
     fieldName: 'trustedClientAddresses',
     getDisabled: isAuthenticationNotActive,
     label: labelTrustedClientAddresses,
-    type: InputType.MultiText,
+    type: InputType.Multiple,
   },
   {
     fieldName: 'blacklistClientAddresses',
     getDisabled: isAuthenticationNotActive,
     label: labelBlacklistClientAddresses,
-    type: InputType.MultiText,
+    type: InputType.Multiple,
   },
   {
     fieldName: 'baseUrl',
@@ -120,7 +120,7 @@ export const inputs: Array<InputProps> = [
     fieldName: 'connectionScopes',
     getDisabled: isAuthenticationNotActive,
     label: labelScopes,
-    type: InputType.MultiText,
+    type: InputType.Multiple,
   },
   {
     fieldName: 'loginClaim',

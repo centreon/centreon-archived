@@ -40,7 +40,7 @@ export enum InputType {
   Switch,
   Radio,
   Text,
-  MultiText,
+  Multiple,
   Password,
 }
 
