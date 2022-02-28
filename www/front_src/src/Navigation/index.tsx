@@ -9,7 +9,7 @@ const Navigation = (): JSX.Element => {
   const { reactRoutes, menu } = useNavigation();
 
   return useMemoComponent({
-    Component: <Sidebar navigationData={menu} reactRoutes={reactRoutes} />,
+    Component: <Sidebar navigationData={menu} />,
     memoProps: [menu, reactRoutes],
   });
 };
