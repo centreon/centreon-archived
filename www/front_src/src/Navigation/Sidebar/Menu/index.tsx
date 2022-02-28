@@ -6,9 +6,12 @@ import { useAtom } from 'jotai';
 
 import List from '@mui/material/List';
 import makeStyles from '@mui/styles/makeStyles';
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 import { Page } from '../../models';
 import { itemSelectedAtom, propsItemSelected } from '../sideBarAtoms';
+import { openedDrawerWidth } from '../index';
 
 import ListButton from './ListButton';
 import icons from './icons';
@@ -23,10 +26,6 @@ const useStyles = makeStyles((theme) => ({
   icon: {
     color: theme.palette.text.primary,
   },
-  root: {
-    paddingLeft: theme.spacing(0.4),
-    paddingRight: theme.spacing(0.4),
-  },
 }));
 
 const NavigationMenu = ({
@@ -34,14 +33,15 @@ const NavigationMenu = ({
   navigationData,
 }: Props): JSX.Element => {
   const classes = useStyles();
+  const theme = useTheme();
   const navigate = useNavigate();
 
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [currentTop, setCurrentTop] = useState<number>();
-  const [currentWidth, setCurrentWidth] = useState(0);
-
   const [itemSelectedNav, setItemSelectedNav] = useAtom(itemSelectedAtom);
   const levelName = 'level_0_Navigated';
+  const closedDrawerWidth = useMediaQuery(theme.breakpoints.up('sm')) ? 9 : 7;
+  const currentWidth = isDrawerOpen ? openedDrawerWidth / 8 : closedDrawerWidth;
 
   const props = {
     currentTop,
@@ -57,10 +57,8 @@ const NavigationMenu = ({
     item: Page,
   ): void => {
     const rect = e.currentTarget.getBoundingClientRect();
-    const top = Math.floor(rect.bottom) - Math.floor(rect.height);
-    const width = Math.floor(rect.right) - Math.floor(rect.left);
+    const top = rect.bottom - rect.height;
     setCurrentTop(top);
-    setCurrentWidth(width / 8);
     setSelectedIndex(index);
     setItemSelectedNav({
       ...itemSelectedNav,
@@ -116,7 +114,7 @@ const NavigationMenu = ({
   };
 
   return (
-    <List className={classes.root} onMouseLeave={handleLeave}>
+    <List onMouseLeave={handleLeave}>
       {navigationData?.map((item, index) => {
         const MenuIcon = !isNil(item?.icon) && icons[item.icon];
         const hover =

@@ -29,6 +29,8 @@ interface StyleProps {
   currentWidth: number;
 }
 
+const collapsWidth = 204;
+
 const useStyles = makeStyles((theme) => ({
   activated: {
     '& .MuiListItemText-root': {
@@ -50,31 +52,24 @@ const useStyles = makeStyles((theme) => ({
   },
   root: {
     '& .MuiListItemButton-root': {
-      height: theme.spacing(4),
-      margin: theme.spacing(0.5, 0.5, 0.5, 0.5),
+      height: theme.spacing(6),
     },
     '& .MuiListItemIcon-root': {
       minWidth: theme.spacing(2.25),
     },
-
     '& .MuiTypography-root': {
       color: theme.palette.text.primary,
       fontSize: theme.typography.caption,
     },
-
     borderColor: theme.palette.primary.main,
     borderLeft: 'solid',
-
     borderWidth: theme.spacing(0.5),
-
     boxShadow: `${theme.spacing(1, 1, 1, 0)} ${theme.palette.divider}`,
-    padding: theme.spacing(0.5),
   },
   scroll: {
     '&::-webkit-scrollbar': {
       width: theme.spacing(1.2),
     },
-
     '&::-webkit-scrollbar-thumb': {
       backgroundColor: theme.palette.action.disabled,
       borderRadius: 5,
@@ -99,7 +94,7 @@ const useStyles = makeStyles((theme) => ({
     left: ({ currentWidth }: StyleProps): string => theme.spacing(currentWidth),
     position: 'fixed',
     top: ({ currentTop }: StyleProps): number | undefined => currentTop,
-    width: theme.spacing(25.5),
+    width: collapsWidth,
     zIndex: theme.zIndex.mobileStepper,
   },
 }));
@@ -116,9 +111,9 @@ const MinCollaps = ({
   const classes = useStyles({ currentTop, currentWidth });
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [topItem, setTopItem] = useState<number>();
-  const [widthItem, setWidthItem] = useState(0);
   const [itemSelectedNav, setitemSelectedNav] = useAtom(itemSelectedAtom);
   const levelName = `level_${level}_Navigated`;
+  const widthItem = currentWidth + collapsWidth / 8 + 0.5;
 
   const handleHover = (
     e: React.MouseEvent<HTMLElement>,
@@ -126,9 +121,7 @@ const MinCollaps = ({
     item: Page,
   ): void => {
     const rect = e.currentTarget.getBoundingClientRect();
-    const top = Math.floor(rect.bottom) - Math.floor(rect.height);
-    const width = Math.floor(rect.right) - Math.floor(rect.left);
-    setWidthItem(currentWidth + width / 8);
+    const top = rect.bottom - rect.height;
     setTopItem(top);
     setSelectedIndex(index);
     const levelLabel = `level_${level}`;
@@ -157,7 +150,7 @@ const MinCollaps = ({
     if (object && object[levelTitle]) {
       return (
         object[levelTitle].index === index &&
-        object[levelTitle].label === item?.label &&
+        object[levelTitle].label === item.label &&
         object[levelTitle].url === item?.url
       );
     }
@@ -264,7 +257,7 @@ const MinCollaps = ({
               <MinCollaps
                 isSubHeader
                 currentTop={topItem}
-                currentWidth={widthItem + 2}
+                currentWidth={widthItem}
                 data={item.groups}
                 isCollapsed={index === selectedIndex}
                 level={level + 1}
@@ -278,7 +271,7 @@ const MinCollaps = ({
                     <div key={itemGroup.label}>
                       <MinCollaps
                         currentTop={topItem}
-                        currentWidth={widthItem + 2}
+                        currentWidth={widthItem}
                         data={itemGroup.children}
                         isCollapsed={index === selectedIndex}
                         level={level + 1}

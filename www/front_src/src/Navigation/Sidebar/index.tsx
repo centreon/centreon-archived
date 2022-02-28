@@ -8,9 +8,9 @@ import { CSSObject, styled, Theme } from '@mui/material/styles';
 import { Page } from '../models';
 
 import Logo from './Logo';
-import NavigationMenu from './Menu/index';
+import NavigationMenu from './Menu';
 
-const drawerWidth = 230;
+export const openedDrawerWidth = 230;
 
 const openedMixin = (theme: Theme): CSSObject => ({
   overflowX: 'hidden',
@@ -18,7 +18,7 @@ const openedMixin = (theme: Theme): CSSObject => ({
     duration: theme.transitions.duration.enteringScreen,
     easing: theme.transitions.easing.sharp,
   }),
-  width: drawerWidth,
+  width: openedDrawerWidth,
 });
 
 const closedMixin = (theme: Theme): CSSObject => ({
@@ -27,9 +27,9 @@ const closedMixin = (theme: Theme): CSSObject => ({
     duration: theme.transitions.duration.leavingScreen,
     easing: theme.transitions.easing.sharp,
   }),
-  width: `calc(${theme.spacing(7)} + 1px)`,
+  width: theme.spacing(7),
   [theme.breakpoints.up('sm')]: {
-    width: `calc(${theme.spacing(9)} + 1px)`,
+    width: theme.spacing(9),
   },
 });
 
@@ -48,7 +48,7 @@ const Drawer = styled(MuiDrawer, {
   boxSizing: 'border-box',
   flexShrink: 0,
   whiteSpace: 'nowrap',
-  width: drawerWidth,
+  width: openedDrawerWidth,
   ...(open && {
     ...openedMixin(theme),
     '& .MuiDrawer-paper': openedMixin(theme),
