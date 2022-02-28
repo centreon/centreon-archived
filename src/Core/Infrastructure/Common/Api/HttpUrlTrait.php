@@ -20,28 +20,58 @@
  */
 declare(strict_types=1);
 
-namespace Core\Infrastructure\RealTime\Api\Hypermedia;
+namespace Core\Infrastructure\Common\Api;
 
-trait HypermediaProviderTrait
+trait HttpUrlTrait
 {
     /**
-     * Get base URI
+     * Get base URL (example: https://127.0.0.1/centreon)
+     *
+     * @return string
+     */
+    protected function getBaseUrl(): string
+    {
+        $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 'http';
+
+        $port = null;
+        if (isset($_SERVER['SERVER_PORT'])) {
+            if (
+                ($protocol === 'http' && $_SERVER['SERVER_PORT'] !== '80')
+                || ($protocol === 'https' && $_SERVER['SERVER_PORT'] !== '443')
+            ) {
+                $port = (int) $_SERVER['SERVER_PORT'];
+            }
+        }
+
+        $serverName = $_SERVER['SERVER_NAME'];
+
+        $baseUri = $this->getBaseUri();
+
+        return $protocol . '://'
+            . $serverName . ($port !== null ? ':' . $port : '')
+            . '/' . ltrim($baseUri, '/');
+    }
+
+    /**
+     * Get base URI (example: /centreon)
      *
      * @return string
      */
     protected function getBaseUri(): string
     {
         $baseUri = '';
+
         if (
             isset($_SERVER['REQUEST_URI'])
             && preg_match(
-                '/^(.+)\/((api|widgets|modules|include)\/|main(\.get)?\.php).+/',
+                '/^(.+)\/((api|widgets|modules|include)\/.+|main(\.get)?\.php|((?<!administration\/)authentication\/providers\/configurations))/',
                 $_SERVER['REQUEST_URI'],
                 $matches
             )
         ) {
             $baseUri = $matches[1];
         }
+
         return $baseUri;
     }
 }

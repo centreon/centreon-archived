@@ -117,7 +117,7 @@ paths:
       tags:
         - Authentication
       summary: "Providers Configurations"
-      description: "Endpoint to list all the existing providers configuration"
+      description: "Endpoint to list active existing providers configuration"
       responses:
         '200':
           description: "OK"

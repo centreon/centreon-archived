@@ -42,7 +42,7 @@ class FindProviderConfigurationsResponse
                 case $configuration instanceof LocalConfiguration:
                     $this->configurations[] = $this->localConfigurationToArray($configuration);
                     break;
-                case $configuration instanceof openIdConfiguration:
+                case $configuration instanceof OpenIdConfiguration:
                     $this->configurations[] = $this->openIdConfigurationToArray($configuration);
                     break;
             }
@@ -57,6 +57,7 @@ class FindProviderConfigurationsResponse
      */
     private function localConfigurationToArray(LocalConfiguration $configuration): array
     {
+        // @todo use model and add isActive & isForced properties
         return [
             'id' => 1,
             'type' => 'local',
@@ -76,6 +77,7 @@ class FindProviderConfigurationsResponse
      */
     private function openIdConfigurationToArray(OpenIdConfiguration $configuration): array
     {
+        // @todo create dto instead of array
         return [
             'id' => 2,
             'type' => 'openid',

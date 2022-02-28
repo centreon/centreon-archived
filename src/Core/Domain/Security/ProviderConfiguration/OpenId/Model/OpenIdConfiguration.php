@@ -28,6 +28,8 @@ use Centreon\Domain\Common\Assertion\AssertionException;
 class OpenIdConfiguration
 {
     public const DEFAULT_LOGIN_GLAIM = 'preferred_username';
+    public const TYPE = 'openid';
+    public const NAME = 'openid';
 
     /**
      * @param boolean $isActive
