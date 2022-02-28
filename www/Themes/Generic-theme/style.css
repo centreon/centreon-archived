@@ -577,7 +577,7 @@ p.description a, p.description a:visited {
 .host_downtime      {background-color: var(--host-downtime-background-color);}
 
 .service_ok,.host_up, .success  {background-color: var(--service-ok-host-up-success-background-color);
-color:#fff}
+color:var(--color-white)}
 .service_warning, .warning  {background-color: var(--service-warning-background-color);}
 .pending    {background-color: var(--pending-background-color);}
 .service_unknown    {background-color: var(--service-unknown-background-color);}
