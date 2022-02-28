@@ -51,9 +51,6 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 'bold',
   },
   root: {
-    '& .MuiListItemButton-root': {
-      height: theme.spacing(6),
-    },
     '& .MuiListItemIcon-root': {
       minWidth: theme.spacing(2.25),
     },
