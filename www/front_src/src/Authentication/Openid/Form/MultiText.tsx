@@ -1,10 +1,9 @@
 import * as React from 'react';
 
 import { FormikValues, useFormikContext } from 'formik';
-import { equals, isNil, map, pluck, prop, type } from 'ramda';
+import { equals, isNil, map, prop, type } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
-import { makeStyles } from '@mui/styles';
 import { FormHelperText, Stack } from '@mui/material';
 
 import {
@@ -15,19 +14,11 @@ import {
 
 import { InputProps } from '../models';
 
-const useStyles = makeStyles({
-  errorStack: {
-    display: 'flex',
-    flexDirection: 'column',
-  },
-});
-
 const MultiText = ({
   fieldName,
   label,
   getDisabled,
 }: InputProps): JSX.Element => {
-  const classes = useStyles();
   const { t } = useTranslation();
 
   const { values, setFieldValue, errors } = useFormikContext<FormikValues>();
