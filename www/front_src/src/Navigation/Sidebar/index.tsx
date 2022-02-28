@@ -4,22 +4,14 @@ import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 import MuiDrawer from '@mui/material/Drawer';
 import { CSSObject, styled, Theme } from '@mui/material/styles';
-import { makeStyles } from '@mui/styles';
 
 import { Page } from '../models';
 
 import Logo from './Logo';
-import NavigationMenu from './Menu';
+import NavigationMenu from './Menu/index';
 
 const drawerWidth = 230;
 
-const useStyles = makeStyles(() => ({
-  logo: {
-    '&:hover': {
-      cursor: 'pointer',
-    },
-  },
-}));
 
 const openedMixin = (theme: Theme): CSSObject => ({
   overflowX: 'hidden',
@@ -73,7 +65,6 @@ export interface Props {
 }
 
 export default ({ navigationData }: Props): JSX.Element => {
-  const classes = useStyles();
   const [open, setOpen] = React.useState(false);
 
   const toggleNavigation = (): void => {
@@ -85,7 +76,6 @@ export default ({ navigationData }: Props): JSX.Element => {
       <Drawer open={open} variant="permanent">
         <DrawerHeader>
           <Logo
-            customClass={classes.logo}
             isDrawerOpen={open}
             onClick={toggleNavigation}
           />

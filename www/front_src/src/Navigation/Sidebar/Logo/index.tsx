@@ -1,8 +1,9 @@
 import React from 'react';
 
-import classnames from 'classnames';
 import { useAtomValue } from 'jotai/utils';
 import { equals } from 'ramda';
+
+import { makeStyles } from '@mui/styles';
 
 import { ThemeMode, userAtom } from '@centreon/ui-context';
 
@@ -12,12 +13,19 @@ import logoMinDark from './Centreon_Logo_Noir_RVB_C.svg';
 import logoMinLight from './Centreon_Logo_Blanc_C.svg';
 
 interface Props {
-  customClass?: string;
   isDrawerOpen?: boolean;
   onClick?: () => void;
 }
+const useStyles = makeStyles(() => ({
+  logo: {
+    '&:hover': {
+      cursor: 'pointer',
+    },
+  },
+}));
 
-const Logo = ({ customClass, onClick, isDrawerOpen }: Props): JSX.Element => {
+const Logo = ({ onClick, isDrawerOpen }: Props): JSX.Element => {
+  const classes = useStyles();
   const { themeMode } = useAtomValue(userAtom);
   const logo = equals(themeMode, ThemeMode.light) ? logoDark : logoLight;
   const logoMin = equals(themeMode, ThemeMode.light)
@@ -25,7 +33,7 @@ const Logo = ({ customClass, onClick, isDrawerOpen }: Props): JSX.Element => {
     : logoMinLight;
 
   return (
-    <div aria-hidden className={classnames(customClass)} onClick={onClick}>
+    <div aria-hidden className={classes.logo} onClick={onClick}>
       <span>
         <img
           alt=""
