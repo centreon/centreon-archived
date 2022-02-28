@@ -307,6 +307,7 @@
     --tab-lists-td-right-border-color: var(--lists-td-top-border-color);
     --list-header-border-top-color: var(--body-background);
     --list-header-border-left-color: var(--list-header-border-top-color);
+    --list-header-font-color: var(--body-color);
     --list-footer-border-color: var(--color-biloba-flower);
     --input-button-hover-font-color: #fff;
     --input-button-hover-background-color: var(--color-primary-dark);

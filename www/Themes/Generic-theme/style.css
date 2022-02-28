@@ -576,7 +576,8 @@ p.description a, p.description a:visited {
 .host_unreachable, .unknown     {background-color: var(--host-unreachable-unknown-background-color);}
 .host_downtime      {background-color: var(--host-downtime-background-color);}
 
-.service_ok,.host_up, .success  {background-color: var(--service-ok-host-up-success-background-color);}
+.service_ok,.host_up, .success  {background-color: var(--service-ok-host-up-success-background-color);
+color:#fff}
 .service_warning, .warning  {background-color: var(--service-warning-background-color);}
 .pending    {background-color: var(--pending-background-color);}
 .service_unknown    {background-color: var(--service-unknown-background-color);}
@@ -1518,6 +1519,7 @@ div.update_readme,div.update_output {background-color:var(--update-read-me-outpu
     padding: 10px;
     position: relative;
     margin-bottom: 14px;
+    border-radius: 5px;
 }
 /*.ajaxOption tr:first-child {
     text-align: right;
