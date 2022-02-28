@@ -1,6 +1,6 @@
 import React from 'react';
 
-import classnames from 'classnames';
+import clsx from 'clsx';
 
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -59,7 +59,7 @@ const ListButton = ({
 
   return (
     <ListItemButton
-      className={classnames({
+      className={clsx({
         [classes.activated]: hover,
       })}
       component="div"

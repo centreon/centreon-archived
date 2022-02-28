@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 import { equals } from 'ramda';
-import classnames from 'classnames';
+import clsx from 'clsx';
 import { useAtom } from 'jotai';
 
 import Collapse from '@mui/material/Collapse';
@@ -191,7 +191,7 @@ const MinCollaps = ({
   return (
     <Collapse
       unmountOnExit
-      className={classnames(classes.root, classes.toggled, {
+      className={clsx(classes.root, classes.toggled, {
         [classes.scroll]: isSubHeader,
       })}
       in={isCollaps}
