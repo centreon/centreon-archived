@@ -141,7 +141,7 @@ const NavigationMenu = ({
               <MinCollaps
                 {...props}
                 data={item.children}
-                isCollaps={index === selectedIndex}
+                isCollapsed={index === selectedIndex}
                 onClick={handlClickItem}
               />
             )}

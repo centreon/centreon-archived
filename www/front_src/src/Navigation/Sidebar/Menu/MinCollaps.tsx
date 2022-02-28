@@ -18,7 +18,7 @@ interface CollapsProps {
   currentTop?: number;
   currentWidth: number;
   data?: Array<Page>;
-  isCollaps: boolean;
+  isCollapsed: boolean;
   isSubHeader?: boolean;
   level: number;
   onClick: (item: Page) => void;
@@ -106,7 +106,7 @@ const useStyles = makeStyles((theme) => ({
 
 const MinCollaps = ({
   data,
-  isCollaps,
+  isCollapsed,
   isSubHeader,
   currentTop,
   currentWidth,
@@ -194,7 +194,7 @@ const MinCollaps = ({
       className={clsx(classes.root, classes.toggled, {
         [classes.scroll]: isSubHeader,
       })}
-      in={isCollaps}
+      in={isCollapsed}
       timeout="auto"
       onMouseLeave={handleLeave}
     >
@@ -266,7 +266,7 @@ const MinCollaps = ({
                 currentTop={topItem}
                 currentWidth={widthItem + 2}
                 data={item.groups}
-                isCollaps={index === selectedIndex}
+                isCollapsed={index === selectedIndex}
                 level={level + 1}
                 onClick={onClick}
               />
@@ -280,7 +280,7 @@ const MinCollaps = ({
                         currentTop={topItem}
                         currentWidth={widthItem + 2}
                         data={itemGroup.children}
-                        isCollaps={index === selectedIndex}
+                        isCollapsed={index === selectedIndex}
                         level={level + 1}
                         onClick={onClick}
                       />
