@@ -232,7 +232,7 @@ const MinCollaps = ({
                     data={content}
                     hover={nestedHover}
                     isOpen={nestedIndex === selectedIndex}
-                    key=""
+                    key={content.label}
                     onClick={
                       !checkArray(item?.groups)
                         ? (): void => onClick(content)
