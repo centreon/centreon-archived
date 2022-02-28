@@ -12,7 +12,7 @@ import classnames from 'classnames';
 import { withTranslation, useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
 import { useUpdateAtom } from 'jotai/utils';
-import { gt, isNil, __ } from 'ramda';
+import { gt, isNil, __, not } from 'ramda';
 
 import { Badge, Typography, Tooltip } from '@mui/material';
 import withStyles from '@mui/styles/withStyles';
@@ -174,7 +174,11 @@ class UserMenuContent extends Component {
         <Clock />
         <div ref={(profile) => (this.profile = profile)}>
           <Tooltip
-            title={`${labelPasswordWillExpireIn}: ${formattedPasswordRemainingTime}`}
+            title={
+              passwordIsNotYetAboutToExpire
+                ? ''
+                : `${labelPasswordWillExpireIn}: ${formattedPasswordRemainingTime}`
+            }
           >
             <Badge
               color="warning"
@@ -249,19 +253,21 @@ class UserMenuContent extends Component {
                   </div>
                 )}
               </ul>
-              <div
-                className={classnames(
-                  styles['submenu-content'],
-                  classes.passwordExpiration,
-                )}
-              >
-                <Typography variant="body2">
-                  {t(labelPasswordWillExpireIn)}:
-                </Typography>
-                <Typography variant="body2">
-                  {formattedPasswordRemainingTime}
-                </Typography>
-              </div>
+              {not(passwordIsNotYetAboutToExpire) && (
+                <div
+                  className={classnames(
+                    styles['submenu-content'],
+                    classes.passwordExpiration,
+                  )}
+                >
+                  <Typography variant="body2">
+                    {t(labelPasswordWillExpireIn)}:
+                  </Typography>
+                  <Typography variant="body2">
+                    {formattedPasswordRemainingTime}
+                  </Typography>
+                </div>
+              )}
               <div className={styles['submenu-content']}>
                 <Link
                   className={styles.logoutLink}
