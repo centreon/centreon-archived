@@ -16545,3 +16545,33 @@ msgstr "Erreur lors de la liaison du modèle (id: %d) à l'hôte (id: %d)"
 
 msgid "Error while linking template %s to host (id: %d)"
 msgstr "Erreur lors de la liaison du modèle %s à l'hôte (id: %d)"
+
+msgid "Reset your password"
+msgstr "Réinitialiser votre mot de passe"
+
+msgid "Current password"
+msgstr "Mot de passe actuel"
+
+msgid "New password"
+msgstr "Nouveau mot de passe"
+
+msgid "New password confirmation"
+msgstr "Confirmation du nouveau mot de passe"
+
+msgid "New passwords must match"
+msgstr "Les nouveaux mots de passe doivent correspondre"
+
+msgid "The new password is the same as the old password"
+msgstr "Le nouveau mot de passe est identique au mot de passe actuel"
+
+msgid "Reset password"
+msgstr "Réinitialiser le mot de passe"
+
+msgid "Password renewed"
+msgstr "Mot de passe renouvelé"
+
+msgid "Your password will expire in"
+msgstr "Votre mot de passe expirera dans"
+
+msgid "Password has expired"
+msgstr "Votre mot de passe a expiré"

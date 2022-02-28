@@ -36,6 +36,7 @@ dayjs.extend(isSameOrBefore);
 dayjs.extend(duration);
 
 const LoginPage = React.lazy(() => import('../Login'));
+const ResetPasswordPage = React.lazy(() => import('../ResetPassword'));
 
 const AppPage = React.lazy(() => import('./InitializationPage'));
 
@@ -54,6 +55,10 @@ const Main = (): JSX.Element => {
     <React.Suspense fallback={<MainLoaderWithoutTranslation />}>
       <Routes>
         <Route element={<LoginPage />} path={reactRoutes.login} />
+        <Route
+          element={<ResetPasswordPage />}
+          path={reactRoutes.resetPassword}
+        />
         <Route element={<AppPage />} path="*" />
       </Routes>
     </React.Suspense>
