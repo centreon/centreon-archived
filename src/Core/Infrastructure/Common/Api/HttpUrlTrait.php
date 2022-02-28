@@ -61,10 +61,16 @@ trait HttpUrlTrait
     {
         $baseUri = '';
 
+        $routeSuffixPatterns = [
+            '(api|widgets|modules|include)\/.+',
+            'main(\.get)?\.php',
+            '(?<!administration\/)authentication\/providers\/configurations',
+        ];
+
         if (
             isset($_SERVER['REQUEST_URI'])
             && preg_match(
-                '/^(.+)\/((api|widgets|modules|include)\/.+|main(\.get)?\.php|((?<!administration\/)authentication\/providers\/configurations))/',
+                '/^(.+)\/(' . implode(',', $routeSuffixPatterns) . ')/',
                 $_SERVER['REQUEST_URI'],
                 $matches
             )

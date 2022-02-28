@@ -32,6 +32,11 @@ class OpenIdConfiguration
     public const NAME = 'openid';
 
     /**
+     * @var int|null
+     */
+    private ?int $id;
+
+    /**
      * @param boolean $isActive
      * @param boolean $isForced
      * @param string[] $trustedClientAddresses
@@ -89,6 +94,25 @@ class OpenIdConfiguration
                 );
             }
         }
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param int|null $id
+     * @return self
+     */
+    public function setId(?int $id): self
+    {
+        $this->id = $id;
+
+        return $this;
     }
 
     /**

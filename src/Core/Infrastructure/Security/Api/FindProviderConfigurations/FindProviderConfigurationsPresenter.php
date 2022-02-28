@@ -25,23 +25,21 @@ namespace Core\Infrastructure\Security\Api\FindProviderConfigurations;
 use Core\Application\Common\UseCase\AbstractPresenter;
 use Core\Application\Security\UseCase\FindProviderConfigurations\FindProviderConfigurationsResponse;
 use Core\Application\Security\UseCase\FindProviderConfigurations\FindProviderConfigurationsPresenterInterface;
-use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
-use Core\Domain\Security\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
 use Core\Infrastructure\Common\Api\HttpUrlTrait;
+use Core\Application\Security\UseCase\FindProviderConfigurations\FindLocalProviderConfigurationResponse;
+use Core\Application\Security\UseCase\FindProviderConfigurations\FindOpenIdProviderConfigurationResponse;
 
-class FindProviderConfigurationsPresenter extends AbstractPresenter implements FindProviderConfigurationsPresenterInterface
+class FindProviderConfigurationsPresenter extends AbstractPresenter implements
+    FindProviderConfigurationsPresenterInterface
 {
     use HttpUrlTrait;
 
     /**
-     * @param RequestParametersInterface $requestParameters
      * @param PresenterFormatterInterface $presenterFormatter
      */
-    public function __construct(
-        private RequestParametersInterface $requestParameters,
-        protected PresenterFormatterInterface $presenterFormatter,
-    ) {
+    public function __construct(protected PresenterFormatterInterface $presenterFormatter)
+    {
     }
 
     /**
@@ -51,55 +49,58 @@ class FindProviderConfigurationsPresenter extends AbstractPresenter implements F
     public function present(mixed $response): void
     {
         $formattedResponse = [];
-        foreach ($response->configurations as $configuration) {
-            // @todo use type constant of local model
-            if ($configuration['type'] === 'local') {
-                $formattedResponse[] = $this->getFormattedLocalConfiguration($configuration);
-            } elseif ($configuration['type'] === OpenIdConfiguration::TYPE) {
-                // @todo use DTO
-                $formattedResponse[] = $this->getFormattedOpenIdConfiguration($configuration);
-            }
+
+        $formattedResponse[] = $this->getFormattedLocalConfiguration($response->localProviderConfiguration);
+
+        if ($response->openIdProviderConfiguration) {
+            $formattedResponse[] = $this->getFormattedOpenIdConfiguration($response->openIdProviderConfiguration);
         }
 
-        $this->presenterFormatter->present($response->configurations);
+        $this->presenterFormatter->present($formattedResponse);
     }
 
     /**
      * format local provider configuration
      *
-     * @param array<string,mixed> $configuration
+     * @param FindLocalProviderConfigurationResponse $configuration
      * @return array<string,mixed>
      */
-    private function getFormattedLocalConfiguration(array $configuration): array
+    private function getFormattedLocalConfiguration(FindLocalProviderConfigurationResponse $configuration): array
     {
-        // @todo use model and write properties one by one
-        return $configuration;
+        return [
+            'id' => $configuration->id,
+            'type' => $configuration->type,
+            'name' => $configuration->name,
+            'authentication_uri' => $configuration->authenticationUri,
+            'is_active' => $configuration->isActive,
+            'is_forced' => $configuration->isForced,
+        ];
     }
 
     /**
      * format open id provider configuration
      *
-     * @param array<string,mixed> $configuration
+     * @param FindOpenIdProviderConfigurationResponse $configuration
      * @return array<string,mixed>
      */
-    private function getFormattedOpenIdConfiguration(array $configuration): array
+    private function getFormattedOpenIdConfiguration(FindOpenIdProviderConfigurationResponse $configuration): array
     {
         return [
-            'id' => 2,
-            'type' => 'openid',
-            'name' => 'openid',
-            'authentication_uri' => $configuration['base_url'] . '/' . $configuration['authorization_endpoint']
+            'id' => $configuration->id,
+            'type' => $configuration->type,
+            'name' => $configuration->name,
+            'authentication_uri' => $configuration->baseUrl . '/' . $configuration->authorizationEndpoint
                 . '?'
                 . http_build_query(
                     [
-                        'client_id' => $configuration['client_id'],
+                        'client_id' => $configuration->clientId,
                         'response_type' => 'code',
                         'redirect_uri' => $this->getBaseUri(), // @todo create full authentication endpoint
                         'state' => uniqid(),
                     ],
                 ),
-            'is_active' => $configuration['is_active'],
-            'is_forced' => $configuration['is_forced'],
+            'is_active' => $configuration->isActive,
+            'is_forced' => $configuration->isForced,
         ];
     }
 }

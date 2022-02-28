@@ -28,65 +28,48 @@ use Core\Domain\Security\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
 class FindProviderConfigurationsResponse
 {
     /**
-     * @var array<array<string,mixed>>
+     * @var FindLocalProviderConfigurationResponse
      */
-    public array $configurations = [];
+    public FindLocalProviderConfigurationResponse $localProviderConfiguration;
 
     /**
-     * @param array<LocalConfiguration|OpenIdConfiguration> $configurations
+     * @var FindOpenIdProviderConfigurationResponse|null
      */
-    public function __construct(array $configurations)
-    {
-        foreach ($configurations as $configuration) {
-            switch (true) {
-                case $configuration instanceof LocalConfiguration:
-                    $this->configurations[] = $this->localConfigurationToArray($configuration);
-                    break;
-                case $configuration instanceof OpenIdConfiguration:
-                    $this->configurations[] = $this->openIdConfigurationToArray($configuration);
-                    break;
-            }
+    public ?FindOpenIdProviderConfigurationResponse $openIdProviderConfiguration = null;
+
+    /**
+     * @param LocalConfiguration $localConfiguration
+     * @param OpenIdConfiguration|null $openIdConfiguration
+     */
+    public function __construct(
+        LocalConfiguration $localConfiguration,
+        ?OpenIdConfiguration $openIdConfiguration,
+    ) {
+        $this->localProviderConfiguration = new FindLocalProviderConfigurationResponse(
+            1,
+            'local',
+            'local',
+            true, // $localConfiguration->isActive(),
+            true, // $localConfiguration->isForced(),
+            '/authentication/providers/configurations/local',
+        );
+
+        if (
+            $openIdConfiguration !== null
+            && $openIdConfiguration->getBaseUrl() !== null
+            && $openIdConfiguration->getAuthorizationEndpoint() !== null
+            && $openIdConfiguration->getClientId() !== null
+        ) {
+            $this->openIdProviderConfiguration = new FindOpenIdProviderConfigurationResponse(
+                $openIdConfiguration->getId(),
+                OpenIdConfiguration::TYPE,
+                OpenIdConfiguration::NAME,
+                $openIdConfiguration->isActive(),
+                $openIdConfiguration->isForced(),
+                $openIdConfiguration->getBaseUrl(),
+                $openIdConfiguration->getAuthorizationEndpoint(),
+                $openIdConfiguration->getClientId(),
+            );
         }
-    }
-
-    /**
-     * Converts local provider configuration entity into an array
-     *
-     * @param LocalConfiguration $configuration
-     * @return array<string,mixed>
-     */
-    private function localConfigurationToArray(LocalConfiguration $configuration): array
-    {
-        // @todo use model and add isActive & isForced properties
-        return [
-            'id' => 1,
-            'type' => 'local',
-            'name' => 'local',
-            'authentication_uri' => '/authentication/providers/configurations/local',
-            'centreon_base_uri' => '/centreon',
-            'is_active' => true,
-            'is_forced' => false,
-        ];
-    }
-
-    /**
-     * Converts open id provider configuration entity into an array
-     *
-     * @param OpenIdConfiguration $configuration
-     * @return array<string,mixed>
-     */
-    private function openIdConfigurationToArray(OpenIdConfiguration $configuration): array
-    {
-        // @todo create dto instead of array
-        return [
-            'id' => 2,
-            'type' => 'openid',
-            'name' => 'openid',
-            'base_url' => $configuration->getBaseUrl(),
-            'authorization_endpoint' => $configuration->getAuthorizationEndpoint(),
-            'client_id' => $configuration->getClientId(),
-            'is_active' => $configuration->isActive(),
-            'is_forced' => $configuration->isForced(),
-        ];
     }
 }

@@ -26,7 +26,8 @@ use Core\Application\Common\UseCase\ErrorResponse;
 use Core\Application\Common\UseCase\NotFoundResponse;
 use Core\Domain\Security\ProviderConfiguration\Local\Model\Configuration as LocalConfiguration;
 use Core\Domain\Security\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
-use Core\Application\Security\ProviderConfiguration\Local\Repository\ReadConfigurationRepositoryInterface as ReadLocalConfigurationRepositoryInterface;
+use Core\Application\Security\ProviderConfiguration\Local\Repository\ReadConfigurationRepositoryInterface
+    as ReadLocalConfigurationRepositoryInterface;
 use Core\Application\Security\ProviderConfiguration\OpenId\Repository\ReadOpenIdConfigurationRepositoryInterface;
 
 class FindProviderConfigurations
@@ -59,21 +60,26 @@ class FindProviderConfigurations
             return;
         }
 
-        $configurations = [$localConfiguration];
-        if ($openIdConfiguration !== null && $openIdConfiguration->isActive()) {
-            $configurations[] = $openIdConfiguration;
+        if ($openIdConfiguration !== null && ! $openIdConfiguration->isActive()) {
+            $openIdConfiguration = null;
         }
 
-        $presenter->present($this->createResponse($configurations));
+        $presenter->present($this->createResponse($localConfiguration, $openIdConfiguration));
     }
 
     /**
-     * @param array<LocalConfiguration|OpenIdConfiguration> $configurations
+     * @param LocalConfiguration $localConfiguration
+     * @param OpenIdConfiguration|null $openIdConfiguration
      * @return FindProviderConfigurationsResponse
      */
-    private function createResponse(array $configurations): FindProviderConfigurationsResponse
-    {
-        $findProviderConfigurationsResponse = new FindProviderConfigurationsResponse($configurations);
+    private function createResponse(
+        LocalConfiguration $localConfiguration,
+        ?OpenIdConfiguration $openIdConfiguration,
+    ): FindProviderConfigurationsResponse {
+        $findProviderConfigurationsResponse = new FindProviderConfigurationsResponse(
+            $localConfiguration,
+            $openIdConfiguration,
+        );
 
         return $findProviderConfigurationsResponse;
     }
