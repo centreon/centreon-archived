@@ -179,7 +179,7 @@ const MinCollaps = ({
         [classes.scroll]: isSubHeader,
       })}
       in={isCollapsed}
-      timeout="auto"
+      timeout={0}
       onMouseLeave={handleLeave}
     >
       {data?.map((item, index) => {
