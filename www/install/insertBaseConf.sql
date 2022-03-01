@@ -620,7 +620,7 @@ INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`
 (69, 'storage_db_type', 'Storage DB type', 'Target DBMS.', 'select', NULL),
 (74, 'path', 'Path', 'Path of the lua script.', 'text', NULL),
 (75, 'connections_count', 'Number of connection to the database', 'Usually cpus/2', 'int', NULL),
-(76, 'tls_hostname', 'TLS Host name', 'Expected TLS certificate common name (CN) - leave blank if unsure.', 'text', NULL)
+(76, 'tls_hostname', 'TLS Host name', 'Expected TLS certificate common name (CN) - leave blank if unsure.', 'text', NULL),
 (77, 'db_type', 'DB type', 'Target DBMS.', 'text', 'T=options:C=value:CK=key:K=unified_sql_db_type');
 
 INSERT INTO `cb_fieldgroup` (`cb_fieldgroup_id`, `groupname`, `displayname`, `multiple`, `group_parent_id`) VALUES
