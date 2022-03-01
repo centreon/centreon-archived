@@ -116,6 +116,7 @@ class FindNotificationPolicyResponse
         if ($timePeriod === null) {
             return [];
         }
+
         return [
             'id' => $timePeriod->getId(),
             'name' => $timePeriod->getName(),

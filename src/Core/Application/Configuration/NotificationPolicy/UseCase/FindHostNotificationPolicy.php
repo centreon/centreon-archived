@@ -27,7 +27,6 @@ use Centreon\Domain\HostConfiguration\Host;
 use Core\Domain\Configuration\User\Model\User;
 use Centreon\Domain\Engine\EngineConfiguration;
 use Core\Application\Common\UseCase\NotFoundResponse;
-use Core\Application\Common\UseCase\NoContentResponse;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Core\Domain\Configuration\UserGroup\Model\UserGroup;
 use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
@@ -130,12 +129,12 @@ class FindHostNotificationPolicy
             $this->createResponse($users, $userGroups, $usersNotificationSettings)
         );
     }
-        /**
+
+    /**
      * @param int $hostId
      * @param FindNotificationPolicyPresenterInterface $presenter
-     * @return void
      */
-    private function handleHostNotFound(int $hostId, FindNotificationPolicyPresenterInterface $presenter)
+    private function handleHostNotFound(int $hostId, FindNotificationPolicyPresenterInterface $presenter): void
     {
         $this->error(
             "Host not found",
@@ -150,12 +149,11 @@ class FindHostNotificationPolicy
     /**
      * @param int $hostId
      * @param FindNotificationPolicyPresenterInterface $presenter
-     * @return void
      */
     private function handleEngineHostConfigurationNotFound(
         int $hostId,
         FindNotificationPolicyPresenterInterface $presenter
-    ) {
+    ): void {
         $this->error(
             "Engine configuration not found for Host",
             [
@@ -169,17 +167,20 @@ class FindHostNotificationPolicy
     /**
      * @param int $hostId
      * @param FindNotificationPolicyPresenterInterface $presenter
-     * @return void
      */
-    private function handleNoNotificationsEnabled(int $hostId, FindNotificationPolicyPresenterInterface $presenter)
-    {
+    private function handleNoNotificationsEnabled(
+        int $hostId,
+        FindNotificationPolicyPresenterInterface $presenter,
+    ): void {
         $this->info(
             "No notifications enabled for this host",
             [
                 'id' => $hostId
             ]
         );
-        $presenter->setResponseStatus(new NoContentResponse());
+        $presenter->present(
+            $this->createResponse([], [], [])
+        );
     }
 
     /**

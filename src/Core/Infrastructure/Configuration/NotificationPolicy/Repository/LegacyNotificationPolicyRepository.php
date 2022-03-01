@@ -27,17 +27,18 @@ use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Core\Application\Configuration\NotificationPolicy\Repository\LegacyNotificationPolicyRepositoryInterface;
 
-class LegacyNotificationPolicyRepository extends AbstractRepositoryDRB implements LegacyNotificationPolicyRepositoryInterface
+class LegacyNotificationPolicyRepository extends AbstractRepositoryDRB implements
+    LegacyNotificationPolicyRepositoryInterface
 {
     /**
      * @param DatabaseConnection $db
+     * @param Container $dependencyInjector
      */
     public function __construct(
         DatabaseConnection $db,
-        private Container $dependencyInjector
+        private Container $dependencyInjector,
     ) {
         $this->db = $db;
-        $this->dependencyInjector = $dependencyInjector;
     }
 
     /**
@@ -52,6 +53,7 @@ class LegacyNotificationPolicyRepository extends AbstractRepositoryDRB implement
          */
         $hostInstance = \Host::getInstance($this->dependencyInjector);
         $notifications = $hostInstance->getCgAndContacts($hostId);
+
         return $notifications;
     }
 }
