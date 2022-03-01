@@ -240,7 +240,7 @@ describe('Login Page', () => {
     expect(screen.getByLabelText(labelHideThePassword)).toBeInTheDocument();
   });
 
-  it('redirects to the user to the reset page when the submitted password is expired', async () => {
+  it('redirects to the reset page when the submitted password is expired', async () => {
     mockPostLoginPasswordExpired();
     renderLoginPage();
 
