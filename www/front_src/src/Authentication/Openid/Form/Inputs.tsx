@@ -26,10 +26,10 @@ import {
 } from '../translatedLabels';
 import { AuthenticationType, InputProps, InputType } from '../models';
 
+import MultipleInput from './Multiple';
 import SwitchInput from './Switch';
 import RadioInput from './Radio';
 import TextInput from './Text';
-import MultipleInput from '../Multiple
 
 const isAuthenticationNotActive = propEq('isActive', false);
 
