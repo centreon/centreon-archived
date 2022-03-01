@@ -37,6 +37,7 @@ use Centreon\Domain\HostConfiguration\Interfaces\HostConfigurationRepositoryInte
 use Core\Application\Configuration\UserGroup\Repository\ReadUserGroupRepositoryInterface;
 use Core\Application\Configuration\Notification\Repository\ReadNotificationRepositoryInterface;
 use Core\Application\Configuration\NotificationPolicy\Repository\LegacyNotificationPolicyRepositoryInterface;
+use Core\Application\RealTime\Repository\ReadHostRepositoryInterface as ReadRealTimeHostRepositoryInterface;
 
 class FindHostNotificationPolicy
 {
@@ -51,6 +52,7 @@ class FindHostNotificationPolicy
      * @param EngineConfigurationServiceInterface $engineService
      * @param AccessGroupRepositoryInterface $accessGroupRepository
      * @param ContactInterface $contact
+     * @param ReadRealTimeHostRepositoryInterface $readRealTimeHostRepository
      */
     public function __construct(
         private LegacyNotificationPolicyRepositoryInterface $legacyRepository,
@@ -61,6 +63,7 @@ class FindHostNotificationPolicy
         private EngineConfigurationServiceInterface $engineService,
         private AccessGroupRepositoryInterface $accessGroupRepository,
         private ContactInterface $contact,
+        private ReadRealTimeHostRepositoryInterface $readRealTimeHostRepository,
     ) {
     }
 
@@ -70,15 +73,64 @@ class FindHostNotificationPolicy
      */
     public function __invoke(
         int $hostId,
-        FindNotificationPolicyPresenterInterface $presenter
+        FindNotificationPolicyPresenterInterface $presenter,
     ): void {
+        $host = $this->findHost($hostId);
+        if ($host === null) {
+            $this->handleHostNotFound($hostId, $presenter);
+            return;
+        }
+
+        /**
+         * Returns the contacts and contactgroups notified for this Host
+         */
+        [
+            'contact' => $notifiedUserIds,
+            'cg' => $notifiedUserGroupIds,
+        ] = $this->legacyRepository->findHostNotifiedUserIdsAndUserGroupIds($hostId);
+        $users = $this->userRepository->findUsersByIds($notifiedUserIds);
+        $usersNotificationSettings = $this->notificationRepository->findHostNotificationsByUserIds($notifiedUserIds);
+        $userGroups = $this->userGroupRepository->findByIds($notifiedUserGroupIds);
+
+        $realtimeHost = $this->readRealTimeHostRepository->findHostById($hostId);
+        if ($realtimeHost === null) {
+            $this->handleHostNotFound($hostId, $presenter);
+            return;
+        }
+
+        $engineConfiguration = $this->engineService->findEngineConfigurationByHost($host);
+        if ($engineConfiguration === null) {
+            $this->handleEngineHostConfigurationNotFound($hostId, $presenter);
+            return;
+        }
+        if (
+            $engineConfiguration->getNotificationsEnabledOption() ===
+                EngineConfiguration::NOTIFICATIONS_OPTION_DISABLED
+        ) {
+            $realtimeHost->setIsNotificationEnabled(false);
+        }
+
+        $presenter->present(
+            $this->createResponse(
+                $users,
+                $userGroups,
+                $usersNotificationSettings,
+                $realtimeHost->isNotificationEnabled(),
+            )
+        );
+    }
+
+    /**
+     * Find host by id
+     *
+     * @param int $hostId
+     * @return Host|null
+     */
+    private function findHost(int $hostId): ?Host
+    {
         $this->info('Searching for host notification policy', ['id' => $hostId]);
         if ($this->contact->isAdmin()) {
             $host = $this->hostRepository->findHost($hostId);
-            if ($host === null) {
-                $this->handleHostNotFound($hostId, $presenter);
-                return;
-            }
         } else {
             $accessGroups = $this->accessGroupRepository->findByContact($this->contact);
             $accessGroupIds = array_map(
@@ -86,48 +138,9 @@ class FindHostNotificationPolicy
                 $accessGroups
             );
             $host = $this->hostRepository->findHostByAccessGroupIds($hostId, $accessGroupIds);
-            if ($host === null) {
-                $this->handleHostNotFound($hostId, $presenter);
-                return;
-            }
         }
 
-        // check if notifications are enabled.
-        switch ($host->getNotificationsEnabledOption()) {
-            case Host::NOTIFICATIONS_OPTION_DISABLED:
-                $this->handleNoNotificationsEnabled($hostId, $presenter);
-                return;
-            case Host::NOTIFICATIONS_OPTION_DEFAULT_ENGINE_VALUE:
-                $engineConfiguration = $this->engineService->findEngineConfigurationByHost($host);
-                if ($engineConfiguration === null) {
-                    $this->handleEngineHostConfigurationNotFound($hostId, $presenter);
-                    return;
-                }
-                if (
-                    $engineConfiguration->getNotificationsEnabledOption() ===
-                        EngineConfiguration::NOTIFICATIONS_OPTION_DISABLED
-                ) {
-                    $this->handleNoNotificationsEnabled($hostId, $presenter);
-                    return;
-                }
-                break;
-            default:
-                break;
-        }
-
-        /**
-         * Returns the contacts and contactgroups notified for this Host
-         */
-        $hostNotificationPolicy = $this->legacyRepository->findHostNotificationPolicy($hostId);
-        $users = $this->userRepository->findUsersByIds($hostNotificationPolicy['contact']);
-        $usersNotificationSettings = $this->notificationRepository->findHostNotificationsByUserIds(
-            $hostNotificationPolicy['contact']
-        );
-        $userGroups = $this->userGroupRepository->findByIds($hostNotificationPolicy['cg']);
-
-        $presenter->present(
-            $this->createResponse($users, $userGroups, $usersNotificationSettings)
-        );
+        return $host;
     }
 
     /**
@@ -165,35 +178,23 @@ class FindHostNotificationPolicy
     }
 
     /**
-     * @param int $hostId
-     * @param FindNotificationPolicyPresenterInterface $presenter
-     */
-    private function handleNoNotificationsEnabled(
-        int $hostId,
-        FindNotificationPolicyPresenterInterface $presenter,
-    ): void {
-        $this->info(
-            "No notifications enabled for this host",
-            [
-                'id' => $hostId
-            ]
-        );
-        $presenter->present(
-            $this->createResponse([], [], [])
-        );
-    }
-
-    /**
      * @param User[] $users
      * @param UserGroup[] $userGroups
      * @param NotificationInterface[] $usersNotificationSettings
+     * @param bool $isNotificationEnabled
      * @return FindNotificationPolicyResponse
      */
     public function createResponse(
         array $users,
         array $userGroups,
-        array $usersNotificationSettings
+        array $usersNotificationSettings,
+        bool $isNotificationEnabled,
     ): FindNotificationPolicyResponse {
-        return new FindNotificationPolicyResponse($users, $userGroups, $usersNotificationSettings);
+        return new FindNotificationPolicyResponse(
+            $users,
+            $userGroups,
+            $usersNotificationSettings,
+            $isNotificationEnabled,
+        );
     }
 }

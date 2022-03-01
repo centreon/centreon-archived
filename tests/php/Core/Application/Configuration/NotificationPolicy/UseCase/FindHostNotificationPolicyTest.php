@@ -24,7 +24,6 @@ use Core\Application\Configuration\NotificationPolicy\UseCase\FindHostNotificati
 use Core\Application\Configuration\NotificationPolicy\UseCase\FindNotificationPolicyPresenterInterface;
 use Core\Application\Configuration\NotificationPolicy\UseCase\FindNotificationPolicyResponse;
 use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
-use Core\Domain\Configuration\Notification\Model\NotificationInterface;
 use Centreon\Domain\Engine\Interfaces\EngineConfigurationServiceInterface;
 use Core\Application\Configuration\User\Repository\ReadUserRepositoryInterface;
 use Centreon\Domain\HostConfiguration\Interfaces\HostConfigurationRepositoryInterface;
@@ -32,7 +31,11 @@ use Core\Application\Configuration\UserGroup\Repository\ReadUserGroupRepositoryI
 use Core\Application\Configuration\Notification\Repository\ReadNotificationRepositoryInterface;
 use Core\Application\Configuration\NotificationPolicy\Repository\LegacyNotificationPolicyRepositoryInterface;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
+use Core\Application\RealTime\Repository\ReadHostRepositoryInterface as ReadRealTimeHostRepositoryInterface;
+use Centreon\Domain\Engine\EngineConfiguration;
 use Centreon\Domain\HostConfiguration\Host;
+use Core\Domain\RealTime\Model\Host as RealTimeHost;
+use Core\Domain\RealTime\Model\HostStatus;
 use Core\Application\Common\UseCase\NotFoundResponse;
 use Core\Domain\Configuration\User\Model\User;
 use Core\Domain\Configuration\Notification\Model\HostNotification;
@@ -48,8 +51,17 @@ beforeEach(function () {
     $this->engineService = $this->createMock(EngineConfigurationServiceInterface::class);
     $this->accessGroupRepository = $this->createMock(AccessGroupRepositoryInterface::class);
     $this->contact = $this->createMock(ContactInterface::class);
+    $this->readRealTimeHostRepository = $this->createMock(ReadRealTimeHostRepositoryInterface::class);
 
     $this->host = new Host();
+    $this->realTimeHost = new RealTimeHost(
+        1,
+        'host1',
+        '127.0.0.1',
+        'central',
+        new HostStatus(HostStatus::STATUS_NAME_DOWN, HostStatus::STATUS_CODE_DOWN, 1)
+    );
+
 
     $this->findNotificationPolicyPresenter = $this->createMock(FindNotificationPolicyPresenterInterface::class);
 });
@@ -64,6 +76,7 @@ it('does not find host notification policy when host is not found by admin user'
         $this->engineService,
         $this->accessGroupRepository,
         $this->contact,
+        $this->readRealTimeHostRepository,
     );
 
     $this->contact
@@ -94,6 +107,7 @@ it('does not find host notification policy when host is not found by acl user', 
         $this->engineService,
         $this->accessGroupRepository,
         $this->contact,
+        $this->readRealTimeHostRepository,
     );
 
     $this->contact
@@ -130,6 +144,7 @@ it('returns empty response when host notification is disabled', function () {
         $this->engineService,
         $this->accessGroupRepository,
         $this->contact,
+        $this->readRealTimeHostRepository,
     );
 
     $this->contact
@@ -144,10 +159,32 @@ it('returns empty response when host notification is disabled', function () {
 
     $this->host->setNotificationsEnabledOption(Host::NOTIFICATIONS_OPTION_DISABLED);
 
+    $this->legacyRepository
+        ->expects($this->once())
+        ->method('findHostNotifiedUserIdsAndUserGroupIds')
+        ->with(1)
+        ->willReturn([
+            'contact' => [],
+            'cg' => [],
+        ]);
+
+    $this->realTimeHost->setIsNotificationEnabled(false);
+    $this->readRealTimeHostRepository
+        ->expects($this->once())
+        ->method('findHostById')
+        ->willReturn($this->realTimeHost);
+
+    $engineConfiguration = new EngineConfiguration();
+    $engineConfiguration->setNotificationsEnabledOption(EngineConfiguration::NOTIFICATIONS_OPTION_DISABLED);
+    $this->engineService
+        ->expects($this->once())
+        ->method('findEngineConfigurationByHost')
+        ->willReturn($engineConfiguration);
+
     $this->findNotificationPolicyPresenter
         ->expects($this->once())
         ->method('present')
-        ->with(new FindNotificationPolicyResponse([], [], []));
+        ->with(new FindNotificationPolicyResponse([], [], [], false));
 
     $useCase(1, $this->findNotificationPolicyPresenter);
 });
@@ -162,6 +199,7 @@ it('returns users, user groups and settings when host notification is enabled', 
         $this->engineService,
         $this->accessGroupRepository,
         $this->contact,
+        $this->readRealTimeHostRepository,
     );
 
     $this->contact
@@ -178,7 +216,7 @@ it('returns users, user groups and settings when host notification is enabled', 
 
     $this->legacyRepository
         ->expects($this->once())
-        ->method('findHostNotificationPolicy')
+        ->method('findHostNotifiedUserIdsAndUserGroupIds')
         ->with(1)
         ->willReturn([
             'contact' => [2],
@@ -207,10 +245,23 @@ it('returns users, user groups and settings when host notification is enabled', 
         ->with([3])
         ->willReturn([$userGroup]);
 
+    $this->realTimeHost->setIsNotificationEnabled(true);
+    $this->readRealTimeHostRepository
+        ->expects($this->once())
+        ->method('findHostById')
+        ->willReturn($this->realTimeHost);
+
+    $engineConfiguration = new EngineConfiguration();
+    $engineConfiguration->setNotificationsEnabledOption(EngineConfiguration::NOTIFICATIONS_OPTION_ENABLED);
+    $this->engineService
+        ->expects($this->once())
+        ->method('findEngineConfigurationByHost')
+        ->willReturn($engineConfiguration);
+
     $this->findNotificationPolicyPresenter
         ->expects($this->once())
         ->method('present')
-        ->with(new FindNotificationPolicyResponse([$user], [$userGroup], [$hostNotification]));
+        ->with(new FindNotificationPolicyResponse([$user], [$userGroup], [$hostNotification], true));
 
     $useCase(1, $this->findNotificationPolicyPresenter);
 });

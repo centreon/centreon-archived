@@ -51,6 +51,7 @@ it('converts given models to array', function () {
         [$this->user],
         [$this->userGroup],
         [$this->usersNotificationSettings],
+        true,
     );
 
     expect($response->users)->toBe([
@@ -80,4 +81,6 @@ it('converts given models to array', function () {
             ],
         ],
     ]);
+
+    expect($response->isNotificationEnabled)->toBe(true);
 });

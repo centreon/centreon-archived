@@ -44,7 +44,7 @@ class LegacyNotificationPolicyRepository extends AbstractRepositoryDRB implement
     /**
      * @inheritDoc
      */
-    public function findHostNotificationPolicy(int $hostId): array
+    public function findHostNotifiedUserIdsAndUserGroupIds(int $hostId): array
     {
         /**
          * Call to Legacy code to get the contacts and contactgroups

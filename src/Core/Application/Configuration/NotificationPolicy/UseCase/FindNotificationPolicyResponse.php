@@ -48,11 +48,13 @@ class FindNotificationPolicyResponse
      * @param User[] $users
      * @param UserGroup[] $userGroups
      * @param NotificationInterface[] $usersNotificationSettings
+     * @param bool $isNotificationEnabled
      */
     public function __construct(
         array $users,
         array $userGroups,
         array $usersNotificationSettings,
+        public bool $isNotificationEnabled,
     ) {
         $this->users = $this->usersToArray($users);
         $this->userGroups = $this->userGroupsToArray($userGroups);

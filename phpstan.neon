@@ -17,6 +17,7 @@ parameters:
     -
       message: '#^Call to an undefined method Pest#'
       path: tests/php/
+  reportUnmatchedIgnoredErrors: false
 services:
   errorFormatter.absolute:
     class: Centreon\PHPStan\AbsolutePathErrorFormatter

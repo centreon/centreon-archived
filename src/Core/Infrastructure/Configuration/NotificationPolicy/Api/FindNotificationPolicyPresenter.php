@@ -57,9 +57,6 @@ class FindNotificationPolicyPresenter extends AbstractPresenter implements FindN
      */
     public function present(mixed $response): void
     {
-        $presenterResponse['users'] = [];
-        $presenterResponse['user_groups'] = [];
-
         $presenterResponse['users'] = array_map(
             fn (array $user) => [
                 'id' => $user['id'],
@@ -73,6 +70,7 @@ class FindNotificationPolicyPresenter extends AbstractPresenter implements FindN
             $response->users
         );
 
+        $presenterResponse['user_groups'] = [];
         foreach ($response->userGroups as $userGroup) {
             $presenterResponse['user_groups'][] = [
                 'id' => $userGroup['id'],
@@ -83,6 +81,9 @@ class FindNotificationPolicyPresenter extends AbstractPresenter implements FindN
                 )
             ];
         }
+
+        $presenterResponse['is_notification_enabled'] = $response->isNotificationEnabled;
+
         $this->presenterFormatter->present($presenterResponse);
     }
 
