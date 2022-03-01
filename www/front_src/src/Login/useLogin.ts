@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { FormikHelpers, FormikValues } from 'formik';
 import { useAtom } from 'jotai';
 import { useTranslation } from 'react-i18next';
+import { propEq, reject } from 'ramda';
 
 import { useRequest, useSnackbar, getData } from '@centreon/ui';
 
@@ -12,14 +13,27 @@ import { platformInstallationStatusAtom } from '../platformInstallationStatusAto
 import useUser from '../Main/useUser';
 
 import postLogin from './api';
-import { platformVersionsDecoder, redirectDecoder } from './api/decoder';
-import { LoginFormValues, PlatformVersions, Redirect } from './models';
+import {
+  platformVersionsDecoder,
+  providersConfigurationDecoder,
+  redirectDecoder,
+} from './api/decoder';
+import {
+  LoginFormValues,
+  PlatformVersions,
+  ProviderConfiguration,
+  Redirect,
+} from './models';
 import { labelLoginSucceeded } from './translatedLabels';
-import { platformVersionsEndpoint } from './api/endpoint';
+import {
+  platformVersionsEndpoint,
+  providersConfigurationEndpoint,
+} from './api/endpoint';
 
 interface UseLoginState {
   platformInstallationStatus: PlatformInstallationStatus | null;
   platformVersions: PlatformVersions | null;
+  providersConfiguration: Array<ProviderConfiguration> | null;
   submitLoginForm: (
     values: LoginFormValues,
     { setSubmitting }: Pick<FormikHelpers<FormikValues>, 'setSubmitting'>,
@@ -30,6 +44,8 @@ const useLogin = (): UseLoginState => {
   const { t, i18n } = useTranslation();
   const [platformVersions, setPlatformVersions] =
     React.useState<PlatformVersions | null>(null);
+  const [providersConfiguration, setProvidersConfiguration] =
+    React.useState<Array<ProviderConfiguration> | null>(null);
 
   const { sendRequest: sendLogin } = useRequest<Redirect>({
     decoder: redirectDecoder,
@@ -38,6 +54,13 @@ const useLogin = (): UseLoginState => {
 
   const { sendRequest: sendPlatformVersions } = useRequest<PlatformVersions>({
     decoder: platformVersionsDecoder,
+    request: getData,
+  });
+
+  const { sendRequest: getProvidersConfiguration } = useRequest<
+    Array<ProviderConfiguration>
+  >({
+    decoder: providersConfigurationDecoder,
     request: getData,
   });
 
@@ -69,14 +92,22 @@ const useLogin = (): UseLoginState => {
 
   React.useEffect(() => {
     i18n.changeLanguage?.(getBrowserLocale());
+
     sendPlatformVersions({
       endpoint: platformVersionsEndpoint,
     }).then(setPlatformVersions);
+
+    getProvidersConfiguration({
+      endpoint: providersConfigurationEndpoint,
+    }).then((providers) => {
+      setProvidersConfiguration(reject(propEq('name', 'local'), providers));
+    });
   }, []);
 
   return {
     platformInstallationStatus,
     platformVersions,
+    providersConfiguration,
     submitLoginForm,
   };
 };

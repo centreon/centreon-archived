@@ -17,3 +17,10 @@ export interface PlatformVersions {
     version: string;
   };
 }
+
+export interface ProviderConfiguration {
+  authenticationUri: string;
+  id: number;
+  isActive: boolean;
+  name: string;
+}

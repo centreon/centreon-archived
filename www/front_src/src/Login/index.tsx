@@ -1,9 +1,9 @@
 import * as React from 'react';
 
 import { Formik } from 'formik';
-import { isNil } from 'ramda';
 import { useTranslation } from 'react-i18next';
 import { useAtomValue } from 'jotai/utils';
+import { isNil } from 'ramda';
 
 import { Paper, Typography } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
@@ -20,6 +20,7 @@ import { LoginFormValues } from './models';
 import useLogin from './useLogin';
 import LoginForm from './Form';
 import { labelCentreonLogo, labelLogin } from './translatedLabels';
+import ExternalProviders from './ExternalProviders';
 
 const useStyles = makeStyles((theme) => ({
   centreonLogo: {
@@ -64,7 +65,8 @@ const LoginPage = (): JSX.Element => {
   const { t } = useTranslation();
   const validationSchema = useValidationSchema();
 
-  const { submitLoginForm, platformVersions } = useLogin();
+  const { submitLoginForm, platformVersions, providersConfiguration } =
+    useLogin();
   const areUserParametersLoaded = useAtomValue(areUserParametersLoadedAtom);
 
   if (areUserParametersLoaded || isNil(areUserParametersLoaded)) {
@@ -81,13 +83,16 @@ const LoginPage = (): JSX.Element => {
       />
       <Paper className={classes.loginPaper}>
         <Typography variant="h5">{t(labelLogin)}</Typography>
-        <Formik<LoginFormValues>
-          initialValues={initialValues}
-          validationSchema={validationSchema}
-          onSubmit={submitLoginForm}
-        >
-          <LoginForm />
-        </Formik>
+        <div>
+          <Formik<LoginFormValues>
+            initialValues={initialValues}
+            validationSchema={validationSchema}
+            onSubmit={submitLoginForm}
+          >
+            <LoginForm />
+          </Formik>
+          <ExternalProviders providersConfiguration={providersConfiguration} />
+        </div>
       </Paper>
       <div className={classes.copyrightAndVersion}>
         <Copyright />
