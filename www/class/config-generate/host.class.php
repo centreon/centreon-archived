@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2019 Centreon
+ * Copyright 2005-2022 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -38,9 +38,9 @@ require_once dirname(__FILE__) . '/abstract/service.class.php';
 
 class Host extends AbstractHost
 {
-    const VERTICAL_NOTIFICATION = 1;
-    const CLOSE_NOTIFICATION = 2;
-    const CUMULATIVE_NOTIFICATION = 3;
+    public const VERTICAL_NOTIFICATION = 1;
+    public const CLOSE_NOTIFICATION = 2;
+    public const CUMULATIVE_NOTIFICATION = 3;
 
     protected $hosts_by_name = array();
     protected $hosts = null;
@@ -156,8 +156,10 @@ class Host extends AbstractHost
                     }
                     $loop[$hostId] = 1;
                     // if notifications_enabled is disabled. We don't go in branch
-                    if (!is_null($hostsTpl[$hostId]['notifications_enabled'])
-                        && (int)$hostsTpl[$hostId]['notifications_enabled'] === 0) {
+                    if (
+                        !is_null($hostsTpl[$hostId]['notifications_enabled'])
+                        && (int)$hostsTpl[$hostId]['notifications_enabled'] === 0
+                    ) {
                         continue;
                     }
 
@@ -214,8 +216,10 @@ class Host extends AbstractHost
                     }
                     $loop[$hostId] = 1;
 
-                    if (!is_null($hostsTpl[$hostId]['notifications_enabled'])
-                        && (int)$hostsTpl[$hostId]['notifications_enabled'] === 0) {
+                    if (
+                        !is_null($hostsTpl[$hostId]['notifications_enabled'])
+                        && (int)$hostsTpl[$hostId]['notifications_enabled'] === 0
+                    ) {
                         continue;
                     }
 
@@ -245,8 +249,10 @@ class Host extends AbstractHost
     private function manageVerticalInheritance(array &$host, string $attribute, string $attributeAdditive): array
     {
         $results = $host[$attribute . '_cache'];
-        if (count($results) > 0
-            && (is_null($host[$attributeAdditive]) || $host[$attributeAdditive] != 1)) {
+        if (
+            count($results) > 0
+            && (is_null($host[$attributeAdditive]) || $host[$attributeAdditive] != 1)
+        ) {
             return $results;
         }
 
@@ -267,15 +273,20 @@ class Host extends AbstractHost
                     }
                     $loop[$hostId] = 1;
 
-                    if (!is_null($hostsTpl[$hostId]['notifications_enabled'])
-                        && (int)$hostsTpl[$hostId]['notifications_enabled'] === 0) {
+                    if (
+                        !is_null($hostsTpl[$hostId]['notifications_enabled'])
+                        && (int)$hostsTpl[$hostId]['notifications_enabled'] === 0
+                    ) {
                         continue;
                     }
 
                     if (count($hostsTpl[$hostId][$attribute . '_cache']) > 0) {
                         $computedCache = array_merge($computedCache, $hostsTpl[$hostId][$attribute . '_cache']);
                         $currentLevelCatch = $level;
-                        if (is_null($hostsTpl[$hostId][$attributeAdditive]) || $hostsTpl[$hostId][$attributeAdditive] != 1) {
+                        if (
+                            is_null($hostsTpl[$hostId][$attributeAdditive])
+                            || $hostsTpl[$hostId][$attributeAdditive] != 1
+                        ) {
                             break;
                         }
                     }
@@ -307,7 +318,7 @@ class Host extends AbstractHost
      * @param array $host
      * @param array $cg
      */
-    private function setContactGroups(array &$host, array $cg = []) : void
+    private function setContactGroups(array &$host, array $cg = []): void
     {
         $cgInstance = Contactgroup::getInstance($this->dependencyInjector);
         $cgResult = '';
@@ -328,7 +339,7 @@ class Host extends AbstractHost
      * @param array $host
      * @param array $contacts
      */
-    private function setContacts(array &$host, array $contacts = []) : void
+    private function setContacts(array &$host, array $contacts = []): void
     {
         $contactInstance = Contact::getInstance($this->dependencyInjector);
         $contactResult = '';
@@ -534,7 +545,7 @@ class Host extends AbstractHost
      * @param int $hostId
      * @return array
      */
-    public function getCgAndContacts(int $hostId) : array
+    public function getCgAndContacts(int $hostId): array
     {
         // we pass null because it can be a meta_host with host_register = '2'
         $host = $this->getHostById($hostId, null);
