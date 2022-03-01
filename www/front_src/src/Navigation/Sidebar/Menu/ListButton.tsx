@@ -33,15 +33,24 @@ const useStyles = makeStyles((theme) => ({
     },
     '&:hover': {
       backgroundColor: theme.palette.primary.main,
+      // margin: theme.spacing(0.25, 0, 0, 0),
     },
 
     backgroundColor: theme.palette.primary.main,
+    // margin: theme.spacing(0.25, 0, 0, 0),
   },
   containerIcon: {
     alignItems: 'center',
+    minWidth: theme.spacing(6.5),
   },
   icon: {
     color: theme.palette.text.primary,
+  },
+  label: {
+    margin: theme.spacing(0),
+  },
+  listButton: {
+    minHeight: theme.spacing(5.5),
   },
 }));
 
@@ -59,11 +68,11 @@ const ListButton = ({
 
   return (
     <ListItemButton
-      className={clsx({
+      className={clsx(classes.listButton, {
         [classes.activated]: hover,
       })}
       component="div"
-      sx={{ pl: 2 }}
+      sx={!isRoot ? { pl: 0 } : { pl: 2 }}
       onClick={!isRoot ? onClick : undefined}
       onDoubleClick={isRoot ? onClick : undefined}
       onMouseEnter={onMouseEnter}
@@ -75,10 +84,10 @@ const ListButton = ({
             {isDrawerOpen &&
               Array.isArray(data?.children) &&
               data.children.length > 0 && (
-                <Expand className={classes.icon} isOpen={isOpen} />
+                <Expand className={classes.icon} isOpen={isOpen} size="small" />
               )}
           </ListItemIcon>
-          <ListItemText primary={data.label} />
+          <ListItemText className={classes.label} primary={data.label} />
         </>
       ) : (
         <>
@@ -87,7 +96,7 @@ const ListButton = ({
               <Expand isOpen={isOpen} size="small" />
             )}
           </ListItemIcon>
-          <ListItemText primary={data.label} />
+          <ListItemText className={classes.label} secondary={data.label} />
         </>
       )}
     </ListItemButton>

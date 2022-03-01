@@ -10,7 +10,7 @@ import { Page } from '../models';
 import Logo from './Logo';
 import NavigationMenu from './Menu';
 
-export const openedDrawerWidth = 230;
+export const openedDrawerWidth = 180;
 
 const openedMixin = (theme: Theme): CSSObject => ({
   overflowX: 'hidden',
@@ -27,9 +27,9 @@ const closedMixin = (theme: Theme): CSSObject => ({
     duration: theme.transitions.duration.leavingScreen,
     easing: theme.transitions.easing.sharp,
   }),
-  width: theme.spacing(7),
+  width: theme.spacing(6),
   [theme.breakpoints.up('sm')]: {
-    width: theme.spacing(9),
+    width: theme.spacing(8),
   },
 });
 

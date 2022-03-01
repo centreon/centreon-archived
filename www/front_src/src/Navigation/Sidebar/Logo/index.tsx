@@ -39,7 +39,7 @@ const Logo = ({ onClick, isDrawerOpen }: Props): JSX.Element => {
           alt=""
           height="52"
           src={isDrawerOpen ? logo : logoMin}
-          width={isDrawerOpen ? '180' : '30'}
+          width={isDrawerOpen ? '140' : '30'}
         />
       </span>
     </div>

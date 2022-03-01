@@ -29,7 +29,7 @@ interface StyleProps {
   currentWidth: number;
 }
 
-const collapsWidth = 204;
+const collapsWidth = 170;
 
 const useStyles = makeStyles((theme) => ({
   activated: {
@@ -53,13 +53,13 @@ const useStyles = makeStyles((theme) => ({
   root: {
     '& .MuiListItemIcon-root': {
       minWidth: theme.spacing(2.25),
+      padding: theme.spacing(0, 0.5, 0, 1),
     },
     '& .MuiTypography-root': {
       color: theme.palette.text.primary,
       fontSize: theme.typography.caption,
     },
     border: `solid ${theme.palette.divider} 0.1px`,
-    borderLeft: `solid ${theme.palette.primary.main} ${theme.spacing(0.5)}`,
   },
   scroll: {
     '&::-webkit-scrollbar': {
@@ -72,7 +72,7 @@ const useStyles = makeStyles((theme) => ({
       border: `solid ${theme.palette.action.hover} 0.5px`,
     },
     maxHeight: theme.spacing(44),
-    overflow: 'auto',
+    overflowX: 'hidden',
   },
   subHeader: {
     color: theme.palette.text.secondary,
@@ -83,9 +83,9 @@ const useStyles = makeStyles((theme) => ({
   toggled: {
     backgroundColor: theme.palette.background.default,
     left: ({ currentWidth }: StyleProps): string => theme.spacing(currentWidth),
+    minWidth: collapsWidth,
     position: 'fixed',
     top: ({ currentTop }: StyleProps): number | undefined => currentTop,
-    width: collapsWidth,
     zIndex: theme.zIndex.mobileStepper,
   },
 }));
@@ -104,7 +104,7 @@ const MinCollaps = ({
   const [topItem, setTopItem] = useState<number>();
   const [itemSelectedNav, setItemSelectedNav] = useAtom(itemSelectedAtom);
   const levelName = `level_${level}_Navigated`;
-  const widthItem = currentWidth + collapsWidth / 8 + 0.5;
+  const widthItem = currentWidth + collapsWidth / 8 + 0.15;
 
   const handleHover = (
     e: React.MouseEvent<HTMLElement>,

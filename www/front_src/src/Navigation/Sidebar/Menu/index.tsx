@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAtom } from 'jotai';
 
 import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
 import makeStyles from '@mui/styles/makeStyles';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
@@ -25,6 +26,10 @@ interface Props {
 const useStyles = makeStyles((theme) => ({
   icon: {
     color: theme.palette.text.primary,
+    fontSize: 28,
+  },
+  listRoot: {
+    padding: theme.spacing(0.25, 0, 0, 0),
   },
 }));
 
@@ -40,7 +45,7 @@ const NavigationMenu = ({
   const [currentTop, setCurrentTop] = useState<number>();
   const [itemSelectedNav, setItemSelectedNav] = useAtom(itemSelectedAtom);
   const levelName = 'level_0_Navigated';
-  const closedDrawerWidth = useMediaQuery(theme.breakpoints.up('sm')) ? 9 : 7;
+  const closedDrawerWidth = useMediaQuery(theme.breakpoints.up('sm')) ? 8 : 6;
   const currentWidth = isDrawerOpen ? openedDrawerWidth / 8 : closedDrawerWidth;
 
   const props = {
@@ -122,12 +127,16 @@ const NavigationMenu = ({
           equals(selectedIndex, index);
 
         return (
-          <List key={item.label}>
+          <ListItem
+            disablePadding
+            className={classes.listRoot}
+            key={item.label}
+          >
             <ListButton
               isRoot
               data={item}
               hover={hover}
-              icon={<MenuIcon className={classes.icon} sx={{ fontSize: 30 }} />}
+              icon={<MenuIcon className={classes.icon} />}
               isDrawerOpen={isDrawerOpen}
               isOpen={index === selectedIndex}
               onClick={(): void => handlClickItem(item)}
@@ -143,7 +152,7 @@ const NavigationMenu = ({
                 onClick={handlClickItem}
               />
             )}
-          </List>
+          </ListItem>
         );
       })}
     </List>
