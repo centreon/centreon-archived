@@ -38,8 +38,11 @@ class FindProviderConfigurationsPresenter extends AbstractPresenter implements
     /**
      * @param PresenterFormatterInterface $presenterFormatter
      */
-    public function __construct(protected PresenterFormatterInterface $presenterFormatter)
-    {
+    public function __construct(
+        private ProviderPresenterInterface $providerPresenter, // iterator
+        protected PresenterFormatterInterface $presenterFormatter
+    ) {
+        // @todo manage iterator
     }
 
     /**

@@ -64,7 +64,11 @@ class FindProviderConfigurations
             $openIdConfiguration = null;
         }
 
-        $presenter->present($this->createResponse($localConfiguration, $openIdConfiguration));
+        // @todo
+        $presenter->present([
+            $this->createResponse($localConfiguration),
+            $this->createResponse($openIdConfiguration),
+        ]);
     }
 
     /**
