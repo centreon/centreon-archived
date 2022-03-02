@@ -82,7 +82,7 @@ const App = (): JSX.Element => {
 
     const pendoScript = document.getElementById('pendo');
 
-    if (pendoScript) {
+    if (!isNil(pendoScript)) {
       return;
     }
 
