@@ -4,7 +4,7 @@ export const labelDefineOpenIDConnectConfiguration =
 export const labelRequired = 'Required';
 export const labelInvalidURL = 'Invalid URL';
 export const labelInvalidIPAddressOrDomainName =
-  'Invalid IP Address or Domain name';
+  'Invalid IP Address or domain name';
 export const labelFailedToSaveOpenidConfiguration =
   'Failed to save OpenID Connect configuration';
 export const labelOpenIDConnectConfigurationSaved =
