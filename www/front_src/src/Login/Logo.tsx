@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import { makeStyles } from '@mui/styles';
 
-import logoCentreon from '../Navigation/Sidebar/Logo/centreon.png';
+import logoCentreon from '../assets/centreon.png';
 
 import { labelCentreonLogo } from './translatedLabels';
 
