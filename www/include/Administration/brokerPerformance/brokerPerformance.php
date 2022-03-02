@@ -187,7 +187,7 @@ function parseStatsFile($statfile)
                     $result['io'][$matches[1]]['type'] = 'input';
                 } elseif (
                     preg_match(
-                        '/.*(central-broker-master-sql|centreon-broker-master-rrd|central-broker-master-perfdata).*/',
+                        '/.*(central-broker-master-sql|centreon-broker-master-rrd|central-broker-master-perfdata|central-broker-master-unified-sql).*/',
                         $key
                     )
                 ) {
