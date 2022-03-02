@@ -105,13 +105,13 @@ const renderMain = (): RenderResult =>
 const mockDefaultGetRequests = (): void => {
   mockedAxios.get
     .mockResolvedValueOnce({
+      data: retrievedTranslations,
+    })
+    .mockResolvedValueOnce({
       data: {
         has_upgrade_available: false,
         is_installed: true,
       },
-    })
-    .mockResolvedValueOnce({
-      data: retrievedTranslations,
     })
     .mockResolvedValueOnce({
       data: retrievedUser,
@@ -136,13 +136,13 @@ const mockDefaultGetRequests = (): void => {
 const mockRedirectFromLoginPageGetRequests = (): void => {
   mockedAxios.get
     .mockResolvedValueOnce({
+      data: retrievedTranslations,
+    })
+    .mockResolvedValueOnce({
       data: {
         has_upgrade_available: false,
         is_installed: true,
       },
-    })
-    .mockResolvedValueOnce({
-      data: retrievedTranslations,
     })
     .mockResolvedValueOnce({
       data: retrievedUser,
@@ -170,13 +170,13 @@ const mockRedirectFromLoginPageGetRequests = (): void => {
 const mockNotConnectedGetRequests = (): void => {
   mockedAxios.get
     .mockResolvedValueOnce({
+      data: retrievedTranslations,
+    })
+    .mockResolvedValueOnce({
       data: {
         has_upgrade_available: false,
         is_installed: true,
       },
-    })
-    .mockResolvedValueOnce({
-      data: retrievedTranslations,
     })
     .mockRejectedValueOnce({
       response: { status: 403 },
@@ -188,14 +188,14 @@ const mockNotConnectedGetRequests = (): void => {
 
 const mockInstallGetRequests = (): void => {
   mockedAxios.get
+    .mockRejectedValueOnce({
+      data: retrievedTranslations,
+    })
     .mockResolvedValueOnce({
       data: {
         has_upgrade_available: false,
         is_installed: false,
       },
-    })
-    .mockResolvedValueOnce({
-      data: retrievedTranslations,
     })
     .mockRejectedValueOnce({
       response: { status: 403 },
@@ -205,13 +205,13 @@ const mockInstallGetRequests = (): void => {
 const mockUpgradeAndUserDisconnectedGetRequests = (): void => {
   mockedAxios.get
     .mockResolvedValueOnce({
+      data: retrievedTranslations,
+    })
+    .mockResolvedValueOnce({
       data: {
         has_upgrade_available: true,
         is_installed: true,
       },
-    })
-    .mockResolvedValueOnce({
-      data: retrievedTranslations,
     })
     .mockRejectedValueOnce({
       response: { status: 403 },
@@ -221,13 +221,13 @@ const mockUpgradeAndUserDisconnectedGetRequests = (): void => {
 const mockUpgradeAndUserConnectedGetRequests = (): void => {
   mockedAxios.get
     .mockResolvedValueOnce({
+      data: retrievedTranslations,
+    })
+    .mockResolvedValueOnce({
       data: {
         has_upgrade_available: true,
         is_installed: true,
       },
-    })
-    .mockResolvedValueOnce({
-      data: retrievedTranslations,
     })
     .mockResolvedValueOnce({
       data: retrievedUser,

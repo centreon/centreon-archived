@@ -1,7 +1,8 @@
 <?php
+
 /*
- * Copyright 2005-2015 Centreon
- * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2022 Centreon
+ * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -41,11 +42,13 @@ require_once _CENTREON_PATH_ . 'www/class/centreonLDAP.class.php';
 require_once _CENTREON_PATH_ . 'www/class/centreonContactgroup.class.php';
 
 /*
- * Retreive information
+ * Retrieve information
  */
 $group = array();
 if (($o == "c" || $o == "w") && $acl_group_id) {
-    $DBRESULT = $pearDB->query("SELECT * FROM acl_groups WHERE acl_group_id = '" . $acl_group_id . "' LIMIT 1");
+    $DBRESULT = $pearDB->prepare("SELECT * FROM acl_groups WHERE acl_group_id = :aclGroupId LIMIT 1");
+    $DBRESULT->bindValue('aclGroupId', $acl_group_id, PDO::PARAM_INT);
+    $DBRESULT->execute();
     /*
      * Set base value
      */
@@ -54,12 +57,15 @@ if (($o == "c" || $o == "w") && $acl_group_id) {
     /*
      * Set Contact Childs
      */
-    $query = "SELECT DISTINCT contact_contact_id "
-        . "FROM acl_group_contacts_relations "
-        . "WHERE acl_group_id = '" . $acl_group_id . "' "
-        . "AND contact_contact_id NOT IN "
-        . "(SELECT contact_id FROM contact WHERE contact_admin = '1')";
-    $DBRESULT = $pearDB->query($query);
+    $query = "SELECT DISTINCT contact_contact_id
+        FROM acl_group_contacts_relations
+        WHERE acl_group_id = :aclGroupId
+        AND contact_contact_id NOT IN
+        (SELECT contact_id FROM contact WHERE contact_admin = '1')";
+    $DBRESULT = $pearDB->prepare($query);
+    $DBRESULT->bindValue('aclGroupId', $acl_group_id, PDO::PARAM_INT);
+    $DBRESULT->execute();
+
     for ($i = 0; $contacts = $DBRESULT->fetchRow(); $i++) {
         $group["cg_contacts"][$i] = $contacts["contact_contact_id"];
     }
@@ -68,10 +74,12 @@ if (($o == "c" || $o == "w") && $acl_group_id) {
     /*
      * Set ContactGroup Childs
      */
-    $query = "SELECT DISTINCT cg_cg_id "
-        . "FROM acl_group_contactgroups_relations "
-        . "WHERE acl_group_id = '" . $acl_group_id . "'";
-    $DBRESULT = $pearDB->query($query);
+    $query = "SELECT DISTINCT cg_cg_id
+        FROM acl_group_contactgroups_relations
+        WHERE acl_group_id = :aclGroupId";
+    $DBRESULT = $pearDB->prepare($query);
+    $DBRESULT->bindValue('aclGroupId', $acl_group_id, PDO::PARAM_INT);
+    $DBRESULT->execute();
     for ($i = 0; $contactgroups = $DBRESULT->fetchRow(); $i++) {
         $group["cg_contactGroups"][$i] = $contactgroups["cg_cg_id"];
     }
@@ -80,10 +88,12 @@ if (($o == "c" || $o == "w") && $acl_group_id) {
     /*
      * Set Menu link List
      */
-    $query = "SELECT DISTINCT acl_topology_id "
-        . "FROM acl_group_topology_relations "
-        . "WHERE acl_group_id = '" . $acl_group_id . "'";
-    $DBRESULT = $pearDB->query($query);
+    $query = "SELECT DISTINCT acl_topology_id
+        FROM acl_group_topology_relations
+        WHERE acl_group_id = :aclGroupId";
+    $DBRESULT = $pearDB->prepare($query);
+    $DBRESULT->bindValue('aclGroupId', $acl_group_id, PDO::PARAM_INT);
+    $DBRESULT->execute();
     for ($i = 0; $data = $DBRESULT->fetchRow(); $i++) {
         $group["menuAccess"][$i] = $data["acl_topology_id"];
     }
@@ -92,12 +102,14 @@ if (($o == "c" || $o == "w") && $acl_group_id) {
     /*
      * Set resources List
      */
-    $query = 'SELECT DISTINCT argr.acl_res_id '
-        . 'FROM acl_res_group_relations argr, acl_resources ar '
-        . 'WHERE argr.acl_res_id = ar.acl_res_id '
-        . 'AND ar.locked = 0 '
-        . 'AND argr.acl_group_id = "' . $acl_group_id . '" ';
-    $DBRESULT = $pearDB->query($query);
+    $query = "SELECT DISTINCT argr.acl_res_id
+        FROM acl_res_group_relations argr, acl_resources ar
+        WHERE argr.acl_res_id = ar.acl_res_id
+        AND ar.locked = 0
+        AND argr.acl_group_id = :aclGroupId";
+    $DBRESULT = $pearDB->prepare($query);
+    $DBRESULT->bindValue('aclGroupId', $acl_group_id, PDO::PARAM_INT);
+    $DBRESULT->execute();
     for ($i = 0; $data = $DBRESULT->fetchRow(); $i++) {
         $group["resourceAccess"][$i] = $data["acl_res_id"];
     }
@@ -107,10 +119,12 @@ if (($o == "c" || $o == "w") && $acl_group_id) {
     /*
      * Set Action List
      */
-    $query = "SELECT DISTINCT acl_action_id "
-        . "FROM acl_group_actions_relations "
-        . "WHERE acl_group_id = '" . $acl_group_id . "'";
-    $DBRESULT = $pearDB->query($query);
+    $query = "SELECT DISTINCT acl_action_id
+        FROM acl_group_actions_relations
+        WHERE acl_group_id = :aclGroupId";
+    $DBRESULT = $pearDB->prepare($query);
+    $DBRESULT->bindValue('aclGroupId', $acl_group_id, PDO::PARAM_INT);
+    $DBRESULT->execute();
     for ($i = 0; $data = $DBRESULT->fetchRow(); $i++) {
         $group["actionAccess"][$i] = $data["acl_action_id"];
     }
