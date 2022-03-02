@@ -18,6 +18,7 @@ import { areUserParametersLoadedAtom } from '../Main/useUser';
 import { labelAlias } from '../Resources/translatedLabels';
 import { platformInstallationStatusAtom } from '../platformInstallationStatusAtom';
 import { userEndpoint } from '../api/endpoint';
+import { labelCentreonWallpaper } from '../components/Wallpaper/translatedLabels';
 
 import {
   labelCentreonLogo,
@@ -36,7 +37,10 @@ const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 const cancelTokenRequestParam = { cancelToken: {} };
 
-jest.mock('../Navigation/Sidebar/Logo/centreon.png');
+jest.mock('../assets/centreon.png');
+jest.mock('../assets/centreon-wallpaper-xl.jpg');
+jest.mock('../assets/centreon-wallpaper-lg.jpg');
+jest.mock('../assets/centreon-wallpaper-sm.jpg');
 
 jest.mock('@centreon/ui-context', () =>
   jest.requireActual('centreon-frontend/packages/ui-context'),
@@ -115,10 +119,11 @@ describe('Login Page', () => {
       );
     });
 
+    expect(screen.getByLabelText(labelCentreonWallpaper)).toBeInTheDocument();
+    expect(screen.getByLabelText(labelCentreonLogo)).toBeInTheDocument();
     expect(screen.getByLabelText(labelAlias)).toBeInTheDocument();
     expect(screen.getByLabelText(labelPassword)).toBeInTheDocument();
     expect(screen.getByLabelText(labelConnect)).toBeInTheDocument();
-    expect(screen.getByLabelText(labelCentreonLogo)).toBeInTheDocument();
     expect(screen.getByText('v. 21.10.1')).toBeInTheDocument();
     expect(screen.getByText('Copyright © 2005 - 2020')).toBeInTheDocument();
   });
