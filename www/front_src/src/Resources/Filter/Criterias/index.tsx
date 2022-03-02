@@ -64,7 +64,7 @@ const CriteriasContent = ({
             );
           })}
           <Grid container item className={classes.searchButton} spacing={1}>
-            <Grid item>
+            <Grid item data-testid={labelClear}>
               <Button color="primary" size="small" onClick={clearFilter}>
                 {t(labelClear)}
               </Button>
@@ -72,6 +72,7 @@ const CriteriasContent = ({
             <Grid item>
               <Button
                 color="primary"
+                data-testid={labelSearch}
                 size="small"
                 variant="contained"
                 onClick={applyCurrentFilter}

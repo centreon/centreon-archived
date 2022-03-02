@@ -33,7 +33,12 @@ const ResourceActionButton = ({
 
   if (displayCondensed) {
     return (
-      <IconButton disabled={disabled} title={title} onClick={onClick}>
+      <IconButton
+        data-testid={label}
+        disabled={disabled}
+        title={title}
+        onClick={onClick}
+      >
         {icon}
       </IconButton>
     );
@@ -43,6 +48,7 @@ const ResourceActionButton = ({
     <Tooltip title={permitted ? '' : labelActionNotPermitted}>
       <span>
         <ActionButton
+          data-testid={label}
           disabled={disabled}
           startIcon={icon}
           variant="contained"

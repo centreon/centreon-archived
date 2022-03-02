@@ -101,6 +101,7 @@ const TimePeriodButtonGroup = ({
                       <Button
                         className={classes.button}
                         component="span"
+                        data-testid={largeName}
                         variant={
                           selectedTimePeriod?.id === id
                             ? 'contained'

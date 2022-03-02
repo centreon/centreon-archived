@@ -72,6 +72,7 @@ const RefreshActionsContent = ({
       <Grid item>
         <IconButton
           ariaLabel={t(labelRefresh)}
+          data-testid={labelRefresh}
           disabled={sending}
           size="small"
           title={t(labelRefresh)}
