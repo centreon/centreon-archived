@@ -14,6 +14,7 @@ import {
 } from '@centreon/ui';
 
 import { labelCentreonLogo } from '../Login/translatedLabels';
+import { loginEndpoint } from '../Login/api/endpoint';
 
 import {
   labelCurrentPassword,
@@ -56,6 +57,16 @@ const retrievedUser = {
   use_deprecated_pages: false,
 };
 
+const retrievedWeb = {
+  web: {
+    version: '21.10.1',
+  },
+};
+
+const retrievedLogin = {
+  redirect_uri: '/monitoring/resources',
+};
+
 const TestComponent = ({ initialValues }: Props): JSX.Element => (
   <BrowserRouter>
     <SnackbarProvider>
@@ -73,7 +84,6 @@ const alias = 'admin';
 const renderResetPasswordPage = (
   initialValues: PasswordResetInformations | null = {
     alias,
-    redirectUri: '/monitoring/resources',
   },
 ): RenderResult => render(<TestComponent initialValues={initialValues} />);
 
@@ -82,8 +92,16 @@ describe('Reset password Page', () => {
     mockedAxios.put.mockResolvedValue({
       data: null,
     });
-    mockedAxios.get.mockResolvedValue({
-      data: retrievedUser,
+    mockedAxios.get
+      .mockResolvedValueOnce({
+        data: retrievedWeb,
+      })
+      .mockResolvedValue({
+        data: retrievedUser,
+      });
+
+    mockedAxios.post.mockResolvedValue({
+      data: retrievedLogin,
     });
   });
 
@@ -145,7 +163,7 @@ describe('Reset password Page', () => {
     });
   });
 
-  it('redirects the user to his default page when the new password is successfully renewed', async () => {
+  it('redirects to the default page when the new password is successfully renewed', async () => {
     renderResetPasswordPage();
 
     userEvent.type(
@@ -174,6 +192,13 @@ describe('Reset password Page', () => {
           },
         },
       );
+    });
+
+    await waitFor(() => {
+      expect(mockedAxios.post).toHaveBeenCalledWith(loginEndpoint, {
+        login: alias,
+        password: 'new-password',
+      });
     });
 
     expect(screen.getByText(labelPasswordRenewed)).toBeInTheDocument();

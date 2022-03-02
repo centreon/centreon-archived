@@ -111,6 +111,7 @@ const mockPostLoginPasswordExpired = (): void => {
 };
 
 const labelInvalidCredentials = 'Invalid credentials';
+
 describe('Login Page', () => {
   beforeEach(() => {
     mockDate.set(mockNow);

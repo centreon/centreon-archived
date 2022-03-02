@@ -32,6 +32,7 @@ import { platformVersionsEndpoint } from './api/endpoint';
 interface UseLoginState {
   platformInstallationStatus: PlatformInstallationStatus | null;
   platformVersions: PlatformVersions | null;
+  sendLogin: (values) => Promise<Redirect>;
   submitLoginForm: (
     values: LoginFormValues,
     { setSubmitting }: Pick<FormikHelpers<FormikValues>, 'setSubmitting'>,
@@ -68,10 +69,10 @@ const useLogin = (): UseLoginState => {
     ({ error, alias, setSubmitting }) => {
       const isUserNotAllowed = pathEq(['response', 'status'], 401, error);
 
-      const {
-        password_is_expired: passwordIsExpired,
-        redirect_uri: redirectUri,
-      } = path(['response', 'data'], error) as RedirectAPI;
+      const { password_is_expired: passwordIsExpired } = path(
+        ['response', 'data'],
+        error,
+      ) as RedirectAPI;
 
       if (isUserNotAllowed && not(passwordIsExpired)) {
         setSubmitting(false);
@@ -84,7 +85,6 @@ const useLogin = (): UseLoginState => {
 
       setPasswordResetInformations({
         alias,
-        redirectUri: redirectUri as string,
       });
       navigate(routeMap.resetPassword);
       showWarningMessage(t(labelPasswordHasExpired));
@@ -121,6 +121,7 @@ const useLogin = (): UseLoginState => {
   return {
     platformInstallationStatus,
     platformVersions,
+    sendLogin,
     submitLoginForm,
   };
 };

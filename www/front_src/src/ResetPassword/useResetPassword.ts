@@ -9,6 +9,8 @@ import { putData, useRequest, useSnackbar } from '@centreon/ui';
 
 import useUser from '../Main/useUser';
 import { platformInstallationStatusAtom } from '../platformInstallationStatusAtom';
+import useLogin from '../Login/useLogin';
+import { labelLoginSucceeded } from '../Login/translatedLabels';
 
 import { ResetPasswordValues } from './models';
 import {
@@ -51,6 +53,7 @@ const useResetPassword = (): UseResetPasswordState => {
   const passwordResetInformations = useAtomValue(passwordResetInformationsAtom);
 
   const loadUser = useUser(i18n.changeLanguage);
+  const { sendLogin } = useLogin();
 
   const submitResetPassword = (
     values: ResetPasswordValues,
@@ -67,9 +70,15 @@ const useResetPassword = (): UseResetPasswordState => {
     })
       .then(() => {
         showSuccessMessage(t(labelPasswordRenewed));
-        loadUser(platformInstallationStatus)?.then(() =>
-          navigate(passwordResetInformations?.redirectUri as string),
-        );
+        sendLogin({
+          login: passwordResetInformations?.alias as string,
+          password: values.newPassword,
+        }).then(({ redirectUri }) => {
+          showSuccessMessage(t(labelLoginSucceeded));
+          loadUser(platformInstallationStatus)?.then(() =>
+            navigate(redirectUri),
+          );
+        });
       })
       .catch(() => {
         setSubmitting(false);
