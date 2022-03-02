@@ -81,4 +81,17 @@
     --textarea-background-color: var(--body-background);
     --textarea-font-color: var(--color-white);
     --select2-selection-single-disabled-background-color: var(--body-background);
+    --ajax-option-background-color:var(--info-box-background-color);
+    --ajax-option-h4-font-color:var(--path-way-font-color);
+    --ajax-option-border-bottom-color:var(--info-box-background-color);
+    --ajax-option-border-top-color:var(--info-box-background-color);
+    --ajax-option-tr-first-child-background-color:var(--info-box-background-color);
+    --ajax-option-tr-first-child-font-color:var(--path-way-font-color);
+    --list-header-background:var(--info-box-background-color);
+    --list-table-anchors-font-color:#fff;
+    --list-header-border-top-color:var(--list-table-anchors-font-color);
+    --list-header-border-left-color: var(--list-table-anchors-font-color);
+    --list-header-font-color: var(--list-table-anchors-font-color);
+    --list-table-border-color:var(--info-box-background-color);
+    --service-ok-host-up-success-background-color:#84bd00
 }
