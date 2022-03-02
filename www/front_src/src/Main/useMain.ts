@@ -1,7 +1,8 @@
 import * as React from 'react';
 
 import i18next, { Resource, ResourceLanguage } from 'i18next';
-import { useAtomValue, useUpdateAtom } from 'jotai/utils';
+import { useAtom } from 'jotai';
+import { useAtomValue } from 'jotai/utils';
 import {
   and,
   includes,
@@ -34,12 +35,13 @@ const useMain = (): void => {
       request: getData,
     });
   const { sendRequest: getTranslations } = useRequest<ResourceLanguage>({
+    httpCodesBypassErrorSnackbar: [500],
     request: getData,
   });
 
+  const [webVersions, setWebVersions] = useAtom(platformInstallationStatusAtom);
   const user = useAtomValue(userAtom);
   const areUserParametersLoaded = useAtomValue(areUserParametersLoadedAtom);
-  const setWebVersions = useUpdateAtom(platformInstallationStatusAtom);
 
   const loadUser = useUser(i18next.changeLanguage);
   const location = useLocation();
@@ -47,7 +49,7 @@ const useMain = (): void => {
 
   const getBrowserLocale = (): string => navigator.language.slice(0, 2);
 
-  const initializeI18n = (retrievedTranslations): void => {
+  const initializeI18n = (retrievedTranslations?: ResourceLanguage): void => {
     i18next.use(initReactI18next).init({
       fallbackLng: 'en',
       keySeparator: false,
@@ -65,23 +67,31 @@ const useMain = (): void => {
   };
 
   React.useEffect(() => {
-    getWebVersions({
-      endpoint: webVersionsEndpoint,
-    }).then((retrievedWebVersions) => {
-      setWebVersions(retrievedWebVersions);
-    });
-
     getTranslations({
       endpoint: translationEndpoint,
     })
       .then((retrievedTranslations) => {
-        loadUser();
         initializeI18n(retrievedTranslations);
       })
-      .catch((): void => {
-        loadUser();
+      .catch(() => {
+        initializeI18n();
+      })
+      .finally(() => {
+        getWebVersions({
+          endpoint: webVersionsEndpoint,
+        }).then((retrievedWebVersions) => {
+          setWebVersions(retrievedWebVersions);
+        });
       });
   }, []);
+
+  React.useEffect((): void => {
+    if (isNil(webVersions)) {
+      return;
+    }
+
+    loadUser(webVersions);
+  }, [webVersions]);
 
   React.useEffect(() => {
     const canChangeToBrowserLanguage = and(

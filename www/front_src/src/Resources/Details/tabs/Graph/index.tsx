@@ -63,7 +63,7 @@ const GraphTabContent = ({ details }: TabProps): JSX.Element => {
 
 const MemoizedGraphTabContent = memoizeComponent<TabProps>({
   Component: GraphTabContent,
-  memoProps: ['details'],
+  memoProps: ['details', 'ariaLabel'],
 });
 
 const GraphTab = ({ details }: TabProps): JSX.Element => {
