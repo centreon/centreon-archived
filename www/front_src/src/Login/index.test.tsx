@@ -157,7 +157,10 @@ describe('Login Page', () => {
     expect(screen.getByLabelText(labelConnect)).toBeInTheDocument();
     expect(screen.getByLabelText(labelCentreonLogo)).toBeInTheDocument();
     expect(screen.getByText('v. 21.10.1')).toBeInTheDocument();
-    expect(screen.getByText(`${labelLoginWith} openid`)).toBeInTheDocument();
+    expect(screen.getByText(`${labelLoginWith} openid`)).toHaveAttribute(
+      'href',
+      '/centreon/authentication/providers/configurations/openid',
+    );
     expect(
       screen.queryByText(`${labelLoginWith} ldap`),
     ).not.toBeInTheDocument();
