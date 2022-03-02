@@ -13,7 +13,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { Page } from '../../models';
 import {
   navigationItemSelectedAtom,
-  propsnavigationItemSelected,
+  propsNavigationItemSelected,
 } from '../sideBarAtoms';
 import { openedDrawerWidth } from '../index';
 
@@ -112,7 +112,7 @@ const NavigationMenu = ({
   };
 
   const isHover = (
-    object: Record<string, propsnavigationItemSelected> | null,
+    object: Record<string, propsNavigationItemSelected> | null,
     level: string,
     index: number,
   ): boolean => {

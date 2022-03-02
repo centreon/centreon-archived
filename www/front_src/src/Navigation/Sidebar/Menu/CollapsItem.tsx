@@ -12,7 +12,7 @@ import ListSubheader from '@mui/material/ListSubheader';
 import { Page } from '../../models';
 import {
   navigationItemSelectedAtom,
-  propsnavigationItemSelected,
+  propsNavigationItemSelected,
 } from '../sideBarAtoms';
 
 import MenuItems from './MenuItems';
@@ -139,7 +139,7 @@ const CollapsItem = ({
   };
 
   const isHover = (
-    object: Record<string, propsnavigationItemSelected> | null,
+    object: Record<string, propsNavigationItemSelected> | null,
     levelTitle: string,
     index: number,
     item: Page,
