@@ -1,7 +1,9 @@
 @import "./Variables-css/variables.css";
 .ListTable a:link, #ListTable a:link, .ListTable a:visited, #ListTable a:visited {color: var(--list-table-anchors-font-color);}
-.ListTable, .ListTableMedium, .ListTableSmall {border-color: var(--list-table-border-color); border-radius: 5px}
-
+.ListTable, .ListTableMedium, .ListTableSmall {
+    border-color: var(--list-table-border-color);
+    border-radius: 5px;
+}
 .list_lvl_1 { background-color:var(--list-lvl-1-background-color); }
 .list_lvl_2 { background-color:var(--list-lvl-2-background-color); }
 

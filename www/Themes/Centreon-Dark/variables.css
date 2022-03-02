@@ -88,10 +88,10 @@
     --ajax-option-tr-first-child-background-color:var(--info-box-background-color);
     --ajax-option-tr-first-child-font-color:var(--path-way-font-color);
     --list-header-background:var(--info-box-background-color);
-    --list-header-border-top-color:#fff;
-    --list-header-border-left-color: #ffffff;
     --list-table-anchors-font-color:#fff;
-    --list-header-font-color: #fff;
+    --list-header-border-top-color:var(--list-table-anchors-font-color);
+    --list-header-border-left-color: var(--list-table-anchors-font-color);
+    --list-header-font-color: var(--list-table-anchors-font-color);
     --list-table-border-color:var(--info-box-background-color);
     --service-ok-host-up-success-background-color:#84bd00
 }
