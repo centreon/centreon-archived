@@ -9,7 +9,7 @@ interface ExpandProps {
   size?: 'inherit' | 'large' | 'medium' | 'small';
 }
 
-const Expand = ({ isOpen, size, className }: ExpandProps): JSX.Element => {
+const ArrowIcon = ({ isOpen, size, className }: ExpandProps): JSX.Element => {
   return isOpen ? (
     <ExpandMore className={className} fontSize={size} />
   ) : (
@@ -17,4 +17,4 @@ const Expand = ({ isOpen, size, className }: ExpandProps): JSX.Element => {
   );
 };
 
-export default Expand;
+export default ArrowIcon;

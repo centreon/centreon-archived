@@ -1,11 +1,11 @@
 import { atomWithStorage } from 'jotai/utils';
 
-export const itemSelectedAtom = atomWithStorage<Record<
+export const navigationItemSelectedAtom = atomWithStorage<Record<
   string,
-  propsItemSelected
-> | null>('itemSelectedNav', null);
+  propsnavigationItemSelected
+> | null>('navigationItemSelected', null);
 
-export interface propsItemSelected {
+export interface propsnavigationItemSelected {
   index: number | null;
   label: string;
   url?: string | null;

@@ -10,9 +10,12 @@ import makeStyles from '@mui/styles/makeStyles';
 import ListSubheader from '@mui/material/ListSubheader';
 
 import { Page } from '../../models';
-import { itemSelectedAtom, propsItemSelected } from '../sideBarAtoms';
+import {
+  navigationItemSelectedAtom,
+  propsnavigationItemSelected,
+} from '../sideBarAtoms';
 
-import ListButton from './ListButton';
+import MenuItems from './MenuItems';
 
 interface CollapsProps {
   currentTop?: number;
@@ -91,7 +94,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const MinCollaps = ({
+const CollapsItem = ({
   data,
   isCollapsed,
   isSubHeader,
@@ -101,9 +104,11 @@ const MinCollaps = ({
   level,
 }: CollapsProps): JSX.Element => {
   const classes = useStyles({ currentTop, currentWidth });
-  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [topItem, setTopItem] = useState<number>();
-  const [itemSelectedNav, setItemSelectedNav] = useAtom(itemSelectedAtom);
+  const [navigationItemSelected, setNavigationItemSelected] = useAtom(
+    navigationItemSelectedAtom,
+  );
   const levelName = `level_${level}_Navigated`;
   const widthItem = currentWidth + collapsWidth / 8 + 0.15;
 
@@ -115,26 +120,26 @@ const MinCollaps = ({
     const rect = e.currentTarget.getBoundingClientRect();
     const top = rect.bottom - rect.height;
     setTopItem(top);
-    setSelectedIndex(index);
+    setHoveredIndex(index);
     const levelLabel = `level_${level}`;
 
-    setItemSelectedNav({
-      ...itemSelectedNav,
+    setNavigationItemSelected({
+      ...navigationItemSelected,
       [levelLabel]: { index, label: item.label, url: item?.url },
     });
   };
 
   const handleLeave = (): void => {
-    setSelectedIndex(null);
-    if (itemSelectedNav) {
-      Object.keys(itemSelectedNav).forEach(() => {
-        delete itemSelectedNav[`level_${level}`];
+    setHoveredIndex(null);
+    if (navigationItemSelected) {
+      Object.keys(navigationItemSelected).forEach(() => {
+        delete navigationItemSelected[`level_${level}`];
       });
     }
   };
 
   const isHover = (
-    object: Record<string, propsItemSelected> | null,
+    object: Record<string, propsnavigationItemSelected> | null,
     levelTitle: string,
     index: number,
     item: Page,
@@ -185,8 +190,8 @@ const MinCollaps = ({
     >
       {data?.map((item, index) => {
         const hover =
-          isHover(itemSelectedNav, levelName, index, item) ||
-          equals(selectedIndex, index);
+          isHover(navigationItemSelected, levelName, index, item) ||
+          equals(hoveredIndex, index);
 
         return (
           <List
@@ -209,14 +214,18 @@ const MinCollaps = ({
               item?.children?.map((content, ind) => {
                 const nestedIndex = getNestedIndex(index, ind, data);
                 const nestedHover =
-                  isHover(itemSelectedNav, levelName, nestedIndex, content) ||
-                  equals(selectedIndex, nestedIndex);
+                  isHover(
+                    navigationItemSelected,
+                    levelName,
+                    nestedIndex,
+                    content,
+                  ) || equals(hoveredIndex, nestedIndex);
 
                 return (
-                  <ListButton
+                  <MenuItems
                     data={content}
                     hover={nestedHover}
-                    isOpen={nestedIndex === selectedIndex}
+                    isOpen={nestedIndex === hoveredIndex}
                     key={content.label}
                     onClick={
                       !checkArray(item?.groups)
@@ -230,10 +239,10 @@ const MinCollaps = ({
                 );
               })
             ) : (
-              <ListButton
+              <MenuItems
                 data={item}
                 hover={hover}
-                isOpen={index === selectedIndex}
+                isOpen={index === hoveredIndex}
                 onClick={
                   !checkArray(item?.groups)
                     ? (): void => onClick(item)
@@ -246,12 +255,12 @@ const MinCollaps = ({
             )}
 
             {Array.isArray(item?.groups) && item.groups.length > 1 ? (
-              <MinCollaps
+              <CollapsItem
                 isSubHeader
                 currentTop={topItem}
                 currentWidth={widthItem}
                 data={item.groups}
-                isCollapsed={index === selectedIndex}
+                isCollapsed={index === hoveredIndex}
                 level={level + 1}
                 onClick={onClick}
               />
@@ -261,11 +270,11 @@ const MinCollaps = ({
                 (itemGroup) =>
                   checkArray(itemGroup?.children) && (
                     <div key={itemGroup.label}>
-                      <MinCollaps
+                      <CollapsItem
                         currentTop={topItem}
                         currentWidth={widthItem}
                         data={itemGroup.children}
-                        isCollapsed={index === selectedIndex}
+                        isCollapsed={index === hoveredIndex}
                         level={level + 1}
                         onClick={onClick}
                       />
@@ -280,4 +289,4 @@ const MinCollaps = ({
   );
 };
 
-export default MinCollaps;
+export default CollapsItem;

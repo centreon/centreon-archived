@@ -9,7 +9,7 @@ import makeStyles from '@mui/styles/makeStyles';
 
 import { Page } from '../../models';
 
-import Expand from './Expand';
+import ArrowIcon from './ArrowIcon';
 
 interface Props {
   data: Page;
@@ -48,11 +48,11 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(0),
   },
   listButton: {
-    minHeight: theme.spacing(5.5),
+    minHeight: theme.spacing(5.4),
   },
 }));
 
-const ListButton = ({
+const MenuItems = ({
   onMouseEnter,
   onClick,
   isOpen,
@@ -82,7 +82,11 @@ const ListButton = ({
             {isDrawerOpen &&
               Array.isArray(data?.children) &&
               data.children.length > 0 && (
-                <Expand className={classes.icon} isOpen={isOpen} size="small" />
+                <ArrowIcon
+                  className={classes.icon}
+                  isOpen={isOpen}
+                  size="small"
+                />
               )}
           </ListItemIcon>
           <ListItemText className={classes.label} primary={data.label} />
@@ -91,7 +95,7 @@ const ListButton = ({
         <>
           <ListItemIcon>
             {Array.isArray(data?.groups) && data.groups.length > 0 && (
-              <Expand isOpen={isOpen} size="small" />
+              <ArrowIcon isOpen={isOpen} size="small" />
             )}
           </ListItemIcon>
           <ListItemText className={classes.label} secondary={data.label} />
@@ -101,4 +105,4 @@ const ListButton = ({
   );
 };
 
-export default ListButton;
+export default MenuItems;

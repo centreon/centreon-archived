@@ -11,12 +11,15 @@ import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
 import { Page } from '../../models';
-import { itemSelectedAtom, propsItemSelected } from '../sideBarAtoms';
+import {
+  navigationItemSelectedAtom,
+  propsnavigationItemSelected,
+} from '../sideBarAtoms';
 import { openedDrawerWidth } from '../index';
 
-import ListButton from './ListButton';
+import MenuItems from './MenuItems';
 import icons from './icons';
-import MinCollaps from './MinCollaps';
+import CollapsItem from './CollapsItem';
 
 interface Props {
   isDrawerOpen: boolean;
@@ -41,9 +44,11 @@ const NavigationMenu = ({
   const theme = useTheme();
   const navigate = useNavigate();
 
-  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [currentTop, setCurrentTop] = useState<number>();
-  const [itemSelectedNav, setItemSelectedNav] = useAtom(itemSelectedAtom);
+  const [navigationItemSelected, setNavigationItemSelected] = useAtom(
+    navigationItemSelectedAtom,
+  );
   const levelName = 'level_0_Navigated';
   const closedDrawerWidth = useMediaQuery(theme.breakpoints.up('sm')) ? 8 : 6;
   const currentWidth = isDrawerOpen ? openedDrawerWidth / 8 : closedDrawerWidth;
@@ -51,9 +56,9 @@ const NavigationMenu = ({
   const props = {
     currentTop,
     currentWidth,
+    hoveredIndex,
     isDrawerOpen,
     level: 1,
-    selectedIndex,
   };
 
   const handleHover = (
@@ -64,15 +69,15 @@ const NavigationMenu = ({
     const rect = e.currentTarget.getBoundingClientRect();
     const top = rect.bottom - rect.height;
     setCurrentTop(top);
-    setSelectedIndex(index);
-    setItemSelectedNav({
-      ...itemSelectedNav,
+    setHoveredIndex(index);
+    setNavigationItemSelected({
+      ...navigationItemSelected,
       level_0: { index, label: item.label, url: item?.url },
     });
   };
 
   const handleLeave = (): void => {
-    setSelectedIndex(null);
+    setHoveredIndex(null);
   };
 
   const getUrlFromEntry = (entryProps: Page): string | null | undefined => {
@@ -92,22 +97,22 @@ const NavigationMenu = ({
       navigate(getUrlFromEntry(item) as string);
     }
 
-    if (itemSelectedNav) {
-      Object.keys(itemSelectedNav).forEach((i: string) => {
+    if (navigationItemSelected) {
+      Object.keys(navigationItemSelected).forEach((i: string) => {
         if (i.includes('_Navigated')) {
-          delete itemSelectedNav[i];
+          delete navigationItemSelected[i];
         } else {
-          itemSelectedNav[`${i}_Navigated`] = itemSelectedNav[i];
-          delete itemSelectedNav[i];
+          navigationItemSelected[`${i}_Navigated`] = navigationItemSelected[i];
+          delete navigationItemSelected[i];
         }
       });
     }
 
-    setItemSelectedNav(itemSelectedNav);
+    setNavigationItemSelected(navigationItemSelected);
   };
 
   const isHover = (
-    object: Record<string, propsItemSelected> | null,
+    object: Record<string, propsnavigationItemSelected> | null,
     level: string,
     index: number,
   ): boolean => {
@@ -123,8 +128,8 @@ const NavigationMenu = ({
       {navigationData?.map((item, index) => {
         const MenuIcon = !isNil(item?.icon) && icons[item.icon];
         const hover =
-          isHover(itemSelectedNav, levelName, index) ||
-          equals(selectedIndex, index);
+          isHover(navigationItemSelected, levelName, index) ||
+          equals(hoveredIndex, index);
 
         return (
           <ListItem
@@ -132,23 +137,23 @@ const NavigationMenu = ({
             className={classes.listRoot}
             key={item.label}
           >
-            <ListButton
+            <MenuItems
               isRoot
               data={item}
               hover={hover}
               icon={<MenuIcon className={classes.icon} />}
               isDrawerOpen={isDrawerOpen}
-              isOpen={index === selectedIndex}
+              isOpen={index === hoveredIndex}
               onClick={(): void => handlClickItem(item)}
               onMouseEnter={(e: React.MouseEvent<HTMLElement>): void =>
                 handleHover(e, index, item)
               }
             />
             {Array.isArray(item?.children) && item.children.length > 0 && (
-              <MinCollaps
+              <CollapsItem
                 {...props}
                 data={item.children}
-                isCollapsed={index === selectedIndex}
+                isCollapsed={index === hoveredIndex}
                 onClick={handlClickItem}
               />
             )}
