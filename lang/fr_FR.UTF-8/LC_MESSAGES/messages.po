@@ -16565,7 +16565,7 @@ msgid "Trusted client addresses"
 msgstr "Adresses de clients de confiance"
 
 msgid "Blacklist client addresses"
-msgstr "Adresses de clients blacklistés"
+msgstr "Adresses de clients sur liste noire"
 
 msgid "Base URL"
 msgstr "URL de base"
