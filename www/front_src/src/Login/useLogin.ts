@@ -57,7 +57,7 @@ const useLogin = (): UseLoginState => {
     })
       .then(({ redirectUri }) => {
         showSuccessMessage(t(labelLoginSucceeded));
-        loadUser()?.then(() => navigate(redirectUri));
+        loadUser(platformInstallationStatus)?.then(() => navigate(redirectUri));
       })
       .catch(() => undefined)
       .finally(() => {
@@ -68,7 +68,7 @@ const useLogin = (): UseLoginState => {
   const getBrowserLocale = (): string => navigator.language.slice(0, 2);
 
   React.useEffect(() => {
-    i18n.changeLanguage(getBrowserLocale());
+    i18n.changeLanguage?.(getBrowserLocale());
     sendPlatformVersions({
       endpoint: platformVersionsEndpoint,
     }).then(setPlatformVersions);
