@@ -88,7 +88,7 @@ const GraphTabContent = ({
 
 const MemoizedGraphTabContent = memoizeComponent<GraphTabContentProps>({
   Component: GraphTabContent,
-  memoProps: ['details', 'tabParameters'],
+  memoProps: ['details', 'tabParameters', 'ariaLabel'],
 });
 
 const GraphTab = ({ details }: TabProps): JSX.Element => {

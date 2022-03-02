@@ -508,12 +508,13 @@ const Filter = (): JSX.Element => {
           )}
           <Criterias />
           <ClickAwayListener onClickAway={closeSuggestionPopover}>
-            <div>
+            <div data-testid={labelClearFilter}>
               <SearchField
                 fullWidth
                 EndAdornment={(): JSX.Element => (
                   <IconButton
                     ariaLabel={t(labelClearFilter)}
+                    data-testid={labelClearFilter}
                     size="small"
                     title={t(labelClearFilter)}
                     onClick={clearFilter}
