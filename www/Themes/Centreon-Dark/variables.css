@@ -81,4 +81,10 @@
     --textarea-background-color: var(--body-background);
     --textarea-font-color: var(--color-white);
     --select2-selection-single-disabled-background-color: var(--body-background);
+    --list-header-border-top-color : var(--info-box-background-color);
+    --list-header-border-left-color : var(--list-header-border-top-color);
+    --list-header-background : var(--info-box-background-color);
+    --list-lvl-1-background-color: var(--list-header-background);
+    --list-lvl-2-background-color : var(--list-header-background);
+    --list-table-border-color : var(--list-table-anchors-font-color);
 }
