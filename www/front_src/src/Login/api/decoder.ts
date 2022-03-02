@@ -29,6 +29,7 @@ const providerConfigurationDecoder = JsonDecoder.object<ProviderConfiguration>(
     authenticationUri: JsonDecoder.string,
     id: JsonDecoder.number,
     isActive: JsonDecoder.boolean,
+    isForced: JsonDecoder.optional(JsonDecoder.boolean),
     name: JsonDecoder.string,
   },
   'Provider Condifugration',

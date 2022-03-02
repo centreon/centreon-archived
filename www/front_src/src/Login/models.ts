@@ -22,5 +22,6 @@ export interface ProviderConfiguration {
   authenticationUri: string;
   id: number;
   isActive: boolean;
+  isForced?: boolean;
   name: string;
 }

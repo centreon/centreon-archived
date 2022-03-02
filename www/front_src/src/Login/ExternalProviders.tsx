@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { filter, isEmpty, propEq } from 'ramda';
+import { filter, isEmpty, isNil, or, propEq } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
 import { Button, Divider, Typography } from '@mui/material';
@@ -29,12 +29,7 @@ const ExternalProviders = ({
   const classes = useStyles();
   const { t } = useTranslation();
 
-  const activeProviders = filter(
-    propEq('isActive', true),
-    providersConfiguration || [],
-  );
-
-  if (isEmpty(activeProviders)) {
+  if (or(isNil(providersConfiguration), isEmpty(providersConfiguration))) {
     return null;
   }
 
@@ -43,7 +38,7 @@ const ExternalProviders = ({
       <Divider>
         <Typography>{t(labelOr)}</Typography>
       </Divider>
-      {activeProviders.map(({ name, authenticationUri }) => (
+      {providersConfiguration?.map(({ name, authenticationUri }) => (
         <Button
           color="primary"
           href={authenticationUri}

@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { FormikHelpers, FormikValues } from 'formik';
 import { useAtom } from 'jotai';
 import { useTranslation } from 'react-i18next';
-import { propEq, reject } from 'ramda';
+import { filter, head, isEmpty, isNil, not, or, propEq, reject } from 'ramda';
 
 import { useRequest, useSnackbar, getData } from '@centreon/ui';
 
@@ -100,7 +100,29 @@ const useLogin = (): UseLoginState => {
     getProvidersConfiguration({
       endpoint: providersConfigurationEndpoint,
     }).then((providers) => {
-      setProvidersConfiguration(reject(propEq('name', 'local'), providers));
+      const forcedProviders = reject<ProviderConfiguration>(
+        (provider): boolean =>
+          or(isNil(provider.isForced), not(provider.isForced)),
+        providers || [],
+      );
+
+      if (not(isEmpty(forcedProviders))) {
+        window.location.replace(head(forcedProviders).authenticationUri);
+
+        return;
+      }
+
+      const externalProviders = reject<ProviderConfiguration>(
+        propEq('name', 'local'),
+        providers,
+      );
+
+      const activeProviders = filter<ProviderConfiguration>(
+        propEq('isActive', true),
+        externalProviders || [],
+      );
+
+      setProvidersConfiguration(activeProviders);
     });
   }, []);
 
