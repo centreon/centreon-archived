@@ -76,6 +76,7 @@ const useStyles = makeStyles((theme) => ({
   },
   subHeader: {
     color: theme.palette.text.secondary,
+    fontSize: theme.typography.body2.fontSize,
     fontWeight: 'bold',
     lineHeight: theme.spacing(3),
     textAlign: 'center',

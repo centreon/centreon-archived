@@ -33,11 +33,9 @@ const useStyles = makeStyles((theme) => ({
     },
     '&:hover': {
       backgroundColor: theme.palette.primary.main,
-      // margin: theme.spacing(0.25, 0, 0, 0),
     },
 
     backgroundColor: theme.palette.primary.main,
-    // margin: theme.spacing(0.25, 0, 0, 0),
   },
   containerIcon: {
     alignItems: 'center',
