@@ -60,6 +60,11 @@ class ProviderConfiguration
     private $isForced;
 
     /**
+     * @var array<string,mixed>
+     */
+    private CustomConfigurationInterface $customConfiguration;
+
+    /**
      * @param integer|null $id
      * @param string $type
      * @param string $name
@@ -155,5 +160,16 @@ class ProviderConfiguration
     public function isForced(): bool
     {
         return $this->isForced;
+    }
+
+    public function getCustomConfiguration(): CustomConfigurationInterface
+    {
+        return $this->customConfiguration;
+    }
+
+    public function setCustomConfiguration(CustomConfigurationInterface $customConfiguration): static
+    {
+        $this->customConfiguration = $customConfiguration;
+        return $this;
     }
 }

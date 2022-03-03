@@ -35,6 +35,7 @@ class DbOpenIdConfigurationFactory
     public static function createFromRecord(array $record, array $customConfiguration): OpenIdConfiguration
     {
         return new OpenIdConfiguration(
+            (int) $record['id'],
             $record['is_active'] === '1',
             $record['is_forced'] === '1',
             $customConfiguration['trusted_client_addresses'],

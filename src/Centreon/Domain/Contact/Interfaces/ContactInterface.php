@@ -167,4 +167,39 @@ interface ContactInterface
      * @return static
      */
     public function setDefaultPage(?Page $defaultPage): static;
+
+    /**
+     * Indicates if user uses deprecated pages
+     *
+     * @return  bool
+     */
+    public function isUsingDeprecatedPages(): bool;
+
+    /**
+     * @param  bool  $useDeprecatedPages  Indicates if user uses deprecated pages
+     * @return  self
+     */
+    public function setUseDeprecatedPages(bool $useDeprecatedPages): static;
+
+        /**
+     * @return bool
+     */
+    public function hasAccessToApiConfiguration(): bool;
+
+    /**
+     * @param bool $hasAccessToApiConfiguration
+     * @return self
+     */
+    public function setAccessToApiConfiguration(bool $hasAccessToApiConfiguration): static;
+
+    /**
+     * @return bool
+     */
+    public function hasAccessToApiRealTime(): bool;
+
+    /**
+     * @param bool $hasAccessToApiRealTime
+     * @return self
+     */
+    public function setAccessToApiRealTime(bool $hasAccessToApiRealTime): static;
 }

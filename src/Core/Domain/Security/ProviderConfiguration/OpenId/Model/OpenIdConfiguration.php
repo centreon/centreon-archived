@@ -28,6 +28,9 @@ use Centreon\Domain\Common\Assertion\AssertionException;
 class OpenIdConfiguration
 {
     public const DEFAULT_LOGIN_GLAIM = 'preferred_username';
+    public const AUTHENTICATION_POST = 'client_secret_post';
+    public const AUTHENTICATION_BASIC = 'client_secret_basic';
+    public const NAME = 'openid';
 
     /**
      * @param boolean $isActive
@@ -48,6 +51,7 @@ class OpenIdConfiguration
      * @param boolean $verifyPeer
      */
     public function __construct(
+        private ?int $id,
         private bool $isActive,
         private bool $isForced,
         private array $trustedClientAddresses,
@@ -87,6 +91,24 @@ class OpenIdConfiguration
                 );
             }
         }
+    }
+
+    /**
+     * @param integer $id
+     * @return static
+     */
+    public function setId(int $id): static
+    {
+        $this->id = $id;
+        return $this;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getId(): int
+    {
+        return $this->id;
     }
 
     /**

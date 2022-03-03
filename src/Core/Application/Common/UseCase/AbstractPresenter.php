@@ -46,7 +46,13 @@ abstract class AbstractPresenter implements PresenterInterface
      */
     public function present(mixed $data): void
     {
+        $this->data = $data;
         $this->presenterFormatter->present($data);
+    }
+
+    public function getData(): mixed
+    {
+        return $this->data;
     }
 
     /**

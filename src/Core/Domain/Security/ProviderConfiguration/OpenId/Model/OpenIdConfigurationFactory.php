@@ -36,6 +36,7 @@ class OpenIdConfigurationFactory
     public static function createFromRequest(UpdateOpenIdConfigurationRequest $request): OpenIdConfiguration
     {
         return new OpenIdConfiguration(
+            null,
             $request->isActive,
             $request->isForced,
             $request->trustedClientAddresses,

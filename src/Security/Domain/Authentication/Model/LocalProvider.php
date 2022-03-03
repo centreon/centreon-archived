@@ -22,15 +22,15 @@ declare(strict_types=1);
 
 namespace Security\Domain\Authentication\Model;
 
-use Core\Domain\Security\Authentication\AuthenticationException;
-use Core\Domain\Security\Authentication\PasswordExpiredException;
-use Centreon\Domain\Contact\Interfaces\ContactInterface;
-use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
-use Centreon\Domain\Log\LoggerTrait;
-use Centreon\Domain\Option\Interfaces\OptionServiceInterface;
 use Pimple\Container;
-use Security\Domain\Authentication\Interfaces\ProviderInterface;
+use Centreon\Domain\Log\LoggerTrait;
+use Centreon\Domain\Contact\Interfaces\ContactInterface;
+use Centreon\Domain\Option\Interfaces\OptionServiceInterface;
+use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
 use Security\Domain\Authentication\Model\ProviderConfiguration;
+use Core\Domain\Security\Authentication\AuthenticationException;
+use Security\Domain\Authentication\Interfaces\ProviderInterface;
+use Core\Domain\Security\Authentication\PasswordExpiredException;
 
 /**
  * @package Security\Authentication\Model

@@ -16533,3 +16533,6 @@ msgstr "Erreur lors de la liaison du modèle (id: %d) à l'hôte (id: %d)"
 
 msgid "Error while linking template %s to host (id: %d)"
 msgstr "Erreur lors de la liaison du modèle %s à l'hôte (id: %d)"
+
+msgid "Unable to get authorization code from your external idp"
+msgstr "Impossible d'obtenir le code d'autorisation à partir de votre idp externe"

@@ -54,6 +54,11 @@ interface PresenterInterface
     public function present(mixed $data): void;
 
     /**
+     * @return mixed
+     */
+    public function getData(): mixed;
+
+    /**
      * @return Response
      */
     public function show(): Response;
