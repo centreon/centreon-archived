@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { filter, isEmpty, isNil, or, propEq } from 'ramda';
+import { isEmpty, isNil, or } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
 import { Button, Divider, Typography } from '@mui/material';
