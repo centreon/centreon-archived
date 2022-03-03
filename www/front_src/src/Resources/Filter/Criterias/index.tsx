@@ -50,7 +50,7 @@ const CriteriasContent = ({
                 </Grid>
               );
             })}
-            <Grid item>
+            <Grid item data-testid={labelClear}>
               <Button color="primary" size="small" onClick={clearAllFilters}>
                 {t(labelClear)}
               </Button>

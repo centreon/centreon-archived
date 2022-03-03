@@ -81,6 +81,7 @@ const StatusColumnOnHover = ({
       <IconButton
         ariaLabel={`${t(labelAcknowledge)} ${row.name}`}
         color="primary"
+        data-testid={`${labelAcknowledge}`}
         disabled={disableAcknowledge}
         title={getActionTitle({
           isActionPermitted: isAcknowledePermitted,
@@ -92,6 +93,7 @@ const StatusColumnOnHover = ({
       </IconButton>
       <IconButton
         ariaLabel={`${t(labelSetDowntimeOn)} ${row.name}`}
+        data-testid={`${labelSetDowntimeOn}`}
         disabled={disableDowntime}
         title={getActionTitle({
           isActionPermitted: isDowntimePermitted,
@@ -103,6 +105,7 @@ const StatusColumnOnHover = ({
       </IconButton>
       <IconButton
         ariaLabel={`${t(labelCheck)} ${row.name}`}
+        data-testid={`${labelCheck}`}
         disabled={disableCheck}
         title={getActionTitle({
           isActionPermitted: isCheckPermitted,

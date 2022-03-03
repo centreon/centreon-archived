@@ -200,6 +200,7 @@ class ServiceStatusMenu extends Component {
           </IconHeader>
           <Link
             className={classnames(styles.link, styles['wrap-middle-icon'])}
+            data-testid="Services Critical"
             to={unhandledCriticalServicesLink}
           >
             <IconNumber
@@ -216,6 +217,7 @@ class ServiceStatusMenu extends Component {
           </Link>
           <Link
             className={classnames(styles.link, styles['wrap-middle-icon'])}
+            data-testid="Services Warning"
             to={unhandledWarningServicesLink}
           >
             <IconNumber
@@ -232,6 +234,7 @@ class ServiceStatusMenu extends Component {
           </Link>
           <Link
             className={classnames(styles.link, styles['wrap-middle-icon'])}
+            data-testid="Services Unknown"
             to={unhandledUnknownServicesLink}
           >
             <IconNumber
@@ -248,6 +251,7 @@ class ServiceStatusMenu extends Component {
           </Link>
           <Link
             className={classnames(styles.link, styles['wrap-middle-icon'])}
+            data-testid="Services Ok"
             to={okServicesLink}
           >
             <IconNumber
@@ -259,6 +263,7 @@ class ServiceStatusMenu extends Component {
             />
           </Link>
           <IconToggleSubmenu
+            data-testid="submenu-service"
             iconType="arrow"
             ref={this.setWrapperRef}
             rotate={toggled}
@@ -276,8 +281,10 @@ class ServiceStatusMenu extends Component {
                 onClick={this.toggle}
               >
                 <SubmenuItem
+                  countTestId="submenu services count all"
                   submenuCount={numeral(data.total).format()}
                   submenuTitle={t('All')}
+                  titleTestId="submenu services title all"
                 />
               </Link>
               <Link
@@ -286,11 +293,13 @@ class ServiceStatusMenu extends Component {
                 onClick={this.toggle}
               >
                 <SubmenuItem
+                  countTestId="submenu services count critical"
                   dotColored="red"
                   submenuCount={`${numeral(
                     data.critical.unhandled,
                   ).format()}/${numeral(data.critical.total).format()}`}
                   submenuTitle={t('Critical')}
+                  titleTestId="submenu services title critical"
                 />
               </Link>
               <Link
@@ -299,11 +308,13 @@ class ServiceStatusMenu extends Component {
                 onClick={this.toggle}
               >
                 <SubmenuItem
+                  countTestId="submenu services count warning"
                   dotColored="orange"
                   submenuCount={`${numeral(
                     data.warning.unhandled,
                   ).format()}/${numeral(data.warning.total).format()}`}
                   submenuTitle={t('Warning')}
+                  titleTestId="submenu services title warning"
                 />
               </Link>
               <Link
@@ -312,11 +323,13 @@ class ServiceStatusMenu extends Component {
                 onClick={this.toggle}
               >
                 <SubmenuItem
+                  countTestId="submenu services count unknown"
                   dotColored="gray"
                   submenuCount={`${numeral(
                     data.unknown.unhandled,
                   ).format()}/${numeral(data.unknown.total).format()}`}
                   submenuTitle={t('Unknown')}
+                  titleTestId="submenu services title unknown"
                 />
               </Link>
               <Link
@@ -325,9 +338,11 @@ class ServiceStatusMenu extends Component {
                 onClick={this.toggle}
               >
                 <SubmenuItem
+                  countTestId="submenu services count ok"
                   dotColored="green"
                   submenuCount={numeral(data.ok).format()}
                   submenuTitle={t('Ok')}
+                  titleTestId="submenu services title ok"
                 />
               </Link>
               <Link
