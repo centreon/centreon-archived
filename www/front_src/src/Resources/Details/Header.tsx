@@ -102,6 +102,7 @@ const HeaderContent = ({ details }: DetailsSectionProps): JSX.Element => {
       <Grid item>
         <IconButton
           ariaLabel={t(labelCopyLink)}
+          data-testid={labelCopyLink}
           size="small"
           title={t(labelCopyLink)}
           onClick={copyResourceLink}

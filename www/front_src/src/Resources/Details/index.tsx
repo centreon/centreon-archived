@@ -88,6 +88,7 @@ const Details = (): JSX.Element | null => {
       selectedTabId={getTabIndex(openDetailsTabId)}
       tabs={getVisibleTabs().map(({ id, title }) => (
         <Tab
+          data-testid={id}
           disabled={isNil(details)}
           key={id}
           label={t(title)}
