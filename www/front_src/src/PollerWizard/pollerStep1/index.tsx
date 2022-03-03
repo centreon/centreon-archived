@@ -27,6 +27,7 @@ interface StepOneFormData {
 }
 
 interface WaitList {
+  id: string;
   ip: string;
   server_name: string;
 }
@@ -49,7 +50,7 @@ const FormPollerStepOne = ({
     },
   );
 
-  const { sendRequest } = useRequest<Array<unknown>>({
+  const { sendRequest } = useRequest<Array<WaitList>>({
     request: postData,
   });
 
@@ -86,20 +87,7 @@ const FormPollerStepOne = ({
       endpoint: pollerWaitListEndpoint,
     })
       .then((data): void => {
-        setWaitList([
-          {
-            ip: '172.0.0.1',
-            server_name: 'localhost',
-          },
-          {
-            ip: '198.0.0.1',
-            server_name: 'poller1',
-          },
-          {
-            ip: '172.10.10.1',
-            server_name: 'poller2',
-          },
-        ]);
+        setWaitList(data);
       })
       .catch(() => {
         setWaitList([]);

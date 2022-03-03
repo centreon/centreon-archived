@@ -6,7 +6,6 @@ import { equals } from 'ramda';
 import { Button, Typography } from '@mui/material';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import FormControl from '@mui/material/FormControl';
 import Radio from '@mui/material/Radio';
 
 import {

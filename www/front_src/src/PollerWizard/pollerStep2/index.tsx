@@ -43,12 +43,6 @@ interface Poller {
   name: string;
 }
 
-interface Additional {
-  label: string;
-  text: string;
-  value: string;
-}
-
 interface stepTwoFormData {
   linked_remote_master: string;
   linked_remote_slaves: Array<SelectEntry>;
@@ -127,26 +121,20 @@ const FormPollerStepTwo = ({
     };
     const dataToPost = { ...data, ...pollerData };
     dataToPost.server_type = 'poller';
-    console.log(dataToPost);
-    setWizard({ submitStatus: false });
-    goToNextStep();
 
     postWizardFormRequest({
       data: dataToPost,
       endpoint: wizardFormEndpoint,
     })
       .then(({ success }) => {
-        console.log('======> 1');
         setWizard({ submitStatus: success });
         if (pollerData.linked_remote_master) {
-          console.log('======> 12');
           goToNextStep();
         } else {
-          console.log('======> 13');
           navigate(routeMap.pollerList);
         }
       })
-      .catch(() => console.log('======> block'));
+      .catch(() => undefined);
   };
 
   return (
