@@ -30,7 +30,6 @@ use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Security\Domain\Authentication\Model\AuthenticationTokens;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
-use Security\Domain\Authentication\Model\ProviderConfiguration;
 use Core\Domain\Security\Authentication\AuthenticationException;
 use Security\Domain\Authentication\Interfaces\ProviderInterface;
 use Core\Domain\Security\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
@@ -270,7 +269,7 @@ class OpenIdProvider implements ProviderInterface
         }
         // Create Provider and Refresh Tokens
         $creationDate = new \DateTime();
-        $providerTokenExpiration = (new \DateTime())->add(new \DateInterval('PT' . $content['expires_in'] . 'S'));
+        $providerTokenExpiration = (new \DateTime())->add(new \DateInterval('PT' . 60 . 'S'));
         $refreshTokenExpiration = (new \DateTime())
             ->add(new \DateInterval('PT' . $content['refresh_expires_in'] . 'S'));
         $this->providerToken =  new ProviderToken(
@@ -295,8 +294,9 @@ class OpenIdProvider implements ProviderInterface
         // Define parameters for the request
         $data = [
             "grant_type" => "refresh_token",
-            "refresh_token" => $authenticationToken?->getProviderRefreshToken()->getToken()
-                ?? $this->refreshToken->getToken(),
+            "refresh_token" => $authenticationToken !== null
+                ? $authenticationToken->getProviderRefreshToken()->getToken()
+                : $this->refreshToken->getToken(),
             "scope" => !empty($this->configuration->getConnectionScopes())
                 ? implode(' ', $this->configuration->getConnectionScopes())
                 : null
@@ -347,16 +347,17 @@ class OpenIdProvider implements ProviderInterface
             throw AuthenticationException::notAuthenticated();
         }
         $creationDate = new \DateTime();
-        $providerTokenExpiration = $creationDate->add(new \DateInterval('PT' . $content ['expires_in'] . 'S'));
-        $refreshTokenExpiration = $creationDate->add(new \DateInterval('PT' . $content ['refresh_expires_in'] . 'S'));
+        $providerTokenExpiration = (new \DateTime())->add(new \DateInterval('PT' . $content ['expires_in'] . 'S'));
+        $refreshTokenExpiration = (new \DateTime())
+            ->add(new \DateInterval('PT' . $content ['refresh_expires_in'] . 'S'));
         $this->providerToken =  new ProviderToken(
-            null,
+            $authenticationToken !== null ? $authenticationToken->getProviderToken()->getId() : null,
             $content['access_token'],
             $creationDate,
             $providerTokenExpiration
         );
         $this->refreshToken = new ProviderToken(
-            null,
+            $authenticationToken !== null ? $authenticationToken->getProviderRefreshToken()->getId() : null,
             $content['refresh_token'],
             $creationDate,
             $refreshTokenExpiration
