@@ -191,6 +191,7 @@ class HostMenu extends Component {
           </IconHeader>
           <Link
             className={classnames(styles.link, styles['wrap-middle-icon'])}
+            data-testid="Hosts Down"
             to={unhandledDownHostsLink}
           >
             <IconNumber
@@ -205,6 +206,7 @@ class HostMenu extends Component {
           </Link>
           <Link
             className={classnames(styles.link, styles['wrap-middle-icon'])}
+            data-testid="Hosts Unreachable"
             to={unhandledUnreachableHostsLink}
           >
             <IconNumber
@@ -221,6 +223,7 @@ class HostMenu extends Component {
           </Link>
           <Link
             className={classnames(styles.link, styles['wrap-middle-icon'])}
+            data-testid="Hosts Up"
             to={upHostsLink}
           >
             <IconNumber
@@ -232,6 +235,7 @@ class HostMenu extends Component {
             />
           </Link>
           <IconToggleSubmenu
+            data-testid="submenu-hosts"
             iconType="arrow"
             ref={this.setWrapperRef}
             rotate={toggled}
@@ -249,8 +253,10 @@ class HostMenu extends Component {
                 onClick={this.toggle}
               >
                 <SubmenuItem
+                  countTestId="submenu hosts count all"
                   submenuCount={numeral(data.total).format()}
                   submenuTitle={t('All')}
+                  titleTestId="submenu hosts title all"
                 />
               </Link>
               <Link
@@ -259,11 +265,13 @@ class HostMenu extends Component {
                 onClick={this.toggle}
               >
                 <SubmenuItem
+                  countTestId="submenu hosts count down"
                   dotColored="red"
                   submenuCount={`${numeral(data.down.unhandled).format(
                     '0a',
                   )}/${numeral(data.down.total).format('0a')}`}
                   submenuTitle={t('Down')}
+                  titleTestId="submenu hosts title down"
                 />
               </Link>
               <Link
@@ -272,11 +280,13 @@ class HostMenu extends Component {
                 onClick={this.toggle}
               >
                 <SubmenuItem
+                  countTestId="submenu hosts count unreachable"
                   dotColored="gray"
                   submenuCount={`${numeral(data.unreachable.unhandled).format(
                     '0a',
                   )}/${numeral(data.unreachable.total).format('0a')}`}
                   submenuTitle={t('Unreachable')}
+                  titleTestId="submenu hosts title unreachable"
                 />
               </Link>
               <Link
@@ -285,9 +295,11 @@ class HostMenu extends Component {
                 onClick={this.toggle}
               >
                 <SubmenuItem
+                  countTestId="submenu hosts count ok"
                   dotColored="green"
                   submenuCount={numeral(data.ok).format()}
                   submenuTitle={t('Up')}
+                  titleTestId="submenu hosts title ok"
                 />
               </Link>
               <Link
@@ -296,9 +308,11 @@ class HostMenu extends Component {
                 onClick={this.toggle}
               >
                 <SubmenuItem
+                  countTestId="submenu hosts count pending"
                   dotColored="blue"
                   submenuCount={numeral(data.pending).format()}
                   submenuTitle={t('Pending')}
+                  titleTestId="submenu hosts title pending"
                 />
               </Link>
             </SubmenuItems>

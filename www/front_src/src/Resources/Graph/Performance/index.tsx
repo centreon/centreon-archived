@@ -441,8 +441,10 @@ const PerformanceGraph = ({
             <ButtonGroup className={classes.buttonGroup} size="small">
               <IconButton
                 disableTouchRipple
+                ariaLabel={t(labelPerformancePage)}
                 className={classes.buttonLink}
                 color="primary"
+                data-testid={labelPerformancePage}
                 title={t(labelPerformancePage)}
                 onClick={goToPerformancePage}
               >
@@ -457,6 +459,8 @@ const PerformanceGraph = ({
                   <>
                     <IconButton
                       disableTouchRipple
+                      ariaLabel={t(labelExportToPng)}
+                      data-testid={labelExportToPng}
                       disabled={isNil(timeline)}
                       title={t(labelExportToPng)}
                       onClick={openSizeExportMenu}
@@ -469,13 +473,22 @@ const PerformanceGraph = ({
                       open={Boolean(menuAnchor)}
                       onClose={closeSizeExportMenu}
                     >
-                      <MenuItem onClick={(): void => convertToPng(1)}>
+                      <MenuItem
+                        data-testid={labelAsDisplayed}
+                        onClick={(): void => convertToPng(1)}
+                      >
                         {t(labelAsDisplayed)}
                       </MenuItem>
-                      <MenuItem onClick={(): void => convertToPng(0.75)}>
+                      <MenuItem
+                        data-testid={labelMediumSize}
+                        onClick={(): void => convertToPng(0.75)}
+                      >
                         {t(labelMediumSize)}
                       </MenuItem>
-                      <MenuItem onClick={(): void => convertToPng(0.5)}>
+                      <MenuItem
+                        data-testid={labelSmallSize}
+                        onClick={(): void => convertToPng(0.5)}
+                      >
                         {t(labelSmallSize)}
                       </MenuItem>
                     </Menu>

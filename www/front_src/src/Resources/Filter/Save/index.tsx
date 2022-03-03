@@ -141,7 +141,11 @@ const SaveFilterMenuContent = ({
 
   return (
     <>
-      <IconButton title={t(labelSaveFilter)} onClick={openSaveFilterMenu}>
+      <IconButton
+        data-testid={labelSaveFilter}
+        title={t(labelSaveFilter)}
+        onClick={openSaveFilterMenu}
+      >
         <SettingsIcon />
       </IconButton>
       <Menu
