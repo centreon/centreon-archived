@@ -170,19 +170,23 @@ const CollapsableItems = ({
     return false;
   };
 
-  const getNestedIndex = (index, ind: number, content: Array<Page>): number => {
-    if (index > 1) {
+  const getNestedIndex = (
+    itemIndex,
+    childrenIndex: number,
+    content: Array<Page>,
+  ): number => {
+    if (itemIndex > 1) {
       return (
         Number(content[0].children?.length) +
-        Number(content[index - 1].children?.length) +
-        ind
+        Number(content[itemIndex - 1].children?.length) +
+        childrenIndex
       );
     }
-    if (index === 1) {
-      return ind + Number(content[0].children?.length);
+    if (itemIndex === 1) {
+      return childrenIndex + Number(content[0].children?.length);
     }
 
-    return ind;
+    return childrenIndex;
   };
 
   const isArrayItem = (item: unknown): boolean => {
