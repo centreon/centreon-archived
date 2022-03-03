@@ -278,7 +278,11 @@ const Filter = (): JSX.Element => {
             value={serviceGroups || []}
             onChange={changeServiceGroups}
           />
-          <Button color="primary" onClick={clearAllFilters}>
+          <Button
+            color="primary"
+            data-testid={labelClear}
+            onClick={clearAllFilters}
+          >
             {t(labelClearAll)}
           </Button>
         </div>
