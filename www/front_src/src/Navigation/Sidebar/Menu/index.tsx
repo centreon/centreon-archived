@@ -7,8 +7,6 @@ import { useAtom } from 'jotai';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import makeStyles from '@mui/styles/makeStyles';
-import { useTheme } from '@mui/material/styles';
-import useMediaQuery from '@mui/material/useMediaQuery';
 
 import { Page } from '../../models';
 import {
@@ -41,17 +39,18 @@ const NavigationMenu = ({
   navigationData,
 }: Props): JSX.Element => {
   const classes = useStyles();
-  const theme = useTheme();
   const navigate = useNavigate();
 
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [currentTop, setCurrentTop] = useState<number>();
+  const [maxHeightCollapsScroll, setMaxHeightCollapsScroll] = useState<
+    number | undefined
+  >(undefined);
   const [navigationItemSelected, setNavigationItemSelected] = useAtom(
     navigationItemSelectedAtom,
   );
   const levelName = 'level_0_Navigated';
-  const closedDrawerWidth = useMediaQuery(theme.breakpoints.up('sm')) ? 8 : 6;
-  const currentWidth = isDrawerOpen ? openedDrawerWidth / 8 : closedDrawerWidth;
+  const currentWidth = isDrawerOpen ? openedDrawerWidth / 8 : 8;
 
   const props = {
     currentTop,
@@ -59,6 +58,8 @@ const NavigationMenu = ({
     hoveredIndex,
     isDrawerOpen,
     level: 1,
+    maxHeightCollapsScroll,
+    setMaxHeightCollapsScroll,
   };
 
   const handleHover = (
@@ -67,7 +68,7 @@ const NavigationMenu = ({
     item: Page,
   ): void => {
     const rect = e.currentTarget.getBoundingClientRect();
-    const top = rect.bottom - rect.height;
+    const { top } = rect;
     setCurrentTop(top);
     setHoveredIndex(index);
     setNavigationItemSelected({

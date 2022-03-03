@@ -24,12 +24,17 @@ interface CollapsProps {
   isCollapsed: boolean;
   isSubHeader?: boolean;
   level: number;
+  maxHeightCollapsScroll?: number;
   onClick: (item: Page) => void;
+  setMaxHeightCollapsScroll: React.Dispatch<
+    React.SetStateAction<number | undefined>
+  >;
 }
 
 interface StyleProps {
   currentTop?: number;
   currentWidth: number;
+  maxHeightCollapsScroll?: number;
 }
 
 const collapsWidth = 170;
@@ -64,19 +69,6 @@ const useStyles = makeStyles((theme) => ({
     },
     border: `solid ${theme.palette.divider} 0.1px`,
   },
-  scroll: {
-    '&::-webkit-scrollbar': {
-      width: theme.spacing(1.2),
-    },
-    '&::-webkit-scrollbar-thumb': {
-      backgroundColor: theme.palette.action.disabled,
-    },
-    '&::-webkit-scrollbar-track': {
-      border: `solid ${theme.palette.action.hover} 0.5px`,
-    },
-    maxHeight: theme.spacing(44),
-    overflowX: 'hidden',
-  },
   subHeader: {
     color: theme.palette.text.secondary,
     fontSize: theme.typography.body2.fontSize,
@@ -85,9 +77,23 @@ const useStyles = makeStyles((theme) => ({
     textAlign: 'center',
   },
   toggled: {
+    '&::-webkit-scrollbar': {
+      width: theme.spacing(1.5),
+    },
+    '&::-webkit-scrollbar-thumb': {
+      backgroundColor: theme.palette.action.disabled,
+    },
+    '&::-webkit-scrollbar-track': {
+      border: `solid ${theme.palette.action.hover} 0.5px`,
+    },
     backgroundColor: theme.palette.background.default,
     left: ({ currentWidth }: StyleProps): string => theme.spacing(currentWidth),
+    maxHeight: ({ maxHeightCollapsScroll }: StyleProps): string =>
+      maxHeightCollapsScroll
+        ? theme.spacing(maxHeightCollapsScroll)
+        : theme.spacing(50),
     minWidth: collapsWidth,
+    overflow: 'auto',
     position: 'fixed',
     top: ({ currentTop }: StyleProps): number | undefined => currentTop,
     zIndex: theme.zIndex.mobileStepper,
@@ -102,10 +108,19 @@ const CollapsItem = ({
   currentWidth,
   onClick,
   level,
+  maxHeightCollapsScroll,
+  setMaxHeightCollapsScroll,
 }: CollapsProps): JSX.Element => {
-  const classes = useStyles({ currentTop, currentWidth });
+  const classes = useStyles({
+    currentTop,
+    currentWidth,
+    maxHeightCollapsScroll,
+  });
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [topItem, setTopItem] = useState<number>();
+  const [nestedMaxHeightCollaps, setNestedMaxHeightCollaps] = useState<
+    undefined | number
+  >(undefined);
   const [navigationItemSelected, setNavigationItemSelected] = useAtom(
     navigationItemSelectedAtom,
   );
@@ -118,7 +133,7 @@ const CollapsItem = ({
     item: Page,
   ): void => {
     const rect = e.currentTarget.getBoundingClientRect();
-    const top = rect.bottom - rect.height;
+    const { top } = rect;
     setTopItem(top);
     setHoveredIndex(index);
     const levelLabel = `level_${level}`;
@@ -178,12 +193,27 @@ const CollapsItem = ({
     return false;
   };
 
+  const isElementInViewport = (el: HTMLElement): boolean => {
+    const rect = el.getBoundingClientRect();
+    const isElementInViewPort =
+      rect.top >= 0 &&
+      rect.left >= 0 &&
+      rect.bottom <=
+        (window.innerHeight || document.documentElement.clientHeight) &&
+      rect.right <= (window.innerWidth || document.documentElement.clientWidth);
+
+    setMaxHeightCollapsScroll((window.innerHeight - rect.top) / 8);
+
+    return isElementInViewPort;
+  };
+
   return (
     <Collapse
       unmountOnExit
-      className={clsx(classes.root, classes.toggled, {
-        [classes.scroll]: isSubHeader,
-      })}
+      addEndListener={(node): void => {
+        isElementInViewport(node);
+      }}
+      className={clsx(classes.root, classes.toggled)}
       in={isCollapsed}
       timeout={0}
       onMouseLeave={handleLeave}
@@ -262,6 +292,8 @@ const CollapsItem = ({
                 data={item.groups}
                 isCollapsed={index === hoveredIndex}
                 level={level + 1}
+                maxHeightCollapsScroll={nestedMaxHeightCollaps}
+                setMaxHeightCollapsScroll={setNestedMaxHeightCollaps}
                 onClick={onClick}
               />
             ) : (
@@ -276,6 +308,8 @@ const CollapsItem = ({
                         data={itemGroup.children}
                         isCollapsed={index === hoveredIndex}
                         level={level + 1}
+                        maxHeightCollapsScroll={nestedMaxHeightCollaps}
+                        setMaxHeightCollapsScroll={setNestedMaxHeightCollaps}
                         onClick={onClick}
                       />
                     </div>

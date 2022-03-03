@@ -27,10 +27,7 @@ const closedMixin = (theme: Theme): CSSObject => ({
     duration: theme.transitions.duration.leavingScreen,
     easing: theme.transitions.easing.sharp,
   }),
-  width: theme.spacing(6),
-  [theme.breakpoints.up('sm')]: {
-    width: theme.spacing(8),
-  },
+  width: theme.spacing(8),
 });
 
 const DrawerHeader = styled('div')(() => ({
