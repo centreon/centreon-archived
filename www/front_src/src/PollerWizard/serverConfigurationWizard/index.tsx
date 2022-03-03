@@ -30,7 +30,9 @@ const ServerConfigurationWizard = ({
 
   const [serverType, setServerType] = React.useState<number>(1);
 
-  const handleSubmit = (): void => {
+  const handleSubmit = (event): void => {
+    event.preventDefault();
+
     if (equals(serverType, 1)) {
       changeServerType(ServerType.Remote);
     }

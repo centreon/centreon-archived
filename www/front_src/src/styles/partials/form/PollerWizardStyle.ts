@@ -8,6 +8,12 @@ interface StylesProps {
 }
 
 const useStyles = makeStyles<Theme>((theme) => ({
+  form: {
+    display: 'flex',
+    flexDirection: 'column',
+    rowGap: theme.spacing(2),
+    width: '100%',
+  },
   formButton: {
     columnGap: theme.spacing(1),
     display: 'flex',
@@ -26,6 +32,12 @@ const useStyles = makeStyles<Theme>((theme) => ({
     fontFamily: 'Roboto Regular',
     fontSize: theme.spacing(1.5),
     margin: '20px 0',
+  },
+  wizardRadio: {
+    columnGap: theme.spacing(2),
+    display: 'flex',
+    justifyContent: 'center',
+    marginBottom: theme.spacing(3),
   },
 }));
 
