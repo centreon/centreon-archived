@@ -1,10 +1,10 @@
-import React from 'react';
+import * as React from 'react';
 
 import { useNavigate } from 'react-router-dom';
 import { FormikHelpers, FormikValues } from 'formik';
 import { useAtom } from 'jotai';
 import { useTranslation } from 'react-i18next';
-import { filter, head, isEmpty, isNil, not, or, propEq, reject } from 'ramda';
+import { filter, isEmpty, isNil, not, or, propEq, reject } from 'ramda';
 
 import { useRequest, useSnackbar, getData } from '@centreon/ui';
 
@@ -107,7 +107,7 @@ const useLogin = (): UseLoginState => {
       );
 
       if (not(isEmpty(forcedProviders))) {
-        window.location.replace(head(forcedProviders).authenticationUri);
+        window.location.replace(forcedProviders[0].authenticationUri);
 
         return;
       }
