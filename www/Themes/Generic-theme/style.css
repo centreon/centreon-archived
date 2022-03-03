@@ -1475,8 +1475,8 @@ a.infobulle:hover   {z-index:25;}
 div.uptodate,div.updateSecu,div.update,div.update_readme,div.update_output,div.graph_footer,div.left_menu {margin:3px;padding:3px;}
 div.uptodate,div.updateSecu,div.update,div.update_readme,div.graph_footer,div.left_menu,div.menuLeft,div.updateError{border-radius:4px;}
 
-div.uptodate    {background-color:var(--up-to-date-background-color);border:1px var(--up-to-date-border-color) solid;}
-div.updateSecu  {background-color:var(--update-secu-background-color);border:1px var(--update-secu-border-color) solid;}
+div.uptodate    {background-color:var(--up-to-date-background-color);border:1px var(--up-to-date-border-color) solid; color:var(--up-to-date-color)}
+div.updateSecu  {background-color:var(--update-secu-background-color);border:1px var(--update-secu-border-color) solid;color:var(--up-to-date-color)}
 div.update  {background-color:var(--update-background-color);border:1px var(--update-border-color) solid;}
 div.updateError {background-color:var(--update-error-background-color);border:1px var(--update-error-border-color) solid;}
 div.update_readme,div.update_output {background-color:var(--update-read-me-output-background-color);border:1px var(--update-read-me-output-border-color) solid;}
@@ -1539,6 +1539,7 @@ div.update_readme,div.update_output {background-color:var(--update-read-me-outpu
     vertical-align: middle;
     padding: 2px 0px;
     position: relative;
+    color:var(--ajax-option-h4-font-color)
 }
 
 .ajaxOption h4 {

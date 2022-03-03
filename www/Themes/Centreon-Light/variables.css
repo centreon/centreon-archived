@@ -11,4 +11,6 @@
     --ui-background-color: none;
     --global-view-ui-active-tabs-border-color: none;
     --global-view-ui-active-tabs-border-bottom-color: var(--ui-anchor-state-active-visited-font-color);
+    --up-to-date-color:none;
+    --ajax-option-h4-font-color:none;
 }

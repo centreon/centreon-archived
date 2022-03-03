@@ -426,6 +426,7 @@
     --update-error-border-color: var(--color-silver-chalice-2);
     --update-read-me-output-background-color: var(--color-white);
     --update-read-me-output-border-color: var(--color-silver-chalice-2);
+    --up-to-date-color:var(--color-white);
     /* ------ END : Warning variables -----*/
 
     /* ------ START : Arbo ACL variables -----*/
