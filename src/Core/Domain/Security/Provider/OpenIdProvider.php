@@ -269,7 +269,7 @@ class OpenIdProvider implements ProviderInterface
         }
         // Create Provider and Refresh Tokens
         $creationDate = new \DateTime();
-        $providerTokenExpiration = (new \DateTime())->add(new \DateInterval('PT' . 60 . 'S'));
+        $providerTokenExpiration = (new \DateTime())->add(new \DateInterval('PT' . $content['expires_in'] . 'S'));
         $refreshTokenExpiration = (new \DateTime())
             ->add(new \DateInterval('PT' . $content['refresh_expires_in'] . 'S'));
         $this->providerToken =  new ProviderToken(
