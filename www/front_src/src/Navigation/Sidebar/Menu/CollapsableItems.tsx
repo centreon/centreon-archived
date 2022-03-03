@@ -17,7 +17,7 @@ import {
 
 import MenuItems from './MenuItems';
 
-interface CollapsProps {
+interface Props {
   currentTop?: number;
   currentWidth: number;
   data?: Array<Page>;
@@ -100,7 +100,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const CollapsItem = ({
+const CollapsableItems = ({
   data,
   isCollapsed,
   isSubHeader,
@@ -110,7 +110,7 @@ const CollapsItem = ({
   level,
   maxHeightCollapsScroll,
   setMaxHeightCollapsScroll,
-}: CollapsProps): JSX.Element => {
+}: Props): JSX.Element => {
   const classes = useStyles({
     currentTop,
     currentWidth,
@@ -127,7 +127,7 @@ const CollapsItem = ({
   const levelName = `level_${level}_Navigated`;
   const widthItem = currentWidth + collapsWidth / 8 + 0.15;
 
-  const handleHover = (
+  const hoverItem = (
     e: React.MouseEvent<HTMLElement>,
     index: number,
     item: Page,
@@ -153,7 +153,7 @@ const CollapsItem = ({
     }
   };
 
-  const isHover = (
+  const isItemHovered = (
     object: Record<string, propsNavigationItemSelected> | null,
     levelTitle: string,
     index: number,
@@ -185,7 +185,7 @@ const CollapsItem = ({
     return ind;
   };
 
-  const checkArray = (item: unknown): boolean => {
+  const isArrayItem = (item: unknown): boolean => {
     if (Array.isArray(item)) {
       return item.length > 0;
     }
@@ -220,7 +220,7 @@ const CollapsItem = ({
     >
       {data?.map((item, index) => {
         const hover =
-          isHover(navigationItemSelected, levelName, index, item) ||
+          isItemHovered(navigationItemSelected, levelName, index, item) ||
           equals(hoveredIndex, index);
 
         return (
@@ -240,11 +240,11 @@ const CollapsItem = ({
             }
           >
             {isSubHeader ? (
-              checkArray(item?.children) &&
+              isArrayItem(item?.children) &&
               item?.children?.map((content, ind) => {
                 const nestedIndex = getNestedIndex(index, ind, data);
                 const nestedHover =
-                  isHover(
+                  isItemHovered(
                     navigationItemSelected,
                     levelName,
                     nestedIndex,
@@ -258,12 +258,12 @@ const CollapsItem = ({
                     isOpen={nestedIndex === hoveredIndex}
                     key={content.label}
                     onClick={
-                      !checkArray(item?.groups)
+                      !isArrayItem(item?.groups)
                         ? (): void => onClick(content)
                         : undefined
                     }
                     onMouseEnter={(e: React.MouseEvent<HTMLElement>): void =>
-                      handleHover(e, nestedIndex, content)
+                      hoverItem(e, nestedIndex, content)
                     }
                   />
                 );
@@ -274,18 +274,18 @@ const CollapsItem = ({
                 hover={hover}
                 isOpen={index === hoveredIndex}
                 onClick={
-                  !checkArray(item?.groups)
+                  !isArrayItem(item?.groups)
                     ? (): void => onClick(item)
                     : undefined
                 }
                 onMouseEnter={(e: React.MouseEvent<HTMLElement>): void =>
-                  handleHover(e, index, item)
+                  hoverItem(e, index, item)
                 }
               />
             )}
 
             {Array.isArray(item?.groups) && item.groups.length > 1 ? (
-              <CollapsItem
+              <CollapsableItems
                 isSubHeader
                 currentTop={topItem}
                 currentWidth={widthItem}
@@ -297,12 +297,12 @@ const CollapsItem = ({
                 onClick={onClick}
               />
             ) : (
-              checkArray(item?.groups) &&
+              isArrayItem(item?.groups) &&
               item?.groups?.map(
                 (itemGroup) =>
-                  checkArray(itemGroup?.children) && (
+                  isArrayItem(itemGroup?.children) && (
                     <div key={itemGroup.label}>
-                      <CollapsItem
+                      <CollapsableItems
                         currentTop={topItem}
                         currentWidth={widthItem}
                         data={itemGroup.children}
@@ -323,4 +323,4 @@ const CollapsItem = ({
   );
 };
 
-export default CollapsItem;
+export default CollapsableItems;

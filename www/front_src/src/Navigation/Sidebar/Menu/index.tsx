@@ -17,7 +17,7 @@ import { openedDrawerWidth } from '../index';
 
 import MenuItems from './MenuItems';
 import icons from './icons';
-import CollapsItem from './CollapsItem';
+import CollapsableItems from './CollapsableItems';
 
 interface Props {
   isDrawerOpen: boolean;
@@ -62,7 +62,7 @@ const NavigationMenu = ({
     setMaxHeightCollapsScroll,
   };
 
-  const handleHover = (
+  const hoverItem = (
     e: React.MouseEvent<HTMLElement>,
     index: number | null,
     item: Page,
@@ -112,7 +112,7 @@ const NavigationMenu = ({
     setNavigationItemSelected(navigationItemSelected);
   };
 
-  const isHover = (
+  const isItemHovered = (
     object: Record<string, propsNavigationItemSelected> | null,
     level: string,
     index: number,
@@ -129,7 +129,7 @@ const NavigationMenu = ({
       {navigationData?.map((item, index) => {
         const MenuIcon = !isNil(item?.icon) && icons[item.icon];
         const hover =
-          isHover(navigationItemSelected, levelName, index) ||
+          isItemHovered(navigationItemSelected, levelName, index) ||
           equals(hoveredIndex, index);
 
         return (
@@ -147,11 +147,11 @@ const NavigationMenu = ({
               isOpen={index === hoveredIndex}
               onClick={(): void => handlClickItem(item)}
               onMouseEnter={(e: React.MouseEvent<HTMLElement>): void =>
-                handleHover(e, index, item)
+                hoverItem(e, index, item)
               }
             />
             {Array.isArray(item?.children) && item.children.length > 0 && (
-              <CollapsItem
+              <CollapsableItems
                 {...props}
                 data={item.children}
                 isCollapsed={index === hoveredIndex}
