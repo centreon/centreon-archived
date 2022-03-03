@@ -197,7 +197,6 @@ class CfgCentreonBrokerInfo
                 'config_group'    => 'logger',
                 'config_group_id' => 1,
             ],
-            /////////////////////////////////////
             [
                 'config_id'       => 1,
                 'config_key'      => 'name',
