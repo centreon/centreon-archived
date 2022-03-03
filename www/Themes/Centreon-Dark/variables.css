@@ -93,5 +93,6 @@
     --list-header-border-left-color: var(--list-table-anchors-font-color);
     --list-header-font-color: var(--list-table-anchors-font-color);
     --list-table-border-color:var(--info-box-background-color);
-    --service-ok-host-up-success-background-color:#84bd00
+    --service-ok-host-up-success-background-color:#84bd00;
+    --ui-icon-fill-color: var(--color-primary-light);
 }

@@ -709,6 +709,7 @@
     --jquery-ui-widget-header-background-color: var(--color-mercury-2);
     --jquery-ui-widget-header-font-color: var(--jquery-ui-widget-content-font-color);
     --jquery-ui-widget-header-anchor-font-color: var(--jquery-ui-widget-content-font-color);
+    --ui-icon-fill-color: var(--color-primary-dark);
     /* Interaction states variables */
     --ui-button-state-disabled-hovered-active-border-color: var(--color-silver-4);
     --ui-button-state-disabled-hovered-active-background-color: var(--color-wild-sand-2);
