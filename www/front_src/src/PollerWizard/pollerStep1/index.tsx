@@ -75,9 +75,6 @@ const FormPollerStepOne = ({
         setWaitList([]);
       });
   };
-  React.useEffect(() => {
-    getWaitList();
-  }, []);
 
   const initializeFromRest = (value): void => {
     setInitialized(true);
@@ -114,10 +111,13 @@ const FormPollerStepOne = ({
     goToNextStep();
   };
 
-  const nextDesabled =
+  const nextDisabled =
     Object.values(stepOneFormData).some((x) => x === '') ||
     Object.values(error).some((x) => x !== '');
 
+  React.useEffect(() => {
+    getWaitList();
+  }, []);
   React.useEffect(() => {
     if (waitList) {
       const platform = waitList.find(
@@ -255,7 +255,7 @@ const FormPollerStepOne = ({
           </Button>
           <Button
             color="primary"
-            disabled={nextDesabled}
+            disabled={nextDisabled}
             size="small"
             type="submit"
             variant="contained"
