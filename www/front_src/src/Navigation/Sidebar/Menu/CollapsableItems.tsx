@@ -91,7 +91,7 @@ const useStyles = makeStyles((theme) => ({
     maxHeight: ({ maxHeightCollapsScroll }: StyleProps): string =>
       maxHeightCollapsScroll
         ? theme.spacing(maxHeightCollapsScroll)
-        : theme.spacing(50),
+        : theme.spacing(40),
     minWidth: collapsWidth,
     overflow: 'auto',
     position: 'fixed',
@@ -172,21 +172,21 @@ const CollapsableItems = ({
 
   const getNestedIndex = (
     itemIndex,
-    childrenIndex: number,
+    childIndex: number,
     content: Array<Page>,
   ): number => {
     if (itemIndex > 1) {
       return (
         Number(content[0].children?.length) +
         Number(content[itemIndex - 1].children?.length) +
-        childrenIndex
+        childIndex
       );
     }
     if (itemIndex === 1) {
-      return childrenIndex + Number(content[0].children?.length);
+      return childIndex + Number(content[0].children?.length);
     }
 
-    return childrenIndex;
+    return childIndex;
   };
 
   const isArrayItem = (item: unknown): boolean => {
@@ -197,25 +197,16 @@ const CollapsableItems = ({
     return false;
   };
 
-  const isElementInViewport = (el: HTMLElement): boolean => {
+  const updateMaxHeightCollaps = (el: HTMLElement): void => {
     const rect = el.getBoundingClientRect();
-    const isElementInViewPort =
-      rect.top >= 0 &&
-      rect.left >= 0 &&
-      rect.bottom <=
-        (window.innerHeight || document.documentElement.clientHeight) &&
-      rect.right <= (window.innerWidth || document.documentElement.clientWidth);
-
     setMaxHeightCollapsScroll((window.innerHeight - rect.top) / 8);
-
-    return isElementInViewPort;
   };
 
   return (
     <Collapse
       unmountOnExit
       addEndListener={(node): void => {
-        isElementInViewport(node);
+        updateMaxHeightCollaps(node);
       }}
       className={clsx(classes.root, classes.toggled)}
       in={isCollapsed}
