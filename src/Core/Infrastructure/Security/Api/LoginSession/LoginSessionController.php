@@ -27,7 +27,6 @@ use Centreon\Application\Controller\AbstractController;
 use Core\Application\Security\UseCase\LoginSession\LoginSession;
 use Core\Application\Security\UseCase\LoginSession\LoginSessionPresenterInterface;
 use Core\Application\Security\UseCase\LoginSession\LoginSessionRequest;
-use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Core\Domain\Security\Authentication\AuthenticationException;
 use JsonSchema\Validator;
@@ -56,14 +55,12 @@ class LoginSessionController extends AbstractController
 
         try {
             $loginSession($presenter, $loginSessionRequest);
-        } catch (AuthenticationException $e) {
+        } catch (AuthenticationException) {
             return $presenter->show();
         }
 
         $presenter->setResponseHeaders(
-            [
-                Cookie::create('PHPSESSID', $session->getId()),
-            ],
+            ['Set-Cookie' => 'PHPSESSID=' . $session->getId()]
         );
 
         return $presenter->show();
