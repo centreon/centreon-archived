@@ -147,8 +147,10 @@ class FindHostNotificationPolicy
      * @param int $hostId
      * @param FindNotificationPolicyPresenterInterface $presenter
      */
-    private function handleHostNotFound(int $hostId, FindNotificationPolicyPresenterInterface $presenter): void
-    {
+    private function handleHostNotFound(
+        int $hostId,
+        FindNotificationPolicyPresenterInterface $presenter,
+    ): void {
         $this->error(
             "Host not found",
             [
@@ -165,7 +167,7 @@ class FindHostNotificationPolicy
      */
     private function handleEngineHostConfigurationNotFound(
         int $hostId,
-        FindNotificationPolicyPresenterInterface $presenter
+        FindNotificationPolicyPresenterInterface $presenter,
     ): void {
         $this->error(
             "Engine configuration not found for Host",
