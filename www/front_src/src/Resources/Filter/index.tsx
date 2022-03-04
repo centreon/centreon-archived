@@ -280,7 +280,7 @@ const Filter = (): JSX.Element => {
           />
           <Button
             color="primary"
-            data-testid={labelClear}
+            data-testid={labelClearAll}
             onClick={clearAllFilters}
           >
             {t(labelClearAll)}
