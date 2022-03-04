@@ -164,7 +164,8 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('openid_connect_client_id', ''),
 ('openid_connect_client_secret', ''),
 ('openid_connect_client_basic_auth', '0'),
-('openid_connect_verify_peer', '0');
+('openid_connect_verify_peer', '0'),
+('unified_sql_db_type', 'mysql');
 
 --
 -- Contenu de la table `giv_components_template`
@@ -619,7 +620,8 @@ INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`
 (69, 'storage_db_type', 'Storage DB type', 'Target DBMS.', 'select', NULL),
 (74, 'path', 'Path', 'Path of the lua script.', 'text', NULL),
 (75, 'connections_count', 'Number of connection to the database', 'Usually cpus/2', 'int', NULL),
-(76, 'tls_hostname', 'TLS Host name', 'Expected TLS certificate common name (CN) - leave blank if unsure.', 'text', NULL);
+(76, 'tls_hostname', 'TLS Host name', 'Expected TLS certificate common name (CN) - leave blank if unsure.', 'text', NULL),
+(77, 'db_type', 'DB type', 'Target DBMS.', 'text', 'T=options:C=value:CK=key:K=unified_sql_db_type');
 
 INSERT INTO `cb_fieldgroup` (`cb_fieldgroup_id`, `groupname`, `displayname`, `multiple`, `group_parent_id`) VALUES
 (1, 'filters', '', 0, NULL),
@@ -902,7 +904,8 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 (34, 43, 1, 14),
 (34, 47, 0, 15),
 (34, 49, 0, 16),
-(34, 50, 0, 17);
+(34, 50, 0, 17),
+(34, 77, 1, 18);
 
 --
 -- Contenu de la table `cb_type_field_relation`

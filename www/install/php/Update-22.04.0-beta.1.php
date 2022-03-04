@@ -180,6 +180,16 @@ try {
             VALUES ($tagId, $typeId, 0)"
     );
 
+    $errorMessage = 'Unable to update options table';
+    $statement = $pearDB->query("INSERT INTO options VALUES ('unified_sql_db_type', 'mysql')");
+
+    $errorMessage = 'Unable to update cb_field table';
+    $statement = $pearDB->query(
+        "INSERT INTO cb_field (fieldname, displayname, description, fieldtype, external)
+            VALUES ('db_type', 'DB type', 'Target DBMS.', 'text', 'T=options:C=value:CK=key:K=unified_sql_db_type')"
+    );
+    $fieldId = $pearDB->lastInsertId();
+
     $errorMessage = 'Unable to update cb_type_field_relation table';
     $inputs = [];
     $statement = $pearDB->query(
@@ -194,6 +204,8 @@ try {
     if (empty($inputs)) {
         throw new Exception("Cannot find fields in cb_type_field_relation table");
     }
+
+    $inputs[] = ['cb_field_id' => $fieldId, 'is_required' => 1];
 
     $query = "INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`, `order_display`)";
     foreach ($inputs as $key => $input) {
