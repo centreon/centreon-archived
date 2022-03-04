@@ -81,7 +81,7 @@ class LoginOpenIdSession
         $this->provider->setConfiguration($openIdProviderConfiguration);
 
         try {
-            $this->provider->authenticateOrFail($request->authorizationCode);
+            $this->provider->authenticateOrFail($request->authorizationCode, $request->clientIp);
             $user = $this->provider->getUser();
             if ($user === null) {
                 if (!$this->provider->canCreateUser()) {
