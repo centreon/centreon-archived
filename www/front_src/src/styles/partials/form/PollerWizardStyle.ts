@@ -1,6 +1,7 @@
 import makeStyles from '@mui/styles/makeStyles';
 import { CreateCSSProperties } from '@mui/styles';
 import { Theme } from '@mui/material';
+import { grey } from '@mui/material/colors';
 
 interface StylesProps {
   statusCreating: boolean | null;
@@ -51,6 +52,12 @@ const useStylesWithProps = makeStyles<Theme, StylesProps>((theme) => ({
   },
   formHeading: {
     marginBottom: theme.spacing(0.625),
+  },
+  formText: {
+    color: grey[500],
+    fontFamily: 'Roboto Regular',
+    fontSize: theme.spacing(1.5),
+    margin: '20px 0',
   },
   statusCreating: ({ statusCreating }): CreateCSSProperties<StylesProps> => ({
     color: statusCreating ? '#acd174' : '#d0021b',
