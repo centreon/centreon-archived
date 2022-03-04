@@ -128,7 +128,7 @@ const FormRemoteServerStepTwo = ({
     <div>
       <div className={classes.formHeading}>
         <Typography variant="h6">
-          {t('Select pollers to be attached to this new Remote Server')}
+          {t('Add advanced server configuration')}
         </Typography>
       </div>
       <form autoComplete="off" onSubmit={handleSubmit}>
