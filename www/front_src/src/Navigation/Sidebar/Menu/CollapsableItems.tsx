@@ -91,7 +91,7 @@ const useStyles = makeStyles((theme) => ({
     maxHeight: ({ maxHeightCollapsScroll }: StyleProps): string =>
       maxHeightCollapsScroll
         ? theme.spacing(maxHeightCollapsScroll)
-        : theme.spacing(40),
+        : theme.spacing(50),
     minWidth: collapsWidth,
     overflow: 'auto',
     position: 'fixed',
@@ -121,11 +121,15 @@ const CollapsableItems = ({
   const [nestedMaxHeightCollaps, setNestedMaxHeightCollaps] = useState<
     undefined | number
   >(undefined);
+  const [currentItemNode, setCurrentItemNode] = useState<
+    HTMLElement | undefined
+  >(undefined);
   const [navigationItemSelected, setNavigationItemSelected] = useAtom(
     navigationItemSelectedAtom,
   );
   const levelName = `level_${level}_Navigated`;
   const widthItem = currentWidth + collapsWidth / 8 + 0.15;
+  const minimumMarginBottom = 4;
 
   const hoverItem = (
     e: React.MouseEvent<HTMLElement>,
@@ -197,10 +201,36 @@ const CollapsableItems = ({
     return false;
   };
 
+  const isElementInViewport = (el: HTMLElement | undefined): boolean => {
+    if (el) {
+      const rect = el.getBoundingClientRect();
+      const isElementInViewPort =
+        rect.top >= 0 &&
+        rect.left >= 0 &&
+        rect.bottom <=
+          (window.innerHeight || document.documentElement.clientHeight) &&
+        rect.right <=
+          (window.innerWidth || document.documentElement.clientWidth);
+
+      return isElementInViewPort;
+    }
+
+    return false;
+  };
+
   const updateMaxHeightCollaps = (el: HTMLElement): void => {
     const rect = el.getBoundingClientRect();
+    setCurrentItemNode(el);
     setMaxHeightCollapsScroll((window.innerHeight - rect.top) / 8);
   };
+
+  React.useEffect(() => {
+    if (maxHeightCollapsScroll) {
+      if (!isElementInViewport(currentItemNode)) {
+        setMaxHeightCollapsScroll(maxHeightCollapsScroll - minimumMarginBottom);
+      }
+    }
+  }, [currentItemNode]);
 
   return (
     <Collapse
