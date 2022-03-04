@@ -1,5 +1,6 @@
 import * as React from 'react';
 
+import { isNil } from 'ramda';
 import { useTranslation } from 'react-i18next';
 import { useUpdateAtom } from 'jotai/utils';
 
@@ -56,9 +57,42 @@ const FormPollerStepOne = ({
 
   const setWizard = useUpdateAtom(setWizardDerivedAtom);
 
+  const getWaitList = (): void => {
+    sendRequest({
+      data: null,
+      endpoint: pollerWaitListEndpoint,
+    })
+      .then((data): void => {
+        setWaitList(data);
+      })
+      .catch(() => {
+        setWaitList([]);
+      });
+  };
   React.useEffect(() => {
     getWaitList();
   }, []);
+
+  const initializeFromRest = (value): void => {
+    setInitialized(true);
+    setInputTypeManual(!value);
+  };
+
+  const handleChange = (event): void => {
+    const { value, name } = event.target;
+
+    setStepOneFormData({
+      ...stepOneFormData,
+      [name]: value,
+    });
+  };
+
+  const handleSubmit = (event): void => {
+    event.preventDefault();
+
+    setWizard(stepOneFormData);
+    goToNextStep();
+  };
 
   React.useEffect(() => {
     if (waitList) {
@@ -75,45 +109,11 @@ const FormPollerStepOne = ({
   }, [stepOneFormData.server_ip]);
 
   React.useEffect(() => {
-    if (waitList && !initialized) {
-      initializeFromRest(waitList.length > 0);
+    if (isNil(waitList) || initialized) {
+      return;
     }
-    setInitialized(true);
+    initializeFromRest(waitList.length > 0);
   }, [waitList]);
-
-  const getWaitList = (): void => {
-    sendRequest({
-      data: null,
-      endpoint: pollerWaitListEndpoint,
-    })
-      .then((data): void => {
-        setWaitList(data);
-      })
-      .catch(() => {
-        setWaitList([]);
-      });
-  };
-
-  const initializeFromRest = (value): void => {
-    setInitialized(true);
-    setInputTypeManual(!value);
-  };
-
-  const handleChange = (evt): void => {
-    const { value, name } = evt.target;
-
-    setStepOneFormData({
-      ...stepOneFormData,
-      [name]: value,
-    });
-  };
-
-  const handleSubmit = (event): void => {
-    event.preventDefault();
-
-    setWizard(stepOneFormData);
-    goToNextStep();
-  };
 
   return (
     <div>

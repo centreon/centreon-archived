@@ -14,7 +14,7 @@ interface PollerData {
   server_ip?: string;
   server_name?: string;
   server_type?: string;
-  submitStatus?: boolean;
+  submitStatus?: boolean | null;
 }
 
 const FormPollerStepThree = (): JSX.Element => {
@@ -24,8 +24,9 @@ const FormPollerStepThree = (): JSX.Element => {
 
   return (
     <WizardFormInstallingStatus
+      error={null}
       formTitle={`${t('Finalizing Setup')}`}
-      statusCreating={pollerData.submitStatus}
+      statusCreating={pollerData.submitStatus ? pollerData.submitStatus : null}
       statusGenerating={null}
     />
   );

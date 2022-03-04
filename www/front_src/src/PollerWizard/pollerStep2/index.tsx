@@ -54,6 +54,7 @@ const FormPollerStepTwo = ({
 }: Props): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   const [pollers, setPollers] = React.useState<Array<Poller>>([]);
   const [stepTwoFormData, setStepTwoFormData] = React.useState<stepTwoFormData>(
@@ -67,19 +68,15 @@ const FormPollerStepTwo = ({
   const { sendRequest: getPollersRequest } = useRequest<Array<Poller>>({
     request: postData,
   });
+
   const { sendRequest: postWizardFormRequest } = useRequest<{
     success: boolean;
   }>({
     request: postData,
   });
+
   const pollerData = useAtomValue<PollerData>(pollerAtom);
   const setWizard = useUpdateAtom(setWizardDerivedAtom);
-
-  React.useEffect(() => {
-    getPollers();
-  }, []);
-
-  const navigate = useNavigate();
 
   const getPollers = (): void => {
     getPollersRequest({ data: null, endpoint: getPollersEndpoint }).then(
@@ -136,6 +133,10 @@ const FormPollerStepTwo = ({
       })
       .catch(() => undefined);
   };
+
+  React.useEffect(() => {
+    getPollers();
+  }, []);
 
   return (
     <div>
