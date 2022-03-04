@@ -51,6 +51,12 @@ const FormPollerStepOne = ({
     },
   );
 
+  const [error, setError] = React.useState<StepOneFormData>({
+    centreon_central_ip: '',
+    server_ip: '',
+    server_name: '',
+  });
+
   const { sendRequest } = useRequest<Array<WaitList>>({
     request: postData,
   });
@@ -81,9 +87,23 @@ const FormPollerStepOne = ({
   const handleChange = (event): void => {
     const { value, name } = event.target;
 
+    setError({
+      ...error,
+      [name]: value.trim() === '' ? 'required' : '',
+    });
+
     setStepOneFormData({
       ...stepOneFormData,
       [name]: value,
+    });
+  };
+
+  const handleBlur = (event): void => {
+    const { value, name } = event.target;
+
+    setError({
+      ...error,
+      [name]: value.trim() === '' ? 'required' : '',
     });
   };
 
@@ -93,6 +113,10 @@ const FormPollerStepOne = ({
     setWizard(stepOneFormData);
     goToNextStep();
   };
+
+  const nextDesabled =
+    Object.values(stepOneFormData).some((x) => x === '') ||
+    Object.values(error).some((x) => x !== '');
 
   React.useEffect(() => {
     if (waitList) {
@@ -139,25 +163,40 @@ const FormPollerStepOne = ({
           <div className={classes.form}>
             <TextField
               fullWidth
+              required
+              error={
+                error.server_name.length > 0 ? error.server_name : undefined
+              }
               label={`${t('Server Name')}`}
               name="server_name"
               value={stepOneFormData.server_name}
+              onBlur={handleBlur}
               onChange={handleChange}
             />
             <TextField
               fullWidth
+              required
+              error={error.server_ip.length > 0 ? error.server_ip : undefined}
               label={`${t('Server IP address')}`}
               name="server_ip"
               value={stepOneFormData.server_ip}
+              onBlur={handleBlur}
               onChange={handleChange}
             />
             <TextField
               fullWidth
+              required
+              error={
+                error.centreon_central_ip.length > 0
+                  ? error.centreon_central_ip
+                  : undefined
+              }
               label={`${t(
                 'Centreon Central IP address, as seen by this server',
               )}`}
               name="centreon_central_ip"
               value={stepOneFormData.centreon_central_ip}
+              onBlur={handleBlur}
               onChange={handleChange}
             />
           </div>
@@ -175,6 +214,10 @@ const FormPollerStepOne = ({
             ) : null}
             <TextField
               fullWidth
+              required
+              error={
+                error.server_name.length > 0 ? error.server_name : undefined
+              }
               label={`${t('Server Name')}`}
               name="server_name"
               value={stepOneFormData.server_name}
@@ -182,6 +225,8 @@ const FormPollerStepOne = ({
             />
             <TextField
               fullWidth
+              required
+              error={error.server_ip.length > 0 ? error.server_ip : undefined}
               label={`${t('Server IP address')}`}
               name="server_ip"
               value={stepOneFormData.server_ip}
@@ -189,6 +234,12 @@ const FormPollerStepOne = ({
             />
             <TextField
               fullWidth
+              required
+              error={
+                error.centreon_central_ip.length > 0
+                  ? error.centreon_central_ip
+                  : undefined
+              }
               label={`${t(
                 'Centreon Central IP address, as seen by this server',
               )}`}
@@ -204,6 +255,7 @@ const FormPollerStepOne = ({
           </Button>
           <Button
             color="primary"
+            disabled={nextDesabled}
             size="small"
             type="submit"
             variant="contained"
