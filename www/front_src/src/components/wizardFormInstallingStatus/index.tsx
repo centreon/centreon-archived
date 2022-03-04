@@ -3,16 +3,29 @@
 
 import React from 'react';
 
-import classnames from 'classnames';
 import { useTranslation } from 'react-i18next';
 
 import { Typography, Paper } from '@mui/material';
 
 import { ContentWithCircularLoading } from '@centreon/ui';
 
-import styles from '../../styles/partials/form/_form.scss';
+import { useStylesWithProps } from '../../styles/partials/form/PollerWizardStyle';
 
-export default ({ formTitle, statusCreating, statusGenerating, error }) => {
+interface Props {
+  error: string | null;
+  formTitle: string;
+  statusCreating: boolean | null;
+  statusGenerating: boolean | null;
+}
+
+export default ({
+  formTitle,
+  statusCreating,
+  statusGenerating,
+  error,
+}: Props): JSX.Element => {
+  const classes = useStylesWithProps({ statusCreating, statusGenerating });
+
   const { t } = useTranslation();
   const loading = statusCreating === null || statusGenerating === null;
   const hasError =
@@ -20,22 +33,21 @@ export default ({ formTitle, statusCreating, statusGenerating, error }) => {
 
   return (
     <Paper
-      className={classnames(styles['form-container'], styles.installation)}
+    // className={
+    //   classnames(styles['form-container'], styles.installation)
+    // }
     >
-      <div className={styles['form-inner']}>
-        <div className={styles['form-heading']}>
+      <div
+      // className={styles['form-inner']}
+      >
+        <div className={classes.formHeading}>
           <Typography variant="h6">{formTitle}</Typography>
         </div>
         {/* display loader until tasks are finished or error is displayed */}
-        <p className={styles['form-text']}>
+        <p className={classes.formText}>
           <Typography>{t('Creating Export Task')}</Typography>
           <ContentWithCircularLoading alignCenter loading={loading}>
-            <span
-              className={classnames(
-                styles['form-status'],
-                styles[statusCreating ? 'valid' : 'failed'],
-              )}
-            >
+            <span className={classes.statusCreating}>
               {statusCreating != null ? (
                 <Typography variant="body2">
                   {statusCreating ? '[OK]' : '[FAIL]'}
@@ -46,15 +58,10 @@ export default ({ formTitle, statusCreating, statusGenerating, error }) => {
             </span>
           </ContentWithCircularLoading>
         </p>
-        <p className={styles['form-text']}>
+        <p className={classes.formText}>
           <Typography>{t('Generating Export Files')}</Typography>
           <ContentWithCircularLoading alignCenter loading={loading}>
-            <span
-              className={classnames(
-                styles['form-status'],
-                styles[statusGenerating ? 'valid' : 'failed'],
-              )}
-            >
+            <span className={classes.statusGenerating}>
               {statusGenerating != null ? (
                 <Typography variant="body2">
                   {statusGenerating ? '[OK]' : '[FAIL]'}
