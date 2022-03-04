@@ -198,6 +198,8 @@ class LoginSessionTest extends TestCase
             ->method('authenticateOrFail')
             ->willThrowException(AuthenticationException::notAuthenticated());
 
+        $this->expectException(AuthenticationException::class);
+
         $this->providerService
             ->expects($this->once())
             ->method('findProviderByConfigurationName')
@@ -231,6 +233,8 @@ class LoginSessionTest extends TestCase
             ->expects($this->once())
             ->method('authenticateOrFail')
             ->willThrowException(PasswordExpiredException::passwordIsExpired());
+
+        $this->expectException(PasswordExpiredException::class);
 
         $this->providerService
             ->expects($this->once())
