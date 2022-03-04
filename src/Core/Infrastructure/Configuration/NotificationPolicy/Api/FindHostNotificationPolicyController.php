@@ -40,10 +40,13 @@ class FindHostNotificationPolicyController extends AbstractController
         FindNotificationPolicyPresenterInterface $presenter
     ): object {
         /**
-         * Access denied if no rights given to the configuration for the current user
+         * Access denied if no rights given to the configuration and realtime for the current user
          */
         $this->denyAccessUnlessGrantedForApiConfiguration();
+        $this->denyAccessUnlessGrantedForApiRealtime();
+
         $useCase($hostId, $presenter);
+
         return $presenter->show();
     }
 }

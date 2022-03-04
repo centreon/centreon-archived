@@ -30,6 +30,6 @@ class NotificationException extends \InvalidArgumentException
      */
     public static function badEvent(string $event): self
     {
-        return new self(sprintf('Invalid event provided (%s)', $event));
+        return new self(sprintf(_('Invalid event provided (%s)'), $event));
     }
 }

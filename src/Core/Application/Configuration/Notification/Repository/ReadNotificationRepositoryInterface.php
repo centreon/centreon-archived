@@ -27,8 +27,11 @@ use Core\Domain\Configuration\Notification\Model\HostNotification;
 interface ReadNotificationRepositoryInterface
 {
     /**
+     * Find host notifications settings (timeperiod, events) by user ids
+     * result is indexed by user id
+     *
      * @param int[] $userIds
      * @return HostNotification[]
      */
-    public function findHostNotificationsByUserIds(array $userIds): array;
+    public function findHostNotificationSettingsByUserIds(array $userIds): array;
 }

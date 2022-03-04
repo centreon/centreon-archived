@@ -27,6 +27,7 @@ use Centreon\Domain\HostConfiguration\Model\HostGroup;
 use Centreon\Domain\HostConfiguration\Model\HostSeverity;
 use Centreon\Domain\MonitoringServer\MonitoringServer;
 use Centreon\Domain\Annotation\EntityDescriptor;
+use Centreon\Domain\Common\Assertion\Assertion;
 
 /***
  * This class is designed to represent a host configuration.
@@ -55,6 +56,12 @@ class Host
     public const NOTIFICATIONS_OPTION_DISABLED = 0,
                  NOTIFICATIONS_OPTION_ENABLED = 1,
                  NOTIFICATIONS_OPTION_DEFAULT_ENGINE_VALUE = 2;
+
+    private const AVAILABLE_NOTIFICATIONS_OPTION = [
+        self::NOTIFICATIONS_OPTION_DISABLED,
+        self::NOTIFICATIONS_OPTION_ENABLED,
+        self::NOTIFICATIONS_OPTION_DEFAULT_ENGINE_VALUE,
+    ];
 
     /**
      * @var int|null
@@ -514,7 +521,14 @@ class Host
      */
     public function setNotificationsEnabledOption(int $notificationsEnabledOption): self
     {
+        Assertion::inArray(
+            $notificationsEnabledOption,
+            self::AVAILABLE_NOTIFICATIONS_OPTION,
+            'Engine::notificationsEnabledOption',
+        );
+
         $this->notificationsEnabledOption = $notificationsEnabledOption;
+
         return $this;
     }
 }

@@ -43,7 +43,7 @@ class DbReadNotificationRepository extends AbstractRepositoryDRB implements Read
     /**
      * @inheritDoc
      */
-    public function findHostNotificationsByUserIds(array $userIds): array
+    public function findHostNotificationSettingsByUserIds(array $userIds): array
     {
         $this->info('Fetching notifications from database');
         $notifications = [];
@@ -77,7 +77,7 @@ class DbReadNotificationRepository extends AbstractRepositoryDRB implements Read
         $collector->bind($statement);
         $statement->execute();
 
-        while (($row = $statement->fetch(\PDO::FETCH_ASSOC))) {
+        while ($row = $statement->fetch(\PDO::FETCH_ASSOC)) {
             $notifications[$row['contact_id']] = DbHostNotificationFactory::createFromRecord($row);
         }
 

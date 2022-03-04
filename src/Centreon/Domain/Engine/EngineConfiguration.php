@@ -22,11 +22,19 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Engine;
 
+use Centreon\Domain\Common\Assertion\Assertion;
+
 class EngineConfiguration
 {
     public const NOTIFICATIONS_OPTION_DISABLED = 0,
                  NOTIFICATIONS_OPTION_ENABLED = 1,
                  NOTIFICATIONS_OPTION_DEFAULT = 2;
+
+    private const AVAILABLE_NOTIFICATIONS_OPTION = [
+        self::NOTIFICATIONS_OPTION_DISABLED,
+        self::NOTIFICATIONS_OPTION_ENABLED,
+        self::NOTIFICATIONS_OPTION_DEFAULT,
+    ];
 
     /**
      * @var int|null
@@ -165,7 +173,14 @@ class EngineConfiguration
      */
     public function setNotificationsEnabledOption(int $notificationsEnabledOption): self
     {
+        Assertion::inArray(
+            $notificationsEnabledOption,
+            self::AVAILABLE_NOTIFICATIONS_OPTION,
+            'Engine::notificationsEnabledOption',
+        );
+
         $this->notificationsEnabledOption = $notificationsEnabledOption;
+
         return $this;
     }
 }

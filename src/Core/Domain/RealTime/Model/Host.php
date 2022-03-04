@@ -378,7 +378,7 @@ class Host
      * @param bool $isNotificationEnabled
      * @return self
      */
-    public function setIsNotificationEnabled(bool $isNotificationEnabled): self
+    public function setNotificationEnabled(bool $isNotificationEnabled): self
     {
         $this->isNotificationEnabled = $isNotificationEnabled;
 

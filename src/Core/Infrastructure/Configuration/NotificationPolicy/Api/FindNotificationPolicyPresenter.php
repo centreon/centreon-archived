@@ -22,10 +22,7 @@ declare(strict_types=1);
 
 namespace Core\Infrastructure\Configuration\NotificationPolicy\Api;
 
-use Symfony\Component\HttpFoundation\Response;
 use Core\Application\Common\UseCase\AbstractPresenter;
-use Core\Infrastructure\Common\Presenter\PresenterTrait;
-use Core\Application\Common\UseCase\ResponseStatusInterface;
 use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
 use Core\Application\Configuration\NotificationPolicy\UseCase\FindNotificationPolicyPresenterInterface;
 use Core\Infrastructure\Configuration\NotificationPolicy\Api\Hypermedia\UserGroupHypermediaCreator;
@@ -33,13 +30,6 @@ use Core\Infrastructure\Configuration\NotificationPolicy\Api\Hypermedia\UserHype
 
 class FindNotificationPolicyPresenter extends AbstractPresenter implements FindNotificationPolicyPresenterInterface
 {
-    use PresenterTrait;
-
-    /**
-     * @var ResponseStatusInterface|null
-     */
-    protected $responseStatus;
-
     /**
      * @param UserHypermediaCreator $userHypermediaCreator
      * @param UserGroupHypermediaCreator $userGroupHypermediaCreator
@@ -85,32 +75,5 @@ class FindNotificationPolicyPresenter extends AbstractPresenter implements FindN
         $presenterResponse['is_notification_enabled'] = $response->isNotificationEnabled;
 
         $this->presenterFormatter->present($presenterResponse);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function show(): Response
-    {
-        if ($this->getResponseStatus() !== null) {
-            $this->presenterFormatter->present($this->getResponseStatus());
-        }
-        return $this->presenterFormatter->show();
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function setResponseStatus(?ResponseStatusInterface $responseStatus): void
-    {
-        $this->responseStatus = $responseStatus;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getResponseStatus(): ?ResponseStatusInterface
-    {
-        return $this->responseStatus;
     }
 }

@@ -20,6 +20,8 @@
  */
 declare(strict_types=1);
 
+namespace Tests\Core\Application\Configuration\NotificationPolicy\UseCase;
+
 use Core\Application\Configuration\NotificationPolicy\UseCase\FindHostNotificationPolicy;
 use Core\Application\Configuration\NotificationPolicy\UseCase\FindNotificationPolicyPresenterInterface;
 use Core\Application\Configuration\NotificationPolicy\UseCase\FindNotificationPolicyResponse;
@@ -168,7 +170,7 @@ it('returns empty response when host notification is disabled', function () {
             'cg' => [],
         ]);
 
-    $this->realTimeHost->setIsNotificationEnabled(false);
+    $this->realTimeHost->setNotificationEnabled(false);
     $this->readRealTimeHostRepository
         ->expects($this->once())
         ->method('findHostById')
@@ -235,7 +237,7 @@ it('returns users, user groups and settings when host notification is enabled', 
 
     $this->notificationRepository
         ->expects($this->once())
-        ->method('findHostNotificationsByUserIds')
+        ->method('findHostNotificationSettingsByUserIds')
         ->with([2])
         ->willReturn([$hostNotification]);
 
@@ -245,7 +247,7 @@ it('returns users, user groups and settings when host notification is enabled', 
         ->with([3])
         ->willReturn([$userGroup]);
 
-    $this->realTimeHost->setIsNotificationEnabled(true);
+    $this->realTimeHost->setNotificationEnabled(true);
     $this->readRealTimeHostRepository
         ->expects($this->once())
         ->method('findHostById')

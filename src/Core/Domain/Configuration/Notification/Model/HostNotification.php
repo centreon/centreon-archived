@@ -32,14 +32,12 @@ class HostNotification implements NotificationInterface
     public const EVENT_HOST_RECOVERY = 'RECOVERY',
                  EVENT_HOST_SCHEDULED_DOWNTIME = 'SCHEDULED_DOWNTIME',
                  EVENT_HOST_FLAPPING = 'FLAPPING',
-                 EVENT_HOST_NONE = 'NONE',
                  EVENT_HOST_DOWN = 'DOWN',
                  EVENT_HOST_UNREACHABLE = 'UNREACHABLE';
 
     public const HOST_EVENTS = [
         self::EVENT_HOST_DOWN,
         self::EVENT_HOST_FLAPPING,
-        self::EVENT_HOST_NONE,
         self::EVENT_HOST_RECOVERY,
         self::EVENT_HOST_SCHEDULED_DOWNTIME,
         self::EVENT_HOST_UNREACHABLE,

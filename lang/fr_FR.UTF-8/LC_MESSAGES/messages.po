@@ -16575,3 +16575,6 @@ msgstr "Votre mot de passe expirera dans"
 
 msgid "Password has expired"
 msgstr "Votre mot de passe a expiré"
+
+msgid "Invalid event provided (%s)"
+msgstr "Evénement fourni invalide (%s)"

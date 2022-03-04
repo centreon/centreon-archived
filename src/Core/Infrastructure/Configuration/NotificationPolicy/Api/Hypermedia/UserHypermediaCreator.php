@@ -49,8 +49,8 @@ class UserHypermediaCreator
     public function createUserConfigurationUri(int $userId): ?string
     {
         return (
-            $this->contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_USERS_CONTACTS__USERS_READ_WRITE)
-            || $this->contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_USERS_CONTACTS__USERS_READ)
+            $this->contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_CONTACTS_READ_WRITE)
+            || $this->contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_CONTACTS_READ)
             || $this->contact->isAdmin()
         )
         ? $this->getBaseUri() . str_replace('{userId}', (string) $userId, self::URI_CONFIGURATION_USER)

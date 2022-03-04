@@ -20,20 +20,9 @@
  */
 declare(strict_types=1);
 
-use Core\Application\Configuration\NotificationPolicy\UseCase\FindHostNotificationPolicy;
-use Core\Application\Configuration\NotificationPolicy\UseCase\FindNotificationPolicyPresenterInterface;
+namespace Tests\Core\Application\Configuration\NotificationPolicy\UseCase;
+
 use Core\Application\Configuration\NotificationPolicy\UseCase\FindNotificationPolicyResponse;
-use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
-use Core\Domain\Configuration\Notification\Model\NotificationInterface;
-use Centreon\Domain\Engine\Interfaces\EngineConfigurationServiceInterface;
-use Core\Application\Configuration\User\Repository\ReadUserRepositoryInterface;
-use Centreon\Domain\HostConfiguration\Interfaces\HostConfigurationRepositoryInterface;
-use Core\Application\Configuration\UserGroup\Repository\ReadUserGroupRepositoryInterface;
-use Core\Application\Configuration\Notification\Repository\ReadNotificationRepositoryInterface;
-use Core\Application\Configuration\NotificationPolicy\Repository\LegacyNotificationPolicyRepositoryInterface;
-use Centreon\Domain\Contact\Interfaces\ContactInterface;
-use Centreon\Domain\HostConfiguration\Host;
-use Core\Application\Common\UseCase\NotFoundResponse;
 use Core\Domain\Configuration\User\Model\User;
 use Core\Domain\Configuration\Notification\Model\HostNotification;
 use Core\Domain\Configuration\TimePeriod\Model\TimePeriod;

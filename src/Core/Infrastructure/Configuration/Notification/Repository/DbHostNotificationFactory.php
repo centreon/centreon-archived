@@ -47,7 +47,7 @@ class DbHostNotificationFactory
 
         foreach ($events as $event) {
             $normalizedEvent = self::normalizeHostEvent($event);
-            if ($normalizedEvent === HostNotification::EVENT_HOST_NONE) {
+            if ($normalizedEvent === null) {
                 continue;
             }
             $notification->addEvent($normalizedEvent);
@@ -60,9 +60,9 @@ class DbHostNotificationFactory
      * Convert single char referencing Host event into a string
      *
      * @param string $event
-     * @return string
+     * @return string|null
      */
-    private static function normalizeHostEvent(string $event): string
+    private static function normalizeHostEvent(string $event): ?string
     {
         return match ($event) {
             'd' => HostNotification::EVENT_HOST_DOWN,
@@ -70,7 +70,7 @@ class DbHostNotificationFactory
             'r' => HostNotification::EVENT_HOST_RECOVERY,
             'f' => HostNotification::EVENT_HOST_FLAPPING,
             's' => HostNotification::EVENT_HOST_SCHEDULED_DOWNTIME,
-            default => HostNotification::EVENT_HOST_NONE
+            default => null
         };
     }
 }

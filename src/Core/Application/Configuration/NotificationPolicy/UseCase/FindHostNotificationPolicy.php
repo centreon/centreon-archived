@@ -89,7 +89,9 @@ class FindHostNotificationPolicy
             'cg' => $notifiedUserGroupIds,
         ] = $this->legacyRepository->findHostNotifiedUserIdsAndUserGroupIds($hostId);
         $users = $this->userRepository->findUsersByIds($notifiedUserIds);
-        $usersNotificationSettings = $this->notificationRepository->findHostNotificationsByUserIds($notifiedUserIds);
+        $usersNotificationSettings = $this->notificationRepository->findHostNotificationSettingsByUserIds(
+            $notifiedUserIds
+        );
         $userGroups = $this->userGroupRepository->findByIds($notifiedUserGroupIds);
 
         $realtimeHost = $this->readRealTimeHostRepository->findHostById($hostId);
@@ -98,6 +100,8 @@ class FindHostNotificationPolicy
             return;
         }
 
+        // If engine configuration related to the host has notification disabled,
+        // it overrides host configuration
         $engineConfiguration = $this->engineService->findEngineConfigurationByHost($host);
         if ($engineConfiguration === null) {
             $this->handleEngineHostConfigurationNotFound($hostId, $presenter);
@@ -107,7 +111,7 @@ class FindHostNotificationPolicy
             $engineConfiguration->getNotificationsEnabledOption() ===
                 EngineConfiguration::NOTIFICATIONS_OPTION_DISABLED
         ) {
-            $realtimeHost->setIsNotificationEnabled(false);
+            $realtimeHost->setNotificationEnabled(false);
         }
 
         $presenter->present(
