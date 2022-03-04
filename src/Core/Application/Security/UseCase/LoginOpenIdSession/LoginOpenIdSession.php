@@ -34,6 +34,7 @@ use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Menu\Interfaces\MenuServiceInterface;
 use Core\Domain\Security\Authentication\AuthenticationException;
 use Centreon\Domain\Repository\Interfaces\DataStorageEngineInterface;
+use Centreon\Infrastructure\Service\Exception\NotFoundException;
 use Security\Domain\Authentication\Interfaces\SessionRepositoryInterface;
 use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
 use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
@@ -84,10 +85,13 @@ class LoginOpenIdSession
             $user = $this->provider->getUser();
             if ($user === null) {
                 if (!$this->provider->canCreateUser()) {
-                    throw new \Exception('User not found');
+                    throw new NotFoundException('User not found');
                 }
                 $this->provider->createUser();
                 $user = $this->provider->getUser();
+                if ($user === null) {
+                    throw new NotFoundException('User not found');
+                }
             }
             $sessionUserInfos = [
                 'contact_id' => $user->getId(),
@@ -127,7 +131,7 @@ class LoginOpenIdSession
                     );
                 }
             }
-        } catch (AuthenticationException $e) {
+        } catch (AuthenticationException | NotFoundException $e) {
             $presenter->present($this->createResponse(null, $e->getMessage()));
             return;
         }

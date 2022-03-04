@@ -30,12 +30,15 @@ use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Security\Domain\Authentication\Model\AuthenticationTokens;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
-use Core\Domain\Security\Authentication\AuthenticationException;
+use Centreon\Domain\Log\LoggerTrait;
 use Security\Domain\Authentication\Interfaces\ProviderInterface;
+use Core\Domain\Security\Authentication\SSOAuthenticationException;
 use Core\Domain\Security\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
 
 class OpenIdProvider implements ProviderInterface
 {
+    use LoggerTrait;
+
     /**
      * @var OpenIdConfiguration
      */
@@ -158,8 +161,11 @@ class OpenIdProvider implements ProviderInterface
      */
     public function authenticateOrFail(?string $authorizationCode): void
     {
-        if (empty($authorizationCode['code']) || $authorizationCode['code'] === null) {
-            //throw exception
+        $this->info('Start authenticating user...', [
+            'provider' => OpenIdConfiguration::NAME
+        ]);
+        if (empty($authorizationCode) || $authorizationCode === null) {
+            throw SSOAuthenticationException::noAuthorizationCode(OpenIdConfiguration::NAME);
         }
 
         $this->verifyThatClientIsAllowedToConnectOrFail();
@@ -169,21 +175,10 @@ class OpenIdProvider implements ProviderInterface
             $this->refreshToken();
         }
         if ($this->providerToken->isExpired() && $this->refreshToken->isExpired()) {
-            throw AuthenticationException::notAuthenticated();
+            throw SSOAuthenticationException::tokensExpired(OpenIdConfiguration::NAME);
         }
         if ($this->configuration->getIntrospectionTokenEndpoint() !== null) {
             $this->sendRequestForIntrospectionTokenOrFail();
-        }
-
-        $loginClaim = $this->configuration->getLoginClaim() ?? OpenIdConfiguration::DEFAULT_LOGIN_GLAIM;
-        if (
-            !array_key_exists($loginClaim, $this->userInformations)
-            && $this->configuration->getUserInformationEndpoint() !== null
-        ) {
-            $this->sendRequestForUserInformationOrFail();
-        }
-        if (!array_key_exists($loginClaim, $this->userInformations)) {
-            throw AuthenticationException::notAuthenticated();
         }
 
         $this->username = $this->getUsernameFromLoginClaim();
@@ -252,20 +247,20 @@ class OpenIdProvider implements ProviderInterface
                     "[Error] Unable to get Token Access Information:, message: %s",
                     $e->getMessage()
                 );
-                throw AuthenticationException::notAuthenticated();
+                throw SSOAuthenticationException::requestForConnectionTokenFail();
         }
 
         // Get the status code and throw an Exception if not a 200
         $statusCode = $response->getStatusCode();
         if ($statusCode !== Response::HTTP_OK) {
-            throw AuthenticationException::notAuthenticated();
+            throw SSOAuthenticationException::requestForConnectionTokenFail();
         }
         $content = json_decode($response->getContent(false), true);
         if (array_key_exists('error', $content) || empty($content)) {
             //add logs
 
             //throw exception
-            throw AuthenticationException::notAuthenticated();
+            throw SSOAuthenticationException::errorFromExternalProvider(OpenIdConfiguration::NAME);
         }
         // Create Provider and Refresh Tokens
         $creationDate = new \DateTime();
@@ -331,20 +326,20 @@ class OpenIdProvider implements ProviderInterface
                     "[Error] Unable to get Token Access Information:, message: %s",
                     $e->getMessage()
                 );
-                throw AuthenticationException::notAuthenticated();
+                throw SSOAuthenticationException::requestForRefreshTokenFail();
         }
 
         // Get the status code and throw an Exception if not a 200
         $statusCode = $response->getStatusCode();
         if ($statusCode !== Response::HTTP_OK) {
-            throw AuthenticationException::notAuthenticated();
+            throw SSOAuthenticationException::requestForRefreshTokenFail();
         }
         $content = json_decode($response->getContent(false), true);
         if (array_key_exists('error', $content) || empty($content)) {
             //add logs
 
             //throw exception
-            throw AuthenticationException::notAuthenticated();
+            throw SSOAuthenticationException::errorFromExternalProvider(OpenIdConfiguration::NAME);
         }
         $creationDate = new \DateTime();
         $providerTokenExpiration = (new \DateTime())->add(new \DateInterval('PT' . $content ['expires_in'] . 'S'));
@@ -395,19 +390,19 @@ class OpenIdProvider implements ProviderInterface
                 ]
             );
         } catch (\Exception $ex) {
-            throw AuthenticationException::notAuthenticated();
+            throw SSOAuthenticationException::requestForIntrospectionTokenFail();
         }
 
         $statusCode = $response->getStatusCode();
         if ($statusCode !== Response::HTTP_OK) {
-            throw AuthenticationException::notAuthenticated();
+            throw SSOAuthenticationException::requestForIntrospectionTokenFail();
         }
         $content = json_decode($response->getContent(false), true);
         if (array_key_exists('error', $content) || empty($content)) {
             //add logs
 
             //throw exception
-            throw AuthenticationException::notAuthenticated();
+            throw SSOAuthenticationException::errorFromExternalProvider(OpenIdConfiguration::NAME);
         }
         $this->userInformations = $content;
     }
@@ -428,38 +423,39 @@ class OpenIdProvider implements ProviderInterface
                 ]
             );
         } catch (\Exception $ex) {
-            throw AuthenticationException::notAuthenticated();
+            throw SSoAuthenticationException::requestForUserInformationFail();
         }
 
         $statusCode = $response->getStatusCode();
         if ($statusCode !== Response::HTTP_OK) {
-            throw AuthenticationException::notAuthenticated();
+            throw SSoAuthenticationException::requestForUserInformationFail();
         }
         $content = json_decode($response->getContent(false), true);
         if (array_key_exists('error', $content) || empty($content)) {
             //add logs
 
             //throw exception
-            throw AuthenticationException::notAuthenticated();
+            throw SSOAuthenticationException::errorFromExternalProvider(OpenIdConfiguration::NAME);
         }
         $this->userInformations = $content;
     }
 
     private function verifyThatClientIsAllowedToConnectOrFail(): void
     {
+        $this->info('Check Client IP from blacklist/whitelist addresses');
         foreach ($this->configuration->getBlacklistClientAddresses() as $blackListedAddress) {
             if ($blackListedAddress !== "" && preg_match('/' . $blackListedAddress . '/', $_SERVER['REMOTE_ADDR'])) {
-                throw AuthenticationException::notAuthenticated();
+                $this->error('');
+                throw SSoAuthenticationException::blackListedClient();
             }
         }
 
-        //Si les whitelist c'est rempli et que j'ai pas mon ip dedans
         foreach ($this->configuration->getTrustedClientAddresses() as $trustedClientAddress) {
             if (
                 $trustedClientAddress !== ""
                 && preg_match('/' . $trustedClientAddress . '/', $_SERVER['REMOTE_ADDR'])
             ) {
-                throw AuthenticationException::notAuthenticated();
+                throw SSoAuthenticationException::notWhiteListedClient();
             }
         }
     }
@@ -474,7 +470,7 @@ class OpenIdProvider implements ProviderInterface
             $this->sendRequestForUserInformationOrFail();
         }
         if (!array_key_exists($loginClaim, $this->userInformations)) {
-            throw AuthenticationException::notAuthenticated();
+            throw SSOAuthenticationException::loginClaimNotFound(OpenIdConfiguration::NAME, $loginClaim);
         }
         return $this->userInformations[$loginClaim];
     }

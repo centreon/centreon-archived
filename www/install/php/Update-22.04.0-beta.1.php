@@ -199,7 +199,7 @@ try {
     $pearDB->commit();
 
     $errorMessage = "Unable to alter table security_token";
-    $pearDB->query("ALTER TABLE `security_token` MODIFY `token` VARCHAR(1000)");
+    $pearDB->query("ALTER TABLE `security_token` MODIFY `token` LONGTEXT");
 } catch (\Exception $e) {
     if ($pearDB->inTransaction()) {
         $pearDB->rollBack();
