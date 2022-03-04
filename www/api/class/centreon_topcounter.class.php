@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005-2021 Centreon
+ * Copyright 2005-2022 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -34,8 +34,9 @@
  *
  */
 
-require_once _CENTREON_PATH_ . "/www/class/centreonDB.class.php";
-require_once __DIR__ . "/webService.class.php";
+require_once __DIR__ . '/webService.class.php';
+require_once __DIR__ . '/../../class/centreonDB.class.php';
+require_once __DIR__ . '/../../class/centreonContact.class.php';
 
 class CentreonTopCounter extends CentreonWebService
 {
@@ -261,7 +262,7 @@ class CentreonTopCounter extends CentreonWebService
             $autoLoginKey = $row['contact_autologin_key'] ?? null;
         }
 
-        return array(
+        return [
             'userId' => $this->centreon->user->user_id,
             'fullname' => $this->centreon->user->name,
             'username' => $this->centreon->user->alias,
@@ -269,8 +270,38 @@ class CentreonTopCounter extends CentreonWebService
             'timezone' => $this->centreon->CentreonGMT->getActiveTimezone($this->centreon->user->gmt),
             'hasAccessToProfile' => $this->hasAccessToProfile,
             'autologinkey' => $autoLoginKey,
-            'soundNotificationsEnabled' => $this->soundNotificationsEnabled
-        );
+            'soundNotificationsEnabled' => $this->soundNotificationsEnabled,
+            'password_remaining_time' => $this->getPasswordRemainingTime(),
+        ];
+    }
+
+    /**
+     * Get password remaining time
+     * null : never expired
+     * int : number of seconds before expiration
+     *
+     * @return int|null
+     */
+    private function getPasswordRemainingTime(): ?int
+    {
+        $passwordRemainingTime = null;
+        $contact = new CentreonContact($this->pearDB);
+        $passwordCreationDate = $contact->findLastPasswordCreationDate((int) $this->centreon->user->user_id);
+
+        if ($passwordCreationDate !== null) {
+            $passwordPolicy = $contact->getPasswordSecurityPolicy();
+            $expirationDelay = $passwordPolicy['password_expiration']['expiration_delay'];
+            $excludedUsers = $passwordPolicy['password_expiration']['excluded_users'];
+
+            if ($expirationDelay !== null && !in_array($this->centreon->user->alias, $excludedUsers)) {
+                $passwordRemainingTime = $passwordCreationDate->getTimestamp() + $expirationDelay - time();
+                if ($passwordRemainingTime < 0) {
+                    $passwordRemainingTime = 0;
+                }
+            }
+        }
+
+        return $passwordRemainingTime;
     }
 
     /**
