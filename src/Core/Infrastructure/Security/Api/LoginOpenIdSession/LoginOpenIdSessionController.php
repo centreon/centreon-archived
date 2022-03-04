@@ -56,7 +56,7 @@ class LoginOpenIdSessionController extends AbstractController
         if ($response->error !== null) {
             return View::createRedirect(
                 $this->getBaseUrl() . '/login?authenticationError=' . $response->error,
-                Response::HTTP_BAD_REQUEST
+                Response::HTTP_FOUND
             );
         }
         return View::createRedirect(
