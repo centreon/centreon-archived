@@ -81,8 +81,8 @@ if ($commandId !== false) {
 }
 
 // Secure command
-$search = ['#S#', '#BS#', '../'];
-$replace = ['/', "\\", '/'];
+$search = ['#S#', '#BS#', '../', "\t"];
+$replace = ['/', "\\", '/', ' '];
 $command = str_replace($search, $replace, $command);
 $command = escapeshellcmd($command);
 
