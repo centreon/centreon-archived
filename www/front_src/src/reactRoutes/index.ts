@@ -23,6 +23,10 @@ const reactRoutes = [
     comp: React.lazy(() => import('../Authentication')),
     path: routeMap.authentication,
   },
+  {
+    comp: React.lazy(() => import('../ResetPassword')),
+    path: routeMap.resetPassword,
+  },
 ];
 
 export default reactRoutes;
