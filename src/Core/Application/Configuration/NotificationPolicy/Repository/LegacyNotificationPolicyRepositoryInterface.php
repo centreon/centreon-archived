@@ -29,4 +29,10 @@ interface LegacyNotificationPolicyRepositoryInterface
      * @return array<string, int[]>
      */
     public function findHostNotifiedUserIdsAndUserGroupIds(int $hostId): array;
+
+    /**
+     * @param int $serviceId
+     * @return array<string, int[]>
+     */
+    public function findServiceNotifiedUserIdsAndUserGroupIds(int $serviceId): array;
 }

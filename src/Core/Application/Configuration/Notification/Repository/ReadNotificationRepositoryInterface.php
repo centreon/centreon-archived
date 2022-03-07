@@ -34,4 +34,13 @@ interface ReadNotificationRepositoryInterface
      * @return HostNotification[]
      */
     public function findHostNotificationSettingsByUserIds(array $userIds): array;
+
+    /**
+     * Find service notification settings (timeperiod, events) by user ids
+     * result is indexed by user id
+     *
+     * @param int[] $userIds
+     * @return ServiceNotification[]
+     */
+    public function findServiceNotificationSettingsByUserIds(array $userIds): array;
 }

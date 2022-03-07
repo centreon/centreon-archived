@@ -56,4 +56,20 @@ class LegacyNotificationPolicyRepository extends AbstractRepositoryDRB implement
 
         return $notifications;
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function findServiceNotifiedUserIdsAndUserGroupIds(int $serviceId): array
+    {
+        /**
+         * Call to Legacy code to get the contacts and contactgroups
+         * that will be notified for the Host regarding global
+         * notification inheritance parameter.
+         */
+        $serviceInstance = \Service::getInstance($this->dependencyInjector);
+        $notifications = $serviceInstance->getCgAndContacts($serviceId);
+
+        return $notifications;
+    }
 }

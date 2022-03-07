@@ -62,6 +62,34 @@ class DbReadServiceRepository extends AbstractRepositoryDRB implements ReadServi
     }
 
     /**
+     * @inheritDoc
+     */
+    public function isAllowedToFindServiceByAccessGroupIds(int $hostId, int $serviceId, array $accessGroupIds): bool
+    {
+        if (empty($accessGroupIds)) {
+            return false;
+        }
+
+        $request = "
+            SELECT s.service_id
+            FROM `:dbstg`.`services` AS s
+            INNER JOIN `:dbstg`.`centreon_acl` AS service_acl
+            ON service_acl.service_id = s.service_id AND service_acl.host_id = s.host_id
+            AND service_acl.group_id IN (" . implode(',', $accessGroupIds) . ")
+            WHERE s.service_id = :service_id AND s.host_id = :host_id AND s.enabled = '1'
+        ";
+
+        $statement = $this->db->prepare($this->translateDbName($request));
+
+        $statement->bindValue(':service_id', $serviceId, \PDO::PARAM_INT);
+        $statement->bindValue(':host_id', $hostId, \PDO::PARAM_INT);
+
+        $statement->execute();
+
+        return $statement->fetch() ? true : false;
+    }
+
+    /**
      * @param int $hostId
      * @param int $serviceId
      * @param string|null $accessGroupRequest
@@ -82,6 +110,7 @@ class DbReadServiceRepository extends AbstractRepositoryDRB implements ReadServi
                 s.output,
                 s.command_line,
                 s.notification_number,
+                s.notify,
                 s.last_state_change AS `last_status_change`,
                 s.last_notification,
                 s.latency,
