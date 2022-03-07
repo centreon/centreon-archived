@@ -484,12 +484,12 @@ if ($centreon->optGen['ldap_auth_enable'] == 1) {
     }
 }
 if ($o != MASSIVE_CHANGE) {
-    $form->setDefaults(array(
-        'contact_oreon' => '1',
-        'contact_admin' => '0',
-        'reach_api' => '0',
-        'reach_api_rt' => '0'
-    ));
+    $form->setDefaults([
+        'contact_oreon' => ['contact_oreon' => '1'],
+        'contact_admin' => ['contact_admin' => '0'],
+        'reach_api' => ['reach_api' => '0'],
+        'reach_api_rt' => ['reach_api_rt' => '0']
+    ]);
 }
 $form->addElement('select', 'contact_auth_type', _("Authentication Source"), $auth_type);
 
