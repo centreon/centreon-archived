@@ -42,7 +42,7 @@ interface StyleProps {
   maxWidthCollapsScroll?: number;
 }
 
-const collapsWidth = 170;
+const collapsWidth = 165;
 
 const useStyles = makeStyles((theme) => ({
   activated: {
@@ -66,7 +66,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     '& .MuiListItemIcon-root': {
       minWidth: theme.spacing(2.25),
-      padding: theme.spacing(0, 0.5, 0, 1),
+      padding: theme.spacing(0, 0.25, 0, 0.75),
     },
     '& .MuiTypography-root': {
       color: theme.palette.text.primary,
@@ -76,14 +76,14 @@ const useStyles = makeStyles((theme) => ({
   },
   subHeader: {
     color: theme.palette.text.secondary,
-    fontSize: theme.typography.body2.fontSize,
+    fontSize: theme.typography.caption.fontSize,
     fontWeight: 'bold',
-    lineHeight: theme.spacing(3),
+    lineHeight: theme.spacing(2.5),
     textAlign: 'center',
   },
   toggled: {
     '&::-webkit-scrollbar': {
-      width: theme.spacing(1.5),
+      width: theme.spacing(1),
     },
     '&::-webkit-scrollbar-corner': {
       backgroundColor: theme.palette.background.default,
@@ -323,8 +323,8 @@ const CollapsableItems = ({
                 onClick={onClick}
               />
             ) : (
-              equals(index, hoveredIndex) &&
               isArrayItem(item?.groups) &&
+              equals(index, hoveredIndex) &&
               item?.groups?.map(
                 (itemGroup) =>
                   isArrayItem(itemGroup?.children) && (

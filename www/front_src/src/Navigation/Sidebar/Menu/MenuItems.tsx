@@ -11,6 +11,8 @@ import { Page } from '../../models';
 
 import ArrowIcon from './ArrowIcon';
 
+export const heightItem = 37;
+
 interface Props {
   data: Page;
   hover: boolean;
@@ -45,10 +47,18 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.text.primary,
   },
   label: {
+    '& .MuiTypography-root': {
+      fontSize: 11,
+    },
     margin: theme.spacing(0),
   },
   listButton: {
-    minHeight: theme.spacing(5.4),
+    alignItems: 'center',
+    height: theme.spacing(heightItem / 8),
+    marginBottom: 1,
+  },
+  rootLabel: {
+    margin: theme.spacing(0),
   },
 }));
 
@@ -70,7 +80,7 @@ const MenuItems = ({
         [classes.activated]: hover,
       })}
       component="div"
-      sx={!isRoot ? { pl: 0 } : { pl: 2 }}
+      sx={!isRoot ? { pl: 0 } : { pl: 1.5 }}
       onClick={!isRoot ? onClick : undefined}
       onDoubleClick={isRoot ? onClick : undefined}
       onMouseEnter={onMouseEnter}
@@ -89,7 +99,7 @@ const MenuItems = ({
                 />
               )}
           </ListItemIcon>
-          <ListItemText className={classes.label} primary={data.label} />
+          <ListItemText className={classes.rootLabel} primary={data.label} />
         </>
       ) : (
         <>

@@ -18,7 +18,7 @@ const Logo = ({ onClick }: Props): JSX.Element => {
 
   return (
     <div aria-hidden onClick={onClick}>
-      <img alt="" height="52" src={logo} width={140} />
+      <img alt="" height="52" src={logo} width={120} />
     </div>
   );
 };
