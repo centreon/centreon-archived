@@ -42,6 +42,7 @@ use Security\Domain\Authentication\Interfaces\ProviderServiceInterface;
 use Security\Domain\Authentication\Interfaces\SessionRepositoryInterface;
 use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
 use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
+use Security\Domain\Authentication\Interfaces\LocalProviderInterface;
 
 class LoginSession
 {
@@ -84,6 +85,9 @@ class LoginSession
         try {
             $this->authorizeUserToAuthenticateOrFail($request->login);
 
+            /**
+             * @var LocalProviderInterface
+             */
             $authenticationProvider = $this->findProviderOrFail($request->providerConfigurationName);
             $this->authenticateOrFail($authenticationProvider, $request);
 
@@ -209,6 +213,10 @@ class LoginSession
             '[AUTHENTICATE] Beginning authentication on provider',
             ['provider_name' => $providerConfigurationName]
         );
+
+        /**
+         * @var LocalProviderInterface|null
+         */
         $authenticationProvider = $this->providerService->findProviderByConfigurationName(
             $providerConfigurationName
         );
@@ -225,7 +233,7 @@ class LoginSession
     /**
      * Authenticate the user or throw an Exception.
      *
-     * @param ProviderInterface $authenticationProvider
+     * @param LocalProviderInterface $authenticationProvider
      * @param LoginSessionRequest $request
      * @throws LegacyAuthenticationException
      */
@@ -248,7 +256,7 @@ class LoginSession
     /**
      * Retrieve user from provider or throw an Exception.
      *
-     * @param ProviderInterface $authenticationProvider
+     * @param LocalProviderInterface $authenticationProvider
      * @return ContactInterface
      * @throws LegacyAuthenticationException
      */
@@ -270,7 +278,7 @@ class LoginSession
     /**
      * Create the user in Centreon or throw an Exception.
      *
-     * @param ProviderInterface $authenticationProvider
+     * @param LocalProviderInterface $authenticationProvider
      * @param ContactInterface $providerUser
      * @throws LegacyAuthenticationException
      */

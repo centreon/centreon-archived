@@ -168,7 +168,7 @@ class OpenIdProvider implements OpenIdProviderInterface
         $this->info('Start authenticating user...', [
             'provider' => OpenIdConfiguration::NAME
         ]);
-        if (empty($authorizationCode) || $authorizationCode === null) {
+        if (empty($authorizationCode)) {
             $this->error(
                 'No authorization code return from external provider',
                 [
@@ -269,7 +269,7 @@ class OpenIdProvider implements OpenIdProviderInterface
             throw SSOAuthenticationException::requestForConnectionTokenFail();
         }
         $content = json_decode($response->getContent(false), true);
-        if (array_key_exists('error', $content) || empty($content)) {
+        if (empty($content) || array_key_exists('error', $content)) {
             $this->logErrorFromExternalProvider($content);
             throw SSOAuthenticationException::errorFromExternalProvider(OpenIdConfiguration::NAME);
         }
@@ -361,7 +361,7 @@ class OpenIdProvider implements OpenIdProviderInterface
             throw SSOAuthenticationException::requestForRefreshTokenFail();
         }
         $content = json_decode($response->getContent(false), true);
-        if (array_key_exists('error', $content) || empty($content)) {
+        if (empty($content) || array_key_exists('error', $content)) {
             $this->logErrorFromExternalProvider($content);
             throw SSOAuthenticationException::errorFromExternalProvider(OpenIdConfiguration::NAME);
         }
@@ -439,7 +439,7 @@ class OpenIdProvider implements OpenIdProviderInterface
             throw SSOAuthenticationException::requestForIntrospectionTokenFail();
         }
         $content = json_decode($response->getContent(false), true);
-        if (array_key_exists('error', $content) || empty($content)) {
+        if (empty($content) || array_key_exists('error', $content)) {
             $this->logErrorFromExternalProvider($content);
             throw SSOAuthenticationException::errorFromExternalProvider(OpenIdConfiguration::NAME);
         }
@@ -476,7 +476,7 @@ class OpenIdProvider implements OpenIdProviderInterface
             throw SSoAuthenticationException::requestForUserInformationFail();
         }
         $content = json_decode($response->getContent(false), true);
-        if (array_key_exists('error', $content) || empty($content)) {
+        if (empty($content) || array_key_exists('error', $content)) {
             $this->logErrorFromExternalProvider($content);
             throw SSOAuthenticationException::errorFromExternalProvider(OpenIdConfiguration::NAME);
         }
@@ -539,9 +539,9 @@ class OpenIdProvider implements OpenIdProviderInterface
     private function logErrorFromExternalProvider(array $content): void
     {
         $this->error(
-            'error from external provider :' . array_key_exists('error', $content)
+            'error from external provider :' . (array_key_exists('error', $content)
                 ? $content['error']
-                : 'No content in response'
+                : 'No content in response')
         );
     }
 

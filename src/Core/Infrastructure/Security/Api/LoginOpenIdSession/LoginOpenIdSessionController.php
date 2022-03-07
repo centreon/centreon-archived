@@ -60,14 +60,14 @@ class LoginOpenIdSessionController extends AbstractController
             );
         }
         return View::createRedirect(
-            $this->getBaseUrl() . $response->redirectionUri,
+            $this->getBaseUrl() . $response->redirectUri,
             Response::HTTP_FOUND,
             ['Set-Cookie' =>  'PHPSESSID=' . $session->getId()]
         );
     }
 
     /**
-     * @param string|null $authorizationCode
+     * @param Request $request
      * @return LoginOpenIdSessionRequest
      */
     private function createLoginOpenIdSessionRequest(Request $request): LoginOpenIdSessionRequest

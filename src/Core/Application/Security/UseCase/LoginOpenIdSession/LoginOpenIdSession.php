@@ -30,7 +30,6 @@ use Security\Domain\Authentication\Model\Session;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Security\Domain\Authentication\Model\ProviderToken;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
-use Centreon\Domain\Menu\Interfaces\MenuServiceInterface;
 use Centreon\Infrastructure\Service\Exception\NotFoundException;
 use Core\Domain\Security\Authentication\AuthenticationException;
 use Centreon\Domain\Repository\Interfaces\DataStorageEngineInterface;
@@ -40,15 +39,22 @@ use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
 use Core\Domain\Security\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
 use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
 use Core\Application\Security\ProviderConfiguration\OpenId\Repository\ReadOpenIdConfigurationRepositoryInterface;
+use Centreon\Domain\Authentication\Exception\AuthenticationException as LegacyAuthenticationException;
 
 class LoginOpenIdSession
 {
     use LoggerTrait;
 
     /**
+     * @param string $redirectDefaultPage
      * @param ReadOpenIdConfigurationRepositoryInterface $repository
-     * @param OpenIdProvider $provider
+     * @param OpenIdProviderInterface $provider
      * @param RequestStack $requestStack
+     * @param Container $dependencyInjector
+     * @param AuthenticationServiceInterface $authenticationService
+     * @param AuthenticationRepositoryInterface $authenticationRepository
+     * @param SessionRepositoryInterface $sessionRepository
+     * @param DataStorageEngineInterface $dataStorageEngine
      */
     public function __construct(
         private string $redirectDefaultPage,
@@ -57,7 +63,6 @@ class LoginOpenIdSession
         private RequestStack $requestStack,
         private Container $dependencyInjector,
         private AuthenticationServiceInterface $authenticationService,
-        private MenuServiceInterface $menuService,
         private AuthenticationRepositoryInterface $authenticationRepository,
         private SessionRepositoryInterface $sessionRepository,
         private DataStorageEngineInterface $dataStorageEngine,
@@ -68,7 +73,7 @@ class LoginOpenIdSession
      * @param LoginOpenIdSessionRequest $request
      * @param LoginOpenIdSessionPresenterInterface $presenter
      */
-    public function __invoke(LoginOpenIdSessionRequest $request, LoginOpenIdSessionPresenterInterface $presenter)
+    public function __invoke(LoginOpenIdSessionRequest $request, LoginOpenIdSessionPresenterInterface $presenter): void
     {
         global $pearDB;
         $pearDB = $this->dependencyInjector['configuration_db'];
@@ -153,7 +158,7 @@ class LoginOpenIdSession
     /**
      * Start the Centreon session.
      *
-     * @param Centreon $legacySession
+     * @param \Centreon $legacySession
      * @throws LegacyAuthenticationException
      */
     private function startLegacySession(\Centreon $legacySession): void
@@ -170,7 +175,6 @@ class LoginOpenIdSession
     /**
      * Get the redirection uri where user will be redirect once logged.
      *
-     * @param LoginSessionRequest $request
      * @param ContactInterface $providerUser
      * @return string
      */
@@ -253,13 +257,13 @@ class LoginOpenIdSession
     }
 
     /**
-     * @param string $redirectionUri
+     * @param string $redirectUri
      * @return LoginOpenIdSessionResponse
      */
-    private function createResponse(?string $redirectionUri, ?string $error = null): LoginOpenIdSessionResponse
+    private function createResponse(?string $redirectUri, ?string $error = null): LoginOpenIdSessionResponse
     {
         $response = new LoginOpenIdSessionResponse();
-        $response->redirectionUri = $redirectionUri;
+        $response->redirectUri = $redirectUri;
         $response->error = $error;
 
         return $response;

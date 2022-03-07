@@ -35,6 +35,11 @@ abstract class AbstractPresenter implements PresenterInterface
     protected $responseStatus;
 
     /**
+     * @var mixed
+     */
+    protected mixed $data;
+
+    /**
      * @param PresenterFormatterInterface $presenterFormatter
      */
     public function __construct(protected PresenterFormatterInterface $presenterFormatter)

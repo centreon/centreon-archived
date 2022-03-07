@@ -14,7 +14,7 @@ class LoginOpenIdSessionResponse
     /**
      * Undocumented variable
      *
-     * @var string
+     * @var string|null
      */
-    public string $redirectUri;
+    public ?string $redirectUri;
 }
