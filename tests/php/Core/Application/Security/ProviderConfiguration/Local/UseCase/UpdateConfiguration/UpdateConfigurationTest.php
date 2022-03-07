@@ -25,6 +25,7 @@ namespace Tests\Core\Application\Security\ProviderConfiguration\Local\UseCase\Up
 
 use PHPUnit\Framework\TestCase;
 use Core\Domain\Security\ProviderConfiguration\Local\Model\Configuration;
+use Core\Domain\Security\ProviderConfiguration\Local\Model\SecurityPolicy;
 use Core\Application\Security\ProviderConfiguration\Local\Repository\WriteConfigurationRepositoryInterface;
 use Core\Application\Configuration\User\Repository\ReadUserRepositoryInterface;
 use Core\Application\Security\ProviderConfiguration\Local\UseCase\UpdateConfiguration\UpdateConfiguration;
@@ -63,32 +64,33 @@ class UpdateConfigurationTest extends TestCase
     public function testUpdateConfiguration(): void
     {
         $excludedUserAliases = ['admin'];
-        $configuration = new Configuration(
-            Configuration::MIN_PASSWORD_LENGTH,
+        $securityPolicy = new SecurityPolicy(
+            SecurityPolicy::MIN_PASSWORD_LENGTH,
             true,
             true,
             true,
             true,
             true,
-            Configuration::MIN_ATTEMPTS,
-            Configuration::MIN_BLOCKING_DURATION,
-            Configuration::MIN_PASSWORD_EXPIRATION_DELAY,
+            SecurityPolicy::MIN_ATTEMPTS,
+            SecurityPolicy::MIN_BLOCKING_DURATION,
+            SecurityPolicy::MIN_PASSWORD_EXPIRATION_DELAY,
             $excludedUserAliases,
-            Configuration::MIN_NEW_PASSWORD_DELAY
+            SecurityPolicy::MIN_NEW_PASSWORD_DELAY
         );
+        $configuration = new Configuration($securityPolicy);
 
         $request = new UpdateConfigurationRequest();
-        $request->passwordMinimumLength = Configuration::MIN_PASSWORD_LENGTH;
+        $request->passwordMinimumLength = SecurityPolicy::MIN_PASSWORD_LENGTH;
         $request->hasUppercase = true;
         $request->hasLowercase = true;
         $request->hasNumber = true;
         $request->hasSpecialCharacter = true;
         $request->canReusePasswords = true;
-        $request->attempts = Configuration::MIN_ATTEMPTS;
-        $request->blockingDuration = Configuration::MIN_BLOCKING_DURATION;
-        $request->passwordExpirationDelay = Configuration::MIN_PASSWORD_EXPIRATION_DELAY;
+        $request->attempts = SecurityPolicy::MIN_ATTEMPTS;
+        $request->blockingDuration = SecurityPolicy::MIN_BLOCKING_DURATION;
+        $request->passwordExpirationDelay = SecurityPolicy::MIN_PASSWORD_EXPIRATION_DELAY;
         $request->passwordExpirationExcludedUserAliases = $excludedUserAliases;
-        $request->delayBeforeNewPassword = Configuration::MIN_NEW_PASSWORD_DELAY;
+        $request->delayBeforeNewPassword = SecurityPolicy::MIN_NEW_PASSWORD_DELAY;
 
 
         $this->readUserRepository

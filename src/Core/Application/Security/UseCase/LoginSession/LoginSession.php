@@ -132,10 +132,10 @@ class LoginSession
                 'password_is_expired' => true,
             ]);
             $presenter->setResponseStatus($response);
-            return;
+            throw $e;
         } catch (AuthenticationException $e) {
             $presenter->setResponseStatus(new UnauthorizedResponse($e->getMessage()));
-            return;
+            throw $e;
         }
 
         $this->debug(

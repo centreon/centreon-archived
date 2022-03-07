@@ -246,4 +246,24 @@ class AssertionException extends \InvalidArgumentException
             )
         );
     }
+
+    /**
+     * Exception when the value doesn't match a regex.
+     *
+     * @param string $value
+     * @param string $pattern
+     * @param string|null $propertyPath
+     * @return self
+     */
+    public static function matchRegex(string $value, string $pattern, string $propertyPath = null): self
+    {
+        return new self(
+            sprintf(
+                _('[%s] The value (%s) doesn\'t match the regex \'%s\''),
+                $propertyPath,
+                $value,
+                $pattern
+            )
+        );
+    }
 }

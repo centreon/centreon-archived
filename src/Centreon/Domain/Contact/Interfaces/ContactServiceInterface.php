@@ -57,14 +57,6 @@ interface ContactServiceInterface
     public function findContact(int $id): ?ContactInterface;
 
     /**
-     * Check if the password is expired
-     *
-     * @param int $contactId
-     * @return bool
-     */
-    public function isPasswordExpired(int $contactId): bool;
-
-    /**
      * Find a contact by an authentication token
      * @param string $token
      * @return ContactInterface|null
