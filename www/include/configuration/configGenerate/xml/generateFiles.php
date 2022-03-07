@@ -235,5 +235,3 @@ if (!headers_sent()) {
 }
 
 $xml->output();
-
-
