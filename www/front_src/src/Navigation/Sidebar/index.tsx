@@ -4,7 +4,6 @@ import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 import MuiDrawer from '@mui/material/Drawer';
 import { CSSObject, styled, Theme } from '@mui/material/styles';
-import { makeStyles } from '@mui/styles';
 
 import { Page } from '../models';
 
@@ -12,7 +11,7 @@ import Logo from './Logo';
 import MiniLogo from './Logo/MiniLogo';
 import NavigationMenu from './Menu';
 
-export const openedDrawerWidth = 180;
+export const openedDrawerWidth = 165;
 
 const openedMixin = (theme: Theme): CSSObject => ({
   overflowX: 'hidden',
@@ -29,11 +28,13 @@ const closedMixin = (theme: Theme): CSSObject => ({
     duration: theme.transitions.duration.leavingScreen,
     easing: theme.transitions.easing.sharp,
   }),
-  width: theme.spacing(8),
+  width: theme.spacing(6),
 });
 
 const DrawerHeader = styled('div')(() => ({
-  alignItems: 'center',
+  '&:hover': {
+    cursor: 'pointer',
+  },
   alignSelf: 'center',
   display: 'flex',
 }));
@@ -58,20 +59,11 @@ const Drawer = styled(MuiDrawer, {
   }),
 }));
 
-const useStyles = makeStyles(() => ({
-  logo: {
-    '&:hover': {
-      cursor: 'pointer',
-    },
-  },
-}));
-
 export interface Props {
   navigationData?: Array<Page>;
 }
 
 export default ({ navigationData }: Props): JSX.Element => {
-  const classes = useStyles();
   const [open, setOpen] = React.useState(false);
 
   const toggleNavigation = (): void => {
@@ -81,7 +73,7 @@ export default ({ navigationData }: Props): JSX.Element => {
   return (
     <Box sx={{ display: 'flex' }}>
       <Drawer open={open} variant="permanent">
-        <DrawerHeader className={classes.logo}>
+        <DrawerHeader>
           {open ? (
             <Logo onClick={toggleNavigation} />
           ) : (
