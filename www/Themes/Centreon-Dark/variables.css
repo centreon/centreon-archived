@@ -1,9 +1,9 @@
 @import "../Generic-theme/Variables-css/variables.css";
 
 :root{
-    --body-background: #424242;
+    --body-background: #212121;
     --body-color: #b2aca2;
-    --info-box-background-color: #1d2021;
+    --info-box-background-color: #181a1b;
     --info-box-border-color: var(--color-pablo);
     --path-way-font-color: var(--body-color);
     --ui-widget-header-background-color: var(--body-background);
@@ -14,8 +14,8 @@
     --global-view-ui-border-color: none;
     --ui-background-color: none;
     --global-view-ui-active-tabs-border-color: none;
-    --global-view-ui-active-tabs-border-bottom-color: #2196F3;
-    --bt-success-background-color: #2196F3;
+    --global-view-ui-active-tabs-border-bottom-color: var(--color-primary-light);
+    --bt-success-background-color: var(--color-primary-light);
     --bt-default-background-color: var(--bt-success-background-color);
     --bt-danger-background-color: var(--bt-success-background-color);
     --bt-info-background-color: var(--bt-success-background-color);
@@ -35,23 +35,23 @@
     --list-one-hover-background-color: #2b2e30;
     --list-two-background-color: #002c3c;
     --list-two-hover-background-color: #2b2e30;
-    --select-background: #424242;
+    --select-background: var(--body-background);
     --select-color: #fff;
-    --input-select-background-color: #424242;
+    --input-select-background-color: var(--body-background);
     --select-border-color: var(--body-color);
     --included-checkbox-checked-before-font-color: var(--input-select-background-color);
-    --md-checkbox-checked-label-before-background-color: #2196F3;
+    --md-checkbox-checked-label-before-background-color: var(--color-primary-light);
     --md-checkbox-background: var(--input-select-background-color);
     --option-color: #fff;
     --form-table-list-header-h3-font-color: #ffffffb3;
     --info-box-h4-font-color: var(--form-table-list-header-h3-font-color);
     --md-checkbox-border-color-after: #10069f;
     --md-checkbox-border-color: var(--body-color);
-    --centreon-popin-background-color: #424242;
-    --centreon-popin-border-color: #424242;
+    --centreon-popin-background-color: var(--body-background);
+    --centreon-popin-border-color: var(--body-background);
     --select2-container-selection-multiple-background-color: var(--body-background);
     --selected2-results-header-background-color: var(--body-background);
-    --select2-results-header-color: #2196F3;
+    --select2-results-header-color: var(--color-primary-light);
     --placeholder-font-color: var(--body-color);
     --select2-dropdown-border-color: var(--body-color);
     --select2-result-option-highlighted-aria-selected-true-background-color: #10069f;
@@ -64,7 +64,7 @@
     --select2-results-option-highlighted-background-color: var(--body-color);
     --select2-selection-multiple-content-background-color: var(--select2-selection-multiple-border-color);
     --select2-selection-choice-remove-background-color: var(--select2-selection-multiple-border-color);
-    --select2-results-option-highlighted-color-aria-selected: #2196f3;
+    --select2-results-option-highlighted-color-aria-selected: var(--color-primary-light);
     --md-radio-checked-backgroud-color: var(--color-primary-light);
     --md-radio-after-background-color: var(--md-radio-checked-backgroud-color);
     --md-radio-label-before-border-color: var(--body-color);
@@ -85,7 +85,7 @@
     --ajax-option-h4-font-color:var(--path-way-font-color);
     --ajax-option-border-bottom-color:var(--info-box-background-color);
     --ajax-option-border-top-color:var(--info-box-background-color);
-    --ajax-option-tr-first-child-background-color:var(--info-box-background-color);
+    --ajax-option-tr-first-child-background-color:var(--body-background);
     --ajax-option-tr-first-child-font-color:var(--path-way-font-color);
     --list-header-background:var(--info-box-background-color);
     --list-table-anchors-font-color:#fff;
@@ -102,4 +102,5 @@
     --up-to-date-color:var(--option-color);
     --update-secu-background-color:var(--color-torch-red);
     --ui-icon-fill-color: var(--color-primary-light);
+    --list-lvl-1-background-color: var(--body-background)
 }
