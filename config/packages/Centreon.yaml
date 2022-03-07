@@ -337,7 +337,10 @@ services:
     Core\Application\Security\UseCase\LoginOpenIdSession\LoginOpenIdSession:
         arguments: [ "%redirect_default_page%" ]
         public: true
-    
+
+    Security\Domain\Authentication\Interfaces\OpenIdProviderInterface:
+        class: Core\Domain\Security\Provider\OpenIdProvider
+
     Core\Domain\Security\Provider\OpenIdProvider:
         tags: ['authentication.providers']
 

@@ -26,20 +26,20 @@ namespace Core\Application\Security\UseCase\LoginOpenIdSession;
 use Pimple\Container;
 use Centreon\Domain\Log\LoggerTrait;
 use Centreon\Domain\Menu\Model\Page;
-use Core\Domain\Security\Provider\OpenIdProvider;
 use Security\Domain\Authentication\Model\Session;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Security\Domain\Authentication\Model\ProviderToken;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Menu\Interfaces\MenuServiceInterface;
+use Centreon\Infrastructure\Service\Exception\NotFoundException;
 use Core\Domain\Security\Authentication\AuthenticationException;
 use Centreon\Domain\Repository\Interfaces\DataStorageEngineInterface;
-use Centreon\Infrastructure\Service\Exception\NotFoundException;
+use Security\Domain\Authentication\Interfaces\OpenIdProviderInterface;
 use Security\Domain\Authentication\Interfaces\SessionRepositoryInterface;
 use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
+use Core\Domain\Security\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
 use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
 use Core\Application\Security\ProviderConfiguration\OpenId\Repository\ReadOpenIdConfigurationRepositoryInterface;
-use Core\Domain\Security\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
 
 class LoginOpenIdSession
 {
@@ -53,7 +53,7 @@ class LoginOpenIdSession
     public function __construct(
         private string $redirectDefaultPage,
         private ReadOpenIdConfigurationRepositoryInterface $repository,
-        private OpenIdProvider $provider,
+        private OpenIdProviderInterface $provider,
         private RequestStack $requestStack,
         private Container $dependencyInjector,
         private AuthenticationServiceInterface $authenticationService,
@@ -73,14 +73,12 @@ class LoginOpenIdSession
         global $pearDB;
         $pearDB = $this->dependencyInjector['configuration_db'];
 
-        $openIdProviderConfiguration = $this->repository->findConfiguration();
-        if ($openIdProviderConfiguration === null) {
-            //throw exception
-        }
-
-        $this->provider->setConfiguration($openIdProviderConfiguration);
-
         try {
+            $openIdProviderConfiguration = $this->repository->findConfiguration();
+            if ($openIdProviderConfiguration === null) {
+                throw new NotFoundException('Provider not found');
+            }
+            $this->provider->setConfiguration($openIdProviderConfiguration);
             $this->provider->authenticateOrFail($request->authorizationCode, $request->clientIp);
             $user = $this->provider->getUser();
             if ($user === null) {

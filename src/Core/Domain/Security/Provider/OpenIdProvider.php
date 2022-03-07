@@ -31,11 +31,11 @@ use Security\Domain\Authentication\Model\AuthenticationTokens;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
 use Centreon\Domain\Log\LoggerTrait;
-use Security\Domain\Authentication\Interfaces\ProviderInterface;
 use Core\Domain\Security\Authentication\SSOAuthenticationException;
 use Core\Domain\Security\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
+use Security\Domain\Authentication\Interfaces\OpenIdProviderInterface;
 
-class OpenIdProvider implements ProviderInterface
+class OpenIdProvider implements OpenIdProviderInterface
 {
     use LoggerTrait;
 
