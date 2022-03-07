@@ -4,11 +4,13 @@ namespace Tests\Core\Application\Security\UseCase\LoginOpenIdSession;
 
 use CentreonDB;
 use Pimple\Container;
+use Centreon\Domain\Contact\Contact;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Core\Infrastructure\Common\Presenter\JsonPresenter;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Menu\Interfaces\MenuServiceInterface;
+use Security\Domain\Authentication\Model\AuthenticationTokens;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Centreon\Domain\Repository\Interfaces\DataStorageEngineInterface;
 use Security\Domain\Authentication\Interfaces\OpenIdProviderInterface;
@@ -50,7 +52,7 @@ beforeEach(function () {
     $this->formatter = $this->createMock(JsonPresenter::class);
     $this->presenter = new LoginOpenIdSessionPresenter($this->formatter);
     $this->contact = $this->createMock(ContactInterface::class);
-
+    $this->authenticationTokens = $this->createMock(AuthenticationTokens::class);
 
     $this->validOpenIdConfiguration = new OpenIdConfiguration(
         1,
@@ -220,6 +222,12 @@ it(
             ->expects($this->any())
             ->method('getUser')
             ->willReturn($this->contact);
+
+        $this->authenticationService
+            ->expects($this->once())
+            ->method('findAuthenticationTokensByToken')
+            ->with('session_abcd')
+            ->willReturn($this->authenticationTokens);
 
         $useCase = new LoginOpenIdSession(
             '/monitoring/ressources',
