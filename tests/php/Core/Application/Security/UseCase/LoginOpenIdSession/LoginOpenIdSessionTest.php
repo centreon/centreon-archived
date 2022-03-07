@@ -4,7 +4,6 @@ namespace Tests\Core\Application\Security\UseCase\LoginOpenIdSession;
 
 use CentreonDB;
 use Pimple\Container;
-use Centreon\Domain\Contact\Contact;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Core\Infrastructure\Common\Presenter\JsonPresenter;
@@ -41,9 +40,8 @@ beforeEach(function () {
         ->expects($this->any())
         ->method('getCurrentRequest')
         ->willReturn($this->request);
-    $this->dependencyInjector = $this->createMock(Container::class);
     $this->centreonDB = $this->createMock(CentreonDB::class);
-    $this->dependencyInjector['configuration_db'] = $this->centreonDB;
+    $this->dependencyInjector = new Container(['configuration_db' => $this->centreonDB]);
     $this->authenticationService = $this->createMock(AuthenticationServiceInterface::class);
     $this->menuService = $this->createMock(MenuServiceInterface::class);
     $this->authenticationRepository = $this->createMock(AuthenticationRepositoryInterface::class);
@@ -203,45 +201,5 @@ it(
 
         $useCase($request, $this->presenter);
         expect($this->presenter->getData()->error)->toBe('User not found');
-    }
-);
-
-it(
-    'expects to find existing token with the current session id',
-    function () {
-        $request = new LoginOpenIdSessionRequest();
-        $request->authorizationCode = 'abcde-fghij-klmno';
-        $request->clientIp = '127.0.0.1';
-
-        $this->repository
-            ->expects($this->once())
-            ->method('findConfiguration')
-            ->willReturn($this->validOpenIdConfiguration);
-
-        $this->provider
-            ->expects($this->any())
-            ->method('getUser')
-            ->willReturn($this->contact);
-
-        $this->authenticationService
-            ->expects($this->once())
-            ->method('findAuthenticationTokensByToken')
-            ->with('session_abcd')
-            ->willReturn($this->authenticationTokens);
-
-        $useCase = new LoginOpenIdSession(
-            '/monitoring/ressources',
-            $this->repository,
-            $this->provider,
-            $this->requestStack,
-            $this->dependencyInjector,
-            $this->authenticationService,
-            $this->menuService,
-            $this->authenticationRepository,
-            $this->sessionRepository,
-            $this->dataStorageEngine
-        );
-
-        $useCase($request, $this->presenter);
     }
 );

@@ -148,8 +148,6 @@ class LoginOpenIdSession
          */
         $redirectionUri = $this->getRedirectionUri($user);
         $presenter->present($this->createResponse($redirectionUri));
-
-        //$presenter->present($this->createResponse($redirectionUri));
     }
 
     /**
