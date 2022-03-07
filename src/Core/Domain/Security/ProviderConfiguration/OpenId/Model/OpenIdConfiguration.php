@@ -32,6 +32,8 @@ class OpenIdConfiguration
     public const AUTHENTICATION_BASIC = 'client_secret_basic';
     public const NAME = 'openid';
 
+    private int $id;
+
     /**
      * @param boolean $isActive
      * @param boolean $isForced
@@ -51,7 +53,6 @@ class OpenIdConfiguration
      * @param boolean $verifyPeer
      */
     public function __construct(
-        private ?int $id,
         private bool $isActive,
         private bool $isForced,
         private array $trustedClientAddresses,
@@ -97,7 +98,7 @@ class OpenIdConfiguration
      * @param integer $id
      * @return static
      */
-    public function setId(?int $id): static
+    public function setId(int $id): static
     {
         $this->id = $id;
         return $this;
@@ -106,7 +107,7 @@ class OpenIdConfiguration
     /**
      * @return integer
      */
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }

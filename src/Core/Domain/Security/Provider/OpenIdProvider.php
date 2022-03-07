@@ -23,6 +23,7 @@ declare(strict_types=1);
 
 namespace Core\Domain\Security\Provider;
 
+use Centreon\Domain\Log\LoggerTrait;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Security\Domain\Authentication\Model\ProviderToken;
@@ -30,10 +31,10 @@ use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Security\Domain\Authentication\Model\AuthenticationTokens;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
-use Centreon\Domain\Log\LoggerTrait;
 use Core\Domain\Security\Authentication\SSOAuthenticationException;
-use Core\Domain\Security\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
 use Security\Domain\Authentication\Interfaces\OpenIdProviderInterface;
+use Core\Domain\Security\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
+use Core\Domain\Security\ProviderConfiguration\OpenId\Exceptions\OpenIdConfigurationException;
 
 class OpenIdProvider implements OpenIdProviderInterface
 {
@@ -57,7 +58,7 @@ class OpenIdProvider implements OpenIdProviderInterface
     /**
      * @var array<string,mixed>
      */
-    private array $userInformations;
+    private array $userInformations = [];
 
     /**
      * @var string
@@ -176,6 +177,16 @@ class OpenIdProvider implements OpenIdProviderInterface
                 ]
             );
             throw SSOAuthenticationException::noAuthorizationCode(OpenIdConfiguration::NAME);
+        }
+
+        if ($this->configuration->getTokenEndpoint() === null) {
+            throw OpenIdConfigurationException::missingTokenEndpoint();
+        }
+        if (
+            $this->configuration->getIntrospectionTokenEndpoint() === null
+            && $this->configuration->getUserInformationEndpoint() === null
+        ) {
+            throw OpenIdConfigurationException::missingInformationEndpoint();
         }
 
         $this->verifyThatClientIsAllowedToConnectOrFail($clientIp);
