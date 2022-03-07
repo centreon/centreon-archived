@@ -52,8 +52,7 @@ beforeEach(function () {
     $this->contact = $this->createMock(ContactInterface::class);
     $this->authenticationTokens = $this->createMock(AuthenticationTokens::class);
 
-    $this->validOpenIdConfiguration = new OpenIdConfiguration(
-        1,
+    $this->validOpenIdConfiguration = (new OpenIdConfiguration(
         true,
         false,
         [],
@@ -70,7 +69,7 @@ beforeEach(function () {
         'client-secret',
         'client_secret_post',
         false
-    );
+    ))->setId(1);
 });
 
 it('expects to return an error message in presenter when no provider configuration are found', function () {
