@@ -22,14 +22,14 @@ const GraphTab = React.lazy(() => import('./Graph'));
 const TimelineTab = React.lazy(() => import('./Timeline'));
 const ServicesTab = React.lazy(() => import('./Services'));
 const MetricsTab = React.lazy(() => import('./Metrics'));
-const notificationsTab = React.lazy(() => import('./Notifications'));
+const notificationTab = React.lazy(() => import('./Notifications'));
 
 const detailsTabId = 0;
 const servicesTabId = 1;
 const timelineTabId = 2;
 const graphTabId = 3;
 const metricsTabId = 4;
-const notificationsTabId = 5;
+const notificationTabId = 5;
 
 export interface TabProps {
   details?: ResourceDetails;
@@ -87,8 +87,9 @@ const tabs: Array<Tab> = [
   },
   {
     Component: NotificationsTab,
+    ariaLabel: labelNotification,
     getIsActive: (): boolean => true,
-    id: notificationsTabId,
+    id: notificationTabId,
     title: labelNotification,
   },
 ];
@@ -122,7 +123,7 @@ const tabIdByLabel = {
   details: detailsTabId,
   graph: graphTabId,
   metrics: metricsTabId,
-  notifications: notificationsTabId,
+  notification: notificationTab,
   services: servicesTabId,
   timeline: timelineTabId,
 };
@@ -147,7 +148,7 @@ export {
   graphTabId,
   servicesTabId,
   metricsTabId,
-  notificationsTab,
+  notificationTab,
   tabs,
   TabById,
   getTabIdFromLabel,

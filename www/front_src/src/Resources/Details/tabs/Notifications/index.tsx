@@ -1,7 +1,7 @@
 import * as React from 'react';
 
-const NotificationsTab = (): JSX.Element => {
+const NotificationTab = (): JSX.Element => {
   return <Notifications />;
 };
 
-export default NotificationsTab;
+export default NotificationTab;
