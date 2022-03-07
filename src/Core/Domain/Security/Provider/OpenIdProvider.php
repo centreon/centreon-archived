@@ -192,9 +192,6 @@ class OpenIdProvider implements OpenIdProviderInterface
         $this->verifyThatClientIsAllowedToConnectOrFail($clientIp);
 
         $this->sendRequestForConnectionTokenOrFail($authorizationCode);
-        if ($this->providerToken->isExpired() && !$this->refreshToken->isExpired()) {
-            $this->refreshToken();
-        }
         if ($this->providerToken->isExpired() && $this->refreshToken->isExpired()) {
             throw SSOAuthenticationException::tokensExpired(OpenIdConfiguration::NAME);
         }
@@ -314,7 +311,7 @@ class OpenIdProvider implements OpenIdProviderInterface
     /**
      * Refresh Access Token
      */
-    public function refreshToken(?AuthenticationTokens $authenticationToken = null): AuthenticationTokens
+    public function refreshToken(AuthenticationTokens $authenticationToken = null): AuthenticationTokens
     {
         $this->info(
             'Refreshing token using refresh token',
@@ -389,13 +386,13 @@ class OpenIdProvider implements OpenIdProviderInterface
         $refreshTokenExpiration = (new \DateTime())
             ->add(new \DateInterval('PT' . $content ['refresh_expires_in'] . 'S'));
         $this->providerToken =  new ProviderToken(
-            $authenticationToken !== null ? $authenticationToken->getProviderToken()->getId() : null,
+            $authenticationToken->getProviderToken()->getId(),
             $content['access_token'],
             $creationDate,
             $providerTokenExpiration
         );
         $this->refreshToken = new ProviderToken(
-            $authenticationToken !== null ? $authenticationToken->getProviderRefreshToken()->getId() : null,
+            $authenticationToken->getProviderRefreshToken()->getId(),
             $content['refresh_token'],
             $creationDate,
             $refreshTokenExpiration

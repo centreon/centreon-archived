@@ -16540,5 +16540,5 @@ msgstr "Impossible d'obtenir le code d'autorisation à partir de votre idp exter
 msgid "Missing token endpoint in your configuration"
 msgstr "L'endpoint de jeton est manquant dans votre configuration"
 
-msgid "Missing userinfo or introspection token endpoint"
-msgstr "L'endpoint de jeton d'information utilisateur ou d'introspection est manquant"
+msgid "Missing userinfo and introspection token endpoint"
+msgstr "L'endpoint de jeton d'information utilisateur et d'introspection sont manquants"
