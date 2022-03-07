@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2021 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,21 +20,15 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Domain\HostConfiguration\Exception;
+namespace Core\Domain\Security\ProviderConfiguration\Local;
 
-/**
- * This class is designed to contain all exceptions for the context of the host macro.
- *
- * @package Centreon\Domain\HostConfiguration\Exception
- */
-class HostMacroException extends \Exception
+class ConfigurationException extends \Exception
 {
     /**
-     * @param \Throwable $ex
      * @return self
      */
-    public static function addMacroException(\Throwable $ex): self
+    public static function notFound(): self
     {
-        return new self(_('Error when adding a host macro'), 0, $ex);
+        return new self(_('Local provider configuration not found'));
     }
 }

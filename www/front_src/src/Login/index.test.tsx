@@ -18,6 +18,7 @@ import { areUserParametersLoadedAtom } from '../Main/useUser';
 import { labelAlias } from '../Resources/translatedLabels';
 import { platformInstallationStatusAtom } from '../platformInstallationStatusAtom';
 import { userEndpoint } from '../api/endpoint';
+import { labelCentreonWallpaper } from '../components/Wallpaper/translatedLabels';
 
 import {
   labelCentreonLogo,
@@ -27,6 +28,7 @@ import {
   labelPassword,
   labelRequired,
   labelHideThePassword,
+  labelPasswordHasExpired,
 } from './translatedLabels';
 import { loginEndpoint, platformVersionsEndpoint } from './api/endpoint';
 
@@ -36,7 +38,10 @@ const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 const cancelTokenRequestParam = { cancelToken: {} };
 
-jest.mock('../Navigation/Sidebar/Logo/centreon.png');
+jest.mock('../assets/centreon.png');
+jest.mock('../assets/centreon-wallpaper-xl.jpg');
+jest.mock('../assets/centreon-wallpaper-lg.jpg');
+jest.mock('../assets/centreon-wallpaper-sm.jpg');
 
 jest.mock('@centreon/ui-context', () =>
   jest.requireActual('centreon-frontend/packages/ui-context'),
@@ -80,15 +85,40 @@ const TestComponent = (): JSX.Element => (
 
 const renderLoginPage = (): RenderResult => render(<TestComponent />);
 
+const mockPostLoginSuccess = (): void => {
+  mockedAxios.post.mockResolvedValue({
+    data: {
+      redirect_uri: '/monitoring/resources',
+    },
+  });
+};
+
+const mockPostLoginInvalidCredentials = (): void => {
+  mockedAxios.post.mockRejectedValueOnce({
+    response: {
+      data: { code: 401, message: labelInvalidCredentials },
+      status: 401,
+    },
+  });
+};
+
+const mockPostLoginPasswordExpired = (): void => {
+  mockedAxios.post.mockRejectedValue({
+    response: {
+      data: {
+        password_is_expired: true,
+        redirect_uri: '/monitoring/resources',
+      },
+      status: 401,
+    },
+  });
+};
+
 const labelInvalidCredentials = 'Invalid credentials';
+
 describe('Login Page', () => {
   beforeEach(() => {
     mockDate.set(mockNow);
-    mockedAxios.post.mockResolvedValue({
-      data: {
-        redirect_uri: '/monitoring/resources',
-      },
-    });
     mockedAxios.get
       .mockResolvedValueOnce({
         data: retrievedWeb,
@@ -106,6 +136,7 @@ describe('Login Page', () => {
   });
 
   it('displays the login form', async () => {
+    mockPostLoginSuccess();
     renderLoginPage();
 
     await waitFor(() => {
@@ -115,15 +146,17 @@ describe('Login Page', () => {
       );
     });
 
+    expect(screen.getByLabelText(labelCentreonWallpaper)).toBeInTheDocument();
+    expect(screen.getByLabelText(labelCentreonLogo)).toBeInTheDocument();
     expect(screen.getByLabelText(labelAlias)).toBeInTheDocument();
     expect(screen.getByLabelText(labelPassword)).toBeInTheDocument();
     expect(screen.getByLabelText(labelConnect)).toBeInTheDocument();
-    expect(screen.getByLabelText(labelCentreonLogo)).toBeInTheDocument();
     expect(screen.getByText('v. 21.10.1')).toBeInTheDocument();
     expect(screen.getByText('Copyright © 2005 - 2020')).toBeInTheDocument();
   });
 
   it(`submits the credentials when they are valid and the "${labelConnect}" is clicked`, async () => {
+    mockPostLoginSuccess();
     renderLoginPage();
 
     userEvent.type(screen.getByLabelText(labelAlias), 'admin');
@@ -149,13 +182,7 @@ describe('Login Page', () => {
   });
 
   it(`does not submit the credentials when they are invalid and the "${labelConnect}" button is clicked`, async () => {
-    mockedAxios.post.mockReset();
-    mockedAxios.post.mockRejectedValueOnce({
-      response: {
-        data: { code: 401, message: labelInvalidCredentials },
-        status: 401,
-      },
-    });
+    mockPostLoginInvalidCredentials();
     renderLoginPage();
 
     userEvent.type(screen.getByLabelText(labelAlias), 'invalid_alias');
@@ -217,5 +244,21 @@ describe('Login Page', () => {
       'text',
     );
     expect(screen.getByLabelText(labelHideThePassword)).toBeInTheDocument();
+  });
+
+  it('redirects to the reset page when the submitted password is expired', async () => {
+    mockPostLoginPasswordExpired();
+    renderLoginPage();
+
+    userEvent.type(screen.getByLabelText(labelAlias), 'admin');
+    userEvent.type(screen.getByLabelText(labelPassword), 'centreon');
+
+    userEvent.click(screen.getByLabelText(labelConnect));
+
+    await waitFor(() => {
+      expect(screen.getByText(labelPasswordHasExpired)).toBeInTheDocument();
+    });
+
+    expect(window.location.href).toBe('http://localhost/reset-password');
   });
 });

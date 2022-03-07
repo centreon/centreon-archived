@@ -44,6 +44,19 @@ trait DbFactoryUtilitiesTrait
     }
 
     /**
+     * Creates DateTimeImmutable from timestamp
+     *
+     * @param int|string|null $timestamp
+     * @return \DateTimeImmutable|null
+     */
+    public static function createDateTimeImmutableFromTimestamp(int|string|null $timestamp): ?\DateTimeImmutable
+    {
+        return $timestamp !== null
+            ? (new \DateTimeImmutable())->setTimestamp((int) $timestamp)
+            : null;
+    }
+
+    /**
      * @param int|string|null $property
      * @return int|null
      */

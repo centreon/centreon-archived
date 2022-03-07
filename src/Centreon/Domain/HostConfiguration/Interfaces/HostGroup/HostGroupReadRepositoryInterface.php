@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace Centreon\Domain\HostConfiguration\Interfaces\HostGroup;
 
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
+use Centreon\Domain\HostConfiguration\Host;
 use Centreon\Domain\HostConfiguration\Model\HostGroup;
 use Centreon\Domain\Repository\RepositoryException;
 
@@ -51,6 +52,15 @@ interface HostGroupReadRepositoryInterface
      * @throws \Exception
      */
     public function findAllByContact(ContactInterface $contact): array;
+
+    /**
+     * Find all host groups linked to a host.
+     *
+     * @param Host $host
+     * @return HostGroup[]
+     * @throws \Throwable
+     */
+    public function findAllByHost(Host $host): array;
 
     /**
      * Find a host group by id.
