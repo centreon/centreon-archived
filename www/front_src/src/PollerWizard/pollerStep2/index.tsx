@@ -4,7 +4,13 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import { useUpdateAtom, useAtomValue } from 'jotai/utils';
 
-import { Typography, Button, FormControlLabel, Checkbox } from '@mui/material';
+import {
+  Typography,
+  Button,
+  FormControlLabel,
+  Checkbox,
+  CircularProgress,
+} from '@mui/material';
 
 import {
   postData,
@@ -57,6 +63,7 @@ const FormPollerStepTwo = ({
   const navigate = useNavigate();
 
   const [pollers, setPollers] = React.useState<Array<Poller>>([]);
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [stepTwoFormData, setStepTwoFormData] = React.useState<stepTwoFormData>(
     {
       linked_remote_master: '',
@@ -118,6 +125,7 @@ const FormPollerStepTwo = ({
     };
     const dataToPost = { ...data, ...pollerData };
     dataToPost.server_type = 'poller';
+    setIsLoading(true);
 
     postWizardFormRequest({
       data: dataToPost,
@@ -131,7 +139,9 @@ const FormPollerStepTwo = ({
           navigate(routeMap.pollerList);
         }
       })
-      .catch(() => undefined);
+      .catch(() => {
+        setIsLoading(false);
+      });
   };
 
   React.useEffect(() => {
@@ -195,6 +205,8 @@ const FormPollerStepTwo = ({
             </Button>
             <Button
               color="primary"
+              disabled={isLoading}
+              endIcon={isLoading && <CircularProgress size={15} />}
               size="small"
               type="submit"
               variant="contained"

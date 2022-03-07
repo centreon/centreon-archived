@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router';
 import { isEmpty } from 'ramda';
 import { useUpdateAtom, useAtomValue } from 'jotai/utils';
 
-import { Typography, Button } from '@mui/material';
+import { Typography, Button, CircularProgress } from '@mui/material';
 
 import {
   postData,
@@ -42,6 +42,7 @@ const FormRemoteServerStepTwo = ({
 }: Props): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
   const [remoteServers, setRemoteServers] =
     React.useState<Array<RemoteList> | null>(null);
@@ -104,6 +105,7 @@ const FormRemoteServerStepTwo = ({
       linked_pollers: linkedPollers.map(({ id }) => id),
     };
     dataToPost.server_type = 'remote';
+    setIsLoading(true);
 
     postWizardFormRequest({
       data: dataToPost,
@@ -121,7 +123,9 @@ const FormRemoteServerStepTwo = ({
           navigate(routeMap.pollerList);
         }
       })
-      .catch(() => undefined);
+      .catch(() => {
+        setIsLoading(false);
+      });
   };
 
   return (
@@ -150,6 +154,8 @@ const FormRemoteServerStepTwo = ({
           </Button>
           <Button
             color="primary"
+            disabled={isLoading}
+            endIcon={isLoading && <CircularProgress size={15} />}
             size="small"
             type="submit"
             variant="contained"
