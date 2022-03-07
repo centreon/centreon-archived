@@ -80,7 +80,7 @@ class OpenIdProvider implements OpenIdProviderInterface
     }
 
     /**
-     * @return OpenIdConfiguration
+     * @inheritDoc
      */
     public function getConfiguration(): OpenIdConfiguration
     {
@@ -88,7 +88,7 @@ class OpenIdProvider implements OpenIdProviderInterface
     }
 
     /**
-     * @return ProviderToken
+     * @inheritDoc
      */
     public function getProviderToken(): ProviderToken
     {
@@ -96,7 +96,7 @@ class OpenIdProvider implements OpenIdProviderInterface
     }
 
     /**
-     * @return ProviderToken
+     * @inheritDoc
      */
     public function getProviderRefreshToken(): ProviderToken
     {
@@ -104,18 +104,24 @@ class OpenIdProvider implements OpenIdProviderInterface
     }
 
     /**
-     * @return OpenIdProvider
+     * @inheritDoc
      */
     public function setConfiguration(OpenIdConfiguration $configuration): void
     {
         $this->configuration = $configuration;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function canCreateUser(): bool
     {
         return true;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function createUser(): ?ContactInterface
     {
         // @todo: implement this method when handling autoimport
@@ -155,9 +161,7 @@ class OpenIdProvider implements OpenIdProviderInterface
     }
 
     /**
-     * Authenticate the user using OpenId Provider.
-     *
-     * @param string|null $authorizationCode
+     * @inheritDoc
      */
     public function authenticateOrFail(?string $authorizationCode, string $clientIp): void
     {
