@@ -5,7 +5,10 @@ import React from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import { Typography, Paper } from '@mui/material';
+import { Typography, Paper, Grid, Alert } from '@mui/material';
+import Chip from '@mui/material/Chip';
+import CheckIcon from '@mui/icons-material/Check';
+import SmsFailedIcon from '@mui/icons-material/SmsFailed';
 
 import { ContentWithCircularLoading } from '@centreon/ui';
 
@@ -45,12 +48,16 @@ export default ({
         </div>
         {/* display loader until tasks are finished or error is displayed */}
         <p className={classes.formText}>
-          <Typography>{t('Creating Export Task')}</Typography>
           <ContentWithCircularLoading alignCenter loading={loading}>
             <span className={classes.statusCreating}>
               {statusCreating != null ? (
                 <Typography variant="body2">
-                  {statusCreating ? '[OK]' : '[FAIL]'}
+                  <Chip
+                    color={statusCreating ? 'success' : 'error'}
+                    icon={statusCreating ? <CheckIcon /> : <SmsFailedIcon />}
+                    label={t('Creating Export Task')}
+                    style={{ width: '100%' }}
+                  />
                 </Typography>
               ) : (
                 '...'
@@ -59,12 +66,16 @@ export default ({
           </ContentWithCircularLoading>
         </p>
         <p className={classes.formText}>
-          <Typography>{t('Generating Export Files')}</Typography>
           <ContentWithCircularLoading alignCenter loading={loading}>
             <span className={classes.statusGenerating}>
               {statusGenerating != null ? (
                 <Typography variant="body2">
-                  {statusGenerating ? '[OK]' : '[FAIL]'}
+                  <Chip
+                    color={statusGenerating ? 'success' : 'error'}
+                    icon={statusGenerating ? <CheckIcon /> : <SmsFailedIcon />}
+                    label={t('Generating Export Files')}
+                    style={{ width: '100%' }}
+                  />
                 </Typography>
               ) : (
                 '...'
@@ -73,9 +84,11 @@ export default ({
           </ContentWithCircularLoading>
         </p>
         {hasError && (
-          <Typography color="error" variant="body2">
-            {error}
-          </Typography>
+          <Grid item>
+            <Alert severity="error">
+              <Typography>{error}</Typography>
+            </Alert>
+          </Grid>
         )}
       </div>
     </Paper>
