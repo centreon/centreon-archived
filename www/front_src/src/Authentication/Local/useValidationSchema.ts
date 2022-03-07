@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
 
-import { SecurityPolicy } from './models';
+import { PasswordSecurityPolicy } from './models';
 import { oneHour, sevenDays, twelveMonths } from './timestamps';
 import {
   labelChooseAValueBetween1and10,
@@ -13,7 +13,7 @@ import {
   labelBlockingDurationMustBeLessThanOrEqualTo7Days,
 } from './translatedLabels';
 
-const useValidationSchema = (): Yup.SchemaOf<SecurityPolicy> => {
+const useValidationSchema = (): Yup.SchemaOf<PasswordSecurityPolicy> => {
   const { t } = useTranslation();
 
   return Yup.object().shape({

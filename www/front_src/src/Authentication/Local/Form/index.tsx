@@ -8,22 +8,22 @@ import makeStyles from '@mui/styles/makeStyles';
 
 import { useRequest, useSnackbar } from '@centreon/ui';
 
-import { SecurityPolicy } from '../models';
+import { PasswordSecurityPolicy } from '../models';
 import useValidationSchema from '../useValidationSchema';
-import { putSecurityPolicy } from '../api';
+import { putPasswordPasswordSecurityPolicy } from '../../api';
 import {
-  labelFailedToSavePasswordSecurityPolicy,
-  labelPasswordSecurityPolicySaved,
+  labelFailedToSavePasswordPasswordSecurityPolicy,
+  labelPasswordPasswordSecurityPolicySaved,
 } from '../translatedLabels';
+import FormButtons from '../../FormButtons';
 
 import PasswordCasePolicy from './PasswordCasePolicy';
 import PasswordExpirationPolicy from './PasswordExpirationPolicy';
 import PasswordBlockingPolicy from './PasswordBlockingPolicy';
-import FormButtons from './FormButtons';
 
 interface Props {
-  initialValues: SecurityPolicy;
-  loadSecurityPolicy: () => void;
+  initialValues: PasswordSecurityPolicy;
+  loadPasswordPasswordSecurityPolicy: () => void;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -36,27 +36,33 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Form = ({ initialValues, loadSecurityPolicy }: Props): JSX.Element => {
+const Form = ({
+  initialValues,
+  loadPasswordPasswordSecurityPolicy,
+}: Props): JSX.Element => {
   const classes = useStyles();
   const validationSchema = useValidationSchema();
   const { showSuccessMessage } = useSnackbar();
   const { t } = useTranslation();
 
   const { sendRequest } = useRequest({
-    defaultFailureMessage: t(labelFailedToSavePasswordSecurityPolicy),
-    request: putSecurityPolicy,
+    defaultFailureMessage: t(labelFailedToSavePasswordPasswordSecurityPolicy),
+    request: putPasswordPasswordSecurityPolicy,
   });
 
-  const submit = (values: SecurityPolicy, { setSubmitting }): Promise<void> =>
+  const submit = (
+    values: PasswordSecurityPolicy,
+    { setSubmitting },
+  ): Promise<void> =>
     sendRequest(values)
       .then(() => {
-        loadSecurityPolicy();
-        showSuccessMessage(t(labelPasswordSecurityPolicySaved));
+        loadPasswordPasswordSecurityPolicy();
+        showSuccessMessage(t(labelPasswordPasswordSecurityPolicySaved));
       })
       .finally(() => setSubmitting(false));
 
   return (
-    <Formik<SecurityPolicy>
+    <Formik<PasswordSecurityPolicy>
       enableReinitialize
       validateOnBlur
       validateOnMount

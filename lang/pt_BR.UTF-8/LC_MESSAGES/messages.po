@@ -15341,3 +15341,78 @@ msgstr ""
 
 # msgid "Profile"
 # msgstr ""
+
+# msgid "Password security policy"
+# msgstr ""
+
+# msgid "OpenID Connect Configuration"
+# msgstr ""
+
+# msgid "Define OpenID Connect Configuration"
+# msgstr ""
+
+# msgid "Invalid URL"
+# msgstr ""
+
+# msgid "Invalid IP Address or domain name"
+# msgstr ""
+
+# msgid "Failed to save OpenID Connect configuration"
+# msgstr ""
+
+# msgid "OpenID Connect configuration saved"
+# msgstr ""
+
+# msgid "Enable OpenID Connect Authentication"
+# msgstr ""
+
+# msgid "Authentication mode"
+# msgstr ""
+
+# msgid "Trusted client addresses"
+# msgstr ""
+
+# msgid "Blacklist client addresses"
+# msgstr ""
+
+# msgid "Base URL"
+# msgstr ""
+
+# msgid "Authorization endpoint"
+# msgstr ""
+
+# msgid "Token endpoint"
+# msgstr ""
+
+# msgid "Introspection token endpoint"
+# msgstr ""
+
+# msgid "User information endpoint"
+# msgstr ""
+
+# msgid "End session endpoint"
+# msgstr ""
+
+# msgid "Scopes"
+# msgstr ""
+
+# msgid "Login claim value"
+# msgstr ""
+
+# msgid "Client ID"
+# msgstr ""
+
+# msgid "Client secret"
+# msgstr ""
+
+# msgid "Use basic authentication for token endpoint authentication"
+# msgstr ""
+
+# msgid "Disable verify peer"
+# msgstr ""
+
+# msgid "OpenID Connect only"
+# msgstr ""
+
+# msgid "Mixed"
+# msgstr ""
