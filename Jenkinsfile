@@ -280,7 +280,7 @@ try {
         stash name: "rpms-centos7", includes: 'output/noarch/*.rpm'
         sh 'rm -rf output'
       }
-    }
+    },
     'rpm packaging alma8': {
       node {
         checkoutCentreonBuild()
