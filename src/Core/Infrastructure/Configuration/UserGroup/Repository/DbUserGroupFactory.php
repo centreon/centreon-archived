@@ -21,32 +21,24 @@
 
 declare(strict_types=1);
 
-namespace Core\Application\Configuration\User\Repository;
+namespace Core\Infrastructure\Configuration\UserGroup\Repository;
 
-use Core\Domain\Configuration\User\Model\User;
+use Core\Domain\Configuration\UserGroup\Model\UserGroup;
 
-interface ReadUserRepositoryInterface
+class DbUserGroupFactory
 {
     /**
-     * Find configured users
-     *
-     * @return User[]
+     * @param array<string, mixed> $data
+     * @return UserGroup
      */
-    public function findAllUsers(): array;
+    public static function createFromRecord(array $data): UserGroup
+    {
+        $userGroup = new UserGroup(
+            (int) $data['id'],
+            $data['name'],
+            $data['alias']
+        );
 
-    /**
-     * Find user ids from a list of alias
-     *
-     * @param string[] $userAliases
-     * @return int[]
-     */
-    public function findUserIdsByAliases(array $userAliases): array;
-
-    /**
-     * Find users by their ids
-     *
-     * @param int[] $userIds
-     * @return User[]
-     */
-    public function findUsersByIds(array $userIds): array;
+        return $userGroup;
+    }
 }

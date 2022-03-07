@@ -86,6 +86,7 @@ class DbReadHostRepository extends AbstractRepositoryDRB implements ReadHostRepo
                 h.perfData AS `performance_data`,
                 h.output,
                 h.command_line,
+                h.notify,
                 h.notification_number,
                 h.last_state_change AS `last_status_change`,
                 h.last_notification,
