@@ -12,10 +12,13 @@ import {
   buildListingEndpoint,
 } from '@centreon/ui';
 
-import { SecurityPolicy, SecurityPolicyFromAPI } from '../../models';
+import {
+  PasswordSecurityPolicy,
+  PasswordSecurityPolicyFromAPI,
+} from '../../models';
 import useValidationSchema from '../../useValidationSchema';
 import {
-  defaultSecurityPolicy,
+  defaultPasswordSecurityPolicy,
   securityPolicyWithInvalidDelayBeforeNewPassword,
   securityPolicyWithInvalidPasswordExpiration,
 } from '../defaults';
@@ -31,7 +34,7 @@ import {
   labelTimeBeforeSettingNewPassword,
   labelExcludedUsers,
 } from '../../translatedLabels';
-import { contactsEndpoint } from '../../api/endpoints';
+import { contactsEndpoint } from '../../../api/endpoints';
 
 import PasswordExpirationPolicy from '.';
 
@@ -42,14 +45,14 @@ const mockedAxios = axios as jest.Mocked<typeof axios>;
 const cancelTokenRequestParam = { cancelToken: {} };
 
 interface Props {
-  initialValues: SecurityPolicy;
+  initialValues: PasswordSecurityPolicy;
 }
 
 const TestComponent = ({ initialValues }: Props): JSX.Element => {
   const validationSchema = useValidationSchema();
 
   return (
-    <Formik<SecurityPolicy>
+    <Formik<PasswordSecurityPolicy>
       enableReinitialize
       validateOnBlur
       validateOnMount
@@ -63,7 +66,7 @@ const TestComponent = ({ initialValues }: Props): JSX.Element => {
 };
 
 const renderPasswordExpirationPolicy = (
-  initialValues: SecurityPolicyFromAPI = defaultSecurityPolicy,
+  initialValues: PasswordSecurityPolicyFromAPI = defaultPasswordSecurityPolicy,
 ): RenderResult =>
   render(
     <TestComponent initialValues={initialValues.password_security_policy} />,

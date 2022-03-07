@@ -17,7 +17,7 @@ interface PasswordExpirationToAPI {
   expiration_delay: number | null;
 }
 
-export interface SecurityPolicy {
+export interface PasswordSecurityPolicy {
   attempts: number | null;
   blockingDuration: number | null;
   canReusePasswords: boolean;
@@ -30,7 +30,7 @@ export interface SecurityPolicy {
   passwordMinLength: number;
 }
 
-export interface SecurityPolicyFromAPI {
+export interface PasswordSecurityPolicyFromAPI {
   password_security_policy: {
     attempts: number | null;
     blockingDuration: number | null;
@@ -45,7 +45,7 @@ export interface SecurityPolicyFromAPI {
   };
 }
 
-export interface SecurityPolicyToAPI {
+export interface PasswordSecurityPolicyToAPI {
   password_security_policy: {
     attempts: number | null;
     blocking_duration: number | null;

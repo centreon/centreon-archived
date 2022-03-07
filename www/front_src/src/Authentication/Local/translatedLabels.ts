@@ -1,4 +1,4 @@
-export const labelDefinePasswordSecurityPolicy =
+export const labelDefinePasswordPasswordSecurityPolicy =
   'Define the password security policy';
 export const labelPasswordCasePolicy = 'Password case policy';
 export const labelPasswordLength = 'Password minimum length';
@@ -50,9 +50,9 @@ export const labelSave = 'Save';
 export const labelSaving = 'Saving...';
 export const labelSaved = 'Saved';
 export const labelReset = 'Reset';
-export const labelPasswordSecurityPolicySaved =
+export const labelPasswordPasswordSecurityPolicySaved =
   'Password security policy saved';
-export const labelFailedToSavePasswordSecurityPolicy =
+export const labelFailedToSavePasswordPasswordSecurityPolicy =
   'Failed to save password security policy';
 export const labelThisWillNotBeUsedBecauseNumberOfAttemptsIsNotDefined =
   'This will not be used because the number of attempts is not defined';
@@ -61,3 +61,4 @@ export const labelResetTheForm = 'Reset the form';
 export const labelDoYouWantToResetTheForm = 'Do you want to reset the form?';
 export const labelExcludedUsers = 'Excluded users';
 export const labelAdmin = 'Admin';
+export const labelPasswordSecurityPolicy = 'Password security policy';

@@ -5,9 +5,12 @@ import userEvent from '@testing-library/user-event';
 
 import { RenderResult, render, screen, waitFor } from '@centreon/ui';
 
+import { authenticationProvidersEndpoint } from '../api/endpoints';
+import { Provider } from '../models';
+
 import {
   labelReset,
-  labelDefinePasswordSecurityPolicy,
+  labelDefinePasswordPasswordSecurityPolicy,
   labelDoYouWantToResetTheForm,
   labelNumberOfAttemptsBeforeBlockingNewAttempts,
   labelPasswordBlockingPolicy,
@@ -18,13 +21,12 @@ import {
   labelSave,
 } from './translatedLabels';
 import {
-  defaultSecurityPolicyAPI,
-  retrievedSecurityPolicyAPI,
+  defaultPasswordSecurityPolicyAPI,
+  retrievedPasswordSecurityPolicyAPI,
 } from './Form/defaults';
-import { securityPolicyEndpoint } from './api/endpoints';
-import { SecurityPolicyToAPI } from './models';
+import { PasswordSecurityPolicyToAPI } from './models';
 
-import Authentication from '.';
+import LocalAuthentication from '.';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
@@ -37,9 +39,12 @@ const cancelTokenPutParams = {
   },
 };
 
-const renderAuthentication = (): RenderResult => render(<Authentication />);
+const renderAuthentication = (): RenderResult =>
+  render(<LocalAuthentication />);
 
-const mockGetSecurityPolicy = (securityPolicy: SecurityPolicyToAPI): void => {
+const mockGetPasswordSecurityPolicy = (
+  securityPolicy: PasswordSecurityPolicyToAPI,
+): void => {
   mockedAxios.get.mockReset();
   mockedAxios.get.mockResolvedValue({
     data: securityPolicy,
@@ -55,16 +60,16 @@ describe('Authentication', () => {
   });
 
   it('updates the retrieved form recommended values and send the data when the "Save" button is clicked', async () => {
-    mockGetSecurityPolicy(defaultSecurityPolicyAPI);
+    mockGetPasswordSecurityPolicy(defaultPasswordSecurityPolicyAPI);
     renderAuthentication();
 
     expect(
-      screen.getByText(labelDefinePasswordSecurityPolicy),
+      screen.getByText(labelDefinePasswordPasswordSecurityPolicy),
     ).toBeInTheDocument();
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
-        securityPolicyEndpoint,
+        authenticationProvidersEndpoint(Provider.Local),
         cancelTokenRequestParam,
       );
     });
@@ -90,10 +95,10 @@ describe('Authentication', () => {
 
     await waitFor(() => {
       expect(mockedAxios.put).toHaveBeenCalledWith(
-        securityPolicyEndpoint,
+        authenticationProvidersEndpoint(Provider.Local),
         {
           password_security_policy: {
-            ...defaultSecurityPolicyAPI.password_security_policy,
+            ...defaultPasswordSecurityPolicyAPI.password_security_policy,
             password_min_length: 45,
           },
         },
@@ -103,16 +108,16 @@ describe('Authentication', () => {
   });
 
   it('updates the retrieved form recommended values and reset the form to the inital values', async () => {
-    mockGetSecurityPolicy(defaultSecurityPolicyAPI);
+    mockGetPasswordSecurityPolicy(defaultPasswordSecurityPolicyAPI);
     renderAuthentication();
 
     expect(
-      screen.getByText(labelDefinePasswordSecurityPolicy),
+      screen.getByText(labelDefinePasswordPasswordSecurityPolicy),
     ).toBeInTheDocument();
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
-        securityPolicyEndpoint,
+        authenticationProvidersEndpoint(Provider.Local),
         cancelTokenRequestParam,
       );
     });
@@ -155,16 +160,16 @@ describe('Authentication', () => {
   });
 
   it('updates the retrieved form values and send the data when the "Save" button is clicked', async () => {
-    mockGetSecurityPolicy(retrievedSecurityPolicyAPI);
+    mockGetPasswordSecurityPolicy(retrievedPasswordSecurityPolicyAPI);
     renderAuthentication();
 
     expect(
-      screen.getByText(labelDefinePasswordSecurityPolicy),
+      screen.getByText(labelDefinePasswordPasswordSecurityPolicy),
     ).toBeInTheDocument();
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
-        securityPolicyEndpoint,
+        authenticationProvidersEndpoint(Provider.Local),
         cancelTokenRequestParam,
       );
     });
@@ -190,10 +195,10 @@ describe('Authentication', () => {
 
     await waitFor(() => {
       expect(mockedAxios.put).toHaveBeenCalledWith(
-        securityPolicyEndpoint,
+        authenticationProvidersEndpoint(Provider.Local),
         {
           password_security_policy: {
-            ...retrievedSecurityPolicyAPI.password_security_policy,
+            ...retrievedPasswordSecurityPolicyAPI.password_security_policy,
             attempts: 2,
           },
         },

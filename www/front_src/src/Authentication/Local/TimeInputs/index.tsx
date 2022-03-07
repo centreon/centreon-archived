@@ -4,7 +4,7 @@ import { equals, find, propEq } from 'ramda';
 
 import makeStyles from '@mui/styles/makeStyles';
 
-import { labelSeconds } from '../../Resources/translatedLabels';
+import { labelSeconds } from '../../../Resources/translatedLabels';
 import {
   labelDay,
   labelDays,

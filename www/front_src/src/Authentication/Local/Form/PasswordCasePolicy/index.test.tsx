@@ -5,7 +5,10 @@ import { Formik } from 'formik';
 
 import { render, RenderResult, screen, waitFor } from '@centreon/ui';
 
-import { SecurityPolicy, SecurityPolicyFromAPI } from '../../models';
+import {
+  PasswordSecurityPolicy,
+  PasswordSecurityPolicyFromAPI,
+} from '../../models';
 import useValidationSchema from '../../useValidationSchema';
 import {
   labelForceToUseLowerCase,
@@ -22,8 +25,8 @@ import {
   labelWeak,
 } from '../../translatedLabels';
 import {
-  defaultSecurityPolicy,
-  defaultSecurityPolicyWithNullValues,
+  defaultPasswordSecurityPolicy,
+  defaultPasswordSecurityPolicyWithNullValues,
 } from '../defaults';
 
 import PasswordCasePolicy from '.';
@@ -31,14 +34,14 @@ import PasswordCasePolicy from '.';
 const noOp = jest.fn();
 
 interface Props {
-  initialValues: SecurityPolicy;
+  initialValues: PasswordSecurityPolicy;
 }
 
 const TestComponent = ({ initialValues }: Props): JSX.Element => {
   const validationSchema = useValidationSchema();
 
   return (
-    <Formik<SecurityPolicy>
+    <Formik<PasswordSecurityPolicy>
       enableReinitialize
       validateOnBlur
       validateOnMount
@@ -52,7 +55,7 @@ const TestComponent = ({ initialValues }: Props): JSX.Element => {
 };
 
 const renderPasswordCasePolicy = (
-  initialValues: SecurityPolicyFromAPI = defaultSecurityPolicy,
+  initialValues: PasswordSecurityPolicyFromAPI = defaultPasswordSecurityPolicy,
 ): RenderResult =>
   render(
     <TestComponent initialValues={initialValues.password_security_policy} />,
@@ -124,7 +127,7 @@ describe('Password case policy', () => {
   });
 
   it('displays the efficiency level according to the selected cases when cases button are clicked', async () => {
-    renderPasswordCasePolicy(defaultSecurityPolicyWithNullValues);
+    renderPasswordCasePolicy(defaultPasswordSecurityPolicyWithNullValues);
 
     userEvent.click(screen.getAllByLabelText(labelForceToUseLowerCase)[0]);
     userEvent.click(screen.getAllByLabelText(labelForceToUseUpperCase)[0]);
