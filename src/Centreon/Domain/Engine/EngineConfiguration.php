@@ -30,7 +30,7 @@ class EngineConfiguration
                  NOTIFICATIONS_OPTION_ENABLED = 1,
                  NOTIFICATIONS_OPTION_DEFAULT = 2;
 
-    private const AVAILABLE_NOTIFICATIONS_OPTION = [
+    private const AVAILABLE_NOTIFICATION_OPTIONS = [
         self::NOTIFICATIONS_OPTION_DISABLED,
         self::NOTIFICATIONS_OPTION_ENABLED,
         self::NOTIFICATIONS_OPTION_DEFAULT,
@@ -175,7 +175,7 @@ class EngineConfiguration
     {
         Assertion::inArray(
             $notificationsEnabledOption,
-            self::AVAILABLE_NOTIFICATIONS_OPTION,
+            self::AVAILABLE_NOTIFICATION_OPTIONS,
             'Engine::notificationsEnabledOption',
         );
 

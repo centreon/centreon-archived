@@ -57,7 +57,7 @@ class Host
                  NOTIFICATIONS_OPTION_ENABLED = 1,
                  NOTIFICATIONS_OPTION_DEFAULT_ENGINE_VALUE = 2;
 
-    private const AVAILABLE_NOTIFICATIONS_OPTION = [
+    private const AVAILABLE_NOTIFICATION_OPTIONS = [
         self::NOTIFICATIONS_OPTION_DISABLED,
         self::NOTIFICATIONS_OPTION_ENABLED,
         self::NOTIFICATIONS_OPTION_DEFAULT_ENGINE_VALUE,
@@ -523,7 +523,7 @@ class Host
     {
         Assertion::inArray(
             $notificationsEnabledOption,
-            self::AVAILABLE_NOTIFICATIONS_OPTION,
+            self::AVAILABLE_NOTIFICATION_OPTIONS,
             'Engine::notificationsEnabledOption',
         );
 
