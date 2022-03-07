@@ -59,7 +59,7 @@ function getCentreonBrokerDirCfg($ns_id)
  *
  * @param CentreonXML $xml
  * @param mixed[] $tabs
- * @return void
+ * @return int
  */
 function printDebug($xml, array $tabs): int
 {
