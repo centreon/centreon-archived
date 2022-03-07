@@ -204,7 +204,7 @@ class CentreonCeip extends CentreonWebService
                     $licenseClientName = $licenseInformation[$module]['client']['name'];
                     if ($module === 'epp') {
                         $productLicense = 'IT Edition';
-                        if ($licenseInformation[$module]['licensing']['type'] == 'IT100') {
+                        if ($licenseInformation[$module]['licensing']['type'] === 'IT100') {
                             $productLicense = 'IT-100 Edition';
                         }
                     }
