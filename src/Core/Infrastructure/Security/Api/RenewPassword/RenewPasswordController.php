@@ -23,13 +23,10 @@ declare(strict_types=1);
 
 namespace Core\Infrastructure\Security\Api\RenewPassword;
 
-use JsonSchema\Validator;
-use JsonSchema\Constraints\Constraint;
 use Symfony\Component\HttpFoundation\Request;
 use Centreon\Application\Controller\AbstractController;
 use Core\Application\Security\UseCase\RenewPassword\RenewPassword;
 use Core\Application\Security\UseCase\RenewPassword\RenewPasswordRequest;
-use Core\Infrastructure\Security\Api\Exception\RenewPasswordApiException;
 use Core\Application\Security\UseCase\RenewPassword\RenewPasswordPresenterInterface;
 
 class RenewPasswordController extends AbstractController
@@ -51,40 +48,6 @@ class RenewPasswordController extends AbstractController
         $renewPasswordRequest = $this->createRenewPasswordRequest($request, $alias);
         $useCase($presenter, $renewPasswordRequest);
         return $presenter->show();
-    }
-
-    /**
-     * Validate the data sent.
-     *
-     * @param Request $request Request sent by client
-     * @param string $jsonValidationFile Json validation file
-     * @throws RenewPasswordApiException
-     */
-    private function validateDataSent(Request $request, string $jsonValidationFile): void
-    {
-        $receivedData = json_decode((string) $request->getContent(), true);
-        if (!is_array($receivedData)) {
-            throw new RenewPasswordApiException('Error when decoding your sent data');
-        }
-        $receivedData = Validator::arrayToObjectRecursive($receivedData);
-        $validator = new Validator();
-        $validator->validate(
-            $receivedData,
-            (object) [
-                '$ref' => 'file://' . realpath(
-                    $jsonValidationFile
-                )
-            ],
-            Constraint::CHECK_MODE_VALIDATE_SCHEMA
-        );
-
-        if (!$validator->isValid()) {
-            $message = '';
-            foreach ($validator->getErrors() as $error) {
-                $message .= sprintf("[%s] %s\n", $error['property'], $error['message']);
-            }
-            throw new RenewPasswordApiException($message);
-        }
     }
 
     /**
