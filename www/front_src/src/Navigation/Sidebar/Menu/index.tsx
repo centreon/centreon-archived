@@ -46,6 +46,9 @@ const NavigationMenu = ({
   const [maxHeightCollapsScroll, setMaxHeightCollapsScroll] = useState<
     number | undefined
   >(undefined);
+  const [maxWidthCollapsScroll, setMaxWidthCollapsScroll] = useState<
+    number | undefined
+  >(undefined);
   const [navigationItemSelected, setNavigationItemSelected] = useAtom(
     navigationItemSelectedAtom,
   );
@@ -59,7 +62,9 @@ const NavigationMenu = ({
     isDrawerOpen,
     level: 1,
     maxHeightCollapsScroll,
+    maxWidthCollapsScroll,
     setMaxHeightCollapsScroll,
+    setMaxWidthCollapsScroll,
   };
 
   const hoverItem = (
@@ -150,14 +155,16 @@ const NavigationMenu = ({
                 hoverItem(e, index, item)
               }
             />
-            {Array.isArray(item?.children) && item.children.length > 0 && (
-              <CollapsableItems
-                {...props}
-                data={item.children}
-                isCollapsed={index === hoveredIndex}
-                onClick={handlClickItem}
-              />
-            )}
+            {Array.isArray(item?.children) &&
+              item.children.length > 0 &&
+              equals(index, hoveredIndex) && (
+                <CollapsableItems
+                  {...props}
+                  data={item.children}
+                  isCollapsed={index === hoveredIndex}
+                  onClick={handlClickItem}
+                />
+              )}
           </ListItem>
         );
       })}

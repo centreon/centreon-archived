@@ -25,8 +25,12 @@ interface Props {
   isSubHeader?: boolean;
   level: number;
   maxHeightCollapsScroll?: number;
+  maxWidthCollapsScroll?: number;
   onClick: (item: Page) => void;
   setMaxHeightCollapsScroll: React.Dispatch<
+    React.SetStateAction<number | undefined>
+  >;
+  setMaxWidthCollapsScroll: React.Dispatch<
     React.SetStateAction<number | undefined>
   >;
 }
@@ -35,6 +39,7 @@ interface StyleProps {
   currentTop?: number;
   currentWidth: number;
   maxHeightCollapsScroll?: number;
+  maxWidthCollapsScroll?: number;
 }
 
 const collapsWidth = 170;
@@ -80,6 +85,9 @@ const useStyles = makeStyles((theme) => ({
     '&::-webkit-scrollbar': {
       width: theme.spacing(1.5),
     },
+    '&::-webkit-scrollbar-corner': {
+      backgroundColor: theme.palette.background.default,
+    },
     '&::-webkit-scrollbar-thumb': {
       backgroundColor: theme.palette.action.disabled,
     },
@@ -92,10 +100,14 @@ const useStyles = makeStyles((theme) => ({
       maxHeightCollapsScroll
         ? theme.spacing(maxHeightCollapsScroll)
         : theme.spacing(50),
-    minWidth: collapsWidth,
+    maxWidth: ({ maxWidthCollapsScroll }: StyleProps): string =>
+      maxWidthCollapsScroll
+        ? theme.spacing(maxWidthCollapsScroll)
+        : theme.spacing(collapsWidth / 8),
     overflow: 'auto',
     position: 'fixed',
     top: ({ currentTop }: StyleProps): number | undefined => currentTop,
+    width: collapsWidth,
     zIndex: theme.zIndex.mobileStepper,
   },
 }));
@@ -109,21 +121,25 @@ const CollapsableItems = ({
   onClick,
   level,
   maxHeightCollapsScroll,
+  maxWidthCollapsScroll,
+  setMaxWidthCollapsScroll,
   setMaxHeightCollapsScroll,
 }: Props): JSX.Element => {
   const classes = useStyles({
     currentTop,
     currentWidth,
     maxHeightCollapsScroll,
+    maxWidthCollapsScroll,
   });
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [topItem, setTopItem] = useState<number>();
   const [nestedMaxHeightCollaps, setNestedMaxHeightCollaps] = useState<
     undefined | number
   >(undefined);
-  const [currentItemNode, setCurrentItemNode] = useState<
-    HTMLElement | undefined
+  const [nestedMaxWidthCollaps, setNestedMaxWidthCollaps] = useState<
+    undefined | number
   >(undefined);
+  const collapsRef = React.useRef<HTMLElement | null>(null);
   const [navigationItemSelected, setNavigationItemSelected] = useAtom(
     navigationItemSelectedAtom,
   );
@@ -201,45 +217,26 @@ const CollapsableItems = ({
     return false;
   };
 
-  const isElementInViewport = (el: HTMLElement | undefined): boolean => {
-    if (el) {
-      const rect = el.getBoundingClientRect();
-      const isElementInViewPort =
-        rect.top >= 0 &&
-        rect.left >= 0 &&
-        rect.bottom <=
-          (window.innerHeight || document.documentElement.clientHeight) &&
-        rect.right <=
-          (window.innerWidth || document.documentElement.clientWidth);
-
-      return isElementInViewPort;
-    }
-
-    return false;
-  };
-
-  const updateMaxHeightCollaps = (el: HTMLElement): void => {
+  const updateSizeCollaps = (el: HTMLElement): void => {
     const rect = el.getBoundingClientRect();
-    setCurrentItemNode(el);
-    setMaxHeightCollapsScroll((window.innerHeight - rect.top) / 8);
+    setMaxHeightCollapsScroll(
+      (window.innerHeight - rect.top) / 8 - minimumMarginBottom,
+    );
+    setMaxWidthCollapsScroll((window.innerWidth - rect.left) / 8);
   };
 
   React.useEffect(() => {
-    if (maxHeightCollapsScroll) {
-      if (!isElementInViewport(currentItemNode)) {
-        setMaxHeightCollapsScroll(maxHeightCollapsScroll - minimumMarginBottom);
-      }
+    if (collapsRef && collapsRef.current) {
+      updateSizeCollaps(collapsRef.current);
     }
-  }, [currentItemNode]);
+  }, []);
 
   return (
     <Collapse
       unmountOnExit
-      addEndListener={(node): void => {
-        updateMaxHeightCollaps(node);
-      }}
       className={clsx(classes.root, classes.toggled)}
       in={isCollapsed}
+      ref={collapsRef}
       timeout={0}
       onMouseLeave={handleLeave}
     >
@@ -309,7 +306,9 @@ const CollapsableItems = ({
               />
             )}
 
-            {Array.isArray(item?.groups) && item.groups.length > 1 ? (
+            {Array.isArray(item?.groups) &&
+            item.groups.length > 1 &&
+            equals(index, hoveredIndex) ? (
               <CollapsableItems
                 isSubHeader
                 currentTop={topItem}
@@ -318,10 +317,13 @@ const CollapsableItems = ({
                 isCollapsed={index === hoveredIndex}
                 level={level + 1}
                 maxHeightCollapsScroll={nestedMaxHeightCollaps}
+                maxWidthCollapsScroll={nestedMaxWidthCollaps}
                 setMaxHeightCollapsScroll={setNestedMaxHeightCollaps}
+                setMaxWidthCollapsScroll={setNestedMaxWidthCollaps}
                 onClick={onClick}
               />
             ) : (
+              equals(index, hoveredIndex) &&
               isArrayItem(item?.groups) &&
               item?.groups?.map(
                 (itemGroup) =>
@@ -334,7 +336,9 @@ const CollapsableItems = ({
                         isCollapsed={index === hoveredIndex}
                         level={level + 1}
                         maxHeightCollapsScroll={nestedMaxHeightCollaps}
+                        maxWidthCollapsScroll={nestedMaxWidthCollaps}
                         setMaxHeightCollapsScroll={setNestedMaxHeightCollaps}
+                        setMaxWidthCollapsScroll={setNestedMaxWidthCollaps}
                         onClick={onClick}
                       />
                     </div>
