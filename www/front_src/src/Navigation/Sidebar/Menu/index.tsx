@@ -15,7 +15,7 @@ import {
   navigationItemSelectedAtom,
   propsNavigationItemSelected,
 } from '../sideBarAtoms';
-import { openedDrawerWidth } from '../index';
+import { closedDrawerWidth, openedDrawerWidth } from '../index';
 
 import MenuItems from './MenuItems';
 import icons from './icons';
@@ -52,7 +52,7 @@ const NavigationMenu = ({
     navigationItemSelectedAtom,
   );
   const levelName = 'level_0_Navigated';
-  const currentWidth = isDrawerOpen ? openedDrawerWidth / 8 : 8;
+  const currentWidth = isDrawerOpen ? openedDrawerWidth / 8 : closedDrawerWidth;
 
   const props = {
     currentTop,

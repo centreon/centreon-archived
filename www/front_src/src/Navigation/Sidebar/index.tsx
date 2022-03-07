@@ -12,6 +12,7 @@ import MiniLogo from './Logo/MiniLogo';
 import NavigationMenu from './Menu';
 
 export const openedDrawerWidth = 165;
+export const closedDrawerWidth = 6;
 
 const openedMixin = (theme: Theme): CSSObject => ({
   overflowX: 'hidden',
@@ -28,7 +29,7 @@ const closedMixin = (theme: Theme): CSSObject => ({
     duration: theme.transitions.duration.leavingScreen,
     easing: theme.transitions.easing.sharp,
   }),
-  width: theme.spacing(6),
+  width: theme.spacing(closedDrawerWidth),
 });
 
 const DrawerHeader = styled('div')(() => ({
