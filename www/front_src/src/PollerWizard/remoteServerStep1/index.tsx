@@ -31,6 +31,15 @@ interface RemoteServerStepOneFormData {
   server_name: string;
 }
 
+interface RemoteServerStepOneFormDataError {
+  centreon_central_ip: string;
+  centreon_folder: string;
+  db_password: string;
+  db_user: string;
+  server_ip: string;
+  server_name: string;
+}
+
 interface WaitList {
   id: string;
   ip: string;
@@ -58,6 +67,15 @@ const FormRemoteServerStepOne = ({
       server_ip: '',
       server_name: '',
     });
+
+  const [error, setError] = React.useState<RemoteServerStepOneFormDataError>({
+    centreon_central_ip: '',
+    centreon_folder: '',
+    db_password: '',
+    db_user: '',
+    server_ip: '',
+    server_name: '',
+  });
 
   const { sendRequest } = useRequest<Array<WaitList>>({
     request: postData,
@@ -94,9 +112,24 @@ const FormRemoteServerStepOne = ({
 
       return;
     }
+
+    setError({
+      ...error,
+      [name]: value.trim() === '' ? 'required' : '',
+    });
+
     setStepOneFormData({
       ...stepOneFormData,
       [name]: value,
+    });
+  };
+
+  const handleBlur = (event): void => {
+    const { value, name } = event.target;
+
+    setError({
+      ...error,
+      [name]: value.trim() === '' ? 'required' : '',
     });
   };
 
@@ -106,6 +139,10 @@ const FormRemoteServerStepOne = ({
     setWizard(stepOneFormData);
     goToNextStep();
   };
+
+  const nextDisabled =
+    Object.values(stepOneFormData).some((x) => x === '') ||
+    Object.values(error).some((x) => x !== '');
 
   React.useEffect(() => {
     getWaitList();
@@ -156,47 +193,77 @@ const FormRemoteServerStepOne = ({
           <div className={classes.form}>
             <TextField
               fullWidth
+              required
+              error={
+                error.server_name.length > 0 ? error.server_name : undefined
+              }
               label={`${t('Server Name')}`}
               name="server_name"
               value={stepOneFormData.server_name}
+              onBlur={handleBlur}
               onChange={handleChange}
             />
             <TextField
               fullWidth
+              required
+              error={error.server_ip.length > 0 ? error.server_ip : undefined}
               label={`${t('Server IP address')}`}
               name="server_ip"
               value={stepOneFormData.server_ip}
+              onBlur={handleBlur}
               onChange={handleChange}
             />
             <TextField
               fullWidth
+              required
+              error={error.db_user.length > 0 ? error.db_user : undefined}
               label={`${t('Database username')}`}
               name="db_user"
               value={stepOneFormData.db_user}
+              onBlur={handleBlur}
               onChange={handleChange}
             />
             <TextField
               fullWidth
+              required
+              error={
+                error.db_password.length > 0 ? error.db_password : undefined
+              }
               label={`${t('Database password')}`}
               name="db_password"
               type="password"
               value={stepOneFormData.db_password}
+              onBlur={handleBlur}
               onChange={handleChange}
             />
             <TextField
               fullWidth
+              required
+              error={
+                error.centreon_central_ip.length > 0
+                  ? error.centreon_central_ip
+                  : undefined
+              }
               label={`${t(
                 'Centreon Central IP address, as seen by this server',
               )}`}
               name="centreon_central_ip"
               value={stepOneFormData.centreon_central_ip}
+              onBlur={handleBlur}
               onChange={handleChange}
             />
             <TextField
               fullWidth
+              required
+              error={
+                error.centreon_folder.length > 0
+                  ? error.centreon_folder
+                  : undefined
+              }
               label={`${t('Centreon Web Folder on Remote')}`}
               name="centreon_folder"
               value={stepOneFormData.centreon_folder}
+              onBlur={handleBlur}
               onChange={handleChange}
             />
             <FormControlLabel
@@ -236,47 +303,77 @@ const FormRemoteServerStepOne = ({
             ) : null}
             <TextField
               fullWidth
+              required
+              error={
+                error.server_name.length > 0 ? error.server_name : undefined
+              }
               label={`${t('Server Name')}`}
               name="server_name"
               value={stepOneFormData.server_name}
+              onBlur={handleBlur}
               onChange={handleChange}
             />
             <TextField
               fullWidth
+              required
+              error={error.server_ip.length > 0 ? error.server_ip : undefined}
               label={`${t('Server IP address')}`}
               name="server_ip"
               value={stepOneFormData.server_ip}
+              onBlur={handleBlur}
               onChange={handleChange}
             />
             <TextField
               fullWidth
+              required
+              error={error.db_user.length > 0 ? error.db_user : undefined}
               label={`${t('Database username')}`}
               name="db_user"
               value={stepOneFormData.db_user}
+              onBlur={handleBlur}
               onChange={handleChange}
             />
             <TextField
               fullWidth
+              required
+              error={
+                error.db_password.length > 0 ? error.db_password : undefined
+              }
               label={`${t('Database password')}`}
               name="db_password"
               type="password"
               value={stepOneFormData.db_password}
+              onBlur={handleBlur}
               onChange={handleChange}
             />
             <TextField
               fullWidth
+              required
+              error={
+                error.centreon_central_ip.length > 0
+                  ? error.centreon_central_ip
+                  : undefined
+              }
               label={`${t(
                 'Centreon Central IP address, as seen by this server',
               )}`}
               name="centreon_central_ip"
               value={stepOneFormData.centreon_central_ip}
+              onBlur={handleBlur}
               onChange={handleChange}
             />
             <TextField
               fullWidth
+              required
+              error={
+                error.centreon_folder.length > 0
+                  ? error.centreon_folder
+                  : undefined
+              }
               label={`${t('Centreon Web Folder on Remote')}`}
               name="centreon_folder"
               value={stepOneFormData.centreon_folder}
+              onBlur={handleBlur}
               onChange={handleChange}
             />
             <FormControlLabel
@@ -309,6 +406,7 @@ const FormRemoteServerStepOne = ({
           </Button>
           <Button
             color="primary"
+            disabled={nextDisabled}
             size="small"
             type="submit"
             variant="contained"
