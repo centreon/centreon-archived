@@ -6,6 +6,7 @@ class OpenIdConfigurationException extends \Exception
 {
     /**
      * Exception thrown when token endpoint is needed but missing.
+     * @return self
      */
     public static function missingTokenEndpoint()
     {
@@ -14,6 +15,7 @@ class OpenIdConfigurationException extends \Exception
 
     /**
      * Exception thrown when both user information endpoints are missing.
+     * @return self
      */
     public static function missingInformationEndpoint()
     {

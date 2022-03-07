@@ -68,7 +68,7 @@ interface OpenIdProviderInterface extends ProviderInterface
      * @param AuthenticationTokens|null $authenticationToken
      * @return AuthenticationTokens
      */
-    public function refreshToken(?AuthenticationTokens $authenticationToken = null): AuthenticationTokens;
+    public function refreshToken(AuthenticationTokens $authenticationToken): AuthenticationTokens;
 
      /**
      * Authenticate the user using OpenId Provider.

@@ -40,6 +40,7 @@ use Core\Domain\Security\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
 use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
 use Core\Application\Security\ProviderConfiguration\OpenId\Repository\ReadOpenIdConfigurationRepositoryInterface;
 use Centreon\Domain\Authentication\Exception\AuthenticationException as LegacyAuthenticationException;
+use Core\Domain\Security\ProviderConfiguration\OpenId\Exceptions\OpenIdConfigurationException;
 
 class LoginOpenIdSession
 {
@@ -134,8 +135,14 @@ class LoginOpenIdSession
                     );
                 }
             }
-        } catch (AuthenticationException | NotFoundException $e) {
+        } catch (AuthenticationException | NotFoundException | OpenIdConfigurationException $e) {
             $presenter->present($this->createResponse(null, $e->getMessage()));
+            return;
+        } catch (\Exception $e) {
+            $presenter->present($this->createResponse(
+                null,
+                'An unexpected error occured while authenticating with OpenID'
+            ));
             return;
         }
 

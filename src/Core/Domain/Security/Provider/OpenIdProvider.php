@@ -311,8 +311,11 @@ class OpenIdProvider implements OpenIdProviderInterface
     /**
      * Refresh Access Token
      */
-    public function refreshToken(AuthenticationTokens $authenticationToken = null): AuthenticationTokens
+    public function refreshToken(AuthenticationTokens $authenticationToken): AuthenticationTokens
     {
+        if ($authenticationToken->getProviderRefreshToken() === null) {
+            throw SSOAuthenticationException::noRefreshToken();
+        }
         $this->info(
             'Refreshing token using refresh token',
             [
@@ -322,9 +325,7 @@ class OpenIdProvider implements OpenIdProviderInterface
         // Define parameters for the request
         $data = [
             "grant_type" => "refresh_token",
-            "refresh_token" => $authenticationToken !== null
-                ? $authenticationToken->getProviderRefreshToken()->getToken()
-                : $this->refreshToken->getToken(),
+            "refresh_token" => $authenticationToken->getProviderRefreshToken()->getToken(),
             "scope" => !empty($this->configuration->getConnectionScopes())
                 ? implode(' ', $this->configuration->getConnectionScopes())
                 : null

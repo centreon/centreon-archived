@@ -43,7 +43,6 @@ beforeEach(function () {
     $this->centreonDB = $this->createMock(CentreonDB::class);
     $this->dependencyInjector = new Container(['configuration_db' => $this->centreonDB]);
     $this->authenticationService = $this->createMock(AuthenticationServiceInterface::class);
-    $this->menuService = $this->createMock(MenuServiceInterface::class);
     $this->authenticationRepository = $this->createMock(AuthenticationRepositoryInterface::class);
     $this->sessionRepository = $this->createMock(SessionRepositoryInterface::class);
     $this->dataStorageEngine = $this->createMock(DataStorageEngineInterface::class);
@@ -89,7 +88,6 @@ it('expects to return an error message in presenter when no provider configurati
         $this->requestStack,
         $this->dependencyInjector,
         $this->authenticationService,
-        $this->menuService,
         $this->authenticationRepository,
         $this->sessionRepository,
         $this->dataStorageEngine
@@ -120,7 +118,6 @@ it('expects to execute authenticateOrFail method from OpenIdProvider', function 
         $this->requestStack,
         $this->dependencyInjector,
         $this->authenticationService,
-        $this->menuService,
         $this->authenticationRepository,
         $this->sessionRepository,
         $this->dataStorageEngine
@@ -152,7 +149,6 @@ it(
             $this->requestStack,
             $this->dependencyInjector,
             $this->authenticationService,
-            $this->menuService,
             $this->authenticationRepository,
             $this->sessionRepository,
             $this->dataStorageEngine
@@ -192,7 +188,6 @@ it(
             $this->requestStack,
             $this->dependencyInjector,
             $this->authenticationService,
-            $this->menuService,
             $this->authenticationRepository,
             $this->sessionRepository,
             $this->dataStorageEngine
