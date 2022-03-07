@@ -363,13 +363,13 @@ $attrContactgroup1 = array_merge(
     $attrContactgroups,
     array('defaultDatasetRoute' => $defaultDatasetRoute)
 );
-$form->addElement('select2', 'contact_cgNotif', _("Linked to Contact Groups"), array(), $attrContactgroup1);
+$form->addElement('select2', 'contact_cgNotif', _("Linked to Contact Groups"), [], $attrContactgroup1);
 
 /**
  * Contact Centreon information
  */
 $form->addElement('header', 'oreon', _("Centreon"));
-$tab = array();
+$tab = [];
 $tab[] = $form->createElement('radio', 'contact_oreon', null, _("Yes"), '1');
 $tab[] = $form->createElement('radio', 'contact_oreon', null, _("No"), '0');
 $form->addGroup($tab, 'contact_oreon', _("Reach Centreon Front-end"), '&nbsp;');
@@ -498,7 +498,7 @@ $form->addElement('select', 'contact_auth_type', _("Authentication Source"), $au
  */
 $form->addElement('header', 'notification', _("Notification"));
 
-$tab = array();
+$tab = [];
 $tab[] = $form->createElement('radio', 'contact_enable_notifications', null, _("Yes"), '1');
 $tab[] = $form->createElement('radio', 'contact_enable_notifications', null, _("No"), '0');
 $tab[] = $form->createElement('radio', 'contact_enable_notifications', null, _("Default"), '2');
@@ -724,7 +724,7 @@ if ($o != MASSIVE_CHANGE) {
     $ret = $form->getSubmitValues();
     $form->addRule('contact_name', _("Compulsory Name"), 'required');
     $form->addRule('contact_alias', _("Compulsory Alias"), 'required');
-    if ($isRemote == false) {
+    if ($isRemote === false) {
         $form->addRule('contact_email', _("Valid Email"), 'required');
     }
     $form->addRule('contact_oreon', _("Required Field"), 'required');
@@ -737,7 +737,7 @@ if ($o != MASSIVE_CHANGE) {
     if (
         (isset($ret["contact_enable_notifications"]["contact_enable_notifications"])
         && $ret["contact_enable_notifications"]["contact_enable_notifications"] == 1)
-        && ($isRemote == false)
+        && ($isRemote === false)
     ) {
         if (isset($ret["contact_template_id"]) && $ret["contact_template_id"] == '') {
             $form->addRule('timeperiod_tp_id', _("Compulsory Period"), 'required');
@@ -900,7 +900,7 @@ if ($valid) {
     }
     $tpl->assign('auth_type', $contactAuthType);
 
-    if ($isRemote == false) {
+    if ($isRemote === false) {
         $tpl->display("formContact.ihtml");
     } else {
         $tpl->display("formContactLight.ihtml");
