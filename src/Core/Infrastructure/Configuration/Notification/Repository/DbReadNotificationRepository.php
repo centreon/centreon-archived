@@ -83,4 +83,48 @@ class DbReadNotificationRepository extends AbstractRepositoryDRB implements Read
 
         return $notifications;
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function findServiceNotificationSettingsByUserIds(array $userIds): array
+    {
+        $this->info('Fetching notifications from database');
+        $notifications = [];
+
+        if (empty($userIds)) {
+            return $notifications;
+        }
+
+        $request = $this->translateDbName(
+            "SELECT
+                c.contact_id,
+                c.contact_service_notification_options,
+                c.timeperiod_tp_id,
+                t.tp_name,
+                t.tp_alias
+            FROM `:db`.contact c
+            INNER JOIN `:db`.timeperiod t
+                ON t.tp_id = c.timeperiod_tp_id"
+        );
+
+        $collector = new StatementCollector();
+
+        foreach ($userIds as $index => $userId) {
+            $key = ":contactId_{$index}";
+
+            $userIdList[] = $key;
+            $collector->addValue($key, $userId, \PDO::PARAM_INT);
+        }
+        $request .= ' WHERE contact_id IN (' . implode(', ', $userIdList) . ')';
+        $statement = $this->db->prepare($request);
+        $collector->bind($statement);
+        $statement->execute();
+
+        while ($row = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            $notifications[$row['contact_id']] = DbServiceNotificationFactory::createFromRecord($row);
+        }
+
+        return $notifications;
+    }
 }

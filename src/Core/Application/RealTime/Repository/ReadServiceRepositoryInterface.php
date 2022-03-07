@@ -45,4 +45,14 @@ interface ReadServiceRepositoryInterface
      * @return Service|null
      */
     public function findServiceByIdAndAccessGroupIds(int $hostId, int $serviceId, array $accessGroupIds): ?Service;
+
+    /**
+     * Check if user is allowed to get service information
+     *
+     * @param int $hostId
+     * @param int $serviceId
+     * @param array $accessGroupIds
+     * @return bool
+     */
+    public function isAllowedToFindServiceByAccessGroupIds(int $hostId, int $serviceId, array $accessGroupIds): bool;
 }
