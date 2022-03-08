@@ -34,7 +34,7 @@
  *
  */
 
-use Core\Domain\Security\ProviderConfiguration\Local\Model\Configuration;
+use Core\Domain\Security\ProviderConfiguration\Local\Model\SecurityPolicy;
 
 class CentreonContact
 {
@@ -388,8 +388,8 @@ class CentreonContact
                 'error_message' =>  _("numbers"),
             ],
             'has_special_characters' => [
-                'pattern' => '/[' . Configuration::SPECIAL_CHARACTERS_LIST . ']/',
-                'error_message' => sprintf(_("special characters among '%s'"), Configuration::SPECIAL_CHARACTERS_LIST),
+                'pattern' => '/[' . SecurityPolicy::SPECIAL_CHARACTERS_LIST . ']/',
+                'error_message' => sprintf(_("special characters among '%s'"), SecurityPolicy::SPECIAL_CHARACTERS_LIST),
             ],
         ];
         $characterPolicyErrorMessages = [];
@@ -413,6 +413,32 @@ class CentreonContact
     }
 
     /**
+     * Find last password creation date by contact id
+     *
+     * @param int $contactId
+     * @return \DateTimeImmutable|null
+     */
+    public function findLastPasswordCreationDate(int $contactId): ?\DateTimeImmutable
+    {
+        $creationDate = null;
+
+        $statement = $this->db->prepare(
+            "SELECT creation_date
+            FROM contact_password
+            WHERE contact_id = :contactId
+            ORDER BY creation_date DESC LIMIT 1"
+        );
+        $statement->bindValue(':contactId', $contactId, \PDO::PARAM_INT);
+        $statement->execute();
+
+        if ($row = $statement->fetch()) {
+            $creationDate = (new \DateTimeImmutable())->setTimestamp((int) $row['creation_date']);
+        }
+
+        return $creationDate;
+    }
+
+    /**
      * Check if a user password respects configured policy when updated (delay, reuse)
      *
      * @param array<string,mixed> $passwordPolicy
@@ -423,16 +449,11 @@ class CentreonContact
      */
     private function respectPasswordChangePolicyOrFail(array $passwordPolicy, string $password, int $contactId): void
     {
-        $statement = $this->db->prepare(
-            "SELECT creation_date FROM contact_password "
-            . "WHERE contact_id = :contactId "
-            . "ORDER BY creation_date DESC LIMIT 1"
-        );
-        $statement->bindValue(':contactId', $contactId, \PDO::PARAM_INT);
-        $statement->execute();
-        if ($passwordCreationDate = $statement->fetchColumn()) {
+        $passwordCreationDate = $this->findLastPasswordCreationDate($contactId);
+
+        if ($passwordCreationDate !== null) {
             $delayBeforeNewPassword = (int) $passwordPolicy['delay_before_new_password'];
-            $isPasswordCanBeChanged = (int) $passwordCreationDate + $delayBeforeNewPassword < time();
+            $isPasswordCanBeChanged = $passwordCreationDate->getTimestamp() + $delayBeforeNewPassword < time();
             if (!$isPasswordCanBeChanged) {
                 throw new \Exception(
                     _("You can't change your password because the delay before changing password is not over.")

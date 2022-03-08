@@ -9,7 +9,13 @@ export interface LoginFormValues {
 }
 
 export interface Redirect {
+  passwordIsExpired?: boolean;
   redirectUri: string;
+}
+
+export interface RedirectAPI {
+  password_is_expired?: boolean;
+  redirect_uri?: string;
 }
 
 export interface PlatformVersions {

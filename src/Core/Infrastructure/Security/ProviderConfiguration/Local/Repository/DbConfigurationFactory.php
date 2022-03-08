@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace Core\Infrastructure\Security\ProviderConfiguration\Local\Repository;
 
 use Core\Domain\Security\ProviderConfiguration\Local\Model\Configuration;
+use Core\Domain\Security\ProviderConfiguration\Local\Model\SecurityPolicy;
 
 class DbConfigurationFactory
 {
@@ -38,7 +39,7 @@ class DbConfigurationFactory
             $excludedUserAliases
         );
 
-        return new Configuration(
+        $securityPolicy = new SecurityPolicy(
             $configuration['password_security_policy']['password_length'],
             $configuration['password_security_policy']['has_uppercase_characters'],
             $configuration['password_security_policy']['has_lowercase_characters'],
@@ -51,5 +52,7 @@ class DbConfigurationFactory
             $excludedUserAliases,
             $configuration['password_security_policy']['delay_before_new_password'],
         );
+
+        return new Configuration($securityPolicy);
     }
 }

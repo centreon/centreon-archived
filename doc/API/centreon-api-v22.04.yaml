@@ -112,6 +112,35 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /authentication/users/{alias}/password:
+    put:
+      tags:
+        - Authentication
+      summary: "Update user password"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                old_password:
+                  type: string
+                  description: "Old user password"
+                  example: "Centreon!2021"
+                new_password:
+                  type: "string"
+                  description: "New user password"
+                  example: "Centreon!2022"
+      responses:
+        '204':
+          description: Command Sent
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /authentication/providers/configurations:
     get:
       tags:
