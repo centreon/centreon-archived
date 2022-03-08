@@ -79,17 +79,20 @@ class FindConfiguration
     public function createResponse(Configuration $configuration): FindConfigurationResponse
     {
         $response = new FindConfigurationResponse();
-        $response->passwordMinimumLength = $configuration->getPasswordMinimumLength();
-        $response->hasUppercase = $configuration->hasUppercase();
-        $response->hasLowercase = $configuration->hasLowercase();
-        $response->hasNumber = $configuration->hasNumber();
-        $response->hasSpecialCharacter = $configuration->hasSpecialCharacter();
-        $response->canReusePasswords = $configuration->canReusePasswords();
-        $response->attempts = $configuration->getAttempts();
-        $response->blockingDuration = $configuration->getBlockingDuration();
-        $response->passwordExpirationDelay = $configuration->getPasswordExpirationDelay();
-        $response->passwordExpirationExcludedUserAliases = $configuration->getPasswordExpirationExcludedUserAliases();
-        $response->delayBeforeNewPassword = $configuration->getDelayBeforeNewPassword();
+        $response->passwordMinimumLength = $configuration->getSecurityPolicy()->getPasswordMinimumLength();
+        $response->hasUppercase = $configuration->getSecurityPolicy()->hasUppercase();
+        $response->hasLowercase = $configuration->getSecurityPolicy()->hasLowercase();
+        $response->hasNumber = $configuration->getSecurityPolicy()->hasNumber();
+        $response->hasSpecialCharacter = $configuration->getSecurityPolicy()->hasSpecialCharacter();
+        $response->canReusePasswords = $configuration->getSecurityPolicy()->canReusePasswords();
+        $response->attempts = $configuration->getSecurityPolicy()->getAttempts();
+        $response->blockingDuration = $configuration->getSecurityPolicy()->getBlockingDuration();
+        $response->passwordExpirationDelay = $configuration->getSecurityPolicy()->getPasswordExpirationDelay();
+        $response->passwordExpirationExcludedUserAliases =
+            $configuration
+                ->getSecurityPolicy()
+                ->getPasswordExpirationExcludedUserAliases();
+        $response->delayBeforeNewPassword = $configuration->getSecurityPolicy()->getDelayBeforeNewPassword();
 
         return $response;
     }

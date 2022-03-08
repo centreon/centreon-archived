@@ -28,10 +28,10 @@ default:
       paths: [ "%paths.base%/features/RealTimeMonitoringServer.feature" ]
       contexts:
         - Centreon\Test\Api\Context\RealTimeMonitoringServerContext
-    authentication:
-      paths: [ "%paths.base%/features/Authentication.feature" ]
+    local_authentication:
+      paths: [ "%paths.base%/features/LocalAuthentication.feature" ]
       contexts:
-        - Centreon\Test\Api\Context\AuthenticationContext
+        - Centreon\Test\Api\Context\LocalAuthenticationContext
     user_filter:
       paths: [ "%paths.base%/features/UserFilter.feature" ]
       contexts:

@@ -6,6 +6,7 @@ const routeMap = {
   notAllowedPage: '/not-allowed',
   pollerList: '/main.php?p=60901',
   pollerWizard: '/poller-wizard/1',
+  resetPassword: '/reset-password',
   resources: '/monitoring/resources',
   upgrade: '/install/upgrade.php',
 };
