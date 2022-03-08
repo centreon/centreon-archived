@@ -97,12 +97,15 @@ const NavigationMenu = ({
     return url;
   };
 
-  const handlClickItem = (item: Page): void => {
+  const handlClickItem = (item: Page, level = 0): void => {
     if (!isNil(getUrlFromEntry(item))) {
       navigate(getUrlFromEntry(item) as string);
     }
 
-    if (navigationItemSelected) {
+    if (
+      navigationItemSelected &&
+      navigationItemSelected[`level_${level}_Navigated`]?.label !== item.label
+    ) {
       Object.keys(navigationItemSelected).forEach((i: string) => {
         if (i.includes('_Navigated')) {
           delete navigationItemSelected[i];

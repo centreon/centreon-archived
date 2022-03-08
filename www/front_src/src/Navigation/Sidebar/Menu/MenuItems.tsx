@@ -76,48 +76,45 @@ const MenuItems = ({
 }: Props): JSX.Element => {
   const classes = useStyles();
 
-  return useMemoComponent({
-    Component: (
-      <ListItemButton
-        className={clsx(classes.listButton, {
-          [classes.activated]: hover,
-        })}
-        component="div"
-        sx={!isRoot ? { pl: 0 } : { pl: 1.5 }}
-        onClick={!isRoot ? onClick : undefined}
-        onDoubleClick={isRoot ? onClick : undefined}
-        onMouseEnter={onMouseEnter}
-      >
-        {isRoot ? (
-          <>
-            <ListItemIcon className={classes.containerIcon}>
-              {icon}
-              {isDrawerOpen &&
-                Array.isArray(data?.children) &&
-                data.children.length > 0 && (
-                  <ArrowIcon
-                    className={classes.icon}
-                    isOpen={isOpen}
-                    size="small"
-                  />
-                )}
-            </ListItemIcon>
-            <ListItemText className={classes.rootLabel} primary={data.label} />
-          </>
-        ) : (
-          <>
-            <ListItemIcon>
-              {Array.isArray(data?.groups) && data.groups.length > 0 && (
-                <ArrowIcon isOpen={isOpen} size="small" />
+  return (
+    <ListItemButton
+      className={clsx(classes.listButton, {
+        [classes.activated]: hover,
+      })}
+      component="div"
+      sx={!isRoot ? { pl: 0 } : { pl: 1.5 }}
+      onClick={!isRoot ? onClick : undefined}
+      onDoubleClick={isRoot ? onClick : undefined}
+      onMouseEnter={onMouseEnter}
+    >
+      {isRoot ? (
+        <>
+          <ListItemIcon className={classes.containerIcon}>
+            {icon}
+            {isDrawerOpen &&
+              Array.isArray(data?.children) &&
+              data.children.length > 0 && (
+                <ArrowIcon
+                  className={classes.icon}
+                  isOpen={isOpen}
+                  size="small"
+                />
               )}
-            </ListItemIcon>
-            <ListItemText className={classes.label} secondary={data.label} />
-          </>
-        )}
-      </ListItemButton>
-    ),
-    memoProps: [hover, isOpen, isDrawerOpen, isRoot],
-  });
+          </ListItemIcon>
+          <ListItemText className={classes.rootLabel} primary={data.label} />
+        </>
+      ) : (
+        <>
+          <ListItemIcon>
+            {Array.isArray(data?.groups) && data.groups.length > 0 && (
+              <ArrowIcon isOpen={isOpen} size="small" />
+            )}
+          </ListItemIcon>
+          <ListItemText className={classes.label} secondary={data.label} />
+        </>
+      )}
+    </ListItemButton>
+  );
 };
 
 export default MenuItems;

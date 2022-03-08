@@ -26,7 +26,7 @@ interface Props {
   isSubHeader?: boolean;
   level: number;
   maxWidthCollapsScroll?: number;
-  onClick: (item: Page) => void;
+  onClick: (item: Page, level: number) => void;
   setCollapseScrollMaxHeight: React.Dispatch<
     React.SetStateAction<number | undefined>
   >;
@@ -281,7 +281,7 @@ const CollapsableItems = ({
                     key={content.label}
                     onClick={
                       !isArrayItem(item?.groups)
-                        ? (): void => onClick(content)
+                        ? (): void => onClick(content, level)
                         : undefined
                     }
                     onMouseEnter={(e: React.MouseEvent<HTMLElement>): void =>
@@ -297,7 +297,7 @@ const CollapsableItems = ({
                 isOpen={index === hoveredIndex}
                 onClick={
                   !isArrayItem(item?.groups)
-                    ? (): void => onClick(item)
+                    ? (): void => onClick(item, level)
                     : undefined
                 }
                 onMouseEnter={(e: React.MouseEvent<HTMLElement>): void =>
