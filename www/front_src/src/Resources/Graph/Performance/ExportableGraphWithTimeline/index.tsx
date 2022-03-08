@@ -151,7 +151,7 @@ const ExportablePerformanceGraphWithTimeline = ({
   ]);
 
   const addCommentToTimeline = ({ date, comment }): void => {
-    const id = crypto.getRandomValues(new Uint16Array(1))[0];
+    const [id] = crypto.getRandomValues(new Uint16Array(1));
 
     setTimeline([
       ...(timeline as Array<TimelineEvent>),
