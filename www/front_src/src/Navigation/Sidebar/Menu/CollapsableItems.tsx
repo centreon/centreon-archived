@@ -98,7 +98,7 @@ const useStyles = makeStyles((theme) => ({
     },
     backgroundColor: theme.palette.background.default,
     left: ({ currentWidth }: StyleProps): string => theme.spacing(currentWidth),
-    maxHeight: ({ maxHeightCollapsScroll }: StyleProps): string =>
+    maxHeight: ({ collapseScrollMaxHeight }: StyleProps): string =>
       maxHeightCollapsScroll
         ? theme.spacing(maxHeightCollapsScroll)
         : theme.spacing(50),
