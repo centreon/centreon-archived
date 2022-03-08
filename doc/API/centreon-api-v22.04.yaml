@@ -839,6 +839,32 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /configuration/contact-template:
+    get:
+      tags:
+      - User
+      summary: "List contact templates"
+      description: "List configured contact templates"
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Configuration.ContactTemplate'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /users/filters/{page_name}:
     get:
       tags:
@@ -4246,7 +4272,7 @@ components:
         - authentication_type
         - verify_peer
         - auto_import
-        - contact_template_id
+        - contact_template
         - email_bind_attribute
         - alias_bind_attribute
         - fullname_bind_attribute
@@ -4341,11 +4367,17 @@ components:
           type: boolean
           description: "Auto import user from external provider"
           example: true
-        contact_template_id:
-          type: integer
-          description: "Contact template ID"
-          example: 1
-          nullable: true
+        contact_template:
+          type: object
+          properties:
+            id:
+              type: integer
+              description: "Contact template ID"
+              example: 1
+            name:
+              type: string
+              description: "Contact template name"
+              example: "Default"
         email_bind_attribute:
           type: string
           description: "Email bind attribute"
@@ -4708,6 +4740,20 @@ components:
         is_activated:
           type: boolean
           description: "Indicates whether the host group is activated or not"
+    Configuration.ContactTemplate:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: integer
+          description: "Contact template id"
+          example: 1
+        name:
+          type: string
+          description: "Contact template name"
+          example: "Contact Template"
     Media.NullableImage:
       type: object
       nullable: true
