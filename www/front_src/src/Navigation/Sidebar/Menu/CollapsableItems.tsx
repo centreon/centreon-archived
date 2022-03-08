@@ -26,7 +26,7 @@ interface Props {
   isCollapsed: boolean;
   isSubHeader?: boolean;
   level: number;
-  maxHeightCollapsScroll?: number;
+  collapseScrollMaxHeight?: number;
   maxWidthCollapsScroll?: number;
   onClick: (item: Page) => void;
   setMaxHeightCollapsScroll: React.Dispatch<
