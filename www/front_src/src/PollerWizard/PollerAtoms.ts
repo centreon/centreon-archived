@@ -1,6 +1,6 @@
 import { atom } from 'jotai';
 
-interface PollerData {
+export interface PollerData {
   centreon_central_ip?: string;
   linked_remote_master?: string;
   linked_remote_slaves?: Array<string>;
@@ -11,7 +11,7 @@ interface PollerData {
   submitStatus?: boolean;
 }
 
-interface RemoteServerData {
+export interface RemoteServerData {
   centreon_central_ip?: string;
   centreon_folder?: string;
   db_password?: string;

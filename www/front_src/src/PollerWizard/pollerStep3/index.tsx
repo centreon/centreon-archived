@@ -3,19 +3,9 @@ import * as React from 'react';
 import { useAtomValue } from 'jotai/utils';
 import { useTranslation } from 'react-i18next';
 
-import { pollerAtom } from '../PollerAtoms';
+import { pollerAtom, PollerData } from '../PollerAtoms';
 import WizardFormInstallingStatus from '../../components/wizardFormInstallingStatus';
-
-interface PollerData {
-  centreon_central_ip?: string;
-  linked_remote_master?: string;
-  linked_remote_slaves?: Array<string>;
-  open_broker_flow?: boolean;
-  server_ip?: string;
-  server_name?: string;
-  server_type?: string;
-  submitStatus?: boolean | null;
-}
+import { labelFinalStep } from '../translatedLabels';
 
 const FormPollerStepThree = (): JSX.Element => {
   const { t } = useTranslation();
@@ -25,7 +15,7 @@ const FormPollerStepThree = (): JSX.Element => {
   return (
     <WizardFormInstallingStatus
       error={null}
-      formTitle={`${t('Finalizing Setup')}`}
+      formTitle={t(labelFinalStep)}
       statusCreating={pollerData.submitStatus ? pollerData.submitStatus : null}
       statusGenerating={null}
     />

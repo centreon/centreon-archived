@@ -3,6 +3,7 @@
 
 import React from 'react';
 
+import { equals, isNil, not } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
 import { Typography, Paper, Grid, Alert } from '@mui/material';
@@ -30,9 +31,10 @@ export default ({
   const classes = useStylesWithProps({ statusCreating, statusGenerating });
 
   const { t } = useTranslation();
-  const loading = statusCreating === null || statusGenerating === null;
+
+  const loading = isNil(statusCreating) || isNil(statusGenerating);
   const hasError =
-    (statusCreating === false || statusGenerating === false) && error;
+    (equals(statusCreating, false) || equals(statusGenerating, false)) && error;
 
   return (
     <Paper
@@ -50,7 +52,7 @@ export default ({
         <p className={classes.formText}>
           <ContentWithCircularLoading alignCenter loading={loading}>
             <span className={classes.statusCreating}>
-              {statusCreating != null ? (
+              {not(isNil(statusCreating)) ? (
                 <Typography variant="body2">
                   <Chip
                     color={statusCreating ? 'success' : 'error'}
@@ -68,7 +70,7 @@ export default ({
         <p className={classes.formText}>
           <ContentWithCircularLoading alignCenter loading={loading}>
             <span className={classes.statusGenerating}>
-              {statusGenerating != null ? (
+              {not(isNil(statusGenerating)) ? (
                 <Typography variant="body2">
                   <Chip
                     color={statusGenerating ? 'success' : 'error'}

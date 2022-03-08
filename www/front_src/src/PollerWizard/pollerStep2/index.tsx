@@ -20,34 +20,23 @@ import {
   SelectEntry,
 } from '@centreon/ui';
 
-import { pollerAtom, setWizardDerivedAtom } from '../PollerAtoms';
+import { pollerAtom, setWizardDerivedAtom, PollerData } from '../PollerAtoms';
 import { useStyles } from '../../styles/partials/form/PollerWizardStyle';
 import routeMap from '../../reactRoutes/routeMap';
+import {
+  labelAdvancedServerConfiguration,
+  labelLinkedRemoteMaster,
+  labelLinkedRemoteSlaves,
+  labelOpenBrokerFlow,
+  labelPrevious,
+  labelApply,
+} from '../translatedLabels';
+import { Props, PollerOrRemoteList } from '../models';
 
 const getPollersEndpoint =
   './api/internal.php?object=centreon_configuration_remote&action=getRemotesList';
 const wizardFormEndpoint =
   './api/internal.php?object=centreon_configuration_remote&action=linkCentreonRemoteServer';
-interface Props {
-  goToNextStep: () => void;
-  goToPreviousStep: () => void;
-}
-interface PollerData {
-  centreon_central_ip?: string;
-  linked_remote_master?: string;
-  linked_remote_slaves?: Array<string>;
-  open_broker_flow?: boolean;
-  server_ip?: string;
-  server_name?: string;
-  server_type?: string;
-  submitStatus?: boolean;
-}
-
-interface Poller {
-  id: string;
-  ip: string;
-  name: string;
-}
 
 interface stepTwoFormData {
   linked_remote_master: string;
@@ -62,7 +51,7 @@ const FormPollerStepTwo = ({
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const [pollers, setPollers] = React.useState<Array<Poller>>([]);
+  const [pollers, setPollers] = React.useState<Array<PollerOrRemoteList>>([]);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [stepTwoFormData, setStepTwoFormData] = React.useState<stepTwoFormData>(
     {
@@ -72,7 +61,9 @@ const FormPollerStepTwo = ({
     },
   );
 
-  const { sendRequest: getPollersRequest } = useRequest<Array<Poller>>({
+  const { sendRequest: getPollersRequest } = useRequest<
+    Array<PollerOrRemoteList>
+  >({
     request: postData,
   });
 
@@ -144,6 +135,18 @@ const FormPollerStepTwo = ({
       });
   };
 
+  const linkedRemoteMasterOption = pollers.map((c) => ({
+    id: c.id,
+    name: c.name,
+  }));
+
+  const linkedRemoteSlavesOption = pollers
+    .filter((poller) => poller.id !== stepTwoFormData.linked_remote_master)
+    .map((c) => ({
+      id: c.id,
+      name: c.name,
+    }));
+
   React.useEffect(() => {
     getPollers();
   }, []);
@@ -152,41 +155,31 @@ const FormPollerStepTwo = ({
     <div>
       <div className={classes.formHeading}>
         <Typography variant="h6">
-          {t('Add advanced server configuration')}
+          {t(labelAdvancedServerConfiguration)}
         </Typography>
       </div>
       <form onSubmit={handleSubmit}>
         <div className={classes.form}>
-          {pollers.length !== 0 && (
+          {linkedRemoteMasterOption.length !== 0 && (
             <SelectField
               fullWidth
-              label={t('Attach poller to a master remote server')}
+              label={t(labelLinkedRemoteMaster)}
               name="linked_remote_master"
-              options={pollers.map((c) => ({
-                id: c.id,
-                name: c.name,
-              }))}
+              options={linkedRemoteMasterOption}
               selectedOptionId={stepTwoFormData.linked_remote_master}
               onChange={handleChange}
             />
           )}
-          {stepTwoFormData.linked_remote_master && pollers.length >= 2 && (
-            <MultiAutocompleteField
-              fullWidth
-              label={t('Attach poller to a slave remote server')}
-              options={pollers
-                .filter(
-                  (poller) =>
-                    poller.id !== stepTwoFormData.linked_remote_master,
-                )
-                .map((c) => ({
-                  id: c.id,
-                  name: c.name,
-                }))}
-              value={stepTwoFormData.linked_remote_slaves}
-              onChange={changeValue}
-            />
-          )}
+          {stepTwoFormData.linked_remote_master &&
+            linkedRemoteSlavesOption.length >= 2 && (
+              <MultiAutocompleteField
+                fullWidth
+                label={t(labelLinkedRemoteSlaves)}
+                options={linkedRemoteSlavesOption}
+                value={stepTwoFormData.linked_remote_slaves}
+                onChange={changeValue}
+              />
+            )}
           <FormControlLabel
             control={
               <Checkbox
@@ -195,13 +188,11 @@ const FormPollerStepTwo = ({
                 onChange={handleChange}
               />
             }
-            label={`${t(
-              'Advanced: reverse Centreon Broker communication flow',
-            )}`}
+            label={`${t(labelOpenBrokerFlow)}`}
           />
           <div className={classes.formButton}>
             <Button size="small" type="button" onClick={goToPreviousStep}>
-              {t('Previous')}
+              {t(labelPrevious)}
             </Button>
             <Button
               color="primary"
@@ -211,7 +202,7 @@ const FormPollerStepTwo = ({
               type="submit"
               variant="contained"
             >
-              {t('Apply')}
+              {t(labelApply)}
             </Button>
           </div>
         </div>

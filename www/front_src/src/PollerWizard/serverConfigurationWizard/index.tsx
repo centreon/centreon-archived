@@ -11,6 +11,8 @@ import Radio from '@mui/material/Radio';
 import {
   labelAddACentreonPoller,
   labelAddACentreonRemoteServer,
+  labelNext,
+  labelChoseServerType,
 } from '../translatedLabels';
 import { ServerType } from '../models';
 import { useStyles } from '../../styles/partials/form/PollerWizardStyle';
@@ -56,7 +58,7 @@ const ServerConfigurationWizard = ({
   return (
     <div>
       <div className={classes.formHeading}>
-        <Typography variant="h6">{t('Choose a server type')}</Typography>
+        <Typography variant="h6">{t(labelChoseServerType)}</Typography>
       </div>
       <form autoComplete="off" onSubmit={handleSubmit}>
         <RadioGroup defaultValue="1" name="server_type">
@@ -78,7 +80,7 @@ const ServerConfigurationWizard = ({
             type="submit"
             variant="contained"
           >
-            {t('Next')}
+            {t(labelNext)}
           </Button>
         </div>
       </form>

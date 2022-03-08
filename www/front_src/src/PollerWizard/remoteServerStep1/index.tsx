@@ -11,14 +11,26 @@ import { postData, useRequest, TextField, SelectField } from '@centreon/ui';
 
 import { setRemoteServerWizardDerivedAtom } from '../PollerAtoms';
 import { useStyles } from '../../styles/partials/form/PollerWizardStyle';
+import {
+  labelCentreonCentralIp,
+  labelCentreonFolder,
+  labelCreateRemoteServer,
+  labelDbPassword,
+  labelDbUser,
+  labelServerName,
+  labelOpenBrokerFlow,
+  labelSelectRemoteLinks,
+  labelSelectRemoteServer,
+  labelServerIp,
+  labelNext,
+  labelPrevious,
+  labelCheckCertificate,
+  labelServerConfiguration,
+} from '../translatedLabels';
+import { Props, WaitList } from '../models';
 
 const remoteServerWaitListEndpoint =
   './api/internal.php?object=centreon_configuration_remote&action=getWaitList';
-
-interface Props {
-  goToNextStep: () => void;
-  goToPreviousStep: () => void;
-}
 
 interface RemoteServerStepOneFormData {
   centreon_central_ip: string;
@@ -37,12 +49,6 @@ interface RemoteServerStepOneFormDataError {
   db_password: string;
   db_user: string;
   server_ip: string;
-  server_name: string;
-}
-
-interface WaitList {
-  id: string;
-  ip: string;
   server_name: string;
 }
 
@@ -140,6 +146,8 @@ const FormRemoteServerStepOne = ({
     goToNextStep();
   };
 
+  const waitListOption = waitList?.map((c) => ({ id: c.ip, name: c.ip }));
+
   const nextDisabled =
     Object.values(stepOneFormData).some((x) => x === '') ||
     Object.values(error).some((x) => x !== '');
@@ -172,20 +180,20 @@ const FormRemoteServerStepOne = ({
   return (
     <div>
       <div className={classes.formHeading}>
-        <Typography variant="h6">{t('Server Configuration')}</Typography>
+        <Typography variant="h6">{t(labelServerConfiguration)}</Typography>
       </div>
       <form autoComplete="off" onSubmit={handleSubmit}>
         <div className={classes.wizardRadio}>
           <FormControlLabel
             checked={inputTypeManual}
             control={<Radio color="primary" size="small" />}
-            label={`${t('Create new Remote Server')}`}
+            label={`${t(labelCreateRemoteServer)}`}
             onClick={(): void => setInputTypeManual(true)}
           />
           <FormControlLabel
             checked={!inputTypeManual}
             control={<Radio color="primary" size="small" />}
-            label={`${t('Select a Remote Server')}`}
+            label={`${t(labelSelectRemoteServer)}`}
             onClick={(): void => setInputTypeManual(false)}
           />
         </div>
@@ -197,7 +205,7 @@ const FormRemoteServerStepOne = ({
               error={
                 error.server_name.length > 0 ? error.server_name : undefined
               }
-              label={`${t('Server Name')}`}
+              label={t(labelServerName)}
               name="server_name"
               value={stepOneFormData.server_name}
               onBlur={handleBlur}
@@ -207,7 +215,7 @@ const FormRemoteServerStepOne = ({
               fullWidth
               required
               error={error.server_ip.length > 0 ? error.server_ip : undefined}
-              label={`${t('Server IP address')}`}
+              label={t(labelServerIp)}
               name="server_ip"
               value={stepOneFormData.server_ip}
               onBlur={handleBlur}
@@ -217,7 +225,7 @@ const FormRemoteServerStepOne = ({
               fullWidth
               required
               error={error.db_user.length > 0 ? error.db_user : undefined}
-              label={`${t('Database username')}`}
+              label={t(labelDbUser)}
               name="db_user"
               value={stepOneFormData.db_user}
               onBlur={handleBlur}
@@ -229,7 +237,7 @@ const FormRemoteServerStepOne = ({
               error={
                 error.db_password.length > 0 ? error.db_password : undefined
               }
-              label={`${t('Database password')}`}
+              label={t(labelDbPassword)}
               name="db_password"
               type="password"
               value={stepOneFormData.db_password}
@@ -244,9 +252,7 @@ const FormRemoteServerStepOne = ({
                   ? error.centreon_central_ip
                   : undefined
               }
-              label={`${t(
-                'Centreon Central IP address, as seen by this server',
-              )}`}
+              label={t(labelCentreonCentralIp)}
               name="centreon_central_ip"
               value={stepOneFormData.centreon_central_ip}
               onBlur={handleBlur}
@@ -260,7 +266,7 @@ const FormRemoteServerStepOne = ({
                   ? error.centreon_folder
                   : undefined
               }
-              label={`${t('Centreon Web Folder on Remote')}`}
+              label={t(labelCentreonFolder)}
               name="centreon_folder"
               value={stepOneFormData.centreon_folder}
               onBlur={handleBlur}
@@ -274,7 +280,7 @@ const FormRemoteServerStepOne = ({
                   onChange={handleChange}
                 />
               }
-              label={`${t('Do not check SSL certificate validation')}`}
+              label={`${t(labelCheckCertificate)}`}
             />
             <FormControlLabel
               control={
@@ -284,19 +290,17 @@ const FormRemoteServerStepOne = ({
                   onChange={handleChange}
                 />
               }
-              label={`${t(
-                'Advanced: reverse Centreon Broker communication flow',
-              )}`}
+              label={`${t(labelOpenBrokerFlow)}`}
             />
           </div>
         ) : (
           <div className={classes.form}>
-            {waitList && waitList.length !== 0 ? (
+            {waitListOption && waitListOption.length !== 0 ? (
               <SelectField
                 fullWidth
-                label={`${t('Select Pending Remote Links')}`}
+                label={t(labelSelectRemoteLinks)}
                 name="server_ip"
-                options={waitList.map((c) => ({ id: c.ip, name: c.ip }))}
+                options={waitListOption}
                 selectedOptionId={stepOneFormData.server_ip}
                 onChange={handleChange}
               />
@@ -307,7 +311,7 @@ const FormRemoteServerStepOne = ({
               error={
                 error.server_name.length > 0 ? error.server_name : undefined
               }
-              label={`${t('Server Name')}`}
+              label={t(labelServerName)}
               name="server_name"
               value={stepOneFormData.server_name}
               onBlur={handleBlur}
@@ -317,7 +321,7 @@ const FormRemoteServerStepOne = ({
               fullWidth
               required
               error={error.server_ip.length > 0 ? error.server_ip : undefined}
-              label={`${t('Server IP address')}`}
+              label={t(labelServerIp)}
               name="server_ip"
               value={stepOneFormData.server_ip}
               onBlur={handleBlur}
@@ -327,7 +331,7 @@ const FormRemoteServerStepOne = ({
               fullWidth
               required
               error={error.db_user.length > 0 ? error.db_user : undefined}
-              label={`${t('Database username')}`}
+              label={t(labelDbUser)}
               name="db_user"
               value={stepOneFormData.db_user}
               onBlur={handleBlur}
@@ -339,7 +343,7 @@ const FormRemoteServerStepOne = ({
               error={
                 error.db_password.length > 0 ? error.db_password : undefined
               }
-              label={`${t('Database password')}`}
+              label={t(labelDbPassword)}
               name="db_password"
               type="password"
               value={stepOneFormData.db_password}
@@ -354,9 +358,7 @@ const FormRemoteServerStepOne = ({
                   ? error.centreon_central_ip
                   : undefined
               }
-              label={`${t(
-                'Centreon Central IP address, as seen by this server',
-              )}`}
+              label={t(labelCentreonCentralIp)}
               name="centreon_central_ip"
               value={stepOneFormData.centreon_central_ip}
               onBlur={handleBlur}
@@ -370,7 +372,7 @@ const FormRemoteServerStepOne = ({
                   ? error.centreon_folder
                   : undefined
               }
-              label={`${t('Centreon Web Folder on Remote')}`}
+              label={t(labelCentreonFolder)}
               name="centreon_folder"
               value={stepOneFormData.centreon_folder}
               onBlur={handleBlur}
@@ -384,7 +386,7 @@ const FormRemoteServerStepOne = ({
                   onChange={handleChange}
                 />
               }
-              label={`${t('Do not check SSL certificate validation')}`}
+              label={`${t(labelCheckCertificate)}`}
             />
             <FormControlLabel
               control={
@@ -394,15 +396,13 @@ const FormRemoteServerStepOne = ({
                   onChange={handleChange}
                 />
               }
-              label={`${t(
-                'Advanced: reverse Centreon Broker communication flow',
-              )}`}
+              label={`${t(labelOpenBrokerFlow)}`}
             />
           </div>
         )}
         <div className={classes.formButton}>
           <Button size="small" onClick={goToPreviousStep}>
-            {t('Previous')}
+            {t(labelPrevious)}
           </Button>
           <Button
             color="primary"
@@ -411,7 +411,7 @@ const FormRemoteServerStepOne = ({
             type="submit"
             variant="contained"
           >
-            {t('Next')}
+            {t(labelNext)}
           </Button>
         </div>
       </form>

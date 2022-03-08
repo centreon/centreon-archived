@@ -20,16 +20,13 @@ import {
   remoteServerAtom,
   setRemoteServerWizardDerivedAtom,
 } from '../PollerAtoms';
-
-interface Props {
-  goToNextStep: () => void;
-  goToPreviousStep: () => void;
-}
-interface RemoteList {
-  id: string;
-  ip: string;
-  name: string;
-}
+import {
+  labelAdvancedServerConfiguration,
+  labelRemoteServers,
+  labelPrevious,
+  labelApply,
+} from '../translatedLabels';
+import { Props, PollerOrRemoteList } from '../models';
 
 const getRemoteServersEndpoint =
   './api/internal.php?object=centreon_configuration_remote&action=getRemotesList';
@@ -45,14 +42,14 @@ const FormRemoteServerStepTwo = ({
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
   const [remoteServers, setRemoteServers] =
-    React.useState<Array<RemoteList> | null>(null);
+    React.useState<Array<PollerOrRemoteList> | null>(null);
 
   const [linkedPollers, setLinkedPollers] = React.useState<Array<SelectEntry>>(
     [],
   );
 
   const { sendRequest: getRemoteServersRequest } = useRequest<
-    Array<RemoteList>
+    Array<PollerOrRemoteList>
   >({
     request: postData,
   });
@@ -67,7 +64,7 @@ const FormRemoteServerStepTwo = ({
   const pollerData = useAtomValue(remoteServerAtom);
   const setWizard = useUpdateAtom(setRemoteServerWizardDerivedAtom);
 
-  const filterOutDefaultPoller = (itemArr): Array<RemoteList> => {
+  const filterOutDefaultPoller = (itemArr): Array<PollerOrRemoteList> => {
     for (let i = 0; i < itemArr.length; i += 1) {
       if (itemArr[i].id === '1') itemArr.splice(i, 1);
     }
@@ -87,10 +84,6 @@ const FormRemoteServerStepTwo = ({
       );
     });
   };
-
-  React.useEffect(() => {
-    getRemoteServers();
-  }, []);
 
   const navigate = useNavigate();
 
@@ -128,29 +121,35 @@ const FormRemoteServerStepTwo = ({
       });
   };
 
+  const remoteServersOption = remoteServers?.map((c) => ({
+    id: c.id,
+    name: c.name,
+  }));
+
+  React.useEffect(() => {
+    getRemoteServers();
+  }, []);
+
   return (
     <div>
       <div className={classes.formHeading}>
         <Typography variant="h6">
-          {t('Add advanced server configuration')}
+          {t(labelAdvancedServerConfiguration)}
         </Typography>
       </div>
       <form autoComplete="off" onSubmit={handleSubmit}>
-        {remoteServers && (
+        {remoteServersOption && (
           <MultiAutocompleteField
             fullWidth
-            label={t('Select pollers to be attached to this new Remote Server')}
-            options={remoteServers.map((c) => ({
-              id: c.id,
-              name: c.name,
-            }))}
+            label={t(labelRemoteServers)}
+            options={remoteServersOption}
             value={linkedPollers}
             onChange={changeValue}
           />
         )}
         <div className={classes.formButton}>
           <Button size="small" onClick={goToPreviousStep}>
-            {t('Previous')}
+            {t(labelPrevious)}
           </Button>
           <Button
             color="primary"
@@ -160,7 +159,7 @@ const FormRemoteServerStepTwo = ({
             type="submit"
             variant="contained"
           >
-            {t('Apply')}
+            {t(labelApply)}
           </Button>
         </div>
       </form>

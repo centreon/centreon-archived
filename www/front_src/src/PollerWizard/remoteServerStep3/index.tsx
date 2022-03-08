@@ -9,22 +9,8 @@ import { postData, useRequest } from '@centreon/ui';
 
 import WizardFormInstallingStatus from '../../components/wizardFormInstallingStatus';
 import routeMap from '../../reactRoutes/routeMap';
-import { remoteServerAtom } from '../PollerAtoms';
-
-interface RemoteServerData {
-  centreon_central_ip?: string;
-  centreon_folder?: string;
-  db_password?: string;
-  db_user?: string;
-  // linked_pollers?: Array<string>;
-  no_check_certificate?: boolean;
-  no_proxy?: boolean;
-  server_ip?: string;
-  server_name?: string;
-  server_type?: string;
-  submitStatus?: boolean | null;
-  taskId?: number | string;
-}
+import { remoteServerAtom, RemoteServerData } from '../PollerAtoms';
+import { labelFinalStep } from '../translatedLabels';
 
 const exportTaskEndpoint =
   'internal.php?object=centreon_task_service&action=getTaskStatus';
@@ -99,7 +85,7 @@ const FormRemoteServerStepThree = (): JSX.Element => {
   return (
     <WizardFormInstallingStatus
       error={error}
-      formTitle={`${t('Finalizing Setup')}`}
+      formTitle={t(labelFinalStep)}
       statusCreating={pollerData.submitStatus ? pollerData.submitStatus : null}
       statusGenerating={generateStatus}
     />

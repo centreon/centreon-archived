@@ -12,24 +12,25 @@ import { postData, useRequest, TextField, SelectField } from '@centreon/ui';
 
 import { setWizardDerivedAtom } from '../PollerAtoms';
 import { useStyles } from '../../styles/partials/form/PollerWizardStyle';
+import {
+  labelServerConfiguration,
+  labelCreatePoller,
+  labelSelectPoller,
+  labelServerName,
+  labelServerIp,
+  labelCentreonCentralIp,
+  labelNext,
+  labelPrevious,
+  labelSelectPollerIp,
+} from '../translatedLabels';
+import { Props, WaitList } from '../models';
 
 const pollerWaitListEndpoint =
   './api/internal.php?object=centreon_configuration_remote&action=getPollerWaitList';
 
-interface Props {
-  goToNextStep: () => void;
-  goToPreviousStep: () => void;
-}
-
 interface StepOneFormData {
   centreon_central_ip: string;
   server_ip: string;
-  server_name: string;
-}
-
-interface WaitList {
-  id: string;
-  ip: string;
   server_name: string;
 }
 
@@ -111,6 +112,8 @@ const FormPollerStepOne = ({
     goToNextStep();
   };
 
+  const waitListOption = waitList?.map((c) => ({ id: c.ip, name: c.ip }));
+
   const nextDisabled =
     Object.values(stepOneFormData).some((x) => x === '') ||
     Object.values(error).some((x) => x !== '');
@@ -142,20 +145,20 @@ const FormPollerStepOne = ({
   return (
     <div>
       <div className={classes.formHeading}>
-        <Typography variant="h6">{t('Server Configuration')}</Typography>
+        <Typography variant="h6">{t(labelServerConfiguration)}</Typography>
       </div>
       <form autoComplete="off" onSubmit={handleSubmit}>
         <div className={classes.wizardRadio}>
           <FormControlLabel
             checked={inputTypeManual}
             control={<Radio color="primary" size="small" />}
-            label={`${t('Create new Poller')}`}
+            label={`${t(labelCreatePoller)}`}
             onClick={(): void => setInputTypeManual(true)}
           />
           <FormControlLabel
             checked={!inputTypeManual}
             control={<Radio color="primary" size="small" />}
-            label={`${t('Select a Poller')}`}
+            label={`${t(labelSelectPoller)}`}
             onClick={(): void => setInputTypeManual(false)}
           />
         </div>
@@ -167,7 +170,7 @@ const FormPollerStepOne = ({
               error={
                 error.server_name.length > 0 ? error.server_name : undefined
               }
-              label={`${t('Server Name')}`}
+              label={t(labelServerName)}
               name="server_name"
               value={stepOneFormData.server_name}
               onBlur={handleBlur}
@@ -177,7 +180,7 @@ const FormPollerStepOne = ({
               fullWidth
               required
               error={error.server_ip.length > 0 ? error.server_ip : undefined}
-              label={`${t('Server IP address')}`}
+              label={t(labelServerIp)}
               name="server_ip"
               value={stepOneFormData.server_ip}
               onBlur={handleBlur}
@@ -191,9 +194,7 @@ const FormPollerStepOne = ({
                   ? error.centreon_central_ip
                   : undefined
               }
-              label={`${t(
-                'Centreon Central IP address, as seen by this server',
-              )}`}
+              label={t(labelCentreonCentralIp)}
               name="centreon_central_ip"
               value={stepOneFormData.centreon_central_ip}
               onBlur={handleBlur}
@@ -202,34 +203,36 @@ const FormPollerStepOne = ({
           </div>
         ) : (
           <div className={classes.form}>
-            {waitList && waitList.length !== 0 ? (
+            {waitListOption && waitListOption.length !== 0 && (
               <SelectField
                 fullWidth
-                label={`${t('Select Pending Poller IP')}`}
+                label={t(labelSelectPollerIp)}
                 name="server_ip"
-                options={waitList.map((c) => ({ id: c.ip, name: c.ip }))}
+                options={waitListOption}
                 selectedOptionId={stepOneFormData.server_ip}
                 onChange={handleChange}
               />
-            ) : null}
+            )}
             <TextField
               fullWidth
               required
               error={
                 error.server_name.length > 0 ? error.server_name : undefined
               }
-              label={`${t('Server Name')}`}
+              label={t(labelServerName)}
               name="server_name"
               value={stepOneFormData.server_name}
+              onBlur={handleBlur}
               onChange={handleChange}
             />
             <TextField
               fullWidth
               required
               error={error.server_ip.length > 0 ? error.server_ip : undefined}
-              label={`${t('Server IP address')}`}
+              label={t(labelServerIp)}
               name="server_ip"
               value={stepOneFormData.server_ip}
+              onBlur={handleBlur}
               onChange={handleChange}
             />
             <TextField
@@ -240,18 +243,17 @@ const FormPollerStepOne = ({
                   ? error.centreon_central_ip
                   : undefined
               }
-              label={`${t(
-                'Centreon Central IP address, as seen by this server',
-              )}`}
+              label={t(labelCentreonCentralIp)}
               name="centreon_central_ip"
               value={stepOneFormData.centreon_central_ip}
+              onBlur={handleBlur}
               onChange={handleChange}
             />
           </div>
         )}
         <div className={classes.formButton}>
           <Button size="small" onClick={goToPreviousStep}>
-            {t('Previous')}
+            {t(labelPrevious)}
           </Button>
           <Button
             color="primary"
@@ -260,7 +262,7 @@ const FormPollerStepOne = ({
             type="submit"
             variant="contained"
           >
-            {t('Next')}
+            {t(labelNext)}
           </Button>
         </div>
       </form>
