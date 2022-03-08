@@ -291,7 +291,6 @@ try {
         sh 'rm -rf output'
       }
     }
-
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
       error('Unit tests // RPM Packaging Failure');
     }
