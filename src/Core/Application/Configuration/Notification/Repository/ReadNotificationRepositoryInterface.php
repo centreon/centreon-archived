@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace Core\Application\Configuration\Notification\Repository;
 
 use Core\Domain\Configuration\Notification\Model\HostNotification;
+use Core\Domain\Configuration\Notification\Model\ServiceNotification;
 
 interface ReadNotificationRepositoryInterface
 {

@@ -55,7 +55,7 @@ class FindServiceNotificationPolicy
      * @param EngineConfigurationServiceInterface $engineService
      * @param AccessGroupRepositoryInterface $accessGroupRepository
      * @param ContactInterface $contact
-     * @param ReadRealTimServiceRepositoryInterface $readRealTimeServiceRepository
+     * @param ReadRealTimeServiceRepositoryInterface $readRealTimeServiceRepository
      */
     public function __construct(
         private LegacyNotificationPolicyRepositoryInterface $legacyRepository,
