@@ -3,6 +3,7 @@
 * Includes: draggable.css, core.css, resizable.css, selectable.css, sortable.css, accordion.css, autocomplete.css, menu.css, button.css, controlgroup.css, checkboxradio.css, datepicker.css, dialog.css, progressbar.css, selectmenu.css, slider.css, spinner.css, tabs.css, tooltip.css, theme.css
 * To view and modify this theme, visit http://jqueryui.com/themeroller/?scope=&folderName=base&cornerRadiusShadow=8px&offsetLeftShadow=0px&offsetTopShadow=0px&thicknessShadow=5px&opacityShadow=30&bgImgOpacityShadow=0&bgTextureShadow=flat&bgColorShadow=666666&opacityOverlay=30&bgImgOpacityOverlay=0&bgTextureOverlay=flat&bgColorOverlay=aaaaaa&iconColorError=cc0000&fcError=5f3f3f&borderColorError=f1a899&bgTextureError=flat&bgColorError=fddfdf&iconColorHighlight=777620&fcHighlight=777620&borderColorHighlight=dad55e&bgTextureHighlight=flat&bgColorHighlight=fffa90&iconColorActive=ffffff&fcActive=ffffff&borderColorActive=003eff&bgTextureActive=flat&bgColorActive=007fff&iconColorHover=555555&fcHover=2b2b2b&borderColorHover=cccccc&bgTextureHover=flat&bgColorHover=ededed&iconColorDefault=777777&fcDefault=454545&borderColorDefault=c5c5c5&bgTextureDefault=flat&bgColorDefault=f6f6f6&iconColorContent=444444&fcContent=333333&borderColorContent=dddddd&bgTextureContent=flat&bgColorContent=ffffff&iconColorHeader=444444&fcHeader=333333&borderColorHeader=dddddd&bgTextureHeader=flat&bgColorHeader=e9e9e9&cornerRadius=3px&fwDefault=normal&fsDefault=1em&ffDefault=Arial%2CHelvetica%2Csans-serif
 * Copyright jQuery Foundation and other contributors; Licensed MIT */
+@import "../Variables-css/variables.css";
 
 .ui-draggable-handle {
 	-ms-touch-action: none;
@@ -171,7 +172,7 @@
 .ui-selectable-helper {
 	position: absolute;
 	z-index: 100;
-	border: 1px dotted black;
+	border: 1px dotted var(--ui-selectable-helper-border-color);
 }
 .ui-sortable-handle {
 	-ms-touch-action: none;
@@ -377,7 +378,7 @@ button.ui-button::-moz-focus-inner {
 }
 
 .ui-checkboxradio-label .ui-icon-background {
-	box-shadow: inset 1px 1px 1px #ccc;
+	box-shadow: inset 1px 1px 1px var(--ui-icon-background-box-shadow-color);
 	border-radius: .12em;
 	border: none;
 }
@@ -386,7 +387,7 @@ button.ui-button::-moz-focus-inner {
 	height: 16px;
 	border-radius: 1em;
 	overflow: visible;
-	border: none;
+	border: var(--ui-icon-background-border-color);
 }
 .ui-checkboxradio-radio-label.ui-checkboxradio-checked .ui-icon,
 .ui-checkboxradio-radio-label.ui-checkboxradio-checked:hover .ui-icon {
@@ -796,9 +797,9 @@ button.ui-button::-moz-focus-inner {
 	vertical-align: middle;
 }
 .ui-spinner-input {
-	border: none;
-	background: none;
-	color: inherit;
+	border: var(--ui-spinner-input-border-color);
+	background: var(--ui-spinner-input-background-color);
+	color: var(--ui-spinner-input-font-color);
 	padding: .222em 0;
 	margin: .2em 0;
 	vertical-align: middle;
@@ -869,7 +870,7 @@ button.ui-button::-moz-focus-inner {
 	display: block;
 	border-width: 0;
 	padding: 1em 1.4em;
-	background: none;
+	background: var(--ui-tabs-panel-background-color);
 }
 .ui-tooltip {
 	padding: 8px;
@@ -898,24 +899,24 @@ body .ui-tooltip {
 	font-size: 1em;
 }
 .ui-widget.ui-widget-content {
-	border: 1px solid #c5c5c5;
+	border: 1px solid var(--ui-widget-ui-widget-content-border-color);
 }
 .ui-widget-content {
-	border: 1px solid #dddddd;
-	background: #ffffff;
-	color: #333333;
+	border: 1px solid var(--jquery-ui-widget-content-border-color);
+	background: var(--jquery-ui-widget-content-background-color);
+	color: var(--jquery-ui-widget-content-font-color);
 }
 .ui-widget-content a {
-	color: #333333;
+	color: var(--jquery-ui-widget-content-anchor-font-color);
 }
 .ui-widget-header {
-	border: 1px solid #dddddd;
-	background: #e9e9e9;
-	color: #333333;
+	border: 1px solid var(--jquery-ui-widget-header-border-color);
+	background: var(--jquery-ui-widget-header-background-color);
+	color: var(--jquery-ui-widget-header-font-color);
 	font-weight: bold;
 }
 .ui-widget-header a {
-	color: #333333;
+	color: var(--jquery-ui-widget-header-anchor-font-color);
 }
 
 /* Interaction states
@@ -929,10 +930,10 @@ body .ui-tooltip {
 works properly when clicked or hovered */
 html .ui-button.ui-state-disabled:hover,
 html .ui-button.ui-state-disabled:active {
-	border: 1px solid #c5c5c5;
-	background: #f6f6f6;
+	border: 1px solid var(--ui-button-state-disabled-hovered-active-border-color);
+	background: var(--ui-button-state-disabled-hovered-active-background-color);
 	font-weight: normal;
-	color: #454545;
+	color: var(--ui-button-state-disabled-hovered-active-font-color);
 }
 .ui-state-default a,
 .ui-state-default a:link,
@@ -941,7 +942,7 @@ a.ui-button,
 a:link.ui-button,
 a:visited.ui-button,
 .ui-button {
-	color: #454545;
+	color: var(--ui-button-anchor-visited-font-color);
 	text-decoration: none;
 }
 .ui-state-hover,
@@ -952,10 +953,10 @@ a:visited.ui-button,
 .ui-widget-header .ui-state-focus,
 .ui-button:hover,
 .ui-button:focus {
-	border: 1px solid #cccccc;
-	background: #ededed;
+	border: 1px solid var(--ui-button-state-hover-focus-border-color);
+	background: var(--ui-button-state-hover-focus-background-color);
 	font-weight: normal;
-	color: #2b2b2b;
+	color: var(--ui-button-state-hover-focus-font-color);
 }
 .ui-state-hover a,
 .ui-state-hover a:hover,
@@ -967,12 +968,12 @@ a:visited.ui-button,
 .ui-state-focus a:visited,
 a.ui-button:hover,
 a.ui-button:focus {
-	color: #2b2b2b;
+	color: var(--ui-button-anchor-state-hover-focus-font-color);
 	text-decoration: none;
 }
 
 .ui-visual-focus {
-	box-shadow: 0 0 3px 1px rgb(94, 158, 214);
+	box-shadow: 0 0 3px 1px var(--ui-visual-focus-box-shadow-color);
 }
 .ui-state-active,
 .ui-widget-content .ui-state-active,
@@ -980,20 +981,20 @@ a.ui-button:focus {
 a.ui-button:active,
 .ui-button:active,
 .ui-button.ui-state-active:hover {
-	border: 1px solid #003eff;
-	background: #007fff;
+	border: 1px solid var(--ui-button-anchor-state-active-hover-border-color);
+	background: var(--ui-button-anchor-state-active-hover-background-color);
 	font-weight: normal;
-	color: #ffffff;
+	color: var(--ui-button-anchor-state-active-hover-font-color);
 }
 .ui-icon-background,
 .ui-state-active .ui-icon-background {
-	border: #003eff;
-	background-color: #ffffff;
+	border: var(--jquery-ui-icon-border-color);
+	background-color: var(--jquery-ui-icon-background-color);
 }
 .ui-state-active a,
 .ui-state-active a:link,
 .ui-state-active a:visited {
-	color: #ffffff;
+	color: var(--ui-state-active-anchor-visited-font-color);
 	text-decoration: none;
 }
 
@@ -1002,35 +1003,35 @@ a.ui-button:active,
 .ui-state-highlight,
 .ui-widget-content .ui-state-highlight,
 .ui-widget-header .ui-state-highlight {
-	border: 1px solid #dad55e;
-	background: #fffa90;
-	color: #777620;
+	border: 1px solid var(--ui-state-highlight-border-color);
+	background: var(--ui-state-highlight-background-color);
+	color: var(--ui-state-highlight-font-color);
 }
 .ui-state-checked {
-	border: 1px solid #dad55e;
-	background: #fffa90;
+	border: 1px solid var(--ui-state-checked-border-color);
+	background: var(--ui-state-checked-background-color);
 }
 .ui-state-highlight a,
 .ui-widget-content .ui-state-highlight a,
 .ui-widget-header .ui-state-highlight a {
-	color: #777620;
+	color: var(--ui-state-highlight-anchor-font-color);
 }
 .ui-state-error,
 .ui-widget-content .ui-state-error,
 .ui-widget-header .ui-state-error {
-	border: 1px solid #f1a899;
-	background: #fddfdf;
-	color: #5f3f3f;
+	border: 1px solid var(--ui-state-error-border-color);
+	background: var(--ui-state-error-background-color);
+	color: var(--ui-state-error-font-color);
 }
 .ui-state-error a,
 .ui-widget-content .ui-state-error a,
 .ui-widget-header .ui-state-error a {
-	color: #5f3f3f;
+	color: var(--ui-state-error-anchor-font-color);
 }
 .ui-state-error-text,
 .ui-widget-content .ui-state-error-text,
 .ui-widget-header .ui-state-error-text {
-	color: #5f3f3f;
+	color: var(--ui-state-error-text-font-color);
 }
 .ui-priority-primary,
 .ui-widget-content .ui-priority-primary,
@@ -1062,13 +1063,7 @@ a.ui-button:active,
 .ui-icon {
 	width: 16px;
 	height: 16px;
-}
-.ui-icon,
-.ui-widget-content .ui-icon {
-	background-image: url("images/ui-icons_444444_256x240.png");
-}
-.ui-widget-header .ui-icon {
-	background-image: url("images/ui-icons_444444_256x240.png");
+	fill: var(--ui-icon-fill-color);
 }
 .ui-state-hover .ui-icon,
 .ui-state-focus .ui-icon,
@@ -1302,11 +1297,11 @@ a.ui-button:active,
 
 /* Overlays */
 .ui-widget-overlay {
-	background: #aaaaaa;
+	background: var(--ui-widget-overlay-background-color);
 	opacity: .3;
 	filter: Alpha(Opacity=30); /* support: IE8 */
 }
 .ui-widget-shadow {
-	-webkit-box-shadow: 0px 0px 5px #666666;
-	box-shadow: 0px 0px 5px #666666;
+	-webkit-box-shadow: 0px 0px 5px var(--ui-widget-shadow-webkit-box-shadow-color);
+	box-shadow: 0px 0px 5px var(--ui-widget-shadow-box-shadow-color);
 }
