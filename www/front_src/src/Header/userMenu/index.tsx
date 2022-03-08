@@ -4,14 +4,21 @@ import classnames from 'classnames';
 import { useTranslation, withTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
 import { useUpdateAtom } from 'jotai/utils';
+import { gt, isNil, not, __ } from 'ramda';
 
-import { Button, Typography, Paper } from '@mui/material';
+import { Button, Typography, Paper, Badge, Tooltip } from '@mui/material';
 import UserIcon from '@mui/icons-material/AccountCircle';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import CheckIcon from '@mui/icons-material/Check';
 import { makeStyles } from '@mui/styles';
 
-import { postData, getData, useRequest, useSnackbar } from '@centreon/ui';
+import {
+  postData,
+  getData,
+  useRequest,
+  useSnackbar,
+  useLocaleDateTimeFormat,
+} from '@centreon/ui';
 
 import Clock from '../Clock';
 import MenuLoader from '../../components/MenuLoader';
@@ -20,17 +27,25 @@ import { areUserParametersLoadedAtom } from '../../Main/useUser';
 import { navigationItemSelectedAtom } from '../../Navigation/Sidebar/sideBarAtoms';
 import { logoutEndpoint } from '../../api/endpoint';
 import reactRoutes from '../../reactRoutes/routeMap';
+import { passwordResetInformationsAtom } from '../../ResetPassword/passwordResetInformationsAtom';
 
 import { userEndpoint } from './api/endpoint';
-import { labelProfile, labelYouHaveBeenLoggedOut } from './translatedLabels';
+import {
+  labelPasswordWillExpireIn,
+  labelProfile,
+  labelYouHaveBeenLoggedOut,
+} from './translatedLabels';
 
 const editProfileTopologyPage = '50104';
+const sevenDays = 60 * 60 * 24 * 7;
+const isGreaterThanSevenDays = gt(__, sevenDays);
 
 interface UserData {
   autologinkey: string | null;
   fullname: string | null;
   hasAccessToProfile: boolean;
   locale: string | null;
+  password_remaining_time?: number | null;
   soundNotificationsEnabled: boolean;
   timezone: string | null;
   userId: string | null;
@@ -72,6 +87,9 @@ const useStyles = makeStyles((theme) => ({
   nameAliasContainer: {
     display: 'grid',
     gridTemplateColumns: '2fr 1fr',
+  },
+  passwordExpiration: {
+    color: theme.palette.warning.main,
   },
   subMenu: {
     boxSizing: 'border-box',
@@ -140,9 +158,13 @@ const UserMenu = (): JSX.Element => {
 
   const navigate = useNavigate();
   const { showSuccessMessage } = useSnackbar();
+  const { toHumanizedDuration } = useLocaleDateTimeFormat();
 
   const setAreUserParametersLoaded = useUpdateAtom(areUserParametersLoadedAtom);
   const setIsNavigationItemSelected = useUpdateAtom(navigationItemSelectedAtom);
+  const setPasswordResetInformationsAtom = useUpdateAtom(
+    passwordResetInformationsAtom,
+  );
 
   const loadUserData = (): void => {
     sendRequest({ endpoint: userEndpoint })
@@ -164,6 +186,7 @@ const UserMenu = (): JSX.Element => {
     }).then(() => {
       setAreUserParametersLoaded(false);
       setIsNavigationItemSelected(null);
+      setPasswordResetInformationsAtom(null);
       navigate(reactRoutes.login);
       showSuccessMessage(t(labelYouHaveBeenLoggedOut));
     });
@@ -222,17 +245,41 @@ const UserMenu = (): JSX.Element => {
   const conditionnedhref = gethref + (window.location.search ? '&' : '?');
   const autolink = `${conditionnedhref}autologin=1&useralias=${data.username}&token=${data.autologinkey}`;
 
+  const passwordIsNotYetAboutToExpire =
+    isNil(data.password_remaining_time) ||
+    isGreaterThanSevenDays(data.password_remaining_time);
+
+  const formattedPasswordRemainingTime = toHumanizedDuration(
+    data.password_remaining_time as number,
+  );
+
   return (
     <div className={classnames(classes.wrapRightUser)}>
       <div className={classnames(classes.wrapRightUserItems)}>
         <Clock />
         <div ref={profile as React.RefObject<HTMLDivElement>}>
-          <UserIcon
-            aria-label={t(labelProfile)}
-            className={classnames(classes.userIcon)}
-            fontSize="large"
-            onClick={toggle}
-          />
+          <Tooltip
+            title={
+              passwordIsNotYetAboutToExpire
+                ? ''
+                : `${t(
+                    labelPasswordWillExpireIn,
+                  )}: ${formattedPasswordRemainingTime}`
+            }
+          >
+            <Badge
+              color="warning"
+              invisible={passwordIsNotYetAboutToExpire}
+              variant="dot"
+            >
+              <UserIcon
+                aria-label={t(labelProfile)}
+                className={classnames(classes.userIcon)}
+                fontSize="large"
+                onClick={toggle}
+              />
+            </Badge>
+          </Tooltip>
           <div
             className={classnames(classes.subMenu, {
               [classes.subMenuActive]: toggled,
@@ -295,6 +342,21 @@ const UserMenu = (): JSX.Element => {
                   </Paper>
                 )}
               </ul>
+              {not(passwordIsNotYetAboutToExpire) && (
+                <div
+                  className={classnames(
+                    classes.subMenuItemContent,
+                    classes.passwordExpiration,
+                  )}
+                >
+                  <Typography variant="body2">
+                    {t(labelPasswordWillExpireIn)}:
+                  </Typography>
+                  <Typography variant="body2">
+                    {formattedPasswordRemainingTime}
+                  </Typography>
+                </div>
+              )}
               <div className={classnames(classes.logoutLink)}>
                 <Paper className={classes.userButton}>
                   <Button

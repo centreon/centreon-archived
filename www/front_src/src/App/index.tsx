@@ -77,6 +77,13 @@ const App = (): JSX.Element => {
     pendoScriptElement.type = 'text/javascript';
     pendoScriptElement.async = true;
     pendoScriptElement.src = './include/common/javascript/pendo.js';
+    pendoScriptElement.id = 'pendo';
+
+    const pendoScript = document.getElementById('pendo');
+
+    if (!isNil(pendoScript)) {
+      return;
+    }
 
     bodyElement.append(pendoScriptElement);
   }, []);
