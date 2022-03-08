@@ -13,7 +13,7 @@ class LocalProviderPresenter
         return [
             'id' => $response->id,
             'type' => $response->type,
-            'name' => $configresponseuration->name,
+            'name' => $response->name,
             'authentication_uri' => $response->authenticationUri,
             'is_active' => $response->isActive,
             'is_forced' => $response->isForced,

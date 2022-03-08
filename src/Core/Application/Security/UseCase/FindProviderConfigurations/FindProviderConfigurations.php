@@ -104,6 +104,7 @@ class FindProviderConfigurations
         $findProviderConfigurationsResponse->authorizationEndpoint =
             $openIdConfiguration->getAuthorizationEndpoint();
         $findProviderConfigurationsResponse->clientId = $openIdConfiguration->getClientId();
+        $findProviderConfigurationsResponse->id = $openIdConfiguration->getId();
 
         return $findProviderConfigurationsResponse;
     }
