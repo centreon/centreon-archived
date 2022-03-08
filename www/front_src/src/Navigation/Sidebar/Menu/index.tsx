@@ -42,7 +42,7 @@ const NavigationMenu = ({
 
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [currentTop, setCurrentTop] = useState<number>();
-  const [maxHeightCollapsScroll, setMaxHeightCollapsScroll] = useState<
+  const [collapseScrollMaxHeight, setCollapseScrollMaxHeight] = useState<
     number | undefined
   >(undefined);
   const [maxWidthCollapsScroll, setMaxWidthCollapsScroll] = useState<
