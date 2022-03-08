@@ -22,11 +22,16 @@ declare(strict_types=1);
 
 namespace Core\Infrastructure\Security\Api\FindProviderConfigurations\ProviderPresenter;
 
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Core\Application\Security\UseCase\FindProviderConfigurations\FindLocalProviderConfigurationResponse;
 use Core\Infrastructure\Security\Api\FindProviderConfigurations\ProviderPresenter\ProviderPresenterInterface;
 
 class LocalProviderPresenter implements ProviderPresenterInterface
 {
+    public function __construct(private UrlGeneratorInterface $router)
+    {
+    }
+
     /**
      * @inheritDoc
      */
@@ -41,11 +46,14 @@ class LocalProviderPresenter implements ProviderPresenterInterface
      */
     public function format(mixed $response): array
     {
+        $authenticationUri = $this->router->generate(
+            'centreon_security_authentication_login',
+        );
         return [
             'id' => $response->id,
             'type' => $response->type,
             'name' => $response->name,
-            'authentication_uri' => $response->authenticationUri,
+            'authentication_uri' => $authenticationUri,
             'is_active' => $response->isActive,
             'is_forced' => $response->isForced,
         ];

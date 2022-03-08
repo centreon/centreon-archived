@@ -60,15 +60,15 @@ class FindProviderConfigurations
             return;
         }
 
-        if ($openIdConfiguration !== null && ! $openIdConfiguration->isActive()) {
-            $openIdConfiguration = null;
-        }
+        $responses = [
+                $this->createLocalResponse($localConfiguration)
+        ];
 
+        if ($openIdConfiguration !== null && $openIdConfiguration->isActive()) {
+            $responses[] = $this->createOpenIdResponse($openIdConfiguration);
+        }
         // @todo
-        $presenter->present([
-            $this->createLocalResponse($localConfiguration),
-            $this->createOpenIdResponse($openIdConfiguration),
-        ]);
+        $presenter->present($responses);
     }
 
     /**
@@ -79,12 +79,11 @@ class FindProviderConfigurations
         LocalConfiguration $localConfiguration,
     ): FindLocalProviderConfigurationResponse {
         $findProviderConfigurationsResponse = new FindLocalProviderConfigurationResponse();
-        $findProviderConfigurationsResponse->id = 1;
-        $findProviderConfigurationsResponse->type = 'local';
-        $findProviderConfigurationsResponse->name = 'local';
-        $findProviderConfigurationsResponse->isActive = true;
-        $findProviderConfigurationsResponse->isForced = false;
-        $findProviderConfigurationsResponse->authenticationUri = '/authentication/providers/configurations/local';
+        $findProviderConfigurationsResponse->id = $localConfiguration->getId();
+        $findProviderConfigurationsResponse->type = $localConfiguration->getType();
+        $findProviderConfigurationsResponse->name = $localConfiguration->getName();
+        $findProviderConfigurationsResponse->isActive = $localConfiguration->isActive();
+        $findProviderConfigurationsResponse->isForced = $localConfiguration->isForced();
 
         return $findProviderConfigurationsResponse;
     }
@@ -96,7 +95,7 @@ class FindProviderConfigurations
     private function createOpenIdResponse(
         ?OpenIdConfiguration $openIdConfiguration,
     ): FindopenIdProviderConfigurationResponse {
-        $findProviderConfigurationsResponse = new FindOpenIdProviderConfigurationResponse();
+        $findProviderConfigurationsResponse =  new FindOpenIdProviderConfigurationResponse();
         $findProviderConfigurationsResponse->isActive = $openIdConfiguration->isActive();
         $findProviderConfigurationsResponse->isForced = $openIdConfiguration->isForced();
         $findProviderConfigurationsResponse->baseUrl = $openIdConfiguration->getBaseUrl();

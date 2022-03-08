@@ -49,10 +49,21 @@ class DbReadConfigurationRepository extends AbstractRepositoryDRB implements Rea
     {
         $configuration = null;
 
-        $customConfiguration = $this->findCustomConfiguration();
+        $statement = $this->db->query(
+            $this->translateDbName(
+                "SELECT *
+                FROM `:db`.`provider_configuration`
+                WHERE `name` = 'local'"
+            )
+        );
+        $customConfiguration = null;
+        if ($statement !== false && $result = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            $this->validateJsonRecord($result['custom_configuration'], __DIR__ . '/CustomConfigurationSchema.json');
+            $customConfiguration = json_decode($result['custom_configuration'], true);
+        }
         if ($customConfiguration !== null) {
             $excludedUsers = $this->findExcludedUsers();
-            $configuration = DbConfigurationFactory::createFromRecord($customConfiguration, $excludedUsers);
+            $configuration = DbConfigurationFactory::createFromRecord($result, $customConfiguration, $excludedUsers);
         }
 
         return $configuration;
@@ -67,17 +78,11 @@ class DbReadConfigurationRepository extends AbstractRepositoryDRB implements Rea
     {
         $statement = $this->db->query(
             $this->translateDbName(
-                "SELECT `custom_configuration`
+                "SELECT *
                 FROM `:db`.`provider_configuration`
                 WHERE `name` = 'local'"
             )
         );
-
-        $customConfiguration = null;
-        if ($statement !== false && $result = $statement->fetch(\PDO::FETCH_ASSOC)) {
-            $this->validateJsonRecord($result['custom_configuration'], __DIR__ . '/CustomConfigurationSchema.json');
-            $customConfiguration = json_decode($result['custom_configuration'], true);
-        }
 
         return $customConfiguration;
     }

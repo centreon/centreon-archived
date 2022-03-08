@@ -42,10 +42,11 @@ class FindProviderConfigurationsPresenter extends AbstractPresenter implements
     private $providerPresenters;
 
     /**
+     * @param \Traversable<ProviderPresenterInterface> $presenters
      * @param PresenterFormatterInterface $presenterFormatter
      */
     public function __construct(
-        \Traversable $presenters, // iterator
+        \Traversable $presenters,
         protected PresenterFormatterInterface $presenterFormatter
     ) {
         if (iterator_count($presenters) === 0) {
@@ -69,58 +70,6 @@ class FindProviderConfigurationsPresenter extends AbstractPresenter implements
                 }
             }
         }
-
-        $formattedResponse[] = $this->getFormattedLocalConfiguration($response->localProviderConfiguration);
-
-        if ($response->openIdProviderConfiguration) {
-            $formattedResponse[] = $this->getFormattedOpenIdConfiguration($response->openIdProviderConfiguration);
-        }
-
         $this->presenterFormatter->present($formattedResponse);
-    }
-
-    /**
-     * format local provider configuration
-     *
-     * @param FindLocalProviderConfigurationResponse $configuration
-     * @return array<string,mixed>
-     */
-    private function getFormattedLocalConfiguration(FindLocalProviderConfigurationResponse $configuration): array
-    {
-        return [
-            'id' => $configuration->id,
-            'type' => $configuration->type,
-            'name' => $configuration->name,
-            'authentication_uri' => $configuration->authenticationUri,
-            'is_active' => $configuration->isActive,
-            'is_forced' => $configuration->isForced,
-        ];
-    }
-
-    /**
-     * format open id provider configuration
-     *
-     * @param FindOpenIdProviderConfigurationResponse $configuration
-     * @return array<string,mixed>
-     */
-    private function getFormattedOpenIdConfiguration(FindOpenIdProviderConfigurationResponse $configuration): array
-    {
-        return [
-            'id' => $configuration->id,
-            'type' => $configuration->type,
-            'name' => $configuration->name,
-            'authentication_uri' => $configuration->baseUrl . '/' . $configuration->authorizationEndpoint
-                . '?'
-                . http_build_query(
-                    [
-                        'client_id' => $configuration->clientId,
-                        'response_type' => 'code',
-                        'redirect_uri' => $this->getBaseUrl(), // @todo create full authentication endpoint
-                        'state' => uniqid(),
-                    ],
-                ),
-            'is_active' => $configuration->isActive,
-            'is_forced' => $configuration->isForced,
-        ];
     }
 }

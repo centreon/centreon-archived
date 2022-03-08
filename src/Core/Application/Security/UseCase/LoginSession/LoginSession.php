@@ -22,26 +22,27 @@ declare(strict_types=1);
 
 namespace Core\Application\Security\UseCase\LoginSession;
 
-use Core\Application\Common\UseCase\UnauthorizedResponse;
-use Centreon\Domain\Authentication\Exception\AuthenticationException as LegacyAuthenticationException;
-use Core\Domain\Security\Authentication\AuthenticationException;
-use Core\Domain\Security\Authentication\PasswordExpiredException;
-use Centreon\Domain\Log\LoggerTrait;
 use Centreon;
+use Centreon\Domain\Log\LoggerTrait;
 use Centreon\Domain\Menu\Model\Page;
 use Security\Domain\Authentication\Model\Session;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Security\Domain\Authentication\Model\LocalProvider;
 use Security\Domain\Authentication\Model\ProviderToken;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Menu\Interfaces\MenuServiceInterface;
+use Core\Application\Common\UseCase\UnauthorizedResponse;
 use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
+use Core\Domain\Security\Authentication\AuthenticationException;
 use Security\Domain\Authentication\Exceptions\ProviderException;
 use Security\Domain\Authentication\Interfaces\ProviderInterface;
+use Core\Domain\Security\Authentication\PasswordExpiredException;
 use Centreon\Domain\Repository\Interfaces\DataStorageEngineInterface;
 use Security\Domain\Authentication\Interfaces\ProviderServiceInterface;
 use Security\Domain\Authentication\Interfaces\SessionRepositoryInterface;
 use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
 use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
+use Centreon\Domain\Authentication\Exception\AuthenticationException as LegacyAuthenticationException;
 
 class LoginSession
 {
@@ -84,7 +85,7 @@ class LoginSession
         try {
             $this->authorizeUserToAuthenticateOrFail($request->login);
 
-            $authenticationProvider = $this->findProviderOrFail($request->providerConfigurationName);
+            $authenticationProvider = $this->findProviderOrFail(LocalProvider::NAME);
             $this->authenticateOrFail($authenticationProvider, $request);
 
             $providerUser = $this->getUserFromProviderOrFail($authenticationProvider);
@@ -137,7 +138,7 @@ class LoginSession
         $this->debug(
             "[AUTHENTICATE] Authentication success",
             [
-                "provider_name" => $request->providerConfigurationName,
+                "provider_name" => LocalProvider::NAME,
                 "contact_id" => $providerUser->getId(),
                 "contact_alias" => $providerUser->getAlias()
             ]
@@ -236,7 +237,7 @@ class LoginSession
          */
         $this->debug(
             '[AUTHENTICATE] Authentication using provider',
-            ['provider_name' => $request->providerConfigurationName]
+            ['provider_name' => LocalProvider::NAME]
         );
 
         $authenticationProvider->authenticateOrFail([

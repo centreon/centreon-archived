@@ -32,7 +32,7 @@ class DbConfigurationFactory
      * @param array<string,mixed> $excludedUserAliases
      * @return Configuration
      */
-    public static function createFromRecord(array $configuration, array $excludedUserAliases): Configuration
+    public static function createFromRecord(array $configuration, array $customConfiguration, array $excludedUserAliases): Configuration
     {
         $excludedUserAliases = array_map(
             fn ($user) => $user['contact_alias'],
@@ -40,19 +40,26 @@ class DbConfigurationFactory
         );
 
         $securityPolicy = new SecurityPolicy(
-            $configuration['password_security_policy']['password_length'],
-            $configuration['password_security_policy']['has_uppercase_characters'],
-            $configuration['password_security_policy']['has_lowercase_characters'],
-            $configuration['password_security_policy']['has_numbers'],
-            $configuration['password_security_policy']['has_special_characters'],
-            $configuration['password_security_policy']['can_reuse_passwords'],
-            $configuration['password_security_policy']['attempts'],
-            $configuration['password_security_policy']['blocking_duration'],
-            $configuration['password_security_policy']['password_expiration_delay'],
+            $customConfiguration['password_security_policy']['password_length'],
+            $customConfiguration['password_security_policy']['has_uppercase_characters'],
+            $customConfiguration['password_security_policy']['has_lowercase_characters'],
+            $customConfiguration['password_security_policy']['has_numbers'],
+            $customConfiguration['password_security_policy']['has_special_characters'],
+            $customConfiguration['password_security_policy']['can_reuse_passwords'],
+            $customConfiguration['password_security_policy']['attempts'],
+            $customConfiguration['password_security_policy']['blocking_duration'],
+            $customConfiguration['password_security_policy']['password_expiration_delay'],
             $excludedUserAliases,
-            $configuration['password_security_policy']['delay_before_new_password'],
+            $customConfiguration['password_security_policy']['delay_before_new_password'],
         );
 
-        return new Configuration($securityPolicy);
+        $localConfiguration =  (new Configuration($securityPolicy))
+            ->setId((int) $configuration['id'])
+            ->setName($configuration['name'])
+            ->setType($configuration['type'])
+            ->setActive((int) $configuration['is_active'] === 1)
+            ->setForced((int) $configuration['is_forced'] === 1);
+
+        return $localConfiguration;
     }
 }
