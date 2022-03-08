@@ -26,8 +26,6 @@ use Core\Infrastructure\Common\Api\HttpUrlTrait;
 use Core\Application\Common\UseCase\AbstractPresenter;
 use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
 use Core\Application\Security\UseCase\FindProviderConfigurations\FindProviderConfigurationsResponse;
-use Core\Application\Security\UseCase\FindProviderConfigurations\FindLocalProviderConfigurationResponse;
-use Core\Application\Security\UseCase\FindProviderConfigurations\FindOpenIdProviderConfigurationResponse;
 use Core\Infrastructure\Security\Api\FindProviderConfigurations\ProviderPresenter\ProviderPresenterInterface;
 use Core\Application\Security\UseCase\FindProviderConfigurations\FindProviderConfigurationsPresenterInterface;
 
@@ -66,7 +64,7 @@ class FindProviderConfigurationsPresenter extends AbstractPresenter implements
         foreach ($data as $response) {
             foreach ($this->providerPresenters as $presenterProvider) {
                 if ($presenterProvider->isValidFor($response)) {
-                    $formattedResponse[] = $presenterProvider->format($response);
+                    $formattedResponse[] = $presenterProvider->present($response);
                 }
             }
         }

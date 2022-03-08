@@ -44,10 +44,11 @@ class LocalProviderPresenter implements ProviderPresenterInterface
      * @param FindLocalProviderConfigurationResponse $response
      * @return array<string,mixed>
      */
-    public function format(mixed $response): array
+    public function present(mixed $response): array
     {
         $authenticationUri = $this->router->generate(
             'centreon_security_authentication_login',
+            [],
         );
         return [
             'id' => $response->id,

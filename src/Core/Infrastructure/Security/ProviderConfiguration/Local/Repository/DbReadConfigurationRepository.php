@@ -70,24 +70,6 @@ class DbReadConfigurationRepository extends AbstractRepositoryDRB implements Rea
     }
 
     /**
-     * Find custom configuration and validate it
-     *
-     * @return array<string,mixed>|null
-     */
-    private function findCustomConfiguration(): ?array
-    {
-        $statement = $this->db->query(
-            $this->translateDbName(
-                "SELECT *
-                FROM `:db`.`provider_configuration`
-                WHERE `name` = 'local'"
-            )
-        );
-
-        return $customConfiguration;
-    }
-
-    /**
      * Find excluded users from password expiration
      *
      * @return array<string,mixed>
