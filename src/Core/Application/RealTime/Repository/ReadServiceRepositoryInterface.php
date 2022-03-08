@@ -51,7 +51,7 @@ interface ReadServiceRepositoryInterface
      *
      * @param int $hostId
      * @param int $serviceId
-     * @param array $accessGroupIds
+     * @param int[] $accessGroupIds
      * @return bool
      */
     public function isAllowedToFindServiceByAccessGroupIds(int $hostId, int $serviceId, array $accessGroupIds): bool;
