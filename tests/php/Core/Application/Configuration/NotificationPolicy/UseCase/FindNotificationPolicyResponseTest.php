@@ -25,21 +25,26 @@ namespace Tests\Core\Application\Configuration\NotificationPolicy\UseCase;
 use Core\Application\Configuration\NotificationPolicy\UseCase\FindNotificationPolicyResponse;
 use Core\Domain\Configuration\User\Model\User;
 use Core\Domain\Configuration\Notification\Model\HostNotification;
+use Core\Domain\Configuration\Notification\Model\ServiceNotification;
 use Core\Domain\Configuration\TimePeriod\Model\TimePeriod;
 use Core\Domain\Configuration\UserGroup\Model\UserGroup;
 
 beforeEach(function () {
     $this->user = new User(2, 'user2', 'user 2', 'user2@localhost', false);
     $this->userGroup = new UserGroup(3, 'cg3', 'cg 3');
-    $this->usersNotificationSettings = new HostNotification(new Timeperiod(1, '24x7', '24/24 7/7'));
-    $this->usersNotificationSettings->addEvent(HostNotification::EVENT_HOST_DOWN);
+
+    $this->userHostNotificationSettings = new HostNotification(new Timeperiod(1, '24x7', '24/24 7/7'));
+    $this->userHostNotificationSettings->addEvent(HostNotification::EVENT_HOST_DOWN);
+
+    $this->userServiceNotificationSettings = new ServiceNotification(new Timeperiod(1, '24x7', '24/24 7/7'));
+    $this->userServiceNotificationSettings->addEvent(ServiceNotification::EVENT_SERVICE_CRITICAL);
 });
 
-it('converts given models to array', function () {
+it('converts given host notification models to array', function () {
     $response = new FindNotificationPolicyResponse(
         [$this->user],
         [$this->userGroup],
-        [$this->usersNotificationSettings],
+        [$this->userHostNotificationSettings],
         true,
     );
 
@@ -62,11 +67,50 @@ it('converts given models to array', function () {
 
     expect($response->usersNotificationSettings)->toBe([
         [
-            'is_notified_on' => $this->usersNotificationSettings->getEvents(),
+            'is_notified_on' => $this->userHostNotificationSettings->getEvents(),
             'time_period' => [
-                'id' => $this->usersNotificationSettings->getTimePeriod()->getId(),
-                'name' => $this->usersNotificationSettings->getTimePeriod()->getName(),
-                'alias' => $this->usersNotificationSettings->getTimePeriod()->getAlias(),
+                'id' => $this->userHostNotificationSettings->getTimePeriod()->getId(),
+                'name' => $this->userHostNotificationSettings->getTimePeriod()->getName(),
+                'alias' => $this->userHostNotificationSettings->getTimePeriod()->getAlias(),
+            ],
+        ],
+    ]);
+
+    expect($response->isNotificationEnabled)->toBe(true);
+});
+
+it('converts given service notification models to array', function () {
+    $response = new FindNotificationPolicyResponse(
+        [$this->user],
+        [$this->userGroup],
+        [$this->userServiceNotificationSettings],
+        true,
+    );
+
+    expect($response->users)->toBe([
+        [
+            'id' => $this->user->getId(),
+            'name' => $this->user->getName(),
+            'alias' => $this->user->getAlias(),
+            'email' => $this->user->getEmail(),
+        ],
+    ]);
+
+    expect($response->userGroups)->toBe([
+        [
+            'id' => $this->userGroup->getId(),
+            'name' => $this->userGroup->getName(),
+            'alias' => $this->userGroup->getAlias(),
+        ],
+    ]);
+
+    expect($response->usersNotificationSettings)->toBe([
+        [
+            'is_notified_on' => $this->userServiceNotificationSettings->getEvents(),
+            'time_period' => [
+                'id' => $this->userServiceNotificationSettings->getTimePeriod()->getId(),
+                'name' => $this->userServiceNotificationSettings->getTimePeriod()->getName(),
+                'alias' => $this->userServiceNotificationSettings->getTimePeriod()->getAlias(),
             ],
         ],
     ]);
