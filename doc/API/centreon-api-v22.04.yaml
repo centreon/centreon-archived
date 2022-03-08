@@ -4154,6 +4154,7 @@ components:
             - password_expiration
             - can_reuse_passwords
             - delay_before_new_password
+            - contact_template_id
           properties:
             password_min_length:
               description: minimum length of the password
@@ -4244,6 +4245,11 @@ components:
         - client_secret
         - authentication_type
         - verify_peer
+        - auto_import
+        - contact_template_id
+        - email_bind_attribute
+        - alias_bind_attribute
+        - fullname_bind_attribute
       properties:
         is_active:
           type: boolean
@@ -4331,6 +4337,30 @@ components:
           type: boolean
           description: "Verify peer"
           example: true
+        auto_import:
+          type: boolean
+          description: "Auto import user from external provider"
+          example: true
+        contact_template_id:
+          type: integer
+          description: "Contact template ID"
+          example: 1
+          nullable: true
+        email_bind_attribute:
+          type: string
+          description: "Email bind attribute"
+          example: "email"
+          nullable: true
+        alias_bind_attribute:
+          type: string
+          description: "Alias bind attribute"
+          example: "preferred_username"
+          nullable: true
+        fullname_bind_attribute:
+          type: string
+          description: "Fullname bind attribute"
+          example: "name"
+          nullable: true
     Comment.Resources:
       type: object
       required: [ resources ]
