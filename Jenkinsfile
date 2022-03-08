@@ -173,17 +173,17 @@ try {
         stash name: "rpms-centos7", includes: 'output/noarch/*.rpm'
         sh 'rm -rf output'
       }
+    },
+    'rpm packaging alma8': {
+      node {
+        checkoutCentreonBuild()
+        unstash 'tar-sources'
+        sh "./centreon-build/jobs/web/${serie}/mon-web-package.sh alma8"
+        archiveArtifacts artifacts: "rpms-alma8.tar.gz"
+        stash name: "rpms-alma8", includes: 'output/noarch/*.rpm'
+        sh 'rm -rf output'
+      }
     }
-    //'packaging centos8': {
-    //  node {
-    //    checkoutCentreonBuild(buildBranch)
-    //    unstash 'tar-sources'
-    //    sh "./centreon-build/jobs/web/${serie}/mon-web-package.sh centos8"
-    //    archiveArtifacts artifacts: "rpms-centos8.tar.gz"
-    //    stash name: "rpms-centos8", includes: 'output/noarch/*.rpm'
-    //    sh 'rm -rf output'
-    //  }
-    //}
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
       error("Unit test // packaging stage failure.");
     }
@@ -205,11 +205,47 @@ try {
     }
   }
 
-  stage('Docker creation') {
-    parallel 'Docker centos7': {
+  if ((env.BUILD == 'REFERENCE')) {
+    stage('Delivery') {
       node {
         checkoutCentreonBuild(buildBranch)
-        sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh centos7"
+        unstash 'tar-sources'
+        unstash 'api-doc'
+        unstash 'rpms-centos7'
+        //unstash 'rpms-centos8'
+        sh "./centreon-build/jobs/web/${serie}/mon-web-delivery.sh"
+      }
+      if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+        error('Delivery stage failure.');
+      }
+    }
+  }
+
+  stage("$DELIVERY_STAGE") {
+    node {
+      checkoutCentreonBuild()    
+      sh 'rm -rf output'
+      unstash 'tar-sources'
+      unstash 'api-doc'
+      unstash 'rpms-alma8'
+      unstash 'rpms-centos7'
+      sh "./centreon-build/jobs/web/${serie}/mon-web-delivery.sh"
+    }
+    if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
+      error('Delivery stage failure');
+    }
+  }
+  
+  stage("$DOCKER_STAGE") {
+    def parallelSteps = [:]
+    def osBuilds = isStableBuild() ? ['centos7', 'alma8'] : ['centos7']
+    for (x in osBuilds) {
+      def osBuild = x
+      parallelSteps[osBuild] = {
+        node {
+          checkoutCentreonBuild()
+          sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh ${osBuild}"
+        }
       }
     }
     //'Docker centos8': {
