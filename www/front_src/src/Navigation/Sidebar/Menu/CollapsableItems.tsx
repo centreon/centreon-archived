@@ -42,7 +42,7 @@ interface StyleProps {
   maxWidthCollapsScroll?: number;
 }
 
-const collapsWidth = 165;
+const collapseWidth = 165;
 
 const useStyles = makeStyles((theme) => ({
   activated: {
@@ -103,11 +103,11 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: ({ maxWidthCollapsScroll }: StyleProps): string =>
       maxWidthCollapsScroll
         ? theme.spacing(maxWidthCollapsScroll)
-        : theme.spacing(collapsWidth / 8),
+        : theme.spacing(collapseWidth / 8),
     overflow: 'auto',
     position: 'fixed',
     top: ({ currentTop }: StyleProps): number | undefined => currentTop,
-    width: collapsWidth,
+    width: collapseWidth,
     zIndex: theme.zIndex.mobileStepper,
   },
 }));
@@ -144,7 +144,7 @@ const CollapsableItems = ({
     navigationItemSelectedAtom,
   );
   const levelName = `level_${level}_Navigated`;
-  const widthItem = currentWidth + collapsWidth / 8 + 0.15;
+  const widthItem = currentWidth + collapseWidth / 8 + 0.15;
   const minimumMarginBottom = 4;
 
   const hoverItem = (
