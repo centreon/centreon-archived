@@ -33,6 +33,8 @@ services:
     _instanceof:
         Security\Domain\Authentication\Interfaces\ProviderInterface:
             tags: ['authentication.providers']
+        Core\Infrastructure\Security\Api\FindProviderConfigurations\ProviderPresenter\ProviderPresenterInterface:
+            tags: ['authentication.presenters']
 
     EventSubscriber\:
         resource: '../src/EventSubscriber/*'
@@ -87,3 +89,6 @@ services:
 
     Security\Domain\Authentication\Model\ProviderFactory:
         arguments: [!tagged_iterator 'authentication.providers']
+
+    Core\Infrastructure\Security\Api\FindProviderConfigurations\FindProviderConfigurationsPresenter:
+        arguments: [!tagged_iterator 'authentication.presenters']

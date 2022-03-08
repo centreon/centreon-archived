@@ -22,13 +22,14 @@ declare(strict_types=1);
 
 namespace Core\Infrastructure\Security\Api\FindProviderConfigurations;
 
-use Core\Application\Common\UseCase\AbstractPresenter;
-use Core\Application\Security\UseCase\FindProviderConfigurations\FindProviderConfigurationsResponse;
-use Core\Application\Security\UseCase\FindProviderConfigurations\FindProviderConfigurationsPresenterInterface;
-use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
 use Core\Infrastructure\Common\Api\HttpUrlTrait;
+use Core\Application\Common\UseCase\AbstractPresenter;
+use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
+use Core\Application\Security\UseCase\FindProviderConfigurations\FindProviderConfigurationsResponse;
 use Core\Application\Security\UseCase\FindProviderConfigurations\FindLocalProviderConfigurationResponse;
 use Core\Application\Security\UseCase\FindProviderConfigurations\FindOpenIdProviderConfigurationResponse;
+use Core\Infrastructure\Security\Api\FindProviderConfigurations\ProviderPresenter\ProviderPresenterInterface;
+use Core\Application\Security\UseCase\FindProviderConfigurations\FindProviderConfigurationsPresenterInterface;
 
 class FindProviderConfigurationsPresenter extends AbstractPresenter implements
     FindProviderConfigurationsPresenterInterface
@@ -36,27 +37,35 @@ class FindProviderConfigurationsPresenter extends AbstractPresenter implements
     use HttpUrlTrait;
 
     /**
+     * @var ProviderPresenterInterface[]
+     */
+    private $providerPresenters;
+
+    /**
      * @param PresenterFormatterInterface $presenterFormatter
      */
     public function __construct(
-        private ProviderPresenterInterface $providerPresenter, // iterator
+        \Traversable $presenters, // iterator
         protected PresenterFormatterInterface $presenterFormatter
     ) {
-        // @todo manage iterator
+        if (iterator_count($presenters) === 0) {
+            throw new \Exception('empty provider presenter');
+        }
+        $this->providerPresenters = iterator_to_array($presenters);
     }
 
     /**
      * {@inheritDoc}
      * @param FindProviderConfigurationsResponse $response
      */
-    public function present(array $responses): void
+    public function present(mixed $data): void
     {
         $formattedResponse = [];
 
-        foreach ($responses as $response) {
-            foreach ($presenterProviders as $presenterProvider) {
-                if ($presenter->isValidFor($response)) {
-                    $formattedResponse[] = $presenterProvider->present($response);
+        foreach ($data as $response) {
+            foreach ($this->providerPresenters as $presenterProvider) {
+                if ($presenterProvider->isValidFor($response)) {
+                    $formattedResponse[] = $presenterProvider->format($response);
                 }
             }
         }

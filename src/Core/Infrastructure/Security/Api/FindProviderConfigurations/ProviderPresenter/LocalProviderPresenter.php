@@ -20,18 +20,26 @@
  */
 declare(strict_types=1);
 
-namespace Core\Infrastructure\Security\Api\FindProviderConfigurations\PresenterProviders;
+namespace Core\Infrastructure\Security\Api\FindProviderConfigurations\ProviderPresenter;
 
 use Core\Application\Security\UseCase\FindProviderConfigurations\FindLocalProviderConfigurationResponse;
+use Core\Infrastructure\Security\Api\FindProviderConfigurations\ProviderPresenter\ProviderPresenterInterface;
 
-class LocalProviderPresenter
+class LocalProviderPresenter implements ProviderPresenterInterface
 {
+    /**
+     * @inheritDoc
+     */
     public function isValidFor(mixed $response): bool
     {
         return is_a($response, FindLocalProviderConfigurationResponse::class);
     }
 
-    public function format(FindLocalProviderConfigurationResponse $response): array
+    /**
+     * @param FindLocalProviderConfigurationResponse $response
+     * @return array<string,mixed>
+     */
+    public function format(mixed $response): array
     {
         return [
             'id' => $response->id,

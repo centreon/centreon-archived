@@ -20,24 +20,32 @@
  */
 declare(strict_types=1);
 
-namespace Core\Infrastructure\Security\Api\FindProviderConfigurations\PresenterProviders;
+namespace Core\Infrastructure\Security\Api\FindProviderConfigurations\ProviderPresenter;
 
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Core\Domain\Security\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
 use Core\Application\Security\UseCase\FindProviderConfigurations\FindOpenIdProviderConfigurationResponse;
+use Core\Infrastructure\Security\Api\FindProviderConfigurations\ProviderPresenter\ProviderPresenterInterface;
 
-class OpenIdProviderPresenter
+class OpenIdProviderPresenter implements ProviderPresenterInterface
 {
     public function __construct(private UrlGeneratorInterface $router)
     {
     }
 
+    /**
+     * @inheritDoc
+     */
     public function isValidFor(mixed $response): bool
     {
         return is_a($response, FindOpenIdProviderConfigurationResponse::class);
     }
 
-    public function format(FindOpenIdProviderConfigurationResponse $response): array
+    /**
+     * @param FindOpenIdProviderConfigurationResponse $response
+     * @return array<string,mixed>
+     */
+    public function format(mixed $response): array
     {
         $redirectUri = $this->router->generate(
             'centreon_security_authentication_openid_login',
