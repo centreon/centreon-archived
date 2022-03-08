@@ -37,7 +37,7 @@ class ConfigurationFactory
      */
     public static function createFromRequest(UpdateConfigurationRequest $request): Configuration
     {
-        return new Configuration(
+        $securityPolicy = new SecurityPolicy(
             $request->passwordMinimumLength,
             $request->hasUppercase,
             $request->hasLowercase,
@@ -50,5 +50,7 @@ class ConfigurationFactory
             $request->passwordExpirationExcludedUserAliases,
             $request->delayBeforeNewPassword
         );
+
+        return new Configuration($securityPolicy);
     }
 }

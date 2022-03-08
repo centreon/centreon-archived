@@ -283,4 +283,28 @@ class Assertion
             $propertyPath
         );
     }
+
+    /**
+     * Assert that a value match a regex
+     *
+     * @param mixed $value
+     * @param string $pattern
+     * @param string|null $propertyPath
+     * @return void
+     */
+    public static function regex(mixed $value, string $pattern, string $propertyPath = null): void
+    {
+        Assert::regex(
+            $value,
+            $pattern,
+            function (array $parameters) {
+                return AssertionException::matchRegex(
+                    $parameters['value'],
+                    $parameters['pattern'],
+                    $parameters['propertyPath']
+                )->getMessage();
+            },
+            $propertyPath
+        );
+    }
 }

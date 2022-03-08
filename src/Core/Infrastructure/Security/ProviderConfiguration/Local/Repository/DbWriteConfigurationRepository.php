@@ -75,16 +75,16 @@ class DbWriteConfigurationRepository extends AbstractRepositoryDRB implements Wr
     {
         $configuration = json_encode([
             "password_security_policy" => [
-                "password_length" => $localConfiguration->getPasswordMinimumLength(),
-                "has_uppercase_characters" => $localConfiguration->hasUppercase(),
-                "has_lowercase_characters" => $localConfiguration->hasLowercase(),
-                "has_numbers" => $localConfiguration->hasNumber(),
-                "has_special_characters" => $localConfiguration->hasSpecialCharacter(),
-                "attempts" => $localConfiguration->getAttempts(),
-                "blocking_duration" => $localConfiguration->getBlockingDuration(),
-                "password_expiration_delay" => $localConfiguration->getPasswordExpirationDelay(),
-                "delay_before_new_password" => $localConfiguration->getDelayBeforeNewPassword(),
-                "can_reuse_passwords" => $localConfiguration->canReusePasswords(),
+                "password_length" => $localConfiguration->getSecurityPolicy()->getPasswordMinimumLength(),
+                "has_uppercase_characters" => $localConfiguration->getSecurityPolicy()->hasUppercase(),
+                "has_lowercase_characters" => $localConfiguration->getSecurityPolicy()->hasLowercase(),
+                "has_numbers" => $localConfiguration->getSecurityPolicy()->hasNumber(),
+                "has_special_characters" => $localConfiguration->getSecurityPolicy()->hasSpecialCharacter(),
+                "attempts" => $localConfiguration->getSecurityPolicy()->getAttempts(),
+                "blocking_duration" => $localConfiguration->getSecurityPolicy()->getBlockingDuration(),
+                "password_expiration_delay" => $localConfiguration->getSecurityPolicy()->getPasswordExpirationDelay(),
+                "delay_before_new_password" => $localConfiguration->getSecurityPolicy()->getDelayBeforeNewPassword(),
+                "can_reuse_passwords" => $localConfiguration->getSecurityPolicy()->canReusePasswords(),
             ],
         ]);
 
