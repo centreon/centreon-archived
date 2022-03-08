@@ -43,6 +43,7 @@ require_once realpath(__DIR__ . "/../../../../../config/centreon.config.php");
 require_once realpath(__DIR__ . "/../../../../../config/bootstrap.php");
 require_once realpath(__DIR__ . "/../../../../../bootstrap.php");
 require_once _CENTREON_PATH_ . "www/include/configuration/configGenerate/DB-Func.php";
+require_once _CENTREON_PATH_ . "www/include/configuration/configGenerate/common-Func.php";
 require_once _CENTREON_PATH_ . 'www/class/config-generate/generate.class.php';
 require_once _CENTREON_PATH_ . "www/class/centreon.class.php";
 require_once _CENTREON_PATH_ . "www/class/centreonContactgroup.class.php";
