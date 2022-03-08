@@ -9,8 +9,6 @@ import List from '@mui/material/List';
 import makeStyles from '@mui/styles/makeStyles';
 import ListSubheader from '@mui/material/ListSubheader';
 
-import { useMemoComponent } from '@centreon/ui';
-
 import { Page } from '../../models';
 import {
   navigationItemSelectedAtom,
@@ -20,13 +18,13 @@ import {
 import MenuItems from './MenuItems';
 
 interface Props {
+  collapseScrollMaxHeight?: number;
   currentTop?: number;
   currentWidth: number;
   data?: Array<Page>;
   isCollapsed: boolean;
   isSubHeader?: boolean;
   level: number;
-  collapseScrollMaxHeight?: number;
   maxWidthCollapsScroll?: number;
   onClick: (item: Page) => void;
   setCollapseScrollMaxHeight: React.Dispatch<
@@ -38,9 +36,9 @@ interface Props {
 }
 
 interface StyleProps {
+  collapseScrollMaxHeight?: number;
   currentTop?: number;
   currentWidth: number;
-  maxHeightCollapsScroll?: number;
   maxWidthCollapsScroll?: number;
 }
 
@@ -99,8 +97,8 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.default,
     left: ({ currentWidth }: StyleProps): string => theme.spacing(currentWidth),
     maxHeight: ({ collapseScrollMaxHeight }: StyleProps): string =>
-      maxHeightCollapsScroll
-        ? theme.spacing(maxHeightCollapsScroll)
+      collapseScrollMaxHeight
+        ? theme.spacing(collapseScrollMaxHeight)
         : theme.spacing(50),
     maxWidth: ({ maxWidthCollapsScroll }: StyleProps): string =>
       maxWidthCollapsScroll
@@ -122,15 +120,15 @@ const CollapsableItems = ({
   currentWidth,
   onClick,
   level,
-  maxHeightCollapsScroll,
+  collapseScrollMaxHeight,
   maxWidthCollapsScroll,
   setMaxWidthCollapsScroll,
-  setMaxHeightCollapsScroll,
+  setCollapseScrollMaxHeight,
 }: Props): JSX.Element => {
   const classes = useStyles({
+    collapseScrollMaxHeight,
     currentTop,
     currentWidth,
-    maxHeightCollapsScroll,
     maxWidthCollapsScroll,
   });
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
@@ -221,7 +219,7 @@ const CollapsableItems = ({
 
   const updateSizeCollaps = (el: HTMLElement): void => {
     const rect = el.getBoundingClientRect();
-    setMaxHeightCollapsScroll(
+    setCollapseScrollMaxHeight(
       (window.innerHeight - rect.top) / 8 - minimumMarginBottom,
     );
     setMaxWidthCollapsScroll((window.innerWidth - rect.left) / 8);
@@ -233,136 +231,125 @@ const CollapsableItems = ({
     }
   }, []);
 
-  return useMemoComponent({
-    Component: (
-      <Collapse
-        unmountOnExit
-        className={clsx(classes.root, classes.toggled)}
-        in={isCollapsed}
-        ref={collapsRef}
-        timeout={0}
-        onMouseLeave={handleLeave}
-      >
-        {data?.map((item, index) => {
-          const hover =
-            isItemHovered(navigationItemSelected, levelName, index, item) ||
-            equals(hoveredIndex, index);
+  return (
+    <Collapse
+      unmountOnExit
+      className={clsx(classes.root, classes.toggled)}
+      in={isCollapsed}
+      ref={collapsRef}
+      timeout={0}
+      onMouseLeave={handleLeave}
+    >
+      {data?.map((item, index) => {
+        const hover =
+          isItemHovered(navigationItemSelected, levelName, index, item) ||
+          equals(hoveredIndex, index);
 
-          return (
-            <List
-              disablePadding
-              key={item.label}
-              subheader={
-                isSubHeader && (
-                  <ListSubheader
-                    disableGutters
-                    disableSticky
-                    className={classes.subHeader}
-                  >
-                    {item.label}
-                  </ListSubheader>
-                )
-              }
-            >
-              {isSubHeader ? (
-                isArrayItem(item?.children) &&
-                item?.children?.map((content, ind) => {
-                  const nestedIndex = getNestedIndex(index, ind, data);
-                  const nestedHover =
-                    isItemHovered(
-                      navigationItemSelected,
-                      levelName,
-                      nestedIndex,
-                      content,
-                    ) || equals(hoveredIndex, nestedIndex);
+        return (
+          <List
+            disablePadding
+            key={item.label}
+            subheader={
+              isSubHeader && (
+                <ListSubheader
+                  disableGutters
+                  disableSticky
+                  className={classes.subHeader}
+                >
+                  {item.label}
+                </ListSubheader>
+              )
+            }
+          >
+            {isSubHeader ? (
+              isArrayItem(item?.children) &&
+              item?.children?.map((content, ind) => {
+                const nestedIndex = getNestedIndex(index, ind, data);
+                const nestedHover =
+                  isItemHovered(
+                    navigationItemSelected,
+                    levelName,
+                    nestedIndex,
+                    content,
+                  ) || equals(hoveredIndex, nestedIndex);
 
-                  return (
-                    <MenuItems
-                      data={content}
-                      hover={nestedHover}
-                      isOpen={nestedIndex === hoveredIndex}
-                      key={content.label}
-                      onClick={
-                        !isArrayItem(item?.groups)
-                          ? (): void => onClick(content)
-                          : undefined
-                      }
-                      onMouseEnter={(e: React.MouseEvent<HTMLElement>): void =>
-                        hoverItem(e, nestedIndex, content)
-                      }
-                    />
-                  );
-                })
-              ) : (
-                <MenuItems
-                  data={item}
-                  hover={hover}
-                  isOpen={index === hoveredIndex}
-                  onClick={
-                    !isArrayItem(item?.groups)
-                      ? (): void => onClick(item)
-                      : undefined
-                  }
-                  onMouseEnter={(e: React.MouseEvent<HTMLElement>): void =>
-                    hoverItem(e, index, item)
-                  }
-                />
-              )}
+                return (
+                  <MenuItems
+                    data={content}
+                    hover={nestedHover}
+                    isOpen={nestedIndex === hoveredIndex}
+                    key={content.label}
+                    onClick={
+                      !isArrayItem(item?.groups)
+                        ? (): void => onClick(content)
+                        : undefined
+                    }
+                    onMouseEnter={(e: React.MouseEvent<HTMLElement>): void =>
+                      hoverItem(e, nestedIndex, content)
+                    }
+                  />
+                );
+              })
+            ) : (
+              <MenuItems
+                data={item}
+                hover={hover}
+                isOpen={index === hoveredIndex}
+                onClick={
+                  !isArrayItem(item?.groups)
+                    ? (): void => onClick(item)
+                    : undefined
+                }
+                onMouseEnter={(e: React.MouseEvent<HTMLElement>): void =>
+                  hoverItem(e, index, item)
+                }
+              />
+            )}
 
-              {Array.isArray(item?.groups) &&
-              item.groups.length > 1 &&
-              equals(index, hoveredIndex) ? (
-                <CollapsableItems
-                  isSubHeader
-                  currentTop={topItem}
-                  currentWidth={widthItem}
-                  data={item.groups}
-                  isCollapsed={index === hoveredIndex}
-                  level={level + 1}
-                  maxHeightCollapsScroll={nestedMaxHeightCollaps}
-                  maxWidthCollapsScroll={nestedMaxWidthCollaps}
-                  setMaxHeightCollapsScroll={setNestedMaxHeightCollaps}
-                  setMaxWidthCollapsScroll={setNestedMaxWidthCollaps}
-                  onClick={onClick}
-                />
-              ) : (
-                isArrayItem(item?.groups) &&
-                equals(index, hoveredIndex) &&
-                item?.groups?.map(
-                  (itemGroup) =>
-                    isArrayItem(itemGroup?.children) && (
-                      <div key={itemGroup.label}>
-                        <CollapsableItems
-                          currentTop={topItem}
-                          currentWidth={widthItem}
-                          data={itemGroup.children}
-                          isCollapsed={index === hoveredIndex}
-                          level={level + 1}
-                          maxHeightCollapsScroll={nestedMaxHeightCollaps}
-                          maxWidthCollapsScroll={nestedMaxWidthCollaps}
-                          setMaxHeightCollapsScroll={setNestedMaxHeightCollaps}
-                          setMaxWidthCollapsScroll={setNestedMaxWidthCollaps}
-                          onClick={onClick}
-                        />
-                      </div>
-                    ),
-                )
-              )}
-            </List>
-          );
-        })}
-      </Collapse>
-    ),
-    memoProps: [
-      isCollapsed,
-      maxHeightCollapsScroll,
-      nestedMaxHeightCollaps,
-      maxWidthCollapsScroll,
-      nestedMaxHeightCollaps,
-      hoveredIndex,
-      navigationItemSelected,
-    ],
-  });
+            {Array.isArray(item?.groups) &&
+            item.groups.length > 1 &&
+            equals(index, hoveredIndex) ? (
+              <CollapsableItems
+                isSubHeader
+                collapseScrollMaxHeight={nestedMaxHeightCollaps}
+                currentTop={topItem}
+                currentWidth={widthItem}
+                data={item.groups}
+                isCollapsed={index === hoveredIndex}
+                level={level + 1}
+                maxWidthCollapsScroll={nestedMaxWidthCollaps}
+                setCollapseScrollMaxHeight={setNestedMaxHeightCollaps}
+                setMaxWidthCollapsScroll={setNestedMaxWidthCollaps}
+                onClick={onClick}
+              />
+            ) : (
+              isArrayItem(item?.groups) &&
+              equals(index, hoveredIndex) &&
+              item?.groups?.map(
+                (itemGroup) =>
+                  isArrayItem(itemGroup?.children) && (
+                    <div key={itemGroup.label}>
+                      <CollapsableItems
+                        collapseScrollMaxHeight={nestedMaxHeightCollaps}
+                        currentTop={topItem}
+                        currentWidth={widthItem}
+                        data={itemGroup.children}
+                        isCollapsed={index === hoveredIndex}
+                        level={level + 1}
+                        maxWidthCollapsScroll={nestedMaxWidthCollaps}
+                        setCollapseScrollMaxHeight={setNestedMaxHeightCollaps}
+                        setMaxWidthCollapsScroll={setNestedMaxWidthCollaps}
+                        onClick={onClick}
+                      />
+                    </div>
+                  ),
+              )
+            )}
+          </List>
+        );
+      })}
+    </Collapse>
+  );
 };
 
 export default CollapsableItems;

@@ -55,14 +55,14 @@ const NavigationMenu = ({
   const currentWidth = isDrawerOpen ? openedDrawerWidth / 8 : closedDrawerWidth;
 
   const props = {
+    collapseScrollMaxHeight,
     currentTop,
     currentWidth,
     hoveredIndex,
     isDrawerOpen,
     level: 1,
-    maxHeightCollapsScroll,
     maxWidthCollapsScroll,
-    setMaxHeightCollapsScroll,
+    setCollapseScrollMaxHeight,
     setMaxWidthCollapsScroll,
   };
 
@@ -128,46 +128,43 @@ const NavigationMenu = ({
     return false;
   };
 
-  return useMemoComponent({
-    Component: (
-      <List onMouseLeave={handleLeave}>
-        {navigationData?.map((item, index) => {
-          const MenuIcon = !isNil(item?.icon) && icons[item.icon];
-          const hover =
-            isItemHovered(navigationItemSelected, levelName, index) ||
-            equals(hoveredIndex, index);
+  return (
+    <List onMouseLeave={handleLeave}>
+      {navigationData?.map((item, index) => {
+        const MenuIcon = !isNil(item?.icon) && icons[item.icon];
+        const hover =
+          isItemHovered(navigationItemSelected, levelName, index) ||
+          equals(hoveredIndex, index);
 
-          return (
-            <ListItem disablePadding key={item.label}>
-              <MenuItems
-                isRoot
-                data={item}
-                hover={hover}
-                icon={<MenuIcon className={classes.icon} />}
-                isDrawerOpen={isDrawerOpen}
-                isOpen={index === hoveredIndex}
-                onClick={(): void => handlClickItem(item)}
-                onMouseEnter={(e: React.MouseEvent<HTMLElement>): void =>
-                  hoverItem(e, index, item)
-                }
-              />
-              {Array.isArray(item?.children) &&
-                item.children.length > 0 &&
-                equals(index, hoveredIndex) && (
-                  <CollapsableItems
-                    {...props}
-                    data={item.children}
-                    isCollapsed={index === hoveredIndex}
-                    onClick={handlClickItem}
-                  />
-                )}
-            </ListItem>
-          );
-        })}
-      </List>
-    ),
-    memoProps: [isDrawerOpen, hoveredIndex],
-  });
+        return (
+          <ListItem disablePadding key={item.label}>
+            <MenuItems
+              isRoot
+              data={item}
+              hover={hover}
+              icon={<MenuIcon className={classes.icon} />}
+              isDrawerOpen={isDrawerOpen}
+              isOpen={index === hoveredIndex}
+              onClick={(): void => handlClickItem(item)}
+              onMouseEnter={(e: React.MouseEvent<HTMLElement>): void =>
+                hoverItem(e, index, item)
+              }
+            />
+            {Array.isArray(item?.children) &&
+              item.children.length > 0 &&
+              equals(index, hoveredIndex) && (
+                <CollapsableItems
+                  {...props}
+                  data={item.children}
+                  isCollapsed={index === hoveredIndex}
+                  onClick={handlClickItem}
+                />
+              )}
+          </ListItem>
+        );
+      })}
+    </List>
+  );
 };
 
 export default NavigationMenu;
