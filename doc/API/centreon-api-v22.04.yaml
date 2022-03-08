@@ -3575,6 +3575,31 @@ paths:
       responses:
         '204':
             description: "OK"
+  /administration/authentication/providers/web-sso:
+    get:
+      tags:
+        - Administration
+      summary: get WebSSO provider configuration with password security policy
+      responses:
+        '200':
+            description: "OK"
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/AuthenticationWebSSOProvider'
+    put:
+      tags:
+        - Administration
+      summary: update WebSSO provider configuration
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthenticationWebSSOProvider'
+      responses:
+        '204':
+            description: "OK"
   /administration/parameters:
     post:
       tags:
@@ -4200,6 +4225,54 @@ components:
               minimum: 3600
               maximum: 604800
               default: 3600
+    AuthenticationWebSSOProvider:
+      type: object
+      required:
+        - is_active
+        - is_forced
+        - trusted_client_addresses
+        - blacklist_client_addresses
+        - login_header_attribute
+        - pattern_matching_login
+        - pattern_replace_login
+      properties:
+        is_active:
+          type: boolean
+          description: "Indicates whether the provider is active or not"
+          example: true
+        is_forced:
+          type: boolean
+          description: "Indicates whether the provider is forced or not"
+          example: false
+        trusted_client_addresses:
+          type: array
+          description: "List of trusted client addresses"
+          items:
+            type: string
+            description: "Client address"
+            example: "127.0.0.1"
+        blacklist_client_addresses:
+          type: array
+          description: "List of blacklisted client addresses"
+          items:
+            type: string
+            description: "Client address"
+            example: "127.0.0.1"
+        login_header_attribute:
+          type: string
+          description: "Login header attribute"
+          example: "HTTP_X_CENTREON_USER"
+          nullable: true
+        pattern_matching_login:
+          type: string
+          description: "Pattern matching login"
+          example: "^(.*)@(.*)$"
+          nullable: true
+        pattern_replace_login:
+          type: string
+          description: "Pattern replace login"
+          example: "^(.*)@(.*)$"
+          nullable: true
     Comment.Resources:
       type: object
       required: [ resources ]
