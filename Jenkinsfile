@@ -280,7 +280,7 @@ try {
         stash name: "rpms-centos7", includes: 'output/noarch/*.rpm'
         sh 'rm -rf output'
       }
-    }
+    },
     'rpm packaging alma8': {
       node {
         checkoutCentreonBuild()
@@ -291,6 +291,7 @@ try {
         sh 'rm -rf output'
       }
     }
+
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
       error('Unit tests // RPM Packaging Failure');
     }
@@ -336,7 +337,7 @@ try {
       sh 'rm -rf output'
       unstash 'tar-sources'
       unstash 'api-doc'
-      // unstash 'rpms-centos8'
+      unstash 'rpms-alma8'
       unstash 'rpms-centos7'
       sh "./centreon-build/jobs/web/${serie}/mon-web-delivery.sh"
     }
@@ -347,8 +348,7 @@ try {
 
   stage("$DOCKER_STAGE") {
     def parallelSteps = [:]
-    // def osBuilds = isStableBuild() ? ['centos7', 'centos8'] : ['centos7']
-    def osBuilds = ['centos7']
+    def osBuilds = isStableBuild() ? ['centos7', 'alma8'] : ['centos7']
     for (x in osBuilds) {
       def osBuild = x
       parallelSteps[osBuild] = {
