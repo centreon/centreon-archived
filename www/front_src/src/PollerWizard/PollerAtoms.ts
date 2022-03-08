@@ -16,7 +16,7 @@ export interface RemoteServerData {
   centreon_folder?: string;
   db_password?: string;
   db_user?: string;
-  // linked_pollers?: Array<string>;
+  linked_pollers?: Array<string>;
   no_check_certificate?: boolean;
   no_proxy?: boolean;
   server_ip?: string;
