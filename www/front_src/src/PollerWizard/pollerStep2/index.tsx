@@ -52,7 +52,6 @@ const FormPollerStepTwo = ({
   const navigate = useNavigate();
 
   const [pollers, setPollers] = React.useState<Array<PollerOrRemoteList>>([]);
-  const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [stepTwoFormData, setStepTwoFormData] = React.useState<stepTwoFormData>(
     {
       linked_remote_master: '',
@@ -67,7 +66,7 @@ const FormPollerStepTwo = ({
     request: postData,
   });
 
-  const { sendRequest: postWizardFormRequest } = useRequest<{
+  const { sendRequest: postWizardFormRequest, sending: loading } = useRequest<{
     success: boolean;
   }>({
     request: postData,
@@ -116,7 +115,6 @@ const FormPollerStepTwo = ({
     };
     const dataToPost = { ...data, ...pollerData };
     dataToPost.server_type = 'poller';
-    setIsLoading(true);
 
     postWizardFormRequest({
       data: dataToPost,
@@ -130,9 +128,7 @@ const FormPollerStepTwo = ({
           navigate(routeMap.pollerList);
         }
       })
-      .catch(() => {
-        setIsLoading(false);
-      });
+      .catch(() => undefined);
   };
 
   const linkedRemoteMasterOption = pollers.map((c) => ({
@@ -196,8 +192,8 @@ const FormPollerStepTwo = ({
             </Button>
             <Button
               color="primary"
-              disabled={isLoading}
-              endIcon={isLoading && <CircularProgress size={15} />}
+              disabled={loading}
+              endIcon={loading && <CircularProgress size={15} />}
               size="small"
               type="submit"
               variant="contained"

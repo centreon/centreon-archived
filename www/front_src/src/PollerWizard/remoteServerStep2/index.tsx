@@ -39,8 +39,6 @@ const FormRemoteServerStepTwo = ({
 }: Props): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
-  const [isLoading, setIsLoading] = React.useState<boolean>(false);
-
   const [remoteServers, setRemoteServers] =
     React.useState<Array<PollerOrRemoteList> | null>(null);
 
@@ -53,7 +51,7 @@ const FormRemoteServerStepTwo = ({
   >({
     request: postData,
   });
-  const { sendRequest: postWizardFormRequest } = useRequest<{
+  const { sendRequest: postWizardFormRequest, sending: loading } = useRequest<{
     s;
     success: boolean;
     task_id: number | string | null;
@@ -98,7 +96,6 @@ const FormRemoteServerStepTwo = ({
       linked_pollers: linkedPollers.map(({ id }) => id),
     };
     dataToPost.server_type = 'remote';
-    setIsLoading(true);
 
     postWizardFormRequest({
       data: dataToPost,
@@ -116,9 +113,7 @@ const FormRemoteServerStepTwo = ({
           navigate(routeMap.pollerList);
         }
       })
-      .catch(() => {
-        setIsLoading(false);
-      });
+      .catch(() => undefined);
   };
 
   const remoteServersOption = remoteServers?.map((c) => ({
@@ -153,8 +148,8 @@ const FormRemoteServerStepTwo = ({
           </Button>
           <Button
             color="primary"
-            disabled={isLoading}
-            endIcon={isLoading && <CircularProgress size={15} />}
+            disabled={loading}
+            endIcon={loading && <CircularProgress size={15} />}
             size="small"
             type="submit"
             variant="contained"
