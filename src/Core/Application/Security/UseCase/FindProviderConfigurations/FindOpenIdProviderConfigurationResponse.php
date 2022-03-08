@@ -24,7 +24,6 @@ namespace Core\Application\Security\UseCase\FindProviderConfigurations;
 
 class FindOpenIdProviderConfigurationResponse
 {
-
     /**
      * @var integer
      */

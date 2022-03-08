@@ -78,14 +78,13 @@ class FindProviderConfigurations
     private function createLocalResponse(
         LocalConfiguration $localConfiguration,
     ): FindLocalProviderConfigurationResponse {
-        $findProviderConfigurationsResponse = new FindLocalProviderConfigurationResponse(
-            1,
-            'local',
-            'local',
-            true,
-            false,
-            '/authentication/providers/local',
-        );
+        $findProviderConfigurationsResponse = new FindLocalProviderConfigurationResponse();
+        $findProviderConfigurationsResponse->id = 1;
+        $findProviderConfigurationsResponse->type = 'local';
+        $findProviderConfigurationsResponse->name = 'local';
+        $findProviderConfigurationsResponse->isActive = true;
+        $findProviderConfigurationsResponse->isForced = false;
+        $findProviderConfigurationsResponse->authenticationUri = '/authentication/providers/configurations/local';
 
         return $findProviderConfigurationsResponse;
     }

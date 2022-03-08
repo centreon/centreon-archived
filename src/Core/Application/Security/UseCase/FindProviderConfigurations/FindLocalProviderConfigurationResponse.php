@@ -25,20 +25,33 @@ namespace Core\Application\Security\UseCase\FindProviderConfigurations;
 class FindLocalProviderConfigurationResponse
 {
     /**
-     * @param int|null $id
-     * @param string $type
-     * @param string $name
-     * @param bool $isActive
-     * @param bool $isForced
-     * @param string $authenticationUri
+     * @var integer
      */
-    public function __construct(
-        public ?int $id,
-        public string $type,
-        public string $name,
-        public bool $isActive,
-        public bool $isForced,
-        public string $authenticationUri,
-    ) {
-    }
+
+    public int $id;
+    /**
+     * @var string
+     */
+
+    public string $type;
+    /**
+     * @var string
+     */
+
+    public string $name;
+    /**
+     * @var bool
+     */
+
+    public bool $isActive;
+    /**
+     * @var bool
+     */
+
+    public bool $isForced;
+    /**
+     * @var string
+     */
+
+    public string $authenticationUri;
 }

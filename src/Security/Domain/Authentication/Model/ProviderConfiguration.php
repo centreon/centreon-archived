@@ -60,6 +60,11 @@ class ProviderConfiguration
     private $isForced;
 
     /**
+     * @var CustomConfigurationInterface
+     */
+    private CustomConfigurationInterface $customConfiguration;
+
+    /**
      * @param integer|null $id
      * @param string $type
      * @param string $name
