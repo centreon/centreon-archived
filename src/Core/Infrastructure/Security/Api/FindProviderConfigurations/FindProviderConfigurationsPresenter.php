@@ -49,9 +49,17 @@ class FindProviderConfigurationsPresenter extends AbstractPresenter implements
      * {@inheritDoc}
      * @param FindProviderConfigurationsResponse $response
      */
-    public function present(mixed $response): void
+    public function present(array $responses): void
     {
         $formattedResponse = [];
+
+        foreach ($responses as $response) {
+            foreach ($presenterProviders as $presenterProvider) {
+                if ($presenter->isValidFor($response)) {
+                    $formattedResponse[] = $presenterProvider->present($response);
+                }
+            }
+        }
 
         $formattedResponse[] = $this->getFormattedLocalConfiguration($response->localProviderConfiguration);
 
