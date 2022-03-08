@@ -22,30 +22,85 @@ declare(strict_types=1);
 
 namespace Core\Application\Security\UseCase\FindProviderConfigurations;
 
-use Core\Domain\Security\ProviderConfiguration\Local\Model\Configuration as LocalConfiguration;
-use Core\Domain\Security\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
-
 class FindOpenIdProviderConfigurationResponse
 {
     /**
-     * @param int|null $id
-     * @param string $type
-     * @param string $name
-     * @param bool $isActive
-     * @param bool $isForced
-     * @param string $baseUrl
-     * @param string $authorizationEndpoint
-     * @param string $clientId
+     * @var boolean
      */
-    public function __construct(
-        public ?int $id,
-        public string $type,
-        public string $name,
-        public bool $isActive,
-        public bool $isForced,
-        public string $baseUrl,
-        public string $authorizationEndpoint,
-        public string $clientId,
-    ) {
-    }
+    public bool $isActive;
+
+    /**
+     * @var boolean
+     */
+    public bool $isForced;
+
+    /**
+     * @var string[]
+     */
+    public array $trustedClientAddresses;
+
+    /**
+     * @var string[]
+     */
+    public array $blacklistClientAddresses;
+
+    /**
+     * @var string|null
+     */
+    public ?string $baseUrl;
+
+    /**
+     * @var string|null
+     */
+    public ?string $authorizationEndpoint;
+
+    /**
+     * @var string|null
+     */
+    public ?string $tokenEndpoint;
+
+    /**
+     * @var string|null
+     */
+    public ?string $introspectionTokenEndpoint;
+
+    /**
+     * @var string|null
+     */
+    public ?string $userInformationEndpoint;
+
+    /**
+     * @var string|null
+     */
+    public ?string $endSessionEndpoint;
+
+    /**
+     * @var string[]
+     */
+    public array $connectionScopes;
+
+    /**
+     * @var string|null
+     */
+    public ?string $loginClaim;
+
+    /**
+     * @var string|null
+     */
+    public ?string $clientId;
+
+    /**
+     * @var string|null
+     */
+    public ?string $clientSecret;
+
+    /**
+     * @var string|null
+     */
+    public ?string $authenticationType;
+
+    /**
+     * @var boolean
+     */
+    public bool $verifyPeer;
 }

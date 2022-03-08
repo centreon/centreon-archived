@@ -66,24 +66,44 @@ class FindProviderConfigurations
 
         // @todo
         $presenter->present([
-            $this->createResponse($localConfiguration),
-            $this->createResponse($openIdConfiguration),
+            $this->createLocalResponse($localConfiguration),
+            $this->createOpenIdResponse($openIdConfiguration),
         ]);
     }
 
     /**
      * @param LocalConfiguration $localConfiguration
-     * @param OpenIdConfiguration|null $openIdConfiguration
-     * @return FindProviderConfigurationsResponse
+     * @return FindLocalProviderConfigurationResponse
      */
-    private function createResponse(
+    private function createLocalResponse(
         LocalConfiguration $localConfiguration,
-        ?OpenIdConfiguration $openIdConfiguration,
-    ): FindProviderConfigurationsResponse {
-        $findProviderConfigurationsResponse = new FindProviderConfigurationsResponse(
-            $localConfiguration,
-            $openIdConfiguration,
+    ): FindLocalProviderConfigurationResponse {
+        $findProviderConfigurationsResponse = new FindLocalProviderConfigurationResponse(
+            1,
+            'local',
+            'local',
+            true,
+            false,
+            '/authentication/providers/local',
         );
+
+        return $findProviderConfigurationsResponse;
+    }
+
+    /**
+     * @param OpenIdConfiguration|null $openIdConfiguration
+     * @return FindopenIdProviderConfigurationResponse
+     */
+    private function createOpenIdResponse(
+        ?OpenIdConfiguration $openIdConfiguration,
+    ): FindopenIdProviderConfigurationResponse {
+        $findProviderConfigurationsResponse = new FindOpenIdProviderConfigurationResponse();
+        $findProviderConfigurationsResponse->isActive = $openIdConfiguration->isActive();
+        $findProviderConfigurationsResponse->isForced = $openIdConfiguration->isForced();
+        $findProviderConfigurationsResponse->baseUrl = $openIdConfiguration->getBaseUrl();
+        $findProviderConfigurationsResponse->authorizationEndpoint =
+            $openIdConfiguration->getAuthorizationEndpoint();
+        $findProviderConfigurationsResponse->clientId = $openIdConfiguration->getClientId();
 
         return $findProviderConfigurationsResponse;
     }

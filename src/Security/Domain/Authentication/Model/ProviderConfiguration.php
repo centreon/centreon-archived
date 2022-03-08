@@ -73,7 +73,7 @@ class ProviderConfiguration
         string $name,
         bool $isActive,
         bool $isForced,
-        string $centreonBaseUri = '/centreon'
+        string $centreonBaseUri = '/centreon',
     ) {
         Assertion::minLength($type, 1, 'ConfigurationProvider::type');
         Assertion::minLength($name, 1, 'ConfigurationProvider::name');
