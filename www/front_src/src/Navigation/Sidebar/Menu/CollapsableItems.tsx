@@ -29,7 +29,7 @@ interface Props {
   collapseScrollMaxHeight?: number;
   maxWidthCollapsScroll?: number;
   onClick: (item: Page) => void;
-  setMaxHeightCollapsScroll: React.Dispatch<
+  setCollapseScrollMaxHeight: React.Dispatch<
     React.SetStateAction<number | undefined>
   >;
   setMaxWidthCollapsScroll: React.Dispatch<
