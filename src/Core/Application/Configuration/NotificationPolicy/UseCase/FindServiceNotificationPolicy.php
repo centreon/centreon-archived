@@ -38,7 +38,7 @@ use Centreon\Domain\HostConfiguration\Interfaces\HostConfigurationRepositoryInte
 use Centreon\Domain\ServiceConfiguration\Interfaces\ServiceConfigurationRepositoryInterface;
 use Core\Application\Configuration\UserGroup\Repository\ReadUserGroupRepositoryInterface;
 use Core\Application\Configuration\Notification\Repository\ReadNotificationRepositoryInterface;
-use Core\Application\Configuration\NotificationPolicy\Repository\LegacyNotificationPolicyRepositoryInterface;
+use Core\Application\Configuration\Notification\Repository\ReadServiceNotificationRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadServiceRepositoryInterface as ReadRealTimeServiceRepositoryInterface;
 
 class FindServiceNotificationPolicy
@@ -46,7 +46,7 @@ class FindServiceNotificationPolicy
     use LoggerTrait;
 
     /**
-     * @param LegacyNotificationPolicyRepositoryInterface $legacyRepository
+     * @param NotificationPolicyRepositoryInterface $readServiceNotificationRepository
      * @param ReadNotificationRepositoryInterface $notificationRepository
      * @param ReadUserRepositoryInterface $userRepository
      * @param ReadUserGroupRepositoryInterface $userGroupRepository
@@ -58,7 +58,7 @@ class FindServiceNotificationPolicy
      * @param ReadRealTimeServiceRepositoryInterface $readRealTimeServiceRepository
      */
     public function __construct(
-        private LegacyNotificationPolicyRepositoryInterface $legacyRepository,
+        private ReadServiceNotificationRepositoryInterface $readServiceNotificationRepository,
         private ReadNotificationRepositoryInterface $notificationRepository,
         private ReadUserRepositoryInterface $userRepository,
         private ReadUserGroupRepositoryInterface $userGroupRepository,
@@ -93,18 +93,8 @@ class FindServiceNotificationPolicy
             return;
         }
 
-        /**
-         * Returns the contacts and contactgroups notified for this Host
-         */
-        [
-            'contact' => $notifiedUserIds,
-            'cg' => $notifiedUserGroupIds,
-        ] = $this->legacyRepository->findServiceNotifiedUserIdsAndUserGroupIds($serviceId);
-        $users = $this->userRepository->findUsersByIds($notifiedUserIds);
-        $usersNotificationSettings = $this->notificationRepository->findServiceNotificationSettingsByUserIds(
-            $notifiedUserIds
-        );
-        $userGroups = $this->userGroupRepository->findByIds($notifiedUserGroupIds);
+        $notifiedContacts = $this->readServiceNotificationRepository->findNotifiedContactsById($serviceId);
+        $notifiedContactGroups = $this->readServiceNotificationRepository->findNotifiedContactGroupsById($serviceId);
 
         $realtimeService = $this->readRealTimeServiceRepository->findServiceById($hostId, $serviceId);
         if ($realtimeService === null) {
@@ -128,8 +118,8 @@ class FindServiceNotificationPolicy
 
         $presenter->present(
             $this->createResponse(
-                $users,
-                $userGroups,
+                $notifiedContacts,
+                $notifiedContactGroups,
                 $usersNotificationSettings,
                 $realtimeService->isNotificationEnabled(),
             )

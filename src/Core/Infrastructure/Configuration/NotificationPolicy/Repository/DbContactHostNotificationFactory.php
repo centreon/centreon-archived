@@ -20,29 +20,29 @@
  */
 declare(strict_types=1);
 
-namespace Core\Infrastructure\Configuration\Notification\Repository;
+namespace Core\Infrastructure\Configuration\NotificationPolicy\Repository;
 
 use Core\Domain\Configuration\TimePeriod\Model\TimePeriod;
-use Core\Domain\Configuration\Notification\Model\ServiceNotification;
+use Core\Domain\Configuration\Notification\Model\HostNotification;
 
-class DbServiceNotificationFactory
+class DbContactHostNotificationFactory
 {
     /**
-     * @param array<string, mixed> $data
-     * @return ServiceNotification
+     * @param array<string,mixed> $notification
+     * @return HostNotification
      */
-    public static function createFromRecord(array $data, NotifiedContact $contact): ServiceNotification
+    public static function createFromRecord(array $notification): HostNotification
     {
         $timePeriod = new TimePeriod(
-            (int) $data['timeperiod_tp_id'],
-            $data['tp_name'],
-            $data['tp_alias']
+            (int) $notification['host_timeperiod_id'],
+            $notification['host_timeperiod_name'],
+            $notification['host_timeperiod_alias']
         );
 
-        $notification = new ServiceNotification($timePeriod);
+        $hostNotification = new HostNotification($timePeriod);
 
-        $events = ($data['contact_service_notification_options'] !== null)
-            ? explode(',', $data['contact_service_notification_options'])
+        $events = $notification['contact_host_notification_options'] !== null
+            ? explode(',', $notification['contact_host_notification_options'])
             : [];
 
         foreach ($events as $event) {
@@ -50,10 +50,10 @@ class DbServiceNotificationFactory
             if ($normalizedEvent === null) {
                 continue;
             }
-            $notification->addEvent($normalizedEvent);
+            $hostNotification->addEvent($normalizedEvent);
         }
 
-        return $notification;
+        return $hostNotification;
     }
 
     /**
@@ -65,13 +65,12 @@ class DbServiceNotificationFactory
     private static function normalizeHostEvent(string $event): ?string
     {
         return match ($event) {
-            'o' => ServiceNotification::EVENT_SERVICE_RECOVERY,
-            's' => ServiceNotification::EVENT_SERVICE_SCHEDULED_DOWNTIME,
-            'f' => ServiceNotification::EVENT_SERVICE_FLAPPING,
-            'w' => ServiceNotification::EVENT_SERVICE_WARNING,
-            'u' => ServiceNotification::EVENT_SERVICE_UNKNOWN,
-            'c' => ServiceNotification::EVENT_SERVICE_CRITICAL,
-            default => null,
+            'd' => HostNotification::EVENT_HOST_DOWN,
+            'u' => HostNotification::EVENT_HOST_UNREACHABLE,
+            'r' => HostNotification::EVENT_HOST_RECOVERY,
+            'f' => HostNotification::EVENT_HOST_FLAPPING,
+            's' => HostNotification::EVENT_HOST_SCHEDULED_DOWNTIME,
+            default => null
         };
     }
 }
