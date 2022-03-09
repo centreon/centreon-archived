@@ -24,7 +24,7 @@ namespace Core\Infrastructure\Security\Api\FindProviderConfigurations\ProviderPr
 
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Core\Domain\Security\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
-use Core\Application\Security\UseCase\FindProviderConfigurations\FindOpenIdProviderConfigurationResponse;
+use Core\Application\Security\UseCase\FindProviderConfigurations\ProviderResponse\OpenIdProviderResponse;
 use Core\Infrastructure\Security\Api\FindProviderConfigurations\ProviderPresenter\ProviderPresenterInterface;
 
 class OpenIdProviderPresenter implements ProviderPresenterInterface
@@ -38,11 +38,11 @@ class OpenIdProviderPresenter implements ProviderPresenterInterface
      */
     public function isValidFor(mixed $response): bool
     {
-        return is_a($response, FindOpenIdProviderConfigurationResponse::class);
+        return is_a($response, OpenIdProviderResponse::class);
     }
 
     /**
-     * @param FindOpenIdProviderConfigurationResponse $response
+     * @param OpenIdProviderResponse $response
      * @return array<string,mixed>
      */
     public function present(mixed $response): array
@@ -52,11 +52,13 @@ class OpenIdProviderPresenter implements ProviderPresenterInterface
             [],
             UrlGeneratorInterface::ABSOLUTE_URL
         );
+
         return [
             'id' => $response->id,
             'type' => OpenIdConfiguration::NAME,
             'name' => OpenIdConfiguration::NAME,
-            'authentication_uri' => $response->baseUrl . '/' . ltrim($response->authorizationEndpoint, '/')
+            'authentication_uri' => $response->baseUrl . '/'
+                . ltrim($response->authorizationEndpoint ?? '', '/')
                 . '?client_id=' . $response->clientId . '&response_type=code' . '&redirect_uri=' . $redirectUri
                 . '&state=' . uniqid(),
             'is_active' => $response->isActive,

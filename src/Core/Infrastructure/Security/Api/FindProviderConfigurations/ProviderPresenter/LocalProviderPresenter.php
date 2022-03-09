@@ -23,7 +23,7 @@ declare(strict_types=1);
 namespace Core\Infrastructure\Security\Api\FindProviderConfigurations\ProviderPresenter;
 
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Core\Application\Security\UseCase\FindProviderConfigurations\FindLocalProviderConfigurationResponse;
+use Core\Application\Security\UseCase\FindProviderConfigurations\ProviderResponse\LocalProviderResponse;
 use Core\Infrastructure\Security\Api\FindProviderConfigurations\ProviderPresenter\ProviderPresenterInterface;
 
 class LocalProviderPresenter implements ProviderPresenterInterface
@@ -37,11 +37,11 @@ class LocalProviderPresenter implements ProviderPresenterInterface
      */
     public function isValidFor(mixed $response): bool
     {
-        return is_a($response, FindLocalProviderConfigurationResponse::class);
+        return is_a($response, LocalProviderResponse::class);
     }
 
     /**
-     * @param FindLocalProviderConfigurationResponse $response
+     * @param LocalProviderResponse $response
      * @return array<string,mixed>
      */
     public function present(mixed $response): array
@@ -50,6 +50,7 @@ class LocalProviderPresenter implements ProviderPresenterInterface
             'centreon_security_authentication_login',
             [],
         );
+
         return [
             'id' => $response->id,
             'type' => $response->type,

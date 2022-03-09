@@ -28,9 +28,11 @@ use Core\Domain\Security\ProviderConfiguration\Local\Model\Configuration;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Core\Infrastructure\Security\ProviderConfiguration\Local\Repository\DbConfigurationFactory;
+use Core\Application\Security\ProviderConfiguration\Repository\ReadProviderConfigurationsRepositoryInterface;
 use Core\Application\Security\ProviderConfiguration\Local\Repository\ReadConfigurationRepositoryInterface;
 
-class DbReadConfigurationRepository extends AbstractRepositoryDRB implements ReadConfigurationRepositoryInterface
+class DbReadConfigurationRepository extends AbstractRepositoryDRB implements
+    ReadProviderConfigurationsRepositoryInterface, ReadConfigurationRepositoryInterface
 {
     use LoggerTrait;
 
@@ -40,6 +42,21 @@ class DbReadConfigurationRepository extends AbstractRepositoryDRB implements Rea
     public function __construct(DatabaseConnection $db)
     {
         $this->db = $db;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findConfigurations(): array
+    {
+        $configurations = [];
+
+        $localConfiguration = $this->findConfiguration();
+        if ($localConfiguration !== null) {
+            $configurations[] = $localConfiguration;
+        }
+
+        return $configurations;
     }
 
     /**

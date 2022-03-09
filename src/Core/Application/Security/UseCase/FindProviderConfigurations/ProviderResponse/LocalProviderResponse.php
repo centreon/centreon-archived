@@ -20,9 +20,9 @@
  */
 declare(strict_types=1);
 
-namespace Core\Application\Security\UseCase\FindProviderConfigurations;
+namespace Core\Application\Security\UseCase\FindProviderConfigurations\ProviderResponse;
 
-class FindLocalProviderConfigurationResponse
+class LocalProviderResponse implements ProviderResponseInterface
 {
     /**
      * @var integer
@@ -48,4 +48,27 @@ class FindLocalProviderConfigurationResponse
      * @var bool
      */
     public bool $isForced;
+
+    /**
+     * @inheritDoc
+     */
+    public function getType(): string
+    {
+        return 'local';
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function create(mixed $configuration): self
+    {
+        $response = new self();
+        $response->id = $configuration->getId();
+        $response->type = $configuration->getType();
+        $response->name = $configuration->getName();
+        $response->isActive = $configuration->isActive();
+        $response->isForced = $configuration->isForced();
+
+        return $response;
+    }
 }

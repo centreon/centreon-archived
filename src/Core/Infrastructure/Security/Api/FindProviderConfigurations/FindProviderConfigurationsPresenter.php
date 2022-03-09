@@ -55,7 +55,7 @@ class FindProviderConfigurationsPresenter extends AbstractPresenter implements
 
     /**
      * {@inheritDoc}
-     * @param array<mixed>
+     * @param mixed[] $data
      */
     public function present(mixed $data): void
     {

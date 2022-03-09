@@ -20,9 +20,9 @@
  */
 declare(strict_types=1);
 
-namespace Core\Application\Security\UseCase\FindProviderConfigurations;
+namespace Core\Application\Security\UseCase\FindProviderConfigurations\ProviderResponse;
 
-class FindOpenIdProviderConfigurationResponse
+class OpenIdProviderResponse implements ProviderResponseInterface
 {
     /**
      * @var integer
@@ -108,4 +108,28 @@ class FindOpenIdProviderConfigurationResponse
      * @var boolean
      */
     public bool $verifyPeer;
+
+    /**
+     * @inheritDoc
+     */
+    public function getType(): string
+    {
+        return 'openid';
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public static function create(mixed $configuration): self
+    {
+        $response = new self();
+        $response->isActive = $configuration->isActive();
+        $response->isForced = $configuration->isForced();
+        $response->baseUrl = $configuration->getBaseUrl();
+        $response->authorizationEndpoint = $configuration->getAuthorizationEndpoint();
+        $response->clientId = $configuration->getClientId();
+        $response->id = $configuration->getId();
+
+        return $response;
+    }
 }

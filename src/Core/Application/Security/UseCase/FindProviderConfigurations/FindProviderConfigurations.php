@@ -23,23 +23,39 @@ declare(strict_types=1);
 namespace Core\Application\Security\UseCase\FindProviderConfigurations;
 
 use Core\Application\Common\UseCase\ErrorResponse;
-use Core\Application\Common\UseCase\NotFoundResponse;
-use Core\Domain\Security\ProviderConfiguration\Local\Model\Configuration as LocalConfiguration;
-use Core\Domain\Security\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
-use Core\Application\Security\ProviderConfiguration\Local\Repository\ReadConfigurationRepositoryInterface
-    as ReadLocalConfigurationRepositoryInterface;
-use Core\Application\Security\ProviderConfiguration\OpenId\Repository\ReadOpenIdConfigurationRepositoryInterface;
+use Core\Application\Security\ProviderConfiguration\Repository\ReadProviderConfigurationsRepositoryInterface;
+use Core\Application\Security\UseCase\FindProviderConfigurations\ProviderResponse\ProviderResponseInterface;
+use Centreon\Infrastructure\Service\Exception\NotFoundException;
 
 class FindProviderConfigurations
 {
     /**
-     * @param ReadLocalConfigurationRepositoryInterface $readLocalRepository
-     * @param ReadOpenIdConfigurationRepositoryInterface $readOpenIdRepository
+     * @var ReadProviderConfigurationsRepositoryInterface[]
+     */
+    private array $providerRepositories;
+
+    /**
+     * @var ProviderResponseInterface[]
+     */
+    private array $providerResponses;
+
+    /**
+     * @param \Traversable<ReadProviderConfigurationsRepositoryInterface> $providerRepositories
+     * @param \Traversable<ProviderResponseInterface> $providerResponses
      */
     public function __construct(
-        private ReadLocalConfigurationRepositoryInterface $readLocalRepository,
-        private ReadOpenIdConfigurationRepositoryInterface $readOpenIdRepository,
+        \Traversable $providerRepositories,
+        \Traversable $providerResponses,
     ) {
+        if (iterator_count($providerRepositories) === 0) {
+            throw new NotFoundException(_('No provider repositories could be found'));
+        }
+        $this->providerRepositories = iterator_to_array($providerRepositories);
+
+        if (iterator_count($providerResponses) === 0) {
+            throw new NotFoundException(_('No provider responses could be found'));
+        }
+        $this->providerResponses = iterator_to_array($providerResponses);
     }
 
     /**
@@ -47,63 +63,29 @@ class FindProviderConfigurations
      */
     public function __invoke(FindProviderConfigurationsPresenterInterface $presenter): void
     {
+        $configurations = [];
+
         try {
-            $localConfiguration = $this->readLocalRepository->findConfiguration();
-            $openIdConfiguration = $this->readOpenIdRepository->findConfiguration();
+            foreach ($this->providerRepositories as $providerRepository) {
+                $configurations = [
+                    ...$configurations,
+                    ...$providerRepository->findConfigurations()
+                ];
+            }
         } catch (\Throwable $ex) {
             $presenter->setResponseStatus(new ErrorResponse($ex->getMessage()));
             return;
         }
 
-        if ($localConfiguration === null) {
-            $presenter->setResponseStatus(new NotFoundResponse('local'));
-            return;
+        $responses = [];
+        foreach ($configurations as $configuration) {
+            foreach ($this->providerResponses as $providerResponse) {
+                if ($configuration->getType() === $providerResponse->getType()) {
+                    $responses[] = $providerResponse->create($configuration);
+                }
+            }
         }
 
-        $responses = [
-                $this->createLocalResponse($localConfiguration)
-        ];
-
-        if ($openIdConfiguration !== null && $openIdConfiguration->isActive()) {
-            $responses[] = $this->createOpenIdResponse($openIdConfiguration);
-        }
-        // @todo
         $presenter->present($responses);
-    }
-
-    /**
-     * @param LocalConfiguration $localConfiguration
-     * @return FindLocalProviderConfigurationResponse
-     */
-    private function createLocalResponse(
-        LocalConfiguration $localConfiguration,
-    ): FindLocalProviderConfigurationResponse {
-        $findProviderConfigurationsResponse = new FindLocalProviderConfigurationResponse();
-        $findProviderConfigurationsResponse->id = $localConfiguration->getId();
-        $findProviderConfigurationsResponse->type = $localConfiguration->getType();
-        $findProviderConfigurationsResponse->name = $localConfiguration->getName();
-        $findProviderConfigurationsResponse->isActive = $localConfiguration->isActive();
-        $findProviderConfigurationsResponse->isForced = $localConfiguration->isForced();
-
-        return $findProviderConfigurationsResponse;
-    }
-
-    /**
-     * @param OpenIdConfiguration|null $openIdConfiguration
-     * @return FindOpenIdProviderConfigurationResponse
-     */
-    private function createOpenIdResponse(
-        ?OpenIdConfiguration $openIdConfiguration,
-    ): FindOpenIdProviderConfigurationResponse {
-        $findProviderConfigurationsResponse =  new FindOpenIdProviderConfigurationResponse();
-        $findProviderConfigurationsResponse->isActive = $openIdConfiguration->isActive();
-        $findProviderConfigurationsResponse->isForced = $openIdConfiguration->isForced();
-        $findProviderConfigurationsResponse->baseUrl = $openIdConfiguration->getBaseUrl();
-        $findProviderConfigurationsResponse->authorizationEndpoint =
-            $openIdConfiguration->getAuthorizationEndpoint();
-        $findProviderConfigurationsResponse->clientId = $openIdConfiguration->getClientId();
-        $findProviderConfigurationsResponse->id = $openIdConfiguration->getId();
-
-        return $findProviderConfigurationsResponse;
     }
 }

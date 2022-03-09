@@ -25,11 +25,13 @@ namespace Core\Infrastructure\Security\ProviderConfiguration\OpenId\Repository;
 
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
+use Core\Application\Security\ProviderConfiguration\Repository\ReadProviderConfigurationsRepositoryInterface;
 use Core\Application\Security\ProviderConfiguration\OpenId\Repository\ReadOpenIdConfigurationRepositoryInterface
     as ReadRepositoryInterface;
 use Core\Domain\Security\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
 
-class DbReadOpenIdConfigurationRepository extends AbstractRepositoryDRB implements ReadRepositoryInterface
+class DbReadOpenIdConfigurationRepository extends AbstractRepositoryDRB implements
+    ReadProviderConfigurationsRepositoryInterface, ReadRepositoryInterface
 {
     /**
 
@@ -38,6 +40,21 @@ class DbReadOpenIdConfigurationRepository extends AbstractRepositoryDRB implemen
     public function __construct(DatabaseConnection $db)
     {
         $this->db = $db;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findConfigurations(): array
+    {
+        $configurations = [];
+
+        $openIdConfiguration = $this->findConfiguration();
+        if ($openIdConfiguration !== null) {
+            $configurations[] = $openIdConfiguration;
+        }
+
+        return $configurations;
     }
 
     /**
