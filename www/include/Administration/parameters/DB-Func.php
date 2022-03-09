@@ -1040,12 +1040,25 @@ function updateBackupConfigData($db, $form, $centreon)
 function updateKnowledgeBaseData($db, $form, $centreon)
 {
     $ret = $form->getSubmitValues();
-    if (!isset($ret['kb_wiki_certificate'])) {
+
+    if (!isset($ret['kb_wiki_certificate']) || !filter_var($ret["kb_wiki_certificate"], FILTER_VALIDATE_INT)) {
         $ret['kb_wiki_certificate'] = 0;
     }
 
-    if (isset($ret["kb_wiki_password"]) && $ret["kb_wiki_password"] === CentreonAuth::PWS_OCCULTATION) {
-        unset($ret["kb_wiki_password"]);
+    if (isset($ret["kb_wiki_password"])) {
+        if ($ret["kb_wiki_password"] === CentreonAuth::PWS_OCCULTATION) {
+            unset($ret["kb_wiki_password"]);
+        } else {
+            $ret["kb_wiki_password"] = $db->escape($ret["kb_wiki_password"]);
+        }
+    }
+
+    if (isset($ret["kb_wiki_url"]) && !filter_var($ret["kb_wiki_url"], FILTER_VALIDATE_URL)) {
+        unset($ret["kb_wiki_url"]);
+    }
+
+    if (isset($ret["kb_wiki_account"])) {
+        $ret["kb_wiki_account"] = $db->escape($ret["kb_wiki_account"]);
     }
 
     foreach ($ret as $key => $value) {
