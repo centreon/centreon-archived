@@ -144,7 +144,7 @@ const CollapsableItems = ({
     navigationItemSelectedAtom,
   );
   const levelName = `level_${level}_Navigated`;
-  const widthItem = currentWidth + collapseWidth + 0.2;
+  const widthItem = currentWidth + collapseWidth + 0.24;
   const minimumMarginBottom = 4;
 
   const hoverItem = (
