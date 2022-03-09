@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Core\Infrastructure\Security\Api\FindProviderConfigurations;
 
+use Centreon\Infrastructure\Service\Exception\NotFoundException;
 use Core\Infrastructure\Common\Api\HttpUrlTrait;
 use Core\Application\Common\UseCase\AbstractPresenter;
 use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
@@ -48,7 +49,7 @@ class FindProviderConfigurationsPresenter extends AbstractPresenter implements
         protected PresenterFormatterInterface $presenterFormatter
     ) {
         if (iterator_count($presenters) === 0) {
-            throw new \Exception('empty provider presenter');
+            throw new NotFoundException(_('No provider presenters could be found'));
         }
         $this->providerPresenters = iterator_to_array($presenters);
     }
