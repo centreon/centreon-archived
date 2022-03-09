@@ -4,12 +4,11 @@ import * as Yup from 'yup';
 import { OpenidConfiguration } from './models';
 import {
   labelRequired,
-  labelInvalidIPAddressOrDomainName,
   labelInvalidURL,
+  labelInvalidIPAddress,
 } from './translatedLabels';
 
-const IPAddressAndDomainRegexp =
-  /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(\/\d{1,3})?$|^(\S)+\.{1,}\D+[^.]$/;
+const IPAddressRegexp = /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(\/\d{1,3})?$/;
 
 const urlRegexp = /https?:\/\/(\S+)/;
 
@@ -24,7 +23,7 @@ const useValidationSchema = (): Yup.SchemaOf<OpenidConfiguration> => {
       .required(t(labelRequired)),
     blacklistClientAddresses: Yup.array().of(
       Yup.string()
-        .matches(IPAddressAndDomainRegexp, t(labelInvalidIPAddressOrDomainName))
+        .matches(IPAddressRegexp, t(labelInvalidIPAddress))
         .required(t(labelRequired)),
     ),
     clientId: Yup.string().required(t(labelRequired)),
@@ -38,7 +37,7 @@ const useValidationSchema = (): Yup.SchemaOf<OpenidConfiguration> => {
     tokenEndpoint: Yup.string().required(t(labelRequired)),
     trustedClientAddresses: Yup.array().of(
       Yup.string()
-        .matches(IPAddressAndDomainRegexp, t(labelInvalidIPAddressOrDomainName))
+        .matches(IPAddressRegexp, t(labelInvalidIPAddress))
         .required(t(labelRequired)),
     ),
     userinfoEndpoint: Yup.string().required(t(labelRequired)),

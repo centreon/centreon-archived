@@ -16558,8 +16558,8 @@ msgstr "Définir la configuration OpenID Connect"
 msgid "Invalid URL"
 msgstr "URL invalide"
 
-msgid "Invalid IP Address or domain name"
-msgstr "Adresse IP ou nom de domaine invalide"
+msgid "Invalid IP Address"
+msgstr "Adresse IP invalide"
 
 msgid "Failed to save OpenID Connect configuration"
 msgstr "La sauvegarde de la configuration OpenID Connect a échoué"

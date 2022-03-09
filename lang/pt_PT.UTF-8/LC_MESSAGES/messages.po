@@ -15342,7 +15342,7 @@ msgstr ""
 # msgid "Invalid URL"
 # msgstr ""
 
-# msgid "Invalid IP Address or domain name"
+# msgid "Invalid IP Address"
 # msgstr ""
 
 # msgid "Failed to save OpenID Connect configuration"
