@@ -11,7 +11,8 @@ import { Page } from '../../models';
 
 import ArrowIcon from './ArrowIcon';
 
-export const heightItem = 37;
+const rootHeightItem = 37;
+const heightItem = 36.4;
 
 interface Props {
   data: Page;
@@ -22,6 +23,9 @@ interface Props {
   isRoot?: boolean;
   onClick?: React.MouseEventHandler<HTMLDivElement>;
   onMouseEnter: (e: React.MouseEvent<HTMLElement>) => void;
+}
+interface StyleProps {
+  isRoot?: boolean;
 }
 const useStyles = makeStyles((theme) => ({
   activated: {
@@ -54,7 +58,11 @@ const useStyles = makeStyles((theme) => ({
   },
   listButton: {
     alignItems: 'center',
-    height: theme.spacing(heightItem / 8),
+    height: ({ isRoot }: StyleProps): string =>
+      isRoot
+        ? theme.spacing(rootHeightItem / 8)
+        : theme.spacing(heightItem / 8),
+
     marginBottom: 1,
   },
   rootLabel: {
@@ -72,7 +80,7 @@ const MenuItems = ({
   isDrawerOpen,
   isRoot,
 }: Props): JSX.Element => {
-  const classes = useStyles();
+  const classes = useStyles({ isRoot });
 
   return (
     <ListItemButton
