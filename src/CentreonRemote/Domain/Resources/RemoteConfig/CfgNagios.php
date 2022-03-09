@@ -86,7 +86,7 @@ class CfgNagios
             'use_true_regexp_matching'                    => '0',
             'admin_email'                                 => 'admin@localhost',
             'admin_pager'                                 => 'admin@localhost',
-            'nagios_comment'                              => 'Centreon Engine configuration file for a polling instance',
+            'nagios_comment'                              => 'Centreon Engine config file for a polling instance',
             'nagios_activate'                             => '1',
             'event_broker_options'                        => '-1',
             'nagios_server_id'                            => $serverID,
