@@ -90,11 +90,11 @@ class FindProviderConfigurations
 
     /**
      * @param OpenIdConfiguration|null $openIdConfiguration
-     * @return FindopenIdProviderConfigurationResponse
+     * @return FindOpenIdProviderConfigurationResponse
      */
     private function createOpenIdResponse(
         ?OpenIdConfiguration $openIdConfiguration,
-    ): FindopenIdProviderConfigurationResponse {
+    ): FindOpenIdProviderConfigurationResponse {
         $findProviderConfigurationsResponse =  new FindOpenIdProviderConfigurationResponse();
         $findProviderConfigurationsResponse->isActive = $openIdConfiguration->isActive();
         $findProviderConfigurationsResponse->isForced = $openIdConfiguration->isForced();

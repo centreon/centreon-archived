@@ -26,7 +26,6 @@ use Centreon\Infrastructure\Service\Exception\NotFoundException;
 use Core\Infrastructure\Common\Api\HttpUrlTrait;
 use Core\Application\Common\UseCase\AbstractPresenter;
 use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
-use Core\Application\Security\UseCase\FindProviderConfigurations\FindProviderConfigurationsResponse;
 use Core\Infrastructure\Security\Api\FindProviderConfigurations\ProviderPresenter\ProviderPresenterInterface;
 use Core\Application\Security\UseCase\FindProviderConfigurations\FindProviderConfigurationsPresenterInterface;
 
@@ -56,7 +55,7 @@ class FindProviderConfigurationsPresenter extends AbstractPresenter implements
 
     /**
      * {@inheritDoc}
-     * @param FindProviderConfigurationsResponse $response
+     * @param array<mixed>
      */
     public function present(mixed $data): void
     {
