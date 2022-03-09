@@ -133,10 +133,11 @@ $form->addRule('ldap_sync_interval', _("An integer with a minimum value of 1 is 
 /**
  * list of contact template available
  */
-$res = $pearDB->query(
+$res = $pearDB->prepare(
     "SELECT contact_id, contact_name FROM contact WHERE contact_register = '0'"
 );
-$LdapContactTplList = array();
+$res->execute();
+$LdapContactTplList = [];
 while ($row = $res->fetch()) {
     $LdapContactTplList[$row['contact_id']] = $row['contact_name'];
 }
