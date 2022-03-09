@@ -14,7 +14,7 @@ import {
 
 import { useMemoComponent } from '@centreon/ui';
 
-import { InputProps } from '../models';
+import { InputProps } from './models';
 
 const Radio = ({
   fieldName,

@@ -6,8 +6,9 @@ import { equals, not, prop } from 'ramda';
 
 import { TextField, useMemoComponent } from '@centreon/ui';
 
-import { InputProps, InputType } from '../models';
-import PasswordEndAdornment from '../../../Login/PasswordEndAdornment';
+import PasswordEndAdornment from '../../Login/PasswordEndAdornment';
+
+import { InputProps, InputType } from './models';
 
 const Text = ({
   label,

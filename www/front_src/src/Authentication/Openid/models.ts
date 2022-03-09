@@ -36,29 +36,7 @@ export interface OpenidConfigurationToAPI {
   verify_peer: boolean;
 }
 
-export enum InputType {
-  Switch,
-  Radio,
-  Text,
-  Multiple,
-  Password,
-}
-
 export enum AuthenticationType {
   ClientSecretBasic = 'client_secret_basic',
   ClientSecretPost = 'client_secret_post',
-}
-
-export interface InputProps {
-  change?: ({ setFieldValue, value }) => void;
-  fieldName: string;
-  getChecked?: (value) => boolean;
-  getDisabled?: (values) => boolean;
-  label: string;
-  options?: Array<{
-    isChecked: (value) => boolean;
-    label: string;
-    value: boolean;
-  }>;
-  type: InputType;
 }

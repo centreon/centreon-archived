@@ -8,7 +8,7 @@ import { FormControlLabel, Switch as MUISwitch } from '@mui/material';
 
 import { useMemoComponent } from '@centreon/ui';
 
-import { InputProps } from '../models';
+import { InputProps } from './models';
 
 const Switch = ({
   fieldName,
