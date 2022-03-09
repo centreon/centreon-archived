@@ -36,8 +36,11 @@ const DrawerHeader = styled('div')(() => ({
   '&:hover': {
     cursor: 'pointer',
   },
+  alignItems: 'flex-end',
   alignSelf: 'center',
   display: 'flex',
+  height: 55,
+  paddingRight: 4.5,
 }));
 
 const Drawer = styled(MuiDrawer, {

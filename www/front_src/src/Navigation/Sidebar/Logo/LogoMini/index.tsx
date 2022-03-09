@@ -20,7 +20,7 @@ const MiniLogo = ({ onClick }: Props): JSX.Element => {
 
   return (
     <div aria-hidden onClick={onClick}>
-      <img alt="" height="52" src={miniLogo} width={25} />
+      <img alt="" height="40" src={miniLogo} width={24} />
     </div>
   );
 };

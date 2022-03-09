@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
   },
   containerIcon: {
     alignItems: 'center',
-    minWidth: theme.spacing(6.5),
+    minWidth: theme.spacing(5.75),
   },
   icon: {
     color: theme.palette.text.primary,
