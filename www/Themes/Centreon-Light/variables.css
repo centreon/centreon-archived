@@ -1,12 +1,12 @@
 @import "../Generic-theme/Variables-css/variables.css";
 
 :root {
-    --body-background: #EDEDED;
+    --body-background: var(--color-gallery-2);
     --ui-widget-header-background-color: var(--body-background);
-    --ui-widget-header-border-bottom-color: #d1d2d4;
+    --ui-widget-header-border-bottom-color: var(--color-iron);
     --ui-tabs-nav-li-anchor-background-color: none;
-    --ui-anchor-state-default-font-color: #0000008a;
-    --ui-anchor-state-active-visited-font-color: #10069f;
+    --ui-anchor-state-default-font-color: var(--color-black-rgba-54);
+    --ui-anchor-state-active-visited-font-color: var(--color-primary-dark);
     --global-view-ui-border-color: none;
     --ui-background-color: none;
     --global-view-ui-active-tabs-border-color: none;
