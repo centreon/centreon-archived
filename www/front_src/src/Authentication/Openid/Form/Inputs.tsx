@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { always, cond, equals, propEq } from 'ramda';
+import { equals, propEq } from 'ramda';
 
 import { makeStyles } from '@mui/styles';
 
@@ -24,25 +24,11 @@ import {
   labelUseBasicAuthenticatonForTokenEndpointAuthentication,
   labelUserInformationEndpoint,
 } from '../translatedLabels';
-import { AuthenticationType, InputProps, InputType } from '../models';
-
-import MultipleInput from './Multiple';
-import SwitchInput from './Switch';
-import RadioInput from './Radio';
-import TextInput from './Text';
+import { AuthenticationType } from '../models';
+import { InputProps, InputType } from '../../FormInputs/models';
+import { getInput } from '../../FormInputs';
 
 const isAuthenticationNotActive = propEq('isActive', false);
-
-const getInput = cond<InputType, (props: InputProps) => JSX.Element>([
-  [equals(InputType.Switch) as (b: InputType) => boolean, always(SwitchInput)],
-  [equals(InputType.Radio) as (b: InputType) => boolean, always(RadioInput)],
-  [equals(InputType.Text) as (b: InputType) => boolean, always(TextInput)],
-  [
-    equals(InputType.Multiple) as (b: InputType) => boolean,
-    always(MultipleInput),
-  ],
-  [equals(InputType.Password) as (b: InputType) => boolean, always(TextInput)],
-]);
 
 export const inputs: Array<InputProps> = [
   {

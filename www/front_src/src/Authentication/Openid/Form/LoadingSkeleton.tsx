@@ -6,7 +6,7 @@ import { makeStyles } from '@mui/styles';
 
 import { LoadingSkeleton } from '@centreon/ui';
 
-import { InputType } from '../models';
+import { InputType } from '../../FormInputs/models';
 
 import { inputs } from './Inputs';
 

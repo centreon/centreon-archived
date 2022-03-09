@@ -25,7 +25,7 @@ import {
   labelEnableOpenIDConnectAuthentication,
   labelEndSessionEndpoint,
   labelIntrospectionTokenEndpoint,
-  labelInvalidIPAddressOrDomainName,
+  labelInvalidIPAddress,
   labelInvalidURL,
   labelLoginClaimValue,
   labelMixed,
@@ -211,9 +211,7 @@ describe('Openid configuration form', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText(
-          `invalid domain: ${labelInvalidIPAddressOrDomainName}`,
-        ),
+        screen.getByText(`invalid domain: ${labelInvalidIPAddress}`),
       ).toBeInTheDocument();
     });
 
@@ -225,7 +223,7 @@ describe('Openid configuration form', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText(`127.0.0.1111: ${labelInvalidIPAddressOrDomainName}`),
+        screen.getByText(`127.0.0.1111: ${labelInvalidIPAddress}`),
       ).toBeInTheDocument();
     });
 
