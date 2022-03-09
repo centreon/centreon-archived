@@ -55,7 +55,6 @@ class FindNotificationPolicyResponse
     ) {
         $this->notifiedContacts = $this->usersToArray($notifiedContacts);
         $this->notifiedContactGroups = $this->userGroupsToArray($notifiedContactGroups);
-        //$this->usersNotificationSettings = $this->usersNotificationSettingsToArray($usersNotificationSettings);
     }
 
     /**
@@ -73,7 +72,9 @@ class FindNotificationPolicyResponse
                 'notifications' => [
                     'host' => [
                         'events' => $notifiedContact->getHostNotification()->getEvents(),
-                        'time_period' => $notifiedContact->getHostNotification()->getTimePeriod(),
+                        'time_period' => self::timePeriodToArray(
+                            $notifiedContact->getHostNotification()->getTimePeriod(),
+                        ),
                     ],
                     'service' => [
                         'events' => $notifiedContact->getServiceNotification()->getEvents(),

@@ -23,56 +23,70 @@ declare(strict_types=1);
 namespace Tests\Core\Application\Configuration\NotificationPolicy\UseCase;
 
 use Core\Application\Configuration\NotificationPolicy\UseCase\FindNotificationPolicyResponse;
-use Core\Domain\Configuration\User\Model\User;
+use Core\Domain\Configuration\Notification\Model\NotifiedContact;
+use Core\Domain\Configuration\Notification\Model\NotifiedContactGroup;
 use Core\Domain\Configuration\Notification\Model\HostNotification;
 use Core\Domain\Configuration\Notification\Model\ServiceNotification;
 use Core\Domain\Configuration\TimePeriod\Model\TimePeriod;
-use Core\Domain\Configuration\UserGroup\Model\UserGroup;
 
 beforeEach(function () {
-    $this->user = new User(2, 'user2', 'user 2', 'user2@localhost', false);
-    $this->userGroup = new UserGroup(3, 'cg3', 'cg 3');
+    $hostNotification = new HostNotification(new Timeperiod(1, '24x7', '24/24 7/7'));
+    $hostNotification->addEvent(HostNotification::EVENT_HOST_DOWN);
 
-    $this->userHostNotificationSettings = new HostNotification(new Timeperiod(1, '24x7', '24/24 7/7'));
-    $this->userHostNotificationSettings->addEvent(HostNotification::EVENT_HOST_DOWN);
+    $serviceNotification = new ServiceNotification(new Timeperiod(1, '24x7', '24/24 7/7'));
+    $serviceNotification->addEvent(ServiceNotification::EVENT_SERVICE_CRITICAL);
 
-    $this->userServiceNotificationSettings = new ServiceNotification(new Timeperiod(1, '24x7', '24/24 7/7'));
-    $this->userServiceNotificationSettings->addEvent(ServiceNotification::EVENT_SERVICE_CRITICAL);
+    $this->contact = new NotifiedContact(
+        2,
+        'user2',
+        'user 2',
+        'user2@localhost',
+        $hostNotification,
+        $serviceNotification,
+    );
+
+    $this->contactGroup = new NotifiedContactGroup(3, 'cg3', 'cg 3');
 });
 
 it('converts given host notification models to array', function () {
     $response = new FindNotificationPolicyResponse(
-        [$this->user],
-        [$this->userGroup],
-        [$this->userHostNotificationSettings],
+        [$this->contact],
+        [$this->contactGroup],
         true,
     );
 
-    expect($response->users)->toBe([
+    expect($response->notifiedContacts)->toBe([
         [
-            'id' => $this->user->getId(),
-            'name' => $this->user->getName(),
-            'alias' => $this->user->getAlias(),
-            'email' => $this->user->getEmail(),
-        ],
-    ]);
-
-    expect($response->userGroups)->toBe([
-        [
-            'id' => $this->userGroup->getId(),
-            'name' => $this->userGroup->getName(),
-            'alias' => $this->userGroup->getAlias(),
-        ],
-    ]);
-
-    expect($response->usersNotificationSettings)->toBe([
-        [
-            'is_notified_on' => $this->userHostNotificationSettings->getEvents(),
-            'time_period' => [
-                'id' => $this->userHostNotificationSettings->getTimePeriod()->getId(),
-                'name' => $this->userHostNotificationSettings->getTimePeriod()->getName(),
-                'alias' => $this->userHostNotificationSettings->getTimePeriod()->getAlias(),
+            'id' => $this->contact->getId(),
+            'name' => $this->contact->getName(),
+            'alias' => $this->contact->getAlias(),
+            'email' => $this->contact->getEmail(),
+            'notifications' => [
+                'host' => [
+                    'events' => ['DOWN'],
+                    'time_period' => [
+                        'id' => 1,
+                        'name' => '24x7',
+                        'alias' => '24/24 7/7',
+                    ],
+                ],
+                'service' => [
+                    'events' => ['CRITICAL'],
+                    'time_period' => [
+                        'id' => 1,
+                        'name' => '24x7',
+                        'alias' => '24/24 7/7',
+                    ],
+                ],
             ],
+        ],
+    ]);
+
+    expect($response->notifiedContactGroups)->toBe([
+        [
+            'id' => $this->contactGroup->getId(),
+            'name' => $this->contactGroup->getName(),
+            'alias' => $this->contactGroup->getAlias(),
         ],
     ]);
 
@@ -81,37 +95,43 @@ it('converts given host notification models to array', function () {
 
 it('converts given service notification models to array', function () {
     $response = new FindNotificationPolicyResponse(
-        [$this->user],
-        [$this->userGroup],
-        [$this->userServiceNotificationSettings],
+        [$this->contact],
+        [$this->contactGroup],
         true,
     );
 
-    expect($response->users)->toBe([
+    expect($response->notifiedContacts)->toBe([
         [
-            'id' => $this->user->getId(),
-            'name' => $this->user->getName(),
-            'alias' => $this->user->getAlias(),
-            'email' => $this->user->getEmail(),
-        ],
-    ]);
-
-    expect($response->userGroups)->toBe([
-        [
-            'id' => $this->userGroup->getId(),
-            'name' => $this->userGroup->getName(),
-            'alias' => $this->userGroup->getAlias(),
-        ],
-    ]);
-
-    expect($response->usersNotificationSettings)->toBe([
-        [
-            'is_notified_on' => $this->userServiceNotificationSettings->getEvents(),
-            'time_period' => [
-                'id' => $this->userServiceNotificationSettings->getTimePeriod()->getId(),
-                'name' => $this->userServiceNotificationSettings->getTimePeriod()->getName(),
-                'alias' => $this->userServiceNotificationSettings->getTimePeriod()->getAlias(),
+            'id' => $this->contact->getId(),
+            'name' => $this->contact->getName(),
+            'alias' => $this->contact->getAlias(),
+            'email' => $this->contact->getEmail(),
+            'notifications' => [
+                'host' => [
+                    'events' => ['DOWN'],
+                    'time_period' => [
+                        'id' => 1,
+                        'name' => '24x7',
+                        'alias' => '24/24 7/7',
+                    ],
+                ],
+                'service' => [
+                    'events' => ['CRITICAL'],
+                    'time_period' => [
+                        'id' => 1,
+                        'name' => '24x7',
+                        'alias' => '24/24 7/7',
+                    ],
+                ],
             ],
+        ],
+    ]);
+
+    expect($response->notifiedContactGroups)->toBe([
+        [
+            'id' => $this->contactGroup->getId(),
+            'name' => $this->contactGroup->getName(),
+            'alias' => $this->contactGroup->getAlias(),
         ],
     ]);
 
