@@ -27,7 +27,7 @@
     --select-background: var(--color-white);
     --select-color : var(--color-charcoal);
     --option-color: var(--color-charcoal);
-    --input-select-background-color: #fff;
+    --input-select-background-color: var(--color-white);
     /******************/
 
     /** Input checkbox **/
