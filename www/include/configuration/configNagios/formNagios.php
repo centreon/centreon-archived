@@ -234,7 +234,7 @@ $nagTab[] = $form->createElement('radio', 'enable_event_handlers', null, _("No")
 $form->addGroup($nagTab, 'enable_event_handlers', _("Event Handler Option"), '&nbsp;');
 
 /* *****************************************************
- * Log archive directory 
+ * Log archive directory
  */
 $form->addElement('text', 'log_archive_path', _("Log Archive Path"), $attrsText2);
 
