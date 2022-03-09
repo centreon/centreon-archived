@@ -16,7 +16,7 @@ interface ProviderPresenterInterface
      * Format response.
      *
      * @param mixed $response
-     * @return array
+     * @return array<string,mixed>
      */
     public function present(mixed $response): array;
 }

@@ -34,7 +34,6 @@ class LoginSessionController extends AbstractController
 {
     /**
      * @param Request $request
-     * @param string $providerConfigurationName
      * @param LoginSession $loginSession
      * @param LoginSessionPresenterInterface $presenter
      * @param SessionInterface $session

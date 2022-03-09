@@ -57,13 +57,20 @@ class DbReadConfigurationRepository extends AbstractRepositoryDRB implements Rea
             )
         );
         $customConfiguration = null;
-        if ($statement !== false && $result = $statement->fetch(\PDO::FETCH_ASSOC)) {
-            $this->validateJsonRecord($result['custom_configuration'], __DIR__ . '/CustomConfigurationSchema.json');
-            $customConfiguration = json_decode($result['custom_configuration'], true);
+        $configuration = [];
+        if ($statement !== false && $configuration = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            $this->validateJsonRecord(
+                $configuration['custom_configuration'], __DIR__ . '/CustomConfigurationSchema.json'
+            );
+            $customConfiguration = json_decode($configuration['custom_configuration'], true);
         }
-        if ($customConfiguration !== null) {
+        if ($customConfiguration !== null && !empty($configuration)) {
             $excludedUsers = $this->findExcludedUsers();
-            $configuration = DbConfigurationFactory::createFromRecord($result, $customConfiguration, $excludedUsers);
+            $configuration = DbConfigurationFactory::createFromRecord(
+                $configuration,
+                $customConfiguration,
+                $excludedUsers
+            );
         }
 
         return $configuration;
