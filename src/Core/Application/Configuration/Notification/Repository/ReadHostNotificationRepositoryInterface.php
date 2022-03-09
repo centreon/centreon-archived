@@ -22,26 +22,20 @@ declare(strict_types=1);
 
 namespace Core\Application\Configuration\Notification\Repository;
 
-use Core\Domain\Configuration\Notification\Model\HostNotification;
-use Core\Domain\Configuration\Notification\Model\ServiceNotification;
+use Core\Domain\Configuration\Notification\Model\NotifiedContact;
+use Core\Domain\Configuration\Notification\Model\NotifiedContactGroup;
 
-interface ReadNotificationRepositoryInterface
+interface ReadHostNotificationRepositoryInterface
 {
     /**
-     * Find host notifications settings (timeperiod, events) by user ids
-     * result is indexed by user id
-     *
-     * @param int[] $userIds
-     * @return HostNotification[]
+     * @param int $hostId
+     * @return array<int,NotifiedContact[]>
      */
-    public function findHostNotificationSettingsByUserIds(array $userIds): array;
+    public function findNotifiedContactsById(int $hostId): array;
 
     /**
-     * Find service notification settings (timeperiod, events) by user ids
-     * result is indexed by user id
-     *
-     * @param int[] $userIds
-     * @return ServiceNotification[]
+     * @param int $hostId
+     * @return array<int,NotifiedContactGroup[]>
      */
-    public function findServiceNotificationSettingsByUserIds(array $userIds): array;
+    public function findNotifiedContactGroupsById(int $hostId): array;
 }

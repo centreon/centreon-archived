@@ -20,40 +20,40 @@
  */
 declare(strict_types=1);
 
-namespace Core\Infrastructure\Configuration\Notification\Repository;
+namespace Core\Infrastructure\Configuration\NotificationPolicy\Repository;
 
 use Core\Domain\Configuration\TimePeriod\Model\TimePeriod;
 use Core\Domain\Configuration\Notification\Model\ServiceNotification;
 
-class DbServiceNotificationFactory
+class DbContactServiceNotificationFactory
 {
     /**
-     * @param array<string, mixed> $data
+     * @param array<string,mixed> $notification
      * @return ServiceNotification
      */
-    public static function createFromRecord(array $data, NotifiedContact $contact): ServiceNotification
+    public static function createFromRecord(array $notification): ServiceNotification
     {
         $timePeriod = new TimePeriod(
-            (int) $data['timeperiod_tp_id'],
-            $data['tp_name'],
-            $data['tp_alias']
+            (int) $notification['service_timeperiod_id'],
+            $notification['service_timeperiod_name'],
+            $notification['service_timeperiod_alias']
         );
 
-        $notification = new ServiceNotification($timePeriod);
+        $serviceNotification = new ServiceNotification($timePeriod);
 
-        $events = ($data['contact_service_notification_options'] !== null)
-            ? explode(',', $data['contact_service_notification_options'])
+        $events = $notification['contact_service_notification_options'] !== null
+            ? explode(',', $notification['contact_service_notification_options'])
             : [];
 
         foreach ($events as $event) {
-            $normalizedEvent = self::normalizeHostEvent($event);
+            $normalizedEvent = self::normalizeServiceEvent($event);
             if ($normalizedEvent === null) {
                 continue;
             }
-            $notification->addEvent($normalizedEvent);
+            $serviceNotification->addEvent($normalizedEvent);
         }
 
-        return $notification;
+        return $serviceNotification;
     }
 
     /**
@@ -62,7 +62,7 @@ class DbServiceNotificationFactory
      * @param string $event
      * @return string|null
      */
-    private static function normalizeHostEvent(string $event): ?string
+    private static function normalizeServiceEvent(string $event): ?string
     {
         return match ($event) {
             'o' => ServiceNotification::EVENT_SERVICE_RECOVERY,

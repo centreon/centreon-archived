@@ -20,19 +20,25 @@
  */
 declare(strict_types=1);
 
-namespace Core\Application\Configuration\NotificationPolicy\Repository;
+namespace Core\Domain\Configuration\Notification\Model;
 
-interface LegacyNotificationPolicyRepositoryInterface
+class NotifiedContact
 {
     /**
-     * @param integer $hostId
-     * @return array<string, int[]>
+     * @param int $id
+     * @param string $name
+     * @param string $alias
+     * @param string $email
+     * @param HostNotification $hostNotification
+     * @param ServiceNotification $serviceNotification
      */
-    public function findHostNotifiedUserIdsAndUserGroupIds(int $hostId): array;
-
-    /**
-     * @param int $serviceId
-     * @return array<string, int[]>
-     */
-    public function findServiceNotifiedUserIdsAndUserGroupIds(int $serviceId): array;
+    public function __construct(
+        private int $id,
+        private string $name,
+        private string $alias,
+        private string $email,
+        private HostNotification $hostNotification,
+        private ServiceNotification $serviceNotification,
+    ) {
+    }
 }
