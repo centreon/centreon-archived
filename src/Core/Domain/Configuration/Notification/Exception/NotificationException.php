@@ -18,35 +18,18 @@
  * For more information : contact@centreon.com
  *
  */
-
 declare(strict_types=1);
 
-namespace Core\Application\Configuration\User\Repository;
+namespace Core\Domain\Configuration\Notification\Exception;
 
-use Core\Domain\Configuration\User\Model\User;
-
-interface ReadUserRepositoryInterface
+class NotificationException extends \InvalidArgumentException
 {
     /**
-     * Find configured users
-     *
-     * @return User[]
+     * @param string $event
+     * @return self
      */
-    public function findAllUsers(): array;
-
-    /**
-     * Find user ids from a list of alias
-     *
-     * @param string[] $userAliases
-     * @return int[]
-     */
-    public function findUserIdsByAliases(array $userAliases): array;
-
-    /**
-     * Find users by their ids
-     *
-     * @param int[] $userIds
-     * @return User[]
-     */
-    public function findUsersByIds(array $userIds): array;
+    public static function badEvent(string $event): self
+    {
+        return new self(sprintf(_('Invalid event provided (%s)'), $event));
+    }
 }

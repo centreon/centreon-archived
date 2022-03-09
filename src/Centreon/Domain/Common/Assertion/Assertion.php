@@ -263,7 +263,7 @@ class Assertion
      * Assert that value is in array
      *
      * @param mixed $value
-     * @param string[] $choices
+     * @param mixed[] $choices
      * @param string|null $propertyPath
      * @throws \Assert\AssertionFailedException
      * @return void

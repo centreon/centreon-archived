@@ -26,8 +26,9 @@ namespace Core\Infrastructure\Configuration\User\Repository;
 use Centreon\Domain\Log\LoggerTrait;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
-use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
+use Centreon\Infrastructure\CentreonLegacyDB\StatementCollector;
 use Core\Infrastructure\Configuration\User\Repository\DbUserFactory;
+use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
 use Core\Application\Configuration\User\Repository\ReadUserRepositoryInterface;
 
 class DbReadUserRepository extends AbstractRepositoryDRB implements ReadUserRepositoryInterface
@@ -139,5 +140,51 @@ class DbReadUserRepository extends AbstractRepositoryDRB implements ReadUserRepo
         }
 
         return $userIds;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findUsersByIds(array $userIds): array
+    {
+        $this->info('Fetching users from database');
+        $users = [];
+
+        if (empty($userIds)) {
+            return $users;
+        }
+
+        $request = $this->translateDbName(
+            "SELECT
+                contact_id,
+                contact_alias,
+                contact_name,
+                contact_email,
+                contact_admin
+            FROM `:db`.contact"
+        );
+
+        $collector = new StatementCollector();
+
+        foreach ($userIds as $index => $userId) {
+            $key = ":contactId_{$index}";
+
+            $userIdList[] = $key;
+            $collector->addValue($key, $userId, \PDO::PARAM_INT);
+        }
+
+        $request .= ' WHERE contact_id IN (' . implode(', ', $userIdList) . ')
+            AND contact_activate = \'1\'';
+
+        $statement = $this->db->prepare($request);
+
+        $collector->bind($statement);
+        $statement->execute();
+
+        while (($row = $statement->fetch(\PDO::FETCH_ASSOC))) {
+            $users[] = DbUserFactory::createFromRecord($row);
+        }
+
+        return $users;
     }
 }

@@ -1,0 +1,7 @@
+configuration.host.notification-policy:
+    methods: GET
+    path: /configuration/hosts/{hostId}/notification-policy
+    controller: 'Core\Infrastructure\Configuration\NotificationPolicy\Api\FindHostNotificationPolicyController'
+    requirements:
+        hostId: '\d+'
+    condition: "request.attributes.get('version') >= 22.04"
