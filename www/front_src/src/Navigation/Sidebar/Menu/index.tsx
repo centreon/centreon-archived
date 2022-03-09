@@ -31,6 +31,11 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.text.primary,
     fontSize: 26,
   },
+  list: {
+    '&.MuiList-root': {
+      padding: theme.spacing(0, 0, 0, 0),
+    },
+  },
 }));
 
 const NavigationMenu = ({
@@ -132,7 +137,7 @@ const NavigationMenu = ({
 
   return useMemoComponent({
     Component: (
-      <List onMouseLeave={handleLeave}>
+      <List className={classes.list} onMouseLeave={handleLeave}>
         {navigationData?.map((item, index) => {
           const MenuIcon = !isNil(item?.icon) && icons[item.icon];
           const hover =
