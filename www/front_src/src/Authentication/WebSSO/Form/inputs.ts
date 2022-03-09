@@ -1,9 +1,4 @@
-import * as React from 'react';
-
 import { propEq } from 'ramda';
-import { useFormikContext, FormikValues } from 'formik';
-
-import { makeStyles } from '@mui/styles';
 
 import {
   labelBlacklistClientAddresses,
@@ -17,7 +12,6 @@ import {
   labelAuthenticationMode,
 } from '../translatedLabels';
 import { InputProps, InputType } from '../../FormInputs/models';
-import { getInput } from '../../FormInputs';
 
 const isAuthenticationNotActive = propEq('isActive', false);
 
@@ -76,50 +70,3 @@ export const inputs: Array<InputProps> = [
     type: InputType.Text,
   },
 ];
-
-const useStyles = makeStyles((theme) => ({
-  inputs: {
-    display: 'flex',
-    flexDirection: 'column',
-    rowGap: theme.spacing(2),
-  },
-}));
-
-const Inputs = (): JSX.Element => {
-  const classes = useStyles();
-
-  const { errors, values } = useFormikContext<FormikValues>();
-  console.log(errors, values);
-
-  return (
-    <div className={classes.inputs}>
-      {inputs.map(
-        ({
-          fieldName,
-          label,
-          getDisabled,
-          type,
-          options,
-          change,
-          getChecked,
-        }) => {
-          const Input = getInput(type);
-
-          const props = {
-            change,
-            fieldName,
-            getChecked,
-            getDisabled,
-            label,
-            options,
-            type,
-          };
-
-          return <Input key={label} {...props} />;
-        },
-      )}
-    </div>
-  );
-};
-
-export default Inputs;

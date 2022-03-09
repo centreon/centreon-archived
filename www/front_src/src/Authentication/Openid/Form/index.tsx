@@ -15,8 +15,9 @@ import {
 import { putOpenidConfiguration } from '../../api';
 import { OpenidConfiguration } from '../models';
 import FormButtons from '../../FormButtons';
+import Inputs from '../../FormInputs';
 
-import Inputs from './Inputs';
+import { inputs } from './inputs';
 
 const useStyles = makeStyles((theme) => ({
   formContainer: {
@@ -65,7 +66,7 @@ const Form = ({
       onSubmit={submit}
     >
       <div className={classes.formContainer}>
-        <Inputs />
+        <Inputs inputs={inputs} />
         <FormButtons />
       </div>
     </Formik>

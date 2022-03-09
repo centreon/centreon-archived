@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { FormikValues, useFormikContext } from 'formik';
-import { prop } from 'ramda';
+import { equals, includes, prop } from 'ramda';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -26,8 +26,13 @@ const Radio = ({
 
   const { values, setFieldValue } = useFormikContext<FormikValues>();
 
-  const change = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setFieldValue(fieldName, event.target.value);
+  const change = (_, value): void => {
+    if (includes(value, ['true', 'false'])) {
+      setFieldValue(fieldName, equals(value, 'true'));
+
+      return;
+    }
+    setFieldValue(fieldName, value);
   };
   const value = prop(fieldName, values);
   const disabled = getDisabled?.(values);

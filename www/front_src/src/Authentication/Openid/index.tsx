@@ -6,11 +6,13 @@ import { isNil, not } from 'ramda';
 import { Container, LinearProgress, Paper, Typography } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 
+import LoadingSkeletonForm from '../FormInputs/LoadingSkeleton';
+
 import { labelDefineOpenIDConnectConfiguration } from './translatedLabels';
 import useOpenid from './useOpenid';
 import Form from './Form';
 import { OpenidConfiguration } from './models';
-import LoadingSkeletonForm from './Form/LoadingSkeleton';
+import { inputs } from './Form/inputs';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -55,7 +57,7 @@ const OpenidConfigurationForm = (): JSX.Element => {
           )}
         </div>
         {isOpenidConfigurationEmpty ? (
-          <LoadingSkeletonForm />
+          <LoadingSkeletonForm inputs={inputs} />
         ) : (
           <Form
             initialValues={initialOpenidConfiguration as OpenidConfiguration}

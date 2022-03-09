@@ -6,11 +6,13 @@ import { isNil, not } from 'ramda';
 import { Container, LinearProgress, Paper, Typography } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 
+import LoadingSkeletonForm from '../FormInputs/LoadingSkeleton';
+
 import { labelDefineWebSSOConfiguration } from './translatedLabels';
 import useWebSSO from './useWebSSO';
 import Form from './Form';
 import { WebSSOConfiguration } from './models';
-import LoadingSkeletonForm from './Form/LoadingSkeleton';
+import { inputs } from './Form/inputs';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -55,7 +57,7 @@ const WebSSOConfigurationForm = (): JSX.Element => {
           )}
         </div>
         {isWebSSOConfigurationEmpty ? (
-          <LoadingSkeletonForm />
+          <LoadingSkeletonForm inputs={inputs} />
         ) : (
           <Form
             initialValues={initialWebSSOConfiguration as WebSSOConfiguration}

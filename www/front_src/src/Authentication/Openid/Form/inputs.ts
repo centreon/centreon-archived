@@ -1,8 +1,4 @@
-import * as React from 'react';
-
 import { equals, propEq } from 'ramda';
-
-import { makeStyles } from '@mui/styles';
 
 import {
   labelAuthenticationMode,
@@ -26,7 +22,6 @@ import {
 } from '../translatedLabels';
 import { AuthenticationType } from '../models';
 import { InputProps, InputType } from '../../FormInputs/models';
-import { getInput } from '../../FormInputs';
 
 const isAuthenticationNotActive = propEq('isActive', false);
 
@@ -148,47 +143,3 @@ export const inputs: Array<InputProps> = [
     type: InputType.Switch,
   },
 ];
-
-const useStyles = makeStyles((theme) => ({
-  inputs: {
-    display: 'flex',
-    flexDirection: 'column',
-    rowGap: theme.spacing(2),
-  },
-}));
-
-const Inputs = (): JSX.Element => {
-  const classes = useStyles();
-
-  return (
-    <div className={classes.inputs}>
-      {inputs.map(
-        ({
-          fieldName,
-          label,
-          getDisabled,
-          type,
-          options,
-          change,
-          getChecked,
-        }) => {
-          const Input = getInput(type);
-
-          const props = {
-            change,
-            fieldName,
-            getChecked,
-            getDisabled,
-            label,
-            options,
-            type,
-          };
-
-          return <Input key={label} {...props} />;
-        },
-      )}
-    </div>
-  );
-};
-
-export default Inputs;

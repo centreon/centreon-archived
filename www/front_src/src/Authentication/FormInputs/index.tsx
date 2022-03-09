@@ -1,4 +1,8 @@
+import * as React from 'react';
+
 import { always, cond, equals } from 'ramda';
+
+import { makeStyles } from '@mui/styles';
 
 import { InputProps, InputType } from './models';
 import MultipleInput from './Multiple';
@@ -16,3 +20,51 @@ export const getInput = cond<InputType, (props: InputProps) => JSX.Element>([
   ],
   [equals(InputType.Password) as (b: InputType) => boolean, always(TextInput)],
 ]);
+
+const useStyles = makeStyles((theme) => ({
+  inputs: {
+    display: 'flex',
+    flexDirection: 'column',
+    rowGap: theme.spacing(2),
+  },
+}));
+
+interface Props {
+  inputs: Array<InputProps>;
+}
+
+const Inputs = ({ inputs }: Props): JSX.Element => {
+  const classes = useStyles();
+
+  return (
+    <div className={classes.inputs}>
+      {inputs.map(
+        ({
+          fieldName,
+          label,
+          getDisabled,
+          type,
+          options,
+          change,
+          getChecked,
+        }) => {
+          const Input = getInput(type);
+
+          const props = {
+            change,
+            fieldName,
+            getChecked,
+            getDisabled,
+            label,
+            options,
+            type,
+          };
+
+          return <Input key={label} {...props} />;
+        },
+      )}
+    </div>
+  );
+};
+
+export default Inputs;

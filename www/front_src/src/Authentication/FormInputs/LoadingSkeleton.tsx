@@ -6,9 +6,7 @@ import { makeStyles } from '@mui/styles';
 
 import { LoadingSkeleton } from '@centreon/ui';
 
-import { InputType } from '../../FormInputs/models';
-
-import { inputs } from './Inputs';
+import { InputProps, InputType } from './models';
 
 const getSkeleton = cond<InputType, JSX.Element>([
   [
@@ -46,7 +44,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const LoadingSkeletonForm = (): JSX.Element => {
+interface Props {
+  inputs: Array<InputProps>;
+}
+
+const LoadingSkeletonForm = ({ inputs }: Props): JSX.Element => {
   const classes = useStyles();
 
   return (
