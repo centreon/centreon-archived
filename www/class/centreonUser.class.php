@@ -61,6 +61,7 @@ class CentreonUser
     public $default_page;
     private $showDeprecatedPages;
     private $currentPage;
+    public $theme;
 
     protected $restApi;
     protected $restApiRt;
@@ -97,6 +98,7 @@ class CentreonUser
         $this->gmt = $user["contact_location"];
         $this->showDeprecatedPages = (bool) $user["show_deprecated_pages"];
         $this->is_admin = null;
+        $this->theme = $user["contact_theme"];
         /*
          * Initiate ACL
          */
@@ -495,6 +497,27 @@ class CentreonUser
     public function setCurrentPage($currentPage)
     {
         $this->currentPage = $currentPage;
+    }
+
+    /**
+     * Get theme
+     *
+     * @return string
+     */
+    public function getTheme()
+    {
+        return $this->theme;
+    }
+
+    /**
+     * Set theme
+     *
+     * @param string $theme
+     * @return void
+     */
+    public function setTheme($theme)
+    {
+        $this->theme = $theme;
     }
 
     /**
