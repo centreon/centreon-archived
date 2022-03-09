@@ -12,11 +12,16 @@ import {
   OpenidConfiguration,
   OpenidConfigurationToAPI,
 } from '../Openid/models';
+import {
+  WebSSOConfiguration,
+  WebSSOConnfigurationToAPI,
+} from '../WebSSO/models';
 
 import { authenticationProvidersEndpoint } from './endpoints';
 import {
   adaptOpenidConfigurationToAPI,
   adaptPasswordSecurityPolicyToAPI,
+  adaptWebSSOConfigurationToAPI,
 } from './adapters';
 
 export const getPasswordPasswordSecurityPolicy =
@@ -48,4 +53,18 @@ export const putOpenidConfiguration =
     putData<OpenidConfigurationToAPI, unknown>(cancelToken)({
       data: adaptOpenidConfigurationToAPI(openidConfiguration),
       endpoint: authenticationProvidersEndpoint(Provider.Openid),
+    });
+
+export const getWebSSOConfiguration =
+  (cancelToken: CancelToken) => (): Promise<WebSSOConfiguration> =>
+    getData<WebSSOConfiguration>(cancelToken)({
+      endpoint: authenticationProvidersEndpoint(Provider.WebSSO),
+    });
+
+export const putWebSSOConfiguration =
+  (cancelToken: CancelToken) =>
+  (webSSOConfiguration: WebSSOConfiguration): Promise<unknown> =>
+    putData<WebSSOConnfigurationToAPI, unknown>(cancelToken)({
+      data: adaptWebSSOConfigurationToAPI(webSSOConfiguration),
+      endpoint: authenticationProvidersEndpoint(Provider.WebSSO),
     });
