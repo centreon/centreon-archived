@@ -26,7 +26,6 @@ namespace Core\Infrastructure\Configuration\User\Repository;
 use Centreon\Domain\Log\LoggerTrait;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
-use Centreon\Infrastructure\CentreonLegacyDB\StatementCollector;
 use Core\Infrastructure\Configuration\User\Repository\DbUserFactory;
 use Centreon\Infrastructure\RequestParameters\SqlRequestParametersTranslator;
 use Core\Application\Configuration\User\Repository\ReadUserRepositoryInterface;

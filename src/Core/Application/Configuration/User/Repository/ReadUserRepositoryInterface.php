@@ -41,12 +41,4 @@ interface ReadUserRepositoryInterface
      * @return int[]
      */
     public function findUserIdsByAliases(array $userAliases): array;
-
-    /**
-     * Find users by their ids
-     *
-     * @param int[] $userIds
-     * @return User[]
-     */
-    public function findUsersByIds(array $userIds): array;
 }

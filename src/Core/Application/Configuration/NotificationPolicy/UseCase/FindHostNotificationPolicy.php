@@ -24,19 +24,15 @@ namespace Core\Application\Configuration\NotificationPolicy\UseCase;
 
 use Centreon\Domain\Log\LoggerTrait;
 use Centreon\Domain\HostConfiguration\Host;
-use Core\Domain\Configuration\User\Model\User;
 use Centreon\Domain\Engine\EngineConfiguration;
 use Core\Application\Common\UseCase\NotFoundResponse;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
-use Core\Domain\Configuration\UserGroup\Model\UserGroup;
+use Core\Domain\Configuration\Notification\Model\NotifiedContact;
+use Core\Domain\Configuration\Notification\Model\NotifiedContactGroup;
 use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
-use Core\Domain\Configuration\Notification\Model\NotificationInterface;
 use Centreon\Domain\Engine\Interfaces\EngineConfigurationServiceInterface;
-use Core\Application\Configuration\User\Repository\ReadUserRepositoryInterface;
 use Centreon\Domain\HostConfiguration\Interfaces\HostConfigurationRepositoryInterface;
-use Core\Application\Configuration\UserGroup\Repository\ReadUserGroupRepositoryInterface;
-use Core\Application\Configuration\Notification\Repository\ReadNotificationRepositoryInterface;
-use Core\Application\Configuration\NotificationPolicy\Repository\LegacyNotificationPolicyRepositoryInterface;
+use Core\Application\Configuration\Notification\Repository\ReadHostNotificationRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadHostRepositoryInterface as ReadRealTimeHostRepositoryInterface;
 
 class FindHostNotificationPolicy
@@ -44,10 +40,7 @@ class FindHostNotificationPolicy
     use LoggerTrait;
 
     /**
-     * @param LegacyNotificationPolicyRepositoryInterface $legacyRepository
-     * @param ReadNotificationRepositoryInterface $notificationRepository
-     * @param ReadUserRepositoryInterface $userRepository
-     * @param ReadUserGroupRepositoryInterface $userGroupRepository
+     * @param ReadHostNotificationRepositoryInterface $readHostNotificationRepository
      * @param HostConfigurationRepositoryInterface $hostRepository
      * @param EngineConfigurationServiceInterface $engineService
      * @param AccessGroupRepositoryInterface $accessGroupRepository
@@ -55,10 +48,7 @@ class FindHostNotificationPolicy
      * @param ReadRealTimeHostRepositoryInterface $readRealTimeHostRepository
      */
     public function __construct(
-        private LegacyNotificationPolicyRepositoryInterface $legacyRepository,
-        private ReadNotificationRepositoryInterface $notificationRepository,
-        private ReadUserRepositoryInterface $userRepository,
-        private ReadUserGroupRepositoryInterface $userGroupRepository,
+        private ReadHostNotificationRepositoryInterface $readHostNotificationRepository,
         private HostConfigurationRepositoryInterface $hostRepository,
         private EngineConfigurationServiceInterface $engineService,
         private AccessGroupRepositoryInterface $accessGroupRepository,
@@ -81,18 +71,8 @@ class FindHostNotificationPolicy
             return;
         }
 
-        /**
-         * Returns the contacts and contactgroups notified for this Host
-         */
-        [
-            'contact' => $notifiedUserIds,
-            'cg' => $notifiedUserGroupIds,
-        ] = $this->legacyRepository->findHostNotifiedUserIdsAndUserGroupIds($hostId);
-        $users = $this->userRepository->findUsersByIds($notifiedUserIds);
-        $usersNotificationSettings = $this->notificationRepository->findHostNotificationSettingsByUserIds(
-            $notifiedUserIds
-        );
-        $userGroups = $this->userGroupRepository->findByIds($notifiedUserGroupIds);
+        $notifiedContacts = $this->readHostNotificationRepository->findNotifiedContactsById($hostId);
+        $notifiedContactGroups = $this->readHostNotificationRepository->findNotifiedContactGroupsById($hostId);
 
         $realtimeHost = $this->readRealTimeHostRepository->findHostById($hostId);
         if ($realtimeHost === null) {
@@ -116,9 +96,8 @@ class FindHostNotificationPolicy
 
         $presenter->present(
             $this->createResponse(
-                $users,
-                $userGroups,
-                $usersNotificationSettings,
+                $notifiedContacts,
+                $notifiedContactGroups,
                 $realtimeHost->isNotificationEnabled(),
             )
         );
@@ -184,22 +163,19 @@ class FindHostNotificationPolicy
     }
 
     /**
-     * @param User[] $users
-     * @param UserGroup[] $userGroups
-     * @param NotificationInterface[] $usersNotificationSettings
+     * @param NotifiedContact[] $notifiedContacts
+     * @param NotifiedContactGroup[] $notifiedContactGroups
      * @param bool $isNotificationEnabled
      * @return FindNotificationPolicyResponse
      */
     public function createResponse(
-        array $users,
-        array $userGroups,
-        array $usersNotificationSettings,
+        array $notifiedContacts,
+        array $notifiedContactGroups,
         bool $isNotificationEnabled,
     ): FindNotificationPolicyResponse {
         return new FindNotificationPolicyResponse(
-            $users,
-            $userGroups,
-            $usersNotificationSettings,
+            $notifiedContacts,
+            $notifiedContactGroups,
             $isNotificationEnabled,
         );
     }

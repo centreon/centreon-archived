@@ -32,16 +32,10 @@ class DbNotifiedContactGroupFactory
      */
     public static function createFromRecord(array $contactGroup): NotifiedContactGroup
     {
-        $hostNotification = DbContactHostNotificationFactory::createFromRecord($contactGroup);
-
-        $serviceNotification = DbContactServiceNotificationFactory::createFromRecord($contactGroup);
-
         return new NotifiedContactGroup(
             (int) $contactGroup['id'],
             $contactGroup['name'],
             $contactGroup['alias'],
-            $hostNotification,
-            $serviceNotification,
         );
     }
 }

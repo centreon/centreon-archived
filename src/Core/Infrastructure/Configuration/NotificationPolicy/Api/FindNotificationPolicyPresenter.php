@@ -47,30 +47,29 @@ class FindNotificationPolicyPresenter extends AbstractPresenter implements FindN
      */
     public function present(mixed $response): void
     {
-        $presenterResponse['users'] = array_map(
-            fn (array $user) => [
-                'id' => $user['id'],
-                'name' => $user['name'],
-                'alias' => $user['alias'],
-                'email' => $user['email'],
-                'is_notified_on' => $response->usersNotificationSettings[$user['id']]['is_notified_on'],
-                'time_period' => $response->usersNotificationSettings[$user['id']]['time_period'],
-                'configuration_uri' => $this->userHypermediaCreator->createUserConfigurationUri($user['id'])
+        $presenterResponse['contacts'] = array_map(
+            fn (array $notifiedContact) => [
+                'id' => $notifiedContact['id'],
+                'name' => $notifiedContact['name'],
+                'alias' => $notifiedContact['alias'],
+                'email' => $notifiedContact['email'],
+                'notifications' => $notifiedContact['notifications'],
+                'configuration_uri' => $this->userHypermediaCreator->createUserConfigurationUri($notifiedContact['id'])
             ],
-            $response->users
+            $response->notifiedContacts,
         );
 
-        $presenterResponse['user_groups'] = [];
-        foreach ($response->userGroups as $userGroup) {
-            $presenterResponse['user_groups'][] = [
-                'id' => $userGroup['id'],
-                'name' => $userGroup['name'],
-                'alias' => $userGroup['alias'],
+        $presenterResponse['contact_groups'] = array_map(
+            fn (array $notifiedContactGroup) => [
+                'id' => $notifiedContactGroup['id'],
+                'name' => $notifiedContactGroup['name'],
+                'alias' => $notifiedContactGroup['alias'],
                 'configuration_uri' => $this->userGroupHypermediaCreator->createUserGroupConfigurationUri(
-                    $userGroup['id']
-                )
-            ];
-        }
+                    $notifiedContactGroup['id']
+                ),
+            ],
+            $response->notifiedContactGroups,
+        );
 
         $presenterResponse['is_notification_enabled'] = $response->isNotificationEnabled;
 

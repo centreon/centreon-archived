@@ -28,18 +28,18 @@ use Core\Application\Configuration\Notification\Repository\ReadServiceNotificati
 use Core\Domain\Configuration\Notification\Model\NotifiedContact;
 use Core\Domain\Configuration\Notification\Model\NotifiedContactGroup;
 
-class LegacyReadHostNotificationRepository extends AbstractDbReadNotificationRepository implements
+class LegacyReadServiceNotificationRepository extends AbstractDbReadNotificationRepository implements
     ReadServiceNotificationRepositoryInterface
 {
     /**
      * @var array<int,NotifiedContact[]>
      */
-    private ?array $notifiedContacts = [];
+    private array $notifiedContacts = [];
 
     /**
      * @var array<int,NotifiedContactGroup[]>
      */
-    private ?array $notifiedContactGroups = [];
+    private array $notifiedContactGroups = [];
 
     /**
      * @param DatabaseConnection $db
@@ -55,25 +55,25 @@ class LegacyReadHostNotificationRepository extends AbstractDbReadNotificationRep
     /**
      * @inheritDoc
      */
-    public function findNotifiedContactsById(int $hostId): array
+    public function findNotifiedContactsById(int $serviceId): array
     {
-        if (!isset($this->notifiedContacts[$hostId])) {
-            $this->fetchNotifiedContactsAndContactGroups($hostId);
+        if (!isset($this->notifiedContacts[$serviceId])) {
+            $this->fetchNotifiedContactsAndContactGroups($serviceId);
         }
 
-        return $this->notifiedContacts[$hostId];
+        return $this->notifiedContacts[$serviceId];
     }
 
     /**
      * @inheritDoc
      */
-    public function findNotifiedContactGroupsById(int $hostId): array
+    public function findNotifiedContactGroupsById(int $serviceId): array
     {
-        if (!isset($this->notifiedContactGroups[$hostId])) {
-            $this->fetchNotifiedContactsAndContactGroups($hostId);
+        if (!isset($this->notifiedContactGroups[$serviceId])) {
+            $this->fetchNotifiedContactsAndContactGroups($serviceId);
         }
 
-        return $this->notifiedContactGroups[$hostId];
+        return $this->notifiedContactGroups[$serviceId];
     }
 
     /**
@@ -95,7 +95,7 @@ class LegacyReadHostNotificationRepository extends AbstractDbReadNotificationRep
             'cg' => $notifiedContactGroupIds,
         ] = $serviceInstance->getCgAndContacts($serviceId);
 
-        $this->notifiedContacts = $this->findContactsByIds($notifiedContactIds);
-        $this->notifiedContactGroups = $this->findContactGroupsByIds($notifiedContactGroupIds);
+        $this->notifiedContacts[$serviceId] = $this->findContactsByIds($notifiedContactIds);
+        $this->notifiedContactGroups[$serviceId] = $this->findContactGroupsByIds($notifiedContactGroupIds);
     }
 }

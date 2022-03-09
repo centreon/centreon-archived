@@ -25,19 +25,15 @@ namespace Core\Application\Configuration\NotificationPolicy\UseCase;
 use Centreon\Domain\Log\LoggerTrait;
 use Centreon\Domain\HostConfiguration\Host;
 use Centreon\Domain\ServiceConfiguration\Service;
-use Core\Domain\Configuration\User\Model\User;
 use Centreon\Domain\Engine\EngineConfiguration;
 use Core\Application\Common\UseCase\NotFoundResponse;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
-use Core\Domain\Configuration\UserGroup\Model\UserGroup;
+use Core\Domain\Configuration\Notification\Model\NotifiedContact;
+use Core\Domain\Configuration\Notification\Model\NotifiedContactGroup;
 use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
-use Core\Domain\Configuration\Notification\Model\NotificationInterface;
 use Centreon\Domain\Engine\Interfaces\EngineConfigurationServiceInterface;
-use Core\Application\Configuration\User\Repository\ReadUserRepositoryInterface;
 use Centreon\Domain\HostConfiguration\Interfaces\HostConfigurationRepositoryInterface;
 use Centreon\Domain\ServiceConfiguration\Interfaces\ServiceConfigurationRepositoryInterface;
-use Core\Application\Configuration\UserGroup\Repository\ReadUserGroupRepositoryInterface;
-use Core\Application\Configuration\Notification\Repository\ReadNotificationRepositoryInterface;
 use Core\Application\Configuration\Notification\Repository\ReadServiceNotificationRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadServiceRepositoryInterface as ReadRealTimeServiceRepositoryInterface;
 
@@ -46,10 +42,7 @@ class FindServiceNotificationPolicy
     use LoggerTrait;
 
     /**
-     * @param NotificationPolicyRepositoryInterface $readServiceNotificationRepository
-     * @param ReadNotificationRepositoryInterface $notificationRepository
-     * @param ReadUserRepositoryInterface $userRepository
-     * @param ReadUserGroupRepositoryInterface $userGroupRepository
+     * @param ReadServiceNotificationRepositoryInterface $readServiceNotificationRepository
      * @param HostConfigurationRepositoryInterface $hostRepository
      * @param ServiceConfigurationRepositoryInterface $serviceRepository
      * @param EngineConfigurationServiceInterface $engineService
@@ -59,9 +52,6 @@ class FindServiceNotificationPolicy
      */
     public function __construct(
         private ReadServiceNotificationRepositoryInterface $readServiceNotificationRepository,
-        private ReadNotificationRepositoryInterface $notificationRepository,
-        private ReadUserRepositoryInterface $userRepository,
-        private ReadUserGroupRepositoryInterface $userGroupRepository,
         private HostConfigurationRepositoryInterface $hostRepository,
         private ServiceConfigurationRepositoryInterface $serviceRepository,
         private EngineConfigurationServiceInterface $engineService,
@@ -120,7 +110,6 @@ class FindServiceNotificationPolicy
             $this->createResponse(
                 $notifiedContacts,
                 $notifiedContactGroups,
-                $usersNotificationSettings,
                 $realtimeService->isNotificationEnabled(),
             )
         );
@@ -245,22 +234,19 @@ class FindServiceNotificationPolicy
     }
 
     /**
-     * @param User[] $users
-     * @param UserGroup[] $userGroups
-     * @param NotificationInterface[] $usersNotificationSettings
+     * @param NotifiedContact[] $notifiedContacts
+     * @param NotifiedContactGroup[] $notifiedContactGroups
      * @param bool $isNotificationEnabled
      * @return FindNotificationPolicyResponse
      */
     public function createResponse(
-        array $users,
-        array $userGroups,
-        array $usersNotificationSettings,
+        array $notifiedContacts,
+        array $notifiedContactGroups,
         bool $isNotificationEnabled,
     ): FindNotificationPolicyResponse {
         return new FindNotificationPolicyResponse(
-            $users,
-            $userGroups,
-            $usersNotificationSettings,
+            $notifiedContacts,
+            $notifiedContactGroups,
             $isNotificationEnabled,
         );
     }
