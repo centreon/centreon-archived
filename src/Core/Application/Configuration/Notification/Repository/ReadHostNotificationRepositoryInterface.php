@@ -29,13 +29,13 @@ interface ReadHostNotificationRepositoryInterface
 {
     /**
      * @param int $hostId
-     * @return array<int,NotifiedContact[]>
+     * @return NotifiedContact[]
      */
     public function findNotifiedContactsById(int $hostId): array;
 
     /**
      * @param int $hostId
-     * @return array<int,NotifiedContactGroup[]>
+     * @return NotifiedContactGroup[]
      */
     public function findNotifiedContactGroupsById(int $hostId): array;
 }

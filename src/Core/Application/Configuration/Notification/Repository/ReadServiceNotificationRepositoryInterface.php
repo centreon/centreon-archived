@@ -29,13 +29,13 @@ interface ReadServiceNotificationRepositoryInterface
 {
     /**
      * @param int $serviceId
-     * @return array<int,NotifiedContact[]>
+     * @return NotifiedContact[]
      */
     public function findNotifiedContactsById(int $serviceId): array;
 
     /**
      * @param int $serviceId
-     * @return array<int,NotifiedContactGroup[]>
+     * @return NotifiedContactGroup[]
      */
     public function findNotifiedContactGroupsById(int $serviceId): array;
 }

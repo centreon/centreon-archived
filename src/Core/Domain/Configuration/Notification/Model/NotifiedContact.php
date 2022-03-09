@@ -41,4 +41,52 @@ class NotifiedContact
         private ServiceNotification $serviceNotification,
     ) {
     }
+
+    /**
+     * @return int
+     */
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAlias(): string
+    {
+        return $this->alias;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEmail(): string
+    {
+        return $this->email;
+    }
+
+    /**
+     * @return HostNotification
+     */
+    public function getHostNotification(): HostNotification
+    {
+        return $this->hostNotification;
+    }
+
+    /**
+     * @return ServiceNotification
+     */
+    public function getServiceNotification(): ServiceNotification
+    {
+        return $this->serviceNotification;
+    }
 }

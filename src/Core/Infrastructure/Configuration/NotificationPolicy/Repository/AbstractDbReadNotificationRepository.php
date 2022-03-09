@@ -62,7 +62,7 @@ abstract class AbstractDbReadNotificationRepository extends AbstractRepositoryDR
                 t1.tp_alias as host_timeperiod_alias,
                 t2.tp_id as service_timeperiod_id,
                 t2.tp_name as service_timeperiod_name,
-                t2.tp_alias as service_timeperiod_lais
+                t2.tp_alias as service_timeperiod_alias
             FROM `:db`.contact c
             INNER JOIN `:db`.timeperiod t1
                 ON t1.tp_id = c.timeperiod_tp_id

@@ -34,12 +34,12 @@ class LegacyReadHostNotificationRepository extends AbstractDbReadNotificationRep
     /**
      * @var array<int,NotifiedContact[]>
      */
-    private ?array $notifiedContacts = [];
+    private array $notifiedContacts = [];
 
     /**
      * @var array<int,NotifiedContactGroup[]>
      */
-    private ?array $notifiedContactGroups = [];
+    private array $notifiedContactGroups = [];
 
     /**
      * @param DatabaseConnection $db
@@ -95,7 +95,7 @@ class LegacyReadHostNotificationRepository extends AbstractDbReadNotificationRep
             'cg' => $notifiedContactGroupIds,
         ] = $hostInstance->getCgAndContacts($hostId);
 
-        $this->notifiedContacts = $this->findContactsByIds($notifiedContactIds);
-        $this->notifiedContactGroups = $this->findContactGroupsByIds($notifiedContactGroupIds);
+        $this->notifiedContacts[$hostId] = $this->findContactsByIds($notifiedContactIds);
+        $this->notifiedContactGroups[$hostId] = $this->findContactGroupsByIds($notifiedContactGroupIds);
     }
 }

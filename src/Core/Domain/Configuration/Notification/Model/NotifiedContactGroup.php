@@ -28,15 +28,35 @@ class NotifiedContactGroup
      * @param int $id
      * @param string $name
      * @param string $alias
-     * @param HostNotification $hostNotification
-     * @param ServiceNotification $serviceNotification
      */
     public function __construct(
         private int $id,
         private string $name,
         private string $alias,
-        private HostNotification $hostNotification,
-        private ServiceNotification $serviceNotification,
     ) {
+    }
+
+    /**
+     * @return int
+     */
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAlias(): string
+    {
+        return $this->alias;
     }
 }
