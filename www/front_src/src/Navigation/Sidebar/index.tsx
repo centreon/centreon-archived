@@ -32,15 +32,15 @@ const closedMixin = (theme: Theme): CSSObject => ({
   width: theme.spacing(closedDrawerWidth),
 });
 
-const DrawerHeader = styled('div')(() => ({
+const DrawerHeader = styled('div')(({ theme }) => ({
   '&:hover': {
     cursor: 'pointer',
   },
   alignItems: 'flex-end',
   alignSelf: 'center',
   display: 'flex',
-  height: 55,
-  paddingRight: 4.5,
+  height: theme.spacing(6.9),
+  paddingRight: theme.spacing(0.65),
 }));
 
 const Drawer = styled(MuiDrawer, {
@@ -52,7 +52,7 @@ const Drawer = styled(MuiDrawer, {
   boxSizing: 'border-box',
   flexShrink: 0,
   whiteSpace: 'nowrap',
-  width: openedDrawerWidth,
+  width: theme.spacing(openedDrawerWidth / 8),
   ...(open && {
     ...openedMixin(theme),
     '& .MuiDrawer-paper': openedMixin(theme),
