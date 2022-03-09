@@ -12,7 +12,7 @@ import MiniLogo from './Logo/LogoMini';
 import NavigationMenu from './Menu';
 
 export const openedDrawerWidth = 165;
-export const closedDrawerWidth = 6;
+export const closedDrawerWidth = 7;
 
 const openedMixin = (theme: Theme): CSSObject => ({
   overflowX: 'hidden',
