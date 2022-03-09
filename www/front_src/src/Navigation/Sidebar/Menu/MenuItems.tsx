@@ -63,7 +63,7 @@ const useStyles = makeStyles((theme) => ({
         ? theme.spacing(rootHeightItem / 8)
         : theme.spacing(heightItem / 8),
 
-    marginBottom: 1,
+    marginBottom: 0.8,
   },
   rootLabel: {
     margin: theme.spacing(0),
