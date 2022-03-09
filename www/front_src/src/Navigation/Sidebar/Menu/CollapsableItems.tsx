@@ -80,7 +80,7 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.text.secondary,
     fontSize: theme.typography.caption.fontSize,
     fontWeight: 'bold',
-    lineHeight: theme.spacing(2.5),
+    lineHeight: theme.spacing(2.9),
     textAlign: 'center',
   },
   toggled: {
