@@ -12,7 +12,7 @@ import {
   labelFailedToSaveWebSSOConfiguration,
   labelWebSSOConfigurationSaved,
 } from '../translatedLabels';
-import { putOpenidConfiguration } from '../../api';
+import { putWebSSOConfiguration } from '../../api';
 import { WebSSOConfiguration } from '../models';
 import FormButtons from '../../FormButtons';
 import Inputs from '../../FormInputs';
@@ -39,7 +39,7 @@ const Form = ({
 
   const { sendRequest } = useRequest({
     defaultFailureMessage: t(labelFailedToSaveWebSSOConfiguration),
-    request: putOpenidConfiguration,
+    request: putWebSSOConfiguration,
   });
   const { showSuccessMessage } = useSnackbar();
 

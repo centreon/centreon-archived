@@ -231,7 +231,7 @@ describe('Openid configuration form', () => {
     expect(screen.getByText(labelReset)).not.toBeDisabled();
   });
 
-  it('saves the openid configuration when a field modified and the "Save" button is clicked', async () => {
+  it('saves the openid configuration when a field is modified and the "Save" button is clicked', async () => {
     renderOpenidConfigurationForm();
 
     await waitFor(() => {
@@ -272,7 +272,7 @@ describe('Openid configuration form', () => {
     });
   });
 
-  it('resets the openid configuration when a field modified and the "Reset" button is clicked', async () => {
+  it('resets the openid configuration when a field is modified and the "Reset" button is clicked', async () => {
     renderOpenidConfigurationForm();
 
     await waitFor(() => {

@@ -15,29 +15,20 @@ import {
 } from '../Local/translatedLabels';
 
 import {
-  labelAuthorizationEndpoint,
-  labelBaseUrl,
   labelBlacklistClientAddresses,
-  labelClientID,
-  labelClientSecret,
-  labelDefineOpenIDConnectConfiguration,
-  labelDisableVerifyPeer,
-  labelEnableOpenIDConnectAuthentication,
-  labelEndSessionEndpoint,
-  labelIntrospectionTokenEndpoint,
-  labelInvalidIPAddressOrDomainName,
-  labelInvalidURL,
-  labelLoginClaimValue,
+  labelDefineWebSSOConfiguration,
+  labelEnableWebSSOAuthentication,
+  labelInvalidIPAddress,
+  labelInvalidRegex,
+  labelLoginHeaderAttributeName,
   labelMixed,
-  labelOpenIDConnectOnly,
-  labelScopes,
-  labelTokenEndpoint,
+  labelPatternMatchLogin,
+  labelPatternReplaceLogin,
   labelTrustedClientAddresses,
-  labelUseBasicAuthenticatonForTokenEndpointAuthentication,
-  labelUserInformationEndpoint,
+  labelWebSSOOnly,
 } from './translatedLabels';
 
-import OpenidConfigurationForm from '.';
+import WebSSOConfigurationForm from '.';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
@@ -50,33 +41,24 @@ const cancelTokenPutParams = {
   },
 };
 
-const renderOpenidConfigurationForm = (): RenderResult =>
-  render(<OpenidConfigurationForm />);
+const renderWebSSOConfigurationForm = (): RenderResult =>
+  render(<WebSSOConfigurationForm />);
 
-const retrievedOpenidConfiguration = {
-  authentication_type: 'client_secret_post',
-  authorization_endpoint: '/authorize',
-  base_url: 'https://localhost:8080',
+const retrievedWebSSOConfiguration = {
   blacklist_client_addresses: ['127.0.0.1'],
-  client_id: 'client_id',
-  client_secret: 'client_secret',
-  connection_scopes: ['openid'],
-  endsession_endpoint: '/logout',
-  introspection_token_endpoint: '/introspect',
   is_active: true,
   is_forced: false,
-  login_claim: 'sub',
-  token_endpoint: '/token',
+  login_header_attribute: '',
+  pattern_matching_login: '',
+  pattern_replace_login: '',
   trusted_client_addresses: ['127.0.0.1'],
-  userinfo_endpoint: '/userinfo',
-  verify_peer: false,
 };
 
-describe('Openid configuration form', () => {
+describe('Web SSOconfiguration form', () => {
   beforeEach(() => {
     mockedAxios.get.mockReset();
     mockedAxios.get.mockResolvedValue({
-      data: retrievedOpenidConfiguration,
+      data: retrievedWebSSOConfiguration,
     });
 
     mockedAxios.put.mockReset();
@@ -86,23 +68,23 @@ describe('Openid configuration form', () => {
   });
 
   it('displays the form', async () => {
-    renderOpenidConfigurationForm();
+    renderWebSSOConfigurationForm();
 
     expect(
-      screen.getByText(labelDefineOpenIDConnectConfiguration),
+      screen.getByText(labelDefineWebSSOConfiguration),
     ).toBeInTheDocument();
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
-        authenticationProvidersEndpoint(Provider.Openid),
+        authenticationProvidersEndpoint(Provider.WebSSO),
         cancelTokenRequestParam,
       );
     });
 
     expect(
-      screen.getByLabelText(labelEnableOpenIDConnectAuthentication),
+      screen.getByLabelText(labelEnableWebSSOAuthentication),
     ).toBeChecked();
-    expect(screen.getByLabelText(labelOpenIDConnectOnly)).not.toBeChecked();
+    expect(screen.getByLabelText(labelWebSSOOnly)).not.toBeChecked();
     expect(screen.getByLabelText(labelMixed)).toBeChecked();
     expect(
       screen.getByLabelText(labelTrustedClientAddresses),
@@ -111,96 +93,62 @@ describe('Openid configuration form', () => {
       screen.getByLabelText(labelBlacklistClientAddresses),
     ).toBeInTheDocument();
     expect(screen.getAllByText('127.0.0.1')).toHaveLength(2);
-    expect(screen.getByLabelText(labelBaseUrl)).toHaveValue(
-      'https://localhost:8080',
+    expect(screen.getByLabelText(labelLoginHeaderAttributeName)).toHaveValue(
+      '',
     );
-    expect(screen.getByLabelText(labelAuthorizationEndpoint)).toHaveValue(
-      '/authorize',
-    );
-    expect(screen.getByLabelText(labelTokenEndpoint)).toHaveValue('/token');
-    expect(screen.getByLabelText(labelIntrospectionTokenEndpoint)).toHaveValue(
-      '/introspect',
-    );
-    expect(
-      screen.getByLabelText(labelUserInformationEndpoint),
-    ).toBeInTheDocument();
-    expect(screen.getByLabelText(labelEndSessionEndpoint)).toHaveValue(
-      '/logout',
-    );
-    expect(screen.getByLabelText(labelScopes)).toBeInTheDocument();
-    expect(screen.getByText('openid')).toBeInTheDocument();
-    expect(screen.getByLabelText(labelLoginClaimValue)).toHaveValue('sub');
-    expect(screen.getByLabelText(labelClientID)).toHaveValue('client_id');
-    expect(screen.getByLabelText(labelClientSecret)).toHaveValue(
-      'client_secret',
-    );
-    expect(
-      screen.getByLabelText(
-        labelUseBasicAuthenticatonForTokenEndpointAuthentication,
-      ),
-    ).toBeChecked();
-    expect(screen.getByLabelText(labelDisableVerifyPeer)).not.toBeChecked();
+    expect(screen.getByLabelText(labelPatternMatchLogin)).toHaveValue('');
+    expect(screen.getByLabelText(labelPatternReplaceLogin)).toHaveValue('');
   });
 
-  it('disables all the fields when the OpenID configuration is disabled', async () => {
-    renderOpenidConfigurationForm();
+  it('disables all the fields when the Web SSO configuration is disabled', async () => {
+    renderWebSSOConfigurationForm();
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
-        authenticationProvidersEndpoint(Provider.Openid),
+        authenticationProvidersEndpoint(Provider.WebSSO),
         cancelTokenRequestParam,
       );
     });
 
-    userEvent.click(
-      screen.getByLabelText(labelEnableOpenIDConnectAuthentication),
-    );
+    userEvent.click(screen.getByLabelText(labelEnableWebSSOAuthentication));
 
-    expect(screen.getByLabelText(labelOpenIDConnectOnly)).toBeDisabled();
+    expect(screen.getByLabelText(labelWebSSOOnly)).toBeDisabled();
     expect(screen.getByLabelText(labelMixed)).toBeDisabled();
     expect(screen.getByLabelText(labelTrustedClientAddresses)).toBeDisabled();
     expect(screen.getByLabelText(labelBlacklistClientAddresses)).toBeDisabled();
-    expect(screen.getByLabelText(labelBaseUrl)).toBeDisabled();
-    expect(screen.getByLabelText(labelAuthorizationEndpoint)).toBeDisabled();
-    expect(screen.getByLabelText(labelTokenEndpoint)).toBeDisabled();
-    expect(
-      screen.getByLabelText(labelIntrospectionTokenEndpoint),
-    ).toBeDisabled();
-    expect(screen.getByLabelText(labelUserInformationEndpoint)).toBeDisabled();
-    expect(screen.getByLabelText(labelEndSessionEndpoint)).toBeDisabled();
-    expect(screen.getByLabelText(labelScopes)).toBeDisabled();
-    expect(screen.getByLabelText(labelLoginClaimValue)).toBeDisabled();
-    expect(screen.getByLabelText(labelClientID)).toBeDisabled();
-    expect(screen.getByLabelText(labelClientSecret)).toBeDisabled();
-    expect(
-      screen.getByLabelText(
-        labelUseBasicAuthenticatonForTokenEndpointAuthentication,
-      ),
-    ).toBeDisabled();
-    expect(screen.getByLabelText(labelDisableVerifyPeer)).toBeDisabled();
-
-    expect(screen.getByText(labelSave)).not.toBeDisabled();
-    expect(screen.getByText(labelReset)).not.toBeDisabled();
+    expect(screen.getByLabelText(labelLoginHeaderAttributeName)).toBeDisabled();
+    expect(screen.getByLabelText(labelPatternMatchLogin)).toBeDisabled();
+    expect(screen.getByLabelText(labelPatternReplaceLogin)).toBeDisabled();
   });
 
   it('displays an error message when fields are not correctly formatted', async () => {
-    renderOpenidConfigurationForm();
+    renderWebSSOConfigurationForm();
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
-        authenticationProvidersEndpoint(Provider.Openid),
+        authenticationProvidersEndpoint(Provider.WebSSO),
         cancelTokenRequestParam,
       );
     });
 
     userEvent.type(
-      screen.getByLabelText(labelBaseUrl),
-      '{selectall}{backspace}invalid base url',
+      screen.getByLabelText(labelPatternMatchLogin),
+      '{selectall}{backspace}invalid-pattern^',
     );
     userEvent.tab();
 
     await waitFor(() => {
-      expect(screen.getByText(labelInvalidURL)).toBeInTheDocument();
+      expect(screen.getByText(labelInvalidRegex)).toBeInTheDocument();
+    });
+
+    userEvent.type(
+      screen.getByLabelText(labelPatternReplaceLogin),
+      '{selectall}{backspace}$invalid-pattern',
+    );
+    userEvent.tab();
+
+    await waitFor(() => {
+      expect(screen.getAllByText(labelInvalidRegex)).toHaveLength(2);
     });
 
     userEvent.type(
@@ -211,9 +159,7 @@ describe('Openid configuration form', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText(
-          `invalid domain: ${labelInvalidIPAddressOrDomainName}`,
-        ),
+        screen.getByText(`invalid domain: ${labelInvalidIPAddress}`),
       ).toBeInTheDocument();
     });
 
@@ -225,7 +171,7 @@ describe('Openid configuration form', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText(`127.0.0.1111: ${labelInvalidIPAddressOrDomainName}`),
+        screen.getByText(`127.0.0.1111: ${labelInvalidIPAddress}`),
       ).toBeInTheDocument();
     });
 
@@ -233,19 +179,19 @@ describe('Openid configuration form', () => {
     expect(screen.getByText(labelReset)).not.toBeDisabled();
   });
 
-  it('saves the openid configuration when a field modified and the "Save" button is clicked', async () => {
-    renderOpenidConfigurationForm();
+  it('saves the web SSO configuration when a field is modified and the "Save" button is clicked', async () => {
+    renderWebSSOConfigurationForm();
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
-        authenticationProvidersEndpoint(Provider.Openid),
+        authenticationProvidersEndpoint(Provider.WebSSO),
         cancelTokenRequestParam,
       );
     });
 
     userEvent.type(
-      screen.getByLabelText(labelBaseUrl),
-      '{selectall}{backspace}http://localhost:8081/login',
+      screen.getByLabelText(labelLoginHeaderAttributeName),
+      'admin',
     );
     userEvent.tab();
 
@@ -257,10 +203,10 @@ describe('Openid configuration form', () => {
 
     await waitFor(() => {
       expect(mockedAxios.put).toHaveBeenCalledWith(
-        authenticationProvidersEndpoint(Provider.Openid),
+        authenticationProvidersEndpoint(Provider.WebSSO),
         {
-          ...retrievedOpenidConfiguration,
-          base_url: 'http://localhost:8081/login',
+          ...retrievedWebSSOConfiguration,
+          login_header_attribute: 'admin',
         },
         cancelTokenPutParams,
       );
@@ -268,25 +214,25 @@ describe('Openid configuration form', () => {
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
-        authenticationProvidersEndpoint(Provider.Openid),
+        authenticationProvidersEndpoint(Provider.WebSSO),
         cancelTokenRequestParam,
       );
     });
   });
 
-  it('resets the openid configuration when a field modified and the "Reset" button is clicked', async () => {
-    renderOpenidConfigurationForm();
+  it('resets the web SSO configuration when a field is modified and the "Reset" button is clicked', async () => {
+    renderWebSSOConfigurationForm();
 
     await waitFor(() => {
       expect(mockedAxios.get).toHaveBeenCalledWith(
-        authenticationProvidersEndpoint(Provider.Openid),
+        authenticationProvidersEndpoint(Provider.WebSSO),
         cancelTokenRequestParam,
       );
     });
 
     userEvent.type(
-      screen.getByLabelText(labelBaseUrl),
-      '{selectall}{backspace}http://localhost:8081/login',
+      screen.getByLabelText(labelLoginHeaderAttributeName),
+      'admin',
     );
     userEvent.tab();
 
@@ -305,8 +251,8 @@ describe('Openid configuration form', () => {
     userEvent.click(screen.getAllByText(labelReset)[1]);
 
     await waitFor(() => {
-      expect(screen.getByLabelText(labelBaseUrl)).toHaveValue(
-        'https://localhost:8080',
+      expect(screen.getByLabelText(labelLoginHeaderAttributeName)).toHaveValue(
+        '',
       );
     });
   });
