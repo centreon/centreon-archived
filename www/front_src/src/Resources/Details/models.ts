@@ -37,8 +37,8 @@ export interface ResourceDetails extends NamedEntity {
   links: ResourceLinks;
   monitoring_server_name?: string;
   next_check: string;
-  notification_number: number;
   notification_enabled: boolean;
+  notification_number: number;
   parent: Parent;
   passive_checks?: boolean;
   percent_state_change: number;
