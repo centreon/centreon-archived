@@ -133,10 +133,11 @@ $form->addRule('ldap_sync_interval', _("An integer with a minimum value of 1 is 
 /**
  * list of contact template available
  */
-$res = $pearDB->query(
+$res = $pearDB->prepare(
     "SELECT contact_id, contact_name FROM contact WHERE contact_register = '0'"
 );
-$LdapContactTplList = array();
+$res->execute();
+$LdapContactTplList = [];
 while ($row = $res->fetch()) {
     $LdapContactTplList[$row['contact_id']] = $row['contact_name'];
 }
@@ -314,8 +315,8 @@ if ($arId) {
     $nbOfInitialRows = $row['nb'];
 
     $res = $pearDB->prepare(
-        "SELECT MAX(ldap_host_id) as cnt 
-        FROM auth_ressource_host 
+        "SELECT MAX(ldap_host_id) as cnt
+        FROM auth_ressource_host
         WHERE auth_ressource_id = :arId"
     );
     $res->bindValue(':arId', (int)$arId, \PDO::PARAM_INT);
@@ -337,6 +338,7 @@ if ($form->validate()) {
     // sanitize name and description
     $values['ar_name'] = filter_var($values['ar_name'], FILTER_SANITIZE_STRING);
     $values['ar_description'] = filter_var($values['ar_description'], FILTER_SANITIZE_STRING);
+    $values['ar_id'] = $arId;
 
     // Check if sanitized name and description are not empty
     if (

@@ -38,12 +38,32 @@ require_once _CENTREON_PATH_ . 'www/class/centreonLDAP.class.php';
 require_once _CENTREON_PATH_ . 'www/class/CentreonLDAPAdmin.class.php';
 $tpl = new Smarty();
 
+/**
+ * used to sanitize key and value in array
+ * @param array<mixed> $inputArray
+ * @return array<mixed>
+ */
+function sanitizeInputArray(array $inputArray): array
+{
+    $sanitizedArray = [];
+    foreach ($inputArray as $key => $value) {
+        $key = filter_var($key, FILTER_VALIDATE_INT);
+        $value = filter_var($value, FILTER_VALIDATE_INT);
+        if (false !== $key && false !== $value) {
+            $sanitizedArray[$key] = $value;
+        }
+    }
+    return $sanitizedArray;
+}
+
 if (isset($_REQUEST['ar_id']) || isset($_REQUEST['new'])) {
+    $_REQUEST['ar_id']  = filter_var($_REQUEST['ar_id'] ?? null, FILTER_VALIDATE_INT);
+    $_REQUEST['new']    = filter_var($_REQUEST['new'] ?? null, FILTER_VALIDATE_INT);
     include _CENTREON_PATH_ . 'www/include/Administration/parameters/ldap/form.php';
 } else {
-    $ldapAction = $_REQUEST['a'] ?? null;
+    $ldapAction = filter_var($_REQUEST['a'] ?? null, FILTER_SANITIZE_STRING);
     if (!is_null($ldapAction) && isset($_REQUEST['select']) && is_array($_REQUEST['select'])) {
-        $select = $_REQUEST['select'];
+        $select = sanitizeInputArray($_REQUEST['select']);
         $ldapConf = new CentreonLdapAdmin($pearDB);
         switch ($ldapAction) {
             case "d":
