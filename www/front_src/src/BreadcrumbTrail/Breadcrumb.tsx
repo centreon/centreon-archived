@@ -9,6 +9,7 @@ import { Breadcrumb as BreadcrumbModel } from './models';
 
 const useStyles = makeStyles(() => ({
   link: {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     '&:hover': {
       textDecoration: 'underline',
     },

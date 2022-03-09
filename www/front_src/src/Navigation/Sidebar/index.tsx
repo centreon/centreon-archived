@@ -33,6 +33,7 @@ const closedMixin = (theme: Theme): CSSObject => ({
 });
 
 const DrawerHeader = styled('div')(({ theme }) => ({
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   '&:hover': {
     cursor: 'pointer',
   },
