@@ -114,7 +114,7 @@ const FormPollerStepOne = ({
 
   const waitListOption = waitList?.map((c) => ({ id: c.ip, name: c.ip }));
 
-  const hasError = (stateName): string | undefined =>
+  const getError = (stateName): string | undefined =>
     error[stateName].length > 0 ? error[stateName] : undefined;
 
   const nextDisabled =
@@ -170,7 +170,7 @@ const FormPollerStepOne = ({
             <TextField
               fullWidth
               required
-              error={hasError('server_name')}
+              error={getError('server_name')}
               label={t(labelServerName)}
               name="server_name"
               value={stepOneFormData.server_name}
@@ -180,7 +180,7 @@ const FormPollerStepOne = ({
             <TextField
               fullWidth
               required
-              error={hasError('server_ip')}
+              error={getError('server_ip')}
               label={t(labelServerIp)}
               name="server_ip"
               value={stepOneFormData.server_ip}
@@ -190,7 +190,7 @@ const FormPollerStepOne = ({
             <TextField
               fullWidth
               required
-              error={hasError('centreon_central_ip')}
+              error={getError('centreon_central_ip')}
               label={t(labelCentreonCentralIp)}
               name="centreon_central_ip"
               value={stepOneFormData.centreon_central_ip}
@@ -213,7 +213,7 @@ const FormPollerStepOne = ({
             <TextField
               fullWidth
               required
-              error={hasError('server_name')}
+              error={getError('server_name')}
               label={t(labelServerName)}
               name="server_name"
               value={stepOneFormData.server_name}
@@ -223,7 +223,7 @@ const FormPollerStepOne = ({
             <TextField
               fullWidth
               required
-              error={hasError('server_ip')}
+              error={getError('server_ip')}
               label={t(labelServerIp)}
               name="server_ip"
               value={stepOneFormData.server_ip}
@@ -233,7 +233,7 @@ const FormPollerStepOne = ({
             <TextField
               fullWidth
               required
-              error={hasError('centreon_central_ip')}
+              error={getError('centreon_central_ip')}
               label={t(labelCentreonCentralIp)}
               name="centreon_central_ip"
               value={stepOneFormData.centreon_central_ip}

@@ -152,7 +152,7 @@ const FormRemoteServerStepOne = ({
     Object.values(stepOneFormData).some((x) => x === '') ||
     Object.values(error).some((x) => x !== '');
 
-  const hasError = (stateName): string | undefined =>
+  const getError = (stateName): string | undefined =>
     error[stateName].length > 0 ? error[stateName] : undefined;
 
   React.useEffect(() => {
@@ -205,7 +205,7 @@ const FormRemoteServerStepOne = ({
             <TextField
               fullWidth
               required
-              error={hasError('server_name')}
+              error={getError('server_name')}
               label={t(labelServerName)}
               name="server_name"
               value={stepOneFormData.server_name}
@@ -215,7 +215,7 @@ const FormRemoteServerStepOne = ({
             <TextField
               fullWidth
               required
-              error={hasError('server_ip')}
+              error={getError('server_ip')}
               label={t(labelServerIp)}
               name="server_ip"
               value={stepOneFormData.server_ip}
@@ -225,7 +225,7 @@ const FormRemoteServerStepOne = ({
             <TextField
               fullWidth
               required
-              error={hasError('db_user')}
+              error={getError('db_user')}
               label={t(labelDbUser)}
               name="db_user"
               value={stepOneFormData.db_user}
@@ -235,7 +235,7 @@ const FormRemoteServerStepOne = ({
             <TextField
               fullWidth
               required
-              error={hasError('db_password')}
+              error={getError('db_password')}
               label={t(labelDbPassword)}
               name="db_password"
               type="password"
@@ -246,7 +246,7 @@ const FormRemoteServerStepOne = ({
             <TextField
               fullWidth
               required
-              error={hasError('centreon_central_ip')}
+              error={getError('centreon_central_ip')}
               label={t(labelCentreonCentralIp)}
               name="centreon_central_ip"
               value={stepOneFormData.centreon_central_ip}
@@ -256,7 +256,7 @@ const FormRemoteServerStepOne = ({
             <TextField
               fullWidth
               required
-              error={hasError('centreon_folder')}
+              error={getError('centreon_folder')}
               label={t(labelCentreonFolder)}
               name="centreon_folder"
               value={stepOneFormData.centreon_folder}
@@ -299,7 +299,7 @@ const FormRemoteServerStepOne = ({
             <TextField
               fullWidth
               required
-              error={hasError('server_name')}
+              error={getError('server_name')}
               label={t(labelServerName)}
               name="server_name"
               value={stepOneFormData.server_name}
@@ -309,7 +309,7 @@ const FormRemoteServerStepOne = ({
             <TextField
               fullWidth
               required
-              error={hasError('server_ip')}
+              error={getError('server_ip')}
               label={t(labelServerIp)}
               name="server_ip"
               value={stepOneFormData.server_ip}
@@ -319,7 +319,7 @@ const FormRemoteServerStepOne = ({
             <TextField
               fullWidth
               required
-              error={hasError('db_user')}
+              error={getError('db_user')}
               label={t(labelDbUser)}
               name="db_user"
               value={stepOneFormData.db_user}
@@ -329,7 +329,7 @@ const FormRemoteServerStepOne = ({
             <TextField
               fullWidth
               required
-              error={hasError('db_password')}
+              error={getError('db_password')}
               label={t(labelDbPassword)}
               name="db_password"
               type="password"
@@ -340,7 +340,7 @@ const FormRemoteServerStepOne = ({
             <TextField
               fullWidth
               required
-              error={hasError('centreon_central_ip')}
+              error={getError('centreon_central_ip')}
               label={t(labelCentreonCentralIp)}
               name="centreon_central_ip"
               value={stepOneFormData.centreon_central_ip}
@@ -350,7 +350,7 @@ const FormRemoteServerStepOne = ({
             <TextField
               fullWidth
               required
-              error={hasError('centreon_folder')}
+              error={getError('centreon_folder')}
               label={t(labelCentreonFolder)}
               name="centreon_folder"
               value={stepOneFormData.centreon_folder}
