@@ -216,7 +216,7 @@ try {
         unstash 'tar-sources'
         unstash 'api-doc'
         unstash 'rpms-centos7'
-        //unstash 'rpms-centos8'
+        unstash 'rpms-alma8'
         sh "./centreon-build/jobs/web/${serie}/mon-web-delivery.sh"
       }
       if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
