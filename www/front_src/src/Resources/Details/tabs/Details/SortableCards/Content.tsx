@@ -21,7 +21,6 @@ const useStyles = makeStyles<Theme, { isDragging: boolean }>((theme) => ({
     height: '100%',
   }),
   tile: {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     '&:hover': {
       boxShadow: theme.shadows[3],
     },
