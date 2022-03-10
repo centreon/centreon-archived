@@ -31,7 +31,8 @@
  * For more information : contact@centreon.com
  *
  */
-@import "www/Themes/Variables-css/Centreon-Light/variables.css ";
+@import "../Variables-css/Centreon-Light/variables.css ";
+
 
 body {
     background-color:var(--body-background);

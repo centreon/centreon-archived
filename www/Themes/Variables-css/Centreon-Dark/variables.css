@@ -1,5 +1,5 @@
+@import "./../Centreon-Light/variables.css";
 @import "../color-variables.css";
-
 :root{
     --body-background: var(--color-primary-body-background-dark);
     --body-color: var(--color-primary-body-dark);

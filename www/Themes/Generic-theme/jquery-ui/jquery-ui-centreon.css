@@ -1,7 +1,8 @@
 /*
  * Jquery portlet style
  */
-@import "www/Themes/Variables-css/Centreon-Light/variables.css ";
+@import "../Variables-css/Centreon-Light/variables.css ";
+
 
  .column_1 { width: 100%; float: left; padding-bottom: 0px; }
  .column_2 { width: 50%; float: left; padding-bottom: 0px; }

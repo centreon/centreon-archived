@@ -1,5 +1,6 @@
 /******* Loading containers **********/
-@import "www/Themes/Variables-css/Centreon-Light/variables.css ";
+@import "../Variables-css/Centreon-Light/variables.css ";
+
 
 .loadingWrapper {
   position: absolute;

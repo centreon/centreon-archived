@@ -1,4 +1,5 @@
-@import "www/Themes/Variables-css/Centreon-Light/variables.css ";
+@import "../Variables-css/Centreon-Light/variables.css ";
+
 .ListTable a:link, #ListTable a:link, .ListTable a:visited, #ListTable a:visited {color: var(--list-table-anchors-font-color);}
 .ListTable, .ListTableMedium, .ListTableSmall {
     border-color: var(--list-table-border-color);
