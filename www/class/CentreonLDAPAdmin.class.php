@@ -564,14 +564,10 @@ class CentreonLdapAdmin
     public function deleteConfiguration($configList = [])
     {
         if (count($configList)) {
-
-            foreach ($configList as $val) {
-                $statement = $this->db->prepare(
-                    "DELETE FROM auth_ressource WHERE ar_id IN (:configList)"
-                );
-                $statement->bindValue(':configList', $val, \PDO::PARAM_INT);
-                $statement->execute();
-            }
+            $statement = $this->db->prepare(
+                "DELETE FROM auth_ressource WHERE ar_id IN (" . implode(',', $configList) . ")"
+            );
+            $statement->execute();
         }
     }
 
@@ -582,19 +578,16 @@ class CentreonLdapAdmin
      * @param array $configList
      * @return void
      */
-    public function setStatus($status, $configList = array())
+    public function setStatus($status, $configList = [])
     {
         if (count($configList)) {
-            foreach ($configList as $val) {
-                $statement = $this->db->prepare(
-                    "UPDATE auth_ressource
-                    SET ar_enable = :ar_enable
-                    WHERE ar_id IN (:configList)"
-                );
-                $statement->bindValue(':ar_enable', $status, \PDO::PARAM_INT);
-                $statement->bindValue(':configList', $val, \PDO::PARAM_INT);
-                $statement->execute();
-            }
+            $statement = $this->db->prepare(
+                "UPDATE auth_ressource
+                SET ar_enable = :ar_enable
+                WHERE ar_id IN (" . implode(',', $configList) . ")"
+            );
+            $statement->bindValue(':ar_enable', $status, \PDO::PARAM_INT);
+            $statement->execute();
         }
     }
 
@@ -654,13 +647,11 @@ class CentreonLdapAdmin
                     $ldapContactIdList[] = $row['contact_id'];
                 }
                 if (!empty($ldapContactIdList)) {
-                    foreach ($ldapContactIdList as $val) {
-                        $statement = $this->db->prepare(
-                            "DELETE FROM contact_password WHERE contact_id IN (:contactIds)"
-                        );
-                        $statement->bindValue(':contactIds', $val, \PDO::PARAM_INT);
-                        $statement->execute();
-                    }
+                    $statement = $this->db->prepare(
+                        "DELETE FROM contact_password WHERE contact_id IN ("
+                        . implode(',', $ldapContactIdList) . ")"
+                    );
+                    $statement->execute();
                 }
             }
         }

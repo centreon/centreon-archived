@@ -775,9 +775,9 @@ class CentreonLDAP
         if (isset($this->constuctCache[$id])) {
             return $this->constuctCache[$id];
         }
-        $query = "SELECT ari_name, ari_value 
-                 FROM auth_ressource_info 
-                 WHERE ari_name IN ('bind_dn', 'bind_pass', 'protocol_version') 
+        $query = "SELECT ari_name, ari_value
+                 FROM auth_ressource_info
+                 WHERE ari_name IN ('bind_dn', 'bind_pass', 'protocol_version')
                  AND ar_id = :ar_id";
         $dbResult = $this->db->prepare($query);
         $dbResult->bindValue(':ar_id', $id, \PDO::PARAM_INT);
@@ -800,7 +800,7 @@ class CentreonLDAP
     {
         if ($this->debugImport) {
             $msg = $this->db->escape($msg);
-            error_log("[" . date("d/m/Y H:i") . "] $msg" . PHP_EOL, 3, $this->debugPath . "ldapsearch.log");
+            error_log("[" . date("d/m/Y H:i") . "] $msg", 3, $this->debugPath . "ldapsearch.log");
         }
     }
 
@@ -849,7 +849,6 @@ class CentreonLDAP
      */
     private function getCnFromDn($dn)
     {
-
         if (preg_match('/(?i:(?<=cn=)).*?(?=,[A-Za-z]{0,2}=|$)/', $dn, $dnArray)) {
             return !empty($dnArray) ? $dnArray[0] : false;
         }
