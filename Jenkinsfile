@@ -290,6 +290,16 @@ try {
         stash name: "rpms-alma8", includes: 'output/noarch/*.rpm'
         sh 'rm -rf output'
       }
+    },
+    'Debian 11 packaging': {
+      node {
+        dir('centreon') {
+          checkout scm
+        }
+        sh 'docker run -i --entrypoint /src/centreon/ci/scripts/centreon-deb-package.sh -v "$PWD:/src" -e DISTRIB="Debian11" -e VERSION=$VERSION -e RELEASE=$RELEASE registry.centreon.com/centreon-debian11-dependencies:22.04'
+        stash name: 'Debian11', includes: 'Debian11/*.deb'
+        archiveArtifacts artifacts: "Debian11/*"
+      }
     }
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
       error('Unit tests // RPM Packaging Failure');
