@@ -186,7 +186,7 @@ class CentreonLdapAdmin
             );
             $statement->bindValue(':ar_name', $options['ar_name'], \PDO::PARAM_STR);
             $statement->bindValue(':ar_description', $options['ar_description'], \PDO::PARAM_STR);
-            $statement->bindValue(':ar_enable', $options['ldap_auth_enable']['ldap_auth_enable'], \PDO::PARAM_INT);
+            $statement->bindValue(':ar_enable', $options['ldap_auth_enable']['ldap_auth_enable'], \PDO::PARAM_STR);
             $statement->bindValue(':ar_sync_base_date', $options['ar_sync_base_date'], \PDO::PARAM_INT);
             $statement->execute();
             $maxArIdSql = "SELECT MAX(ar_id) as last_id FROM auth_ressource WHERE ar_name = :ar_name";
@@ -207,7 +207,7 @@ class CentreonLdapAdmin
             );
             $statement->bindValue(':ar_name', $options['ar_name'], \PDO::PARAM_STR);
             $statement->bindValue(':ar_description', $options['ar_description'], \PDO::PARAM_STR);
-            $statement->bindValue(':ar_enable', $options['ldap_auth_enable']['ldap_auth_enable'], \PDO::PARAM_INT);
+            $statement->bindValue(':ar_enable', $options['ldap_auth_enable']['ldap_auth_enable'], \PDO::PARAM_STR);
             $statement->bindValue(':ar_sync_base_date', $options['ar_sync_base_date'], \PDO::PARAM_INT);
             $statement->bindValue(':ar_id', $arId, \PDO::PARAM_INT);
             $statement->execute();
