@@ -796,11 +796,10 @@ class CentreonLDAP
      *
      * @param string $msg
      */
-    private function debug($msg): void
+    private function debug($msg)
     {
         if ($this->debugImport) {
-            $msg = $this->db->escape($msg);
-            error_log("[" . date("d/m/Y H:i") . "] $msg", 3, $this->debugPath . "ldapsearch.log");
+            error_log("[" . date("d/m/Y H:i") . "] " . $msg . "\n", 3, $this->debugPath . "ldapsearch.log");
         }
     }
 

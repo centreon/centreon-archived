@@ -586,7 +586,7 @@ class CentreonLdapAdmin
                 SET ar_enable = :ar_enable
                 WHERE ar_id IN (" . implode(',', $configList) . ")"
             );
-            $statement->bindValue(':ar_enable', $status, \PDO::PARAM_INT);
+            $statement->bindValue(':ar_enable', $status, \PDO::PARAM_STR);
             $statement->execute();
         }
     }
