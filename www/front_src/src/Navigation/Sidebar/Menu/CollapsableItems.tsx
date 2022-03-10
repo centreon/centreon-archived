@@ -338,8 +338,7 @@ const CollapsableItems = ({
                 equals(index, hoveredIndex) &&
                 item?.groups?.map(
                   (itemGroup) =>
-                    isArrayItem(itemGroup?.children) &&
-                    equals(index, hoveredIndex) && (
+                    isArrayItem(itemGroup?.children) && (
                       <div key={itemGroup.label}>
                         <CollapsableItems
                           collapseScrollMaxHeight={nestedScrollCollapsMaxHeight}
