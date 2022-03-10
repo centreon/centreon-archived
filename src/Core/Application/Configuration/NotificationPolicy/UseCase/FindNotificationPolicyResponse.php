@@ -53,15 +53,15 @@ class FindNotificationPolicyResponse
         array $notifiedContactGroups,
         public bool $isNotificationEnabled,
     ) {
-        $this->notifiedContacts = $this->usersToArray($notifiedContacts);
-        $this->notifiedContactGroups = $this->userGroupsToArray($notifiedContactGroups);
+        $this->notifiedContacts = $this->contactsToArray($notifiedContacts);
+        $this->notifiedContactGroups = $this->contactGroupsToArray($notifiedContactGroups);
     }
 
     /**
      * @param NotifiedContact[] $notifiedContacts
      * @return array<array<string, mixed>>
      */
-    private function usersToArray(array $notifiedContacts): array
+    private function contactsToArray(array $notifiedContacts): array
     {
         return array_map(
             fn (NotifiedContact $notifiedContact) => [
@@ -92,7 +92,7 @@ class FindNotificationPolicyResponse
      * @param NotifiedContactGroup[] $notifiedContactGroups
      * @return array<array<string, mixed>>
      */
-    private function userGroupsToArray(array $notifiedContactGroups): array
+    private function contactGroupsToArray(array $notifiedContactGroups): array
     {
         return array_map(
             fn (NotifiedContactGroup $notifiedContactGroup) => [

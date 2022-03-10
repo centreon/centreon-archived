@@ -26,11 +26,11 @@ use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Core\Infrastructure\RealTime\Api\Hypermedia\HypermediaProviderTrait;
 
-class UserHypermediaCreator
+class ContactGroupHypermediaCreator
 {
     use HypermediaProviderTrait;
 
-    private const URI_CONFIGURATION_USER = '/main.php?p=60301&o=c&contact_id={userId}';
+    private const URI_CONFIGURATION_CONTACT_GROUP = '/main.php?p=60302&o=c&cg_id={contactGroupId}';
 
     /**
      * @param ContactInterface $contact
@@ -41,19 +41,20 @@ class UserHypermediaCreator
     }
 
     /**
-     * Create the configuration URI to the user regarding ACL
+     * Create the configuration URI to the contact group regarding ACL
      *
-     * @param integer $userId
+     * @param int $contactGroupId
      * @return string|null
      */
-    public function createUserConfigurationUri(int $userId): ?string
+    public function createContactGroupConfigurationUri(int $contactGroupId): ?string
     {
         return (
-            $this->contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_CONTACTS_READ_WRITE)
-            || $this->contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_CONTACTS_READ)
+            $this->contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_SERVICES_SERVICE_GROUPS_READ_WRITE)
+            || $this->contact->hasTopologyRole(Contact::ROLE_CONFIGURATION_SERVICES_SERVICE_GROUPS_READ)
             || $this->contact->isAdmin()
         )
-        ? $this->getBaseUri() . str_replace('{userId}', (string) $userId, self::URI_CONFIGURATION_USER)
+        ? $this->getBaseUri()
+            . str_replace('{contactGroupId}', (string) $contactGroupId, self::URI_CONFIGURATION_CONTACT_GROUP)
         : null;
     }
 }

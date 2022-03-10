@@ -124,7 +124,7 @@ abstract class AbstractDbReadNotificationRepository extends AbstractRepositoryDR
 
         $bindKeys = [];
         foreach ($contactGroupIds as $index => $contactGroupId) {
-            $key = ":userGroupId_{$index}";
+            $key = ":contactGroupId_{$index}";
 
             $bindKeys[] = $key;
             $collector->addValue($key, $contactGroupId, \PDO::PARAM_INT);

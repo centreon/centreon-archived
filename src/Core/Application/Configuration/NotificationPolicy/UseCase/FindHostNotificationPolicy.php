@@ -24,6 +24,7 @@ namespace Core\Application\Configuration\NotificationPolicy\UseCase;
 
 use Centreon\Domain\Log\LoggerTrait;
 use Centreon\Domain\HostConfiguration\Host;
+use Core\Domain\RealTime\Model\Host as RealtimeHost;
 use Centreon\Domain\Engine\EngineConfiguration;
 use Core\Application\Common\UseCase\NotFoundResponse;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
@@ -80,19 +81,12 @@ class FindHostNotificationPolicy
             return;
         }
 
-        // If engine configuration related to the host has notification disabled,
-        // it overrides host configuration
         $engineConfiguration = $this->engineService->findEngineConfigurationByHost($host);
         if ($engineConfiguration === null) {
             $this->handleEngineHostConfigurationNotFound($hostId, $presenter);
             return;
         }
-        if (
-            $engineConfiguration->getNotificationsEnabledOption() ===
-                EngineConfiguration::NOTIFICATIONS_OPTION_DISABLED
-        ) {
-            $realtimeHost->setNotificationEnabled(false);
-        }
+        $this->overrideHostNotificationByEngineConfiguration($engineConfiguration, $realtimeHost);
 
         $presenter->present(
             $this->createResponse(
@@ -160,6 +154,25 @@ class FindHostNotificationPolicy
             ]
         );
         $presenter->setResponseStatus(new NotFoundResponse('Engine configuration'));
+    }
+
+    /**
+     * If engine configuration related to the host has notification disabled,
+     * it overrides host notification status
+     *
+     * @param EngineConfiguration $engineConfiguration
+     * @param RealtimeHost $realtimeHost
+     */
+    private function overrideHostNotificationByEngineConfiguration(
+        EngineConfiguration $engineConfiguration,
+        RealtimeHost $realtimeHost,
+    ): void {
+        if (
+            $engineConfiguration->getNotificationsEnabledOption() ===
+                EngineConfiguration::NOTIFICATIONS_OPTION_DISABLED
+        ) {
+            $realtimeHost->setNotificationEnabled(false);
+        }
     }
 
     /**

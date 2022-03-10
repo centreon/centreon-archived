@@ -25,19 +25,19 @@ namespace Core\Infrastructure\Configuration\NotificationPolicy\Api;
 use Core\Application\Common\UseCase\AbstractPresenter;
 use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
 use Core\Application\Configuration\NotificationPolicy\UseCase\FindNotificationPolicyPresenterInterface;
-use Core\Infrastructure\Configuration\NotificationPolicy\Api\Hypermedia\UserGroupHypermediaCreator;
-use Core\Infrastructure\Configuration\NotificationPolicy\Api\Hypermedia\UserHypermediaCreator;
+use Core\Infrastructure\Configuration\NotificationPolicy\Api\Hypermedia\ContactGroupHypermediaCreator;
+use Core\Infrastructure\Configuration\NotificationPolicy\Api\Hypermedia\ContactHypermediaCreator;
 
 class FindNotificationPolicyPresenter extends AbstractPresenter implements FindNotificationPolicyPresenterInterface
 {
     /**
-     * @param UserHypermediaCreator $userHypermediaCreator
-     * @param UserGroupHypermediaCreator $userGroupHypermediaCreator
+     * @param ContactHypermediaCreator $contactHypermediaCreator
+     * @param ContactGroupHypermediaCreator $contactGroupHypermediaCreator
      * @param PresenterFormatterInterface $presenterFormatter
      */
     public function __construct(
-        private UserHypermediaCreator $userHypermediaCreator,
-        private UserGroupHypermediaCreator $userGroupHypermediaCreator,
+        private ContactHypermediaCreator $contactHypermediaCreator,
+        private ContactGroupHypermediaCreator $contactGroupHypermediaCreator,
         protected PresenterFormatterInterface $presenterFormatter
     ) {
     }
@@ -54,7 +54,7 @@ class FindNotificationPolicyPresenter extends AbstractPresenter implements FindN
                 'alias' => $notifiedContact['alias'],
                 'email' => $notifiedContact['email'],
                 'notifications' => $notifiedContact['notifications'],
-                'configuration_uri' => $this->userHypermediaCreator->createUserConfigurationUri($notifiedContact['id'])
+                'configuration_uri' => $this->contactHypermediaCreator->createContactConfigurationUri($notifiedContact['id'])
             ],
             $response->notifiedContacts,
         );
@@ -64,7 +64,7 @@ class FindNotificationPolicyPresenter extends AbstractPresenter implements FindN
                 'id' => $notifiedContactGroup['id'],
                 'name' => $notifiedContactGroup['name'],
                 'alias' => $notifiedContactGroup['alias'],
-                'configuration_uri' => $this->userGroupHypermediaCreator->createUserGroupConfigurationUri(
+                'configuration_uri' => $this->contactGroupHypermediaCreator->createContactGroupConfigurationUri(
                     $notifiedContactGroup['id']
                 ),
             ],

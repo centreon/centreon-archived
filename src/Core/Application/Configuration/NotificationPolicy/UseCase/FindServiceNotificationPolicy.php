@@ -25,6 +25,7 @@ namespace Core\Application\Configuration\NotificationPolicy\UseCase;
 use Centreon\Domain\Log\LoggerTrait;
 use Centreon\Domain\HostConfiguration\Host;
 use Centreon\Domain\ServiceConfiguration\Service;
+use Core\Domain\RealTime\Model\Service as RealtimeService;
 use Centreon\Domain\Engine\EngineConfiguration;
 use Core\Application\Common\UseCase\NotFoundResponse;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
@@ -92,19 +93,12 @@ class FindServiceNotificationPolicy
             return;
         }
 
-        // If engine configuration related to the host has notification disabled,
-        // it overrides host configuration
         $engineConfiguration = $this->engineService->findEngineConfigurationByHost($host);
         if ($engineConfiguration === null) {
             $this->handleEngineHostConfigurationNotFound($hostId, $presenter);
             return;
         }
-        if (
-            $engineConfiguration->getNotificationsEnabledOption() ===
-                EngineConfiguration::NOTIFICATIONS_OPTION_DISABLED
-        ) {
-            $realtimeService->setNotificationEnabled(false);
-        }
+        $this->overrideServiceNotificationByEngineConfiguration($engineConfiguration, $realtimeService);
 
         $presenter->present(
             $this->createResponse(
@@ -231,6 +225,25 @@ class FindServiceNotificationPolicy
         );
 
         $presenter->setResponseStatus(new NotFoundResponse('Engine configuration'));
+    }
+
+    /**
+     * If engine configuration related to the host has notification disabled,
+     * it overrides host notification status
+     *
+     * @param EngineConfiguration $engineConfiguration
+     * @param RealtimeService $realtimeService
+     */
+    private function overrideServiceNotificationByEngineConfiguration(
+        EngineConfiguration $engineConfiguration,
+        RealtimeService $realtimeService,
+    ): void {
+        if (
+            $engineConfiguration->getNotificationsEnabledOption() ===
+                EngineConfiguration::NOTIFICATIONS_OPTION_DISABLED
+        ) {
+            $realtimeService->setNotificationEnabled(false);
+        }
     }
 
     /**
