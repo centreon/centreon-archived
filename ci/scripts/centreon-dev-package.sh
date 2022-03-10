@@ -1,0 +1,25 @@
+#!/bin/sh
+set -e
+
+if [ -z "$VERSION" -o -z "$RELEASE" -o -z "$DISTRIB" ] ; then
+  echo "You need to specify VERSION / RELEASE / DISTRIB variables"
+  exit 1
+fi
+
+echo "################################################## PACKAGING COLLECT ##################################################"
+
+AUTHOR="Luiz Costa"
+AUTHOR_EMAIL="me@luizgustavo.pro.br"
+
+tar czpf centreon-$VERSION.tar.gz centreon
+cd centreon/
+cp -rf ci/debian .
+debmake -f "${AUTHOR}" -e "${AUTHOR_EMAIL}" -u "$VERSION" -y -r "$RELEASE"
+debuild-pbuilder
+cd ../
+
+if [ -d "$DISTRIB" ] ; then
+  rm -rf "$DISTRIB"
+fi
+mkdir $DISTRIB
+mv *.deb $DISTRIB/
