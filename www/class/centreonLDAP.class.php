@@ -298,7 +298,7 @@ class CentreonLDAP
      * @param string $username The username
      * @return string|bool The dn string or false if not found
      */
-    public function findUserDn($username): string|bool
+    public function findUserDn($username)
     {
         if (trim($this->userSearchInfo['filter']) == '') {
             return false;
@@ -795,7 +795,8 @@ class CentreonLDAP
     private function debug($msg): void
     {
         if ($this->debugImport) {
-            error_log("[" . date("d/m/Y H:i") . "] " . $msg . "\n", 3, $this->debugPath . "ldapsearch.log");
+            $msg = $this->db->escape($msg);
+            error_log("[" . date("d/m/Y H:i") . "] $msg\n", 3, $this->debugPath . "ldapsearch.log");
         }
     }
 

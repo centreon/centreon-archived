@@ -72,8 +72,6 @@ $statement = $pearDB->prepare("UPDATE options SET `value` = :enableLdap WHERE `k
 $statement->bindValue(':enableLdap', $enableLdap);
 $statement->execute();
 
-
-
 include "./include/common/checkPagination.php";
 $list = $ldapConf->getLdapConfigurationList($searchLdap, ($num * $limit), $limit);
 $tpl = initSmartyTpl($path . 'ldap/', $tpl);

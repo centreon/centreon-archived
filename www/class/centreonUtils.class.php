@@ -91,6 +91,29 @@ class CentreonUtils
     }
 
     /**
+     * used to sanitize key and value in array
+     * @param array<mixed> $inputArray
+     * @return array<mixed>
+     */
+    public function sanitizeInputArrayNew(array $inputArray): array
+    {
+        $sanitizedArray = [];
+        foreach ($inputArray as $key => $value) {
+            if ($key === 'address') {
+                $key = filter_var($key, FILTER_SANITIZE_STRING);
+                $value = filter_var($value, FILTER_SANITIZE_STRING);
+            } else {
+                $key = filter_var($key, FILTER_VALIDATE_INT);
+                $value = filter_var($value, FILTER_VALIDATE_INT);
+            }
+            if (false !== $key && false !== $value) {
+                $sanitizedArray[$key] = $value;
+            }
+        }
+        return $sanitizedArray;
+    }
+
+    /**
      * Converts Object into Array
      *
      * @param mixed $arrObjData
