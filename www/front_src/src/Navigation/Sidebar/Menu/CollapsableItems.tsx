@@ -172,6 +172,7 @@ const CollapsableItems = ({
         delete navigationItemSelected[`level_${level}`];
       });
     }
+    setNavigationItemSelected(navigationItemSelected);
   };
 
   const isItemHovered = (
