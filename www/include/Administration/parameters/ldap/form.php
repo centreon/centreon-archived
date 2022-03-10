@@ -315,8 +315,8 @@ if ($arId) {
     $nbOfInitialRows = $row['nb'];
 
     $res = $pearDB->prepare(
-        "SELECT MAX(ldap_host_id) as cnt 
-        FROM auth_ressource_host 
+        "SELECT MAX(ldap_host_id) as cnt
+        FROM auth_ressource_host
         WHERE auth_ressource_id = :arId"
     );
     $res->bindValue(':arId', (int)$arId, \PDO::PARAM_INT);
@@ -338,6 +338,7 @@ if ($form->validate()) {
     // sanitize name and description
     $values['ar_name'] = filter_var($values['ar_name'], FILTER_SANITIZE_STRING);
     $values['ar_description'] = filter_var($values['ar_description'], FILTER_SANITIZE_STRING);
+    $values['ar_id'] = $arId;
 
     // Check if sanitized name and description are not empty
     if (

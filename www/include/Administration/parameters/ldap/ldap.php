@@ -57,8 +57,8 @@ function sanitizeInputArray(array $inputArray): array
 }
 
 if (isset($_REQUEST['ar_id']) || isset($_REQUEST['new'])) {
-    $_REQUEST['ar_id']  = filter_var($_REQUEST['ar_id'], FILTER_VALIDATE_INT);
-    $_REQUEST['new']    = filter_var($_REQUEST['new'], FILTER_VALIDATE_INT);
+    $_REQUEST['ar_id']  = filter_var($_REQUEST['ar_id'] ?? null, FILTER_VALIDATE_INT);
+    $_REQUEST['new']    = filter_var($_REQUEST['new'] ?? null, FILTER_VALIDATE_INT);
     include _CENTREON_PATH_ . 'www/include/Administration/parameters/ldap/form.php';
 } else {
     $ldapAction = filter_var($_REQUEST['a'] ?? null, FILTER_SANITIZE_STRING);

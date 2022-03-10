@@ -133,10 +133,10 @@ class CentreonLdapAdmin
         $statement->bindValue(':auth_ressource_id', $arId, \PDO::PARAM_INT);
         $statement->execute();
         if (isset($_REQUEST['address'])) {
-            $addressList = sanitizeInputArray($_REQUEST['address']);
-            $portList = isset($_REQUEST['port']) ? sanitizeInputArray($_REQUEST['port']) : null;
-            $sslList = isset($_REQUEST['ssl']) ? sanitizeInputArray($_REQUEST['ssl']) : null;
-            $tlsList = isset($_REQUEST['tls']) ? sanitizeInputArray($_REQUEST['tls']) : null;
+            $addressList = $this->sanitizeInputArray($_REQUEST['address']);
+            $portList = isset($_REQUEST['port']) ? $this->sanitizeInputArray($_REQUEST['port']) : null;
+            $sslList = isset($_REQUEST['ssl']) ? $this->sanitizeInputArray($_REQUEST['ssl']) : null;
+            $tlsList = isset($_REQUEST['tls']) ? $this->sanitizeInputArray($_REQUEST['tls']) : null;
             $insertStr = "";
             $i = 1;
             foreach ($addressList as $key => $addr) {
@@ -153,7 +153,7 @@ class CentreonLdapAdmin
                 $i++;
             }
             if ($insertStr) {
-                $$statement = $this->db->prepare(
+                $statement = $this->db->prepare(
                     "INSERT INTO auth_ressource_host
                     (auth_ressource_id, host_address, host_port, use_ssl, use_tls, host_order)
                     VALUES :insertStr"
@@ -196,16 +196,14 @@ class CentreonLdapAdmin
             }
             $statement = $this->db->prepare(
                 "INSERT INTO auth_ressource (ar_name, ar_description, ar_type, ar_enable, ar_sync_base_date)
-                VALUES (:ar_name, :ar_description,'ldap', :ar_enable, :ar_sync_base_date"
+                VALUES (:ar_name, :ar_description,'ldap', :ar_enable, :ar_sync_base_date)"
             );
             $statement->bindValue(':ar_name', $options['ar_name'], \PDO::PARAM_STR);
             $statement->bindValue(':ar_description', $options['ar_description'], \PDO::PARAM_STR);
-            $statement->bindValue(':ar_enable', $options['ldap_auth_enable']['ldap_auth_enable'], \PDO::PARAM_INT);
-            $statement->bindValue(':ar_sync_base_date', $ $options['ar_sync_base_date'], \PDO::PARAM_INT);
+            $statement->bindValue(':ar_enable', $options['ldap_auth_enable']['ldap_auth_enable']);
+            $statement->bindValue(':ar_sync_base_date', $options['ar_sync_base_date'], \PDO::PARAM_INT);
             $statement->execute();
-            $maxArIdSql = "SELECT MAX(ar_id) as last_id
-                          FROM auth_ressource
-                          WHERE ar_name = :ar_name";
+            $maxArIdSql = "SELECT MAX(ar_id) as last_id FROM auth_ressource WHERE ar_name = :ar_name";
             $res = $this->db->prepare($maxArIdSql);
             $res->bindValue(':ar_name', $options['ar_name'], \PDO::PARAM_STR);
             $res->execute();
@@ -223,8 +221,8 @@ class CentreonLdapAdmin
             );
             $statement->bindValue(':ar_name', $options['ar_name'], \PDO::PARAM_STR);
             $statement->bindValue(':ar_description', $options['ar_description'], \PDO::PARAM_STR);
-            $statement->bindValue(':ar_enable', $options['ldap_auth_enable']['ldap_auth_enable'], \PDO::PARAM_INT);
-            $statement->bindValue(':ar_sync_base_date', $ $options['ar_sync_base_date'], \PDO::PARAM_INT);
+            $statement->bindValue(':ar_enable', $options['ldap_auth_enable']['ldap_auth_enable']);
+            $statement->bindValue(':ar_sync_base_date', $options['ar_sync_base_date'], \PDO::PARAM_INT);
             $statement->bindValue(':ar_id', $arId, \PDO::PARAM_INT);
             $statement->execute();
         }
@@ -236,6 +234,7 @@ class CentreonLdapAdmin
         ) {
             unset($options["bind_pass"]);
         }
+
         foreach ($options as $key => $value) {
             if (!in_array($key, $knownParameters)) {
                 continue;
@@ -266,16 +265,16 @@ class CentreonLdapAdmin
                 $query = "UPDATE `auth_ressource_info`
                     SET `ari_value` = :ari_value
                     WHERE `ari_name` = :ari_name
-                    AND ar_id = :ar_id";
+                    AND `ar_id` = :ar_id";
             } else {
                 $query = "INSERT INTO `auth_ressource_info`
                     (`ar_id`, `ari_name`, `ari_value`)
                     VALUES (:ar_id, :ari_name, :ari_value)";
             }
             $statement = $this->db->prepare($query);
-            $statement->bindvalue(':ar_id', $arId, \PDO::PARAM_INT);
-            $statement->bindvalue(':ari_name', $key, \PDO::PARAM_STR);
-            $statement->bindvalue(':ari_value', $value, \PDO::PARAM_STR);
+            $statement->bindvalue(':ar_id', $this->db->escape($arId), \PDO::PARAM_INT);
+            $statement->bindvalue(':ari_name', $this->db->escape($key), \PDO::PARAM_STR);
+            $statement->bindvalue(':ari_value', $this->db->escape($value, false), \PDO::PARAM_STR);
             $statement->execute();
         }
         $this->updateLdapServers($arId);
@@ -397,7 +396,7 @@ class CentreonLdapAdmin
                 );
                 $statement->bindvalue(':ar_id', $id, \PDO::PARAM_INT);
                 $statement->bindvalue(':ari_name', $key, \PDO::PARAM_INT);
-                $statement->bindvalue(':ari_value', $value, \PDO::PARAM_INT);
+                $statement->bindvalue(':ari_value', $value, \PDO::PARAM_STR);
                 $statement->execute();
             } catch (\PDOException $e) {
                 return false;
@@ -429,7 +428,7 @@ class CentreonLdapAdmin
                     );
                     $statement->bindvalue(':ar_id', $id, \PDO::PARAM_INT);
                     $statement->bindvalue(':ari_name', $key, \PDO::PARAM_STR);
-                    $statement->bindvalue(':ari_value', $value, \PDO::PARAM_INT);
+                    $statement->bindvalue(':ari_value', $value, \PDO::PARAM_STR);
                     $statement->execute();
                 } else {
                     $statement = $this->db->prepare(
@@ -439,7 +438,7 @@ class CentreonLdapAdmin
                     );
                     $statement->bindvalue(':ar_id', $id, \PDO::PARAM_INT);
                     $statement->bindvalue(':ari_name', $key, \PDO::PARAM_STR);
-                    $statement->bindvalue(':ari_value', $value, \PDO::PARAM_INT);
+                    $statement->bindvalue(':ari_value', $value, \PDO::PARAM_STR);
                     $statement->execute();
                 }
             } catch (\PDOException $e) {
@@ -584,6 +583,7 @@ class CentreonLdapAdmin
                 WHERE ar_id
                 IN (:configList)"
             );
+
             $statement->bindValue(':configList', implode(',', $configList), \PDO::PARAM_STR);
             $statement->execute();
         }
@@ -654,12 +654,12 @@ class CentreonLdapAdmin
             'FROM auth_ressource_info ' .
             'WHERE ar_id = :ar_id AND ari_name = "ldap_store_password" '
         );
-        $result->bindValue(':arId', $arId, \PDO::PARAM_INT);
+        $result->bindValue(':ar_id', $arId, \PDO::PARAM_INT);
         $result->execute();
         if ($row = $result->fetch()) {
             if ($row['ari_value'] == '0') {
-                $statement = $this->db->prepare("SELECT contact_id FROM contact WHERE ar_id = :arId");
-                $statement->bindValue(':arId', $arId, \PDO::PARAM_INT);
+                $statement = $this->db->prepare("SELECT contact_id FROM contact WHERE ar_id = :ar_id");
+                $statement->bindValue(':ar_id', $arId, \PDO::PARAM_INT);
                 $statement->execute();
                 $ldapContactIdList = [];
                 while ($row = $statement->fetch()) {
