@@ -90,7 +90,7 @@ function enableNagiosInDB($nagiosId = null)
     $statement->bindValue(':id', (int) $data["nagios_server_id"], \PDO::PARAM_INT);
     $statement->execute();
     $activate = $statement->fetch(\PDO::FETCH_ASSOC);
-    if ($activate && $activate["name"]) {
+    if (isset($activate["name"]) && $activate["name"] == 1) { {
         $query = "UPDATE `nagios_server` SET `ns_activate` = '1' WHERE `id` = :id";
         $statement = $pearDB->prepare($query);
         $statement->bindValue(':id', (int) $activate['id'], \PDO::PARAM_INT);
@@ -172,6 +172,9 @@ function deleteNagiosInDB($nagios = array())
     $dbResult->closeCursor();
 }
 
+/*
+ * Duplicate Engine Configuration file in DB
+ */
 function multipleNagiosInDB($nagios = array(), $nbrDup = array())
 {
     foreach ($nagios as $originalNagiosId => $value) {

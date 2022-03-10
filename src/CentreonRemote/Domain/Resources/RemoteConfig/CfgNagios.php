@@ -41,7 +41,6 @@ class CfgNagios
             'use_timezone'                                => null,
             'log_file'                                    => '/var/log/centreon-engine/centengine.log',
             'cfg_dir'                                     => '/etc/centreon-engine/',
-            'temp_file'                                   => '/var/log/centreon-engine/centengine.tmp',
             'status_file'                                 => '/var/log/centreon-engine/status.dat',
             'status_update_interval'                      => '60',
             'enable_notifications'                        => '1',

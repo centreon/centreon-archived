@@ -39,7 +39,6 @@ class CfgNagios
             'nagios_name'                                 => 'Centreon Engine Central',
             'log_file'                                    => '@monitoring_varlog@/centengine.log',
             'cfg_dir'                                     => '@monitoring_etc@',
-            'temp_file'                                   => '@monitoring_varlog@/centengine.tmp',
             'status_file'                                 => '@monitoring_varlog@/status.dat',
             'status_update_interval'                      => '60',
             'enable_notifications'                        => '1',
@@ -120,6 +119,12 @@ class CfgNagios
             'cfg_file'                                    => 'centengine.cfg',
             'logger_version'                              => 'log_v2_enabled',
             'log_pid'                                     => '1',
+            'ocsp_timeout'                                => 5,
+            'ochp_timeout'                                => 5,
+            'obsess_over_services'                        => '0',
+            'ocsp_command'                                => null,
+            'obsess_over_hosts'                           => '2',
+            'ochp_command'                                => null,
         ];
     }
 }
