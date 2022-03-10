@@ -218,7 +218,7 @@ const CollapsableItems = ({
     return false;
   };
 
-  const updateSizeCollaps = (el: HTMLElement): void => {
+  const updateCollapseSize = (el: HTMLElement): void => {
     const rect = el.getBoundingClientRect();
     setCollapseScrollMaxHeight(
       (window.innerHeight - rect.top) / 8 - minimumMarginBottom,
@@ -228,7 +228,7 @@ const CollapsableItems = ({
 
   React.useEffect(() => {
     if (collapsRef && collapsRef.current) {
-      updateSizeCollaps(collapsRef.current);
+      updateCollapseSize(collapsRef.current);
     }
   }, []);
 
