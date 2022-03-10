@@ -150,6 +150,11 @@ try {
 
     $errorMessage = "Unable to alter table security_token";
     $pearDB->query("ALTER TABLE `security_token` MODIFY `token` varchar(4096)");
+
+    $pearDB->beginTransaction();
+    // @todo error_message
+    migrateBrokerConfOutputsToUnifiedSql($pearDB);
+    $pearDB->commit();
 } catch (\Exception $e) {
     if ($pearDB->inTransaction()) {
         $pearDB->rollBack();
@@ -457,4 +462,100 @@ function updateSecurityPolicyConfiguration(CentreonDB $pearDB): void
     );
     $statement->bindValue(':localProviderConfiguration', $localProviderConfiguration, \PDO::PARAM_STR);
     $statement->execute();
+}
+
+/** Undocumented function
+ *
+ * @param CentreonDb $pearDB
+ * @return void
+ */
+function migrateBrokerConfOutputsToUnifiedSql(CentreonDB $pearDB)
+{
+    $errorMessage = "Unable to select config ids from 'cfg_centreon_broker' table";
+    $dbResult = $pearDB->query("SELECT config_id FROM cfg_centreonbroker WHERE config_name LIKE '%-broker%'");
+    $configIds = $dbResult->fetchAll(PDO::FETCH_COLUMN, 0);
+    if (empty($configIds)) {
+        throw new Exception("Cannot find config ids in cfg_centreon_broker table");
+    }
+
+    $errorMessage = "Unable to select existing outputs from 'cb_type' table";
+    $dbResult = $pearDB->query("SELECT cb_type_id FROM cb_type WHERE type_shortname IN ('sql', 'storage')");
+    $typeIds = $dbResult->fetchAll(PDO::FETCH_COLUMN, 0);
+    if (empty($typeIds)) {
+        throw new Exception("Cannot find fields in cb_type table");
+    }
+
+    $blockIdsList = "";
+    foreach ($typeIds as $key => $typeId) {
+        $blockIdsList .= $key > 0 ? "," : "";
+        $blockIdsList .= "'1_$typeId'";
+    }
+
+    $errorMessage = "Unable to select type id from 'cb_type' table";
+    $dbResult = $pearDB->query("SELECT cb_type_id FROM cb_type WHERE type_shortname IN ('unified_sql')");
+    $unifiedSqlType = $dbResult->fetch(PDO::FETCH_COLUMN, 0);
+    if (empty($unifiedSqlType)) {
+        throw new Exception("Cannot find fields in cb_type table");
+    }
+    $unifiedSqlTypeId = $unifiedSqlType['cb_type_id'];
+
+    foreach ($configIds as $configId) {
+        $dbResult = $pearDB->query(
+            "SELECT config_group_id FROM cfg_centreonbroker_info
+            WHERE config_id = $configId AND config_key = 'blockId'
+            AND config_value IN ($blockIdsList)"
+        );
+        $configGroupIds = $dbResult->fetchAll(PDO::FETCH_COLUMN, 0);
+        if (empty($configGroupIds)) {
+            throw new Exception("Cannot find fields in cfg_centreonbroker_info table");
+        }
+
+        $errorMessage = "";
+        $dbResult = $pearDB->query("SELECT MAX(config_group_id) as max_config_group_id FROM cfg_centreonbroker_info
+                    WHERE config_id = $configId AND config_group = 'output'");
+        $maxConfigGroupId = $dbResult->fetch(PDO::FETCH_COLUMN, 0);
+        if (empty($maxConfigGroupId)) {
+            throw new Exception("Cannot find max_config_group_id in cfg_centreonbroker_info table");
+        }
+        $nextConfigGroupId = (int) $maxConfigGroupId['max_config_group_id'] + 1;
+
+        $unifiedSql = [];
+        foreach ($configGroupIds as $configGroupId) {
+            $dbResult = $pearDB->query(
+                "SELECT * FROM cfg_centreonbroker_info
+                WHERE config_id = $configId AND config_group = 'output' AND config_group_id = $configGroupId"
+            );
+            while ($row = $dbResult->fetch()) {
+                $unifiedSql[$row['config_key']] = array_merge($unifiedSql[$row['config_key']] ?? [], $row);
+                $unifiedSql[$row['config_key']]['config_group_id'] = $nextConfigGroupId;
+            }
+        }
+
+        $unifiedSql['name']['config_value'] = str_replace(['sql', 'perfdata'], 'unified-sql', $unifiedSql['name']['config_value']);
+        $unifiedSql['type']['config_value'] = 'unified_sql';
+        $unifiedSql['blockId']['config_value'] = "1_$unifiedSqlTypeId";
+
+        $query = "";
+        $queryGlue = "";
+        foreach ($unifiedSql as $key => $row) {
+            if ($query === '') {
+                $columns_name = implode(", ", array_keys($row));
+                $query = "INSERT INTO cfg_centreonbroker_info ($columns_name) VALUES ";
+            }
+
+            $glue = '';
+            $query .= $queryGlue . "(";
+            foreach ($row as $key => $value) {
+                $query .= $glue;
+                $query .= $value === null ? 'NULL' : (is_numeric($value) ? $value : "'$value'");
+                $glue = ", ";
+            }
+            $query .= ")";
+            $queryGlue = ', ';
+        }
+
+        $pearDB->query($query);
+
+        $pearDB->query("DELETE FROM cfg_centreonbroker_info WHERE config_id = $configId AND config_group_id IN (" . implode(', ', $configGroupIds) .")");
+    }
 }
