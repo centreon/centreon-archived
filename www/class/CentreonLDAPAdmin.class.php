@@ -34,8 +34,6 @@
  *
  */
 
-require_once 'centreonUtils.class.php';
-
 /**
  * Ldap Administration class
  */
