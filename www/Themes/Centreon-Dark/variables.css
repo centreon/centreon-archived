@@ -93,5 +93,13 @@
     --list-header-border-left-color: var(--list-table-anchors-font-color);
     --list-header-font-color: var(--list-table-anchors-font-color);
     --list-table-border-color:var(--info-box-background-color);
-    --service-ok-host-up-success-background-color:#84bd00
+    --service-ok-host-up-success-background-color:#84bd00;
+    --arbo-a-bg-grey-background-color:var(--select-background);
+    --arbo-a-bg-grey-mid-background-color:var(--arbo-a-bg-grey-background-color);
+    --arbo-a-bg-grey-light-background-color:var(--arbo-a-bg-grey-background-color);
+    --arbo-a-bg-grey-white-background-color:var(--arbo-a-bg-grey-background-color);
+    --up-to-date-background-color:var(--service-ok-host-up-success-background-color);
+    --up-to-date-color:var(--option-color);
+    --update-secu-background-color:var(--color-torch-red);
+    --ui-icon-fill-color: var(--color-primary-light);
 }

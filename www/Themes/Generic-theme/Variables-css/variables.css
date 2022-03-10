@@ -426,6 +426,7 @@
     --update-error-border-color: var(--color-silver-chalice-2);
     --update-read-me-output-background-color: var(--color-white);
     --update-read-me-output-border-color: var(--color-silver-chalice-2);
+    --up-to-date-color:var(--color-white);
     /* ------ END : Warning variables -----*/
 
     /* ------ START : Arbo ACL variables -----*/
@@ -709,6 +710,7 @@
     --jquery-ui-widget-header-background-color: var(--color-mercury-2);
     --jquery-ui-widget-header-font-color: var(--jquery-ui-widget-content-font-color);
     --jquery-ui-widget-header-anchor-font-color: var(--jquery-ui-widget-content-font-color);
+    --ui-icon-fill-color: var(--color-primary-dark);
     /* Interaction states variables */
     --ui-button-state-disabled-hovered-active-border-color: var(--color-silver-4);
     --ui-button-state-disabled-hovered-active-background-color: var(--color-wild-sand-2);

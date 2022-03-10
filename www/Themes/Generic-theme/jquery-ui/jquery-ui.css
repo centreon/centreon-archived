@@ -1063,13 +1063,7 @@ a.ui-button:active,
 .ui-icon {
 	width: 16px;
 	height: 16px;
-}
-.ui-icon,
-.ui-widget-content .ui-icon {
-	background-image: url("images/ui-icons_444444_256x240.png");
-}
-.ui-widget-header .ui-icon {
-	background-image: url("images/ui-icons_444444_256x240.png");
+	fill: var(--ui-icon-fill-color);
 }
 .ui-state-hover .ui-icon,
 .ui-state-focus .ui-icon,

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005 - 2020 Centreon (https://www.centreon.com/)
+ * Copyright 2005 - 2022 Centreon (https://www.centreon.com/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,24 +23,36 @@ namespace Centreon\Test\Api\Context;
 
 use Centreon\Test\Behat\Api\Context\ApiContext;
 
-class AuthenticationContext extends ApiContext
+class LocalAuthenticationContext extends ApiContext
 {
     /**
-     * @Given I log in with invalid credentials
+     * @Given /^I log in with "([^"]*)" \/ "([^"]*)"$/
      */
-    public function iLogInWithInvalidCredentials()
+    public function iLogInWith($login, $password)
     {
         $this->setHttpHeaders(['Content-Type' => 'application/json']);
         $this->iSendARequestToWithBody(
             'POST',
-            $this->getBaseUri() . '/api/v21.10/login',
+            $this->getBaseUri() . '/authentication/providers/configurations/local',
             json_encode([
-                'security' => [
-                    'credentials' => [
-                        'login' => 'bad_login',
-                        'password' => 'bad_password',
-                    ],
-                ],
+                'login' => $login,
+                'password' => $password,
+            ])
+        );
+    }
+
+    /**
+     * @Given I log in with invalid password
+     */
+    public function iLogInWithInvalidPassword()
+    {
+        $this->setHttpHeaders(['Content-Type' => 'application/json']);
+        $this->iSendARequestToWithBody(
+            'POST',
+            $this->getBaseUri() . '/authentication/providers/configurations/local',
+            json_encode([
+                'login' => 'admin',
+                'password' => 'bad_password',
             ])
         );
     }
