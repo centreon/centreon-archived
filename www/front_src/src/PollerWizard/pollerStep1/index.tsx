@@ -22,6 +22,7 @@ import {
   labelNext,
   labelPrevious,
   labelSelectPollerIp,
+  labelRequired,
 } from '../translatedLabels';
 import { Props, WaitList } from '../models';
 
@@ -87,7 +88,7 @@ const FormPollerStepOne = ({
 
     setError({
       ...error,
-      [name]: value.trim() === '' ? 'required' : '',
+      [name]: value.trim() === '' ? t(labelRequired) : '',
     });
 
     setStepOneFormData({
@@ -101,7 +102,7 @@ const FormPollerStepOne = ({
 
     setError({
       ...error,
-      [name]: value.trim() === '' ? 'required' : '',
+      [name]: value.trim() === '' ? t(labelRequired) : '',
     });
   };
 

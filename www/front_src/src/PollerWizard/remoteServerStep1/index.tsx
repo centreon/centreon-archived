@@ -26,6 +26,7 @@ import {
   labelPrevious,
   labelCheckCertificate,
   labelServerConfiguration,
+  labelRequired,
 } from '../translatedLabels';
 import { Props, WaitList } from '../models';
 
@@ -121,7 +122,7 @@ const FormRemoteServerStepOne = ({
 
     setError({
       ...error,
-      [name]: value.trim() === '' ? 'required' : '',
+      [name]: value.trim() === '' ? t(labelRequired) : '',
     });
 
     setStepOneFormData({
@@ -135,7 +136,7 @@ const FormRemoteServerStepOne = ({
 
     setError({
       ...error,
-      [name]: value.trim() === '' ? 'required' : '',
+      [name]: value.trim() === '' ? t(labelRequired) : '',
     });
   };
 

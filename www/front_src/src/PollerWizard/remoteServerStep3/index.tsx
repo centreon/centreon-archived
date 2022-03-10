@@ -10,7 +10,10 @@ import { postData, useRequest } from '@centreon/ui';
 import WizardFormInstallingStatus from '../../components/wizardFormInstallingStatus';
 import routeMap from '../../reactRoutes/routeMap';
 import { remoteServerAtom, RemoteServerData } from '../PollerAtoms';
-import { labelFinalStep } from '../translatedLabels';
+import {
+  labelExportGenerationTimeout,
+  labelFinalStep,
+} from '../translatedLabels';
 
 const exportTaskEndpoint =
   'internal.php?object=centreon_task_service&action=getTaskStatus';
@@ -74,7 +77,7 @@ const FormRemoteServerStepThree = (): JSX.Element => {
 
       return;
     }
-    setError('Export generation timeout');
+    setError(t(labelExportGenerationTimeout));
     setGenerateStatus(false);
   };
 

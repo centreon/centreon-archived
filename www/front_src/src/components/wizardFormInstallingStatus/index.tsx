@@ -14,6 +14,10 @@ import SmsFailedIcon from '@mui/icons-material/SmsFailed';
 import { ContentWithCircularLoading } from '@centreon/ui';
 
 import { useStylesWithProps } from '../../styles/partials/form/PollerWizardStyle';
+import {
+  labelCreatingExportTask,
+  labelGeneratingExportFiles,
+} from '../../PollerWizard/translatedLabels';
 
 interface Props {
   error: string | null;
@@ -57,7 +61,7 @@ export default ({
                   <Chip
                     color={statusCreating ? 'success' : 'error'}
                     icon={statusCreating ? <CheckIcon /> : <SmsFailedIcon />}
-                    label={t('Creating Export Task')}
+                    label={t(labelCreatingExportTask)}
                     style={{ width: '100%' }}
                   />
                 </Typography>
@@ -75,7 +79,7 @@ export default ({
                   <Chip
                     color={statusGenerating ? 'success' : 'error'}
                     icon={statusGenerating ? <CheckIcon /> : <SmsFailedIcon />}
-                    label={t('Generating Export Files')}
+                    label={t(labelGeneratingExportFiles)}
                     style={{ width: '100%' }}
                   />
                 </Typography>
