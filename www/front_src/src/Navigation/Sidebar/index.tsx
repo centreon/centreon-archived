@@ -76,7 +76,7 @@ export default ({ navigationData }: Props): JSX.Element => {
   };
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box data-testid="sidebar" sx={{ display: 'flex' }}>
       <Drawer open={open} variant="permanent">
         <DrawerHeader>
           {open ? (
