@@ -78,7 +78,7 @@ const NavigationMenu = ({
   ): void => {
     const rect = e.currentTarget.getBoundingClientRect();
     const { top } = rect;
-    setCurrentTop(top - 0.58);
+    setCurrentTop(top);
     setHoveredIndex(index);
     setNavigationItemSelected({
       ...navigationItemSelected,

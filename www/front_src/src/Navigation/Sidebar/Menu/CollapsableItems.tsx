@@ -75,6 +75,7 @@ const useStyles = makeStyles((theme) => ({
       fontSize: theme.typography.caption,
     },
     border: `solid ${theme.palette.divider} 0.1px`,
+    boxSizing: 'border-box',
   },
   subHeader: {
     color: theme.palette.text.secondary,
@@ -144,7 +145,7 @@ const CollapsableItems = ({
     navigationItemSelectedAtom,
   );
   const levelName = `level_${level}_Navigated`;
-  const widthItem = currentWidth + collapseWidth + 0.1;
+  const widthItem = currentWidth + collapseWidth;
   const minimumMarginBottom = 4;
 
   const hoverItem = (
@@ -154,7 +155,7 @@ const CollapsableItems = ({
   ): void => {
     const rect = e.currentTarget.getBoundingClientRect();
     const { top } = rect;
-    setTopItem(top - 0.7);
+    setTopItem(top);
     setHoveredIndex(index);
     const levelLabel = `level_${level}`;
 

@@ -12,7 +12,7 @@ import { Page } from '../../models';
 import ArrowIcon from './ArrowIcon';
 
 const rootHeightItem = 37;
-const heightItem = 36.8;
+const heightItem = 36.2;
 
 interface Props {
   data: Page;
