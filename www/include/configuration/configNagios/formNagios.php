@@ -584,7 +584,6 @@ foreach (CentreonMainCfg::EVENT_BROKER_OPTIONS as $bit => $label) {
         '&nbsp;',
         _($label),
         [
-            "id" => "ebo" . $bit,
             'onClick' => $onClick,
             'class' => 'event-broker-options'
         ]
