@@ -15,6 +15,7 @@
  *
  * For information : contact@centreon.com
  */
+
 /*      Database */
 $conf_centreon['hostCentreon'] = "localhost";
 $conf_centreon['hostCentstorage'] = "localhost";
@@ -26,7 +27,6 @@ $conf_centreon['port'] = "3306";
 
 
 /* path to classes */
-$classdir='./class';
+$classdir = './class';
 /* Centreon Path */
-$centreon_path='/usr/share/centreon/';
-?>
+$centreon_path = '/usr/share/centreon/';
