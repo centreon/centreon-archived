@@ -39,8 +39,11 @@ function clonifyTableFields(attributeName,displayName){
         var table2 = jQuery('<table>').addClass('formTable table').css({'position': 'relative','border': '1px solid #e7e7e8'});
         var clone_template = jQuery('<tr>').attr('id',obj +"_template" ).addClass('clone_template').append(jQuery('<td>').attr('colspan','2').css({'padding': '0 12px'}).append(table2));
         table1.append(clone_template).append(jQuery('<tr>').attr('id',obj +"_noforms_template" ));
-        var img = jQuery('<img>').attr('src','./img/icons/circle-cross.png').addClass('ico-14').css('vertical-align','middle');
-        var remove = jQuery('<span>').css({'cursor': 'pointer', 'position': 'absolute', 'top': '56px', 'right': '-17px'}).attr('id', obj+'_remove_current').append(img);
+        var svg = jQuery('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"  class="ico-14-circle-cross">\n' +
+            '<path d="M0 0h24v24H0z" fill="none"/>\n' +
+            '<path d="M14.59 8L12 10.59 9.41 8 8 9.41 10.59 12 8 14.59 9.41 16 12 13.41 14.59 16 16 14.59 13.41 12 16 9.41 14.59 8zM12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>\n' +
+            '</svg>')
+        var remove = jQuery('<span>').css({'cursor': 'pointer', 'position': 'absolute', 'top': '56px', 'right': '-17px'}).attr('id', obj+'_remove_current').append(svg);
         table2.append(jQuery('<tr>').append(jQuery('<td>').css({'text-align': 'right', 'height': '1px'}).attr('rowspan','5').attr('colspan','2').append(remove)));
 
         if(GroupArray.hasOwnProperty(obj)){

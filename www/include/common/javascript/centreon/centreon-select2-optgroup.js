@@ -122,10 +122,10 @@
           .css('cursor', 'pointer')
           .addClass('clearAllSelect2')
           .attr('title', this.translate('Clear field'))
-          .append(
-              $('<img>')
-                  .attr('src', './img/icons/circle-cross.png')
-                  .addClass('ico-14')
+          .append('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"  class="ico-14-circle-cross">\n' +
+              '<path d="M0 0h24v24H0z" fill="none"/>\n' +
+              '<path d="M14.59 8L12 10.59 9.41 8 8 9.41 10.59 12 8 14.59 9.41 16 12 13.41 14.59 16 16 14.59 13.41 12 16 9.41 14.59 8zM12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>\n' +
+              '</svg>'
           );
 
       this.clearButton.on('click', function () {
@@ -366,7 +366,10 @@
       var $closeButton = $('<a>')
           .addClass('close')
           .css('cursor', 'pointer')
-          .append('<img src="./img/icons/circle-cross.png" class="ico-18">');
+          .append('<svg xmlns="http://www.w3.org/2000/svg" class="ico-18"  style="vertical-align:middle;" viewBox="0 0 24 24">\n' +
+              '                    <path d="M0 0h24v24H0z" fill="none"/>\n' +
+              '                    <path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"/>\n' +
+              '                </svg>');
 
       if (self.confirmBox !== null) {
         return;

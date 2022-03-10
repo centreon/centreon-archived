@@ -49,7 +49,10 @@
         <div class="Toolbar_TDSelectAction_Top">
           <span class="consol_button"><div id="JS_monitoring_refresh" style="cursor:pointer" onclick="javascript:monitoring_refresh('');"><img src='./img/icons/refresh.png' alt='Refresh' title='Refresh'></div></span>
           <span class="consol_button"><div id="JS_monitoring_play" class="cachediv" style="cursor:pointer" onclick="javascript:monitoring_play('');"><img src='./img/icons/media_play.png' alt='Play' title='Play'></div></span>
-          <span class="consol_button"><img id="JS_monitoring_play_gray"  src='./img/icons/media_play_gray.png' alt='Play' title='Play'></span>
+          <span class="consol_button"><svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" alt='Play' title='Play' class='ico-media'>
+    <path d="M0 0h24v24H0z" fill="none"/>
+    <path d="M10 16.5l6-4.5-6-4.5v9zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
+</svg></span>
           <span class="consol_button"><div class="" id="JS_monitoring_pause" style="cursor:pointer" onclick="javascript:monitoring_pause('');"><img src='./img/icons/media_pause.png' alt='Pause' title='Pause'></div></span>
           <span class="consol_button"><img id="JS_monitoring_pause_gray" class="cachediv" src='./img/icons/media_pause_gray.png' alt='Pause' title='Pause'></span>
         </div>

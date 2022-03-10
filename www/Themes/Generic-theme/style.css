@@ -624,14 +624,26 @@ color:var(--status-success-color)}
     height: 12px;
 }
 
-.ico-14 {
+.ico-14-disabled {
     width: 14px;
     height: 14px;
+    fill:var(--ico-14-fill-color-disabled)
+}
+.ico-14-enabled {
+    width: 14px;
+    height: 14px;
+    fill:var(--ico-14-fill-color-enabled)
+}
+.ico-14{
+    width: 14px;
+    height: 14px;
+    fill: var(--ico-14-fill-color);
 }
 
 .ico-16 {
     width: 16px;
     height: 16px;
+    fill: var(--ico-16-all-services);
 }
 
 .ico-18 {
@@ -647,6 +659,17 @@ color:var(--status-success-color)}
 .ico-22 {
     width: 22px;
     height: 22px;
+}
+.ico-media{
+    width: 22px;
+    height: 22px;
+    fill: var(--ico-media);
+}
+.ico-14-circle-cross{
+    width: 14px;
+    height: 14px;
+    vertical-align: middle;
+    fill: var(--circle-cross);
 }
 /* ------ END : Size icons
 /* ------ START : Buttons -----*/
@@ -1998,7 +2021,7 @@ span.state_badge {
 }
 
 #cboxClose {
-    background: #fff url('../../img/icons/circle-cross.png') no-repeat 0 0 /100% !important ;
+    background: #fff url('../../img/icons/circle-cross.svg') no-repeat 0 0 /100% !important ;
     top: -10px !important;
     height: 18px !important;
     width: 18px !important;

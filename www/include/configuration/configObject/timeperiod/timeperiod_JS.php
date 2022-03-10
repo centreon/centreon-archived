@@ -80,8 +80,8 @@
         valueElem.setAttribute('data-validator', '^([0-9]{2}:[0-9]{2}-[0-9]{2}:[0-9]{2}(,)?)+$');
         tdElem2.appendChild(valueElem);
 
-        imgElem.src = "./img/icons/circle-cross.png";
-        imgElem.class = 'ico-14';
+        imgElem.src = "./img/icons/circle-cross.svg";
+        imgElem.class = 'ico-14-circle-cross';
         imgElem.id = globalj;
         imgElem.onclick = function () {
             var response = window.confirm('<?php echo _("Do you confirm this deletion?"); ?>');
@@ -150,8 +150,8 @@
                 valueElem.disabled = true;
             }
 
-            imgElem.src = "./img/icons/circle-cross.png";
-            imgElem.class = 'ico-14';
+            imgElem.src = "./img/icons/circle-cross.svg";
+            imgElem.class = 'ico-14-circle-cross';
             imgElem.id = globalj;
             imgElem.onclick = function () {
                 var response = window.confirm('<?php echo _("Do you confirm this deletion?"); ?>');

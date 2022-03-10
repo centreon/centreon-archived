@@ -31,10 +31,21 @@
         <td>
         
         <div class="Toolbar_TDSelectAction_Top">
-          <span class="consol_button"><a id="JS_monitoring_refresh" href="#" onclick="javascript:monitoring_refresh('');"><img src='./img/icons/refresh.png' alt='Refresh' title='Refresh'></a></span>
+          <span class="consol_button"><a id="JS_monitoring_refresh" href="#" onclick="javascript:monitoring_refresh('');"><svg xmlns="http://www.w3.org/2000/svg" class='ico-media' alt='Refresh' title='Refresh' viewBox="0 0 24 24">
+                                                                                                                          <path d="M0 0h24v24H0z" fill="none"/>
+                                                                                                                          <path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/>
+                                                                                                                          </svg></a></span>
           <span class="consol_button"><a id="JS_monitoring_play" class="cachediv" href="#" onclick="javascript:monitoring_play('');"><img src='./img/icons/media_play.png' alt='Play' title='Play'></a></span>
-          <span class="consol_button"><img id="JS_monitoring_play_gray"  src='./img/icons/media_play_gray.png' alt='Play' title='Play'></span>
-          <span class="consol_button"><a id="JS_monitoring_pause" href="#" onclick="javascript:monitoring_pause('');"><img src='./img/icons/media_pause.png' alt='Pause' title='Pause'></a></span>
+          <span class="consol_button"><svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" alt='Play' title='Play' class='ico-media'>
+    <path d="M0 0h24v24H0z" fill="none"/>
+    <path d="M10 16.5l6-4.5-6-4.5v9zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
+</svg></span>
+          <span class="consol_button"><a id="JS_monitoring_pause" href="#" onclick="javascript:monitoring_pause('');">
+              <svg xmlns="http://www.w3.org/2000/svg" alt='Pause' title='Pause' class='ico-media' viewBox="0 0 24 24">
+              <path d="M0 0h24v24H0z" fill="none"/>
+              <path d="M9 16h2V8H9v8zm3-14C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm1-4h2V8h-2v8z"/>
+            </svg>
+          </a></span>
           <span class="consol_button"><img id="JS_monitoring_pause_gray" class="cachediv" src='./img/icons/media_pause_gray.png' alt='Pause' title='Pause'></span>
             </div>
         </td>

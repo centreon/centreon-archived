@@ -1486,8 +1486,8 @@ S2.define('select2/selection/single',[
     $selection.html(
       '<span class="select2-selection__rendered"></span>' +
       '<span class="select2-selection__arrow" role="presentation">' +
-        '<b role="presentation"></b>' +
-      '</span>'
+        '<svg xmlns="http://www.w3.org/2000/svg" role="presentation" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M7 10l5 5 5-5z"/></svg>' +
+        '</span>'
     );
 
     return $selection;

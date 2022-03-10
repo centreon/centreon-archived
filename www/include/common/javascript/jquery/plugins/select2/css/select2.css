@@ -150,7 +150,9 @@
     position: absolute;
     top: 1px;
     right: 1px;
-    width: 20px; }
+    width: 20px;
+    fill: var(--select2-selection-rendered-font-color);
+  }
     .select2-container--default .select2-selection--single .select2-selection__arrow b {
       border-color: var(--select2-selection-arrow-border-color) transparent transparent transparent;
       border-style: solid;

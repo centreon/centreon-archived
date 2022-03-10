@@ -81,13 +81,13 @@
     --textarea-background-color: var(--body-background);
     --textarea-font-color: var(--color-white);
     --select2-selection-single-disabled-background-color: var(--body-background);
-    --ajax-option-background-color:var(--info-box-background-color);
+    --ajax-option-background-color:#181A1B;
     --ajax-option-h4-font-color:var(--path-way-font-color);
     --ajax-option-border-bottom-color:var(--info-box-background-color);
     --ajax-option-border-top-color:var(--info-box-background-color);
     --ajax-option-tr-first-child-background-color:var(--info-box-background-color);
     --ajax-option-tr-first-child-font-color:var(--path-way-font-color);
-    --list-header-background:var(--info-box-background-color);
+    --list-header-background:#181A1B;
     --list-table-anchors-font-color:#fff;
     --list-header-border-top-color:var(--list-table-anchors-font-color);
     --list-header-border-left-color: var(--list-table-anchors-font-color);
@@ -102,4 +102,7 @@
     --up-to-date-color:var(--option-color);
     --update-secu-background-color:var(--color-torch-red);
     --ui-icon-fill-color: var(--color-primary-light);
+    --ico-14-fill-color:var(--color-primary-light) ;
+    --ico-16-all-services:var(--color-primary-light);
+    --ico-media:var(--color-primary-light);
 }
