@@ -108,4 +108,12 @@
     --list-two-font-color: var(--color-white);
     --list-two-hover-font-color: var(--list-two-font-color);
     --list-lvl-2-background-color: var(--body-background);
+    --broker-stats-lv2-title-background-color: var(--info-box-background-color);
+    --broker-stats-lv2-title-hover-background-color: var(--color-cod-grey);
+    --broker-stats-title-background-color: var(--broker-stats-lv2-title-background-color);
+    --broker-stats-title-hover-background-color: var(--broker-stats-lv2-title-hover-background-color);
+    --broker-stats-title-border-bottom-color: var(--broker-stats-lv2-title-background-color);
+    --broker-stats-title-border-top-color: var(--broker-stats-lv2-title-background-color);
+    --broker-stats-info-name-font-color:var(--color-alabaster-2);
+    --broker-stats-loaded-font-color: var(--service-ok-host-up-success-background-color);
 }
