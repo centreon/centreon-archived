@@ -165,14 +165,22 @@ const CollapsableItems = ({
     });
   };
 
+  const deleteNavigationItemsSelected = (
+    navigationItems: Record<string, propsNavigationItemSelected>,
+  ): void => {
+    const navigation = navigationItems;
+    Object.keys(navigation).forEach(() => {
+      delete navigation[`level_${level}`];
+    });
+
+    setNavigationItemSelected(navigation);
+  };
+
   const handleLeave = (): void => {
     setHoveredIndex(null);
     if (navigationItemSelected) {
-      Object.keys(navigationItemSelected).forEach(() => {
-        delete navigationItemSelected[`level_${level}`];
-      });
+      deleteNavigationItemsSelected(navigationItemSelected);
     }
-    setNavigationItemSelected(navigationItemSelected);
   };
 
   const isItemHovered = (

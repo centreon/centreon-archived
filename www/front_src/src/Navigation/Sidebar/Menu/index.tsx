@@ -102,23 +102,28 @@ const NavigationMenu = ({
     return url;
   };
 
-  const addNavigationItemSelected = (nivel: number): void => {
-    if (navigationItemSelected) {
-      Object.keys(navigationItemSelected).forEach((i: string) => {
+  const addNavigationItemSelected = (
+    navigationItems: Record<string, propsNavigationItemSelected>,
+    nivel: number,
+  ): Record<string, propsNavigationItemSelected> => {
+    const navigation = navigationItems;
+    if (navigation) {
+      Object.keys(navigation).forEach((i: string) => {
         if (i.includes('_Navigated')) {
           if (i > `level_${nivel}_Navigated`) {
-            delete navigationItemSelected[i];
+            delete navigation[i];
           }
           if (`level_${nivel}_Navigated` === i) {
-            navigationItemSelected[i] =
-              navigationItemSelected[`level_${nivel}`];
+            navigation[i] = navigation[`level_${nivel}`];
           }
         } else {
-          navigationItemSelected[`${i}_Navigated`] = navigationItemSelected[i];
-          delete navigationItemSelected[i];
+          navigation[`${i}_Navigated`] = navigation[i];
+          delete navigation[i];
         }
       });
     }
+
+    return navigation;
   };
 
   const handlClickItem = (item: Page, level = 0): void => {
@@ -131,14 +136,17 @@ const NavigationMenu = ({
         !isNil(navigationItemSelected[`level_${level}_Navigated`]?.url) &&
         navigationItemSelected[`level_${level}_Navigated`]?.url !== item?.url
       ) {
-        addNavigationItemSelected(level);
+        setNavigationItemSelected(
+          addNavigationItemSelected(navigationItemSelected, level),
+        );
       } else if (
         navigationItemSelected[`level_${level}_Navigated`]?.label !== item.label
       ) {
-        addNavigationItemSelected(level);
+        setNavigationItemSelected(
+          addNavigationItemSelected(navigationItemSelected, level),
+        );
       }
     }
-    setNavigationItemSelected(navigationItemSelected);
   };
 
   const isItemHovered = (
