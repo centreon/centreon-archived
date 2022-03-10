@@ -56,7 +56,6 @@ const useStyles = makeStyles((theme) => ({
     '& .MuiSvgIcon-root': {
       color: theme.palette.background.paper,
     },
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     '&:hover': {
       backgroundColor: theme.palette.primary.main,
     },
