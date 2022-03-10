@@ -54,7 +54,9 @@ class FindNotificationPolicyPresenter extends AbstractPresenter implements FindN
                 'alias' => $notifiedContact['alias'],
                 'email' => $notifiedContact['email'],
                 'notifications' => $notifiedContact['notifications'],
-                'configuration_uri' => $this->contactHypermediaCreator->createContactConfigurationUri($notifiedContact['id'])
+                'configuration_uri' => $this->contactHypermediaCreator->createContactConfigurationUri(
+                    $notifiedContact['id']
+                ),
             ],
             $response->notifiedContacts,
         );
