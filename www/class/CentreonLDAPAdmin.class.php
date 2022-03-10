@@ -60,6 +60,29 @@ class CentreonLdapAdmin
     }
 
     /**
+     * used to sanitize key and value in array
+     * @param array<mixed> $inputArray
+     * @return array<mixed>
+     */
+    public function sanitizeInputArray(array $inputArray): array
+    {
+        $sanitizedArray = [];
+        foreach ($inputArray as $key => $value) {
+            if ($key === 'address') {
+                $key = filter_var($key, FILTER_SANITIZE_STRING);
+                $value = filter_var($value, FILTER_SANITIZE_STRING);
+            } else {
+                $key = filter_var($key, FILTER_VALIDATE_INT);
+                $value = filter_var($value, FILTER_VALIDATE_INT);
+            }
+            if (false !== $key && false !== $value) {
+                $sanitizedArray[$key] = $value;
+            }
+        }
+        return $sanitizedArray;
+    }
+
+    /**
      * Get ldap parameters
      *
      * @return array
@@ -108,20 +131,19 @@ class CentreonLdapAdmin
      */
     protected function updateLdapServers($arId)
     {
-        $centreonUtils = new CentreonUtils();
         $statement = $this->db->prepare("DELETE FROM auth_ressource_host WHERE auth_ressource_id = :auth_ressource_id");
         $statement->bindValue(':auth_ressource_id', $arId, \PDO::PARAM_INT);
         $statement->execute();
         if (isset($_REQUEST['address']) && is_array($_REQUEST['address'])) {
-            $addressList = $centreonUtils->sanitizeInputArrayNew($_REQUEST['address']);
+            $addressList = $this->sanitizeInputArray($_REQUEST['address']);
             $portList = isset($_REQUEST['port'])
-                ? $centreonUtils->sanitizeInputArrayNew($_REQUEST['port'])
+                ? $this->sanitizeInputArray($_REQUEST['port'])
                 : null;
             $sslList = isset($_REQUEST['ssl'])
-                ? $centreonUtils->sanitizeInputArrayNew($_REQUEST['ssl'])
+                ? $this->sanitizeInputArray($_REQUEST['ssl'])
                 : null;
             $tlsList = isset($_REQUEST['tls'])
-            ? $centreonUtils->sanitizeInputArrayNew($_REQUEST['tls'])
+            ? $this->sanitizeInputArray($_REQUEST['tls'])
             : null;
             $insertStr = "";
             $i = 1;
