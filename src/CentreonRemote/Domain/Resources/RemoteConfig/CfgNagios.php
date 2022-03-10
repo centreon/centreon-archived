@@ -22,7 +22,6 @@ class CfgNagios
             'use_timezone'                                => null,
             'log_file'                                    => '/var/log/centreon-engine/centengine.log',
             'cfg_dir'                                     => '/etc/centreon-engine/',
-            'temp_file'                                   => '/var/log/centreon-engine/centengine.tmp',
             'status_file'                                 => '/var/log/centreon-engine/status.dat',
             'status_update_interval'                      => '60',
             'enable_notifications'                        => '1',
@@ -104,6 +103,12 @@ class CfgNagios
             'daemon_dumps_core'                           => '0',
             'cfg_file'                                    => 'centengine.cfg',
             'log_pid'                                     => '1',
+            'ocsp_timeout'                                => 5,
+            'ochp_timeout'                                => 5,
+            'obsess_over_services'                        => '0',
+            'ocsp_command'                                => null,
+            'obsess_over_hosts'                           => '2',
+            'ochp_command'                                => null,
         ];
     }
 }

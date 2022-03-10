@@ -84,7 +84,7 @@ function enableNagiosInDB($nagiosId = null)
         "AND `id` = '" . $data["nagios_server_id"] . "'";
     $dbResult = $pearDB->query($query);
     $activate = $dbResult->fetch();
-    if ($activate["name"]) {
+    if (isset($activate["name"]) && $activate["name"] == 1) {
         $query = "UPDATE `nagios_server` SET `ns_activate` = '1' WHERE `id` = '" . $activate['id'] . "'";
         $pearDB->query($query);
         $centreon->CentreonLogAction->insertLog("poller", $activate['id'], $activate['name'], "enable");
@@ -156,6 +156,9 @@ function deleteNagiosInDB($nagios = array())
     $dbResult->closeCursor();
 }
 
+/* 
+ * Duplicate Engine Configuration file in DB
+ */
 function multipleNagiosInDB($nagios = array(), $nbrDup = array())
 {
     foreach ($nagios as $key => $value) {
@@ -252,8 +255,8 @@ function insertNagios($ret = array(), $brokerTab = array())
         $ret = $form->getSubmitValues();
     }
     $rq = "INSERT INTO cfg_nagios ("
-        . "`nagios_id`, `nagios_name`, `use_timezone`, `nagios_server_id`, `log_file`, `cfg_dir` , "
-        . "`temp_file`, `status_file`, `status_update_interval`, "
+        . "`nagios_id`, `nagios_name`, `use_timezone`, `nagios_server_id`, `log_file`, `cfg_dir`, "
+        . "`status_file`, `status_update_interval`, "
         . "`enable_notifications`, `execute_service_checks` , "
         . "`accept_passive_service_checks`, `execute_host_checks` , "
         . "`accept_passive_host_checks`, `enable_event_handlers`, `log_archive_path` , "
@@ -272,16 +275,17 @@ function insertNagios($ret = array(), $brokerTab = array())
         . "`enable_predictive_host_dependency_checks`, `enable_flap_detection`, `low_service_flap_threshold` , "
         . "`high_service_flap_threshold`, `low_host_flap_threshold`, `high_host_flap_threshold` ,"
         . "`soft_state_dependencies` ,`enable_predictive_service_dependency_checks` , "
-        . "`service_check_timeout`, `host_check_timeout`, `event_handler_timeout` , "
-        . "`notification_timeout` , "
+        . "`service_check_timeout`, `host_check_timeout`, `event_handler_timeout`, "
+        . "`notification_timeout` , `ocsp_timeout`, `ochp_timeout`"
+        . "`obsess_over_services` , `ocsp_command`, `obsess_over_hosts`, `ochp_command`, "
         . "`check_for_orphaned_services`, `check_service_freshness` , "
         . "`service_freshness_check_interval`, `cached_host_check_horizon`, "
         . "`cached_service_check_horizon`, `additional_freshness_latency` , "
         . "`check_host_freshness`, `host_freshness_check_interval`, `instance_heartbeat_interval`, `date_format` , "
         . "`illegal_object_name_chars`, `illegal_macro_output_chars`, "
-        . "`debug_file`, `debug_level` , "
+        . "`debug_file`, `debug_level`, "
         . "`debug_level_opt`, `debug_verbosity`, `max_debug_file_size`, `daemon_dumps_core`, "
-        . "`enable_environment_macros`, `use_regexp_matching`, `use_true_regexp_matching` , "
+        . "`enable_environment_macros`, `use_regexp_matching`, `use_true_regexp_matching`, "
         . "`admin_email`, `admin_pager`, `nagios_comment`, `nagios_activate`, "
         . "`event_broker_options`, `check_for_orphaned_hosts`, `external_command_buffer_slots`, "
         . "`cfg_file`, `log_pid`, `enable_macros_filter`, `macros_filter`) ";
@@ -318,12 +322,6 @@ function insertNagios($ret = array(), $brokerTab = array())
         $rq .= "NULL, ";
     }
 
-    if (isset($ret["temp_file"]) && $ret["temp_file"] != null) {
-        $rq .= "'" . htmlentities($ret["temp_file"], ENT_QUOTES, "UTF-8") . "', ";
-    } else {
-        $rq .= "NULL, ";
-    }
-
     if (isset($ret["status_file"]) && $ret["status_file"] != null) {
         $rq .= "'" . htmlentities($ret["status_file"], ENT_QUOTES, "UTF-8") . "', ";
     } else {
@@ -342,7 +340,7 @@ function insertNagios($ret = array(), $brokerTab = array())
     ) {
         $rq .= "'" . $ret["enable_notifications"]["enable_notifications"] . "',  ";
     } else {
-        $rq .= "'2', ";
+        $rq .= "'1', ";
     }
 
     if (
@@ -351,7 +349,7 @@ function insertNagios($ret = array(), $brokerTab = array())
     ) {
         $rq .= "'" . $ret["execute_service_checks"]["execute_service_checks"] . "',  ";
     } else {
-        $rq .= "'2', ";
+        $rq .= "'1', ";
     }
 
     if (
@@ -360,7 +358,7 @@ function insertNagios($ret = array(), $brokerTab = array())
     ) {
         $rq .= "'" . $ret["accept_passive_service_checks"]["accept_passive_service_checks"] . "',  ";
     } else {
-        $rq .= "'2', ";
+        $rq .= "'1', ";
     }
 
     if (
@@ -369,7 +367,7 @@ function insertNagios($ret = array(), $brokerTab = array())
     ) {
         $rq .= "'" . $ret["execute_host_checks"]["execute_host_checks"] . "',  ";
     } else {
-        $rq .= "'2', ";
+        $rq .= "'1', ";
     }
 
     if (
@@ -378,7 +376,7 @@ function insertNagios($ret = array(), $brokerTab = array())
     ) {
         $rq .= "'" . $ret["accept_passive_host_checks"]["accept_passive_host_checks"] . "',  ";
     } else {
-        $rq .= "'2', ";
+        $rq .= "'1', ";
     }
 
     if (
@@ -387,7 +385,7 @@ function insertNagios($ret = array(), $brokerTab = array())
     ) {
         $rq .= "'" . $ret["enable_event_handlers"]["enable_event_handlers"] . "',  ";
     } else {
-        $rq .= "'2', ";
+        $rq .= "'1', ";
     }
 
     if (isset($ret["log_archive_path"]) && $ret["log_archive_path"] != null) {
@@ -402,7 +400,7 @@ function insertNagios($ret = array(), $brokerTab = array())
     ) {
         $rq .= "'" . $ret["check_external_commands"]["check_external_commands"] . "',  ";
     } else {
-        $rq .= "'2', ";
+        $rq .= "'1', ";
     }
 
     if (isset($ret["command_check_interval"]) && $ret["command_check_interval"] != null) {
@@ -423,7 +421,7 @@ function insertNagios($ret = array(), $brokerTab = array())
     ) {
         $rq .= "'" . $ret["retain_state_information"]["retain_state_information"] . "',  ";
     } else {
-        $rq .= "'2', ";
+        $rq .= "'1', ";
     }
 
     if (isset($ret["state_retention_file"]) && $ret["state_retention_file"] != null) {
@@ -444,7 +442,7 @@ function insertNagios($ret = array(), $brokerTab = array())
     ) {
         $rq .= "'" . $ret["use_retained_program_state"]["use_retained_program_state"] . "',  ";
     } else {
-        $rq .= "'2', ";
+        $rq .= "'1', ";
     }
 
     if (
@@ -453,19 +451,19 @@ function insertNagios($ret = array(), $brokerTab = array())
     ) {
         $rq .= "'" . $ret["use_retained_scheduling_info"]["use_retained_scheduling_info"] . "',  ";
     } else {
-        $rq .= "'2', ";
+        $rq .= "'1', ";
     }
 
     if (isset($ret["use_syslog"]["use_syslog"]) && $ret["use_syslog"]["use_syslog"] != 2) {
         $rq .= "'" . $ret["use_syslog"]["use_syslog"] . "',  ";
     } else {
-        $rq .= "'2', ";
+        $rq .= "'0', ";
     }
 
     if (isset($ret["log_notifications"]["log_notifications"]) && $ret["log_notifications"]["log_notifications"] != 2) {
         $rq .= "'" . $ret["log_notifications"]["log_notifications"] . "',  ";
     } else {
-        $rq .= "'2', ";
+        $rq .= "'1', ";
     }
 
     if (
@@ -474,13 +472,13 @@ function insertNagios($ret = array(), $brokerTab = array())
     ) {
         $rq .= "'" . $ret["log_service_retries"]["log_service_retries"] . "',  ";
     } else {
-        $rq .= "'2', ";
+        $rq .= "'1', ";
     }
 
     if (isset($ret["log_host_retries"]["log_host_retries"]) && $ret["log_host_retries"]["log_host_retries"] != 2) {
         $rq .= "'" . $ret["log_host_retries"]["log_host_retries"] . "',  ";
     } else {
-        $rq .= "'2', ";
+        $rq .= "'1', ";
     }
 
     if (
@@ -489,7 +487,7 @@ function insertNagios($ret = array(), $brokerTab = array())
     ) {
         $rq .= "'" . $ret["log_event_handlers"]["log_event_handlers"] . "',  ";
     } else {
-        $rq .= "'2', ";
+        $rq .= "'1', ";
     }
 
     if (
@@ -498,7 +496,7 @@ function insertNagios($ret = array(), $brokerTab = array())
     ) {
         $rq .= "'" . $ret["log_external_commands"]["log_external_commands"] . "',  ";
     } else {
-        $rq .= "'2', ";
+        $rq .= "'1', ";
     }
 
     if (
@@ -507,7 +505,7 @@ function insertNagios($ret = array(), $brokerTab = array())
     ) {
         $rq .= "'" . $ret["log_passive_checks"]["log_passive_checks"] . "',  ";
     } else {
-        $rq .= "'2', ";
+        $rq .= "'1', ";
     }
 
     if (isset($ret["global_host_event_handler"]) && $ret["global_host_event_handler"] != null) {
@@ -543,31 +541,31 @@ function insertNagios($ret = array(), $brokerTab = array())
     if (isset($ret["service_interleave_factor"]) && $ret["service_interleave_factor"] != null) {
         $rq .= "'" . htmlentities($ret["service_interleave_factor"], ENT_QUOTES, "UTF-8") . "',  ";
     } else {
-        $rq .= "'2', ";
+        $rq .= "'s', ";
     }
 
     if (isset($ret["max_concurrent_checks"]) && $ret["max_concurrent_checks"] != null) {
         $rq .= "'" . htmlentities($ret["max_concurrent_checks"], ENT_QUOTES, "UTF-8") . "',  ";
     } else {
-        $rq .= "NULL, ";
+        $rq .= "0, ";
     }
 
     if (isset($ret["max_service_check_spread"]) && $ret["max_service_check_spread"] != null) {
         $rq .= "'" . htmlentities($ret["max_service_check_spread"], ENT_QUOTES, "UTF-8") . "',  ";
     } else {
-        $rq .= "NULL, ";
+        $rq .= "15, ";
     }
 
     if (isset($ret["max_host_check_spread"]) && $ret["max_host_check_spread"] != null) {
         $rq .= "'" . htmlentities($ret["max_host_check_spread"], ENT_QUOTES, "UTF-8") . "',  ";
     } else {
-        $rq .= "NULL, ";
+        $rq .= "15, ";
     }
 
     if (isset($ret["check_result_reaper_frequency"]) && $ret["check_result_reaper_frequency"] != null) {
         $rq .= "'" . htmlentities($ret["check_result_reaper_frequency"], ENT_QUOTES, "UTF-8") . "',  ";
     } else {
-        $rq .= "NULL, ";
+        $rq .= "5, ";
     }
 
     if (
@@ -576,19 +574,19 @@ function insertNagios($ret = array(), $brokerTab = array())
     ) {
         $rq .= "'" . $ret["auto_reschedule_checks"]["auto_reschedule_checks"] . "',  ";
     } else {
-        $rq .= "'2', ";
+        $rq .= "'0', ";
     }
 
     if (isset($ret["auto_rescheduling_interval"]) && $ret["auto_rescheduling_interval"] != null) {
         $rq .= "'" . htmlentities($ret["auto_rescheduling_interval"], ENT_QUOTES, "UTF-8") . "',  ";
     } else {
-        $rq .= "NULL, ";
+        $rq .= "30, ";
     }
 
     if (isset($ret["auto_rescheduling_window"]) && $ret["auto_rescheduling_window"] != null) {
         $rq .= "'" . htmlentities($ret["auto_rescheduling_window"], ENT_QUOTES, "UTF-8") . "',  ";
     } else {
-        $rq .= "NULL, ";
+        $rq .= "180, ";
     }
 
     if (
@@ -598,7 +596,7 @@ function insertNagios($ret = array(), $brokerTab = array())
         $rq .= "'" .
         $ret["enable_predictive_host_dependency_checks"]["enable_predictive_host_dependency_checks"] . "',  ";
     } else {
-        $rq .= "'2', ";
+        $rq .= "'0', ";
     }
 
     if (
@@ -607,7 +605,7 @@ function insertNagios($ret = array(), $brokerTab = array())
     ) {
         $rq .= "'" . $ret["enable_flap_detection"]["enable_flap_detection"] . "',  ";
     } else {
-        $rq .= "'2', ";
+        $rq .= "'0', ";
     }
 
     if (isset($ret["low_service_flap_threshold"]) && $ret["low_service_flap_threshold"] != null) {
@@ -640,7 +638,7 @@ function insertNagios($ret = array(), $brokerTab = array())
     ) {
         $rq .= "'" . $ret["soft_state_dependencies"]["soft_state_dependencies"] . "',  ";
     } else {
-        $rq .= "'2', ";
+        $rq .= "'0', ";
     }
 
     if (
@@ -656,23 +654,65 @@ function insertNagios($ret = array(), $brokerTab = array())
     if (isset($ret["service_check_timeout"]) && $ret["service_check_timeout"] != null) {
         $rq .= "'" . htmlentities($ret["service_check_timeout"], ENT_QUOTES, "UTF-8") . "',  ";
     } else {
-        $rq .= "NULL, ";
+        $rq .= "60, ";
     }
 
     if (isset($ret["host_check_timeout"]) && $ret["host_check_timeout"] != null) {
         $rq .= "'" . htmlentities($ret["host_check_timeout"], ENT_QUOTES, "UTF-8") . "',  ";
     } else {
-        $rq .= "NULL, ";
+        $rq .= "12, ";
     }
 
     if (isset($ret["event_handler_timeout"]) && $ret["event_handler_timeout"] != null) {
         $rq .= "'" . htmlentities($ret["event_handler_timeout"], ENT_QUOTES, "UTF-8") . "',  ";
     } else {
-        $rq .= "NULL, ";
+        $rq .= "30, ";
     }
 
     if (isset($ret["notification_timeout"]) && $ret["notification_timeout"] != null) {
         $rq .= "'" . htmlentities($ret["notification_timeout"], ENT_QUOTES, "UTF-8") . "',  ";
+    } else {
+        $rq .= "30, ";
+    }
+
+    if (isset($ret["ocsp_timeout"]) && $ret["ocsp_timeout"] != null) {
+        $rq .= "'" . htmlentities($ret["ocsp_timeout"], ENT_QUOTES, "UTF-8") . "',  ";
+    } else {
+        $rq .= "5, ";
+    }
+
+    if (isset($ret["ochp_timeout"]) && $ret["ochp_timeout"] != null) {
+        $rq .= "'" . htmlentities($ret["ochp_timeout"], ENT_QUOTES, "UTF-8") . "',  ";
+    } else {
+        $rq .= "5, ";
+    }
+
+    if (
+        isset($ret["obsess_over_services"]["obsess_over_services"])
+        && $ret["obsess_over_services"]["obsess_over_services"] != 2
+    ) {
+        $rq .= "'" . $ret["obsess_over_services"]["obsess_over_services"] . "',  ";
+    } else {
+        $rq .= "'0', ";
+    }
+
+    if (isset($ret["ocsp_command"]) && $ret["ocsp_command"] != null) {
+        $rq .= "'" . htmlentities($ret["ocsp_command"], ENT_QUOTES, "UTF-8") . "',  ";
+    } else {
+        $rq .= "NULL, ";
+    }
+
+    if (
+        isset($ret["obsess_over_hosts"]["obsess_over_hosts"])
+        && $ret["obsess_over_hosts"]["obsess_over_hosts"] != 2
+    ) {
+        $rq .= "'" . $ret["obsess_over_hosts"]["obsess_over_hosts"] . "',  ";
+    } else {
+        $rq .= "'0', ";
+    }
+
+    if (isset($ret["ochp_command"]) && $ret["ochp_command"] != null) {
+        $rq .= "'" . htmlentities($ret["ochp_command"], ENT_QUOTES, "UTF-8") . "',  ";
     } else {
         $rq .= "NULL, ";
     }
@@ -683,7 +723,7 @@ function insertNagios($ret = array(), $brokerTab = array())
     ) {
         $rq .= "'" . $ret["check_for_orphaned_services"]["check_for_orphaned_services"] . "',  ";
     } else {
-        $rq .= "'2', ";
+        $rq .= "'0', ";
     }
 
     if (
@@ -692,7 +732,7 @@ function insertNagios($ret = array(), $brokerTab = array())
     ) {
         $rq .= "'" . $ret["check_service_freshness"]["check_service_freshness"] . "',  ";
     } else {
-        $rq .= "'2', ";
+        $rq .= "'0', ";
     }
 
     if (isset($ret["service_freshness_check_interval"]) && $ret["service_freshness_check_interval"] != null) {
@@ -725,7 +765,7 @@ function insertNagios($ret = array(), $brokerTab = array())
     ) {
         $rq .= "'" . $ret["check_host_freshness"]["check_host_freshness"] . "',  ";
     } else {
-        $rq .= "'2', ";
+        $rq .= "'0', ";
     }
 
     if (isset($ret["host_freshness_check_interval"]) && $ret["host_freshness_check_interval"] != null) {
@@ -747,7 +787,7 @@ function insertNagios($ret = array(), $brokerTab = array())
     if (isset($ret["date_format"]) && $ret["date_format"] != null) {
         $rq .= "'" . htmlentities($ret["date_format"], ENT_QUOTES, "UTF-8") . "',  ";
     } else {
-        $rq .= "NULL, ";
+        $rq .= "'euro', ";
     }
 
     if (isset($ret["illegal_object_name_chars"]) && $ret["illegal_object_name_chars"] != null) {
@@ -806,7 +846,7 @@ function insertNagios($ret = array(), $brokerTab = array())
     ) {
         $rq .= "'" . $ret["enable_environment_macros"]["enable_environment_macros"] . "',  ";
     } else {
-        $rq .= "'2', ";
+        $rq .= "'0', ";
     }
 
     if (
@@ -815,7 +855,7 @@ function insertNagios($ret = array(), $brokerTab = array())
     ) {
         $rq .= "'" . $ret["use_regexp_matching"]["use_regexp_matching"] . "',  ";
     } else {
-        $rq .= "'2', ";
+        $rq .= "'0', ";
     }
 
     if (
@@ -824,7 +864,7 @@ function insertNagios($ret = array(), $brokerTab = array())
     ) {
         $rq .= "'" . $ret["use_true_regexp_matching"]["use_true_regexp_matching"] . "',  ";
     } else {
-        $rq .= "'2', ";
+        $rq .= "'0', ";
     }
 
     if (isset($ret["admin_email"]) && $ret["admin_email"] != null) {
@@ -864,7 +904,7 @@ function insertNagios($ret = array(), $brokerTab = array())
     ) {
         $rq .= "'" . $ret["check_for_orphaned_hosts"]["check_for_orphaned_hosts"] . "', ";
     } else {
-        $rq .= "'2', ";
+        $rq .= "'1', ";
     }
 
     if (
@@ -989,12 +1029,6 @@ function updateNagios($nagios_id = null)
         $rq .= "cfg_dir = NULL, ";
     }
 
-    if (isset($ret["temp_file"]) && $ret["temp_file"] != null) {
-        $rq .= "temp_file = '" . htmlentities($ret["temp_file"], ENT_QUOTES, "UTF-8") . "',  ";
-    } else {
-        $rq .= "temp_file = NULL, ";
-    }
-
     if (isset($ret["status_file"]) && $ret["status_file"] != null) {
         $rq .= "status_file = '" . htmlentities($ret["status_file"], ENT_QUOTES, "UTF-8") . "',  ";
     } else {
@@ -1013,7 +1047,7 @@ function updateNagios($nagios_id = null)
     ) {
         $rq .= "enable_notifications = '" . $ret["enable_notifications"]["enable_notifications"] . "',  ";
     } else {
-        $rq .= "enable_notifications = '2', ";
+        $rq .= "enable_notifications = '1', ";
     }
 
     if (
@@ -1022,7 +1056,7 @@ function updateNagios($nagios_id = null)
     ) {
         $rq .= "execute_service_checks = '" . $ret["execute_service_checks"]["execute_service_checks"] . "',  ";
     } else {
-        $rq .= "execute_service_checks = '2', ";
+        $rq .= "execute_service_checks = '1', ";
     }
 
     if (
@@ -1033,7 +1067,7 @@ function updateNagios($nagios_id = null)
             . $ret["accept_passive_service_checks"]["accept_passive_service_checks"]
             . "',  ";
     } else {
-        $rq .= "accept_passive_service_checks = '2', ";
+        $rq .= "accept_passive_service_checks = '1', ";
     }
 
     if (
@@ -1042,7 +1076,7 @@ function updateNagios($nagios_id = null)
     ) {
         $rq .= "execute_host_checks = '" . $ret["execute_host_checks"]["execute_host_checks"] . "',  ";
     } else {
-        $rq .= "execute_host_checks = '2', ";
+        $rq .= "execute_host_checks = '1', ";
     }
 
     if (
@@ -1053,7 +1087,7 @@ function updateNagios($nagios_id = null)
             . $ret["accept_passive_host_checks"]["accept_passive_host_checks"]
             . "',  ";
     } else {
-        $rq .= "accept_passive_host_checks = '2', ";
+        $rq .= "accept_passive_host_checks = '1', ";
     }
 
     if (
@@ -1062,7 +1096,7 @@ function updateNagios($nagios_id = null)
     ) {
         $rq .= "enable_event_handlers = '" . $ret["enable_event_handlers"]["enable_event_handlers"] . "',  ";
     } else {
-        $rq .= "enable_event_handlers = '2', ";
+        $rq .= "enable_event_handlers = '1', ";
     }
 
     if (isset($ret["log_archive_path"]) && $ret["log_archive_path"] != null) {
@@ -1077,7 +1111,7 @@ function updateNagios($nagios_id = null)
     ) {
         $rq .= "check_external_commands = '" . $ret["check_external_commands"]["check_external_commands"] . "',  ";
     } else {
-        $rq .= "check_external_commands = '2', ";
+        $rq .= "check_external_commands = '1', ";
     }
 
     if (isset($ret["command_check_interval"]) && $ret["command_check_interval"] != null) {
@@ -1094,25 +1128,13 @@ function updateNagios($nagios_id = null)
         $rq .= "command_file = NULL, ";
     }
 
-    if (isset($ret["downtime_file"]) && $ret["downtime_file"] != null) {
-        $rq .= "downtime_file = '" . htmlentities($ret["downtime_file"], ENT_QUOTES, "UTF-8") . "',  ";
-    } else {
-        $rq .= "downtime_file = NULL, ";
-    }
-
-    if (isset($ret["comment_file"]) && $ret["comment_file"] != null) {
-        $rq .= "comment_file = '" . htmlentities($ret["comment_file"], ENT_QUOTES, "UTF-8") . "',  ";
-    } else {
-        $rq .= "comment_file = NULL, ";
-    }
-
     if (
         isset($ret["retain_state_information"]["retain_state_information"])
         && $ret["retain_state_information"]["retain_state_information"] != 2
     ) {
         $rq .= "retain_state_information = '" . $ret["retain_state_information"]["retain_state_information"] . "',  ";
     } else {
-        $rq .= "retain_state_information = '2', ";
+        $rq .= "retain_state_information = '1', ";
     }
 
     if (isset($ret["state_retention_file"]) && $ret["state_retention_file"] != null) {
@@ -1137,7 +1159,7 @@ function updateNagios($nagios_id = null)
             . $ret["use_retained_program_state"]["use_retained_program_state"]
             . "',  ";
     } else {
-        $rq .= "use_retained_program_state = '2', ";
+        $rq .= "use_retained_program_state = '1', ";
     }
 
     if (
@@ -1148,19 +1170,19 @@ function updateNagios($nagios_id = null)
             . $ret["use_retained_scheduling_info"]["use_retained_scheduling_info"]
             . "',  ";
     } else {
-        $rq .= "use_retained_scheduling_info = '2', ";
+        $rq .= "use_retained_scheduling_info = '1', ";
     }
 
     if (isset($ret["use_syslog"]["use_syslog"]) && $ret["use_syslog"]["use_syslog"] != 2) {
         $rq .= "use_syslog = '" . $ret["use_syslog"]["use_syslog"] . "',  ";
     } else {
-        $rq .= "use_syslog = '2', ";
+        $rq .= "use_syslog = '0', ";
     }
 
     if (isset($ret["log_notifications"]["log_notifications"]) && $ret["log_notifications"]["log_notifications"] != 2) {
         $rq .= "log_notifications = '" . $ret["log_notifications"]["log_notifications"] . "',  ";
     } else {
-        $rq .= "log_notifications = '2', ";
+        $rq .= "log_notifications = '1', ";
     }
 
     if (
@@ -1169,13 +1191,13 @@ function updateNagios($nagios_id = null)
     ) {
         $rq .= "log_service_retries = '" . $ret["log_service_retries"]["log_service_retries"] . "',  ";
     } else {
-        $rq .= "log_service_retries = '2', ";
+        $rq .= "log_service_retries = '1', ";
     }
 
     if (isset($ret["log_host_retries"]["log_host_retries"]) && $ret["log_host_retries"]["log_host_retries"] != 2) {
         $rq .= "log_host_retries = '" . $ret["log_host_retries"]["log_host_retries"] . "',  ";
     } else {
-        $rq .= "log_host_retries = '2', ";
+        $rq .= "log_host_retries = '1', ";
     }
 
     if (
@@ -1184,7 +1206,7 @@ function updateNagios($nagios_id = null)
     ) {
         $rq .= "log_event_handlers = '" . $ret["log_event_handlers"]["log_event_handlers"] . "',  ";
     } else {
-        $rq .= "log_event_handlers = '2', ";
+        $rq .= "log_event_handlers = '1', ";
     }
 
     if (
@@ -1193,7 +1215,7 @@ function updateNagios($nagios_id = null)
     ) {
         $rq .= "log_external_commands = '" . $ret["log_external_commands"]["log_external_commands"] . "',  ";
     } else {
-        $rq .= "log_external_commands = '2', ";
+        $rq .= "log_external_commands = '1', ";
     }
 
     if (
@@ -1202,7 +1224,7 @@ function updateNagios($nagios_id = null)
     ) {
         $rq .= "log_passive_checks = '" . $ret["log_passive_checks"]["log_passive_checks"] . "',  ";
     } else {
-        $rq .= "log_passive_checks = '2', ";
+        $rq .= "log_passive_checks = '1', ";
     }
 
     if (isset($ret["global_host_event_handler"]) && $ret["global_host_event_handler"] != null) {
@@ -1242,7 +1264,7 @@ function updateNagios($nagios_id = null)
             . htmlentities($ret["service_interleave_factor"], ENT_QUOTES, "UTF-8")
             . "',  ";
     } else {
-        $rq .= "service_interleave_factor = '2', ";
+        $rq .= "service_interleave_factor = 's', ";
     }
 
     if (isset($ret["max_concurrent_checks"]) && $ret["max_concurrent_checks"] != null) {
@@ -1279,7 +1301,7 @@ function updateNagios($nagios_id = null)
     ) {
         $rq .= "auto_reschedule_checks = '" . $ret["auto_reschedule_checks"]["auto_reschedule_checks"] . "',  ";
     } else {
-        $rq .= "auto_reschedule_checks = '2', ";
+        $rq .= "auto_reschedule_checks = '0', ";
     }
 
     if (isset($ret["auto_rescheduling_interval"]) && $ret["auto_rescheduling_interval"] != null) {
@@ -1315,7 +1337,7 @@ function updateNagios($nagios_id = null)
     ) {
         $rq .= "enable_flap_detection = '" . $ret["enable_flap_detection"]["enable_flap_detection"] . "',  ";
     } else {
-        $rq .= "enable_flap_detection = '2', ";
+        $rq .= "enable_flap_detection = '0', ";
     }
 
     if (isset($ret["low_service_flap_threshold"]) && $ret["low_service_flap_threshold"] != null) {
@@ -1356,7 +1378,7 @@ function updateNagios($nagios_id = null)
     ) {
         $rq .= "soft_state_dependencies = '" . $ret["soft_state_dependencies"]["soft_state_dependencies"] . "',  ";
     } else {
-        $rq .= "soft_state_dependencies = '2', ";
+        $rq .= "soft_state_dependencies = '0', ";
     }
 
     if (
@@ -1367,7 +1389,7 @@ function updateNagios($nagios_id = null)
             . $ret["enable_predictive_service_dependency_checks"]["enable_predictive_service_dependency_checks"]
             . "',  ";
     } else {
-        $rq .= "enable_predictive_service_dependency_checks = '2', ";
+        $rq .= "enable_predictive_service_dependency_checks = '0', ";
     }
 
     if (isset($ret["service_check_timeout"]) && $ret["service_check_timeout"] != null) {
@@ -1394,6 +1416,48 @@ function updateNagios($nagios_id = null)
         $rq .= "notification_timeout = NULL, ";
     }
 
+    if (isset($ret["ocsp_timeout"]) && $ret["ocsp_timeout"] != null) {
+        $rq .= "ocsp_timeout = '" . htmlentities($ret["ocsp_timeout"], ENT_QUOTES, "UTF-8") . "',  ";
+    } else {
+        $rq .= "ocsp_timeout = NULL, ";
+    }
+
+    if (isset($ret["ochp_timeout"]) && $ret["ochp_timeout"] != null) {
+        $rq .= "ochp_timeout = '" . htmlentities($ret["ochp_timeout"], ENT_QUOTES, "UTF-8") . "',  ";
+    } else {
+        $rq .= "ochp_timeout = NULL, ";
+    }
+
+    if (
+        isset($ret["obsess_over_services"]["obsess_over_services"])
+        && $ret["obsess_over_services"]["obsess_over_services"] != 2
+    ) {
+        $rq .= "obsess_over_services = '" . $ret["obsess_over_services"]["obsess_over_services"] . "',  ";
+    } else {
+        $rq .= "obsess_over_services = '0', ";
+    }
+
+    if (isset($ret["ocsp_command"]) && $ret["ocsp_command"] != null) {
+        $rq .= "ocsp_command = '" . htmlentities($ret["ocsp_command"], ENT_QUOTES, "UTF-8") . "',  ";
+    } else {
+        $rq .= "ocsp_command = NULL, ";
+    }
+
+    if (
+        isset($ret["obsess_over_hosts"]["obsess_over_hosts"])
+        && $ret["obsess_over_hosts"]["obsess_over_hosts"] != 2
+    ) {
+        $rq .= "obsess_over_hosts = '" . $ret["obsess_over_hosts"]["obsess_over_hosts"] . "',  ";
+    } else {
+        $rq .= "obsess_over_hosts = '0', ";
+    }
+
+    if (isset($ret["ochp_command"]) && $ret["ochp_command"] != null) {
+        $rq .= "ochp_command = '" . htmlentities($ret["ochp_command"], ENT_QUOTES, "UTF-8") . "',  ";
+    } else {
+        $rq .= "ochp_command = NULL, ";
+    }
+
     if (
         isset($ret["check_for_orphaned_services"]["check_for_orphaned_services"])
         && $ret["check_for_orphaned_services"]["check_for_orphaned_services"] != 2
@@ -1402,7 +1466,7 @@ function updateNagios($nagios_id = null)
             . $ret["check_for_orphaned_services"]["check_for_orphaned_services"]
             . "',  ";
     } else {
-        $rq .= "check_for_orphaned_services = '2', ";
+        $rq .= "check_for_orphaned_services = '1', ";
     }
 
     if (
@@ -1413,7 +1477,7 @@ function updateNagios($nagios_id = null)
             . $ret["check_service_freshness"]["check_service_freshness"]
             . "',  ";
     } else {
-        $rq .= "check_service_freshness = '2', ";
+        $rq .= "check_service_freshness = '1', ";
     }
 
     if (isset($ret["service_freshness_check_interval"]) && $ret["service_freshness_check_interval"] != null) {
@@ -1454,7 +1518,7 @@ function updateNagios($nagios_id = null)
     ) {
         $rq .= "check_host_freshness = '" . $ret["check_host_freshness"]["check_host_freshness"] . "',  ";
     } else {
-        $rq .= "check_host_freshness = '2', ";
+        $rq .= "check_host_freshness = '0', ";
     }
 
     if (isset($ret["host_freshness_check_interval"]) && $ret["host_freshness_check_interval"] != null) {
@@ -1501,7 +1565,7 @@ function updateNagios($nagios_id = null)
             . $ret["enable_environment_macros"]["enable_environment_macros"]
             . "',  ";
     } else {
-        $rq .= "use_large_installation_tweaks = '2', ";
+        $rq .= "enable_environment_macros = '0', ";
     }
 
     if (
@@ -1510,7 +1574,7 @@ function updateNagios($nagios_id = null)
     ) {
         $rq .= "use_regexp_matching = '" . $ret["use_regexp_matching"]["use_regexp_matching"] . "',  ";
     } else {
-        $rq .= "use_regexp_matching = '2', ";
+        $rq .= "use_regexp_matching = '0', ";
     }
 
     if (
@@ -1519,7 +1583,7 @@ function updateNagios($nagios_id = null)
     ) {
         $rq .= "use_true_regexp_matching = '" . $ret["use_true_regexp_matching"]["use_true_regexp_matching"] . "',  ";
     } else {
-        $rq .= "use_true_regexp_matching = '2', ";
+        $rq .= "use_true_regexp_matching = '0', ";
     }
 
     if (isset($ret["admin_email"]) && $ret["admin_email"] != null) {

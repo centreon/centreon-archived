@@ -376,6 +376,25 @@ $form->addElement('text', 'service_check_timeout', _("Service Check Timeout"), $
 $form->addElement('text', 'host_check_timeout', _("Host Check Timeout"), $attrsText3);
 $form->addElement('text', 'event_handler_timeout', _("Event Handler Timeout"), $attrsText3);
 $form->addElement('text', 'notification_timeout', _("Notification Timeout"), $attrsText3);
+$form->addElement('text', 'ocsp_timeout', _("Obsessive Compulsive Service Processor Timeout"), $attrsText3);
+$form->addElement('text', 'ochp_timeout', _("Obsessive Compulsive Host Processor Timeout"), $attrsText3);
+
+/* *****************************************************
+ * OCSP / OCHP
+ */
+$nagTab = array();
+$nagTab[] = $form->createElement('radio', 'obsess_over_services', null, _("Yes"), '1');
+$nagTab[] = $form->createElement('radio', 'obsess_over_services', null, _("No"), '0');
+$nagTab[] = $form->createElement('radio', 'obsess_over_services', null, _("Default"), '2');
+$form->addGroup($nagTab, 'obsess_over_services', _("Obsess Over Services Option"), '&nbsp;');
+$form->addElement('select', 'ocsp_command', _("Obsessive Compulsive Service Processor Command"), $checkCmds);
+
+$nagTab = array();
+$nagTab[] = $form->createElement('radio', 'obsess_over_hosts', null, _("Yes"), '1');
+$nagTab[] = $form->createElement('radio', 'obsess_over_hosts', null, _("No"), '0');
+$nagTab[] = $form->createElement('radio', 'obsess_over_hosts', null, _("Default"), '2');
+$form->addGroup($nagTab, 'obsess_over_hosts', _("Obsess Over Hosts Option"), '&nbsp;');
+$form->addElement('select', 'ochp_command', _("Obsessive Compulsive Host Processor Command"), $checkCmds);
 
 /* *****************************************************
  * Check orphaned
@@ -462,15 +481,16 @@ foreach (CentreonMainCfg::EVENT_BROKER_OPTIONS as $bit => $label) {
     $eventBrokerOptionsData[] = $form->createElement(
         'checkbox',
         $bit,
-        '',
+        '&nbsp;',
         _($label),
         [
+            "id" => "ebo" . $bit,
             'onClick' => $onClick,
             'class' => 'event-broker-options'
         ]
     );;
 }
-$form->addGroup($eventBrokerOptionsData, 'event_broker_options', _("Broker Module Options"), '&nbsp;');
+$form->addGroup($eventBrokerOptionsData, 'event_broker_options', _("Broker Module Options"), '<br/>');
  // New options for enable whitelist of macros sent to Centreon Broker
 $enableMacrosFilter = [];
 $enableMacrosFilter[] = $form->createElement('radio', 'enable_macros_filter', null, _("Yes"), 1);
@@ -509,13 +529,6 @@ $form->addGroup($nagTab, 'enable_predictive_host_dependency_checks', _("Predicti
 $nagTab = array();
 $nagTab[] = $form->createElement('radio', 'enable_predictive_service_dependency_checks', null, _("Yes"), '1');
 $nagTab[] = $form->createElement('radio', 'enable_predictive_service_dependency_checks', null, _("No"), '0');
-$nagTab[] = $form->createElement(
-    'radio',
-    'enable_predictive_service_dependency_checks',
-    null,
-    _("Default"),
-    '2'
-);
 $form->addGroup(
     $nagTab,
     'enable_predictive_service_dependency_checks',
@@ -788,7 +801,7 @@ if ($valid) {
     $tpl->assign('Archives', _("Archives"));
     $tpl->assign('StatesRetention', _("States Retention"));
     $tpl->assign('BrokerModule', _("Broker Module"));
-    $tpl->assign('Perfdata', _("Perfdata"));
+    $tpl->assign('MacrosMgmt', _("Macros Filters Configuration"));
     $tpl->assign('TimeUnit', _("Time Unit"));
     $tpl->assign('HostCheckSchedulingOptions', _("Host Check Scheduling Options"));
     $tpl->assign('ServiceCheckSchedulingOptions', _("Service Check Scheduling Options"));
