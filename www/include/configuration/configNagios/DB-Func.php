@@ -156,7 +156,7 @@ function deleteNagiosInDB($nagios = array())
     $dbResult->closeCursor();
 }
 
-/* 
+/*
  * Duplicate Engine Configuration file in DB
  */
 function multipleNagiosInDB($nagios = array(), $nbrDup = array())
