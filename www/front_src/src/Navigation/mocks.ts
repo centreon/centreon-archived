@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 import Navigation from './models';
 
 export const retrievedNavigation: Navigation = {

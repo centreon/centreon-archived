@@ -33,7 +33,6 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: theme.spacing(4),
   },
   event: {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     '&:before': {
       flex: 0,
       padding: 0,
