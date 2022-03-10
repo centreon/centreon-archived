@@ -71,6 +71,7 @@ class CentreonLDAP
             "AND ar_id = :ar_id"
         );
         $dbResult->bindValue(':ar_id', $arId, \PDO::PARAM_INT);
+        $dbResult->execute();
         $row = $dbResult->fetch();
         $dbResult->closeCursor();
         if (isset($row['ari_value'])) {
@@ -119,6 +120,7 @@ class CentreonLDAP
                 AND ar_id = :ar_id"
             );
             $dbResult->bindValue(':ar_id', $arId, \PDO::PARAM_INT);
+            $dbResult->execute();
             $row = $dbResult->fetch();
             $dbResult->closeCursor();
             if ($row && trim($row['ari_value']) != '') {
@@ -143,6 +145,7 @@ class CentreonLDAP
                 ORDER BY host_order"
             );
             $dbResult->bindValue(':ar_id', $arId, \PDO::PARAM_INT);
+            $dbResult->execute();
             while ($row = $dbResult->fetch()) {
                 $ldap = array();
                 $ldap['host'] = $row['host_address'];
@@ -180,6 +183,7 @@ class CentreonLDAP
 
         $finalLdapHostParameters = [];
 
+        $resLdapHostParameters->execute();
         while ($rowLdapHostParameters = $resLdapHostParameters->fetch()) {
             $finalLdapHostParameters = $rowLdapHostParameters;
         }

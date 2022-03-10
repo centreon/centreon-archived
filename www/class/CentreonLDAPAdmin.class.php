@@ -532,7 +532,7 @@ class CentreonLdapAdmin
     {
         $sql = "SELECT ar_id, ar_enable, ar_name, ar_description, ar_sync_base_date FROM auth_ressource ";
         if ($search != "") {
-            $sql .= "WHERE ar_name LIKE '%:ar_name%' ";
+            $sql .= "WHERE ar_name LIKE :ar_name ";
         }
         $sql .= "ORDER BY ar_name ";
         if (!is_null($offset) && !is_null($limit)) {
@@ -541,7 +541,7 @@ class CentreonLdapAdmin
         $res = $this->db->prepare($sql);
 
         if ($search != "") {
-            $res->bindValue(':ar_name', $search, \PDO::PARAM_STR);
+            $res->bindValue(':ar_name', "%$search%", \PDO::PARAM_STR);
         }
         if (!is_null($offset) && !is_null($limit)) {
             $res->bindValue(':offset', $offset, \PDO::PARAM_INT);
