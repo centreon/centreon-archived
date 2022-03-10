@@ -1,11 +1,9 @@
 :root {
     /** Main colors **/
-    /** Dark mode **/
     --color-primary-light: #64B5F6;
     --color-primary-body-dark : #b2aca2;
     --color-primary-body-background-dark:#212121;
     --color-primary-success-dark : #84bd00;
-    /*******/
     --color-primary-dark: #10069F;
     --color-success : #88b917 ;
     --color-warning : #ff9a13 ;
