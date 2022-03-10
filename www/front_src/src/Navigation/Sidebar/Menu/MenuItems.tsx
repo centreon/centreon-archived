@@ -12,7 +12,7 @@ import { Page } from '../../models';
 import ArrowIcon from './ArrowIcon';
 
 const rootHeightItem = 37;
-const heightItem = 36.4;
+const heightItem = 36.8;
 
 interface Props {
   data: Page;
@@ -63,7 +63,6 @@ const useStyles = makeStyles((theme) => ({
       isRoot
         ? theme.spacing(rootHeightItem / 8)
         : theme.spacing(heightItem / 8),
-
     marginBottom: 0.8,
   },
   rootLabel: {

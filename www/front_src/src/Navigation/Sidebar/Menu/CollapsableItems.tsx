@@ -155,7 +155,7 @@ const CollapsableItems = ({
   ): void => {
     const rect = e.currentTarget.getBoundingClientRect();
     const { top } = rect;
-    setTopItem(top);
+    setTopItem(top - 0.7);
     setHoveredIndex(index);
     const levelLabel = `level_${level}`;
 

@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import React, { useState } from 'react';
 
 import { equals, isNil } from 'ramda';
@@ -78,7 +79,7 @@ const NavigationMenu = ({
   ): void => {
     const rect = e.currentTarget.getBoundingClientRect();
     const { top } = rect;
-    setCurrentTop(top);
+    setCurrentTop(top - 0.58);
     setHoveredIndex(index);
     setNavigationItemSelected({
       ...navigationItemSelected,
@@ -102,23 +103,35 @@ const NavigationMenu = ({
     return url;
   };
 
+  const addNavigationItemSelected = (
+    navigationItem: Record<string, propsNavigationItemSelected>,
+  ): void => {
+    Object.keys(navigationItem).forEach((i: string) => {
+      if (i.includes('_Navigated')) {
+        delete navigationItem[i];
+      } else {
+        navigationItem[`${i}_Navigated`] = navigationItem[i];
+        delete navigationItem[i];
+      }
+    });
+  };
+
   const handlClickItem = (item: Page, level = 0): void => {
     if (!isNil(getUrlFromEntry(item))) {
       navigate(getUrlFromEntry(item) as string);
     }
 
-    if (
-      navigationItemSelected &&
-      navigationItemSelected[`level_${level}_Navigated`]?.label !== item.label
-    ) {
-      Object.keys(navigationItemSelected).forEach((i: string) => {
-        if (i.includes('_Navigated')) {
-          delete navigationItemSelected[i];
-        } else {
-          navigationItemSelected[`${i}_Navigated`] = navigationItemSelected[i];
-          delete navigationItemSelected[i];
-        }
-      });
+    if (navigationItemSelected) {
+      if (
+        !isNil(navigationItemSelected[`level_${level}_Navigated`]?.url) &&
+        navigationItemSelected[`level_${level}_Navigated`]?.url !== item?.url
+      ) {
+        addNavigationItemSelected(navigationItemSelected);
+      } else if (
+        navigationItemSelected[`level_${level}_Navigated`]?.label !== item.label
+      ) {
+        addNavigationItemSelected(navigationItemSelected);
+      }
     }
     setNavigationItemSelected(navigationItemSelected);
   };
