@@ -116,9 +116,7 @@ const FormRemoteServerStepTwo = ({
       .catch(() => undefined);
   };
 
-  const remoteServersOption = remoteServers?.map((c) =>
-    pick(['id', 'name'], c),
-  );
+  const remoteServersOption = remoteServers?.map(pick(['id', 'name']));
 
   React.useEffect(() => {
     getRemoteServers();

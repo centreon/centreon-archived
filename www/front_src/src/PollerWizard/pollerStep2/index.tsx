@@ -132,11 +132,11 @@ const FormPollerStepTwo = ({
       .catch(() => undefined);
   };
 
-  const linkedRemoteMasterOption = pollers.map((c) => pick(['id', 'name'], c));
+  const linkedRemoteMasterOption = pollers.map(pick(['id', 'name']));
 
   const linkedRemoteSlavesOption = pollers
     .filter((poller) => poller.id !== stepTwoFormData.linked_remote_master)
-    .map((c) => pick(['id', 'name'], c));
+    .map(pick(['id', 'name']));
 
   React.useEffect(() => {
     getPollers();
