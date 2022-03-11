@@ -32,7 +32,8 @@ use Core\Application\Security\ProviderConfiguration\Repository\ReadProviderConfi
 use Core\Application\Security\ProviderConfiguration\Local\Repository\ReadConfigurationRepositoryInterface;
 
 class DbReadConfigurationRepository extends AbstractRepositoryDRB implements
-    ReadProviderConfigurationsRepositoryInterface, ReadConfigurationRepositoryInterface
+    ReadProviderConfigurationsRepositoryInterface,
+    ReadConfigurationRepositoryInterface
 {
     use LoggerTrait;
 
@@ -77,7 +78,8 @@ class DbReadConfigurationRepository extends AbstractRepositoryDRB implements
         $configuration = [];
         if ($statement !== false && $configuration = $statement->fetch(\PDO::FETCH_ASSOC)) {
             $this->validateJsonRecord(
-                $configuration['custom_configuration'], __DIR__ . '/CustomConfigurationSchema.json'
+                $configuration['custom_configuration'],
+                __DIR__ . '/CustomConfigurationSchema.json',
             );
             $customConfiguration = json_decode($configuration['custom_configuration'], true);
         }

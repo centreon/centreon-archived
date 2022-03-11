@@ -173,10 +173,6 @@ paths:
                       type: "string"
                       description: "Provider Uri used to proceed authentication"
                       example: "/centreon/authentication/providers/configurations/local"
-                    centreon_base_uri:
-                      type: "string"
-                      description: "Centreon Base Uri used by the provider to redirect"
-                      example: "/centreon"
                     is_active:
                       type: boolean
                       description: "Provider active or not"

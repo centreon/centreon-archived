@@ -31,7 +31,8 @@ use Core\Application\Security\ProviderConfiguration\OpenId\Repository\ReadOpenId
 use Core\Domain\Security\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
 
 class DbReadOpenIdConfigurationRepository extends AbstractRepositoryDRB implements
-    ReadProviderConfigurationsRepositoryInterface, ReadRepositoryInterface
+    ReadProviderConfigurationsRepositoryInterface,
+    ReadRepositoryInterface
 {
     /**
 
@@ -67,7 +68,10 @@ class DbReadOpenIdConfigurationRepository extends AbstractRepositoryDRB implemen
         );
         $configuration = null;
         if ($statement !== false && $result = $statement->fetch(\PDO::FETCH_ASSOC)) {
-            $this->validateJsonRecord($result['custom_configuration'], __DIR__ . '/CustomConfigurationSchema.json');
+            $this->validateJsonRecord(
+                $result['custom_configuration'],
+                __DIR__ . '/CustomConfigurationSchema.json',
+            );
             $customConfiguration = json_decode($result['custom_configuration'], true);
             $configuration = DbOpenIdConfigurationFactory::createFromRecord($result, $customConfiguration);
         }
