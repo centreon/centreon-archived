@@ -104,18 +104,18 @@ const NavigationMenu = ({
 
   const addNavigationItemSelected = (
     navigationItems: Record<string, propsNavigationItemSelected>,
-    nivel: number,
+    level: number,
   ): Record<string, propsNavigationItemSelected> => {
     const navigation = clone(navigationItems);
 
     if (navigation) {
       Object.keys(navigation).forEach((i: string) => {
         if (i.includes('_Navigated')) {
-          if (i > `level_${nivel}_Navigated`) {
+          if (i > `level_${level}_Navigated`) {
             delete navigation[i];
           }
-          if (`level_${nivel}_Navigated` === i) {
-            navigation[i] = navigation[`level_${nivel}`];
+          if (`level_${level}_Navigated` === i) {
+            navigation[i] = navigation[`level_${level}`];
           }
         } else {
           navigation[`${i}_Navigated`] = navigation[i];

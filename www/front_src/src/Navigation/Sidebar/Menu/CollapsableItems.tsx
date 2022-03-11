@@ -136,7 +136,7 @@ const CollapsableItems = ({
     currentWidth,
   });
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-  const [topItem, setTopItem] = useState<number>();
+  const [itemTop, setItemTop] = useState<number>();
   const [nestedScrollCollapsMaxHeight, setNestedScrollCollapsMaxHeight] =
     useState<undefined | number>(undefined);
   const [nestedScrollCollapsMaxWidth, setNestedScrollCollapsMaxWidth] =
@@ -146,7 +146,7 @@ const CollapsableItems = ({
     navigationItemSelectedAtom,
   );
   const levelName = `level_${level}_Navigated`;
-  const widthItem = currentWidth + collapseWidth;
+  const itemWidth = currentWidth + collapseWidth;
   const minimumMarginBottom = 4;
 
   const hoverItem = (
@@ -156,7 +156,7 @@ const CollapsableItems = ({
   ): void => {
     const rect = e.currentTarget.getBoundingClientRect();
     const { top } = rect;
-    setTopItem(top - collapsBorderWidth);
+    setItemTop(top - collapsBorderWidth);
     setHoveredIndex(index);
     const levelLabel = `level_${level}`;
 
@@ -325,8 +325,8 @@ const CollapsableItems = ({
                   isSubHeader
                   collapseScrollMaxHeight={nestedScrollCollapsMaxHeight}
                   collapseScrollMaxWidth={nestedScrollCollapsMaxWidth}
-                  currentTop={topItem}
-                  currentWidth={widthItem}
+                  currentTop={itemTop}
+                  currentWidth={itemWidth}
                   data={item.groups}
                   isCollapsed={index === hoveredIndex}
                   level={level + 1}
@@ -344,8 +344,8 @@ const CollapsableItems = ({
                         <CollapsableItems
                           collapseScrollMaxHeight={nestedScrollCollapsMaxHeight}
                           collapseScrollMaxWidth={nestedScrollCollapsMaxWidth}
-                          currentTop={topItem}
-                          currentWidth={widthItem}
+                          currentTop={itemTop}
+                          currentWidth={itemWidth}
                           data={itemGroup.children}
                           isCollapsed={index === hoveredIndex}
                           level={level + 1}
