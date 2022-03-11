@@ -73,7 +73,7 @@ class CentreonLdapAdmin
                 $key = filter_var($key, FILTER_VALIDATE_INT);
                 $value = filter_var($value, FILTER_VALIDATE_INT);
             }
-            if ((false !== $key || $key !== '') && (false !== $value || $key !== '')) {
+            if ((false !== $key || $key !== '') && (false !== $value || $value !== '')) {
                 $sanitizedArray[$key] = $value;
             }
         }
