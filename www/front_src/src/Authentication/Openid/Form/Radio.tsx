@@ -26,9 +26,15 @@ const Radio = ({
 
   const { values, setFieldValue } = useFormikContext<FormikValues>();
 
-  const change = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    setFieldValue(fieldName, event.target.value);
+  const change = (_, value): void => {
+    if (includes(value, ['true', 'false'])) {
+      setFieldValue(fieldName, equals(value, 'true'));
+
+      return;
+    }
+    setFieldValue(fieldName, value);
   };
+
   const value = prop(fieldName, values);
   const disabled = getDisabled?.(values);
 
