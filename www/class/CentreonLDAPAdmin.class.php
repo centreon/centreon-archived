@@ -599,13 +599,16 @@ class CentreonLdapAdmin
     public function setStatus($status, $configList = [])
     {
         if (count($configList)) {
-            $statement = $this->db->prepare(
-                "UPDATE auth_ressource
-                SET ar_enable = :ar_enable
-                WHERE ar_id IN (" . implode(',', $configList) . ")"
-            );
-            $statement->bindValue(':ar_enable', $status, \PDO::PARAM_STR);
-            $statement->execute();
+            foreach ($configList as $val) {
+                $statement = $this->db->prepare(
+                    "UPDATE auth_ressource
+                    SET ar_enable = :ar_enable
+                    WHERE ar_id IN (:ar_id)"
+                );
+                $statement->bindValue(':ar_id', $val, \PDO::PARAM_STR);
+                $statement->bindValue(':ar_enable', $status, \PDO::PARAM_STR);
+                $statement->execute();
+            }
         }
     }
 
