@@ -571,7 +571,7 @@ function migrateBrokerConfigOutputsToUnifiedSql(CentreonDB $pearDB): void
         // Delete former outputs
         $pearDB->query(
             "DELETE FROM cfg_centreonbroker_info
-            WHERE config_id = $configId AND config_group_id IN (" . implode(', ', $configGroupIds) .")"
+            WHERE config_id = $configId AND config_group_id IN (" . implode(', ', $configGroupIds) . ")"
         );
     }
 }
