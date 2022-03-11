@@ -42,3 +42,4 @@ export const labelFinalStep = 'Finalizing Setup';
 export const labelNext = 'Next';
 export const labelPrevious = 'Previous';
 export const labelApply = 'Apply';
+export const labelRequired = 'Required';
