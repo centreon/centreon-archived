@@ -17,9 +17,9 @@ import {
 } from '../sideBarAtoms';
 import { closedDrawerWidth, openedDrawerWidth } from '../index';
 
+import CollapsableItems, { collapsBorderWidth } from './CollapsableItems';
 import MenuItems from './MenuItems';
 import icons from './icons';
-import CollapsableItems from './CollapsableItems';
 
 interface Props {
   isDrawerOpen: boolean;
@@ -78,7 +78,7 @@ const NavigationMenu = ({
   ): void => {
     const rect = e.currentTarget.getBoundingClientRect();
     const { top } = rect;
-    setCurrentTop(top);
+    setCurrentTop(top - collapsBorderWidth);
     setHoveredIndex(index);
     setNavigationItemSelected({
       ...navigationItemSelected,
