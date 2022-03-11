@@ -152,8 +152,8 @@ try {
     $pearDB->query("ALTER TABLE `security_token` MODIFY `token` varchar(4096)");
 
     $pearDB->beginTransaction();
-    // @todo error_message
-    migrateBrokerConfOutputsToUnifiedSql($pearDB);
+    $errorMessage = "Unable to migrate broker config to unified_sql";
+    migrateBrokerConfigOutputsToUnifiedSql($pearDB);
     $pearDB->commit();
 } catch (\Exception $e) {
     if ($pearDB->inTransaction()) {
@@ -464,25 +464,26 @@ function updateSecurityPolicyConfiguration(CentreonDB $pearDB): void
     $statement->execute();
 }
 
-/** Undocumented function
+/**
+ * Migrate broker outputs 'sql' and 'storage' to a unique output 'unified_sql'
  *
  * @param CentreonDb $pearDB
  * @return void
  */
-function migrateBrokerConfOutputsToUnifiedSql(CentreonDB $pearDB)
+function migrateBrokerConfigOutputsToUnifiedSql(CentreonDB $pearDB): void
 {
-    $errorMessage = "Unable to select config ids from 'cfg_centreon_broker' table";
-    $dbResult = $pearDB->query("SELECT config_id FROM cfg_centreonbroker WHERE config_name LIKE '%-broker%'");
+    // Retrieve all broker config ids
+    $dbResult = $pearDB->query("SELECT config_id FROM cfg_centreonbroker WHERE config_name LIKE '%broker%'");
     $configIds = $dbResult->fetchAll(PDO::FETCH_COLUMN, 0);
     if (empty($configIds)) {
-        throw new Exception("Cannot find config ids in cfg_centreon_broker table");
+        throw new Exception("Cannot find config ids in cfg_centreonbroker table");
     }
 
-    $errorMessage = "Unable to select existing outputs from 'cb_type' table";
+    // Determine blockIds for output of type sql and storage
     $dbResult = $pearDB->query("SELECT cb_type_id FROM cb_type WHERE type_shortname IN ('sql', 'storage')");
     $typeIds = $dbResult->fetchAll(PDO::FETCH_COLUMN, 0);
     if (empty($typeIds)) {
-        throw new Exception("Cannot find fields in cb_type table");
+        throw new Exception("Cannot find 'sql' and 'storage' in cb_type table");
     }
 
     $blockIdsList = "";
@@ -491,15 +492,27 @@ function migrateBrokerConfOutputsToUnifiedSql(CentreonDB $pearDB)
         $blockIdsList .= "'1_$typeId'";
     }
 
-    $errorMessage = "Unable to select type id from 'cb_type' table";
+    // Retrieve unified_sql type id
     $dbResult = $pearDB->query("SELECT cb_type_id FROM cb_type WHERE type_shortname IN ('unified_sql')");
     $unifiedSqlType = $dbResult->fetch(PDO::FETCH_COLUMN, 0);
     if (empty($unifiedSqlType)) {
-        throw new Exception("Cannot find fields in cb_type table");
+        throw new Exception("Cannot find 'unified_sql' in cb_type table");
     }
     $unifiedSqlTypeId = $unifiedSqlType['cb_type_id'];
 
     foreach ($configIds as $configId) {
+        // Find next config group id
+        $dbResult = $pearDB->query(
+            "SELECT MAX(config_group_id) as max_config_group_id FROM cfg_centreonbroker_info
+            WHERE config_id = $configId AND config_group = 'output'"
+        );
+        $maxConfigGroupId = $dbResult->fetch(PDO::FETCH_COLUMN, 0);
+        if (empty($maxConfigGroupId)) {
+            throw new Exception("Cannot find max config group id in cfg_centreonbroker_info table");
+        }
+        $nextConfigGroupId = (int) $maxConfigGroupId['max_config_group_id'] + 1;
+
+        // Find config group ids of outputs to replace
         $dbResult = $pearDB->query(
             "SELECT config_group_id FROM cfg_centreonbroker_info
             WHERE config_id = $configId AND config_key = 'blockId'
@@ -507,37 +520,37 @@ function migrateBrokerConfOutputsToUnifiedSql(CentreonDB $pearDB)
         );
         $configGroupIds = $dbResult->fetchAll(PDO::FETCH_COLUMN, 0);
         if (empty($configGroupIds)) {
-            throw new Exception("Cannot find fields in cfg_centreonbroker_info table");
+            throw new Exception("Cannot find config group ids in cfg_centreonbroker_info table");
         }
 
-        $errorMessage = "";
-        $dbResult = $pearDB->query("SELECT MAX(config_group_id) as max_config_group_id FROM cfg_centreonbroker_info
-                    WHERE config_id = $configId AND config_group = 'output'");
-        $maxConfigGroupId = $dbResult->fetch(PDO::FETCH_COLUMN, 0);
-        if (empty($maxConfigGroupId)) {
-            throw new Exception("Cannot find max_config_group_id in cfg_centreonbroker_info table");
-        }
-        $nextConfigGroupId = (int) $maxConfigGroupId['max_config_group_id'] + 1;
-
-        $unifiedSql = [];
+        // Build unified sql output config from outputs to replace and insert it
+        $unifiedSqlOutput = [];
         foreach ($configGroupIds as $configGroupId) {
             $dbResult = $pearDB->query(
                 "SELECT * FROM cfg_centreonbroker_info
                 WHERE config_id = $configId AND config_group = 'output' AND config_group_id = $configGroupId"
             );
             while ($row = $dbResult->fetch()) {
-                $unifiedSql[$row['config_key']] = array_merge($unifiedSql[$row['config_key']] ?? [], $row);
-                $unifiedSql[$row['config_key']]['config_group_id'] = $nextConfigGroupId;
+                $unifiedSqlOutput[$row['config_key']] = array_merge($unifiedSqlOutput[$row['config_key']] ?? [], $row);
+                $unifiedSqlOutput[$row['config_key']]['config_group_id'] = $nextConfigGroupId;
             }
         }
+        if (empty($unifiedSqlOutput)) {
+            throw new Exception("Cannot find conf for unified sql from cfg_centreonbroker_info table");
+        }
 
-        $unifiedSql['name']['config_value'] = str_replace(['sql', 'perfdata'], 'unified-sql', $unifiedSql['name']['config_value']);
-        $unifiedSql['type']['config_value'] = 'unified_sql';
-        $unifiedSql['blockId']['config_value'] = "1_$unifiedSqlTypeId";
+        $unifiedSqlOutput['name']['config_value'] = str_replace(
+            ['sql', 'perfdata'],
+            'unified-sql',
+            $unifiedSqlOutput['name']['config_value']
+        );
+        $unifiedSqlOutput['type']['config_value'] = 'unified_sql';
+        $unifiedSqlOutput['blockId']['config_value'] = "1_$unifiedSqlTypeId";
 
+        // Insert new output
         $query = "";
         $queryGlue = "";
-        foreach ($unifiedSql as $key => $row) {
+        foreach ($unifiedSqlOutput as $key => $row) {
             if ($query === '') {
                 $columns_name = implode(", ", array_keys($row));
                 $query = "INSERT INTO cfg_centreonbroker_info ($columns_name) VALUES ";
@@ -553,9 +566,12 @@ function migrateBrokerConfOutputsToUnifiedSql(CentreonDB $pearDB)
             $query .= ")";
             $queryGlue = ', ';
         }
-
         $pearDB->query($query);
 
-        $pearDB->query("DELETE FROM cfg_centreonbroker_info WHERE config_id = $configId AND config_group_id IN (" . implode(', ', $configGroupIds) .")");
+        // Delete former outputs
+        $pearDB->query(
+            "DELETE FROM cfg_centreonbroker_info
+            WHERE config_id = $configId AND config_group_id IN (" . implode(', ', $configGroupIds) .")"
+        );
     }
 }
