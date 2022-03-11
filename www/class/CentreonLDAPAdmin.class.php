@@ -379,16 +379,14 @@ class CentreonLdapAdmin
     public function addTemplate($options = [])
     {
         try {
-            $statement = $this->db->prepare(
+            $this->db->query(
                 "INSERT INTO auth_ressource (ar_type, ar_enable) VALUES ('ldap_tmpl', '0')"
             );
-            $statement->execute();
         } catch (\PDOException $e) {
             return false;
         }
         try {
-            $dbResult = $this->db->prepare("SELECT MAX(ar_id) as id FROM auth_ressource WHERE ar_type = 'ldap_tmpl'");
-            $dbResult->execute();
+            $dbResult = $this->db->query("SELECT MAX(ar_id) as id FROM auth_ressource WHERE ar_type = 'ldap_tmpl'");
             $row = $dbResult->fetch();
         } catch (\PDOException $e) {
             return false;
@@ -463,12 +461,11 @@ class CentreonLdapAdmin
     public function getTemplate($id = 0)
     {
         if ($id === 0) {
-            $res = $this->db->prepare(
+            $res = $this->db->query(
                 "SELECT ar_id
                  FROM auth_ressource
                  WHERE ar_type = 'ldap_tmpl'"
             );
-            $res->execute();
             if ($res->rowCount() === 0) {
                 return [];
             }
@@ -584,10 +581,11 @@ class CentreonLdapAdmin
     public function deleteConfiguration($configList = [])
     {
         if (count($configList)) {
-            $statement = $this->db->prepare(
-                "DELETE FROM auth_ressource WHERE ar_id IN (" . implode(',', $configList) . ")"
+            $this->db->query(
+                "DELETE FROM auth_ressource
+                WHERE ar_id
+                IN (" . implode(',', $configList) . ")"
             );
-            $statement->execute();
         }
     }
 
@@ -667,11 +665,10 @@ class CentreonLdapAdmin
                     $ldapContactIdList[] = $row['contact_id'];
                 }
                 if (!empty($ldapContactIdList)) {
-                    $statement = $this->db->prepare(
-                        "DELETE FROM contact_password WHERE contact_id IN ("
-                        . implode(',', $ldapContactIdList) . ")"
+                    $contactIds = implode(', ', $ldapContactIdList);
+                    $this->db->query(
+                        "DELETE FROM contact_password WHERE contact_id IN ($contactIds)"
                     );
-                    $statement->execute();
                 }
             }
         }

@@ -78,13 +78,12 @@ class CentreonLDAP
             $use_dns_srv = $row['ari_value'];
         }
 
-        $dbResult = $this->db->prepare(
+        $dbResult = $this->db->query(
             "SELECT `key`, `value`
             FROM `options`
             WHERE `key`
             IN ('debug_ldap_import', 'debug_path')"
         );
-        $dbResult->execute();
         while ($row = $dbResult->fetch()) {
             if ($row['key'] == 'debug_ldap_import') {
                 if ($row['value'] == 1) {
@@ -751,8 +750,7 @@ class CentreonLDAP
     private function getInfoUseDnsConnect(): void
     {
         $query = "SELECT `key`, `value` FROM `options` WHERE `key` IN ('ldap_dns_use_ssl', 'ldap_dns_use_tls')";
-        $dbResult = $this->db->prepare($query);
-        $dbResult->execute();
+        $dbResult = $this->db->query($query);
         $infos = [];
         while ($row = $dbResult->fetch()) {
             if ($row['key'] == 'ldap_dns_use_ssl') {

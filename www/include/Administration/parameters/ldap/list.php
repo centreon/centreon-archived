@@ -69,7 +69,7 @@ foreach ($list as $k => $v) {
 }
 
 $statement = $pearDB->prepare("UPDATE options SET `value` = :enableLdap WHERE `key` = 'ldap_auth_enable'");
-$statement->bindValue(':enableLdap', $enableLdap);
+$statement->bindValue(':enableLdap', $enableLdap, \PDO::PARAM_INT);
 $statement->execute();
 
 include "./include/common/checkPagination.php";
