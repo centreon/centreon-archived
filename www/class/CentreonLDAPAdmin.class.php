@@ -66,14 +66,14 @@ class CentreonLdapAdmin
     {
         $sanitizedArray = [];
         foreach ($inputArray as $key => $value) {
-            if ($key === 'address') {
+            if (!is_numeric($value)) {
                 $key = filter_var($key, FILTER_SANITIZE_STRING);
                 $value = filter_var($value, FILTER_SANITIZE_STRING);
             } else {
                 $key = filter_var($key, FILTER_VALIDATE_INT);
                 $value = filter_var($value, FILTER_VALIDATE_INT);
             }
-            if (false !== $key && false !== $value) {
+            if ((false !== $key || $key !== '') && (false !== $value || $key !== '')) {
                 $sanitizedArray[$key] = $value;
             }
         }
@@ -143,29 +143,24 @@ class CentreonLdapAdmin
             $tlsList = isset($_REQUEST['tls'])
             ? $this->sanitizeInputArray($_REQUEST['tls'])
             : null;
-            $insertStr = "";
             $i = 1;
             foreach ($addressList as $key => $addr) {
                 if (is_null($addr) || $addr == "") {
                     continue;
                 }
-                if ($insertStr) {
-                    $insertStr .= ", ";
-                }
-                $insertStr .= "($arId, '" . $this->db->escape($addr) . "', '" .
-                    $this->db->escape($portList[$key]) . "', " .
-                    $this->db->escape(isset($sslList[$key]) ? 1 : 0) . ", " .
-                    $this->db->escape(isset($tlsList[$key]) ? 1 : 0) . ", $i)";
-                $i++;
-            }
-            if ($insertStr) {
                 $statement = $this->db->prepare(
                     "INSERT INTO auth_ressource_host
                     (auth_ressource_id, host_address, host_port, use_ssl, use_tls, host_order)
-                    VALUES :insertStr"
+                    VALUES (:auth_ressource_id, :host_address, :host_port, :use_ssl, :use_tls, :host_order)"
                 );
-                $statement->bindValue(':insertStr', $insertStr, \PDO::PARAM_STR);
+                $statement->bindValue(':auth_ressource_id', $arId, \PDO::PARAM_INT);
+                $statement->bindValue(':host_address', $addr, \PDO::PARAM_STR);
+                $statement->bindValue(':host_port', $portList[$key], \PDO::PARAM_INT);
+                $statement->bindValue(':use_ssl', (isset($sslList[$key]) ? 1 : 0), \PDO::PARAM_INT);
+                $statement->bindValue(':use_tls', (isset($tlsList[$key]) ? 1 : 0), \PDO::PARAM_INT);
+                $statement->bindValue(':host_order', $i, \PDO::PARAM_INT);
                 $statement->execute();
+                $i++;
             }
         }
     }
