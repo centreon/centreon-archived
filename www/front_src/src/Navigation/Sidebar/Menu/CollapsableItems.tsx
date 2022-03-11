@@ -74,7 +74,7 @@ const useStyles = makeStyles((theme) => ({
       color: theme.palette.text.primary,
       fontSize: theme.typography.caption,
     },
-    border: `solid ${theme.palette.divider} 0.1px`,
+    border: `solid ${theme.palette.divider} 0.01px`,
     boxSizing: 'border-box',
   },
   subHeader: {
