@@ -15325,7 +15325,7 @@ msgstr ""
 # msgstr ""
 
 # msgid "You have been logged out"
-# msgstr "" 
+# msgstr ""
 
 # msgid "Profile"
 # msgstr ""
@@ -15403,4 +15403,34 @@ msgstr ""
 # msgstr ""
 
 # msgid "Mixed"
+# msgstr ""
+
+# msgid "Reset your password"
+# msgstr ""
+
+# msgid "Current password"
+# msgstr ""
+
+# msgid "New password"
+# msgstr ""
+
+# msgid "New password confirmation"
+# msgstr ""
+
+# msgid "New passwords must match"
+# msgstr ""
+
+# msgid "The new password is the same as the old password"
+# msgstr ""
+
+# msgid "Reset password"
+# msgstr ""
+
+# msgid "Password renewed"
+# msgstr ""
+
+# msgid "Your password will expire in"
+# msgstr ""
+
+# msgid "Password has expired"
 # msgstr ""

@@ -215,19 +215,22 @@ class CentreonAuth
                         if (!isset($this->userInfos["contact_passwd"])) {
                             $hashedPassword = password_hash($this->password, self::PASSWORD_HASH_ALGORITHM);
                             $contact = new \CentreonContact($this->pearDB);
-                            $contact->addPasswordByContactId(
-                                (int) $this->userInfos['contact_id'],
-                                $hashedPassword
-                            );
+                            $contactId = $contact->findContactIdByAlias($this->login);
+                            if ($contactId !== null) {
+                                $contact->addPasswordByContactId($contactId, $hashedPassword);
+                            }
                         // Update password if LDAP authentication is valid but password not up to date in Centreon.
                         } elseif (!password_verify($this->password, $this->userInfos["contact_passwd"])) {
                             $hashedPassword = password_hash($this->password, self::PASSWORD_HASH_ALGORITHM);
                             $contact = new \CentreonContact($this->pearDB);
-                            $contact->replacePasswordByContactId(
-                                (int) $this->userInfos['contact_id'],
-                                $this->userInfos["contact_passwd"],
-                                $hashedPassword
-                            );
+                            $contactId = $contact->findContactIdByAlias($this->login);
+                            if ($contactId !== null) {
+                                $contact->replacePasswordByContactId(
+                                    $contactId,
+                                    $this->userInfos["contact_passwd"],
+                                    $hashedPassword
+                                );
+                            }
                         }
                     }
                 }

@@ -101,8 +101,8 @@ class DbReadConfigurationRepository extends AbstractRepositoryDRB implements Rea
         );
 
         $excludedUsers = [];
-        if ($statement !== false) {
-            $excludedUsers = $statement->fetchAll(\PDO::FETCH_ASSOC);
+        if ($statement !== false && $rows = $statement->fetchAll(\PDO::FETCH_ASSOC)) {
+            $excludedUsers = $rows;
         }
 
         return $excludedUsers;

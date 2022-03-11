@@ -23,12 +23,14 @@ declare(strict_types=1);
 
 namespace Centreon\Domain\Authentication\Exception;
 
+use Core\Domain\Security\Authentication\AuthenticationException as CoreAuthenticationException;
+
 /**
  * This class is designed to contain all exceptions for the context of the authentication process.
  *
  * @package Centreon\Domain\Authentication\Exception
  */
-class AuthenticationException extends \Exception
+class AuthenticationException extends CoreAuthenticationException
 {
     /**
      * @return self

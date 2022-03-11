@@ -30,13 +30,10 @@ use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
 class ContactService implements ContactServiceInterface
 {
     /**
-     * @var ContactRepositoryInterface
+     * @param ContactRepositoryInterface $contactRepository
      */
-    private $contactRepository;
-
-    public function __construct(ContactRepositoryInterface $contactRepository)
+    public function __construct(private ContactRepositoryInterface $contactRepository)
     {
-        $this->contactRepository = $contactRepository;
     }
 
     /**
@@ -59,15 +56,6 @@ class ContactService implements ContactServiceInterface
     public function findContact(int $id): ?ContactInterface
     {
         return $this->contactRepository->findById($id);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function isPasswordExpired(int $contactId): bool
-    {
-        // @todo get last password creation and compare it to password duration from security policy
-        return false;
     }
 
     /**
