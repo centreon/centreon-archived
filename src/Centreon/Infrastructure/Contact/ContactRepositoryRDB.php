@@ -453,6 +453,9 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
             case 'service_display_command':
                 $contact->addRole(Contact::ROLE_DISPLAY_COMMAND);
                 break;
+            case 'generate_cfg':
+                $contact->addRole(Contact::ROLE_GENERATE_CONFIGURATION);
+                break;
         }
     }
 
