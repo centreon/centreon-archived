@@ -37,7 +37,7 @@
  /**
  * Used to update fields in the 'centreon.options' table
  *
- * @param object $pearDB : database connection
+ * @param \CentreonDB $pearDB : database connection
  * @param string $key : name of the row
  * @param string $value : value of the row
  */
