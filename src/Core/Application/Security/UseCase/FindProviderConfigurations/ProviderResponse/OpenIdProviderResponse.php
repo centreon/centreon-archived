@@ -42,16 +42,6 @@ class OpenIdProviderResponse implements ProviderResponseInterface
     public bool $isForced;
 
     /**
-     * @var string[]
-     */
-    public array $trustedClientAddresses;
-
-    /**
-     * @var string[]
-     */
-    public array $blacklistClientAddresses;
-
-    /**
      * @var string|null
      */
     public ?string $baseUrl;
@@ -61,55 +51,11 @@ class OpenIdProviderResponse implements ProviderResponseInterface
      */
     public ?string $authorizationEndpoint;
 
-    /**
-     * @var string|null
-     */
-    public ?string $tokenEndpoint;
-
-    /**
-     * @var string|null
-     */
-    public ?string $introspectionTokenEndpoint;
-
-    /**
-     * @var string|null
-     */
-    public ?string $userInformationEndpoint;
-
-    /**
-     * @var string|null
-     */
-    public ?string $endSessionEndpoint;
-
-    /**
-     * @var string[]
-     */
-    public array $connectionScopes;
-
-    /**
-     * @var string|null
-     */
-    public ?string $loginClaim;
 
     /**
      * @var string|null
      */
     public ?string $clientId;
-
-    /**
-     * @var string|null
-     */
-    public ?string $clientSecret;
-
-    /**
-     * @var string|null
-     */
-    public ?string $authenticationType;
-
-    /**
-     * @var boolean
-     */
-    public bool $verifyPeer;
 
     /**
      * @inheritDoc
