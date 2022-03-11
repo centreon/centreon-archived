@@ -57,7 +57,7 @@ class DbConfigurationFactory
             $customConfiguration['password_security_policy']['delay_before_new_password'],
         );
 
-        $localConfiguration =  (new Configuration($securityPolicy))
+        $localConfiguration = (new Configuration($securityPolicy))
             ->setId((int) $configuration['id'])
             ->setName($configuration['name'])
             ->setType($configuration['type'])

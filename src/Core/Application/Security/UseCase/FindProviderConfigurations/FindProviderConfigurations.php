@@ -77,6 +77,11 @@ class FindProviderConfigurations
             return;
         }
 
+        /**
+         * match configuration type and response type to bind automatically corresponding configuration and response.
+         * e.g configuration type 'local' will match response type 'local',
+         * LocalProviderResponse::create will take LocalConfiguration.
+         */
         $responses = [];
         foreach ($configurations as $configuration) {
             foreach ($this->providerResponses as $providerResponse) {

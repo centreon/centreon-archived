@@ -28,6 +28,9 @@ use Core\Infrastructure\Security\Api\FindProviderConfigurations\ProviderPresente
 
 class LocalProviderPresenter implements ProviderPresenterInterface
 {
+    /**
+     * @param UrlGeneratorInterface $router
+     */
     public function __construct(private UrlGeneratorInterface $router)
     {
     }
