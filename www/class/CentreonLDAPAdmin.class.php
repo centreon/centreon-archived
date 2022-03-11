@@ -104,35 +104,45 @@ class CentreonLdapAdmin
      *
      * @param int $arId | auth resource id
      */
-    protected function updateLdapServers($arId)
+    protected function updateLdapServers($arId): void
     {
-        $this->db->query("DELETE FROM auth_ressource_host WHERE auth_ressource_id = " . $this->db->escape($arId));
+        $statement = $this->db->prepare(
+            "DELETE FROM auth_ressource_host WHERE auth_ressource_id = :id"
+        );
+        $statement->bindValue(':id', $arId, PDO::PARAM_INT);
+        $statement->execute();
+
         if (isset($_REQUEST['address'])) {
-            $addressList = $_REQUEST['address'] ?? null;
-            $portList = $_REQUEST['port'] ?? null;
-            $sslList = $_REQUEST['ssl'] ?? null;
-            $tlsList = $_REQUEST['tls'] ?? null;
-            $insertStr = "";
-            $i = 1;
-            foreach ($addressList as $key => $addr) {
-                if (is_null($addr) || $addr == "") {
-                    continue;
+            $subRequest = '';
+            $bindValues = [];
+            $bindIndex = 0;
+            foreach ($_REQUEST['address'] as $index => $address) {
+                $bindValues[':address_' . $bindIndex] = [PDO::PARAM_STR => $address];
+                $bindValues[':port_' . $bindIndex] = [PDO::PARAM_INT => $_REQUEST['port'][$index]];
+                $bindValues[':tls_' . $bindIndex] = [PDO::PARAM_STR => isset($_REQUEST['tls'][$index]) ? '1' : '0'];
+                $bindValues[':ssl_' . $bindIndex] = [PDO::PARAM_STR => isset($_REQUEST['ssl'][$index]) ? '1' : '0'];
+                $bindValues[':order_' . $bindIndex] = [PDO::PARAM_INT => $bindIndex + 1];
+                if (! empty($subRequest)) {
+                    $subRequest .= ', ';
                 }
-                if ($insertStr) {
-                    $insertStr .= ", ";
-                }
-                $insertStr .= "($arId, '" . $this->db->escape($addr) . "', '" .
-                    $this->db->escape($portList[$key]) . "', " .
-                    $this->db->escape(isset($sslList[$key]) ? 1 : 0) . ", " .
-                    $this->db->escape(isset($tlsList[$key]) ? 1 : 0) . ", $i)";
-                $i++;
+                $subRequest .=
+                    '(:id, :address_' . $bindIndex . ', :port_' . $bindIndex . ', :ssl_' . $bindIndex
+                    . ', :tls_' . $bindIndex     . ', :order_' . $bindIndex . ')';
+                $bindIndex++;
             }
-            if ($insertStr) {
-                $this->db->query(
+
+            if (! empty($subRequest)) {
+                $bindValues[':id'] = [PDO::PARAM_INT => (int) $arId];
+                $statement = $this->db->prepare(
                     "INSERT INTO auth_ressource_host
                     (auth_ressource_id, host_address, host_port, use_ssl, use_tls, host_order)
-                    VALUES $insertStr"
+                    VALUES " . $subRequest
                 );
+                foreach ($bindValues as $bindKey => $bindValue) {
+                    $bindType = key($bindValue);
+                    $statement->bindValue($bindKey, $bindValue[$bindType], $bindType);
+                }
+                $statement->execute();
             }
         }
     }
@@ -143,11 +153,11 @@ class CentreonLdapAdmin
      * 'ldap_auth_enable', 'ldap_auto_import', 'ldap_srv_dns', 'ldap_search_limit', 'ldap_search_timeout'
      * and 'ldap_dns_use_ssl', 'ldap_dns_use_tls', 'ldap_dns_use_domain' if ldap_srv_dns = 1
      *
+     * @param array<string, mixed> $options The list of options
      * @param int $arId
-     * @param array $options The list of options
      * @return int resource auth id
      */
-    public function setGeneralOptions(array $options, $arId = 0)
+    public function setGeneralOptions(array $options, $arId = 0): int
     {
         $isUpdate = ((int)$arId !== 0);
 
@@ -167,30 +177,41 @@ class CentreonLdapAdmin
                     "LDAP PARAM - Warning the reference date wasn\'t set for LDAP : " . $options['ar_name']
                 );
             }
-            $this->db->query(
+            $statement = $this->db->prepare(
                 "INSERT INTO auth_ressource (ar_name, ar_description, ar_type, ar_enable, ar_sync_base_date) 
-                VALUES ('" . $this->db->escape($options['ar_name']) . "',
-                    '" . $this->db->escape($options['ar_description']) . "',
-                    'ldap',
-                    '" . $options['ldap_auth_enable']['ldap_auth_enable'] . "',
-                    '" . $options['ar_sync_base_date'] . "')"
+                VALUES (:name, :description, 'ldap', :is_enabled, :sync_date)"
             );
-            $maxArIdSql = "SELECT MAX(ar_id) as last_id
-                          FROM auth_ressource
-                          WHERE ar_name = '" . $this->db->escape($options['ar_name']) . "'";
-            $res = $this->db->query($maxArIdSql);
-            $row = $res->fetch();
+            $statement->bindValue(':name', $options['ar_name'], PDO::PARAM_STR);
+            $statement->bindValue(':description', $options['ar_description'], PDO::PARAM_STR);
+            $statement->bindValue(':is_enabled', $options['ldap_auth_enable']['ldap_auth_enable'], PDO::PARAM_STR);
+            $statement->bindValue(':sync_date', $options['ar_sync_base_date'], PDO::PARAM_INT);
+            $statement->execute();
+
+            $statement = $this->db->prepare(
+                "SELECT MAX(ar_id) as last_id
+                FROM auth_ressource
+                WHERE ar_name = :name"
+            );
+            $statement->bindValue(':name', $options['ar_name'], PDO::PARAM_STR);
+            $statement->execute();
+            $row = $statement->fetch();
             $arId = $row['last_id'];
-            unset($res);
+            unset($statement);
         } else {
-            $this->db->query(
+            $statement = $this->db->prepare(
                 "UPDATE auth_ressource
-                SET ar_name = '" . $this->db->escape($options['ar_name']) . "',
-                ar_description = '" . $this->db->escape($options['ar_description']) . "',
-                ar_enable = '" . $options['ldap_auth_enable']['ldap_auth_enable'] . "',
-                ar_sync_base_date = '" . $options['ar_sync_base_date'] . "'
-                WHERE ar_id = " . $this->db->escape($arId)
+                    SET ar_name = :name,
+                        ar_description = :description,
+                        ar_enable = :is_enabled,
+                        ar_sync_base_date = :sync_date
+                WHERE ar_id = :id"
             );
+            $statement->bindValue(':name', $options['ar_name'], PDO::PARAM_STR);
+            $statement->bindValue(':description', $options['ar_description'], PDO::PARAM_STR);
+            $statement->bindValue(':is_enabled', $options['ldap_auth_enable']['ldap_auth_enable'], PDO::PARAM_STR);
+            $statement->bindValue(':sync_date', $options['ar_sync_base_date'], PDO::PARAM_INT);
+            $statement->bindValue(':id', $arId, PDO::PARAM_INT);
+            $statement->execute();
         }
         $knownParameters = $this->getLdapParameters();
         if (
@@ -227,17 +248,23 @@ class CentreonLdapAdmin
                 $value = strtolower($value);
             }
             if (isset($gopt[$key])) {
-                $query = "UPDATE `auth_ressource_info`
-                    SET `ari_value` = '" . $this->db->escape($value, false) . "'
-                    WHERE `ari_name` = '" . $this->db->escape($key) . "'
-                    AND ar_id = " . $this->db->escape($arId);
+                $statement = $this->db->prepare(
+                    "UPDATE `auth_ressource_info`
+                        SET `ari_value` = :value
+                    WHERE `ari_name` = :name
+                        AND `ar_id` = :id"
+                );
             } else {
-                $query = "INSERT INTO `auth_ressource_info`
+                $statement = $this->db->prepare(
+                    "INSERT INTO `auth_ressource_info`
                     (`ar_id`, `ari_name`, `ari_value`)
-                    VALUES (" . $this->db->escape($arId) . ", '" . $this->db->escape($key) . "', '" .
-                    $this->db->escape($value, false) . "')";
+                    VALUES (:id, :name, :value)"
+                );
             }
-            $this->db->query($query);
+            $statement->bindValue(':value', $value, PDO::PARAM_STR);
+            $statement->bindValue(':name', $key, PDO::PARAM_STR);
+            $statement->bindValue(':id', $arId, PDO::PARAM_INT);
+            $statement->execute();
         }
         $this->updateLdapServers($arId);
 
@@ -255,12 +282,15 @@ class CentreonLdapAdmin
      */
     public function getGeneralOptions($arId)
     {
-        $gopt = array();
-        $query = "SELECT `ari_name`, `ari_value` FROM `auth_ressource_info`
+        $gopt = [];
+        $statement = $this->db->prepare(
+            "SELECT `ari_name`, `ari_value` FROM `auth_ressource_info`
             WHERE `ari_name` <> 'bind_pass'
-            AND ar_id = " . $this->db->escape($arId);
-        $res = $this->db->query($query);
-        while ($row = $res->fetch()) {
+            AND ar_id = :id"
+        );
+        $statement->bindValue(':id', $arId, PDO::PARAM_INT);
+        $statement->execute();
+        while ($row = $statement->fetch()) {
             $gopt[$row['ari_name']] = $row['ari_value'];
         }
         $gopt['bind_pass'] = CentreonAuth::PWS_OCCULTATION;
@@ -269,57 +299,70 @@ class CentreonLdapAdmin
 
     /**
      * Add a Ldap server
+     * (Possibility of a dead code)
      *
      * @param int $arId
-     * @param array $params
+     * @param array<string, mixed> $params
      * @return void
      */
-    public function addServer($arId, $params = array())
+    public function addServer($arId, $params = []): void
     {
-        $use_ssl = isset($params['use_ssl']) ? 1 : 0;
-        $use_tls = isset($params['use_tls']) ? 1 : 0;
-        $sql = "INSERT INTO auth_ressource_host " .
-            "(auth_ressource_id, host_address, host_port, use_ssl, use_tls, host_order) " .
-            "VALUES ($arId, '" . $this->db->escape($params['hostname']) . "', '" .
-            $this->db->escape($params['port']) . "', " .
-            $use_ssl . ", " .
-            $use_tls . ", '" .
-            $this->db->escape($params['order']) . "')";
-        $this->db->query($sql);
+        $statement = $this->db->prepare(
+            "INSERT INTO auth_ressource_host
+            (auth_ressource_id, host_address, host_port, use_ssl, use_tls, host_order)
+            VALUES (:id, :address, :port, :ssl, :tls, :order)"
+        );
+        $statement->bindValue(':id', $arId, PDO::PARAM_INT);
+        $statement->bindValue(':address', $params['hostname'], PDO::PARAM_STR);
+        $statement->bindValue(':port', $params['port'], PDO::PARAM_INT);
+        $statement->bindValue(':ssl', isset($params['use_ssl']) ? 1 : 0, PDO::PARAM_INT);
+        $statement->bindValue(':tls', isset($params['use_tls']) ? 1 : 0, PDO::PARAM_INT);
+        $statement->bindValue(':order', $params['order'], PDO::PARAM_INT);
+        $statement->execute();
     }
 
     /**
      * Modify a Ldap server
      *
      * @param int $arId
-     * @param array $params
+     * @param array<string, mixed> $params
      * @return void
      */
-    public function modifyServer($arId, $params = array())
+    public function modifyServer($arId, $params = array()): void
     {
         if (!isset($params['order']) || !isset($params['id'])) {
-            return false;
+            return;
         }
         $use_ssl = isset($params['use_ssl']) ? 1 : 0;
         $use_tls = isset($params['use_tls']) ? 1 : 0;
-        $sql = "UPDATE auth_ressource_host 
-            SET host_address = '" . $this->db->escape($params['hostname']) . "',
-            host_port = '" . $this->db->escape($params['port']) . "',
-            host_order = '" . $this->db->escape($params['order']) . "',
-            use_ssl = " . $use_ssl . ",
-            use_tls = " . $use_tls . "
-            WHERE ldap_host_id = " . $this->db->escape($params['id']) . "
-            AND auth_ressource_id = " . $arId;
-        $this->db->query($sql);
+
+        $statement = $this->db->prepare(
+            "UPDATE auth_ressource_host
+            SET host_address = :address,
+                host_port = :port,
+                host_order = :order,
+                use_ssl = :ssl,
+                use_tls = :tls
+            WHERE ldap_host_id = :id AND auth_ressource_id = :resource_id"
+        );
+        $statement->bindValue(':address', $params['hostname'], PDO::PARAM_STR);
+        $statement->bindValue(':port', $params['port'], PDO::PARAM_INT);
+        $statement->bindValue(':order', $params['order'], PDO::PARAM_INT);
+        $statement->bindValue(':ssl', isset($params['use_ssl']) ? 1 : 0, PDO::PARAM_INT);
+        $statement->bindValue(':tls', isset($params['use_tls']) ? 1 : 0, PDO::PARAM_INT);
+        $statement->bindValue(':id', $params['id'], PDO::PARAM_INT);
+        $statement->bindValue(':resource_id', $arId, PDO::PARAM_INT);
+        $statement->execute();
     }
 
     /**
      * Add a template
+     * (Possibility of a dead code)
      *
      * @param array $options A hash table with options for connections and search in ldap
      * @return int|bool The id of connection, false on error
      */
-    public function addTemplate($options = array())
+    public function addTemplate(array $options = [])
     {
         try {
             $this->db->query(
@@ -335,13 +378,17 @@ class CentreonLdapAdmin
             return false;
         }
         $id = $row['id'];
-        foreach ($options as $key => $value) {
+        foreach ($options as $name => $value) {
             try {
-                $this->db->query(
+                $statement = $this->db->prepare(
                     "INSERT INTO auth_ressource_info
-                    (ar_id, ari_name, ari_value) VALUES (" . CentreonDB::escape($id) . ", '" .
-                    $this->db->escape($key) . "', '" . $this->db->escape($value) . "')"
+                    (ar_id, ari_name, ari_value)
+                    VALUES (:id, :name, :value)"
                 );
+                $statement->bindValue(':id', $id, PDO::PARAM_INT);
+                $statement->bindValue(':name', $name, PDO::PARAM_STR);
+                $statement->bindValue(':value', $value, PDO::PARAM_STR);
+                $statement->execute();
             } catch (\PDOException $e) {
                 return false;
             }
@@ -351,12 +398,13 @@ class CentreonLdapAdmin
 
     /**
      * Modify a template
+     * (Possibility of a dead code)
      *
      * @param int The id of the template
      * @param array $options A hash table with options for connections and search in ldap
      * @return bool
      */
-    public function modifyTemplate($id, $options = array())
+    public function modifyTemplate($id, array $options = []): bool
     {
         /*
          * Load configuration
@@ -366,18 +414,22 @@ class CentreonLdapAdmin
         foreach ($options as $key => $value) {
             try {
                 if (isset($config[$key])) {
-                    $sth = $this->db->query(
-                        "UPDATE auth_ressource_info SET ari_value = '" . $this->db->escape($value) . "'
-                        WHERE ar_id = " . CentreonDB::escape($id) . " AND ari_name = '" . $this->db->escape($key) . "'"
+                    $statement = $this->db->prepare(
+                        "UPDATE auth_ressource_info 
+                        SET ari_value = :value
+                        WHERE ar_id = :id AND ar_name = :name"
                     );
                 } else {
-                    $sth = $this->db->query(
+                    $statement = $this->db->prepare(
                         "INSERT INTO auth_ressource_info
                         (ar_id, ari_name, ari_value)
-                        VALUES (" . CentreonDB::escape($id) . ", '" . $this->db->escape($key) . "', '" .
-                        $this->db->escape($value) . "')"
+                        VALUES (:id, :name, :value)"
                     );
                 }
+                $statement->bindValue(':value', $value, PDO::PARAM_STR);
+                $statement->bindValue(':name', $key, PDO::PARAM_STR);
+                $statement->bindValue(':id', $id, PDO::PARAM_INT);
+                $statement->execute();
             } catch (\PDOException $e) {
                 return false;
             }
@@ -389,9 +441,9 @@ class CentreonLdapAdmin
      * Get the template information
      *
      * @param int $id The template id, if 0 get the template
-     * @return array $list
+     * @return array<string, string>
      */
-    public function getTemplate($id = 0)
+    public function getTemplate($id = 0): array
     {
         if ($id == 0) {
             $res = $this->db->query(
@@ -405,12 +457,15 @@ class CentreonLdapAdmin
             $row = $res->fetch();
             $id = $row['ar_id'];
         }
-        $query = "SELECT ari_name, ari_value
-                 FROM auth_ressource_info
-                 WHERE ar_id = " . CentreonDB::escape($id);
-        $res = $this->db->query($query);
-        $list = array();
-        while ($row = $res->fetch()) {
+        $statement = $this->db->prepare(
+            "SELECT ari_name, ari_value
+             FROM auth_ressource_info
+             WHERE ar_id = :id"
+        );
+        $statement->bindValue(':id', $id, PDO::PARAM_INT);
+        $statement->execute();
+        $list = [];
+        while ($row = $statement->fetch()) {
             $list[$row['ari_name']] = $row['ari_value'];
         }
         return $list;
@@ -474,40 +529,56 @@ class CentreonLdapAdmin
      * @param string $search
      * @param string $offset
      * @param int $limit
-     * @return array
+     * @return mixed[]
      */
-    public function getLdapConfigurationList($search = "", $offset = null, $limit = null)
+    public function getLdapConfigurationList($search = "", $offset = null, $limit = null): array
     {
-        $sql = "SELECT ar_id, ar_enable, ar_name, ar_description, ar_sync_base_date FROM auth_ressource ";
-        if ($search != "") {
-            $sql .= "WHERE ar_name LIKE '%" . $this->db->escape($search) . "%' ";
+        $request = "SELECT ar_id, ar_enable, ar_name, ar_description, ar_sync_base_date FROM auth_ressource ";
+
+        $bindValues = [];
+        if ($search !== "") {
+            $request .= "WHERE ar_name LIKE :search ";
+            $bindValues[':search'] = [PDO::PARAM_STR => '%' . $search . '%'];
         }
-        $sql .= "ORDER BY ar_name ";
+        $request .= "ORDER BY ar_name ";
         if (!is_null($offset) && !is_null($limit)) {
-            $sql .= "LIMIT $offset,$limit";
+            $request .= "LIMIT :offset,:limit";
+            $bindValues[':offset'] = [PDO::PARAM_INT => $offset];
+            $bindValues[':limit'] = [PDO::PARAM_INT => $limit];
         }
-        $res = $this->db->query($sql);
-        $tab = array();
-        while ($row = $res->fetch()) {
-            $tab[] = $row;
+        $statement = $this->db->prepare($request);
+        foreach ($bindValues as $bindKey => $bindValue) {
+            $bindType = key($bindValue);
+            $statement->bindValue($bindKey, $bindValue[$bindType], $bindType);
         }
-        return $tab;
+        $statement->execute();
+        $configuration = [];
+        while ($row = $statement->fetch()) {
+            $configuration[] = $row;
+        }
+        return $configuration;
     }
 
     /**
      * Delete ldap configuration
      *
-     * @param array $configList
+     * @param mixed[] $configList
      * @return void
      */
-    public function deleteConfiguration($configList = array())
+    public function deleteConfiguration(array $configList = []): void
     {
         if (count($configList)) {
-            $this->db->query(
-                "DELETE FROM auth_ressource 
-                WHERE ar_id 
-                IN (" . implode(',', $configList) . ")"
-            );
+            $configIds = [];
+            foreach ($configList as $configId) {
+                if (is_numeric($configId)) {
+                    $configIds[] = (int) $configId;
+                }
+            }
+            if (count($configIds)) {
+                $this->db->query(
+                    'DELETE FROM auth_ressource WHERE ar_id IN (' . implode(',', $configIds) . ')'
+                );
+            }
         }
     }
 
@@ -515,37 +586,49 @@ class CentreonLdapAdmin
      * Enable/Disable ldap configuration
      *
      * @param int $status
-     * @param array $configList
+     * @param mixed[] $configList
      * @return void
      */
-    public function setStatus($status, $configList = array())
+    public function setStatus($status, $configList = array()): void
     {
         if (count($configList)) {
-            $this->db->query(
-                "UPDATE auth_ressource 
-                SET ar_enable = '" . $this->db->escape($status) . "'
-                WHERE ar_id IN (" . implode(',', $configList) . ")"
-            );
+            $configIds = [];
+            foreach ($configList as $configId) {
+                if (is_numeric($configId)) {
+                    $configIds[] = (int) $configId;
+                }
+            }
+            if (count($configIds)) {
+                $statement = $this->db->prepare(
+                    'UPDATE auth_ressource 
+                    SET ar_enable = :is_enabled
+                    WHERE ar_id IN (' . implode(',', $configIds) . ')'
+                );
+                $statement->bindValue(':is_enabled', $status, PDO::PARAM_STR);
+                $statement->execute();
+            }
         }
     }
 
     /**
      * Get list of servers from resource id
      *
-     * @param int $arId | Auth resource id
-     * @return array
+     * @param int $arId Auth resource id
+     * @return array<int, array<string, mixed>>
      */
-    public function getServersFromResId($arId)
+    public function getServersFromResId($arId): array
     {
-        $res = $this->db->query(
+        $statement = $this->db->prepare(
             "SELECT host_address, host_port, use_ssl, use_tls
             FROM auth_ressource_host
-            WHERE auth_ressource_id = " . $this->db->escape($arId) .
-            " ORDER BY host_order"
+            WHERE auth_ressource_id = :id
+            ORDER BY host_order"
         );
-        $arr = array();
+        $statement->bindValue(':id', $arId, PDO::PARAM_INT);
+        $statement->execute();
+        $arr = [];
         $i = 0;
-        while ($row = $res->fetch()) {
+        while ($row = $statement->fetch()) {
             $arr[$i]['address_#index#'] = $row['host_address'];
             $arr[$i]['port_#index#'] = $row['host_port'];
             if ($row['use_ssl']) {
@@ -562,25 +645,27 @@ class CentreonLdapAdmin
     /**
      * Remove contact passwords if password storage is disabled
      *
-     * @param int $arId | Auth resource id
+     * @param int $arId Auth resource id
      * @return void
      */
-    private function manageContactPasswords($arId)
+    private function manageContactPasswords($arId): void
     {
-        $result = $this->db->query(
-            'SELECT ari_value ' .
-            'FROM auth_ressource_info ' .
-            'WHERE ar_id = ' . $this->db->escape($arId) . ' ' .
-            'AND ari_name = "ldap_store_password" '
+        $statement = $this->db->prepare(
+            'SELECT ari_value 
+            FROM auth_ressource_info 
+            WHERE ar_id = :id
+            AND ari_name = "ldap_store_password"'
         );
-        if ($row = $result->fetch()) {
-            if ($row['ari_value'] == '0') {
-                $statement = $this->db->prepare("SELECT contact_id FROM contact WHERE ar_id = :arId");
-                $statement->bindValue(':arId', $arId, \PDO::PARAM_INT);
-                $statement->execute();
+        $statement->bindValue(':id', $arId, PDO::PARAM_INT);
+        $statement->execute();
+        if ($row = $statement->fetch()) {
+            if ($row['ari_value'] === '0') {
+                $statement2 = $this->db->prepare("SELECT contact_id FROM contact WHERE ar_id = :arId");
+                $statement2->bindValue(':arId', $arId, \PDO::PARAM_INT);
+                $statement2->execute();
                 $ldapContactIdList = [];
-                while ($row = $statement->fetch()) {
-                    $ldapContactIdList[] = $row['contact_id'];
+                while ($row2 = $statement2->fetch()) {
+                    $ldapContactIdList[] = (int) $row2['contact_id'];
                 }
                 if (!empty($ldapContactIdList)) {
                     $contactIds = implode(', ', $ldapContactIdList);
