@@ -34,20 +34,23 @@
  *
  */
 
+ /**
+ * Used to update fields in the 'centreon.options' table
+ *
+ * @param object $pearDB : database connection
+ * @param string $key : name of the row
+ * @param string $value : value of the row
+ */
 function updateOption($pearDB, $key, $value)
 {
-    /*
-     * Purge
-     */
-    $pearDB->query("DELETE FROM `options` WHERE `key` = '$key'");
+    $stmt = $pearDB->prepare("DELETE FROM `options` WHERE `key` = :key");
+    $stmt->bindValue(':key', $key, \PDO::PARAM_STR);
+    $stmt->execute();
 
-    /*
-     * Add
-     */
-    if (!is_null($value) && $value != 'NULL') {
-        $value = "'$value'";
-    }
-    $pearDB->query("INSERT INTO `options` (`key`, `value`) VALUES ('$key', $value)");
+    $stmt = $pearDB->prepare("INSERT INTO `options` (`key`, `value`) VALUES (:key, :value)");
+    $stmt->bindValue(':key', $key, \PDO::PARAM_STR);
+    $stmt->bindValue(':value', $value, \PDO::PARAM_STR);
+    $stmt->execute();
 }
 
 /**
