@@ -34,20 +34,23 @@
  *
  */
 
+ /**
+ * Used to update fields in the 'centreon.options' table
+ *
+ * @param \CentreonDB $pearDB : database connection
+ * @param string $key : name of the row
+ * @param string $value : value of the row
+ */
 function updateOption($pearDB, $key, $value)
 {
-    /*
-     * Purge
-     */
-    $pearDB->query("DELETE FROM `options` WHERE `key` = '$key'");
+    $stmt = $pearDB->prepare("DELETE FROM `options` WHERE `key` = :key");
+    $stmt->bindValue(':key', $key, \PDO::PARAM_STR);
+    $stmt->execute();
 
-    /*
-     * Add
-     */
-    if (!is_null($value) && $value != 'NULL') {
-        $value = "'$value'";
-    }
-    $pearDB->query("INSERT INTO `options` (`key`, `value`) VALUES ('$key', $value)");
+    $stmt = $pearDB->prepare("INSERT INTO `options` (`key`, `value`) VALUES (:key, :value)");
+    $stmt->bindValue(':key', $key, \PDO::PARAM_STR);
+    $stmt->bindValue(':value', $value, \PDO::PARAM_STR);
+    $stmt->execute();
 }
 
 /**
@@ -1040,12 +1043,17 @@ function updateBackupConfigData($db, $form, $centreon)
 function updateKnowledgeBaseData($db, $form, $centreon)
 {
     $ret = $form->getSubmitValues();
-    if (!isset($ret['kb_wiki_certificate'])) {
+
+    if (!isset($ret['kb_wiki_certificate']) || !filter_var($ret["kb_wiki_certificate"], FILTER_VALIDATE_INT)) {
         $ret['kb_wiki_certificate'] = 0;
     }
 
     if (isset($ret["kb_wiki_password"]) && $ret["kb_wiki_password"] === CentreonAuth::PWS_OCCULTATION) {
         unset($ret["kb_wiki_password"]);
+    }
+
+    if (isset($ret["kb_wiki_url"]) && !filter_var($ret["kb_wiki_url"], FILTER_VALIDATE_URL)) {
+        unset($ret["kb_wiki_url"]);
     }
 
     foreach ($ret as $key => $value) {
