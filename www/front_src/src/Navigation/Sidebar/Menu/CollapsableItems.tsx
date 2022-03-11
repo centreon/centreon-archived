@@ -45,7 +45,7 @@ interface StyleProps {
 }
 
 const collapseWidth = 20.6;
-export const collapsBorderWidth = 0.1;
+export const collapseBorderWidth = 0.1;
 
 const useStyles = makeStyles((theme) => ({
   activated: {
@@ -75,7 +75,7 @@ const useStyles = makeStyles((theme) => ({
       color: theme.palette.text.primary,
       fontSize: theme.typography.caption,
     },
-    border: `solid ${theme.palette.divider} ${collapsBorderWidth}px`,
+    border: `solid ${theme.palette.divider} ${collapseBorderWidth}px`,
     boxSizing: 'border-box',
   },
   subHeader: {
@@ -156,7 +156,7 @@ const CollapsableItems = ({
   ): void => {
     const rect = e.currentTarget.getBoundingClientRect();
     const { top } = rect;
-    setItemTop(top - collapsBorderWidth);
+    setItemTop(top - collapseBorderWidth);
     setHoveredIndex(index);
     const levelLabel = `level_${level}`;
 
