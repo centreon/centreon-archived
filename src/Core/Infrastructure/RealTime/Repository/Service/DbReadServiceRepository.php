@@ -71,7 +71,7 @@ class DbReadServiceRepository extends AbstractRepositoryDRB implements ReadServi
         }
 
         $request = "
-            SELECT s.service_id
+            SELECT COUNT(s.service_id) AS total
             FROM `:dbstg`.`services` AS s
             INNER JOIN `:dbstg`.`centreon_acl` AS service_acl
             ON service_acl.service_id = s.service_id AND service_acl.host_id = s.host_id
@@ -86,7 +86,7 @@ class DbReadServiceRepository extends AbstractRepositoryDRB implements ReadServi
 
         $statement->execute();
 
-        return $statement->fetch() ? true : false;
+        return $statement->fetchColumn() > 0;
     }
 
     /**
