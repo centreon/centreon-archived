@@ -52,7 +52,7 @@ it('returns error when there is an issue during configurations search', function
     $this->readProviderConfigurationRepository
         ->expects($this->once())
         ->method('findConfigurations')
-        ->willThrowException(New \Exception($errorMessage));
+        ->willThrowException(new \Exception($errorMessage));
 
     $this->presenter
         ->expects($this->once())
