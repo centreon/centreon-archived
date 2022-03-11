@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { equals, isNil } from 'ramda';
+import { equals, isNil, clone } from 'ramda';
 import { useNavigate } from 'react-router-dom';
 import { useAtom } from 'jotai';
 
@@ -106,7 +106,8 @@ const NavigationMenu = ({
     navigationItems: Record<string, propsNavigationItemSelected>,
     nivel: number,
   ): Record<string, propsNavigationItemSelected> => {
-    const navigation = navigationItems;
+    const navigation = clone(navigationItems);
+
     if (navigation) {
       Object.keys(navigation).forEach((i: string) => {
         if (i.includes('_Navigated')) {

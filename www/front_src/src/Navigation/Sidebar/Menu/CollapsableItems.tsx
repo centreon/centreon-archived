@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { equals } from 'ramda';
+import { equals, clone } from 'ramda';
 import clsx from 'clsx';
 import { useAtom } from 'jotai';
 
@@ -169,7 +169,7 @@ const CollapsableItems = ({
   const deleteNavigationItemsSelected = (
     navigationItems: Record<string, propsNavigationItemSelected>,
   ): void => {
-    const navigation = navigationItems;
+    const navigation = clone(navigationItems);
     Object.keys(navigation).forEach(() => {
       delete navigation[`level_${level}`];
     });
