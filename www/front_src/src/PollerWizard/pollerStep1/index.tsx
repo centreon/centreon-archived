@@ -125,6 +125,7 @@ const FormPollerStepOne = ({
   React.useEffect(() => {
     getWaitList();
   }, []);
+
   React.useEffect(() => {
     if (waitList) {
       const platform = waitList.find(

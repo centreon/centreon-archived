@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
-import { isEmpty } from 'ramda';
+import { isEmpty, pick } from 'ramda';
 import { useUpdateAtom, useAtomValue } from 'jotai/utils';
 
 import { Typography, Button, CircularProgress } from '@mui/material';
@@ -116,10 +116,9 @@ const FormRemoteServerStepTwo = ({
       .catch(() => undefined);
   };
 
-  const remoteServersOption = remoteServers?.map((c) => ({
-    id: c.id,
-    name: c.name,
-  }));
+  const remoteServersOption = remoteServers?.map((c) =>
+    pick(['id', 'name'], c),
+  );
 
   React.useEffect(() => {
     getRemoteServers();

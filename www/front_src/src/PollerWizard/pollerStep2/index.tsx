@@ -3,6 +3,7 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import { useUpdateAtom, useAtomValue } from 'jotai/utils';
+import { pick } from 'ramda';
 
 import {
   Typography,
@@ -131,17 +132,11 @@ const FormPollerStepTwo = ({
       .catch(() => undefined);
   };
 
-  const linkedRemoteMasterOption = pollers.map((c) => ({
-    id: c.id,
-    name: c.name,
-  }));
+  const linkedRemoteMasterOption = pollers.map((c) => pick(['id', 'name'], c));
 
   const linkedRemoteSlavesOption = pollers
     .filter((poller) => poller.id !== stepTwoFormData.linked_remote_master)
-    .map((c) => ({
-      id: c.id,
-      name: c.name,
-    }));
+    .map((c) => pick(['id', 'name'], c));
 
   React.useEffect(() => {
     getPollers();

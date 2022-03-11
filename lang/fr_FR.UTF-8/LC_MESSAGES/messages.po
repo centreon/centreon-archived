@@ -16577,7 +16577,7 @@ msgid "Password has expired"
 msgstr "Votre mot de passe a expiré"
 
 # msgid "Export generation timeout"
-# msgstr "Temps d'exécution maximal d'une génération exportatrice"
+# msgstr "Durée d'expiration de la génération d'export"
 
 # msgid "Add advanced server configuration"
 # msgstr "Ajouter une configuration de serveur avancée"
@@ -16592,16 +16592,16 @@ msgstr "Votre mot de passe a expiré"
 # msgstr "Sélectionnez l'adresse IP du collecteur en attente"
 
 # msgid "Do not check SSL certificate validation"
-# msgstr "Ne cochez pas la validation du certificat SSL"
+# msgstr "Ne pas vérifier la validité du certificat SS"
 
 # msgid "Types"
-# msgstr "Les types"
+# msgstr "Types"
 
 # msgid "Uninstalled"
 # msgstr "Désinstallé"
 
 # msgid "Outdated"
-# msgstr "Périmé"
+# msgstr "Expiré"
 
 # msgid "Up To Date"
 # msgstr "À jour"
