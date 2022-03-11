@@ -71,10 +71,10 @@
                 {$form.service_template_model_stm_id.html}
                 {if $o == "a" || $o == "c"}
                     &nbsp;<img src='./img/icons/show_template.png' title="Show template" class="ico-16"style='cursor:pointer;vertical-align:middle;' onClick="window.open('main.php?p=60206&service_id='+ document.Form.elements['service_template_model_stm_id'].options[document.Form.elements['service_template_model_stm_id'].selectedIndex].value + '&o=w&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=800, height=600');">
-                         &nbsp;<svg xmlns="http://www.w3.org/2000/svg"  title="Edit template" class="ico-14" style='cursor:pointer;vertical-align:middle;' onClick="window.open('main.php?p=60206&service_id='+ document.Form.elements['service_template_model_stm_id'].options[document.Form.elements['service_template_model_stm_id'].selectedIndex].value + '&o=c&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=800, height=600');" viewBox="0 0 24 24">
+                    &nbsp;<svg xmlns="http://www.w3.org/2000/svg"  title="Edit template" class="ico-14" style='cursor:pointer;vertical-align:middle;' onClick="window.open('main.php?p=60206&service_id='+ document.Form.elements['service_template_model_stm_id'].options[document.Form.elements['service_template_model_stm_id'].selectedIndex].value + '&o=c&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=800, height=600');" viewBox="0 0 24 24">
                                 <path d="M0 0h24v24H0z" fill="none"/>
                                 <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
-                                </svg>
+                          </svg>
                 {/if}
             </td>
         </tr>

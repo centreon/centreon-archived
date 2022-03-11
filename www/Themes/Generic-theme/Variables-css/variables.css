@@ -192,7 +192,6 @@
     --badge-downtime-background-color : var(--color-mauve);
     --badge-undetermined :var(--color-iron);
     --status-success-color:var(--color-white);
-    --ico-16-all-services:var(--color-primary-dark);
     /***********/
 
     /** START : Buttons **/
@@ -591,6 +590,7 @@
     --ico-14-fill-color-enabled:var(--color-checkbox-disabled-checked-label-green);
     --ico-14-fill-color:var(--color-primary-dark) ;
     --ico-media:var(--color-primary-dark);
+    --ico-16-all-services:var(--color-primary-dark);
     --circle-cross:var(--color-red);
     /* ------ END : Bloc element variables -----*/
 
