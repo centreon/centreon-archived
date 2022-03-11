@@ -26,7 +26,7 @@ import routeMap from '../../reactRoutes/routeMap';
 import {
   labelAdvancedServerConfiguration,
   labelLinkedRemoteMaster,
-  labelLinkedRemoteSlaves,
+  labelLinkedadditionalRemote,
   labelOpenBrokerFlow,
   labelPrevious,
   labelApply,
@@ -170,7 +170,7 @@ const FormPollerStepTwo = ({
             linkedRemoteSlavesOption.length >= 2 && (
               <MultiAutocompleteField
                 fullWidth
-                label={t(labelLinkedRemoteSlaves)}
+                label={t(labelLinkedadditionalRemote)}
                 options={linkedRemoteSlavesOption}
                 value={stepTwoFormData.linked_remote_slaves}
                 onChange={changeValue}

@@ -16575,3 +16575,59 @@ msgstr "Votre mot de passe expirera dans"
 
 msgid "Password has expired"
 msgstr "Votre mot de passe a expiré"
+
+# msgid "Export generation timeout"
+# msgstr "Temps d'exécution maximal d'une génération exportatrice"
+
+# msgid "Add advanced server configuration"
+# msgstr "Ajouter une configuration de serveur avancée"
+
+# msgid "Create new Poller"
+# msgstr "Créer un nouveau Collecteur"
+
+# msgid "Select a Poller"
+# msgstr "Sélectionnez un Collecteur"
+
+# msgid "Select Pending Poller IP"
+# msgstr "Sélectionnez l'adresse IP du collecteur en attente"
+
+# msgid "Do not check SSL certificate validation"
+# msgstr "Ne cochez pas la validation du certificat SSL"
+
+# msgid "Types"
+# msgstr "Les types"
+
+# msgid "Uninstalled"
+# msgstr "Désinstallé"
+
+# msgid "Outdated"
+# msgstr "Périmé"
+
+# msgid "Up To Date"
+# msgstr "À jour"
+
+# msgid "Module"
+# msgstr "Module"
+
+# msgid "Install all"
+# msgstr "Tout installer"
+
+# msgid "Update all"
+# msgstr "Tout mettre à jour"
+
+# msgid "Install"
+# msgstr "Installer"
+
+# msgid "Update"
+# msgstr "Mettre à jour"
+
+# msgid "License required"
+# msgstr "Licence requise"
+
+# msgid "License expires"
+# msgstr "La licence expire"
+
+# msgid "License not valid"
+# msgstr "Licence non valide"
+
+
