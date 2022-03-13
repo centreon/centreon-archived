@@ -106,25 +106,26 @@ const NavigationMenu = ({
     navigationItems: Record<string, propsNavigationItemSelected>,
     level: number,
   ): Record<string, propsNavigationItemSelected> => {
-    const navigation = clone(navigationItems);
+    const updatedNavigationItems = clone(navigationItems);
 
-    if (navigation) {
-      Object.keys(navigation).forEach((i: string) => {
+    if (updatedNavigationItems) {
+      Object.keys(updatedNavigationItems).forEach((i: string) => {
         if (i.includes('_Navigated')) {
           if (i > `level_${level}_Navigated`) {
-            delete navigation[i];
+            delete updatedNavigationItems[i];
           }
           if (`level_${level}_Navigated` === i) {
-            navigation[i] = navigation[`level_${level}`];
+            updatedNavigationItems[i] =
+              updatedNavigationItems[`level_${level}`];
           }
         } else {
-          navigation[`${i}_Navigated`] = navigation[i];
-          delete navigation[i];
+          updatedNavigationItems[`${i}_Navigated`] = updatedNavigationItems[i];
+          delete updatedNavigationItems[i];
         }
       });
     }
 
-    return navigation;
+    return updatedNavigationItems;
   };
 
   const handlClickItem = (item: Page, level = 0): void => {
