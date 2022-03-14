@@ -39,27 +39,6 @@ interface LocalProviderInterface extends ProviderInterface
     public function authenticateOrFail(array $data): void;
 
     /**
-     * Get legacy Centreon session
-     *
-     * @return \Centreon
-     */
-    public function getLegacySession(): \Centreon;
-
-    /**
-     * Set legacy Centreon session
-     *
-     * @param \Centreon $legacySession
-     */
-    public function setLegacySession(\Centreon $legacySession): void;
-
-    /**
-     * Indicates whether we can create the authenticated user or not.
-     *
-     * @return bool
-     */
-    public function canCreateUser(): bool;
-
-    /**
      * Return the provider token
      *
      * @param string $token
@@ -74,13 +53,6 @@ interface LocalProviderInterface extends ProviderInterface
      * @return ProviderToken|null
      */
     public function getProviderRefreshToken(string $token): ?ProviderToken;
-
-    /**
-     * Retrieve the contact.
-     *
-     * @return ContactInterface|null
-     */
-    public function getUser(): ?ContactInterface;
 
     /**
      * Get the provider's configuration (ex: client_id, client_secret, grant_type, ...).

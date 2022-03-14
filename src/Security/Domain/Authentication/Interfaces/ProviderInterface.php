@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Security\Domain\Authentication\Interfaces;
 
+use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Security\Domain\Authentication\Model\AuthenticationTokens;
 
 /**
@@ -29,6 +30,14 @@ use Security\Domain\Authentication\Model\AuthenticationTokens;
  */
 interface ProviderInterface
 {
+
+    /**
+     * Indicates whether we can create the authenticated user or not.
+     *
+     * @return bool
+     */
+    public function canCreateUser(): bool;
+
     /**
      * Indicates whether or not the provider has a mechanism to refresh the token.
      *
@@ -50,9 +59,24 @@ interface ProviderInterface
     public function getName(): string;
 
     /**
+     * @return ContactInterface|null
+     */
+    public function getUser(): ?ContactInterface;
+
+    /**
      * Set the provider's configuration to initialize it (ex: client_id, client_secret, grant_type, ...).
      *
      * @param ProviderConfigurationInterface $configuration
      */
     public function setConfiguration(ProviderConfigurationInterface $configuration): void;
+
+    /**
+     * @return \Centreon
+     */
+    public function getLegacySession(): \Centreon;
+
+    /**
+     * @param \Centreon $legacySession
+     */
+    public function setLegacySession(\Centreon $legacySession): void;
 }

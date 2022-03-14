@@ -24,29 +24,9 @@ interface OpenIdProviderInterface extends ProviderInterface
     public function getProviderRefreshToken(): ProviderToken;
 
     /**
-     * @return boolean
-     */
-    public function canCreateUser(): bool;
-
-    /**
      * @return ContactInterface|null
      */
     public function createUser(): ?ContactInterface;
-
-    /**
-     * @return \Centreon
-     */
-    public function getLegacySession(): \Centreon;
-
-    /**
-     * @param \Centreon $legacySession
-     */
-    public function setLegacySession(\Centreon $legacySession): void;
-
-    /**
-     * @return ContactInterface|null
-     */
-    public function getUser(): ?ContactInterface;
 
      /**
      * Authenticate the user using OpenId Provider.
