@@ -83,6 +83,7 @@ class DbReadMetaServiceRepository extends AbstractRepositoryDRB implements ReadM
             s.output,
             s.command_line,
             s.notification_number,
+            s.notify,
             s.last_state_change AS `last_status_change`,
             s.last_notification,
             s.latency,

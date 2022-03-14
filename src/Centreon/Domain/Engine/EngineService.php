@@ -314,6 +314,22 @@ class EngineService extends AbstractCentreonService implements
     /**
      * @inheritDoc
      */
+    public function findCentralEngineConfiguration(): ?EngineConfiguration
+    {
+        try {
+            return $this->engineConfigurationRepository->findCentralEngineConfiguration();
+        } catch (\Throwable $ex) {
+            throw new EngineException(
+                _('Error when searching for the central engine configuration'),
+                0,
+                $ex
+            );
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function findEngineConfigurationByHost(\Centreon\Domain\HostConfiguration\Host $host): ?EngineConfiguration
     {
         if ($host->getId() === null) {
