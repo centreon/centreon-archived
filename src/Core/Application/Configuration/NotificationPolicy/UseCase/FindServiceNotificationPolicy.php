@@ -24,7 +24,8 @@ namespace Core\Application\Configuration\NotificationPolicy\UseCase;
 
 use Centreon\Domain\Log\LoggerTrait;
 use Centreon\Domain\HostConfiguration\Host;
-use Core\Domain\RealTime\Model\Host as RealtimeHost;
+use Centreon\Domain\ServiceConfiguration\Service;
+use Core\Domain\RealTime\Model\Service as RealtimeService;
 use Centreon\Domain\Engine\EngineConfiguration;
 use Core\Application\Common\UseCase\NotFoundResponse;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
@@ -33,37 +34,42 @@ use Core\Domain\Configuration\Notification\Model\NotifiedContactGroup;
 use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
 use Centreon\Domain\Engine\Interfaces\EngineConfigurationServiceInterface;
 use Centreon\Domain\HostConfiguration\Interfaces\HostConfigurationRepositoryInterface;
-use Core\Application\Configuration\Notification\Repository\ReadHostNotificationRepositoryInterface;
-use Core\Application\RealTime\Repository\ReadHostRepositoryInterface as ReadRealTimeHostRepositoryInterface;
+use Centreon\Domain\ServiceConfiguration\Interfaces\ServiceConfigurationRepositoryInterface;
+use Core\Application\Configuration\Notification\Repository\ReadServiceNotificationRepositoryInterface;
+use Core\Application\RealTime\Repository\ReadServiceRepositoryInterface as ReadRealTimeServiceRepositoryInterface;
 
-class FindHostNotificationPolicy
+class FindServiceNotificationPolicy
 {
     use LoggerTrait;
 
     /**
-     * @param ReadHostNotificationRepositoryInterface $readHostNotificationRepository
+     * @param ReadServiceNotificationRepositoryInterface $readServiceNotificationRepository
      * @param HostConfigurationRepositoryInterface $hostRepository
+     * @param ServiceConfigurationRepositoryInterface $serviceRepository
      * @param EngineConfigurationServiceInterface $engineService
      * @param AccessGroupRepositoryInterface $accessGroupRepository
      * @param ContactInterface $contact
-     * @param ReadRealTimeHostRepositoryInterface $readRealTimeHostRepository
+     * @param ReadRealTimeServiceRepositoryInterface $readRealTimeServiceRepository
      */
     public function __construct(
-        private ReadHostNotificationRepositoryInterface $readHostNotificationRepository,
+        private ReadServiceNotificationRepositoryInterface $readServiceNotificationRepository,
         private HostConfigurationRepositoryInterface $hostRepository,
+        private ServiceConfigurationRepositoryInterface $serviceRepository,
         private EngineConfigurationServiceInterface $engineService,
         private AccessGroupRepositoryInterface $accessGroupRepository,
         private ContactInterface $contact,
-        private ReadRealTimeHostRepositoryInterface $readRealTimeHostRepository,
+        private ReadRealTimeServiceRepositoryInterface $readRealTimeServiceRepository,
     ) {
     }
 
     /**
      * @param int $hostId
+     * @param int $serviceId
      * @param FindNotificationPolicyPresenterInterface $presenter
      */
     public function __invoke(
         int $hostId,
+        int $serviceId,
         FindNotificationPolicyPresenterInterface $presenter,
     ): void {
         $host = $this->findHost($hostId);
@@ -72,12 +78,18 @@ class FindHostNotificationPolicy
             return;
         }
 
-        $notifiedContacts = $this->readHostNotificationRepository->findNotifiedContactsById($hostId);
-        $notifiedContactGroups = $this->readHostNotificationRepository->findNotifiedContactGroupsById($hostId);
+        $service = $this->findService($hostId, $serviceId);
+        if ($service === null) {
+            $this->handleServiceNotFound($hostId, $serviceId, $presenter);
+            return;
+        }
 
-        $realtimeHost = $this->readRealTimeHostRepository->findHostById($hostId);
-        if ($realtimeHost === null) {
-            $this->handleHostNotFound($hostId, $presenter);
+        $notifiedContacts = $this->readServiceNotificationRepository->findNotifiedContactsById($serviceId);
+        $notifiedContactGroups = $this->readServiceNotificationRepository->findNotifiedContactGroupsById($serviceId);
+
+        $realtimeService = $this->readRealTimeServiceRepository->findServiceById($hostId, $serviceId);
+        if ($realtimeService === null) {
+            $this->handleServiceNotFound($hostId, $serviceId, $presenter);
             return;
         }
 
@@ -86,13 +98,13 @@ class FindHostNotificationPolicy
             $this->handleEngineHostConfigurationNotFound($hostId, $presenter);
             return;
         }
-        $this->overrideHostNotificationByEngineConfiguration($engineConfiguration, $realtimeHost);
+        $this->overrideServiceNotificationByEngineConfiguration($engineConfiguration, $realtimeService);
 
         $presenter->present(
             $this->createResponse(
                 $notifiedContacts,
                 $notifiedContactGroups,
-                $realtimeHost->isNotificationEnabled(),
+                $realtimeService->isNotificationEnabled(),
             )
         );
     }
@@ -121,6 +133,42 @@ class FindHostNotificationPolicy
     }
 
     /**
+     * Find service by id
+     *
+     * @param int $hostId
+     * @param int $serviceId
+     * @return Service|null
+     */
+    private function findService(int $hostId, int $serviceId): ?Service
+    {
+        $this->info('Searching for host notification policy', ['host_id' => $hostId, 'service_id' => $serviceId]);
+
+        $service = null;
+
+        if ($this->contact->isAdmin()) {
+            $service = $this->serviceRepository->findService($serviceId);
+        } else {
+            $accessGroups = $this->accessGroupRepository->findByContact($this->contact);
+            $accessGroupIds = array_map(
+                fn($accessGroup) => $accessGroup->getId(),
+                $accessGroups
+            );
+
+            if (
+                $this->readRealTimeServiceRepository->isAllowedToFindServiceByAccessGroupIds(
+                    $hostId,
+                    $serviceId,
+                    $accessGroupIds,
+                )
+            ) {
+                $service = $this->serviceRepository->findService($serviceId);
+            }
+        }
+
+        return $service;
+    }
+
+    /**
      * @param int $hostId
      * @param FindNotificationPolicyPresenterInterface $presenter
      */
@@ -140,6 +188,28 @@ class FindHostNotificationPolicy
 
     /**
      * @param int $hostId
+     * @param int $serviceId
+     * @param FindNotificationPolicyPresenterInterface $presenter
+     */
+    private function handleServiceNotFound(
+        int $hostId,
+        int $serviceId,
+        FindNotificationPolicyPresenterInterface $presenter,
+    ): void {
+        $this->error(
+            "Service not found",
+            [
+                'host_id' => $hostId,
+                'service_id' => $serviceId,
+                'userId' => $this->contact->getId(),
+            ]
+        );
+
+        $presenter->setResponseStatus(new NotFoundResponse('Service'));
+    }
+
+    /**
+     * @param int $hostId
      * @param FindNotificationPolicyPresenterInterface $presenter
      */
     private function handleEngineHostConfigurationNotFound(
@@ -149,10 +219,11 @@ class FindHostNotificationPolicy
         $this->error(
             "Engine configuration not found for Host",
             [
-                'id' => $hostId,
+                'host_id' => $hostId,
                 'userId' => $this->contact->getId(),
             ]
         );
+
         $presenter->setResponseStatus(new NotFoundResponse('Engine configuration'));
     }
 
@@ -161,17 +232,17 @@ class FindHostNotificationPolicy
      * it overrides host notification status
      *
      * @param EngineConfiguration $engineConfiguration
-     * @param RealtimeHost $realtimeHost
+     * @param RealtimeService $realtimeService
      */
-    private function overrideHostNotificationByEngineConfiguration(
+    private function overrideServiceNotificationByEngineConfiguration(
         EngineConfiguration $engineConfiguration,
-        RealtimeHost $realtimeHost,
+        RealtimeService $realtimeService,
     ): void {
         if (
             $engineConfiguration->getNotificationsEnabledOption() ===
                 EngineConfiguration::NOTIFICATIONS_OPTION_DISABLED
         ) {
-            $realtimeHost->setNotificationEnabled(false);
+            $realtimeService->setNotificationEnabled(false);
         }
     }
 

@@ -18,27 +18,24 @@
  * For more information : contact@centreon.com
  *
  */
-
 declare(strict_types=1);
 
-namespace Core\Application\Configuration\User\Repository;
+namespace Core\Application\Configuration\Notification\Repository;
 
-use Core\Domain\Configuration\User\Model\User;
+use Core\Domain\Configuration\Notification\Model\NotifiedContact;
+use Core\Domain\Configuration\Notification\Model\NotifiedContactGroup;
 
-interface ReadUserRepositoryInterface
+interface ReadHostNotificationRepositoryInterface
 {
     /**
-     * Find configured users
-     *
-     * @return User[]
+     * @param int $hostId
+     * @return NotifiedContact[]
      */
-    public function findAllUsers(): array;
+    public function findNotifiedContactsById(int $hostId): array;
 
     /**
-     * Find user ids from a list of alias
-     *
-     * @param string[] $userAliases
-     * @return int[]
+     * @param int $hostId
+     * @return NotifiedContactGroup[]
      */
-    public function findUserIdsByAliases(array $userAliases): array;
+    public function findNotifiedContactGroupsById(int $hostId): array;
 }

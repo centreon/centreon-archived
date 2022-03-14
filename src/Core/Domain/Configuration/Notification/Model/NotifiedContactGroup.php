@@ -20,18 +20,43 @@
  */
 declare(strict_types=1);
 
-namespace Core\Application\Configuration\Notification\Repository;
+namespace Core\Domain\Configuration\Notification\Model;
 
-use Core\Domain\Configuration\Notification\Model\HostNotification;
-
-interface ReadNotificationRepositoryInterface
+class NotifiedContactGroup
 {
     /**
-     * Find host notifications settings (timeperiod, events) by user ids
-     * result is indexed by user id
-     *
-     * @param int[] $userIds
-     * @return HostNotification[]
+     * @param int $id
+     * @param string $name
+     * @param string $alias
      */
-    public function findHostNotificationSettingsByUserIds(array $userIds): array;
+    public function __construct(
+        private int $id,
+        private string $name,
+        private string $alias,
+    ) {
+    }
+
+    /**
+     * @return int
+     */
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAlias(): string
+    {
+        return $this->alias;
+    }
 }

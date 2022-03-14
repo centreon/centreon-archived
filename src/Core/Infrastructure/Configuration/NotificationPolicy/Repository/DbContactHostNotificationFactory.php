@@ -20,29 +20,29 @@
  */
 declare(strict_types=1);
 
-namespace Core\Infrastructure\Configuration\Notification\Repository;
+namespace Core\Infrastructure\Configuration\NotificationPolicy\Repository;
 
 use Core\Domain\Configuration\TimePeriod\Model\TimePeriod;
 use Core\Domain\Configuration\Notification\Model\HostNotification;
 
-class DbHostNotificationFactory
+class DbContactHostNotificationFactory
 {
     /**
-     * @param array<string, mixed> $data
+     * @param array<string,mixed> $notification
      * @return HostNotification
      */
-    public static function createFromRecord(array $data): HostNotification
+    public static function createFromRecord(array $notification): HostNotification
     {
         $timePeriod = new TimePeriod(
-            (int) $data['timeperiod_tp_id'],
-            $data['tp_name'],
-            $data['tp_alias']
+            (int) $notification['host_timeperiod_id'],
+            $notification['host_timeperiod_name'],
+            $notification['host_timeperiod_alias']
         );
 
-        $notification = new HostNotification($timePeriod);
+        $hostNotification = new HostNotification($timePeriod);
 
-        $events = ($data['contact_host_notification_options'] !== null)
-            ? explode(',', $data['contact_host_notification_options'])
+        $events = $notification['contact_host_notification_options'] !== null
+            ? explode(',', $notification['contact_host_notification_options'])
             : [];
 
         foreach ($events as $event) {
@@ -50,10 +50,10 @@ class DbHostNotificationFactory
             if ($normalizedEvent === null) {
                 continue;
             }
-            $notification->addEvent($normalizedEvent);
+            $hostNotification->addEvent($normalizedEvent);
         }
 
-        return $notification;
+        return $hostNotification;
     }
 
     /**

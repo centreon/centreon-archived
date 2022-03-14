@@ -18,27 +18,24 @@
  * For more information : contact@centreon.com
  *
  */
-
 declare(strict_types=1);
 
-namespace Core\Application\Configuration\User\Repository;
+namespace Core\Infrastructure\Configuration\NotificationPolicy\Repository;
 
-use Core\Domain\Configuration\User\Model\User;
+use Core\Domain\Configuration\Notification\Model\NotifiedContactGroup;
 
-interface ReadUserRepositoryInterface
+class DbNotifiedContactGroupFactory
 {
     /**
-     * Find configured users
-     *
-     * @return User[]
+     * @param array<string,mixed> $contactGroup
+     * @return NotifiedContactGroup
      */
-    public function findAllUsers(): array;
-
-    /**
-     * Find user ids from a list of alias
-     *
-     * @param string[] $userAliases
-     * @return int[]
-     */
-    public function findUserIdsByAliases(array $userAliases): array;
+    public static function createFromRecord(array $contactGroup): NotifiedContactGroup
+    {
+        return new NotifiedContactGroup(
+            (int) $contactGroup['id'],
+            $contactGroup['name'],
+            $contactGroup['alias'],
+        );
+    }
 }
