@@ -12,7 +12,7 @@ class SSOAuthenticationException extends \Exception
      */
     public static function tokensExpired(string $providerName): self
     {
-        return new self(sprintf(_('[%s]: Both provider and refresh token have expired'), $providerName));
+        return new self(sprintf(_('[%s]: Both provider and refresh tokens have expired'), $providerName));
     }
 
     /**

@@ -16546,18 +16546,6 @@ msgstr "Erreur lors de la liaison du modèle (id: %d) à l'hôte (id: %d)"
 msgid "Error while linking template %s to host (id: %d)"
 msgstr "Erreur lors de la liaison du modèle %s à l'hôte (id: %d)"
 
-msgid "Unable to get authorization code from your external idp"
-msgstr "Impossible d'obtenir le code d'autorisation à partir de votre idp externe"
-
-msgid "Missing token endpoint in your configuration"
-msgstr "L'endpoint de jeton est manquant dans votre configuration"
-
-msgid "Missing userinfo and introspection token endpoint"
-msgstr "L'endpoint de jeton d'information utilisateur et d'introspection sont manquants"
-
-msgid "No refresh token has been found"
-msgstr "Aucun jeton de rafraîchissement n'a été trouvé"
-
 msgid "Password security policy"
 msgstr "Politique de sécurité de mot de passe"
 
@@ -16671,3 +16659,45 @@ msgstr "Aucun dépôt de fournisseur n'a pu être trouvé"
 
 msgid "No provider responses could be found"
 msgstr "Aucune réponse de fournisseur n'a pu être trouvée"
+
+msgid "Unable to get authorization code from your external idp"
+msgstr "Impossible d'obtenir le code d'autorisation à partir de votre idp externe"
+
+msgid "Missing token endpoint in your configuration"
+msgstr "L'endpoint de jeton est manquant dans votre configuration"
+
+msgid "Missing userinfo and introspection token endpoint"
+msgstr "L'endpoint de jeton d'information utilisateur et d'introspection sont manquants"
+
+msgid "No refresh token has been found"
+msgstr "Aucun jeton de rafraîchissement n'a été trouvé"
+
+msgid "[%s]: Both provider and refresh tokens have expired"
+msgstr "[%s] : Les jetons de fournisseur et de rafraîchissement ont expirés"
+
+msgid "Request for connection token to external provider has failed"
+msgstr "La demande de jeton de connexion à un fournisseur externe a échoué"
+
+msgid "[%s]: An error occured during your request"
+msgstr "[%s] : Une erreur est survenue durant votre demande"
+
+msgid "Request for refresh token to external provider has failed"
+msgstr "La demande de jeton de rafraîchissement à un fournisseur externe a échoué"
+
+msgid "Request for introspection token to external provider has failed"
+msgstr "La demande de jeton d'introspection à un fournisseur externe a échoué"
+
+msgid "Request for user information to external provider has failed"
+msgstr "La demande d'information utilisateur à un fournisseur externe a échoué"
+
+msgid "Your IP is blacklisted"
+msgstr "Votre adresse IP est sur liste noire"
+
+msgid "Your IP is not whitelisted"
+msgstr "Votre adresse IP n'est pas sur liste blanche"
+
+msgid "[%s]: Login claim [%s] not found from external provider user"
+msgstr "[%s] : La déclaration de connexion [%s] n'a pas été trouvée dans l'utilisateur du fournisseur externe"
+
+msgid "[%s]: No authorization code return by external provider"
+msgstr "[%s] : Aucun code d'autorisation n'a été retourné par le fournisseur externe"
