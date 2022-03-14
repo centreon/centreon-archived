@@ -7,9 +7,9 @@ import { equals, not } from 'ramda';
 
 import { postData, useRequest } from '@centreon/ui';
 
-import WizardFormInstallingStatus from '../../components/wizardFormInstallingStatus';
+import WizardFormSetupStatus from '../../components/WizardFormSetupStatus';
 import routeMap from '../../reactRoutes/routeMap';
-import { remoteServerAtom, RemoteServerData } from '../PollerAtoms';
+import { remoteServerAtom, RemoteServerData } from '../pollerAtoms';
 import {
   labelExportGenerationTimeout,
   labelFinalStep,
@@ -18,7 +18,7 @@ import {
 const exportTaskEndpoint =
   'internal.php?object=centreon_task_service&action=getTaskStatus';
 
-const FormRemoteServerStepThree = (): JSX.Element => {
+const RemoteServerWizardStepThree = (): JSX.Element => {
   const { t } = useTranslation();
 
   const [error, setError] = React.useState<string | null>(null);
@@ -86,7 +86,7 @@ const FormRemoteServerStepThree = (): JSX.Element => {
   }, []);
 
   return (
-    <WizardFormInstallingStatus
+    <WizardFormSetupStatus
       error={error}
       formTitle={t(labelFinalStep)}
       statusCreating={pollerData.submitStatus ? pollerData.submitStatus : null}
@@ -95,4 +95,4 @@ const FormRemoteServerStepThree = (): JSX.Element => {
   );
 };
 
-export default FormRemoteServerStepThree;
+export default RemoteServerWizardStepThree;

@@ -19,7 +19,7 @@ import routeMap from '../../reactRoutes/routeMap';
 import {
   remoteServerAtom,
   setRemoteServerWizardDerivedAtom,
-} from '../PollerAtoms';
+} from '../pollerAtoms';
 import {
   labelAdvancedServerConfiguration,
   labelRemoteServers,
@@ -33,7 +33,7 @@ const getRemoteServersEndpoint =
 const wizardFormEndpoint =
   './api/internal.php?object=centreon_configuration_remote&action=linkCentreonRemoteServer';
 
-const FormRemoteServerStepTwo = ({
+const RemoteServerWizardStepTwo = ({
   goToNextStep,
   goToPreviousStep,
 }: Props): JSX.Element => {
@@ -159,4 +159,4 @@ const FormRemoteServerStepTwo = ({
   );
 };
 
-export default FormRemoteServerStepTwo;
+export default RemoteServerWizardStepTwo;

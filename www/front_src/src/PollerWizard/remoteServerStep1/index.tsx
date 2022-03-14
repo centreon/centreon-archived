@@ -9,7 +9,7 @@ import Radio from '@mui/material/Radio';
 
 import { postData, useRequest, TextField, SelectField } from '@centreon/ui';
 
-import { setRemoteServerWizardDerivedAtom } from '../PollerAtoms';
+import { setRemoteServerWizardDerivedAtom } from '../pollerAtoms';
 import { useStyles } from '../../styles/partials/form/PollerWizardStyle';
 import {
   labelCentreonCentralIp,
@@ -53,7 +53,7 @@ interface RemoteServerStepOneFormDataError {
   server_name: string;
 }
 
-const FormRemoteServerStepOne = ({
+const RemoteServerWizardStepOne = ({
   goToNextStep,
   goToPreviousStep,
 }: Props): JSX.Element => {
@@ -399,4 +399,4 @@ const FormRemoteServerStepOne = ({
   );
 };
 
-export default FormRemoteServerStepOne;
+export default RemoteServerWizardStepOne;

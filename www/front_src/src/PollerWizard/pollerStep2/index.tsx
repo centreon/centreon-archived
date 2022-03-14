@@ -21,7 +21,7 @@ import {
   SelectEntry,
 } from '@centreon/ui';
 
-import { pollerAtom, setWizardDerivedAtom, PollerData } from '../PollerAtoms';
+import { pollerAtom, setWizardDerivedAtom, PollerData } from '../pollerAtoms';
 import { useStyles } from '../../styles/partials/form/PollerWizardStyle';
 import routeMap from '../../reactRoutes/routeMap';
 import {
@@ -39,12 +39,12 @@ const getPollersEndpoint =
 const wizardFormEndpoint =
   './api/internal.php?object=centreon_configuration_remote&action=linkCentreonRemoteServer';
 
-interface stepTwoFormData {
+interface StepTwoFormData {
   linked_remote_master: string;
   linked_remote_slaves: Array<SelectEntry>;
   open_broker_flow: boolean;
 }
-const FormPollerStepTwo = ({
+const PollerWizardStepTwo = ({
   goToNextStep,
   goToPreviousStep,
 }: Props): JSX.Element => {
@@ -53,7 +53,7 @@ const FormPollerStepTwo = ({
   const navigate = useNavigate();
 
   const [pollers, setPollers] = React.useState<Array<PollerOrRemoteList>>([]);
-  const [stepTwoFormData, setStepTwoFormData] = React.useState<stepTwoFormData>(
+  const [stepTwoFormData, setStepTwoFormData] = React.useState<StepTwoFormData>(
     {
       linked_remote_master: '',
       linked_remote_slaves: [],
@@ -202,4 +202,4 @@ const FormPollerStepTwo = ({
   );
 };
 
-export default FormPollerStepTwo;
+export default PollerWizardStepTwo;

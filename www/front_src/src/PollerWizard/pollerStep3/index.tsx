@@ -3,17 +3,17 @@ import * as React from 'react';
 import { useAtomValue } from 'jotai/utils';
 import { useTranslation } from 'react-i18next';
 
-import { pollerAtom, PollerData } from '../PollerAtoms';
-import WizardFormInstallingStatus from '../../components/wizardFormInstallingStatus';
+import { pollerAtom, PollerData } from '../pollerAtoms';
+import WizardFormSetupStatus from '../../components/WizardFormSetupStatus';
 import { labelFinalStep } from '../translatedLabels';
 
-const FormPollerStepThree = (): JSX.Element => {
+const PollerWizardStepThree = (): JSX.Element => {
   const { t } = useTranslation();
 
   const pollerData = useAtomValue<PollerData>(pollerAtom);
 
   return (
-    <WizardFormInstallingStatus
+    <WizardFormSetupStatus
       error={null}
       formTitle={t(labelFinalStep)}
       statusCreating={pollerData.submitStatus ? pollerData.submitStatus : null}
@@ -22,4 +22,4 @@ const FormPollerStepThree = (): JSX.Element => {
   );
 };
 
-export default FormPollerStepThree;
+export default PollerWizardStepThree;

@@ -10,7 +10,7 @@ import Radio from '@mui/material/Radio';
 
 import { postData, useRequest, TextField, SelectField } from '@centreon/ui';
 
-import { setWizardDerivedAtom } from '../PollerAtoms';
+import { setWizardDerivedAtom } from '../pollerAtoms';
 import { useStyles } from '../../styles/partials/form/PollerWizardStyle';
 import {
   labelServerConfiguration,
@@ -35,7 +35,7 @@ interface StepOneFormData {
   server_name: string;
 }
 
-const FormPollerStepOne = ({
+const PollerWizardStepOne = ({
   goToNextStep,
   goToPreviousStep,
 }: Props): JSX.Element => {
@@ -263,4 +263,4 @@ const FormPollerStepOne = ({
   );
 };
 
-export default FormPollerStepOne;
+export default PollerWizardStepOne;

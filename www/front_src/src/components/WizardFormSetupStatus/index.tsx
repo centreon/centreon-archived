@@ -41,18 +41,11 @@ export default ({
     (equals(statusCreating, false) || equals(statusGenerating, false)) && error;
 
   return (
-    <Paper
-    // className={
-    //   classnames(styles['form-container'], styles.installation)
-    // }
-    >
-      <div
-      // className={styles['form-inner']}
-      >
+    <Paper>
+      <div>
         <div className={classes.formHeading}>
           <Typography variant="h6">{formTitle}</Typography>
         </div>
-        {/* display loader until tasks are finished or error is displayed */}
         <p className={classes.formText}>
           <ContentWithCircularLoading alignCenter loading={loading}>
             <span className={classes.statusCreating}>
