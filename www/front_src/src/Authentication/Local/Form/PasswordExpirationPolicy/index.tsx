@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Typography } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 
-import memoizeComponent from '../../../Resources/memoizedComponent';
+import memoizeComponent from '../../../../Resources/memoizedComponent';
 import { labelPasswordExpirationPolicy } from '../../translatedLabels';
 
 import PasswordExpiration from './PasswordExpiration';

@@ -5,10 +5,13 @@ import { Formik } from 'formik';
 
 import { render, RenderResult, screen, waitFor } from '@centreon/ui';
 
-import { SecurityPolicy, SecurityPolicyFromAPI } from '../../models';
+import {
+  PasswordSecurityPolicy,
+  PasswordSecurityPolicyFromAPI,
+} from '../../models';
 import useValidationSchema from '../../useValidationSchema';
 import {
-  defaultSecurityPolicy,
+  defaultPasswordSecurityPolicy,
   securityPolicyWithInvalidBlockingDuration,
 } from '../defaults';
 import {
@@ -31,14 +34,14 @@ import PasswordCasePolicy from '.';
 const noOp = jest.fn();
 
 interface Props {
-  initialValues: SecurityPolicy;
+  initialValues: PasswordSecurityPolicy;
 }
 
 const TestComponent = ({ initialValues }: Props): JSX.Element => {
   const validationSchema = useValidationSchema();
 
   return (
-    <Formik<SecurityPolicy>
+    <Formik<PasswordSecurityPolicy>
       enableReinitialize
       validateOnBlur
       validateOnMount
@@ -52,7 +55,7 @@ const TestComponent = ({ initialValues }: Props): JSX.Element => {
 };
 
 const renderPasswordBlockingPolicy = (
-  initialValues: SecurityPolicyFromAPI = defaultSecurityPolicy,
+  initialValues: PasswordSecurityPolicyFromAPI = defaultPasswordSecurityPolicy,
 ): RenderResult =>
   render(
     <TestComponent initialValues={initialValues.password_security_policy} />,

@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { FormikValues, useFormikContext } from 'formik';
-import { equals, not } from 'ramda';
+import { not } from 'ramda';
 
 import { Button } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
@@ -17,9 +17,7 @@ import {
   labelSave,
   labelSaved,
   labelSaving,
-} from '../translatedLabels';
-
-import { defaultSecurityPolicy } from './defaults';
+} from './Local/translatedLabels';
 
 const useStyles = makeStyles((theme) => ({
   buttons: {
@@ -37,7 +35,7 @@ const FormButtons = (): JSX.Element => {
   const [submitted, setSubmitted] = React.useState(false);
   const [askingBeforeReset, setAskingBeforeReset] = React.useState(false);
 
-  const { isSubmitting, dirty, isValid, values, submitForm, resetForm } =
+  const { isSubmitting, dirty, isValid, submitForm, resetForm } =
     useFormikContext<FormikValues>();
 
   const submit = (): void => {
@@ -64,11 +62,7 @@ const FormButtons = (): JSX.Element => {
     setAskingBeforeReset(false);
   };
 
-  const areValuesEqualsToDefault = equals(values, defaultSecurityPolicy);
-  const formHasChanged = areValuesEqualsToDefault || dirty;
-
-  const canSubmit =
-    not(isSubmitting) && formHasChanged && isValid && not(submitted);
+  const canSubmit = not(isSubmitting) && dirty && isValid && not(submitted);
   const canReset = not(isSubmitting) && dirty && not(submitted);
 
   return useMemoComponent({

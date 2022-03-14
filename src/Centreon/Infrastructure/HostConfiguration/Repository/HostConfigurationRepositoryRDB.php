@@ -831,12 +831,8 @@ class HostConfigurationRepositoryRDB extends AbstractRepositoryDRB implements Ho
      */
     private function updateMonitoringServerRelation(int $hostId, int $monitoringServerId): void
     {
-        $request = $this->translateDbName(
-            "DELETE FROM `:db`.ns_host_relation
-            WHERE nagios_server_id = :monitoring_server_id AND host_host_id = :host_id"
-        );
+        $request = $this->translateDbName("DELETE FROM `:db`.ns_host_relation WHERE host_host_id = :host_id");
         $statement = $this->db->prepare($request);
-        $statement->bindValue(':monitoring_server_id', $monitoringServerId, \PDO::PARAM_INT);
         $statement->bindValue(':host_id', $hostId, \PDO::PARAM_INT);
         $statement->execute();
 

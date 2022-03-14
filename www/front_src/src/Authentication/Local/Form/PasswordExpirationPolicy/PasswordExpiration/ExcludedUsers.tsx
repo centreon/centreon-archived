@@ -21,7 +21,7 @@ import {
 import { labelAdmin, labelExcludedUsers } from '../../../translatedLabels';
 import { getField } from '../../utils';
 import { Contact } from '../../../models';
-import { contactsEndpoint } from '../../../api/endpoints';
+import { contactsEndpoint } from '../../../../api/endpoints';
 
 const excludedUsersFieldName = 'passwordExpiration.excludedUsers';
 
