@@ -175,7 +175,6 @@ try {
  * Handle new broker output creation 'unified_sql'
  *
  * @param CentreonDB $pearDB
- * @return void
  */
 function addNewUnifiedSqlOutput(CentreonDB $pearDB): void
 {
