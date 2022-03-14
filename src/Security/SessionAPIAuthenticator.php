@@ -148,10 +148,12 @@ class SessionAPIAuthenticator extends AbstractAuthenticator
      */
     private function getUserAndUpdateSession(string $sessionId): UserInterface
     {
+        $isValidToken = $this->authenticationService->isValidToken($sessionId);
+
         $this->authenticationService->deleteExpiredSecurityTokens();
         $this->sessionRepository->deleteExpiredSession();
 
-        if (!$this->authenticationService->isValidToken($sessionId)) {
+        if (! $isValidToken) {
             throw new BadCredentialsException();
         }
 
