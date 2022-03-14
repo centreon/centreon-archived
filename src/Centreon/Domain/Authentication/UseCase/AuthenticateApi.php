@@ -78,9 +78,6 @@ class AuthenticateApi
         $this->info(sprintf("[AUTHENTICATE API] Beginning API authentication for contact '%s'", $request->getLogin()));
         $this->deleteExpiredToken();
 
-        /**
-         * @var LocalProviderInterface
-         */
         $localProvider = $this->findLocalProviderOrFail();
         $this->authenticateOrFail($localProvider, $request);
 
@@ -122,11 +119,14 @@ class AuthenticateApi
     /**
      * Find the local provider or throw an Exception.
      *
-     * @return ProviderInterface
+     * @return LocalProviderInterface
      * @throws ProviderException
      */
-    private function findLocalProviderOrFail(): ProviderInterface
+    private function findLocalProviderOrFail(): LocalProviderInterface
     {
+        /**
+         * @var LocalProviderInterface
+         */
         $localProvider = $this->providerService->findProviderByConfigurationName(LocalProvider::NAME);
 
         if ($localProvider === null) {

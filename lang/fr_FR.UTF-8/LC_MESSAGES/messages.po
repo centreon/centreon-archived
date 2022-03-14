@@ -16660,14 +16660,11 @@ msgstr "Aucun dépôt de fournisseur n'a pu être trouvé"
 msgid "No provider responses could be found"
 msgstr "Aucune réponse de fournisseur n'a pu être trouvée"
 
-msgid "Unable to get authorization code from your external idp"
-msgstr "Impossible d'obtenir le code d'autorisation à partir de votre idp externe"
-
 msgid "Missing token endpoint in your configuration"
 msgstr "L'endpoint de jeton est manquant dans votre configuration"
 
 msgid "Missing userinfo and introspection token endpoint"
-msgstr "L'endpoint de jeton d'information utilisateur et d'introspection sont manquants"
+msgstr "Les points d'accès de jeton d'information utilisateur et d'introspection sont manquants"
 
 msgid "No refresh token has been found"
 msgstr "Aucun jeton de rafraîchissement n'a été trouvé"

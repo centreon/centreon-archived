@@ -188,7 +188,7 @@ class LoginOpenIdSession
     private function getRedirectionUri(
         ContactInterface $providerUser,
     ): string {
-        if ($providerUser->getDefaultPage() !== null && $providerUser->getDefaultPage()->getUrl() !== null) {
+        if ($providerUser->getDefaultPage()?->getUrl() !== null) {
             return $this->buildDefaultRedirectionUri($providerUser->getDefaultPage());
         }
 
@@ -257,7 +257,8 @@ class LoginOpenIdSession
     }
 
     /**
-     * @param string $redirectUri
+     * @param string|null $redirectUri
+     * @param string|null $error
      * @return LoginOpenIdSessionResponse
      */
     private function createResponse(?string $redirectUri, ?string $error = null): LoginOpenIdSessionResponse

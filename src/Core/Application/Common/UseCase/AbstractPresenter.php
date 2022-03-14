@@ -37,7 +37,7 @@ abstract class AbstractPresenter implements PresenterInterface
     /**
      * @var mixed
      */
-    protected mixed $data;
+    protected mixed $presentedData;
 
     /**
      * @param PresenterFormatterInterface $presenterFormatter
@@ -49,10 +49,10 @@ abstract class AbstractPresenter implements PresenterInterface
     /**
      * @inheritDoc
      */
-    public function present(mixed $data): void
+    public function present(mixed $presentedData): void
     {
-        $this->data = $data;
-        $this->presenterFormatter->present($data);
+        $this->presentedData = $presentedData;
+        $this->presenterFormatter->present($presentedData);
     }
 
     /**
@@ -60,7 +60,7 @@ abstract class AbstractPresenter implements PresenterInterface
      */
     public function getData(): mixed
     {
-        return $this->data;
+        return $this->presentedData;
     }
 
     /**
