@@ -56,12 +56,6 @@ interface ProviderInterface
     public function canRefreshToken(): bool;
 
     /**
-     * @param AuthenticationTokens $authenticationToken
-     * @return AuthenticationTokens|null
-     */
-    public function refreshToken(AuthenticationTokens $authenticationToken): ?AuthenticationTokens;
-
-    /**
      * Return the provider's name.
      *
      * @return string
@@ -79,4 +73,10 @@ interface ProviderInterface
      * @param ProviderConfigurationInterface $configuration
      */
     public function setConfiguration(ProviderConfigurationInterface $configuration): void;
+
+    /**
+     * @param AuthenticationTokens $authenticationToken
+     * @return AuthenticationTokens|null
+     */
+    public function refreshToken(AuthenticationTokens $authenticationToken): ?AuthenticationTokens;
 }
