@@ -183,7 +183,9 @@ class LoginSessionTest extends TestCase
             ->willReturn(null);
 
         $this->expectException(ProviderException::class);
-        $this->expectExceptionMessage('Provider configuration (provider_configuration_1) not found');
+        $this->expectExceptionMessage(
+            ProviderException::providerConfigurationNotFound('local')->getMessage()
+        );
 
         $authenticate($this->loginSessionPresenter, $authenticateRequest);
     }
@@ -686,7 +688,6 @@ class LoginSessionTest extends TestCase
     private function createLoginSessionRequest(): LoginSessionRequest
     {
         $request = new LoginSessionRequest();
-        $request->providerConfigurationName = 'provider_configuration_1';
         $request->login = 'admin';
         $request->password = 'centreon';
         $request->baseUri = '/';

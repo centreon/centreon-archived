@@ -34,7 +34,6 @@ class LoginSessionController extends AbstractController
 {
     /**
      * @param Request $request
-     * @param string $providerConfigurationName
      * @param LoginSession $loginSession
      * @param LoginSessionPresenterInterface $presenter
      * @param SessionInterface $session
@@ -42,14 +41,13 @@ class LoginSessionController extends AbstractController
      */
     public function __invoke(
         Request $request,
-        string $providerConfigurationName,
         LoginSession $loginSession,
         LoginSessionPresenterInterface $presenter,
         SessionInterface $session,
     ): object {
         $this->validateDataSent($request, __DIR__ . '/LoginSessionSchema.json');
 
-        $loginSessionRequest = $this->createLoginSessionRequest($request, $providerConfigurationName);
+        $loginSessionRequest = $this->createLoginSessionRequest($request);
 
         try {
             $loginSession($presenter, $loginSessionRequest);
@@ -71,13 +69,11 @@ class LoginSessionController extends AbstractController
      * @return LoginSessionRequest
      */
     private function createLoginSessionRequest(
-        Request $request,
-        string $providerConfigurationName,
+        Request $request
     ): LoginSessionRequest {
         $requestData = json_decode((string) $request->getContent(), true);
 
         $loginSessionRequest = new LoginSessionRequest();
-        $loginSessionRequest->providerConfigurationName = $providerConfigurationName;
         $loginSessionRequest->login = $requestData['login'];
         $loginSessionRequest->password = $requestData['password'];
         $loginSessionRequest->baseUri = $this->getBaseUri();

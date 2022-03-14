@@ -18,35 +18,12 @@
  * For more information : contact@centreon.com
  *
  */
-
 declare(strict_types=1);
 
-namespace Core\Application\Security\UseCase\LoginSession;
+namespace Core\Application\Security\UseCase\FindProviderConfigurations;
 
-class LoginSessionRequest
+use Core\Application\Common\UseCase\PresenterInterface;
+
+interface FindProviderConfigurationsPresenterInterface extends PresenterInterface
 {
-    /**
-     * @var string
-     */
-    public string $login;
-
-    /**
-     * @var string
-     */
-    public string $password;
-
-    /**
-     * @var string
-     */
-    public string $baseUri;
-
-    /**
-     * @var string|null
-     */
-    public ?string $refererQueryParameters;
-
-    /**
-     * @var string|null
-     */
-    public ?string $clientIp;
 }

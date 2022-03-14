@@ -21,32 +21,14 @@
 
 declare(strict_types=1);
 
-namespace Core\Application\Security\UseCase\LoginSession;
+namespace Core\Application\Security\ProviderConfiguration\Repository;
 
-class LoginSessionRequest
+interface ReadProviderConfigurationsRepositoryInterface
 {
     /**
-     * @var string
+     * Find provider configurations
+     *
+     * @return mixed[]
      */
-    public string $login;
-
-    /**
-     * @var string
-     */
-    public string $password;
-
-    /**
-     * @var string
-     */
-    public string $baseUri;
-
-    /**
-     * @var string|null
-     */
-    public ?string $refererQueryParameters;
-
-    /**
-     * @var string|null
-     */
-    public ?string $clientIp;
+    public function findConfigurations(): array;
 }
