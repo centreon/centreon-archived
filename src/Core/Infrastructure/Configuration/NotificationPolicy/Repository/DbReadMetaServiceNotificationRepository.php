@@ -34,7 +34,6 @@ class DbReadMetaServiceNotificationRepository extends AbstractRepositoryDRB impl
 
     /**
      * @param DatabaseConnection $db
-     * @param Container $dependencyInjector
      */
     public function __construct(DatabaseConnection $db)
     {

@@ -30,7 +30,6 @@ use Core\Application\Common\UseCase\NotFoundResponse;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Core\Domain\Configuration\Notification\Model\NotifiedContact;
 use Core\Domain\Configuration\Notification\Model\NotifiedContactGroup;
-use Centreon\Domain\Security\Interfaces\AccessGroupRepositoryInterface;
 use Centreon\Domain\Engine\Interfaces\EngineConfigurationServiceInterface;
 use Centreon\Domain\MetaServiceConfiguration\Interfaces\MetaServiceConfigurationReadRepositoryInterface;
 use Core\Application\Configuration\Notification\Repository\ReadMetaServiceNotificationRepositoryInterface;
@@ -45,7 +44,6 @@ class FindMetaServiceNotificationPolicy
      * @param ReadMetaServiceNotificationRepositoryInterface $readMetaServiceNotificationRepository
      * @param MetaServiceConfigurationReadRepositoryInterface $readMetaServiceRepository
      * @param EngineConfigurationServiceInterface $engineService
-     * @param AccessGroupRepositoryInterface $accessGroupRepository
      * @param ContactInterface $contact
      * @param ReadRealTimeMetaServiceRepositoryInterface $readRealTimeMetaServiceRepository
      */
@@ -53,7 +51,6 @@ class FindMetaServiceNotificationPolicy
         private ReadMetaServiceNotificationRepositoryInterface $readMetaServiceNotificationRepository,
         private MetaServiceConfigurationReadRepositoryInterface $readMetaServiceRepository,
         private EngineConfigurationServiceInterface $engineService,
-        private AccessGroupRepositoryInterface $accessGroupRepository,
         private ContactInterface $contact,
         private ReadRealTimeMetaServiceRepositoryInterface $readRealTimeMetaServiceRepository,
     ) {
