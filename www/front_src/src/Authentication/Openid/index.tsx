@@ -15,14 +15,8 @@ import { OpenidConfiguration } from './models';
 import { inputs } from './Form/inputs';
 
 const useStyles = makeStyles((theme) => ({
-  container: {
-    width: 'fit-content',
-  },
   loading: {
     height: theme.spacing(0.5),
-  },
-  paper: {
-    padding: theme.spacing(2),
   },
 }));
 
@@ -46,26 +40,24 @@ const OpenidConfigurationForm = (): JSX.Element => {
   }, []);
 
   return (
-    <Container className={classes.container}>
-      <Paper className={classes.paper}>
-        <Typography variant="h4">
-          {t(labelDefineOpenIDConnectConfiguration)}
-        </Typography>
-        <div className={classes.loading}>
-          {not(isOpenidConfigurationEmpty) && sendingGetOpenidConfiguration && (
-            <LinearProgress />
-          )}
-        </div>
-        {isOpenidConfigurationEmpty ? (
-          <LoadingSkeletonForm inputs={inputs} />
-        ) : (
-          <Form
-            initialValues={initialOpenidConfiguration as OpenidConfiguration}
-            loadOpenidConfiguration={loadOpenidConfiguration}
-          />
+    <>
+      <Typography variant="h4">
+        {t(labelDefineOpenIDConnectConfiguration)}
+      </Typography>
+      <div className={classes.loading}>
+        {not(isOpenidConfigurationEmpty) && sendingGetOpenidConfiguration && (
+          <LinearProgress />
         )}
-      </Paper>
-    </Container>
+      </div>
+      {isOpenidConfigurationEmpty ? (
+        <LoadingSkeletonForm inputs={inputs} />
+      ) : (
+        <Form
+          initialValues={initialOpenidConfiguration as OpenidConfiguration}
+          loadOpenidConfiguration={loadOpenidConfiguration}
+        />
+      )}
+    </>
   );
 };
 

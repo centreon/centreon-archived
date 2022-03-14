@@ -46,26 +46,22 @@ const WebSSOConfigurationForm = (): JSX.Element => {
   }, []);
 
   return (
-    <Container className={classes.container}>
-      <Paper className={classes.paper}>
-        <Typography variant="h4">
-          {t(labelDefineWebSSOConfiguration)}
-        </Typography>
-        <div className={classes.loading}>
-          {not(isWebSSOConfigurationEmpty) && sendingGetWebSSOConfiguration && (
-            <LinearProgress />
-          )}
-        </div>
-        {isWebSSOConfigurationEmpty ? (
-          <LoadingSkeletonForm inputs={inputs} />
-        ) : (
-          <Form
-            initialValues={initialWebSSOConfiguration as WebSSOConfiguration}
-            loadWebSSOonfiguration={loadWebSSOonfiguration}
-          />
+    <>
+      <Typography variant="h4">{t(labelDefineWebSSOConfiguration)}</Typography>
+      <div className={classes.loading}>
+        {not(isWebSSOConfigurationEmpty) && sendingGetWebSSOConfiguration && (
+          <LinearProgress />
         )}
-      </Paper>
-    </Container>
+      </div>
+      {isWebSSOConfigurationEmpty ? (
+        <LoadingSkeletonForm inputs={inputs} />
+      ) : (
+        <Form
+          initialValues={initialWebSSOConfiguration as WebSSOConfiguration}
+          loadWebSSOonfiguration={loadWebSSOonfiguration}
+        />
+      )}
+    </>
   );
 };
 

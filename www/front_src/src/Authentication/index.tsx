@@ -2,8 +2,9 @@ import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import { Box, Paper, Tab } from '@mui/material';
+import { Box, Container, Paper, Tab } from '@mui/material';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
+import { makeStyles } from '@mui/styles';
 
 import { Provider } from './models';
 import LocalAuthentication from './Local';
@@ -31,7 +32,17 @@ const panels = [
   },
 ];
 
+const useStyles = makeStyles((theme) => ({
+  container: {
+    width: '720px',
+  },
+  paper: {
+    padding: theme.spacing(4),
+  },
+}));
+
 const Authentication = (): JSX.Element => {
+  const classes = useStyles();
   const { t } = useTranslation();
   const [tab, setTab] = React.useState(Provider.Local);
 
@@ -51,7 +62,11 @@ const Authentication = (): JSX.Element => {
     () =>
       panels.map(({ Component, value }) => (
         <TabPanel key={value} value={value}>
-          <Component />
+          <Container className={classes.container}>
+            <Paper className={classes.paper}>
+              <Component />
+            </Paper>
+          </Container>
         </TabPanel>
       )),
     [],
