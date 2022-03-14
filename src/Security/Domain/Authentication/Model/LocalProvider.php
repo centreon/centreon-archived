@@ -23,25 +23,25 @@ declare(strict_types=1);
 namespace Security\Domain\Authentication\Model;
 
 use Pimple\Container;
-use Core\Domain\Security\ProviderConfiguration\Local\ConfigurationException;
-use Core\Application\Security\User\Repository\ReadUserRepositoryInterface;
-use Core\Application\Security\User\Repository\WriteUserRepositoryInterface;
-use Core\Application\Security\ProviderConfiguration\Local\Repository\ReadConfigurationRepositoryInterface;
-use Core\Domain\Security\User\Model\User;
-use Core\Domain\Security\ProviderConfiguration\Local\Model\SecurityPolicy;
 use Centreon\Domain\Log\LoggerTrait;
+use Core\Domain\Security\User\Model\User;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Centreon\Domain\Option\Interfaces\OptionServiceInterface;
 use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
 use Security\Domain\Authentication\Model\ProviderConfiguration;
 use Core\Domain\Security\Authentication\AuthenticationException;
-use Security\Domain\Authentication\Interfaces\ProviderInterface;
 use Core\Domain\Security\Authentication\PasswordExpiredException;
+use Security\Domain\Authentication\Interfaces\LocalProviderInterface;
+use Core\Application\Security\User\Repository\ReadUserRepositoryInterface;
+use Core\Domain\Security\ProviderConfiguration\Local\Model\SecurityPolicy;
+use Core\Application\Security\User\Repository\WriteUserRepositoryInterface;
+use Core\Domain\Security\ProviderConfiguration\Local\ConfigurationException;
+use Core\Application\Security\ProviderConfiguration\Local\Repository\ReadConfigurationRepositoryInterface;
 
 /**
  * @package Security\Authentication\Model
  */
-class LocalProvider implements ProviderInterface
+class LocalProvider implements LocalProviderInterface
 {
     use LoggerTrait;
 

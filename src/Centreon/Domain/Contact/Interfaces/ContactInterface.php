@@ -177,7 +177,7 @@ interface ContactInterface
 
     /**
      * @param  bool  $useDeprecatedPages  Indicates if user uses deprecated pages
-     * @return  self
+     * @return static
      */
     public function setUseDeprecatedPages(bool $useDeprecatedPages): static;
 
@@ -188,7 +188,7 @@ interface ContactInterface
 
     /**
      * @param bool $hasAccessToApiConfiguration
-     * @return self
+     * @return static
      */
     public function setAccessToApiConfiguration(bool $hasAccessToApiConfiguration): static;
 
@@ -199,7 +199,7 @@ interface ContactInterface
 
     /**
      * @param bool $hasAccessToApiRealTime
-     * @return self
+     * @return static
      */
     public function setAccessToApiRealTime(bool $hasAccessToApiRealTime): static;
 }

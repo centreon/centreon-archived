@@ -23,11 +23,12 @@ declare(strict_types=1);
 namespace Security\Domain\Authentication\Model;
 
 use Centreon\Domain\Common\Assertion\Assertion;
+use Security\Domain\Authentication\Interfaces\ProviderConfigurationInterface;
 
 /**
  * @package Security\Authentication\Model
  */
-class ProviderConfiguration
+class ProviderConfiguration implements ProviderConfigurationInterface
 {
     /**
      * @var int|null

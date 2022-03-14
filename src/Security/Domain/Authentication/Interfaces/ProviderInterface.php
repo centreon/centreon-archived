@@ -22,9 +22,37 @@ declare(strict_types=1);
 
 namespace Security\Domain\Authentication\Interfaces;
 
+use Security\Domain\Authentication\Model\AuthenticationTokens;
+
 /**
  * @package Security\Authentication\Interfaces
  */
 interface ProviderInterface
 {
+    /**
+     * Indicates whether or not the provider has a mechanism to refresh the token.
+     *
+     * @return bool
+     */
+    public function canRefreshToken(): bool;
+
+    /**
+     * @param AuthenticationTokens $authenticationToken
+     * @return AuthenticationTokens|null
+     */
+    public function refreshToken(AuthenticationTokens $authenticationToken): ?AuthenticationTokens;
+
+    /**
+     * Return the provider's name.
+     *
+     * @return string
+     */
+    public function getName(): string;
+
+    /**
+     * Set the provider's configuration to initialize it (ex: client_id, client_secret, grant_type, ...).
+     *
+     * @param ProviderConfiguration $configuration
+     */
+    public function setConfiguration(ProviderConfigurationInterface $configuration): void;
 }

@@ -44,8 +44,7 @@ class ProviderFactory
     public function __construct(
         \Traversable $providers,
         private ReadOpenIdConfigurationRepositoryInterface $openIdRepository
-    )
-    {
+    ) {
         if (iterator_count($providers) === 0) {
             throw ProviderException::emptyAuthenticationProvider();
         }

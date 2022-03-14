@@ -34,6 +34,7 @@ use Security\Domain\Authentication\Exceptions\ProviderException;
 use Security\Domain\Authentication\Interfaces\ProviderServiceInterface;
 use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
 use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
+use Security\Domain\Authentication\Interfaces\LocalProviderInterface;
 
 class AuthenticateApi
 {
@@ -77,6 +78,9 @@ class AuthenticateApi
         $this->info(sprintf("[AUTHENTICATE API] Beginning API authentication for contact '%s'", $request->getLogin()));
         $this->deleteExpiredToken();
 
+        /**
+         * @var LocalProviderInterface
+         */
         $localProvider = $this->findLocalProviderOrFail();
         $this->authenticateOrFail($localProvider, $request);
 
@@ -135,7 +139,7 @@ class AuthenticateApi
     /**
      * Authenticate the user or throw an Exception.
      *
-     * @param ProviderInterface $localProvider
+     * @param LocalProviderInterface $localProvider
      * @param AuthenticateApiRequest $request
      * @throws AuthenticationException
      */
@@ -156,7 +160,7 @@ class AuthenticateApi
     /**
      * Retrieve user from provider or throw an Exception.
      *
-     * @param ProviderInterface $localProvider
+     * @param LocalProviderInterface $localProvider
      * @return ContactInterface
      * @throws AuthenticationException
      */

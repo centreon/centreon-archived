@@ -24,8 +24,9 @@ declare(strict_types=1);
 namespace Core\Domain\Security\ProviderConfiguration\OpenId\Model;
 
 use Centreon\Domain\Common\Assertion\AssertionException;
+use Security\Domain\Authentication\Interfaces\ProviderConfigurationInterface;
 
-class OpenIdConfiguration
+class OpenIdConfiguration implements ProviderConfigurationInterface
 {
     public const DEFAULT_LOGIN_GLAIM = 'preferred_username';
     public const AUTHENTICATION_POST = 'client_secret_post';

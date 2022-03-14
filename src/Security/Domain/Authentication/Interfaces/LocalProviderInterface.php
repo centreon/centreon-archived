@@ -60,20 +60,6 @@ interface LocalProviderInterface extends ProviderInterface
     public function canCreateUser(): bool;
 
     /**
-     * Indicates whether or not the provider has a mechanism to refresh the token.
-     *
-     * @return bool
-     */
-    public function canRefreshToken(): bool;
-
-    /**
-     * Return the provider's name.
-     *
-     * @return string
-     */
-    public function getName(): string;
-
-    /**
      * Return the provider token
      *
      * @param string $token
@@ -109,12 +95,4 @@ interface LocalProviderInterface extends ProviderInterface
      * @param ProviderConfiguration $configuration
      */
     public function setConfiguration(ProviderConfiguration $configuration): void;
-
-    /**
-     * Refresh the provider token.
-     *
-     * @param AuthenticationTokens $authenticationTokens
-     * @return AuthenticationTokens|null Return the new AuthenticationTokens object if success otherwise null
-     */
-    public function refreshToken(AuthenticationTokens $authenticationTokens): ?AuthenticationTokens;
 }
