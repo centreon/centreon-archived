@@ -340,8 +340,6 @@ services:
 
     Security\Domain\Authentication\Interfaces\OpenIdProviderInterface:
         class: Core\Domain\Security\Provider\OpenIdProvider
-
-    Core\Domain\Security\Provider\OpenIdProvider:
         tags: ['authentication.providers']
 
     Centreon\Domain\Authentication\UseCase\AuthenticateApi:
