@@ -20,7 +20,7 @@ const openedMixin = (theme: Theme): CSSObject => ({
     duration: theme.transitions.duration.enteringScreen,
     easing: theme.transitions.easing.sharp,
   }),
-  width: openedDrawerWidth,
+  width: theme.spacing(openedDrawerWidth / 8),
 });
 
 const closedMixin = (theme: Theme): CSSObject => ({

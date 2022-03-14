@@ -12,8 +12,8 @@ import { useMemoComponent } from '@centreon/ui';
 
 import { Page } from '../../models';
 import {
-  navigationItemSelectedAtom,
-  propsNavigationItemSelected,
+  selectedNavigationItemsAtom,
+  propsSelectedNavigationItems,
 } from '../sideBarAtoms';
 import { closedDrawerWidth, openedDrawerWidth } from '../index';
 
@@ -53,8 +53,8 @@ const NavigationMenu = ({
   const [collapseScrollMaxWidth, setCollapseScrollMaxWidth] = useState<
     number | undefined
   >(undefined);
-  const [navigationItemSelected, setNavigationItemSelected] = useAtom(
-    navigationItemSelectedAtom,
+  const [selectedNavigationItems, setSelectedNavigationItems] = useAtom(
+    selectedNavigationItemsAtom,
   );
   const levelName = 'level_0_Navigated';
   const currentWidth = isDrawerOpen ? openedDrawerWidth / 8 : closedDrawerWidth;
@@ -80,8 +80,8 @@ const NavigationMenu = ({
     const { top } = rect;
     setCurrentTop(top - collapseBorderWidth);
     setHoveredIndex(index);
-    setNavigationItemSelected({
-      ...navigationItemSelected,
+    setSelectedNavigationItems({
+      ...selectedNavigationItems,
       level_0: { index, label: item.label, url: item?.url },
     });
   };
@@ -102,10 +102,10 @@ const NavigationMenu = ({
     return url;
   };
 
-  const addNavigationItemSelected = (
-    navigationItems: Record<string, propsNavigationItemSelected>,
+  const addSelectedNavigationItems = (
+    navigationItems: Record<string, propsSelectedNavigationItems>,
     level: number,
-  ): Record<string, propsNavigationItemSelected> => {
+  ): Record<string, propsSelectedNavigationItems> => {
     const updatedNavigationItems = clone(navigationItems);
 
     if (updatedNavigationItems) {
@@ -133,26 +133,27 @@ const NavigationMenu = ({
       navigate(getUrlFromEntry(item) as string);
     }
 
-    if (navigationItemSelected) {
+    if (selectedNavigationItems) {
       if (
-        !isNil(navigationItemSelected[`level_${level}_Navigated`]?.url) &&
-        navigationItemSelected[`level_${level}_Navigated`]?.url !== item?.url
+        !isNil(selectedNavigationItems[`level_${level}_Navigated`]?.url) &&
+        selectedNavigationItems[`level_${level}_Navigated`]?.url !== item?.url
       ) {
-        setNavigationItemSelected(
-          addNavigationItemSelected(navigationItemSelected, level),
+        setSelectedNavigationItems(
+          addSelectedNavigationItems(selectedNavigationItems, level),
         );
       } else if (
-        navigationItemSelected[`level_${level}_Navigated`]?.label !== item.label
+        selectedNavigationItems[`level_${level}_Navigated`]?.label !==
+        item.label
       ) {
-        setNavigationItemSelected(
-          addNavigationItemSelected(navigationItemSelected, level),
+        setSelectedNavigationItems(
+          addSelectedNavigationItems(selectedNavigationItems, level),
         );
       }
     }
   };
 
-  const isItemHovered = (
-    object: Record<string, propsNavigationItemSelected> | null,
+  const isItemClicked = (
+    object: Record<string, propsSelectedNavigationItems> | null,
     level: string,
     index: number,
   ): boolean => {
@@ -169,7 +170,7 @@ const NavigationMenu = ({
         {navigationData?.map((item, index) => {
           const MenuIcon = !isNil(item?.icon) && icons[item.icon];
           const hover =
-            isItemHovered(navigationItemSelected, levelName, index) ||
+            isItemClicked(selectedNavigationItems, levelName, index) ||
             equals(hoveredIndex, index);
 
           return (
@@ -206,7 +207,7 @@ const NavigationMenu = ({
       hoveredIndex,
       collapseScrollMaxHeight,
       collapseScrollMaxWidth,
-      navigationItemSelected,
+      selectedNavigationItems,
     ],
   });
 };

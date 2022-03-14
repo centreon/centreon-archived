@@ -13,8 +13,8 @@ import { useMemoComponent } from '@centreon/ui';
 
 import { Page } from '../../models';
 import {
-  navigationItemSelectedAtom,
-  propsNavigationItemSelected,
+  selectedNavigationItemsAtom,
+  propsSelectedNavigationItems,
 } from '../sideBarAtoms';
 
 import MenuItems from './MenuItems';
@@ -142,8 +142,8 @@ const CollapsableItems = ({
   const [nestedScrollCollapsMaxWidth, setNestedScrollCollapsMaxWidth] =
     useState<undefined | number>(undefined);
   const collapsRef = React.useRef<HTMLElement | null>(null);
-  const [navigationItemSelected, setNavigationItemSelected] = useAtom(
-    navigationItemSelectedAtom,
+  const [selectedNavigationItems, setSelectedNavigationItems] = useAtom(
+    selectedNavigationItemsAtom,
   );
   const levelName = `level_${level}_Navigated`;
   const itemWidth = currentWidth + collapseWidth;
@@ -160,32 +160,32 @@ const CollapsableItems = ({
     setHoveredIndex(index);
     const levelLabel = `level_${level}`;
 
-    setNavigationItemSelected({
-      ...navigationItemSelected,
+    setSelectedNavigationItems({
+      ...selectedNavigationItems,
       [levelLabel]: { index, label: item.label, url: item?.url },
     });
   };
 
   const deleteNavigationItemsSelected = (
-    navigationItems: Record<string, propsNavigationItemSelected>,
+    navigationItems: Record<string, propsSelectedNavigationItems>,
   ): void => {
     const navigationKeysToRemove = keys(navigationItems).filter(
       (navigationItem) => {
         return !navigationItem.includes('_Navigated');
       },
     );
-    setNavigationItemSelected(omit(navigationKeysToRemove, navigationItems));
+    setSelectedNavigationItems(omit(navigationKeysToRemove, navigationItems));
   };
 
   const handleLeave = (): void => {
     setHoveredIndex(null);
-    if (navigationItemSelected) {
-      deleteNavigationItemsSelected(navigationItemSelected);
+    if (selectedNavigationItems) {
+      deleteNavigationItemsSelected(selectedNavigationItems);
     }
   };
 
-  const isItemHovered = (
-    object: Record<string, propsNavigationItemSelected> | null,
+  const isItemClicked = (
+    object: Record<string, propsSelectedNavigationItems> | null,
     levelTitle: string,
     index: number,
     item: Page,
@@ -254,7 +254,7 @@ const CollapsableItems = ({
       >
         {data?.map((item, index) => {
           const hover =
-            isItemHovered(navigationItemSelected, levelName, index, item) ||
+            isItemClicked(selectedNavigationItems, levelName, index, item) ||
             equals(hoveredIndex, index);
 
           return (
@@ -278,8 +278,8 @@ const CollapsableItems = ({
                 item?.children?.map((content, ind) => {
                   const nestedIndex = getNestedIndex(index, ind, data);
                   const nestedHover =
-                    isItemHovered(
-                      navigationItemSelected,
+                    isItemClicked(
+                      selectedNavigationItems,
                       levelName,
                       nestedIndex,
                       content,
@@ -373,7 +373,7 @@ const CollapsableItems = ({
       nestedScrollCollapsMaxHeight,
       nestedScrollCollapsMaxWidth,
       hoveredIndex,
-      navigationItemSelected,
+      selectedNavigationItems,
     ],
   });
 };
