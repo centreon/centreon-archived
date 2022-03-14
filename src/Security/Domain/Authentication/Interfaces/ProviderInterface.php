@@ -52,7 +52,7 @@ interface ProviderInterface
     /**
      * Set the provider's configuration to initialize it (ex: client_id, client_secret, grant_type, ...).
      *
-     * @param ProviderConfiguration $configuration
+     * @param ProviderConfigurationInterface $configuration
      */
     public function setConfiguration(ProviderConfigurationInterface $configuration): void;
 }
