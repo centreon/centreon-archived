@@ -4,7 +4,6 @@ namespace Security\Domain\Authentication\Interfaces;
 
 use Security\Domain\Authentication\Model\ProviderToken;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
-use Security\Domain\Authentication\Model\AuthenticationTokens;
 use Core\Domain\Security\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
 
 interface OpenIdProviderInterface extends ProviderInterface
