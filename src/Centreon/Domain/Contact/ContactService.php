@@ -95,6 +95,9 @@ class ContactService implements ContactServiceInterface
         }
     }
 
+    /**
+     * @inheritDoc
+     */
     public function findByEmail(string $email): ?ContactInterface
     {
         return $this->contactRepository->findByEmail($email);

@@ -181,7 +181,7 @@ interface ContactInterface
      */
     public function setUseDeprecatedPages(bool $useDeprecatedPages): static;
 
-        /**
+    /**
      * @return bool
      */
     public function hasAccessToApiConfiguration(): bool;
