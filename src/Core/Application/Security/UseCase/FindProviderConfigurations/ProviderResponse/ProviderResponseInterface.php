@@ -20,28 +20,20 @@
  */
 declare(strict_types=1);
 
-namespace Core\Infrastructure\RealTime\Api\Hypermedia;
+namespace Core\Application\Security\UseCase\FindProviderConfigurations\ProviderResponse;
 
-trait HypermediaProviderTrait
+interface ProviderResponseInterface
 {
     /**
-     * Get base URI
+     * Get provider type (ex: local, openid, ...)
      *
      * @return string
      */
-    protected function getBaseUri(): string
-    {
-        $baseUri = '';
-        if (
-            isset($_SERVER['REQUEST_URI'])
-            && preg_match(
-                '/^(.+)\/((api|widgets|modules|include)\/|main(\.get)?\.php).+/',
-                $_SERVER['REQUEST_URI'],
-                $matches
-            )
-        ) {
-            $baseUri = $matches[1];
-        }
-        return $baseUri;
-    }
+    public function getType(): string;
+
+    /**
+     * @param mixed $configuration
+     * @return self
+     */
+    public static function create(mixed $configuration): self;
 }

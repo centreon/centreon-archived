@@ -184,7 +184,9 @@ class LoginSessionTest extends TestCase
             ->willReturn(null);
 
         $this->expectException(ProviderException::class);
-        $this->expectExceptionMessage('Provider configuration (local) not found');
+        $this->expectExceptionMessage(
+            ProviderException::providerConfigurationNotFound('local')->getMessage()
+        );
 
         $authenticate($this->loginSessionPresenter, $authenticateRequest);
     }

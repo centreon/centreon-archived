@@ -69,7 +69,7 @@ class LoginSessionController extends AbstractController
      * @return LoginSessionRequest
      */
     private function createLoginSessionRequest(
-        Request $request,
+        Request $request
     ): LoginSessionRequest {
         $requestData = json_decode((string) $request->getContent(), true);
 

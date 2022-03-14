@@ -70,18 +70,6 @@ class ProviderService implements ProviderServiceInterface
     /**
      * @inheritDoc
      */
-    public function findProvidersConfigurations(): array
-    {
-        try {
-            return $this->providerRepository->findProvidersConfigurations();
-        } catch (\Exception $ex) {
-            throw ProviderException::findProvidersConfigurations($ex);
-        }
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function findProviderByConfigurationId(int $providerConfigurationId): ?ProviderInterface
     {
         try {
@@ -140,7 +128,7 @@ class ProviderService implements ProviderServiceInterface
         try {
             return $this->providerRepository->findProviderConfigurationByConfigurationName($providerConfigurationName);
         } catch (\Exception $ex) {
-            throw ProviderException::findProvidersConfigurations($ex);
+            throw ProviderException::findProviderConfiguration($providerConfigurationName, $ex);
         }
     }
 }

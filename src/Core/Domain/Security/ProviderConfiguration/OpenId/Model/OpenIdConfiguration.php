@@ -30,9 +30,13 @@ class OpenIdConfiguration
     public const DEFAULT_LOGIN_GLAIM = 'preferred_username';
     public const AUTHENTICATION_POST = 'client_secret_post';
     public const AUTHENTICATION_BASIC = 'client_secret_basic';
+    public const TYPE = 'openid';
     public const NAME = 'openid';
 
-    private int $id;
+    /**
+     * @var int|null
+     */
+    private ?int $id;
 
     /**
      * @param boolean $isActive
@@ -95,21 +99,22 @@ class OpenIdConfiguration
     }
 
     /**
-     * @param integer $id
-     * @return static
+     * @return int|null
      */
-    public function setId(int $id): static
+    public function getId(): ?int
     {
-        $this->id = $id;
-        return $this;
+        return $this->id;
     }
 
     /**
-     * @return integer
+     * @param int|null $id
+     * @return self
      */
-    public function getId(): int
+    public function setId(?int $id): self
     {
-        return $this->id;
+        $this->id = $id;
+
+        return $this;
     }
 
     /**

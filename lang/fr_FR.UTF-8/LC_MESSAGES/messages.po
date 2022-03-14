@@ -16662,3 +16662,12 @@ msgstr "Votre mot de passe expirera dans"
 
 msgid "Password has expired"
 msgstr "Votre mot de passe a expiré"
+
+msgid "No provider presenters could be found"
+msgstr "Aucun présenteur de fournisseur n'a pu être trouvé"
+
+msgid "No provider repositories could be found"
+msgstr "Aucun dépôt de fournisseur n'a pu être trouvé"
+
+msgid "No provider responses could be found"
+msgstr "Aucune réponse de fournisseur n'a pu être trouvée"

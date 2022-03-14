@@ -11,12 +11,12 @@ parameters:
     - %currentWorkingDirectory%/tests/php/Security
     - %currentWorkingDirectory%/tests/php/Utility
   ignoreErrors:
-      -
-        message: '#^Undefined variable: \$this$#'
-        path: tests/php/
-      -
-        message: '#^Call to an undefined method Pest#'
-        path: tests/php/
+    -
+      message: '#^Undefined variable: \$this$#'
+      path: tests/php/
+    -
+      message: '#^Call to an undefined method Pest#'
+      path: tests/php/
   reportUnmatchedIgnoredErrors: false
 services:
   errorFormatter.absolute:
