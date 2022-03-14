@@ -669,6 +669,70 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalServerError'
+  /configuration/hosts/{host_id}/notification-policy:
+    get:
+      tags:
+        - Notification Policy
+      summary: "Get notification policy of a host"
+      description: "Return the notified contacts and contact groups of a host."
+      parameters:
+        - $ref: '#/components/parameters/HostId'
+      responses:
+        '200':
+          description: "Successful request"
+          content:
+            application/json:
+              schema:
+                $ref: './NotificationPolicy.yaml'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /configuration/{host_id}/services/{service_id}/notification-policy:
+    get:
+      tags:
+        - Notification Policy
+      summary: "Get notification policy of a service"
+      description: "Return the notified contacts and contact groups of a service."
+      parameters:
+        - $ref: '#/components/parameters/HostId'
+        - $ref: '#/components/parameters/ServiceId'
+      responses:
+        '200':
+          description: "Successful request"
+          content:
+            application/json:
+              schema:
+                $ref: './NotificationPolicy.yaml'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /configuration/metaservices/{meta_id}/notification-policy:
+    get:
+      tags:
+        - Notification Policy
+      summary: "Get notification policy of a meta service"
+      description: "Return the notified contacts and contact groups of a meta service."
+      parameters:
+        - $ref: '#/components/parameters/MetaId'
+      responses:
+        '200':
+          description: "Successful request"
+          content:
+            application/json:
+              schema:
+                $ref: './NotificationPolicy.yaml'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /monitoring/servers:
     get:
       tags:
