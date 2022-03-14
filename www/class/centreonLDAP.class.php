@@ -98,7 +98,8 @@ class CentreonLDAP
         $searchTimeout = 5;
         $tempSearchTimeout = $this->getLdapHostParameters((int) $arId, 'ldap_search_timeout');
         if (count($tempSearchTimeout) > 0) {
-            if (isset($tempSearchTimeout['ari_value'])
+            if (
+                isset($tempSearchTimeout['ari_value'])
                 && !empty($tempSearchTimeout['ari_value'])
             ) {
                 $searchTimeout = $tempSearchTimeout['ari_value'];
@@ -238,7 +239,8 @@ class CentreonLDAP
     public function rebind(): bool
     {
         $this->setErrorHandler();
-        if (isset($this->ldap['info']['bind_dn'])
+        if (
+            isset($this->ldap['info']['bind_dn'])
             && $this->ldap['info']['bind_dn'] != ""
             && isset($this->ldap['info']['bind_pass'])
             && $this->ldap['info']['bind_pass'] != ""
