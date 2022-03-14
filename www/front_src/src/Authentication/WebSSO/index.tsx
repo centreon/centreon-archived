@@ -3,7 +3,7 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { isNil, not } from 'ramda';
 
-import { Container, LinearProgress, Paper, Typography } from '@mui/material';
+import { LinearProgress, Typography } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 
 import LoadingSkeletonForm from '../FormInputs/LoadingSkeleton';
