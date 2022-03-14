@@ -59,7 +59,7 @@ interface PresenterInterface
      * Useful for handle case where show is not called (e.g for a redirection)
      * @return mixed
      */
-    public function getData(): mixed;
+    public function getPresentedData(): mixed;
 
     /**
      * @return Response

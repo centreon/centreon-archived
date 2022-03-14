@@ -52,7 +52,7 @@ class LoginOpenIdSessionController extends AbstractController
     ): object {
         $loginOpenIdSessionRequest = $this->createLoginOpenIdSessionRequest($request);
         $useCase($loginOpenIdSessionRequest, $presenter);
-        $response = $presenter->getData();
+        $response = $presenter->getPresentedData();
         if ($response->error !== null) {
             return View::createRedirect(
                 $this->getBaseUrl() . '/login?authenticationError=' . $response->error,

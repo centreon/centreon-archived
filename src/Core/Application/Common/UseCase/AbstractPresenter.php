@@ -58,7 +58,7 @@ abstract class AbstractPresenter implements PresenterInterface
     /**
      * @inheritDoc
      */
-    public function getData(): mixed
+    public function getPresentedData(): mixed
     {
         return $this->presentedData;
     }
