@@ -188,16 +188,10 @@ class LoginOpenIdSession
     private function getRedirectionUri(
         ContactInterface $providerUser,
     ): string {
-        /**
-         * Check if a legacy page could be get from the request referer.
-         */
         if ($providerUser->getDefaultPage() !== null && $providerUser->getDefaultPage()->getUrl() !== null) {
-            $redirectionUri = $this->buildDefaultRedirectionUri($providerUser->getDefaultPage());
-        } else {
-            $redirectionUri = $this->redirectDefaultPage;
+            return $this->buildDefaultRedirectionUri($providerUser->getDefaultPage());
         }
-
-        return $redirectionUri;
+            return $this->redirectDefaultPage;
     }
 
     /**
@@ -209,13 +203,11 @@ class LoginOpenIdSession
     private function buildDefaultRedirectionUri(Page $defaultPage): string
     {
         if ($defaultPage->isReact() === true) {
-            // redirect to the react path
-            $redirectUri = $defaultPage->getUrl();
-        } else {
-            $redirectUri = "/main.php?p=" . $defaultPage->getPageNumber();
-            if ($defaultPage->getUrlOptions() !== null) {
-                $redirectUri .= $defaultPage->getUrlOptions();
-            }
+            return $defaultPage->getUrl();
+        }
+        $redirectUri = "/main.php?p=" . $defaultPage->getPageNumber();
+        if ($defaultPage->getUrlOptions() !== null) {
+            $redirectUri .= $defaultPage->getUrlOptions();
         }
 
         return $redirectUri;
