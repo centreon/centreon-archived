@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { equals } from 'ramda';
+import { equals, keys, omit } from 'ramda';
 import clsx from 'clsx';
 import { useAtom } from 'jotai';
 
@@ -169,11 +169,12 @@ const CollapsableItems = ({
   const deleteNavigationItemsSelected = (
     navigationItems: Record<string, propsNavigationItemSelected>,
   ): void => {
-    const updatedNavigationItems = navigationItems;
-    Object.keys(updatedNavigationItems).forEach(() => {
-      delete updatedNavigationItems[`level_${level}`];
-    });
-    setNavigationItemSelected(updatedNavigationItems);
+    const navigationKeysToRemove = keys(navigationItems).filter(
+      (navigationItem) => {
+        return !navigationItem.includes('_Navigated');
+      },
+    );
+    setNavigationItemSelected(omit(navigationKeysToRemove, navigationItems));
   };
 
   const handleLeave = (): void => {
