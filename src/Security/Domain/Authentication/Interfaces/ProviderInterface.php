@@ -32,6 +32,16 @@ interface ProviderInterface
 {
 
     /**
+     * @return \Centreon
+     */
+    public function getLegacySession(): \Centreon;
+
+    /**
+     * @param \Centreon $legacySession
+     */
+    public function setLegacySession(\Centreon $legacySession): void;
+
+    /**
      * Indicates whether we can create the authenticated user or not.
      *
      * @return bool
@@ -69,14 +79,4 @@ interface ProviderInterface
      * @param ProviderConfigurationInterface $configuration
      */
     public function setConfiguration(ProviderConfigurationInterface $configuration): void;
-
-    /**
-     * @return \Centreon
-     */
-    public function getLegacySession(): \Centreon;
-
-    /**
-     * @param \Centreon $legacySession
-     */
-    public function setLegacySession(\Centreon $legacySession): void;
 }
