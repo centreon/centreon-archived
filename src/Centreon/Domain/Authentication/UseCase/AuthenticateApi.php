@@ -125,7 +125,7 @@ class AuthenticateApi
     private function findLocalProviderOrFail(): LocalProviderInterface
     {
         /**
-         * @var LocalProviderInterface
+         * @var LocalProviderInterface|null
          */
         $localProvider = $this->providerService->findProviderByConfigurationName(LocalProvider::NAME);
 

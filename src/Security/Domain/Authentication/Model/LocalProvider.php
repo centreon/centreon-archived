@@ -215,6 +215,9 @@ class LocalProvider implements LocalProviderInterface
      */
     public function setConfiguration(ProviderConfigurationInterface $configuration): void
     {
+        if (!is_a($configuration, ProviderConfiguration::class)) {
+            throw new \InvalidArgumentException('Bad provider configuration');
+        }
         $this->configuration = $configuration;
     }
 

@@ -30,7 +30,6 @@ use Security\Domain\Authentication\Model\AuthenticationTokens;
  */
 interface ProviderInterface
 {
-
     /**
      * Get legacy Centreon session
      *
@@ -84,5 +83,5 @@ interface ProviderInterface
      * @param AuthenticationTokens $authenticationTokens
      * @return AuthenticationTokens|null Return the new AuthenticationTokens object if success otherwise null
      */
-    public function refreshToken(AuthenticationTokens $authenticationToken): ?AuthenticationTokens;
+    public function refreshToken(AuthenticationTokens $authenticationTokens): ?AuthenticationTokens;
 }

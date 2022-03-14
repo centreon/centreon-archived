@@ -110,6 +110,9 @@ class OpenIdProvider implements OpenIdProviderInterface
      */
     public function setConfiguration(ProviderConfigurationInterface $configuration): void
     {
+        if (!is_a($configuration, OpenIdConfiguration::class)) {
+            throw new \InvalidArgumentException('Bad provider configuration');
+        }
         $this->configuration = $configuration;
     }
 
@@ -220,21 +223,21 @@ class OpenIdProvider implements OpenIdProviderInterface
     /**
      * @inheritDoc
      */
-    public function refreshToken(AuthenticationTokens $authenticationToken): AuthenticationTokens
+    public function refreshToken(AuthenticationTokens $authenticationTokens): AuthenticationTokens
     {
-        if ($authenticationToken->getProviderRefreshToken() === null) {
+        if ($authenticationTokens->getProviderRefreshToken() === null) {
             throw SSOAuthenticationException::noRefreshToken();
         }
         $this->info(
             'Refreshing token using refresh token',
             [
-                'refresh_token' => substr($authenticationToken->getProviderRefreshToken()->getToken(), -10)
+                'refresh_token' => substr($authenticationTokens->getProviderRefreshToken()->getToken(), -10)
             ]
         );
         // Define parameters for the request
         $data = [
             "grant_type" => "refresh_token",
-            "refresh_token" => $authenticationToken->getProviderRefreshToken()->getToken(),
+            "refresh_token" => $authenticationTokens->getProviderRefreshToken()->getToken(),
             "scope" => !empty($this->configuration->getConnectionScopes())
                 ? implode(' ', $this->configuration->getConnectionScopes())
                 : null
@@ -296,22 +299,22 @@ class OpenIdProvider implements OpenIdProviderInterface
         $refreshTokenExpiration = (new \DateTime())
             ->add(new \DateInterval('PT' . $content ['refresh_expires_in'] . 'S'));
         $this->providerToken =  new ProviderToken(
-            $authenticationToken->getProviderToken()->getId(),
+            $authenticationTokens->getProviderToken()->getId(),
             $content['access_token'],
             $creationDate,
             $providerTokenExpiration
         );
         $this->refreshToken = new ProviderToken(
-            $authenticationToken->getProviderRefreshToken()->getId(),
+            $authenticationTokens->getProviderRefreshToken()->getId(),
             $content['refresh_token'],
             $creationDate,
             $refreshTokenExpiration
         );
 
         return new AuthenticationTokens(
-            $authenticationToken->getUserId(),
-            $authenticationToken->getConfigurationProviderId(),
-            $authenticationToken->getSessionToken(),
+            $authenticationTokens->getUserId(),
+            $authenticationTokens->getConfigurationProviderId(),
+            $authenticationTokens->getSessionToken(),
             $this->providerToken,
             $this->refreshToken
         );
