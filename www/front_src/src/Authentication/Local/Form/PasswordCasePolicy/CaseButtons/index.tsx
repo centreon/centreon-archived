@@ -3,7 +3,13 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { FormikValues, useFormikContext } from 'formik';
 
-import { Button, ButtonGroup, ButtonProps, useTheme } from '@mui/material';
+import {
+  Button,
+  ButtonGroup,
+  ButtonProps,
+  Typography,
+  useTheme,
+} from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 
 import { useMemoComponent } from '@centreon/ui';
@@ -40,6 +46,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     rowGap: theme.spacing(0.5),
+    width: 'fit-content',
   },
   lowerCaseButton: {
     textTransform: 'none',
@@ -87,6 +94,7 @@ const CaseButtons = (): JSX.Element => {
   return useMemoComponent({
     Component: (
       <div className={classes.caseButtonsContainer}>
+        <Typography variant="caption">Choose letter cases</Typography>
         <ButtonGroup aria-label={t(labelPasswordCases)} size="small">
           <Button
             {...(hasLowerCase && activeButtonProps)}

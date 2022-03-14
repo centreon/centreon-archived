@@ -33,8 +33,16 @@ const panels = [
 ];
 
 const useStyles = makeStyles((theme) => ({
+  box: {
+    overflowY: 'hidden',
+  },
   container: {
+    marginBottom: theme.spacing(9),
     maxWidth: theme.spacing(90),
+  },
+  panel: {
+    height: '100%',
+    overflowY: 'auto',
   },
   paper: {
     padding: theme.spacing(4),
@@ -61,7 +69,7 @@ const Authentication = (): JSX.Element => {
   const tabPanels = React.useMemo(
     () =>
       panels.map(({ Component, value }) => (
-        <TabPanel key={value} value={value}>
+        <TabPanel className={classes.panel} key={value} value={value}>
           <Container className={classes.container}>
             <Paper className={classes.paper}>
               <Component />
@@ -73,7 +81,7 @@ const Authentication = (): JSX.Element => {
   );
 
   return (
-    <Box>
+    <Box className={classes.box}>
       <TabContext value={tab}>
         <Paper>
           <TabList variant="fullWidth" onChange={changeTab}>
