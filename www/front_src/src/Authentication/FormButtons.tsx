@@ -68,6 +68,9 @@ const FormButtons = (): JSX.Element => {
   return useMemoComponent({
     Component: (
       <div className={classes.buttons}>
+        <Button disabled={not(canReset)} size="small" onClick={askBeforeReset}>
+          {t(labelReset)}
+        </Button>
         <SaveButton
           disabled={not(canSubmit)}
           labelLoading={labelSaving}
@@ -78,14 +81,6 @@ const FormButtons = (): JSX.Element => {
           succeeded={submitted}
           onClick={submit}
         />
-        <Button
-          disabled={not(canReset)}
-          size="small"
-          variant="contained"
-          onClick={askBeforeReset}
-        >
-          {t(labelReset)}
-        </Button>
         <ConfirmDialog
           labelCancel={t(labelCancel)}
           labelConfirm={t(labelReset)}
