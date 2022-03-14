@@ -2402,7 +2402,7 @@ CREATE TABLE `password_expiration_excluded_users` (
 
 CREATE TABLE `security_token` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `token` varchar(255) NOT NULL,
+  `token` LONGTEXT NOT NULL,
   `creation_date` bigint UNSIGNED NOT NULL,
   `expiration_date` bigint UNSIGNED DEFAULT NULL,
   PRIMARY KEY (`id`),
