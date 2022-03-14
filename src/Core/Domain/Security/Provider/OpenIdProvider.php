@@ -203,9 +203,7 @@ class OpenIdProvider implements OpenIdProviderInterface
     }
 
     /**
-     * Get User
-     *
-     * @return ContactInterface|null
+     * @inheritDoc
      */
     public function getUser(): ?ContactInterface
     {
@@ -219,97 +217,7 @@ class OpenIdProvider implements OpenIdProviderInterface
     }
 
     /**
-     * Get Connection Token from OpenId Provider.
-     *
-     * @param string $authorizationCode
-     */
-    private function sendRequestForConnectionTokenOrFail(string $authorizationCode): void
-    {
-        $this->info('Send request to external provider for connection token...');
-
-        // Define parameters for the request
-        $redirectUri = $this->router->generate(
-            'centreon_security_authentication_openid_login',
-            [],
-            UrlGeneratorInterface::ABSOLUTE_URL
-        );
-        $data = [
-            "grant_type" => "authorization_code",
-            "code" => $authorizationCode,
-            "redirect_uri" => $redirectUri
-        ];
-        $headers = [
-            'Content-Type' => "application/x-www-form-urlencoded"
-        ];
-
-        // Define authentication type based on configuration
-        if ($this->configuration->getAuthenticationType() === OpenIdConfiguration::AUTHENTICATION_BASIC) {
-            $headers['Authorization'] = "Basic " . base64_encode(
-                $this->configuration->getClientId() . ":" . $this->configuration->getClientSecret()
-            );
-        } else {
-            $data["client_id"] = $this->configuration->getClientId();
-            $data["client_secret"] = $this->configuration->getClientSecret();
-        }
-
-        // Send the request to IDP
-        try {
-            $response = $this->client->request(
-                'POST',
-                $this->configuration->getBaseUrl() . '/' . ltrim($this->configuration->getTokenEndpoint(), '/'),
-                [
-                    'headers' => $headers,
-                    'body' => $data,
-                    'verify_peer' => $this->configuration->verifyPeer()
-                ]
-            );
-        } catch (\Exception $e) {
-                $this->error(
-                    sprintf("[Error] Unable to get Token Access Information:, message: %s", $e->getMessage())
-                );
-                throw SSOAuthenticationException::requestForConnectionTokenFail();
-        }
-
-        // Get the status code and throw an Exception if not a 200
-        $statusCode = $response->getStatusCode();
-        if ($statusCode !== Response::HTTP_OK) {
-            $this->logErrorForInvalidStatusCode($statusCode, Response::HTTP_OK);
-            throw SSOAuthenticationException::requestForConnectionTokenFail();
-        }
-        $content = json_decode($response->getContent(false), true);
-        if (empty($content) || array_key_exists('error', $content)) {
-            $this->logErrorFromExternalProvider($content);
-            throw SSOAuthenticationException::errorFromExternalProvider(OpenIdConfiguration::NAME);
-        }
-
-        $this->info(
-            'Access Token return by external provider',
-            [
-                'provider_token' => '...' . substr($content['access_token'], -10),
-                'refresh_token' => '...' . substr($content['refresh_token'], -10),
-            ]
-        );
-        // Create Provider and Refresh Tokens
-        $creationDate = new \DateTime();
-        $providerTokenExpiration = (new \DateTime())->add(new \DateInterval('PT' . $content['expires_in'] . 'S'));
-        $refreshTokenExpiration = (new \DateTime())
-            ->add(new \DateInterval('PT' . $content['refresh_expires_in'] . 'S'));
-        $this->providerToken =  new ProviderToken(
-            null,
-            $content['access_token'],
-            $creationDate,
-            $providerTokenExpiration
-        );
-        $this->refreshToken = new ProviderToken(
-            null,
-            $content['refresh_token'],
-            $creationDate,
-            $refreshTokenExpiration
-        );
-    }
-
-    /**
-     * Refresh Access Token
+     * @inheritDoc
      */
     public function refreshToken(AuthenticationTokens $authenticationToken): AuthenticationTokens
     {
@@ -405,6 +313,96 @@ class OpenIdProvider implements OpenIdProviderInterface
             $authenticationToken->getSessionToken(),
             $this->providerToken,
             $this->refreshToken
+        );
+    }
+
+    /**
+     * Get Connection Token from OpenId Provider.
+     *
+     * @param string $authorizationCode
+     */
+    private function sendRequestForConnectionTokenOrFail(string $authorizationCode): void
+    {
+        $this->info('Send request to external provider for connection token...');
+
+        // Define parameters for the request
+        $redirectUri = $this->router->generate(
+            'centreon_security_authentication_openid_login',
+            [],
+            UrlGeneratorInterface::ABSOLUTE_URL
+        );
+        $data = [
+            "grant_type" => "authorization_code",
+            "code" => $authorizationCode,
+            "redirect_uri" => $redirectUri
+        ];
+        $headers = [
+            'Content-Type' => "application/x-www-form-urlencoded"
+        ];
+
+        // Define authentication type based on configuration
+        if ($this->configuration->getAuthenticationType() === OpenIdConfiguration::AUTHENTICATION_BASIC) {
+            $headers['Authorization'] = "Basic " . base64_encode(
+                $this->configuration->getClientId() . ":" . $this->configuration->getClientSecret()
+            );
+        } else {
+            $data["client_id"] = $this->configuration->getClientId();
+            $data["client_secret"] = $this->configuration->getClientSecret();
+        }
+
+        // Send the request to IDP
+        try {
+            $response = $this->client->request(
+                'POST',
+                $this->configuration->getBaseUrl() . '/' . ltrim($this->configuration->getTokenEndpoint(), '/'),
+                [
+                    'headers' => $headers,
+                    'body' => $data,
+                    'verify_peer' => $this->configuration->verifyPeer()
+                ]
+            );
+        } catch (\Exception $e) {
+                $this->error(
+                    sprintf("[Error] Unable to get Token Access Information:, message: %s", $e->getMessage())
+                );
+                throw SSOAuthenticationException::requestForConnectionTokenFail();
+        }
+
+        // Get the status code and throw an Exception if not a 200
+        $statusCode = $response->getStatusCode();
+        if ($statusCode !== Response::HTTP_OK) {
+            $this->logErrorForInvalidStatusCode($statusCode, Response::HTTP_OK);
+            throw SSOAuthenticationException::requestForConnectionTokenFail();
+        }
+        $content = json_decode($response->getContent(false), true);
+        if (empty($content) || array_key_exists('error', $content)) {
+            $this->logErrorFromExternalProvider($content);
+            throw SSOAuthenticationException::errorFromExternalProvider(OpenIdConfiguration::NAME);
+        }
+
+        $this->info(
+            'Access Token return by external provider',
+            [
+                'provider_token' => '...' . substr($content['access_token'], -10),
+                'refresh_token' => '...' . substr($content['refresh_token'], -10),
+            ]
+        );
+        // Create Provider and Refresh Tokens
+        $creationDate = new \DateTime();
+        $providerTokenExpiration = (new \DateTime())->add(new \DateInterval('PT' . $content['expires_in'] . 'S'));
+        $refreshTokenExpiration = (new \DateTime())
+            ->add(new \DateInterval('PT' . $content['refresh_expires_in'] . 'S'));
+        $this->providerToken =  new ProviderToken(
+            null,
+            $content['access_token'],
+            $creationDate,
+            $providerTokenExpiration
+        );
+        $this->refreshToken = new ProviderToken(
+            null,
+            $content['refresh_token'],
+            $creationDate,
+            $refreshTokenExpiration
         );
     }
 
