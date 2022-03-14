@@ -54,6 +54,9 @@ interface PresenterInterface
     public function present(mixed $data): void;
 
     /**
+     * Return the response stored in the presenter.
+     *
+     * Useful for handle case where show is not called (e.g for a redirection)
      * @return mixed
      */
     public function getData(): mixed;

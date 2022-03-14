@@ -131,7 +131,6 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
         );
         $statement = $this->db->prepare($request);
         $statement->bindValue(':email', $email, \PDO::PARAM_STR);
-
         $statement->execute();
 
         $contact = null;
