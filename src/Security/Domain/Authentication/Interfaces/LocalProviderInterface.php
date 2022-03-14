@@ -88,11 +88,4 @@ interface LocalProviderInterface extends ProviderInterface
      * @return ProviderConfiguration
      */
     public function getConfiguration(): ProviderConfiguration;
-
-    /**
-     * Set the provider's configuration to initialize it (ex: client_id, client_secret, grant_type, ...).
-     *
-     * @param ProviderConfiguration $configuration
-     */
-    public function setConfiguration(ProviderConfiguration $configuration): void;
 }

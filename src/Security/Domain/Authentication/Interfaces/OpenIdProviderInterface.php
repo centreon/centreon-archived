@@ -25,11 +25,6 @@ interface OpenIdProviderInterface extends ProviderInterface
     public function getProviderRefreshToken(): ProviderToken;
 
     /**
-     * @param OpenIdConfiguration $configuration
-     */
-    public function setConfiguration(OpenIdConfiguration $configuration): void;
-
-    /**
      * @return boolean
      */
     public function canCreateUser(): bool;

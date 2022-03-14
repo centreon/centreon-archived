@@ -35,6 +35,7 @@ use Core\Domain\Security\Authentication\SSOAuthenticationException;
 use Security\Domain\Authentication\Interfaces\OpenIdProviderInterface;
 use Core\Domain\Security\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
 use Core\Domain\Security\ProviderConfiguration\OpenId\Exceptions\OpenIdConfigurationException;
+use Security\Domain\Authentication\Interfaces\ProviderConfigurationInterface;
 
 class OpenIdProvider implements OpenIdProviderInterface
 {
@@ -107,7 +108,7 @@ class OpenIdProvider implements OpenIdProviderInterface
     /**
      * @inheritDoc
      */
-    public function setConfiguration(OpenIdConfiguration $configuration): void
+    public function setConfiguration(ProviderConfigurationInterface $configuration): void
     {
         $this->configuration = $configuration;
     }

@@ -37,6 +37,7 @@ use Core\Domain\Security\ProviderConfiguration\Local\Model\SecurityPolicy;
 use Core\Application\Security\User\Repository\WriteUserRepositoryInterface;
 use Core\Domain\Security\ProviderConfiguration\Local\ConfigurationException;
 use Core\Application\Security\ProviderConfiguration\Local\Repository\ReadConfigurationRepositoryInterface;
+use Security\Domain\Authentication\Interfaces\ProviderConfigurationInterface;
 
 /**
  * @package Security\Authentication\Model
@@ -212,7 +213,7 @@ class LocalProvider implements LocalProviderInterface
     /**
      * @inheritDoc
      */
-    public function setConfiguration(ProviderConfiguration $configuration): void
+    public function setConfiguration(ProviderConfigurationInterface $configuration): void
     {
         $this->configuration = $configuration;
     }
