@@ -12,7 +12,7 @@ interface ListNotificationProps {
   parameters: ListingParameters;
 }
 
-const buildNotificationEndpoint = ({
+export const buildNotificationEndpoint = ({
   endpoint,
   parameters,
 }: ListNotificationProps): string =>

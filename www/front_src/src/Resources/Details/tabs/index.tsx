@@ -125,7 +125,7 @@ const tabIdByLabel = {
   details: detailsTabId,
   graph: graphTabId,
   metrics: metricsTabId,
-  notification: notificationsTabId,
+  notifications: notificationsTabId,
   services: servicesTabId,
   timeline: timelineTabId,
 };
