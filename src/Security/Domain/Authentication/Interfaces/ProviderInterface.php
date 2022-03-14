@@ -32,11 +32,15 @@ interface ProviderInterface
 {
 
     /**
+     * Get legacy Centreon session
+     *
      * @return \Centreon
      */
     public function getLegacySession(): \Centreon;
 
     /**
+     * Set legacy Centreon session
+     *
      * @param \Centreon $legacySession
      */
     public function setLegacySession(\Centreon $legacySession): void;
@@ -75,8 +79,10 @@ interface ProviderInterface
     public function setConfiguration(ProviderConfigurationInterface $configuration): void;
 
     /**
-     * @param AuthenticationTokens $authenticationToken
-     * @return AuthenticationTokens|null
+     * Refresh the provider token.
+     *
+     * @param AuthenticationTokens $authenticationTokens
+     * @return AuthenticationTokens|null Return the new AuthenticationTokens object if success otherwise null
      */
     public function refreshToken(AuthenticationTokens $authenticationToken): ?AuthenticationTokens;
 }

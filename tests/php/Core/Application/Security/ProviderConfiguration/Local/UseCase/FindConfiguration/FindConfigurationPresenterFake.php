@@ -93,6 +93,9 @@ class FindConfigurationPresenterFake implements FindConfigurationPresenterInterf
         return $this->responseHeaders;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function getData(): mixed
     {
         return $this->response;
