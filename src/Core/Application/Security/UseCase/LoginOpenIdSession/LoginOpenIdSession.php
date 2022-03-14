@@ -191,7 +191,8 @@ class LoginOpenIdSession
         if ($providerUser->getDefaultPage() !== null && $providerUser->getDefaultPage()->getUrl() !== null) {
             return $this->buildDefaultRedirectionUri($providerUser->getDefaultPage());
         }
-            return $this->redirectDefaultPage;
+
+        return $this->redirectDefaultPage;
     }
 
     /**

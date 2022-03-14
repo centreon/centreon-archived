@@ -55,6 +55,9 @@ abstract class AbstractPresenter implements PresenterInterface
         $this->presenterFormatter->present($data);
     }
 
+    /**
+     * @inheritDoc
+     */
     public function getData(): mixed
     {
         return $this->data;
