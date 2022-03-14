@@ -1,4 +1,4 @@
-import { equals, propEq } from 'ramda';
+import { equals } from 'ramda';
 
 import {
   labelAuthenticationMode,
@@ -23,8 +23,6 @@ import {
 import { AuthenticationType } from '../models';
 import { InputProps, InputType } from '../../FormInputs/models';
 
-const isAuthenticationNotActive = propEq('isActive', false);
-
 export const inputs: Array<InputProps> = [
   {
     fieldName: 'isActive',
@@ -33,7 +31,6 @@ export const inputs: Array<InputProps> = [
   },
   {
     fieldName: 'isForced',
-    getDisabled: isAuthenticationNotActive,
     label: labelAuthenticationMode,
     options: [
       {
@@ -51,73 +48,61 @@ export const inputs: Array<InputProps> = [
   },
   {
     fieldName: 'trustedClientAddresses',
-    getDisabled: isAuthenticationNotActive,
     label: labelTrustedClientAddresses,
     type: InputType.Multiple,
   },
   {
     fieldName: 'blacklistClientAddresses',
-    getDisabled: isAuthenticationNotActive,
     label: labelBlacklistClientAddresses,
     type: InputType.Multiple,
   },
   {
     fieldName: 'baseUrl',
-    getDisabled: isAuthenticationNotActive,
     label: labelBaseUrl,
     type: InputType.Text,
   },
   {
     fieldName: 'authorizationEndpoint',
-    getDisabled: isAuthenticationNotActive,
     label: labelAuthorizationEndpoint,
     type: InputType.Text,
   },
   {
     fieldName: 'tokenEndpoint',
-    getDisabled: isAuthenticationNotActive,
     label: labelTokenEndpoint,
     type: InputType.Text,
   },
   {
     fieldName: 'introspectionTokenEndpoint',
-    getDisabled: isAuthenticationNotActive,
     label: labelIntrospectionTokenEndpoint,
     type: InputType.Text,
   },
   {
     fieldName: 'userInformationEndpoint',
-    getDisabled: isAuthenticationNotActive,
     label: labelUserInformationEndpoint,
     type: InputType.Text,
   },
   {
     fieldName: 'endSessionEndpoint',
-    getDisabled: isAuthenticationNotActive,
     label: labelEndSessionEndpoint,
     type: InputType.Text,
   },
   {
     fieldName: 'connectionScopes',
-    getDisabled: isAuthenticationNotActive,
     label: labelScopes,
     type: InputType.Multiple,
   },
   {
     fieldName: 'loginClaim',
-    getDisabled: isAuthenticationNotActive,
     label: labelLoginClaimValue,
     type: InputType.Text,
   },
   {
     fieldName: 'clientId',
-    getDisabled: isAuthenticationNotActive,
     label: labelClientID,
     type: InputType.Text,
   },
   {
     fieldName: 'clientSecret',
-    getDisabled: isAuthenticationNotActive,
     label: labelClientSecret,
     type: InputType.Password,
   },
@@ -132,13 +117,11 @@ export const inputs: Array<InputProps> = [
     },
     fieldName: 'authenticationType',
     getChecked: (value) => equals(AuthenticationType.ClientSecretPost, value),
-    getDisabled: isAuthenticationNotActive,
     label: labelUseBasicAuthenticatonForTokenEndpointAuthentication,
     type: InputType.Switch,
   },
   {
     fieldName: 'verifyPeer',
-    getDisabled: isAuthenticationNotActive,
     label: labelDisableVerifyPeer,
     type: InputType.Switch,
   },

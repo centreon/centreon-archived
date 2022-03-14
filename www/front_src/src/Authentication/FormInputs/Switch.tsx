@@ -13,7 +13,6 @@ import { InputProps } from './models';
 const Switch = ({
   fieldName,
   change,
-  getDisabled,
   label,
   getChecked,
 }: InputProps): JSX.Element => {
@@ -35,7 +34,6 @@ const Switch = ({
 
   const value =
     getChecked?.(prop(fieldName, values)) ?? prop(fieldName, values);
-  const disabled = getDisabled?.(values);
 
   return useMemoComponent({
     Component: (
@@ -43,7 +41,6 @@ const Switch = ({
         control={
           <MUISwitch
             checked={value}
-            disabled={disabled}
             inputProps={{ 'aria-label': t(label) }}
             onChange={changeSwitchValue}
           />
@@ -51,7 +48,7 @@ const Switch = ({
         label={t(label) as string}
       />
     ),
-    memoProps: [value, disabled],
+    memoProps: [value],
   });
 };
 

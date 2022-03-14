@@ -1,5 +1,3 @@
-import { propEq } from 'ramda';
-
 import {
   labelBlacklistClientAddresses,
   labelMixed,
@@ -13,8 +11,6 @@ import {
 } from '../translatedLabels';
 import { InputProps, InputType } from '../../FormInputs/models';
 
-const isAuthenticationNotActive = propEq('isActive', false);
-
 export const inputs: Array<InputProps> = [
   {
     fieldName: 'isActive',
@@ -23,7 +19,6 @@ export const inputs: Array<InputProps> = [
   },
   {
     fieldName: 'isForced',
-    getDisabled: isAuthenticationNotActive,
     label: labelAuthenticationMode,
     options: [
       {
@@ -41,31 +36,26 @@ export const inputs: Array<InputProps> = [
   },
   {
     fieldName: 'trustedClientAddresses',
-    getDisabled: isAuthenticationNotActive,
     label: labelTrustedClientAddresses,
     type: InputType.Multiple,
   },
   {
     fieldName: 'blacklistClientAddresses',
-    getDisabled: isAuthenticationNotActive,
     label: labelBlacklistClientAddresses,
     type: InputType.Multiple,
   },
   {
     fieldName: 'loginHeaderAttribute',
-    getDisabled: isAuthenticationNotActive,
     label: labelLoginHeaderAttributeName,
     type: InputType.Text,
   },
   {
     fieldName: 'patternMatchingLogin',
-    getDisabled: isAuthenticationNotActive,
     label: labelPatternMatchLogin,
     type: InputType.Text,
   },
   {
     fieldName: 'patternReplaceLogin',
-    getDisabled: isAuthenticationNotActive,
     label: labelPatternReplaceLogin,
     type: InputType.Text,
   },

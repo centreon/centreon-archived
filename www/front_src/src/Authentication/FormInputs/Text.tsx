@@ -10,12 +10,7 @@ import PasswordEndAdornment from '../../Login/PasswordEndAdornment';
 
 import { InputProps, InputType } from './models';
 
-const Text = ({
-  label,
-  fieldName,
-  getDisabled,
-  type,
-}: InputProps): JSX.Element => {
+const Text = ({ label, fieldName, type }: InputProps): JSX.Element => {
   const { t } = useTranslation();
 
   const [isVisible, setIsVisible] = React.useState(false);
@@ -32,7 +27,6 @@ const Text = ({
   };
 
   const value = prop(fieldName, values);
-  const disabled = getDisabled?.(values);
 
   const error = prop(fieldName, touched) ? prop(fieldName, errors) : undefined;
 
@@ -55,7 +49,6 @@ const Text = ({
       <TextField
         EndAdornment={passwordEndAdornment}
         ariaLabel={t(label)}
-        disabled={disabled}
         error={error as string | undefined}
         label={t(label)}
         type={inputType}
@@ -64,7 +57,7 @@ const Text = ({
         onChange={change}
       />
     ),
-    memoProps: [error, value, disabled, isVisible],
+    memoProps: [error, value, isVisible],
   });
 };
 

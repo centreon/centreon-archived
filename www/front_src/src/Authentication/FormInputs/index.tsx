@@ -38,31 +38,20 @@ const Inputs = ({ inputs }: Props): JSX.Element => {
 
   return (
     <div className={classes.inputs}>
-      {inputs.map(
-        ({
-          fieldName,
-          label,
-          getDisabled,
-          type,
-          options,
+      {inputs.map(({ fieldName, label, type, options, change, getChecked }) => {
+        const Input = getInput(type);
+
+        const props = {
           change,
+          fieldName,
           getChecked,
-        }) => {
-          const Input = getInput(type);
+          label,
+          options,
+          type,
+        };
 
-          const props = {
-            change,
-            fieldName,
-            getChecked,
-            getDisabled,
-            label,
-            options,
-            type,
-          };
-
-          return <Input key={label} {...props} />;
-        },
-      )}
+        return <Input key={label} {...props} />;
+      })}
     </div>
   );
 };
