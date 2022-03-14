@@ -34,7 +34,7 @@ const panels = [
 
 const useStyles = makeStyles((theme) => ({
   container: {
-    width: '720px',
+    maxWidth: theme.spacing(90),
   },
   paper: {
     padding: theme.spacing(4),

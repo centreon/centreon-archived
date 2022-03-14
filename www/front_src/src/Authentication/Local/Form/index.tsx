@@ -28,7 +28,7 @@ interface Props {
 
 const useStyles = makeStyles((theme) => ({
   formContainer: {
-    margin: theme.spacing(2, 1, 1),
+    margin: theme.spacing(2, 0, 1),
   },
   formGroup: {
     marginBottom: theme.spacing(1),
