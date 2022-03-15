@@ -9,7 +9,6 @@ import {
   groupBy,
   last,
   not,
-  pipe,
   pluck,
   prop,
   reduce,

@@ -100,27 +100,6 @@ describe('Web SSOconfiguration form', () => {
     expect(screen.getByLabelText(labelPatternReplaceLogin)).toHaveValue('');
   });
 
-  it('disables all the fields when the Web SSO configuration is disabled', async () => {
-    renderWebSSOConfigurationForm();
-
-    await waitFor(() => {
-      expect(mockedAxios.get).toHaveBeenCalledWith(
-        authenticationProvidersEndpoint(Provider.WebSSO),
-        cancelTokenRequestParam,
-      );
-    });
-
-    userEvent.click(screen.getByLabelText(labelEnableWebSSOAuthentication));
-
-    expect(screen.getByLabelText(labelWebSSOOnly)).toBeDisabled();
-    expect(screen.getByLabelText(labelMixed)).toBeDisabled();
-    expect(screen.getByLabelText(labelTrustedClientAddresses)).toBeDisabled();
-    expect(screen.getByLabelText(labelBlacklistClientAddresses)).toBeDisabled();
-    expect(screen.getByLabelText(labelLoginHeaderAttributeName)).toBeDisabled();
-    expect(screen.getByLabelText(labelPatternMatchLogin)).toBeDisabled();
-    expect(screen.getByLabelText(labelPatternReplaceLogin)).toBeDisabled();
-  });
-
   it('displays an error message when fields are not correctly formatted', async () => {
     renderWebSSOConfigurationForm();
 

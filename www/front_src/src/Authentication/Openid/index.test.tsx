@@ -142,47 +142,6 @@ describe('Openid configuration form', () => {
     expect(screen.getByLabelText(labelDisableVerifyPeer)).not.toBeChecked();
   });
 
-  it('disables all the fields when the OpenID configuration is disabled', async () => {
-    renderOpenidConfigurationForm();
-
-    await waitFor(() => {
-      expect(mockedAxios.get).toHaveBeenCalledWith(
-        authenticationProvidersEndpoint(Provider.Openid),
-        cancelTokenRequestParam,
-      );
-    });
-
-    userEvent.click(
-      screen.getByLabelText(labelEnableOpenIDConnectAuthentication),
-    );
-
-    expect(screen.getByLabelText(labelOpenIDConnectOnly)).toBeDisabled();
-    expect(screen.getByLabelText(labelMixed)).toBeDisabled();
-    expect(screen.getByLabelText(labelTrustedClientAddresses)).toBeDisabled();
-    expect(screen.getByLabelText(labelBlacklistClientAddresses)).toBeDisabled();
-    expect(screen.getByLabelText(labelBaseUrl)).toBeDisabled();
-    expect(screen.getByLabelText(labelAuthorizationEndpoint)).toBeDisabled();
-    expect(screen.getByLabelText(labelTokenEndpoint)).toBeDisabled();
-    expect(
-      screen.getByLabelText(labelIntrospectionTokenEndpoint),
-    ).toBeDisabled();
-    expect(screen.getByLabelText(labelUserInformationEndpoint)).toBeDisabled();
-    expect(screen.getByLabelText(labelEndSessionEndpoint)).toBeDisabled();
-    expect(screen.getByLabelText(labelScopes)).toBeDisabled();
-    expect(screen.getByLabelText(labelLoginClaimValue)).toBeDisabled();
-    expect(screen.getByLabelText(labelClientID)).toBeDisabled();
-    expect(screen.getByLabelText(labelClientSecret)).toBeDisabled();
-    expect(
-      screen.getByLabelText(
-        labelUseBasicAuthenticatonForTokenEndpointAuthentication,
-      ),
-    ).toBeDisabled();
-    expect(screen.getByLabelText(labelDisableVerifyPeer)).toBeDisabled();
-
-    expect(screen.getByText(labelSave)).not.toBeDisabled();
-    expect(screen.getByText(labelReset)).not.toBeDisabled();
-  });
-
   it('displays an error message when fields are not correctly formatted', async () => {
     renderOpenidConfigurationForm();
 

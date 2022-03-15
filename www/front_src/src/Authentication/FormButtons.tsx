@@ -36,7 +36,7 @@ const FormButtons = (): JSX.Element => {
   const [submitted, setSubmitted] = React.useState(false);
   const [askingBeforeReset, setAskingBeforeReset] = React.useState(false);
 
-  const { isSubmitting, dirty, isValid, submitForm, resetForm, errors } =
+  const { isSubmitting, dirty, isValid, submitForm, resetForm } =
     useFormikContext<FormikValues>();
 
   const submit = (): void => {
@@ -62,8 +62,6 @@ const FormButtons = (): JSX.Element => {
   const closeAskingBeforeReset = (): void => {
     setAskingBeforeReset(false);
   };
-
-  console.log(errors);
 
   const canSubmit = not(isSubmitting) && dirty && isValid && not(submitted);
   const canReset = not(isSubmitting) && dirty && not(submitted);
