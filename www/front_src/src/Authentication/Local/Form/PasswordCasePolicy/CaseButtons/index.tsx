@@ -2,11 +2,12 @@ import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { FormikValues, useFormikContext } from 'formik';
+import clsx from 'clsx';
 
 import {
   Button,
-  ButtonGroup,
   ButtonProps,
+  Stack,
   Typography,
   useTheme,
 } from '@mui/material';
@@ -42,6 +43,9 @@ const hasNumberName = 'hasNumber';
 const hasSpecialCharacterName = 'hasSpecialCharacter';
 
 const useStyles = makeStyles((theme) => ({
+  button: {
+    minWidth: theme.spacing(4),
+  },
   caseButtonsContainer: {
     display: 'flex',
     flexDirection: 'column',
@@ -95,13 +99,15 @@ const CaseButtons = (): JSX.Element => {
     Component: (
       <div className={classes.caseButtonsContainer}>
         <Typography variant="caption">Choose letter cases</Typography>
-        <ButtonGroup aria-label={t(labelPasswordCases)} size="small">
+        <Stack aria-label={t(labelPasswordCases)} direction="row" spacing={1}>
           <Button
-            {...(hasLowerCase && activeButtonProps)}
             aria-label={t(labelForceToUseLowerCase)}
-            className={classes.lowerCaseButton}
+            className={clsx(classes.lowerCaseButton, classes.button)}
             color="primary"
+            size="small"
+            variant="outlined"
             onClick={selectCase(hasLowerCaseName)}
+            {...(hasLowerCase && activeButtonProps)}
           >
             <LabelWithTooltip
               label={labelLowerCase}
@@ -109,10 +115,13 @@ const CaseButtons = (): JSX.Element => {
             />
           </Button>
           <Button
-            {...(hasUpperCase && activeButtonProps)}
             aria-label={t(labelForceToUseUpperCase)}
+            className={classes.button}
             color="primary"
+            size="small"
+            variant="outlined"
             onClick={selectCase(hasUpperCaseName)}
+            {...(hasUpperCase && activeButtonProps)}
           >
             <LabelWithTooltip
               label={labelUpperCase}
@@ -120,10 +129,13 @@ const CaseButtons = (): JSX.Element => {
             />
           </Button>
           <Button
-            {...(hasNumber && activeButtonProps)}
             aria-label={t(labelForceToUseNumbers)}
+            className={classes.button}
             color="primary"
+            size="small"
+            variant="outlined"
             onClick={selectCase(hasNumberName)}
+            {...(hasNumber && activeButtonProps)}
           >
             <LabelWithTooltip
               label={labelNumber}
@@ -131,17 +143,20 @@ const CaseButtons = (): JSX.Element => {
             />
           </Button>
           <Button
-            {...(hasSpecialCharacter && activeButtonProps)}
             aria-label={t(labelForceToUseSpecialCharacters)}
+            className={classes.button}
             color="primary"
+            size="small"
+            variant="outlined"
             onClick={selectCase(hasSpecialCharacterName)}
+            {...(hasSpecialCharacter && activeButtonProps)}
           >
             <LabelWithTooltip
               label={labelSpecialCharacters}
               tooltipLabel={labelForceToUseSpecialCharacters}
             />
           </Button>
-        </ButtonGroup>
+        </Stack>
         <StrengthProgress
           max={4}
           thresholds={thresholds}
