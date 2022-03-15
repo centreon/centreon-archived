@@ -115,7 +115,7 @@ it('expects to return an error message in presenter when no provider configurati
     );
 
     $useCase($request, $this->presenter);
-    expect($this->presenter->getData()->error)->toBe('Provider not found');
+    expect($this->presenter->getPresentedData()->error)->toBe('Provider not found');
 });
 
 it('expects to execute authenticateOrFail method from OpenIdProvider', function () {
@@ -175,7 +175,7 @@ it(
             $this->dataStorageEngine
         );
         $useCase($request, $this->presenter);
-        expect($this->presenter->getData()->error)->toBe('User not found');
+        expect($this->presenter->getPresentedData()->error)->toBe('User not found');
     }
 );
 
@@ -215,6 +215,6 @@ it(
         );
 
         $useCase($request, $this->presenter);
-        expect($this->presenter->getData()->error)->toBe('User not found');
+        expect($this->presenter->getPresentedData()->error)->toBe('User not found');
     }
 );
