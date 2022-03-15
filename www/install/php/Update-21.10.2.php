@@ -58,4 +58,3 @@ try {
 
     throw new \Exception($versionOfTheUpgrade . $errorMessage, (int)$e->getCode(), $e);
 }
-
