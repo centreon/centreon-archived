@@ -76,7 +76,7 @@ class DbReadServiceRepository extends AbstractRepositoryDRB implements ReadServi
             INNER JOIN `:dbstg`.`centreon_acl` AS service_acl
             ON service_acl.service_id = s.service_id AND service_acl.host_id = s.host_id
             AND service_acl.group_id IN (" . implode(',', $accessGroupIds) . ")
-            WHERE s.service_id = :service_id AND s.host_id = :host_id AND s.enabled = '1'
+            WHERE s.service_id = :service_id AND s.host_id = :host_id AND s.enabled = 1
         ";
 
         $statement = $this->db->prepare($this->translateDbName($request));
