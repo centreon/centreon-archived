@@ -16650,3 +16650,15 @@ msgstr "Votre mot de passe expirera dans"
 
 msgid "Password has expired"
 msgstr "Votre mot de passe a expiré"
+
+msgid "Choose letter cases"
+msgstr "Choisir les casses d'écriture"
+
+msgid "Activation"
+msgstr "Activation"
+
+msgid "Identity provider"
+msgstr "Fournisseur d'identité"
+
+msgid "Client addresses"
+msgstr "Adresses de client"

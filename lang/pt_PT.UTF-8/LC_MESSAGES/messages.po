@@ -15434,3 +15434,15 @@ msgstr ""
 
 # msgid "Password has expired"
 # msgstr ""
+
+# msgid "Choose letter cases"
+# msgstr ""
+
+# msgid "Activation"
+# msgstr ""
+
+# msgid "Identity provider"
+# msgstr ""
+
+# msgid "Client addresses"
+# msgstr ""
