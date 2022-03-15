@@ -16664,7 +16664,7 @@ msgid "Missing token endpoint in your configuration"
 msgstr "Le point d'accès au jeton est manquant dans votre configuration"
 
 msgid "Missing userinfo and introspection token endpoint"
-msgstr "Les points d'accès de jeton d'information utilisateur et d'introspection sont manquants"
+msgstr "Les points d'accès au jeton d'information utilisateur et d'introspection sont manquants"
 
 msgid "No refresh token has been found"
 msgstr "Aucun jeton de rafraîchissement n'a été trouvé"
