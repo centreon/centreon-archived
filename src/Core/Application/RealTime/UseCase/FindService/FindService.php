@@ -31,6 +31,7 @@ use Centreon\Domain\Security\AccessGroup;
 use Core\Domain\RealTime\Model\Acknowledgement;
 use Core\Application\Common\UseCase\NotFoundResponse;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
+use Centreon\Domain\Monitoring\Host as LegacyHost;
 use Centreon\Domain\Monitoring\Service as LegacyService;
 use Centreon\Domain\Monitoring\Interfaces\MonitoringServiceInterface;
 use Core\Application\RealTime\Repository\ReadHostRepositoryInterface;
@@ -260,11 +261,12 @@ class FindService
         ) {
             try {
                 $legacyService = (new LegacyService())
+                    ->setHost((new LegacyHost())->setId($service->getHostId()))
                     ->setId($service->getId())
-                    ->setCheckCommand($service->getCommandLine());
+                    ->setCommandLine($service->getCommandLine());
 
                 $this->monitoringService->hidePasswordInServiceCommandLine($legacyService);
-                $obfuscatedCommandLine = $legacyService->getCheckCommand();
+                $obfuscatedCommandLine = $legacyService->getCommandLine();
             } catch (\Throwable $ex) {
                 $this->debug(
                     "Failed to hide password in service command line",
