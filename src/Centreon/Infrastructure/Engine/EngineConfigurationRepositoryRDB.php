@@ -65,6 +65,33 @@ class EngineConfigurationRepositoryRDB extends AbstractRepositoryDRB implements 
     /**
      * @inheritDoc
      */
+    public function findCentralEngineConfiguration(): ?EngineConfiguration
+    {
+        $engineConfiguration = null;
+
+        $request = $this->translateDbName(
+            'SELECT cfg.* FROM `:db`.cfg_nagios cfg
+            INNER JOIN `:db`.nagios_server server
+                ON server.id = cfg.nagios_server_id
+            WHERE server.localhost = "1"'
+        );
+        $statement = $this->db->query($request);
+
+        if (($record = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
+            $engineConfiguration = (new EngineConfiguration())
+                ->setId((int) $record['nagios_id'])
+                ->setName($record['nagios_name'])
+                ->setIllegalObjectNameCharacters($record['illegal_object_name_chars'])
+                ->setMonitoringServerId((int) $record['nagios_server_id'])
+                ->setNotificationsEnabledOption((int) $record['enable_notifications']);
+        }
+
+        return $engineConfiguration;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function findEngineConfigurationByHost(Host $host): ?EngineConfiguration
     {
         if ($host->getId() === null) {

@@ -14,3 +14,11 @@ configuration.service.notification-policy:
         hostId: '\d+'
         serviceId: '\d+'
     condition: "request.attributes.get('version') >= 22.04"
+
+configuration.metaservice.notification-policy:
+    methods: GET
+    path: /configuration/metaservices/{metaServiceId}/notification-policy
+    controller: 'Core\Infrastructure\Configuration\NotificationPolicy\Api\FindMetaServiceNotificationPolicyController'
+    requirements:
+        metaServiceId: '\d+'
+    condition: "request.attributes.get('version') >= 22.04"
