@@ -36,6 +36,7 @@ use Security\Domain\Authentication\Interfaces\OpenIdProviderInterface;
 use Core\Domain\Security\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
 use Core\Domain\Security\ProviderConfiguration\OpenId\Exceptions\OpenIdConfigurationException;
 use Security\Domain\Authentication\Interfaces\ProviderConfigurationInterface;
+use Symfony\Contracts\HttpClient\ResponseInterface;
 
 class OpenIdProvider implements OpenIdProviderInterface
 {
@@ -242,29 +243,8 @@ class OpenIdProvider implements OpenIdProviderInterface
                 ? implode(' ', $this->configuration->getConnectionScopes())
                 : null
         ];
-        $headers = [
-            'Content-Type' => "application/x-www-form-urlencoded"
-        ];
-        $this->defineAuthenticationType($headers, $data);
 
-        // Send the request to IDP
-        try {
-            $response = $this->client->request(
-                'POST',
-                $this->configuration->getBaseUrl() . '/' . ltrim($this->configuration->getTokenEndpoint(), '/'),
-                [
-                    'headers' => $headers,
-                    'body' => $data,
-                    'verify_peer' => $this->configuration->verifyPeer()
-                ]
-            );
-        } catch (\Exception $e) {
-            $this->error(sprintf(
-                "[Error] Unable to get Token Refresh Information:, message: %s",
-                $e->getMessage()
-            ));
-            throw SSOAuthenticationException::requestForRefreshTokenFail();
-        }
+        $response = $this->sendRequestToTokenEndpoint($data);
 
         // Get the status code and throw an Exception if not a 200
         $statusCode = $response->getStatusCode();
@@ -331,29 +311,8 @@ class OpenIdProvider implements OpenIdProviderInterface
             "code" => $authorizationCode,
             "redirect_uri" => $redirectUri
         ];
-        $headers = [
-            'Content-Type' => "application/x-www-form-urlencoded"
-        ];
 
-        $this->defineAuthenticationType($headers, $data);
-
-        // Send the request to IDP
-        try {
-            $response = $this->client->request(
-                'POST',
-                $this->configuration->getBaseUrl() . '/' . ltrim($this->configuration->getTokenEndpoint(), '/'),
-                [
-                    'headers' => $headers,
-                    'body' => $data,
-                    'verify_peer' => $this->configuration->verifyPeer()
-                ]
-            );
-        } catch (\Exception $e) {
-                $this->error(
-                    sprintf("[Error] Unable to get Token Access Information:, message: %s", $e->getMessage())
-                );
-                throw SSOAuthenticationException::requestForConnectionTokenFail();
-        }
+        $response = $this->sendRequestToTokenEndpoint($data);
 
         // Get the status code and throw an Exception if not a 200
         $statusCode = $response->getStatusCode();
@@ -528,12 +487,15 @@ class OpenIdProvider implements OpenIdProviderInterface
     /**
      * Define authentication type based on configuration
      *
-     * @param array<string,string> $headers
      * @param array<string,mixed> $data
-     * @return void
+     * @return ResponseInterface
      */
-    private function defineAuthenticationType(&$headers, &$data)
+    private function sendRequestToTokenEndpoint(array $data): ResponseInterface
     {
+        $headers = [
+            'Content-Type' => "application/x-www-form-urlencoded"
+        ];
+
         if ($this->configuration->getAuthenticationType() === OpenIdConfiguration::AUTHENTICATION_BASIC) {
             $headers['Authorization'] = "Basic " . base64_encode(
                 $this->configuration->getClientId() . ":" . $this->configuration->getClientSecret()
@@ -541,6 +503,31 @@ class OpenIdProvider implements OpenIdProviderInterface
         } else {
             $data["client_id"] = $this->configuration->getClientId();
             $data["client_secret"] = $this->configuration->getClientSecret();
+        }
+
+        // Send the request to IDP
+        try {
+            return $this->client->request(
+                'POST',
+                $this->configuration->getBaseUrl() . '/' . ltrim($this->configuration->getTokenEndpoint(), '/'),
+                [
+                    'headers' => $headers,
+                    'body' => $data,
+                    'verify_peer' => $this->configuration->verifyPeer()
+                ]
+            );
+        } catch (\Exception $e) {
+            if (array_key_exists('refresh_token', $data)) {
+                $this->error(
+                    sprintf("[Error] Unable to get Token Refresh Information:, message: %s", $e->getMessage())
+                );
+                throw SSOAuthenticationException::requestForRefreshTokenFail();
+            } else {
+                $this->error(
+                    sprintf("[Error] Unable to get Token Access Information:, message: %s", $e->getMessage())
+                );
+                throw SSOAuthenticationException::requestForConnectionTokenFail();
+            }
         }
     }
 
