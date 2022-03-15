@@ -29,9 +29,13 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
-use Core\Application\Security\ProviderConfiguration\WebSSO\UseCase\UpdateWebSSOConfiguration;
-use Core\Application\Security\ProviderConfiguration\WebSSO\UseCase\UpdateWebSSOConfigurationPresenterInterface;
-use Core\Infrastructure\Security\ProviderConfiguration\WebSSO\Api\UpdateWebSSOConfiguration\UpdateWebSSOConfigurationController;
+use Core\Application\Security\ProviderConfiguration\WebSSO\UseCase\{
+    UpdateWebSSOConfiguration,
+    UpdateWebSSOConfigurationPresenterInterface
+};
+use Core\Infrastructure\Security\ProviderConfiguration\WebSSO\Api\UpdateWebSSOConfiguration\{
+    UpdateWebSSOConfigurationController
+};
 
 beforeEach(function () {
     $this->useCase = $this->createMock(UpdateWebSSOConfiguration::class);
