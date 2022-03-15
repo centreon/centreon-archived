@@ -10,14 +10,21 @@ import {
   labelAuthenticationMode,
 } from '../translatedLabels';
 import { InputProps, InputType } from '../../FormInputs/models';
+import {
+  labelActivation,
+  labelClientAddresses,
+  labelIdentityProvider,
+} from '../../translatedLabels';
 
 export const inputs: Array<InputProps> = [
   {
+    category: labelActivation,
     fieldName: 'isActive',
     label: labelEnableWebSSOAuthentication,
     type: InputType.Switch,
   },
   {
+    category: labelActivation,
     fieldName: 'isForced',
     label: labelAuthenticationMode,
     options: [
@@ -35,26 +42,32 @@ export const inputs: Array<InputProps> = [
     type: InputType.Radio,
   },
   {
+    category: labelClientAddresses,
     fieldName: 'trustedClientAddresses',
     label: labelTrustedClientAddresses,
     type: InputType.Multiple,
   },
   {
+    category: labelClientAddresses,
     fieldName: 'blacklistClientAddresses',
     label: labelBlacklistClientAddresses,
     type: InputType.Multiple,
   },
   {
+    category: labelIdentityProvider,
     fieldName: 'loginHeaderAttribute',
     label: labelLoginHeaderAttributeName,
+    required: true,
     type: InputType.Text,
   },
   {
+    category: labelIdentityProvider,
     fieldName: 'patternMatchingLogin',
     label: labelPatternMatchLogin,
     type: InputType.Text,
   },
   {
+    category: labelIdentityProvider,
     fieldName: 'patternReplaceLogin',
     label: labelPatternReplaceLogin,
     type: InputType.Text,

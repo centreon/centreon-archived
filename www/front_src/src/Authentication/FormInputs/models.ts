@@ -7,6 +7,7 @@ export enum InputType {
 }
 
 export interface InputProps {
+  category: string;
   change?: ({ setFieldValue, value }) => void;
   fieldName: string;
   getChecked?: (value) => boolean;
@@ -16,5 +17,11 @@ export interface InputProps {
     label: string;
     value: boolean;
   }>;
+  required?: boolean;
   type: InputType;
+}
+
+export interface Category {
+  name: string;
+  order: number;
 }

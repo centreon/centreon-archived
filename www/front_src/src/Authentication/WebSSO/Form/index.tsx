@@ -16,12 +16,13 @@ import { putWebSSOConfiguration } from '../../api';
 import { WebSSOConfiguration } from '../models';
 import FormButtons from '../../FormButtons';
 import Inputs from '../../FormInputs';
+import { categories } from '../..';
 
 import { inputs } from './inputs';
 
 const useStyles = makeStyles((theme) => ({
   formContainer: {
-    margin: theme.spacing(2, 1, 1),
+    margin: theme.spacing(2, 0, 0),
   },
 }));
 
@@ -66,7 +67,7 @@ const Form = ({
       onSubmit={submit}
     >
       <div className={classes.formContainer}>
-        <Inputs inputs={inputs} />
+        <Inputs categories={categories} inputs={inputs} />
         <FormButtons />
       </div>
     </Formik>

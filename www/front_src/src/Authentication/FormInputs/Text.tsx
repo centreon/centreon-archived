@@ -10,7 +10,12 @@ import PasswordEndAdornment from '../../Login/PasswordEndAdornment';
 
 import { InputProps, InputType } from './models';
 
-const Text = ({ label, fieldName, type }: InputProps): JSX.Element => {
+const Text = ({
+  label,
+  fieldName,
+  type,
+  required,
+}: InputProps): JSX.Element => {
   const { t } = useTranslation();
 
   const [isVisible, setIsVisible] = React.useState(false);
@@ -51,6 +56,7 @@ const Text = ({ label, fieldName, type }: InputProps): JSX.Element => {
         ariaLabel={t(label)}
         error={error as string | undefined}
         label={t(label)}
+        required={required}
         type={inputType}
         value={value || ''}
         onBlur={handleBlur(fieldName)}

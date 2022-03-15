@@ -62,3 +62,4 @@ export const labelDoYouWantToResetTheForm = 'Do you want to reset the form?';
 export const labelExcludedUsers = 'Excluded users';
 export const labelAdmin = 'Admin';
 export const labelPasswordSecurityPolicy = 'Password security policy';
+export const labelChooseLetterCases = 'Choose letter cases';

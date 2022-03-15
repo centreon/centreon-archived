@@ -16,6 +16,7 @@ import makeStyles from '@mui/styles/makeStyles';
 import { useMemoComponent } from '@centreon/ui';
 
 import {
+  labelChooseLetterCases,
   labelForceToUseLowerCase,
   labelForceToUseNumbers,
   labelForceToUseSpecialCharacters,
@@ -98,7 +99,7 @@ const CaseButtons = (): JSX.Element => {
   return useMemoComponent({
     Component: (
       <div className={classes.caseButtonsContainer}>
-        <Typography variant="caption">Choose letter cases</Typography>
+        <Typography variant="caption">{t(labelChooseLetterCases)}</Typography>
         <Stack aria-label={t(labelPasswordCases)} direction="row" spacing={1}>
           <Button
             aria-label={t(labelForceToUseLowerCase)}

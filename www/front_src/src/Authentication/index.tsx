@@ -13,6 +13,12 @@ import { labelOpenIDConnectConfiguration } from './Openid/translatedLabels';
 import OpenidConfiguration from './Openid';
 import WebSSOConfigurationForm from './WebSSO';
 import { labelWebSSOConfiguration } from './WebSSO/translatedLabels';
+import {
+  labelActivation,
+  labelClientAddresses,
+  labelIdentityProvider,
+} from './translatedLabels';
+import { Category } from './FormInputs/models';
 
 const panels = [
   {
@@ -29,6 +35,21 @@ const panels = [
     Component: WebSSOConfigurationForm,
     title: labelWebSSOConfiguration,
     value: Provider.WebSSO,
+  },
+];
+
+export const categories: Array<Category> = [
+  {
+    name: labelActivation,
+    order: 1,
+  },
+  {
+    name: labelIdentityProvider,
+    order: 2,
+  },
+  {
+    name: labelClientAddresses,
+    order: 3,
   },
 ];
 

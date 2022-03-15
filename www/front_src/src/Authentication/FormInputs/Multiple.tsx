@@ -14,7 +14,7 @@ import {
 
 import { InputProps } from './models';
 
-const Multiple = ({ fieldName, label }: InputProps): JSX.Element => {
+const Multiple = ({ fieldName, label, required }: InputProps): JSX.Element => {
   const { t } = useTranslation();
 
   const { values, setFieldValue, errors } = useFormikContext<FormikValues>();
@@ -67,6 +67,7 @@ const Multiple = ({ fieldName, label }: InputProps): JSX.Element => {
           open={false}
           options={[]}
           popupIcon={null}
+          required={required}
           value={normalizedValues}
           onChange={change}
         />
