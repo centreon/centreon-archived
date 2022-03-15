@@ -31,8 +31,8 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(2, 0, 0),
   },
   formGroup: {
-    marginBottom: theme.spacing(1),
-    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(2),
+    marginTop: theme.spacing(2),
   },
 }));
 
