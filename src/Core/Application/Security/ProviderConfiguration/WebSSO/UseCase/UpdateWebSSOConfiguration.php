@@ -41,7 +41,6 @@ class UpdateWebSSOConfiguration
     /**
      * @param UpdateWebSSOConfigurationPresenterInterface $presenter
      * @param UpdateWebSSOConfigurationRequest $request
-     * @return void
      */
     public function __invoke(
         UpdateWebSSOConfigurationPresenterInterface $presenter,

@@ -26,12 +26,12 @@ namespace Core\Application\Security\ProviderConfiguration\WebSSO\UseCase;
 class UpdateWebSSOConfigurationRequest
 {
     /**
-     * @var boolean
+     * @var bool
      */
     public bool $isActive;
 
     /**
-     * @var boolean
+     * @var bool
      */
     public bool $isForced;
 
