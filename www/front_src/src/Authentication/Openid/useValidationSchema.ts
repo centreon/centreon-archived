@@ -17,30 +17,33 @@ const useValidationSchema = (): Yup.SchemaOf<OpenidConfiguration> => {
 
   return Yup.object().shape({
     authenticationType: Yup.string().required(t(labelRequired)),
-    authorizationEndpoint: Yup.string().required(t(labelRequired)),
+    authorizationEndpoint: Yup.string().nullable().required(t(labelRequired)),
     baseUrl: Yup.string()
       .matches(urlRegexp, t(labelInvalidURL))
+      .nullable()
       .required(t(labelRequired)),
     blacklistClientAddresses: Yup.array().of(
       Yup.string()
         .matches(IPAddressRegexp, t(labelInvalidIPAddress))
         .required(t(labelRequired)),
     ),
-    clientId: Yup.string().required(t(labelRequired)),
-    clientSecret: Yup.string().required(t(labelRequired)),
+    clientId: Yup.string().nullable().required(t(labelRequired)),
+    clientSecret: Yup.string().nullable().required(t(labelRequired)),
     connectionScopes: Yup.array().of(Yup.string().required(t(labelRequired))),
-    endSessionEndpoint: Yup.string().required(t(labelRequired)),
-    introspectionTokenEndpoint: Yup.string().required(t(labelRequired)),
+    endSessionEndpoint: Yup.string().nullable(),
+    introspectionTokenEndpoint: Yup.string()
+      .nullable()
+      .required(t(labelRequired)),
     isActive: Yup.boolean().required(t(labelRequired)),
     isForced: Yup.boolean().required(t(labelRequired)),
-    loginClaim: Yup.string().required(t(labelRequired)),
-    tokenEndpoint: Yup.string().required(t(labelRequired)),
+    loginClaim: Yup.string().nullable(),
+    tokenEndpoint: Yup.string().nullable().required(t(labelRequired)),
     trustedClientAddresses: Yup.array().of(
       Yup.string()
         .matches(IPAddressRegexp, t(labelInvalidIPAddress))
         .required(t(labelRequired)),
     ),
-    userinfoEndpoint: Yup.string().required(t(labelRequired)),
+    userinfoEndpoint: Yup.string().nullable(),
     verifyPeer: Yup.boolean().required(t(labelRequired)),
   });
 };

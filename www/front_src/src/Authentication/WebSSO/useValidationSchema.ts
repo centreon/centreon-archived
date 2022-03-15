@@ -22,7 +22,7 @@ const useValidationSchema = (): Yup.SchemaOf<WebSSOConfiguration> => {
     ),
     isActive: Yup.boolean().required(t(labelRequired)),
     isForced: Yup.boolean().required(t(labelRequired)),
-    loginHeaderAttribute: Yup.string().nullable(),
+    loginHeaderAttribute: Yup.string().nullable().required(t(labelRequired)),
     patternMatchingLogin: Yup.string()
       .matches(matchARegexp, t(labelInvalidRegex))
       .nullable(),

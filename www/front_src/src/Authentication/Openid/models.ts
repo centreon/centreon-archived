@@ -6,14 +6,14 @@ export interface OpenidConfiguration {
   clientId: string | null;
   clientSecret: string | null;
   connectionScopes: Array<string>;
-  endSessionEndpoint: string | null;
+  endSessionEndpoint?: string | null;
   introspectionTokenEndpoint: string | null;
   isActive: boolean;
   isForced: boolean;
-  loginClaim: string | null;
+  loginClaim?: string | null;
   tokenEndpoint: string | null;
   trustedClientAddresses: Array<string>;
-  userinfoEndpoint: string | null;
+  userinfoEndpoint?: string | null;
   verifyPeer: boolean;
 }
 
@@ -25,14 +25,14 @@ export interface OpenidConfigurationToAPI {
   client_id: string | null;
   client_secret: string | null;
   connection_scopes: Array<string>;
-  endsession_endpoint: string | null;
+  endsession_endpoint?: string | null;
   introspection_token_endpoint: string | null;
   is_active: boolean;
   is_forced: boolean;
-  login_claim: string | null;
+  login_claim?: string | null;
   token_endpoint: string | null;
   trusted_client_addresses: Array<string>;
-  userinfo_endpoint: string | null;
+  userinfo_endpoint?: string | null;
   verify_peer: boolean;
 }
 
