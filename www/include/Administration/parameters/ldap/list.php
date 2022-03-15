@@ -67,7 +67,9 @@ foreach ($list as $k => $v) {
         $enableLdap = 1;
     }
 }
-$pearDB->query("UPDATE options SET `value` = " . $enableLdap . " WHERE `key` = 'ldap_auth_enable'");
+$statement = $pearDB->prepare("UPDATE options SET `value` = :value WHERE `key` = 'ldap_auth_enable'");
+$statement->bindValue(':value', $enableLdap, PDO::PARAM_STR);
+$statement->execute();
 
 include "./include/common/checkPagination.php";
 $list = $ldapConf->getLdapConfigurationList($searchLdap, ($num * $limit), $limit);
