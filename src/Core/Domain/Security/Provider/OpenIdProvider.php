@@ -245,16 +245,7 @@ class OpenIdProvider implements OpenIdProviderInterface
         $headers = [
             'Content-Type' => "application/x-www-form-urlencoded"
         ];
-
-        // Define authentication type based on configuration
-        if ($this->configuration->getAuthenticationType() === OpenIdConfiguration::AUTHENTICATION_BASIC) {
-            $headers['Authorization'] = "Basic " . base64_encode(
-                $this->configuration->getClientId() . ":" . $this->configuration->getClientSecret()
-            );
-        } else {
-            $data["client_id"] = $this->configuration->getClientId();
-            $data["client_secret"] = $this->configuration->getClientSecret();
-        }
+        $this->defineAuthenticationType($headers, $data);
 
         // Send the request to IDP
         try {
@@ -268,11 +259,11 @@ class OpenIdProvider implements OpenIdProviderInterface
                 ]
             );
         } catch (\Exception $e) {
-                $this->error(sprintf(
-                    "[Error] Unable to get Token Refresh Information:, message: %s",
-                    $e->getMessage()
-                ));
-                throw SSOAuthenticationException::requestForRefreshTokenFail();
+            $this->error(sprintf(
+                "[Error] Unable to get Token Refresh Information:, message: %s",
+                $e->getMessage()
+            ));
+            throw SSOAuthenticationException::requestForRefreshTokenFail();
         }
 
         // Get the status code and throw an Exception if not a 200
@@ -344,15 +335,7 @@ class OpenIdProvider implements OpenIdProviderInterface
             'Content-Type' => "application/x-www-form-urlencoded"
         ];
 
-        // Define authentication type based on configuration
-        if ($this->configuration->getAuthenticationType() === OpenIdConfiguration::AUTHENTICATION_BASIC) {
-            $headers['Authorization'] = "Basic " . base64_encode(
-                $this->configuration->getClientId() . ":" . $this->configuration->getClientSecret()
-            );
-        } else {
-            $data["client_id"] = $this->configuration->getClientId();
-            $data["client_secret"] = $this->configuration->getClientSecret();
-        }
+        $this->defineAuthenticationType($headers, $data);
 
         // Send the request to IDP
         try {
@@ -540,6 +523,25 @@ class OpenIdProvider implements OpenIdProviderInterface
             throw SSOAuthenticationException::loginClaimNotFound(OpenIdConfiguration::NAME, $loginClaim);
         }
         return $this->userInformations[$loginClaim];
+    }
+
+    /**
+     * Define authentication type based on configuration
+     *
+     * @param array<string,string> $headers
+     * @param array<string,mixed> $data
+     * @return void
+     */
+    private function defineAuthenticationType(&$headers, &$data)
+    {
+        if ($this->configuration->getAuthenticationType() === OpenIdConfiguration::AUTHENTICATION_BASIC) {
+            $headers['Authorization'] = "Basic " . base64_encode(
+                $this->configuration->getClientId() . ":" . $this->configuration->getClientSecret()
+            );
+        } else {
+            $data["client_id"] = $this->configuration->getClientId();
+            $data["client_secret"] = $this->configuration->getClientSecret();
+        }
     }
 
     /**
