@@ -102,4 +102,9 @@
     --up-to-date-color:var(--option-color);
     --update-secu-background-color:var(--color-torch-red);
     --ui-icon-fill-color: var(--color-primary-light);
+    --list-ack-background-color:var(--color-raw-umber);
+    --list-ack-hover-background-color:var(--color-raw-umber);
+    --list-downtime-background-color:var(--color-persian-indigo);
+    --list-downtime-hover-background-color:var(--color-persian-indigo);
+    --list-two-hover-background-color:var(--list-two-background-color);
 }
