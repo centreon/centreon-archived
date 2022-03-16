@@ -142,9 +142,36 @@ try {
         ADD `blocking_time` BIGINT(20) UNSIGNED DEFAULT NULL"
     );
 
+    $errorMessage = "Impossible to add default OpenID provider configuration";
+    insertOpenIdConfiguration($pearDB);
+
+    $errorMessage = "Unable to alter table security_token";
+    $pearDB->query("ALTER TABLE `security_token` MODIFY `token` varchar(4096)");
+} catch (\Exception $e) {
+    if ($pearDB->inTransaction()) {
+        $pearDB->rollBack();
+    }
+
+    $centreonLog->insertLog(
+        4,
+        $versionOfTheUpgrade . $errorMessage .
+        " - Code : " . (int)$e->getCode() .
+        " - Error : " . $e->getMessage() .
+        " - Trace : " . $e->getTraceAsString()
+    );
+
+    throw new \Exception($versionOfTheUpgrade . $errorMessage, (int)$e->getCode(), $e);
+}
+
+/**
+ * insert OpenId Configuration
+ *
+ * @param CentreonDB $pearDB
+ */
+function insertOpenIdConfiguration(CentreonDB $pearDB): void
+{
     $pearDB->beginTransaction();
     // Move OpenID Connect information to openid provider configuration.
-    $errorMessage = "Impossible to get openid configuration from option table";
     $statement = $pearDB->query("SELECT * FROM options WHERE `key` LIKE 'openid_%'");
     if (($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
         $isActive = $result['openid_connect_enable'] === '1';
@@ -183,7 +210,7 @@ try {
                 : 'client_secret_post',
             "verify_peer" => $result['openid_connect_verify_peer'] === '1' ? false : true // '1' is Verify Peer disable
         ];
-        $errorMessage = "Impossible to add default OpenID provider configuration";
+
         $statement2 = $pearDB->prepare(
             "INSERT INTO provider_configuration (`type`,`name`,`custom_configuration`,`is_active`,`is_forced`)
             VALUES ('openid','openid', :customConfiguration, :isActive, :isForced)"
@@ -193,34 +220,30 @@ try {
         $statement2->bindValue(':isForced', $isForced ? '1' : '0', \PDO::PARAM_STR);
         $statement2->execute();
 
-        $errorMessage = "Impossible to remove open_id options form options table";
         $pearDB->query("DELETE FROM options WHERE `key` LIKE 'open_id%'");
     } else {
-        $customConfiguration = '{"trusted_client_addresses":[],"blacklist_client_addresses":[],"base_url":null,'
-            . '"authorization_endpoint":null,"token_endpoint":null,"introspection_token_endpoint":null,'
-            . '"userinfo_endpoint":null,"endsession_endpoint":null,"connection_scopes":[],"login_claim":null,'
-            . '"client_id":null,"client_secret":null,"authentication_type":"client_secret_post","verify_peer":true}';
-        $pearDB->query(
+        $customConfiguration = [
+            "trusted_client_addresses" => [],
+            "blacklist_client_addresses" => [],
+            "base_url" => null,
+            "authorization_endpoint" => null,
+            "token_endpoint" => null,
+            "introspection_token_endpoint" => null,
+            "userinfo_endpoint" => null,
+            "endsession_endpoint" => null,
+            "connection_scopes" => [],
+            "login_claim" => null,
+            "client_id" => null,
+            "client_secret" => null,
+            "authentication_type" => "client_secret_post",
+            "verify_peer" => true
+        ];
+        $statement = $pearDB->prepare(
             "INSERT INTO provider_configuration (`type`,`name`,`custom_configuration`,`is_active`,`is_forced`)
-            VALUES ('openid','openid', '" . $customConfiguration . "', false, false)"
+            VALUES ('openid','openid', :customConfiguration, false, false)"
         );
+        $statement->bindValue(':customConfiguration', json_encode($customConfiguration), \PDO::PARAM_STR);
+        $statement->execute();
     }
     $pearDB->commit();
-
-    $errorMessage = "Unable to alter table security_token";
-    $pearDB->query("ALTER TABLE `security_token` MODIFY `token` varchar(4096)");
-} catch (\Exception $e) {
-    if ($pearDB->inTransaction()) {
-        $pearDB->rollBack();
-    }
-
-    $centreonLog->insertLog(
-        4,
-        $versionOfTheUpgrade . $errorMessage .
-        " - Code : " . (int)$e->getCode() .
-        " - Error : " . $e->getMessage() .
-        " - Trace : " . $e->getTraceAsString()
-    );
-
-    throw new \Exception($versionOfTheUpgrade . $errorMessage, (int)$e->getCode(), $e);
 }
