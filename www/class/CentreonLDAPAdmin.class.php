@@ -417,7 +417,7 @@ class CentreonLdapAdmin
                     $statement = $this->db->prepare(
                         "UPDATE auth_ressource_info 
                         SET ari_value = :value
-                        WHERE ar_id = :id AND ar_name = :name"
+                        WHERE ar_id = :id AND ari_name = :name"
                     );
                 } else {
                     $statement = $this->db->prepare(
