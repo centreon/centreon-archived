@@ -38,7 +38,6 @@ try {
             AFTER `contact_comment`"
         );
     }
-
 } catch (\Exception $e) {
     $centreonLog->insertLog(
         4,
