@@ -38,7 +38,7 @@ const LocalAuthentication = (): JSX.Element => {
   useTab(isPasswordSecurityPolicyEmpty);
 
   return (
-    <>
+    <div>
       <Typography variant="h4">
         {t(labelDefinePasswordPasswordSecurityPolicy)}
       </Typography>
@@ -58,7 +58,7 @@ const LocalAuthentication = (): JSX.Element => {
           }
         />
       )}
-    </>
+    </div>
   );
 };
 

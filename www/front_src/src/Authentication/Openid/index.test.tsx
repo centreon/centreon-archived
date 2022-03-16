@@ -41,6 +41,8 @@ import OpenidConfigurationForm from '.';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
+jest.mock('../logos/providerPadlock.svg');
+
 const cancelTokenRequestParam = { cancelToken: {} };
 
 const cancelTokenPutParams = {

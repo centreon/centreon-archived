@@ -49,7 +49,7 @@ const WebSSOConfigurationForm = (): JSX.Element => {
   }, []);
 
   return (
-    <>
+    <div>
       <Typography variant="h4">{t(labelDefineWebSSOConfiguration)}</Typography>
       <div className={classes.loading}>
         {not(isWebSSOConfigurationEmpty) && sendingGetWebSSOConfiguration && (
@@ -64,7 +64,7 @@ const WebSSOConfigurationForm = (): JSX.Element => {
           loadWebSSOonfiguration={loadWebSSOonfiguration}
         />
       )}
-    </>
+    </div>
   );
 };
 

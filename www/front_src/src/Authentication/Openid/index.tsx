@@ -43,7 +43,7 @@ const OpenidConfigurationForm = (): JSX.Element => {
   }, []);
 
   return (
-    <>
+    <div>
       <Typography variant="h4">
         {t(labelDefineOpenIDConnectConfiguration)}
       </Typography>
@@ -60,7 +60,7 @@ const OpenidConfigurationForm = (): JSX.Element => {
           loadOpenidConfiguration={loadOpenidConfiguration}
         />
       )}
-    </>
+    </div>
   );
 };
 

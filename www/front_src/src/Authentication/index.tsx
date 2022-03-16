@@ -22,20 +22,25 @@ import {
 } from './translatedLabels';
 import { Category } from './FormInputs/models';
 import { tabAtom, appliedTabAtom } from './tabAtoms';
+import passwordPadlockLogo from './logos/passwordPadlock.svg';
+import providerPadlockLogo from './logos/providerPadlock.svg';
 
 const panels = [
   {
     Component: LocalAuthentication,
+    image: passwordPadlockLogo,
     title: labelPasswordSecurityPolicy,
     value: Provider.Local,
   },
   {
     Component: OpenidConfiguration,
+    image: providerPadlockLogo,
     title: labelOpenIDConnectConfiguration,
     value: Provider.Openid,
   },
   {
     Component: WebSSOConfigurationForm,
+    image: providerPadlockLogo,
     title: labelWebSSOConfiguration,
     value: Provider.WebSSO,
   },
@@ -62,13 +67,21 @@ const useStyles = makeStyles((theme) => ({
   },
   container: {
     height: '100%',
-    maxWidth: theme.spacing(120),
+    maxWidth: theme.spacing(140),
     overflowY: 'hidden',
   },
   formContainer: {
+    columnGap: theme.spacing(4),
+    display: 'grid',
+    gridTemplateColumns: '1.2fr 0.8fr',
     height: '100%',
     overflowY: 'auto',
     padding: theme.spacing(3),
+  },
+  image: {
+    padding: theme.spacing(0, 5),
+    position: 'sticky',
+    top: 0,
   },
   panel: {
     height: '88%',
@@ -104,10 +117,11 @@ const Authentication = (): JSX.Element => {
 
   const tabPanels = React.useMemo(
     () =>
-      panels.map(({ Component, value }) => (
+      panels.map(({ Component, value, image }) => (
         <TabPanel className={classes.panel} key={value} value={value}>
           <div className={classes.formContainer}>
             <Component />
+            <img alt="padlock" className={classes.image} src={image} />
           </div>
         </TabPanel>
       )),
