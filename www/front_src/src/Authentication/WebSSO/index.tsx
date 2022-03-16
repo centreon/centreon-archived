@@ -7,6 +7,7 @@ import { LinearProgress, Typography } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 
 import LoadingSkeletonForm from '../FormInputs/LoadingSkeleton';
+import useTab from '../useTab';
 
 import { labelDefineWebSSOConfiguration } from './translatedLabels';
 import useWebSSO from './useWebSSO';
@@ -40,6 +41,8 @@ const WebSSOConfigurationForm = (): JSX.Element => {
     () => isNil(initialWebSSOConfiguration),
     [initialWebSSOConfiguration],
   );
+
+  useTab(isWebSSOConfigurationEmpty);
 
   React.useEffect(() => {
     loadWebSSOonfiguration();

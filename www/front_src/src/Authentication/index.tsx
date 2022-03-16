@@ -62,7 +62,7 @@ const useStyles = makeStyles((theme) => ({
   },
   container: {
     marginBottom: theme.spacing(9),
-    maxWidth: theme.spacing(90),
+    maxWidth: theme.spacing(120),
   },
   panel: {
     height: '100%',
@@ -96,11 +96,7 @@ const Authentication = (): JSX.Element => {
     () =>
       panels.map(({ Component, value }) => (
         <TabPanel className={classes.panel} key={value} value={value}>
-          <Container className={classes.container}>
-            <Paper className={classes.paper}>
-              <Component />
-            </Paper>
-          </Container>
+          <Component />
         </TabPanel>
       )),
     [],
@@ -109,12 +105,14 @@ const Authentication = (): JSX.Element => {
   return (
     <Box className={classes.box}>
       <TabContext value={appliedTab}>
-        <Paper>
-          <TabList variant="fullWidth" onChange={changeTab}>
-            {tabs}
-          </TabList>
-        </Paper>
-        {tabPanels}
+        <Container className={classes.container}>
+          <Paper>
+            <TabList variant="fullWidth" onChange={changeTab}>
+              {tabs}
+            </TabList>
+            {tabPanels}
+          </Paper>
+        </Container>
       </TabContext>
     </Box>
   );

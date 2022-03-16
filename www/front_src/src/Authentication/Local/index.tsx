@@ -6,6 +6,8 @@ import { isNil, not } from 'ramda';
 import { Theme, Typography, LinearProgress } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 
+import useTab from '../useTab';
+
 import { labelDefinePasswordPasswordSecurityPolicy } from './translatedLabels';
 import useAuthentication from './useAuthentication';
 import Form from './Form';
@@ -32,6 +34,8 @@ const LocalAuthentication = (): JSX.Element => {
     () => isNil(initialPasswordPasswordSecurityPolicy),
     [initialPasswordPasswordSecurityPolicy],
   );
+
+  useTab(isPasswordSecurityPolicyEmpty);
 
   return (
     <>

@@ -7,6 +7,7 @@ import { LinearProgress, Typography } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 
 import LoadingSkeletonForm from '../FormInputs/LoadingSkeleton';
+import useTab from '../useTab';
 
 import { labelDefineOpenIDConnectConfiguration } from './translatedLabels';
 import useOpenid from './useOpenid';
@@ -34,6 +35,8 @@ const OpenidConfigurationForm = (): JSX.Element => {
     () => isNil(initialOpenidConfiguration),
     [initialOpenidConfiguration],
   );
+
+  useTab(isOpenidConfigurationEmpty);
 
   React.useEffect(() => {
     loadOpenidConfiguration();
