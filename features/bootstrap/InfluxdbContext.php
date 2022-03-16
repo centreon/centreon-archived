@@ -57,7 +57,7 @@ class InfluxdbContext extends CentreonContext
             '#metrics_column___3_template0 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > ' .
             'tr:nth-child(4) > td:nth-child(2) > input:nth-child(1)'
         )->setValue('metric_id');
-        $this->assertFind('named', array('id', 'metrics_column___4_add'))->click();
+        $this->assertFind('named', array('id', 'metrics_column___3_add'))->click();
         sleep(1);
         $this->assertFind(
             'css',
@@ -69,7 +69,7 @@ class InfluxdbContext extends CentreonContext
             '#metrics_column___3_template1 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > ' .
             'tr:nth-child(4) > td:nth-child(2) > input:nth-child(1)'
         )->setValue('time');
-        $this->assertFind('named', array('id', 'metrics_column___4_add'))->click();
+        $this->assertFind('named', array('id', 'metrics_column___3_add'))->click();
         sleep(1);
         $this->assertFind(
             'css',
@@ -98,7 +98,7 @@ class InfluxdbContext extends CentreonContext
             '#status_column___3_template0 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > ' .
             'tr:nth-child(4) > td:nth-child(2) > input:nth-child(1)'
         )->setValue('index_id');
-        $this->assertFind('named', array('id', 'status_column___4_add'))->click();
+        $this->assertFind('named', array('id', 'status_column___3_add'))->click();
         sleep(1);
         $this->assertFind(
             'css',
@@ -110,7 +110,7 @@ class InfluxdbContext extends CentreonContext
             '#status_column___3_template1 > td:nth-child(1) > table:nth-child(1) > tbody:nth-child(1) > ' .
             'tr:nth-child(4) > td:nth-child(2) > input:nth-child(1)'
         )->setValue('time');
-        $this->assertFind('named', array('id', 'status_column___4_add'))->click();
+        $this->assertFind('named', array('id', 'status_column___3_add'))->click();
         sleep(1);
         $this->assertFind(
             'css',
