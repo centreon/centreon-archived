@@ -186,10 +186,12 @@ function addNewUnifiedSqlOutput(CentreonDB $pearDB): void
     }
     $moduleId = $module['cb_module_id'];
 
-    $pearDB->query(
+    $stmt = $pearDB->prepare(
         "INSERT INTO `cb_type` (`type_name`, `type_shortname`, `cb_module_id`)
-        VALUES ('Unified SQL', 'unified_sql', $moduleId)"
+        VALUES ('Unified SQL', 'unified_sql', :cb_module_id)"
     );
+    $stmt->bindParam(':cb_module_id', $moduleId, PDO::PARAM_INT);
+    $stmt->execute();
     $typeId = $pearDB->lastInsertId();
 
     // Link new type to tag 'output'
@@ -200,10 +202,13 @@ function addNewUnifiedSqlOutput(CentreonDB $pearDB): void
     }
     $tagId = $tag['cb_tag_id'];
 
-    $pearDB->query(
+    $stmt = $pearDB->query(
         "INSERT INTO `cb_tag_type_relation` (`cb_tag_id`, `cb_type_id`, `cb_type_uniq`)
-        VALUES ($tagId, $typeId, 0)"
+        VALUES (:cb_tag_id, :cb_type_id, 0)"
     );
+    $stmt->bindParam(':cb_tag_id', $tagId, PDO::PARAM_INT);
+    $stmt->bindParam(':cb_type_id', $typeId, PDO::PARAM_INT);
+    $stmt->execute();
 
     // Create new field 'unified_sql_db_type' with fixed value
     $pearDB->query("INSERT INTO options VALUES ('unified_sql_db_type', 'mysql')");
@@ -232,10 +237,19 @@ function addNewUnifiedSqlOutput(CentreonDB $pearDB): void
     $inputs[] = ['cb_field_id' => $fieldId, 'is_required' => 1];
 
     $query = "INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`, `order_display`)";
+    $bindedValues = [];
     foreach ($inputs as $key => $input) {
-        $order = $key + 1;
         $query .= $key === 0 ? " VALUES " : ", ";
-        $query .= "($typeId, " . $input['cb_field_id'] . ", " . $input['is_required'] . ", $order)";
+        $query .= "(:cb_type_id_$key, :cb_field_id_$key, :is_required_$key, :order_display_$key)";
+
+        $bindedValues[':cb_type_id_' . $key] = $typeId;
+        $bindedValues[':cb_field_id_' . $key] = $input['cb_field_id'];
+        $bindedValues[':is_required_' . $key] = $input['is_required'];
+        $bindedValues[':order_display_' . $key] = (int) $key + 1;
     }
-    $pearDB->query($query);
+    $stmt = $pearDB->prepare($query);
+    foreach ($bindedValues as $key => $value) {
+        $stmt->bindParam($key, $value, PDO::PARAM_INT);
+    }
+    $stmt->execute();
 }
