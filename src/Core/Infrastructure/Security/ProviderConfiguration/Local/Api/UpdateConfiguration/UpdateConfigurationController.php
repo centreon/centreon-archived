@@ -82,38 +82,4 @@ class UpdateConfigurationController extends AbstractController
 
         return $updateRequest;
     }
-
-    /**
-     * Validate the data sent.
-     *
-     * @param Request $request Request sent by client
-     * @param string $jsonValidationFile Json validation file
-     * @throws \Exception
-     */
-    private function validateDataSent(Request $request, string $jsonValidationFile): void
-    {
-        $receivedData = json_decode((string) $request->getContent(), true);
-        if (!is_array($receivedData)) {
-            throw new ConfigurationException('Error when decoding your sent data');
-        }
-        $receivedData = Validator::arrayToObjectRecursive($receivedData);
-        $validator = new Validator();
-        $validator->validate(
-            $receivedData,
-            (object) [
-                '$ref' => 'file://' . realpath(
-                    $jsonValidationFile
-                )
-            ],
-            Constraint::CHECK_MODE_VALIDATE_SCHEMA
-        );
-
-        if (!$validator->isValid()) {
-            $message = '';
-            foreach ($validator->getErrors() as $error) {
-                $message .= sprintf("[%s] %s\n", $error['property'], $error['message']);
-            }
-            throw new ConfigurationException($message);
-        }
-    }
 }

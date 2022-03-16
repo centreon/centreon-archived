@@ -54,40 +54,6 @@ class RenewPasswordController extends AbstractController
     }
 
     /**
-     * Validate the data sent.
-     *
-     * @param Request $request Request sent by client
-     * @param string $jsonValidationFile Json validation file
-     * @throws RenewPasswordApiException
-     */
-    private function validateDataSent(Request $request, string $jsonValidationFile): void
-    {
-        $receivedData = json_decode((string) $request->getContent(), true);
-        if (!is_array($receivedData)) {
-            throw new RenewPasswordApiException('Error when decoding your sent data');
-        }
-        $receivedData = Validator::arrayToObjectRecursive($receivedData);
-        $validator = new Validator();
-        $validator->validate(
-            $receivedData,
-            (object) [
-                '$ref' => 'file://' . realpath(
-                    $jsonValidationFile
-                )
-            ],
-            Constraint::CHECK_MODE_VALIDATE_SCHEMA
-        );
-
-        if (!$validator->isValid()) {
-            $message = '';
-            foreach ($validator->getErrors() as $error) {
-                $message .= sprintf("[%s] %s\n", $error['property'], $error['message']);
-            }
-            throw new RenewPasswordApiException($message);
-        }
-    }
-
-    /**
      * @param Request $request
      * @param string $userAlias
      * @return RenewPasswordRequest

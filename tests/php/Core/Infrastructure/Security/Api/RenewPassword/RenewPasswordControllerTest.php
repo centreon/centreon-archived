@@ -69,7 +69,7 @@ class RenewPasswordControllerTest extends TestCase
             ->method('getContent')
             ->willReturn($invalidPayload);
 
-        $this->expectException(RenewPasswordApiException::class);
+        $this->expectException(\InvalidArgumentException::class);
         $controller($this->useCase, $this->request, $this->presenter, 'admin');
     }
 }
