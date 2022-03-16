@@ -35,6 +35,11 @@ abstract class AbstractPresenter implements PresenterInterface
     protected $responseStatus;
 
     /**
+     * @var mixed
+     */
+    protected mixed $presentedData;
+
+    /**
      * @param PresenterFormatterInterface $presenterFormatter
      */
     public function __construct(protected PresenterFormatterInterface $presenterFormatter)
@@ -44,9 +49,18 @@ abstract class AbstractPresenter implements PresenterInterface
     /**
      * @inheritDoc
      */
-    public function present(mixed $data): void
+    public function present(mixed $presentedData): void
     {
-        $this->presenterFormatter->present($data);
+        $this->presentedData = $presentedData;
+        $this->presenterFormatter->present($presentedData);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getPresentedData(): mixed
+    {
+        return $this->presentedData;
     }
 
     /**

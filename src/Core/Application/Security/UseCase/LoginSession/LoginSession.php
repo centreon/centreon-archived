@@ -38,6 +38,7 @@ use Security\Domain\Authentication\Exceptions\ProviderException;
 use Security\Domain\Authentication\Interfaces\ProviderInterface;
 use Core\Domain\Security\Authentication\PasswordExpiredException;
 use Centreon\Domain\Repository\Interfaces\DataStorageEngineInterface;
+use Security\Domain\Authentication\Interfaces\LocalProviderInterface;
 use Security\Domain\Authentication\Interfaces\ProviderServiceInterface;
 use Security\Domain\Authentication\Interfaces\SessionRepositoryInterface;
 use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
@@ -85,6 +86,9 @@ class LoginSession
         try {
             $this->authorizeUserToAuthenticateOrFail($request->login);
 
+            /**
+             * @var LocalProviderInterface
+             */
             $authenticationProvider = $this->findProviderOrFail(LocalProvider::NAME);
             $this->authenticateOrFail($authenticationProvider, $request);
 
@@ -210,6 +214,10 @@ class LoginSession
             '[AUTHENTICATE] Beginning authentication on provider',
             ['provider_name' => $providerConfigurationName]
         );
+
+        /**
+         * @var LocalProviderInterface|null
+         */
         $authenticationProvider = $this->providerService->findProviderByConfigurationName(
             $providerConfigurationName
         );
@@ -226,7 +234,7 @@ class LoginSession
     /**
      * Authenticate the user or throw an Exception.
      *
-     * @param ProviderInterface $authenticationProvider
+     * @param LocalProviderInterface $authenticationProvider
      * @param LoginSessionRequest $request
      * @throws LegacyAuthenticationException
      */
@@ -249,7 +257,7 @@ class LoginSession
     /**
      * Retrieve user from provider or throw an Exception.
      *
-     * @param ProviderInterface $authenticationProvider
+     * @param LocalProviderInterface $authenticationProvider
      * @return ContactInterface
      * @throws LegacyAuthenticationException
      */
@@ -271,7 +279,7 @@ class LoginSession
     /**
      * Create the user in Centreon or throw an Exception.
      *
-     * @param ProviderInterface $authenticationProvider
+     * @param LocalProviderInterface $authenticationProvider
      * @param ContactInterface $providerUser
      * @throws LegacyAuthenticationException
      */

@@ -197,6 +197,9 @@ try {
         $pearDB->query("DELETE FROM options WHERE `key` LIKE 'open_id%'");
     }
     $pearDB->commit();
+
+    $errorMessage = "Unable to alter table security_token";
+    $pearDB->query("ALTER TABLE `security_token` MODIFY `token` varchar(4096)");
 } catch (\Exception $e) {
     if ($pearDB->inTransaction()) {
         $pearDB->rollBack();
