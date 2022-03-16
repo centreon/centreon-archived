@@ -3,7 +3,7 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { FormikValues, useFormikContext } from 'formik';
 import { equals, not } from 'ramda';
-import { useAtom, useAtomValue } from 'jotai';
+import { useAtom } from 'jotai';
 
 import { Button } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
