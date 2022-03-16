@@ -61,15 +61,25 @@ const useStyles = makeStyles((theme) => ({
     overflowY: 'hidden',
   },
   container: {
-    marginBottom: theme.spacing(9),
+    height: '100%',
     maxWidth: theme.spacing(120),
+    overflowY: 'hidden',
   },
-  panel: {
+  formContainer: {
     height: '100%',
     overflowY: 'auto',
+    padding: theme.spacing(3),
+  },
+  panel: {
+    height: '88%',
+    padding: 0,
   },
   paper: {
-    padding: theme.spacing(4),
+    boxShadow: theme.shadows[3],
+    height: '100%',
+  },
+  tabList: {
+    boxShadow: theme.shadows[2],
   },
 }));
 
@@ -96,7 +106,9 @@ const Authentication = (): JSX.Element => {
     () =>
       panels.map(({ Component, value }) => (
         <TabPanel className={classes.panel} key={value} value={value}>
-          <Component />
+          <div className={classes.formContainer}>
+            <Component />
+          </div>
         </TabPanel>
       )),
     [],
@@ -106,8 +118,12 @@ const Authentication = (): JSX.Element => {
     <Box className={classes.box}>
       <TabContext value={appliedTab}>
         <Container className={classes.container}>
-          <Paper>
-            <TabList variant="fullWidth" onChange={changeTab}>
+          <Paper className={classes.paper}>
+            <TabList
+              className={classes.tabList}
+              variant="fullWidth"
+              onChange={changeTab}
+            >
               {tabs}
             </TabList>
             {tabPanels}
