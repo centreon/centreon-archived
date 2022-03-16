@@ -67,18 +67,18 @@ const useStyles = makeStyles((theme) => ({
   },
   container: {
     height: '100%',
-    maxWidth: theme.spacing(140),
+    maxWidth: theme.spacing(120),
     overflowY: 'hidden',
   },
   formContainer: {
-    columnGap: theme.spacing(4),
     display: 'grid',
-    gridTemplateColumns: '1.2fr 0.8fr',
+    gridTemplateColumns: '1.2fr 0.6fr',
     height: '100%',
     overflowY: 'auto',
     padding: theme.spacing(3),
   },
   image: {
+    opacity: 0.5,
     padding: theme.spacing(0, 5),
     position: 'sticky',
     top: 0,
