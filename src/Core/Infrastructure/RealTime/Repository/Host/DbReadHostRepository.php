@@ -84,11 +84,7 @@ class DbReadHostRepository extends AbstractRepositoryDRB implements ReadHostRepo
 
         $statement->bindValue(':host_id', $hostId, \PDO::PARAM_INT);
 
-        try {
         $statement->execute();
-        } catch (\Exception $e) {
-            var_dump($e->getMessage());
-        }
 
         return $statement->fetchColumn() > 0;
     }
