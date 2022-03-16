@@ -67,7 +67,7 @@ class DbWriteWebSSOConfigurationRepository extends AbstractRepositoryDRB impleme
 
     /**
      * @param WebSSOConfiguration $configuration
-     * @return array
+     * @return array<string,mixed>
      */
     private function buildCustomConfigurationFromWebSSOConfiguration(WebSSOConfiguration $configuration): array
     {
