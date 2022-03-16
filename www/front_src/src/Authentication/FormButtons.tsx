@@ -102,7 +102,12 @@ const FormButtons = (): JSX.Element => {
   return useMemoComponent({
     Component: (
       <div className={classes.buttons}>
-        <Button disabled={not(canReset)} size="small" onClick={askBeforeReset}>
+        <Button
+          aria-label={t(labelReset)}
+          disabled={not(canReset)}
+          size="small"
+          onClick={askBeforeReset}
+        >
           {t(labelReset)}
         </Button>
         <SaveButton
