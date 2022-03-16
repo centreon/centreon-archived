@@ -81,7 +81,7 @@ if ($result === false) {
     $isRemote = false;
 } else {
     $isRemote = array_map("myDecode", $result);
-    $isRemote = ($isRemote['value'] === 'yes') ? true : false;
+    $isRemote = $isRemote['value'] === 'yes';
 }
 $dbResult->closeCursor();
 
