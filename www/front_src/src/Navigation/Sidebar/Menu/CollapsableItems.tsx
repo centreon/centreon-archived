@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { equals, keys, omit } from 'ramda';
+import { equals, isNil, keys, omit } from 'ramda';
 import clsx from 'clsx';
 import { useAtom } from 'jotai';
 
@@ -14,6 +14,7 @@ import { useMemoComponent } from '@centreon/ui';
 import { Page } from '../../models';
 import {
   selectedNavigationItemsAtom,
+  itemsHoveredByDefaultAtom,
   propsSelectedNavigationItems,
 } from '../sideBarAtoms';
 
@@ -25,10 +26,13 @@ interface Props {
   currentTop?: number;
   currentWidth: number;
   data?: Array<Page>;
+  getRootItemHoveredByDefault?: () => Page | null;
   isCollapsed: boolean;
   isSubHeader?: boolean;
   level: number;
   onClick: (item: Page, level: number) => void;
+  pathname?: string;
+  search?: string;
   setCollapseScrollMaxHeight: React.Dispatch<
     React.SetStateAction<number | undefined>
   >;
@@ -123,7 +127,10 @@ const CollapsableItems = ({
   currentTop,
   currentWidth,
   onClick,
+  getRootItemHoveredByDefault,
   level,
+  pathname,
+  search,
   collapseScrollMaxHeight,
   collapseScrollMaxWidth,
   setCollapseScrollMaxWidth,
@@ -142,8 +149,15 @@ const CollapsableItems = ({
   const [nestedScrollCollapsMaxWidth, setNestedScrollCollapsMaxWidth] =
     useState<undefined | number>(undefined);
   const collapsRef = React.useRef<HTMLElement | null>(null);
+  const childItemHoveredByDefault = React.useRef<Page | null>(null);
+  const parentItemHoveredByDefault = React.useRef<Page | null>(null);
+  const rootItemHoveredByDefault = React.useRef<Page | null>(null);
+
   const [selectedNavigationItems, setSelectedNavigationItems] = useAtom(
     selectedNavigationItemsAtom,
+  );
+  const [itemsHoveredByDefault, setItemsHoveredByDefault] = useAtom(
+    itemsHoveredByDefaultAtom,
   );
   const levelName = `level_${level}_Navigated`;
   const itemWidth = currentWidth + collapseWidth;
@@ -174,6 +188,7 @@ const CollapsableItems = ({
         return !navigationItem.includes('_Navigated');
       },
     );
+
     setSelectedNavigationItems(omit(navigationKeysToRemove, navigationItems));
   };
 
@@ -184,7 +199,7 @@ const CollapsableItems = ({
     }
   };
 
-  const isItemClicked = (
+  const isItemHovered = (
     object: Record<string, propsSelectedNavigationItems> | null,
     levelTitle: string,
     index: number,
@@ -236,17 +251,108 @@ const CollapsableItems = ({
     setCollapseScrollMaxWidth((window.innerWidth - rect.left) / 8);
   };
 
+  const fillItemsHoveredByDefault = (
+    rootItem: Page | null,
+    parentItem: Page | null,
+    childItem: Page | null,
+  ): void => {
+    rootItemHoveredByDefault.current = rootItem;
+    parentItemHoveredByDefault.current = parentItem;
+    childItemHoveredByDefault.current = childItem;
+  };
+
+  const searchItemsHoveredByDefault = (
+    childItem: Page | null,
+    parentItem: Page | null = null,
+  ): void => {
+    if (!isNil(childItem) && !childItem.is_react) {
+      const page = search?.match(/\d+/);
+
+      if (page) {
+        if (equals(page[0], childItem?.page)) {
+          if (getRootItemHoveredByDefault) {
+            fillItemsHoveredByDefault(
+              getRootItemHoveredByDefault(),
+              parentItem,
+              childItem,
+            );
+          }
+        }
+      }
+    } else if (!isNil(childItem) && equals(pathname, childItem?.url)) {
+      if (getRootItemHoveredByDefault) {
+        fillItemsHoveredByDefault(
+          getRootItemHoveredByDefault(),
+          parentItem,
+          childItem,
+        );
+      }
+    }
+
+    if (isArrayItem(childItem?.groups)) {
+      childItem?.groups?.forEach((itemGroup) => {
+        if (isArrayItem(itemGroup?.children)) {
+          itemGroup?.children?.forEach((i) =>
+            searchItemsHoveredByDefault(i, childItem),
+          );
+        }
+      });
+    }
+  };
+
+  const isItemHoveredByDefault = (item: Page): boolean => {
+    if (!itemsHoveredByDefault) {
+      searchItemsHoveredByDefault(item);
+
+      return false;
+    }
+    const isParentItemHoveredByDefault = !isNil(
+      itemsHoveredByDefault?.parentItemHoveredByDefault,
+    )
+      ? equals(
+          item.label,
+          itemsHoveredByDefault.parentItemHoveredByDefault.label,
+        ) &&
+        equals(item?.url, itemsHoveredByDefault.parentItemHoveredByDefault?.url)
+      : false;
+
+    const isChildItemHoveredByDefault = !isNil(
+      itemsHoveredByDefault?.childItemHoveredByDefault,
+    )
+      ? equals(
+          item.label,
+          itemsHoveredByDefault.childItemHoveredByDefault.label,
+        ) &&
+        equals(item?.url, itemsHoveredByDefault.childItemHoveredByDefault?.url)
+      : false;
+
+    return isParentItemHoveredByDefault || isChildItemHoveredByDefault;
+  };
+
   React.useEffect(() => {
-    if (collapsRef && collapsRef.current) {
+    if (isCollapsed && collapsRef && collapsRef.current) {
       updateCollapseSize(collapsRef.current);
     }
-  }, []);
+  }, [isCollapsed]);
+
+  React.useEffect(() => {
+    if (childItemHoveredByDefault.current) {
+      setItemsHoveredByDefault({
+        ...itemsHoveredByDefault,
+        childItemHoveredByDefault: childItemHoveredByDefault.current,
+        parentItemHoveredByDefault: parentItemHoveredByDefault.current,
+        rootItemHoveredByDefault: rootItemHoveredByDefault.current,
+      });
+    }
+  }, [childItemHoveredByDefault]);
 
   return useMemoComponent({
     Component: (
       <Collapse
         unmountOnExit
         className={clsx(classes.root, classes.toggled)}
+        enter={false}
+        exit={false}
         in={isCollapsed}
         ref={collapsRef}
         timeout={0}
@@ -254,8 +360,9 @@ const CollapsableItems = ({
       >
         {data?.map((item, index) => {
           const hover =
-            isItemClicked(selectedNavigationItems, levelName, index, item) ||
-            equals(hoveredIndex, index);
+            isItemHovered(selectedNavigationItems, levelName, index, item) ||
+            equals(hoveredIndex, index) ||
+            isItemHoveredByDefault(item);
 
           return (
             <List
@@ -278,12 +385,14 @@ const CollapsableItems = ({
                 item?.children?.map((content, ind) => {
                   const nestedIndex = getNestedIndex(index, ind, data);
                   const nestedHover =
-                    isItemClicked(
+                    isItemHovered(
                       selectedNavigationItems,
                       levelName,
                       nestedIndex,
                       content,
-                    ) || equals(hoveredIndex, nestedIndex);
+                    ) ||
+                    equals(hoveredIndex, nestedIndex) ||
+                    isItemHoveredByDefault(content);
 
                   return (
                     <MenuItems
@@ -369,11 +478,12 @@ const CollapsableItems = ({
     memoProps: [
       isCollapsed,
       collapseScrollMaxHeight,
-      setCollapseScrollMaxWidth,
+      collapseScrollMaxWidth,
       nestedScrollCollapsMaxHeight,
       nestedScrollCollapsMaxWidth,
       hoveredIndex,
       selectedNavigationItems,
+      itemsHoveredByDefault,
     ],
   });
 };

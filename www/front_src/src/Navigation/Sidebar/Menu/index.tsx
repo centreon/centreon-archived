@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
-import { equals, isNil, clone } from 'ramda';
-import { useNavigate } from 'react-router-dom';
+import { equals, isNil, clone, gt } from 'ramda';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAtom } from 'jotai';
 
 import List from '@mui/material/List';
@@ -12,6 +12,7 @@ import { useMemoComponent } from '@centreon/ui';
 
 import { Page } from '../../models';
 import {
+  itemsHoveredByDefaultAtom,
   selectedNavigationItemsAtom,
   propsSelectedNavigationItems,
 } from '../sideBarAtoms';
@@ -44,6 +45,7 @@ const NavigationMenu = ({
 }: Props): JSX.Element => {
   const classes = useStyles();
   const navigate = useNavigate();
+  const { pathname, search } = useLocation();
 
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [currentTop, setCurrentTop] = useState<number>();
@@ -56,6 +58,9 @@ const NavigationMenu = ({
   const [selectedNavigationItems, setSelectedNavigationItems] = useAtom(
     selectedNavigationItemsAtom,
   );
+  const [itemsHoveredByDefault, setItemsHoveredByDefault] = useAtom(
+    itemsHoveredByDefaultAtom,
+  );
   const levelName = 'level_0_Navigated';
   const currentWidth = isDrawerOpen ? openedDrawerWidth / 8 : closedDrawerWidth;
 
@@ -67,6 +72,8 @@ const NavigationMenu = ({
     hoveredIndex,
     isDrawerOpen,
     level: 1,
+    pathname,
+    search,
     setCollapseScrollMaxHeight,
     setCollapseScrollMaxWidth,
   };
@@ -110,10 +117,13 @@ const NavigationMenu = ({
 
     if (updatedNavigationItems) {
       Object.keys(updatedNavigationItems).forEach((i: string) => {
+        const levelToRemove = i?.match(/\d+/);
+
+        if (levelToRemove && gt(Number(levelToRemove[0]), level)) {
+          delete updatedNavigationItems[i];
+        }
+
         if (i.includes('_Navigated')) {
-          if (i > `level_${level}_Navigated`) {
-            delete updatedNavigationItems[i];
-          }
           if (`level_${level}_Navigated` === i) {
             updatedNavigationItems[i] =
               updatedNavigationItems[`level_${level}`];
@@ -128,7 +138,8 @@ const NavigationMenu = ({
     return updatedNavigationItems;
   };
 
-  const handlClickItem = (item: Page, level = 0): void => {
+  const handleClickItem = (item: Page, level = 0): void => {
+    setItemsHoveredByDefault(null);
     if (!isNil(getUrlFromEntry(item))) {
       navigate(getUrlFromEntry(item) as string);
     }
@@ -152,7 +163,7 @@ const NavigationMenu = ({
     }
   };
 
-  const isItemClicked = (
+  const isItemHovered = (
     object: Record<string, propsSelectedNavigationItems> | null,
     level: string,
     index: number,
@@ -164,14 +175,37 @@ const NavigationMenu = ({
     return false;
   };
 
+  const sendRootItemHoveredByDefault = (item: Page): Page => {
+    return item;
+  };
+
+  const isItemHoveredByDefault = (item: Page): boolean => {
+    if (itemsHoveredByDefault) {
+      const isRootItemHoveredByDefault = !isNil(
+        itemsHoveredByDefault?.rootItemHoveredByDefault,
+      )
+        ? equals(
+            item.label,
+            itemsHoveredByDefault.rootItemHoveredByDefault.label,
+          ) &&
+          equals(item?.url, itemsHoveredByDefault.rootItemHoveredByDefault?.url)
+        : false;
+
+      return isRootItemHoveredByDefault;
+    }
+
+    return false;
+  };
+
   return useMemoComponent({
     Component: (
       <List className={classes.list} onMouseLeave={handleLeave}>
         {navigationData?.map((item, index) => {
           const MenuIcon = !isNil(item?.icon) && icons[item.icon];
           const hover =
-            isItemClicked(selectedNavigationItems, levelName, index) ||
-            equals(hoveredIndex, index);
+            isItemHovered(selectedNavigationItems, levelName, index) ||
+            equals(hoveredIndex, index) ||
+            isItemHoveredByDefault(item);
 
           return (
             <ListItem disablePadding key={item.label}>
@@ -182,21 +216,23 @@ const NavigationMenu = ({
                 icon={<MenuIcon className={classes.icon} />}
                 isDrawerOpen={isDrawerOpen}
                 isOpen={index === hoveredIndex}
-                onClick={(): void => handlClickItem(item)}
+                onClick={(): void => handleClickItem(item)}
                 onMouseEnter={(e: React.MouseEvent<HTMLElement>): void =>
                   hoverItem(e, index, item)
                 }
               />
-              {Array.isArray(item?.children) &&
-                item.children.length > 0 &&
-                equals(index, hoveredIndex) && (
-                  <CollapsableItems
-                    {...props}
-                    data={item.children}
-                    isCollapsed={index === hoveredIndex}
-                    onClick={handlClickItem}
-                  />
-                )}
+
+              {Array.isArray(item?.children) && item.children.length > 0 && (
+                <CollapsableItems
+                  {...props}
+                  data={item.children}
+                  getRootItemHoveredByDefault={(): Page | null =>
+                    sendRootItemHoveredByDefault(item)
+                  }
+                  isCollapsed={index === hoveredIndex}
+                  onClick={handleClickItem}
+                />
+              )}
             </ListItem>
           );
         })}
@@ -208,6 +244,7 @@ const NavigationMenu = ({
       collapseScrollMaxHeight,
       collapseScrollMaxWidth,
       selectedNavigationItems,
+      itemsHoveredByDefault,
     ],
   });
 };
