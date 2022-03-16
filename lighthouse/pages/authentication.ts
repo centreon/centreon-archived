@@ -27,9 +27,6 @@ export const generateReportForAuthenticationPage = async ({
   await flow.endTimespan();
 
   await flow.startTimespan({ stepName: 'Type base URL' });
-  await page.type(
-    'input[aria-label="Password minimum length"]',
-    'http://localhost/',
-  );
+  await page.type('input[aria-label="Base URL"]', 'http://localhost/');
   await flow.endTimespan();
 };
