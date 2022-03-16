@@ -2,12 +2,18 @@ import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { FormikValues, useFormikContext } from 'formik';
-import { not } from 'ramda';
+import { equals, not } from 'ramda';
+import { useAtom, useAtomValue } from 'jotai';
 
 import { Button } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 
-import { ConfirmDialog, SaveButton, useMemoComponent } from '@centreon/ui';
+import {
+  ConfirmDialog,
+  SaveButton,
+  useMemoComponent,
+  UnsavedChangesDialog,
+} from '@centreon/ui';
 
 import {
   labelCancel,
@@ -18,6 +24,7 @@ import {
   labelSaved,
   labelSaving,
 } from './Local/translatedLabels';
+import { tabAtom, appliedTabAtom } from './tabAtoms';
 
 const useStyles = makeStyles((theme) => ({
   buttons: {
@@ -38,6 +45,11 @@ const FormButtons = (): JSX.Element => {
 
   const { isSubmitting, dirty, isValid, submitForm, resetForm } =
     useFormikContext<FormikValues>();
+
+  const [unsavedDialogOpened, setUnsavedDialogOpened] = React.useState(false);
+
+  const [appliedTab, setAppliedTab] = useAtom(appliedTabAtom);
+  const [tab, setTab] = useAtom(tabAtom);
 
   const submit = (): void => {
     submitForm()
@@ -63,8 +75,29 @@ const FormButtons = (): JSX.Element => {
     setAskingBeforeReset(false);
   };
 
+  const closeUnsavedDialog = (): void => {
+    setUnsavedDialogOpened(false);
+    setTab(appliedTab);
+  };
+
+  const saveChanges = (): void => {
+    submitForm().then(() => setAppliedTab(tab));
+  };
+
+  const discardChanges = (): void => setAppliedTab(tab);
+
   const canSubmit = not(isSubmitting) && dirty && isValid && not(submitted);
   const canReset = not(isSubmitting) && dirty && not(submitted);
+
+  React.useEffect(() => {
+    if (not(dirty) || equals(tab, appliedTab)) {
+      setAppliedTab(tab);
+
+      return;
+    }
+
+    setUnsavedDialogOpened(true);
+  }, [tab, appliedTab]);
 
   return useMemoComponent({
     Component: (
@@ -92,6 +125,14 @@ const FormButtons = (): JSX.Element => {
           onClose={closeAskingBeforeReset}
           onConfirm={reset}
         />
+        <UnsavedChangesDialog
+          closeDialog={closeUnsavedDialog}
+          dialogOpened={unsavedDialogOpened}
+          discardChanges={discardChanges}
+          isSubmitting={isSubmitting}
+          isValidForm={isValid}
+          saveChanges={saveChanges}
+        />
       </div>
     ),
     memoProps: [
@@ -100,6 +141,8 @@ const FormButtons = (): JSX.Element => {
       isSubmitting,
       submitted,
       askingBeforeReset,
+      tab,
+      unsavedDialogOpened,
     ],
   });
 };

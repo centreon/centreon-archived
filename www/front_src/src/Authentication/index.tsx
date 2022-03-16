@@ -1,6 +1,8 @@
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
+import { useAtomValue } from 'jotai';
+import { useUpdateAtom } from 'jotai/utils';
 
 import { Box, Container, Paper, Tab } from '@mui/material';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
@@ -19,6 +21,7 @@ import {
   labelIdentityProvider,
 } from './translatedLabels';
 import { Category } from './FormInputs/models';
+import { tabAtom, appliedTabAtom } from './tabAtoms';
 
 const panels = [
   {
@@ -73,7 +76,9 @@ const useStyles = makeStyles((theme) => ({
 const Authentication = (): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
-  const [tab, setTab] = React.useState(Provider.Local);
+
+  const appliedTab = useAtomValue(appliedTabAtom);
+  const setTab = useUpdateAtom(tabAtom);
 
   const changeTab = (_, newTab: Provider): void => {
     setTab(newTab);
@@ -103,7 +108,7 @@ const Authentication = (): JSX.Element => {
 
   return (
     <Box className={classes.box}>
-      <TabContext value={tab}>
+      <TabContext value={appliedTab}>
         <Paper>
           <TabList variant="fullWidth" onChange={changeTab}>
             {tabs}
