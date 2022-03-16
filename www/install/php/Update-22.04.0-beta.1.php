@@ -195,6 +195,15 @@ try {
 
         $errorMessage = "Impossible to remove open_id options form options table";
         $pearDB->query("DELETE FROM options WHERE `key` LIKE 'open_id%'");
+    } else {
+        $customConfiguration = '{"trusted_client_addresses":[],"blacklist_client_addresses":[],"base_url":null,'
+            . '"authorization_endpoint":null,"token_endpoint":null,"introspection_token_endpoint":null,'
+            . '"userinfo_endpoint":null,"endsession_endpoint":null,"connection_scopes":[],"login_claim":null,'
+            . '"client_id":null,"client_secret":null,"authentication_type":"client_secret_post","verify_peer":true}';
+        $pearDB->query(
+            "INSERT INTO provider_configuration (`type`,`name`,`custom_configuration`,`is_active`,`is_forced`)
+            VALUES ('openid','openid', '" . $customConfiguration . "', false, false)"
+        );
     }
     $pearDB->commit();
 
