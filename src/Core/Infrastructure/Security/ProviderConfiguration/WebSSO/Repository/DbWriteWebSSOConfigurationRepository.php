@@ -47,7 +47,7 @@ class DbWriteWebSSOConfigurationRepository extends AbstractRepositoryDRB impleme
      */
     public function updateConfiguration(WebSSOConfiguration $configuration): void
     {
-        $this->info('Updating OpenID Configuration in DBMS');
+        $this->info('Updating WebSSO Configuration in DBMS');
         $statement = $this->db->prepare(
             $this->translateDbName(
                 "UPDATE `:db`.`provider_configuration` SET
