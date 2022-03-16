@@ -177,8 +177,12 @@ function insertOpenIdConfiguration(CentreonDB $pearDB): void
         $isActive = $result['openid_connect_enable'] === '1';
         $isForced = $result['openid_connect_mode'] === '0'; //'0' OpenId Connect Only, '1' Mixed
         $customConfiguration = [
-            "trusted_client_addresses" => explode(',', $result['openid_connect_trusted_clients']),
-            "blacklist_client_addresses" => explode(',', $result['openid_connect_blacklist_clients']),
+            "trusted_client_addresses" => !empty($result['openid_connect_trusted_clients'])
+                ? explode(',', $result['openid_connect_trusted_clients'])
+                : [],
+            "blacklist_client_addresses" => !empty($result['openid_connect_blacklist_clients'])
+                ? explode(',', $result['openid_connect_blacklist_clients'])
+                : [],
             "base_url" => !empty($result['openid_connect_base_url']) ? $result['openid_connect_base_url'] : null,
             "authorization_endpoint" => !empty($result['openid_connect_authorization_endpoint'])
                 ? $result['openid_connect_authorization_endpoint']
