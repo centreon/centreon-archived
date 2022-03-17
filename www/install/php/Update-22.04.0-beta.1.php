@@ -152,7 +152,7 @@ try {
     );
 
     $errorMessage = "Unable to add 'unifed_sql' broker configuration output";
-    addNewUnifiedSqlOutput($pearDb);
+    addNewUnifiedSqlOutput($pearDB);
 
     $pearDB->commit();
 } catch (\Exception $e) {
@@ -190,7 +190,7 @@ function addNewUnifiedSqlOutput(CentreonDB $pearDB): void
         "INSERT INTO `cb_type` (`type_name`, `type_shortname`, `cb_module_id`)
         VALUES ('Unified SQL', 'unified_sql', :cb_module_id)"
     );
-    $stmt->bindParam(':cb_module_id', $moduleId, PDO::PARAM_INT);
+    $stmt->bindValue(':cb_module_id', $moduleId, PDO::PARAM_INT);
     $stmt->execute();
     $typeId = $pearDB->lastInsertId();
 
@@ -202,12 +202,12 @@ function addNewUnifiedSqlOutput(CentreonDB $pearDB): void
     }
     $tagId = $tag['cb_tag_id'];
 
-    $stmt = $pearDB->query(
+    $stmt = $pearDB->prepare(
         "INSERT INTO `cb_tag_type_relation` (`cb_tag_id`, `cb_type_id`, `cb_type_uniq`)
         VALUES (:cb_tag_id, :cb_type_id, 0)"
     );
-    $stmt->bindParam(':cb_tag_id', $tagId, PDO::PARAM_INT);
-    $stmt->bindParam(':cb_type_id', $typeId, PDO::PARAM_INT);
+    $stmt->bindValue(':cb_tag_id', $tagId, PDO::PARAM_INT);
+    $stmt->bindValue(':cb_type_id', $typeId, PDO::PARAM_INT);
     $stmt->execute();
 
     // Create new field 'unified_sql_db_type' with fixed value
@@ -249,7 +249,7 @@ function addNewUnifiedSqlOutput(CentreonDB $pearDB): void
     }
     $stmt = $pearDB->prepare($query);
     foreach ($bindedValues as $key => $value) {
-        $stmt->bindParam($key, $value, PDO::PARAM_INT);
+        $stmt->bindValue($key, $value, PDO::PARAM_INT);
     }
     $stmt->execute();
 }
