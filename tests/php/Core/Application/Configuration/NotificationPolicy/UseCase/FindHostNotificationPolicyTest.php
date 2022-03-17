@@ -119,10 +119,10 @@ it('does not find host notification policy when host is not found by acl user', 
         ->with($this->contact)
         ->willReturn([]);
 
-    $this->hostRepository
+    $this->readRealTimeHostRepository
         ->expects($this->once())
-        ->method('findHostByAccessGroupIds')
-        ->willReturn(null);
+        ->method('isAllowedToFindHostByAccessGroupIds')
+        ->willReturn(false);
 
     $this->findNotificationPolicyPresenter
         ->expects($this->once())

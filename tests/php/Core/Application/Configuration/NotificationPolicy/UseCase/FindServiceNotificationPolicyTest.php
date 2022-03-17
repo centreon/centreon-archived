@@ -34,6 +34,7 @@ use Core\Application\Configuration\UserGroup\Repository\ReadUserGroupRepositoryI
 use Core\Application\Configuration\Notification\Repository\ReadNotificationRepositoryInterface;
 use Core\Application\Configuration\Notification\Repository\ReadServiceNotificationRepositoryInterface;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
+use Core\Application\RealTime\Repository\ReadHostRepositoryInterface as ReadRealTimeHostRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadServiceRepositoryInterface as ReadRealTimeServiceRepositoryInterface;
 use Centreon\Domain\Engine\EngineConfiguration;
 use Centreon\Domain\HostConfiguration\Host;
@@ -54,6 +55,7 @@ beforeEach(function () {
     $this->engineService = $this->createMock(EngineConfigurationServiceInterface::class);
     $this->accessGroupRepository = $this->createMock(AccessGroupRepositoryInterface::class);
     $this->contact = $this->createMock(ContactInterface::class);
+    $this->readRealTimeHostRepository = $this->createMock(ReadRealTimeHostRepositoryInterface::class);
     $this->readRealTimeServiceRepository = $this->createMock(ReadRealTimeServiceRepositoryInterface::class);
 
     $this->host = new Host();
@@ -92,6 +94,7 @@ beforeEach(function () {
         $this->engineService,
         $this->accessGroupRepository,
         $this->contact,
+        $this->readRealTimeHostRepository,
         $this->readRealTimeServiceRepository,
     );
 });
@@ -111,6 +114,55 @@ it('does not find service notification policy when host is not found by admin us
         ->expects($this->once())
         ->method('setResponseStatus')
         ->with(new NotFoundResponse('Host'));
+
+    ($this->useCase)(1, 1, $this->findNotificationPolicyPresenter);
+});
+
+it('does not find service notification policy when acl user does not have access to host', function () {
+    $this->contact
+        ->expects($this->once())
+        ->method('isAdmin')
+        ->willReturn(false);
+
+    $this->readRealTimeHostRepository
+        ->expects($this->once())
+        ->method('isAllowedToFindHostByAccessGroupIds')
+        ->willReturn(false);
+
+    $this->findNotificationPolicyPresenter
+        ->expects($this->once())
+        ->method('setResponseStatus')
+        ->with(new NotFoundResponse('Host'));
+
+    ($this->useCase)(1, 1, $this->findNotificationPolicyPresenter);
+});
+
+
+it('does not find service notification policy when acl user does not have access to service', function () {
+    $this->contact
+        ->expects($this->exactly(2))
+        ->method('isAdmin')
+        ->willReturn(false);
+
+    $this->readRealTimeHostRepository
+        ->expects($this->once())
+        ->method('isAllowedToFindHostByAccessGroupIds')
+        ->willReturn(true);
+
+    $this->hostRepository
+        ->expects($this->once())
+        ->method('findHost')
+        ->willReturn($this->host);
+
+    $this->readRealTimeServiceRepository
+        ->expects($this->once())
+        ->method('isAllowedToFindServiceByAccessGroupIds')
+        ->willReturn(false);
+
+    $this->findNotificationPolicyPresenter
+        ->expects($this->once())
+        ->method('setResponseStatus')
+        ->with(new NotFoundResponse('Service'));
 
     ($this->useCase)(1, 1, $this->findNotificationPolicyPresenter);
 });

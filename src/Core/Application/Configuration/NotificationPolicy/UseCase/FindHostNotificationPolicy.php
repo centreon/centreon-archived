@@ -66,6 +66,8 @@ class FindHostNotificationPolicy
         int $hostId,
         FindNotificationPolicyPresenterInterface $presenter,
     ): void {
+        $this->info('Searching for host notification policy', ['id' => $hostId]);
+
         $host = $this->findHost($hostId);
         if ($host === null) {
             $this->handleHostNotFound($hostId, $presenter);
@@ -105,7 +107,10 @@ class FindHostNotificationPolicy
      */
     private function findHost(int $hostId): ?Host
     {
-        $this->info('Searching for host notification policy', ['id' => $hostId]);
+        $this->info('Searching for host configuration', ['id' => $hostId]);
+
+        $host = null;
+
         if ($this->contact->isAdmin()) {
             $host = $this->hostRepository->findHost($hostId);
         } else {
@@ -114,7 +119,10 @@ class FindHostNotificationPolicy
                 fn($accessGroup) => $accessGroup->getId(),
                 $accessGroups
             );
-            $host = $this->hostRepository->findHostByAccessGroupIds($hostId, $accessGroupIds);
+
+            if ($this->readRealTimeHostRepository->isAllowedToFindHostByAccessGroupIds($hostId, $accessGroupIds)) {
+                $host = $this->hostRepository->findHost($hostId);
+            }
         }
 
         return $host;
