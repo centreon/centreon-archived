@@ -39,7 +39,6 @@ class FindWebSSOConfiguration
 
     /**
      * @param FindWebSSOConfigurationPresenterInterface $presenter
-     * @return void
      */
     public function __invoke(FindWebSSOConfigurationPresenterInterface $presenter): void
     {
