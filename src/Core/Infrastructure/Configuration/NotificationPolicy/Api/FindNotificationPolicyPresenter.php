@@ -25,19 +25,19 @@ namespace Core\Infrastructure\Configuration\NotificationPolicy\Api;
 use Core\Application\Common\UseCase\AbstractPresenter;
 use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
 use Core\Application\Configuration\NotificationPolicy\UseCase\FindNotificationPolicyPresenterInterface;
-use Core\Infrastructure\Configuration\NotificationPolicy\Api\Hypermedia\UserGroupHypermediaCreator;
-use Core\Infrastructure\Configuration\NotificationPolicy\Api\Hypermedia\UserHypermediaCreator;
+use Core\Infrastructure\Configuration\NotificationPolicy\Api\Hypermedia\ContactGroupHypermediaCreator;
+use Core\Infrastructure\Configuration\NotificationPolicy\Api\Hypermedia\ContactHypermediaCreator;
 
 class FindNotificationPolicyPresenter extends AbstractPresenter implements FindNotificationPolicyPresenterInterface
 {
     /**
-     * @param UserHypermediaCreator $userHypermediaCreator
-     * @param UserGroupHypermediaCreator $userGroupHypermediaCreator
+     * @param ContactHypermediaCreator $contactHypermediaCreator
+     * @param ContactGroupHypermediaCreator $contactGroupHypermediaCreator
      * @param PresenterFormatterInterface $presenterFormatter
      */
     public function __construct(
-        private UserHypermediaCreator $userHypermediaCreator,
-        private UserGroupHypermediaCreator $userGroupHypermediaCreator,
+        private ContactHypermediaCreator $contactHypermediaCreator,
+        private ContactGroupHypermediaCreator $contactGroupHypermediaCreator,
         protected PresenterFormatterInterface $presenterFormatter
     ) {
     }
@@ -47,30 +47,31 @@ class FindNotificationPolicyPresenter extends AbstractPresenter implements FindN
      */
     public function present(mixed $response): void
     {
-        $presenterResponse['users'] = array_map(
-            fn (array $user) => [
-                'id' => $user['id'],
-                'name' => $user['name'],
-                'alias' => $user['alias'],
-                'email' => $user['email'],
-                'is_notified_on' => $response->usersNotificationSettings[$user['id']]['is_notified_on'],
-                'time_period' => $response->usersNotificationSettings[$user['id']]['time_period'],
-                'configuration_uri' => $this->userHypermediaCreator->createUserConfigurationUri($user['id'])
+        $presenterResponse['contacts'] = array_map(
+            fn (array $notifiedContact) => [
+                'id' => $notifiedContact['id'],
+                'name' => $notifiedContact['name'],
+                'alias' => $notifiedContact['alias'],
+                'email' => $notifiedContact['email'],
+                'notifications' => $notifiedContact['notifications'],
+                'configuration_uri' => $this->contactHypermediaCreator->createContactConfigurationUri(
+                    $notifiedContact['id']
+                ),
             ],
-            $response->users
+            $response->notifiedContacts,
         );
 
-        $presenterResponse['user_groups'] = [];
-        foreach ($response->userGroups as $userGroup) {
-            $presenterResponse['user_groups'][] = [
-                'id' => $userGroup['id'],
-                'name' => $userGroup['name'],
-                'alias' => $userGroup['alias'],
-                'configuration_uri' => $this->userGroupHypermediaCreator->createUserGroupConfigurationUri(
-                    $userGroup['id']
-                )
-            ];
-        }
+        $presenterResponse['contact_groups'] = array_map(
+            fn (array $notifiedContactGroup) => [
+                'id' => $notifiedContactGroup['id'],
+                'name' => $notifiedContactGroup['name'],
+                'alias' => $notifiedContactGroup['alias'],
+                'configuration_uri' => $this->contactGroupHypermediaCreator->createContactGroupConfigurationUri(
+                    $notifiedContactGroup['id']
+                ),
+            ],
+            $response->notifiedContactGroups,
+        );
 
         $presenterResponse['is_notification_enabled'] = $response->isNotificationEnabled;
 

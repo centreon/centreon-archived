@@ -5,3 +5,20 @@ configuration.host.notification-policy:
     requirements:
         hostId: '\d+'
     condition: "request.attributes.get('version') >= 22.04"
+
+configuration.service.notification-policy:
+    methods: GET
+    path: /configuration/hosts/{hostId}/services/{serviceId}/notification-policy
+    controller: 'Core\Infrastructure\Configuration\NotificationPolicy\Api\FindServiceNotificationPolicyController'
+    requirements:
+        hostId: '\d+'
+        serviceId: '\d+'
+    condition: "request.attributes.get('version') >= 22.04"
+
+configuration.metaservice.notification-policy:
+    methods: GET
+    path: /configuration/metaservices/{metaServiceId}/notification-policy
+    controller: 'Core\Infrastructure\Configuration\NotificationPolicy\Api\FindMetaServiceNotificationPolicyController'
+    requirements:
+        metaServiceId: '\d+'
+    condition: "request.attributes.get('version') >= 22.04"

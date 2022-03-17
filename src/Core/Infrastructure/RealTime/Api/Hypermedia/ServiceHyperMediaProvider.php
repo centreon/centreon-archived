@@ -40,7 +40,8 @@ class ServiceHypermediaProvider implements HypermediaProviderInterface
 
     public const ENDPOINT_SERVICE_TIMELINE = 'centreon_application_monitoring_gettimelinebyhostandservice',
                  ENDPOINT_PERFORMANCE_GRAPH = 'monitoring.metric.getServicePerformanceMetrics',
-                 ENDPOINT_STATUS_GRAPH = 'monitoring.metric.getServiceStatusMetrics';
+                 ENDPOINT_STATUS_GRAPH = 'monitoring.metric.getServiceStatusMetrics',
+                 ENDPOINT_SERVICE_NOTIFICATION_POLICY = 'configuration.service.notification-policy';
 
     /**
      * @param ContactInterface $contact
@@ -162,10 +163,14 @@ class ServiceHypermediaProvider implements HypermediaProviderInterface
             'hostId' => $response->hostId,
             'serviceId' => $response->id,
         ];
+
         return [
             'timeline' => $this->createForTimelineEndpoint($parameters),
             'status_graph' => $this->createForStatusGraphEndpoint($parameters),
-            'performance_graph' => $response->hasGraphData ? $this->createForPerformanceDataEndpoint($parameters) : null
+            'performance_graph' => $response->hasGraphData
+                ? $this->createForPerformanceDataEndpoint($parameters)
+                : null,
+            'notification_policy' => $this->createNotificationPolicyEndpoint($parameters),
         ];
     }
 
@@ -219,5 +224,16 @@ class ServiceHypermediaProvider implements HypermediaProviderInterface
             ],
             $response->servicegroups
         );
+    }
+
+    /**
+     * Create Notification policy endpoint URI for the Service Resource
+     *
+     * @param array<string, int> $parameters
+     * @return string
+     */
+    public function createNotificationPolicyEndpoint(array $parameters): string
+    {
+        return $this->router->generate(self::ENDPOINT_SERVICE_NOTIFICATION_POLICY, $parameters);
     }
 }

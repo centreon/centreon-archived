@@ -65,6 +65,11 @@ class ResourceLinksEndpoints
     private $metrics;
 
     /**
+     * @var string|null
+     */
+    private $notificationPolicy;
+
+    /**
      * @return string|null
      */
     public function getDetails(): ?string
@@ -193,6 +198,25 @@ class ResourceLinksEndpoints
     public function setMetrics(?string $metrics): self
     {
         $this->metrics = $metrics;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getNotificationPolicy(): ?string
+    {
+        return $this->notificationPolicy;
+    }
+
+    /**
+     * @param string|null $notificationPolicy
+     * @return self
+     */
+    public function setNotificationPolicy(?string $notificationPolicy): self
+    {
+        $this->notificationPolicy = $notificationPolicy;
 
         return $this;
     }
