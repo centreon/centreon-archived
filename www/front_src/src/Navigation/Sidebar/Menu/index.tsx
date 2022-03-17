@@ -139,29 +139,27 @@ const NavigationMenu = ({
   };
 
   const handleClickItem = (currentPage: Page, level = 0): void => {
-    setItemsHoveredByDefault(null);
-    if (!isNil(getUrlFromEntry(currentPage))) {
-      navigate(getUrlFromEntry(currentPage) as string);
+    if (!selectedNavigationItems) {
+      return;
     }
-
-    if (selectedNavigationItems) {
-      const isAlreadyClicked =
-        equals(
-          selectedNavigationItems[`level_${level}_Navigated`]?.url,
-          currentPage?.url,
-        ) &&
-        equals(
-          selectedNavigationItems[`level_${level}_Navigated`]?.label,
-          currentPage.label,
-        );
-
-      if (isAlreadyClicked) {
-        return;
-      }
-      setSelectedNavigationItems(
-        addSelectedNavigationItems(selectedNavigationItems, level),
+    const isAlreadyClicked =
+      equals(
+        selectedNavigationItems[`level_${level}_Navigated`]?.url,
+        currentPage?.url,
+      ) &&
+      equals(
+        selectedNavigationItems[`level_${level}_Navigated`]?.label,
+        currentPage.label,
       );
+
+    if (isAlreadyClicked) {
+      return;
     }
+    setSelectedNavigationItems(
+      addSelectedNavigationItems(selectedNavigationItems, level),
+    );
+    navigate(getUrlFromEntry(currentPage) as string);
+    setItemsHoveredByDefault(null);
   };
 
   const isItemHovered = (
