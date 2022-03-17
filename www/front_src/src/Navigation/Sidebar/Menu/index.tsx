@@ -193,6 +193,16 @@ const NavigationMenu = ({
     return false;
   };
 
+  const handleWindowClose = (): void => {
+    setSelectedNavigationItems(null);
+  };
+
+  React.useEffect(() => {
+    window.addEventListener('beforeunload', handleWindowClose);
+
+    return () => window.removeEventListener('beforeunload', handleWindowClose);
+  }, []);
+
   return useMemoComponent({
     Component: (
       <List className={classes.list} onMouseLeave={handleLeave}>
