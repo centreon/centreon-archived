@@ -5639,6 +5639,11 @@ components:
               nullable: true
               description: "current resource downtimes endpoint"
               example: "/centreon/api/latest/monitoring/hosts/11/downtimes?search=%7B%22%24and%22:%5B%7B%22start_time%22:%7B%22%24lt%22:1599655905%7D,%22end_time%22:%7B%22%24gt%22:1599655905%7D,%220%22:%7B%22%24or%22:%7B%22is_cancelled%22:%7B%22%24neq%22:1%7D,%22deletion_time%22:%7B%22%24gt%22:1599655905%7D%7D%7D%7D%5D%7D"
+            notification_policy:
+              type: string
+              nullable: true
+              description: "current resource notification policy endpoint"
+              example: "/centreon/api/latest/configurations/hosts/11/notification-policy"
         externals:
           type: object
           properties:
