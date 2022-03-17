@@ -181,17 +181,13 @@ const NavigationMenu = ({
 
   const isItemHoveredByDefault = (item: Page): boolean => {
     if (itemsHoveredByDefault) {
-      const isRootItemHoveredByDefault = !isNil(
-        itemsHoveredByDefault?.rootItemHoveredByDefault,
-      )
-        ? equals(
-            item.label,
-            itemsHoveredByDefault.rootItemHoveredByDefault.label,
-          ) &&
-          equals(item?.url, itemsHoveredByDefault.rootItemHoveredByDefault?.url)
-        : false;
-
-      return isRootItemHoveredByDefault;
+      return (
+        equals(
+          item.label,
+          itemsHoveredByDefault?.rootItemHoveredByDefault?.label,
+        ) &&
+        equals(item?.url, itemsHoveredByDefault.rootItemHoveredByDefault?.url)
+      );
     }
 
     return false;
