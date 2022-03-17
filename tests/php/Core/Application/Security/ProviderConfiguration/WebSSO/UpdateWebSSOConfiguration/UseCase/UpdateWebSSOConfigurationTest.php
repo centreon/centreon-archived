@@ -27,9 +27,11 @@ use Centreon\Domain\Common\Assertion\AssertionException;
 use Core\Application\Common\UseCase\ErrorResponse;
 use Core\Application\Common\UseCase\NoContentResponse;
 use Core\Domain\Security\ProviderConfiguration\WebSSO\Model\WebSSOConfigurationFactory;
-use Core\Application\Security\ProviderConfiguration\WebSSO\UseCase\UpdateWebSSOConfiguration;
-use Core\Application\Security\ProviderConfiguration\WebSSO\UseCase\UpdateWebSSOConfigurationRequest;
-use Core\Application\Security\ProviderConfiguration\WebSSO\UseCase\UpdateWebSSOConfigurationPresenterInterface;
+use Core\Application\Security\ProviderConfiguration\WebSSO\UseCase\UpdateWebSSOConfiguration\{
+    UpdateWebSSOConfiguration,
+    UpdateWebSSOConfigurationRequest,
+    UpdateWebSSOConfigurationPresenterInterface
+};
 use Core\Application\Security\ProviderConfiguration\WebSSO\Repository\WriteWebSSOConfigurationRepositoryInterface;
 
 beforeEach(function () {

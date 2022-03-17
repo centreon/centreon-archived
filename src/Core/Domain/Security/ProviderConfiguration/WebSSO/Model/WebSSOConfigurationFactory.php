@@ -23,7 +23,9 @@ declare(strict_types=1);
 
 namespace Core\Domain\Security\ProviderConfiguration\WebSSO\Model;
 
-use Core\Application\Security\ProviderConfiguration\WebSSO\UseCase\UpdateWebSSOConfigurationRequest;
+use Core\Application\Security\ProviderConfiguration\WebSSO\UseCase\UpdateWebSSOConfiguration\{
+    UpdateWebSSOConfigurationRequest
+};
 
 class WebSSOConfigurationFactory
 {

@@ -21,7 +21,7 @@
 
 declare(strict_types=1);
 
-namespace Core\Application\Security\ProviderConfiguration\WebSSO\UseCase;
+namespace Core\Application\Security\ProviderConfiguration\WebSSO\UseCase\UpdateWebSSOConfiguration;
 
 use Core\Application\Common\UseCase\ErrorResponse;
 use Core\Application\Common\UseCase\NoContentResponse;

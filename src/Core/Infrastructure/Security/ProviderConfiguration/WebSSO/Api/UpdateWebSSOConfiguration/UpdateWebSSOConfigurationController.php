@@ -26,9 +26,11 @@ namespace Core\Infrastructure\Security\ProviderConfiguration\WebSSO\Api\UpdateWe
 use Symfony\Component\HttpFoundation\Request;
 use Centreon\Application\Controller\AbstractController;
 use Centreon\Domain\Log\LoggerTrait;
-use Core\Application\Security\ProviderConfiguration\WebSSO\UseCase\UpdateWebSSOConfiguration;
-use Core\Application\Security\ProviderConfiguration\WebSSO\UseCase\UpdateWebSSOConfigurationRequest;
-use Core\Application\Security\ProviderConfiguration\WebSSO\UseCase\UpdateWebSSOConfigurationPresenterInterface;
+use Core\Application\Security\ProviderConfiguration\WebSSO\UseCase\UpdateWebSSOConfiguration\{
+    UpdateWebSSOConfiguration,
+    UpdateWebSSOConfigurationRequest,
+    UpdateWebSSOConfigurationPresenterInterface
+};
 
 class UpdateWebSSOConfigurationController extends AbstractController
 {
