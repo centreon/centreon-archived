@@ -138,28 +138,25 @@ const NavigationMenu = ({
     return updatedNavigationItems;
   };
 
-  const handleClickItem = (item: Page, level = 0): void => {
+  const handleClickItem = (currentPage: Page, level = 0): void => {
     setItemsHoveredByDefault(null);
-    if (!isNil(getUrlFromEntry(item))) {
-      navigate(getUrlFromEntry(item) as string);
+    if (!isNil(getUrlFromEntry(currentPage))) {
+      navigate(getUrlFromEntry(currentPage) as string);
     }
 
     if (selectedNavigationItems) {
-      if (
-        !isNil(selectedNavigationItems[`level_${level}_Navigated`]?.url) &&
-        selectedNavigationItems[`level_${level}_Navigated`]?.url !== item?.url
-      ) {
-        setSelectedNavigationItems(
-          addSelectedNavigationItems(selectedNavigationItems, level),
-        );
-      } else if (
-        selectedNavigationItems[`level_${level}_Navigated`]?.label !==
-        item.label
-      ) {
-        setSelectedNavigationItems(
-          addSelectedNavigationItems(selectedNavigationItems, level),
-        );
+      const isAlreadyClicked =
+        selectedNavigationItems[`level_${level}_Navigated`]?.url ===
+          currentPage?.url &&
+        selectedNavigationItems[`level_${level}_Navigated`]?.label ===
+          currentPage.label;
+
+      if (isAlreadyClicked) {
+        return;
       }
+      setSelectedNavigationItems(
+        addSelectedNavigationItems(selectedNavigationItems, level),
+      );
     }
   };
 
