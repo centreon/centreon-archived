@@ -1,21 +1,26 @@
-import { ListingModel } from '@centreon/ui';
-
-import { NamedEntity, Status } from '../../../models';
+import { NamedEntity } from '../../../models';
 
 export type ContactEntity = Omit<NamedEntity, 'uuid'>;
 
-export interface NotificationsEvent {
-  contact?: ContactEntity;
-  contactGroup?: ContactEntity;
-  content?: string;
-  date: string;
+export interface Contact {
+  alias: string;
+  configuration_uri: string;
+  email: string;
   id: number;
-  status?: Status;
-  tries?: number;
+  name: string;
 }
 
-export interface NotificationStatus {
-  enable: boolean;
+export interface ContactGroup {
+  alias: string;
+  configuration_uri: string;
+  id: number;
+  name: string;
 }
 
-export type NotificationListing = ListingModel<NotificationsEvent>;
+export interface ContactsResult {
+  contacts: Array<Contact>;
+}
+
+export interface ContactGroupResult {
+  contactsGroup: Array<ContactGroup>;
+}

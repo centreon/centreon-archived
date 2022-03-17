@@ -10,6 +10,7 @@ import {
   labelTimeline,
   labelServices,
   labelMetrics,
+  labelNotification,
 } from '../../translatedLabels';
 import { ResourceDetails } from '../models';
 import DetailsLoadingSkeleton from '../LoadingSkeleton';
@@ -28,6 +29,7 @@ const servicesTabId = 1;
 const timelineTabId = 2;
 const graphTabId = 3;
 const metricsTabId = 4;
+const notificationsTabId =5;
 
 export interface TabProps {
   details?: ResourceDetails;
@@ -125,6 +127,7 @@ const tabIdByLabel = {
   metrics: metricsTabId,
   services: servicesTabId,
   timeline: timelineTabId,
+  notification: notificationsTabId,
 };
 
 const getTabIdFromLabel = (label: string): TabId => {

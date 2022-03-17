@@ -1,40 +1,51 @@
 import { JsonDecoder } from 'ts.data.json';
 
-import { buildListingDecoder } from '@centreon/ui';
+import {
+  ContactGroup,
+  Contact,
+  ContactsResult,
+  ContactGroupResult,
+} from '../models';
 
-import { statusDecoder } from '../../../../decoders';
-import { ContactEntity, NotificationsEvent } from '../models';
-
-const getContactEntityDecoder = (
-  decoderName: string,
-): JsonDecoder.Decoder<ContactEntity | undefined> =>
-  JsonDecoder.optional(
-    JsonDecoder.object(
-      {
-        id: JsonDecoder.number,
-        name: JsonDecoder.string,
-      },
-      decoderName,
-    ),
-  );
-
-const entityDecoder = JsonDecoder.object<NotificationsEvent>(
+const contactDecoder = JsonDecoder.object<Contact>(
   {
-    contact: getContactEntityDecoder('Contact'),
-    contactGroup: getContactEntityDecoder('ContactGroup'),
-    content: JsonDecoder.string,
-    date: JsonDecoder.string,
+    alias: JsonDecoder.string,
+    configuration_uri: JsonDecoder.string,
+    email: JsonDecoder.string,
     id: JsonDecoder.number,
-    status: JsonDecoder.optional(statusDecoder),
-    tries: JsonDecoder.optional(JsonDecoder.number),
+    name: JsonDecoder.string,
   },
-  'NotificationEvent',
+  'contact',
+);
+const listContactsDecoder = JsonDecoder.array(contactDecoder, 'list contact');
+
+export const contactsResultDecoder = JsonDecoder.object<ContactsResult>(
+  {
+    contacts: listContactsDecoder,
+  },
+  'contact result',
 );
 
-const listNotificationsEventDecoder = buildListingDecoder({
-  entityDecoder,
-  entityDecoderName: 'NotificationsEvent',
-  listingDecoderName: 'NotificationsEventListing',
-});
+const contactGroupDecoder = JsonDecoder.object<ContactGroup>(
+  {
+    alias: JsonDecoder.string,
+    configuration_uri: JsonDecoder.string,
+    id: JsonDecoder.number,
+    name: JsonDecoder.string,
+  },
+  'contactGroup',
+);
 
-export { listNotificationsEventDecoder };
+const listContactsGroupDecoder = JsonDecoder.array(
+  contactGroupDecoder,
+  'list contact group',
+);
+
+export const contactsGroupResultDecoder =
+  JsonDecoder.object<ContactGroupResult>(
+    {
+      contactsGroup: listContactsGroupDecoder,
+    },
+    'contact group result',
+  );
+s;
