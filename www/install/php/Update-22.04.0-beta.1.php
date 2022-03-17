@@ -109,7 +109,6 @@ try {
 
     $errorMessage = "Unable to drop column 'contact_passwd' from 'contact' table";
     $pearDB->query("ALTER TABLE `contact` DROP COLUMN `contact_passwd`");
-    $pearDB->commit();
 
     // Add JS Effect to contact
     $errorMessage = 'Impossible to add "contact_js_effects" column to "contact" table';
