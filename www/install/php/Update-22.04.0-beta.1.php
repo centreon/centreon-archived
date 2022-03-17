@@ -253,5 +253,4 @@ function insertOpenIdConfiguration(CentreonDB $pearDB): void
     $statement2->bindValue(':isActive', $isActive ? '1' : '0', \PDO::PARAM_STR);
     $statement2->bindValue(':isForced', $isForced ? '1' : '0', \PDO::PARAM_STR);
     $statement2->execute();
-    $pearDB->commit();
 }
