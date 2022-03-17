@@ -189,68 +189,87 @@ function insertOpenIdConfiguration(CentreonDB $pearDB): void
     $statement = $pearDB->query("SELECT * FROM options WHERE `key` LIKE 'openid_%'");
     $result = $statement->fetchAll(\PDO::FETCH_ASSOC);
     if (!empty($result)) {
-        foreach ($result as $key => $value) {
-            switch ($key) {
+        foreach ($result as $configLine) {
+            switch ($configLine['key']) {
                 case 'openid_connect_enable':
-                    $isActive = $value === '1';
+                    $isActive = $configLine['value'] === '1';
                     break;
                 case 'openid_connect_mode':
-                    $isForced = $value === '0'; //'0' OpenId Connect Only, '1' Mixed
+                    $isForced = $configLine['value'] === '0'; //'0' OpenId Connect Only, '1' Mixed
                     break;
                 case 'openid_connect_trusted_clients':
-                    $customConfiguration['trusted_client_addresses'] = !empty($value) ? explode(',', $value) : [];
+                    $customConfiguration['trusted_client_addresses'] = !empty($configLine['value'])
+                        ? explode(',', $configLine['value'])
+                        : [];
                     break;
                 case 'openid_connect_blacklist_clients':
-                    $customConfiguration['blacklist_client_addresses'] = !empty($value) ? explode(',', $value) : [];
+                    $customConfiguration['blacklist_client_addresses'] = !empty($configLine['value'])
+                        ? explode(',', $configLine['value'])
+                        : [];
                     break;
                 case 'openid_connect_base_url':
-                    $customConfiguration['base_url'] = !empty($value) ? $value : null;
+                    $customConfiguration['base_url'] = !empty($configLine['value'])
+                        ? $configLine['value']
+                        : null;
                     break;
                 case 'openid_connect_authorization_endpoint':
-                    $customConfiguration['authorization_endpoint'] = !empty($value) ? $value : null;
+                    $customConfiguration['authorization_endpoint'] = !empty($configLine['value'])
+                        ? $configLine['value']
+                        : null;
                     break;
                 case 'openid_connect_token_endpoint':
-                    $customConfiguration['token_endpoint'] = !empty($value) ? $value : null;
+                    $customConfiguration['token_endpoint'] = !empty($configLine['value'])
+                        ? $configLine['value']
+                        : null;
                     break;
                 case 'openid_connect_introspection_endpoint':
-                    $customConfiguration['introspection_token_endpoint'] = !empty($value) ? $value : null;
+                    $customConfiguration['introspection_token_endpoint'] = !empty($configLine['value'])
+                        ? $configLine['value']
+                        : null;
                     break;
                 case 'openid_connect_userinfo_endpoint':
-                    $customConfiguration['userinfo_endpoint'] = !empty($value) ? $value : null;
+                    $customConfiguration['userinfo_endpoint'] = !empty($configLine['value'])
+                        ? $configLine['value']
+                        : null;
                     break;
                 case 'openid_connect_end_session_endpoint':
-                    $customConfiguration['endsession_endpoint'] = !empty($value) ? $value : null;
+                    $customConfiguration['endsession_endpoint'] = !empty($configLine['value'])
+                        ? $configLine['value']
+                        : null;
                     break;
                 case 'openid_connect_scope':
-                    $customConfiguration['connection_scopes'] = !empty($value) ? explode(' ', $value) : [];
+                    $customConfiguration['connection_scopes'] = !empty($configLine['value'])
+                        ? explode(' ', $configLine['value'])
+                        : [];
                     break;
                 case 'openid_connect_login_claim':
-                    $customConfiguration['login_claim'] = !empty($value) ? $value : null;
+                    $customConfiguration['login_claim'] = !empty($configLine['value']) ? $configLine['value'] : null;
                     break;
                 case 'openid_connect_client_id':
-                    $customConfiguration['client_id'] = !empty($value) ? $value : null;
+                    $customConfiguration['client_id'] = !empty($configLine['value']) ? $configLine['value'] : null;
                     break;
                 case 'openid_connect_client_secret':
-                    $customConfiguration['client_secret'] = !empty($value) ? $value : null;
+                    $customConfiguration['client_secret'] = !empty($configLine['value']) ? $configLine['value'] : null;
                     break;
                 case 'openid_connect_client_basic_auth':
-                    $customConfiguration['authentication_type'] = $value === '1'
+                    $customConfiguration['authentication_type'] = $configLine['value'] === '1'
                         ? 'client_secret_basic'
                         : 'client_secret_post';
                     break;
                 case 'openid_connect_verify_peer':
-                    $customConfiguration['verify_peer'] = $value === '1' ? false : true; // '1' is Verify Peer disable
+                    // '1' is Verify Peer disable
+                    $customConfiguration['verify_peer'] = $configLine['value'] === '1' ? false : true;
                     break;
             }
         }
         $pearDB->query("DELETE FROM options WHERE `key` LIKE 'open_id%'");
     }
-    $statement2 = $pearDB->prepare(
+    $insertStatement = $pearDB->prepare(
         "INSERT INTO provider_configuration (`type`,`name`,`custom_configuration`,`is_active`,`is_forced`)
         VALUES ('openid','openid', :customConfiguration, :isActive, :isForced)"
     );
-    $statement2->bindValue(':customConfiguration', json_encode($customConfiguration), \PDO::PARAM_STR);
-    $statement2->bindValue(':isActive', $isActive ? '1' : '0', \PDO::PARAM_STR);
-    $statement2->bindValue(':isForced', $isForced ? '1' : '0', \PDO::PARAM_STR);
-    $statement2->execute();
+    $insertStatement->bindValue(':customConfiguration', json_encode($customConfiguration), \PDO::PARAM_STR);
+    $insertStatement->bindValue(':isActive', $isActive ? '1' : '0', \PDO::PARAM_STR);
+    $insertStatement->bindValue(':isForced', $isForced ? '1' : '0', \PDO::PARAM_STR);
+    $insertStatement->execute();
 }
