@@ -260,7 +260,7 @@ class AssertionException extends \InvalidArgumentException
     {
         return new self(
             sprintf(
-                _('[%s] The value "%s" was expected to be a valid ip address'),
+                _('[%s] The value \'%s\' was expected to be a valid ip address'),
                 $propertyPath,
                 $value
             )
