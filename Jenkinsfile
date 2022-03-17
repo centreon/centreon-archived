@@ -141,6 +141,23 @@ try {
           tool: esLint(id: 'eslint', name: 'eslint', pattern: 'codestyle-fe.xml'),
           trendChartType: 'NONE'
         )
+
+        if (securityAnalysisRequired == 'no') {
+          Utils.markStageSkippedForConditional('sonar')
+        } else {
+          // Run sonarQube analysis
+          unstash 'git-sources'
+          sh 'rm -rf centreon-web && tar xzf centreon-web-git.tar.gz'
+          withSonarQubeEnv('SonarQubeDev') {
+            sh "./centreon-build/jobs/web/${serie}/mon-web-analysis.sh"
+          }
+          timeout(time: 10, unit: 'MINUTES') {
+            def qualityGate = waitForQualityGate()
+            if (qualityGate.status != 'OK') {
+              error "Pipeline aborted due to quality gate failure: ${qualityGate.status}"
+            }
+          }
+        }
       }
     },
     //'unit tests centos8': {
