@@ -105,7 +105,6 @@ try {
 
     $errorMessage = "Unable to drop column 'contact_passwd' from 'contact' table";
     $pearDB->query("ALTER TABLE `contact` DROP COLUMN `contact_passwd`");
-    $pearDB->commit();
 
     $errorMessage = 'Impossible to add "contact_js_effects" column to "contact" table';
     if (!$pearDB->isColumnExist('contact', 'contact_js_effects')) {
