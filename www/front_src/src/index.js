@@ -4,7 +4,7 @@
 /* eslint-disable no-multi-assign */
 /* eslint-disable func-names */
 
-import AppProvider from './Provider';
+import Main from './Main';
 
 // make an IIFE function to allow "await" usage
 // generate an "external" bundle to embed all needed libraries by external pages and hooks
@@ -19,18 +19,13 @@ import AppProvider from './Provider';
   window.ReactRouterDOM = window.ReactRouterDom = await import(
     /* webpackChunkName: "external" */ 'react-router-dom'
   );
-  window.ReactRedux = await import(
-    /* webpackChunkName: "external" */ 'react-redux'
-  );
-  window.ReduxForm = await import(
-    /* webpackChunkName: "external" */ 'redux-form'
-  );
   window.ReactI18Next = await import(
     /* webpackChunkName: "external" */ 'react-i18next'
   );
   window.CentreonUiContext = await import(
     /* webpackChunkName: "external" */ '@centreon/ui-context'
   );
+  window.Jotai = await import(/* webpackChunkName: "external" */ 'jotai');
 
-  window.ReactDOM.render(<AppProvider />, document.getElementById('root'));
+  window.ReactDOM.render(<Main />, document.getElementById('root'));
 })();

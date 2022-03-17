@@ -9,15 +9,15 @@ import { hasPath, isNil, not, path, prop } from 'ramda';
 import {
   Grid,
   Typography,
-  makeStyles,
   Theme,
   Link,
   Tooltip,
-} from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
-import CopyIcon from '@material-ui/icons/FileCopy';
-import SettingsIcon from '@material-ui/icons/Settings';
-import { CreateCSSProperties } from '@material-ui/styles';
+  Skeleton,
+} from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import CopyIcon from '@mui/icons-material/FileCopy';
+import SettingsIcon from '@mui/icons-material/Settings';
+import { CreateCSSProperties } from '@mui/styles';
 
 import {
   StatusChip,
@@ -32,9 +32,9 @@ import {
   labelConfigure,
   labelCopyLink,
   labelLinkCopied,
+  labelShortcuts,
   labelSomethingWentWrong,
 } from '../translatedLabels';
-import memoizeComponent from '../memoizedComponent';
 import { Parent, ResourceUris } from '../models';
 
 import SelectableResourceName from './tabs/Details/SelectableResourceName';
@@ -57,9 +57,6 @@ const useStyles = makeStyles<Theme, MakeStylesProps>((theme) => ({
     height: 43,
     padding: theme.spacing(0, 1),
   }),
-}));
-
-const useStylesHeaderContent = makeStyles((theme) => ({
   parent: {
     alignItems: 'center',
     display: 'grid',
@@ -100,7 +97,7 @@ const useStylesHeaderContent = makeStyles((theme) => ({
 const LoadingSkeleton = (): JSX.Element => (
   <Grid container item alignItems="center" spacing={2} style={{ flexGrow: 1 }}>
     <Grid item>
-      <Skeleton height={25} variant="circle" width={25} />
+      <Skeleton height={25} variant="circular" width={25} />
     </Grid>
     <Grid item>
       <Skeleton height={25} width={250} />
@@ -112,10 +109,12 @@ type Props = {
   onSelectParent: (parent: Parent) => void;
 } & DetailsSectionProps;
 
-const HeaderContent = ({ details, onSelectParent }: Props): JSX.Element => {
+const Header = ({ details, onSelectParent }: Props): JSX.Element => {
   const { t } = useTranslation();
   const { showSuccessMessage, showErrorMessage } = useSnackbar();
-  const classes = useStylesHeaderContent();
+  const classes = useStyles({
+    displaySeverity: not(isNil(details?.severity_level)),
+  });
 
   const copyResourceLink = (): void => {
     try {
@@ -146,7 +145,7 @@ const HeaderContent = ({ details, onSelectParent }: Props): JSX.Element => {
     : 'primary';
 
   return (
-    <>
+    <div className={classes.header}>
       {details?.severity_level && (
         <StatusChip
           label={details?.severity_level.toString()}
@@ -176,6 +175,7 @@ const HeaderContent = ({ details, onSelectParent }: Props): JSX.Element => {
               <Link
                 aria-label={`${t(labelConfigure)}_${details.name}`}
                 className={classes.resourceNameConfigurationLink}
+                data-testid={labelConfigure}
                 href={resourceConfigurationUri}
               >
                 <SettingsIcon
@@ -201,32 +201,21 @@ const HeaderContent = ({ details, onSelectParent }: Props): JSX.Element => {
           </div>
         )}
       </div>
-      <ShortcutsTooltip resourceUris={resourceUris} />
+      <ShortcutsTooltip
+        data-testid={labelShortcuts}
+        resourceUris={resourceUris}
+      />
       <IconButton
         ariaLabel={t(labelCopyLink)}
+        data-testid={labelCopyLink}
         size="small"
         title={t(labelCopyLink)}
         onClick={copyResourceLink}
       >
         <CopyIcon fontSize="small" />
       </IconButton>
-    </>
-  );
-};
-
-const Header = ({ details, onSelectParent }: Props): JSX.Element => {
-  const classes = useStyles({
-    displaySeverity: not(isNil(details?.severity_level)),
-  });
-
-  return (
-    <div className={classes.header}>
-      <HeaderContent details={details} onSelectParent={onSelectParent} />
     </div>
   );
 };
 
-export default memoizeComponent<Props>({
-  Component: Header,
-  memoProps: ['details'],
-});
+export default Header;

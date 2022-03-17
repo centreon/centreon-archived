@@ -1,18 +1,24 @@
 import * as React from 'react';
 
-import { connect } from 'react-redux';
-import { Switch, Route, withRouter } from 'react-router-dom';
-import { equals } from 'ramda';
+import { Routes, Route, useHref } from 'react-router-dom';
+import { isNil, not, propOr } from 'ramda';
+import { useAtomValue } from 'jotai/utils';
 
-import { styled } from '@material-ui/core';
+import { styled } from '@mui/material';
 
-import { PageSkeleton } from '@centreon/ui';
+import { PageSkeleton, useMemoComponent } from '@centreon/ui';
 
-import internalPagesRoutes from '../../route-maps';
+import internalPagesRoutes from '../../reactRoutes';
 import { dynamicImport } from '../../helpers/dynamicImport';
-import NotAllowedPage from '../../route-components/notAllowedPage';
 import BreadcrumbTrail from '../../BreadcrumbTrail';
-import { allowedPagesSelector } from '../../redux/selectors/navigation/allowedPages';
+import useNavigation from '../../Navigation/useNavigation';
+import { externalComponentsAtom } from '../../externalComponents/atoms';
+import ExternalComponents, {
+  ExternalComponent,
+} from '../../externalComponents/models';
+
+const NotAllowedPage = React.lazy(() => import('../../NotFoundPage'));
+const NotFoundPage = React.lazy(() => import('../../NotFoundPage'));
 
 const PageContainer = styled('div')(({ theme }) => ({
   background: theme.palette.background.default,
@@ -23,16 +29,10 @@ const PageContainer = styled('div')(({ theme }) => ({
 }));
 
 const getExternalPageRoutes = ({
-  history,
   allowedPages,
   pages,
+  basename,
 }): Array<JSX.Element> => {
-  const basename = history.createHref({
-    hash: '',
-    pathname: '/',
-    search: '',
-  });
-
   const pageEntries = Object.entries(pages);
   const isAllowedPage = (path): boolean =>
     allowedPages?.find((allowedPage) => path.includes(allowedPage));
@@ -44,72 +44,89 @@ const getExternalPageRoutes = ({
 
     return (
       <Route
-        exact
-        key={path}
-        path={path}
-        render={(renderProps): JSX.Element => (
+        element={
           <PageContainer>
             <BreadcrumbTrail path={path} />
-            <Page {...renderProps} />
+            <Page />
           </PageContainer>
-        )}
+        }
+        key={path}
+        path={path}
       />
     );
   });
 };
 
 interface Props {
-  allowedPages: Array<string>;
+  allowedPages: Array<string | Array<string>>;
   externalPagesFetched: boolean;
-  history;
   pages: Record<string, unknown>;
 }
 
-const ReactRouter = React.memo<Props>(
-  ({ allowedPages, history, pages, externalPagesFetched }: Props) => {
-    if (!externalPagesFetched || !allowedPages) {
-      return <PageSkeleton />;
-    }
+const ReactRouterContent = ({
+  pages,
+  externalPagesFetched,
+  allowedPages,
+}: Props): JSX.Element => {
+  const basename = useHref('/');
 
-    return (
+  return useMemoComponent({
+    Component: (
       <React.Suspense fallback={<PageSkeleton />}>
-        <Switch>
+        <Routes>
           {internalPagesRoutes.map(({ path, comp: Comp, ...rest }) => (
             <Route
-              exact
-              key={path}
-              path={path}
-              render={(renderProps): JSX.Element => (
+              element={
                 <PageContainer>
                   {allowedPages.includes(path) ? (
                     <>
                       <BreadcrumbTrail path={path} />
-                      <Comp {...renderProps} />
+                      <Comp />
                     </>
                   ) : (
-                    <NotAllowedPage {...renderProps} />
+                    <NotAllowedPage />
                   )}
                 </PageContainer>
-              )}
+              }
+              key={path}
+              path={path}
               {...rest}
             />
           ))}
-          {getExternalPageRoutes({ allowedPages, history, pages })}
-          {externalPagesFetched && <Route component={NotAllowedPage} />}
-        </Switch>
+          {getExternalPageRoutes({ allowedPages, basename, pages })}
+          {externalPagesFetched && (
+            <Route element={<NotFoundPage />} path="*" />
+          )}
+        </Routes>
       </React.Suspense>
-    );
-  },
-  (previousProps, nextProps) =>
-    equals(previousProps.pages, nextProps.pages) &&
-    equals(previousProps.allowedPages, nextProps.allowedPages) &&
-    equals(previousProps.externalPagesFetched, nextProps.externalPagesFetched),
-);
+    ),
+    memoProps: [externalPagesFetched, pages],
+  });
+};
 
-const mapStateToProps = (state): Record<string, unknown> => ({
-  allowedPages: allowedPagesSelector(state),
-  externalPagesFetched: state.externalComponents.fetched,
-  pages: state.externalComponents.pages,
-});
+const ReactRouter = (): JSX.Element => {
+  const externalComponents = useAtomValue(externalComponentsAtom);
+  const { allowedPages } = useNavigation();
 
-export default connect(mapStateToProps)(withRouter(ReactRouter));
+  const externalPagesFetched = not(isNil(externalComponents));
+
+  if (!externalPagesFetched || !allowedPages) {
+    return <PageSkeleton />;
+  }
+
+  const pages = propOr<undefined, ExternalComponents | null, ExternalComponent>(
+    undefined,
+    'pages',
+    externalComponents,
+  );
+
+  return (
+    <ReactRouterContent
+      allowedPages={allowedPages}
+      externalPagesFetched={externalPagesFetched}
+      pages={pages}
+    />
+  );
+};
+
+export default ReactRouter;

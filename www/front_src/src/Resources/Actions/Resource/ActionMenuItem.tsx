@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import { MenuItem, MenuItemProps, Tooltip } from '@material-ui/core';
+import { MenuItem, MenuItemProps, Tooltip } from '@mui/material';
 
 import { labelActionNotPermitted } from '../../translatedLabels';
 

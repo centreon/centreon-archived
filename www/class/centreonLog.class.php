@@ -35,16 +35,19 @@
 
 class CentreonUserLog
 {
-
     private static $instance;
     private $errorType;
     private $uid;
     private $path;
 
+    public const TYPE_LOGIN = 1;
+    public const TYPE_SQL = 2;
+    public const TYPE_LDAP = 3;
+    public const TYPE_UPGRADE = 4;
+
     /*
      * Constructor
      */
-
     public function __construct($uid, $pearDB)
     {
 
@@ -69,10 +72,10 @@ class CentreonUserLog
             $this->path = _CENTREON_LOG_;
         }
 
-        $this->errorType[1] = $this->path . "/login.log";
-        $this->errorType[2] = $this->path . "/sql-error.log";
-        $this->errorType[3] = $this->path . "/ldap.log";
-        $this->errorType[4] = $this->path . "/upgrade.log";
+        $this->errorType[self::TYPE_LOGIN] = $this->path . "/login.log";
+        $this->errorType[self::TYPE_SQL] = $this->path . "/sql-error.log";
+        $this->errorType[self::TYPE_LDAP] = $this->path . "/ldap.log";
+        $this->errorType[self::TYPE_UPGRADE] = $this->path . "/upgrade.log";
     }
 
     /*
@@ -122,13 +125,12 @@ class CentreonUserLog
         if (is_null(self::$instance)) {
             self::$instance = new CentreonUserLog($uid, CentreonDB::factory('centreon'));
         }
-        return self::$intance;
+        return self::$instance;
     }
 }
 
 class CentreonLog
 {
-
     private $errorType;
     private $path;
 

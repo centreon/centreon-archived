@@ -10,8 +10,8 @@ import {
   TableHead,
   TableCell,
   TableBody,
-} from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
+  Skeleton,
+} from '@mui/material';
 
 import {
   useRequest,
@@ -53,7 +53,9 @@ const DetailsTable = <TDetails extends { id: number }>({
   });
 
   useEffect(() => {
-    sendRequest(endpoint).then((retrievedDetails) => {
+    sendRequest({
+      endpoint,
+    }).then((retrievedDetails) => {
       setDetails(retrievedDetails.result);
     });
   }, []);

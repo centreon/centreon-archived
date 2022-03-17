@@ -2,21 +2,17 @@ import * as React from 'react';
 
 import dayjs from 'dayjs';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
-import { and, or } from 'ramda';
+import { and, cond, equals } from 'ramda';
 import { useTranslation } from 'react-i18next';
+import { useAtomValue } from 'jotai/utils';
 
-import { MuiPickersUtilsProvider } from '@material-ui/pickers';
-import {
-  FormHelperText,
-  makeStyles,
-  Typography,
-  Button,
-  Popover,
-} from '@material-ui/core';
-import AccessTimeIcon from '@material-ui/icons/AccessTime';
+import { FormHelperText, Typography, Button, Popover } from '@mui/material';
+import { LocalizationProvider } from '@mui/lab';
+import makeStyles from '@mui/styles/makeStyles';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
 
-import { useUserContext } from '@centreon/ui-context';
 import { dateTimeFormat, useLocaleDateTimeFormat } from '@centreon/ui';
+import { userAtom } from '@centreon/ui-context';
 
 import {
   labelEndDate,
@@ -53,12 +49,12 @@ const useStyles = makeStyles((theme) => ({
   },
   buttonContent: {
     alignItems: 'center',
-    columnGap: `${theme.spacing(1)}px`,
+    columnGap: theme.spacing(1),
     display: 'grid',
     gridTemplateColumns: 'min-content auto',
   },
   compactFromTo: {
-    columnGap: `${theme.spacing(0.5)}px`,
+    columnGap: theme.spacing(0.5),
     display: 'grid',
     grid: 'repeat(2, min-content) / min-content auto',
   },
@@ -67,18 +63,18 @@ const useStyles = makeStyles((theme) => ({
   },
   fromTo: {
     alignItems: 'center',
-    columnGap: `${theme.spacing(0.5)}px`,
+    columnGap: theme.spacing(0.5),
     display: 'grid',
     gridTemplateColumns: 'repeat(4, auto)',
   },
   minimalFromTo: {
     display: 'grid',
     gridTemplateRows: 'repeat(2, min-content)',
-    rowGap: `${theme.spacing(0.3)}px`,
+    rowGap: theme.spacing(0.3),
   },
   minimalPickers: {
     alignItems: 'center',
-    columnGap: `${theme.spacing(1)}px`,
+    columnGap: theme.spacing(1),
     display: 'grid',
     gridTemplateColumns: 'min-content auto',
   },
@@ -88,18 +84,18 @@ const useStyles = makeStyles((theme) => ({
   },
   pickers: {
     alignItems: 'center',
-    columnGap: `${theme.spacing(0.5)}px`,
+    columnGap: theme.spacing(0.5),
     display: 'grid',
-    gridTemplateColumns: `minmax(${theme.spacing(15)}px, ${theme.spacing(
+    gridTemplateColumns: `minmax(${theme.spacing(15)}, ${theme.spacing(
       17,
-    )}px) min-content minmax(${theme.spacing(15)}px, ${theme.spacing(17)}px)`,
+    )}px) min-content minmax(${theme.spacing(15)}, ${theme.spacing(17)})`,
   },
   popover: {
     display: 'grid',
     gridTemplateRows: 'auto auto auto',
     justifyItems: 'center',
     padding: theme.spacing(1, 2),
-    rowGap: `${theme.spacing(1)}px`,
+    rowGap: theme.spacing(1),
   },
 }));
 
@@ -113,31 +109,39 @@ const CustomTimePeriodPickers = ({
   const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
   const [start, setStart] = React.useState<Date>(customTimePeriod.start);
   const [end, setEnd] = React.useState<Date>(customTimePeriod.end);
-  const { locale } = useUserContext();
   const { format } = useLocaleDateTimeFormat();
-  const { Adapter, isMeridianFormat } = useDateTimePickerAdapter();
+  const { locale } = useAtomValue(userAtom);
+  const { Adapter } = useDateTimePickerAdapter();
 
   const isInvalidDate = ({ startDate, endDate }): boolean =>
     dayjs(startDate).isSameOrAfter(dayjs(endDate), 'minute');
 
-  const changeDate =
-    ({ property, date }) =>
-    (): void => {
-      const currentDate = customTimePeriod[property];
+  const changeDate = ({ property, date }): void => {
+    const currentDate = customTimePeriod[property];
 
-      if (
-        or(
-          dayjs(date).isSame(dayjs(currentDate)),
-          isInvalidDate({ endDate: end, startDate: start }),
-        )
-      ) {
-        return;
-      }
-      acceptDate({
-        date,
-        property,
-      });
-    };
+    cond([
+      [
+        (): boolean => equals(CustomTimePeriodProperty.start, property),
+        (): void => setStart(date),
+      ],
+      [
+        (): boolean => equals(CustomTimePeriodProperty.end, property),
+        (): void => setEnd(date),
+      ],
+    ])();
+
+    if (
+      dayjs(date).isSame(dayjs(currentDate)) ||
+      isInvalidDate({ endDate: end, startDate: start }) ||
+      !dayjs(date).isValid()
+    ) {
+      return;
+    }
+    acceptDate({
+      date,
+      property,
+    });
+  };
 
   React.useEffect(() => {
     if (
@@ -164,21 +168,13 @@ const CustomTimePeriodPickers = ({
 
   const error = isInvalidDate({ endDate: end, startDate: start });
 
-  const commonPickersProps = {
-    InputProps: {
-      disableUnderline: true,
-    },
-    autoOk: true,
-    error: undefined,
-    format: dateTimeFormat,
-  };
-
   return (
     <>
       <Button
         aria-label={t(labelCompactTimePeriod)}
         className={classes.button}
         color="primary"
+        data-testid={labelCompactTimePeriod}
         variant="outlined"
         onClick={openPopover}
       >
@@ -217,20 +213,16 @@ const CustomTimePeriodPickers = ({
         }}
         onClose={closePopover}
       >
-        <div className={classes.popover}>
-          <MuiPickersUtilsProvider
-            locale={locale.substring(0, 2)}
-            utils={Adapter}
-          >
+        <LocalizationProvider
+          dateAdapter={Adapter}
+          locale={locale.substring(0, 2)}
+        >
+          <div className={classes.popover}>
             <div>
               <Typography>{t(labelFrom)}</Typography>
               <div aria-label={t(labelStartDate)}>
                 <DateTimePickerInput
                   changeDate={changeDate}
-                  commonPickersProps={{
-                    ...commonPickersProps,
-                    ampm: isMeridianFormat(start),
-                  }}
                   date={start}
                   maxDate={customTimePeriod.end}
                   property={CustomTimePeriodProperty.start}
@@ -243,10 +235,6 @@ const CustomTimePeriodPickers = ({
               <div aria-label={t(labelEndDate)}>
                 <DateTimePickerInput
                   changeDate={changeDate}
-                  commonPickersProps={{
-                    ...commonPickersProps,
-                    ampm: isMeridianFormat(end),
-                  }}
                   date={end}
                   minDate={customTimePeriod.start}
                   property={CustomTimePeriodProperty.end}
@@ -254,13 +242,14 @@ const CustomTimePeriodPickers = ({
                 />
               </div>
             </div>
-          </MuiPickersUtilsProvider>
-          {error && (
-            <FormHelperText error className={classes.error}>
-              {t(labelEndDateGreaterThanStartDate)}
-            </FormHelperText>
-          )}
-        </div>
+
+            {error && (
+              <FormHelperText error className={classes.error}>
+                {t(labelEndDateGreaterThanStartDate)}
+              </FormHelperText>
+            )}
+          </div>
+        </LocalizationProvider>
       </Popover>
     </>
   );

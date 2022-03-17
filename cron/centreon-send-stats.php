@@ -121,7 +121,7 @@ if ($isRemote === false) {
          * Only send statistics if user using a free version has enabled this option
          * or if at least a Centreon license is valid
          */
-        if ($shouldSendStatistics || $hasValidLicenses || $isRemote) {
+        if ($shouldSendStatistics || $hasValidLicenses) {
             try {
                 $additional = $oStatistics->getAdditionalData();
             } catch (\Throwable $e) {

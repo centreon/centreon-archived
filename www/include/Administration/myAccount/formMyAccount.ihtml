@@ -44,7 +44,7 @@
                     <h4>{t}Password Management{/t}</h4>
                 </td>
             </tr>
-            <tr class="list_one"><td class="FormRowField">{$form.contact_passwd.label}</td><td class="FormRowValue">{$form.contact_passwd.html} {if $o}{$form.contact_gen_passwd.html}{/if}</td></tr>
+            <tr class="list_one"><td class="FormRowField">{$form.contact_passwd.label}</td><td class="FormRowValue">{$form.contact_passwd.html} {if $o}{$form.contact_gen_passwd.html}{if $expirationMessage}<span style="color:red;">{$expirationMessage}</span>{/if}{/if}</td></tr>
     		<tr class="list_two"><td class="FormRowField">{$form.contact_passwd2.label}</td><td class="FormRowValue">{$form.contact_passwd2.html}</td></tr>
             {/if}
     		<tr class="list_lvl_1">
@@ -54,7 +54,6 @@
             </tr>
             <tr class="list_two"><td class="FormRowField">{$form.default_page.label}</td><td class="FormRowValue">{$form.default_page.html}</td></tr>
             <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="show_deprecated_pages">{$form.show_deprecated_pages.label}</td><td class="FormRowValue">{$form.show_deprecated_pages.html}</td></tr>
-            <tr class="list_two"><td class="FormRowField">{$form.contact_js_effects.label}</td><td class="FormRowValue">{$form.contact_js_effects.html}</td></tr>
             {if $contactIsAdmin && !$isRemote}
             <tr class="list_one"><td class="FormRowField">{$form.enable_one_click_export.label}</td><td class="FormRowValue">{$form.enable_one_click_export.html}</td></tr>
             {/if}

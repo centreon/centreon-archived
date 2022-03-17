@@ -97,7 +97,7 @@ msgstr ""
 #: centreon-web/help.php:15
 #: centreon-web/www/include/configuration/configCentreonBroker/help.php:68
 msgid "How much messages must be logged."
-msgstr "Combien de messages doit être enregistrés dans le journal d'évènements."
+msgstr "Combien de messages doivent être enregistrés dans le journal d'évènements."
 
 #: centreon-web/help.php:18
 #: centreon-web/www/include/configuration/configCentreonBroker/help.php:49
@@ -151,8 +151,8 @@ msgstr "Taille maximale en octets (Bytes)."
 #: centreon-web/www/include/configuration/configCentreonBroker/help.php:57
 msgid "Name of the input or output object that will act as failover."
 msgstr ""
-"Nom de l'objet qui sera utilisé pour la bascule lorsque la connexion distante "
-"paramétrée ici sera interrompue."
+"Nom de l'objet qui sera utilisé pour la bascule lorsque la connexion distante, "
+"paramétrée ici, sera interrompue."
 
 #: centreon-web/help.php:26
 #: centreon-web/www/include/configuration/configCentreonBroker/help.php:51
@@ -239,8 +239,8 @@ msgid ""
 "The higher the buffer size is, the best compression. This however increase "
 "data streaming latency. Use with caution."
 msgstr ""
-"Plus l'espace en mémoire alloué pour la compression est important et plus le "
-"mécanisme de compression sera meilleur. Cependant, les données sont envoyées "
+"Plus l'espace en mémoire alloué pour la compression est important et meilleur sera le"
+"mécanisme de compression . Cependant, les données sont envoyées "
 "quand la limite du cache est atteinte, ce qui peut ajouter quelques latences "
 "avant envoi des données. À utiliser avec prudence."
 
@@ -303,8 +303,8 @@ msgstr "Temps en secondes à attendre avant d'activer le basculement."
 
 #: centreon-web/help.php:50
 #: centreon-web/www/include/configuration/configCentreonBroker/help.php:88
-msgid "Time in seconds to wait between each connection attempt."
-msgstr "Temps d'attente en secondes entre chaque tentative de connexion."
+msgid "Time in seconds to wait between each connection attempt (Default value: 30s)."
+msgstr "Temps d'attente en secondes entre chaque tentative de connexion (Valeur par défaut: 30s)."
 
 #: centreon-web/help.php:51
 #: centreon-web/www/include/configuration/configCentreonBroker/help.php:39
@@ -5094,7 +5094,7 @@ msgid ""
 "make detailed information on the service, emergency contact methods, etc. "
 "available to other support staff."
 msgstr ""
-"Définie une adresse web qui pourra être utilisé pour fournir plus "
+"Définit une adresse web qui pourra être utilisé pour fournir plus "
 "d'information à propos du service. N'importe quelle adresse web valide peut "
 "être utilisée. Cette option peut-être très utile si vous voulez ajouter des "
 "informations détaillés au service, procédure et personnes à contacter en cas "
@@ -5110,8 +5110,8 @@ msgid ""
 "performed on the service. You will see the link to the action URL in the "
 "service details."
 msgstr ""
-"Définie une URL optionnelle fournissant des actions supplémentaires sur le "
-"service. Vous pourrait voir un lien vers l'URL dans les détails du service."
+"Définit une URL optionnelle fournissant des actions supplémentaires sur le "
+"service. Le lien sera visible dans les détails du service."
 
 #: centreon-web/www/include/configuration/configObject/service/help.php:114
 msgid ""
@@ -5241,7 +5241,7 @@ msgid ""
 "Define the type of the command. The type will be used to show the command only "
 "in the relevant sections."
 msgstr ""
-"Définie le type de la commande. Le type sera utilisé afin d'afficher la "
+"Définit le type de la commande. Le type sera utilisé afin d'afficher la "
 "commande uniquement dans les sections appropriées."
 
 #: centreon-web/www/include/configuration/configObject/command/help.php:45

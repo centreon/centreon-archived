@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005 - 2019 Centreon (https://www.centreon.com/)
  *
@@ -45,6 +46,21 @@ interface ContactInterface
     public function isActive(): bool;
 
     /**
+     * Indicates whether the contact is allowed to reach web application.
+     *
+     * @return bool
+     */
+    public function isAllowedToReachWeb(): bool;
+
+    /**
+     * Allow user or not to reach web application.
+     *
+     * @param bool $isAllowed
+     * @return static
+     */
+    public function setAllowedToReachWeb(bool $isAllowed): static;
+
+    /**
      * Contact name.
      *
      * @return string
@@ -75,9 +91,9 @@ interface ContactInterface
     /**
      * Contact template id.
      *
-     * @return int
+     * @return int|null
      */
-    public function getTemplateId(): int;
+    public function getTemplateId(): ?int;
 
     /**
      * Contact token.
@@ -89,9 +105,9 @@ interface ContactInterface
     /**
      * Contact encoded password.
      *
-     * @return string
+     * @return string|null
      */
-    public function getEncodedPassword(): string;
+    public function getEncodedPassword(): ?string;
 
     /**
      * Returns the roles granted to the user.
@@ -108,6 +124,22 @@ interface ContactInterface
      * @return string[] The user roles
      */
     public function getRoles(): array;
+
+    /**
+     * Indicates if this user has a role.
+     *
+     * @param string $role Role name to find
+     * @return bool
+     */
+    public function hasRole(string $role): bool;
+
+    /**
+     * Indicates if this user has a topology access.
+     *
+     * @param string $role Role name to find
+     * @return bool
+     */
+    public function hasTopologyRole(string $role): bool;
 
     /**
      * Contact timezone.
@@ -132,7 +164,7 @@ interface ContactInterface
 
     /**
      * @param Page|null $defaultPage
-     * @return self
+     * @return static
      */
-    public function setDefaultPage(?Page $defaultPage);
+    public function setDefaultPage(?Page $defaultPage): static;
 }

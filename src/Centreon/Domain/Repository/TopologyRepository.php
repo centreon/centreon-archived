@@ -44,9 +44,9 @@ use PDO;
 
 class TopologyRepository extends ServiceEntityRepository
 {
-    const ACL_ACCESS_NONE = 0;
-    const ACL_ACCESS_READ_WRITE = 1;
-    const ACL_ACCESS_READ_ONLY = 2;
+    private const ACL_ACCESS_NONE = 0;
+    private const ACL_ACCESS_READ_WRITE = 1;
+    private const ACL_ACCESS_READ_ONLY = 2;
 
     /**
      * Disable Menus for a Master-to-Remote transition
@@ -75,6 +75,8 @@ class TopologyRepository extends ServiceEntityRepository
     /**
      * Get Topologies according to ACL for user
      * @todo refactor this into function below it
+     * @param mixed $user
+     * @return mixed[]
      */
     public function getReactTopologiesPerUserWithAcl($user)
     {
@@ -151,9 +153,9 @@ class TopologyRepository extends ServiceEntityRepository
     /**
      * Get list of topologies per user and filter by react pages if specified
      * @param CentreonUser $user
-     * @return array
+     * @return array<mixed>|false
      */
-    public function getTopologyList(CentreonUser $user): array
+    public function getTopologyList(CentreonUser $user)
     {
         $topologies = [];
 
@@ -164,7 +166,7 @@ class TopologyRepository extends ServiceEntityRepository
 
         $whereClause = false;
         if (!$user->access->admin) {
-            $query .= ' WHERE topology_page IN (' . $user->access->getTopologyString() . ')';
+            $query .= ' WHERE topology_page IN (' . $user->access->getTopologyString() . ')  OR topology_page IS NULL';
             $whereClause = true;
         }
 
@@ -185,13 +187,13 @@ class TopologyRepository extends ServiceEntityRepository
     /**
      * Find Topology entity by criteria
      *
-     * @param array $params
+     * @param mixed[] $params
      * @return Topology|null
      */
     public function findOneBy($params = []): ?Topology
     {
         $sql = static::baseSqlQueryForEntity();
-        $collector = new StatementCollector;
+        $collector = new StatementCollector();
         $isWhere = false;
         foreach ($params as $column => $value) {
             $key = ":{$column}Val";

@@ -41,8 +41,7 @@ use Centreon\Application\DataRepresenter\Entity;
 
 class EntityTest extends TestCase
 {
-
-    public function testJsonSerialize()
+    public function testJsonSerialize(): void
     {
         $data = 'OK';
 

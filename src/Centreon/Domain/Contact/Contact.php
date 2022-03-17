@@ -23,7 +23,6 @@ declare(strict_types=1);
 namespace Centreon\Domain\Contact;
 
 use Centreon\Domain\Menu\Model\Page;
-use Symfony\Component\Security\Core\Role\Role;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 
@@ -49,6 +48,7 @@ class Contact implements UserInterface, ContactInterface
     public const ROLE_HOST_ADD_COMMENT = 'ROLE_HOST_ADD_COMMENT';
     public const ROLE_SERVICE_ADD_COMMENT = 'ROLE_SERVICE_ADD_COMMENT';
     public const ROLE_DISPLAY_COMMAND = 'ROLE_DISPLAY_COMMAND';
+    public const ROLE_GENERATE_CONFIGURATION = 'ROLE_GENERATE_CONFIGURATION';
 
     // user pages access
     public const ROLE_CONFIGURATION_HOSTS_WRITE = 'ROLE_CONFIGURATION_HOSTS_HOSTS_RW';
@@ -62,6 +62,11 @@ class Contact implements UserInterface, ContactInterface
     public const ROLE_REPORTING_DASHBOARD_SERVICES = 'ROLE_REPORTING_DASHBOARD_SERVICES_RW';
     public const ROLE_CONFIGURATION_MONITORING_SERVER_READ_WRITE = 'ROLE_CONFIGURATION_POLLERS_POLLERS_RW';
     public const ROLE_CONFIGURATION_MONITORING_SERVER_READ = 'ROLE_CONFIGURATION_POLLERS_POLLERS_R';
+    public const ROLE_CONFIGURATION_HOSTS_HOST_GROUPS_READ_WRITE = 'ROLE_CONFIGURATION_HOSTS_HOST_GROUPS_RW';
+    public const ROLE_CONFIGURATION_HOSTS_HOST_GROUPS_READ = 'ROLE_CONFIGURATION_HOSTS_HOST_GROUPS_R';
+    public const ROLE_CONFIGURATION_SERVICES_SERVICE_GROUPS_READ_WRITE =
+        'ROLE_CONFIGURATION_SERVICES_SERVICE_GROUPS_RW';
+    public const ROLE_CONFIGURATION_SERVICES_SERVICE_GROUPS_READ = 'ROLE_CONFIGURATION_SERVICES_SERVICE_GROUPS_R';
 
     /**
      * @var string
@@ -104,7 +109,7 @@ class Contact implements UserInterface, ContactInterface
     private $isAdmin;
 
     /**
-     * @var int Id of the contact template
+     * @var int|null Id of the contact template
      */
     private $templateId;
 
@@ -114,12 +119,17 @@ class Contact implements UserInterface, ContactInterface
     private $isActive;
 
     /**
+     * @var bool Indicates whether this contact is allowed to reach centreon application
+     */
+    private $isAllowedToReachWeb;
+
+    /**
      * @var string|null Authentication Token
      */
     private $token;
 
     /**
-     * @var string Encoded password
+     * @var string|null Encoded password
      */
     private $encodedPassword;
 
@@ -134,7 +144,7 @@ class Contact implements UserInterface, ContactInterface
     private $hasAccessToApiRealTime;
 
     /**
-     * @var (Role|string)[]
+     * @var string[]
      */
     private $roles = [];
 
@@ -261,7 +271,7 @@ class Contact implements UserInterface, ContactInterface
     }
 
     /**
-     * @return bool
+     * @inheritDoc
      */
     public function isAdmin(): bool
     {
@@ -269,6 +279,8 @@ class Contact implements UserInterface, ContactInterface
     }
 
     /**
+     * Set if the user is admin or not.
+     *
      * @param bool $isAdmin
      * @return self
      */
@@ -283,15 +295,15 @@ class Contact implements UserInterface, ContactInterface
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getTemplateId(): int
+    public function getTemplateId(): ?int
     {
         return $this->templateId;
     }
 
     /**
-     * @param int $templateId
+     * @param int|null $templateId
      * @return self
      */
     public function setTemplateId(?int $templateId): self
@@ -319,6 +331,24 @@ class Contact implements UserInterface, ContactInterface
     }
 
     /**
+     * @inheritDoc
+     */
+    public function isAllowedToReachWeb(): bool
+    {
+        return $this->isAllowedToReachWeb;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setAllowedToReachWeb(bool $isAllowed): static
+    {
+        $this->isAllowedToReachWeb = $isAllowed;
+
+        return $this;
+    }
+
+    /**
      * @return string|null
      */
     public function getToken(): ?string
@@ -337,9 +367,9 @@ class Contact implements UserInterface, ContactInterface
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getEncodedPassword(): string
+    public function getEncodedPassword(): ?string
     {
         return $this->encodedPassword;
     }
@@ -379,9 +409,9 @@ class Contact implements UserInterface, ContactInterface
      * This should be the encoded password. On authentication, a plain-text
      * password will be salted, encoded, and then compared to this value.
      *
-     * @return string The password
+     * @return string|null The password
      */
-    public function getPassword()
+    public function getPassword(): ?string
     {
         return $this->token;
     }
@@ -468,10 +498,7 @@ class Contact implements UserInterface, ContactInterface
     }
 
     /**
-     * Indicates if this user has a role.
-     *
-     * @param string $role Role name to find
-     * @return bool
+     * @inheritDoc
      */
     public function hasRole(string $role): bool
     {
@@ -479,10 +506,7 @@ class Contact implements UserInterface, ContactInterface
     }
 
     /**
-     * Indicates if this user has a topology access.
-     *
-     * @param string $role Role name to find
-     * @return bool
+     * @inheritDoc
      */
     public function hasTopologyRole(string $role): bool
     {
@@ -568,10 +592,9 @@ class Contact implements UserInterface, ContactInterface
     }
 
     /**
-     * @param Page|null $defaultPage
-     * @return self
+     * @inheritDoc
      */
-    public function setDefaultPage(?Page $defaultPage)
+    public function setDefaultPage(?Page $defaultPage): static
     {
         $this->defaultPage = $defaultPage;
         return $this;
@@ -618,12 +641,20 @@ class Contact implements UserInterface, ContactInterface
 
     /**
      * @param bool $isOneClickExportEnabled
-     * @return Contact
+     * @return self
      */
-    public function setOneClickExportEnabled(bool $isOneClickExportEnabled): Contact
+    public function setOneClickExportEnabled(bool $isOneClickExportEnabled): self
     {
         $this->isOneClickExportEnabled = $isOneClickExportEnabled;
 
         return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getUserIdentifier(): string
+    {
+        return $this->alias;
     }
 }

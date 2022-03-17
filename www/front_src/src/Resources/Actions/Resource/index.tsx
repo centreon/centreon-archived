@@ -1,12 +1,13 @@
 import * as React from 'react';
 
-import { all, head, pathEq, pick } from 'ramda';
+import { all, head, pathEq } from 'ramda';
 import { useTranslation } from 'react-i18next';
+import { useAtom } from 'jotai';
 
-import { makeStyles } from '@material-ui/core';
-import IconAcknowledge from '@material-ui/icons/Person';
-import IconCheck from '@material-ui/icons/Sync';
-import IconMore from '@material-ui/icons/MoreHoriz';
+import makeStyles from '@mui/styles/makeStyles';
+import IconAcknowledge from '@mui/icons-material/Person';
+import IconCheck from '@mui/icons-material/Sync';
+import IconMore from '@mui/icons-material/MoreHoriz';
 
 import {
   useCancelTokenSource,
@@ -27,11 +28,16 @@ import {
   labelAddComment,
   labelMoreActions,
 } from '../../translatedLabels';
-import { ResourceContext, useResourceContext } from '../../Context';
 import { checkResources } from '../api';
 import { Resource } from '../../models';
 import AddCommentForm from '../../Graph/Performance/Graph/AddCommentForm';
-import memoizeComponent from '../../memoizedComponent';
+import {
+  resourcesToAcknowledgeAtom,
+  resourcesToCheckAtom,
+  resourcesToDisacknowledgeAtom,
+  resourcesToSetDowntimeAtom,
+  selectedResourcesAtom,
+} from '../actionsAtoms';
 
 import useAclQuery from './aclQuery';
 import DowntimeForm from './Downtime';
@@ -51,32 +57,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-type Props = Pick<
-  ResourceContext,
-  | 'resourcesToCheck'
-  | 'selectedResources'
-  | 'resourcesToAcknowledge'
-  | 'resourcesToSetDowntime'
-  | 'resourcesToDisacknowledge'
-  | 'setSelectedResources'
-  | 'setResourcesToAcknowledge'
-  | 'setResourcesToSetDowntime'
-  | 'setResourcesToCheck'
-  | 'setResourcesToDisacknowledge'
->;
-
-const ResourceActionsContent = ({
-  resourcesToCheck,
-  selectedResources,
-  resourcesToAcknowledge,
-  resourcesToSetDowntime,
-  resourcesToDisacknowledge,
-  setSelectedResources,
-  setResourcesToAcknowledge,
-  setResourcesToSetDowntime,
-  setResourcesToCheck,
-  setResourcesToDisacknowledge,
-}: Props): JSX.Element => {
+const ResourceActions = (): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
   const { cancel, token } = useCancelTokenSource();
@@ -86,6 +67,20 @@ const ResourceActionsContent = ({
     React.useState<Resource | null>();
   const [resourceToComment, setResourceToComment] =
     React.useState<Resource | null>();
+
+  const [selectedResources, setSelectedResources] = useAtom(
+    selectedResourcesAtom,
+  );
+  const [resourcesToAcknowledge, setResourcesToAcknowledge] = useAtom(
+    resourcesToAcknowledgeAtom,
+  );
+  const [resourcesToSetDowntime, setResourcesToSetDowntime] = useAtom(
+    resourcesToSetDowntimeAtom,
+  );
+  const [resourcesToCheck, setResourcesToCheck] = useAtom(resourcesToCheckAtom);
+  const [resourcesToDisacknowledge, setResourcesToDisacknowledge] = useAtom(
+    resourcesToDisacknowledgeAtom,
+  );
 
   const {
     canAcknowledge,
@@ -315,36 +310,6 @@ const ResourceActionsContent = ({
       </PopoverMenu>
     </div>
   );
-};
-
-const memoProps = [
-  'resourcesToCheck',
-  'selectedResources',
-  'resourcesToAcknowledge',
-  'resourcesToSetDowntime',
-  'resourcesToDisacknowledge',
-];
-
-const MemoizedResourceActionsContent = memoizeComponent<Props>({
-  Component: ResourceActionsContent,
-  memoProps,
-});
-
-const functionProps = [
-  'setSelectedResources',
-  'setResourcesToAcknowledge',
-  'setResourcesToSetDowntime',
-  'setResourcesToCheck',
-  'setResourcesToDisacknowledge',
-];
-
-const ResourceActions = (): JSX.Element => {
-  const resourceContextProps = pick(
-    [...memoProps, ...functionProps],
-    useResourceContext(),
-  );
-
-  return <MemoizedResourceActionsContent {...resourceContextProps} />;
 };
 
 export default ResourceActions;

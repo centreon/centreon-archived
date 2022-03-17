@@ -28,11 +28,9 @@ use Psr\Container\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Centreon\Domain\Authentication\UseCase\Logout;
-use Centreon\Domain\Authentication\UseCase\Authenticate;
 use Centreon\Domain\Authentication\UseCase\AuthenticateApi;
 use Centreon\Application\Controller\AuthenticationController;
 use Security\Domain\Authentication\Model\ProviderConfiguration;
-use Centreon\Domain\Authentication\UseCase\AuthenticateResponse;
 use Centreon\Domain\Authentication\UseCase\AuthenticateApiResponse;
 use Centreon\Domain\Authentication\Exception\AuthenticationException;
 use Centreon\Domain\Authentication\UseCase\FindProvidersConfigurations;
@@ -66,11 +64,6 @@ class AuthenticationControllerTest extends TestCase
     protected $findProvidersConfigurations;
 
     /**
-     * @var Authenticate|\PHPUnit\Framework\MockObject\MockObject
-     */
-    protected $authenticate;
-
-    /**
      * @var ContainerInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     protected $container;
@@ -95,7 +88,6 @@ class AuthenticationControllerTest extends TestCase
         $this->authenticateApi = $this->createMock(AuthenticateApi::class);
         $this->logout = $this->createMock(Logout::class);
         $this->findProvidersConfigurations = $this->createMock(FindProvidersConfigurations::class);
-        $this->authenticate = $this->createMock(Authenticate::class);
 
         $this->container = $this->createMock(ContainerInterface::class);
 
@@ -162,12 +154,22 @@ class AuthenticationControllerTest extends TestCase
         );
 
         $this->authenticateApi
-        ->expects($this->once())
-        ->method('execute')
-        ->will($this->throwException(AuthenticationException::notAuthenticated()));
-        $this->expectException(AuthenticationException::class);
-        $this->expectExceptionMessage('Authentication failed');
-        $authenticationController->login($this->request, $this->authenticateApi, $response);
+            ->expects($this->once())
+            ->method('execute')
+            ->willThrowException(AuthenticationException::invalidCredentials());
+
+        $view = $authenticationController->login($this->request, $this->authenticateApi, $response);
+
+        $this->assertEquals(
+            View::create(
+                [
+                    "code" => Response::HTTP_UNAUTHORIZED,
+                    "message" => 'Invalid credentials',
+                ],
+                Response::HTTP_UNAUTHORIZED
+            ),
+            $view
+        );
     }
 
     /**

@@ -2,27 +2,11 @@ import * as React from 'react';
 
 import { path, isNil, equals, last, pipe, not } from 'ramda';
 
-import { makeStyles } from '@material-ui/core';
+import makeStyles from '@mui/styles/makeStyles';
 
 import { Resource } from '../../../models';
-import ExportablePerformanceGraphWithTimeline from '../../../Graph/Performance/ExportableGraphWithTimeline';
-import { MousePosition } from '../../../Graph/Performance/Graph/useMetricsValue';
-
-const MemoizedPerformanceGraph = React.memo(
-  ExportablePerformanceGraphWithTimeline,
-  (prevProps, nextProps) => {
-    const prevResource = prevProps.resource;
-    const nextResource = nextProps.resource;
-
-    return (
-      equals(prevResource?.id, nextResource?.id) &&
-      equals(
-        prevProps.resourceGraphMousePosition,
-        nextProps.resourceGraphMousePosition,
-      )
-    );
-  },
-);
+import ExportableGraphWithTimeline from '../../../Graph/Performance/ExportableGraphWithTimeline';
+import { MousePosition } from '../../../Graph/Performance/Graph/mouseTimeValueAtoms';
 
 interface Props {
   infiniteScrollTriggerRef: React.RefObject<HTMLDivElement>;
@@ -50,8 +34,6 @@ const ServiceGraphs = ({
   infiniteScrollTriggerRef,
 }: Props): JSX.Element => {
   const classes = useStyles();
-  const [resourceGraphMousePosition, setResourceGraphMousePosition] =
-    React.useState<ResourceGraphMousePosition | null>(null);
 
   const servicesWithGraph = services.filter(
     pipe(path(['links', 'endpoints', 'performance_graph']), isNil, not),
@@ -65,12 +47,10 @@ const ServiceGraphs = ({
 
         return (
           <div key={id}>
-            <MemoizedPerformanceGraph
+            <ExportableGraphWithTimeline
               limitLegendRows
               graphHeight={120}
               resource={service}
-              resourceGraphMousePosition={resourceGraphMousePosition}
-              updateResourceGraphMousePosition={setResourceGraphMousePosition}
             />
             {isLastService && <div ref={infiniteScrollTriggerRef} />}
           </div>

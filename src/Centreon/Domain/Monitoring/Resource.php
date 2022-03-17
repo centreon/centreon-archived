@@ -40,7 +40,6 @@ class Resource
     // Groups for serialization
     public const SERIALIZER_GROUP_MAIN = 'resource_main';
     public const SERIALIZER_GROUP_PARENT = 'resource_parent';
-    public const SERIALIZER_GROUP_DETAILS = 'resource_details';
 
     // Groups for validation
     public const VALIDATION_GROUP_ACK_HOST = ['ack_host'];
@@ -103,7 +102,7 @@ class Resource
     protected $commandLine;
 
     /**
-     * @var string|null
+     * @var string
      */
     private $monitoringServerName;
 
@@ -193,6 +192,11 @@ class Resource
     private $notificationNumber;
 
     /**
+     * @var int
+     */
+    private $stateType;
+
+    /**
      * @var string|null
      */
     private $tries;
@@ -251,7 +255,7 @@ class Resource
      */
     private $calculationType;
 
-    /*
+    /**
      * Indicates if notifications are enabled for the Resource
      *
      * @var bool
@@ -281,7 +285,7 @@ class Resource
     {
         $result = null;
 
-        if ($this->getLastStatusChange()) {
+        if ($this->getLastStatusChange() !== null) {
             $result = CentreonDuration::toString(time() - $this->getLastStatusChange()->getTimestamp());
         }
 
@@ -295,7 +299,7 @@ class Resource
     {
         $result = null;
 
-        if ($this->getLastCheck()) {
+        if ($this->getLastCheck() !== null) {
             $result = CentreonDuration::toString(time() - $this->getLastCheck()->getTimestamp());
         }
 
@@ -499,10 +503,10 @@ class Resource
     }
 
    /**
-     * @param string|null $monitoringServerName
+     * @param string $monitoringServerName
      * @return self
      */
-    public function setMonitoringServerName(?string $monitoringServerName): self
+    public function setMonitoringServerName(string $monitoringServerName): self
     {
         $this->monitoringServerName = $monitoringServerName;
         return $this;
@@ -831,6 +835,24 @@ class Resource
     }
 
     /**
+     * @return integer
+     */
+    public function getStateType(): int
+    {
+        return $this->stateType;
+    }
+
+    /**
+     * @param integer $stateType
+     * @return self
+     */
+    public function setStateType(int $stateType): self
+    {
+        $this->stateType = $stateType;
+        return $this;
+    }
+
+    /**
      * @return string|null
      */
     public function getTries(): ?string
@@ -901,7 +923,7 @@ class Resource
      */
     public function setInformation(?string $information): self
     {
-        $this->information = trim($information);
+        $this->information = $information !== null ? trim($information) : null;
 
         return $this;
     }

@@ -66,3 +66,19 @@ www/widgets
 !www/widgets/require.php
 
 .DS_store
+
+# Windows thumbnail cache files
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+
+.lighthouseci
+lighthouse/report
+lighthouse/build
+manifest.json
+
+!config/packages/serializer/Centreon/
+config/packages/serializer/Centreon*
+config/packages/dev/Centreon*
+config/packages/prod/Centreon*

@@ -1,20 +1,23 @@
+/* eslint-disable react/jsx-no-constructed-context-values */
 import * as React from 'react';
 
 import axios from 'axios';
+import { Simulate } from 'react-dom/test-utils';
+import userEvent from '@testing-library/user-event';
+import { Provider } from 'jotai';
+
 import {
+  setUrlQueryParameters,
+  getUrlQueryParameters,
   fireEvent,
   waitFor,
   render,
   RenderResult,
   act,
-} from '@testing-library/react';
-import { Simulate } from 'react-dom/test-utils';
-import userEvent from '@testing-library/user-event';
-
-import { setUrlQueryParameters, getUrlQueryParameters } from '@centreon/ui';
+} from '@centreon/ui';
+import { refreshIntervalAtom, userAtom } from '@centreon/ui-context';
 
 import {
-  labelResource,
   labelHost,
   labelState,
   labelAcknowledged,
@@ -28,10 +31,13 @@ import {
   labelUnhandledProblems,
   labelNewFilter,
   labelSearchOptions,
+  labelStatusType,
+  labelSoft,
+  labelType,
 } from '../translatedLabels';
 import useListing from '../Listing/useListing';
-import useActions from '../Actions/useActions';
-import Context, { ResourceContext } from '../Context';
+import useActions from '../testUtils/useActions';
+import Context, { ResourceContext } from '../testUtils/Context';
 import useLoadResources from '../Listing/useLoadResources';
 import {
   defaultStates,
@@ -40,18 +46,27 @@ import {
   getFilterWithUpdatedCriteria,
   getListingEndpoint,
   searchableFields,
+  defaultStateTypes,
 } from '../testUtils';
+import useLoadDetails from '../testUtils/useLoadDetails';
 import useDetails from '../Details/useDetails';
 
 import { allFilter, Filter as FilterModel } from './models';
 import useFilter from './useFilter';
-import { filterKey } from './storedFilter';
+import { filterKey } from './filterAtoms';
 import { defaultSortField, defaultSortOrder } from './Criterias/default';
 import { buildHostGroupsEndpoint } from './api/endpoint';
 
 import Filter from '.';
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
+
+const mockUser = {
+  isExportButtonEnabled: true,
+  locale: 'en',
+  timezone: 'Europe/Paris',
+};
+const mockRefreshInterval = 60;
 
 jest.useFakeTimers();
 
@@ -73,7 +88,7 @@ type FilterParameter = [
 ];
 
 const filterParams: Array<FilterParameter> = [
-  [labelResource, labelHost, { resourceTypes: ['host'] }, undefined],
+  [labelType, labelHost, { resourceTypes: ['host'] }, undefined],
   [
     labelState,
     labelAcknowledged,
@@ -87,6 +102,14 @@ const filterParams: Array<FilterParameter> = [
     labelOk,
     {
       statuses: [...defaultStatuses, 'OK'],
+    },
+    undefined,
+  ],
+  [
+    labelStatusType,
+    labelSoft,
+    {
+      statusTypes: [...defaultStateTypes, 'soft'],
     },
     undefined,
   ],
@@ -187,10 +210,12 @@ const FilterWithLoading = (): JSX.Element => {
 };
 
 const FilterTest = (): JSX.Element | null => {
-  const filterState = useFilter();
-  const detailsState = useDetails();
+  useFilter();
+  const detailsState = useLoadDetails();
   const listingState = useListing();
   const actionsState = useActions();
+
+  useDetails();
 
   return (
     <Context.Provider
@@ -198,7 +223,6 @@ const FilterTest = (): JSX.Element | null => {
         {
           ...listingState,
           ...actionsState,
-          ...filterState,
           ...detailsState,
         } as ResourceContext
       }
@@ -208,7 +232,18 @@ const FilterTest = (): JSX.Element | null => {
   );
 };
 
-const renderFilter = (): RenderResult => render(<FilterTest />);
+const FilterTestWitJotai = (): JSX.Element => (
+  <Provider
+    initialValues={[
+      [userAtom, mockUser],
+      [refreshIntervalAtom, mockRefreshInterval],
+    ]}
+  >
+    <FilterTest />
+  </Provider>
+);
+
+const renderFilter = (): RenderResult => render(<FilterTestWitJotai />);
 
 const mockedLocalStorageGetItem = jest.fn();
 const mockedLocalStorageSetItem = jest.fn();
@@ -230,7 +265,6 @@ const dynamicCriteriaRequests = (): void => {
         result: [],
       },
     })
-    .mockResolvedValueOnce({ data: {} })
     .mockResolvedValueOnce({ data: {} })
     .mockResolvedValue({ data: hostGroupsData });
 };
@@ -360,6 +394,7 @@ describe(Filter, () => {
       {
         resourceTypes: [],
         states: [],
+        statusTypes: [],
         statuses: defaultStatuses,
       },
     ],
@@ -368,6 +403,7 @@ describe(Filter, () => {
       {
         resourceTypes: [],
         states: [],
+        statusTypes: [],
         statuses: [],
       },
     ],
@@ -388,11 +424,7 @@ describe(Filter, () => {
 
       await waitFor(() => {
         expect(mockedAxios.get).toHaveBeenLastCalledWith(
-          getListingEndpoint({
-            resourceTypes: criterias.resourceTypes,
-            states: criterias.states,
-            statuses: criterias.statuses,
-          }),
+          getListingEndpoint(criterias),
           cancelTokenRequestParam,
         );
       });
@@ -615,6 +647,7 @@ describe(Filter, () => {
         queryByLabelText,
         findByPlaceholderText,
         getByLabelText,
+        findByText,
       } = renderResult;
 
       await waitFor(() => expect(mockedAxios.get).toHaveBeenCalledTimes(2));
@@ -633,7 +666,7 @@ describe(Filter, () => {
         getByLabelText(labelSearchOptions).firstElementChild as HTMLElement,
       );
 
-      userEvent.click(getByText(labelResource));
+      userEvent.click(getByText(labelType));
       expect(getByText(labelHost)).toBeInTheDocument();
 
       userEvent.click(getByText(labelState));
@@ -648,7 +681,9 @@ describe(Filter, () => {
 
       await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
 
-      expect(getByText(linuxServersHostGroup.name)).toBeInTheDocument();
+      const linuxServerOption = await findByText(linuxServersHostGroup.name);
+
+      expect(linuxServerOption).toBeInTheDocument();
 
       act(() => {
         fireEvent.click(getByText(labelServiceGroup));
@@ -656,7 +691,11 @@ describe(Filter, () => {
 
       await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
 
-      expect(getByText(webAccessServiceGroup.name)).toBeInTheDocument();
+      const webAccessServiceGroupOption = await findByText(
+        webAccessServiceGroup.name,
+      );
+
+      expect(webAccessServiceGroupOption).toBeInTheDocument();
     });
 
     it('stores filter values in localStorage when updated', async () => {
@@ -668,9 +707,9 @@ describe(Filter, () => {
 
       mockedAxios.get.mockResolvedValue({ data: {} });
 
-      const unhandledProblemsOption = await findByText(labelUnhandledProblems);
+      const newFilterOption = await findByText(labelNewFilter);
 
-      userEvent.click(unhandledProblemsOption);
+      userEvent.click(newFilterOption);
 
       userEvent.click(getByText(labelAll));
 
@@ -763,7 +802,7 @@ describe(Filter, () => {
         getByLabelText(labelSearchOptions).firstElementChild as HTMLElement,
       );
 
-      fireEvent.click(getByText(labelResource));
+      fireEvent.click(getByText(labelType));
       expect(getByText(labelHost)).toBeInTheDocument();
 
       fireEvent.click(getByText(labelState));

@@ -29,7 +29,6 @@ use Symfony\Component\Finder\Finder;
  */
 class ConfigurationTest extends TestCase
 {
-
     public function setUp(): void
     {
         $this->configuration = [

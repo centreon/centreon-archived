@@ -2,10 +2,12 @@ import * as React from 'react';
 
 import axios from 'axios';
 import * as yup from 'yup';
+import { useAtomValue } from 'jotai/utils';
 
-import { ClickAwayListener, makeStyles } from '@material-ui/core';
+import { ClickAwayListener } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 
-import { useUserContext } from '@centreon/ui-context';
+import { refreshIntervalAtom } from '@centreon/ui-context';
 
 import MenuLoader from '../../components/MenuLoader';
 
@@ -31,13 +33,14 @@ const RessourceStatusCounter = <
   schema,
   children,
   loaderWidth,
-}: Props): JSX.Element => {
+}: Props): JSX.Element | null => {
   const [data, setData] = React.useState<StatusCount>();
   const [toggled, setToggled] = React.useState<boolean>();
+  const [isAllowed, setIsAllowed] = React.useState<boolean>(true);
 
   const interval = React.useRef<number>();
 
-  const { refreshInterval } = useUserContext();
+  const refreshInterval = useAtomValue(refreshIntervalAtom);
 
   const getData = (): void => {
     axios
@@ -49,7 +52,7 @@ const RessourceStatusCounter = <
       })
       .catch((error) => {
         if (error.response && error.response.status === 401) {
-          setData(undefined);
+          setIsAllowed(false);
         }
       });
   };
@@ -69,6 +72,10 @@ const RessourceStatusCounter = <
   const toggleDetailedView = (): void => {
     setToggled(!toggled);
   };
+
+  if (!isAllowed) {
+    return null;
+  }
 
   if (!data) {
     return <MenuLoader width={loaderWidth} />;

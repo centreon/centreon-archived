@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
@@ -7,10 +8,10 @@
 
 import React from 'react';
 
-import DeleteIcon from '@material-ui/icons/Delete';
-import UpdateIcon from '@material-ui/icons/SystemUpdateAlt';
-import CheckIcon from '@material-ui/icons/Check';
-import InstallIcon from '@material-ui/icons/Add';
+import DeleteIcon from '@mui/icons-material/Delete';
+import UpdateIcon from '@mui/icons-material/SystemUpdateAlt';
+import CheckIcon from '@mui/icons-material/Check';
+import InstallIcon from '@mui/icons-material/Add';
 import {
   Card,
   CardActions,
@@ -22,7 +23,7 @@ import {
   Chip,
   LinearProgress,
   Divider,
-} from '@material-ui/core';
+} from '@mui/material';
 
 import Wrapper from '../Wrapper';
 

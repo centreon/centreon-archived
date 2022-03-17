@@ -17,13 +17,13 @@ import {
   add,
   negate,
   or,
-  pathOr,
   propOr,
 } from 'ramda';
 import { useTranslation } from 'react-i18next';
+import { useAtomValue } from 'jotai/utils';
 
-import { makeStyles, Typography, Theme } from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
+import { Typography, Theme, Skeleton } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 
 import {
   useRequest,
@@ -41,8 +41,7 @@ import {
   CustomTimePeriod,
   CustomTimePeriodProperty,
 } from '../../Details/tabs/Graph/models';
-import { useResourceContext } from '../../Context';
-import { ResourceGraphMousePosition } from '../../Details/tabs/Services/Graphs';
+import { selectedResourceIdAtom } from '../../Details/detailsAtoms';
 
 import Graph from './Graph';
 import Legend from './Legend';
@@ -52,12 +51,14 @@ import {
   TimeValue,
   Line as LineModel,
   AdjustTimePeriodProps,
-  Metric,
 } from './models';
-import { getTimeSeries, getLineData } from './timeSeries';
-import useMetricsValue, { MetricsValueContext } from './Graph/useMetricsValue';
+import { getTimeSeries, getLineData, getMetrics } from './timeSeries';
 import { TimeShiftDirection } from './Graph/TimeShiftZones';
 import MemoizedGraphActions from './GraphActions';
+import {
+  isListingGraphOpenAtom,
+  timeValueAtom,
+} from './Graph/mouseTimeValueAtoms';
 
 interface Props {
   adjustTimePeriod?: (props: AdjustTimePeriodProps) => void;
@@ -72,12 +73,8 @@ interface Props {
   onAddComment?: (commentParameters: CommentParameters) => void;
   resource: Resource | ResourceDetails;
   resourceDetailsUpdated?: boolean;
-  resourceGraphMousePosition?: ResourceGraphMousePosition | null;
   timeline?: Array<TimelineEvent>;
   toggableLegend?: boolean;
-  updateResourceGraphMousePosition?: (
-    resourceGraphMousePosition: ResourceGraphMousePosition | null,
-  ) => void;
   xAxisTickFormat?: string;
 }
 
@@ -93,7 +90,7 @@ const useStyles = makeStyles<Theme, MakeStylesProps>((theme) => ({
     gridTemplateRows: ({ graphHeight, displayTitle }): string =>
       `${displayTitle ? 'min-content' : ''} ${theme.spacing(
         2,
-      )}px ${graphHeight}px min-content`,
+      )} ${graphHeight}px min-content`,
     height: '100%',
     width: 'auto',
   },
@@ -104,7 +101,7 @@ const useStyles = makeStyles<Theme, MakeStylesProps>((theme) => ({
     width: '100%',
   },
   graphTranslation: {
-    columnGap: `${theme.spacing(1)}px`,
+    columnGap: theme.spacing(1),
     display: 'grid',
     gridTemplateColumns: ({ canAdjustTimePeriod }): string =>
       canAdjustTimePeriod ? 'min-content auto min-content' : 'auto',
@@ -149,8 +146,6 @@ const PerformanceGraph = ({
   limitLegendRows,
   isInViewport = true,
   displayCompleteGraph,
-  updateResourceGraphMousePosition,
-  resourceGraphMousePosition,
 }: Props): JSX.Element => {
   const classes = useStyles({
     canAdjustTimePeriod: not(isNil(adjustTimePeriod)),
@@ -166,15 +161,18 @@ const PerformanceGraph = ({
   const performanceGraphRef = React.useRef<HTMLDivElement | null>(null);
   const performanceGraphHeightRef = React.useRef<number>(0);
 
-  const { selectedResourceId } = useResourceContext();
-
   const {
     sendRequest: sendGetGraphDataRequest,
     sending: sendingGetGraphDataRequest,
   } = useRequest<GraphData>({
     request: getData,
   });
-  const metricsValueProps = useMetricsValue(isInViewport);
+
+  const selectedResourceId = useAtomValue(selectedResourceIdAtom);
+
+  const timeValue = useAtomValue(timeValueAtom);
+  const isListingGraphOpen = useAtomValue(isListingGraphOpenAtom);
+
   const { toDateTime } = useLocaleDateTimeFormat();
 
   React.useEffect(() => {
@@ -182,7 +180,9 @@ const PerformanceGraph = ({
       return;
     }
 
-    sendGetGraphDataRequest(endpoint)
+    sendGetGraphDataRequest({
+      endpoint,
+    })
       .then((graphData) => {
         setTimeSeries(getTimeSeries(graphData));
         setBase(graphData.global.base);
@@ -212,20 +212,6 @@ const PerformanceGraph = ({
   }, [selectedResourceId]);
 
   React.useEffect(() => {
-    const mousePosition = prop('mousePosition', metricsValueProps);
-    if (isNil(mousePosition)) {
-      updateResourceGraphMousePosition?.(null);
-      metricsValueProps.changeMetricsValue({ newMetricsValue: null });
-
-      return;
-    }
-    updateResourceGraphMousePosition?.({
-      mousePosition,
-      resourceId: resource.id,
-    });
-  }, [metricsValueProps.mousePosition]);
-
-  React.useEffect(() => {
     if (isInViewport && performanceGraphRef.current && lineData) {
       performanceGraphHeightRef.current =
         performanceGraphRef.current.clientHeight;
@@ -245,7 +231,7 @@ const PerformanceGraph = ({
     return (
       <Skeleton
         height={performanceGraphHeightRef.current}
-        variant="rect"
+        variant="rectangular"
         width="100%"
       />
     );
@@ -354,17 +340,19 @@ const PerformanceGraph = ({
     });
   };
 
-  const timeTick = pathOr(
+  const timeTick = propOr<string, TimeValue | null, string>(
     '',
-    ['metricsValue', 'timeValue', 'timeTick'],
-    metricsValueProps,
+    'timeTick',
+    timeValue,
   );
 
-  const metricsValue = prop('metricsValue', metricsValueProps);
-
-  const metrics = propOr([] as Array<Metric>, 'metrics', metricsValue);
+  const metrics = getMetrics(timeValue as TimeValue);
 
   const containsMetrics = not(isNil(metrics)) && not(isEmpty(metrics));
+
+  const isDisplayedInListing = not(displayTitle);
+
+  const displayTimeValues = not(isListingGraphOpen) || isDisplayedInListing;
 
   return (
     <div
@@ -392,51 +380,51 @@ const PerformanceGraph = ({
       )}
 
       <div>
-        {timeTick && containsMetrics && (
+        {displayTimeValues && timeTick && containsMetrics && (
           <Typography align="center" variant="body1">
             {toDateTime(timeTick)}
           </Typography>
         )}
       </div>
-      <MetricsValueContext.Provider value={metricsValueProps}>
-        <div>
-          <Responsive.ParentSize>
-            {({ width, height }): JSX.Element => (
-              <Graph
-                applyZoom={adjustTimePeriod}
-                base={base as number}
-                canAdjustTimePeriod={not(isNil(adjustTimePeriod))}
-                containsMetrics={containsMetrics}
-                displayEventAnnotations={displayEventAnnotations}
-                height={height}
-                lines={displayedLines}
-                loading={
-                  not(resourceDetailsUpdated) && sendingGetGraphDataRequest
-                }
-                resource={resource}
-                resourceGraphMousePosition={resourceGraphMousePosition}
-                shiftTime={shiftTime}
-                timeSeries={timeSeries}
-                timeline={timeline}
-                width={width}
-                xAxisTickFormat={xAxisTickFormat}
-                onAddComment={onAddComment}
-              />
-            )}
-          </Responsive.ParentSize>
-        </div>
-        <Legend
-          base={base as number}
-          displayCompleteGraph={displayCompleteGraph}
-          limitLegendRows={limitLegendRows}
-          lines={sortedLines}
-          toggable={toggableLegend}
-          onClearHighlight={clearHighlight}
-          onHighlight={highlightLine}
-          onSelect={selectMetricLine}
-          onToggle={toggleMetricLine}
-        />
-      </MetricsValueContext.Provider>
+      <div>
+        <Responsive.ParentSize>
+          {({ width, height }): JSX.Element => (
+            <Graph
+              applyZoom={adjustTimePeriod}
+              base={base as number}
+              canAdjustTimePeriod={not(isNil(adjustTimePeriod))}
+              containsMetrics={containsMetrics}
+              displayEventAnnotations={displayEventAnnotations}
+              displayTimeValues={displayTimeValues}
+              height={height}
+              lines={displayedLines}
+              loading={
+                not(resourceDetailsUpdated) && sendingGetGraphDataRequest
+              }
+              resource={resource}
+              shiftTime={shiftTime}
+              timeSeries={timeSeries}
+              timeline={timeline}
+              width={width}
+              xAxisTickFormat={xAxisTickFormat}
+              onAddComment={onAddComment}
+            />
+          )}
+        </Responsive.ParentSize>
+      </div>
+      <Legend
+        base={base as number}
+        displayCompleteGraph={displayCompleteGraph}
+        displayTimeValues={displayTimeValues}
+        limitLegendRows={limitLegendRows}
+        lines={sortedLines}
+        timeSeries={timeSeries}
+        toggable={toggableLegend}
+        onClearHighlight={clearHighlight}
+        onHighlight={highlightLine}
+        onSelect={selectMetricLine}
+        onToggle={toggleMetricLine}
+      />
     </div>
   );
 };

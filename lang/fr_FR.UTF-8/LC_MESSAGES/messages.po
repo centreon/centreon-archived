@@ -15500,6 +15500,9 @@ msgstr "Filtre id %s non trouvé"
 msgid "Filter already exists"
 msgstr "Le filtre existe déjà"
 
+msgid "Filter name already used"
+msgstr "Le nom de filtre est déjà utilisé"
+
 msgid "Error when adding filter %s"
 msgstr "Erreur lors de l'ajout du filtre %s"
 
@@ -15937,7 +15940,7 @@ msgstr "Commande de désacquittement envoyée"
 msgid "Unable to find the Engine configuration"
 msgstr "Impossible de trouver la configuration du moteur de supervision"
 
-msgid "Ip address can not be empty"
+msgid "Ip address cannot be empty"
 msgstr "L'adresse IP ne peut pas être vide"
 
 msgid "Monitoring server is not correctly defined"
@@ -16157,7 +16160,7 @@ msgid "The duration must be lesser than a year"
 msgstr "La durée doit être inférieure à une année"
 
 msgid "Authentication failed"
-msgstr "Authentification échouée"
+msgstr "Echec de l'authentification"
 
 msgid "User cannot be logout"
 msgstr "L'utilisateur ne peut pas être déconnecté"
@@ -16302,3 +16305,273 @@ msgstr "L'export et le rechargement de la configuration a echoué"
 
 msgid "Enable the one-click export button for poller configuration"
 msgstr "Activer le bouton d’export de la configuration des collecteurs en un seul clic"
+
+msgid "Status type"
+msgstr "Type de status"
+
+msgid "Hard"
+msgstr "Dur"
+
+msgid "Soft"
+msgstr "Souple"
+
+msgid "User is not allowed to reach web application"
+msgstr "L'utilisateur n'est pas autorisé à joindre l'application web"
+
+msgid "You are disconnected"
+msgstr "Vous êtes déconnecté"
+
+msgid "Centreon is loading..."
+msgstr "Centreon est en cours de chargement..."
+
+msgid "Login succeeded"
+msgstr "Connexion réussie"
+
+msgid "Login"
+msgstr "Connexion"
+
+msgid "Centreon Logo"
+msgstr "Logo de Centreon"
+
+msgid "You are not allowed to see this page"
+msgstr "Vous n'êtes pas autorisé à voir cette page"
+
+msgid "This page could not be found"
+msgstr "Cette page n'a pas pu être trouvée"
+
+msgid "Successful logout"
+msgstr "Déconnexion réussie"
+
+msgid "No session token provided"
+msgstr "Aucun jeton de session fourni"
+
+msgid "Display the password"
+msgstr "Afficher le mot de passe"
+
+msgid "Hide the password"
+msgstr "Cacher le mot de passe"
+
+msgid "centreon is not properly installed"
+msgstr "centreon n'est pas correctement installé"
+
+msgid "Define the password security policy"
+msgstr "Définir la politique de sécurité de mot de passe"
+
+msgid "Password case policy"
+msgstr "Politique de casse du mot de passe"
+
+msgid "Password minimum length"
+msgstr "Longueur minimum du mot de passe"
+
+msgid "Minimum 8 characters"
+msgstr "8 caractères minimum"
+
+msgid "Maximum 128 characters"
+msgstr "128 caractères maximum"
+
+msgid "Force to use upper case"
+msgstr "Forcer à utiliser une majuscule"
+
+msgid "Force to use lower case"
+msgstr "Forcer à utiliser une minuscule"
+
+msgid "Force to use numbers"
+msgstr "Forcer à utiliser des nombres"
+
+msgid "Force to use special characters"
+msgstr "Forcer à utiliser des caractères spéciaux"
+
+msgid "Password cases"
+msgstr "Casses du mot de passe"
+
+msgid "Weak"
+msgstr "Faible"
+
+msgid "Good"
+msgstr "Bon"
+
+msgid "Strong"
+msgstr "Fort"
+
+msgid "Password expiration policy"
+msgstr "Politique d'expiration du mot de passe"
+
+msgid "Password expiration"
+msgstr "Expiration du mot de passe"
+
+msgid "Choose a duration between 1 hour and 12 months"
+msgstr "Veuillez choisir une durée entre 1 heure et 12 mois"
+
+msgid "Month"
+msgstr "Mois"
+
+msgid "Months"
+msgstr "Mois"
+
+msgid "Hour"
+msgstr "Heure"
+
+msgid "Minute"
+msgstr "Minute"
+
+msgid "Second"
+msgstr "Seconde"
+
+msgid "Can reuse last 3 passwords"
+msgstr "Peut réutiliser les 3 derniers mot de passe"
+
+msgid "Time before setting a new password"
+msgstr "Durée avant de définir un nouveau mot de passe"
+
+msgid "Choose a duration between 1 hour and 1 week"
+msgstr "Veuillez choisir une durée entre 1 heure et 1 semaine"
+
+msgid "Password blocking policy"
+msgstr "Politique de blocage du mot de passe"
+
+msgid "Number of attempts before blocking new attempts"
+msgstr "Nombre de tentatives avant le blocage d'une nouvelle tentative"
+
+msgid "Choose a value between 1 and 10"
+msgstr "Veuillez choisir une valeur entre 1 et 10"
+
+msgid "Blocking time before new connection attempt"
+msgstr "Durée de blocage avant une nouvelle tentative"
+
+msgid "Blocking duration must be less than or equal to 7 days"
+msgstr "La durée de blocage doit être inférieure ou égale à 7 jours"
+
+msgid "Saving..."
+msgstr "En cours de sauvegarde..."
+
+msgid "Saved"
+msgstr "Sauvegardé"
+
+msgid "Password security policy saved"
+msgstr "Politique de sécurité de mot de passe sauvegardée"
+
+msgid "Failed to save password security policy"
+msgstr "La sauvegarde de la politique de définition de mot de passe a échoué"
+
+msgid "This will not be used because the number of attempts is not defined"
+msgstr "Ceci ne va pas être utilisé car le nombre de tentatives n'est pas défini"
+
+msgid "You can't change your password because the delay before changing password is not over."
+msgstr "Vous ne pouvez pas changer votre mot de passe car le délai avant changement de mot de passe n'est pas encore terminé."
+
+msgid "Your password must be %d characters long"
+msgstr "Votre mot de passe doit contenir %d caractères"
+
+msgid "and must contain"
+msgstr "et doit contenir"
+
+msgid "uppercase characters"
+msgstr "caractères majuscules"
+
+msgid "lowercase characters"
+msgstr "caractères minuscules"
+
+msgid "numbers"
+msgstr "nombres"
+
+msgid "special characters among '%s'"
+msgstr "caractères spéciaux parmi '%s'"
+
+msgid "Your password has already been used. Please choose a different password from the previous three."
+msgstr "Votre mot de passe a déjà été utilisé. Veuillez choisir un mot de passe différent des trois précédents."
+
+msgid "Your password has expired. Please change it."
+msgstr "Votre mot de passe a expiré. Veuillez le changer."
+
+msgid "Your password will expire in %s days."
+msgstr "Votre mot de passe expirera dans %s jours."
+
+msgid "Security policy not found. Please verify that your installation is valid"
+msgstr "Politique de sécurité non trouvée. Veuillez vérifier que votre installation est valide"
+
+msgid "Error while reading local provider configuration"
+msgstr "Erreur lors de la lecture de la configuration du fournisseur local"
+
+msgid "Your autologin key must be different than your current password"
+msgstr "Votre clé d'autologin doit être différente de votre mot de passe actuel"
+
+msgid "Your new password and autologin key must be different"
+msgstr "Votre nouveau mot de passe et votre clé d'autologin doivent être différents"
+
+msgid "Error on adding a host (Reason: %s)"
+msgstr "Erreur lors de l'ajout d'un hôte (Raison : %s)"
+
+msgid "Error on updating a host (Reason: %s)"
+msgstr "Erreur lors de la mise à jour d'un hôte (Raison : %s)"
+
+msgid "Error on removing services from the host #%d"
+msgstr "Erreur lors de la suppression des services de l'hôte #%d"
+
+msgid "You have been logged out"
+msgstr "Vous avez été déconnecté"
+
+msgid "Profile"
+msgstr "Profil"
+
+msgid "Role Relations"
+msgstr "Relations de rôle"
+
+msgid "Linked to Roles"
+msgstr "Lié aux rôles"
+
+msgid "Local provider configuration not found"
+msgstr "Configuration du fournisseur d'accès local non trouvée"
+
+msgid "User information not found"
+msgstr "Informations utilisateur non trouvées"
+
+msgid "User is blocked"
+msgstr "L'utilisateur est bloqué"
+
+msgid "Your password doesn't match the security policy"
+msgstr "Votre mot de passe ne correspond pas à la politique de sécurité"
+
+msgid "Error on reading host macros (Reason: %s)"
+msgstr "Erreur lors de la lecture des macros de l'hôte (Raison : %s)"
+
+msgid "Error on updating a host macro (Reason: %s)"
+msgstr "Erreur lors de la mise à jour d'une macro d'hôte (Raison : %s)"
+
+msgid "Error on reading host templates (Reason: %s)"
+msgstr "Erreur lors de la lecture des modèles d'hôtes (Raison : %s)"
+
+msgid "Error while linking template (id: %d) to host (id: %d)"
+msgstr "Erreur lors de la liaison du modèle (id: %d) à l'hôte (id: %d)"
+
+msgid "Error while linking template %s to host (id: %d)"
+msgstr "Erreur lors de la liaison du modèle %s à l'hôte (id: %d)"
+
+msgid "Reset your password"
+msgstr "Réinitialiser votre mot de passe"
+
+msgid "Current password"
+msgstr "Mot de passe actuel"
+
+msgid "New password"
+msgstr "Nouveau mot de passe"
+
+msgid "New password confirmation"
+msgstr "Confirmation du nouveau mot de passe"
+
+msgid "New passwords must match"
+msgstr "Les nouveaux mots de passe doivent correspondre"
+
+msgid "The new password is the same as the old password"
+msgstr "Le nouveau mot de passe est identique au mot de passe actuel"
+
+msgid "Reset password"
+msgstr "Réinitialiser le mot de passe"
+
+msgid "Password renewed"
+msgstr "Mot de passe renouvelé"
+
+msgid "Your password will expire in"
+msgstr "Votre mot de passe expirera dans"
+
+msgid "Password has expired"
+msgstr "Votre mot de passe a expiré"

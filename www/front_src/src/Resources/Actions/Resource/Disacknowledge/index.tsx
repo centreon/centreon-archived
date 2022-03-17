@@ -3,8 +3,7 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { propEq } from 'ramda';
 
-import { Alert } from '@material-ui/lab';
-import { FormControlLabel, Checkbox, Grid } from '@material-ui/core';
+import { Alert, FormControlLabel, Checkbox, Grid } from '@mui/material';
 
 import { useSnackbar, useRequest, Dialog } from '@centreon/ui';
 
@@ -105,7 +104,7 @@ const DisacknowledgeForm = ({
                   onChange={changeDisacknowledgeAttachedRessources}
                 />
               }
-              label={t(labelDisacknowledgeServices)}
+              label={t(labelDisacknowledgeServices) as string}
             />
           </Grid>
         )}

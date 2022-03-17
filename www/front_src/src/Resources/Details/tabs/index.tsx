@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { isNil, find, propEq, invertObj, path, equals } from 'ramda';
 
-import { makeStyles } from '@material-ui/core';
+import makeStyles from '@mui/styles/makeStyles';
 
 import {
   labelDetails,
@@ -12,13 +12,15 @@ import {
   labelMetrics,
 } from '../../translatedLabels';
 import { ResourceDetails } from '../models';
+import DetailsLoadingSkeleton from '../LoadingSkeleton';
 
-import DetailsTab from './Details';
-import GraphTab from './Graph';
 import { Tab, TabId } from './models';
-import TimelineTab from './Timeline';
-import ServicesTab from './Services';
-import MetricsTab from './Metrics';
+
+const DetailsTab = React.lazy(() => import('./Details'));
+const GraphTab = React.lazy(() => import('./Graph'));
+const TimelineTab = React.lazy(() => import('./Timeline'));
+const ServicesTab = React.lazy(() => import('./Services'));
+const MetricsTab = React.lazy(() => import('./Metrics'));
 
 const detailsTabId = 0;
 const servicesTabId = 1;
@@ -33,6 +35,7 @@ export interface TabProps {
 const tabs: Array<Tab> = [
   {
     Component: DetailsTab,
+    ariaLabel: labelDetails,
     getIsActive: (): boolean => true,
     id: detailsTabId,
     title: labelDetails,
@@ -99,7 +102,9 @@ const TabById = ({ id, details }: TabByIdProps): JSX.Element | null => {
 
   return (
     <div className={classes.container}>
-      <Component details={details} />
+      <React.Suspense fallback={<DetailsLoadingSkeleton />}>
+        <Component details={details} />
+      </React.Suspense>
     </div>
   );
 };

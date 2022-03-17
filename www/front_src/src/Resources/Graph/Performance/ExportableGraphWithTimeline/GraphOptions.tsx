@@ -2,22 +2,25 @@ import * as React from 'react';
 
 import { isNil, not, pluck, values } from 'ramda';
 import { useTranslation } from 'react-i18next';
+import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 
-import {
-  FormControlLabel,
-  FormGroup,
-  makeStyles,
-  Popover,
-  Switch,
-} from '@material-ui/core';
-import SettingsIcon from '@material-ui/icons/Settings';
+import { FormControlLabel, FormGroup, Popover, Switch } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import SettingsIcon from '@mui/icons-material/Settings';
 
 import { IconButton, useMemoComponent } from '@centreon/ui';
 
 import { labelGraphOptions } from '../../../translatedLabels';
-import { GraphOption } from '../../../Details/models';
+import { GraphOption, GraphOptions } from '../../../Details/models';
+import {
+  setGraphTabParametersDerivedAtom,
+  tabParametersAtom,
+} from '../../../Details/detailsAtoms';
 
-import { useGraphOptionsContext } from './useGraphOptions';
+import {
+  changeGraphOptionsDerivedAtom,
+  graphOptionsAtom,
+} from './graphOptionsAtoms';
 
 const useStyles = makeStyles((theme) => ({
   optionLabel: {
@@ -29,11 +32,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const GraphOptions = (): JSX.Element => {
+const Options = (): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
   const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
-  const { graphOptions, changeGraphOptions } = useGraphOptionsContext();
+
+  const graphOptions = useAtomValue(graphOptionsAtom);
+  const tabParameters = useAtomValue(tabParametersAtom);
+  const changeGraphOptions = useUpdateAtom(changeGraphOptionsDerivedAtom);
+  const setGraphTabParameters = useUpdateAtom(setGraphTabParametersDerivedAtom);
 
   const openGraphOptions = (event: React.MouseEvent): void => {
     if (isNil(anchorEl)) {
@@ -53,11 +60,19 @@ const GraphOptions = (): JSX.Element => {
     graphOptionsConfiguration,
   );
 
+  const changeTabGraphOptions = (options: GraphOptions): void => {
+    setGraphTabParameters({
+      ...tabParameters.graph,
+      options,
+    });
+  };
+
   return useMemoComponent({
     Component: (
       <>
         <IconButton
           ariaLabel={t(labelGraphOptions)}
+          data-testid={labelGraphOptions}
           size="small"
           title={t(labelGraphOptions)}
           onClick={openGraphOptions}
@@ -82,11 +97,16 @@ const GraphOptions = (): JSX.Element => {
                     checked={value}
                     color="primary"
                     size="small"
-                    onChange={changeGraphOptions(id)}
+                    onChange={(): void =>
+                      changeGraphOptions({
+                        changeTabGraphOptions,
+                        graphOptionId: id,
+                      })
+                    }
                   />
                 }
                 key={label}
-                label={t(label)}
+                label={t(label) as string}
                 labelPlacement="start"
               />
             ))}
@@ -98,4 +118,4 @@ const GraphOptions = (): JSX.Element => {
   });
 };
 
-export default GraphOptions;
+export default Options;

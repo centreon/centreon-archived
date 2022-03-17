@@ -301,6 +301,8 @@ abstract class CentreonObject
         if (method_exists($this, "insertRelations")) {
             $this->insertRelations($id);
         }
+        $aclObj = new CentreonACL($this->dependencyInjector);
+        $aclObj->reload(true);
     }
 
 
@@ -326,6 +328,8 @@ abstract class CentreonObject
         if (count($ids)) {
             $this->object->delete($ids[0]);
             $this->addAuditLog('d', $ids[0], $objectName);
+            $aclObj = new CentreonACL($this->dependencyInjector);
+            $aclObj->reload(true);
         } else {
             throw new CentreonClapiException(self::OBJECT_NOT_FOUND . ":" . $objectName);
         }
@@ -469,9 +473,9 @@ abstract class CentreonObject
         $filterId = $this->getObjectId($filterName);
         $filterIds = is_array($filterId) ? $filterId : [$filterId];
         foreach ($filterIds as $filterId) {
-            $exported->ariane_push($this->action, $filterId, $filterName);
-            if ($exported->is_exported($this->action, $filterId, $filterName)) {
-                $exported->ariane_pop();
+            $exported->arianePush($this->action, $filterId, $filterName);
+            if ($exported->isExported($this->action, $filterId, $filterName)) {
+                $exported->arianePop();
                 return false;
             }
         }
@@ -534,7 +538,7 @@ abstract class CentreonObject
             }
         }
 
-        CentreonExported::getInstance()->ariane_pop();
+        CentreonExported::getInstance()->arianePop();
         return true;
     }
 

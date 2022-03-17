@@ -105,6 +105,7 @@ foreach ($ids as $arId) {
     if ($ldap->connect()) {
         $connect = true;
     }
+
     if ($connect) {
         $ldap_search_filter = "";
         $ldap_base_dn = "";

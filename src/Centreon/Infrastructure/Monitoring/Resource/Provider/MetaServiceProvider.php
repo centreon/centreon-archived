@@ -105,8 +105,8 @@ final class MetaServiceProvider extends Provider
             NULL AS `action_url`,
             NULL AS `notes_url`,
             NULL AS `notes_label`,
-            NULL AS `monitoring_server_name`,
-            NULL AS `monitoring_server_id`,
+            i.name AS `monitoring_server_name`,
+            i.instance_id AS `monitoring_server_id`,
             s.command_line AS `command_line`,
             NULL AS `timezone`,
             NULL AS `parent_id`,
@@ -144,6 +144,7 @@ final class MetaServiceProvider extends Provider
             s.last_state_change AS `last_status_change`,
             s.last_notification AS `last_notification`,
             s.notification_number AS `notification_number`,
+            s.state_type AS `state_type`,
             CONCAT(s.check_attempt, '/', s.max_check_attempts, ' (', CASE
                 WHEN s.state_type = 1 THEN 'H'
                 WHEN s.state_type = 0 THEN 'S'
@@ -161,6 +162,9 @@ final class MetaServiceProvider extends Provider
             ON sh.host_id = s.host_id
             AND sh.name LIKE '\_Module\_Meta%'
             AND sh.enabled = 1";
+
+        // get monitoring server information
+        $sql .= " INNER JOIN `:dbstg`.`instances` AS i ON i.instance_id = sh.instance_id";
 
         // show active services only
         $sql .= ' WHERE s.enabled = 1 ';
@@ -221,6 +225,21 @@ final class MetaServiceProvider extends Provider
             }
 
             $sql .= ' AND s.description IN (' . implode(', ', $metaServiceIds) . ')';
+        }
+
+        // apply the state types filter to SQL query
+        $stateTypes = ResourceFilter::map($filter->getStatusTypes(), ResourceFilter::MAP_STATUS_TYPES);
+        if ($stateTypes) {
+            $stateTypesList = [];
+
+            foreach ($stateTypes as $index => $stateType) {
+                $key = ":serviceStateType_{$index}";
+
+                $stateTypesList[] = $key;
+                $collector->addValue($key, $stateType, \PDO::PARAM_INT);
+            }
+
+            $sql .= ' AND s.state_type IN (' . implode(', ', $stateTypesList) . ')';
         }
 
         return $sql;

@@ -145,17 +145,12 @@ class AuthenticateApi
          * Authenticate with the legacy mechanism encapsulated into the Local Provider.
          */
         $this->debug('[AUTHENTICATE API] Authentication using provider', ['provider_name' => LocalProvider::NAME]);
-        $localProvider->authenticate(['login' => $request->getLogin(), 'password' => $request->getPassword()]);
-        if (!$localProvider->isAuthenticated()) {
-            $this->critical(
-                "[AUTHENTICATE API] Provider can't authenticate successfully user ",
-                [
-                    "provider_name" => $localProvider->getName(),
-                    "user" => $request->getLogin()
-                ]
-            );
-            throw AuthenticationException::invalidCredentials();
-        }
+        $localProvider->authenticateOrFail(
+            [
+                'login' => $request->getLogin(),
+                'password' => $request->getPassword(),
+            ],
+        );
     }
 
     /**

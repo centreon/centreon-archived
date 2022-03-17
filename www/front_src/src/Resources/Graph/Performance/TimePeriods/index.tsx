@@ -3,25 +3,31 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { always, cond, lt, lte, map, not, pick, T } from 'ramda';
 import { Responsive } from '@visx/visx';
+import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 
 import {
   Paper,
-  makeStyles,
   ButtonGroup,
   Button,
   useTheme,
   Tooltip,
   Theme,
-} from '@material-ui/core';
-import { CreateCSSProperties } from '@material-ui/styles';
+} from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import { CreateCSSProperties } from '@mui/styles';
 
 import { useMemoComponent } from '@centreon/ui';
 
 import { timePeriods } from '../../../Details/tabs/Graph/models';
 import GraphOptions from '../ExportableGraphWithTimeline/GraphOptions';
-import { useResourceContext } from '../../../Context';
 
 import CustomTimePeriodPickers from './CustomTimePeriodPickers';
+import {
+  changeCustomTimePeriodDerivedAtom,
+  changeSelectedTimePeriodDerivedAtom,
+  customTimePeriodAtom,
+  selectedTimePeriodAtom,
+} from './timePeriodAtoms';
 
 interface StylesProps {
   disablePaper: boolean;
@@ -39,7 +45,7 @@ const useStyles = makeStyles<Theme, StylesProps>((theme) => ({
     backgroundColor: disablePaper ? 'transparent' : 'undefined',
     border: disablePaper ? 'unset' : 'undefined',
     boxShadow: disablePaper ? 'unset' : 'undefined',
-    columnGap: `${theme.spacing(2)}px`,
+    columnGap: theme.spacing(2),
     display: 'grid',
     gridTemplateColumns: `repeat(3, auto)`,
     justifyContent: 'center',
@@ -64,12 +70,14 @@ const TimePeriodButtonGroup = ({
   const { t } = useTranslation();
   const theme = useTheme();
 
-  const {
-    customTimePeriod,
-    changeCustomTimePeriod,
-    changeSelectedTimePeriod,
-    selectedTimePeriod,
-  } = useResourceContext();
+  const customTimePeriod = useAtomValue(customTimePeriodAtom);
+  const selectedTimePeriod = useAtomValue(selectedTimePeriodAtom);
+  const changeCustomTimePeriod = useUpdateAtom(
+    changeCustomTimePeriodDerivedAtom,
+  );
+  const changeSelectedTimePeriod = useUpdateAtom(
+    changeSelectedTimePeriodDerivedAtom,
+  );
 
   const translatedTimePeriodOptions = timePeriodOptions.map((timePeriod) => ({
     ...timePeriod,
@@ -101,6 +109,7 @@ const TimePeriodButtonGroup = ({
                       <Button
                         className={classes.button}
                         component="span"
+                        data-testid={largeName}
                         variant={
                           selectedTimePeriod?.id === id
                             ? 'contained'
@@ -134,6 +143,7 @@ const TimePeriodButtonGroup = ({
       disableGraphOptions,
       disablePaper,
       selectedTimePeriod?.id,
+      customTimePeriod,
     ],
   });
 };

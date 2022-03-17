@@ -13,9 +13,11 @@ import {
   omit,
 } from 'ramda';
 import { useTranslation } from 'react-i18next';
+import { useUpdateAtom } from 'jotai/utils';
+import { useAtom } from 'jotai';
 
-import DeleteIcon from '@material-ui/icons/Delete';
-import { makeStyles } from '@material-ui/core';
+import DeleteIcon from '@mui/icons-material/Delete';
+import makeStyles from '@mui/styles/makeStyles';
 
 import {
   ContentWithCircularLoading,
@@ -38,8 +40,11 @@ import {
 } from '../../translatedLabels';
 import { updateFilter, deleteFilter } from '../api';
 import { Filter, newFilter } from '../models';
-import { ResourceContext, useResourceContext } from '../../Context';
-import memoizeComponent from '../../memoizedComponent';
+import {
+  appliedFilterAtom,
+  currentFilterAtom,
+  customFiltersAtom,
+} from '../filterAtoms';
 
 const useStyles = makeStyles((theme) => ({
   filterCard: {
@@ -51,29 +56,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-interface EditFilterCardProps {
+interface Props {
   filter: Filter;
 }
 
-type Props = EditFilterCardProps &
-  Pick<
-    ResourceContext,
-    | 'customFilters'
-    | 'setCurrentFilter'
-    | 'setCustomFilters'
-    | 'setAppliedFilter'
-    | 'currentFilter'
-    | 'currentFilter'
-  >;
-
-const EditFilterCardContent = ({
-  filter,
-  currentFilter,
-  customFilters,
-  setCurrentFilter,
-  setAppliedFilter,
-  setCustomFilters,
-}: Props): JSX.Element => {
+const EditFilterCard = ({ filter }: Props): JSX.Element => {
   const classes = useStyles();
 
   const { t } = useTranslation();
@@ -95,6 +82,10 @@ const EditFilterCardContent = ({
   } = useRequest({
     request: deleteFilter,
   });
+
+  const [currentFilter, setCurrentFilter] = useAtom(currentFilterAtom);
+  const [customFilters, setCustomFilters] = useAtom(customFiltersAtom);
+  const setAppliedFilter = useUpdateAtom(appliedFilterAtom);
 
   const { name, id } = filter;
 
@@ -181,7 +172,12 @@ const EditFilterCardContent = ({
         loading={sendingRequest}
         loadingIndicatorSize={24}
       >
-        <IconButton title={t(labelDelete)} onClick={askDelete}>
+        <IconButton
+          aria-label={t(labelDelete)}
+          size="large"
+          title={t(labelDelete)}
+          onClick={askDelete}
+        >
           <DeleteIcon fontSize="small" />
         </IconButton>
       </ContentWithCircularLoading>
@@ -206,34 +202,6 @@ const EditFilterCardContent = ({
         />
       )}
     </div>
-  );
-};
-
-const memoProps = ['filter', 'currentFilter', 'customFilters'];
-
-const MemoizedEditFilterCardContent = memoizeComponent<Props>({
-  Component: EditFilterCardContent,
-  memoProps,
-});
-
-const EditFilterCard = ({ filter }: EditFilterCardProps): JSX.Element => {
-  const {
-    setCurrentFilter,
-    filterWithParsedSearch,
-    setCustomFilters,
-    customFilters,
-    setAppliedFilter,
-  } = useResourceContext();
-
-  return (
-    <MemoizedEditFilterCardContent
-      currentFilter={filterWithParsedSearch}
-      customFilters={customFilters}
-      filter={filter}
-      setAppliedFilter={setAppliedFilter}
-      setCurrentFilter={setCurrentFilter}
-      setCustomFilters={setCustomFilters}
-    />
   );
 };
 

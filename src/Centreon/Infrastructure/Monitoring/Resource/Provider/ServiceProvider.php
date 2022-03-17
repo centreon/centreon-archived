@@ -156,6 +156,7 @@ final class ServiceProvider extends Provider
             s.last_state_change AS `last_status_change`,
             s.last_notification AS `last_notification`,
             s.notification_number AS `notification_number`,
+            s.state_type AS `state_type`,
             CONCAT(s.check_attempt, '/', s.max_check_attempts, ' (', CASE
                 WHEN s.state_type = 1 THEN 'H'
                 WHEN s.state_type = 0 THEN 'S'
@@ -174,7 +175,7 @@ final class ServiceProvider extends Provider
             FROM `:dbstg`.`services` AS s
             INNER JOIN `:dbstg`.`hosts` sh
                 ON sh.host_id = s.host_id
-                AND sh.name NOT LIKE '_Module_%'
+                AND sh.name NOT LIKE '\_Module\_%'
                 AND sh.enabled = 1";
 
         // get monitoring server information
@@ -263,6 +264,21 @@ final class ServiceProvider extends Provider
             }
 
             $sql .= ' AND s.state IN (' . implode(', ', $statusList) . ')';
+        }
+
+        // apply the state types filter to SQL query
+        $statusTypes = ResourceFilter::map($filter->getStatusTypes(), ResourceFilter::MAP_STATUS_TYPES);
+        if ($statusTypes) {
+            $statusTypesList = [];
+
+            foreach ($statusTypes as $index => $statusType) {
+                $key = ":serviceStateType_{$index}";
+
+                $statusTypesList[] = $key;
+                $collector->addValue($key, $statusType, \PDO::PARAM_INT);
+            }
+
+            $sql .= ' AND s.state_type IN (' . implode(', ', $statusTypesList) . ')';
         }
 
         if (!empty($filter->getHostIds())) {

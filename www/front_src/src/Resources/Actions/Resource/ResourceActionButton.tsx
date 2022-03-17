@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import { Tooltip, useMediaQuery, useTheme } from '@material-ui/core';
+import { Tooltip, useMediaQuery, useTheme } from '@mui/material';
 
 import { IconButton } from '@centreon/ui';
 
@@ -33,8 +33,14 @@ const ResourceActionButton = ({
 
   if (displayCondensed) {
     return (
-      <IconButton disabled={disabled} title={title} onClick={onClick}>
-        {icon}
+      <IconButton
+        data-testid={label}
+        disabled={disabled}
+        size="large"
+        title={title}
+        onClick={onClick}
+      >
+        <div aria-label={label}>{icon}</div>
       </IconButton>
     );
   }
@@ -43,6 +49,7 @@ const ResourceActionButton = ({
     <Tooltip title={permitted ? '' : labelActionNotPermitted}>
       <span>
         <ActionButton
+          data-testid={label}
           disabled={disabled}
           startIcon={icon}
           variant="contained"

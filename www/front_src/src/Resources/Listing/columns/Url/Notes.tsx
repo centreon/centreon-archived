@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { path } from 'ramda';
 
-import IconLink from '@material-ui/icons/Link';
+import IconLink from '@mui/icons-material/Link';
 
 import { ComponentColumnProps } from '@centreon/ui';
 

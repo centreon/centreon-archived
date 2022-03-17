@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { equals, isNil } from 'ramda';
+import { useAtomValue, useUpdateAtom } from 'jotai/utils';
 
 import {
   PopoverMultiAutocompleteField,
@@ -10,7 +11,10 @@ import {
   useMemoComponent,
 } from '@centreon/ui';
 
-import { ResourceContext, useResourceContext } from '../../Context';
+import {
+  filterWithParsedSearchDerivedAtom,
+  setCriteriaAndNewFilterDerivedAtom,
+} from '../filterAtoms';
 
 import { criteriaValueNameById, selectableCriterias } from './models';
 
@@ -19,12 +23,12 @@ interface Props {
   value: Array<SelectEntry>;
 }
 
-const CriteriaContent = ({
-  name,
-  value,
-  setCriteriaAndNewFilter,
-}: Props & Pick<ResourceContext, 'setCriteriaAndNewFilter'>): JSX.Element => {
+const CriteriaContent = ({ name, value }: Props): JSX.Element => {
   const { t } = useTranslation();
+
+  const setCriteriaAndNewFilter = useUpdateAtom(
+    setCriteriaAndNewFilterDerivedAtom,
+  );
 
   const getTranslated = (values: Array<SelectEntry>): Array<SelectEntry> => {
     return values.map((entry) => ({
@@ -53,7 +57,7 @@ const CriteriaContent = ({
   };
 
   if (isNil(options)) {
-    const getOptionSelected = (option, selectedValue): boolean =>
+    const isOptionEqualToValue = (option, selectedValue): boolean =>
       equals(option.name, selectedValue.name);
 
     const getEndpoint = ({ search, page }): string =>
@@ -69,7 +73,7 @@ const CriteriaContent = ({
         disableSortedOptions
         field="name"
         getEndpoint={getEndpoint}
-        getOptionSelected={getOptionSelected}
+        isOptionEqualToValue={isOptionEqualToValue}
         value={value}
         onChange={(_, updatedValue): void => {
           changeCriteria(updatedValue);
@@ -84,6 +88,7 @@ const CriteriaContent = ({
   return (
     <PopoverMultiAutocompleteField
       {...commonProps}
+      hideInput
       options={translatedOptions}
       value={translatedValues}
       onChange={(_, updatedValue): void => {
@@ -94,17 +99,12 @@ const CriteriaContent = ({
 };
 
 const Criteria = ({ value, name }: Props): JSX.Element => {
-  const { setCriteriaAndNewFilter, filterWithParsedSearch } =
-    useResourceContext();
+  const filterWithParsedSearch = useAtomValue(
+    filterWithParsedSearchDerivedAtom,
+  );
 
   return useMemoComponent({
-    Component: (
-      <CriteriaContent
-        name={name}
-        setCriteriaAndNewFilter={setCriteriaAndNewFilter}
-        value={value}
-      />
-    ),
+    Component: <CriteriaContent name={name} value={value} />,
     memoProps: [value, name, filterWithParsedSearch],
   });
 };

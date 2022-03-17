@@ -1,18 +1,10 @@
 import * as React from 'react';
 
-import {
-  render,
-  RenderResult,
-  waitFor,
-  fireEvent,
-  Matcher,
-  act,
-} from '@testing-library/react';
 import axios from 'axios';
 import {
   partition,
   where,
-  contains,
+  includes,
   head,
   split,
   pipe,
@@ -20,7 +12,6 @@ import {
   prop,
   reject,
   map,
-  includes,
   __,
   propEq,
   find,
@@ -30,15 +21,23 @@ import {
   not,
 } from 'ramda';
 import userEvent from '@testing-library/user-event';
+import { Provider } from 'jotai';
 
-import { Column } from '@centreon/ui';
-import { useUserContext } from '@centreon/ui-context';
+import {
+  render,
+  RenderResult,
+  waitFor,
+  fireEvent,
+  Matcher,
+  act,
+  Column,
+} from '@centreon/ui';
+import { refreshIntervalAtom, userAtom } from '@centreon/ui-context';
 
 import { Resource, ResourceType } from '../models';
-import Context, { ResourceContext } from '../Context';
-import useActions from '../Actions/useActions';
-import useDetails from '../Details/useDetails';
-import useFilter from '../Filter/useFilter';
+import Context, { ResourceContext } from '../testUtils/Context';
+import useActions from '../testUtils/useActions';
+import useFilter from '../testUtils/useFilter';
 import { labelInDowntime, labelAcknowledged } from '../translatedLabels';
 import {
   getListingEndpoint,
@@ -46,11 +45,17 @@ import {
   defaultSecondSortCriteria,
 } from '../testUtils';
 import { unhandledProblemsFilter } from '../Filter/models';
+import useLoadDetails from '../testUtils/useLoadDetails';
+import useDetails from '../Details/useDetails';
 
 import useListing from './useListing';
 import { getColumns, defaultSelectedColumnIds } from './columns';
 
 import Listing from '.';
+
+jest.mock('@centreon/ui-context', () =>
+  jest.requireActual('centreon-frontend/packages/ui-context'),
+);
 
 const columns = getColumns({
   actions: { onAcknowledge: jest.fn() },
@@ -59,18 +64,12 @@ const columns = getColumns({
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
-const mockUserContext = {
+const mockUser = {
+  isExportButtonEnabled: true,
   locale: 'en',
-  refreshInterval: 60,
   timezone: 'Europe/Paris',
 };
-
-jest.mock('@centreon/centreon-frontend/packages/ui-context', () => ({
-  ...(jest.requireActual('@centreon/ui-context') as jest.Mocked<unknown>),
-  useUserContext: jest.fn(),
-}));
-
-const mockedUserContext = useUserContext as jest.Mock;
+const mockRefreshInterval = 60;
 
 jest.mock('../icons/Downtime');
 jest.useFakeTimers();
@@ -138,8 +137,10 @@ let context: ResourceContext;
 const ListingTest = (): JSX.Element => {
   const listingState = useListing();
   const actionsState = useActions();
-  const detailsState = useDetails();
+  const detailsState = useLoadDetails();
   const filterState = useFilter();
+
+  useDetails();
 
   context = {
     ...listingState,
@@ -155,12 +156,21 @@ const ListingTest = (): JSX.Element => {
   );
 };
 
-const renderListing = (): RenderResult => render(<ListingTest />);
+const ListingTestWithJotai = (): JSX.Element => (
+  <Provider
+    initialValues={[
+      [userAtom, mockUser],
+      [refreshIntervalAtom, mockRefreshInterval],
+    ]}
+  >
+    <ListingTest />
+  </Provider>
+);
+
+const renderListing = (): RenderResult => render(<ListingTestWithJotai />);
 
 describe(Listing, () => {
   beforeEach(() => {
-    mockedUserContext.mockReturnValue(mockUserContext);
-
     mockedAxios.get
       .mockResolvedValueOnce({
         data: {
@@ -176,7 +186,6 @@ describe(Listing, () => {
   });
 
   afterEach(() => {
-    mockedUserContext.mockReset();
     mockedAxios.get.mockReset();
   });
 
@@ -188,7 +197,7 @@ describe(Listing, () => {
     });
 
     const [resourcesWithMultipleLines, resourcesWithSingleLines] = partition(
-      where({ information: contains('\n') }),
+      where({ information: includes('\n') }),
       retrievedListing.result,
     );
 
@@ -212,7 +221,7 @@ describe(Listing, () => {
   describe('column sorting', () => {
     afterEach(async () => {
       act(() => {
-        context.setCurrentFilter(unhandledProblemsFilter);
+        context.setCurrentFilter?.(unhandledProblemsFilter);
       });
 
       await waitFor(() => {
@@ -352,7 +361,7 @@ describe(Listing, () => {
 
     await waitFor(() =>
       expect(mockedAxios.get).toHaveBeenCalledWith(
-        getListingEndpoint({ limit: 20 }),
+        getListingEndpoint({ limit: 30 }),
         cancelTokenRequestParam,
       ),
     );
@@ -456,13 +465,13 @@ describe(Listing, () => {
   it.each(additionalIds)(
     'displays additional columns when selected from the corresponding menu',
     async (columnId) => {
-      const { getAllByText, getByTitle, getByText } = renderListing();
+      const { getAllByText, getByLabelText, getByText } = renderListing();
 
       await waitFor(() => {
         expect(mockedAxios.get).toHaveBeenCalled();
       });
 
-      fireEvent.click(getByTitle('Add columns').firstChild as HTMLElement);
+      fireEvent.click(getByLabelText('Add columns').firstChild as HTMLElement);
 
       const column = find(propEq('id', columnId), columns);
       const columnLabel = column?.label as string;

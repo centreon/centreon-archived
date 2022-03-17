@@ -3,20 +3,20 @@ jms_serializer:
         directories:
             centreon:
                 namespace_prefix: "Centreon\\Domain"
-                path: '%kernel.root_dir%/../config/packages/serializer/Centreon'
+                path: '%kernel.project_dir%/config/packages/serializer/Centreon'
             application:
                 namespace_prefix: "Centreon\\Application"
-                path: '%kernel.root_dir%/../config/packages/serializer/Application'
+                path: '%kernel.project_dir%/config/packages/serializer/Application'
             infrastructure:
                 namespace_prefix: "Centreon\\Infrastructure"
-                path: '%kernel.root_dir%/../config/packages/serializer/Infrastructure'
+                path: '%kernel.project_dir%/config/packages/serializer/Infrastructure'
 parameters:
     api.header: "Api-Version"
-    api.version.latest: "21.10"
+    api.version.latest: "22.04"
     debug_log_file: '%log_path%/centreon-web.log'
     env(DEBUG_LEVEL): !php/const Monolog\Logger::NOTICE
     curl.timeout: 60
-    debug_level: "%env(DEBUG_LEVEL)%"
+    debug_level: "%env(int:DEBUG_LEVEL)%"
     env(DEBUG_CONTACT): null
 
 services:
@@ -28,6 +28,9 @@ services:
     Centreon\:
         resource: '../../src/Centreon/*'
         exclude: '../../src/Centreon/Tests'
+
+    Core\:
+        resource: '../../src/Core/*'
 
     Centreon\Infrastructure\DatabaseConnection:
         class: Centreon\Infrastructure\DatabaseConnection
@@ -111,6 +114,7 @@ services:
 
     Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerConfigurationRepositoryInterface:
         class: Centreon\Infrastructure\MonitoringServer\Repository\MonitoringServerConfigurationRepositoryApi
+        public: true
         calls:
         - method: setTimeout
           arguments: ['%curl.timeout%']
@@ -204,6 +208,10 @@ services:
         calls:
             - [setEncryptionFirstKey, ['%env(APP_SECRET)%']]
 
+    Core\Infrastructure\Platform\Repository\FileReadPlatformRepository:
+        class: Core\Infrastructure\Platform\Repository\FileReadPlatformRepository
+        arguments: ['%centreon_etc_path%', '%centreon_install_path%']
+
     # Monitoring resources
     _instanceof:
         Centreon\Infrastructure\Monitoring\Resource\Provider\ProviderInterface:
@@ -211,6 +219,8 @@ services:
             calls:
                 - method: setSqlRequestTranslator
                   arguments: ['@sqlRequestTranslator']
+        Core\Infrastructure\RealTime\Api\Hypermedia\HypermediaProviderInterface:
+            tags: ['realtime.api.hypermedia']
 
     Centreon\Domain\Monitoring\Interfaces\ResourceServiceInterface:
         class: Centreon\Domain\Monitoring\ResourceService
@@ -222,6 +232,12 @@ services:
               arguments: ['@sqlRequestTranslator']
             - method: setProviders
               arguments: [!tagged_iterator 'monitoring.resource.providers']
+
+    Core\Infrastructure\RealTime\Api\Hypermedia\HypermediaCreator:
+        class: Core\Infrastructure\RealTime\Api\Hypermedia\HypermediaCreator
+        calls:
+            - method: setHypermediaProviders
+              arguments: [!tagged_iterator 'realtime.api.hypermedia']
 
     # Filters
     Centreon\Domain\Filter\Interfaces\FilterServiceInterface:
@@ -314,7 +330,7 @@ services:
     Centreon\Domain\Menu\Interfaces\MenuRepositoryInterface:
         class: Centreon\Infrastructure\Menu\MenuRepositoryRDB
 
-    Centreon\Domain\Authentication\UseCase\Authenticate:
+    Core\Application\Security\UseCase\LoginSession\LoginSession:
         arguments: [ "%redirect_default_page%" ]
         public: true
 

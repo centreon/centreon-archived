@@ -23,7 +23,6 @@ namespace Tests\Security;
 use PHPUnit\Framework\Error\Warning;
 use PHPUnit\Framework\TestCase;
 use Security\Encryption;
-use ValueError;
 
 class EncryptionTest extends TestCase
 {
@@ -95,8 +94,8 @@ class EncryptionTest extends TestCase
 
     public function testWarningOnBadHashAlgorihtmWhileEncryption(): void
     {
-        $this->expectWarning(Warning::class);
-        $this->expectWarningMessage('openssl_cipher_iv_length(): Unknown cipher algorithm');
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('openssl_cipher_iv_length(): Unknown cipher algorithm');
         $encryption = (new Encryption('bad-algorithm'))
             ->setFirstKey($this->secondKey)
             ->setSecondKey($this->secondKey);
@@ -143,8 +142,8 @@ class EncryptionTest extends TestCase
 
     public function testWarningOnBadHashAlgorihtmWhileDecryption(): void
     {
-        $this->expectWarning();
-        $this->expectWarningMessage('openssl_cipher_iv_length(): Unknown cipher algorithm');
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('openssl_cipher_iv_length(): Unknown cipher algorithm');
         $encryption = (new Encryption('bad-algorithm'))
             ->setFirstKey($this->secondKey)
             ->setSecondKey($this->secondKey);

@@ -1,18 +1,15 @@
+/* eslint-disable react/jsx-no-constructed-context-values */
 import * as React from 'react';
 
-import {
-  render,
-  RenderResult,
-  fireEvent,
-  waitFor,
-  act,
-} from '@testing-library/react';
 import axios from 'axios';
 import { last, omit, propEq } from 'ramda';
 import userEvent from '@testing-library/user-event';
+import { Provider } from 'jotai';
 
-import useFilter from '../useFilter';
-import Context, { ResourceContext } from '../../Context';
+import { render, RenderResult, fireEvent, waitFor, act } from '@centreon/ui';
+
+import useFilter from '../../testUtils/useFilter';
+import Context, { ResourceContext } from '../../testUtils/Context';
 import {
   labelSaveFilter,
   labelSave,
@@ -51,7 +48,13 @@ const SaveMenuTest = (): JSX.Element => {
   );
 };
 
-const renderSaveMenu = (): RenderResult => render(<SaveMenuTest />);
+const SaveMenuTestWithJotai = (): JSX.Element => (
+  <Provider>
+    <SaveMenuTest />
+  </Provider>
+);
+
+const renderSaveMenu = (): RenderResult => render(<SaveMenuTestWithJotai />);
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
@@ -163,11 +166,11 @@ describe(SaveMenu, () => {
   });
 
   it('disables save menus when the current filter has no changes', async () => {
-    const { getByTitle, getAllByText } = renderSaveMenu();
+    const { getByLabelText, getAllByText } = renderSaveMenu();
 
     await waitFor(() => expect(mockedAxios.get).toHaveBeenCalled());
 
-    userEvent.click(getByTitle(labelSaveFilter));
+    userEvent.click(getByLabelText(labelSaveFilter));
 
     expect(last(getAllByText(labelSaveAsNew))).toHaveAttribute(
       'aria-disabled',
@@ -198,7 +201,7 @@ describe(SaveMenu, () => {
 
     expect(
       last(getAllByText(labelSave))?.parentElement?.parentElement,
-    ).toHaveAttribute('aria-disabled', 'false');
+    ).not.toHaveAttribute('aria-disabled');
 
     fireEvent.click(last(getAllByText(labelSaveAsNew)) as HTMLElement);
 
@@ -244,9 +247,9 @@ describe(SaveMenu, () => {
       );
     });
 
-    expect(
-      last(getAllByText(labelSave))?.parentElement?.parentElement,
-    ).toHaveAttribute('aria-disabled', 'false');
+    expect(last(getAllByText(labelSave))?.parentElement).not.toHaveAttribute(
+      'aria-disabled',
+    );
 
     fireEvent.click(last(getAllByText(labelSave)) as HTMLElement);
 

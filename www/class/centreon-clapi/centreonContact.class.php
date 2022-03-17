@@ -1,6 +1,7 @@
 <?php
+
 /*
- * Copyright 2005-2015 CENTREON
+ * Copyright 2005-2021 CENTREON
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -35,6 +36,7 @@
 
 namespace CentreonClapi;
 
+require_once __DIR__ . '/../../../bootstrap.php';
 require_once "centreonObject.class.php";
 require_once "centreonUtils.class.php";
 require_once "centreonTimePeriod.class.php";
@@ -51,23 +53,22 @@ require_once "Centreon/Object/Relation/Contact/Command/Service.php";
  */
 class CentreonContact extends CentreonObject
 {
-
-    const ORDER_UNIQUENAME = 1;
-    const ORDER_NAME = 0;
-    const ORDER_MAIL = 2;
-    const ORDER_PASS = 3;
-    const ORDER_ADMIN = 4;
-    const ORDER_ACCESS = 5;
-    const ORDER_LANG = 6;
-    const ORDER_AUTHTYPE = 7;
-    const HOST_NOTIF_TP = "hostnotifperiod";
-    const SVC_NOTIF_TP = "svcnotifperiod";
-    const HOST_NOTIF_CMD = "hostnotifcmd";
-    const SVC_NOTIF_CMD = "svcnotifcmd";
-    const UNKNOWN_LOCALE = "Invalid locale";
-    const UNKNOWN_TIMEZONE = "Invalid timezone";
-    const CONTACT_LOCATION = "timezone";
-    const UNKNOWN_NOTIFICATION_OPTIONS = "Invalid notifications options";
+    public const ORDER_UNIQUENAME = 1;
+    public const ORDER_NAME = 0;
+    public const ORDER_MAIL = 2;
+    public const ORDER_PASS = 3;
+    public const ORDER_ADMIN = 4;
+    public const ORDER_ACCESS = 5;
+    public const ORDER_LANG = 6;
+    public const ORDER_AUTHTYPE = 7;
+    public const HOST_NOTIF_TP = "hostnotifperiod";
+    public const SVC_NOTIF_TP = "svcnotifperiod";
+    public const HOST_NOTIF_CMD = "hostnotifcmd";
+    public const SVC_NOTIF_CMD = "svcnotifcmd";
+    public const UNKNOWN_LOCALE = "Invalid locale";
+    public const UNKNOWN_TIMEZONE = "Invalid timezone";
+    public const CONTACT_LOCATION = "timezone";
+    public const UNKNOWN_NOTIFICATION_OPTIONS = "Invalid notifications options";
 
     protected $register;
     public static $aDepends = array(
@@ -133,7 +134,7 @@ class CentreonContact extends CentreonObject
             'contact_activate' => '1',
             'contact_register' => '1'
         );
-        $this->insertParams = array(
+        $this->insertParams = [
             'contact_name',
             'contact_alias',
             'contact_email',
@@ -142,12 +143,13 @@ class CentreonContact extends CentreonObject
             'contact_oreon',
             'contact_lang',
             'contact_auth_type'
-        );
+        ];
         $this->exportExcludedParams = array_merge(
             $this->insertParams,
             array(
                 $this->object->getPrimaryKey(),
-                "contact_register"
+                "contact_register",
+                "ar_id"
             )
         );
         $this->action = "CONTACT";
@@ -170,22 +172,6 @@ class CentreonContact extends CentreonObject
             throw new CentreonClapiException("Unknown contact: " . $contact_name);
         }
         return $cIds[0];
-    }
-
-    /**
-     * Validate Name format
-     *
-     * @param $name
-     * @return mixed
-     */
-    protected function validateName($name)
-    {
-        if (preg_match('/^[0-9a-zA-Z\_\-\ \/\\\.]*$/', $name, $matches) && strlen($name)) {
-            return $this->checkNameformat($name);
-        } else {
-            print "Name '$name' doesn't match with Centreon naming rules.\n";
-            exit(1);
-        }
     }
 
     /**
@@ -258,6 +244,7 @@ class CentreonContact extends CentreonObject
             "AND"
         );
         foreach ($elements as $tab) {
+            unset($tab['contact_passwd']);
             echo implode($this->delim, $tab) . "\n";
         }
     }
@@ -278,11 +265,18 @@ class CentreonContact extends CentreonObject
         $addParams[$this->object->getUniqueLabelField()] = $params[self::ORDER_UNIQUENAME];
         $addParams['contact_name'] = $this->checkIllegalChar($params[self::ORDER_NAME]);
         $addParams['contact_email'] = $params[self::ORDER_MAIL];
-        $addParams['contact_passwd'] = md5($params[self::ORDER_PASS]);
 
-        $algo = $this->dependencyInjector['utils']->detectPassPattern($params[self::ORDER_PASS]);
-        if (!$algo) {
-            $addParams['contact_passwd'] = $this->dependencyInjector['utils']->encodePass($params[self::ORDER_PASS]);
+        if (password_needs_rehash($params[self::ORDER_PASS], \CentreonAuth::PASSWORD_HASH_ALGORITHM)) {
+            $contact = new \CentreonContact($this->db);
+            try {
+                $contact->respectPasswordPolicyOrFail($params[self::ORDER_PASS], null);
+            } catch (\Throwable $e) {
+                throw new CentreonClapiException($e->getMessage(), $e->getCode(), $e);
+            }
+            $addParams['contact_passwd'] = password_hash(
+                $params[self::ORDER_PASS],
+                \CentreonAuth::PASSWORD_HASH_ALGORITHM
+            );
         } else {
             $addParams['contact_passwd'] = $params[self::ORDER_PASS];
         }
@@ -377,9 +371,17 @@ class CentreonContact extends CentreonObject
                     }
                     $params[1] = "lang";
                     $params[2] = $completeLanguage;
-                } elseif ($params[1] == "password") {
+                } elseif ($params[1] === "password") {
                     $params[1] = "passwd";
-                    $params[2] = md5(trim($params[2]));
+                    if (password_needs_rehash($params[2], \CentreonAuth::PASSWORD_HASH_ALGORITHM)) {
+                        $contact = new \CentreonContact($this->db);
+                        try {
+                            $contact->respectPasswordPolicyOrFail($params[2], $objectId);
+                        } catch (\Throwable $e) {
+                            throw new CentreonClapiException($e->getMessage(), $e->getCode(), $e);
+                        }
+                        $params[2] = password_hash($params[2], \CentreonAuth::PASSWORD_HASH_ALGORITHM);
+                    }
                 } elseif ($params[1] == "hostnotifopt") {
                     $params[1] = "host_notification_options";
                     $aNotifs = explode(",", $params[2]);
@@ -404,7 +406,6 @@ class CentreonContact extends CentreonObject
                             'reach_api',
                             'reach_api_rt',
                             'default_page',
-                            'ar_id',
                             'show_deprecated_pages',
                             'enable_one_click_export'
                         ]
@@ -527,10 +528,6 @@ class CentreonContact extends CentreonObject
             "AND"
         );
         foreach ($elements as $element) {
-            $algo = $this->dependencyInjector['utils']->detectPassPattern($element['contact_passwd']);
-            if (!$algo) {
-                $element['contact_passwd'] = $this->dependencyInjector['utils']->encodePass($element['contact_passwd']);
-            }
             $addStr = $this->action . $this->delim . "ADD";
             foreach ($this->insertParams as $param) {
                 $addStr .= $this->delim . $element[$param];

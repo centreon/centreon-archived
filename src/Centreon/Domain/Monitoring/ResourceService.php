@@ -23,9 +23,6 @@ declare(strict_types=1);
 namespace Centreon\Domain\Monitoring;
 
 use Centreon\Domain\Entity\EntityValidator;
-use Centreon\Domain\MetaServiceConfiguration\Exception\MetaServiceConfigurationException;
-use Centreon\Domain\MetaServiceConfiguration\Interfaces\MetaServiceConfigurationReadRepositoryInterface;
-use Centreon\Domain\Monitoring\ResourceGroup;
 use Centreon\Domain\Monitoring\ResourceFilter;
 use Centreon\Domain\Repository\RepositoryException;
 use Centreon\Domain\Service\AbstractCentreonService;
@@ -60,11 +57,6 @@ class ResourceService extends AbstractCentreonService implements ResourceService
     private $accessGroupRepository;
 
     /**
-     * @var MetaServiceConfigurationReadRepositoryInterface
-     */
-    private $metaServiceConfigurationRepository;
-
-    /**
      * @param ResourceRepositoryInterface $resourceRepository
      * @param MonitoringRepositoryInterface $monitoringRepository,
      * @param AccessGroupRepositoryInterface $accessGroupRepository
@@ -72,13 +64,11 @@ class ResourceService extends AbstractCentreonService implements ResourceService
     public function __construct(
         ResourceRepositoryInterface $resourceRepository,
         MonitoringRepositoryInterface $monitoringRepository,
-        AccessGroupRepositoryInterface $accessGroupRepository,
-        MetaServiceConfigurationReadRepositoryInterface $metaServiceConfigurationRepository
+        AccessGroupRepositoryInterface $accessGroupRepository
     ) {
         $this->resourceRepository = $resourceRepository;
         $this->monitoringRepository = $monitoringRepository;
         $this->accessGroupRepository = $accessGroupRepository;
-        $this->metaServiceConfigurationRepository = $metaServiceConfigurationRepository;
     }
 
     /**
@@ -128,123 +118,6 @@ class ResourceService extends AbstractCentreonService implements ResourceService
         }
 
         return $list;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function enrichHostWithDetails(ResourceEntity $resource): void
-    {
-        $downtimes = $this->monitoringRepository->findDowntimes(
-            $resource->getId(),
-            0
-        );
-        $resource->setDowntimes($downtimes);
-
-        if ($resource->getAcknowledged()) {
-            $acknowledgements = $this->monitoringRepository->findAcknowledgements(
-                $resource->getId(),
-                0
-            );
-            if (!empty($acknowledgements)) {
-                $resource->setAcknowledgement($acknowledgements[0]);
-            }
-        }
-
-        /**
-         * Get hostgroups on which the actual host belongs
-         */
-        $hostGroups = $this->monitoringRepository
-            ->findHostGroups($resource->getId());
-
-
-        $resourceGroups = [];
-
-        foreach ($hostGroups as $hostGroup) {
-            $resourceGroups[] = new ResourceGroup($hostGroup->getId(), $hostGroup->getName());
-        }
-
-        /**
-         * Assign those resource groups to the actual resource
-         */
-        $resource->setGroups($resourceGroups);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function enrichServiceWithDetails(ResourceEntity $resource): void
-    {
-        if ($resource->getParent() === null) {
-            throw new ResourceException(_('Parent of resource type service cannot be null'));
-        }
-
-        $downtimes = $this->monitoringRepository->findDowntimes(
-            $resource->getParent()->getId(),
-            $resource->getId()
-        );
-        $resource->setDowntimes($downtimes);
-
-        if ($resource->getAcknowledged()) {
-            $acknowledgements = $this->monitoringRepository->findAcknowledgements(
-                $resource->getParent()->getId(),
-                $resource->getId()
-            );
-            if (!empty($acknowledgements)) {
-                $resource->setAcknowledgement($acknowledgements[0]);
-            }
-        }
-
-        /**
-         * Get servicegroups to which belongs the actual service resource.
-         */
-        $serviceGroups = $this->monitoringRepository
-            ->findServiceGroupsByHostAndService($resource->getParent()->getId(), $resource->getId());
-
-        $resourceGroups = [];
-
-        foreach ($serviceGroups as $serviceGroup) {
-            $resourceGroups[] = new ResourceGroup($serviceGroup->getId(), $serviceGroup->getName());
-        }
-
-        /**
-         * Add those groups to the actual resource detailed.
-         */
-        $resource->setGroups($resourceGroups);
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    public function enrichMetaServiceWithDetails(ResourceEntity $resource): void
-    {
-        $downtimes = $this->monitoringRepository->findDowntimes(
-            $resource->getHostId(),
-            $resource->getServiceId()
-        );
-        $resource->setDowntimes($downtimes);
-
-        if ($resource->getAcknowledged()) {
-            $acknowledgements = $this->monitoringRepository->findAcknowledgements(
-                $resource->getHostId(),
-                $resource->getServiceId()
-            );
-            if (!empty($acknowledgements)) {
-                $resource->setAcknowledgement($acknowledgements[0]);
-            }
-        }
-        /**
-         * Specific to the Meta Service Resource Type
-         * we need to add the Meta Service calculationType
-         */
-        $metaConfiguration = $this->contact->isAdmin()
-            ? $this->metaServiceConfigurationRepository->findById($resource->getId())
-            : $this->metaServiceConfigurationRepository->findByIdAndContact($resource->getId(), $this->contact);
-
-        if (!is_null($metaConfiguration)) {
-            $resource->setCalculationType($metaConfiguration->getCalculationType());
-        }
     }
 
     /**
@@ -336,7 +209,7 @@ class ResourceService extends AbstractCentreonService implements ResourceService
      * Validates input for resource based on groups
      * @param EntityValidator $validator
      * @param ResourceEntity $resource
-     * @param array<string, mixed> $contextGroups
+     * @param array<string> $contextGroups
      * @return ConstraintViolationListInterface<mixed>
      */
     public static function validateResource(

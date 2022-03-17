@@ -23,20 +23,17 @@ declare(strict_types=1);
 
 namespace Centreon\Application\Controller;
 
-use Centreon\Domain\Authentication\Model\Credentials;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Centreon\Domain\Authentication\UseCase\Logout;
-use Centreon\Domain\Authentication\UseCase\Authenticate;
 use Centreon\Domain\Authentication\UseCase\LogoutRequest;
 use Centreon\Domain\Authentication\UseCase\AuthenticateApi;
-use Centreon\Domain\Authentication\UseCase\AuthenticateRequest;
-use Centreon\Domain\Authentication\UseCase\AuthenticateResponse;
 use Centreon\Domain\Authentication\UseCase\AuthenticateApiRequest;
 use Centreon\Domain\Authentication\UseCase\AuthenticateApiResponse;
 use Centreon\Domain\Authentication\UseCase\FindProvidersConfigurations;
 use Centreon\Domain\Authentication\UseCase\FindProvidersConfigurationsResponse;
+use Centreon\Domain\Authentication\Exception\AuthenticationException;
 use Security\Infrastructure\Authentication\API\Model_2110\ApiAuthenticationFactory;
 use Security\Infrastructure\Authentication\API\Model_2110\ProvidersConfigurationsFactory;
 
@@ -45,6 +42,8 @@ use Security\Infrastructure\Authentication\API\Model_2110\ProvidersConfiguration
  */
 class AuthenticationController extends AbstractController
 {
+    private const INVALID_CREDENTIALS_MESSAGE = 'Invalid credentials';
+
     /**
      * Entry point used to identify yourself and retrieve an authentication token.
      * (If view_response_listener = true, we need to write the following
@@ -63,7 +62,18 @@ class AuthenticationController extends AbstractController
         $password = $contentBody['security']['credentials']['password'] ?? '';
 
         $request = new AuthenticateApiRequest($login, $password);
-        $authenticate->execute($request, $response);
+
+        try {
+            $authenticate->execute($request, $response);
+        } catch (AuthenticationException $e) {
+            return $this->view(
+                [
+                    "code" => Response::HTTP_UNAUTHORIZED,
+                    "message" => _(self::INVALID_CREDENTIALS_MESSAGE),
+                ],
+                Response::HTTP_UNAUTHORIZED
+            );
+        }
 
         return $this->view(ApiAuthenticationFactory::createFromResponse($response));
     }
@@ -83,7 +93,7 @@ class AuthenticationController extends AbstractController
         if ($token === null) {
             return $this->view([
                 "code" => Response::HTTP_UNAUTHORIZED,
-                "message" => 'Invalid credentials'
+                "message" => _(self::INVALID_CREDENTIALS_MESSAGE)
             ], Response::HTTP_UNAUTHORIZED);
         }
 
@@ -107,42 +117,5 @@ class AuthenticationController extends AbstractController
     ): View {
         $findProviderConfigurations->execute($response);
         return $this->view(ProvidersConfigurationsFactory::createFromResponse($response));
-    }
-
-    /**
-     * @param Request $request
-     * @param Authenticate $authenticate
-     * @param string $providerConfigurationName
-     * @param AuthenticateResponse $response
-     * @return View
-     */
-    public function authentication(
-        Request $request,
-        Authenticate $authenticate,
-        string $providerConfigurationName,
-        AuthenticateResponse $response
-    ): View {
-        // submitted from form directly
-        $data = $request->request->getIterator();
-        $referer = $request->headers->get('referer');
-        $clientIp = $request->getClientIp();
-        if ($clientIp === null) {
-            throw new \InvalidArgumentException('Invalid address');
-        }
-        if (empty($data['login']) || empty($data['password'])) {
-            throw new \InvalidArgumentException('Missing credentials parameters');
-        }
-        $credentials = new Credentials($data['login'], $data['password']);
-
-        $authenticateRequest = new AuthenticateRequest(
-            $credentials,
-            $providerConfigurationName,
-            $this->getBaseUri(),
-            $referer,
-            $clientIp
-        );
-
-        $authenticate->execute($authenticateRequest, $response);
-        return $this->view($response->getRedirectionUriApi());
     }
 }

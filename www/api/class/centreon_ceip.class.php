@@ -87,20 +87,29 @@ class CentreonCeip extends CentreonWebService
     /**
      * Get the type of the Centreon server
      *
-     * @return string the type of the server (central|remote)
+     * @return array the type of the server (central|remote and on_premise|centreon_cloud)
      */
-    private function getServerType(): string
+    private function getServerType(): array
     {
-        $instanceType = 'central';
+        // Default parameters
+        $instanceInformation = [
+            'type' => 'central',
+            'platform' => 'on_premise'
+        ];
 
         $result = $this->pearDB->query(
-            "SELECT `value` FROM `informations` WHERE `key` = 'isRemote'"
+            "SELECT * FROM `informations` WHERE `key` IN ('isRemote', 'is_cloud')"
         );
-        if ($row = $result->fetch()) {
-            $instanceType = $row['value'] === 'yes' ? 'remote' : 'central';
+        while ($row = $result->fetch()) {
+            if ($row['key'] === 'is_cloud' && $row['value'] === 'yes') {
+                $instanceInformation['platform'] = 'centreon_cloud';
+            }
+            if ($row['key'] === 'isRemote' && $row['value'] === 'yes') {
+                $instanceInformation['type'] = 'remote';
+            }
         }
 
-        return $instanceType;
+        return $instanceInformation;
     }
 
     /**
@@ -166,10 +175,14 @@ class CentreonCeip extends CentreonWebService
         // Get Version of Centreon
         $centreonVersion = $this->getCentreonVersion();
 
+        // Get Instance information
+        $instanceInformation = $this->getServerType();
+
         return [
             'id' => $this->uuid,
             'name' => $licenseInfo['companyName'],
-            'serverType' => $this->getServerType(),
+            'serverType' => $instanceInformation['type'],
+            'platformType' => $instanceInformation['platform'],
             'licenseType' => $licenseInfo['licenseType'],
             'versionMajor' => $centreonVersion['major'],
             'versionMinor' => $centreonVersion['minor'],
@@ -204,6 +217,9 @@ class CentreonCeip extends CentreonWebService
                     $licenseClientName = $licenseInformation[$module]['client']['name'];
                     if ($module === 'epp') {
                         $productLicense = 'IT Edition';
+                        if ($licenseInformation[$module]['licensing']['type'] === 'IT100') {
+                            $productLicense = 'IT-100 Edition';
+                        }
                     }
                     if (in_array($module, ['mbi', 'bam', 'map'])) {
                         $productLicense = 'Business Edition';
@@ -212,7 +228,7 @@ class CentreonCeip extends CentreonWebService
                 }
             }
         } catch (\Exception $exception) {
-            $this->logger->error($exception->getMessage, ['context' => $exception]);
+            $this->logger->error($exception->getMessage(), ['context' => $exception]);
         }
 
         return [

@@ -16,7 +16,7 @@ class NagiosServer
      *
      * @param string $name the poller name
      * @param string $ip the poller ip address
-     * @return array the configuration template
+     * @return array<string,int|string> the configuration template
      */
     public static function getConfiguration(string $name, string $ip): array
     {

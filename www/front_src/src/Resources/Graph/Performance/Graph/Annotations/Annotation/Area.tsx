@@ -2,14 +2,20 @@ import * as React from 'react';
 
 import { Shape } from '@visx/visx';
 import { ScaleTime } from 'd3-scale';
-import { max, prop } from 'ramda';
+import { max, pick, prop } from 'ramda';
+import { useAtom } from 'jotai';
+import { useAtomValue } from 'jotai/utils';
 
-import { makeStyles } from '@material-ui/core';
+import makeStyles from '@mui/styles/makeStyles';
 
 import { useLocaleDateTimeFormat, useMemoComponent } from '@centreon/ui';
 
 import { labelFrom, labelTo } from '../../../../../translatedLabels';
-import useAnnotationsContext from '../../Context';
+import {
+  annotationHoveredAtom,
+  getFillColorDerivedAtom,
+  getIconColorDerivedAtom,
+} from '../../annotationsAtoms';
 
 import Annotation, { Props as AnnotationProps, yMargin, iconSize } from '.';
 
@@ -21,10 +27,7 @@ type Props = {
   graphHeight: number;
   startDate: string;
   xScale: ScaleTime<number, number>;
-} & Omit<
-  AnnotationProps,
-  'marker' | 'xIcon' | 'header' | 'icon' | 'setAnnotationHovered'
->;
+} & Omit<AnnotationProps, 'marker' | 'xIcon' | 'header' | 'icon'>;
 
 const useStyles = makeStyles((theme) => ({
   icon: {
@@ -48,23 +51,31 @@ const AreaAnnotation = ({
 
   const classes = useStyles();
 
-  const { annotationHovered, setAnnotationHovered, getFill, getIconColor } =
-    useAnnotationsContext();
+  const [annotationHovered, setAnnotationHovered] = useAtom(
+    annotationHoveredAtom,
+  );
+  const getFillColor = useAtomValue(getFillColorDerivedAtom);
+  const getIconColor = useAtomValue(getIconColorDerivedAtom);
 
   const xIconMargin = -iconSize / 2;
 
   const xStart = max(xScale(new Date(startDate)), 0);
   const xEnd = endDate ? xScale(new Date(endDate)) : xScale.range()[1];
 
+  const annotation = pick(['event', 'resourceId'], props);
+
   const area = (
     <Shape.Bar
-      fill={getFill({ color, event: prop('event', props) })}
+      fill={getFillColor({ annotation, color })}
       height={graphHeight + iconSize / 2}
       width={xEnd - xStart}
       x={xStart}
       y={yMargin + iconSize + 2}
       onMouseEnter={(): void =>
-        setAnnotationHovered(() => prop('event', props))
+        setAnnotationHovered(() => ({
+          annotation,
+          resourceId: prop('resourceId', props),
+        }))
       }
       onMouseLeave={(): void => setAnnotationHovered(() => undefined)}
     />
@@ -82,8 +93,8 @@ const AreaAnnotation = ({
       height={iconSize}
       style={{
         color: getIconColor({
+          annotation,
           color,
-          event: prop('event', props),
         }),
       }}
       width={iconSize}
@@ -96,7 +107,6 @@ const AreaAnnotation = ({
         header={header}
         icon={icon}
         marker={area}
-        setAnnotationHovered={setAnnotationHovered}
         xIcon={xStart + (xEnd - xStart) / 2 + xIconMargin}
         {...props}
       />

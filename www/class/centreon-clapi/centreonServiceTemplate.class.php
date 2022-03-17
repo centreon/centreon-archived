@@ -49,7 +49,6 @@ require_once "Centreon/Object/Service/Template.php";
  */
 class CentreonServiceTemplate extends CentreonObject
 {
-
     public const ORDER_SVCDESC = 0;
     public const ORDER_SVCALIAS = 1;
     public const ORDER_SVCTPL = 2;
@@ -423,7 +422,7 @@ class CentreonServiceTemplate extends CentreonObject
     /**
      * @param $serviceId
      */
-    function insertRelations($serviceId)
+    public function insertRelations($serviceId)
     {
         $extended = new \Centreon_Object_Service_Extended($this->dependencyInjector);
         $extended->insert(array($extended->getUniqueLabelField() => $serviceId));
@@ -1194,7 +1193,10 @@ class CentreonServiceTemplate extends CentreonObject
             0,
             null,
             null,
-            array('svc_svc_id' => isset($element[$this->object->getPrimaryKey()]) ? $element[$this->object->getPrimaryKey()] : null),
+            array(
+                'svc_svc_id' => isset($element[$this->object->getPrimaryKey()])
+                ? $element[$this->object->getPrimaryKey()] : null
+            ),
             "AND"
         );
         foreach ($macros as $macro) {
