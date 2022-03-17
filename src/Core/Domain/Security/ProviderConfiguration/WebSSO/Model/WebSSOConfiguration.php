@@ -52,7 +52,7 @@ class WebSSOConfiguration
     ) {
         foreach ($trustedClientAddresses as $trustedClientAddress) {
             if (filter_var($trustedClientAddress, FILTER_VALIDATE_IP) === false) {
-                throw AssertionException::ip(
+                throw AssertionException::ipAddressNotValid(
                     $trustedClientAddress,
                     'WebSSOConfiguration::trustedClientAddresses'
                 );
@@ -60,7 +60,7 @@ class WebSSOConfiguration
         }
         foreach ($blacklistClientAddresses as $blacklistClientAddress) {
             if (filter_var($blacklistClientAddress, FILTER_VALIDATE_IP) === false) {
-                throw AssertionException::ip(
+                throw AssertionException::ipAddressNotValid(
                     $blacklistClientAddress,
                     'WebSSOConfiguration::blacklistClientAddresses'
                 );

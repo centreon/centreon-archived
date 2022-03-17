@@ -67,7 +67,8 @@ it('should have an Error Response when parameters are invalid', function () {
     $updateWebSSOConfigurationRequest = new UpdateWebSSOConfigurationRequest();
     $updateWebSSOConfigurationRequest->isActive = true;
     $updateWebSSOConfigurationRequest->isForced = false;
-    $updateWebSSOConfigurationRequest->trustedClientAddresses = ["abcd_.@"];
+    $badIpAddress = "abcd_.@";
+    $updateWebSSOConfigurationRequest->trustedClientAddresses = [$badIpAddress];
     $updateWebSSOConfigurationRequest->blacklistClientAddresses = [];
     $updateWebSSOConfigurationRequest->loginHeaderAttribute = 'HTTP_AUTH_USER';
     $updateWebSSOConfigurationRequest->patternMatchingLogin = '/@.*/';
@@ -77,8 +78,8 @@ it('should have an Error Response when parameters are invalid', function () {
         ->expects($this->once())
         ->method('setResponseStatus')
         ->with(new ErrorResponse(
-            AssertionException::ip(
-                "abcd_.@",
+            AssertionException::ipAddressNotValid(
+                $badIpAddress,
                 'WebSSOConfiguration::trustedClientAddresses'
             )->getMessage()
         ));

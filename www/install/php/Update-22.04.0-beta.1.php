@@ -101,11 +101,11 @@ try {
         $statement->bindValue(':creationDate', time(), \PDO::PARAM_INT);
         $statement->execute();
     }
-
-    $pearDB->commit();
+    insertWebSSOConfiguration($pearDB);
 
     $errorMessage = "Unable to drop column 'contact_passwd' from 'contact' table";
     $pearDB->query("ALTER TABLE `contact` DROP COLUMN `contact_passwd`");
+    $pearDB->commit();
 
     $errorMessage = 'Impossible to add "contact_js_effects" column to "contact" table';
     if (!$pearDB->isColumnExist('contact', 'contact_js_effects')) {
@@ -135,8 +135,6 @@ try {
         ADD `login_attempts` INT(11) UNSIGNED DEFAULT NULL,
         ADD `blocking_time` BIGINT(20) UNSIGNED DEFAULT NULL"
     );
-
-    insertWebSSOConfiguration($pearDB);
 } catch (\Exception $e) {
     if ($pearDB->inTransaction()) {
         $pearDB->rollBack();
@@ -161,52 +159,53 @@ try {
  */
 function insertWebSSOConfiguration(CentreonDB $pearDB): void
 {
-    $pearDB->beginTransaction();
+    $customConfiguration = [
+        "trusted_client_addresses" => [],
+        "blacklist_client_addresses" => [],
+        "login_header_attribute" => null,
+        "pattern_matching_login" => null,
+        "pattern_replace_login" => null
+    ];
+    $isActive = false;
+    $isForced = false;
     $statement = $pearDB->query("SELECT * FROM options WHERE `key` LIKE 'sso_%'");
-    if (($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
-        $isActive = $result['sso_enable'] === '1';
-        $isForced = $result['sso_mode'] === '0'; //'0' SSO Only, '1' Mixed
-        $customConfiguration = [
-            "trusted_client_addresses" => !empty($result['sso_trusted_clients'])
-                ? explode(',', $result['sso_trusted_clients'])
-                : [],
-            "blacklist_client_addresses" => !empty($result['sso_blacklist_clients'])
-                ? explode(',', $result['sso_blacklist_clients'])
-                : [],
-            "login_header_attribute" => !empty($result['sso_header_username'])
-                ? $result['sso_header_username']
-                : null,
-            "pattern_matching_login" => !empty($result['sso_username_pattern'])
-                ? $result['sso_username_pattern']
-                : null,
-            "pattern_replace_login" => !empty($result['sso_username_replace'])
-                ? $result['sso_username_replace']
-                : null
-        ];
-        $statement2 = $pearDB->prepare(
-            "INSERT INTO provider_configuration (`type`,`name`,`custom_configuration`,`is_active`,`is_forced`)
-            VALUES ('web-sso','web-sso', :customConfiguration, :isActive, :isForced)"
-        );
-        $statement2->bindValue(':customConfiguration', json_encode($customConfiguration), \PDO::PARAM_STR);
-        $statement2->bindValue(':isActive', $isActive ? '1' : '0', \PDO::PARAM_STR);
-        $statement2->bindValue(':isForced', $isForced ? '1' : '0', \PDO::PARAM_STR);
-        $statement2->execute();
+    $result = $statement->fetchAll(\PDO::FETCH_ASSOC);
+    if (!empty($result)) {
+        foreach ($result as $key => $value) {
+            switch ($key) {
+                case 'sso_enable':
+                    $isActive = $value === '1';
+                    break;
+                case 'sso_mode':
+                    $isForced = $value === '0'; //'0' SSO Only, '1' Mixed
+                    break;
+                case 'sso_trusted_clients':
+                    $customConfiguration['trusted_client_addresses'] = !empty($value) ? explode(',', $value) : [];
+                    break;
+                case 'sso_blacklist_clients':
+                    $customConfiguration['blacklist_client_addresses'] = !empty($value) ? explode(',', $value) : [];
+                    break;
+                case 'sso_header_username':
+                    $customConfiguration['login_header_attribute'] = !empty($value) ? $value : null;
+                    break;
+                case 'sso_username_pattern':
+                    $customConfiguration['pattern_matching_login'] = !empty($value) ? $value : null;
+                    break;
+                case 'sso_username_replace':
+                    $customConfiguration['pattern_replace_login'] = !empty($value) ? $value : null;
+                    break;
+            }
+        }
 
         $pearDB->query("DELETE FROM options WHERE `key` LIKE 'sso_%'");
-    } else {
-        $customConfiguration = [
-            "trusted_client_addresses" => [],
-            "blacklist_client_addresses" => [],
-            "login_header_attribute" => null,
-            "pattern_matching_login" => null,
-            "pattern_replace_login" => null
-        ];
-        $statement = $pearDB->prepare(
-            "INSERT INTO provider_configuration (`type`,`name`,`custom_configuration`,`is_active`,`is_forced`)
-            VALUES ('web-sso','web-sso', :customConfiguration, false, false)"
-        );
-        $statement->bindValue(':customConfiguration', json_encode($customConfiguration), \PDO::PARAM_STR);
-        $statement->execute();
     }
-    $pearDB->commit();
+
+    $statement2 = $pearDB->prepare(
+        "INSERT INTO provider_configuration (`type`,`name`,`custom_configuration`,`is_active`,`is_forced`)
+        VALUES ('web-sso','web-sso', :customConfiguration, :isActive, :isForced)"
+    );
+    $statement2->bindValue(':customConfiguration', json_encode($customConfiguration), \PDO::PARAM_STR);
+    $statement2->bindValue(':isActive', $isActive ? '1' : '0', \PDO::PARAM_STR);
+    $statement2->bindValue(':isForced', $isForced ? '1' : '0', \PDO::PARAM_STR);
+    $statement2->execute();
 }
