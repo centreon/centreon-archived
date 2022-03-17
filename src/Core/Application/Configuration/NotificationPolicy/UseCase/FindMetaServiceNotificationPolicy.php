@@ -106,6 +106,7 @@ class FindMetaServiceNotificationPolicy
     private function findMetaService(int $metaServiceId): ?MetaServiceConfiguration
     {
         $this->info('Searching for meta service configuration', ['id' => $metaServiceId]);
+
         if ($this->contact->isAdmin()) {
             $metaService = $this->readMetaServiceRepository->findById($metaServiceId);
         } else {

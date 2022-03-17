@@ -36,6 +36,7 @@ use Centreon\Domain\Engine\Interfaces\EngineConfigurationServiceInterface;
 use Centreon\Domain\HostConfiguration\Interfaces\HostConfigurationRepositoryInterface;
 use Centreon\Domain\ServiceConfiguration\Interfaces\ServiceConfigurationRepositoryInterface;
 use Core\Application\Configuration\Notification\Repository\ReadServiceNotificationRepositoryInterface;
+use Core\Application\RealTime\Repository\ReadHostRepositoryInterface as ReadRealTimeHostRepositoryInterface;
 use Core\Application\RealTime\Repository\ReadServiceRepositoryInterface as ReadRealTimeServiceRepositoryInterface;
 
 class FindServiceNotificationPolicy
@@ -49,6 +50,7 @@ class FindServiceNotificationPolicy
      * @param EngineConfigurationServiceInterface $engineService
      * @param AccessGroupRepositoryInterface $accessGroupRepository
      * @param ContactInterface $contact
+     * @param ReadRealTimeHostRepositoryInterface $readRealTimeHostRepository
      * @param ReadRealTimeServiceRepositoryInterface $readRealTimeServiceRepository
      */
     public function __construct(
@@ -58,6 +60,7 @@ class FindServiceNotificationPolicy
         private EngineConfigurationServiceInterface $engineService,
         private AccessGroupRepositoryInterface $accessGroupRepository,
         private ContactInterface $contact,
+        private ReadRealTimeHostRepositoryInterface $readRealTimeHostRepository,
         private ReadRealTimeServiceRepositoryInterface $readRealTimeServiceRepository,
     ) {
     }
@@ -72,6 +75,8 @@ class FindServiceNotificationPolicy
         int $serviceId,
         FindNotificationPolicyPresenterInterface $presenter,
     ): void {
+        $this->info('Searching for service notification policy', ['host_id' => $hostId, 'service_id' => $serviceId]);
+
         $host = $this->findHost($hostId);
         if ($host === null) {
             $this->handleHostNotFound($hostId, $presenter);
@@ -117,7 +122,10 @@ class FindServiceNotificationPolicy
      */
     private function findHost(int $hostId): ?Host
     {
-        $this->info('Searching for host notification policy', ['id' => $hostId]);
+        $this->info('Searching for host configuration', ['id' => $hostId]);
+
+        $host = null;
+
         if ($this->contact->isAdmin()) {
             $host = $this->hostRepository->findHost($hostId);
         } else {
@@ -126,7 +134,10 @@ class FindServiceNotificationPolicy
                 fn($accessGroup) => $accessGroup->getId(),
                 $accessGroups
             );
-            $host = $this->hostRepository->findHostByAccessGroupIds($hostId, $accessGroupIds);
+
+            if ($this->readRealTimeHostRepository->isAllowedToFindHostByAccessGroupIds($hostId, $accessGroupIds)) {
+                $host = $this->hostRepository->findHost($hostId);
+            }
         }
 
         return $host;
@@ -141,7 +152,7 @@ class FindServiceNotificationPolicy
      */
     private function findService(int $hostId, int $serviceId): ?Service
     {
-        $this->info('Searching for host notification policy', ['host_id' => $hostId, 'service_id' => $serviceId]);
+        $this->info('Searching for service configuration', ['host_id' => $hostId, 'service_id' => $serviceId]);
 
         $service = null;
 
