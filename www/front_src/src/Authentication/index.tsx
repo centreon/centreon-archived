@@ -67,7 +67,7 @@ const useStyles = makeStyles((theme) => ({
   },
   container: {
     height: '100%',
-    maxWidth: theme.spacing(120),
+    maxWidth: theme.spacing(125),
     overflowY: 'hidden',
   },
   formContainer: {

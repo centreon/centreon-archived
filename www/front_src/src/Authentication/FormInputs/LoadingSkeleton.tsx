@@ -36,6 +36,7 @@ const useStyles = makeStyles((theme) => ({
     columnGap: theme.spacing(2),
     display: 'flex',
     flexDirection: 'row',
+    justifyContent: 'flex-end',
   },
   skeletonInputs: {
     display: 'flex',
