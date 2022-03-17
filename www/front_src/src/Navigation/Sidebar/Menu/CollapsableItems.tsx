@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { equals, isNil, keys, omit } from 'ramda';
+import { equals, keys, omit } from 'ramda';
 import clsx from 'clsx';
 import { useAtom } from 'jotai';
 
@@ -160,6 +160,9 @@ const CollapsableItems = ({
     itemsHoveredByDefaultAtom,
   );
   const levelName = `level_${level}_Navigated`;
+  const keyChildItemHoveredByDefault = 'childItemHoveredByDefault';
+  const keyParentItemHoveredByDefault = 'parentItemHoveredByDefault';
+  const keyRootItemHoveredByDefault = 'rootItemHoveredByDefault';
   const itemWidth = currentWidth + collapseWidth;
   const minimumMarginBottom = 4;
 
@@ -251,82 +254,101 @@ const CollapsableItems = ({
     setCollapseScrollMaxWidth((window.innerWidth - rect.left) / 8);
   };
 
-  const fillItemsHoveredByDefault = (
-    rootItem: Page | null,
-    parentItem: Page | null,
-    childItem: Page | null,
-  ): void => {
+  const fillItemsHoveredByDefault = ({
+    rootItem,
+    parentItem,
+    childItem,
+  }): void => {
     rootItemHoveredByDefault.current = rootItem;
     parentItemHoveredByDefault.current = parentItem;
     childItemHoveredByDefault.current = childItem;
   };
 
-  const searchItemsHoveredByDefault = (
-    childItem: Page | null,
-    parentItem: Page | null = null,
-  ): void => {
-    if (!isNil(childItem) && !childItem.is_react) {
-      const page = search?.match(/\d+/);
-
-      if (page) {
-        if (equals(page[0], childItem?.page)) {
-          if (getRootItemHoveredByDefault) {
-            fillItemsHoveredByDefault(
-              getRootItemHoveredByDefault(),
-              parentItem,
-              childItem,
-            );
-          }
-        }
-      }
-    } else if (!isNil(childItem) && equals(pathname, childItem?.url)) {
-      if (getRootItemHoveredByDefault) {
-        fillItemsHoveredByDefault(
-          getRootItemHoveredByDefault(),
-          parentItem,
-          childItem,
-        );
-      }
+  const searchItemsWithReactUrl = ({ childItem, parentItem = null }): void => {
+    if (!equals(pathname, childItem?.url) || !getRootItemHoveredByDefault) {
+      return;
     }
+    fillItemsHoveredByDefault({
+      childItem,
+      parentItem,
+      rootItem: getRootItemHoveredByDefault(),
+    });
+  };
 
+  const searchItemsWithPhpUrl = ({ childItem, parentItem = null }): void => {
+    const page = search?.match(/\d+/);
+    if (
+      !page ||
+      !equals(page[0], childItem?.page) ||
+      !getRootItemHoveredByDefault
+    ) {
+      return;
+    }
+    fillItemsHoveredByDefault({
+      childItem,
+      parentItem,
+      rootItem: getRootItemHoveredByDefault(),
+    });
+  };
+
+  const searchItemsHoveredByDefault = ({
+    childItem,
+    parentItem = null,
+  }): void => {
     if (isArrayItem(childItem?.groups)) {
-      childItem?.groups?.forEach((itemGroup) => {
-        if (isArrayItem(itemGroup?.children)) {
-          itemGroup?.children?.forEach((i) =>
-            searchItemsHoveredByDefault(i, childItem),
-          );
+      childItem.groups?.forEach((itemGroup) => {
+        const child = itemGroup?.children;
+        if (!isArrayItem(child) || !child) {
+          return;
         }
+        child.forEach((grandchild) =>
+          searchItemsHoveredByDefault({
+            childItem: grandchild,
+            parentItem: childItem,
+          }),
+        );
       });
+
+      return;
     }
+    if (!childItem.is_react) {
+      searchItemsWithPhpUrl({ childItem, parentItem });
+
+      return;
+    }
+    searchItemsWithReactUrl({ childItem, parentItem });
+  };
+
+  const checkIsItemHoveredByDefault = ({
+    currentPage,
+    itemsHovered,
+    key,
+  }): boolean => {
+    return (
+      equals(currentPage.label, itemsHovered[key]?.label) &&
+      equals(currentPage?.url, itemsHovered[key]?.url)
+    );
   };
 
   const isItemHoveredByDefault = (item: Page): boolean => {
     if (!itemsHoveredByDefault) {
-      searchItemsHoveredByDefault(item);
+      searchItemsHoveredByDefault({ childItem: item });
 
       return false;
     }
-    const isParentItemHoveredByDefault = !isNil(
-      itemsHoveredByDefault?.parentItemHoveredByDefault,
-    )
-      ? equals(
-          item.label,
-          itemsHoveredByDefault.parentItemHoveredByDefault.label,
-        ) &&
-        equals(item?.url, itemsHoveredByDefault.parentItemHoveredByDefault?.url)
-      : false;
 
-    const isChildItemHoveredByDefault = !isNil(
-      itemsHoveredByDefault?.childItemHoveredByDefault,
-    )
-      ? equals(
-          item.label,
-          itemsHoveredByDefault.childItemHoveredByDefault.label,
-        ) &&
-        equals(item?.url, itemsHoveredByDefault.childItemHoveredByDefault?.url)
-      : false;
-
-    return isParentItemHoveredByDefault || isChildItemHoveredByDefault;
+    return (
+      checkIsItemHoveredByDefault({
+        currentPage: item,
+        itemsHovered: itemsHoveredByDefault,
+        key: keyParentItemHoveredByDefault,
+      }) ||
+      checkIsItemHoveredByDefault({
+        currentPage: item,
+        itemsHovered: itemsHoveredByDefault,
+        key: keyChildItemHoveredByDefault,
+      })
+    );
   };
 
   React.useEffect(() => {
@@ -339,9 +361,9 @@ const CollapsableItems = ({
     if (childItemHoveredByDefault.current) {
       setItemsHoveredByDefault({
         ...itemsHoveredByDefault,
-        childItemHoveredByDefault: childItemHoveredByDefault.current,
-        parentItemHoveredByDefault: parentItemHoveredByDefault.current,
-        rootItemHoveredByDefault: rootItemHoveredByDefault.current,
+        [keyChildItemHoveredByDefault]: childItemHoveredByDefault.current,
+        [keyParentItemHoveredByDefault]: parentItemHoveredByDefault.current,
+        [keyRootItemHoveredByDefault]: rootItemHoveredByDefault.current,
       });
     }
   }, [childItemHoveredByDefault]);
