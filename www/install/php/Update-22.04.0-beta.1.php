@@ -171,28 +171,38 @@ function insertWebSSOConfiguration(CentreonDB $pearDB): void
     $statement = $pearDB->query("SELECT * FROM options WHERE `key` LIKE 'sso_%'");
     $result = $statement->fetchAll(\PDO::FETCH_ASSOC);
     if (!empty($result)) {
-        foreach ($result as $key => $value) {
-            switch ($key) {
+        foreach ($result as $configLine) {
+            switch ($configLine['key']) {
                 case 'sso_enable':
-                    $isActive = $value === '1';
+                    $isActive = $configLine['value'] === '1';
                     break;
                 case 'sso_mode':
-                    $isForced = $value === '0'; //'0' SSO Only, '1' Mixed
+                    $isForced = $configLine['value'] === '0'; //'0' SSO Only, '1' Mixed
                     break;
                 case 'sso_trusted_clients':
-                    $customConfiguration['trusted_client_addresses'] = !empty($value) ? explode(',', $value) : [];
+                    $customConfiguration['trusted_client_addresses'] = !empty($configLine['value'])
+                        ? explode(',', $configLine['value'])
+                        : [];
                     break;
                 case 'sso_blacklist_clients':
-                    $customConfiguration['blacklist_client_addresses'] = !empty($value) ? explode(',', $value) : [];
+                    $customConfiguration['blacklist_client_addresses'] = !empty($configLine['value'])
+                        ? explode(',', $configLine['value'])
+                        : [];
                     break;
                 case 'sso_header_username':
-                    $customConfiguration['login_header_attribute'] = !empty($value) ? $value : null;
+                    $customConfiguration['login_header_attribute'] = !empty($configLine['value'])
+                        ? $configLine['value']
+                        : null;
                     break;
                 case 'sso_username_pattern':
-                    $customConfiguration['pattern_matching_login'] = !empty($value) ? $value : null;
+                    $customConfiguration['pattern_matching_login'] = !empty($configLine['value'])
+                        ? $configLine['value']
+                        : null;
                     break;
                 case 'sso_username_replace':
-                    $customConfiguration['pattern_replace_login'] = !empty($value) ? $value : null;
+                    $customConfiguration['pattern_replace_login'] = !empty($configLine['value'])
+                        ? $configLine['value']
+                        : null;
                     break;
             }
         }
@@ -200,12 +210,12 @@ function insertWebSSOConfiguration(CentreonDB $pearDB): void
         $pearDB->query("DELETE FROM options WHERE `key` LIKE 'sso_%'");
     }
 
-    $statement2 = $pearDB->prepare(
+    $insertStatement = $pearDB->prepare(
         "INSERT INTO provider_configuration (`type`,`name`,`custom_configuration`,`is_active`,`is_forced`)
         VALUES ('web-sso','web-sso', :customConfiguration, :isActive, :isForced)"
     );
-    $statement2->bindValue(':customConfiguration', json_encode($customConfiguration), \PDO::PARAM_STR);
-    $statement2->bindValue(':isActive', $isActive ? '1' : '0', \PDO::PARAM_STR);
-    $statement2->bindValue(':isForced', $isForced ? '1' : '0', \PDO::PARAM_STR);
-    $statement2->execute();
+    $insertStatement->bindValue(':customConfiguration', json_encode($customConfiguration), \PDO::PARAM_STR);
+    $insertStatement->bindValue(':isActive', $isActive ? '1' : '0', \PDO::PARAM_STR);
+    $insertStatement->bindValue(':isForced', $isForced ? '1' : '0', \PDO::PARAM_STR);
+    $insertStatement->execute();
 }
