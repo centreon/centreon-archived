@@ -380,5 +380,4 @@ try {
             "*INFO*: ${e}"
   }
 
-  currentBuild.result = 'FAILURE'
 }
