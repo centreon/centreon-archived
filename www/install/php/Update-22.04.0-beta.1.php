@@ -135,6 +135,26 @@ try {
         ADD `login_attempts` INT(11) UNSIGNED DEFAULT NULL,
         ADD `blocking_time` BIGINT(20) UNSIGNED DEFAULT NULL"
     );
+
+    /**
+     * Add new UnifiedSQl broker output
+     */
+    $pearDB->beginTransaction();
+
+    $errorMessage = 'Unable to update cb_type table ';
+    $pearDB->query(
+        "UPDATE `cb_type` set type_name = 'Perfdata Generator (Centreon Storage) - DEPRECATED'
+        WHERE type_shortname = 'storage'"
+    );
+    $pearDB->query(
+        "UPDATE `cb_type` set type_name = 'Broker SQL database - DEPRECATED'
+        WHERE type_shortname = 'sql'"
+    );
+
+    $errorMessage = "Unable to add 'unifed_sql' broker configuration output";
+    addNewUnifiedSqlOutput($pearDB);
+
+    $pearDB->commit();
 } catch (\Exception $e) {
     if ($pearDB->inTransaction()) {
         $pearDB->rollBack();
@@ -149,4 +169,87 @@ try {
     );
 
     throw new \Exception($versionOfTheUpgrade . $errorMessage, (int)$e->getCode(), $e);
+}
+
+/**
+ * Handle new broker output creation 'unified_sql'
+ *
+ * @param CentreonDB $pearDB
+ */
+function addNewUnifiedSqlOutput(CentreonDB $pearDB): void
+{
+    // Add new output type 'unified_sql'
+    $statement = $pearDB->query("SELECT cb_module_id FROM cb_module WHERE name = 'Storage'");
+    $module = $statement->fetch();
+    if ($module === false) {
+        throw new Exception("Cannot find 'Storage' module in cb_module table");
+    }
+    $moduleId = $module['cb_module_id'];
+
+    $stmt = $pearDB->prepare(
+        "INSERT INTO `cb_type` (`type_name`, `type_shortname`, `cb_module_id`)
+        VALUES ('Unified SQL', 'unified_sql', :cb_module_id)"
+    );
+    $stmt->bindValue(':cb_module_id', $moduleId, PDO::PARAM_INT);
+    $stmt->execute();
+    $typeId = $pearDB->lastInsertId();
+
+    // Link new type to tag 'output'
+    $statement = $pearDB->query("SELECT cb_tag_id FROM cb_tag WHERE tagname = 'Output'");
+    $tag = $statement->fetch();
+    if ($tag === false) {
+        throw new Exception("Cannot find 'Output' tag in cb_tag table");
+    }
+    $tagId = $tag['cb_tag_id'];
+
+    $stmt = $pearDB->prepare(
+        "INSERT INTO `cb_tag_type_relation` (`cb_tag_id`, `cb_type_id`, `cb_type_uniq`)
+        VALUES (:cb_tag_id, :cb_type_id, 0)"
+    );
+    $stmt->bindValue(':cb_tag_id', $tagId, PDO::PARAM_INT);
+    $stmt->bindValue(':cb_type_id', $typeId, PDO::PARAM_INT);
+    $stmt->execute();
+
+    // Create new field 'unified_sql_db_type' with fixed value
+    $pearDB->query("INSERT INTO options VALUES ('unified_sql_db_type', 'mysql')");
+
+    $pearDB->query(
+        "INSERT INTO `cb_field` (fieldname, displayname, description, fieldtype, external)
+        VALUES ('db_type', 'DB type', 'Target DBMS.', 'text', 'T=options:C=value:CK=key:K=unified_sql_db_type')"
+    );
+    $fieldId = $pearDB->lastInsertId();
+
+    // Add form fields for 'unified_sql' output
+    $inputs = [];
+    $statement = $pearDB->query(
+        "SELECT DISTINCT(tfr.cb_field_id), tfr.is_required FROM cb_type_field_relation tfr, cb_type t, cb_field f
+        WHERE tfr.cb_type_id = t.cb_type_id
+        AND t.type_shortname in ('sql', 'storage')
+        AND tfr.cb_field_id = f.cb_field_id
+        AND f.fieldname NOT LIKE 'db_type'
+        ORDER BY tfr.order_display"
+    );
+    $inputs = $statement->fetchAll();
+    if (empty($inputs)) {
+        throw new Exception("Cannot find fields in cb_type_field_relation table");
+    }
+
+    $inputs[] = ['cb_field_id' => $fieldId, 'is_required' => 1];
+
+    $query = "INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`, `order_display`)";
+    $bindedValues = [];
+    foreach ($inputs as $key => $input) {
+        $query .= $key === 0 ? " VALUES " : ", ";
+        $query .= "(:cb_type_id_$key, :cb_field_id_$key, :is_required_$key, :order_display_$key)";
+
+        $bindedValues[':cb_type_id_' . $key] = $typeId;
+        $bindedValues[':cb_field_id_' . $key] = $input['cb_field_id'];
+        $bindedValues[':is_required_' . $key] = $input['is_required'];
+        $bindedValues[':order_display_' . $key] = (int) $key + 1;
+    }
+    $stmt = $pearDB->prepare($query);
+    foreach ($bindedValues as $key => $value) {
+        $stmt->bindValue($key, $value, PDO::PARAM_INT);
+    }
+    $stmt->execute();
 }
