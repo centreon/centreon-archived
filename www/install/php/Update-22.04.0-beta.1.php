@@ -104,11 +104,12 @@ try {
         $statement->bindValue(':creationDate', time(), \PDO::PARAM_INT);
         $statement->execute();
     }
-
-    $pearDB->commit();
+    $errorMessage = "Impossible to add default OpenID provider configuration";
+    insertOpenIdConfiguration($pearDB);
 
     $errorMessage = "Unable to drop column 'contact_passwd' from 'contact' table";
     $pearDB->query("ALTER TABLE `contact` DROP COLUMN `contact_passwd`");
+    $pearDB->commit();
 
     // Add JS Effect to contact
     $errorMessage = 'Impossible to add "contact_js_effects" column to "contact" table';
@@ -142,9 +143,6 @@ try {
         ADD `blocking_time` BIGINT(20) UNSIGNED DEFAULT NULL"
     );
 
-    $errorMessage = "Impossible to add default OpenID provider configuration";
-    insertOpenIdConfiguration($pearDB);
-
     $errorMessage = "Unable to alter table security_token";
     $pearDB->query("ALTER TABLE `security_token` MODIFY `token` varchar(4096)");
 } catch (\Exception $e) {
@@ -164,7 +162,7 @@ try {
 }
 
 /**
- * insert OpenId Configuration
+ * insert OpenId Configuration Default configuration.
  *
  * @param CentreonDB $pearDB
  */
@@ -188,8 +186,6 @@ function insertOpenIdConfiguration(CentreonDB $pearDB): void
     ];
     $isActive = false;
     $isForced = false;
-    $pearDB->beginTransaction();
-    // Move OpenID Connect information to openid provider configuration.
     $statement = $pearDB->query("SELECT * FROM options WHERE `key` LIKE 'openid_%'");
     $result = $statement->fetchAll(\PDO::FETCH_ASSOC);
     if (!empty($result)) {
