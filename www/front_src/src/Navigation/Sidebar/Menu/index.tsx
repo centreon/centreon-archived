@@ -109,10 +109,10 @@ const NavigationMenu = ({
     return url;
   };
 
-  const addSelectedNavigationItems = (
-    navigationItems: Record<string, propsSelectedNavigationItems>,
-    level: number,
-  ): Record<string, propsSelectedNavigationItems> => {
+  const addSelectedNavigationItems = ({
+    navigationItem,
+    level,
+  }): Record<string, SelectedNavigationItem> => {
     const updatedNavigationItems = clone(navigationItems);
 
     keys(updatedNavigationItems).forEach((i: string) => {
