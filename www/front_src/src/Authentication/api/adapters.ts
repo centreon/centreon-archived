@@ -1,8 +1,15 @@
-import { SecurityPolicy, SecurityPolicyToAPI } from '../models';
+import {
+  PasswordSecurityPolicy,
+  PasswordSecurityPolicyToAPI,
+} from '../Local/models';
+import {
+  OpenidConfiguration,
+  OpenidConfigurationToAPI,
+} from '../Openid/models';
 
-export const adaptSecurityPolicyFromAPI = (
-  securityPolicy: SecurityPolicy,
-): SecurityPolicy => {
+export const adaptPasswordSecurityPolicyFromAPI = (
+  securityPolicy: PasswordSecurityPolicy,
+): PasswordSecurityPolicy => {
   return {
     ...securityPolicy,
     blockingDuration: securityPolicy.blockingDuration
@@ -20,7 +27,7 @@ export const adaptSecurityPolicyFromAPI = (
   };
 };
 
-export const adaptSecurityPolicyToAPI = ({
+export const adaptPasswordSecurityPolicyToAPI = ({
   passwordMinLength,
   delayBeforeNewPassword,
   canReusePasswords,
@@ -31,7 +38,7 @@ export const adaptSecurityPolicyToAPI = ({
   hasUpperCase,
   attempts,
   blockingDuration,
-}: SecurityPolicy): SecurityPolicyToAPI => {
+}: PasswordSecurityPolicy): PasswordSecurityPolicyToAPI => {
   return {
     password_security_policy: {
       attempts,
@@ -54,3 +61,39 @@ export const adaptSecurityPolicyToAPI = ({
     },
   };
 };
+
+export const adaptOpenidConfigurationToAPI = ({
+  authenticationType,
+  authorizationEndpoint,
+  baseUrl,
+  blacklistClientAddresses,
+  clientId,
+  clientSecret,
+  connectionScopes,
+  endSessionEndpoint,
+  introspectionTokenEndpoint,
+  isActive,
+  isForced,
+  loginClaim,
+  tokenEndpoint,
+  trustedClientAddresses,
+  userinfoEndpoint,
+  verifyPeer,
+}: OpenidConfiguration): OpenidConfigurationToAPI => ({
+  authentication_type: authenticationType,
+  authorization_endpoint: authorizationEndpoint,
+  base_url: baseUrl,
+  blacklist_client_addresses: blacklistClientAddresses,
+  client_id: clientId,
+  client_secret: clientSecret,
+  connection_scopes: connectionScopes,
+  endsession_endpoint: endSessionEndpoint,
+  introspection_token_endpoint: introspectionTokenEndpoint,
+  is_active: isActive,
+  is_forced: isForced,
+  login_claim: loginClaim,
+  token_endpoint: tokenEndpoint,
+  trusted_client_addresses: trustedClientAddresses,
+  userinfo_endpoint: userinfoEndpoint,
+  verify_peer: verifyPeer,
+});

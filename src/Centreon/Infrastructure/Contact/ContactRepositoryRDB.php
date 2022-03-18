@@ -114,6 +114,36 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
     /**
      * @inheritDoc
      */
+    public function findByEmail(string $email): ?Contact
+    {
+        $request = $this->translateDbName(
+            'SELECT contact.*, cp.password AS contact_passwd, t.topology_url,
+            t.topology_url_opt, t.is_react, t.topology_id, tz.timezone_name
+            FROM `:db`.contact
+            LEFT JOIN `:db`.contact_password cp
+                ON cp.contact_id = contact.contact_id
+            LEFT JOIN `:db`.timezone tz
+                ON tz.timezone_id = contact.contact_location
+            LEFT JOIN `:db`.topology t
+                ON t.topology_page = contact.default_page
+            WHERE contact_email = :email
+            ORDER BY cp.creation_date DESC LIMIT 1'
+        );
+        $statement = $this->db->prepare($request);
+        $statement->bindValue(':email', $email, \PDO::PARAM_STR);
+        $statement->execute();
+
+        $contact = null;
+        if (($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
+            $contact = $this->createContact($result);
+        }
+
+        return $contact;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function findBySession(string $sessionId): ?Contact
     {
         $request = $this->translateDbName(
@@ -381,6 +411,7 @@ final class ContactRepositoryRDB implements ContactRepositoryInterface
             ->setName($contact['contact_name'])
             ->setAlias($contact['contact_alias'])
             ->setEmail($contact['contact_email'])
+            ->setLang($contact['contact_lang'])
             ->setTemplateId((int) $contact['contact_template_id'])
             ->setIsActive($contact['contact_activate'] === '1')
             ->setAllowedToReachWeb($contact['contact_oreon'] === '1')
