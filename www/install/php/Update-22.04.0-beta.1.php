@@ -115,7 +115,13 @@ try {
     $errorMessage = "Unable to add 'unifed_sql' broker configuration output";
     addNewUnifiedSqlOutput($pearDB);
 
+    $errorMessage = "Unable to migrate broker config to unified_sql";
+    migrateBrokerConfigOutputsToUnifiedSql($pearDB);
+
     $pearDB->commit();
+
+    $errorMessage = "Unable to drop column 'contact_passwd' from 'contact' table";
+    $pearDB->query("ALTER TABLE `contact` DROP COLUMN `contact_passwd`");
 
     /**
      * Alter Tables
@@ -151,9 +157,6 @@ try {
     $errorMessage = "Unable to alter table security_token";
     $pearDB->query("ALTER TABLE `security_token` MODIFY `token` varchar(4096)");
 
-    $pearDB->beginTransaction();
-    $errorMessage = "Unable to migrate broker config to unified_sql";
-    migrateBrokerConfigOutputsToUnifiedSql($pearDB);
     $pearDB->commit();
 } catch (\Exception $e) {
     if ($pearDB->inTransaction()) {
