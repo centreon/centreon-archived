@@ -161,11 +161,11 @@ const NavigationMenu = ({
     setItemsHoveredByDefault(null);
   };
 
-  const isItemHovered = (
-    object: Record<string, propsSelectedNavigationItems> | null,
-    level: string,
-    index: number,
-  ): boolean => {
+  const isItemHovered = ({
+    navigationItem,
+    level,
+    index,
+  }): boolean => {
     if (!object || !object[level]) {
       return false;
     }
