@@ -127,7 +127,7 @@ const NavigationMenu = ({
 
         return;
       }
-      if (`level_${level}_Navigated` === i) {
+      if (equals(`level_${level}_Navigated`, i)) {
         updatedNavigationItems[i] = updatedNavigationItems[`level_${level}`];
       }
     });
