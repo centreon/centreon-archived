@@ -166,7 +166,7 @@ const NavigationMenu = ({
     level,
     index,
   }): boolean => {
-    if (!object || !object[level]) {
+    if (!navigationItem || !navigationItem[level]) {
       return false;
     }
 
