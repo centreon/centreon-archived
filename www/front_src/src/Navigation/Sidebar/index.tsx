@@ -44,7 +44,7 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 }));
 
 const Drawer = styled(MuiDrawer, {
-  shouldForwardProp: (prop) => prop !== 'open',
+  shouldForwardProp: (prop) => !equals(prop, 'open'),
 })(({ theme, open }) => ({
   '& .MuiPaper-root': {
     backgroundColor: theme.palette.background.default,
