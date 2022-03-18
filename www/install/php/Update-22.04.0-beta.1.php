@@ -27,6 +27,7 @@ $centreonLog = new CentreonLog();
 $versionOfTheUpgrade = 'UPGRADE - 22.04.0-beta.1: ';
 
 try {
+    // Add custom_configuration to provider configurations
     $errorMessage = "Unable to add column 'custom_configuration' to table 'provider_configuration'";
     $pearDB->query(
         "ALTER TABLE `provider_configuration` ADD COLUMN `custom_configuration` JSON NOT NULL AFTER `name`"
@@ -46,6 +47,7 @@ try {
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8"
     );
 
+    // Insert default Security Policy
     $errorMessage = "Unable to insert default local security policy configuration";
     $localProviderConfiguration = json_encode([
         "password_security_policy" => [
@@ -69,6 +71,7 @@ try {
     $statement->bindValue(':localProviderConfiguration', $localProviderConfiguration, \PDO::PARAM_STR);
     $statement->execute();
 
+    // Move old password from contact to contact_password
     $errorMessage = "Unable to create table 'contact_password'";
     $pearDB->query(
         "CREATE TABLE `contact_password` (
@@ -101,12 +104,13 @@ try {
         $statement->bindValue(':creationDate', time(), \PDO::PARAM_INT);
         $statement->execute();
     }
-
-    $pearDB->commit();
+    $errorMessage = "Impossible to add default OpenID provider configuration";
+    insertOpenIdConfiguration($pearDB);
 
     $errorMessage = "Unable to drop column 'contact_passwd' from 'contact' table";
     $pearDB->query("ALTER TABLE `contact` DROP COLUMN `contact_passwd`");
 
+    // Add JS Effect to contact
     $errorMessage = 'Impossible to add "contact_js_effects" column to "contact" table';
     if (!$pearDB->isColumnExist('contact', 'contact_js_effects')) {
         $pearDB->query(
@@ -116,6 +120,7 @@ try {
         );
     }
 
+    // Update Broker information
     $errorMessage = 'Unable to update the description in cb_field';
     $statement = $pearDB->query("
         UPDATE cb_field
@@ -129,6 +134,7 @@ try {
     $errorMessage = 'Unable to delete old logger configuration';
     $statement = $pearDB->query("DELETE FROM cfg_centreonbroker_info WHERE config_group = 'logger'");
 
+    // Add login blocking mechanism to contact
     $errorMessage = 'Impossible to add "login_attempts" and "blocking_time" columns to "contact" table';
     $pearDB->query(
         "ALTER TABLE `contact`
@@ -136,6 +142,8 @@ try {
         ADD `blocking_time` BIGINT(20) UNSIGNED DEFAULT NULL"
     );
 
+    $errorMessage = "Unable to alter table security_token";
+    $pearDB->query("ALTER TABLE `security_token` MODIFY `token` varchar(4096)");
     /**
      * Add new UnifiedSQl broker output
      */
@@ -169,6 +177,119 @@ try {
     );
 
     throw new \Exception($versionOfTheUpgrade . $errorMessage, (int)$e->getCode(), $e);
+}
+
+/**
+ * insert OpenId Configuration Default configuration.
+ *
+ * @param CentreonDB $pearDB
+ */
+function insertOpenIdConfiguration(CentreonDB $pearDB): void
+{
+    $customConfiguration = [
+        "trusted_client_addresses" => [],
+        "blacklist_client_addresses" => [],
+        "base_url" => null,
+        "authorization_endpoint" => null,
+        "token_endpoint" => null,
+        "introspection_token_endpoint" => null,
+        "userinfo_endpoint" => null,
+        "endsession_endpoint" => null,
+        "connection_scopes" => [],
+        "login_claim" => null,
+        "client_id" => null,
+        "client_secret" => null,
+        "authentication_type" => "client_secret_post",
+        "verify_peer" => true
+    ];
+    $isActive = false;
+    $isForced = false;
+    $statement = $pearDB->query("SELECT * FROM options WHERE `key` LIKE 'openid_%'");
+    $result = $statement->fetchAll(\PDO::FETCH_ASSOC);
+    if (!empty($result)) {
+        foreach ($result as $configLine) {
+            switch ($configLine['key']) {
+                case 'openid_connect_enable':
+                    $isActive = $configLine['value'] === '1';
+                    break;
+                case 'openid_connect_mode':
+                    $isForced = $configLine['value'] === '0'; //'0' OpenId Connect Only, '1' Mixed
+                    break;
+                case 'openid_connect_trusted_clients':
+                    $customConfiguration['trusted_client_addresses'] = !empty($configLine['value'])
+                        ? explode(',', $configLine['value'])
+                        : [];
+                    break;
+                case 'openid_connect_blacklist_clients':
+                    $customConfiguration['blacklist_client_addresses'] = !empty($configLine['value'])
+                        ? explode(',', $configLine['value'])
+                        : [];
+                    break;
+                case 'openid_connect_base_url':
+                    $customConfiguration['base_url'] = !empty($configLine['value'])
+                        ? $configLine['value']
+                        : null;
+                    break;
+                case 'openid_connect_authorization_endpoint':
+                    $customConfiguration['authorization_endpoint'] = !empty($configLine['value'])
+                        ? $configLine['value']
+                        : null;
+                    break;
+                case 'openid_connect_token_endpoint':
+                    $customConfiguration['token_endpoint'] = !empty($configLine['value'])
+                        ? $configLine['value']
+                        : null;
+                    break;
+                case 'openid_connect_introspection_endpoint':
+                    $customConfiguration['introspection_token_endpoint'] = !empty($configLine['value'])
+                        ? $configLine['value']
+                        : null;
+                    break;
+                case 'openid_connect_userinfo_endpoint':
+                    $customConfiguration['userinfo_endpoint'] = !empty($configLine['value'])
+                        ? $configLine['value']
+                        : null;
+                    break;
+                case 'openid_connect_end_session_endpoint':
+                    $customConfiguration['endsession_endpoint'] = !empty($configLine['value'])
+                        ? $configLine['value']
+                        : null;
+                    break;
+                case 'openid_connect_scope':
+                    $customConfiguration['connection_scopes'] = !empty($configLine['value'])
+                        ? explode(' ', $configLine['value'])
+                        : [];
+                    break;
+                case 'openid_connect_login_claim':
+                    $customConfiguration['login_claim'] = !empty($configLine['value']) ? $configLine['value'] : null;
+                    break;
+                case 'openid_connect_client_id':
+                    $customConfiguration['client_id'] = !empty($configLine['value']) ? $configLine['value'] : null;
+                    break;
+                case 'openid_connect_client_secret':
+                    $customConfiguration['client_secret'] = !empty($configLine['value']) ? $configLine['value'] : null;
+                    break;
+                case 'openid_connect_client_basic_auth':
+                    $customConfiguration['authentication_type'] = $configLine['value'] === '1'
+                        ? 'client_secret_basic'
+                        : 'client_secret_post';
+                    break;
+                case 'openid_connect_verify_peer':
+                    // '1' is Verify Peer disable
+                    $customConfiguration['verify_peer'] = $configLine['value'] === '1' ? false : true;
+                    break;
+            }
+        }
+        $pearDB->query("DELETE FROM options WHERE `key` LIKE 'open_id%'");
+    }
+    $insertStatement = $pearDB->prepare(
+        "INSERT INTO provider_configuration (`type`,`name`,`custom_configuration`,`is_active`,`is_forced`)
+        VALUES ('openid','openid', :customConfiguration, :isActive, :isForced)"
+    );
+    $insertStatement->bindValue(':customConfiguration', json_encode($customConfiguration), \PDO::PARAM_STR);
+    $insertStatement->bindValue(':isActive', $isActive ? '1' : '0', \PDO::PARAM_STR);
+    $insertStatement->bindValue(':isForced', $isForced ? '1' : '0', \PDO::PARAM_STR);
+    $insertStatement->execute();
 }
 
 /**

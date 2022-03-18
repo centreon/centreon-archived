@@ -1419,4 +1419,11 @@ VALUES (
   '{"password_security_policy": {"password_length": 12, "has_uppercase_characters": true, "has_lowercase_characters": true, "has_numbers": true, "has_special_characters": true, "attempts": 5, "blocking_duration": 900, "password_expiration_delay": 7776000, "delay_before_new_password": 3600, "can_reuse_passwords": false }}',
   true,
   true
+),
+(
+  'openid',
+  'openid',
+  '{"trusted_client_addresses":[],"blacklist_client_addresses":[],"base_url":null,"authorization_endpoint":null,"token_endpoint":null,"introspection_token_endpoint":null,"userinfo_endpoint":null,"endsession_endpoint":null,"connection_scopes":[],"login_claim":null,"client_id":null,"client_secret":null,"authentication_type":"client_secret_post","verify_peer":true}',
+  false,
+  false
 );

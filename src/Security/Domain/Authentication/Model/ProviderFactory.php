@@ -22,6 +22,8 @@ declare(strict_types=1);
 
 namespace Security\Domain\Authentication\Model;
 
+use Core\Application\Security\ProviderConfiguration\OpenId\Repository\ReadOpenIdConfigurationRepositoryInterface;
+use Core\Domain\Security\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
 use Security\Domain\Authentication\Exceptions\ProviderException;
 use Security\Domain\Authentication\Interfaces\ProviderInterface;
 
@@ -39,8 +41,10 @@ class ProviderFactory
      * @param \Traversable<ProviderInterface> $providers
      * @throws ProviderException
      */
-    public function __construct(\Traversable $providers)
-    {
+    public function __construct(
+        \Traversable $providers,
+        private ReadOpenIdConfigurationRepositoryInterface $openIdRepository
+    ) {
         if (iterator_count($providers) === 0) {
             throw ProviderException::emptyAuthenticationProvider();
         }
@@ -55,6 +59,9 @@ class ProviderFactory
     {
         foreach ($this->providers as $provider) {
             if ($provider->getName() === $configuration->getName()) {
+                if ($configuration->getName() === OpenIdConfiguration::NAME) {
+                    $configuration = $this->openIdRepository->findConfiguration();
+                }
                 $provider->setConfiguration($configuration);
                 return $provider;
             }
