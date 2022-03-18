@@ -125,7 +125,7 @@ class UpdateConfigurationControllerTest extends TestCase
             ->method('getContent')
             ->willReturn($invalidPayload);
 
-        $this->expectException(ConfigurationException::class);
+        $this->expectException(\InvalidArgumentException::class);
         $controller($this->useCase, $this->request, $this->presenter);
     }
 

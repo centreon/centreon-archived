@@ -445,7 +445,7 @@ class Contact implements UserInterface, ContactInterface
     }
 
     /**
-     * @return bool
+     * @inheritDoc
      */
     public function hasAccessToApiConfiguration(): bool
     {
@@ -453,10 +453,9 @@ class Contact implements UserInterface, ContactInterface
     }
 
     /**
-     * @param bool $hasAccessToApiConfiguration
-     * @return self
+     * @inheritDoc
      */
-    public function setAccessToApiConfiguration(bool $hasAccessToApiConfiguration): self
+    public function setAccessToApiConfiguration(bool $hasAccessToApiConfiguration): static
     {
         $this->hasAccessToApiConfiguration = $hasAccessToApiConfiguration;
 
@@ -470,7 +469,7 @@ class Contact implements UserInterface, ContactInterface
     }
 
     /**
-     * @return bool
+     * @inheritDoc
      */
     public function hasAccessToApiRealTime(): bool
     {
@@ -478,10 +477,9 @@ class Contact implements UserInterface, ContactInterface
     }
 
     /**
-     * @param bool $hasAccessToApiRealTime
-     * @return self
+     * @inheritDoc
      */
-    public function setAccessToApiRealTime(bool $hasAccessToApiRealTime): self
+    public function setAccessToApiRealTime(bool $hasAccessToApiRealTime): static
     {
         $this->hasAccessToApiRealTime = $hasAccessToApiRealTime;
         if ($this->hasAccessToApiRealTime) {
@@ -606,20 +604,17 @@ class Contact implements UserInterface, ContactInterface
     }
 
     /**
-     * Indicates if user uses deprecated pages
-     *
-     * @return  bool
+     * @inheritDoc
      */
-    public function isUsingDeprecatedPages()
+    public function isUsingDeprecatedPages(): bool
     {
         return $this->useDeprecatedPages;
     }
 
     /**
-     * @param  bool  $useDeprecatedPages  Indicates if user uses deprecated pages
-     * @return  self
+     * @inheritDoc
      */
-    public function setUseDeprecatedPages(bool $useDeprecatedPages)
+    public function setUseDeprecatedPages(bool $useDeprecatedPages): static
     {
         $this->useDeprecatedPages = $useDeprecatedPages;
 
