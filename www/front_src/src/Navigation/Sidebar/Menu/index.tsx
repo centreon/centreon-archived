@@ -120,6 +120,8 @@ const NavigationMenu = ({
 
       if (keyToRemove && gt(Number(keyToRemove[0]), level)) {
         delete updatedNavigationItems[i];
+
+        return;
       }
       if (!i.includes('_Navigated')) {
         updatedNavigationItems[`${i}_Navigated`] = updatedNavigationItems[i];
@@ -164,11 +166,11 @@ const NavigationMenu = ({
     level: string,
     index: number,
   ): boolean => {
-    if (object && object[level]) {
-      return object[level].index === index;
+    if (!object || !object[level]) {
+      return false;
     }
 
-    return false;
+    return equals(object[level].index, index);
   };
 
   const sendRootItemHoveredByDefault = (item: Page): Page => {
@@ -176,17 +178,17 @@ const NavigationMenu = ({
   };
 
   const isItemHoveredByDefault = (item: Page): boolean => {
-    if (itemsHoveredByDefault) {
-      return (
-        equals(
-          item.label,
-          itemsHoveredByDefault?.rootItemHoveredByDefault?.label,
-        ) &&
-        equals(item?.url, itemsHoveredByDefault.rootItemHoveredByDefault?.url)
-      );
+    if (!itemsHoveredByDefault) {
+      return false;
     }
 
-    return false;
+    return (
+      equals(
+        item.label,
+        itemsHoveredByDefault?.rootItemHoveredByDefault?.label,
+      ) &&
+      equals(item?.url, itemsHoveredByDefault.rootItemHoveredByDefault?.url)
+    );
   };
 
   const handleWindowClose = (): void => {
