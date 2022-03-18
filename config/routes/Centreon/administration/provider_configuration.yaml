@@ -16,7 +16,7 @@ centreon_security_update_provider_configuration_web_sso:
     controller: 'Core\Infrastructure\Security\ProviderConfiguration\WebSSO\Api\UpdateWebSSOConfiguration\UpdateWebSSOConfigurationController'
     condition: "request.attributes.get('version') >= 22.04"
 
-centreon_security_update_provider_configuration_web_sso:
+centreon_security_find_provider_configuration_web_sso:
     methods: GET
     path: /administration/authentication/providers/web-sso
     controller: 'Core\Infrastructure\Security\ProviderConfiguration\WebSSO\Api\FindWebSSOConfiguration\FindWebSSOConfigurationController'
