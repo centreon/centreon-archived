@@ -4,7 +4,7 @@ import { Page } from '../models';
 
 export const selectedNavigationItemsAtom = atomWithStorage<Record<
   string,
-  propsSelectedNavigationItems
+  SelectedNavigationItem
 > | null>('selectedNavigationItems', null);
 
 export const itemsHoveredByDefaultAtom = atomWithStorage<Record<
