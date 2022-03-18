@@ -12,7 +12,7 @@ export const itemsHoveredByDefaultAtom = atomWithStorage<Record<
   Page | null
 > | null>('itemsHoveredByDefault', null);
 
-export interface propsSelectedNavigationItems {
+export interface SelectedNavigationItem {
   index: number | null;
   label: string;
   url?: string | null;
