@@ -5,7 +5,7 @@ namespace CentreonRemote\Domain\Resources\RemoteConfig\BrokerInfo;
 /**
  * Get broker configuration template
  */
-class OutputSqlMaster
+class OutputUnifiedSql
 {
     /**
      * Get template configuration
@@ -20,7 +20,14 @@ class OutputSqlMaster
         return [
             [
                 'config_key'      => 'name',
-                'config_value'    => 'central-broker-master-sql',
+                'config_value'    => 'central-broker-master-unified-sql',
+                'config_group'    => 'output',
+                'config_group_id' => '0',
+                'grp_level'       => '0',
+            ],
+            [
+                'config_key'      => 'db_type',
+                'config_value'    => 'mysql',
                 'config_group'    => 'output',
                 'config_group_id' => '0',
                 'grp_level'       => '0',
@@ -35,20 +42,6 @@ class OutputSqlMaster
             [
                 'config_key'      => 'buffering_timeout',
                 'config_value'    => '0',
-                'config_group'    => 'output',
-                'config_group_id' => '0',
-                'grp_level'       => '0',
-            ],
-            [
-                'config_key'      => 'failover',
-                'config_value'    => '',
-                'config_group'    => 'output',
-                'config_group_id' => '0',
-                'grp_level'       => '0',
-            ],
-            [
-                'config_key'      => 'db_type',
-                'config_value'    => 'mysql',
                 'config_group'    => 'output',
                 'config_group_id' => '0',
                 'grp_level'       => '0',
@@ -103,8 +96,50 @@ class OutputSqlMaster
                 'grp_level'       => '0',
             ],
             [
+                'config_key'      => 'interval',
+                'config_value'    => '60',
+                'config_group'    => 'output',
+                'config_group_id' => '0',
+                'grp_level'       => '0',
+            ],
+            [
+                'config_key'      => 'length',
+                'config_value'    => '15552000',
+                'config_group'    => 'output',
+                'config_group_id' => '0',
+                'grp_level'       => '0',
+            ],
+            [
                 'config_key'      => 'check_replication',
                 'config_value'    => 'no',
+                'config_group'    => 'output',
+                'config_group_id' => '0',
+                'grp_level'       => '0',
+            ],
+            [
+                'config_key'      => 'rebuild_check_interval',
+                'config_value'    => '',
+                'config_group'    => 'output',
+                'config_group_id' => '0',
+                'grp_level'       => '0',
+            ],
+            [
+                'config_key'      => 'store_in_data_bin',
+                'config_value'    => 'yes',
+                'config_group'    => 'output',
+                'config_group_id' => '0',
+                'grp_level'       => '0',
+            ],
+            [
+                'config_key'      => 'insert_in_index_data',
+                'config_value'    => '1',
+                'config_group'    => 'output',
+                'config_group_id' => '0',
+                'grp_level'       => '0',
+            ],
+            [
+                'config_key'      => 'failover',
+                'config_value'    => '',
                 'config_group'    => 'output',
                 'config_group_id' => '0',
                 'grp_level'       => '0',
@@ -125,14 +160,14 @@ class OutputSqlMaster
             ],
             [
                 'config_key'      => 'type',
-                'config_value'    => 'sql',
+                'config_value'    => 'unified_sql',
                 'config_group'    => 'output',
                 'config_group_id' => '0',
                 'grp_level'       => '0',
             ],
             [
                 'config_key'      => 'blockId',
-                'config_value'    => '1_16',
+                'config_value'    => '1_34',
                 'config_group'    => 'output',
                 'config_group_id' => '0',
                 'grp_level'       => '0',
