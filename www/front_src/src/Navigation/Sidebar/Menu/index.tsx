@@ -141,7 +141,7 @@ const NavigationMenu = ({
     if (!selectedNavigationItems) {
       return;
     }
-    const isAlreadyClicked =
+    const isAlreadySelected =
       equals(
         selectedNavigationItems[`level_${level}_Navigated`]?.url,
         currentPage?.url,
@@ -151,7 +151,7 @@ const NavigationMenu = ({
         currentPage.label,
       );
 
-    if (isAlreadyClicked) {
+    if (isAleadySelected) {
       return;
     }
     setSelectedNavigationItems(
