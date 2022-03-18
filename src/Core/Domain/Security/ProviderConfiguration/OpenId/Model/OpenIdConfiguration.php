@@ -245,4 +245,12 @@ class OpenIdConfiguration implements ProviderConfigurationInterface
     {
         return $this->verifyPeer;
     }
+
+    /**
+     * @return string
+     */
+    public function getType(): string
+    {
+        return self::TYPE;
+    }
 }
