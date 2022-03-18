@@ -33,7 +33,9 @@ use Core\Application\Security\ProviderConfiguration\WebSSO\UseCase\FindWebSSOCon
     FindWebSSOConfiguration,
     FindWebSSOConfigurationPresenterInterface
 };
-use Core\Infrastructure\Security\ProviderConfiguration\WebSSO\Api\FindWebSSOConfiguration\FindWebSSOConfigurationController;
+use Core\Infrastructure\Security\ProviderConfiguration\WebSSO\Api\FindWebSSOConfiguration\{
+    FindWebSSOConfigurationController
+};
 
 beforeEach(function () {
     $this->useCase = $this->createMock(FindWebSSOConfiguration::class);
