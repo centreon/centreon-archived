@@ -23,6 +23,7 @@ declare(strict_types=1);
 
 namespace Tests\Core\Application\Security\ProviderConfiguration\WebSSO\UseCase\FindWebSSOConfiguration;
 
+use Centreon\Domain\Repository\RepositoryException;
 use Core\Application\Common\UseCase\ErrorResponse;
 use Core\Application\Common\UseCase\NotFoundResponse;
 use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
@@ -90,27 +91,9 @@ it('should present an ErrorResponse when an error occured during the finding pro
     $this->repository
         ->expects($this->once())
         ->method('findConfiguration')
-        ->willThrowException(new \Exception($exceptionMessage));
+        ->willThrowException(new RepositoryException($exceptionMessage));
 
     $useCase($presenter);
     expect($presenter->getResponseStatus())->toBeInstanceOf(ErrorResponse::class);
     expect($presenter->getResponseStatus()?->getMessage())->toBe($exceptionMessage);
 });
-
-it(
-    'should present an ErrorResponse with a generic error when a datastorage error occured during the finding process',
-    function () {
-        $useCase = new FindWebSSOConfiguration($this->repository);
-        $presenter = new FindWebSSOConfigurationPresenterStub($this->presenterFormatter);
-        $this->repository
-            ->expects($this->once())
-            ->method('findConfiguration')
-            ->willThrowException(new \PDOException());
-
-        $useCase($presenter);
-        expect($presenter->getResponseStatus())->toBeInstanceOf(ErrorResponse::class);
-        expect($presenter->getResponseStatus()?->getMessage())->toBe(
-            "Couldn't get WebSSO configuration from data storage"
-        );
-    }
-);

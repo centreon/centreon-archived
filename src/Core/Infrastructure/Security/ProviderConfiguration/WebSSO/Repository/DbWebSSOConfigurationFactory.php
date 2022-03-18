@@ -29,8 +29,6 @@ use Core\Domain\Security\ProviderConfiguration\WebSSO\Model\WebSSOConfiguration;
 class DbWebSSOConfigurationFactory
 {
     /**
-     * Undocumented function
-     *
      * @param array<string,mixed> $customConfiguration
      * @param array<string,mixed> $configuration
      * @throws AssertionException

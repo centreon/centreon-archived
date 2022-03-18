@@ -23,6 +23,8 @@ declare(strict_types=1);
 
 namespace Core\Application\Security\ProviderConfiguration\WebSSO\UseCase\FindWebSSOConfiguration;
 
+use Centreon\Domain\Common\Assertion\AssertionException;
+use Centreon\Domain\Repository\RepositoryException;
 use Core\Application\Common\UseCase\ErrorResponse;
 use Core\Application\Common\UseCase\NotFoundResponse;
 use Core\Domain\Security\ProviderConfiguration\WebSSO\Model\WebSSOConfiguration;
@@ -44,10 +46,7 @@ class FindWebSSOConfiguration
     {
         try {
             $configuration = $this->repository->findConfiguration();
-        } catch (\PDOException $ex) {
-            $presenter->setResponseStatus(new ErrorResponse("Couldn't get WebSSO configuration from data storage"));
-            return;
-        } catch (\Exception $ex) {
+        } catch (RepositoryException | AssertionException $ex) {
             $presenter->setResponseStatus(new ErrorResponse($ex->getMessage()));
             return;
         }
