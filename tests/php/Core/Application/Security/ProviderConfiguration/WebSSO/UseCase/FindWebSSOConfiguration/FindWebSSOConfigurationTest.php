@@ -42,9 +42,9 @@ it('should present a FindWebSSOConfigurationResponse when everything goes well',
     $configuration = new WebSSOConfiguration(
         true,
         false,
+        ['127.0.0.1'],
         [],
-        [],
-        null,
+        'HTTP_AUTH_USER',
         null,
         null,
     );
@@ -59,6 +59,13 @@ it('should present a FindWebSSOConfigurationResponse when everything goes well',
 
     $useCase($presenter);
     expect($presenter->response)->toBeInstanceOf(FindWebSSOConfigurationResponse::class);
+    expect($presenter->response->isActive)->toBeTrue();
+    expect($presenter->response->isForced)->toBeFalse();
+    expect($presenter->response->trustedClientAddresses)->toBe(['127.0.0.1']);
+    expect($presenter->response->blacklistClientAddresses)->toBeEmpty();
+    expect($presenter->response->loginHeaderAttribute)->toBe('HTTP_AUTH_USER');
+    expect($presenter->response->patternMatchingLogin)->toBeNull();
+    expect($presenter->response->patternReplaceLogin)->toBeNull();
 });
 
 it('should present a NotFoundResponse when no configuration are found in Data storage', function () {
@@ -89,3 +96,21 @@ it('should present an ErrorResponse when an error occured during the finding pro
     expect($presenter->getResponseStatus())->toBeInstanceOf(ErrorResponse::class);
     expect($presenter->getResponseStatus()?->getMessage())->toBe($exceptionMessage);
 });
+
+it(
+    'should present an ErrorResponse with a generic error when a datastorage error occured during the finding process',
+    function () {
+        $useCase = new FindWebSSOConfiguration($this->repository);
+        $presenter = new FindWebSSOConfigurationPresenterStub($this->presenterFormatter);
+        $this->repository
+            ->expects($this->once())
+            ->method('findConfiguration')
+            ->willThrowException(new \PDOException());
+
+        $useCase($presenter);
+        expect($presenter->getResponseStatus())->toBeInstanceOf(ErrorResponse::class);
+        expect($presenter->getResponseStatus()?->getMessage())->toBe(
+            "Couldn't get WebSSO configuration from data storage"
+        );
+    }
+);

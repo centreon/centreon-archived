@@ -44,7 +44,10 @@ class FindWebSSOConfiguration
     {
         try {
             $configuration = $this->repository->findConfiguration();
-        } catch (\Throwable $ex) {
+        } catch (\PDOException $ex) {
+            $presenter->setResponseStatus(new ErrorResponse("Couldn't get WebSSO configuration from data storage"));
+            return;
+        } catch (\Exception $ex) {
             $presenter->setResponseStatus(new ErrorResponse($ex->getMessage()));
             return;
         }
@@ -63,6 +66,15 @@ class FindWebSSOConfiguration
      */
     private function createResponse(WebSSOConfiguration $configuration): FindWebSSOConfigurationResponse
     {
-        return new FindWebSSOConfigurationResponse();
+        $response = new FindWebSSOConfigurationResponse();
+        $response->isActive = $configuration->isActive();
+        $response->isForced = $configuration->isForced();
+        $response->trustedClientAddresses = $configuration->getTrustedClientAddresses();
+        $response->blacklistClientAddresses = $configuration->getBlackListClientAddresses();
+        $response->loginHeaderAttribute = $configuration->getLoginHeaderAttribute();
+        $response->patternMatchingLogin = $configuration->getPatternMatchingLogin();
+        $response->patternReplaceLogin = $configuration->getPatternReplaceLogin();
+
+        return $response;
     }
 }

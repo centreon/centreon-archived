@@ -25,4 +25,38 @@ namespace Core\Application\Security\ProviderConfiguration\WebSSO\UseCase\FindWeb
 
 class FindWebSSOConfigurationResponse
 {
+    /**
+     * @var bool
+     */
+    public bool $isActive;
+
+    /**
+     * @var bool
+     */
+    public bool $isForced;
+
+    /**
+     * @var array<string>
+     */
+    public array $trustedClientAddresses;
+
+    /**
+     * @var array<string>
+     */
+    public array $blacklistClientAddresses;
+
+    /**
+     * @var string|null
+     */
+    public ?string $loginHeaderAttribute;
+
+    /**
+     * @var string|null
+     */
+    public ?string $patternMatchingLogin;
+
+    /**
+     * @var string|null
+     */
+    public ?string $patternReplaceLogin;
 }
