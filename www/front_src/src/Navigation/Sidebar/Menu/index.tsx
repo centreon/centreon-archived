@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { equals, isNil, clone, gt } from 'ramda';
+import { equals, isNil, clone, gt, keys } from 'ramda';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAtom } from 'jotai';
 
@@ -115,25 +115,22 @@ const NavigationMenu = ({
   ): Record<string, propsSelectedNavigationItems> => {
     const updatedNavigationItems = clone(navigationItems);
 
-    if (updatedNavigationItems) {
-      Object.keys(updatedNavigationItems).forEach((i: string) => {
-        const levelToRemove = i?.match(/\d+/);
+    keys(updatedNavigationItems).forEach((i: string) => {
+      const keyToRemove = i?.match(/\d+/);
 
-        if (levelToRemove && gt(Number(levelToRemove[0]), level)) {
-          delete updatedNavigationItems[i];
-        }
+      if (keyToRemove && gt(Number(keyToRemove[0]), level)) {
+        delete updatedNavigationItems[i];
+      }
+      if (!i.includes('_Navigated')) {
+        updatedNavigationItems[`${i}_Navigated`] = updatedNavigationItems[i];
+        delete updatedNavigationItems[i];
 
-        if (i.includes('_Navigated')) {
-          if (`level_${level}_Navigated` === i) {
-            updatedNavigationItems[i] =
-              updatedNavigationItems[`level_${level}`];
-          }
-        } else {
-          updatedNavigationItems[`${i}_Navigated`] = updatedNavigationItems[i];
-          delete updatedNavigationItems[i];
-        }
-      });
-    }
+        return;
+      }
+      if (`level_${level}_Navigated` === i) {
+        updatedNavigationItems[i] = updatedNavigationItems[`level_${level}`];
+      }
+    });
 
     return updatedNavigationItems;
   };
