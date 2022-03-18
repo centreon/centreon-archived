@@ -550,7 +550,8 @@ function migrateBrokerConfigOutputsToUnifiedSql(CentreonDB $pearDB): void
         // Insert new output
         $query = "";
         $queryGlue = "";
-        foreach ($unifiedSqlOutput as $key => $row) {
+        $bindedValues = [];
+        foreach ($unifiedSqlOutput as $configKey => $row) {
             if ($query === '') {
                 $columns_name = implode(", ", array_keys($row));
                 $query = "INSERT INTO cfg_centreonbroker_info ($columns_name) VALUES ";
@@ -558,20 +559,45 @@ function migrateBrokerConfigOutputsToUnifiedSql(CentreonDB $pearDB): void
 
             $glue = '';
             $query .= $queryGlue . "(";
+
             foreach ($row as $key => $value) {
                 $query .= $glue;
-                $query .= $value === null ? 'NULL' : (is_numeric($value) ? $value : "'$value'");
+                $query .= ":" . $configKey . '_' . $key;
                 $glue = ", ";
+
+                $bindedValues[':' . $configKey . '_' . $key] = $value;
             }
             $query .= ")";
             $queryGlue = ', ';
         }
-        $pearDB->query($query);
+
+        $stmt = $pearDB->prepare($query);
+        foreach ($unifiedSqlOutput as $configKey => $row) {
+            foreach ($row as $key => $value) {
+                if (in_array($key, ['config_key', 'config_value', 'config_group'])) {
+                    $stmt->bindValue(':' . $configKey . '_' . $key, $value, PDO::PARAM_STR);
+                } else {
+                    $stmt->bindValue(':' . $configKey . '_' . $key, $value, PDO::PARAM_INT);
+                }
+            }
+        }
+        $stmt->queryString;
+
+        $stmt->execute();
 
         // Delete former outputs
-        $pearDB->query(
+        $bindedValues = [];
+        foreach ($configGroupIds as $index => $configGroupId) {
+            $bindedValues[':id_' . $index] = $configGroupId;
+        }
+
+        $stmt = $pearDB->prepare(
             "DELETE FROM cfg_centreonbroker_info
-            WHERE config_id = $configId AND config_group_id IN (" . implode(', ', $configGroupIds) . ")"
+            WHERE config_id = $configId AND config_group_id IN (" . implode(', ', array_keys($bindedValues)) . ")"
         );
+        foreach ($bindedValues as $key => $value) {
+            $stmt->bindValue($key, $value, PDO::PARAM_INT);
+        }
+        $stmt->execute();
     }
 }
