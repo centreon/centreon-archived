@@ -23,6 +23,8 @@ declare(strict_types=1);
 
 namespace Core\Application\Security\ProviderConfiguration\WebSSO\UseCase\FindWebSSOConfiguration;
 
+use Centreon\Domain\Common\Assertion\AssertionException;
+use Centreon\Domain\Repository\RepositoryException;
 use Core\Application\Common\UseCase\ErrorResponse;
 use Core\Application\Common\UseCase\NotFoundResponse;
 use Core\Domain\Security\ProviderConfiguration\WebSSO\Model\WebSSOConfiguration;
@@ -44,7 +46,7 @@ class FindWebSSOConfiguration
     {
         try {
             $configuration = $this->repository->findConfiguration();
-        } catch (\Throwable $ex) {
+        } catch (RepositoryException | AssertionException $ex) {
             $presenter->setResponseStatus(new ErrorResponse($ex->getMessage()));
             return;
         }
@@ -63,6 +65,15 @@ class FindWebSSOConfiguration
      */
     private function createResponse(WebSSOConfiguration $configuration): FindWebSSOConfigurationResponse
     {
-        return new FindWebSSOConfigurationResponse();
+        $response = new FindWebSSOConfigurationResponse();
+        $response->isActive = $configuration->isActive();
+        $response->isForced = $configuration->isForced();
+        $response->trustedClientAddresses = $configuration->getTrustedClientAddresses();
+        $response->blacklistClientAddresses = $configuration->getBlackListClientAddresses();
+        $response->loginHeaderAttribute = $configuration->getLoginHeaderAttribute();
+        $response->patternMatchingLogin = $configuration->getPatternMatchingLogin();
+        $response->patternReplaceLogin = $configuration->getPatternReplaceLogin();
+
+        return $response;
     }
 }

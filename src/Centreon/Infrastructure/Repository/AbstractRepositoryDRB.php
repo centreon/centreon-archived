@@ -21,11 +21,17 @@ declare(strict_types=1);
 
 namespace Centreon\Infrastructure\Repository;
 
+use Centreon\Domain\Log\LoggerTrait;
+use JsonSchema\Validator;
+use JsonSchema\Constraints\Constraint;
 use Centreon\Domain\Security\AccessGroup;
 use Centreon\Infrastructure\DatabaseConnection;
+use Centreon\Domain\Repository\RepositoryException;
 
 class AbstractRepositoryDRB
 {
+    use LoggerTrait;
+
     /**
      * @var DatabaseConnection
      */
@@ -61,5 +67,41 @@ class AbstractRepositoryDRB
             $ids[] = $accessGroup->getId();
         }
         return implode(',', $ids);
+    }
+
+    /**
+     * Validate the Json of a property
+     *
+     * @param string $jsonRecord The JSON Property to validate
+     * @param string $jsonSchemaFilePath The JSON Schema Validation file
+     * @throws RepositoryException
+     */
+    protected function validateJsonRecord(string $jsonRecord, string $jsonSchemaFilePath): void
+    {
+        $decodedRecord = json_decode($jsonRecord, true);
+
+        if (is_array($decodedRecord) === false) {
+            $this->critical('The property get from dbms is not a valid json');
+            throw new RepositoryException('Invalid Json format');
+        }
+
+        $decodedRecord = Validator::arrayToObjectRecursive($decodedRecord);
+        $validator = new Validator();
+        $validator->validate(
+            $decodedRecord,
+            (object) [
+                '$ref' => 'file://' . $jsonSchemaFilePath,
+            ],
+            Constraint::CHECK_MODE_VALIDATE_SCHEMA
+        );
+
+        if ($validator->isValid() === false) {
+            $message = '';
+            foreach ($validator->getErrors() as $error) {
+                $message .= sprintf("[%s] %s\n", $error['property'], $error['message']);
+            }
+            $this->critical($message);
+            throw new RepositoryException('Some properties doesn\'t match the json schema :' . $message);
+        }
     }
 }

@@ -23,6 +23,7 @@ declare(strict_types=1);
 
 namespace Tests\Core\Application\Security\ProviderConfiguration\WebSSO\UseCase\FindWebSSOConfiguration;
 
+use Centreon\Domain\Repository\RepositoryException;
 use Core\Application\Common\UseCase\ErrorResponse;
 use Core\Application\Common\UseCase\NotFoundResponse;
 use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
@@ -42,9 +43,9 @@ it('should present a FindWebSSOConfigurationResponse when everything goes well',
     $configuration = new WebSSOConfiguration(
         true,
         false,
+        ['127.0.0.1'],
         [],
-        [],
-        null,
+        'HTTP_AUTH_USER',
         null,
         null,
     );
@@ -59,6 +60,13 @@ it('should present a FindWebSSOConfigurationResponse when everything goes well',
 
     $useCase($presenter);
     expect($presenter->response)->toBeInstanceOf(FindWebSSOConfigurationResponse::class);
+    expect($presenter->response->isActive)->toBeTrue();
+    expect($presenter->response->isForced)->toBeFalse();
+    expect($presenter->response->trustedClientAddresses)->toBe(['127.0.0.1']);
+    expect($presenter->response->blacklistClientAddresses)->toBeEmpty();
+    expect($presenter->response->loginHeaderAttribute)->toBe('HTTP_AUTH_USER');
+    expect($presenter->response->patternMatchingLogin)->toBeNull();
+    expect($presenter->response->patternReplaceLogin)->toBeNull();
 });
 
 it('should present a NotFoundResponse when no configuration are found in Data storage', function () {
@@ -83,7 +91,7 @@ it('should present an ErrorResponse when an error occured during the finding pro
     $this->repository
         ->expects($this->once())
         ->method('findConfiguration')
-        ->willThrowException(new \Exception($exceptionMessage));
+        ->willThrowException(new RepositoryException($exceptionMessage));
 
     $useCase($presenter);
     expect($presenter->getResponseStatus())->toBeInstanceOf(ErrorResponse::class);
