@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import { equals } from 'ramda';
 import clsx from 'clsx';
-import { useAtom } from 'jotai';
+import { useAtomValue, useAtom } from 'jotai';
 
 import Collapse from '@mui/material/Collapse';
 import List from '@mui/material/List';
@@ -12,7 +12,10 @@ import ListSubheader from '@mui/material/ListSubheader';
 import { useMemoComponent } from '@centreon/ui';
 
 import { Page } from '../../models';
-import { selectedNavigationItemsAtom } from '../sideBarAtoms';
+import {
+  selectedNavigationItemsAtom,
+  hoveredNavigationItemsAtom,
+} from '../sideBarAtoms';
 
 import MenuItems from './MenuItems';
 
@@ -141,9 +144,10 @@ const CollapsableItems = ({
   const [nestedScrollCollapsMaxWidth, setNestedScrollCollapsMaxWidth] =
     useState<undefined | number>(undefined);
   const collapsRef = React.useRef<HTMLElement | null>(null);
-  const [selectedNavigationItems, setSelectedNavigationItems] = useAtom(
-    selectedNavigationItemsAtom,
+  const [hoveredNavigationItems, setHoveredNavigationItems] = useAtom(
+    hoveredNavigationItemsAtom,
   );
+  const selectedNavigationItems = useAtomValue(selectedNavigationItemsAtom);
 
   const levelName = `level_${level}_Navigated`;
   const itemWidth = currentWidth + collapseWidth;
@@ -160,21 +164,21 @@ const CollapsableItems = ({
     setHoveredIndex(index);
     const levelLabel = `level_${level}`;
 
-    setSelectedNavigationItems({
-      ...selectedNavigationItems,
+    setHoveredNavigationItems({
+      ...hoveredNavigationItems,
       [levelLabel]: item,
     });
   };
 
   const isItemHovered = (
-    object: Record<string, Page> | null,
+    navigationItem: Record<string, Page> | null,
     levelTitle: string,
     item: Page,
   ): boolean => {
-    if (object && object[levelTitle]) {
+    if (navigationItem && navigationItem[levelTitle]) {
       return (
-        object[levelTitle].label === item.label &&
-        object[levelTitle].url === item?.url
+        navigationItem[levelTitle].label === item.label &&
+        navigationItem[levelTitle].url === item?.url
       );
     }
 

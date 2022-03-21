@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { equals, isNil, clone, gt, keys, omit } from 'ramda';
+import { equals, isNil } from 'ramda';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAtom } from 'jotai';
 
@@ -11,7 +11,10 @@ import makeStyles from '@mui/styles/makeStyles';
 import { useMemoComponent } from '@centreon/ui';
 
 import { Page } from '../../models';
-import { selectedNavigationItemsAtom } from '../sideBarAtoms';
+import {
+  selectedNavigationItemsAtom,
+  hoveredNavigationItemsAtom,
+} from '../sideBarAtoms';
 import { closedDrawerWidth, openedDrawerWidth } from '../index';
 
 import CollapsableItems, { collapseBorderWidth } from './CollapsableItems';
@@ -54,6 +57,9 @@ const NavigationMenu = ({
   const [selectedNavigationItems, setSelectedNavigationItems] = useAtom(
     selectedNavigationItemsAtom,
   );
+  const [hoveredNavigationItems, setHoveredNavigationItems] = useAtom(
+    hoveredNavigationItemsAtom,
+  );
 
   const selectedNavigationItemsByDefault = React.useRef<Array<Page> | null>(
     null,
@@ -84,31 +90,15 @@ const NavigationMenu = ({
     const { top } = rect;
     setCurrentTop(top - collapseBorderWidth);
     setHoveredIndex(index);
-    setSelectedNavigationItems({
-      ...selectedNavigationItems,
+    setHoveredNavigationItems({
+      ...hoveredNavigationItems,
       level_0: item,
     });
   };
 
-  const deleteNavigationItemsSelected = (
-    navigationItems: Record<string, Page>,
-  ): void => {
-    const navigationKeysToRemove = keys(navigationItems).filter(
-      (navigationItem) => {
-        return !navigationItem.includes('_Navigated');
-      },
-    );
-
-    setSelectedNavigationItems(omit(navigationKeysToRemove, navigationItems));
-  };
-
   const handleLeave = (): void => {
     setHoveredIndex(null);
-    setHoveredIndex(null);
-    if (!selectedNavigationItems) {
-      return;
-    }
-    deleteNavigationItemsSelected(selectedNavigationItems);
+    setHoveredNavigationItems(null);
   };
 
   const getUrlFromEntry = (entryProps: Page): string | null | undefined => {
@@ -123,58 +113,11 @@ const NavigationMenu = ({
     return url;
   };
 
-  const addSelectedNavigationItems = ({
-    navigationItem,
-    level,
-  }): Record<string, Page> => {
-    const updatedNavigationItems = clone(navigationItem);
-
-    keys(updatedNavigationItems).forEach((i: any) => {
-      const keyToRemove = i?.match(/\d+/);
-
-      if (keyToRemove && gt(Number(keyToRemove[0]), level)) {
-        delete updatedNavigationItems[i];
-
-        return;
-      }
-      if (!i.includes('_Navigated')) {
-        updatedNavigationItems[`${i}_Navigated`] = updatedNavigationItems[i];
-        delete updatedNavigationItems[i];
-
-        return;
-      }
-      if (!equals(`level_${level}_Navigated`, i)) {
-        return;
-      }
-      updatedNavigationItems[i] = updatedNavigationItems[`level_${level}`];
-    });
-
-    return updatedNavigationItems;
-  };
-
-  const handleClickItem = (currentPage: Page, level = 0): void => {
-    if (!selectedNavigationItems) {
+  const handleClickItem = (currentPage: Page): void => {
+    if (!hoveredNavigationItems) {
       return;
     }
-    const isAlreadySelected =
-      equals(
-        selectedNavigationItems[`level_${level}_Navigated`]?.url,
-        currentPage?.url,
-      ) &&
-      equals(
-        selectedNavigationItems[`level_${level}_Navigated`].label,
-        currentPage.label,
-      );
-
-    if (isAlreadySelected) {
-      return;
-    }
-    setSelectedNavigationItems(
-      addSelectedNavigationItems({
-        level,
-        navigationItem: selectedNavigationItems,
-      }),
-    );
+    setSelectedNavigationItems(hoveredNavigationItems);
     navigate(getUrlFromEntry(currentPage) as string);
   };
 
@@ -273,6 +216,7 @@ const NavigationMenu = ({
 
   const handleWindowClose = (): void => {
     setSelectedNavigationItems(null);
+    setHoveredNavigationItems(null);
   };
 
   React.useEffect(() => {
@@ -282,11 +226,15 @@ const NavigationMenu = ({
   }, []);
 
   React.useEffect(() => {
-    if (selectedNavigationItemsByDefault) {
-      addSelectedNavigationItemsByDefault(
-        selectedNavigationItemsByDefault.current,
-      );
+    if (
+      !selectedNavigationItemsByDefault ||
+      !selectedNavigationItemsByDefault.current
+    ) {
+      return;
     }
+    addSelectedNavigationItemsByDefault(
+      selectedNavigationItemsByDefault.current,
+    );
   }, [search]);
 
   return useMemoComponent({
