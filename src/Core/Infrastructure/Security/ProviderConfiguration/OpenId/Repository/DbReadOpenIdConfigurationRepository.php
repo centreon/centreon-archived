@@ -25,19 +25,36 @@ namespace Core\Infrastructure\Security\ProviderConfiguration\OpenId\Repository;
 
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
+use Core\Application\Security\ProviderConfiguration\Repository\ReadProviderConfigurationsRepositoryInterface;
 use Core\Application\Security\ProviderConfiguration\OpenId\Repository\ReadOpenIdConfigurationRepositoryInterface
     as ReadRepositoryInterface;
 use Core\Domain\Security\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
 
-class DbReadOpenIdConfigurationRepository extends AbstractRepositoryDRB implements ReadRepositoryInterface
+class DbReadOpenIdConfigurationRepository extends AbstractRepositoryDRB implements
+    ReadProviderConfigurationsRepositoryInterface,
+    ReadRepositoryInterface
 {
     /**
-
      * @param DatabaseConnection $db
      */
     public function __construct(DatabaseConnection $db)
     {
         $this->db = $db;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function findConfigurations(): array
+    {
+        $configurations = [];
+
+        $openIdConfiguration = $this->findConfiguration();
+        if ($openIdConfiguration !== null) {
+            $configurations[] = $openIdConfiguration;
+        }
+
+        return $configurations;
     }
 
     /**
@@ -50,7 +67,10 @@ class DbReadOpenIdConfigurationRepository extends AbstractRepositoryDRB implemen
         );
         $configuration = null;
         if ($statement !== false && $result = $statement->fetch(\PDO::FETCH_ASSOC)) {
-            $this->validateJsonRecord($result['custom_configuration'], __DIR__ . '/CustomConfigurationSchema.json');
+            $this->validateJsonRecord(
+                $result['custom_configuration'],
+                __DIR__ . '/CustomConfigurationSchema.json',
+            );
             $customConfiguration = json_decode($result['custom_configuration'], true);
             $configuration = DbOpenIdConfigurationFactory::createFromRecord($result, $customConfiguration);
         }

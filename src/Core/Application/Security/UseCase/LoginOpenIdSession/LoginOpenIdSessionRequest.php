@@ -18,30 +18,20 @@
  * For more information : contact@centreon.com
  *
  */
+
 declare(strict_types=1);
 
-namespace Core\Infrastructure\RealTime\Api\Hypermedia;
+namespace Core\Application\Security\UseCase\LoginOpenIdSession;
 
-trait HypermediaProviderTrait
+class LoginOpenIdSessionRequest
 {
     /**
-     * Get base URI
-     *
-     * @return string
+     * @var string|null
      */
-    protected function getBaseUri(): string
-    {
-        $baseUri = '';
-        if (
-            isset($_SERVER['REQUEST_URI'])
-            && preg_match(
-                '/^(.+)\/((api|widgets|modules|include)\/|main(\.get)?\.php).+/',
-                $_SERVER['REQUEST_URI'],
-                $matches
-            )
-        ) {
-            $baseUri = $matches[1];
-        }
-        return $baseUri;
-    }
+    public ?string $authorizationCode;
+
+    /**
+     * @var string
+     */
+    public string $clientIp;
 }

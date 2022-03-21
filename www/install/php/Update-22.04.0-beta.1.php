@@ -104,8 +104,8 @@ try {
         $statement->bindValue(':creationDate', time(), \PDO::PARAM_INT);
         $statement->execute();
     }
-
-    $pearDB->commit();
+    $errorMessage = "Impossible to add default OpenID provider configuration";
+    insertOpenIdConfiguration($pearDB);
 
     $errorMessage = "Unable to drop column 'contact_passwd' from 'contact' table";
     $pearDB->query("ALTER TABLE `contact` DROP COLUMN `contact_passwd`");
@@ -142,60 +142,26 @@ try {
         ADD `blocking_time` BIGINT(20) UNSIGNED DEFAULT NULL"
     );
 
+    $errorMessage = "Unable to alter table security_token";
+    $pearDB->query("ALTER TABLE `security_token` MODIFY `token` varchar(4096)");
+    /**
+     * Add new UnifiedSQl broker output
+     */
     $pearDB->beginTransaction();
-    // Move OpenID Connect information to openid provider configuration.
-    $errorMessage = "Impossible to get openid configuration from option table";
-    $statement = $pearDB->query("SELECT * FROM options WHERE `key` LIKE 'openid_%'");
-    if (($result = $statement->fetch(\PDO::FETCH_ASSOC)) !== false) {
-        $isActive = $result['openid_connect_enable'] === '1';
-        $isForced = $result['openid_connect_mode'] === '0'; //'0' OpenId Connect Only, '1' Mixed
-        $customConfiguration = [
-            "trusted_client_addresses" => explode(',', $result['openid_connect_trusted_clients']),
-            "blacklist_client_addresses" => explode(',', $result['openid_connect_blacklist_clients']),
-            "base_url" => !empty($result['openid_connect_base_url']) ? $result['openid_connect_base_url'] : null,
-            "authorization_endpoint" => !empty($result['openid_connect_authorization_endpoint'])
-                ? $result['openid_connect_authorization_endpoint']
-                : null,
-            "token_endpoint" => !empty($result['openid_connect_token_endpoint'])
-                ? $result['openid_connect_token_endpoint']
-                : null,
-            "introspection_token_endpoint" => !empty($result['openid_connect_introspection_endpoint'])
-                ? $result['openid_connect_introspection_endpoint']
-                : null,
-            "userinfo_endpoint" => !empty($result['openid_connect_userinfo_endpoint'])
-                ? $result['openid_connect_userinfo_endpoint']
-                : null,
-            "endsession_endpoint" => !empty($result['openid_connect_end_session_endpoint'])
-                ? $result['openid_connect_end_session_endpoint']
-                : null,
-            "connection_scopes" => explode(" ", $result['openid_connect_scope']),
-            "login_claim" => !empty($result['openid_connect_login_claim'])
-                ? $result['openid_connect_login_claim']
-                : null,
-            "client_id" => !empty($result['openid_connect_client_id'])
-                ? $result['openid_connect_client_id']
-                : null,
-            "client_secret" => !empty($result['openid_connect_client_secret'])
-                ? $result['openid_connect_client_secret']
-                : null,
-            "authentication_type" => $result['openid_connect_client_basic_auth'] === '1'
-                ? 'client_secret_basic'
-                : 'client_secret_post',
-            "verify_peer" => $result['openid_connect_verify_peer'] === '1' ? false : true // '1' is Verify Peer disable
-        ];
-        $errorMessage = "Impossible to add default OpenID provider configuration";
-        $statement2 = $pearDB->prepare(
-            "INSERT INTO provider_configuration (`type`,`name`,`custom_configuration`,`is_active`,`is_forced`)
-            VALUES ('openid','openid', :customConfiguration, :isActive, :isForced)"
-        );
-        $statement2->bindValue(':customConfiguration', json_encode($customConfiguration), \PDO::PARAM_STR);
-        $statement2->bindValue(':isActive', $isActive ? '1' : '0', \PDO::PARAM_STR);
-        $statement2->bindValue(':isForced', $isForced ? '1' : '0', \PDO::PARAM_STR);
-        $statement2->execute();
 
-        $errorMessage = "Impossible to remove open_id options form options table";
-        $pearDB->query("DELETE FROM options WHERE `key` LIKE 'open_id%'");
-    }
+    $errorMessage = 'Unable to update cb_type table ';
+    $pearDB->query(
+        "UPDATE `cb_type` set type_name = 'Perfdata Generator (Centreon Storage) - DEPRECATED'
+        WHERE type_shortname = 'storage'"
+    );
+    $pearDB->query(
+        "UPDATE `cb_type` set type_name = 'Broker SQL database - DEPRECATED'
+        WHERE type_shortname = 'sql'"
+    );
+
+    $errorMessage = "Unable to add 'unifed_sql' broker configuration output";
+    addNewUnifiedSqlOutput($pearDB);
+
     $pearDB->commit();
 } catch (\Exception $e) {
     if ($pearDB->inTransaction()) {
@@ -211,4 +177,200 @@ try {
     );
 
     throw new \Exception($versionOfTheUpgrade . $errorMessage, (int)$e->getCode(), $e);
+}
+
+/**
+ * insert OpenId Configuration Default configuration.
+ *
+ * @param CentreonDB $pearDB
+ */
+function insertOpenIdConfiguration(CentreonDB $pearDB): void
+{
+    $customConfiguration = [
+        "trusted_client_addresses" => [],
+        "blacklist_client_addresses" => [],
+        "base_url" => null,
+        "authorization_endpoint" => null,
+        "token_endpoint" => null,
+        "introspection_token_endpoint" => null,
+        "userinfo_endpoint" => null,
+        "endsession_endpoint" => null,
+        "connection_scopes" => [],
+        "login_claim" => null,
+        "client_id" => null,
+        "client_secret" => null,
+        "authentication_type" => "client_secret_post",
+        "verify_peer" => true
+    ];
+    $isActive = false;
+    $isForced = false;
+    $statement = $pearDB->query("SELECT * FROM options WHERE `key` LIKE 'openid_%'");
+    $result = $statement->fetchAll(\PDO::FETCH_ASSOC);
+    if (!empty($result)) {
+        foreach ($result as $configLine) {
+            switch ($configLine['key']) {
+                case 'openid_connect_enable':
+                    $isActive = $configLine['value'] === '1';
+                    break;
+                case 'openid_connect_mode':
+                    $isForced = $configLine['value'] === '0'; //'0' OpenId Connect Only, '1' Mixed
+                    break;
+                case 'openid_connect_trusted_clients':
+                    $customConfiguration['trusted_client_addresses'] = !empty($configLine['value'])
+                        ? explode(',', $configLine['value'])
+                        : [];
+                    break;
+                case 'openid_connect_blacklist_clients':
+                    $customConfiguration['blacklist_client_addresses'] = !empty($configLine['value'])
+                        ? explode(',', $configLine['value'])
+                        : [];
+                    break;
+                case 'openid_connect_base_url':
+                    $customConfiguration['base_url'] = !empty($configLine['value'])
+                        ? $configLine['value']
+                        : null;
+                    break;
+                case 'openid_connect_authorization_endpoint':
+                    $customConfiguration['authorization_endpoint'] = !empty($configLine['value'])
+                        ? $configLine['value']
+                        : null;
+                    break;
+                case 'openid_connect_token_endpoint':
+                    $customConfiguration['token_endpoint'] = !empty($configLine['value'])
+                        ? $configLine['value']
+                        : null;
+                    break;
+                case 'openid_connect_introspection_endpoint':
+                    $customConfiguration['introspection_token_endpoint'] = !empty($configLine['value'])
+                        ? $configLine['value']
+                        : null;
+                    break;
+                case 'openid_connect_userinfo_endpoint':
+                    $customConfiguration['userinfo_endpoint'] = !empty($configLine['value'])
+                        ? $configLine['value']
+                        : null;
+                    break;
+                case 'openid_connect_end_session_endpoint':
+                    $customConfiguration['endsession_endpoint'] = !empty($configLine['value'])
+                        ? $configLine['value']
+                        : null;
+                    break;
+                case 'openid_connect_scope':
+                    $customConfiguration['connection_scopes'] = !empty($configLine['value'])
+                        ? explode(' ', $configLine['value'])
+                        : [];
+                    break;
+                case 'openid_connect_login_claim':
+                    $customConfiguration['login_claim'] = !empty($configLine['value']) ? $configLine['value'] : null;
+                    break;
+                case 'openid_connect_client_id':
+                    $customConfiguration['client_id'] = !empty($configLine['value']) ? $configLine['value'] : null;
+                    break;
+                case 'openid_connect_client_secret':
+                    $customConfiguration['client_secret'] = !empty($configLine['value']) ? $configLine['value'] : null;
+                    break;
+                case 'openid_connect_client_basic_auth':
+                    $customConfiguration['authentication_type'] = $configLine['value'] === '1'
+                        ? 'client_secret_basic'
+                        : 'client_secret_post';
+                    break;
+                case 'openid_connect_verify_peer':
+                    // '1' is Verify Peer disable
+                    $customConfiguration['verify_peer'] = $configLine['value'] === '1' ? false : true;
+                    break;
+            }
+        }
+        $pearDB->query("DELETE FROM options WHERE `key` LIKE 'open_id%'");
+    }
+    $insertStatement = $pearDB->prepare(
+        "INSERT INTO provider_configuration (`type`,`name`,`custom_configuration`,`is_active`,`is_forced`)
+        VALUES ('openid','openid', :customConfiguration, :isActive, :isForced)"
+    );
+    $insertStatement->bindValue(':customConfiguration', json_encode($customConfiguration), \PDO::PARAM_STR);
+    $insertStatement->bindValue(':isActive', $isActive ? '1' : '0', \PDO::PARAM_STR);
+    $insertStatement->bindValue(':isForced', $isForced ? '1' : '0', \PDO::PARAM_STR);
+    $insertStatement->execute();
+}
+
+/**
+ * Handle new broker output creation 'unified_sql'
+ *
+ * @param CentreonDB $pearDB
+ */
+function addNewUnifiedSqlOutput(CentreonDB $pearDB): void
+{
+    // Add new output type 'unified_sql'
+    $statement = $pearDB->query("SELECT cb_module_id FROM cb_module WHERE name = 'Storage'");
+    $module = $statement->fetch();
+    if ($module === false) {
+        throw new Exception("Cannot find 'Storage' module in cb_module table");
+    }
+    $moduleId = $module['cb_module_id'];
+
+    $stmt = $pearDB->prepare(
+        "INSERT INTO `cb_type` (`type_name`, `type_shortname`, `cb_module_id`)
+        VALUES ('Unified SQL', 'unified_sql', :cb_module_id)"
+    );
+    $stmt->bindValue(':cb_module_id', $moduleId, PDO::PARAM_INT);
+    $stmt->execute();
+    $typeId = $pearDB->lastInsertId();
+
+    // Link new type to tag 'output'
+    $statement = $pearDB->query("SELECT cb_tag_id FROM cb_tag WHERE tagname = 'Output'");
+    $tag = $statement->fetch();
+    if ($tag === false) {
+        throw new Exception("Cannot find 'Output' tag in cb_tag table");
+    }
+    $tagId = $tag['cb_tag_id'];
+
+    $stmt = $pearDB->prepare(
+        "INSERT INTO `cb_tag_type_relation` (`cb_tag_id`, `cb_type_id`, `cb_type_uniq`)
+        VALUES (:cb_tag_id, :cb_type_id, 0)"
+    );
+    $stmt->bindValue(':cb_tag_id', $tagId, PDO::PARAM_INT);
+    $stmt->bindValue(':cb_type_id', $typeId, PDO::PARAM_INT);
+    $stmt->execute();
+
+    // Create new field 'unified_sql_db_type' with fixed value
+    $pearDB->query("INSERT INTO options VALUES ('unified_sql_db_type', 'mysql')");
+
+    $pearDB->query(
+        "INSERT INTO `cb_field` (fieldname, displayname, description, fieldtype, external)
+        VALUES ('db_type', 'DB type', 'Target DBMS.', 'text', 'T=options:C=value:CK=key:K=unified_sql_db_type')"
+    );
+    $fieldId = $pearDB->lastInsertId();
+
+    // Add form fields for 'unified_sql' output
+    $inputs = [];
+    $statement = $pearDB->query(
+        "SELECT DISTINCT(tfr.cb_field_id), tfr.is_required FROM cb_type_field_relation tfr, cb_type t, cb_field f
+        WHERE tfr.cb_type_id = t.cb_type_id
+        AND t.type_shortname in ('sql', 'storage')
+        AND tfr.cb_field_id = f.cb_field_id
+        AND f.fieldname NOT LIKE 'db_type'
+        ORDER BY tfr.order_display"
+    );
+    $inputs = $statement->fetchAll();
+    if (empty($inputs)) {
+        throw new Exception("Cannot find fields in cb_type_field_relation table");
+    }
+
+    $inputs[] = ['cb_field_id' => $fieldId, 'is_required' => 1];
+
+    $query = "INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`, `order_display`)";
+    $bindedValues = [];
+    foreach ($inputs as $key => $input) {
+        $query .= $key === 0 ? " VALUES " : ", ";
+        $query .= "(:cb_type_id_$key, :cb_field_id_$key, :is_required_$key, :order_display_$key)";
+
+        $bindedValues[':cb_type_id_' . $key] = $typeId;
+        $bindedValues[':cb_field_id_' . $key] = $input['cb_field_id'];
+        $bindedValues[':is_required_' . $key] = $input['is_required'];
+        $bindedValues[':order_display_' . $key] = (int) $key + 1;
+    }
+    $stmt = $pearDB->prepare($query);
+    foreach ($bindedValues as $key => $value) {
+        $stmt->bindValue($key, $value, PDO::PARAM_INT);
+    }
+    $stmt->execute();
 }

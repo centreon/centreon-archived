@@ -24,10 +24,20 @@ declare(strict_types=1);
 namespace Core\Domain\Security\ProviderConfiguration\OpenId\Model;
 
 use Centreon\Domain\Common\Assertion\AssertionException;
+use Security\Domain\Authentication\Interfaces\ProviderConfigurationInterface;
 
-class OpenIdConfiguration
+class OpenIdConfiguration implements ProviderConfigurationInterface
 {
     public const DEFAULT_LOGIN_GLAIM = 'preferred_username';
+    public const AUTHENTICATION_POST = 'client_secret_post';
+    public const AUTHENTICATION_BASIC = 'client_secret_basic';
+    public const TYPE = 'openid';
+    public const NAME = 'openid';
+
+    /**
+     * @var int|null
+     */
+    private ?int $id;
 
     /**
      * @param boolean $isActive
@@ -87,6 +97,25 @@ class OpenIdConfiguration
                 );
             }
         }
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param int|null $id
+     * @return self
+     */
+    public function setId(?int $id): self
+    {
+        $this->id = $id;
+
+        return $this;
     }
 
     /**
@@ -215,5 +244,13 @@ class OpenIdConfiguration
     public function verifyPeer(): bool
     {
         return $this->verifyPeer;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType(): string
+    {
+        return self::TYPE;
     }
 }

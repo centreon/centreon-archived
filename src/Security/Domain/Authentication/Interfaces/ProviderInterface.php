@@ -24,20 +24,12 @@ namespace Security\Domain\Authentication\Interfaces;
 
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Security\Domain\Authentication\Model\AuthenticationTokens;
-use Security\Domain\Authentication\Model\ProviderToken;
-use Security\Domain\Authentication\Model\ProviderConfiguration;
 
 /**
  * @package Security\Authentication\Interfaces
  */
 interface ProviderInterface
 {
-    /**
-     * @param array<string, mixed> $data
-     * @throws \Throwable
-     */
-    public function authenticateOrFail(array $data): void;
-
     /**
      * Get legacy Centreon session
      *
@@ -74,41 +66,16 @@ interface ProviderInterface
     public function getName(): string;
 
     /**
-     * Return the provider token
-     *
-     * @param string $token
-     * @return ProviderToken
-     */
-    public function getProviderToken(string $token): ProviderToken;
-
-    /**
-     * Return the provider refresh token.
-     *
-     * @param string $token
-     * @return ProviderToken|null
-     */
-    public function getProviderRefreshToken(string $token): ?ProviderToken;
-
-    /**
-     * Retrieve the contact.
-     *
      * @return ContactInterface|null
      */
     public function getUser(): ?ContactInterface;
 
     /**
-     * Get the provider's configuration (ex: client_id, client_secret, grant_type, ...).
-     *
-     * @return ProviderConfiguration
-     */
-    public function getConfiguration(): ProviderConfiguration;
-
-    /**
      * Set the provider's configuration to initialize it (ex: client_id, client_secret, grant_type, ...).
      *
-     * @param ProviderConfiguration $configuration
+     * @param ProviderConfigurationInterface $configuration
      */
-    public function setConfiguration(ProviderConfiguration $configuration): void;
+    public function setConfiguration(ProviderConfigurationInterface $configuration): void;
 
     /**
      * Refresh the provider token.
