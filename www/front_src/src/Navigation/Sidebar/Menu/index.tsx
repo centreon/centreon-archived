@@ -179,17 +179,17 @@ const NavigationMenu = ({
   };
 
   const isItemHovered = (
-    object: Record<string, Page> | null,
+    navigationItem: Record<string, Page> | null,
     level: string,
     item: Page,
   ): boolean => {
-    if (!object || !object[level]) {
+    if (!navigationItem || !navigationItem[level]) {
       return false;
     }
 
     return (
-      equals(object[level].label, item.label) &&
-      equals(object[level]?.url, item?.url)
+      equals(navigationItem[level].label, item.label) &&
+      equals(navigationItem[level]?.url, item?.url)
     );
   };
 
