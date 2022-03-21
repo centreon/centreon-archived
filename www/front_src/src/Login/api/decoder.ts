@@ -1,6 +1,6 @@
 import { JsonDecoder } from 'ts.data.json';
 
-import { PlatformVersions, Redirect } from '../models';
+import { PlatformVersions, ProviderConfiguration, Redirect } from '../models';
 
 export const redirectDecoder = JsonDecoder.object<Redirect>(
   {
@@ -24,4 +24,24 @@ export const platformVersionsDecoder = JsonDecoder.object<PlatformVersions>(
     ),
   },
   'Platform versions Decoder',
+);
+
+const providerConfigurationDecoder = JsonDecoder.object<ProviderConfiguration>(
+  {
+    authenticationUri: JsonDecoder.string,
+    id: JsonDecoder.number,
+    isActive: JsonDecoder.boolean,
+    isForced: JsonDecoder.optional(JsonDecoder.boolean),
+    name: JsonDecoder.string,
+  },
+  'Provider Condifugration',
+  {
+    authenticationUri: 'authentication_uri',
+    isActive: 'is_active',
+  },
+);
+
+export const providersConfigurationDecoder = JsonDecoder.array(
+  providerConfigurationDecoder,
+  'Providers Configuration List',
 );
