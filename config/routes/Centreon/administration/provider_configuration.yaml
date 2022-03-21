@@ -20,4 +20,15 @@ centreon_security_find_provider_configuration_web_sso:
     methods: GET
     path: /administration/authentication/providers/web-sso
     controller: 'Core\Infrastructure\Security\ProviderConfiguration\WebSSO\Api\FindWebSSOConfiguration\FindWebSSOConfigurationController'
+
+centreon_security_update_provider_configuration_openid:
+    methods: PUT
+    path: /administration/authentication/providers/openid
+    controller: 'Core\Infrastructure\Security\ProviderConfiguration\OpenId\Api\UpdateOpenIdConfiguration\UpdateOpenIdConfigurationController'
+    condition: "request.attributes.get('version') >= 22.04"
+
+centreon_security_find_provider_configuration_openid:
+    methods: GET
+    path: /administration/authentication/providers/openid
+    controller: 'Core\Infrastructure\Security\ProviderConfiguration\OpenId\Api\FindOpenIdConfiguration\FindOpenIdConfigurationController'
     condition: "request.attributes.get('version') >= 22.04"

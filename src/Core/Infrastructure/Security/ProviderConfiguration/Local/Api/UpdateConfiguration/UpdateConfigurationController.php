@@ -23,11 +23,8 @@ declare(strict_types=1);
 
 namespace Core\Infrastructure\Security\ProviderConfiguration\Local\Api\UpdateConfiguration;
 
-use JsonSchema\Validator;
-use JsonSchema\Constraints\Constraint;
 use Symfony\Component\HttpFoundation\Request;
 use Centreon\Application\Controller\AbstractController;
-use Core\Infrastructure\Security\ProviderConfiguration\Local\Api\Exception\ConfigurationException;
 use Core\Application\Security\ProviderConfiguration\Local\UseCase\UpdateConfiguration\UpdateConfiguration;
 use Core\Application\Security\ProviderConfiguration\Local\UseCase\UpdateConfiguration\UpdateConfigurationRequest;
 use Core\Application\Security\ProviderConfiguration\Local\UseCase\UpdateConfiguration\{

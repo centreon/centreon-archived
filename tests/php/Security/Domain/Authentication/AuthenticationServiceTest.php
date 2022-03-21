@@ -27,7 +27,7 @@ use Security\Domain\Authentication\AuthenticationService;
 use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
 use Security\Domain\Authentication\Interfaces\ProviderServiceInterface;
 use Security\Domain\Authentication\Interfaces\SessionRepositoryInterface;
-use Security\Domain\Authentication\Interfaces\ProviderInterface;
+use Security\Domain\Authentication\Interfaces\LocalProviderInterface;
 use Security\Domain\Authentication\Model\AuthenticationTokens;
 use Security\Domain\Authentication\Model\ProviderToken;
 use Core\Application\Security\Repository\WriteTokenRepositoryInterface;
@@ -59,7 +59,7 @@ class AuthenticationServiceTest extends TestCase
     private $writeTokenRepository;
 
     /**
-     * @var ProviderInterface|\PHPUnit\Framework\MockObject\MockObject
+     * @var LocalProviderInterface|\PHPUnit\Framework\MockObject\MockObject
      */
     private $provider;
 
@@ -79,7 +79,7 @@ class AuthenticationServiceTest extends TestCase
         $this->providerService = $this->createMock(ProviderServiceInterface::class);
         $this->sessionRepository = $this->createMock(SessionRepositoryInterface::class);
         $this->writeTokenRepository = $this->createMock(WriteTokenRepositoryInterface::class);
-        $this->provider = $this->createMock(ProviderInterface::class);
+        $this->provider = $this->createMock(LocalProviderInterface::class);
         $this->authenticationTokens = $this->createMock(AuthenticationTokens::class);
         $this->providerToken = $this->createMock(ProviderToken::class);
     }

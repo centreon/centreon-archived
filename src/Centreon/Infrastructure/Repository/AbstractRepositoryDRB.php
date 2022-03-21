@@ -21,8 +21,8 @@ declare(strict_types=1);
 
 namespace Centreon\Infrastructure\Repository;
 
-use Centreon\Domain\Log\LoggerTrait;
 use JsonSchema\Validator;
+use Centreon\Domain\Log\LoggerTrait;
 use JsonSchema\Constraints\Constraint;
 use Centreon\Domain\Security\AccessGroup;
 use Centreon\Infrastructure\DatabaseConnection;

@@ -1,71 +1,55 @@
 import * as React from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { isNil, not } from 'ramda';
 
-import {
-  Paper,
-  Theme,
-  Typography,
-  LinearProgress,
-  Container,
-} from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
+import { Box, Paper, Tab } from '@mui/material';
+import { TabContext, TabList, TabPanel } from '@mui/lab';
 
-import { labelDefinePasswordSecurityPolicy } from './translatedLabels';
-import useAuthentication from './useAuthentication';
-import Form from './Form';
-import { SecurityPolicy } from './models';
-import LoadingSkeleton from './LoadingSkeleton';
+import { useMemoComponent } from '@centreon/ui';
 
-const useStyles = makeStyles((theme: Theme) => ({
-  container: {
-    width: 'fit-content',
-  },
-  loading: {
-    height: theme.spacing(0.5),
-  },
-  paper: {
-    padding: theme.spacing(2),
-  },
-}));
+import { Provider } from './models';
+import LocalAuthentication from './Local';
+import { labelPasswordSecurityPolicy } from './Local/translatedLabels';
+import { labelOpenIDConnectConfiguration } from './Openid/translatedLabels';
+import OpenidConfiguration from './Openid';
 
 const Authentication = (): JSX.Element => {
-  const classes = useStyles();
   const { t } = useTranslation();
+  const [tab, setTab] = React.useState(Provider.Local);
 
-  const {
-    sendingGetSecurityPolicy,
-    initialSecurityPolicy,
-    loadSecurityPolicy,
-  } = useAuthentication();
-
-  const isSecurityPolicyEmpty = React.useMemo(
-    () => isNil(initialSecurityPolicy),
-    [initialSecurityPolicy],
-  );
+  const changeTab = (_, newTab: Provider): void => {
+    setTab(newTab);
+  };
 
   return (
-    <Container className={classes.container}>
-      <Paper className={classes.paper}>
-        <Typography variant="h4">
-          {t(labelDefinePasswordSecurityPolicy)}
-        </Typography>
-        <div className={classes.loading}>
-          {not(isSecurityPolicyEmpty) && sendingGetSecurityPolicy && (
-            <LinearProgress />
-          )}
-        </div>
-        {isSecurityPolicyEmpty ? (
-          <LoadingSkeleton />
-        ) : (
-          <Form
-            initialValues={initialSecurityPolicy as SecurityPolicy}
-            loadSecurityPolicy={loadSecurityPolicy}
-          />
-        )}
-      </Paper>
-    </Container>
+    <Box>
+      <TabContext value={tab}>
+        <Paper>
+          <TabList variant="fullWidth" onChange={changeTab}>
+            <Tab
+              label={t(labelPasswordSecurityPolicy)}
+              value={Provider.Local}
+            />
+            <Tab
+              label={t(labelOpenIDConnectConfiguration)}
+              value={Provider.Openid}
+            />
+          </TabList>
+        </Paper>
+        <TabPanel value={Provider.Local}>
+          {useMemoComponent({
+            Component: <LocalAuthentication />,
+            memoProps: [],
+          })}
+        </TabPanel>
+        <TabPanel value={Provider.Openid}>
+          {useMemoComponent({
+            Component: <OpenidConfiguration />,
+            memoProps: [],
+          })}
+        </TabPanel>
+      </TabContext>
+    </Box>
   );
 };
 
