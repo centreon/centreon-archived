@@ -12,11 +12,13 @@ import {
   labelFailedToSaveWebSSOConfiguration,
   labelWebSSOConfigurationSaved,
 } from '../translatedLabels';
-import { putWebSSOConfiguration } from '../../api';
-import { WebSSOConfiguration } from '../models';
+import { putProviderConfiguration } from '../../api';
+import { WebSSOConfiguration, WebSSOConfigurationToAPI } from '../models';
 import FormButtons from '../../FormButtons';
 import Inputs from '../../FormInputs';
 import { categories } from '../..';
+import { Provider } from '../../models';
+import { adaptWebSSOConfigurationToAPI } from '../../api/adapters';
 
 import { inputs } from './inputs';
 
@@ -40,7 +42,13 @@ const Form = ({
 
   const { sendRequest } = useRequest({
     defaultFailureMessage: t(labelFailedToSaveWebSSOConfiguration),
-    request: putWebSSOConfiguration,
+    request: putProviderConfiguration<
+      WebSSOConfiguration,
+      WebSSOConfigurationToAPI
+    >({
+      adapter: adaptWebSSOConfigurationToAPI,
+      type: Provider.WebSSO,
+    }),
   });
   const { showSuccessMessage } = useSnackbar();
 

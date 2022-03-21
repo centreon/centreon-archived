@@ -8,21 +8,9 @@ import {
   PasswordSecurityPolicyToAPI,
 } from '../Local/models';
 import { Provider } from '../models';
-import {
-  OpenidConfiguration,
-  OpenidConfigurationToAPI,
-} from '../Openid/models';
-import {
-  WebSSOConfiguration,
-  WebSSOConnfigurationToAPI,
-} from '../WebSSO/models';
 
 import { authenticationProvidersEndpoint } from './endpoints';
-import {
-  adaptOpenidConfigurationToAPI,
-  adaptPasswordSecurityPolicyToAPI,
-  adaptWebSSOConfigurationToAPI,
-} from './adapters';
+import { adaptPasswordSecurityPolicyToAPI } from './adapters';
 
 export const getPasswordPasswordSecurityPolicy =
   (cancelToken: CancelToken) => (): Promise<PasswordSecurityPolicy> =>
@@ -41,30 +29,27 @@ export const putPasswordPasswordSecurityPolicy =
       endpoint: authenticationProvidersEndpoint(Provider.Local),
     });
 
-export const getOpenidConfiguration =
-  (cancelToken: CancelToken) => (): Promise<OpenidConfiguration> =>
-    getData<OpenidConfiguration>(cancelToken)({
-      endpoint: authenticationProvidersEndpoint(Provider.Openid),
-    });
-
-export const putOpenidConfiguration =
+export const getProviderConfiguration =
+  <Configuration>(type: Provider) =>
   (cancelToken: CancelToken) =>
-  (openidConfiguration: OpenidConfiguration): Promise<unknown> =>
-    putData<OpenidConfigurationToAPI, unknown>(cancelToken)({
-      data: adaptOpenidConfigurationToAPI(openidConfiguration),
-      endpoint: authenticationProvidersEndpoint(Provider.Openid),
+  (): Promise<Configuration> =>
+    getData<Configuration>(cancelToken)({
+      endpoint: authenticationProvidersEndpoint(type),
     });
 
-export const getWebSSOConfiguration =
-  (cancelToken: CancelToken) => (): Promise<WebSSOConfiguration> =>
-    getData<WebSSOConfiguration>(cancelToken)({
-      endpoint: authenticationProvidersEndpoint(Provider.WebSSO),
-    });
+interface PutProviderConfiguration<Configuration, ConfigurationToAPI> {
+  adapter: (configuration: Configuration) => ConfigurationToAPI;
+  type: Provider;
+}
 
-export const putWebSSOConfiguration =
+export const putProviderConfiguration =
+  <Configuration, ConfigurationToAPI>({
+    type,
+    adapter,
+  }: PutProviderConfiguration<Configuration, ConfigurationToAPI>) =>
   (cancelToken: CancelToken) =>
-  (webSSOConfiguration: WebSSOConfiguration): Promise<unknown> =>
-    putData<WebSSOConnfigurationToAPI, unknown>(cancelToken)({
-      data: adaptWebSSOConfigurationToAPI(webSSOConfiguration),
-      endpoint: authenticationProvidersEndpoint(Provider.WebSSO),
+  (configuration: Configuration): Promise<unknown> =>
+    putData<ConfigurationToAPI, unknown>(cancelToken)({
+      data: adapter(configuration),
+      endpoint: authenticationProvidersEndpoint(type),
     });

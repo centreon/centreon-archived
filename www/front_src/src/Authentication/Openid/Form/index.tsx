@@ -12,11 +12,13 @@ import {
   labelFailedToSaveOpenidConfiguration,
   labelOpenIDConnectConfigurationSaved,
 } from '../translatedLabels';
-import { putOpenidConfiguration } from '../../api';
-import { OpenidConfiguration } from '../models';
+import { putProviderConfiguration } from '../../api';
+import { OpenidConfiguration, OpenidConfigurationToAPI } from '../models';
 import FormButtons from '../../FormButtons';
 import Inputs from '../../FormInputs';
 import { categories } from '../..';
+import { Provider } from '../../models';
+import { adaptOpenidConfigurationToAPI } from '../../api/adapters';
 
 import { inputs } from './inputs';
 
@@ -40,7 +42,10 @@ const Form = ({
 
   const { sendRequest } = useRequest({
     defaultFailureMessage: t(labelFailedToSaveOpenidConfiguration),
-    request: putOpenidConfiguration,
+    request: putProviderConfiguration<
+      OpenidConfiguration,
+      OpenidConfigurationToAPI
+    >({ adapter: adaptOpenidConfigurationToAPI, type: Provider.Openid }),
   });
   const { showSuccessMessage } = useSnackbar();
 

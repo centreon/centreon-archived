@@ -2,8 +2,9 @@ import * as React from 'react';
 
 import { useRequest } from '@centreon/ui';
 
-import { getWebSSOConfiguration } from '../api';
+import { getProviderConfiguration } from '../api';
 import { webSSOConfigurationDecoder } from '../api/decoders';
+import { Provider } from '../models';
 
 import { WebSSOConfiguration } from './models';
 
@@ -18,7 +19,7 @@ const useWebSSO = (): UseWebSSOState => {
     React.useState<WebSSOConfiguration | null>(null);
   const { sendRequest, sending } = useRequest<WebSSOConfiguration>({
     decoder: webSSOConfigurationDecoder,
-    request: getWebSSOConfiguration,
+    request: getProviderConfiguration<WebSSOConfiguration>(Provider.WebSSO),
   });
 
   const loadWebSSOonfiguration = (): void => {

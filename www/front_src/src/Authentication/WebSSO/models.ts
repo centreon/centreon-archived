@@ -8,7 +8,7 @@ export interface WebSSOConfiguration {
   trustedClientAddresses: Array<string>;
 }
 
-export interface WebSSOConnfigurationToAPI {
+export interface WebSSOConfigurationToAPI {
   blacklist_client_addresses: Array<string>;
   is_active: boolean;
   is_forced: boolean;

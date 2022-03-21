@@ -8,7 +8,7 @@ import {
 } from '../Openid/models';
 import {
   WebSSOConfiguration,
-  WebSSOConnfigurationToAPI,
+  WebSSOConfigurationToAPI,
 } from '../WebSSO/models';
 
 export const adaptPasswordSecurityPolicyFromAPI = (
@@ -110,7 +110,7 @@ export const adaptWebSSOConfigurationToAPI = ({
   isActive,
   isForced,
   trustedClientAddresses,
-}: WebSSOConfiguration): WebSSOConnfigurationToAPI => ({
+}: WebSSOConfiguration): WebSSOConfigurationToAPI => ({
   blacklist_client_addresses: blacklistClientAddresses,
   is_active: isActive,
   is_forced: isForced,
