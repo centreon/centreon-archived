@@ -43,22 +43,6 @@ class ProviderRepository extends AbstractRepositoryDRB implements ProviderReposi
      * {@inheritDoc}
      * @throws \Assert\AssertionFailedException
      */
-    public function findProvidersConfigurations(): array
-    {
-        $statement = $this->db->prepare($this->translateDbName("SELECT * FROM `:db`.provider_configuration"));
-        $statement->execute();
-        $providersConfigurations = [];
-        while ($result = $statement->fetch(\PDO::FETCH_ASSOC)) {
-            $providerConfiguration = ProviderConfigurationFactoryRdb::create($result);
-            $providersConfigurations[] = $providerConfiguration;
-        }
-        return $providersConfigurations;
-    }
-
-    /**
-     * {@inheritDoc}
-     * @throws \Assert\AssertionFailedException
-     */
     public function findProviderConfiguration(int $id): ?ProviderConfiguration
     {
         $statement = $this->db->prepare($this->translateDbName(

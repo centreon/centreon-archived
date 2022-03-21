@@ -67,7 +67,7 @@ class CentreonConfigurationObjects extends CentreonWebService
         }
 
         // Get Object targeted
-        if (isset($this->arguments['target'])) {
+        if (isset($this->arguments['target']) && preg_match('/^[a-zA-Z]+$/', $this->arguments['target'])) {
             $target = ucfirst($this->arguments['target']);
         } else {
             throw new RestBadRequestException("Bad parameters target");
@@ -80,7 +80,6 @@ class CentreonConfigurationObjects extends CentreonWebService
             $calledClass = 'Centreon' . $target;
             $defaultValuesParameters = $calledClass::getDefaultValuesParameters($field);
         }
-
         if (count($defaultValuesParameters) == 0) {
             throw new RestBadRequestException("Bad parameters count");
         }

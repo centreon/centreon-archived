@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace Centreon\Application\Controller\Configuration;
 
+use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Exception\EntityNotFoundException;
 use Centreon\Domain\Exception\TimeoutException;
 use Centreon\Domain\Log\LoggerTrait;
@@ -37,6 +38,7 @@ use Centreon\Domain\MonitoringServer\UseCase\GenerateAllConfigurations;
 use Centreon\Domain\RequestParameters\Interfaces\RequestParametersInterface;
 use Centreon\Domain\MonitoringServer\Interfaces\MonitoringServerServiceInterface;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * This class is designed to manage all requests concerning monitoring servers
@@ -206,14 +208,22 @@ class MonitoringServerController extends AbstractController
      */
     private function execute(callable $callable): void
     {
+        /**
+         * @var Contact $user
+         */
+        $user = $this->getUser();
         try {
+            if (! $user->isAdmin() && ! $user->hasRole(Contact::ROLE_GENERATE_CONFIGURATION)) {
+                throw new AccessDeniedException('Insufficient rights (required: ROLE_GENERATE_CONFIGURATION)');
+            }
             $callable();
         } catch (TimeoutException $ex) {
             $this->error($ex->getMessage());
             throw new MonitoringServerException(
                 'The operation timed out - please use the legacy export menu to workaround this problem'
             );
-        } catch (EntityNotFoundException $ex) {
+        } catch (EntityNotFoundException | AccessDeniedException $ex) {
+            $this->error($ex->getMessage());
             throw $ex;
         } catch (\Exception $ex) {
             $this->error($ex->getMessage());
