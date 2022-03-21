@@ -38,6 +38,7 @@ const providerConfigurationDecoder = JsonDecoder.object<ProviderConfiguration>(
   {
     authenticationUri: 'authentication_uri',
     isActive: 'is_active',
+    isForced: 'is_forced',
   },
 );
 

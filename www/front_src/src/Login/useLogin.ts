@@ -9,11 +9,11 @@ import {
   isEmpty,
   isNil,
   not,
-  or,
   propEq,
   reject,
   path,
   pathEq,
+  equals,
 } from 'ramda';
 import { useUpdateAtom } from 'jotai/utils';
 
@@ -149,11 +149,15 @@ const useLogin = (): UseLoginState => {
     getProvidersConfiguration({
       endpoint: providersConfigurationEndpoint,
     }).then((providers) => {
-      const forcedProviders = reject<ProviderConfiguration>(
+      const forcedProviders = filter<ProviderConfiguration>(
         (provider): boolean =>
-          or(isNil(provider.isForced), not(provider.isForced)),
+          not(isNil(provider.isForced)) &&
+          (provider.isForced as boolean) &&
+          not(equals(provider.name, 'local')),
         providers || [],
       );
+
+      console.log(forcedProviders);
 
       if (not(isEmpty(forcedProviders))) {
         window.location.replace(forcedProviders[0].authenticationUri);
