@@ -157,8 +157,6 @@ const useLogin = (): UseLoginState => {
         providers || [],
       );
 
-      console.log(forcedProviders);
-
       if (not(isEmpty(forcedProviders))) {
         window.location.replace(forcedProviders[0].authenticationUri);
 
