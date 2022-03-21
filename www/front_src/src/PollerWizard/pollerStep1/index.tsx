@@ -1,10 +1,10 @@
 import * as React from 'react';
 
-import { isNil } from 'ramda';
+import { isNil, isEmpty } from 'ramda';
 import { useTranslation } from 'react-i18next';
 import { useUpdateAtom } from 'jotai/utils';
 
-import { Typography, Button } from '@mui/material';
+import { Typography } from '@mui/material';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Radio from '@mui/material/Radio';
 
@@ -19,12 +19,11 @@ import {
   labelServerName,
   labelServerIp,
   labelCentreonCentralIp,
-  labelNext,
-  labelPrevious,
   labelSelectPollerIp,
   labelRequired,
 } from '../translatedLabels';
 import { Props, WaitList } from '../models';
+import WizardButtons from '../forms/wizardButtons';
 
 const pollerWaitListEndpoint =
   './api/internal.php?object=centreon_configuration_remote&action=getPollerWaitList';
@@ -88,7 +87,7 @@ const PollerWizardStepOne = ({
 
     setError({
       ...error,
-      [name]: value.trim() === '' ? t(labelRequired) : '',
+      [name]: isEmpty(value.trim()) ? t(labelRequired) : '',
     });
 
     setStepOneFormData({
@@ -102,7 +101,7 @@ const PollerWizardStepOne = ({
 
     setError({
       ...error,
-      [name]: value.trim() === '' ? t(labelRequired) : '',
+      [name]: isEmpty(value.trim()) ? t(labelRequired) : '',
     });
   };
 
@@ -118,9 +117,8 @@ const PollerWizardStepOne = ({
   const getError = (stateName): string | undefined =>
     error[stateName].length > 0 ? error[stateName] : undefined;
 
-  const nextDisabled =
-    Object.values(stepOneFormData).some((x) => x === '') ||
-    Object.values(error).some((x) => x !== '');
+  const atLeastOneVide = Object.values(stepOneFormData).some((x) => x === '');
+  const atLeastOneError = Object.values(error).some((x) => x !== '');
 
   React.useEffect(() => {
     getWaitList();
@@ -244,20 +242,11 @@ const PollerWizardStepOne = ({
             />
           </div>
         )}
-        <div className={classes.formButton}>
-          <Button size="small" onClick={goToPreviousStep}>
-            {t(labelPrevious)}
-          </Button>
-          <Button
-            color="primary"
-            disabled={nextDisabled}
-            size="small"
-            type="submit"
-            variant="contained"
-          >
-            {t(labelNext)}
-          </Button>
-        </div>
+        <WizardButtons
+          goToPreviousStep={goToPreviousStep}
+          loading={atLeastOneVide || atLeastOneError}
+          type="Next"
+        />
       </form>
     </div>
   );

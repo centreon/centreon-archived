@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router';
 import { isEmpty, pick } from 'ramda';
 import { useUpdateAtom, useAtomValue } from 'jotai/utils';
 
-import { Typography, Button, CircularProgress } from '@mui/material';
+import { Typography } from '@mui/material';
 
 import {
   postData,
@@ -14,6 +14,7 @@ import {
   MultiAutocompleteField,
 } from '@centreon/ui';
 
+import WizardButtons from '../forms/wizardButtons';
 import { useStyles } from '../../styles/partials/form/PollerWizardStyle';
 import routeMap from '../../reactRoutes/routeMap';
 import {
@@ -23,10 +24,8 @@ import {
 import {
   labelAdvancedServerConfiguration,
   labelRemoteServers,
-  labelPrevious,
-  labelApply,
 } from '../translatedLabels';
-import { Props, PollerOrRemoteList } from '../models';
+import { Props, PollerRemoteList } from '../models';
 
 const getRemoteServersEndpoint =
   './api/internal.php?object=centreon_configuration_remote&action=getRemotesList';
@@ -40,14 +39,14 @@ const RemoteServerWizardStepTwo = ({
   const classes = useStyles();
   const { t } = useTranslation();
   const [remoteServers, setRemoteServers] =
-    React.useState<Array<PollerOrRemoteList> | null>(null);
+    React.useState<Array<PollerRemoteList> | null>(null);
 
   const [linkedPollers, setLinkedPollers] = React.useState<Array<SelectEntry>>(
     [],
   );
 
   const { sendRequest: getRemoteServersRequest } = useRequest<
-    Array<PollerOrRemoteList>
+    Array<PollerRemoteList>
   >({
     request: postData,
   });
@@ -62,12 +61,8 @@ const RemoteServerWizardStepTwo = ({
   const pollerData = useAtomValue(remoteServerAtom);
   const setWizard = useUpdateAtom(setRemoteServerWizardDerivedAtom);
 
-  const filterOutDefaultPoller = (itemArr): Array<PollerOrRemoteList> => {
-    for (let i = 0; i < itemArr.length; i += 1) {
-      if (itemArr[i].id === '1') itemArr.splice(i, 1);
-    }
-
-    return itemArr;
+  const filterOutDefaultPoller = (itemArr): Array<PollerRemoteList> => {
+    return itemArr.filter(({ id }) => id !== '1');
   };
 
   const getRemoteServers = (): void => {
@@ -139,21 +134,11 @@ const RemoteServerWizardStepTwo = ({
             onChange={changeValue}
           />
         )}
-        <div className={classes.formButton}>
-          <Button size="small" onClick={goToPreviousStep}>
-            {t(labelPrevious)}
-          </Button>
-          <Button
-            color="primary"
-            disabled={loading}
-            endIcon={loading && <CircularProgress size={15} />}
-            size="small"
-            type="submit"
-            variant="contained"
-          >
-            {t(labelApply)}
-          </Button>
-        </div>
+        <WizardButtons
+          goToPreviousStep={goToPreviousStep}
+          loading={loading}
+          type="Apply"
+        />
       </form>
     </div>
   );

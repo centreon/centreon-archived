@@ -1,10 +1,10 @@
 import * as React from 'react';
 
-import { isNil } from 'ramda';
+import { isNil, isEmpty } from 'ramda';
 import { useTranslation } from 'react-i18next';
 import { useUpdateAtom } from 'jotai/utils';
 
-import { Typography, Button, FormControlLabel, Checkbox } from '@mui/material';
+import { Typography, FormControlLabel, Checkbox } from '@mui/material';
 import Radio from '@mui/material/Radio';
 
 import { postData, useRequest, TextField, SelectField } from '@centreon/ui';
@@ -22,13 +22,12 @@ import {
   labelSelectRemoteLinks,
   labelSelectRemoteServer,
   labelServerIp,
-  labelNext,
-  labelPrevious,
   labelCheckCertificate,
   labelServerConfiguration,
   labelRequired,
 } from '../translatedLabels';
 import { Props, WaitList } from '../models';
+import WizardButtons from '../forms/wizardButtons';
 
 const remoteServerWaitListEndpoint =
   './api/internal.php?object=centreon_configuration_remote&action=getWaitList';
@@ -122,7 +121,7 @@ const RemoteServerWizardStepOne = ({
 
     setError({
       ...error,
-      [name]: value.trim() === '' ? t(labelRequired) : '',
+      [name]: isEmpty(value.trim()) ? t(labelRequired) : '',
     });
 
     setStepOneFormData({
@@ -136,7 +135,7 @@ const RemoteServerWizardStepOne = ({
 
     setError({
       ...error,
-      [name]: value.trim() === '' ? t(labelRequired) : '',
+      [name]: isEmpty(value.trim()) ? t(labelRequired) : '',
     });
   };
 
@@ -149,9 +148,8 @@ const RemoteServerWizardStepOne = ({
 
   const waitListOption = waitList?.map((c) => ({ id: c.ip, name: c.ip }));
 
-  const nextDisabled =
-    Object.values(stepOneFormData).some((x) => x === '') ||
-    Object.values(error).some((x) => x !== '');
+  const atLeastOneVide = Object.values(stepOneFormData).some((x) => x === '');
+  const atLeastOneError = Object.values(error).some((x) => x !== '');
 
   const getError = (stateName): string | undefined =>
     error[stateName].length > 0 ? error[stateName] : undefined;
@@ -380,20 +378,11 @@ const RemoteServerWizardStepOne = ({
             />
           </div>
         )}
-        <div className={classes.formButton}>
-          <Button size="small" onClick={goToPreviousStep}>
-            {t(labelPrevious)}
-          </Button>
-          <Button
-            color="primary"
-            disabled={nextDisabled}
-            size="small"
-            type="submit"
-            variant="contained"
-          >
-            {t(labelNext)}
-          </Button>
-        </div>
+        <WizardButtons
+          goToPreviousStep={goToPreviousStep}
+          loading={atLeastOneVide || atLeastOneError}
+          type="Next"
+        />
       </form>
     </div>
   );

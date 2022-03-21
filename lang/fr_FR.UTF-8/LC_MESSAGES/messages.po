@@ -16592,7 +16592,7 @@ msgstr "Votre mot de passe a expiré"
 # msgstr "Sélectionnez l'adresse IP du collecteur en attente"
 
 # msgid "Do not check SSL certificate validation"
-# msgstr "Ne pas vérifier la validité du certificat SS"
+# msgstr "Ne pas vérifier la validité du certificat SSL"
 
 # msgid "Types"
 # msgstr "Types"
@@ -16603,7 +16603,7 @@ msgstr "Votre mot de passe a expiré"
 # msgid "Outdated"
 # msgstr "Expiré"
 
-# msgid "Up To Date"
+# msgid "Up to date"
 # msgstr "À jour"
 
 # msgid "Module"
@@ -16629,5 +16629,3 @@ msgstr "Votre mot de passe a expiré"
 
 # msgid "License not valid"
 # msgstr "Licence non valide"
-
-

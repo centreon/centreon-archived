@@ -21,7 +21,7 @@ export interface WaitList {
   server_name: string;
 }
 
-export interface PollerOrRemoteList {
+export interface PollerRemoteList {
   id: string;
   ip: string;
   name: string;

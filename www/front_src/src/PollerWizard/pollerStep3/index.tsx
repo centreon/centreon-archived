@@ -10,13 +10,13 @@ import { labelFinalStep } from '../translatedLabels';
 const PollerWizardStepThree = (): JSX.Element => {
   const { t } = useTranslation();
 
-  const pollerData = useAtomValue<PollerData>(pollerAtom);
+  const pollerData = useAtomValue<PollerData | null>(pollerAtom);
 
   return (
     <WizardFormSetupStatus
       error={null}
       formTitle={t(labelFinalStep)}
-      statusCreating={pollerData.submitStatus ? pollerData.submitStatus : null}
+      statusCreating={pollerData?.submitStatus ? pollerData.submitStatus : null}
       statusGenerating={null}
     />
   );

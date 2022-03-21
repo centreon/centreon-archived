@@ -15387,7 +15387,7 @@ msgstr ""
 # msgid "Outdated"
 # msgstr ""
 
-# msgid "Up To Date"
+# msgid "Up to date"
 # msgstr ""
 
 # msgid "Module"

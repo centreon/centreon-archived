@@ -5,13 +5,7 @@ import { useNavigate } from 'react-router';
 import { useUpdateAtom, useAtomValue } from 'jotai/utils';
 import { pick } from 'ramda';
 
-import {
-  Typography,
-  Button,
-  FormControlLabel,
-  Checkbox,
-  CircularProgress,
-} from '@mui/material';
+import { Typography, FormControlLabel, Checkbox } from '@mui/material';
 
 import {
   postData,
@@ -29,10 +23,9 @@ import {
   labelLinkedRemoteMaster,
   labelLinkedadditionalRemote,
   labelOpenBrokerFlow,
-  labelPrevious,
-  labelApply,
 } from '../translatedLabels';
-import { Props, PollerOrRemoteList } from '../models';
+import { Props, PollerRemoteList } from '../models';
+import WizardButtons from '../forms/wizardButtons';
 
 const getPollersEndpoint =
   './api/internal.php?object=centreon_configuration_remote&action=getRemotesList';
@@ -52,7 +45,7 @@ const PollerWizardStepTwo = ({
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const [pollers, setPollers] = React.useState<Array<PollerOrRemoteList>>([]);
+  const [pollers, setPollers] = React.useState<Array<PollerRemoteList>>([]);
   const [stepTwoFormData, setStepTwoFormData] = React.useState<StepTwoFormData>(
     {
       linked_remote_master: '',
@@ -62,7 +55,7 @@ const PollerWizardStepTwo = ({
   );
 
   const { sendRequest: getPollersRequest } = useRequest<
-    Array<PollerOrRemoteList>
+    Array<PollerRemoteList>
   >({
     request: postData,
   });
@@ -73,7 +66,7 @@ const PollerWizardStepTwo = ({
     request: postData,
   });
 
-  const pollerData = useAtomValue<PollerData>(pollerAtom);
+  const pollerData = useAtomValue<PollerData | null>(pollerAtom);
   const setWizard = useUpdateAtom(setWizardDerivedAtom);
 
   const getPollers = (): void => {
@@ -123,7 +116,7 @@ const PollerWizardStepTwo = ({
     })
       .then(({ success }) => {
         setWizard({ submitStatus: success });
-        if (pollerData.linked_remote_master) {
+        if (pollerData?.linked_remote_master) {
           goToNextStep();
         } else {
           navigate(routeMap.pollerList);
@@ -181,21 +174,11 @@ const PollerWizardStepTwo = ({
             }
             label={`${t(labelOpenBrokerFlow)}`}
           />
-          <div className={classes.formButton}>
-            <Button size="small" type="button" onClick={goToPreviousStep}>
-              {t(labelPrevious)}
-            </Button>
-            <Button
-              color="primary"
-              disabled={loading}
-              endIcon={loading && <CircularProgress size={15} />}
-              size="small"
-              type="submit"
-              variant="contained"
-            >
-              {t(labelApply)}
-            </Button>
-          </div>
+          <WizardButtons
+            goToPreviousStep={goToPreviousStep}
+            loading={loading}
+            type="Apply"
+          />
         </div>
       </form>
     </div>

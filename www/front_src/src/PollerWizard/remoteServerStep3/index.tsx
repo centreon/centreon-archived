@@ -38,7 +38,9 @@ const RemoteServerWizardStepThree = (): JSX.Element => {
   const generationTimeoutRef = React.useRef<NodeJS.Timeout>();
 
   const remainingGenerationTimeoutRef = React.useRef<number>(30);
-  const pollerData = useAtomValue<RemoteServerData>(remoteServerAtom);
+  const pollerData = useAtomValue<RemoteServerData | null>(
+    remoteServerAtom,
+  ) as RemoteServerData;
 
   const refreshGeneration = (): void => {
     const { taskId } = pollerData;

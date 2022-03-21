@@ -26,12 +26,12 @@ export interface RemoteServerData {
   taskId?: number | string;
 }
 
-export const pollerAtom = atom<PollerData>({});
+export const pollerAtom = atom<PollerData | null>(null);
 export const setWizardDerivedAtom = atom(null, (get, set, data: PollerData) => {
   set(pollerAtom, { ...get(pollerAtom), ...data });
 });
 
-export const remoteServerAtom = atom<RemoteServerData>({});
+export const remoteServerAtom = atom<RemoteServerData | null>(null);
 export const setRemoteServerWizardDerivedAtom = atom(
   null,
   (get, set, data: RemoteServerData) => {

@@ -58,7 +58,7 @@ const useUser = (
           isExportButtonEnabled,
           locale: locale || 'en',
           name,
-          themeMode: 'light' as ThemeMode,
+          themeMode: 'dark' as ThemeMode,
           timezone,
           use_deprecated_pages: useDeprecatedPages,
         });

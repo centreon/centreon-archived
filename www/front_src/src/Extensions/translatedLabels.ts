@@ -1,7 +1,7 @@
 export const labelType = 'Types';
 export const labelUninstalled = 'Uninstalled';
 export const labelOutdated = 'Outdated';
-export const labelUpToDate = 'Up To Date';
+export const labelUpToDate = 'Up to date';
 export const labelModule = 'Module';
 export const labelInstallAll = 'Install all';
 export const labelUpdateAll = 'Update all';
