@@ -462,7 +462,7 @@ describe('Main', () => {
     });
   });
 
-  it('displays a message when the authentication failed from an external providers', () => {
+  it('displays a message when the authentication from an external provider fails ', () => {
     window.history.pushState(
       {},
       '',
