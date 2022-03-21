@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { equals } from 'ramda';
+
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 import MuiDrawer from '@mui/material/Drawer';

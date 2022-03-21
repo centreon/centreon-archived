@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { equals, isNil, clone, gt, keys } from 'ramda';
+import { equals, isNil, clone, gt, keys, omit } from 'ramda';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAtom } from 'jotai';
 
@@ -11,11 +11,7 @@ import makeStyles from '@mui/styles/makeStyles';
 import { useMemoComponent } from '@centreon/ui';
 
 import { Page } from '../../models';
-import {
-  itemsHoveredByDefaultAtom,
-  selectedNavigationItemsAtom,
-  propsSelectedNavigationItems,
-} from '../sideBarAtoms';
+import { selectedNavigationItemsAtom } from '../sideBarAtoms';
 import { closedDrawerWidth, openedDrawerWidth } from '../index';
 
 import CollapsableItems, { collapseBorderWidth } from './CollapsableItems';
@@ -58,8 +54,9 @@ const NavigationMenu = ({
   const [selectedNavigationItems, setSelectedNavigationItems] = useAtom(
     selectedNavigationItemsAtom,
   );
-  const [itemsHoveredByDefault, setItemsHoveredByDefault] = useAtom(
-    itemsHoveredByDefaultAtom,
+
+  const selectedNavigationItemsByDefault = React.useRef<Array<Page> | null>(
+    null,
   );
   const levelName = 'level_0_Navigated';
   const currentWidth = isDrawerOpen ? openedDrawerWidth / 8 : closedDrawerWidth;
@@ -89,17 +86,34 @@ const NavigationMenu = ({
     setHoveredIndex(index);
     setSelectedNavigationItems({
       ...selectedNavigationItems,
-      level_0: { index, label: item.label, url: item?.url },
+      level_0: item,
     });
+  };
+
+  const deleteNavigationItemsSelected = (
+    navigationItems: Record<string, Page>,
+  ): void => {
+    const navigationKeysToRemove = keys(navigationItems).filter(
+      (navigationItem) => {
+        return !navigationItem.includes('_Navigated');
+      },
+    );
+
+    setSelectedNavigationItems(omit(navigationKeysToRemove, navigationItems));
   };
 
   const handleLeave = (): void => {
     setHoveredIndex(null);
+    setHoveredIndex(null);
+    if (!selectedNavigationItems) {
+      return;
+    }
+    deleteNavigationItemsSelected(selectedNavigationItems);
   };
 
   const getUrlFromEntry = (entryProps: Page): string | null | undefined => {
-    const page = isNil(entryProps?.page) ? '' :  entryProps.page;
-    const options = isNil(entryProps?.options) ? '' :  entryProps.options;
+    const page = isNil(entryProps?.page) ? '' : entryProps.page;
+    const options = isNil(entryProps?.options) ? '' : entryProps.options;
 
     const urlOptions = `${page}${options}`;
     const url = entryProps.is_react
@@ -112,10 +126,10 @@ const NavigationMenu = ({
   const addSelectedNavigationItems = ({
     navigationItem,
     level,
-  }): Record<string, SelectedNavigationItem> => {
-    const updatedNavigationItems = clone(navigationItems);
+  }): Record<string, Page> => {
+    const updatedNavigationItems = clone(navigationItem);
 
-    keys(updatedNavigationItems).forEach((i: string) => {
+    keys(updatedNavigationItems).forEach((i: any) => {
       const keyToRemove = i?.match(/\d+/);
 
       if (keyToRemove && gt(Number(keyToRemove[0]), level)) {
@@ -129,9 +143,10 @@ const NavigationMenu = ({
 
         return;
       }
-      if (equals(`level_${level}_Navigated`, i)) {
-        updatedNavigationItems[i] = updatedNavigationItems[`level_${level}`];
+      if (!equals(`level_${level}_Navigated`, i)) {
+        return;
       }
+      updatedNavigationItems[i] = updatedNavigationItems[`level_${level}`];
     });
 
     return updatedNavigationItems;
@@ -147,48 +162,113 @@ const NavigationMenu = ({
         currentPage?.url,
       ) &&
       equals(
-        selectedNavigationItems[`level_${level}_Navigated`]?.label,
+        selectedNavigationItems[`level_${level}_Navigated`].label,
         currentPage.label,
       );
 
-    if (isAleadySelected) {
+    if (isAlreadySelected) {
       return;
     }
     setSelectedNavigationItems(
-      addSelectedNavigationItems(selectedNavigationItems, level),
+      addSelectedNavigationItems({
+        level,
+        navigationItem: selectedNavigationItems,
+      }),
     );
     navigate(getUrlFromEntry(currentPage) as string);
-    setItemsHoveredByDefault(null);
   };
 
   const isItemHovered = (
-    object: Record<string, propsSelectedNavigationItems> | null,
+    object: Record<string, Page> | null,
     level: string,
-    index: number,
+    item: Page,
   ): boolean => {
     if (!object || !object[level]) {
       return false;
     }
 
-    return equals(object[level].index, index);
+    return (
+      equals(object[level].label, item.label) &&
+      equals(object[level]?.url, item?.url)
+    );
   };
 
-  const sendRootItemHoveredByDefault = (item: Page): Page => {
-    return item;
-  };
-
-  const isItemHoveredByDefault = (item: Page): boolean => {
-    if (!itemsHoveredByDefault) {
-      return false;
+  const isArrayItem = (item: unknown): boolean => {
+    if (Array.isArray(item)) {
+      return item.length > 0;
     }
 
-    return (
-      equals(
-        item.label,
-        itemsHoveredByDefault?.rootItemHoveredByDefault?.label,
-      ) &&
-      equals(item?.url, itemsHoveredByDefault.rootItemHoveredByDefault?.url)
+    return false;
+  };
+
+  const addSelectedNavigationItemsByDefault = (items): void => {
+    const selectedNavigationItemsToAdd = items.reduce(
+      (previousItem, currentItem, currentIndex) => {
+        return {
+          ...previousItem,
+          [`level_${currentIndex}_Navigated`]: currentItem,
+        };
+      },
+      {},
     );
+
+    setSelectedNavigationItems(selectedNavigationItemsToAdd);
+  };
+
+  const searchItemsWithReactUrl = (
+    parentItem: Page,
+    ...args: Array<Page>
+  ): void => {
+    if (!equals(pathname, parentItem?.url)) {
+      return;
+    }
+    selectedNavigationItemsByDefault.current = [parentItem, ...args].reverse();
+  };
+
+  const searchItemsWithPhpUrl = (
+    parentItem: Page,
+    ...args: Array<Page>
+  ): void => {
+    const page = search?.match(/\d+/);
+    if (!page || !equals(page[0], parentItem?.page)) {
+      return;
+    }
+    selectedNavigationItemsByDefault.current = [parentItem, ...args].reverse();
+  };
+
+  const searchItemsHoveredByDefault = (currentPage, ...args): void => {
+    const childPage = currentPage?.children;
+    if (isNil(childPage) || !isArrayItem(childPage)) {
+      if (!currentPage.is_react) {
+        searchItemsWithPhpUrl(currentPage, ...args);
+
+        return;
+      }
+      searchItemsWithReactUrl(currentPage, ...args);
+
+      return;
+    }
+    childPage.forEach((item) => {
+      const grandsonPage = item?.groups;
+      if (isNil(grandsonPage) || !isArrayItem(grandsonPage)) {
+        if (args.length > 0) {
+          searchItemsHoveredByDefault(item, ...args);
+
+          return;
+        }
+        searchItemsHoveredByDefault(item, currentPage);
+
+        return;
+      }
+      grandsonPage.forEach((element) => {
+        if (args.length > 0) {
+          searchItemsHoveredByDefault(element, item, ...args);
+
+          return;
+        }
+        searchItemsHoveredByDefault(element, item, currentPage);
+      });
+    });
   };
 
   const handleWindowClose = (): void => {
@@ -201,15 +281,24 @@ const NavigationMenu = ({
     return () => window.removeEventListener('beforeunload', handleWindowClose);
   }, []);
 
+  React.useEffect(() => {
+    if (selectedNavigationItemsByDefault) {
+      addSelectedNavigationItemsByDefault(
+        selectedNavigationItemsByDefault.current,
+      );
+    }
+  }, [search]);
+
   return useMemoComponent({
     Component: (
       <List className={classes.list} onMouseLeave={handleLeave}>
         {navigationData?.map((item, index) => {
+          searchItemsHoveredByDefault(item);
+
           const MenuIcon = !isNil(item?.icon) && icons[item.icon];
           const hover =
-            isItemHovered(selectedNavigationItems, levelName, index) ||
-            equals(hoveredIndex, index) ||
-            isItemHoveredByDefault(item);
+            isItemHovered(selectedNavigationItems, levelName, item) ||
+            equals(hoveredIndex, index);
 
           return (
             <ListItem disablePadding key={item.label}>
@@ -226,17 +315,17 @@ const NavigationMenu = ({
                 }
               />
 
-              {Array.isArray(item?.children) && item.children.length > 0 && (
-                <CollapsableItems
-                  {...props}
-                  data={item.children}
-                  getRootItemHoveredByDefault={(): Page | null =>
-                    sendRootItemHoveredByDefault(item)
-                  }
-                  isCollapsed={index === hoveredIndex}
-                  onClick={handleClickItem}
-                />
-              )}
+              {Array.isArray(item?.children) &&
+                equals(hoveredIndex, index) &&
+                item.children.length > 0 && (
+                  <CollapsableItems
+                    {...props}
+                    data={item.children}
+                    isCollapsed={index === hoveredIndex}
+                    onClick={handleClickItem}
+                    onLeave={handleLeave}
+                  />
+                )}
             </ListItem>
           );
         })}
@@ -248,7 +337,6 @@ const NavigationMenu = ({
       collapseScrollMaxHeight,
       collapseScrollMaxWidth,
       selectedNavigationItems,
-      itemsHoveredByDefault,
     ],
   });
 };
