@@ -11,15 +11,25 @@ env.REF_BRANCH = "${maintenanceBranch}"
 env.PROJECT='centreon-web'
 if (env.BRANCH_NAME.startsWith('release-')) {
   env.BUILD = 'RELEASE'
-} else if ((env.BRANCH_NAME == env.REF_BRANCH) || (env.BRANCH_NAME == maintenanceBranch)) {
+  env.DELIVERY_STAGE = 'Delivery to testing'
+  env.DOCKER_STAGE = 'Docker packaging'
+} else if (env.BRANCH_NAME == maintenanceBranch) {
   env.BUILD = 'REFERENCE'
-} else if ((env.BRANCH_NAME == 'develop') || (env.BRANCH_NAME == qaBranch)) {
+  env.DELIVERY_STAGE = 'Delivery to canary'
+  env.DOCKER_STAGE = 'Docker packaging with canary rpms'
+} else if (env.BRANCH_NAME == qaBranch) {
   env.BUILD = 'QA'
+  env.DELIVERY_STAGE = 'Delivery to unstable'
+  env.DOCKER_STAGE = 'Docker packaging with unstable rpms'
 } else {
   env.BUILD = 'CI'
+  env.DELIVERY_STAGE = 'Delivery to canary'
+  env.DOCKER_STAGE = 'Docker packaging with canary rpms'
 }
+
 def apiFeatureFiles = []
 def featureFiles = []
+
 def buildBranch = env.BRANCH_NAME
 if (env.CHANGE_BRANCH) {
   buildBranch = env.CHANGE_BRANCH
@@ -38,6 +48,7 @@ if (!env.CHANGE_ID && env.BUILD == 'CI') {
 def isStableBuild() {
   return ((env.BUILD == 'REFERENCE') || (env.BUILD == 'QA'))
 }
+
 def checkoutCentreonBuild(buildBranch) {
   def getCentreonBuildGitConfiguration = { branchName -> [
     $class: 'GitSCM',
@@ -68,9 +79,12 @@ stage('Deliver sources') {
     dir('centreon-web') {
       checkout scm
     }
+
     // git repository is stored for the Sonar analysis below.
     sh 'tar czf centreon-web-git.tar.gz centreon-web'
     stash name: 'git-sources', includes: 'centreon-web-git.tar.gz'
+
+    //resuming process
     sh "./centreon-build/jobs/web/${serie}/mon-web-source.sh"
     source = readProperties file: 'source.properties'
     env.VERSION = "${source.VERSION}"
@@ -86,7 +100,11 @@ stage('Deliver sources') {
       reportName: 'Centreon Build Artifacts',
       reportTitles: ''
     ])
+
+    //get api feature files
     apiFeatureFiles = sh(script: 'find centreon-web/tests/api/features -type f -name "*.feature" -printf "%P\n" | sort', returnStdout: true).split()
+
+    //FIXME : reintegrate ldap features after fixing them
     featureFiles = sh(script: 'rm centreon-web/features/Ldap*.feature && find centreon-web/features -type f -name "*.feature" -printf "%P\n" | sort', returnStdout: true).split()
   }
 }
@@ -193,38 +211,6 @@ try {
     }
   }
 
-  if ((env.BUILD == 'QA')) {
-    stage('Delivery to unstable') {
-      node {
-        checkoutCentreonBuild(buildBranch)
-        unstash 'tar-sources'
-        unstash 'api-doc'
-        unstash 'rpms-centos7'
-        unstash 'rpms-alma8'
-        sh "./centreon-build/jobs/web/${serie}/mon-web-delivery.sh"
-      }
-      if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-        error('Delivery stage failure.');
-      }
-    }
-  }
-
-  if ((env.BUILD == 'REFERENCE')) {
-    stage('Delivery') {
-      node {
-        checkoutCentreonBuild(buildBranch)
-        unstash 'tar-sources'
-        unstash 'api-doc'
-        unstash 'rpms-centos7'
-        unstash 'rpms-alma8'
-        sh "./centreon-build/jobs/web/${serie}/mon-web-delivery.sh"
-      }
-      if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-        error('Delivery stage failure.');
-      }
-    }
-  }
-
   stage("$DELIVERY_STAGE") {
     node {
       checkoutCentreonBuild()    
@@ -258,6 +244,7 @@ try {
     //    sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh centos8"
     //  }
     //}
+    parallel parallelSteps
     if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
       error('Bundle stage failure.');
     }
@@ -326,32 +313,8 @@ try {
     }
   }
 
-  if ((env.BUILD == 'RELEASE')) {
-    stage('Delivery to testing') {
-      node {
-        checkoutCentreonBuild(buildBranch)
-        unstash 'tar-sources'
-        unstash 'api-doc'
-        unstash 'rpms-centos7'
-        unstash 'rpms-alma8'
-        sh "./centreon-build/jobs/web/${serie}/mon-web-delivery.sh"
-      }
-      if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-        error('Delivery stage failure.');
-      }
-    }
-
-    if (env.BUILD == 'REFERENCE' || env.BUILD == 'QA') {
-      build job: "centreon-autodiscovery/${env.BRANCH_NAME}", wait: false
-      build job: "centreon-awie/${env.BRANCH_NAME}", wait: false
-      build job: "centreon-license-manager/${env.BRANCH_NAME}", wait: false
-      build job: "centreon-pp-manager/${env.BRANCH_NAME}", wait: false
-      build job: "centreon-bam/${env.BRANCH_NAME}", wait: false
-      build job: "centreon-mbi/${env.BRANCH_NAME}", wait: false
-    }
-  }
 } catch(e) {
-  if ((env.BUILD == 'RELEASE') || (env.BUILD == 'REFERENCE')) {
+  if (isStableBuild()) {
     slackSend channel: "#monitoring-metrology",
         color: "#F30031",
         message: "*FAILURE*: `CENTREON WEB` <${env.BUILD_URL}|build #${env.BUILD_NUMBER}> on branch ${env.BRANCH_NAME}\n" +
