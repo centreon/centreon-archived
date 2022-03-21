@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2015 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -59,11 +60,12 @@ if (!CentreonSession::checkSession(session_id(), $pearDB)) {
     print "Bad Session";
     exit();
 }
+$centreon = $_SESSION['centreon'];
 
 define('STATUS_OK', 0);
 define('STATUS_NOK', 1);
 
-if (!isset($_POST['poller'])) {
+if (!isset($_POST['poller']) || ! $centreon->user->access->checkAction('generate_cfg')) {
     exit;
 }
 
@@ -78,8 +80,10 @@ $pollers = explode(',', $_POST['poller']);
 
 // Add task to export files if there is a remote
 $pollerParams = [];
-foreach ($pollers as $pollerId) {
-    $pollerParams[':poller_' . $pollerId] = $pollerId;
+foreach ($pollers as $index => $pollerId) {
+    if (is_numeric($pollerId)) {
+        $pollerParams[':poller_' . $index] = $pollerId;
+    }
 }
 
 // SELECT Remote Servers from selected pollers
@@ -177,9 +181,6 @@ try {
     $nagiosCFGPath = _CENTREON_CACHEDIR_ . "/config/engine/";
     $centreonBrokerPath = _CENTREON_CACHEDIR_ . "/config/broker/";
 
-    $centreon = $_SESSION['centreon'];
-    $centreon = $centreon;
-
     /*  Set new error handler */
     set_error_handler('log_error');
 
@@ -235,7 +236,7 @@ try {
                 /*
                  * Check if monitoring engine's configuration directory existss
                  */
-                 $dbResult = $pearDB->query(
+                $dbResult = $pearDB->query(
                     "SELECT cfg_dir FROM cfg_nagios, nagios_server
                     WHERE nagios_server.id = cfg_nagios.nagios_server_id
                     AND nagios_server.localhost = '1'
