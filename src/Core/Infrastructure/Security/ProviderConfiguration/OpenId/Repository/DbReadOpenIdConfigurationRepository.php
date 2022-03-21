@@ -35,6 +35,7 @@ class DbReadOpenIdConfigurationRepository extends AbstractRepositoryDRB implemen
     ReadRepositoryInterface
 {
     /**
+
      * @param DatabaseConnection $db
      */
     public function __construct(DatabaseConnection $db)
