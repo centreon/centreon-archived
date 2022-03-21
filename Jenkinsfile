@@ -213,7 +213,7 @@ try {
 
   stage("$DELIVERY_STAGE") {
     node {
-      checkoutCentreonBuild()    
+      checkoutCentreonBuild(buildBranch)    
       sh 'rm -rf output'
       unstash 'tar-sources'
       unstash 'api-doc'
@@ -233,7 +233,7 @@ try {
       def osBuild = x
       parallelSteps[osBuild] = {
         node {
-          checkoutCentreonBuild()
+          checkoutCentreonBuild(buildBranch)
           sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh ${osBuild}"
         }
       }
