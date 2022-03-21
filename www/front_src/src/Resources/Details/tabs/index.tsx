@@ -29,7 +29,7 @@ const servicesTabId = 1;
 const timelineTabId = 2;
 const graphTabId = 3;
 const metricsTabId = 4;
-const notificationsTabId =5;
+const notificationsTabId = 5;
 
 export interface TabProps {
   details?: ResourceDetails;
@@ -125,9 +125,9 @@ const tabIdByLabel = {
   details: detailsTabId,
   graph: graphTabId,
   metrics: metricsTabId,
+  notification: notificationsTabId,
   services: servicesTabId,
   timeline: timelineTabId,
-  notification: notificationsTabId,
 };
 
 const getTabIdFromLabel = (label: string): TabId => {

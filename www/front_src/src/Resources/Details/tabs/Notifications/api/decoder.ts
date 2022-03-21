@@ -48,4 +48,3 @@ export const contactsGroupResultDecoder =
     },
     'contact group result',
   );
-s;

@@ -10,6 +10,7 @@ import {
 } from '../models';
 
 import { CustomTimePeriod, TimePeriodId } from './tabs/Graph/models';
+import { Contact } from './tabs/Notifications/models';
 
 export interface Group extends NamedEntity {
   configuration_uri: string | null;
@@ -39,6 +40,7 @@ export interface ResourceDetails extends NamedEntity {
   next_check: string;
   notification_enabled: boolean;
   notification_number: number;
+  notification_policy: string;
   parent: Parent;
   passive_checks?: boolean;
   percent_state_change: number;
