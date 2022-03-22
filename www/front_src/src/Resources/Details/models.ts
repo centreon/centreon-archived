@@ -10,7 +10,6 @@ import {
 } from '../models';
 
 import { CustomTimePeriod, TimePeriodId } from './tabs/Graph/models';
-import { Contact } from './tabs/Notifications/models';
 
 export interface Group extends NamedEntity {
   configuration_uri: string | null;

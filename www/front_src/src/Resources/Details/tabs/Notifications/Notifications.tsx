@@ -1,9 +1,7 @@
 import * as React from 'react';
 
-import { isEmpty, isNil, path } from 'ramda';
+import { isNil, path } from 'ramda';
 import { useAtomValue } from 'jotai/utils';
-
-import { Grid } from '@mui/material';
 
 import { getData, useRequest } from '@centreon/ui';
 
@@ -17,7 +15,6 @@ interface ContactNotif {
 }
 
 const Notification = (): JSX.Element => {
-  const details = useAtomValue(detailsAtom);
   const [contact, setContact] = React.useState<Array<Contact> | null>(null);
   const [contactGroup, setContactGroup] =
     React.useState<Array<ContactGroup> | null>(null);
@@ -25,6 +22,7 @@ const Notification = (): JSX.Element => {
   const { sendRequest } = useRequest<ContactNotif>({
     request: getData,
   });
+  const details = useAtomValue(detailsAtom);
 
   const endpoint = path(['links', 'endpoints', 'notification_policy'], details);
 
