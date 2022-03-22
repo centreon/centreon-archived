@@ -18,34 +18,3 @@
  * For more information : contact@centreon.com
  *
  */
-
-include_once __DIR__ . "/../../class/centreonLog.class.php";
-$centreonLog = new CentreonLog();
-
-//error specific content
-$versionOfTheUpgrade = 'UPGRADE - 21.10.2: ';
-
-/**
- * Query with transaction
- */
-try {
-    $errorMessage = 'Impossible to add "contact_js_effects" column to "contact" table';
-
-    if (!$pearDB->isColumnExist('contact', 'contact_js_effects')) {
-        $pearDB->query(
-            "ALTER TABLE `contact`
-            ADD COLUMN `contact_js_effects` enum('0','1') DEFAULT '0'
-            AFTER `contact_comment`"
-        );
-    }
-} catch (\Exception $e) {
-    $centreonLog->insertLog(
-        4,
-        $versionOfTheUpgrade . $errorMessage .
-        " - Code : " . (int)$e->getCode() .
-        " - Error : " . $e->getMessage() .
-        " - Trace : " . $e->getTraceAsString()
-    );
-
-    throw new \Exception($versionOfTheUpgrade . $errorMessage, (int)$e->getCode(), $e);
-}
