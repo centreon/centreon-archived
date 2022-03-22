@@ -16704,6 +16704,7 @@ msgstr "Votre mot de passe a expiré"
 
 # msgid "License not valid"
 # msgstr "Licence non valide"
+
 msgid "No provider presenters could be found"
 msgstr "Aucun présenteur de fournisseur n'a pu être trouvé"
 
