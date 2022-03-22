@@ -16546,6 +16546,81 @@ msgstr "Erreur lors de la liaison du modèle (id: %d) à l'hôte (id: %d)"
 msgid "Error while linking template %s to host (id: %d)"
 msgstr "Erreur lors de la liaison du modèle %s à l'hôte (id: %d)"
 
+msgid "Password security policy"
+msgstr "Politique de sécurité de mot de passe"
+
+msgid "OpenID Connect Configuration"
+msgstr "Configuration OpenID Connect"
+
+msgid "Define OpenID Connect Configuration"
+msgstr "Définir la configuration OpenID Connect"
+
+msgid "Invalid URL"
+msgstr "URL invalide"
+
+msgid "Invalid IP Address or domain name"
+msgstr "Adresse IP ou nom de domaine invalide"
+
+msgid "Failed to save OpenID Connect configuration"
+msgstr "La sauvegarde de la configuration OpenID Connect a échoué"
+
+msgid "OpenID Connect configuration saved"
+msgstr "Configuration OpenID Connect sauvegardée"
+
+msgid "Enable OpenID Connect Authentication"
+msgstr "Activer l'authentification OpenID Connect"
+
+msgid "Authentication mode"
+msgstr "Mode d'authentification"
+
+msgid "Trusted client addresses"
+msgstr "Adresses de clients de confiance"
+
+msgid "Blacklist client addresses"
+msgstr "Adresses de clients sur liste noire"
+
+msgid "Base URL"
+msgstr "URL de base"
+
+msgid "Authorization endpoint"
+msgstr "Point d'entrée d'autorisation"
+
+msgid "Token endpoint"
+msgstr "Point d'entrée de jeton"
+
+msgid "Introspection token endpoint"
+msgstr "Point d'entrée de jeton d'introspection"
+
+msgid "User information endpoint"
+msgstr "Point d'entrée d'information utilisateur"
+
+msgid "End session endpoint"
+msgstr "Point d'entrée de fin de session"
+
+msgid "Scopes"
+msgstr "Portées"
+
+msgid "Login claim value"
+msgstr "Valeur de la déclaration de connexion"
+
+msgid "Client ID"
+msgstr "ID de client"
+
+msgid "Client secret"
+msgstr "Secret de client"
+
+msgid "Use basic authentication for token endpoint authentication"
+msgstr "Utiliser l'authentification basique pour l'authentification du point d'entrée de jeton"
+
+msgid "Disable verify peer"
+msgstr "Désactiver la vérification du pair"
+
+msgid "OpenID Connect only"
+msgstr "OpenID Connect seulement"
+
+msgid "Mixed"
+msgstr "Mélangé"
+
 msgid "Reset your password"
 msgstr "Réinitialiser votre mot de passe"
 
@@ -16629,3 +16704,51 @@ msgstr "Votre mot de passe a expiré"
 
 # msgid "License not valid"
 # msgstr "Licence non valide"
+
+msgid "No provider presenters could be found"
+msgstr "Aucun présenteur de fournisseur n'a pu être trouvé"
+
+msgid "No provider repositories could be found"
+msgstr "Aucun dépôt de fournisseur n'a pu être trouvé"
+
+msgid "No provider responses could be found"
+msgstr "Aucune réponse de fournisseur n'a pu être trouvée"
+
+msgid "Missing token endpoint in your configuration"
+msgstr "Le point d'accès au jeton est manquant dans votre configuration"
+
+msgid "Missing userinfo and introspection token endpoint"
+msgstr "Les points d'accès au jeton d'information utilisateur et d'introspection sont manquants"
+
+msgid "No refresh token has been found"
+msgstr "Aucun jeton de rafraîchissement n'a été trouvé"
+
+msgid "[%s]: Both provider and refresh tokens have expired"
+msgstr "[%s] : Les jetons de fournisseur et de rafraîchissement ont expirés"
+
+msgid "Request for connection token to external provider has failed"
+msgstr "La demande de jeton de connexion à un fournisseur externe a échoué"
+
+msgid "[%s]: An error occured during your request"
+msgstr "[%s] : Une erreur est survenue durant votre demande"
+
+msgid "Request for refresh token to external provider has failed"
+msgstr "La demande de jeton de rafraîchissement à un fournisseur externe a échoué"
+
+msgid "Request for introspection token to external provider has failed"
+msgstr "La demande de jeton d'introspection à un fournisseur externe a échoué"
+
+msgid "Request for user information to external provider has failed"
+msgstr "La demande d'information utilisateur à un fournisseur externe a échoué"
+
+msgid "Your IP is blacklisted"
+msgstr "Votre adresse IP est sur liste noire"
+
+msgid "Your IP is not whitelisted"
+msgstr "Votre adresse IP n'est pas sur liste blanche"
+
+msgid "[%s]: Login claim [%s] not found from external provider user"
+msgstr "[%s] : La déclaration de connexion [%s] n'a pas été trouvée dans l'utilisateur du fournisseur externe"
+
+msgid "[%s]: No authorization code return by external provider"
+msgstr "[%s] : Aucun code d'autorisation n'a été retourné par le fournisseur externe"
