@@ -94,4 +94,12 @@ class ContactService implements ContactServiceInterface
             throw ContactServiceException::errorWhileSearchingContact($ex);
         }
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function findByEmail(string $email): ?ContactInterface
+    {
+        return $this->contactRepository->findByEmail($email);
+    }
 }
