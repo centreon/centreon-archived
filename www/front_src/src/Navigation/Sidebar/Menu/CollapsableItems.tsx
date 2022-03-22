@@ -153,11 +153,7 @@ const CollapsableItems = ({
   const itemWidth = currentWidth + collapseWidth;
   const minimumMarginBottom = 4;
 
-  const hoverItem = (
-    e: React.MouseEvent<HTMLElement>,
-    index: number,
-    item: Page,
-  ): void => {
+  const hoverItem = ({ e, index, currentPage }): void => {
     const rect = e.currentTarget.getBoundingClientRect();
     const { top } = rect;
     setItemTop(top - collapseBorderWidth);
@@ -166,30 +162,26 @@ const CollapsableItems = ({
 
     setHoveredNavigationItems({
       ...hoveredNavigationItems,
-      [levelLabel]: item,
+      [levelLabel]: currentPage,
     });
   };
 
-  const isItemHovered = (
-    navigationItem: Record<string, Page> | null,
-    levelTitle: string,
-    item: Page,
-  ): boolean => {
+  const isItemHovered = ({
+    navigationItem,
+    levelTitle,
+    currentPage,
+  }): boolean => {
     if (navigationItem && navigationItem[levelTitle]) {
       return (
-        navigationItem[levelTitle].label === item.label &&
-        navigationItem[levelTitle].url === item?.url
+        navigationItem[levelTitle].label === currentPage.label &&
+        navigationItem[levelTitle].url === currentPage?.url
       );
     }
 
     return false;
   };
 
-  const getNestedIndex = (
-    itemIndex,
-    childIndex: number,
-    content: Array<Page>,
-  ): number => {
+  const getNestedIndex = ({ itemIndex, childIndex, content }): number => {
     if (itemIndex > 1) {
       return (
         Number(content[0].children?.length) +
@@ -240,8 +232,11 @@ const CollapsableItems = ({
       >
         {data?.map((item, index) => {
           const hover =
-            isItemHovered(selectedNavigationItems, levelName, item) ||
-            equals(hoveredIndex, index);
+            isItemHovered({
+              currentPage: item,
+              levelTitle: levelName,
+              navigationItem: selectedNavigationItems,
+            }) || equals(hoveredIndex, index);
 
           return (
             <List
@@ -262,13 +257,17 @@ const CollapsableItems = ({
               {isSubHeader ? (
                 isArrayItem(item?.children) &&
                 item?.children?.map((content, ind) => {
-                  const nestedIndex = getNestedIndex(index, ind, data);
+                  const nestedIndex = getNestedIndex({
+                    childIndex: ind,
+                    content: data,
+                    itemIndex: index,
+                  });
                   const nestedHover =
-                    isItemHovered(
-                      selectedNavigationItems,
-                      levelName,
-                      content,
-                    ) || equals(hoveredIndex, nestedIndex);
+                    isItemHovered({
+                      currentPage: content,
+                      levelTitle: levelName,
+                      navigationItem: selectedNavigationItems,
+                    }) || equals(hoveredIndex, nestedIndex);
 
                   return (
                     <MenuItems
@@ -282,7 +281,11 @@ const CollapsableItems = ({
                           : undefined
                       }
                       onMouseEnter={(e: React.MouseEvent<HTMLElement>): void =>
-                        hoverItem(e, nestedIndex, content)
+                        hoverItem({
+                          currentPage: content,
+                          e,
+                          index: nestedIndex,
+                        })
                       }
                     />
                   );
@@ -298,7 +301,7 @@ const CollapsableItems = ({
                       : undefined
                   }
                   onMouseEnter={(e: React.MouseEvent<HTMLElement>): void =>
-                    hoverItem(e, index, item)
+                    hoverItem({ currentPage: item, e, index })
                   }
                 />
               )}

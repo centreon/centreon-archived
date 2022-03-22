@@ -81,18 +81,14 @@ const NavigationMenu = ({
     setCollapseScrollMaxWidth,
   };
 
-  const hoverItem = (
-    e: React.MouseEvent<HTMLElement>,
-    index: number | null,
-    item: Page,
-  ): void => {
+  const hoverItem = ({ e, index, currentPage }): void => {
     const rect = e.currentTarget.getBoundingClientRect();
     const { top } = rect;
     setCurrentTop(top - collapseBorderWidth);
     setHoveredIndex(index);
     setHoveredNavigationItems({
       ...hoveredNavigationItems,
-      level_0: item,
+      level_0: currentPage,
     });
   };
 
@@ -118,21 +114,20 @@ const NavigationMenu = ({
       return;
     }
     setSelectedNavigationItems(hoveredNavigationItems);
+    if (isNil(getUrlFromEntry(currentPage))) {
+      return;
+    }
     navigate(getUrlFromEntry(currentPage) as string);
   };
 
-  const isItemHovered = (
-    navigationItem: Record<string, Page> | null,
-    level: string,
-    item: Page,
-  ): boolean => {
+  const isItemHovered = ({ navigationItem, level, currentPage }): boolean => {
     if (!navigationItem || !navigationItem[level]) {
       return false;
     }
 
     return (
-      equals(navigationItem[level].label, item.label) &&
-      equals(navigationItem[level]?.url, item?.url)
+      equals(navigationItem[level].label, currentPage.label) &&
+      equals(navigationItem[level]?.url, currentPage?.url)
     );
   };
 
@@ -245,8 +240,11 @@ const NavigationMenu = ({
 
           const MenuIcon = !isNil(item?.icon) && icons[item.icon];
           const hover =
-            isItemHovered(selectedNavigationItems, levelName, item) ||
-            equals(hoveredIndex, index);
+            isItemHovered({
+              currentPage: item,
+              level: levelName,
+              navigationItem: selectedNavigationItems,
+            }) || equals(hoveredIndex, index);
 
           return (
             <ListItem disablePadding key={item.label}>
@@ -259,7 +257,7 @@ const NavigationMenu = ({
                 isOpen={index === hoveredIndex}
                 onClick={(): void => handleClickItem(item)}
                 onMouseEnter={(e: React.MouseEvent<HTMLElement>): void =>
-                  hoverItem(e, index, item)
+                  hoverItem({ currentPage: item, e, index })
                 }
               />
 
