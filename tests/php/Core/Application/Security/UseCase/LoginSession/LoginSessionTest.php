@@ -24,31 +24,32 @@ namespace Tests\Core\Application\Security\UseCase\LoginSession;
 
 use PHPUnit\Framework\TestCase;
 use Centreon\Domain\Menu\Model\Page;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Security\Domain\Authentication\Model\ProviderToken;
+use Centreon\Domain\Contact\Interfaces\ContactInterface;
+use Centreon\Domain\Menu\Interfaces\MenuServiceInterface;
+use Core\Application\Common\UseCase\UnauthorizedResponse;
+use Security\Domain\Authentication\Model\AuthenticationTokens;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
 use Security\Domain\Authentication\Model\ProviderConfiguration;
 use Core\Application\Security\UseCase\LoginSession\LoginSession;
-use Centreon\Domain\Contact\Interfaces\ContactInterface;
-use Security\Domain\Authentication\Model\AuthenticationTokens;
-use Core\Infrastructure\Security\Api\LoginSession\LoginSessionPresenter;
-use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
-use Core\Application\Security\UseCase\LoginSession\LoginSessionRequest;
-use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
-use Security\Domain\Authentication\Interfaces\ProviderInterface;
-use Centreon\Domain\Authentication\Exception\AuthenticationException as LegacyAuthenticationException;
 use Core\Domain\Security\Authentication\AuthenticationException;
-use Core\Domain\Security\Authentication\PasswordExpiredException;
-use Core\Application\Common\UseCase\UnauthorizedResponse;
-use Core\Application\Security\UseCase\LoginSession\PasswordExpiredResponse;
-use Centreon\Domain\Menu\Interfaces\MenuServiceInterface;
 use Security\Domain\Authentication\Exceptions\ProviderException;
-use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
-use Security\Domain\Authentication\Interfaces\SessionRepositoryInterface;
-use Security\Domain\Authentication\Interfaces\ProviderServiceInterface;
-use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
+use Security\Domain\Authentication\Interfaces\ProviderInterface;
+use Core\Domain\Security\Authentication\PasswordExpiredException;
 use Centreon\Domain\Repository\Interfaces\DataStorageEngineInterface;
-use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Core\Infrastructure\Common\Presenter\PresenterFormatterInterface;
+use Security\Domain\Authentication\Interfaces\LocalProviderInterface;
+use Core\Application\Security\UseCase\LoginSession\LoginSessionRequest;
+use Security\Domain\Authentication\Interfaces\ProviderServiceInterface;
+use Core\Infrastructure\Security\Api\LoginSession\LoginSessionPresenter;
+use Security\Domain\Authentication\Interfaces\SessionRepositoryInterface;
+use Core\Application\Security\UseCase\LoginSession\PasswordExpiredResponse;
+use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
+use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
+use Centreon\Domain\Authentication\Exception\AuthenticationException as LegacyAuthenticationException;
 
 class LoginSessionTest extends TestCase
 {
@@ -134,7 +135,7 @@ class LoginSessionTest extends TestCase
         $this->authenticationService = $this->createMock(AuthenticationServiceInterface::class);
         $this->providerService = $this->createMock(ProviderServiceInterface::class);
         $this->contactService = $this->createMock(ContactServiceInterface::class);
-        $this->provider = $this->createMock(ProviderInterface::class);
+        $this->provider = $this->createMock(LocalProviderInterface::class);
         $this->contact = $this->createMock(ContactInterface::class);
         $this->authenticationTokens = $this->createMock(AuthenticationTokens::class);
         $this->menuService = $this->createMock(MenuServiceInterface::class);
@@ -183,7 +184,9 @@ class LoginSessionTest extends TestCase
             ->willReturn(null);
 
         $this->expectException(ProviderException::class);
-        $this->expectExceptionMessage('Provider configuration (provider_configuration_1) not found');
+        $this->expectExceptionMessage(
+            ProviderException::providerConfigurationNotFound('local')->getMessage()
+        );
 
         $authenticate($this->loginSessionPresenter, $authenticateRequest);
     }
@@ -686,7 +689,6 @@ class LoginSessionTest extends TestCase
     private function createLoginSessionRequest(): LoginSessionRequest
     {
         $request = new LoginSessionRequest();
-        $request->providerConfigurationName = 'provider_configuration_1';
         $request->login = 'admin';
         $request->password = 'centreon';
         $request->baseUri = '/';

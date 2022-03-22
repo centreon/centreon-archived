@@ -31,11 +31,8 @@ use Centreon\Domain\Authentication\UseCase\LogoutRequest;
 use Centreon\Domain\Authentication\UseCase\AuthenticateApi;
 use Centreon\Domain\Authentication\UseCase\AuthenticateApiRequest;
 use Centreon\Domain\Authentication\UseCase\AuthenticateApiResponse;
-use Centreon\Domain\Authentication\UseCase\FindProvidersConfigurations;
-use Centreon\Domain\Authentication\UseCase\FindProvidersConfigurationsResponse;
 use Centreon\Domain\Authentication\Exception\AuthenticationException;
 use Security\Infrastructure\Authentication\API\Model_2110\ApiAuthenticationFactory;
-use Security\Infrastructure\Authentication\API\Model_2110\ProvidersConfigurationsFactory;
 
 /**
  * @package Centreon\Application\Controller
@@ -103,19 +100,5 @@ class AuthenticationController extends AbstractController
         return $this->view([
             'message' => 'Successful logout'
         ]);
-    }
-
-    /**
-     * Returns the list of available providers.
-     * @param FindProvidersConfigurations $findProviderConfigurations
-     * @param FindProvidersConfigurationsResponse $response
-     * @return View
-     */
-    public function findProvidersConfigurations(
-        FindProvidersConfigurations $findProviderConfigurations,
-        FindProvidersConfigurationsResponse $response
-    ): View {
-        $findProviderConfigurations->execute($response);
-        return $this->view(ProvidersConfigurationsFactory::createFromResponse($response));
     }
 }
