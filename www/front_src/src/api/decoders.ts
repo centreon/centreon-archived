@@ -22,6 +22,7 @@ export const userDecoder = JsonDecoder.object<User>(
   'User parameters',
   {
     isExportButtonEnabled: 'is_export_button_enabled',
+    themeMode: 'theme',
   },
 );
 
