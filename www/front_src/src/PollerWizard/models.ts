@@ -4,6 +4,11 @@ export enum ServerType {
   Remote = 'remote',
 }
 
+export enum WizardButtonsTypes {
+  'Next',
+  'Apply',
+}
+
 export interface WizardFormProps {
   changeServerType: (serverType: ServerType) => void;
   goToNextStep: () => void;

@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { isNil, isEmpty } from 'ramda';
+import { isNil, isEmpty, values } from 'ramda';
 import { useTranslation } from 'react-i18next';
 import { useUpdateAtom } from 'jotai/utils';
 
@@ -22,7 +22,7 @@ import {
   labelSelectPollerIp,
   labelRequired,
 } from '../translatedLabels';
-import { Props, WaitList } from '../models';
+import { Props, WaitList, WizardButtonsTypes } from '../models';
 import WizardButtons from '../forms/wizardButtons';
 
 const pollerWaitListEndpoint =
@@ -117,8 +117,8 @@ const PollerWizardStepOne = ({
   const getError = (stateName): string | undefined =>
     error[stateName].length > 0 ? error[stateName] : undefined;
 
-  const atLeastOneVide = Object.values(stepOneFormData).some((x) => x === '');
-  const atLeastOneError = Object.values(error).some((x) => x !== '');
+  const isFormNotCompleted = values(stepOneFormData).some((x) => x === '');
+  const hasError = values(error).some((x) => x !== '');
 
   React.useEffect(() => {
     getWaitList();
@@ -243,9 +243,9 @@ const PollerWizardStepOne = ({
           </div>
         )}
         <WizardButtons
+          disabled={isFormNotCompleted || hasError}
           goToPreviousStep={goToPreviousStep}
-          loading={atLeastOneVide || atLeastOneError}
-          type="Next"
+          type={WizardButtonsTypes.Next}
         />
       </form>
     </div>

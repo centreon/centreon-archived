@@ -24,7 +24,7 @@ import {
   labelLinkedadditionalRemote,
   labelOpenBrokerFlow,
 } from '../translatedLabels';
-import { Props, PollerRemoteList } from '../models';
+import { Props, PollerRemoteList, WizardButtonsTypes } from '../models';
 import WizardButtons from '../forms/wizardButtons';
 
 const getPollersEndpoint =
@@ -75,8 +75,8 @@ const PollerWizardStepTwo = ({
     );
   };
 
-  const handleChange = (evt): void => {
-    const { value, name } = evt.target;
+  const handleChange = (event): void => {
+    const { value, name } = event.target;
 
     if (name === 'open_broker_flow') {
       setStepTwoFormData({
@@ -175,9 +175,9 @@ const PollerWizardStepTwo = ({
             label={`${t(labelOpenBrokerFlow)}`}
           />
           <WizardButtons
+            disabled={loading}
             goToPreviousStep={goToPreviousStep}
-            loading={loading}
-            type="Apply"
+            type={WizardButtonsTypes.Apply}
           />
         </div>
       </form>

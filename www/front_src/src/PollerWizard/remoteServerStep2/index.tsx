@@ -25,7 +25,7 @@ import {
   labelAdvancedServerConfiguration,
   labelRemoteServers,
 } from '../translatedLabels';
-import { Props, PollerRemoteList } from '../models';
+import { Props, PollerRemoteList, WizardButtonsTypes } from '../models';
 
 const getRemoteServersEndpoint =
   './api/internal.php?object=centreon_configuration_remote&action=getRemotesList';
@@ -135,9 +135,9 @@ const RemoteServerWizardStepTwo = ({
           />
         )}
         <WizardButtons
+          disabled={loading}
           goToPreviousStep={goToPreviousStep}
-          loading={loading}
-          type="Apply"
+          type={WizardButtonsTypes.Apply}
         />
       </form>
     </div>
