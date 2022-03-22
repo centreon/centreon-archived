@@ -12,7 +12,6 @@ import { Page } from '../../models';
 import ArrowIcon from './ArrowIcon';
 
 const rootHeightItem = 37;
-const heightItem = 36.2;
 
 interface Props {
   data: Page;
@@ -24,9 +23,7 @@ interface Props {
   onClick?: React.MouseEventHandler<HTMLDivElement>;
   onMouseEnter: (e: React.MouseEvent<HTMLElement>) => void;
 }
-interface StyleProps {
-  isRoot?: boolean;
-}
+
 const useStyles = makeStyles((theme) => ({
   activated: {
     '& .MuiListItemText-root': {
@@ -58,10 +55,7 @@ const useStyles = makeStyles((theme) => ({
   },
   listButton: {
     alignItems: 'center',
-    height: ({ isRoot }: StyleProps): string =>
-      isRoot
-        ? theme.spacing(rootHeightItem / 8)
-        : theme.spacing(heightItem / 8),
+    height: theme.spacing(rootHeightItem / 8),
     marginBottom: 0.8,
   },
   rootLabel: {

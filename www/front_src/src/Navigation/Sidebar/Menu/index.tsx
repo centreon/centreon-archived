@@ -17,7 +17,7 @@ import {
 } from '../sideBarAtoms';
 import { closedDrawerWidth, openedDrawerWidth } from '../index';
 
-import CollapsableItems, { collapseBorderWidth } from './CollapsableItems';
+import CollapsableItems from './CollapsableItems';
 import MenuItems from './MenuItems';
 import icons from './icons';
 
@@ -84,7 +84,7 @@ const NavigationMenu = ({
   const hoverItem = ({ e, index, currentPage }): void => {
     const rect = e.currentTarget.getBoundingClientRect();
     const { top } = rect;
-    setCurrentTop(top - collapseBorderWidth);
+    setCurrentTop(top);
     setHoveredIndex(index);
     setHoveredNavigationItems({
       ...hoveredNavigationItems,
