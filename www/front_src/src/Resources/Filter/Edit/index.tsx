@@ -13,6 +13,7 @@ import makeStyles from '@mui/styles/makeStyles';
 import {
   MemoizedSectionPanel as SectionPanel,
   useRequest,
+  RootComponentProps,
   SortableItems,
 } from '@centreon/ui';
 
