@@ -64,7 +64,7 @@ const EditFiltersPanel = (): JSX.Element => {
     setEditPanelOpen(false);
   };
 
-  const dragEnd = (items: Array<string>, event): void => {
+  const dragEnd = ({ items, event }): void => {
     const reorderedCutomFilters = map((id) => {
       const filter = find(
         (customFilter) => equals(Number(customFilter.id), Number(id)),
