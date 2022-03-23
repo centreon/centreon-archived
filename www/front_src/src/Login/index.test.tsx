@@ -28,9 +28,14 @@ import {
   labelPassword,
   labelRequired,
   labelHideThePassword,
+  labelLoginWith,
   labelPasswordHasExpired,
 } from './translatedLabels';
-import { loginEndpoint, platformVersionsEndpoint } from './api/endpoint';
+import {
+  loginEndpoint,
+  platformVersionsEndpoint,
+  providersConfigurationEndpoint,
+} from './api/endpoint';
 
 import LoginPage from '.';
 
@@ -64,6 +69,30 @@ const retrievedWeb = {
     version: '21.10.1',
   },
 };
+
+const retrievedProvidersConfiguration = [
+  {
+    authentication_uri:
+      '/centreon/authentication/providers/configurations/local',
+    id: 1,
+    is_active: true,
+    name: 'local',
+  },
+  {
+    authentication_uri:
+      '/centreon/authentication/providers/configurations/openid',
+    id: 2,
+    is_active: true,
+    name: 'openid',
+  },
+  {
+    authentication_uri:
+      '/centreon/authentication/providers/configurations/ldap',
+    id: 3,
+    is_active: false,
+    name: 'ldap',
+  },
+];
 
 const TestComponent = (): JSX.Element => (
   <BrowserRouter>
@@ -123,16 +152,19 @@ describe('Login Page', () => {
       .mockResolvedValueOnce({
         data: retrievedWeb,
       })
+      .mockResolvedValueOnce({
+        data: retrievedProvidersConfiguration,
+      })
       .mockResolvedValue({
         data: retrievedUser,
       });
+    window.history.pushState({}, '', '/');
   });
 
   afterEach(() => {
     mockDate.reset();
     mockedAxios.get.mockReset();
     mockedAxios.post.mockReset();
-    window.history.pushState({}, '', '/');
   });
 
   it('displays the login form', async () => {
@@ -146,12 +178,24 @@ describe('Login Page', () => {
       );
     });
 
+    expect(mockedAxios.get).toHaveBeenCalledWith(
+      providersConfigurationEndpoint,
+      cancelTokenRequestParam,
+    );
+
     expect(screen.getByLabelText(labelCentreonWallpaper)).toBeInTheDocument();
     expect(screen.getByLabelText(labelCentreonLogo)).toBeInTheDocument();
     expect(screen.getByLabelText(labelAlias)).toBeInTheDocument();
     expect(screen.getByLabelText(labelPassword)).toBeInTheDocument();
     expect(screen.getByLabelText(labelConnect)).toBeInTheDocument();
     expect(screen.getByText('v. 21.10.1')).toBeInTheDocument();
+    expect(screen.getByText(`${labelLoginWith} openid`)).toHaveAttribute(
+      'href',
+      '/centreon/authentication/providers/configurations/openid',
+    );
+    expect(
+      screen.queryByText(`${labelLoginWith} ldap`),
+    ).not.toBeInTheDocument();
     expect(screen.getByText('Copyright © 2005 - 2020')).toBeInTheDocument();
   });
 
