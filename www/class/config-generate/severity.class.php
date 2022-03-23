@@ -79,11 +79,11 @@ class Severity extends AbstractObject
 
     private function cacheHostSeverity()
     {
-        $stmt = $this->backend_instance->db->prepare("SELECT
-                    hc_name, hc_id, level, icon_id
-                FROM hostcategories
-                WHERE level IS NOT NULL AND hc_activate = '1'
-        ");
+        $stmt = $this->backend_instance->db->prepare(
+            "SELECT hc_name, hc_id, level, icon_id
+            FROM hostcategories
+            WHERE level IS NOT NULL AND hc_activate = '1'"
+        );
 
         $stmt->execute();
         $values = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -129,15 +129,15 @@ class Severity extends AbstractObject
 
         # We get unitary
         if (is_null($this->stmt_host)) {
-            $this->stmt_host = $this->backend_instance->db->prepare("SELECT
-                    hc_id, hc_name, level
+            $this->stmt_host = $this->backend_instance->db->prepare(
+                "SELECT hc_id, hc_name, level
                 FROM hostcategories_relation, hostcategories
                 WHERE hostcategories_relation.host_host_id = :host_id
                     AND hostcategories_relation.hostcategories_hc_id = hostcategories.hc_id
                     AND level IS NOT NULL AND hc_activate = '1'
                 ORDER BY level DESC
-                LIMIT 1
-                ");
+                LIMIT 1"
+            );
         }
 
         $this->stmt_host->bindParam(':host_id', $host_id, PDO::PARAM_INT);
@@ -166,11 +166,11 @@ class Severity extends AbstractObject
 
     private function cacheServiceSeverity()
     {
-        $stmt = $this->backend_instance->db->prepare("SELECT
-                    sc_name, sc_id, level, icon_id
-                FROM service_categories
-                WHERE level IS NOT NULL AND sc_activate = '1'
-        ");
+        $stmt = $this->backend_instance->db->prepare(
+            "SELECT sc_name, sc_id, level, icon_id
+            FROM service_categories
+            WHERE level IS NOT NULL AND sc_activate = '1'"
+        );
 
         $stmt->execute();
         $values = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -230,15 +230,15 @@ class Severity extends AbstractObject
 
         # We get unitary
         if (is_null($this->stmt_service)) {
-            $this->stmt_service = $this->backend_instance->db->prepare("SELECT
-                    service_categories.sc_id, sc_name, level
+            $this->stmt_service = $this->backend_instance->db->prepare(
+                "SELECT service_categories.sc_id, sc_name, level
                 FROM service_categories_relation, service_categories
                 WHERE service_categories_relation.service_service_id = :service_id
                     AND service_categories_relation.sc_id = service_categories.sc_id
                     AND level IS NOT NULL AND sc_activate = '1'
                 ORDER BY level DESC
-                LIMIT 1
-                ");
+                LIMIT 1"
+            );
         }
 
         $this->stmt_service->bindParam(':service_id', $service_id, PDO::PARAM_INT);
@@ -278,11 +278,11 @@ class Severity extends AbstractObject
 
         # We get unitary
         if (is_null($this->stmt_hc_name)) {
-            $this->stmt_hc_name = $this->backend_instance->db->prepare("SELECT
-                    sc_name, sc_id, level
+            $this->stmt_hc_name = $this->backend_instance->db->prepare(
+                "SELECT sc_name, sc_id, level
                 FROM service_categories
-                WHERE sc_name = :sc_name AND level IS NOT NULL AND sc_activate = '1'
-                ");
+                WHERE sc_name = :sc_name AND level IS NOT NULL AND sc_activate = '1'"
+            );
         }
 
         $this->stmt_hc_name->bindParam(':sc_name', $hc_name, PDO::PARAM_STR);
