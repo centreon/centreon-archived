@@ -172,7 +172,7 @@ const CollapsableItems = ({
     if (navigationItem && navigationItem[levelTitle]) {
       return (
         navigationItem[levelTitle].label === currentPage.label &&
-        navigationItem[levelTitle].url === currentPage?.url
+        navigationItem[levelTitle]?.url === currentPage?.url
       );
     }
 
