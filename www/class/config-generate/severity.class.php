@@ -63,13 +63,13 @@ class Severity extends AbstractObject
         'level' => 'level',
         'icon_id' => 'icon_id',
     ];
-    protected $attributes_write = array(
+    protected $attributes_write = [
         'id',
         'name',
         'level',
         'icon_id',
         'type'
-    );
+    ];
 
     public function __construct(\Pimple\Container $dependencyInjector)
     {
@@ -303,6 +303,16 @@ class Severity extends AbstractObject
      */
     public function generateObjects(): void
     {
+        $this->generateServiceSeverityObjects();
+
+        $this->generateHostSeverityObjects();
+    }
+
+    /**
+     * Export service severities in corresponding export file
+     */
+    private function generateServiceSeverityObjects(): void
+    {
         foreach ($this->service_severity_cache as $id => $value) {
             if (is_null($value) || ! in_array($id, $this->service_linked_cache)) {
                 continue;
@@ -314,7 +324,13 @@ class Severity extends AbstractObject
             $severity['type'] = 'service';
             $this->generateObjectInFile($severity, $id);
         }
+    }
 
+    /**
+     * Export host severities in corresponding export file
+     */
+    private function  generateHostSeverityObjects(): void
+    {
         foreach ($this->host_severity_cache as $id => $value) {
             if (is_null($value) || ! in_array($id, $this->host_linked_cache)) {
                 continue;
