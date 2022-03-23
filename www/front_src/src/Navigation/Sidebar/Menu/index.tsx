@@ -17,7 +17,7 @@ import {
 } from '../sideBarAtoms';
 import { closedDrawerWidth, openedDrawerWidth } from '../index';
 
-import CollapsableItems from './CollapsableItems';
+import CollapsibleItems from './CollapsibleItems';
 import MenuItems from './MenuItems';
 import icons from './icons';
 
@@ -64,7 +64,7 @@ const NavigationMenu = ({
   const selectedNavigationItemsByDefault = React.useRef<Array<Page> | null>(
     null,
   );
-  const levelName = 'level_0_Navigated';
+  const levelName = 'level_0';
   const currentWidth = isDrawerOpen ? openedDrawerWidth / 8 : closedDrawerWidth;
 
   const props = {
@@ -110,14 +110,11 @@ const NavigationMenu = ({
   };
 
   const handleClickItem = (currentPage: Page): void => {
-    if (!hoveredNavigationItems) {
-      return;
-    }
-    setSelectedNavigationItems(hoveredNavigationItems);
     if (isNil(getUrlFromEntry(currentPage))) {
       return;
     }
     navigate(getUrlFromEntry(currentPage) as string);
+    setSelectedNavigationItems(hoveredNavigationItems);
   };
 
   const isItemHovered = ({ navigationItem, level, currentPage }): boolean => {
@@ -144,7 +141,7 @@ const NavigationMenu = ({
       (previousItem, currentItem, currentIndex) => {
         return {
           ...previousItem,
-          [`level_${currentIndex}_Navigated`]: currentItem,
+          [`level_${currentIndex}`]: currentItem,
         };
       },
       {},
@@ -264,7 +261,7 @@ const NavigationMenu = ({
               {Array.isArray(item?.children) &&
                 equals(hoveredIndex, index) &&
                 item.children.length > 0 && (
-                  <CollapsableItems
+                  <CollapsibleItems
                     {...props}
                     data={item.children}
                     isCollapsed={index === hoveredIndex}

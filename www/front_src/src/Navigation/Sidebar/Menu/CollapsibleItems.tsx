@@ -28,7 +28,7 @@ interface Props {
   isCollapsed: boolean;
   isSubHeader?: boolean;
   level: number;
-  onClick: (item: Page, level: number) => void;
+  onClick: (item: Page) => void;
   onLeave?: () => void;
   setCollapseScrollMaxHeight: React.Dispatch<
     React.SetStateAction<number | undefined>
@@ -115,7 +115,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const CollapsableItems = ({
+const CollapsibleItems = ({
   data,
   isCollapsed,
   isSubHeader,
@@ -147,7 +147,7 @@ const CollapsableItems = ({
   );
   const selectedNavigationItems = useAtomValue(selectedNavigationItemsAtom);
 
-  const levelName = `level_${level}_Navigated`;
+  const levelName = `level_${level}`;
   const itemWidth = currentWidth + collapseWidth;
   const minimumMarginBottom = 4;
 
@@ -156,11 +156,10 @@ const CollapsableItems = ({
     const { top } = rect;
     setItemTop(top);
     setHoveredIndex(index);
-    const levelLabel = `level_${level}`;
 
     setHoveredNavigationItems({
       ...hoveredNavigationItems,
-      [levelLabel]: currentPage,
+      [levelName]: currentPage,
     });
   };
 
@@ -275,7 +274,7 @@ const CollapsableItems = ({
                       key={content.label}
                       onClick={
                         !isArrayItem(item?.groups)
-                          ? (): void => onClick(content, level)
+                          ? (): void => onClick(content)
                           : undefined
                       }
                       onMouseEnter={(e: React.MouseEvent<HTMLElement>): void =>
@@ -295,7 +294,7 @@ const CollapsableItems = ({
                   isOpen={index === hoveredIndex}
                   onClick={
                     !isArrayItem(item?.groups)
-                      ? (): void => onClick(item, level)
+                      ? (): void => onClick(item)
                       : undefined
                   }
                   onMouseEnter={(e: React.MouseEvent<HTMLElement>): void =>
@@ -307,7 +306,7 @@ const CollapsableItems = ({
               {Array.isArray(item?.groups) &&
               item.groups.length > 1 &&
               equals(index, hoveredIndex) ? (
-                <CollapsableItems
+                <CollapsibleItems
                   isSubHeader
                   collapseScrollMaxHeight={nestedScrollCollapsMaxHeight}
                   collapseScrollMaxWidth={nestedScrollCollapsMaxWidth}
@@ -327,7 +326,7 @@ const CollapsableItems = ({
                   (itemGroup) =>
                     isArrayItem(itemGroup?.children) && (
                       <div key={itemGroup.label}>
-                        <CollapsableItems
+                        <CollapsibleItems
                           collapseScrollMaxHeight={nestedScrollCollapsMaxHeight}
                           collapseScrollMaxWidth={nestedScrollCollapsMaxWidth}
                           currentTop={itemTop}
@@ -364,4 +363,4 @@ const CollapsableItems = ({
   });
 };
 
-export default CollapsableItems;
+export default CollapsibleItems;
