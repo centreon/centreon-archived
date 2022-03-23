@@ -234,8 +234,9 @@ const CollapsibleItems = ({
               levelTitle: levelName,
               navigationItem: selectedNavigationItems,
             }) || equals(hoveredIndex, index);
-const mouseEnterItem = (e: React.MouseEvent<HTMLElement>): void =>
-                    hoverItem({ currentPage: item, e, index })
+          const mouseEnterItem = (e: React.MouseEvent<HTMLElement>): void =>
+            hoverItem({ currentPage: item, e, index });
+
           return (
             <List
               disablePadding
@@ -267,8 +268,11 @@ const mouseEnterItem = (e: React.MouseEvent<HTMLElement>): void =>
                       navigationItem: selectedNavigationItems,
                     }) || equals(hoveredIndex, nestedIndex);
 
-const mouseEnterContent = (e: React.MouseEvent<HTMLElement>): void =>
-                    hoverItem({ currentPage: content, e, index })
+                  const mouseEnterContent = (
+                    e: React.MouseEvent<HTMLElement>,
+                  ): void =>
+                    hoverItem({ currentPage: content, e, index: nestedIndex });
+
                   return (
                     <MenuItems
                       data={content}
