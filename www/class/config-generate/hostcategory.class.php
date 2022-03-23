@@ -104,6 +104,7 @@ class Hostcategory extends AbstractObject
             }
             $value['type'] = 'hostcategory';
 
+            $this->seekFileEnd();
             $this->generateObjectInFile($value, $id);
         }
     }

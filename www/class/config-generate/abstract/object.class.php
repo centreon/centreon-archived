@@ -265,4 +265,14 @@ abstract class AbstractObject
     {
         return $this->broker;
     }
+
+    /**
+     * Move file pointer to end of file
+     */
+    protected function seekFileEnd(): void
+    {
+        if (! is_null($this->fp)) {
+            fseek($this->fp, 0, SEEK_END);
+        }
+    }
 }
