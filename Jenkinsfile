@@ -8,12 +8,20 @@ env.REF_BRANCH = "${maintenanceBranch}"
 env.PROJECT='centreon-web'
 if (env.BRANCH_NAME.startsWith('release-')) {
   env.BUILD = 'RELEASE'
-} else if ((env.BRANCH_NAME == env.REF_BRANCH) || (env.BRANCH_NAME == maintenanceBranch)) {
+  env.DELIVERY_STAGE = 'Delivery to testing'
+  env.DOCKER_STAGE = 'Docker packaging'
+} else if (env.BRANCH_NAME == maintenanceBranch) {
   env.BUILD = 'REFERENCE'
-} else if ((env.BRANCH_NAME == 'develop') || (env.BRANCH_NAME == qaBranch)) {
+  env.DELIVERY_STAGE = 'Delivery to canary'
+  env.DOCKER_STAGE = 'Docker packaging with canary rpms'
+} else if (env.BRANCH_NAME == qaBranch) {
   env.BUILD = 'QA'
+  env.DELIVERY_STAGE = 'Delivery to unstable'
+  env.DOCKER_STAGE = 'Docker packaging with unstable rpms'
 } else {
   env.BUILD = 'CI'
+  env.DELIVERY_STAGE = 'Delivery to canary'
+  env.DOCKER_STAGE = 'Docker packaging with canary rpms'
 }
 def apiFeatureFiles = []
 def featureFiles = []
@@ -156,11 +164,11 @@ try {
         }
       }
     },
-    //'unit tests centos8': {
+    //'unit tests alma8': {
     //  node {
     //    checkoutCentreonBuild(buildBranch)
     //    unstash 'tar-sources'
-    //    sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh centos8"
+    //    sh "./centreon-build/jobs/web/${serie}/mon-web-unittest.sh alma8"
     //    junit 'ut-be.xml,ut-fe.xml'
     //  }
     //},
@@ -189,41 +197,9 @@ try {
     }
   }
 
-  if ((env.BUILD == 'QA')) {
-    stage('Delivery to unstable') {
-      node {
-        checkoutCentreonBuild(buildBranch)
-        unstash 'tar-sources'
-        unstash 'api-doc'
-        unstash 'rpms-centos7'
-        unstash 'rpms-alma8'
-        sh "./centreon-build/jobs/web/${serie}/mon-web-delivery.sh"
-      }
-      if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-        error('Delivery stage failure.');
-      }
-    }
-  }
-
-  if ((env.BUILD == 'REFERENCE')) {
-    stage('Delivery') {
-      node {
-        checkoutCentreonBuild(buildBranch)
-        unstash 'tar-sources'
-        unstash 'api-doc'
-        unstash 'rpms-centos7'
-        unstash 'rpms-alma8'
-        sh "./centreon-build/jobs/web/${serie}/mon-web-delivery.sh"
-      }
-      if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-        error('Delivery stage failure.');
-      }
-    }
-  }
-
   stage("$DELIVERY_STAGE") {
     node {
-      checkoutCentreonBuild()    
+      checkoutCentreonBuild(buildBranch)    
       sh 'rm -rf output'
       unstash 'tar-sources'
       unstash 'api-doc'
@@ -243,7 +219,7 @@ try {
       def osBuild = x
       parallelSteps[osBuild] = {
         node {
-          checkoutCentreonBuild()
+          checkoutCentreonBuild(buildBranch)
           sh "./centreon-build/jobs/web/${serie}/mon-web-bundle.sh ${osBuild}"
         }
       }
@@ -305,32 +281,8 @@ try {
     }
   }
 
-  if ((env.BUILD == 'RELEASE') || (env.BUILD == 'REFERENCE')) {
-    stage('Delivery to testing') {
-      node {
-        checkoutCentreonBuild(buildBranch)
-        unstash 'tar-sources'
-        unstash 'api-doc'
-        unstash 'rpms-centos7'
-        //unstash 'rpms-centos8'
-        sh "./centreon-build/jobs/web/${serie}/mon-web-delivery.sh"
-      }
-      if ((currentBuild.result ?: 'SUCCESS') != 'SUCCESS') {
-        error('Delivery stage failure.');
-      }
-    }
-
-    if (env.BUILD == 'REFERENCE') {
-      build job: "centreon-autodiscovery/${env.BRANCH_NAME}", wait: false
-      build job: "centreon-awie/${env.BRANCH_NAME}", wait: false
-      build job: "centreon-license-manager/${env.BRANCH_NAME}", wait: false
-      build job: "centreon-pp-manager/${env.BRANCH_NAME}", wait: false
-      build job: "centreon-bam/${env.BRANCH_NAME}", wait: false
-      build job: "centreon-mbi/${env.BRANCH_NAME}", wait: false
-    }
-  }
 } catch(e) {
-  if ((env.BUILD == 'RELEASE') || (env.BUILD == 'REFERENCE')) {
+  if (isStableBuild()) {
     slackSend channel: "#monitoring-metrology",
         color: "#F30031",
         message: "*FAILURE*: `CENTREON WEB` <${env.BUILD_URL}|build #${env.BUILD_NUMBER}> on branch ${env.BRANCH_NAME}\n" +
