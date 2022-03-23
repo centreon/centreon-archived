@@ -1,10 +1,20 @@
-import React from 'react';
+import * as React from 'react';
 
 import { useNavigate } from 'react-router-dom';
 import { FormikHelpers, FormikValues } from 'formik';
 import { useAtom } from 'jotai';
 import { useTranslation } from 'react-i18next';
-import { not, path, pathEq } from 'ramda';
+import {
+  filter,
+  isEmpty,
+  isNil,
+  not,
+  propEq,
+  reject,
+  path,
+  pathEq,
+  equals,
+} from 'ramda';
 import { useUpdateAtom } from 'jotai/utils';
 
 import { useRequest, useSnackbar, getData } from '@centreon/ui';
@@ -16,22 +26,31 @@ import { passwordResetInformationsAtom } from '../ResetPassword/passwordResetInf
 import routeMap from '../reactRoutes/routeMap';
 
 import postLogin from './api';
-import { platformVersionsDecoder, redirectDecoder } from './api/decoder';
+import {
+  platformVersionsDecoder,
+  providersConfigurationDecoder,
+  redirectDecoder,
+} from './api/decoder';
+import {
+  labelLoginSucceeded,
+  labelPasswordHasExpired,
+} from './translatedLabels';
+import {
+  platformVersionsEndpoint,
+  providersConfigurationEndpoint,
+} from './api/endpoint';
 import {
   LoginFormValues,
   PlatformVersions,
   Redirect,
   RedirectAPI,
+  ProviderConfiguration,
 } from './models';
-import {
-  labelLoginSucceeded,
-  labelPasswordHasExpired,
-} from './translatedLabels';
-import { platformVersionsEndpoint } from './api/endpoint';
 
 interface UseLoginState {
   platformInstallationStatus: PlatformInstallationStatus | null;
   platformVersions: PlatformVersions | null;
+  providersConfiguration: Array<ProviderConfiguration> | null;
   sendLogin: (values) => Promise<Redirect>;
   submitLoginForm: (
     values: LoginFormValues,
@@ -43,6 +62,8 @@ const useLogin = (): UseLoginState => {
   const { t, i18n } = useTranslation();
   const [platformVersions, setPlatformVersions] =
     React.useState<PlatformVersions | null>(null);
+  const [providersConfiguration, setProvidersConfiguration] =
+    React.useState<Array<ProviderConfiguration> | null>(null);
 
   const { sendRequest: sendLogin } = useRequest<Redirect>({
     decoder: redirectDecoder,
@@ -52,6 +73,13 @@ const useLogin = (): UseLoginState => {
 
   const { sendRequest: sendPlatformVersions } = useRequest<PlatformVersions>({
     decoder: platformVersionsDecoder,
+    request: getData,
+  });
+
+  const { sendRequest: getProvidersConfiguration } = useRequest<
+    Array<ProviderConfiguration>
+  >({
+    decoder: providersConfigurationDecoder,
     request: getData,
   });
 
@@ -113,14 +141,46 @@ const useLogin = (): UseLoginState => {
 
   React.useEffect(() => {
     i18n.changeLanguage?.(getBrowserLocale());
+
     sendPlatformVersions({
       endpoint: platformVersionsEndpoint,
     }).then(setPlatformVersions);
+
+    getProvidersConfiguration({
+      endpoint: providersConfigurationEndpoint,
+    }).then((providers) => {
+      const forcedProviders = filter<ProviderConfiguration>(
+        (provider): boolean =>
+          not(isNil(provider.isForced)) &&
+          (provider.isForced as boolean) &&
+          not(equals(provider.name, 'local')),
+        providers || [],
+      );
+
+      if (not(isEmpty(forcedProviders))) {
+        window.location.replace(forcedProviders[0].authenticationUri);
+
+        return;
+      }
+
+      const externalProviders = reject<ProviderConfiguration>(
+        propEq('name', 'local'),
+        providers,
+      );
+
+      const activeProviders = filter<ProviderConfiguration>(
+        propEq('isActive', true),
+        externalProviders || [],
+      );
+
+      setProvidersConfiguration(activeProviders);
+    });
   }, []);
 
   return {
     platformInstallationStatus,
     platformVersions,
+    providersConfiguration,
     sendLogin,
     submitLoginForm,
   };
