@@ -57,11 +57,11 @@
 .list_one_fixe      {   background-color: var(--list-one-fix-background-color);}
 .list_two_fixe      {   background-color: var(--list-two-fix-background-color);}
 
-.list_one           {   background-color: var(--list-one-background-color);}
-.list_one:hover     {   background-color: var(--list-one-hover-background-color);}
+.list_one           {   background-color: var(--list-one-background-color); color: var(--list-one-font-color);}
+.list_one:hover     {   background-color: var(--list-one-hover-background-color); color: var(--list-one-hover-font-color);}
 
-.list_two           {   background-color: var(--list-two-background-color);}
-.list_two:hover     {   background-color: var(--list-two-hover-background-color);}
+.list_two           {   background-color: var(--list-two-background-color); color: var(--list-two-font-color);}
+.list_two:hover     {   background-color: var(--list-two-hover-background-color); color: var(--list-two-hover-font-color);}
 
 .list_three         {   background-color: var(--list-three-background-color);}
 .list_three:hover   {   background-color: var(--list-three-hover-background-color);}

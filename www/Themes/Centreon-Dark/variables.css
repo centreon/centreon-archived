@@ -102,4 +102,8 @@
     --up-to-date-color:var(--option-color);
     --update-secu-background-color:var(--color-torch-red);
     --ui-icon-fill-color: var(--color-primary-light);
+    --list-one-font-color: var(--color-white);
+    --list-one-hover-font-color: var(--list-one-font-color);
+    --list-two-font-color: var(--color-white);
+    --list-two-hover-font-color: var(--list-two-font-color);
 }
