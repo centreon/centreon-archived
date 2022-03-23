@@ -48,6 +48,7 @@ class Host extends AbstractHost
     protected $generate_filename = 'hosts.cfg';
     protected $object_name = 'host';
     protected $stmt_hg = null;
+    protected $stmt_hc = null;
     protected $stmt_parent = null;
     protected $stmt_service = null;
     protected $stmt_service_sg = null;
@@ -483,6 +484,7 @@ class Host extends AbstractHost
         $this->getContactGroups($host);
         $this->getContacts($host);
         $this->getHostGroups($host);
+        $this->getHostCategories($host);
         $this->getParents($host);
         $this->getSeverity($host['host_id']);
 
@@ -518,6 +520,7 @@ class Host extends AbstractHost
         Escalation::getInstance($this->dependencyInjector)->generateObjects();
         Dependency::getInstance($this->dependencyInjector)->generateObjects();
         Severity::getInstance($this->dependencyInjector)->generateObjects();
+        Hostcategory::getInstance($this->dependencyInjector)->generateObjects();
     }
 
     public function getHostIdByHostName($host_name)
@@ -584,5 +587,29 @@ class Host extends AbstractHost
         $this->generated_parentship = array();
         $this->generatedHosts = array();
         parent::reset();
+    }
+
+    /**
+     * @param array<string,mixed> $host
+     */
+    private function getHostCategories(array &$host): void
+    {
+        if (!isset($host['hc'])) {
+            if (is_null($this->stmt_hc)) {
+                $this->stmt_hc = $this->backend_instance->db->prepare(
+                    "SELECT hostcategories_hc_id
+                    FROM hostcategories_relation
+                    WHERE host_host_id = :host_id"
+                );
+            }
+            $this->stmt_hc->bindParam(':host_id', $host['host_id'], PDO::PARAM_INT);
+            $this->stmt_hc->execute();
+            $host['hc'] = $this->stmt_hc->fetchAll(PDO::FETCH_COLUMN);
+        }
+
+        $hostcategory = Hostcategory::getInstance($this->dependencyInjector);
+        foreach ($host['hc'] as $hc_id) {
+            $hostcategory->addHostInHc($hc_id, $host['host_id'], $host['host_name']);
+        }
     }
 }
