@@ -317,11 +317,10 @@ class Severity extends AbstractObject
             if (is_null($value) || ! in_array($id, $this->service_linked_cache)) {
                 continue;
             }
-            $severity = [];
+            $severity = ['type' => 'service'];
             foreach ($this->attributesSelectService as $selectAttr => $writeAttr) {
                 $severity[$writeAttr] = $value[$selectAttr];
             }
-            $severity['type'] = 'service';
             $this->generateObjectInFile($severity, $id);
         }
     }
@@ -329,17 +328,16 @@ class Severity extends AbstractObject
     /**
      * Export host severities in corresponding export file
      */
-    private function  generateHostSeverityObjects(): void
+    private function generateHostSeverityObjects(): void
     {
         foreach ($this->host_severity_cache as $id => $value) {
             if (is_null($value) || ! in_array($id, $this->host_linked_cache)) {
                 continue;
             }
-            $severity = [];
+            $severity = ['type' => 'host'];
             foreach ($this->attributesSelectHost as $selectAttr => $writeAttr) {
                 $severity[$writeAttr] = $value[$selectAttr];
             }
-            $severity['type'] = 'host';
             $this->generateObjectInFile($severity, $id);
         }
     }
