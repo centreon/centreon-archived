@@ -335,6 +335,7 @@
     --menu3-background-color: var(--color-white);
     --date-font-color: var(--color-ghost);
     --detail-chart-title-background-color:var(--color-periwinkle-gray);
+    --header-text-font-color: var(--body-color);
 
     /* ------ START : info box variables -----*/
     --info-box-border-color: var(--color-iron);

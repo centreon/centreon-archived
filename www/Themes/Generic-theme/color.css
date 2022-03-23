@@ -150,4 +150,7 @@ input[type="submit"]:hover, input[type="button"]:hover, input[type="reset"]:hove
     color: var(--main-nav-list-b-anchor-font-color);
     text-decoration: none;
 }
+.header-text {
+    color: var(--header-text-font-color);
+}
 
