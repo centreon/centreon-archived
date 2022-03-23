@@ -46,11 +46,30 @@ class Severity extends AbstractObject
     private $host_severity_cache = array();
     private $host_linked_cache = array();
 
-    protected $generate_filename = null;
-    protected $object_name = null;
     protected $stmt_host = null;
     protected $stmt_service = null;
     protected $stmt_hc_name = null;
+    protected $generate_filename =  'severities.cfg';
+    protected $object_name = 'severity';
+    protected $attributesHcSelect = [
+        'hc_id' => 'id',
+        'hc_name' => 'name',
+        'level' => 'level',
+        'icon_id' => 'icon_id',
+    ];
+    protected $attributesScSelect = [
+        'sc_id' => 'id',
+        'sc_name' => 'name',
+        'level' => 'level',
+        'icon_id' => 'icon_id',
+    ];
+    protected $attributes_write = array(
+        'id',
+        'name',
+        'level',
+        'icon_id',
+        'type'
+    );
 
     public function __construct(\Pimple\Container $dependencyInjector)
     {
@@ -60,8 +79,8 @@ class Severity extends AbstractObject
 
     private function cacheHostSeverity()
     {
-        $stmt = $this->backend_instance->db->prepare("SELECT 
-                    hc_name, hc_id, level
+        $stmt = $this->backend_instance->db->prepare("SELECT
+                    hc_name, hc_id, level, icon_id
                 FROM hostcategories
                 WHERE level IS NOT NULL AND hc_activate = '1'
         ");
@@ -109,10 +128,10 @@ class Severity extends AbstractObject
 
         # We get unitary
         if (is_null($this->stmt_host)) {
-            $this->stmt_host = $this->backend_instance->db->prepare("SELECT 
+            $this->stmt_host = $this->backend_instance->db->prepare("SELECT
                     hc_id, hc_name, level
                 FROM hostcategories_relation, hostcategories
-                WHERE hostcategories_relation.host_host_id = :host_id 
+                WHERE hostcategories_relation.host_host_id = :host_id
                     AND hostcategories_relation.hostcategories_hc_id = hostcategories.hc_id
                     AND level IS NOT NULL AND hc_activate = '1'
                 ORDER BY level DESC
@@ -146,8 +165,8 @@ class Severity extends AbstractObject
 
     private function cacheServiceSeverity()
     {
-        $stmt = $this->backend_instance->db->prepare("SELECT 
-                    sc_name, sc_id, level
+        $stmt = $this->backend_instance->db->prepare("SELECT
+                    sc_name, sc_id, level, icon_id
                 FROM service_categories
                 WHERE level IS NOT NULL AND sc_activate = '1'
         ");
@@ -209,10 +228,10 @@ class Severity extends AbstractObject
 
         # We get unitary
         if (is_null($this->stmt_service)) {
-            $this->stmt_service = $this->backend_instance->db->prepare("SELECT 
+            $this->stmt_service = $this->backend_instance->db->prepare("SELECT
                     service_categories.sc_id, sc_name, level
                 FROM service_categories_relation, service_categories
-                WHERE service_categories_relation.service_service_id = :service_id 
+                WHERE service_categories_relation.service_service_id = :service_id
                     AND service_categories_relation.sc_id = service_categories.sc_id
                     AND level IS NOT NULL AND sc_activate = '1'
                 ORDER BY level DESC
@@ -257,7 +276,7 @@ class Severity extends AbstractObject
 
         # We get unitary
         if (is_null($this->stmt_hc_name)) {
-            $this->stmt_hc_name = $this->backend_instance->db->prepare("SELECT 
+            $this->stmt_hc_name = $this->backend_instance->db->prepare("SELECT
                     sc_name, sc_id, level
                 FROM service_categories
                 WHERE sc_name = :sc_name AND level IS NOT NULL AND sc_activate = '1'
@@ -275,5 +294,32 @@ class Severity extends AbstractObject
         $this->service_severity_by_name_cache[$hc_name] = &$severity;
         $this->service_severity_cache[$hc_name] = &$severity;
         return $severity['sc_id'];
+    }
+
+    public function generateObjects()
+    {
+        foreach ($this->service_severity_cache as $id => $value) {
+            if (is_null($value) || ! in_array($id, $this->service_linked_cache)) {
+                continue;
+            }
+            $severity = [];
+            foreach ($this->attributesScSelect as $selectAttr => $writeAttr) {
+                $severity[$writeAttr] = $value[$selectAttr];
+            }
+            $severity['type'] = 'service';
+            $this->generateObjectInFile($severity, $id);
+        }
+
+        foreach ($this->host_severity_cache as $id => $value) {
+            if (is_null($value) || ! in_array($id, $this->host_linked_cache)) {
+                continue;
+            }
+            $severity = [];
+            foreach ($this->attributesHcSelect as $selectAttr => $writeAttr) {
+                $severity[$writeAttr] = $value[$selectAttr];
+            }
+            $severity['type'] = 'host';
+            $this->generateObjectInFile($severity, $id);
+        }
     }
 }
