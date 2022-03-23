@@ -68,7 +68,7 @@ class Severity extends AbstractObject
         'name',
         'level',
         'icon_id',
-        'type'
+        'type',
     ];
 
     public function __construct(\Pimple\Container $dependencyInjector)
