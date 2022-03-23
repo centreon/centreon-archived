@@ -279,13 +279,7 @@ const mouseEnterContent = (e: React.MouseEvent<HTMLElement>): void =>
                           ? (): void => onClick(content)
                           : undefined
                       }
-                      onMouseEnter={(e: React.MouseEvent<HTMLElement>): void =>
-                        hoverItem({
-                          currentPage: content,
-                          e,
-                          index: nestedIndex,
-                        })
-                      }
+                      onMouseEnter={mouseEnterContent}
                     />
                   );
                 })
