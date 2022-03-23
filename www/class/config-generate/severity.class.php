@@ -105,8 +105,9 @@ class Severity extends AbstractObject
         $stmt->execute();
         foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $value) {
             if (isset($this->host_linked_cache[$value['host_host_id']])) {
-                if ($this->host_severity_cache[$value['hc_id']]['level'] <
-                    $this->host_severity_cache[$this->host_linked_cache[$value['host_host_id']]]
+                if (
+                    $this->host_severity_cache[$value['hc_id']]['level']
+                    < $this->host_severity_cache[$this->host_linked_cache[$value['host_host_id']]]
                 ) {
                     $this->host_linked_cache[$value['host_host_id']] = $value['hc_id'];
                 }
@@ -192,8 +193,9 @@ class Severity extends AbstractObject
         $stmt->execute();
         foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $value) {
             if (isset($this->service_linked_cache[$value['service_service_id']])) {
-                if ($this->service_severity_cache[$value['sc_id']]['level'] <
-                    $this->service_severity_cache[$this->service_linked_cache[$value['service_service_id']]]
+                if (
+                    $this->service_severity_cache[$value['sc_id']]['level']
+                    < $this->service_severity_cache[$this->service_linked_cache[$value['service_service_id']]]
                 ) {
                     $this->service_linked_cache[$value['service_service_id']] = $value['sc_id'];
                 }
@@ -296,7 +298,10 @@ class Severity extends AbstractObject
         return $severity['sc_id'];
     }
 
-    public function generateObjects()
+    /**
+     * Export cached objects in corresponding export file
+     */
+    public function generateObjects(): void
     {
         foreach ($this->service_severity_cache as $id => $value) {
             if (is_null($value) || ! in_array($id, $this->service_linked_cache)) {
