@@ -51,13 +51,13 @@ class Severity extends AbstractObject
     protected $stmt_hc_name = null;
     protected $generate_filename =  'severities.cfg';
     protected $object_name = 'severity';
-    protected $attributesHcSelect = [
+    protected $attributesSelectHost = [
         'hc_id' => 'id',
         'hc_name' => 'name',
         'level' => 'level',
         'icon_id' => 'icon_id',
     ];
-    protected $attributesScSelect = [
+    protected $attributesSelectService = [
         'sc_id' => 'id',
         'sc_name' => 'name',
         'level' => 'level',
@@ -308,7 +308,7 @@ class Severity extends AbstractObject
                 continue;
             }
             $severity = [];
-            foreach ($this->attributesScSelect as $selectAttr => $writeAttr) {
+            foreach ($this->attributesSelectService as $selectAttr => $writeAttr) {
                 $severity[$writeAttr] = $value[$selectAttr];
             }
             $severity['type'] = 'service';
@@ -320,7 +320,7 @@ class Severity extends AbstractObject
                 continue;
             }
             $severity = [];
-            foreach ($this->attributesHcSelect as $selectAttr => $writeAttr) {
+            foreach ($this->attributesSelectHost as $selectAttr => $writeAttr) {
                 $severity[$writeAttr] = $value[$selectAttr];
             }
             $severity['type'] = 'host';
