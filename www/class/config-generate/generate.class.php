@@ -47,6 +47,7 @@ require_once dirname(__FILE__) . '/hosttemplate.class.php';
 require_once dirname(__FILE__) . '/command.class.php';
 require_once dirname(__FILE__) . '/timeperiod.class.php';
 require_once dirname(__FILE__) . '/hostgroup.class.php';
+require_once dirname(__FILE__) . '/hostcategory.class.php';
 require_once dirname(__FILE__) . '/servicegroup.class.php';
 require_once dirname(__FILE__) . '/contact.class.php';
 require_once dirname(__FILE__) . '/contactgroup.class.php';
@@ -230,6 +231,7 @@ class Generate
         Contact::getInstance($this->dependencyInjector)->reset();
         Contactgroup::getInstance($this->dependencyInjector)->reset();
         Hostgroup::getInstance($this->dependencyInjector)->reset();
+        Hostcategory::getInstance($this->dependencyInjector)->reset();
         Servicegroup::getInstance($this->dependencyInjector)->reset();
         Severity::getInstance($this->dependencyInjector)->reset();
         Timeperiod::getInstance($this->dependencyInjector)->reset();
