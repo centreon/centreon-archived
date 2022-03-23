@@ -117,4 +117,5 @@
     --broker-stats-info-name-font-color:var(--color-alabaster-2);
     --broker-stats-loaded-font-color: var(--service-ok-host-up-success-background-color);
     --chart-legend-font-color:none;
+    --graph-title-background-color: var(--body-background);
 }
