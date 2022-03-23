@@ -215,6 +215,7 @@ class ServiceTemplate extends AbstractService
         $this->getContactGroups($this->service_cache[$service_id]);
         $this->getContacts($this->service_cache[$service_id]);
         $this->getServiceGroups($service_id);
+        $this->getServiceCategories($service_id);
         $this->getSeverity($service_id);
 
         $this->generateObjectInFile($this->service_cache[$service_id], $service_id);
@@ -234,5 +235,20 @@ class ServiceTemplate extends AbstractService
         $this->current_service_id = null;
         $this->loop_stpl = array();
         parent::reset();
+    }
+
+    /**
+     * @param int $serviceId
+     */
+    protected function getServiceCategories(int $serviceId): void
+    {
+        $servicecategory = Servicecategory::getInstance($this->dependencyInjector);
+        $this->service_cache[$serviceId]['sc'] = $servicecategory->getServiceCategoriesForStpl($serviceId);
+
+        foreach ($this->service_cache[$serviceId]['sc'] as &$value) {
+            if (! is_null($value)) {
+                $servicecategory->addServiceInSc($value, $serviceId,$this->service_cache[$serviceId]['service_description']);
+            }
+        }
     }
 }

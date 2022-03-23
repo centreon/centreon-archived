@@ -521,6 +521,7 @@ class Host extends AbstractHost
         Dependency::getInstance($this->dependencyInjector)->generateObjects();
         Severity::getInstance($this->dependencyInjector)->generateObjects();
         Hostcategory::getInstance($this->dependencyInjector)->generateObjects();
+        Servicecategory::getInstance($this->dependencyInjector)->generateObjects();
     }
 
     public function getHostIdByHostName($host_name)

@@ -49,6 +49,7 @@ require_once dirname(__FILE__) . '/timeperiod.class.php';
 require_once dirname(__FILE__) . '/hostgroup.class.php';
 require_once dirname(__FILE__) . '/hostcategory.class.php';
 require_once dirname(__FILE__) . '/servicegroup.class.php';
+require_once dirname(__FILE__) . '/servicecategory.class.php';
 require_once dirname(__FILE__) . '/contact.class.php';
 require_once dirname(__FILE__) . '/contactgroup.class.php';
 require_once dirname(__FILE__) . '/servicetemplate.class.php';
@@ -234,6 +235,7 @@ class Generate
         Hostcategory::getInstance($this->dependencyInjector)->reset();
         Servicegroup::getInstance($this->dependencyInjector)->reset();
         Severity::getInstance($this->dependencyInjector)->reset();
+        Servicecategory::getInstance($this->dependencyInjector)->reset();
         Timeperiod::getInstance($this->dependencyInjector)->reset();
         Escalation::getInstance($this->dependencyInjector)->reset();
         Dependency::getInstance($this->dependencyInjector)->reset();
