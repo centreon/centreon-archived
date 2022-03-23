@@ -358,6 +358,7 @@ const CollapsibleItems = ({
       nestedScrollCollapsMaxWidth,
       hoveredIndex,
       selectedNavigationItems,
+      hoveredNavigationItems,
     ],
   });
 };

@@ -172,6 +172,9 @@ const NavigationMenu = ({
   };
 
   const searchItemsHoveredByDefault = (currentPage, ...args): void => {
+    if (selectedNavigationItems) {
+      return;
+    }
     const childPage = currentPage?.children;
     if (isNil(childPage) || !isArrayItem(childPage)) {
       if (!currentPage.is_react) {
@@ -280,6 +283,7 @@ const NavigationMenu = ({
       collapseScrollMaxHeight,
       collapseScrollMaxWidth,
       selectedNavigationItems,
+      hoveredNavigationItems,
     ],
   });
 };
