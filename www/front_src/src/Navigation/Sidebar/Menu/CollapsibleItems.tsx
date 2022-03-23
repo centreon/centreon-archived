@@ -266,6 +266,8 @@ const CollapsibleItems = ({
                       navigationItem: selectedNavigationItems,
                     }) || equals(hoveredIndex, nestedIndex);
 
+const mouseEnterContent = (e: React.MouseEvent<HTMLElement>): void =>
+                    hoverItem({ currentPage: content, e, index })
                   return (
                     <MenuItems
                       data={content}
