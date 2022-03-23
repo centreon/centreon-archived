@@ -27,11 +27,11 @@ use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Core\Application\RealTime\UseCase\FindHost\FindHostResponse;
-use Core\Infrastructure\RealTime\Api\Hypermedia\HypermediaProviderTrait;
+use Core\Infrastructure\Common\Api\HttpUrlTrait;
 
 class HostHypermediaProvider implements HypermediaProviderInterface
 {
-    use HypermediaProviderTrait;
+    use HttpUrlTrait;
 
     public const URI_CONFIGURATION = '/main.php?p=60101&o=c&host_id={hostId}',
                  URI_EVENT_LOGS = '/main.php?p=20301&h={hostId}',
