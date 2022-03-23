@@ -76,6 +76,9 @@ import {
   labelBeforeLastYear,
   labelLastCheckWithOkStatus,
   labelGraph,
+  labelEmail,
+  labelName,
+  labelNotification,
 } from '../translatedLabels';
 import Context, { ResourceContext } from '../testUtils/Context';
 import useListing from '../Listing/useListing';
@@ -492,6 +495,7 @@ const retrievedFilters = {
     result: [],
   },
 };
+
 
 let context: ResourceContext;
 
@@ -1695,4 +1699,62 @@ describe(Details, () => {
       );
     });
   });
+
+  const contact = {
+        alias: 'adminAdmin',
+        configuration_uri: '/centreon/main.php?p=60102&o=c&contact_id=1',
+        email: 'root@localhost',
+        id: 1,
+        name: 'admin',
+    };
+
+      const contactGroup = {
+            alias: 'group',
+            configuration_uri: '/centreon/main.php?p=60102&o=c&cg_id=1',
+            id: 1,
+            name: 'group',
+      };
+
+
+  it('display retrieved contact group when the host Resource have notification enabled', async () => {
+    
+    mockedAxios.get.mockResolvedValueOnce({ data: contact });
+    
+    const { getByText } =
+    renderDetails();
+    fireEvent.click(getByText(labelNotification));
+
+  await waitFor(() => {
+    expect(mockedAxios.get).toHaveBeenCalledWith(
+      './api/latest/configuration/hosts/{host_id}/notification-policy' as string,
+      expect.anything(),
+    );
+  });
+    expect(labelName).toBeInTheDocument();
+    expect(getByText('admin')).toBeInTheDocument();
+    expect(getByText(labelAlias)).toBeInTheDocument();
+    expect(getByText('adminAdmin')).toBeInTheDocument();
+    expect(getByText(labelEmail)).toBeInTheDocument();
+    expect(getByText('root@localhost')).toBeInTheDocument();
+  });
+
+
+it('display retrieved contact and contact group when the host Resource have notification enabled', async () => {
+    
+  mockedAxios.get.mockResolvedValueOnce({ data: contactGroup });
+  
+  const { getByText } =
+  renderDetails();
+  fireEvent.click(getByText(labelNotification));
+
+await waitFor(() => {
+  expect(mockedAxios.get).toHaveBeenCalledWith(
+    './api/latest/configuration/hosts/{host_id}/notification-policy' as string,
+    expect.anything(),
+  );
+});
+  expect(labelName).toBeInTheDocument();
+  expect(getByText('admin')).toBeInTheDocument();
+  expect(getByText(labelAlias)).toBeInTheDocument();
+  expect(getByText('adminAdmin')).toBeInTheDocument();
 });
