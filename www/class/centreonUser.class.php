@@ -98,7 +98,7 @@ class CentreonUser
         $this->gmt = $user["contact_location"];
         $this->showDeprecatedPages = (bool) $user["show_deprecated_pages"];
         $this->is_admin = null;
-        $this->theme = $user["contact_theme"];
+        $this->theme = $user["contact_theme"] ?? null;
         /*
          * Initiate ACL
          */
