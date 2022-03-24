@@ -15435,5 +15435,59 @@ msgstr ""
 # msgid "Password has expired"
 # msgstr ""
 
+# msgid "Export generation timeout"
+# msgstr ""
+
+# msgid "Add advanced server configuration"
+# msgstr ""
+
+# msgid "Create new Poller"
+# msgstr ""
+
+# msgid "Select a Poller"
+# msgstr ""
+
+# msgid "Select Pending Poller IP"
+# msgstr ""
+
+# msgid "Do not check SSL certificate validation"
+# msgstr ""
+
+# msgid "Types"
+# msgstr ""
+
+# msgid "Uninstalled"
+# msgstr ""
+
+# msgid "Outdated"
+# msgstr ""
+
+# msgid "Up to date"
+# msgstr ""
+
+# msgid "Module"
+# msgstr ""
+
+# msgid "Install all"
+# msgstr ""
+
+# msgid "Update all"
+# msgstr ""
+
+# msgid "Install"
+# msgstr ""
+
+# msgid "Update"
+# msgstr ""
+
+# msgid "License required"
+# msgstr ""
+
+# msgid "License expires"
+# msgstr ""
+
+# msgid "License not valid"
+# msgstr ""
+
 # msgid "Login with"
 # msgstr ""
