@@ -64,9 +64,16 @@ class DbConfigurationFactoryTest extends TestCase
         )->getMessage());
 
         $configuration = [
+            'id' => 1,
+            'name' => 'local',
+            'type' => 'local',
+            'is_active' => '1',
+            'is_forced' => '1',
+        ];
+        $customConfiguration = [
             'password_security_policy' => $this->securityPolicyData,
         ];
-        DbConfigurationFactory::createFromRecord($configuration, []);
+        DbConfigurationFactory::createFromRecord($configuration, $customConfiguration, []);
     }
 
     /**
@@ -83,9 +90,16 @@ class DbConfigurationFactoryTest extends TestCase
         )->getMessage());
 
         $configuration = [
+            'id' => 1,
+            'name' => 'local',
+            'type' => 'local',
+            'is_active' => '1',
+            'is_forced' => '1',
+        ];
+        $customConfiguration = [
             'password_security_policy' => $this->securityPolicyData,
         ];
-        DbConfigurationFactory::createFromRecord($configuration, []);
+        DbConfigurationFactory::createFromRecord($configuration, $customConfiguration, []);
     }
 
     /**
@@ -102,9 +116,16 @@ class DbConfigurationFactoryTest extends TestCase
         )->getMessage());
 
         $configuration = [
+            'id' => 1,
+            'name' => 'local',
+            'type' => 'local',
+            'is_active' => '1',
+            'is_forced' => '1',
+        ];
+        $customConfiguration = [
             'password_security_policy' => $this->securityPolicyData,
         ];
-        DbConfigurationFactory::createFromRecord($configuration, []);
+        DbConfigurationFactory::createFromRecord($configuration, $customConfiguration, []);
     }
 
     /**
@@ -121,9 +142,16 @@ class DbConfigurationFactoryTest extends TestCase
         )->getMessage());
 
         $configuration = [
+            'id' => 1,
+            'name' => 'local',
+            'type' => 'local',
+            'is_active' => '1',
+            'is_forced' => '1',
+        ];
+        $customConfiguration = [
             'password_security_policy' => $this->securityPolicyData,
         ];
-        DbConfigurationFactory::createFromRecord($configuration, []);
+        DbConfigurationFactory::createFromRecord($configuration, $customConfiguration, []);
     }
 
     /**
@@ -140,9 +168,16 @@ class DbConfigurationFactoryTest extends TestCase
         )->getMessage());
 
         $configuration = [
+            'id' => 1,
+            'name' => 'local',
+            'type' => 'local',
+            'is_active' => '1',
+            'is_forced' => '1',
+        ];
+        $customConfiguration = [
             'password_security_policy' => $this->securityPolicyData,
         ];
-        DbConfigurationFactory::createFromRecord($configuration, []);
+        DbConfigurationFactory::createFromRecord($configuration, $customConfiguration, []);
     }
 
     /**
@@ -159,9 +194,16 @@ class DbConfigurationFactoryTest extends TestCase
         )->getMessage());
 
         $configuration = [
+            'id' => 1,
+            'name' => 'local',
+            'type' => 'local',
+            'is_active' => '1',
+            'is_forced' => '1',
+        ];
+        $customConfiguration = [
             'password_security_policy' => $this->securityPolicyData,
         ];
-        DbConfigurationFactory::createFromRecord($configuration, []);
+        DbConfigurationFactory::createFromRecord($configuration, $customConfiguration, []);
     }
 
     /**
@@ -178,9 +220,16 @@ class DbConfigurationFactoryTest extends TestCase
         )->getMessage());
 
         $configuration = [
+            'id' => 1,
+            'name' => 'local',
+            'type' => 'local',
+            'is_active' => '1',
+            'is_forced' => '1',
+        ];
+        $customConfiguration = [
             'password_security_policy' => $this->securityPolicyData,
         ];
-        DbConfigurationFactory::createFromRecord($configuration, []);
+        DbConfigurationFactory::createFromRecord($configuration, $customConfiguration, []);
     }
 
     /**
@@ -197,9 +246,16 @@ class DbConfigurationFactoryTest extends TestCase
         )->getMessage());
 
         $configuration = [
+            'id' => 1,
+            'name' => 'local',
+            'type' => 'local',
+            'is_active' => '1',
+            'is_forced' => '1',
+        ];
+        $customConfiguration = [
             'password_security_policy' => $this->securityPolicyData,
         ];
-        DbConfigurationFactory::createFromRecord($configuration, []);
+        DbConfigurationFactory::createFromRecord($configuration, $customConfiguration, []);
     }
 
     /**
@@ -216,9 +272,16 @@ class DbConfigurationFactoryTest extends TestCase
         )->getMessage());
 
         $configuration = [
+            'id' => 1,
+            'name' => 'local',
+            'type' => 'local',
+            'is_active' => '1',
+            'is_forced' => '1',
+        ];
+        $customConfiguration = [
             'password_security_policy' => $this->securityPolicyData,
         ];
-        DbConfigurationFactory::createFromRecord($configuration, []);
+        DbConfigurationFactory::createFromRecord($configuration, $customConfiguration, []);
     }
 
     /**
@@ -235,9 +298,16 @@ class DbConfigurationFactoryTest extends TestCase
         )->getMessage());
 
         $configuration = [
+            'id' => 1,
+            'name' => 'local',
+            'type' => 'local',
+            'is_active' => '1',
+            'is_forced' => '1',
+        ];
+        $customConfiguration = [
             'password_security_policy' => $this->securityPolicyData,
         ];
-        DbConfigurationFactory::createFromRecord($configuration, []);
+        DbConfigurationFactory::createFromRecord($configuration, $customConfiguration, []);
     }
 
     /**
@@ -246,9 +316,16 @@ class DbConfigurationFactoryTest extends TestCase
     public function testConfigurationCorrectlyCreated(): void
     {
         $configuration = [
+            'id' => 1,
+            'name' => 'local',
+            'type' => 'local',
+            'is_active' => '1',
+            'is_forced' => '1',
+        ];
+        $customConfiguration = [
             'password_security_policy' => $this->securityPolicyData,
         ];
-        $configuration = DbConfigurationFactory::createFromRecord($configuration, []);
+        $configuration = DbConfigurationFactory::createFromRecord($configuration, $customConfiguration, []);
 
         $this->assertEquals(
             $this->securityPolicyData['password_length'],

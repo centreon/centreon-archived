@@ -234,6 +234,7 @@ const CollapsibleItems = ({
               levelTitle: levelName,
               navigationItem: selectedNavigationItems,
             }) || equals(hoveredIndex, index);
+
           const mouseEnterItem = (e: React.MouseEvent<HTMLElement>): void =>
             hoverItem({ currentPage: item, e, index });
 

@@ -75,24 +75,14 @@ $initialValues = array();
 /*
  * Check if this server is a Remote Server to hide some part of form
  */
-$dbResult = $pearDB->query("SELECT i.key, i.value FROM informations i WHERE i.key IN ('isRemote', 'is_cloud')");
-
-const PLATFORM_CENTRAL = 'central';
-const PLATFORM_REMOTE = 'remote';
-const PLATFORM_CLOUD = 'cloud';
-
-$platformType = PLATFORM_CENTRAL;
-while (($result = $dbResult->fetch()) !== false) {
-    // If the platform is a cloud we don't check if it is also a remote or not.
-    if ($result['key'] === 'is_cloud' && $result['value'] === 'yes') {
-        $platformType = PLATFORM_CLOUD;
-        break;
-    }
-    if ($result['key'] === 'isRemote' && $result['value'] === 'yes') {
-        $platformType = PLATFORM_REMOTE;
-    }
+$dbResult = $pearDB->query("SELECT i.value FROM informations i WHERE i.key = 'isRemote'");
+$result = $dbResult->fetch();
+if ($result === false) {
+    $isRemote = false;
+} else {
+    $isRemote = array_map("myDecode", $result);
+    $isRemote = $isRemote['value'] === 'yes';
 }
-
 $dbResult->closeCursor();
 
 /**
@@ -357,12 +347,7 @@ $form->addElement('text', 'contact_address6', _("Address6"), $attrsText);
 /**
  * Contact Groups Field
  */
-if ($platformType === PLATFORM_CLOUD) {
-    $form->addElement('header', 'groupLinks', _("Role Relations"));
-} else {
-    $form->addElement('header', 'groupLinks', _("Group Relations"));
-}
-
+$form->addElement('header', 'groupLinks', _("Group Relations"));
 if ($o == MASSIVE_CHANGE) {
     $mc_mod_cg = array();
     $mc_mod_cg[] = $form->createElement('radio', 'mc_mod_cg', null, _("Incremental"), '0');
@@ -378,13 +363,7 @@ $attrContactgroup1 = array_merge(
     $attrContactgroups,
     array('defaultDatasetRoute' => $defaultDatasetRoute)
 );
-
-if ($platformType === PLATFORM_CLOUD) {
-    $form->addElement('select2', 'contact_cgNotif', _("Linked to Roles"), [], $attrContactgroup1);
-} else {
-    $form->addElement('select2', 'contact_cgNotif', _("Linked to Contact Groups"), [], $attrContactgroup1);
-}
-
+$form->addElement('select2', 'contact_cgNotif', _("Linked to Contact Groups"), [], $attrContactgroup1);
 
 /**
  * Contact Centreon information
@@ -522,14 +501,9 @@ $form->addElement('header', 'notification', _("Notification"));
 $tab = [];
 $tab[] = $form->createElement('radio', 'contact_enable_notifications', null, _("Yes"), '1');
 $tab[] = $form->createElement('radio', 'contact_enable_notifications', null, _("No"), '0');
-if ($platformType === PLATFORM_CLOUD) {
-    $form->setDefaults(['contact_enable_notifications' => '1']);
-} else {
-    $tab[] = $form->createElement('radio', 'contact_enable_notifications', null, _("Default"), '2');
-}
-
+$tab[] = $form->createElement('radio', 'contact_enable_notifications', null, _("Default"), '2');
 $form->addGroup($tab, 'contact_enable_notifications', _("Enable Notifications"), '&nbsp;');
-if ($o != MASSIVE_CHANGE && $platformType !== PLATFORM_CLOUD) {
+if ($o != MASSIVE_CHANGE) {
     $form->setDefaults(array('contact_enable_notifications' => '2'));
 }
 
@@ -750,23 +724,20 @@ if ($o != MASSIVE_CHANGE) {
     $ret = $form->getSubmitValues();
     $form->addRule('contact_name', _("Compulsory Name"), 'required');
     $form->addRule('contact_alias', _("Compulsory Alias"), 'required');
-    if ($platformType !== PLATFORM_REMOTE) {
+    if ($isRemote === false) {
         $form->addRule('contact_email', _("Valid Email"), 'required');
     }
-    if ($platformType !== PLATFORM_CLOUD) {
-        // We do not set those rules for Cloud platform as the input ren't shown and default values are provided.
-        $form->addRule('contact_oreon', _("Required Field"), 'required');
-        $form->addRule('contact_auth_type', _("Required Field"), 'required');
-        if ($centreon->user->admin) {
-            $form->addRule('contact_admin', _("Required Field"), 'required');
-        }
-    }
+    $form->addRule('contact_oreon', _("Required Field"), 'required');
     $form->addRule('contact_lang', _("Required Field"), 'required');
+    if ($centreon->user->admin) {
+        $form->addRule('contact_admin', _("Required Field"), 'required');
+    }
+    $form->addRule('contact_auth_type', _("Required Field"), 'required');
 
     if (
         (isset($ret["contact_enable_notifications"]["contact_enable_notifications"])
         && $ret["contact_enable_notifications"]["contact_enable_notifications"] == 1)
-        && ($platformType === PLATFORM_CENTRAL)
+        && ($isRemote === false)
     ) {
         if (isset($ret["contact_template_id"]) && $ret["contact_template_id"] == '') {
             $form->addRule('timeperiod_tp_id', _("Compulsory Period"), 'required');
@@ -860,6 +831,7 @@ if (
         $tpl->assign("ldapGroups", $cgLdap);
     }
 }
+
 $valid = false;
 
 if ($form->validate() && $from_list_menu == false) {
@@ -928,16 +900,10 @@ if ($valid) {
     }
     $tpl->assign('auth_type', $contactAuthType);
 
-    switch ($platformType) {
-        case PLATFORM_REMOTE:
-            $tpl->display("formContactLight.ihtml");
-            break;
-        case PLATFORM_CLOUD:
-            $tpl->display("formContactCloud.ihtml");
-            break;
-        default:
-            $tpl->display("formContact.ihtml");
-            break;
+    if ($isRemote === false) {
+        $tpl->display("formContact.ihtml");
+    } else {
+        $tpl->display("formContactLight.ihtml");
     }
 }
 ?>
