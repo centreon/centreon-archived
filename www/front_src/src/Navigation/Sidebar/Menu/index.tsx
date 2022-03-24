@@ -60,10 +60,6 @@ const NavigationMenu = ({
   const [hoveredNavigationItems, setHoveredNavigationItems] = useAtom(
     hoveredNavigationItemsAtom,
   );
-
-  const selectedNavigationItemsByDefault = React.useRef<Array<Page> | null>(
-    null,
-  );
   const levelName = 'level_0';
   const currentWidth = isDrawerOpen ? openedDrawerWidth / 8 : closedDrawerWidth;
 
@@ -153,60 +149,70 @@ const NavigationMenu = ({
   const searchItemsWithReactUrl = (
     parentItem: Page,
     ...args: Array<Page>
-  ): void => {
+  ): Array<Page> | null => {
     if (!equals(pathname, parentItem?.url)) {
-      return;
+      return null;
     }
-    selectedNavigationItemsByDefault.current = [parentItem, ...args].reverse();
+
+    return [parentItem, ...args].reverse();
   };
 
   const searchItemsWithPhpUrl = (
     parentItem: Page,
     ...args: Array<Page>
-  ): void => {
+  ): Array<Page> | null => {
     const page = search?.match(/\d+/);
     if (!page || !equals(page[0], parentItem?.page)) {
-      return;
+      return null;
     }
-    selectedNavigationItemsByDefault.current = [parentItem, ...args].reverse();
+
+    return [parentItem, ...args].reverse();
   };
 
-  const searchItemsHoveredByDefault = (currentPage, ...args): void => {
-    if (selectedNavigationItems) {
-      return;
-    }
+  const searchItemsHoveredByDefault = (
+    currentPage,
+    ...args
+  ): Array<Page> | null => {
     const childPage = currentPage?.children;
     if (isNil(childPage) || !isArrayItem(childPage)) {
       if (!currentPage.is_react) {
-        searchItemsWithPhpUrl(currentPage, ...args);
-
-        return;
+        return searchItemsWithPhpUrl(currentPage, ...args);
       }
-      searchItemsWithReactUrl(currentPage, ...args);
 
-      return;
+      return searchItemsWithReactUrl(currentPage, ...args);
     }
-    childPage.forEach((item) => {
-      const grandsonPage = item?.groups;
+    for (let j = 0; j < childPage.length; j += 1) {
+      const grandsonPage = childPage[j]?.groups;
       if (isNil(grandsonPage) || !isArrayItem(grandsonPage)) {
-        if (args.length > 0) {
-          searchItemsHoveredByDefault(item, ...args);
+        if (searchItemsHoveredByDefault(childPage[j])) {
+          if (args.length > 0) {
+            return searchItemsHoveredByDefault(childPage[j], ...args);
+          }
 
-          return;
+          return searchItemsHoveredByDefault(childPage[j], currentPage);
         }
-        searchItemsHoveredByDefault(item, currentPage);
+      } else {
+        for (let n = 0; n < grandsonPage.length; n += 1) {
+          if (searchItemsHoveredByDefault(grandsonPage[n])) {
+            if (args.length > 0) {
+              return searchItemsHoveredByDefault(
+                grandsonPage[n],
+                childPage[j],
+                ...args,
+              );
+            }
 
-        return;
+            return searchItemsHoveredByDefault(
+              grandsonPage[n],
+              childPage[j],
+              currentPage,
+            );
+          }
+        }
       }
-      grandsonPage.forEach((element) => {
-        if (args.length > 0) {
-          searchItemsHoveredByDefault(element, item, ...args);
+    }
 
-          return;
-        }
-        searchItemsHoveredByDefault(element, item, currentPage);
-      });
-    });
+    return null;
   };
 
   const handleWindowClose = (): void => {
@@ -215,29 +221,24 @@ const NavigationMenu = ({
   };
 
   React.useEffect(() => {
+    if (!navigationData) {
+      return undefined;
+    }
+    navigationData.forEach((item) => {
+      if (searchItemsHoveredByDefault(item)) {
+        addSelectedNavigationItemsByDefault(searchItemsHoveredByDefault(item));
+      }
+    });
+
     window.addEventListener('beforeunload', handleWindowClose);
 
     return () => window.removeEventListener('beforeunload', handleWindowClose);
   }, []);
 
-  React.useEffect(() => {
-    if (
-      !selectedNavigationItemsByDefault ||
-      !selectedNavigationItemsByDefault.current
-    ) {
-      return;
-    }
-    addSelectedNavigationItemsByDefault(
-      selectedNavigationItemsByDefault.current,
-    );
-  }, [search]);
-
   return useMemoComponent({
     Component: (
       <List className={classes.list} onMouseLeave={handleLeave}>
         {navigationData?.map((item, index) => {
-          searchItemsHoveredByDefault(item);
-
           const MenuIcon = !isNil(item?.icon) && icons[item.icon];
           const hover =
             isItemHovered({

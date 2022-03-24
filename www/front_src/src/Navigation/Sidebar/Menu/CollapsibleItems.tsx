@@ -237,6 +237,12 @@ const CollapsibleItems = ({
           const mouseEnterItem = (e: React.MouseEvent<HTMLElement>): void =>
             hoverItem({ currentPage: item, e, index });
 
+          const isCollapseWithSubheader =
+            Array.isArray(item?.groups) && item.groups.length > 1;
+
+          const isSimpleCollapse =
+            isArrayItem(item?.groups) && equals(index, hoveredIndex);
+
           return (
             <List
               disablePadding
@@ -302,9 +308,7 @@ const CollapsibleItems = ({
                 />
               )}
 
-              {Array.isArray(item?.groups) &&
-              item.groups.length > 1 &&
-              equals(index, hoveredIndex) ? (
+              {isCollapseWithSubheader && equals(index, hoveredIndex) ? (
                 <CollapsibleItems
                   isSubHeader
                   collapseScrollMaxHeight={nestedScrollCollapsMaxHeight}
@@ -319,8 +323,7 @@ const CollapsibleItems = ({
                   onClick={onClick}
                 />
               ) : (
-                isArrayItem(item?.groups) &&
-                equals(index, hoveredIndex) &&
+                isSimpleCollapse &&
                 item?.groups?.map(
                   (itemGroup) =>
                     isArrayItem(itemGroup?.children) && (
