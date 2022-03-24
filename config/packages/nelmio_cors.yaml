@@ -4,7 +4,7 @@ nelmio_cors:
         origin_regex: true
         allow_origin: ['*']
         allow_methods: ['GET', 'OPTIONS', 'POST', 'PUT', 'PATCH', 'DELETE']
-        allow_headers: ['Content-Type', 'Authorization', 'Origin', 'Accept', 'X-AUTH-TOKEN']
+        allow_headers: ['Content-Type', 'Authorization', 'Origin', 'Accept', 'X-AUTH-TOKEN', 'REMOTE_USER']
         expose_headers: ['Link']
         hosts: ['*']
         max_age: 3600
