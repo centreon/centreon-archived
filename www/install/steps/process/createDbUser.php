@@ -96,6 +96,7 @@ $mandatoryPrivileges = [
     'LOCK TABLES',
     'CREATE TEMPORARY TABLES',
     'EVENT',
+    'CREATE VIEW',
 ];
 $privilegesQuery = implode(', ', $mandatoryPrivileges);
 $query = "GRANT " . $privilegesQuery . " ON `%s`.* TO " . $parameters['db_user'] . "@" . $host;
