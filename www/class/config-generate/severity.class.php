@@ -45,6 +45,8 @@ class Severity extends AbstractObject
 
     private $host_severity_cache = array();
     private $host_linked_cache = array();
+    private $host_severities = [];
+    private $service_severities = [];
 
     protected $stmt_host = null;
     protected $stmt_service = null;
@@ -147,7 +149,7 @@ class Severity extends AbstractObject
             $this->host_linked_cache[$host_id] = null;
             return null;
         }
-        $this->host_linked_cache[$service_id] = $severity['hc_id'];
+        $this->host_linked_cache[$host_id] = $severity['hc_id'];
         $this->host_severity_cache[$severity['hc_id']] = &$severity;
         return $severity['hc_id'];
     }
@@ -161,6 +163,7 @@ class Severity extends AbstractObject
             return null;
         }
 
+        $this->host_severities[$hc_id] = $this->host_severity_cache[$hc_id];
         return $this->host_severity_cache[$hc_id];
     }
 
@@ -264,6 +267,7 @@ class Severity extends AbstractObject
             return null;
         }
 
+        $this->service_severities[$sc_id] = $this->service_severity_cache[$sc_id];
         return $this->service_severity_cache[$sc_id];
     }
 
@@ -313,8 +317,8 @@ class Severity extends AbstractObject
      */
     private function generateServiceSeverityObjects(): void
     {
-        foreach ($this->service_severity_cache as $id => $value) {
-            if (is_null($value) || ! in_array($id, $this->service_linked_cache)) {
+        foreach ($this->service_severities as $id => $value) {
+            if (is_null($value)) {
                 continue;
             }
             $severity = ['type' => 'service'];
@@ -330,8 +334,8 @@ class Severity extends AbstractObject
      */
     private function generateHostSeverityObjects(): void
     {
-        foreach ($this->host_severity_cache as $id => $value) {
-            if (is_null($value) || ! in_array($id, $this->host_linked_cache)) {
+        foreach ($this->host_severities as $id => $value) {
+            if (is_null($value)) {
                 continue;
             }
             $severity = ['type' => 'host'];
@@ -340,5 +344,15 @@ class Severity extends AbstractObject
             }
             $this->generateObjectInFile($severity, $id);
         }
+    }
+
+    /**
+     * Reset instance
+     */
+    public function reset(): void
+    {
+        $this->host_severities = [];
+        $this->service_severities = [];
+        parent::reset();
     }
 }
