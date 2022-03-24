@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005-2015 Centreon
+ * Copyright 2005-2022 Centreon
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -36,18 +36,18 @@
 
 class Hostcategory extends AbstractObject
 {
-    private $hc = array();
+    private $hc = [];
     protected $generate_filename = 'tags.cfg';
     protected $object_name = 'tag';
     protected $attributes_select = '
         hc_id as id,
         hc_name as name
     ';
-    protected $attributes_write = array(
+    protected $attributes_write = [
         'id',
         'name',
         'type',
-    );
+    ];
     protected $stmt_hc = null;
 
     /**

@@ -36,36 +36,41 @@
 
 class Servicecategory extends AbstractObject
 {
-    private $use_cache = 1;
     private $done_cache = 0;
 
-    private $sc = array();
-    private $sc_relation_cache = array();
+    private $sc = [];
+    private $sc_relation_cache = [];
     protected $generate_filename = 'tags.cfg';
     protected $object_name = 'tag';
     protected $attributes_select = '
         sc_id as id,
         sc_name as name
     ';
-    protected $attributes_write = array(
+    protected $attributes_write = [
         'id',
         'name',
         'type',
-    );
+    ];
     protected $stmt_sc = null;
     protected $stmt_service_sc = null;
     protected $stmt_stpl_sc = null;
 
+    /**
+     * @param \Pimple\Container $dependencyInjector
+     */
     public function __construct(\Pimple\Container $dependencyInjector)
     {
         parent::__construct($dependencyInjector);
         $this->buildCache();
     }
 
-    private function buildCache()
+    /**
+     * Build cache for service categories
+     */
+    private function buildCache(): void
     {
-        if ($this->done_cache == 1) {
-            return 0;
+        if ($this->done_cache === 1) {
+            return;
         }
 
         $stmt = $this->backend_instance->db->prepare(
@@ -83,13 +88,19 @@ class Servicecategory extends AbstractObject
         $this->done_cache = 1;
     }
 
+    /**
+     * Get categories linked to service template
+     *
+     * @param int $service_id
+     * @return int[]
+     */
     public function getServicecategoriesForStpl(int $service_id): array
     {
         # Get from the cache
         if (isset($this->sc_relation_cache[$service_id])) {
             return $this->sc_relation_cache[$service_id];
         }
-        if ($this->done_cache == 1) {
+        if ($this->done_cache === 1) {
             return array();
         }
 
@@ -116,6 +127,12 @@ class Servicecategory extends AbstractObject
         return $categories;
     }
 
+    /**
+     * Retrieve a categorie from its id
+     *
+     * @param int $sc_id
+     * @return void
+     */
     private function getServicecategoryFromId(int $sc_id): void
     {
         if (is_null($this->stmt_sc)) {
@@ -136,9 +153,16 @@ class Servicecategory extends AbstractObject
         $this->sc[$sc_id]['members'] = array();
     }
 
+    /**
+     * Add a service to members of a servicecategory
+     *
+     * @param int $sc_id
+     * @param int $service_id
+     * @param string $service_description
+     */
     public function addServiceInSc(int $sc_id, int $service_id, string $service_description): void
     {
-        if (!isset($this->sc[$sc_id])) {
+        if (! isset($this->sc[$sc_id])) {
             $this->getServicecategoryFromId($sc_id);
         }
         if (is_null($this->sc[$sc_id]) || isset($this->sc[$sc_id]['members'][$service_id])) {
@@ -148,6 +172,9 @@ class Servicecategory extends AbstractObject
         $this->sc[$sc_id]['members'][$service_id] = $service_description;
     }
 
+    /**
+     * Write servicecategories in configuration file
+     */
     public function generateObjects(): void
     {
         foreach ($this->sc as $id => &$value) {
@@ -162,11 +189,14 @@ class Servicecategory extends AbstractObject
         }
     }
 
+    /**
+     * Reset instance
+     */
     public function reset(): void
     {
         parent::reset();
         foreach ($this->sc as &$value) {
-            if (!is_null($value)) {
+            if (! is_null($value)) {
                 $value['members'] = array();
             }
         }

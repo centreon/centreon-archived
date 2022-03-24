@@ -153,12 +153,12 @@ class HostTemplate extends AbstractHost
 
     private function getHosts()
     {
-        $stmt = $this->backend_instance->db->prepare("
-            SELECT {$this->attributes_select}
+        $stmt = $this->backend_instance->db->prepare(
+            "SELECT {$this->attributes_select}
             FROM host
-                LEFT JOIN extended_host_information ON extended_host_information.host_host_id = host.host_id
-            WHERE
-                host.host_register = '0' AND host.host_activate = '1'");
+            LEFT JOIN extended_host_information ON extended_host_information.host_host_id = host.host_id
+            WHERE host.host_register = '0' AND host.host_activate = '1'"
+        );
         $stmt->execute();
         $this->hosts = $stmt->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_UNIQUE | PDO::FETCH_ASSOC);
     }
