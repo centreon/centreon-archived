@@ -111,6 +111,22 @@ try {
     $errorMessage = "Impossible to add default WebSSO provider configuration";
     insertWebSSOConfiguration($pearDB);
 
+    /**
+     * Add new UnifiedSQl broker output
+     */
+    $errorMessage = 'Unable to update cb_type table ';
+    $pearDB->query(
+        "UPDATE `cb_type` set type_name = 'Perfdata Generator (Centreon Storage) - DEPRECATED'
+        WHERE type_shortname = 'storage'"
+    );
+    $pearDB->query(
+        "UPDATE `cb_type` set type_name = 'Broker SQL database - DEPRECATED'
+        WHERE type_shortname = 'sql'"
+    );
+
+    $errorMessage = "Unable to add 'unifed_sql' broker configuration output";
+    addNewUnifiedSqlOutput($pearDB);
+
     $errorMessage = "Unable to drop column 'contact_passwd' from 'contact' table";
     $pearDB->query("ALTER TABLE `contact` DROP COLUMN `contact_passwd`");
 
@@ -132,9 +148,6 @@ try {
         WHERE `cb_field_id` = 31
     ");
 
-    $errorMessage = 'Unable to delete logger entry in cb_tag';
-    $statement = $pearDB->query("DELETE FROM cb_tag WHERE tagname = 'logger'");
-
     $errorMessage = 'Unable to delete old logger configuration';
     $statement = $pearDB->query("DELETE FROM cfg_centreonbroker_info WHERE config_group = 'logger'");
 
@@ -148,25 +161,6 @@ try {
 
     $errorMessage = "Unable to alter table security_token";
     $pearDB->query("ALTER TABLE `security_token` MODIFY `token` varchar(4096)");
-    /**
-     * Add new UnifiedSQl broker output
-     */
-    $pearDB->beginTransaction();
-
-    $errorMessage = 'Unable to update cb_type table ';
-    $pearDB->query(
-        "UPDATE `cb_type` set type_name = 'Perfdata Generator (Centreon Storage) - DEPRECATED'
-        WHERE type_shortname = 'storage'"
-    );
-    $pearDB->query(
-        "UPDATE `cb_type` set type_name = 'Broker SQL database - DEPRECATED'
-        WHERE type_shortname = 'sql'"
-    );
-
-    $errorMessage = "Unable to add 'unifed_sql' broker configuration output";
-    addNewUnifiedSqlOutput($pearDB);
-
-    $pearDB->commit();
 } catch (\Exception $e) {
     if ($pearDB->inTransaction()) {
         $pearDB->rollBack();
