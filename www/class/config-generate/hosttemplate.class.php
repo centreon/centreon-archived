@@ -128,6 +128,7 @@ class HostTemplate extends AbstractHost
     protected $attributes_array = array(
         'use'
     );
+    protected $stmt_hc = null;
 
     /**
      * @param int $hostId
@@ -154,9 +155,9 @@ class HostTemplate extends AbstractHost
     {
         $stmt = $this->backend_instance->db->prepare("
             SELECT {$this->attributes_select}
-            FROM host 
-                LEFT JOIN extended_host_information ON extended_host_information.host_host_id = host.host_id 
-            WHERE  
+            FROM host
+                LEFT JOIN extended_host_information ON extended_host_information.host_host_id = host.host_id
+            WHERE
                 host.host_register = '0' AND host.host_activate = '1'");
         $stmt->execute();
         $this->hosts = $stmt->fetchAll(PDO::FETCH_GROUP | PDO::FETCH_UNIQUE | PDO::FETCH_ASSOC);
@@ -205,6 +206,7 @@ class HostTemplate extends AbstractHost
         $this->getHostTemplates($this->hosts[$host_id]);
         $this->getHostCommands($this->hosts[$host_id]);
         $this->getHostPeriods($this->hosts[$host_id]);
+        $this->getHostCategories($this->hosts[$host_id]);
         $this->getContactGroups($this->hosts[$host_id]);
         $this->getContacts($this->hosts[$host_id]);
         $this->getSeverity($host_id);
@@ -217,5 +219,29 @@ class HostTemplate extends AbstractHost
     {
         $this->loop_htpl = array();
         parent::reset();
+    }
+
+    /**
+     * @param array<string,mixed> $host
+     */
+    private function getHostCategories(array &$host): void
+    {
+        if (!isset($host['hc'])) {
+            if (is_null($this->stmt_hc)) {
+                $this->stmt_hc = $this->backend_instance->db->prepare(
+                    "SELECT hostcategories_hc_id
+                    FROM hostcategories_relation
+                    WHERE host_host_id = :host_id"
+                );
+            }
+            $this->stmt_hc->bindParam(':host_id', $host['host_id'], PDO::PARAM_INT);
+            $this->stmt_hc->execute();
+            $host['hc'] = $this->stmt_hc->fetchAll(PDO::FETCH_COLUMN);
+        }
+
+        $hostcategory = Hostcategory::getInstance($this->dependencyInjector);
+        foreach ($host['hc'] as $hc_id) {
+            $hostcategory->addHostInHc($hc_id, $host['host_id'], $host['name']);
+        }
     }
 }
