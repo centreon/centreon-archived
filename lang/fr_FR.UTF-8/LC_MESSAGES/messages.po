@@ -16752,3 +16752,6 @@ msgstr "[%s] : La déclaration de connexion [%s] n'a pas été trouvée dans l'u
 
 msgid "[%s]: No authorization code return by external provider"
 msgstr "[%s] : Aucun code d'autorisation n'a été retourné par le fournisseur externe"
+
+msgid "Login with"
+msgstr "Se connecter avec"
