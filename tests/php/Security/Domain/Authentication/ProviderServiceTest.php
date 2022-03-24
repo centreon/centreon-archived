@@ -86,49 +86,6 @@ class ProviderServiceTest extends TestCase
     }
 
     /**
-     * test findProvidersConfigurations on failure
-     */
-    public function testFindProvidersConfigurationsFailed(): void
-    {
-        $providerService = new ProviderService(
-            $this->authenticationRepository,
-            $this->providerRepository,
-            $this->providerFactory
-        );
-
-        $this->providerRepository
-            ->expects($this->once())
-            ->method('findProvidersConfigurations')
-            ->willThrowException(new \Exception());
-
-        $this->expectException(ProviderException::class);
-        $this->expectExceptionMessage('Error while searching providers configurations');
-
-        $providerService->findProvidersConfigurations();
-    }
-
-    /**
-     * test findProvidersConfigurations on success
-     */
-    public function testFindProvidersConfigurationsSucceed(): void
-    {
-        $providerService = new ProviderService(
-            $this->authenticationRepository,
-            $this->providerRepository,
-            $this->providerFactory
-        );
-
-        $this->providerRepository
-            ->expects($this->once())
-            ->method('findProvidersConfigurations')
-            ->willReturn([$this->providerConfiguration]);
-
-        $providersConfigurations = $providerService->findProvidersConfigurations();
-
-        $this->assertEquals($this->providerConfiguration, $providersConfigurations[0]);
-    }
-
-    /**
      * test findProviderByConfigurationId on failure
      */
     public function testFindProviderByConfigurationIdFailed(): void
@@ -303,14 +260,18 @@ class ProviderServiceTest extends TestCase
             $this->providerFactory
         );
 
+        $throwedException = new \Exception();
+
         $this->providerRepository
             ->expects($this->once())
             ->method('findProviderConfigurationByConfigurationName')
             ->with('local')
-            ->willThrowException(new \Exception());
+            ->willThrowException($throwedException);
 
         $this->expectException(ProviderException::class);
-        $this->expectExceptionMessage('Error while searching providers configurations');
+        $this->expectExceptionMessage(
+            ProviderException::findProviderConfiguration('local', $throwedException)->getMessage()
+        );
 
         $providerService->findProviderConfigurationByConfigurationName('local');
     }

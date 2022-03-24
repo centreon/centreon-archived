@@ -271,11 +271,15 @@
     --list-header-background: var(--color-periwinkle-gray);
     --list-sub-header-background-color: var(--color-perano);
     --list-one-background-color: var(--color-twilight-blue);
+    --list-one-font-color: none;
     --list-one-fix-background-color: var(--list-one-background-color);
     --list-one-hover-background-color: var(--list-header-background);
+    --list-one-hover-font-color: none;
     --list-two-background-color: var(--color-twilight-blue-2);
+    --list-two-font-color: none;
     --list-two-fix-background-color: var(--list-two-background-color);
     --list-two-hover-background-color: var(--list-header-background);
+    --list-two-hover-font-color: none;
     --list-three-background-color: var(--color-sweet-corn);
     --list-three-hover-background-color: var(--color-yellow-green);
     --list-four-background-color: var(--color-lightning-yellow);

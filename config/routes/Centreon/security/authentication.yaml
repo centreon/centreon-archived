@@ -1,17 +1,22 @@
 centreon_security_authentication_find_providers_configurations:
     methods: GET
     path: /authentication/providers/configurations
-    controller: 'Centreon\Application\Controller\AuthenticationController::findProvidersConfigurations'
+    controller: 'Core\Infrastructure\Security\Api\FindProviderConfigurations\FindProviderConfigurationsController'
 
 centreon_security_authentication_login:
     methods: POST
-    path: /authentication/providers/configurations/{providerConfigurationName}
+    path: /authentication/providers/configurations/local
     controller: 'Core\Infrastructure\Security\Api\LoginSession\LoginSessionController'
 
 centreon_application_authentication_logout:
     methods: POST
     path: /authentication/logout
     controller: 'Core\Infrastructure\Security\Api\LogoutSession\LogoutSessionController'
+
+centreon_security_authentication_openid_login:
+    methods: GET
+    path: /authentication/providers/configurations/openid
+    controller: 'Core\Infrastructure\Security\Api\LoginOpenIdSession\LoginOpenIdSessionController'
 
 centreon_security__renew_user_password:
     methods: PUT
