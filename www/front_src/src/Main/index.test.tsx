@@ -73,6 +73,16 @@ const retrievedWeb = {
   },
 };
 
+const retrievedProvidersConfiguration = [
+  {
+    authentication_uri:
+      '/centreon/authentication/providers/configurations/local',
+    id: 1,
+    is_active: true,
+    name: 'local',
+  },
+];
+
 jest.mock('../Header', () => {
   const Header = (): JSX.Element => {
     return <div />;
@@ -151,6 +161,9 @@ const mockRedirectFromLoginPageGetRequests = (): void => {
       data: retrievedWeb,
     })
     .mockResolvedValueOnce({
+      data: retrievedProvidersConfiguration,
+    })
+    .mockResolvedValueOnce({
       data: retrievedNavigation,
     })
     .mockResolvedValueOnce({
@@ -183,6 +196,9 @@ const mockNotConnectedGetRequests = (): void => {
     })
     .mockResolvedValueOnce({
       data: retrievedWeb,
+    })
+    .mockResolvedValueOnce({
+      data: retrievedProvidersConfiguration,
     });
 };
 
@@ -444,5 +460,18 @@ describe('Main', () => {
         'http://localhost/monitoring/resources',
       );
     });
+  });
+
+  it('displays a message when the authentication from an external provider fails ', () => {
+    window.history.pushState(
+      {},
+      '',
+      '/?authenticationError=Authentication%20failed',
+    );
+    mockDefaultGetRequests();
+
+    renderMain();
+
+    expect(screen.getByText('Authentication failed')).toBeInTheDocument();
   });
 });
