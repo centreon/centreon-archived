@@ -119,4 +119,5 @@
     --chart-legend-font-color:none;
     --graph-title-background-color: var(--body-background);
     --header-text-font-color: var(--body-color);
+    --row-disabled-background-color: var(--body-background);
 }
