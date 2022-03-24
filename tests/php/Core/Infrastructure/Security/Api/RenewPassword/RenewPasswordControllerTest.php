@@ -25,7 +25,6 @@ namespace Tests\Infrastructure\Security\Api\RenewPassword;
 
 use Core\Application\Security\UseCase\RenewPassword\RenewPassword;
 use Core\Application\Security\UseCase\RenewPassword\RenewPasswordPresenterInterface;
-use Core\Infrastructure\Security\Api\Exception\RenewPasswordApiException;
 use Core\Infrastructure\Security\Api\RenewPassword\RenewPasswordController;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;

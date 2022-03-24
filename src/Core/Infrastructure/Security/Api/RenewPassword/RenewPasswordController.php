@@ -23,13 +23,10 @@ declare(strict_types=1);
 
 namespace Core\Infrastructure\Security\Api\RenewPassword;
 
-use JsonSchema\Validator;
-use JsonSchema\Constraints\Constraint;
 use Symfony\Component\HttpFoundation\Request;
 use Centreon\Application\Controller\AbstractController;
 use Core\Application\Security\UseCase\RenewPassword\RenewPassword;
 use Core\Application\Security\UseCase\RenewPassword\RenewPasswordRequest;
-use Core\Infrastructure\Security\Api\Exception\RenewPasswordApiException;
 use Core\Application\Security\UseCase\RenewPassword\RenewPasswordPresenterInterface;
 
 class RenewPasswordController extends AbstractController
@@ -50,6 +47,7 @@ class RenewPasswordController extends AbstractController
         $this->validateDataSent($request, __DIR__ . '/RenewPasswordSchema.json');
         $renewPasswordRequest = $this->createRenewPasswordRequest($request, $alias);
         $useCase($presenter, $renewPasswordRequest);
+
         return $presenter->show();
     }
 

@@ -29,14 +29,6 @@ use Security\Domain\Authentication\Exceptions\ProviderException;
 interface ProviderServiceInterface
 {
     /**
-     * Find providers configurations
-     *
-     * @return ProviderConfiguration[]
-     * @throws ProviderException
-     */
-    public function findProvidersConfigurations(): array;
-
-    /**
      * Find a provider by configuration id.
      *
      * @param int $providerConfigurationId

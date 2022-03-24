@@ -22,26 +22,27 @@ declare(strict_types=1);
 
 namespace Security\Domain\Authentication\Model;
 
+use Pimple\Container;
+use Centreon\Domain\Log\LoggerTrait;
+use Core\Domain\Security\User\Model\User;
+use Centreon\Domain\Contact\Interfaces\ContactInterface;
+use Centreon\Domain\Option\Interfaces\OptionServiceInterface;
+use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
+use Security\Domain\Authentication\Model\ProviderConfiguration;
 use Core\Domain\Security\Authentication\AuthenticationException;
 use Core\Domain\Security\Authentication\PasswordExpiredException;
-use Core\Domain\Security\ProviderConfiguration\Local\ConfigurationException;
+use Security\Domain\Authentication\Interfaces\LocalProviderInterface;
 use Core\Application\Security\User\Repository\ReadUserRepositoryInterface;
-use Core\Application\Security\User\Repository\WriteUserRepositoryInterface;
-use Core\Application\Security\ProviderConfiguration\Local\Repository\ReadConfigurationRepositoryInterface;
-use Core\Domain\Security\User\Model\User;
 use Core\Domain\Security\ProviderConfiguration\Local\Model\SecurityPolicy;
-use Centreon\Domain\Contact\Interfaces\ContactInterface;
-use Centreon\Domain\Contact\Interfaces\ContactServiceInterface;
-use Centreon\Domain\Log\LoggerTrait;
-use Centreon\Domain\Option\Interfaces\OptionServiceInterface;
-use Pimple\Container;
-use Security\Domain\Authentication\Interfaces\ProviderInterface;
-use Security\Domain\Authentication\Model\ProviderConfiguration;
+use Core\Application\Security\User\Repository\WriteUserRepositoryInterface;
+use Core\Domain\Security\ProviderConfiguration\Local\ConfigurationException;
+use Core\Application\Security\ProviderConfiguration\Local\Repository\ReadConfigurationRepositoryInterface;
+use Security\Domain\Authentication\Interfaces\ProviderConfigurationInterface;
 
 /**
  * @package Security\Authentication\Model
  */
-class LocalProvider implements ProviderInterface
+class LocalProvider implements LocalProviderInterface
 {
     use LoggerTrait;
 
@@ -212,8 +213,11 @@ class LocalProvider implements ProviderInterface
     /**
      * @inheritDoc
      */
-    public function setConfiguration(ProviderConfiguration $configuration): void
+    public function setConfiguration(ProviderConfigurationInterface $configuration): void
     {
+        if (!is_a($configuration, ProviderConfiguration::class)) {
+            throw new \InvalidArgumentException('Bad provider configuration');
+        }
         $this->configuration = $configuration;
     }
 

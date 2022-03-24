@@ -28,12 +28,12 @@ use Core\Domain\Security\ProviderConfiguration\Local\Model\Configuration;
 use Centreon\Infrastructure\DatabaseConnection;
 use Centreon\Infrastructure\Repository\AbstractRepositoryDRB;
 use Core\Infrastructure\Security\ProviderConfiguration\Local\Repository\DbConfigurationFactory;
-use Core\Infrastructure\Security\ProviderConfiguration\Local\Repository\ConfigurationException;
+use Core\Application\Security\ProviderConfiguration\Repository\ReadProviderConfigurationsRepositoryInterface;
 use Core\Application\Security\ProviderConfiguration\Local\Repository\ReadConfigurationRepositoryInterface;
-use JsonSchema\Validator;
-use JsonSchema\Constraints\Constraint;
 
-class DbReadConfigurationRepository extends AbstractRepositoryDRB implements ReadConfigurationRepositoryInterface
+class DbReadConfigurationRepository extends AbstractRepositoryDRB implements
+    ReadProviderConfigurationsRepositoryInterface,
+    ReadConfigurationRepositoryInterface
 {
     use LoggerTrait;
 
@@ -48,41 +48,51 @@ class DbReadConfigurationRepository extends AbstractRepositoryDRB implements Rea
     /**
      * @inheritDoc
      */
+    public function findConfigurations(): array
+    {
+        $configurations = [];
+
+        $localConfiguration = $this->findConfiguration();
+        if ($localConfiguration !== null) {
+            $configurations[] = $localConfiguration;
+        }
+
+        return $configurations;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function findConfiguration(): ?Configuration
     {
         $configuration = null;
 
-        $customConfiguration = $this->findCustomConfiguration();
-        if ($customConfiguration !== null) {
-            $excludedUsers = $this->findExcludedUsers();
-            $configuration = DbConfigurationFactory::createFromRecord($customConfiguration, $excludedUsers);
-        }
-
-        return $configuration;
-    }
-
-    /**
-     * Find custom configuration and validate it
-     *
-     * @return array<string,mixed>|null
-     */
-    private function findCustomConfiguration(): ?array
-    {
         $statement = $this->db->query(
             $this->translateDbName(
-                "SELECT `custom_configuration`
+                "SELECT *
                 FROM `:db`.`provider_configuration`
                 WHERE `name` = 'local'"
             )
         );
-
         $customConfiguration = null;
-        if ($statement !== false && $result = $statement->fetch(\PDO::FETCH_ASSOC)) {
-            $this->validateReadCustomConfiguration($result['custom_configuration']);
-            $customConfiguration = json_decode($result['custom_configuration'], true);
+        $configuration = [];
+        if ($statement !== false && $configuration = $statement->fetch(\PDO::FETCH_ASSOC)) {
+            $this->validateJsonRecord(
+                $configuration['custom_configuration'],
+                __DIR__ . '/CustomConfigurationSchema.json',
+            );
+            $customConfiguration = json_decode($configuration['custom_configuration'], true);
+        }
+        if ($customConfiguration !== null && !empty($configuration)) {
+            $excludedUsers = $this->findExcludedUsers();
+            $configuration = DbConfigurationFactory::createFromRecord(
+                $configuration,
+                $customConfiguration,
+                $excludedUsers
+            );
         }
 
-        return $customConfiguration;
+        return $configuration;
     }
 
     /**
@@ -109,40 +119,5 @@ class DbReadConfigurationRepository extends AbstractRepositoryDRB implements Rea
         }
 
         return $excludedUsers;
-    }
-
-    /**
-     * Validate the custom configuration format
-     *
-     * @param string $configuration provider custom configuration
-     * @throws ConfigurationException
-     */
-    private function validateReadCustomConfiguration(string $configuration): void
-    {
-        $decodedConfiguration = json_decode($configuration, true);
-
-        if (is_array($decodedConfiguration) === false) {
-            $this->critical('Local provider custom configuration is not a valid json');
-            throw ConfigurationException::errorWhileReadingConfiguration();
-        }
-
-        $decodedConfiguration = Validator::arrayToObjectRecursive($decodedConfiguration);
-        $validator = new Validator();
-        $validator->validate(
-            $decodedConfiguration,
-            (object) [
-                '$ref' => 'file://' . __DIR__ . '/CustomConfigurationSchema.json',
-            ],
-            Constraint::CHECK_MODE_VALIDATE_SCHEMA
-        );
-
-        if ($validator->isValid() === false) {
-            $message = '';
-            foreach ($validator->getErrors() as $error) {
-                $message .= sprintf("[%s] %s\n", $error['property'], $error['message']);
-            }
-            $this->critical($message);
-            throw ConfigurationException::errorWhileReadingConfiguration();
-        }
     }
 }
