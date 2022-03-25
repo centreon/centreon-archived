@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { Provider as ReduxProvider } from 'react-redux';
 import Fullscreen from 'react-fullscreen-crossbrowser';
-import { isNil, not } from 'ramda';
+import { not } from 'ramda';
 
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import { Fab } from '@mui/material';
