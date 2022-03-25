@@ -234,8 +234,8 @@ INSERT INTO `giv_graphs_template` (`graph_id`, `name`, `vertical_label`, `width`
 -- Contenu de la table Connector
 --
 INSERT INTO `connector` (`id`, `name`, `description`, `command_line`, `enabled`, `created`, `modified`) VALUES
-(1, 'Perl Connector', '', 'centreon_connector_perl', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP()),
-(2, 'SSH Connector', '', 'centreon_connector_ssh', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP());
+(1, 'Perl Connector', '', 'centreon_connector_perl --log-file=@monitoring_varlog@/connector-perl.log', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP()),
+(2, 'SSH Connector', '', 'centreon_connector_ssh --log-file=@monitoring_varlog@/connector-ssh.log', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP());
 
 
 --
