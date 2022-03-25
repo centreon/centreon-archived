@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import * as React from 'react';
 
-import { equals, isNil } from 'ramda';
+import { equals, flatten, isEmpty, isNil } from 'ramda';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAtom } from 'jotai';
 
@@ -46,15 +46,14 @@ const NavigationMenu = ({
   const navigate = useNavigate();
   const { pathname, search } = useLocation();
 
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-  const [currentTop, setCurrentTop] = useState<number>();
-  const [collapseScrollMaxHeight, setCollapseScrollMaxHeight] = useState<
+  const [hoveredIndex, setHoveredIndex] = React.useState<number | null>(null);
+  const [currentTop, setCurrentTop] = React.useState<number>();
+  const [collapseScrollMaxHeight, setCollapseScrollMaxHeight] = React.useState<
     number | undefined
   >(undefined);
-  const [collapseScrollMaxWidth, setCollapseScrollMaxWidth] = useState<
+  const [collapseScrollMaxWidth, setCollapseScrollMaxWidth] = React.useState<
     number | undefined
   >(undefined);
-  const itemsHoveredByDefault = React.useRef<Array<Page> | null>(null);
   const [selectedNavigationItems, setSelectedNavigationItems] = useAtom(
     selectedNavigationItemsAtom,
   );
@@ -180,48 +179,35 @@ const NavigationMenu = ({
         !currentPage.is_react &&
         searchItemsWithPhpUrl(currentPage, ...args)
       ) {
-        itemsHoveredByDefault.current = searchItemsWithPhpUrl(
-          currentPage,
-          ...args,
-        );
-
-        return itemsHoveredByDefault.current;
+        return searchItemsWithPhpUrl(currentPage, ...args);
       }
 
       if (
         currentPage.is_react &&
         searchItemsWithReactUrl(currentPage, ...args)
       ) {
-        itemsHoveredByDefault.current = searchItemsWithReactUrl(
-          currentPage,
-          ...args,
-        );
-
-        return itemsHoveredByDefault.current;
+        return searchItemsWithReactUrl(currentPage, ...args);
       }
-    } else {
-      childPage.forEach((item) => {
-        const grandsonPage = item?.groups;
-        if (isNil(grandsonPage) || !isArrayItem(grandsonPage)) {
-          if (args.length > 0) {
-            return searchItemsHoveredByDefault(item, ...args);
-          }
-
-          return searchItemsHoveredByDefault(item, currentPage);
-        }
-        grandsonPage.forEach((element) => {
-          if (args.length > 0) {
-            return searchItemsHoveredByDefault(element, item, ...args);
-          }
-
-          return searchItemsHoveredByDefault(element, item, currentPage);
-        });
-
-        return null;
-      });
     }
 
-    return itemsHoveredByDefault.current;
+    return childPage?.map((item) => {
+      const grandsonPage = item?.groups;
+      if (isNil(grandsonPage) || !isArrayItem(grandsonPage)) {
+        if (args.length > 0) {
+          return searchItemsHoveredByDefault(item, ...args);
+        }
+
+        return searchItemsHoveredByDefault(item, currentPage);
+      }
+
+      return grandsonPage.map((element) => {
+        if (args.length > 0) {
+          return searchItemsHoveredByDefault(element, item, ...args);
+        }
+
+        return searchItemsHoveredByDefault(element, item, currentPage);
+      });
+    });
   };
 
   const handleWindowClose = (): void => {
@@ -230,17 +216,15 @@ const NavigationMenu = ({
   };
 
   React.useEffect(() => {
-    if (!navigationData) {
-      return undefined;
-    }
-    navigationData.every((item) => {
-      if (searchItemsHoveredByDefault(item)) {
-        addSelectedNavigationItemsByDefault(searchItemsHoveredByDefault(item));
+    navigationData?.forEach((item) => {
+      const searchedItems = searchItemsHoveredByDefault(item);
+      const filteredResult = flatten(searchedItems || []).filter(Boolean);
 
-        return false;
+      if (isEmpty(filteredResult)) {
+        return;
       }
 
-      return true;
+      addSelectedNavigationItemsByDefault(filteredResult);
     });
     window.addEventListener('beforeunload', handleWindowClose);
 
