@@ -67,28 +67,6 @@ const App = (): JSX.Element => {
     removeFullscreen,
   } = useApp();
 
-  React.useEffect(() => {
-    const bodyElement = document.querySelector('body');
-    if (isNil(bodyElement)) {
-      return;
-    }
-
-    const pendoScriptElement = document.createElement('script');
-
-    pendoScriptElement.type = 'text/javascript';
-    pendoScriptElement.async = true;
-    pendoScriptElement.src = './include/common/javascript/pendo.js';
-    pendoScriptElement.id = 'pendo';
-
-    const pendoScript = document.getElementById('pendo');
-
-    if (!isNil(pendoScript)) {
-      return;
-    }
-
-    bodyElement.append(pendoScriptElement);
-  }, []);
-
   if (!dataLoaded) {
     return <PageLoader />;
   }
