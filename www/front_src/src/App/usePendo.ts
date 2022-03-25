@@ -9,7 +9,7 @@ import { getData, useRequest } from '@centreon/ui';
 import initPendo from './initPendo';
 import { CeipData } from './models';
 
-const oneDay = 24 * 60 * 60 * 1000;
+const oneDayInMs = 24 * 60 * 60 * 1000;
 
 const centreonPlatformDataAtom = atomWithStorage<CeipData | null>(
   'centreonPlatformData',
@@ -62,7 +62,7 @@ const usePendo = (): void => {
 
     try {
       const isCacheOutdated = gte(
-        (centreonPlatformData?.cacheGenerationDate || 0) + oneDay,
+        (centreonPlatformData?.cacheGenerationDate || 0) + oneDayInMs,
         Date.now(),
       );
 
