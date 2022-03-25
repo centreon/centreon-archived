@@ -75,6 +75,7 @@ const useStyles = makeStyles((theme) => ({
       color: theme.palette.text.primary,
       fontSize: theme.typography.caption,
     },
+    boxShadow: theme.shadows[3],
     outline: `solid  ${theme.palette.divider} ${0.1}px`,
   },
   subHeader: {
