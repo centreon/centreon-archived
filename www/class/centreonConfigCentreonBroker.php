@@ -687,10 +687,11 @@ class CentreonConfigCentreonBroker
         $query = "INSERT INTO cfg_centreonbroker "
             . "(config_name, config_filename, ns_nagios_server, config_activate, daemon, config_write_timestamp, "
             . "config_write_thread_id, stats_activate, cache_directory, event_queue_max_size, command_file, "
-            . "pool_size, log_directory, log_filename, log_max_size) "
+            . "pool_size, log_directory, log_filename, log_max_size, bbdo_version) "
             . "VALUES (:config_name, :config_filename, :ns_nagios_server, :config_activate, :daemon, "
             . ":config_write_timestamp, :config_write_thread_id, :stats_activate, :cache_directory, "
-            . ":event_queue_max_size, :command_file, :pool_size, :log_directory, :log_filename, :log_max_size)";
+            . ":event_queue_max_size, :command_file, :pool_size, :log_directory, :log_filename, :log_max_size, "
+            . ":bbdo_version)";
         try {
             $stmt = $this->db->prepare($query);
             $stmt->bindValue(':config_name', $values['name'], \PDO::PARAM_STR);
@@ -705,6 +706,7 @@ class CentreonConfigCentreonBroker
             $stmt->bindValue(':log_directory', $values['log_directory'], \PDO::PARAM_STR);
             $stmt->bindValue(':log_filename', $values['log_filename'], \PDO::PARAM_STR);
             $stmt->bindValue(':log_max_size', $values['log_max_size'], \PDO::PARAM_INT);
+            $stmt->bindValue(':bbdo_version', $values['bbdo_version'], \PDO::PARAM_STR);
             $stmt->bindValue(
                 ':event_queue_max_size',
                 (int)$this->checkEventMaxQueueSizeValue($values['event_queue_max_size']),
@@ -779,7 +781,7 @@ class CentreonConfigCentreonBroker
             . "stats_activate = :stats_activate, cache_directory = :cache_directory, "
             . "event_queue_max_size = :event_queue_max_size, command_file = :command_file , "
             . "log_directory = :log_directory, log_filename = :log_filename , log_max_size = :log_max_size , "
-            . "pool_size = :pool_size WHERE config_id = " . $id;
+            . "pool_size = :pool_size, bbdo_version = :bbdo_version WHERE config_id = " . $id;
         try {
             $stmt = $this->db->prepare($query);
             $stmt->bindValue(':config_name', $values['name'], \PDO::PARAM_STR);
@@ -794,6 +796,7 @@ class CentreonConfigCentreonBroker
             $stmt->bindValue(':log_directory', $values['log_directory'], \PDO::PARAM_STR);
             $stmt->bindValue(':log_filename', $values['log_filename'], \PDO::PARAM_STR);
             $stmt->bindValue(':log_max_size', $values['log_max_size'], \PDO::PARAM_INT);
+            $stmt->bindValue(':bbdo_version', $values['bbdo_version'], \PDO::PARAM_STR);
             $stmt->bindValue(
                 ':event_queue_max_size',
                 (int)$this->checkEventMaxQueueSizeValue($values['event_queue_max_size']),

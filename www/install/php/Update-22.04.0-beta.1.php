@@ -164,6 +164,8 @@ try {
 
     $errorMessage = "Unable to alter table security_token";
     $pearDB->query("ALTER TABLE `security_token` MODIFY `token` varchar(4096)");
+
+    $statement->query('ALTER TABLE `cfg_centreonbroker` ADD `bbdo_version` VARCHAR(50) DEFAULT "3.0.0"');
 } catch (\Exception $e) {
     if ($pearDB->inTransaction()) {
         $pearDB->rollBack();
