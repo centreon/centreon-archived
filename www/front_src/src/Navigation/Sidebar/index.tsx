@@ -3,7 +3,6 @@ import React from 'react';
 import { equals } from 'ramda';
 
 import Box from '@mui/material/Box';
-import Divider from '@mui/material/Divider';
 import MuiDrawer from '@mui/material/Drawer';
 import { CSSObject, styled, Theme } from '@mui/material/styles';
 
@@ -86,7 +85,6 @@ export default ({ navigationData }: Props): JSX.Element => {
             <MiniLogo onClick={toggleNavigation} />
           )}
         </DrawerHeader>
-        <Divider />
         <NavigationMenu isDrawerOpen={open} navigationData={navigationData} />
       </Drawer>
     </Box>
