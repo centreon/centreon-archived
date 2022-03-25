@@ -54,6 +54,7 @@ const NavigationMenu = ({
   const [collapseScrollMaxWidth, setCollapseScrollMaxWidth] = useState<
     number | undefined
   >(undefined);
+  const itemsHoveredByDefault = React.useRef<Array<Page> | null>(null);
   const [selectedNavigationItems, setSelectedNavigationItems] = useAtom(
     selectedNavigationItemsAtom,
   );
@@ -175,44 +176,52 @@ const NavigationMenu = ({
   ): Array<Page> | null => {
     const childPage = currentPage?.children;
     if (isNil(childPage) || !isArrayItem(childPage)) {
-      if (!currentPage.is_react) {
-        return searchItemsWithPhpUrl(currentPage, ...args);
+      if (
+        !currentPage.is_react &&
+        searchItemsWithPhpUrl(currentPage, ...args)
+      ) {
+        itemsHoveredByDefault.current = searchItemsWithPhpUrl(
+          currentPage,
+          ...args,
+        );
+
+        return itemsHoveredByDefault.current;
       }
 
-      return searchItemsWithReactUrl(currentPage, ...args);
-    }
-    for (let j = 0; j < childPage.length; j += 1) {
-      const grandsonPage = childPage[j]?.groups;
-      if (isNil(grandsonPage) || !isArrayItem(grandsonPage)) {
-        if (searchItemsHoveredByDefault(childPage[j])) {
+      if (
+        currentPage.is_react &&
+        searchItemsWithReactUrl(currentPage, ...args)
+      ) {
+        itemsHoveredByDefault.current = searchItemsWithReactUrl(
+          currentPage,
+          ...args,
+        );
+
+        return itemsHoveredByDefault.current;
+      }
+    } else {
+      childPage.forEach((item) => {
+        const grandsonPage = item?.groups;
+        if (isNil(grandsonPage) || !isArrayItem(grandsonPage)) {
           if (args.length > 0) {
-            return searchItemsHoveredByDefault(childPage[j], ...args);
+            return searchItemsHoveredByDefault(item, ...args);
           }
 
-          return searchItemsHoveredByDefault(childPage[j], currentPage);
+          return searchItemsHoveredByDefault(item, currentPage);
         }
-      } else {
-        for (let n = 0; n < grandsonPage.length; n += 1) {
-          if (searchItemsHoveredByDefault(grandsonPage[n])) {
-            if (args.length > 0) {
-              return searchItemsHoveredByDefault(
-                grandsonPage[n],
-                childPage[j],
-                ...args,
-              );
-            }
-
-            return searchItemsHoveredByDefault(
-              grandsonPage[n],
-              childPage[j],
-              currentPage,
-            );
+        grandsonPage.forEach((element) => {
+          if (args.length > 0) {
+            return searchItemsHoveredByDefault(element, item, ...args);
           }
-        }
-      }
+
+          return searchItemsHoveredByDefault(element, item, currentPage);
+        });
+
+        return null;
+      });
     }
 
-    return null;
+    return itemsHoveredByDefault.current;
   };
 
   const handleWindowClose = (): void => {
@@ -224,12 +233,15 @@ const NavigationMenu = ({
     if (!navigationData) {
       return undefined;
     }
-    navigationData.forEach((item) => {
+    navigationData.every((item) => {
       if (searchItemsHoveredByDefault(item)) {
         addSelectedNavigationItemsByDefault(searchItemsHoveredByDefault(item));
-      }
-    });
 
+        return false;
+      }
+
+      return true;
+    });
     window.addEventListener('beforeunload', handleWindowClose);
 
     return () => window.removeEventListener('beforeunload', handleWindowClose);
