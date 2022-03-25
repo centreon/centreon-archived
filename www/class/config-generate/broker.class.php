@@ -55,7 +55,8 @@ class Broker extends AbstractObjectJSON
         log_directory,
         log_filename,
         log_max_size,
-        pool_size
+        pool_size,
+        bbdo_version
     ';
     protected $attributes_select_parameters = '
         config_group,
@@ -179,6 +180,7 @@ class Broker extends AbstractObjectJSON
             $object['event_queue_max_size'] = (int)$row['event_queue_max_size'];
             $object['command_file'] = (string) $row['command_file'];
             $object['cache_directory'] = (string) $cache_directory;
+            $object['bbdo_version'] = (string) $row['bbdo_version'];
             if (!empty($row['pool_size'])) {
                 $object['pool_size'] = (int)$row['pool_size'];
             }
