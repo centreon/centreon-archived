@@ -84,7 +84,7 @@ const MenuItems = ({
           [classes.activated]: hover,
         })}
         component="div"
-        sx={!isRoot ? { pl: 0 } : { pl: 1.5 }}
+        sx={!isRoot ? { pl: 0 } : { pl: 1.2 }}
         onClick={!isRoot ? onClick : undefined}
         onDoubleClick={isRoot ? onClick : undefined}
         onMouseEnter={onMouseEnter}
