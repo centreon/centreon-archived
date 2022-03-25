@@ -162,7 +162,6 @@ foreach ($jsdata as $k => $val) {
 
 ?>
 
-<script src="./include/common/javascript/pendo.js" async></script>
 <script type='text/javascript'>
     jQuery(function() {
         initWholePage();
