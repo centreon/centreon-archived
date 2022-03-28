@@ -91,14 +91,14 @@ class Servicecategory extends AbstractObject
     /**
      * Get categories linked to service template
      *
-     * @param int $service_id
+     * @param int $serviceId
      * @return int[]
      */
-    public function getServicecategoriesForStpl(int $service_id): array
+    public function getServicecategoriesForStpl(int $serviceId): array
     {
         # Get from the cache
-        if (isset($this->sc_relation_cache[$service_id])) {
-            return $this->sc_relation_cache[$service_id];
+        if (isset($this->sc_relation_cache[$serviceId])) {
+            return $this->sc_relation_cache[$serviceId];
         }
         if ($this->done_cache === 1) {
             return array();
@@ -112,17 +112,17 @@ class Servicecategory extends AbstractObject
                 WHERE level IS NULL
                 AND sc_activate = '1'
                 AND service_categories_relation.sc_id = service_categories.sc_id
-                AND service_categories_relation.service_service_id = :service_id"
+                AND service_categories_relation.service_service_id = :serviceId"
             );
         }
-        $this->stmt_stpl_sc->bindParam(':service_id', $service_id, PDO::PARAM_INT);
+        $this->stmt_stpl_sc->bindParam(':serviceId', $serviceId, PDO::PARAM_INT);
         $this->stmt_stpl_sc->execute();
 
         $categories = [];
         foreach ($this->stmt_service_sc->fetchAll(PDO::FETCH_ASSOC) as $value) {
             $categories[] = $value['sc_id'];
         }
-        $this->sc_relation_cache[$service_id] = $categories;
+        $this->sc_relation_cache[$serviceId] = $categories;
 
         return $categories;
     }
@@ -130,46 +130,46 @@ class Servicecategory extends AbstractObject
     /**
      * Retrieve a categorie from its id
      *
-     * @param int $sc_id
+     * @param int $scId
      * @return void
      */
-    private function getServicecategoryFromId(int $sc_id): void
+    private function getServicecategoryFromId(int $scId): void
     {
         if (is_null($this->stmt_sc)) {
             $this->stmt_sc = $this->backend_instance->db->prepare(
                 "SELECT {$this->attributes_select}
                 FROM service_categories
-                WHERE sc_id = :sc_id AND level IS NULL AND sc_activate = '1'"
+                WHERE sc_id = :scId AND level IS NULL AND sc_activate = '1'"
             );
         }
 
-        $this->stmt_sc->bindParam(':sc_id', $sc_id, PDO::PARAM_INT);
+        $this->stmt_sc->bindParam(':scId', $scId, PDO::PARAM_INT);
         $this->stmt_sc->execute();
         $results = $this->stmt_sc->fetchAll(PDO::FETCH_ASSOC);
-        $this->sc[$sc_id] = array_pop($results);
-        if (is_null($this->sc[$sc_id])) {
+        $this->sc[$scId] = array_pop($results);
+        if (is_null($this->sc[$scId])) {
             return;
         }
-        $this->sc[$sc_id]['members'] = array();
+        $this->sc[$scId]['members'] = array();
     }
 
     /**
      * Add a service to members of a servicecategory
      *
-     * @param int $sc_id
-     * @param int $service_id
-     * @param string $service_description
+     * @param int $scId
+     * @param int $serviceId
+     * @param string $serviceDescription
      */
-    public function addServiceInSc(int $sc_id, int $service_id, string $service_description): void
+    public function addServiceInSc(int $scId, int $serviceId, string $serviceDescription): void
     {
-        if (! isset($this->sc[$sc_id])) {
-            $this->getServicecategoryFromId($sc_id);
+        if (! isset($this->sc[$scId])) {
+            $this->getServicecategoryFromId($scId);
         }
-        if (is_null($this->sc[$sc_id]) || isset($this->sc[$sc_id]['members'][$service_id])) {
+        if (is_null($this->sc[$scId]) || isset($this->sc[$scId]['members'][$serviceId])) {
             return;
         }
 
-        $this->sc[$sc_id]['members'][$service_id] = $service_description;
+        $this->sc[$scId]['members'][$serviceId] = $serviceDescription;
     }
 
     /**
