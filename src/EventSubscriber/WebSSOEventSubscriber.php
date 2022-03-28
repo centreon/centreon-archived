@@ -118,11 +118,11 @@ class WebSSOEventSubscriber implements EventSubscriberInterface
      * @param WebSSOConfiguration $webSSOConfiguration
      * @return string
      */
-    public function extractUsernameFromLoginClaimOrFail(WebSSOConfiguration $webSSOConfiguration): string
+    private function extractUsernameFromLoginClaimOrFail(WebSSOConfiguration $webSSOConfiguration): string
     {
         $userAlias = preg_replace(
             '/' . trim($webSSOConfiguration->getPatternMatchingLogin(), '/') . '/',
-            $webSSOConfiguration->getPatternReplaceLogin(),
+            $webSSOConfiguration->getPatternReplaceLogin() ?? '',
             $_SERVER[$webSSOConfiguration->getLoginHeaderAttribute()]
         );
         if (is_array($userAlias) || empty($userAlias)) {

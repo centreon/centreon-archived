@@ -26,17 +26,19 @@ namespace Tests\EventSubscriber;
 use Pimple\Container;
 use Centreon\Domain\Contact\Contact;
 use EventSubscriber\WebSSOEventSubscriber;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Centreon\Domain\Option\Interfaces\OptionServiceInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Centreon\Infrastructure\Service\Exception\NotFoundException;
 use Centreon\Domain\Contact\Interfaces\ContactRepositoryInterface;
 use Centreon\Domain\Repository\Interfaces\DataStorageEngineInterface;
 use Security\Domain\Authentication\Interfaces\SessionRepositoryInterface;
 use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
+use Core\Domain\Security\ProviderConfiguration\WebSSO\Model\WebSSOConfiguration;
 use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
 use Core\Application\Security\ProviderConfiguration\WebSSO\Repository\ReadWebSSOConfigurationRepositoryInterface;
-use Core\Domain\Security\ProviderConfiguration\WebSSO\Model\WebSSOConfiguration;
 
 beforeEach(function () {
     $this->security = $this->createMock(Security::class);
@@ -51,6 +53,7 @@ beforeEach(function () {
     $this->authenticationRepository = $this->createMock(AuthenticationRepositoryInterface::class);
     $this->security = $this->createMock(Security::class);
     $this->event = $this->createMock(RequestEvent::class);
+    $this->request = $this->createMock(Request::class);
     $this->subscriber = new WebSSOEventSubscriber(
         120,
         $this->dependencyInjector,
@@ -65,6 +68,15 @@ beforeEach(function () {
         $this->security
     );
 });
+
+it('should throw an exception if no web-sso configuration are found', function () {
+    $this->webSSOReadRepository
+    ->expects($this->once())
+    ->method('findConfiguration')
+    ->willReturn(null);
+
+    $this->subscriber->loginWebSSOUser($this->event);
+})->throws(NotFoundException::class);
 
 it('should do nothing if user is already connected', function () {
     $contact = new Contact();
@@ -107,3 +119,88 @@ it('should do nothing if Web SSO is not active', function () {
 
     $this->subscriber->loginWebSSOUser($this->event);
 });
+
+it('should throw an exception if the user IP is blacklisted', function () {
+    $blacklistedIp = '127.0.0.1';
+    $webSSOConfiguration = new WebSSOConfiguration(true, false, [], [$blacklistedIp], '', '', '');
+
+    $this->webSSOReadRepository
+        ->expects($this->once())
+        ->method('findConfiguration')
+        ->willReturn($webSSOConfiguration);
+
+    $this->event
+        ->expects($this->once())
+        ->method('getRequest')
+        ->willReturn($this->request);
+
+    $this->request
+        ->expects($this->once())
+        ->method('getClientIp')
+        ->willReturn($blacklistedIp);
+
+    $this->subscriber->loginWebSSOUser($this->event);
+})->throws(\Exception::class);
+
+it('should throw an exception if the user IP is not whitelisted', function () {
+    $webSSOConfiguration = new WebSSOConfiguration(true, false, ['127.0.0.2'], [], '', '', '');
+
+    $this->webSSOReadRepository
+        ->expects($this->once())
+        ->method('findConfiguration')
+        ->willReturn($webSSOConfiguration);
+
+    $this->event
+        ->expects($this->once())
+        ->method('getRequest')
+        ->willReturn($this->request);
+
+    $this->request
+        ->expects($this->once())
+        ->method('getClientIp')
+        ->willReturn('127.0.0.1');
+
+    $this->subscriber->loginWebSSOUser($this->event);
+})->throws(\Exception::class);
+
+it('should throw an exception when login attribute environment variable is not set', function () {
+    $webSSOConfiguration = new WebSSOConfiguration(true, false, [], [], 'HTTP_AUTH_CLIENT', '', '');
+
+    $this->webSSOReadRepository
+        ->expects($this->once())
+        ->method('findConfiguration')
+        ->willReturn($webSSOConfiguration);
+
+    $this->event
+        ->expects($this->once())
+        ->method('getRequest')
+        ->willReturn($this->request);
+
+    $this->request
+        ->expects($this->once())
+        ->method('getClientIp')
+        ->willReturn('127.0.0.1');
+
+    $this->subscriber->loginWebSSOUser($this->event);
+})->throws(\InvalidArgumentException::class);
+
+it('should throw an exception when login matching regexp return an invalid result', function () {
+    $webSSOConfiguration = new WebSSOConfiguration(true, false, [], [], 'HTTP_AUTH_CLIENT', '@.*', '');
+    $_SERVER['HTTP_AUTH_USER'] = 'oidc';
+    $this->webSSOReadRepository
+        ->expects($this->once())
+        ->method('findConfiguration')
+        ->willReturn($webSSOConfiguration);
+
+    $this->event
+        ->expects($this->once())
+        ->method('getRequest')
+        ->willReturn($this->request);
+
+    $this->request
+        ->expects($this->once())
+        ->method('getClientIp')
+        ->willReturn('127.0.0.1');
+
+    $this->subscriber->loginWebSSOUser($this->event);
+})->throws(\Exception::class);
