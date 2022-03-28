@@ -51,9 +51,9 @@ class Hostcategory extends AbstractObject
     protected $stmt_hc = null;
 
     /**
-     * @param int $hc_id
+     * @param int $hcId
      */
-    private function getHostcategoryFromId(int $hc_id): void
+    private function getHostcategoryFromId(int $hcId): void
     {
         if (is_null($this->stmt_hc)) {
             $this->stmt_hc = $this->backend_instance->db->prepare(
@@ -64,14 +64,12 @@ class Hostcategory extends AbstractObject
                 AND hc_activate = '1'"
             );
         }
-        $this->stmt_hc->bindParam(':hc_id', $hc_id, PDO::PARAM_INT);
+        $this->stmt_hc->bindParam(':hc_id', $hcId, PDO::PARAM_INT);
         $this->stmt_hc->execute();
-        $results = $this->stmt_hc->fetchAll(PDO::FETCH_ASSOC);
-        $this->hc[$hc_id] = array_pop($results);
-        if (is_null($this->hc[$hc_id])) {
-            return;
+        if ($row = $this->stmt_hc->fetch(\PDO::FETCH_ASSOC)) {
+            $this->hc[$hcId] = $row;
+            $this->hc[$hcId]['members'] = [];
         }
-        $this->hc[$hc_id]['members'] = array();
     }
 
     /**
