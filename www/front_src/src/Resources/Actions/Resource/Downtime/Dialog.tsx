@@ -114,7 +114,9 @@ const DialogDowntime = ({
         ? dayjs(newValue).toDate()
         : dayjs(formatKeyboardValue(keyBoardValue))
             .add(
-              dayjs.duration({ hours: getLocalAndConfiguredTimezoneOffset() }),
+              dayjs.duration({
+                hours: getLocalAndConfiguredTimezoneOffset({}),
+              }),
             )
             .toDate();
 

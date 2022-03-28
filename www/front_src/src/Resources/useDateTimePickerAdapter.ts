@@ -1,7 +1,7 @@
 /* eslint-disable class-methods-use-this */
 import DayjsAdapter from '@date-io/dayjs';
 import dayjs from 'dayjs';
-import { equals, isNil } from 'ramda';
+import { equals, isNil, not } from 'ramda';
 import { useAtomValue } from 'jotai/utils';
 
 import { useLocaleDateTimeFormat } from '@centreon/ui';
@@ -10,7 +10,7 @@ import { userAtom } from '@centreon/ui-context';
 interface UseDateTimePickerAdapterProps {
   Adapter;
   formatKeyboardValue: (value?: string) => string | undefined;
-  getLocalAndConfiguredTimezoneOffset: () => number;
+  getLocalAndConfiguredTimezoneOffset: (props) => number;
 }
 
 const useDateTimePickerAdapter = (): UseDateTimePickerAdapterProps => {
@@ -19,12 +19,17 @@ const useDateTimePickerAdapter = (): UseDateTimePickerAdapterProps => {
 
   const normalizedLocale = locale.substring(0, 2);
 
-  const getLocalAndConfiguredTimezoneOffset = (): number => {
+  const getLocalAndConfiguredTimezoneOffset = ({
+    currentTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone,
+    destinationTimezone = timezone,
+  }): number => {
     const now = new Date();
-    const currentTimezoneDate = new Date(now.toLocaleString('en-US'));
+    const currentTimezoneDate = new Date(
+      now.toLocaleString('en-US', { timeZone: currentTimezone }),
+    );
     const destinationTimezoneDate = new Date(
       now.toLocaleString('en-US', {
-        timeZone: timezone,
+        timeZone: destinationTimezone,
       }),
     );
 
@@ -35,6 +40,13 @@ const useDateTimePickerAdapter = (): UseDateTimePickerAdapterProps => {
       1000
     );
   };
+
+  const itIsSummerTimeBaby = equals(
+    getLocalAndConfiguredTimezoneOffset({ destinationTimezone: 'UTC' }),
+    2,
+  );
+
+  console.log('summer ? ', itIsSummerTimeBaby);
 
   const formatKeyboardValue = (value?: string): string | undefined => {
     if (equals(normalizedLocale, 'en') || isNil(value)) {
@@ -69,10 +81,14 @@ const useDateTimePickerAdapter = (): UseDateTimePickerAdapterProps => {
     };
 
     public setHours = (date: dayjs.Dayjs, count: number): dayjs.Dayjs => {
-      if (equals(getLocalAndConfiguredTimezoneOffset(), 1)) {
+      if (
+        (equals(getLocalAndConfiguredTimezoneOffset({}), 1) &&
+          not(itIsSummerTimeBaby)) ||
+        equals(timezone, 'UTC')
+      ) {
         return date
           .tz(timezone)
-          .set('hour', count - getLocalAndConfiguredTimezoneOffset());
+          .set('hour', count - getLocalAndConfiguredTimezoneOffset({}));
       }
 
       return date.tz(timezone).set('hour', count);
@@ -137,6 +153,22 @@ const useDateTimePickerAdapter = (): UseDateTimePickerAdapterProps => {
     ): dayjs.Dayjs => {
       const dateWithTimezone = date.tz(timezone);
       const timeWithTimezone = time.tz(timezone);
+
+      if (equals(timezone, 'UTC') && itIsSummerTimeBaby) {
+        return dateWithTimezone
+          .hour(
+            timeWithTimezone.hour() - getLocalAndConfiguredTimezoneOffset({}),
+          )
+          .add(timeWithTimezone.minute(), 'minute')
+          .add(timeWithTimezone.second(), 'second');
+      }
+
+      if (itIsSummerTimeBaby) {
+        return dateWithTimezone
+          .hour(timeWithTimezone.hour())
+          .minute(timeWithTimezone.minute())
+          .second(timeWithTimezone.second());
+      }
 
       return dateWithTimezone
         .add(timeWithTimezone.hour(), 'hour')

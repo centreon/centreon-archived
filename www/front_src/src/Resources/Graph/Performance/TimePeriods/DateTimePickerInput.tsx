@@ -58,7 +58,7 @@ const DateTimePickerInput = ({
       return;
     }
     const value = dayjs(formatKeyboardValue(keyBoardValue))
-      .add(dayjs.duration({ hours: getLocalAndConfiguredTimezoneOffset() }))
+      .add(dayjs.duration({ hours: getLocalAndConfiguredTimezoneOffset({}) }))
       .toDate();
 
     setDate(value);
