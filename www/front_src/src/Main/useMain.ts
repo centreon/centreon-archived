@@ -6,17 +6,19 @@ import { useAtomValue } from 'jotai/utils';
 import {
   and,
   includes,
+  isEmpty,
   isNil,
   mergeAll,
   not,
+  or,
   pipe,
   reduce,
   toPairs,
 } from 'ramda';
 import { initReactI18next } from 'react-i18next';
-import { useLocation, useNavigate } from 'react-router';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 
-import { getData, useRequest } from '@centreon/ui';
+import { getData, useRequest, useSnackbar } from '@centreon/ui';
 import { userAtom } from '@centreon/ui-context';
 
 import { webVersionsDecoder } from '../api/decoders';
@@ -38,6 +40,7 @@ const useMain = (): void => {
     httpCodesBypassErrorSnackbar: [500],
     request: getData,
   });
+  const { showErrorMessage } = useSnackbar();
 
   const [webVersions, setWebVersions] = useAtom(platformInstallationStatusAtom);
   const user = useAtomValue(userAtom);
@@ -46,6 +49,7 @@ const useMain = (): void => {
   const loadUser = useUser(i18next.changeLanguage);
   const location = useLocation();
   const navigate = useNavigate();
+  const [searchParameter] = useSearchParams();
 
   const getBrowserLocale = (): string => navigator.language.slice(0, 2);
 
@@ -66,7 +70,19 @@ const useMain = (): void => {
     });
   };
 
+  const displayAuthenticationError = (): void => {
+    const authenticationError = searchParameter.get('authenticationError');
+
+    if (or(isNil(authenticationError), isEmpty(authenticationError))) {
+      return;
+    }
+
+    showErrorMessage(authenticationError as string);
+  };
+
   React.useEffect(() => {
+    displayAuthenticationError();
+
     getTranslations({
       endpoint: translationEndpoint,
     })
