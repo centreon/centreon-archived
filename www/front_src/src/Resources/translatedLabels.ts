@@ -236,3 +236,4 @@ export const labelHard = 'Hard';
 export const labelSoft = 'Soft';
 export const labelInvalidFormat = 'Invalid format';
 export const labelType = 'Type';
+export const labelEmail = 'Mail';

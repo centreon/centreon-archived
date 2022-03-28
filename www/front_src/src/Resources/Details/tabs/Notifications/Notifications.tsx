@@ -8,6 +8,7 @@ import { getData, useRequest } from '@centreon/ui';
 import { detailsAtom } from '../../detailsAtoms';
 
 import { Contact, ContactGroup } from './models';
+import { Typography } from '@mui/material';
 
 interface ContactNotif {
   contact: Array<Contact> | null;
@@ -18,11 +19,11 @@ const Notification = (): JSX.Element => {
   const [contact, setContact] = React.useState<Array<Contact> | null>(null);
   const [contactGroup, setContactGroup] =
     React.useState<Array<ContactGroup> | null>(null);
-
   const { sendRequest } = useRequest<ContactNotif>({
     request: getData,
   });
   const details = useAtomValue(detailsAtom);
+
 
   const endpoint = path(['links', 'endpoints', 'notification_policy'], details);
 
@@ -46,18 +47,23 @@ const Notification = (): JSX.Element => {
     <div>
       {!isNil(contact) &&
         contact?.map(({ id, name, alias, email, configuration_uri }) => (
+          <Typography >
           <div key={id}>
             <li>{name}</li>/<li>{alias}</li>
             <li>{email}</li>
             <li>{configuration_uri}</li>
           </div>
+          </Typography>
+
         ))}
       {!isNil(contactGroup) &&
         contactGroup?.map(({ id, name, alias, configuration_uri }) => (
+          <Typography>
           <div key={id}>
             <li>{name}</li>/<li>{alias}</li>
             <li>{configuration_uri}</li>
           </div>
+          </Typography>
         ))}
     </div>
   );
