@@ -75,20 +75,20 @@ class Hostcategory extends AbstractObject
     /**
      * Add hostcategory to list and add host to its members
      *
-     * @param int $hc_id
-     * @param int $host_id
-     * @param string $host_name
+     * @param int $hcId
+     * @param int $hostId
+     * @param string $hostName
      */
-    public function addHostInHc(int $hc_id, int $host_id, string $host_name): void
+    public function addHostInHc(int $hcId, int $hostId, string $hostName): void
     {
-        if (!isset($this->hc[$hc_id])) {
-            $this->getHostcategoryFromId($hc_id);
+        if (!isset($this->hc[$hcId])) {
+            $this->getHostcategoryFromId($hcId);
         }
-        if (is_null($this->hc[$hc_id]) || isset($this->hc[$hc_id]['members'][$host_id])) {
+        if (is_null($this->hc[$hcId]) || isset($this->hc[$hcId]['members'][$hostId])) {
             return;
         }
 
-        $this->hc[$hc_id]['members'][$host_id] = $host_name;
+        $this->hc[$hcId]['members'][$hostId] = $hostName;
     }
 
     /**
