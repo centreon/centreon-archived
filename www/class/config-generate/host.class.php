@@ -596,16 +596,14 @@ class Host extends AbstractHost
     private function getHostCategories(array &$host): void
     {
         if (!isset($host['hc'])) {
-            if (is_null($this->stmt_hc)) {
-                $this->stmt_hc = $this->backend_instance->db->prepare(
-                    "SELECT hostcategories_hc_id
-                    FROM hostcategories_relation
-                    WHERE host_host_id = :host_id"
-                );
-            }
-            $this->stmt_hc->bindParam(':host_id', $host['host_id'], PDO::PARAM_INT);
-            $this->stmt_hc->execute();
-            $host['hc'] = $this->stmt_hc->fetchAll(PDO::FETCH_COLUMN);
+            $stmt = $this->backend_instance->db->prepare(
+                "SELECT hostcategories_hc_id
+                FROM hostcategories_relation
+                WHERE host_host_id = :host_id"
+            );
+            $stmt->bindParam(':host_id', $host['host_id'], PDO::PARAM_INT);
+            $stmt->execute();
+            $host['hc'] = $stmt->fetchAll(PDO::FETCH_COLUMN);
         }
 
         $hostcategory = Hostcategory::getInstance($this->dependencyInjector);

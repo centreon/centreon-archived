@@ -51,9 +51,6 @@ class Servicecategory extends AbstractObject
         'name',
         'type',
     ];
-    protected $stmt_sc = null;
-    protected $stmt_service_sc = null;
-    protected $stmt_stpl_sc = null;
 
     /**
      * @param \Pimple\Container $dependencyInjector
@@ -105,21 +102,19 @@ class Servicecategory extends AbstractObject
         }
 
         # We get unitary
-        if (is_null($this->stmt_stpl_sc)) {
-            $this->stmt_stpl_sc = $this->backend_instance->db->prepare(
-                "SELECT service_categories.sc_id, service_service_id
-                FROM service_categories, service_categories_relation
-                WHERE level IS NULL
-                AND sc_activate = '1'
-                AND service_categories_relation.sc_id = service_categories.sc_id
-                AND service_categories_relation.service_service_id = :serviceId"
-            );
-        }
-        $this->stmt_stpl_sc->bindParam(':serviceId', $serviceId, PDO::PARAM_INT);
-        $this->stmt_stpl_sc->execute();
+        $stmt = $this->backend_instance->db->prepare(
+            "SELECT service_categories.sc_id, service_service_id
+            FROM service_categories, service_categories_relation
+            WHERE level IS NULL
+            AND sc_activate = '1'
+            AND service_categories_relation.sc_id = service_categories.sc_id
+            AND service_categories_relation.service_service_id = :serviceId"
+        );
+        $stmt->bindParam(':serviceId', $serviceId, PDO::PARAM_INT);
+        $stmt->execute();
 
         $categories = [];
-        foreach ($this->stmt_service_sc->fetchAll(PDO::FETCH_ASSOC) as $value) {
+        foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $value) {
             $categories[] = $value['sc_id'];
         }
         $this->sc_relation_cache[$serviceId] = $categories;
@@ -135,17 +130,14 @@ class Servicecategory extends AbstractObject
      */
     private function getServicecategoryFromId(int $scId): void
     {
-        if (is_null($this->stmt_sc)) {
-            $this->stmt_sc = $this->backend_instance->db->prepare(
-                "SELECT {$this->attributes_select}
-                FROM service_categories
-                WHERE sc_id = :scId AND level IS NULL AND sc_activate = '1'"
-            );
-        }
-
-        $this->stmt_sc->bindParam(':scId', $scId, PDO::PARAM_INT);
-        $this->stmt_sc->execute();
-        $results = $this->stmt_sc->fetchAll(PDO::FETCH_ASSOC);
+        $stmt = $this->backend_instance->db->prepare(
+            "SELECT {$this->attributes_select}
+            FROM service_categories
+            WHERE sc_id = :scId AND level IS NULL AND sc_activate = '1'"
+        );
+        $stmt->bindParam(':scId', $scId, PDO::PARAM_INT);
+        $stmt->execute();
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $this->sc[$scId] = array_pop($results);
         if (is_null($this->sc[$scId])) {
             return;

@@ -48,25 +48,22 @@ class Hostcategory extends AbstractObject
         'name',
         'type',
     ];
-    protected $stmt_hc = null;
 
     /**
      * @param int $hcId
      */
     private function getHostcategoryFromId(int $hcId): void
     {
-        if (is_null($this->stmt_hc)) {
-            $this->stmt_hc = $this->backend_instance->db->prepare(
-                "SELECT {$this->attributes_select}
-                FROM hostcategories
-                WHERE hc_id = :hc_id
-                AND level IS NULL
-                AND hc_activate = '1'"
-            );
-        }
-        $this->stmt_hc->bindParam(':hc_id', $hcId, PDO::PARAM_INT);
-        $this->stmt_hc->execute();
-        if ($row = $this->stmt_hc->fetch(\PDO::FETCH_ASSOC)) {
+        $stmt = $this->backend_instance->db->prepare(
+            "SELECT {$this->attributes_select}
+            FROM hostcategories
+            WHERE hc_id = :hc_id
+            AND level IS NULL
+            AND hc_activate = '1'"
+        );
+        $stmt->bindParam(':hc_id', $hcId, PDO::PARAM_INT);
+        $stmt->execute();
+        if ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             $this->hc[$hcId] = $row;
             $this->hc[$hcId]['members'] = [];
         }
