@@ -78,6 +78,8 @@ class Servicecategory extends AbstractObject
             AND service_categories_relation.sc_id = service_categories.sc_id"
         );
         $stmt->execute();
+
+        $this->sc_relation_cache = [];
         foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $value) {
             $this->sc_relation_cache[$value['service_service_id']][] = $value['sc_id'];
         }
