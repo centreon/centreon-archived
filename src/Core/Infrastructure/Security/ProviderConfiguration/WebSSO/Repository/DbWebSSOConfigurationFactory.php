@@ -36,7 +36,7 @@ class DbWebSSOConfigurationFactory
      */
     public static function createFromRecord(array $customConfiguration, array $configuration): WebSSOConfiguration
     {
-        return new WebSSOConfiguration(
+        $webSSOConfiguration = new WebSSOConfiguration(
             $configuration['is_active'] === '1',
             $configuration['is_forced'] === '1',
             $customConfiguration['trusted_client_addresses'],
@@ -45,5 +45,8 @@ class DbWebSSOConfigurationFactory
             $customConfiguration['pattern_matching_login'],
             $customConfiguration['pattern_replace_login']
         );
+        $webSSOConfiguration->setId((int) $configuration['id']);
+
+        return $webSSOConfiguration;
     }
 }

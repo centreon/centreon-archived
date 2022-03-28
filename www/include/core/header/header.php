@@ -87,7 +87,7 @@ $args = "&redirect=" . urlencode(http_build_query($_GET));
 // if session is not valid and autologin token is not given, then redirect to login page
 if (!isset($_SESSION["centreon"])) {
     if (!isset($_GET['autologin'])) {
-        header("Location: index.php?disconnect=1" . $args);
+        include(__DIR__ . '/../../../index.html');
     } else {
         $args = null;
         foreach ($_GET as $key => $value) {

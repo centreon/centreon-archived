@@ -85,5 +85,8 @@ services:
     Security\Domain\Authentication\Model\LocalProvider:
         arguments: [ "%session_expiration_delay%" ]
 
+    EventSubscriber\WebSSOEventSubscriber:
+        arguments: [ "%session_expiration_delay%" ]
+
     Security\Domain\Authentication\Model\ProviderFactory:
         arguments: [!tagged_iterator 'authentication.providers']

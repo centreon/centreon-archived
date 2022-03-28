@@ -23,8 +23,12 @@ declare(strict_types=1);
 
 namespace Core\Domain\Security\ProviderConfiguration\WebSSO\Model;
 
-class WebSSOConfiguration
+use Security\Domain\Authentication\Interfaces\ProviderConfigurationInterface;
+
+class WebSSOConfiguration implements ProviderConfigurationInterface
 {
+    public const NAME = 'web-sso';
+
     /**
      * @var int|null
      */

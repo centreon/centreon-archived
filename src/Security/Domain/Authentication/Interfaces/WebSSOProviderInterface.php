@@ -21,19 +21,8 @@
 
 declare(strict_types=1);
 
-namespace Core\Infrastructure\Security\Api\LoginWebSSOSession;
+namespace Security\Domain\Authentication\Interfaces;
 
-use Symfony\Component\HttpFoundation\Request;
-use Centreon\Application\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
-
-class LoginWebSSOSessionController extends AbstractController
+interface WebSSOProviderInterface extends ProviderInterface
 {
-    /**
-     * @param $request Request
-     */
-    public function __invoke(Request $request)
-    {
-        
-    }
 }

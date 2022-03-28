@@ -23,7 +23,9 @@ declare(strict_types=1);
 namespace Security\Domain\Authentication\Model;
 
 use Core\Application\Security\ProviderConfiguration\OpenId\Repository\ReadOpenIdConfigurationRepositoryInterface;
+use Core\Application\Security\ProviderConfiguration\WebSSO\Repository\ReadWebSSOConfigurationRepositoryInterface;
 use Core\Domain\Security\ProviderConfiguration\OpenId\Model\OpenIdConfiguration;
+use Core\Domain\Security\ProviderConfiguration\WebSSO\Model\WebSSOConfiguration;
 use Security\Domain\Authentication\Exceptions\ProviderException;
 use Security\Domain\Authentication\Interfaces\ProviderInterface;
 
@@ -43,7 +45,8 @@ class ProviderFactory
      */
     public function __construct(
         \Traversable $providers,
-        private ReadOpenIdConfigurationRepositoryInterface $openIdRepository
+        private ReadOpenIdConfigurationRepositoryInterface $openIdRepository,
+        private ReadWebSSOConfigurationRepositoryInterface $webSSORepository,
     ) {
         if (iterator_count($providers) === 0) {
             throw ProviderException::emptyAuthenticationProvider();
@@ -61,6 +64,9 @@ class ProviderFactory
             if ($provider->getName() === $configuration->getName()) {
                 if ($configuration->getName() === OpenIdConfiguration::NAME) {
                     $configuration = $this->openIdRepository->findConfiguration();
+                }
+                if ($configuration->getName() === WebSSOConfiguration::NAME) {
+                    $configuration = $this->webSSORepository->findConfiguration();
                 }
                 $provider->setConfiguration($configuration);
                 return $provider;
