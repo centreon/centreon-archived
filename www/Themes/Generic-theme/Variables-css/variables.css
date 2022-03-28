@@ -202,11 +202,11 @@
     --bt-danger-background-color: var(--color-primary-dark);
     --bt-info-background-color : var(--color-primary-dark);
     --bt-warning-background-color :var(--color-primary-dark);
-    --bt-action-color-background-color : var(--color-robins-egg-blue);
+    --bt-action-color-background-color : var(--color-primary-dark);
     --bt-action-color :var(--color-white);
-    --bt-action-border-color :var(--color-persian-green);
-    --bt-action-hover-background-color: var(--color-persian-green);
-    --bt-action-hover-border-color: var(--color-surfie-green);
+    --bt-action-border-color: var(--color-primary-dark);
+    --bt-action-hover-background-color: var(--color-primary-dark);
+    --bt-action-hover-border-color: var(--color-primary-dark);
     --bt-default-ui-state-hover-background-color : var(--color-oslo-gray);
     --bt-default-ui-state-hover-color : var(--color-white);
     --bt-success-ui-state-hover-background-color: var(--color-christi);
