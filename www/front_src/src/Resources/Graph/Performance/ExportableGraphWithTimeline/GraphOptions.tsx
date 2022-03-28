@@ -105,6 +105,7 @@ const Options = (): JSX.Element => {
                     }
                   />
                 }
+                data-testid={label}
                 key={label}
                 label={t(label) as string}
                 labelPlacement="start"
