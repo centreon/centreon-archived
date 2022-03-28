@@ -491,17 +491,17 @@ function migrateBrokerConfigOutputsToUnifiedSql(CentreonDB $pearDB): void
 
     $blockIdsList = "";
     foreach ($typeIds as $key => $typeId) {
-        $blockIdsList .= $key > 0 ? "," : "";
+        $blockIdsList .= ! empty($blockIdsList) ? "," : "";
         $blockIdsList .= "'1_$typeId'";
     }
 
     // Retrieve unified_sql type id
-    $dbResult = $pearDB->query("SELECT cb_type_id FROM cb_type WHERE type_shortname IN ('unified_sql')");
+    $dbResult = $pearDB->query("SELECT cb_type_id FROM cb_type WHERE type_shortname = 'unified_sql'");
     $unifiedSqlType = $dbResult->fetch(PDO::FETCH_COLUMN, 0);
     if (empty($unifiedSqlType)) {
         throw new Exception("Cannot find 'unified_sql' in cb_type table");
     }
-    $unifiedSqlTypeId = $unifiedSqlType['cb_type_id'];
+    $unifiedSqlTypeId = (int) $unifiedSqlType['cb_type_id'];
 
     foreach ($configIds as $configId) {
         // Find next config group id
