@@ -10,6 +10,7 @@ const useStyles = makeStyles((theme) => ({
     columnGap: theme.spacing(2),
     display: 'grid',
     gridTemplateColumns: 'repeat(2, 77px)',
+    justifyContent: 'flex-end',
     marginTop: theme.spacing(1),
   },
   formContainer: {
@@ -20,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(0.5),
   },
   passwordCaseGroup: {
-    columnGap: theme.spacing(1),
+    columnGap: theme.spacing(4),
     display: 'grid',
     gridTemplateColumns: 'repeat(2, 1fr)',
     marginTop: theme.spacing(1),

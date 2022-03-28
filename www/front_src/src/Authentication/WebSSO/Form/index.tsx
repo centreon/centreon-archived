@@ -9,16 +9,16 @@ import { useRequest, useSnackbar } from '@centreon/ui';
 
 import useValidationSchema from '../useValidationSchema';
 import {
-  labelFailedToSaveOpenidConfiguration,
-  labelOpenIDConnectConfigurationSaved,
+  labelFailedToSaveWebSSOConfiguration,
+  labelWebSSOConfigurationSaved,
 } from '../translatedLabels';
 import { putProviderConfiguration } from '../../api';
-import { OpenidConfiguration, OpenidConfigurationToAPI } from '../models';
+import { WebSSOConfiguration, WebSSOConfigurationToAPI } from '../models';
 import FormButtons from '../../FormButtons';
 import Inputs from '../../FormInputs';
 import { categories } from '../..';
 import { Provider } from '../../models';
-import { adaptOpenidConfigurationToAPI } from '../../api/adapters';
+import { adaptWebSSOConfigurationToAPI } from '../../api/adapters';
 
 import { inputs } from './inputs';
 
@@ -29,36 +29,39 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface Props {
-  initialValues: OpenidConfiguration;
-  loadOpenidConfiguration: () => void;
+  initialValues: WebSSOConfiguration;
+  loadWebSSOonfiguration: () => void;
 }
 
 const Form = ({
   initialValues,
-  loadOpenidConfiguration,
+  loadWebSSOonfiguration,
 }: Props): JSX.Element => {
   const classes = useStyles();
   const { t } = useTranslation();
 
   const { sendRequest } = useRequest({
-    defaultFailureMessage: t(labelFailedToSaveOpenidConfiguration),
+    defaultFailureMessage: t(labelFailedToSaveWebSSOConfiguration),
     request: putProviderConfiguration<
-      OpenidConfiguration,
-      OpenidConfigurationToAPI
-    >({ adapter: adaptOpenidConfigurationToAPI, type: Provider.Openid }),
+      WebSSOConfiguration,
+      WebSSOConfigurationToAPI
+    >({
+      adapter: adaptWebSSOConfigurationToAPI,
+      type: Provider.WebSSO,
+    }),
   });
   const { showSuccessMessage } = useSnackbar();
 
   const validationSchema = useValidationSchema();
 
   const submit = (
-    values: OpenidConfiguration,
+    values: WebSSOConfiguration,
     { setSubmitting },
   ): Promise<void> =>
     sendRequest(values)
       .then(() => {
-        loadOpenidConfiguration();
-        showSuccessMessage(t(labelOpenIDConnectConfigurationSaved));
+        loadWebSSOonfiguration();
+        showSuccessMessage(t(labelWebSSOConfigurationSaved));
       })
       .finally(() => setSubmitting(false));
 
