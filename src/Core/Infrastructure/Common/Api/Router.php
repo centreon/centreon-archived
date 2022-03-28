@@ -20,7 +20,7 @@
  */
 declare(strict_types=1);
 
-namespace Centreon\Application\Controller;
+namespace Core\Infrastructure\Common\Api;
 
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\RouterInterface;
@@ -34,6 +34,8 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  */
 class Router implements RouterInterface, RequestMatcherInterface, WarmableInterface, UrlGeneratorInterface
 {
+    use HttpUrlTrait;
+
     /**
      * @var RouterInterface
      */
@@ -75,9 +77,7 @@ class Router implements RouterInterface, RequestMatcherInterface, WarmableInterf
      */
     public function generate(string $name, array $parameters = [], int $referenceType = self::ABSOLUTE_PATH)
     {
-        if (isset($_SERVER['REQUEST_URI']) && preg_match('/^(.+)\/api\/.+/', $_SERVER['REQUEST_URI'], $matches)) {
-            $parameters['base_uri'] = trim($matches[1], '/');
-        }
+        $parameters['base_uri'] = trim($this->getBaseUri(), '/') . '/';
 
         return $this->router->generate($name, $parameters, $referenceType);
     }
