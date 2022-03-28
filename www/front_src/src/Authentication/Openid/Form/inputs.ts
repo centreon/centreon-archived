@@ -1,8 +1,4 @@
-import * as React from 'react';
-
-import { always, cond, equals, propEq } from 'ramda';
-
-import { makeStyles } from '@mui/styles';
+import { equals } from 'ramda';
 
 import {
   labelAuthenticationMode,
@@ -24,35 +20,24 @@ import {
   labelUseBasicAuthenticatonForTokenEndpointAuthentication,
   labelUserInformationEndpoint,
 } from '../translatedLabels';
-import { AuthenticationType, InputProps, InputType } from '../models';
-
-import MultipleInput from './Multiple';
-import SwitchInput from './Switch';
-import RadioInput from './Radio';
-import TextInput from './Text';
-
-const isAuthenticationNotActive = propEq('isActive', false);
-
-const getInput = cond<InputType, (props: InputProps) => JSX.Element>([
-  [equals(InputType.Switch) as (b: InputType) => boolean, always(SwitchInput)],
-  [equals(InputType.Radio) as (b: InputType) => boolean, always(RadioInput)],
-  [equals(InputType.Text) as (b: InputType) => boolean, always(TextInput)],
-  [
-    equals(InputType.Multiple) as (b: InputType) => boolean,
-    always(MultipleInput),
-  ],
-  [equals(InputType.Password) as (b: InputType) => boolean, always(TextInput)],
-]);
+import { AuthenticationType } from '../models';
+import { InputProps, InputType } from '../../FormInputs/models';
+import {
+  labelActivation,
+  labelClientAddresses,
+  labelIdentityProvider,
+} from '../../translatedLabels';
 
 export const inputs: Array<InputProps> = [
   {
+    category: labelActivation,
     fieldName: 'isActive',
     label: labelEnableOpenIDConnectAuthentication,
     type: InputType.Switch,
   },
   {
+    category: labelActivation,
     fieldName: 'isForced',
-    getDisabled: isAuthenticationNotActive,
     label: labelAuthenticationMode,
     options: [
       {
@@ -69,78 +54,85 @@ export const inputs: Array<InputProps> = [
     type: InputType.Radio,
   },
   {
+    category: labelClientAddresses,
     fieldName: 'trustedClientAddresses',
-    getDisabled: isAuthenticationNotActive,
     label: labelTrustedClientAddresses,
     type: InputType.Multiple,
   },
   {
+    category: labelClientAddresses,
     fieldName: 'blacklistClientAddresses',
-    getDisabled: isAuthenticationNotActive,
     label: labelBlacklistClientAddresses,
     type: InputType.Multiple,
   },
   {
+    category: labelIdentityProvider,
     fieldName: 'baseUrl',
-    getDisabled: isAuthenticationNotActive,
     label: labelBaseUrl,
+    required: true,
     type: InputType.Text,
   },
   {
+    category: labelIdentityProvider,
     fieldName: 'authorizationEndpoint',
-    getDisabled: isAuthenticationNotActive,
     label: labelAuthorizationEndpoint,
+    required: true,
     type: InputType.Text,
   },
   {
+    category: labelIdentityProvider,
     fieldName: 'tokenEndpoint',
-    getDisabled: isAuthenticationNotActive,
     label: labelTokenEndpoint,
+    required: true,
     type: InputType.Text,
   },
   {
+    category: labelIdentityProvider,
     fieldName: 'introspectionTokenEndpoint',
-    getDisabled: isAuthenticationNotActive,
     label: labelIntrospectionTokenEndpoint,
+    required: true,
     type: InputType.Text,
   },
   {
+    category: labelIdentityProvider,
     fieldName: 'userInformationEndpoint',
-    getDisabled: isAuthenticationNotActive,
     label: labelUserInformationEndpoint,
     type: InputType.Text,
   },
   {
+    category: labelIdentityProvider,
     fieldName: 'endSessionEndpoint',
-    getDisabled: isAuthenticationNotActive,
     label: labelEndSessionEndpoint,
     type: InputType.Text,
   },
   {
+    category: labelIdentityProvider,
     fieldName: 'connectionScopes',
-    getDisabled: isAuthenticationNotActive,
     label: labelScopes,
     type: InputType.Multiple,
   },
   {
+    category: labelIdentityProvider,
     fieldName: 'loginClaim',
-    getDisabled: isAuthenticationNotActive,
     label: labelLoginClaimValue,
     type: InputType.Text,
   },
   {
+    category: labelIdentityProvider,
     fieldName: 'clientId',
-    getDisabled: isAuthenticationNotActive,
     label: labelClientID,
+    required: true,
     type: InputType.Text,
   },
   {
+    category: labelIdentityProvider,
     fieldName: 'clientSecret',
-    getDisabled: isAuthenticationNotActive,
     label: labelClientSecret,
+    required: true,
     type: InputType.Password,
   },
   {
+    category: labelIdentityProvider,
     change: ({ setFieldValue, value }): void => {
       setFieldValue(
         'authenticationType',
@@ -151,58 +143,13 @@ export const inputs: Array<InputProps> = [
     },
     fieldName: 'authenticationType',
     getChecked: (value) => equals(AuthenticationType.ClientSecretPost, value),
-    getDisabled: isAuthenticationNotActive,
     label: labelUseBasicAuthenticatonForTokenEndpointAuthentication,
     type: InputType.Switch,
   },
   {
+    category: labelIdentityProvider,
     fieldName: 'verifyPeer',
-    getDisabled: isAuthenticationNotActive,
     label: labelDisableVerifyPeer,
     type: InputType.Switch,
   },
 ];
-
-const useStyles = makeStyles((theme) => ({
-  inputs: {
-    display: 'flex',
-    flexDirection: 'column',
-    rowGap: theme.spacing(2),
-  },
-}));
-
-const Inputs = (): JSX.Element => {
-  const classes = useStyles();
-
-  return (
-    <div className={classes.inputs}>
-      {inputs.map(
-        ({
-          fieldName,
-          label,
-          getDisabled,
-          type,
-          options,
-          change,
-          getChecked,
-        }) => {
-          const Input = getInput(type);
-
-          const props = {
-            change,
-            fieldName,
-            getChecked,
-            getDisabled,
-            label,
-            options,
-            type,
-          };
-
-          return <Input key={label} {...props} />;
-        },
-      )}
-    </div>
-  );
-};
-
-export default Inputs;
