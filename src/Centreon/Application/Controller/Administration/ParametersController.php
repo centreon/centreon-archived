@@ -155,8 +155,10 @@ class ParametersController extends AbstractController
             $isAcknowledgementPersistent;
         $parameters[self::KEY_NAME_CONCORDANCE[self::DEFAULT_ACKNOWLEDGEMENT_STICKY]] = $isAcknowledgementSticky;
         $parameters[self::KEY_NAME_CONCORDANCE[self::DEFAULT_ACKNOWLEDGEMENT_NOTIFY]] = $isAcknowledgementNotify;
-        $parameters[self::KEY_NAME_CONCORDANCE[self::DEFAULT_ACKNOWLEDGEMENT_WITH_SERVICES]] = $isAcknowledgementWithServices;
-        $parameters[self::KEY_NAME_CONCORDANCE[self::DEFAULT_ACKNOWLEDGEMENT_FORCE_ACTIVE_CHECKS]] = $isAcknowledgementForceActiveChecks;
+        $parameters[self::KEY_NAME_CONCORDANCE[self::DEFAULT_ACKNOWLEDGEMENT_WITH_SERVICES]] =
+            $isAcknowledgementWithServices;
+        $parameters[self::KEY_NAME_CONCORDANCE[self::DEFAULT_ACKNOWLEDGEMENT_FORCE_ACTIVE_CHECKS]] =
+            $isAcknowledgementForceActiveChecks;
         $parameters[self::KEY_NAME_CONCORDANCE[self::DEFAULT_DOWNTIME_FIXED]] = $isDowntimeFixed;
         $parameters[self::KEY_NAME_CONCORDANCE[self::DEFAULT_DOWNTIME_WITH_SERVICES]] = $isDowntimeWithServices;
 
