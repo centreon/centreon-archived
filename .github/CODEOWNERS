@@ -6,7 +6,7 @@
 /project/       @centreon/centreon-ci
 *.sh            @centreon/centreon-ci
 
-.snyk						@centreon/centreon-security
+.snyk				@centreon/centreon-security
 sonar-project.properties	@centreon/centreon-security
 
 *.po            @ghost
