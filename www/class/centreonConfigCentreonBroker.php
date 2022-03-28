@@ -727,14 +727,14 @@ class CentreonConfigCentreonBroker
             $stmt->bindValue(':config_activate', $values['activate']['activate'], \PDO::PARAM_STR);
             $stmt->bindValue(':daemon', $values['activate_watchdog']['activate_watchdog'], \PDO::PARAM_STR);
             $stmt->bindValue(':cache_directory', $values['cache_directory'], \PDO::PARAM_STR);
-            $stmt->bindValue(':log_directory', $values['log_directory'], \PDO::PARAM_STR);
-            $stmt->bindValue(':log_filename', $values['log_filename'], \PDO::PARAM_STR);
+            $stmt->bindValue(':log_directory', $values['log_directory']?? null, \PDO::PARAM_STR);
+            $stmt->bindValue(':log_filename', $values['log_filename']?? null, \PDO::PARAM_STR);
             $stmt->bindValue(
                 ':event_queue_max_size',
                 (int) $this->checkEventMaxQueueSizeValue($values['event_queue_max_size']),
                 \PDO::PARAM_INT
             );
-            $stmt->bindValue(':command_file', $values['command_file'], \PDO::PARAM_STR);
+            $stmt->bindValue(':command_file', $values['command_file']?? null, \PDO::PARAM_STR);
             $stmt->bindValue(
                 ':pool_size',
                 ! empty($values['pool_size']) ? (int) $values['pool_size'] : null,
@@ -793,7 +793,8 @@ class CentreonConfigCentreonBroker
             $stmt->bindValue(':id_centreonbroker', (int) $id, \PDO::PARAM_INT);
             foreach ($logs as $logId => $logName) {
                 $stmt->bindValue(':log_' . $logId, (int) $logId, \PDO::PARAM_INT);
-                $stmt->bindValue(':level_' . $logId, (int) $values['log_' . $logName], \PDO::PARAM_INT);
+                $logValue = $values['log_' . $logName]?? null;
+                $stmt->bindValue(':level_' . $logId, (int) $logValue, \PDO::PARAM_INT);
             }
             $stmt->execute();
         } catch (\PDOException $e) {
