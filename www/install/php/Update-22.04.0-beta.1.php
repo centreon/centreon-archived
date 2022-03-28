@@ -130,27 +130,6 @@ try {
     $errorMessage = "Unable to drop column 'contact_passwd' from 'contact' table";
     $pearDB->query("ALTER TABLE `contact` DROP COLUMN `contact_passwd`");
 
-    // Add JS Effect to contact
-    $errorMessage = 'Impossible to add "contact_js_effects" column to "contact" table';
-    if (!$pearDB->isColumnExist('contact', 'contact_js_effects')) {
-        $pearDB->query(
-            "ALTER TABLE `contact`
-            ADD COLUMN `contact_js_effects` enum('0','1') DEFAULT '0'
-            AFTER `contact_comment`"
-        );
-    }
-
-    // Update Broker information
-    $errorMessage = 'Unable to update the description in cb_field';
-    $statement = $pearDB->query("
-        UPDATE cb_field
-        SET `description` = 'Time in seconds to wait between each connection attempt (Default value: 30s).'
-        WHERE `cb_field_id` = 31
-    ");
-
-    $errorMessage = 'Unable to delete old logger configuration';
-    $statement = $pearDB->query("DELETE FROM cfg_centreonbroker_info WHERE config_group = 'logger'");
-
     // Add login blocking mechanism to contact
     $errorMessage = 'Impossible to add "login_attempts" and "blocking_time" columns to "contact" table';
     $pearDB->query(
