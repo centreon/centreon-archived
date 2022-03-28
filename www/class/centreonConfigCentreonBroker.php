@@ -698,10 +698,10 @@ class CentreonConfigCentreonBroker
             'log_filename',
         ];
         if (isset($values['write_timestamp']['write_timestamp'])) {
-           $columnNames[] = 'config_write_timestamp';
+            $columnNames[] = 'config_write_timestamp';
         }
         if (isset($values['write_thread_id']['write_thread_id'])) {
-           $columnNames[] = 'config_write_thread_id';
+            $columnNames[] = 'config_write_thread_id';
         }
         if (isset($values['stats_activate']['stats_activate'])) {
             $columnNames[] = 'stats_activate';
@@ -727,24 +727,32 @@ class CentreonConfigCentreonBroker
             $stmt->bindValue(':config_activate', $values['activate']['activate'], \PDO::PARAM_STR);
             $stmt->bindValue(':daemon', $values['activate_watchdog']['activate_watchdog'], \PDO::PARAM_STR);
             $stmt->bindValue(':cache_directory', $values['cache_directory'], \PDO::PARAM_STR);
-            $stmt->bindValue(':log_directory', $values['log_directory']?? null, \PDO::PARAM_STR);
-            $stmt->bindValue(':log_filename', $values['log_filename']?? null, \PDO::PARAM_STR);
+            $stmt->bindValue(':log_directory', $values['log_directory'] ?? null, \PDO::PARAM_STR);
+            $stmt->bindValue(':log_filename', $values['log_filename'] ?? null, \PDO::PARAM_STR);
             $stmt->bindValue(
                 ':event_queue_max_size',
                 (int) $this->checkEventMaxQueueSizeValue($values['event_queue_max_size']),
                 \PDO::PARAM_INT
             );
-            $stmt->bindValue(':command_file', $values['command_file']?? null, \PDO::PARAM_STR);
+            $stmt->bindValue(':command_file', $values['command_file'] ?? null, \PDO::PARAM_STR);
             $stmt->bindValue(
                 ':pool_size',
                 ! empty($values['pool_size']) ? (int) $values['pool_size'] : null,
                 \PDO::PARAM_INT
             );
             if (in_array('config_write_timestamp', $columnNames)) {
-                $stmt->bindValue(':config_write_timestamp', $values['write_timestamp']['write_timestamp'], \PDO::PARAM_STR);
+                $stmt->bindValue(
+                    ':config_write_timestamp',
+                    $values['write_timestamp']['write_timestamp'],
+                    \PDO::PARAM_STR
+                );
             }
             if (in_array('config_write_thread_id', $columnNames)) {
-                $stmt->bindValue(':config_write_thread_id', $values['write_thread_id']['write_thread_id'], \PDO::PARAM_STR);
+                $stmt->bindValue(
+                    ':config_write_thread_id',
+                    $values['write_thread_id']['write_thread_id'],
+                    \PDO::PARAM_STR
+                );
             }
             if (in_array('stats_activate', $columnNames)) {
                 $stmt->bindValue(':stats_activate', $values['stats_activate']['stats_activate'], \PDO::PARAM_STR);
@@ -793,7 +801,7 @@ class CentreonConfigCentreonBroker
             $stmt->bindValue(':id_centreonbroker', (int) $id, \PDO::PARAM_INT);
             foreach ($logs as $logId => $logName) {
                 $stmt->bindValue(':log_' . $logId, (int) $logId, \PDO::PARAM_INT);
-                $logValue = $values['log_' . $logName]?? null;
+                $logValue = $values['log_' . $logName] ?? null;
                 $stmt->bindValue(':level_' . $logId, (int) $logValue, \PDO::PARAM_INT);
             }
             $stmt->execute();
