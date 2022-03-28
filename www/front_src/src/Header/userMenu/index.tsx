@@ -27,6 +27,10 @@ import { areUserParametersLoadedAtom } from '../../Main/useUser';
 import { logoutEndpoint } from '../../api/endpoint';
 import reactRoutes from '../../reactRoutes/routeMap';
 import { passwordResetInformationsAtom } from '../../ResetPassword/passwordResetInformationsAtom';
+import {
+  selectedNavigationItemsAtom,
+  hoveredNavigationItemsAtom,
+} from '../../Navigation/Sidebar/sideBarAtoms';
 
 import { userEndpoint } from './api/endpoint';
 import {
@@ -163,6 +167,8 @@ const UserMenu = (): JSX.Element => {
   const setPasswordResetInformationsAtom = useUpdateAtom(
     passwordResetInformationsAtom,
   );
+  const setSelectedNavigationItems = useUpdateAtom(selectedNavigationItemsAtom);
+  const setHoveredNavigationItems = useUpdateAtom(hoveredNavigationItemsAtom);
 
   const loadUserData = (): void => {
     sendRequest({ endpoint: userEndpoint })
@@ -184,6 +190,8 @@ const UserMenu = (): JSX.Element => {
     }).then(() => {
       setAreUserParametersLoaded(false);
       setPasswordResetInformationsAtom(null);
+      setSelectedNavigationItems(null);
+      setHoveredNavigationItems(null);
       navigate(reactRoutes.login);
       showSuccessMessage(t(labelYouHaveBeenLoggedOut));
     });
