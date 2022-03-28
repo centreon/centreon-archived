@@ -222,9 +222,9 @@ const retrievedDetails = {
   latency: 0.005,
   links: {
     endpoints: {
+      notification_policy: 'notification_policy',
       performance_graph: 'performance_graph',
       timeline: 'timeline',
-      notification_policy : 'notification_policy',
     },
     externals: {
       action_url: undefined,
@@ -496,7 +496,6 @@ const retrievedFilters = {
     result: [],
   },
 };
-
 
 let context: ResourceContext;
 
@@ -1701,55 +1700,53 @@ describe(Details, async () => {
     });
   });
 
-//       it('display retrieved contact and contact group when the Resource have notification enabled', async () => {
+  //       it('display retrieved contact and contact group when the Resource have notification enabled', async () => {
 
-// //ARRANGE 
-//          const notificationEnabled = true;
-//          const contact = [{
-          
-//             id: 14,
-//             name: 'contact 1',
-//             alias: 'contact1',
-//             email: 'contact1@localhost',
-//             configuration_uri: '/centreon/main.php?p=60301&o=c&contact_id=14',
-//         }];
+  // //ARRANGE
+  //          const notificationEnabled = true;
+  //          const contact = [{
 
-//           const contactGroup : [{
-//           id?: 14,
-//           name?: 'contact group 1',
-//           alias?: 'contactgroup1',
-//           configuration_uri?: '/centreon/main.php?p=60301&o=c&cg=1',  
-//         }];
+  //             id: 14,
+  //             name: 'contact 1',
+  //             alias: 'contact1',
+  //             email: 'contact1@localhost',
+  //             configuration_uri: '/centreon/main.php?p=60301&o=c&contact_id=14',
+  //         }];
 
-//         //ACT 
+  //           const contactGroup : [{
+  //           id?: 14,
+  //           name?: 'contact group 1',
+  //           alias?: 'contactgroup1',
+  //           configuration_uri?: '/centreon/main.php?p=60301&o=c&cg=1',
+  //         }];
 
-//         mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
-    
-//         const { getByText } = renderDetails();  
+  //         //ACT
 
-//         userEvent.click(getByText(labelNotification) as HTMLElement);
+  //         mockedAxios.get.mockResolvedValueOnce({ data: retrievedDetails });
 
-    
-//       await waitFor(() => {
-//         expect(mockedAxios.get).toHaveBeenCalledWith(
-//           `${retrievedDetails.links.endpoints.notification_policy}?`,
-//             cancelTokenRequestParam,
-//           );
-//       });
+  //         const { getByText } = renderDetails();
 
-//       //Assert
-//
-//         expect(labelName).toBeInTheDocument();
-//         expect(getByText('admin')).toBeInTheDocument();
-//         expect((labelAlias)).toBeInTheDocument();
-//         expect(getByText('adminAdmin')).toBeInTheDocument();
-//         expect((labelEmail)).toBeInTheDocument();
-//         expect(getByText('root@localhost')).toBeInTheDocument();
-//         expect(labelName).toBeInTheDocument();
-//         expect(getByText('adminGroup')).toBeInTheDocument();
-//         expect((labelAlias)).toBeInTheDocument();
-//         expect(getByText('adminGroup')).toBeInTheDocument();
-//       });
-// });
-    
+  //         userEvent.click(getByText(labelNotification) as HTMLElement);
+
+  //       await waitFor(() => {
+  //         expect(mockedAxios.get).toHaveBeenCalledWith(
+  //           `${retrievedDetails.links.endpoints.notification_policy}?`,
+  //             cancelTokenRequestParam,
+  //           );
+  //       });
+
+  //       //Assert
+  //
+  //         expect(labelName).toBeInTheDocument();
+  //         expect(getByText('admin')).toBeInTheDocument();
+  //         expect((labelAlias)).toBeInTheDocument();
+  //         expect(getByText('adminAdmin')).toBeInTheDocument();
+  //         expect((labelEmail)).toBeInTheDocument();
+  //         expect(getByText('root@localhost')).toBeInTheDocument();
+  //         expect(labelName).toBeInTheDocument();
+  //         expect(getByText('adminGroup')).toBeInTheDocument();
+  //         expect((labelAlias)).toBeInTheDocument();
+  //         expect(getByText('adminGroup')).toBeInTheDocument();
+  //       });
+  // });
 });

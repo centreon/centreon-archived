@@ -5,7 +5,6 @@ import {
   Contact,
   ContactsResult,
   ContactGroupResult,
-  
 } from '../models';
 
 const contactDecoder = JsonDecoder.object<Contact>(

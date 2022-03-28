@@ -88,9 +88,7 @@ const tabs: Array<Tab> = [
   {
     Component: NotificationsTab,
     ariaLabel: labelNotification,
-    getIsActive: (details: ResourceDetails): boolean => {
-      return details.notification_enabled;
-    },
+    getIsActive: (): boolean => true,
     id: notificationsTabId,
     title: labelNotification,
   },
