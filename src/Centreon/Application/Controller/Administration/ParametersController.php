@@ -90,8 +90,8 @@ class ParametersController extends AbstractController
         $refreshInterval = '';
         $isAcknowledgementPersistent = false;
         $isAcknowledgementSticky = false;
-        $isAcknowledgementNotify = true;
-        $isAcknowledgementWithServices = true;
+        $isAcknowledgementNotify = false;
+        $isAcknowledgementWithServices = false;
         $isAcknowledgementForceActiveChecks = false;
         $isDowntimeFixed = true;
         $isDowntimeWithServices = false;
@@ -127,13 +127,13 @@ class ParametersController extends AbstractController
                     $isAcknowledgementSticky = (int) $option->getValue() === 1 ? true : false;
                     break;
                 case self::DEFAULT_ACKNOWLEDGEMENT_NOTIFY:
-                    $isAcknowledgementNotify = (int) $option->getValue() === 1;
+                    $isAcknowledgementNotify = (int) $option->getValue() === 1 ? true : false;
                     break;
                 case self::DEFAULT_ACKNOWLEDGEMENT_WITH_SERVICES:
-                    $isAcknowledgementWithServices = (int) $option->getValue() === 1;
+                    $isAcknowledgementWithServices = (int) $option->getValue() === 1 ? true : false;
                     break;
                 case self::DEFAULT_ACKNOWLEDGEMENT_FORCE_ACTIVE_CHECKS:
-                    $isAcknowledgementForceActiveChecks = (int) $option->getValue() === 1;
+                    $isAcknowledgementForceActiveChecks = (int) $option->getValue() === 1 ? true : false;
                     break;
                 case self::DEFAULT_DOWNTIME_WITH_SERVICES:
                     $isDowntimeWithServices = (int) $option->getValue() === 1 ? true : false;
@@ -155,10 +155,8 @@ class ParametersController extends AbstractController
             $isAcknowledgementPersistent;
         $parameters[self::KEY_NAME_CONCORDANCE[self::DEFAULT_ACKNOWLEDGEMENT_STICKY]] = $isAcknowledgementSticky;
         $parameters[self::KEY_NAME_CONCORDANCE[self::DEFAULT_ACKNOWLEDGEMENT_NOTIFY]] = $isAcknowledgementNotify;
-        $parameters[self::KEY_NAME_CONCORDANCE[self::DEFAULT_ACKNOWLEDGEMENT_WITH_SERVICES]] =
-            $isAcknowledgementWithServices;
-        $parameters[self::KEY_NAME_CONCORDANCE[self::DEFAULT_ACKNOWLEDGEMENT_FORCE_ACTIVE_CHECKS]] =
-            $isAcknowledgementForceActiveChecks;
+        $parameters[self::KEY_NAME_CONCORDANCE[self::DEFAULT_ACKNOWLEDGEMENT_WITH_SERVICES]] = $isAcknowledgementWithServices;
+        $parameters[self::KEY_NAME_CONCORDANCE[self::DEFAULT_ACKNOWLEDGEMENT_FORCE_ACTIVE_CHECKS]] = $isAcknowledgementForceActiveChecks;
         $parameters[self::KEY_NAME_CONCORDANCE[self::DEFAULT_DOWNTIME_FIXED]] = $isDowntimeFixed;
         $parameters[self::KEY_NAME_CONCORDANCE[self::DEFAULT_DOWNTIME_WITH_SERVICES]] = $isDowntimeWithServices;
 
