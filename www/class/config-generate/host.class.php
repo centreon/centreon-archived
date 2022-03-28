@@ -48,7 +48,6 @@ class Host extends AbstractHost
     protected $generate_filename = 'hosts.cfg';
     protected $object_name = 'host';
     protected $stmt_hg = null;
-    protected $stmt_hc = null;
     protected $stmt_parent = null;
     protected $stmt_service = null;
     protected $stmt_service_sg = null;

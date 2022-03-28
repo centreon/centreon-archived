@@ -128,7 +128,6 @@ class HostTemplate extends AbstractHost
     protected $attributes_array = array(
         'use'
     );
-    protected $stmt_hc = null;
 
     /**
      * @param int $hostId
