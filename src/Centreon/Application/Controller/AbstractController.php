@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace Centreon\Application\Controller;
 
 use JsonSchema\Validator;
+use Centreon\Domain\Log\LoggerTrait;
 use JsonSchema\Constraints\Constraint;
 use Symfony\Component\HttpFoundation\Request;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
@@ -34,6 +35,8 @@ use FOS\RestBundle\Controller\AbstractFOSRestController;
  */
 abstract class AbstractController extends AbstractFOSRestController
 {
+    use LoggerTrait;
+
     public const ROLE_API_REALTIME = 'ROLE_API_REALTIME';
     public const ROLE_API_REALTIME_EXCEPTION_MESSAGE = 'You are not authorized to access this resource';
     public const ROLE_API_CONFIGURATION = 'ROLE_API_CONFIGURATION';
@@ -107,6 +110,7 @@ abstract class AbstractController extends AbstractFOSRestController
 
         if (!$validator->isValid()) {
             $message = '';
+            $this->error('Invalid request body');
             foreach ($validator->getErrors() as $error) {
                 $message .= sprintf("[%s] %s\n", $error['property'], $error['message']);
             }

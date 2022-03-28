@@ -21,16 +21,19 @@
 
 declare(strict_types=1);
 
-namespace Core\Application\Security\ProviderConfiguration\WebSSO\UseCase;
+namespace Core\Application\Security\ProviderConfiguration\WebSSO\UseCase\UpdateWebSSOConfiguration;
 
 use Core\Application\Common\UseCase\ErrorResponse;
 use Core\Application\Common\UseCase\NoContentResponse;
 use Centreon\Domain\Common\Assertion\AssertionException;
+use Centreon\Domain\Log\LoggerTrait;
 use Core\Domain\Security\ProviderConfiguration\WebSSO\Model\WebSSOConfigurationFactory;
 use Core\Application\Security\ProviderConfiguration\WebSSO\Repository\WriteWebSSOConfigurationRepositoryInterface;
 
 class UpdateWebSSOConfiguration
 {
+    use LoggerTrait;
+
     /**
      * @param WriteWebSSOConfigurationRepositoryInterface $repository
      */
@@ -46,9 +49,11 @@ class UpdateWebSSOConfiguration
         UpdateWebSSOConfigurationPresenterInterface $presenter,
         UpdateWebSSOConfigurationRequest $request
     ): void {
+        $this->info('Updating WebSSO Configuration ...');
         try {
             $configuration = WebSSOConfigurationFactory::createFromRequest($request);
         } catch (AssertionException $ex) {
+            $this->error('Unable to create WebSSO Configuration');
             $presenter->setResponseStatus(new ErrorResponse($ex->getMessage()));
             return;
         }

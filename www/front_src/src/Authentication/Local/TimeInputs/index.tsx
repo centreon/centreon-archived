@@ -22,7 +22,7 @@ import TimeInput from './TimeInput';
 
 const useStyles = makeStyles((theme) => ({
   timeInputs: {
-    columnGap: theme.spacing(1.5),
+    columnGap: theme.spacing(2),
     display: 'flex',
     flexDirection: 'row',
     marginBottom: theme.spacing(0.5),
