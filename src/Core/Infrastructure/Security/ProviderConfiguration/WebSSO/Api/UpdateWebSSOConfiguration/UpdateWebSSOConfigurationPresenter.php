@@ -21,28 +21,13 @@
 
 declare(strict_types=1);
 
-namespace Core\Domain\Security\ProviderConfiguration\WebSSO\Model;
+namespace Core\Infrastructure\Security\ProviderConfiguration\WebSSO\Api\UpdateWebSSOConfiguration;
 
+use Core\Application\Common\UseCase\AbstractPresenter;
 use Core\Application\Security\ProviderConfiguration\WebSSO\UseCase\UpdateWebSSOConfiguration\{
-    UpdateWebSSOConfigurationRequest
+    UpdateWebSSOConfigurationPresenterInterface as PresenterInterface
 };
 
-class WebSSOConfigurationFactory
+class UpdateWebSSOConfigurationPresenter extends AbstractPresenter implements PresenterInterface
 {
-    /**
-     * @param UpdateWebSSOConfigurationRequest $request
-     * @return WebSSOConfiguration
-     */
-    public static function createFromRequest(UpdateWebSSOConfigurationRequest $request): WebSSOConfiguration
-    {
-        return new WebSSOConfiguration(
-            $request->isActive,
-            $request->isForced,
-            $request->trustedClientAddresses,
-            $request->blacklistClientAddresses,
-            $request->loginHeaderAttribute,
-            $request->patternMatchingLogin,
-            $request->patternReplaceLogin
-        );
-    }
 }

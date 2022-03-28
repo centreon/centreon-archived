@@ -16651,6 +16651,9 @@ msgstr "Votre mot de passe expirera dans"
 msgid "Password has expired"
 msgstr "Votre mot de passe a expiré"
 
+msgid "The value '%s' was expected to be a valid ip address"
+msgstr "La valeur '%s' devait être une adresse ip valide"
+
 msgid "Choose letter cases"
 msgstr "Choisir les casses d'écriture"
 

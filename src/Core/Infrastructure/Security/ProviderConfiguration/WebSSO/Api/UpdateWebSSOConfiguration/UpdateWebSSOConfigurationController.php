@@ -25,12 +25,17 @@ namespace Core\Infrastructure\Security\ProviderConfiguration\WebSSO\Api\UpdateWe
 
 use Symfony\Component\HttpFoundation\Request;
 use Centreon\Application\Controller\AbstractController;
-use Core\Application\Security\ProviderConfiguration\WebSSO\UseCase\UpdateWebSSOConfiguration;
-use Core\Application\Security\ProviderConfiguration\WebSSO\UseCase\UpdateWebSSOConfigurationRequest;
-use Core\Application\Security\ProviderConfiguration\WebSSO\UseCase\UpdateWebSSOConfigurationPresenterInterface;
+use Centreon\Domain\Log\LoggerTrait;
+use Core\Application\Security\ProviderConfiguration\WebSSO\UseCase\UpdateWebSSOConfiguration\{
+    UpdateWebSSOConfiguration,
+    UpdateWebSSOConfigurationRequest,
+    UpdateWebSSOConfigurationPresenterInterface
+};
 
 class UpdateWebSSOConfigurationController extends AbstractController
 {
+    use LoggerTrait;
+
     /**
      * @param UpdateWebSSOConfiguration $useCase
      * @param Request $request
@@ -43,6 +48,7 @@ class UpdateWebSSOConfigurationController extends AbstractController
         UpdateWebSSOConfigurationPresenterInterface $presenter
     ): object {
         $this->denyAccessUnlessGrantedForApiConfiguration();
+        $this->info('Validating request body...');
         $this->validateDataSent($request, __DIR__ . '/UpdateWebSSOConfigurationSchema.json');
         $updateWebSSOConfigurationRequest = $this->createUpdateWebSSOConfigurationRequest($request);
         $useCase($presenter, $updateWebSSOConfigurationRequest);

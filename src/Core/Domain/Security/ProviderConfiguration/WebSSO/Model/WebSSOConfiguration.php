@@ -23,6 +23,8 @@ declare(strict_types=1);
 
 namespace Core\Domain\Security\ProviderConfiguration\WebSSO\Model;
 
+use Centreon\Domain\Common\Assertion\AssertionException;
+
 class WebSSOConfiguration
 {
     /**
@@ -48,7 +50,22 @@ class WebSSOConfiguration
         private ?string $patternMatchingLogin,
         private ?string $patternReplaceLogin
     ) {
-        //@todo Add validation rules
+        foreach ($trustedClientAddresses as $trustedClientAddress) {
+            if (filter_var($trustedClientAddress, FILTER_VALIDATE_IP) === false) {
+                throw AssertionException::ipAddressNotValid(
+                    $trustedClientAddress,
+                    'WebSSOConfiguration::trustedClientAddresses'
+                );
+            }
+        }
+        foreach ($blacklistClientAddresses as $blacklistClientAddress) {
+            if (filter_var($blacklistClientAddress, FILTER_VALIDATE_IP) === false) {
+                throw AssertionException::ipAddressNotValid(
+                    $blacklistClientAddress,
+                    'WebSSOConfiguration::blacklistClientAddresses'
+                );
+            }
+        }
     }
 
     /**

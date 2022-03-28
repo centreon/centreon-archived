@@ -23,12 +23,16 @@ declare(strict_types=1);
 
 namespace Tests\Core\Application\Security\ProviderConfiguration\WebSSO\UpdateWebSSOConfiguration\UseCase;
 
+use Centreon\Domain\Common\Assertion\AssertionException;
+use Core\Application\Common\UseCase\ErrorResponse;
 use Core\Application\Common\UseCase\NoContentResponse;
-use Core\Application\Security\ProviderConfiguration\WebSSO\Repository\WriteWebSSOConfigurationRepositoryInterface;
-use Core\Application\Security\ProviderConfiguration\WebSSO\UseCase\UpdateWebSSOConfiguration;
-use Core\Application\Security\ProviderConfiguration\WebSSO\UseCase\UpdateWebSSOConfigurationPresenterInterface;
-use Core\Application\Security\ProviderConfiguration\WebSSO\UseCase\UpdateWebSSOConfigurationRequest;
 use Core\Domain\Security\ProviderConfiguration\WebSSO\Model\WebSSOConfigurationFactory;
+use Core\Application\Security\ProviderConfiguration\WebSSO\UseCase\UpdateWebSSOConfiguration\{
+    UpdateWebSSOConfiguration,
+    UpdateWebSSOConfigurationRequest,
+    UpdateWebSSOConfigurationPresenterInterface
+};
+use Core\Application\Security\ProviderConfiguration\WebSSO\Repository\WriteWebSSOConfigurationRepositoryInterface;
 
 beforeEach(function () {
     $this->repository = $this->createMock(WriteWebSSOConfigurationRepositoryInterface::class);
@@ -61,4 +65,27 @@ it('execute the use case correctly when all parameters are valid', function () {
     $useCase($this->presenter, $updateWebSSOConfigurationRequest);
 });
 
-//@todo: Tests useCase with Invalid Parameters
+it('should have an Error Response when parameters are invalid', function () {
+    $updateWebSSOConfigurationRequest = new UpdateWebSSOConfigurationRequest();
+    $updateWebSSOConfigurationRequest->isActive = true;
+    $updateWebSSOConfigurationRequest->isForced = false;
+    $badIpAddress = "abcd_.@";
+    $updateWebSSOConfigurationRequest->trustedClientAddresses = [$badIpAddress];
+    $updateWebSSOConfigurationRequest->blacklistClientAddresses = [];
+    $updateWebSSOConfigurationRequest->loginHeaderAttribute = 'HTTP_AUTH_USER';
+    $updateWebSSOConfigurationRequest->patternMatchingLogin = '/@.*/';
+    $updateWebSSOConfigurationRequest->patternReplaceLogin = 'sso_';
+
+    $this->presenter
+        ->expects($this->once())
+        ->method('setResponseStatus')
+        ->with(new ErrorResponse(
+            AssertionException::ipAddressNotValid(
+                $badIpAddress,
+                'WebSSOConfiguration::trustedClientAddresses'
+            )->getMessage()
+        ));
+
+    $useCase = new UpdateWebSSOConfiguration($this->repository);
+    $useCase($this->presenter, $updateWebSSOConfigurationRequest);
+});
