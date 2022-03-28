@@ -70,7 +70,7 @@ const Inputs = ({ inputs, categories }: Props): JSX.Element => {
     [inputs],
   );
 
-  const sortedCategoriesName = React.useMemo(() => {
+  const sortedCategoryNames = React.useMemo(() => {
     const sortedCategories = sort(ascend(prop('order')), categories);
 
     return pluck('name', sortedCategories);
@@ -87,12 +87,12 @@ const Inputs = ({ inputs, categories }: Props): JSX.Element => {
           ),
         }),
         {},
-        sortedCategoriesName,
+        sortedCategoryNames,
       ),
     [inputs],
   );
 
-  const lastCategory = React.useMemo(() => last(sortedCategoriesName), []);
+  const lastCategory = React.useMemo(() => last(sortedCategoryNames), []);
 
   return (
     <div>
