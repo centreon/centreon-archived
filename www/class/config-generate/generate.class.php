@@ -257,6 +257,7 @@ class Generate
             $this->current_poller['localhost']
         );
         $this->generateModuleObjects(1);
+
         Engine::getInstance($this->dependencyInjector)->generateFromPoller($this->current_poller);
         $this->backend_instance->movePath($this->current_poller['id']);
 
@@ -344,12 +345,16 @@ class Generate
         }
         if (is_array($this->module_objects)) {
             foreach ($this->module_objects as $module_object) {
+                $externalModule = $module_object::getInstance($this->dependencyInjector);
                 if (
-                    ($type == 1 && $module_object::getInstance($this->dependencyInjector)->isEngineObject() == true)
-                    || ($type == 2 && $module_object::getInstance($this->dependencyInjector)->isBrokerObject() == true)
+                    $externalModule instanceof ExternalModuleGenerationInterface
+                    && (
+                        ($type == 1 && $externalModule->isEngineObject() === true)
+                        || ($type == 2 && $externalModule->isBrokerObject() == true)
+                    )
                 ) {
-                    $module_object::getInstance($this->dependencyInjector)->generateFromPollerId(
-                        $this->current_poller['id'],
+                    $externalModule->generateFromPollerId(
+                        (int) $this->current_poller['id'],
                         $this->current_poller['localhost']
                     );
                 }
@@ -364,7 +369,10 @@ class Generate
         }
         if (is_array($this->module_objects)) {
             foreach ($this->module_objects as $module_object) {
-                $module_object::getInstance($this->dependencyInjector)->reset();
+                $externalModule = $module_object::getInstance($this->dependencyInjector);
+                if ($externalModule instanceof ExternalModuleGenerationInterface) {
+                    $externalModule->reset();
+                }
             }
         }
     }

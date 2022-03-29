@@ -1,8 +1,8 @@
 <?php
 
 /*
- * Copyright 2005-2019 Centreon
- * Centreon is developed by : Julien Mathis and Romain Le Merlus under
+ * Copyright 2005-2022 Centreon
+ * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
  * This program is free software; you can redistribute it and/or modify it under
@@ -34,63 +34,52 @@
  *
  */
 
-abstract class AbstractObjectJSON
+declare(strict_types=1);
+
+abstract class JsonFormat
 {
-    protected $backend_instance = null;
-    protected $generate_filename = null;
+    /**
+     * @var mixed
+     */
+    protected mixed $cacheData = null;
 
-    protected $dependencyInjector;
-
-    protected $content = [];
+    protected ?string $filePath = null;
 
     /**
-     * @param \Pimple\Container $dependencyInjector
-     * @return static
+     * @param mixed $data
      */
-    public static function getInstance(\Pimple\Container $dependencyInjector): static
+    public function setContent(mixed $data): void
     {
-        /**
-         * @var array<string, static>
-         */
-        static $instances = array();
+        $this->cacheData = $data;
+    }
 
-        /**
-         * @var class-string<static>
-         */
-        $calledClass = get_called_class();
+    /**
+     * Defines the path of the file where the data should be written.
+     *
+     * @param string $filePath
+     */
+    public function setFilePath(string $filePath): void
+    {
+        $this->filePath = $filePath;
+    }
 
-        if (!isset($instances[$calledClass])) {
-            $instances[$calledClass] = new $calledClass($dependencyInjector);
+    /**
+     * Writes the content of the cache only if it is not empty.
+     *
+     * @return int|bool Number of bytes written or false on failure
+     * @throws Exception
+     */
+    public function flushContent(): int|bool
+    {
+        if ($this->filePath === null) {
+            throw new Exception('No file path defined');
         }
+        if (! empty($this->cacheData)) {
+            $data = json_encode($this->cacheData, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+            $this->cacheData = null;
 
-        return $instances[$calledClass];
-    }
-
-    protected function __construct(\Pimple\Container $dependencyInjector)
-    {
-        $this->dependencyInjector = $dependencyInjector;
-        $this->backend_instance = Backend::getInstance($this->dependencyInjector);
-    }
-
-    public function reset()
-    {
-    }
-
-    protected function writeFile($dir)
-    {
-        $full_file = $dir . '/' . $this->generate_filename;
-        if ($handle = fopen($full_file, 'w')) {
-            if (!fwrite($handle, $this->content)) {
-                throw new RuntimeException('Cannot write to file "' . $full_file . '"');
-            }
-            fclose($handle);
-        } else {
-            throw new Exception("Cannot open file " . $full_file);
+            return file_put_contents($this->filePath, $data);
         }
-    }
-
-    protected function generateFile($object)
-    {
-        $this->content = json_encode(['centreonBroker' => $object], JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT);
+        return 0;
     }
 }

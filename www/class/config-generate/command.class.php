@@ -37,6 +37,7 @@
 class Command extends AbstractObject
 {
     private $commands = null;
+
     private $mail_bin = null;
     protected $generate_filename = 'commands.cfg';
     protected $object_name = 'command';
@@ -53,7 +54,10 @@ class Command extends AbstractObject
         'connector',
     );
 
-    private function getCommands()
+    /**
+     * Create the cache of commands.
+     */
+    private function createCommandsCache(): void
     {
         $query = "SELECT $this->attributes_select FROM command " .
             "LEFT JOIN connector ON connector.id = command.connector_id AND connector.enabled = '1' " .
@@ -82,7 +86,7 @@ class Command extends AbstractObject
     {
         $name = null;
         if (is_null($this->commands)) {
-            $this->getCommands();
+            $this->createCommandsCache();
         }
 
         if (!isset($this->commands[$command_id])) {
@@ -116,5 +120,24 @@ class Command extends AbstractObject
             $command_id
         );
         return $this->commands[$command_id]['command_name'];
+    }
+
+    /**
+     * Get information of command.
+     *
+     * @param int $commandId
+     * @return array{
+     *     command_name: string,
+     *     command_line_base: string,
+     *     connector: string,
+     *     enable_shell: string
+     *  }|null
+     */
+    public function findCommandById(int $commandId): ?array
+    {
+        if (is_null($this->commands)) {
+            $this->createCommandsCache();
+        }
+        return $this->commands[$commandId] ?? null;
     }
 }

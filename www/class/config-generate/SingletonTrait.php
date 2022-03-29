@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright 2005-2019 Centreon
+ * Copyright 2005-2022 Centreon
  * Centreon is developed by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -34,15 +34,10 @@
  *
  */
 
-abstract class AbstractObjectJSON
+declare(strict_types=1);
+
+trait SingletonTrait
 {
-    protected $backend_instance = null;
-    protected $generate_filename = null;
-
-    protected $dependencyInjector;
-
-    protected $content = [];
-
     /**
      * @param \Pimple\Container $dependencyInjector
      * @return static
@@ -64,33 +59,5 @@ abstract class AbstractObjectJSON
         }
 
         return $instances[$calledClass];
-    }
-
-    protected function __construct(\Pimple\Container $dependencyInjector)
-    {
-        $this->dependencyInjector = $dependencyInjector;
-        $this->backend_instance = Backend::getInstance($this->dependencyInjector);
-    }
-
-    public function reset()
-    {
-    }
-
-    protected function writeFile($dir)
-    {
-        $full_file = $dir . '/' . $this->generate_filename;
-        if ($handle = fopen($full_file, 'w')) {
-            if (!fwrite($handle, $this->content)) {
-                throw new RuntimeException('Cannot write to file "' . $full_file . '"');
-            }
-            fclose($handle);
-        } else {
-            throw new Exception("Cannot open file " . $full_file);
-        }
-    }
-
-    protected function generateFile($object)
-    {
-        $this->content = json_encode(['centreonBroker' => $object], JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT);
     }
 }
