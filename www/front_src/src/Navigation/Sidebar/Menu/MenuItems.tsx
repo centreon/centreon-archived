@@ -1,6 +1,7 @@
 import React from 'react';
 
 import clsx from 'clsx';
+import { useAtomValue } from 'jotai';
 
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -10,6 +11,7 @@ import makeStyles from '@mui/styles/makeStyles';
 import { useMemoComponent } from '@centreon/ui';
 
 import { Page } from '../../models';
+import { hoveredNavigationItemsAtom } from '../sideBarAtoms';
 
 import ArrowIcon from './ArrowIcon';
 
@@ -76,6 +78,7 @@ const MenuItems = ({
   isRoot,
 }: Props): JSX.Element => {
   const classes = useStyles({ isRoot });
+  const hoveredNavigationItems = useAtomValue(hoveredNavigationItemsAtom);
 
   return useMemoComponent({
     Component: (
@@ -117,7 +120,7 @@ const MenuItems = ({
         )}
       </ListItemButton>
     ),
-    memoProps: [hover, isOpen, isRoot, isDrawerOpen],
+    memoProps: [hover, isOpen, isRoot, isDrawerOpen, hoveredNavigationItems],
   });
 };
 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { equals } from 'ramda';
+import { equals, keys, omit } from 'ramda';
 import clsx from 'clsx';
 import { useAtomValue, useAtom } from 'jotai';
 
@@ -158,10 +158,22 @@ const CollapsibleItems = ({
     setItemTop(top);
     setHoveredIndex(index);
 
-    setHoveredNavigationItems({
-      ...hoveredNavigationItems,
-      [levelName]: currentPage,
-    });
+    const navigationKeysToRemove = keys(hoveredNavigationItems).filter(
+      (navigationItem) => {
+        return navigationItem > levelName;
+      },
+    );
+    if (navigationKeysToRemove.length <= 0) {
+      setHoveredNavigationItems({
+        ...hoveredNavigationItems,
+        [levelName]: currentPage,
+      });
+
+      return;
+    }
+    setHoveredNavigationItems(
+      omit(navigationKeysToRemove, hoveredNavigationItems),
+    );
   };
 
   const isItemHovered = ({

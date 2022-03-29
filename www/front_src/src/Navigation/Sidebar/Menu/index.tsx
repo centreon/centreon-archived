@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { equals, flatten, isEmpty, isNil } from 'ramda';
+import { equals, flatten, isEmpty, isNil, keys, omit } from 'ramda';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAtom } from 'jotai';
 
@@ -82,10 +82,24 @@ const NavigationMenu = ({
     const { top } = rect;
     setCurrentTop(top);
     setHoveredIndex(index);
-    setHoveredNavigationItems({
-      ...hoveredNavigationItems,
-      level_0: currentPage,
-    });
+
+    const navigationKeysToRemove = keys(hoveredNavigationItems).filter(
+      (navigationItem) => {
+        return navigationItem > levelName;
+      },
+    );
+
+    if (navigationKeysToRemove.length <= 0) {
+      setHoveredNavigationItems({
+        ...hoveredNavigationItems,
+        [levelName]: currentPage,
+      });
+
+      return;
+    }
+    setHoveredNavigationItems(
+      omit(navigationKeysToRemove, hoveredNavigationItems),
+    );
   };
 
   const handleLeave = (): void => {
