@@ -721,20 +721,32 @@ class CentreonConfigCentreonBroker
 
         try {
             $stmt = $this->db->prepare($query);
-            $stmt->bindValue(':config_name', $values['name'], \PDO::PARAM_STR);
-            $stmt->bindValue(':config_filename', $values['filename'], \PDO::PARAM_STR);
+            $stmt->bindValue(':config_name', html_entity_decode($values['name']), \PDO::PARAM_STR);
+            $stmt->bindValue(':config_filename', html_entity_decode($values['filename']), \PDO::PARAM_STR);
             $stmt->bindValue(':ns_nagios_server', $values['ns_nagios_server'], \PDO::PARAM_STR);
             $stmt->bindValue(':config_activate', $values['activate']['activate'], \PDO::PARAM_STR);
             $stmt->bindValue(':daemon', $values['activate_watchdog']['activate_watchdog'], \PDO::PARAM_STR);
-            $stmt->bindValue(':cache_directory', $values['cache_directory'], \PDO::PARAM_STR);
-            $stmt->bindValue(':log_directory', $values['log_directory'] ?? null, \PDO::PARAM_STR);
-            $stmt->bindValue(':log_filename', $values['log_filename'] ?? null, \PDO::PARAM_STR);
+            $stmt->bindValue(':cache_directory', html_entity_decode($values['cache_directory']), \PDO::PARAM_STR);
+            $stmt->bindValue(
+                ':log_directory',
+                isset($values['log_directory']) ? html_entity_decode($values['log_directory']) : null,
+                \PDO::PARAM_STR
+            );
+            $stmt->bindValue(
+                ':log_filename',
+                isset($values['log_filename']) ? html_entity_decode($values['log_filename']) : null,
+                \PDO::PARAM_STR
+            );
             $stmt->bindValue(
                 ':event_queue_max_size',
                 (int) $this->checkEventMaxQueueSizeValue($values['event_queue_max_size']),
                 \PDO::PARAM_INT
             );
-            $stmt->bindValue(':command_file', $values['command_file'] ?? null, \PDO::PARAM_STR);
+            $stmt->bindValue(
+                ':command_file',
+                isset($values['command_file']) ? html_entity_decode($values['command_file']) : null,
+                \PDO::PARAM_STR
+            );
             $stmt->bindValue(
                 ':pool_size',
                 ! empty($values['pool_size']) ? (int) $values['pool_size'] : null,
@@ -761,7 +773,7 @@ class CentreonConfigCentreonBroker
                 $stmt->bindValue(':log_max_size', $values['log_max_size'], \PDO::PARAM_INT);
             }
             if (in_array('bbdo_version', $columnNames)) {
-                $stmt->bindValue(':bbdo_version', $values['bbdo_version'], \PDO::PARAM_STR);
+                $stmt->bindValue(':bbdo_version', html_entity_decode($values['bbdo_version']), \PDO::PARAM_STR);
             }
 
             $stmt->execute();
@@ -831,25 +843,25 @@ class CentreonConfigCentreonBroker
             . "pool_size = :pool_size, bbdo_version = :bbdo_version WHERE config_id = " . $id;
         try {
             $stmt = $this->db->prepare($query);
-            $stmt->bindValue(':config_name', $values['name'], \PDO::PARAM_STR);
-            $stmt->bindValue(':config_filename', $values['filename'], \PDO::PARAM_STR);
+            $stmt->bindValue(':config_name', html_entity_decode($values['name']), \PDO::PARAM_STR);
+            $stmt->bindValue(':config_filename', html_entity_decode($values['filename']), \PDO::PARAM_STR);
             $stmt->bindValue(':ns_nagios_server', $values['ns_nagios_server'], \PDO::PARAM_STR);
             $stmt->bindValue(':config_activate', $values['activate']['activate'], \PDO::PARAM_STR);
             $stmt->bindValue(':daemon', $values['activate_watchdog']['activate_watchdog'], \PDO::PARAM_STR);
             $stmt->bindValue(':config_write_timestamp', $values['write_timestamp']['write_timestamp'], \PDO::PARAM_STR);
             $stmt->bindValue(':config_write_thread_id', $values['write_thread_id']['write_thread_id'], \PDO::PARAM_STR);
             $stmt->bindValue(':stats_activate', $values['stats_activate']['stats_activate'], \PDO::PARAM_STR);
-            $stmt->bindValue(':cache_directory', $values['cache_directory'], \PDO::PARAM_STR);
-            $stmt->bindValue(':log_directory', $values['log_directory'], \PDO::PARAM_STR);
-            $stmt->bindValue(':log_filename', $values['log_filename'], \PDO::PARAM_STR);
+            $stmt->bindValue(':cache_directory', html_entity_decode($values['cache_directory']), \PDO::PARAM_STR);
+            $stmt->bindValue(':log_directory', html_entity_decode($values['log_directory']), \PDO::PARAM_STR);
+            $stmt->bindValue(':log_filename', html_entity_decode($values['log_filename']), \PDO::PARAM_STR);
             $stmt->bindValue(':log_max_size', $values['log_max_size'], \PDO::PARAM_INT);
-            $stmt->bindValue(':bbdo_version', $values['bbdo_version'], \PDO::PARAM_STR);
+            $stmt->bindValue(':bbdo_version', html_entity_decode($values['bbdo_version']), \PDO::PARAM_STR);
             $stmt->bindValue(
                 ':event_queue_max_size',
                 (int)$this->checkEventMaxQueueSizeValue($values['event_queue_max_size']),
                 \PDO::PARAM_INT
             );
-            $stmt->bindValue(':command_file', $values['command_file'], \PDO::PARAM_STR);
+            $stmt->bindValue(':command_file', html_entity_decode($values['command_file']), \PDO::PARAM_STR);
             empty($values['pool_size'])
                 ? $stmt->bindValue(':pool_size', null, \PDO::PARAM_NULL)
                 : $stmt->bindValue(':pool_size', (int)$values['pool_size'], \PDO::PARAM_INT);
