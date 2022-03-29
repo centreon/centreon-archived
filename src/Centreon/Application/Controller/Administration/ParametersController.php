@@ -90,8 +90,8 @@ class ParametersController extends AbstractController
         $refreshInterval = '';
         $isAcknowledgementPersistent = false;
         $isAcknowledgementSticky = false;
-        $isAcknowledgementNotify = false;
-        $isAcknowledgementWithServices = false;
+        $isAcknowledgementNotify = true;
+        $isAcknowledgementWithServices = true;
         $isAcknowledgementForceActiveChecks = false;
         $isDowntimeFixed = true;
         $isDowntimeWithServices = false;
