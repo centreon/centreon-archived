@@ -18,9 +18,9 @@ import { Contact, ContactGroup } from './models';
 
 const useStyles = makeStyles((theme) => ({
   list: {
+    textAlign: 'center',
     bgcolor: 'background.paper',
-    maxHeight: theme.spacing(200),
-    maxWidth: theme.spacing(200),
+    maxHeight: theme.spacing(100),
     overflow: 'auto',
     position: 'relative',
     width: '100%',
@@ -64,20 +64,29 @@ const Notification = (): JSX.Element => {
   return (
     <div>
       <List className={classes.list} subheader={<li />}>
-        {['CONTACTS', 'CONTACT GROUP'].map((sectionId) => (
+        {['CONTACTS'].map((sectionId) => (
+           <Typography variant="body2">
           <li key={`section-${sectionId}`}>
             <ul>
+             
               <ListSubheader>{`${sectionId}`}</ListSubheader>
-              {['NOM', 'ALIAS', 'EMAIL'].map((item) => (
-                <ListItem key={`item-${sectionId}-${item}`}>
-                  <ListItemText primary={`Item ${item}`} />
+
+              {notificationContacts?.is_notification_enabled &&
+        notificationContacts.contacts?.map(
+          ({ id, name, alias, email }) => (
+                <Typography variant="body2">
+                <ListItem key={`item-${sectionId}-${id}`}>
+                  <ListItemText primary={`Name:${name}`} {...`Alias:${alias}`} {...`Email:${email}`} />
                 </ListItem>
+                </Typography>
               ))}
             </ul>
           </li>
+          </Typography>
+
         ))}
       </List>
-      {notificationContacts?.is_notification_enabled &&
+      {/* {notificationContacts?.is_notification_enabled &&
         notificationContacts.contacts?.map(
           ({ id, name, alias, email, configuration_uri }) => (
             <Paper className={classes.paper}>
@@ -103,7 +112,7 @@ const Notification = (): JSX.Element => {
               </Typography>
             </Paper>
           ),
-        )}
+        )} */}
     </div>
   );
 };
