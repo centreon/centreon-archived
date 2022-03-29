@@ -34,18 +34,25 @@
  *
  */
 
-class Servicecategory extends AbstractObject
+class ServiceCategory extends AbstractObject
 {
-    private $done_cache = 0;
+    /** @var int */
+    private $doneCache = 0;
+    /** @var array<int,mixed> */
+    private $serviceCategories = [];
+    /** @var array<int,int[]> */
+    private $serviceCategoriesRelationsCache = [];
 
-    private $sc = [];
-    private $sc_relation_cache = [];
+    /** @var string */
     protected $generate_filename = 'tags.cfg';
+    /** @var string */
     protected $object_name = 'tag';
-    protected $attributes_select = '
+    /** @var string */
+    protected $attributesSelect = '
         sc_id as id,
         sc_name as name
     ';
+    /** @var string[] */
     protected $attributes_write = [
         'id',
         'name',
@@ -66,10 +73,6 @@ class Servicecategory extends AbstractObject
      */
     private function buildCache(): void
     {
-        if ($this->done_cache === 1) {
-            return;
-        }
-
         $stmt = $this->backend_instance->db->prepare(
             "SELECT service_categories.sc_id, service_service_id
             FROM service_categories, service_categories_relation
@@ -79,12 +82,12 @@ class Servicecategory extends AbstractObject
         );
         $stmt->execute();
 
-        $this->sc_relation_cache = [];
+        $this->serviceCategoriesRelationsCache = [];
         foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $value) {
-            $this->sc_relation_cache[$value['service_service_id']][] = $value['sc_id'];
+            $this->serviceCategoriesRelationsCache[(int) $value['service_service_id']][] = (int) $value['sc_id'];
         }
 
-        $this->done_cache = 1;
+        $this->doneCache = 1;
     }
 
     /**
@@ -93,13 +96,13 @@ class Servicecategory extends AbstractObject
      * @param int $serviceId
      * @return int[]
      */
-    public function getServicecategoriesForStpl(int $serviceId): array
+    public function getServiceCategoriesForServiceTemplate(int $serviceId): array
     {
         # Get from the cache
-        if (isset($this->sc_relation_cache[$serviceId])) {
-            return $this->sc_relation_cache[$serviceId];
+        if (isset($this->serviceCategoriesRelationsCache[$serviceId])) {
+            return $this->serviceCategoriesRelationsCache[$serviceId];
         }
-        if ($this->done_cache === 1) {
+        if ($this->doneCache === 1) {
             return array();
         }
 
@@ -119,7 +122,7 @@ class Servicecategory extends AbstractObject
         foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $value) {
             $categories[] = $value['sc_id'];
         }
-        $this->sc_relation_cache[$serviceId] = $categories;
+        $this->serviceCategoriesRelationsCache[$serviceId] = $categories;
 
         return $categories;
     }
@@ -127,43 +130,49 @@ class Servicecategory extends AbstractObject
     /**
      * Retrieve a categorie from its id
      *
-     * @param int $scId
+     * @param int $serviceCategoryId
      * @return void
      */
-    private function getServicecategoryFromId(int $scId): void
+    private function getServiceCategoryFromId(int $serviceCategoryId): void
     {
         $stmt = $this->backend_instance->db->prepare(
-            "SELECT {$this->attributes_select}
+            "SELECT {$this->attributesSelect}
             FROM service_categories
-            WHERE sc_id = :scId AND level IS NULL AND sc_activate = '1'"
+            WHERE sc_id = :serviceCategoryId AND level IS NULL AND sc_activate = '1'"
         );
-        $stmt->bindParam(':scId', $scId, PDO::PARAM_INT);
+        $stmt->bindParam(':serviceCategoryId', $serviceCategoryId, PDO::PARAM_INT);
         $stmt->execute();
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $this->sc[$scId] = array_pop($results);
-        if (is_null($this->sc[$scId])) {
+        $this->serviceCategories[$serviceCategoryId] = array_pop($results);
+        if (is_null($this->serviceCategories[$serviceCategoryId])) {
             return;
         }
-        $this->sc[$scId]['members'] = array();
+        $this->serviceCategories[$serviceCategoryId]['members'] = array();
     }
 
     /**
-     * Add a service to members of a servicecategory
+     * Add a service to members of a service category
      *
-     * @param int $scId
+     * @param int $serviceCategoryId
      * @param int $serviceId
      * @param string $serviceDescription
      */
-    public function addServiceInSc(int $scId, int $serviceId, string $serviceDescription): void
-    {
-        if (! isset($this->sc[$scId])) {
-            $this->getServicecategoryFromId($scId);
+    public function addServiceInServiceCategories(
+        int $serviceCategoryId,
+        int $serviceId,
+        string $serviceDescription
+    ): void {
+        if (! isset($this->serviceCategories[$serviceCategoryId])) {
+            $this->getServiceCategoryFromId($serviceCategoryId);
         }
-        if (is_null($this->sc[$scId]) || isset($this->sc[$scId]['members'][$serviceId])) {
+        if (
+            is_null($this->serviceCategories[$serviceCategoryId])
+            || isset($this->serviceCategories[$serviceCategoryId]['members'][$serviceId])
+        ) {
             return;
         }
 
-        $this->sc[$scId]['members'][$serviceId] = $serviceDescription;
+        $this->serviceCategories[$serviceCategoryId]['members'][$serviceId] = $serviceDescription;
     }
 
     /**
@@ -171,7 +180,7 @@ class Servicecategory extends AbstractObject
      */
     public function generateObjects(): void
     {
-        foreach ($this->sc as $id => &$value) {
+        foreach ($this->serviceCategories as $id => &$value) {
             if (! isset($value['members']) || count($value['members']) === 0) {
                 continue;
             }
@@ -189,7 +198,7 @@ class Servicecategory extends AbstractObject
     public function reset(): void
     {
         parent::reset();
-        foreach ($this->sc as &$value) {
+        foreach ($this->serviceCategories as &$value) {
             if (! is_null($value)) {
                 $value['members'] = array();
             }

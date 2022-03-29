@@ -232,10 +232,10 @@ class Generate
         Contact::getInstance($this->dependencyInjector)->reset();
         Contactgroup::getInstance($this->dependencyInjector)->reset();
         Hostgroup::getInstance($this->dependencyInjector)->reset();
-        Hostcategory::getInstance($this->dependencyInjector)->reset();
+        HostCategory::getInstance($this->dependencyInjector)->reset();
         Servicegroup::getInstance($this->dependencyInjector)->reset();
         Severity::getInstance($this->dependencyInjector)->reset();
-        Servicecategory::getInstance($this->dependencyInjector)->reset();
+        ServiceCategory::getInstance($this->dependencyInjector)->reset();
         Timeperiod::getInstance($this->dependencyInjector)->reset();
         Escalation::getInstance($this->dependencyInjector)->reset();
         Dependency::getInstance($this->dependencyInjector)->reset();

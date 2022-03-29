@@ -34,15 +34,21 @@
  *
  */
 
-class Hostcategory extends AbstractObject
+class HostCategory extends AbstractObject
 {
-    private $hc = [];
+    /** @var array<int,mixed> */
+    private $hostCategories = [];
+
+    /** @var string */
     protected $generate_filename = 'tags.cfg';
+    /** @var string */
     protected $object_name = 'tag';
-    protected $attributes_select = '
+    /** @var string */
+    protected $attributesSelect = '
         hc_id as id,
         hc_name as name
     ';
+    /** @var string[] */
     protected $attributes_write = [
         'id',
         'name',
@@ -50,42 +56,45 @@ class Hostcategory extends AbstractObject
     ];
 
     /**
-     * @param int $hcId
+     * @param int $hostCategoryId
      */
-    private function getHostcategoryFromId(int $hcId): void
+    private function getHostcategoryFromId(int $hostCategoryId): void
     {
         $stmt = $this->backend_instance->db->prepare(
-            "SELECT {$this->attributes_select}
+            "SELECT {$this->attributesSelect}
             FROM hostcategories
             WHERE hc_id = :hc_id
             AND level IS NULL
             AND hc_activate = '1'"
         );
-        $stmt->bindParam(':hc_id', $hcId, PDO::PARAM_INT);
+        $stmt->bindParam(':hc_id', $hostCategoryId, PDO::PARAM_INT);
         $stmt->execute();
         if ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            $this->hc[$hcId] = $row;
-            $this->hc[$hcId]['members'] = [];
+            $this->hostCategories[$hostCategoryId] = $row;
+            $this->hostCategories[$hostCategoryId]['members'] = [];
         }
     }
 
     /**
-     * Add hostcategory to list and add host to its members
+     * Add a host to members of a host category
      *
-     * @param int $hcId
+     * @param int $hostCategoryId
      * @param int $hostId
      * @param string $hostName
      */
-    public function addHostInHc(int $hcId, int $hostId, string $hostName): void
+    public function addHostInHostCategories(int $hostCategoryId, int $hostId, string $hostName): void
     {
-        if (!isset($this->hc[$hcId])) {
-            $this->getHostcategoryFromId($hcId);
+        if (!isset($this->hostCategories[$hostCategoryId])) {
+            $this->getHostcategoryFromId($hostCategoryId);
         }
-        if (is_null($this->hc[$hcId]) || isset($this->hc[$hcId]['members'][$hostId])) {
+        if (
+            is_null($this->hostCategories[$hostCategoryId])
+            || isset($this->hostCategories[$hostCategoryId]['members'][$hostId])
+        ) {
             return;
         }
 
-        $this->hc[$hcId]['members'][$hostId] = $hostName;
+        $this->hostCategories[$hostCategoryId]['members'][$hostId] = $hostName;
     }
 
     /**
@@ -93,7 +102,7 @@ class Hostcategory extends AbstractObject
      */
     public function generateObjects(): void
     {
-        foreach ($this->hc as $id => &$value) {
+        foreach ($this->hostCategories as $id => &$value) {
             if (! isset($value['members']) || count($value['members']) === 0) {
                 continue;
             }
@@ -110,9 +119,9 @@ class Hostcategory extends AbstractObject
     public function reset(): void
     {
         parent::reset();
-        foreach ($this->hc as &$value) {
+        foreach ($this->hostCategories as &$value) {
             if (!is_null($value)) {
-                $value['members'] = array();
+                $value['members'] = [];
             }
         }
     }

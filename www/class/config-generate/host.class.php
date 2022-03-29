@@ -519,8 +519,8 @@ class Host extends AbstractHost
         Escalation::getInstance($this->dependencyInjector)->generateObjects();
         Dependency::getInstance($this->dependencyInjector)->generateObjects();
         Severity::getInstance($this->dependencyInjector)->generateObjects();
-        Hostcategory::getInstance($this->dependencyInjector)->generateObjects();
-        Servicecategory::getInstance($this->dependencyInjector)->generateObjects();
+        HostCategory::getInstance($this->dependencyInjector)->generateObjects();
+        ServiceCategory::getInstance($this->dependencyInjector)->generateObjects();
     }
 
     public function getHostIdByHostName($host_name)
@@ -605,9 +605,9 @@ class Host extends AbstractHost
             $host['hc'] = $stmt->fetchAll(PDO::FETCH_COLUMN);
         }
 
-        $hostcategory = Hostcategory::getInstance($this->dependencyInjector);
-        foreach ($host['hc'] as $hcId) {
-            $hostcategory->addHostInHc($hcId, $host['host_id'], $host['host_name']);
+        $hostCategory = HostCategory::getInstance($this->dependencyInjector);
+        foreach ($host['hc'] as $hostCategoryId) {
+            $hostCategory->addHostInHostCategories($hostCategoryId, $host['host_id'], $host['host_name']);
         }
     }
 }

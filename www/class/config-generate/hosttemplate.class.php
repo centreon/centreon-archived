@@ -132,7 +132,7 @@ class HostTemplate extends AbstractHost
     /**
      * @param int $hostId
      */
-    public function addCacheHostTpl(int $hostId) : void
+    public function addCacheHostTpl(int $hostId): void
     {
         // We use host_register = 1 because we don't want _Module_* hosts
         $stmt = $this->backend_instance->db->prepare("
@@ -236,9 +236,9 @@ class HostTemplate extends AbstractHost
             $host['hc'] = $stmt->fetchAll(PDO::FETCH_COLUMN);
         }
 
-        $hostcategory = Hostcategory::getInstance($this->dependencyInjector);
-        foreach ($host['hc'] as $hcId) {
-            $hostcategory->addHostInHc($hcId, $host['host_id'], $host['name']);
+        $hostCategory = HostCategory::getInstance($this->dependencyInjector);
+        foreach ($host['hc'] as $hostCategoryId) {
+            $hostCategory->addHostInHostCategories($hostCategoryId, $host['host_id'], $host['name']);
         }
     }
 }
