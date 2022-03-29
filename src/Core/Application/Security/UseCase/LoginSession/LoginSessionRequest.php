@@ -28,11 +28,6 @@ class LoginSessionRequest
     /**
      * @var string
      */
-    public string $providerConfigurationName;
-
-    /**
-     * @var string
-     */
     public string $login;
 
     /**

@@ -87,14 +87,28 @@ const renderResetPasswordPage = (
   },
 ): RenderResult => render(<TestComponent initialValues={initialValues} />);
 
+const retrievedProvidersConfiguration = [
+  {
+    authentication_uri:
+      '/centreon/authentication/providers/configurations/local',
+    id: 1,
+    is_active: true,
+    name: 'local',
+  },
+];
+
 describe('Reset password Page', () => {
   beforeEach(() => {
     mockedAxios.put.mockResolvedValue({
       data: null,
     });
+
     mockedAxios.get
       .mockResolvedValueOnce({
         data: retrievedWeb,
+      })
+      .mockResolvedValueOnce({
+        data: retrievedProvidersConfiguration,
       })
       .mockResolvedValue({
         data: retrievedUser,
@@ -108,6 +122,7 @@ describe('Reset password Page', () => {
   afterEach(() => {
     mockedAxios.get.mockReset();
     mockedAxios.put.mockReset();
+    mockedAxios.post.mockReset();
     window.history.pushState({}, '', '/');
   });
 

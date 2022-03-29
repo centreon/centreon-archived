@@ -92,4 +92,8 @@ class FindInstallationStatusPresenterStub implements FindInstallationStatusPrese
     {
         return $this->responseHeaders;
     }
+
+    public function getPresentedData(): mixed
+    {
+    }
 }

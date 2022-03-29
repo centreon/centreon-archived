@@ -146,43 +146,41 @@ paths:
       tags:
         - Authentication
       summary: "Providers Configurations"
-      description: "Endpoint to list all the existing providers configuration"
+      description: "Endpoint to list active existing providers configuration"
       responses:
         '200':
           description: "OK"
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                    description: "Id of configuration"
-                    example: 1
-                  type:
-                    type: "string"
-                    description: "Type of provider"
-                    example: "local"
-                  name:
-                    type: "string"
-                    description: "Name of provider"
-                    example: "local"
-                  authentication_uri:
-                    type: "string"
-                    description: "Provider Uri used to proceed authentication"
-                    example: "/centreon/authentication/providers/configurations/local"
-                  centreon_base_uri:
-                    type: "string"
-                    description: "Centreon Base Uri used by the provider to redirect"
-                    example: "/centreon"
-                  is_active:
-                    type: boolean
-                    description: "Provider active or not"
-                    example: true
-                  is_forced:
-                    type: boolean
-                    description: "Provider forced or not"
-                    example: false
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      description: "Id of configuration"
+                      example: 1
+                    type:
+                      type: "string"
+                      description: "Type of provider"
+                      example: "local"
+                    name:
+                      type: "string"
+                      description: "Name of provider"
+                      example: "local"
+                    authentication_uri:
+                      type: "string"
+                      description: "Provider Uri used to proceed authentication"
+                      example: "/centreon/authentication/providers/configurations/local"
+                    is_active:
+                      type: boolean
+                      description: "Provider active or not"
+                      example: true
+                    is_forced:
+                      type: boolean
+                      description: "Provider forced or not"
+                      example: false
   /authentication/providers/configurations/{provider_configuration_name}:
     post:
       tags:
@@ -901,6 +899,32 @@ paths:
                     example: '/main.php?p=60901'
         '403':
           $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /configuration/contact-template:
+    get:
+      tags:
+      - User
+      summary: "List contact templates"
+      description: "List configured contact templates"
+      responses:
+        '200':
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Configuration.ContactTemplate'
+                  meta:
+                    $ref: '#/components/schemas/Meta'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
         '500':
           $ref: '#/components/responses/InternalServerError'
   /users/filters/{page_name}:
@@ -3639,6 +3663,31 @@ paths:
       responses:
         '204':
             description: "OK"
+  /administration/authentication/providers/openid:
+    get:
+      tags:
+        - Administration
+      summary: get openid provider configuration
+      responses:
+        '200':
+            description: "OK"
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/AuthenticationOpenIdProvider'
+    put:
+      tags:
+        - Administration
+      summary: update openid provider configuration
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthenticationOpenIdProvider'
+      responses:
+        '204':
+            description: "Configuration updated"
   /administration/parameters:
     post:
       tags:
@@ -4193,6 +4242,7 @@ components:
             - password_expiration
             - can_reuse_passwords
             - delay_before_new_password
+            - contact_template_id
           properties:
             password_min_length:
               description: minimum length of the password
@@ -4264,6 +4314,147 @@ components:
               minimum: 3600
               maximum: 604800
               default: 3600
+    AuthenticationOpenIdProvider:
+      type: object
+      required:
+        - is_active
+        - is_forced
+        - trusted_client_addresses
+        - blacklist_client_addresses
+        - base_url
+        - authorization_endpoint
+        - token_endpoint
+        - introspection_token_endpoint
+        - userinfo_endpoint
+        - endsession_endpoint
+        - connection_scopes
+        - login_claim
+        - client_id
+        - client_secret
+        - authentication_type
+        - verify_peer
+        - auto_import
+        - contact_template
+        - email_bind_attribute
+        - alias_bind_attribute
+        - fullname_bind_attribute
+      properties:
+        is_active:
+          type: boolean
+          description: "Indicates whether the provider is active or not"
+          example: true
+        is_forced:
+          type: boolean
+          description: "Indicates whether the provider is forced or not"
+          example: false
+        trusted_client_addresses:
+          type: array
+          description: "List of trusted client addresses"
+          items:
+            type: string
+            description: "IP address"
+            example: "127.0.0.1"
+        blacklist_client_addresses:
+          type: array
+          description: "List of blacklisted client addresses"
+          items:
+            type: string
+            description: "IP address"
+            example: "127.0.0.1"
+        base_url:
+          type: string
+          description: "Base URL of the provider"
+          example: "https://localhost:8080"
+          nullable: true
+        authorization_endpoint:
+          type: string
+          description: "Authorization endpoint of the provider"
+          example: "/authorize"
+          nullable: true
+        token_endpoint:
+          type: string
+          description: "Token endpoint of the provider"
+          example: "/token"
+          nullable: true
+        introspection_token_endpoint:
+          type: string
+          description: "Introspection token endpoint of the provider"
+          example: "/introspect"
+          nullable: true
+        userinfo_endpoint:
+          type: string
+          description: "Userinfo endpoint of the provider"
+          example: "/userinfo"
+          nullable: true
+        endsession_endpoint:
+          type: string
+          description: "Endsession endpoint of the provider"
+          example: "/logout"
+          nullable: true
+        connection_scopes:
+          type: array
+          description: "List of scopes to request"
+          items:
+            type: string
+            description: "Scope"
+            example: "openid"
+        login_claim:
+          type: string
+          description: "Claim used to login"
+          example: "sub"
+          nullable: true
+        client_id:
+          type: string
+          description: "Client ID"
+          example: "client_id"
+          nullable: true
+        client_secret:
+          type: string
+          description: "Client secret"
+          example: "client_secret"
+          nullable: true
+        authentication_type:
+          type: string
+          description: "Authentication type"
+          example: "client_secret_post"
+          nullable: true
+          enum:
+            - client_secret_post
+            - client_secret_basic
+        verify_peer:
+          type: boolean
+          description: "Verify peer"
+          example: true
+        auto_import:
+          type: boolean
+          description: "Auto import user from external provider"
+          example: true
+        contact_template:
+          type: object
+          properties:
+            id:
+              type: integer
+              description: "Contact template ID"
+              example: 1
+            name:
+              type: string
+              description: "Contact template name"
+              example: "Default"
+        email_bind_attribute:
+          type: string
+          description: "Email bind attribute"
+          example: "email"
+          nullable: true
+        alias_bind_attribute:
+          type: string
+          description: "Alias bind attribute"
+          example: "preferred_username"
+          nullable: true
+        fullname_bind_attribute:
+          type: string
+          description: "Fullname bind attribute"
+          example: "name"
+          nullable: true
     Comment.Resources:
       type: object
       required: [ resources ]
@@ -4611,6 +4802,20 @@ components:
         is_activated:
           type: boolean
           description: "Indicates whether the host group is activated or not"
+    Configuration.ContactTemplate:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: integer
+          description: "Contact template id"
+          example: 1
+        name:
+          type: string
+          description: "Contact template name"
+          example: "Contact Template"
     Media.NullableImage:
       type: object
       nullable: true
