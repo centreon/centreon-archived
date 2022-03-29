@@ -24,11 +24,11 @@ namespace Core\Infrastructure\Configuration\NotificationPolicy\Api\Hypermedia;
 
 use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
-use Core\Infrastructure\RealTime\Api\Hypermedia\HypermediaProviderTrait;
+use Core\Infrastructure\Common\Api\HttpUrlTrait;
 
 class ContactGroupHypermediaCreator
 {
-    use HypermediaProviderTrait;
+    use HttpUrlTrait;
 
     private const URI_CONFIGURATION_CONTACT_GROUP = '/main.php?p=60302&o=c&cg_id={contactGroupId}';
 
