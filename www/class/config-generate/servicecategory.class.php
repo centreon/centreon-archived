@@ -166,7 +166,7 @@ class ServiceCategory extends AbstractObject
             $this->getServiceCategoryFromId($serviceCategoryId);
         }
         if (
-            is_null($this->serviceCategories[$serviceCategoryId])
+            ! isset($this->serviceCategories[$serviceCategoryId])
             || isset($this->serviceCategories[$serviceCategoryId]['members'][$serviceId])
         ) {
             return;
