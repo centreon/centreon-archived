@@ -88,7 +88,7 @@ class HostCategory extends AbstractObject
             $this->getHostcategoryFromId($hostCategoryId);
         }
         if (
-            is_null($this->hostCategories[$hostCategoryId])
+            ! isset($this->hostCategories[$hostCategoryId])
             || isset($this->hostCategories[$hostCategoryId]['members'][$hostId])
         ) {
             return;
