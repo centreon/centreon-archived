@@ -127,7 +127,7 @@ class ParametersController extends AbstractController
                     $isAcknowledgementSticky = (int) $option->getValue() === 1 ? true : false;
                     break;
                 case self::DEFAULT_ACKNOWLEDGEMENT_NOTIFY:
-                    $isAcknowledgementNotify = (int) $option->getValue() === 1 ? true : false;
+                    $isAcknowledgementNotify = (int) $option->getValue() === 1;
                     break;
                 case self::DEFAULT_ACKNOWLEDGEMENT_WITH_SERVICES:
                     $isAcknowledgementWithServices = (int) $option->getValue() === 1 ? true : false;
