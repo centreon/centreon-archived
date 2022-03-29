@@ -133,7 +133,7 @@ class ParametersController extends AbstractController
                     $isAcknowledgementWithServices = (int) $option->getValue() === 1 ? true : false;
                     break;
                 case self::DEFAULT_ACKNOWLEDGEMENT_FORCE_ACTIVE_CHECKS:
-                    $isAcknowledgementForceActiveChecks = (int) $option->getValue() === 1 ? true : false;
+                    $isAcknowledgementForceActiveChecks = (int) $option->getValue() === 1;
                     break;
                 case self::DEFAULT_DOWNTIME_WITH_SERVICES:
                     $isDowntimeWithServices = (int) $option->getValue() === 1 ? true : false;
