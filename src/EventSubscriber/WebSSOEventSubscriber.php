@@ -118,6 +118,7 @@ class WebSSOEventSubscriber implements EventSubscriberInterface
      *
      * @param WebSSOConfiguration $webSSOConfiguration
      * @return string
+     * @throws SSOAuthenticationException
      */
     private function extractUsernameFromLoginClaimOrFail(WebSSOConfiguration $webSSOConfiguration): string
     {
@@ -136,6 +137,7 @@ class WebSSOEventSubscriber implements EventSubscriberInterface
     /**
      * @param string $ipAddress
      * @param WebSSOConfiguration $webSSOConfiguration
+     * @throws SSOAuthenticationException
      */
     private function validateIpIsAllowToConnect(string $ipAddress, WebSSOConfiguration $webSSOConfiguration): void
     {
@@ -273,6 +275,7 @@ class WebSSOEventSubscriber implements EventSubscriberInterface
      * @param ProviderToken $providerToken
      * @param ProviderToken|null $providerRefreshToken
      * @param string|null $clientIp
+     * @throws AuthenticationException
      */
     private function createAuthenticationTokens(
         string $sessionToken,
