@@ -167,26 +167,11 @@ final class AcknowledgementRepositoryRDB extends AbstractRepositoryDRB implement
                   AND acg.acl_group_activate = \'1\'
                   AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups) . ') ';
 
-        $request = 'SELECT
-            ack.acknowledgement_id,
-            ack.entry_time,
-            ack.host_id,
-            ack.service_id,
-            ack.author,
-            `cmts`.data AS `comment_data`,
-            ack.deletion_time,
-            ack.instance_id,
-            ack.notify_contacts,
-            ack.persistent_comment,
-            ack.state,
-            ack.sticky,
-            ack.type,
-            contact.contact_id AS `author_id`
+        $request =
+            'SELECT ack.*, contact.contact_id AS author_id
             FROM `:dbstg`.acknowledgements ack
             LEFT JOIN `:db`.contact
-                ON contact.contact_alias = ack.author
-            LEFT JOIN `:dbstg`.`comments` AS `cmts`
-                ON `cmts`.host_id = ack.host_id AND `cmts`.deletion_time IS NULL'
+              ON contact.contact_alias = ack.author'
             . $accessGroupFilter
             . 'WHERE ack.host_id = :host_id
               AND ack.service_id = 0';
@@ -218,27 +203,11 @@ final class AcknowledgementRepositoryRDB extends AbstractRepositoryDRB implement
                   AND acg.acl_group_activate = \'1\'
                   AND acg.acl_group_id IN (' . $this->accessGroupIdToString($this->accessGroups) . ') ';
 
-        $request = 'SELECT
-            ack.acknowledgement_id,
-            ack.entry_time,
-            ack.host_id,
-            ack.service_id,
-            ack.author,
-            `cmts`.data AS `comment_data`,
-            ack.deletion_time,
-            ack.instance_id,
-            ack.notify_contacts,
-            ack.persistent_comment,
-            ack.state,
-            ack.sticky,
-            ack.type,
-            contact.contact_id AS `author_id`
+        $request =
+            'SELECT ack.*, contact.contact_id AS author_id
             FROM `:dbstg`.acknowledgements ack
             LEFT JOIN `:db`.contact
-                ON contact.contact_alias = ack.author
-            LEFT JOIN `:dbstg`.`comments` AS `cmts`
-                ON `cmts`.host_id = ack.host_id AND `cmts`.service_id = ack.host_id
-                AND `cmts`.deletion_time IS NULL'
+              ON contact.contact_alias = ack.author'
             . $accessGroupFilter
             . 'WHERE ack.host_id = :host_id
             AND ack.service_id = :service_id';
@@ -366,10 +335,7 @@ final class AcknowledgementRepositoryRDB extends AbstractRepositoryDRB implement
             ? ' '
             : ' INNER JOIN `:dbstg`.`centreon_acl` acl
                   ON acl.host_id = ack.host_id'
-                .  (($type === Acknowledgement::TYPE_SERVICE_ACKNOWLEDGEMENT)
-                    ? ' AND acl.service_id = ack.service_id '
-                    : ''
-                )
+                .  (($type === Acknowledgement::TYPE_SERVICE_ACKNOWLEDGEMENT) ? ' AND acl.service_id = ack.service_id ' : '')
                 . ' INNER JOIN `:db`.`acl_groups` acg
                   ON acg.acl_group_id = acl.group_id
                   AND acg.acl_group_activate = \'1\'
