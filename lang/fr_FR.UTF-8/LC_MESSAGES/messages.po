@@ -16656,6 +16656,7 @@ msgstr "Evénement fourni invalide (%s)"
 
 msgid "Error when searching for the central engine configuration"
 msgstr "Erreur lors de la recherche de la configuration du moteur de collecte central"
+
 msgid "No provider presenters could be found"
 msgstr "Aucun présenteur de fournisseur n'a pu être trouvé"
 

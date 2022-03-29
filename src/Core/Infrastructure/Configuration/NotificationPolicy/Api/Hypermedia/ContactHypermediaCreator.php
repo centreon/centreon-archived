@@ -24,11 +24,11 @@ namespace Core\Infrastructure\Configuration\NotificationPolicy\Api\Hypermedia;
 
 use Centreon\Domain\Contact\Contact;
 use Centreon\Domain\Contact\Interfaces\ContactInterface;
-use Core\Infrastructure\RealTime\Api\Hypermedia\HypermediaProviderTrait;
+use Core\Infrastructure\Common\Api\HttpUrlTrait;
 
 class ContactHypermediaCreator
 {
-    use HypermediaProviderTrait;
+    use HttpUrlTrait;
 
     private const URI_CONFIGURATION_CONTACT = '/main.php?p=60301&o=c&contact_id={contactId}';
 
