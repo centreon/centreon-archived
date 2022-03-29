@@ -16716,3 +16716,6 @@ msgstr "[%s] : Aucun code d'autorisation n'a été retourné par le fournisseur 
 
 msgid "Login with"
 msgstr "Se connecter avec"
+
+msgid "Can't resolve username from login claim using configured regexp"
+msgstr "Impossible de résoudre le nom d'utilisateur à partir de la déclaration de connexion en utilisant la regexp configurée"

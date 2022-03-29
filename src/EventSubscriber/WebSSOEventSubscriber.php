@@ -41,6 +41,7 @@ use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
 use Core\Domain\Security\ProviderConfiguration\WebSSO\Model\WebSSOConfiguration;
 use Security\Domain\Authentication\Interfaces\AuthenticationRepositoryInterface;
 use Core\Application\Security\ProviderConfiguration\WebSSO\Repository\ReadWebSSOConfigurationRepositoryInterface;
+use Core\Domain\Security\Authentication\SSOAuthenticationException;
 use Symfony\Component\HttpFoundation\Request;
 
 class WebSSOEventSubscriber implements EventSubscriberInterface
@@ -126,7 +127,7 @@ class WebSSOEventSubscriber implements EventSubscriberInterface
             $_SERVER[$webSSOConfiguration->getLoginHeaderAttribute()]
         );
         if (is_array($userAlias) || empty($userAlias)) {
-            throw new \Exception('Can\'t resolve username from login claim using configured regexp');
+            throw SSOAuthenticationException::unableToRetrieveUsernameFromLoginClaim();
         }
 
         return $userAlias;
@@ -139,13 +140,13 @@ class WebSSOEventSubscriber implements EventSubscriberInterface
     private function validateIpIsAllowToConnect(string $ipAddress, WebSSOConfiguration $webSSOConfiguration): void
     {
         if (in_array($ipAddress, $webSSOConfiguration->getBlackListClientAddresses())) {
-            throw new \Exception('IP address is blacklisted');
+            throw SSOAuthenticationException::blackListedClient();
         }
         if (
             ! empty($webSSOConfiguration->getTrustedClientAddresses())
             && ! in_array($ipAddress, $webSSOConfiguration->getTrustedClientAddresses())
         ) {
-            throw new \Exception('IP address is not whitelisted');
+            throw SSOAuthenticationException::notWhiteListedClient();
         }
     }
 
