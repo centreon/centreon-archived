@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { equals, keys, omit } from 'ramda';
+import { equals } from 'ramda';
 import clsx from 'clsx';
 import { useAtomValue, useAtom } from 'jotai';
 
@@ -15,6 +15,7 @@ import { Page } from '../../models';
 import {
   selectedNavigationItemsAtom,
   hoveredNavigationItemsAtom,
+  hoveredNavigationItemsDerivedAtom,
 } from '../sideBarAtoms';
 
 import MenuItems from './MenuItems';
@@ -143,9 +144,10 @@ const CollapsibleItems = ({
   const [nestedScrollCollapsMaxWidth, setNestedScrollCollapsMaxWidth] =
     useState<undefined | number>(undefined);
   const collapsRef = React.useRef<HTMLElement | null>(null);
-  const [hoveredNavigationItems, setHoveredNavigationItems] = useAtom(
-    hoveredNavigationItemsAtom,
+  const [, hoveredNavigationItemsDerived] = useAtom(
+    hoveredNavigationItemsDerivedAtom,
   );
+  const hoveredNavigationItems = useAtomValue(hoveredNavigationItemsAtom);
   const selectedNavigationItems = useAtomValue(selectedNavigationItemsAtom);
 
   const levelName = `level_${level}`;
@@ -157,23 +159,7 @@ const CollapsibleItems = ({
     const { top } = rect;
     setItemTop(top);
     setHoveredIndex(index);
-
-    const navigationKeysToRemove = keys(hoveredNavigationItems).filter(
-      (navigationItem) => {
-        return navigationItem > levelName;
-      },
-    );
-    if (navigationKeysToRemove.length <= 0) {
-      setHoveredNavigationItems({
-        ...hoveredNavigationItems,
-        [levelName]: currentPage,
-      });
-
-      return;
-    }
-    setHoveredNavigationItems(
-      omit(navigationKeysToRemove, hoveredNavigationItems),
-    );
+    hoveredNavigationItemsDerived({ currentPage, levelName });
   };
 
   const isItemHovered = ({

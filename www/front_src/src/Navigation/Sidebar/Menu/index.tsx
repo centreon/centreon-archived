@@ -14,6 +14,7 @@ import { Page } from '../../models';
 import {
   selectedNavigationItemsAtom,
   hoveredNavigationItemsAtom,
+  hoveredNavigationItemsDerivedAtom,
 } from '../sideBarAtoms';
 import { closedDrawerWidth, openedDrawerWidth } from '../index';
 
@@ -60,6 +61,11 @@ const NavigationMenu = ({
   const [hoveredNavigationItems, setHoveredNavigationItems] = useAtom(
     hoveredNavigationItemsAtom,
   );
+
+  const [, hoveredNavigationItemsDerived] = useAtom(
+    hoveredNavigationItemsDerivedAtom,
+  );
+
   const levelName = 'level_0';
   const currentWidth = isDrawerOpen ? openedDrawerWidth / 8 : closedDrawerWidth;
 
@@ -82,24 +88,7 @@ const NavigationMenu = ({
     const { top } = rect;
     setCurrentTop(top);
     setHoveredIndex(index);
-
-    const navigationKeysToRemove = keys(hoveredNavigationItems).filter(
-      (navigationItem) => {
-        return navigationItem > levelName;
-      },
-    );
-
-    if (navigationKeysToRemove.length <= 0) {
-      setHoveredNavigationItems({
-        ...hoveredNavigationItems,
-        [levelName]: currentPage,
-      });
-
-      return;
-    }
-    setHoveredNavigationItems(
-      omit(navigationKeysToRemove, hoveredNavigationItems),
-    );
+    hoveredNavigationItemsDerived({ currentPage, levelName });
   };
 
   const handleLeave = (): void => {
