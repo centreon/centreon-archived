@@ -131,7 +131,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     display: 'flex',
     flexWrap: 'wrap',
-    padding: theme.spacing(0.75, 2.75, 0.75, 7.6),
+    padding: theme.spacing(0.75, 2.75, 0.75, 1),
     position: 'relative',
   },
   wrapRightUserItems: {
