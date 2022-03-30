@@ -231,6 +231,7 @@ class Generate
         Contactgroup::getInstance($this->dependencyInjector)->reset();
         Hostgroup::getInstance($this->dependencyInjector)->reset();
         Servicegroup::getInstance($this->dependencyInjector)->reset();
+        Severity::getInstance($this->dependencyInjector)->reset();
         Timeperiod::getInstance($this->dependencyInjector)->reset();
         Escalation::getInstance($this->dependencyInjector)->reset();
         Dependency::getInstance($this->dependencyInjector)->reset();
