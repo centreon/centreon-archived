@@ -128,7 +128,6 @@ class WebSSOEventSubscriber implements EventSubscriberInterface
      * @param WebSSOConfiguration $webSSOConfiguration
      * @return string
      * @throws SSOAuthenticationException
-     * @throws \InvalidArgumentException
      */
     private function extractUsernameFromLoginClaimOrFail(WebSSOConfiguration $webSSOConfiguration): string
     {
