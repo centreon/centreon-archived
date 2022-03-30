@@ -59,8 +59,6 @@ if (
 $cbObj = new CentreonConfigCentreonBroker($pearDB);
 
 /**
- * Undocumented function
- *
  * @param array<string,mixed> $data
  * @return array<string,mixed>
  */
@@ -78,8 +76,6 @@ function htmlEncodeBrokerInformation(array $data): array
 }
 
 /**
- * Undocumented function
- *
  * @param array<string,mixed> $data
  * @return array<string,mixed>
  */
