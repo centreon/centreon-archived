@@ -136,7 +136,6 @@ const useApp = (): UseAppState => {
     keepAliveRequest({
       endpoint: keepAliveEndpoint,
     }).catch((error) => {
-      console.log(not(pathEq(['response', 'status'], 401, error)));
       if (not(pathEq(['response', 'status'], 401, error))) {
         return;
       }
