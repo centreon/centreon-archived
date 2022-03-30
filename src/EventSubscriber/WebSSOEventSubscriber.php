@@ -91,6 +91,10 @@ class WebSSOEventSubscriber implements EventSubscriberInterface
      * login User with Web SSO
      *
      * @param RequestEvent $event
+     * @throws SSOAuthenticationException
+     * @throws NotFoundException
+     * @throws \InvalidArgumentException
+     * @throws AuthenticationException
      */
     public function loginWebSSOUser(RequestEvent $event): void
     {
@@ -124,6 +128,7 @@ class WebSSOEventSubscriber implements EventSubscriberInterface
      * @param WebSSOConfiguration $webSSOConfiguration
      * @return string
      * @throws SSOAuthenticationException
+     * @throws \InvalidArgumentException
      */
     private function extractUsernameFromLoginClaimOrFail(WebSSOConfiguration $webSSOConfiguration): string
     {
@@ -325,7 +330,7 @@ class WebSSOEventSubscriber implements EventSubscriberInterface
             }
         } catch (\Exception $ex) {
             $this->error('Unable to create authentication tokens', [
-                'trace' => $ex
+                'trace' => $ex->getTraceAsString()
             ]);
             if (!$isAlreadyInTransaction) {
                 $this->dataStorageEngine->rollbackTransaction();
