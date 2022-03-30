@@ -56,6 +56,8 @@ if (
     return null;
 }
 
+const PASSWORD_REPLACEMENT_VALUE = '**********';
+
 $cbObj = new CentreonConfigCentreonBroker($pearDB);
 
 /*
