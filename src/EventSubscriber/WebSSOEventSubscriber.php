@@ -35,6 +35,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Centreon\Infrastructure\Service\Exception\NotFoundException;
 use Core\Domain\Security\Authentication\AuthenticationException;
 use Centreon\Domain\Contact\Interfaces\ContactRepositoryInterface;
+use Centreon\Domain\Log\LoggerTrait;
 use Centreon\Domain\Repository\Interfaces\DataStorageEngineInterface;
 use Security\Domain\Authentication\Interfaces\SessionRepositoryInterface;
 use Security\Domain\Authentication\Interfaces\AuthenticationServiceInterface;
@@ -46,8 +47,9 @@ use Symfony\Component\HttpFoundation\Request;
 
 class WebSSOEventSubscriber implements EventSubscriberInterface
 {
+    use LoggerTrait;
+
     /**
-     * @param integer $sessionExpirationDelay
      * @param Container $dependencyInjector
      * @param ReadWebSSOConfigurationRepositoryInterface $webSSOReadRepository
      * @param ContactRepositoryInterface $contactRepository
@@ -60,7 +62,6 @@ class WebSSOEventSubscriber implements EventSubscriberInterface
      * @param Security $security
      */
     public function __construct(
-        private int $sessionExpirationDelay,
         private Container $dependencyInjector,
         private ReadWebSSOConfigurationRepositoryInterface $webSSOReadRepository,
         private ContactRepositoryInterface $contactRepository,
@@ -97,6 +98,7 @@ class WebSSOEventSubscriber implements EventSubscriberInterface
             $request = $event->getRequest();
             $webSSOConfiguration = $this->findWebSSOConfigurationOrFail();
             if ($webSSOConfiguration->isActive()) {
+                $this->info('Starting authentication with WebSSO');
                 $this->validateIpIsAllowToConnect($request->getClientIp(), $webSSOConfiguration);
                 $this->validateLoginAttributeOrFail($webSSOConfiguration);
 
@@ -109,6 +111,9 @@ class WebSSOEventSubscriber implements EventSubscriberInterface
                 $sessionId = $this->session->getId();
                 $request->headers->set('Set-Cookie', "PHPSESSID=" . $sessionId);
                 $this->createTokenIfNotExist($sessionId, $webSSOConfiguration->getId(), $user, $request->getClientIp());
+                $this->info('Authenticated successfully', [
+                    'user' => $user->getAlias()
+                ]);
             }
         }
     }
@@ -122,12 +127,17 @@ class WebSSOEventSubscriber implements EventSubscriberInterface
      */
     private function extractUsernameFromLoginClaimOrFail(WebSSOConfiguration $webSSOConfiguration): string
     {
+        $this->info('Retrieving username from login claim');
         $userAlias = preg_replace(
             '/' . trim($webSSOConfiguration->getPatternMatchingLogin(), '/') . '/',
             $webSSOConfiguration->getPatternReplaceLogin() ?? '',
             $_SERVER[$webSSOConfiguration->getLoginHeaderAttribute()]
         );
-        if (is_array($userAlias) || empty($userAlias)) {
+        if (empty($userAlias)) {
+            $this->error('Regex does not match anything', [
+                'regex' => $webSSOConfiguration->getPatternMatchingLogin(),
+                'subject' => $_SERVER[$webSSOConfiguration->getLoginHeaderAttribute()]
+            ]);
             throw SSOAuthenticationException::unableToRetrieveUsernameFromLoginClaim();
         }
 
@@ -141,13 +151,16 @@ class WebSSOEventSubscriber implements EventSubscriberInterface
      */
     private function validateIpIsAllowToConnect(string $ipAddress, WebSSOConfiguration $webSSOConfiguration): void
     {
-        if (in_array($ipAddress, $webSSOConfiguration->getBlackListClientAddresses())) {
+        $this->info('Check Client IP from blacklist/whitelist addresses');
+        if (in_array($ipAddress, $webSSOConfiguration->getBlackListClientAddresses(), true)) {
+            $this->error('IP Blacklisted', ['ip' => '...' . substr($ipAddress, -5)]);
             throw SSOAuthenticationException::blackListedClient();
         }
         if (
-            ! empty($webSSOConfiguration->getTrustedClientAddresses())
-            && ! in_array($ipAddress, $webSSOConfiguration->getTrustedClientAddresses())
+            !empty($webSSOConfiguration->getTrustedClientAddresses())
+            && !in_array($ipAddress, $webSSOConfiguration->getTrustedClientAddresses(), true)
         ) {
+            $this->error('IP not Whitelisted', ['ip' => '...' . substr($ipAddress, -5)]);
             throw SSOAuthenticationException::notWhiteListedClient();
         }
     }
@@ -160,9 +173,10 @@ class WebSSOEventSubscriber implements EventSubscriberInterface
      */
     private function findWebSSOConfigurationOrFail(): WebSSOConfiguration
     {
+        $this->info('finding web-sso configuration');
         $webSSOConfiguration = $this->webSSOReadRepository->findConfiguration();
         if ($webSSOConfiguration === null) {
-            throw new NotFoundException('Web SSO Configuration doesn\'t exist');
+            throw new NotFoundException('Web SSO Configuration does not exist');
         }
 
         return $webSSOConfiguration;
@@ -176,7 +190,11 @@ class WebSSOEventSubscriber implements EventSubscriberInterface
      */
     private function validateLoginAttributeOrFail(WebSSOConfiguration $webSSOConfiguration): void
     {
-        if (! array_key_exists($webSSOConfiguration->getLoginHeaderAttribute(), $_SERVER)) {
+        $this->info('Validating login header attribute');
+        if (!array_key_exists($webSSOConfiguration->getLoginHeaderAttribute(), $_SERVER)) {
+            $this->error('login header attribute not found in server environment server', [
+                'login_header_attribute' => $webSSOConfiguration->getLoginHeaderAttribute()
+            ]);
             throw new \InvalidArgumentException('Missing Login Attribute');
         }
     }
@@ -190,9 +208,12 @@ class WebSSOEventSubscriber implements EventSubscriberInterface
      */
     private function findUserByAliasOrFail(string $alias): Contact
     {
+        $this->info('searching user', [
+            'user' => $alias
+        ]);
         $user = $this->contactRepository->findByName($alias);
         if ($user === null) {
-            throw new NotFoundException("Contact $alias doesn't exists");
+            throw new NotFoundException("Contact $alias does not exists");
         }
 
         return $user;
@@ -206,6 +227,7 @@ class WebSSOEventSubscriber implements EventSubscriberInterface
      */
     private function createSession(Contact $user, Request $request): void
     {
+        $this->info('creating session');
         global $pearDB;
         $pearDB = $this->dependencyInjector['configuration_db'];
         $sessionUserInfos = [
@@ -243,19 +265,18 @@ class WebSSOEventSubscriber implements EventSubscriberInterface
         Contact $user,
         string $clientIp
     ): void {
+        $this->info('creating token');
         $authenticationTokens = $this->authenticationService->findAuthenticationTokensByToken(
             $sessionId
         );
         if ($authenticationTokens === null) {
             $sessionExpireOption = $this->optionService->findSelectedOptions(['session_expire']);
-            if (!empty($sessionExpireOption)) {
-                $this->sessionExpirationDelay = (int) $sessionExpireOption[0]->getValue();
-            }
+            $sessionExpirationDelay = (int) $sessionExpireOption[0]->getValue();
             $token = new ProviderToken(
                 $webSSOConfigurationId,
                 $sessionId,
                 new \DateTime(),
-                (new \DateTime())->add(new \DateInterval('PT' . $this->sessionExpirationDelay . 'M'))
+                (new \DateTime())->add(new \DateInterval('PT' . $sessionExpirationDelay . 'M'))
             );
             $this->createAuthenticationTokens(
                 $sessionId,
@@ -302,7 +323,10 @@ class WebSSOEventSubscriber implements EventSubscriberInterface
             if (!$isAlreadyInTransaction) {
                 $this->dataStorageEngine->commitTransaction();
             }
-        } catch (\Exception) {
+        } catch (\Exception $ex) {
+            $this->error('Unable to create authentication tokens', [
+                'trace' => $ex
+            ]);
             if (!$isAlreadyInTransaction) {
                 $this->dataStorageEngine->rollbackTransaction();
             }

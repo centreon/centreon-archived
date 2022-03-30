@@ -62,11 +62,13 @@ class ProviderFactory
     {
         foreach ($this->providers as $provider) {
             if ($provider->getName() === $configuration->getName()) {
-                if ($configuration->getName() === OpenIdConfiguration::NAME) {
-                    $configuration = $this->openIdRepository->findConfiguration();
-                }
-                if ($configuration->getName() === WebSSOConfiguration::NAME) {
-                    $configuration = $this->webSSORepository->findConfiguration();
+                switch ($configuration->getName()) {
+                    case OpenIdConfiguration::NAME:
+                        $configuration = $this->openIdRepository->findConfiguration();
+                        break;
+                    case WebSSOConfiguration::NAME:
+                        $configuration = $this->webSSORepository->findConfiguration();
+                        break;
                 }
                 $provider->setConfiguration($configuration);
                 return $provider;

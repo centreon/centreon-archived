@@ -44,36 +44,57 @@ class WebSSOProvider implements WebSSOProviderInterface
      */
     private WebSSOConfiguration $configuration;
 
+    /**
+     * @inheritDoc
+     */
     public function getLegacySession(): \Centreon
     {
         return $this->legacySession;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function setLegacySession(\Centreon $legacySession): void
     {
         $this->legacySession = $legacySession;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function canCreateUser(): bool
     {
         return false;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function canRefreshToken(): bool
     {
         return false;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function getName(): string
     {
         return self::NAME;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function getUser(): ?ContactInterface
     {
         return null;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function setConfiguration(ProviderConfigurationInterface $configuration): void
     {
         if (!is_a($configuration, WebSSOConfiguration::class)) {
@@ -82,11 +103,17 @@ class WebSSOProvider implements WebSSOProviderInterface
         $this->configuration = $configuration;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function getConfiguration(): WebSSOConfiguration
     {
         return $this->configuration;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function refreshToken(AuthenticationTokens $authenticationTokens): ?AuthenticationTokens
     {
         return null;

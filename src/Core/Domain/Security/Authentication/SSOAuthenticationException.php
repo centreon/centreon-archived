@@ -151,6 +151,6 @@ class SSOAuthenticationException extends \Exception
      */
     public static function unableToRetrieveUsernameFromLoginClaim(): self
     {
-        return new self(_('Can\'t resolve username from login claim using configured regexp'));
+        return new self(_('Can\'t resolve username from login claim using configured regular expression'));
     }
 }
