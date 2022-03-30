@@ -40,7 +40,7 @@ class WebSSOProvider implements WebSSOProviderInterface
     private \Centreon $legacySession;
 
     /**
-     * @return \Centreon
+     * @var WebSSOConfiguration
      */
     private WebSSOConfiguration $configuration;
 
