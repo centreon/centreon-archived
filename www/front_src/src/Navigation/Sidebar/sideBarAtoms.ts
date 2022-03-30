@@ -1,6 +1,6 @@
 import { atom } from 'jotai';
 import { atomWithStorage } from 'jotai/utils';
-import { keys, omit } from 'ramda';
+import { isNil, keys, omit } from 'ramda';
 
 import { Page } from '../models';
 
