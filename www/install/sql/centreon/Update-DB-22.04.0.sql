@@ -40,6 +40,20 @@ ALTER TABLE cfg_nagios DROP COLUMN `use_large_installation_tweaks`;
 ALTER TABLE cfg_nagios DROP COLUMN `use_setpgid`;
 ALTER TABLE cfg_nagios DROP COLUMN `translate_passive_host_checks`;
 
+/* remove OCSP / OCHP */
+ALTER TABLE cfg_nagios drop CONSTRAINT `cfg_nagios_ibfk_20`;
+ALTER TABLE cfg_nagios DROP KEY `cmd3_index`;
+ALTER TABLE cfg_nagios DROP COLUMN `ocsp_command`;
+ALTER TABLE cfg_nagios drop CONSTRAINT `cfg_nagios_ibfk_21`;
+ALTER TABLE cfg_nagios DROP KEY `cmd4_index`;
+ALTER TABLE cfg_nagios DROP COLUMN `ochp_command`;
+
+ALTER TABLE cfg_nagios DROP COLUMN `ocsp_timeout`;
+ALTER TABLE cfg_nagios DROP COLUMN `ochp_timeout`;
+ALTER TABLE cfg_nagios DROP COLUMN `obsess_over_services`;
+ALTER TABLE cfg_nagios DROP COLUMN `obsess_over_hosts`;
+
+
 UPDATE cfg_nagios set `auto_reschedule_checks` = '0' WHERE `auto_reschedule_checks` = '2';
 UPDATE cfg_nagios set `enable_environment_macros` = '0' WHERE `enable_environment_macros` = '2';
 UPDATE cfg_nagios set `use_regexp_matching` = '0' WHERE `use_regexp_matching` = '2';
