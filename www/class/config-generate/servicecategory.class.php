@@ -36,12 +36,10 @@
 
 class ServiceCategory extends AbstractObject
 {
-    /** @var int */
-    private $doneCache = 0;
     /** @var array<int,mixed> */
     private $serviceCategories = [];
-    /** @var array<int,int[]> */
-    private $serviceCategoriesRelationsCache = [];
+    /** @var array<int,int[]>|null */
+    private $serviceCategoriesRelationsCache = null;
 
     /** @var string */
     protected $generate_filename = 'tags.cfg';
@@ -58,15 +56,6 @@ class ServiceCategory extends AbstractObject
         'name',
         'type',
     ];
-
-    /**
-     * @param \Pimple\Container $dependencyInjector
-     */
-    public function __construct(\Pimple\Container $dependencyInjector)
-    {
-        parent::__construct($dependencyInjector);
-        $this->buildCache();
-    }
 
     /**
      * Build cache for service categories
@@ -98,33 +87,11 @@ class ServiceCategory extends AbstractObject
      */
     public function getServiceCategoriesForServiceTemplate(int $serviceId): array
     {
-        # Get from the cache
-        if (isset($this->serviceCategoriesRelationsCache[$serviceId])) {
-            return $this->serviceCategoriesRelationsCache[$serviceId];
-        }
-        if ($this->doneCache === 1) {
-            return array();
+        if ($this->serviceCategoriesRelationsCache === null) {
+            $this->buildCache();
         }
 
-        # We get unitary
-        $stmt = $this->backend_instance->db->prepare(
-            "SELECT service_categories.sc_id, service_service_id
-            FROM service_categories, service_categories_relation
-            WHERE level IS NULL
-            AND sc_activate = '1'
-            AND service_categories_relation.sc_id = service_categories.sc_id
-            AND service_categories_relation.service_service_id = :serviceId"
-        );
-        $stmt->bindParam(':serviceId', $serviceId, PDO::PARAM_INT);
-        $stmt->execute();
-
-        $categories = [];
-        foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $value) {
-            $categories[] = $value['sc_id'];
-        }
-        $this->serviceCategoriesRelationsCache[$serviceId] = $categories;
-
-        return $categories;
+        return $this->serviceCategoriesRelationsCache[$serviceId] ?? [];
     }
 
     /**
@@ -133,7 +100,7 @@ class ServiceCategory extends AbstractObject
      * @param int $serviceCategoryId
      * @return void
      */
-    private function getServiceCategoryFromId(int $serviceCategoryId): void
+    private function addServiceCategoryToList(int $serviceCategoryId): void
     {
         $stmt = $this->backend_instance->db->prepare(
             "SELECT {$this->attributesSelect}
@@ -157,13 +124,13 @@ class ServiceCategory extends AbstractObject
      * @param int $serviceId
      * @param string $serviceDescription
      */
-    public function addServiceInServiceCategories(
+    public function addServiceToServiceCategoryMembers(
         int $serviceCategoryId,
         int $serviceId,
         string $serviceDescription
     ): void {
         if (! isset($this->serviceCategories[$serviceCategoryId])) {
-            $this->getServiceCategoryFromId($serviceCategoryId);
+            $this->addServiceCategoryToList($serviceCategoryId);
         }
         if (
             ! isset($this->serviceCategories[$serviceCategoryId])
