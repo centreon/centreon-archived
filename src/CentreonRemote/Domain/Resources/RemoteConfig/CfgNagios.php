@@ -103,12 +103,6 @@ class CfgNagios
             'daemon_dumps_core'                           => '0',
             'cfg_file'                                    => 'centengine.cfg',
             'log_pid'                                     => '1',
-            'ocsp_timeout'                                => 5,
-            'ochp_timeout'                                => 5,
-            'obsess_over_services'                        => '0',
-            'ocsp_command'                                => null,
-            'obsess_over_hosts'                           => '2',
-            'ochp_command'                                => null,
         ];
     }
 }

@@ -222,8 +222,8 @@ $nagios_comment["sleep_time"] = "This is the number of seconds to sleep between 
 $nagios_comment["timeout"] = "These options control how much time Nagios will allow various "
     . "types of commands to execute before killing them off.  Options "
     . "are available for controlling maximum time allotted for "
-    . "service checks, host checks, event handlers, notifications, the "
-    . "ocsp command, and performance data commands.  All values are in "
+    . "service checks, host checks, event handlers, notifications, "
+    . "and performance data commands.  All values are in "
     . "seconds. ";
 
 $nagios_comment["retain_state_information"] = "This setting determines whether or not Nagios will save state "
@@ -386,35 +386,6 @@ $nagios_comment["service_perfdata_file_processing_command"] = "This option allow
     . "that you define in your object configuration file.<br />"
     . "The interval at which this command is executed is determined "
     . "by the service_perfdata_file_processing_interval directive.";
-
-$nagios_comment["obsess_over_services"] = "This determines whether or not Nagios will obsess over service "
-    . "checks and run the ocsp_command defined below.  Unless you\'re "
-    . "planning on implementing distributed monitoring, do not enable "
-    . "this option.  Read the HTML docs for more information on "
-    . "implementing distributed monitoring. "
-    . "Values: 1 = obsess over services, 0 = do not obsess (default) ";
-
-$nagios_comment["obsess_over_hosts"] = "This value determines whether or not Nagios will &laquo;obsess&laquo; "
-    . "over host checks results and run the obsessive compulsive host processor command you define.<br />"
-    . "I know - funny name, but it was all I could think of.<br />"
-    . "This option is useful for performing distributed monitoring.<br />"
-    . "If you're not doing distributed monitoring, don't enable this option.";
-
-$nagios_comment["ocsp_command"] = "This is the command that is run for every service check that is "
-    . "processed by Nagios.  This command is executed only if the "
-    . "obsess_over_service option (above) is set to 1.  The command  "
-    . "argument is the short name of a command definition that you "
-    . "define in your host configuration file. Read the HTML docs for "
-    . "more information on implementing distributed monitoring. ";
-
-$nagios_comment["ochp_command"] = "This option allows you to specify a command to be run "
-    . "after every host check, which can be useful in distributed monitoring.<br />"
-    . "This command is executed after any event handler or notification commands.<br />"
-    . "The command argument is the short name of a command definition "
-    . "that you define in your object configuration file.<br />"
-    . "The maximum amount of time that this command can run is controlled by the ochp_timeout option.<br />"
-    . "This command is only executed if the obsess_over_hosts option is enabled globally "
-    . "and if the obsess_over_host directive in the host definition is enabled.";
 
 $nagios_comment["check_for_orphaned_services"] = "This determines whether or not Nagios will periodically  "
     . "check for orphaned services.  Since service checks are not "

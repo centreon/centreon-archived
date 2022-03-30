@@ -72,8 +72,6 @@ class Engine extends AbstractObject
         host_check_timeout,
         event_handler_timeout,
         notification_timeout,
-        ocsp_timeout,
-        ochp_timeout,
         service_freshness_check_interval,
         host_freshness_check_interval,
         instance_heartbeat_interval,
@@ -94,8 +92,6 @@ class Engine extends AbstractObject
         log_pid,
         global_host_event_handler as global_host_event_handler_id,
         global_service_event_handler as global_service_event_handler_id,
-        ocsp_command as ocsp_command_id,
-        ochp_command as ochp_command_id,
         enable_notifications,
         execute_service_checks,
         accept_passive_service_checks,
@@ -197,8 +193,6 @@ class Engine extends AbstractObject
         'log_passive_checks',
         'auto_reschedule_checks',
         'soft_state_dependencies',
-        'obsess_over_services',
-        'obsess_over_hosts',
         'check_for_orphaned_services',
         'check_for_orphaned_hosts',
         'check_service_freshness',
@@ -334,9 +328,7 @@ class Engine extends AbstractObject
             = $command_instance->generateFromCommandId($object['global_host_event_handler_id']);
         $object['global_service_event_handler']
             = $command_instance->generateFromCommandId($object['global_service_event_handler_id']);
-        $object['ocsp_command'] = $command_instance->generateFromCommandId($object['ocsp_command_id']);
-        $object['ochp_command'] = $command_instance->generateFromCommandId($object['ochp_command_id']);
-
+        
         $object['grpc_port'] = 50000 + $poller_id;
         $this->generate_filename = 'centengine.DEBUG';
         $object['cfg_file'] = $this->cfg_file['debug']['cfg_file'];

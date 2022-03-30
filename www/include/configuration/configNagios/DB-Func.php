@@ -270,15 +270,12 @@ function insertNagios($ret = array(), $brokerTab = array())
         . "`host_inter_check_delay_method`, `service_interleave_factor` ,"
         . "`max_concurrent_checks`, `max_service_check_spread` , "
         . "`max_host_check_spread`, `check_result_reaper_frequency` , "
-        . "`auto_reschedule_checks`, `auto_rescheduling_interval` , "
-        . "`auto_rescheduling_window` , "
+        . "`auto_reschedule_checks`, `auto_rescheduling_interval`, `auto_rescheduling_window` , "
         . "`enable_predictive_host_dependency_checks`, `enable_flap_detection`, `low_service_flap_threshold` , "
         . "`high_service_flap_threshold`, `low_host_flap_threshold`, `high_host_flap_threshold` ,"
         . "`soft_state_dependencies` ,`enable_predictive_service_dependency_checks` , "
         . "`service_check_timeout`, `host_check_timeout`, `event_handler_timeout`, "
-        . "`notification_timeout` , `ocsp_timeout`, `ochp_timeout`"
-        . "`obsess_over_services` , `ocsp_command`, `obsess_over_hosts`, `ochp_command`, "
-        . "`check_for_orphaned_services`, `check_service_freshness` , "
+        . "`notification_timeout`, `check_for_orphaned_services`, `check_service_freshness` , "
         . "`service_freshness_check_interval`, `cached_host_check_horizon`, "
         . "`cached_service_check_horizon`, `additional_freshness_latency` , "
         . "`check_host_freshness`, `host_freshness_check_interval`, `instance_heartbeat_interval`, `date_format` , "
@@ -673,48 +670,6 @@ function insertNagios($ret = array(), $brokerTab = array())
         $rq .= "'" . htmlentities($ret["notification_timeout"], ENT_QUOTES, "UTF-8") . "',  ";
     } else {
         $rq .= "30, ";
-    }
-
-    if (isset($ret["ocsp_timeout"]) && $ret["ocsp_timeout"] != null) {
-        $rq .= "'" . htmlentities($ret["ocsp_timeout"], ENT_QUOTES, "UTF-8") . "',  ";
-    } else {
-        $rq .= "5, ";
-    }
-
-    if (isset($ret["ochp_timeout"]) && $ret["ochp_timeout"] != null) {
-        $rq .= "'" . htmlentities($ret["ochp_timeout"], ENT_QUOTES, "UTF-8") . "',  ";
-    } else {
-        $rq .= "5, ";
-    }
-
-    if (
-        isset($ret["obsess_over_services"]["obsess_over_services"])
-        && $ret["obsess_over_services"]["obsess_over_services"] != 2
-    ) {
-        $rq .= "'" . $ret["obsess_over_services"]["obsess_over_services"] . "',  ";
-    } else {
-        $rq .= "'0', ";
-    }
-
-    if (isset($ret["ocsp_command"]) && $ret["ocsp_command"] != null) {
-        $rq .= "'" . htmlentities($ret["ocsp_command"], ENT_QUOTES, "UTF-8") . "',  ";
-    } else {
-        $rq .= "NULL, ";
-    }
-
-    if (
-        isset($ret["obsess_over_hosts"]["obsess_over_hosts"])
-        && $ret["obsess_over_hosts"]["obsess_over_hosts"] != 2
-    ) {
-        $rq .= "'" . $ret["obsess_over_hosts"]["obsess_over_hosts"] . "',  ";
-    } else {
-        $rq .= "'0', ";
-    }
-
-    if (isset($ret["ochp_command"]) && $ret["ochp_command"] != null) {
-        $rq .= "'" . htmlentities($ret["ochp_command"], ENT_QUOTES, "UTF-8") . "',  ";
-    } else {
-        $rq .= "NULL, ";
     }
 
     if (
@@ -1414,48 +1369,6 @@ function updateNagios($nagios_id = null)
         $rq .= "notification_timeout = '" . htmlentities($ret["notification_timeout"], ENT_QUOTES, "UTF-8") . "',  ";
     } else {
         $rq .= "notification_timeout = NULL, ";
-    }
-
-    if (isset($ret["ocsp_timeout"]) && $ret["ocsp_timeout"] != null) {
-        $rq .= "ocsp_timeout = '" . htmlentities($ret["ocsp_timeout"], ENT_QUOTES, "UTF-8") . "',  ";
-    } else {
-        $rq .= "ocsp_timeout = NULL, ";
-    }
-
-    if (isset($ret["ochp_timeout"]) && $ret["ochp_timeout"] != null) {
-        $rq .= "ochp_timeout = '" . htmlentities($ret["ochp_timeout"], ENT_QUOTES, "UTF-8") . "',  ";
-    } else {
-        $rq .= "ochp_timeout = NULL, ";
-    }
-
-    if (
-        isset($ret["obsess_over_services"]["obsess_over_services"])
-        && $ret["obsess_over_services"]["obsess_over_services"] != 2
-    ) {
-        $rq .= "obsess_over_services = '" . $ret["obsess_over_services"]["obsess_over_services"] . "',  ";
-    } else {
-        $rq .= "obsess_over_services = '0', ";
-    }
-
-    if (isset($ret["ocsp_command"]) && $ret["ocsp_command"] != null) {
-        $rq .= "ocsp_command = '" . htmlentities($ret["ocsp_command"], ENT_QUOTES, "UTF-8") . "',  ";
-    } else {
-        $rq .= "ocsp_command = NULL, ";
-    }
-
-    if (
-        isset($ret["obsess_over_hosts"]["obsess_over_hosts"])
-        && $ret["obsess_over_hosts"]["obsess_over_hosts"] != 2
-    ) {
-        $rq .= "obsess_over_hosts = '" . $ret["obsess_over_hosts"]["obsess_over_hosts"] . "',  ";
-    } else {
-        $rq .= "obsess_over_hosts = '0', ";
-    }
-
-    if (isset($ret["ochp_command"]) && $ret["ochp_command"] != null) {
-        $rq .= "ochp_command = '" . htmlentities($ret["ochp_command"], ENT_QUOTES, "UTF-8") . "',  ";
-    } else {
-        $rq .= "ochp_command = NULL, ";
     }
 
     if (

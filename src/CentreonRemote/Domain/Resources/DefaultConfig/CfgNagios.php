@@ -71,7 +71,7 @@ class CfgNagios
             'check_for_orphaned_services'                 => '1',
             'check_for_orphaned_hosts'                    => '1',
             'check_service_freshness'                     => '0',
-            'service_freshness_check_interval'            => null,
+            'service_freshness_check_interval'            => '0',
             'freshness_check_interval'                    => null,
             'check_host_freshness'                        => '0',
             'host_freshness_check_interval'               => null,
@@ -100,12 +100,6 @@ class CfgNagios
             'daemon_dumps_core'                           => '0',
             'cfg_file'                                    => 'centengine.cfg',
             'log_pid'                                     => '1',
-            'ocsp_timeout'                                => 5,
-            'ochp_timeout'                                => 5,
-            'obsess_over_services'                        => '0',
-            'ocsp_command'                                => null,
-            'obsess_over_hosts'                           => '2',
-            'ochp_command'                                => null,
         ];
     }
 }

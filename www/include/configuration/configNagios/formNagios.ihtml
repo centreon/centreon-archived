@@ -142,16 +142,6 @@
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="low_host_flap_threshold">&nbsp;{$form.low_host_flap_threshold.label}</td><td class="FormRowValue">{$form.low_host_flap_threshold.html}&nbsp;&nbsp;%</td></tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="high_host_flap_threshold">&nbsp;{$form.high_host_flap_threshold.label}</td><td class="FormRowValue">{$form.high_host_flap_threshold.html}&nbsp;&nbsp;%</td></tr>
 
-		 	<tr class="list_lvl_1">
-        <td class="ListColLvl1_name" colspan="2">
-          <h4>{$PostCheck}</h4>
-        </td>
-      </tr>
-      <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="obsess_over_services">&nbsp;{$form.obsess_over_services.label}</td><td class="FormRowValue">{$form.obsess_over_services.html}</td></tr>
-      <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="ocsp_command">&nbsp;{$form.ocsp_command.label}</td><td class="FormRowValue">{$form.ocsp_command.html}</td></tr>
-      <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="obsess_over_hosts">&nbsp;{$form.obsess_over_hosts.label}</td><td class="FormRowValue">{$form.obsess_over_hosts.html}</td></tr>
-      <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="ochp_command">&nbsp;{$form.ochp_command.label}</td><td class="FormRowValue">{$form.ochp_command.html}</td></tr>     
-
       <tr class="list_lvl_1">
         <td class="ListColLvl1_name" colspan="2">
           <h4>{$MiscOptions}</h4>
@@ -204,8 +194,6 @@
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="host_check_timeout">&nbsp;{$form.host_check_timeout.label}</td><td class="FormRowValue">{$form.host_check_timeout.html}&nbsp;{$Seconds}</td></tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="event_handler_timeout">&nbsp;{$form.event_handler_timeout.label}</td><td class="FormRowValue">{$form.event_handler_timeout.html}&nbsp;{$Seconds}</td></tr>
       <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="notification_timeout">&nbsp;{$form.notification_timeout.label}</td><td class="FormRowValue">{$form.notification_timeout.html}&nbsp;{$Seconds}</td></tr>
-      <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="ocsp_timeout">&nbsp;{$form.ocsp_timeout.label}</td><td class="FormRowValue">{$form.ocsp_timeout.html}&nbsp;{$Seconds}</td></tr>
-      <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="ochp_timeout">&nbsp;{$form.ochp_timeout.label}</td><td class="FormRowValue">{$form.ochp_timeout.html}&nbsp;{$Seconds}</td></tr>
 
 			<tr class="list_lvl_1">
         <td class="ListColLvl1_name" colspan="2">

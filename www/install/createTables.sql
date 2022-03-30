@@ -530,12 +530,6 @@ CREATE TABLE `cfg_nagios` (
   `host_check_timeout` int(11) DEFAULT NULL,
   `event_handler_timeout` int(11) DEFAULT NULL,
   `notification_timeout` int(11) DEFAULT NULL,
-  `ocsp_timeout` int(11) DEFAULT NULL,
-  `ochp_timeout` int(11) DEFAULT NULL,
-  `obsess_over_services` enum('0','1') DEFAULT NULL,
-  `ocsp_command` int(11) DEFAULT NULL,
-  `obsess_over_hosts` enum('0','1') DEFAULT NULL,
-  `ochp_command` int(11) DEFAULT NULL,
   `check_for_orphaned_services` enum('0','1') DEFAULT NULL,
   `check_for_orphaned_hosts` enum('0','1') DEFAULT NULL,
   `check_service_freshness` enum('0','1') DEFAULT NULL,
@@ -580,8 +574,6 @@ CREATE TABLE `cfg_nagios` (
   KEY `nagios_server_id` (`nagios_server_id`),
   CONSTRAINT `cfg_nagios_ibfk_18` FOREIGN KEY (`global_host_event_handler`) REFERENCES `command` (`command_id`) ON DELETE SET NULL,
   CONSTRAINT `cfg_nagios_ibfk_19` FOREIGN KEY (`global_service_event_handler`) REFERENCES `command` (`command_id`) ON DELETE SET NULL,
-  CONSTRAINT `cfg_nagios_ibfk_20` FOREIGN KEY (`ocsp_command`) REFERENCES `command` (`command_id`) ON DELETE SET NULL,
-  CONSTRAINT `cfg_nagios_ibfk_21` FOREIGN KEY (`ochp_command`) REFERENCES `command` (`command_id`) ON DELETE SET NULL,
   CONSTRAINT `cfg_nagios_ibfk_26` FOREIGN KEY (`nagios_server_id`) REFERENCES `nagios_server` (`id`) ON DELETE CASCADE,
   CONSTRAINT `cfg_nagios_ibfk_27` FOREIGN KEY (`use_timezone`) REFERENCES `timezone` (`timezone_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

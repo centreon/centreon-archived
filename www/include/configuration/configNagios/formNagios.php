@@ -376,25 +376,6 @@ $form->addElement('text', 'service_check_timeout', _("Service Check Timeout"), $
 $form->addElement('text', 'host_check_timeout', _("Host Check Timeout"), $attrsText3);
 $form->addElement('text', 'event_handler_timeout', _("Event Handler Timeout"), $attrsText3);
 $form->addElement('text', 'notification_timeout', _("Notification Timeout"), $attrsText3);
-$form->addElement('text', 'ocsp_timeout', _("Obsessive Compulsive Service Processor Timeout"), $attrsText3);
-$form->addElement('text', 'ochp_timeout', _("Obsessive Compulsive Host Processor Timeout"), $attrsText3);
-
-/* *****************************************************
- * OCSP / OCHP
- */
-$nagTab = array();
-$nagTab[] = $form->createElement('radio', 'obsess_over_services', null, _("Yes"), '1');
-$nagTab[] = $form->createElement('radio', 'obsess_over_services', null, _("No"), '0');
-$nagTab[] = $form->createElement('radio', 'obsess_over_services', null, _("Default"), '2');
-$form->addGroup($nagTab, 'obsess_over_services', _("Obsess Over Services Option"), '&nbsp;');
-$form->addElement('select', 'ocsp_command', _("Obsessive Compulsive Service Processor Command"), $checkCmds);
-
-$nagTab = array();
-$nagTab[] = $form->createElement('radio', 'obsess_over_hosts', null, _("Yes"), '1');
-$nagTab[] = $form->createElement('radio', 'obsess_over_hosts', null, _("No"), '0');
-$nagTab[] = $form->createElement('radio', 'obsess_over_hosts', null, _("Default"), '2');
-$form->addGroup($nagTab, 'obsess_over_hosts', _("Obsess Over Hosts Option"), '&nbsp;');
-$form->addElement('select', 'ochp_command', _("Obsessive Compulsive Host Processor Command"), $checkCmds);
 
 /* *****************************************************
  * Check orphaned
@@ -490,12 +471,14 @@ foreach (CentreonMainCfg::EVENT_BROKER_OPTIONS as $bit => $label) {
     );
 }
 $form->addGroup($eventBrokerOptionsData, 'event_broker_options', _("Broker Module Options"), '<br/>');
- // New options for enable whitelist of macros sent to Centreon Broker
+
+// New options for enable whitelist of macros sent to Centreon Broker
 $enableMacrosFilter = [];
 $enableMacrosFilter[] = $form->createElement('radio', 'enable_macros_filter', null, _("Yes"), 1);
 $enableMacrosFilter[] = $form->createElement('radio', 'enable_macros_filter', null, _("No"), 0);
 $form->addGroup($enableMacrosFilter, 'enable_macros_filter', _("Enable macro filtering"), '&nbsp;');
- // Dynamic field for macros whitelisted
+
+// Dynamic field for macros whitelisted
 $form->addElement(
     'static',
     'macros_filter',
@@ -792,7 +775,6 @@ if ($valid) {
     $tpl->assign('EventHandler', _("Event Handler"));
     $tpl->assign('Freshness', _("Freshness"));
     $tpl->assign('FlappingOptions', _("Flapping Options"));
-    $tpl->assign('PostCheck', _("Post Check"));
     $tpl->assign('CachedCheck', _("Cached Check"));
     $tpl->assign('MiscOptions', _("Misc Options"));
     $tpl->assign('LoggingOptions', _("Logging Options"));
