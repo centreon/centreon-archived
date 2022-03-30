@@ -607,7 +607,7 @@ class Host extends AbstractHost
 
         $hostCategory = HostCategory::getInstance($this->dependencyInjector);
         foreach ($host['hc'] as $hostCategoryId) {
-            $hostCategory->addHostInHostCategories($hostCategoryId, $host['host_id'], $host['host_name']);
+            $hostCategory->addHostToHostCategoryMembers($hostCategoryId, $host['host_id'], $host['host_name']);
         }
     }
 }
