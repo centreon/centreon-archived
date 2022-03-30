@@ -238,7 +238,7 @@ class HostTemplate extends AbstractHost
 
         $hostCategory = HostCategory::getInstance($this->dependencyInjector);
         foreach ($host['hc'] as $hostCategoryId) {
-            $hostCategory->addHostInHostCategories($hostCategoryId, $host['host_id'], $host['name']);
+            $hostCategory->addHostToHostCategoryMembers($hostCategoryId, $host['host_id'], $host['name']);
         }
     }
 }

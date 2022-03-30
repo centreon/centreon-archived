@@ -58,7 +58,7 @@ class HostCategory extends AbstractObject
     /**
      * @param int $hostCategoryId
      */
-    private function getHostcategoryFromId(int $hostCategoryId): void
+    private function addHostCategoryToList(int $hostCategoryId): void
     {
         $stmt = $this->backend_instance->db->prepare(
             "SELECT {$this->attributesSelect}
@@ -82,10 +82,10 @@ class HostCategory extends AbstractObject
      * @param int $hostId
      * @param string $hostName
      */
-    public function addHostInHostCategories(int $hostCategoryId, int $hostId, string $hostName): void
+    public function addHostToHostCategoryMembers(int $hostCategoryId, int $hostId, string $hostName): void
     {
         if (!isset($this->hostCategories[$hostCategoryId])) {
-            $this->getHostcategoryFromId($hostCategoryId);
+            $this->addHostCategoryToList($hostCategoryId);
         }
         if (
             ! isset($this->hostCategories[$hostCategoryId])
