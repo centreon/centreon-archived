@@ -23,7 +23,7 @@ export const hoveredNavigationItemsDerivedAtom = atom(
       },
     );
 
-    if (navigationKeysToRemove.length <= 0) {
+    if (isNil(navigationKeysToRemove)) {
       set(hoveredNavigationItemsAtom, {
         ...get(hoveredNavigationItemsAtom),
         [levelName]: currentPage,
