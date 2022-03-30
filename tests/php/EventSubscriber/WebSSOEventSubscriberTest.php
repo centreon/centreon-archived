@@ -55,7 +55,6 @@ beforeEach(function () {
     $this->event = $this->createMock(RequestEvent::class);
     $this->request = $this->createMock(Request::class);
     $this->subscriber = new WebSSOEventSubscriber(
-        120,
         $this->dependencyInjector,
         $this->webSSOReadRepository,
         $this->contactRepository,
