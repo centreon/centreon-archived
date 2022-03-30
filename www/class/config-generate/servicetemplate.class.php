@@ -247,7 +247,7 @@ class ServiceTemplate extends AbstractService
 
         foreach ($this->service_cache[$serviceId]['sc'] as &$value) {
             if (! is_null($value)) {
-                $serviceCategory->addServiceInServiceCategories(
+                $serviceCategory->addServiceToServiceCategoryMembers(
                     $value,
                     $serviceId,
                     $this->service_cache[$serviceId]['service_description']
