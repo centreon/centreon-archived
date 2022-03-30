@@ -1,10 +1,13 @@
 import * as React from 'react';
 
 import { equals } from 'ramda';
+import { useAtomValue } from 'jotai/utils';
 
 import { styled } from '@mui/material/styles';
 import Switch from '@mui/material/Switch';
 import makeStyles from '@mui/styles/makeStyles';
+
+import { userAtom, ThemeMode } from '@centreon/ui-context';
 
 interface StyleProps {
   darkModeSvg?: string;
@@ -82,10 +85,11 @@ const useStyles = makeStyles((theme) => ({
 export default (): JSX.Element => {
   const props = { darkModeSvg: svgMoon, lightModeSvg: svgSun };
   const classes = useStyles();
-  const [isDarkMode, setIsDarkMode] = React.useState(false);
+  const { themeMode } = useAtomValue(userAtom);
+  const isDarkMode = equals(themeMode, ThemeMode.dark);
 
   const handleModeOfTheme = (): void => {
-    setIsDarkMode(!isDarkMode);
+    // console.log('handleModeOfTheme', themeMode);
   };
 
   return (
