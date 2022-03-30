@@ -69,7 +69,7 @@ beforeEach(function () {
     );
 });
 
-it('should throw an exception if no web-sso configuration are found', function () {
+it('should throw an exception if web-sso configuration is not found', function () {
     $this->webSSOReadRepository
     ->expects($this->once())
     ->method('findConfiguration')
