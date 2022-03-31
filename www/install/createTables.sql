@@ -569,8 +569,6 @@ CREATE TABLE `cfg_nagios` (
   PRIMARY KEY (`nagios_id`),
   KEY `cmd1_index` (`global_host_event_handler`),
   KEY `cmd2_index` (`global_service_event_handler`),
-  KEY `cmd3_index` (`ocsp_command`),
-  KEY `cmd4_index` (`ochp_command`),
   KEY `nagios_server_id` (`nagios_server_id`),
   CONSTRAINT `cfg_nagios_ibfk_18` FOREIGN KEY (`global_host_event_handler`) REFERENCES `command` (`command_id`) ON DELETE SET NULL,
   CONSTRAINT `cfg_nagios_ibfk_19` FOREIGN KEY (`global_service_event_handler`) REFERENCES `command` (`command_id`) ON DELETE SET NULL,
